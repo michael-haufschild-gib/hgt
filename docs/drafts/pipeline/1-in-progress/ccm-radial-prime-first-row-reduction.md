@@ -1,4 +1,4 @@
-# The CCM radial prime charge reduces to one coalescing first-row series
+# The CCM radial prime charge requires one uniform first-row vanishing theorem
 
 - **ID:** `ccm-radial-prime-first-row-reduction`
 - **Stage:** 1-in-progress
@@ -6,11 +6,13 @@
 - **Scientific status:** `[CONJECTURE] [NOT AN RH PROOF]`
 - **Parent theories:** Dunster's uniform radial Bessel expansion, one-dimensional nonstationary
   phase, and the von Mangoldt divisor identity
-- **Statement:** After removing the solved diagonal divisibility spectrum, every weighted radial
-  Gram entry with both indices at least two contributes only `O(d_1/lambda^2)`. The sole possible
-  gap-scale off-diagonal prime contribution is
-  `-2 sum_(k>=2)log(k)G_lambda(1,k)`, whose stationary point coalesces with the radial endpoint at
-  `k` of order `2*pi*lambda^2`.
+- **Statement:** After removing the solved diagonal divisibility spectrum, the positive target is
+  a uniform theorem proving that the complete off-diagonal radial prime charge is `o(d_1)`. Its
+  only stationary sector is the first row
+  `-2 sum_(k>=2)log(k)G_lambda(1,k)`. The leading Dunster model predicts the summable bound
+  `G_lambda(1,k)=O(d_1*c^(-1/2)k^(-2))`, including the endpoint-coalescing transition
+  `k` of order `c=2*pi*lambda^2`; the exact PSWF remainder theorem needed to promote this bound is
+  open.
 
 ## Setup
 
@@ -184,20 +186,115 @@ k asymptotic to c=2*pi*lambda^2.                                  (17)
 
 This is the same scale as the finite-prime cutoff in the CCM parity carrier.
 
-## Positive open theorem
+## Leading-model first-row vanishing profile
 
-The intended full radial prime reduction is one-dimensional in the arithmetic index:
+`[DERIVED IN THE BULK AND TRANSITION REGIMES; UNIFORM MATCHING REMAINS OPEN]` Put
 
 ```text
-determine the cofinal limit of
-  d_1(lambda)^(-1) sum_(k>=2)log(k)G_lambda(1,k)
-through the transition k/c,
-then combine it with the exact Poisson central correction.        (18)
+rho(x)=sqrt(x^2-1).
+```
+
+When `sigma_4(c)=0`, the radial Bessel profile in Dunster's formula simplifies exactly to
+
+```text
+R_c(x)=x^(-1/2)J_0(c*rho(x)).                                    (18)
+```
+
+The normalized leading-model first-row Gram entry is therefore a fixed constant times
+
+```text
+c*k^(-1/2) integral_1^infinity
+  J_0(c*rho(x))J_0(c*rho(k*x)) dx/x.                             (19)
+```
+
+For `1<<k<<c`, the difference phase has the critical point `(15)`. At that point
+
+```text
+rho(x_k)=1/k,
+rho(k*x_k)=k,
+|d^2/dx^2[rho(x)-rho(k*x)]|_(x=x_k)=k^3-k^(-1).                  (20)
+```
+
+The two Bessel amplitudes and one-dimensional stationary phase consequently give
+
+```text
+G_lambda^model(1,k)/d_1(lambda)
+ =O(c^(-1/2)k^(-2)).                                             (21)
+```
+
+The sum phase is nonstationary and is smaller. For every fixed `k`, ordinary stationary phase
+proves `(21)`. In the transition `k=u*c` with `u` in a compact subset of `(0,infinity)`, set
+`x=1+z/c^2`. Then
+
+```text
+c*rho(x)->sqrt(2z),
+c*rho(k*x)=c*k+u*z-(2u)^(-1)+o(1),
+dx=c^(-2)dz,                                                     (22)
+```
+
+while the second Bessel amplitude is `O(c^(-3/2))`. Thus
+
+```text
+G_lambda^model(1,u*c)/d_1(lambda)=O_u(c^(-5/2)),                  (23)
+```
+
+exactly the value predicted by `(21)`. More precisely, the transition is governed by the classical
+Weber Gaussian--Bessel transform. After `r=rho(x)` and `z=c*r`, the model integral becomes
+
+```text
+1/(c*sqrt(k)) integral_0^infinity z J_0(z)
+  J_0(sqrt(k^2*z^2+c^2*(k^2-1))) dz                         (23a)
+```
+
+up to a factor tending to one on bounded `z`. If `k/c->u>0`, the second Bessel phase is
+
+```text
+c*k-1/(2u)+u*z^2/2+o(1).
+```
+
+Abel continuation of
+
+```text
+integral_0^infinity z J_0(z)exp(i*u*z^2/2)dz
+ =i/u*exp(-i/(2u))                                           (23b)
+```
+
+therefore supplies exactly the missing factor `1/u=c/k`. This identifies an explicit Weber
+transition kernel, rather than merely a coalescing scale. Formal endpoint integration by parts for
+`k/c->infinity` gives the same factor. A rigorous partition with constants uniform in both `c` and
+`k`, including removal of the Abel regulator, is still required before summing all transition
+regimes. Its target is
+
+```text
+sum_(k>=2)log(k)G_lambda^model(1,k)
+ =O(d_1(lambda)c^(-1/2))=o(d_1(lambda)).                          (24)
+```
+
+For the actual fixed mode, `c*sigma_4(c)^2` has a finite nonzero limit. This changes the bounded
+stationary phase but not the powers in `(21)`--`(24)`. What is still missing is a differentiated,
+two-parameter version of Dunster's exact remainder estimate strong enough to retain the
+`k^(-2)` summability uniformly through `k/c`.
+
+## Positive open theorem
+
+The intended full radial prime theorem is one-dimensional in the arithmetic index:
+
+```text
+prove
+  d_1(lambda)^(-1) sum_(k>=2)log(k)G_lambda(1,k) ->0
+uniformly through the transition k/c,
+then combine the solved diagonal spectrum with the exact
+Poisson central correction and archimedean form.                   (25)
 ```
 
 The relevant analytic object is a Bessel stationary point coalescing with a regular singular
-endpoint. Dunster supplies the uniform radial Bessel model; the missing theorem is its weighted
-arithmetic summation through `k/c`, not a general two-index Gram estimate.
+endpoint. Dunster supplies the uniform radial Bessel model; the missing theorem is error-stable
+weighted arithmetic summation through `k/c`, not another fixed-index asymptotic.
+
+The finite-archimedean Gamma boundary law makes the division of labor exact: completion supplies
+one upper projective direction, whereas the indices `k` in `(25)` carry an unbounded independent
+divisibility module. The desired theorem must transport and sum that module in the closed Weil
+form. It cannot replace it by an archimedean scalar or a compact-open germ limit.
 
 ## Novelty and significance verdict
 
@@ -209,6 +306,8 @@ the main route's novelty gate. No novelty claim is made before it is proved.
 
 - T. M. Dunster, *Asymptotics of Prolate Spheroidal Wave Functions*, arXiv:1601.00699.
 - A. Connes, C. Consani, H. Moscovici, *Zeta Spectral Triples*, arXiv:2511.22755.
+- NIST Digital Library of Mathematical Functions, Eq. 10.22.51 (the Gaussian--Bessel transform
+  used in `(23b)`, followed by Abel continuation).
 
 ## Lean decision
 
@@ -220,8 +319,10 @@ The formal tree has no radial PSWF or stationary-phase infrastructure. No Lean f
 - [ ] transfer the estimate to Dunster's exact uniform remainder
 - [ ] sum the exact `j,k>=2` weighted sector
 - [x] diagonal charge imported and separated
-- [ ] isolate the exceptional first-row series for the exact radial charge
+- [x] isolate the exceptional first-row series for the exact finite radial charge
 - [x] coalescing scale `k/c` identified
-- [ ] evaluate the first-row coalescing series
+- [x] derive the fixed-index and `k/c` transition vanishing scales
+- [ ] prove one uniform summable bound for the complete leading Dunster model
+- [ ] transfer summable vanishing to the exact PSWF remainder
 - [ ] combine with exact Poisson central correction
 - [ ] true Weil Rayleigh-excess and parity transfer

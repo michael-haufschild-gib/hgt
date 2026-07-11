@@ -85,6 +85,12 @@ hidden proof of the open arrow:
    `(8/(11*pi))dx/(x*sqrt(x^2-1))`, every fixed off-diagonal radial Gram entry is `o(d_1)`, and
    the diagonal divisibility spectrum is `(8/(11*pi*k))arcsin(1/k)`. The remaining source problem
    is simultaneous growing-index/von-Mangoldt uniformity, not fixed-index radial asymptotics.
+10. `ccm-radial-prime-first-row-reduction.md` reduces that growing-index problem to two positive
+    estimates. The `j,k>=2` sector needs an exact almost-orthogonality bound, while the only
+    stationary sector needs uniform first-row vanishing. Fixed-index stationary phase and the
+    explicit Weber kernel at `k` comparable to `c` both give the target scale
+    `G_lambda(1,k)=O(d_1*c^(-1/2)k^(-2))`. Uniformly matching those regimes and transferring the
+    result through the exact radial remainder are the present analytic gates.
 
 The additive heat-aperture zero echo and the unrestricted Krein-index realization remain detectors
 or no-go theorems. They cannot discharge this source comparison: echo disappearance and index zero

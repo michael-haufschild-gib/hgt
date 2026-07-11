@@ -498,10 +498,18 @@ Primary sources:
 
 ## 10. Lean status
 
-The current Lean tree has no formal Laurent shift field, Poincare asymptotic field, Gamma/digamma
-sectorial expansion, holomorphic almost-periodic hull, or Bohr-frequency rank infrastructure. No
-small wrapper would formalize the substantive theorem. The card remains at stage 2 until the whole
-claim is formalized unconditionally.
+`formal/GaloisForLFunctions/GammaProjectiveBoundary.lean` now proves unconditionally:
+
+- the nonzero orbit mass of the differentiated digamma shift datum;
+- the absence of a meromorphic finite-pole solution of
+  `g(z + 1) - g(z) = -1 / z²`, hence the rational branch obstruction;
+- `Re ψ(σ + it) → +∞` and `1 / ψ(σ + it) → 0` for `σ ≥ 0`;
+- the two-jet projective boundary `Γ(σ + it) / Γ'(σ + it) → 0` for `σ > 0`;
+- the finite projective-relation limit lemma used by the recurrence collapse.
+
+The remaining formal work is the full Laurent shift field, Poincare asymptotic field, general
+Gamma-field monomial valuation, holomorphic almost-periodic hull, and Bohr-frequency rank
+infrastructure. The card remains at stage 2 until the whole claim is formalized unconditionally.
 
 ## Gates
 

@@ -531,4 +531,38 @@ theorem eulerFisherScalarCurvature_tendsto_atBot :
   funext β
   simp
 
+/-- The exact exponential blow-up rate of the cold scalar curvature is `log (4/3)`. -/
+theorem eulerFisherScalarCurvature_log_rate_tendsto :
+    Tendsto (fun β : ℝ => Real.log (-eulerFisherScalarCurvature β) / β)
+      atTop (𝓝 (Real.log ((4 : ℝ) / 3))) := by
+  let C : ℝ := (Real.log 3) ^ 2 * (Real.log 3 - Real.log 2) ^ 2 /
+    (Real.log 2) ^ 4
+  let S : ℝ → ℝ := fun β => ((3 : ℝ) / 4) ^ β *
+    (-eulerFisherScalarCurvature β)
+  have hC : 0 < C := eulerLowTemperatureCurvatureCoefficient_pos
+  have hS : Tendsto S atTop (𝓝 C) := by
+    simpa [S, C] using eulerFisherScalarCurvature_neg_scaled_tendsto
+  have hlogS : Tendsto (fun β => Real.log (S β)) atTop (𝓝 (Real.log C)) :=
+    hS.log (ne_of_gt hC)
+  have hsmall : Tendsto (fun β => Real.log (S β) / β) atTop (𝓝 0) :=
+    hlogS.div_atTop tendsto_id
+  have htarget : Tendsto
+      (fun β : ℝ => Real.log ((4 : ℝ) / 3) + Real.log (S β) / β)
+      atTop (𝓝 (Real.log ((4 : ℝ) / 3))) := by
+    simpa using (tendsto_const_nhds (x := Real.log ((4 : ℝ) / 3))).add hsmall
+  apply htarget.congr'
+  have hSpos : ∀ᶠ β : ℝ in atTop, 0 < S β :=
+    hS.eventually (Ioi_mem_nhds hC)
+  filter_upwards [eventually_ge_atTop (2 : ℝ), hSpos] with β hβ hSβ
+  have hβ0 : β ≠ 0 := by linarith
+  have hfactor : ((4 : ℝ) / 3) ^ β * S β =
+      -eulerFisherScalarCurvature β := by
+    dsimp [S]
+    rw [← mul_assoc, ← Real.mul_rpow (by norm_num : (0 : ℝ) ≤ 4 / 3)
+      (by norm_num : (0 : ℝ) ≤ 3 / 4)]
+    norm_num
+  rw [← hfactor, Real.log_mul (ne_of_gt (Real.rpow_pos_of_pos (by norm_num) β))
+    (ne_of_gt hSβ), Real.log_rpow (by norm_num : (0 : ℝ) < 4 / 3)]
+  field_simp
+
 end RHTower
