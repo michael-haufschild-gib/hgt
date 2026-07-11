@@ -73,4 +73,83 @@ theorem multGammaProd_functional {n : ℕ} (hn : 0 < n) {s : ℝ} (hs : 0 < s) :
   have hn0 : (n : ℝ) ≠ 0 := ne_of_gt hnR
   field_simp
 
+/-- Value at `1`: `P(1) = (∏_{k<n} Γ((1+k)/n)) · n`. -/
+theorem multGammaProd_one (n : ℕ) :
+    multGammaProd n 1 = (∏ k ∈ Finset.range n, Real.Gamma ((1 + k) / n)) * (n : ℝ) := by
+  rw [multGammaProd, Real.rpow_one]
+
+/-- Each shifted-scaled log-Gamma summand `s ↦ log Γ((s+k)/n)` is convex on `s > 0`, by composing
+`convexOn_log_Gamma` with the affine map `s ↦ n⁻¹ s + k/n`. -/
+theorem logGamma_shiftScale_convexOn {n : ℕ} (hn : 0 < n) (k : ℕ) :
+    ConvexOn ℝ (Set.Ioi (0 : ℝ)) (fun s => Real.log (Real.Gamma ((s + k) / n))) := by
+  have hnR : (0 : ℝ) < n := by exact_mod_cast hn
+  have hn0 : (n : ℝ) ≠ 0 := ne_of_gt hnR
+  have hcomp := convexOn_log_Gamma.comp_affineMap
+    ((DistribSMul.toLinearMap ℝ ℝ ((n : ℝ)⁻¹)).toAffineMap + AffineMap.const ℝ ℝ ((k : ℝ) / n))
+  refine (hcomp.subset ?_ (convex_Ioi _)).congr ?_
+  · intro x hx
+    have hx0 : (0 : ℝ) < x := hx
+    show (0 : ℝ) < (n : ℝ)⁻¹ • x + (k : ℝ) / n
+    rw [smul_eq_mul]
+    positivity
+  · intro x _
+    show Real.log (Real.Gamma ((n : ℝ)⁻¹ • x + (k : ℝ) / n)) = Real.log (Real.Gamma ((x + k) / n))
+    rw [smul_eq_mul, show (n : ℝ)⁻¹ * x + (k : ℝ) / n = (x + k) / n by field_simp; ring]
+
+/-- The Gauss product is log-convex on `s > 0`. -/
+theorem multGammaProd_log_convexOn {n : ℕ} (hn : 0 < n) :
+    ConvexOn ℝ (Set.Ioi (0 : ℝ)) (Real.log ∘ multGammaProd n) := by
+  have hnR : (0 : ℝ) < n := by exact_mod_cast hn
+  have h1n : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  -- log P(s) = ∑ log Γ((s+k)/n) + s·log n on Ioi 0
+  have hEq : Set.EqOn (Real.log ∘ multGammaProd n)
+      (fun s => (∑ k ∈ Finset.range n, Real.log (Real.Gamma ((s + k) / n))) + s * Real.log n)
+      (Set.Ioi 0) := by
+    intro s hs
+    have hprodpos : (0 : ℝ) < ∏ k ∈ Finset.range n, Real.Gamma ((s + k) / n) :=
+      Finset.prod_pos fun k _ => Real.Gamma_pos_of_pos (arg_pos hn hs k)
+    have hnpow : (0 : ℝ) < (n : ℝ) ^ s := Real.rpow_pos_of_pos hnR s
+    rw [Function.comp_apply, multGammaProd, Real.log_mul (ne_of_gt hprodpos) (ne_of_gt hnpow),
+      Real.log_prod _ _ (fun k _ => (Real.Gamma_pos_of_pos (arg_pos hn hs k)).ne'),
+      Real.log_rpow hnR]
+  -- convexity of the sum by induction, plus the linear term
+  have hsum : ConvexOn ℝ (Set.Ioi (0 : ℝ))
+      (fun s => ∑ k ∈ Finset.range n, Real.log (Real.Gamma ((s + k) / n))) := by
+    induction Finset.range n using Finset.induction with
+    | empty => simpa using convexOn_const (0 : ℝ) (convex_Ioi 0)
+    | insert a t ha ih =>
+        simp only [Finset.sum_insert ha]
+        exact (logGamma_shiftScale_convexOn hn a).add ih
+  have hlin : ConvexOn ℝ (Set.Ioi (0 : ℝ)) (fun s => s * Real.log n) := by
+    simpa only [mul_comm _ (Real.log _)] using
+      (convexOn_id (convex_Ioi (0 : ℝ))).smul (Real.log_nonneg h1n)
+  exact (hsum.add hlin).congr hEq.symm
+
+/-- **Gauss multiplication (up to constant), real positive form.**  For `n ≥ 1` and `s > 0`,
+`∏_{k<n} Γ((s+k)/n) · n^s = C_n · Γ(s)` with `C_n = P(1) = (∏_{k<n} Γ((1+k)/n))·n`.  Proof: the
+normalized product is log-convex, satisfies the Gamma functional equation, is positive and `= 1` at
+`s = 1`, so by Bohr–Mollerup it equals `Γ`. -/
+theorem multGammaProd_eq {n : ℕ} (hn : 0 < n) {s : ℝ} (hs : 0 < s) :
+    multGammaProd n s = multGammaProd n 1 * Real.Gamma s := by
+  have hP1 : 0 < multGammaProd n 1 := multGammaProd_pos hn one_pos
+  set C := multGammaProd n 1 with hC
+  -- normalized `s ↦ P s / C` matches Γ by Bohr–Mollerup
+  have hnorm : Set.EqOn (fun s => multGammaProd n s / C) Real.Gamma (Set.Ioi 0) := by
+    refine eq_Gamma_of_log_convex ?_ (fun {y} hy => ?_) (fun {y} hy => ?_) ?_
+    · -- log-convexity of the normalized product
+      have hconv := multGammaProd_log_convexOn hn
+      have hEq : Set.EqOn (Real.log ∘ fun s => multGammaProd n s / C)
+          (fun s => (Real.log ∘ multGammaProd n) s - Real.log C) (Set.Ioi 0) := by
+        intro x hx
+        simp only [Function.comp_apply]
+        rw [Real.log_div (ne_of_gt (multGammaProd_pos hn hx)) (ne_of_gt hP1)]
+      exact (hconv.sub_const (Real.log C)).congr hEq.symm
+    · rw [multGammaProd_functional hn hy, mul_div_assoc]
+    · exact div_pos (multGammaProd_pos hn hy) hP1
+    · rw [div_self (ne_of_gt hP1)]
+  have := hnorm hs
+  simp only at this
+  rw [eq_comm, ← this, div_mul_cancel₀]
+  exact ne_of_gt hP1
+
 end GaloisForLFunctions

@@ -105,6 +105,61 @@ Subtracting `(9)` from `(6)` proves `(5)`.
 This is a coordinate bridge, not an RH advance by itself: pointwise or mean-square control of
 `psi(X)-X` at the critical exponent is classically RH-bearing.
 
+## 2A. Causal source versus anti-causal defect `[PROVED; SEARCH/BRIDGE]`
+
+The coupled transform `(3)` is not itself the infinitesimal anti-causal profile. Suzuki's exact
+Mellin identity is
+
+```text
+integral_0^infinity h_omega^(1)(x)
+  x^(1/2+i z) d*x
+ =i Theta_omega(z)/z,
+Im z>1/2+omega.                                           (9a)
+```
+
+Define the causal residual on `x>1` by
+
+```text
+r_omega(x)=x^(-1/2)-h_omega^(1)(x).                       (9b)
+```
+
+Suzuki's Theorem A.1 proves
+
+```text
+r_omega in L2((1,infinity),dx)
+ <-> Theta_omega is inner in the upper half-plane
+ <-> zeta has no zero with Re rho>1/2+omega,              (9c)
+```
+
+with the usual common-divisor convention. When innerness holds, Mellin--Plancherel identifies
+`r_omega` with the boundary inverse transform of
+
+```text
+(1-Theta_omega(z))/(i z).                                 (9d)
+```
+
+Without innerness, shifting the contour from the Euler line to the Hardy boundary crosses the
+upper-half-plane poles of `Theta_omega`; the crossed residues are precisely the anti-causal
+off-line-zero modes. Therefore the formal move
+
+```text
+differentiate the causal error transform `(3)` at omega=0
+  = the infinitesimal anti-causal profile
+```
+
+is false without an additional contour-jump theorem. Proving the `L2` cancellation in `(9c)` for
+all positive `omega` is already RH, not an easier estimate from which `(1)` follows formally.
+
+The legitimate critical object is the difference between two continuations of the same source:
+
+```text
+critical boundary inverse
+  - Euler-line causal continuation
+  = anti-causal contour-jump defect.                      (9e)
+```
+
+The requested norm `(1)` is the first-order energy of `(9e)`, not the norm of either term alone.
+
 ## 3. Candidate mechanisms
 
 ### Candidate A: pointed Nyman projection
@@ -120,6 +175,9 @@ ell_E=P_src v_arch.                                       (10)
 Then `(1)` follows from projection contractivity.  The projection must preserve the marked
 Möbius/floor coupling in `(4)`; an abstract unitary image or an unpointed Nyman closure is
 insufficient.
+
+After `(9e)`, `P_src` must act on the two-continuation incidence graph. A projection constructed
+only from the causal Nyman/Suzuki residual would assume `(9c)` and be circular.
 
 ### Candidate B: completed Hardy sum rule
 
@@ -154,13 +212,66 @@ are the input and boundary counterterm of one contractive renewal operator.  Its
    cancellation.
 5. **Divisor reconstruction.** Expanding `ell_E` into Xi-zero residue modes proves the implication
    from `(1)` to RH but cannot prove `(1)`.
+6. **Wrong-side identification.** The pole-subtracted summatory error determines the Euler-line
+   causal primitive. The energy target lives in the contour jump `(9e)`. A coupled-cancellation
+   proof must control the difference of the two continuations, not merely estimate `(3)`.
+
+## 4A. Finite-energy reduction `[PROVED HERE; BRIDGE]`
+
+Let `J` be any finite set of distinct right-half zero locations
+
+```text
+rho_j=1/2+a_j+i gamma_j,
+0<a_j<1/2,
+```
+
+with multiplicities `m_j>=1`, and let
+
+```text
+ell_J(t)=2 sum_(j in J)m_j exp(-(a_j+i gamma_j)t).
+```
+
+Then the Cauchy Gram identity gives
+
+```text
+||ell_J||_2^2
+ =4 sum_(j,k in J)m_j m_k
+   (a_j+a_k)/((a_j+a_k)^2+(gamma_j-gamma_k)^2)
+
+ >4 sum_(j in J)m_j^2
+ >=4 #J.                                                   (12)
+```
+
+All ordered-pair contributions are positive, and the diagonal contribution is
+`2m_j^2/a_j>4m_j^2`. Hence the finite-subset energies are monotone under enlargement and diverge
+for an infinite right-half divisor. Consequently
+
+```text
+finite first-order contour-jump energy
+  -> only finitely many off-line zeros,                    (13)
+
+energy <=4
+  -> no off-line zero
+  -> RH.                                                   (14)
+```
+
+This splits the source problem into two positive carrier theorems:
+
+1. source boundary regularity makes the contour-jump energy finite;
+2. exact Euler discreteness excludes a finite nonzero contour-jump divisor.
+
+The second theorem is not in the current corpus. Existing quiet-crossing rigidity saturates at the
+degree-one Gamma boundary, and sparse-Euler divisor rigidity requires a comparison Euler product
+not supplied by finite-exception factorization.
 
 ## 5. Open core
 
 `[OPEN CORE]` Construct the critical distributional limit of `(3)` as one closed Hilbert-space
-operator on the coupled pair `(4)`.  Prove either the pointed projection identity `(10)` or the
-source sum rule `(11)` without using a zero-free half-plane beyond `Re s>1`, an RH-equivalent
-Nyman closure statement, or a divisor expansion.
+operator on the coupled pair `(4)` together with the boundary-continuation map. Prove a source
+bound on the contour jump `(9e)`, not merely the causal residual `(9b)`. Equivalently, prove either
+the pointed two-continuation projection identity `(10)` or the source sum rule `(11)` without using
+a zero-free half-plane beyond `Re s>1`, an RH-equivalent Nyman closure statement, or a divisor
+expansion.
 
 Only after this operator is constructed is there a legitimate Lean target.  Formalizing
 `(1) -> RH` with `(1)` as a hypothesis would be a wrapper around the existing energy criterion.
@@ -170,6 +281,8 @@ Only after this operator is constructed is there a legitimate Lean target.  Form
 - [x] exact RH-bearing norm target fixed
 - [x] coupled floor/Mobius source fixed
 - [x] critical derivative law `(5)` proved
+- [x] causal-source/anti-causal-defect distinction proved
+- [x] finite-energy reduction `(12)`--`(14)` proved
 - [ ] distributional critical limit of the completed transform
 - [ ] pointed projection, sum rule, or renewal contraction
 - [ ] unconditional boundary norm `(1)`
