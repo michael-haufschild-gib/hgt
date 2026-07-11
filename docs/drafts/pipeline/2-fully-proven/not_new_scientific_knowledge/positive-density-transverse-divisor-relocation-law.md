@@ -167,6 +167,17 @@ degree. Applying this to every subfamily shows that the finite-translate differe
 stated over `K`: equality of rank after a DA base extension does not imply equality of the complete
 differential relation ideals over the smaller base.
 
+The logarithmic source classes agree as well:
+
+```text
+Dlog(F_a)-Dlog(F_0)=Dlog(A_a)-Dlog(A_0) in K.               (18)
+```
+
+Thus `F_0` and `F_a` define the same class in the additive quotient of meromorphic logarithmic
+derivatives by the DA field. The source class, the complete ordinate measure, and all finite
+differential-translation ranks can therefore agree simultaneously while transverse localization
+changes on a positive-density divisor.
+
 ## No-go theorem for ordinate-only HT implementations
 
 Let an implementation invariant factor through the following package:
@@ -175,7 +186,8 @@ Let an implementation invariant factor through the following package:
 2. the scalar functional equation and Schwarz reality;
 3. hypertranscendence and all finite differential-translation ranks;
 4. the complete translated differential field after a fixed DA base extension; and
-5. the complete zero-ordinate counting measure, not merely its asymptotic Weyl law.
+5. the logarithmic source class modulo that DA field; and
+6. the complete zero-ordinate counting measure, not merely its asymptotic Weyl law.
 
 Then the invariant has the same value on `F_0` and `F_a`, although the RH-type divisor statement is
 true for `F_0` and false for `F_a`. Consequently no theorem using only this package can produce a

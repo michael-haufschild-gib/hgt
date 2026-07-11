@@ -154,17 +154,21 @@ relative to the exponentially small fixed-mode spectral gaps.      (9)
 
 Even a proof of `(9)` strong enough to identify the true finite-Weil low spectrum would remain a
 local spectral theorem. The formalized logarithmic-boundary transfer isolates the additional
-cofinal obligations:
+cofinal obligations. In the CCM determinant family, however, the two gates specialize
+asymmetrically: whenever the finite even-simple hypothesis holds, every spectral-variable zero is
+real, hence every corresponding zeta-variable zero has horizontal displacement zero. The
+prime-clock energy gate is then identically satisfied. What remains is the analytic gate:
 
 ```text
 source-defined holomorphic F_N
-  -> F_N converges locally uniformly and zero-preservingly to Xi,
-  -> every F_N-zero has reflected energy o((log N)^2).  (10)
+  -> every F_N-zero lies on Re(s)=1/2,
+  -> F_N converges locally uniformly and nontrivially to Xi.       (10)
 ```
 
-The exterior-tail estimate can support the first arrow only if it controls the determinant or
+The exterior-tail estimate can support the last arrow only if it controls the determinant or
 characteristic function locally uniformly. Finite positivity, self-adjointness, a small Weil
-eigenvalue, or agreement of finitely many eigenvectors cannot replace `(10)`.
+eigenvalue, or agreement of finitely many eigenvectors supplies no divisor convergence and cannot
+replace `(10)`.
 
 The live Connes route is therefore the following dependency chain:
 
@@ -172,12 +176,13 @@ The live Connes route is therefore the following dependency chain:
 Fuchs/prolate leakage
   -> exterior E-tail control in the correct graph/sampling topology
   -> relative true-Weil spectral transfer
-  -> source-defined cofinal determinant carrying the Xi divisor
-  -> sub-log-square energy on its zero fibers.          (11)
+  -> finite even-simple determinant with real spectral zeros
+  -> source-defined cofinal determinant carrying the Xi divisor.  (11)
 ```
 
-The first line is now understood. The second line is the first analytic open core. The last two
-lines are the independent cofinal open core.
+The first line is now understood. The second line is the first analytic open core. The final line is
+the cofinal open core; once it is proved, the preceding real-zero statement makes the metric gate
+automatic.
 
 ## Attack record
 

@@ -228,7 +228,7 @@ leading scale-invariant prime field = symmetric Dickman = zero-free,
 zeta nodes = completion-sensitive correction beyond that field.        (22)
 ```
 
-## 7. Next mathematical object
+## 7. Signed-defect successor
 
 The surviving residue is the renormalized signed Lévy defect
 
@@ -239,16 +239,18 @@ Delta_N
    -1_(0<|u|<=1)du/|u|.                                (23)
 ```
 
-Its unscaled vague limit is zero, but its first nonvanishing distributional normalization may
-retain the explicit-formula zero spectrum. A viable next theorem must determine:
+Its unscaled vague limit is zero.  The successor theorem
+`prime-boundary-perturbative-jet-monodromy-escape.md` determines its algebraic asymptotics:
 
-1. the correct normalization of `Delta_N`;
-2. the topology in which a nonzero limit can exist;
-3. whether the completed Gamma/theta correction cancels its deterministic boundary term; and
-4. whether its remaining signed transform is zero-preserving for `Xi`.
+1. the first symmetric normalization is `(log N)^2` and its coefficient is the second regular
+   prime-zeta coefficient;
+2. every algebraic order is a distributional jet supported at `u=0`;
+3. the Gamma/theta correction can change those local coefficients but cannot change divisor
+   monodromy; and
+4. the zeta divisor lives in an escaping, nonperturbative prime-zeta monodromy sector.
 
-This is not a flow. It is a fluctuation of the constraint carrier after the universal positive
-phase has been factored out.
+Thus the signed defect does not yield a zero-preserving compact boundary field.  The natural
+quantized successor is winding number, whose localization statement is exactly RH.
 
 ## 8. Parent and novelty boundary
 
@@ -278,7 +280,10 @@ research question is the completed signed fluctuation `(23)`, not the leading Di
 - `primeBoundaryCharacteristic_eq_exp_neg_verticalEnergy`;
 - `primeBoundaryCharacteristic_eq_ofReal_exp`;
 - `primeBoundaryCharacteristic_re_pos`;
-- `primeBoundaryCharacteristic_ne_zero`.
+- `primeBoundaryCharacteristic_ne_zero`;
+- `primeBoundaryLogMoment`;
+- `iteratedDeriv_primeBoundaryWickCumulant_even`;
+- `iteratedDeriv_primeBoundaryWickCumulant_odd`.
 
 The finite entire-cumulant restriction and zero-free characteristic theorem are axiom-clean. The
 probability-space construction and scale-invariant weak limit remain on paper because the current
@@ -294,5 +299,5 @@ formal tree has no downstream use for a full Lévy-process implementation.
 - [x] finite zero-free theorem formalized in Lean
 - [x] limiting zero-free obstruction proved
 - [x] parent theory audit completed; classified as bridge
-- [ ] determine the first nonzero completed signed Lévy fluctuation
-
+- [x] determine the first nonzero signed fluctuation and its all-orders perturbative category
+- [x] identify the remaining nonperturbative sector as escaping divisor monodromy

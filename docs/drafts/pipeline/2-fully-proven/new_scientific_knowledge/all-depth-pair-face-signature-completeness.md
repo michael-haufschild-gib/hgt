@@ -190,6 +190,13 @@ Summing the finitely many orbit components proves the identity.
 
 Thus a finite divisor whose orbit sum vanishes independently in every transverse direction is already one full transverse coboundary. No analytic or Galois input enters this lemma.
 
+This lemma is formalized unconditionally and axiom-clean in
+`GaloisForLFunctions.TelescopeIdeal`. The per-orbit identity `⋂_i (u_i - 1) = (∏_i (u_i - 1))` is
+`iInf_span_singleton_eq_span_prod` (for pairwise relatively prime elements) and
+`iInf_span_singleton_eq_span_prod_of_primes` (for pairwise non-associate primes, the exact
+Laurent-ring hypothesis), holding in any unique factorization domain. Summing the finitely many
+orbit components is the remaining bookkeeping over the group algebra.
+
 ## Bottom charge
 
 For `F in Q_d`, define its bottom charge in the surviving direction `tau_d` by

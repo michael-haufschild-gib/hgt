@@ -131,6 +131,23 @@ Therefore Route B has two different verdicts:
 
 Route B has not proved RH.
 
+## Relationship to the later finite-Weil determinant lane
+
+This verdict concerns the 2024 semilocal Jacobi/Sonin candidate
+`W_(lambda,S)=(H+1/2)^2+lambda^2N_S`. It must not be used as a verdict on the different 2025 CCM
+finite-Weil-ground construction.
+
+The latter begins with the already closed compact-resolvent restricted Weil operator, and its finite
+Galerkin ground vector has an explicit regularized determinant. It therefore bypasses the missing
+semilocal `K_p` graph realization, raw-defect determinant blindness, and Sonin extension-selection
+problem recorded here. Its own open core is large-aperture simple-evenness plus locally uniform
+convergence of the normalized characteristic determinant to `Xi`. The exact pipeline grounding is
+recorded in `ccm-growing-aperture-mellin-determinant-transfer.md`.
+
+The two lanes share only the terminal cofinal Weil/divisor problem. A theorem or no-go for one lane
+does not transfer to the other unless its hypotheses are checked at the level of the actual operator
+and determinant topology.
+
 ## Why the old formulation was misleading
 
 The report's open core asks for a log-coordinate convolution/test operator whose trace is the

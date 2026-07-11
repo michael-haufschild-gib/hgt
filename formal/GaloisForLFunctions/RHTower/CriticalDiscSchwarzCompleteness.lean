@@ -81,12 +81,40 @@ theorem criticalSchwarzTransform_sub
   rw [sub_eq_add_neg, criticalSchwarzTransform_add,
     criticalSchwarzTransform_neg, sub_eq_add_neg]
 
+theorem criticalSchwarzTransform_one (r : ℝ) :
+    criticalSchwarzTransform r (1 : C(CriticalClosedDisc r, ℂ)) = 1 := by
+  ext z
+  simp [criticalSchwarzTransform]
+
+theorem criticalSchwarzTransform_mul
+    (r : ℝ) (f g : C(CriticalClosedDisc r, ℂ)) :
+    criticalSchwarzTransform r (f * g) =
+      criticalSchwarzTransform r f * criticalSchwarzTransform r g := by
+  ext z
+  simp [criticalSchwarzTransform, map_mul]
+
 @[simp]
 theorem criticalSchwarzTransform_involutive
     (r : ℝ) (f : C(CriticalClosedDisc r, ℂ)) :
     criticalSchwarzTransform r (criticalSchwarzTransform r f) = f := by
   ext z
   simp [criticalSchwarzTransform]
+
+/-- Schwarz conjugation is an involutive ring equivalence on the compact
+critical-disc Banach algebra. -/
+def criticalSchwarzRingEquiv (r : ℝ) :
+    C(CriticalClosedDisc r, ℂ) ≃+* C(CriticalClosedDisc r, ℂ) where
+  toFun := criticalSchwarzTransform r
+  invFun := criticalSchwarzTransform r
+  left_inv := criticalSchwarzTransform_involutive r
+  right_inv := criticalSchwarzTransform_involutive r
+  map_add' := criticalSchwarzTransform_add r
+  map_mul' := criticalSchwarzTransform_mul r
+
+@[simp]
+theorem criticalSchwarzRingEquiv_apply
+    (r : ℝ) (f : C(CriticalClosedDisc r, ℂ)) :
+    criticalSchwarzRingEquiv r f = criticalSchwarzTransform r f := rfl
 
 theorem norm_criticalSchwarzTransform_le
     (r : ℝ) (f : C(CriticalClosedDisc r, ℂ)) :
