@@ -143,6 +143,6 @@ cofinal Weil spectral-floor convergence.
 - [x] notes-level arithmetic, pointing, and metric carriers coupled
 - [x] canonical finite-stage sources attacked
 - [x] real-spectrum graph-core shortcut proved RH-equivalent
-- [ ] construct the canonical finite-stage operators `A_(N,u)`
-- [ ] prove their uniform budget `(7)`
+- [x] retired as an independent lower-burden CCM completion
+- [ ] use `(7)` only if a genuinely transverse finite-stage source is constructed
 - [ ] RH

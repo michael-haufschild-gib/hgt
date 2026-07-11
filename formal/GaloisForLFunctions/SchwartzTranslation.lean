@@ -1,4 +1,5 @@
 import Mathlib.Analysis.Distribution.SchwartzSpace.Deriv
+import Mathlib.Analysis.Calculus.Taylor
 
 /-!
 # Translation on Schwartz space
@@ -71,6 +72,96 @@ theorem lineDerivOp_translateCLM (a m : E) (f : 𝓢(E, F)) :
   rfl
 
 /-! ## One-dimensional strong-orbit infrastructure -/
+
+/-- Iterating the ordinary derivative `m` times after `n` times is the `(n+m)`-th derivative.
+This elementary composition law is not currently packaged by mathlib's iterated-derivative API. -/
+theorem iteratedDeriv_iteratedDeriv {f : ℝ → ℂ} (m n : ℕ) :
+    iteratedDeriv m (iteratedDeriv n f) = iteratedDeriv (n + m) f := by
+  simp only [iteratedDeriv_eq_iterate]
+  rw [← Function.iterate_add_apply, Nat.add_comm]
+
+/-- Two-sided directional Taylor estimate for a difference quotient.  The unit direction `c`
+encodes the sign of the real step, so one theorem handles both right and left translation
+increments. -/
+theorem directionalDifferenceQuotientError_le
+    {g : ℝ → ℂ} (hg : ContDiff ℝ 2 g) {y c r C : ℝ}
+    (hr : 0 < r) (hc : |c| = 1)
+    (hC : ∀ t ∈ Set.Icc 0 r, ‖iteratedDeriv 2 g (y + c * t)‖ ≤ C) :
+    ‖((c * r)⁻¹ : ℝ) • (g (y + c * r) - g y) - deriv g y‖ ≤ C * r := by
+  let psi : ℝ → ℂ := fun t => g (y + c * t)
+  have hpsi : ContDiff ℝ 2 psi := by
+    dsimp only [psi]
+    exact hg.comp (contDiff_const.add (contDiff_const.mul contDiff_id))
+  have hud : UniqueDiffOn ℝ (Set.Icc 0 r) := uniqueDiffOn_Icc hr
+  have hpsi_two (t : ℝ) :
+      iteratedDeriv 2 psi t = (c ^ 2 : ℝ) • iteratedDeriv 2 g (y + c * t) := by
+    let gy : ℝ → ℂ := fun u => g (y + u)
+    have hgy : ContDiff ℝ 2 gy := hg.comp (contDiff_const.add contDiff_id)
+    have hs := congrFun (iteratedDeriv_comp_const_smul hgy c) t
+    dsimp only [gy] at hs
+    change iteratedDeriv 2 (fun x : ℝ => g (y + c * x)) t = _
+    rw [hs]
+    rw [congrFun (iteratedDeriv_comp_const_add 2 g y) (c * t)]
+  have hCpsi : ∀ t ∈ Set.Icc 0 r,
+      ‖iteratedDerivWithin 2 psi (Set.Icc 0 r) t‖ ≤ C := by
+    intro t ht
+    rw [iteratedDerivWithin_eq_iteratedDeriv (n := 2) hud hpsi.contDiffAt ht]
+    rw [hpsi_two]
+    rw [norm_smul, Real.norm_eq_abs, abs_pow, hc, one_pow, one_mul]
+    simpa [add_comm] using hC t ht
+  have hTaylor := taylor_mean_remainder_bound (n := 1) (a := 0) (b := r)
+    (x := r) (C := C) (le_of_lt hr) hpsi.contDiffOn
+    (Set.right_mem_Icc.mpr (le_of_lt hr)) hCpsi
+  have hpsi_one : iteratedDerivWithin 1 psi (Set.Icc 0 r) 0 = deriv psi 0 := by
+    rw [iteratedDerivWithin_eq_iteratedDeriv (n := 1) hud
+      (hpsi.of_le (by norm_num)).contDiffAt
+      (Set.left_mem_Icc.mpr (le_of_lt hr))]
+    exact congrFun iteratedDeriv_one 0
+  have hpsi_deriv : deriv psi 0 = c • deriv g y := by
+    have hgy : ContDiff ℝ 1 (fun u : ℝ => g (y + u)) :=
+      (hg.of_le (by norm_num)).comp (contDiff_const.add contDiff_id)
+    have hs := congrFun (iteratedDeriv_comp_const_smul hgy c) 0
+    rw [show deriv psi 0 = iteratedDeriv 1 (fun x : ℝ => g (y + c * x)) 0 by
+      simp [psi]]
+    rw [hs]
+    simp only [pow_one, mul_zero]
+    rw [congrFun (iteratedDeriv_comp_const_add 1 g y) 0]
+    simp
+  have hTaylor' :
+      ‖g (y + c * r) - (g y + r • (c • deriv g y))‖ ≤ C * r ^ 2 := by
+    have htaylorEval : taylorWithinEval psi 1 (Set.Icc 0 r) 0 r =
+        psi 0 + r • deriv psi 0 := by
+      rw [show (1 : ℕ) = 0 + 1 by omega, taylorWithinEval_succ,
+        taylor_within_zero_eval, hpsi_one]
+      norm_num
+    rw [htaylorEval] at hTaylor
+    simpa [psi, hpsi_deriv] using hTaylor
+  have hc0 : c ≠ 0 := by
+    intro hzero
+    rw [hzero, abs_zero] at hc
+    norm_num at hc
+  have hcr : c * r ≠ 0 := mul_ne_zero hc0 (ne_of_gt hr)
+  have hid : ((c * r)⁻¹ : ℝ) • (g (y + c * r) - g y) - deriv g y =
+      ((c * r)⁻¹ : ℝ) •
+        (g (y + c * r) - (g y + r • (c • deriv g y))) := by
+    symm
+    calc
+      ((c * r)⁻¹ : ℝ) •
+          (g (y + c * r) - (g y + r • (c • deriv g y))) =
+          ((c * r)⁻¹ : ℝ) • (g (y + c * r) - g y) -
+            ((c * r)⁻¹ : ℝ) • (r • (c • deriv g y)) := by module
+      _ = ((c * r)⁻¹ : ℝ) • (g (y + c * r) - g y) - deriv g y := by
+        congr 1
+        rw [smul_smul, smul_smul]
+        have hcoef : (c * r)⁻¹ * r * c = 1 := by field_simp
+        rw [hcoef, one_smul]
+  rw [hid, norm_smul, Real.norm_eq_abs, abs_inv, abs_mul, hc, one_mul]
+  have hrabs : |r| = r := abs_of_pos hr
+  rw [hrabs]
+  calc
+    r⁻¹ * ‖g (y + c * r) - (g y + r • (c • deriv g y))‖
+        ≤ r⁻¹ * (C * r ^ 2) := by gcongr
+    _ = C * r := by field_simp
 
 /-- Difference quotient for the real translation parameter on complex-valued Schwartz space. -/
 noncomputable def translateDifferenceQuotient (a h : ℝ) (f : 𝓢(ℝ, ℂ)) : 𝓢(ℝ, ℂ) :=
@@ -162,5 +253,98 @@ theorem weighted_iteratedDeriv_translate_bound
         (2 ^ k * ((Finset.Iic (k, m)).sup
           (fun p => SchwartzMap.seminorm ℂ p.1 p.2)) f) := by
       gcongr
+
+/-- Pointwise Taylor bound for every iterated derivative of the translation difference-quotient
+error.  The constant is uniform in the spatial variable and linear in the translation step. -/
+theorem weighted_iteratedDeriv_translateDifferenceQuotientError_le
+    (f : 𝓢(ℝ, ℂ)) (a h x : ℝ) (k n : ℕ) (hh0 : h ≠ 0) (hh1 : |h| ≤ 1) :
+    |x| ^ k * ‖iteratedDeriv n (translateDifferenceQuotientError a h f) x‖ ≤
+      ((2 + |a|) ^ k *
+        (2 ^ k * ((Finset.Iic (k, n + 2)).sup
+          (fun p => SchwartzMap.seminorm ℂ p.1 p.2)) f)) * |h| := by
+  let r : ℝ := |h|
+  let c : ℝ := h / r
+  let y : ℝ := x + a
+  let g : ℝ → ℂ := iteratedDeriv n f
+  let gx : ℝ → ℂ := fun u => |x| ^ k • g u
+  let C : ℝ := (2 + |a|) ^ k *
+    (2 ^ k * ((Finset.Iic (k, n + 2)).sup
+      (fun p => SchwartzMap.seminorm ℂ p.1 p.2)) f)
+  have hr : 0 < r := by dsimp [r]; exact abs_pos.mpr hh0
+  have hc : |c| = 1 := by
+    dsimp [c, r]
+    rw [abs_div, abs_abs, div_self (ne_of_gt (abs_pos.mpr hh0))]
+  have hcr : c * r = h := by
+    dsimp [c, r]
+    field_simp
+  have hg : ContDiff ℝ 2 g := by
+    apply (contDiff_nat_iff_iteratedDeriv).2
+    constructor
+    · intro m _hm
+      have hm : iteratedDeriv m g = iteratedDeriv (n + m) f := by
+        dsimp only [g]
+        exact iteratedDeriv_iteratedDeriv m n
+      rw [hm]
+      exact (f.smooth (n + m)).continuous_iteratedDeriv' (n + m)
+    · intro m _hm
+      have hm : iteratedDeriv m g = iteratedDeriv (n + m) f := by
+        dsimp only [g]
+        exact iteratedDeriv_iteratedDeriv m n
+      rw [hm]
+      exact (f.smooth (n + m + 1)).differentiable_iteratedDeriv' (n + m)
+  have hgx : ContDiff ℝ 2 gx := hg.const_smul (|x| ^ k)
+  have hiter_gx (u : ℝ) :
+      iteratedDeriv 2 gx u = |x| ^ k • iteratedDeriv (n + 2) f u := by
+    change iteratedDeriv 2 ((|x| ^ k : ℝ) • g) u = _
+    rw [iteratedDeriv_const_smul hg.contDiffAt (|x| ^ k)]
+    rw [congrFun (iteratedDeriv_iteratedDeriv 2 n) u]
+  have hderiv_gx (u : ℝ) :
+      deriv gx u = |x| ^ k • iteratedDeriv (n + 1) f u := by
+    rw [← congrFun iteratedDeriv_one u]
+    change iteratedDeriv 1 ((|x| ^ k : ℝ) • g) u = _
+    rw [iteratedDeriv_const_smul (n := 1)
+      (hg.of_le (by norm_num)).contDiffAt (|x| ^ k)]
+    rw [congrFun (iteratedDeriv_iteratedDeriv 1 n) u]
+  have hC : ∀ t ∈ Set.Icc 0 r,
+      ‖iteratedDeriv 2 gx (y + c * t)‖ ≤ C := by
+    intro t ht
+    rw [hiter_gx, norm_smul, Real.norm_eq_abs, abs_pow, abs_abs]
+    have htbound : |c * t| ≤ 1 := by
+      rw [abs_mul, hc, one_mul, abs_of_nonneg ht.1]
+      exact ht.2.trans hh1
+    simpa [C, y, add_assoc] using
+      weighted_iteratedDeriv_translate_bound f a (c * t) x k (n + 2) htbound
+  have hdir := directionalDifferenceQuotientError_le hgx hr hc hC
+  rw [hcr] at hdir
+  have hscaled : |x| ^ k •
+      ((h⁻¹ : ℝ) • (g (y + h) - g y) - iteratedDeriv (n + 1) f y) =
+      (h⁻¹ : ℝ) • (gx (y + h) - gx y) - deriv gx y := by
+    rw [hderiv_gx]
+    dsimp only [gx]
+    module
+  rw [iteratedDeriv_translateDifferenceQuotientError]
+  rw [show x + (a + h) = y + h by dsimp [y]; ring,
+    show x + a = y by rfl]
+  change |x| ^ k *
+      ‖(h⁻¹ : ℝ) • (g (y + h) - g y) - iteratedDeriv (n + 1) f y‖ ≤ C * r
+  have hpowabs : ‖(|x| ^ k : ℝ)‖ = |x| ^ k := by
+    rw [Real.norm_eq_abs, abs_of_nonneg]
+    positivity
+  rw [← hpowabs, ← norm_smul, hscaled]
+  exact hdir
+
+/-- Every Schwartz seminorm of the translation difference-quotient error is `O(|h|)` with an
+explicit bound from finitely many higher seminorms of the original function. -/
+theorem seminorm_translateDifferenceQuotientError_le
+    (f : 𝓢(ℝ, ℂ)) (a h : ℝ) (k n : ℕ) (hh0 : h ≠ 0) (hh1 : |h| ≤ 1) :
+    SchwartzMap.seminorm ℂ k n (translateDifferenceQuotientError a h f) ≤
+      ((2 + |a|) ^ k *
+        (2 ^ k * ((Finset.Iic (k, n + 2)).sup
+          (fun p => SchwartzMap.seminorm ℂ p.1 p.2)) f)) * |h| := by
+  apply SchwartzMap.seminorm_le_bound' (𝕜 := ℂ) k n
+  · positivity
+  · intro x
+    exact weighted_iteratedDeriv_translateDifferenceQuotientError_le
+      f a h x k n hh0 hh1
 
 end SchwartzMap

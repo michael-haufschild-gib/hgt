@@ -6,7 +6,8 @@
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** A periodic-pencil representation of the facet complements of a finite simplicial
   complex produces an entire non-multiple-Gamma HT system in the same analytic dimension whose
-  exact full nonlinear differential matroid is the localized Stanley--Reisner matroid.  The
+  exact full nonlinear differential matroid is the localized Stanley--Reisner matroid.  Analytic
+  dimension one is exactly the simplex-or-pure-principal stratum.  The
   connected nonpure two-thick complex `S^1 wedge S^2` has periodic-pencil dimension and intrinsic
   HT realization dimension exactly two, although its faithful hyperplane dimension is four.
 
@@ -229,6 +230,71 @@ ppDim(Delta)<=ffsDim(Delta)<=|Fac(Delta)|.                   (22)
 The first inequality can be strict because distinct parallel leaves in (4) are analytically
 identified by a periodic source even though no single hyperplane contains them.
 
+## Exact dimension-one phase law `[PROVED HERE]`
+
+Let `Delta` be a complex on a nonempty essential vertex set `V`.  The following are equivalent:
+
+```text
+(i)  peDim(Delta)=1;
+(ii) htDim(Delta)=1;
+(iii) ppDim(Delta)=1;
+(iv) Delta is the full simplex, or there is a nonempty U subset V with
+     Fac(Delta)={V\{u}:u in U};
+(v)  I_Delta=0, or I_Delta=(prod_(u in U)(t_u-1)) for one nonempty U.       (D1)
+```
+
+### Necessity
+
+If `peDim(Delta)=1`, every facet complement is contained in a closed subgroup `P_A subset C` with
+noncompact quotient.  Its identity component cannot be `C`, so `P_A` is discrete.  A discrete
+subgroup of `C` of rank two is a full lattice with compact elliptic quotient; hence `P_A` has
+`Z`-rank at most one.  The globally `Q`-independent translation steps in `V\A` all lie in `P_A`, so
+
+```text
+|V\A|<=1 for every facet A.                                 (D2)
+```
+
+The same conclusion follows directly from a one-dimensional periodic-pencil separation, since
+the nonzero form `ell_A:C->C` is injective and maps all complement steps into the one-dimensional
+`Q`-space `omega_A Q`.  It follows from the period-escape inequality
+`peDim<=htDim<=ppDim` for either of the other dimension-one hypotheses as well.
+
+If `V` itself is a facet, it is the unique facet and `Delta` is the full simplex.  Otherwise every
+facet is `V\{u}` for a vertex `u`; writing `U` for the nonempty set of omitted vertices gives (iv).
+A set is then a face exactly when it omits an element of `U`, so `U` is the unique minimal nonface
+and (v) follows.
+
+### Sufficiency and sharpness
+
+Choose `Q`-linearly independent nonzero numbers `(a_v)_(v in V)`.
+
+If `Fac(Delta)={V\{u}:u in U}`, use `ell_u(z)=z` and `omega_u=a_u`.  The complement value is one
+period, and
+
+```text
+{1} union {a_v/a_u:v!=u}                                   (D3)
+```
+
+is `Q`-linearly independent: multiplication by `a_u` gives the original independent family
+`{a_v:v in V}`.  This is a periodic-pencil separation in `C`.
+
+For the full simplex, use its sole facet `V`, take `ell(z)=z`, and choose `omega` outside the
+`Q`-span of the finite family `(a_v)`.  Then `{1} union {a_v/omega}` is independent.  The
+periodic-pencil realization theorem supplies in both cases an entire one-variable HT system with
+the exact annihilator and full nonlinear matroid.  Thus (iv) implies `ppDim=htDim=1`, and its period
+groups give `peDim=1`.  This proves (D1).
+
+Faithful single-hyperplane dimension has a sharper boundary:
+
+```text
+ffsDim(Delta)=1 iff Delta is the full simplex.               (D4)
+```
+
+Indeed, a nonzero linear form on `C` cannot vanish on a nonzero translation step, so a faithful
+one-dimensional facet can have no complement.  Conversely the full simplex is immediate.  Hence
+periodicity is not a technical convenience even in dimension one: its cyclic leaves realize every
+nonzero principal squarefree ideal that a single hyperplane cannot.
+
 ## The nonpure two-thick wedge has periodic-pencil dimension two `[PROVED HERE]`
 
 Let `Delta_wedge` have vertices `{0,1,2,3,4,5}` and facets
@@ -340,6 +406,23 @@ period pencils rather than four independent linear coordinates.  Any proposed ro
 only one scalar analytic clock must become pure and principal; any viable nonpure route must expose
 at least a second analytic direction or an equivalent periodic-pencil quotient.  No assertion that
 the zeta function supplies such a pencil is made here.
+
+For a finite prime set `P`, the horizontal steps `(log p)_(p in P)` are `Q`-linearly independent:
+after clearing denominators, a rational relation would give an integer relation among prime powers,
+and unique factorization kills every exponent.  Therefore the dimension-one phase law applies
+without a genericity assumption.  Any scalar meromorphic prime-translation carrier that realizes a
+full exact Stanley--Reisner matroid must have
+
+```text
+I=(product_(p in U)(T_(log p)-1))                            (RH1)
+```
+
+for one finite prime subset `U`, or `I=0`.  This is the positive scalar route normal form: every
+facet omits exactly one prime from `U`.  A route requiring two incomparable forbidden prime blocks,
+mixed circuit degrees, or nonpure prime compatibility must construct a second analytic escape
+coordinate, a vector/sheaf equivalent, or a non-additive action whose stabilizers are not scalar
+period lattices.  The theorem constrains the form of a successful route; it does not assert that a
+zeta-derived carrier satisfies the full-matroid hypothesis.
 
 ## Parent and novelty boundary
 

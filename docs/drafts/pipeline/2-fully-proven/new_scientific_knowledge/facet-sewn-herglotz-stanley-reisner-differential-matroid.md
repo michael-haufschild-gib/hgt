@@ -27,19 +27,19 @@ lambda_j=pi^j,   epsilon_j=2^(-j),   j>=1.                  (S0)
 
 The numbers `(lambda_j)` are `Q`-linearly independent because `pi` is transcendental, and
 `sum_j epsilon_j/(1+lambda_j)<infinity`.  Choose a bounded positive reweighting `(exp(u_j))` for
-which the meromorphic Herglotz function
+such that the meromorphic Herglotz function
 
 ```text
 g(z)=sum_(j>=1) epsilon_j exp(u_j)/(lambda_j-z)              (S1)
 ```
 
-has its distinct complex translates
+has distinct complex translates
 
 ```text
 {g(z+h):h in C}
 ```
 
-are differentially algebraically independent over `C(z)`.  Such reweightings form a comeager set
+that are differentially algebraically independent over `C(z)`.  Such reweightings form a comeager set
 by the discrete-support corollary in
 `herglotz-full-translation-ht-krein-index-orthogonality.md`.
 
@@ -51,6 +51,11 @@ positive residues in (S1) make every `pi^j` an uncancelled pole, while `{pi^j:j>
 `Q`-linear rank.  Adding or removing finitely many rational poles does not change this obstruction.
 Thus `g` is not a disguised finite-order multiple-Gamma logarithmic derivative.  Independently,
 the nonpure relation complex below is not the uniform skeleton of any fixed hierarchy order.
+For the elliptic hierarchy the finite-rank divisor statement is immediate from Nishizawa's product
+formula, whose zeros and poles lie in
+`Z+sum_j Z tau_j`; see M. Nishizawa, *An elliptic analogue of the multiple gamma function*, J. Phys.
+A **34** (2001), 7411--7421, DOI `10.1088/0305-4470/34/36/320`.  The Barnes case is the analogous
+finite-period Weierstrass product.
 
 Introduce one complex coordinate `z_A` for every facet `A`, and put
 
@@ -258,10 +263,18 @@ This is the boundary of a triangle and the boundary of a tetrahedron joined at t
 realization is `S^1 wedge S^2`.  It is connected and nonpure because its facets have cardinalities
 two and three.
 
-It is two-thick.  The empty face has many coface directions.  At each vertex of the triangle there
-are two incident cycle directions.  At each tetrahedral vertex there are at least two incident edge
-directions.  Every tetrahedral edge lies in exactly two boundary triangles and hence has the two
-complementary coface directions.  These are all the nonmaximal faces.
+It is two-thick in the exact sense that every nonfacet face `J` has distinct vertices `q,u notin J`
+for which both `J union {q}` and `J union {u}` remain faces.  The complete case split is finite and
+structural:
+
+- for `J=empty`, take any two vertices in one displayed edge;
+- for `J={0},{1},{2}`, take the other two triangle vertices;
+- for `J={3},{4},{5}`, take the other two vertices among `{3,4,5}`;
+- every remaining nonfacet face is an edge of the tetrahedral boundary; the two vertices of
+  `{0,3,4,5}\J` extend it to its two incident triangular facets.
+
+There are no other cases: a face is contained in one of the displayed edges or triangles, so a
+nonfacet face has cardinality at most two, and the three cycle edges are already facets.
 
 Its minimal nonfaces are
 
@@ -269,6 +282,11 @@ Its minimal nonfaces are
 {1,3}, {1,4}, {1,5}, {2,3}, {2,4}, {2,5},
 {0,1,2}, {0,3,4,5}.                                         (17)
 ```
+
+Indeed, the six pairs are precisely the cross pairs between `{1,2}` and `{3,4,5}`.  If a set has
+no cross pair, it lies in `{0,1,2}` or in `{0,3,4,5}`; inside those two vertex sets the only
+minimal nonfaces are respectively the full triangle and full tetrahedron.  This proves both that
+every set in (17) is minimal and that the list is exhaustive.
 
 Therefore its structural ideal is
 
@@ -343,9 +361,38 @@ constraint geometry they jointly prove.  Its geometric companion,
 supports only principal pure geometry.  Together the two theorems establish a nontrivial analytic
 dimension stratification of HT relation complexes.
 
+## Exact Lean completion boundary
+
+The current Lean tree contains genuine supporting components, but not this theorem:
+
+- `GaloisForLFunctions.SimplicialConstraintTower` defines faces, facet antichains, and
+  `TwoThick`, and proves general pure/ridge-thick implications;
+- `GaloisForLFunctions.DifferentialMatroidFoundations`, `DifferentialExchange`, and
+  `DifferentialMatroidGluing` provide the abstract differential-rank and orbit-gluing machinery;
+- `GaloisForLFunctions.BaireGenericAvoidance` formalizes the final category-theoretic passage from
+  nowhere-dense relation loci to existence of a generic gauge;
+- `GaloisForLFunctions.MeromorphicTranslationDifferentialOperator` proves that translations commute
+  with differential jets and constant-coefficient differential operators.
+
+The following theorem-specific obligations are still unformalized:
+
+1. the actual meromorphic series (S1), its normal convergence and pole divisor, and the
+   finite-dimensional Cauchy-jet surjectivity/transversality proof of full translation freeness;
+2. the arbitrary finite-complex localized facet-prime identity (10), not only the uniform
+   squarefree-Veronese special case already present elsewhere;
+3. the differential Smith-normal-form rank lemma (14) instantiated in an actual differential
+   field of meromorphic functions;
+4. the explicit six-vertex facet family (16), its exact minimal nonfaces (17), nonpurity, and
+   two-thickness;
+5. the analytic-algebraic assembly yielding (4) for every finite operator family.
+
+Formalizing an abstract interface that assumes any of these five items would be useful
+infrastructure but would not formalize this card.  Stage 3 requires all five and the final assembly
+unconditionally.
+
 ## Gates
 
-- [x] non-multiple-Gamma analytic source chosen
+- [x] non-multiple-Gamma source proved by its infinite-`Q`-rank pole divisor
 - [x] product-domain structural translations defined
 - [x] diagonal-specialization lemma proved without coefficient collapse
 - [x] exact Stanley--Reisner kernel proved after Laurent localization

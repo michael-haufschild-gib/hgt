@@ -110,7 +110,9 @@ decompactification.
 - `BoundedVerticalClockApproximationCertificate`;
 - `boundedVerticalClockApproximationCertificate_iff_riemannHypothesis`;
 - `LocalBoundedVerticalClockDichotomy`;
-- `riemannHypothesis_of_locally_bounded_vertical_clock_dichotomy_approximants`.
+- `riemannHypothesis_of_locally_bounded_vertical_clock_dichotomy_approximants`;
+- `LocalBoundedVerticalClockApproximationCertificate`;
+- `localBoundedVerticalClockApproximationCertificate_iff_riemannHypothesis`.
 
 The file compiles with the project toolchain and is imported by the RHTower umbrella.
 
@@ -141,3 +143,8 @@ the Hurwitz/compactness machinery, not the bounded-clock antecedent.  Source-sid
 replace exact bounded periodicity by an independently controlled defect, such as the already
 formalized compact-local reflected prime energy, or quantify a decompactifying source law without
 repackaging real-zero localization.
+
+The strongest direct pivot is the source-closure problem in
+`xi-approximant-prime-energy-source-close.md`; a second is all-depth horizontal carrier coercivity,
+whose depth-one and depth-two cases are already formalized.  The full pipeline and Lean audit is
+`docs/reports/bounded_clock_route_full_audit_0711.md`.

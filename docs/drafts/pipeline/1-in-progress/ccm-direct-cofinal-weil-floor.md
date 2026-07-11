@@ -1019,6 +1019,63 @@ true restricted-Weil floor ->0,
 or normalized finite-Weil determinants ->Xi divisor-faithfully.          (12z40)
 ```
 
+### O. Direct screw-kernel null equation
+
+The shortest surviving CCM branch is now the exact aperture charge. If `u in L2_0(-a,a)` is
+extended by zero and lies in `ker G_a`, then differentiating the screw convolution twice gives
+
+```text
+(K_infinity*u)(x)
+ =sum_(2<=n<e^(2a)) Lambda(n)n^(-1/2)
+    (u(x-log n)+u(x+log n)),       |x|<a.                (12z41)
+```
+
+Here `K_infinity` is the completed pole--Gamma distribution; away from zero its regular kernel is
+
+```text
+e^(|t|/2)-e^(-5|t|/2)/(1-e^(-2|t|)).                    (12z42)
+```
+
+The cutoff `n<e^(2a)` is forced exactly by support overlap. Equation `(12z41)` is one static
+compatibility constraint among the logarithmic archimedean pseudodifferential channel, the finite
+faithful prime-shift module, and the hard aperture boundary. It contains no auxiliary determinant
+and no chosen finite-prime approximation.
+
+The differentiated equation must retain two anchors, such as
+
+```text
+(G_a u)(0)=0,       (G_a u)(a/2)=0.                     (12z41a)
+```
+
+Indeed `(12z41)` only says that `G_au` is affine on the aperture; `(12z41a)` kills the two affine
+modes and restores exact equivalence with `u in ker G_a`.
+
+Global Fourier division is invalid because `(12z41)` holds only inside the aperture. The live
+mechanisms are therefore source-specific unique continuation: logarithmic-elliptic
+quasi-analyticity, boundary-shell prime peeling, or a Wiener--Hopf factorization whose partial
+indices are fixed by the Euler--Gamma source. The exact conjecture and its kill conditions are in
+`ccm-prime-shift-screw-null-unique-continuation.md`.
+
+The periodic-pencil theorem supplies only a conditional fourth language. If the boundary-shell
+relations are first proved to have an exact nonpure Stanley--Reisner annihilator, then at least two
+genuine analytic directions are forced. No such relation-complex identification is currently
+proved for `(12z41)`.
+
+Two scalar regularity shortcuts are already closed. Iterating the order-`log|D|` archimedean
+ellipticity reaches only the intersection of logarithmic Sobolev domains, which still contains
+every compactly supported smooth function and is not quasi-analytic. Moreover the full-line symbol
+
+```text
+M_a(xi)=m_infinity(xi)
+ -2sum_(n<e^(2a))Lambda(n)n^(-1/2)cos(xi log n)          (12z43)
+```
+
+is negative at `xi=0` for large `a` but tends to `+infinity` with `|xi|`; the prime sum is of size
+`e^a`, while `m_infinity(xi)=log|xi|+O(1)`. Hence `(12z43)` has real characteristic crossings
+cofinally. A zero-free scalar Wiener--Hopf factorization cannot work. The surviving object is a
+singular finite-interval factorization retaining those crossings and proving a nonvanishing
+boundary Evans determinant, or a source-selected matrix relation.
+
 ## Gates
 
 - [x] determinant transfer collapsed to the direct floor criterion
@@ -1068,8 +1125,12 @@ or normalized finite-Weil determinants ->Xi divisor-faithfully.          (12z40)
 - [x] real-spectrum finite logarithmic graphs proved transverse-zero
 - [x] graph-core convergence from CCM real spectra proved RH-equivalent
 - [x] periodic-pencil analytic dimension separated from Hardy polarization count
-- [ ] construct the canonical finite-stage boundary-strip operators `A_(N,u)`
-- [ ] prove their uniform four-unit budget `(12z30)`
+- [x] finite-stage boundary-strip shortcut retired as an independent CCM completion
+- [x] exact finite-aperture prime-shift screw null equation isolated
+- [x] affine loss under differentiation repaired by two exact anchors
+- [x] logarithmic-elliptic quasi-analytic shortcut excluded
+- [x] zero-free scalar Wiener--Hopf shortcut excluded by real characteristic crossings
+- [ ] prove or refute source-specific unique continuation for `(12z41)`
 - [ ] construct a positive reference splitting `(10)`
 - [ ] prove the infinite-carrier contraction `(11)`
 - [ ] or construct a source-defined Gram factorization of `(12c)` and an index-faithful aperture
