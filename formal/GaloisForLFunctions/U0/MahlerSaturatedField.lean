@@ -730,9 +730,19 @@ theorem layerPolyEval_injective (q₀ : ℚ) (hq₀ : 0 < q₀) :
   by_contra hne
   exact layerPolyEval_ne_zero hq₀ (sub_ne_zero.mpr hne) (by rw [map_sub, hab, sub_self])
 
+theorem layerEmbed_ne_zero (q₀ : ℚ) (hq₀ : 0 < q₀) {f : RatFunc MahlerBase}
+    (hf : f ≠ 0) : layerEmbed q₀ hq₀ f ≠ 0 := by
+  intro h0
+  have hone : layerEmbed q₀ hq₀ (f * f⁻¹) = 1 := by
+    rw [mul_inv_cancel₀ (G₀ := RatFunc MahlerBase) hf, map_one]
+  rw [map_mul, h0, zero_mul] at hone
+  exact zero_ne_one hone
+
 theorem layerEmbed_injective (q₀ : ℚ) (hq₀ : 0 < q₀) :
-    Function.Injective (layerEmbed q₀ hq₀) :=
-  (layerEmbed q₀ hq₀).injective
+    Function.Injective (layerEmbed q₀ hq₀) := by
+  intro a b hab
+  by_contra hne
+  exact layerEmbed_ne_zero q₀ hq₀ (sub_ne_zero.mpr hne) (by rw [map_sub, hab, sub_self])
 
 /-! ## The constant field inside the tower -/
 
@@ -760,7 +770,7 @@ def satConstHom : ℂ →+* ↥mahlerSat where
   map_add' a b := Subtype.ext (map_add hahnConstHom a b)
 
 theorem satConstHom_injective : Function.Injective satConstHom :=
-  fun a b h => hahnConstHom.injective (congrArg Subtype.val h)
+  fun _ _ h => hahnConstHom.injective (congrArg Subtype.val h)
 
 theorem mahlerSigma_hahnConstHom (c : ℂ) :
     mahlerSigma (hahnConstHom c) = hahnConstHom c := by
@@ -829,12 +839,13 @@ theorem layerEmbed_TT (m : ℕ) :
   rw [layerEmbed_ratFuncC, show 2 * 2 ^ m = 2 ^ m * 2 from mul_comm 2 (2 ^ m), pow_mul,
     map_pow, monoRatEval_X_pow_two_pow, sq]
 
+set_option maxHeartbeats 1000000 in
 /-- One constant-multiple jet as a base-layer product: the Hahn-level form. -/
 theorem hahnConst_mul_shift_jet' (m : ℕ) (a : ℂ) (j : ℕ) :
     hahnConstHom a * mahlerDeriv^[j] mahlerShift =
       (mahlerT * mahlerT) *
         (layerPolyEval (layerQ m) (layerQ_pos m)
-            (Polynomial.monomial j (RatFunc.C (-((2 : ℂ) ^ j * a) / 2))) / mahlerEll) := by
+            (Polynomial.monomial j (RatFunc.C (-((2 : ℂ) ^ j * a) / 2))) * mahlerEll⁻¹) := by
   rw [show (Polynomial.monomial j (RatFunc.C (-((2 : ℂ) ^ j * a) / 2)) :
       Polynomial MahlerBase) =
     Polynomial.C (RatFunc.C (-((2 : ℂ) ^ j * a) / 2)) * Polynomial.X ^ j from by
@@ -851,20 +862,10 @@ theorem hahnConst_mul_shift_jet' (m : ℕ) (a : ℂ) (j : ℕ) :
         hahnConstHom (-((2 : ℂ) ^ j * a)) / hahnConstHom 2 :=
       map_div₀ (f := hahnConstHom) (a := -((2 : ℂ) ^ j * a)) (b := 2)
     rw [hdiv2, map_neg, map_mul, map_pow, map_ofNat, div_eq_mul_inv]
-    exact neg_mul _ _
-  rw [hconst, mahlerDeriv_iterate_shift, div_eq_mul_inv]
+    exact neg_mul ((2 : HahnSeries ℚ (RatFunc ℂ)) ^ j * hahnConstHom a)
+      ((2 : HahnSeries ℚ (RatFunc ℂ))⁻¹)
+  rw [hconst, mahlerDeriv_iterate_shift]
   ring
-
-/-- One constant-multiple jet as the layer image of a monomial telescoper term. -/
-theorem hahnConst_mul_shift_jet (m : ℕ) (a : ℂ) (j : ℕ) :
-    hahnConstHom a * mahlerDeriv^[j] mahlerShift =
-      layerEmbed (layerQ m) (layerQ_pos m)
-        (RatFunc.C ((RatFunc.X : RatFunc ℂ) ^ (2 * 2 ^ m)) *
-          (algebraMap (Polynomial MahlerBase) (RatFunc MahlerBase)
-              (Polynomial.monomial j (RatFunc.C (-((2 : ℂ) ^ j * a) / 2))) /
-            algebraMap (Polynomial MahlerBase) (RatFunc MahlerBase) Polynomial.X)) := by
-  rw [map_mul, layerEmbed_TT, layerEmbed_apply_div, layerPolyEval_X]
-  exact hahnConst_mul_shift_jet' m a j
 
 /-- The eigenvariable numerator polynomial of a constant-coefficient jet combination. -/
 def shiftComboPoly (c : (Unit × ℕ) →₀ ℂ) : Polynomial MahlerBase :=
@@ -922,7 +923,7 @@ theorem shift_combo_layerEmbed (m : ℕ) (c : (Unit × ℕ) →₀ ℂ) :
     map_sum (layerPolyEval (layerQ m) (layerQ_pos m))
       (fun p => Polynomial.monomial p.2 (RatFunc.C (-((2 : ℂ) ^ p.2 * c p) / 2)))
       c.support,
-    Finset.sum_div, Finset.mul_sum]
+    div_eq_mul_inv, Finset.sum_mul, Finset.mul_sum]
   exact Finset.sum_congr rfl fun p _ => hahnConst_mul_shift_jet' m (c p) p.2
 
 /-- No nonzero constant-coefficient combination of shift jets telescopes on the saturated
@@ -943,6 +944,20 @@ theorem mahlerSat_no_shift_combination (c : (Unit × ℕ) →₀ ℂ) (hc : c �
     (shiftComboPoly_ne_zero hc) (fun i => ⟨_, shiftComboPoly_coeff c i⟩) κ
     (layerEmbed_injective (layerQ m) (layerQ_pos m) heq)
 
+/-- The native coefficientwise `ℂ`-action on the carrier is multiplication by the
+corresponding constant. -/
+theorem hahn_smul_eq (c : ℂ) (x : HahnSeries ℚ (RatFunc ℂ)) :
+    c • x = hahnConstHom c * x := by
+  rw [hahnConstHom_apply]
+  ext q
+  rw [HahnSeries.coeff_single_zero_mul]
+  rw [show (c • x).coeff q = c • x.coeff q from rfl]
+  rw [Algebra.smul_def]
+
+theorem zero_smul_jet (p : Unit × ℕ) :
+    (0 : ↥mahlerSat) • differentialJet p.2 satShift = 0 :=
+  zero_smul _ _
+
 /-! ## The Ostrowski application -/
 
 /-- **The normalized velocity is differentially transcendental over the saturated dyadic
@@ -951,10 +966,19 @@ field, commutes exactly with the untwisted derivation, and shifts the normalized
 by a tower element whose jets admit no rational telescoper on any layer. -/
 theorem velocityHat_differentialIndependent :
     DifferentialIndependent ↥mahlerSat (fun _ : Unit => velocityHat) := by
-  letI : Algebra ℂ (HahnSeries ℚ (RatFunc ℂ)) := hahnConstHom.toAlgebra
+  letI : Algebra ℂ (HahnSeries ℚ (RatFunc ℂ)) :=
+    { smul := fun c x => c • x
+      algebraMap := hahnConstHom
+      commutes' := fun _ _ => mul_comm _ _
+      smul_def' := hahn_smul_eq }
   letI : Algebra ℂ ↥mahlerSat := satConstHom.toAlgebra
   haveI : IsScalarTower ℂ ↥mahlerSat (HahnSeries ℚ (RatFunc ℂ)) :=
-    IsScalarTower.of_algebraMap_eq (fun _ => rfl)
+    ⟨fun c k l => by
+      rw [Subfield.smul_def, Subfield.smul_def, smul_eq_mul, smul_eq_mul,
+        Algebra.smul_def c k, hahn_smul_eq]
+      rw [show ((algebraMap ℂ ↥mahlerSat c * k : ↥mahlerSat) :
+          HahnSeries ℚ (RatFunc ℂ)) =
+        hahnConstHom c * (k : HahnSeries ℚ (RatFunc ℂ)) from rfl, mul_assoc]⟩
   haveI : CharZero ↥mahlerSat := charZero_of_injective_algebraMap satConstHom_injective
   refine automorphismFamily_differentialIndependent_of_no_constant_simultaneous_jet_telescoping
     (I := Unit) (C := ℂ)
@@ -971,7 +995,7 @@ theorem velocityHat_differentialIndependent :
   apply mahlerSat_no_shift_combination c hc k
   have hval := congrArg Subtype.val heq
   rw [hval, Finsupp.linearCombination_apply,
-    Finsupp.sum_mapRange_index (fun p => zero_smul ↥mahlerSat _)]
+    Finsupp.sum_mapRange_index zero_smul_jet]
   show (Subfield.subtype mahlerSat)
       (c.sum fun p a => algebraMap ℂ ↥mahlerSat a • differentialJet p.2 satShift) = _
   rw [map_finsuppSum (Subfield.subtype mahlerSat)]
@@ -981,6 +1005,149 @@ theorem velocityHat_differentialIndependent :
   rw [show (algebraMap ℂ ↥mahlerSat (c p) • differentialJet p.2 satShift :
       ↥mahlerSat).val = hahnConstHom (c p) * (differentialJet p.2 satShift).val from rfl]
   rw [differentialJet_mahlerSat_val]
+  rfl
+
+/-! ## Transport: hypertranscendence of the velocity jet over the base field -/
+
+theorem layerQ_zero : layerQ 0 = 1 := by
+  rw [layerQ, pow_zero, inv_one]
+
+theorem monoRatEval_congr {q₁ q₂ : ℚ} (h : q₁ = q₂) (h₁ : 0 < q₁) (f : RatFunc ℂ) :
+    monoRatEval q₁ h₁ f = monoRatEval q₂ (h ▸ h₁) f := by
+  subst h
+  rfl
+
+theorem monoRatEval_one_mem_mahlerSat (f : RatFunc ℂ) :
+    monoRatEval 1 one_pos f ∈ mahlerSat := by
+  have h := monoRatEval_mem_layerField 0 f
+  rw [monoRatEval_congr layerQ_zero (layerQ_pos 0) f] at h
+  exact layerField_le_mahlerSat 0 h
+
+/-- The base rational-function field `ℂ(t)` inside the saturated tower. -/
+def satBaseHom : RatFunc ℂ →+* ↥mahlerSat where
+  toFun f := ⟨monoRatEval 1 one_pos f, monoRatEval_one_mem_mahlerSat f⟩
+  map_one' := Subtype.ext (map_one (monoRatEval 1 one_pos))
+  map_mul' a b := Subtype.ext (map_mul (monoRatEval 1 one_pos) a b)
+  map_zero' := Subtype.ext (map_zero (monoRatEval 1 one_pos))
+  map_add' a b := Subtype.ext (map_add (monoRatEval 1 one_pos) a b)
+
+theorem satBaseHom_injective : Function.Injective satBaseHom :=
+  fun _ _ h => (monoRatEval 1 one_pos).injective (congrArg Subtype.val h)
+
+theorem algebraMap_comp_satBaseHom :
+    (algebraMap ↥mahlerSat (HahnSeries ℚ (RatFunc ℂ))).comp satBaseHom =
+      monoRatEval 1 one_pos :=
+  RingHom.ext fun _ => rfl
+
+/-- The eigenvariable as an element of the saturated tower. -/
+def satEll : ↥mahlerSat :=
+  ⟨mahlerEll, layerField_le_mahlerSat 0 (mahlerEll_mem_layerField 0)⟩
+
+theorem satEll_ne_zero : satEll ≠ 0 :=
+  fun h => mahlerEll_ne_zero (congrArg Subtype.val h)
+
+/-- The jets of the normalized velocity untwist to eigenvariable powers of the Euler jets
+of the velocity itself. -/
+theorem mahlerDeriv_iterate_velocityHat (n : ℕ) :
+    mahlerDeriv^[n] velocityHat =
+      mahlerEll ^ ((n : ℤ) - 1) * eulerDeriv^[n] (toMahlerCarrier velocityJet) := by
+  induction n with
+  | zero =>
+    rw [Function.iterate_zero_apply, Function.iterate_zero_apply, velocityHat]
+    rw [show ((0 : ℕ) : ℤ) - 1 = -1 from by norm_num, zpow_neg_one]
+    exact mul_comm _ _
+  | succ n ih =>
+    rw [Function.iterate_succ_apply', ih, mahlerDeriv_mul,
+      mahlerDeriv_zpow_eq_zero mahlerDeriv_mahlerEll, zero_mul, zero_add]
+    rw [show mahlerDeriv (eulerDeriv^[n] (toMahlerCarrier velocityJet)) =
+      mahlerEll * eulerDeriv^[n + 1] (toMahlerCarrier velocityJet) from by
+      rw [Function.iterate_succ_apply']
+      rfl]
+    rw [show ((n + 1 : ℕ) : ℤ) - 1 = ((n : ℤ) - 1) + 1 from by push_cast; ring]
+    rw [zpow_add_one₀ (G₀ := HahnSeries ℚ (RatFunc ℂ)) mahlerEll_ne_zero]
+    ring
+
+/-- Scaling each jet variable by an eigenvariable power, as an algebra substitution. -/
+def jetScale (z : Unit × ℕ → ℤ) :
+    MvPolynomial (Unit × ℕ) ↥mahlerSat →ₐ[↥mahlerSat] MvPolynomial (Unit × ℕ) ↥mahlerSat :=
+  MvPolynomial.aeval (fun p => MvPolynomial.C (satEll ^ z p) * MvPolynomial.X p)
+
+theorem jetScale_injective (z : Unit × ℕ → ℤ) : Function.Injective (jetScale z) := by
+  have hcomp : (jetScale (fun p => -(z p))).comp (jetScale z) =
+      AlgHom.id ↥mahlerSat (MvPolynomial (Unit × ℕ) ↥mahlerSat) := by
+    apply MvPolynomial.algHom_ext
+    intro p
+    rw [AlgHom.comp_apply, AlgHom.id_apply, jetScale, jetScale, MvPolynomial.aeval_X,
+      map_mul, MvPolynomial.aeval_X, MvPolynomial.aeval_C]
+    rw [show algebraMap ↥mahlerSat (MvPolynomial (Unit × ℕ) ↥mahlerSat) (satEll ^ z p) =
+      MvPolynomial.C (satEll ^ z p) from rfl]
+    rw [← mul_assoc, ← map_mul, ← zpow_add₀ satEll_ne_zero]
+    rw [show z p + -(z p) = 0 from by ring, zpow_zero, map_one, one_mul]
+  intro a b hab
+  have hid := congrArg (jetScale (fun p => -(z p))) hab
+  rw [← AlgHom.comp_apply, ← AlgHom.comp_apply, hcomp, AlgHom.id_apply,
+    AlgHom.id_apply] at hid
+  exact hid
+
+/-- **Hypertranscendence of the Böttcher velocity jet over the base field, in the graded
+carrier.**  No nonzero polynomial with `ℂ(t)`-coefficients vanishes on the Euler jets of
+the lacunary velocity `A`: the normalized velocity is an additive Mahler primitive over
+the saturated dyadic tower, its jets rescale to the Euler jets by eigenvariable powers,
+and the tower-level differential independence descends. -/
+theorem velocity_theta_hypertranscendental (m : ℕ)
+    (P : MvPolynomial (Fin (m + 1)) (RatFunc ℂ)) (hP : P ≠ 0) :
+    MvPolynomial.eval₂ (monoRatEval 1 one_pos)
+      (fun i : Fin (m + 1) => eulerDeriv^[(i : ℕ)] (toMahlerCarrier velocityJet)) P ≠ 0 := by
+  intro heval
+  have hAI : AlgebraicIndependent ↥mahlerSat
+      (fun p : Unit × ℕ => differentialJet p.2 velocityHat) :=
+    velocityHat_differentialIndependent
+  have hjet : ∀ p : Unit × ℕ,
+      differentialJet p.2 velocityHat = mahlerDeriv^[p.2] velocityHat := fun _ => rfl
+  set P₁ : MvPolynomial (Fin (m + 1)) ↥mahlerSat := MvPolynomial.map satBaseHom P with hP₁
+  set P₂ : MvPolynomial (Unit × ℕ) ↥mahlerSat :=
+    MvPolynomial.rename (fun i : Fin (m + 1) => (((), (i : ℕ)) : Unit × ℕ)) P₁ with hP₂
+  set P₃ : MvPolynomial (Unit × ℕ) ↥mahlerSat :=
+    jetScale (fun p => 1 - (p.2 : ℤ)) P₂ with hP₃
+  have hsub : ∀ p : Unit × ℕ,
+      MvPolynomial.aeval (fun p : Unit × ℕ => differentialJet p.2 velocityHat)
+        (MvPolynomial.C (satEll ^ (1 - (p.2 : ℤ))) * MvPolynomial.X p) =
+      eulerDeriv^[p.2] (toMahlerCarrier velocityJet) := by
+    intro p
+    rw [map_mul, MvPolynomial.aeval_C, MvPolynomial.aeval_X, hjet,
+      mahlerDeriv_iterate_velocityHat]
+    rw [show algebraMap ↥mahlerSat (HahnSeries ℚ (RatFunc ℂ))
+        (satEll ^ (1 - (p.2 : ℤ))) = mahlerEll ^ (1 - (p.2 : ℤ)) from
+      map_zpow₀ (algebraMap ↥mahlerSat (HahnSeries ℚ (RatFunc ℂ))) satEll _]
+    rw [← mul_assoc, ← zpow_add₀ (G₀ := HahnSeries ℚ (RatFunc ℂ)) mahlerEll_ne_zero]
+    rw [show (1 - (p.2 : ℤ)) + ((p.2 : ℤ) - 1) = 0 from by ring, zpow_zero, one_mul]
+  have hzero : MvPolynomial.aeval
+      (fun p : Unit × ℕ => differentialJet p.2 velocityHat) P₃ = 0 := by
+    have hcompose := DFunLike.congr_fun
+      (MvPolynomial.comp_aeval
+        (fun p : Unit × ℕ => MvPolynomial.C (satEll ^ (1 - (p.2 : ℤ))) * MvPolynomial.X p)
+        (MvPolynomial.aeval (fun p : Unit × ℕ => differentialJet p.2 velocityHat))) P₂
+    rw [AlgHom.comp_apply] at hcompose
+    rw [hP₃, jetScale, hcompose]
+    rw [show (fun p : Unit × ℕ => MvPolynomial.aeval
+        (fun q : Unit × ℕ => differentialJet q.2 velocityHat)
+        (MvPolynomial.C (satEll ^ (1 - (p.2 : ℤ))) * MvPolynomial.X p)) =
+      (fun p : Unit × ℕ => eulerDeriv^[p.2] (toMahlerCarrier velocityJet)) from
+      funext hsub]
+    rw [hP₂, MvPolynomial.aeval_rename, hP₁]
+    rw [show ((fun p : Unit × ℕ => eulerDeriv^[p.2] (toMahlerCarrier velocityJet)) ∘
+        (fun i : Fin (m + 1) => (((), (i : ℕ)) : Unit × ℕ))) =
+      (fun i : Fin (m + 1) => eulerDeriv^[(i : ℕ)] (toMahlerCarrier velocityJet)) from
+      rfl]
+    rw [MvPolynomial.aeval_def, MvPolynomial.eval₂_map, algebraMap_comp_satBaseHom]
+    exact heval
+  have hP₃0 : P₃ = 0 := hAI (by rw [hzero, map_zero])
+  have hP₂0 : P₂ = 0 := jetScale_injective _ (by rw [← hP₃, hP₃0, map_zero])
+  have hP₁0 : P₁ = 0 := MvPolynomial.rename_injective _
+    (fun a b hab => Fin.val_injective (congrArg Prod.snd hab))
+    (by rw [← hP₂, hP₂0, map_zero])
+  exact hP (MvPolynomial.map_injective satBaseHom satBaseHom_injective
+    (by rw [← hP₁, hP₁0, map_zero]))
 end
 
 end GaloisForLFunctions
