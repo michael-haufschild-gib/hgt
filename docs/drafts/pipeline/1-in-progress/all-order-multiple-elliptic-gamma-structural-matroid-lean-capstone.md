@@ -169,7 +169,7 @@ functional equations are no longer assumptions.
 
 `formal/GaloisForLFunctions/JacobiThetaDivisor.lean` and
 `formal/GaloisForLFunctions/JacobiThetaDivisorSimple.lean` establish the expected theta lattice
-orbit and its local divisor law, but do not yet classify the entire zero set. The exact
+orbit and its local divisor law. The exact
 evenness, period, and quasiperiod constraints force the odd half-period `(1+tau)/2` to be a zero,
 and every `Z + tau Z` translate is also a zero. Simplicity is proved globally without a product
 formula: pair the defining derivative series under `n -> -n-1`, isolate the leading term `2*pi*i`,
@@ -181,19 +181,43 @@ The normalized punctured limit
 (z-z0) theta'(z,tau)/theta(z,tau) -> 1
 ```
 
-is proved at the half-period and at every lattice translate. Hence the logarithmic derivative has
-the expected residue-one orbit. What remains at the theta-divisor gate is the converse zero-set
-theorem: every zero must lie in `(1+tau)/2 + Z + tau Z`. Without that exclusion of extra zeros, a
-translated logarithmic-derivative defect may have additional pole orbits not represented by the
-current two-orbit model. After this classification, the next order-one task is to realize the
-elliptic-gamma defect as a difference of two translated theta logarithmic derivatives and map the
-complete principal-part data into `OrbitResidueVector`.
+is proved at the half-period and at every lattice translate.
+
+`formal/GaloisForLFunctions/JacobiThetaRectangleCharge.lean` and
+`formal/GaloisForLFunctions/JacobiThetaExactDivisor.lean` close the converse without a product
+formula. A translated axis-aligned rectangle of width `1` and height `im tau` has zero-free
+boundary. Its vertical edges cancel by period one. On the top edge, translation by
+`tau-re tau` and interval invariance of a one-periodic integral turn quasiperiodicity into the
+exact charge `2*pi*i`. The existing axiom-clean rectangle residue theorem and finite analytic
+peeling show that the rectangle contains total zero multiplicity one. Every lattice orbit meets
+its interior, so the known simple half-period zero is the unique zero there. Lean now proves
+
+```text
+jacobiTheta₂ z tau = 0
+  iff exists m n : Z, z = (1+tau)/2 + m + n*tau.
+```
+
+Thus the complete theta pole orbit and residue-one law are unconditional.
+
+`formal/GaloisForLFunctions/JacobiThetaDefectPrincipalPart.lean` now defines the translated
+logarithmic-derivative defect
+
+```text
+phi(z+h)-phi(z),  phi=theta'/theta,
+```
+
+and proves its exact two-orbit local data whenever `h` is outside `Z+tau Z`: residue `-1` on the
+base half-period lattice and residue `+1` on its translate by `-h`. Exact zero classification proves
+the opposite summand is regular at each pole, so no hidden pole orbit remains. The next order-one
+task is the field-level map of these analytic principal parts into `OrbitResidueVector`, followed by
+the actual elliptic-gamma defect identity.
 
 `formal/GaloisForLFunctions/JacobiThetaParallelogramCharge.lean` proves the global constraint-side
 counting input. On every zero-free fundamental boundary, the integral of the theta logarithmic
 derivative is exactly `2*pi*i`: the period-one edges cancel and the quasiperiodic pair contributes
-the single charge. This uses no product formula and no assumed divisor classification. Converting
-that charge into the exact zero-set theorem still requires a parallelogram argument principle.
+the single charge. This uses no product formula and no assumed divisor classification. The separate
+axis-aligned rectangle argument above supplies the argument-principle bridge with the already
+formalized rectangle residue theorem.
 
 `formal/GaloisForLFunctions/JacobiThetaBoundaryRegular.lean` discharges the contour-selection gate.
 The fixed-parameter theta zero set is finite in every compact disc. Real coordinates in the basis
@@ -279,7 +303,8 @@ analytic capstone is already formalized.
 - [x] residue-one normalized logarithmic-derivative limit on the full lattice orbit
 - [x] theta fundamental-parallelogram logarithmic-derivative charge `2*pi*i`
 - [x] existence of a zero-free translated fundamental-parallelogram boundary
-- [ ] exact theta zero-set classification: no zeros outside the odd-half-period lattice orbit
+- [x] exact theta zero-set classification: no zeros outside the odd-half-period lattice orbit
+- [x] exact two-orbit residue law for a nonlattice translated theta logarithmic-derivative defect
 - [ ] meromorphic and elliptic function-field foundation
 - [ ] theta and multiple-elliptic-gamma definitions and hierarchy
 - [ ] orbit-principal-part obstruction
@@ -366,3 +391,16 @@ analytic capstone is already formalized.
   Compact-disc finiteness of the theta zero set and explicit `(1,tau)` coordinates reduce boundary
   avoidance to choosing one real diagonal shift outside a finite forbidden set. The only remaining
   theta zero-classification input is now the parallelogram argument principle itself.
+- 2026-07-11 -- Closed the exact Jacobi-theta divisor gate unconditionally in Lean. The decisive
+  route is an axis-aligned fundamental rectangle of width `1` and height `im tau`, not a skew
+  parallelogram argument principle: period one cancels the vertical sides, quasiperiodicity plus
+  invariance of a period-one interval integral gives charge `2*pi*i`, and the existing rectangle
+  residue theorem plus finite peeling gives total multiplicity one. Lattice reduction then proves
+  `theta(z,tau)=0 iff z=(1+tau)/2+m+n*tau`. The principal theorem and its zero-count dependencies
+  report only `propext`, `Classical.choice`, and `Quot.sound`.
+- 2026-07-11 -- Used the exact divisor to close the analytic principal-part data for a translated
+  theta logarithmic-derivative defect. For every nonlattice shift `h`, Lean proves normalized
+  punctured limits `-1` on the base half-period lattice and `+1` on the lattice translated by
+  `-h`; exact zero classification proves the other summand is regular at each pole. Both residue
+  theorems are axiom-clean. What remains is packaging these coefficients in the meromorphic germ
+  field's orbit-residue map and connecting them to the elliptic-gamma hierarchy equation.

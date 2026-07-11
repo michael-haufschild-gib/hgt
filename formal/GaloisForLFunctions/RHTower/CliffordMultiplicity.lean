@@ -292,7 +292,7 @@ private theorem liftJ_sq {f : Module.End ℂ W} (hf : f * f = -1) : liftJ f * li
   refine LinearMap.ext fun p => ?_
   have h1 := end_sq_apply hf p.1
   have h2 := end_sq_apply hf p.2
-  simp [Module.End.mul_apply, liftJ_apply, h1, h2]
+  simp [Module.End.mul_apply, liftJ_apply, Prod.ext_iff, h1, h2]
 
 private theorem liftJ_anticomm {f g : Module.End ℂ W} (h : f * g = -(g * f)) :
     liftJ f * liftJ g = -(liftJ g * liftJ f) := by

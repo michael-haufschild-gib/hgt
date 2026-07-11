@@ -118,15 +118,21 @@ exactly a proof that `D` is even; RH is the statement that the constraint kills 
   supported on the critical line. Off the line the Keldysh–symplectic mechanism then forces even
   multiplicity — rung 1. On-line odd zeros are exactly the `J`-anomaly, localized on the seam:
   the operator restatement of "escapes happen in pairs" (seam-sign shadow).
-- `[CONJECTURE]` **Clifford filtration of the ladder.** Rung `k` ⟺ realization carrying a
-  `Cl_{2k}(ℂ) ≅ M_{2^k}(ℂ)`-module structure on off-line root spaces (the unique irreducible
-  representation has dimension `2^k`, forcing `2^k ∣ mult`). The dyadic tower of rungs is the
-  Clifford/Bott periodicity tower: rung-raising = adjoining two anticommuting odd generators,
-  matching the Kummer squaring law. The cofinal criterion becomes: **an unbounded emergent
-  Clifford tower on finite-dimensional root spaces is impossible unless the off-line spectrum is
-  empty** — RH as "the off-line spectrum is forced to carry more symmetry than any finite
-  multiplicity can hold". Constraint-side throughout: symmetry-algebra size against finiteness;
-  no flow, no deformation parameter.
+- `[PROVED HERE, Lean]` **Clifford filtration of the ladder** (upgraded from conjecture;
+  `CliffordMultiplicity.lean`, axiom-clean). Rung `k` ⟺ at every off-line zero the vanishing
+  order is the algebraic multiplicity of an endomorphism commuting with `2k` anticommuting
+  complex structures (`rhLadder_iff_cliffordModel`). Mechanism: `2k` anticommuting complex
+  structures force `2^k ∣ dim` (`pow_dvd_finrank_of_anticomm`, the halving induction on the
+  `i`-eigenspace of `J₁` with the residual family `J₂Jⱼ`), and commuting structures preserve
+  generalized eigenspaces (`pow_dvd_finrank_maxGenEigenspace_of_anticomm`). Converse: scalar
+  model on the doubled `Cl`-module (`AnticommSpace.base`/`double` — the module face of
+  `Cl_{n+2} ≅ Cl_n ⊗ M₂`, matching the Kummer squaring law). Tower coherence: forgetting
+  generators restricts level `k` to every lower level (`CliffordModel.restrictLevel`,
+  `cliffordModel_mono`), mirroring `rhLadder_of_succ`. Capstones: `rh_iff_forall_cliffordModel`
+  — **RH ⟺ Clifford models at every level** — and `rh_of_cliffordModel_cofinal` (unboundedly
+  many levels suffice). The cofinal criterion is now literally: an unbounded emergent Clifford
+  tower on finite-dimensional root spaces forces the off-line spectrum empty. Constraint-side
+  throughout: symmetry-algebra size against finiteness; no flow, no deformation parameter.
 - `[CONJECTURE, moonshot — gear-train/plumbing collision]` **Wu-characteristic reading.** Equip
   the weld surface's divisor lattice with the arithmetic linking form (prime-braid/tropical
   linking, in-tree) and conjecture the critical line is its characteristic element: a Wu-type
@@ -150,10 +156,13 @@ exactly a proof that `D` is even; RH is the statement that the constraint kills 
 
 - [x] 0 → 1  in-progress: route map complete; invariant named; walls banked; mechanism bricks
       formalized (`LadderLattice.lean`, `SymplecticMultiplicity.lean`, lint green, axiom-clean)
-- [ ] 1 → 2  fully-proven: the Clifford rung-`k` mechanism on paper; the closure reading's
-      limit-parity lemma written; any construction progress on the seam-anomalous `J`
-- [ ] 2 → 3  formalized: Clifford mechanism (`M_{2^k}`-module ⟹ divisibility of every root-space
-      dimension) in Lean; rung-`k` analogue of `rhLadder_one_iff_symplecticRealization`
+- [x] Stage-1 bricks 1→2→3 (mechanism/bridge/coherence): Clifford rung-`k` mechanism, rung-`k`
+      bridge `rhLadder_iff_cliffordModel`, and level restriction all proven and formalized in
+      `CliffordMultiplicity.lean` (lint green, axiom-clean); the k = 1 symplectic and Clifford
+      readings coexist as independent operator faces of the same rung
+- [ ] 1 → 2  fully-proven (route level): the closure reading's limit-parity lemma written; any
+      construction progress on the seam-anomalous `J` (Stage 2, the open core)
+- [ ] 2 → 3  formalized (route level): whatever Stage-2 structure survives on paper
 - [ ] 3 → 4  publication-ready
 
 ## Open core
@@ -163,14 +172,164 @@ structure on an operator model of the off-line divisor whose anomaly is line-sup
 parity-weakening of Hilbert–Pólya. Every ingredient except the arithmetic construction is now a
 theorem.
 
+## Stage 2 — gate analysis (divisor model, symmetry, anomaly, non-circularity)
+
+**Gate 4 (divisor model): PASSED, in two forms.**
+
+- Canonical analytic model `[BRIDGE]`: the banked window factorization (`xi_ball_factorization`)
+  gives `𝒪(B)/(ξ) ≅ ⊕_w ℂ[z]/((z−w)^{m_w})` with multiplication-by-`s` as the operator —
+  eigenvalues the window zeros, algebraic multiplicities the orders. The single-zero local piece
+  is the in-tree `LocalDivisorJet` (`SigmaDivisorJet.lean`). Standard commutative algebra.
+- Arithmetic-member model `[PROVED, banked]`: `EMSplitData` (`EMAnnulusSupply.lean`) supplies at
+  every strip point a finite hole space of the explicit completed Euler–Maclaurin member with
+  hole count = the central vanishing order (`emSplitData_count_eq`), and
+  `rhLadder_of_em_split_multiplicity` already transports every rung to this model. The window
+  dimension is arithmetic data; no divisor is read.
+
+**Gate 5 (symmetry): two walls now stand, one of them new and machine-checked.**
+
+- `[PROVED HERE, Lean]` **The cyclic no-go** (`SymplecticCyclicObstruction.lean`): every
+  `K`-invariant bilinear form on a module with a cyclic vector is symmetric
+  (`invariant_bilin_symm_of_cyclicVector` — on iterates the form reads only `i + j`); hence an
+  alternating invariant form vanishes and a symplectic structure forces ≥ 2 channels
+  (`not_cyclicVector_of_symplectic`). Sharpened to root spaces: for symplectically self-adjoint
+  `K` **no nontrivial generalized eigenspace admits a cyclic vector**
+  (`restrictMaxGen_no_cyclicVector_of_symplectic`) — beyond even multiplicity, single Jordan
+  blocks are excluded at every eigenvalue. Consequence: the canonical local divisor model is
+  cyclic, so **the J can never live on the analytic local model**; the second channel must come
+  from elsewhere. (Commutative-algebra face `[SEARCH]`: on a Gorenstein quotient all invariant
+  forms are residue forms `φ(fg)`, automatically symmetric.)
+- `[PROVED-shape, paper]` **FE-doubling blindness.** The one unconditional arithmetic doubling —
+  carrier `𝒪(B_ρ)/(ξ) ⊕ 𝒪(B_{1−ρ})/(ξ)` over a window and its functional-equation mirror,
+  `K = (mult s) ⊕ (mult (1−s))`, `ω` the residue pairing crossed with the FE pullback — is
+  symplectic with `K` self-adjoint and eigenvalue `ρ` of multiplicity `2m`. It models the
+  *paired* divisor, even unconditionally: the reader no-go in operator clothing. (The Lean
+  converse constructions already certify that doubled-multiplicity realizations are free.) Any
+  J built by mirror pairing proves nothing; the J must fix a single quadruple member.
+
+**Gate 6 (anomaly localization): collapse on analytic carriers; automatic on balanced ones.**
+
+`[PROVED-shape, paper]` **The Smith-balance reduction.** For any 2×2 holomorphic presentation
+`ξ = det M` on a window, the cokernel model splits by the local Smith form:
+`coker M ≅ 𝒪/(d₁) ⊕ 𝒪/(d₂)` with `d₁ = gcd(entries of M)`, `d₁d₂ = ξ`. Define the **balance
+defect** `β_M(ρ) := v_ρ(d₂) − v_ρ(d₁) ≥ 0`; then `β_M(ρ) ≡ ord_ρ(ξ) (mod 2)`, and a symplectic
+self-adjoint structure exists on the cokernel model at `ρ` iff `β_M(ρ) = 0`. Consequences:
+
+- at an odd-order zero balance is impossible — **the anomaly is canonically supported on
+  odd-order zeros; it cannot leak**: gate 6 is automatic in this frame;
+- rung 1 ⟺ some window-wise presentation has `β_M = 0` at every off-line zero (forward: balance
+  forces even order; converse: a local square root yields a balanced diagonal presentation);
+- if `M` is built from ξ's own analytic germ, balance at `ρ` ⟺ the Weierstrass factor is a
+  square ⟺ the rung locally — circularity located exactly. The route lives or dies on
+  presentations whose entries have independent arithmetic identity.
+
+**Gate 7 (non-circularity): sharpened.** The demand is now precise: exhibit an arithmetic 2×2
+presentation `ξ = det M` — entries from the Eisenstein/theta/Hecke side, not from any square
+root of ξ — and prove off-line balance of the entry gcd from the entries' own relations (their
+functional equations, multiplicativity), never from ξ's divisor. The rung becomes a statement
+about the **common vanishing divisor of four explicit arithmetic functions** rather than the
+parity of one function's divisor — the meander cut: re-presenting the single channel as a
+determinant exposes an inner gcd channel that analysis of ξ alone does not see.
+
+**Surviving candidates for the presentation** (all `[CONJECTURE]`, novelty-gated):
+
+- (C1) **Metaplectic/theta carrier.** The two channels = the even/odd components of the Weil
+  representation; the metaplectic deck element acts by −1 on the genuine part — an arithmetic
+  germ of `J² = −1` — and ξ is the Mellin transform of θ. Structural rhyme: Waldspurger converts
+  "central L-value is a square" through the metaplectic correspondence; the rung asks for the
+  function-level analogue on the right half-plane. Euler input: half-integral Hecke theory acts
+  through `T(p²)` — the square-index substructure the germ `ζ^{1/2}` already displays.
+- (C2) **Eisenstein/Maass–Selberg Gram presentation.** Truncated Eisenstein inner products give
+  2×2 Gram matrices with ξ-combinations as determinants and the scattering unitarity axis on
+  the critical line. The location program through scattering is classical and closed
+  (Lax–Phillips, `[SEARCH]` — do not re-run); the balance question about local Smith forms of
+  these Grams at off-line points is not posed there.
+- Falsification branch: a **channel-rigidity theorem** — every arithmetic functor of window data
+  factors through cyclic-or-mirror-doubled carriers — would convert the route into a no-go
+  (multiplicity parity inaccessible to operator symmetry), itself promotable.
+
+**The half-bound and the shape classification** `[PROVED-shape, paper]`. For a 2×2 presentation
+over the local ring at `ρ`, `v(d₁) = min entry order` and `v(det) ≥ 2·(min entry order)`, so
+**the entry gcd can never exceed half the determinant order**; balance is exactly achievement of
+the half bound, and then some determinant-achieving diagonal has entry orders exactly
+`(m/2, m/2)`.  Consequently every balanced presentation contains, on its achieving diagonal, a
+local factorization of ξ into two factors of equal order — and conversely such a factorization
+gives the diagonal presentation.  Balanced 2×2 presentations and equal-order factorizations are
+the same object.
+
+**Wronskian kill** `[PROVED-shape, paper]`.  Presentations `M = [[u, v], [u', v']]` (so
+`ξ = W(u,v)`) can never balance at a zero: the derivative drop `v(u') = v(u) − 1` (whenever
+`v(u) ≥ 1`) is incompatible with all four entries reaching the half bound `m/2 ≥ 1`.  Derivative
+and Wronskian shapes are excluded as rung certificates.
+
+**The twin theorem** `[PROVED HERE, Lean]` (`TwinFactorization.lean`, axiom-clean):
+
+> `rhLadder_one_iff_twinFactorization` — **RH₂ ⟺ ξ admits a twin factorization on
+> `Re s > ½`**: analytic `a, d` with `a·d = ξ` pointwise and `ord_ρ(a) = ord_ρ(d)` at every
+> right-half point.
+
+The square root is the diagonal twin `a = d`; the format's gain is that the twins may differ —
+as functions and in their divisors — on the critical line, so the line anomaly (gate 6) is
+built into the format rather than demanded of a symmetry.  Consistency against the class wall:
+for orbit-quartic counterexamples twins simply fail to exist; the format proves nothing
+vacuously.  The mirror twin `(f(s), f(1−s))` is not automatically equal-order (it demands
+`v_f(ρ) = v_f(1−ρ)` — the reflection reader again): no gain from reflection, as the walls
+require.
+
+**Stage-2 verdict, gate by gate.**
+
+- Gate 4 (divisor model): **CLOSED — constructed/found** (canonical window model banked;
+  EM-member arithmetic model banked with rung transport).
+- Gate 5 (symmetry): **CLOSED productively — impossibility plus equivalent reformat, both
+  machine-checked.**  A J on ξ-derived analytic carriers is impossible (cyclic no-go, Lean;
+  mirror blindness, paper); on 2×2 carriers the symmetry demand is equivalent to balance, and
+  balance to twins; the Lean twin theorem replaces "construct J" by "construct twins" with no
+  loss.
+- Gate 6 (anomaly localization): **CLOSED structurally** — in the twin/balance format the odd
+  anomaly is automatic (`β ≡ ord mod 2`; twins constrained only off the line); leakage is
+  impossible by format, not by engineering.
+- Gate 7 (non-circularity): **OPEN — this is the route's entire remaining content, now in
+  sharpest form.**  Construct arithmetic twins not built from `√ξ`.  Equivalent
+  Dirichlet-series form: a convolution splitting `𝟙 = α ∗ δ` with `α ≠ δ` allowed, whose two
+  L-series continue to `Re s > ½` with equal divisors (the square-root germ is the diagonal
+  splitting `α = δ = d_{1/2}`; the twin format opens the full unit group of Dirichlet series).
+  Kill-list so far: Wronskian/derivative shapes, mirror twins, `√ξ`-diagonal.  Live candidates:
+  metaplectic/theta even–odd channels (exact ingredient needed: the entries of the metaplectic
+  Eisenstein scattering data on the double cover — a formula-level literature verification,
+  recorded, not yet performed), Eisenstein/Maass–Selberg Grams (balance question new there),
+  and non-diagonal convolution splittings with forced divisor equality.
+
 ## Log
 
 - 2026-07-11 — created in 1-in-progress; divisor-lattice + sharp-level + Kramers bricks banked in
   Lean; walls consolidated from banked no-gos; program stack stated.
+- 2026-07-11 — Stage-1 bricks closed: `CliffordMultiplicity.lean` proves the rung-`k` mechanism
+  (halving induction), the bridge `rhLadder_iff_cliffordModel`, the doubling existence
+  construction, level coherence, and the capstones `rh_iff_forall_cliffordModel` /
+  `rh_of_cliffordModel_cofinal`. Every rung of the ladder now has an operator-symmetry
+  characterization; the route's remaining content is entirely Stage 2 (the arithmetic
+  construction) and Stage 3 (escalation).
+- 2026-07-11 — Stage-2 gate analysis complete: gate 4 passed (canonical + EM-member models);
+  cyclic no-go proven and formalized (`SymplecticCyclicObstruction.lean` — invariant forms on
+  cyclic modules are symmetric; no lone Jordan channel for symplectic self-adjoint operators);
+  FE-doubling blindness and Smith-balance reduction on paper; the open core relocated to the
+  balance defect `β_M` of arithmetic 2×2 presentations. Sonin/HS carriers assessed: they are
+  analytic window functors, hence subject to the cyclic/mirror walls — a J there must import an
+  arithmetic second channel first.
+- 2026-07-11 — Stage-2 constructions executed: half-bound/shape classification and Wronskian
+  kill on paper; the twin theorem formalized (`TwinFactorization.lean`,
+  `rhLadder_one_iff_twinFactorization`, axiom-clean, lint green).  Gates 4–6 closed
+  (constructed / impossibility-plus-reformat / structural); gate 7 is the open core in final
+  form: arithmetic twins ⟺ non-diagonal convolution splitting `𝟙 = α ∗ δ` with equal continued
+  divisors.
 
 ## Next move
 
-Formalize the Clifford rung-`k` mechanism (a module over a matrix algebra `M_d` has every
-submodule dimension divisible by `d`; apply to root spaces) and instantiate the first candidate
-`J` on the Sonin/HS window substrate: the two shortest paths from this card into new theorem
-ground.
+Attack gate 7 through the convolution-splitting form: characterize which unit-group splittings
+`𝟙 = α ∗ δ` can have BOTH L-series continue past `Re s = 1` (the Euler-side constraint on
+`(α, δ)` — multiplicativity forces local splittings `(1 − p^{-s})^{-1} = a_p(s)·d_p(s)` and the
+continuation demand couples them across `p`); the first structural theorem to try is a rigidity
+statement — either every admissible splitting is diagonal-up-to-units (route converts to a
+no-go with the rigidity theorem as the promotable residue) or the admissible space is a torsor
+whose parametrization names the Stage-2 object.  In parallel: the metaplectic scattering-entry
+lookup, and in Lean the `2^k`-fold equidivisor factorization generalization of the twin theorem.
