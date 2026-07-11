@@ -369,8 +369,20 @@ Fuchs, and the signal-analysis literature are complete.
 
 ## Lean decision
 
-The formal tree has no radial PSWF, Bessel envelope asymptotics, or oscillatory-measure interface.
-No Lean file is added.
+The algebraic core is already formalized (axiom-clean) by existing modules:
+
+- The **exterior leakage** `(2)` `delta_lambda = (ell_1^2 d_0 + ell_0^2 d_1)/(ell_0^2 + ell_1^2)` is
+  identically `GaloisForLFunctions.twoModeSecularRoot d_0 d_1 ell_0 ell_1`
+  (`ProlateSecularEquation.lean`); `twoModeSecularRoot_mem_Ioo` gives `d_0 < delta_lambda < d_1`, and
+  the limit `(3)` `delta_lambda/d_1 -> 8/11` is `ccm_groundState_weight_eq`.
+- The **diagonal spectrum** value `(8/(11*pi*k)) arcsin(1/k)` is `(8/(11*pi))` times
+  `GaloisForLFunctions.constrainedProlateArchSeriesTerm` (`ConstrainedProlateExteriorWeil.lean`),
+  whose nonnegativity, summability, and positive total are already proved
+  (`constrainedProlateArchSeriesTerm_nonneg/_le`, `summable_...`, `tsum_..._pos`).
+
+What is not formalized is the **weak convergence** `(4)` of the radial measures `nu_lambda` and the
+Gram-matrix diagonalization: the formal tree has no radial PSWF, Bessel-envelope asymptotics, or
+oscillatory-measure interface (that is the Fuchs/Dunster analytic layer).
 
 ## Gates
 

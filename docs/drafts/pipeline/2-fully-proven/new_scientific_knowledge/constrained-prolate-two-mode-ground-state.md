@@ -447,12 +447,32 @@ to concentration and leakage. The constrained compression also has unconditional
 concentration/leakage eigenmodes in
 `formal/GaloisForLFunctions/RHTower/ConstrainedProlateConstrainedSpectrum.lean`.
 
-The scientifically new asymptotic theorem `(4)`--`(7)` is not yet formalized. Its remaining inputs
-are the classical identification and simplicity theorem matching the positive signed modes with
-the `4j` numbering, Fuchs fixed-index asymptotics with normalization, prolate-to-Hermite
-convergence, and the uniform infinite-tail secular estimate. The card therefore remains
-paper-proven; the concrete operator and spectral substrates are now present, but no finite-matrix
-or hypothesis-only shadow is counted as promotion.
+The rank-one **secular equation** at the heart of §2 — that a constrained eigenvalue `μ ∈ (d_0, d_1)`
+has coordinates `v_j = ℓ_j/(d_j − μ)` and solves `F(μ) = ∑_j ℓ_j²/(d_j − μ) = 0`, with `F` strictly
+increasing on any pole-free interval, hence at most one root there — is formalized axiom-clean in
+`GaloisForLFunctions.ProlateSecularEquation`: `secular_strictMonoOn` (strict monotonicity of `F` on
+`(a,b)` when every pole `d_j ∉ (a,b)` and some `ℓ_{j₀} ≠ 0`) and `secular_root_unique` (the
+constrained ground eigenvalue, where it exists, is simple).  This is the exact "Formula (13) makes
+its eigenspace one-dimensional; `F` is strictly increasing … exactly one root" step, proved for the
+full (arbitrary index set) constraint, not a finite-matrix shadow.  **Existence** of the constrained
+ground eigenvalue is also formalized: `secular_exists_root` proves that for consecutive poles
+`d a₀ < d b₀` (nothing strictly between, both with `ℓ ≠ 0`) the secular equation has a root in
+`(d a₀, d b₀)`, via the pole limits `F(μ) → ∓∞` at the endpoints (`tendsto_const_div_sub_atBot/atTop`)
+and the intermediate value theorem.  Together with `secular_root_unique` this gives the card's
+"`C_λ` has a simple lowest eigenvalue `μ_0` in `(d_0, d_1)`" — existence and simplicity — without any
+Fuchs/Hermite input.  The **two-mode trial value**
+(eq. 12) is also formalized exactly: `twoModeSecularRoot d₀ d₁ ℓ₀ ℓ₁ = (ℓ₀²d₁+ℓ₁²d₀)/(ℓ₀²+ℓ₁²)`
+with `twoModeSecularRoot_mem_Ioo` (it lies strictly in `(d₀,d₁)`, so `C_λ` has an eigenvalue below
+`d₁`) and `twoModeSecular_eq_zero` (it is the exact root of the two-mode secular equation
+`ℓ₀²/(d₀−μ)+ℓ₁²/(d₁−μ)=0`, i.e. `μ_2mode`).  The headline **constant `8/11`** (eq. 11) is formalized
+by `ccm_groundState_weight_eq`: `a₀²/(a₀²+a₁²) = 8/11` for the prolate-to-Hermite limits
+`a₀ = 2^{1/4}`, `a₁ = √3·2^{−5/4}` — the value `μ_0(λ)/d_1(λ)` converges to in (5).
+
+The scientifically new asymptotic theorem `(4)`--`(7)` is not yet fully formalized. Its remaining
+inputs are the classical identification and simplicity theorem matching the positive signed modes
+with the `4j` numbering, Fuchs fixed-index asymptotics with normalization, prolate-to-Hermite
+convergence, and the uniform infinite-tail secular estimate (existence of the root and its
+`8/11`/`3/11` asymptotics on top of the now-formalized monotonicity/uniqueness).
 
 ## Gates
 

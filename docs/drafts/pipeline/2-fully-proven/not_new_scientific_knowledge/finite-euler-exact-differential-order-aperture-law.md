@@ -1,12 +1,13 @@
-# First-order-faithful finite Euler readouts have exactly one differential order per prime
+# Rational Euler readout aperture equals visible character-lattice rank
 
 - **ID:** `finite-euler-exact-differential-order-aperture-law`
 - **Stage:** 2-fully-proven / paper proof complete
 - **Type:** THEOREM (paper) / POSITIVE DIFFERENTIAL-STATE LAW / GENERAL HT LANDSCAPE
 - **Scientific status:** `[PROVED] [SEARCH] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** Every rational scalar readout of `k` rationally independent exponential source
-  coordinates that is first-order sensitive to each coordinate has minimal autonomous
-  algebraic-differential order exactly `k`. In particular, a finite Euler product, its inverse
+  coordinates has minimal autonomous algebraic-differential order exactly equal to the rank of its
+  visible Taylor-character lattice. It has order below `k` exactly when it is invariant under a
+  positive-dimensional algebraic subtorus of the source phases. In particular, a finite Euler product, its inverse
   anchor, its logarithmic derivative, and its finite diagonal determinant realization over a prime
   set `S` all have minimal differential order exactly `#S`, both over the constants and over the
   Euler--Gamma differential field `C(s)<Gamma>`. Thus every retained independent prime contributes
@@ -35,11 +36,18 @@ x_i(s)=exp(-lambda_i s),
 D x_i=-lambda_i x_i.                                      (2)
 ```
 
-Let `B in C(X_1,...,X_k)` be regular at the origin and first-order faithful:
+Let `B in C(X_1,...,X_k)` be nonconstant and regular at the origin. Write its convergent Taylor
+expansion there as
 
 ```text
-partial B/partial X_i evaluated at X=0 !=0
-for every i.                                               (3)
+B(X)=sum_(alpha in N^k)c_alpha X^alpha.                   (3a)
+```
+
+Define its visible character lattice and rank by
+
+```text
+L_B=span_Z{alpha:c_alpha!=0, alpha!=0} subset Z^k,
+r_B=rank_Z L_B.                                           (3b)
 ```
 
 On a sufficiently far right half-plane put
@@ -48,7 +56,23 @@ On a sufficiently far right half-plane put
 f_B(s)=B(x_1(s),...,x_k(s)).                               (4)
 ```
 
-`[PROVED]` The exact faithful-readout law is
+`[PROVED]` The exact rational-readout law is
+
+```text
+ap_C(f_B)=r_B.                                            (5a)
+```
+
+Thus rational scalar observation costs one differential order for every visible independent
+character, not for every displayed coordinate.
+
+The first-order-faithful case is the full-rank specialization:
+
+```text
+partial B/partial X_i evaluated at X=0 !=0
+for every i.                                               (3)
+```
+
+Then `c_(e_i)!=0` for every coordinate vector `e_i`, so `L_B=Z^k`, `r_B=k`, and `(5a)` becomes
 
 ```text
 ap_C(f_B)=k.                                               (5)
@@ -162,6 +186,63 @@ The proof does more than count Bohr-hull real dimension: it identifies a nonsing
 observability determinant and therefore obtains one full order per source coordinate, rather than
 the weaker half-rank floor.
 
+## 3a. Full character-lattice classification
+
+The Jacobian argument proves the important full-rank case directly. The general equality `(5a)`
+has a complementary support-and-symmetry proof.
+
+Under the differential embedding `ev`, the Taylor series `(3a)` becomes the generalized Dirichlet
+series
+
+```text
+f_B(s)=sum_alpha c_alpha exp(-(alpha dot lambda)s).        (17a)
+```
+
+Rational independence of the `lambda_i` makes distinct Taylor characters have distinct exponents,
+and identifies the rational rank of the exponent support with `r_B`. The Cano--Fortuny Ayuso
+support-rank theorem says that a generalized power-series solution of a constant-coefficient ADE
+of order `n` has support rank at most `n`. Therefore
+
+```text
+ap_C(f_B)>=r_B.                                           (17b)
+```
+
+For the reverse inequality, let
+
+```text
+H_B={t in (C^x)^k:t^alpha=1 for every alpha in L_B}.       (17c)
+```
+
+This algebraic subgroup has dimension `k-r_B`. Every `t in H_B` fixes the Taylor expansion of `B`
+at the origin, so `B(tX)=B(X)` as a rational-function identity. Hence
+
+```text
+B in C(X_1,...,X_k)^(H_B).                                (17d)
+```
+
+The diagonal derivation `Delta` commutes with the coordinate torus and preserves this invariant
+field. The invariant field is the function field of the quotient torus and has transcendence
+degree `r_B`. Thus
+
+```text
+B,Delta B,...,Delta^(r_B)B
+```
+
+are algebraically dependent. Applying `ev` gives `ap_C(f_B)<=r_B`, proving `(5a)`.
+
+Equivalently,
+
+```text
+ap_C(f_B)<k
+  iff dim H_B>0
+  iff B factors rationally through a quotient torus of dimension <k.         (17e)
+```
+
+> **Rational compression classification.** Every scalar differential order saved by a rational
+> readout is paid for by an exact algebraic subtorus of source phases that the readout identifies.
+> A rational readout with no positive-dimensional phase blindness has full aperture, even when all
+> of its first derivatives at the origin vanish.
+
 ## 4. Exact finite-Euler law
 
 Let `S` be a nonempty finite set of primes and put
@@ -226,15 +307,15 @@ The Gamma projective-boundary theorem says that every finite nonzero coefficient
 `K_Gamma` has a nonzero constant projective limit under upper vertical translation. This implies
 
 ```text
-ap_(K_Gamma)(f_B)=ap_C(f_B)=k                            (25)
+ap_(K_Gamma)(f_B)=ap_C(f_B)=r_B.                         (25)
 ```
 
-for every faithful rational readout `(4)`.
+for every rational readout `(4)`.
 
 ### Proof
 
-The inequality `ap_(K_Gamma)(f_B)<=k` follows from the constant-coefficient relation already
-constructed in Section 3. Suppose conversely that a relation of order `n<k` exists:
+The inequality `ap_(K_Gamma)(f_B)<=r_B` follows from the constant-coefficient relation already
+constructed in Section 3a. Suppose conversely that a relation of order `n<r_B` exists:
 
 ```text
 sum_alpha A_alpha(s)
@@ -266,7 +347,7 @@ sum_alpha d_alpha
   product_(j=0)^n (D^j f_B(s))^(alpha_j)=0,               (29)
 ```
 
-contradicting `(16)` because `n<k`. Thus `(25)` holds. In particular,
+contradicting `(5a)` because `n<r_B`. Thus `(25)` holds. In particular,
 
 ```text
 ap_(C(s)<Gamma>)(E_S)
@@ -336,8 +417,9 @@ Their positive common form is
 
 ```text
 k independent prime coordinates
-  => every first-order-faithful rational scalar readout has aperture k,
-     or the architecture exposes a non-scalar/infinite-dimensional carrier.  (34)
+  => a rational scalar readout has aperture equal to its visible character rank;
+     full source faithfulness costs k, while every saved order is an exact
+     subtorus of phase blindness.                                             (34)
 ```
 
 ## 8. Attacks and boundaries
@@ -345,11 +427,10 @@ k independent prime coordinates
 1. **Frequency independence is load-bearing.** Resonant `lambda_i` can belong to a smaller
    exponential field. The natural cost is the rational rank of the exponent group, not the number
    of displayed summands.
-2. **First-order visibility is load-bearing for the Jacobian proof.** Condition `(3)` makes every
-   coordinate visible in the first observability determinant. The Cano--Fortuny support-rank
-   theorem gives related lower bounds without this hypothesis, but `(5)` is stated in the exact
-   nonsingular class shared by Euler factors, anchors, logarithmic fluxes, and diagonal
-   determinants.
+2. **First-order visibility is not the categorical boundary.** Condition `(3)` is load-bearing only
+   for the short Jacobian proof. The character-lattice theorem `(5a)` covers tangent-blind rational
+   readouts as well. Full aperture fails only through an actual positive-dimensional subtorus
+   symmetry.
 3. **Arbitrary coefficient enrichment can compress the order.** If the coefficient field already
    contains some `x_i`, the corresponding source coordinate can disappear from the relative cost.
    Equation `(25)` is special to coefficient fields with a constant projective return boundary.
@@ -375,8 +456,9 @@ Two recent parent results make the constant-coefficient order law a direct bridg
    (2025), proves the sum-of-input-orders upper bound for rational expressions of DA functions.
    Each local Euler coordinate is first-order, giving `ap_C(E_S)<=#S`.
 
-Sections 2--3 provide a short self-contained Jacobian proof of both inequalities for every
-first-order-faithful rational readout. The Gamma-relative equality uses the separately proved one-point projective
+Sections 2--3 provide a short self-contained Jacobian proof in the first-order-faithful class.
+Section 3a combines the published support-rank theorem with standard algebraic-torus invariant
+fields to classify every rational readout. The Gamma-relative equality uses the separately proved one-point projective
 boundary of `C(s)<Gamma>`. This exact synthesis is operationally stronger than the earlier
 half-prime-count hull bound, but it introduces no mechanism beyond the parent support-rank,
 D-algebraic arithmetic, and projective-boundary theorems. It therefore fails the scientific-novelty
@@ -401,7 +483,8 @@ unconditional paper proof remains stage 2.
 - [x] differential aperture defined
 - [x] exponential-coordinate field embedded faithfully
 - [x] full observability determinant proved nonzero
-- [x] exact first-order-faithful rational-readout order proved
+- [x] exact arbitrary rational-readout character-lattice order proved
+- [x] compression classified exactly by positive-dimensional subtorus blindness
 - [x] exact finite-Euler specialization proved
 - [x] product, inverse-anchor, and determinant noncompression proved
 - [x] Gamma-relative noncompression proved

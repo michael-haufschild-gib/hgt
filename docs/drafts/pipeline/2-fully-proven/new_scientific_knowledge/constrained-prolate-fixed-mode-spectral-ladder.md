@@ -367,10 +367,39 @@ literature classification.
 
 ## Lean decision
 
-The formal tree contains finite-dimensional matrix interlacing and extensive Sonin/prolate support
-infrastructure, but no interface for the infinite prolate diagonal operator, Fuchs asymptotics, or
-prolate-to-Hermite convergence. Formalizing a finite secular-equation shadow would certify only parent
-theory and would not verify `(8)`--`(13)`. No Lean file is added until those analytic interfaces exist.
+The **existence-and-uniqueness half of Theorem `(8)`** — "there is exactly one constrained eigenvalue
+`mu_k` in `(d_k, d_(k+1))`" — is formalized axiom-clean, and for the *full infinite* prolate diagonal
+operator (arbitrary index set), not a finite secular-equation shadow:
+`GaloisForLFunctions.secular_exists_root` (a root of the secular equation
+`F(mu) = sum_j ell_j^2/(d_j - mu) = 0` exists in each gap between consecutive leakage values with
+nonzero coordinate) and `secular_root_unique` (it is unique, since `F` is strictly monotone —
+`secular_strictMonoOn`); the ladder interlacing `d_k <= mu_k <= d_(k+1)` across three consecutive
+scales is `secular_interlacing` (`ProlateSecularEquation.lean`).  The base ratio limit specializes to
+`theta_0 = q_0/(q_0+q_1) = 1/(1 + binom(4,2)/16) = 8/11 = ccm_groundState_weight_eq`.
+
+What is *not* formalized is the **limit `(8)`** `mu_k/d_(k+1) -> theta_k` and the `lambda^8` ratio
+asymptotics `(9)`: these require Fuchs fixed-index asymptotics `d_j ~ A_(4j) lambda^(8j+1)
+e^(-4 pi lambda^2)` and prolate-to-Hermite convergence `ell_j -> a_j`, the analytic layer absent from
+mathlib.
+
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateHermiteContrast.lean` now formalizes the
+complete limiting Hermite algebra used by that missing analytic passage. It defines the actual
+weights `q_j=choose(4j,2j)/16^j`, the positive coordinates with
+`a_j^2=sqrt(2)q_j`, the partial sums `Q_k`, and `theta_k=Q_k/Q_(k+1)`. It proves unconditionally
+that every explicit vector `w_k` satisfies the vanishing-integral constraint, that distinct `w_k`
+are mutually orthogonal, and that `w_k` is orthogonal to every preceding raw CCM contrast. It also
+certifies
+
+```text
+q_0=1, q_1=3/8, q_2=35/128,
+Q_0=1, Q_1=11/8, Q_2=211/128,
+theta_0=8/11, theta_1=176/211,
+Q_1^2/(Q_0 Q_2)=242/211.
+```
+
+Thus equations `(4)`, `(5)`, and the exact algebraic content of `(10)`--`(13)` are now in Lean.
+The remaining gate is specifically the concrete analytic convergence from the actual prolate
+operator to this ladder; it is not replaced by an asymptotic hypothesis.
 
 ## Gates
 

@@ -237,4 +237,32 @@ theorem reflCocycle_zeta {s : ℂ} (h0 : 0 < s.re) (h1 : s.re < 1) (hζ : rieman
   rw [div_eq_div_iff hζ hΓ1]
   linear_combination hfe
 
+/-! ### §8 Common-completion ratio blindness -/
+
+/-- **A common reflection multiplier cancels from a quotient.**  If two carriers have the same
+nonzero pointwise reflection multiplier, then their quotient is fixed by reflection at that point.
+This is the algebraic mechanism behind common-completion counterexamples: dividing two arithmetic
+carriers with identical conductor and archimedean data erases the entire functional-equation
+factor. -/
+theorem ratio_one_sub_eq_of_common_reflection
+    {F G H : ℂ → ℂ} {s : ℂ}
+    (hF : F (1 - s) = H s * F s)
+    (hG : G (1 - s) = H s * G s)
+    (hH : H s ≠ 0) (hG0 : G s ≠ 0) :
+    F (1 - s) / G (1 - s) = F s / G s := by
+  rw [hF, hG]
+  field_simp
+
+/-- **The reflection cocycle is blind to common-completion quotients.**  Under the same hypotheses
+as `ratio_one_sub_eq_of_common_reflection`, and away from zeros of both carriers, the intrinsic
+reflection cocycle of `F/G` is exactly `1`. -/
+theorem reflCocycle_div_eq_one_of_common_reflection
+    {F G H : ℂ → ℂ} {s : ℂ}
+    (hF : F (1 - s) = H s * F s)
+    (hG : G (1 - s) = H s * G s)
+    (hH : H s ≠ 0) (hF0 : F s ≠ 0) (hG0 : G s ≠ 0) :
+    reflCocycle (fun z => F z / G z) s = 1 := by
+  rw [reflCocycle, ratio_one_sub_eq_of_common_reflection hF hG hH hG0]
+  exact div_self (div_ne_zero hF0 hG0)
+
 end RHTower

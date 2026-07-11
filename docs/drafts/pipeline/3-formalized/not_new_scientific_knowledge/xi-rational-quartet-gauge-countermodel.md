@@ -6,7 +6,8 @@
 - **Lean:** `formal/GaloisForLFunctions/RHTower/XiRationalQuartetGauge.lean`
 - **Statement:** There exists an entire function with the completed-xi functional equation and
   Schwarz symmetry, nonvanishing on the real segment `0 < sigma < 1`, but with an explicit zero
-  off the critical line.
+  off the critical line.  The same countermodel has an explicitly different exact logarithmic
+  source at the safe anchor `s=0`.
 
 ## Exact theorem
 
@@ -27,7 +28,11 @@ It proves:
 5. if `b>0`, then `Q_(a,b)` has positive real part at every real argument and
    `xi_(a,b)(sigma) != 0` for `0<sigma<1`;
 6. `rho=1/2+a+b i` is a zero of `xi_(a,b)`;
-7. if `a!=0`, then `Re(rho)!=1/2`.
+7. if `a!=0`, then `Re(rho)!=1/2`;
+8. for the concrete gauge `a=1/4`, `b=1`,
+   `Dlog Q_(1/4,1)(0)=-608/425`;
+9. `Dlog xi_(1/4,1)(0)=Dlog xi(0)-608/425`;
+10. consequently the exact logarithmic sources of `xi_(1/4,1)` and `xi` differ at `s=0`.
 
 The capstone `RHTower.exists_xi_symmetric_entire_offcritical_countermodel` specializes to
 `a=1/4`, `b=1`, proves `0<Re(rho)<1`, and packages all seven facts into one unconditional
@@ -39,6 +44,12 @@ off the critical line somewhere in the plane.
 Entire analyticity, the xi functional equation, Schwarz symmetry, and real-segment
 nonvanishing do not determine critical-line zero location.  Any proposed RH route using only
 those properties is formally refuted by this countermodel.
+
+The source-marking theorems identify the positive escape: the exact logarithmic source does detect
+the rational orbit insertion.  Therefore a viable source--divisor construction must retain this
+exact correction rather than pass to a rational/DA quotient.  This does not prove that the exact
+zeta source has an RH-positive divisor, but it formalizes the gauge-breaking datum any such proof
+must use.
 
 The theorem does not refute divisor-sensitive routes.  It also does not formalize the broader
 paper theorem that rational gauges preserve differential-translation matroids.  That claim stays
@@ -53,7 +64,8 @@ hypertranscendence arguments from silently assuming divisor recovery.
 ## Verification
 
 - `lake build GaloisForLFunctions.RHTower.XiRationalQuartetGauge` passed.
-- Scratch `#print axioms` for the capstone and real-anchor theorem reports only
+- Scratch `#print axioms` for the capstone, real-anchor theorem, and all four exact-source marking
+  theorems reports only
   `[propext, Classical.choice, Quot.sound]`.
 - The project formal lint passes with no active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
   declaration.
@@ -69,3 +81,5 @@ hypertranscendence arguments from silently assuming divisor recovery.
 
 - 2026-07-11 -- Formalized the quartic gauge, both symmetries, entire analyticity, off-critical
   zero, real-axis gauge positivity, real-segment nonvanishing, and the existential capstone.
+- 2026-07-11 -- Formalized the nonzero exact logarithmic-source charge `-608/425`, its additive
+  contribution to the gauged xi source, and source inequality at `s=0`.

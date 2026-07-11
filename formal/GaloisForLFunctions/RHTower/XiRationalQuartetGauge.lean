@@ -147,4 +147,62 @@ theorem exists_xi_symmetric_entire_offcritical_countermodel :
   · exact quartetPoint_off_critical (by norm_num)
   · exact quartetGaugedXi_quartetPoint (1 / 4) 1
 
+/-! ## Exact-source marking
+
+The symmetric gauge preserves the elementary completed-function data above, but it does not
+preserve the exact logarithmic source.  At the safe real anchor `s = 0`, its logarithmic derivative
+is the explicit nonzero rational number `-608/425`.  Thus an orbit-sensitive source--divisor
+incidence can distinguish the countermodel even though FE, Schwarz reality, entire order, and the
+DA-gauge-invariant data cannot. -/
+
+/-- Exact derivative of the concrete centered quartet gauge at the real anchor `s = 0`. -/
+theorem centeredQuartetGauge_concrete_hasDerivAt_zero :
+    HasDerivAt (centeredQuartetGauge (1 / 4) 1) (-19 / 8 : ℂ) 0 := by
+  have hfun : centeredQuartetGauge (1 / 4) 1 =
+      fun s : ℂ => ((s - 3 / 4) ^ 2 + 1) * ((s - 1 / 4) ^ 2 + 1) := by
+    funext s
+    norm_num [centeredQuartetGauge]
+    ring
+  rw [hfun]
+  convert
+    ((((hasDerivAt_id (𝕜 := ℂ) 0).sub_const (3 / 4)).pow 2).add_const 1).mul
+      ((((hasDerivAt_id (𝕜 := ℂ) 0).sub_const (1 / 4)).pow 2).add_const 1)
+    using 1
+  all_goals norm_num
+
+/-- The concrete orbit-insertion gauge has a nonzero exact logarithmic-source charge at `s = 0`. -/
+theorem centeredQuartetGauge_concrete_logDeriv_zero :
+    logDeriv (centeredQuartetGauge (1 / 4) 1) 0 = (-608 / 425 : ℂ) := by
+  rw [logDeriv_apply, centeredQuartetGauge_concrete_hasDerivAt_zero.deriv]
+  norm_num [centeredQuartetGauge]
+
+/-- The logarithmic source of the gauged xi differs from that of xi by the explicit gauge charge. -/
+theorem quartetGaugedXi_concrete_logDeriv_zero :
+    logDeriv (quartetGaugedXi (1 / 4) 1) 0 =
+      (-608 / 425 : ℂ) + logDeriv xi 0 := by
+  change logDeriv (fun z => centeredQuartetGauge (1 / 4) 1 z * xi z) 0 = _
+  rw [logDeriv_mul 0]
+  · rw [centeredQuartetGauge_concrete_logDeriv_zero]
+  · norm_num [centeredQuartetGauge]
+  · rw [xi_zero]
+    norm_num
+  · unfold centeredQuartetGauge
+    fun_prop
+  · exact xi_differentiable 0
+
+/-- **Exact source marking breaks the quartet gauge.**  Although the concrete gauged xi has the
+same FE, Schwarz symmetry, entire regularity, and real-anchor nonvanishing as xi, their exact
+logarithmic sources already differ at `s = 0`. -/
+theorem quartetGaugedXi_concrete_logDeriv_ne :
+    logDeriv (quartetGaugedXi (1 / 4) 1) 0 ≠ logDeriv xi 0 := by
+  rw [quartetGaugedXi_concrete_logDeriv_zero]
+  intro h
+  have hc : (-608 / 425 : ℂ) = 0 := by
+    calc
+      (-608 / 425 : ℂ) =
+          ((-608 / 425 : ℂ) + logDeriv xi 0) - logDeriv xi 0 := by ring
+      _ = logDeriv xi 0 - logDeriv xi 0 := by rw [h]
+      _ = 0 := sub_self _
+  norm_num at hc
+
 end RHTower

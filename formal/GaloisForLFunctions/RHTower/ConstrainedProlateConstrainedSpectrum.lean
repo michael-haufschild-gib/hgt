@@ -43,6 +43,35 @@ theorem constrainedProlateMode_orthogonal_of_ne
     inner ℂ (constrainedProlateMode a m) (constrainedProlateMode a n) = 0 :=
   ContinuousLinearMap.inner_svVec_svVec_of_ne (H := constrainedProlateSubspace a) _ hmn
 
+/-- Every live constrained concentration mode has unit norm. -/
+theorem norm_constrainedProlateMode_of_value_ne_zero
+    (a : ℝ) (ha : 0 < a) {n : ℕ}
+    (hn : constrainedProlateConcentrationValue a n ≠ 0) :
+    ‖constrainedProlateMode a n‖ = 1 := by
+  exact @ContinuousLinearMap.norm_svVec_of_ne_zero
+    (constrainedProlateSubspace a)
+    (constrainedProlateSubspace a).normedAddCommGroup
+    (constrainedProlateSubspace a).innerProductSpace
+    (constrainedProlateSubspace_completeSpace a)
+    (constrainedProlateConcentration a)
+    (isCompactOperator_constrainedProlateConcentration a ha)
+    (constrainedProlateConcentration_isPositive a).isSymmetric
+    (fun x => (constrainedProlateConcentration_isPositive a).re_inner_nonneg_right x)
+    n hn
+
+/-- Compactness forces the constrained concentration values to vanish. -/
+theorem constrainedProlateConcentrationValue_tendsto_zero (a : ℝ) (ha : 0 < a) :
+    Filter.Tendsto (constrainedProlateConcentrationValue a) Filter.atTop (nhds 0) := by
+  exact @ContinuousLinearMap.svVal_tendsto_zero
+    (constrainedProlateSubspace a)
+    (constrainedProlateSubspace a).normedAddCommGroup
+    (constrainedProlateSubspace a).innerProductSpace
+    (constrainedProlateSubspace_completeSpace a)
+    (constrainedProlateConcentration a)
+    (isCompactOperator_constrainedProlateConcentration a ha)
+    (constrainedProlateConcentration_isPositive a).isSymmetric
+    (fun x => (constrainedProlateConcentration_isPositive a).re_inner_nonneg_right x)
+
 noncomputable def constrainedProlateLeakageValue (a : ℝ) (n : ℕ) : ℝ :=
   1 - constrainedProlateConcentrationValue a n
 
@@ -54,5 +83,11 @@ theorem constrainedProlateLeakage_apply_mode (a : ℝ) (n : ℕ) :
     ContinuousLinearMap.one_apply, constrainedProlateConcentration_apply_mode]
   simp only [constrainedProlateLeakageValue, Complex.ofReal_sub, Complex.ofReal_one]
   module
+
+/-- The complementary constrained leakage values tend to one. -/
+theorem constrainedProlateLeakageValue_tendsto_one (a : ℝ) (ha : 0 < a) :
+    Filter.Tendsto (constrainedProlateLeakageValue a) Filter.atTop (nhds 1) := by
+  simpa [constrainedProlateLeakageValue] using
+    (tendsto_const_nhds.sub (constrainedProlateConcentrationValue_tendsto_zero a ha))
 
 end RHTower

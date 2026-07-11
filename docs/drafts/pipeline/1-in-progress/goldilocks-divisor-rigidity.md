@@ -642,13 +642,17 @@ accident of the classical completion — it is forced by the cocycle. This is ob
 of the mission (why no rule exists), located at the completion: the constraint's own trivializers
 are constraint-only objects.
 
-## [CONJECTURE C-COC] The cocycle-transcendence dichotomy (the branch-native successor)
+## [FALSIFIED C-COC] The cocycle-transcendence dichotomy
 
-> For an integral multiplicative carrier with meromorphic continuation: the reflection cocycle
+> ~~For an integral multiplicative carrier with meromorphic continuation: the reflection cocycle
 > `h_F = F(1−s)/F(s)` is differentially algebraic **iff** `F` is a Dirichlet polynomial.
 > Equivalently: the involution `s ↦ 1−s` never acts differentially-algebraically on a genuine
 > Euler product — the σ-antisymmetrization of `log F` (pure prime-frequency data) is never DA
-> unless the arithmetic is finite.
+> unless the arithmetic is finite.~~
+
+This statement is false, including after requiring infinite prime support.  See the terminal
+correction at the end of this card and
+`docs/drafts/pipeline/5-failed/dedekind-zeta-ratio-reflection-cocycle-counterexample.md`.
 
 Position. Not Ostrowski (carrier-HT does not force cocycle-HT — an exact DA functional equation
 for an HT carrier is a priori possible; the conjecture is that arithmetic forbids the
@@ -1512,3 +1516,27 @@ nonconstant member yields a loud connected curtain exactly when no quiet polygon
 exists — and the polygonal branch is integration-ready for the Perron contour. The full planar
 stack (A: separation; B: discrete Hex; C: continuous duality) was absent from mathlib and is now
 in-tree, axiom-clean.
+
+## Terminal correction — C-COC falsified by common-completion ratios
+
+`[PROVED — ROUTE FALSIFIED]` Let `K` and `L` be distinct cubic number fields with the same
+signed discriminant and put `F = zeta_K/zeta_L`.  The two fields have the same signature, hence the
+same Dedekind completion factor.  Dividing their functional equations gives
+`F(1-s)=F(s)` as a meromorphic identity, so `h_F=1` is DA.  On `Re(s)>1`, the ideal-count
+coefficients of `zeta_K` convolved with the norm-aggregated ideal-Mobius coefficients of
+`1/zeta_L` give an integer-valued multiplicative Dirichlet series for `F`.  Distinct cubic fields
+have distinct zeta functions by Perlis's arithmetic-solitude theorem in degrees at most six; their
+Euler factors differ at infinitely many primes, and `F` is not a Dirichlet polynomial.  Infinite
+families of distinct same-discriminant cubic fields therefore give infinite counterfamilies.
+
+The literal claim already fails for `(1-p^{-s})^{-1}`; the Dedekind-zeta family proves that adding
+infinite prime support does not repair it.  The exact proof and literature audit are in
+`docs/drafts/pipeline/5-failed/dedekind-zeta-ratio-reflection-cocycle-counterexample.md`.  The common
+completion cancellation is formalized by `ratio_one_sub_eq_of_common_reflection` and
+`reflCocycle_div_eq_one_of_common_reflection` in `ReflectionCocycleClass.lean`.
+
+`[SCIENTIFIC VERDICT]` This is a decisive project-route refutation but a standard parent-theory
+synthesis, hence `[BRIDGE]`, not new scientific knowledge.  C-COC is retired.  INT-ORDER and the
+two-base leaf problem, if pursued, are independent HGT questions rather than stages of this
+classification.  Any successor must first define an intrinsic primitive/indecomposable Euler class
+that excludes common-completion quotients without being reverse-engineered from this counterexample.

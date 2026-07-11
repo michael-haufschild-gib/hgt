@@ -297,6 +297,72 @@ the June 2026 theta pair.  The result is mathematically significant because it r
 of the proposed metric and identifies its precise open content, but remains
 `[NOVELTY UNVERIFIED]` pending specialist review of contemporaneous work.
 
+## Lean status
+
+`formal/GaloisForLFunctions/RHTower/XiWeilPolarization.lean` now constructs the multiplicity-exact
+zero-side Weil polarization on the actual centered Xi divisor. Functional-equation reflection and
+Schwarz conjugation are lifted to the divisor-copy index and prove the Hermitian identity without
+RH. The module also proves unconditionally that multiplication by the centered spectral coordinate
+is formally symmetric, that `XiC` lies in both radicals, and that adding a multiple of `XiC` to
+either preimage leaves the form unchanged. Under RH, every square-summable diagonal is identified
+exactly with the nonnegative atomic Gram sum. For every actual zero `alpha`, Lean proves that the
+divisor-copy fiber is finite and nonempty, sums the eigenfunction diagonal to
+`m_alpha * ||XiC'(alpha)||^2`, proves that this norm vanishes exactly at a multiple zero, and proves
+orthogonality for distinct zero parameters. The same module defines the removable entire
+Hedenmalm quotient as `i * dslope XiC alpha`, proves its literal quotient formula away from
+`alpha`, its value `i XiC'(alpha)` at the removed point, and its exact vanishing at every distinct
+divisor copy.
+
+`formal/GaloisForLFunctions/RHTower/XiWeilResolventSource.lean` supplies a first genuine
+prime-plus-Gamma realization on a concrete infinite Weil test core. For the Cauchy tests
+`C_z(a)=(a-z)^(-1)`, Lean proves absolute summability and the exact polarized identity
+
+```text
+q_W(C_z,C_w)
+  = (T(conj(w))-T(z))/(z-conj(w)),
+```
+
+where `T` is the multiplicity-exact Xi relative resolvent trace. It then replaces both copies of
+`T` by the unordered von-Mangoldt `LSeries` plus the fixed archimedean/boundary term on the
+absolute-convergence half-plane, and by the continued prime carrier plus the same archimedean term
+on the natural pole-free domain. These identities use the existing source theorem
+`primeArchSourceRelativeTrace_eq_xiRelativeResolventTrace`; no zero enumeration or prime cutoff is
+introduced.
+
+The result is closed under finite Cauchy packets: for
+`F=sum_z c_z C_z` and `G=sum_w d_w C_w`, the same file proves the exact sesquilinear double sum
+
+```text
+q_W(F,G)
+ = sum_z sum_w c_z conjugate(d_w)
+   * (T(conjugate(w))-T(z))/(z-conjugate(w)),
+```
+
+and substitutes the prime--Gamma source for every entry, in both source domains. Thus the
+formalized source core is an actual finite-dimensional resolvent test algebra, not only one
+isolated kernel identity.
+
+`formal/GaloisForLFunctions/RHTower/XiWeilHilbertCore.lean` now realizes every square-summable
+divisor evaluation as an actual `ell^2` vector. Under RH, Lean identifies the Weil polarization
+exactly with the Hilbert inner product (with the argument order dictated by Lean's convention),
+proves that the completed theta transform is literally the zero vector, and proves that every
+centered Cauchy test is square-summable. It defines the closed span of the regular Cauchy evaluation
+vectors as a complete Hilbert subspace. For every actual Xi zero, the removable Hedenmalm quotient
+has the exact Hilbert norm
+
+```text
+||u_alpha||^2 = m_alpha ||XiC'(alpha)||^2.
+```
+
+This is an unconditional construction of the evaluation carrier; only its identification with the
+positive Weil metric uses RH. It does not assert that the full differential pair extends to a
+closable unbounded operator on this completion.
+
+This closes the algebraic divisor side of `(6)`, `(9)`, `(11)`, `(12)`, and `(15)`. The formal tree
+still lacks the extension of the prime-plus-Gamma equality from the Cauchy/resolvent core to the
+full Guinand--Weil test algebra, and the closability/domain theorem for the full unbounded
+Hedenmalm pair. No source-side or positivity claim is represented by an assumption.
+
 ## Gates
 
 - [x] completed centered Weil distribution fixed
@@ -309,6 +375,12 @@ of the proposed metric and identifies its precise open content, but remains
 - [x] nondegeneracy identified exactly with RH plus simplicity
 - [x] all-prime and archimedean provenance stated
 - [x] eigenfunction quotients checked in a Guinand--Weil class
-- [ ] Hilbert completion and closability theorem
+- [x] closed Hilbert completion of the square-summable Cauchy evaluation core
+- [ ] closability/domain theorem for the full unbounded Hedenmalm pair
 - [ ] independent specialist novelty audit
-- [ ] Lean formalization of the analytic distribution
+- [x] multiplicity-exact zero-side Weil polarization and theta radical in Lean
+- [x] Lean prime-plus-Gamma realization on the Cauchy/resolvent core
+- [ ] Lean extension to the full Guinand--Weil test algebra
+- [x] Lean entire eigenfunction quotient and pointwise derivative law
+- [x] Lean multiplicity-summed eigenfunction norm and orthogonality law
+- [x] Lean `ell^2` evaluation carrier, Cauchy completion, and exact Hedenmalm Hilbert norm

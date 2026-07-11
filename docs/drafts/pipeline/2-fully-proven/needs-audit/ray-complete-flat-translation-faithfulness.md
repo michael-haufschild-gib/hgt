@@ -437,12 +437,38 @@ Primary adjacent sources:
 
 ## 13. Lean status
 
-The tree already contains the actual right-half-plane identity
-`zeta_logDeriv_frequencies_weld`, the two-prime theorem `irrational_log_ratio`, and the reusable
-Vandermonde theorem `vandermonde_moments_eq_zero_of_injective`. It does not contain the required
-generalized Dirichlet coefficient-uniqueness theorem, the analytic/formal constraint ideals, or a
-theorem assembling `(8)` and `(24)` for the actual zeta logarithmic derivative. The complete claim
-remains stage 2. A finite-dimensional annihilator wrapper alone would not justify stage 3.
+`[FORMALIZED]` The algebraic core is fully machine-checked in
+`formal/GaloisForLFunctions/RHTower/RayCompleteTranslationFaithful.lean` (axiom-clean:
+`propext`, `Classical.choice`, `Quot.sound` only). The translation algebra is modelled as
+`A = AddMonoidAlgebra ℂ ℂ`, and the analytic constraint ideal `I_an` is represented by the joint
+kernel of the translation characters `χ_λ(∑_j c_j T_{h_j}) = ∑_j c_j e^{-λ h_j}` — the character
+form to which `I_an` reduces by exponential decay of rationals and generalized-Dirichlet coefficient
+uniqueness (the classical analytic bridge, cited but not re-proved).
+
+Formalized declarations:
+
+- `translationChar` / `translationChar_apply` — the characters `χ_λ` as algebra homs `A →ₐ[ℂ] ℂ`.
+- `exists_injective_ray` — the aliasing lemma `(14)`–`(15)`: on an infinite set of positive rays
+  with pairwise irrational ratios, some ray makes `h ↦ e^{-λ_p h}` injective on any finite support.
+- `finset_moments_eq_zero` — the Vandermonde separation core, built on
+  `vandermonde_moments_eq_zero_of_injective` via the diagonal factor `z_{p,j}`.
+- `translationChar_moments_eq_zero` and `rayComplete_annIdeal_eq_bot` — the theorem `(8)`,
+  `I_an(F) = 0`, in element and ideal form.
+- `euler_translation_faithful`, `eulerLogDeriv_annIdeal_eq_bot`,
+  `zeta_logDeriv_translation_faithful` — the Euler instance `(23)`, using `irrational_log_ratio` for
+  the incommensurable rays and `zeta_logDeriv_frequencies_weld` to name the actual `-ζ'/ζ` carrier.
+- `eulerFreqBelow` / `eulerJ` / `eulerJ_antitone` / `eulerJ_iInf_eq_bot` — the finite-stage ancestor
+  filtration `(31)`–`(34)`: the decreasing chain `J_M ⊆ J_N` and the cofinal separation `⋂_N J_N = 0`.
+- `completion_injection` and `completedZeta_nonzero_class` — the completion-injection law `(24)` and
+  the completed-zeta nonzero-class instance `(29)`, over an abstract module of carriers with a
+  rational subspace (the module algebra `P e = P(a+e) - P a`, exactly the paper proof).
+- `annIdeal_single_ray_ne_bot` — the converse boundary (attack §11.1): a single ray has the nonzero
+  annihilator `T_{2πi/λ} - 1`, so ray-completeness is load-bearing for `(8)`.
+
+Not carried to Lean (classical analytic inputs, represented as the character-kernel interface rather
+than reproved): generalized-Dirichlet coefficient uniqueness and exponential decay of nonzero
+rationals; the formal Poincaré-shadow side `I_for` of `(17)`–`(19)`; and the specific trigamma
+recurrence `(28)`, which enters `completedZeta_nonzero_class` as the hypothesis `hRat`.
 
 ## Gates
 
@@ -455,4 +481,6 @@ remains stage 2. A finite-dimensional annihilator wrapper alone would not justif
 - [x] finite-stage ancestor filtration proved
 - [x] positive route obligations stated
 - [ ] exact priority audit against the full difference-independence literature
-- [ ] complete unconditional Lean formalization
+- [x] complete unconditional Lean formalization of the algebraic core (character/ideal frame):
+      `RayCompleteTranslationFaithful.lean`, axiom-clean; analytic bridge (Dirichlet uniqueness,
+      rational decay, `I_for`) represented as the character-kernel interface

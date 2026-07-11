@@ -544,11 +544,21 @@ one at `s=0`, that the full denominator has exact order `pi(N)`, and that its re
 meromorphic order `-pi(N)`.  Thus the exact cusp pole order is formalized, rather than represented
 by a finite-dimensional count.
 
-The formal tree still lacks smooth compact-local convergence of all derivatives, the exact
-order-`pi(N)` Mellin cusp pole, the finite product resolvent and its logarithmic derivative,
-exponentially weighted cutoff convergence, the cofinal pointed screen, and the entire Rouché
-divisor transfer in `(28)`.  The zero-fibre energy estimate `(30)` remains the separate RH-bearing
-open theorem.
+`formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeDerivatives.lean` proves that every
+logarithmic derivative of every source summand is an explicit recursively generated
+polynomial--Gaussian.  A summable compact-interval majorant justifies termwise differentiation of
+both the all-integer and finite-prime sums, and proves uniform compact-local convergence of the
+actual iterated derivatives for every order `m`.  This is the full unconditional statement `(9)`.
+
+`formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeResolvent.lean` assembles the concrete
+one-prime physical Euler factors already present in the RHTower corpus.  It proves that their full
+finite product is invertible on the even physical Hilbert carrier and defines its bounded two-sided
+inverse.  The parameter-dependent logarithmic derivative `(17j)` has not yet been added.
+
+The formal tree still lacks the parameter-dependent finite product resolvent and its logarithmic
+derivative, exponentially weighted cutoff convergence, the cofinal pointed screen, and the entire
+Rouché divisor transfer in `(28)`.  The zero-fibre energy estimate `(30)` remains the separate
+RH-bearing open theorem.
 
 ### Lean gates
 
@@ -557,9 +567,10 @@ open theorem.
 - [x] absolutely convergent finite-prime smooth-integer source
 - [x] exact smooth-integer resolvent-series action on the theta seed
 - [x] compact-local uniform convergence to the all-integer source
-- [ ] compact-local convergence of every positive derivative order
+- [x] compact-local convergence of every positive derivative order
 - [x] Mellin cusp pole of exact order `pi(N)`
-- [ ] bounded finite-prime resolvent and von Mangoldt logarithmic derivative
+- [x] bounded finite-prime resolvent at the critical parameter
+- [ ] parameter-dependent resolvent and von Mangoldt logarithmic derivative
 - [ ] cofinal pointed screen and exponentially weighted convergence
 - [ ] entire transform and Rouché divisor transfer
 - [ ] sub-log-square reflected energy on every approximant zero

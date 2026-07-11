@@ -6,7 +6,8 @@
 - **Statement:** The complete differential-algebraic matroid of all translates of a meromorphic
   function, the corresponding logarithmic-derivative matroid, and every source class taken modulo
   differentially algebraic functions are invariant under multiplication by a nonzero
-  differential-algebraic gauge.  Rational gauges already realize arbitrary finite
+  differential-algebraic gauge. Rational gauges also preserve minimal differential aperture
+  exactly and already realize arbitrary finite
   functional-equation/conjugation-symmetric off-critical zero packets.  Consequently no theorem
   expressed only in these HT invariants can determine an RH-type zero-location property.
 
@@ -66,6 +67,49 @@ hold after extension.  Eliminating the differential-algebraic coefficients retur
 differential transcendence ranks over `K`.
 
 The rational-gauge specialization below avoids this extra base-change step entirely.
+
+## Exact aperture strengthening `[PROVED HERE]`
+
+For a differential field `K`, write
+
+`J_m(f)=K(f,Df,...,D^m f)`
+
+and let `ap_K(f)` be the least `m` for which the displayed jet tuple is algebraically dependent,
+with value `infinity` for an HT element. If `A in K^x`, Leibniz gives a lower-triangular linear
+transformation
+
+`(f,Df,...,D^m f) -> (Af,D(Af),...,D^m(Af))`
+
+whose diagonal is the nonzero element `A`. Applying the same formula to `f=A^(-1)(Af)` gives the
+inverse. Therefore
+
+`J_m(Af)=J_m(f)` for every `m`,
+
+`ap_K(Af)=ap_K(f)`.                                       (3a)
+
+This permits an exact quantitative realization. Over `K=C(s)`, the zero-free entire exponential
+cascade
+
+`U_0=1`, `U_1=exp(s)`, `U_(n+1)=exp(U_n)`
+
+has `ap_K(U_n)=n` by the exact entire-cascade order theorem. A zero-free entire HT unit is
+
+`U_infinity=exp(1/Gamma)`.
+
+Indeed, Hölder makes `1/Gamma` HT. If `U_infinity` were DA, its logarithmic derivative
+`(1/Gamma)'` would be DA, and an ADE for that derivative is an ADE for `1/Gamma` after shifting
+derivative indices, a contradiction.
+
+For any finite effective divisor `D`, let `Q_D` be its polynomial. Then
+
+`F_(D,n)=Q_D U_n`
+
+is entire and satisfies
+
+`Div(F_(D,n))=D`, `ap_(C(s))(F_(D,n))=n`                  (3b)
+
+for every `n in N union {infinity}`. Thus finite divisor data and differential aperture are
+independent coordinates, not merely distinct examples at the HT endpoint.
 
 ## Arbitrary finite off-line packet implantation `[PROVED HERE]`
 
@@ -150,6 +194,10 @@ Then `I(X_A)=I(X)` for every rational gauge `A` above.  Since `X_A` may contain 
 off-critical quartet packet while `I` is unchanged, no such invariant determines whether all zeros
 lie on the critical line.
 
+The quantitative equations `(3a)`--`(3b)` show that adding minimal differential order to `I` does
+not repair the blindness: every finite effective divisor occurs at every finite aperture and at
+infinite aperture.
+
 Equivalently:
 
 > The divisor-location predicate does not descend to the DA-gauge quotient on which these HT
@@ -221,6 +269,8 @@ order-one statement have not all been formalized in Lean as this complete claim.
 ## Gates
 
 - [x] Gauge invariance of translate-generated differential fields proved.
+- [x] Exact minimal differential-aperture invariance proved.
+- [x] Every finite effective divisor realized at every finite and infinite aperture.
 - [x] Logarithmic-derivative and source-coset invariance proved.
 - [x] Arbitrary finite symmetric off-line packet polynomial constructed.
 - [x] Completed-xi specialization and route boundary proved.
@@ -239,3 +289,6 @@ order-one statement have not all been formalized in Lean as this complete claim.
 - 2026-07-11 -- Completed the paper proof, classified the mechanism as a bridge, and separated the
   fully formalized concrete quartet countermodel from the still-paper-level differential-field
   invariance theorem.
+- 2026-07-11 -- Consolidated the exact rational-gauge aperture theorem and the every-divisor at
+  every-aperture realization from a duplicate bridge card. This strengthens the quantitative
+  blindness statement without creating a second wrapper claim.

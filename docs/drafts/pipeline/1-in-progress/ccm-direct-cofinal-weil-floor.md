@@ -399,6 +399,442 @@ node families through growing matrix size, boundary/infinite-node escape, or the
 mechanism. A fixed scalar Herglotz ratio cannot do this; cofinal nonnegative Fourier coordinates are
 incompatible with Xi logarithmic-derivative growth.
 
+### E. Mixed source aperture, relative index, and divisor marking
+
+The exact finite-Euler aperture theorem and the relative-coordinate index theorem measure two
+different parts of a successful CCM carrier. For a prime cutoff `P`, every first-order-faithful
+rational scalar readout `B_P` has differential aperture `pi(P)`. For a CCM relative determinant
+with active coordinate set `J_(lambda,N)`,
+
+```text
+ind_- K_(R,lambda,N)=#J_(lambda,N).                       (12q)
+```
+
+`ccm-euler-observability-relative-index-allocation-law.md` proves the exact bridge. If the scalar
+jet sees rank `rho` and a source-defined residue map jointly retains all `pi(P)` Euler directions,
+then
+
+```text
+pi(P)-rho<=ind_- K_(R,lambda,N).                          (12r)
+```
+
+This is an allocation law, not an identification of cutoffs: `P`, `lambda`, and `N` remain
+distinct until the construction supplies their incidence map. Directions already visible in the
+scalar differential carrier are not counted again in the relative state.
+
+If a source direction enters through a Fourier residue that vanishes at the base point, `(12r)`
+must be read stratifiably rather than discarded. The complete residue Jacobian then forces, on an
+open dense set of arbitrarily small real source deformations,
+
+```text
+ind_- K_R>=pi(P)-rho.                                     (12r1)
+```
+
+The missing direction is paid by quantized negative-index birth immediately off the zero-residue
+stratum. Hence the cofinal carrier must retain the full residue support stratification, not only
+the active-pole index at the zeta point.
+
+At fixed aperture the source-deformed ground-state map is already explicit. Kato response gives
+
+```text
+D_h xi_b
+ =R_b^perp P_perp v_h xi_b,                              (12t)
+
+D_h F_b=M_lambda(D_h xi_b).                              (12u)
+```
+
+The theorem `ccm-generic-ground-separating-incidence-law.md` shows that the compressed prime-shift
+space has an open dense set of separating vectors. At a simple ground state in that set, `(12t)`
+and `(12u)` are injective in every retained prime direction. Failure is confined to the explicit
+Gram-determinant seam
+
+```text
+det((<A_i xi_b,A_j xi_b>)_(0<=i,j<=pi(P)))=0.             (12v)
+```
+
+The cofinal source-to-spectral theorem is therefore quantitative transversality: prove that the
+true von-Mangoldt ground state avoids `(12v)` with a least-Gram-eigenvalue margin strong enough to
+survive the reduced resolvent and the growing Mellin evaluation norm.
+
+`ccm-prime-log-crowding-separating-margin-law.md` proves that this margin forces a specific resource.
+If `delta_P` is the nearest-neighbour spacing among `{log p:p<=P}` and `D` is the translation
+generator, then
+
+```text
+sigma_(lambda,P)<=delta_P^2||D xi_lambda||^2/2,           (12v1)
+```
+
+up to the fixed factor for symmetric channels, while
+
+```text
+delta_P<=log(P/2)/(pi(P)-1)=O((log P)^2/P).               (12v2)
+```
+
+Thus every quantitative cofinal incidence must be paid by inverse-spacing oscillation of the true
+ground state. The prolate/Sonin carrier is not merely allowed to escape compactness; it is forced
+to carry this growing generator energy at whatever rate the determinant-transfer margin demands.
+For the genuine degree-one Euler-ray deformation, this applies exactly on the top shell
+`e^(A/2)<p<=e^A`, where every ray has only its first shift inside the aperture. The normalized
+nearest-neighbour spacing there is `O(A^2e^(-A))`, so a fixed stable margin costs generator norm
+at least of order `e^A/A^2`.
+
+One more coordinate is compulsory. The finite divisor--aperture orthogonality law shows that a
+symmetric polynomial can insert an arbitrary off-line orbit without changing differential
+aperture, HT, FE, Schwarz reality, or order-one growth. Hence even the joint budget `(12r)` is not
+an RH selector unless the CCM determinant/kernel incidence is orbit-sensitive. The positive
+three-coordinate carrier is
+
+```text
+prime-source visibility
+  + relative spectral-state capacity
+  + a pointed source--divisor marking that changes under every off-line orbit insertion. (12w)
+```
+
+The complete Euler Pick kernel already has the required transverse index. The remaining theorem
+is to transport that complete inertia, not merely source rank or active-pole count, into the
+restricted screw spaces while preserving the cofinal separating margin.
+
+### F. Signed Möbius Schur transfer and the continuation seam
+
+The signed-channel coisometry now has an exact Hardy-space transfer function. With
+`sigma=1+2omega`,
+
+```text
+tau_omega(z)
+ =E_(P_omega)[mu(d)d^(-z)]
+ =zeta(2sigma)/(zeta(sigma)zeta(sigma+z))
+ =product_p (1-p^(-(sigma+z)))/(1+p^(-sigma)).            (12x)
+```
+
+Every local factor has modulus at most one for `Re z>=0`, so
+
+```text
+|tau_omega(z)|<=1.                                       (12y)
+```
+
+Thus the signed Möbius synthesis is already a source-defined contraction on the Euler side. The
+complete coupled floor--tail transform is
+
+```text
+L F_omega(z)
+ =zeta(1+z)/((1+omega+z)zeta(1+2omega+z))
+  -1/((1+omega)z zeta(1+2omega)).                        (12z)
+```
+
+This removes “construct an arithmetic contraction” as an open task. The contraction ceases to be
+automatic only when the inverse-transform contour is moved to the divisor boundary: the first
+term in `(12z)` has possible poles at
+
+```text
+z=rho-1-2omega.                                          (12z1)
+```
+
+Those crossed poles are exactly the anti-causal zero modes. Therefore the required positive
+operator is not bounded functional calculus of `(12x)`. It is an orbit-sensitive meromorphic
+continuation graph carrying the residue seam, together with a renormalization satisfying
+
+```text
+||ell_E||_2<=||ell_pole||_2=2.                            (12z2)
+```
+
+The rational-orbit countermodel shows why the seam is load-bearing: a symmetric polynomial leaves
+the Euler-side multiplier `(12x)` unchanged but inserts a nonzero residue vector. Hence any proof
+using only the Schur norm, the diagonal squarefree channel law, or a channel-independent bounded
+operator is transverse-blind. A viable CCM/Connes construction must preserve the gauge covariance
+of the full continued source and transport its faithful residue index into the screw spaces.
+
+The critical Euler-line graph limit is now complete. The centered Schur difference quotient has
+the strong Hardy limit
+
+```text
+c_omega/z(
+  1/zeta(1+2omega+z)-1/zeta(1+2omega)
+)
+ ->1/(z zeta(1+z)),                                      (12z3)
+```
+
+whose inverse Laplace vector is
+
+```text
+m_0(t)=sum_(n<=e^t)mu(n)/n in L2(0,infinity).             (12z4)
+```
+
+The renormalized floor-remainder component converges strongly to
+
+```text
+1/(1+z)-1/(z zeta(1+z)).                                 (12z5)
+```
+
+Therefore the complete coupled causal source converges strongly to `e^(-t)`. Failure of causal
+convergence and failure of constant-channel graph membership are no longer open explanations.
+The RH content is exactly the noncommutation of this strong limit with the meromorphic contour
+transfer: crossed poles create the anti-causal residue seam.
+
+### G. The continuation graph must carry inverse-horizontal charge
+
+`orbit-sensitive-continuation-horizontal-charge-norm-law.md` closes the generic bounded-map
+version of the continuation problem. A pole at `w=-gamma+i a` has fixed Euler-line norm and
+reflected residue energy
+
+```text
+||c/(.-w)||_(Im z=Y)^2=pi|c|^2/(Y-a),
+||c exp(-a t)exp(i gamma t)||_2^2=|c|^2/(2a).            (12z6)
+```
+
+Hence the norm ratio is `(Y-a)/(2*pi*a)` and diverges as the orbit approaches the critical line.
+The same divergence survives a full FE--Schwarz rational quartet: its fixed-line source norm is
+uniformly bounded for `0<a<=Y/2`, whereas its two right-half residue modes have energy at least
+`4m^2/a`.
+
+Consequently there is no universal bounded, or uniformly Lipschitz, gauge-covariant map from the
+ordinary Euler-line Hardy norm to the divisor residue space. Any bounded continuation graph `D`
+with residue map `J:D->L2` is forced to allocate
+
+```text
+||q_(a,gamma)^sym||_D^2>=4m^2/(||J||^2 a).              (12z7)
+```
+
+This turns the obstruction into the positive carrier law: the CCM continuation domain must carry
+the full Cauchy residue Gram form
+
+```text
+R(q)=||Jq||_2^2
+ =4 sum_(j,k)m_j m_k/
+    (a_j+a_k+i(gamma_j-gamma_k)).                        (12z8)
+```
+
+Equivalently it needs explicit residue coordinates, a Pontryagin/Krein realization of those
+coordinates, or a genuinely Xi-pointed nonuniform theorem. The first two make continuation an
+unbounded closed graph before renormalization. The third must use arithmetic marking that changes
+under every symmetric orbit insertion.
+
+Therefore “construct a bounded continuation” is now retired. The remaining RH-bearing statement
+is source-specific:
+
+```text
+exact Xi source
+  -> closed orbit-marked graph carrying R
+  -> distinguished pole-to-divisor renormalization
+  -> ||ell_E||_2<=2.                                    (12z9)
+```
+
+The four-unit theorem shows that `(12z9)` proves RH. It cannot be established uniformly on the
+FE--Schwarz gauge family, whose residue charge diverges like `1/a`.
+
+### H. Semilocal Hankel gap-trace slope
+
+The charged graph has a positive trace-class realization. For an anti-causal profile `ell`, define
+the shifted Hankel leakage
+
+```text
+(H_u f)(x)=integral_0^infinity ell(u+x+y)f(y)dy,
+F_ell(u)=Tr(H_u^*H_u).                                   (12z10)
+```
+
+The exact Hilbert--Schmidt identity is
+
+```text
+F_ell(u)=integral_u^infinity(t-u)|ell(t)|^2dt,
+-F_ell'(0+)=||ell||_2^2.                                (12z11)
+```
+
+For the incoming Euler pole `ell_pole(t)=2e^(-t/2)`,
+
+```text
+F_pole(u)=4e^(-u),       F_pole'(0+)=-4.                (12z12)
+```
+
+For the completed off-line divisor profile, the Cauchy threshold gives
+
+```text
+RH
+ <-> -F_E'(0+)<=4
+ <-> F_E'(0+)>=F_pole'(0+).                             (12z13)
+```
+
+Thus the source-specific four-unit theorem is equivalently a semilocal trace-slope conservation
+law. This avoids unbounded evaluation of the leakage kernel at its boundary corner while retaining
+the full inverse-horizontal orbit charge. Its exact source-side candidate is explicit: if the
+infinitesimal shifted-Xi leakage `D` can be closed on the meromorphic graph and `V_b` is the
+reflected half-line shift, then
+
+```text
+D_u=V_(u/2)^* D V_(u/2),       F_E(u)=Tr(D_u^*D_u).     (12z14)
+```
+
+On the Euler half-plane, the candidate `D` has the explicit symbol `-2Xi'/Xi`, including the
+von-Mangoldt and Gamma terms. The surviving Connes target is to close its meromorphic graph and
+control the initial aperture loss. Section K below sharpens this further: full trace class of the
+shifted compressions is unnecessary.
+
+Control at one positive aperture is insufficient. The RH datum is the right derivative at the
+singular endpoint, so the cofinal transport must be trace differentiable at `u=0` on the
+distinguished Xi graph vector.
+
+### I. Canonical closed two-channel source graph
+
+The orbit-sensitive graph itself is now constructed. Let
+
+```text
+q_Xi(z)=-2Xi'(1/2-i z)/Xi(1/2-i z),
+D_q={f in H2_+:q_Xi f in L2(R)}.                         (12z15)
+```
+
+Cartwright bounded-type theory gives
+
+```text
+integral_R log(1+|q_Xi(x)|)/(1+x^2)dx<infinity.          (12z16)
+```
+
+An outer majorant `a` with `|a|=(1+|q_Xi|)^(-1)` satisfies
+`aH2_+ subset D_q`; because `a` is outer, this is a dense core. The paired map
+
+```text
+G_Xi f=(P_+(q_Xi f),P_-(q_Xi f))                        (12z17)
+```
+
+is closed in the full graph norm. This paired form is essential: closedness belongs to the source
+constraint `q_Xi f=g_++g_-`, not to either projected channel in isolation.
+
+The projected anti-causal channel is nevertheless closable. A lower-half-plane outer majorant
+`b` with `|b|=(1+|q_Xi|)^(-1)` gives the dense adjoint core
+
+```text
+bH2_- subset D((P_-M_(q_Xi))^*).                         (12z17a)
+```
+
+Hence
+
+```text
+D_Xi=bar(P_-M_(q_Xi)|D_q)                                (12z17b)
+```
+
+is a canonical closed unbounded Hankel operator. No trace-class or RH hypothesis is used.
+
+If a rational FE--Schwarz orbit changes the source by `r in L-infinity(R)`, then the graph domain
+is unchanged and
+
+```text
+(f,g_+,g_-)
+ |->(f,g_++P_+(rf),g_-+P_-(rf))                         (12z18)
+```
+
+is a bounded invertible graph gauge. For one upper pole `r(z)=c/(z-w)`,
+
+```text
+P_-(rf)(x)=c f(w)/(x-w).                                (12z19)
+```
+
+Thus each right-half zero is exactly one rank-one evaluation/residue coordinate; a pole of order
+`m` gives its finite evaluation jet. This realizes the pointed source--divisor incidence and the
+inverse-horizontal charge without assuming RH.
+
+At the operator level, bounded rational gauges satisfy
+
+```text
+bar(H_(q_Xi+r))=D_Xi+P_-M_r,
+D(bar(H_(q_Xi+r)))=D(D_Xi).                               (12z19a)
+```
+
+Thus the full orbit action is an exact finite-rank perturbation law on the closed anti-causal
+operator, not merely an isomorphism of paired graphs.
+
+Accordingly, graph construction is no longer open. The entire remaining analytic seam on this
+interface is to construct the positive boundary relative trace of the anti-causal channel and prove
+its four-unit density bound on the distinguished Xi source.
+
+### J. Quantized index--trace-slope coercivity
+
+The corpus note that divisor winding is the nonperturbative finite-prime charge now couples exactly
+to the graph metric. For a finite right-half divisor `D={1/2+a_j+i gamma_j}` with multiplicities
+`m_j`, put
+
+```text
+kappa(D)=sum_j m_j,
+E(D)=-F_D'(0+).                                          (12z20)
+```
+
+Here `kappa` is simultaneously denominator-inner degree, shifted-leakage multiplicity, and
+prime-zeta monodromy. The Cauchy diagonal and `0<a_j<1/2` give the strict coercivity
+
+```text
+E(D)>=2 sum_j m_j^2/a_j
+    >4 sum_j m_j
+     =4 kappa(D).                                        (12z21)
+```
+
+The incoming Euler pole has
+
+```text
+kappa_pole=1,       E_pole=4.                            (12z22)
+```
+
+Thus the strip boundary is the exact unit-cost threshold: one incoming pole unit has budget four,
+while every outgoing transverse divisor unit costs strictly more than four. The positive CCM law
+is now a marked resource conservation theorem:
+
+```text
+(kappa_pole,E_pole)=(1,4)
+  -> exact completed source incidence
+  -> (kappa_off,E_off), with E_off>4 kappa_off if kappa_off>0
+  + E_off<=E_pole
+  -> kappa_off=0
+  -> RH.                                                  (12z23)
+```
+
+The index prevents divisor charge from dissolving in the cofinal limit; the trace slope supplies
+the strict metric cost; the pointed Euler source orients their coupling. This is the same carrier
+triple demanded by the finite-prime monodromy, topological boundary-index, and pointed Krein
+results in `docs/prompts/notes.md`.
+
+### K. Full trace class is replaced by a boundary relative trace
+
+Let `H_ell` be the Hankel operator with kernel `ell(x+y)`, let `P_a` project onto `[a,infinity)`,
+and put `Q_a=I-P_a`. For `u=2a`, define the positive removed-corner trace
+
+```text
+Delta_ell(u)
+ =||Q_a H_ell Q_a||_(S_2)^2
+  +||Q_a H_ell P_a||_(S_2)^2
+  +||P_a H_ell Q_a||_(S_2)^2.                           (12z24)
+```
+
+Only `ell in L2` is required. Direct first-quadrant geometry gives
+
+```text
+Delta_ell(u)
+ =integral_0^infinity min(t,u)|ell(t)|^2dt,
+
+lim_(u->0+)Delta_ell(u)/u=||ell||_2^2.                  (12z25)
+```
+
+Equivalently,
+
+```text
+Delta_ell(2a)
+ =||Q_aH_ell Q_a||_(S_2)^2+||[P_a,H_ell]||_(S_2)^2.     (12z25a)
+```
+
+This is precisely a local-corner plus cutoff-commutator relative trace.
+
+Thus the residue energy is a boundary relative-trace density even when the full Hankel operator is
+not Hilbert--Schmidt. For the incoming pole,
+
+```text
+Delta_pole(u)=4(1-e^(-u)).                              (12z26)
+```
+
+The exact positive CCM target is therefore
+
+```text
+limsup_(u->0+) Delta_Xi(u)/Delta_pole(u)<=1.             (12z27)
+```
+
+By `(12z21)`, `(12z27)` forces `kappa_off=0` and RH. This is smaller than a global trace-class
+theorem and matches the relative-compression form of the semilocal Connes trace formula. What must
+be constructed from the exact source are the three boundary-block traces and their first-order
+density, not an absolute trace of the whole continuation operator.
+
 ## Gates
 
 - [x] determinant transfer collapsed to the direct floor criterion
@@ -416,10 +852,37 @@ incompatible with Xi logarithmic-derivative growth.
 - [x] exact compressed position/Euler leakage Gram identity constructed
 - [x] dephased finite-spectrum Euler-Pick transfer and aperture-phase defect isolated
 - [x] relative coordinate negative index and logarithmic cofinal charge floor proved
+- [x] exact scalar-observability/relative-index allocation law proved
+- [x] dormant residue directions converted into nearby quantized index birth
+- [x] fixed-aperture Kato prime-to-characteristic response constructed
+- [x] generic separating locus and determinantal incidence seam isolated
+- [x] prime-log crowding converted into an exact ground-oscillation requirement
+- [x] orbit-sensitive source--divisor marking isolated as a third carrier coordinate
+- [x] signed Möbius synthesis identified as an exact Euler-side Schur contraction
+- [x] complete coupled causal transfer function and continuation-pole seam identified
+- [x] centered weighted-Mertens boundary vector proved to have a strong critical limit
+- [x] complete coupled causal source proved to converge strongly at the Euler boundary
+- [x] universal bounded gauge-covariant continuation excluded
+- [x] inverse-horizontal residue charge forced into every orbit-sensitive graph norm
+- [x] residue charge realized as the initial slope of a positive Hankel gap trace
+- [x] four-unit bound restated as semilocal trace-slope conservation
+- [x] canonical Xi-pointed closed two-channel graph constructed from the exact logarithmic source
+- [x] anti-causal logarithmic-source Hankel operator proved closable on a dense adjoint core
+- [x] rational orbit gauges realized as bounded graph automorphisms with rank-one residue channels
+- [x] rational orbit gauges realized as bounded finite-rank perturbations of the closed operator
+- [x] transverse integer index coupled to the trace slope by `E>4*kappa`
+- [x] incoming Euler pole identified as the exact saturated unit `(kappa,E)=(1,4)`
+- [x] full trace-class demand reduced to a positive three-block boundary relative trace
+- [x] exact `min(t,u)` kernel and pole density `4` proved
 - [ ] construct a positive reference splitting `(10)`
 - [ ] prove the infinite-carrier contraction `(11)`
 - [ ] or construct a source-defined Gram factorization of `(12c)` and an index-faithful aperture
       transport
 - [ ] or construct a positive relative-background kernel and prove `(12l)`
+- [ ] prove a cofinal lower bound for the true ground-state separating margin
+- [ ] transport complete orbit-sensitive Euler-Pick inertia into the screw spaces
+- [ ] prove its distinguished pole-to-divisor renormalization is nonexpansive in the charged graph
+- [ ] construct the three boundary-block traces `(12z24)` directly from the Xi source graph
+- [ ] prove the relative-trace density bound `(12z27)`
 - [ ] prove absence of negative spectral birth `(5a)`
 - [ ] invoke the cofinal floor criterion to prove RH
