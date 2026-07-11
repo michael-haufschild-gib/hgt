@@ -128,6 +128,34 @@ The limit vectors are mutually orthogonal and lie in the limiting vanishing-inte
 Thus the complete fixed-depth constrained spectrum selects a canonical orthogonal Hermite contrast
 ladder, not only the first `h_0`--`h_4` contrast.
 
+### Exact identification with the CCM Gram--Schmidt ladder
+
+`[PROVED HERE; BRIDGE]` The limiting vectors in `(10)` are exactly the ordered Gram--Schmidt
+orthogonalization of the raw Hermite contrasts used in the Connes--Consani construction.
+
+Indeed, put
+
+```text
+r_m=a_0 e_m-a_m e_0,   m>=1.                            (10a)
+```
+
+These are the Hermite limits of CCM's even prolate combinations
+
+```text
+psi_(2m) psi_0(0)-psi_0 psi_(2m)(0).
+```
+
+For fixed `m`, the vectors `r_1,...,r_(m-1)` span the codimension-one subspace
+
+```text
+{x in span(e_0,...,e_(m-1)) : sum_(j=0)^(m-1) a_j x_j=0}.
+```
+
+The vector `w_(m-1)` from `(10)` is orthogonal to every `r_j`, `j<m`, lies in
+`span(r_1,...,r_m)`, and has a nonzero `e_m` coordinate. It is therefore, up to normalization and
+sign, the `m`-th Gram--Schmidt vector. Thus the spectral ladder does not merely resemble the
+published numerical prolate orthogonalization: it selects its exact fixed-mode Hermite limit.
+
 The first two constants are
 
 ```text
@@ -275,11 +303,14 @@ This proves `(11)` and completes the theorem.
   separation, the exact constants `Q_k/Q_(k+1)`, and the limiting orthogonal Hermite contrast ladder.
 - `[PROVED HERE]` The all-depth spectral fingerprint `(9)`, including the explicit first excited
   constants `(13)`.
+- `[PROVED HERE; BRIDGE]` The eigenvector limits are exactly the ordered Gram--Schmidt limits of the
+  raw even CCM prolate contrasts, so the new spectral ladder and the published numerical comparison
+  use the same canonical vectors rather than two analogous bases.
 - `[NOT PROVED]` The true finite-prime Weil eigenvalues or eigenvectors obey this ladder. The theorem
   supplies the prolate side of a comparison theorem; it does not supply the Weil-to-prolate transfer.
 - `[NOT PROVED]` Simplicity or positivity of the true continuous Weil ground state for every cutoff.
 
-The fake proof of RH now fails at one exact sentence:
+The fake local spectral proof now fails at one exact sentence:
 
 ```text
 the finite-prime Weil low-spectrum has the same fixed-depth projective asymptotics as C_lambda.
@@ -288,6 +319,13 @@ the finite-prime Weil low-spectrum has the same fixed-depth projective asymptoti
 Neither small Rayleigh value nor ordinary form convergence proves this. The relevant gaps themselves
 vanish like `exp(-4*pi*lambda^2)` times a polynomial, so the transfer must be relative to the full
 minuscule ladder, not additive at a polynomial error scale.
+
+Even proving that sentence would not cross the cofinal RH boundary. The formalized
+`finite-prime-logarithmic-boundary-transfer` theorem additionally requires a source-defined
+holomorphic determinant or characteristic family `F_N` which converges locally uniformly and
+zero-preservingly to `Xi`, together with sub-log-square reflected energy on every approximant zero
+fiber. The ladder is a local spectral fingerprint that such a construction must retain; it is not
+itself a divisor-transfer theorem.
 
 ## Novelty and significance audit
 

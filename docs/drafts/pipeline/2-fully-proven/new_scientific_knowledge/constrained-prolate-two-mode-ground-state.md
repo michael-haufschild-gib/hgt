@@ -35,6 +35,11 @@ fixed-aperture strict-margin Weil families cannot detect every remote off-line q
 here escapes through both permitted channels: its support grows with `lambda`, and its leakage tends
 to zero exponentially, so it approaches the prolate radical.
 
+The global radical source space also imposes `f(0)=0`. The finite-aperture theorem
+`ccm-restricted-summation-aperture-gauge.md` shows that this additional scalar condition is gauge at
+the level of `k_lambda`: it can be imposed by an invisible central bump without changing
+`R_lambda E(f)`. Endpoint regularity and the lower Poisson tail remain genuine, separate issues.
+
 ## Setup
 
 Let `F` be the unitary additive Fourier transform on `L2(R)` in the convention
@@ -390,10 +395,22 @@ CCM program but leaves the principal analytic bridge open.
 
 ## Exact remaining Connes-route core
 
+There are two independent cutoffs: the arithmetic aperture `X=lambda^2` and the Galerkin dimension
+`M`. For every finite pair for which the CCM lowest-eigenvalue hypothesis holds, the associated
+determinant has real zeros in the spectral variable. In the zeta variable `s=1/2+iz`, its zeros
+therefore lie exactly on `Re(s)=1/2`. Consequently the prime-clock energy on those zero fibers is
+identically zero. The metric gate in the formalized logarithmic-boundary transfer theorem is
+automatic for this family; finite self-adjointness supplies that gate but not the analytic gate.
+
+The terminal CCM obligation is to choose a cofinal diagonal `M=M(X)`, normalize the determinants so
+that the limit is nonzero, and prove locally uniform convergence to `Xi`. This is the missing
+divisor-carrying statement. It must simultaneously justify the fixed-aperture Galerkin limit and
+the growing-aperture limit.
+
 Let `A_lambda` denote the true continuous Weil operator in the CCM normalization and let
-`r_lambda=<A_lambda g_lambda,g_lambda>`. A transfer theorem must prove estimates strong enough to
-compare the true Weil ground vector with `g_lambda`. A sufficient Davis--Kahan-type target is a
-form-residual estimate
+`r_lambda=<A_lambda g_lambda,g_lambda>`. One possible producer of the required analytic convergence
+is an estimate strong enough to compare the true Weil ground vector with `g_lambda`. A sufficient
+Davis--Kahan-type input is a form-residual estimate
 
 ```text
 ||(A_lambda-r_lambda)g_lambda||
@@ -405,10 +422,12 @@ prolate theorem proves the corresponding surrogate separation but does not ident
 `Gap_lambda` for `A_lambda`.
 
 Because the supports grow and the vectors approach the radical, ordinary fixed-support norm control
-is not enough for the final determinant statement. The transfer must also retain the weighted or
+is not enough for the final determinant statement. The transfer must retain the weighted or
 projective control needed for locally uniform Mellin-transform convergence on every closed substrip
-of `|Im z|<1/2`. This is the cofinal, zero-preserving step that the compact-detector and logarithmic
-boundary-layer obstructions require.
+of `|Im z|<1/2`. This is the analytic gate. Once it is proved for a cofinal CCM family whose finite
+zeros are real, the metric defect is zero and the formalized boundary-transfer theorem yields RH.
+The Davis--Kahan route is only one possible way to produce this convergence; a direct normal-family,
+de Branges, or log-derivative argument would also suffice if it carries the full divisor.
 
 ## Lean decision
 
