@@ -355,6 +355,16 @@ The common DA extension preserves differential transcendence degree, so (21) is 
 The multiplicative statement follows by logarithmic derivatives and the same torsion-free integer
 clearing argument as in the structural theorem.
 
+## Lean formalization of the gluing engine
+
+The arbitrary-coset descending face lifting and bottom-layer joint atomicity rest on the same
+free-block replication and simplicial-star minimal-circuit gluing as the unlabelled hierarchy. These
+are formalized axiom-clean in `GaloisForLFunctions.DifferentialMatroidGluing`
+(`Rank.freeBlock`, `Rank.crossNeutral_iUnion_indep`, `Rank.graphGluing`). The compatible-pair label
+`c` is inert for the gluing: the incidence in `Rank.graphGluing` is an abstract predicate, so the
+extra label rides along without changing the argument. The special-function inputs and the
+differential-linear rank formula enter as the rank/interface hypotheses.
+
 ## First proof audit
 
 The proof adds only one genuinely new step to the structural face filtration: the external label

@@ -304,6 +304,18 @@ This follows from Smith normal form and the triangular leading-jet form of every
 constant-coefficient differential operator. DA normalization terms do not change differential
 transcendence degree. This proves (10). `QED`
 
+## Lean formalization of the replication and gluing lemmas
+
+The relative orbit replication lemma and the joint independence of the three face branches are
+formalized axiom-clean in `GaloisForLFunctions.DifferentialMatroidGluing` as the abstract theorems
+`Rank.freeBlock` and `Rank.crossNeutral_iUnion_indep`, over a monotone submodular subcardinal rank
+that abstracts `dtrdeg` and its translation automorphisms. The three-branch case is the union of
+three free independent orbits whose directions are mutually rank-neutral (`CrossNeutral`). The
+special-function inputs — that `dtrdeg` is such a rank, each branch is a free independent orbit
+(`FreeIndepOrbit`), and each structural direction is DA-trivial off its own face — enter as those
+interfaces. The complete structural-matroid theorem additionally needs the differential-linear rank
+lemma, which is not part of this engine.
+
 ## Consequences
 
 ### No nonlinear dependence beyond the face ideal

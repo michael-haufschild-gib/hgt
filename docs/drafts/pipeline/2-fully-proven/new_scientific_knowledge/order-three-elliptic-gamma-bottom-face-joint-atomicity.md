@@ -259,6 +259,26 @@ distinct.
 This is joint independence across different elliptic parameter pairs, not merely independence of
 translates of one fixed elliptic gamma function.
 
+## Lean formalization
+
+The two abstract engines are formalized unconditionally and axiom-clean in
+`formal/GaloisForLFunctions/DifferentialMatroidGluing.lean`. Differential transcendence degree over
+the fixed base is abstracted as a monotone submodular subcardinal `ℕ`-valued rank on finite
+coordinate sets (`Rank`), and derivation-commuting translations as its rank automorphisms
+(`rankAutSubgroup`). Over this:
+
+- `Rank.freeBlock` is the free-block replication lemma.
+- `Rank.crossNeutral_iUnion_indep` is vertex-star independence: a cross-neutral family of free
+  independent orbits has an independent union.
+- `Rank.graphGluing` is the minimal-circuit graph orbit-gluing theorem, over an abstract incidence
+  predicate `inc : V → ι → Prop`.
+- `Rank.orderThree_sixFace_indep` specializes it to the complete graph on the four structural
+  directions `Fin 4`, giving joint independence of the six bottom-face orbits.
+
+The analytic parent enters exactly as the three interfaces: that `dtrdeg` is such a rank, and, per
+direction, `FreeIndepOrbit` (edge atomicity plus geometric freeness) and `CrossNeutral` (off-face
+DA-triviality). Nothing in the Lean development depends on those interfaces being discharged.
+
 ## Attacks and boundaries
 
 1. **Atomic parent.** The theorem is conditional on the generic order-one atomic theorem. The

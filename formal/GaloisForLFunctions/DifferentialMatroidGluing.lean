@@ -278,6 +278,35 @@ theorem crossNeutral_mono {σ : Equiv.Perm Ω} {S S' : Set Ω} (h : R.CrossNeutr
     (hS : S' ⊆ S) : R.CrossNeutral σ S' :=
   fun t ht n => h t (subset_trans ht hS) n
 
+/-- `σ` produces, for every finite block of `S` and every `M`, an `M`-fold family of pairwise
+disjoint `σ`-translates that stay inside `S`.  Geometric freeness of the direction on `S`. -/
+def HasFreeTranslates (σ : Equiv.Perm Ω) (S : Set Ω) : Prop :=
+  ∀ B : Finset Ω, (↑B : Set Ω) ⊆ S → ∀ M : ℕ, ∃ N : Fin M → ℤ,
+    (∀ i j : Fin M, i ≠ j → Disjoint (B.image ⇑(σ ^ (N i))) (B.image ⇑(σ ^ (N j)))) ∧
+    (∀ j : Fin M, (↑(B.image ⇑(σ ^ (N j))) : Set Ω) ⊆ S)
+
+/-- Star independence feeds the free-block interface: an independent set on which `σ` acts with free
+translates is a free independent orbit for `σ`.  This is the bridge from the first gluing step
+(`crossNeutral_iUnion_indep`) to the free-block hypothesis of the second step. -/
+theorem freeIndepOrbit_of_indep {σ : Equiv.Perm Ω} {S : Set Ω} (haut : σ ∈ R.rankAutSubgroup)
+    (hindep : R.IndepSet S) (hfree : HasFreeTranslates σ S) : R.FreeIndepOrbit σ S := by
+  refine ⟨haut, ?_⟩
+  intro B hB M
+  obtain ⟨N, hdisj, hsub⟩ := hfree B hB M
+  refine ⟨N, ?_⟩
+  have hunionsub :
+      (↑((univ : Finset (Fin M)).biUnion (fun j => B.image ⇑(σ ^ (N j)))) : Set Ω) ⊆ S := by
+    intro x hx
+    rw [Finset.mem_coe, Finset.mem_biUnion] at hx
+    obtain ⟨j, _, hxj⟩ := hx
+    exact hsub j (Finset.mem_coe.mpr hxj)
+  rw [hindep _ hunionsub,
+    Finset.card_biUnion (fun i _ j _ hij => hdisj i j hij)]
+  have hcard : ∀ j : Fin M, (B.image ⇑(σ ^ (N j))).card = B.card :=
+    fun j => Finset.card_image_of_injective B (σ ^ (N j)).injective
+  rw [Finset.sum_congr rfl (fun j _ => hcard j), Finset.sum_const, Finset.card_univ,
+    Fintype.card_fin, smul_eq_mul]
+
 /-- **Star independence.**  If each orbit in a finite family is a free independent orbit along its
 own direction, and each direction is rank-neutral on the union of the other orbits, then the whole
 union of orbits is independent. -/
@@ -352,6 +381,128 @@ theorem crossNeutral_iUnion_indep {ι : Type*} [DecidableEq ι] (O : ι → Set 
         _ = Fs.card + Fa.card := by rw [hρFs]
         _ = F.card := hcardF.symm
 
+/-!
+## Graph orbit-gluing
+
+The second gluing step.  The incidence structure is abstracted to a predicate `inc : V → ι → Prop`
+(`inc q e` means vertex `q` is an endpoint of edge `e`).  For each vertex `q` the *star*
+`⋃ {O e | inc q e}` is a free independent orbit along the direction `σ q`, and `σ q` is rank-neutral
+on the complementary union `⋃ {O e | ¬ inc q e}` (a coordinate outside the star lies in an orbit
+that `σ q` does not move).  Then the whole union of edge orbits is independent — no hidden nonlinear
+relation crosses a star.
+
+The `FreeIndepOrbit (σ q) (star q)` hypothesis is discharged in a concrete instance from star
+independence (`crossNeutral_iUnion_indep`, the first gluing step) together with geometric freeness
+of `σ q` on the star (`freeIndepOrbit_of_indep`).
+
+Because the incidence is an abstract predicate `inc : V → ι → Prop`, the theorem is independent of
+edge arity: it applies verbatim to graphs (two-element faces), to `s`-uniform hypergraphs (the
+uniform simplicial-star gluing of the all-order hierarchy), and to faces carrying an extra label
+(the compatible pair-faces of the all-depth matroid).  Only the discharge of `FreeIndepOrbit` on the
+star changes with arity — a nested-star recursion in the hypergraph case.
+-/
+
+/-- **Graph orbit-gluing theorem.**  Under star-freeness and off-star rank-neutrality for every
+vertex, the union of all edge orbits is independent.  Proved by the minimal-circuit argument: a
+minimal dependent finite set is split at a star, and the free-block replication lemma with the star
+direction `σ q` contradicts the dependence. -/
+theorem graphGluing {V ι : Type*} [DecidableEq ι] (edges : Finset ι) (O : ι → Set Ω)
+    (σ : V → Equiv.Perm Ω) (inc : V → ι → Prop) [∀ q, DecidablePred (inc q)]
+    (hCover : ∀ e ∈ edges, ∃ q : V, inc q e)
+    (hStar : ∀ q : V, R.FreeIndepOrbit (σ q) (⋃ e ∈ edges.filter (inc q), O e))
+    (hOff : ∀ q : V, R.CrossNeutral (σ q) (⋃ e ∈ edges.filter (fun e => ¬ inc q e), O e)) :
+    R.IndepSet (⋃ e ∈ edges, O e) := by
+  classical
+  intro F
+  induction F using Finset.strongInduction with
+  | _ F ih =>
+    intro hF
+    by_contra hne
+    have hlt : R.ρ F < F.card := lt_of_le_of_ne (R.ρ_le_card F) hne
+    have hFne : F.Nonempty := Finset.card_pos.mp (by omega)
+    obtain ⟨x, hxF⟩ := hFne
+    -- `x` lies in some edge orbit; pick an incident vertex `q`.
+    have hxU : x ∈ (⋃ e ∈ edges, O e) := hF (Finset.mem_coe.mpr hxF)
+    rw [Set.mem_iUnion₂] at hxU
+    obtain ⟨e, heE, hxe⟩ := hxU
+    obtain ⟨q, hq⟩ := hCover e heE
+    -- `x` lies in the star at `q`.
+    have hxStar : x ∈ (⋃ e ∈ edges.filter (inc q), O e) := by
+      rw [Set.mem_iUnion₂]; exact ⟨e, Finset.mem_filter.mpr ⟨heE, hq⟩, hxe⟩
+    -- Split `F` at the star.
+    set B : Finset Ω := F.filter (fun y => y ∈ (⋃ e ∈ edges.filter (inc q), O e)) with hB
+    set C0 : Finset Ω := F.filter (fun y => y ∉ (⋃ e ∈ edges.filter (inc q), O e)) with hC0
+    have hxB : x ∈ B := by rw [hB, Finset.mem_filter]; exact ⟨hxF, hxStar⟩
+    have hC0sub : C0 ⊆ F := by rw [hC0]; exact Finset.filter_subset _ _
+    have hC0ssub : C0 ⊂ F :=
+      (Finset.ssubset_iff_of_subset hC0sub).mpr
+        ⟨x, hxF, fun hc => (Finset.mem_filter.mp hc).2 hxStar⟩
+    have hunion : C0 ∪ B = F := by
+      rw [hC0, hB]; ext y; simp only [Finset.mem_union, Finset.mem_filter]; tauto
+    have hdisj : Disjoint C0 B := by
+      rw [hC0, hB, Finset.disjoint_left]; intro y hy hy'
+      simp only [Finset.mem_filter] at hy hy'; exact hy.2 hy'.2
+    have hcardF : F.card = C0.card + B.card := by
+      rw [← hunion]; exact Finset.card_union_of_disjoint hdisj
+    -- `C0` lies in the off-star union.
+    have hC0Off : (↑C0 : Set Ω) ⊆ ⋃ e ∈ edges.filter (fun e => ¬ inc q e), O e := by
+      intro y hy
+      rw [Finset.mem_coe, hC0, Finset.mem_filter] at hy
+      obtain ⟨hyF, hyStar⟩ := hy
+      have hyU : y ∈ (⋃ e ∈ edges, O e) := hF (Finset.mem_coe.mpr hyF)
+      rw [Set.mem_iUnion₂] at hyU
+      obtain ⟨e', he'E, hye'⟩ := hyU
+      rw [Set.mem_iUnion₂]
+      refine ⟨e', Finset.mem_filter.mpr ⟨he'E, ?_⟩, hye'⟩
+      intro hinc
+      exact hyStar (by rw [Set.mem_iUnion₂]; exact ⟨e', Finset.mem_filter.mpr ⟨he'E, hinc⟩, hye'⟩)
+    -- `C0 ⊆ ⋃ edges O` for the induction hypothesis.
+    have hC0U : (↑C0 : Set Ω) ⊆ ⋃ e ∈ edges, O e := by
+      intro y hy
+      rw [Finset.mem_coe, hC0, Finset.mem_filter] at hy
+      exact hF (Finset.mem_coe.mpr hy.1)
+    have hρC0 : R.ρ C0 = C0.card := ih C0 hC0ssub hC0U
+    -- `B` lies in the star.
+    have hBStar : (↑B : Set Ω) ⊆ ⋃ e ∈ edges.filter (inc q), O e := by
+      intro y hy; rw [Finset.mem_coe, hB, Finset.mem_filter] at hy; exact hy.2
+    -- Free-block replication with the star direction `σ q`.
+    have hDA : ∀ n : ℤ, R.ρ (C0 ∪ C0.image ⇑((σ q) ^ n)) = R.ρ C0 :=
+      fun n => hOff q C0 hC0Off n
+    have hFree := (hStar q).free B hBStar
+    have hblock := R.freeBlock (hStar q).aut hDA hFree
+    -- `ρ F = F.card`, contradicting the deficiency.
+    have hEq : R.ρ F = F.card :=
+      calc R.ρ F = R.ρ (C0 ∪ B) := by rw [hunion]
+        _ = R.ρ C0 + B.card := hblock
+        _ = C0.card + B.card := by rw [hρC0]
+        _ = F.card := hcardF.symm
+    omega
+
 end Rank
+
+/-!
+## Order-three bottom-face joint atomicity
+
+The order-three multiple-elliptic-gamma bottom faces occupy the complete graph on the four
+structural directions `Fin 4`: one face `O (i,j)` for each pair `i < j`.  Specializing the graph
+orbit-gluing theorem to this complete graph gives joint independence of all six bottom-face orbits,
+with the analytic content supplied through the two rank interfaces (`FreeIndepOrbit`, `CrossNeutral`)
+per structural direction.
+-/
+
+/-- The six order-three bottom-face orbits (complete graph on `Fin 4`) are jointly independent,
+given that each structural direction is free and independent on its star and rank-neutral off it. -/
+theorem Rank.orderThree_sixFace_indep {Ω : Type*} [DecidableEq Ω] (R : Rank Ω)
+    (O : Fin 4 × Fin 4 → Set Ω) (σ : Fin 4 → Equiv.Perm Ω)
+    (hStar : ∀ q : Fin 4, R.FreeIndepOrbit (σ q)
+      (⋃ e ∈ (Finset.univ.filter (fun p : Fin 4 × Fin 4 => p.1 < p.2)).filter
+        (fun p => q = p.1 ∨ q = p.2), O e))
+    (hOff : ∀ q : Fin 4, R.CrossNeutral (σ q)
+      (⋃ e ∈ (Finset.univ.filter (fun p : Fin 4 × Fin 4 => p.1 < p.2)).filter
+        (fun p => ¬ (q = p.1 ∨ q = p.2)), O e)) :
+    R.IndepSet (⋃ e ∈ Finset.univ.filter (fun p : Fin 4 × Fin 4 => p.1 < p.2), O e) := by
+  refine R.graphGluing _ O σ (fun q p => q = p.1 ∨ q = p.2) ?_ hStar hOff
+  intro e _
+  exact ⟨e.1, Or.inl rfl⟩
 
 end GaloisForLFunctions.MatroidGluing

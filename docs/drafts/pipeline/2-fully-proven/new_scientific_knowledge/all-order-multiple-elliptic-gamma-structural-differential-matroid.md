@@ -623,6 +623,16 @@ The remaining formal dependency chain is substantive:
    and the rank theorem;
 7. the concrete all-order capstone with its additive and multiplicative corollaries.
 
+The abstract gluing engine of item 6 — free-block replication and the simplicial-star orbit gluing
+over an arbitrary incidence predicate — is now formalized axiom-clean in
+`GaloisForLFunctions.DifferentialMatroidGluing`: `Rank.freeBlock`,
+`Rank.crossNeutral_iUnion_indep`, and `Rank.graphGluing`. Differential transcendence degree over the
+base is abstracted there as a monotone submodular subcardinal rank, and translations as its rank
+automorphisms; because incidence is an abstract predicate the gluing theorem applies uniformly to
+`s`-uniform hypergraphs (the nested-star discharge of the `FreeIndepOrbit` interface is what changes
+with arity). Discharging that rank abstraction and the `FreeIndepOrbit`/`CrossNeutral` interfaces
+from the special-function chain remains.
+
 The theorem must not move to Stage 3 until this chain terminates in the concrete statement (1),
 the formal lint passes, and `#print axioms` reports only Lean's standard logical axioms.
 
