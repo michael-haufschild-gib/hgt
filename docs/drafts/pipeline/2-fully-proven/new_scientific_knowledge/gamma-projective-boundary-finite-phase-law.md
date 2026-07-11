@@ -504,6 +504,10 @@ Primary sources:
 - the absence of a meromorphic finite-pole solution of
   `g(z + 1) - g(z) = -1 / z²`, hence the rational branch obstruction;
 - `Re ψ(σ + it) → +∞` and `1 / ψ(σ + it) → 0` for `σ ≥ 0`;
+- the all-orders estimates `ψ⁽ᵐ⁺¹⁾(σ + it) → 0` for every `m` and `σ > 0`, including an
+  explicit factorial-weighted vertical bound;
+- a canonical recursive Bell polynomial for every Gamma derivative, with its exact off-pole
+  evaluation and pure-axis leading term `xⁿ`;
 - the two-jet projective boundary `Γ(σ + it) / Γ'(σ + it) → 0` and the order-two jet
   boundary `Γ'(σ + it) / Γ''(σ + it) → 0` for `σ > 0`;
 - the finite projective-relation limit lemma used by the recurrence collapse.

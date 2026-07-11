@@ -134,6 +134,12 @@ outside that star is DA-stationary in that direction.  A minimal differential ci
 therefore violate the free-block replication inequality.  Hence the union of all maximal-face
 orbits is jointly differentially algebraically independent.
 
+The nested-star/free-block gluing is formalized axiom-clean in
+`GaloisForLFunctions.DifferentialMatroidGluing`: `Rank.freeBlock` (the replication inequality) and
+`Rank.graphGluing`, whose incidence is an abstract predicate, so it covers the `s`-uniform
+simplicial-star (hypergraph) case verbatim. The special-function inputs enter as the
+`Rank`/`FreeIndepOrbit`/`CrossNeutral` interfaces.
+
 ## Descent through all face layers
 
 Let `D` be the differential field of DA meromorphic functions.  It is stable under every

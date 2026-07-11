@@ -68,6 +68,13 @@ Then
 
 Equivalently, one defect chosen from each distinct nonzero coset is differentially algebraically independent; a defect from the zero coset is DA; and defects belonging to the same coset differ by a DA function after translation. Thus the differential-algebraic dependence matroid of all translation defects is exactly the partition matroid of `C/H` with the zero coset declared algebraic.
 
+The abstract independence content — distinct-coset defects are jointly independent, and same-coset
+translates are rank-neutral — is the star-independence case of the gluing engine formalized
+axiom-clean in `GaloisForLFunctions.DifferentialMatroidGluing` (`Rank.freeBlock`,
+`Rank.crossNeutral_iUnion_indep`), with `dtrdeg` abstracted as the submodular `Rank`; the analytic
+inputs (that `dtrdeg` is that rank; the order-one atomic parent) enter as the `Rank`/`CrossNeutral`
+interfaces.
+
 The same statements hold for the multiplicative shift quotients
 
 `R_h(z)=Gamma(z+h; tau,sigma)/Gamma(z; tau,sigma)`.

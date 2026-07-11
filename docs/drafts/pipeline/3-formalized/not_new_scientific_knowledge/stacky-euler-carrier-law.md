@@ -1,9 +1,9 @@
 # The pointed Euler action groupoid retains the carrier erased by the coarse germ quotient
 
 - **ID:** `stacky-euler-carrier-conjecture`
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE THEOREM / HIGHER-CATEGORICAL RH REFORMULATION
-- **Scientific status:** `[CONJECTURE] [NOVELTY UNVERIFIED]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM / HIGHER-CATEGORICAL RH BRIDGE
+- **Scientific status:** `[PROVED] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Route status:** disjoint from abandoned RHTower Routes A--D
 - **Statement:** On a fixed-divisor critical-disc fibre, the maximal Hausdorff continuous Euler
   quotient is one point, but the pointed translation action groupoid recovers the full generated
@@ -122,7 +122,7 @@ actual Euler arrows
 5. **Cold-collapse attack.** Scalar Fisher curvature factors through the first two energy levels;
    it can diagnose the clock end but cannot serve as the incidence functor.
 
-## Open core
+## Separate open core
 
 Construct a canonical completed source-to-divisor functor on `(6)` whose induced trace-moment
 reader is:
@@ -137,20 +137,39 @@ and zero-preserving with multiplicity.                           (8)
 Only `(8)` could turn the stacky carrier into an RH route.  Until then, no abandoned route is
 reopened.
 
-## Lean plan
+## Lean formalization
 
-- [ ] Define the translation arrow type for an additive subgroup acting on an additive group.
-- [ ] Prove identities, composition, inverses, and freeness.
-- [ ] Prove the pointed source-fibre equivalence `(3)`.
-- [ ] Specialize to `criticalDiscRealEulerIncrementGroup`.
-- [ ] Combine `(3)` with `criticalDisc_continuous_finiteUnitInvariant_eq_base` as a single
-  coarse-versus-pointed theorem.
+- [x] Define `TranslationArrow` for an additive subgroup acting on an additive group.
+- [x] Prove identities, composition, inverses, associativity, and freeness.
+- [x] Prove `translationSourceFiberEquiv`, the exact pointed source-fibre equivalence `(3)`.
+- [x] Specialize as `criticalDiscEulerSourceFiberEquiv` to
+  `criticalDiscRealEulerIncrementGroup`.
+- [x] Prove `criticalDisc_coarse_collapses_pointed_recovers`, combining `(3)` with
+  `criticalDisc_continuous_finiteUnitInvariant_eq_base`.
 - [ ] Keep `(5)` paper-level unless a suitable Mathlib classifying-space API makes formalization
   proportionate.
 
+Formal file:
+
+```text
+formal/GaloisForLFunctions/RHTower/EulerTranslationGroupoid.lean
+```
+
+The focused build and repository formal lint pass.  `translationSourceFiberEquiv` uses only
+`propext`; the actual critical-disc coarse-versus-pointed theorem uses the standard Mathlib axioms
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+## Novelty verdict
+
+The translation action groupoid, source-fibre recovery, and Borel quotient of a contractible
+translation space are standard equivariant/category theory after vocabulary erasure.  The actual
+Euler specialization is a useful new bridge inside the project, but it does not pass the global
+novelty gate.  Any new science must occur in the completed source-to-divisor incidence functor,
+not in the abstract groupoid construction.
+
 ## Gates
 
-- [x] 0 -> 1: exact category, carrier identification, falsification attacks, and open core stated
-- [ ] 1 -> 2: complete the actual critical-disc specialization and parent-literature audit
-- [ ] 2 -> 3: formalize the translation groupoid source-fibre theorem and specialization
-- [ ] 3 -> 4: construct the source-to-divisor incidence functor `(8)`
+- [x] 0 -> 1: exact category, carrier identification, and falsification attacks stated
+- [x] 1 -> 2: complete paper proof and actual critical-disc specialization
+- [x] 2 -> 3: formalize the translation groupoid source-fibre theorem and specialization
+- [ ] separate research card: construct the source-to-divisor incidence functor `(8)`

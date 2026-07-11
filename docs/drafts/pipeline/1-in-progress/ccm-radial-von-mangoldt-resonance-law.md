@@ -276,7 +276,7 @@ sum_(k>=2) log(k)|G_lambda(1,k)|
 which is already at the Rayleigh-transfer rate. Together with the `j,k>=2` estimate, the complete
 raw radial prime response is then the proved diagonal constant plus `O(d_1/lambda)`.
 
-### 6. Finite-aperture cutoff removes the infinite-error obstruction
+### 6. Finite prime aperture leaves an infinite radial tail
 
 For the actual restricted-Weil vector supported on the logarithmic aperture `[-log lambda,
 log lambda]`, a prime shift `log q` has no overlap once
@@ -285,30 +285,60 @@ log lambda]`, a prime shift `log q` has no overlap once
 q>lambda^2.                                                       (22)
 ```
 
-Thus the finite operator consumed by the Hermitian determinant route requires the radial Gram row
-only through `q<=lambda^2`, equivalently `q=O(c)`. This is exactly the range covered by the endpoint
-transition analysis above.
-
-This observation weakens the Dunster-remainder gate. A pointwise uniform relative error
-`O(c^(-1))` whose absolute first-row contribution is bounded by `C*d_1/(c*q)` accumulates only
+This cutoff is now a Lean theorem. The module
+`GaloisForLFunctions.RHTower.ApertureShiftCutoff` proves pointwise disjointness first and then the
+exact integral identity
 
 ```text
-d_1/c *sum_(q<=c) log(q)/q
- =O(d_1*log(c)^2/c)=o(d_1/lambda).                                (23)
+logApertureDilationCorrelation_eq_zero:
+  1<lambda -> lambda^2<q ->
+  support(f) subset [-log(lambda),log(lambda)] ->
+  integral conj(f(x))*f(x+log(q))dx=0.                            (22a)
 ```
 
-No oscillatory representation of the error is needed for this finite-aperture estimate. The
-apparent divergence arises only after separating the infinite exterior representative into prime
-and central pieces. The exact quotient identity should instead be used as follows:
+Thus the finite operator contains only prime shifts `q<=lambda^2`. It does **not** contain only
+radial indices `k<=lambda^2`: in the shifted Poisson vector `k=q*n`, the multiplier `n` is
+unbounded.
+
+After divisor reindexing the exact radial coefficient is
 
 ```text
-finite aperture form: evaluate the finitely supported prime shifts directly;
+a_lambda(k)=sum_(q|k; q<=lambda^2)Lambda(q),
+0<=a_lambda(k)<=log k.                                          (23)
+```
+
+For `k<=lambda^2`, `a_lambda(k)=log k`, and the low first-row theorem applies. But multiples
+`k=q*n>lambda^2` remain. The exact quotient identity must therefore be used as follows:
+
+```text
+finite aperture form: retain the truncated-divisor weight over every radial index;
 exterior representative: use only for the completed closed-form identity,
                          without termwise infinite prime separation.                (24)
 ```
 
-Accordingly, the determinant route needs a finite-cutoff version of `(3)`--`(5)`, uniform for
-`q<=lambda^2`, rather than an independently summable all-prime decomposition of `(1)`.
+Accordingly, the determinant route needs
+
+```text
+sum_(k>lambda^2)a_lambda(k)G_lambda(1,k)=o(d_1(lambda)),         (24a)
+```
+
+not merely a bound for radial indices `k<=lambda^2`.
+
+The low radial part of the exceptional first row is proved in
+`ccm-exact-finite-aperture-first-row-vanishing.md`. The exact relation
+`c=2*pi*lambda^2` places that low subrange at `k<=c/(2*pi)`. Retaining the actual
+`sigma_4(c)^2=9/c+O(c^(-2))` phase, stationary phase gives
+
+```text
+|G_lambda(1,k)|/d_1(lambda)
+ <=C*c^(-1/2)*k^(-2)+C*c^(-1)*k^(-1),
+2<=k<=lambda^2.                                                  (25)
+```
+
+The first term is the Bessel stationary contribution and the second is Dunster's uniform envelope
+remainder. Their logarithmically weighted low-index sum is
+`O(c^(-1/2))+O(log(c)^2/c)=o(1)`. The high tail `(24a)` remains a gate for the top-down
+finite-determinant route.
 
 ## Attacks and failure conditions
 
@@ -327,6 +357,9 @@ Accordingly, the determinant route needs a finite-cutoff version of `(3)`--`(5)`
 ## Gates
 
 - [x] 0 → 1 in-progress: explicit source, candidate constant, resonance mechanism, and falsifiers stated
+- [x] finite-aperture cutoff `q>lambda^2` formalized in Lean
+- [x] exact low radial first-row vanishing proved with the nonzero degree-four phase
+- [ ] truncated-divisor weighted high radial first row proved negligible
 - [ ] 1 → 2 fully-proven: close the four proof gates above and audit the constant against parent theory
 - [ ] 2 → 3 formalized: requires formal PSWF and semiclassical infrastructure; no wrapper Lean theorem
 - [ ] 3 → 4 publication-ready: only if novelty and significance survive after the full Rayleigh consequence is known

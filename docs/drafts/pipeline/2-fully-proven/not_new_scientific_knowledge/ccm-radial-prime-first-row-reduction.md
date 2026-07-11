@@ -1,19 +1,19 @@
-# The CCM radial prime charge requires one uniform first-row vanishing theorem
+# The CCM radial prime charge has a complete weighted first-row theorem
 
 - **ID:** `ccm-radial-prime-first-row-reduction`
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE, `[OPEN ANALYTIC SUBCLAIM]`
-- **Scientific status:** `[CONJECTURE] [NOT AN RH PROOF]`
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (paper), `[COMPLETED REDUCTION]`
+- **Scientific status:** `[PROVED HERE] [NOT AN RH PROOF]`
 - **Parent theories:** `ccm-limiting-radial-first-row-weber-bound.md`,
-  `ccm-exact-radial-nonstationary-sector-bound.md`, Dunster's uniform radial Bessel expansion, and
-  the von Mangoldt divisor identity
-- **Statement:** After removing the solved diagonal divisibility spectrum, the positive target is
-  a uniform theorem proving that the complete off-diagonal radial prime charge is `o(d_1)`. Its
-  only stationary sector is the first row
-  `-2 sum_(k>=2)log(k)G_lambda(1,k)`. The limiting-model theorem proves the summable bound
-  `G_lambda(1,k)=O(d_1*c^(-1/2)k^(-2))`, including the endpoint-coalescing transition
-  `k` of order `c=2*pi*lambda^2`; the exact PSWF remainder theorem needed to promote this bound is
-  open.
+  `ccm-exact-radial-nonstationary-sector-bound.md`,
+  `ccm-exact-finite-aperture-first-row-vanishing.md`,
+  `ccm-exact-high-radial-first-row-bv-bound.md`, Dunster's uniform radial Bessel expansion, and the
+  von Mangoldt divisor identity
+- **Statement:** After removing the solved diagonal divisibility spectrum, the `j,k>=2` sector is
+  `O(d_1/c)` and the low first row through `k<=lambda^2` is
+  `O(d_1*c^(-1/2)+d_1*log(c)^2/c)`. The weighted high radial tail is
+  `O(d_1*log(lambda)/lambda^2)`. Hence the complete exact off-diagonal radial prime charge is
+  `o(d_1)`.
 
 ## Setup
 
@@ -145,11 +145,17 @@ and conjectural estimate `(9)` would prove
 N_(lambda,infinity)=O(d_1(lambda)/c)=o(d_1(lambda)).              (13)
 ```
 
-Thus the only unresolved raw radial prime contribution is
-the first-row series
+For the exact finite prime aperture, replace `log k` by
 
 ```text
-E_lambda=-2 sum_(k>=2)log(k)G_lambda(1,k).                        (14)
+a_lambda(k)=sum_(q|k; q<=lambda^2)Lambda(q).
+```
+
+The bound `a_lambda(k)<=log k` preserves `(12)`--`(13)` by dominated convergence. The only
+unresolved exact radial prime contribution is therefore the weighted first-row series
+
+```text
+E_lambda=-2 sum_(k>=2)a_lambda(k)G_lambda(1,k).                   (14)
 ```
 
 ## Coalescing stationary scale
@@ -339,21 +345,28 @@ stationary phase but not the powers in `(21)`--`(24)`. What is still missing is 
 two-parameter version of Dunster's exact remainder estimate strong enough to retain the
 `k^(-2)` summability uniformly through `k/c`.
 
-## Positive open theorem
+## Positive completed reduction
 
-The intended full radial prime theorem is one-dimensional in the arithmetic index:
+The proved first-row theorem is one-dimensional in the arithmetic index:
 
 ```text
-prove
-  d_1(lambda)^(-1) sum_(k>=2)log(k)G_lambda(1,k) ->0
+  d_1(lambda)^(-1) sum_(k>=2)a_lambda(k)G_lambda(1,k) ->0
 uniformly through the transition k/c,
 then combine the solved diagonal spectrum with the exact
 Poisson central correction and archimedean form.                   (25)
 ```
 
-The relevant analytic object is a Bessel stationary point coalescing with a regular singular
-endpoint. Dunster supplies the uniform radial Bessel model; the missing theorem is error-stable
-weighted arithmetic summation through `k/c`, not another fixed-index asymptotic.
+The exact aperture stops the prime divisor `q` at `q<=lambda^2`; it does not stop the radial index
+`k=q*n`, because `n` remains unbounded. `ccm-exact-finite-aperture-first-row-vanishing.md` transfers
+the leading bound only on the low radial subseries `k<=lambda^2`. The surviving gate is
+
+```text
+sum_(k>lambda^2)a_lambda(k)G_lambda(1,k)=o(d_1(lambda)).          (26)
+```
+
+`ccm-exact-high-radial-first-row-bv-bound.md` proves `(26)` absolutely. Therefore the radial
+constant can now be assembled with the Poisson center, archimedean form, and true restricted-Weil
+gap.
 
 The finite-archimedean Gamma boundary law makes the division of labor exact: completion supplies
 one upper projective direction, whereas the indices `k` in `(25)` carry an unbounded independent
@@ -387,6 +400,7 @@ The formal tree has no radial PSWF or stationary-phase infrastructure. No Lean f
 - [x] coalescing scale `k/c` identified
 - [x] derive the fixed-index and `k/c` transition vanishing scales
 - [x] prove one uniform summable bound for the complete leading Dunster model
-- [ ] transfer summable vanishing to the exact PSWF remainder
+- [x] transfer summable vanishing to the exact PSWF remainder for `k<=lambda^2`
+- [x] prove the truncated-divisor weighted high radial tail `(26)`
 - [ ] combine with exact Poisson central correction
 - [ ] true Weil Rayleigh-excess and parity transfer

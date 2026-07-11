@@ -170,6 +170,281 @@ theorem deriv_digamma_vertical_tendsto_zero {σ : ℝ} (hσ : 0 < σ) :
       · simp
     simpa using h1.add h2
 
+/-- Every positive-order polygamma tends to zero after large positive translation:
+`ψ⁽ᵐ⁺¹⁾(z+N) → 0` as `N → ∞`.
+
+The proof applies the all-orders Cauchy estimate on a fixed radius-`1/2` disk to the existing
+uniform `O(1/N)` digamma shift bound.  It upgrades the previously available trigamma-only
+far-field theorem to every derivative order. -/
+theorem iteratedDeriv_digamma_add_nat_tendsto (m : ℕ) (z : ℂ) :
+    Tendsto (fun N : ℕ => iteratedDeriv (m + 1) Complex.digamma (z + (N : ℂ)))
+      atTop (nhds 0) := by
+  set K : ℝ := ‖z - 1‖ + 1 / 2 with hK_def
+  have hK0 : 0 < K := by
+    rw [hK_def]
+    positivity
+  let B : ℝ := (m + 1).factorial * (2 * K) / (1 / 2 : ℝ) ^ (m + 1)
+  have hB0 : 0 ≤ B := by
+    dsimp [B]
+    positivity
+  refine squeeze_zero_norm' ?_ (tendsto_const_div_atTop_nhds_zero_nat B)
+  filter_upwards [eventually_ge_atTop 1,
+    (tendsto_natCast_atTop_atTop (R := ℝ)).eventually_ge_atTop (2 * K),
+    (tendsto_natCast_atTop_atTop (R := ℝ)).eventually_gt_atTop (-z.re + 1)]
+    with N hN1 hthr hre
+  have hN0 : (0 : ℝ) < (N : ℝ) := by
+    exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hN1
+  have hclosed_re : ∀ ζ ∈ Metric.closedBall (z + (N : ℂ)) (1 / 2), 0 < ζ.re := by
+    intro ζ hζ
+    have hd : ‖ζ - (z + (N : ℂ))‖ ≤ 1 / 2 := by
+      rw [← dist_eq_norm]
+      exact hζ
+    have h1 := abs_le.mp (le_trans (Complex.abs_re_le_norm (ζ - (z + (N : ℂ)))) hd)
+    have h2 : (ζ - (z + (N : ℂ))).re = ζ.re - (z.re + N) := by
+      simp [Complex.sub_re, Complex.add_re]
+    rw [h2] at h1
+    linarith [h1.1]
+  have hsup : ∀ ζ ∈ Metric.closedBall (z + (N : ℂ)) (1 / 2),
+      ‖Complex.digamma ζ - Complex.digamma ((N : ℂ) + 1)‖ ≤ 2 * K / N := by
+    intro ζ hζ
+    have hd : ‖ζ - (z + (N : ℂ))‖ ≤ 1 / 2 := by
+      rw [← dist_eq_norm]
+      exact hζ
+    have hwz : ‖(ζ - (N : ℂ)) - z‖ ≤ 1 / 2 := by
+      rw [show (ζ - (N : ℂ)) - z = ζ - (z + (N : ℂ)) from by ring]
+      exact hd
+    have hw1 : ‖(ζ - (N : ℂ)) - 1‖ ≤ K := by
+      rw [hK_def]
+      calc ‖(ζ - (N : ℂ)) - 1‖ = ‖((ζ - (N : ℂ)) - z) + (z - 1)‖ := by ring_nf
+        _ ≤ ‖(ζ - (N : ℂ)) - z‖ + ‖z - 1‖ := norm_add_le _ _
+        _ ≤ ‖z - 1‖ + 1 / 2 := by linarith
+    have hwre : 0 < ((ζ - (N : ℂ)) + (N : ℂ)).re := by
+      rw [sub_add_cancel]
+      exact hclosed_re ζ hζ
+    have hthr' : 2 * ‖(ζ - (N : ℂ)) - 1‖ ≤ (N : ℝ) := by linarith
+    have happ := RHTower.digamma_shift_diff_bound hN1 hwre hthr'
+    rw [sub_add_cancel] at happ
+    exact le_trans happ (div_le_div₀ (by linarith) (by linarith) hN0 le_rfl)
+  have hdiff : DifferentiableOn ℂ
+      (fun ζ => Complex.digamma ζ - Complex.digamma ((N : ℂ) + 1))
+      {ζ : ℂ | 0 < ζ.re} := fun ζ hζ =>
+    ((RHTower.digamma_analyticOnNhd_re_pos ζ hζ).differentiableAt.sub_const
+      _).differentiableWithinAt
+  have hsubset : Metric.closedBall (z + (N : ℂ)) (1 / 2) ⊆ {ζ : ℂ | 0 < ζ.re} :=
+    fun ζ hζ => hclosed_re ζ hζ
+  have hcauchy := Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le
+    (m + 1) (show (0 : ℝ) < 1 / 2 by norm_num) (hdiff.diffContOnCl_ball hsubset)
+    (fun ζ hζ => hsup ζ (Metric.sphere_subset_closedBall hζ))
+  rw [show (fun ζ => Complex.digamma ζ - Complex.digamma ((N : ℂ) + 1)) =
+      (fun ζ => -Complex.digamma ((N : ℂ) + 1) + Complex.digamma ζ) by
+        funext ζ
+        ring,
+    iteratedDeriv_const_add (Nat.succ_pos m)] at hcauchy
+  calc
+    ‖iteratedDeriv (m + 1) Complex.digamma (z + (N : ℂ))‖
+        ≤ (m + 1).factorial * (2 * K / N) / (1 / 2 : ℝ) ^ (m + 1) := hcauchy
+    _ = B / N := by
+      dsimp [B]
+      field_simp
+
+/-- Iterating the general polygamma recurrence over a positive integer shift. -/
+theorem polygamma_apply_add_nat (r N : ℕ) {z : ℂ} (hz : 0 < z.re) :
+    iteratedDeriv r Complex.digamma (z + (N : ℂ)) =
+      iteratedDeriv r Complex.digamma z +
+        (-1 : ℂ) ^ r * r.factorial *
+          ∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ (r + 1))⁻¹ := by
+  induction N with
+  | zero => simp
+  | succ N ih =>
+      have hzN : 0 < (z + (N : ℂ)).re := by simp; positivity
+      have hpoles : ∀ p : ℕ, z + (N : ℂ) ≠ -(p : ℂ) := by
+        intro p heq
+        have hre := congrArg Complex.re heq
+        simp at hre
+        linarith [Nat.cast_nonneg (α := ℝ) p]
+      have hrec := polygamma_recurrence r (z + (N : ℂ)) hpoles
+      rw [show (fun w => deriv Complex.Gamma w / Complex.Gamma w) = Complex.digamma by
+        funext w
+        rw [Complex.digamma_def, logDeriv_apply]] at hrec
+      rw [show z + (↑(N + 1) : ℂ) = (z + (N : ℂ)) + 1 by push_cast; ring]
+      rw [sub_eq_iff_eq_add] at hrec
+      rw [hrec, ih, Finset.sum_range_succ]
+      rw [div_eq_mul_inv]
+      ring
+
+/-- Uniform finite-sum bound for every positive-order polygamma kernel on an upper vertical line.
+For height at least one, every exponent `m+2` is dominated by the already-established quadratic
+kernel. -/
+theorem norm_polygammaKernel_sum_le (m N : ℕ) {σ t : ℝ}
+    (hσ : 0 < σ) (ht : 0 < t) (ht1 : 1 ≤ t) :
+    ‖∑ n ∈ Finset.range N,
+        ((((σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)) ^ (m + 2))⁻¹)‖ ≤
+      1 / t ^ 2 + Real.pi / (2 * t) := by
+  calc
+    ‖∑ n ∈ Finset.range N,
+        ((((σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)) ^ (m + 2))⁻¹)‖
+        ≤ ∑ n ∈ Finset.range N,
+          ‖((((σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)) ^ (m + 2))⁻¹)‖ :=
+            norm_sum_le _ _
+    _ ≤ ∑ n ∈ Finset.range N, 1 / ((σ + n) ^ 2 + t ^ 2) := by
+      apply Finset.sum_le_sum
+      intro n hn
+      let w : ℂ := (σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)
+      have hw : w = ((σ + n : ℝ) : ℂ) + (t : ℂ) * Complex.I := by
+        dsimp [w]
+        push_cast
+        ring
+      have him : w.im = t := by simp [hw]
+      have htq : t ≤ ‖w‖ := by
+        have := Complex.abs_im_le_norm w
+        simpa [him, abs_of_pos ht] using this
+      have hq : 1 ≤ ‖w‖ := ht1.trans htq
+      have hpow : ‖w‖ ^ 2 ≤ ‖w‖ ^ (m + 2) := by
+        rw [show m + 2 = 2 + m by omega, pow_add]
+        exact le_mul_of_one_le_right (sq_nonneg ‖w‖) (one_le_pow₀ hq)
+      have hnormsq : ‖w‖ ^ 2 = (σ + n) ^ 2 + t ^ 2 := by
+        rw [← Complex.normSq_eq_norm_sq, hw, Complex.normSq_add_mul_I]
+      change ‖(w ^ (m + 2))⁻¹‖ ≤ _
+      rw [norm_inv, norm_pow, inv_eq_one_div]
+      calc
+        1 / ‖w‖ ^ (m + 2) ≤ 1 / ‖w‖ ^ 2 :=
+          one_div_le_one_div_of_le (by positivity) hpow
+        _ = 1 / ((σ + n) ^ 2 + t ^ 2) := by rw [hnormsq]
+    _ ≤ 1 / t ^ 2 + Real.pi / (2 * t) :=
+      RHTower.sum_inv_sq_add_le hσ.le ht N
+
+/-- Explicit all-orders vertical polygamma bound. -/
+theorem norm_iteratedDeriv_digamma_vertical_le (m : ℕ) {σ t : ℝ}
+    (hσ : 0 < σ) (ht : 0 < t) (ht1 : 1 ≤ t) :
+    ‖iteratedDeriv (m + 1) Complex.digamma
+        ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤
+      (m + 1).factorial * (1 / t ^ 2 + Real.pi / (2 * t)) := by
+  let z : ℂ := (σ : ℂ) + (t : ℂ) * Complex.I
+  have hz : 0 < z.re := by simp [z]; exact hσ
+  let C : ℂ := (-1 : ℂ) ^ (m + 1) * (m + 1).factorial
+  let E : ℝ := 1 / t ^ 2 + Real.pi / (2 * t)
+  have hCnorm : ‖C‖ = (m + 1).factorial := by simp [C]
+  have hineq : ∀ N : ℕ,
+      ‖iteratedDeriv (m + 1) Complex.digamma z‖ ≤
+        ‖iteratedDeriv (m + 1) Complex.digamma (z + (N : ℂ))‖ +
+          (m + 1).factorial * E := by
+    intro N
+    have hrec := polygamma_apply_add_nat (m + 1) N hz
+    have hsum := norm_polygammaKernel_sum_le m N hσ ht ht1
+    have hsum' : ‖∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ (m + 2))⁻¹‖ ≤ E := by
+      simpa [z, E, add_assoc] using hsum
+    have heq : iteratedDeriv (m + 1) Complex.digamma z =
+        iteratedDeriv (m + 1) Complex.digamma (z + (N : ℂ)) -
+          C * ∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ (m + 2))⁻¹ := by
+      rw [show m + 1 + 1 = m + 2 by omega] at hrec
+      apply eq_sub_of_add_eq
+      simpa [C] using hrec.symm
+    rw [heq]
+    calc
+      ‖iteratedDeriv (m + 1) Complex.digamma (z + (N : ℂ)) -
+          C * ∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ (m + 2))⁻¹‖
+          ≤ ‖iteratedDeriv (m + 1) Complex.digamma (z + (N : ℂ))‖ +
+            ‖C * ∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ (m + 2))⁻¹‖ := norm_sub_le _ _
+      _ ≤ ‖iteratedDeriv (m + 1) Complex.digamma (z + (N : ℂ))‖ +
+            (m + 1).factorial * E := by
+          gcongr
+          rw [norm_mul, hCnorm]
+          exact mul_le_mul_of_nonneg_left hsum' (Nat.cast_nonneg _)
+  have hfar := iteratedDeriv_digamma_add_nat_tendsto m z
+  have hc : Tendsto (fun _ : ℕ => (m + 1).factorial * E) atTop
+      (nhds ((m + 1).factorial * E)) := tendsto_const_nhds
+  have hlim : Tendsto (fun N : ℕ =>
+      ‖iteratedDeriv (m + 1) Complex.digamma (z + (N : ℂ))‖ +
+        (m + 1).factorial * E) atTop
+      (nhds (0 + (m + 1).factorial * E)) := by
+    simpa using hfar.norm.add hc
+  simpa [z, E] using ge_of_tendsto hlim (Filter.Eventually.of_forall hineq)
+
+/-- Every positive-order polygamma tends to zero on every upper vertical line in the open right
+half-plane. -/
+theorem iteratedDeriv_digamma_vertical_tendsto_zero (m : ℕ) {σ : ℝ}
+    (hσ : 0 < σ) :
+    Tendsto (fun t : ℝ => iteratedDeriv (m + 1) Complex.digamma
+      ((σ : ℂ) + (t : ℂ) * Complex.I)) atTop (nhds 0) := by
+  rw [tendsto_zero_iff_norm_tendsto_zero]
+  apply squeeze_zero' (Filter.Eventually.of_forall fun _ => norm_nonneg _)
+  · filter_upwards [eventually_ge_atTop (1 : ℝ)] with t ht
+    exact norm_iteratedDeriv_digamma_vertical_le m hσ (lt_of_lt_of_le zero_lt_one ht) ht
+  · have hinv : Tendsto (fun t : ℝ => t⁻¹) atTop (nhds 0) := tendsto_inv_atTop_zero
+    have h1 : Tendsto (fun t : ℝ => 1 / t ^ 2) atTop (nhds 0) := by
+      simpa [one_div, inv_pow] using hinv.pow 2
+    have h2 : Tendsto (fun t : ℝ => Real.pi / (2 * t)) atTop (nhds 0) := by
+      convert hinv.const_mul (Real.pi / 2) using 1
+      · funext t
+        ring
+      · simp
+    simpa using (h1.add h2).const_mul ((m + 1).factorial : ℝ)
+
+/-- The canonical complete Bell polynomial expressing `Γ⁽ⁿ⁾/Γ` in the digamma jet. -/
+def gammaBell : (n : ℕ) → MvPolynomial (Fin n) ℂ
+  | 0 => 1
+  | n + 1 =>
+      MvPolynomial.X 0 * MvPolynomial.rename Fin.castSucc (gammaBell n) +
+        ∑ j : Fin n, MvPolynomial.rename Fin.castSucc (MvPolynomial.pderiv j (gammaBell n)) *
+          MvPolynomial.X j.succ
+
+/-- The canonical Bell polynomial evaluates to the normalized `n`-th Gamma derivative off the
+poles.  Unlike `exists_gamma_bell`, this theorem exposes one recursive polynomial whose algebraic
+invariants can be used by the projective-boundary proof. -/
+theorem gamma_iteratedDeriv_eq_gamma_mul_eval_gammaBell (n : ℕ) (s : ℂ)
+    (hs : ∀ p : ℕ, s ≠ -(p : ℂ)) :
+    iteratedDeriv n Complex.Gamma s = Complex.Gamma s *
+      MvPolynomial.eval
+        (fun j : Fin n => iteratedDeriv (j : ℕ) Complex.digamma s) (gammaBell n) := by
+  induction n generalizing s with
+  | zero => simp [gammaBell, iteratedDeriv_zero]
+  | succ n ih =>
+      set ψ : ℂ → ℂ := Complex.digamma with hψdef
+      have hev : (iteratedDeriv n Complex.Gamma) =ᶠ[nhds s]
+          (fun w => Complex.Gamma w * MvPolynomial.eval
+            (fun j : Fin n => iteratedDeriv (j : ℕ) ψ w) (gammaBell n)) := by
+        filter_upwards [offPoles_isOpen.mem_nhds hs] with w hw
+        rw [hψdef]
+        exact ih w hw
+      have hg : ∀ j : Fin n, HasDerivAt (fun w => iteratedDeriv (j : ℕ) ψ w)
+          (iteratedDeriv ((j : ℕ) + 1) ψ s) s := by
+        intro j
+        have hj := (analyticAt_iteratedDeriv_logDeriv (j : ℕ) s hs).differentiableAt.hasDerivAt
+        rw [hψdef, Complex.digamma_def]
+        rw [iteratedDeriv_succ]
+        exact hj
+      have hchain := hasDerivAt_mvEval_jet (gammaBell n)
+        (fun j => fun w => iteratedDeriv (j : ℕ) ψ w)
+        (fun j => iteratedDeriv ((j : ℕ) + 1) ψ s) s hg
+      have hΓ : HasDerivAt Complex.Gamma (deriv Complex.Gamma s) s :=
+        (analyticAt_Gamma s hs).differentiableAt.hasDerivAt
+      have hRHS := hΓ.mul hchain
+      have hne : Complex.Gamma s ≠ 0 := Complex.Gamma_ne_zero hs
+      have hgpsi : deriv Complex.Gamma s = Complex.Gamma s * ψ s := by
+        rw [hψdef, Complex.digamma_def, logDeriv_apply]
+        field_simp
+      rw [iteratedDeriv_succ, hev.deriv_eq.trans hRHS.deriv, hgpsi]
+      simp only [gammaBell, MvPolynomial.eval_add, MvPolynomial.eval_mul, MvPolynomial.eval_X,
+        MvPolynomial.eval_rename, MvPolynomial.eval_sum, Function.comp_def, Fin.val_succ,
+        Fin.val_castSucc, iteratedDeriv_zero, Fin.val_zero]
+      ring
+
+/-- On the pure digamma axis, the order-`n` Bell polynomial is exactly its leading monomial `xⁿ`.
+All terms containing a positive-order polygamma vanish. -/
+theorem gammaBell_eval_axis (n : ℕ) (x : ℂ) :
+    MvPolynomial.eval (fun j : Fin n => if (j : ℕ) = 0 then x else 0) (gammaBell n) = x ^ n := by
+  induction n with
+  | zero => simp [gammaBell]
+  | succ n ih =>
+      simp only [gammaBell, MvPolynomial.eval_add, MvPolynomial.eval_mul, MvPolynomial.eval_X,
+        MvPolynomial.eval_rename, MvPolynomial.eval_sum, Function.comp_def, Fin.val_zero,
+        if_pos, Fin.val_castSucc, Fin.val_succ, Nat.succ_ne_zero, if_false, mul_zero,
+        Finset.sum_const_zero, add_zero]
+      calc
+        x * (MvPolynomial.eval (fun j : Fin n => if (j : ℕ) = 0 then x else 0)
+            (gammaBell n)) = x * x ^ n := congrArg (fun y => x * y) ih
+        _ = x ^ (n + 1) := by rw [pow_succ']
+
 /-- The order-two Gamma jet has the next projective boundary relation:
 `Γ'(σ+it) / Γ''(σ+it) → 0` for `σ > 0`.
 

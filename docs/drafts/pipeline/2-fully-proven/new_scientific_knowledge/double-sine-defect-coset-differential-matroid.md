@@ -67,6 +67,13 @@ In particular:
    independent;
 3. defects in the same coset differ by a DA function.
 
+The abstract independence content (2) — distinct-coset defects jointly independent, same-coset
+rank-neutral, giving `dtrdeg = ` number of distinct nonzero cosets — is the partition-matroid /
+star-independence case of the gluing engine formalized axiom-clean in
+`GaloisForLFunctions.DifferentialMatroidGluing` (`Rank.freeBlock`, `Rank.crossNeutral_iUnion_indep`).
+The analytic inputs (paired telescoping, that `dtrdeg` is the submodular `Rank`) enter as the
+`Rank`/`CrossNeutral` interfaces.
+
 ## Proof: structural cosets give the upper bound
 
 Equation (1) and finite telescoping show that `Delta_h L_2` is DA for every `h in H`.

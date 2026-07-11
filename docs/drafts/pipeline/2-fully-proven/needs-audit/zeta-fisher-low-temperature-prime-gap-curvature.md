@@ -238,12 +238,13 @@ eulerPrimePowerMoment_scaled_tendsto
 eulerPrimePowerMoment_det_scaled_tendsto
 eulerFisherScalarCurvature_neg_scaled_tendsto
 eulerFisherScalarCurvature_tendsto_atBot
+eulerFisherScalarCurvature_log_rate_tendsto
 ```
 
-Thus `(1)`, `(2)`, `(3)`, and the divergence assertion in `(4)` are formalized for the actual
-Euler prime-power spectrum.  The logarithmic-rate limit in `(4)` and the radial-distance
-asymptotic `(5)` remain paper-proved but are not yet in Lean.  Focused builds and the repository
-formal lint pass.  The theorem family uses only the standard Mathlib axioms `propext`,
+Thus `(1)`, `(2)`, `(3)`, and all of `(4)` are formalized for the actual Euler prime-power
+spectrum.  The radial-distance asymptotic `(5)` remains paper-proved but is not yet in Lean.
+Focused builds and the repository formal lint pass.  The theorem family uses only the standard
+Mathlib axioms `propext`,
 `Classical.choice`, and `Quot.sound`.
 
 ## Carrier verdict after the finite-Gamma boundary law
@@ -281,7 +282,6 @@ Routes A--D.
 - [x] 0 -> 1: exact scaled limits, source-pure mechanism, and falsification tests stated
 - [x] 1 -> 2: complete paper proof with dominated-convergence majorants
 - [x] 2 -> 3 core: universal two-level law, actual Euler scaled limits, curvature coefficient,
-  curvature divergence, and axiom audit completed in Lean
-- [ ] 2 -> 3 completion: formalize the logarithmic-rate and radial-distance asymptotics; run the
-  corresponding axiom audit
+  curvature divergence, logarithmic rate, and axiom audit completed in Lean
+- [ ] 2 -> 3 completion: formalize the radial-distance asymptotic and run its axiom audit
 - [ ] 3 -> 4: primary-source novelty audit and standalone exposition

@@ -88,10 +88,23 @@ hidden proof of the open arrow:
 10. `ccm-radial-prime-first-row-reduction.md` reduces that growing-index problem to two positive
     estimates. `ccm-exact-radial-nonstationary-sector-bound.md` uses Dunster's phase-preserving
     exterior Olver expansion to prove that the complete exact `j,k>=2` sector is `O(d_1/c)`. The
-    only surviving stationary sector is the first row. A uniform stationary-phase/Weber argument
-    proves for the complete limiting Dunster model that
-    `G_lambda^model(1,k)=O(d_1*c^(-1/2)k^(-2))` for every `k>=2`. Transferring this summable scale
-    through the exact two-parameter radial remainder is the present first-row analytic gate.
+    only stationary sector is the first row. `ccm-exact-finite-aperture-first-row-vanishing.md`
+    proves its low radial-index part through `k<=lambda^2` is `o(d_1)`.
+    `ccm-prime-shift-radial-index-separation-law.md` proves that the prime cutoff does not truncate
+    the radial multiplier `k=q*n`; `ccm-exact-high-radial-first-row-bv-bound.md` proves the weighted
+    tail `k>lambda^2` is `o(d_1)` by exterior-phase integration by parts.
+11. `constrained-prolate-full-radial-prime-charge-law.md` performs the resulting cofinal
+    finite-aperture assembly and proves the candidate-new raw radial limit
+    `-(16/(11*pi))sum_(k>=2)(log k/k)arcsin(1/k)`. The prime side of the exterior incidence tensor
+    is therefore explicit, including the infinite radial multiplier.
+12. `constrained-prolate-exterior-weil-leading-law.md` proves the next layer. The exact exterior
+    tail has positive leading energy
+    `D_arch*d_1*log(2*pi*lambda^2)`, with
+    `D_arch=(8/(11*pi))sum_(k>=1)arcsin(1/k)/k`; the radial prime constant is one logarithmic order
+    lower and the finite-aperture Poisson center is `o(d_1)`.
+    `ccm-countable-log-chirp-renormalization-law.md` proves the required log-weighted
+    almost-orthogonality, and the exact radical quotient transfers the law to the seed. The first
+    unresolved theorem is now the true-ground lower bound and gap comparison.
 
 The additive heat-aperture zero echo and the unrestricted Krein-index realization remain detectors
 or no-go theorems. They cannot discharge this source comparison: echo disappearance and index zero
@@ -123,6 +136,18 @@ This certified-lower-bound form avoids a strong-residual estimate and matches th
 radical quotient. The parity-floor separation is the candidate mechanism for cofinal
 simple-evenness. Any proof which first shows `epsilon_0(lambda)->0` instead belongs to the shorter
 Weil spectral-floor branch and has already absorbed the full RH burden.
+
+The explicit seed law makes a concrete sufficient target available:
+
+```text
+epsilon_0(lambda)>=-C*d_1(lambda),
+Gap_lambda>=c_0*lambda^8*d_1(lambda)*log lambda.                  (S)
+```
+
+Together with
+`<A_lambda g_lambda,g_lambda>~D_arch*d_1(lambda)log(2*pi*lambda^2)`, `(S)` gives Rayleigh
+excess/gap `O(lambda^(-8))`. It preserves the fixed-mode constrained-prolate ladder and allows a
+negative floor of order `d_1`, so it does not assume RH-level positivity.
 
 ## Failure conditions
 
