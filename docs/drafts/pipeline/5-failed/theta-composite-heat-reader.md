@@ -74,6 +74,14 @@ The fixed positive source and reflected cosine datum remain valid infrastructure
 be a static non-exact completed-theta/prime obstruction class surviving the quotient by all affine
 flow coboundaries.
 
+The direct reflected-reader calculation is now formalized in
+`formal/GaloisForLFunctions/RHTower/XiThetaSquareRateReflectedAction.lean`. In the global shifted
+heat coordinate the reflected profile is supported below zero, so
+`thetaHeatRateSourceReaderL2_reflectedThetaAction_eq_zero` proves exact annihilation by the causal
+reader. The alternative reorientation is definitionally the positive half and supplies no second
+charge. See
+`../3-formalized/not_new_scientific_knowledge/theta-causal-reader-reflected-action-zero.md`.
+
 ## Gates
 
 - [x] 0 -> 1: exact atom bridge, fixed-index audit, and first functional gap identified.
@@ -81,4 +89,5 @@ flow coboundaries.
   Perron source proved.
 - [x] Route falsification: reflected charge is not independent and the moving boundary is an exact
   flat translation coboundary.
+- [x] Reflected action: the causal reader's direct completed-theta pairing is exactly zero in Lean.
 - [ ] Any future reuse must occur only after quotienting out this affine flow defect.

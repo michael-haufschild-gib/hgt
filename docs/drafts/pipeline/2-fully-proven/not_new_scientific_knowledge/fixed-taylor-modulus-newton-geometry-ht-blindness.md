@@ -82,7 +82,7 @@ and the transition between `n` and `n+1` occurs at `t=log(n+1)`. The DA and HT r
 
 1. **Newton trapping cannot imply DA or recurrence.** A fixed algebraic locus for exponent gaps and normalized magnitudes has no access to phase transcendence.
 2. **Newton geometry alone cannot supply the coefficient-floor theorem.** The DA hypothesis must enter through exact complex coefficient identities or an equivalent phase-sensitive consequence. Convex geometry and maximum-term asymptotics can organize those identities but cannot replace them. This does not rule out a proof that combines `(SG)` with such ADE-specific information.
-3. **The algebraically independent super-Gaussian example is HT.** Taking `rho_n=exp(-n^3)` gives an HT entire series with every Newton transition adjacent and every plateau width asymptotic to `6n`, after bounded phase perturbations of the logarithmic data are removed by choosing unit phases. Thus exceptionally simple Newton geometry is compatible with genuine hypertranscendence.
+3. **The algebraically independent super-Gaussian example is HT.** Taking `rho_n=exp(-n^3)` gives an HT entire series whose logarithmic coefficient data are exactly `n^3`, so every Newton transition is adjacent and every plateau width is exactly `6n` for `n>=1`. Thus exceptionally simple Newton geometry is compatible with genuine hypertranscendence.
 
 The last item should not be confused with a counterexample to the super-Gaussian DA coefficient-floor conjecture: it lies on the predicted HT side.
 

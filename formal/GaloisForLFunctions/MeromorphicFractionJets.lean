@@ -156,7 +156,7 @@ theorem differentialJet_analyticFraction_eq
           ((IsFractionRing.injective (analyticSubring Set.univ) (meroField Set.univ))
             (by simpa using hz))
       field_simp [hd]
-      ring
+      all_goals first | exact isPreconnected_univ | exact Set.univ_nonempty
 
 /-- At every regular point, the recursive quotient is the ordinary iterated derivative. -/
 theorem functionFractionJetPair_div_eq_iteratedDeriv
@@ -183,9 +183,9 @@ theorem functionFractionJetPair_div_eq_iteratedDeriv
       dsimp [p] at hderiv
       simp only [functionFractionJetPair]
       rw [← hderiv]
-      rw [deriv_div (hpa z (Set.mem_univ z)).differentiableAt
-        (hpb z (Set.mem_univ z)).differentiableAt hpbz]
-      field_simp [hpbz]
+      have hdiv := deriv_div (hpa z (Set.mem_univ z)).differentiableAt
+        (hpb z (Set.mem_univ z)).differentiableAt hpbz
+      convert hdiv.symm using 1 <;> ring
 
 end
 
