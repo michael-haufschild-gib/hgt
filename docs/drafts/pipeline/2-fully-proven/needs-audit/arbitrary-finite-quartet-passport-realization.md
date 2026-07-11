@@ -228,7 +228,15 @@ and yields one scalar for which the repaired polynomial is strictly positive rea
 imaginary axis.  Its packet capstone simultaneously certifies divisibility by every prescribed
 quartet power, so all local multiplicities are retained.
 
-The order-one envelope and aperiodicity remain paper-only.
+`formal/GaloisForLFunctions/RHTower/CoshQuartetEnvelope.lean` now formalizes the envelope as an entire,
+real-even, Schwarz-real, `pi i`-periodic function, proves its exact two-lattice zero classification,
+and proves strict positive reality on the whole imaginary axis.
+`formal/GaloisForLFunctions/RHTower/CoshPolynomialPeriodClassification.lean` proves that the period
+group of its product with every nonconstant polynomial is exactly `{0}`.
+`formal/GaloisForLFunctions/RHTower/CoshPolynomialExactOrderOne.lean` proves explicit global upper
+and real-ray lower exponential bounds, certifying exact entire order one for every nonzero polynomial
+multiplier.  The remaining formal task is the single capstone assembling these global results with
+the equivariant CRT and positive repair.
 
 ## Parent-theory and novelty gate
 
@@ -246,6 +254,7 @@ The order-one envelope and aperiodicity remain paper-only.
 - [x] 1 -> 2: CRT realization, positivity repair, flux-prefix equality, full-germ separation, exact order,
   and aperiodicity have complete proofs above.
 - [ ] independent audit of the invariant CRT averaging and quasi-period argument.
-- [ ] 2 -> 3: the degree-bounded equivariant CRT, packet positivity, and global scalar repair are
-  formalized; formalize the order-one envelope and aperiodicity.
+- [ ] 2 -> 3: the degree-bounded equivariant CRT, packet positivity, global scalar repair, and
+  cosh-envelope realizability, product period classification, and exact entire order one are
+  formalized; assemble the arbitrary finite-packet capstone.
 - [ ] complete literature and parent-theory audit before any scientific-novelty promotion.

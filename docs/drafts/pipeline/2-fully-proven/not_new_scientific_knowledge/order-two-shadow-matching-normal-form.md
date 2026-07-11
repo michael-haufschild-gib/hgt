@@ -113,6 +113,24 @@ Local solutions are automatic. Global entire solutions are the obstruction.
 
 The first open subcase for `Phi=id` is therefore ramified. For general nonaffine `Phi`, even a zero-free `W` still requires a separate entire-factorization argument; no blanket exclusion is claimed here.
 
+`[SEARCH]` Liao--Yang prove that every finite-order transcendental entire solution of a second-order ADE with rational coefficients is pseudo-prime. Here `W'=w` with first-order DA `w`, so `W` is finite-order and satisfies a second-order ADE. Consequently a factorization
+
+`W=Phi o g`
+
+with transcendental entire `g` forces `Phi` into the rational exception of pseudo-primality. Thus the surviving global matching problem is not an arbitrary entire factorization: after removing polynomial `g`, it is the ramified rational, and in the entire-output case essentially polynomial, outer-factor stratum.
+
+The smallest live case is
+
+`W=a+g^2`.
+
+It asks whether a primitive-defect-one primitive of a first-order entire DA function can possess a totally ramified finite value. An affirmative example falsifies shadow-recovery rigidity; a negative theorem closes every quadratic separable matching.
+
+`[PROVED ELSEWHERE]` If `w` is autonomous first-order entire DA, this quadratic case is impossible. Its primitive has either zero defect or a nonzero additive period drift; the latter forbids every totally ramified value. See `drifting-periodic-primitive-ramification-exclusion.md`.
+
+`[PROVED ELSEWHERE]` The full rational outer-factor exception is impossible whenever the primitive has a nonzero polynomial shift drift. A divided-difference factorization plus Hadamard theory forces the putative inner factor to be first-order DA; a unique-pole substitution reduces rational outer functions to the polynomial case. This covers `w=L(exp(cz))+P(z)`; see `polynomial-drift-rational-outer-factor-rigidity.md`.
+
+`[PROVED ELSEWHERE]` A quadratic factor is also impossible under an affine reflection constraint `W o sigma=C-W`: difference of squares plus involutivity forces the inner factor into a one-hyperexponential field. This covers the genuinely nonautonomous derivative `w=z sin z`; see `involutive-reflection-quadratic-rigidity.md`.
+
 ## Parent-theory verdict
 
 The matching PDE is the algebraic form of the standard partial-matching criterion for cascade observability. Solving it in the separable case is a characteristic calculation. The global entire factorization residue is not resolved here. This card is therefore bridge infrastructure, not new scientific knowledge.
@@ -124,10 +142,11 @@ The matching PDE is the algebraic form of the standard partial-matching criterio
 - [x] Complete separable characteristic normal form.
 - [x] Direct zero-free primitive boundary excluded.
 - [x] Parent observability theory identified; bridge verdict.
-- [ ] Classify the ramified entire factorization residue.
+- [ ] Classify the ramified rational/polynomial factorization residue for genuinely nonautonomous first-order derivatives with no polynomial shift drift.
 - [ ] Lean deferred: existing formal files cover differential polynomials and primitive affine actions, but not algebraic partial derivatives or observation Jacobians.
 
 ## Primary references
 
 1. A. Isidori, A. J. Krener, C. Gori-Giorgi, and S. Monaco, *The Observability of Cascade Connected Nonlinear Systems*, IFAC Proceedings Volumes 14 (1981), 337--342.
 2. Y. Wang and E. D. Sontag, *Orders of Input/Output Differential Equations and State-Space Dimensions*, SIAM J. Control Optim. 33 (1995), 1102--1126.
+3. L.-W. Liao and C.-C. Yang, *On the growth and factorization of entire solutions of algebraic differential equations*, Ann. Acad. Sci. Fenn. Math. 25 (2000), 73--84.

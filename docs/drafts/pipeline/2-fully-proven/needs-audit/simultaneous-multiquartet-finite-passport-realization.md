@@ -222,8 +222,12 @@ mechanism behind every selected quartet:
   imaginary axis, supplying the algebraic zero-free-axis core.
 
 The exact source check and exact Lake target build pass.  The listed declarations depend only on
-`propext`, `Classical.choice`, and `Quot.sound`.  The global `cosh` envelope remains to be formalized,
-so the card stays at stage 2.
+`propext`, `Classical.choice`, and `Quot.sound`.  `CoshQuartetEnvelope.lean` now formalizes the entire
+real-even, Schwarz-real, `pi i`-periodic envelope, its exact two-lattice zero set, and strict
+imaginary-axis positivity.  `CoshPolynomialPeriodClassification.lean` proves that every nonconstant
+polynomial multiplier collapses its period group to `{0}`.  `CoshPolynomialExactOrderOne.lean`
+supplies the matching global upper and real-ray lower exponential bounds, hence exact entire order
+one.  The single assembled packet theorem remains, so the card stays at stage 2.
 
 ## Gates
 
@@ -231,6 +235,7 @@ so the card stays at stage 2.
 - [x] 1 -> 2: the construction, finite-jet contact, full-germ separation, symmetry, zero-free axis,
   exact order, and aperiodicity have complete paper proofs above.
 - [ ] independent audit of the aperiodicity argument and the affine coordinate transfer.
-- [ ] 2 -> 3: the simultaneous analytic-unit core and full finite-product instantiation are formalized
-  and axiom-audited; the global `cosh` envelope, exact order, zero-free axis, and aperiodicity remain.
+- [ ] 2 -> 3: the simultaneous analytic-unit core, full finite-product instantiation, and global
+  cosh-envelope realizability and product period classification are formalized and axiom-audited;
+  exact entire order one is also formalized; assemble the global packet capstone.
 - [ ] literature and parent-theory audit sufficient for any scientific-novelty promotion.

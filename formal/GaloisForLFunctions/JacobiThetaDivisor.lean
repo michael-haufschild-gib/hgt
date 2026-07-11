@@ -129,6 +129,52 @@ theorem thetaHalfPeriodDerivative_add_one (τ : ℂ) :
     ring
   rw [harg, jacobiTheta₂'_add_left]
 
+/-- Exact `S : τ ↦ -1/τ` transformation of the half-period derivative. -/
+theorem thetaHalfPeriodDerivative_S_eq {τ : ℂ} (hτ : 0 < τ.im) :
+    thetaHalfPeriodDerivative (-1 / τ) =
+      (1 / (-Complex.I * (-1 / τ)) ^ (1 / 2 : ℂ) *
+        Complex.exp
+          (-Real.pi * Complex.I * thetaHalfPeriod (-1 / τ) ^ 2 / (-1 / τ)) /
+        (-1 / τ)) * (-thetaHalfPeriodDerivative τ) := by
+  have hτ0 : τ ≠ 0 := by
+    intro h
+    rw [h, Complex.zero_im] at hτ
+    linarith
+  have hσ0 : -1 / τ ≠ 0 := div_ne_zero (by norm_num) hτ0
+  have hcoord : thetaHalfPeriod (-1 / τ) / (-1 / τ) = -thetaHalfPeriod τ + 1 := by
+    simp only [thetaHalfPeriod]
+    field_simp
+    ring
+  have hdouble : -1 / (-1 / τ) = τ := by
+    field_simp
+  rw [thetaHalfPeriodDerivative, jacobiTheta₂'_functional_equation, hcoord,
+    hdouble,
+    jacobiTheta₂'_add_left, jacobiTheta₂'_neg_left,
+    jacobiTheta₂_add_left, jacobiTheta₂_neg_left,
+    jacobiTheta₂_thetaHalfPeriod_eq_zero, mul_zero, sub_zero,
+    thetaHalfPeriodDerivative]
+
+/-- Nonvanishing of the half-period derivative is invariant under modular inversion. -/
+theorem thetaHalfPeriodDerivative_S_ne_zero_iff {τ : ℂ} (hτ : 0 < τ.im) :
+    thetaHalfPeriodDerivative (-1 / τ) ≠ 0 ↔ thetaHalfPeriodDerivative τ ≠ 0 := by
+  rw [thetaHalfPeriodDerivative_S_eq hτ]
+  have hτ0 : τ ≠ 0 := by
+    intro h
+    rw [h, Complex.zero_im] at hτ
+    linarith
+  have hσ0 : -1 / τ ≠ 0 := div_ne_zero (by norm_num) hτ0
+  have hbase : -Complex.I * (-1 / τ) ≠ 0 :=
+    mul_ne_zero (neg_ne_zero.mpr Complex.I_ne_zero) hσ0
+  have hpow : (-Complex.I * (-1 / τ)) ^ (1 / 2 : ℂ) ≠ 0 :=
+    Complex.cpow_ne_zero_iff.mpr (Or.inl hbase)
+  have hfactor :
+      1 / (-Complex.I * (-1 / τ)) ^ (1 / 2 : ℂ) *
+          Complex.exp
+            (-Real.pi * Complex.I * thetaHalfPeriod (-1 / τ) ^ 2 / (-1 / τ)) /
+          (-1 / τ) ≠ 0 :=
+    div_ne_zero (mul_ne_zero (div_ne_zero one_ne_zero hpow) (Complex.exp_ne_zero _)) hσ0
+  rw [mul_ne_zero_iff_left hfactor, neg_ne_zero]
+
 end
 
 end GaloisForLFunctions

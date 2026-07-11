@@ -165,9 +165,29 @@ phi(z + tau) = phi(z) - 2*pi*i.
 ```
 
 Thus theta existence, analyticity, nonvanishing as a field denominator, and its two basic
-functional equations are no longer assumptions. What remains for order-one atomicity is the
-theta zero-divisor theorem, simple-pole residue extraction for `theta'/theta`, and its transport to
-the finite orbit-residue obstruction already formalized abstractly.
+functional equations are no longer assumptions.
+
+`formal/GaloisForLFunctions/JacobiThetaDivisor.lean` and
+`formal/GaloisForLFunctions/JacobiThetaDivisorSimple.lean` establish the expected theta lattice
+orbit and its local divisor law, but do not yet classify the entire zero set. The exact
+evenness, period, and quasiperiod constraints force the odd half-period `(1+tau)/2` to be a zero,
+and every `Z + tau Z` translate is also a zero. Simplicity is proved globally without a product
+formula: pair the defining derivative series under `n -> -n-1`, isolate the leading term `2*pi*i`,
+bound the remaining Gaussian tail on `im tau >= 4/5`, and transport nonvanishing from the modular
+fundamental domain through the exact `S` and `T` laws. Every lattice translate is therefore simple.
+The normalized punctured limit
+
+```text
+(z-z0) theta'(z,tau)/theta(z,tau) -> 1
+```
+
+is proved at the half-period and at every lattice translate. Hence the logarithmic derivative has
+the expected residue-one orbit. What remains at the theta-divisor gate is the converse zero-set
+theorem: every zero must lie in `(1+tau)/2 + Z + tau Z`. Without that exclusion of extra zeros, a
+translated logarithmic-derivative defect may have additional pole orbits not represented by the
+current two-orbit model. After this classification, the next order-one task is to realize the
+elliptic-gamma defect as a difference of two translated theta logarithmic derivatives and map the
+complete principal-part data into `OrbitResidueVector`.
 
 `formal/GaloisForLFunctions/DifferentialPolynomialOver.lean` supplies the total differential
 polynomial derivation over a nonconstant differential base: coefficients are differentiated while
@@ -242,6 +262,10 @@ analytic capstone is already formalized.
 - [x] rank-three translation fixed field identified with constants in the germ carrier
 - [x] Jacobi theta and logarithmic derivative realized in the meromorphic carrier
 - [x] theta `1`-periodicity and `tau`-quasiperiodicity proved as field identities
+- [x] theta odd-half-period zero and full lattice zero orbit
+- [x] global simplicity of every theta lattice zero
+- [x] residue-one normalized logarithmic-derivative limit on the full lattice orbit
+- [ ] exact theta zero-set classification: no zeros outside the odd-half-period lattice orbit
 - [ ] meromorphic and elliptic function-field foundation
 - [ ] theta and multiple-elliptic-gamma definitions and hierarchy
 - [ ] orbit-principal-part obstruction

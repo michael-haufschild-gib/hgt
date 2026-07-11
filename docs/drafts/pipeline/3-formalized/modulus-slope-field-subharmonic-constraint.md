@@ -67,3 +67,58 @@ dichotomy reads the OPEN ball — the field cannot see its own boundary.
 
 ## Log
 - 2026-07-11 — created directly at 3-formalized; module compiled clean on first pass, axiom-clean.
+
+## Quantization layer (added 2026-07-11, `ModulusSlopeQuantization.lean`)
+
+The enclosed divisor mass is an integer and the field brackets it, so the field is quantized.
+All axiom-clean:
+
+| Theorem | Content |
+|---|---|
+| `one_le_xiBallOrderSum_of_zero` | a zero in the ball forces mass ≥ 1 |
+| `xi_zeroFree_closedBall_of_modulusSlope_lt_one` | slope < 1 ⟹ inner closed ball zero-free (integer in [0,1) is 0) |
+| `rh_iff_forall_rightHalf_modulusSlope_lt_one` | **RH as an open inequality**: RH ⟺ field < 1 on right-half pairs — a full unit of room replaces exact flatness |
+| `xi_exists_isolating_radius`, `xiBallOrderSum_eq_order_of_isolated` | isolation bricks |
+| `rhLadder_iff_forall_rightHalf_dvd_ballOrderSum` | rung k ⟺ 2^k ∣ enclosed mass of EVERY right-half ball |
+| `rhLadder_iff_forall_annulus_modulusSlope_dvd` | rung k ⟺ slope at every zero-free annulus is an integer ≡ 0 mod 2^k — one \|ξ\| reading certifies the rung box-wide |
+| `modulusSlope_eq_zero_of_one_le_sub_re` | unconditionally flat past the wall: the open region is exactly the strip |
+
+The two quantizations compose: sub-unit samples certify the zero-free annuli that the mod-2^k
+readings need — a covering of a box by < 1 samples plus one annulus reading is a complete
+rung certificate from `|ξ|` data alone.
+
+**Open core, exactly localized:** RH ⟺ for every ball with closure in `Re > 1/2`,
+`A(r₂) − A(r₁) < log(r₂/r₁)` — an *averaged* zero-repulsion (inner-circle average lower bound
+for `log‖ξ‖` against the outer average).  The budget is the log radius RATIO, scale-free; near
+the line the admissible balls shrink and the difficulty relocates there scale-invariantly.
+
+**Numeric targets (recorded, not run):** (i) refutation certificate: one certified slope sample
+> 0 over a right-half pair; at a zero-free annulus the sample is an integer, so a nonzero
+reading carries a UNIT margin — certified quadrature needs precision ~1, not ~ε.  (ii) a
+phase-free zero-free-box verification scheme: sub-unit slope samples from |ξ| quadrature alone,
+an alternative to argument-principle/Turing counting.
+
+## Log (cont.)
+- 2026-07-11 — quantization layer formalized; both modules build green standalone; axiom-clean.
+
+## Mirror layer (added 2026-07-11, `ModulusSlopeMirror.lean`)
+
+The field-level functional equation, all axiom-clean:
+
+| Theorem | Content |
+|---|---|
+| `circleMap_lineReflect` | the reflection maps circles to equal-radius circles via θ ↦ π − θ |
+| `xi_circleAverage_lineReflect` | every circle average of log‖ξ‖ is mirror-invariant |
+| `modulusSlope_lineReflect` | **field-level FE**: `modulusSlope (lineReflect ρ) = modulusSlope ρ` |
+| `modulusSlope_eq_zero_of_re_add_le_zero` | flat past the LEFT wall (Re < 0), mirroring Re > 1 |
+| `rh_iff_forall_leftHalf_modulusSlope_lt_one` | the sub-unit RH criterion transported to the left half-plane |
+| `not_riemannHypothesis_of_leftHalf_modulusSlope_ne_zero` | the disproof certificate transported to the left half-plane |
+
+The field's nontrivial support is a mirror-symmetric band around the strip; every one-sided
+criterion halves.  The constraint that fixes ξ (FE + Schwarz) now acts on the field itself —
+no flow anywhere, one reflection substitution θ ↦ π − θ plus 2π-periodicity.
+
+## Log (cont. 2)
+- 2026-07-11 — mirror layer formalized; three modules total, all standalone-build green, axiom-clean.
+- Remaining frontier: aim the averaged zero-repulsion `A(r₂) − A(r₁) < log(r₂/r₁)` at one
+  explicit strip box through the EM carrier / `CompletedZetaGrowth` budgets.

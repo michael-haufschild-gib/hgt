@@ -89,6 +89,18 @@ The open core in this separable stratum is the global entire factorization
 
 `[PROVED]` A zero-free finite-order primitive is itself first-order: Hadamard factorization makes it an exponential of a polynomial. This closes the direct `Phi=id` subcase. A nonaffine factorization `W=Phi o g` remains open even when `W` is zero-free.
 
+`[SEARCH]` Liao--Yang's pseudo-primality theorem for finite-order entire second-order ADE solutions reduces `W=Phi o g` to the rational outer-factor exception whenever `g` is transcendental entire. The first live ramified case is quadratic:
+
+`W=a+g^2`, `W'=w` first-order DA, `ord_DA(W)=2`.
+
+Equivalently, can a primitive-defect-one primitive of a first-order entire DA function have a totally ramified finite value?
+
+`[PROVED]` Not when `w` is autonomous. Writing `w=L(exp(az))`, a primitive-defect-one primitive has nonzero drift under the period `2 pi i/a`. One totally ramified value would then generate infinitely many, contradicting Nevanlinna. The proof is separated in `2-fully-proven/not_new_scientific_knowledge/drifting-periodic-primitive-ramification-exclusion.md`.
+
+`[PROVED]` No rational outer-factor exception survives when a primitive `W` has nonzero polynomial shift drift. The divided difference of `P(g_T)-P(g)` and Hadamard theory force the inner factor into an algebraic extension of a one-hyperexponential first-order field; a unique-pole substitution handles rational outers. This covers every `w=L(exp(cz))+P(z)` and is separated in `2-fully-proven/not_new_scientific_knowledge/polynomial-drift-rational-outer-factor-rigidity.md`.
+
+`[PROVED]` No quadratic factor survives an affine reflection `W o sigma=C-W`. This covers the nonautonomous derivative `w=z sin z`, whose primitive `sin z-z cos z` is odd. See `2-fully-proven/not_new_scientific_knowledge/involutive-reflection-quadratic-rigidity.md`.
+
 ### Boundary cases
 
 - Polynomial outer functions are excluded: their order is zero and they can collapse states algebraically.
@@ -98,9 +110,9 @@ The open core in this separable stratum is the global entire factorization
 
 ## Strongest next lemma
 
-`[CONJECTURE]` Let `w` be a transcendental entire first-order DA function and `W` an entire primitive. If `W=Phi o g` with `Phi'` algebraic, `Phi` nonaffine, and `g` entire DA, then either `g` is first-order DA or the zero divisor of `W` carries a ramification pattern forbidden by the first-order ADE of `w=W'`.
+`[CONJECTURE]` Let `w` be a genuinely nonautonomous transcendental entire first-order DA function and `W` an entire primitive with primitive defect one. Then `W` has no totally ramified finite value. Equivalently, there do not exist `a in C` and a transcendental entire `g` with `W=a+g^2`.
 
-This ramified primitive-factorization statement is the first nontrivial case not settled by primitive-extension, linear order-two, or first-order Wiman arguments.
+This quadratic ramification statement is the first nontrivial case not settled by primitive-extension, pseudo-primality, linear order-two, or first-order Wiman arguments.
 
 ## RH pressure test, not selector
 
@@ -116,6 +128,9 @@ No Euler, divisor, translation-spectrum, or zero-localization claim is made here
 - [x] Linear order-two inner stratum proved rigid.
 - [x] Exact nonlinear order-two matching PDE and separable normal form proved.
 - [x] Direct zero-free primitive subcase excluded.
+- [x] Autonomous first-order derivative subcase excluded by period drift.
+- [x] Laurent-exponential-plus-polynomial derivative subcase excluded by polynomial drift.
+- [x] Affine-reflection quadratic subcase excluded.
 - [ ] Prove or falsify the second-order variational matching lemma.
 - [ ] Literature audit only after the mathematical core moves beyond standard cascade observability.
 - [ ] Lean after a finite algebraic lemma survives; current formal infrastructure already covers primitive affine actions and algebraic primitive descent.

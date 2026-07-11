@@ -197,8 +197,19 @@ another finite passport condition.
   theorem from the strict degree gap, realizes the quartet packet as a monic degree-`4 sum M_i`
   polynomial, and produces one scalar repair which is strictly positive real on the whole
   imaginary axis while preserving every quartet multiplicity.
-- `[OPEN FORMAL INTERFACE]` Formalize the order-one `cosh` envelope, its zero-free imaginary axis,
-  and the zero-lattice aperiodicity argument.
+- `[FORMALIZATION]` `CoshQuartetEnvelope.lean` constructs the entire real-even, Schwarz-real,
+  `pi i`-periodic envelope, classifies its two displaced zero lattices exactly, and proves strict
+  positive reality on the whole imaginary axis for every nonzero displacement.
+- `[FORMALIZATION]` `CoshPolynomialPeriodClassification.lean` proves that multiplication by any
+  nonconstant complex polynomial collapses the envelope period group from `pi i Z` to `{0}`.  The
+  proof quantizes three consecutive translated envelope zeros and uses finiteness of the polynomial
+  zero set to show that every product period reaches that configuration.
+- `[FORMALIZATION]` `CoshPolynomialExactOrderOne.lean` proves a global
+  `C (1 + norm z)^d exp(2 norm z)` upper bound and a positive `c exp(2x)` lower bound on a real ray
+  for every nonzero polynomial multiplier.  This explicit two-sided sandwich certifies exact entire
+  order one.
+- `[OPEN FORMAL INTERFACE]` Assemble the equivariant CRT, positive repair, envelope, exact-growth,
+  and period-classification components into the single arbitrary finite-passport capstone.
 
 ## Gates
 
@@ -207,6 +218,7 @@ another finite passport condition.
 - [x] 1 -> 2: the coordinate conversion, symmetry-assigned unit jets, degree-bounded CRT,
   positivity repair, exact separator, exact order, and aperiodicity have complete proofs above.
 - [ ] independent audit of the coordinate conversion and the global period argument.
-- [ ] 2 -> 3: the passport map, degree-controlled equivariant CRT, packet polynomial, and global
-  positivity domination are formalized; formalize the order-one envelope and aperiodicity.
+- [ ] 2 -> 3: the passport map, degree-controlled equivariant CRT, packet polynomial, global
+  positivity domination, cosh-envelope realizability, and the product period classification are
+  formalized, together with exact entire order one; assemble the single global capstone.
 - [ ] complete the literature and parent-theory audit before any scientific-novelty promotion.
