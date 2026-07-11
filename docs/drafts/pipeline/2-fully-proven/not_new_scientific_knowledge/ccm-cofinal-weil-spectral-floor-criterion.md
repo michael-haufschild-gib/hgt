@@ -91,9 +91,9 @@ determinant branch:
   => RH.
 ```
 
-The determinant branch cannot be completed by finite real spectra alone. The spectral-floor branch
-does not use those spectra at all; it supplies the missing global information through cofinal Weil
-positivity. Thus it is not a counterexample to the finite-prime divisor obstruction.
+The determinant branch is completed by a cofinal divisor-carrying limit. The spectral-floor branch
+is completed by cofinal Weil positivity. These are the two positive global certificates attached to
+the CCM comparison.
 
 ## Route consequence
 
@@ -108,7 +108,8 @@ In particular:
 - `[RH-SUFFICIENT CORE]` Prove `(4)` or merely `(2)`.
 - `[ALTERNATIVE RH-SUFFICIENT CORE]` Prove the projective ground-vector rate and locally uniform
   determinant convergence to `Xi`.
-- `[DEAD]` Infer RH from real zeros of finite determinants without either cofinal statement.
+- `[REQUIRED COFINAL CERTIFICATE]` Supply either the spectral-floor limit or the locally uniform
+  divisor-carrying determinant limit in addition to finite real zeros.
 
 ## Novelty and significance verdict
 

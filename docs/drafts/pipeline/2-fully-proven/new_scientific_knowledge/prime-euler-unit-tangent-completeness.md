@@ -54,12 +54,14 @@ This is a static source-orbit theorem, not a flow or limiting construction.
 - [x] preliminary literature audit: exact and equivalent searches, stronger/general parent
   searches, and English/French/German/Russian terminology searches completed; independent expert
   review remains required
-- [x] significance gate: excludes every continuous local or whole-fundamental-quadrant regular-flux
-  source constraint at the actual zeta Euler point, including the FE--Schwarz-symmetric orbit;
-  the complete continuous global quotient is the divisor
+- [x] significance gate: classifies the actual-zeta finite-unit action: every fixed-divisor
+  regular-flux fibre is one orbit closure, including the FE--Schwarz real form, and the complete
+  continuous global quotient is exactly the divisor
 - [x] provisional novelty verdict: `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
-- [ ] 2 -> 3: not selected for Lean before the scientific audit; the full proof requires analytic
-  functionals and a sectorial Blaschke theorem not currently exposed by the project API
+- [ ] 2 -> 3: the actual tangent, prime-Lambert inversion, sector uniqueness, compact-carrier
+  annihilator theorem, critical-disc complex and Schwarz-real completeness, nonlinear generated
+  group, and continuous quotient classification are formalized unconditionally in Lean; the full
+  arbitrary-convex-domain and global-quadrant statements still require a formal Runge layer
 
 ## The source tangent
 
@@ -171,8 +173,10 @@ For the zeros `z=log p`, this would require
 sum_p 1/(log p)^alpha < infinity.
 ```
 
-The series diverges, even after deleting finitely many primes, by the prime number theorem.  Hence
-the bounded function, and therefore `H`, is identically zero.
+The series diverges even after deleting finitely many primes without using the prime number
+theorem: eventually `(log p)^alpha <= p`, so its terms dominate `1/p`, and Euler's divergence of
+the reciprocal-prime series applies. Hence the bounded function, and therefore `H`, is identically
+zero.
 
 ## Mobius inversion recovers the Fourier--Borel transform
 

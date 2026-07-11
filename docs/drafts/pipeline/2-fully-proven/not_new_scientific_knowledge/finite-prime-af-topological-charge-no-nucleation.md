@@ -12,6 +12,10 @@
   only through a finite-stage zero, a gap-closing singular limit, or a non-AF/state-dependent index
   category.
 
+**Positive carrier form:** every nonzero regular charge descends from a finite source charge; every
+nonzero singular extension charge is a nonliftability index.  The exact constructive specification
+is in `thermodynamic-divisor-charge-finite-ancestor-or-boundary-index.md`.
+
 ## 1. Prime-indexed quantum universe
 
 Let `P_N` be an increasing finite set of primes.  Attach a finite-dimensional local Hilbert space

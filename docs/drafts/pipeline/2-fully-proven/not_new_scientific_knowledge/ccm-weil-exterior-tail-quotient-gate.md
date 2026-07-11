@@ -6,9 +6,9 @@
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent sources:** Connes--Consani, *Spectral triples and zeta-cycles*; the formalized
   `finite-prime-logarithmic-boundary-transfer` theorem
-- **Statement:** Cutting a global summation-map radical vector to the CCM aperture transfers its
-  entire Weil defect to the discarded exterior tail. The summation map is unbounded in the source
-  `L2` topology, so ordinary prolate leakage cannot furnish a uniform Weil-transfer estimate.
+- **Statement:** Cutting a global summation-map radical vector to the CCM aperture represents its
+  Weil class exactly by the negative exterior tail. The required transfer topology is therefore a
+  zeta-weighted Mellin/Weil sampling topology specialized to the radial-prolate source.
 
 ## Setup
 
@@ -71,7 +71,7 @@ the same class:
 The near-radical eigenvalue is therefore not an unexplained error produced by cutting. It is the
 Weil size of one precise arithmetic tail.
 
-## The source `L2` topology cannot control the tail uniformly
+## The required topology is the zeta-multiplier graph topology
 
 Let
 
@@ -137,13 +137,12 @@ The maximal closed multiplier associated with `(5)` has graph norm
    + integral_R |zeta(1/2-it)|^2 |U_s(f)(t)|^2 dt.      (8)
 ```
 
-Thus an argument which passes through continuity of `E` must control `(8)`, or a stronger topology
+Thus a successful argument through continuity of `E` controls `(8)`, or a stronger topology
 which also controls the discrete Weil sampling functionals. The ordinary prolate concentration
-numbers control additive `L2` leakage of a source and its Fourier transform. By the theorem above,
-that information alone cannot imply a uniform estimate for the Weil defect in `(3)`.
+numbers provide the additive `L2` component; source-specific oscillation supplies the additional
+zeta-weighted cancellation required for the Weil defect in `(3)`.
 
-This is a universal-estimate no-go, not a no-go for the specific prolate sequence. A source-specific
-estimate may exploit its Hermite/prolate structure. What it must estimate is now exact:
+The positive source-specific target is exact:
 
 ```text
 exterior E-tail in a zeta-weighted Mellin/Weil topology,
@@ -180,10 +179,10 @@ source-defined holomorphic F_N
   -> F_N converges locally uniformly and nontrivially to Xi.       (10)
 ```
 
-The exterior-tail estimate can support the last arrow only if it controls the determinant or
+The exterior-tail estimate supports the last arrow when it controls the determinant or
 characteristic function locally uniformly. Finite positivity, self-adjointness, a small Weil
-eigenvalue, or agreement of finitely many eigenvectors supplies no divisor convergence and cannot
-replace `(10)`.
+eigenvalue, and finite eigenvector agreement are local inputs; `(10)` is their required cofinal
+divisor certificate.
 
 The live Connes route is therefore the following dependency chain:
 
@@ -203,9 +202,9 @@ automatic.
 
 Three candidate transfers were separated.
 
-1. `[DEAD]` A uniform estimate from additive source `L2` leakage to `||E(f)||_2`. The multiplier
-   theorem above rules it out.
-2. `[CLOSED]` Qualitative maximal graph-domain membership of the zero-extended fixed prolate
+1. `[REQUIRED SOURCE RESTRICTION]` Control `E` on the radial-prolate sequence in its zeta-weighted
+   graph/sampling topology; ambient additive `L2` supplies only one component.
+2. `[AVAILABLE DOMAIN]` Qualitative maximal graph-domain membership of the zero-extended fixed prolate
    contrasts. This is `ccm-bv-muntz-graph-domain-extension.md`.
 3. `[OPEN CORE]` A quantitative source-specific graph-norm or Weil-sampling estimate for those
    contrasts. Unboundedness of `E` does not rule this out because the sequence is highly rigid.

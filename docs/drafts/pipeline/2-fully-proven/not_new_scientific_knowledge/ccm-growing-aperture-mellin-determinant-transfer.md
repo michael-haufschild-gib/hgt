@@ -177,8 +177,8 @@ normalized det_reg(D_lambda-z) -> Xi(z)
 locally uniformly and zero-preservingly.               (14)
 ```
 
-This is a specialization, not a no-go for finite-prime approximation. In the general theorem a
-finite-prime family can prove RH provided its normalized approximants carry the `Xi` divisor
+The positive general theorem is that a finite-prime family proves RH when its normalized
+approximants carry the `Xi` divisor
 locally uniformly and every approximant zero `z` satisfies
 
 ```text
@@ -245,8 +245,8 @@ This theorem is one link in an existing chain, not a new standalone route.
 ### Inputs already proved in the pipeline
 
 1. `ccm-restricted-summation-aperture-gauge.md` proves that the apparent source point-value defect
-   can be removed without changing the restricted summation vector. The genuine obstruction is the
-   exterior arithmetic tail, not the two scalar source constraints.
+   can be removed without changing the restricted summation vector. The genuine transfer object is
+   the exterior arithmetic tail.
 2. `constrained-prolate-two-mode-ground-state.md` proves that the CCM `h_0`--`h_4` seed is selected
    by the exact vanishing-integral prolate concentration problem and supplies its surrogate gap.
 3. `constrained-prolate-fixed-mode-spectral-ladder.md` proves the complete fixed-depth constrained
@@ -254,8 +254,9 @@ This theorem is one link in an existing chain, not a new standalone route.
    limits. These are falsifiable local spectral fingerprints for any true-Weil comparison.
 4. `ccm-weil-exterior-tail-quotient-gate.md` identifies the aperture vector with the negative
    exterior tail modulo the global Weil radical. `ccm-poisson-tail-l2-unboundedness.md` then proves
-   quantitatively that the ambient arithmetic tail map is unbounded on the scalar prolate-leakage
-   `L2` space. Hence `(11)` must use the special prolate source, not an abstract concentration bound.
+   quantitatively that the successful tail estimate must use the special prolate source in a
+   zeta-weighted/oscillatory topology. An abstract scalar concentration bound supplies only its
+   starting datum.
    `ccm-bv-muntz-graph-domain-extension.md` closes the qualitative endpoint issue: the actual
    zero-extended prolate contrast belongs to the maximal zeta-multiplier graph domain and its global
    summation vector vanishes at every zeta zero. The missing input is a cofinal rate, not domain

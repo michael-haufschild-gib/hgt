@@ -6,11 +6,11 @@
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Parent source:** Connes--Consani--Moscovici, *Zeta Spectral Triples*, Sections 7--8;
   Connes--Consani, *Spectral triples and zeta-cycles*, Sections 3 and 6
-- **Statement:** On the aperture `[lambda^(-1),lambda]`, the restricted summation map cannot see
-  even zero-integral source corrections supported strictly inside `(-lambda^(-1),lambda^(-1))`.
-  Point evaluation is surjective on this kernel, so the source condition `f(0)=0` can be imposed
-  exactly without changing the CCM approximant. This removes the apparent two-constraint mismatch,
-  but it does not regularize the zero-extended prolate endpoints.
+- **Statement:** On the aperture `[lambda^(-1),lambda]`, the restricted summation map factors through
+  the quotient by even zero-integral corrections supported inside
+  `(-lambda^(-1),lambda^(-1))`. Every quotient class has a representative with `f(0)=0`, so the CCM
+  approximant admits an exact global-radical source representative while retaining its genuine
+  zero-extended prolate endpoints.
 
 ## Setup
 
@@ -99,9 +99,9 @@ second condition exactly. Since the compressed-Fourier eigenvalues of `h_(0,lamb
 defect is not an invariant of the finite-aperture approximant: subtracting `h_lambda(0)b` leaves
 `k_lambda=R_lambda E(h_lambda)` exactly unchanged while enforcing both scalar conditions.
 
-This observation kills the tempting normalized constraint-determinant obstruction. The nonzero
-two-mode determinant measures a choice of source representative, not a class invariant after
-passing through `R_lambda E`.
+This observation identifies the correct invariant: the quotient source class after passing through
+`R_lambda E`. The nonzero two-mode determinant measures a representative choice, while the aperture
+vector has an exact representative satisfying both global-radical scalar conditions.
 
 ## Exact limitation
 

@@ -77,4 +77,15 @@ theorem windingNumber_amplifiedDeterminantLoop_eq_zero_iff
   · intro h
     rw [h, mul_zero]
 
+/-- **Positive finite-ancestor theorem.**  A nonzero winding after independent tensor enlargement
+already comes from a nonzero winding before the new local degree of freedom was adjoined. -/
+theorem nonzero_winding_has_finiteAncestor
+    (d : ℕ) (hd : 0 < d) (M : ℝ → Matrix m m ℂ) {a b : ℝ}
+    (hloop : RHTower.IsLoop (determinantLoop M) a b)
+    (hcharge : RHTower.windingNumber (amplifiedDeterminantLoop d M) a b ≠ 0) :
+    RHTower.windingNumber (determinantLoop M) a b ≠ 0 := by
+  intro hzero
+  apply hcharge
+  exact (windingNumber_amplifiedDeterminantLoop_eq_zero_iff d hd M hloop).2 hzero
+
 end PrimeQuasiLocalCharge
