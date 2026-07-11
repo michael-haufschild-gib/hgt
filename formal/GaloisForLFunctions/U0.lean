@@ -7,6 +7,10 @@ window constructions are assembled in `U0AllNonexceptionalDisconnected`.
 -/
 import GaloisForLFunctions.U0.ClosedLoopFTC
 import GaloisForLFunctions.U0.MahlerRatFunc
+import GaloisForLFunctions.U0.VelocityJetSeries
+import GaloisForLFunctions.U0.MahlerHahnCarrier
+import GaloisForLFunctions.U0.MahlerTwoVariable
+import GaloisForLFunctions.U0.MahlerLayerEmbedding
 import GaloisForLFunctions.U0.PolyAsymptotics
 import GaloisForLFunctions.U0.U0Series
 import GaloisForLFunctions.U0.U0NaturalBoundary

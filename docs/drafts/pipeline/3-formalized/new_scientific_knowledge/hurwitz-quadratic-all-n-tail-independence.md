@@ -1,7 +1,7 @@
 # Hurwitz Quadratic All-N Tail Independence
 
 - **ID:** hurwitz-quadratic-all-n-tail-independence
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** hurwitz-in-a-weld-escape-ht.md; hurwitz-quadratic-n2-density-shadow.md
 - **Statement:** For `Re(s)>1` and `s notin Z`, every finite Hurwitz shift ladder `{zeta(s+k,a)}_{0<=k<=N}` satisfies no nonzero `C(a)`-polynomial relation of total degree at most two.
@@ -14,7 +14,12 @@ Upgrade the proven `N=2` quadratic density shadow to every finite shift ladder. 
 
 - [x] 0 -> 1 in-progress: exact obstruction and reduction named
 - [x] 1 -> 2 fully-proven: rational-tail independence lemma and quadratic row descent proved below
-- [ ] 2 -> 3 formalized: not formalized
+- [x] 2 -> 3 formalized: `HurwitzAllNHZeta.hurwitz_allN_hzeta_unconditional` and
+  `hurwitz_allN_hzeta_upper_half_plane` (`formal/GaloisForLFunctions/Hurwitz/AllNHZeta.lean`)
+  state the theorem against the genuine `hzeta (s+k) a` values with polynomial coefficients;
+  they compose the strip transport `model_relation_of_hzeta_relation` with the unconditional
+  model close `hurwitz_allN_independence_all_noninteger`. Hurwitz area build green; axioms
+  `[propext, Classical.choice, Quot.sound]`; formal lint passed.
 - [ ] 3 -> 4 publication-ready: not extracted
 
 ## Theorem
@@ -198,3 +203,11 @@ The result remains narrow. Higher-degree algebraic relations and full hypertrans
 
 - 2026-06-24 -- created after the proven `N=2` quadratic shadow exposed the exact all-ladder gate.
 - 2026-06-24 -- finite-difference shortcut retired; polylog branch/pole-tower proof closes the rational-tail lemma and the all-`N` quadratic row descent.
+- 2026-07-11 -- Formalized against the genuine Hurwitz values. The model-level all-`N` close
+  (`hurwitz_allN_independence_all_noninteger`, carded separately as
+  `hurwitz-alln-order-two-closure`) is composed with the `hzeta`-to-model strip transport
+  `model_relation_of_hzeta_relation`, giving `hurwitz_allN_hzeta_unconditional`: a genuine
+  polynomial-coefficient degree-`<=2` relation among `hzeta (s+k) a`, `0<=k<=N`, holding near the
+  negative-integer ray on the upper side (or on the whole upper half-plane), kills every
+  coefficient. Hypotheses are exactly `Re(s)>1` and `s` nonintegral. Axiom-clean; card promoted
+  to 3-formalized.

@@ -15,15 +15,15 @@ stronger than the `ℤ`-independence above and lies beyond the two-variable Gelf
 it is Baker's theorem (1966): the logarithms of distinct primes (indeed of multiplicatively
 independent algebraic numbers) are linearly independent over `ℚ̄`.
 
-The hard analytic content — Baker's theorem itself — is carried here as the single explicit interface
-`BakerLinearIndependence`, encoded with complex coefficients each `IsAlgebraic ℤ` (the clean encoding
-of "`ℚ̄`-linear independence" that avoids constructing `ℚ̄` as a field type).  Everything downstream is
-derived unconditionally-modulo-that-interface:
+This file fixes the stable proposition `BakerLinearIndependence`, encoded with complex coefficients
+each `IsAlgebraic ℤ`, and proves the reductions that consume it.  The downstream
+`BakerProof.BakerIteration` module proves the proposition and exports the premise-free public forms:
 
-* `primeLog_algIndep` — the real-coefficient form: any real algebraic linear relation among distinct
+* `primeLog_algIndep_of_baker` — the interface-consuming real-coefficient reduction; its public
+  premise-free theorem is `primeLog_algIndep`;
   prime logs is trivial (the direct strengthening of `primeLog_linearIndependent` from `ℤ` to `ℚ̄`);
-* `baker_prime_mult_indep` — the multiplicative form, through the `log`-bridge: for distinct primes
-  and real algebraic exponents, `∏ pᵢ ^ cᵢ = 1` forces every exponent to vanish;
+* `baker_prime_mult_indep_of_baker` — the interface-consuming multiplicative reduction; its public
+  premise-free theorem is `baker_prime_mult_indep`;
 * `twoPrimeLog_algIndep_complex` — the two-prime algebraic-coefficient fragment, now unconditional
   from the formalized Gelfond--Schneider theorem;
 * `baker_intFragment_unconditional` — the integer-coefficient fragment is *already* a theorem
@@ -47,11 +47,9 @@ primes `p : Fin n → ℕ` and every family of complex coefficients `β : Fin n 
 the prime logarithms `{log p}` are linearly independent over the algebraic numbers `ℚ̄` (encoded here
 as complex coefficients each `IsAlgebraic ℤ`, avoiding `ℚ̄` as an explicit field).
 
-This is the single hard analytic input, not proved here.  It is strictly stronger than the
-unique-factorization `ℤ`-independence already in this tree and lies beyond the two-variable
-Gelfond–Schneider method: its proof is Baker's method — auxiliary functions in *several* complex
-variables, with an interpolation/extrapolation determinant estimate and a zero bound, extending the
-Gelfond–Schneider construction to `n` logarithms simultaneously. -/
+This file records the stable interface.  Its unconditional proof is supplied downstream by
+`bakerLinearIndependence_holds`: a several-variable integral auxiliary matrix, finite
+long extrapolation with decreasing multiplicity, and a terminal Vandermonde zero estimate. -/
 def BakerLinearIndependence : Prop :=
   ∀ (n : ℕ) (p : Fin n → ℕ) (β : Fin n → ℂ),
     Function.Injective p → (∀ i, (p i).Prime) → (∀ i, IsAlgebraic ℤ (β i)) →
@@ -166,7 +164,7 @@ linear relation `∑ᵢ cᵢ · log pᵢ = 0` among distinct prime logs with *re
 merely `ℤ`-free but `ℚ̄`-free.  Proof: embed the real relation along `ℝ ↪ ℂ` (algebraicity transfers
 by `isAlgebraic_ofReal`) and apply the interface, then descend the vanishing coefficients back to
 `ℝ`. -/
-theorem primeLog_algIndep (hB : BakerLinearIndependence) {n : ℕ} (p : Fin n → ℕ)
+theorem primeLog_algIndep_of_baker (hB : BakerLinearIndependence) {n : ℕ} (p : Fin n → ℕ)
     (hp : Function.Injective p) (hprime : ∀ i, (p i).Prime)
     (c : Fin n → ℝ) (halg : ∀ i, IsAlgebraic ℤ (c i))
     (hrel : ∑ i, c i * Real.log (p i) = 0) : ∀ i, c i = 0 := by
@@ -187,11 +185,11 @@ genuine downstream of the additive statement through the logarithm bridge: takin
 product (each factor positive, hence nonzero) turns `∏ pᵢ ^ cᵢ = 1` into `∑ᵢ cᵢ · log pᵢ = 0`, to
 which `primeLog_algIndep` applies.  With integer exponents this is unique factorization; with
 algebraic exponents it is Baker. -/
-theorem baker_prime_mult_indep (hB : BakerLinearIndependence) {n : ℕ} (p : Fin n → ℕ)
+theorem baker_prime_mult_indep_of_baker (hB : BakerLinearIndependence) {n : ℕ} (p : Fin n → ℕ)
     (hp : Function.Injective p) (hprime : ∀ i, (p i).Prime)
     (c : Fin n → ℝ) (halg : ∀ i, IsAlgebraic ℤ (c i))
     (hprod : ∏ i, (p i : ℝ) ^ (c i) = 1) : ∀ i, c i = 0 := by
-  apply primeLog_algIndep hB p hp hprime c halg
+  apply primeLog_algIndep_of_baker hB p hp hprime c halg
   have hpos : ∀ i, (0 : ℝ) < (p i : ℝ) := fun i => by exact_mod_cast (hprime i).pos
   have hne : ∀ i ∈ (Finset.univ : Finset (Fin n)), (p i : ℝ) ^ (c i) ≠ 0 :=
     fun i _ => ne_of_gt (Real.rpow_pos_of_pos (hpos i) (c i))

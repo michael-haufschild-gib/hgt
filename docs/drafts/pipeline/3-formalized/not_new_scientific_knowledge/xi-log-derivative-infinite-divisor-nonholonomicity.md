@@ -8,6 +8,7 @@
   - `formal/GaloisForLFunctions/PoleHolonomicDegreeBudget.lean`
   - `formal/GaloisForLFunctions/RHTower/XiZerosInfinite.lean`
   - `formal/GaloisForLFunctions/RHTower/XiLogDerivNonholonomic.lean`
+  - `formal/GaloisForLFunctions/RHTower/FiniteSpectralTraceNoGo.lean`
 - **Lane:** general infinite-divisor obstruction; completed-zeta logarithmic carrier
 
 ## Statement
@@ -89,9 +90,11 @@ when they require the actual completed logarithmic carrier to be holonomic.
    `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/mobius-logarithmic-jet-ht-transfer-li-no-holonomic-route.md`;
    it is not yet a Lean theorem.
 2. **Finite-dimensional Hilbert--Pólya models.**  A finite matrix characteristic determinant has a
-   rational logarithmic derivative, hence a holonomic one.  It cannot equal `xi'/xi`.  Infinite
-   unbounded self-adjoint operator models are not excluded.  A holonomic spectral approximant
-   reproducing `N` actual poles needs leading ODE coefficient degree at least `N`.
+   finite atomic logarithmic derivative.  Lean theorem
+   `xi_logDeriv_ne_finiteSpectralTrace` now proves directly that no finite support with arbitrary
+   complex multiplicity weights can equal `xi'/xi`.  Infinite unbounded self-adjoint operator
+   models are not excluded.  A holonomic spectral approximant reproducing `N` actual poles needs
+   leading ODE coefficient degree at least `N`.
 3. **Finite-rank Connes trace carriers.**  Any realization whose completed spectral trace closes to
    a finite holonomic carrier cannot reproduce the actual divisor.  Infinite noncommutative trace
    formulas are not excluded; fixed coefficient degree cannot stabilize along an unbounded divisor
@@ -123,8 +126,11 @@ The common wall is therefore precise:
 - [x] Formal lint passes with no new `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration.
 - [x] `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
 - [ ] Formalize the Möbius pullback to obtain the Li-generator theorem itself in Lean.
-- [ ] Formalize named finite-matrix/canonical-system corollaries before moving those consequences
-  from paper route boundaries to Lean route certificates.
+- [x] Formalize the common finite atomic resolvent-trace corollary covering finite-dimensional
+  matrix, finite-rank trace-carrier, and finite spectral-support implementations; see
+  `finite-spectral-trace-xi-nogo.md`.
+- [ ] Formalize any stronger named canonical-system corollary whose hypotheses are not already
+  exactly a finite atomic resolvent trace.
 
 ## Scientific gate
 

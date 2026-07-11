@@ -34,6 +34,7 @@
 
 ## Scope
 
-The module constructs and normalizes the exact infinite interpolation symbol. It does not yet
-formalize right-half-plane Hardy membership, its exact boundary norm, or the Paley-Wiener L2
-representative.
+The module constructs and normalizes the exact infinite interpolation symbol. Right-half-plane
+holomorphy, including the selected removable node, is formalized in `XiThetaSquareRateHardy`, and
+the exact boundary norm is formalized in `XiThetaSquareRateBoundary`. The remaining gap is the
+uniform interior-line Hardy supremum and the Paley-Wiener L2 representative.

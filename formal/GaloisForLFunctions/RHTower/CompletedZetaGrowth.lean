@@ -603,17 +603,17 @@ theorem completedZeta0_order_le_one :
     norm_nonneg (mellin modifiedEvenKernel (s / 2))]
 
 /-- The order-one growth of `Λ₀` in the form `CompletedZeta0OrderOne`, discharging the analytic input
-`xi_growth_order_le_one` consumes; hence the completed `ξ` has order ≤ 1 unconditionally. -/
-theorem completedZeta0OrderOne : CompletedZeta0OrderOne :=
+to the completed-`ξ` growth reduction. -/
+theorem completedZeta0OrderOne_holds : CompletedZeta0OrderOne :=
   completedZeta0_order_le_one
 
 /-- **The completed ξ is entire of order ≤ 1, unconditionally.**  Combining the reduction
-`xi_growth_order_le_one` (all transcendental growth of `ξ` lives in `Λ₀`) with the discharged growth
-bound `completedZeta0OrderOne`, the completed zeta satisfies a global order-one growth envelope with no
-analytic debt — a native invariant of the completion `Λ = Γ·ζ` and the growth input Hadamard-type
-factorization and zero-counting arguments over `ξ` require. -/
-theorem xi_order_le_one :
+`xi_growth_order_le_one_of_completedZeta0OrderOne` (all transcendental growth of `ξ` lives in `Λ₀`)
+with the discharged growth bound `completedZeta0OrderOne_holds`, the completed zeta satisfies a global
+order-one growth envelope with no analytic debt — a native invariant of the completion `Λ = Γ·ζ` and
+the growth input Hadamard-type factorization and zero-counting arguments over `ξ` require. -/
+theorem xi_growth_order_le_one :
     ∃ C : ℝ, 0 < C ∧ ∀ s : ℂ, ‖xi s‖ ≤ Real.exp (C * (1 + ‖s‖) * Real.log (2 + ‖s‖)) :=
-  xi_growth_order_le_one completedZeta0OrderOne
+  xi_growth_order_le_one_of_completedZeta0OrderOne completedZeta0OrderOne_holds
 
 end RHTower

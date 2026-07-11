@@ -335,18 +335,6 @@ theorem stageSample_node_ratio_le_two_thirds_of_order
   push_cast
   nlinarith
 
-/-- Uniform Schwarz node decay at the prescribed next-stage multiplicity. -/
-theorem stageSample_node_ratio_le_two_thirds
-    {n t k : ℕ} (ht : 8 ≤ t)
-    (hS : 0 < stageSampleCount n t k)
-    (sample : Fin (stageSampleCount n t (k + 1))) :
-    let S := stageSampleCount n t k
-    let q := stageOrder n t (k + 1)
-    (((((sample : ℕ) + S : ℕ) : ℝ) ^ (q * S)) /
-      (((t * S : ℕ) : ℝ) - S) ^ (q * S)) ≤
-        ((2 : ℝ) / 3) ^ (q * S) :=
-  stageSample_node_ratio_le_two_thirds_of_order ht hS sample
-
 theorem stageGrowthMajorant_nonneg
     (R : Relation) (c : ℤ) (t k v : ℕ) :
     0 ≤ stageGrowthMajorant R c t k v := by
@@ -733,27 +721,6 @@ theorem Relation.auxiliaryMatrix_kernel_mono
     ⟨sample, lt_of_lt_of_le sample.isLt hS⟩ (fun i => (ν i : ℕ))
       (fun i => lt_of_lt_of_le (ν i).isLt hT)
 
-/-- The unconditional first quarter-disc extrapolation is the base case of the long iteration. -/
-theorem Relation.exists_parameterized_stageOne_kernel_of_scale
-    (R : Relation) (hn : 3 ≤ R.n) (c : ℤ) (hc : c ≠ 0)
-    (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n) :
-    ∃ t : ℕ, 4 ≤ t ∧ 2 ^ (R.n + 2) < t ∧
-      ∃ η : R.Column (BakerParameters.exponentWidth R.n t) → 𝓞 R.CoefficientField,
-        η ≠ 0 ∧
-          Matrix.mulVec (R.auxiliaryMatrix c hint pivot
-            (BakerParameters.exponentWidth R.n t)
-            (BakerIteration.stageSampleCount R.n t 1)
-            (BakerIteration.stageOrder R.n t 0)) η = 0 := by
-  obtain ⟨t, ht, htlarge, η, hη, hker⟩ :=
-    BakerParameters.Relation.exists_parameterized_extended_auxiliary_kernel_of_scale
-      R hn c hc hint pivot
-  refine ⟨t, ht, htlarge, η, hη, ?_⟩
-  apply R.auxiliaryMatrix_kernel_mono c hint pivot η hker
-  · have hs := BakerIteration.stageSampleCount_succ_le_quarterRadius R.n t 0
-    simpa [BakerParameters.quarterSampleCount,
-      BakerParameters.extrapolationRadius_eq_mul_sampleCount] using hs
-  · simp [BakerIteration.stageOrder]
-
 /-- One long-extrapolation transition.  Exact zeros for every component in the new `q`-box are
 reassembled as a kernel for the enlarged `S' × q^(n-1)` auxiliary matrix. -/
 theorem Relation.auxiliaryMatrix_kernel_extrapolate
@@ -922,4 +889,135 @@ theorem Relation.auxiliaryMatrix_kernel_eq_zero_of_card_le_samples
   rw [he] at hj
   exact R.integralCoeffEmbedding_injective (by simpa using hj)
 
+/-- Long extrapolation is incompatible with an algebraic logarithmic relation of arity at least
+three.  A cofinal divisible parameter choice makes all stage inequalities simultaneous; the same
+nonzero Siegel vector then reaches a terminal Vandermonde kernel with at least one sample per
+column, forcing that vector to be zero. -/
+theorem Relation.false_of_long_extrapolation_of_scale
+    (R : Relation) (hn : 3 ≤ R.n) (c : ℤ) (hc : c ≠ 0)
+    (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n) :
+    False := by
+  let K := BakerIteration.iterationLength R.n
+  let B := BakerIteration.structuredMultiplier R.n
+  let threshold := 2 ^ R.n * 4 ^ ((8 * R.n - 4) * R.n - 4 * R.n)
+  have hfirst := (BakerIteration.structuredBase_tendsto_atTop R.n).eventually
+    (BakerParameters.eventually_radiusStepSmallness R hn c)
+  have hall := BakerIteration.eventually_all_structured_stageSmallness R hn c
+  obtain ⟨u, ⟨hfirstu, hallu⟩, hu⟩ :=
+    ((hfirst.and hall).and (eventually_ge_atTop (max threshold 2))).exists
+  have huthreshold : threshold ≤ u := le_trans (Nat.le_max_left _ _) hu
+  have hu2 : 2 ≤ u := le_trans (Nat.le_max_right _ _) hu
+  let t := BakerIteration.structuredBase R.n u
+  let u' := B * u
+  have ht_four : t = 4 * u' := by rfl
+  have hBpos : 0 < B := BakerIteration.structuredMultiplier_pos R.n
+  have huu' : u ≤ u' := Nat.le_mul_of_pos_left u hBpos
+  have hthreshold' : threshold ≤ u' := huthreshold.trans huu'
+  have ht : 8 ≤ t := by
+    rw [ht_four]
+    omega
+  obtain ⟨η, hηne, hker, hbound⟩ :=
+    BakerParameters.Relation.exists_parameterized_auxiliary_coefficients_of_scale
+      R hn c hc hint pivot t (by omega)
+  have hclosedLinear := BakerParameters.Relation.parameterizedCoefficientBoundClosed_le_linear
+    R hn c hc hint pivot t (by omega)
+  have hboundLinear : ∀ m,
+      house ((algebraMap (𝓞 R.CoefficientField) R.CoefficientField) (η m)) ≤
+        BakerParameters.linearCoefficientBudget R c t := fun m =>
+    (hbound m).trans hclosedLinear
+  have hquarter : Matrix.mulVec (R.auxiliaryMatrix c hint pivot
+      (BakerParameters.exponentWidth R.n t)
+      (BakerParameters.quarterSampleCount R.n t)
+      (BakerParameters.extrapolationOrder R.n t)) η = 0 := by
+    apply R.auxiliaryMatrix_mulVec_eq_zero_of_component_box_zero
+    intro sample ν
+    let νNat : R.NonPivot pivot → ℕ := fun i => (ν i : ℕ)
+    have hv : (∑ i, νNat i) ≤
+        (R.n - 1) * BakerParameters.extrapolationOrder R.n t := by
+      simpa [νNat] using R.sum_rowMultiIndex_le pivot ν
+    apply BakerParameters.Relation.quarterRadiusSample_shifted_eq_zero_of_decay_growth_lt_one
+      R hn c hc hint pivot t (by omega) η hker hbound νNat
+    · intro i
+      calc
+        νNat i + BakerParameters.extrapolationOrder R.n t <
+            BakerParameters.extrapolationOrder R.n t +
+              BakerParameters.extrapolationOrder R.n t :=
+          Nat.add_lt_add_right (ν i).isLt _
+        _ = BakerParameters.derivativeCutoff R.n t := by
+          simp [BakerParameters.derivativeCutoff, two_mul]
+    · exact BakerParameters.quarterSample_mem sample
+    · exact hfirstu (∑ i, νNat i) hv
+  have hbase : Matrix.mulVec (R.auxiliaryMatrix c hint pivot
+      (BakerParameters.exponentWidth R.n t)
+      (BakerIteration.stageSampleCount R.n t 1)
+      (BakerIteration.stageOrder R.n t 0)) η = 0 := by
+    apply R.auxiliaryMatrix_kernel_mono c hint pivot η hquarter
+    · have hs := BakerIteration.stageSampleCount_succ_le_quarterRadius R.n t 0
+      simpa [BakerParameters.quarterSampleCount,
+        BakerParameters.extrapolationRadius_eq_mul_sampleCount] using hs
+    · simp [BakerIteration.stageOrder]
+  have hterminal : Matrix.mulVec (R.auxiliaryMatrix c hint pivot
+      (BakerParameters.exponentWidth R.n t)
+      (BakerIteration.stageSampleCount R.n t (K + 1))
+      (BakerIteration.stageOrder R.n t K)) η = 0 := by
+    apply R.auxiliaryMatrix_kernel_iterate c hc hint pivot t ht η
+      (BakerParameters.linearCoefficientBudget R c t) hboundLinear
+      (BakerParameters.linearCoefficientBudget_nonneg R c t) hbase K
+    · intro k hk sample ν
+      apply BakerIteration.stage_scalar_smallness_of_majorant R c t k ht sample ν
+      apply hallu k
+      · simpa [K] using hk
+      · exact R.sum_rowMultiIndex_le pivot ν
+    · exact le_rfl
+  have horder : 0 < BakerIteration.stageOrder R.n t K := by
+    rw [ht_four]
+    exact BakerIteration.final_stageOrder_pos hn hthreshold'
+  have hcardNat : BakerParameters.exponentWidth R.n t ^ R.n ≤
+      BakerIteration.stageSampleCount R.n t (K + 1) := by
+    rw [ht_four]
+    exact BakerIteration.final_columnCount_le_stageSampleCount hn hthreshold'
+  have hcard : Fintype.card (R.Column (BakerParameters.exponentWidth R.n t)) ≤
+      BakerIteration.stageSampleCount R.n t (K + 1) := by
+    simpa using hcardNat
+  have hηzero := R.auxiliaryMatrix_kernel_eq_zero_of_card_le_samples
+    c hint pivot η hterminal horder hcard
+  exact hηne hηzero
+
 end GaloisForLFunctions.RHTower.BakerProof
+
+namespace GaloisForLFunctions.RHTower
+
+open BakerProof
+
+/-- **Baker linear independence, unconditionally.**  Any nonzero coefficient in a hypothetical
+algebraic relation reduces to an arity-at-least-three relation.  Clearing coefficient denominators
+then contradicts `Relation.false_of_long_extrapolation_of_scale`. -/
+theorem bakerLinearIndependence_holds : BakerLinearIndependence := by
+  intro n p β hp hprime hβ hrel i
+  by_contra hβi
+  have hnontrivial : ∃ j, β j ≠ 0 := ⟨i, hβi⟩
+  obtain ⟨R, hn, _⟩ := exists_reduced_relation_of_counterexample
+    n p β hp hprime hβ hrel hnontrivial
+  obtain ⟨c, hc, hint⟩ := R.exists_common_integer_scale
+  have hint' : ∀ j, IsIntegral ℤ (R.scaledCoeff c j) := by
+    simpa [Relation.scaledCoeff] using hint
+  let pivot : Fin R.n := ⟨0, by omega⟩
+  exact R.false_of_long_extrapolation_of_scale hn c hc hint' pivot
+
+/-- Real-algebraic independence of distinct prime logarithms, with the former Baker proposition
+premise discharged. -/
+theorem primeLog_algIndep {n : ℕ} (p : Fin n → ℕ)
+    (hp : Function.Injective p) (hprime : ∀ i, (p i).Prime)
+    (c : Fin n → ℝ) (halg : ∀ i, IsAlgebraic ℤ (c i))
+    (hrel : ∑ i, c i * Real.log (p i) = 0) : ∀ i, c i = 0 :=
+  primeLog_algIndep_of_baker bakerLinearIndependence_holds p hp hprime c halg hrel
+
+/-- Multiplicative independence for real algebraic prime exponents, with the former Baker
+proposition premise discharged. -/
+theorem baker_prime_mult_indep {n : ℕ} (p : Fin n → ℕ)
+    (hp : Function.Injective p) (hprime : ∀ i, (p i).Prime)
+    (c : Fin n → ℝ) (halg : ∀ i, IsAlgebraic ℤ (c i))
+    (hprod : ∏ i, (p i : ℝ) ^ (c i) = 1) : ∀ i, c i = 0 :=
+  baker_prime_mult_indep_of_baker bakerLinearIndependence_holds p hp hprime c halg hprod
+
+end GaloisForLFunctions.RHTower

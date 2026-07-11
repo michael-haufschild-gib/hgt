@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** NOT-NEW / INTERFACE DISCHARGE
 - **Source:** RHTower `ThueMorseMellinFlatness` + `L2FourierIntegralBridge`
-- **Statement:** `[PROVED]` The entire Mellin transform of the concrete Thue--Morse infinite-product kernel has an `L²` trace on every negative integer vertical line, unconditionally inhabits `HasPerronCarrierFlankL2Energy` with its exact line norm as budget, and consequently has an all-depth canonical cross-line Mellin defect against the concrete nonzero positive theta source.
+- **Statement:** `[PROVED]` The entire Mellin transform of the concrete Thue--Morse infinite-product kernel has an `L²` trace on every negative integer vertical line, unconditionally inhabits both Perron flank-energy and horizontal-mass interfaces, and consequently has an all-depth canonical cross-line Mellin defect against the concrete nonzero positive theta source.
 
 ## Goal
 
@@ -59,6 +59,8 @@ all depths proves `HasCrossLineMellinDefect`, hence also its eventual weakening.
 - Module: `formal/GaloisForLFunctions/RHTower/ThueMorseFlankEnergyDischarge.lean`
 - Pointwise theorem: `thueMorseMellinCarrier_hasPerronCarrierFlankL2EnergyAt`
 - Eventual theorem: `thueMorseMellinCarrier_hasPerronCarrierFlankL2Energy`
+- Horizontal-mass theorem: `thueMorseMellinCarrier_hasPerronCarrierHorizontalMass`
+- Completed coefficient theorem: `thueMorseMellinCarrier_perronThirdCharge`
 - Pointwise seam theorem: `thueMorseMellinCarrier_hasCrossLineMellinDefectAt`
 - All-depth seam theorem: `thueMorseMellinCarrier_hasCrossLineMellinDefect`
 - Eventual seam theorem: `thueMorseMellinCarrier_hasEventuallyCrossLineMellinDefect`
@@ -70,3 +72,6 @@ all depths proves `HasCrossLineMellinDefect`, hence also its eventual weakening.
 - 2026-07-10 — created in 1-in-progress after rejecting the vacuous zero-carrier and false uniform-bound shortcut.
 - 2026-07-10 — proved and formalized the nonzero Thue--Morse provider; moved to 3-formalized/not-new because this closes an underbuilt interface by composition rather than asserting new mathematical knowledge.
 - 2026-07-10 — composed the all-depth energy with the concrete positive theta source to discharge all three cross-line defect interfaces.
+- 2026-07-11 — proved the Mellin carrier's Gamma-times-`LSeries` identity and composed it with the
+  balanced third-order Perron charge. Reciprocal Gamma now extracts every shifted Thue--Morse
+  coefficient directly from the concrete carrier without a caller-supplied representation Prop.

@@ -100,5 +100,7 @@ finite local convergence or imposing the elementary global guards cannot supply 
 - [x] Paper proof written; independent audit still required before stage 2.
 - [ ] Parent-theory and literature audit of compact-open density/closure results for symmetric
   exponential-type entire functions.
-- [ ] Lean formalization of the explicit family, finite contact, aperiodicity, and compact-open bound.
-
+- [x] Lean formalization of the explicit family, full elementary guard stack, exact finite
+  partner-flux contact, exact escape order, and pointwise convergence in
+  `GuardedFinitePassportClosure.lean`.
+- [ ] Lean upgrade from pointwise to compact-open convergence and formal germ separation.

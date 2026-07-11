@@ -39,12 +39,12 @@ theorem XiC_ofReal (t : ℝ) : XiC (t : ℂ) = (Xi t : ℂ) := by
 
 /-- **`ΞC` has growth order at most one.**  There is `C > 0` with
 `‖ΞC z‖ ≤ exp (C · (1 + ‖z‖) · log (2 + ‖z‖))` for all `z`.  Immediate from the unconditional
-order-one envelope for `ξ` (`xi_order_le_one`) together with `‖½ + z·i‖ ≤ 1 + ‖z‖` and the
+order-one envelope for `ξ` (`xi_growth_order_le_one`) together with `‖½ + z·i‖ ≤ 1 + ‖z‖` and the
 monotonicity estimates `1 + ‖s‖ ≤ 2(1 + ‖z‖)` and `log(2 + ‖s‖) ≤ 2 log(2 + ‖z‖)`. -/
 theorem XiC_order :
     ∃ C : ℝ, 0 < C ∧ ∀ z : ℂ,
       ‖XiC z‖ ≤ Real.exp (C * (1 + ‖z‖) * Real.log (2 + ‖z‖)) := by
-  obtain ⟨C₀, hC₀, hgrow⟩ := xi_order_le_one
+  obtain ⟨C₀, hC₀, hgrow⟩ := xi_growth_order_le_one
   refine ⟨4 * C₀, by positivity, ?_⟩
   intro z
   set a : ℝ := ‖z‖ with ha

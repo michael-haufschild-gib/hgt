@@ -3,7 +3,7 @@ The zero-density bound for the completed zeta ξ: the number of ξ-zeros in a di
 grows at most like `r · log r`.
 
 The Jensen bound `xi_zeroCount_disc_le_logModulus` caps the interior zero count of a disc by the
-boundary log-modulus.  Feeding it the unconditional order-≤1 growth envelope `xi_order_le_one` (on the
+boundary log-modulus.  Feeding it the unconditional order-≤1 growth envelope `xi_growth_order_le_one` (on the
 sphere of radius `2r` centred at the pole-free anchor `s = 2`, where `‖s‖ ≤ 2 + 2r`) turns the log of
 the boundary modulus into an `O(r log r)` quantity, while the radius ratio `R/r = 2` contributes the
 fixed positive factor `log 2`.  The result is the counting-function growth `N(r) = O(r log r)` — the
@@ -21,13 +21,13 @@ namespace RHTower
 ξ-zero multiplicity in the closed disc `B(2, r)` is bounded by `C·(1+r)·log(2+r)` for a fixed `C`.
 Proof: Jensen's inequality (`xi_zeroCount_disc_le_logModulus`) at centre `2` (`xi 2 ≠ 0`), inner radius
 `r`, outer radius `2r`, with the boundary modulus `M` bounded by the unconditional order-one envelope
-`xi_order_le_one` (as `‖z‖ ≤ 2+2r` on the sphere); the ratio `R/r = 2` gives the fixed factor
+`xi_growth_order_le_one` (as `‖z‖ ≤ 2+2r` on the sphere); the ratio `R/r = 2` gives the fixed factor
 `log 2 > 0`. -/
 theorem xi_zeroCount_growth :
     ∃ C : ℝ, 0 < C ∧ ∀ r : ℝ, 1 ≤ r →
       (↑(∑ᶠ u, (MeromorphicOn.divisor xi (Metric.closedBall (2 : ℂ) r)) u) : ℝ)
         ≤ C * (1 + r) * Real.log (2 + r) := by
-  obtain ⟨C₀, hC₀, hgrow⟩ := xi_order_le_one
+  obtain ⟨C₀, hC₀, hgrow⟩ := xi_growth_order_le_one
   have hL2pos : 0 < Real.log 2 := Real.log_pos (by norm_num)
   refine ⟨(6 * C₀ + |Real.log ‖xi 2‖| + Real.log 2) / Real.log 2, by positivity, ?_⟩
   intro r hr1

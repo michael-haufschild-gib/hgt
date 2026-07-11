@@ -27,7 +27,7 @@ noncomputable section
 
 /-- The upper member `a + πi/2` of the selected real-even quartet. -/
 def closureQuartetCenter (a : ℝ) : ℂ :=
-  (a : ℂ) + ((Real.pi / 2 : ℝ) : ℂ) * I
+  (a : ℂ) + (Real.pi : ℂ) / 2 * I
 
 /-- The scaled Hermite-flat polynomial multiplier at contact order `M`. -/
 def guardedClosurePolynomial (a : ℝ) (M : ℕ) (ε : ℝ) : Polynomial ℂ :=
@@ -102,6 +102,182 @@ theorem guardedClosurePolynomial_degree_pos {a ε : ℝ} {M : ℕ}
     0 < (guardedClosurePolynomial a M ε).degree := by
   rw [← natDegree_pos_iff_degree_pos, guardedClosurePolynomial_natDegree hε hM]
   omega
+
+/-! ## Finite completed-flux contact at the two period-partner centers -/
+
+/-- The lower member `-a - πi/2` of the selected quartet. -/
+def closureLowerCenter (a : ℝ) : ℂ :=
+  -closureQuartetCenter a
+
+/-- Its vertical period partner `-a + πi/2`. -/
+def closureUpperPartnerCenter (a : ℝ) : ℂ :=
+  -(starRingEnd ℂ) (closureQuartetCenter a)
+
+theorem closureUpperPartnerCenter_eq_shift (a : ℝ) :
+    closureUpperPartnerCenter a = closureLowerCenter a + (Real.pi : ℂ) * I := by
+  apply Complex.ext
+  · simp [closureUpperPartnerCenter, closureLowerCenter, closureQuartetCenter,
+      map_div₀, map_ofNat, Complex.mul_re]
+  · simp [closureUpperPartnerCenter, closureLowerCenter, closureQuartetCenter,
+      map_div₀, map_ofNat, Complex.mul_im]
+    ring
+
+/-- Changing the quartet parameter by sign does not change its real-even atom. -/
+theorem quartetFlatAtom_neg_parameter (α z : ℂ) :
+    quartetFlatAtom (-α) z = quartetFlatAtom α z := by
+  unfold quartetFlatAtom
+  simp only [map_neg, neg_sq]
+
+/-- Changing the quartet parameter by conjugation does not change its Schwarz-paired atom. -/
+theorem quartetFlatAtom_conj_parameter (α z : ℂ) :
+    quartetFlatAtom ((starRingEnd ℂ) α) z = quartetFlatAtom α z := by
+  change (z ^ 2 - (star α) ^ 2) * (z ^ 2 - (star (star α)) ^ 2) =
+    (z ^ 2 - α ^ 2) * (z ^ 2 - (star α) ^ 2)
+  rw [star_star]
+  ring
+
+theorem quartetFlatAtom_closureLowerCenter (a : ℝ) (z : ℂ) :
+    quartetFlatAtom (closureQuartetCenter a) z = quartetFlatAtom (closureLowerCenter a) z := by
+  rw [closureLowerCenter, quartetFlatAtom_neg_parameter]
+
+theorem quartetFlatAtom_closureUpperPartnerCenter (a : ℝ) (z : ℂ) :
+    quartetFlatAtom (closureQuartetCenter a) z =
+      quartetFlatAtom (closureUpperPartnerCenter a) z := by
+  rw [closureUpperPartnerCenter, quartetFlatAtom_neg_parameter,
+    quartetFlatAtom_conj_parameter]
+
+/-- The analytic unit left after extracting the prescribed power at a selected quartet center. -/
+def guardedClosureLocalUnit (ε : ℝ) (M : ℕ) (c x : ℂ) : ℂ :=
+  (ε : ℂ) * quartetFlatAtomUnit c x ^ M
+
+theorem guardedClosureLocalUnit_analyticAt_zero (ε : ℝ) (M : ℕ) (c : ℂ) :
+    AnalyticAt ℂ (guardedClosureLocalUnit ε M c) 0 := by
+  unfold guardedClosureLocalUnit quartetFlatAtomUnit
+  fun_prop
+
+/-- At the lower center, the polynomial multiplier is exactly a Hermite-flat factor. -/
+theorem guardedClosurePolynomial_shift_lower (a ε : ℝ) (M : ℕ) (x : ℂ) :
+    (guardedClosurePolynomial a M ε).eval (closureLowerCenter a + x) =
+      hermiteFlatFactor M (guardedClosureLocalUnit ε M (closureLowerCenter a)) x := by
+  rw [guardedClosurePolynomial_eval, quartetFlatAtom_closureLowerCenter,
+    quartetFlatAtom_shift]
+  simp only [hermiteFlatFactor, guardedClosureLocalUnit]
+  ring
+
+/-- At the vertical partner, the same polynomial multiplier is independently Hermite-flat to the
+same order. -/
+theorem guardedClosurePolynomial_shift_upperPartner (a ε : ℝ) (M : ℕ) (x : ℂ) :
+    (guardedClosurePolynomial a M ε).eval (closureUpperPartnerCenter a + x) =
+      hermiteFlatFactor M (guardedClosureLocalUnit ε M (closureUpperPartnerCenter a)) x := by
+  rw [guardedClosurePolynomial_eval, quartetFlatAtom_closureUpperPartnerCenter,
+    quartetFlatAtom_shift]
+  simp only [hermiteFlatFactor, guardedClosureLocalUnit]
+  ring
+
+theorem closureQuartetCenter_self_factor_ne {a : ℝ} (ha : a ≠ 0) :
+    (2 * closureQuartetCenter a) *
+      ((closureQuartetCenter a) ^ 2 -
+        ((starRingEnd ℂ) (closureQuartetCenter a)) ^ 2) ≠ 0 := by
+  apply mul_ne_zero
+  · intro h
+    have hre := congrArg Complex.re h
+    simp [closureQuartetCenter] at hre
+    exact ha hre
+  · intro h
+    have him := congrArg Complex.im h
+    have hstar : (starRingEnd ℂ) (closureQuartetCenter a) =
+        (a : ℂ) - (Real.pi : ℂ) / 2 * I := by
+      apply Complex.ext <;>
+        simp [closureQuartetCenter, map_div₀, map_ofNat, Complex.mul_re, Complex.mul_im]
+    rw [hstar] at him
+    simp [closureQuartetCenter, pow_two, Complex.mul_im] at him
+    have hapi : a * Real.pi = 0 := by linarith
+    exact ha ((mul_eq_zero.mp hapi).resolve_right (ne_of_gt Real.pi_pos))
+
+theorem closureLowerCenter_self_factor_ne {a : ℝ} (ha : a ≠ 0) :
+    (2 * closureLowerCenter a) *
+      ((closureLowerCenter a) ^ 2 -
+        ((starRingEnd ℂ) (closureLowerCenter a)) ^ 2) ≠ 0 := by
+  simpa [closureLowerCenter] using closureQuartetCenter_self_factor_ne ha
+
+theorem closureUpperPartnerCenter_self_factor_ne {a : ℝ} (ha : a ≠ 0) :
+    (2 * closureUpperPartnerCenter a) *
+      ((closureUpperPartnerCenter a) ^ 2 -
+        ((starRingEnd ℂ) (closureUpperPartnerCenter a)) ^ 2) ≠ 0 := by
+  have hbase := closureLowerCenter_self_factor_ne ha
+  have hcenter : closureUpperPartnerCenter a =
+      (starRingEnd ℂ) (closureLowerCenter a) := by
+    simp [closureUpperPartnerCenter, closureLowerCenter]
+  rw [hcenter]
+  intro hzero
+  apply hbase
+  have hstar := congrArg (starRingEnd ℂ) hzero
+  simpa only [map_mul, map_ofNat, map_sub, map_pow, map_zero,
+    starRingEnd_self_apply] using hstar
+
+theorem guardedClosureLocalUnit_zero_ne {ε : ℝ} {M : ℕ} {c : ℂ}
+    (hε : ε ≠ 0)
+    (hc : (2 * c) * (c ^ 2 - ((starRingEnd ℂ) c) ^ 2) ≠ 0) :
+    guardedClosureLocalUnit ε M c 0 ≠ 0 := by
+  rw [guardedClosureLocalUnit]
+  apply mul_ne_zero (ofReal_ne_zero.mpr hε)
+  simpa [quartetFlatAtomUnit] using pow_ne_zero M hc
+
+/-- Every correction coefficient below the selected contact order vanishes at the lower center. -/
+theorem guardedClosure_lower_fluxCorrection_iteratedDeriv_zero
+    {a ε : ℝ} {M n : ℕ} (ha : a ≠ 0) (hε : ε ≠ 0) (hM : 0 < M) (hn : n < M) :
+    iteratedDeriv n
+      (hermiteFlatFluxCorrection M
+        (guardedClosureLocalUnit ε M (closureLowerCenter a))) 0 = 0 := by
+  exact hermiteFlatFluxCorrection_iteratedDeriv_zero hM
+    (guardedClosureLocalUnit_analyticAt_zero ε M (closureLowerCenter a))
+    (guardedClosureLocalUnit_zero_ne hε (closureLowerCenter_self_factor_ne ha)) hn
+
+/-- Every correction coefficient below the selected contact order vanishes at the vertical
+partner center. -/
+theorem guardedClosure_upperPartner_fluxCorrection_iteratedDeriv_zero
+    {a ε : ℝ} {M n : ℕ} (ha : a ≠ 0) (hε : ε ≠ 0) (hM : 0 < M) (hn : n < M) :
+    iteratedDeriv n
+      (hermiteFlatFluxCorrection M
+        (guardedClosureLocalUnit ε M (closureUpperPartnerCenter a))) 0 = 0 := by
+  exact hermiteFlatFluxCorrection_iteratedDeriv_zero hM
+    (guardedClosureLocalUnit_analyticAt_zero ε M (closureUpperPartnerCenter a))
+    (guardedClosureLocalUnit_zero_ne hε
+      (closureUpperPartnerCenter_self_factor_ne ha)) hn
+
+/-- The lower-center correction first escapes at the prescribed order. -/
+theorem guardedClosure_lower_fluxCorrection_iteratedDeriv_escape_ne_zero
+    {a ε : ℝ} {M : ℕ} (ha : a ≠ 0) (hε : ε ≠ 0) (hM : 0 < M) :
+    iteratedDeriv M
+      (hermiteFlatFluxCorrection M
+        (guardedClosureLocalUnit ε M (closureLowerCenter a))) 0 ≠ 0 := by
+  exact hermiteFlatFluxCorrection_iteratedDeriv_escape_ne_zero hM
+    (guardedClosureLocalUnit_analyticAt_zero ε M (closureLowerCenter a))
+    (guardedClosureLocalUnit_zero_ne hε (closureLowerCenter_self_factor_ne ha))
+
+/-- The upper-partner correction first escapes at the same prescribed order. -/
+theorem guardedClosure_upperPartner_fluxCorrection_iteratedDeriv_escape_ne_zero
+    {a ε : ℝ} {M : ℕ} (ha : a ≠ 0) (hε : ε ≠ 0) (hM : 0 < M) :
+    iteratedDeriv M
+      (hermiteFlatFluxCorrection M
+        (guardedClosureLocalUnit ε M (closureUpperPartnerCenter a))) 0 ≠ 0 := by
+  exact hermiteFlatFluxCorrection_iteratedDeriv_escape_ne_zero hM
+    (guardedClosureLocalUnit_analyticAt_zero ε M (closureUpperPartnerCenter a))
+    (guardedClosureLocalUnit_zero_ne hε
+      (closureUpperPartnerCenter_self_factor_ne ha))
+
+/-- The two independent local multiplier-flux corrections have the same Taylor prefix at every
+degree below `M`. -/
+theorem guardedClosure_partner_fluxCorrection_same_prefix
+    {a ε : ℝ} {M n : ℕ} (ha : a ≠ 0) (hε : ε ≠ 0) (hM : 0 < M) (hn : n < M) :
+    iteratedDeriv n
+      (hermiteFlatFluxCorrection M
+        (guardedClosureLocalUnit ε M (closureLowerCenter a))) 0 =
+    iteratedDeriv n
+      (hermiteFlatFluxCorrection M
+        (guardedClosureLocalUnit ε M (closureUpperPartnerCenter a))) 0 := by
+  rw [guardedClosure_lower_fluxCorrection_iteratedDeriv_zero ha hε hM hn,
+    guardedClosure_upperPartner_fluxCorrection_iteratedDeriv_zero ha hε hM hn]
 
 /-- A Gaussian depth scale beats every fixed geometric growth factor. -/
 theorem exp_neg_nat_sq_mul_pow_tendsto_zero {R : ℝ} (hR : 0 < R) :

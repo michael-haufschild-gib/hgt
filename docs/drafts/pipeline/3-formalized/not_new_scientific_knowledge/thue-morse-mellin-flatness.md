@@ -9,7 +9,9 @@
 - **Statement:** Every finite binary product obeys the exact all-order bound
   `exp(-x) prod_{k<m}(1-exp(-2^k x)) <= 2^(m(m-1)/2)x^m`. Any complex kernel dominated by all
   those finite products, locally integrable on `(0,infinity)`, and exponentially decaying at
-  infinity has a Mellin transform analytic on the whole complex plane.
+  infinity has a Mellin transform analytic on the whole complex plane. The concrete product equals
+  its shifted signed radial series, and on `Re s > 1` its Mellin transform is `Gamma(s)` times the
+  corresponding shifted `LSeries`.
 
 ## Delivered theorem chain
 
@@ -28,6 +30,9 @@
 - `IsThueMorseKernelBound.isMellinFlatKernel`: the all-order hypothesis is removed from the caller.
 - `mellin_analyticOnNhd_of_thueMorseKernelBound`: capstone; finite binary-product domination plus
   local integrability and one exponential tail imply an entire Mellin transform.
+- `thueMorseKernel_eq_tsum`: exact infinite product-to-radial-series identity.
+- `mellin_thueMorseMellinKernel_eq_gamma_mul_LSeries`: unconditional Mellin--Dirichlet identity on
+  `Re s > 1`.
 
 ## Proof content
 
@@ -50,9 +55,18 @@ theorem supplies differentiability at `s`. Since `s` was arbitrary, the transfor
 - `[PROVED]` The result is vector-valued over every complete complex normed space.
 - `[PROVED]` The exact binary coefficient `2^(m(m-1)/2)` is formalized, not hidden in an existential
   constant.
-- `[OPEN CORE]` The actual infinite Thue--Morse product has not yet been constructed in Lean or
-  connected to the shifted coefficient series.
-- `[OPEN CORE]` The matching lower product bound and exact Hadamard type `(log 2)/2` remain paper-only.
+- `[PROVED]` The actual infinite product is constructed and equals the shifted signed Thue--Morse
+  exponential series pointwise on the positive axis (`thueMorseKernel_eq_tsum`).
+- `[PROVED]` The finite integer product has exact coefficients `thueMorseSign n` on
+  `n < 2^m` and zero beyond (`coeff_thueMorsePolynomial`, `thueMorsePolynomial_eq_sum`).
+- `[PROVED]` `mellin_thueMorseMellinKernel_eq_gamma_mul_LSeries` transports the radial `HasSum`
+  through the Mellin integral and identifies the result with the shifted signed Thue--Morse
+  `LSeries` on `Re s > 1`.
+- `[PROVED]` `thueMorseKernel_lower_of_dyadic_bracket` and
+  `thueMorseKernel_radial_quadratic_lower` supply the matching positive-tail and logarithmic
+  quadratic lower bounds.
+- `[OPEN CORE]` The global upper maximum-modulus estimate needed for exact Hadamard type
+  `(log 2)/2` remains to be formalized.
 - `[BRIDGE]` Mellin strip holomorphy is mathlib infrastructure. The new formal payload is the
   all-order quantifier discharge and its exact binary-product instantiation.
 
@@ -70,14 +84,13 @@ theorem supplies differentiability at `s`. Since `s` was arbitrary, the transfor
 - [x] 0 -> 1: exact interface and finite source bound isolated.
 - [x] 1 -> 2: proof complete.
 - [x] 2 -> 3: formalized, target build and axiom audit pass.
-- [ ] 3 -> 4: requires formal construction of the infinite product and the exact order/type layer.
+- [ ] 3 -> 4: requires the exact lower-bound/order/type layer and a standalone paper.
 
 ## Next generative move
 
-Construct the positive infinite binary product as the monotone limit of the finite kernels and prove
-that its omitted tail lies in `[0,1]`. The capstone then yields the entire Mellin transform with no
-new analytic hypotheses; the remaining scientific layer is the matching lower flatness estimate,
-which determines the exact type.
+Transport the existing finite-prefix upper bounds through the Mellin integral uniformly on complex
+discs, then combine them with reciprocal-Gamma growth. The lower radial and negative-half-integer
+growth sides are now formalized.
 
 ## Concrete infinite-product update
 
@@ -91,11 +104,18 @@ which determines the exact type.
   big-O of `exp(-x)` at infinity are discharged in Lean.
 - `[PROVED]` `thueMorseMellinKernel_mellin_analyticOnNhd` proves that the Mellin transform of the
   concrete infinite product is analytic on the whole complex plane.
-- `[OPEN CORE]` The formal series identity connecting this product to the shifted signed
-  Thue--Morse Dirichlet series is not yet present.
-- `[OPEN CORE]` The matching lower flatness estimate and exact Hadamard order-two type remain
-  paper-only.
+- `[PROVED]` `thueMorsePolynomial`, `coeff_thueMorsePolynomial`, and
+  `thueMorsePolynomial_eq_sum` give the exact finite signed coefficient identity.
+- `[PROVED]` `thueMorseFiniteKernel_eq_sum` and `thueMorseKernel_eq_tsum` connect the finite and
+  infinite radial products to the shifted signed exponential series.
+- `[PROVED]` `thueMorseRadialSeries_hasSum_complex`, `thueMorseMellin_weight_summable`, and
+  `mellin_thueMorseMellinKernel_eq_gamma_mul_LSeries` close the analytic handoff to the shifted
+  signed `LSeries` on `Re s > 1`.
+- `[PROVED]` The matching lower flatness estimate is formalized, including strict product
+  positivity, a fixed positive tail constant, dyadic scale selection, and the quadratic logarithmic
+  bound.
+- `[OPEN CORE]` Exact Hadamard order-two type still requires the global upper maximum-modulus bound.
 
-The earlier scope item saying that the infinite product had not been constructed is superseded by
-this update. The targeted module build still passes at `8475/8475`, and the four added principal
-claims have axiom set `{propext, Classical.choice, Quot.sound}`.
+The targeted module build passes at `8475/8475`; the principal product, coefficient, radial-series,
+Mellin--Dirichlet, and Mellin-flatness claims have axiom set
+`{propext, Classical.choice, Quot.sound}`.

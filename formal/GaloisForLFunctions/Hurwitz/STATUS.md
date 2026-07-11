@@ -241,3 +241,13 @@ near `v = 0` off the cut ⟹ `p = 0`, by bounded-blow-up + derivative induction)
 **`rows_and_constant_close_unconditional`**.  Together with the proven quadratic block
 (`allN_quad_vanish_genuine_all_noninteger`), every analytic input of the all-N Hurwitz descent
 is a theorem.  Axioms: `[propext, Classical.choice, Quot.sound]` throughout; lint gate green.
+
+## Update 9 (2026-07-11) — GENUINE-hzeta ALL-N CAPSTONE; THE CARD IS CLOSED
+
+`AllNHZeta.lean` adds the missing genuine-value form: `hurwitz_allN_hzeta_unconditional`
+(near-ray hypothesis) and `hurwitz_allN_hzeta_upper_half_plane` (relation on `Im a > 0`).
+Both compose `model_relation_of_hzeta_relation` with
+`HurwitzAllNComplete.hurwitz_allN_independence_all_noninteger`; hypotheses only `1 < Re s`,
+`s ∉ ℤ`, symmetric `q`.  Axioms `[propext, Classical.choice, Quot.sound]`; area build and
+formal lint green.  Card `hurwitz-quadratic-all-n-tail-independence` promoted to
+`3-formalized/new_scientific_knowledge`.

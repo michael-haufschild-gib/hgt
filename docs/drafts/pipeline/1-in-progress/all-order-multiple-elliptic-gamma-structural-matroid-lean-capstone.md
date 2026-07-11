@@ -104,8 +104,8 @@ in the defect-matroid independence argument, not only the one-defect spectrum ar
 distinct orbit classes exactly when their difference is outside `H ⊔ ℤq`. In particular, the
 paper's elliptic nonresonance condition `h ∉ Λ + ℤq` is formally equivalent to distinctness of
 the pole classes represented by `0` and `-h`. Thus the lattice-to-orbit-residue passage is no
-longer an informal step. The meromorphic principal-part map and theta realization are still
-missing.
+longer an informal step. Theta realization is now complete; the remaining local gap is a
+functorial meromorphic principal-part map for arbitrary elliptic coboundaries.
 
 `formal/GaloisForLFunctions/DifferenceDifferential.lean` defines several commuting field
 automorphisms which fix the coefficient field and commute with the derivation. It proves that
@@ -208,9 +208,138 @@ phi(z+h)-phi(z),  phi=theta'/theta,
 
 and proves its exact two-orbit local data whenever `h` is outside `Z+tau Z`: residue `-1` on the
 base half-period lattice and residue `+1` on its translate by `-h`. Exact zero classification proves
-the opposite summand is regular at each pole, so no hidden pole orbit remains. The next order-one
-task is the field-level map of these analytic principal parts into `OrbitResidueVector`, followed by
-the actual elliptic-gamma defect identity.
+the opposite summand is regular at each pole, so no hidden pole orbit remains.
+
+`formal/GaloisForLFunctions/MeromorphicThetaDefect.lean` realizes this same defect as an actual
+element of the global meromorphic fraction field. It proves translation composition in the germ
+and fraction carriers, supplies one explicit entire cross numerator and product denominator, and
+proves that the fraction is fixed by both period translations `1` and `tau`. For every nonlattice
+shift the field element is not merely nonzero but unequal to every embedded complex constant;
+clearing a hypothetical constant identity and evaluating at the simple theta zero leaves a
+nonzero product. Thus the analytic residue theorem and the genuine elliptic field element are now
+about the same named object. The remaining order-one issue is to exclude this pole pattern from
+the image of an arbitrary elliptic meromorphic translation coboundary and then instantiate the
+actual elliptic-gamma defect identity.
+
+`formal/GaloisForLFunctions/MeromorphicPoleOrbitBoundary.lean` removes the proposed Laurent-
+coefficient extraction from the order-one obstruction. For a meromorphic `g`, assume its pole
+indices on one integer translation orbit are finite. If `g(z+q)-g(z)` had exactly one pole on that
+orbit, the pole-index set of `g` would be nonempty. Its least pole index produces a pole one step
+before the support, and its greatest pole index produces a pole at the final support point, because
+at each boundary one summand is singular and the other is regular. These are distinct, a
+contradiction. Lean proves this directly with `meromorphicOrderAt`. The remaining realization is
+therefore finiteness of pole indices for a lattice-periodic meromorphic coboundary primitive.
+
+`formal/GaloisForLFunctions/JacobiThetaDefectMeromorphicOrder.lean` translates the previously
+proved normalized limits into exact meromorphic orders. A general lemma shows that
+`(z-p)f(z) -> c != 0` for a meromorphic `f` forces `ord_p(f)=-1`. Applied to both theta-defect
+lattices, it proves exact simple poles there; exact theta zero classification and analytic division
+prove the converse, so Lean now knows the complete pole set of the undifferentiated defect. The
+next module propagates this exact support through arbitrary nonzero constant-coefficient
+differential operators.
+
+`formal/GaloisForLFunctions/MeromorphicSimplePoleDifferentialOperator.lean` proves the required
+propagation generically. The `j`th derivative of any meromorphic simple pole has exact order
+`-(j+1)`. Hence a nonzero `L in C[delta]` has exact order `-(deg L+1)`: its leading derivative is
+strictly more singular than every lower term and cannot cancel. Analyticity is preserved off the
+original poles. Applied to the theta defect, this gives an exact iff theorem saying that
+`L(phi(z+h)-phi(z))` has precisely the same two pole lattices and no others. The local
+singleton-support side of the order-one obstruction is now complete.
+
+`formal/GaloisForLFunctions/JacobiThetaDifferentialOrbitObstruction.lean` combines exact
+differentiated support with the coefficient-free boundary theorem. Under nontorsion of `q` modulo
+`Z+Z tau` and nonresonance of `h` modulo `Z+Z tau+Zq`, the differentiated theta defect has exactly
+one pole on its distinguished `q`-orbit. It therefore cannot equal `g(z+q)-g(z)` whenever the pole
+indices of `g` on that orbit are finite.
+
+`formal/GaloisForLFunctions/CompactEllipticPoleFiniteness.lean` discharges that finiteness
+hypothesis for every genuine elliptic meromorphic primitive. Fractional coordinates reduce the
+orbit into a compact fundamental parallelogram; local finiteness of the native meromorphic divisor
+makes its pole set there finite; and nontorsion makes orbit reduction injective. The resulting
+theorem unconditionally excludes
+
+```text
+L(phi(z+h)-phi(z)) = g(z+q)-g(z)
+```
+
+for every nonzero `L in C[delta]` and every globally meromorphic `g` with periods `1,tau`. Thus the
+local analytic noncoboundary theorem needed at order one is complete without a residue extractor or
+a compactness assumption shell.
+
+`formal/GaloisForLFunctions/JacobiThetaFamilyOrbitObstruction.lean` strengthens the analytic
+statement from one defect to every finite separated family. Choose any member whose operator is
+nonzero. Pairwise nonresonance makes all other differentiated defects analytic on its shifted pole
+orbit, while exact simple-pole differentiation makes the chosen member singular at precisely the
+zero index. Compact elliptic pole finiteness and the boundary theorem then exclude a single
+elliptic coboundary for the entire differential combination. This is the genuine analytic
+finite-family input for the defect-coset matroid; it is no longer represented only by an abstract
+principal-part vector theorem.
+
+`formal/GaloisForLFunctions/FiniteTypeSpecialization.lean` proves the product-specialization
+descent used after simultaneous telescoping. For a finite-type domain `R` over an algebraically
+closed field `C`, every nonzero element survives under some `C`-point of `R`; the proof localizes
+away from that element and applies Nullstellensatz through a maximal quotient. A basis of the left
+field then shows that every nonzero denominator in `A tensor_C R` survives some specialization of
+the right factor. Finally, a cross-multiplied rational identity
+
+```text
+sigma(N) D - N sigma(D) = a sigma(D) D
+```
+
+specializes to an actual `u in A` with `sigma(u)-u=a`. Thus the generic algebraic descent from a
+rational product certificate to one factor is unconditional and axiom-clean. What remains is the
+concrete identification of the paired elliptic compositum with the relevant fraction field and the
+actual multiple-elliptic-gamma hierarchy realization.
+
+`formal/GaloisForLFunctions/EllipticGammaLogKernel.lean` begins that actual realization from the
+standard double-product logarithmic derivative, not from an assumed functional equation. It
+defines the forward and backward rational atoms and proves exact finite telescoping under
+`x -> p*x` and `x -> q*x`. In each direction the complete rectangular slice collapses to the
+expected one-dimensional theta boundary plus two explicit terminal tails. This is the algebraic
+source of the paired elliptic-gamma increment equations. The same module now proves that both
+terminal tails tend to zero whenever the shifted nome has norm less than one. More strongly, it
+proves absolute summability of both halves of the double kernel and of the full kernel, justifies
+the required Fubini decomposition, defines the absolutely convergent one-dimensional theta-product
+logarithmic kernel, and passes finite telescoping to the two genuine pointwise increment equations
+
+```text
+K(p,q;p*x)-K(p,q;x)=ThetaLog(q;x),
+K(p,q;q*x)-K(p,q;x)=ThetaLog(p;x).
+```
+
+These are constructed identities, not assumed hierarchy axioms.
+`EllipticGammaLogNormalConvergence.lean` then supplies an explicit two-index geometric Weierstrass
+majorant and uniform convergence on every closed annulus `r <= |x| <= R`, `r > 0`. Thus normal
+convergence on compact subsets of the punctured multiplicative plane is closed. The remaining
+analytic comparison no longer requires formalizing the Jacobi triple product.
+`EllipticThetaLogCoordinate.lean` uses
+`x(tau,z)=-exp(pi*i*tau) exp(2*pi*i*z)` and proves that the additive normalization of `ThetaLog`
+has exactly the period-one and period-`tau` quasiperiod laws of the existing analytic Jacobi-theta
+logarithmic derivative. `EllipticThetaLogComparison.lean` therefore proves their discrepancy is
+doubly periodic on the common regular locus. The identification is reduced to matching the
+explicit pole divisor. `EllipticThetaCoordinateDivisor.lean` now proves the location statement
+exactly: `x(tau,z)` belongs to the full integer nome orbit if and only if `z` belongs to the odd
+half-period lattice, if and only if `jacobiTheta2(z,tau)=0`. The remaining local theorem is equality
+of the normalized principal parts on that common divisor. This is now closed at the distinguished
+half-period by `EllipticThetaLogPrincipalPart.lean`: the unique singular atom is isolated, both
+infinite remainders are proved analytic at the nome by uniform geometric majorants, the exponential
+coordinate derivative is nonzero, and the constructed additive kernel has normalized limit `1`.
+`EllipticThetaLogComparison.lean` combines this with the analytic Jacobi-theta residue-one theorem
+to prove the comparison discrepancy has normalized limit `0`. The remaining analytic step is to
+package the constructed kernel meromorphically on the full plane. The regular base region is now
+closed: `EllipticThetaLogFundamentalAnnulus.lean` proves the full constructed theta kernel analytic
+at every `x` with `|q| < |x| < 1`, using a smaller closed annulus and explicit summable bounds for
+both atom families. It remains to widen across the single fundamental pole using the principal-part
+decomposition. That widening and global transport are now closed. On `|q|^2 < |x| < 1` the
+remainder is analytic and the full kernel is meromorphic with only the isolated `x=q` atom;
+`EllipticThetaLogNomeTransport.lean` proves meromorphicity invariant under `x -> q*x`, even at the
+exceptional point by working on punctured germs; and `EllipticThetaLogGlobalMeromorphic.lean` uses
+a minimal-power reduction to prove the multiplicative kernel meromorphic on all `C*` and its
+aligned additive pullback meromorphic on all `C`. Thus the comparison discrepancy is globally
+meromorphic. `MeromorphicNormalizedRemovable.lean` converts its zero normalized principal part to
+nonnegative native meromorphic order at the half-period. It remains to transport removability over
+the full lattice and conclude the elliptic discrepancy is constant. The resulting equality then
+packages the constructed boundary in the existing global meromorphic field.
 
 `formal/GaloisForLFunctions/JacobiThetaParallelogramCharge.lean` proves the global constraint-side
 counting input. On every zero-free fundamental boundary, the integral of the theta logarithmic
@@ -293,6 +422,7 @@ analytic capstone is already formalized.
 - [x] unconditional multi-automorphism dependence-to-telescoping foundation
 - [x] unconditional simultaneous telescoping and all-jet independence contrapositive
 - [x] arbitrary noncommuting automorphism-family strengthening
+- [x] finite-type rational product-specialization descent to one factor
 - [x] genuine meromorphic fraction field with quotient-rule derivation
 - [x] complex translations lifted as differential-field automorphisms
 - [x] rank-three translation fixed field identified with constants in the germ carrier
@@ -305,9 +435,30 @@ analytic capstone is already formalized.
 - [x] existence of a zero-free translated fundamental-parallelogram boundary
 - [x] exact theta zero-set classification: no zeros outside the odd-half-period lattice orbit
 - [x] exact two-orbit residue law for a nonlattice translated theta logarithmic-derivative defect
+- [x] translated theta defect realized as a nonconstant doubly periodic meromorphic-field element
+- [x] coefficient-free singleton-pole obstruction for finite meromorphic translation orbits
+- [x] exact meromorphic-order classification of the two theta-defect pole lattices
+- [x] exact differentiated theta-defect pole support for every nonzero `C[delta]` operator
 - [ ] meromorphic and elliptic function-field foundation
 - [ ] theta and multiple-elliptic-gamma definitions and hierarchy
-- [ ] orbit-principal-part obstruction
+- [x] exact finite telescoping of the elliptic-gamma logarithmic-derivative double kernel
+- [x] terminal-tail vanishing in both elliptic-gamma nome directions
+- [x] absolute summability and Fubini decomposition of the full double kernel
+- [x] both pointwise elliptic-gamma increment equations with convergent theta-product boundaries
+- [x] uniform convergence of the full double kernel on every closed multiplicative annulus
+- [x] exponential-coordinate period and quasiperiod laws for the constructed theta boundary
+- [x] ellipticity of the constructed-versus-analytic theta-log discrepancy on the regular locus
+- [x] exact alignment of the multiplicative nome orbit with the analytic Jacobi-theta divisor
+- [x] residue-one normalized principal part for the constructed theta boundary at the half-period
+- [x] vanishing normalized principal part of the constructed-versus-analytic discrepancy
+- [x] analyticity of the constructed theta kernel on the pole-free fundamental annulus
+- [x] one-pole meromorphicity on the wider fundamental annulus
+- [x] bidirectional meromorphic transport under multiplication by the nome
+- [x] global meromorphicity on `C*` and of the aligned additive pullback on `C`
+- [x] native nonnegative meromorphic order of the comparison at the half-period
+- [x] elliptic finite-pole realization for arbitrary meromorphic elliptic coboundary primitives
+- [x] unconditional differentiated theta-defect noncoboundary against every elliptic primitive
+- [x] unconditional finite-family theta-defect noncoboundary for separated shift classes
 - [ ] generic order-one atomic theorem
 - [ ] abstract all-order independence induction
 - [ ] Stanley--Reisner differential-rank theorem
@@ -404,3 +555,118 @@ analytic capstone is already formalized.
   `-h`; exact zero classification proves the other summand is regular at each pole. Both residue
   theorems are axiom-clean. What remains is packaging these coefficients in the meromorphic germ
   field's orbit-residue map and connecting them to the elliptic-gamma hierarchy equation.
+- 2026-07-11 -- Closed the analytic-function-to-meromorphic-field identity for the theta defect.
+  `MeromorphicThetaDefect` proves that translations compose on both carriers, represents
+  `phi(z+h)-phi(z)` by an explicit entire numerator/denominator pair, proves genuine `1`- and
+  `tau`-periodicity, and excludes every constant value for a nonlattice shift by evaluation at the
+  simple theta zero. Exact builds and axiom reports pass with only `propext`, `Classical.choice`,
+  and `Quot.sound`. The remaining local gate is no longer identification of the defect itself; it
+  is functorial extraction of fixed-order principal parts from arbitrary elliptic coboundaries.
+- 2026-07-11 -- Replaced the remaining Laurent-coefficient extractor by a coefficient-free pole-
+  support boundary theorem. A finite pole set on an integer translation orbit has a least and a
+  greatest index; the shift coboundary has a pole at both induced boundaries, so it cannot have
+  singleton pole support. `MeromorphicPoleOrbitBoundary` proves this with `meromorphicOrderAt`,
+  builds exactly, and reports only standard Lean axioms. The residual analytic work is compact-
+  elliptic finiteness plus exact differentiated theta-defect pole support.
+- 2026-07-11 -- Converted the theta-defect residue limits into exact native meromorphic orders.
+  `JacobiThetaDefectMeromorphicOrder` proves both lattice orbits have order `-1` and that every
+  other point is analytic, hence supplies the complete pole set of the genuine analytic defect.
+  Exact source/build checks and axiom reports pass. The remaining singleton-support input is now
+  only its stability under a nonzero constant-coefficient differential operator.
+- 2026-07-11 -- Closed differentiated theta-defect support for every nonzero
+  constant-coefficient differential operator. A generic meromorphic theorem gives
+  `ord_p(f^(j))=-(j+1)` at a simple pole and shows the highest nonzero differential term cannot
+  cancel. The resulting theta theorem preserves exactly the two known pole lattices and no others.
+  Builds and axiom reports pass; only finite pole support for an arbitrary elliptic coboundary
+  primitive remains in the local obstruction.
+- 2026-07-11 -- Closed the local analytic order-one obstruction without a finiteness hypothesis.
+  `JacobiThetaDifferentialOrbitObstruction` first gives singleton pole support on the distinguished
+  nontorsion orbit. `CompactEllipticPoleFiniteness` then reduces that orbit to fractional
+  `(1,tau)` coordinates, uses compact finiteness of the native meromorphic divisor, and proves the
+  reduction injective. Consequently no nonzero constant-coefficient differential operator applied
+  to a nonresonant theta defect is a translation coboundary of any globally meromorphic elliptic
+  primitive. Exact source/build checks pass and the capstones use only `propext`,
+  `Classical.choice`, and `Quot.sound`. The next unresolved theorem is no longer local elliptic
+  analysis; it is the actual multiple-elliptic-gamma hierarchy specialization and all-order rank
+  assembly.
+- 2026-07-11 -- Strengthened the completed local analytic obstruction from one theta defect to an
+  arbitrary finite separated family. Any nonzero operator supplies a distinguished shifted pole;
+  pairwise nonresonance makes every other family term analytic on that orbit, so the complete sum
+  has singleton pole support there. `JacobiThetaFamilyOrbitObstruction` combines this with compact
+  elliptic pole finiteness to rule out every elliptic translation coboundary. Exact builds pass and
+  both family capstones report only `propext`, `Classical.choice`, and `Quot.sound`. This supplies
+  the analytic family-level input needed by the defect matroid; product specialization remains the
+  next bridge to the paired elliptic-gamma system.
+- 2026-07-11 -- Closed the generic product-specialization descent unconditionally.
+  `FiniteTypeSpecialization` uses localization plus Nullstellensatz to find a complex point avoiding
+  any prescribed nonzero coefficient, lifts this to preservation of arbitrary nonzero tensor
+  denominators via a basis of the left field, proves equivariance with the left automorphism, and
+  specializes a cross-multiplied rational difference identity to an actual left-field coboundary.
+  Exact builds pass and all three specialization capstones report only `propext`,
+  `Classical.choice`, and `Quot.sound`. The remaining application is concrete rather than generic:
+  present the paired elliptic compositum as the fraction field of the tensor coordinate domain and
+  instantiate the actual elliptic-gamma hierarchy.
+- 2026-07-11 -- Started the actual elliptic-gamma realization from its double-product logarithmic
+  kernel. `EllipticGammaLogKernel` proves exact finite telescoping under both nome shifts: every
+  finite slice reduces to the correct one-dimensional boundary and two terminal tails. Both
+  capstones build with only standard Lean axioms. This is not an assumed hierarchy interface; it
+  is the formula from which the hierarchy will follow after normal convergence and tail vanishing.
+- 2026-07-11 -- Proved both terminal tails in the finite elliptic-gamma kernel identities tend to
+  zero for nomes of norm less than one. The paired shift identities are therefore analytically
+  reduced to normal convergence of the double sum and identification of the surviving
+  one-dimensional boundary with a theta logarithmic derivative.
+- 2026-07-11 -- Closed pointwise convergence and the two infinite order-one hierarchy equations.
+  `EllipticGammaLogKernel` proves a general cofinite comparison theorem for the rational log atom,
+  geometric absolute summability of both two-index argument families, absolute summability of the
+  full kernel, and Fubini decomposition into nome fibers. Finite telescoping plus the vanishing
+  tails then gives `K(p,q;p*x)-K(p,q;x)=ThetaLog(q;x)`; nome symmetry gives the polarized equation
+  with `p` and `q` exchanged. The theta boundary is itself absolutely summable. The remaining
+  analytic gate is uniform-on-compact convergence away from the polar divisor and identification
+  with the existing analytic theta logarithmic derivative, not existence or pointwise convergence.
+- 2026-07-11 -- Closed normal convergence on multiplicative annuli. The new
+  `EllipticGammaLogNormalConvergence` module constructs separate forward and backward geometric
+  majorants, proves both are summable on `N x N`, and applies an eventual Weierstrass bound to the
+  rational log atoms. The full double kernel converges uniformly on every closed annulus
+  `r <= |x| <= R` with `r > 0`. This removes compact convergence as an open assumption; the next
+  analytic step is the explicit polar-set complement and the exponential-coordinate theta
+  normalization.
+- 2026-07-11 -- Replaced the anticipated Jacobi triple-product bridge by a constraint-and-divisor
+  uniqueness bridge. `EllipticThetaLogKernel` first proves its own exact multiplicative
+  quasiperiod `T(q,q*x)-T(q,x)=-1` off the boundary pole. Under
+  `x(tau,z)=-exp(pi*i*tau)exp(2*pi*i*z)`, `EllipticThetaLogCoordinate` proves the normalized boundary
+  has the same `1`-period and `tau`-quasiperiod as `thetaLogDeriv`. The new comparison module proves
+  their discrepancy is doubly periodic on the common regular locus. It remains to match the
+  explicit pole divisors; compact ellipticity then makes the discrepancy constant, which cancels
+  from every translated defect used by the matroid theorem.
+- 2026-07-11 -- Closed exact divisor-location alignment. `EllipticThetaCoordinateDivisor` rewrites
+  the aligned coordinate as one complex exponential, classifies equality with every integer nome
+  power using the kernel of complex exponential, and proves this nome orbit is exactly the odd
+  half-period lattice. Composing with `JacobiThetaExactDivisor` gives an iff with
+  `jacobiTheta2(z,tau)=0`. The comparison gap is now local principal-part equality at this common
+  divisor, followed by the standard constant-discrepancy argument.
+- 2026-07-11 -- Closed the distinguished principal-part comparison. The new
+  `EllipticThetaLogPrincipalPart` module splits the theta boundary into its unique singular atom and
+  forward/backward remainders, proves the remainders analytic at the nome using explicit uniform
+  geometric bounds, computes the nonzero derivative of the aligned exponential coordinate, and
+  proves `(z-z0)*ThetaLogConstructed(z) -> 1` at the odd half-period. Combining this with the
+  existing analytic Jacobi-theta residue-one theorem gives normalized limit zero for their
+  discrepancy. The remaining comparison work is global meromorphic packaging and transport of
+  removability over the complete lattice divisor, after which elliptic constancy identifies every
+  translated defect.
+- 2026-07-11 -- Proved analyticity on the regular fundamental multiplicative annulus.
+  `EllipticThetaLogFundamentalAnnulus` takes any point with `|q| < |x| < 1`, nests it inside a
+  smaller closed annulus, constructs summable forward and backward rational-atom majorants, proves
+  every summand differentiable on the corresponding open annulus, and applies the complex
+  Weierstrass theorem. This supplies the pole-free fundamental domain for the global meromorphic
+  transport. The next exact target is the wider `|q|^2 < |x| < 1` annulus with the single `x=q`
+  atom isolated, followed by transport under integer nome powers.
+- 2026-07-11 -- Closed global meromorphicity of the constructed theta boundary. The wider
+  fundamental annulus isolates the sole `x=q` rational atom and proves the remainder analytic.
+  `EllipticThetaLogNomeTransport` shows meromorphic germs are invariant under `x -> q*x`; a
+  minimal-power reduction then moves every nonzero point into the wider annulus, proving the
+  kernel meromorphic on `C*`. Composition with the nonvanishing exponential coordinate proves the
+  additive normalization globally meromorphic on `C`. Consequently the comparison discrepancy is
+  globally meromorphic. The new generic normalized-removability lemma turns `(z-p)f(z)->0` into
+  nonnegative `meromorphicOrderAt`; applied at the half-period, it closes removability there. The
+  remaining theta bridge is transport of this nonnegative order over the complete period lattice
+  and elliptic constancy.

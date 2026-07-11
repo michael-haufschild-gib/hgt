@@ -16,9 +16,9 @@ BakerLinearIndependence`; do not replace it with a stronger unproved interface o
 
 - [x] 0 -> 1 in-progress: exact interface and consumers audited; no existing Lean formalization was
   found in Mathlib or the primary-source search.
-- [ ] 1 -> 2 fully-proven: the several-variable auxiliary-function, extrapolation, and zero-estimate
+- [x] 1 -> 2 fully-proven: the several-variable auxiliary-function, extrapolation, and zero-estimate
   chain closes the exact prime-log statement.
-- [ ] 2 -> 3 formalized: `bakerLinearIndependence_holds` builds; all concrete `hB` premises are
+- [x] 2 -> 3 formalized: `bakerLinearIndependence_holds` builds; all concrete `hB` premises are
   removed; axiom audit and formal lint pass.
 
 ## Foundation order
@@ -33,35 +33,23 @@ BakerLinearIndependence`; do not replace it with a stronger unproved interface o
    the prescribed derivative order at every selected sample.
 5. [x] Prove strict-scale extrapolation uniformly over a shifted-component box and a growing sample
    window, with all scalar smallness premises discharged.
-6. [ ] Iterate the enlarged exact-zero box until the main auxiliary function has at least as many
+6. [x] Iterate the enlarged exact-zero box until the main auxiliary function has at least as many
    consecutive zero samples as columns, then close by the ordinary Vandermonde zero estimate.
 
-## Open core
+## Closed core
 
-`[OPEN CORE]` The arbitrary finite-family step is genuine Baker theory.  A counterexample is now
-reduced globally to minimal arity: every nontrivial algebraic relation on its prime family has full
-support.  Complex conjugation therefore fixes every normalized coefficient ratio, and the
-scale-free eliminated direction coordinates are real.  The multivariate integral auxiliary matrix,
-explicit Siegel coefficient bound, shifted components `G_ν`, triangular derivative law,
-algebraic-integer values, multipoint Schwarz estimate, and asymmetric norm-product discreteness
-theorem are formalized.
+`[PROVEN]` The arbitrary finite-family step is formalized.  The parameter is restricted to a
+cofinal divisible subfamily, so every prescribed multiplicity halving is exact.  At stage `k`, the
+sample interval grows by `t/4`, the component cutoff halves, and the closed positive growth budget
+has scale `exp(C*t^(12n+k))`; Schwarz decay has the strictly larger scale
+`(2/3)^(u^(12n+k+1))`.  A finite-filter intersection makes all stages simultaneous.
 
-The corrected polynomial family is `L=2*t^(8n-4)`, `S=t^(4n)`, `q=t^(8n)`, `T=2q`, and
-`R=t^(4n+1)`.  Lean proves the column count is exactly twice the initial row count.  Every analytic,
-height, sample, and shifted-direction contribution is bounded by a fixed exponential at scale
-`t^(12n-1)`, while Schwarz decay occurs at scale `q*S=t^(12n)`.  Consequently one sufficiently large
-parameter produces a nonzero kernel whose entire lower `q`-box of components vanishes at every
-natural sample in the first quarter of the disc.  These zeros are repackaged as a kernel for the
-enlarged matrix with `quarterSampleCount * q^(n-1)` rows, and Lean proves that count eventually
-exceeds `L^n`.
-
-The named remaining core is long extrapolation with decreasing multiplicity: reuse each enlarged
-kernel as the next interpolation set, grow the consecutive sample range by a fixed fraction of `t`,
-and reduce the component cutoff by a fixed factor.  After finitely many stages depending only on
-`n`, the main component has at least `L^n` consecutive integer zeros.  The existing one-variable
-Vandermonde estimate then contradicts the nonzero Siegel vector.  This avoids importing a stronger
-Philippon zero lemma and uses the classical longer-extrapolation route with the already formalized
-weak zero estimate.
+After `8*n*(n-1)` stages, Lean proves the consecutive sample count is at least the number `L^n` of
+auxiliary coefficients and the remaining component cutoff is positive.  The zeroth component is
+the original auxiliary exponential polynomial.  Its natural samples are a Vandermonde system in
+the distinct positive nodes `exp(frequency m)`, so the terminal kernel forces the Siegel vector to
+be zero, contradicting its construction.  This proves `bakerLinearIndependence_holds` and the
+unconditional real-additive and multiplicative consumer interfaces.
 
 ## Log
 
@@ -91,3 +79,9 @@ weak zero estimate.
   minimal-arity reduction; normalized coefficient ratios and direction coordinates are now proved
   real.  The targeted `BakerParameters` build, generated-index check, formal lint, and axiom audit
   pass; the new declarations use only `propext`, `Classical.choice`, and `Quot.sound`.
+- 2026-07-11 -- closed long extrapolation in `BakerIteration.lean`.  A cofinal power-of-two parameter
+  subfamily supports simultaneous finite iteration with decreasing multiplicity; the terminal
+  sample count dominates `L^n`, the remaining cutoff is positive, and an ordinary Vandermonde
+  argument forces the nonzero Siegel vector to vanish.  Proved `bakerLinearIndependence_holds`,
+  premise-free `primeLog_algIndep` and `baker_prime_mult_indep`.  The targeted Lean
+  4.30 build and axiom audit pass; only `propext`, `Classical.choice`, and `Quot.sound` occur.

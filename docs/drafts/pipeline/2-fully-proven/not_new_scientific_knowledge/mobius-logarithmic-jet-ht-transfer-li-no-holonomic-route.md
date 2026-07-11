@@ -3,13 +3,14 @@
 - **ID:** `mobius-logarithmic-jet-ht-transfer-li-no-holonomic-route`
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) / route no-go
-- **Scientific status:** `[PROVED HERE] [BRIDGE]`; stronger Li HT claim `[CONDITIONAL]`
+- **Scientific status:** `[PROVED HERE] [UNCONDITIONAL] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lane:** general hypertranscendence; coefficient transforms; Li-criterion boundary
 - **Statement:** For a nonzero meromorphic function, logarithmic differentiation after a Möbius
   change preserves DA versus HT exactly.  Independently, a function with infinitely many zeros has
   a non-D-finite Möbius logarithmic jet.  Consequently the Li sequence is unconditionally not
   P-recursive, and no holonomic closed-recurrence implementation of Li's criterion can prove RH.
-  If completed `xi` is HT, then its Li generator is HT as well.
+  The independently proved augmentation-exposure theorem makes completed `xi` HT, so its Li
+  generator is unconditionally HT as well.
 
 ## Goal
 
@@ -72,7 +73,7 @@ For a local logarithm `G=log(F o r)`, one has `G'=J_r(F)`.  Differentiation pres
 ADE for `G'` becomes an ADE for `G` after shifting every derivative index by one.  Therefore `G` is
 DA exactly when `J_r(F)` is DA.  This completes all equivalences.  ∎
 
-## Li specialization `[CONDITIONAL: HT of completed xi is not source-cleared]`
+## Li specialization `[PROVED HERE, UNCONDITIONAL]`
 
 Let `xi` be Riemann's completed xi-function and put
 
@@ -92,7 +93,10 @@ Consequently
 
 `=J_r(xi)(z)`.
 
-If the completed `xi` is HT over `C(s)`, the transfer theorem gives
+The completed-logarithmic-derivative augmentation theorem proves unconditionally that `xi'/xi` is
+HT over `C(s)`: applying the shift `s -> s+2` strips the common gamma mode and exposes an ordinary
+Dirichlet series with nonzero coefficients at every prime, to which Ostrowski applies.  The
+logarithmic-derivative equivalence then makes `xi` HT.  Applying the transfer theorem gives
 
 `L_Li is HT over C(z)`.
 
@@ -150,11 +154,11 @@ explains why that forcing cannot be eliminated into a fixed closed P-recursive l
    infinite-dimensional input at each index is not closed and is not excluded.
 4. **Asymptotic recurrences.** An asymptotic expansion or inequality is not an exact P-recurrence and
    remains available.
-5. **Source dependence, audit result.** Only the stronger conclusion `L_Li is HT` requires HT of
-   completed `xi`.  The non-P-recursiveness theorem is unconditional.  Li--Ye 2008 proves only a
-   restricted class of joint polynomial nonrelations; it explicitly presents full differential
-   independence of `zeta` and `Gamma` as Markus's conjecture.  It therefore does **not** justify the
-   unconditional `HT(xi)` assertion made in older project cards.
+5. **Source dependence, audit result.** Li--Ye 2008 alone does not source-clear `HT(xi)`; it proves
+   only a restricted class of joint polynomial nonrelations and presents full differential
+   independence of `zeta` and `Gamma` as Markus's conjecture.  The unconditional input now comes
+   instead from the completed-logarithmic-derivative augmentation theorem, whose Ostrowski source
+   exposure avoids the missing joint-independence claim.
 
 ## Scientific gate
 
@@ -172,11 +176,12 @@ algebraic-differential handle.
 - [x] Paper proof of the general transfer theorem.
 - [x] Unconditional paper proof that the Li generator is not D-finite and the Li sequence is not
   P-recursive.
-- [x] Conditional strengthening: `HT(xi)` iff the Li generator is HT.
+- [x] Unconditional strengthening: `HT(xi)` and therefore the Li generator is HT.
 - [x] Audit Li--Ye 2008 in full: it does not prove full differential independence and does not
   source-clear `HT(xi)`.
-- [ ] Prove `HT(xi)` or locate a primary theorem that actually proves it; until then only the
-  stronger HT label for the Li generator is conditional.
+- [x] Prove `HT(xi)` independently of the unproved Markus joint-independence conjecture; discharged
+  by `completed-logderiv-augmentation-filter-exposure.md` using a source-stripping shift and
+  Ostrowski's theorem.
 - [x] Search exact and equivalent non-holonomicity statements for the Li sequence; no exact primary
   statement located, but the proof is a routine finite-singularity argument and is graded bridge.
 - [x] 1 -> 2: proof complete; parent/literature verdict `[BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`.
@@ -209,3 +214,8 @@ algebraic-differential handle.
   formulations but no exact printed non-P-recursiveness statement.  The result is nevertheless a
   direct classical singularity argument, so it is moved to fully-proven bridge infrastructure, not
   promoted as new science.
+- 2026-07-11 -- Removed the conditional HT label after the independent augmentation-exposure
+  theorem proved `xi'/xi`, hence `xi`, hypertranscendental without using the unproved joint
+  differential independence of `zeta` and `Gamma`.  The Li logarithmic generator is now
+  unconditionally HT; the card remains stage 2 because this complete analytic transfer has not
+  been formalized in Lean.

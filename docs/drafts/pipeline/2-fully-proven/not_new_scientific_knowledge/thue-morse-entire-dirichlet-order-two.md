@@ -258,15 +258,16 @@ the final Mellin integral only:
 3. `mellin_differentiableAt_of_superpolynomial_zero`: discharge the existing Mellin big-O strip
    interface at an arbitrary `s` from all-order flatness at zero and exponential decay at infinity;
 4. `thueMorseMellin_entire`: the entire continuation;
-5. the two-sided estimate (7), then the exact order/type theorem once the project exposes a reusable
-   Hadamard-type interface.
+5. the two-sided estimate (7), realized directly by explicit lower and upper growth theorems rather
+   than by assuming a Hadamard-type interface.
 
 ## Gates
 
 - [x] 0 -> 1: exact counterexample and growth invariant isolated; degenerate and literature cases
   attacked.
 - [x] 1 -> 2: complete proof of exact order and type, with no computational dependency.
-- [ ] 2 -> 3: finite-product, flatness, Mellin, and growth layers remain to be formalized.
+- [x] 2 -> 3: the finite-product, Mellin, matching lower-flatness, entire-continuation, sharp
+  lower-growth, global Mellin upper-growth, and reciprocal-Gamma upper-growth layers are formalized.
 - [ ] 3 -> 4: requires a standalone paper and an independent priority audit of the exact type.
 
 ## Next generative move
@@ -283,8 +284,7 @@ natural boundary or a finite abscissa singularity.
   `../../3-formalized/new/thue-morse-mellin-flatness.md` and
   `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean`. The exact finite coefficient
   `2^(m(m-1)/2)`, natural-to-real exponent discharge, whole-plane Mellin convergence, and analytic
-  capstone are axiom-clean. The stage-2 card remains here because the infinite product construction,
-  matching lower bound, and exact order/type theorem are not yet in Lean.
+  capstone are axiom-clean.
 
 ## Concrete formalization update
 
@@ -294,5 +294,17 @@ natural boundary or a finite abscissa singularity.
   the `exp(-x)` tail.
 - `thueMorseMellinKernel_mellin_analyticOnNhd` therefore formalizes the whole-plane analyticity of
   the concrete product's Mellin transform.
-- The stage-2 status remains correct for this card: the formal coefficient-series identity, the
-  lower radial estimate, and the exact order/type theorem have not yet crossed the Lean gate.
+- The finite coefficient identity and the infinite radial product-to-series identity are now
+  formalized (`coeff_thueMorsePolynomial`, `thueMorsePolynomial_eq_sum`,
+  `thueMorseKernel_eq_tsum`). The Mellin-to-`LSeries` handoff is also formalized on `Re s > 1` by
+  `mellin_thueMorseMellinKernel_eq_gamma_mul_LSeries`.
+- 2026-07-11 — strict positivity of the infinite product, the fixed positive tail, the dyadic lower
+  factorization, and the sharp logarithmic radial lower bound are formalized. The new
+  `ThueMorseExactOrder` module constructs the entire continuation, proves agreement with the
+  `LSeries`, transports the radial estimate to a sharp negative-axis Mellin bound, and preserves it
+  through reciprocal Gamma on negative half-integers.
+- 2026-07-11 — the global upper side is formalized without a growth Prop. The Mellin carrier is
+  bounded by its exact binary-prefix constant plus a factorial, then by an exponential with
+  quadratic coefficient `(log 2)/2`. `GammaInvGrowth` proves the reciprocal-Gamma factor has an
+  explicit order-one Weierstrass envelope. Their direct product is
+  `thueMorseEntireDirichlet_norm_le_exact_order_two_envelope`.

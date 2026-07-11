@@ -1,8 +1,10 @@
 import GaloisForLFunctions.RHTower.ThueMorseMellinFlatness
 import GaloisForLFunctions.RHTower.L2FourierIntegralBridge
 import GaloisForLFunctions.RHTower.PerronCarrierFlankMass
+import GaloisForLFunctions.RHTower.DirichletPolyPerronMass
 import GaloisForLFunctions.RHTower.XiThetaCriticalTrace
 import GaloisForLFunctions.RHTower.XiThetaPositiveL2Perron
+import GaloisForLFunctions.RHTower.ArchimedeanBalancedPerron
 
 /-!
 # Thue--Morse Mellin carrier discharges Perron flank L2 energy
@@ -148,6 +150,84 @@ theorem thueMorseMellinCarrier_hasPerronCarrierFlankL2Energy :
     HasPerronCarrierFlankL2Energy (mellin thueMorseMellinKernel)
       thueMorseMellinCarrierFlankL2Budget :=
   Eventually.of_forall thueMorseMellinCarrier_hasPerronCarrierFlankL2EnergyAt
+
+/-- The concrete Thue--Morse carrier therefore has coefficient-independent weighted Perron flank
+mass at every sufficiently deep negative line.  The mass interface is constructed from the
+unconditional vertical `L²` energy by Cauchy--Schwarz; no separate flank hypothesis remains. -/
+theorem thueMorseMellinCarrier_hasPerronCarrierFlankMass :
+    HasPerronCarrierFlankMass (mellin thueMorseMellinKernel)
+      (fun M => perronFlankL2Constant * thueMorseMellinCarrierFlankL2Budget M) :=
+  HasPerronCarrierFlankL2Energy.hasPerronCarrierFlankMass
+    thueMorseMellinKernel_isMellinFlatKernel.mellin_differentiable
+    thueMorseMellinCarrier_hasPerronCarrierFlankL2Energy
+
+/-- A Mellin-flat kernel has the weighted horizontal Perron mass at every strip depth whose left
+edge lies left of the Perron line.  Uniform boundedness on the closed vertical strip supplies the
+integrable `(1+T²)⁻¹` majorant. -/
+theorem IsMellinFlatKernel.hasPerronCarrierHorizontalMassAt
+    {f : ℝ → ℂ} (hf : IsMellinFlatKernel f) {c : ℝ} {M : ℕ}
+    (hMc : -(M : ℝ) ≤ c) :
+    HasPerronCarrierHorizontalMassAt (mellin f) c M := by
+  obtain ⟨C, hC, hbound⟩ := hf.exists_mellin_vertical_strip_bound (-(M : ℝ)) c
+  have hcont : Continuous (mellin f) := hf.mellin_differentiable.continuous
+  have hstrip : ∀ x ∈ Icc (-(M : ℝ)) c, ∀ T : ℝ,
+      ‖mellin f (↑x + ↑T * I)‖ ≤ C := by
+    intro x hx T
+    apply hbound (↑x + ↑T * I)
+    · simpa only [add_re, ofReal_re, mul_re, I_re, ofReal_im, mul_zero, zero_mul,
+        sub_zero, add_zero] using hx.1
+    · simpa only [add_re, ofReal_re, mul_re, I_re, ofReal_im, mul_zero, zero_mul,
+        sub_zero, add_zero] using hx.2
+  exact hasPerronCarrierHorizontalMassAt_of_uniform_strip_norm_le
+    (F := mellin f) (c := c) (C := C) (M := M) hcont hMc hC hstrip
+
+/-- Every Mellin-flat kernel has eventual horizontal Perron mass on every fixed Perron line.  Once
+the negative integer depth passes `-c`, the preceding finite-strip bound applies at every depth. -/
+theorem IsMellinFlatKernel.hasPerronCarrierHorizontalMass
+    {f : ℝ → ℂ} (hf : IsMellinFlatKernel f) (c : ℝ) :
+    HasPerronCarrierHorizontalMass (mellin f) c := by
+  obtain ⟨N : ℕ, hN⟩ := exists_nat_ge (-c)
+  filter_upwards [eventually_ge_atTop N] with M hNM
+  apply hf.hasPerronCarrierHorizontalMassAt
+  have hcast : (N : ℝ) ≤ (M : ℝ) := by exact_mod_cast hNM
+  linarith
+
+/-- The concrete Thue--Morse Mellin carrier therefore has horizontal Perron mass on every fixed
+Perron line, with no strip-mass hypothesis. -/
+theorem thueMorseMellinCarrier_hasPerronCarrierHorizontalMass (c : ℝ) :
+    HasPerronCarrierHorizontalMass (mellin thueMorseMellinKernel) c :=
+  thueMorseMellinKernel_isMellinFlatKernel.hasPerronCarrierHorizontalMass c
+
+/-- **Unconditional completed coefficient extraction.**  Reciprocal Gamma removes the concrete
+Mellin carrier's now-proved Gamma factor on any Perron line `c > 1`; the balanced third-order
+probe then extracts the selected shifted Thue--Morse coefficient with no representation Prop. -/
+theorem thueMorseMellinCarrier_perronThirdCharge
+    {c : ℝ} (hc : 1 < c) {n : ℕ} {δ : ℝ}
+    (hn : 1 ≤ n) (hδ0 : 0 < δ) (hδ : δ < 2 / 3) :
+    thueMorseDirichletCoeff n * (3 * (δ : ℂ) ^ 2 / 4) =
+      (1 / (2 * Real.pi) : ℝ) •
+        ∫ t : ℝ,
+          (Complex.Gamma ((c : ℂ) + (t : ℂ) * I))⁻¹ *
+            mellin thueMorseMellinKernel ((c : ℂ) + (t : ℂ) * I) *
+              perronThirdBalancedE n δ ((c : ℂ) + (t : ℂ) * I) := by
+  have hsum : LSeriesSummable thueMorseDirichletCoeff (c : ℂ) :=
+    thueMorseDirichletCoeff_lseriesSummable (by simpa using hc)
+  have hcharge := perronThirdBalancedCharge (a := thueMorseDirichletCoeff)
+    (c := c) (by linarith : 0 < c) hsum hn hδ0 hδ
+  rw [hcharge]
+  congr 1
+  apply MeasureTheory.integral_congr_ae
+  filter_upwards [] with t
+  let s : ℂ := (c : ℂ) + (t : ℂ) * I
+  have hsre : s.re = c := by simp [s]
+  have hs1 : 1 < s.re := by rw [hsre]; exact hc
+  have hG : Complex.Gamma s ≠ 0 :=
+    Complex.Gamma_ne_zero_of_re_pos (by linarith)
+  rw [mellin_thueMorseMellinKernel_eq_gamma_mul_LSeries hs1]
+  have hG' : Complex.Gamma ((c : ℂ) + (t : ℂ) * I) ≠ 0 := by
+    simpa [s] using hG
+  dsimp [s]
+  field_simp [hG']
 
 /-! ### Canonical nonzero-source cross-line seam -/
 

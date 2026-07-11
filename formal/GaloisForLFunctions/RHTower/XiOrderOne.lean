@@ -12,8 +12,8 @@ completed zeta, obeys the Hadamard order-one growth bound
 
 All of the transcendental growth is carried by the entire function `Λ₀`: multiplying by the
 degree-two polynomial `s(s-1)/2` and adding the constant `½` enlarge the exponent by only a bounded
-amount.  This reduction is proved unconditionally; it consumes a single analytic input,
-`CompletedZeta0OrderOne`, the order-one growth of `Λ₀` itself.
+amount.  This file proves the reduction from the explicit `CompletedZeta0OrderOne` interface; the
+unconditional producer and public premise-free theorem live in `CompletedZetaGrowth`.
 -/
 
 open Complex Real
@@ -51,7 +51,7 @@ zeta `Λ₀` (`CompletedZeta0OrderOne`), the completion `ξ = s(s-1)/2·Λ₀ + 
 order-one bound `‖ξ s‖ ≤ exp (C·(1+‖s‖)·log(2+‖s‖))`.  The polynomial prefactor `s(s-1)/2` and the
 constant `½` add only a bounded amount to the exponent, so the same functional form persists with a
 larger constant. -/
-theorem xi_growth_order_le_one (h : CompletedZeta0OrderOne) :
+theorem xi_growth_order_le_one_of_completedZeta0OrderOne (h : CompletedZeta0OrderOne) :
     ∃ C : ℝ, 0 < C ∧ ∀ s : ℂ,
       ‖xi s‖ ≤ Real.exp (C * (1 + ‖s‖) * Real.log (2 + ‖s‖)) := by
   obtain ⟨C, hC, hbound⟩ := h
