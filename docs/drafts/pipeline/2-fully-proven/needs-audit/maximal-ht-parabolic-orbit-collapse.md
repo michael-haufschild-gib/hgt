@@ -6,10 +6,11 @@
 - **Lane:** general hypertranscendence; translation dynamics; universality and recurrence boundary
 - **Statement:** A bounded outer function can have a differentially algebraically independent
   continuum of parabolic translates at every algebraic power while the compact-open closure of its
-  real orbit adds only one constant limit point.  Maximal algebraic orbit freedom therefore
-  coexists with complete topological escape and failure of strong self-recurrence.  The collapse
-  mechanism holds for every finite positive Stieltjes measure on a half-line; maximal HT is realized
-  by a comeager atomic subfamily inside that universally collapsing class.
+  real orbit is a topological circle obtained by adding one constant rank-collapse point.  Maximal
+  algebraic orbit freedom therefore coexists with complete topological escape and failure of strong
+  self-recurrence.  The collapse mechanism holds for every finite positive Stieltjes measure on a
+  half-line; maximal HT is realized by a comeager atomic subfamily inside that universally
+  collapsing class.
 
 ## Goal
 
@@ -69,7 +70,11 @@ Thus `phi o tau_t=phi+t`.
 
    `closure{(O o tau_t)^N:t in R}`
 
-   ` ={(O o tau_t)^N:t in R} union {exp(-N)}`.                (7)
+   ` ={(O o tau_t)^N:t in R} union {exp(-N)}`,                (7)
+
+   and this closure is homeomorphic to the circle.  More precisely, the orbit map extends to a
+   homeomorphism from the one-point compactification `R union {infinity}` onto (7), sending the
+   added point to `exp(-N)`.
 
 5. The orbit in (5) is not compact-open universal, even among nonvanishing targets.  For `N=1`,
    it also fails strong self-recurrence: there are a compact `K subset D` and `epsilon>0` for which
@@ -159,6 +164,19 @@ If `(t_n)` is unbounded, a subsequence tends to one of the two infinities and (6
 composition, and the locally uniform topology gives the orbit point `(O o tau_t)^N`.  Conversely,
 the constant in (7) is attained as the limit at infinity.  This proves (7).
 
+To identify the topology rather than only the underlying set, define
+
+`j_N(t)=(O o tau_t)^N`, `t in R`,
+
+and set `j_N(infinity)=exp(-N)` on the one-point compactification of `R`.  Equation (6) is exactly
+continuity at the added point.  The map is injective on `R`: equality at two distinct parameters
+would contradict the differential algebraic independence in (5), already through the polynomial
+relation `Y_1-Y_2`.  No finite orbit point is the added constant, because a nonzero analytic
+function whose `N`-th power is constant is itself constant, whereas `O o tau_t` is nonconstant.
+Thus `j_N` is a continuous bijection from a compact space to the Hausdorff space `Hol(D)`.  It is a
+homeomorphism onto its image, which is (7).  Since the one-point compactification of `R` is a
+circle, the orbit closure is a topological circle.
+
 ### 4. Failure of universality and strong recurrence
 
 Equation (9) gives
@@ -192,6 +210,14 @@ density, ergodicity, or universality on the parameterized orbit.  The separation
 every algebraic power normalization: each power orbit remains maximally free while both ends of the
 real parameter line collapse to one constant.
 
+**One-point differential-rank boundary law.**  For every `N`, the topological circle (7) has one
+distinguished point `exp(-N)` with differential transcendence degree zero over `C(w)`.  Every finite
+set of distinct points in its complement is differentially algebraically independent and therefore
+has maximal differential transcendence degree equal to its cardinality.  Hence differential rank
+can collapse from the maximum possible value on every finite orbit packet to zero at a single
+compact-open boundary point.  Differential-algebraic freedom is not closed under compact-open
+compactification, even for an invertible outer carrier and even simultaneously at every power.
+
 This is not a statement that HT functions are generally nonuniversal.  It is a sharp independence
 theorem: the strongest available algebraic orbit freedom does not imply even weak topological
 richness of that orbit.
@@ -223,14 +249,22 @@ phase distribution, Euler marking, or equivalent topological input.
 - `[SEARCH]` Classical work also studies linear independence of translates and translation-generated
   closed subspaces separately; Edwards' 1951 paper is
   `https://www.numdam.org/item/AIF_1951__3__31_0/`.
+- `[SEARCH]` The composition-operator literature contains strong orbital-limit results for
+  parabolic non-automorphisms and hypercyclicity results for parabolic automorphisms.  For example,
+  Bourdon--Shapiro's dichotomy, summarized in Feldman's 2010 thesis, says that only constants can be
+  orbital limit points for the relevant non-automorphism class.  It does not construct one bounded
+  outer vector for a continuous parabolic automorphism group whose orbit closure is a circle and
+  whose every finite orbit packet is differentially algebraically independent.  Source:
+  `https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=bgsu1280934433`.
 
 Preliminary searches did not locate the exact coexistence proved here: an uncountable
 differentially algebraically independent translation family at every power, carried by an invertible
-outer function, whose continuous real orbit has the one-point closure (7) and zero-density
-self-recurrence.  The proof depends on the separately novelty-unverified Herglotz full-orbit theorem,
-but the topological collapse and all-power strengthening add a distinct exact law.  It passes the
-proof and significance gates; scientific priority remains provisional pending specialist audit in
-differential algebra and linear dynamics.
+outer function, whose continuous real orbit compactifies to a circle with one DA rank-collapse
+point and has zero-density self-recurrence.  The proof depends on the separately novelty-unverified
+Herglotz full-orbit theorem, but the circle compactification, topological rank boundary, and
+all-power strengthening add a distinct exact law.  It passes the proof and significance gates;
+scientific priority remains provisional pending specialist audit in differential algebra and linear
+dynamics.
 
 ## Lean status
 
@@ -258,3 +292,6 @@ unconditional statement is formalized in Lean.
 - 2026-07-11 -- Strengthened the two-sided decay from the exponentially weighted atomic example to
   every finite positive Stieltjes measure on a half-line, separating the universal collapse
   mechanism from the residual maximal-HT selection.
+- 2026-07-11 -- Identified the exact orbit topology: at every power the orbit closure is a circle,
+  with maximal differential rank on every finite packet off one added constant point and rank zero
+  at that point.
