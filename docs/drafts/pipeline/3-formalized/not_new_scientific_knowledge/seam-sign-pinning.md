@@ -1,7 +1,7 @@
 # Seam-sign pinning: what distinguishes off-line zeros
 
 - **ID:** seam-sign-pinning
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean, bricks) + CONJECTURE (pinning dichotomy)
 - **Source:** successor of defect-protection (π₀ classification); question: what property do
   off-line zeros have that on-line zeros cannot meet, and what constraint lets them off the line?
@@ -50,8 +50,8 @@ sign-visible.
 ## Gates
 - [x] 0 → 1  in-progress: dichotomies stated, bricks specified
 - [x] 1 → 2  fully-proven: bracket pinning, parity reading, full pinning dichotomy, equivariant
-      h-principle — all proved (residual [KNOWN, unformalized]: real-anchor positivity ξ > 0 on
-      (0,1) via η-positivity)
+      h-principle — all proved; the former residual (real-anchor positivity ξ > 0 on (0,1) via
+      η-positivity) is proved and formalized (`XiRealAnchorPositive.lean`, axiom-clean)
 - [x] 2 → 3  formalized, all axiom-clean, in the umbrella:
       `SeamSignBit.lean` (`fESchwarz_real_on_line`, `line_sign_conserved`,
       `seam_two_invariants_conserved`, `online_zero_pinned_of_sign_bracket`);
@@ -61,7 +61,14 @@ sign-visible.
       `equivariant_joined_of_winding_sign_eq`, `equivariant_joined_iff` — π₀ ≅ ℤ × ℤ/2);
       `ConnectedSymmetryBarrier.rh_iff_seam_blind_windows_chargeless` (the RH re-cut: charge only
       where the seam can see it); `DirichletShapeCharge.xi_chargeFree_beyond_wall` (Euler
-      contrast)
+      contrast); `RealRootTower.lean` (boundary tower saturates at one bit);
+      `XiRealAnchorPositive.lean` (arithmetic anchor pinning); `CreaseHolonomy.lean`
+      (`xi_window_tower_iff_ledger` — ledger evaluation); `EquivariantRootDissolution.lean`
+      (the dissolution + `rh_iff_xi_equivariant_coherentTower_offline`);
+      `EquivariantOfflineRegion.lean` (`exists_equivariant_root_iff_offline`,
+      `equivariant_coherentTower_offline_iff` — the region-level echo; 2026-07-11).
+      All headline theorems re-verified axiom-clean 2026-07-11
+      (propext, Classical.choice, Quot.sound only)
 - [ ] 3 → 4  publication-ready
 
 ## Approach
@@ -75,6 +82,9 @@ pinned at symmetric points unless they split in pairs).
 ## Log
 - 2026-07-08 — created; D1/D3 identified as banked; D2 bricks delegated (`SeamSignBit.lean`);
   pinning dichotomy labeled with its open core.
+- 2026-07-11 — closure pass: all ten card modules verified present and axiom-clean; the last
+  unformalized claim (region-level mirror-pair echo) proved in Lean
+  (`EquivariantOfflineRegion.lean`); card moved to 3-formalized (see §Closure).
 
 ## §Deeper: the equivariant classification behind the dichotomy
 
@@ -150,9 +160,9 @@ the pinning of odd on-line clusters), and its local obstruction theory is now fu
 substrate (SeamSignBit, SeamEquivariantTwist, ConnectedSymmetryBarrier). This merges the two
 surviving constraint routes of the program — the Kummer tower and the seam sign — into one object.
 
-## §Real tower: local obstruction theory (formalization in flight)
+## §Real tower: local obstruction theory [PROVED HERE, Lean, axiom-clean]
 
-`RealRootTower.lean` (delegated): **the seam obstruction saturates at one bit.** An equivariant
+`RealRootTower.lean`: **the seam obstruction saturates at one bit.** An equivariant
 `2^k`-th root of a symmetric boundary loop exists ⟺ `2^k ∣ winding` ∧ anchor sign positive — at
 EVERY level the Real tower carries exactly one bit beyond the deck data, because log-branch
 adjustments move the reflection twist by even integers only (`2^k·t − 2m = k₀` solvable ⟺ `k₀`
@@ -160,12 +170,17 @@ even). Full equivariant tower on the boundary ⟺ winding 0 ∧ sign +. [Found b
 the naive guess "twist mod 2^k is a level-k invariant" is FALSE — only its parity survives branch
 adjustment.]
 
-Region-level remark [PROVED-shape, to formalize later]: a σ-invariant region that misses the line
-is a mirror pair of components, where equivariant structure is free (define on one component,
-reflect to the other); the Real tower is obstructed only where the region meets the seam — the
-region-level echo of `rh_iff_seam_blind_windows_chargeless`.
+Region-level remark [PROVED HERE, Lean, axiom-clean, 2026-07-11]: a σ-invariant open region that
+misses the line is a mirror pair — its left part is exactly the σ-image of its right part
+(`offline_symm_left_eq_mirror_image`) — and equivariant structure is free there: an equivariant
+`n`-th root exists ⟺ a plain root exists on the right part (`exists_equivariant_root_iff_offline`;
+any `n`, no sign clause, no parity clause), and likewise for coherent ℤ₂-towers
+(`equivariant_coherentTower_offline_iff`); the Real tower is obstructed only where the region
+meets the seam — the region-level echo of `rh_iff_seam_blind_windows_chargeless`
+(`EquivariantOfflineRegion.lean`; generic in the carrier, ξ-instance
+`xi_equivariant_root_iff_offline`).
 
-`XiRealAnchorPositive.lean` (delegated): the coefficient side pins the anchor: paired alternating
+`XiRealAnchorPositive.lean`: the coefficient side pins the anchor: paired alternating
 series positive for σ > 0, eta factor negative on (0,1) ⟹ ζ < 0 there; archFactor negative ⟹
 ξ > 0 on the real segment — the base point of seam-sign bookkeeping is +, forced by arithmetic.
 
@@ -209,3 +224,36 @@ form of "RH ⟺ the Real tower extends across the strip" is dead (on-line zeros 
 unconditionally), and its off-line form is the plain ladder verbatim — the Real tower's genuinely
 new content relative to the plain ladder lives ONLY in boundary/annular data, where it equals the
 unconditional on-line parity ledger.
+
+## §Closure [2026-07-11]: verdict and what it opens
+
+Every mathematical claim on this card is now [PROVED HERE, Lean, axiom-clean]; nothing on the
+card is conjectural any longer. The complete obstruction map of the Real (σ-equivariant) root
+tower, machine-checked end to end:
+
+| sector | equivariant surplus over the plain theory | Lean surface |
+|---|---|---|
+| σ-invariant regions off the line | none — free by mirror gluing | `exists_equivariant_root_iff_offline`, `equivariant_coherentTower_offline_iff` |
+| σ-invariant regions meeting the line | the unconditional line ledger only | `xi_equivariant_root_iff_root`, `rhLadder_xi_equivariant_window_root` |
+| σ-symmetric boundary loops | exactly one sign bit = crease-ledger parity | `equivariant_pow_root_iff`, `xi_window_tower_iff_ledger` |
+| off-line globally, pro level | none — the rung/RH verbatim | `rhLadder_iff_equivariant_offline_root`, `rh_iff_xi_equivariant_coherentTower_offline` |
+
+**Classification: not new scientific knowledge.** The pinning mechanism (defects on the fixed
+locus of an anti-holomorphic symmetry leave it only in mirror pairs) is classical-shaped, and the
+parity reading is the Hardy sign mechanism; the project-native part — the Real tower as the
+merger of the Kummer and seam-sign routes — resolved as a machine-checked no-go: regionally the
+equivariant theory adds nothing to the plain ladder, and the one genuine bit is a hole invariant
+equal to unconditional ledger data. The no-go is the payload: it retires "RH ⟺ the Real tower
+extends across the strip" (region form dead on on-line zeros, off-line form the plain ladder
+verbatim) and localizes all remaining seam-sign content into the crease ledger.
+
+**What it opens — the Chowla anchor** (rng-drawn successor; card seeded in 0-backlog).
+The dissolution theorems are generic in the carrier: for ANY line-symmetric member, regional
+dissolution is decided by one sign at one line anchor. For ξ that sign is a theorem
+(`xi_pos_on_real_anchor` — η-positivity). For the completed Dirichlet member Λ(s,χ) of a real
+primitive character the same bit at the central anchor is `sign L(½,χ)` — an OPEN arithmetic
+quantity (Chowla: nonzero; GRH: nonnegative) — and since Λ(σ,χ) > 0 for σ ≥ 1, the bit equals
+the parity of real zeros in (½,1): the Siegel-zero sector. `[CONJECTURE]` In the Dirichlet
+family the equivariant surplus does not dissolve for free: the anchor bit IS the Siegel parity,
+and the family-wide dissolution law is exactly central nonnegativity. The seam-sign theory,
+trivial for ξ at the anchor, becomes an arithmetic instrument one carrier over.

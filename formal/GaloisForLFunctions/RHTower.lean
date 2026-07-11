@@ -271,6 +271,7 @@ import GaloisForLFunctions.RHTower.CarrierPhaseCrossing
 import GaloisForLFunctions.RHTower.CarrierZeroUnconditional
 import GaloisForLFunctions.RHTower.CarrierHorizontalRigidity
 import GaloisForLFunctions.RHTower.CarrierDepthTwoRigidity
+import GaloisForLFunctions.RHTower.DepthThreeDirichletHighZeros
 import GaloisForLFunctions.RHTower.MinimumModulus
 import GaloisForLFunctions.RHTower.JensenCount
 import GaloisForLFunctions.RHTower.ScalarCertificate
@@ -492,6 +493,7 @@ import GaloisForLFunctions.RHTower.XiRealAnchorPositive
 import GaloisForLFunctions.RHTower.SymmetricDivisorRealization
 import GaloisForLFunctions.RHTower.TailBlindness
 import GaloisForLFunctions.RHTower.EquivariantRootDissolution
+import GaloisForLFunctions.RHTower.EquivariantOfflineRegion
 import GaloisForLFunctions.RHTower.CreaseHolonomy
 import GaloisForLFunctions.RHTower.FiniteEulerInert
 import GaloisForLFunctions.RHTower.FiniteDivisorPrefixNonselection
@@ -537,6 +539,7 @@ import GaloisForLFunctions.RHTower.ThetaHalfPlaneBound
 import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeSource
 import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeDerivatives
 import GaloisForLFunctions.RHTower.ThetaCuspMellinPole
+import GaloisForLFunctions.RHTower.PolarPrimeMellinDefect
 import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeResolvent
 import GaloisForLFunctions.RHTower.LandauSummabilityTransfer
 import GaloisForLFunctions.RHTower.QuietCrossingCocycle
@@ -572,6 +575,7 @@ import GaloisForLFunctions.RHTower.XiHadamardGrowth
 import GaloisForLFunctions.RHTower.XiLaguerrePolya
 import GaloisForLFunctions.RHTower.TraceHankelConverse
 import GaloisForLFunctions.RHTower.XiTraceHankelCriterion
+import GaloisForLFunctions.RHTower.XiTraceHankelCountableCriterion
 import GaloisForLFunctions.RHTower.TraceHankelSequenceCone
 import GaloisForLFunctions.RHTower.TraceHankelAnalyticInstability
 import GaloisForLFunctions.RHTower.ReBoundAffine
@@ -606,6 +610,7 @@ import GaloisForLFunctions.RHTower.SlepianBandCommutation
 import GaloisForLFunctions.RHTower.ProlateWronskian
 import GaloisForLFunctions.RHTower.ProlateDiagonalization
 import GaloisForLFunctions.RHTower.BandTransformSymmetric
+import GaloisForLFunctions.RHTower.LadderLimitSecular
 import GaloisForLFunctions.RHTower.SoninEulerTripleShellOverlap
 import GaloisForLFunctions.RHTower.SoninEulerCrossShellOverlap
 import GaloisForLFunctions.RHTower.SoninTimeBandIdeal

@@ -137,7 +137,7 @@ No claim is made here that either resource has already been constructed.
 ## Lean formalization
 
 `formal/GaloisForLFunctions/RHTower/DepthThreeDirichletHighZeros.lean` proves the complete theorem
-without axioms.  It uses Mathlib's dense irrational rotations on `AddCircle 1`, extracts a strictly
+without project axioms or placeholders.  It uses Mathlib's dense irrational rotations on `AddCircle 1`, extracts a strictly
 increasing convergent subsequence, transports it through the circle exponential, proves the local
 uniform convergence of the translated entire factors, and invokes
 `eventually_exists_zero_closedBall_of_tendstoLocallyUniformly`.

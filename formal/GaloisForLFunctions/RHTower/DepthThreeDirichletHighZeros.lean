@@ -5,6 +5,18 @@ import Mathlib.Topology.Instances.AddCircle.Real
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Topology.Algebra.Group.SubmonoidClosure
 
+/-!
+# Cofinal depth-three prime-phase recurrence
+
+The direct carrier `1 + 2⁻s + 3⁻s` has zeros arbitrarily high in the open critical strip.
+The proof identifies the positive mechanism: an interior amplitude balance and the irrational
+relative prime phase produce recurrent cancellation, while local-uniform zero transfer turns the
+limiting balanced zero into a cofinal divisor.
+
+Consequently, an RH-capable all-depth coercivity theorem must supply recurrence-sensitive
+localization or retain a genuinely independent source direction.
+-/
+
 open Complex Metric Set Filter Topology
 
 namespace RHTower
@@ -107,6 +119,8 @@ lemma exists_depthThree_phase_subsequence :
     dsimp [twist]
     fun_prop
   have htwist := htwist_cont.continuousAt.tendsto.comp hcircle
+  change Tendsto (fun n => twist (AddCircle.toCircle (k n • a))) atTop
+    (𝓝 (twist (AddCircle.toCircle b))) at htwist
   have hseq : (fun n => twist (AddCircle.toCircle (k n • a))) =
       (fun n => Circle.exp (-((Real.pi + 2 * Real.pi * k n) * α))) := by
     funext n
@@ -129,16 +143,21 @@ lemma exists_depthThree_phase_subsequence :
     ring
   rw [hseq, hlim] at htwist
   have hcoe : Tendsto
-      (fun n => ((Circle.exp (-((Real.pi + 2 * Real.pi * k n) * α) : Circle) : ℂ)))
-      atTop (𝓝 ((Circle.exp (-Real.pi) : Circle) : ℂ)) :=
+      (fun n => (Circle.exp (-((Real.pi + 2 * Real.pi * k n) * α)) : ℂ))
+      atTop (𝓝 (Circle.exp (-Real.pi) : ℂ)) :=
     continuous_subtype_val.continuousAt.tendsto.comp htwist
   refine ⟨k, hk, ?_⟩
-  have hminus : ((Circle.exp (-Real.pi) : Circle) : ℂ) = -1 := by
+  have hminus : (Circle.exp (-Real.pi) : ℂ) = -1 := by
     rw [Circle.coe_exp]
-    simpa only [ofReal_neg, ofReal_pi, neg_mul] using Complex.exp_neg_pi_mul_I
+    simpa using Complex.exp_neg_pi_mul_I
   rw [hminus] at hcoe
-  simpa only [Circle.coe_exp, α, ofReal_neg, ofReal_mul, ofReal_add, ofReal_pi,
-    ofReal_natCast, neg_mul] using hcoe
+  convert hcoe using 1
+  funext n
+  rw [Circle.coe_exp]
+  congr 1
+  dsimp [α]
+  push_cast
+  ring
 
 end
 end RHTower
@@ -330,9 +349,9 @@ lemma depthThreeTranslatedApprox_tendstoLocallyUniformly
       (fun n (_ : ℂ) => a3 * (3 : ℂ) ^ (-(I * (depthThreeHeight (k n) : ℂ))))
       (fun _ : ℂ => -a3) atTop :=
     hcoeff.tendstoUniformly_const.tendstoLocallyUniformly
-  have hbase3LU : TendstoLocallyUniformly (fun _ : ℕ => base3) base3 atTop :=
-    ((tendsto_const_nhds : Tendsto (fun _ : ℕ => base3) atTop (𝓝 base3))
-      .tendstoUniformly_const).tendstoLocallyUniformly
+  have hbase3LU : TendstoLocallyUniformly (fun _ : ℕ => base3) base3 atTop := by
+    intro u hu x
+    exact ⟨Set.univ, univ_mem, Eventually.of_forall fun _ _ _ => refl_mem_uniformity hu⟩
   have hvar : TendstoLocallyUniformly
       (fun n z => (a3 * (3 : ℂ) ^ (-(I * (depthThreeHeight (k n) : ℂ)))) * base3 z)
       (fun z => (-a3) * base3 z) atTop := by
@@ -340,17 +359,17 @@ lemma depthThreeTranslatedApprox_tendstoLocallyUniformly
       dsimp [base3]
       fun_prop)
   let fixed : ℂ → ℂ := fun z => 1 - a2 * base2 z
-  have hfixed : TendstoLocallyUniformly (fun _ : ℕ => fixed) fixed atTop :=
-    tendsto_const_nhds.tendstoUniformly_const.tendstoLocallyUniformly
+  have hfixed : TendstoLocallyUniformly (fun _ : ℕ => fixed) fixed atTop := by
+    intro u hu x
+    exact ⟨Set.univ, univ_mem, Eventually.of_forall fun _ _ _ => refl_mem_uniformity hu⟩
   have hadd := hfixed.add hvar
   convert hadd using 1
   · funext n z
     rw [depthThreeTranslatedApprox_eq]
     rfl
   · funext z
-    rfl
-  · funext z
     unfold fixed base2 base3 a2 a3 depthThreeLimit
+    simp only [Pi.add_apply]
     ring
 
 end

@@ -637,8 +637,10 @@ z=rho-1-2omega.                                          (12z1)
 ```
 
 Those crossed poles are exactly the anti-causal zero modes. Therefore the required positive
-operator is not bounded functional calculus of `(12x)`. It is an orbit-sensitive meromorphic
-continuation graph carrying the residue seam, together with a renormalization satisfying
+operator is not bounded functional calculus of `(12x)`. The orbit-sensitive meromorphic
+continuation graph carrying the residue seam exists canonically by coprime inner factorization;
+the RH-bearing addition is a source theorem forcing its denominator model space to vanish, or an
+equivalent pole-to-divisor renormalization satisfying
 
 ```text
 ||ell_E||_2<=||ell_pole||_2=2.                            (12z2)
@@ -712,6 +714,107 @@ scalar Schur contractivity and one-vector Hardy control must become complete pos
 finite matrix `(K_omega(z_j,z_k))`, cofinally as `omega` decreases to zero. At `omega=0`,
 `Phi_0=1` and `K_0=0`; retaining only the strong endpoint loses the entire transverse filtration.
 The proof and scope are recorded in `ccm-causal-pick-affine-conjugacy-law.md`.
+
+The operator seam has also been normalized exactly. The completed quotient `Phi_omega` is
+unconditionally Schur on `Re z>0`: with `X(w)=xi(1/2+w)`, the centered Hadamard product gives
+
+```text
+Re X'(w)/X(w)>0,       Re w>1/2,
+
+log|Phi_omega(z)|
+ =-integral_0^(2omega) Re X'(1/2+z+t)/X(1/2+z+t) dt<0.   (12z5e)
+```
+
+Let `C_omega` be the corresponding causal convolution and let `E_a` multiply time-domain vectors
+by `exp(a t)`. Exponential conjugation translates the multiplier left:
+
+```text
+E_a C_omega E_(-a)  <->  Phi_omega(z-a).                 (12z5f)
+```
+
+The classical zero strip already gives a nonzero safe range:
+
+```text
+||E_a C_omega E_(-a)||<=1,       0<=a<=omega.            (12z5f1)
+```
+
+Indeed the boundary quotient is symmetric about the line `Re s=1+omega-a>=1`; in the centered
+Hadamard product, moving from the left boundary point to the right increases the distance to every
+zero because all zeros satisfy `Re rho<1`. The bounded-type maximum principle then gives
+`(12z5f1)`.
+
+At the distinguished exponent `a_omega=1/2+omega`, this becomes
+
+```text
+Phi_omega(z-a_omega)
+ =xi(1/2-omega+z)/xi(1/2+omega+z).                       (12z5g)
+```
+
+Thus absence of zeros in `Re rho>1/2+omega` is equivalent to the natural graph in `(12z5f)`
+closing to an everywhere-defined contraction at `a=a_omega`. Its failure has leakage rank equal
+to the number of zeros beyond that layer. Cofinal weighted contractivity as `omega->0` is RH, and
+`a_omega->1/2`.
+
+The target width exceeds the unconditional safe width by exactly
+
+```text
+(1/2+omega)-omega=1/2                                   (12z5g1)
+```
+
+at every positive shift. Thus the half-unit seam is already present before the critical limit;
+it is not created by `omega->0`.
+
+More precisely, if the target quotient has coprime inner factorization `A_omega/B_omega`, its
+canonical graph is
+
+```text
+{(B_omega g,A_omega g):g in H2_+}.                       (12z5h)
+```
+
+It is already closed and isometric. Its domain defect `K_(B_omega)` has dimension equal to the
+number of zeros beyond `1/2+omega`. Therefore graph construction, closedness, and nonexpansivity on
+the pole-cancelling domain are retired as independent RH steps. The positive missing theorem is
+full domain: prove from the Euler--Gamma source that `K_(B_omega)=0` cofinally. This is proved and
+scoped in `ccm-completed-quotient-weighted-schur-seam-law.md`.
+
+The global Poisson formula supplies the half-weight algebraically but leaves exactly the same
+defect. With `s=1/2+omega+z`, choose `m` large and put
+
+```text
+d_(omega,m)(z)=s(s-1)zeta(s)/(1+z)^m.                   (12z5i)
+```
+
+This bounded pole-cleared Muntz multiplier has inner factor `B_omega`, so
+
+```text
+closure(Ran M_(d_(omega,m)))=B_omega H2_+,
+ker(M_(d_(omega,m))^*)=K_(B_omega).                     (12z5j)
+```
+
+Every off-line zero is therefore an adjoint Cauchy-jet null channel of the completed Poisson--Muntz
+range. Poisson reflection does not remove it. The exact positive Poisson obligation is dense range
+in `(12z5j)`, which is equivalent to the shifted zero-free half-plane. Thus support self-duality,
+Mellin graph membership, and the half-weight normalization are available; cofinal range density is
+the RH-bearing statement.
+
+The whole range defect has one scalar positive determinant. For `x>0`, Poisson--Jensen gives
+
+```text
+E_omega(x)
+ =x/pi integral_R log|d_(omega,m)(it)|/(x^2+t^2)dt
+  -log|d_(omega,m)(x)|
+ =-log|B_omega(x)|                                        (12z5k)
+
+ =1/2 sum_(Re rho>1/2+omega)m_rho
+   log(((x+a_rho)^2+gamma_rho^2)
+       /((x-a_rho)^2+gamma_rho^2))>=0,                    (12z5l)
+```
+
+where `a_rho=Re rho-1/2-omega`. Every summand is strictly positive. Hence vanishing of
+`E_omega(x)` at one point is equivalent to `K_(B_omega)=0`. This yields a second positive cofinal
+format: instead of locally uniform zero-preserving convergence, prove convergence of one interior
+logarithmic value, its Poisson logarithmic boundary functional, and the finite inner defect. The
+complete bridge is `ccm-poisson-jensen-outer-defect-rh-law.md`.
 
 This also fixes the role of the two new HT constraint-dimension theorems. For fixed `omega`,
 `(12z5b)` is an invertible scalar meromorphic coordinate change, not a proved nonpure
@@ -1331,6 +1434,12 @@ any finite packet, exterior trace, support, mean-zero condition, and anchors `(1
 - [x] encode all nonattained transverse layers by the defect abscissa `(11c)`
 - [x] classify causal Möbius transport as a cofinal half-unit weighted-domain tower `(11e)`
 - [x] identify the causal Möbius quotient with the Euler-region shifted-Xi Pick carrier `(12z5)`
+- [x] identify the invariant half-unit seam as exponential conjugation of one causal contraction
+- [x] prove the prelimit safe weighted width is `omega` and the missing width is exactly `1/2`
+- [x] construct the canonical isometric quotient graph and identify its model-space domain defect
+- [x] identify the Poisson--Muntz half-weight defect with the same adjoint model space
+- [x] compress the complete model-space obstruction to one positive outer-entropy defect
+- [ ] prove from the Euler--Gamma source that `K_(B_omega)=0` cofinally
 - [ ] prove the zero-type recession `omega_R=0`
 - [ ] prove the infinite-carrier lower-frame bound `(11)`
 - [ ] or construct a source-defined Gram factorization of `(12c)` and an index-faithful aperture

@@ -10,6 +10,9 @@ import GaloisForLFunctions.Hypertranscendence
 import GaloisForLFunctions.HypertranscendencePolynomial
 import GaloisForLFunctions.DifferentiallyAlgebraicInvariance
 import GaloisForLFunctions.AutonomousSeparant
+import GaloisForLFunctions.AutonomousDifferentialAlgebraic
+import GaloisForLFunctions.LinearSystemDescent
+import GaloisForLFunctions.FormalMahlerDescent
 import GaloisForLFunctions.ArchimedeanBendLaw
 import GaloisForLFunctions.TaylorDerivativeCoefficient
 import GaloisForLFunctions.ExponentialGaugeSelection
@@ -69,6 +72,7 @@ import GaloisForLFunctions.CayleySchur
 import GaloisForLFunctions.IharaBlockSelector
 import GaloisForLFunctions.FrozenConstraint
 import GaloisForLFunctions.FunctionalEquationParity
+import GaloisForLFunctions.FeigenbaumValueRelations
 import GaloisForLFunctions.SpectralTorelli
 import GaloisForLFunctions.ExteriorParity
 import GaloisForLFunctions.LocalFactorDuality

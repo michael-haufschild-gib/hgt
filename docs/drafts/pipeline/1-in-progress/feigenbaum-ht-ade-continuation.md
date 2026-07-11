@@ -8,10 +8,72 @@
 ## Statement
 
 The Feigenbaum fixed-point function g — the unique normalized solution of
-  g(x) = −(1/α)g(g(αx)),   g(0) = 1
+  g(x) = −α g(g(x/α)),   g(0) = 1,   α≈2.502907875
 extended to its maximal complex domain D (Epstein–Lascoux 1981, Buff) — is
 hypertranscendental: it satisfies no algebraic differential equation (ADE) of any
 finite order over ℂ(x).
+
+The HT assertion remains `[CONJECTURE]`.  The exact value relations below are independent of that
+assertion and are the current proved content of this card.
+
+## Exact Feigenbaum value-relation ledger
+
+Put
+
+```text
+lambda=-1/alpha.
+```
+
+The normalized functional equation is equivalently
+
+```text
+g(g(x))=lambda g(alpha x),   g(0)=1,   alpha lambda=-1.     (V1)
+```
+
+It forces the following values.
+
+1. **Critical value and multiplier `[SEARCH]`.** Evaluation at zero and comparison of the first
+   nonzero critical jet give
+
+   ```text
+   g(1)=lambda=-1/alpha.                                    (V2)
+   ```
+
+   If the critical point at zero has exact order `m`, so
+   `g(x)=1+c x^m+O(x^(m+1))` with `c!=0`, then
+
+   ```text
+   g'(1)=-alpha^(m-1).                                      (V3)
+   ```
+
+   For the quadratic Feigenbaum fixed point, `m=2` and `g'(1)=-alpha`.  Campanino--Epstein--Ruelle
+   state the equivalent relations `g(1)+lambda=0` and `lambda g'(1)+1=0` for this case.
+
+2. **Dyadic iterate value law `[PROVED HERE] [NOVELTY UNVERIFIED]`.** Evenness and (V1) imply, for
+   every `n>=0`,
+
+   ```text
+   g^[2^n](x)=lambda^n g(alpha^n x),                         (V4)
+   g^[2^n](0)=lambda^n.                                     (V5)
+   ```
+
+   Here `g^[k]` denotes the `k`-fold compositional iterate.  The induction uses
+   `alpha^n lambda^n=(-1)^n`; evenness removes that sign before one more use of (V1).
+
+Relations (V2)--(V5) are value identities.  They do not imply differential algebraicity or
+hypertranscendence and are not evidence for either conclusion without an additional theorem about
+relations among the resulting values.
+
+The algebraic content (V2), (V4), and (V5) is formalized in
+`GaloisForLFunctions.FeigenbaumValueRelations` as `feigenbaum_critical_value`,
+`feigenbaum_dyadic_iterate`, and `feigenbaum_dyadic_critical_value`.  The dyadic theorems are
+axiom-clean apart from Lean's standard `propext` and quotient soundness; the critical-value theorem
+uses no axioms.
+
+Primary normalization source: M. Campanino, H. Epstein, D. Ruelle, *On Feigenbaum's Functional
+Equation*, IHES/P/80/32 (1980), equations (7)--(8) and the theorem on page 6.  The quadratic values
+(V2)--(V3) are `[SEARCH]`.  Exact searches did not locate the all-`n` dyadic formula (V4), so its
+scientific novelty remains unverified rather than asserted.
 
 ## Required inputs (to verify before promoting)
 
@@ -83,7 +145,7 @@ The proof uses:
 - Cauchy–Kowalewski → analytic extension past x₀
 - Epstein–Lascoux → no such extension exists
 
-The renormalization constraint g = -(1/α)g∘g∘dilation appears only in the background — it
+The renormalization constraint `g(x)=-alpha g(g(x/alpha))` appears only in the background — it
 is needed to establish Epstein–Lascoux noncontinuability (input 1), not in the ADE argument.
 The ADE argument is GENERAL: it applies to ANY function on a Jordan domain D with bounded
 g ∈ H^∞(D), no continuation past ∂D (genuine natural boundary), and rectifiable ∂D.
@@ -159,8 +221,8 @@ Also W_c is unbounded; a bounded sub-domain D must be specified before H^∞(D) 
 
 The argument is CONDITIONALLY CORRECT: if the Feigenbaum g satisfies
   **(H)** g, g', ..., g^{(n-1)} all in H^∞(D) with finite non-tangential limits a.e. on ∂D
-then the induction closes and g is HT. The renormalization equation g = -(1/α)g∘g∘dilation
-might force (H) via the chain-rule identity g'(x) = -α·g'(g(αx))·g'(αx) — a functional
+then the induction closes and g is HT. The renormalization equation might force (H) via the
+chain-rule identity `g'(x)=-g'(g(x/alpha))g'(x/alpha)` — a functional
 bound on g' in terms of g' at scaled points. Whether this forces g' ∈ H^∞(D) requires
 extracting the growth properties of g from Epstein's construction.
 

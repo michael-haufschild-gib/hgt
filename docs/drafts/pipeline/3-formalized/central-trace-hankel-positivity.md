@@ -44,3 +44,30 @@ Lean certificates: `finite_traceHankel_nonneg_implies_real`,
 
 - 2026-07-10 — detector completed in Lean, including the infinite dominated-convergence argument
   and reverse RH implication; only the independent source-side positivity law remains open.
+
+## Countable integer-polynomial reduction (2026-07-11)
+
+`[PROVED IN LEAN]` The RH-equivalent value family is countable. Define
+
+```text
+XiCentralTraceHankelIntNonnegative :=
+  forall P : Polynomial Int,
+    0 <= Re(xiCentralTraceHankel(P mapped to Real)).
+```
+
+Then
+
+```text
+XiCentralTraceHankelIntNonnegative <-> RiemannHypothesis.
+```
+
+The proof realizes every bounded-degree test as an explicit finite quadratic moment form on
+`Fin n -> Real`. This form is continuous in the coefficient vector. Rational vectors are dense;
+one positive common denominator converts a rational vector to an integer vector; and quadratic
+homogeneity preserves its sign. The machine-checked implementation is
+`XiTraceHankelCountableCriterion.lean`, with capstone
+`xiCentralTraceHankelIntNonnegative_iff_riemannHypothesis`.
+
+This does not supply the open positivity law. It sharpens the positive source obligation: a source
+provider need only establish a countable arithmetic family of inequalities indexed by `Int[X]`,
+not a quantifier over the uncountable space `Real[X]`.

@@ -4,18 +4,42 @@
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Source:** reflection-cocycle lane (ReflectionCocycleClass/Curvature/Archimedean); INT-ORDER re-cut
-- **Statement:** `[CONJECTURE]` Every ordinary Dirichlet series with finite abscissa and entire continuation has vertical-line exponential type ≤ π/2; equivalently, every reflection cocycle `h_F(s) = F(1−s)/F(s)` of such a carrier that is meromorphic of finite order is Selberg-shape (conductor × Γ-quotients), i.e. its reflection curvature lies in the finite trigamma-sum cone.
+- **Statement A:** `[CONJECTURE]` Every ordinary Dirichlet series with finite abscissa and entire
+  continuation has vertical-line exponential type at most `pi/2`.
+- **Statement B:** `[SEPARATE CONJECTURE]` If its reflection quotient
+  `h_F(s)=F(1-s)/F(s)` is meromorphic of finite order, then `h_F` is a conductor exponential times
+  a finite Gamma quotient, equivalently its logarithmic curvature is a finite trigamma sum.
+- **Logical status:** A is a scalar growth bound; B is a full functional/divisor classification.
+  Neither is currently proved to imply the other.  The former headline's word “equivalently” was
+  incorrect and has been removed.
+
+## Exact value-relation ledger
+
+For every nonzero meromorphic `F`, wherever the quotients are defined,
+
+```text
+h_F(s)=F(1-s)/F(s),
+h_F(s) h_F(1-s)=1.                                         (V1)
+```
+
+If `h_F` is finite-order meromorphic and has polynomially bounded vertical modulus, the formalized
+exponent relation is
+
+```text
+h_F(s)=exp(a(s-1/2)+b) * h_div(s),                          (V2)
+```
+
+where all second-logarithmic-derivative values come from `h_div`.  Statement B asks whether those
+curvature values are exactly finite sums of affine trigamma values.  Statement A asks only for a
+bound on `log|F(sigma+it)|/|t|`.  These are distinct value questions.
 
 ## Goal
 
 The Selberg class **postulates** the split shape `Q^{2s−1}·∏ Γ(λⱼs+μⱼ)/Γ(λⱼ(1−s)+μ̄ⱼ)` of the
 functional-equation factor as an axiom; the parent theory cannot ask whether that shape is forced.
-Proving rigidity derives the axiom from the constraint side (the carrier's half-plane structure);
-refuting it produces a non-Selberg carrier — an inhabitant of 𝓜⁺ invisible to the parent by
-construction. Either outcome is knowledge the parent cannot state. Γ-extremality is the native
-formulation: the archimedean generator is the growth-extremal point of the finite-abscissa class,
-and the frequency lattice (the prime side) is what would enforce the bound — a constraint
-(extremal/boundary condition), not a flow.
+Statement B asks whether the values of `h_F` force that shape.  Independently, Statement A asks
+whether the values of `F` on every vertical line obey the `pi/2` type bound.  Either assertion must
+be proved or refuted on its own hypotheses.
 
 ## Structure (established reductions)
 

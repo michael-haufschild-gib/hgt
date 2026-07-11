@@ -10,12 +10,10 @@
   constant character by any gauge differentially algebraic over that translation-saturated
   archimedean field.
 
-## Role in the geometry program
+## Relation to the HT value geometry
 
-This cocycle statement is not the scientific novelty unit of the route.  Gamma independence,
-two-shift quasiperiodicity, DA gauge obstruction, and prime-frequency separation are contributing
-mechanisms.  Their role is to test whether the universal HT relation geometry admits a canonical
-arithmetic pointing when the carrier is `zeta`.
+This cocycle statement is not the scientific novelty unit.  It asks whether the universal HT
+relation geometry admits a canonical arithmetic pointing when the distinguished value is `zeta`.
 
 The candidate-new object remains the geometry already isolated by the realization and dimension
 theorems: arbitrary finite simplicial complexes occur as exact HT relation geometries, analytic
@@ -174,7 +172,7 @@ fixed-field argument remain imported paper steps rather than Lean theorems.
 
 1. Classical Hilbert--Ostrowski hypertranscendence proves zeta is DT over `C(s)`.  This gives
    nonflatness only over the ordinary DA gauge field.
-2. The proved Gamma projective-boundary and finite archimedean-product laws give
+2. The proved single-Gamma and finite archimedean-product value laws give
 
    ```text
    zeta is DT over C(s)<G>
@@ -198,24 +196,19 @@ fixed-field argument remain imported paper steps rather than Lean theorems.
 
 No inference from a single-Gamma theorem to (4) is valid without this finite-family upgrade.
 
-## Candidate proof routes and attacks
+## Exact value-relation ledger
 
-### Route A: finite translated-Gamma projective boundary `[OPEN CORE]`
+The established relations are:
 
-Prove that for every finite set `E subset Lambda`, every recurrent holomorphic function DA over
+1. distinct prime-log Gamma translates have no algebraic relation over `C(s)`;
+2. all jets of distinct prime-log Gamma translates have no algebraic relation over the larger
+   one-periodic meromorphic base `F(s)`;
+3. every nonzero prime-log translation fixes exactly the constant values inside the generated
+   differential field;
+4. distinct Gamma Laurent monomials have distinct finite signed-moment, hence complete Stirling,
+   value signatures.
 
-```text
-C(s)<Gamma(s+lambda):lambda in E>_D                         (13)
-```
-
-has finite rational Bohr rank.  Zeta has the infinite independent frequency set `{log r:r prime}`
-and would contradict that conclusion.
-
-The existing one-product valuation does not prove this.  Distinct nonintegral Gamma shifts may be
-algebraically or differentially independent, and flat cancellation among their complete Stirling
-series must be excluded in the full fraction field, not termwise guessed.
-
-One formerly open substep is now closed.  Enumerate the distinct shifts in `E` as
+For the fourth relation, enumerate a finite set of distinct shifts as
 `lambda_1,...,lambda_r`.  For an exponent vector `e in Z^r`, define its signed moments
 
 ```text
@@ -234,43 +227,25 @@ equality of complete signatures into equality of the moments (14). `QED`
 
 The Vandermonde core is already formalized in mathlib as
 `Matrix.eq_zero_of_forall_pow_sum_mul_pow_eq_zero`; the repository's `PowerSumTorelli` supplies the
-equivalent unsigned multiset formulation.  The remaining Route A core is now sharply located:
-prove that a finite rational combination of these distinct Gamma transmonomials has a nonzero
-formal sectorial image and that its normalized coefficient tuple has a nonzero constant projective
-limit.  Signature separation removes monomial collision, but it does not by itself exclude an
-all-orders flat cancellation in the full differential fraction field.
+equivalent unsigned multiset formulation.
 
-### Route B: mixed difference--differential independence `[OPEN CORE]`
-
-Show directly that for every finite `E subset Lambda` and jet orders `m,n`, the family
+The sole unclassified relation in this card is the following finite value question.  For every
+finite `E subset Lambda` and jet orders `m,n`, determine the algebraic relations of
 
 ```text
 {zeta^(j)(s):0<=j<=m}
  union {Gamma^(k)(s+lambda):lambda in E,0<=k<=n}            (15)
 ```
 
-has no algebraic relation that is nontrivial in the zeta jets.  This finite statement for every
-`E,m,n` is equivalent to (4).
-
-The attack is parent reduction: if a published mixed independence theorem already has precisely
-(15), this route is `[SEARCH]`, not new knowledge, and the card should be closed as a literature
-bridge.
-
-### Route C: divisor-growth separation `[CONJECTURE]`
-
-Every finite Gamma-shift differential expression has poles confined to finitely many affine
-integer lattices and archimedean order-one growth.  Zeta has one pole but an infinite prime-frequency
-module on right half-planes.  A theorem combining divisor support, vertical projective valuation,
-and Bohr recurrence may prevent a differential relation across those two analytic types.
-
-Pole support alone is insufficient: differential polynomials can cancel poles, and zeta's
-hypertranscendence is not a divisor-counting statement.
+over `C(s)`.  Absence of every relation nontrivial in the zeta jets, for all `E,m,n`, is equivalent
+to (4).  If a published theorem already classifies exactly (15), the statement is `[SEARCH]`;
+otherwise it remains `[OPEN CORE]`.  No auxiliary construction is part of this question.
 
 ## RH-facing significance
 
-The two outcomes identify complementary positive resource laws.  If the curvature is absorbed,
-the translation-saturated archimedean differential field is already an adequate carrier for the
-two-prime zeta cocycle.  If the curvature survives, zeta carries a prime-relative gauge class beyond
+The two outcomes identify complementary positive value laws.  If the curvature is absorbed,
+the translation-saturated archimedean differential field already contains the two-prime zeta
+cocycle relation.  If the curvature survives, zeta has a prime-relative gauge class beyond
 every finite or countably translation-generated archimedean completion.  The latter outcome gives
 a canonical separation of the two HT sources:
 
@@ -278,11 +253,9 @@ a canonical separation of the two HT sources:
 archimedean Gamma translation field  !=  prime cocycle curvature of zeta.  (16)
 ```
 
-That still would not prove RH.  DA gauges can change divisors, and relative curvature is shared by
-many Euler/Dirichlet sources.  The next required theorem would couple the nonflat class to a
-functional-equation polarization or positive kernel in a way that excludes symmetric off-line DA
-gauge implants.  The value of (4) is that it isolates a genuinely prime-side resource on which such
-a coupling could act.
+That still would not prove RH.  The same relative value relation may occur for many Euler or
+Dirichlet sources.  Equation (4) classifies only whether the zeta value
+is differentially algebraic over the stated archimedean value field.
 
 ## Gates
 
@@ -298,7 +271,7 @@ a coupling could act.
 - [x] finite separated-pole differential obstruction formalized axiom-clean in Lean
 - [x] finite Gamma-monomial Stirling signatures separated by formalized Vandermonde moments
 - [ ] obtain and audit the full 2024 Wang--Yao theorem statement, not only later descriptions
-- [ ] prove Route A or Route B
+- [ ] classify the finite mixed value relation (15)
 - [ ] promote to stage 2 only after an unconditional paper proof
 - [ ] complete unconditional Lean formalization before stage 3
 
