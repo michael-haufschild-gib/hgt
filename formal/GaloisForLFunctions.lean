@@ -10,6 +10,7 @@ import GaloisForLFunctions.Hypertranscendence
 import GaloisForLFunctions.ExponentialGaugeSelection
 import GaloisForLFunctions.GammaTranscendental
 import GaloisForLFunctions.GammaDifferentialFE
+import GaloisForLFunctions.GammaProjectiveBoundary
 import GaloisForLFunctions.ExponentialSumDA
 import GaloisForLFunctions.CarrierDichotomy
 import GaloisForLFunctions.MultiQDifference
@@ -89,6 +90,7 @@ import GaloisForLFunctions.FunctionFieldDegeneration
 import GaloisForLFunctions.DifferentialABP
 import GaloisForLFunctions.DifferentialIndependence
 import GaloisForLFunctions.DifferentialExchange
+import GaloisForLFunctions.DifferentialAlgebraicDeriv
 import GaloisForLFunctions.DifferentialMatroidFoundations
 import GaloisForLFunctions.DifferentialMatroidGluing
 import GaloisForLFunctions.AlgebraicMatroidRank

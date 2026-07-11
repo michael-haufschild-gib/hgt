@@ -7,8 +7,8 @@
 - **Parent theories:** Fourier series of the periodic sawtooth, periodic averaging, and the Euler
   logarithmic derivative
 - **Statement:** Integer multiplicative translates of the leading CCM endpoint sawtooth retain an
-  exact rational resonance. Uniformly through the cofinal prime-power cutoff, their von Mangoldt
-  incidence converges to the scalar `-(pi^2/12) zeta'(2)/zeta(2)`.
+  exact rational resonance. Their full exterior von Mangoldt incidence is absolutely summable,
+  uniformly in the aperture, and converges to `-(pi^2/12) zeta'(2)/zeta(2)`.
 
 ## Sawtooth normalization
 
@@ -179,6 +179,82 @@ sum_(2<=n<=N) Lambda(n)n^(-1/2)
 
 Under `(13)`, this converges to `-(pi^2/12)zeta'(2)/zeta(2)`.
 
+### Full exterior all-prime theorem
+
+The cutoff in `(19)` can be removed. Put
+
+```text
+J_n(L)=integral_0^infinity e^(-s)F_n(L e^s)ds
+      =L integral_L^infinity S(x)S(nx)/x^2 dx.         (20)
+```
+
+`[PROVED HERE]` There is an absolute constant `C_1` such that, for every `L>=1` and `n>=1`,
+
+```text
+|J_n(L)|<=C_1/n.                                      (21)
+```
+
+Consequently, for every `L>=1`, the full prime response
+
+```text
+P_L^full
+ =sum_(n>=2) Lambda(n)n^(-1/2)
+    integral_0^infinity T_L(s)T_L(s+log n)ds           (22)
+```
+
+converges absolutely, and
+
+```text
+P_L^full ->-pi^2/12 * zeta'(2)/zeta(2)                (23)
+```
+
+as `L->infinity`.
+
+#### Proof
+
+Since `S` has mean zero, the primitive
+
+```text
+B_n(x)=integral_0^x S(nt)dt
+```
+
+is periodic and satisfies
+
+```text
+||B_n||_infinity=||B_1||_infinity/n.                  (24)
+```
+
+On `[L,infinity)`, put `u_L(x)=L x^(-2)S(x)`. The sawtooth is a function of bounded
+variation on compact intervals, with absolutely continuous derivative `-1/2` and jumps of size
+`pi` at `2*pi*Z`. Therefore
+
+```text
+Var_[L,infinity)(u_L)
+ <=integral_L^infinity 2L x^(-3)|S(x)|dx
+   +(1/2)integral_L^infinity L x^(-2)dx
+   +pi sum_(2*pi*k>=L) L/(2*pi*k)^2
+ <=C_2                                                     (25)
+```
+
+uniformly for `L>=1`. Also `u_L(x)->0` as `x->infinity` and `|u_L(L)|=O(1/L)`.
+Stieltjes integration by parts in `(20)` now gives
+
+```text
+|J_n(L)|
+ <=||B_n||_infinity
+    *(|u_L(L)|+Var_[L,infinity)(u_L))
+ <=C_1/n,
+```
+
+which proves `(21)`. By `(15)` the `n`-th summand of `(22)` is
+
+```text
+Lambda(n)/n * J_n(L).
+```
+
+Equation `(21)` dominates it by `C_1 Lambda(n)/n^2`, an absolutely summable sequence. For each
+fixed `n`, `(18)` gives `J_n(L)->pi^2/(12n)`. Dominated convergence and `(17)` prove `(23)`.
+
 ## Exact CCM specialization
 
 For an even `C2` source supported on `[-lambda,lambda]`, the endpoint theorem in
@@ -187,32 +263,33 @@ For an even `C2` source supported on `[-lambda,lambda]`, the endpoint theorem in
 
 ```text
 f(lambda)/(pi*sqrt(lambda))
-  *e^(-s/2)S(2*pi*lambda^2 e^s).                      (20)
+  *e^(-s/2)S(2*pi*lambda^2 e^s).                      (26)
 ```
 
 Thus `(10)` has
 
 ```text
 L=2*pi*lambda^2,
-N<lambda^2.                                           (21)
+N<lambda^2.                                           (27)
 ```
 
-The actual cofinal cutoff satisfies `(13)`. Hence the entire prime-power incidence of the leading
-endpoint layer has the universal limit `(14)`, multiplied by the squared endpoint amplitude
+The finite-aperture cutoff satisfies `(13)`, so `(14)` controls the matching finite prime carrier.
+More strongly, `(23)` controls the complete lower-exterior prime-dilation response. Both have the
+same universal limit, multiplied by the squared endpoint amplitude
 `|f(lambda)|^2/(pi^2 lambda)` and by the form's fixed normalization.
 
 The positive structural conclusion is sharp:
 
 ```text
 the leading endpoint layer carries the weighted all-prime tail
-through the single moment  sum Lambda(n)/n^2.          (22)
+through the single moment  sum Lambda(n)/n^2.          (28)
 ```
 
 Therefore a CCM proof of the full pointed incidence transfer must combine this universal scalar
 with at least one additional cofinal carrier: the subleading endpoint jets, a nontrivial
 two-scale envelope, the interior radial-prolate autocorrelation, or the reduced-resolvent response
 of `ccm-prime-source-ground-incidence-response.md`. Those additional carriers are what can retain
-more than the one Euler moment in `(20)` and couple the source to the distinguished divisor/trace
+more than the one Euler moment in `(28)` and couple the source to the distinguished divisor/trace
 moments.
 
 ## Route consequence
@@ -226,10 +303,10 @@ be organized as
 explicit leading Euler scalar
   + quantitatively smaller or richer endpoint/interior remainder
   + archimedean term
-  -> true Weil Rayleigh excess and parity margin.       (23)
+  -> true Weil Rayleigh excess and parity margin.       (29)
 ```
 
-To turn `(21)` into the cofinal Weil-floor theorem, one still needs endpoint asymptotics for the
+To turn `(29)` into the cofinal Weil-floor theorem, one still needs endpoint asymptotics for the
 actual constrained prolate source and a bilinear remainder estimate relative to the true even
 spectral gap. Neither is asserted here.
 
@@ -258,6 +335,7 @@ primitive calculation would not certify the radial-prolate remainder. No Lean fi
 - [x] integer-dilation sawtooth mean computed
 - [x] averaging error uniform in the dilation proved
 - [x] growing von Mangoldt cutoff summed
+- [x] full exterior von Mangoldt series dominated and summed
 - [x] exact Euler scalar identified
 - [ ] actual constrained-prolate endpoint amplitude asymptotics
 - [ ] subleading/interior incidence estimate beyond the one-moment leading layer

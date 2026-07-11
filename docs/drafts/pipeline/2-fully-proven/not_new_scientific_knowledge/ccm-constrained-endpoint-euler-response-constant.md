@@ -3,14 +3,15 @@
 - **ID:** `ccm-constrained-endpoint-euler-response-constant`
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper)
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`,
-  provisional pending independent proof and exact parent-literature comparison
+- **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent sources:** Slepian--Pollak finite-Fourier theory, Fuchs fixed-mode concentration
   asymptotics, Slepian's full fixed-mode PSWF expansions, and
   `constrained-prolate-two-mode-ground-state.md`
 - **Statement:** For the normalized vanishing-integral `h_0`--`h_4` CCM source, the prime-dilation
-  quadratic response of its leading lower endpoint tail is asymptotic to
-  `(4*pi/33)(-zeta'(2)/zeta(2))` times the `h_4` concentration deficit.
+  response of its leading lower endpoint tail is
+  `(4*pi/33)(-zeta'(2)/zeta(2))d_1+o(d_1)`. With the two signed prime atoms in the Weil kernel, the
+  actual prime-form contribution is
+  `-(8*pi/33)(-zeta'(2)/zeta(2))d_1+o(d_1)`.
 
 ## Setup
 
@@ -158,21 +159,21 @@ Hence
 
 ## Exact all-prime response constant
 
-Let `N_lambda=floor(lambda^2)` and define the prime-dilation quadratic response of the leading
-endpoint layer by
+Define the complete lower-exterior prime-dilation quadratic response of the leading endpoint layer
+by
 
 ```text
 R_lambda
- =sum_(2<=n<=N_lambda) Lambda(n)n^(-1/2)
+ =sum_(n>=2) Lambda(n)n^(-1/2)
     integral_0^infinity
       [a_lambda T_(L_lambda)(s)]
       [a_lambda T_(L_lambda)(s+log n)]ds.                           (16)
 ```
 
-The cofinal sawtooth incidence theorem proves
+The full exterior sawtooth incidence theorem proves absolute convergence and
 
 ```text
-sum_(2<=n<=N_lambda) Lambda(n)n^(-1/2)
+sum_(n>=2) Lambda(n)n^(-1/2)
   integral_0^infinity T_(L_lambda)(s)T_(L_lambda)(s+log n)ds
  ->pi^2/12 * (-zeta'(2)/zeta(2)).                                  (17)
 ```
@@ -186,56 +187,100 @@ R_lambda/d_1(lambda)
 
 Every quantity on the right is positive.
 
+## Signed prime contribution to the exterior Weil form
+
+In additive logarithmic coordinates, the prime part of the even screw kernel is
+
+```text
+K_prime(t)
+ =-sum_(n>=2) Lambda(n)n^(-1/2)
+    *(delta_(log n)(t)+delta_(-log n)(t)).                          (19)
+```
+
+Let the leading lower tail be supported on `x<=-log(lambda)` and write
+
+```text
+b_lambda^0(-log(lambda)-s)=a_lambda T_(L_lambda)(s),  s>=0.
+```
+
+The two atoms in `(19)` give equal correlations, so the prime part of the global Weil form is
+
+```text
+Q_prime(b_lambda^0,b_lambda^0)=-2 R_lambda.                         (20)
+```
+
+Therefore `(18)` yields the signed asymptotic
+
+```text
+Q_prime(b_lambda^0,b_lambda^0)/d_1(lambda)
+ ->-(8*pi/33)*(-zeta'(2)/zeta(2)).                                 (21)
+```
+
 ## Positive consequence for the CCM route
 
 The leading exterior prime layer is now calibrated at the same exponential scale as the
 constrained positive-sector gap:
 
 ```text
-leading prime endpoint response = explicit positive constant*d_1+o(d_1).             (19)
+leading prime endpoint response = explicit positive constant*d_1+o(d_1),
+actual prime Weil contribution  = explicit negative constant*d_1+o(d_1).             (22)
 ```
 
 Thus the true-Weil comparison must preserve and combine three `d_1`-scale quantities rather than
 merely bound an unspecified small tail:
 
 ```text
-the Euler response in (18)
+the signed prime contribution in (21)
   + the archimedean endpoint response
-  + the subleading/interior prime-incidence response.                                (20)
+  + the subleading/interior prime-incidence response.                                (23)
 ```
 
-A proof that the sum in `(20)` equals a positive constant times `d_1`, with a remainder
+A proof that the sum in `(23)` equals a positive constant times `d_1`, with a remainder
 `o(d_1)`, would prove that the CCM seed has cofinally vanishing positive Weil Rayleigh quotient.
 Together with a matching true-gap or floor argument, this feeds respectively the determinant or
-direct cofinal-Weil branch. Equation `(18)` supplies the first exact arithmetic coefficient in that
-comparison.
+direct cofinal-Weil branch. Equation `(21)` supplies the first exact signed arithmetic coefficient
+in that comparison.
 
-The theorem does **not** identify the full exterior Weil form with `(16)`. The archimedean term,
-the upper exterior tail, the subleading endpoint jets, and the passage from the model seed to the
-true Weil ground state remain separate obligations.
+The theorem does **not** identify the full exterior Weil form with `(16)`. Since `g_lambda` is
+supported on `[-lambda,lambda]`, its summation vector vanishes identically for `u>lambda`; the
+complete exterior representative is the lower tail. The remaining obligations are the
+archimedean term, the full lower-tail remainder after subtracting `(14)`, and the passage from the
+model seed to the true Weil ground state.
 
-## Novelty audit
+That remainder must be kept intact in the zeta-multiplier graph domain. In particular, the Poisson
+central correction by itself is proportional to `e^(-s/2)`. Its isolated prime correlations would
+contain `sum Lambda(n)/n`, which diverges. The source is nevertheless in the graph domain because
+the central correction cancels with the rest of the exact Fourier tail. Thus pointwise endpoint-jet
+sizes do not license a termwise Weil-form expansion; the positive next theorem is a bilinear
+estimate for
+
+```text
+exact lower tail - a_lambda T_(L_lambda)
+```
+
+as one source-defined graph-domain vector.
+
+## Novelty and significance verdict
 
 ### Parent overlap
 
 - Slepian--Pollak and Fuchs supply `(4)` in equivalent normalization and the fixed-mode asymptotic
   input `(9)`.
 - `constrained-prolate-two-mode-ground-state.md` supplies the `8/11` coefficient.
-- `ccm-cofinal-prime-sawtooth-incidence-law.md` supplies the cofinal Euler scalar.
+- `ccm-cofinal-prime-sawtooth-incidence-law.md` supplies absolute summability and the full
+  exterior Euler scalar.
 
-### Candidate-new residue
+The exact constants `16/(11*pi)` and `(18)` were not located verbatim in the checked parent sources.
+However, `ccm-prolate-endpoint-jet-resummation-law.md` proves that the fixed endpoint expansion is
+not cofinally ordered at frequencies comparable to `lambda`. The vector `b_lambda^0` is therefore
+a formal first-component calibration, not a proved leading approximation to the exact CCM tail.
 
-No checked parent source couples all three ingredients to obtain the constrained endpoint constant
-`16/(11*pi)` or the all-prime response constant `(18)`. The statement survives vocabulary erasure
-as a new exact asymptotic for a constrained prolate endpoint under a growing arithmetic dilation
-quadratic form.
-
-### Significance
-
-The constant lives at the first unresolved comparison scale of the CCM route and can affect the
-sign of the true Weil Rayleigh quotient. Provisional significance: `7/10`. This is enough for
-candidate-new placement, but not for final novelty certification without an independent proof and
-page-level audit of the fixed-mode endpoint literature.
+After vocabulary erasure, the result is a direct combination of a classical endpoint response, a
+constrained two-mode coefficient, and periodic dilation averaging. Its unproved connection to the
+actual radial tail prevents it from clearing the significance gate even if the displayed constant
+is novel as a formula. It is classified as a bridge. A significant new result must instead compute
+the weighted dilation correlations of the **uniform radial-prolate profile** or prove the
+renormalized exact-tail remainder theorem.
 
 ## References
 

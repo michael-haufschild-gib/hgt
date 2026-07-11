@@ -306,6 +306,12 @@ This theorem is one link in an existing chain, not a new standalone route.
    generic coherent dilation-sum growth: its leading Fourier endpoint tail is a bounded sawtooth
    series, and its central Poisson correction is of deficit order. The residual open datum is a
    closed-Weil estimate for the remaining endpoint jets relative to the constrained gap.
+   `ccm-prolate-endpoint-jet-resummation-law.md` sharpens that statement: the fixed-jet expansion is
+   not cofinally ordered at frequencies `y` comparable to `lambda`, because the endpoint
+   logarithmic derivative is of order `lambda^3`. The positive source object is the exact uniform
+   radial-prolate exterior profile. `ccm-radial-prolate-two-scale-boundary-carrier.md` fixes its
+   endpoint slope and total rescaled leakage mass, while explicitly leaving tightness and the
+   matched transition law open.
 5. `ccm-galerkin-cofinal-diagonal-transfer.md` proves that fixed-aperture form-core convergence and
    a diagonal choice of Galerkin dimensions transfer any continuous determinant limit to finite
    CCM determinants. No estimate uniform in the aperture and Galerkin dimension is needed.
@@ -339,6 +345,20 @@ This theorem is one link in an existing chain, not a new standalone route.
     form, and the derivative of the CCM Mellin characteristic function is the Mellin transform of
     that same reduced-resolvent response. This is the precise coupling from weighted source tail to
     divisor/trace moments.
+12. `finite-archimedean-gamma-product-boundary-law.md` proves that every finite commensurable
+    archimedean Gamma completion contributes one upper projective valuation direction, whereas a
+    recurrent object DA over that field has finite rational phase rank. The infinite prime-log
+    module must therefore be carried independently through completion.
+    `ccm-radial-dilation-divisibility-carrier.md` identifies the exact CCM carrier: multiplicative
+    translation selects radial Fourier indices divisible by the translating integer, finite
+    Möbius inversion recovers every radial component, and the prime Weil form pairs the complete
+    dilation-autocorrelation vector with the von Mangoldt coefficients. At cutoff `N`, retaining
+    the prime directions requires dimension at least `pi(N)`; the Gamma factor cannot supply or
+    collapse those directions. `constrained-prolate-radial-leakage-divisibility-spectrum.md`
+    computes the fixed-index asymptotic of this actual carrier: the exterior leakage has universal
+    density `(8/(11*pi))/(x*sqrt(x^2-1))`, the diagonal Gram spectrum is
+    `(8/(11*pi*k))arcsin(1/k)`, and every fixed off-diagonal entry vanishes. The open step is the
+    simultaneous growing-index weighted limit.
 
 The resulting exact open target should be stated projectively. After removing the explicit
 nonvanishing exponential in `(2)`, put
@@ -440,6 +460,10 @@ large-aperture simple-evenness nor supplies the locally uniform determinant limi
   feed the characteristic function through the true ground-state reduced resolvent. The remaining
   estimate is cofinal control of this incidence tensor at the actual von Mangoldt point in the
   growing Mellin topology.
+- `[REQUIRED INFINITE RADIAL DIVISIBILITY CARRIER]` Prove a weighted cofinal limit for the complete
+  dilation-autocorrelation vector of the exact radial-prolate lower tail, not only for its scalar
+  Weil pairing. Finite Möbius inversion shows that these shifted tails retain every finite radial
+  component; the finite Gamma completion contributes only one separate valuation direction.
 - `[OPEN CORE]` Prove `(11)` using the exterior-tail Weil quotient identity and the constrained
   prolate fixed-mode gap ladder.
 - `[PREFERRED OPEN CORE]` Prove the quadratic form estimate `(12b)`, preferably through a
