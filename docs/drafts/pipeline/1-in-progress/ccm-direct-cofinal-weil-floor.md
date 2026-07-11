@@ -267,6 +267,51 @@ Thus the CCM source already possesses the forced complementary carrier. The rema
 not to invent arithmetic state: it is to factor the completed form positively while preserving the
 inertia of this explicit quotient through the cofinal aperture limit.
 
+The corpus-level factorization of that carrier is now recorded in
+`ccm-sonin-three-grade-relative-carrier-law.md`. The canonical source has three inseparable grades:
+
+```text
+noncompact principal Calkin shell carrying A_N
+  + Hilbert--Schmidt linear cross carrying the unsquared log(p^m) coefficient
+  + positive trace-class residual Gram.                  (12g)
+```
+
+The first grade is too large for an all-prime compact sum, the third deletes the principal mode and
+squares coefficients, and the second has no canonical trace without a genuine relative
+functional. Therefore the preferred version of the Gram/aperture transport in `(12d)` is a closed
+principal--relative extension carrying all three grades, followed by a cofinal contraction whose
+principal symbol is faithful on `A_N` and whose degree-one functional is Connes's semilocal
+logarithmic trace.
+
+The degree-one operator is explicit before Sonin compression. By
+`critical-euler-position-commutator-carrier-law.md`, logarithmic position `X_A` and the skew Euler
+logarithm `Z_A` satisfy
+
+```text
+[X_A,Z_A]
+ =sum_(n<e^A)Lambda(n)/n
+    (T_(A,log n)+T_(A,log n)^*).                         (12h)
+```
+
+The coefficient of the `p^k` term in `Z_A` is exactly `1/(k p^k)`, while the commutator produces
+the orbital length `log(p^k)`. Hence the next construction is no longer an unspecified relative
+functional: it is the closed transport of `(12h)` through the three-grade Sonin carrier and its
+coupling to Burnol's Gamma conductor.
+
+Compression no longer introduces an unspecified error term. For any orthogonal constraint `Q`,
+the position/Euler commutator obeys
+
+```text
+Q[X_A,Z_A]Q
+ =[QX_AQ,QZ_AQ]
+  +L_(X,A)^*L_(Z,A)+L_(Z,A)^*L_(X,A),                   (12i)
+```
+
+with `L_(X,A)=(1-Q)X_AQ` and `L_(Z,A)=(1-Q)Z_AQ`. Under an admissible relative trace the internal
+commutator vanishes, so the exact degree-one source is the polarized leakage Gram. The next theorem
+is to put these two leakage maps on a common closed graph, identify their relative trace with the
+semilocal logarithmic functional, and prove the completed Gamma--prime square/contraction.
+
 ## Gates
 
 - [x] determinant transfer collapsed to the direct floor criterion
@@ -279,6 +324,9 @@ inertia of this explicit quotient through the cofinal aperture limit.
 - [x] RH reduced to compact screw injectivity at every aperture
 - [x] complete two-channel Euler--Weil resolvent family constructed
 - [x] exact arithmetic-complement operator carrier `A_N` constructed
+- [x] three-grade principal--relative carrier forced by the formalized Sonin corpus
+- [x] exact degree-one Euler position commutator constructed
+- [x] exact compressed position/Euler leakage Gram identity constructed
 - [ ] construct a positive reference splitting `(10)`
 - [ ] prove the infinite-carrier contraction `(11)`
 - [ ] or construct a source-defined Gram factorization of `(12c)` and an index-faithful aperture

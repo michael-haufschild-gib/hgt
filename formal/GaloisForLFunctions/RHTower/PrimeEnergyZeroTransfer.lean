@@ -30,17 +30,49 @@ theorem xiCTaylorApprox_differentiable (n : ℕ) : Differentiable ℂ (xiCTaylor
   exact fun z => (HasFDerivAt.multilinear_comp (f := cauchyPowerSeries XiC 0 1 k)
     (fun _ => hasFDerivAt_id z)).differentiableAt
 
+/-- The finite-prime logarithmic pinning theorem along an arbitrary cofinal cutoff sequence. -/
+theorem tendsto_horizontalDisplacement_zero_of_cofinal_energy_div_log_sq_tendsto_zero
+    (cutoff : ℕ → ℕ) (hcutoff : Tendsto cutoff atTop atTop)
+    (epsilon : ℕ → ℝ)
+    (henergy : Tendsto
+      (fun j : ℕ => primeClockCutoffEnergy (cutoff j) (epsilon j) /
+        Real.log (cutoff j) ^ 2)
+      atTop (𝓝 0)) :
+    Tendsto epsilon atTop (𝓝 0) := by
+  have hratio := tendsto_primeClockSusceptibility_div_log_sq.comp hcutoff
+  have hratioLower : ∀ᶠ j : ℕ in atTop,
+      (1 / 4 : ℝ) ≤ primeClockSusceptibility (cutoff j) / Real.log (cutoff j) ^ 2 := by
+    filter_upwards [(tendsto_order.1 hratio).1 (1 / 4 : ℝ) (by norm_num)] with j hj
+    exact hj.le
+  have hcutoffTwo : ∀ᶠ j : ℕ in atTop, 2 ≤ cutoff j :=
+    hcutoff.eventually (eventually_ge_atTop 2)
+  have hsqBound : ∀ᶠ j : ℕ in atTop,
+      epsilon j ^ 2 ≤
+        primeClockCutoffEnergy (cutoff j) (epsilon j) / Real.log (cutoff j) ^ 2 := by
+    filter_upwards [hratioLower, hcutoffTwo] with j hratioJ hN
+    exact horizontalDisplacement_sq_le_energy_div_log_sq (cutoff j) (epsilon j) hN hratioJ
+  have hsq : Tendsto (fun j : ℕ => epsilon j ^ 2) atTop (𝓝 0) := by
+    apply squeeze_zero'
+    · exact Eventually.of_forall fun j => sq_nonneg (epsilon j)
+    · exact hsqBound
+    · exact henergy
+  have habs : Tendsto (fun j : ℕ => |epsilon j|) atTop (𝓝 0) := by
+    simpa only [Real.sqrt_sq_eq_abs, Real.sqrt_zero] using hsq.sqrt
+  apply tendsto_zero_iff_norm_tendsto_zero.mpr
+  simpa only [Real.norm_eq_abs] using habs
+
 /-- Locally uniform entire approximants whose zero fibres have locally uniform sub-log-square
 finite-prime reflected energy force the Riemann hypothesis. Only zeros in each fixed compact ball
 are controlled; no condition is imposed on spurious approximant zeros escaping to infinity. -/
-theorem riemannHypothesis_of_XiC_locally_uniform_localPrimeEnergy_approximants
-    {Fn : ℕ → ℂ → ℂ}
+theorem riemannHypothesis_of_XiC_locally_uniform_cofinalLocalPrimeEnergy_approximants
+    {Fn : ℕ → ℂ → ℂ} {cutoff : ℕ → ℕ}
+    (hcutoff : Tendsto cutoff atTop atTop)
     (hconv : TendstoLocallyUniformly Fn XiC atTop)
     (hFn : ∀ᶠ n in atTop, Differentiable ℂ (Fn n))
     (hzeroEnergyLocal : ∀ R : ℝ, ∃ E : ℕ → ℝ,
       Tendsto E atTop (𝓝 0) ∧
       ∀ᶠ n in atTop, ∀ z ∈ closedBall (0 : ℂ) R, Fn n z = 0 →
-        primeClockCutoffEnergy n z.im / Real.log n ^ 2 ≤ E n) :
+        primeClockCutoffEnergy (cutoff n) z.im / Real.log (cutoff n) ^ 2 ≤ E n) :
     RiemannHypothesis := by
   classical
   have hXiCZeroReal : ∀ z : ℂ, XiC z = 0 → z.im = 0 := by
@@ -76,11 +108,11 @@ theorem riemannHypothesis_of_XiC_locally_uniform_localPrimeEnergy_approximants
       simpa only [w, P, dif_pos hn] using hchoose
     obtain ⟨E, hE, hzeroEnergy⟩ := hzeroEnergyLocal (dist z 0 + r)
     have henergyNonneg : ∀ n : ℕ,
-        0 ≤ primeClockCutoffEnergy n (w n).im / Real.log n ^ 2 := by
+        0 ≤ primeClockCutoffEnergy (cutoff n) (w n).im / Real.log (cutoff n) ^ 2 := by
       intro n
-      exact div_nonneg (primeClockCutoffEnergy_nonneg n (w n).im) (sq_nonneg _)
+      exact div_nonneg (primeClockCutoffEnergy_nonneg (cutoff n) (w n).im) (sq_nonneg _)
     have henergyLe : ∀ᶠ n in atTop,
-        primeClockCutoffEnergy n (w n).im / Real.log n ^ 2 ≤ E n := by
+        primeClockCutoffEnergy (cutoff n) (w n).im / Real.log (cutoff n) ^ 2 ≤ E n := by
       filter_upwards [hwSpec, hzeroEnergy] with n hwn hbound
       apply hbound (w n)
       · rw [Metric.mem_closedBall]
@@ -90,12 +122,13 @@ theorem riemannHypothesis_of_XiC_locally_uniform_localPrimeEnergy_approximants
           _ = dist z 0 + r := add_comm _ _
       · exact hwn.2
     have henergyTendsto : Tendsto
-        (fun n : ℕ => primeClockCutoffEnergy n (w n).im / Real.log n ^ 2)
+        (fun n : ℕ => primeClockCutoffEnergy (cutoff n) (w n).im /
+          Real.log (cutoff n) ^ 2)
         atTop (𝓝 0) :=
       squeeze_zero' (Eventually.of_forall henergyNonneg) henergyLe hE
     have hwIm : Tendsto (fun n : ℕ => (w n).im) atTop (𝓝 0) :=
-      tendsto_horizontalDisplacement_zero_of_energy_div_log_sq_tendsto_zero
-        (fun n => (w n).im) henergyTendsto
+      tendsto_horizontalDisplacement_zero_of_cofinal_energy_div_log_sq_tendsto_zero
+        cutoff hcutoff (fun n => (w n).im) henergyTendsto
     have hsmall : ∀ᶠ n in atTop, |(w n).im| < r := by
       have hmetric := (Metric.tendsto_atTop.mp hwIm) r hr
       simpa [Real.dist_eq] using hmetric
@@ -132,6 +165,19 @@ theorem riemannHypothesis_of_XiC_locally_uniform_localPrimeEnergy_approximants
   have hzIm : z.im = 1 / 2 - ρ.re := by simp [z]
   have hre : ρ.re = 1 / 2 := by linarith [him, hzIm]
   exact (ne_of_gt (mem_rightHalf.mp hρ)) hre
+
+/-- The index-cutoff specialization of the cofinal compact-local transfer theorem. -/
+theorem riemannHypothesis_of_XiC_locally_uniform_localPrimeEnergy_approximants
+    {Fn : ℕ → ℂ → ℂ}
+    (hconv : TendstoLocallyUniformly Fn XiC atTop)
+    (hFn : ∀ᶠ n in atTop, Differentiable ℂ (Fn n))
+    (hzeroEnergyLocal : ∀ R : ℝ, ∃ E : ℕ → ℝ,
+      Tendsto E atTop (𝓝 0) ∧
+      ∀ᶠ n in atTop, ∀ z ∈ closedBall (0 : ℂ) R, Fn n z = 0 →
+        primeClockCutoffEnergy n z.im / Real.log n ^ 2 ≤ E n) :
+    RiemannHypothesis := by
+  exact riemannHypothesis_of_XiC_locally_uniform_cofinalLocalPrimeEnergy_approximants
+    (cutoff := fun n => n) tendsto_id hconv hFn hzeroEnergyLocal
 
 /-- Uniform zero-fibre energy is a convenient stronger interface to the compact-local theorem. -/
 theorem riemannHypothesis_of_XiC_locally_uniform_primeEnergy_approximants

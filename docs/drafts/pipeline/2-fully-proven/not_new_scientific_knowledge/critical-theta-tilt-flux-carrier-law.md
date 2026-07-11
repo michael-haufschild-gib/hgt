@@ -305,6 +305,137 @@ The pointed cusp screen already supplies the carrier and locally uniform divisor
 remaining theorem is precisely the cofinal flux inequality, or a weaker quantitative version which
 forces sub-log-square reflected energy on every approximant zero fibre.
 
+## 6A. Corpus-grounded completion of the carrier specification
+
+The existing RHTower corpus removes three apparent construction problems and sharpens the one that
+remains.
+
+First, `XiRelativeResolventFlux.lean` already proves, without a prime ordering or zero enumeration,
+that the continued von Mangoldt--archimedean source trace is exactly the centered Xi relative
+resolvent away from its natural poles:
+
+```text
+continuedPrimeArchSourceRelativeTrace
+  = xiRelativeResolventTrace.                             (30)
+```
+
+Thus the missing theorem is not analytic continuation of the source trace.  The terminal Route A
+audit proves that extracting trace-Hankel positivity from `(30)` by a compact-open germ, a finite
+corona expression, or divisor reconstruction is either blind or RH-equivalent.
+
+Second, `SeamKreinStructure.lean` proves that the reflected one-particle prime diagonal is unbounded.
+No bounded conjugation internal to that prime space can implement `s |-> 1-s`.  It also proves that
+the full reciprocity graph is Lagrangian for the signed doubled Green form.  Therefore the positive
+operator promised by `(16)` must have the following shape:
+
+> The successful Hilbert--Polya carrier is a larger doubled Krein seam whose nonzero content comes
+> from an arithmetic domain, closure, or boundary defect.  It cannot be an internal bounded prime
+> reflection or the quotient of the full reciprocity graph alone.
+
+Third, `relative-contraction-compression-exhaustion.md` proves that cofinal finite compressions do
+determine a completed contraction after the bounded self-adjoint operator, or the correct closed
+semibounded form, has been source-constructed.  The companion one-sided-bound theorem shows that
+upper compression inequalities alone do not construct that completion.  Consequently a viable
+finite-section implementation must carry a common closed source domain and a two-sided completion
+law before applying compression exhaustion.
+
+There is also a second exact positive endpoint already present in the corpus.  For the shifted
+completed quotient
+
+```text
+Theta_omega(z)
+ =Xi(1/2-omega-i z)/Xi(1/2+omega-i z),                   (31)
+```
+
+let `T_omega` and `L_omega` be its causal Toeplitz and anti-causal Hardy columns.  Boundary
+unimodularity gives
+
+```text
+I-T_omega^*T_omega=L_omega^*L_omega.                     (32)
+```
+
+For a finite right-half divisor, the corpus proves the first-order source curvature
+
+```text
+C_E
+ =lim_(omega->0+) omega^(-2)(I-T_omega^*T_omega)
+ =D^*D>=0,                                                (33)
+```
+
+and identifies its boundary corner with the global Cauchy energy
+
+```text
+C_E(0,0)
+ =integral_0^infinity |ell_1(t)|^2 dt,
+
+ell_1(t)
+ =2 sum_j m_j exp(-(a_j+i gamma_j)t).                    (34)
+```
+
+The exact Cauchy Gram expansion has strictly positive ordered-pair contributions and gives
+
+```text
+C_E(0,0)>=2 sum_j m_j^2/a_j.                             (35)
+```
+
+Every right-half zeta displacement satisfies `0<a_j<1/2`; hence one off-line zero forces
+`C_E(0,0)>4`.  Therefore the entirely source-side estimate
+
+```text
+C_E(0,0)<=4                                               (36)
+```
+
+implies RH and requires no ordinate localization.  Construction and positivity of `(33)` do not
+prove `(36)`: a self-dual quartet satisfies the generic FE, unimodularity, cocycle, and Toeplitz
+contractivity laws while making the corner arbitrarily large.  The bound must use the exact
+all-prime magnitudes and the archimedean cancellation at the compressed boundary.
+
+The corpus identifies the exact arithmetic variable on which such a bound must act.  Put
+
+```text
+c_omega(n)
+ =n^omega product_(p|n)(1-p^(-2omega)),
+
+A_omega(X)=sum_(n<=X)c_omega(n),
+
+E_omega(X)
+ =A_omega(X)
+  -X^(1+omega)/((1+omega)zeta(1+2omega)).                (37)
+```
+
+Suzuki's completed integrated tail has the source identity
+
+```text
+h_omega^(1)(x)
+ =x^(-1) integral_((0,x])
+    g_omega^(1)(t/x)dE_omega(t).                         (38)
+```
+
+The positive average term in `A_omega` contributes exactly zero because the archimedean kernel has
+the matching vanishing moment.  Moreover
+
+```text
+E_omega(X)
+ =sum_(d<=X) mu(d)d^(-omega)R_omega(X/d)
+  -X^(1+omega)/(1+omega)
+    sum_(d>X)mu(d)d^(-1-2omega),                         (39)
+
+R_omega(Y)
+ =sum_(m<=Y)m^omega-Y^(1+omega)/(1+omega).
+```
+
+Each term in `(39)` is only `O_omega(X^(1-omega))` under absolute values.  Therefore the positive
+source theorem required by `(36)` is a coupled cancellation law for the transformed pair in `(39)`.
+It must retain the floor discrepancy and compensating Mobius tail together through the
+archimedean kernel.  This is the concrete all-prime/archimedean incidence absent from the
+self-dual-quartet fake and from every finite Gamma carrier.
+
+Equations `(16)` and `(36)` are therefore two compatible faces of the same positive carrier
+obligation.  The first asks for a contractive reflected trace on the doubled source domain.  The
+second asks for an absolute boundary regularity budget on its infinitesimal Hardy defect.  A direct
+Hilbert--Polya proof may close either face, but it must construct the common source domain and retain
+the growing prime complement `(27)`.
+
 ## 7. Attacks and exact boundary
 
 1. **Not ordinary norm convexity.** Although `J_Phi(a)>=0`, the derivative of a positive norm square

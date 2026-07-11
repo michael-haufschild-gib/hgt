@@ -307,18 +307,47 @@ also shows
 J_M subset J_N for M>=N.                                  (33)
 ```
 
+For `lambda>0`, define the translation character
+
+```text
+chi_lambda(sum_j c_j T_(h_j))=sum_j c_j exp(-lambda h_j). (33a)
+```
+
+Coefficient uniqueness gives the exact finite-stage ideal
+
+```text
+J_N=intersection_(p<=N,m>=1) ker chi_(m log p).            (33b)
+```
+
+Each character kernel is maximal, so `J_N` is radical and
+
+```text
+B_N=A/J_N                                                 (33c)
+```
+
+is the reduced coordinate algebra of the prime-power translation characters through cutoff `N`.
+For `M>=N`, inclusion `(33)` gives a surjection `B_M->B_N`.
+
 The infinite theorem is exactly the cofinal separation law
 
 ```text
 intersection_N J_N={0}.                                   (34)
 ```
 
+Equivalently, the canonical map
+
+```text
+A -> inverse_limit_N B_N                                 (34a)
+```
+
+is injective.
+
 Thus the Euler carrier is **cofinally cutoff-faithful**: every cutoff has explicit finite
 translation constraints, but no nonzero constraint survives all prime cutoffs.
 
 This is the positive finite-to-infinite carrier. A successful limiting construction must represent
-the decreasing family `(J_N)` and preserve its zero intersection; merely preserving each cutoff
-after collapsing their distinction does not carry the Euler source.
+the reduced character algebras `B_N`, their transition maps, and the injectivity in `(34a)`; merely
+preserving each cutoff after collapsing their distinction does not carry the Euler source.
 
 ## 9. HT landscape law
 
@@ -379,26 +408,28 @@ and prove their intersection is zero in the completed constraint.
 5. **The theorem is not an HT criterion.** Translation faithfulness is an independent characteristic.
    Some HT functions have finite translation constraints, and a DA function need not satisfy any
    constant-coefficient translation equation.
-6. **No route is rejected by name.** A route remains viable precisely by realizing the residually
-   faithful carrier `(31)`--`(34)`.
+6. **No route is rejected by name.** A route remains viable precisely by realizing the cofinally
+   cutoff-faithful carrier `(31)`--`(34)`.
 
 ## 12. Parent and novelty audit
 
 `[SEARCH]` Generalized Dirichlet-series uniqueness, rational asymptotics, and Vandermonde inversion
 are classical. Difference independence of Gamma functions and Dirichlet-series classes is an active
-literature, including Li--Tahir--Gao (2023). Ostrowski's structure theory and later functional-
-independence results are adjacent.
+literature, including Li--Tahir--Gao (2023) and Lu's zeta-specific 2024 theorem. Ostrowski's
+structure theory and later functional-independence results are adjacent.
 
 `[NOVELTY UNVERIFIED]` Preliminary exact searches did not locate the quotient `Q_flat`, the maximal
 identity `(19)`, the ray-complete arbitrary-translation proof, or the completion injection `(24)`.
-However, the proof is an elementary synthesis once the invariant is defined, and the full text of
-the closest difference-independence paper was not accessible. The result must not be promoted beyond
-`[NOVELTY UNVERIFIED]` without an exact theorem-by-theorem priority comparison.
+However, the proof is an elementary synthesis once the invariant is defined, and the full texts of
+the two closest difference-independence papers were not accessible. The result must not be promoted
+beyond `[NOVELTY UNVERIFIED]` without an exact theorem-by-theorem priority comparison.
 
 Primary adjacent sources:
 
 - X.-M. Li, H. Tahir, X.-Y. Gao, *On the Algebraic Difference Independence of the Euler Gamma
   Function and Dirichlet Series*, Constructive Approximation 58 (2023), 121--149.
+- F. Lu, *On the algebraic difference independence of Gamma and zeta*, J. Math. Anal. Appl. 538
+  (2024), article 128446.
 - A. Ostrowski, *Uber Dirichletsche Reihen und algebraische Differentialgleichungen*, Math. Z. 8
   (1920), 241--298.
 - J. Kaczorowski, A. Perelli, *Functional independence of the singularities of a class of Dirichlet
@@ -406,11 +437,12 @@ Primary adjacent sources:
 
 ## 13. Lean status
 
-The finite algebraic core requires finite-support translation operators, generalized Dirichlet
-coefficient uniqueness, prime-log irrational ratios, and Vandermonde inversion. The current tree
-contains several of these ingredients separately, but no analytic constraint ideal or theorem that
-formalizes `(8)` and `(24)` for the actual zeta logarithmic derivative. The complete claim remains
-stage 2. A finite-dimensional annihilator wrapper alone would not justify stage 3.
+The tree already contains the actual right-half-plane identity
+`zeta_logDeriv_frequencies_weld`, the two-prime theorem `irrational_log_ratio`, and the reusable
+Vandermonde theorem `vandermonde_moments_eq_zero_of_injective`. It does not contain the required
+generalized Dirichlet coefficient-uniqueness theorem, the analytic/formal constraint ideals, or a
+theorem assembling `(8)` and `(24)` for the actual zeta logarithmic derivative. The complete claim
+remains stage 2. A finite-dimensional annihilator wrapper alone would not justify stage 3.
 
 ## Gates
 

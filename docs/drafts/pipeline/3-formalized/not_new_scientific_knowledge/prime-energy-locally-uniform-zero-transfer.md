@@ -64,6 +64,7 @@ Declaration:
 
 ```text
 RHTower.riemannHypothesis_of_XiC_locally_uniform_localPrimeEnergy_approximants
+RHTower.riemannHypothesis_of_XiC_locally_uniform_cofinalLocalPrimeEnergy_approximants
 RHTower.riemannHypothesis_of_XiC_locally_uniform_primeEnergy_approximants
 RHTower.riemannHypothesis_of_xiCTaylorApprox_localPrimeEnergy
 RHTower.riemannHypothesis_of_xiCTaylorApprox_primeEnergy
@@ -105,6 +106,11 @@ escaping to infinity. Finite real-rootedness is not required: compact-local, asy
 sub-log-square reflected prime energy suffices. Alternative self-adjoint or determinant
 approximants remain eligible under the general theorem.
 
+For a cofinal prime cutoff sequence `N_j -> infinity`, the generalized theorem replaces every
+occurrence of `N` in the energy by `N_j`. This is the exact interface required by the paper-proved
+pointed theta-cusp screen family: after its transforms are formalized, their compact-local
+sub-log-square zero-fibre energy implies RH directly.
+
 ## Gates
 
 - [x] source-pure quantitative condition identified
@@ -114,4 +120,5 @@ approximants remain eligible under the general theorem.
 - [x] construct a source-defined concrete approximant family
 - [x] prove its locally uniform convergence and holomorphy
 - [x] localize the zero-fibre hypothesis to fixed compact balls
+- [x] generalize the transfer to arbitrary cofinal prime cutoffs
 - [ ] prove the compact-local zero-fibre energy envelope

@@ -613,6 +613,12 @@ Formalized so far (axiom-clean; `propext, Classical.choice, Quot.sound` only):
   `finite-archimedean-gamma-product-boundary-law` mechanism the `M != 0` case invokes).
 - Basic archimedean Gamma factors and recurrences: `ArchimedeanGamma.lean`, `GammaWeierstrass.lean`,
   `GammaDifferentialFE.lean`.
+- **Phase-budget rank `(36)`.** `PrimeLogPhaseBudget.lean` proves
+  `primeLog_primesBelow_linearIndependent`: the logarithms of the primes `< N` are `ℤ`-linearly
+  independent (restriction of `RHTower.primeLog_linearIndependent`), and
+  `primesBelow_card_eq_primeCounting'` gives their count `= Nat.primeCounting' N`. Together these are
+  exactly `rank_ℚ Λ_N = π(N)`, the lower-bound side of the phase-budget inequality `(37)`. The upper
+  bound `π(N) ≤ δ_G + 2m(n+1)` still needs the ADE/Bohr-hull machinery.
 
 Still missing (no partial wrapper): Gauss multiplication `(6)` in meromorphic ratio form for general
 `d`, discrete shift residues `(13)`, the formal transseries / Adamczewski--Dreyfus--Hardouin shift

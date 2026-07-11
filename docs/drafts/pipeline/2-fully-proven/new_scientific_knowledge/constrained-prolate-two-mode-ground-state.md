@@ -440,11 +440,19 @@ fixed by `P_a` and having integral zero. The compressed leakage is positive, is 
 compact operator, and has quadratic form
 `||f||^2-||P_a F P_a f||^2`. These theorems are unconditional.
 
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateSignedSpectrum.lean` supplies the actual
+signed compact spectrum of `P_a F P_a`: signed eigen-equations, orthogonality, physical-support
+membership of every nonzero mode, decay of the signed eigenvalues, and the exact squaring relation
+to concentration and leakage. The constrained compression also has unconditional greedy
+concentration/leakage eigenmodes in
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateConstrainedSpectrum.lean`.
+
 The scientifically new asymptotic theorem `(4)`--`(7)` is not yet formalized. Its remaining inputs
-are the signed prolate spectral decomposition selecting the `4j` sector, Fuchs fixed-index
-asymptotics with normalization, prolate-to-Hermite convergence, and the uniform infinite-tail
-secular estimate. The card therefore remains paper-proven; the concrete operator substrate is now
-present, but no finite-matrix or hypothesis-only shadow is counted as promotion.
+are the classical identification and simplicity theorem matching the positive signed modes with
+the `4j` numbering, Fuchs fixed-index asymptotics with normalization, prolate-to-Hermite
+convergence, and the uniform infinite-tail secular estimate. The card therefore remains
+paper-proven; the concrete operator and spectral substrates are now present, but no finite-matrix
+or hypothesis-only shadow is counted as promotion.
 
 ## Gates
 
