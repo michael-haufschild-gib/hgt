@@ -30,6 +30,9 @@ def derivativeCutoff (n t : ℕ) : ℕ := 2 * extrapolationOrder n t
 /-- Schwarz-disc radius. -/
 def extrapolationRadius (n t : ℕ) : ℕ := t ^ (4 * n + 1)
 
+/-- Number of natural samples in the first quarter of the Schwarz disc, including zero. -/
+def quarterSampleCount (n t : ℕ) : ℕ := extrapolationRadius n t / 4 + 1
+
 /-- The complete positive factor in the first extrapolation step after the Schwarz node ratio has
 been separated off. -/
 noncomputable def firstStepGrowth (R : Relation) (c : ℤ) (t : ℕ) : ℝ :=
@@ -390,6 +393,53 @@ theorem double_rowCount_le_columnCount {n t : ℕ} (hn : 3 ≤ n) (_ht : 2 ≤ t
     2 * (sampleCount n t * derivativeCutoff n t ^ (n - 1)) ≤
       exponentWidth n t ^ n :=
   (double_rowCount_eq_columnCount hn).le
+
+/-- The column count is the product of the lower shift-box count and the exact residual sample
+factor `2^n * S`. -/
+theorem columnCount_eq_twoPow_mul_sample_shift {n t : ℕ} (hn : 3 ≤ n) :
+    exponentWidth n t ^ n =
+      2 ^ n * (sampleCount n t * extrapolationOrder n t ^ (n - 1)) := by
+  rw [← double_rowCount_eq_columnCount hn]
+  unfold derivativeCutoff
+  rw [mul_pow]
+  have hpow : 2 * 2 ^ (n - 1) = 2 ^ n := by
+    calc
+      2 * 2 ^ (n - 1) = 2 ^ ((n - 1) + 1) := by rw [pow_succ']
+      _ = 2 ^ n := by congr 1; omega
+  rw [← hpow]
+  ring
+
+/-- Once the parameter base exceeds the fixed arity constant, the extrapolated quarter-disc row
+box contains strictly more conditions than auxiliary columns. -/
+theorem columnCount_lt_quarterSample_shift_count
+    {n t : ℕ} (hn : 3 ≤ n) (ht : 2 ^ (n + 2) < t) :
+    exponentWidth n t ^ n <
+      quarterSampleCount n t * extrapolationOrder n t ^ (n - 1) := by
+  rw [columnCount_eq_twoPow_mul_sample_shift hn]
+  have htpos : 0 < t :=
+    lt_trans (pow_pos (by norm_num : 0 < (2 : ℕ)) _) ht
+  have hSpos : 0 < sampleCount n t := by
+    unfold sampleCount
+    exact pow_pos htpos _
+  have hscale : 2 ^ n * sampleCount n t ≤ extrapolationRadius n t / 4 := by
+    apply (Nat.le_div_iff_mul_le (by norm_num : 0 < 4)).mpr
+    have hradius : extrapolationRadius n t = t * sampleCount n t := by
+      simp [extrapolationRadius, sampleCount, pow_succ, mul_comm]
+    rw [hradius]
+    have hmul := Nat.mul_le_mul_right (sampleCount n t) ht.le
+    calc
+      (2 ^ n * sampleCount n t) * 4 =
+          2 ^ (n + 2) * sampleCount n t := by
+        rw [pow_add]
+        ring
+      _ ≤ t * sampleCount n t := hmul
+  have hcount : 2 ^ n * sampleCount n t < quarterSampleCount n t := by
+    simpa [quarterSampleCount] using Nat.lt_succ_of_le hscale
+  have hqpos : 0 < extrapolationOrder n t ^ (n - 1) := by
+    unfold extrapolationOrder
+    exact pow_pos (pow_pos htpos _) _
+  have hmul := (Nat.mul_lt_mul_right hqpos).mpr hcount
+  simpa [mul_assoc, mul_comm, mul_left_comm] using hmul
 
 theorem Relation.parameterizedCoefficientBoundClosed_le_linear
     (R : Relation) (hn : 3 ≤ R.n) (c : ℤ) (hc : c ≠ 0)
@@ -766,6 +816,13 @@ theorem quarterRadiusSample_mem_closedBall
   rw [Metric.mem_closedBall, dist_eq_norm]
   simp only [sub_zero, Complex.norm_natCast]
   exact_mod_cast (le_trans (Nat.le_mul_of_pos_left sample (by norm_num)) hquarter)
+
+theorem quarterSample_mem {n t : ℕ} (sample : Fin (quarterSampleCount n t)) :
+    4 * (sample : ℕ) ≤ extrapolationRadius n t := by
+  have hs : (sample : ℕ) ≤ extrapolationRadius n t / 4 := by
+    simpa [quarterSampleCount] using sample.isLt
+  have := (Nat.le_div_iff_mul_le (by norm_num : 0 < 4)).mp hs
+  simpa [mul_comm] using this
 
 /-- Uniform node-ratio decay for every natural sample in the first quarter of the Schwarz disc. -/
 theorem quarterRadiusSample_node_ratio_le_two_thirds
@@ -1154,48 +1211,45 @@ theorem Relation.exists_parameterized_auxiliary_coefficients_of_scale
   exact R.auxiliaryCoefficientBound_le_closed c hc hint pivot
     (exponentWidth R.n t) (sampleCount R.n t) (derivativeCutoff R.n t) hL hcard
 
-/-- For a fixed integral coefficient scale, one parameter base produces a nonzero auxiliary kernel
-whose entire lower shifted-component box vanishes at every natural sample in the first quarter of
-the Schwarz disc. -/
-theorem Relation.exists_parameterized_quarterRadius_shiftedBox_zero_of_scale
+/-- For a fixed integral coefficient scale, the whole analytic extrapolation closes into a nonzero
+kernel vector for an enlarged auxiliary matrix whose row count is strictly larger than its column
+count.  The only remaining input is the terminal Baker zero lemma asserting injectivity of this
+specific enlarged matrix. -/
+theorem Relation.exists_parameterized_extended_auxiliary_kernel_of_scale
     (R : Relation) (hn : 3 ≤ R.n) (c : ℤ) (hc : c ≠ 0)
     (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n) :
-    ∃ t : ℕ, 4 ≤ t ∧
+    ∃ t : ℕ, 4 ≤ t ∧ 2 ^ (R.n + 2) < t ∧
       ∃ η : R.Column (exponentWidth R.n t) → 𝓞 R.CoefficientField,
         η ≠ 0 ∧
           Matrix.mulVec (R.auxiliaryMatrix c hint pivot
-            (exponentWidth R.n t) (sampleCount R.n t) (derivativeCutoff R.n t)) η = 0 ∧
-          (∀ m, house ((algebraMap (𝓞 R.CoefficientField) R.CoefficientField) (η m)) ≤
-            R.auxiliaryCoefficientBoundClosed c
-              (exponentWidth R.n t) (sampleCount R.n t) (derivativeCutoff R.n t)) ∧
-          ∀ sample : ℕ, 4 * sample ≤ extrapolationRadius R.n t →
-            ∀ ν : R.NonPivot pivot → ℕ,
-              (∀ i, ν i < extrapolationOrder R.n t) →
-              R.auxiliaryComponent c pivot ν η sample = 0 := by
-  obtain ⟨t, hsmall, ht⟩ :=
-    ((eventually_radiusStepSmallness R hn c).and
-      (eventually_ge_atTop 4)).exists
+            (exponentWidth R.n t) (quarterSampleCount R.n t)
+              (extrapolationOrder R.n t)) η = 0 := by
+  obtain ⟨t, ⟨hsmall, ht⟩, htlarge⟩ :=
+    (((eventually_radiusStepSmallness R hn c).and
+      (eventually_ge_atTop 4)).and
+        (eventually_ge_atTop (2 ^ (R.n + 2) + 1))).exists
+  have htstrict : 2 ^ (R.n + 2) < t := by omega
   obtain ⟨η, hη, hker, hbound⟩ :=
     Relation.exists_parameterized_auxiliary_coefficients_of_scale
       R hn c hc hint pivot t (by omega)
-  refine ⟨t, ht, η, hη, hker, hbound, ?_⟩
-  intro sample hquarter ν hν
-  let ν' : R.NonPivot pivot → Fin (extrapolationOrder R.n t) :=
-    fun i => ⟨ν i, hν i⟩
-  have hv : (∑ i, ν i) ≤
+  refine ⟨t, ht, htstrict, η, hη, ?_⟩
+  apply R.auxiliaryMatrix_mulVec_eq_zero_of_component_box_zero
+  intro sample ν
+  let νNat : R.NonPivot pivot → ℕ := fun i => (ν i : ℕ)
+  have hv : (∑ i, νNat i) ≤
       (R.n - 1) * extrapolationOrder R.n t := by
-    simpa [ν'] using R.sum_rowMultiIndex_le pivot ν'
+    simpa [νNat] using R.sum_rowMultiIndex_le pivot ν
   apply Relation.quarterRadiusSample_shifted_eq_zero_of_decay_growth_lt_one
-    R hn c hc hint pivot t ht η hker hbound ν
+    R hn c hc hint pivot t ht η hker hbound νNat
   · intro i
     calc
-      ν i + extrapolationOrder R.n t <
+      νNat i + extrapolationOrder R.n t <
           extrapolationOrder R.n t + extrapolationOrder R.n t :=
-        Nat.add_lt_add_right (hν i) _
+        Nat.add_lt_add_right (ν i).isLt _
       _ = derivativeCutoff R.n t := by
         simp [derivativeCutoff, two_mul]
-  · exact hquarter
-  · exact hsmall (∑ i, ν i) hv
+  · exact quarterSample_mem sample
+  · exact hsmall (∑ i, νNat i) hv
 
 /-- The parameter family discharges every dimension and positivity premise of the Siegel-kernel
 construction, including its explicit coefficient-house estimate. -/

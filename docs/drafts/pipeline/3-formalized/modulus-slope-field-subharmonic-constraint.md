@@ -122,3 +122,30 @@ no flow anywhere, one reflection substitution θ ↦ π − θ plus 2π-periodic
 - 2026-07-11 — mirror layer formalized; three modules total, all standalone-build green, axiom-clean.
 - Remaining frontier: aim the averaged zero-repulsion `A(r₂) − A(r₁) < log(r₂/r₁)` at one
   explicit strip box through the EM carrier / `CompletedZetaGrowth` budgets.
+
+## Budget layer (added 2026-07-11, `ModulusSlopeBudget.lean`)
+
+The averaged zero-repulsion open core, split into its two one-sided budgets and closed at the
+real anchors.  All axiom-clean:
+
+| Theorem | Content |
+|---|---|
+| `xi_log_norm_center_le_circleAverage` | center floor: `log‖ξ(ρ)‖ ≤ A(ρ,r)` at nonvanishing centers |
+| `xi_circleAverage_le_log_sup` | sphere cap: circle sup `M` gives `A(ρ,r) ≤ log M` |
+| `modulusSlope_lt_one_of_center_sup_budget` | the splice: `log M − log‖ξ(ρ)‖ < log(r₂/r₁)` ⟹ slope < 1 |
+| `xi_zeroFree_closedBall_of_center_sup_budget` | …⟹ inner closed ball ξ-zero-free |
+| `xi_zeroFree_closedBall_effective_radius` | **effective isolation radius** `r₁ = r₂·‖ξ(ρ)‖/(2M)` from two modulus data |
+| `xi_ne_zero_real_anchor`, `xi_norm_real_anchor` | `ξ(σ)` positive real on `σ ∈ (0,1)`; `‖ξ(σ)‖ = ξ(σ).re` |
+| `xi_zeroFree_closedBall_real_anchor` | explicit strip box at every real anchor, radius `r₂·ξ(σ).re/(2M)` |
+| `exists_xi_zeroFree_closedBall_real_anchor` | hypothesis-free: every real anchor carries a field-certified zero-free ball |
+
+Status of the open core after this layer: the inequality `A(r₂) − A(r₁) < log(r₂/r₁)` is now
+DISCHARGED whenever two modulus data are available (center value + circle sup), and
+unconditionally at every real anchor `σ ∈ (0,1)` of the strip.  The residual input for boxes
+off the real axis is exactly the numeric pair `(‖ξ(ρ)‖, sup_{|z−ρ|=r₂}‖ξ(z)‖)` — a certified-
+quadrature target (recorded, not run), or an EM-carrier/`CompletedZetaGrowth` analytic target
+for explicit-height boxes.  Register: the splice mechanism is effective Jensen (BRIDGE); the
+new content is the field-side interface and the unconditional real-anchor instances.
+
+## Log (cont. 3)
+- 2026-07-11 — budget layer formalized; four modules total, all standalone-build green, axiom-clean.

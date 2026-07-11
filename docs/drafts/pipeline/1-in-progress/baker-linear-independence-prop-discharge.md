@@ -31,26 +31,37 @@ BakerLinearIndependence`; do not replace it with a stronger unproved interface o
 4. [x] Build the multivariate auxiliary matrix, obtain a nonzero integral Siegel-kernel vector with
    an explicit height bound, and prove that its exponential polynomial is nonzero while vanishing to
    the prescribed derivative order at every selected sample.
-5. [ ] Prove extrapolation, determinant nonvanishing, and the final algebraic-norm contradiction.
+5. [x] Prove strict-scale extrapolation uniformly over a shifted-component box and a growing sample
+   window, with all scalar smallness premises discharged.
+6. [ ] Iterate the enlarged exact-zero box until the main auxiliary function has at least as many
+   consecutive zero samples as columns, then close by the ordinary Vandermonde zero estimate.
 
 ## Open core
 
-`[OPEN CORE]` The arbitrary finite-family step is genuine Baker theory.  Any counterexample has now
-been reduced to a nonzero minimal relation of arity at least three inside one finite number field.
-The multivariate integral auxiliary matrix now returns both a nonzero kernel vector and its explicit
-Siegel coefficient-house bound.  The shifted component family `G_ν`, its triangular derivative law,
+`[OPEN CORE]` The arbitrary finite-family step is genuine Baker theory.  A counterexample is now
+reduced globally to minimal arity: every nontrivial algebraic relation on its prime family has full
+support.  Complex conjugation therefore fixes every normalized coefficient ratio, and the
+scale-free eliminated direction coordinates are real.  The multivariate integral auxiliary matrix,
+explicit Siegel coefficient bound, shifted components `G_ν`, triangular derivative law,
 algebraic-integer values, multipoint Schwarz estimate, and asymmetric norm-product discreteness
-theorem are formalized.  Closed analytic and conjugate bounds reduce one exact extrapolation step to
-a scalar inequality containing only `L`, `S`, `T`, the radius, the sample, and fixed invariants of the
-relation.  The polynomial parameter family `L=t^(8n-2)`, `S=t^(4n)`, `q=t^(8n)`, `T=2q`, and
-`R=t^(4n+1)` formally discharges the matrix dimension and positivity obligations, with at least twice
-as many columns as rows.  The full matrix height and coefficient height have closed integer-power
-majorants, so the real Siegel exponent is eliminated from the first-step growth budget.  At the first
-new sample the exact remaining premise is
-`(2/3)^(t^(12n)) * firstStepGrowthMajorant R c t < 1`, while every positive scale in the majorant is
-at most `t^(12n-1)`.  The remaining core is to formalize that strict-scale eventual inequality,
-iterate exact vanishing over the required shifted components and later samples, and close with the
-final zero estimate.
+theorem are formalized.
+
+The corrected polynomial family is `L=2*t^(8n-4)`, `S=t^(4n)`, `q=t^(8n)`, `T=2q`, and
+`R=t^(4n+1)`.  Lean proves the column count is exactly twice the initial row count.  Every analytic,
+height, sample, and shifted-direction contribution is bounded by a fixed exponential at scale
+`t^(12n-1)`, while Schwarz decay occurs at scale `q*S=t^(12n)`.  Consequently one sufficiently large
+parameter produces a nonzero kernel whose entire lower `q`-box of components vanishes at every
+natural sample in the first quarter of the disc.  These zeros are repackaged as a kernel for the
+enlarged matrix with `quarterSampleCount * q^(n-1)` rows, and Lean proves that count eventually
+exceeds `L^n`.
+
+The named remaining core is long extrapolation with decreasing multiplicity: reuse each enlarged
+kernel as the next interpolation set, grow the consecutive sample range by a fixed fraction of `t`,
+and reduce the component cutoff by a fixed factor.  After finitely many stages depending only on
+`n`, the main component has at least `L^n` consecutive integer zeros.  The existing one-variable
+Vandermonde estimate then contradicts the nonzero Siegel vector.  This avoids importing a stronger
+Philippon zero lemma and uses the classical longer-extrapolation route with the already formalized
+weak zero estimate.
 
 ## Log
 
@@ -72,3 +83,11 @@ final zero estimate.
   asymmetric discreteness criterion using the field norm: distinguished norm times the remaining
   conjugate house power below one forces the component to vanish.  The explicit finite house bound
   is wired into that criterion.  Targeted build, formal lint, and axiom audit pass.
+- 2026-07-11 -- proved the eventual strict-scale inequality and strengthened the first exact zero to
+  uniform vanishing of the whole lower shifted-component box throughout the first quarter of the
+  Schwarz disc.  Corrected the width to `L=2*t^(8n-4)`: columns now equal twice the initial rows, and
+  the extrapolated sample/shift row count eventually exceeds the columns.  Exact component zeros are
+  bridged back to an enlarged matrix kernel.  Replaced support deletion by genuine global
+  minimal-arity reduction; normalized coefficient ratios and direction coordinates are now proved
+  real.  The targeted `BakerParameters` build, generated-index check, formal lint, and axiom audit
+  pass; the new declarations use only `propext`, `Classical.choice`, and `Quot.sound`.

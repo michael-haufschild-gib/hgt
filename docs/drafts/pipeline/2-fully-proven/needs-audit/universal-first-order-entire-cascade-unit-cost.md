@@ -31,7 +31,9 @@ Goldberg's theorem makes every `f_k` finite order. No autonomous hypothesis, com
 
 ## Reduction I: every transcendental entire first-order solution has a nondegenerate Wiman place
 
-`[PROVED HERE, PAPER LEVEL]` Fix one `f` and an irreducible equation
+`[PROVED HERE, PAPER LEVEL]` Fix one `f` and take the minimal polynomial of `f'` over
+`C(U,V)` with `U=z` and `V=f`; after clearing denominators, write its primitive irreducible
+equation as
 
 `P(z,f,f')=0`.
 
@@ -67,11 +69,46 @@ Here `p=rho-1`. Hence
 
 `p+1=rho>0`.
 
-There is no component ambiguity: `P` was chosen irreducible over `C(U)`, and its roots in `W` form one algebraic function-field component. After substituting `W=TV`, the Newton--Puiseux place above the selected root of the top symbol is therefore a place of the same irreducible component containing the analytic element `f'`.
+There is no component ambiguity: `P` is irreducible in `C(U,V)[W]`, and its roots in `W` form
+one algebraic function-field component. After substituting `W=TV`, the Newton--Puiseux place
+above the selected root of the top symbol is therefore a place of the same irreducible component
+containing the analytic element `f'`.
 
 Call this a **nondegenerate Wiman place**. Its initial monomial is
 
 `W=c U^p V`, with `q:=p+1>0`.
+
+### Compatibility of the layer places on the cascade component
+
+The places cannot be chosen as unrelated roots of the separate minimal polynomials.  Let `K` be
+the function field of the irreducible cascade component determined by the analytic derivative
+branches.  Algebraic independence of `X_1,...,X_n` makes the rational state field
+
+`C(z)(X_1,...,X_n)`
+
+inject into `K`.  For every edge `k`, its irreducible derivative field
+
+`E_k=C(X_(k-1),X_k)(b_k)`
+
+also injects into `K`; hence the dominant rational map from a normal model of `K` to a normal
+projective model of `E_k` does not collapse the chosen Wiman place.
+
+Build a composite valuation from the terminal state inward.  On the projective `X_n`-fiber choose
+the terminal-linear place of `E_n`; properness of normalization gives a place above it on the
+normal model of `K`.  Its residue field still contains the full lower cascade component over the
+generic variables `X_1,...,X_(n-1)` and the leading coefficient
+`tau_n(X_(n-1))`.  Refine this residue valuation by the positive Wiman place at
+`X_(n-1)=infinity`.  Repeat on the normalized lower fiber products.  At each step a finite base
+change may split a place but cannot remove every point above it, and ramification only multiplies
+the valuation; it cannot turn the nonzero exponent `q_k` into zero.
+
+This produces one valuation flag on the actual irreducible field `K` with nested order
+
+`X_n >> X_(n-1) >> ... >> X_1 >> z`
+
+and with all selected initial laws simultaneously valid.  Thus the later nonzero initial
+coefficient is computed in the analytic cascade component, not in an unrelated tensor-product
+component.
 
 ### Audit closure: the Newton place is genuinely on the irreducible derivative curve
 
@@ -101,7 +138,11 @@ Newton--Puiseux in `V^(-1)` lifts the root `T=tau(U)` to a place
 
 `W=tau(U)V+lower powers of V`.
 
-Because `P` is irreducible in `C(U)[V,W]` and depends on `W`, it remains irreducible over `C(U,V)` after taking its primitive part.  All derivative branches are places of this one algebraic function field.  The selected place need not be the asymptotic branch followed by the analytic solution: a nonzero nested initial coefficient at any place proves that the corresponding algebraic field element is nonzero.  This is exactly what the later observability determinant requires.
+Because `P` was chosen as the primitive minimal polynomial in `C(U,V)[W]`, all derivative
+branches are places of this one algebraic function field.  The selected place need not be the
+asymptotic branch followed by the analytic solution: a nonzero nested initial coefficient at any
+place proves that the corresponding algebraic field element is nonzero.  This is exactly what the
+later observability determinant requires.
 
 ## Reduction II: the initial monomial cascade is observable
 
@@ -260,8 +301,19 @@ This charge is not a renamed Nevanlinna order: its new role is as the coefficien
 - Goldberg supplies finite order; Wiman--Valiron supplies the top homogeneous symbol; neither treats minimal ADE order of iterated compositions.
 - Liao--Yang proves pseudo-primality of every transcendental entire first-order ADE solution. That rules out a first-order ADE for a two-layer transcendental composition by growth, but it does not give the all-depth exact order law.
 - Ait El Manssour--Sattelberger--Teguia Tabuguia constructs ADEs for compositions and proves the general upper bound `ord(f o g)<=ord(f)+ord(g)` for equations linear in their highest derivative. It does not prove exactness for special entire solutions or automatic observability of their composition states.
+- Malmquist's 1920 theorem, in Eremenko's differential-function-field formulation, forces the irreducible first-order field of a transcendental meromorphic solution to satisfy the Fuchs conditions.  The ensuing Riccati/Poincare/Clairaut classification controls the one-layer algebraic curve, but it neither proves that an arbitrary entire cascade is observable nor computes the minimal ADE order of its terminal output.
+- Reinhart proves exact-order results for Schanuel functions built from algebraic operations and exponentiation.  That parent covers exponential towers and related expression classes, not arbitrary transcendental entire solutions of irreducible first-order algebraic differential equations.  The Wiman-place argument is precisely what replaces an explicit Schanuel presentation.
+- Teguia Tabuguia's 2025 arithmetic theorem gives the sum of input orders as an elimination bound for rational arithmetic expressions of generic DA states.  It does not treat nonlinear composition exactness for special global entire solutions.
 
 The candidate's possible new content is therefore narrow: **entire first-order ADE growth forces a nondegenerate Newton place, and that place forbids every positive-dimensional unobservable matching in every finite composition cascade.**
+
+The Malmquist parent does not collapse this class to Reinhart's.  In genus zero it gives an
+algebraic change to a Riccati equation with algebraic coefficients; in genus one it gives a
+Poincare field uniformized by an elliptic function of an Abelian integral.  These are
+one-layer birational classifications, not presentations by field operations and exponentiation,
+and neither makes the composed terminal state algebraically observable.  Eremenko's Theorem 8
+adds the half-integer growth law for entire solutions, but still supplies no composition-order
+lower bound.
 
 ## Counterexample gate
 
@@ -295,7 +347,19 @@ The qualification **canonical** is essential. Arbitrary locally uniform approxim
 
 ## RH pressure test, not research selector
 
-The theorem is wholly about general HT structure. Only after it is proved could one ask whether a zeta-related object admits a canonical first-order constraint cascade. No Euler, translation-spectrum, divisor-Hermite, or zero-localization claim is made here, and none is needed for the theorem.
+The theorem is wholly about general HT structure.  Its first zeta-facing consequence is an exclusion, not a proof route.
+
+Let `phi` be a nonconstant entire solution of a Poincare/Schroder constraint
+
+`phi(lambda z)=f(phi(z))`, `|lambda|>1`,
+
+where `f` is transcendental entire and first-order DA.  Strelitz gives `rho(f)>0`.  The function `phi` cannot be a polynomial, since then the left side is a polynomial while the right side is transcendental.  Polya's composition-growth theorem now makes `f o phi`, hence `phi(lambda z)`, an entire function of infinite order: the only finite-order transcendental-inner exception requires the outer function to have order zero.  Therefore every such `phi` has infinite order.
+
+The completed zeta function `xi`, and `t |-> xi(1/2+it)`, have finite order one.  They cannot be Poincare functions of transcendental entire first-order DA maps.  Thus the new unit-cost law rules out the most direct attempt to explain zeta's HT by a positive-charge entire cascade.
+
+The sharp remaining compositional boundary is meromorphic order zero.  Such first-order factors exist, the Wiman charge can vanish there, and Liao--Yang records explicit two-layer meromorphic compression.  A future RH-relevant route would first need a classification of finite-order HT objects built from **zero-charge meromorphic matching**, and then an independent reason that the zeta constraints select the critical-line divisor.  The present theorem supplies the boundary and the no-go result, not that missing selection principle.
+
+No Euler, translation-spectrum, divisor-Hermite, or zero-localization claim is made here, and none is needed for the theorem.
 
 ## Novelty gate
 
@@ -304,6 +368,30 @@ The theorem is wholly about general HT structure. Only after it is proved could 
 - **Targeted literature audit:** exact-title and concept searches across arXiv, Crossref, OpenAlex, the Wang--Sontag cited-by corpus, the full Liao--Yang paper, and the full 2023 *D-Algebraic Functions* paper found upper composition-order bounds, generic elimination algorithms, pseudo-primality, and Schanuel-class exactness, but no theorem asserting exact order `n` for every composition of arbitrary transcendental entire first-order ADE solutions.
 - **Residual novelty under test:** automatic generic observability for the complete nonautonomous first-order entire ADE class.
 - **Failure rule:** if Isidori's matching criterion plus standard Newton-polygon theory yields the automatic-observability statement directly, downgrade the result to `[BRIDGE]`.
+
+## Dual-gate verdict
+
+### Novelty: provisional pass
+
+The exact delta from the strongest parents is now isolated.
+
+- Liao--Yang proves only the two-factor obstruction through pseudo-primality.
+- Reinhart computes exact order inside the explicitly generated Schanuel class.
+- Wang--Sontag turns observability into an order lower bound but does not prove observability.
+- Malmquist--Eremenko classifies the one-layer Fuchsian differential field but not a composed output.
+- The DA-arithmetic papers give elimination upper bounds, not equality for special entire solutions.
+
+The candidate supplies the missing all-depth statement for the full analytic class of transcendental entire first-order ADE solutions, without an explicit expression presentation.  No exact, equivalent, or stronger theorem was found in the checked primary/citation literature.  This remains a provisional rather than bibliographically certified pass.
+
+### Significance: pass
+
+The result is not just a new example or a minimal equation calculation.  It proves a universal quantization law on a natural maximal one-state analytic class:
+
+`one global transcendental entire first-order constraint layer = one minimal differential order`.
+
+It also identifies the mechanism and the sharp wall.  The analytic growth invariant `rho(f)>0` becomes the nonzero coefficient of an algebraic observability determinant; its magnitude is irrelevant, while its vanishing is exactly where the proof and known meromorphic counterexamples permit compression.  Finally, every repelling Poincare linearization in this class is an HT limit with canonical exact-order recession `1,2,3,...`.  These are consequence-bearing statements about the DA/HT boundary, not renamed closure properties.
+
+**Current verdict:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [PAPER PROOF COMPLETE] [DUAL GATE PROVISIONALLY PASSED]`.  Keep the card in `needs-audit` until an independent specialist checks the Puiseux/Bell determinant proof and the 1990s exact-order literature.
 
 ## Gates
 
@@ -316,6 +404,10 @@ The theorem is wholly about general HT structure. Only after it is proved could 
 - [ ] Independent expert priority and proof check.
 - [ ] Lean only after novelty and numerical-precertification instructions can be reconciled.
 
+### Lean audit
+
+`scripts/formal_tools.py research` finds the pointwise definitions of differential algebraicity and independence, together with a Gamma-specific Bell-chain formalization, but no reusable theorem for multivariate Jacobian observability, algebraic Puiseux places at infinity, or Wiman--Valiron asymptotics.  Formalizing only the Gamma Bell identities would not certify the candidate.  A faithful Lean route would first require a general algebraic Bell row-reduction/Jacobian lemma and then substantial new analytic infrastructure.  No Lean edit is justified before the scientific-priority gate, and the project rule requiring numerical pre-certification cannot be combined with the active skill's prohibition on computation as discovery.
+
 ## Primary references checked
 
 1. A. A. Goldberg, finite-order theorem for meromorphic solutions of first-order algebraic differential equations.
@@ -326,9 +418,13 @@ The theorem is wholly about general HT structure. Only after it is proved could 
 6. G. M. Reinhart, *Schanuel Functions and Algebraic Differential Equations*, PhD dissertation, University of Illinois (1993).
 7. R. Ait El Manssour, A.-L. Sattelberger, and B. Teguia Tabuguia, *D-Algebraic Functions*, J. Symbolic Comput. 2023; arXiv:2301.02512.
 8. W. Bergweiler, *Solution of a Problem of Rubel Concerning Iteration and Algebraic Differential Equations*, Indiana Univ. Math. J. 44 (1995), 257--267.
+9. A. E. Eremenko, *Meromorphic solutions of algebraic differential equations*, Russian Math. Surveys 37:4 (1982), 61--95, especially Malmquist's theorem and the Fuchsian differential-field classification.
+10. G. M. Reinhart, *On the Order of Algebraic Differential Equations Satisfied by Schanuel Functions*, J. Math. Anal. Appl. 191 (1995), 331--345.
+11. B. Teguia Tabuguia, *Arithmetic of D-Algebraic Functions*, J. Symbolic Comput. 126 (2025), 102348.
 
 ## Log
 
 - 2026-07-11 -- Created after the autonomous and output-linear Newton-corner theorems. Isolated the nondegenerate Wiman place and the positive monomial observability degeneration as the two mechanisms that may close the complete nonautonomous first-order class.
 - 2026-07-11 -- Medalist re-audit withdrew the premature proved label: the state derivation is not homogeneous for the naive Puiseux weight, so monomial observability does not yet imply observability of the full lower-term cascade. The exact open core is a flat finite-jet degeneration or a no-matching theorem.
 - 2026-07-11 -- Closed that open core without a generic degeneration: exact Bell-polynomial row reductions remove terminal variables one at a time, and the nested leading determinant acquires a nonzero factor from every `q_i=p_(i+1)+1`. This proves that `q_i=0` is the sharp compression wall and that positive Wiman exponents force full observability.
+- 2026-07-11 -- Independent scope and parent audit after the user correction: reconciled the separate whole-HT translation/divisor work, checked Goldberg--Strelitz in the primary Liao--Yang paper, checked Malmquist--Eremenko, Reinhart's Schanuel-order parent, Wang--Sontag, and the 2023/2025 DA arithmetic papers.  Added a phase-free Newton-weight proof and an explicit Clunie induction for state independence.  No exact or stronger parent theorem was located; scientific priority remains provisional rather than asserted.

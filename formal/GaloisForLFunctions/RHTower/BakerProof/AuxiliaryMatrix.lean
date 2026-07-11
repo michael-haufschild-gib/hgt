@@ -34,6 +34,34 @@ noncomputable def Relation.scaledDirection (R : Relation) (c : ℤ) (pivot : Fin
   R.scaledCoeff c pivot * ((m i : ℕ) : R.CoefficientField) -
     ((m pivot : ℕ) : R.CoefficientField) * R.scaledCoeff c i
 
+/-- The scale-free eliminated coordinate.  For a support-minimal relation its distinguished value
+is real, and every scaled direction is a common nonzero row scalar times this coordinate. -/
+noncomputable def Relation.normalizedDirection (R : Relation) (pivot : Fin R.n)
+    {L : ℕ} (m : R.Column L) (i : Fin R.n) : R.CoefficientField :=
+  (m i : ℕ) - (m pivot : ℕ) * R.normalizedCoeff pivot i
+
+theorem Relation.scaledDirection_eq_scaledCoeff_mul_normalizedDirection
+    (R : Relation) (c : ℤ) (pivot : Fin R.n)
+    {L : ℕ} (m : R.Column L) (i : Fin R.n) :
+    R.scaledDirection c pivot m i =
+      R.scaledCoeff c pivot * R.normalizedDirection pivot m i := by
+  unfold Relation.scaledDirection Relation.scaledCoeff
+    Relation.normalizedDirection Relation.normalizedCoeff
+  field_simp [R.coeffLift_ne_zero pivot]
+  ring
+
+theorem Relation.coeffEmbedding_normalizedDirection_im_eq_zero
+    (R : Relation) (hmin : R.SupportMinimal) (pivot : Fin R.n)
+    {L : ℕ} (m : R.Column L) (i : Fin R.n) :
+    (R.coeffEmbedding (R.normalizedDirection pivot m i)).im = 0 := by
+  unfold Relation.normalizedDirection
+  rw [map_sub, map_mul, R.coeffEmbedding_normalizedCoeff]
+  simp only [map_natCast]
+  have hr : (R.coeff i / R.coeff pivot).im = 0 :=
+    Complex.conj_eq_iff_im.mp
+      (R.coeff_div_coeff_conj_eq_of_supportMinimal hmin pivot i)
+  simp [Complex.mul_im, hr]
+
 private theorem isIntegral_natCast_coefficientField (R : Relation) (a : ℕ) :
     IsIntegral ℤ (a : R.CoefficientField) := by
   rw [show (a : R.CoefficientField) = algebraMap ℤ R.CoefficientField (a : ℤ) by simp]

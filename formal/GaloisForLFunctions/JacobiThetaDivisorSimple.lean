@@ -138,7 +138,8 @@ theorem exp_neg_twentyFour_fifths_lt_one_ninth :
     rw [show (24 / 5 : ℝ) = 12 / 5 + 12 / 5 by norm_num, Real.exp_add]
     nlinarith [Real.exp_pos (12 / 5 : ℝ)]
   rw [Real.exp_neg, inv_lt_comm₀ (Real.exp_pos _) (by norm_num)]
-  convert he24 using 1 <;> norm_num
+  convert he24 using 1
+  norm_num
 
 /-- On `im τ ≥ 4/5`, every paired tail term is dominated by the fixed rational geometric
 majorant with ratio `1/9`. -/
@@ -181,7 +182,8 @@ theorem norm_thetaHalfPeriodDerivativePair_succ_le_rational
       exp_neg_twentyFour_fifths_lt_one_ninth.le (n + 1)
   dsimp [r] at hexp
   gcongr
-  convert hexp.trans hpow using 1 <;> ring
+  convert hexp.trans hpow using 1
+  ring
 
 /-- The entire paired derivative tail has norm strictly smaller than the leading term `2*pi*i`
 throughout `im τ ≥ 4/5`. -/
@@ -283,7 +285,7 @@ theorem jacobiTheta₂'_thetaHalfPeriod_ne_zero {τ : ℂ} (hτ : 0 < τ.im) :
   thetaHalfPeriodDerivative_ne_zero_of_im_pos hτ
 
 /-- A simple theta zero remains simple after every integral multiple of the quasiperiod. -/
-theorem jacobiTheta₂'_ne_zero_add_int_mul_tau {z τ : ℂ} (hτ : 0 < τ.im)
+theorem jacobiTheta₂'_ne_zero_add_int_mul_tau {z τ : ℂ}
     (hz : jacobiTheta₂ z τ = 0) (hz' : jacobiTheta₂' z τ ≠ 0) (n : ℤ) :
     jacobiTheta₂' (z + (n : ℂ) * τ) τ ≠ 0 := by
   induction n using Int.induction_on with
@@ -324,11 +326,12 @@ theorem jacobiTheta₂'_ne_zero_add_int {z τ : ℂ}
 theorem jacobiTheta₂'_thetaHalfPeriod_add_lattice_ne_zero
     {τ : ℂ} (hτ : 0 < τ.im) (m n : ℤ) :
     jacobiTheta₂' (thetaHalfPeriod τ + (m : ℂ) + (n : ℂ) * τ) τ ≠ 0 := by
-  have hn := jacobiTheta₂'_ne_zero_add_int_mul_tau hτ
+  have hn := jacobiTheta₂'_ne_zero_add_int_mul_tau
     (jacobiTheta₂_thetaHalfPeriod_eq_zero τ)
     (jacobiTheta₂'_thetaHalfPeriod_ne_zero hτ) n
   have hm := jacobiTheta₂'_ne_zero_add_int hn m
-  convert hm using 1 <;> ring
+  convert hm using 1
+  ring
 
 /-- **Residue-one local law.** The logarithmic derivative of theta has normalized punctured limit
 `1` at the odd half-period.  This is the analytic simple-pole coefficient consumed by the
@@ -363,7 +366,11 @@ theorem tendsto_thetaLogDeriv_normalized_halfPeriod {τ : ℂ} (hτ : 0 < τ.im)
   filter_upwards [self_mem_nhdsWithin] with z hz
   have hz0 : z - z₀ ≠ 0 := sub_ne_zero.mpr hz
   rw [show jacobiTheta₂ z τ = (z - z₀) * u z by simpa [θ] using hfactor z]
-  field_simp
+  rcases eq_or_ne (u z) 0 with huz | huz
+  · simp [huz]
+  dsimp [z₀]
+  have hz0' : z - thetaHalfPeriod τ ≠ 0 := by simpa [z₀] using hz0
+  field_simp [huz, hz0']
 
 /-- **Residue-one orbit law.** The theta logarithmic derivative has simple-pole coefficient `1`
 at every translate of the odd half-period by `ℤ + τℤ`. -/
@@ -400,7 +407,12 @@ theorem tendsto_thetaLogDeriv_normalized_lattice {τ : ℂ} (hτ : 0 < τ.im) (m
   filter_upwards [self_mem_nhdsWithin] with z hz
   have hz0 : z - z₀ ≠ 0 := sub_ne_zero.mpr hz
   rw [show jacobiTheta₂ z τ = (z - z₀) * u z by simpa [θ] using hfactor z]
-  field_simp
+  rcases eq_or_ne (u z) 0 with huz | huz
+  · simp [huz]
+  dsimp [z₀]
+  have hz0' : z - (thetaHalfPeriod τ + (m : ℂ) + (n : ℂ) * τ) ≠ 0 := by
+    simpa [z₀] using hz0
+  field_simp [huz, hz0']
 
 end
 

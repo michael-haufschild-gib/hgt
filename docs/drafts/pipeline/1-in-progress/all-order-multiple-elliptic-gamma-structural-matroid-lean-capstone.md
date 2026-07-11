@@ -189,6 +189,18 @@ current two-orbit model. After this classification, the next order-one task is t
 elliptic-gamma defect as a difference of two translated theta logarithmic derivatives and map the
 complete principal-part data into `OrbitResidueVector`.
 
+`formal/GaloisForLFunctions/JacobiThetaParallelogramCharge.lean` proves the global constraint-side
+counting input. On every zero-free fundamental boundary, the integral of the theta logarithmic
+derivative is exactly `2*pi*i`: the period-one edges cancel and the quasiperiodic pair contributes
+the single charge. This uses no product formula and no assumed divisor classification. Converting
+that charge into the exact zero-set theorem still requires a parallelogram argument principle.
+
+`formal/GaloisForLFunctions/JacobiThetaBoundaryRegular.lean` discharges the contour-selection gate.
+The fixed-parameter theta zero set is finite in every compact disc. Real coordinates in the basis
+`(1,tau)` then permit a diagonal translate of the fundamental parallelogram whose bottom and left
+edges avoid the finite zero set; periodicity and quasiperiodicity make the complete boundary
+zero-free. No zero-set classification is assumed.
+
 `formal/GaloisForLFunctions/DifferentialPolynomialOver.lean` supplies the total differential
 polynomial derivation over a nonconstant differential base: coefficients are differentiated while
 formal jets are shifted. Evaluation intertwines this derivation, so the relation ideal over the
@@ -265,6 +277,8 @@ analytic capstone is already formalized.
 - [x] theta odd-half-period zero and full lattice zero orbit
 - [x] global simplicity of every theta lattice zero
 - [x] residue-one normalized logarithmic-derivative limit on the full lattice orbit
+- [x] theta fundamental-parallelogram logarithmic-derivative charge `2*pi*i`
+- [x] existence of a zero-free translated fundamental-parallelogram boundary
 - [ ] exact theta zero-set classification: no zeros outside the odd-half-period lattice orbit
 - [ ] meromorphic and elliptic function-field foundation
 - [ ] theta and multiple-elliptic-gamma definitions and hierarchy
@@ -344,3 +358,11 @@ analytic capstone is already formalized.
   derivative in the meromorphic fraction field. Proved its period-one invariance and the exact
   `tau`-shift defect `-2*pi*i`. The next missing order-one input is now solely divisor-level:
   theta's simple zero class and the induced simple-pole orbit residues of its log derivative.
+- 2026-07-11 -- Proved the theta fundamental-parallelogram boundary charge directly from the period
+  and quasiperiod constraints. This isolates the remaining exact-divisor task to a general
+  parallelogram argument principle plus a zero-free boundary selection, without using the Jacobi
+  triple product.
+- 2026-07-11 -- Proved existence of a zero-free translated fundamental-parallelogram boundary.
+  Compact-disc finiteness of the theta zero set and explicit `(1,tau)` coordinates reduce boundary
+  avoidance to choosing one real diagonal shift outside a finite forbidden set. The only remaining
+  theta zero-classification input is now the parallelogram argument principle itself.

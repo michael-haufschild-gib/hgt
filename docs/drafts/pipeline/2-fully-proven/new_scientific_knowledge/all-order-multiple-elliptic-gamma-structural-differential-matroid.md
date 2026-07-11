@@ -646,7 +646,8 @@ the formal lint passes, and `#print axioms` reports only Lean's standard logical
 - [ ] independent proof audit
 - [ ] independent specialist priority audit
 - [ ] full unconditional Lean formalization of the concrete theorem
-- [ ] arbitrary-translation universal face-matroid extension
+- [x] arbitrary-translation universal face-matroid extension proved in
+  `all-depth-compatible-pair-face-differential-matroid`
 
 ## Log
 
@@ -656,3 +657,7 @@ the formal lint passes, and `#print axioms` reports only Lean's standard logical
   nonsummability.
 - 2026-07-10 -- Closed every intermediate face layer, the top primitive, and the all-order additive
   and multiplicative Stanley--Reisner differential matroids.
+- 2026-07-11 -- Strengthened the structural Laurent-orbit theorem to the full arbitrary-complex-
+  translation differential matroid in `all-depth-compatible-pair-face-differential-matroid`.
+  The universal module splits over full-lattice cosets into Stanley--Reisner blocks, and the
+  arbitrary-label face-lifting proof makes all blocks jointly free.

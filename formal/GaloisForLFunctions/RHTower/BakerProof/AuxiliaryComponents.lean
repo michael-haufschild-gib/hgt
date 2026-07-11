@@ -130,4 +130,28 @@ theorem Relation.auxiliaryComponent_iteratedDeriv_eq_zero_of_kernel
     rw [← hsum]
     exact Finset.single_le_sum (fun _ _ => Nat.zero_le _) (Finset.mem_univ i)
 
+/-- A rectangular family of exact component zeros is exactly a kernel vector for the corresponding
+enlarged auxiliary matrix.  This is the bridge from analytic extrapolation back to the terminal
+algebraic zero estimate. -/
+theorem Relation.auxiliaryMatrix_mulVec_eq_zero_of_component_box_zero
+    (R : Relation) (c : ℤ)
+    (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n)
+    {L S T : ℕ} (η : R.Column L → 𝓞 R.CoefficientField)
+    (hzero : ∀ sample : Fin S, ∀ ν : R.NonPivot pivot → Fin T,
+      R.auxiliaryComponent c pivot (fun i => (ν i : ℕ)) η (sample : ℕ) = 0) :
+    Matrix.mulVec (R.auxiliaryMatrix c hint pivot L S T) η = 0 := by
+  funext row
+  apply R.integralCoeffEmbedding_injective
+  have hz := hzero row.1 row.2
+  change R.integralCoeffEmbedding
+      ((Matrix.mulVec (R.auxiliaryMatrix c hint pivot L S T) η) row) =
+    R.integralCoeffEmbedding 0
+  rw [map_zero]
+  rw [Matrix.mulVec, dotProduct, map_sum]
+  simp_rw [map_mul]
+  change (∑ m, R.coeffEmbedding (R.auxiliaryEntry c pivot row m) *
+    R.integralCoeffEmbedding (η m)) = 0
+  simp_rw [R.coeffEmbedding_auxiliaryEntry]
+  simpa only [Relation.auxiliaryComponent, mul_assoc, mul_comm, mul_left_comm] using hz
+
 end GaloisForLFunctions.RHTower.BakerProof

@@ -21,6 +21,15 @@ noncomputable def Relation.normalizedCoeff (R : Relation) (pivot i : Fin R.n) :
     R.coeffEmbedding (R.normalizedCoeff pivot i) = R.coeff i / R.coeff pivot := by
   simp [Relation.normalizedCoeff]
 
+/-- Every normalized coefficient of a globally support-minimal counterexample lies on the real
+axis under the distinguished embedding. -/
+theorem Relation.coeffEmbedding_normalizedCoeff_im_eq_zero
+    (R : Relation) (hmin : R.SupportMinimal) (pivot i : Fin R.n) :
+    (R.coeffEmbedding (R.normalizedCoeff pivot i)).im = 0 := by
+  apply Complex.conj_eq_iff_im.mp
+  rw [R.coeffEmbedding_normalizedCoeff]
+  exact R.coeff_div_coeff_conj_eq_of_supportMinimal hmin pivot i
+
 /-- Solving the vanishing relation for any chosen prime logarithm.  This is the algebraic
 normalization used to expand derivatives of the Baker auxiliary exponential polynomial in the
 remaining logarithms. -/
