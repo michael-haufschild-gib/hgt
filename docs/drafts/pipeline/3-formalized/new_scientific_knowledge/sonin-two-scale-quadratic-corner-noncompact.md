@@ -345,8 +345,11 @@ If `m=min(p,q)`, its initial projection is the sum of the physical and Fourier s
 from `a*q/m` to `a*q`, and its final projection is the corresponding sum from `a*p/m` to `a*p`.
 See `sonin-mixed-calkin-partial-isometry-law.md`.
 
-The remaining multiplication question starts at three mixed Gram factors, where the intermediate
-shell-overlap projection depends on three scales and need not collapse to one Gram entry.
+`[RESOLVED BY CHILD]` The three-factor question is closed by
+`sonin-three-factor-shell-overlap-law.md`: a chain through a common middle scale collapses to the
+direct Gram entry modulo compacts exactly when `min(p,r) <= q`; otherwise it is a pinched shell
+partial isometry whose thickness is the logarithm of the minimum scale visited. Chains with
+non-matching middle scales remain open.
 
 ## Log
 

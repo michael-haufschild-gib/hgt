@@ -85,8 +85,11 @@ or limiting flow is used.
 The theorem determines the initial and final Calkin projections of every two-scale even-Sonin
 Euler Gram entry. It does not yet provide a Lean essential-norm reader from compact congruence, so
 the corollaries `||G(p,q)||_ess=1` and the corresponding positive Euler coefficient remain
-paper-level consequences. It also does not determine the multiplication law for chains of three
-or more mixed entries; those products involve intersections of several displaced shell intervals.
+paper-level consequences. The multiplication law for chains of three mixed entries through a
+common middle scale is now formalized in `sonin-three-factor-shell-overlap-law.md`
+(`SoninEulerTripleShellOverlap.lean`): absorption holds exactly on `min(p,r) <= q`, and the
+pinched chain transports a shell of thickness `log min(p,q,r)`. Chains with non-matching middle
+scales remain open.
 
 ## Dual gate
 

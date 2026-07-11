@@ -171,9 +171,10 @@ unnormalized source entry has essential norm `(p*q)^(-1/2)`.
 - `[SEARCH]` Half-line translation and Wiener--Hopf algebras supply the parent model for the shell
   computation after logarithmic coordinates. The source-specific two-polarization identification
   and the endpoints in (0) were not located in the audited sources.
-- `[OPEN CORE]` The higher multiplication law among three or more mixed Gram partial isometries is
-  not determined here. Its overlap projections depend on three competing shell intervals and need
-  not reduce to another single `G(p,q)`.
+- `[RESOLVED BY CHILD]` The higher multiplication law for chains through a common middle scale is
+  determined by `sonin-three-factor-shell-overlap-law.md`: `G(p,q)G(q,r) =_K G(p,r)` exactly when
+  `min(p,r) <= q`, and otherwise the chain is a pinched shell partial isometry of thickness
+  `log min(p,q,r)`. Chains with non-matching middle scales remain open.
 
 ## Significance and novelty gate
 

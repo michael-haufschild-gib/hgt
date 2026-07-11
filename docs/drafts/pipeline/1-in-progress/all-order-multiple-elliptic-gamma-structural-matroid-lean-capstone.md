@@ -690,3 +690,59 @@ analytic capstone is already formalized.
   external-translation/structural face is exactly the analytic theta logarithmic-derivative defect
   on the regular locus. The remaining order-one gap is now field-level atomicity for the gamma
   primitive, not identification of its boundary or its pole obstruction.
+
+## Current unconditional actual-product order-one surface
+
+The actual elliptic-gamma bridge is now formalized, rather than represented by a kernel or
+functional-equation assumption.
+
+`formal/GaloisForLFunctions/EllipticGammaProduct.lean` constructs the forward and backward entire
+double products, proves locally uniform convergence on the whole additive plane, proves both
+products nonzero, and identifies the logarithmic derivative of their quotient with the additive
+double-sum kernel on its regular locus.
+
+`formal/GaloisForLFunctions/MeromorphicEllipticGamma.lean` embeds this quotient as a nonzero element
+of the global meromorphic differential field and gives an explicit one-fraction presentation of
+its logarithmic derivative.
+
+`formal/GaloisForLFunctions/AnalyticSubringEvaluation.lean` and
+`AnalyticSubringFractionEvaluation.lean` prove the missing identity-theorem interface: global
+analytic germs admit point evaluation; local equality promotes to analytic-subring equality; and
+equality of meromorphic fractions gives equality of quotient representatives on every punctured
+neighborhood.
+
+`formal/GaloisForLFunctions/EllipticGammaMixedFace.lean` proves the unconditional field identity
+
+```text
+T_sigma(T_h psi - psi) - (T_h psi - psi)
+  = T_h(theta'/theta) - theta'/theta,
+```
+
+where `psi` is the logarithmic derivative of the genuine elliptic-gamma double product. The proof
+clears the global fractions, proves the identity on a nonempty common regular neighborhood from the
+normally convergent kernel calculation, and promotes it globally by analytic continuation. No
+regular-locus hypothesis remains in the theorem.
+
+`formal/GaloisForLFunctions/MeromorphicPoleOrbitBoundaryLocal.lean` strengthens the theta
+pole-orbit obstruction to punctured-local meromorphic equality. Combining it with the mixed-face
+theorem, `formal/GaloisForLFunctions/EllipticGammaExternalDefectNonElliptic.lean` proves:
+
+```text
+T_h psi - psi
+```
+
+cannot equal any `(1,tau)`-elliptic meromorphic quotient of two entire functions whenever `sigma`
+is nontorsion modulo `Z + Z tau` and `h` is nonresonant modulo
+`Z + Z tau + Z sigma`.
+
+This is an unconditional order-one elliptic-field separation theorem for the actual product. It is
+strictly weaker than the atomic parent required by the matroid theorem: the remaining order-one
+gate is to prove the same exclusion after every nonzero `L in C[delta]`, and then the finite-family
+version. Concretely, the missing formal interface is compatibility between
+`differentialOperatorApply L` in the global meromorphic fraction field and punctured-local
+application of `constantCoeffDifferentialOperator L` to a quotient representative. Once that
+interface is closed, the existing finite theta-family orbit obstruction supplies the analytic
+noncoboundary input for Ostrowski descent.
+
+All named capstones in these modules build under the repository toolchain. Their `#print axioms`
+output is exactly `propext`, `Classical.choice`, and `Quot.sound`; the formal lint gate passes.
