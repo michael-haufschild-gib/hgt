@@ -175,7 +175,7 @@ Thus the bulk arithmetic fluctuation is beyond every algebraic order in the boun
 
 ## 4. Finite perturbation theory is structurally zero-free
 
-Every finite perturbative approximation has the form
+Every finite truncation of `(17)`, after exponentiation, has the form
 
 ```text
 exp(Phi(z)+Q_M(z/L)),                                         (20)
@@ -250,7 +250,7 @@ A_infinity(s)=s(s-1) pi^(-s/2) Gamma(s/2)/2                    (26)
 ```
 
 is holomorphic and nonzero on the open critical strip.  It therefore has a holomorphic logarithm
-there.  Adding `log A_infinity` can change every local Taylor coefficient in `(17)`, but it has zero
+there.  Adding `log A_infinity` changes the local Taylor coefficients in `(17)`, but it has zero
 monodromy around every nontrivial zeta zero.
 
 Thus the Gamma/theta weld can renormalize the perturbative endpoint jet but cannot cancel, create,

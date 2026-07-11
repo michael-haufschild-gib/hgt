@@ -331,6 +331,91 @@ theorem smul_deriv_mem_localIncrementGroup_topologicalClosure
   apply AddSubgroup.subset_closure
   exact ⟨c * (((n + 1 : ℕ) : 𝕜)⁻¹), hn, rfl⟩
 
+/-- Prime exponentials on a critical disc are Schwarz fixed. -/
+theorem criticalSchwarzTransform_compactExponentialTest_criticalDisc
+    (r : ℝ) (p : ℕ) :
+    criticalSchwarzTransform r
+        (compactExponentialTest (criticalDiscCoordinate r) (Real.log p)) =
+      compactExponentialTest (criticalDiscCoordinate r) (Real.log p) := by
+  ext z
+  rw [criticalSchwarzTransform_apply, compactExponentialTest_apply,
+    compactExponentialTest_apply, ← Complex.exp_conj]
+  congr 1
+  have hlog : conj (Real.log p : ℂ) = (Real.log p : ℂ) :=
+    RCLike.conj_ofReal _
+  rw [map_mul, map_neg, hlog, criticalDiscCoordinate_conjugation]
+  simp
+
+/-- Schwarz conjugation commutes with precomposition by critical reflection. -/
+theorem criticalSchwarzTransform_comp_criticalDiscReflection
+    (r : ℝ) (f : C(CriticalClosedDisc r, ℂ)) :
+    criticalSchwarzTransform r (f.comp (criticalDiscReflection r)) =
+      (criticalSchwarzTransform r f).comp (criticalDiscReflection r) := by
+  ext z
+  simp [criticalSchwarzTransform, criticalDiscConjugation,
+    criticalDiscReflection]
+
+/-- A Mobius flux is Schwarz fixed when its carrier and scalar parameter are. -/
+theorem criticalSchwarzTransform_compactMobiusFlux
+    {r : ℝ} {q : C(CriticalClosedDisc r, ℂ)}
+    (hq : criticalSchwarzTransform r q = q) {a : ℂ} (ha : conj a = a) :
+    criticalSchwarzTransform r (compactMobiusFlux q a) =
+      compactMobiusFlux q a := by
+  unfold compactMobiusFlux
+  rw [criticalSchwarzTransform_mul, criticalSchwarzTransform_smul,
+    criticalSchwarzTransform_ringInverse,
+    criticalSchwarzTransform_sub, criticalSchwarzTransform_one,
+    criticalSchwarzTransform_smul, ha, hq]
+
+/-- Every real-parameter FE-paired degree-one increment on a critical disc is
+Schwarz fixed. -/
+theorem criticalSchwarzTransform_criticalDisc_realEulerUnitFEIncrement
+    (r : ℝ) (p : ℕ) (b : ℝ) :
+    criticalSchwarzTransform r
+      (compactEulerUnitFEIncrement
+        (compactExponentialTest (criticalDiscCoordinate r) (Real.log p))
+        (criticalDiscReflection r) p b) =
+      compactEulerUnitFEIncrement
+        (compactExponentialTest (criticalDiscCoordinate r) (Real.log p))
+        (criticalDiscReflection r) p b := by
+  let q := compactExponentialTest (criticalDiscCoordinate r) (Real.log p)
+  have hq : criticalSchwarzTransform r q = q :=
+    criticalSchwarzTransform_compactExponentialTest_criticalDisc r p
+  have hqref : criticalSchwarzTransform r (q.comp (criticalDiscReflection r)) =
+      q.comp (criticalDiscReflection r) := by
+    rw [criticalSchwarzTransform_comp_criticalDiscReflection, hq]
+  have hreal (a : ℝ) : conj (a : ℂ) = (a : ℂ) := RCLike.conj_ofReal a
+  have hflux (q' : C(CriticalClosedDisc r, ℂ))
+      (hq' : criticalSchwarzTransform r q' = q') (a : ℝ) :
+      criticalSchwarzTransform r (compactDegreeOneEulerLocalFlux q' p a) =
+        compactDegreeOneEulerLocalFlux q' p a := by
+    unfold compactDegreeOneEulerLocalFlux
+    rw [criticalSchwarzTransform_smul]
+    have hlog : conj (Real.log p : ℂ) = (Real.log p : ℂ) :=
+      RCLike.conj_ofReal _
+    rw [hlog, criticalSchwarzTransform_compactMobiusFlux hq' (hreal a)]
+  unfold compactEulerUnitFEIncrement compactEulerUnitIncrement
+  have hqb : criticalSchwarzTransform r
+      (compactDegreeOneEulerLocalFlux q p (1 + (b : ℂ))) =
+      compactDegreeOneEulerLocalFlux q p (1 + (b : ℂ)) := by
+    simpa using hflux q hq (1 + b)
+  have hqone : criticalSchwarzTransform r
+      (compactDegreeOneEulerLocalFlux q p 1) =
+      compactDegreeOneEulerLocalFlux q p 1 := by
+    simpa using hflux q hq 1
+  have hrefb : criticalSchwarzTransform r
+      (compactDegreeOneEulerLocalFlux (q.comp (criticalDiscReflection r)) p
+        (1 + (b : ℂ))) =
+      compactDegreeOneEulerLocalFlux (q.comp (criticalDiscReflection r)) p
+        (1 + (b : ℂ)) := by
+    simpa using hflux (q.comp (criticalDiscReflection r)) hqref (1 + b)
+  have hrefone : criticalSchwarzTransform r
+      (compactDegreeOneEulerLocalFlux (q.comp (criticalDiscReflection r)) p 1) =
+      compactDegreeOneEulerLocalFlux (q.comp (criticalDiscReflection r)) p 1 := by
+    simpa using hflux (q.comp (criticalDiscReflection r)) hqref 1
+  rw [criticalSchwarzTransform_sub, criticalSchwarzTransform_sub,
+    criticalSchwarzTransform_sub, hqb, hqone, hrefb, hrefone]
+
 /-- The real local FE Euler-increment generators surviving an arbitrary finite
 prime deletion. -/
 def criticalDiscRealEulerIncrementGenerators

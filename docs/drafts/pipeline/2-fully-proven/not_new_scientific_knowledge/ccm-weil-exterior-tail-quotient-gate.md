@@ -150,6 +150,21 @@ exterior E-tail in a zeta-weighted Mellin/Weil topology,
 relative to the exponentially small fixed-mode spectral gaps.      (9)
 ```
 
+There is no remaining qualitative graph-domain objection from the sharp endpoint cutoff.
+`ccm-bv-muntz-graph-domain-extension.md` proves that every compactly supported
+bounded-variation zero-mean source, including the zero-extended CCM prolate contrast, produces a
+global `L2(d*u)` summation vector and lies in the maximal zeta-multiplier graph domain. Its Mellin
+transform vanishes at every nontrivial zeta zero. What remains open is quantitative: a cofinal
+closed-Weil/sampling bound for that specific vector, strong enough relative to the minuscule
+fixed-mode gaps.
+
+Nor does the ambient coherent-growth example describe the leading tail of the special source.
+`ccm-endpoint-oscillation-poisson-tail-bound.md` proves that its `1/y` Fourier endpoint term sums as
+the uniformly bounded sawtooth series and reduces the lower-tail norm to explicit endpoint jets.
+The zero-integral two-mode source also has central Poisson correction of exact deficit order. The
+remaining question is whether those endpoint-jet bounds control the **Weil-form residual** below the
+constrained gap; an `L2` tail bound alone does not provide that comparison.
+
 ## Cofinal RH boundary
 
 Even a proof of `(9)` strong enough to identify the true finite-Weil low spectrum would remain a
@@ -190,9 +205,11 @@ Three candidate transfers were separated.
 
 1. `[DEAD]` A uniform estimate from additive source `L2` leakage to `||E(f)||_2`. The multiplier
    theorem above rules it out.
-2. `[OPEN CORE]` A source-specific graph-norm or Weil-sampling estimate for the fixed prolate
+2. `[CLOSED]` Qualitative maximal graph-domain membership of the zero-extended fixed prolate
+   contrasts. This is `ccm-bv-muntz-graph-domain-extension.md`.
+3. `[OPEN CORE]` A quantitative source-specific graph-norm or Weil-sampling estimate for those
    contrasts. Unboundedness of `E` does not rule this out because the sequence is highly rigid.
-3. `[OPEN CORE]` A Schur--Feshbach comparison of the true Weil form with the constrained prolate
+4. `[OPEN CORE]` A Schur--Feshbach comparison of the true Weil form with the constrained prolate
    ladder, with off-diagonal coupling little-o of each minuscule ladder gap. This still needs the
    determinant/divisor transfer in `(10)`.
 
@@ -218,6 +235,7 @@ wrapper without certifying the source-specific statement. No Lean file is added.
 - [x] density of the CCM source space in the source `L2` space proved
 - [x] no bounded `L2` extension of the summation map proved
 - [x] correct first graph topology isolated
+- [x] zero-extended prolate source shown to belong qualitatively to that graph domain
 - [x] cofinal logarithmic-boundary obligations integrated
 - [ ] source-specific fixed-prolate graph/sampling estimate
 - [ ] relative true-Weil Schur--Feshbach transfer

@@ -144,6 +144,14 @@ projective control required by the Mellin determinants—through endpoint jets, 
 Mellin Hardy space, an exact radial-prolate summation identity, or a different direct normal-family
 argument. Such information is absent from the scalar concentration eigenvalue.
 
+`ccm-endpoint-oscillation-poisson-tail-bound.md` supplies the first source-specific exception. For
+an even compact `C2` source, the leading exterior Fourier term generates the bounded sawtooth
+series `sum sin(n theta)/n`, not the coherent packet used in `(1)`. The arithmetic lower tail is
+therefore controlled by endpoint jets. For the normalized CCM zero-integral two-mode source, its
+Poisson zero-mode correction is moreover asymptotic to an explicit constant times the concentration
+deficit. The generic theorem here remains valid, but its bad vectors are now proved not to model the
+leading endpoint tail of the CCM source.
+
 ## Novelty verdict
 
 The theorem is an exact and useful route gate, but its mechanism is standard Mellin/dilation theory.

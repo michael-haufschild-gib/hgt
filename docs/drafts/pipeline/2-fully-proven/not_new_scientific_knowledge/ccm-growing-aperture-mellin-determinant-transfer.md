@@ -177,6 +177,34 @@ normalized det_reg(D_lambda-z) -> Xi(z)
 locally uniformly and zero-preservingly.               (14)
 ```
 
+This is a specialization, not a no-go for finite-prime approximation. In the general theorem a
+finite-prime family can prove RH provided its normalized approximants carry the `Xi` divisor
+locally uniformly and every approximant zero `z` satisfies
+
+```text
+E_N(Re(z)-1/2)=o((log N)^2).                           (14a)
+```
+
+For the CCM real-zero determinants `(14a)` holds identically with left side zero. Consequently the
+general two-gate theorem collapses here to the single divisor-preserving convergence requirement
+`(14)`.
+
+The sharper prime-boundary result does not add a second CCM mechanism. For a horizontal defect
+`epsilon_N log N -> c`, `prime-clock-critical-window-scaling.md` gives the universal overlap
+
+```text
+O(c)=exp(-Phi(c)/2)>0
+```
+
+at every finite critical coordinate. The symmetric Dickman specialization in
+`prime-boundary-symmetric-dickman-zero-free-law.md` strengthens this to a zero-free finite and
+limiting characteristic profile. At a CCM spectral zero one has `c=0`, hence `Phi(0)=0` and
+`O(0)=1`. Therefore the entire prime-clock/Dickman boundary channel is maximally nonvanishing on
+the finite CCM zero fiber. It can neither manufacture the missing `Xi` divisor nor repair a failure
+of `(14)`. Finite determinants having all zeros on the line proves nothing about `Xi` until a
+normalization makes those same characteristic functions converge locally uniformly to `Xi` and
+thereby carry every `Xi` zero.
+
 The CCM paper already proves `(14)` with the prolate seed `k_lambda` substituted for the true Weil
 ground vector. Equations `(5)` and `(11)` give exact sufficient rates for transferring that result
 to the true self-adjoint determinants.
@@ -214,12 +242,24 @@ This theorem is one link in an existing chain, not a new standalone route.
    exterior tail modulo the global Weil radical. `ccm-poisson-tail-l2-unboundedness.md` then proves
    quantitatively that the ambient arithmetic tail map is unbounded on the scalar prolate-leakage
    `L2` space. Hence `(11)` must use the special prolate source, not an abstract concentration bound.
+   `ccm-bv-muntz-graph-domain-extension.md` closes the qualitative endpoint issue: the actual
+   zero-extended prolate contrast belongs to the maximal zeta-multiplier graph domain and its global
+   summation vector vanishes at every zeta zero. The missing input is a cofinal rate, not domain
+   membership.
+   `ccm-endpoint-oscillation-poisson-tail-bound.md` then proves that the special source avoids the
+   generic coherent dilation-sum growth: its leading Fourier endpoint tail is a bounded sawtooth
+   series, and its central Poisson correction is of deficit order. The residual open datum is a
+   closed-Weil estimate for the remaining endpoint jets relative to the constrained gap.
 5. `ccm-galerkin-cofinal-diagonal-transfer.md` proves that fixed-aperture form-core convergence and
    a diagonal choice of Galerkin dimensions transfer any continuous determinant limit to finite
    CCM determinants. No estimate uniform in the aperture and Galerkin dimension is needed.
 6. `finite-prime-logarithmic-boundary-transfer.md` proves the final cofinal boundary theorem. For
    the CCM family its metric gate is already zero by finite self-adjointness; only the locally
    uniform divisor-carrying analytic gate remains.
+7. `prime-clock-critical-window-scaling.md` and
+   `prime-boundary-symmetric-dickman-zero-free-law.md` show that the full critical crossover is
+   zero-free. In particular, it supplies no hidden divisor mechanism once the finite CCM zeros have
+   zero horizontal defect.
 
 The resulting exact open target should be stated projectively. After removing the explicit
 nonvanishing exponential in `(2)`, put
@@ -327,6 +367,10 @@ large-aperture simple-evenness nor supplies the locally uniform determinant limi
   exact screw kernel and violates the Beurling--Deny criterion beyond an explicit aperture.
 - `[OPEN CORE]` Prove `(11)` using the exterior-tail Weil quotient identity and the constrained
   prolate fixed-mode gap ladder.
+- `[CLOSED]` The genuine zero-extended prolate source is not Schwartz, but it is in the maximal
+  zeta-multiplier graph domain; its endpoint jump is no longer a route obstruction.
+- `[CLOSED]` The leading fixed-source Fourier endpoint tail does not realize the ambient coherent
+  `L2` unboundedness mechanism; Poisson summation reduces it to explicit endpoint jets.
 - `[OPEN CORE]` Prove the smallest true finite-Weil eigenvalue is simple with even eigenvector for
   every cofinal cutoff used by the determinant family.
 - `[CONDITIONAL ROUTE]` If the two open cores hold, the existing CCM determinant identity and their
@@ -336,6 +380,9 @@ large-aperture simple-evenness nor supplies the locally uniform determinant limi
   source-specific target is exactly the continuous simple-even theorem plus `(15b)`. A joint
   `lambda`--Galerkin estimate, a separate finite-zero energy estimate, and a Route-B determinant
   construction are not dependencies.
+- `[DEAD]` Use the prime-clock critical crossover or its symmetric Dickman limit to create the
+  missing zero set. Both profiles are strictly nonzero at every finite boundary coordinate, and on
+  the CCM zero fiber their overlap is exactly one.
 
 ## Novelty and significance verdict
 

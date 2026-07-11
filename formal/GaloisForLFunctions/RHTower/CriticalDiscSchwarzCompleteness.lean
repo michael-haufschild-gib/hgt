@@ -116,6 +116,37 @@ theorem criticalSchwarzRingEquiv_apply
     (r : ℝ) (f : C(CriticalClosedDisc r, ℂ)) :
     criticalSchwarzRingEquiv r f = criticalSchwarzTransform r f := rfl
 
+/-- The canonical ring inverse commutes with Schwarz conjugation, including at
+nonunits where `Ring.inverse` is defined to be zero. -/
+theorem criticalSchwarzTransform_ringInverse
+    (r : ℝ) (x : C(CriticalClosedDisc r, ℂ)) :
+    criticalSchwarzTransform r (Ring.inverse x) =
+      Ring.inverse (criticalSchwarzTransform r x) := by
+  change criticalSchwarzRingEquiv r (Ring.inverse x) =
+    Ring.inverse (criticalSchwarzRingEquiv r x)
+  by_cases hx : IsUnit x
+  · obtain ⟨u, rfl⟩ := hx
+    rw [Ring.inverse_unit]
+    let v := Units.map (criticalSchwarzRingEquiv r).toMonoidHom u
+    have hv : (v : C(CriticalClosedDisc r, ℂ)) =
+        criticalSchwarzRingEquiv r (u : C(CriticalClosedDisc r, ℂ)) := rfl
+    rw [show criticalSchwarzRingEquiv r
+        (↑(u⁻¹) : C(CriticalClosedDisc r, ℂ)) =
+        (↑(v⁻¹) : C(CriticalClosedDisc r, ℂ)) by rfl]
+    rw [← hv, Ring.inverse_unit]
+  · rw [Ring.inverse_non_unit _ hx, map_zero]
+    rw [Ring.inverse_non_unit]
+    intro hmap
+    apply hx
+    have hback := hmap.map (criticalSchwarzRingEquiv r).symm.toMonoidHom
+    change IsUnit ((criticalSchwarzRingEquiv r).symm
+      (criticalSchwarzRingEquiv r x)) at hback
+    have heq : (criticalSchwarzRingEquiv r).symm
+        (criticalSchwarzRingEquiv r x) = x :=
+      (criticalSchwarzRingEquiv r).symm_apply_apply x
+    rw [heq] at hback
+    exact hback
+
 theorem norm_criticalSchwarzTransform_le
     (r : ℝ) (f : C(CriticalClosedDisc r, ℂ)) :
     ‖criticalSchwarzTransform r f‖ ≤ ‖f‖ := by
