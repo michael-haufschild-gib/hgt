@@ -257,6 +257,11 @@ zeta(s)=0
 the subleading heat-aperture echo in (7) vanishes.      (11)
 ```
 
+The complete shifted-value expansion and its single-missing-rung law are recorded in
+`additive-heat-aperture-shifted-zeta-echo-ladder.md`. The `k`-th complex channel is an explicit
+nonzero archimedean factor times `conj(zeta(s-k))`; every channel with `k>=1` is nonzero throughout
+the strip.
+
 On the critical line, `1-conj(s)=s`, so (9a) identifies the two echo coefficients exactly as
 
 ```text
@@ -301,9 +306,9 @@ To prove nonvanishing, put `w=s-1`.  Then `-1/2<Re(w)<0`.  The functional equati
 integer, so no trivial zero occurs.  Hence `zeta(s-1)!=0`.
 
 This tangent is source-built, nonzero even at a multiple zero in the spectral parameter, and does
-not divide by `zeta'(s)`.  It closes the nonvanishing question but not the RH route.  The terminal
-route theorem computes its primewise covariance defect and proves that it is a normal reflected
-intertwiner only on the critical line; requiring that property at every zero is exactly RH.
+not divide by `zeta'(s)`. It supplies the required nonvanishing value. RH localization additionally
+requires the primewise covariance value that characterizes a normal reflected intertwiner exactly
+on the critical line.
 
 This is not point sampling of an `L2` boundary class.  The entire function `E_s(x)` for `x>0` is a
 strictly positive, absolutely convergent quadratic measurement of the full density.  The zeta
@@ -330,8 +335,9 @@ zeta(2 sigma)
 gives `|xi(s)|^2`.  Thus the additive heat aperture constructs the completed intensity from the
 full prime density throughout `1/2<Re(s)<1`, with no zero divisor in its definition.
 
-The Gamma factor is not cosmetic.  The almost-periodicity no-go for bounded prime-screen
-observables proves that vertical decay cannot come from the compact prime phase algebra alone.
+The Gamma factor is not cosmetic. The almost-periodicity theorem for bounded prime-screen
+observables positively identifies an additional noncompact archimedean value as necessary for
+vertical decay beyond the compact prime phase algebra.
 
 ## Superselection verdict
 
@@ -349,11 +355,12 @@ The separate terminal theorem
 `heat-echo-superselection-descent-is-rh.md` proves that asking disappearance of the heat echo to
 create a reflected-sector morphism is exactly RH, not an independent intermediate statement.
 
-## Fake tests
+## Source-separation tests
 
-- A particle-only observable cannot reproduce (7): it has no off-diagonal `m-n` terms.
-- A bounded prime-torus observable cannot reproduce (7): its height signal is almost periodic and
-  has no additive small-time singular expansion.
+- A particle-only observable contains only diagonal values; reproducing (7) therefore requires the
+  additional off-diagonal `m-n` coherence.
+- A bounded prime-torus observable has an almost-periodic height signal; reproducing (7) therefore
+  requires the additional noncompact value carrying the additive small-time singular expansion.
 - A completely multiplicative phase twist changes the off-diagonal heat energy, so the detector is
   not local-unitary invariant.  Whether the exact theta completion rejects every prescribed-divisor
   Helson twist remains open.
@@ -387,8 +394,8 @@ publication.
 
 The significance gate passes: unlike a restatement of analytic continuation, the theorem
 constructs an everywhere finite positive observable from the normalizable prime state and reads a
-zeta zero from its asymptotic channel structure.  It survives as a measurement theorem; its former
-use as a zero-to-superselection descent route is retired.
+zeta zero from its asymptotic channel structure. It survives as a measurement theorem. A
+zero-to-superselection descent requires the additional reflected covariance value named above.
 
 ## Gates
 

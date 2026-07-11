@@ -437,6 +437,10 @@ The current Lean tree contains genuine supporting components, but not this theor
 - `GaloisForLFunctions.HTGeometry.PrimeLogDifferentialLinearIndependence` proves exact meromorphic
   order `-1` at every translated source pole and unconditional nonvanishing of every nontrivial
   finite constant-coefficient differential combination of distinct translates.
+- `GaloisForLFunctions.HTGeometry.CauchyJetControllability` proves that finitely supported real
+  masses on any infinite injective real support surject onto every finite complex Cauchy-jet packet
+  at distinct upper-half-plane nodes; `PrimeLogCauchyJetControllability` specializes this theorem
+  to the actual prime-log support.
 
 The following theorem-specific obligations determine Lean completion.  Items 2 and 4 are now
 formalized; the other three and the final assembly remain:
@@ -448,10 +452,12 @@ formalized; the other three and the final assembly remain:
    positivity and local finiteness of the support, `Q`-linear independence, and exclusion from
    every finite rational span.  The exact Sidon/private-pole geometry and the resulting full
    differential-linear independence of finite complex-translation packets are formalized in the
-   two modules above.  For this realization theorem, the remaining source obligation is the
-   finite-dimensional Cauchy-jet avoidance theorem for each fixed tuple in the countable set
-   `Gamma_Delta`, followed by the already-formal Baire intersection.  The stronger uncountable
-   full-complex parametric-transversality theorem is not required;
+   two modules above.  Finite-dimensional real Cauchy-jet surjectivity for the actual prime-log
+   support is also formalized.  For this realization theorem, the remaining source obligation is
+   to turn those finite mass controls into arbitrarily small positive gauge perturbations and prove
+   that each fixed genuinely nonlinear relation locus for the countable set `Gamma_Delta` is closed
+   with empty interior.  The final countable Baire intersection is already formal, and the stronger
+   uncountable full-complex parametric-transversality theorem is not required;
 2. `[FORMALIZED]` the arbitrary finite-complex facet-prime identity and its preservation under an
    arbitrary localization are proved in
    `GaloisForLFunctions.HTGeometry.StanleyReisnerFacetIdeal`;
@@ -484,6 +490,8 @@ unconditionally.
   rational support rank formalized unconditionally in Lean
 - [x] exact prime-log Sidon collision geometry, infinite private-pole supply, and finite-packet
   constant-coefficient differential-linear independence formalized unconditionally in Lean
+- [x] infinite-real-support Cauchy-jet coefficient rigidity and real finite-jet controllability,
+  including the actual prime-log specialization, formalized unconditionally in Lean
 - [ ] complete unconditional Lean formalization before stage 3
 
 ## Log

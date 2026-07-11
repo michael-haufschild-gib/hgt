@@ -2,7 +2,9 @@ import GaloisForLFunctions.Core
 import Mathlib.Analysis.Complex.Basic
 import Mathlib.Analysis.Complex.SummableUniformlyOn
 import Mathlib.Analysis.SpecificLimits.Normed
+import Mathlib.Analysis.PSeries
 import Mathlib.LinearAlgebra.Dimension.Finite
+import Mathlib.NumberTheory.SumPrimeReciprocals
 import Mathlib.Topology.Algebra.InfiniteSum.TsumUniformlyOn
 
 /-!
@@ -183,6 +185,132 @@ theorem primeLogSupport_not_contained_finite_span :
 theorem primeLogSupport_pos (p : Nat.Primes) : 0 < primeLogSupport p := by
   apply Real.log_pos
   exact_mod_cast p.2.one_lt
+
+/-- The exponent-one Cauchy-feature energy after exponential transport by `b`, with `m`
+additional prime-log decay factors.  Every finite rational cancellation of Cauchy sections has
+this form up to a constant and a finite exceptional set. -/
+def primeLogHerglotzTransportMassOrder (m : ℕ) (b : ℝ) (p : Nat.Primes) : ℝ :=
+  (p : ℝ) ^ (2 * b - 1) / (1 + (Real.log (p : ℝ)) ^ 2) ^ m
+
+/-- **Every finite prime-log cancellation order still crosses every positive transport wall.**
+For `b > 0` and every finite `m`, the transported energy with denominator
+`(1 + (log p)^2)^m` diverges.  Thus no finite order of cancellation at infinity repairs the
+prime-log Cauchy features after positive exponential transport. -/
+theorem not_summable_primeLogHerglotzTransportMassOrder_of_pos
+    (m : ℕ) {b : ℝ} (hb : 0 < b) :
+    ¬ Summable (primeLogHerglotzTransportMassOrder m b) := by
+  intro hsum
+  by_cases hm : m = 0
+  · subst m
+    have hpow : Summable (fun p : Nat.Primes => (p : ℝ) ^ (2 * b - 1)) := by
+      change Summable (fun p : Nat.Primes =>
+        (p : ℝ) ^ (2 * b - 1) / (1 + (Real.log (p : ℝ)) ^ 2) ^ 0) at hsum
+      simpa using hsum
+    rw [Nat.Primes.summable_rpow] at hpow
+    linarith
+  · have hmpos : 0 < m := Nat.pos_of_ne_zero hm
+    let beta : ℝ := b / m
+    let C : ℝ := 1 + ((beta / 2)⁻¹) ^ 2
+    have hbeta : 0 < beta := by
+      dsimp [beta]
+      positivity
+    have hCpos : 0 < C := by
+      dsimp [C]
+      positivity
+    have hden : ∀ p : Nat.Primes,
+        1 + (Real.log (p : ℝ)) ^ 2 ≤ C * (p : ℝ) ^ beta := by
+      intro p
+      have hp0 : 0 < (p : ℝ) := by exact_mod_cast p.prop.pos
+      have hp1 : 1 ≤ (p : ℝ) := by exact_mod_cast p.prop.one_lt.le
+      have heps : 0 < beta / 2 := by linarith
+      have hlog := Real.log_le_rpow_div hp0.le heps
+      have hlog0 : 0 ≤ Real.log (p : ℝ) := Real.log_nonneg hp1
+      have hright : 0 ≤ (p : ℝ) ^ (beta / 2) / (beta / 2) := by positivity
+      have hlogsq0 : (Real.log (p : ℝ)) ^ 2 ≤
+          ((p : ℝ) ^ (beta / 2) / (beta / 2)) ^ 2 :=
+        (sq_le_sq₀ hlog0 hright).2 hlog
+      have hrpow_sq : ((p : ℝ) ^ (beta / 2) / (beta / 2)) ^ 2 =
+          ((beta / 2)⁻¹) ^ 2 * (p : ℝ) ^ beta := by
+        calc
+          ((p : ℝ) ^ (beta / 2) / (beta / 2)) ^ 2 =
+              ((beta / 2)⁻¹) ^ 2 * (((p : ℝ) ^ (beta / 2)) ^ 2) := by ring
+          _ = ((beta / 2)⁻¹) ^ 2 * (p : ℝ) ^ ((beta / 2) * 2) := by
+            rw [← Real.rpow_mul_natCast hp0.le]
+            norm_num
+          _ = ((beta / 2)⁻¹) ^ 2 * (p : ℝ) ^ beta := by ring_nf
+      have hlogsq : (Real.log (p : ℝ)) ^ 2 ≤
+          ((beta / 2)⁻¹) ^ 2 * (p : ℝ) ^ beta := by
+        rw [← hrpow_sq]
+        exact hlogsq0
+      have hpow1 : 1 ≤ (p : ℝ) ^ beta := Real.one_le_rpow hp1 hbeta.le
+      change 1 + (Real.log (p : ℝ)) ^ 2 ≤
+        (1 + ((beta / 2)⁻¹) ^ 2) * (p : ℝ) ^ beta
+      nlinarith [sq_nonneg ((beta / 2)⁻¹), Real.rpow_nonneg hp0.le beta]
+    have hdenpow : ∀ p : Nat.Primes,
+        (1 + (Real.log (p : ℝ)) ^ 2) ^ m ≤ C ^ m * (p : ℝ) ^ b := by
+      intro p
+      have hp0 : 0 < (p : ℝ) := by exact_mod_cast p.prop.pos
+      calc
+        (1 + (Real.log (p : ℝ)) ^ 2) ^ m ≤ (C * (p : ℝ) ^ beta) ^ m := by
+          gcongr
+          exact hden p
+        _ = C ^ m * ((p : ℝ) ^ beta) ^ m := by rw [mul_pow]
+        _ = C ^ m * (p : ℝ) ^ (beta * m) := by
+          rw [← Real.rpow_mul_natCast hp0.le]
+        _ = C ^ m * (p : ℝ) ^ b := by
+          congr 2
+          dsimp [beta]
+          field_simp
+    have hmajor : ∀ p : Nat.Primes,
+        (C ^ m)⁻¹ * (p : ℝ) ^ (b - 1) ≤
+          primeLogHerglotzTransportMassOrder m b p := by
+      intro p
+      have hp0 : 0 < (p : ℝ) := by exact_mod_cast p.prop.pos
+      have hdenpos : 0 < (1 + (Real.log (p : ℝ)) ^ 2) ^ m := by positivity
+      rw [primeLogHerglotzTransportMassOrder, le_div_iff₀ hdenpos]
+      calc
+        (C ^ m)⁻¹ * (p : ℝ) ^ (b - 1) *
+              (1 + (Real.log (p : ℝ)) ^ 2) ^ m
+            ≤ (C ^ m)⁻¹ * (p : ℝ) ^ (b - 1) *
+              (C ^ m * (p : ℝ) ^ b) := by
+                gcongr
+                exact hdenpow p
+        _ = (p : ℝ) ^ (2 * b - 1) := by
+          calc
+            (C ^ m)⁻¹ * (p : ℝ) ^ (b - 1) * (C ^ m * (p : ℝ) ^ b) =
+                ((C ^ m)⁻¹ * C ^ m) *
+                  ((p : ℝ) ^ (b - 1) * (p : ℝ) ^ b) := by ring
+            _ = (p : ℝ) ^ (b - 1) * (p : ℝ) ^ b := by
+              rw [inv_mul_cancel₀ (pow_ne_zero m hCpos.ne'), one_mul]
+            _ = (p : ℝ) ^ ((b - 1) + b) := by rw [Real.rpow_add hp0]
+            _ = (p : ℝ) ^ (2 * b - 1) := by ring_nf
+    have hscaled : Summable
+        (fun p : Nat.Primes => (C ^ m)⁻¹ * (p : ℝ) ^ (b - 1)) := by
+      apply Summable.of_nonneg_of_le
+      · intro p
+        positivity
+      · exact hmajor
+      · exact hsum
+    have hpow : Summable (fun p : Nat.Primes => (p : ℝ) ^ (b - 1)) :=
+      (summable_mul_left_iff (inv_ne_zero (pow_ne_zero m hCpos.ne'))).mp hscaled
+    rw [Nat.Primes.summable_rpow] at hpow
+    linarith
+
+/-- The canonical one-denominator Cauchy-feature energy after exponential transport by `b`. -/
+def primeLogHerglotzTransportMass (b : ℝ) (p : Nat.Primes) : ℝ :=
+  (p : ℝ) ^ (2 * b - 1) / (1 + (Real.log (p : ℝ)) ^ 2)
+
+/-- **Every positive exponential transport crosses the prime-log Herglotz domain wall.** -/
+theorem not_summable_primeLogHerglotzTransportMass_of_pos
+    {b : ℝ} (hb : 0 < b) :
+    ¬ Summable (primeLogHerglotzTransportMass b) := by
+  intro hsum
+  apply not_summable_primeLogHerglotzTransportMassOrder_of_pos 1 hb
+  change Summable (fun p : Nat.Primes =>
+    (p : ℝ) ^ (2 * b - 1) / (1 + (Real.log (p : ℝ)) ^ 2)) at hsum
+  change Summable (fun p : Nat.Primes =>
+    (p : ℝ) ^ (2 * b - 1) / (1 + (Real.log (p : ℝ)) ^ 2) ^ 1)
+  simpa using hsum
 
 /-- Distinct primes give distinct support points. -/
 theorem primeLogSupport_injective : Function.Injective primeLogSupport :=

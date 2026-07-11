@@ -1,4 +1,7 @@
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.NumberTheory.AbelSummation
+import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
+import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 import Mathlib.Tactic
 
 /-!
@@ -16,7 +19,7 @@ summation.
 -/
 
 open scoped BigOperators ComplexConjugate
-open Finset
+open Finset MeasureTheory ArithmeticFunction
 
 noncomputable section
 
@@ -126,6 +129,216 @@ theorem polarMultiplier_zero_pos {a : ℝ} (ha : 0 < a) :
   rw [polarMultiplier_zero]
   have hs : 0 < Real.sinh a := (Real.sinh_pos_iff).2 ha
   linarith
+
+/-- The zero-frequency polar value in the aperture coordinate `X = exp(2a)`. -/
+theorem polarMultiplier_zero_eq_sqrtExp (a : ℝ) :
+    polarMultiplier a 0 =
+      4 * Real.sqrt (Real.exp (2 * a)) -
+        4 / Real.sqrt (Real.exp (2 * a)) := by
+  have hsqrt : Real.sqrt (Real.exp (2 * a)) = Real.exp a := by
+    rw [show Real.exp (2 * a) = (Real.exp a) ^ 2 by
+      rw [pow_two, ← Real.exp_add]
+      congr 1
+      ring]
+    rw [Real.sqrt_sq_eq_abs, abs_of_pos (Real.exp_pos a)]
+  rw [polarMultiplier_zero, hsqrt, Real.sinh_eq, Real.exp_neg]
+  ring
+
+/-- Abel summation at the critical square-root weight. -/
+theorem abelSqrtWeight_identity (c : ℕ → ℝ) (hc : c 0 = 0) (X : ℝ) :
+    ∑ k ∈ Icc 0 ⌊X⌋₊, ((k : ℝ) ^ (-1 / 2 : ℝ)) * c k =
+      X ^ (-1 / 2 : ℝ) * (∑ k ∈ Icc 0 ⌊X⌋₊, c k) +
+        (1 / 2 : ℝ) * ∫ t in Set.Ioc (1 : ℝ) X,
+          t ^ (-3 / 2 : ℝ) * (∑ k ∈ Icc 0 ⌊t⌋₊, c k) := by
+  let f : ℝ → ℝ := fun t => t ^ (-1 / 2 : ℝ)
+  have hdiff : ∀ t ∈ Set.Icc (1 : ℝ) X, DifferentiableAt ℝ f t := by
+    intro t ht
+    exact (Real.hasDerivAt_rpow_const (Or.inl (by linarith [ht.1]))).differentiableAt
+  have hderiv : deriv f = fun t => (-1 / 2 : ℝ) * t ^ (-3 / 2 : ℝ) := by
+    funext t
+    rw [show f = fun u : ℝ => u ^ (-1 / 2 : ℝ) by rfl]
+    rw [Real.deriv_rpow_const]
+    congr 1
+    norm_num
+  have hcont : ContinuousOn (fun t : ℝ => (-1 / 2 : ℝ) * t ^ (-3 / 2 : ℝ))
+      (Set.Icc (1 : ℝ) X) := by
+    exact continuousOn_const.mul <|
+      continuousOn_id.rpow_const (fun t ht => Or.inl (by
+        change t ≠ 0
+        linarith [ht.1]))
+  have hint : IntegrableOn (deriv f) (Set.Icc (1 : ℝ) X) := by
+    rw [hderiv]
+    exact hcont.integrableOn_compact isCompact_Icc
+  have h := sum_mul_eq_sub_integral_mul₀ c hc X hdiff hint
+  rw [show f = fun u : ℝ => u ^ (-1 / 2 : ℝ) by rfl] at h
+  rw [hderiv] at h
+  have hscale :
+      (∫ t in Set.Ioc (1 : ℝ) X,
+        ((-1 / 2 : ℝ) * t ^ (-3 / 2 : ℝ)) * (∑ k ∈ Icc 0 ⌊t⌋₊, c k)) =
+      (-1 / 2 : ℝ) * ∫ t in Set.Ioc (1 : ℝ) X,
+        t ^ (-3 / 2 : ℝ) * (∑ k ∈ Icc 0 ⌊t⌋₊, c k) := by
+    rw [← MeasureTheory.integral_const_mul]
+    apply MeasureTheory.integral_congr_ae
+    filter_upwards with t
+    ring
+  rw [hscale] at h
+  rw [h]
+  ring
+
+/-- The elementary critical main integral. -/
+theorem integral_invSqrt_Ioc (X : ℝ) (hX : 1 ≤ X) :
+    (∫ t in Set.Ioc (1 : ℝ) X, t ^ (-1 / 2 : ℝ)) =
+      2 * (Real.sqrt X - 1) := by
+  let F : ℝ → ℝ := fun t => t ^ (1 / 2 : ℝ)
+  let F' : ℝ → ℝ := fun t => (1 / 2 : ℝ) * t ^ (-1 / 2 : ℝ)
+  have hderiv : deriv F = F' := by
+    funext t
+    rw [show F = fun u : ℝ => u ^ (1 / 2 : ℝ) by rfl]
+    rw [Real.deriv_rpow_const]
+    rw [show F' t = (1 / 2 : ℝ) * t ^ (-1 / 2 : ℝ) by rfl]
+    congr 1
+    norm_num
+  have hdiff : ∀ t ∈ Set.uIcc (1 : ℝ) X, DifferentiableAt ℝ F t := by
+    intro t ht
+    have ht1 : 1 ≤ t := by
+      rw [Set.uIcc_of_le hX] at ht
+      exact ht.1
+    exact (Real.hasDerivAt_rpow_const (Or.inl (by linarith))).differentiableAt
+  have hcont : ContinuousOn F' (Set.uIcc (1 : ℝ) X) := by
+    rw [Set.uIcc_of_le hX]
+    exact continuousOn_const.mul <|
+      continuousOn_id.rpow_const (fun t ht => Or.inl (by
+        change t ≠ 0
+        linarith [ht.1]))
+  have hfund := intervalIntegral.integral_deriv_eq_sub' F hderiv hdiff hcont
+  rw [intervalIntegral.integral_of_le hX] at hfund
+  rw [show F' = fun t : ℝ => (1 / 2 : ℝ) * t ^ (-1 / 2 : ℝ) by rfl] at hfund
+  rw [MeasureTheory.integral_const_mul] at hfund
+  rw [show F X = Real.sqrt X by
+    rw [show F X = X ^ (1 / 2 : ℝ) by rfl, ← Real.sqrt_eq_rpow]] at hfund
+  norm_num [F] at hfund
+  linarith
+
+/-- The linear main term inside the critical Mellin integral. -/
+theorem integral_criticalMain_Ioc (X : ℝ) (hX : 1 ≤ X) :
+    (∫ t in Set.Ioc (1 : ℝ) X, t ^ (-3 / 2 : ℝ) * t) =
+      2 * (Real.sqrt X - 1) := by
+  rw [show (∫ t in Set.Ioc (1 : ℝ) X, t ^ (-3 / 2 : ℝ) * t) =
+      ∫ t in Set.Ioc (1 : ℝ) X, t ^ (-1 / 2 : ℝ) by
+    apply MeasureTheory.integral_congr_ae
+    filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
+    have ht0 : 0 < t := by linarith [ht.1]
+    nth_rewrite 2 [← Real.rpow_one t]
+    rw [← Real.rpow_add ht0]
+    congr 1
+    ring]
+  exact integral_invSqrt_Ioc X hX
+
+/-- The cumulative coefficient sum at a real cutoff. -/
+def criticalCumulative (c : ℕ → ℝ) (t : ℝ) : ℝ :=
+  ∑ k ∈ Icc 0 ⌊t⌋₊, c k
+
+/-- The deviation of the cumulative coefficient sum from its linear main term. -/
+def criticalMellinError (c : ℕ → ℝ) (t : ℝ) : ℝ :=
+  criticalCumulative c t - t
+
+/--
+Exact critical Mellin defect identity.  Instantiating `c` with the von Mangoldt
+function gives the Chebyshev-error formula used in the CCM polar-prime symbol.
+-/
+theorem criticalMellinError_identity
+    (c : ℕ → ℝ) (hc : c 0 = 0) (X : ℝ) (hX : 1 ≤ X) :
+    ∑ k ∈ Icc 0 ⌊X⌋₊, ((k : ℝ) ^ (-1 / 2 : ℝ)) * c k =
+      2 * Real.sqrt X - 1 + criticalMellinError c X / Real.sqrt X +
+        (1 / 2 : ℝ) * ∫ t in Set.Ioc (1 : ℝ) X,
+          criticalMellinError c t * t ^ (-3 / 2 : ℝ) := by
+  have hbase := abelSqrtWeight_identity c hc X
+  have hX0 : 0 < X := lt_of_lt_of_le zero_lt_one hX
+  have hgcont : ContinuousOn (fun t : ℝ => t ^ (-3 / 2 : ℝ))
+      (Set.Icc (1 : ℝ) X) :=
+    continuousOn_id.rpow_const (fun t ht => Or.inl (by
+      change t ≠ 0
+      linarith [ht.1]))
+  have hgint : IntegrableOn (fun t : ℝ => t ^ (-3 / 2 : ℝ))
+      (Set.Icc (1 : ℝ) X) := hgcont.integrableOn_compact isCompact_Icc
+  have hpsiInt : IntegrableOn
+      (fun t : ℝ => t ^ (-3 / 2 : ℝ) * criticalCumulative c t)
+      (Set.Icc (1 : ℝ) X) := by
+    simpa [criticalCumulative] using
+      (integrableOn_mul_sum_Icc c (a := (1 : ℝ)) (b := X) zero_le_one hgint)
+  have hmainCont : ContinuousOn (fun t : ℝ => t ^ (-3 / 2 : ℝ) * t)
+      (Set.Icc (1 : ℝ) X) := hgcont.mul continuousOn_id
+  have hmainInt : IntegrableOn (fun t : ℝ => t ^ (-3 / 2 : ℝ) * t)
+      (Set.Icc (1 : ℝ) X) := hmainCont.integrableOn_compact isCompact_Icc
+  have herrInt : IntegrableOn
+      (fun t : ℝ => criticalMellinError c t * t ^ (-3 / 2 : ℝ))
+      (Set.Icc (1 : ℝ) X) := by
+    have hd := hpsiInt.sub hmainInt
+    apply hd.congr_fun _ measurableSet_Icc
+    intro t ht
+    simp only [Pi.sub_apply, criticalMellinError]
+    ring
+  have hsplit :
+      (∫ t in Set.Ioc (1 : ℝ) X, t ^ (-3 / 2 : ℝ) * criticalCumulative c t) =
+      (∫ t in Set.Ioc (1 : ℝ) X, t ^ (-3 / 2 : ℝ) * t) +
+      ∫ t in Set.Ioc (1 : ℝ) X, criticalMellinError c t * t ^ (-3 / 2 : ℝ) := by
+    rw [← MeasureTheory.integral_add
+      (hmainInt.mono_set Set.Ioc_subset_Icc_self)
+      (herrInt.mono_set Set.Ioc_subset_Icc_self)]
+    apply MeasureTheory.integral_congr_ae
+    filter_upwards with t
+    simp only [criticalMellinError]
+    ring
+  have hboundary :
+      X ^ (-1 / 2 : ℝ) * criticalCumulative c X =
+        Real.sqrt X + criticalMellinError c X / Real.sqrt X := by
+    have hsqrt0 : 0 < Real.sqrt X := Real.sqrt_pos.2 hX0
+    have hweight : X ^ (-1 / 2 : ℝ) = 1 / Real.sqrt X := by
+      rw [show (-1 / 2 : ℝ) = -(1 / 2 : ℝ) by ring]
+      rw [Real.rpow_neg hX0.le]
+      rw [← Real.sqrt_eq_rpow]
+      rw [one_div]
+    rw [hweight]
+    simp only [criticalMellinError]
+    field_simp [hsqrt0.ne']
+    nlinarith [Real.sq_sqrt hX0.le]
+  rw [show (∑ k ∈ Icc 0 ⌊X⌋₊, c k) = criticalCumulative c X by
+    rfl] at hbase
+  have hsplit' :
+      (∫ t in Set.Ioc (1 : ℝ) X,
+        t ^ (-3 / 2 : ℝ) * (∑ k ∈ Icc 0 ⌊t⌋₊, c k)) =
+      (∫ t in Set.Ioc (1 : ℝ) X, t ^ (-3 / 2 : ℝ) * t) +
+      ∫ t in Set.Ioc (1 : ℝ) X, criticalMellinError c t * t ^ (-3 / 2 : ℝ) := by
+    simpa [criticalCumulative] using hsplit
+  rw [hsplit', integral_criticalMain_Ioc X hX, hboundary] at hbase
+  linarith
+
+/-- The exact critical Mellin error identity for the von Mangoldt coefficients. -/
+theorem vonMangoldt_criticalMellinError_identity (X : ℝ) (hX : 1 ≤ X) :
+    ∑ k ∈ Icc 0 ⌊X⌋₊, ((k : ℝ) ^ (-1 / 2 : ℝ)) * Λ k =
+      2 * Real.sqrt X - 1 +
+        criticalMellinError (fun k => Λ k) X / Real.sqrt X +
+        (1 / 2 : ℝ) * ∫ t in Set.Ioc (1 : ℝ) X,
+          criticalMellinError (fun k => Λ k) t * t ^ (-3 / 2 : ℝ) := by
+  exact criticalMellinError_identity (fun k => Λ k) (by simp) X hX
+
+/--
+The complete zero-frequency polar--prime cancellation at aperture `a ≥ 0`.
+This is the finite critical Mellin defect formula; `m` is the independent
+archimedean zero-frequency contribution.
+-/
+theorem polarPrimeZero_defect_identity (m a : ℝ) (ha : 0 ≤ a) :
+    m - 2 * (∑ k ∈ Icc 0 ⌊Real.exp (2 * a)⌋₊,
+      ((k : ℝ) ^ (-1 / 2 : ℝ)) * Λ k) + polarMultiplier a 0 =
+      m + 2 - 4 / Real.sqrt (Real.exp (2 * a)) -
+        2 * criticalMellinError (fun k => Λ k) (Real.exp (2 * a)) /
+          Real.sqrt (Real.exp (2 * a)) -
+        ∫ t in Set.Ioc (1 : ℝ) (Real.exp (2 * a)),
+          criticalMellinError (fun k => Λ k) t * t ^ (-3 / 2 : ℝ) := by
+  have hX : 1 ≤ Real.exp (2 * a) := Real.one_le_exp (by linarith)
+  rw [vonMangoldt_criticalMellinError_identity (Real.exp (2 * a)) hX]
+  rw [polarMultiplier_zero_eq_sqrtExp]
+  ring
 
 /--
 The exact critical-scale cancellation after inserting an Abel-summation identity

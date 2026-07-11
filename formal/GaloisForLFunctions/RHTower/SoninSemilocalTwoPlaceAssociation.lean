@@ -67,4 +67,32 @@ theorem semilocalArchimedean_twoFrequencyAssociation_pos
   · rw [← Real.mul_rpow (Real.cosh_pos u).le (Real.cosh_pos v).le]
   · rw [Real.cosh_add, Real.cosh_sub]
 
+/-- The archimedean characteristic does not define a positive Hankel kernel by the tempting
+sum-frequency prescription `K(u,v) = phi(u+v)`.  Already the two nodes `0,t` have a negative
+Gram determinant.  Thus the exponential Gamma decay cannot be inserted as a diagonal damping
+factor for the prime-log Herglotz carrier; a genuine relative prime--Gamma covariance is needed. -/
+theorem semilocalArchimedeanCharacteristic_two_mul_lt_sq
+    {t : ℝ} (ht : t ≠ 0) :
+    semilocalArchimedeanCharacteristic (2 * t) <
+      semilocalArchimedeanCharacteristic t ^ 2 := by
+  have hsinh : Real.sinh t ≠ 0 := by
+    simpa using Real.sinh_strictMono.injective.ne ht
+  have hbase : Real.cosh t ^ 2 < Real.cosh (2 * t) := by
+    rw [show 2 * t = t + t by ring, Real.cosh_add]
+    nlinarith [sq_pos_of_ne_zero hsinh]
+  have hpow := Real.rpow_lt_rpow_of_neg
+    (sq_pos_of_pos (Real.cosh_pos t)) hbase (by norm_num : (-(1 : ℝ) / 2) < 0)
+  dsimp [semilocalArchimedeanCharacteristic] at hpow ⊢
+  rw [← Real.rpow_pow_comm (Real.cosh_pos t).le (-(1 : ℝ) / 2) 2] at hpow
+  exact hpow
+
+/-- The explicit negative `2 x 2` determinant for the sum-frequency Gamma Hankel kernel. -/
+theorem semilocalArchimedeanCharacteristic_hankelDet_neg
+    {t : ℝ} (ht : t ≠ 0) :
+    semilocalArchimedeanCharacteristic 0 *
+          semilocalArchimedeanCharacteristic (2 * t) -
+        semilocalArchimedeanCharacteristic t ^ 2 < 0 := by
+  simpa [semilocalArchimedeanCharacteristic] using
+    sub_neg.mpr (semilocalArchimedeanCharacteristic_two_mul_lt_sq ht)
+
 end RHTower

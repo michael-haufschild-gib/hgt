@@ -640,12 +640,15 @@ remain required.
 ## Lean status
 
 The current Lean tree formalizes the finite pairability/index side (`OmegaComplexStructure`,
-`SeamPolarizationWeld`, `SeamSpectralFlow`, `CarrierCauchy`), the measured-index blindness side, and
-the forward infinite positive-measure Herglotz/Pick theorem in `MeasureCarrier.lean`.  It does not
-contain infinite **signed** Cauchy-kernel index, Baire genericity in `ell^infinity`, algebraic
-rank-defect codimension, `L^infinity(mu)` measure reweighting, regularized infinite-measure Cauchy
-transforms, or parametric transversality.  Those missing layers carry the complete
-claim, so no partial theorem is promoted to stage 3.
+`SeamPolarizationWeld`, `SeamSpectralFlow`, `CarrierCauchy`), the measured-index blindness side, the
+forward infinite positive-measure Herglotz/Pick theorem in `MeasureCarrier.lean`, and the abstract
+countable Baire-avoidance backbone.  `HTGeometry.CauchyJetControllability` now proves the complete
+finite-dimensional real Cauchy-jet surjectivity theorem for every infinite injective real support,
+including the actual prime-log specialization.  The tree does not yet contain the corresponding
+`L^infinity(mu)` measure-level theorem for arbitrary nondiscrete support, infinite **signed**
+Cauchy-kernel index, algebraic rank-defect codimension, regularized infinite-measure reweighting, or
+parametric transversality.  Those missing layers carry the complete measure-universal claim, so no
+partial theorem is promoted to stage 3.
 
 ## Gates
 

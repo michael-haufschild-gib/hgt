@@ -5,9 +5,10 @@
 - **Type:** THEOREM (paper) / SOURCE-CORRECTION AND CARRIER LAW
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [ERRATUM CANDIDATE] [NOT AN RH PROOF]`
 - **Lean status:** `[PARTIALLY FORMALIZED]` — the unconditional finite-dimensional kernel,
-  signature, zero-frequency multiplier, and algebraic Mellin cancellation are verified in
-  `formal/GaloisForLFunctions/RHTower/PolarPrimeMellinDefect.lean`; the Stieltjes and Laplace
-  identities remain paper-level
+  signature, corrected zero-frequency multiplier, full real-cutoff Abel identity `(12)`, its
+  von Mangoldt specialization, and the zero-frequency defect `(13)` are verified in
+  `formal/GaloisForLFunctions/RHTower/PolarPrimeMellinDefect.lean`; the distributional source-sign
+  derivation, autocorrelation identities, and infinite Laplace identity remain paper-level
 - **Parent source:** Suzuki, *Weil's quadratic form via the screw function*, arXiv:2606.09096,
   equations (2.5), (2.7), and (2.11)
 - **Statement:** The exact finite-aperture Fourier symbol contains an aperture-dependent rank-two
@@ -112,13 +113,22 @@ polarEnergy_nonneg_of_sinhFeature_eq_zero
 polarEnergy_nonpos_of_coshFeature_eq_zero
 polarMultiplier_zero
 polarMultiplier_zero_pos
+polarMultiplier_zero_eq_sqrtExp
+abelSqrtWeight_identity
+integral_invSqrt_Ioc
+integral_criticalMain_Ioc
+criticalMellinError_identity
+vonMangoldt_criticalMellinError_identity
+polarPrimeZero_defect_identity
 criticalMellinDefect_cancellation
 ```
 
 Thus Lean checks the exact `(+,-)` two-channel signature, the positive zero-frequency sign for
-positive aperture, and the cancellation obtained after supplying the Abel-summation identity.
-The formal theorem deliberately does not claim a construction of the von Mangoldt Stieltjes
-measure, the zeta logarithmic derivative, or the infinite Laplace transform `(22)`.
+positive aperture, the exact real-cutoff Abel formula for every coefficient sequence with zero
+constant term, its specialization to the von Mangoldt coefficients, and the complete finite
+polar--prime cancellation `(13)` for `X=exp(2a)`. The formal theorem deliberately does not claim
+the source-level distributional sign derivation, the autocorrelation Stieltjes carrier, the zeta
+logarithmic derivative, or the infinite Laplace transform `(22)`.
 
 ## 3. Critical Mellin defect at zero
 
@@ -280,7 +290,9 @@ knowledge.
 - [x] Laplace source identified with the rational-plus-Euler logarithmic derivative
 - [x] necessary critical-defect carrier law stated positively
 - [x] unconditional finite-dimensional core formalized in Lean and axiom-audited
+- [x] real-cutoff Abel and von Mangoldt critical Mellin identities formalized in Lean
+- [x] complete finite zero-frequency defect `(13)` formalized in Lean
 - [ ] independent source/author audit of the printed sign
-- [ ] formalize the Stieltjes partial-summation and Laplace-source layers
+- [ ] formalize the distributional/autocorrelation Stieltjes and infinite Laplace-source layers
 - [ ] control the full compressed symbol on `PW_a`
 - [ ] RH

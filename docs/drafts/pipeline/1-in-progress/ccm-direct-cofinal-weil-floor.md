@@ -601,6 +601,30 @@ The complete Euler Pick kernel already has the required transverse index. The re
 is to transport that complete inertia, not merely source rank or active-pole count, into the
 restricted screw spaces while preserving the cofinal separating margin.
 
+The prime-log pole carrier now imposes a sharper positive seam budget. For `b>0`, its transported
+Cauchy sections
+
+```text
+v_(b,z)(p)=p^(b-1/2)/(log p-z)
+```
+
+are finitely linearly independent modulo `ell^2(P)`. Equivalently, the transport-defect quotient
+contains an infinite-dimensional Cauchy family. Hence every additive prime-coordinate
+renormalization that repairs all upper-half-plane sections must have infinite-dimensional
+correction range. This remains true after every finite rational cancellation order, since Lean
+proves
+
+```text
+sum_p p^(2b-1)/(1+(log p)^2)^m=infinity
+```
+
+for every finite `m`. Thus the archimedean completion cannot be represented at this seam by a
+finite-rank correction in the prime Hilbert space. A viable completed carrier must instead expose
+an infinite prime--Gamma coupling, a relative/indefinite completion before the norm, or an
+equivalent global marked constraint. The complete proof and its exact scope are in
+`prime-log-cauchy-seam-infinite-renormalization-rank.md`; the all-orders analytic core is formalized
+in `PrimeLogHerglotz.lean`.
+
 ### F. Signed Möbius Schur transfer and the continuation seam
 
 The signed-channel coisometry now has an exact Hardy-space transfer function. With
@@ -714,6 +738,12 @@ scalar Schur contractivity and one-vector Hardy control must become complete pos
 finite matrix `(K_omega(z_j,z_k))`, cofinally as `omega` decreases to zero. At `omega=0`,
 `Phi_0=1` and `K_0=0`; retaining only the strong endpoint loses the entire transverse filtration.
 The proof and scope are recorded in `ccm-causal-pick-affine-conjugacy-law.md`.
+
+This is not a request to manufacture matrix positivity from a scalar prime source. Before the
+continuation seam, the positive prime-log measure already supplies Gram/Pick positivity for every
+finite node family. What is missing is an **index-faithful transport of that complete positivity**
+through the fixed half-unit prime--Gamma seam to `(12z5d)`. The infinite-renormalization-rank law
+shows that this transport cannot be a finite-rank correction of the prime Cauchy sections.
 
 The operator seam has also been normalized exactly. The completed quotient `Phi_omega` is
 unconditionally Schur on `Re z>0`: with `X(w)=xi(1/2+w)`, the centered Hadamard product gives

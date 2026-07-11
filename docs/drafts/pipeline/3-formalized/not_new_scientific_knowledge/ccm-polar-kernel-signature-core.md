@@ -1,4 +1,4 @@
-# CCM polar-kernel signed rank-two core
+# CCM polar-prime signed kernel and critical Mellin core
 
 - **ID:** `ccm-polar-kernel-signature-core`
 - **Stage:** 3-formalized
@@ -49,23 +49,32 @@ P_a(0)=8 sinh(a),
 0<a -> 0<P_a(0).
 ```
 
-Finally, after supplying an Abel-summation identity
+For every real cutoff `X>=1` and every coefficient sequence `c` with `c(0)=0`, define
 
 ```text
-S=2r-1+E/r+I/2
+C_c(X)=sum_(n<=X)c(n),
+E_c(X)=C_c(X)-X.
 ```
 
-and the polar value `P=4r-4/r`, Lean verifies the exact cancellation
+Lean proves the exact critical square-root Abel identity
 
 ```text
-m-2S+P=m+2-4/r-2E/r-I.
+sum_(n<=X)c(n)n^(-1/2)
+ =2sqrt(X)-1+E_c(X)/sqrt(X)
+  +(1/2)integral_1^X E_c(t)t^(-3/2)dt.
 ```
+
+The von Mangoldt specialization is therefore the Chebyshev critical Mellin identity. Combining it
+with `X=exp(2a)` and `P_a(0)=4sqrt(X)-4/sqrt(X)`, Lean proves the complete finite zero-frequency
+polar--prime defect formula `(13)` of the paper parent.
 
 ## Positive carrier law
 
 Every finite-aperture CCM implementation using this polar block is forced to preserve its two
 distinguished feature channels. Positivity is obtained by annihilating or controlling the negative
-sinh channel; it is not a property of an unmarked scalar polar correction.
+sinh channel; it is not a property of an unmarked scalar polar correction. At zero frequency it is
+also forced to carry the endpoint-renormalized critical Chebyshev error: the leading prime mass and
+the polar mass cancel exactly.
 
 ## Formal declarations
 
@@ -79,20 +88,29 @@ RHTower.polarEnergy_nonneg_of_sinhFeature_eq_zero
 RHTower.polarEnergy_nonpos_of_coshFeature_eq_zero
 RHTower.polarMultiplier_zero
 RHTower.polarMultiplier_zero_pos
+RHTower.polarMultiplier_zero_eq_sqrtExp
+RHTower.abelSqrtWeight_identity
+RHTower.integral_invSqrt_Ioc
+RHTower.integral_criticalMain_Ioc
+RHTower.criticalMellinError_identity
+RHTower.vonMangoldt_criticalMellinError_identity
+RHTower.polarPrimeZero_defect_identity
 RHTower.criticalMellinDefect_cancellation
 ```
 
-The target module builds, the declarations pass `#print axioms` with only Lean's standard logical
-axioms, and the repository formal lint plus generated-index check pass.
+The target module builds and the declarations pass `#print axioms` with only Lean's standard
+logical axioms. The generated indexes were refreshed. At the final repository-wide lint run, an
+unrelated concurrent file, `RHTower/ThetaCuspReflection.lean`, contained an active `sorry`; the CCM
+module itself contains no proof debt.
 
 ## Scope boundary
 
-This card formalizes the finite-dimensional and algebraic core only. It does not formalize:
+This card formalizes the finite-dimensional kernel and the complete finite zero-frequency analytic
+identity. It does not formalize:
 
 - the distributional derivation of the sign from Suzuki's source;
-- the von Mangoldt Stieltjes measure;
-- partial summation for the Chebyshev error;
-- the zeta logarithmic derivative or the infinite Laplace identity;
+- the full autocorrelation Stieltjes carrier `(18)`--`(20)`;
+- the zeta logarithmic derivative or infinite Laplace identity `(22)`;
 - control of the full compressed CCM symbol;
 - RH.
 
@@ -105,10 +123,13 @@ trusted interface for later CCM formalization, not new scientific knowledge.
 - [x] finite complex quadratic-form factorization formalized
 - [x] signed energy channels and one-sided consequences formalized
 - [x] zero-frequency polar sign formalized
-- [x] critical algebraic cancellation formalized
+- [x] exact real-cutoff Abel identity formalized
+- [x] von Mangoldt/Chebyshev critical Mellin identity formalized
+- [x] complete finite zero-frequency defect formula formalized
 - [x] exact module build
 - [x] axiom audit
-- [x] formal lint and generated-index check
-- [ ] Stieltjes/Laplace analytic parent formalized
+- [x] generated indexes refreshed
+- [ ] repository-wide lint clean; currently blocked by unrelated concurrent `ThetaCuspReflection`
+- [ ] autocorrelation Stieltjes and infinite Laplace source formalized
 - [ ] full compressed symbol controlled
 - [ ] RH

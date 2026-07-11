@@ -3,5 +3,7 @@ import GaloisForLFunctions.HTGeometry.StanleyReisnerFacetIdeal
 import GaloisForLFunctions.HTGeometry.PrimeLogHerglotz
 import GaloisForLFunctions.HTGeometry.PrimeLogTranslationGeometry
 import GaloisForLFunctions.HTGeometry.PrimeLogDifferentialLinearIndependence
+import GaloisForLFunctions.HTGeometry.CauchyJetControllability
+import GaloisForLFunctions.HTGeometry.PrimeLogCauchyJetControllability
 
 /-! # Hypertranscendental constraint geometry -/

@@ -56,4 +56,18 @@ theorem mahler_homogeneous_two_eq_zero {Y : ℂ⟦X⟧}
   rw [h]
   congr 1
 
+/-- **The Mahler substitution endomorphism is injective**: `f(X^k) = g(X^k)` forces `f = g`
+for `k ≥ 1` — the coefficient at `k·n` of the substituted series reads off the coefficient at
+`n`. -/
+theorem subst_X_pow_injective {k : ℕ} (hk : k ≠ 0) :
+    Function.Injective (fun f : ℂ⟦X⟧ => (subst (PowerSeries.X ^ k) f : ℂ⟦X⟧)) := by
+  intro f g h
+  ext n
+  have hc := congrArg (PowerSeries.coeff (k * n)) h
+  simp only [] at hc
+  rw [PowerSeries.coeff_subst_X_pow hk, PowerSeries.coeff_subst_X_pow hk,
+    if_pos (Dvd.intro n rfl), if_pos (Dvd.intro n rfl),
+    Nat.mul_div_cancel_left n (Nat.pos_of_ne_zero hk)] at hc
+  simpa using hc
+
 end GaloisForLFunctions

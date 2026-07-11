@@ -111,3 +111,387 @@ the mixed anti-diagonal moment rather than only positive diagonal energies.
 
 - 2026-07-11 -- Countable integer-polynomial RH criterion formalized; universal all-moment Sonin
   weld weakened to independent per-test Gram convergence.
+
+## 2026-07-11 corpus and Lean audit
+
+The unrestricted formulation has now been separated from the source theorem.
+
+`[PROVED IN LEAN]` Define `XiCentralTraceHankelIntNonnegativeLimit` by asking, separately for every
+integer polynomial `P`, for an arbitrary sequence of nonnegative real numbers converging to `Q(P)`.
+Then
+
+```text
+XiCentralTraceHankelIntNonnegativeLimit
+  <-> XiCentralTraceHankelIntNonnegative
+  <-> RiemannHypothesis.
+```
+
+The declarations are
+`xiCentralTraceHankelIntNonnegativeLimit_iff_nonnegative` and
+`xiCentralTraceHankelIntNonnegativeLimit_iff_riemannHypothesis` in
+`XiTraceHankelCountableCriterion.lean`. The companion formalized card is
+`../3-formalized/not_new_scientific_knowledge/per-test-nonnegative-limit-rh-equivalence.md`.
+
+The proof is the closedness of the nonnegative half-line, with the constant sequence for the
+converse. Consequently, arbitrary polynomial-dependent Gram kernels have exactly the RH sign
+content unless their source construction carries additional coherence before `Q(P)` is evaluated.
+
+### What the existing corpus already supplies
+
+The project already contains the following unconditional pieces.
+
+1. `xiCentralTraceHankel_ofFn` identifies the degree-`d` target with the finite Hankel block
+   `[xiCentralReciprocalMoment (m+n)]`.
+2. `continuedPrimeArchSourceRelativeTrace_eq_xiRelativeResolventTrace` supplies the exact
+   prime--archimedean source identity away from its natural poles.
+3. `SoninAllPrimeResidualKernel.lean` constructs a positive Hilbert--Schmidt polynomial probe, and
+   `SoninAllPrimeHankelCollapse.lean` proves its Gram entries depend only on `m+n`.
+4. That residual Gram has the wrong arithmetic law: block orthogonalization deletes mixed prime
+   words and its positive energy squares the residual coefficients. The remaining equality with
+   the Xi reciprocal moments is not formal plumbing; it is the missing RH-bearing theorem.
+5. `SoninRelativeGramDefect.lean` restores the unsquared Euler coefficient in the
+   principal/residual cross. The cross is Hilbert--Schmidt, while the quadratic residual is positive
+   trace class.
+6. A Hilbert--Schmidt cross has no automatic trace. `SoninSemilocalRelativeTrace.lean` constructs
+   one legitimate compact-support scalarization, but `not_soninSemilocalFluxNormalization` proves
+   that its geometric response is uniformly bounded and cannot equal the required unbounded
+   orbital length `m log p`.
+7. `critical-euler-position-commutator-carrier-law.md` already identifies the correct replacement
+   on paper: logarithmic position `X_A` and the skew Euler logarithm `Z_A` satisfy
+   `[X_A,T_(A,h)]=hT_(A,h)`, so the missing orbital length is produced intrinsically. After
+   compression, the degree-one source splits into an internal trace-defect cocycle and the
+   polarized position/Euler leakage cross.
+8. `ccm-sonin-three-grade-relative-carrier-law.md` synthesizes the forced carrier: principal Calkin
+   shell, degree-one Hilbert--Schmidt relative cross with the exact logarithmic response, positive
+   trace-class residual energy, and the archimedean/Gamma channel. The closed carrier and its
+   positive contraction are not yet constructed.
+9. The formal tree already contains the principal Calkin faithfulness, relative ideal tower,
+   positive residual energy, exact unsquared coefficient exposure, finite Hankel expansion, and RH
+   endpoint. It does not yet contain the weighted log-position commutator on the actual Sonin
+   carrier, the genuine semilocal relative trace on that pair, or the completed contraction.
+
+## Corrected finite-degree Gram target
+
+The phrase “the two-term test carries the mixed anti-diagonal” is false without coherence. If
+`K(X^r+cX^s,j)` is unrelated to the kernels chosen for the two monomials, it realizes only one
+scalar and contains no recoverable mixed inner product.
+
+The minimal source-pure target is therefore:
+
+For every degree `d`, construct source-defined Hilbert spaces `H_(d,j)` and coefficient-linear maps
+
+```text
+G_(d,j) : R^(d+1) -> HS(H_(d,j))
+```
+
+from finite prime--archimedean log-coordinate test data such that
+
+```text
+< G_(d,j)e_m, G_(d,j)e_n >_HS
+  -> xiCentralReciprocalMoment(m+n)                       (2)
+```
+
+for every `0<=m,n<=d`. Equivalently, the positive finite Gram forms
+
+```text
+q_(d,j)(a)=||G_(d,j)a||_HS^2
+```
+
+converge to `xiCentralTraceHankelVector(d+1,a)` on coefficient vectors. The carrier and cutoff may
+depend on `d`, so this remains strictly weaker than one universal all-degree trace-class moment
+operator. The map may not depend on the sign of the target quadratic value or on the Xi divisor.
+
+Polarization makes the mixed obligation explicit:
+
+```text
+2 Re <G e_m,G e_n>
+  = ||G(e_m+e_n)||^2-||Ge_m||^2-||Ge_n||^2.
+```
+
+Thus the first decisive construction is one common source carrier for the three tests
+`X^r`, `X^s`, and `X^r+X^s`, not three unrelated kernels.
+
+## Candidate moves after the corpus audit
+
+1. `[RETIRED]` Residual-only all-prime Gram. It is positive and Hankel, but its moment sequence is
+   not the Xi sequence and its coefficient law is wrong.
+2. `[RETIRED]` Fixed projection-correction scalarization. Its response cannot carry `m log p`.
+3. `[RETIRED]` Arbitrary per-polynomial nonlinear factorization. The new Lean equivalence proves it
+   is the target sign condition with no independent source content.
+4. `[BRIDGE, INSUFFICIENT]` Bare semilocal prolate/self-adjoint extension. Existing pipeline work
+   shows extension existence but rank-at-most-two boundary ambiguity; a chosen extension is not
+   canonical source data.
+5. `[CONJECTURE]` Finite-degree coherent log-position/Sonin leakage Gram. Transport the existing
+   `X_A,Z_A` commutator carrier through the exact Sonin principal--relative extension, include the
+   Gamma conductor, and construct a source-canonical contraction whose defect tends to zero on the
+   finite rational-resolvent block generated by degrees `0,...,d`.
+
+## Attack on the surviving candidate
+
+- Compactness of a Weil--Sonin defect is not enough; one also needs a bounded family of test vectors
+  converging weakly to zero, or a trace-norm error tending to zero.
+- A selected self-adjoint boundary condition can encode the scalar sign. Source symmetry must select
+  it, or the final Gram limit must be invariant under the rank-two extension ambiguity.
+- Positive Euler coefficients are not enough. Existing point-source Hankel cards show the local
+  FE-even kernels are indefinite; the proof must use the exact prime--Gamma coupling.
+- The internal compressed commutator cannot be discarded by formal cyclicity. For the boundary
+  relative trace it may contribute a nonzero trace-defect cocycle.
+- A scalar convergence proof for each `P` is insufficient unless it comes by polarization from the
+  common degree-`d` map `G_(d,j)`.
+
+## Revised open core
+
+`[OPEN RH CORE]` Construct, on the existing three-grade Sonin carrier, the closed transport of the
+finite-aperture logarithmic-position/Euler commutator and the archimedean conductor. Prove that its
+compressed degree-one pair (trace-defect cocycle plus polarized leakage cross) and the positive
+grade-two residual assemble into coefficient-linear maps `G_(d,j)` satisfying `(2)` for every fixed
+degree `d`.
+
+A sufficient quantitative endpoint is an entirely source-side estimate
+
+```text
+|xiCentralTraceHankelVector(d+1,a)-||G_(d,j)a||_HS^2|
+  <= epsilon_(d,j) ||a||^2,
+epsilon_(d,j) -> 0,                                       (3)
+```
+
+first on integer vectors and then on all real vectors. Equation `(3)` must be proved through the
+continued prime--archimedean trace and the semilocal carrier, not by evaluating the Xi divisor.
+
+The next mathematical object is therefore not another Gram wrapper. It is the common closed
+log-position/Sonin graph and its source-selected relative trace.
+
+## Prime-log Herglotz source refinement
+
+The pole carrier at `PrimeLogHerglotz.lean:211` supplies a canonical static source coordinate, but
+the dyadic gauge used by the facet-sewn HT construction is not the arithmetic zeta weight.
+
+`[PROVED ON PAPER]` The exact Euler-logarithm measure on prime-power log support is
+
+```text
+mu_E=sum_(p prime,k>=1) 1/(k p^k) delta_(k log p).
+```
+
+Its Herglotz-normalized Cauchy transform
+
+```text
+H_E(z)=sum_(p,k) 1/(k p^k)
+  (1/(k log p-z)-(k log p)/(1+(k log p)^2))
+```
+
+converges locally uniformly off its locally finite pole set and has positive imaginary part in the
+upper half-plane. Multiplication by log position changes the residue weight by
+
+```text
+(k log p)/(k p^k)=log p/p^k,
+```
+
+and its Laplace transform is exactly `-zeta'(1+s)/zeta(1+s)` on `Re s>0`. The complete proof is in
+`../2-fully-proven/not_new_scientific_knowledge/euler-log-prime-power-herglotz-half-weight-law.md`.
+
+`[PROVED IN LEAN]` The positive carrier cannot be transported toward the critical line by an
+exponential weight. For every `b>0`,
+
+```text
+sum_p p^(2b-1)/(1+(log p)^2)=infinity.
+```
+
+This is
+`GaloisForLFunctions.HTGeometry.not_summable_primeLogHerglotzTransportMass_of_pos`, with formalized
+card
+`../3-formalized/not_new_scientific_knowledge/prime-log-herglotz-positive-transport-wall.md`.
+The critical half-weight is therefore not a domain issue that finite polynomial degree removes.
+
+### Consequence
+
+The prime-log Herglotz measure solves channel resolution and produces the orbital length
+intrinsically, but it does not transport positivity to the Xi reciprocal moments. The next live
+object must sew this marked prime measure to the Gamma conductor before the half-weight is applied.
+The sewing must retain the exact residues and functional-equation polarization; the facet-sewn
+universality theorem proves that an unpointed Herglotz/HT relation complex has no source-selection
+content.
+
+`[OPEN RH CORE, SHARPENED]` Construct a static prime--Gamma covariance or relative-trace carrier
+whose completed finite-degree feature maps are defined across the half-weight even though neither
+prime facet is individually transportable. Prove the source identity and the Gram error estimate
+`(3)` on that sewn carrier. Any construction that first transports the positive prime Herglotz
+space and adds Gamma afterward is now formally excluded.
+
+## Hardy--Titchmarsh/Sonin sewing audit after the prime-log pointer
+
+The project already contains an exact prime--Gamma sewing, but it is not yet the positive compact
+carrier required by `(3)`.
+
+`[PROVED IN LEAN]` `HardyTitchmarshSemilocalSquare.lean` constructs, for every prime scale `p>1`,
+the weighted semilocal line and the place-adjoining map `iota'_p`.  Its exact Gram law is
+
+```text
+(iota'_p)^* iota'_p = M_(|1-p^(-1/2-is)|^2),
+```
+
+and the Hardy--Titchmarsh square commutes exactly with the physical local factor.  Thus the Gamma
+and prime pieces are already on one source-defined carrier; no arbitrary facet sewing is needed.
+
+The same file and `HardyTitchmarshEulerConcrete.lean` prove the decisive ideal obstruction:
+
+```text
+M_(w_p) M_(w_q) is noncompact,
+[Pi_(a,infinity),M_(w_p)] is noncompact,
+```
+
+and the one-prime cross-boundary Euler corner is noncompact.  Therefore the raw semilocal Gram and
+its finite-prime products cannot themselves be the Hilbert--Schmidt feature maps `G_(d,j)`.  The
+principal-shell relative subtraction is not optional.
+
+`[PROVED IN LEAN]` `SoninPrincipalShellResidual.lean` supplies that canonical subtraction at one
+scale, and `SoninRelativeGramDefect.lean` proves that the resulting degree-one cross is
+Hilbert--Schmidt while retaining the unsquared Euler coefficient.  However, the subtraction gives
+an indefinite relative Gram defect, not a positive square.  The missing theorem is exactly a
+completed prime--Gamma contraction dominating this relative cross while preserving its
+log-position response.
+
+### Gamma-decay attack
+
+The archimedean cyclic characteristic
+
+```text
+phi(t)=(cosh t)^(-1/2)
+```
+
+has asymptotic decay of critical size `exp(-|t|/2)`, so a tempting construction is the damped
+sum-Hankel kernel `K(u,v)=phi(u+v)` on the prime-log semigroup.
+
+`[FALSIFIED IN LEAN]` For every `t!=0`,
+
+```text
+phi(2t)<phi(t)^2,
+phi(0)phi(2t)-phi(t)^2<0.
+```
+
+Hence the `2 x 2` Gram matrix on `{0,t}` is indefinite.  The declarations are
+`semilocalArchimedeanCharacteristic_two_mul_lt_sq` and
+`semilocalArchimedeanCharacteristic_hankelDet_neg`; the formalized card is
+`../3-formalized/not_new_scientific_knowledge/gamma-characteristic-sum-hankel-no-go.md`.
+Difference-frequency use of `phi` is positive definite, but its diagonal is `1` and gives no
+half-weight damping.  Thus the Gamma factor has the right decay only inside a nontrivial relative
+covariance; it cannot be attached as a scalar positive Hankel weight.
+
+### Current-literature check
+
+The semilocal prolate literature still presents positivity comparison as the program rather than a
+proved theorem.  The 2026 screw-function formulation likewise leaves the limiting nonlocal
+self-adjoint realization conjectural.  The 2026 finite Guinand--Weil dictionary sharpens the warning:
+each truncated Galerkin quadratic value is already an exact zero sum, while only the omitted
+archimedean tail is an automatically positive Cauchy--Stieltjes increment.  Finite truncation does
+not manufacture the missing full positivity.
+
+### Surviving construction
+
+`[CONJECTURE, NARROWED]` Use the channel-resolved finite-place multipliers from the semilocal
+Hardy--Titchmarsh square, subtract their common noncompact principal shell before squaring, and sew
+the resulting Hilbert--Schmidt degree-one channels to the archimedean conductor through a
+source-defined block contraction.  For a block Gram
+
+```text
+[ A  C  ]
+[ C* B  ],
+```
+
+positivity requires a factorization `C=A^(1/2) K B^(1/2)` with `||K||<=1`.  Here `C` is forced by
+the log-position/Euler leakage cross, `A` by the channel-resolved prime residuals, and `B` by the
+Gamma conductor.  The Hardy--Titchmarsh unitary identifies the common carrier but does not prove
+this contraction; its noncompact-corner theorem shows why principal subtraction must occur first.
+
+`[OPEN RH CORE, CURRENT]` Construct this explicit source contraction on the principal-relative
+Sonin graph and prove its finite-degree compression error tends to zero as in `(3)`.  The following
+three shortcuts are now formally excluded: positive prime transport followed by Gamma addition,
+scalar Gamma Hankel damping, and the raw Hardy--Titchmarsh semilocal Gram without principal-shell
+subtraction.
+## A positive sewing that really crosses the half-weight
+
+The negative sum-Hankel determinant does not exclude every positive Gamma sewing.  There is one
+canonical positive covariance that crosses the wall.
+
+Let `phi(t)=(cosh t)^(-1/2)` and define
+
+```text
+d(t)=sqrt(phi(2t)),
+K_Gamma(t,u)=d(t)d(u)phi(t-u).                              (4)
+```
+
+`[PROVED ON PAPER]` Since `phi(t-u)` is the characteristic kernel of the normalized Gamma cyclic
+measure, `(4)` is positive semidefinite by diagonal congruence.  Its diagonal is
+
+```text
+K_Gamma(t,t)=phi(2t) asymp exp(-t).
+```
+
+At `t=log p`, this changes the critical transported Cauchy mass from
+`1/(1+(log p)^2)` to at most
+
+```text
+sqrt(2)/(p(1+(log p)^2)),
+```
+
+which is summable.  Thus sewing Gamma before transport really does repair the analytic half-weight
+domain.  The proof and exact bounds are in
+`../2-fully-proven/not_new_scientific_knowledge/gamma-damped-stationary-prime-log-covariance-law.md`.
+
+### Why this is not yet the Xi Gram
+
+Every entry `K_Gamma(t,u)` is strictly positive.  A coherent square of two positive prime-power
+channels therefore contains a strictly positive cross term.  The Euler logarithm and its
+log-position derivative are additive over prime powers and contain no such pair terms.  Hence this
+positive covariance cannot equal the continued source trace directly.
+
+This leaves one precise, nonempty construction problem rather than a generic half-weight wall:
+retain `(4)` to obtain the Gamma decay, then perform a source-defined operator-valued subtraction
+of its off-diagonal prime-power energy while preserving the degree-one log-position response.
+Orthogonalizing the channels before sewing restores additivity but deletes the covariance that made
+the half-weight finite.
+
+`[LEADING CONJECTURE]` The conjugated local-channel sum in the Gauss-paired quantized differential
+identity is the required covariance subtraction before trace, and the Sonin principal-shell
+relative defect is its compact/Hilbert--Schmidt compression.  Prove that their common
+Hardy--Titchmarsh realization sends the kernel `(4)` to the completed degree-one relative trace and
+that the remaining grade-two operator is its positive Schur complement.  This would produce the
+coherent maps `G_(d,j)`; no existing project theorem proves the Schur-complement bound.
+
+`[SOURCE-SELECTION CAVEAT]` The damping `d(t)=sqrt(phi(2t))` is natural but is not yet selected by
+the exact Hardy--Titchmarsh forward map.  That map selects the local symbol and its noncompact Euler
+Gram.  The next proof must derive `(4)` (or a replacement with the same diagonal decay) from the
+Gauss-paired ratio/Sonin/conductor operator itself.  Treating `d` as an admissible external gauge
+would merely move the missing theorem into the choice of covariance.
+## Exact half-unit seam and finite-degree audit
+
+The completed Hardy/CCM pipeline already identifies the global version of the same obstruction.
+For `omega>0`, the completed causal quotient
+
+```text
+Phi_omega(z)=xi(1+z)/xi(1+2omega+z)
+```
+
+is unconditionally Schur, and exponential conjugation remains contractive through widths
+`0<=a<=omega`.  The shifted-Xi/RH boundary requires width
+
+```text
+a_omega=1/2+omega.
+```
+
+Thus the unproved width is exactly `1/2` at every prelimit, not only as `omega->0`.  The card
+`ccm-completed-quotient-weighted-schur-seam-law.md` proves that contractivity at the target width is
+equivalent to vanishing of the denominator model space carrying the off-line zero Cauchy jets.
+Consequently a generic completed contraction is not a lemma waiting to be connected: at the target
+width it is already an RH-equivalent statement.
+
+The countable finite-degree criterion does not shorten this seam.  For any prescribed degree,
+sufficiently high off-line reciprocal pairs perturb the finite Hankel block by an arbitrarily small
+amount while preserving its positivity.  This is the theorem in
+`finite-degree-reciprocal-tests-height-limited.md`.  Therefore no fixed-degree estimate can force a
+smaller exponential domain.  The route must construct one source operator/form whose all-degree
+compressions exhaust the target, or prove estimates with genuine degree-to-height control.
+
+`[ROUTE DISCIPLINE]` The Gamma-damped covariance `(4)` is useful only if it is derived inside that
+completed source operator and its off-diagonal covariance is canceled before trace.  Proving that
+its Schur complement is nonnegative after identifying it with the target form would merely restate
+the target-width contraction/RH criterion.

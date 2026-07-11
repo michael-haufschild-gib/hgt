@@ -211,6 +211,40 @@ theorem xiCentralTraceHankelIntNonnegative_iff_riemannHypothesis :
     exact xiCentralTraceHankelNonnegative_of_riemannHypothesis hRH
       (p.map (Int.castRingHom ℝ))
 
+/-- The unrestricted per-test nonnegative-limit formulation.  This deliberately records only the
+scalar content of a proposed Gram approximation: no common carrier, coefficient-linearity, or
+source construction is required. -/
+def XiCentralTraceHankelIntNonnegativeLimit : Prop :=
+  ∀ p : Polynomial ℤ,
+    ∃ energy : ℕ → ℝ,
+      (∀ j, 0 ≤ energy j) ∧
+        Tendsto energy atTop
+          (𝓝 (xiCentralTraceHankel (p.map (Int.castRingHom ℝ))).re)
+
+/-- Arbitrary polynomial-dependent limits of nonnegative scalars contain exactly the same sign
+content as integer-polynomial trace-Hankel nonnegativity.  Therefore a per-test Gram route gains
+independent mathematical content only from extra source-side coherence imposed on its kernels. -/
+theorem xiCentralTraceHankelIntNonnegativeLimit_iff_nonnegative :
+    XiCentralTraceHankelIntNonnegativeLimit ↔ XiCentralTraceHankelIntNonnegative := by
+  constructor
+  · intro hlimit p
+    obtain ⟨energy, henergy, hconv⟩ := hlimit p
+    exact isClosed_Ici.mem_of_tendsto hconv
+      (Filter.Eventually.of_forall henergy)
+  · intro hnonneg p
+    refine ⟨fun _ => (xiCentralTraceHankel
+      (p.map (Int.castRingHom ℝ))).re, ?_, tendsto_const_nhds⟩
+    intro j
+    exact hnonneg p
+
+/-- **Unrestricted per-test nonnegative-limit criterion for RH.**  This is an exact audit theorem,
+not a source construction: the missing RH-bearing input is a canonical semilocal family whose
+nonnegative energies converge without reading the Xi divisor or its sign. -/
+theorem xiCentralTraceHankelIntNonnegativeLimit_iff_riemannHypothesis :
+    XiCentralTraceHankelIntNonnegativeLimit ↔ RiemannHypothesis := by
+  rw [xiCentralTraceHankelIntNonnegativeLimit_iff_nonnegative,
+    xiCentralTraceHankelIntNonnegative_iff_riemannHypothesis]
+
 end
 
 end RHTower

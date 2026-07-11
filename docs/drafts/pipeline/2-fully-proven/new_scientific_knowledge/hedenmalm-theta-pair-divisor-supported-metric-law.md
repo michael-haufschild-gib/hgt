@@ -437,11 +437,22 @@ integrability of `|XiC|^2` against every temperate spectral measure follows auto
 Schwartz decay. Nullity of the source then forces the complete atomic decomposition `(11)`; no
 integrability or support premise remains in this adapter.
 
+`formal/GaloisForLFunctions/RHTower/ThetaCuspReflection.lean` proves the missing global reflection
+mechanism for the actual all-integer theta-cusp series. The raw positive Gaussian tail changes
+under reflection by exactly the two modes `exp(x/2)` and `exp(-x/2)`; the cusp operator
+`d^2/dx^2 - 1/4` annihilates both. Lean consequently proves that the full source is even, smooth
+to every order, and that its `m`-th derivative has parity `(-1)^m`.
+
+`formal/GaloisForLFunctions/RHTower/ThetaCuspSchwartz.lean` proves actual global energy decay, not
+only compact-local convergence. Every derivative has an explicit `C_m exp(-|x|)` bound after
+reflection, every weighted derivative is globally bounded, and the full theta-cusp source is
+constructed as an actual element of real and complex Schwartz space.
+
 The remaining formal gap is the central Schwartz-kernel plus Bochner--Schwartz existence theorem
 taking an arbitrary positive continuous translation-invariant Schwartz form to its positive
-tempered spectral measure, together with the construction of the theta source as an actual
-Schwartz object whose formal Fourier transform is `XiC`. Mathlib supplies the component theories
-but neither the required Schwartz kernel theorem nor this assembled representation theorem.
+tempered spectral measure, together with the exact formal Fourier identity identifying the newly
+constructed theta-cusp Schwartz object with `XiC`. Mathlib supplies the component theories but
+neither the required Schwartz kernel theorem nor this assembled representation theorem.
 
 ## Gates
 
@@ -470,4 +481,7 @@ but neither the required Schwartz kernel theorem nor this assembled representati
 - [x] Lean every positive temperate measure constructs the required continuous positive form
 - [x] Lean the constructed spectral form symmetrizes momentum and is translation invariant
 - [x] Lean the Schwartz-Xi null-source adapter discharges integrability and yields atomicity
+- [x] Lean theta-cusp reflection, smoothness, and all-derivative parity
+- [x] Lean actual global theta-cusp Schwartz decay and Schwartz-space object
+- [ ] Lean exact Fourier transform of the theta-cusp Schwartz object equals `XiC`
 - [ ] Lean Schwartz translation-invariance to Bochner--Schwartz classification bridge

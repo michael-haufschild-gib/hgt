@@ -46,6 +46,11 @@ Thus the spatial Feigenbaum constant is also an exact postcritical derivative-gr
 ordinary average in (3), divided by `2^n-1`, tends to zero, while its unaveraged growth retains the
 nonzero exponent `log(alpha)/log(2)`.
 
+The arbitrary finite-critical-order theorem is recorded separately in
+`../../2-fully-proven/new_scientific_knowledge/feigenbaum-critical-order-postcritical-product-law.md`.
+For critical order `m`, the right side becomes `(-1)^n alpha^(n(m-1))`, so the exact exponent is
+`(m-1)log(alpha)/log(2)`.
+
 ## Proof
 
 The dyadic value identity proved from the functional equation and evenness is
