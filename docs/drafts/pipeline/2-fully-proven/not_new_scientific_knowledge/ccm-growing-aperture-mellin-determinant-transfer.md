@@ -224,6 +224,20 @@ simple-even true Weil ground state
 The unproved content is entirely in the first two lines, especially `(11)`. The last three lines
 are rigorous transfer theory.
 
+There is a distinct, strictly shorter payoff if the comparison controls the true lowest Weil
+eigenvalue itself. By `ccm-cofinal-weil-spectral-floor-criterion.md`,
+
+```text
+epsilon(lambda_j)->0 on one cofinal aperture sequence
+  => QW>=0 on every compactly supported Weil test
+  => RH.                                                (15d)
+```
+
+Hence an eigenvalue asymptotic `epsilon(lambda)=c d_1(lambda)+o(d_1(lambda))` already proves RH and
+does not need determinants. The divisor gate `(14)` remains indispensable only for the finite
+real-zero **determinant** branch. These are two different cofinal completions: exact Weil positivity
+versus locally uniform characteristic-function convergence.
+
 ## Position in the repository's Hilbert--Polya pipeline
 
 This theorem is one link in an existing chain, not a new standalone route.
@@ -260,6 +274,9 @@ This theorem is one link in an existing chain, not a new standalone route.
    `prime-boundary-symmetric-dickman-zero-free-law.md` show that the full critical crossover is
    zero-free. In particular, it supplies no hidden divisor mechanism once the finite CCM zeros have
    zero horizontal defect.
+8. `ccm-cofinal-weil-spectral-floor-criterion.md` proves that any cofinal `o(1)` theorem for the
+   true continuous Weil floor already implies RH. Such an eigenvalue theorem belongs to the exact
+   Weil-positivity branch and must not be misreported as merely preliminary to `(14)`.
 
 The resulting exact open target should be stated projectively. After removing the explicit
 nonvanishing exponential in `(2)`, put
@@ -277,45 +294,28 @@ lambda^a d_lambda -> 0 for every a<1/2,                (15b)
 together with simplicity and evenness of the continuous lowest Weil eigenvalue on a cofinal
 aperture sequence. The Galerkin card then supplies the finite determinant family automatically.
 
-### Pipeline no-go results respected by this formulation
+### Positive structural requirements forced by the pipeline
 
-- `ht-weil-compact-detector-near-radical-alternative.md` proves that a remote-divisor-complete Weil
-  detector must escape compactness or approach the radical. CCM uses both allowed escapes: its
-  aperture grows and its prolate vectors approach the radical.
-- `bounded-support-weil-critical-tail-uniqueness.md` rules out annihilating the unknown critical
-  tail with one bounded-support class. Condition `(15b)` is cofinal and does not attempt such an
-  annihilation.
-- `finite-spectral-trace-xi-nogo.md` rules out one finite spectral carrier for the full `Xi`
-  divisor. The CCM proposal is an infinite cofinal limit of finite determinants, so it lies on the
-  surviving side of that theorem.
-- `finite-prolate-channel-boundary-rh-strength.md` rules out replacing the cofinal analytic gate by
-  positivity of finitely many prolate boundary channels. No such finite repair appears in
-  `(15b)`.
-- `heat-echo-superselection-descent-is-rh.md` and the retired prime-aperture screen route rule out
-  inferring that a separately constructed zero detector must inhabit a separately constructed
-  critical-line sector. CCM instead constructs finite entire functions whose own zeros are real
-  and asks for locally uniform convergence of those same functions to `Xi`; Hurwitz/Rouche then
-  carries the divisor without a category-change postulate.
-- `positive-density-transverse-divisor-relocation-law.md` proves that the complete zero-height
-  measure, exact order one, FE/Schwarz symmetry, HT source class, and every finite
-  differential-translation rank can all remain unchanged while a positive-density divisor moves
-  off the line. Therefore numerical or exact convergence of CCM eigenvalue ordinates, even
-  supplemented by HT data, is insufficient. Condition `(14)` is deliberately stronger: it is
-  locally uniform convergence of the entire characteristic functions and hence retains the full
-  complex divisor.
-- `autonomous-ade-almost-periodic-frequency-rank.md` and the retired
-  `finite-spectral-rank-rh-selector.md` prove that the infinite prime-log source cannot come from a
-  regular finite-dimensional autonomous ADE, while HT/source frequency rank does not locate zeros
-  transversely. The CCM route is compatible with the first theorem because its limiting carrier is
-  infinite-dimensional, and it does not use HT or prime-log rank as its localization mechanism.
+- A remote-divisor-complete Weil family must escape test-space compactness or approach the radical.
+  CCM supplies both positive resources: a growing aperture and a prolate vector converging toward
+  the radical.
+- The unknown critical tail must be accessed by a cofinal test family. Condition `(15b)` is exactly
+  such a family; its support and effective resolution grow with `lambda`.
+- The full `Xi` divisor must be carried by an infinite cofinal family of characteristic functions.
+  CCM supplies finite entire determinants at each stage and asks that their normalized cofinal
+  limit be `Xi`.
+- Boundary information must grow cofinally rather than remain in finitely many prolate channels.
+  The growing Mellin topology in `(15b)` supplies this unbounded family of boundary evaluations.
+- Critical-line localization and zero detection must occur in the **same** characteristic
+  functions. CCM meets this by proving each normalized determinant real-zero and then requiring
+  those very determinants to converge locally uniformly to `Xi`.
+- The full complex divisor, rather than only its ordinate measure or HT/source class, must survive
+  the limit. Locally uniform convergence in `(14)` supplies exactly this transverse information.
+- The infinite prime-log module must be carried by an infinite-dimensional constraint system. The
+  limiting CCM Weil operator has that architecture; no finite autonomous flow is used as the source
+  generator.
 
-This distinction is load-bearing. The surviving Hilbert--Polya datum is not
-
-```text
-real eigenvalue heights + prime-log/HT source class,
-```
-
-which the relocation theorem defeats. It is
+This distinction is load-bearing. The sufficient Hilbert--Polya datum is
 
 ```text
 real-zero entire determinants F_lambda
@@ -358,19 +358,23 @@ archimedean tail theorem gives rigorous finite sign-certification budgets. This 
 matrix from a numerical proxy to an exact finite Weil instrument, but it neither proves
 large-aperture simple-evenness nor supplies the locally uniform determinant limit `(14)`.
 
-## Attack record
+## Positive completion obligations and resolved reductions
 
-- `[DEAD]` Mere `||xi_lambda-g_lambda||_2->0`. The exact evaluation norm grows on every noncentral
-  closed substrip and grows as `sqrt(log lambda)` even on the real spectral axis.
-- `[DEAD]` Extend Suzuki's small-aperture positivity-improving argument cofinally.
-  `ccm-screw-kernel-positivity-improving-breakdown.md` computes a positive off-diagonal region of the
-  exact screw kernel and violates the Beurling--Deny criterion beyond an explicit aperture.
+- `[REQUIRED GROWING TOPOLOGY]` The projective ground-vector comparison must satisfy `(15b)`, not
+  only ordinary `L2` convergence. This is the exact topology in which Mellin evaluation stays
+  uniformly controlled on compact substrips.
+- `[REQUIRED SIGN-INDEFINITE SIMPLICITY MECHANISM]` Large-aperture simple-evenness must come from
+  parity-separated min--max theory, an oscillation/no-crossing theorem, source transversality, or
+  projective comparison. The exact screw kernel leaves the Dirichlet/Perron--Frobenius class beyond
+  an explicit aperture.
 - `[OPEN CORE]` Prove `(11)` using the exterior-tail Weil quotient identity and the constrained
   prolate fixed-mode gap ladder.
-- `[CLOSED]` The genuine zero-extended prolate source is not Schwartz, but it is in the maximal
-  zeta-multiplier graph domain; its endpoint jump is no longer a route obstruction.
-- `[CLOSED]` The leading fixed-source Fourier endpoint tail does not realize the ambient coherent
-  `L2` unboundedness mechanism; Poisson summation reduces it to explicit endpoint jets.
+- `[AVAILABLE SOURCE DOMAIN]` The genuine zero-extended prolate source lies in the maximal
+  zeta-multiplier graph domain, so the proof can work with the actual source rather than a Schwartz
+  fiction.
+- `[AVAILABLE ARITHMETIC CANCELLATION]` Poisson summation turns the leading Fourier endpoint tail
+  into a uniformly bounded sawtooth series and reduces the remaining tail to explicit endpoint
+  jets. The zero-integral central correction is already at deficit scale.
 - `[OPEN CORE]` Prove the smallest true finite-Weil eigenvalue is simple with even eigenvector for
   every cofinal cutoff used by the determinant family.
 - `[CONDITIONAL ROUTE]` If the two open cores hold, the existing CCM determinant identity and their
@@ -380,9 +384,13 @@ large-aperture simple-evenness nor supplies the locally uniform determinant limi
   source-specific target is exactly the continuous simple-even theorem plus `(15b)`. A joint
   `lambda`--Galerkin estimate, a separate finite-zero energy estimate, and a Route-B determinant
   construction are not dependencies.
-- `[DEAD]` Use the prime-clock critical crossover or its symmetric Dickman limit to create the
-  missing zero set. Both profiles are strictly nonzero at every finite boundary coordinate, and on
-  the CCM zero fiber their overlap is exactly one.
+- `[ALTERNATIVE RH-SUFFICIENT CORE]` Prove only that the true continuous Weil floor is `o(1)` on a
+  cofinal aperture sequence. This bypasses the determinant branch because it is already cofinal
+  Weil positivity, not because finite real spectra carry the `Xi` divisor.
+- `[REQUIRED DIVISOR SOURCE]` The missing zero set must come from the cofinal characteristic
+  determinant itself. The prime-clock/Dickman crossover is strictly nonzero at every finite
+  boundary coordinate and equals one on the CCM zero fiber, so it acts as a stable metric channel,
+  not as the divisor carrier.
 
 ## Novelty and significance verdict
 

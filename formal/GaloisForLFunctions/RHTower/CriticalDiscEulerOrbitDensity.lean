@@ -527,4 +527,37 @@ theorem criticalDisc_analytic_odd_schwarz_mem_realEulerIncrementGroup_closure
       (hr01.trans hr1) hepsilon S)
     (criticalDiscRealEulerIncrementGroup r₀ S epsilon).isClosed_topologicalClosure) hspan'
 
+/-- Positive quotient classification: on the analytic FE-odd Schwarz-real
+regular-germ fiber, every continuous reader invariant under finite real Euler
+increments is exactly its value at the zero regular germ.  Equivalently, this
+fiber has a one-point maximal continuous quotient under the generated action. -/
+theorem criticalDisc_continuous_finiteUnitInvariant_eq_base
+    {Y : Type*} [TopologicalSpace Y] [T2Space Y]
+    (A : C(CriticalClosedDisc r₀, ℂ) → Y) (hA : Continuous A)
+    (hinvariant : ∀ x g,
+      g ∈ criticalDiscRealEulerIncrementGroup r₀ S epsilon →
+      A (x + g) = A x)
+    (f : ℂ → ℂ) {r₀ r₁ epsilon : ℝ}
+    (hr₀ : 0 ≤ r₀) (hr01 : r₀ < r₁) (hr1 : r₁ < 1 / 2)
+    (hepsilon : 0 < epsilon)
+    (hf : DiffContOnCl ℂ f (ball (1 / 2 : ℂ) r₁))
+    (hodd : ∀ z ∈ closedBall (1 / 2 : ℂ) r₀, f (1 - z) = -f z)
+    (hschwarz : ∀ z : ℂ, f (conj z) = conj (f z))
+    (S : Finset Nat.Primes) :
+    A (criticalDiscRestriction f r₀
+      (hf.continuousOn_ball.mono (Metric.closedBall_subset_closedBall hr01.le))) = A 0 := by
+  let G := criticalDiscRealEulerIncrementGroup r₀ S epsilon
+  let target := criticalDiscRestriction f r₀
+    (hf.continuousOn_ball.mono (Metric.closedBall_subset_closedBall hr01.le))
+  have htarget : target ∈ G.topologicalClosure := by
+    simpa [G, target] using
+      criticalDisc_analytic_odd_schwarz_mem_realEulerIncrementGroup_closure
+        f hr₀ hr01 hr1 hepsilon hf hodd hschwarz S
+  have hG : (↑G : Set C(CriticalClosedDisc r₀, ℂ)) ⊆ {x | A x = A 0} := by
+    intro g hg
+    simpa using hinvariant 0 g hg
+  have hclosed : IsClosed {x : C(CriticalClosedDisc r₀, ℂ) | A x = A 0} :=
+    isClosed_eq hA continuous_const
+  exact (closure_minimal hG hclosed) htarget
+
 end RHTower

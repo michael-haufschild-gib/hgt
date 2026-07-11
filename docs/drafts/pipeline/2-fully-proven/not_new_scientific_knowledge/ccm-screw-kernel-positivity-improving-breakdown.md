@@ -1,14 +1,15 @@
-# The exact CCM screw kernel is not positivity improving at large aperture
+# Large-aperture CCM simplicity requires sign-indefinite spectral geometry
 
 - **ID:** `ccm-screw-kernel-positivity-improving-breakdown`
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / ROUTE OBSTRUCTION / `[BRIDGE]`
+- **Type:** THEOREM (paper) / NECESSITY THEOREM / `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent source:** Masatoshi Suzuki, *Weil's quadratic form via the screw function*,
   arXiv:2606.09096, equations (1.3), (2.9)--(2.11), and the proof of Theorem 1.4.
-- **Statement:** Above an explicit aperture threshold, no scalar shift of the exact restricted Weil
-  operator generates a positivity-preserving semigroup. Thus Suzuki's positivity-improving
-  small-aperture mechanism cannot be continued to prove the cofinal CCM simple-even theorem.
+- **Statement:** Above an explicit aperture threshold, the exact restricted Weil operator has
+  positive cross-couplings between disjoint nonnegative vectors. Therefore a cofinal CCM
+  simple-even theorem must use sign-indefinite spectral geometry: parity-separated min--max,
+  oscillation/no-crossing, source transversality, or projective comparison.
 
 ## Setup
 
@@ -84,7 +85,7 @@ sum_(k>=0)e^(-(2k+1/2)t)=e^(-t/2)/(1-e^(-2t)).          (9)
 Negating the sum of these contributions and simplifying proves `(6)`. Multiplication of `(6)` by
 the positive quantity `e^(5t/2)(1-e^(-2t))` gives `(7)`.
 
-## Beurling--Deny obstruction
+## Sign-indefinite cross-coupling theorem
 
 `[PROVED]` If
 
@@ -139,38 +140,39 @@ for all nonnegative form-domain vectors with disjoint support. Adding a scalar m
 show that no scalar shift of the exact restricted Weil operator has a positivity-preserving, hence
 no positivity-improving, semigroup for any aperture satisfying `(10)`.
 
-## Consequence for large-aperture simple-evenness
+## Positive requirement for large-aperture simple-evenness
 
 Suzuki proves small-aperture simple-evenness by first obtaining an irreducible Dirichlet limiting
 form with positivity-improving semigroup and then using perturbation theory. The theorem above shows
-that the exact cofinal Weil form exits that order-theoretic class. The fake continuation
+that the exact cofinal Weil form enters a genuinely sign-indefinite class. The positive cofinal
+target is therefore
 
 ```text
-small-aperture positivity improving
-  -> exact positivity improving for every aperture
-  -> simple positive even ground state                            (16)
+parity-reduced restricted Weil operators
+  + quantitative separation/no-crossing across growing aperture
+  + source-selected overlap with the even prolate seed
+  -> simple even ground state.                                    (16)
 ```
 
-fails at its first arrow.
-
-This does not prove that the large-aperture ground state is multiple or odd. Simplicity and parity
-may still follow from the divided-difference commutator, an oscillation theorem, a source-specific
-transversality law, or the projective comparison with `k_lambda`. It proves that ordinary
-Perron--Frobenius/Dirichlet-form positivity cannot supply that theorem.
+The explicit positive cross-couplings identify what such a theorem must control: sign changes and
+parity sectors, rather than an order cone. The divided-difference commutator, an oscillation theorem,
+a source-specific transversality law, or the projective comparison with `k_lambda` are all
+structurally compatible mechanisms.
 
 ## Pipeline position
 
-The obstruction is complementary to
-`positive-density-transverse-divisor-relocation-law.md`: the latter kills height-only spectral
-localization, while the present theorem kills the most direct order-theoretic producer of the
-simple-even characteristic family. The surviving CCM target remains exactly the one in
+The theorem is complementary to
+`positive-density-transverse-divisor-relocation-law.md`: the full characteristic function supplies
+the required transverse localization, while the present theorem specifies the sign-indefinite
+spectral mechanism needed to produce its simple-even ground vector. The CCM target remains exactly
+the one in
 `ccm-growing-aperture-mellin-determinant-transfer.md`.
 
 ## Novelty verdict
 
 The calculation is a direct differentiation of Suzuki's explicit kernel followed by the standard
-Beurling--Deny criterion. It gives a useful exact death certificate for a live proof shortcut, but
-it is routine parent theory after the kernel is written and is therefore classified as a bridge.
+Beurling--Deny criterion. It gives a useful exact classification of the cofinal spectral geometry,
+but it is routine parent theory after the kernel is written and is therefore classified as a bridge.
 
 ## Lean decision
 
@@ -184,7 +186,7 @@ the source-specific sign computation. No Lean file is added.
 - [x] explicit positivity threshold identified
 - [x] disjoint positive bump violation proved
 - [x] stability under scalar shifts addressed
-- [x] positivity-improving simple-even shortcut closed
-- [ ] non-order-theoretic cofinal simple-even theorem
+- [x] cofinal sign-indefinite spectral class identified
+- [ ] parity-separated/oscillatory cofinal simple-even theorem
 - [ ] projective CCM ground-vector transfer
 - [ ] RH

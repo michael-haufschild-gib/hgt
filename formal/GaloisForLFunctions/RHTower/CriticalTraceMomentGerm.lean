@@ -77,8 +77,13 @@ theorem normalizedTraceMomentGerm_oddTracePreimage
     normalizedTraceMomentGerm (oddTracePreimage g) = g := by
   funext z
   unfold normalizedTraceMomentGerm oddTracePreimage
-  have h := dslope_mul_self g hg z
-  simpa only [neg_mul, dslope_neg, neg_neg] using h
+  by_cases hz : z = 0
+  · subst z
+    rw [dslope_same]
+    have hder := ((hasDerivAt_id (0 : ℂ)).mul hg.hasDerivAt).neg.deriv
+    simpa using congrArg Neg.neg hder
+  · rw [dslope_of_ne _ hz, slope_def_module]
+    simp [hz, smul_eq_mul]
 
 /-- The larger-disc/smaller-disc bound governing normalized division.  A
 uniform error `R₂` on a disc of radius `R₁` becomes at most `R₂/R₁`
@@ -97,8 +102,11 @@ theorem analyticAt_normalizedTraceMomentGerm
     {T : ℂ → ℂ} (hT : AnalyticAt ℂ T 0) :
     AnalyticAt ℂ (normalizedTraceMomentGerm T) 0 := by
   rcases hT with ⟨p, hp⟩
+  have hs := hp.has_fpower_series_dslope_fslope
+  have hneg : HasFPowerSeriesAt
+      ((-1 : ℂ) • dslope T 0) ((-1 : ℂ) • p.fslope) 0 :=
+    hs.const_smul
   exact ⟨-p.fslope, by
-    simpa [normalizedTraceMomentGerm] using
-      (hp.has_fpower_series_dslope_fslope.const_smul (-1 : ℂ))⟩
+    simpa [normalizedTraceMomentGerm] using hneg⟩
 
 end RHTower

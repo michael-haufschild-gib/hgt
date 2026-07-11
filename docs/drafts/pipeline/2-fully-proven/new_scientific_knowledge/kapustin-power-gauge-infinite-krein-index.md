@@ -1,4 +1,4 @@
-# Kapustin power gauges have infinite two-sided Krein index
+# Kapustin power gauges require a noncompact full-sector polarization
 
 - **ID:** `kapustin-power-gauge-infinite-krein-index`
 - **Stage:** 2-fully-proven/new_scientific_knowledge
@@ -7,8 +7,10 @@
   Mathematical Journal 65 (2024), 72--75
 - **Statement:** Every explicit power gauge `phi_beta(s)=s^(-beta)` in Kapustin's theorem gives a
   critical-line weight with infinitely many positive and negative sign intervals.  The associated
-  symmetric Krein space has positive and negative indices `(infinity,infinity)`, and no finite-rank
-  correction of its metric can make it positive.
+  symmetric Krein space has indices `(infinity,infinity)`.  More positively: every bounded metric
+  correction that Hilbertizes this carrier must dominate the identity on the complete negative
+  sector, and is therefore necessarily infinite-rank, noncompact, outside every finite Schatten
+  class, and of essential norm at least one.
 
 ## Goal
 
@@ -31,8 +33,10 @@ is self-adjoint for the Krein metric `[f,g]=integral f conjugate(g) p`, and ever
 `rho` gives the eigenvalue `1/(rho(1-rho))`.
 
 The missing Hilbert--Polya step is not the spectrum but the metric.  This card determines the metric
-inertia for the entire explicit family singled out in Kapustin's paper and tests whether its
-indefiniteness is a finite defect that could be removed by a finite-rank polarization.
+inertia for the entire explicit family singled out in Kapustin's paper and gives a necessary operator
+profile for every successful polarization.  The conclusion is a construction requirement, not only
+an exclusion: the new metric must act coercively on an infinite-dimensional, explicitly located
+negative sector.
 
 ## Theorem
 
@@ -61,9 +65,28 @@ with indefinite form
 [f,g]_beta=integral_R f(t)conjugate(g(t))p_beta(t)dt.
 ```
 
-Both the positive and negative indices of `K_beta` are infinite.  If `B` is any bounded finite-rank
-Hermitian form on the Hilbert majorant `L2(|p_beta|)`, then `[.,.]_beta+B` still has infinite negative
-index and therefore is not a Hilbert inner product.
+Both the positive and negative indices of `K_beta` are infinite.  Let `J_beta` be the fundamental
+symmetry `multiplication by sign(p_beta)`, and let `P_-` be the Hilbert-majorant projection onto the
+negative sector.  If a bounded self-adjoint operator `G` corrects the metric so that
+
+```text
+J_beta+G >= 0,
+```
+
+then necessarily
+
+```text
+P_- G P_- >= P_-.                                             (4)
+```
+
+Consequently `G` has infinite rank, is noncompact, belongs to no finite Schatten class, and satisfies
+`essentialNorm(G)>=1`.  If `J_beta+G>=epsilon I` for some `epsilon>0`, then the stronger bound
+
+```text
+P_- G P_- >= (1+epsilon)P_-                                  (5)
+```
+
+holds.
 
 In particular the conclusion holds for every `beta>17/21`, the explicit admissible power family in
 Kapustin's theorem, including `beta=1`.
@@ -119,19 +142,33 @@ Let `I` be any positive interval on which `p_beta>0`.  Even functions supported 
 same construction with a negative interval gives an infinite-dimensional negative-definite
 subspace.  Thus both Krein indices are infinite even after Kapustin's symmetry restriction.
 
-### 3. Finite-rank metric corrections cannot Hilbertize
+### 3. Every Hilbertization must dominate the full negative sector
 
-Let `N` be an infinite-dimensional negative-definite subspace constructed above.  A bounded
-finite-rank Hermitian form `B` is represented by a finite-rank self-adjoint operator in the Hilbert
-majorant.  The subspace
+In the Hilbert majorant, the original Krein form is
 
 ```text
-N intersect ker(B)
+[f,g]_beta=<J_beta f,g>.
 ```
 
-has finite codimension in `N` and is therefore infinite-dimensional.  On it the corrected form
-`[.,.]_beta+B` equals `[.,.]_beta` and remains strictly negative.  Hence every finite-rank metric
-correction leaves infinite negative index.
+For `f` in the range of `P_-`, one has `J_beta f=-f`.  Positivity of the corrected metric gives
+
+```text
+0 <= <(J_beta+G)f,f>
+   =-||f||^2+<Gf,f>.
+```
+
+Therefore `<Gf,f>>=||f||^2` on the whole negative sector, which is exactly `(4)`.  Uniform positivity
+with lower bound `epsilon` gives `(5)` in the same way.
+
+Since the range of `P_-` is infinite-dimensional, `(4)` rules out compactness: if `G` were compact,
+its compression `P_-GP_-` would be compact and could not dominate the identity on an
+infinite-dimensional Hilbert space.  The same argument excludes every finite Schatten class.  The
+image of `G` contains infinitely many independent negative-sector directions, so `G` has infinite
+rank.  Finally, the image of `G` in the Calkin algebra has norm at least one because every compact
+perturbation still has compression with lower essential spectral edge at least one.  Hence
+`essentialNorm(G)>=1`.
+
+The earlier finite-rank obstruction is now a corollary of the stronger positive requirement `(4)`.
 
 This completes the proof.
 
@@ -143,9 +180,9 @@ metric is not a Pontryagin metric with finitely many negative directions.  Its i
 
 1. the metric index cannot count off-line zeros;
 2. the rank-one nature of the operator perturbation does not make the polarization defect rank one;
-3. no finite-rank change of metric can turn these gauges into Hilbert--Polya operators; and
-4. a successful repair must replace the metric by an infinite-rank, source-selected positive
-   polarization, not merely adjust finitely many spectral modes.
+3. every successful metric must supply a noncompact full-sector correction satisfying `(4)`; and
+4. a viable construction must therefore produce an infinite-rank, source-selected polarization with
+   an essential lower bound, not merely adjust finitely many spectral modes.
 
 This distinguishes Kapustin's carrier from the shifted-`Xi` generalized de Branges kernel in
 `../not_new_scientific_knowledge/shifted-xi-kernel-transverse-index-filtration.md`, whose negative
@@ -176,13 +213,14 @@ index faithfully equals the number of zeros beyond the shifted line.
   asymptotics and elementary Krein geometry.  The source-specific inertia theorem and its
   finite-rank-polarization consequence were not located in the parent literature.
 - **Significance.** The theorem separates an exact zeta spectral carrier from a faithful RH defect
-  carrier and closes the entire explicit gauge family offered in the 2024 paper as a finite-defect
-  route to Hilbert--Polya.
+  carrier and gives the exact operator inequality every Hilbertization of the explicit 2024 gauge
+  family must satisfy.  It replaces a finite-defect search by a noncompact full-sector polarization
+  target.
 
 ## Gates
 
 - [x] 0 -> 1: exact source operator, gauge family, and falsifiable inertia claim isolated.
-- [x] 1 -> 2: complete Stirling, sign-alternation, symmetric-index, and finite-rank obstruction proof.
+- [x] 1 -> 2: complete Stirling, sign-alternation, symmetric-index, and full-sector polarization proof.
 - [ ] 2 -> 3: no Lean formalization selected; the current tree lacks complex Stirling asymptotics and
   weighted Krein-space infrastructure, and a partial finite-dimensional wrapper would not formalize
   the theorem.
@@ -192,8 +230,10 @@ index faithfully equals the number of zeros beyond the shifted line.
 
 `[CONJECTURE]` Every admissible Kapustin gauge has either a sign-changing weight of infinite negative
 index or else contains, in its inner/outer factorization, an infinite-rank boundary phase whose
-construction is already an RH-strength positive polarization.  The power-gauge theorem proves the
-first branch only for the explicit family and does not establish this universal dichotomy.
+Toeplitz order compensates the reciprocal-gamma phase.  In the first branch, every Hilbertization
+must obey the full-sector lower bound `(4)`.  In the second, that compensating factor itself is the
+source-selected positive polarization to construct.  The power-gauge theorem proves the first branch
+only for the explicit family and does not establish this universal dichotomy.
 
 ## References
 
@@ -209,3 +249,5 @@ first branch only for the explicit family and does not establish this universal 
 - 2026-07-11 -- parent paper and project pipeline audited; power-gauge phase asymptotic isolated.
 - 2026-07-11 -- infinite sign alternation, symmetric two-sided infinite index, and finite-rank
   non-Hilbertization proved on paper.
+- 2026-07-11 -- no-go recast as the positive full-sector requirement `P_-GP_->=P_-`; every successful
+  Hilbertization must be noncompact, infinite-rank, and have essential norm at least one.

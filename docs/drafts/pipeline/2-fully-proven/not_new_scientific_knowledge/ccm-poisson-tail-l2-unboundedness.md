@@ -1,15 +1,15 @@
-# The CCM Poisson-tail map is not controlled by prolate leakage in `L2`
+# CCM Poisson-tail control must use source-structured arithmetic cancellation
 
 - **ID:** `ccm-poisson-tail-l2-unboundedness`
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper), `[BRIDGE] [CLOSED GENERIC TRANSFER]`
+- **Type:** THEOREM (paper), `[BRIDGE] [NECESSITY THEOREM]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Parent theories:** Mellin diagonalization of dilations; Dirichlet-polynomial multipliers;
   Connes--Consani's summation map `E`
-- **Statement:** The arithmetic dilation sum that carries the Fourier leakage of a prolate source
-  into the lower Poisson tail has unbounded operator norm on the natural `L2` leakage space. Its
-  `N`-term norm grows at least like `sqrt(N)`. Therefore the scalar prolate deficit
-  `||(1-P_lambda) Fourier(f)||_2` cannot, by itself, control the Weil-side tail or residual.
+- **Statement:** A cofinal CCM tail estimate must use structure beyond the scalar prolate deficit.
+  The ambient arithmetic dilation sum has `N`-term norm at least of order `sqrt(N)`, so the required
+  boundedness must arise on the radial-prolate sequence through oscillation, endpoint jets, a
+  zeta-weighted graph norm, or an exact summation identity.
 
 ## Route object
 
@@ -113,10 +113,10 @@ On the full line its Fourier multiplier is the Dirichlet polynomial
 sum_(n<=N)n^(-1/2-it).
 ```
 
-The growth in (1) is its coherent value at frequency zero. Thus the obstruction is the standard
-unbounded critical-line zeta multiplier, written in the one-sided tail geometry needed by CCM.
+The growth in (1) is its coherent value at frequency zero. Thus the positive CCM estimate must
+cancel the critical-line zeta multiplier's coherent mode in the one-sided tail geometry.
 
-## Consequence for the CCM transfer
+## Positive requirement for the CCM transfer
 
 For a time-limited unit vector `f`, the prolate angle controls only
 
@@ -124,18 +124,19 @@ For a time-limited unit vector `f`, the prolate angle controls only
 ||(1-P_lambda)Fourier(f)||_2^2.
 ```
 
-The theorem proves that no estimate of the form
+The theorem shows that the successful estimate must be source-restricted, with cancellation beyond
+an ambient operator bound of the form
 
 ```text
 ||1_[lambda,infinity) E((1-P_lambda)Fourier(f))||_(L2(dv/v))
  <=C_lambda ||(1-P_lambda)Fourier(f)||_2               (4)
 ```
 
-can hold on the ambient leakage space with a constant obtained from the prolate angle alone. Hence
-the exponentially small eigenvalue `1-chi_4(lambda)^2` and the surrogate spectral gap do not imply
-a Weil residual estimate by abstract perturbation theory.
 
-This closes the generic `L2` transfer, not the CCM route. For finite CCM determinants whose zeros are
+The scalar concentration eigenvalue must be supplemented by cancellation data describing the
+actual radial-prolate leakage vector.
+
+For finite CCM determinants whose zeros are
 real in the spectral variable, the prime-clock energy defect is exactly zero. Their unresolved
 terminal gate is therefore locally uniform, zero-preserving convergence to `Xi`, not an additional
 horizontal-energy estimate. The actual leakage vector is a special radial-prolate tail with strong
@@ -154,6 +155,7 @@ leading endpoint tail of the CCM source.
 
 ## Novelty verdict
 
-The theorem is an exact and useful route gate, but its mechanism is standard Mellin/dilation theory.
-It is therefore `[BRIDGE]`, not new scientific knowledge. The new unresolved mathematical object is
-the restriction of the arithmetic tail map to the two-dimensional low-mode radial-prolate family.
+The theorem is an exact and useful topology classifier, but its mechanism is standard
+Mellin/dilation theory. It is therefore `[BRIDGE]`, not new scientific knowledge. The positive
+unresolved mathematical object is the arithmetic tail map restricted to the two-dimensional
+low-mode radial-prolate family.
