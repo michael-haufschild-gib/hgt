@@ -78,7 +78,7 @@ explicit polynomial-Gaussian atom expansion, and strict positivity on `x>0`.
    \]
    Hence `E(p)<0` for all `p>1` sufficiently close to `1`, although every `f_p` is log-concave. A viable shape theorem must therefore exploit a stronger theta-specific condition, such as a uniform curvature floor or an atom-dominance estimate that places the source on the Gaussian-or-lighter side of the cumulant boundary.
 
-## Fourth-moment reduction
+## Retired fourth-moment producer and positive replacement
 
 Write
 
@@ -101,31 +101,62 @@ The unnormalized target has the exact decomposition
 \end{aligned}
 \]
 
-Therefore the source-only fourth-moment concentration bound
+The source-only fourth-moment concentration bound
 
 \[
 7m_0m_2\le15m_1^2                                      \tag{C4}
 \]
 
-already implies the sixth-moment Hankel inequality. Equivalently, for the normalized theta-cusp
+implies the sixth-moment Hankel inequality. Equivalently, for the normalized theta-cusp
 probability measure,
 
 \[
 \frac{r_4}{r_2^2}\le\frac{15}{7}.
 \]
 
-This is a genuine reduction of the open analytic input: the sixth raw moment is eliminated, while
-the only use of it is the unconditional Cauchy--Schwarz term. The resulting formal chain is
+The implication is correct, but high-precision evaluation of the actual Xi derivatives gives
+
+\[
+\frac{7m_0m_2}{15m_1^2}\approx1.30251466714643>1.
+\]
+
+Thus `(C4)` has the wrong orientation for the actual theta-cusp source and is not a viable
+producer.  The positive information is that the sixth-moment compensation is essential.
+
+A numerically viable replacement is the pair
+
+\[
+14m_2^2\le9m_1m_3,\qquad 16m_0m_2\le45m_1^2.           \tag{R}
+\]
+
+Their exact source identity is
+
+\[
+\begin{aligned}
+&m_0(9m_1m_3-14m_2^2)+m_2(45m_1^2-16m_0m_2)\\
+&\qquad=3\bigl(3m_0m_1m_3+15m_1^2m_2-10m_0m_2^2\bigr).
+\end{aligned}
+\]
+
+Both inequalities in `(R)` have the correct numerical orientation:
+
+\[
+\frac{m_1m_3}{m_2^2}\approx1.56826779548>\frac{14}{9},
+\qquad
+\frac{m_0m_2}{m_1^2}\approx2.79110285817<\frac{45}{16}.
+\]
+
+Lean now proves the formal chain
 
 ```text
-ThetaCuspFourthMomentConcentration
+ThetaCuspUpperAdjacentRatioSeparation
+  + ThetaCuspRelaxedFourthMomentConcentration
   -> ThetaCuspSixthMomentHankelInequality
   -> every linear-polynomial prime--Gamma source Hankel test is nonnegative.
 ```
 
-The reduction does not prove `(C4)`, and the linear-polynomial level alone does not imply RH. The
-next analytic target is now the explicit fourth/second moment ratio of `thetaCuspFullSource`, not a
-sixth-order cumulant inequality.
+The numerical evaluations are pre-certification, not proofs of `(R)`.  The next analytic target is
+to prove these two quadratic ratio inequalities directly from `thetaCuspFullSource`.
 
 ## Immediate Lean interfaces
 
@@ -137,9 +168,10 @@ sixth-order cumulant inequality.
   displayed source-only inequality is equivalent to nonnegativity of every linear-polynomial prime--Gamma
   trace-Hankel test.
 
-Thus all algebraic and Fourier-transfer interfaces are unconditional in Lean. The original
-sixth-moment inequality remains open; the fourth-moment concentration bound is now a sufficient,
-strictly lower-order source target.
+`PrimeArchThetaCumulantRatioSplit.lean` proves the exact two-ratio decomposition and its
+linear-polynomial consequence.  Thus all algebraic and Fourier-transfer interfaces are
+unconditional in Lean. The original sixth-moment inequality and both source ratio inequalities
+remain open.
 
 ## Completion condition
 
@@ -147,7 +179,10 @@ strictly lower-order source target.
 - [x] `M₀,M₁,M₂` cumulant formulas in Lean
 - [x] Cauchy--Schwarz log-convexity `m₂² ≤ m₁m₃` in Lean
 - [x] Fourth-moment concentration implies the sixth-moment criterion in Lean
-- [ ] Prove `7m₀m₂ ≤ 15m₁²` for the explicit theta-cusp source
+- [x] Numerically reject `7m₀m₂ ≤ 15m₁²` as an actual-source producer
+- [x] Formalize the exact two-ratio replacement
+- [ ] Prove `14m₂² ≤ 9m₁m₃` for the explicit theta-cusp source
+- [ ] Prove `16m₀m₂ ≤45m₁²` for the explicit theta-cusp source
 - [ ] Paper proof of `3r₂r₆ + 15r₂²r₄ - 10r₄² ≥ 0`
 - [ ] Lean proof of the first two-by-two source Hankel minor
 - [ ] Identify a mechanism that plausibly extends beyond the first minor

@@ -155,14 +155,21 @@ finite lower-denominator/upper-current inequality, not coefficient positivity by
   rate: `|T(x)| <= C_p exp(-p x)`.  Hence its normalized moments satisfy
   `|c_n| <= 2C_p/p^(2n+1)`.  The top defect and its derivative therefore decay geometrically on
   every fixed compact set once `p` exceeds the evaluation radius.  The source coefficient bound
-  is proved on paper and in `XiCTaylorThetaTailRapidDecay.lean`; compact-uniform packaging remains
-  to be added, but no zero information is needed for it.
+  and compact-uniform value/derivative decay are proved on paper and in
+  `XiCTaylorThetaTailRapidDecay.lean`; no zero information is needed for them.
 - `[PROVED BRIDGE]` A source-selected super-accurate schedule can be chosen entirely at odd
   cutoffs.  On that schedule, the explicit finite theta-tail envelope
   `J_(U_d)+|U_d'||E_d|+|E_d'||U_d|` forces polynomial nonvanishing and the desired pointwise
   logarithmic-flux bound; its eventual sublinear mesh version implies RH.  This exact finite
   coefficient gate is proved on paper and in `XiCTaylorThetaTailFiniteCoefficientGate.lean`.
   The gate deliberately leaves satisfaction of the core-current inequality open.
+- `[PROVED REDUCTION]` The odd schedule can be selected jointly so that the Taylor error, top
+  defect, and top-defect derivative all obey the same super-accurate expanding-ball tolerance.
+  On every anisotropic fibre the two cross terms are then
+  `o((n+1)|P|^2)` unconditionally.  The proof uses the local analytic order only for a polynomial
+  value lower bound and does not assume whether the target is a zero.  Thus the top defect is now
+  completely discharged: the sole remaining producer is sublinear upper current of `U_d` itself.
+  This reduction is proved in `XiCTaylorThetaTailFiniteCoefficientGate.lean`.
 - `[PROVED ROUTE FAILURE]` Finite prime Pólya--Schur scalings preserve a pre-existing hyperbolic
   section, but the renormalized infinite-prime identification with the canonical Xi coefficients
   is the already recorded RH-sized limit wall.  It supplies no finite current estimate for the

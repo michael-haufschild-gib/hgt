@@ -16,6 +16,10 @@ odd cutoffs
 N(k) = 2(D(k)+1)+1.                                      (1)
 ```
 
+The schedule may be chosen simultaneously so that, on the closed ball of radius `k`, both the
+top defect `E_(D(k))` and its derivative are smaller than the same super-accurate tolerance used
+for the Taylor approximation.
+
 For each `d` and `z`, define the entirely finite theta-tail envelope
 
 ```text
@@ -50,6 +54,24 @@ hold eventually on every left-strip anisotropic mesh fibre, then the canonical X
 logarithmic derivatives have sublinear upper flux there.  Together with the super-accurate odd
 schedule, `(5)` implies the Riemann hypothesis.
 
+The cross-interference in `(2)` is unconditional on this joint schedule.  For every mesh fibre
+and every `epsilon>0`, eventually
+
+```text
+|U_d'||E_d|+|E_d'||U_d|
+ < epsilon (n+1)|P_(2d+3)|^2.                            (6)
+```
+
+The local analytic order supplies the required polynomial lower bound for the Taylor value without
+assuming or locating a zero.  Hence the entire remaining source obligation is
+
+```text
+J_(U_d)(z_n)
+ < epsilon (n+1)|P_(2d+3)(z_n)|^2.                       (7)
+```
+
+Condition `(7)` alone forces anisotropic sublinear upper flux and RH.
+
 No Xi zero location, real-rootedness, anti-Herglotz positivity, or limiting measure is used in
 this gate.
 
@@ -63,10 +85,10 @@ schedule.
 The oriented top-defect theorem gives
 
 ```text
-J_(P_(2d+3))(z) <= A_d(z)                                (6)
+J_(P_(2d+3))(z) <= A_d(z)                                (8)
 ```
 
-in the upper half-plane.  Combining `(3)` and `(6)` produces the strict denominator-cleared
+in the upper half-plane.  Combining `(3)` and `(8)` produces the strict denominator-cleared
 current inequality.  It excludes a polynomial zero at `z` and division by the positive squared
 modulus gives `(4)`.  Apply this pointwise along the mesh to prove the sublinear-flux implication.
 
@@ -85,12 +107,20 @@ Principal declarations:
 ```text
 xiCTaylorOddDegreeSchedule
 exists_xiCTaylorSuperaccurateOddSchedule
+XiCTaylorOddThetaTailSuperaccurateSchedule
+exists_xiCTaylorOddThetaTailSuperaccurateSchedule
 xiCTaylorThetaTailCoreInterference
+xiCTaylorThetaTailCrossInterference
 xiCTaylor_logDeriv_im_lt_of_thetaTailCoreInterference_lt
 XiCTaylorThetaTailCoreInterferenceSublinearUpper
+XiCTaylorThetaTailCoreCurrentSublinearUpper
+eventually_xiCTaylorThetaTailCrossInterference_lt_scaled_normSq
+xiCTaylorThetaTailCoreInterferenceSublinearUpper_of_coreCurrent
 xiCTaylorAnisotropicOrientedCoefficientSublinearUpper_of_thetaTailCoreInterference
 xiCTaylorAnisotropicLogDerivSublinearUpper_of_thetaTailCoreInterference
 riemannHypothesis_of_xiCTaylorThetaTailCoreInterferenceSublinearUpper
+xiCTaylorAnisotropicLogDerivSublinearUpper_of_thetaTailCoreCurrent
+riemannHypothesis_of_xiCTaylorThetaTailCoreCurrentSublinearUpper
 ```
 
 The capstones use only the standard mathlib axioms
@@ -98,16 +128,20 @@ The capstones use only the standard mathlib axioms
 
 ## Status boundary
 
-This card proves the requested finite orientation-sensitive forcing theorem.  It does not prove
-that the theta-tail core satisfies `(5)`.  Since `(5)` plus the unconditionally existing odd
-schedule implies RH, claiming the source inequality without a new proof would be circular.
+This card proves the finite orientation-sensitive forcing theorem and discharges every explicit
+top-defect term from source estimates.  It does not prove that the theta-tail core satisfies
+`(7)`.  Since `(7)` plus the unconditionally existing joint schedule implies RH, claiming that
+source inequality without a new proof would be circular.
 
 ## Gates
 
 - [x] odd source-selected super-accurate schedule constructed
+- [x] schedule strengthened to make the top defect and derivative super-accurate
 - [x] finite theta-tail envelope defined from actual coefficients
 - [x] pointwise envelope-to-logarithmic-flux theorem proved
+- [x] top-defect cross-interference discharged unconditionally on every mesh fibre
+- [x] target reduced to the theta-tail core current alone
 - [x] anisotropic sublinear-flux implication proved
 - [x] RH terminal implication proved
 - [x] all statements formalized in Lean
-- [ ] unconditional theta-tail core-current estimate `(5)`
+- [ ] unconditional theta-tail core-current estimate `(7)`

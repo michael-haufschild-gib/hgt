@@ -42,7 +42,13 @@ satisfy
 ```
 
 Thus the top coefficient in the finite theta-tail telescope decays geometrically at every
-prescribed fixed spatial scale.
+prescribed fixed spatial scale.  More precisely, if `E_d` is the explicit top-defect polynomial,
+then on every fixed closed ball
+
+```text
+sup_(|z|<=R) |E_d(z)|  -> 0,
+sup_(|z|<=R) |E_d'(z)| -> 0.                              (3)
+```
 
 ## Proof
 
@@ -88,6 +94,11 @@ exp_nat_mul_abs_thetaCuspTailAtom_le
 abs_thetaCuspTailDerivative_zero_le_nat_exp_neg
 integral_pow_mul_exp_nat_neg
 abs_thetaCuspTailEvenCoefficient_le_nat_rate
+norm_xiCTaylorThetaTailTopDefectPolynomial_eval
+norm_xiCTaylorThetaTailTopDefectPolynomial_derivative_eval
+tendsto_norm_xiCTaylorThetaTailTopDefectPolynomial_eval_of_norm_lt_nat
+tendsto_norm_xiCTaylorThetaTailTopDefectPolynomial_derivative_eval_of_norm_lt_nat
+eventually_norm_xiCTaylorThetaTailTopDefect_lt_on_closedBall
 ```
 
 The module builds without `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.
@@ -98,5 +109,5 @@ The module builds without `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.
 - [x] exact exponential moment integral proved
 - [x] arbitrary geometric normalized-moment bound proved
 - [x] all statements formalized in Lean
-- [ ] top-defect value and derivative decay packaged uniformly on compact sets
+- [x] top-defect value and derivative decay packaged uniformly on compact sets
 - [ ] theta-tail core current proved sublinear on the anisotropic mesh

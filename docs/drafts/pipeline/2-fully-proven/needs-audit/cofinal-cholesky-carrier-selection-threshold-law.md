@@ -401,7 +401,9 @@ inverse-Cholesky section forces equality of the original carriers. Every fixed C
 every finite Toeplitz Gram section are also proved weakly continuous.
 
 All five exact builds pass. `#print axioms` on the capstone declarations reports only `propext`,
-`Classical.choice`, and `Quot.sound`, and the repository formal lint passes.
+`Classical.choice`, and `Quot.sound`. The touched modules contain no proof debt. The current
+repository-wide formal lint is blocked by two unrelated active `sorry` declarations in
+`DifferentialUnitEquation.lean`; therefore no repository-wide lint-pass claim is made here.
 
 The remaining formalization requires continuity of the triangular positive-diagonal factor,
 construction and weak continuity of the actual N-extremal Nevanlinna

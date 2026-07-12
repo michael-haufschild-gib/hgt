@@ -281,12 +281,8 @@ theorem continuous_cayleyMoment (n : ℕ) :
   have hint : Integrable (fun x : ℝ => realCayley x ^ n) (mu : Measure ℝ) :=
     (cayleyPowerBCF n).integrable (mu : Measure ℝ)
   apply Complex.ext
-  · rw [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_re,
-      Complex.I_re, Complex.I_im, mul_zero, sub_zero, integral_re hint]
-    rfl
-  · rw [Complex.add_im, Complex.mul_im, Complex.ofReal_im, Complex.ofReal_re,
-      Complex.I_re, Complex.I_im, zero_mul, mul_one, zero_add, integral_im hint]
-    rfl
+  · simpa using (integral_re hint).symm
+  · simpa using (integral_im hint).symm
 
 /-- Every fixed two-sided Hermitian Cayley moment is weakly continuous. -/
 theorem continuous_cayleyMomentZ (q : ℤ) :

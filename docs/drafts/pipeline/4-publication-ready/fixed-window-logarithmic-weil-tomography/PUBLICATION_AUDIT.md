@@ -23,7 +23,7 @@ of the Riemann hypothesis.
     lower-bound and norm criteria, cofinal negative divergence, sharp transverse exponent, and
     exact cutoff-free observable multiplicity-weighted pole tomography of the complete sequence.
   - The Landau and screw-function mechanisms are classical parents and are not claimed as new.
-- Significance: 20/22
+- Significance: 21/22
   - One scalar cofinal family recovers every off-critical divisor coordinate, its exact analytic
     multiplicity, and its supremal transverse displacement.
   - Pole locations recover support and normalized residues recover multiplicity, so the theorem

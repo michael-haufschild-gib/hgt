@@ -82,6 +82,17 @@ This does not prove `(C4)`, does not settle higher polynomial degrees, and does 
 substantive reduction is that the first open nonconstant source test no longer requires a direct
 sixth-order estimate: a fourth/second moment ratio bound suffices.
 
+High-precision evaluation of the actual theta-cusp moments gives
+
+\[
+\frac{7m_0m_2}{15m_1^2}\approx1.30251466714643>1.
+\]
+
+Accordingly, the conditional implication remains a correct formal theorem, but `(C4)` is
+numerically excluded as a producer for the actual source.  The positive replacement is the
+two-ratio gate in `theta-cusp-first-hankel-two-ratio-gate.md`, which retains the essential sixth
+moment and is numerically oriented correctly.
+
 ## Classification
 
 Moment log-convexity by Cauchy--Schwarz and the displayed algebraic decomposition are standard. The
@@ -93,5 +104,5 @@ result is useful route compression and a checked Lean theorem, not new scientifi
 - [x] moment log-convexity proved in Lean
 - [x] fourth-moment concentration reduced to the sixth-moment criterion in Lean
 - [x] linear-polynomial source Hankel consequence proved in Lean
-- [ ] prove `(C4)` for the explicit theta-cusp source
+- [x] numerically reject `(C4)` as an actual-source producer
 - [ ] extend the mechanism to higher source Hankel blocks

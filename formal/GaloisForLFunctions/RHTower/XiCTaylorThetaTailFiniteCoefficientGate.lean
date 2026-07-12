@@ -243,6 +243,23 @@ def XiCTaylorThetaTailCoreInterferenceSublinearUpper (D : ℕ → ℕ) : Prop :=
                   (xiCTaylorAnisotropicScheduleStage sigma n))).eval
                     (xiCTaylorAnisotropicCenteredPoint sigma n))
 
+/-- The irreducible source obligation after the favorable top defect and its cross terms have
+been removed: sublinear upper current for the finite theta-tail core itself. -/
+def XiCTaylorThetaTailCoreCurrentSublinearUpper (D : ℕ → ℕ) : Prop :=
+  ∀ sigma : ℂ, 0 < sigma.re → sigma.re < 1 / 2 →
+    ∀ epsilon : ℝ, 0 < epsilon →
+      ∀ᶠ n : ℕ in atTop,
+        orientedPolynomialCurrent
+            (xiCTaylorThetaTailCorePolynomial
+              (D (xiCTaylorAnisotropicScheduleStage sigma n)))
+            (xiCTaylorAnisotropicCenteredPoint sigma n) <
+          (epsilon * ((n + 1 : ℕ) : ℝ)) *
+            Complex.normSq
+              ((xiCTaylorPolynomial
+                (xiCTaylorOddDegreeSchedule D
+                  (xiCTaylorAnisotropicScheduleStage sigma n))).eval
+                    (xiCTaylorAnisotropicCenteredPoint sigma n))
+
 theorem eventually_xiCTaylorAnisotropicCenteredPoint_im_pos
     (sigma : ℂ) (hsigma : sigma.re < 1 / 2) :
     ∀ᶠ n : ℕ in atTop, 0 < (xiCTaylorAnisotropicCenteredPoint sigma n).im := by
@@ -418,6 +435,49 @@ theorem eventually_xiCTaylorThetaTailCrossInterference_lt_scaled_normSq
       rw [Complex.normSq_eq_norm_sq]
       exact mul_le_mul_of_nonneg_left hbaseSq (mul_nonneg hepsilon.le hq.le)
 
+/-- On a source-selected theta-tail super-accurate schedule, the core-current condition alone
+implies the full finite envelope condition; the top-defect cross terms are discharged
+unconditionally. -/
+theorem xiCTaylorThetaTailCoreInterferenceSublinearUpper_of_coreCurrent
+    {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
+    (hcore : XiCTaylorThetaTailCoreCurrentSublinearUpper D) :
+    XiCTaylorThetaTailCoreInterferenceSublinearUpper D := by
+  intro sigma hsigmaPos hsigmaHalf epsilon hepsilon
+  have hepsilonHalf : 0 < epsilon / 2 := half_pos hepsilon
+  have hcoreEv := hcore sigma hsigmaPos hsigmaHalf (epsilon / 2) hepsilonHalf
+  have hcrossEv :=
+    eventually_xiCTaylorThetaTailCrossInterference_lt_scaled_normSq
+      hD sigma hepsilonHalf
+  filter_upwards [hcoreEv, hcrossEv] with n hnCore hnCross
+  rw [xiCTaylorThetaTailCoreInterference_eq]
+  calc
+    orientedPolynomialCurrent
+          (xiCTaylorThetaTailCorePolynomial
+            (D (xiCTaylorAnisotropicScheduleStage sigma n)))
+          (xiCTaylorAnisotropicCenteredPoint sigma n) +
+        xiCTaylorThetaTailCrossInterference
+          (D (xiCTaylorAnisotropicScheduleStage sigma n))
+          (xiCTaylorAnisotropicCenteredPoint sigma n) <
+      ((epsilon / 2) * ((n + 1 : ℕ) : ℝ)) *
+          Complex.normSq
+            ((xiCTaylorPolynomial
+              (xiCTaylorOddDegreeSchedule D
+                (xiCTaylorAnisotropicScheduleStage sigma n))).eval
+                  (xiCTaylorAnisotropicCenteredPoint sigma n)) +
+        ((epsilon / 2) * ((n + 1 : ℕ) : ℝ)) *
+          Complex.normSq
+            ((xiCTaylorPolynomial
+              (xiCTaylorOddDegreeSchedule D
+                (xiCTaylorAnisotropicScheduleStage sigma n))).eval
+                  (xiCTaylorAnisotropicCenteredPoint sigma n)) :=
+      add_lt_add hnCore hnCross
+    _ = (epsilon * ((n + 1 : ℕ) : ℝ)) *
+          Complex.normSq
+            ((xiCTaylorPolynomial
+              (xiCTaylorOddDegreeSchedule D
+                (xiCTaylorAnisotropicScheduleStage sigma n))).eval
+                  (xiCTaylorAnisotropicCenteredPoint sigma n)) := by ring
+
 /-- The finite theta-tail envelope condition forces the denominator-cleared oriented coefficient
 condition for the odd Taylor schedule. -/
 theorem xiCTaylorAnisotropicOrientedCoefficientSublinearUpper_of_thetaTailCoreInterference
@@ -449,6 +509,24 @@ theorem riemannHypothesis_of_xiCTaylorThetaTailCoreInterferenceSublinearUpper
     RiemannHypothesis :=
   riemannHypothesis_of_xiCTaylorAnisotropicOrientedCoefficientSublinearUpper hD
     (xiCTaylorAnisotropicOrientedCoefficientSublinearUpper_of_thetaTailCoreInterference hfinite)
+
+/-- The reduced core-current condition forces anisotropic sublinear upper flux; all top-defect
+terms have already been discharged from the explicit theta source. -/
+theorem xiCTaylorAnisotropicLogDerivSublinearUpper_of_thetaTailCoreCurrent
+    {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
+    (hcore : XiCTaylorThetaTailCoreCurrentSublinearUpper D) :
+    XiCTaylorAnisotropicLogDerivSublinearUpper (xiCTaylorOddDegreeSchedule D) :=
+  xiCTaylorAnisotropicLogDerivSublinearUpper_of_thetaTailCoreInterference
+    (xiCTaylorThetaTailCoreInterferenceSublinearUpper_of_coreCurrent hD hcore)
+
+/-- Final reduced endpoint: on an unconditionally existing source-selected schedule, proving the
+finite theta-tail core-current inequality is sufficient for RH. -/
+theorem riemannHypothesis_of_xiCTaylorThetaTailCoreCurrentSublinearUpper
+    {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
+    (hcore : XiCTaylorThetaTailCoreCurrentSublinearUpper D) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_xiCTaylorThetaTailCoreInterferenceSublinearUpper hD.1
+    (xiCTaylorThetaTailCoreInterferenceSublinearUpper_of_coreCurrent hD hcore)
 
 end
 
