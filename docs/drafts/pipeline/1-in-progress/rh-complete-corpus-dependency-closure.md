@@ -286,8 +286,9 @@ perturbation or of the determinant-line no-crossing law, not the search boundary
 - [PROVED] For every fixed `L>0`, RH is equivalent to this one sampled rectangular family being nonnegative, and also equivalent to its being merely bounded below.
 - [PROVED] The same rectangular value is the fixed discrete curvature of the real Xi screw profile; for `L=log m` its multiplicative midpoint form on `n,mn,m^2n` is formalized.
 - [PROVED] On the source side, the moving rectangular term is one critical-Mellin tent pairing, equivalently the imbalance of two adjacent equal logarithmic blocks; the remaining Gamma term is uniformly bounded at fixed width.
+- [PROVED] A constant floor is stronger than necessary: an eventual lower floor `-C n^alpha` forces every zero into `Re rho<=1/2+alpha`; hence any `n^o(1)` or polylogarithmic lower loss already proves RH.  The all-epsilon observable subpower gate is now formalized in `CCMRectangularSubpowerLowerGate.lean`.
 - [PROVED] The Wigner cross-energy obstruction has an exact positive dual floor controlled by the primal `p_b` energy and reciprocal-symbol boundary energy.
-- [OPEN CORE] Prove one unconditional source-defined finite lower bound for that rectangular family.  The Wigner--Eisenstein boundary form and quadratic scattering construction remain competing providers of the same missing source floor.
+- [OPEN CORE] Prove one unconditional source-defined subpower lower bound for that rectangular family.  The weaker endpoint permits polynomial losses in aperture and reciprocal powers of a diagonal regulator; the Möbius/Sonin, Wigner--Eisenstein, and quadratic scattering constructions remain competing providers.
 - [NOVELTY UNVERIFIED] Any completed glue theorem remains scientifically unclassified until the proof, parent-theory, literature, and rediscovery gates are run.
 
 ## Log

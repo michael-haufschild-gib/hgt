@@ -114,7 +114,6 @@ theorem xiLogDeriv_split {s : ℂ} (hs : 1 < s.re) :
   have hlegF : logDeriv (fun w : ℂ => w * (w - 1) / 2) s = 1 / s + 1 / (s - 1) := by
     rw [logDeriv_apply, hdF.deriv]
     field_simp
-    ring
   -- the archimedean leg
   have hlegΓ : logDeriv Gammaℝ s
       = -(Real.log Real.pi) / 2 + (1 / 2) * Complex.digamma (s / 2) := by
@@ -130,7 +129,6 @@ theorem xiLogDeriv_split {s : ℂ} (hs : 1 < s.re) :
       rw [Complex.ofReal_log Real.pi_pos.le]
     rw [hlogπ]
     field_simp
-    ring
   -- the Dirichlet leg
   have hlegζ : logDeriv riemannZeta s = zetaLogDeriv s := by
     rw [logDeriv_apply, zetaLogDeriv]

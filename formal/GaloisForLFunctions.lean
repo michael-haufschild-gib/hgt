@@ -292,3 +292,6 @@ import GaloisForLFunctions.HolderDifferenceBricks
 import GaloisForLFunctions.HolderShiftElimination
 import GaloisForLFunctions.DigammaHypertranscendental
 import GaloisForLFunctions.QuantitativeHolderInterface
+import GaloisForLFunctions.GammaShiftEigenrelation
+import GaloisForLFunctions.GammaBellSubstitution
+import GaloisForLFunctions.GammaHypertranscendental

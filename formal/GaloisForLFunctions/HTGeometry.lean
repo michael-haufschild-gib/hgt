@@ -62,3 +62,5 @@ import GaloisForLFunctions.HTGeometry.FacetSewnHerglotzStanleyReisner
 import GaloisForLFunctions.HTGeometry.CofinalCholeskyFiniteFrame
 import GaloisForLFunctions.HTGeometry.CayleyMomentFrame
 import GaloisForLFunctions.HTGeometry.CauchyJetFrame
+import GaloisForLFunctions.HTGeometry.LabeledBoundarySimplex
+import GaloisForLFunctions.HTGeometry.CofinalCholeskySelection

@@ -293,13 +293,13 @@ theorem map_clearedShift (m N : ℕ) (G' : MvPolynomial (Fin m) (Polynomial ℂ)
   rw [hexp, pow_add]
   ring
 
-/-- The cleared substitution preserves annihilation: evaluation at `z` becomes `z^{m·N}`
-times evaluation at `z + 1`, by the differentiated shift law. -/
-theorem annihilatesDigamma_clearedShift {m N : ℕ}
+/-- **The value law of the cleared substitution**: evaluation at `z` is `z^{m·N}` times
+evaluation at `z + 1`, by the differentiated shift law. -/
+theorem polyJetEval_clearedShift {m N : ℕ}
     {G' : MvPolynomial (Fin m) (Polynomial ℂ)} (hN : G'.totalDegree ≤ N)
-    (hGv : AnnihilatesDigamma m G') :
-    AnnihilatesDigamma m (clearedShift m N G') := by
-  intro z hz
+    {z : ℂ} (hz : ∀ p : ℕ, z ≠ -(p : ℂ)) :
+    polyJetEval m z (clearedShift m N G')
+      = z ^ (m * N) * polyJetEval m (z + 1) G' := by
   have hz1 : ∀ p : ℕ, z + 1 ≠ -(p : ℂ) := by
     intro p hEq
     exact hz (p + 1) (by push_cast; linear_combination hEq)
@@ -377,7 +377,18 @@ theorem annihilatesDigamma_clearedShift {m N : ℕ}
         = eval₂ (Polynomial.evalRingHom (z + 1)) (digammaJet m (z + 1)) G' := rfl
     rw [hcast, eval₂_eq']
     rfl
-  rw [← hexpand, hGv (z + 1) hz1, mul_zero]
+  rw [← hexpand]
+
+/-- The cleared substitution preserves annihilation. -/
+theorem annihilatesDigamma_clearedShift {m N : ℕ}
+    {G' : MvPolynomial (Fin m) (Polynomial ℂ)} (hN : G'.totalDegree ≤ N)
+    (hGv : AnnihilatesDigamma m G') :
+    AnnihilatesDigamma m (clearedShift m N G') := by
+  intro z hz
+  have hz1 : ∀ p : ℕ, z + 1 ≠ -(p : ℂ) := by
+    intro p hEq
+    exact hz (p + 1) (by push_cast; linear_combination hEq)
+  rw [polyJetEval_clearedShift hN hz, hGv (z + 1) hz1, mul_zero]
 
 /-- The annihilator set is stable under the jet substitution. -/
 theorem digammaAnnihilator_shift {m : ℕ} (G : MvPolynomial (Fin m) (RatFunc ℂ))
@@ -428,6 +439,83 @@ top form to vanish — impossible in characteristic zero. -/
 theorem hypertranscendental_digamma : Hypertranscendental Complex.digamma := by
   rintro ⟨n, P, hP0, hPz⟩
   exact hP0 (digamma_jet_annihilator_eq_zero n P (fun z _ => hPz z))
+
+/-! ## The polynomial-coefficient annihilator theorem -/
+
+theorem reshapeJet_comp_reshapeJetInv (n : ℕ) :
+    (reshapeJet n).comp (reshapeJetInv n) = RingHom.id _ := by
+  apply MvPolynomial.ringHom_ext
+  · intro p
+    have hext : ((reshapeJet n).comp (reshapeJetInv n)).comp
+          (MvPolynomial.C : Polynomial ℂ →+* MvPolynomial (Fin (n + 1)) (Polynomial ℂ))
+        = (MvPolynomial.C : Polynomial ℂ →+* MvPolynomial (Fin (n + 1)) (Polynomial ℂ))
+        := by
+      apply Polynomial.ringHom_ext
+      · intro a
+        simp [reshapeJet, reshapeJetInv]
+      · simp [reshapeJet, reshapeJetInv]
+    have := RingHom.congr_fun hext p
+    simpa using this
+  · intro j
+    simp [reshapeJet, reshapeJetInv]
+
+theorem reshapeJetInv_injective (n : ℕ) : Function.Injective (reshapeJetInv n) := by
+  intro a b h
+  have ha := RingHom.congr_fun (reshapeJet_comp_reshapeJetInv n) a
+  have hb := RingHom.congr_fun (reshapeJet_comp_reshapeJetInv n) b
+  rw [RingHom.comp_apply] at ha hb
+  rw [RingHom.id_apply] at ha hb
+  rw [← ha, ← hb, h]
+
+theorem poly_eval_offPole_eq_zero {p : Polynomial ℂ}
+    (h : ∀ z : ℂ, (∀ q : ℕ, z ≠ -(q : ℂ)) → p.eval z = 0) : p = 0 := by
+  apply Polynomial.eq_zero_of_infinite_isRoot
+  apply Set.infinite_of_injective_forall_mem
+    (f := fun n : ℕ => ((n + 1 : ℕ) : ℂ))
+    (fun n₁ n₂ hEq => by
+      have h12 : (n₁ + 1 : ℕ) = (n₂ + 1 : ℕ) := Nat.cast_injective hEq
+      omega)
+  intro n
+  have hne : ∀ q : ℕ, ((n + 1 : ℕ) : ℂ) ≠ -(q : ℂ) := by
+    intro q hEq
+    have hre := congrArg Complex.re hEq
+    push_cast at hre
+    have hq : (0 : ℝ) ≤ (q : ℝ) := Nat.cast_nonneg q
+    have hn : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+    simp only [Complex.add_re, Complex.natCast_re, Complex.one_re,
+      Complex.neg_re] at hre
+    linarith
+  exact h _ hne
+
+/-- **The polynomial-coefficient annihilator theorem**: a polynomial-coefficient jet
+polynomial whose evaluation on the digamma jets vanishes off the poles is zero — the
+coefficient-ring form of Hölder's theorem, consumed by the Γ-power elimination. -/
+theorem polyJetEval_offPole_eq_zero {m : ℕ}
+    (G : MvPolynomial (Fin m) (Polynomial ℂ))
+    (hG : ∀ z : ℂ, (∀ p : ℕ, z ≠ -(p : ℂ)) → polyJetEval m z G = 0) : G = 0 := by
+  cases m with
+  | zero =>
+      obtain ⟨p, rfl⟩ := MvPolynomial.C_surjective (Fin 0) G
+      rw [show (0 : MvPolynomial (Fin 0) (Polynomial ℂ)) = MvPolynomial.C 0 by
+        rw [map_zero]]
+      congr 1
+      apply poly_eval_offPole_eq_zero
+      intro z hz
+      have := hG z hz
+      rwa [polyJetEval_C] at this
+  | succ n =>
+      have hvan : ∀ z : ℂ, (∀ p : ℕ, z ≠ -(p : ℂ)) →
+          MvPolynomial.eval (Fin.cons z fun j : Fin (n + 1) =>
+            iteratedDeriv (j : ℕ) Complex.digamma z) (reshapeJetInv n G) = 0 := by
+        intro z hz
+        rw [← polyJetEval_reshapeJet]
+        rw [show reshapeJet n (reshapeJetInv n G) = G from
+          RingHom.congr_fun (reshapeJet_comp_reshapeJetInv n) G]
+        exact hG z hz
+      have h0 := digamma_jet_annihilator_eq_zero n (reshapeJetInv n G) hvan
+      have := congrArg (reshapeJet n) h0
+      rwa [show reshapeJet n (reshapeJetInv n G) = G from
+        RingHom.congr_fun (reshapeJet_comp_reshapeJetInv n) G, map_zero] at this
 
 end GaloisForLFunctions
 

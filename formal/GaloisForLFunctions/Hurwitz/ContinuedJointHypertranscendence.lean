@@ -51,7 +51,7 @@ theorem ascPochhammer_eval_ne_zero_of_nonintegral {s : ℂ}
   intro k _ heq
   apply hs (-k)
   push_cast
-  exact heq
+  linear_combination heq
 
 /-- **Unrestricted finite-family joint hypertranscendence in the shift variable.** -/
 theorem continued_joint_hzeta_hypertranscendental_in_shift_of_linearIndependent
@@ -93,7 +93,7 @@ theorem continued_joint_hzeta_hypertranscendental_in_shift_of_linearIndependent
 
 /-- **Exact-residue joint hypertranscendence in the shift variable.** -/
 theorem continued_joint_hzeta_hypertranscendental_in_shift_of_integerResidueSeparated
-    {s : ι → ℂ} (hnonintegral : ∀ j m, s j ≠ (m : ℂ))
+    {s : ι → ℂ} (hnonintegral : ∀ j, ∀ m : ℤ, s j ≠ (m : ℂ))
     (hseparated : ∀ i j, i ≠ j → ∀ m : ℤ, s i - s j ≠ (m : ℂ))
     (N : ℕ) (P : MvPolynomial (ι × Fin (N + 1)) (Polynomial ℂ))
     (hrel : ∀ a : ℂ, 0 < a.im →
@@ -147,7 +147,7 @@ theorem continued_joint_hzeta_rational_hypertranscendental_in_shift_of_linearInd
 
 /-- Rational-coefficient form of exact-residue joint hypertranscendence. -/
 theorem continued_joint_hzeta_rational_hypertranscendental_in_shift_of_integerResidueSeparated
-    {s : ι → ℂ} (hnonintegral : ∀ j m, s j ≠ (m : ℂ))
+    {s : ι → ℂ} (hnonintegral : ∀ j, ∀ m : ℤ, s j ≠ (m : ℂ))
     (hseparated : ∀ i j, i ≠ j → ∀ m : ℤ, s i - s j ≠ (m : ℂ))
     (N : ℕ) (Q : MvPolynomial (ι × Fin (N + 1)) (RatFunc ℂ))
     (hrel : ∀ a : ℂ, 0 < a.im →

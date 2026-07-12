@@ -133,17 +133,65 @@ finite lower-denominator/upper-current inequality, not coefficient positivity by
   `CofinalCholeskyFiniteFrame.lean` change coordinates but supply no orientation.  Congruence
   preserves the inertia of the indefinite coefficient-current form, every finite frame prefix
   retains a nontrivial carrier fibre, and only the complete compatible tower selects the measure.
-  Using that complete tower here would reintroduce the forbidden limiting-measure route.
-- `[OPEN CORE]` Determine whether the actual completed theta coefficient constraints factor the
-  oriented two-point current `(2)` with a sign-definite leading term and a quantitatively sublinear
-  residual. If they do not, isolate the first explicit indefinite source kernel and retire that
-  candidate rather than weakening the theorem.
+  The concurrent `HTGeometry/CofinalCholeskySelection.lean` now formalizes that last statement:
+  equality at every canonical inverse-Cholesky level determines the probability measure.  Using
+  precisely that complete-tower selector here would reintroduce the forbidden limiting-measure
+  route; the new finite-frame uniqueness theorems still do not orient the current.
+- `[PROVED BRIDGE]` The exact theta-tail differential constraint gives a finite coefficient
+  telescope.  If `c_k=2(2k)!^(-1) integral_0^infinity x^(2k)T(x)dx`, then the Xi Taylor
+  magnitudes satisfy `b_0=1/2-c_0/4` and `b_(k+1)=c_k-c_(k+1)/4`.  Hence
+  `B_(d+1)(w)=1/2+(w-1/4)Q_d(w)-(c_(d+1)/4)w^(d+1)`, and the actual odd-cutoff Xi Taylor section is
+  `B_d(-z^2)`.  This is proved on paper and in
+  `XiCTaylorThetaTailTelescope.lean`.  It isolates one explicit top defect but does not by itself
+  sign the full oriented current, so it is not the producer.
+- `[PROVED BRIDGE]` After `w=-z^2`, the top defect is a real monomial
+  `E_d(z)=((-1)^(d+1)c_(d+1)/4)z^(2d+2)`, and every real monomial has
+  `J_(az^m)(z)=-m a^2 |z|^(2m-2) Im z <= 0` in the upper half-plane.  Thus the defect itself is
+  favorable.  Writing the theta-tail core as `U_d`, the exact polarization gives
+  `J_(U_d-E_d) <= J_(U_d)+|U_d'||E_d|+|E_d'||U_d|`.  The open estimate is now localized to the
+  core current and these two explicit cross-interference terms.  This is proved on paper and in
+  `XiCTaylorThetaTailOrientedDefect.lean`.
+- `[PROVED BRIDGE]` The explicit raw theta tail decays at every prescribed natural exponential
+  rate: `|T(x)| <= C_p exp(-p x)`.  Hence its normalized moments satisfy
+  `|c_n| <= 2C_p/p^(2n+1)`.  The top defect and its derivative therefore decay geometrically on
+  every fixed compact set once `p` exceeds the evaluation radius.  The source coefficient bound
+  is proved on paper and in `XiCTaylorThetaTailRapidDecay.lean`; compact-uniform packaging remains
+  to be added, but no zero information is needed for it.
+- `[PROVED BRIDGE]` A source-selected super-accurate schedule can be chosen entirely at odd
+  cutoffs.  On that schedule, the explicit finite theta-tail envelope
+  `J_(U_d)+|U_d'||E_d|+|E_d'||U_d|` forces polynomial nonvanishing and the desired pointwise
+  logarithmic-flux bound; its eventual sublinear mesh version implies RH.  This exact finite
+  coefficient gate is proved on paper and in `XiCTaylorThetaTailFiniteCoefficientGate.lean`.
+  The gate deliberately leaves satisfaction of the core-current inequality open.
+- `[PROVED ROUTE FAILURE]` Finite prime Pólya--Schur scalings preserve a pre-existing hyperbolic
+  section, but the renormalized infinite-prime identification with the canonical Xi coefficients
+  is the already recorded RH-sized limit wall.  It supplies no finite current estimate for the
+  present canonical Taylor sections.
+- `[PROVED ROUTE FAILURE]` A convex-tail theorem giving only `Re Q(z)>0` cannot exclude the Xi zero
+  equation `Q(z)=1/(2(z^2+1/4))`.  If `z=x+iy` with `0<y<1/2`, then
+  `Re(z^2+1/4)=x^2+1/4-y^2>0`, so the reciprocal on the right also has positive real part.  A live
+  theorem must control the argument of `Q`, or the full oriented cross-current, not one Cartesian
+  component.
+- `[PROVED STRUCTURAL WARNING]` The seam reflection fixes every odd boundary derivative of the
+  one-sided tail, so repeated integration by parts cancels the rational seam contribution to all
+  algebraic orders.  The surviving Xi term is beyond that formal inverse-frequency expansion.
+  Bounds that retain only finitely many monotonicity or convexity derivatives therefore estimate
+  the cancelled carrier rather than the residual whose orientation decides the target.
+- `[OBSERVED, NOT A PRODUCER]` The concurrent rectangular CCM observable continuation recovers the
+  off-line Xi divisor as poles of a log-sampled Weil-tail L-series.  Its continuation is explicitly
+  built from the Xi divisor carrier; transporting it here would violate the zero-location firewall.
+- `[OPEN CORE]` Prove that the actual finite theta-tail core current is sublinear relative to the
+  canonical Taylor value on every anisotropic mesh fibre.  The top defect's self-current is
+  nonpositive and its coefficients have arbitrary geometric decay, so its cross-interference is
+  a removable compact-uniform error rather than the source obstruction.  If the core remains
+  indefinite, isolate the first explicit theta-tail coefficient obstruction and retire that source
+  predicate rather than weakening the theorem.
 
 ## Gates
 
 - [x] prior pipeline, failed routes, and formal theorem surface audited
 - [x] exact RH-equivalent endpoint separated from the requested source producer
-- [ ] several genuinely different coefficient mechanisms constructed and attacked
+- [x] several genuinely different coefficient mechanisms constructed and attacked
 - [ ] finite source predicate stated without target-oracle content
 - [ ] canonical Xi coefficients proved to satisfy the predicate
 - [ ] predicate proved to imply `(1)` on every compact anisotropic mesh

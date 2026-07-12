@@ -14,7 +14,7 @@ identify finite Cayley frames with finite Cauchy jets in the cofinal Cholesky se
 -/
 
 open MeasureTheory Measure Metric Complex spectrum
-open scoped Topology
+open scoped Topology ComplexOrder
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -248,6 +248,22 @@ theorem cauchyJet_eq_of_same_inverseCholeskyFrame
         iteratedDeriv n (resolventTransform ν) (-I) := by
   rw [← circleToeplitzGram_eq_iff_cauchyJet_prefix]
   exact gram_eq_of_same_inverseCholesky C _ _ hμ hν
+
+/-- Exact canonical finite-frame/jet equivalence. For positive-definite Cayley Gram sections, the
+normalized lower-triangular inverse-Cholesky frames agree exactly when the regular Cauchy jets at
+`-i` agree through order `N-1`. -/
+theorem gramSchmidtInverseFrame_eq_iff_cauchyJet_prefix
+    (μ ν : Measure ℝ) [IsProbabilityMeasure μ] [IsProbabilityMeasure ν]
+    (N : ℕ)
+    (hμ : (circleToeplitzGram N (cayleyMomentZ μ)).PosDef)
+    (hν : (circleToeplitzGram N (cayleyMomentZ ν)).PosDef) :
+    gramSchmidtInverseFrame (circleToeplitzGram N (cayleyMomentZ μ)) hμ =
+        gramSchmidtInverseFrame (circleToeplitzGram N (cayleyMomentZ ν)) hν ↔
+      ∀ n < N,
+        iteratedDeriv n (resolventTransform μ) (-I) =
+          iteratedDeriv n (resolventTransform ν) (-I) := by
+  rw [gramSchmidtInverseFrame_eq_iff_gram_eq,
+    circleToeplitzGram_eq_iff_cauchyJet_prefix]
 
 end
 

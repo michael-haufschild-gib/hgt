@@ -261,7 +261,7 @@ theorem monoScalar_ne_one_of_nonintegral {s : ℂ}
   exact hs m hm
 
 open HurwitzLadder HurwitzZetaContinuation in
-set_option maxHeartbeats 20000000 in
+set_option maxHeartbeats 800000 in
 /-- **Joint continued-Hurwitz ladder independence from monodromy-value separation.**
 
 Pairwise distinct nontrivial monodromy scalars suffice.  For a candidate relation of degree `D`,
@@ -316,8 +316,12 @@ theorem continued_joint_hurwitz_ladder_independence_of_monoScalar
       ring
     have hPaDegree : Pa.totalDegree ≤ D := by
       dsimp only [Pa, D]
-      unfold MvPolynomial.totalDegree
-      exact Finset.sup_mono (MvPolynomial.support_map_subset P (Polynomial.evalRingHom a))
+      change (MvPolynomial.map (Polynomial.evalRingHom a) P).support.sup
+          (fun d => d.sum fun _ e => e) ≤ P.totalDegree
+      apply Finset.sup_le
+      intro d hd
+      exact MvPolynomial.le_totalDegree
+        (MvPolynomial.support_map_subset (Polynomial.evalRingHom a) P hd)
     have hPaGrid : ∀ m : Fin (N + D + 1) → ℕ,
         MvPolynomial.eval (additiveGridPoint base u m) Pa = 0 := by
       intro m
@@ -328,7 +332,7 @@ theorem continued_joint_hurwitz_ladder_independence_of_monoScalar
             (fun b => monoScalar (s jk.1) ^ m b) (jk.2 : ℕ) a) =
           additiveGridPoint base u m := by
         funext jk
-        rw [hdz]
+        rw [hdz (fun j b => monoScalar (s j) ^ m b) jk]
         rfl
       rw [hvalues] at hm
       exact hm

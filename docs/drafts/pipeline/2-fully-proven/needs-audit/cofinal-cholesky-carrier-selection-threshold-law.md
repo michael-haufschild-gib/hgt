@@ -378,18 +378,37 @@ Formalization is in progress; no Stage 3 claim is made. The unconditional module
    `iteratedDeriv n (resolventTransform μ) (-i)=n! reciprocalMoment μ (n+1)`;
 4. for probability measures, the exact equivalence
    `G_N(μ)=G_N(ν)` iff their regular Cauchy jets agree through order `N-1`;
-5. the inverse Gram identity `G_N⁻¹=C_NᴴC_N`; and
-6. equality of the Cauchy jets whenever one inverse-Cholesky frame orthonormalizes both Gram
-   matrices.
+5. the inverse Gram identity `G_N⁻¹=C_NᴴC_N`;
+6. an explicit normalized Gram--Schmidt inverse-Cholesky construction for every positive-definite
+   complex Gram matrix, including lower triangularity and real strictly positive diagonal; and
+7. structural uniqueness among all lower-triangular positive-real-diagonal inverse-Cholesky
+   frames, and equality of the explicit canonical frames iff equality of the Gram matrices iff
+   equality of the corresponding finite Cauchy jets.
 
-All three exact builds pass. `#print axioms` on the capstone declarations reports only `propext`,
+The unconditional module `GaloisForLFunctions.HTGeometry.LabeledBoundarySimplex` additionally
+proves the separated-kernel core of the boundary geometry: barycenter formation, exact label
+pushforward `π_*(Beta η)=η`, injectivity, probability preservation, density transport, and mutual
+absolute continuity under positive reweighting. It now also proves weak continuity of barycentring
+through any weakly continuous measurable probability kernel, closed topological embedding under
+exact label recovery, atomlessness transport, and singularity transport under the precise
+reference-null preimage hypothesis used in the manuscript.
+
+The unconditional module `GaloisForLFunctions.HTGeometry.CofinalCholeskySelection` now proves the
+complete set-theoretic selector without assuming Fourier determinacy: Fourier characters determine
+a finite measure on the additive circle, the real Cayley map is a measurable embedding, all
+positive Cayley moments determine a real probability measure, and equality of every canonical
+inverse-Cholesky section forces equality of the original carriers. Every fixed Cayley moment and
+every finite Toeplitz Gram section are also proved weakly continuous.
+
+All five exact builds pass. `#print axioms` on the capstone declarations reports only `propext`,
 `Classical.choice`, and `Quot.sound`, and the repository formal lint passes.
 
-The remaining formalization requires the positive-diagonal triangular Cholesky construction and
-uniqueness, the canonical Nevanlinna Bauer simplex and spectral transport,
-finite-frame Hilbert-cube fibers, constrained full-shift transversality, complete-tower selection,
-F. and M. Riesz, graph closure as a linear relation, OPUC/Bernstein--Szegő repair and divergence,
-and the final residual-set capstone.
+The remaining formalization requires continuity of the triangular positive-diagonal factor,
+construction and weak continuity of the actual N-extremal Nevanlinna
+kernel and projective support label, the full Bauer-simplex/topological and spectral-type layer,
+finite-frame Hilbert-cube fibers, constrained full-shift transversality, topological continuity of
+the complete-tower coordinate, F. and M. Riesz, graph closure as a linear relation,
+OPUC/Bernstein--Szegő repair and divergence, and the final residual-set capstone.
 
 ## Gates
 

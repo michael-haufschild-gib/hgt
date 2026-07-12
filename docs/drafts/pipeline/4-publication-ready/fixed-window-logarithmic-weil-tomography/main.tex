@@ -48,20 +48,27 @@ has no zeros in either open transverse half-plane.  We prove that logarithmic sa
 translation parameter, $a=\frac12\log n$, turns the growing edge into an ordinary Dirichlet
 carrier.  The resulting single scalar sequence is a complete transverse detector: the Riemann
 hypothesis is equivalent to its nonnegativity, to its eventual lower boundedness, and to its norm
-boundedness.  If the hypothesis is false, the sequence is cofinally unbounded below.  Its sharp
+boundedness.  If the hypothesis is false, the sequence is cofinally unbounded below, and its sharp
 power exponent is the supremal horizontal displacement of the xi divisor.
 
-The same carrier gives a stronger tomography statement.  After deletion of any sufficiently late
-finite prefix, the Dirichlet series of the actual Weil values admits a canonical meromorphic
-continuation to $\Re s>1$.  Its simple poles are exactly
+Our principal theorem is a cutoff-free multiplicity-exact tomography statement.  The Dirichlet
+series of the complete sequence of actual Weil values admits a canonical meromorphic continuation
+$\cM_L$ to $\Re s>1$.  Its simple poles are exactly
 \[
   s=1+(\rho-\tfrac12),\qquad \XiR(\rho)=0,\quad \Re\rho>\tfrac12.
 \]
-Thus one fixed boundary window and one arithmetic mesh recover the complete off-critical support,
-not merely its rightmost displacement.  We also identify the sequence with a fixed-width second
+If $\rho$ has analytic multiplicity $m(\rho)$, then
+\[
+  \operatorname*{Res}_{s=\rho+1/2}\cM_L(s)
+  =2m(\rho)A_L(\rho-\tfrac12)^2.
+\]
+Since the window factor never vanishes, one fixed boundary window and one arithmetic mesh recover
+the complete off-critical divisor with multiplicity, not merely its support or rightmost displacement.
+We also identify the sequence with a fixed-width second
 difference of the xi screw function.  The results are unconditional divisor-side theorems; the
-remaining source-side problem is to derive one cofinal lower bound from the prime--archimedean or
-semilocal operator realization.
+remaining RH-bearing problem is to construct this completed observable from the
+prime--archimedean or semilocal operator realization and prove a cofinal lower floor or holomorphic
+right-half-plane continuation there.
 \end{abstract}
 
 \noindent\textbf{2020 Mathematics Subject Classification.}
@@ -91,6 +98,13 @@ places the Yoshida, Bombieri, Connes, and Connes--Consani--Moscovici forms in on
 framework~\cite{Suzuki2026}.  Finite Galerkin values have also been identified exactly with
 finite Guinand--Weil zero sums~\cite{Groskin2026}.
 
+There is also a classical superzeta literature in which Dirichlet series are formed directly over
+the Riemann zeros and their meromorphic polar structure is studied~\cite{Voros2003}.  That
+construction takes the zero set as the Dirichlet indexing object.  Here the Dirichlet variable is
+the ordinary integer $n$: the coefficients are one logarithmically sampled Weil sequence, and its
+Mellin poles recover the transverse divisor.  This distinction is essential for the intended
+prime-side and semilocal interpretation.
+
 This paper isolates a different compression.  Fix any $L>0$ once and for all.  Translate the
 same two-edge rectangle to aperture $a$, then sample only at $a=\frac12\log n$.  Three phenomena
 occur simultaneously.
@@ -104,18 +118,21 @@ $w=\rho-\frac12$.
 Dirichlet carrier controls the entire Weil sequence.
 \end{enumerate}
 
-The first main theorem gives three exact RH criteria and a quantitative false-RH law.  The second
-main theorem attaches a meromorphic continuation to the actual scalar tail and shows that its
-simple-pole support is precisely the shifted right xi divisor.  This support theorem is stronger
-than an abscissa statement: the full off-critical support is visible from one sequence.  The third
-main theorem gives the exact screw-coordinate identity.
+The principal theorem attaches a cutoff-free meromorphic continuation to the complete actual
+scalar sequence and proves
+multiplicity-exact divisor tomography: pole positions give the shifted right xi support and
+normalized residues give the analytic multiplicities.  Functional-equation and Schwarz symmetry
+then recover the full off-critical divisor.  Companion theorems give three exact RH criteria,
+cofinal divergence under false RH, the sharp transverse exponent, and the exact screw-coordinate
+identity.
 
 The novelty is the conjunction of fixed positive width, arithmetic logarithmic sampling,
-cofinal divergence, sharp transverse exponent, and observable pole-support tomography.  Landau's
+cofinal divergence, sharp transverse exponent, and observable multiplicity-exact pole tomography.  Landau's
 theorem, Weil positivity, shifted-zeta continuation, and screw functions are the parent
 mechanisms.  We keep this boundary explicit.  We also keep the logical boundary explicit: the
 paper does not prove RH.  It identifies the exact cofinal scalar carrier on which a successful
-prime-side or semilocal construction must establish one finite lower bound.
+prime-side or semilocal construction must establish a completed source--divisor coupling and a
+cofinal lower floor or holomorphic continuation.
 
 \section{The centered xi divisor and the rectangular window}
 
@@ -272,11 +289,12 @@ is a canonical meromorphic continuation of $C_L$.
 For $L>0$, the meromorphic function $\widetilde C_L$ has, in $\Re s>1$, a simple pole at
 $s=1+w$ for every $w\in\cZ_+$, and no other poles.  If $w$ has multiplicity $m$, then
 \[
-  \ord_{1+w}X_L=m-1,
-  \qquad
-  \ord_{1+w}\XiR(s-\tfrac12)=m,
-  \qquad
-  \ord_{1+w}\widetilde C_L=-1.
+  \begin{aligned}
+  \ord_{1+w}X_L&=m-1,
+  &\ord_{1+w}\XiR(s-\tfrac12)&=m,\\
+  \ord_{1+w}\widetilde C_L&=-1,
+  &\operatorname*{Res}_{s=1+w}\widetilde C_L(s)&=m c_L(w).
+  \end{aligned}
   \tag{3.7}
 \]
 \end{proposition}
@@ -293,8 +311,39 @@ $c_L(w_0)\ne0$ and by the positive integer $m$ does not change that order.  Ever
 support different from $w_0$ is divisible by $(s-p)^m$.  Local normal convergence preserves this
 common order floor through their infinite sum.  Hence the equal-support fiber has order $m-1$,
 the off-support tail has order at least $m$, and their sum has order exactly $m-1$.  Division by
-(3.8) proves (3.7).  Away from the coordinates $1+w$, the denominator in (3.6) is nonzero and the
+(3.8) proves the order statement.  More precisely, put
+$R(z)=(z-1)\zeta(z)$ with its removable value $R(1)=1$.  The equal-support fiber is
+\[
+  m c_L(w_0)(s-p)^{m-1}u(s)R(s-w_0),
+\]
+whereas the off-support tail is divisible by $(s-p)^m$.  Dividing by (3.8) gives principal part
+$m c_L(w_0)/(s-p)$ and proves the residue formula in (3.7).  Away from the coordinates $1+w$,
+the denominator in (3.6) is nonzero and the
 quotient is holomorphic.
+\end{proof}
+
+\begin{proposition}[Pole bound from tail summability]\label{prop:polebound}
+Fix $L>0$, $C\in\R$, $N\in\N$, and $\delta\ge0$ such that
+$\Re w\le\delta$ for every $w\in\cZ_+$.  Put
+\[
+ b_n=\begin{cases}d_L(n)+C,&n\ge N,\\0,&n<N.\end{cases}
+\]
+If the ordinary Dirichlet series of $(b_n)$ converges at a real point $\sigma>1$, then
+\[
+  \Re(1+w)\le\sigma\qquad(w\in\cZ_+).
+  \tag{3.9}
+\]
+\end{proposition}
+
+\begin{proof}
+Convergence at the real point $\sigma$ gives holomorphy of the ordinary L-series on
+$\Re s>\sigma$.  On a farther right half-plane it agrees with the canonical continuation built
+from $\widetilde C_L$, the constant-zeta term, and a finite Dirichlet polynomial.  The identity
+theorem propagates the agreement through the connected pole-free part of $\Re s>\sigma$.
+If some shifted pole $p=1+w$ lay in that half-plane, the ordinary L-series would give a
+holomorphic continuation across $p$.  Multiplication by $\XiR(s-\frac12)$ would then force the
+cancelled numerator to vanish to order at least the multiplicity $m$ of $w$.  Proposition
+\ref{prop:poles} gives exact order $m-1$, a contradiction.  Hence no such $p$ exists.
 \end{proof}
 
 \begin{remark}
@@ -341,18 +390,20 @@ and (d)$\Rightarrow$(c) are immediate.
 
 Suppose RH is false.  Functional-equation symmetry gives $\cZ_+\ne\varnothing$.  If $d_L(n)$
 were eventually bounded below, add a constant and delete a finite prefix to obtain a nonnegative
-coefficient sequence.  The associated L-series agrees on $\Re s>1+\delta_*$ with
+coefficient sequence.  Its L-series agrees on $\Re s>1+\delta_*$ with
 \[
   2C_L(s)+C\zeta(s)-P(s),
   \tag{4.3}
 \]
-where $P$ is a finite Dirichlet polynomial.  Local normal convergence at the real boundary and
-the scale-local Landau argument force convergence strictly to the left of $1+\delta_*$.  Applied
-to the xi-cancelled series, that continuation would make $X_L$ divisible by the full order $m$
-at every actual shifted pole reached by the continuation.  Proposition~\ref{prop:poles} gives
-the contradictory exact order $m-1$.  Therefore $d_L(n)$ is cofinally below every real level.
-Proposition~\ref{prop:remainder} transfers the same statement to $q_L(n)$, proving (4.2).
-Consequently (c) implies RH, and all four conditions are equivalent.
+where $P$ is a finite Dirichlet polynomial.  Let $\sigma_c$ be its abscissa of convergence.
+Initially $\sigma_c\le1+\delta_*$.  The shifted-zeta carrier is holomorphic on a disc centred at
+the real boundary point $1+\delta_*$: the right divisor has a uniform positive ordinate gap and
+the reciprocal-$3/2$ majorant gives local normal convergence there.  Landau's theorem therefore
+excludes $\sigma_c=1+\delta_*$.  Thus the nonnegative tail series converges at some real
+$\sigma<1+\delta_*$.  Proposition~\ref{prop:polebound} gives
+$1+\delta_*\le\sigma$, a contradiction.  Therefore $d_L(n)$ is cofinally below every real
+level.  Proposition~\ref{prop:remainder} transfers the same statement to $q_L(n)$, proving
+(4.2).  Consequently (c) implies RH, and all four conditions are equivalent.
 \end{proof}
 
 The same argument retains quantitative information.
@@ -387,94 +438,109 @@ The bounded difference between $d_L$ and $q_L$ is absorbed into $Cn^\alpha$ beca
 $n^\alpha\ge1$.
 \end{proof}
 
-\section{Pole tomography from the actual Weil tail}
+\section{Cutoff-free multiplicity-exact divisor tomography}
 
-Proposition~\ref{prop:poles} concerns the isolated growing carrier.  We now show that no such
-isolation is needed in the final statement.
-
-Choose $N$ so that
+Proposition~\ref{prop:poles} concerns the isolated growing carrier.  We now remove every cutoff
+from the final object.  Define the global observable remainder
 \[
-  n\ge N\quad\Longrightarrow\quad n\ge1,
-  \qquad L\le\frac12\log n.
+  e_L(n)=q_L(n)-d_L(n).
   \tag{5.1}
 \]
-Define the observable tail and the finite carrier prefix by
+Choose an auxiliary $N$ so that $n\ge N$ implies $n\ge1$ and
+$L\le\frac12\log n$.  Proposition~\ref{prop:remainder} gives
 \[
-  q_{L,N}(n)=\begin{cases}q_L(n),&n\ge N,\\0,&n<N,\end{cases}
-  \qquad
-  p_{L,N}(n)=\begin{cases}d_L(n),&n<N,\\0,&n\ge N.\end{cases}
+  |e_L(n)|\le K_L\qquad(n\ge N).
   \tag{5.2}
 \]
-Set
+The terms with $n<N$ form a finite sequence.  Consequently
 \[
-  r_{L,N}(n)=q_{L,N}(n)-d_L(n)+p_{L,N}(n).
+  E_L(s)=\sum_{n\ge1}\frac{e_L(n)}{n^s}
   \tag{5.3}
 \]
-Then $r_{L,N}(n)=0$ for $n<N$, while Proposition~\ref{prop:remainder} gives
-\[
-  |r_{L,N}(n)|\le K_L\qquad(n\ge1).
-  \tag{5.4}
-\]
-Hence
-\[
-  R_{L,N}(s)=\sum_{n\ge1}\frac{r_{L,N}(n)}{n^s}
-  \tag{5.5}
-\]
-is holomorphic on $\Re s>1$.  Let
-\[
-  P_{L,N}(s)=\sum_{n<N}\frac{d_L(n)}{n^s}
-  \tag{5.6}
-\]
-be the finite Dirichlet polynomial.
+converges absolutely and is holomorphic on $\Re s>1$.  Although a cutoff proves this fact, neither
+$e_L$, $E_L$, nor the continuation below depends on it.
 
-\begin{theorem}[Observable pole tomography]\label{thm:tomography}
-For every $L>0$ and every $N$ satisfying (5.1), the ordinary Dirichlet series
+\begin{theorem}[Main theorem: cutoff-free observable divisor tomography]\label{thm:tomography}
+For every $L>0$, the ordinary Dirichlet series of the complete observable sequence
 \[
-  \sum_{n\ge1}\frac{q_{L,N}(n)}{n^s}
-  \tag{5.7}
+  \sum_{n\ge1}\frac{q_L(n)}{n^s}
+  \tag{5.4}
 \]
 has, on its initial half-plane of convergence, the canonical continuation
 \[
-  \cM_{L,N}(s)=2\widetilde C_L(s)-P_{L,N}(s)+R_{L,N}(s).
-  \tag{5.8}
+  \cM_L(s)=2\widetilde C_L(s)+E_L(s).
+  \tag{5.5}
 \]
-The function $\cM_{L,N}$ is meromorphic on $\Re s>1$, and
+The function $\cM_L$ is meromorphic on $\Re s>1$, and
 \[
-  \ord_s\cM_{L,N}=-1
+  \ord_s\cM_L=-1
   \quad\Longleftrightarrow\quad
   s=1+w\text{ for some }w\in\cZ_+.
-  \tag{5.9}
+  \tag{5.6}
 \]
-At every other point of $\Re s>1$, $\cM_{L,N}$ is holomorphic.
+At every other point of $\Re s>1$, $\cM_L$ is holomorphic.  Moreover, if
+$w\in\cZ_+$ has analytic multiplicity $m(w)$, then
+\[
+  \operatorname*{Res}_{s=1+w}\cM_L(s)
+  =2m(w)c_L(w)=2m(w)A_L(w)^2,
+  \tag{5.7}
+\]
+and therefore
+\[
+  m(w)=
+  \frac{\operatorname*{Res}_{s=1+w}\cM_L(s)}{2A_L(w)^2}.
+  \tag{5.8}
+\]
+Thus one full observable sequence, with no deleted prefix and no auxiliary choice, determines the
+right xi divisor with its exact analytic multiplicities.
 \end{theorem}
 
 \begin{proof}
-Equation (5.3) gives the coefficient identity
-\[
-  q_{L,N}=d_L-p_{L,N}+r_{L,N}.
-\]
-On $\Re s>1+\delta_*$, absolute convergence and (3.3) therefore give (5.8).
-The functions $P_{L,N}$ and $R_{L,N}$ are holomorphic on $\Re s>1$.  At every shifted right
-zero, Proposition~\ref{prop:poles} gives order $-1$ for $2\widetilde C_L$; adding a holomorphic
-function cannot cancel a pole of strictly smaller order.  Away from those shifted coordinates,
-all three terms in (5.8) are holomorphic.  This proves (5.9).
+The coefficient identity $q_L=d_L+e_L$, absolute convergence, and (3.3) give (5.5) on
+$\Re s>1+\delta_*$.  The correction $E_L$ is holomorphic on $\Re s>1$.  At every shifted right
+zero, Proposition~\ref{prop:poles} gives order $-1$ for $2\widetilde C_L$; addition of a
+holomorphic function cannot cancel a pole of strictly smaller order.  Away from those shifted
+coordinates both terms in (5.5) are holomorphic.  This proves (5.6).  The correction has zero
+residue at $1+w$, while Proposition~\ref{prop:poles} gives residue $m(w)c_L(w)$ for
+$\widetilde C_L$.  The factor two gives (5.7).  Lemma~\ref{lem:edge} shows $A_L(w)\ne0$, so
+division yields (5.8).
 \end{proof}
 
-\begin{corollary}[Support recovery and RH]\label{cor:tomography}
-The complete right off-critical support of the xi divisor is recovered from one fixed-width tail
-by
+\begin{corollary}[Divisor recovery and RH]\label{cor:tomography}
+The complete right off-critical divisor of xi, including multiplicities, is recovered from one
+complete fixed-width sequence.
+Its support is
 \[
   \{\rho:\XiR(\rho)=0,\ \Re\rho>\tfrac12\}
-  =\{s-\tfrac12:\Re s>1,\ \ord_s\cM_{L,N}=-1\}.
-  \tag{5.10}
+  =\{s-\tfrac12:\Re s>1,\ \ord_s\cM_L=-1\}.
+  \tag{5.9}
 \]
-In particular, RH is equivalent to holomorphy of $\cM_{L,N}$ on $\Re s>1$.
+The multiplicity at $\rho=s-\tfrac12$ is the normalized residue in (5.8).  Functional-equation
+and Schwarz symmetry then recover the entire off-critical divisor.  In particular, RH is
+equivalent to holomorphy of $\cM_L$ on $\Re s>1$.
 \end{corollary}
+
+\begin{corollary}[Intrinsic normalized pole divisor]\label{cor:intrinsic}
+Let $L_1,L_2>0$ and let $w$ be a right off-critical support point.  Then
+\[
+ \frac{\operatorname*{Res}_{s=1+w}\cM_{L_1}(s)}{2A_{L_1}(w)^2}
+ =
+ \frac{\operatorname*{Res}_{s=1+w}\cM_{L_2}(s)}{2A_{L_2}(w)^2}
+ =m(w).
+ \tag{5.10}
+\]
+Thus the normalized weighted pole divisor is independent of the rectangular width.  There is no
+cutoff coordinate to quotient out.
+\end{corollary}
+
+\begin{proof}
+Apply (5.7) to each $L_j$.
+\end{proof}
 
 \begin{remark}
 The continuation is not an arbitrary interpolation of the scalar samples.  It is fixed by the
-xi-cancelled shifted-zeta carrier, the explicitly deleted finite prefix, and the absolutely
-convergent bounded-remainder L-series.  This is the incidence marking that prevents a
+xi-cancelled shifted-zeta carrier and the globally defined absolutely convergent remainder
+L-series.  This is the incidence marking that prevents a
 transverse relocation of the divisor while leaving only ordinate data unchanged.
 \end{remark}
 
@@ -519,33 +585,33 @@ and pole tomography of Section~5.
 The theorem changes the positive obligation on a semilocal or prime-side construction.  It is not
 necessary to establish positivity on an unspecified compact family, nor to match finitely many
 spectral ordinates.  For any chosen $L>0$, it is enough to construct the actual completed
-source--divisor incidence along the single section $q_L(n)$ and prove one of the following:
+source--divisor incidence along the single section $q_L(n)$ and prove one cofinal finite lower floor
 \[
-  \inf_{n\ge N}q_L(n)>-\infty,
-  \qquad
-  \sup_{n\ge N}|q_L(n)|<\infty,
-  \qquad
-  q_L(n)\ge0.
+  q_L(n)\ge-C\qquad(n\ge N).
   \tag{7.1}
 \]
-Any one closes RH by Theorem~\ref{thm:completeness}.
+This closes RH by Theorem~\ref{thm:completeness}; norm boundedness and positivity are stronger
+sufficient special cases.  Alternatively, the same source construction may prove directly that
+the cutoff-free canonical continuation $\cM_L$ is holomorphic on $\Re s>1$.
 
 This is a cofinal, noncompact carrier condition.  Finite-prime positivity or a finite
 self-adjoint spectrum does not imply (7.1): the construction must transport the completed
-Euler--Gamma incidence into the actual tail.  The compatible finite-factorization viewpoint is
-therefore useful only when its cofinal section controls the bounded correction in (5.5).  Once
+Euler--Gamma incidence into the complete actual sequence.  The compatible finite-factorization
+viewpoint is therefore useful only when its cofinal section controls the global remainder in
+(5.3).  Once
 that happens, Theorem~\ref{thm:tomography} gives a rigid alternative:
 
 \begin{quote}
-the residual Mellin channel is holomorphic on $\Re s>1$, or its simple poles are exactly the
-shifted off-critical xi support.
+the residual Mellin channel is holomorphic on $\Re s>1$, or its weighted simple-pole divisor is
+exactly the shifted off-critical xi divisor, with multiplicities encoded by normalized residues.
 \end{quote}
 
 In particular, the noncompact escape required by prolate or near-radical Connes--Consani
 mechanisms is not an undirected loss of compactness.  Along the rectangular section it must be a
-coherent escape whose scalar trace values obey (7.1).  The same obligation applies to recent
+coherent escape whose scalar trace values obey (7.1), or whose Mellin channel is holomorphic on the
+whole target half-plane.  The same obligation applies to recent
 finite-prime spectral triples.  Their normalized determinants must carry the completed divisor
-strongly enough to identify the tail continuation, not only a finite list of real spectral zeros.
+strongly enough to identify the full continuation, not only a finite list of real spectral zeros.
 
 \section{Scope and limitations}
 
@@ -558,11 +624,12 @@ The rectangle is deliberately nonsmooth.  We avoid an inadmissible appeal to the
 test space by defining $Q_L$ through the absolutely convergent xi divisor polarization.  A
 prime-side explicit-formula realization of this exact boundary value requires either an
 appropriate completion theorem or a justified approximation whose limit preserves the scalar
-tail.  That source theorem is the remaining RH-bearing step.
+sequence.  That source theorem is the remaining RH-bearing step.
 
-The pole theorem recovers support, not multiplicity from the pole order: every off-critical zero,
-simple or multiple, produces a simple pole.  Recovering multiplicity from a normalized leading
-coefficient is a separate refinement and is not used here.
+Every off-critical zero, simple or multiple, produces a simple pole, so pole order alone forgets
+multiplicity.  The main theorem repairs exactly that loss: the pole residue is the analytic
+multiplicity times the explicit nonvanishing rectangular weight.  Thus the weighted pole divisor,
+not the unweighted pole set, is the intrinsic observable.
 
 Finally, the novelty claim is intentionally narrow.  Weil positivity, the Connes trace-formula
 architecture, Landau's theorem, and the screw function are established parent theories.  The new
@@ -632,6 +699,12 @@ arXiv:2606.09096, 2026.
 E.~C.~Titchmarsh,
 \emph{The Theory of the Riemann Zeta-Function}, 2nd ed., revised by D.~R.~Heath-Brown,
 Oxford University Press, 1986.
+
+\bibitem{Voros2003}
+A.~Voros,
+\emph{Zeta functions for the Riemann zeros},
+Ann. Inst. Fourier (Grenoble) \textbf{53} (2003), 665--699;
+erratum \textbf{54} (2004), 1139.
 
 \bibitem{Weil1952}
 A.~Weil,

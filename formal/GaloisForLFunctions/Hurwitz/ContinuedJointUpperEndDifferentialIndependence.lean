@@ -267,6 +267,70 @@ theorem continued_joint_hzeta_upperEnd_differentialIndependent_finite
   have hcomp := hrect.comp e he
   simpa [e, continuedJointHzetaUpperEndFieldJet] using hcomp
 
+/-- Every finite jet rectangle for nonintegral, pairwise residue-separated exponents is
+algebraically independent over `ℂ(a)`. -/
+theorem continued_joint_hzeta_upperEnd_rectangle_algebraicIndependent_of_integerResidueSeparated
+    {s : ι → ℂ} (hnonintegral : ∀ j, ∀ m : ℤ, s j ≠ (m : ℂ))
+    (hseparated : ∀ i j, i ≠ j → ∀ m : ℤ, s i - s j ≠ (m : ℂ)) (N : ℕ) :
+    letI := isDomain_upperEndAnalyticSubring
+    letI : Algebra (RatFunc ℂ) upperEndMeroField := upperEndRatfuncToMero.toAlgebra
+    letI := upperEndMeroFieldDifferential
+    AlgebraicIndependent (RatFunc ℂ)
+      (continuedJointHzetaUpperEndFieldJet (s := s) N) := by
+  letI := isDomain_upperEndAnalyticSubring
+  letI : Algebra ℤ upperEndAnalyticSubring := Ring.toIntAlgebra _
+  letI : Algebra ℤ upperEndMeroField := Ring.toIntAlgebra _
+  letI : Algebra (RatFunc ℂ) upperEndMeroField := upperEndRatfuncToMero.toAlgebra
+  letI := upperEndMeroFieldDifferential
+  rw [algebraicIndependent_iff]
+  intro Q hQ
+  apply
+    continued_joint_hzeta_rational_hypertranscendental_in_shift_of_integerResidueSeparated
+      hnonintegral hseparated N Q
+  have hfield : MvPolynomial.eval₂ upperEndRatfuncToMero
+      (continuedJointHzetaUpperEndFieldJet (s := s) N) Q = 0 := by
+    simpa [MvPolynomial.aeval_def, RingHom.algebraMap_toAlgebra] using hQ
+  have hclear :=
+    continuedJointHzetaUpperEndClearedRelation_eq_zero_of_fieldRelation_eq_zero N Q hfield
+  exact continuedJointHzetaPolynomialRelation_eq_zero_of_upperEnd_eq_zero N
+    (GaloisForLFunctions.HTGeometry.clearRatFuncCoefficients Q) hclear
+
+/-- **Exact-residue object-level joint differential independence.** -/
+theorem continued_joint_hzeta_upperEnd_differentialIndependent_finite_of_integerResidueSeparated
+    {s : ι → ℂ} (hnonintegral : ∀ j, ∀ m : ℤ, s j ≠ (m : ℂ))
+    (hseparated : ∀ i j, i ≠ j → ∀ m : ℤ, s i - s j ≠ (m : ℂ)) :
+    letI := isDomain_upperEndAnalyticSubring
+    letI : Algebra (RatFunc ℂ) upperEndMeroField := upperEndRatfuncToMero.toAlgebra
+    letI := upperEndMeroFieldDifferential
+    DifferentialIndependent (RatFunc ℂ) (fun j => continuedHzetaUpperEndMero (s j)) := by
+  letI := isDomain_upperEndAnalyticSubring
+  letI : Algebra ℤ upperEndAnalyticSubring := Ring.toIntAlgebra _
+  letI : Algebra ℤ upperEndMeroField := Ring.toIntAlgebra _
+  letI : Algebra (RatFunc ℂ) upperEndMeroField := upperEndRatfuncToMero.toAlgebra
+  letI := upperEndMeroFieldDifferential
+  unfold DifferentialIndependent
+  apply algebraicIndependent_of_finite_type
+  intro t ht
+  let N : ℕ := ∑ p ∈ ht.toFinset, p.2
+  have horder : ∀ p : t, p.1.2 < N + 1 := by
+    intro p
+    have hpMem : p.1 ∈ ht.toFinset := ht.mem_toFinset.mpr p.2
+    have hle : p.1.2 ≤ ∑ q ∈ ht.toFinset, q.2 :=
+      Finset.single_le_sum (fun q _ => Nat.zero_le q.2) hpMem
+    exact Nat.lt_succ_of_le hle
+  let e : t → ι × Fin (N + 1) := fun p => (p.1.1, ⟨p.1.2, horder p⟩)
+  have he : Function.Injective e := by
+    intro p q hpq
+    apply Subtype.ext
+    exact Prod.ext
+      (congrArg (fun z : ι × Fin (N + 1) => z.1) hpq)
+      (congrArg (fun z : ι × Fin (N + 1) => z.2.1) hpq)
+  have hrect :=
+    continued_joint_hzeta_upperEnd_rectangle_algebraicIndependent_of_integerResidueSeparated
+      hnonintegral hseparated N
+  have hcomp := hrect.comp e he
+  simpa [e, continuedJointHzetaUpperEndFieldJet] using hcomp
+
 end
 
 end HurwitzJointLadder

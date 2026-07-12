@@ -428,3 +428,146 @@ Not advanced this pass beyond the formalized covariance shadow (B2).  Next brick
 uniqueness — the graded weight is the unique dilation-covariant graded functional on the
 diagonal up to normalization — an arithmetic statement on `ℕ` formalizable with current
 tools; the off-diagonal (ergodicity) part remains the research-scale wall.
+
+### A6. Hölder's theorem PROVEN IN LEAN; the chain assembled (2026-07-12, pass 4)
+
+**A6a. Hölder's theorem, digamma form `[PROVED HERE + FORMALIZED, axiom-clean]`.**
+`Hypertranscendental Complex.digamma` — psi = Gamma'/Gamma satisfies no algebraic
+differential equation over `C[s]` — is machine-checked
+(`formal/GaloisForLFunctions/DigammaHypertranscendental.lean`, riding
+`HolderShiftElimination.lean`). The proof is a new fully algebraic execution of the classical
+difference-equation argument, with no Laurent expansions and no analytic minimality:
+
+1. *Shift elimination over `C(X)`* (`no_shift_stable_annihilator`): any subset of
+   `MvPolynomial (Fin m) (RatFunc C)` closed under subtraction, `C(X)`-scalars, and the jet
+   substitution `tau : a(X) -> a(X+1), Y_j -> Y_j + (-1)^j j!/X^(j+1)`, containing no nonzero
+   constant, contains no nonzero element. A double-minimal member (minimal jet degree `D`,
+   then minimal top-layer support) forces `tau P = u*P` by support-count elimination; the top
+   layer is shift-periodic hence has constant coefficient ratios (brick 1); the `(D-1)` layer
+   satisfies difference equations with right sides in the span of the pole parts, killed by
+   brick 2 — the gradient of the top form vanishes, impossible in characteristic zero.
+2. *No RatFunc evaluation anywhere*: the annihilator set is defined by denominator-cleared
+   polynomial forms (`digammaAnnihilator`), and shift stability is verified through an explicit
+   cleared substitution `Y_j -> X^m Y_j + (-1)^j j! X^(m-1-j)` (`clearedShift`) converted to
+   evaluation at `z+1` by the differentiated shift law `psi^(j)(z+1) = psi^(j)(z) +
+   (-1)^j j!/z^(j+1)` (from the tree's `polygamma_recurrence`).
+3. The engine consumes vanishing only OFF THE POLES, so the stronger polynomial-level form
+   `digamma_jet_annihilator_eq_zero` is exposed directly.
+
+**A6b. The QH interface formalized `[FORMALIZED, axiom-clean]`**
+(`formal/GaloisForLFunctions/QuantitativeHolderInterface.lean`):
+- `halfDigamma_jet_annihilator_eq_zero` — the VANISHING CASE OF QH IS NOW A THEOREM: a
+  polynomial in `(s, psi(s/2)-jets)` vanishing off the poles is zero (substitution `s -> 2s`
+  into Hölder).
+- `halfDigamma_jet_annihilator_eq_zero_of_ray` — ray rigidity: vanishing on the far real ray
+  suffices (jet evaluation analytic off `-2N`; complement of a countable set is connected;
+  identity theorem).
+- `QuantitativeHolder` (the QH Prop) and `WatsonFlatness` (the named sectorial
+  Gevrey-1/Watson input, conclusion needed only on the far ray);
+  `quantitativeHolder_of_watsonFlatness` — QH reduces to Watson flatness with all vanishing
+  content machine-checked.
+
+**A6c. The chain assembled `[FORMALIZED, axiom-clean]`**
+(`formal/GaloisForLFunctions/RHTower/XiHypertranscendenceChain.lean`):
+- `xiLogDeriv_split` — the weld identity UNCONDITIONAL on `Re s > 1`:
+  `xi'/xi = 1/s + 1/(s-1) - (log pi)/2 + (1/2) psi(s/2) + zeta'/zeta`, plus its local
+  function-level form `xiLogDeriv_eventuallyEq_split` (all jets split).
+- `XiFrequencyCollapse` — the named Dirichlet-side input: a nonzero jet annihilator of `xi`
+  yields a nonzero exponentially small half-argument digamma jet polynomial (contains: the
+  triangular change of variables, frequency grouping, minimal-frequency estimate, prime-power
+  Vandermonde — the A2 paper proof).
+- `xi_hypertranscendental_of_quantitativeHolder` / `..._of_watsonFlatness` — THE CHAIN
+  THEOREMS: `QuantitativeHolder` (resp. `WatsonFlatness`) plus `XiFrequencyCollapse` forces
+  `Hypertranscendental xi`.
+
+**Residue of the Lambda-HT certificate after pass 4 — exactly two named interfaces:**
+1. `WatsonFlatness` — sectorial Gevrey-1 digamma asymptotics + Watson uniqueness (new
+   mathlib-level analysis; the A4 route).
+2. `XiFrequencyCollapse` — the Dirichlet-side collapse; formalization target riding the
+   tree's `ZetaHypertranscendental` machinery (`zetaJetA`, `jetM_inj`,
+   `LSeriesPolynomialWeightUniqueness`) against the now-proven weld split; von Mangoldt
+   L-series identities are in mathlib.
+
+**Opened (next generative moves):** (i) `XiFrequencyCollapse` is now a sharply-scoped
+formalization campaign with every prerequisite named; (ii) the Gamma-transfer
+`Hypertranscendental Complex.Gamma` from digamma HT — differential-algebra elimination of the
+Bell substitution `Gamma^(k) = Gamma * B_k(psi-jets)`, a term-count induction in the same
+MvPolynomial style; (iii) the graded KMS wall B3 is untouched by this pass and remains the
+card's other gate-1->2 item.
+
+### A7. Hölder's theorem for Γ itself PROVEN IN LEAN (2026-07-12, pass 5)
+
+**`Hypertranscendental Complex.Gamma` `[PROVED HERE + FORMALIZED, axiom-clean]`** — the
+original 1887 statement, transferred from the digamma form through the Bell substitution.
+Three new modules:
+
+1. `GammaShiftEigenrelation.lean` — the inverse shift `ratShiftInv`/`jetTranslateInv`
+   (making the jet substitution an automorphism), degree preservation
+   (`totalDegree_jetTranslate`, via the top-layer law, no inverse needed), and the
+   **eigenrelation refutation** `no_shift_eigenrelation`: no nonzero jet polynomials with
+   `sigma(f)*g = X^e*f*sigma(g)`, `e >= 1`. Reduced to relatively prime parts (UFD
+   `exists_reduced_factors`), the substitution forces `sigma(f) | f`, `sigma(g) | g` with
+   equal degrees, so both quotients are scalars and the top-layer coefficient ratio
+   satisfies the rational Gamma FE `r(X+1) = X^e r(X)` — refuted by a pure `natDegree`
+   count (LHS `deg p + deg q`, RHS `e + deg p + deg q`).
+2. `GammaBellSubstitution.lean` — the structural Bell family `bellCore k` (minimal jet
+   frames, rename-based recursion mirroring the tree's existential `exists_gamma_bell`),
+   the evaluation identity `Gamma^(k) = Gamma * B_k(psi-jets)`, the triangular
+   decomposition `B_{k+1} = x_k + (poly in x_<k)` (`pderiv_last_bellCore = 1` +
+   `bellCore_succ_decomp`), and **pointwise surjectivity of the Bell value map**
+   (`exists_bellCore_solution`, recursive back-substitution via `Fin.snoc` prefix vectors)
+   — the step that transports nonzeroness through the substitution WITHOUT any lex-order
+   or localization machinery.
+3. `GammaHypertranscendental.lean` — `GammaPowerRel` (cleared Gamma-power relations),
+   the **Gamma-power elimination** `gammaPowerRel_eq_zero` (strong induction on the
+   Gamma-degree: the shift contributes `s^k` per degree by `Gamma(s+1) = s*Gamma(s)`;
+   cross-multiplication kills the top; the eliminated relation dies by induction; the
+   surviving identities are either a single term — killed by the polynomial-level Hölder
+   theorem `polyJetEval_offPole_eq_zero` — or eigenrelations, killed by module 1), the
+   Bell expansion `eval₂_bell_expansion`, and the capstone `hypertranscendental_gamma`.
+
+Supporting refactor: `polyJetEval_clearedShift` (value form of the cleared substitution,
+extracted from the digamma module) and `polyJetEval_offPole_eq_zero` (the
+polynomial-coefficient annihilator theorem via `reshapeJet_comp_reshapeJetInv`).
+
+**Which frontier this closes:** `Hypertranscendence.lean`'s founding target
+(`Hypertranscendental Complex.Gamma`, flagged there as "the frontier statement") is now a
+theorem. Together with `hypertranscendental_digamma` and `hypertranscendental_riemannZeta`
+all three seed objects of the branch (Γ, ψ, ζ) are machine-checked hypertranscendental.
+
+**Opened:** the Gamma-power elimination pattern (Bell transfer + power elimination +
+eigenrelation endgame) is exactly the shape of the log-derivative closure step (a) of
+`XiFrequencyCollapse` — for ξ the role of the Γ FE is played by differentiation
+(`ξ' = u·ξ`), so the analogous endgame is a DIFFERENTIAL unit equation
+`∂w = m·x₁·w` in the jet fraction field; the remaining collapse bricks are the
+von Mangoldt Dirichlet jets (mathlib has the L-series identities) and the
+minimal-frequency estimate.
+
+### A8. XiFrequencyCollapse: the jet decomposition formalized (2026-07-12, pass 5)
+
+**`[FORMALIZED, axiom-clean]`** (`formal/GaloisForLFunctions/RHTower/XiCollapseDirichletLeg.lean`):
+
+- `iteratedDeriv_zetaLogDeriv_eq_LSeries` — **the von Mangoldt jet identity**: on
+  `Re s > 1`, `(d/ds)^j (zeta'/zeta)(s) = (-1)^(j+1) * L((log·)^[j] Lambda)(s)` — every
+  jet of the Dirichlet leg is an absolutely convergent prime-supported Dirichlet series
+  with polynomial-in-log weights (rides mathlib's
+  `LSeries_vonMangoldt_eq_deriv_riemannZeta_div` + `LSeries_iteratedDeriv`).
+- `iteratedDeriv_half_digamma` — the chain rule `(d/ds)^j psi(s/2) = (1/2)^j psi^(j)(s/2)`
+  off the poles.
+- `iteratedDeriv_xiLogDeriv_split` — **the full jet decomposition**: every jet of
+  `xi'/xi` on `Re s > 1` splits as
+  `(rational-leg jet) + (1/2)^(j+1) psi^(j)(s/2) + (-1)^(j+1) L(log^j Lambda)(s)`.
+  This is exactly the `u^(j) = r_j + a_j + z_j` split of A2, machine-checked.
+
+**XiFrequencyCollapse residue after pass 5** — three named sub-bricks:
+1. Log-derivative closure for `xi`: `xi` DA ⟹ nonzero relation among `xi'/xi`-jets. The
+   Gamma-transfer pattern (A7) applies verbatim EXCEPT the elimination endgame: for `xi`
+   the shift is replaced by differentiation (`xi' = u·xi`), so the terminal identity is the
+   DIFFERENTIAL unit equation `∂w = m·x₁·w` in the jet fraction field (∂ = ∂_s + Σ
+   x_{j+1}∂_{x_j}) — refutable by a weight/degree count analogous to
+   `ratShift_eq_X_pow_mul_eq_zero`.
+2. The minimal-frequency estimate: grouping the relation by Dirichlet frequency and
+   bounding the tail below the least frequency — the analytic wall (exponential smallness
+   of the least coefficient on the ray).
+3. Prime-power Vandermonde extraction — the tree's `jetM_inj`/`lseries_jetProd` machinery
+   over von Mangoldt weights.

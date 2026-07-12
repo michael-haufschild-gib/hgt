@@ -3,11 +3,15 @@
 - **ID:** `explicit-rectangular-two-edge-weil-completeness`
 - **Stage:** 1-in-progress
 - **Type:** `[THEOREM]` / COFINAL CCM BOUNDARY COMPLETENESS AND POLE TOMOGRAPHY
-- **Scientific status:** `[THEOREM] [NOVELTY AUDIT PASSED 2026-07-12] [PUBLICATION AUDIT IN PROGRESS]`
+- **Scientific status:** `[THEOREM] [NOVELTY AUDIT PASSED 2026-07-12] [PUBLICATION READY 95/100]`
+- **Standalone paper:**
+  `docs/drafts/pipeline/4-publication-ready/fixed-window-logarithmic-weil-tomography/main.tex`
 - **Statement:** For every fixed width `L>0`, the single translated rectangular two-edge family
   detects every possible off-critical Xi divisor.  If RH is false, its multiplicity-exact Weil
   values are unbounded below as the aperture tends to infinity.  Equivalently, RH is characterized
-  by nonnegativity on this one explicit cofinal family.
+  by nonnegativity on this one explicit cofinal family.  The ordinary L-series of the complete
+  logarithmically sampled sequence, with no deleted prefix, has a cutoff-free continuation whose
+  normalized polar divisor is exactly the multiplicity-weighted off-critical Xi divisor.
 
 ## Candidate theorem
 
@@ -241,7 +245,7 @@ one finite cofinal lower bound—not necessarily positivity—closes RH.
     norm of this one sampled family, and, when RH is false, the family recovers the exact supremal
     horizontal displacement rather than merely detecting its existence.
 
-11. **Complete observable pole-support tomography.**
+11. **Complete observable multiplicity-exact divisor tomography.**
     `CCMRectangularPoleTomography.lean` constructs the canonical meromorphic continuation
 
     ```text
@@ -252,31 +256,43 @@ one finite cofinal lower bound—not necessarily positivity—closes RH.
     `C_L`, and there are no other poles there.  The order is always `-1`, including when `rho` is
     multiple: the numerator has exact order `m-1` and the denominator exact order `m`.
 
-    `CCMRectangularObservablePoleTomography.lean` then removes the dependence on the isolated
-    dominant component.  After deleting any finite prefix beyond which `L<=log(n)/2`, the actual
-    logarithmically sampled Weil sequence differs from the right-divisor carrier by a uniformly
-    bounded sequence.  The correction L-series is analytic throughout `Re(s)>1`.  Therefore the
-    actual tail L-series has a canonical continuation whose simple-pole support in `Re(s)>1` is
-    exactly
+    `CCMRectangularFullObservableDivisorTomography.lean` then removes both the isolated dominant
+    component and the finite deletion from the theorem.  The complete logarithmically sampled
+    Weil sequence differs from the right-divisor carrier by one globally defined remainder.  An
+    auxiliary late cutoff decomposes that remainder into a uniformly bounded tail plus a finite
+    prefix, so its L-series is analytic throughout `Re(s)>1`; the resulting continuation itself is
+    cutoff-free.  Its simple-pole support in `Re(s)>1` is exactly
 
     ```text
     {1+(rho-1/2) : xi(rho)=0, Re(rho)>1/2}.
     ```
 
-    Thus one fixed-width scalar Weil sequence recovers the complete off-critical support, while
-    its sharp power exponent recovers the maximal horizontal displacement.
+    At a shifted zero of analytic multiplicity `m`, the full observable continuation has trailing
+    coefficient
+
+    ```text
+    2 m A_L(rho-1/2)^2.
+    ```
+
+    Since the window factor is nonzero, normalization recovers `m` exactly.  Hence one fixed-width
+    scalar Weil sequence recovers the complete off-critical divisor with multiplicity, while its
+    sharp power exponent recovers the maximal horizontal displacement.  The normalized weight is
+    intrinsic: it is independent of the positive width and the multiplicity copy naming the same
+    Xi support point.  There is no cutoff coordinate in the final continuation.
 
 ## Primary-literature novelty audit
 
 The exact theorem surface was compared with Connes--Consani's scaling-Hamiltonian, zeta-cycle,
 and archimedean Weil-positivity papers; Suzuki's 2025 Hilbert-space/screw-line criterion; Suzuki's
 2022 screw-function RH criteria; and Suzuki's June 2026 unified screw-function treatment of the
-Yoshida, Bombieri, Connes, and Connes--Consani--Moscovici forms.  Those works supply the parent
+Yoshida, Bombieri, Connes, and Connes--Consani--Moscovici forms; and Voros's meromorphic
+superzeta functions formed directly over the Riemann zeros.  Those works supply the parent
 Weil/screw/operator frameworks and one-parameter criteria.  No located result gives the conjunction
 proved here: an arbitrary fixed positive rectangle width, the arithmetic mesh `t=log n`, eventual
 lower boundedness and norm boundedness as exact RH criteria, cofinal negative divergence under
-false RH, sharp transverse power exponent, and exact simple-pole support tomography from the
-observable tail L-series.  The novelty claim is restricted to that conjunction; Landau's theorem,
+false RH, sharp transverse power exponent, and exact multiplicity-weighted pole tomography from the
+complete observable L-series with a cutoff-free continuation.  The novelty claim is restricted to
+that conjunction; Landau's theorem,
 Weil positivity, shifted-zeta continuation, and screw functions remain acknowledged parent theory.
 
 ## Gates
@@ -293,8 +309,10 @@ Weil positivity, shifted-zeta continuation, and screw functions remain acknowled
 - [x] exact RH equivalence, cofinal divergence, and bounded-below criterion formalized
 - [x] exact screw-function discrete-curvature identity and logarithmic-mesh criterion formalized
 - [x] sharp transverse power exponent and norm-boundedness criterion formalized
+- [x] multiplicity-exact observable residue tomography formalized
+- [x] cutoff eliminated from the full observable continuation and manuscript theorem
 - [x] complete paper proof audited at the divisor-polarization and abscissa boundaries
 - [x] unconditional Lean formalization of every promoted divisor-side claim
 - [x] primary-literature novelty audit
 - [ ] independent proof audit
-- [ ] standalone paper score at least 90/100
+- [x] standalone paper score at least 90/100

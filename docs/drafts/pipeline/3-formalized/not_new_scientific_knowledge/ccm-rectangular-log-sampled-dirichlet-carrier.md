@@ -12,7 +12,10 @@
   `CCMRectangularDominantFold.lean`, `CCMRectangularWeilCompleteness.lean`, and
   `CCMRectangularScrewCurvature.lean`, `CCMRectangularTransverseGrowth.lean`,
   `CCMRectangularPoleTomography.lean`, and
-  `CCMRectangularObservablePoleTomography.lean`
+  `CCMRectangularObservablePoleTomography.lean`, and
+  `CCMRectangularObservableDivisorTomography.lean`, and
+  `CCMRectangularFullObservableDivisorTomography.lean`, and
+  `CCMRectangularManuscriptCapstone.lean`
 
 ## Theorem
 
@@ -96,13 +99,26 @@ Unconditionally:
     coordinates `s=1+(rho-1/2)`.  A zero of multiplicity `m` still produces
     order `-1`, because the numerator has exact order `m-1` and the denominator
     exact order `m`.
-14. After deleting any finite initial segment beyond which `L<=log(n)/2`, the
-    actual Weil values differ from the full right-divisor coefficients by a
-    bounded sequence.  The correction L-series is analytic on `Re s>1`.
-    Hence the canonical continuation of the actual tail L-series has exactly
-    the same simple-pole support.  One fixed-width scalar Weil sequence thus
-    recovers every off-critical support coordinate, while its power exponent
-    recovers their supremal horizontal displacement.
+14. The complete actual Weil sequence differs from the full right-divisor
+    coefficients by one globally defined remainder.  A late cutoff decomposes
+    that remainder into a bounded tail plus a finite prefix, proving that its
+    L-series is analytic on `Re s>1`.  The resulting continuation is attached
+    to the full sequence and contains no cutoff parameter.  Its simple-pole
+    support is exactly the shifted right Xi support.
+15. The observable pole weights recover analytic multiplicity exactly.  If
+    `rho` has multiplicity `m`, then the trailing coefficient at
+    `s=1+(rho-1/2)` is
+
+    ```text
+    2 m A_L(rho-1/2)^2.
+    ```
+
+    Division by the nonzero window factor therefore recovers `m`.  The same
+    complete scalar sequence determines the full right off-critical divisor,
+    not only its support.
+16. The normalized pole weight is intrinsic: it is unchanged when the positive
+    rectangular width or the multiplicity copy naming a fixed support point is
+    changed.  There is no cutoff coordinate in the final continuation.
 
 The earlier safe-half-plane estimate remains available: for every `eps>0` and
 `Re s>=3/2+eps`,
@@ -165,6 +181,27 @@ The earlier safe-half-plane estimate remains available: for every `eps>0` and
 - `analyticAt_LSeries_xiRectangularWeilRemainderCoefficient`
 - `LSeries_xiRectangularWeilTailCoefficient_eq_continuation`
 - `meromorphicOrderAt_xiRectangularWeilTailContinuation_eq_neg_one_iff`
+- `meromorphicTrailingCoeffAt_xiRectangularWeilTailContinuation`
+- `normalizedObservableResidue_eq_xiRightMultiplicity`
+- `normalizedObservableResidue_intrinsic`
+- `meromorphicTrailingCoeffAt_xiRectangularWeilTailContinuation_cutoff_invariant`
+- `exists_xiRectangularAdmissibleCutoff`
+- `xiRectangularWeilFullRemainderCoefficient_LSeriesSummable`
+- `analyticAt_LSeries_xiRectangularWeilFullRemainderCoefficient`
+- `LSeries_xiRectangularWeilLogCoefficient_eq_fullContinuation`
+- `meromorphicOn_xiRectangularWeilFullContinuation_rightOne`
+- `meromorphicOrderAt_xiRectangularWeilFullContinuation_eq_neg_one_iff`
+- `meromorphicTrailingCoeffAt_xiRectangularWeilFullContinuation`
+- `normalizedFullObservableResidue_eq_xiRightMultiplicity`
+- `normalizedFullObservableResidue_intrinsic`
+- `riemannHypothesis_iff_fullObservableContinuation_analytic_rightOne`
+- `fixedWindowLogarithmicWeilCompleteness_capstone`
+- `fixedWindowObservablePoleTomography_capstone`
+- `fixedWindowObservableSupportRecovery_capstone`
+- `fixedWindowObservableDivisorTomography_capstone`
+- `fixedWindowObservableDivisorUniversality_capstone`
+- `fixedWindowFullObservableDivisorTomography_capstone`
+- `fixedWindowFullObservableDivisorUniversality_capstone`
 
 ## Boundary
 
