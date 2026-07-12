@@ -198,6 +198,76 @@ RH iff O(a,b)>=0 for every 0<a<1/2 and b in R,            (19)
 up to the positive factor `4/a` produced by `r=2u`.  Formula `(18)` records only the sign-relevant
 normalization; `(15)`--`(16)` are the primary exact coordinates.
 
+### Ordered-pair Mellin signature `[PROVED ON PAPER; ALGEBRAIC CORE IN LEAN]`
+
+Before grouping by `r=nm`, the same atoms admit a second exact description which determines the
+ambient signature.  For `w=a+i b` with `a>1/2`, put
+
+```text
+X_n(w)=integral_R k_n(x)exp(w x)dx.
+```
+
+The substitution `t=n exp(x)` gives
+
+```text
+X_n(w)=A(w)n^(-w-1/2),                                   (18o)
+
+A(w)=integral_0^infinity
+       t^(w-1/2)P(t)exp(-pi t^2)dt
+    =(w^2-1/4)/2 * pi^(-w/2-1/4)
+       Gamma(w/2+1/4).                                   (18p)
+```
+
+The last equality follows from the elementary Gaussian Mellin integral and one Gamma recurrence.
+In the half-plane `a>1/2`, the sum of `(18o)` is absolutely convergent and `A(w)!=0`.
+
+Expand the Hermitian diagonal `(2)` before summing the ordered pairs.  If
+
+```text
+C(a,b)=Re(A'(w)conj(A(w)))/a,
+d(a,b)=|A(w)|^2/(2a)>0,
+```
+
+then its `(n,m)` entry is
+
+```text
+K_(n,m)(a,b)
+ =(nm)^(-a-1/2) exp(i b(log m-log n))
+    * (C(a,b)-d(a,b)log(nm)).                              (18q)
+```
+
+Thus the oscillatory phase is only a diagonal unitary congruence.  For any two distinct positive
+integers `n_1,n_2`, the corresponding Hermitian principal determinant is exactly
+
+```text
+det K_{n_1,n_2}
+ =-d(a,b)^2 (n_1 n_2)^(-2a-1)
+    * (log n_1-log n_2)^2 < 0.                            (18r)
+```
+
+Indeed the phase cancels from `K_12 K_21`, and the remaining identity is
+
+```text
+(C-2du)(C-2dv)-(C-d(u+v))^2=-d^2(u-v)^2.                 (18s)
+```
+
+Consequently every two distinct theta atoms span a Krein plane: the ordered-pair kernel has one
+positive and one negative direction.  This does **not** contradict possible positivity of the
+actual scalar current, which evaluates the kernel only on the distinguished all-one source
+section.  It proves the sharper positive implementation law:
+
+> A successful theta/Hilbert--Polya construction must orient the distinguished cofinal all-prime
+> section after archimedean completion.  It cannot obtain RH by making the ambient theta-atom
+> coefficient kernel positive, by assigning a positive Gram vector to every ordered pair, or by
+> extending the desired sign to arbitrary coefficient perturbations.
+
+The restriction `a>1/2` in this signature calculation is essential: it is the region where the
+Dirichlet atom expansion is absolutely convergent.  The RH-equivalent scalar gate `(7)` lies in
+`0<a<1/2`, where the termwise Dirichlet expansion has crossed its convergence boundary.  The
+Wigner--Eisenstein current `(15)` is the completed carrier through that crossing.  Therefore
+orientation, if true, must be created by the cofinal source-selected completion rather than being
+present in the uncompleted pair kernel.
+
 ### Exact Eisenstein differential realization
 
 Put `Y=exp(2y)` and `D_Y=Y partial_Y`.  In the standard completed normalization, the nonconstant
@@ -401,9 +471,14 @@ inside the `y`-fibers; it must arise from the complete radial/arithmetic couplin
 - [x] identify the Wigner current with the completed Eisenstein differential current
       `(18d)`--`(18h)` on paper;
 - [x] prove and formalize the sharp positive symbol floor `(18i)`--`(18k)`;
+- [x] derive the ordered-atom Mellin factorization `(18o)`--`(18q)` and the exact two-point
+      Krein determinant `(18r)` on paper;
+- [x] formalize the affine-logarithmic determinant and its weighted strict negativity in Lean;
 - [x] identify the fiberwise-positive producer as impossible by Hudson rigidity;
 - [ ] complete a primary-source audit for the precise theta-product/Eisenstein parent identity;
 - [ ] formalize `(2)` and `(13)`--`(16)` in Lean without assuming RH or positivity;
+- [ ] formalize the analytic Mellin integral `(18o)`--`(18p)` and its differentiation/summation
+      interchange in the absolute-convergence half-plane;
 - [ ] formalize the removable `b=0` specialization after annihilation of the Eisenstein polar
       constant term;
 - [ ] determine the exact raising-operator relation between `Kcal_b` and the weight-zero

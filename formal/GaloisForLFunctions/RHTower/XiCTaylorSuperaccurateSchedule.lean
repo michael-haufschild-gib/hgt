@@ -77,14 +77,15 @@ theorem exists_xiCTaylorSuperaccurateSchedule :
     induction n with
     | zero => rw [hN_zero]
     | succ n _ =>
-        rw [show n.succ = n + 1 by omega, hN_succ]
+        rw [hN_succ]
         exact Nat.le_max_right _ _
   have hstrict : StrictMono N := strictMono_nat_of_lt_succ fun n => by
     rw [hN_succ]
     exact lt_of_lt_of_le (Nat.lt_succ_self (N n)) (Nat.le_max_left _ _)
   refine ⟨N, hstrict, ?_⟩
   intro n z hz
-  exact hK n (N n) (hKN n) z hz
+  obtain ⟨hvalue, hderiv⟩ := hK n (N n) (hKN n)
+  exact ⟨hvalue z hz, hderiv z hz⟩
 
 end
 

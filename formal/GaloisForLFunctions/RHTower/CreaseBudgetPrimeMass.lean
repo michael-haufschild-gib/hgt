@@ -761,14 +761,13 @@ theorem le_log_factorial {n : ℕ} (hn : 1 ≤ n) :
     hmono.integral_le_sum
   have heval : ∫ x in (1 : ℝ)..(1 + (d : ℝ)), Real.log x
       = (1 + (d : ℝ)) * Real.log (1 + (d : ℝ)) - (d : ℝ) := by
-    rw [integral_log (fun h => by
-      rcases Set.mem_uIcc.mp h with ⟨h1, _⟩ | ⟨_, h2⟩ <;>
-        nlinarith [Nat.cast_nonneg (α := ℝ) d])]
+    rw [integral_log]
     simp
+    ring
   have hsplit : ∑ i ∈ Finset.range (1 + d), Real.log ((i : ℝ) + 1)
       = ∑ i ∈ Finset.range d, Real.log ((1 : ℝ) + ((i + 1 : ℕ) : ℝ)) := by
     rw [add_comm 1 d, Finset.sum_range_succ']
-    have h0 : Real.log ((0 : ℝ) + 1) = 0 := by norm_num
+    have h0 : Real.log (((0 : ℕ) : ℝ) + 1) = 0 := by norm_num
     rw [h0, add_zero]
     refine Finset.sum_congr rfl fun i _ => ?_
     congr 1
@@ -776,13 +775,12 @@ theorem le_log_factorial {n : ℕ} (hn : 1 ≤ n) :
     ring
   rw [hsplit]
   refine le_trans (le_of_eq ?_) (le_trans (le_of_eq heval.symm) hint)
-  push_cast
   ring_nf
 
 /-- Legendre's first term: `⌊n/p⌋ ≤ ν_p(n!)`. -/
 theorem div_le_factorization_factorial {n p : ℕ} (hp : p.Prime) (hn : 1 ≤ n) :
     n / p ≤ n.factorial.factorization p := by
-  rw [hp.factorization_factorial (b := n + 1)
+  rw [Nat.factorization_factorial hp (b := n + 1)
     (lt_of_le_of_lt (Nat.log_le_self p n) (Nat.lt_succ_self n))]
   have h1 : (1 : ℕ) ∈ Finset.Ico 1 (n + 1) := by
     simp only [Finset.mem_Ico]
@@ -799,7 +797,7 @@ theorem factorization_factorial_le {n p : ℕ} (hp : p.Prime) :
     rw [inv_lt_one_iff₀]
     right
     linarith
-  rw [hp.factorization_factorial (b := n + 1)
+  rw [Nat.factorization_factorial hp (b := n + 1)
     (lt_of_le_of_lt (Nat.log_le_self p n) (Nat.lt_succ_self n))]
   push_cast
   calc ∑ i ∈ Finset.Ico 1 (n + 1), ((n / p ^ i : ℕ) : ℝ)
@@ -817,20 +815,28 @@ theorem factorization_factorial_le {n p : ℕ} (hp : p.Prime) :
             intro i hi
             simp only [Finset.mem_Ico] at hi
             exact Finset.mem_range.mpr hi.2
+          have h1r : (0 : ℝ) < 1 - ((p : ℝ))⁻¹ := by linarith
           have hfull : ∑ i ∈ Finset.range (n + 1), ((p : ℝ))⁻¹ ^ i
-              ≤ 1 / (1 - ((p : ℝ))⁻¹) := geom_sum_le hr0 hr1.le _
+              ≤ 1 / (1 - ((p : ℝ))⁻¹) := by
+            rw [geom_sum_eq (by linarith : ((p : ℝ))⁻¹ ≠ 1),
+              show (((p : ℝ))⁻¹ ^ (n + 1) - 1) / (((p : ℝ))⁻¹ - 1)
+                = (1 - ((p : ℝ))⁻¹ ^ (n + 1)) / (1 - ((p : ℝ))⁻¹) from by
+                  rw [div_eq_div_iff (by linarith) (by linarith)]
+                  ring]
+            exact div_le_div₀ (by norm_num)
+              (by nlinarith [pow_nonneg hr0 (n + 1)]) h1r le_rfl
           have hzero : ((p : ℝ))⁻¹ ^ 0 = 1 := pow_zero _
           have hsplit : ∑ i ∈ Finset.Ico 1 (n + 1), ((p : ℝ))⁻¹ ^ i
               = (∑ i ∈ Finset.range (n + 1), ((p : ℝ))⁻¹ ^ i) - 1 := by
-            rw [Finset.range_eq_Ico, ← Finset.sum_Ico_eq_sum_range]
-            · rw [← Finset.sum_Ico_consecutive _ (Nat.zero_le 1) (by omega),
-                show Finset.Ico 0 1 = {0} from rfl, Finset.sum_singleton, hzero]
-              ring
+            rw [Finset.range_eq_Ico,
+              Finset.sum_eq_sum_Ico_succ_bot (by omega : 0 < n + 1), hzero]
+            ring
           rw [hsplit]
           have hident : 1 / (1 - ((p : ℝ))⁻¹) - 1 = ((p : ℝ) - 1)⁻¹ := by
             have hpne : (p : ℝ) ≠ 0 := by linarith
             have hpm1 : (p : ℝ) - 1 ≠ 0 := by linarith
             field_simp
+            ring
           linarith [hfull, hident.ge, hident.le]
         calc (n : ℝ) * ∑ i ∈ Finset.Ico 1 (n + 1), ((p : ℝ))⁻¹ ^ i
             ≤ (n : ℝ) * ((p : ℝ) - 1)⁻¹ :=
@@ -861,9 +867,13 @@ theorem log_factorial_eq (n : ℕ) :
     exact Nat.mem_primesBelow.mpr ⟨by omega, hpp⟩
   have hprodeq : (n.factorial : ℕ) = ∏ p ∈ Nat.primesBelow (n + 1), p ^ n.factorial.factorization p := by
     rw [← Finsupp.prod_of_support_subset _ hsupp _ (fun p _ => pow_zero p)]
-    exact (Nat.factorization_prod_pow_eq_self hne).symm
-  rw [show ((n.factorial : ℕ) : ℝ) = ∏ p ∈ Nat.primesBelow (n + 1),
-      ((p : ℝ)) ^ n.factorial.factorization p from by rw [hprodeq]; push_cast; rfl]
+    exact (Nat.prod_factorization_pow_eq_self hne).symm
+  have hcast : ((n.factorial : ℕ) : ℝ) = ∏ p ∈ Nat.primesBelow (n + 1),
+      ((p : ℝ)) ^ n.factorial.factorization p := by
+    conv_lhs => rw [hprodeq]
+    push_cast
+    rfl
+  rw [hcast]
   rw [Real.log_prod (fun p hp => pow_ne_zero _
     (by exact_mod_cast (Nat.mem_primesBelow.mp hp).2.pos.ne'))]
   exact Finset.sum_congr rfl fun p hp => by rw [Real.log_pow]
@@ -891,7 +901,6 @@ theorem mertens_first_upper {n : ℕ} (hn : 1 ≤ n) :
     have hpp := (Nat.mem_primesBelow.mp hp).2
     have hpne : ((p : ℕ) : ℝ) ≠ 0 := by exact_mod_cast hpp.pos.ne'
     field_simp
-    ring
   have htheta := sum_primesBelow_log_le n
   have hfact := log_factorial_le n
   have hmain : (n : ℝ) * (∑ p ∈ Nat.primesBelow (n + 1), Real.log p / p)

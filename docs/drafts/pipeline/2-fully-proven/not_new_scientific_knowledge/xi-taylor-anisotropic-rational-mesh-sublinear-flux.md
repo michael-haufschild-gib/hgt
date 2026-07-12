@@ -184,13 +184,15 @@ The current corpus already supplies:
 - `xiCTaylorApprox_tendstoLocallyUniformly`;
 - `xiCTaylorApprox_deriv_tendstoLocallyUniformly`;
 - `xiCTaylorApprox_logDeriv_tendsto` at fixed pole-free points;
+- `exists_xiCTaylorSuperaccurateSchedule`: an axiom-clean source-selected schedule satisfying
+  the simultaneous expanding-ball value and derivative estimate `(3)`;
 - `xi_normalizedLogDeriv_tendsto_order` for the local pole residue;
 - `continuedPrimeArchSourceRelativeTrace_eventuallyEq_logDeriv_XiC`;
 - `riemannHypothesis_of_xiCTaylorGaussianRatLeftHalfImEventuallyBoundedAbove` for the older
   uniform-bound/fixed-rational quantifier pattern.
 
-The missing Lean infrastructure is a diagonal compact approximation selector, the explicit finite
-anisotropic mesh, and the quotient perturbation estimate `(13)`.
+The remaining Lean infrastructure is the explicit finite anisotropic mesh and the quotient
+perturbation estimate `(13)`; the diagonal compact approximation selector is formalized.
 
 ## Non-circularity gate
 
@@ -220,6 +222,12 @@ that retains the completed prime--archimedean orientation.
 
 - [x] 0 -> 1 in-progress: explicit source objects, mesh, and non-circularity gate
 - [x] 1 -> 2 fully-proven: complete paper proof of schedule existence and equivalence `(5)`
-- [ ] 2 -> 3 formalized: diagonal selector, mesh geometry, and quotient perturbation in Lean
+- [ ] 2 -> 3 formalized: mesh geometry and quotient perturbation remain; diagonal selector complete
 - [ ] 3 -> 4 publication-ready: only after a non-circular proof of `(15)`
 
+## Formalization log
+
+- 2026-07-12 — Formalized `XiCTaylorSuperaccurateSchedule` and
+  `exists_xiCTaylorSuperaccurateSchedule` in
+  `formal/GaloisForLFunctions/RHTower/XiCTaylorSuperaccurateSchedule.lean`; exact module build
+  passes and the theorem uses only `propext`, `Classical.choice`, and `Quot.sound`.

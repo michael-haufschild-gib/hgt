@@ -542,6 +542,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeSource
 import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeDerivatives
 import GaloisForLFunctions.RHTower.ThetaCuspReflection
 import GaloisForLFunctions.RHTower.ThetaWignerEisensteinSymbol
+import GaloisForLFunctions.RHTower.ThetaMellinPairSignature
 import GaloisForLFunctions.RHTower.ThetaCuspSchwartz
 import GaloisForLFunctions.RHTower.ThetaCuspMellinPole
 import GaloisForLFunctions.RHTower.PolarPrimeMellinDefect
