@@ -93,6 +93,19 @@ It forces the following values.
    Thus `alpha` is exactly the dyadic polynomial-growth exponent of the postcritical derivative
    product.  The corresponding Lyapunov average is `n log(alpha)/(2^n-1)` and tends to zero.
 
+4. **Arbitrary critical order `[PROVED HERE] [FORMALIZED] [CANDIDATE NEW SCIENTIFIC
+   KNOWLEDGE]`.** If the first nonzero critical jet has order `m>0`, then
+
+   ```text
+   product_(j=1)^(2^n-1) g'(g^[j](0))
+     =(-1)^n alpha^(n(m-1)).                              (V8)
+   ```
+
+   Thus the finite-orbit derivative exponent factors exactly as critical-order excess `m-1`
+   times the spatial scaling exponent `log(alpha)/log(2)`.  The complete formal theorem and its
+   reusable first-nonzero-jet composition lemma are recorded at
+   `../3-formalized/new_scientific_knowledge/feigenbaum-critical-order-postcritical-product-law.md`.
+
 Relations (V2)--(V7) are value identities.  They do not imply differential algebraicity or
 hypertranscendence and are not evidence for either conclusion without an additional theorem about
 relations among the resulting values.
@@ -101,9 +114,13 @@ The algebraic content (V2), (V4), and (V5) is formalized in
 `GaloisForLFunctions.FeigenbaumValueRelations` as `feigenbaum_critical_value`,
 `feigenbaum_dyadic_iterate`, `feigenbaum_dyadic_critical_value`,
 `feigenbaum_quadratic_postcritical_deriv`, and
-`feigenbaum_quadratic_postcritical_product`.  The derivative-product theorem has its own stage-3
-card at
-`../3-formalized/new_scientific_knowledge/feigenbaum-postcritical-derivative-product-law.md`.
+`feigenbaum_quadratic_postcritical_product`, together with the arbitrary-order declarations
+`feigenbaum_criticalOrder_postcritical_deriv` and
+`feigenbaum_criticalOrder_postcritical_product`.  The derivative-product theorems have stage-3
+cards at
+`../3-formalized/new_scientific_knowledge/feigenbaum-postcritical-derivative-product-law.md`
+and
+`../3-formalized/new_scientific_knowledge/feigenbaum-critical-order-postcritical-product-law.md`.
 The dyadic and derivative-product theorems are axiom-clean apart from Lean's standard `propext`,
 `Classical.choice`, and quotient soundness; the critical-value theorem uses no axioms.
 

@@ -644,11 +644,17 @@ The current Lean tree formalizes the finite pairability/index side (`OmegaComple
 forward infinite positive-measure Herglotz/Pick theorem in `MeasureCarrier.lean`, and the abstract
 countable Baire-avoidance backbone.  `HTGeometry.CauchyJetControllability` now proves the complete
 finite-dimensional real Cauchy-jet surjectivity theorem for every infinite injective real support,
-including the actual prime-log specialization.  The tree does not yet contain the corresponding
-`L^infinity(mu)` measure-level theorem for arbitrary nondiscrete support, infinite **signed**
-Cauchy-kernel index, algebraic rank-defect codimension, regularized infinite-measure reweighting, or
-parametric transversality.  Those missing layers carry the complete measure-universal claim, so no
-partial theorem is promoted to stage 3.
+including the actual prime-log specialization.  For that discrete source,
+`HTGeometry.PolynomialJetEscape`, `PrimeLogGaugePerturbation`,
+`PolynomialRelationDetector`, and `PrimeLogPolynomialJetEscape` prove positivity-preserving
+polynomial avoidance inside arbitrarily small bounded-gauge balls, including nonzero specialization
+of polynomial-coefficient relations at distinct upper-half-plane nodes.  `DiscreteCauchyJetPacket`,
+`DiscreteCauchyJetDerivatives`, and `JetFactorialScale` identify those coordinates exactly with the
+actual iterated derivatives and transfer avoidance across the factorial diagonal.  The tree does not yet
+contain the corresponding `L^infinity(mu)` measure-level theorem for arbitrary nondiscrete support,
+infinite **signed** Cauchy-kernel index, algebraic rank-defect codimension, regularized
+infinite-measure reweighting, or full parametric transversality.  Those missing layers carry the
+complete measure-universal claim, so no partial theorem is promoted to stage 3.
 
 ## Gates
 

@@ -134,3 +134,50 @@ No Euler, divisor, translation-spectrum, or zero-localization claim is made here
 - [ ] Prove or falsify the second-order variational matching lemma.
 - [ ] Literature audit only after the mathematical core moves beyond standard cascade observability.
 - [ ] Lean after a finite algebraic lemma survives; current formal infrastructure already covers primitive affine actions and algebraic primitive descent.
+
+## 2026-07-12 Attack residue on the quadratic ramification lemma
+
+Target: `w` genuinely nonautonomous transcendental entire first-order DA, `W' = w`, `W` of
+primitive defect one; exclude `W = a + g^2` with `g` transcendental entire. Write
+`P(z, X, Y) = 0` for the minimal ADE of `w`, `D = deg_(X,Y) P`, `N = deg_z P`. WLOG `X` does not
+divide `P` (else divide out: `w` is not identically zero).
+
+`[PROVED SKETCH]` **Finitely many zeros of `g` collapse the defect.** If `g` has finitely many
+zeros, then by Hadamard (Gol'dberg gives `w`, hence `W`, hence `g`, finite order)
+`g = R e^Q` with `R, Q` polynomials, so `(W-a)'/(W-a) = 2Q' + 2R'/R` is rational and `W`
+satisfies a first-order rational linear ADE, contradicting defect one. Hence `g` has infinitely
+many zeros; each zero of multiplicity `m` is a zero of `w` of odd order `2m-1` and an `a`-point
+of `W` of order `2m`.
+
+`[PROVED SKETCH]` **Multiple zeros pin the origin of the curve.** At a zero of `g` of
+multiplicity `m >= 2`, `(w, w')(z_0) = (0, 0)`, so `P(z_0, 0, 0) = 0`. Infinitely many multiple
+zeros force `P(z, 0, 0) = 0` identically.
+
+`[CONJECTURE]` **Newton-polygon multiplicity bound.** Along a zero of multiplicity `m`, the
+solution germ has `w ~ t^(2m-1)`, `w' ~ t^(2m-2)`. Substituting into `P(z_0+t, w, w') = 0`, the
+minimal `t`-order among monomials `c_(ij)(z_0+t) X^i Y^j` must be attained twice:
+`(2m-1)(i-i') + (2m-2)(j-j') = v' - v` with `|i-i'|,|j-j'| <= D`, `|v'-v| <= N`. Unless the
+matching pair has `i+j = i'+j'` (a diagonal block of the Newton polygon, where the condition
+degenerates to `i - i' = v' - v` independently of `m`), this forces `2m-2 <= N + D`, a uniform
+multiplicity bound. Open sub-case: diagonal-block ADEs.
+
+`[PROVED SKETCH]` **Simple zeros ride one algebraic branch.** At a simple zero `z_n` of `g`,
+`(w, w')(z_n) = (0, 2 g'(z_n)^2)`, so `P(z_n, 0, 2g'(z_n)^2) = 0`. Since `P(z, 0, Y)` is not
+identically zero, the values `2 g'(z_n)^2` lie on the algebraic curve `P(z, 0, Y) = 0`; by
+pigeonhole one algebraic branch `Y = phi(z)` carries infinitely many of them:
+`2 g'(z_n)^2 = phi(z_n)`. Equivalently `W'' = phi(z)` at infinitely many `a`-points of `W`.
+
+`[OPEN CORE — sharpened]` Drive the branch constraint to a contradiction with genuine
+nonautonomy. Obstruction found: the auxiliary function `H = W'' - phi - (lower ADE terms)`
+vanishes identically precisely in the Riccati stratum `w' = a_0 + a_1 w + a_2 w^2` (there
+`phi = a_0` is the ADE's own section, so the constraint is a tautology). The decisive test case
+is therefore: **does a genuinely nonautonomous Riccati with rational coefficients admit an entire
+transcendental solution `w = 2 g g'` with `g` entire and `int w` of defect one?** The Riccati
+linearization `w = -u'/(a_2 u)` with `u'' - (a_1 + a_2'/a_2) u' + a_0 a_2 u = 0` puts the
+question inside classical second-order linear theory, where the banked linear-order-two rigidity
+(`p != 0` stratum) already applies to the inner state; what is missing is the bridge from that
+rigidity to the ramification statement for the primitive.
+
+Next move: settle the Riccati test case by combining the linearization with the banked
+`nonautonomous-cap-linear-order-two-shadow-rigidity` mechanism; if it survives there, attack the
+diagonal-block Newton case, which is the only escape from bounded multiplicities.

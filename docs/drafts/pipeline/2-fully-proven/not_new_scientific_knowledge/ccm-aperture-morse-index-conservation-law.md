@@ -146,6 +146,19 @@ charge in the Euler-convergent region. A genuinely source-native CCM proof may t
 index-preserving incidence transform between the Euler Pick system and `G_a`; merely observing that
 both indices vanish iff RH is not such a transform.
 
+`[PROVED SUBSEQUENT TRANSPORT]` The global screw kernel supplies that index transport after cofinal
+exhaustion. Its Krein--Langer negative index is exactly the total right-half off-line zero
+multiplicity, while continuous-kernel exhaustion identifies that index with `sup_a kappa(a)`.
+The shifted-Xi inner denominator has the same cofinal model-space dimension. Thus
+
+```text
+sup_a kappa(a)
+ =right-half off-line zero multiplicity
+ =sup_(omega>0)dim K(B_omega).
+```
+
+The proof is in `ccm-aperture-morse-hardymodel-index-exhaustion-law.md`.
+
 ## Scientific status
 
 The ingredients are classical min--max monotonicity, Yoshida's localized Weil criterion, and
@@ -173,5 +186,5 @@ represented in Lean. An abstract wrapper would not certify the theorem, so no Le
 - [x] small-aperture anchor recorded
 - [x] RH, charge conservation, nondegeneracy, and screw injectivity identified
 - [x] first-zero-mode crossing isolated
+- [x] cofinal aperture charge identified with the full Hardy off-line model-space index
 - [ ] construct a source-defined proof of `ker(G_a)=0` for every `a`
-

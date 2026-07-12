@@ -263,8 +263,11 @@ log-position/Sonin graph and its source-selected relative trace.
 
 ## Prime-log Herglotz source refinement
 
-The pole carrier at `PrimeLogHerglotz.lean:211` supplies a canonical static source coordinate, but
-the dyadic gauge used by the facet-sewn HT construction is not the arithmetic zeta weight.
+The prime-log pole carrier constructed in `PrimeLogHerglotz.lean` supplies a canonical static
+source coordinate, but the dyadic gauge used by the facet-sewn HT construction is not the
+arithmetic zeta weight. The later theorem
+`not_summable_primeLogHerglotzTransportMassOrder_of_pos` is a distinct statement: it proves that
+every finite logarithmic cancellation order fails after positive transport.
 
 `[PROVED ON PAPER]` The exact Euler-logarithm measure on prime-power log support is
 
@@ -300,7 +303,26 @@ This is
 `GaloisForLFunctions.HTGeometry.not_summable_primeLogHerglotzTransportMass_of_pos`, with formalized
 card
 `../3-formalized/not_new_scientific_knowledge/prime-log-herglotz-positive-transport-wall.md`.
-The critical half-weight is therefore not a domain issue that finite polynomial degree removes.
+The stronger declaration
+`not_summable_primeLogHerglotzTransportMassOrder_of_pos` proves the same divergence after every
+finite log-position cancellation order. `PrimeLogCauchySeamRank.lean` then proves exact finite
+independence: every nonzero packet of distinct upper-half-plane Cauchy sections remains outside the
+transported prime `ell^2` space. The critical half-weight is therefore not a domain issue that
+finite polynomial degree or finite-rank additive renormalization removes.
+
+`[PROVED IN LEAN, POSITIVE COUNTERPART]` The canonical Gamma diagonal repairs the complete finite
+Cauchy core, not only one normalized section:
+
+```text
+sum_p phi(2log p)
+  |sum_j c_j/(z_j-log p)|^2<infinity.                    (3a)
+```
+
+For distinct upper-half-plane nodes, the paired capstone says that `(3a)` always holds while the
+undamped critical packet is summable exactly when `c=0`. This is formalized in
+`GammaDampedPrimeLogCauchyDomain.lean`. Hence a successful carrier is forced to supply a genuine
+inverse-prime archimedean order before completion; the Gamma diagonal supplies exactly that domain
+resource.
 
 ### Consequence
 
@@ -311,11 +333,12 @@ The sewing must retain the exact residues and functional-equation polarization; 
 universality theorem proves that an unpointed Herglotz/HT relation complex has no source-selection
 content.
 
-`[OPEN RH CORE, SHARPENED]` Construct a static prime--Gamma covariance or relative-trace carrier
-whose completed finite-degree feature maps are defined across the half-weight even though neither
-prime facet is individually transportable. Prove the source identity and the Gram error estimate
-`(3)` on that sewn carrier. Any construction that first transports the positive prime Herglotz
-space and adds Gamma afterward is now formally excluded.
+`[OPEN RH CORE, SHARPENED]` Derive the Gamma-damped finite-Cauchy domain from the actual
+Hardy--Titchmarsh/Gauss-paired/Sonin source operator, then prove that its source-selected relative
+covariance equals the completed prime--archimedean trace and satisfies the Gram error estimate `(3)`.
+The analytic domain crossing is complete; source selection, covariance subtraction, and
+divisor-sensitive positivity remain open. Any construction that first transports the positive
+prime Herglotz space and adds Gamma afterward is formally excluded.
 
 ## Hardy--Titchmarsh/Sonin sewing audit after the prime-log pointer
 
@@ -444,18 +467,45 @@ channels therefore contains a strictly positive cross term.  The Euler logarithm
 log-position derivative are additive over prime powers and contain no such pair terms.  Hence this
 positive covariance cannot equal the continued source trace directly.
 
-This leaves one precise, nonempty construction problem rather than a generic half-weight wall:
-retain `(4)` to obtain the Gamma decay, then perform a source-defined operator-valued subtraction
-of its off-diagonal prime-power energy while preserving the degree-one log-position response.
-Orthogonalizing the channels before sewing restores additivity but deletes the covariance that made
-the half-weight finite.
+This leaves one precise, nonempty construction problem rather than a generic half-weight wall.
+The correct positive organization is now known: retain the prime channels as the columns of one
+Gamma-damped synthesis operator `T`. The formal finite-Cauchy summability theorem makes `T`
+Hilbert--Schmidt; `T^*T` retains every off-diagonal covariance, while `Tr(T^*T)` is automatically the
+additive sum of its diagonal column energies. This is proved on paper in
+`../2-fully-proven/not_new_scientific_knowledge/ccm-gamma-damped-cauchy-frame-trace-law.md`.
+The remaining construction problem is to realize this synthesis inside the actual semilocal
+operator. Its Euler-region prime-power diagonal is exact: the uniquely forced correction
 
-`[LEADING CONJECTURE]` The conjugated local-channel sum in the Gauss-paired quantized differential
-identity is the required covariance subtraction before trace, and the Sonin principal-shell
-relative defect is its compact/Hilbert--Schmidt compression.  Prove that their common
-Hardy--Titchmarsh realization sends the kernel `(4)` to the completed degree-one relative trace and
-that the remaining grade-two operator is its positive Schur complement.  This would produce the
-coherent maps `G_(d,j)`; no existing project theorem proves the Schur-complement bound.
+```text
+r_(p,k)=1/(k p^k phi(2klog p))
+       =sqrt(1+p^(-4k))/(sqrt(2)k)
+```
+
+is a positive contraction, and the corrected Gram trace is precisely the Euler-log Cauchy
+polarization. But the centered von-Mangoldt source forces instead
+
+```text
+q_(p,k)=((log p)/sqrt(2))p^(k/2)sqrt(1+p^(-4k)),
+```
+
+which is cofinally unbounded. This is proved in
+`../2-fully-proven/not_new_scientific_knowledge/ccm-euler-gamma-radon-nikodym-frame-law.md`.
+The remaining source problem is therefore to realize that recession as a closable relative
+operator and implement the exponential Loewner atom
+`(exp(-i conjugate(w)t)-exp(-i zt))/(z-conjugate(w))`, which is not the Euler Cauchy product. The
+archimedean/boundary divided-difference channel must live on the same domain before the complete
+frame can be identified with the actual semilocal operator. The canonical closed two-channel graph
+and the exact bilateral factorization of this atom are already proved in
+`../2-fully-proven/not_new_scientific_knowledge/ccm-logderivative-closed-two-channel-graph-law.md`;
+the open input is the distinguished Sonin compression and its quantitative relative trace bound.
+
+`[LEADING CONJECTURE]` The conjugated local-channel family in the Gauss-paired quantized
+differential identity is the resolved synthesis map, and the Sonin principal-shell relative defect
+is its compact/Hilbert--Schmidt compression. Prove that their common Hardy--Titchmarsh realization
+has the channel Gram described above, sends its diagonal trace to the completed degree-one relative
+trace, and retains the grade-two covariance as its positive off-diagonal operator. The bounded
+correction is exact only in the Euler region; no existing project theorem realizes the unbounded
+critical correction and archimedean/boundary channel in the same Sonin operator.
 
 `[SOURCE-SELECTION CAVEAT]` The damping `d(t)=sqrt(phi(2t))` is natural but is not yet selected by
 the exact Hardy--Titchmarsh forward map.  That map selects the local symbol and its noncompact Euler
@@ -491,10 +541,11 @@ amount while preserving its positivity.  This is the theorem in
 smaller exponential domain.  The route must construct one source operator/form whose all-degree
 compressions exhaust the target, or prove estimates with genuine degree-to-height control.
 
-`[ROUTE DISCIPLINE]` The Gamma-damped covariance `(4)` is useful only if it is derived inside that
-completed source operator and its off-diagonal covariance is canceled before trace.  Proving that
-its Schur complement is nonnegative after identifying it with the target form would merely restate
-the target-width contraction/RH criterion.
+`[ROUTE DISCIPLINE]` The Gamma-damped covariance `(4)` is useful only if its channel synthesis is
+derived inside that completed source operator and its diagonal trace is identified arithmetically.
+The off-diagonal covariance should remain in the Gram operator rather than be canceled. Proving
+positivity only after identifying the whole Gram with the target form would merely restate the
+target-width contraction/RH criterion.
 
 `[LEAN PROGRESS]` The damped covariance itself, strict positivity of its entries, its diagonal law,
 and the exact bound
@@ -529,3 +580,41 @@ statements:
 This leaves the Gamma-damped covariance `(4)` as a model for the required decay, not as an
 identified suboperator of the present Gauss-paired construction.  The exact open core is now a
 uniform covariance-cancellation/Schatten theorem, followed by the finite-degree Xi moment identity.
+
+## Diagonal residue-bundle reduction
+
+`[PROVED BRIDGE]` The infinitesimal safe completed kernel now has a canonical diagonal Fock
+relation
+
+```text
+T_0 k_x=k_x tensor (t |-> exp(-xt)),
+```
+
+whose contractivity is equivalent to RH.  This target is source-selected: under the reflected
+Paley--Wiener transform, `exp(-xt)` is the anti-causal residue coordinate of the upper-half-plane
+Cauchy pole `(u-i x)^(-1)` in the canonical closed completed-logarithmic-source graph.
+
+The universal Laplace coordinate also has the exact polar--prime incidence
+
+```text
+1/(x+y)
+ =-zeta'(1+x+y)/zeta(1+x+y)-1/(x+y+1)
+  +integral_0^infinity exp(-(x+y+1/2)h)dR(h).
+```
+
+Thus the required contraction is precisely a four-channel passivity law coupling the safe
+completed input, the shifted polar Laplace channel, the resolved von-Mangoldt prime-power channel,
+and the signed critical Mellin-defect channel.  The complete proof is in
+`../2-fully-proven/not_new_scientific_knowledge/ccm-diagonal-fock-polar-prime-mellin-incidence-law.md`.
+
+The formal line-211 transport theorem fixes the topology of any approximation.  Sampling the same
+Cauchy residue coordinates at `log p` remains outside the prime Hilbert domain after every fixed
+finite rational cancellation order, while the formal Gamma-damped carrier transition places every
+finite Cauchy packet in the domain.  Therefore the genuine Gauss/Sonin construction must sew Gamma
+before completion and converge in a relative graph topology; ordinary prime `ell^2` convergence is
+not the relevant limit.
+
+`[OPEN RH CORE, RESIDUE FORM]` Prove that the distinguished Sonin compression of the closed Xi
+source graph is contractive on the complete diagonal residue bundle and that its cofinal defect
+index is preserved.  This is the common operator statement behind the finite-degree Gram target,
+the four-unit boundary relative-trace bound, and the square restricted-Weil Evans line.

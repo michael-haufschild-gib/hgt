@@ -146,8 +146,14 @@ ker G_a={0}
 Equation `(13)` is a definition of the exact remaining boundary object, not a claim that a
 finite-dimensional determinant has already been constructed. The theorem proves only that its
 interior trace is finite-dimensional and indexed canonically by the real characteristic crossings.
-Reducing the exterior compatibility to a finite determinant requires an additional truncated
-zero-free-multiplier factorization theorem.
+The exterior compatibility is irreducibly infinite-dimensional. The zero-free multiplier `c_a`
+retains the infinite digamma pole lattice `plus_or_minus i(2n+1/2)`. Its exterior restriction is a
+Hankel kernel; Kronecker's finite-rank theorem would make `c_a` rational if that restriction had
+finite rank. Therefore the finite packet may appear as one block, but the complete Evans object
+must begin as an operator/Fredholm relation on an infinite-dimensional Gamma boundary space. A
+finite effective determinant is legitimate only after an exact Schur-complement elimination whose
+entries retain the infinite block's resolvent. The proof is in
+`ccm-characteristic-evans-boundary-infinite-rank-law.md`.
 
 ## 4. Positive CCM carrier law
 
@@ -168,10 +174,10 @@ finite real characteristic packet
 ```
 
 In the second branch the packet size `d_a` is allowed to grow with aperture. A fixed finite-state or
-fixed-order scalar boundary rule can work cofinally only if it proves both a compression theorem
-for this growing packet and elimination of the exterior trace. The earlier coarse argument forcing
-crossings from the prime main term was invalid because it omitted `P_a(0)=8sinh(a)`, which cancels
-that main term.
+fixed-order scalar boundary rule cannot encode the exterior trace. A cofinal proof must construct
+the infinite boundary operator and couple it to the growing finite packet. The earlier coarse
+argument forcing crossings from the prime main term was invalid because it omitted
+`P_a(0)=8sinh(a)`, which cancels that main term.
 
 This is standard scalar multiplier and ODE reduction, so it is a bridge rather than new scientific
 knowledge.
@@ -185,8 +191,10 @@ knowledge.
 - [x] interior null equation reduced to a constant-coefficient ODE
 - [x] exact finite characteristic-mode packet identified
 - [x] remaining boundary Evans relation, including exterior data, specified
+- [x] exterior trace proved infinite-rank
+- [x] raw finite characteristic-only Evans determinant retired
 - [ ] decide whether the corrected symbol has real zeros at each aperture
-- [ ] prove truncated zero-free-multiplier injectivity and reduce the exterior trace
-- [ ] construct the Evans relation in a closed trace/boundary space
+- [ ] construct the infinite-dimensional Evans relation in a closed trace/boundary space
+- [ ] construct an exact Schur complement retaining the infinite boundary resolvent
 - [ ] prove its kernel is zero for every aperture
 - [ ] RH

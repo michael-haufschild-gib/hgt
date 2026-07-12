@@ -364,6 +364,17 @@ relation geometry" with the following positive universality law:
 > with every finite simplicial relation geometry, including every mixture of facet dimensions and
 > minimal-circuit degrees.
 
+The prime-log source supplies a second positive law at the carrier level:
+
+> **Finite-jet Zariski fullness.** At every strictly positive prime-log mass configuration, the
+> admissible positive cone has full algebraic tangent freedom on every finite translated actual
+> differential-jet packet.  Every proper algebraic finite-jet condition can be escaped by an arbitrarily small
+> finitely supported mass perturbation without changing the pole carrier or losing positivity.
+
+This statement is proved and formalized in `positive-prime-log-polynomial-jet-escape`.  Its
+algebraic and interpolation mechanisms are classical and are classified as a bridge; the
+scientifically new candidate on this card remains the realized constraint geometry.
+
 This forces a positive requirement on any RH construction built from HT relation complexes:
 
 > **Arithmetic source-selection requirement.** An RH-capable HT construction must carry a
@@ -377,6 +388,20 @@ arithmetic source must supply selection.  Candidate markings include an Euler-fa
 orientation, a canonical positive measure or kernel cone, a functional-equation polarization, or a
 prime-indexed compatibility class.  A successful construction must prove that its marking is intrinsic and
 cannot be changed by the rational gauge freedoms already exhibited in the Herglotz theorem.
+
+Finite-jet Zariski fullness sharpens this requirement.  If the marking is stable under small
+positive carrier-preserving mass perturbations, then it cannot be a proper algebraic condition on
+any finite jet packet.  Its finite-jet Zariski closure is forced to be the whole packet space.
+Therefore an RH-capable marking must be carried by an infinite compatibility layer: a global Euler
+product law, a functional-equation polarization across the whole carrier, a boundary kernel cone,
+or an inverse-limit prime class.  Positivity and the pole support alone do not provide that layer.
+
+The upper-end carrier now makes the functional-equation option geometric.  Complex translations
+preserve one end and commute with differentiation, whereas `s |-> 1-s` exchanges the upper and
+lower ends and satisfies the formally proved signed law `R D=-D R` on their meromorphic fields.
+Hence an RH-capable polarization must be a two-ended sewing carrying this sign together with the
+Euler marking.  The generic HT source fills each one-ended finite differential window; the
+arithmetic selector must constrain how the two windows are identified globally.
 
 The result therefore does not furnish a carrier for `zeta`.  It identifies what a carrier theorem
 must positively add: a canonical pointing of the otherwise universal constraint geometry.
@@ -440,29 +465,124 @@ The current Lean tree contains genuine supporting components, but not this theor
 - `GaloisForLFunctions.HTGeometry.CauchyJetControllability` proves that finitely supported real
   masses on any infinite injective real support surject onto every finite complex Cauchy-jet packet
   at distinct upper-half-plane nodes; `PrimeLogCauchyJetControllability` specializes this theorem
-  to the actual prime-log support.
+  to the actual prime-log support and proves full tangent freedom inside every strictly positive
+  mass cone;
+- `GaloisForLFunctions.HTGeometry.PolynomialJetEscape` proves that every nonzero algebraic relation
+  on a finite complex packet has a closed nowhere-dense zero set and can be escaped through any
+  surjective positive finite-mass control map; `PrimeLogPolynomialJetEscape` proves this for the
+  actual dyadic prime-log masses;
+- `GaloisForLFunctions.HTGeometry.PrimeLogGaugePerturbation` proves that every positive finitely
+  supported additive mass perturbation is represented exactly by a logarithmic gauge which changes
+  only finitely many prime coordinates, preserves boundedness, and can be made uniformly as small
+  as prescribed in the bounded-gauge norm;
+- `GaloisForLFunctions.HTGeometry.PolynomialRelationDetector` proves that every nonzero
+  `C[z]`-coefficient relation has a nonzero specialization at a finite packet of distinct
+  upper-half-plane translated nodes; `PrimeLogPolynomialJetEscape` composes this detector with the
+  gauge-ball escape theorem;
+- `GaloisForLFunctions.HTGeometry.DiscreteCauchyJetPacket` proves absolute convergence and exact
+  affine finite-mass variation of the prime-log normalized jet packet;
+- `GaloisForLFunctions.HTGeometry.DiscreteCauchyJetDerivatives` proves by locally uniform termwise
+  differentiation that the normalized order-`j` coordinate is exactly `g^(j)/j!`;
+- `GaloisForLFunctions.HTGeometry.JetFactorialScale` proves that the nonzero factorial diagonal
+  preserves nonzero jet polynomials.  Consequently `PrimeLogPolynomialJetEscape` proves gauge-ball
+  escape for nonzero polynomial-coefficient relations in the actual iterated derivatives.
+- `GaloisForLFunctions.HTGeometry.RationalCoefficientClearing` gives a canonical nonzero common
+  denominator and cleared multivariate polynomial for every nonzero `C(X)`-coefficient relation,
+  chooses an upper-half-plane detector away from the entire coefficient-pole divisor, and proves
+  gauge-ball escape for the honest specialized rational relation in the actual iterated
+  derivatives.
+- `GaloisForLFunctions.HTGeometry.FiniteEvaluationPacket` proves the coefficient-uniform algebraic
+  geometry needed beyond fixed-relation escape: every finite linearly independent family of
+  complex functions has one square full-rank evaluation packet excluding every complex coefficient
+  vector simultaneously.
+- `GaloisForLFunctions.HTGeometry.ExpandedMonomialEvaluation`,
+  `CoefficientPatternDeterminant`, and `CoefficientUniformJetEscape` instantiate that geometry for
+  every finite expanded family `z^d M_beta(x)`, choose noncolliding upper translated nodes, package
+  all complex coefficient vectors into one determinant, and make the matrix full rank by an
+  arbitrarily small bounded-gauge perturbation of the actual differential jets.
+- `GaloisForLFunctions.HTGeometry.BoundedGaugeContinuity` realizes bounded gauges as a complete
+  uniform function space and proves continuity of every actual differential-jet coordinate.
+  `BoundedGaugeGenericity` proves that each finite coefficient-pattern rank defect is closed and
+  nowhere dense and that every countable family of such defects has dense residual complement.
+- `GaloisForLFunctions.HTGeometry.CountableDifferentialPattern` explicitly codes finite injective
+  shift packets, jet rectangles, distinct monomial supports, and polynomial coefficient-degree
+  bounds without coding their complex coefficient vectors.  It proves that the code type is
+  countable and produces a dense residual set of bounded gauges satisfying coefficient rigidity
+  for every code simultaneously.  `CountableShiftPalette` specializes this result to the exact
+  countable set `Q(i)+sum_v Z omega_v` used here.
+- `GaloisForLFunctions.HTGeometry.PolynomialPatternRectangularization` proves that every finite
+  `C[z]`-coefficient differential polynomial has a canonical pattern, a faithful expanded
+  coefficient vector, and an exact specialized-evaluation expansion.
+  `PolynomialCoefficientDifferentialFreeness` then proves the conventional finite-packet
+  polynomial relation is zero.  `RationalCoefficientDifferentialFreeness` combines this with exact
+  canonical denominator clearing and proves dense-residual cleared `C(z)`-coefficient freeness,
+  including existence on the exact `Gamma_Delta` palette.
+- `GaloisForLFunctions.HTGeometry.UpperEndFilter`, `UpperEndMeromorphicField`, and
+  `UpperEndDifferentialField` construct the directed upper-end germ geometry, prove that its
+  eventual-analytic subring is a domain, extend differentiation to its fraction field, and prove
+  that all complex translations are commuting differential-field automorphisms.
+  `UpperEndPrimeLogCarrier` embeds `C(z)` faithfully and realizes every bounded prime-log source
+  and every complex translate inside this one field.
+- `GaloisForLFunctions.HTGeometry.UpperEndPrimeLogJets` identifies every abstract differential-field
+  jet with the genuine translated complex derivative germ.  `UpperEndDifferentialIndependence`
+  carries field relations through canonical clearing and faithful germ evaluation, propagates
+  eventual vanishing across the common translated upper domain, proves every finite jet rectangle
+  algebraically independent, and assembles genuine `DifferentialIndependent (RatFunc C)` for the
+  full palette, including unconditional existence for `Gamma_Delta`.
+- `GaloisForLFunctions.HTGeometry.TwoEndedReflection` constructs the lower-end companion and proves
+  that critical reflection exchanges the two meromorphic fields with the signed differential law
+  `R D=-D R`.  This formalizes the functional-equation sewing geometry but does not by itself
+  identify the generic source with zeta.
+- `GaloisForLFunctions.HTGeometry.AlgebraicIndependentLinearForms` proves the nonlinear algebraic
+  core of the rank lemma: a full-row-rank matrix has a right inverse, and its row linear forms in
+  an algebraically independent family remain algebraically independent.
 
-The following theorem-specific obligations determine Lean completion.  Items 2 and 4 are now
-formalized; the other three and the final assembly remain:
+The following theorem-specific obligations determine Lean completion.  Items 1, 2, and 4 are
+formalized; items 3, 5, and the final assembly remain:
 
-1. `[PARTIALLY FORMALIZED]` `GaloisForLFunctions.HTGeometry.PrimeLogHerglotz` defines (S1), proves
+1. `[FORMALIZED]` `GaloisForLFunctions.HTGeometry.PrimeLogHerglotz` defines (S1), proves
    absolute convergence at every complex argument after totalized-inverse interpretation,
    Herglotz positivity, locally uniform convergence and holomorphy off the pole carrier, and an
    exact simple-pole theorem at every `log p` with explicit nonzero residue.  It also proves
    positivity and local finiteness of the support, `Q`-linear independence, and exclusion from
    every finite rational span.  The exact Sidon/private-pole geometry and the resulting full
    differential-linear independence of finite complex-translation packets are formalized in the
-   two modules above.  Finite-dimensional real Cauchy-jet surjectivity for the actual prime-log
-   support is also formalized.  For this realization theorem, the remaining source obligation is
-   to turn those finite mass controls into arbitrarily small positive gauge perturbations and prove
-   that each fixed genuinely nonlinear relation locus for the countable set `Gamma_Delta` is closed
-   with empty interior.  The final countable Baire intersection is already formal, and the stronger
-   uncountable full-complex parametric-transversality theorem is not required;
+   two modules above.  Finite-dimensional real Cauchy-jet surjectivity, full tangent freedom inside
+   the positive mass cone, closed nowhere-dense zero sets for nonzero finite-jet polynomials, and
+   positive escape from every such polynomial relation are formalized for the actual prime-log
+   source, and those perturbations are formalized as exact arbitrarily small bounded logarithmic
+   gauges.  The polynomial-coefficient detector extraction, its composition with gauge-ball escape,
+   the exact identification with actual prime-log Herglotz derivatives, and factorial-coordinate
+   descent are also formalized.  Canonical simultaneous denominator clearing, avoidance of the
+   complete coefficient-pole divisor, and actual differential-jet escape for each fixed nonzero
+   rational-coefficient relation are now formalized as well.  The coefficient-uniform source
+   geometry is also formalized: expanded functions `z^d M_beta(x)` admit a full-rank packet at
+   noncolliding upper translated nodes; simultaneous prime-log control realizes determinant escape
+   on actual derivatives; and the resulting defect is closed and nowhere dense in the complete
+   bounded-gauge space.  The countable rectangular code for all finite shift packets, jet orders,
+   monomial supports, and coefficient degrees is now formalized, as is its specialization to the
+   exact palette `Gamma_Delta=Q(i)+sum_v Z omega_v`.  One bounded gauge is formally proved to satisfy
+   every finite polynomial-coefficient relation rigidity condition simultaneously.  Arbitrary
+   finite polynomial support is now canonically rectangularized, its coefficient vector is proved
+   faithful, and its specialized evaluation is reconstructed exactly.  Canonically cleared
+   rational-coefficient relations are also proved zero.  The upper-end analytic domain, its
+   meromorphic fraction field, quotient-rule derivation, commuting complex-translation
+   automorphisms, faithful `C(z)` embedding, and actual prime-log translate elements are now
+   formalized.  Field-valued differential jets are identified with the genuine translated
+   derivatives; field relation vanishing is carried through canonical denominator clearing and
+   faithful upper-end germ evaluation; the identity theorem promotes eventual vanishing to the
+   full common translated upper domain.  Finite rectangles are then assembled into
+   `DifferentialIndependent (RatFunc C)` for the complete palette, with unconditional existence on
+   `Gamma_Delta`.  The coefficients themselves range over uncountable `C` and are correctly
+   eliminated patternwise by the determinant rather than enumerated;
 2. `[FORMALIZED]` the arbitrary finite-complex facet-prime identity and its preservation under an
    arbitrary localization are proved in
    `GaloisForLFunctions.HTGeometry.StanleyReisnerFacetIdeal`;
-3. the differential Smith-normal-form rank lemma (14) instantiated in an actual differential
-   field of meromorphic functions;
+3. `[PARTIALLY FORMALIZED]` the full-row-rank linear-form preservation theorem underlying (14) is
+   formalized.  The remaining differential step is the polynomial-operator Toeplitz lift: row
+   independence over `C(delta)` must imply full row rank for every finite packet of shifted output
+   jets, after which the formalized linear-form theorem gives differential independence.  The
+   resulting rank statement must then be instantiated in the upper-end meromorphic field;
 4. `[FORMALIZED]` the explicit six-vertex facet family (16), its exact minimal nonfaces (17),
    nonpurity, facet-antichain property, and two-thickness are proved in
    `GaloisForLFunctions.HTGeometry.WedgeTwoThick`;
@@ -492,6 +612,41 @@ unconditionally.
   constant-coefficient differential-linear independence formalized unconditionally in Lean
 - [x] infinite-real-support Cauchy-jet coefficient rigidity and real finite-jet controllability,
   including the actual prime-log specialization, formalized unconditionally in Lean
+- [x] positivity-preserving finite-mass tangent freedom and fixed nonzero polynomial finite-jet
+  escape, including the actual dyadic prime-log masses, formalized unconditionally in Lean
+- [x] exact reconstruction of positive finite mass perturbations as bounded logarithmic gauges
+  with finite change support and arbitrarily small uniform gauge norm, formalized unconditionally
+  in Lean
+- [x] nonzero polynomial-coefficient relation specialization at distinct upper-half-plane nodes
+  and its bounded-gauge prime-log escape, formalized unconditionally in Lean
+- [x] exact normalized Cauchy packet equals the actual differential jet after the nonzero factorial
+  diagonal, and actual differential-relation gauge-ball escape, formalized unconditionally in Lean
+- [x] canonical simultaneous clearing of nonzero rational coefficient families, pole-divisor-safe
+  upper-half-plane specialization, and actual rational differential-relation gauge-ball escape,
+  formalized unconditionally in Lean
+- [x] coefficient-uniform finite evaluation geometry: one full-rank square packet detects every
+  coefficient vector of a finite linearly independent function family, formalized unconditionally
+  in Lean
+- [x] expanded differential-monomial packet geometry, noncolliding upper translated nodes, one
+  determinant for all complex coefficient vectors, and actual-derivative bounded-gauge full-rank
+  escape, formalized unconditionally in Lean
+- [x] complete bounded-gauge topology, continuity of actual differential jets, closed nowhere-dense
+  finite-pattern defects, and abstract countable dense-residual assembly, formalized
+  unconditionally in Lean
+- [x] explicit countable encoding of every finite translate/jet/monomial/degree rectangle,
+  simultaneous coefficient rigidity, and specialization to the exact `Gamma_Delta` palette,
+  formalized unconditionally in Lean
+- [x] canonical rectangularization of arbitrary finite `C[z]`-coefficient support, faithful
+  coefficient recovery, exact evaluation reconstruction, and canonically cleared rational
+  coefficient relation rigidity, formalized unconditionally in Lean
+- [x] upper-end analytic domain and meromorphic differential field, commuting complex translations,
+  faithful rational coordinate field, and actual bounded prime-log translate elements formalized
+  unconditionally in Lean
+- [x] identify the cleared functional source theorem with restricted-translation
+  `DifferentialIndependent (RatFunc C)` inside the upper-end field, formalized unconditionally in
+  Lean
+- [x] full-row-rank matrix linear forms preserve algebraic independence, including construction of
+  a right inverse from row independence, formalized unconditionally in Lean
 - [ ] complete unconditional Lean formalization before stage 3
 
 ## Log

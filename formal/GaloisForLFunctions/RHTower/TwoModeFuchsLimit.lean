@@ -66,3 +66,32 @@ theorem ccm_twoMode_ground_leakage_ratio {A₀ A₁ : ℝ} (hA₀ : 0 < A₀) (h
   simpa using h
 
 end RHTower
+
+namespace RHTower
+
+/-- **The CCM 3/11 gap law.**  The constrained spectral gap of the two-mode ground state —
+the distance from the ground leakage to the dominant mode leakage — is asymptotically `3/11`
+of the dominant leakage: the complementary constant to the `8/11` ground ratio. -/
+theorem ccm_twoMode_ground_gap_ratio {A₀ A₁ : ℝ} (hA₀ : 0 < A₀) (hA₁ : 0 < A₁) :
+    Filter.Tendsto (fun lam : ℝ =>
+        (fuchsRate A₁ 4 lam - GaloisForLFunctions.twoModeSecularRoot
+            (fuchsRate A₀ 0 lam) (fuchsRate A₁ 4 lam)
+            ((2 : ℝ) ^ ((1 : ℝ) / 4)) (Real.sqrt 3 / (2 : ℝ) ^ ((5 : ℝ) / 4)))
+          / fuchsRate A₁ 4 lam)
+      Filter.atTop (nhds (3 / 11)) := by
+  have h8 := ccm_twoMode_ground_leakage_ratio hA₀ hA₁
+  have hone : Filter.Tendsto (fun lam : ℝ =>
+      1 - GaloisForLFunctions.twoModeSecularRoot
+          (fuchsRate A₀ 0 lam) (fuchsRate A₁ 4 lam)
+          ((2 : ℝ) ^ ((1 : ℝ) / 4)) (Real.sqrt 3 / (2 : ℝ) ^ ((5 : ℝ) / 4))
+        / fuchsRate A₁ 4 lam)
+      Filter.atTop (nhds (1 - 8 / 11)) :=
+    Filter.Tendsto.sub tendsto_const_nhds h8
+  have h311 : (1 : ℝ) - 8 / 11 = 3 / 11 := by norm_num
+  rw [h311] at hone
+  refine hone.congr' ?_
+  filter_upwards [Filter.eventually_gt_atTop (0 : ℝ)] with lam hlam
+  have hd1 : fuchsRate A₁ 4 lam ≠ 0 := (fuchsRate_pos hA₁ 4 hlam).ne'
+  field_simp
+
+end RHTower

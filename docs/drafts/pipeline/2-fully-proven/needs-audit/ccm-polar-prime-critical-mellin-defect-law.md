@@ -271,6 +271,20 @@ The polar block may not be absorbed into an aperture-independent `m_infinity`, a
 term may not be studied without its polar cancellation. Any zero-free or characteristic-crossing
 factorization must be performed on the corrected symbol `W_a`.
 
+The same Laplace identity now gives the exact source incidence of the canonical diagonal Fock
+coordinate.  Setting `z=x+y+1/2` in `(22)` yields
+
+```text
+1/(x+y)
+ =-zeta'(1+x+y)/zeta(1+x+y)-1/(x+y+1)
+  +integral_0^infinity exp(-(x+y+1/2)h)dR(h).             (25)
+```
+
+Thus the universal Cauchy leg required by the infinitesimal CCM contraction is already the signed
+colligation of the resolved prime-power Gram, a shifted polar Gram, and this critical Mellin
+defect.  The resulting RH-equivalent four-channel passivity law is recorded in
+`../not_new_scientific_knowledge/ccm-diagonal-fock-polar-prime-mellin-incidence-law.md`.
+
 ## Novelty boundary
 
 The Fourier transform `(3)` and partial summation `(12)` are elementary. The potentially new

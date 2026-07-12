@@ -112,9 +112,11 @@ log zeta(1+s)=sum_(p,k) exp(-s k log p)/(k p^k),
 
 There are no pairwise prime-power terms in `(8)`.  Consequently the coherent Gram energy `(7)`
 cannot be identified with the additive source trace.  Orthogonal direct-sum channels restore
-additivity but discard the Gamma covariance; the existing point-source Hankel no-go results then
-apply.  The only surviving architecture keeps the cross covariance and supplies an exact
-relative-trace/covariance subtraction before the final positive square.
+additivity but discard the Gamma covariance if they are scalarized separately. The positive
+resolution is instead channel-resolved synthesis: use the damped Gamma modes as the columns of one
+operator `T`. Then `T^*T` retains every cross covariance in its off-diagonal matrix entries, while
+`Tr(T^*T)` reads only the additive diagonal column energy. The theorem is recorded in
+`ccm-gamma-damped-cauchy-frame-trace-law.md`.
 
 ## Consequence for the countable Gram route
 
@@ -124,14 +126,15 @@ it fixes the shape of the missing operation:
 
 ```text
 Gamma-damped stationary prime covariance
-  + source-defined cancellation of its off-diagonal prime-power energy
-  + log-position derivative
+  + resolved prime-channel synthesis before trace
+  + exact arithmetic identification of the Gram diagonal
   -> completed principal-relative Gram.                  (9)
 ```
 
-The cancellation cannot be a scalar normalization, because every cross entry in `(6)` is nonzero.
-It must be operator-valued or relative, matching the principal-shell/Sonin and Gauss-paired
-quantized-differential carriers already present in the pipeline.
+The prime channels cannot be collapsed to a coherent scalar sum before forming the Gram, because
+every cross entry in `(6)` is nonzero. They must remain resolved inside an operator-valued or
+relative carrier, matching the principal-shell/Sonin and Gauss-paired quantized-differential
+constructions already present in the pipeline.
 
 ## Scientific classification
 
@@ -144,7 +147,8 @@ bounds are standard.  The result is a route bridge, not new scientific knowledge
 - [x] exact exponential diagonal decay proved
 - [x] critical half-weight Cauchy summability proved
 - [x] strict nonadditive cross terms isolated
-- [ ] construct the source-defined operator covariance subtraction
+- [x] construct the channel-resolved Hilbert--Schmidt Gram whose trace is additive
+- [ ] identify its diagonal with the exact completed arithmetic source
 - [ ] identify the completed finite-degree Gram with the Xi Hankel block
 - [ ] RH
 
@@ -172,3 +176,17 @@ semilocalArchimedeanCharacteristic_two_mul_le_sqrtTwo_mul_exp_neg
 
 The full finite-matrix positive-definiteness statement still uses the classical Gamma Fourier
 integral on paper; that spectral-measure identity is not yet represented in the Lean module.
+
+`GammaDampedPrimeLogCauchyDomain.lean` now formalizes the complete finite-packet domain statement.
+For arbitrary finite packet data it proves
+
+```text
+sum_p phi(2 log p)
+  * |sum_j c_j/(z_j-log p)|^2<infinity.
+```
+
+For distinct upper-half-plane nodes, the capstone combines this with the prime-only theorem to give
+the exact critical carrier transition: the Gamma-damped packet is always summable, while the
+undamped critical-half-weight packet is summable exactly when `c=0`. The proof formalizes the
+Cauchy-condensation majorant `sum_n 1/(n(log n)^2)<infinity`. This closes the full finite Cauchy-core
+domain gate; it does not close the source-selection or relative-trace identity gates.

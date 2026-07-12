@@ -12,6 +12,7 @@ This module formalizes two exact value laws used by that expansion:
 * every backward integer shift `ζ(s-k)`, `k ≥ 1`, is nonzero in the open critical strip.
 -/
 import Mathlib.NumberTheory.LSeries.Nonvanishing
+import GaloisForLFunctions.RHTower.ZetaCarrier
 
 namespace GaloisForLFunctions
 
@@ -173,6 +174,64 @@ theorem riemannZeta_sub_nat_ne_zero_of_criticalStrip
     simpa [u]
   rw [riemannZeta_def_of_ne_zero hw0]
   exact div_ne_zero hLambdaW hGammaW
+
+/-! ### The echo tail as a forward Euler-value sequence -/
+
+/-- The zeta value carried by the `k`-th complex heat echo after Schwarz reflection.  On paper this
+is `conj (ζ(s-k))`; keeping the reflected argument explicit avoids building global meromorphic
+Schwarz reflection into the definition. -/
+def heatApertureBackwardZetaValue (s : ℂ) (k : ℕ) : ℂ :=
+  riemannZeta ((starRingEnd ℂ) s - k)
+
+/-- The right-half-plane zeta value paired to the `k`-th backward echo by the functional equation. -/
+def heatApertureForwardZetaValue (s : ℂ) (k : ℕ) : ℂ :=
+  riemannZeta (1 - (starRingEnd ℂ) s + k)
+
+/-- **Echo reflection law.** Every strict backward heat-echo value with `Re s < 1` is
+the zeta functional-equation multiplier times a forward value in the half-plane of absolute
+convergence.  This is the exact bridge from the additive heat ladder to its Dirichlet-value tail. -/
+theorem heatApertureBackwardZetaValue_eq_zetaChi_mul_forward
+    {s : ℂ} (hshi : s.re < 1)
+    {k : ℕ} (hk : 1 ≤ k) :
+    heatApertureBackwardZetaValue s k =
+      RHTower.zetaChi ((starRingEnd ℂ) s - k) *
+        heatApertureForwardZetaValue s k := by
+  let w : ℂ := (starRingEnd ℂ) s - k
+  have hkR : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk
+  have hw0 : w ≠ 0 := by
+    intro h
+    have hre := congrArg Complex.re h
+    simp only [w, Complex.sub_re, Complex.conj_re, Complex.natCast_re, Complex.zero_re] at hre
+    linarith
+  have hw1 : w ≠ 1 := by
+    intro h
+    have hre := congrArg Complex.re h
+    simp only [w, Complex.sub_re, Complex.conj_re, Complex.natCast_re, Complex.one_re] at hre
+    linarith
+  have hG : Gammaℝ (1 - w) ≠ 0 := by
+    apply Gammaℝ_ne_zero_of_re_pos
+    simp only [w, Complex.sub_re, Complex.one_re, Complex.conj_re, Complex.natCast_re]
+    linarith
+  have hfe := RHTower.zeta_eq_zetaChi_mul hw0 hw1 hG
+  simpa [heatApertureBackwardZetaValue, heatApertureForwardZetaValue, w,
+    sub_eq_add_neg, add_assoc, add_comm, add_left_comm] using hfe
+
+/-- The actual complex coefficient carried by the `k`-th heat echo, before the aperture power. -/
+def heatApertureEchoValue (s : ℂ) (k : ℕ) : ℂ :=
+  heatApertureEchoCoeff s k * heatApertureBackwardZetaValue s k
+
+/-- **Forward-value factorization of every strict heat echo.** The additive echo coefficient factors
+into its explicit archimedean weight, the exact functional-equation multiplier, and a zeta value
+in the absolutely convergent half-plane. -/
+theorem heatApertureEchoValue_eq_forward
+    {s : ℂ} (hshi : s.re < 1)
+    {k : ℕ} (hk : 1 ≤ k) :
+    heatApertureEchoValue s k =
+      heatApertureEchoCoeff s k * RHTower.zetaChi ((starRingEnd ℂ) s - k) *
+        heatApertureForwardZetaValue s k := by
+  rw [heatApertureEchoValue,
+    heatApertureBackwardZetaValue_eq_zetaChi_mul_forward hshi hk]
+  ring
 
 end
 

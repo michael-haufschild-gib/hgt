@@ -67,8 +67,10 @@ infinite, while every evaluation node lies in the upper half-plane.
 
 The theorem concerns arbitrary signed infinitesimal mass directions.  At a positive base mass,
 every finitely supported direction remains inside the positive cone after multiplication by a
-sufficiently small real scalar.  Thus it supplies the local submersion input; it does not by itself
-perform the subsequent nonlinear rank-defect avoidance or Baire intersection.
+sufficiently small real scalar.  The companion formalized bridge
+`positive-prime-log-polynomial-jet-escape` combines this local submersion with polynomial rigidity
+to perform fixed finite-jet algebraic avoidance.  The remaining realization step is the uniform
+reduction of every differential relation locus to such a detected finite-jet polynomial condition.
 
 ## Lean certificate
 
@@ -77,10 +79,13 @@ perform the subsequent nonlinear rank-defect avoidance or Baire intersection.
 - `eval_clearedCauchyJetPolynomial_eq_mul_sum`;
 - `cauchyJet_coeff_eq_zero_of_infinite`;
 - `cauchyJetLinearCombination_surjective`;
-- `cauchyJetRealLinearCombination_surjective`.
+- `cauchyJetRealLinearCombination_surjective`;
+- `exists_small_positive_finsupp_perturbation`;
+- `surjective_finsupp_full_tangent_at_positive`.
 
 `GaloisForLFunctions.HTGeometry.PrimeLogCauchyJetControllability` proves the actual source theorem
-`primeLogCauchyJetRealLinearCombination_surjective`.
+`primeLogCauchyJetRealLinearCombination_surjective`, its positive full-tangent specialization, and
+the actual dyadic-weight theorem `primeDyadicCauchyJet_full_tangent`.
 
 The axiom audit contains only `propext`, `Classical.choice`, and `Quot.sound`.
 

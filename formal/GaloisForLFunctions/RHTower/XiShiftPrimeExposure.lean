@@ -16,8 +16,10 @@ prime support.
 import GaloisForLFunctions.RHTower.XiRelativeResolventFlux
 import GaloisForLFunctions.ArchimedeanGamma
 import Mathlib.NumberTheory.LSeries.Linearity
+import Mathlib.NumberTheory.LSeries.Positivity
 
 open Complex Function
+open scoped ComplexOrder
 
 namespace RHTower
 
@@ -139,6 +141,101 @@ theorem xi_logDeriv_shift_two_exposes_prime_source {s : ℂ} (hs : 1 < s.re) :
   rw [infinitePrimeFlux_eq_vonMangoldtLSeries hsp] at hsplit2
   have harch := logDeriv_archFactor_shift_two hs
   linear_combination hsplit - hsplit2 + harch + hp
+
+/-- The coefficient exposed by the `+2` shift of the completed logarithmic derivative. -/
+def filteredVonMangoldtCoeff (n : ℕ) : ℂ :=
+  (ArithmeticFunction.vonMangoldt n : ℂ) *
+    (1 - (n : ℂ) ^ (-(2 : ℂ)))
+
+/-- Every coefficient of the filtered von Mangoldt source is nonnegative. -/
+theorem filteredVonMangoldtCoeff_nonneg (n : ℕ) :
+    0 ≤ filteredVonMangoldtCoeff n := by
+  rcases lt_trichotomy n 1 with hn | hn | hn
+  · have : n = 0 := by omega
+    subst n
+    simp [filteredVonMangoldtCoeff]
+  · subst n
+    simp [filteredVonMangoldtCoeff]
+  · have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn.le
+    have hpowR : (n : ℝ) ^ (-(2 : ℝ)) ≤ 1 :=
+      Real.rpow_le_one_of_one_le_of_nonpos hnR (by norm_num)
+    have hcpow : (n : ℂ) ^ (-(2 : ℂ)) = ((n : ℝ) ^ (-(2 : ℝ)) : ℝ) := by
+      simpa using (Complex.ofReal_cpow (Nat.cast_nonneg n) (-(2 : ℝ))).symm
+    have hfac : 0 ≤ (1 - (n : ℂ) ^ (-(2 : ℂ))) := by
+      rw [hcpow]
+      exact_mod_cast sub_nonneg.mpr hpowR
+    exact mul_nonneg (by exact_mod_cast
+      (ArithmeticFunction.vonMangoldt_nonneg (n := n))) hfac
+
+/-- The coefficient at the first prime is strictly positive. -/
+theorem filteredVonMangoldtCoeff_two_pos :
+    0 < filteredVonMangoldtCoeff 2 := by
+  rw [filteredVonMangoldtCoeff,
+    ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
+  have hlog : 0 < (Real.log 2 : ℂ) := by
+    exact_mod_cast Real.log_pos (by norm_num : (1 : ℝ) < 2)
+  have hcpow : (2 : ℂ) ^ (-(2 : ℂ)) = ((2 : ℝ) ^ (-(2 : ℝ)) : ℝ) := by
+    simpa using (Complex.ofReal_cpow (by norm_num : (0 : ℝ) ≤ 2) (-(2 : ℝ))).symm
+  have hpowR : (2 : ℝ) ^ (-(2 : ℝ)) < 1 :=
+    Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) (by norm_num)
+  have hfacR : 0 < (1 : ℝ) - (2 : ℝ) ^ (-(2 : ℝ)) := sub_pos.mpr hpowR
+  have hfacC : 0 < ((1 - (2 : ℝ) ^ (-(2 : ℝ)) : ℝ) : ℂ) := by
+    exact_mod_cast hfacR
+  change 0 < (Real.log 2 : ℂ) * (1 - (2 : ℂ) ^ (-(2 : ℂ)))
+  rw [hcpow]
+  apply mul_pos hlog
+  simpa using hfacC
+
+/-- The filtered von Mangoldt source is summable throughout its Euler half-plane. -/
+theorem LSeriesSummable_filteredVonMangoldtCoeff {s : ℂ} (hs : 1 < s.re) :
+    LSeriesSummable filteredVonMangoldtCoeff s := by
+  let f : ℕ → ℂ := fun n => (ArithmeticFunction.vonMangoldt n : ℂ)
+  let g : ℕ → ℂ := fun n => f n * (n : ℂ) ^ (-(2 : ℂ))
+  have hf : LSeriesSummable f s := ArithmeticFunction.LSeriesSummable_vonMangoldt hs
+  have hsp : 1 < (s + 2).re := by
+    norm_num [Complex.add_re]
+    linarith
+  have hgshift : LSeriesSummable f (s + 2) :=
+    ArithmeticFunction.LSeriesSummable_vonMangoldt hsp
+  have hterm : ∀ n : ℕ, LSeries.term f (s + 2) n = LSeries.term g s n := by
+    intro n
+    rcases eq_or_ne n 0 with rfl | hn
+    · simp
+    · rw [LSeries.term_of_ne_zero hn, LSeries.term_of_ne_zero hn]
+      rw [Complex.cpow_add s (2 : ℂ) (Nat.cast_ne_zero.mpr hn)]
+      simp only [g, Complex.cpow_neg]
+      field_simp [Nat.cast_ne_zero.mpr hn]
+  have hg : LSeriesSummable g s := by
+    unfold LSeriesSummable at hgshift ⊢
+    exact hgshift.congr hterm
+  have hfg : f - g = filteredVonMangoldtCoeff := by
+    funext n
+    simp only [Pi.sub_apply, f, g, filteredVonMangoldtCoeff]
+    ring
+  rw [← hfg]
+  exact hf.sub hg
+
+/-- On every real Euler anchor, the actual filtered von Mangoldt source is strictly positive. -/
+theorem LSeries_filteredVonMangoldtCoeff_pos {σ : ℝ} (hσ : 1 < σ) :
+    0 < LSeries filteredVonMangoldtCoeff σ := by
+  rw [LSeries]
+  exact (LSeriesSummable_filteredVonMangoldtCoeff
+    (s := (σ : ℂ)) (by simpa using hσ)).tsum_pos
+      (fun n => LSeries.term_nonneg (filteredVonMangoldtCoeff_nonneg n) σ)
+      2 (LSeries.term_pos (by norm_num) filteredVonMangoldtCoeff_two_pos σ)
+
+/-- **Strict Euler-anchor sign for the actual completed source.**  On every real
+`σ > 1`, the rationally renormalized `+2` shift defect of `xi'/xi` is strictly positive. -/
+theorem xi_logDeriv_shift_two_filtered_source_pos {σ : ℝ} (hσ : 1 < σ) :
+    0 < logDeriv xi (σ + 2) - logDeriv xi σ -
+        (1 / (σ + 2) + 1 / (σ + 1) - 1 / (σ - 1)) := by
+  have h := xi_logDeriv_shift_two_exposes_prime_source
+    (s := (σ : ℂ)) (by simpa using hσ)
+  rw [show LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ) *
+      (1 - (n : ℂ) ^ (-(2 : ℂ)))) (σ : ℂ) =
+      LSeries filteredVonMangoldtCoeff (σ : ℂ) by rfl] at h
+  rw [h]
+  exact LSeries_filteredVonMangoldtCoeff_pos hσ
 
 end
 

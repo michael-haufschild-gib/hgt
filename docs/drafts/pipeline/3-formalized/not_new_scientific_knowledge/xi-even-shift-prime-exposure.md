@@ -22,6 +22,17 @@ The capstone declaration is
 
 `RHTower.xi_logDeriv_shift_two_exposes_prime_source`.
 
+The same module now proves the strict real-axis sign
+
+`0 < logDeriv xi (sigma+2) - logDeriv xi sigma`
+
+`  - (1/(sigma+2) + 1/(sigma+1) - 1/(sigma-1))`
+
+for every real `sigma > 1`.  This is
+`RHTower.xi_logDeriv_shift_two_filtered_source_pos`.  Its proof does not appeal to a zero
+of xi: every coefficient `Lambda(n)(1-n^(-2))` is nonnegative, the `n=2` coefficient is
+strictly positive, and the L-series is summable on the Euler half-plane.
+
 The proof is assembled from four separately exposed declarations:
 
 1. `logDeriv_archFactor_closed`: the completed archimedean/boundary logarithmic
@@ -37,7 +48,8 @@ No zero location, RH, numerical verification, prime cutoff, or ordering of zeros
 
 ## Exact scope
 
-This card formalizes the source-exposure identity only.  The paper-level theorem that the
+This card formalizes the source-exposure identity and its strict sign on real Euler anchors.
+It does not continue that sign through the critical strip.  The paper-level theorem that the
 right side is hypertranscendental uses Ostrowski/Reich/Nagoshi theory for Dirichlet series,
 which is not present in Lean.  Therefore this card does not claim a Lean proof that `xi`,
 `xi'/xi`, or the filtered series is hypertranscendental.  That theorem remains in
@@ -47,7 +59,8 @@ until its complete unconditional statement is formalized.
 ## Verification
 
 - `lake build GaloisForLFunctions.RHTower.XiShiftPrimeExposure` passed.
-- Scratch `#print axioms` for all five declarations reports only the project baseline
+- Scratch `#print axioms` for the five new coefficient, summability, positivity, and xi
+  declarations reports only the project baseline
   `[propext, Classical.choice, Quot.sound]`.
 - No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration is introduced.
 
@@ -72,3 +85,6 @@ novelty.
   even-shift defect, the coefficientwise L-series shift, the filtered von Mangoldt identity,
   and the actual-xi capstone.  Kept the unformalized Ostrowski hypertranscendence consequence
   outside stage 3.
+- 2026-07-12 -- Proved coefficientwise nonnegativity, strict positivity at the first prime,
+  summability, strict positivity of the filtered source on every real Euler anchor, and the
+  corresponding strict sign of the actual completed `+2` shift defect.

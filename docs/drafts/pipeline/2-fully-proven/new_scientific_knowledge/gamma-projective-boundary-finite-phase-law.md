@@ -450,6 +450,11 @@ module lives and prove that the completed constraint preserves it.
    archimedean factors `Gamma((s+mu)/2)` admit the same argument after an affine change of variable,
    but simultaneous incommensurable Gamma scales require a separate multi-valuation theorem.
 
+The finite same-scale real-translate extension is now proved in
+`finite-real-shift-gamma-projective-boundary-law.md`.  Its orbit-residue injection and real-weight
+ordering give the one-point projective boundary for every finite pairwise incongruent translate
+family and the translation-saturated prime-log zeta consequence.
+
 ## 9. Parent and novelty audit
 
 `[NOVELTY UNVERIFIED]` The proof is complete, but the exact scientific novelty claim has not yet

@@ -198,7 +198,8 @@ and parent-theory audit.
 - [x] finite-rank additive renormalization excluded
 - [x] formalize the all-finite-order prime-series core `(14)` as
   `not_summable_primeLogHerglotzTransportMassOrder_of_pos`
-- [ ] formalize the full rational-packet quotient theorem
+- [x] formalize the full rational-packet finite-independence theorem as
+  `summable_primeLogCauchyPacketTransportEnergy_iff` in `PrimeLogCauchySeamRank.lean`
 - [ ] audit weighted Cauchy-transform and renormalized-resolvent literature more broadly
 - [ ] construct the infinite marked prime--Gamma seam carrier
 - [ ] transport its complete inertia into the screw spaces
@@ -209,3 +210,6 @@ and parent-theory audit.
 - 2026-07-11 -- extracted from the line-211 prime-log pole carrier and strengthened the scalar
   positive-transport wall to an infinite renormalization-rank theorem.
 - 2026-07-11 -- formalized the all-finite-order analytic core in `PrimeLogHerglotz.lean`.
+- 2026-07-11 -- formalized rational order at infinity, finite Cauchy numerator nonvanishing, and
+  exact finite independence modulo transported prime square-summability in
+  `PrimeLogCauchySeamRank.lean`.

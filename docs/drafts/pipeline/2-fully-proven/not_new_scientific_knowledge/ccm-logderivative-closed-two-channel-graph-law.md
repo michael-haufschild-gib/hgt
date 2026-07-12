@@ -204,6 +204,14 @@ fixed unitary normalization,
 c exp(-Im(w)t) exp(-i Re(w)t),       t>0.                 (14)
 ```
 
+For the imaginary-axis family `w=i x`, `(14)` is exactly the Laplace feature
+`c_x(t)=exp(-xt)` in the canonical diagonal Fock lift of the safe completed kernel.  Hence that
+lift is the diagonal bundle of the present graph's anti-causal residue coordinates.  Sampling the
+boundary vector `(x-i a)^(-1)` on the prime-log support gives the transported Cauchy family whose
+all-finite-order divergence and exact finite-packet independence are formalized in
+`PrimeLogHerglotz.lean` and `PrimeLogCauchySeamRank.lean`.  The resulting source-selected
+contractivity criterion is recorded in `ccm-safe-kernel-diagonal-fock-lift-rh-law.md`.
+
 A pole of order `m` gives the expected finite jet of evaluations at `w`. Several poles give the
 direct finite sum, with their mutual Cauchy Gram matrix. Hence the graph is orbit-sensitive before
 any divisor is explicitly reconstructed.
@@ -244,6 +252,35 @@ q_Xi
 
 Thus `(16)` is pointed by the exact all-prime and archimedean completion data, not merely by the Xi
 divisor.
+
+### Exact bilateral factorization of one source atom
+
+For `t>0`, the polarized exponential atom carried by `(17)` satisfies
+
+```text
+(exp(-i conjugate(w)t)-exp(-i zt))/(z-conjugate(w))
+ =i t integral_0^1
+    exp(-i t(1-u)z) exp(-i t u conjugate(w)) du.          (17a)
+```
+
+Equivalently, on `L2(0,1)` put
+
+```text
+A_t(z)(u)=sqrt(t) exp(-i t(1-u)z),
+B_t(w)(u)=sqrt(t) exp(i t u w).                           (17b)
+```
+
+Then `(17a)` is `i` times the cross-pairing of `A_t(z)` and `B_t(w)`. This is not a one-channel
+positive Gram: the two feature maps have opposite causal orientation. It is the atomic form of the
+paired graph `(16)`. Summing the von-Mangoldt atoms requires the graph domain because the critical
+weight relative to the Gamma diagonal recedes like
+
+```text
+((log p)/sqrt(2)) p^(k/2)sqrt(1+p^(-4k)).                 (17c)
+```
+
+Thus the exponential Loewner kernel and the unbounded half-weight are both already native to the
+canonical two-channel graph; neither should be replaced by an Euler-region Cauchy Gram.
 
 Now multiply Xi by an FE--Schwarz orbit polynomial `A`. Its source becomes
 

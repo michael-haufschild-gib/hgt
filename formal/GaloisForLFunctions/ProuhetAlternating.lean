@@ -29,7 +29,7 @@ theorem prouhet_alternating_annihilation {n : ℕ} (w : ℕ → ℂ) (p : Polyno
   induction n generalizing p with
   | zero => exact absurd hdeg (Nat.not_lt_zero _)
   | succ n ih =>
-    rw [Finset.range_succ,
+    rw [Finset.range_add_one,
       Finset.sum_powerset_insert (Finset.notMem_range_self)
         (fun S => (-1 : ℂ) ^ S.card * p.eval (∑ i ∈ S, w i)),
       ← Finset.sum_add_distrib]
@@ -46,8 +46,6 @@ theorem prouhet_alternating_annihilation {n : ℕ} (w : ℕ → ℂ) (p : Polyno
         Finset.notMem_range_self (Finset.mem_powerset.mp hT hmem)
       rw [Finset.card_insert_of_notMem hnT, Finset.sum_insert hnT, heval, pow_succ]
       ring_nf
-      rw [add_comm (w n) (∑ i ∈ T, w i)]
-      ring
     rw [Finset.sum_congr rfl hstep, Finset.sum_neg_distrib]
     by_cases hq0 : q = 0
     · simp [hq0]
@@ -66,11 +64,11 @@ theorem prouhet_alternating_annihilation {n : ℕ} (w : ℕ → ℂ) (p : Polyno
         have hdegeq : (taylor (w n) p).degree = p.degree := by
           rw [degree_eq_natDegree htp0, degree_eq_natDegree hp0, natDegree_taylor]
         have hlc : (taylor (w n) p).leadingCoeff = p.leadingCoeff := by
-          rw [taylor_apply, leadingCoeff_comp (by simp [natDegree_X_add_C]), leadingCoeff_X_add_C,
+          rw [taylor_apply, leadingCoeff_comp (by simp), leadingCoeff_X_add_C,
             one_pow, mul_one]
         have hdlt : q.degree < p.degree := by
           rw [hq]
-          exact degree_sub_lt hdegeq htp0 hlc
+          exact hdegeq ▸ degree_sub_lt hdegeq htp0 hlc
         exact natDegree_lt_natDegree hq0 hdlt
       rcases Nat.eq_zero_or_pos p.natDegree with hpd | hpd
       · exfalso
@@ -81,5 +79,80 @@ theorem prouhet_alternating_annihilation {n : ℕ} (w : ℕ → ℂ) (p : Polyno
           have := hpdeg (by omega)
           omega
         rw [ih q hqn, neg_zero]
+
+end GaloisForLFunctions
+
+namespace GaloisForLFunctions
+
+/-- Geometric sum of dyadic weights. -/
+theorem sum_range_two_pow (m : ℕ) : ∑ i ∈ Finset.range m, (2 : ℕ) ^ i = 2 ^ m - 1 := by
+  induction m with
+  | zero => simp
+  | succ m ih =>
+    rw [Finset.sum_range_succ, ih]
+    have hp : (2 : ℕ) ^ (m + 1) = 2 * 2 ^ m := by ring
+    have h1 : 1 ≤ (2 : ℕ) ^ m := Nat.one_le_two_pow
+    omega
+
+theorem sum_two_pow_finset_eq (S : Finset ℕ) :
+    ∑ i ∈ S, (2 : ℕ) ^ i = ((S.sort (· ≤ ·)).map fun i => 2 ^ i).sum := by
+  have h := List.sum_toFinset (fun i => (2 : ℕ) ^ i)
+    ((Finset.sortedLT_sort S).pairwise.nodup)
+  rw [Finset.sort_toFinset] at h
+  exact h
+
+/-- The binary support of a subset sum of distinct dyadic powers is the subset itself. -/
+theorem bitIndices_sum_two_pow_finset (S : Finset ℕ) :
+    (∑ i ∈ S, (2 : ℕ) ^ i).bitIndices = S.sort (· ≤ ·) := by
+  rw [sum_two_pow_finset_eq, Nat.bitIndices_sum_map_two_pow (Finset.sortedLT_sort S)]
+
+/-- **Prouhet–Thue–Morse annihilation**: the Thue–Morse-signed sum of a polynomial over
+`[0, 2^n)` vanishes when the degree is below `n` — the sign at `k` being the parity of the
+binary digit sum of `k`. -/
+theorem prouhet_thue_morse (n : ℕ) (p : Polynomial ℂ) (hdeg : p.natDegree < n) :
+    ∑ k ∈ Finset.range (2 ^ n), (-1 : ℂ) ^ k.bitIndices.length * p.eval (k : ℂ) = 0 := by
+  have hgen := prouhet_alternating_annihilation (fun i => (2 : ℂ) ^ i) p hdeg
+  rw [Finset.sum_nbij' (fun S => ∑ i ∈ S, 2 ^ i) (fun k => k.bitIndices.toFinset)
+    ?hi ?hj ?hji ?hij ?hval] at hgen
+  · exact hgen
+  case hi =>
+    intro S hS
+    rw [Finset.mem_range]
+    have hle : ∑ i ∈ S, (2 : ℕ) ^ i ≤ ∑ i ∈ Finset.range n, (2 : ℕ) ^ i :=
+      Finset.sum_le_sum_of_subset (Finset.mem_powerset.mp hS)
+    rw [sum_range_two_pow] at hle
+    have h1 : 1 ≤ (2 : ℕ) ^ n := Nat.one_le_two_pow
+    show ∑ i ∈ S, (2 : ℕ) ^ i < 2 ^ n
+    omega
+  case hj =>
+    intro k hk
+    rw [Finset.mem_powerset]
+    intro i hi
+    rw [List.mem_toFinset] at hi
+    have h2 := Nat.two_pow_le_of_mem_bitIndices hi
+    rw [Finset.mem_range] at hk ⊢
+    by_contra hni
+    push Not at hni
+    have h3 : (2 : ℕ) ^ n ≤ 2 ^ i := Nat.pow_le_pow_right (by norm_num) hni
+    omega
+  case hji =>
+    intro S _
+    show (∑ i ∈ S, (2 : ℕ) ^ i).bitIndices.toFinset = S
+    rw [bitIndices_sum_two_pow_finset, Finset.sort_toFinset]
+  case hij =>
+    intro k _
+    show ∑ i ∈ k.bitIndices.toFinset, (2 : ℕ) ^ i = k
+    rw [List.sum_toFinset _ Nat.bitIndices_nodup, Nat.sum_map_two_pow_bitIndices]
+  case hval =>
+    intro S _
+    have hlen : (∑ i ∈ S, (2 : ℕ) ^ i).bitIndices.length = S.card := by
+      rw [bitIndices_sum_two_pow_finset, Finset.length_sort]
+    have hcast : ((∑ i ∈ S, (2 : ℕ) ^ i : ℕ) : ℂ) = ∑ i ∈ S, (2 : ℂ) ^ i := by
+      push_cast
+      rfl
+    show (-1 : ℂ) ^ S.card * p.eval (∑ i ∈ S, (2 : ℂ) ^ i)
+      = (-1 : ℂ) ^ (∑ i ∈ S, (2 : ℕ) ^ i).bitIndices.length
+        * p.eval ((∑ i ∈ S, (2 : ℕ) ^ i : ℕ) : ℂ)
+    rw [hlen, hcast]
 
 end GaloisForLFunctions

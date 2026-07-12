@@ -623,7 +623,8 @@ finite-rank correction in the prime Hilbert space. A viable completed carrier mu
 an infinite prime--Gamma coupling, a relative/indefinite completion before the norm, or an
 equivalent global marked constraint. The complete proof and its exact scope are in
 `prime-log-cauchy-seam-infinite-renormalization-rank.md`; the all-orders analytic core is formalized
-in `PrimeLogHerglotz.lean`.
+in `PrimeLogHerglotz.lean`, and the exact finite-packet independence theorem is formalized in
+`PrimeLogCauchySeamRank.lean`.
 
 ### F. Signed Möbius Schur transfer and the continuation seam
 
@@ -744,6 +745,217 @@ continuation seam, the positive prime-log measure already supplies Gram/Pick pos
 finite node family. What is missing is an **index-faithful transport of that complete positivity**
 through the fixed half-unit prime--Gamma seam to `(12z5d)`. The infinite-renormalization-rank law
 shows that this transport cannot be a finite-rank correction of the prime Cauchy sections.
+
+The positive domain resource is now exact on the complete finite Cauchy core. Lean proves, for every
+finite packet,
+
+```text
+sum_p phi(2log p)
+  |sum_j c_j/(z_j-log p)|^2<infinity,                     (12z5d0)
+```
+
+while for distinct upper-half-plane nodes the same packet without `phi(2log p)` is summable at the
+critical half-weight exactly when every `c_j` vanishes. The proof uses the sharp tail
+`phi(2log p)<=sqrt(2)/p` and Cauchy decay to reach the summable majorant
+`1/(p(log p)^2)`. Thus Gamma completion positively supplies one full inverse-prime domain order to
+all finite resolvent directions simultaneously. The remaining seam is not domain existence: it is
+the source-selected relative covariance that identifies this repaired Hilbert core with the
+divisor-sensitive Weil/Pick form. The formal theorem is
+`gammaDampedPrimeLogCauchyPacket_critical_carrierTransition` in
+`RHTower/GammaDampedPrimeLogCauchyDomain.lean`.
+
+The Gamma conductor now imposes a second, quantitative carrier law. For the normalized cyclic
+characteristic `phi(t)=(cosh t)^(-1/2)`, let `A_p` be the variance of the Fourier mode at `log p`
+and `C_p` its covariance with the centered second spectral moment. If the prime block is
+diagonalized into independent channels and coupled to one scalar conductor coordinate, positivity
+of every finite block forces
+
+```text
+B_F >= sum_(p in F) |C_p|^2/A_p,
+
+|C_p|^2/A_p
+ = (9/8) p(p-1)^2(p+1)^4/(p^2+1)^4
+ >= 9/(512p).                                            (12z5d1)
+```
+
+Nonzero diagonal damping cancels exactly from this quotient. Hence `B_F` must grow without bound
+because `sum_p 1/p` diverges. The positive conclusion is that an index-faithful prime--Gamma
+transport must expose growing/infinite archimedean conductor capacity, a Gauss-paired channel
+family whose arity grows with the prime packet, a non-diagonal prime covariance, or a
+principal-relative/semifinite trace before scalarization. One fixed scalar Gamma observable cannot
+carry the cofinal independent-prime block. The full paper and unconditional Lean theorem are in
+`ccm-gamma-conductor-schur-capacity-law.md` and
+`RHTower/GammaConductorSchurCapacity.lean`.
+
+The non-diagonal alternative is itself quantified. After variance normalization, write
+`u_p^2=R_p`, `S_F=sum_(p in F)R_p`, and let `K_F` be the prime covariance with unit diagonal. If the
+full prime--conductor block is positive with fixed conductor capacity `B>0`, then
+
+```text
+sum_(p,q)K_F(p,q)u_pu_q>=S_F^2/B,
+sum_(p!=q)K_F(p,q)u_pu_q>=S_F^2/B-S_F.                   (12z5d2)
+```
+
+Since `S_F` diverges, the surviving carrier must develop cofinally concentrating covariance in the
+conductor-coupled direction. Thus the next construction target is no longer generic ``relative
+covariance'': it is a source-selected Gram/relative kernel realizing `(12z5d2)` while its
+renormalized trace remains the additive Euler source and its Pick inertia remains divisor-sensitive.
+
+At the archimedean cyclic-measure level this Gram carrier is explicit. With
+`X_p=exp(i log(p)S)-phi(log p)` and `Y=S^2-1/2`, one has `||Y||^2=3/2` and
+
+```text
+G_(p,q)=phi(log q-log p)-phi(log p)phi(log q).            (12z5d3)
+```
+
+The family `{X_p} union {Y}` is a genuine Gram family, so all finite blocks are positive and
+`(12z5d2)` holds with `B=3/2`. This constructs the required concentrating covariance before the
+Hardy/Sonin compression. The live source-selection gate is to show that Gauss-paired local ratios
+and their quantized differential produce `(12z5d3)`--or an index-faithful equivalent--as a resolved
+prime-channel synthesis whose Gram diagonal is the additive Euler trace. The off-diagonal
+covariance remains in the positive operator; the trace reads only its diagonal. This
+Hilbert--Schmidt frame law is proved in `ccm-gamma-damped-cauchy-frame-trace-law.md`.
+
+The Euler-region Herglotz diagonal can be matched exactly, not only asymptotically. For the
+prime-power coordinate `(p,k)`, the unique positive correction satisfying
+
+```text
+r_(p,k)phi(2klog p)=1/(k p^k)
+```
+
+is
+
+```text
+r_(p,k)=sqrt(1+p^(-4k))/(sqrt(2)k),
+1/(sqrt(2)k)<=r_(p,k)<=1/k.                              (12z5d3a)
+```
+
+It is a bounded diagonal contraction. After rescaling the resolved Gamma columns by
+`sqrt(r_(p,k))`, their Gram trace is exactly the Euler-log prime-power Cauchy polarization, while
+their off-diagonal entries retain the stationary Gamma covariance.
+
+The attack against the actual centered source is sharp. Its critical von-Mangoldt magnitude is
+`ell_(p,k)=(log p)p^(-k/2)`, so the forced Gamma correction is
+
+```text
+q_(p,k)=ell_(p,k)/phi(2klog p)
+ =((log p)/sqrt(2))p^(k/2)sqrt(1+p^(-4k)).                (12z5d3b)
+```
+
+This correction is cofinally unbounded. Hence bounded diagonal normalization closes only the
+Euler region; it cannot cross the critical source seam. The remaining source gate is to realize
+the unbounded recession `(12z5d3b)` as a closable relative Gauss-paired/Sonin operator and also
+transport the exponential source atom through its actual Loewner kernel
+
+```text
+(exp(-i conjugate(w)t)-exp(-i zt))/(z-conjugate(w)),      (12z5d3c)
+```
+
+which is not the Euler-region Cauchy product. The exact archimedean/boundary divided-difference
+channel must live on the same domain, and Pick inertia must be preserved. The generic domain and
+bilateral factorization are already supplied by the canonical closed graph in
+`ccm-logderivative-closed-two-channel-graph-law.md`; the live theorem is its distinguished Sonin
+compression and the quantitative relative trace-slope/Loewner bound, not existence of an abstract
+two-channel operator.
+The proof and scope are in `ccm-euler-gamma-radon-nikodym-frame-law.md`.
+
+The source now supplies a factorization-independent equivalent. For critical-line local ratios
+`u_v(t)=rho_v(1/2+it)`, define
+
+```text
+C_F(t)
+ =product_(v in {infinity} union F)u_v(t)-1
+  -sum_v(u_v(t)-1).                                        (12z5d4)
+```
+
+The subset expansion of the product shows that `C_F` contains exactly the terms involving at least
+two places. It has
+
+```text
+C_F(0)=C_F'(0)=0,
+C_F''(0)=-2 sum_(v<w)b_vb_w<0,                              (12z5d5)
+```
+
+where
+
+```text
+b_p=2log(p)/(sqrt(p)-1),
+b_infinity=log(pi)-psi(1/4).
+```
+
+For the prime-only part,
+
+```text
+-(C_F^fin)''(0)
+ =8 sum_({p,q} subset F)
+     log(p)log(q)/((sqrt(p)-1)(sqrt(q)-1))
+ >=8 sum_({p,q} subset F)1/(pq)->infinity.                 (12z5d6)
+```
+
+At two boundary points the corresponding quantized-differential multiplier is
+
+```text
+kappa_F(x,y)
+ =product_v(conj(u_v(x))u_v(y))-1
+  -sum_v(conj(u_v(x))u_v(y)-1).                            (12z5d7)
+```
+
+It vanishes quadratically on the diagonal. Thus the degree-one diagonal trace remains the additive
+local Weil functional, while `(12z5d7)` is the canonical, trace-invisible, cofinally growing
+covariance grade. This replaces the overly rigid demand that Gauss-paired channels literally equal
+the Gamma Gram `(12z5d3)`. Algebraic Gauss descent is exact: for
+`omega(U)=U^(-1)[F_H,U]`, the identity
+
+```text
+omega(UV)=V^(-1)omega(U)V+omega(V)                           (12z5d8)
+```
+
+makes `[omega]` additive in the quotient by conjugation coboundaries. Hence every Gauss splitting
+and every pairing descends to the same canonical cyclic class. The live theorem is the **positive
+Gauss lift**: choose the compact Hardy representative and Sonin relative grade uniformly so that it
+is a positive Schur lift of this class, retains the covariance charge `(12z5d6)`, and transports
+divisor-sensitive index. The source-charge proof is in
+`ccm-local-ratio-second-order-covariance-charge.md`; algebraic descent is recorded in
+`ccm-gauss-paired-quantized-differential-incidence-law.md`.
+
+There is also a canonical positive finite lift before Hardy compression. Put
+
+```text
+a_v(t)=u_v(t)-1,
+V_F(t)_I=product_(v in I)a_v(t),       |I|>=2.              (12z5d9)
+```
+
+Then
+
+```text
+C_F(t)=sum_(|I|>=2)V_F(t)_I,
+K_F^cov(x,y)=sum_(|I|>=2)conj(V_F(x)_I)V_F(y)_I>=0.         (12z5d10)
+```
+
+The coordinates form the graded carrier
+
+```text
+H_F^cov=directSum_(k=2)^m ell^2({I subset V:|I|=k}),
+dim H_F^cov=2^m-m-1.                                       (12z5d11)
+```
+
+All central curvature `(12z5d5)` lies in degree two, of dimension `binom(m,2)`; higher grades have
+higher diagonal vanishing. The coefficient-one readout in `(12z5d10)` has exact norm
+`sqrt(2^m-m-1)`, so faithful cofinal scalarization is necessarily unbounded. This closes the
+finite algebraic positive-lift problem and identifies the exact resource the analytic construction
+must weight. The finite Hardy identification is also complete. If `w_j` are normalized
+Gauss-paired quasi-inner factors and `H(a)=(1-P)M_aP`, then
+
+```text
+H(ab)=H(a)(PM_bP)+((1-P)M_a(1-P))H(b).                    (12z5d12)
+```
+
+Hence every subset monomial `product_(j in I)(w_j-1)` has compact Hardy defect. Their finite column
+operator is compact, and its adjoint square is a positive Hardy Gram lift whose row-sum is the
+paired scalar covariance anomaly. The live theorem is now genuinely cofinal: prove that Sonin
+compression supplies a cutoff-uniform weighting/determinant ideal for these finite lifts and that
+their Pick inertia is preserved. The proof is in
+`ccm-higher-subset-covariance-fock-lift.md`.
 
 The operator seam has also been normalized exactly. The completed quotient `Phi_omega` is
 unconditionally Schur on `Re z>0`: with `X(w)=xi(1/2+w)`, the centered Hadamard product gives
@@ -1379,9 +1591,17 @@ W_a(0)=m(0)+2-4/sqrt(X)
 
 The sign is therefore a critical Mellin defect, not a consequence of the leading prime mass. The
 corrected symbol tends to `+infinity` as `|xi|->infinity`, so its real zero set is finite but may be
-empty. The surviving object is either a zero-free finite-interval factorization retaining the
-rank-two polar block or a singular factorization retaining every crossing and proving a
-nonvanishing boundary Evans relation.
+empty at a general aperture. The zero-free branch is already false at the initial aperture. With
+
+```text
+a_0=min((log 2)/2,arsinh(-(psi(1/4)-log pi)/8)),
+```
+
+every `0<a<a_0` has no visible prime power, satisfies `W_a(0)<0`, and therefore has a nonzero
+symmetric real characteristic pair. Small-aperture screw injectivity still holds. Thus the
+surviving object is a singular factorization retaining every crossing and proving a nonvanishing
+boundary Evans relation. The exact theorem is in
+`ccm-prime-free-aperture-characteristic-pair-law.md`.
 
 At fixed `a` the possibly empty real crossing set is finite. After factoring its multiplicity polynomial `p_a`
 from `(12z43)` by a bounded rational factor, the remaining multiplier `c_a` is real-zero-free and
@@ -1398,6 +1618,214 @@ factorization/Evans relation with no nonzero compatible pair, retaining the rank
 any finite packet, exterior trace, support, mean-zero condition, and anchors `(12z41a)`. The reduction is proved in
 `ccm-characteristic-crossing-interior-mode-reduction-law.md`.
 
+The exterior trace cannot be discarded or compressed without retaining its exact resolvent. After
+real characteristic factorization, `c_a` still has the infinite digamma pole lattice
+`plus_or_minus i(2n+1/2)`. Its exterior restriction is Hankel; finite rank would force a rational
+multiplier by Kronecker's theorem. Therefore the native Evans object is an infinite-dimensional
+Fredholm boundary relation with a finite characteristic block. A finite effective determinant is
+allowed only after an exact Schur complement whose entries retain the infinite boundary resolvent.
+This carrier law is proved in `ccm-characteristic-evans-boundary-infinite-rank-law.md`.
+
+If the infinite boundary block is invertible, the exact block-operator identity reduces the full
+kernel to the finite Schur complement `A_a-B_aD_a^(-1)C_a`. The determinant may therefore be finite
+in size, but its entries must retain the exact infinite boundary resolvent. The all-orders
+prime-log transport wall rules out every finite rational/logarithmic surrogate for that resolvent.
+The resulting positive carrier law is proved in `ccm-fredholm-schur-resolvent-carrier-law.md`.
+
+The natural raw-`L2` inverse-symbol block is not boundedly invertible: its multiplier tends to zero
+like `1/log|xi|`, and fixed-support high-frequency exterior packets are approximate null vectors.
+Thus the live effective determinant must be a logarithmic graph-space Feshbach determinant or a
+closed relative-resolvent relation, not an ordinary bounded-operator Schur complement. This
+functional-category decision is proved in `ccm-exterior-inverse-symbol-graph-norm-law.md`.
+
+That exterior block is nevertheless positive and injective with dense nonclosed range. Therefore
+the exterior datum is unique whenever it exists, and the live boundary theorem is exact membership
+of the finite characteristic forcing in that range. The infinite boundary problem has become a
+finite-to-infinite range-incidence condition plus the two screw anchors.
+
+Hilbert-space range duality converts that incidence into the exact observability estimate
+
+```text
+sup_(h!=0)
+ |<f,1_I m_a(D)1_E h>|/||1_E m_a(D)1_E h||<infinity.
+```
+
+Its value is the norm of the unique exterior reconstruction. The remaining theorem is therefore a
+source-specific boundary-observability bound on the finite characteristic space, followed by
+injectivity of the reconstructed rational-factor residual and anchor map. This reduction is proved
+in `ccm-exterior-range-observability-law.md`.
+
+The observability bound is now closed. The zero-free factor is a positive logarithmic multiplier
+plus a bounded multiplier; its cross-boundary logarithmic kernel is Carleman-bounded. The coercive
+Dirichlet realization reconstructs a unique supported state from every interior characteristic
+trace, so the admissible space is the full characteristic space. The remaining map is explicitly
+the rational-factor residual plus mean-zero and the two screw anchors. This is proved in
+`ccm-log-symbol-dirichlet-exterior-reconstruction-law.md`.
+
+The rational residual is finite-dimensional. With `d_a=2L_a`, the Bessel kernel of
+`(1+D^2)^(-L_a)` shows that all reconstructed boundary contributions lie in the `d_a`-dimensional
+space spanned by `x^j exp(plus_or_minus x)`, `0<=j<L_a`. The residual and three anchors therefore
+form a finite map `M_a`, and the exact remaining condition is
+
+```text
+det(M_a^*M_a)>0 for every aperture.
+```
+
+The entries still contain the full logarithmic Dirichlet inverse; this is not a return to a raw
+finite-prime determinant. The proof is in `ccm-rational-residual-finite-evans-matrix-law.md`.
+
+Every original screw null vector has the required global transformed-trace regularity: its interior
+trace solves the characteristic ODE, while the logarithmic cross block controls the exterior.
+Therefore the finite determinant criterion is unconditional and
+
+```text
+RH iff for every a>0, det(M_a^*M_a)>0.
+```
+
+This is proved in `ccm-screw-null-global-log-regularity-law.md`. The entire remaining burden is the
+strict cofinal positivity of this source-defined determinant family.
+
+The scalar Gram determinant is only the metric shadow of the prospective quantized carrier. Its
+square root is the norm of `wedge^(d_a)M_a`, but `M_a` is rectangular, so this is a Pluecker vector
+rather than a scalar determinant-line section. Hence the viable cofinal theorem must first identify
+the finite Evans complex with the intrinsic Fredholm determinant line, then transport the canonical
+prime--Gamma crossing orientation and prove zero spectral flow. This requirement is proved in
+`ccm-evans-gram-requires-determinant-line-lift.md`.
+
+Reflection makes the finite target more rigid: the map splits into an even block with the mean and
+constant-affine channels and an odd block with the slope channel. The Gram determinant is the
+product of the two parity determinants. This canonical `(2 even)+(1 odd)` grading is a natural
+source-compatible candidate for the cokernel stabilization; the actual cokernel
+identification remains open. See
+`ccm-parity-split-evans-gram-law.md`.
+
+Suzuki's deficiency-index characteristic line exists only after shifting below the unknown lowest
+Weil eigenvalue. Zero shift at every aperture is already RH, and a cofinal family of admissible
+shifts tending to zero also proves RH by no evacuation. Thus the determinant-line comparison must
+be unshifted and indefinite, not imported from the positive shifted construction. See
+`ccm-suzuki-deficiency-line-zero-shift-floor-equivalence.md`.
+
+`[PROVED SQUARE-EVANS REDUCTION]` The rectangularity above belongs to the differentiated screw
+variable, not to the restricted-Weil eigenproblem itself. For an actual eigenfunction
+`v in L2(-a,a)`, the exact equation is
+
+```text
+1_I(W_a(D)-lambda)v=0.
+```
+
+Factoring the shifted symbol, performing the same logarithmic Dirichlet reconstruction, and taking
+the rational Bessel residual gives an equal-dimensional map
+
+```text
+N_(a,lambda):F_(a,lambda)->R_(a,lambda),
+ker N_(a,lambda) isomorphic to ker(A_a-lambda I).
+```
+
+Thus `det N_(a,lambda)` is already an intrinsic determinant-line section; the mean and two affine
+channels disappear because no derivative inversion is used. Its negative roots recover the finite
+Morse index, and RH is equivalent to its nonvanishing for every `a>0` and `lambda<=0`. The
+Weierstrass continuation through complex-conjugate characteristic pairs and analytic Grushin
+reduction glue these finite maps through every real-zero stratum change to the intrinsic Fredholm
+determinant line. The remaining carrier problem is aperture-coherent source normalization followed
+by the nonvanishing theorem. See
+`ccm-restricted-weil-square-evans-determinant-law.md`.
+The gluing theorem is `ccm-weierstrass-stabilized-square-evans-line-law.md`.
+
+The positive frame splitting canonically normalizes this line. In the even sector,
+
+```text
+H_a=B_a^*B_a=A_a^++mu_a I>0,
+A_a^+-lambda I
+ =H_a^(1/2)[I-(mu_a+lambda)H_a^(-1)]H_a^(1/2).
+```
+
+Thus the normalized section equals the identity at `lambda=-mu_a`, and the exact RH-bearing bound
+is `mu_a||H_a^(-1)||<1`. The inverse frame is compact but belongs to no finite Schatten class,
+because its singular values decay only as `1/log n`. This forces a determinant-line or finite
+boundary-Evans carrier and excludes every ordinary finite-order Fredholm determinant. See
+`ccm-source-normalized-nonschatten-birman-schwinger-line-law.md`.
+
+The explicit continuous level
+
+```text
+bar_mu_a=8a exp(a)-m(0)+1>mu_a
+```
+
+removes the jumps of the finite prime cutoff from the normalization. It places
+`-bar_mu_a` strictly below the spectrum for every aperture and turns the live inequality into
+
+```text
+bar_mu_a||(A_a^++bar_mu_a I)^(-1)||<1.
+```
+
+`[PROVED COFINAL INDEX TRANSPORT]` The aperture charge and the Hardy defect are now identified as
+the same cardinal invariant, not merely two RH-equivalent predicates:
+
+```text
+sup_(a>0)kappa(a)
+ =sum_(Re rho>1/2)multiplicity(rho)
+ =sup_(omega>0)dim K(B_omega).
+```
+
+The global screw kernel has one Krein--Langer negative square per right-half zero, and exhaustion
+of a continuous kernel by bounded intervals transports every finite negative packet into an actual
+restricted-Weil aperture. See `ccm-aperture-morse-hardymodel-index-exhaustion-law.md`.
+
+`[PROVED REAL EULER-RAY NORMAL FORM]` For each shift `omega`, the complete Hardy defect index is
+already carried by the real kernel
+
+```text
+L_omega(x,y)
+ =(1-f_omega(x)f_omega(y))/(x+y),
+f_omega(y)=xi(y+1/2-omega)/xi(y+1/2+omega),
+x,y>1/2+omega.
+```
+
+All Xi arguments are real and greater than one, so every entry uses only positive absolutely
+convergent Euler products and explicit Gamma factors. Dense rational ray matrices exhaust the full
+off-line multiplicity. The exact remaining prime-side theorem is complete positivity of this
+Cauchy--Loewner kernel cofinally in `omega`; see `ccm-real-euler-ray-loewner-index-law.md`.
+
+`[PROVED INFINITESIMAL EULER KERNEL]` The cofinal shift parameter can be removed. Put
+
+```text
+Q(x)=xi'(1/2+x)/xi(1/2+x),
+J(x,y)=(Q(x)+Q(y))/(x+y),
+x,y>1/2.
+```
+
+The kernel `J` is the `omega->0+` derivative of the real shifted quotient kernel, and its negative
+index is exactly the total right-half off-line zero multiplicity. All entries use the absolutely
+convergent formula for `xi'/xi(s)` at real `s>1`. Thus the sharpest current source target is one
+fixed complete-positivity theorem `J>=0`; see
+`ccm-infinitesimal-real-euler-ray-logderivative-index-law.md`.
+
+`[PROVED INFINITESIMAL HALF-UNIT SEAM]` The zero strip supplies the unconditional positive kernel
+
+```text
+J_safe(x,y)=[Q(x)+Q(y)]/(x+y-1).
+```
+
+The RH kernel is `J(x,y)=[Q(x)+Q(y)]/(x+y)`. Their scalar Schur ratio
+`(x+y-1)/(x+y)` has negative determinant on every distinct pair, so no universal scalar kernel
+multiplier crosses the seam. The successful construction must use non-diagonal Euler--Gamma
+covariance in the closed two-channel graph or the square Evans carrier. See
+`ccm-infinitesimal-half-unit-cauchy-seam-law.md`.
+
+`[PROVED DIAGONAL FOCK NORMAL FORM]` The required non-diagonal covariance is explicit. Let `k_x`
+be the RKHS feature of `J_safe` and `c_x(t)=exp(-xt)`. Then
+
+```text
+T_0 k_x=k_x tensor c_x,
+||sum alpha_j k_(x_j)||^2-||sum alpha_j T_0k_(x_j)||^2
+ =sum_(j,k)conj(alpha_j)alpha_k J(x_j,x_k).
+```
+
+Hence RH is exactly contractivity of `T_0`, and its expansion index equals the cofinal aperture
+Morse charge. The finite local-ratio subset/Gauss-paired Fock carriers now have a unique analytic
+target: converge to `T_0` while preserving the contraction bound. See
+`ccm-safe-kernel-diagonal-fock-lift-rh-law.md`.
+
 ## Gates
 
 - [x] determinant transfer collapsed to the direct floor criterion
@@ -1407,6 +1835,11 @@ any finite packet, exterior trace, support, mean-zero condition, and anchors `(1
 - [x] three possible global mechanisms compared
 - [x] exact Paley--Wiener Toeplitz compression identified
 - [x] finite-aperture Morse charge isolated and proved monotone
+- [x] cofinal aperture Morse charge identified with the full Hardy model-space defect
+- [x] reduce the complete Hardy defect to a real Euler-ray Cauchy--Loewner kernel
+- [x] collapse the cofinal shifts to one infinitesimal real Euler log-derivative kernel
+- [x] isolate the infinitesimal half-unit seam and exclude universal scalar Schur transport
+- [x] construct the canonical diagonal Fock carrier for the missing covariance
 - [x] RH reduced to compact screw injectivity at every aperture
 - [x] complete two-channel Euler--Weil resolvent family constructed
 - [x] exact arithmetic-complement operator carrier `A_N` constructed
@@ -1456,6 +1889,24 @@ any finite packet, exterior trace, support, mean-zero condition, and anchors `(1
 - [x] polar--prime main-term cancellation reduced to the critical Mellin defect
 - [x] false coarse crossing argument retracted
 - [x] interior null equation reduced to a finite characteristic-mode packet
+- [x] refute zero-free scalar factorization in the initial prime-free aperture
+- [x] prove the characteristic exterior trace is irreducibly infinite-rank
+- [x] isolate the exact conditional Fredholm Schur-complement carrier
+- [x] force the logarithmic graph-space/Feshbach functional category
+- [x] isolate the dense-range incidence form of exterior matching
+- [x] convert exterior range incidence to exact boundary observability
+- [x] close boundary observability by logarithmic Dirichlet reconstruction
+- [x] construct the exact finite Evans Gram determinant after infinite boundary reconstruction
+- [x] prove every screw null vector lies in the determinant category
+- [x] identify strict cofinal Evans determinant positivity as an exact RH equivalent
+- [x] isolate the Evans-to-Fredholm determinant-line lift as the quantized aperture carrier
+- [x] split the exact Evans determinant into canonical even and odd sectors
+- [x] exclude the shifted positive deficiency line as a noncircular zero-shift carrier
+- [x] construct the exact square restricted-Weil Evans determinant for every spectral parameter
+- [x] glue the square Evans determinant line through characteristic-stratum changes
+- [x] select a continuous explicit normalization chamber in aperture
+- [x] construct its source normalization at each fixed aperture
+- [x] remove finite-prime cutoff jumps from the source normalization
 - [ ] decide the corrected symbol's zero-free versus crossing branch
 - [ ] prove or refute source-specific unique continuation for `(12z41)`
 - [x] construct the exact positive frame-minus-level splitting `(10)`
@@ -1469,6 +1920,18 @@ any finite packet, exterior trace, support, mean-zero condition, and anchors `(1
 - [x] construct the canonical isometric quotient graph and identify its model-space domain defect
 - [x] identify the Poisson--Muntz half-weight defect with the same adjoint model space
 - [x] compress the complete model-space obstruction to one positive outer-entropy defect
+- [x] prove the damping-invariant harmonic Gamma-conductor capacity law for independent prime blocks
+- [x] quantify the forced coherent off-diagonal covariance for every fixed-capacity positive block
+- [x] prove the canonical Gamma diagonal carries every finite prime-log Cauchy packet across the
+      critical half-weight
+- [x] construct the channel-resolved Gamma Cauchy Gram with additive trace and retained covariance
+- [x] identify the exact bounded Euler-region Gamma correction and the unbounded critical-source
+      Radon--Nikodym recession
+- [x] construct the canonical second-order local-ratio covariance charge and prove cofinal curvature
+- [x] prove factorization-independent Gauss descent in the cyclic coinvariant quotient
+- [x] construct the canonical positive higher-subset covariance lift and its cofinal resource law
+- [x] construct compact positive subset-Fock Hardy lifts for every finite Gauss pairing
+- [ ] construct a cutoff-uniform Sonin weighting/determinant ideal for the finite Hardy lifts
 - [ ] prove from the Euler--Gamma source that `K_(B_omega)=0` cofinally
 - [ ] prove the zero-type recession `omega_R=0`
 - [ ] prove the infinite-carrier lower-frame bound `(11)`

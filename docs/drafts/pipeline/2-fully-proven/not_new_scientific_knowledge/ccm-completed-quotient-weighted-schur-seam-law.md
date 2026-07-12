@@ -316,6 +316,19 @@ Every off-line zero is a missing input channel, not a failure of isometry on the
 domain. A successful source proof must show that the model-space defect `(21)` vanishes. Merely
 renorming `B_omega H2_+`, proving graph closedness, or proving nonexpansivity there cannot do so.
 
+`[PROVED COFINAL TRANSPORT]` These missing Hardy inputs are exactly the cofinal finite-aperture
+Morse charge. The global screw kernel has one negative square per right-half zero, and bounded-
+interval exhaustion gives
+
+```text
+sup_(a>0)kappa(a)
+ =sum_(Re rho>1/2)multiplicity(rho)
+ =sup_(omega>0)dim K(B_omega).
+```
+
+Thus every finite model-space defect packet becomes an actual negative restricted-Weil subspace at
+some finite aperture. See `ccm-aperture-morse-hardymodel-index-exhaustion-law.md`.
+
 The graph is nevertheless the correct orbit-sensitive carrier. Multiplying Xi by a symmetric
 orbit polynomial changes `B_omega` and hence changes the domain defect, even when the ordinary
 Euler-side Schur multiplier is unchanged. This is the exact marking absent from a divisor-blind
@@ -523,6 +536,7 @@ not certify `(17)` or `(23)`. No Lean file is added.
 - [x] leakage index attached to every failed weighted layer
 - [x] canonical closed isometric charged graph constructed
 - [x] its domain defect identified with the complete off-line divisor model space
+- [x] cofinal model-space defect identified with the restricted-Weil aperture Morse charge
 - [x] graph closedness and nonexpansivity retired as independent RH steps
 - [x] completed Poisson--Muntz range closure identified with `B_omega H2_+`
 - [x] off-line zeros identified as adjoint Cauchy-jet null channels

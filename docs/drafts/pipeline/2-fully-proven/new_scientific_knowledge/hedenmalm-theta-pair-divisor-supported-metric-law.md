@@ -448,11 +448,18 @@ only compact-local convergence. Every derivative has an explicit `C_m exp(-|x|)`
 reflection, every weighted derivative is globally bounded, and the full theta-cusp source is
 constructed as an actual element of real and complex Schwartz space.
 
-The remaining formal gap is the central Schwartz-kernel plus Bochner--Schwartz existence theorem
-taking an arbitrary positive continuous translation-invariant Schwartz form to its positive
-tempered spectral measure, together with the exact formal Fourier identity identifying the newly
-constructed theta-cusp Schwartz object with `XiC`. Mathlib supplies the component theories but
-neither the required Schwartz kernel theorem nor this assembled representation theorem.
+`formal/GaloisForLFunctions/RHTower/ThetaCuspSchwartzFourierXi.lean` now proves the exact normalized
+Schwartz-space identity
+
+```text
+fourier (2*pi * thetaCuspFullSource (2*pi * ·)) t = XiC t.
+```
+
+It also specializes the spectral-measure adapter: nullity of this explicit source in any positive
+temperate spectral form forces the complete atomic measure decomposition on the real `Xi` zero set.
+The remaining formal gap is only the central Schwartz-kernel plus Bochner--Schwartz existence theorem
+taking an arbitrary positive continuous translation-invariant Schwartz form to its positive tempered
+spectral measure. Mathlib supplies the component theories but not this assembled representation theorem.
 
 ## Gates
 
@@ -483,5 +490,5 @@ neither the required Schwartz kernel theorem nor this assembled representation t
 - [x] Lean the Schwartz-Xi null-source adapter discharges integrability and yields atomicity
 - [x] Lean theta-cusp reflection, smoothness, and all-derivative parity
 - [x] Lean actual global theta-cusp Schwartz decay and Schwartz-space object
-- [ ] Lean exact Fourier transform of the theta-cusp Schwartz object equals `XiC`
+- [x] Lean exact Fourier transform of the normalized theta-cusp Schwartz object equals `XiC`
 - [ ] Lean Schwartz translation-invariance to Bochner--Schwartz classification bridge

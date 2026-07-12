@@ -390,3 +390,438 @@ theorem guardedClosureApproximant_global_certificate (a : ℝ) (ha : a ≠ 0) (N
 end
 
 end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+/-! ## Compact-open convergence of the guarded realizers -/
+
+theorem coshQuartetEnvelope_continuous (a : ℝ) :
+    Continuous (coshQuartetEnvelope a) := by
+  unfold coshQuartetEnvelope
+  exact (Complex.continuous_cosh.comp (continuous_id.sub continuous_const)).mul
+    (Complex.continuous_cosh.comp (continuous_id.add continuous_const))
+
+theorem quartetFlatAtom_continuous (α : ℂ) :
+    Continuous (quartetFlatAtom α) := by
+  unfold quartetFlatAtom
+  fun_prop
+
+/-- **Compact-open closure.** The guarded aperiodic finite-depth realizers converge to the
+periodic all-order envelope uniformly on every compact subset of the plane: the superexponential
+contact scale beats the polynomial multiplier's geometric growth on each compact set. -/
+theorem guardedClosureApproximant_tendstoLocallyUniformly (a : ℝ) :
+    TendstoLocallyUniformly (fun N z => guardedClosureApproximant a N z)
+      (coshQuartetEnvelope a) atTop := by
+  rw [tendstoLocallyUniformly_iff_forall_isCompact]
+  intro K hK
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro ε hε
+  obtain ⟨E, hE⟩ := hK.exists_bound_of_continuousOn
+    (coshQuartetEnvelope_continuous a).continuousOn
+  obtain ⟨R, hR⟩ := hK.exists_bound_of_continuousOn
+    (quartetFlatAtom_continuous (closureQuartetCenter a)).continuousOn
+  have hb : Tendsto
+      (fun N : ℕ => max E 0 * (guardedClosureScale N * max R 0 ^ (N + 1)))
+      atTop (𝓝 0) := by
+    have htail := (exp_neg_nat_sq_mul_pow_tendsto_zero_of_nonneg
+      (le_max_right R 0)).comp (tendsto_add_atTop_nat 1)
+    have hmul := htail.const_mul (max E 0)
+    simpa [guardedClosureScale, Function.comp, mul_zero] using hmul
+  filter_upwards [hb.eventually_lt_const hε] with N hN z hz
+  have hdiff : coshQuartetEnvelope a z - guardedClosureApproximant a N z =
+      -(coshQuartetEnvelope a z * (((guardedClosureScale N : ℝ) : ℂ) *
+        quartetFlatAtom (closureQuartetCenter a) z ^ (N + 1))) := by
+    simp only [guardedClosureApproximant, polynomialXiEnvelope,
+      guardedClosurePolynomial_eval]
+    ring
+  rw [dist_eq_norm, hdiff, norm_neg, norm_mul, norm_mul, norm_pow, Complex.norm_real,
+    Real.norm_eq_abs,
+    abs_of_pos (show (0 : ℝ) < guardedClosureScale N from Real.exp_pos _)]
+  have h1 : ‖coshQuartetEnvelope a z‖ ≤ max E 0 :=
+    le_trans (hE z hz) (le_max_left E 0)
+  have h2 : ‖quartetFlatAtom (closureQuartetCenter a) z‖ ≤ max R 0 :=
+    le_trans (hR z hz) (le_max_left R 0)
+  have h3 : (0 : ℝ) ≤ guardedClosureScale N := (Real.exp_pos _).le
+  calc ‖coshQuartetEnvelope a z‖ *
+      (guardedClosureScale N * ‖quartetFlatAtom (closureQuartetCenter a) z‖ ^ (N + 1))
+      ≤ max E 0 * (guardedClosureScale N * max R 0 ^ (N + 1)) := by
+        gcongr
+    _ < ε := hN
+
+/-! ## Formal germ separation of the two partner flux corrections
+
+Equality of the partner germs would transport the aperiodic multiplier polynomial onto an exact
+vertical period.  The chain is: eventual equality near the origin forces a polynomial identity,
+the identity forces a Wronskian relation, value-one normalization at the origin upgrades the
+Wronskian relation to equality of the two shifted polynomials, and equality of the shifts is a
+nonzero period of a positive-degree polynomial. -/
+
+/-- A neighbourhood of the origin supports infinitely many agreement points. -/
+theorem infinite_setOf_eq_of_eventuallyEq_nhds_zero {f g : ℂ → ℂ}
+    (h : f =ᶠ[𝓝 (0 : ℂ)] g) : {x : ℂ | f x = g x}.Infinite := by
+  obtain ⟨δ, hδ, hball⟩ := Metric.eventually_nhds_iff.mp h
+  apply Set.infinite_of_injective_forall_mem
+    (f := fun n : ℕ => ((δ / (n + 2) : ℝ) : ℂ))
+  · intro m n hmn
+    simp only [Complex.ofReal_inj] at hmn
+    have hm : ((m : ℝ) + 2) ≠ 0 := by positivity
+    have hn : ((n : ℝ) + 2) ≠ 0 := by positivity
+    rw [div_eq_div_iff hm hn] at hmn
+    have h2 := mul_left_cancel₀ (ne_of_gt hδ) hmn
+    have h3 : (m : ℝ) = (n : ℝ) := by linarith
+    exact_mod_cast h3
+  · intro n
+    apply hball
+    rw [dist_zero_right, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_pos (by positivity : (0 : ℝ) < δ / ((n : ℝ) + 2))]
+    apply div_lt_self hδ
+    have hn0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+    linarith
+
+/-- Polynomials whose evaluations agree near the origin are equal. -/
+theorem polynomial_eq_of_eval_eventuallyEq_nhds_zero {p q : Polynomial ℂ}
+    (h : (fun x : ℂ => p.eval x) =ᶠ[𝓝 (0 : ℂ)] fun x : ℂ => q.eval x) : p = q :=
+  Polynomial.eq_of_infinite_eval_eq p q (infinite_setOf_eq_of_eventuallyEq_nhds_zero h)
+
+/-- A polynomial of positive degree admits no nonzero additive period. -/
+theorem polynomial_no_nontrivial_period {P : Polynomial ℂ} {h : ℂ}
+    (hdeg : 0 < P.natDegree) (hh : h ≠ 0)
+    (hper : ∀ z : ℂ, P.eval (z + h) = P.eval z) : False := by
+  have hiter : ∀ n : ℕ, P.eval ((n : ℂ) * h) = P.eval 0 := by
+    intro n
+    induction n with
+    | zero => simp
+    | succ m ih =>
+        have hstep : ((m + 1 : ℕ) : ℂ) * h = (m : ℂ) * h + h := by
+          push_cast
+          ring
+        rw [hstep, hper, ih]
+  have hQne : P - Polynomial.C (P.eval 0) ≠ 0 := by
+    intro h0
+    rw [sub_eq_zero.mp h0, Polynomial.natDegree_C] at hdeg
+    exact lt_irrefl 0 hdeg
+  have hroots : {x : ℂ | (P - Polynomial.C (P.eval 0)).IsRoot x}.Infinite := by
+    apply Set.infinite_of_injective_forall_mem (f := fun n : ℕ => (n : ℂ) * h)
+    · intro m n hmn
+      have := mul_right_cancel₀ hh hmn
+      exact_mod_cast this
+    · intro n
+      simp only [Set.mem_setOf_eq, Polynomial.IsRoot, Polynomial.eval_sub,
+        Polynomial.eval_C, hiter n, sub_self]
+  exact hQne (Polynomial.eq_zero_of_infinite_isRoot _ hroots)
+
+/-- Two polynomials with value one at the origin and equal logarithmic derivative coincide: the
+difference would vanish at the origin to some exact finite order `k+1`, while the Wronskian
+identity forces the order-`k` coefficient of its derivative to vanish as well. -/
+theorem polynomial_eq_of_derivative_mul_eq {f g : Polynomial ℂ}
+    (hf0 : f.eval 0 = 1) (hg0 : g.eval 0 = 1)
+    (hw : Polynomial.derivative f * g = f * Polynomial.derivative g) : f = g := by
+  by_contra hne
+  have hne0 : f - g ≠ 0 := sub_ne_zero.mpr hne
+  have hwron : f * Polynomial.derivative (f - g) =
+      Polynomial.derivative f * (f - g) := by
+    rw [Polynomial.derivative_sub]
+    linear_combination hw
+  have hkpos : 0 < (f - g).rootMultiplicity 0 := by
+    rw [Polynomial.rootMultiplicity_pos hne0]
+    simp [Polynomial.IsRoot, Polynomial.eval_sub, hf0, hg0]
+  obtain ⟨q, hq, hnd⟩ := (f - g).exists_eq_pow_rootMultiplicity_mul_and_not_dvd hne0 0
+  rw [Polynomial.C_0, sub_zero] at hq hnd
+  obtain ⟨k, hk⟩ : ∃ k, (f - g).rootMultiplicity 0 = k + 1 :=
+    ⟨(f - g).rootMultiplicity 0 - 1, by omega⟩
+  rw [hk] at hq
+  have hder : Polynomial.derivative (f - g) =
+      X ^ k * (Polynomial.C ((k : ℂ) + 1) * q + X * Polynomial.derivative q) := by
+    rw [hq, Polynomial.derivative_mul, Polynomial.derivative_X_pow, Nat.add_sub_cancel]
+    push_cast
+    ring
+  have hXk : (X : Polynomial ℂ) ^ k ≠ 0 := pow_ne_zero _ Polynomial.X_ne_zero
+  have hkey : f * (Polynomial.C ((k : ℂ) + 1) * q + X * Polynomial.derivative q) =
+      Polynomial.derivative f * (X * q) := by
+    apply mul_left_cancel₀ hXk
+    calc
+      X ^ k * (f * (Polynomial.C ((k : ℂ) + 1) * q + X * Polynomial.derivative q))
+          = f * (X ^ k *
+            (Polynomial.C ((k : ℂ) + 1) * q + X * Polynomial.derivative q)) := by
+            ring
+      _ = f * Polynomial.derivative (f - g) := by rw [hder]
+      _ = Polynomial.derivative f * (f - g) := hwron
+      _ = Polynomial.derivative f * (X ^ (k + 1) * q) := by rw [hq]
+      _ = X ^ k * (Polynomial.derivative f * (X * q)) := by ring
+  have heval := congrArg (Polynomial.eval (0 : ℂ)) hkey
+  simp only [Polynomial.eval_mul, Polynomial.eval_add, Polynomial.eval_C,
+    Polynomial.eval_X, hf0, one_mul, zero_mul, mul_zero, add_zero] at heval
+  have hq0 : q.eval 0 = 0 := by
+    rcases mul_eq_zero.mp heval with h | h
+    · exfalso
+      have hcast : ((k : ℂ) + 1) ≠ 0 := by
+        exact_mod_cast Nat.succ_ne_zero k
+      exact hcast h
+    · exact h
+  exact hnd (Polynomial.X_dvd_iff.mpr
+    (by rw [Polynomial.coeff_zero_eq_eval_zero]; exact hq0))
+
+/-- The completed flux correction is the negative coordinate-weighted logarithmic derivative of
+its Hermite-flat factor. -/
+theorem hermiteFlatFluxCorrection_eq_neg_logDeriv {M : ℕ} (hM : 0 < M)
+    {u : ℂ → ℂ} (hu : Differentiable ℂ u) (x : ℂ) :
+    hermiteFlatFluxCorrection M u x =
+      -(x * deriv (hermiteFlatFactor M u) x) / hermiteFlatFactor M u x := by
+  have h1 : HasDerivAt (hermiteFlatFactor M u)
+      ((M : ℂ) * x ^ (M - 1) * u x + x ^ M * deriv u x) x := by
+    have hpow : HasDerivAt (fun t : ℂ => t ^ M) ((M : ℂ) * x ^ (M - 1)) x :=
+      hasDerivAt_pow M x
+    have hmul : HasDerivAt (fun t : ℂ => t ^ M * u t)
+        ((M : ℂ) * x ^ (M - 1) * u x + x ^ M * deriv u x) x :=
+      hpow.mul (hu x).hasDerivAt
+    exact hmul.const_add 1
+  have hd := h1.deriv
+  simp only [hermiteFlatFluxCorrection, hermiteFlatFluxUnit]
+  rw [hd, ← mul_div_assoc]
+  have hxpow : x * x ^ (M - 1) = x ^ M := by
+    conv_rhs => rw [show M = M - 1 + 1 by omega]
+    rw [pow_succ]
+    ring
+  congr 1
+  linear_combination ((M : ℂ) * u x) * hxpow
+
+theorem guardedClosureLocalUnit_differentiable (ε : ℝ) (M : ℕ) (c : ℂ) :
+    Differentiable ℂ (guardedClosureLocalUnit ε M c) := by
+  unfold guardedClosureLocalUnit quartetFlatAtomUnit
+  fun_prop
+
+/-- The multiplier takes the value one at the lower selected center. -/
+theorem guardedClosurePolynomial_eval_lowerCenter (a : ℝ) (N : ℕ) :
+    (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval
+      (closureLowerCenter a) = 1 := by
+  have h := guardedClosurePolynomial_shift_lower a (guardedClosureScale N) (N + 1) 0
+  rw [add_zero] at h
+  rw [h]
+  exact hermiteFlatFactor_zero (Nat.succ_pos N) _
+
+/-- The multiplier takes the value one at the vertical partner center. -/
+theorem guardedClosurePolynomial_eval_upperPartnerCenter (a : ℝ) (N : ℕ) :
+    (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval
+      (closureUpperPartnerCenter a) = 1 := by
+  have h := guardedClosurePolynomial_shift_upperPartner a (guardedClosureScale N) (N + 1) 0
+  rw [add_zero] at h
+  rw [h]
+  exact hermiteFlatFactor_zero (Nat.succ_pos N) _
+
+/-- **No vertical transport of the multiplier.** No scalar multiple identifies the multiplier
+polynomial recentered at the two period-partner centers: evaluation at the centers forces the
+scalar to be one, and exact equality would give the nonconstant polynomial the vertical period
+`πi`. -/
+theorem guardedClosurePolynomial_comp_partner_ne_C_mul (a : ℝ) (N : ℕ) (C : ℂ) :
+    (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).comp
+        (X + Polynomial.C (closureLowerCenter a)) ≠
+      Polynomial.C C *
+        (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).comp
+          (X + Polynomial.C (closureUpperPartnerCenter a)) := by
+  intro hcomp
+  have hC : C = 1 := by
+    have h0 := congrArg (Polynomial.eval (0 : ℂ)) hcomp
+    simp only [Polynomial.eval_comp, Polynomial.eval_mul, Polynomial.eval_add,
+      Polynomial.eval_X, Polynomial.eval_C, zero_add] at h0
+    rw [guardedClosurePolynomial_eval_lowerCenter a N,
+      guardedClosurePolynomial_eval_upperPartnerCenter a N, mul_one] at h0
+    exact h0.symm
+  rw [hC, map_one, one_mul] at hcomp
+  have hper : ∀ w : ℂ,
+      (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval
+        (w + (Real.pi : ℂ) * I) =
+      (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval w := by
+    intro w
+    have h1 := congrArg (Polynomial.eval (w - closureLowerCenter a)) hcomp
+    simp only [Polynomial.eval_comp, Polynomial.eval_add, Polynomial.eval_X,
+      Polynomial.eval_C] at h1
+    rw [closureUpperPartnerCenter_eq_shift] at h1
+    have e1 : w - closureLowerCenter a + closureLowerCenter a = w := by ring
+    have e2 : w - closureLowerCenter a +
+        (closureLowerCenter a + (Real.pi : ℂ) * I) = w + (Real.pi : ℂ) * I := by
+      ring
+    rw [e1, e2] at h1
+    exact h1.symm
+  have hπ : ((Real.pi : ℂ) * I) ≠ 0 :=
+    mul_ne_zero (Complex.ofReal_ne_zero.mpr Real.pi_ne_zero) Complex.I_ne_zero
+  have hdeg :
+      0 < (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).natDegree := by
+    have hεne : guardedClosureScale N ≠ 0 := (Real.exp_pos _).ne'
+    rw [guardedClosurePolynomial_natDegree hεne (Nat.succ_pos N)]
+    omega
+  exact polynomial_no_nontrivial_period hdeg hπ hper
+
+/-- **Factor germ separation.** No scalar multiple identifies the two period-partner factor
+germs near the origin. -/
+theorem guardedClosure_partner_factor_germ_ne (a : ℝ) (N : ℕ) (C : ℂ) :
+    ¬ ((fun x : ℂ => (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval
+          (closureLowerCenter a + x)) =ᶠ[𝓝 (0 : ℂ)]
+        fun x : ℂ =>
+          C * (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval
+            (closureUpperPartnerCenter a + x)) := by
+  intro heq
+  apply guardedClosurePolynomial_comp_partner_ne_C_mul a N C
+  apply polynomial_eq_of_eval_eventuallyEq_nhds_zero
+  filter_upwards [heq] with x hx
+  simp only [Polynomial.eval_comp, Polynomial.eval_mul, Polynomial.eval_add,
+    Polynomial.eval_X, Polynomial.eval_C]
+  rw [add_comm x (closureLowerCenter a), add_comm x (closureUpperPartnerCenter a)]
+  exact hx
+
+end
+
+end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+/-- **Flux germ separation.** At every finite contact depth, the two period-partner completed
+flux-correction germs are distinct near the origin.  Their equality would equate the coordinate-
+weighted logarithmic derivatives of the two recentered multiplier factors, hence — after
+polynomial rigidity at the origin — the recentered multipliers themselves, giving the nonconstant
+multiplier the vertical period `πi`. -/
+theorem guardedClosure_partner_fluxCorrection_germ_ne (a : ℝ) (N : ℕ) :
+    ¬ (hermiteFlatFluxCorrection (N + 1)
+        (guardedClosureLocalUnit (guardedClosureScale N) (N + 1) (closureLowerCenter a))
+      =ᶠ[𝓝 (0 : ℂ)]
+      hermiteFlatFluxCorrection (N + 1)
+        (guardedClosureLocalUnit (guardedClosureScale N) (N + 1)
+          (closureUpperPartnerCenter a))) := by
+  intro heq
+  have hFc : hermiteFlatFactor (N + 1)
+      (guardedClosureLocalUnit (guardedClosureScale N) (N + 1) (closureLowerCenter a)) =
+      fun x : ℂ => (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval
+        (closureLowerCenter a + x) :=
+    funext fun x =>
+      (guardedClosurePolynomial_shift_lower a (guardedClosureScale N) (N + 1) x).symm
+  have hFd : hermiteFlatFactor (N + 1)
+      (guardedClosureLocalUnit (guardedClosureScale N) (N + 1)
+        (closureUpperPartnerCenter a)) =
+      fun x : ℂ => (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval
+        (closureUpperPartnerCenter a + x) :=
+    funext fun x =>
+      (guardedClosurePolynomial_shift_upperPartner a (guardedClosureScale N) (N + 1) x).symm
+  have hderiv_c : ∀ x : ℂ, deriv (fun t : ℂ =>
+      (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval
+        (closureLowerCenter a + t)) x =
+      (Polynomial.derivative
+        (guardedClosurePolynomial a (N + 1) (guardedClosureScale N))).eval
+        (closureLowerCenter a + x) := by
+    intro x
+    rw [deriv_comp_const_add (fun s : ℂ =>
+      (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval s)
+      (closureLowerCenter a) x]
+    exact Polynomial.deriv _
+  have hderiv_d : ∀ x : ℂ, deriv (fun t : ℂ =>
+      (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval
+        (closureUpperPartnerCenter a + t)) x =
+      (Polynomial.derivative
+        (guardedClosurePolynomial a (N + 1) (guardedClosureScale N))).eval
+        (closureUpperPartnerCenter a + x) := by
+    intro x
+    rw [deriv_comp_const_add (fun s : ℂ =>
+      (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval s)
+      (closureUpperPartnerCenter a) x]
+    exact Polynomial.deriv _
+  have hne_c : ∀ᶠ x in 𝓝 (0 : ℂ),
+      (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval
+        (closureLowerCenter a + x) ≠ 0 := by
+    have hcont : ContinuousAt (fun x : ℂ =>
+        (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval
+          (closureLowerCenter a + x)) 0 :=
+      (((guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).continuous).comp
+        (continuous_const.add continuous_id)).continuousAt
+    refine hcont.eventually_ne ?_
+    show (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval
+        (closureLowerCenter a + 0) ≠ 0
+    rw [add_zero, guardedClosurePolynomial_eval_lowerCenter a N]
+    exact one_ne_zero
+  have hne_d : ∀ᶠ x in 𝓝 (0 : ℂ),
+      (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval
+        (closureUpperPartnerCenter a + x) ≠ 0 := by
+    have hcont : ContinuousAt (fun x : ℂ =>
+        (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval
+          (closureUpperPartnerCenter a + x)) 0 :=
+      (((guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).continuous).comp
+        (continuous_const.add continuous_id)).continuousAt
+    refine hcont.eventually_ne ?_
+    show (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval
+        (closureUpperPartnerCenter a + 0) ≠ 0
+    rw [add_zero, guardedClosurePolynomial_eval_upperPartnerCenter a N]
+    exact one_ne_zero
+  have hpoly : X * ((Polynomial.derivative
+        (guardedClosurePolynomial a (N + 1) (guardedClosureScale N))).comp
+          (X + Polynomial.C (closureLowerCenter a)) *
+        (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).comp
+          (X + Polynomial.C (closureUpperPartnerCenter a))) =
+      X * ((Polynomial.derivative
+        (guardedClosurePolynomial a (N + 1) (guardedClosureScale N))).comp
+          (X + Polynomial.C (closureUpperPartnerCenter a)) *
+        (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).comp
+          (X + Polynomial.C (closureLowerCenter a))) := by
+    apply polynomial_eq_of_eval_eventuallyEq_nhds_zero
+    filter_upwards [heq, hne_c, hne_d] with x hx hcx hdx
+    have hbc : hermiteFlatFluxCorrection (N + 1)
+        (guardedClosureLocalUnit (guardedClosureScale N) (N + 1) (closureLowerCenter a)) x =
+        -(x * (Polynomial.derivative
+            (guardedClosurePolynomial a (N + 1) (guardedClosureScale N))).eval
+            (closureLowerCenter a + x)) /
+          (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval
+            (closureLowerCenter a + x) := by
+      rw [hermiteFlatFluxCorrection_eq_neg_logDeriv (Nat.succ_pos N)
+        (guardedClosureLocalUnit_differentiable (guardedClosureScale N) (N + 1)
+          (closureLowerCenter a)) x, hFc]
+      simp only []
+      rw [hderiv_c x]
+    have hbd : hermiteFlatFluxCorrection (N + 1)
+        (guardedClosureLocalUnit (guardedClosureScale N) (N + 1)
+          (closureUpperPartnerCenter a)) x =
+        -(x * (Polynomial.derivative
+            (guardedClosurePolynomial a (N + 1) (guardedClosureScale N))).eval
+            (closureUpperPartnerCenter a + x)) /
+          (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).eval
+            (closureUpperPartnerCenter a + x) := by
+      rw [hermiteFlatFluxCorrection_eq_neg_logDeriv (Nat.succ_pos N)
+        (guardedClosureLocalUnit_differentiable (guardedClosureScale N) (N + 1)
+          (closureUpperPartnerCenter a)) x, hFd]
+      simp only []
+      rw [hderiv_d x]
+    rw [hbc, hbd, div_eq_div_iff hcx hdx] at hx
+    simp only [Polynomial.eval_mul, Polynomial.eval_comp, Polynomial.eval_add,
+      Polynomial.eval_X, Polynomial.eval_C]
+    simp only [add_comm x (closureLowerCenter a), add_comm x (closureUpperPartnerCenter a)]
+    linear_combination -hx
+  have hcancel := mul_left_cancel₀ (Polynomial.X_ne_zero (R := ℂ)) hpoly
+  have hwr : Polynomial.derivative
+      ((guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).comp
+        (X + Polynomial.C (closureLowerCenter a))) *
+      (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).comp
+        (X + Polynomial.C (closureUpperPartnerCenter a)) =
+      (guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).comp
+        (X + Polynomial.C (closureLowerCenter a)) *
+      Polynomial.derivative
+        ((guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).comp
+          (X + Polynomial.C (closureUpperPartnerCenter a))) := by
+    rw [Polynomial.derivative_comp, Polynomial.derivative_comp,
+      Polynomial.derivative_X_add_C, Polynomial.derivative_X_add_C, one_mul, one_mul]
+    linear_combination hcancel
+  have hf0 : ((guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).comp
+      (X + Polynomial.C (closureLowerCenter a))).eval 0 = 1 := by
+    rw [Polynomial.eval_comp, Polynomial.eval_add, Polynomial.eval_X, Polynomial.eval_C,
+      zero_add]
+    exact guardedClosurePolynomial_eval_lowerCenter a N
+  have hg0 : ((guardedClosurePolynomial a (N + 1) (guardedClosureScale N)).comp
+      (X + Polynomial.C (closureUpperPartnerCenter a))).eval 0 = 1 := by
+    rw [Polynomial.eval_comp, Polynomial.eval_add, Polynomial.eval_X, Polynomial.eval_C,
+      zero_add]
+    exact guardedClosurePolynomial_eval_upperPartnerCenter a N
+  have hfg := polynomial_eq_of_derivative_mul_eq hf0 hg0 hwr
+  exact guardedClosurePolynomial_comp_partner_ne_C_mul a N 1
+    (by rw [map_one, one_mul]; exact hfg)
+
+end
+
+end RHTower

@@ -312,6 +312,20 @@ DPrime_lambda/d_1(lambda)
 
 The series in `(33)` converges absolutely because `arcsin(1/k)=O(1/k)`. It is strictly negative.
 
+The exact value transform in
+`prolate-arcsine-zeta-derivative-transform.md` rewrites the diagonal constant as
+
+```text
+sum_(k>=2) log(k)/k*arcsin(1/k)
+ =-sum_(j>=0) binom(2j,j)/(4^j(2j+1))*zeta'(2j+2),
+
+DPrime_lambda/d_1(lambda)
+ ->16/(11*pi)*sum_(j>=0) binom(2j,j)/(4^j(2j+1))*zeta'(2j+2).
+```
+
+Thus the solved diagonal charge is equivalently a positive-weight spectrum of even zeta
+derivative values.
+
 Equation `(33)` is the diagonal contribution to the exact prime form of the raw radial Poisson
 sum. The full prime form also contains the weighted off-diagonal Gram sums and the inseparable
 central correction from Poisson summation; no equality between `(33)` and the complete prime form

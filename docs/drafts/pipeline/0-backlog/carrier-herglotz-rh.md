@@ -65,3 +65,16 @@ Therefore a carrier/Herglotz route must prove the full upper-half-plane Pick/Nev
 `../2-fully-proven/seam-division-source-split-cancellation.md` adds the local residue gate to the carrier route. The carrier coordinate `Xi'(w)/(w Xi(w))` is regular at the seam only after the archimedean/pole and prime log-derivative constants cancel by the functional equation.
 
 Therefore a carrier/Herglotz proof must act on the completed divided carrier, not on separately divided source summands. The separate summands are meromorphic at the seam and cannot be individual Markov transforms there.
+
+## 2026-07-12 local pole passage formalized
+
+The infinite pole-exclusion direction no longer requires a Krein--Langer matrix limit. The module
+`PrimeArchAntiHerglotzGate.lean` proves directly that scalar anti-Herglotzness of the continued
+centered prime--archimedean trace on the upper half-strip implies RH. A reflected off-line zero has
+positive multiplicity, and approaching its pole from inside the half-strip produces a forbidden
+positive imaginary value.
+
+The same module reduces the hypothesis to the countable Gaussian-rational value family. The live
+problem is now the source proof of completed prime--Gamma accretivity, recorded in
+`../1-in-progress/completed-prime-gamma-left-half-accretivity-to-rh.md`; it is not the infinite
+zero-divisor passage described in the original approach above.

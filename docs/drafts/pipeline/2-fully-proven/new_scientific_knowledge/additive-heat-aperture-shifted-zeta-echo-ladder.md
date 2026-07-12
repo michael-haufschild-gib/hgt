@@ -6,7 +6,9 @@
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** The small-aperture expansion of the additive heat energy contains one complex
   channel for every backward zeta value `zeta(s-k)`; at a nontrivial zeta zero exactly the zeroth
-  rung disappears and every later rung is provably nonzero.
+  rung disappears and every later rung is provably nonzero.  After functional normalization, the
+  strict tail is the forward sequence `zeta(1-conj(s)+k)`; the Euler logarithms of that sequence
+  recover every prime-power value `Lambda(N)/log N` by exact coefficient peeling.
 
 ## Source observable
 
@@ -160,6 +162,30 @@ the k=0 complex echo is absent and every k>=1 echo is present. (7)
 The first surviving value is the previously recorded tangent `i zeta(s-1)`. Formula (7) upgrades
 that tangent to an infinite, recursively weighted nonvanishing ladder.
 
+## Forward-value and prime-power tail `[PROVED HERE]`
+
+Let `e_k(s)=C_k(s)conj(zeta(s-k))` be the complex echo coefficient.  For every `k>=1`, the
+functional equation gives
+
+```text
+e_k(s)
+ =C_k(s)chi(conj(s)-k)zeta(1-conj(s)+k),
+chi(w)=Gamma_R(1-w)/Gamma_R(w).                        (7a)
+```
+
+The last zeta value lies in `Re>1`.  Taking its canonical Euler logarithm and then peeling its
+Dirichlet coefficients at large `k` recovers
+
+```text
+Lambda(N)/log N = 1/r  if N=p^r,
+Lambda(N)/log N = 0    otherwise.                      (7b)
+```
+
+For real strip parameters these Euler-log echo values have strictly positive-definite Hankel
+matrices of every order.  The complete theorem and proof are in
+`additive-heat-echo-prime-power-tomography-law.md`.  Lean formalizes `(7a)` as
+`heatApertureEchoValue_eq_forward`.
+
 ## Law developed from the relation
 
 The heat aperture separates the zeta divisor from all backward shifts of that divisor. A
@@ -204,6 +230,8 @@ formalizes the actual coefficients (2) and proves
 heatApertureEchoCoeff_add_two
 heatApertureEchoCoeff_ne_zero
 riemannZeta_sub_nat_ne_zero_of_criticalStrip
+heatApertureBackwardZetaValue_eq_zetaChi_mul_forward
+heatApertureEchoValue_eq_forward
 ```
 
 The targeted build passes. Each final theorem depends only on Lean's standard `propext`,

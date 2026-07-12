@@ -1,4 +1,4 @@
-# Critical-centre Euler-unit completeness and trace-Hankel instability
+# Critical-centre Euler-unit completeness and trace-Hankel boundary law
 
 - **ID:** `critical-center-euler-unit-trace-hankel-instability`
 - **Stage:** 2-fully-proven / candidate-new
@@ -20,7 +20,7 @@
 
 ## Goal
 
-Route A already has two exact Lean-certified facts:
+Two exact Lean-certified value relations are available:
 
 1. the continued prime--archimedean source trace equals the centred Xi relative resolvent near the
    functional-equation centre;
@@ -29,7 +29,7 @@ Route A already has two exact Lean-certified facts:
 
 The theorem classifies the available source geometry. The finite-unit action is topologically
 transitive on every fixed-divisor regular-germ fibre, so the continuous quotient is precisely the
-divisor. The positive RH-bearing object is therefore forced to be an incidence structure coupling
+divisor. The positive RH-bearing object is therefore an incidence structure coupling
 the weighted all-prime coefficient tail to the archimedean completion, with a topology that retains
 this arithmetic tail instead of collapsing it to the locally continued germ.
 
@@ -44,7 +44,7 @@ experiment.
   prime-Lambert fixed-locus statement
 - [x] preliminary literature audit: exact formula, equivalent-formulation, and parent searches
   completed; independent specialist review remains required
-- [x] significance gate: classifies the compact-open local-germ geometry of Route A: the
+- [x] significance gate: classifies the compact-open local-germ geometry of the source values: the
   fixed-divisor regular fibre is one finite-unit orbit closure, and the surviving RH carrier is the
   weighted all-prime-tail/archimedean incidence object
 - [ ] 2 -> 3: the fixed-locus completeness, Schwarz-real descent, genuine nonlinear generated-group
@@ -394,8 +394,8 @@ uses the full germ space and is not a finite-jet warning.
 2. **The result does not call distinct Euler products identical.**  Finite Euler units change the
    arithmetic source.  Density says only that the locally continued germ forgets the weighted-tail
    distinction.
-3. **All Taylor orders are included.**  The topology is compact-open on holomorphic germs, not a
-   finite truncation.  The failure is therefore stronger than finite-jet local openness.
+3. **All Taylor orders are included.**  The compact-open topology on holomorphic germs makes the
+   quotient classification an all-jet theorem rather than a finite-truncation statement.
 4. **The fixed locus is essential.**  The anti-invariant projection in Theorem A replaces the
    separated-carrier argument used on domains strictly to the right of `Re s=1/2`.
 5. **No zero data enter the completeness proof.**  The prime-Lambert tangent family, FE reflection,
@@ -406,7 +406,7 @@ uses the full germ space and is not a finite-jet warning.
    from Cauchy estimates and high-order monomial square tests.  The candidate novelty is its exact
    coupling to critical-centre completeness of the actual Euler-unit Lambert family.
 
-## 7. Route A verdict
+## 7. Positive value verdict
 
 `[PROVED]` The source form itself is no longer missing: the continued prime--archimedean trace and
 the reciprocal-square moment germ are exact.
@@ -417,8 +417,8 @@ the principal part, the maximal quotient is exactly the divisor/multiplicity. Th
 trace-moment fibre is the divided-difference image of this orbit geometry, and its Hankel-positive
 cone is nowhere thick.
 
-`[POSITIVE OPEN CORE]` Construct the weighted-tail incidence pairing carried by the distinguished
-von Mangoldt point and the archimedean completion, and prove that it lands in the full Hankel cone.
+`[POSITIVE OPEN CORE]` The remaining value theorem is the weighted-tail incidence pairing carried
+by the distinguished von Mangoldt point and the archimedean completion, landing in the full Hankel cone.
 The required object has the form
 
 ```text
@@ -426,12 +426,12 @@ The required object has the form
     -> trace-Hankel positive form,                         (23)
 ```
 
-not another source-germ coordinate or local Gram factorization.
+with the von Mangoldt coefficient graph retained before passage to the continued germ.
 
-`[FINAL POSITIVE VERDICT ON ROUTE A]` Route A is the weighted-tail incidence programme (23): retain
-the von Mangoldt coefficient graph, couple it to the archimedean completion, and prove positivity
-before quotienting to the continued germ. The theorem determines the correct carrier and topology
-for the route; the compact-open germ is its quotient, not its source object.
+`[POSITIVE VALUE VERDICT]` The weighted-tail incidence relation `(23)` retains the von Mangoldt
+coefficient graph, couples it to the archimedean completion, and proves positivity before
+quotienting to the continued germ.  The compact-open germ is the resulting quotient value; the
+weighted coefficient tail and archimedean completion are the source values.
 
 ## 8. Parent and preliminary literature audit
 
@@ -447,7 +447,7 @@ result `prime-euler-unit-tangent-completeness.md`.  The present theorem is not i
 specialization: that proof uses separation of a carrier from its FE reflection, which fails at the
 fixed locus.  The anti-invariant extension (1), the identity `G=2F`, and the resulting completeness
 of the entire odd fixed-locus germ space supply the missing argument.  The trace-Hankel instability
-then turns that fixed-locus theorem into a Route A exclusion.
+then identifies the exact boundary of the trace-Hankel-positive values.
 
 Exact searches for
 

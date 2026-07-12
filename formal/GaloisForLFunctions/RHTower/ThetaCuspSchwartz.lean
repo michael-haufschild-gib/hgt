@@ -249,10 +249,12 @@ theorem integrableOn_thetaCuspTailDerivative_Ioi (m : ℕ) :
   let C := thetaCuspTailDerivativeExpConstant m
   have hdom : IntegrableOn (fun x : ℝ => C * Real.exp (-x)) (Ioi 0) :=
     (integrableOn_exp_neg_Ioi 0).const_mul C
-  apply hdom.mono
+  have hC : 0 ≤ C := thetaCuspTailDerivativeExpConstant_nonneg m
+  apply Integrable.mono hdom
   · exact (differentiable_thetaCuspTailDerivative m).continuous.aestronglyMeasurable.restrict
-  · filter_upwards with x hx
-    rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+  · filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+    rw [Real.norm_eq_abs, Real.norm_eq_abs,
+      abs_of_nonneg (mul_nonneg hC (Real.exp_pos _).le)]
     exact abs_thetaCuspTailDerivative_le_exp_neg m hx.le
 
 theorem thetaCuspTailDerivative_tendsto_atTop_zero (m : ℕ) :

@@ -201,6 +201,33 @@ uncancelled pole of `Theta_omega` in the upper half-plane and therefore an off-l
 `(C)` is an equivalence when the witness format includes its rational `omega`, rational sample
 points, and certified Euler-product intervals.
 
+`[PROVED SUBSEQUENT APERTURE TRANSPORT]` The limiting Pick inertia is also the cofinal localized
+Weil Morse charge. The global screw kernel supplies the common negative-square realization, and
+continuous-kernel exhaustion proves
+
+```text
+sup_(a>0)kappa(a)
+ =sup_(omega>0)lim_N nu_-(P_(omega,N))
+ =sum_(Re rho>1/2)multiplicity(rho).
+```
+
+Thus a finite Euler-region negative Pick witness is not merely a divisor certificate: after
+passing through the global screw carrier, its charge occurs in a genuine finite restricted-Weil
+aperture. The theorem is `ccm-aperture-morse-hardymodel-index-exhaustion-law.md`.
+
+`[PROVED SUBSEQUENT RAY REDUCTION]` The full shifted index is already attained on the single
+vertical ray `z=iy`, `y>1/2+omega`. There the shifted arguments are positive real numbers greater
+than one and the Pick kernel becomes
+
+```text
+(1-f_omega(x)f_omega(y))/(x+y),
+f_omega(y)=xi(y+1/2-omega)/xi(y+1/2+omega)>0.
+```
+
+Thus complex sampling is unnecessary: dense rational ray matrices recover the complete off-line
+count using only positive absolutely convergent Euler products. See
+`ccm-real-euler-ray-loewner-index-law.md`.
+
 ## Why this is stronger than an RH equivalent
 
 - It is cardinal-valued, not Boolean: the matrices count off-line zeros layer by layer.

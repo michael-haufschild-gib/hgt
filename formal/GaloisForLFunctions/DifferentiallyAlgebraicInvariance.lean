@@ -161,3 +161,76 @@ theorem hypertranscendental_comp_const_mul_iff {f : ℂ → ℂ}
   (differentiallyAlgebraic_comp_const_mul_iff hsm hc).not
 
 end GaloisForLFunctions
+
+namespace GaloisForLFunctions
+
+/-- Iterated derivatives of a constant multiple, unconditionally. -/
+theorem iteratedDeriv_const_mul_field (c : ℂ) (f : ℂ → ℂ) (j : ℕ) :
+    iteratedDeriv j (fun z => c * f z) = fun z => c * iteratedDeriv j f z := by
+  induction j with
+  | zero => simp [iteratedDeriv_zero]
+  | succ j ih =>
+    rw [iteratedDeriv_succ, ih, iteratedDeriv_succ]
+    funext z
+    exact deriv_const_mul_field c
+
+/-- Jet substitution scaling the value slots: the point slot is fixed, every jet slot is
+multiplied by `c⁻¹`. -/
+noncomputable def jetValueScaleSub (n : ℕ) (c : ℂ) :
+    Fin (n + 2) → MvPolynomial (Fin (n + 2)) ℂ :=
+  Fin.cases (X 0) (fun j => C c⁻¹ * X j.succ)
+
+/-- Value-scaling invariance of differential algebraicity, unconditionally. -/
+theorem DifferentiallyAlgebraic.const_mul {f : ℂ → ℂ}
+    (hf : DifferentiallyAlgebraic f) {c : ℂ} (hc : c ≠ 0) :
+    DifferentiallyAlgebraic (fun z => c * f z) := by
+  obtain ⟨n, P, hP0, hPz⟩ := hf
+  refine ⟨n, bind₁ (jetValueScaleSub n c) P, ?_, ?_⟩
+  · intro h
+    apply hP0
+    have hback : bind₁ (jetValueScaleSub n c⁻¹) (bind₁ (jetValueScaleSub n c) P) = P := by
+      rw [bind₁_bind₁]
+      have hσ : (fun i => bind₁ (jetValueScaleSub n c⁻¹) (jetValueScaleSub n c i))
+          = (X : Fin (n + 2) → MvPolynomial (Fin (n + 2)) ℂ) := by
+        funext i
+        induction i using Fin.cases with
+        | zero => simp only [jetValueScaleSub, Fin.cases_zero, bind₁_X_right]
+        | succ j =>
+          simp only [jetValueScaleSub, Fin.cases_succ, map_mul, bind₁_X_right, bind₁_C_right]
+          rw [inv_inv, ← mul_assoc, ← map_mul, inv_mul_cancel₀ hc, map_one, one_mul]
+      rw [hσ, bind₁_X_left]
+      rfl
+    rw [← hback, h, map_zero]
+  · intro z
+    rw [eval_bind₁]
+    have hvec : (fun i => eval
+          (Fin.cons z fun j : Fin (n + 1) => iteratedDeriv (j : ℕ) (fun w => c * f w) z)
+          (jetValueScaleSub n c i))
+        = Fin.cons z (fun j : Fin (n + 1) => iteratedDeriv (j : ℕ) f z) := by
+      funext i
+      induction i using Fin.cases with
+      | zero => simp [jetValueScaleSub]
+      | succ j =>
+        simp only [jetValueScaleSub, Fin.cases_succ, eval_mul, eval_C, eval_X, Fin.cons_succ]
+        rw [congrFun (iteratedDeriv_const_mul_field c f (j : ℕ)) z, ← mul_assoc,
+          inv_mul_cancel₀ hc, one_mul]
+    rw [hvec]
+    exact hPz z
+
+theorem differentiallyAlgebraic_const_mul_iff {f : ℂ → ℂ} {c : ℂ} (hc : c ≠ 0) :
+    DifferentiallyAlgebraic (fun z => c * f z) ↔ DifferentiallyAlgebraic f := by
+  constructor
+  · intro h
+    have h2 := h.const_mul (inv_ne_zero hc)
+    have hfun : (fun z => c⁻¹ * (c * f z)) = f := by
+      funext z
+      rw [← mul_assoc, inv_mul_cancel₀ hc, one_mul]
+    rwa [hfun] at h2
+  · exact fun h => h.const_mul hc
+
+/-- Hypertranscendence is invariant under nonzero scalar multiples of the function. -/
+theorem hypertranscendental_const_mul_iff {f : ℂ → ℂ} {c : ℂ} (hc : c ≠ 0) :
+    Hypertranscendental (fun z => c * f z) ↔ Hypertranscendental f :=
+  (differentiallyAlgebraic_const_mul_iff hc).not
+
+end GaloisForLFunctions

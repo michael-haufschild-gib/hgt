@@ -79,6 +79,57 @@ The trace-class hypothesis is load-bearing. Equation `(7)` is not an appeal to a
 renormalized trace; it applies only after the chosen test or resolvent smoothing has established
 the ordinary trace domain.
 
+## 2a. Canonical descent modulo conjugation coboundaries
+
+The product identity has a factorization-independent quotient form. In any unital algebra with a
+derivation `delta`, put
+
+```text
+omega(U)=U^(-1)delta(U)                                      (8a)
+```
+
+for invertible `U`. The Leibniz rule gives the crossed-homomorphism identity
+
+```text
+omega(UV)=V^(-1)omega(U)V+omega(V).                          (8b)
+```
+
+Let `Coinv` be the additive quotient by the span of conjugation coboundaries
+
+```text
+V^(-1)TV-T.                                                  (8c)
+```
+
+Then `(8b)` becomes the exact homomorphism law
+
+```text
+[omega(UV)]=[omega(U)]+[omega(V)] in Coinv.                  (8d)
+```
+
+Consequently every finite factorization of the same multiplier defines the same class. In
+particular, for a Gauss splitting
+
+```text
+rho_infinity=product_k g_k
+```
+
+and any pairing `w_k=g_krho_(p_k)`, commutativity of the boundary multipliers gives
+
+```text
+sum_k[omega(w_k)]
+ =[omega(rho_infinity)]+sum_(p in F)[omega(rho_p)]
+ =[omega(rho_infinity product_(p in F)rho_p)].               (8e)
+```
+
+Thus Gauss splitting and the bijection between components and primes do not create ambiguity at the
+cyclic-coinvariant level. Their dependence lives entirely in explicit conjugation coboundaries.
+Every conjugation-invariant trace annihilates `(8c)`, recovering `(7)`.
+
+This closes the **algebraic Gauss-descent** problem. It does not choose a positive representative of
+the class: squaring, Hardy compression, Schatten norm, and negative index do not factor through
+`Coinv`. The RH-bearing datum must therefore be a pointed positive/relative lift of `(8e)`, selected
+by the Hardy polarization, Sonin projection, cyclic vector, or determinant line.
+
 ## 3. Gauss-paired Connes--Consani specialization
 
 Let
@@ -232,6 +283,7 @@ analytic theorem rather than progress on RH. No Lean file is added.
 
 - [x] exact finite-product quantized-differential identity
 - [x] exact trace additivity under an ordinary trace-class hypothesis
+- [x] factorization- and pairing-independent descent to the cyclic coinvariant class
 - [x] Gauss-paired local-factor specialization
 - [x] coefficient--state prime budget identified without double counting
 - [ ] uniform cofinal trace-class or relative-trace theorem

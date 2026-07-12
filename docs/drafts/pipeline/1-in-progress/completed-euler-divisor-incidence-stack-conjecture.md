@@ -93,3 +93,25 @@ after that finite theorem exists is a cofinal limit question mathematically defi
 - [ ] 1 -> 2: construct the finite-cutoff incidence functor without target-defined data
 - [ ] 2 -> 3: formalize finite functoriality and arrow faithfulness in Lean
 - [ ] 3 -> 4: prove the cofinal zero-preserving incidence theorem
+
+## 2026-07-12 Formal plan for the first finite theorem
+
+The tree already supplies the groupoid layer (`EulerTranslationGroupoid.lean`: arrow type,
+composition laws, exact source-fibre recovery) and the source layer
+(`CriticalDiscEulerOrbitDensity.lean`: FE-paired unit increments, increment group on the critical
+disc). The first finite theorem therefore reduces to one analytic brick plus assembly:
+
+`[OPEN BRICK]` **Per-prime independence of the finite-cutoff increments.** For a finite prime set,
+a vanishing integer combination of FE-paired unit increments on the critical disc has every
+per-prime component zero. Proof route, all ingredients now located: each increment is the disc
+restriction of a half-plane function whose analytic part has Dirichlet expansion supported on
+`{p^m}` (geometric Möbius flux), plus a Schwarz-conjugate part split off by the existing
+`criticalSchwarzTransform` lemmas; vanishing on the disc propagates by the identity theorem to the
+half-plane; mathlib's `LSeries_eq_zero_iff` (LSeries injectivity) kills the coefficients; unique
+factorization partitions the support by `p`. Faithfulness of the coefficient component of `I_N`
+on arrows is exactly this brick, since arrows are determined by their displacements.
+
+Assembly after the brick: coefficient component = per-prime coordinate reading (well-defined by
+independence); trace component = moment vector of the object function (source-derived, not
+divisor-derived); functoriality is the displacement additivity already proved in the groupoid
+module. No Lean wrapper before the brick is proved.
