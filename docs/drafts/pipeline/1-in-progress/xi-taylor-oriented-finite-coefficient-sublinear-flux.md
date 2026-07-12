@@ -186,6 +186,13 @@ finite lower-denominator/upper-current inequality, not coefficient positivity by
   This is proved on paper and in `XiCTaylorThetaTailConvexCore.lean`.  The representation is
   source-pure and finite, but its current still polarizes to a mixed two-point kernel; probability
   positivity alone is not the missing orientation law.
+- `[PROVED REDUCTION]` Both the core value and its derivative are exact averages against the same
+  density `rho=4T''`.  Polarization and product-measure symmetry give
+  `J_(U_d)=(1/4) integral integral rho(x)rho(y)K_d(z;x,y)dxdy`, where `K_d` is the symmetric pair
+  current of the finite shifted-cosine atoms.  This is proved on paper and in
+  `XiCTaylorThetaTailCoreCorrelation.lean`.  The direct producer is now tracked separately in
+  `xi-taylor-theta-tail-core-density-current.md`; its open content is a cancellation identity for
+  the full canonical density, not pointwise atom positivity.
 - `[PROVED ROUTE FAILURE]` Finite prime Pólya--Schur scalings preserve a pre-existing hyperbolic
   section, but the renormalized infinite-prime identification with the canonical Xi coefficients
   is the already recorded RH-sized limit wall.  It supplies no finite current estimate for the

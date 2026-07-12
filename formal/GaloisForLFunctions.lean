@@ -297,3 +297,5 @@ import GaloisForLFunctions.GammaBellSubstitution
 import GaloisForLFunctions.GammaHypertranscendental
 import GaloisForLFunctions.DifferentialUnitEquation
 import GaloisForLFunctions.DifferentialPowerElimination
+import GaloisForLFunctions.LogDerivBellTransfer
+import GaloisForLFunctions.LogDerivPowerRelation

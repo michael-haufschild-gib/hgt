@@ -431,7 +431,17 @@ atomlessness of the parameter law. The still-open
 classical construction core is to construct this family in Lean from every normalized
 indeterminate Hamburger moment sequence; the assembled theorem does not discharge that existence.
 
-All eight exact builds pass. `#print axioms` on the capstone declarations reports only `propext`,
+The unconditional module
+`GaloisForLFunctions.HTGeometry.CholeskyDeterminantDivergence` now proves the repair-escape
+implication used in `(20)--(21)`. For every positive-definite Gram tower with canonical
+inverse-Cholesky frames, vanishing normalized Gram determinants force: normalized frame
+determinants to tend to infinity, the least Gram eigenvalue to tend to zero, and the Euclidean
+operator norms of the frames to tend to infinity. The norm proof uses a unit least-eigenvalue
+eigenvector and the exact identity `G⁻¹=CᴴC`, so it introduces no dimension-dependent determinant
+estimate. This does not yet formalize the OPUC/Szegő theorem that supplies normalized determinant
+vanishing for a purely singular circle measure, nor the asserted exact finite norm equality.
+
+All nine exact builds pass. `#print axioms` on the capstone declarations reports only `propext`,
 `Classical.choice`, and `Quot.sound`. The touched modules contain no proof debt, and the
 repository-wide formal lint passes. This validates only the declarations listed above, not the
 still-unformalized claims in the paper.
@@ -441,7 +451,8 @@ construction and weak continuity of the actual N-extremal Nevanlinna
 kernel and projective support label, the full Bauer-simplex/topological and spectral-type layer,
 finite-frame Hilbert-cube fibers, constrained full-shift transversality, topological continuity of
 the complete-tower coordinate, F. and M. Riesz, graph closure as a linear relation,
-OPUC/Bernstein--Szegő repair and divergence, and the final residual-set capstone.
+the OPUC/Szegő determinant-vanishing input and Bernstein--Szegő approximation, the exact finite
+operator-norm identity, and the final residual-set capstone.
 
 ## Gates
 

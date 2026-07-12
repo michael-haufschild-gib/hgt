@@ -31,6 +31,22 @@ for every epsilon>0,
   I_L(n) >= -C_epsilon n^epsilon for all n>=N_epsilon.    (1)
 ```
 
+The formalized completed-error reduction in
+`../3-formalized/not_new_scientific_knowledge/ccm-completed-critical-mellin-chebyshev-potential-law.md`
+rewrites the integrand exactly as
+
+```text
+R(h)
+ =1-2/sqrt(exp(h))-E(exp(h))/sqrt(exp(h))
+  -(1/2) integral_[1,exp(h)] E(t)t^(-3/2)dt,
+
+E(X)=psi(X)-X.                                            (2)
+```
+
+Thus `(1)` is now literally a one-sided subpower lower problem for one fixed Haar coefficient of
+the normalized Chebyshev potential `(2)`.  The polar and von Mangoldt square-root main terms have
+already cancelled in Lean; they are not separate remaining estimates.
+
 The paper-proved rectangular critical-Mellin law identifies the actual fixed-width Weil value with
 `2 I_L(n)` plus a fixed term and an `n`-uniformly bounded Gamma term. The Lean theorem
 `riemannHypothesis_of_xiRectangularWeilTailSubpowerLower` therefore turns `(1)` into RH.
@@ -106,13 +122,16 @@ source inequality (1)
 ```
 
 The only paper-to-Lean bridge still missing in this displayed chain is the already paper-proved
-Stieltjes/autocorrelation identity from `I_L(n)` to the actual rectangular Weil value.
+Stieltjes/autocorrelation identity from `I_L(n)` to the actual rectangular Weil value.  The source
+quantity `I_L(n)` itself and its exact Chebyshev-potential form are now formalized without a `Prop`
+interface.
 
 ## Gates
 
 - [x] exact source scalar isolated
 - [x] weaker one-sided subpower endpoint proved sufficient in Lean
 - [x] bounded Gamma term shown harmless on paper
+- [x] square-root polar/prime cancellation reduced in Lean to the normalized Chebyshev potential
 - [ ] prove `(1)` unconditionally from the completed source
 - [ ] formalize the critical-Mellin Stieltjes/autocorrelation identity
 - [ ] compose to RH

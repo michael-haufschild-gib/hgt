@@ -614,3 +614,68 @@ recursion: a single case split on whether every variable is `x₀`.
    off the ξ-zeros; identity-theorem extension as in `QuantitativeHolderInterface`).
 2. The minimal-frequency estimate + von Mangoldt Vandermonde (the analytic wall + tree
    `jetM` bookkeeping over the now-formalized von Mangoldt jets `iteratedDeriv_xiLogDeriv_split`).
+
+### A10. The differentiation-elimination engine + log-derivative bridge FORMALIZED (2026-07-12, pass 7)
+
+**`[PROVED HERE + FORMALIZED, axiom-clean]`** — sub-brick (1) of XiFrequencyCollapse is now
+built up to a single well-scoped Bell-graded wiring step. Two new modules:
+
+**`formal/GaloisForLFunctions/DifferentialPowerElimination.lean`** — the engine, the
+`𝒟`-on-coefficients analog of `gammaPowerRel_eq_zero`:
+- `diffPowerRel_yields` — **THE ENGINE**: a power relation `∑_{d≤D} f^d·(uJet u z)(Q_d) = 0`
+  on an open `Ω` (hypotheses `hf : f' = u·f`, `hJ : jet-eval differentiates by 𝒟`,
+  `hfne : f ≠ 0`), with not all `Q_d = 0`, yields a NONZERO `R` with `(uJet u z)(R) = 0` on
+  `Ω` — a differential-algebraic relation for `u`. Strong induction on the ξ-degree:
+  `derivedRelation` (differentiate the relation, coefficient `Q_d ↦ 𝒟Q_d + d·x₁·Q_d`),
+  `elimRelation` (kill the top power), then either a single surviving term (the `u`-relation,
+  via `f ≠ 0`) or the differential eigenrelation — refuted by `no_differential_eigenrelation`
+  (pass 6). No denominator clearing (unlike the Γ shift-elimination): with `s = x₀` a jet
+  variable everything is in `MvPolynomial ℕ ℂ` with `totalDeriv`.
+- The analytic bridge, discharging the engine's hypotheses from analyticity: `uJet`,
+  `hasDerivAt_uJetEval` (**the chain rule** `(uJet u ·)(P)' = (uJet u z)(𝒟P)`), and the
+  packaged capstone `logDeriv_DA_of_powerRel` (engine + bridge for `u = f'/f`).
+
+**`formal/GaloisForLFunctions/LogDerivBellTransfer.lean`** — the transfer bricks:
+- `iteratedDeriv_eq_bellCore_generic` — the **generic Bell identity**
+  `f⁽ᵏ⁾ = f·B_k(u-jets)` for any analytic nonzero `f` (generalizes
+  `gamma_iteratedDeriv_eq_bellCore`).
+- `finPolyToNat` + `eval_uJet_finPolyToNat` — the frame translation carrying the `Fin`-frame
+  Bell-graded coefficients of the Γ-transfer into the `ℕ`-frame the engine consumes, with
+  `eval (uJet u z) (finPolyToNat n H) = eval₂ (evalRingHom z) (u-jets) H`.
+
+**Remaining for sub-brick (1) — one wiring step:** assemble the power relation from `ξ` DA.
+With `Ω = {ξ ≠ 0}` (open; ξ entire), `H = reshapeJet n P`, `u = ξ'/ξ`:
+`eval₂_bell_expansion` (reuse) + `eval₂_reshapeJet` (reuse) + the generic Bell identity give
+`∀ z ∈ Ω, ∑_dd (ξ z)^dd · (uJet u z)(finPolyToNat n (bellGraded n H dd)) = 0`; the
+non-vanishing `∃ dd, finPolyToNat n (bellGraded n H dd) ≠ 0` is `P ≠ 0` via the top-degree
+`bellGraded` (Bell triangularity, `bellCore_succ_decomp`) or the Bell-surjectivity
+`exists_bellAt_solution` (as in `hypertranscendental_gamma`'s vanishing step). Feeding these to
+`logDeriv_DA_of_powerRel` discharges sub-brick (1) end-to-end. Then the residue of
+`Hypertranscendental xi` is the single analytic input `WatsonFlatness` plus the
+minimal-frequency/von Mangoldt-Vandermonde bookkeeping over `iteratedDeriv_xiLogDeriv_split`.
+
+### A11. XiFrequencyCollapse sub-brick (1) DISCHARGED END-TO-END (2026-07-12, pass 7 cont.)
+
+**`logDeriv_DA_of_DA_full` `[PROVED HERE + FORMALIZED, axiom-clean]`**
+(`formal/GaloisForLFunctions/LogDerivPowerRelation.lean`): for any `f` analytic and nonzero on
+an open `Ω` carrying a NONZERO differential-algebraic relation, its logarithmic derivative
+`u = f'/f` satisfies a nonzero differential-algebraic relation on `Ω`. Applied to `f = ξ`
+(entire, `Ω = {ξ ≠ 0}` open), this is exactly **"ξ DA ⟹ ξ'/ξ DA"** — sub-brick (1), complete.
+
+The assembly, all axiom-clean:
+- `xiDA_powerRelation` — the DA relation becomes a power relation
+  `∑_d f^d·(uJet u z)(finPolyToNat n (bellGraded n (reshapeJet n P) d)) = 0` via
+  `eval₂_bell_expansion` + `eval₂_reshapeJet` + the generic Bell identity + the frame
+  translation.
+- `exists_finPolyToNat_bellGraded_ne_zero` — the non-vanishing `P ≠ 0 ⟹ ∃ d, Q_d ≠ 0`, via
+  `finPolyToNat_injective` (built from an explicit left inverse) and `Pzero_of_bellGraded_zero`
+  (the Bell-surjectivity vanishing argument `exists_bellAt_solution`, reconstructed from
+  `hypertranscendental_gamma`).
+- `logDeriv_DA_of_powerRel` (the engine + chain-rule bridge) then delivers the `u`-relation.
+
+**XiFrequencyCollapse residue after pass 7 — one named analytic input remains for
+`Hypertranscendental xi`:** the minimal-frequency estimate + von Mangoldt Vandermonde
+bookkeeping over the now-formalized jet split `iteratedDeriv_xiLogDeriv_split` (sub-brick 2),
+plus `WatsonFlatness` for the QH interface. The differential-algebra spine of the whole
+collapse — Hölder for Γ/ψ/ζ, the differential unit no-go, the elimination engine, and now the
+log-derivative closure ξ DA ⟹ ξ'/ξ DA — is entirely machine-checked.
