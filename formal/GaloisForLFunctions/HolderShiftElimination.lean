@@ -171,6 +171,9 @@ theorem ratShift_sub_polePart_combination {m : ℕ} {w : RatFunc ℂ} {δ : Fin 
       pow_ne_zero _ ratFuncX_ne_zero
     rw [map_mul]
     field_simp
+    rw [← map_mul, ← map_mul]
+    congr 1
+    ring
   -- cross-multiplied polynomial identity
   have hqK : algebraMap (Polynomial ℂ) (RatFunc ℂ) q ≠ 0 := fun h0 =>
     hq (RatFunc.algebraMap_injective ℂ (by rw [h0, map_zero]))
@@ -268,6 +271,11 @@ theorem sub_single_add_single {α : Fin m →₀ ℕ} {j : Fin m} (h : α j ≠ 
   · rw [if_neg hk]
     omega
 
+theorem degSum_sub_single {α : Fin m →₀ ℕ} {j : Fin m} (h : α j ≠ 0) :
+    degSum (α - Finsupp.single j 1) + 1 = degSum α := by
+  conv_rhs => rw [← sub_single_add_single h]
+  rw [degSum_add, degSum_single]
+
 theorem add_single_sub_single (α : Fin m →₀ ℕ) (j : Fin m) :
     α + Finsupp.single j 1 - Finsupp.single j 1 = α := by
   ext k
@@ -316,7 +324,8 @@ theorem jetTranslate_monomial (α : Fin m →₀ ℕ) (a : RatFunc ℂ) :
 
 theorem transMonomial_zero : transMonomial (0 : Fin m →₀ ℕ) = 1 := by
   unfold transMonomial
-  simp
+  refine Finset.prod_eq_one fun j _ => ?_
+  rw [Finsupp.coe_zero, Pi.zero_apply, pow_zero]
 
 theorem transMonomial_add_single (α : Fin m →₀ ℕ) (j : Fin m) :
     transMonomial (α + Finsupp.single j 1)
@@ -358,26 +367,19 @@ theorem subTopMonomial_add_single (α : Fin m →₀ ℕ) (j : Fin m) :
     refine Finset.sum_congr rfl fun k hk => ?_
     have hkj : k ≠ j := Finset.ne_of_mem_erase hk
     rw [X_eq_monomial, monomial_mul, mul_one]
-    have happ : (α + Finsupp.single j 1) k = α k := by
+    have happ : ((α + Finsupp.single j 1 : Fin m →₀ ℕ)) k = α k := by
       rw [Finsupp.add_apply, Finsupp.single_apply, if_neg (fun h => hkj (Eq.symm h)),
         add_zero]
     rw [happ]
-    congr 1
-    ext l
-    simp only [Finsupp.add_apply, Finsupp.tsub_apply, Finsupp.single_apply]
-    by_cases hl : j = l
-    · subst hl
-      rw [if_neg (fun h => hkj (Eq.symm h))]
-      omega
-    · by_cases hl' : k = l
-      · subst hl'
-        rw [if_neg hl]
-        omega
-      · rw [if_neg hl']
-        omega
+    have hidx : (α + Finsupp.single j 1 : Fin m →₀ ℕ) - Finsupp.single k 1
+        = α - Finsupp.single k 1 + Finsupp.single j 1 := by
+      ext l
+      simp only [Finsupp.add_apply, Finsupp.tsub_apply, Finsupp.single_apply]
+      split_ifs <;> omega
+    rw [hidx]
   · -- the `j` term absorbs the extra `C (polePart j) * monomial α 1`
     rw [X_eq_monomial, monomial_mul, mul_one, add_single_sub_single]
-    have happ : (α + Finsupp.single j 1) j = α j + 1 := by
+    have happ : ((α + Finsupp.single j 1 : Fin m →₀ ℕ)) j = α j + 1 := by
       rw [Finsupp.add_apply, Finsupp.single_apply, if_pos rfl]
     rw [happ]
     have hCmul : C (polePart (j : ℕ)) * (monomial α 1 : MvPolynomial (Fin m) (RatFunc ℂ))
@@ -386,6 +388,7 @@ theorem subTopMonomial_add_single (α : Fin m →₀ ℕ) (j : Fin m) :
     rw [hCmul]
     by_cases hα : α j = 0
     · rw [hα, Nat.cast_zero, zero_mul, map_zero, zero_add, Nat.cast_one, one_mul]
+      rw [zero_add]
     · rw [sub_single_add_single hα]
       rw [show ((α j + 1 : ℕ) : RatFunc ℂ) = (α j : RatFunc ℂ) + 1 by push_cast; ring]
       rw [add_mul, one_mul, map_add]
@@ -413,47 +416,51 @@ theorem transMonomial_decomposition (α : Fin m →₀ ℕ) :
             rw [degSum_eq_univ_sum]
             exact Finset.single_le_sum (f := fun k => α k) (fun _ _ => Nat.zero_le _)
               (Finset.mem_univ k)
+          simp only [Finsupp.coe_zero, Pi.zero_apply]
           omega
         · exact h
       obtain ⟨j, hj⟩ := exists_apply_ne_zero_of_degSum_pos hpos
       set α' := α - Finsupp.single j 1 with hα'_def
       have hres : α' + Finsupp.single j 1 = α := sub_single_add_single hj
-      have hdeg' : degSum α' + 1 = degSum α := by
-        rw [← hres, degSum_add, degSum_single]
+      have hdeg' : degSum α' + 1 = degSum α := degSum_sub_single hj
       obtain ⟨E', hE'eq, hE'coeff⟩ := ih (degSum α') (by omega) α' rfl
       refine ⟨C (polePart (j : ℕ)) * subTopMonomial α'
         + E' * (X j + C (polePart (j : ℕ))), ?_, ?_⟩
-      · rw [← hres, transMonomial_add_single, hE'eq, subTopMonomial_add_single]
-        rw [X_eq_monomial, monomial_mul, mul_one, ← X_eq_monomial]
+      · rw [← hres, transMonomial_add_single, hE'eq, subTopMonomial_add_single,
+          show (monomial (α' + Finsupp.single j 1) (1 : RatFunc ℂ))
+              = monomial α' 1 * X j by
+            rw [X_eq_monomial, monomial_mul, mul_one]]
         ring
       · intro β hβ
-        rw [← hres, degSum_add, degSum_single] at hβ
-        rw [coeff_add, mul_add, coeff_add, coeff_C_mul]
-        have h1 : coeff β (subTopMonomial α') = 0 := by
-          unfold subTopMonomial
-          rw [coeff_sum]
-          refine Finset.sum_eq_zero fun k _ => ?_
-          by_cases hk : α' k = 0
-          · rw [hk, Nat.cast_zero, zero_mul, map_zero, coeff_zero]
-          · rw [coeff_monomial]
-            refine if_neg fun hEq => ?_
-            have : degSum (α' - Finsupp.single k 1) + 1 = degSum α' := by
-              rw [← degSum_single k 1, ← degSum_add, sub_single_add_single hk]
-            rw [hEq] at this
-            omega
-        have h2 : coeff β (E' * X j) = 0 := by
-          rw [coeff_mul_X']
-          split
-          · refine hE'coeff _ ?_
-            have : degSum (β - Finsupp.single j 1) + 1 = degSum β := by
-              rw [← degSum_single j 1, ← degSum_add, sub_single_add_single]
-              rename_i hmem
-              exact Finsupp.mem_support_iff.mp hmem
-            omega
-          · rfl
-        have h3 : coeff β (E' * C (polePart (j : ℕ))) = 0 := by
-          rw [mul_comm, coeff_C_mul, hE'coeff _ (by omega), mul_zero]
-        rw [h1, h2, h3, mul_zero, zero_add, add_zero]
+        rw [← hN, ← hdeg'] at hβ
+        have h1 : coeff β (C (polePart (j : ℕ)) * subTopMonomial α') = 0 := by
+          rw [coeff_C_mul]
+          have hsub : coeff β (subTopMonomial α') = 0 := by
+            unfold subTopMonomial
+            rw [coeff_sum]
+            refine Finset.sum_eq_zero fun k _ => ?_
+            by_cases hk : α' k = 0
+            · rw [hk, Nat.cast_zero, zero_mul, map_zero, coeff_zero]
+            · rw [coeff_monomial]
+              refine if_neg fun hEq => ?_
+              have hlt := degSum_sub_single hk
+              rw [hEq] at hlt
+              omega
+          rw [hsub, mul_zero]
+        have h2 : coeff β (E' * (X j + C (polePart (j : ℕ)))) = 0 := by
+          rw [mul_add, coeff_add]
+          have h2a : coeff β (E' * X j) = 0 := by
+            rw [coeff_mul_X']
+            by_cases hmem : j ∈ β.support
+            · rw [if_pos hmem]
+              refine hE'coeff _ ?_
+              have hdegβ := degSum_sub_single (Finsupp.mem_support_iff.mp hmem)
+              omega
+            · rw [if_neg hmem]
+          have h2b : coeff β (E' * C (polePart (j : ℕ))) = 0 := by
+            rw [mul_comm, coeff_C_mul, hE'coeff β (by omega), mul_zero]
+          rw [h2a, h2b, add_zero]
+        rw [coeff_add, h1, h2, add_zero]
 
 theorem coeff_transMonomial_of_degSum_eq {α β : Fin m →₀ ℕ}
     (h : degSum β = degSum α) :
@@ -468,8 +475,7 @@ theorem coeff_transMonomial_of_degSum_eq {α β : Fin m →₀ ℕ}
     · rw [hk, Nat.cast_zero, zero_mul, map_zero, coeff_zero]
     · rw [coeff_monomial]
       refine if_neg fun hEq' => ?_
-      have hlt : degSum (α - Finsupp.single k 1) + 1 = degSum α := by
-        rw [← degSum_single k 1, ← degSum_add, sub_single_add_single hk]
+      have hlt := degSum_sub_single hk
       rw [hEq'] at hlt
       omega
   rw [h1, hE β (by omega), add_zero, add_zero]
@@ -489,7 +495,7 @@ theorem coeff_transMonomial_of_degSum_succ {α β : Fin m →₀ ℕ}
   by_cases hj : α j = 0
   · rw [if_neg, if_neg]
     · intro hEq'
-      have : (β + Finsupp.single j 1) j = α j := by rw [← hEq']
+      have : ((β + Finsupp.single j 1 : Fin m →₀ ℕ)) j = α j := by rw [← hEq']
       rw [Finsupp.add_apply, Finsupp.single_apply, if_pos rfl] at this
       omega
     · intro hEq'
@@ -525,14 +531,13 @@ theorem coeff_transMonomial_of_degSum_lt {α β : Fin m →₀ ℕ}
   · rw [hk, Nat.cast_zero, zero_mul, map_zero, coeff_zero]
   · rw [coeff_monomial]
     refine if_neg fun hEq' => ?_
-    have hlt : degSum (α - Finsupp.single k 1) + 1 = degSum α := by
-      rw [← degSum_single k 1, ← degSum_add, sub_single_add_single hk]
+    have hlt := degSum_sub_single hk
     rw [hEq'] at hlt
     omega
 
 theorem totalDegree_transMonomial_le (α : Fin m →₀ ℕ) :
     (transMonomial α).totalDegree ≤ degSum α := by
-  refine le_trans (MvPolynomial.totalDegree_finset_prod _ _) ?_
+  refine le_trans (MvPolynomial.totalDegree_finsetProd _ _) ?_
   rw [degSum_eq_univ_sum]
   refine Finset.sum_le_sum fun j _ => ?_
   refine le_trans (MvPolynomial.totalDegree_pow _ _) ?_
@@ -642,7 +647,7 @@ theorem coeff_jetTranslate_of_le_degSum_succ {P : MvPolynomial (Fin m) (RatFunc 
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [Finset.sum_ite_eq' P.support (β + Finsupp.single j 1)
       (fun α => ratShift (coeff α P) * ((α j : RatFunc ℂ) * polePart (j : ℕ)))]
-    have happ : (β + Finsupp.single j 1) j = β j + 1 := by
+    have happ : ((β + Finsupp.single j 1 : Fin m →₀ ℕ)) j = β j + 1 := by
       rw [Finsupp.add_apply, Finsupp.single_apply, if_pos rfl]
     by_cases hβ : β + Finsupp.single j 1 ∈ P.support
     · rw [if_pos hβ, happ]
@@ -748,9 +753,8 @@ theorem no_shift_stable_annihilator {m : ℕ}
         intro hPβ
         apply MvPolynomial.mem_support_iff.mp hβQ
         rw [hQtop β hβD, hPβ, map_zero, mul_zero, mul_zero, sub_zero]
-    have hlt := Finset.card_lt_card hss
+    have hlt : topCard Q < topCard P := Finset.card_lt_card hss
     have hle := hcmin Q hQI hQne hQD
-    rw [htopCard_def] at hle hlt
     omega
   -- top layer: constant coefficient ratios
   have htop : ∀ β, degSum β = D →
@@ -796,9 +800,9 @@ theorem no_shift_stable_annihilator {m : ℕ}
       have hnum : ratShift (coeff β P) * a - ratShift a * coeff β P
           = (a * ratShift a) * (-S) := by
         linear_combination -hcoeffQ
-      rw [map_div₀, div_sub_div _ _ hσa ha, hnum]
-      rw [show ratShift a * a = a * ratShift a by ring, mul_div_assoc,
-        div_self (mul_ne_zero ha hσa), mul_one]
+      rw [map_div₀, div_sub_div _ _ hσa ha, hnum,
+        show ratShift a * a = a * ratShift a by ring,
+        mul_div_cancel_left₀ _ (mul_ne_zero ha hσa)]
       rw [hS_def, ← Finset.sum_neg_distrib]
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [map_neg, map_mul]
@@ -807,8 +811,7 @@ theorem no_shift_stable_annihilator {m : ℕ}
       ring
     have hδ := ratShift_sub_polePart_combination hw j
     have ht0 : t j = 0 := by
-      have hne : ((β j : ℂ) + 1) ≠ 0 := by
-        exact_mod_cast Nat.cast_add_one_ne_zero (β j)
+      have hne : ((β j : ℂ) + 1) ≠ 0 := Nat.cast_add_one_ne_zero (β j)
       have := neg_eq_zero.mp hδ
       exact (mul_eq_zero.mp this).resolve_left hne
     rw [ht j, ht0, map_zero, zero_mul]
@@ -817,7 +820,8 @@ theorem no_shift_stable_annihilator {m : ℕ}
   have hres : αs - Finsupp.single j 1 + Finsupp.single j 1 = αs :=
     sub_single_add_single hj
   have hβdeg : degSum (αs - Finsupp.single j 1) + 1 = D := by
-    rw [← hαs, ← hres, degSum_add, degSum_single]
+    rw [← hαs]
+    exact degSum_sub_single hj
   have := hkill (αs - Finsupp.single j 1) hβdeg j
   rw [hres] at this
   exact ha this

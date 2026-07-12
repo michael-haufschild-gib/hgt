@@ -117,10 +117,23 @@ finite lower-denominator/upper-current inequality, not coefficient positivity by
   full cosine kernel, one source coordinate at `u=0` and another at `v>0` contributes a cross term
   proportional to `-v cos(xv)sinh(yv)`; choosing `xv=pi` makes it positive for `y>0`.  Hence
   positivity of the theta weights cannot prove the current sign atom by atom.
+- `[PROVED ROUTE FAILURE]` Positive even Schwartz source structure and all raw-moment Hankel
+  inequalities are insufficient.  The density
+  `g_epsilon(x)+a g_epsilon(x-1)+a g_epsilon(x+1)`, `0<a<1/2`, is strictly positive, even, and
+  Schwartz and has a uniform strict log-concavity floor for `epsilon>1`, while its Fourier transform
+  `exp(-epsilon z^2/2)(1+2a cos z)` has the explicit simple nonreal zeros
+  `pi +/- i arcosh(1/(2a))`.  Any live inequality must distinguish the exact theta source from
+  this family.
 - `[PROVED ROUTE FAILURE]` A source-conditioned resultant or arithmetic lower bound at the
   Gaussian-rational nodes cannot exclude the pole amplifier: every complex target has the
   explicit `1/n` by `1/n^2` right approximants, and a hypothetical Xi zero makes the polynomial
   values naturally of order `n^{-m}`, not arithmetically exceptional.
+- `[PROVED ROUTE FAILURE]` The finite Cauchy-jet, Toeplitz, and inverse-Cholesky frames in
+  `HTGeometry/CauchyJetFrame.lean`, `CayleyMomentFrame.lean`, and
+  `CofinalCholeskyFiniteFrame.lean` change coordinates but supply no orientation.  Congruence
+  preserves the inertia of the indefinite coefficient-current form, every finite frame prefix
+  retains a nontrivial carrier fibre, and only the complete compatible tower selects the measure.
+  Using that complete tower here would reintroduce the forbidden limiting-measure route.
 - `[OPEN CORE]` Determine whether the actual completed theta coefficient constraints factor the
   oriented two-point current `(2)` with a sign-definite leading term and a quantitatively sublinear
   residual. If they do not, isolate the first explicit indefinite source kernel and retire that

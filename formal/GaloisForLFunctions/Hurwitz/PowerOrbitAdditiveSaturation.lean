@@ -343,6 +343,165 @@ theorem totalDegree_mvTranslate_sub_lt {σ : Type*} [Fintype σ]
         have hdrop := ih R.totalDegree hRlt R rfl (Nat.pos_of_ne_zero hRdegree)
         omega
 
+/-! ## Robust additive grids -/
+
+variable {σ β : Type*} [Fintype σ] [DecidableEq σ] [Fintype β] [DecidableEq β]
+
+/-- An affine grid obtained by summing one independently chosen orbit value from every column. -/
+def additiveGridPoint (base : σ → ℂ) (u : β → ℕ → σ → ℂ) (m : β → ℕ) : σ → ℂ :=
+  fun i => base i + ∑ b : β, u b (m b) i
+
+/-- The consecutive increment in one orbit column. -/
+def orbitIncrement (u : β → ℕ → σ → ℂ) (b : β) (m : ℕ) : σ → ℂ :=
+  fun i => u b (m + 1) i - u b m i
+
+/-- Consecutive orbit increments that survive deletion of the columns in `S`. -/
+def survivingIncrementSet (u : β → ℕ → σ → ℂ) (S : Finset β) : Set (σ → ℂ) :=
+  {v | ∃ b : β, b ∉ S ∧ ∃ m : ℕ, v = orbitIncrement u b m}
+
+theorem additiveGridPoint_update (base : σ → ℂ) (u : β → ℕ → σ → ℂ)
+    (m : β → ℕ) (b : β) (r : ℕ) :
+    additiveGridPoint base u (Function.update m b r) =
+      fun i => additiveGridPoint base u m i - u b (m b) i + u b r i := by
+  funext i
+  rw [additiveGridPoint, additiveGridPoint]
+  let f : β → ℂ := fun c => u c (m c) i
+  have hupdate : (fun c : β => u c (Function.update m b r c) i) =
+      Function.update f b (u b r i) := by
+    funext c
+    by_cases hcb : c = b
+    · subst c
+      simp [f]
+    · simp [Function.update_of_ne hcb, f]
+  rw [hupdate, Finset.sum_update_of_mem (Finset.mem_univ b)]
+  dsimp only [f]
+  rw [Finset.sum_eq_add_sum_diff_singleton_of_mem (Finset.mem_univ b)]
+  ring
+
+theorem additiveGridPoint_zeroColumn (base : σ → ℂ) (u : β → ℕ → σ → ℂ)
+    (b : β) (r : ℕ) (m : β → ℕ) :
+    additiveGridPoint (fun i => base i + u b r i)
+      (fun c n i => if c = b then 0 else u c n i) m =
+    additiveGridPoint base u (Function.update m b r) := by
+  funext i
+  rw [additiveGridPoint]
+  rw [additiveGridPoint_update]
+  have hskip : (∑ c : β, if c = b then 0 else u c (m c) i) =
+      (∑ c : β, u c (m c) i) - u b (m b) i := by
+    conv_lhs => rw [Finset.sum_eq_add_sum_diff_singleton_of_mem (Finset.mem_univ b)]
+    rw [if_pos rfl, zero_add]
+    have hrest :
+        (∑ x ∈ (Finset.univ : Finset β) \ {b}, if x = b then 0 else u x (m x) i) =
+          ∑ x ∈ (Finset.univ : Finset β) \ {b}, u x (m x) i := by
+      apply Finset.sum_congr rfl
+      intro x hx
+      rw [if_neg]
+      simpa using (Finset.mem_sdiff.mp hx).2
+    rw [hrest]
+    rw [Finset.sum_eq_add_sum_diff_singleton_of_mem (Finset.mem_univ b)]
+    ring
+  rw [hskip]
+  change _ = additiveGridPoint base u m i - u b (m b) i + u b r i
+  rw [additiveGridPoint]
+  ring
+
+/-- **Robust additive-grid saturation.**  Let a degree-`D` polynomial vanish on an affine sum of
+independently sampled orbit columns.  If deleting any `D` columns still leaves the consecutive
+increments spanning the whole value space, the polynomial is zero.
+
+The proof converts orbit vanishing into translation invariance.  A consecutive translation
+difference has smaller degree, so induction absorbs one deleted column at each degree drop. -/
+theorem additiveGrid_zero_of_robust_increment_span :
+    ∀ D : ℕ, ∀ (base : σ → ℂ) (u : β → ℕ → σ → ℂ)
+      (P : MvPolynomial σ ℂ),
+      P.totalDegree ≤ D →
+      (∀ S : Finset β, S.card ≤ D →
+        Submodule.span ℂ (survivingIncrementSet u S) = ⊤) →
+      (∀ m : β → ℕ, MvPolynomial.eval (additiveGridPoint base u m) P = 0) →
+      P = 0 := by
+  intro D
+  induction D using Nat.strong_induction_on with
+  | h D ih =>
+      intro base u P hdegree hspan hgrid
+      by_cases hPdegree : P.totalDegree = 0
+      · have hPC := MvPolynomial.totalDegree_eq_zero_iff_eq_C.mp hPdegree
+        let m : β → ℕ := fun _ => 0
+        have hm := hgrid m
+        rw [hPC, MvPolynomial.eval_C] at hm
+        rw [hPC, hm, map_zero]
+      · have hPpos : 0 < P.totalDegree := Nat.pos_of_ne_zero hPdegree
+        have hinvariant : ∀ b : β, ∀ r : ℕ,
+            mvTranslate (orbitIncrement u b r) P = P := by
+          intro b r
+          let Q := mvTranslate (orbitIncrement u b r) P - P
+          let base' : σ → ℂ := fun i => base i + u b r i
+          let u' : β → ℕ → σ → ℂ := fun c n i => if c = b then 0 else u c n i
+          have hQdegree : Q.totalDegree < D := by
+            have hdrop := totalDegree_mvTranslate_sub_lt (orbitIncrement u b r) P hPpos
+            change Q.totalDegree < P.totalDegree at hdrop
+            omega
+          have hspan' : ∀ S : Finset β, S.card ≤ D - 1 →
+              Submodule.span ℂ (survivingIncrementSet u' S) = ⊤ := by
+            intro S hScard
+            let T := insert b S
+            have hTcard : T.card ≤ D := by
+              exact (Finset.card_insert_le b S).trans (by omega)
+            have htop := hspan T hTcard
+            apply top_unique
+            rw [← htop]
+            apply Submodule.span_mono
+            intro v hv
+            rcases hv with ⟨c, hcT, n, rfl⟩
+            have hcb : c ≠ b := by
+              intro h
+              apply hcT
+              simp [T, h]
+            refine ⟨c, ?_, n, ?_⟩
+            · intro hcS
+              exact hcT (Finset.mem_insert_of_mem hcS)
+            · apply funext
+              intro i
+              simp [orbitIncrement, u', hcb]
+          have hQgrid : ∀ m : β → ℕ,
+              MvPolynomial.eval (additiveGridPoint base' u' m) Q = 0 := by
+            intro m
+            dsimp only [Q]
+            rw [map_sub, eval_mvTranslate]
+            rw [additiveGridPoint_zeroColumn]
+            have hnext : (fun i =>
+                additiveGridPoint base u (Function.update m b r) i +
+                  orbitIncrement u b r i) =
+                additiveGridPoint base u (Function.update m b (r + 1)) := by
+              funext i
+              rw [additiveGridPoint_update, additiveGridPoint_update]
+              simp [orbitIncrement]
+            rw [hnext, hgrid, hgrid, sub_self]
+          have hQzero := ih (D - 1) (by omega) base' u' Q
+            (Nat.le_pred_of_lt hQdegree) hspan' hQgrid
+          exact sub_eq_zero.mp hQzero
+        have hset : survivingIncrementSet u ∅ ≤ translationInvariantSubmodule P := by
+          intro v hv
+          rcases hv with ⟨b, _, r, rfl⟩
+          exact hinvariant b r
+        have htop : translationInvariantSubmodule P = ⊤ := by
+          apply top_unique
+          rw [← hspan ∅ (by simp)]
+          exact Submodule.span_le.mpr hset
+        apply MvPolynomial.funext
+        intro x
+        let m : β → ℕ := fun _ => 0
+        let g := additiveGridPoint base u m
+        let v : σ → ℂ := fun i => x i - g i
+        have hv : v ∈ translationInvariantSubmodule P := by rw [htop]; trivial
+        have he := congrArg (MvPolynomial.eval g) hv
+        rw [eval_mvTranslate] at he
+        have hgadd : (fun i => g i + v i) = x := by
+          funext i
+          dsimp only [v]
+          ring
+        rw [hgadd, hgrid m] at he
+        exact he
+
 end
 
 end HurwitzJointOrbit

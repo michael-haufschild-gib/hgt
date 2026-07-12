@@ -367,15 +367,26 @@ formalization.
 
 ## Lean status
 
-Formalization is in progress; no Stage 3 claim is made. The unconditional module
-`GaloisForLFunctions.HTGeometry.CofinalCholeskyFiniteFrame` now proves the Cayley triangular
-prefix equivalence, finite Hermitian Toeplitz moment equivalence, the inverse Gram identity
-`G_N⁻¹=C_NᴴC_N`, and uniqueness of the Gram matrix determined by a fixed inverse-Cholesky frame.
-Its exact build passes, and `#print axioms` reports only `propext`, `Classical.choice`, and
-`Quot.sound`.
+Formalization is in progress; no Stage 3 claim is made. The unconditional modules
+`GaloisForLFunctions.HTGeometry.CofinalCholeskyFiniteFrame`,
+`GaloisForLFunctions.HTGeometry.CayleyMomentFrame`, and
+`GaloisForLFunctions.HTGeometry.CauchyJetFrame` now prove:
+
+1. the pointwise and measure-level Cayley triangular transform;
+2. exact equivalence of every finite Cayley-moment and reciprocal-moment prefix;
+3. the all-order dominated-differentiation formula
+   `iteratedDeriv n (resolventTransform μ) (-i)=n! reciprocalMoment μ (n+1)`;
+4. for probability measures, the exact equivalence
+   `G_N(μ)=G_N(ν)` iff their regular Cauchy jets agree through order `N-1`;
+5. the inverse Gram identity `G_N⁻¹=C_NᴴC_N`; and
+6. equality of the Cauchy jets whenever one inverse-Cholesky frame orthonormalizes both Gram
+   matrices.
+
+All three exact builds pass. `#print axioms` on the capstone declarations reports only `propext`,
+`Classical.choice`, and `Quot.sound`, and the repository formal lint passes.
 
 The remaining formalization requires the positive-diagonal triangular Cholesky construction and
-uniqueness, the canonical Nevanlinna Bauer simplex, measure-level Cayley and spectral transport,
+uniqueness, the canonical Nevanlinna Bauer simplex and spectral transport,
 finite-frame Hilbert-cube fibers, constrained full-shift transversality, complete-tower selection,
 F. and M. Riesz, graph closure as a linear relation, OPUC/Bernstein--Szegő repair and divergence,
 and the final residual-set capstone.

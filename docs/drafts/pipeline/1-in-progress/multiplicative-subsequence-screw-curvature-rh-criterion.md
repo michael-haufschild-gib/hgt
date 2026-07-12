@@ -75,11 +75,41 @@ is eventually bounded below as n tends to infinity.                         (5)
 ```
 
 This is strictly more structured than an arbitrary Weil lower bound.  It
-invites a source construction from a multiplicative conditional-negative-
-type kernel, KMS covariance, or an all-prime Euler--Gamma covariance.  A
-valid construction must identify its covariance exactly with `Psi`; a
-Born-temperature phase label or projective Fisher metric is insufficient,
-because the corpus proves those data are phase-blind.
+has an exact source-side form.  Put
+
+```text
+R(h)=4sinh(h/2)
+  -sum_(q<=exp(h)) Lambda(q)q^(-1/2).
+```
+
+The rectangular critical-Mellin tent law proves that, up to a fixed term and
+an `n`-uniformly bounded Gamma term, `(1)` is twice
+
+```text
+integral_[log(mn),log(m^2n)] R(h)dh
+ -integral_[log n,log(mn)] R(h)dh.                         (6)
+```
+
+Thus the missing positive statement is a finite lower floor for the imbalance
+of two adjacent equal logarithmic blocks.  This invites a source construction
+from a multiplicative conditional-negative-type kernel, a coupled renewal
+projection, or an all-prime Euler--Gamma covariance.  A valid construction
+must retain the signed prime--polar incidence in `R`; a Born-temperature phase
+label or projective Fisher metric is insufficient, because the corpus proves
+those data are phase-blind.
+
+The fixed-multiple subsequence theorem is not load-bearing for this source
+attack.  At every original rectangular sample `X=N`, the same law reads
+
+```text
+integral_[N/m,N] R(log x)d*x
+ -integral_[N/m^2,N/m] R(log x)d*x.                        (7)
+```
+
+The endpoints need not be integers.  A lower floor for `(7)` over all large
+integer `N` feeds the already formalized full-sample rectangular criterion
+directly.  The subsequence formalization remains useful only if one wants the
+three screw arguments themselves to be logarithms of integers.
 
 ## Attacks
 
@@ -88,10 +118,13 @@ because the corpus proves those data are phase-blind.
 2. `[REJECTED]` Coarse Chebyshev or PNT bounds do not prove `(5)`.  The
    continuous polar main term and the prime midpoint mass cancel at leading
    order; any fixed relative error leaves an unbounded `sqrt(n)` residual.
-3. `[LIVE]` Construct an all-prime, Gamma-completed covariance whose
-   multiplicative parallelogram defect is exactly `(1)`, retaining the
-   continuation seam before scalarization.
-4. `[LIVE]` Alternatively prove a source identity expressing `(1)` as a
+3. `[PROVED POSITIVE DUAL]` The cancellation no-go leaves the exact adjacent
+   block imbalance `(6)`.  No global Weil form or pointwise sign of `R` is
+   needed; one fixed-scale lower bound is sufficient.
+4. `[LIVE]` Construct an all-prime, Gamma-completed covariance whose
+   multiplicative parallelogram defect reads `(6)`, retaining the continuation
+   seam before scalarization.
+5. `[LIVE]` Alternatively prove a source identity expressing `(1)` as a
    squared norm plus an `n`-uniform boundary term.  The boundary term, not
    bulk positivity, is the positive datum demanded by the Wigner and screw
    no-go theorems.
@@ -100,9 +133,10 @@ because the corpus proves those data are phase-blind.
 
 - [x] exact multiplicative midpoint identity formalized
 - [x] finite-prime and coarse-PNT shortcuts attacked
-- [ ] parameterize the Landau pole-jet chain by the fixed multiplier `M`
-- [ ] prove the multiplicative-subsequence RH equivalence in Lean
+- [x] exact adjacent critical-Mellin block readout proved on paper
+- [x] full-sample adjacent-block route shown to bypass fixed-multiple Landau
+- [ ] parameterize the Landau pole-jet chain by the fixed multiplier `M` (optional integer-triple refinement)
+- [ ] prove the multiplicative-subsequence RH equivalence in Lean (optional integer-triple refinement)
 - [ ] construct the all-prime Gamma-completed covariance or norm-square law
 - [ ] prove its boundary term is uniform in `n`
 - [ ] compose with the subsequence criterion and verify RH
-

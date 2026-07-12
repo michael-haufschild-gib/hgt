@@ -29,12 +29,13 @@ theorem exists_xiRightZeroCopy_shiftedPole_eq_of_xi_shifted_eq_zero
     ⟨s - 1 / 2, mem_xi_divisor_support_of_eq_zero hzero⟩
   have hm : 0 < Int.toNat
       ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ)) := by
-    exact Int.toNat_pos.mpr (xi_divisor_pos_on_support ρ)
+    have := xi_divisor_pos_on_support ρ
+    omega
   let q0 : XiZeroCopy := ⟨ρ, ⟨0, hm⟩⟩
   have hq0 : 0 < (I * xiSpectralPoint q0).re := by
     rw [I_mul_xiSpectralPoint]
     dsimp only [q0, ρ]
-    simp only [Complex.sub_re, ofReal_re]
+    norm_num [Complex.sub_re]
     linarith
   let q : XiRightZeroCopy := ⟨q0, hq0⟩
   refine ⟨q, ?_⟩
@@ -73,9 +74,9 @@ theorem meromorphicOrderAt_xiRectangularRightDirichletContinuation_eq_neg_one
   let U : Set ℂ := {s : ℂ | 1 < s.re}
   have hU : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
   have hpoleU : xiRightShiftedPole q ∈ U := by
-    rw [Set.mem_setOf_eq, xiRightShiftedPole, Complex.add_re,
-      Complex.one_re]
-    exact add_lt_add_left (xiRightCenteredZero_re_pos q) 1
+    change 1 < (xiRightShiftedPole q).re
+    rw [xiRightShiftedPole, Complex.add_re, Complex.one_re]
+    linarith [xiRightCenteredZero_re_pos q]
   have hnum : AnalyticAt ℂ (xiRectangularCancelledSeries L)
       (xiRightShiftedPole q) :=
     ((differentiableOn_xiRectangularCancelledSeries_rightOne L).analyticOnNhd hU)
@@ -84,8 +85,8 @@ theorem meromorphicOrderAt_xiRectangularRightDirichletContinuation_eq_neg_one
       (xiRightShiftedPole q) := by
     exact (xi_analyticOnNhd_univ _ (Set.mem_univ _)).comp
       (analyticAt_id.sub analyticAt_const)
-  rw [xiRectangularRightDirichletContinuation,
-    meromorphicOrderAt_div hnum.meromorphicAt hden.meromorphicAt,
+  unfold xiRectangularRightDirichletContinuation
+  rw [fun_meromorphicOrderAt_div hnum.meromorphicAt hden.meromorphicAt,
     hnum.meromorphicOrderAt_eq, hden.meromorphicOrderAt_eq,
     xiRectangularCancelledSeries_order hL q, xi_shifted_half_order]
   rw [ENat.map_coe, ENat.map_coe]
@@ -130,9 +131,19 @@ theorem meromorphicOrderAt_xiRectangularRightDirichletContinuation_eq_neg_one_if
     push Not at hnone
     have han :=
       analyticAt_xiRectangularRightDirichletContinuation_of_ne_poles L hs
-        (fun q => Ne.symm (hnone q))
+        hnone
     rw [han.meromorphicOrderAt_eq] at horder
-    simp at horder
+    have hnonneg : (0 : WithTop ℤ) ≤
+        ENat.map Nat.cast
+          (analyticOrderAt (xiRectangularRightDirichletContinuation L) s) := by
+      induction analyticOrderAt (xiRectangularRightDirichletContinuation L) s
+          using ENat.recTopCoe with
+      | top => simp
+      | coe n => simp
+    rw [horder] at hnonneg
+    have hnot : ¬ ((0 : WithTop ℤ) ≤ ((-1 : ℤ) : WithTop ℤ)) := by
+      exact_mod_cast (show ¬ (0 : ℤ) ≤ -1 by omega)
+    exact hnot hnonneg
   · rintro ⟨q, rfl⟩
     exact meromorphicOrderAt_xiRectangularRightDirichletContinuation_eq_neg_one
       hL q
@@ -142,6 +153,7 @@ divisor, the ordinary coefficient L-series equals twice the meromorphic
 continuation. -/
 theorem LSeries_xiRectangularRightDirichletComplex_eq_continuation
     (L : ℝ) {delta : ℝ}
+    (hdelta0 : 0 ≤ delta)
     (hupper : ∀ q : XiRightZeroCopy,
       (xiRightCenteredZero q).re ≤ delta)
     {s : ℂ} (hs : 1 + delta < s.re) :
@@ -151,12 +163,6 @@ theorem LSeries_xiRectangularRightDirichletComplex_eq_continuation
   have hxi0 : xi (s - 1 / 2) ≠ 0 := by
     intro hzero
     have hs1 : 1 < s.re := by
-      have hdelta : 0 ≤ delta := by
-        by_contra hneg
-        push Not at hneg
-        obtain ⟨q⟩ := Classical.choice inferInstance
-        have := hupper q
-        linarith [xiRightCenteredZero_re_pos q]
       linarith
     obtain ⟨q, hq⟩ :=
       exists_xiRightZeroCopy_shiftedPole_eq_of_xi_shifted_eq_zero hs1 hzero
@@ -166,7 +172,10 @@ theorem LSeries_xiRectangularRightDirichletComplex_eq_continuation
     linarith
   rw [xiRectangularRightDirichletContinuation,
     xiRectangularCancelledSeries_eq_xi_mul_shiftedZeta L hupper hs]
-  field_simp
+  have hxi0' : xi ((2 * s - 1) / 2) ≠ 0 := by
+    have harg : (2 * s - 1) / 2 = s - 1 / 2 := by ring
+    simpa only [harg] using hxi0
+  field_simp [hxi0, hxi0']
 
 end
 

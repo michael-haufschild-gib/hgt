@@ -16,6 +16,7 @@ finite lemmas; they are formalized in the subsequent carrier modules.
 namespace GaloisForLFunctions.HTGeometry
 
 open Complex Matrix
+open scoped ComplexOrder
 
 noncomputable section
 
@@ -146,6 +147,39 @@ congruence. Triangularity and positive diagonal, which make the frame canonical,
 the later Cholesky construction. -/
 def IsInverseCholeskyFrame (C G : Matrix n n ℂ) : Prop :=
   C * G * Cᴴ = 1
+
+/-- Every finite positive-definite complex Gram matrix admits an inverse frame. The construction is
+normalized Gram--Schmidt in the inner product induced by `G`. The subsequent canonical Cholesky
+theorem strengthens this frame with lower triangularity and positive diagonal. -/
+theorem exists_inverseCholeskyFrame_of_posDef
+    {N : ℕ} (G : Matrix (Fin N) (Fin N) ℂ) (hG : G.PosDef) :
+    ∃ C : Matrix (Fin N) (Fin N) ℂ, IsInverseCholeskyFrame C G := by
+  let normInst := Matrix.toNormedAddCommGroup G hG
+  letI : NormedAddCommGroup (Fin N → ℂ) := normInst
+  letI : SeminormedAddCommGroup (Fin N → ℂ) := normInst.toSeminormedAddCommGroup
+  letI := Matrix.toInnerProductSpace G hG.posSemidef
+  let b : Module.Basis (Fin N) ℂ (Fin N → ℂ) := Pi.basisFun ℂ (Fin N)
+  let q : Fin N → (Fin N → ℂ) := InnerProductSpace.gramSchmidtNormed ℂ b
+  let C : Matrix (Fin N) (Fin N) ℂ := fun j k => star (q j k)
+  refine ⟨C, ?_⟩
+  unfold IsInverseCholeskyFrame
+  ext j k
+  rw [Matrix.mul_apply, Matrix.one_apply]
+  simp only [Matrix.mul_apply, C, Matrix.conjTranspose_apply, star_star]
+  have horth : Orthonormal ℂ q :=
+    InnerProductSpace.gramSchmidtNormed_orthonormal b.linearIndependent
+  have hinner := orthonormal_iff_ite.mp horth j k
+  change (G *ᵥ q k) ⬝ᵥ star (q j) = (if j = k then 1 else 0) at hinner
+  simp only [dotProduct, Matrix.mulVec, Pi.star_apply] at hinner
+  simp_rw [Finset.sum_mul]
+  rw [Finset.sum_comm]
+  convert hinner using 1
+  apply Finset.sum_congr rfl
+  intro x hx
+  rw [Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro y hy
+  ring
 
 /-- An inverse-Cholesky frame satisfies the exact inverse Gram identity `G⁻¹ = Cᴴ C`. -/
 theorem inverse_eq_conjTranspose_mul_of_inverseCholesky

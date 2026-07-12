@@ -119,6 +119,40 @@ all-prime Gamma-completed covariance or norm-square law for this multiplicative 
 finite-prime KMS or projective Born/Fisher metric cannot supply the identification: the formal
 corpus proves those data are divisor- and phase-blind.
 
+The earlier source parallelogram work now closes one more coordinate change.  With
+
+```text
+R(h)=4sinh(h/2)-sum_(q<=exp(h)) Lambda(q)q^(-1/2),
+```
+
+the moving prime--polar part of the rectangular detector is the Stieltjes pairing with one tent
+centered at `2a-L`.  Integration by parts turns it into
+
+```text
+integral_[2a-L,2a]R(h)dh-integral_[2a-2L,2a-L]R(h)dh.
+```
+
+The remaining digamma term is uniformly bounded for fixed `L`.  Therefore RH is equivalent to a
+finite lower floor for this single adjacent equal-block imbalance on `2a=log n`.  For `L=log m`
+the blocks are exactly `[n/m,n]` and `[n/m^2,n/m]` in logarithmic measure.  This is the positive
+dual of the polar--prime main-term cancellation no-go: the required source datum is not separate
+control of either main term but a one-sided bound on their completed adjacent-block imbalance.
+
+The natural Möbius-coisometry shortcut has also been tested.  The adjacent-block readout is a
+zero-mean translated Haar vector, so it annihilates the common constant boundary mode and
+localizes `(I-P_d)1` to one finite shell around the aperture.  However, critical differentiation
+through all channels below `X` requires `omega log X ->0`, while the normalized Möbius mass lives
+at `log d asymp 1/omega`; the visible mass then tends to zero.  The positive surviving target is a
+noncompact cross-scale synthesis which transports the remote Möbius tail into the near-aperture
+Haar shell before the critical limit.
+
+This adjacent-block chain does not require the conjectural fixed-multiple Landau extension.  It is
+valid at every original sample `2a=log N`; for `L=log m` the real endpoints are
+`N/m^2,N/m,N`, whether or not the quotients are integers.  Hence one source floor for the block
+imbalance composes immediately with the existing Lean theorem
+`riemannHypothesis_iff_rectangular_logSample_weil_eventually_bddBelow`.  The integer-triple
+subsequence remains an optional arithmetic refinement, not a middle gap in the leading chain.
+
 ## Secondary open core — quadratic scale scattering
 
 [OPEN CORE] Construct, before reading the Xi divisor, a closed self-adjoint source realization
@@ -224,7 +258,8 @@ charge.
 | Starting point | Source end | Missing middle | RH end | Verdict |
 |---|---|---|---|---|
 | Rectangular Landau pole jet | fixed-width two-edge divisor family, shifted-zeta continuation, and Xi cancellation are exact and unconditional | prove one source-defined finite lower bound for the sampled rectangular Weil values | `RH <->` this one family is bounded below is formalized | **Leading chain; divisor side closed** |
-| Multiplicative screw curvature | the rectangular value is exactly a second difference of the real Xi screw profile; at `L=log m` it is the multiplicative midpoint curvature on `n,mn,m^2n` | formalize fixed-multiple subsequence completeness; construct an all-prime Gamma-completed covariance or norm-square with a uniform boundary term | feeds the same bounded-below rectangular endpoint | **New live detour; exact coordinate typed** |
+| Multiplicative screw curvature | the rectangular value is exactly a second difference of the real Xi screw profile; at `L=log m` it is the multiplicative midpoint curvature on `n,mn,m^2n` | construct an all-prime Gamma-completed covariance or norm-square with a uniform boundary term; fixed-multiple subsequence formalization is optional | feeds the same bounded-below rectangular endpoint | **Live detour; source route no longer waits on subsequence Lean** |
+| Critical-Mellin adjacent blocks | the rectangular autocorrelation splits into one fixed tent and one moving tent; the Gamma term is uniformly bounded | prove a source lower bound for the difference of the two adjacent equal-scale averages of `R` | exactly equivalent to the sampled rectangular lower floor | **Positive source readout closed; inequality open** |
 | Quadratic scale/Hedenmalm scattering | Gaussian theta seed, `D(D+1)`, weight-one inversion, exact source Bezoutian, and Wigner--Eisenstein prime current are source-defined | close the operator on `L²(dt)`; identify the Wigner radial form as its boundary/scattering form; prove a source sign or norm-square law and the determinant identity without divisor-selected data | `XiQuadraticSpectralReality <-> RH` is formalized | **Secondary live detour** |
 | Graded order/disorder system | parity grading and half-integer Hurwitz sector are canonical and formalized | realize the signed swap as the boundary involution of the quadratic source operator; prove graded KMS/scattering classification; show a partition zero is a spectral degeneration | feeds the quadratic endpoint | **Live feeder**; Poisson wiring would close the profile-to-sector brick, but its current untracked draft still fails to typecheck |
 | Hyperbolic/adelic scattering | prime logarithms and the Gamma ladder can be read as length and cusp data | construct an actual self-adjoint two-dimensional or adelic scattering object; identify its determinant with Xi; exclude nonreal resonances by source geometry | the same real quadratic energy endpoint | **Live geometric variant**, but the determinant realization is wholly open |
@@ -250,6 +285,7 @@ perturbation or of the determinant-line no-crossing law, not the search boundary
 - [PROVED] For every fixed `L>0`, false RH forces the logarithmically sampled rectangular Weil values below every real level cofinally, with exact analytic multiplicity.
 - [PROVED] For every fixed `L>0`, RH is equivalent to this one sampled rectangular family being nonnegative, and also equivalent to its being merely bounded below.
 - [PROVED] The same rectangular value is the fixed discrete curvature of the real Xi screw profile; for `L=log m` its multiplicative midpoint form on `n,mn,m^2n` is formalized.
+- [PROVED] On the source side, the moving rectangular term is one critical-Mellin tent pairing, equivalently the imbalance of two adjacent equal logarithmic blocks; the remaining Gamma term is uniformly bounded at fixed width.
 - [PROVED] The Wigner cross-energy obstruction has an exact positive dual floor controlled by the primal `p_b` energy and reciprocal-symbol boundary energy.
 - [OPEN CORE] Prove one unconditional source-defined finite lower bound for that rectangular family.  The Wigner--Eisenstein boundary form and quadratic scattering construction remain competing providers of the same missing source floor.
 - [NOVELTY UNVERIFIED] Any completed glue theorem remains scientifically unclassified until the proof, parent-theory, literature, and rediscovery gates are run.

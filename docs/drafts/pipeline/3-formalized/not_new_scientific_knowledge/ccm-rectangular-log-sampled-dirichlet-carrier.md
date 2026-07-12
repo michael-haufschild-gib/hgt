@@ -10,7 +10,9 @@
   `CCMShiftedXiPoleJet.lean`, `CCMShiftedXiGlobalOrder.lean`,
   `CCMShiftedXiLandauContinuation.lean`, `CCMShiftedXiLandauPoleContradiction.lean`,
   `CCMRectangularDominantFold.lean`, `CCMRectangularWeilCompleteness.lean`, and
-  `CCMRectangularScrewCurvature.lean`, and `CCMRectangularTransverseGrowth.lean`
+  `CCMRectangularScrewCurvature.lean`, `CCMRectangularTransverseGrowth.lean`,
+  `CCMRectangularPoleTomography.lean`, and
+  `CCMRectangularObservablePoleTomography.lean`
 
 ## Theorem
 
@@ -89,6 +91,18 @@ Unconditionally:
     `0<=alpha<delta_*` and every `C>=0`.  Under RH it is uniformly bounded.
     Thus norm boundedness is another exact RH criterion, and the carrier
     quantitatively recovers the horizontal defect when one exists.
+13. The Xi-cancelled shifted-zeta carrier divided by `xi(s-1/2)` is meromorphic
+    on `Re s>1`.  Its simple poles are exactly the shifted right-divisor
+    coordinates `s=1+(rho-1/2)`.  A zero of multiplicity `m` still produces
+    order `-1`, because the numerator has exact order `m-1` and the denominator
+    exact order `m`.
+14. After deleting any finite initial segment beyond which `L<=log(n)/2`, the
+    actual Weil values differ from the full right-divisor coefficients by a
+    bounded sequence.  The correction L-series is analytic on `Re s>1`.
+    Hence the canonical continuation of the actual tail L-series has exactly
+    the same simple-pole support.  One fixed-width scalar Weil sequence thus
+    recovers every off-critical support coordinate, while its power exponent
+    recovers their supremal horizontal displacement.
 
 The earlier safe-half-plane estimate remains available: for every `eps>0` and
 `Re s>=3/2+eps`,
@@ -145,6 +159,12 @@ The earlier safe-half-plane estimate remains available: for every `eps>0` and
 - `xiWeilPolarization_rectangular_logSample_cofinally_exceeds_power`
 - `xiRightTransverseSup_is_sharp_rectangular_power_exponent`
 - `riemannHypothesis_iff_rectangular_logSample_weil_norm_bdd`
+- `meromorphicOrderAt_xiRectangularRightDirichletContinuation_eq_neg_one_iff`
+- `LSeries_xiRectangularRightDirichletComplex_eq_continuation`
+- `norm_xiRectangularWeilRemainderCoefficient_le`
+- `analyticAt_LSeries_xiRectangularWeilRemainderCoefficient`
+- `LSeries_xiRectangularWeilTailCoefficient_eq_continuation`
+- `meromorphicOrderAt_xiRectangularWeilTailContinuation_eq_neg_one_iff`
 
 ## Boundary
 

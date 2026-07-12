@@ -2,8 +2,8 @@
 
 - **ID:** `explicit-rectangular-two-edge-weil-completeness`
 - **Stage:** 1-in-progress
-- **Type:** `[CONJECTURE]` / COFINAL CCM BOUNDARY COMPLETENESS
-- **Scientific status:** `[CONJECTURE] [NOVELTY UNVERIFIED] [TARGET SIGNIFICANCE 90/100]`
+- **Type:** `[THEOREM]` / COFINAL CCM BOUNDARY COMPLETENESS AND POLE TOMOGRAPHY
+- **Scientific status:** `[THEOREM] [NOVELTY AUDIT PASSED 2026-07-12] [PUBLICATION AUDIT IN PROGRESS]`
 - **Statement:** For every fixed width `L>0`, the single translated rectangular two-edge family
   detects every possible off-critical Xi divisor.  If RH is false, its multiplicity-exact Weil
   values are unbounded below as the aperture tends to infinity.  Equivalently, RH is characterized
@@ -241,6 +241,44 @@ one finite cofinal lower bound—not necessarily positivity—closes RH.
     norm of this one sampled family, and, when RH is false, the family recovers the exact supremal
     horizontal displacement rather than merely detecting its existence.
 
+11. **Complete observable pole-support tomography.**
+    `CCMRectangularPoleTomography.lean` constructs the canonical meromorphic continuation
+
+    ```text
+    C_L(s)=Xi-cancelled rectangular series / xi(s-1/2).
+    ```
+
+    In `Re(s)>1`, every shifted right-divisor coordinate `s=1+(rho-1/2)` is a simple pole of
+    `C_L`, and there are no other poles there.  The order is always `-1`, including when `rho` is
+    multiple: the numerator has exact order `m-1` and the denominator exact order `m`.
+
+    `CCMRectangularObservablePoleTomography.lean` then removes the dependence on the isolated
+    dominant component.  After deleting any finite prefix beyond which `L<=log(n)/2`, the actual
+    logarithmically sampled Weil sequence differs from the right-divisor carrier by a uniformly
+    bounded sequence.  The correction L-series is analytic throughout `Re(s)>1`.  Therefore the
+    actual tail L-series has a canonical continuation whose simple-pole support in `Re(s)>1` is
+    exactly
+
+    ```text
+    {1+(rho-1/2) : xi(rho)=0, Re(rho)>1/2}.
+    ```
+
+    Thus one fixed-width scalar Weil sequence recovers the complete off-critical support, while
+    its sharp power exponent recovers the maximal horizontal displacement.
+
+## Primary-literature novelty audit
+
+The exact theorem surface was compared with Connes--Consani's scaling-Hamiltonian, zeta-cycle,
+and archimedean Weil-positivity papers; Suzuki's 2025 Hilbert-space/screw-line criterion; Suzuki's
+2022 screw-function RH criteria; and Suzuki's June 2026 unified screw-function treatment of the
+Yoshida, Bombieri, Connes, and Connes--Consani--Moscovici forms.  Those works supply the parent
+Weil/screw/operator frameworks and one-parameter criteria.  No located result gives the conjunction
+proved here: an arbitrary fixed positive rectangle width, the arithmetic mesh `t=log n`, eventual
+lower boundedness and norm boundedness as exact RH criteria, cofinal negative divergence under
+false RH, sharp transverse power exponent, and exact simple-pole support tomography from the
+observable tail L-series.  The novelty claim is restricted to that conjunction; Landau's theorem,
+Weil positivity, shifted-zeta continuation, and screw functions remain acknowledged parent theory.
+
 ## Gates
 
 - [x] candidate explicit profile and nonvanishing mechanism isolated
@@ -257,6 +295,6 @@ one finite cofinal lower bound—not necessarily positivity—closes RH.
 - [x] sharp transverse power exponent and norm-boundedness criterion formalized
 - [x] complete paper proof audited at the divisor-polarization and abscissa boundaries
 - [x] unconditional Lean formalization of every promoted divisor-side claim
-- [ ] primary-literature novelty audit
+- [x] primary-literature novelty audit
 - [ ] independent proof audit
 - [ ] standalone paper score at least 90/100

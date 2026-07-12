@@ -1,0 +1,649 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=29mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\setlength{\emergencystretch}{2em}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,
+  urlcolor=blue!55!black]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\XiR}{\Xi}
+\newcommand{\cZ}{\mathcal Z}
+\newcommand{\cM}{\mathcal M}
+\newcommand{\cQ}{\mathcal Q}
+\newcommand{\cR}{\mathcal R}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\Res}{\operatorname{Res}}
+\newcommand{\supp}{\operatorname{supp}}
+
+\title{Fixed-Window Logarithmic Weil Tomography}
+\author{Michael Haufschild \and GPT 5.6 Sol \and Fable 5 \and Grok 4.5}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+For every fixed width $L>0$ we introduce one translated rectangular two-edge family in the
+centered Weil form of the Riemann xi-function.  Its window transform
+\[
+ A_L(w)=\frac{1-e^{-Lw}}{w}
+\]
+has no zeros in either open transverse half-plane.  We prove that logarithmic sampling of the
+translation parameter, $a=\frac12\log n$, turns the growing edge into an ordinary Dirichlet
+carrier.  The resulting single scalar sequence is a complete transverse detector: the Riemann
+hypothesis is equivalent to its nonnegativity, to its eventual lower boundedness, and to its norm
+boundedness.  If the hypothesis is false, the sequence is cofinally unbounded below.  Its sharp
+power exponent is the supremal horizontal displacement of the xi divisor.
+
+The same carrier gives a stronger tomography statement.  After deletion of any sufficiently late
+finite prefix, the Dirichlet series of the actual Weil values admits a canonical meromorphic
+continuation to $\Re s>1$.  Its simple poles are exactly
+\[
+  s=1+(\rho-\tfrac12),\qquad \XiR(\rho)=0,\quad \Re\rho>\tfrac12.
+\]
+Thus one fixed boundary window and one arithmetic mesh recover the complete off-critical support,
+not merely its rightmost displacement.  We also identify the sequence with a fixed-width second
+difference of the xi screw function.  The results are unconditional divisor-side theorems; the
+remaining source-side problem is to derive one cofinal lower bound from the prime--archimedean or
+semilocal operator realization.
+\end{abstract}
+
+\noindent\textbf{2020 Mathematics Subject Classification.}
+11M26, 11M06, 30B50, 42A82, 47B25.
+
+\noindent\textbf{Keywords.}
+Riemann hypothesis, Weil quadratic form, screw function, Dirichlet series, Landau theorem,
+Connes trace formula, pole tomography.
+
+\section{Introduction}
+
+Weil's quadratic-form criterion converts the Riemann hypothesis into positivity of a Hermitian
+form on a test space~\cite{Weil1952,Yoshida1992,Bombieri2000}.  Connes's trace-formula program
+places the same form in a spectral and semilocal operator architecture~\cite{Connes1999}, with
+later work isolating the scaling Hamiltonian, the archimedean positivity mechanism, prolate
+near-radical directions, and zeta cycles~\cite{ConnesConsani2019,ConnesConsani2021,
+ConnesConsani2023}.  Recent finite spectral triples package prime cutoffs into self-adjoint
+finite objects, while leaving convergence to the completed xi divisor as the decisive global
+step~\cite{ConnesConsaniMoscovici2025}.
+
+The usual Weil criterion ranges over a large test space.  This is natural for positivity but
+obscures a more economical question: can a single explicit cofinal family already carry every
+transverse zero?  One-parameter criteria are known in screw-function and Hilbert-space form.
+Suzuki proved several screw-function equivalents of RH~\cite{Suzuki2023} and later obtained a
+screw-line equality criterion on a cofinal interval~\cite{Suzuki2025}.  His recent synthesis
+places the Yoshida, Bombieri, Connes, and Connes--Consani--Moscovici forms in one screw-function
+framework~\cite{Suzuki2026}.  Finite Galerkin values have also been identified exactly with
+finite Guinand--Weil zero sums~\cite{Groskin2026}.
+
+This paper isolates a different compression.  Fix any $L>0$ once and for all.  Translate the
+same two-edge rectangle to aperture $a$, then sample only at $a=\frac12\log n$.  Three phenomena
+occur simultaneously.
+
+\begin{enumerate}[label=(\roman*)]
+\item The rectangle has an exact half-plane nonvanishing law, so no generic profile selection is
+needed.
+\item The cofinal translation becomes an ordinary Dirichlet monomial $n^w$ at a centered zero
+$w=\rho-\frac12$.
+\item The discarded edge and the on-line divisor remain uniformly bounded, so the transverse
+Dirichlet carrier controls the entire Weil sequence.
+\end{enumerate}
+
+The first main theorem gives three exact RH criteria and a quantitative false-RH law.  The second
+main theorem attaches a meromorphic continuation to the actual scalar tail and shows that its
+simple-pole support is precisely the shifted right xi divisor.  This support theorem is stronger
+than an abscissa statement: the full off-critical support is visible from one sequence.  The third
+main theorem gives the exact screw-coordinate identity.
+
+The novelty is the conjunction of fixed positive width, arithmetic logarithmic sampling,
+cofinal divergence, sharp transverse exponent, and observable pole-support tomography.  Landau's
+theorem, Weil positivity, shifted-zeta continuation, and screw functions are the parent
+mechanisms.  We keep this boundary explicit.  We also keep the logical boundary explicit: the
+paper does not prove RH.  It identifies the exact cofinal scalar carrier on which a successful
+prime-side or semilocal construction must establish one finite lower bound.
+
+\section{The centered xi divisor and the rectangular window}
+
+Let
+\[
+  \XiR(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s).
+\]
+Its nontrivial zeros form a multiset invariant under $\rho\mapsto1-\rho$ and
+$\rho\mapsto\overline\rho$.  Write
+\[
+  w=\rho-\frac12,
+\]
+and let $\cZ$ denote the resulting centered multiset, with analytic multiplicity.  Then
+\[
+  |\Re w|<\frac12,qquad
+  \sum_{w\in\cZ}\frac1{|w|^2}<\infty.
+  \tag{2.1}
+\]
+The latter follows from the classical zero count $N_\Xi(T)=O(T\log T)$.
+
+For $L>0$ define
+\[
+  A_L(w)=
+  \begin{cases}
+  \dfrac{1-e^{-Lw}}{w},&w\ne0,\\[6pt]
+  L,&w=0,
+  \end{cases}
+  \qquad
+  F_{a,L}(w)=e^{aw}A_L(w)+e^{-aw}A_L(-w).
+  \tag{2.2}
+\]
+The transform is the bilateral centered Laplace transform of
+\[
+  \mathbf 1_{[a-L,a]}+\mathbf 1_{[-a,-a+L]}.
+\]
+We work directly with the absolutely convergent divisor polarization
+\[
+  Q_L(a)=\sum_{w\in\cZ}F_{a,L}(w)^2.
+  \tag{2.3}
+\]
+Absolute convergence follows from (2.1) and the strip bound below.  Formula (2.3) is the
+rectangle-completed zero side of the centered Weil form.  Its unconditional Hermitian symmetry
+makes $Q_L(a)$ real.  No distributional assertion about a
+discontinuous test function is needed for the arguments in this paper.
+
+\begin{lemma}[Half-plane nonvanishing]\label{lem:nonvanishing}
+If $L>0$ and $\Re w\ne0$, then $A_L(w)\ne0$.
+\end{lemma}
+
+\begin{proof}
+If $A_L(w)=0$ with $w\ne0$, then $e^{-Lw}=1$.  Taking absolute values gives
+$e^{-L\Re w}=1$, hence $\Re w=0$, a contradiction.
+\end{proof}
+
+\begin{lemma}[Exact edge decomposition]\label{lem:edge}
+For every $w\in\C$,
+\[
+  A_L(-w)=e^{Lw}A_L(w),
+  \tag{2.4}
+\]
+and consequently
+\[
+  F_{a,L}(w)^2=A_L(w)^2
+  \bigl(e^{2aw}+2e^{Lw}+e^{-2(a-L)w}\bigr).
+  \tag{2.5}
+\]
+Moreover, uniformly on $|\Re w|\le\frac12$,
+\[
+  |A_L(w)|\le \frac{1+e^{L/2}}{|w|}\qquad(w\ne0).
+  \tag{2.6}
+\]
+\end{lemma}
+
+\begin{proof}
+Both identities are algebraic consequences of (2.2).  For (2.6), use
+$|1-e^{-Lw}|\le1+e^{-L\Re w}\le1+e^{L/2}$.
+\end{proof}
+
+Let $\cZ_+=\{w\in\cZ:\Re w>0\}$, retaining multiplicity, and define
+\[
+  c_L(w)=A_L(w)^2,
+  \qquad
+  d_L(n)=2\sum_{w\in\cZ_+}c_L(w)n^w
+  \quad(n\ge1).
+  \tag{2.7}
+\]
+Conjugation invariance makes $d_L(n)$ real.  Functional-equation symmetry folds the growing edge
+of (2.5) onto (2.7).
+
+\begin{proposition}[Uniform remainder]\label{prop:remainder}
+For each fixed $L>0$ there is a finite constant $K_L$ such that, whenever
+$a\ge L$,
+\[
+  \left|Q_L(a)-D_L(a)\right|\le K_L,
+  \tag{2.8}
+\]
+where $D_L(\frac12\log n)=d_L(n)$.  One may take
+\[
+  K_L=R_L\sum_{w\in\cZ}|w|^{-2}
+  \tag{2.9}
+\]
+with an explicit $R_L$ depending only on $L$.
+\end{proposition}
+
+\begin{proof}
+For $\Re w>0$, select the first term in (2.5); for $\Re w<0$, select the third
+term.  The functional equation identifies the latter with the first term at $-w$.  The middle
+term is independent of $a$.  On the selected positive half-strip the third term has modulus at
+most a constant depending only on $L$ when $a\ge L$; the symmetric statement holds on the
+negative half-strip.  On the critical line all exponential factors in (2.5) have bounded modulus.
+Lemma~\ref{lem:edge} therefore bounds every discarded summand by $R_L|w|^{-2}$.
+Summation using (2.1) gives (2.8).
+\end{proof}
+
+\section{The logarithmic Dirichlet carrier}
+
+Assume $\cZ_+\ne\varnothing$ and set
+\[
+  \delta_* = \sup_{w\in\cZ_+}\Re w.
+  \tag{3.1}
+\]
+Then $0<\delta_*\le\frac12$.  Define
+\[
+  C_L(s)=\sum_{w\in\cZ_+}c_L(w)\zeta(s-w)
+  \tag{3.2}
+\]
+initially on $\Re s>1+\delta_*$.  Absolute convergence permits interchange of the two sums and
+gives
+\[
+  \sum_{n\ge1}\frac{d_L(n)}{n^s}=2C_L(s).
+  \tag{3.3}
+\]
+
+The continuation of (3.2) requires a multiplicity-safe formulation.  Put
+\[
+  X_L(s)=\XiR(s-\tfrac12)C_L(s)
+  \tag{3.4}
+\]
+on the initial half-plane, filling each removable shifted-zeta singularity.  The unconditional
+zero count yields
+\[
+  \sum_{w\in\cZ_+}|w|^{-3/2}<\infty.
+  \tag{3.5}
+\]
+Together with a square-root vertical bound for $\zeta$ on closed substrips, (3.5) gives local
+normal convergence of the filled series on $\Re s>1$.  Thus $X_L$ is holomorphic there and
+\[
+  \widetilde C_L(s)=\frac{X_L(s)}{\XiR(s-\tfrac12)}
+  \tag{3.6}
+\]
+is a canonical meromorphic continuation of $C_L$.
+
+\begin{proposition}[Exact pole support]\label{prop:poles}
+For $L>0$, the meromorphic function $\widetilde C_L$ has, in $\Re s>1$, a simple pole at
+$s=1+w$ for every $w\in\cZ_+$, and no other poles.  If $w$ has multiplicity $m$, then
+\[
+  \ord_{1+w}X_L=m-1,
+  \qquad
+  \ord_{1+w}\XiR(s-\tfrac12)=m,
+  \qquad
+  \ord_{1+w}\widetilde C_L=-1.
+  \tag{3.7}
+\]
+\end{proposition}
+
+\begin{proof}
+Fix a distinct support point $w_0\in\cZ_+$ of multiplicity $m$.  Near $p=1+w_0$, factor
+\[
+  \XiR(s-\tfrac12)=(s-p)^m u(s),\qquad u(p)\ne0.
+  \tag{3.8}
+\]
+The $m$ equal-support summands in (3.4) are identical.  The pole-filled factor
+$\XiR(s-\frac12)\zeta(s-w_0)$ has exact order $m-1$ at $p$; multiplying by
+$c_L(w_0)\ne0$ and by the positive integer $m$ does not change that order.  Every summand with
+support different from $w_0$ is divisible by $(s-p)^m$.  Local normal convergence preserves this
+common order floor through their infinite sum.  Hence the equal-support fiber has order $m-1$,
+the off-support tail has order at least $m$, and their sum has order exactly $m-1$.  Division by
+(3.8) proves (3.7).  Away from the coordinates $1+w$, the denominator in (3.6) is nonzero and the
+quotient is holomorphic.
+\end{proof}
+
+\begin{remark}
+The order computation is the point at which multiplicity matters.  Treating only simple zeros
+would hide the finite equal-support fiber and would not justify the absence of cancellation.
+\end{remark}
+
+\section{Cofinal divergence and the RH criteria}
+
+We use the classical Landau principle: an ordinary Dirichlet series with eventually nonnegative
+real coefficients cannot be holomorphic through the real point at its abscissa of convergence.
+The form needed below is scale-local: if the series converges at one real point and extends
+holomorphically to a disc reaching a smaller real point, its Taylor expansion forces convergence
+at that smaller point.  This is the standard proof of Landau's theorem applied after deleting a
+finite prefix.
+
+\begin{theorem}[Cofinal fixed-window completeness]\label{thm:completeness}
+Fix $L>0$ and put
+\[
+  q_L(n)=Q_L\!\left(\frac12\log n\right)
+  \qquad\left(L\le\frac12\log n\right).
+  \tag{4.1}
+\]
+Then the following are equivalent.
+\begin{enumerate}[label=(\alph*)]
+\item The Riemann hypothesis holds.
+\item $q_L(n)\ge0$ at every admissible logarithmic sample.
+\item The admissible tail of $q_L(n)$ is bounded below.
+\item The admissible values $|q_L(n)|$ are bounded.
+\end{enumerate}
+If RH is false, then for every $B\in\R$ and every $N_0$ there is an admissible $n\ge N_0$ such
+that
+\[
+  q_L(n)<B.
+  \tag{4.2}
+\]
+\end{theorem}
+
+\begin{proof}
+Under RH every $w\in\cZ$ is purely imaginary.  The two-edge transform $F_{a,L}(w)$ is then real
+in the spectral coordinate, so every summand in (2.3) is a real square.  This proves (a)$\Rightarrow$(b).
+The uniform reciprocal-square estimate also gives (a)$\Rightarrow$(d), while (b)$\Rightarrow$(c)
+and (d)$\Rightarrow$(c) are immediate.
+
+Suppose RH is false.  Functional-equation symmetry gives $\cZ_+\ne\varnothing$.  If $d_L(n)$
+were eventually bounded below, add a constant and delete a finite prefix to obtain a nonnegative
+coefficient sequence.  The associated L-series agrees on $\Re s>1+\delta_*$ with
+\[
+  2C_L(s)+C\zeta(s)-P(s),
+  \tag{4.3}
+\]
+where $P$ is a finite Dirichlet polynomial.  Local normal convergence at the real boundary and
+the scale-local Landau argument force convergence strictly to the left of $1+\delta_*$.  Applied
+to the xi-cancelled series, that continuation would make $X_L$ divisible by the full order $m$
+at every actual shifted pole reached by the continuation.  Proposition~\ref{prop:poles} gives
+the contradictory exact order $m-1$.  Therefore $d_L(n)$ is cofinally below every real level.
+Proposition~\ref{prop:remainder} transfers the same statement to $q_L(n)$, proving (4.2).
+Consequently (c) implies RH, and all four conditions are equivalent.
+\end{proof}
+
+The same argument retains quantitative information.
+
+\begin{theorem}[Sharp transverse exponent]\label{thm:exponent}
+Assume RH is false and let $\delta_*$ be given by (3.1).  There is a constant $M_L<\infty$ such
+that every admissible sample satisfies
+\[
+  |q_L(n)|\le M_L n^{\delta_*}.
+  \tag{4.4}
+\]
+Conversely, for every $0\le\alpha<\delta_*$, every $C\ge0$, and every $N_0$, there is an
+admissible $n\ge N_0$ for which
+\[
+  |q_L(n)|>Cn^\alpha.
+  \tag{4.5}
+\]
+Thus $\delta_*$ is the sharp power exponent of the single fixed-window sequence.
+\end{theorem}
+
+\begin{proof}
+By (2.6), $\sum_{w\in\cZ_+}|c_L(w)|<\infty$.  Since
+$|n^w|=n^{\Re w}\le n^{\delta_*}$, (2.7) gives the upper bound for $d_L(n)$; the bounded
+remainder gives (4.4).
+
+If (4.5) failed for some $\alpha<\delta_*$, then the bounded remainder would give an eventual
+$O(n^\alpha)$ bound for $d_L(n)$.  Its L-series would converge absolutely at every
+$\Re s>1+\alpha$.  Choose $\beta$ with $\alpha<\beta<\delta_*$.  The continuation argument of
+Proposition~\ref{prop:poles}, now applied at the real line $1+\beta$, would force every shifted
+pole to satisfy $\Re(1+w)\le1+\beta$.  Taking suprema yields $\delta_*\le\beta$, a contradiction.
+The bounded difference between $d_L$ and $q_L$ is absorbed into $Cn^\alpha$ because
+$n^\alpha\ge1$.
+\end{proof}
+
+\section{Pole tomography from the actual Weil tail}
+
+Proposition~\ref{prop:poles} concerns the isolated growing carrier.  We now show that no such
+isolation is needed in the final statement.
+
+Choose $N$ so that
+\[
+  n\ge N\quad\Longrightarrow\quad n\ge1,
+  \qquad L\le\frac12\log n.
+  \tag{5.1}
+\]
+Define the observable tail and the finite carrier prefix by
+\[
+  q_{L,N}(n)=\begin{cases}q_L(n),&n\ge N,\\0,&n<N,\end{cases}
+  \qquad
+  p_{L,N}(n)=\begin{cases}d_L(n),&n<N,\\0,&n\ge N.\end{cases}
+  \tag{5.2}
+\]
+Set
+\[
+  r_{L,N}(n)=q_{L,N}(n)-d_L(n)+p_{L,N}(n).
+  \tag{5.3}
+\]
+Then $r_{L,N}(n)=0$ for $n<N$, while Proposition~\ref{prop:remainder} gives
+\[
+  |r_{L,N}(n)|\le K_L\qquad(n\ge1).
+  \tag{5.4}
+\]
+Hence
+\[
+  R_{L,N}(s)=\sum_{n\ge1}\frac{r_{L,N}(n)}{n^s}
+  \tag{5.5}
+\]
+is holomorphic on $\Re s>1$.  Let
+\[
+  P_{L,N}(s)=\sum_{n<N}\frac{d_L(n)}{n^s}
+  \tag{5.6}
+\]
+be the finite Dirichlet polynomial.
+
+\begin{theorem}[Observable pole tomography]\label{thm:tomography}
+For every $L>0$ and every $N$ satisfying (5.1), the ordinary Dirichlet series
+\[
+  \sum_{n\ge1}\frac{q_{L,N}(n)}{n^s}
+  \tag{5.7}
+\]
+has, on its initial half-plane of convergence, the canonical continuation
+\[
+  \cM_{L,N}(s)=2\widetilde C_L(s)-P_{L,N}(s)+R_{L,N}(s).
+  \tag{5.8}
+\]
+The function $\cM_{L,N}$ is meromorphic on $\Re s>1$, and
+\[
+  \ord_s\cM_{L,N}=-1
+  \quad\Longleftrightarrow\quad
+  s=1+w\text{ for some }w\in\cZ_+.
+  \tag{5.9}
+\]
+At every other point of $\Re s>1$, $\cM_{L,N}$ is holomorphic.
+\end{theorem}
+
+\begin{proof}
+Equation (5.3) gives the coefficient identity
+\[
+  q_{L,N}=d_L-p_{L,N}+r_{L,N}.
+\]
+On $\Re s>1+\delta_*$, absolute convergence and (3.3) therefore give (5.8).
+The functions $P_{L,N}$ and $R_{L,N}$ are holomorphic on $\Re s>1$.  At every shifted right
+zero, Proposition~\ref{prop:poles} gives order $-1$ for $2\widetilde C_L$; adding a holomorphic
+function cannot cancel a pole of strictly smaller order.  Away from those shifted coordinates,
+all three terms in (5.8) are holomorphic.  This proves (5.9).
+\end{proof}
+
+\begin{corollary}[Support recovery and RH]\label{cor:tomography}
+The complete right off-critical support of the xi divisor is recovered from one fixed-width tail
+by
+\[
+  \{\rho:\XiR(\rho)=0,\ \Re\rho>\tfrac12\}
+  =\{s-\tfrac12:\Re s>1,\ \ord_s\cM_{L,N}=-1\}.
+  \tag{5.10}
+\]
+In particular, RH is equivalent to holomorphy of $\cM_{L,N}$ on $\Re s>1$.
+\end{corollary}
+
+\begin{remark}
+The continuation is not an arbitrary interpolation of the scalar samples.  It is fixed by the
+xi-cancelled shifted-zeta carrier, the explicitly deleted finite prefix, and the absolutely
+convergent bounded-remainder L-series.  This is the incidence marking that prevents a
+transverse relocation of the divisor while leaving only ordinate data unchanged.
+\end{remark}
+
+\section{The screw-function coordinate}
+
+Define the centered xi screw profile
+\[
+  \Psi_\Xi(t)=\sum_{w\in\cZ}\frac{\cosh(tw)-1}{w^2},
+  \qquad t\in\R.
+  \tag{6.1}
+\]
+The series converges absolutely by (2.1), because $|\Re w|<\frac12$, and it is real by divisor
+symmetry.
+
+\begin{theorem}[Exact fixed-width curvature identity]\label{thm:screw}
+For every $L,a\in\R$,
+\[
+  Q_L(a)=2\Bigl[
+    \Psi_\Xi(2a)+\Psi_\Xi(2a-2L)-2\Psi_\Xi(2a-L)+2\Psi_\Xi(L)
+  \Bigr].
+  \tag{6.2}
+\]
+Consequently Theorem~\ref{thm:completeness} is equivalently an RH criterion for the one
+fixed-width second-difference expression in (6.2), sampled only at $2a=\log n$.
+\end{theorem}
+
+\begin{proof}
+For $w\ne0$, substitute $A_L(w)=(1-e^{-Lw})/w$ and
+$A_L(-w)=e^{Lw}A_L(w)$ into $F_{a,L}(w)^2$.  Expanding the exponentials and grouping each
+$e^{tw}+e^{-tw}-2=2(\cosh(tw)-1)$ gives the summand identity corresponding to (6.2).
+Absolute convergence permits summation over $\cZ$.  The removable value at $w=0$ follows by
+continuity, although $w=0$ is not a xi zero.
+\end{proof}
+
+The screw identity places the theorem directly beside the modern screw-line formulation of the
+Weil form~\cite{Suzuki2023,Suzuki2025,Suzuki2026}.  The additional feature here is the exact
+rectangular stencil and the arithmetic logarithmic mesh, which produce the Dirichlet continuation
+and pole tomography of Section~5.
+
+\section{Implications for the Connes route}
+
+The theorem changes the positive obligation on a semilocal or prime-side construction.  It is not
+necessary to establish positivity on an unspecified compact family, nor to match finitely many
+spectral ordinates.  For any chosen $L>0$, it is enough to construct the actual completed
+source--divisor incidence along the single section $q_L(n)$ and prove one of the following:
+\[
+  \inf_{n\ge N}q_L(n)>-\infty,
+  \qquad
+  \sup_{n\ge N}|q_L(n)|<\infty,
+  \qquad
+  q_L(n)\ge0.
+  \tag{7.1}
+\]
+Any one closes RH by Theorem~\ref{thm:completeness}.
+
+This is a cofinal, noncompact carrier condition.  Finite-prime positivity or a finite
+self-adjoint spectrum does not imply (7.1): the construction must transport the completed
+Euler--Gamma incidence into the actual tail.  The compatible finite-factorization viewpoint is
+therefore useful only when its cofinal section controls the bounded correction in (5.5).  Once
+that happens, Theorem~\ref{thm:tomography} gives a rigid alternative:
+
+\begin{quote}
+the residual Mellin channel is holomorphic on $\Re s>1$, or its simple poles are exactly the
+shifted off-critical xi support.
+\end{quote}
+
+In particular, the noncompact escape required by prolate or near-radical Connes--Consani
+mechanisms is not an undirected loss of compactness.  Along the rectangular section it must be a
+coherent escape whose scalar trace values obey (7.1).  The same obligation applies to recent
+finite-prime spectral triples.  Their normalized determinants must carry the completed divisor
+strongly enough to identify the tail continuation, not only a finite list of real spectral zeros.
+
+\section{Scope and limitations}
+
+The results are unconditional, but they are divisor-side theorems.  They do not derive the lower
+bound (7.1) from primes, Gamma factors, a Sonin space, or a self-adjoint operator.  They therefore
+do not prove RH.  Their role is to isolate a minimal positive carrier and to show exactly what it
+remembers.
+
+The rectangle is deliberately nonsmooth.  We avoid an inadmissible appeal to the classical smooth
+test space by defining $Q_L$ through the absolutely convergent xi divisor polarization.  A
+prime-side explicit-formula realization of this exact boundary value requires either an
+appropriate completion theorem or a justified approximation whose limit preserves the scalar
+tail.  That source theorem is the remaining RH-bearing step.
+
+The pole theorem recovers support, not multiplicity from the pole order: every off-critical zero,
+simple or multiple, produces a simple pole.  Recovering multiplicity from a normalized leading
+coefficient is a separate refinement and is not used here.
+
+Finally, the novelty claim is intentionally narrow.  Weil positivity, the Connes trace-formula
+architecture, Landau's theorem, and the screw function are established parent theories.  The new
+result is the fixed-window logarithmic compression and its quantitative and meromorphic
+consequences.
+
+\begin{thebibliography}{99}
+
+\bibitem{Bombieri2000}
+E.~Bombieri,
+\emph{Remarks on Weil's quadratic functional in the theory of prime numbers, I},
+Rend. Lincei Mat. Appl. \textbf{11} (2000), 183--233.
+
+\bibitem{Connes1999}
+A.~Connes,
+\emph{Trace formula in noncommutative geometry and the zeros of the Riemann zeta function},
+Selecta Math. (N.S.) \textbf{5} (1999), 29--106.
+
+\bibitem{ConnesConsani2019}
+A.~Connes and C.~Consani,
+\emph{The scaling Hamiltonian},
+arXiv:1910.14368, 2019.
+
+\bibitem{ConnesConsani2021}
+A.~Connes and C.~Consani,
+\emph{Weil positivity and trace formula, the archimedean place},
+arXiv:2006.13771, revised 2026.
+
+\bibitem{ConnesConsani2023}
+A.~Connes and C.~Consani,
+\emph{Spectral triples and zeta-cycles},
+Enseign. Math. \textbf{69} (2023), 93--148.
+
+\bibitem{ConnesConsaniMoscovici2025}
+A.~Connes, C.~Consani, and H.~Moscovici,
+\emph{Zeta spectral triples},
+arXiv:2511.22755, 2025.
+
+\bibitem{Groskin2026}
+A.~Groskin,
+\emph{A finite Guinand--Weil dictionary and archimedean tail order for the truncated Weil
+quadratic form},
+arXiv:2607.02828, 2026.
+
+\bibitem{Maurizi2010}
+B.~Maurizi,
+\emph{Extending Landau's theorem on Dirichlet series with non-negative coefficients},
+arXiv:1009.0228, 2010.
+
+\bibitem{Suzuki2023}
+M.~Suzuki,
+\emph{Aspects of the screw function corresponding to the Riemann zeta function},
+arXiv:2206.03682v4, 2023.
+
+\bibitem{Suzuki2025}
+M.~Suzuki,
+\emph{On the Hilbert space derived from the Weil distribution},
+Canad. J. Math., published online 3 November 2025,
+doi:10.4153/S0008414X25101739.
+
+\bibitem{Suzuki2026}
+M.~Suzuki,
+\emph{Weil's quadratic form via the screw function},
+arXiv:2606.09096, 2026.
+
+\bibitem{Titchmarsh1986}
+E.~C.~Titchmarsh,
+\emph{The Theory of the Riemann Zeta-Function}, 2nd ed., revised by D.~R.~Heath-Brown,
+Oxford University Press, 1986.
+
+\bibitem{Weil1952}
+A.~Weil,
+\emph{Sur les ``formules explicites'' de la th\'eorie des nombres premiers},
+Commun. S\'em. Math. Univ. Lund, volume dedicated to Marcel Riesz (1952), 252--265.
+
+\bibitem{Yoshida1992}
+H.~Yoshida,
+\emph{On Hermitian forms attached to zeta functions},
+in \emph{Zeta Functions in Geometry}, Adv. Stud. Pure Math. \textbf{21},
+Mathematical Society of Japan, 1992, 281--325.
+
+\end{thebibliography}
+
+\end{document}

@@ -89,6 +89,35 @@ theorem cayleyMoment_prefix_iff_reciprocalMoment_prefix
   simp_rw [cayleyMoment_eq_triangularTransform]
   exact cayleyTriangularTransform_prefix_iff
 
+/-- The two-sided Hermitian completion of the positive Cayley moments. -/
+def cayleyMomentZ (μ : Measure ℝ) : ℤ → ℂ
+  | .ofNat n => cayleyMoment μ n
+  | .negSucc n => star (cayleyMoment μ (n + 1))
+
+@[simp]
+theorem cayleyMomentZ_ofNat (μ : Measure ℝ) (n : ℕ) :
+    cayleyMomentZ μ n = cayleyMoment μ n := rfl
+
+/-- The two-sided Cayley moment sequence of a probability measure is Hermitian. -/
+theorem cayleyMomentZ_isHermitian
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] :
+    IsHermitianMoment (cayleyMomentZ μ) := by
+  intro r
+  cases r with
+  | zero => simp [cayleyMomentZ, cayleyMoment]
+  | succ n => rfl
+
+/-- Equality of the level-`N` Cayley Toeplitz Gram sections is exactly equality of the positive
+Cayley moments through level `N`. -/
+theorem circleToeplitzGram_cayleyMomentZ_eq_iff
+    (μ ν : Measure ℝ) [IsProbabilityMeasure μ] [IsProbabilityMeasure ν] (N : ℕ) :
+    circleToeplitzGram N (cayleyMomentZ μ) =
+        circleToeplitzGram N (cayleyMomentZ ν) ↔
+      ∀ k ≤ N, cayleyMoment μ k = cayleyMoment ν k := by
+  rw [circleToeplitzGram_eq_iff_positiveMoment_eq
+    (cayleyMomentZ_isHermitian μ) (cayleyMomentZ_isHermitian ν)]
+  simp only [cayleyMomentZ_ofNat]
+
 end
 
 end GaloisForLFunctions.HTGeometry

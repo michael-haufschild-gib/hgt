@@ -61,3 +61,4 @@ import GaloisForLFunctions.HTGeometry.FacetSewnHerglotzStanleyReisner
 /-! # Hypertranscendental constraint geometry -/
 import GaloisForLFunctions.HTGeometry.CofinalCholeskyFiniteFrame
 import GaloisForLFunctions.HTGeometry.CayleyMomentFrame
+import GaloisForLFunctions.HTGeometry.CauchyJetFrame

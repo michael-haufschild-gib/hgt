@@ -289,3 +289,6 @@ import GaloisForLFunctions.RHTower.OrbitSumDegree
 import GaloisForLFunctions.RHTower.ExpEulerRelation
 import GaloisForLFunctions.RHTower.TranscendentalPi
 import GaloisForLFunctions.HolderDifferenceBricks
+import GaloisForLFunctions.HolderShiftElimination
+import GaloisForLFunctions.DigammaHypertranscendental
+import GaloisForLFunctions.QuantitativeHolderInterface
