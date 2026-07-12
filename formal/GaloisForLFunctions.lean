@@ -46,6 +46,7 @@ import GaloisForLFunctions.DifferentialMonomialGapValue
 import GaloisForLFunctions.HomogeneousDiffPolyGap
 import GaloisForLFunctions.SuperlacunaryExists
 import GaloisForLFunctions.GapOvershoot
+import GaloisForLFunctions.DifferentialMonomialGapVanish
 import GaloisForLFunctions.IterateDerivativeFalling
 import GaloisForLFunctions.WeightPolynomial
 import GaloisForLFunctions.WeightPolynomialDependence

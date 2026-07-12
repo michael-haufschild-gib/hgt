@@ -10,6 +10,37 @@ open HurwitzLadder HurwitzJointOrbit
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
+/-- **Intrinsic rational-coefficient joint ladder independence.**  In the canonical
+denominator-cleared functional semantics, no nonzero relation over `ℂ(a)` couples a finite family
+of Hurwitz ladders whose monodromy monomials are pairwise distinct. -/
+theorem joint_hurwitz_ladder_rational_independence
+    {s : ι → ℂ} (hs1 : ∀ j, 1 < (s j).re)
+    (hmono : Function.Injective (monomialValue (fun j => monoScalar (s j))))
+    (N : ℕ) (Q : MvPolynomial (ι × Fin (N + 1)) (RatFunc ℂ))
+    (hrel : ∀ a : ℂ, 0 < a.im →
+      MvPolynomial.eval₂ (Polynomial.evalRingHom a)
+        (fun jk => hzeta (s jk.1 + ((jk.2 : ℕ) : ℂ)) a)
+        (GaloisForLFunctions.HTGeometry.clearRatFuncCoefficients Q) = 0) :
+    Q = 0 := by
+  have hclear := joint_hurwitz_ladder_independence hs1 hmono N
+    (GaloisForLFunctions.HTGeometry.clearRatFuncCoefficients Q) hrel
+  by_contra hQ
+  exact GaloisForLFunctions.HTGeometry.clearRatFuncCoefficients_ne_zero Q hQ hclear
+
+/-- Rational linear independence of `1` and the exponents implies rational-coefficient joint
+independence of every finite union of their Hurwitz ladders. -/
+theorem joint_hurwitz_ladder_rational_independence_of_linearIndependent
+    {s : ι → ℂ} (hs1 : ∀ j, 1 < (s j).re)
+    (hsQ : LinearIndependent ℚ (exponentFamily s))
+    (N : ℕ) (Q : MvPolynomial (ι × Fin (N + 1)) (RatFunc ℂ))
+    (hrel : ∀ a : ℂ, 0 < a.im →
+      MvPolynomial.eval₂ (Polynomial.evalRingHom a)
+        (fun jk => hzeta (s jk.1 + ((jk.2 : ℕ) : ℂ)) a)
+        (GaloisForLFunctions.HTGeometry.clearRatFuncCoefficients Q) = 0) :
+    Q = 0 :=
+  joint_hurwitz_ladder_rational_independence hs1
+    (monomialValue_monoScalar_injective_of_linearIndependent s hsQ) N Q hrel
+
 /-- A finite family of Hurwitz zeta functions is jointly hypertranscendental in the shift variable
 when the monomials in its monodromy scalars are pairwise distinct. -/
 theorem joint_hzeta_hypertranscendental_in_shift

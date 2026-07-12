@@ -28,4 +28,25 @@ theorem all_le_of_sum_bnat_lt {bnat : ℕ → ℕ} (hmono : Monotone bnat) {r : 
       (Finset.mem_univ i)
   omega
 
+/-- **Overshoot down.**  If `r` values of a monotone sequence, all with index `≤ M`, sum to more
+than `(r-1)·bnat M + bnat (M-1)`, then every index equals `M`.  A single index below `M` drops
+the sum by a full gap. -/
+theorem all_eq_of_sum_bnat_gt {bnat : ℕ → ℕ} (hmono : Monotone bnat) {r : ℕ} {n : Fin r → ℕ}
+    {T M : ℕ} (hsum : ∑ i, bnat (n i) = T) (hle : ∀ i, n i ≤ M)
+    (hgt : (r - 1) * bnat M + bnat (M - 1) < T) : ∀ i, n i = M := by
+  classical
+  intro i
+  by_contra h
+  have hiM : n i ≤ M - 1 := by have := hle i; omega
+  have hbi : bnat (n i) ≤ bnat (M - 1) := hmono hiM
+  have hrest : ∑ j ∈ Finset.univ.erase i, bnat (n j) ≤ (r - 1) * bnat M := by
+    have h1 : ∑ j ∈ Finset.univ.erase i, bnat (n j) ≤ (Finset.univ.erase i).card • bnat M :=
+      Finset.sum_le_card_nsmul _ _ _ fun j _ => hmono (hle j)
+    rwa [Finset.card_erase_of_mem (Finset.mem_univ i), Finset.card_univ, Fintype.card_fin,
+      smul_eq_mul] at h1
+  have hsplit : bnat (n i) + ∑ j ∈ Finset.univ.erase i, bnat (n j) = T := by
+    rw [← hsum]
+    exact Finset.add_sum_erase Finset.univ (fun j => bnat (n j)) (Finset.mem_univ i)
+  omega
+
 end GaloisForLFunctions

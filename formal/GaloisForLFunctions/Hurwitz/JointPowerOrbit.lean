@@ -168,6 +168,22 @@ noncomputable def exponentFamily {ι : Type*} (s : ι → ℂ) : Option ι → �
   | none => 1
   | some j => s j
 
+/-- Restricting an exponent family along an injective index map restricts the augmented family
+`(1, s_j)` along the induced option map. -/
+theorem exponentFamily_comp {ι κ : Type*} (s : ι → ℂ) (f : κ → ι) :
+    exponentFamily (s ∘ f) = exponentFamily s ∘ Option.map f := by
+  funext x
+  cases x <;> rfl
+
+/-- Rational linear independence of an augmented exponent family passes to every injectively
+indexed subfamily. -/
+theorem exponentFamily_linearIndependent_comp {ι κ : Type*} (s : ι → ℂ)
+    (hs : LinearIndependent ℚ (exponentFamily s)) (f : κ → ι)
+    (hf : Function.Injective f) :
+    LinearIndependent ℚ (exponentFamily (s ∘ f)) := by
+  rw [exponentFamily_comp]
+  exact hs.comp (Option.map f) (Option.map_injective hf)
+
 /-- The exponent encoded by a nonnegative monomial in a family of Hurwitz exponents. -/
 noncomputable def exponentWeight {ι : Type*} (s : ι → ℂ) (d : ι →₀ ℕ) : ℂ :=
   d.sum fun j n => (n : ℂ) * s j

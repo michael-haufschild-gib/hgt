@@ -131,6 +131,86 @@ theorem xiThetaEigenHilbertClosure_eq_top_of_simple
   Submodule.dense_iff_topologicalClosure_eq_top.mp
     (xiThetaEigenAlgebraicSubspace_dense_of_simple hsimple)
 
+/-- The closed coordinate hyperplane used to detect a missing theta eigenvector. -/
+def xiCoordinateZeroSubspace (q : XiZeroCopy) :
+    Submodule ℂ (lp (fun _ : XiZeroCopy => ℂ) 2) where
+  carrier := {v | v q = 0}
+  zero_mem' := rfl
+  add_mem' := by
+    intro x y hx hy
+    change x q = 0 at hx
+    change y q = 0 at hy
+    change (x + y) q = 0
+    change x q + y q = 0
+    rw [hx, hy, add_zero]
+  smul_mem' := by
+    intro c x hx
+    change x q = 0 at hx
+    change (c • x) q = 0
+    change c * x q = 0
+    rw [hx, mul_zero]
+
+theorem xiCoordinateZeroSubspace_isClosed (q : XiZeroCopy) :
+    IsClosed (xiCoordinateZeroSubspace q :
+      Set (lp (fun _ : XiZeroCopy => ℂ) 2)) := by
+  change IsClosed {v : lp (fun _ : XiZeroCopy => ℂ) 2 | v q = 0}
+  have hcont : Continuous
+      (fun v : lp (fun _ : XiZeroCopy => ℂ) 2 => v q) := by
+    simpa only [Function.comp_apply] using
+      ((PiLp.continuous_apply 2 (fun _ : XiZeroCopy => ℂ) q).comp continuous_subtype_val)
+  exact isClosed_eq hcont continuous_const
+
+/-- If the derivative at one Xi zero vanishes, every theta eigenfunction evaluation lies in the
+closed hyperplane that kills the corresponding divisor coordinate. -/
+theorem xiThetaEigenAlgebraicSubspace_le_coordinateZero_of_deriv_eq_zero
+    (q : XiZeroCopy) (hderiv : deriv XiC (xiSpectralPoint q) = 0) :
+    xiThetaEigenAlgebraicSubspace ≤ xiCoordinateZeroSubspace q := by
+  refine Submodule.span_le.mpr ?_
+  rintro _ ⟨p, rfl⟩
+  change xiThetaEigenEvaluationLp p q = 0
+  rw [xiThetaEigenEvaluationLp_apply]
+  by_cases hpq : xiSpectralPoint q = xiSpectralPoint p
+  · rw [hpq, xiThetaEigenFourier_self]
+    have hderivp : deriv XiC (xiSpectralPoint p) = 0 := by
+      rw [← hpq]
+      exact hderiv
+    rw [hderivp, mul_zero]
+  · exact xiThetaEigenFourier_spectralPoint_eq_zero
+      (XiC_xiSpectralPoint_eq_zero p) q hpq
+
+/-- Density of the theta eigenfunction evaluations forces every Xi zero to be simple. -/
+theorem XiZerosSimple_of_xiThetaEigenAlgebraicSubspace_dense
+    (hdense : Dense (xiThetaEigenAlgebraicSubspace :
+      Set (lp (fun _ : XiZeroCopy => ℂ) 2))) :
+    XiZerosSimple := by
+  intro alpha halpha
+  obtain ⟨q, hq⟩ := (XiC_eq_zero_iff_exists_xiZeroCopy alpha).mp halpha
+  intro hderiv
+  have hderivq : deriv XiC (xiSpectralPoint q) = 0 := by simpa [hq] using hderiv
+  have hle := xiThetaEigenAlgebraicSubspace_le_coordinateZero_of_deriv_eq_zero q hderivq
+  have hclosure : xiThetaEigenAlgebraicSubspace.topologicalClosure ≤
+      xiCoordinateZeroSubspace q :=
+    xiThetaEigenAlgebraicSubspace.topologicalClosure_minimal hle
+      (xiCoordinateZeroSubspace_isClosed q)
+  have htop : xiThetaEigenAlgebraicSubspace.topologicalClosure = ⊤ :=
+    Submodule.dense_iff_topologicalClosure_eq_top.mp hdense
+  have hsingle : (lp.single 2 q (1 : ℂ) : lp (fun _ : XiZeroCopy => ℂ) 2) ∈
+      xiCoordinateZeroSubspace q := by
+    apply hclosure
+    rw [htop]
+    exact Submodule.mem_top
+  change (lp.single 2 q (1 : ℂ) : lp (fun _ : XiZeroCopy => ℂ) 2) q = 0 at hsingle
+  rw [lp.single_apply_self] at hsingle
+  exact one_ne_zero hsingle
+
+/-- The actual theta eigenfunction evaluations are complete in the multiplicity-exact Xi carrier
+if and only if every Xi zero is simple. -/
+theorem xiThetaEigenAlgebraicSubspace_dense_iff_simple :
+    Dense (xiThetaEigenAlgebraicSubspace :
+      Set (lp (fun _ : XiZeroCopy => ℂ) 2)) ↔ XiZerosSimple :=
+  ⟨XiZerosSimple_of_xiThetaEigenAlgebraicSubspace_dense,
+    xiThetaEigenAlgebraicSubspace_dense_of_simple⟩
+
 /-- Under RH, unit mass on every divisor copy is a real-divisor weight. -/
 def xiUnitRealDivisorWeight (hRH : RiemannHypothesis) : XiRealDivisorWeight where
   weight := fun _ => 1
