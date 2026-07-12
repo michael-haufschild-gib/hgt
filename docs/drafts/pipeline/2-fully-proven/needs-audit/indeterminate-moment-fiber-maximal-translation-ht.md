@@ -621,6 +621,14 @@ residual at fixed spectral type. The intersection of all jet levels at one regul
 singleton. Thus the carrier passes from maximal aperture to rigidity precisely at coherent germ
 completion, not at any finite derivative order.
 
+The exact global classification is supplied by
+`pick-defect-finite-selector-maximal-ht-phase-law.md`. For an arbitrary realized finite Cauchy-jet
+packet, the reduced confluent Pick matrix is the phase coordinate. A singular matrix selects one
+finite-order canonical solution; a positive-definite matrix leaves a free Schur parameter and the
+whole exact level has dense residual maximal full-translation HT. This replaces the overbroad
+slogan “finite jets never select” by the exact law “finite jets select only through Pick
+singularity.”
+
 ## Constraint-fiber phase law `[PROVED HERE]`
 
 Write `Pi_infinity(mu)` for the complete formal asymptotic data of all fixed translates and
@@ -717,6 +725,14 @@ It also isolates the remaining RH-bearing obligation more sharply. Source select
 rigid; what is not proved is the **global orientation** of the reconstructed kernel--a positive,
 source-derived Gram factorization or equivalent de Branges/Weil sign law. Maximal HT, moment
 determinacy, and analytic continuation do not supply that orientation.
+
+The Pick-defect companion adds a finite-resolution constraint. If the Xi source orientation holds,
+then every finite reduced Pick matrix of its strip Schur transform is positive definite, never
+singular. Indeed orientation implies RH, the infinite Xi divisor becomes an infinite family of
+boundary contacts, and the Schur transform cannot be rational inner; singular finite Pick data
+would force precisely such a rational-inner solution. Thus the actual oriented source is strictly
+inside the free-Pick phase at every finite order. Its sign can only be a cofinal/complete-germ or
+global-kernel phenomenon.
 
 ## RH-facing consequence
 
@@ -823,6 +839,7 @@ mean-zero parameter-pole theorem. No Stage 3 claim is made.
 - [x] constraint Markov projector and stationary/ergodic law companion theorem
 - [x] polynomial-blind / resolvent-complete boundary Hilbert splitting companion theorem
 - [x] finite-jet aperture / complete-germ closure threshold companion theorem
+- [x] singular-Pick uniqueness / positive-defect maximal-HT phase companion theorem
 - [x] jet-deficient selector necessity law
 - [x] concrete pointed Xi analytic-germ carrier classified on the rigid-selection side
 - [ ] specialist moment-problem and differential-algebra literature gates
@@ -882,3 +899,8 @@ mean-zero parameter-pole theorem. No Stage 3 claim is made.
 - 2026-07-12 -- Proved the finite-jet aperture / complete-germ closure companion. Every exact finite
   Cauchy-jet level retains infinite positive aperture, fixed spectral type, and residual maximal
   translation HT; the complete Taylor germ at one regular point determines the boundary law.
+- 2026-07-12 -- Completed the global finite-selector classification. Reduced confluent Pick
+  singularity selects one finite-order canonical solution; positive Pick defect leaves a free Schur
+  parameter and residual maximal full-translation HT throughout the exact jet level. Conditionally
+  on Xi orientation, every finite Xi Pick matrix is strictly positive definite, so its sign is
+  necessarily a cofinal/complete-germ phenomenon.

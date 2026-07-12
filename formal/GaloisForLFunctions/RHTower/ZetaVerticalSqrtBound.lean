@@ -129,6 +129,96 @@ theorem norm_riemannZeta_le_sqrt_norm_add_two
     _ ≤ (2 + 1 / d + 4 / 3) * Real.sqrt (‖s‖ + 2) := by
       gcongr
 
+/-- Pole-term square-root bound down to the half-plane `Re s >= 1/2`. -/
+theorem norm_emPole_le_sqrt_div_half
+    {N : ℕ} (hN : 1 ≤ N) {s : ℂ} (hs : 1 / 2 ≤ s.re)
+    {d : ℝ} (hd : 0 < d) (hsep : d ≤ ‖s - 1‖) :
+    ‖emPole N s‖ ≤ Real.sqrt N / d := by
+  rw [emPole, norm_div]
+  have hNRpos : (0 : ℝ) < N := by
+    exact_mod_cast (lt_of_lt_of_le zero_lt_one hN)
+  have hNRone : (1 : ℝ) ≤ N := by exact_mod_cast hN
+  have hpow : ‖(N : ℂ) ^ (1 - s)‖ ≤ Real.sqrt N := by
+    rw [← Complex.ofReal_natCast,
+      Complex.norm_cpow_eq_rpow_re_of_pos hNRpos, Real.sqrt_eq_rpow]
+    apply Real.rpow_le_rpow_of_exponent_le hNRone
+    simp only [Complex.sub_re, Complex.one_re]
+    linarith
+  exact div_le_div₀ (Real.sqrt_nonneg _) hpow hd hsep
+
+/-- Euler--Maclaurin remainder bound down to `Re s >= 1/2`. -/
+theorem emRemainderBudget_le_two_sqrt
+    {N : ℕ} (hN : 1 ≤ N) {s : ℂ} (hs : 1 / 2 ≤ s.re)
+    (hsize : 1 + ‖s‖ ≤ (N : ℝ)) :
+    ‖s‖ * (N : ℝ) ^ (-s.re) / s.re ≤ 2 * Real.sqrt N := by
+  have hNRpos : (0 : ℝ) < N := by
+    exact_mod_cast (lt_of_lt_of_le zero_lt_one hN)
+  have hNRone : (1 : ℝ) ≤ N := by exact_mod_cast hN
+  have hspos : 0 < s.re := by linarith
+  have hnormN : ‖s‖ ≤ (N : ℝ) := by linarith
+  have hpow : (N : ℝ) ^ (-s.re) ≤ (N : ℝ) ^ (-(1 / 2 : ℝ)) :=
+    Real.rpow_le_rpow_of_exponent_le hNRone (by linarith)
+  have hprod : ‖s‖ * (N : ℝ) ^ (-s.re) ≤ Real.sqrt N := by
+    calc
+      ‖s‖ * (N : ℝ) ^ (-s.re) ≤
+          (N : ℝ) * (N : ℝ) ^ (-(1 / 2 : ℝ)) := by gcongr
+      _ = (N : ℝ) ^ (1 / 2 : ℝ) := by
+        calc
+          (N : ℝ) * (N : ℝ) ^ (-(1 / 2 : ℝ)) =
+              (N : ℝ) ^ ((1 : ℝ) + (-(1 / 2 : ℝ))) := by
+                rw [Real.rpow_add hNRpos, Real.rpow_one]
+          _ = (N : ℝ) ^ (1 / 2 : ℝ) := by
+            congr 1
+            ring
+      _ = Real.sqrt N := by rw [Real.sqrt_eq_rpow]
+  calc
+    ‖s‖ * (N : ℝ) ^ (-s.re) / s.re ≤ Real.sqrt N / (1 / 2 : ℝ) :=
+      div_le_div₀ (Real.sqrt_nonneg _) hprod (by norm_num) hs
+    _ = 2 * Real.sqrt N := by ring
+
+/-- Square-root vertical zeta bound on `Re s >= 1/2`, uniformly away from
+the pole at `1`. -/
+theorem norm_riemannZeta_le_sqrt_norm_add_two_half
+    {s : ℂ} (hs : 1 / 2 ≤ s.re) {d : ℝ} (hd : 0 < d)
+    (hsep : d ≤ ‖s - 1‖) :
+    ‖riemannZeta s‖ ≤
+      (2 + 1 / d + 2) * Real.sqrt (‖s‖ + 2) := by
+  let N : ℕ := Nat.ceil (1 + ‖s‖)
+  have hxnonneg : 0 ≤ 1 + ‖s‖ := by positivity
+  have hsize : 1 + ‖s‖ ≤ (N : ℝ) := Nat.le_ceil _
+  have hNreal : (1 : ℝ) ≤ 1 + ‖s‖ := by
+    linarith [norm_nonneg s]
+  have hN : 1 ≤ N := by
+    exact_mod_cast le_trans hNreal hsize
+  have hNupper : (N : ℝ) ≤ ‖s‖ + 2 := by
+    have h := (Nat.ceil_lt_add_one hxnonneg).le
+    dsimp [N]
+    convert h using 1
+    ring
+  have hspos : 0 < s.re := by linarith
+  have hs1 : s ≠ 1 := by
+    intro heq
+    rw [heq, sub_self, norm_zero] at hsep
+    linarith
+  have hAFE := zeta_norm_le_afe hN hspos hs1
+  have hD : ‖dirichletPoly N s‖ ≤ 2 * Real.sqrt N :=
+    norm_dirichletPoly_le_two_sqrt N hs
+  have hP : ‖emPole N s‖ ≤ Real.sqrt N / d :=
+    norm_emPole_le_sqrt_div_half hN hs hd hsep
+  have hR : ‖s‖ * (N : ℝ) ^ (-s.re) / s.re ≤ 2 * Real.sqrt N :=
+    emRemainderBudget_le_two_sqrt hN hs hsize
+  have hsqrt : Real.sqrt N ≤ Real.sqrt (‖s‖ + 2) :=
+    Real.sqrt_le_sqrt hNupper
+  calc
+    ‖riemannZeta s‖ ≤
+        ‖dirichletPoly N s‖ + ‖emPole N s‖ +
+          ‖s‖ * (N : ℝ) ^ (-s.re) / s.re := hAFE
+    _ ≤ 2 * Real.sqrt N + Real.sqrt N / d + 2 * Real.sqrt N := by
+      linarith
+    _ = (2 + 1 / d + 2) * Real.sqrt N := by ring
+    _ ≤ (2 + 1 / d + 2) * Real.sqrt (‖s‖ + 2) := by
+      gcongr
+
 end
 
 end RHTower

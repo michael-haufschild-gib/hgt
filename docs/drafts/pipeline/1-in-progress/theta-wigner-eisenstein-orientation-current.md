@@ -209,6 +209,11 @@ E*(x+iY,1/2+i b)_nonconstant
     tau_b(r) K_(i b)(2pi rY)cos(2pi r x).                (18a)
 ```
 
+For `b=0`, the completed Eisenstein series itself has the familiar central meromorphic singularity,
+but its polar part lies entirely in the constant term.  All identities below are first read for
+`b!=0`; after applying the constant-term-annihilating differential factor they extend to `b=0` by
+the resulting removable continuation.  No product `0*infinity` is being used.
+
 For one Fourier mode `F_r(Y)=sqrt(Y)K_(i b)(2pi rY)`, the horizontal operator
 
 ```text
@@ -294,6 +299,18 @@ for every real `b,tau`.  Equality occurs at `tau=0` in the first regime and at
 `tau=+-sqrt(b^2-1/4)` in the second.  Thus the archimedean differential current has no negative or
 null frequency.  The unresolved orientation cannot be blamed on that operator: it lies in the
 mixed arithmetic/radial pairing after the coercive image has been formed.
+
+The sharp minimizer also rules out a high-height bulk-domination proof.  For `|b|>1/2`, the
+low-energy channel moves along
+
+```text
+tau^2=b^2-1/4,                                            (18k')
+```
+
+and the floor is only `b^2`, not quartic in `b`.  Hence the arithmetic current can remain resonant
+with the archimedean operator at arbitrarily high spectral height.  A successful estimate must
+control the divisor characters on this moving characteristic shell; it cannot discard them by a
+large-`|b|` Gamma comparison.
 
 The elementary completion polynomial has a different, equally exact radial law.  If
 
@@ -387,6 +404,8 @@ inside the `y`-fibers; it must arise from the complete radial/arithmetic couplin
 - [x] identify the fiberwise-positive producer as impossible by Hudson rigidity;
 - [ ] complete a primary-source audit for the precise theta-product/Eisenstein parent identity;
 - [ ] formalize `(2)` and `(13)`--`(16)` in Lean without assuming RH or positivity;
+- [ ] formalize the removable `b=0` specialization after annihilation of the Eisenstein polar
+      constant term;
 - [ ] determine the exact raising-operator relation between `Kcal_b` and the weight-zero
       Eisenstein series, including normalization conventions in `(18a)`;
 - [ ] prove a non-target-fed lower bound for the mixed current `(18)`, or retire it as another

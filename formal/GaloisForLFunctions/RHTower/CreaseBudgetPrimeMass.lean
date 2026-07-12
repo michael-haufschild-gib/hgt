@@ -728,4 +728,281 @@ theorem line_crossing_cutoff_lt_expexp' {σ₂ : ℝ} (hσ₂ : 1 / 2 < σ₂) {
   have h3 := Real.exp_lt_exp.mpr h2
   rwa [Real.exp_log (by positivity : (0 : ℝ) < (Nat.sqrt N : ℝ) + 1)] at h3
 
+/-! ## The effective Mertens first theorem -/
+
+/-- `log n! ≤ n·log n`. -/
+theorem log_factorial_le (n : ℕ) : Real.log (n.factorial : ℝ) ≤ n * Real.log n := by
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · simp
+  · rw [Nat.factorial_eq_prod_range_add_one]
+    push_cast
+    rw [Real.log_prod (fun i _ => by positivity)]
+    calc ∑ i ∈ Finset.range n, Real.log ((i : ℝ) + 1)
+        ≤ ∑ i ∈ Finset.range n, Real.log n := by
+          refine Finset.sum_le_sum fun i hi => ?_
+          refine Real.log_le_log (by positivity) ?_
+          have h := Finset.mem_range.mp hi
+          have h' : i + 1 ≤ n := h
+          exact_mod_cast h'
+      _ = n * Real.log n := by rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+
+/-- `n·log n − n + 1 ≤ log n!`, by the integral test against `∫ log`. -/
+theorem le_log_factorial {n : ℕ} (hn : 1 ≤ n) :
+    (n : ℝ) * Real.log n - n + 1 ≤ Real.log (n.factorial : ℝ) := by
+  obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hn
+  rw [Nat.factorial_eq_prod_range_add_one]
+  push_cast
+  rw [Real.log_prod (fun i _ => by positivity)]
+  have hmono : MonotoneOn Real.log (Set.Icc (1 : ℝ) (1 + (d : ℝ))) := by
+    intro a ha b hb hab
+    exact Real.log_le_log (lt_of_lt_of_le one_pos ha.1) hab
+  have hint : ∫ x in (1 : ℝ)..(1 + (d : ℝ)), Real.log x
+      ≤ ∑ i ∈ Finset.range d, Real.log ((1 : ℝ) + ((i + 1 : ℕ) : ℝ)) :=
+    hmono.integral_le_sum
+  have heval : ∫ x in (1 : ℝ)..(1 + (d : ℝ)), Real.log x
+      = (1 + (d : ℝ)) * Real.log (1 + (d : ℝ)) - (d : ℝ) := by
+    rw [integral_log (fun h => by
+      rcases Set.mem_uIcc.mp h with ⟨h1, _⟩ | ⟨_, h2⟩ <;>
+        nlinarith [Nat.cast_nonneg (α := ℝ) d])]
+    simp
+  have hsplit : ∑ i ∈ Finset.range (1 + d), Real.log ((i : ℝ) + 1)
+      = ∑ i ∈ Finset.range d, Real.log ((1 : ℝ) + ((i + 1 : ℕ) : ℝ)) := by
+    rw [add_comm 1 d, Finset.sum_range_succ']
+    have h0 : Real.log ((0 : ℝ) + 1) = 0 := by norm_num
+    rw [h0, add_zero]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    congr 1
+    push_cast
+    ring
+  rw [hsplit]
+  refine le_trans (le_of_eq ?_) (le_trans (le_of_eq heval.symm) hint)
+  push_cast
+  ring_nf
+
+/-- Legendre's first term: `⌊n/p⌋ ≤ ν_p(n!)`. -/
+theorem div_le_factorization_factorial {n p : ℕ} (hp : p.Prime) (hn : 1 ≤ n) :
+    n / p ≤ n.factorial.factorization p := by
+  rw [hp.factorization_factorial (b := n + 1)
+    (lt_of_le_of_lt (Nat.log_le_self p n) (Nat.lt_succ_self n))]
+  have h1 : (1 : ℕ) ∈ Finset.Ico 1 (n + 1) := by
+    simp only [Finset.mem_Ico]
+    omega
+  have h := Finset.single_le_sum (f := fun i => n / p ^ i) (fun i _ => Nat.zero_le _) h1
+  simpa using h
+
+/-- Legendre's geometric bound: `ν_p(n!) ≤ n/(p−1)`. -/
+theorem factorization_factorial_le {n p : ℕ} (hp : p.Prime) :
+    (n.factorial.factorization p : ℝ) ≤ (n : ℝ) / ((p : ℝ) - 1) := by
+  have hp2 : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp.two_le
+  have hr0 : (0 : ℝ) ≤ ((p : ℝ))⁻¹ := by positivity
+  have hr1 : ((p : ℝ))⁻¹ < 1 := by
+    rw [inv_lt_one_iff₀]
+    right
+    linarith
+  rw [hp.factorization_factorial (b := n + 1)
+    (lt_of_le_of_lt (Nat.log_le_self p n) (Nat.lt_succ_self n))]
+  push_cast
+  calc ∑ i ∈ Finset.Ico 1 (n + 1), ((n / p ^ i : ℕ) : ℝ)
+      ≤ ∑ i ∈ Finset.Ico 1 (n + 1), (n : ℝ) * ((p : ℝ))⁻¹ ^ i := by
+        refine Finset.sum_le_sum fun i _ => ?_
+        refine le_trans (Nat.cast_div_le) (le_of_eq ?_)
+        push_cast
+        rw [inv_pow, div_eq_mul_inv]
+    _ = (n : ℝ) * ∑ i ∈ Finset.Ico 1 (n + 1), ((p : ℝ))⁻¹ ^ i := by
+        rw [Finset.mul_sum]
+    _ ≤ (n : ℝ) / ((p : ℝ) - 1) := by
+        have hgeo : ∑ i ∈ Finset.Ico 1 (n + 1), ((p : ℝ))⁻¹ ^ i
+            ≤ ((p : ℝ) - 1)⁻¹ := by
+          have hIco : Finset.Ico 1 (n + 1) ⊆ Finset.range (n + 1) := by
+            intro i hi
+            simp only [Finset.mem_Ico] at hi
+            exact Finset.mem_range.mpr hi.2
+          have hfull : ∑ i ∈ Finset.range (n + 1), ((p : ℝ))⁻¹ ^ i
+              ≤ 1 / (1 - ((p : ℝ))⁻¹) := geom_sum_le hr0 hr1.le _
+          have hzero : ((p : ℝ))⁻¹ ^ 0 = 1 := pow_zero _
+          have hsplit : ∑ i ∈ Finset.Ico 1 (n + 1), ((p : ℝ))⁻¹ ^ i
+              = (∑ i ∈ Finset.range (n + 1), ((p : ℝ))⁻¹ ^ i) - 1 := by
+            rw [Finset.range_eq_Ico, ← Finset.sum_Ico_eq_sum_range]
+            · rw [← Finset.sum_Ico_consecutive _ (Nat.zero_le 1) (by omega),
+                show Finset.Ico 0 1 = {0} from rfl, Finset.sum_singleton, hzero]
+              ring
+          rw [hsplit]
+          have hident : 1 / (1 - ((p : ℝ))⁻¹) - 1 = ((p : ℝ) - 1)⁻¹ := by
+            have hpne : (p : ℝ) ≠ 0 := by linarith
+            have hpm1 : (p : ℝ) - 1 ≠ 0 := by linarith
+            field_simp
+          linarith [hfull, hident.ge, hident.le]
+        calc (n : ℝ) * ∑ i ∈ Finset.Ico 1 (n + 1), ((p : ℝ))⁻¹ ^ i
+            ≤ (n : ℝ) * ((p : ℝ) - 1)⁻¹ :=
+              mul_le_mul_of_nonneg_left hgeo (Nat.cast_nonneg n)
+          _ = (n : ℝ) / ((p : ℝ) - 1) := by rw [div_eq_mul_inv]
+
+/-- Real floor bound: `n/p − 1 < ⌊n/p⌋`. -/
+theorem cast_div_lt {n p : ℕ} (hp : 0 < p) :
+    (n : ℝ) / p - 1 < ((n / p : ℕ) : ℝ) := by
+  have hcast : (p : ℝ) * ((n / p : ℕ) : ℝ) + ((n % p : ℕ) : ℝ) = (n : ℝ) := by
+    exact_mod_cast Nat.div_add_mod n p
+  have hcast2 : ((n % p : ℕ) : ℝ) < (p : ℝ) := by exact_mod_cast Nat.mod_lt _ hp
+  have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp
+  rw [sub_lt_iff_lt_add, div_lt_iff₀ hp0]
+  nlinarith [hcast, hcast2]
+
+/-- The prime-power log-sum identity: `log n! = ∑_{p ≤ n} ν_p(n!)·log p`. -/
+theorem log_factorial_eq (n : ℕ) :
+    Real.log (n.factorial : ℝ)
+      = ∑ p ∈ Nat.primesBelow (n + 1), (n.factorial.factorization p : ℝ) * Real.log p := by
+  have hne : (n.factorial : ℕ) ≠ 0 := Nat.factorial_ne_zero n
+  have hsupp : n.factorial.factorization.support ⊆ Nat.primesBelow (n + 1) := by
+    intro p hp
+    rw [Nat.support_factorization] at hp
+    have hpp := Nat.prime_of_mem_primeFactors hp
+    have hdvd := Nat.dvd_of_mem_primeFactors hp
+    have hle := (Nat.Prime.dvd_factorial hpp).mp hdvd
+    exact Nat.mem_primesBelow.mpr ⟨by omega, hpp⟩
+  have hprodeq : (n.factorial : ℕ) = ∏ p ∈ Nat.primesBelow (n + 1), p ^ n.factorial.factorization p := by
+    rw [← Finsupp.prod_of_support_subset _ hsupp _ (fun p _ => pow_zero p)]
+    exact (Nat.factorization_prod_pow_eq_self hne).symm
+  rw [show ((n.factorial : ℕ) : ℝ) = ∏ p ∈ Nat.primesBelow (n + 1),
+      ((p : ℝ)) ^ n.factorial.factorization p from by rw [hprodeq]; push_cast; rfl]
+  rw [Real.log_prod (fun p hp => pow_ne_zero _
+    (by exact_mod_cast (Nat.mem_primesBelow.mp hp).2.pos.ne'))]
+  exact Finset.sum_congr rfl fun p hp => by rw [Real.log_pow]
+
+/-- **The effective Mertens first theorem, upper law**:
+`∑_{p ≤ n} log p / p ≤ log n + log 4`. -/
+theorem mertens_first_upper {n : ℕ} (hn : 1 ≤ n) :
+    ∑ p ∈ Nat.primesBelow (n + 1), Real.log p / p ≤ Real.log n + Real.log 4 := by
+  have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+  have hkey : ∑ p ∈ Nat.primesBelow (n + 1), ((n : ℝ) / p - 1) * Real.log p
+      ≤ Real.log (n.factorial : ℝ) := by
+    rw [log_factorial_eq]
+    refine Finset.sum_le_sum fun p hp => ?_
+    have hpp := (Nat.mem_primesBelow.mp hp).2
+    refine mul_le_mul_of_nonneg_right ?_
+      (Real.log_nonneg (by exact_mod_cast hpp.one_lt.le))
+    calc (n : ℝ) / p - 1 ≤ ((n / p : ℕ) : ℝ) := (cast_div_lt hpp.pos).le
+      _ ≤ (n.factorial.factorization p : ℝ) := by
+        exact_mod_cast div_le_factorization_factorial hpp hn
+  have hexpand : ∑ p ∈ Nat.primesBelow (n + 1), ((n : ℝ) / p - 1) * Real.log p
+      = (n : ℝ) * (∑ p ∈ Nat.primesBelow (n + 1), Real.log p / p)
+        - ∑ p ∈ Nat.primesBelow (n + 1), Real.log p := by
+    rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun p hp => ?_
+    have hpp := (Nat.mem_primesBelow.mp hp).2
+    have hpne : ((p : ℕ) : ℝ) ≠ 0 := by exact_mod_cast hpp.pos.ne'
+    field_simp
+    ring
+  have htheta := sum_primesBelow_log_le n
+  have hfact := log_factorial_le n
+  have hmain : (n : ℝ) * (∑ p ∈ Nat.primesBelow (n + 1), Real.log p / p)
+      ≤ (n : ℝ) * (Real.log n + Real.log 4) := by
+    rw [hexpand] at hkey
+    rw [mul_add]
+    linarith
+  exact le_of_mul_le_mul_left hmain hn0
+
+/-- The convergent Mertens correction: `∑_{p ≤ x} log p / (p(p−1)) ≤ 8`, via
+`log p ≤ 2√p` and the integral-test tail. -/
+theorem sum_primesBelow_log_div_le (x : ℕ) :
+    ∑ p ∈ Nat.primesBelow x, Real.log p / ((p : ℝ) * ((p : ℝ) - 1)) ≤ 8 := by
+  have hsub : Nat.primesBelow x ⊆ Finset.Icc 2 x := by
+    intro p hp
+    obtain ⟨hplt, hpp⟩ := Nat.mem_primesBelow.mp hp
+    exact Finset.mem_Icc.mpr ⟨hpp.two_le, by omega⟩
+  have hterm : ∀ k ∈ Finset.Icc 2 x,
+      Real.log k / ((k : ℝ) * ((k : ℝ) - 1)) ≤ 4 * (k : ℝ) ^ (-(3 / 2 : ℝ)) := by
+    intro k hk
+    have h2 : (2 : ℝ) ≤ (k : ℝ) := by exact_mod_cast (Finset.mem_Icc.mp hk).1
+    have hk0 : (0 : ℝ) < (k : ℝ) := by linarith
+    have hlog : Real.log k ≤ 2 * Real.sqrt k := by
+      have hs := Real.add_one_le_exp (Real.log (Real.sqrt k))
+      have hsp : (0 : ℝ) < Real.sqrt k := Real.sqrt_pos.mpr hk0
+      have := Real.log_le_sub_one_of_pos hsp
+      have hhalf : Real.log (Real.sqrt k) = Real.log k / 2 := Real.log_sqrt hk0.le
+      nlinarith [Real.sqrt_nonneg (k : ℝ)]
+    have hden : (k : ℝ) / 2 ≤ (k : ℝ) - 1 := by linarith
+    have hdenpos : (0 : ℝ) < (k : ℝ) - 1 := by linarith
+    have hsqrt : Real.sqrt k = (k : ℝ) ^ (1 / 2 : ℝ) := Real.sqrt_eq_rpow _
+    calc Real.log k / ((k : ℝ) * ((k : ℝ) - 1))
+        ≤ (2 * Real.sqrt k) / ((k : ℝ) * ((k : ℝ) / 2)) := by
+          apply div_le_div₀ (by positivity) hlog (by positivity)
+          exact mul_le_mul_of_nonneg_left hden hk0.le
+      _ = 4 * ((k : ℝ) ^ (1 / 2 : ℝ) * ((k : ℝ) ^ (2 : ℕ))⁻¹) := by
+          rw [hsqrt]
+          field_simp
+          ring
+      _ = 4 * (k : ℝ) ^ (-(3 / 2 : ℝ)) := by
+          congr 1
+          rw [← Real.rpow_natCast ((k : ℝ)) 2, ← Real.rpow_neg hk0.le,
+            ← Real.rpow_add hk0]
+          congr 1
+          push_cast
+          ring
+  refine le_trans (Finset.sum_le_sum_of_subset_of_nonneg hsub fun k hk _ => ?_) ?_
+  · have h2 : (2 : ℝ) ≤ (k : ℝ) := by exact_mod_cast (Finset.mem_Icc.mp hk).1
+    have : (0 : ℝ) < (k : ℝ) - 1 := by linarith
+    have hlognn : 0 ≤ Real.log k := Real.log_nonneg (by linarith)
+    positivity
+  · refine le_trans (Finset.sum_le_sum hterm) ?_
+    rcases Nat.lt_or_ge x 2 with hx | hx
+    · rw [Finset.Icc_eq_empty (by omega), Finset.sum_empty]
+      norm_num
+    · have hIcc : Finset.Icc 2 x = Finset.Ico 2 (x + 1) := by
+        ext k
+        simp only [Finset.mem_Icc, Finset.mem_Ico]
+        omega
+      rw [hIcc, Finset.sum_Ico_eq_sum_range, ← Finset.mul_sum]
+      have hb := sum_range_add_rpow_neg_le (c := 3 / 2) (by norm_num) (M := 1) le_rfl
+        (x + 1 - 2)
+      rw [Nat.cast_one, Real.one_rpow] at hb
+      have hcongr : ∑ i ∈ Finset.range (x + 1 - 2), ((2 + i : ℕ) : ℝ) ^ (-(3 / 2 : ℝ))
+          = ∑ i ∈ Finset.range (x + 1 - 2), ((i + (1 + 1) : ℕ) : ℝ) ^ (-(3 / 2 : ℝ)) := by
+        refine Finset.sum_congr rfl fun i _ => ?_
+        congr 1
+        push_cast
+        ring
+      rw [hcongr]
+      have : ∑ i ∈ Finset.range (x + 1 - 2), ((i + (1 + 1) : ℕ) : ℝ) ^ (-(3 / 2 : ℝ))
+          ≤ 1 / (3 / 2 - 1) := hb
+      have h2 : (1 : ℝ) / (3 / 2 - 1) = 2 := by norm_num
+      nlinarith [this]
+
+/-- **The effective Mertens first theorem, lower law**:
+`log n − 9 ≤ ∑_{p ≤ n} log p / p`. -/
+theorem mertens_first_lower {n : ℕ} (hn : 1 ≤ n) :
+    Real.log n - 9 ≤ ∑ p ∈ Nat.primesBelow (n + 1), Real.log p / p := by
+  have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+  have hkey : Real.log (n.factorial : ℝ)
+      ≤ ∑ p ∈ Nat.primesBelow (n + 1), ((n : ℝ) / ((p : ℝ) - 1)) * Real.log p := by
+    rw [log_factorial_eq]
+    refine Finset.sum_le_sum fun p hp => ?_
+    have hpp := (Nat.mem_primesBelow.mp hp).2
+    exact mul_le_mul_of_nonneg_right (factorization_factorial_le hpp)
+      (Real.log_nonneg (by exact_mod_cast hpp.one_lt.le))
+  have hexpand : ∑ p ∈ Nat.primesBelow (n + 1), ((n : ℝ) / ((p : ℝ) - 1)) * Real.log p
+      = (n : ℝ) * (∑ p ∈ Nat.primesBelow (n + 1), Real.log p / p)
+        + (n : ℝ) * ∑ p ∈ Nat.primesBelow (n + 1),
+            Real.log p / ((p : ℝ) * ((p : ℝ) - 1)) := by
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun p hp => ?_
+    have hpp := (Nat.mem_primesBelow.mp hp).2
+    have hp2 : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hpp.two_le
+    have hpne : ((p : ℕ) : ℝ) ≠ 0 := by linarith
+    have hpm1 : ((p : ℝ) - 1) ≠ 0 := by linarith
+    field_simp
+    ring
+  have hcorr := sum_primesBelow_log_div_le (n + 1)
+  have hstir := le_log_factorial hn
+  have hmain : (n : ℝ) * (Real.log n - 9)
+      ≤ (n : ℝ) * (∑ p ∈ Nat.primesBelow (n + 1), Real.log p / p) := by
+    have h1 : (n : ℝ) * Real.log n - n + 1
+        ≤ (n : ℝ) * (∑ p ∈ Nat.primesBelow (n + 1), Real.log p / p) + (n : ℝ) * 8 := by
+      have h2 : (n : ℝ) * ∑ p ∈ Nat.primesBelow (n + 1),
+          Real.log p / ((p : ℝ) * ((p : ℝ) - 1)) ≤ (n : ℝ) * 8 :=
+        mul_le_mul_of_nonneg_left hcorr hn0.le
+      rw [hexpand] at hkey
+      linarith
+    nlinarith
+  exact le_of_mul_le_mul_left hmain hn0
+
 end RHTower

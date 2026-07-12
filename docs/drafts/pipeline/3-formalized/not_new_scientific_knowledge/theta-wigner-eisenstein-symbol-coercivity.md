@@ -98,6 +98,26 @@ The archimedean differential operator in the Wigner--Eisenstein orientation curr
 frequency and no negative spectral direction.  Its inverse is bounded on each fixed Eisenstein
 frequency fiber by `m(b)^(-1)` at the scalar-symbol level.
 
+The sharp minimizer matters: for `|b|>1/2` the low-energy channel follows the characteristic shell
+
+```text
+tau^2=b^2-1/4
+```
+
+and the spectral floor is only `b^2`.  Thus high Eisenstein frequency does not create a quartic
+archimedean gap.  Any source proof must control the arithmetic divisor characters on this moving
+shell rather than appeal to bulk Gamma domination.
+
+More exactly, for every `R>=0`,
+
+```text
+p_b(tau)<=b^2+R^2
+ iff |tau^2-(b^2-1/4)|<=R.                               (7)
+```
+
+Thus every bounded-excess state is forced into a quantified neighborhood of the characteristic
+shell; this is not an asymptotic heuristic.
+
 This does not orient the Xi Bezoutian.  The remaining sign lies in the mixed pairing of this
 coercive archimedean image with the divisor-character coefficients
 
@@ -112,6 +132,8 @@ the source carrier, not a replacement for the arithmetic orientation theorem.
 
 - `thetaWignerEisensteinSymbol_eq_normSq`
 - `thetaWignerEisensteinSymbol_neg`
+- `thetaWignerEisensteinSymbol_eq_height_add_shellSq`
+- `thetaWignerEisensteinSymbol_sublevel_iff`
 - `thetaWignerEisensteinFloor_pos`
 - `thetaWignerEisensteinFloor_le_symbol`
 - `thetaWignerEisensteinSymbol_pos`

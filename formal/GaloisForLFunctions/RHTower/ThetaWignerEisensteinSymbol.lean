@@ -47,6 +47,32 @@ theorem thetaWignerEisensteinSymbol_neg (b τ : ℝ) :
     thetaWignerEisensteinSymbol b (-τ) = thetaWignerEisensteinSymbol b τ := by
   simp [thetaWignerEisensteinSymbol]
 
+/-- Characteristic-shell normal form.  The excess over `b^2` is exactly the squared distance, in
+the variable `τ^2`, from the moving shell `τ^2=b^2-1/4`. -/
+theorem thetaWignerEisensteinSymbol_eq_height_add_shellSq (b τ : ℝ) :
+    thetaWignerEisensteinSymbol b τ =
+      b ^ 2 + (τ ^ 2 - (b ^ 2 - 1 / 4)) ^ 2 := by
+  unfold thetaWignerEisensteinSymbol
+  ring
+
+/-- Exact localization of every bounded-excess state around the moving characteristic shell. -/
+theorem thetaWignerEisensteinSymbol_sublevel_iff {b τ R : ℝ} (hR : 0 ≤ R) :
+    thetaWignerEisensteinSymbol b τ ≤ b ^ 2 + R ^ 2 ↔
+      |τ ^ 2 - (b ^ 2 - 1 / 4)| ≤ R := by
+  rw [thetaWignerEisensteinSymbol_eq_height_add_shellSq]
+  let δ := τ ^ 2 - (b ^ 2 - 1 / 4)
+  have hδ : 0 ≤ |δ| := abs_nonneg δ
+  constructor
+  · intro h
+    change b ^ 2 + δ ^ 2 ≤ b ^ 2 + R ^ 2 at h
+    apply (sq_le_sq₀ hδ hR).1
+    simpa [sq_abs] using (show δ ^ 2 ≤ R ^ 2 by linarith)
+  · intro h
+    change |δ| ≤ R at h
+    have hsquare := (sq_le_sq₀ hδ hR).2 h
+    change b ^ 2 + δ ^ 2 ≤ b ^ 2 + R ^ 2
+    simpa [sq_abs] using (show b ^ 2 + |δ| ^ 2 ≤ b ^ 2 + R ^ 2 by linarith)
+
 /-- The exact spectral edge is strictly positive at every real Eisenstein frequency. -/
 theorem thetaWignerEisensteinFloor_pos (b : ℝ) :
     0 < thetaWignerEisensteinFloor b := by

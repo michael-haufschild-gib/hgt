@@ -210,6 +210,20 @@ This is a phase threshold, not a claim that “finite data are insufficient” i
 identifies the surviving positive geometry at every finite stage and proves exact closure at the
 limit.
 
+## Exact scope via Pick defect `[PROVED IN COMPANION]`
+
+The companion `pick-defect-finite-selector-maximal-ht-phase-law.md` gives the global correction to
+the chart theorem. A finite analytic packet can select uniquely when its reduced confluent Pick
+matrix is singular; the unique solution then has a rational inner parameter and is finite-order
+canonical. Otherwise the Pick matrix is positive definite, a free Schur parameter remains, and
+maximal full-translation HT is dense residual in the entire exact level set.
+
+The infinite-support boundary mixtures used here necessarily lie in the positive-defect phase. If
+their finite data had singular Pick matrix, classical uniqueness would make their Pick parameter
+rational inner and their moment solution finite-order canonical, contradicting the nontrivial
+boundary mixture. Thus the aperture theorem above is exactly the nonsingular branch of the general
+Pick-defect dichotomy, not an overstatement about singular boundary data.
+
 ## General HT consequence
 
 For hypertranscendental carrier problems built from moment or Herglotz constraints, finitely many
@@ -285,6 +299,7 @@ transversality over constrained Banach charts, analytic germ uniqueness, and Sti
 - [x] residual maximal full-translation HT in the exact finite-jet level proved
 - [x] complete-germ uniqueness proved
 - [x] finite-jet / complete-germ threshold law extracted
+- [x] scope corrected and completed by the singular/free Pick-defect companion
 - [x] concrete Xi/Hedenmalm consequence scoped
 - [x] local prior-research collision search
 - [ ] independent specialist proof audit

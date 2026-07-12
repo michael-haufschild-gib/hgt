@@ -581,6 +581,7 @@ import GaloisForLFunctions.RHTower.XiWeilLineConjHilbert
 import GaloisForLFunctions.RHTower.XiWeilOneCauchyGate
 import GaloisForLFunctions.RHTower.PrimeArchSourceUpperBoundGate
 import GaloisForLFunctions.RHTower.XiCTaylorFluxBoundGate
+import GaloisForLFunctions.RHTower.XiCTaylorSuperaccurateSchedule
 import GaloisForLFunctions.RHTower.XiDivisorSupportedMetric
 import GaloisForLFunctions.SchwartzSesquilinear
 import GaloisForLFunctions.SchwartzProduct

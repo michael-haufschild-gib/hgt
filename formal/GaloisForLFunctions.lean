@@ -282,3 +282,4 @@ import GaloisForLFunctions.WedgeFacetLowerBound
 import GaloisForLFunctions.RHTower.PiTranscendenceSetup
 import GaloisForLFunctions.RHTower.ScaledSymmetricPolynomial
 import GaloisForLFunctions.RHTower.NonmonicSymmetricIntegral
+import GaloisForLFunctions.RHTower.IntegralizedConjugateSet
