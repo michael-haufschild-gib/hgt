@@ -170,6 +170,22 @@ finite lower-denominator/upper-current inequality, not coefficient positivity by
   value lower bound and does not assume whether the target is a zero.  Thus the top defect is now
   completely discharged: the sole remaining producer is sublinear upper current of `U_d` itself.
   This reduction is proved in `XiCTaylorThetaTailFiniteCoefficientGate.lean`.
+- `[PROVED BRIDGE]` The remaining core now has a literal finite source coordinate.  With
+  `C_d(z,x)=sum_(k<=d)(-1)^k(zx)^(2k)/(2k)!`, one has
+  `Q_d(-z^2)=2 integral_0^infinity T(x)C_d(z,x)dx` and
+  `U_d(z)=1/2-(z^2+1/4)Q_d(-z^2)`.  This is proved on paper and in
+  `XiCTaylorThetaTailCoreIntegral.lean`.  Polarizing this formula recovers a mixed two-point
+  kernel; positive theta weights alone still do not orient it.
+- `[PROVED BRIDGE]` Two further integrations by parts expose a normalized positive source density
+  `rho(x)=4T''(x)`.  Its atom polynomial is
+  `4pi^2u^4-6pi u^2+1/4`, which is strictly positive for `u>=1`, and
+  `integral_0^infinity rho=1`.  The tail coefficients satisfy
+  `c_k=(1/2) integral rho(x)x^(2k+2)/(2k+2)! dx`, so the remaining core is the exact finite convex
+  mixture
+  `U_d(z)=(1/2) integral rho(x)[1-(z^2+1/4)S_d(z,x)]dx`.
+  This is proved on paper and in `XiCTaylorThetaTailConvexCore.lean`.  The representation is
+  source-pure and finite, but its current still polarizes to a mixed two-point kernel; probability
+  positivity alone is not the missing orientation law.
 - `[PROVED ROUTE FAILURE]` Finite prime Pólya--Schur scalings preserve a pre-existing hyperbolic
   section, but the renormalized infinite-prime identification with the canonical Xi coefficients
   is the already recorded RH-sized limit wall.  It supplies no finite current estimate for the
@@ -187,6 +203,11 @@ finite lower-denominator/upper-current inequality, not coefficient positivity by
 - `[OBSERVED, NOT A PRODUCER]` The concurrent rectangular CCM observable continuation recovers the
   off-line Xi divisor as poles of a log-sampled Weil-tail L-series.  Its continuation is explicitly
   built from the Xi divisor carrier; transporting it here would violate the zero-location firewall.
+- `[OBSERVED, NOT A PRODUCER]` The concurrent `HTGeometry/HamburgerBoundaryKernel.lean` and
+  `HTGeometry/NevanlinnaBoundaryAlgebra.lean` formalize barycenters preserving a complete
+  Hamburger moment sequence and projective labels for complete Nevanlinna boundary families.
+  They do not orient a finite Taylor current.  Their selective content belongs to the complete
+  moment/boundary family and therefore cannot replace the required finite source inequality.
 - `[OPEN CORE]` Prove that the actual finite theta-tail core current is sublinear relative to the
   canonical Taylor value on every anisotropic mesh fibre.  The top defect's self-current is
   nonpositive and its coefficients have arbitrary geometric decay, so its cross-interference is

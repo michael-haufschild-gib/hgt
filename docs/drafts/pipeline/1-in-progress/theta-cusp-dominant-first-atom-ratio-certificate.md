@@ -116,12 +116,40 @@ explicit incomplete-Gamma bounds for the n=1 atom
   -> all real linear-polynomial prime--Gamma source tests are nonnegative.
 ```
 
+## Formal progress
+
+`PrimeArchThetaAtomMoments.lean` now proves unconditionally
+
+\[
+m_j=\sum_{n\ge0}a_{j,n},
+\qquad a_{j,n}\ge0,
+\]
+
+by an `L¹`-justified sum--integral interchange.  It also defines the exact remainder
+
+\[
+r_j=m_j-a_{j,1}ge0
+\]
+
+and proves `m_j=a_{j,1}+r_j`.  Thus the atom decomposition and its positivity are no longer paper
+interfaces; only the explicit incomplete-Gamma and higher-atom tail estimates remain open.
+
+Principal declarations:
+
+- `thetaCuspAtomRawEvenMoment`
+- `thetaCuspAtomRawEvenMoment_nonneg`
+- `thetaCuspRawEvenMoment_eq_tsum_atomRawEvenMoment`
+- `thetaCuspHigherAtomRawEvenMoment`
+- `thetaCuspHigherAtomRawEvenMoment_nonneg`
+- `thetaCuspRawEvenMoment_eq_one_add_higher`
+
 ## Gates
 
 - [x] source-pure atom decomposition identified
 - [x] exact incomplete-Gamma integral representation derived
 - [x] viable rational ratio window identified numerically
-- [ ] prove the sum-integral atom decomposition
+- [x] prove the sum-integral atom decomposition in Lean
+- [x] prove nonnegativity of every atom and the higher-atom remainder
 - [ ] prove explicit rational enclosures for `a_0,a_1,a_2,a_3`
 - [ ] prove explicit tail bounds `(2)`
 - [ ] prove inequalities `(3)` and `(4)`

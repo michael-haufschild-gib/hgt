@@ -295,3 +295,5 @@ import GaloisForLFunctions.QuantitativeHolderInterface
 import GaloisForLFunctions.GammaShiftEigenrelation
 import GaloisForLFunctions.GammaBellSubstitution
 import GaloisForLFunctions.GammaHypertranscendental
+import GaloisForLFunctions.DifferentialUnitEquation
+import GaloisForLFunctions.DifferentialPowerElimination

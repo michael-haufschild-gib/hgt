@@ -5,10 +5,7 @@ This is an agent worklist aid, not a mathematical ledger.
 
 ## Proof Debt
 
-| Kind | Location | Context | Text |
-|---|---|---|---|
-| proof-debt | `formal/GaloisForLFunctions/DifferentialUnitEquation.lean:84` | `theorem pderiv_succ_totalDeriv` | `sorry` |
-| proof-debt | `formal/GaloisForLFunctions/DifferentialUnitEquation.lean:90` | `theorem pderiv_succ_totalDeriv` | `sorry` |
+No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 
 ## Large Files
 

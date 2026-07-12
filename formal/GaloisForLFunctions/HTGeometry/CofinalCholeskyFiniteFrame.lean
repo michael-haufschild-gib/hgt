@@ -472,6 +472,120 @@ theorem canonicalInverseCholeskyFrame_unique
   rw [hU, one_mul] at h
   exact h
 
+/-- Determinant form of inverse-Cholesky orthonormalization. This is the algebraic source of the
+finite determinant repair law. -/
+theorem det_identity_of_inverseCholesky (C G : Matrix n n ℂ)
+    (h : IsInverseCholeskyFrame C G) :
+    C.det * G.det * star C.det = 1 := by
+  have hdet := congrArg Matrix.det h
+  simpa [Matrix.det_mul, Matrix.det_conjTranspose] using hdet
+
+/-- A canonical lower-triangular inverse-Cholesky frame has positive real determinant. -/
+theorem canonicalInverseCholesky_det_pos
+    {N : ℕ} (C G : Matrix (Fin N) (Fin N) ℂ)
+    (h : IsCanonicalInverseCholeskyFrame C G) :
+    0 < C.det.re ∧ C.det.im = 0 := by
+  rw [Matrix.det_of_lowerTriangular C h.2.1]
+  have hdiag (i : Fin N) : C i i = ((C i i).re : ℂ) := by
+    apply Complex.ext
+    · simp
+    · simpa using (h.2.2 i).1
+  have hprod : (∏ i, C i i) = ((∏ i, (C i i).re : ℝ) : ℂ) := by
+    calc
+      (∏ i, C i i) = ∏ i, ((C i i).re : ℂ) :=
+        Finset.prod_congr rfl fun i _ => hdiag i
+      _ = ((∏ i, (C i i).re : ℝ) : ℂ) := by norm_cast
+  rw [hprod]
+  simp only [Complex.ofReal_re, Complex.ofReal_im]
+  exact ⟨Finset.prod_pos fun i _ => (h.2.2 i).2, trivial⟩
+
+/-- For the canonical normalization, the determinant identity is exactly
+`det G * (det C)^2 = 1`. -/
+theorem canonicalInverseCholesky_det_square_mul
+    {N : ℕ} (C G : Matrix (Fin N) (Fin N) ℂ)
+    (h : IsCanonicalInverseCholeskyFrame C G) :
+    G.det * C.det ^ 2 = 1 := by
+  have hid := det_identity_of_inverseCholesky C G h.1
+  have hreal := (canonicalInverseCholesky_det_pos C G h).2
+  have hstar : star C.det = C.det := by
+    apply Complex.ext
+    · simp
+    · simp [hreal]
+  rw [hstar, mul_comm C.det G.det] at hid
+  calc
+    G.det * C.det ^ 2 = G.det * C.det * C.det := by ring
+    _ = 1 := hid
+
+/-- Exact positive-root form of the inverse-Cholesky determinant law:
+`det C = (det G)⁻¹ᐟ²`. Since both determinants are real and positive, the statement is expressed
+on real parts. -/
+theorem canonicalInverseCholesky_det_eq_inv_sqrt
+    {N : ℕ} (C G : Matrix (Fin N) (Fin N) ℂ)
+    (hG : G.PosDef) (h : IsCanonicalInverseCholeskyFrame C G) :
+    C.det.re = (G.det.re)⁻¹.sqrt := by
+  have hgpos := hG.det_pos
+  simp only [Complex.lt_def, Complex.zero_re, Complex.zero_im] at hgpos
+  have hgim : G.det.im = 0 := hgpos.2.symm
+  have hc := canonicalInverseCholesky_det_pos C G h
+  have hid := canonicalInverseCholesky_det_square_mul C G h
+  have hre := congrArg Complex.re hid
+  rw [pow_two] at hre
+  simp [Complex.mul_re, hgim, hc.2] at hre
+  have hsqrt_nonneg : 0 ≤ (G.det.re)⁻¹.sqrt := Real.sqrt_nonneg _
+  have hsqrt_sq : (G.det.re)⁻¹.sqrt ^ 2 = (G.det.re)⁻¹ := by
+    rw [Real.sq_sqrt]
+    exact inv_nonneg.mpr hgpos.1.le
+  have hg_ne : G.det.re ≠ 0 := ne_of_gt hgpos.1
+  apply (sq_eq_sq₀ (le_of_lt hc.1) hsqrt_nonneg).mp
+  rw [hsqrt_sq, inv_eq_one_div]
+  apply (eq_div_iff hg_ne).2
+  nlinarith
+
+/-- Leading principal restriction from level `N+1` to level `N`. -/
+def leadingPrincipalSubmatrix {N : ℕ}
+    (M : Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ) : Matrix (Fin N) (Fin N) ℂ :=
+  M.submatrix Fin.castSucc Fin.castSucc
+
+/-- The leading principal restriction of a canonical inverse-Cholesky frame remains canonical for
+the leading principal Gram block. -/
+theorem leadingPrincipalSubmatrix_isCanonical
+    {N : ℕ} (C G : Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ)
+    (h : IsCanonicalInverseCholeskyFrame C G) :
+    IsCanonicalInverseCholeskyFrame
+      (leadingPrincipalSubmatrix C) (leadingPrincipalSubmatrix G) := by
+  refine ⟨?_, ?_, ?_⟩
+  · unfold IsInverseCholeskyFrame leadingPrincipalSubmatrix
+    ext i j
+    have hbig := congrFun (congrFun h.1 i.castSucc) j.castSucc
+    simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.one_apply,
+      Matrix.submatrix_apply, Fin.castSucc_inj] at hbig ⊢
+    rw [Fin.sum_univ_castSucc] at hbig
+    simp_rw [Fin.sum_univ_castSucc] at hbig
+    have hiLast : C i.castSucc (Fin.last N) = 0 := by
+      apply h.2.1
+      simp
+    have hjLast : C j.castSucc (Fin.last N) = 0 := by
+      apply h.2.1
+      simp
+    simp [hiLast, hjLast] at hbig
+    exact hbig
+  · intro i j hij
+    exact h.2.1 hij
+  · intro i
+    exact h.2.2 i.castSucc
+
+/-- Normalized Gram--Schmidt inverse-Cholesky frames are compatible under leading-principal
+restriction. Thus the canonical finite frames form a coherent tower. -/
+theorem gramSchmidtInverseFrame_leadingPrincipal
+    {N : ℕ} (G : Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ) (hG : G.PosDef) :
+    leadingPrincipalSubmatrix (gramSchmidtInverseFrame G hG) =
+      gramSchmidtInverseFrame (leadingPrincipalSubmatrix G)
+        (hG.submatrix (Fin.castSucc_injective N)) := by
+  apply canonicalInverseCholeskyFrame_unique (leadingPrincipalSubmatrix G)
+  · exact leadingPrincipalSubmatrix_isCanonical _ _
+      (gramSchmidtInverseFrame_isCanonical G hG)
+  · exact gramSchmidtInverseFrame_isCanonical _ _
+
 /-- For the canonical normalized Gram--Schmidt construction, equality of inverse-Cholesky frames
 is equivalent to equality of the underlying positive-definite Gram matrices. -/
 theorem gramSchmidtInverseFrame_eq_iff_gram_eq

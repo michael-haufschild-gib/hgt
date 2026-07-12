@@ -383,7 +383,11 @@ Formalization is in progress; no Stage 3 claim is made. The unconditional module
    complex Gram matrix, including lower triangularity and real strictly positive diagonal; and
 7. structural uniqueness among all lower-triangular positive-real-diagonal inverse-Cholesky
    frames, and equality of the explicit canonical frames iff equality of the Gram matrices iff
-   equality of the corresponding finite Cauchy jets.
+   equality of the corresponding finite Cauchy jets;
+8. the exact determinant identities `det C * det G * star(det C)=1` and, for the canonical
+   normalization, `det C=(det G)^(-1/2)` in positive-real form; and
+9. leading-principal compatibility of the canonical frames, so the finite matrices form an actual
+   coherent inverse-Cholesky tower rather than an unrelated family of normalizations.
 
 The unconditional module `GaloisForLFunctions.HTGeometry.LabeledBoundarySimplex` additionally
 proves the separated-kernel core of the boundary geometry: barycenter formation, exact label
@@ -400,10 +404,37 @@ positive Cayley moments determine a real probability measure, and equality of ev
 inverse-Cholesky section forces equality of the original carriers. Every fixed Cayley moment and
 every finite Toeplitz Gram section are also proved weakly continuous.
 
-All five exact builds pass. `#print axioms` on the capstone declarations reports only `propext`,
-`Classical.choice`, and `Quot.sound`. The touched modules contain no proof debt. The current
-repository-wide formal lint is blocked by two unrelated active `sorry` declarations in
-`DifferentialUnitEquation.lean`; therefore no repository-wide lint-pass claim is made here.
+The unconditional module `GaloisForLFunctions.HTGeometry.HamburgerBoundaryKernel` proves the
+unbounded moment-preservation step used in the Nevanlinna construction. It derives a real-valued
+bind-integral theorem from positive and negative `lintegral` parts, then proves that a measurable
+probability kernel whose leaves share one complete Hamburger moment sequence has a barycenter with
+exactly the same sequence. Odd-moment integrability is obtained from the common even moments, so no
+unproved signed Fubini interchange is hidden in this step.
+
+The unconditional module `GaloisForLFunctions.HTGeometry.NevanlinnaBoundaryAlgebra` now proves the
+determinant-one algebra underlying the concrete boundary label: the lower row has no common zero,
+distinct finite denominator fibers are disjoint, every finite fiber is disjoint from the infinity
+fiber, the explicit one-point label `[-D:C]` recovers each fiber exactly, and the resolvent
+Möbius-difference formula follows from the determinant identity. For continuous lower-row entries,
+the label is proved continuous into `OnePoint ℝ`; at zeros of `C`, the proof derives escape from
+every compact real set rather than postulating projective continuity. With the projective line
+equipped with its Borel sigma algebra, a probability leaf carried by a finite or infinite
+denominator fiber is proved to push forward to exactly the corresponding Dirac label.
+
+The unconditional module `GaloisForLFunctions.HTGeometry.NevanlinnaBoundaryKernel` assembles these
+results without assuming the simplex conclusion. From a classical N-extremal family carrying one
+moment sequence, its exact denominator-fiber support, and weak continuity of its leaves, it derives
+exact projective labeling, complete Hamburger-moment preservation for every barycenter, and the
+closed topological embedding of projective parameter laws into real carrier laws. It also derives
+exact density transport through the projective label and atomlessness of the carrier from
+atomlessness of the parameter law. The still-open
+classical construction core is to construct this family in Lean from every normalized
+indeterminate Hamburger moment sequence; the assembled theorem does not discharge that existence.
+
+All eight exact builds pass. `#print axioms` on the capstone declarations reports only `propext`,
+`Classical.choice`, and `Quot.sound`. The touched modules contain no proof debt, and the
+repository-wide formal lint passes. This validates only the declarations listed above, not the
+still-unformalized claims in the paper.
 
 The remaining formalization requires continuity of the triangular positive-diagonal factor,
 construction and weak continuity of the actual N-extremal Nevanlinna

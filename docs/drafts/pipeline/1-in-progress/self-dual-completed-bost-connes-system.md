@@ -571,3 +571,46 @@ minimal-frequency estimate.
    of the least coefficient on the ray).
 3. Prime-power Vandermonde extraction — the tree's `jetM_inj`/`lseries_jetProd` machinery
    over von Mangoldt weights.
+
+### A9. The differential unit equation no-go PROVEN IN LEAN (2026-07-12, pass 6)
+
+**`differential_unit_no_go` / `no_differential_eigenrelation` `[PROVED HERE + FORMALIZED,
+axiom-clean]`** (`formal/GaloisForLFunctions/DifferentialUnitEquation.lean`) — the terminal
+obstruction of XiFrequencyCollapse sub-brick (1), the differential twin of
+`no_shift_eigenrelation`.
+
+On the differential polynomial ring `ℂ{u} = MvPolynomial ℕ ℂ` (jet coordinates `x₀ = s`,
+`x₁ = u`, `x_{j+1} = u⁽ʲ⁾`) with the total derivative `𝒟` (`𝒟 x₀ = 1`, `𝒟 x_k = x_{k+1}`
+for `k ≥ 1`), the **differential unit equation** `𝒟 w = m·x₁·w` (`m ≥ 1`) has no nonzero
+rational solution: in cleared form, for `p, q ≠ 0` (`no_differential_eigenrelation`; the
+coprime core `differential_unit_no_go`),
+
+`𝒟p·q − p·𝒟q = m·x₁·p·q`  is impossible.
+
+**Why this is the right object.** In the Γ-transfer (A7) the `f`-power elimination
+terminated against the *shift* `s ↦ s+1` (functional equation `Γ(s+1) = s·Γ(s)`) and its
+eigenrelation `σf·g = Xᵉ·f·σg`. For `ξ` the functional equation is *differentiation*
+(`ξ' = u·ξ`), so differentiation contributes the factor `d` in `ξ`-degree `d`, and the
+terminal eigenrelation is exactly the differential unit equation with `u = ξ'/ξ = x₁`. This
+is the general terminal for the **logarithmic-derivative closure of differential
+algebraicity** — reusable well beyond `ξ`.
+
+**Proof (the differential twin of the integer-root pinch).** The total derivative introduces
+at the top jet variable `x_N` a fresh variable `x_{N+1}` linearly with coefficient `∂_{x_N}`
+— formalized as the commutator identities `[∂_{x_{N+1}},𝒟] = ∂_{x_N}` (N≥1) and
+`[∂_{x₁},𝒟] = 0` (via `Derivation.commutator_apply` + `derivation_ext`, using the total
+derivative built as `mkDerivation ℂ`). Applying `∂_{x_{N+1}}` to the equation, coprimality
+plus the strict total-degree drop of `∂_{x_N}` (`totalDegree_pderiv_lt`,
+`pderiv_self_dvd_eq_zero`, `pderiv_ne_zero_of_mem_vars`) forces `p, q` independent of the top
+variable; descending to `ℂ[x₀]`, a final `∂_{x₁}` reads off `m·p·q = 0` — impossible. No
+recursion: a single case split on whether every variable is `x₀`.
+
+**XiFrequencyCollapse residue after pass 6 — two named bricks:**
+1. The log-derivative closure ENGINE: `ξ` DA ⟹ nonzero `u = ξ'/ξ` jet relation. Structure =
+   Bell transfer (`bellCore` reusable) + differentiation elimination (𝒟 on
+   `MvPolynomial ℕ ℂ` coefficients, cleared form) with `no_differential_eigenrelation` as the
+   now-available terminal — the direct differential analog of `gammaPowerRel_eq_zero`; plus
+   the off-poles concrete bridge (`ξ` entire with zeros, `u` meromorphic, jet identity holds
+   off the ξ-zeros; identity-theorem extension as in `QuantitativeHolderInterface`).
+2. The minimal-frequency estimate + von Mangoldt Vandermonde (the analytic wall + tree
+   `jetM` bookkeeping over the now-formalized von Mangoldt jets `iteratedDeriv_xiLogDeriv_split`).

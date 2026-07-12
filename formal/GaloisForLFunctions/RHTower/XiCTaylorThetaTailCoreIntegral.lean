@@ -53,15 +53,43 @@ theorem thetaCuspTailEvenPolynomial_eval₂_neg_sq_eq_integral
     push_cast
     ring]
   rw [MeasureTheory.integral_finset_sum]
-  · simp only [eval₂_sum, eval₂_mul, eval₂_C, eval₂_pow, eval₂_X,
-      Finset.mul_sum]
+  · rw [show eval₂ (algebraMap ℝ ℂ) (-z ^ 2)
+        (∑ k ∈ Finset.range (d + 1),
+          C (thetaCuspTailEvenCoefficient k) * X ^ k) =
+        ∑ k ∈ Finset.range (d + 1),
+          eval₂ (algebraMap ℝ ℂ) (-z ^ 2)
+            (C (thetaCuspTailEvenCoefficient k) * X ^ k) by
+      change (Polynomial.eval₂RingHom (algebraMap ℝ ℂ) (-z ^ 2))
+          (∑ k ∈ Finset.range (d + 1),
+            C (thetaCuspTailEvenCoefficient k) * X ^ k) = _
+      rw [map_sum]
+      simp only [Polynomial.coe_eval₂RingHom]]
+    simp only [eval₂_mul, eval₂_C, eval₂_pow, eval₂_X]
+    rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro k _
+    change (thetaCuspTailEvenCoefficient k : ℂ) * (-z ^ 2) ^ k = _
     rw [thetaCuspTailEvenCoefficient_eq_complex_integral]
-    rw [MeasureTheory.integral_const_mul]
-    rw [MeasureTheory.integral_mul_const]
-    rw [neg_pow, pow_two, ← pow_mul]
-    ring
+    calc
+      (2 * ∫ x : ℝ in Ioi 0,
+          ((x ^ (2 * k) * thetaCuspTailDerivative 0 x : ℝ) : ℂ) /
+            (2 * k).factorial) * (-z ^ 2) ^ k =
+          2 * ((∫ x : ℝ in Ioi 0,
+            ((x ^ (2 * k) * thetaCuspTailDerivative 0 x : ℝ) : ℂ) /
+              (2 * k).factorial) * (-z ^ 2) ^ k) := by ring
+      _ = 2 * ∫ x : ℝ in Ioi 0,
+          (((x ^ (2 * k) * thetaCuspTailDerivative 0 x : ℝ) : ℂ) /
+            (2 * k).factorial) * (-z ^ 2) ^ k := by
+        rw [MeasureTheory.integral_mul_const]
+      _ = 2 * ∫ x : ℝ in Ioi 0,
+          ((-1 : ℂ) ^ k * z ^ (2 * k)) *
+            ((x ^ (2 * k) * thetaCuspTailDerivative 0 x : ℝ) : ℂ) /
+              (2 * k).factorial := by
+        congr 2
+        funext x
+        push_cast
+        rw [neg_pow, ← pow_mul]
+        ring
   · intro k _
     have hcomp : IntegrableOn
         (fun x : ℝ => ((x ^ (2 * k) * thetaCuspTailDerivative 0 x : ℝ) : ℂ))

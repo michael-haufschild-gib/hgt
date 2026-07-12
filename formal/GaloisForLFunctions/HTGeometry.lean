@@ -64,3 +64,6 @@ import GaloisForLFunctions.HTGeometry.CayleyMomentFrame
 import GaloisForLFunctions.HTGeometry.CauchyJetFrame
 import GaloisForLFunctions.HTGeometry.LabeledBoundarySimplex
 import GaloisForLFunctions.HTGeometry.CofinalCholeskySelection
+import GaloisForLFunctions.HTGeometry.HamburgerBoundaryKernel
+import GaloisForLFunctions.HTGeometry.NevanlinnaBoundaryAlgebra
+import GaloisForLFunctions.HTGeometry.NevanlinnaBoundaryKernel

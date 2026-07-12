@@ -144,6 +144,70 @@ has strictly negative Weil square; the same `ρ` supplies its displayed positive
 \(\mathcal E_\Xi\).  These results are proved in
 `XiHurwitzOrientationEnergyConsumers.lean`.
 
+## Canonical Hilbert negative sector
+
+On the multiplicity-exact Xi zero-copy space define the signed coordinate
+
+\[
+  v_\Xi(\rho,j)=
+  \frac{\operatorname{Im}q(\rho)}
+  {|q(\rho)|\,|\rho-\tfrac12|}.
+\]
+
+This is an actual \(\ell^2\) vector and Lean proves the exact norm identity
+
+\[
+  \|v_\Xi\|_2^2=\mathcal E_\Xi.
+\]
+
+Let \(J\) be the unconditional unitary involution induced by critical-line reflection on the same
+zero-copy Hilbert space, and put
+
+\[
+  \mathcal W(v)=\operatorname{Re}\langle Jv,v\rangle.
+\]
+
+Functional-equation reflection conjugates the Hurwitz character, hence
+
+\[
+  Jv_\Xi=-v_\Xi,
+  \qquad
+  \mathcal W(v_\Xi)=-\|v_\Xi\|_2^2=-\mathcal E_\Xi.
+\]
+
+Therefore the complete Weil positivity criterion compresses to one canonical HGT-derived vector:
+
+\[
+  \mathrm{RH}
+  \iff \mathcal W(v_\Xi)\ge0
+  \iff \mathcal W(F)\ge0\ \text{for every square-summable }F.
+\]
+
+This is unconditional.  The closure relation is now also unconditional: normalized regular
+Cauchy vectors in the analytically continued prime--Gamma domain exhaust each exact multiplicity
+fiber, and the fiber expansion sums to `v_Xi`.  Consequently
+
+\[
+v_\Xi\in\overline{\operatorname{span}
+  (\text{continued prime--Gamma Cauchy vectors})}.
+\]
+
+There is therefore a sequence of finite algebraic source vectors `V_n` with
+
+\[
+V_n\to v_\Xi,
+\qquad
+\mathcal W(V_n)\to-\mathcal E_\Xi.
+\]
+
+The sole remaining mathematical input on this chain is source positivity.  It is enough to prove
+eventual nonnegativity along this one approximating sequence; positivity of the entire
+square-summable Weil domain is not an input.
+
+This last shrink is formalized as an exact criterion: the sequence may be chosen unconditionally
+so that RH is equivalent to eventual nonnegativity of its Weil values.  Thus the open value problem
+is countable and cofinal, rather than universal over the continued Cauchy source domain.
+
 ## Lean theorem chain
 
 - `monoScalar_feReflection`
@@ -165,6 +229,21 @@ has strictly negative Weil square; the same `ρ` supplies its displayed positive
 - `xiHurwitzOrientationEnergy_pos_iff_exists_weil_negativeSquare`
 - `xiHurwitz_offCritical_constructive_energy_weil_witness`
 - `xi_hurwitz_scalar_constraint_orientation_product_law`
+- `norm_sq_xiHurwitzOrientationVector`
+- `riemannHypothesis_iff_xiHurwitzOrientationVector_eq_zero`
+- `xiWeilLineConjLp_xiHurwitzOrientationVector`
+- `xiWeilHilbertQuadratic_xiHurwitzOrientationVector`
+- `riemannHypothesis_iff_xiHurwitzOrientationVector_weil_nonneg`
+- `xiHurwitzOrientationVector_weil_nonneg_iff_fullWeil_nonneg`
+- `riemannHypothesis_of_cauchyCore_nonneg_of_orientationVector_mem`
+- `xiHurwitzOrientationVector_mem_continuedCauchyHilbertSubspace`
+- `exists_continuedCauchyCore_tendsto_xiHurwitzOrientationVector`
+- `xiHurwitzOrientationEnergy_continuedCauchy_reconstruction`
+- `exists_continuedCauchyCore_weil_negative_of_orientationEnergy_pos`
+- `exists_continuedCauchyCore_close_weil_lt_neg_half_energy`
+- `riemannHypothesis_of_cauchyCore_nonnegative`
+- `xiWeilHilbertQuadratic_nonneg_of_riemannHypothesis`
+- `exists_continuedCauchyCore_sequence_eventually_nonnegative_iff_riemannHypothesis`
 
 ## RH leverage
 
@@ -172,11 +251,12 @@ The prior Xi-zero corollary was only a rigidity endpoint: it said that distinct 
 Hurwitz differential relation.  The present theorem adds an RH-equivalent orientation on the exact
 same monodromy values and ties it to the Vandermonde separator already used by the proof.
 
-- **Structural RH leverage:** 88/100.  One trace-class scalar now controls the pointwise zero
-  chamber, finite Hankel failure, polynomial trace failure, and the complete Weil/Krein negative
-  square, while the same character values retain the exact HGT differential matroid.
-- **Direct proof closure:** 68/100.  The theorem supplies faithful scalar and witness interfaces but
-  does not prove that the source-defined Euler--Gamma data force zero energy.
+- **Structural RH leverage:** 93/100.  The trace-class scalar is now the norm square of a canonical
+  HGT-derived vector in the existing Xi Hilbert carrier; that vector spans an exact negative Weil
+  sector, and positivity on it is equivalent to full Weil positivity and RH.
+- **Direct proof closure:** 82/100.  The Hilbert-closure/value-relation face is discharged.  The
+  source-to-RH passage is reduced to a sign theorem for finite continued prime--Gamma Cauchy
+  values along one approximating sequence.  That sign theorem is not proved.
 - **Positive remaining problem:** derive the negative-real/positive-Vandermonde character chamber
   from source-defined Euler--Gamma constraints, without assuming zero locations.  This is a precise
   value target rather than an untyped zero-to-function bridge.
