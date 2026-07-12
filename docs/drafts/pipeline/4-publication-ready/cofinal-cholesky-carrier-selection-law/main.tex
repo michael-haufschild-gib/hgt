@@ -1,0 +1,630 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=29mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,
+  urlcolor=blue!55!black]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\T}{\mathbb T}
+\newcommand{\HH}{\mathbb H}
+\newcommand{\cK}{\mathcal K}
+\newcommand{\cM}{\mathcal M}
+\newcommand{\cP}{\mathcal P}
+\newcommand{\cR}{\mathcal R}
+\newcommand{\D}{\partial}
+\newcommand{\Graph}{\operatorname{Graph}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\dtrdeg}{\operatorname{dtrdeg}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\Beta}{\operatorname{Beta}}
+
+\title{Cofinal Cholesky Selection for Singular\
+Hypertranscendental Herglotz Carriers}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Fix an indeterminate Hamburger moment sequence and its canonical Nevanlinna boundary simplex.
+After Cayley transport to the circle, associate with each representing measure the compatible
+inverse-Cholesky matrices of its Toeplitz moment sections.  We prove a sharp selection law.  The
+complete matrix tower is a faithful topological coordinate for the carrier, but every finite
+prefix level contains infinite-dimensional positive charts on which maximal differential
+algebraic independence of complex translates is residual, even with spectral type fixed.  On the
+residual singular-continuous phase, the unrenormalized analytic-polynomial graph is dense in the
+full source--carrier product.  The same Cholesky tower is the unique compatible triangular repair;
+it yields the unitary orthogonal-polynomial realization and necessarily diverges in both operator
+norm and normalized determinant.  Thus finite positive Toeplitz geometry, cofinal carrier
+selection, and operator closure are three distinct levels of structure.  The result is a general
+constraint theorem for hypertranscendental Herglotz carriers; no arithmetic specialization is used
+in its proof.
+\end{abstract}
+
+\noindent\textbf{2020 Mathematics Subject Classification.}
+30D35, 34M15, 42C05, 44A60, 47A06.
+
+\noindent\textbf{Keywords.}
+hypertranscendence, Hamburger moment problem, Herglotz function, Toeplitz matrix,
+Cholesky factorization, orthogonal polynomials, linear relation.
+
+\section{Introduction}
+
+Hypertranscendence is usually expressed negatively: a meromorphic function is
+hypertranscendental when it satisfies no nonzero algebraic differential equation over the chosen
+base field.  For a function selected by positivity or moment constraints, however, the useful
+question is geometric.  Which part of the constraint selects the carrier, and which finite data
+leave differential freedom?
+
+This paper answers that question for a canonical class of Herglotz carriers.  An indeterminate
+Hamburger moment sequence has many positive representing measures with the same complete moment
+shadow.  Nevanlinna theory organizes a canonical closed simplex of such measures by probability
+laws on the real projective boundary.  Each carrier can also be described, after Cayley transport,
+by its Toeplitz moment matrices and their inverse-Cholesky factors.  Those matrices are not an
+auxiliary encoding: their rows are the coefficients of the orthonormal polynomials in the
+monomial frame.
+
+Our main result identifies a finite/infinite threshold for this Hilbert coordinate.  If
+$C_N(\nu)$ denotes the inverse-Cholesky matrix through degree $N$, then
+\[
+  \nu\longmapsto \bigl(C_0(\nu),C_1(\nu),\ldots\bigr)
+\]
+is a homeomorphism onto its image.  Nevertheless, fixing any one $C_N$ leaves an
+infinite-dimensional positive chart.  On a dense residual subset of that exact level, all finite
+families of distinct complex translates of the Cauchy transform are differentially algebraically
+independent over $\C(z)$.  The chart can be chosen to preserve spectral type.
+
+The second part determines what occurs at a singular carrier.  The canonical map sending a finite
+Hardy coefficient vector to the same analytic polynomial in $L^2(\mu)$ is not merely
+nonclosable.  Its graph is dense in the entire product.  Ordinary graph closure therefore retains
+no incidence between source and carrier.  The inverse-Cholesky tower repairs the graph before
+closure and produces the unitary orthogonal-polynomial representation, but its norm and normalized
+volume diverge.  In this sense the complete tower is simultaneously the unique triangular
+selector and a noncompact boundary coordinate.
+
+The individual ingredients have classical parents.  Nevanlinna parametrization belongs to moment
+theory; Verblunsky coordinates, Bernstein--Szeg\H{o} approximation, and Toeplitz determinant
+identities belong to OPUC; the closability boundary is due to Yafaev~\cite{Yafaev2016}; and the
+regular--singular decomposition of linear relations is developed in
+Hassi--Sebesty\'en--de Snoo--Szafraniec~\cite{HassiEtAl2007}.  The new candidate contribution is
+the selection theorem joining these structures to residual full-translation differential
+independence inside one exact moment constraint.  We keep this boundary explicit throughout.
+
+The paper is organized as follows.  Section~\ref{sec:boundary} constructs the canonical boundary
+simplex.  Section~\ref{sec:frame} identifies finite Cholesky frames with finite Cauchy jets.
+Section~\ref{sec:aperture} proves that every finite frame level retains residual maximal
+translation hypertranscendence.  Section~\ref{sec:selection} proves complete-tower selection.
+Section~\ref{sec:graph} determines the singular graph and its forced repair.  The combined law and
+its scope are stated in Sections~\ref{sec:combined} and~\ref{sec:scope}.
+
+\section{The canonical Nevanlinna boundary simplex}\label{sec:boundary}
+
+Let $s=(s_n)_{n\geq0}$ be a normalized indeterminate Hamburger moment sequence and let
+\[
+  \cM(s)=\left\{\nu\in\cP(\R):\int_{\R}x^n\,d\nu(x)=s_n
+  \text{ for every }n\geq0\right\}.
+\]
+Choose a real Nevanlinna matrix
+\[
+  W(z)=\begin{pmatrix}A(z)&B(z)\\ C(z)&D(z)\end{pmatrix},
+  \qquad A(z)D(z)-B(z)C(z)=1,
+\]
+in the standard normalization.  Its entries are real entire functions of minimal exponential
+type~\cite{Akhiezer1965,PrucknerEtAl2023}.  For
+$\tau\in\R\cup\{\infty\}=:\mathbf T$, the constant Nevanlinna parameter gives an
+$N$-extremal measure $\nu_\tau\in\cM(s)$ with
+\begin{equation}\label{eq:nev-family}
+  m_\tau(z):=\int_{\R}\frac{d\nu_\tau(x)}{x-z}
+  =\frac{A(z)\tau+B(z)}{C(z)\tau+D(z)}.
+\end{equation}
+On the regular set of $C$, put
+\begin{equation}\label{eq:q}
+  q(z)=-\frac{D(z)}{C(z)},\qquad
+  a(z)=-\frac{1}{C(z)^2}.
+\end{equation}
+Direct subtraction gives
+\begin{equation}\label{eq:mobius-difference}
+  m_\tau(z)=m_\infty(z)+\frac{a(z)}{\tau-q(z)}.
+\end{equation}
+
+The supports of distinct $N$-extremal measures are disjoint.  Indeed, a common support point for
+two finite parameters would satisfy both $C(x)\tau_1+D(x)=0$ and
+$C(x)\tau_2+D(x)=0$, hence $C(x)=D(x)=0$, contrary to
+$AD-BC=1$.  The same determinant identity separates the parameter $\infty$.
+
+Define the projective support label
+\begin{equation}\label{eq:pi}
+  \pi(x)=[-D(x):C(x)]\in\mathbf T.
+\end{equation}
+It is continuous into the projective line and equals $\tau$ on
+$\supp\nu_\tau$.  For $\eta\in\cP(\mathbf T)$ define the barycenter
+\begin{equation}\label{eq:beta}
+  \Beta(\eta)(E)=\int_{\mathbf T}\nu_\tau(E)\,d\eta(\tau).
+\end{equation}
+Tonelli's theorem for even moments and domination by the next even moment for odd moments show
+that $\Beta(\eta)\in\cM(s)$.
+
+\begin{proposition}[Canonical boundary simplex]\label{prop:beta}
+The map $\Beta:\cP(\mathbf T)\to\cM(s)$ is continuous and affine, and
+\begin{equation}\label{eq:left-inverse}
+  \pi_*\Beta(\eta)=\eta.
+\end{equation}
+Consequently
+\[
+  \cK_s:=\Beta(\cP(\mathbf T))
+\]
+is a closed Bauer simplex canonically affinely homeomorphic to
+$\cP(\mathbf T)$.
+\end{proposition}
+
+\begin{proof}
+The weak continuity of $\tau\mapsto\nu_\tau$ is the classical continuity of the
+$N$-extremal Nevanlinna family.  Since $\mathbf T$ is compact, integration against this weakly
+continuous kernel proves continuity of $\Beta$.  For every bounded continuous $f$ on
+$\mathbf T$, support separation gives
+\[
+ \int f\,d(\pi_*\Beta(\eta))
+ =\int_{\mathbf T}\left(\int_{\R}f(\pi(x))\,d\nu_\tau(x)\right)d\eta(\tau)
+ =\int_{\mathbf T}f(\tau)\,d\eta(\tau).
+\]
+This is \eqref{eq:left-inverse}.  Hence $\Beta$ is injective.  A continuous injection from the
+compact space $\cP(\mathbf T)$ into the Hausdorff space $\cM(s)$ is a homeomorphism onto its
+closed image.  The extreme points are precisely the measures $\nu_\tau$, so the extreme boundary
+is compact.
+\end{proof}
+
+The construction does not depend on the chosen normalization.  Changing the Nevanlinna matrix
+acts on $\mathbf T$ by a real projective transformation, and the relabeling of $\pi$ is canceled by
+the opposite relabeling of $\Beta$.  Thus $\cK_s$ and the retraction
+$\Beta\pi_*:\cM(s)\to\cK_s$ are intrinsic.
+
+\section{The inverse-Cholesky frame coordinate}\label{sec:frame}
+
+Use the Cayley map
+\begin{equation}\label{eq:cayley}
+  \kappa(x)=\frac{x-i}{x+i}
+\end{equation}
+from the compactified real line to $\T$.  For $\nu\in\cK_s$, let
+$\mu_\nu=\kappa_*\nu$ and write
+\begin{equation}\label{eq:circle-moments}
+  c_k(\nu)=\int_{\T}\zeta^k\,d\mu_\nu(\zeta),\qquad k\in\mathbb Z.
+\end{equation}
+Every member of $\cK_s$ has infinite support, so its Toeplitz Gram matrices
+\begin{equation}\label{eq:gram}
+  G_N(\nu)=\bigl(c_{j-k}(\nu)\bigr)_{0\leq j,k\leq N}
+\end{equation}
+are positive definite.
+
+Let $C_N(\nu)$ be the unique lower-triangular matrix with positive diagonal such that
+\begin{equation}\label{eq:cholesky}
+  C_N(\nu)G_N(\nu)C_N(\nu)^*=I_{N+1}.
+\end{equation}
+If $v_N=(1,z,\ldots,z^N)^t$, the vector $C_Nv_N$ consists of the first $N+1$
+orthonormal polynomials of $\mu_\nu$.  Cholesky uniqueness makes the matrices compatible under
+leading-block restriction.
+
+\begin{lemma}[Frame--jet equivalence]\label{lem:frame-jet}
+For $\nu_1,\nu_2\in\cK_s$ and $N\geq1$, the following are equivalent:
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=*]
+  \item $C_N(\nu_1)=C_N(\nu_2)$;
+  \item $G_N(\nu_1)=G_N(\nu_2)$;
+  \item $c_k(\nu_1)=c_k(\nu_2)$ for $1\leq k\leq N$;
+  \item $m_{\nu_1}^{(r)}(-i)=m_{\nu_2}^{(r)}(-i)$ for $0\leq r<N$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Equation~\eqref{eq:cholesky} gives
+\begin{equation}\label{eq:gram-inverse}
+  G_N(\nu)^{-1}=C_N(\nu)^*C_N(\nu).
+\end{equation}
+Together with positive-diagonal Cholesky uniqueness this proves (i)$\Leftrightarrow$(ii).
+The Toeplitz diagonals and $c_{-k}=\overline{c_k}$ give
+(ii)$\Leftrightarrow$(iii).  Finally,
+\begin{align}
+  \kappa(x)^k
+    &=\left(1-\frac{2i}{x+i}\right)^k
+      =\sum_{r=0}^k\binom{k}{r}(-2i)^r(x+i)^{-r},
+      \label{eq:triangular-cayley}\\
+  m_\nu^{(r-1)}(-i)
+    &=(r-1)!\int_{\R}(x+i)^{-r}\,d\nu(x),\qquad r\geq1.
+      \label{eq:cauchy-derivative}
+\end{align}
+The change of coordinates from the first $N$ Cauchy integrals to
+$(c_1,\ldots,c_N)$ is triangular with nonzero diagonal.  This proves
+(iii)$\Leftrightarrow$(iv).
+\end{proof}
+
+For $\nu_0\in\cK_s$, define the level-$N$ frame fiber
+\begin{equation}\label{eq:frame-fiber}
+  \mathfrak F_N(\nu_0)
+  =\{\nu\in\cK_s:C_N(\nu)=C_N(\nu_0)\}.
+\end{equation}
+Lemma~\ref{lem:frame-jet} is the first interaction in the main theorem: a finite canonical Hilbert
+frame is exactly a finite regular analytic jet, rather than a merely comparable finite datum.
+
+\section{Finite frame levels retain maximal HT}\label{sec:aperture}
+
+We first specify the differential-algebraic property.  A family $(f_h)_{h\in H}$ of meromorphic
+functions is \emph{differentially algebraically independent over $\C(z)$} if the jet family
+$(\D^rf_h)_{h\in H,r\geq0}$ is algebraically independent over $\C(z)$.  We call a Cauchy
+transform \emph{maximally translation-HT} when
+\begin{equation}\label{eq:maxht}
+  \bigl(m_\nu(z+h_1),\ldots,m_\nu(z+h_d)\bigr)
+\end{equation}
+is differentially algebraically independent over $\C(z)$ for every finite tuple of distinct
+complex shifts.
+
+Fix $\nu_0=\Beta(\eta_0)$ with $\eta_0$ of infinite support.  For $0<\delta<1$ and $N\geq1$,
+let $X_{N,\delta}(\eta_0)$ be the set of real $w\in L^\infty(\eta_0)$ satisfying
+\begin{equation}\label{eq:chart}
+  \|w-1\|_\infty<\delta,\qquad
+  \int w\,d\eta_0=1,qquad
+  \int w(\tau)m_\tau^{(r)}(-i)\,d\eta_0(\tau)
+   =m_{\nu_0}^{(r)}(-i)quad(0\leq r<N).
+\end{equation}
+The carrier associated with $w$ is
+\begin{equation}\label{eq:weighted-carrier}
+  \nu_w=\Beta(w\eta_0).
+\end{equation}
+All weights are strictly positive.  Hence $w\eta_0$ and $\eta_0$ are equivalent, and the spectral
+type transported by the mutually singular $N$-extremal leaves is unchanged.
+
+\begin{lemma}[Infinite positive frame aperture]\label{lem:aperture}
+The chart $X_{N,\delta}(\eta_0)$ is an open subset of an infinite-dimensional real affine Banach
+space.  Every $\nu_w$ belongs to $\mathfrak F_N(\nu_0)$.
+\end{lemma}
+
+\begin{proof}
+The tangent space at $w=1$ is the common kernel of the real and imaginary parts of finitely many
+continuous linear functionals on $L^\infty(\eta_0;\R)$.  Since $\eta_0$ has infinite support,
+$L^\infty(\eta_0;\R)$ is infinite-dimensional; a finite-codimensional closed subspace remains
+infinite-dimensional.  Its sufficiently small balls preserve positivity.  The last assertion is
+Lemma~\ref{lem:frame-jet}.
+\end{proof}
+
+For completeness, we isolate the transversality input.  It is stated in the exact form used here.
+
+\begin{proposition}[Constrained translate transversality]\label{prop:transversality}
+Let $J$ be a finite packet of Cauchy jets frozen in a positive boundary chart of the form
+\eqref{eq:chart}.  Suppose the boundary law has infinite support.  Then, on the tangent that
+annihilates $J$, every finite packet of translated Cauchy jets whose parameter poles are disjoint
+from those of $J$ is onto as a real-linear map.  Consequently the set of weights for which
+\eqref{eq:maxht} holds for every tuple of distinct shifts is dense residual in the chart.
+\end{proposition}
+
+\begin{proof}
+We give the two parts because they are where positivity, the uncountable shift space, and
+differential coefficients meet.
+
+By \eqref{eq:mobius-difference}, every $z$-jet of $m_\tau(z)$ is a rational function of $\tau$.
+Its only parameter pole is $q(z)$, and the highest derivative contributes a nonzero highest-order
+principal part whenever $a(z)q'(z)\neq0$.  Reflected conjugates put the poles belonging to real
+functionals in the opposite half-plane.
+
+Let $E_J$ be the real tangent annihilating the frozen packet and normalization.  If a real
+functional on a target jet packet annihilates its image from $E_J$, then the corresponding real
+combination of target rational functions belongs, $\eta_0$-almost everywhere, to the real span of
+the constant and the frozen rational functions.  Infinite support upgrades this equality to a
+rational identity.  The target and frozen parameter-pole sets are disjoint.  Comparing principal
+parts, from the highest order downwards at every target pole, kills every target coefficient.
+Thus the target map is onto.
+
+It remains to pass from a fixed tuple of shifts to all tuples.  Fix a differential relation
+pattern: finitely many shifts and jet orders, finitely many distinct differential monomials, and a
+degree bound after clearing coefficients in $\C(z)$.  Choose more evaluation rows than the number
+of coefficient monomials plus the complex dimension of the shift configuration.  The failure of
+the resulting evaluation matrix to have full column rank is a complex algebraic rank-defect set.
+Its natural rank stratification has complex codimension larger than the shift dimension.
+
+The function $q$ has no nonzero translation period.  Indeed, all its poles are real and at least
+one exists.  A nonreal period would move a real pole off the real axis; a nonzero real period would
+force a real arithmetic progression of poles.  The latter has linear counting density, contrary
+to the minimal exponential type of $C$ by Jensen's formula.  We may therefore cover the distinct
+shift configuration space by countably many relatively compact patches and, on each patch, choose
+evaluation rows for which all target parameter poles remain separated from one another and from
+the frozen poles.
+
+The surjectivity proved in the first paragraph supplies a finite-dimensional perturbation family
+that is submersive onto all row-jet coordinates.  Parametric transversality applied to each smooth
+rank stratum makes the row-evaluation map transverse to the rank-defect set for a dense set of
+weights.  The codimension choice makes its preimage in the compact shift patch empty.  Normal
+convergence of the Cauchy jets on compact upper-half-plane packets makes this avoidance open.
+
+There are countably many relation patterns and compact configuration patches.  Their open dense
+avoidance sets have dense residual intersection by Baire's theorem.  If a relation is first given
+as an upper-end germ, the meromorphic identity theorem continues it to the chosen evaluation
+rows.  If it has coefficients in $\C(z)$, clearing the finitely many denominators puts it into one
+of the enumerated patterns.  Hence the intersection has property~\eqref{eq:maxht}.
+\end{proof}
+
+\begin{theorem}[Finite-frame freedom]\label{thm:finite-frame}
+For every $N\geq1$, the exact frame fiber $\mathfrak F_N(\nu_0)$ contains the
+infinite-dimensional positive chart
+$\{\nu_w:w\in X_{N,\delta}(\eta_0)\}$.  Within that chart, maximally translation-HT carriers form
+a dense residual set.  Every carrier in the chart has the same complete Hamburger moments, the
+same frame through degree $N$, and the same pure-point, singular-continuous, or absolutely
+continuous spectral type as $\nu_0$.
+\end{theorem}
+
+\begin{proof}
+Combine Lemma~\ref{lem:aperture} and Proposition~\ref{prop:transversality}.  Exact moment
+preservation follows from barycentring measures that all represent $s$.  Equivalence of
+$w\eta_0$ and $\eta_0$, together with disjoint support fibers, preserves the transported spectral
+type.
+\end{proof}
+
+\section{The complete tower selects the carrier}\label{sec:selection}
+
+Define
+\begin{equation}\label{eq:theta}
+  \Theta:\cK_s\longrightarrow\prod_{N\geq0}\operatorname{Tri}_{N+1}^{+}(\C),
+  \qquad \Theta(\nu)=(C_N(\nu))_{N\geq0},
+\end{equation}
+where $\operatorname{Tri}_{N+1}^{+}(\C)$ denotes lower-triangular matrices with positive diagonal.
+
+\begin{theorem}[Complete-frame selection]\label{thm:selection}
+The map $\Theta$ is a homeomorphism of $\cK_s$ onto its image.  Equivalently, for every
+$\nu_0\in\cK_s$,
+\begin{equation}\label{eq:intersection}
+  \bigcap_{N\geq0}\mathfrak F_N(\nu_0)=\{\nu_0\}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+If $\Theta(\nu_1)=\Theta(\nu_2)$, Lemma~\ref{lem:frame-jet} gives equality of every positive
+circle moment.  Negative moments are their conjugates.  Trigonometric polynomials are uniformly
+dense in $C(\T)$, so $\mu_{\nu_1}=\mu_{\nu_2}$.  Cayley inversion yields
+$\nu_1=\nu_2$.  This proves injectivity and \eqref{eq:intersection}.
+
+For fixed $N$, $C_N$ depends continuously on the first $N$ circle moments: the moment map is weakly
+continuous and positive-diagonal Cholesky factorization is continuous on the positive-definite
+cone.  Thus $\Theta$ is continuous in the product topology.  The domain $\cK_s$ is compact and
+the target is Hausdorff, so a continuous injection is a homeomorphism onto its image.
+\end{proof}
+
+Theorems~\ref{thm:finite-frame} and~\ref{thm:selection} give an exact threshold.  Every finite
+projection of the canonical coordinate retains an infinite-dimensional residual-HT modulus,
+whereas the coherent projective limit selects one carrier.  No appeal to cardinality or informal
+``insufficiency of finite data'' is involved.
+
+\section{Singular graph saturation and the forced repair}\label{sec:graph}
+
+Let $\mu$ be an infinite-support probability measure on $\T$.  On
+$\ell^2(\mathbb Z_+)$ define the densely defined polynomial map
+\begin{equation}\label{eq:raw-map}
+  A_\mu:c_{00}(\mathbb Z_+)\longrightarrow L^2(\mu),
+  \qquad A_\mu(a)=\sum_{n\geq0}a_n\zeta^n.
+\end{equation}
+Its quadratic form has the Toeplitz matrices $G_N(\mu)$ as finite sections.  Yafaev's theorem
+states that this form, equivalently $A_\mu$, is closable exactly when
+$\mu$ is absolutely continuous with respect to normalized Lebesgue measure~\cite{Yafaev2016}.
+For pure singularity one obtains the exact opposite endpoint.
+
+\begin{theorem}[Maximal graph saturation]\label{thm:saturation}
+If $\mu\perp m$ is a purely singular probability measure, then
+\begin{equation}\label{eq:saturation}
+  \overline{\Graph(A_\mu)}
+  =\ell^2(\mathbb Z_+)\times L^2(\mu).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Suppose $(x,g)$ is orthogonal to $\Graph(A_\mu)$.  Testing the monomials gives, up to the fixed
+inner-product convention,
+\begin{equation}\label{eq:orthogonal-coefficients}
+  x_n=-\int_{\T}\overline{g(\zeta)}\zeta^n\,d\mu(\zeta),
+  \qquad n\geq0.
+\end{equation}
+The complex measure $d\sigma=\overline g\,d\mu$ is finite by Cauchy--Schwarz.  Since
+$x\in\ell^2$, one half-line of Fourier coefficients of $\sigma$ belongs to $\ell^2$.
+The Riesz brothers theorem implies that $\sigma$ is absolutely continuous; see, for example,
+\cite[Chapter~4]{Duren1970} or the form used in~\cite[Theorem~2.6]{Yafaev2016}.  But
+$\sigma\ll\mu\perp m$, so $\sigma=0$.  Hence $g=0$ $\mu$-almost everywhere and
+$x=0$ by \eqref{eq:orthogonal-coefficients}.  The graph has zero orthogonal complement, which is
+equivalent to \eqref{eq:saturation}.
+\end{proof}
+
+In the language of linear relations, the closure is maximally multivalued.  The general fact that
+the closure of a singular relation is a Cartesian product is classical~\cite{HassiEtAl2007}; the
+proof above identifies the full product directly for the present Toeplitz weld.
+
+The same $C_N$ that selected the carrier in Section~\ref{sec:selection} is the unique compatible
+triangular repair of this graph.  From \eqref{eq:gram-inverse},
+\begin{equation}\label{eq:norm-law}
+  \|C_N\|=\lambda_{\min}(G_N)^{-1/2},
+  \qquad
+  \det C_N=(\det G_N)^{-1/2}.
+\end{equation}
+Szeg\H{o}'s determinant formula gives
+\begin{equation}\label{eq:szego-det}
+  \det G_N=\prod_{j=0}^{N-1}(1-|\alpha_j|^2)^{N-j},
+\end{equation}
+where $(\alpha_j)$ are the Verblunsky coefficients.  If
+$d\mu=w\,dm+d\mu_s$, Szeg\H{o}'s theorem states
+\begin{equation}\label{eq:szego}
+  \lim_{N\to\infty}(\det G_N)^{1/N}
+  =\prod_{j=0}^{\infty}(1-|\alpha_j|^2)
+  =\exp\left(\int_{\T}\log w\,dm\right).
+\end{equation}
+For pure singularity $w=0$ almost everywhere, so the limit is zero.  Since the diagonal of $G_N$
+is one, $\operatorname{tr}G_N=N+1$ and $\lambda_{\max}(G_N)\geq1$.  Therefore
+\begin{equation}\label{eq:divergence}
+  \lambda_{\min}(G_N)\longrightarrow0,qquad
+  \|C_N\|\longrightarrow\infty,qquad
+  (\det C_N)^{1/(N+1)}\longrightarrow\infty.
+\end{equation}
+
+Let $\varphi_n$ be the orthonormal polynomials of $\mu$.  Compatibility defines an isometry
+\begin{equation}\label{eq:unitary-map}
+  U_\mu:\ell^2(\mathbb Z_+)\longrightarrow L^2(\mu),
+  \qquad U_\mu e_n=\varphi_n.
+\end{equation}
+For pure singularity this map is onto.  If $g$ were orthogonal to all analytic polynomials, the
+measure $\overline g\mu$ would have a vanishing Fourier half-line.  F.~and M.~Riesz would make it
+absolutely continuous, while it remains singular, so it must vanish.
+
+We have proved the exact three-level geometry
+\begin{equation}\label{eq:trichotomy}
+\begin{array}{c|c}
+\text{finite raw section}&G_N>0\\
+\text{unweighted cofinal closure}&\overline{\Graph(A_\mu)}
+  =\ell^2\times L^2(\mu)\\
+\text{coherently repaired limit}&U_\mu\text{ unitary},\quad \|C_N\|\to\infty.
+\end{array}
+\end{equation}
+
+For comparison, the Bernstein--Szeg\H{o} measure
+\begin{equation}\label{eq:bs}
+  d\mu^{[N]}(e^{i\theta})=
+  \frac{d\theta}{2\pi|\varphi_N(e^{i\theta})|^2}
+\end{equation}
+has positive real-analytic density, rational Carath\'eodory transform, and the same first $N$
+Verblunsky coefficients as $\mu$~\cite{Simon2005}.  Hence
+$G_N(\mu^{[N]})=G_N(\mu)$ and it carries exactly the same finite repair $C_N$.
+Every finite model is a bounded, bounded-below weld, while the singular limit has the saturated
+raw graph \eqref{eq:saturation}.  What fails is uniform control of the compatible repairs.
+
+\section{The cofinal frame-selection law}\label{sec:combined}
+
+Singular-continuous probabilities form a dense $G_\delta$ in $\cP(\mathbf T)$.  The same is true
+for the maximal-translation-HT condition after transport by $\Beta$, by
+Proposition~\ref{prop:transversality} and Baire intersection.  Their intersection is therefore
+residual in $\cK_s$.
+
+\begin{theorem}[Cofinal Cholesky selection]\label{thm:main}
+For every indeterminate normalized Hamburger moment sequence, the canonical simplex $\cK_s$
+contains a residual set $\cR_s$ of singular-continuous carriers with maximally translation-HT
+Cauchy transforms.  For every $\nu_0\in\cR_s$:
+\begin{enumerate}[leftmargin=*,label=\textup{(\arabic*)}]
+  \item the compatible inverse-Cholesky tower $\Theta(\nu_0)$ determines $\nu_0$ uniquely and
+  topologically;
+  \item every finite prefix fiber $\mathfrak F_N(\nu_0)$ contains an infinite-dimensional
+  positive chart with residual maximal translation-HT and fixed singular-continuous spectral
+  type;
+  \item the unrenormalized analytic-polynomial graph has full-product closure;
+  \item the same tower is the unique compatible positive-diagonal triangular repair, produces a
+  unitary carrier representation, and obeys the divergence laws~\eqref{eq:divergence};
+  \item every Bernstein--Szeg\H{o} model carries the exact finite repair through its truncation
+  degree, although all such models are absolutely continuous and differentially algebraic.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The residual spectral and differential phase was just described.  Item~(1) is
+Theorem~\ref{thm:selection}; item~(2) is Theorem~\ref{thm:finite-frame}; items~(3)--(4) follow
+from Theorem~\ref{thm:saturation}, Cholesky uniqueness, and
+\eqref{eq:divergence}--\eqref{eq:unitary-map}; item~(5) is the
+Bernstein--Szeg\H{o} prefix identity following \eqref{eq:bs}.
+\end{proof}
+
+The theorem is a positive necessity law.  It does not merely assert that finite Toeplitz data are
+insufficient.  It identifies what a faithful carrier construction must retain: a coherent frame
+tower, graph norm, boundary relation, or source marking that reconstructs the same unitary
+incidence before taking the cofinal closure.  In the singular phase this datum cannot remain
+uniformly equivalent to the monomial Hardy frame.
+
+\section{Scope, comparison, and arithmetic specialization}\label{sec:scope}
+
+The statement is about hypertranscendental Herglotz carriers in general.  It uses no primes,
+Euler product, functional equation, or zeta zeros.  The differential-algebraic component should be
+compared with results on hypertranscendence forced by fixed difference equations, such as
+Adamczewski--Dreyfus--Hardouin~\cite{ADH2021}, and with algebraic independence for functions
+governed by independent operators~\cite{ADHW2024}.  Here the functions are selected generically
+inside an exact positive moment constraint; they are not assumed to solve a difference equation.
+
+The operator statement also has a precise classical boundary.  Graph saturation itself is a
+specialized singular-relation phenomenon, not an independent novelty claim.  The OPUC determinant
+and approximation formulas are likewise classical.  The candidate new content of
+Theorem~\ref{thm:main} is the fact that one and the same canonical matrix tower has all three
+roles:
+\begin{enumerate}[leftmargin=*]
+  \item its finite projections define exact fibers retaining residual maximal HT;
+  \item its coherent projective limit is a faithful topological selector;
+  \item on the generic singular phase it is the unique divergent triangular repair of a fully
+  saturated raw graph.
+\end{enumerate}
+These roles are not created by independently adjoining two encodings; they are consequences of
+the frame--jet equivalence in Lemma~\ref{lem:frame-jet}.
+
+There is a conditional consequence for any Riemann-hypothesis architecture that first normalizes
+the logarithmic derivative of the completed zeta function as a Herglotz/Toeplitz carrier.  If that
+normalization has a purely singular representing measure, then finite positive Toeplitz sections
+and ordinary graph convergence cannot select the source-faithful carrier.  A prime--archimedean
+construction must derive the complete compatible frame tower, or an equivalent boundary marking,
+before closure.  This is a constraint on such a route, not a proof of positivity and not a proof of
+the Riemann hypothesis.
+
+Two limitations are essential.  First, residuality does not provide a canonical explicit member
+of $\cR_s$.  Second, the priority of the combined theorem requires specialist comparison across
+moment theory, OPUC, linear relations, and differential algebra.  Database searches that fail to
+find the exact conjunction do not establish novelty.  These limitations prevent the classical
+ingredients from being presented as new and separate the proved theorem from its significance
+assessment.
+
+\begin{thebibliography}{99}
+
+\bibitem{ADH2021}
+B. Adamczewski, T. Dreyfus, and C. Hardouin,
+\emph{Hypertranscendence and linear difference equations},
+J. Amer. Math. Soc. \textbf{34} (2021), 475--503.
+
+\bibitem{ADHW2024}
+B. Adamczewski, T. Dreyfus, C. Hardouin, and M. Wibmer,
+\emph{Algebraic independence and linear difference equations},
+J. Eur. Math. Soc. \textbf{26} (2024), 1899--1932.
+
+\bibitem{Akhiezer1965}
+N. I. Akhiezer,
+\emph{The Classical Moment Problem and Some Related Questions in Analysis},
+Oliver \& Boyd, Edinburgh, 1965.
+
+\bibitem{Duren1970}
+P. L. Duren,
+\emph{Theory of $H^p$ Spaces},
+Academic Press, New York, 1970.
+
+\bibitem{HassiEtAl2007}
+S. Hassi, Z. Sebesty\'en, H. S. V. de Snoo, and F. H. Szafraniec,
+\emph{A canonical decomposition for linear operators and linear relations},
+Acta Math. Hungar. \textbf{115} (2007), 281--307;
+\href{https://arxiv.org/abs/math/0611045}{arXiv:math/0611045}.
+
+\bibitem{PrucknerEtAl2023}
+R. Pruckner, J. Reiffenstein, and H. Woracek,
+\emph{An upper bound for the Nevanlinna matrix of an indeterminate moment sequence},
+\href{https://arxiv.org/abs/2307.10748}{arXiv:2307.10748} (2023).
+
+\bibitem{Simon2005}
+B. Simon,
+\emph{Orthogonal polynomials on the unit circle: new results},
+Int. Math. Res. Not. 2004, no.~53, 2837--2880;
+expanded survey \emph{OPUC on one foot},
+\href{https://web.ma.utexas.edu/mp_arc/c/05/05-78.pdf}{MP\_ARC 05-78} (2005).
+
+\bibitem{Yafaev2016}
+D. R. Yafaev,
+\emph{On semibounded Toeplitz operators},
+J. Operator Theory \textbf{77} (2017), 3--17;
+\href{https://arxiv.org/abs/1603.06229}{arXiv:1603.06229}.
+
+\end{thebibliography}
+
+\end{document}

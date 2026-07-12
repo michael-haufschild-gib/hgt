@@ -108,6 +108,26 @@ sum of *all* rung prime masses at once — every pair `(e, p)` with `p^e ≤ y` 
 `e < M` contributes its full `p⁻¹`, prime-power uniqueness injecting the pairs into
 the support.  The certified multi-scale prime detector, machine-checked.
 
+The discrete Abel conversion and the calibrated detector:
+
+```text
+sum_{p <= N} 1/p <= log log N + 6                (coefficient-one upper law)      (32)
+log log(N+1) - 1 <= sum_{p <= N} 1/p <= log log N + 6   (the two-sided law)       (33)
+sum_{(e,p)} c(e)²·p⁻¹ <= sum_{n <= y} ([n is M-free]·c(ν)·(minFac n)^(-1/2))²
+    with ν = n.factorization n.minFac            (calibrated detector)            (34)
+```
+
+`(32)` is discrete Abel summation over `primesBelow`, integral-free: each `1/p` splits
+as `(log p/p)·(1/log N + telescope of 1/log across scales)`; interchanging the double
+sum prices every scale `k` by the banked Mertens-first upper law, and the main term
+telescopes to `log log` through the rectangle estimate `1 − a/b ≤ log(b/a)` — the
+coefficient is exactly one, all constants explicit, no integral anywhere.  With the
+telescoped lower law this is `(33)`: the `1 + o(1)` two-sided prime-mass law in
+effective form.  `(34)` is the calibrated detector: rung-dependent weights `c(e)`,
+read off the carrier support as the exponent of the minimal prime, tune the spectral
+line intensities — the forced content is the `c`-weighted spectrum, and matching `c`
+to a carrier's second-moment profile reads off its dominant dilation rungs.
+
 ## Proof
 
 `(1)` the budget's square-only support evaluates exactly at prime squares:
@@ -200,7 +220,12 @@ same square-support mechanism in the tree's other quadratic functionals:
 - `mertens_first_upper`, `sum_primesBelow_log_div_le`, `mertens_first_lower`: the
   effective Mertens first theorem `(29)`–`(30)`;
 - (in `SquareSupportPrimeMass.lean`) `joint_spectral_forced_content`: the joint
-  multi-scale detector `(31)`.
+  multi-scale detector `(31)`;
+- `one_sub_div_le_log_sub`, `sum_Icc_sub_telescope`, `primeMass_upper_one`,
+  `primeMass_two_sided`: the discrete Abel conversion and the two-sided law
+  `(32)`–`(33)`;
+- (in `SquareSupportPrimeMass.lean`) `calibrated_detector`: the calibrated
+  multi-scale detector `(34)`.
 
 Both modules are imported by `GaloisForLFunctions.RHTower` and `GaloisForLFunctions`.
 
@@ -218,13 +243,14 @@ across the two files use only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Opens
 
-With `(29)` in hand, the missing conversion is Abel summation over `primesBelow`:
-`∑_{p≤x} 1/p = A(x)/log x + ∫ A(t)/(t·log²t) dt` with `A` the Mertens-first partial
-sums, which turns `(29)`–`(30)` into the two-sided prime-mass law with constant
-`1 + o(1)` — a single summation-by-parts brick over an explicit weight, all of whose
-inputs are now banked.  The joint detector `(31)` weighs every spectral line equally
-(each pair contributes exactly `p⁻¹`); the forward object is the *calibrated* detector —
-rung-dependent weights `c_e` tuning the line intensities, whose forced content
-`∑_e c_e²·(rung-e mass)` matches a target spectral profile.  Matching the profile of a
-given carrier's second moment would read off which dilation rungs dominate it: a
-spectral decomposition of carriers by forced prime content.
+The two-sided law `(33)` and the meter `(16)` now compose: `lineBudget + cap` is a
+certified upper reading of a quantity pinned in `[log log − 1, log log + 6]`, so the
+budget itself determines `log log √N` to within an explicit additive window — the
+forward object is the inverse reading: certified bounds on `N` from a measured budget,
+a carrier-side cutoff estimator.  The calibrated detector `(34)` opens the matching
+problem: given a carrier's second-moment profile, choose `c` so the calibrated spectrum
+meets it — for the σ-weighted mollifier diagonals the natural first target is
+`c(e) = e^(-s)` (a zeta-weighted spectrum), whose forced content
+`∑_e e^(-2s)·(rung-e mass)` is a hybrid Dirichlet series over exponents and primes —
+the exponent-zeta of the carrier, a new object sitting between the `m`-free ladder and
+the prime spectrum.

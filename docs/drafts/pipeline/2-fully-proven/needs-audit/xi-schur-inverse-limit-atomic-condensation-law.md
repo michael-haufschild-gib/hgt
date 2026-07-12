@@ -269,6 +269,7 @@ and condensation theorem are not jointly formalized in Lean.
 - [x] pure-point carrier and zero Szego product proved under RH
 - [x] strict-but-noncoercive Toeplitz/Gram law proved
 - [x] uniformly coercive source weld forced to pinch cofinally
+- [x] raw Xi graph saturation and divergent triangular repair derived conditionally
 - [x] Bernstein--Szego atomic condensation and all-`L^p` blow-up proved
 - [x] route consequence stated positively
 - [ ] independent specialist proof audit

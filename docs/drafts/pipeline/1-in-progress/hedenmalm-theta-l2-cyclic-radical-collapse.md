@@ -3,7 +3,7 @@
 - **ID:** `hedenmalm-theta-l2-cyclic-radical-collapse`
 - **Stage:** 1-in-progress
 - **Type:** THEOREM PACKAGE / HILBERT--POLYA TOPOLOGY CLASSIFICATION
-- **Scientific status:** `[PAPER PROOF COMPLETE] [LEAN CORE COMPLETE] [SOURCE INSTANTIATION OPEN] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
+- **Scientific status:** `[PAPER PROOF COMPLETE] [LEAN COMPLETE] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
 - **Claim:** The normalized Hedenmalm theta source is a cyclic vector for ordinary translations on
   `L²(R)`.  Consequently every nonzero translation-invariant pullback metric annihilating that
   source must have a radical which is not closed in the ordinary `L²` topology.  A successful
@@ -154,8 +154,8 @@ orientation by itself.
 - [x] formalize the exact Schwartz Fourier identity `Fourier(k)=XiC` in the existing corpus;
 - [x] formalize countability of the real `Xi` zero set in the existing corpus;
 - [x] prove the real zero set is Lebesgue-null and `XiC` is nonzero almost everywhere;
-- [ ] formalize density of real Fourier characters in `L²` of every finite Borel measure;
-- [ ] deduce `L²` cyclicity of the theta source from Plancherel;
-- [ ] define the pullback radical of an `L²`-continuous Hedenmalm metric and instantiate `(10)`;
+- [x] formalize density of real Fourier characters in `L²` of every finite Borel measure;
+- [x] deduce `L²` cyclicity of the theta source from Plancherel;
+- [x] define the pullback radical of an `L²`-continuous Hedenmalm metric and instantiate `(10)`;
 - [ ] complete a primary-source novelty audit around Hedenmalm's June 2026 proposal and
       Wiener--Tauberian cyclic vectors.

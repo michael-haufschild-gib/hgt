@@ -252,9 +252,11 @@ theorem isCyclicFamily_realProbCharacterLp
     rw [← memLp_one_iff_integrable]
     exact (Lp.memLp g).mono_exponent (by norm_num)
   have hgStarMeas : Measurable (fun x : ℝ ↦ (starRingEnd ℂ) (g x)) := by
-    exact Complex.continuous_conj.comp_measurable g.stronglyMeasurable.measurable
-  have hgStarInt : Integrable (fun x : ℝ ↦ (starRingEnd ℂ) (g x)) mu :=
-    hgOne.conj
+    exact Complex.continuous_conj.measurable.comp (Lp.stronglyMeasurable g).measurable
+  have hgStarInt : Integrable (fun x : ℝ ↦ (starRingEnd ℂ) (g x)) mu := by
+    refine ⟨hgStarMeas.aestronglyMeasurable, hgOne.2.congr' ?_⟩
+    filter_upwards with x
+    simp
   have hfourier (t : ℝ) :
       ∫ x, realProbCharacter t x * (starRingEnd ℂ) (g x) ∂mu = 0 := by
     have ht := hinner t
@@ -264,7 +266,7 @@ theorem isCyclicFamily_realProbCharacterLp
           fun x ↦ realProbCharacter t x * (starRingEnd ℂ) (g x) := by
       filter_upwards [realProbCharacterLp_ae mu t] with x hx
       rw [hx]
-      simp [mul_comm]
+      simp
     rw [integral_congr_ae hpoint] at ht
     exact ht
   have hgStarZero :=
@@ -272,7 +274,8 @@ theorem isCyclicFamily_realProbCharacterLp
       mu hgStarMeas hgStarInt hfourier
   have hgZero : g = 0 := by
     apply Lp.ext
-    filter_upwards [hgStarZero] with x hx
+    filter_upwards [hgStarZero, Lp.coeFn_zero ℂ 2 mu] with x hx hzero
+    rw [hzero]
     have := congrArg (starRingEnd ℂ) hx
     simpa using this
   calc

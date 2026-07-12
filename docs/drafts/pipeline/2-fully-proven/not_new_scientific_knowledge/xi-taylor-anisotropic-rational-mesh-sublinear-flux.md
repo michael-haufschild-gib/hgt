@@ -192,15 +192,23 @@ The current corpus already supplies:
 - `nat_div_five_lt_inv_re_of_anisotropic`: the linear reciprocal amplifier behind `(11)`;
 - `norm_logDeriv_sub_logDeriv_le_of_two_norm_sub_le`: explicit nonvanishing and
   logarithmic-derivative perturbation control, the algebraic core of `(13)`;
+- `eventually_xiOrder_div_ten_lt_logDeriv_anisotropicMesh_re_div`: an actual Xi zero of
+  multiplicity `m` forces normalized mesh growth greater than `m/10`, the formal version of
+  `(11)`;
+- `XiAnisotropicLogDerivSublinearUpper`: the zero-free source premise that the normalized Xi
+  logarithmic derivative is eventually below every positive rate on each explicit mesh fibre;
+- `riemannHypothesis_of_xiAnisotropicLogDerivSublinearUpper`: the axiom-clean formal endpoint
+  `sublinear anisotropic Xi mesh flux -> RiemannHypothesis`;
 - `xi_normalizedLogDeriv_tendsto_order` for the local pole residue;
 - `continuedPrimeArchSourceRelativeTrace_eventuallyEq_logDeriv_XiC`;
 - `riemannHypothesis_of_xiCTaylorGaussianRatLeftHalfImEventuallyBoundedAbove` for the older
   uniform-bound/fixed-rational quantifier pattern.
 
-The remaining Lean infrastructure is the finite compact-mesh maximum and the specialization of
-the generic quotient bound to the super-accurate Xi schedule near a zero.  The diagonal selector,
-the decisive one-point anisotropic mesh geometry, its linear reciprocal amplifier, and the generic
-quotient perturbation estimate are formalized.
+The direct Xi endpoint is formalized.  The remaining Lean infrastructure for the finite-polynomial
+criterion is the finite compact-mesh maximum and the specialization of the generic quotient bound
+to the super-accurate Xi schedule near a zero.  The diagonal selector, the decisive one-point
+anisotropic mesh geometry, its linear reciprocal amplifier, the exact Xi linear pole-growth
+theorem, and the generic quotient perturbation estimate are formalized.
 
 ## Non-circularity gate
 
@@ -231,7 +239,8 @@ that retains the completed prime--archimedean orientation.
 - [x] 0 -> 1 in-progress: explicit source objects, mesh, and non-circularity gate
 - [x] 1 -> 2 fully-proven: complete paper proof of schedule existence and equivalence `(5)`
 - [ ] 2 -> 3 formalized: compact mesh maximum and Xi-specific asymptotic specialization remain;
-  selector, one-point mesh geometry, reciprocal amplifier, and generic quotient perturbation complete
+  selector, one-point mesh geometry, reciprocal amplifier, Xi pole growth, and generic quotient
+  perturbation complete
 - [ ] 3 -> 4 publication-ready: only after a non-circular proof of `(15)`
 
 ## Formalization log
@@ -247,3 +256,12 @@ that retains the completed prime--archimedean orientation.
 - 2026-07-12 — Formalized the generic quotient and logarithmic-derivative perturbation bounds in
   `formal/GaloisForLFunctions/RHTower/LogDerivQuotientPerturbation.lean`; direct Lean and axiom
   checks pass.
+- 2026-07-12 — Formalized exact multiplicity recovery and the eventual `m/10` normalized linear
+  lower bound for the Xi logarithmic derivative along the mesh in
+  `formal/GaloisForLFunctions/RHTower/XiAnisotropicPoleGrowth.lean`; direct Lean and axiom checks
+  pass.
+- 2026-07-12 — Formalized the zero-free, unbounded sublinear source premise
+  `XiAnisotropicLogDerivSublinearUpper` and the terminal implication
+  `riemannHypothesis_of_xiAnisotropicLogDerivSublinearUpper` in
+  `formal/GaloisForLFunctions/RHTower/XiAnisotropicSublinearGate.lean`.  This closes a direct
+  `x -> RH` interface before the remaining finite-Taylor transfer.

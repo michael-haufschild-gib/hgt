@@ -7,8 +7,8 @@
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED]`
 - **Parents:** `singular-maximal-ht-schur-defect-collapse-law.md`,
   `nevanlinna-boundary-bauer-retract-maximal-ht.md`
-- **Statement:** For a purely singular probability measure on the circle, the graph of the
-  canonical analytic-polynomial identification from coefficient Hardy space to the carrier
+- **Statement:** For a purely singular infinite-support probability measure on the circle, the
+  graph of the canonical analytic-polynomial identification from coefficient Hardy space to the carrier
   `L^2` space is dense in the full product. Its closure is therefore the maximally multivalued
   linear relation, not the graph of an operator. Nevertheless every canonical Bernstein--Szego
   truncation gives a bounded, bounded-below Toeplitz weld and reproduces the target Gram section
@@ -108,7 +108,8 @@ Because `x in ell^2`, one half of the Fourier coefficients of the finite complex
 d nu=conjugate(g)d mu                                      (8)
 ```
 
-lies in `ell^2`. Choose `h in L^2(m)` with precisely those one-sided Fourier coefficients. Then
+is square summable. The measure is finite because `g in L^2(mu)` and `mu` is a probability.
+Choose `h in L^2(m)` with precisely those one-sided Fourier coefficients. Then
 `nu-hm` has a vanishing Fourier half-line. The F. and M. Riesz theorem makes `nu-hm` absolutely
 continuous; hence `nu` is absolutely continuous.
 
@@ -219,6 +220,16 @@ For a singular infinite-support carrier, the parent cofinal law therefore forces
 ||C_N||->infinity.                                        (19)
 ```
 
+The complete frame volume has the exact law
+
+```text
+det(C_N)=det(G_N(mu))^(-1/2),
+det(C_N)^(1/(N+1))->infinity.                              (19a)
+```
+
+The second limit follows from the zero Szego determinant root of the singular carrier. Thus the
+repair does not merely develop one bad coordinate: its geometric-mean expansion diverges.
+
 This divergence is not a defect of a chosen basis: among compatible lower-triangular
 positive-diagonal changes of the monomial frame, `(17)` determines `C_N` uniquely.
 
@@ -312,6 +323,33 @@ The positive necessity law is:
 
 This is stronger than demanding an unbounded operator. Without extra structure, there is no
 operator left to be unbounded.
+
+## Consequences for proof architectures
+
+These consequences concern routes that factor through the normalized Herglotz/Toeplitz carrier;
+they do not claim that every imaginable RH formulation is Toeplitz.
+
+1. **Finite Toeplitz or OPUC sections.** Strict positivity of every `G_N` is only the entrance
+   condition. A successful construction must also produce the compatible matrices `C_N` and
+   control their source meaning. Determinants or eigenvalue signs alone do not retain the carrier
+   incidence in the limit.
+2. **de Branges or Hilbert--Polya realizations.** A source-selected Hilbert norm cannot remain
+   uniformly equivalent to the raw monomial Hardy norm. Its frame change must contain the same
+   cofinal divergence as `(19)`, or a unitarily equivalent boundary marking. A uniformly bounded
+   frame equivalence would leave the target form coercive and contradict the singular phase.
+3. **Taylor or finite-prime zero transfer.** Locally uniform zero preservation and the formalized
+   `1/log N` prime-clock pinning can locate a limiting divisor only after a source theorem couples
+   them to the carrier. Ordinary convergence of the unrenormalized positive graphs cannot supply
+   that coupling, because their target graph saturates. The missing theorem must transport the
+   marked frame or graph norm as well as the scalar values.
+4. **CCM/Weil finite-aperture graphs.** A proposed closed four-channel graph cannot be obtained by
+   simply closing the unmarked moment-polynomial incidence. The source-selected boundary relation,
+   determinant line, or channel rigging must be installed before the cofinal aperture limit; after
+   unmarked closure the incidence information is gone.
+
+The positive common requirement is not “avoid singularity.” The required Xi carrier is singular.
+It is: **carry the divergent normalization coherently enough that singularity becomes a unitary
+boundary representation instead of a maximally multivalued raw relation.**
 
 ## RH consequence `[PROVED HERE; RH NOT PROVED]`
 

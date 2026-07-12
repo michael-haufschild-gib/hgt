@@ -1,4 +1,4 @@
-import Mathlib.Topology.Algebra.Module.Basic
+import Mathlib
 
 /-!
 # Cyclic radical collapse
@@ -83,6 +83,23 @@ theorem cyclicOrbit_forces_nonclosed_properSubmodule
     (horbit : ∀ i, U i k ∈ N) :
     ¬ IsClosed (N : Set E) :=
   not_isClosed_of_isCyclicFamily_of_le_properSubmodule hcyclic N hNproper horbit
+
+/-- A continuous complex functional vanishing on a cyclic family is zero. -/
+theorem continuousLinearFunctional_eq_zero_of_isCyclicFamily
+    {E ι : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
+    {v : ι → E} (hcyclic : IsCyclicFamily (𝕜 := ℂ) v)
+    (L : E →L[ℂ] ℂ) (hL : ∀ i, L (v i) = 0) :
+    L = 0 := by
+  refine ContinuousLinearMap.ext_on hcyclic ?_
+  intro x hx
+  change L x = 0
+  induction hx using Submodule.span_induction with
+  | mem y hy =>
+      obtain ⟨i, rfl⟩ := hy
+      exact hL i
+  | zero => simp
+  | add x y hx hy ihx ihy => simp [ihx, ihy]
+  | smul c x hx ihx => simp [ihx]
 
 end
 

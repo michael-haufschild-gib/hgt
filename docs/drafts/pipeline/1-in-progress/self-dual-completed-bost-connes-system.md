@@ -352,3 +352,46 @@ BC-ergodicity technology beyond this tree — a named research-scale wall, not a
 
 **Residue of gate 1→2 after this pass:** exactly two named walls — QH (A3) and graded KMS
 uniqueness (B3). Everything mechanizable before them is proven and formalized.
+
+### A4. QH attacked via Gevrey--Watson: it collapses into Hölder (2026-07-12, second pass)
+
+**A4a. Unconditional holonomic rung for `zeta` `[PROVED HERE + FORMALIZED]`.** The residue law
+was generalized to any analytic zero (`logDeriv_iteratedDeriv_residue_of_zero`), and the trivial
+zeros `-2, -4, ...` supply an unconditional injective pole sequence for `zeta'/zeta`; the needed
+"not identically zero nearby" input is the identity theorem on the punctured plane against
+`zeta(2) != 0` — no simplicity of trivial zeros, no differentiated functional equation.
+**`zeta'/zeta` satisfies no linear differential equation with polynomial coefficients,
+unconditionally** (`zetaLogDeriv_not_holonomic`,
+`formal/GaloisForLFunctions/RHTower/XiLogDerivNotHolonomic.lean`, axiom-clean). The advertised
+`zeta'(-2k) != 0` brick turned out unnecessary — the multiplicity-agnostic design removes it.
+
+**A4b. QH is equivalent to Hölder's theorem `[PROVED HERE, paper, modulo two classical
+inputs]`.** The Gevrey--Watson test succeeds and collapses the wall:
+
+> **Theorem.** Assume (i) the digamma jets admit Poincaré expansions with Gevrey-1 remainder
+> bounds uniformly in sectors `|arg s| <= pi - delta` (Binet's integral representation), and
+> (ii) Nevanlinna--Watson uniqueness: a function holomorphic in a sector of opening `> pi`
+> that is Gevrey-1-flat (hence `O(e^(-c|s|))` there) vanishes identically.  Then QH holds if
+> and only if `psi` is hypertranscendental (Hölder 1887).
+
+*Proof.* QH implies Hölder trivially (a vanishing nonzero polynomial relation is exponentially
+small). Conversely let `P != 0` be a polynomial with `F := P(s, psi-jets)` exponentially small
+on the real ray; clearing denominators keeps exponential smallness. Substituting the Gevrey
+expansions, `F` acquires a composite power-log asymptotic expansion with well-ordered support.
+If the expansion is nonzero its leading term `c·sigma^a·log^b(sigma)` dominates, contradicting
+exponential smallness. If it is zero, `F` is Gevrey-1-flat in a sector of opening
+`2(pi - delta) > pi`, hence exponentially small throughout; by (ii) `F ≡ 0`, i.e. `P` is an
+algebraic differential relation for `psi`, contradicting Hölder. QED.
+
+**A4c. Consequence: the `[OPEN CORE]` is discharged at paper level.** Chaining A2 and A4b:
+
+> `xi` (equivalently `Lambda`) is hypertranscendental — proved modulo three classical
+> literature inputs: Hölder 1887, Binet/Gevrey sectorial digamma bounds, Nevanlinna--Watson
+> uniqueness.
+
+The no-finite-handle certificate demanded by constraint 7 therefore exists on paper; as
+expected it is a composition of classical results, not new science `[BRIDGE]`. What remains is
+purely a formalization frontier, now exactly delimited: Hölder's theorem in Lean (the tree's
+named Gamma frontier, `GammaDifferentialFE` being its staging) plus sectorial Gevrey/Watson
+infrastructure absent from mathlib. Gate 1→2's item (A) is closed as mathematics; item (B)
+(graded KMS uniqueness) remains the single open wall of the card.
