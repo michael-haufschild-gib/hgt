@@ -312,6 +312,25 @@ theorem exists_pairwiseConjSeparatedContinuedSourceEnergy_tendsto
       xiWeilHilbertQuadratic_indexedCauchyPacket_eq_continuedSource_re
         c (w n) (hwsep n)
 
+/-- Every vector in the continued Cauchy algebraic span has an actual finite indexed packet
+representation. -/
+theorem exists_finsupp_indexedCauchyPacket_eq_of_mem
+    (v : lp (fun _ : XiZeroCopy => ℂ) 2)
+    (hv : v ∈ xiWeilContinuedCauchyAlgebraicSubspace) :
+    ∃ c : XiContinuedCauchyPoint →₀ ℂ,
+      xiWeilContinuedCauchyPacketLp
+        (fun i : {x // x ∈ c.support} ↦ c i.1)
+        (fun i : {x // x ∈ c.support} ↦ i.1) = v := by
+  rw [xiWeilContinuedCauchyAlgebraicSubspace] at hv
+  obtain ⟨c, hc⟩ :=
+    Finsupp.mem_span_range_iff_exists_finsupp.mp hv
+  refine ⟨c, ?_⟩
+  rw [← hc]
+  unfold xiWeilContinuedCauchyPacketLp
+  rw [Finsupp.sum]
+  exact (Finset.sum_subtype c.support (fun _ => Iff.rfl)
+    (fun i => c i • xiWeilContinuedCauchyLp i)).symm
+
 end
 
 end RHTower
