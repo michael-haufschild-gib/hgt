@@ -276,3 +276,79 @@ square-summability assumptions must not enter the construction.
   materializes as a phase-internal graded involution; its original phase-exchanging form is dead.
   Open next: the paper-level C*-existence with graded KMS uniqueness on the strip, and the
   `[OPEN CORE]` `Lambda`-hypertranscendence certificate.
+
+## Gate 1→2 execution (2026-07-12): both residual items driven to named walls
+
+### A. The `Lambda`-hypertranscendence certificate
+
+**A1. Holonomic rung `[PROVED HERE + FORMALIZED, zero-sequence hypothesis]`.** The tree's
+pole-residue master engine (`GammaDifferentialFE.not_holonomic_master`, arbitrary injective pole
+locations) applies to `xi'/xi`: at every `xi`-zero `rho` of order `m >= 1`,
+`xi'/xi = m/(s-rho) + analytic`, so each iterated derivative has a pole of exact order `j+1`
+with nonvanishing leading datum `m·(-1)^j·j!` — no simplicity needed
+(`xiLogDeriv_iteratedDeriv_residue`). Hence, given any injective sequence of `xi` zeros
+(classically true: infinitude of nontrivial zeros; not yet unconditional in the tree),
+**`xi'/xi` satisfies no linear differential equation with polynomial coefficients**
+(`xiLogDeriv_not_holonomic`, `formal/GaloisForLFunctions/RHTower/XiLogDerivNotHolonomic.lean`,
+axiom-clean). Unconditionalization routes: Hardy-type infinitude, or the trivial-zero variant on
+`zeta'/zeta` at `s = -2k` (needs `zeta'(-2k) != 0` from the differentiated FE).
+
+**A2. The full rung reduces to a single quantitative digamma wall `[PROVED HERE, paper]`.**
+Define **(QH)**: *no nonzero polynomial `P` in `s` and the jets `psi(s/2), psi'(s/2), ...` (with
+`C(s)` coefficients) has `P(s, psi-jets)(sigma) = O(e^(-c*sigma))` on the real ray for some
+`c > 0`.* Then:
+
+> **Theorem.** QH implies `xi` is hypertranscendental (equivalently `Lambda` is).
+
+*Proof.* If `xi` is DA then so is `u := xi'/xi` (log-derivative closure). Split
+`u^(j) = r_j(s) + a_j + z_j` with `r_j` rational, `a_j` the `(1/2)psi(s/2)`-jets, and
+`z_j = (d/ds)^j (zeta'/zeta)` the prime-log Dirichlet jets. A putative relation
+`Q(s, u, ..., u^(m)) = 0` becomes `sum_alpha C_alpha(s, a-jets) * z^alpha = 0` with the
+`C_alpha` polynomial in `s` and the `a`-jets; since the change of variables is triangular, some
+`C_(alpha*)` is a nonzero polynomial. Each `z`-monomial expands into an absolutely convergent
+Dirichlet series over frequencies `log(n_1...n_r)` with polynomial-in-`log` coefficients; group
+the whole relation by frequency: `sum_m d_m(s) m^(-s) = 0` on `Re s > sigma_0`, where each
+`d_m` lies in `C(s)[psi-jets]` and has power-log growth with summable majorants. The standard
+minimal-frequency estimate makes the least nonzero `d_(m_0)` exponentially small on the ray, so
+QH forces `d_(m_0) = 0` *as a polynomial*; hence all `d_m = 0`. Unique factorization (prime-power
+frequencies `p^w` receive only `p`-supported monomials) plus Vandermonde in `log p` over
+infinitely many primes — the tree's `ZetaHypertranscendental` jet bookkeeping (`jetM_inj`,
+`lseries_jetProd`) — then recovers `C_alpha = 0` as polynomials for every `alpha`, contradicting
+`C_(alpha*) != 0`. QED.
+
+Moreover **QH implies Hölder's theorem** (a vanishing polynomial relation among `psi`-jets is in
+particular exponentially small), so QH is a strict quantitative strengthening of the tree's named
+Gamma frontier.
+
+**A3. Dead-end localization.** Laurent/pole bookkeeping cannot pass the holonomic rung: at a
+simple zero, `u' + u^2` has no double pole (the Riccati cancellation; Weierstrass `p` shows
+pole-compatible nonlinear ADEs exist). The entire remaining content of the `[OPEN CORE]` is QH.
+Named closure route `[CONJECTURE]`: the digamma asymptotics are Gevrey-1 in sectors
+`|arg s| < pi - delta`, so a QH-violating element is exponentially flat in a sector of opening
+`> pi`, and Watson's uniqueness theorem forces it to vanish; formalization of that route needs
+sectorial Gevrey estimates not present in mathlib.
+
+### B. The graded C*-system: existence data proven, uniqueness named
+
+**B1. The system and its modular data `[PROVED, computation]`.** On `l2(N>=1)` with
+`H|n> = log sqrt(n)|n>`, the dilation isometries `mu_k|n> = |kn>` satisfy
+`sigma_t(mu_k) = k^(it/2) mu_k`; the parity grading satisfies `Gamma mu_k = mu_k Gamma` for odd
+`k` (`gradedSign_mul_odd`) while `mu_2` twists (`gradedSign_mul_two`). The archimedean scale
+mode is welded ungraded (step 1).
+
+**B2. Graded Gibbs covariance on the strip `[PROVED HERE + FORMALIZED]`.** The diagonal shadow
+of the super-KMS condition for the graded Gibbs functional holds unconditionally on the whole
+strip: the `k`-dilated graded doublet weights sum to `k^(-beta/2)` times the parity supertrace
+(`tsum_dilatedBornSupertraceTerm`,
+`formal/GaloisForLFunctions/RHTower/BornSuperKMSCovariance.lean`, axiom-clean) — exactly the
+covariance `omega(mu_k x mu_k^*) = k^(-beta/2) omega(x)` demanded of a `KMS_beta` functional,
+available at temperatures where only the graded datum converges (`gradedOrder_beyond_wall`).
+
+**B3. Uniqueness `[OPEN CORE]`.** What remains for gate 1→2 is the uniqueness of the graded
+KMS functional on the strip — the supertrace analogue of the published high-temperature
+ergodicity (Neshveyev-type). The phase-internality theorem (step 5) removes the non-normality
+obstruction, so the target is a *normal* graded uniqueness statement; its proof requires
+BC-ergodicity technology beyond this tree — a named research-scale wall, not a construction gap.
+
+**Residue of gate 1→2 after this pass:** exactly two named walls — QH (A3) and graded KMS
+uniqueness (B3). Everything mechanizable before them is proven and formalized.

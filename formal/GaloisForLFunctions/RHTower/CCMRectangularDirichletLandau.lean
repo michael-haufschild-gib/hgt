@@ -986,7 +986,7 @@ theorem exists_xiRectangularLandauCoefficient_summable_left_of_boundary
     (L C : ℝ) (N : ℕ) (hne : Nonempty XiRightZeroCopy)
     (hlower : ∀ n, N ≤ n →
       0 ≤ xiRectangularRightDirichletCoefficientReal L n + C) :
-    ∃ σ : ℝ, σ < 1 + xiRightTransverseSup ∧
+    ∃ σ : ℝ, 1 < σ ∧ σ < 1 + xiRightTransverseSup ∧
       LSeriesSummable
         (fun n => ((xiRectangularLandauCoefficient L C N n : ℝ) : ℂ))
         (σ : ℂ) := by
@@ -1071,7 +1071,9 @@ theorem exists_xiRectangularLandauCoefficient_summable_left_of_boundary
     (a := xiRectangularLandauCoefficient L C N)
     hnonneg hh hsum (R := R)
     (G := xiRectangularLandauContinuation L C N) hGd hagree hineq
-  refine ⟨σ, ?_, htransfer⟩
+  refine ⟨σ, ?_, ?_, htransfer⟩
+  · dsimp only [σ]
+    linarith
   dsimp only [σ, δ]
   linarith
 

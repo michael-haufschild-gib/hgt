@@ -243,4 +243,118 @@ theorem windowPrimeMass_le_detection_diagonal (y : ℕ) :
     push_cast
     ring
 
+/-- **The joint spectral statement.**  One carrier and one weight — the `M`-free
+indicator with the minimal-prime weight `(minFac n)^(-1/2)` — force the *sum of all rung
+prime masses at once*: the index runs over every pair `(e, p)` with `1 ≤ e < M` and
+`p^e ≤ y`, and each pair contributes its full `p⁻¹`.  Prime-power uniqueness
+(`p^e` determines `p` as its minimal factor and then `e`) makes the pairs inject into
+the support: a certified multi-scale prime detector. -/
+theorem joint_spectral_forced_content {M : ℕ} (hM : M ≠ 0) (y : ℕ) :
+    ∑ q ∈ ((Finset.Icc 1 (M - 1)) ×ˢ Nat.primesBelow (y + 1)).filter
+        (fun q => q.2 ^ q.1 ≤ y), ((q.2 : ℕ) : ℝ)⁻¹
+      ≤ ∑ n ∈ Finset.Icc 1 y,
+          (((mFreeIndicator M n : ℤ) : ℝ)
+            * ((n.minFac : ℕ) : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 := by
+  set T := ((Finset.Icc 1 (M - 1)) ×ˢ Nat.primesBelow (y + 1)).filter
+    (fun q => q.2 ^ q.1 ≤ y) with hT
+  have hmemT : ∀ q ∈ T, 1 ≤ q.1 ∧ q.1 ≤ M - 1 ∧ q.2.Prime ∧ q.2 ^ q.1 ≤ y := by
+    intro q hq
+    obtain ⟨hqmem, hqle⟩ := Finset.mem_filter.mp hq
+    obtain ⟨hq1, hq2⟩ := Finset.mem_product.mp hqmem
+    obtain ⟨h1, h2⟩ := Finset.mem_Icc.mp hq1
+    exact ⟨h1, h2, (Nat.mem_primesBelow.mp hq2).2, hqle⟩
+  have hinj : Set.InjOn (fun q : ℕ × ℕ => q.2 ^ q.1) T := by
+    intro a ha b hb hab
+    obtain ⟨ha1, -, hap, -⟩ := hmemT a ha
+    obtain ⟨hb1, -, hbp, -⟩ := hmemT b hb
+    simp only at hab
+    have hmina := Nat.Prime.pow_minFac hap (by omega : a.1 ≠ 0)
+    have hminb := Nat.Prime.pow_minFac hbp (by omega : b.1 ≠ 0)
+    have hpeq : a.2 = b.2 := by rw [← hmina, ← hminb, hab]
+    have heeq : a.1 = b.1 := by
+      rw [hpeq] at hab
+      exact Nat.pow_right_injective hbp.two_le hab
+    exact Prod.ext heeq hpeq
+  have himg : T.image (fun q : ℕ × ℕ => q.2 ^ q.1) ⊆ Finset.Icc 1 y := by
+    intro n hn
+    obtain ⟨q, hq, rfl⟩ := Finset.mem_image.mp hn
+    obtain ⟨h1, -, hp, hle⟩ := hmemT q hq
+    exact Finset.mem_Icc.mpr ⟨Nat.one_le_pow _ _ hp.pos, hle⟩
+  have hsub : ∑ n ∈ T.image (fun q : ℕ × ℕ => q.2 ^ q.1),
+      (((mFreeIndicator M n : ℤ) : ℝ) * ((n.minFac : ℕ) : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2
+      ≤ ∑ n ∈ Finset.Icc 1 y,
+          (((mFreeIndicator M n : ℤ) : ℝ) * ((n.minFac : ℕ) : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 :=
+    Finset.sum_le_sum_of_subset_of_nonneg himg fun i _ _ => by positivity
+  refine le_trans (le_of_eq ?_) hsub
+  rw [Finset.sum_image hinj]
+  refine Finset.sum_congr rfl fun q hq => ?_
+  obtain ⟨h1, h2, hp, hle⟩ := hmemT q hq
+  have hlt : q.1 < M := by omega
+  have hp0 : (0 : ℝ) < ((q.2 : ℕ) : ℝ) := by exact_mod_cast hp.pos
+  rw [Nat.Prime.pow_minFac hp (by omega : q.1 ≠ 0),
+    mFreeIndicator_apply_prime_pow hM hp, if_pos hlt]
+  push_cast
+  rw [one_mul, ← Real.rpow_natCast (((q.2 : ℕ) : ℝ) ^ (-(1 / 2 : ℝ))) 2,
+    ← Real.rpow_mul hp0.le,
+    show (-(1 / 2 : ℝ)) * ((2 : ℕ) : ℝ) = -1 by push_cast; ring, Real.rpow_neg_one]
+
+/-- **The calibrated multi-scale detector.**  Rung-dependent weights `c e` tune the
+spectral line intensities: the `M`-free carrier with weight
+`c(exponent)·(minFac n)^(-1/2)` — the exponent read off the carrier support as
+`n.factorization n.minFac` — forces the calibrated spectrum
+`∑_(e,p) c(e)²·p⁻¹`.  Matching the profile `c` to a carrier's second moment reads off
+which dilation rungs dominate it: the spectral decomposition of carriers by forced
+prime content. -/
+theorem calibrated_detector {M : ℕ} (hM : M ≠ 0) (c : ℕ → ℝ) (y : ℕ) :
+    ∑ q ∈ ((Finset.Icc 1 (M - 1)) ×ˢ Nat.primesBelow (y + 1)).filter
+        (fun q => q.2 ^ q.1 ≤ y), (c q.1) ^ 2 * ((q.2 : ℕ) : ℝ)⁻¹
+      ≤ ∑ n ∈ Finset.Icc 1 y,
+          (((mFreeIndicator M n : ℤ) : ℝ) * (c (n.factorization n.minFac)
+            * ((n.minFac : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)))) ^ 2 := by
+  set T := ((Finset.Icc 1 (M - 1)) ×ˢ Nat.primesBelow (y + 1)).filter
+    (fun q => q.2 ^ q.1 ≤ y) with hT
+  have hmemT : ∀ q ∈ T, 1 ≤ q.1 ∧ q.1 ≤ M - 1 ∧ q.2.Prime ∧ q.2 ^ q.1 ≤ y := by
+    intro q hq
+    obtain ⟨hqmem, hqle⟩ := Finset.mem_filter.mp hq
+    obtain ⟨hq1, hq2⟩ := Finset.mem_product.mp hqmem
+    obtain ⟨h1, h2⟩ := Finset.mem_Icc.mp hq1
+    exact ⟨h1, h2, (Nat.mem_primesBelow.mp hq2).2, hqle⟩
+  have hinj : Set.InjOn (fun q : ℕ × ℕ => q.2 ^ q.1) T := by
+    intro a ha b hb hab
+    obtain ⟨ha1, -, hap, -⟩ := hmemT a ha
+    obtain ⟨hb1, -, hbp, -⟩ := hmemT b hb
+    simp only at hab
+    have hmina := Nat.Prime.pow_minFac hap (by omega : a.1 ≠ 0)
+    have hminb := Nat.Prime.pow_minFac hbp (by omega : b.1 ≠ 0)
+    have hpeq : a.2 = b.2 := by rw [← hmina, ← hminb, hab]
+    have heeq : a.1 = b.1 := by
+      rw [hpeq] at hab
+      exact Nat.pow_right_injective hbp.two_le hab
+    exact Prod.ext heeq hpeq
+  have himg : T.image (fun q : ℕ × ℕ => q.2 ^ q.1) ⊆ Finset.Icc 1 y := by
+    intro n hn
+    obtain ⟨q, hq, rfl⟩ := Finset.mem_image.mp hn
+    obtain ⟨h1, -, hp, hle⟩ := hmemT q hq
+    exact Finset.mem_Icc.mpr ⟨Nat.one_le_pow _ _ hp.pos, hle⟩
+  have hsub : ∑ n ∈ T.image (fun q : ℕ × ℕ => q.2 ^ q.1),
+      (((mFreeIndicator M n : ℤ) : ℝ) * (c (n.factorization n.minFac)
+        * ((n.minFac : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)))) ^ 2
+      ≤ ∑ n ∈ Finset.Icc 1 y,
+          (((mFreeIndicator M n : ℤ) : ℝ) * (c (n.factorization n.minFac)
+            * ((n.minFac : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)))) ^ 2 :=
+    Finset.sum_le_sum_of_subset_of_nonneg himg fun i _ _ => by positivity
+  refine le_trans (le_of_eq ?_) hsub
+  rw [Finset.sum_image hinj]
+  refine Finset.sum_congr rfl fun q hq => ?_
+  obtain ⟨h1, h2, hp, hle⟩ := hmemT q hq
+  have hlt : q.1 < M := by omega
+  have hp0 : (0 : ℝ) < ((q.2 : ℕ) : ℝ) := by exact_mod_cast hp.pos
+  rw [Nat.Prime.pow_minFac hp (by omega : q.1 ≠ 0),
+    Nat.Prime.factorization_pow hp, Finsupp.single_eq_same,
+    mFreeIndicator_apply_prime_pow hM hp, if_pos hlt]
+  push_cast
+  rw [one_mul, mul_pow, ← Real.rpow_natCast (((q.2 : ℕ) : ℝ) ^ (-(1 / 2 : ℝ))) 2,
+    ← Real.rpow_mul hp0.le,
+    show (-(1 / 2 : ℝ)) * ((2 : ℕ) : ℝ) = -1 by push_cast; ring, Real.rpow_neg_one]
+
 end RHTower

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.Hurwitz.ContinuedJointLadderIndependence
 import GaloisForLFunctions.Hurwitz.JointHypertranscendence
+import GaloisForLFunctions.HTGeometry.RationalCoefficientClearing
 
 /-!
 # Unrestricted joint hypertranscendence of the continued Hurwitz family
@@ -30,7 +31,13 @@ theorem ascPochhammer_eval_ne_zero_of_exponentFamily_linearIndependent
   have hrel : ∑ x : Option ι, g x • exponentFamily s x = 0 := by
     rw [Fintype.sum_option]
     simp only [g, exponentFamily, Rat.smul_def, mul_one]
-    simp [heq]
+    push_cast
+    rw [heq]
+    rw [Finset.sum_eq_single j]
+    · simp
+    · intro i _ hij
+      simp [hij]
+    · simp
   have hc := Fintype.linearIndependent_iff.mp hsQ g hrel (some j)
   simp [g] at hc
 
@@ -71,5 +78,20 @@ theorem continued_joint_hzeta_hypertranscendental_in_shift_of_linearIndependent
   have hinv := congrArg (hzetaJetDiagonalScale (fun i => (c i)⁻¹)) hP'
   rw [hzetaJetDiagonalScale_inv_apply c hc P] at hinv
   simpa using hinv
+
+/-- Unrestricted rational-coefficient joint hypertranscendence in the canonical
+denominator-cleared functional semantics. -/
+theorem continued_joint_hzeta_rational_hypertranscendental_in_shift_of_linearIndependent
+    {s : ι → ℂ} (hsQ : LinearIndependent ℚ (exponentFamily s))
+    (N : ℕ) (Q : MvPolynomial (ι × Fin (N + 1)) (RatFunc ℂ))
+    (hrel : ∀ a : ℂ, 0 < a.im →
+      MvPolynomial.eval₂ (Polynomial.evalRingHom a)
+        (fun jk => iteratedDeriv (jk.2 : ℕ) (continuedHzeta (s jk.1)) a)
+        (GaloisForLFunctions.HTGeometry.clearRatFuncCoefficients Q) = 0) :
+    Q = 0 := by
+  have hclear := continued_joint_hzeta_hypertranscendental_in_shift_of_linearIndependent
+    hsQ N (GaloisForLFunctions.HTGeometry.clearRatFuncCoefficients Q) hrel
+  by_contra hQ
+  exact GaloisForLFunctions.HTGeometry.clearRatFuncCoefficients_ne_zero Q hQ hclear
 
 end HurwitzJointLadder

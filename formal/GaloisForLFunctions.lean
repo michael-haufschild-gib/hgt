@@ -283,3 +283,6 @@ import GaloisForLFunctions.RHTower.PiTranscendenceSetup
 import GaloisForLFunctions.RHTower.ScaledSymmetricPolynomial
 import GaloisForLFunctions.RHTower.NonmonicSymmetricIntegral
 import GaloisForLFunctions.RHTower.IntegralizedConjugateSet
+import GaloisForLFunctions.RHTower.SubsetSumPolynomial
+import GaloisForLFunctions.RHTower.ReducedSubsetSumPoly
+import GaloisForLFunctions.RHTower.OrbitSumDegree

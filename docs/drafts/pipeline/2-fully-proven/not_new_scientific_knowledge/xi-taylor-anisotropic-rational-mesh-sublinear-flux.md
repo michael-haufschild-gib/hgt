@@ -115,14 +115,14 @@ Choose `R` so that `sigma` is in the interior of `K_R`, and let its analytic mul
 
 ```text
 a_n = ceil(n Re(sigma)) + 1,
-b_n = a nearest integer to n^2 Im(sigma),
+b_n = floor(n^2 Im(sigma)),
 s_n = a_n/n + i b_n/n^2.                                    (7)
 ```
 
 Then `s_n` belongs to `G_(n,R)` and, writing `delta_n=s_n-sigma=x_n+i y_n`,
 
 ```text
-1/n <= x_n < 2/n,      |y_n| <= 1/(2n^2).                   (8)
+1/n <= x_n < 2/n,      |y_n| < 1/n^2.                       (8)
 ```
 
 Factor Xi at the zero:
@@ -142,7 +142,7 @@ The second term is bounded.  Equations `(8)` and `(10)` give
 ```text
 Re logDeriv xi(s_n)
   >= m x_n/(x_n^2+y_n^2) - O(1)
-  >= (4m/17)n - O(1).                                        (11)
+  > (m/5)n - O(1).                                            (11)
 ```
 
 Under the centered coordinate, `z_n=z(s_n)` tends to the zero `z(sigma)` and
@@ -165,7 +165,7 @@ P_(N(n))(z_n) / F(z_n) -> 1,
 In particular `P_(N(n))(z_n) != 0` eventually.  Combining `(11)`--`(13)` yields
 
 ```text
-M_(n,R)/n >= 4m/17 - o(1),                                   (14)
+M_(n,R)/n >= m/5 - o(1),                                     (14)
 ```
 
 contradicting the right side of `(5)`.  Therefore the sublinear mesh condition implies RH.
@@ -186,13 +186,21 @@ The current corpus already supplies:
 - `xiCTaylorApprox_logDeriv_tendsto` at fixed pole-free points;
 - `exists_xiCTaylorSuperaccurateSchedule`: an axiom-clean source-selected schedule satisfying
   the simultaneous expanding-ball value and derivative estimate `(3)`;
+- `xiTaylorAnisotropicRightApprox_re_sub_bounds` and
+  `abs_xiTaylorAnisotropicRightApprox_im_sub_lt`: the explicit `1/n` by `1/n^2` mesh geometry
+  `(8)`;
+- `nat_div_five_lt_inv_re_of_anisotropic`: the linear reciprocal amplifier behind `(11)`;
+- `norm_logDeriv_sub_logDeriv_le_of_two_norm_sub_le`: explicit nonvanishing and
+  logarithmic-derivative perturbation control, the algebraic core of `(13)`;
 - `xi_normalizedLogDeriv_tendsto_order` for the local pole residue;
 - `continuedPrimeArchSourceRelativeTrace_eventuallyEq_logDeriv_XiC`;
 - `riemannHypothesis_of_xiCTaylorGaussianRatLeftHalfImEventuallyBoundedAbove` for the older
   uniform-bound/fixed-rational quantifier pattern.
 
-The remaining Lean infrastructure is the explicit finite anisotropic mesh and the quotient
-perturbation estimate `(13)`; the diagonal compact approximation selector is formalized.
+The remaining Lean infrastructure is the finite compact-mesh maximum and the specialization of
+the generic quotient bound to the super-accurate Xi schedule near a zero.  The diagonal selector,
+the decisive one-point anisotropic mesh geometry, its linear reciprocal amplifier, and the generic
+quotient perturbation estimate are formalized.
 
 ## Non-circularity gate
 
@@ -222,7 +230,8 @@ that retains the completed prime--archimedean orientation.
 
 - [x] 0 -> 1 in-progress: explicit source objects, mesh, and non-circularity gate
 - [x] 1 -> 2 fully-proven: complete paper proof of schedule existence and equivalence `(5)`
-- [ ] 2 -> 3 formalized: mesh geometry and quotient perturbation remain; diagonal selector complete
+- [ ] 2 -> 3 formalized: compact mesh maximum and Xi-specific asymptotic specialization remain;
+  selector, one-point mesh geometry, reciprocal amplifier, and generic quotient perturbation complete
 - [ ] 3 -> 4 publication-ready: only after a non-circular proof of `(15)`
 
 ## Formalization log
@@ -231,3 +240,10 @@ that retains the completed prime--archimedean orientation.
   `exists_xiCTaylorSuperaccurateSchedule` in
   `formal/GaloisForLFunctions/RHTower/XiCTaylorSuperaccurateSchedule.lean`; exact module build
   passes and the theorem uses only `propext`, `Classical.choice`, and `Quot.sound`.
+- 2026-07-12 — Formalized the anisotropic Gaussian-rational mesh and its sharp one-sided
+  approximation bounds, together with the linear reciprocal amplifier `n/5 < Re(delta⁻¹)`, in
+  `formal/GaloisForLFunctions/RHTower/XiTaylorAnisotropicMesh.lean`; direct Lean and axiom checks
+  pass.
+- 2026-07-12 — Formalized the generic quotient and logarithmic-derivative perturbation bounds in
+  `formal/GaloisForLFunctions/RHTower/LogDerivQuotientPerturbation.lean`; direct Lean and axiom
+  checks pass.

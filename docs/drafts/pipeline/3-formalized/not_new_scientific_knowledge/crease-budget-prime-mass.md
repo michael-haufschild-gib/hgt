@@ -86,6 +86,28 @@ spectral lines in one carrier), and by the mixed-radix telescope the convolution
 dilated carriers inherits the whole ladder below its modulus `P_K` — the telescope
 compounds the per-rung fingerprints into a single carrier.
 
+The Mertens-first-grade input and the joint detector, both delivered:
+
+```text
+log n! = sum_{p <= n} ν_p(n!)·log p;  n/p <= ν_p(n!) <= n/(p-1)   (Legendre)     (27)
+n·log n - n + 1 <= log n! <= n·log n                              (Stirling)     (28)
+sum_{p <= n} log p / p <= log n + log 4              (Mertens first, upper)      (29)
+log n - 9 <= sum_{p <= n} log p / p                  (Mertens first, lower)      (30)
+sum over pairs (e, p), 1 <= e < M, p^e <= y, of 1/p
+    <= sum_{n <= y} ([n is M-free]·(minFac n)^(-1/2))²   (joint detector)        (31)
+```
+
+`(29)`–`(30)` are the effective Mertens first theorem, fully elementary: the
+prime-power factorization of `n!` counted twice, with Legendre's first term against
+`log n! ≤ n log n` for the upper law and the geometric Legendre bound against the
+integral-test Stirling bound for the lower, the convergent correction
+`∑ log p/(p(p-1)) ≤ 8` handled by `log p ≤ 2√p` and the banked p-series tail.
+`(31)` is the joint spectral statement: one carrier (the `M`-free indicator), one
+weight (the minimal-prime weight `(minFac n)^(-1/2)`), and the forced content is the
+sum of *all* rung prime masses at once — every pair `(e, p)` with `p^e ≤ y` and
+`e < M` contributes its full `p⁻¹`, prime-power uniqueness injecting the pairs into
+the support.  The certified multi-scale prime detector, machine-checked.
+
 ## Proof
 
 `(1)` the budget's square-only support evaluates exactly at prime squares:
@@ -170,7 +192,15 @@ same square-support mechanism in the tree's other quadratic functionals:
   the full fingerprint ladder `(25)`;
 - `telescope_compound_fingerprint`: the mixed-radix compound signature `(26)` — the
   convolution product of the dilated carriers, evaluated through
-  `prod_mPart_mFreeIndicator_mixed`.
+  `prod_mPart_mFreeIndicator_mixed`;
+- `log_factorial_eq`, `div_le_factorization_factorial`, `factorization_factorial_le`,
+  `cast_div_lt`: the Legendre double count `(27)`;
+- `log_factorial_le`, `le_log_factorial`: the Stirling bracket `(28)` (integral test
+  against `∫ log`);
+- `mertens_first_upper`, `sum_primesBelow_log_div_le`, `mertens_first_lower`: the
+  effective Mertens first theorem `(29)`–`(30)`;
+- (in `SquareSupportPrimeMass.lean`) `joint_spectral_forced_content`: the joint
+  multi-scale detector `(31)`.
 
 Both modules are imported by `GaloisForLFunctions.RHTower` and `GaloisForLFunctions`.
 
@@ -183,18 +213,18 @@ Both modules are imported by `GaloisForLFunctions.RHTower` and `GaloisForLFuncti
 - [x] generated indexes, axiom audit, and formal lint gate pass
 
 The umbrella build reaches and accepts both modules; the sole independent existing
-failure is `SummableEulerCalkinInjectivity.lean`.  All thirty-nine public declarations
+failure is `SummableEulerCalkinInjectivity.lean`.  All forty-eight public declarations
 across the two files use only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Opens
 
-The meter now reads `[log log − 1, 4·log log + C]`: coefficient one below, and the
-remaining constant lives entirely above — closing it to `1 + o(1)` needs an effective
-Mertens first theorem (`∑_{p≤x} log p / p = log x + O(1)`), whose elementary route
-(primorial bound + Abel summation over `primesBelow`) is now the single missing analytic
-brick of the lane.  The compound signature `(26)` reads the telescope's spectrum only
-rung by rung; the forward object is the *joint* spectral statement — a single weighted
-functional (weight varying with `n` through its exponent profile) whose forced content
-is the sum over all rungs `∑_{e<P_K} (rung-e mass)` at once, which would make the
-mixed-radix carrier a certified multi-scale prime detector: one carrier, one functional,
-the whole Mertens spectrum below its modulus.
+With `(29)` in hand, the missing conversion is Abel summation over `primesBelow`:
+`∑_{p≤x} 1/p = A(x)/log x + ∫ A(t)/(t·log²t) dt` with `A` the Mertens-first partial
+sums, which turns `(29)`–`(30)` into the two-sided prime-mass law with constant
+`1 + o(1)` — a single summation-by-parts brick over an explicit weight, all of whose
+inputs are now banked.  The joint detector `(31)` weighs every spectral line equally
+(each pair contributes exactly `p⁻¹`); the forward object is the *calibrated* detector —
+rung-dependent weights `c_e` tuning the line intensities, whose forced content
+`∑_e c_e²·(rung-e mass)` matches a target spectral profile.  Matching the profile of a
+given carrier's second moment would read off which dilation rungs dominate it: a
+spectral decomposition of carriers by forced prime content.

@@ -1014,4 +1014,209 @@ theorem mertens_first_lower {n : ℕ} (hn : 1 ≤ n) :
     nlinarith
   exact le_of_mul_le_mul_left hmain hn0
 
+/-! ## The coefficient-one two-sided prime-mass law -/
+
+/-- The rectangle-under-the-curve estimate, integral-free: `1 − a/b ≤ log b − log a`. -/
+theorem one_sub_div_le_log_sub {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
+    1 - a / b ≤ Real.log b - Real.log a := by
+  have hb : (0 : ℝ) < b := lt_of_lt_of_le ha hab
+  have h := Real.log_le_sub_one_of_pos (show (0 : ℝ) < a / b by positivity)
+  rw [Real.log_div ha.ne' hb.ne'] at h
+  linarith
+
+/-- Generic backward telescope over `Icc a (b−1)`. -/
+theorem sum_Icc_sub_telescope (f : ℕ → ℝ) {a b : ℕ} (hab : a ≤ b) (hb : 1 ≤ b) :
+    ∑ k ∈ Finset.Icc a (b - 1), (f k - f (k + 1)) = f a - f b := by
+  have hIcc : Finset.Icc a (b - 1) = Finset.Ico a b := by
+    ext k
+    simp only [Finset.mem_Icc, Finset.mem_Ico]
+    omega
+  rw [hIcc, Finset.sum_Ico_eq_sum_range]
+  have hcongr : ∀ i ∈ Finset.range (b - a), f (a + i) - f (a + i + 1)
+      = (fun j => f (a + j)) i - (fun j => f (a + j)) (i + 1) := fun i _ => rfl
+  rw [Finset.sum_congr rfl hcongr, Finset.sum_range_sub']
+  show f (a + 0) - f (a + (b - a)) = f a - f b
+  rw [Nat.add_zero, Nat.add_sub_cancel' hab]
+
+/-- **Discrete Abel summation over `primesBelow`, upper form**: the coefficient-one
+prime-mass upper law `∑_{p ≤ N} 1/p ≤ log log N + 6`.  Each reciprocal is
+`(log p/p)·(1/log p)`; the `1/log` factor telescopes across scales, Mertens' first
+theorem prices every scale, and the log-log main term telescopes through
+`1 − a/b ≤ log(b/a)`. -/
+theorem primeMass_upper_one {N : ℕ} (hN : 2 ≤ N) :
+    ∑ p ∈ Nat.primesBelow (N + 1), (p : ℝ)⁻¹ ≤ Real.log (Real.log N) + 6 := by
+  have hN2 : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hlogN : (0 : ℝ) < Real.log N := Real.log_pos (by linarith)
+  have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
+  have hlog2N : Real.log 2 ≤ Real.log N := Real.log_le_log (by norm_num) hN2
+  have hlogk : ∀ k : ℕ, 2 ≤ k → (0 : ℝ) < Real.log k := fun k hk =>
+    Real.log_pos (by exact_mod_cast hk)
+  -- the per-prime split 1/p = (log p / p)·(1/log N) + (log p / p)·(telescope)
+  have hsplit : ∑ p ∈ Nat.primesBelow (N + 1), (p : ℝ)⁻¹
+      = (∑ p ∈ Nat.primesBelow (N + 1), Real.log p / p) * (1 / Real.log N)
+        + ∑ p ∈ Nat.primesBelow (N + 1), (Real.log p / p) *
+            ∑ k ∈ Finset.Icc p (N - 1), (1 / Real.log k - 1 / Real.log (k + 1)) := by
+    rw [Finset.sum_mul, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun p hp => ?_
+    obtain ⟨hplt, hpp⟩ := Nat.mem_primesBelow.mp hp
+    have hp2 : 2 ≤ p := hpp.two_le
+    have hlogp : (0 : ℝ) < Real.log p := hlogk p hp2
+    have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hpp.pos
+    have htel : ∑ k ∈ Finset.Icc p (N - 1), (1 / Real.log k - 1 / Real.log (k + 1))
+        = 1 / Real.log p - 1 / Real.log N := by
+      have h := sum_Icc_sub_telescope (fun k => 1 / Real.log k)
+        (a := p) (b := N) (by omega) (by omega)
+      exact Eq.trans (Finset.sum_congr rfl fun k _ => by
+        simp only []
+        push_cast
+        ring_nf) h
+    rw [htel]
+    field_simp
+    ring
+  rw [hsplit]
+  -- the boundary term
+  have hM1N := mertens_first_upper (n := N) (by omega)
+  have hT1 : (∑ p ∈ Nat.primesBelow (N + 1), Real.log p / p) * (1 / Real.log N) ≤ 3 := by
+    have hM1nn : (0 : ℝ) ≤ ∑ p ∈ Nat.primesBelow (N + 1), Real.log p / p := by
+      refine Finset.sum_nonneg fun p hp => ?_
+      have hpp := (Nat.mem_primesBelow.mp hp).2
+      have : (0 : ℝ) ≤ Real.log p := Real.log_nonneg (by exact_mod_cast hpp.one_lt.le)
+      positivity
+    have hlog4 : Real.log 4 = 2 * Real.log 2 := by
+      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+      push_cast
+      ring
+    have h1 : (∑ p ∈ Nat.primesBelow (N + 1), Real.log p / p) * (1 / Real.log N)
+        ≤ (Real.log N + Real.log 4) * (1 / Real.log N) :=
+      mul_le_mul_of_nonneg_right hM1N (by positivity)
+    have h2 : (Real.log N + Real.log 4) * (1 / Real.log N) = 1 + Real.log 4 / Real.log N := by
+      field_simp
+    have h3 : Real.log 4 / Real.log N ≤ 2 := by
+      rw [hlog4, div_le_iff₀ hlogN]
+      linarith
+    linarith
+  -- the telescoped scale sum
+  have hcomm : ∑ p ∈ Nat.primesBelow (N + 1), (Real.log p / p) *
+        ∑ k ∈ Finset.Icc p (N - 1), (1 / Real.log k - 1 / Real.log (k + 1))
+      = ∑ k ∈ Finset.Icc 2 (N - 1), (1 / Real.log k - 1 / Real.log (k + 1)) *
+          ∑ p ∈ Nat.primesBelow (k + 1), Real.log p / p := by
+    simp_rw [Finset.mul_sum]
+    rw [Finset.sum_comm' (t' := Finset.Icc 2 (N - 1))
+      (s' := fun k => Nat.primesBelow (k + 1)) ?_]
+    · refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun p _ => by ring
+    · intro p k
+      simp only [Nat.mem_primesBelow, Finset.mem_Icc]
+      constructor
+      · rintro ⟨⟨hplt, hpp⟩, hpk, hkN⟩
+        have h2p := hpp.two_le
+        exact ⟨⟨by omega, hpp⟩, by omega, hkN⟩
+      · rintro ⟨⟨hplt, hpp⟩, h2k, hkN⟩
+        have h2p := hpp.two_le
+        exact ⟨⟨by omega, hpp⟩, by omega, hkN⟩
+  rw [hcomm]
+  have hT2 : ∑ k ∈ Finset.Icc 2 (N - 1), (1 / Real.log k - 1 / Real.log (k + 1)) *
+        ∑ p ∈ Nat.primesBelow (k + 1), Real.log p / p
+      ≤ (Real.log (Real.log N) - Real.log (Real.log 2)) + 2 := by
+    have hstep : ∀ k ∈ Finset.Icc 2 (N - 1),
+        (1 / Real.log k - 1 / Real.log (k + 1)) *
+            ∑ p ∈ Nat.primesBelow (k + 1), Real.log p / p
+          ≤ (Real.log (Real.log ((k : ℕ) + 1)) - Real.log (Real.log k))
+            + Real.log 4 * (1 / Real.log k - 1 / Real.log (k + 1)) := by
+      intro k hk
+      obtain ⟨h2k, hkN⟩ := Finset.mem_Icc.mp hk
+      have hlk : (0 : ℝ) < Real.log k := hlogk k h2k
+      have hlk1 : (0 : ℝ) < Real.log (k + 1) := by
+        refine Real.log_pos ?_
+        have : (2 : ℝ) ≤ (k : ℝ) := by exact_mod_cast h2k
+        linarith
+      have hlkle : Real.log k ≤ Real.log (k + 1) := by
+        refine Real.log_le_log (by positivity) ?_
+        linarith
+      have hdelta : (0 : ℝ) ≤ 1 / Real.log k - 1 / Real.log (k + 1) := by
+        have := one_div_le_one_div_of_le hlk hlkle
+        linarith
+      have hM1k := mertens_first_upper (n := k) (by omega)
+      have hmul : (1 / Real.log k - 1 / Real.log (k + 1)) *
+          ∑ p ∈ Nat.primesBelow (k + 1), Real.log p / p
+          ≤ (1 / Real.log k - 1 / Real.log (k + 1)) * (Real.log k + Real.log 4) :=
+        mul_le_mul_of_nonneg_left hM1k hdelta
+      have hmain : (1 / Real.log k - 1 / Real.log (k + 1)) * Real.log k
+          ≤ Real.log (Real.log ((k : ℕ) + 1)) - Real.log (Real.log k) := by
+        have hid : (1 / Real.log k - 1 / Real.log (k + 1)) * Real.log k
+            = 1 - Real.log k / Real.log (k + 1) := by
+          field_simp
+        rw [hid]
+        have := one_sub_div_le_log_sub hlk hlkle
+        have hcast : Real.log (Real.log ((k : ℕ) + 1)) = Real.log (Real.log ((k : ℝ) + 1)) := by
+          ring_nf
+        rw [hcast]
+        linarith
+      nlinarith [hmul, hmain, hdelta]
+    refine le_trans (Finset.sum_le_sum hstep) ?_
+    rw [Finset.sum_add_distrib, ← Finset.mul_sum]
+    have htel1 : ∑ k ∈ Finset.Icc 2 (N - 1),
+        (Real.log (Real.log ((k : ℝ) + 1)) - Real.log (Real.log k))
+        = Real.log (Real.log N) - Real.log (Real.log 2) := by
+      have h := sum_Icc_sub_telescope (fun k => -(Real.log (Real.log k)))
+        (a := 2) (b := N) (by omega) (by omega)
+      have hcongr : ∀ k ∈ Finset.Icc 2 (N - 1),
+          Real.log (Real.log ((k : ℝ) + 1)) - Real.log (Real.log k)
+          = (fun j : ℕ => -(Real.log (Real.log j))) k
+            - (fun j : ℕ => -(Real.log (Real.log j))) (k + 1) := by
+        intro k _
+        simp only []
+        push_cast
+        ring
+      rw [Finset.sum_congr rfl hcongr, h]
+      ring
+    have htel2 : ∑ k ∈ Finset.Icc 2 (N - 1), (1 / Real.log k - 1 / Real.log (k + 1))
+        = 1 / Real.log 2 - 1 / Real.log N := by
+      have h := sum_Icc_sub_telescope (fun k => 1 / Real.log k)
+        (a := 2) (b := N) (by omega) (by omega)
+      exact Eq.trans (Finset.sum_congr rfl fun k _ => by
+        simp only []
+        push_cast
+        ring_nf) h
+    rw [htel1, htel2]
+    have hlog4 : Real.log 4 = 2 * Real.log 2 := by
+      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+      push_cast
+      ring
+    have hbound : Real.log 4 * (1 / Real.log 2 - 1 / Real.log N) ≤ 2 := by
+      rw [hlog4]
+      have h1 : 1 / Real.log 2 - 1 / Real.log N ≤ 1 / Real.log 2 := by
+        have : (0 : ℝ) ≤ 1 / Real.log N := by positivity
+        linarith
+      have h2 : 2 * Real.log 2 * (1 / Real.log 2) = 2 := by
+        field_simp
+      nlinarith [hlog2, h1]
+    linarith
+  -- the constant −log log 2 ≤ 1
+  have hexphalf : Real.exp (1 / 2) < 2 := by
+    have hsq : Real.exp (1 / 2) * Real.exp (1 / 2) = Real.exp 1 := by
+      rw [← Real.exp_add]
+      norm_num
+    nlinarith [Real.exp_one_lt_d9, Real.exp_pos (1 / 2 : ℝ)]
+  have hhalf : (1 / 2 : ℝ) < Real.log 2 := by
+    calc (1 / 2 : ℝ) = Real.log (Real.exp (1 / 2)) := (Real.log_exp _).symm
+      _ < Real.log 2 := Real.log_lt_log (Real.exp_pos _) hexphalf
+  have hloglog2 : -(Real.log (Real.log 2)) ≤ 1 := by
+    have h1 : Real.log (1 / 2) < Real.log (Real.log 2) :=
+      Real.log_lt_log (by norm_num) hhalf
+    have h2 : Real.log (1 / 2) = -(Real.log 2) := by
+      rw [one_div, Real.log_inv]
+    have h3 : Real.log 2 ≤ 1 := by
+      have := Real.log_le_sub_one_of_pos (show (0 : ℝ) < 2 by norm_num)
+      linarith
+    linarith
+  linarith
+
+/-- **The coefficient-one two-sided prime-mass law**:
+`log log(N+1) − 1 ≤ ∑_{p ≤ N} 1/p ≤ log log N + 6`.  Both coefficients are exactly one;
+the constants are explicit — the `1 + o(1)` law in effective form. -/
+theorem primeMass_two_sided {N : ℕ} (hN : 2 ≤ N) :
+    Real.log (Real.log ((N : ℝ) + 1)) - 1 ≤ ∑ p ∈ Nat.primesBelow (N + 1), (p : ℝ)⁻¹
+      ∧ ∑ p ∈ Nat.primesBelow (N + 1), (p : ℝ)⁻¹ ≤ Real.log (Real.log N) + 6 :=
+  ⟨by linarith [mertens_lower_add_one (M := N) (by omega)], primeMass_upper_one hN⟩
+
 end RHTower

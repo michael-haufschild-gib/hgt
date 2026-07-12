@@ -273,16 +273,23 @@ Let
 T(z)=continuedPrimeArchSourceRelativeTrace(z).             (15)
 ```
 
-The formal orientation gate proves that `T` is anti-Pick on the centered upper strip exactly when
-RH holds. Assume this orientation for the present structural consequence and Cayley-transform
-`-T` to a Schur function on a disk model of the strip.
+The formal orientation gate proves that `T` is anti-Pick on the centered upper half-strip exactly
+when RH holds. Half-strip orientation alone does not make its disk transform inner, because it does
+not supply real boundary values on both strip edges. Assume orientation, deduce RH, and instead use
+the globally meromorphic centered logarithmic derivative `T_Xi=XiC'/XiC`, which agrees with `T` on
+their common regular domain.
 
-The completed Xi divisor is unconditionally infinite. Under orientation, hence under RH, all of
-those poles of `T=XiC'/XiC` lie on the real boundary of the centered strip. After Cayley transform,
-each distinct source pole gives a distinct boundary point where the Schur function has limiting
-value `1`. A nonconstant rational inner function can take the value `1` at only finitely many
-boundary points, while the constant function `1` does not invert to the finite source `T` in the
-strip. Therefore the oriented Xi Schur function is not rational inner.
+Under RH, the paired even Hadamard product gives
+
+```text
+T_Xi(z)=sum_(gamma>0) m_gamma[1/(z-gamma)+1/(z+gamma)]
+```
+
+locally normally in the upper half-plane. Hence `-T_Xi` is Herglotz there and has real boundary
+values away from the real Xi divisor. Normalize it at an interior point and Cayley-transform the
+domain and target. The resulting Schur function is inner, and its Clark measure is pure point on
+the Cayley images of the Xi zeros. The completed Xi divisor is unconditionally infinite, so this
+inner function is nonrational.
 
 Take any finite reduced packet of its interior values and derivatives. Its confluent Pick matrix is
 positive semidefinite because the oriented Xi Schur function realizes the data. It cannot be

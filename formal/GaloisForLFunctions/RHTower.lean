@@ -570,6 +570,7 @@ import GaloisForLFunctions.RHTower.XiHedenmalmMultiplicityChain
 import GaloisForLFunctions.RHTower.XiHedenmalmDeBrangesSeam
 import GaloisForLFunctions.RHTower.XiHedenmalmMomentDeterminacy
 import GaloisForLFunctions.RHTower.XiHedenmalmOrientationGate
+import GaloisForLFunctions.RHTower.CyclicRadicalCollapse
 import GaloisForLFunctions.RHTower.XiHedenmalmSymmetricMultiplicity
 import GaloisForLFunctions.RHTower.XiHedenmalmJordanMatrix
 import GaloisForLFunctions.RHTower.XiWeilResolventSource
@@ -583,6 +584,9 @@ import GaloisForLFunctions.RHTower.XiWeilOneCauchyGate
 import GaloisForLFunctions.RHTower.PrimeArchSourceUpperBoundGate
 import GaloisForLFunctions.RHTower.XiCTaylorFluxBoundGate
 import GaloisForLFunctions.RHTower.XiCTaylorSuperaccurateSchedule
+import GaloisForLFunctions.RHTower.XiTaylorAnisotropicMesh
+import GaloisForLFunctions.RHTower.LogDerivQuotientPerturbation
+import GaloisForLFunctions.RHTower.XiAnisotropicPoleGrowth
 import GaloisForLFunctions.RHTower.XiDivisorSupportedMetric
 import GaloisForLFunctions.SchwartzSesquilinear
 import GaloisForLFunctions.SchwartzProduct
@@ -744,3 +748,5 @@ import GaloisForLFunctions.RHTower.WeightOneInversion
 import GaloisForLFunctions.RHTower.QuadraticScaleSpectralRH
 import GaloisForLFunctions.RHTower.BornPoissonWiring
 import GaloisForLFunctions.RHTower.BornGradedKMSClassification
+import GaloisForLFunctions.RHTower.XiLogDerivNotHolonomic
+import GaloisForLFunctions.RHTower.BornSuperKMSCovariance

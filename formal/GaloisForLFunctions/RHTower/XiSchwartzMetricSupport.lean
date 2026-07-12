@@ -78,6 +78,17 @@ theorem xiRealZeroSet_countable : xiRealZeroSet.Countable := by
   have := congrArg Complex.re hq
   simpa using this
 
+/-- The real centered Xi divisor is Lebesgue-null, without assuming RH. -/
+theorem volume_xiRealZeroSet : volume xiRealZeroSet = 0 :=
+  xiRealZeroSet_countable.measure_zero volume
+
+/-- The completed theta transform is nonzero almost everywhere on the real
+spectral axis.  This is the source-specific input for ordinary `L²`
+translation cyclicity. -/
+theorem ae_XiC_ofReal_ne_zero : ∀ᵐ t : ℝ ∂(volume : Measure ℝ), XiC (t : ℂ) ≠ 0 := by
+  rw [ae_iff]
+  simpa [xiRealZeroSet] using volume_xiRealZeroSet
+
 /-- A measure concentrated on a measurable countable set is exactly the sum of its point masses.
 This is the ambient-space form of mathlib's `Measure.sum_smul_dirac`, whose supplied statement is
 for a countable underlying type. -/
