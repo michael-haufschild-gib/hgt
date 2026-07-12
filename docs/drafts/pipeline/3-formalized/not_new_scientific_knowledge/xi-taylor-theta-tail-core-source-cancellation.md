@@ -8,7 +8,9 @@
   `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedSource.lean`,
   `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedFeedback.lean`,
   `formal/GaloisForLFunctions/RHTower/XiCTaylorOrientedCoefficientCurrent.lean`,
-  `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailOrientedDefect.lean`
+  `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailOrientedDefect.lean`,
+  `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailMomentLogConvex.lean`,
+  `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCoreLaguerreAtomNoGo.lean`
 - **Parent target:**
   `../../1-in-progress/xi-taylor-theta-tail-core-density-current.md`
 
@@ -87,6 +89,54 @@ J_(U_d)(i/2)=-(1/2)A_d(1/4)<0,                          (8)
 
 where every coefficient of the raw tail polynomial `A_d` is strictly positive.
 
+The coefficient telescope gives a stronger axis law.  If
+
+```text
+B_d(w)=1/2+(w-1/4)A_d(w),
+```
+
+then `B_d` is exactly the next Xi magnitude section plus a positive top monomial.  Its value and
+derivative are therefore strictly positive for every `w>=0`, and Lean proves
+
+```text
+J_(U_d)(iy)=-2y B_d'(y^2)B_d(y^2)<0  for every y>0.       (8a)
+```
+
+Lean also proves the exact current reflections
+
+```text
+J_(U_d)(conjugate z)=-J_(U_d)(z),
+J_(U_d)(-z)=-J_(U_d)(z),
+J_(U_d)(-conjugate z)=J_(U_d)(z).                         (8b)
+```
+
+Thus reflection across the imaginary axis preserves the unknown off-axis current and supplies no
+pair cancellation.  On the source side, with
+`h(x)=(exp(x/2)-exp(-x/2))/2`, the exact laws are
+
+```text
+T(-x)=T(x)+h(x),
+rho(-x)=rho(x)+h(x),
+(rho-T)(-x)=(rho-T)(x)=4 Phi(x).                          (8c)
+```
+
+The elementary defect is not integrable against the finite polynomial section on a full line;
+subtracting it leaves the even completed-source channel already identified with the circular
+Taylor feedback `(7)`.
+
+The exact moment relations also exclude a direct Theorem-M endpoint-atom representation of the
+core.  For core degree `N>=4`, log-convexity of the first `N` completed theta moments and Hausdorff
+monotonicity force
+
+```text
+p <= M_N <= M_3 <= 8/[N(N-1)(N-2)] <= 1/3.               (8d)
+```
+
+Lean proves all-order moment positivity, adjacent log-convexity, ratio monotonicity, and the final
+abstract bound `thetaCoreCriticalLaguerre_endpointAtom_le_third`.  Therefore the `p>1/2`
+sign-copy mechanism cannot apply to the core even though its added top coefficient differs from
+the raw moment section.
+
 For any complex polynomial `P`, the current is also the vertical value derivative
 
 ```text
@@ -120,12 +170,16 @@ The combined raw integral is the Lean declaration
 Equations `(1)`--`(10)` retain the boundary seam and separate the completion radial cost from the
 cosine correlation.  Equation `(7)` proves that the completed-source channel is a feedback copy of
 the unknown Taylor section, so treating it as an independently positive correction is circular.
-Equation `(8)` signs only `z=i/2`, not the horizontal boundary line or the open strip.  The
-remaining producer is exactly the raw `T` mixed correlation plus seam in `(3)`.  Therefore this
-package is a formalized reduction, not the sublinear-current producer and not an RH proof.
+Equation `(8a)` signs the positive imaginary axis, not the general vertical fibres in the open
+strip.  The remaining producer is exactly the raw `T` mixed correlation plus seam in `(3)` away
+from that axis.  Therefore this package is a formalized reduction, not the sublinear-current
+producer and not an RH proof.
 
 ## Verification
 
 - Targeted module build passes.
 - Formal lint passes with no active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration.
 - The principal declarations use only `propext`, `Classical.choice`, and `Quot.sound`.
+- The axis theorem is
+  `xiCTaylorThetaTailCorePolynomial_current_mul_I_neg`; the source reflections are
+  `thetaCuspTailSecondDensity_neg` and `thetaCuspTailSecondDensity_sub_tail_neg`.

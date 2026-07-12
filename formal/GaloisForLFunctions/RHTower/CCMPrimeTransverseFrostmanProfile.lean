@@ -50,7 +50,10 @@ lemma normSq_one_sub_exp_I_mul (θ : ℝ) :
     Complex.normSq (1 - Complex.exp ((θ : ℂ) * Complex.I)) = 2 - 2 * Real.cos θ := by
   rw [Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin,
     Complex.normSq_apply]
-  change (1 - Real.cos θ) ^ 2 + (0 - Real.sin θ) ^ 2 = _
+  simp only [Complex.sub_re, Complex.one_re, Complex.add_re, Complex.ofReal_re,
+    Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im, Complex.ofReal_im,
+    mul_zero, sub_zero, Complex.sub_im, Complex.one_im, Complex.add_im, mul_one,
+    add_zero]
   nlinarith [Real.sin_sq_add_cos_sq θ]
 
 lemma normSq_real_sub_exp_I_mul (q θ : ℝ) :
@@ -58,7 +61,9 @@ lemma normSq_real_sub_exp_I_mul (q θ : ℝ) :
       q ^ 2 - 2 * q * Real.cos θ + 1 := by
   rw [Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin,
     Complex.normSq_apply]
-  change (q - Real.cos θ) ^ 2 + (0 - Real.sin θ) ^ 2 = _
+  simp only [Complex.sub_re, Complex.ofReal_re, Complex.add_re, Complex.mul_re,
+    Complex.mul_im, Complex.I_re, Complex.I_im, Complex.ofReal_im, mul_zero,
+    sub_zero, Complex.sub_im, Complex.add_im, mul_one, add_zero]
   nlinarith [Real.sin_sq_add_cos_sq θ]
 
 lemma norm_sq_ccmFrostmanTransverseValue {q θ : ℝ} (hq : 1 < q) :
@@ -92,9 +97,11 @@ lemma ccmFrostmanProfileFloor_le {q θ : ℝ} (hq : 1 < q) :
   have hQ : 0 < (q + 1) ^ 2 := sq_pos_of_pos (by linarith)
   rw [ccmFrostmanProfileFloor, ccmFrostmanPoissonProfile]
   rw [div_le_div_iff₀ hQ hD]
-  have hc := neg_one_le_cos θ
+  have hc := Real.neg_one_le_cos θ
   have hnum : 0 ≤ (q - 1) ^ 2 := sq_nonneg _
-  nlinarith
+  have hdenle : q ^ 2 - 2 * q * Real.cos θ + 1 ≤ (q + 1) ^ 2 := by
+    nlinarith
+  exact mul_le_mul_of_nonneg_left hdenle hnum
 
 lemma ccmFrostmanPoissonProfile_le_one {q θ : ℝ} (hq : 1 < q) :
     ccmFrostmanPoissonProfile q θ ≤ 1 := by
@@ -107,10 +114,10 @@ lemma ccmFrostmanPoissonProfile_le_one {q θ : ℝ} (hq : 1 < q) :
     ccmFrostmanPoissonProfile q 0 = 1 := by
   rw [ccmFrostmanPoissonProfile, Real.cos_zero]
   have hq1 : q - 1 ≠ 0 := sub_ne_zero.mpr hq.ne'
-  field_simp
-  ring
+  have hden : q ^ 2 - 2 * q * 1 + 1 = (q - 1) ^ 2 := by ring
+  rw [hden, div_self (pow_ne_zero 2 hq1)]
 
-@[simp] theorem ccmFrostmanPoissonProfile_pi {q : ℝ} (hq : 1 < q) :
+@[simp] theorem ccmFrostmanPoissonProfile_pi {q : ℝ} (_hq : 1 < q) :
     ccmFrostmanPoissonProfile q Real.pi = ccmFrostmanProfileFloor q := by
   rw [ccmFrostmanPoissonProfile, ccmFrostmanProfileFloor, Real.cos_pi]
   ring_nf
@@ -131,10 +138,15 @@ def ccmFrostmanAngleProfile (q : ℝ) (θ : Real.Angle) : ℝ :=
 lemma continuous_ccmFrostmanAngleProfile {q : ℝ} (hq : 1 < q) :
     Continuous (ccmFrostmanAngleProfile q) := by
   apply Continuous.div continuous_const
-  · fun_prop
+  · exact (continuous_const.sub
+      (continuous_const.mul Real.Angle.continuous_cos)).add continuous_const
   · intro θ
-    have hc : -1 ≤ θ.cos := Real.Angle.neg_one_le_cos θ
-    have hc' : θ.cos ≤ 1 := Real.Angle.cos_le_one θ
+    have hc : -1 ≤ θ.cos := by
+      induction θ using Real.Angle.induction_on with
+      | _ θ => simpa using Real.neg_one_le_cos θ
+    have hc' : θ.cos ≤ 1 := by
+      induction θ using Real.Angle.induction_on with
+      | _ θ => simpa using Real.cos_le_one θ
     nlinarith [sq_pos_of_pos (sub_pos.mpr hq)]
 
 lemma ccmFrostmanAngleProfile_floor_le {q : ℝ} (hq : 1 < q) (θ : Real.Angle) :
@@ -168,7 +180,8 @@ def ccmPrimePoleOrbitAngle (p q : ℕ) (n : ℤ) : Real.Angle :=
 theorem denseRange_ccmPrimePoleOrbitAngle {p q : ℕ}
     (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) :
     DenseRange (ccmPrimePoleOrbitAngle p q) := by
-  rw [ccmPrimePoleOrbitAngle]
+  change DenseRange (fun n : ℤ =>
+    n • ((2 * Real.pi * (Real.log q / Real.log p) : ℝ) : Real.Angle))
   apply AddCircle.denseRange_zsmul_coe_iff.mpr
   have hirr := irrational_log_div_log_of_distinct_primes hp hq hpq
   convert hirr using 1
@@ -198,10 +211,15 @@ theorem exists_ccmPrimeTransverseFrostmanProfile_lt_floor_add
       ccmFrostmanProfileFloor q + ε := by
   let U : Set Real.Angle :=
     {θ | ccmFrostmanAngleProfile q θ < ccmFrostmanProfileFloor q + ε}
+  have hqR : (1 : ℝ) < q := by exact_mod_cast hq.one_lt
   have hopen : IsOpen U :=
-    isOpen_Iio.preimage (continuous_ccmFrostmanAngleProfile (by exact_mod_cast hq.one_lt))
+    isOpen_Iio.preimage (continuous_ccmFrostmanAngleProfile hqR)
   have hmem : (Real.pi : Real.Angle) ∈ U := by
-    simp [U, ccmFrostmanAngleProfile_pi (by exact_mod_cast hq.one_lt), hε]
+    change ccmFrostmanAngleProfile q (Real.pi : Real.Angle) <
+      ccmFrostmanProfileFloor q + ε
+    rw [show ccmFrostmanAngleProfile q (Real.pi : Real.Angle) =
+      ccmFrostmanProfileFloor q from ccmFrostmanAngleProfile_pi hqR]
+    exact lt_add_of_pos_right _ hε
   obtain ⟨n, hn⟩ := (denseRange_ccmPrimePoleOrbitAngle hp hq hpq).exists_mem_open
     hopen ⟨_, hmem⟩
   exact ⟨n, hn⟩
@@ -213,10 +231,14 @@ theorem exists_one_sub_lt_ccmPrimeTransverseFrostmanProfile
     ∃ n : ℤ, 1 - ε < ccmPrimeTransverseFrostmanProfile p q n := by
   let U : Set Real.Angle :=
     {θ | 1 - ε < ccmFrostmanAngleProfile q θ}
+  have hqR : (1 : ℝ) < q := by exact_mod_cast hq.one_lt
   have hopen : IsOpen U :=
-    isOpen_Ioi.preimage (continuous_ccmFrostmanAngleProfile (by exact_mod_cast hq.one_lt))
+    isOpen_Ioi.preimage (continuous_ccmFrostmanAngleProfile hqR)
   have hmem : (0 : Real.Angle) ∈ U := by
-    simp [U, ccmFrostmanAngleProfile_zero (by exact_mod_cast hq.one_lt), hε]
+    change 1 - ε < ccmFrostmanAngleProfile q (0 : Real.Angle)
+    rw [show ccmFrostmanAngleProfile q (0 : Real.Angle) = 1 from
+      ccmFrostmanAngleProfile_zero hqR]
+    linarith
   obtain ⟨n, hn⟩ := (denseRange_ccmPrimePoleOrbitAngle hp hq hpq).exists_mem_open
     hopen ⟨_, hmem⟩
   exact ⟨n, hn⟩
@@ -225,13 +247,23 @@ end RHTower
 
 namespace RHTower
 
+/-- Cosine converts an integral angle multiple back to real multiplication. -/
+lemma ccmAngle_cos_zsmul (n : ℤ) (x : ℝ) :
+    Real.Angle.cos (n • (x : Real.Angle)) = Real.cos ((n : ℝ) * x) := by
+  calc
+    Real.Angle.cos (n • (x : Real.Angle)) =
+        Real.Angle.cos ((n • x : ℝ) : Real.Angle) := by
+          rw [Real.Angle.coe_zsmul]
+    _ = Real.cos (n • x : ℝ) := Real.Angle.cos_coe _
+    _ = Real.cos ((n : ℝ) * x) := by rw [zsmul_eq_mul]
+
 /-- The angular definition is exactly the real Poisson profile on the pole orbit. -/
 theorem ccmPrimeTransverseFrostmanProfile_eq_poisson (p q : ℕ) (n : ℤ) :
     ccmPrimeTransverseFrostmanProfile p q n =
       ccmFrostmanPoissonProfile q
         (2 * Real.pi * (n : ℝ) * (Real.log q / Real.log p)) := by
   simp [ccmPrimeTransverseFrostmanProfile, ccmPrimePoleOrbitAngle,
-    ccmFrostmanAngleProfile, ccmFrostmanPoissonProfile]
+    ccmFrostmanAngleProfile, ccmFrostmanPoissonProfile, ccmAngle_cos_zsmul]
   congr 2
   ring
 

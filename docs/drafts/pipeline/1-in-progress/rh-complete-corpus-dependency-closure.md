@@ -289,13 +289,28 @@ provider would have to supply.
    are logarithmic cumulants.  The first nonconstant minor is already a sixth-moment concentration
    inequality, so raw-density positivity and the all-order recurrence do not close the Hankel cone.
 
-The shortest independent source-value target left by this audit is the continued prime--Gamma
-Cauchy kernel.  A source-built positive-kernel factorization on the pole-free upper strip would
-imply the one-Cauchy diagonal sign and hence RH.  Merely postulating such a factorization is
-equivalent to the missing sign; the new content would have to be an explicit prime--Gamma
-construction whose positivity is visible before the Xi divisor is read.  The distinct
-determinant-line alternative remains a source-selected null-homotopy or no-first-crossing theorem
-for a family retaining the full negative index.
+The continued prime--Gamma Cauchy kernel has a complete value interface with the CCM Mellin
+channel:
+`XiCriticalMellinSourceFactorization.lean` constructs the canonical continued critical-Mellin
+defect, proves agreement with the convergent polar--prime Laplace channel on `Re u>0`, and rewrites
+the full continued Xi source kernel as the conjugate divided difference of
+
+```text
+explicit polar background - continued critical-Mellin defect - Gamma logarithmic derivative.
+```
+
+The apparent background is not an independent positive reserve.  Expanding the archimedean
+logarithmic derivative cancels its two rational boundary terms exactly against the displayed polar
+terms, leaving
+
+```text
+i * (continued critical-Mellin defect + Gamma connection).
+```
+
+Consequently the proposed domination theorem is exactly positivity of the full Xi source kernel
+in renamed coordinates.  It is retired as a top-down discharge rather than promoted as an open
+mechanism.  The distinct determinant-line alternative remains: construct a source-selected
+null-homotopy or no-first-crossing theorem for a family retaining the complete negative index.
 
 ## Two-ended detour audit
 
@@ -331,6 +346,7 @@ identifications are no longer missing interfaces.
 | Multivariate stable prime section | finite Euler/simplicial incidence objects and canonical finite orientations exist | build a completed prime--archimedean multiaffine section, prove stability survives the Gamma weld and cofinal limit, and identify the diagonal limit with Xi | locally uniform real-zero transfer to RH is formalized | **Live only with a new completed section**; bare Euler sections are RH-blind and a shifted local orbit already fails PF2 |
 | Function-field purity degeneration | fixed-`q` Frobenius purity is a genuine theorem; coefficient FE and degree collapse exist in Lean | construct a single differentiable determinant family linking arithmetic curves to Xi and prove locally uniform zero-preserving convergence | locally uniform closed-locus transfer is formalized | **End presently untyped**: prime powers have no sequence `q -> 1`; formal `q -> 1` language is not an arithmetic family |
 | Determinant-line/spectral-flow index | completed source Fredholm and seam families exist | prove a source no-first-crossing law or a null-homotopy retaining the complete defect index | the index equals off-line multiplicity | **Secondary live chain**; orientation counts crossings but does not forbid the first |
+| All-prime Sonin finite moment blocks | the residual energy `T_a=K_a^*K_a` is positive trace class and its Gram tower collapses exactly to `S_r(a)=Tr(T_a^(r+1))` | for every cutoff, construct one positive aperture sequence on which the whole initial moment block converges to the fixed prime--Gamma block | finite-block convergence gives per-test Gram convergence, countable prime--Gamma trace-Hankel positivity, and RH | **Independent live value-relation chain**; unlike the Calkin principal grade, it retains the compact trace data, but the simultaneous cluster-point theorem is wholly open |
 | Hurwitz monodromy/Cauchy source | the Xi-indexed Hurwitz family is differentially free; its character phase is the exact transverse coordinate; the canonical orientation vector is reconstructed by separated continued-Cauchy packets with exact prime--Gamma energies | prove nonnegativity for the explicit separated source packets, or on their algebraic span, without importing a zero-location sign | eventual nonnegativity of one reconstructed source sequence is equivalent to RH; the same phase is the sharp rectangular growth exponent | **Live source-sign chain**; closure, multiplicity, and source-domain interfaces are discharged |
 | Resurgence/Stokes alignment | explicit-formula trans-series language can be source-defined | identify Borel singularities without first taking `log xi`; prove source Stokes positivity/alignment | alignment is RH | **Target-fed in current form**; using the Xi logarithmic divisor builds the answer into the source |
 | Böttcher/Brolin, chromatic sphere, QECC, hyperreal prime | each has a native source object or analogy | no source-defined functor to the completed zeta zero set or quadratic energy is presently typed | absent | **Fringe feeders, not proof chains yet**; retained for new functor construction, not ranked by proximity |
@@ -354,12 +370,16 @@ perturbation or of the determinant-line no-crossing law, not the search boundary
 - [PROVED] A constant floor is stronger than necessary: an eventual lower floor `-C n^alpha` forces every zero into `Re rho<=1/2+alpha`; hence any `n^o(1)` or polylogarithmic lower loss already proves RH.  The all-epsilon observable subpower gate is now formalized in `CCMRectangularSubpowerLowerGate.lean`.
 - [PROVED] The Wigner cross-energy obstruction has an exact positive dual floor controlled by the primal `p_b` energy and reciprocal-symbol boundary energy.
 - [PROVED] The normalized principal Hurwitz phase is exactly the right-half transverse displacement and its supremum is the sharp rectangular power-growth exponent.
+- [PROVED] Relative to any actual critical-line Xi anchor, the reciprocal-square weighted sum of squared imaginary anchored two-node Hurwitz Vandermonde determinants is exactly the canonical orientation energy; the HGT separator, one-vector Weil obstruction, and scalar energy are one value relation.
 - [PROVED] The full Hurwitz orientation vector belongs to the Hilbert closure of pairwise-conjugate-separated continued Cauchy packets in the analytically continued prime--Gamma source domain; their exact source energies converge to the negative orientation energy.
+- [PROVED] The continued prime--Gamma trace and its RH-bearing Cauchy kernel factor globally through the canonical continued critical-Mellin defect; the defect agrees with the convergent polar--prime Laplace channel on its right-half-plane domain.
+- [PROVED] On the regular continued-source domain, the polar boundary terms cancel exactly against the rational part of the archimedean logarithmic derivative, leaving `i * (critical-Mellin defect + Gamma connection)`; polar--Gamma domination is therefore the original Xi source sign, not an independent discharge.
+- [PROVED] Simultaneous convergence of every finite initial all-prime Sonin trace-moment block to the fixed prime--Gamma moment block implies the existing per-test positive Gram coupling and therefore RH; this is a source-value closure premise rather than a sign premise.
 - [PROVED] Poisson wiring and graded KMS classification are formalized, but they do not discharge orientation: reflected-label equality at a zero is equivalent to the reflection already fixing that zero.
 - [PROVED] Ordinary `L²` theta cyclicity cannot discharge Hedenmalm completeness: every nonzero Hedenmalm form is forced to be singular relative to the ordinary `L²` topology.
 - [PROVED] The new square-root vertical zeta bound does not close the Hardy-sign-change endpoint; that endpoint still requires a local completed-carrier second-moment floor dominating its closed first-moment budget and the remaining seam/Jensen transfer data.
 - [EXTERNAL ACTIVE CORE] Prove one unconditional source-defined subpower lower bound for the rectangular family.  This exact `Q_{L,n}` route and its equivalent critical-Mellin, screw-curvature, and principal-phase growth estimates are owned by a concurrent agent and excluded from this lane.
-- [OPEN CORE] Independently construct either a source-visible positive-kernel factorization of the continued prime--Gamma Cauchy kernel or a source-selected determinant-line null-homotopy retaining the complete negative index.  Neither statement may be obtained from the Xi divisor, an RH-equivalent limiting measure, or a hidden zero-free assumption.
+- [OPEN CORE] Independently pursue one of three non-sign producers: construct a source-selected determinant-line null-homotopy retaining the complete negative index; find genuinely additional structure of the coupled critical-Mellin--Gamma source beyond its Xi-kernel sign; or classify the simultaneous finite-block cluster points of the positive all-prime Sonin trace-moment curve and place the prime--Gamma vector in that closure.  None may be obtained from the Xi divisor, an RH-equivalent limiting measure, or a hidden zero-free assumption.
 - [NOVELTY UNVERIFIED] Any completed glue theorem remains scientifically unclassified until the proof, parent-theory, literature, and rediscovery gates are run.
 
 ## Log

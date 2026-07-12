@@ -492,18 +492,47 @@ injective in the weak/product topologies, and its restriction to every compact c
 a closed topological embedding. Thus the paper's exact `C_N` topological selector, rather than
 only its equivalent Gram coordinate, is now formalized.
 
-All sixteen exact builds pass. `#print axioms` on the capstone declarations reports only `propext`,
-`Classical.choice`, and `Quot.sound`. The touched modules contain no proof debt, and the
-repository-wide formal lint passes. This validates only the declarations listed above, not the
-still-unformalized claims in the paper.
+The unconditional modules `GaloisForLFunctions.HTGeometry.PositiveHilbertCubeEmbedding`,
+`FiniteConstraintBlockKernel`, and `CountableConstraintBlockAperture` prove the Banach-space core
+of the finite-fiber aperture. A geometrically weighted biorthogonal kernel sequence gives a closed
+embedded signed Hilbert cube, every point stays in the exact affine finite-constraint fiber, and
+the total perturbation norm is at most its prescribed radius. Countably many separated
+`(k+1)`-atom blocks produce such a sequence for every `k`-constraint operator.
 
-The remaining formalization requires construction and weak continuity of the actual N-extremal Nevanlinna
-kernel and projective support label, the full Bauer-simplex/topological and spectral-type layer,
-finite-frame Hilbert-cube fibers, constrained full-shift transversality,
-the one-sided Fourier/F. and M. Riesz rigidity input and its
-pure-singular graph-saturation consequence,
-the OPUC/Szegő determinant-vanishing input and Bernstein--Szegő approximation, and the final
-residual-set capstone.
+The unconditional modules `GaloisForLFunctions.HTGeometry.LinftyFiniteConstraintAperture` and
+`LinftyPositiveAperture` instantiate that geometry in real `L∞`. Normalized `L¹` indicator
+pairings give exact biorthogonal coordinates on pairwise-disjoint positive measurable blocks.
+Every aperture of radius below one about the constant density is strictly positive almost
+everywhere, so it defines an injective family of positive density measures.
+
+The unconditional module `GaloisForLFunctions.HTGeometry.AtomlessProjectivePositiveAperture`
+derives the required countable positive block partition from the paper's actual atomlessness
+hypothesis on `OnePoint ℝ`. It transports the law to the real chart, proves continuity of its CDF
+from singleton-nullity, chooses strictly increasing quantile cuts, and pulls the resulting
+pairwise-disjoint positive intervals back to the projective line. Thus no stronger unstated
+nonatomic-divisibility axiom is used.
+
+The unconditional modules
+`GaloisForLFunctions.HTGeometry.ProjectiveFiniteConstraintCarrierAperture` and
+`AtomlessProjectiveFrameFiber` connect the aperture to the literal carrier geometry. Finite real
+`L¹` constraints, including normalization, produce a closed embedded Hilbert cube of positive
+parameter probabilities; the Nevanlinna barycenter remains a closed embedding, preserves the
+complete Hamburger moment sequence, and is injective by exact projective label recovery. Choosing
+the real and imaginary parts of the leaf Cayley moments as the finite constraints proves that
+every carrier in the cube has exactly the same level-`N` Cayley--Toeplitz Gram section and the same
+regular Cauchy jet through order `N-1` as the base barycenter. This is the paper's literal
+atomless Hilbert-cube frame-fiber proposition.
+
+All twenty-four exact builds pass. `#print axioms` on the new frame-fiber capstones reports only `propext`,
+`Classical.choice`, and `Quot.sound`. The touched modules contain no proof debt, and the
+repository-wide formal lint must be rerun after the current shared-worktree activity settles. This
+validates only the declarations listed above, not the still-unformalized claims in the paper.
+
+The remaining formalization requires construction of the actual N-extremal Nevanlinna family from
+every normalized indeterminate Hamburger moment sequence, the infinite-support positive-chart
+statement outside the atomless branch, constrained full-complex-shift transversality, the
+one-sided Fourier/F. and M. Riesz rigidity theorem, the OPUC/Szegő determinant-vanishing theorem,
+Bernstein--Szegő approximation, and the final residual-set and paper-wide capstones.
 
 ## Gates
 

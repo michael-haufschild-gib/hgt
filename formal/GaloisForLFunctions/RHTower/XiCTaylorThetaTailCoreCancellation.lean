@@ -184,6 +184,25 @@ theorem thetaCuspTailSecondDensity_eq_tail_add_four_fullSource (x : ℝ) :
   unfold thetaCuspTailSecondDensity
   ring
 
+/-- The canonical density has the same elementary half-exponential reflection defect as the raw
+one-sided theta tail.  The completed difference `rho - T = 4 Phi` is the even part. -/
+theorem thetaCuspTailSecondDensity_neg (x : ℝ) :
+    thetaCuspTailSecondDensity (-x) =
+      thetaCuspTailSecondDensity x + thetaCuspReflectionMode x := by
+  rw [thetaCuspTailSecondDensity_eq_tail_add_four_fullSource,
+    thetaCuspTailSecondDensity_eq_tail_add_four_fullSource,
+    thetaCuspTailDerivative_zero_neg, thetaCuspFullSource_neg]
+  simp only [thetaCuspReflectionMode]
+  ring
+
+/-- Subtracting the raw tail removes the whole reflection defect of the canonical density. -/
+theorem thetaCuspTailSecondDensity_sub_tail_neg (x : ℝ) :
+    thetaCuspTailSecondDensity (-x) - thetaCuspTailDerivative 0 (-x) =
+      thetaCuspTailSecondDensity x - thetaCuspTailDerivative 0 x := by
+  rw [thetaCuspTailSecondDensity_neg, thetaCuspTailDerivative_zero_neg]
+  simp only [thetaCuspReflectionMode]
+  ring
+
 /-- Exact finite-section completion identity.  The shifted second section is not an independent
 kernel: after multiplication by `z^2` it is the defect of the next ordinary cosine section. -/
 theorem truncatedCosineSection_succ_eq_one_sub_sq_mul_secondSection

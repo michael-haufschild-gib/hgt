@@ -31,6 +31,29 @@ theorem evenMagnitudeLift_secondDerivative_eval (B : Polynomial ℝ) (z : ℂ) :
     Polynomial.derivative_mul, Polynomial.aeval_def]
   ring
 
+/-- On the imaginary axis, the current of an even real lift is exactly the negative radial
+derivative product of its magnitude polynomial. -/
+theorem orientedPolynomialCurrent_evenMagnitudeLift_mul_I
+    (B : Polynomial ℝ) (y : ℝ) :
+    orientedPolynomialCurrent (evenMagnitudeLift B) ((y : ℂ) * I) =
+      -2 * y * B.derivative.eval (y ^ 2) * B.eval (y ^ 2) := by
+  unfold orientedPolynomialCurrent
+  rw [evenMagnitudeLift_eval, evenMagnitudeLift_derivative_eval]
+  rw [show -(((y : ℂ) * I) ^ 2) = ((y ^ 2 : ℝ) : ℂ) by
+    rw [mul_pow, I_sq]
+    push_cast
+    ring]
+  have hB : B.eval₂ (algebraMap ℝ ℂ) ((y ^ 2 : ℝ) : ℂ) =
+      ((Polynomial.eval (y ^ 2) B : ℝ) : ℂ) :=
+    Polynomial.eval₂_at_apply (p := B) (algebraMap ℝ ℂ) (y ^ 2)
+  have hBd : B.derivative.eval₂ (algebraMap ℝ ℂ) ((y ^ 2 : ℝ) : ℂ) =
+      ((Polynomial.eval (y ^ 2) B.derivative : ℝ) : ℂ) :=
+    Polynomial.eval₂_at_apply (p := B.derivative) (algebraMap ℝ ℂ) (y ^ 2)
+  rw [hB, hBd]
+  simp only [Complex.conj_ofReal, Complex.mul_im, Complex.mul_re,
+    Complex.ofReal_re, Complex.ofReal_im, I_re, I_im]
+  norm_num
+
 /-- Exact raw-coordinate decomposition of the complex Laguerre defect.  The final norm-square
 term has a favorable sign; all unresolved orientation is in the first two raw value correlations. -/
 theorem evenMagnitudeLift_verticalLaguerreDefect_eq_raw
@@ -67,6 +90,47 @@ theorem orientedPolynomialCurrent_evenMagnitudeLift_real_eq_zero
     simp
   rw [hlift]
   exact orientedPolynomialCurrent_map_real_eq_zero (B.comp (-(X ^ 2))) x
+
+/-- Schwarz reflection reverses the oriented current of a real-coefficient polynomial. -/
+theorem orientedPolynomialCurrent_map_real_conj
+    (Q : Polynomial ℝ) (z : ℂ) :
+    orientedPolynomialCurrent (Q.map (algebraMap ℝ ℂ)) ((starRingEnd ℂ) z) =
+      -orientedPolynomialCurrent (Q.map (algebraMap ℝ ℂ)) z := by
+  unfold orientedPolynomialCurrent
+  rw [Polynomial.derivative_map]
+  have hQ : (Q.map (algebraMap ℝ ℂ)).eval ((starRingEnd ℂ) z) =
+      (starRingEnd ℂ) ((Q.map (algebraMap ℝ ℂ)).eval z) := by
+    simpa [Polynomial.aeval_def] using Polynomial.aeval_conj Q z
+  have hQd : (Q.derivative.map (algebraMap ℝ ℂ)).eval ((starRingEnd ℂ) z) =
+      (starRingEnd ℂ) ((Q.derivative.map (algebraMap ℝ ℂ)).eval z) := by
+    simpa [Polynomial.aeval_def] using Polynomial.aeval_conj Q.derivative z
+  rw [hQ, hQd]
+  simp
+  ring
+
+/-- Central negation reverses the oriented current of an even-magnitude lift. -/
+theorem orientedPolynomialCurrent_evenMagnitudeLift_neg
+    (B : Polynomial ℝ) (z : ℂ) :
+    orientedPolynomialCurrent (evenMagnitudeLift B) (-z) =
+      -orientedPolynomialCurrent (evenMagnitudeLift B) z := by
+  unfold orientedPolynomialCurrent
+  rw [evenMagnitudeLift_eval, evenMagnitudeLift_derivative_eval,
+    evenMagnitudeLift_eval, evenMagnitudeLift_derivative_eval]
+  rw [neg_sq]
+  simp
+
+/-- Reflection across the imaginary axis preserves the current of an even real lift. -/
+theorem orientedPolynomialCurrent_evenMagnitudeLift_neg_conj
+    (B : Polynomial ℝ) (z : ℂ) :
+    orientedPolynomialCurrent (evenMagnitudeLift B) (-((starRingEnd ℂ) z)) =
+      orientedPolynomialCurrent (evenMagnitudeLift B) z := by
+  rw [orientedPolynomialCurrent_evenMagnitudeLift_neg]
+  have hlift : evenMagnitudeLift B =
+      (B.comp (-(X ^ 2))).map (algebraMap ℝ ℂ) := by
+    rw [evenMagnitudeLift, Polynomial.map_comp]
+    simp
+  rw [hlift, orientedPolynomialCurrent_map_real_conj]
+  ring
 
 /-- The whole vertical current of an even-magnitude lift is the integrated complex Laguerre
 defect from its zero-current real boundary. -/

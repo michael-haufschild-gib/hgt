@@ -1,7 +1,7 @@
 # Prime-complete transverse Frostman profile in CCM local-factor geometry
 
 - **ID:** ccm-prime-transverse-frostman-profile
-- **Stage:** 1-in-progress
+- **Stage:** 1-in-progress; unconditional Lean foundation complete, novelty audit open
 - **Type:** CANDIDATE
 - **Source:** Connes--Consani prime-local Blaschke products, their distinguished pole orbits, and prime-log irrationality
 - **Statement:** For distinct primes `p,q`, evaluation of the `q`-local Frostman shift along the distinguished `p`-pole orbit has an explicit Poisson-kernel defect whose lower envelope is `((q-1)/(q+1))^2`; hence the marked transverse profile recovers `q` exactly.
@@ -13,8 +13,8 @@ Replace the prime-blind universal Calkin boundary character by the positive datu
 ## Gates
 
 - [x] 0 → 1 in-progress: explicit source formula, arithmetic density mechanism, recovery formula, and a primary-literature gap identified
-- [ ] 1 → 2 fully-proven: complete paper proof of the exact profile, lower-envelope sharpness, and recovery
-- [ ] 2 → 3 formalized: all scalar and density theorems in Lean with no project axioms or placeholders
+- [x] Mathematical proof complete: exact profile, lower-envelope sharpness, upper-envelope sharpness, and recovery
+- [x] Lean foundation complete: all scalar, density, `IsGLB`, `IsLUB`, recovery, and bundled marked/unmarked theorems, with no project axioms or placeholders
 - [ ] 3 → 4 publication-ready: bundle with the all-prime Calkin character only after novelty and significance exceed 90/100
 
 ## Candidate theorem
@@ -59,14 +59,27 @@ The unmarked polynomial Calkin quotient admits a universal character taking ever
 - The candidate new content is their exact cross-prime assembly for the Connes--Consani local-factor system and the resulting prime-recovery law.
 - If the recovery law or an equivalent cross-prime profile appears in the literature, this card must be downgraded to a bridge.
 
+## Formal surface
+
+The unconditional module is
+`formal/GaloisForLFunctions/RHTower/CCMPrimeTransverseFrostmanProfile.lean`.
+Its main declarations prove:
+
+- the exact complex Frostman defect and Poisson-profile identity;
+- irrationality of every distinct-prime logarithmic clock ratio, by reuse of the existing unconditional prime-rate theorem;
+- density of the marked source-prime pole orbit on the angle circle;
+- exact `IsGLB` and `IsLUB` statements for the integer-orbit profile;
+- algebraic recovery of the target scale from the lower envelope;
+- one bundled theorem juxtaposing the all-prime unmarked Calkin character with marked transverse recovery.
+
+`#print axioms` for the capstone and its critical dependencies reports only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
 ## Open core
 
-1. Formalize the exact complex Frostman value and its defect formula.
-2. Formalize irrationality of `log q / log p` for distinct primes from prime-log linear independence.
-3. Formalize sharp lower-envelope and upper-envelope approximation along the integer pole orbit.
-4. Decide whether to formalize the full Hardy projection identity or state the theorem intrinsically as the normalized model-kernel diagonal.
-5. Complete the exact primary-source audit, including Crofoot/Frostman model-space transforms and later Toeplitz-kernel literature.
+1. Complete the exact primary-source audit, including Crofoot/Frostman model-space transforms and later Toeplitz-kernel literature.
+2. Decide whether a full Hardy projection identity materially strengthens the paper. It is not required by, and is not claimed in, the current intrinsic normalized model-kernel theorem.
 
 ## Current verdict
 
-`[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` only provisionally. The formula is not in the inspected Connes--Consani paper and exact web searches found no cross-prime treatment. Current significance estimate: 91/100 if the prime-recovery law and its marked-versus-unmarked consequence survive the full parent-literature audit; otherwise 75/100 as a model-space bridge.
+`[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` only provisionally. The complete unconditional theorem is now formalized, but formalization does not settle novelty. The formula is not in the inspected Connes--Consani paper and exact web searches found no cross-prime treatment. Current significance estimate: 91/100 if the prime-recovery law and its marked-versus-unmarked consequence survive the full parent-literature audit; otherwise 75/100 as a model-space bridge.

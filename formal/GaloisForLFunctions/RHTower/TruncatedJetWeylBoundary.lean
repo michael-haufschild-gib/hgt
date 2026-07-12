@@ -59,6 +59,38 @@ theorem boundaryCompletedJetWeylDefect_zero_last
   rw [pow_succ]
   ring
 
+
+/-- **Unconditional semilinear interior law.** Before the top boundary is closed, the canonical
+one-sided truncated-jet shift obeys the exact Weyl relation in every dimension and for every phase.
+The price is singularity: the missing wrap makes the shift noninvertible. -/
+theorem truncatedJetClock_oneSidedShift_weyl
+    (n : ℕ) (zeta : ℂ) :
+    truncatedJetClock n zeta * boundaryCompletedJetShift n 0 =
+      zeta • (boundaryCompletedJetShift n 0 * truncatedJetClock n zeta) := by
+  ext i j
+  simp only [truncatedJetClock, Matrix.diagonal_mul, Matrix.mul_diagonal,
+    smul_eq_mul, smul_apply]
+  by_cases hstep : (j : ℕ) + 1 = (i : ℕ)
+  · simp only [boundaryCompletedJetShift, hstep, if_pos]
+    rw [← hstep, pow_succ]
+    ring
+  · simp [boundaryCompletedJetShift, hstep]
+
+/-- The canonical one-sided truncated-jet shift is singular: its top column is zero. -/
+theorem boundaryCompletedJetShift_zero_det (n : ℕ) :
+    (boundaryCompletedJetShift n 0).det = 0 := by
+  apply Matrix.det_eq_zero_of_column_eq_zero (Fin.last n)
+  intro i
+  have htop : n + 1 ≠ (i : ℕ) := Nat.ne_of_gt i.isLt
+  simp [boundaryCompletedJetShift, htop]
+
+/-- The geometric clock is invertible whenever its phase is nonzero. -/
+theorem truncatedJetClock_det_ne_zero
+    (n : ℕ) {zeta : ℂ} (hzeta : zeta ≠ 0) :
+    (truncatedJetClock n zeta).det ≠ 0 := by
+  rw [truncatedJetClock, Matrix.det_diagonal]
+  exact Finset.prod_ne_zero_iff.mpr fun i _ => pow_ne_zero (i : ℕ) hzeta
+
 /-- If the phase closes after `n+1` steps, every boundary holonomy gives an exact Weyl pair. -/
 theorem boundaryCompletedJetWeyl_of_phase_pow_card
     (n : ℕ) (zeta h : ℂ) (hzeta : zeta ^ (n + 1) = 1) :

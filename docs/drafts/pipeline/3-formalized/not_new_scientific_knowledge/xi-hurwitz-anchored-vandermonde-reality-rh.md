@@ -60,6 +60,27 @@ all finite positive determinants
 one anchored family of real 2 x 2 determinants.           (5)
 ```
 
+The anchored family also has an exact scalar compression.  Normalize each imaginary determinant
+by the moving character radius and weight it by the canonical multiplicity-sensitive centered
+reciprocal-square Xi weight.  For every critical-line anchor `tau`, Lean proves
+
+\[
+\sum_{\rho\in Z_\Xi}
+  \frac{m_\rho}{|\rho-\tfrac12|^2}
+  \frac{\operatorname{Im}D(\rho,\tau)^2}{|q(\rho)|^2}
+=\mathcal E_\Xi.
+\]
+
+Thus the HGT Vandermonde obstruction, the canonical orientation vector, and the complete Xi Weil
+obstruction are the same scalar after anchoring.  This is a value-relation simplification, not a
+new producer of the required zero value:
+
+```text
+anchored Vandermonde energy = 0
+  <-> E_Xi = 0
+  <-> RH.                                                  (6)
+```
+
 ## Source obligation
 
 The existence of critical-line Xi zeros is classical Hardy theory, but the current formal theorem
@@ -82,6 +103,9 @@ Principal declarations:
 - `riemannHypothesis_iff_xiHurwitzAnchoredPairVandermondeReal`
 - `riemannHypothesis_of_exists_xiHurwitzAnchor_pairVandermondeReal`
 - `xiHurwitzPairVandermondeDet_pos_real_of_rh`
+- `xiHurwitzAnchoredPairOrientationDefect_eq`
+- `xiHurwitzAnchoredPairOrientationEnergy_eq`
+- `riemannHypothesis_iff_xiHurwitzAnchoredPairOrientationEnergy_eq_zero`
 
 The exact module build passes.  The nonvanishing and RH capstones use only `propext`,
 `Classical.choice`, and `Quot.sound`.
@@ -92,6 +116,7 @@ The exact module build passes.  The nonvanishing and RH capstones use only `prop
 - [x] unconditional nonvanishing for distinct Xi points proved
 - [x] positive chamber weakened to anchored reality
 - [x] anchored reality composed to RH
+- [x] anchored determinant defects summed exactly to the canonical orientation energy
 - [x] exact build and axiom check
 - [ ] direct Lean construction of one actual critical-line Xi anchor
 - [ ] source theorem forcing anchored separator reality

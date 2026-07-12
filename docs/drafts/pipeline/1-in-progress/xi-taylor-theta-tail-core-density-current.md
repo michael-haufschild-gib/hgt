@@ -145,14 +145,57 @@ proved in Lean.  It signs only the single point `z=i/2`: on the rest of the hori
 `Im z=1/2`, the factor `z^2+1/4` does not vanish.  Thus `(8)` supplies no boundary-line control and
 does not localize the positive-current obstruction by itself.
 
+The exact coefficient telescope strengthens this isolated seam value in one genuine direction.
+Writing `B_d(w)=1/2+(w-1/4)A_d(w)`, Lean now proves
+
+```text
+B_d(w)=M_(d+1)(w)+(1/4)a_(d+1)w^(d+1),
+M_(d+1)(w)=sum_(k=0)^(d+1) mu_k w^k/(2k)!,              (8a)
+```
+
+where `mu_k>=0`, `mu_0,mu_1>0`, and `a_(d+1)>0`.  Consequently, for every `w>=0`,
+
+```text
+B_d(w)>0,  B_d'(w)>0,
+J_(U_d)(iy)=-2y B_d'(y^2)B_d(y^2)<0  for y>0.           (8b)
+```
+
+Thus the full canonical value relations orient the entire positive imaginary axis, not merely
+`i/2`.  This is stronger than positivity of the density and fails for a generic individual core
+atom.  It still does not reach an anisotropic fibre with nonzero real part.  The exact polynomial
+reflections are
+
+```text
+J_(U_d)(conjugate z)=-J_(U_d)(z),
+J_(U_d)(-z)=-J_(U_d)(z),
+J_(U_d)(-conjugate z)=J_(U_d)(z).                        (8c)
+```
+
+In particular reflection across the imaginary axis preserves the unknown current, so conjugate
+mesh fibres reinforce rather than cancel each other.
+
+The source reflection is equally exact.  With
+`h(x)=(exp(x/2)-exp(-x/2))/2`, Lean proves
+
+```text
+T(-x)=T(x)+h(x),
+rho(-x)=rho(x)+h(x),
+(rho-T)(-x)=(rho-T)(x)=4 Phi(x).                         (8d)
+```
+
+This does not yield a full-line antisymmetrization: `h` grows exponentially on one end and its
+pairing with a finite polynomial cosine section is not integrable.  Removing `h` leaves the even
+completed source `4 Phi`, whose finite transform is the circular Taylor feedback `(7)`.
+
 For every polynomial `P`, Lean also proves the exact value-coordinate identity
 
 ```text
 d/dy |P(x+iy)|^2 = -2 J_P(x+iy).                           (9)
 ```
 
-The whole real boundary, unlike the isolated point `(8)`, has an exact value relation.  Since
-`U_d` has real coefficients,
+The whole real boundary has a second exact value relation.  Together with `(8b)` this signs the two
+coordinate axes, but the anisotropic target lies on general vertical fibres.  Since `U_d` has real
+coefficients,
 
 ```text
 J_(U_d)(x)=0,
@@ -230,15 +273,64 @@ Q_3'(s)=-(s^2-20s+120)/240<0  for every real s,
 shows that `Q_3` has only one real root and hence its even lift has four nonreal zeros, despite
 being the positive inverse-gamma average `(13)` of hyperbolic critical-Laguerre copies.
 
-The live question suggested by `(13)` is narrower: combine the horizontal Laguerre energy identity
+The Laguerre energy does not transfer directly to `(13)`.  Its favorable identity is horizontal,
 
 ```text
-partial_x (|L_d|^2+|L_d'|^2)=(x/d)|L_d'|^2
+partial_x (|L_d(x+iy)|^2+|L_d'(x+iy)|^2)=(x/d)|L_d'(x+iy)|^2.
 ```
 
-with the *specific product scale* `x/sqrt(G_d)` and the raw theta weight `T(x)` to bound the two
-cross terms in `(12)`.  A proof must control the averaged cross current; hyperbolicity of each
-Laguerre copy separately is insufficient.
+The scale in `(13)` moves instead on the radial path `r -> rz`.  The Kummer ODE gives the exact
+radial identity
+
+```text
+d/dr (|L_d(rz)|^2+|L_d'(rz)|^2)
+ = -4 Im(z) J_(L_d)(rz)
+   +(r/d) Re(z^2)|L_d'(rz)|^2.                            (13a)
+```
+
+Thus the individual-copy radial energy already contains the unknown oriented current.  More
+decisively, the current of the average in `(13)` is a double-scale cross current, not the average
+of the diagonal currents in `(13a)`.  The only surviving Laguerre possibility is a *polarized*
+two-scale energy identity whose mismatch terms cancel under the exact product of the inverse-gamma
+scale and `T(x)dx`; the one-copy energy and hyperbolicity of each Laguerre copy are insufficient.
+
+There is nevertheless a second exact relation in the same coordinate.  Put
+`R_d=G_d^(-1/2)` and
+
+```text
+S_d(r)=2(d+1)-2d/r^2.
+```
+
+The inverse-gamma density gives the Stein identity
+
+```text
+E[R_d f'(R_d)]=E[S_d(R_d)f(R_d)],  E[S_d(R_d)]=0.         (13b)
+```
+
+Hence, if `F_d(w)=E[L_d(R_d w)]=C_d(w)` is the ordinary truncated cosine and
+`M_d(z)=integral T(x)F_d(zx)dx`, then
+
+```text
+w F_d'(w)=E[S_d(R_d)L_d(R_d w)],
+z M_d'(z)=integral T(x)E[S_d(R_d)L_d(R_dzx)]dx.           (13c)
+```
+
+After polarization with independent `(x,r)` and `(y,s)`, this becomes the exact score--phase
+covariance
+
+```text
+Im(z M_d'(z) conjugate(M_d(z)))
+ = (1/2) integral integral T(x)T(y)
+     E[(S_d(r)-S_d(s))
+       Im(L_d(rzx)conjugate(L_d(szy)))] dxdy.             (13d)
+```
+
+Equations `(13b)`--`(13d)` are proved on paper by integration by parts in the explicit
+inverse-gamma density.  `[OPEN CORE]` The score is increasing in `r`, but the two source variables
+`x,y` are independent, so real-rooted radial phase monotonicity of each `L_d` does not sign the
+cross phase in `(13d)`.  A surviving Laguerre proof must show that the exact `T`-weighted product
+law makes this score--phase covariance upper-sublinear; replacing it by a diagonal or an absolute
+value loses the required cancellation.
 
 The identity-atom part of the Theorem-M mechanism is in fact unavailable for *any* critical-
 Laguerre representation of the raw moment section.  Normalize the raw moments to `mu_0=1`, write
@@ -275,6 +367,32 @@ alternative truncated Hausdorff representing measure instead of the natural inve
 Equations `(14)`--`(15)` are proved on paper.  Theorem M therefore supplies the Laguerre coordinate
 and energy identity, but its coercive sign-copy step is rigorously retired for the raw theta
 moments.  Any surviving use of `(13)` must estimate the averaged cross current directly.
+
+The same atom mechanism also fails if it is applied directly to the *core* polynomial from `(8a)`.
+Let `N=d+1`.  Its first `N` unnormalized moments `q_0,...,q_(N-1)` are the genuine moments of the
+positive completed theta source, hence their ratios
+`r_k=q_(k+1)/q_k` are nondecreasing for `k<=N-2`; only the artificial top moment `q_N` differs.
+For any critical-Laguerre representation on `[0,1]`, Hausdorff monotonicity gives
+
+```text
+M_(k+1)/M_k = N r_k/(lambda^2(N-k)),
+lambda^2 >= N r_(N-2)/2.
+```
+
+Consequently, for `k=0,1,2`,
+
+```text
+M_(k+1)/M_k <= 2/(N-k),
+p <= M_N <= M_3 <= 8/[N(N-1)(N-2)] <= 1/3  (N>=4).       (15a)
+```
+
+Thus an identity atom `p>1/2` is impossible for every core degree `N>=4`, regardless of the special
+top coefficient.  Equation `(15a)` is proved on paper from Cauchy--Schwarz log-convexity and the
+finite Hausdorff moment inequalities.  It is now formalized in Lean: all-order theta-moment
+log-convexity and ratio monotonicity are
+`thetaCuspRawEvenMoment_sq_le_adjacent` and
+`thetaCuspRawEvenMoment_ratio_mono`; the abstract endpoint bound is
+`thetaCoreCriticalLaguerre_endpointAtom_le_third`.
 
 ## Literature/value-relation audit
 
@@ -337,6 +455,8 @@ moments.  Any surviving use of `(13)` must estimate the averaged cross current d
 - [x] expose the raw-tail plus completed-source density split
 - [x] prove the completed-source feedback identity and remove that circular channel
 - [x] prove the exact negative current at the central completion seam point
+- [x] strengthen the seam sign to strict negativity on the whole positive imaginary axis
+- [x] formalize the source and polynomial reflection laws and exclude reflected-fibre cancellation
 - [x] identify the current with the vertical derivative of the finite squared modulus
 - [x] derive and formalize the real-boundary-to-interior complex Laguerre-defect identity
 - [x] audit classical theta, orthogonal-polynomial, spectral, and Wigner value relations

@@ -10,6 +10,8 @@
   - `GaloisForLFunctions/RHTower/XiThetaL2Cyclicity.lean`
   - `GaloisForLFunctions/RHTower/XiThetaL2MetricSingularity.lean`
   - `GaloisForLFunctions/RHTower/XiThetaSchwartzL2ExtensionObstruction.lean`
+  - `GaloisForLFunctions/RHTower/CyclicNullFormNonclosability.lean`
+  - `GaloisForLFunctions/RHTower/XiThetaSchwartzL2Nonclosability.lean`
 
 ## Theorem package
 
@@ -24,7 +26,13 @@ The formal chain proves unconditionally:
    simultaneous translation and annihilates the theta source is identically zero;
 6. consequently no nonzero metric with those properties exists;
 7. a momentum-symmetric theta-null continuous Schwartz form which extends jointly continuously
-   to ordinary `L²(R)` is identically zero.
+   to ordinary `L²(R)` is identically zero;
+8. every nonzero nonnegative form in that class fails the sequential closability criterion in
+   ordinary `L²(R)` and has an `L²`-null sequence of fixed nonzero form energy;
+9. within the nonnegative, momentum-symmetric, theta-null cone, sequential `L²` closability is
+   equivalent to the form vanishing identically;
+10. every source vector is arbitrarily close in ordinary `L²` to the form radical, so the induced
+    quotient seminorm vanishes on every source coset.
 
 The final source-specific theorem is
 
@@ -36,6 +44,18 @@ The Schwartz-to-`L²` capstone is
 
 ```text
 not_exists_nonzero_xiThetaSchwartzForm_l2_extension.
+```
+
+The exact closure classification is
+
+```text
+xiThetaSchwartzForm_sequentiallyL2Closable_iff_zero.
+```
+
+The quotient-collapse theorem is
+
+```text
+exists_leftRadical_l2_approx.
 ```
 
 It contains no RH hypothesis, zero-location hypothesis, positivity interface, assumed cyclicity,

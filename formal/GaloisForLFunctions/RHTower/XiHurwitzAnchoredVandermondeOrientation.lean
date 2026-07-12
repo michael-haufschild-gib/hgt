@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.XiHurwitzConstraintOrientation
+import GaloisForLFunctions.RHTower.XiHurwitzOrientationEnergy
 
 /-!
 # One anchored Hurwitz Vandermonde reality chamber proves RH
@@ -50,6 +50,53 @@ theorem xiHurwitzMonodromyCharacter_im_eq_zero_of_re_eq_half
   have hneg := (openCriticalStrip_monoScalar_negativeReal_iff
     (xi_divisor_support_re_mem_open_unit τ)).mpr hτ
   simpa only [xiHurwitzMonodromyCharacter] using hneg.1
+
+/-- The squared imaginary part of the anchored two-node Vandermonde, normalized by the moving
+zero's character radius. -/
+def xiHurwitzAnchoredPairOrientationDefect
+    (ρ τ : XiDivisorSupport) : ℝ :=
+  (xiHurwitzPairVandermondeDet ρ τ).im ^ 2 /
+    ‖xiHurwitzMonodromyCharacter ρ‖ ^ 2
+
+/-- Once the anchor lies on the critical line, the anchored determinant defect is exactly the
+canonical pointwise Hurwitz orientation defect. -/
+theorem xiHurwitzAnchoredPairOrientationDefect_eq
+    {τ : XiDivisorSupport} (hτ : (τ : ℂ).re = 1 / 2)
+    (ρ : XiDivisorSupport) :
+    xiHurwitzAnchoredPairOrientationDefect ρ τ =
+      xiHurwitzOrientationDefect ρ := by
+  rw [xiHurwitzAnchoredPairOrientationDefect,
+    xiHurwitzOrientationDefect, xiHurwitzPairVandermondeDet_eq_sub,
+    Complex.sub_im,
+    xiHurwitzMonodromyCharacter_im_eq_zero_of_re_eq_half hτ,
+    sub_zero]
+
+/-- The multiplicity-sensitive reciprocal-square sum of all anchored two-node determinant
+defects. -/
+def xiHurwitzAnchoredPairOrientationEnergy (τ : XiDivisorSupport) : ℝ :=
+  ∑' ρ : XiDivisorSupport,
+    xiHurwitzOrientationWeight ρ *
+      xiHurwitzAnchoredPairOrientationDefect ρ τ
+
+/-- Every critical-line anchor gives exactly the same scalar: the canonical Xi--Hurwitz
+orientation energy. -/
+theorem xiHurwitzAnchoredPairOrientationEnergy_eq
+    {τ : XiDivisorSupport} (hτ : (τ : ℂ).re = 1 / 2) :
+    xiHurwitzAnchoredPairOrientationEnergy τ =
+      xiHurwitzOrientationEnergy := by
+  rw [xiHurwitzAnchoredPairOrientationEnergy, xiHurwitzOrientationEnergy]
+  apply tsum_congr
+  intro ρ
+  rw [xiHurwitzOrientationEnergyTerm,
+    xiHurwitzAnchoredPairOrientationDefect_eq hτ]
+
+/-- **Scalar anchored Vandermonde criterion.**  Relative to any actual critical-line anchor, RH is
+equivalent to vanishing of one convergent scalar made from the HGT Vandermonde separators. -/
+theorem riemannHypothesis_iff_xiHurwitzAnchoredPairOrientationEnergy_eq_zero
+    (τ : XiDivisorSupport) (hτ : (τ : ℂ).re = 1 / 2) :
+    RiemannHypothesis ↔ xiHurwitzAnchoredPairOrientationEnergy τ = 0 := by
+  rw [xiHurwitzAnchoredPairOrientationEnergy_eq hτ]
+  exact riemannHypothesis_iff_xiHurwitzOrientationEnergy_eq_zero
 
 /-- Under RH, all anchored pair separators are real. -/
 theorem xiHurwitzAnchoredPairVandermondeReal_of_rh

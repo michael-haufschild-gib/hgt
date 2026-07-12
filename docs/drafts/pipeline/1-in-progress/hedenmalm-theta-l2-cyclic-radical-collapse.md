@@ -127,6 +127,19 @@ Q_2=0 and Q_S=0.                                           (11a)
 Thus a nonzero admissible Schwartz form does not merely lack a bounded multiplier
 representation: it admits no jointly continuous ordinary-`L²` sesquilinear extension at all.
 
+The stronger nonclosability theorem removes even the closed-unbounded escape.  If the form is
+nonnegative and nonzero, there is a Schwartz sequence `(z_n)` such that
+
+```text
+z_n -> 0 in ordinary L²,
+q(z_m-z_n,z_m-z_n)=0 for every m,n,
+q(z_n,z_n)=c>0 for every n.                               (11c)
+```
+
+Hence the form fails the standard sequential criterion for closability.  No closed nonnegative
+quadratic form on ordinary `L²(R)` can restrict to the proposed Hedenmalm orientation on this
+translation-stable source core.
+
 ## 4. Relation to the orientation seam
 
 Moment determinacy reconstructs the theta source but does not orient its Bezoutian.  The present
@@ -188,5 +201,7 @@ orientation by itself.
 - [x] define the pullback radical of an `L²`-continuous Hedenmalm metric and instantiate `(10)`;
 - [x] prove that every momentum-symmetric theta-null Schwartz form with an ordinary-`L²`
       continuous extension vanishes;
+- [x] prove that every nonzero nonnegative such form fails sequential closability in ordinary
+      `L²`, with an explicit fixed-energy null sequence;
 - [ ] complete a primary-source novelty audit around Hedenmalm's June 2026 proposal and
       Wiener--Tauberian cyclic vectors.

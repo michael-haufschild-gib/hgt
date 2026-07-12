@@ -269,6 +269,97 @@ theorem thetaCuspTailEvenPolynomial_eval_quarter_pos (d : ℕ) :
     exact mul_pos (thetaCuspTailEvenCoefficient_pos k) (by positivity)
   · exact ⟨0, by simp⟩
 
+/-- The core magnitude polynomial is the next canonical Xi magnitude section plus the positive
+top monomial removed by the finite theta-tail telescope. -/
+theorem xiCTaylorThetaTailCoreMagnitude_eq_xi_add_top (d : ℕ) :
+    C (1 / 2) + (X - C (1 / 4)) * thetaCuspTailEvenPolynomial d =
+      xiCTaylorEvenMagnitudePolynomial (d + 1) +
+        C ((1 / 4 : ℝ) * thetaCuspTailEvenCoefficient (d + 1)) * X ^ (d + 1) := by
+  rw [xiCTaylorEvenMagnitudePolynomial_succ]
+  ring
+
+/-- The exact coefficient telescope makes the core magnitude strictly positive on the
+nonnegative real ray. -/
+theorem xiCTaylorThetaTailCoreMagnitude_eval_pos
+    (d : ℕ) {w : ℝ} (hw : 0 ≤ w) :
+    0 < (C (1 / 2) + (X - C (1 / 4)) *
+      thetaCuspTailEvenPolynomial d).eval w := by
+  rw [xiCTaylorThetaTailCoreMagnitude_eq_xi_add_top]
+  simp only [eval_add, eval_mul, eval_C, eval_pow, eval_X]
+  have hxi : 0 < (xiCTaylorEvenMagnitudePolynomial (d + 1)).eval w := by
+    rw [xiCTaylorEvenMagnitudePolynomial]
+    simp only [eval_finsetSum, eval_mul, eval_C, eval_pow, eval_X]
+    apply Finset.sum_pos'
+    · intro k _hk
+      exact mul_nonneg
+        (div_nonneg (thetaCuspRawEvenMoment_nonneg k) (Nat.cast_nonneg _))
+        (pow_nonneg hw _)
+    · refine ⟨0, by simp, ?_⟩
+      simpa using thetaCuspRawEvenMoment_zero_pos
+  have htop : 0 ≤
+      (1 / 4 : ℝ) * thetaCuspTailEvenCoefficient (d + 1) * w ^ (d + 1) := by
+    exact mul_nonneg
+      (mul_nonneg (by norm_num) (thetaCuspTailEvenCoefficient_pos _).le)
+      (pow_nonneg hw _)
+  linarith
+
+/-- The same telescope makes the core magnitude strictly increasing on the nonnegative real ray.
+This is the value relation that orients the whole positive imaginary axis after `w = -z²`. -/
+theorem xiCTaylorThetaTailCoreMagnitude_derivative_eval_pos
+    (d : ℕ) {w : ℝ} (hw : 0 ≤ w) :
+    0 < (C (1 / 2) + (X - C (1 / 4)) *
+      thetaCuspTailEvenPolynomial d).derivative.eval w := by
+  rw [xiCTaylorThetaTailCoreMagnitude_eq_xi_add_top]
+  simp only [derivative_add, derivative_mul, derivative_C, zero_mul, zero_add,
+    derivative_X_pow, eval_add, eval_mul, eval_C, eval_pow, eval_X]
+  have hxi : 0 <
+      (xiCTaylorEvenMagnitudePolynomial (d + 1)).derivative.eval w := by
+    rw [xiCTaylorEvenMagnitudePolynomial]
+    simp only [derivative_sum, derivative_mul, derivative_C, zero_mul, zero_add,
+      derivative_X_pow, eval_finsetSum, eval_mul, eval_C, eval_pow, eval_X]
+    apply Finset.sum_pos'
+    · intro k _hk
+      exact mul_nonneg
+        (div_nonneg (thetaCuspRawEvenMoment_nonneg k) (Nat.cast_nonneg _))
+        (mul_nonneg (Nat.cast_nonneg k) (pow_nonneg hw _))
+    · refine ⟨1, by simp, ?_⟩
+      norm_num [thetaCuspRawEvenMoment_one_pos]
+  have htop : 0 ≤
+      (1 / 4 : ℝ) * thetaCuspTailEvenCoefficient (d + 1) *
+        ((d + 1 : ℕ) : ℝ) * w ^ (d + 1 - 1) := by
+    exact mul_nonneg
+      (mul_nonneg
+        (mul_nonneg (by norm_num) (thetaCuspTailEvenCoefficient_pos _).le)
+        (Nat.cast_nonneg _))
+      (pow_nonneg hw _)
+  linarith
+
+/-- The full canonical density, through its exact coefficient telescope, gives favorable current
+at every point of the positive imaginary axis, not only at the completion point `i/2`. -/
+theorem xiCTaylorThetaTailCorePolynomial_current_mul_I_neg
+    (d : ℕ) {y : ℝ} (hy : 0 < y) :
+    orientedPolynomialCurrent (xiCTaylorThetaTailCorePolynomial d) ((y : ℂ) * I) < 0 := by
+  rw [xiCTaylorThetaTailCorePolynomial,
+    orientedPolynomialCurrent_evenMagnitudeLift_mul_I]
+  have hval := xiCTaylorThetaTailCoreMagnitude_eval_pos d (sq_nonneg y)
+  have hder :=
+    xiCTaylorThetaTailCoreMagnitude_derivative_eval_pos d (sq_nonneg y)
+  have hprod : 0 < 2 * y *
+      (C (1 / 2) + (X - C (1 / 4)) *
+        thetaCuspTailEvenPolynomial d).derivative.eval (y ^ 2) *
+      (C (1 / 2) + (X - C (1 / 4)) *
+        thetaCuspTailEvenPolynomial d).eval (y ^ 2) := by
+    positivity
+  linarith
+
+/-- Non-strict positive-axis form, including the real seam point `y = 0`. -/
+theorem xiCTaylorThetaTailCorePolynomial_current_mul_I_nonpos
+    (d : ℕ) {y : ℝ} (hy : 0 ≤ y) :
+    orientedPolynomialCurrent (xiCTaylorThetaTailCorePolynomial d) ((y : ℂ) * I) ≤ 0 := by
+  rcases hy.eq_or_lt with rfl | hy
+  · simpa using (xiCTaylorThetaTailCorePolynomial_current_real_eq_zero d 0).le
+  · exact (xiCTaylorThetaTailCorePolynomial_current_mul_I_neg d hy).le
+
 /-- Every finite theta-tail core is pinned to the central seam value at the upper completion
 boundary. -/
 theorem xiCTaylorThetaTailCorePolynomial_eval_half_mul_I (d : ℕ) :
