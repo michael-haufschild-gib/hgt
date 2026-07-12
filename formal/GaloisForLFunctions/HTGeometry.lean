@@ -33,6 +33,7 @@ import GaloisForLFunctions.HTGeometry.UpperEndPrimeLogCarrier
 import GaloisForLFunctions.HTGeometry.TwoEndedReflection
 import GaloisForLFunctions.HTGeometry.UpperEndPrimeLogJets
 import GaloisForLFunctions.HTGeometry.UpperEndDifferentialIndependence
+import GaloisForLFunctions.HTGeometry.UniversalFacetPalette
 import GaloisForLFunctions.HTGeometry.AlgebraicIndependentLinearForms
 import GaloisForLFunctions.HTGeometry.DifferentialOperatorToeplitzRank
 import GaloisForLFunctions.HTGeometry.FacetRestrictionEmbedding
@@ -50,6 +51,7 @@ import GaloisForLFunctions.HTGeometry.RationalIndependentWeights
 import GaloisForLFunctions.HTGeometry.FacetOrbitShift
 import GaloisForLFunctions.HTGeometry.UpperEndConstantField
 import GaloisForLFunctions.HTGeometry.UpperEndStanleyReisnerRealization
+import GaloisForLFunctions.HTGeometry.UniversalFiniteConstraintCarrier
 import GaloisForLFunctions.HTGeometry.FacetSewnHerglotzStanleyReisner
 
 /-! # Hypertranscendental constraint geometry -/

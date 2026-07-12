@@ -1,15 +1,16 @@
 # The exact constrained prolate exterior Weil form has a universal positive leading law
 
 - **ID:** `constrained-prolate-exterior-weil-leading-law`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`,
-  pending independent audit
+- **Stage:** 1-in-progress
+- **Type:** CONJECTURE with proved component theorems
+- **Scientific status:** `[CONJECTURE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent results:** the constrained radial leakage/divisibility spectrum, the exact finite-aperture
   radial off-diagonal bounds, `ccm-countable-log-chirp-renormalization-law.md`, the aperture shift
   cutoff, and Suzuki's archimedean multiplier formula
-- **Statement:** The exact lower exterior CCM tail, and therefore the corresponding CCM seed by
-  the radical quotient identity, has archimedean Weil energy
+- **Statement:** The raw radial norm, archimedean multiplier component, and finite-aperture prime
+  component have the asymptotics stated below. Promoting their combination to the exact closed
+  Weil form additionally requires one graph-domain theorem for the coupled polar--prime critical
+  Mellin defect. Conditional on that theorem, the lower exterior CCM tail has leading energy
   `D_arch*d_1(lambda)log(2*pi*lambda^2)+o(d_1 log lambda)`, where
   `D_arch=(8/(11*pi))sum_(k>=1)arcsin(1/k)/k>0`. Its radial prime charge is only order `d_1`, and
   its Poisson zero-mode correction is `o(d_1)` in the finite-aperture form.
@@ -116,7 +117,7 @@ bound `sum_(q<=X)Lambda(q)/sqrt(q)=O(sqrt(X)log X)`, and the fixed-mode Fuchs fa
 `sqrt(d_1(lambda))` beats every power of `lambda`. Hence the zero-mode correction does not alter
 the first leakage-scale prime constant.
 
-## Exterior Weil law
+## Proved regular-channel law
 
 The cofinal finite-aperture radial prime law gives
 
@@ -125,13 +126,31 @@ Q_prime(R_lambda,R_lambda)/d_1(lambda)
  ->-16/(11*pi)sum_(k>=2)log(k)/k*arcsin(1/k).                    (13)
 ```
 
-This is one logarithmic order below `(9)`. Equations `(9)`--`(13)` prove the positive leading law
+This is one logarithmic order below `(9)`. Therefore the separately defined regular channels obey
 
 ```text
 [A+Q_prime](b_lambda,b_lambda)
  /(d_1(lambda)log c)
  ->D_arch>0.                                                     (14)
 ```
+
+Equation `(14)` is not yet the full Weil form. The exact form also contains the aperture-dependent
+rank-two polar block, and its prime term is coupled to that block through the critical Mellin
+defect. At the Mellin boundary the radial sum and the Poisson center are not separately in the
+polar evaluation domain. Their `L2` separation in `(10)`--`(12)` is valid for the archimedean and
+finite-shift pieces, but it does not justify a channelwise polar evaluation.
+
+The corrected source is
+`../2-fully-proven/needs-audit/ccm-polar-prime-critical-mellin-defect-law.md`. The positive missing
+theorem is the graph-domain estimate
+
+```text
+Q_defect(b_lambda,b_lambda)=o(d_1(lambda)log c),                 (14a)
+```
+
+where `Q_defect` is evaluated on the intact Poisson-resummed bracket and includes its polar
+counterterm. Only `(14a)`, not a separate estimate of the radial sum and center at the critical
+Mellin boundary, promotes `(14)` to a full Weil asymptotic.
 
 ## Positive route consequence
 
@@ -142,7 +161,7 @@ radical quotient identity proves
 QW(a_lambda,a_lambda)=QW(b_lambda,b_lambda).                     (15)
 ```
 
-Thus `(14)` is the actual seed Rayleigh law, not one side of a future interior cancellation:
+Conditional on `(14a)`, `(14)` becomes the actual seed Rayleigh law:
 
 ```text
 QW(a_lambda,a_lambda)
@@ -186,8 +205,8 @@ directly. It must therefore be classified as the direct spectral-floor core, not
 determinant estimate. The collapse is recorded in
 `ccm-rayleigh-transfer-collapses-to-spectral-floor.md`.
 
-Equation `(14)` is not a positivity theorem for the complete restricted Weil operator: the
-ground lower bound and true gap in `(17)` remain open.
+Without `(14a)`, even the full seed asymptotic `(16)` remains open. After `(14a)`, the ground lower
+bound and true gap in `(17)` are the next independent gates.
 
 ## Novelty and significance verdict
 
@@ -198,11 +217,11 @@ spectral constructions separately. Searches for the arcsine radial divisibility 
 von Mangoldt/prolate combination found no formula `(5)`, `(13)`, or `(14)` in the CCM or PSWF
 literature.
 
-### Significance: provisional pass, 8/10
+### Significance: provisional pass, 8/10 if `(14a)` is proved
 
-The theorem evaluates the leading sign and coefficient of the exact CCM seed Rayleigh value and
-turns the previous vague tail problem into the explicit gap comparison `(17)`. It does not prove
-RH because the true lower bound, simple-evenness, and gap comparison remain open.
+The proved component laws identify the candidate leading sign and coefficient and turn the
+remaining tail problem into the explicit graph-domain estimate `(14a)`. The exact seed Rayleigh
+law is not claimed before that estimate is proved.
 
 The result remains candidate-new pending an independent audit of the exact CCM normalization,
 logarithmic cross-term summation, and finite-aperture center estimate.
@@ -234,10 +253,11 @@ and their signs, but does not replace the missing analytic realization by abstra
 
 - [x] full radial norm coefficient summed after the high first-row tail
 - [x] archimedean logarithmic chirp law transferred to all radial indices
-- [x] Poisson zero mode shown lower order in the finite-aperture form
+- [x] Poisson zero mode shown lower order for the `L2`, archimedean, and finite-shift components
 - [x] raw radial prime constant inserted
-- [x] positive exterior Weil coefficient obtained
-- [x] radical quotient identity available to transfer a proved exterior law to the seed
+- [x] positive regular-channel coefficient obtained
+- [x] radical quotient identity available after a full graph-domain law is proved
+- [ ] coupled polar--prime critical Mellin defect estimate `(14a)`
 - [ ] independent normalization and cross-term audit
 - [ ] certify a true ground-energy lower bound
 - [ ] compare the explicit seed value with the true even gap

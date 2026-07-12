@@ -34,6 +34,7 @@ import GaloisForLFunctions.RHTower.PrimeArchSourceUpperBoundGate
 import GaloisForLFunctions.RHTower.SoninLogCoordinateScattering
 import GaloisForLFunctions.RHTower.HermitianDeterminantRH
 import GaloisForLFunctions.RHTower.PrimeEnergyZeroTransfer
+import GaloisForLFunctions.RHTower.RadialPSWFInteractionPicture
 
 namespace RHTower
 

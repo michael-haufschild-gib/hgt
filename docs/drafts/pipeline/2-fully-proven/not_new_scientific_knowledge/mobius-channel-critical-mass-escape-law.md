@@ -231,12 +231,21 @@ The analytic ingredients are the classical squarefree Dirichlet series, the pole
 and elementary Hilbert direct-sum theory.  Their combination is a useful source-transfer bridge,
 not claimed as new scientific knowledge.
 
-## 8. Lean decision
+## 8. Lean status
 
-The formal tree does not yet contain the required direct sum of `L2` shift channels together with
-the squarefree Dirichlet-series norm identity.  Formalizing only the abstract fact that a compact
-operator maps weak convergence to norm convergence would not certify the arithmetic theorem.
-No Lean file is added until the normalized Möbius channel itself can be represented end to end.
+`InfiniteMobiusShiftAnalysis.lean` now combines the formal squarefree normalization with the
+actual logarithmic translation unitaries and constructs
+
+```text
+L2(R) -> ell2(N;L2(R))
+```
+
+as a complex-linear isometry for the unit-normalized Möbius amplitudes. This formalizes the
+divisor-resolved infinite channel end to end. The paper normalization `(3)` differs by the scalar
+`zeta(2+4omega)^(-1/2)`; its exact strict norm, the `omega->0` escape theorem, weak convergence, and
+the compact-synthesis consequence are not yet formalized. Those remaining statements require a
+packaged real zeta-pole limit and countable-channel weak-convergence argument, not merely another
+finite-coordinate wrapper.
 
 ## Gates
 

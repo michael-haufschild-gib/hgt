@@ -54,9 +54,13 @@ where the amplitudes, including the Olver remainder, satisfy symbol bounds
 ```
 
 uniformly in `c`, `r>=2`, and `x>=1`. Dunster states the Olver remainder bound on complex
-unbounded domains containing `z>=2`. Applying Cauchy's estimate on fixed-radius discs inside such
-a domain gives the differentiated remainder bound in `(3)`; the explicit Liouville--Green
-coefficients satisfy the same symbol estimate directly. The phase is
+unbounded domains containing `z>=2`, but that additive bound alone does not justify factoring the
+remainder through an oscillatory exponential. The exact interaction-picture theorem in
+`radial-pswf-interaction-picture-transport.md` supplies the missing phase-preserving statement:
+after Dunster's Liouville transform, the two amplitudes satisfy exact first-order transport
+equations driven by the short-range potential `psi=O(xi^(-2))`. Their total variation is therefore
+`O(c^(-1))`, uniformly on the exterior sector. Restoring the explicit geometric prefactor gives
+`(3)`. The phase is
 
 ```text
 xi_c(z)=integral_1^z sqrt((t^2-sigma_4(c)^2)/(t^2-1))dt,
@@ -154,6 +158,7 @@ clear the parent-theory novelty gate and is classified as a bridge.
 - T. M. Dunster, *Asymptotics of Prolate Spheroidal Wave Functions*, arXiv:1601.00699, especially
   Section 2, formulas `(2.19)`--`(2.22)`.
 - A. Connes, C. Consani, H. Moscovici, *Zeta Spectral Triples*, arXiv:2511.22755.
+- `radial-pswf-interaction-picture-transport.md`, exact ODE transport and Lean formalization.
 
 ## Lean decision
 

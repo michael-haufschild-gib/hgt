@@ -183,9 +183,26 @@ finite-jet avoidance under the translation action.  A plausible route is:
 5. prove each defect locus closed and nowhere dense;
 6. take a countable Baire intersection and descend the resulting ratios to the quotient.
 
-The exact missing lemma is finite translated jet interpolation for quasi-Abelian line-bundle
-sections.  Uncountable transcendence degree is evidence that the parameter space is large enough,
-but it is not a substitute for this lemma.
+The exact missing lemma is **all-order finite translated jet interpolation in one fixed section
+space**.  Abe proves finite point separation and tangent separation for automorphic forms of an
+ample factor on a torusless quasi-Abelian variety.  His Poincare-series proof is strong enough to
+suggest an all-order extension, but the published theorem stops at first jets.  Very ampleness is
+not enough: products of separating sections interpolate higher jets in increasing tensor powers,
+whereas the Baire construction needs one fixed Frechet space from which a single ratio is chosen.
+
+This distinction leads to a stronger general law on the companion card
+`affine-jet-packet-collision-completeness.md`: whenever a carrier has one section/function space
+which interpolates every finite jet packet, a residual set of functions has a completely
+differentially free orbit under every countable faithful affine action.  Thus the quasi-Abelian
+converse reduces to a geometric property of the carrier, not to a special-function construction:
+
+```text
+all-order packet interpolation  ==>  complete HT orbit freedom.             (15a)
+```
+
+For the present equality, the remaining quasi-Abelian question is therefore exact: does every
+noncompact generalized-Riemann quotient admit a fixed automorphic-factor space with all-order
+finite jet interpolation?  Uncountable transcendence degree and very ampleness do not answer it.
 
 ### Divisor-valuation alternative `[PARTIALLY PROVED]`
 
@@ -215,8 +232,11 @@ degree recovers `beta_0`.  The finite injectivity core is formalized uncondition
 What remains is genuinely analytic: construct one meromorphic function on every noncompact
 quasi-Abelian quotient with a locally finite family of such aperiodic divisor orbits and enough
 independent principal-part freedom to prevent cancellation by the regular translated factors.
-The generalized Lefschetz theorem supplies infinite-dimensional section spaces and aperiodic
-divisors, but does not directly supply this infinite principal-part interpolation.
+The generalized Lefschetz theory supplies global generation, point separation, and immersion by
+sections.  It does **not** supply an aperiodic divisor for every positive line bundle: Capocasa and
+Catanese explicitly left that issue open, and the later linear-systems paper records it as Problem
+2.9.  The divisor route is therefore stronger than the packet-interpolation route and may cross an
+unnecessary open problem.
 
 ## Attacks and boundary cases
 
@@ -234,6 +254,10 @@ divisors, but does not directly supply this infinite principal-part interpolatio
    genuinely higher-rank quasi-Abelian facet geometry.  A collapse theorem `qaDim=ppDim` would be
    equally significant, because it would upgrade periodic pencils from a construction to the exact
    classification.
+6. `[LIVE ATTACK]` Extend Abe's Poincare-series separation theorem from values and first
+   derivatives to arbitrary finite jets without changing the automorphic factor.  Exponential
+   damping survives any fixed number of differentiations; the unresolved point is uniform
+   Hermite interpolation with the subquadratic growth required by the series.
 
 ## RH-facing consequence `[CONJECTURE]`
 
@@ -255,6 +279,11 @@ The generalized Riemann relation and existence of nondegenerate periodic meromor
 quasi-Abelian reduction are also parent inputs.  They do not state differential-algebraic freeness
 of a countable translation orbit, simultaneous facet realization, Stanley--Reisner annihilator
 geometry, or equality (8).
+
+The exact published interpolation boundary used here is Y. Abe, *Construction of automorphic forms
+for ample factors of quasi-Abelian varieties*, Kyushu J. Math. **57** (2003), 51--85, DOI
+`10.2206/kyushujm.57.51`: Theorem 8.1 separates arbitrary finite point packets and Theorem 9.1
+separates one tangent direction, but no all-order jet theorem is stated.
 
 The candidate-new residue is precisely the quasi-Abelian full-orbit theorem and its conversion of
 the parent period classification into the exact HT constraint-dimension law (8).
@@ -281,6 +310,7 @@ Until then the score is below 65 and the card remains `[CONJECTURE]`.
 - [x] sufficiency localized to one named full-orbit theorem
 - [x] compact and one-dimensional boundaries classified
 - [ ] prove finite translated jet interpolation for quasi-Abelian line-bundle sections
+- [x] isolate all-order packet interpolation as the exact geometric sufficiency condition
 - [ ] prove or refute the quasi-Abelian full-orbit theorem
 - [ ] prove `htDim=qaDim`
 - [ ] decide the comparison with `ppDim`

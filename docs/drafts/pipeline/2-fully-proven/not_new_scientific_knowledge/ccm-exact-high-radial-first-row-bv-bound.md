@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent theories:** Dunster's pole-uniform Bessel and exterior Liouville--Green expansions,
-  differentiated Olver bounds, and nonstationary integration by parts
+  exact interaction-picture transport, and nonstationary integration by parts
 - **Statement:** For the actual constrained prolate source and every
   `k>=lambda^2=c/(2*pi)`, the exact radial Gram entry satisfies
   `|G_lambda(1,k)|<=C*d_1(lambda)/k^2`. Consequently the truncated-divisor weighted high first row
@@ -45,8 +45,11 @@ where
 |d/dx a_(epsilon,c,k)(x)|<=C*x^(-3/2).                           (3)
 ```
 
-The differentiated bounds include the Olver remainder, by the complex-domain Cauchy estimate used
-in `ccm-exact-radial-nonstationary-sector-bound.md`. The phase satisfies
+The differentiated bounds include the exact remainder by
+`radial-pswf-interaction-picture-transport.md`: the Liouville-transformed equation gives exact
+amplitude derivatives proportional to `psi/c`, and Dunster's exterior potential is uniformly
+short-range. This avoids the unjustified step of treating an additive Olver remainder as a
+relative oscillatory remainder. The phase satisfies
 
 ```text
 Phi_(epsilon,k)'(x)
@@ -173,6 +176,7 @@ it is classified as a bridge.
   and 3.
 - F. W. J. Olver, *Asymptotics and Special Functions*, the Liouville--Green and Bessel error
   theorems used by Dunster.
+- `radial-pswf-interaction-picture-transport.md`, exact ODE transport and Lean formalization.
 
 ## Lean decision
 

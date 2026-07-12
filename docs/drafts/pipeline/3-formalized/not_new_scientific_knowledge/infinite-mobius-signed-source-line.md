@@ -6,7 +6,8 @@
 - **Scientific status:** `[FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Lean file:**
   `formal/GaloisForLFunctions/RHTower/InfiniteMobiusSignedChannel.lean`,
-  `formal/GaloisForLFunctions/RHTower/InfiniteMobiusCausalShift.lean`, and
+  `formal/GaloisForLFunctions/RHTower/InfiniteMobiusCausalShift.lean`,
+  `formal/GaloisForLFunctions/RHTower/InfiniteMobiusShiftAnalysis.lean`, and
   `formal/GaloisForLFunctions/RHTower/InfiniteMobiusLaplaceMultiplier.lean`
 - **Upstream:**
   `formal/GaloisForLFunctions/RHTower/SquarefreeMoebiusNormalization.lean`
@@ -77,6 +78,17 @@ Pi_w R_w^*=R_w^*,
 The coisometry theorem is instantiated with the actual infinite Möbius amplitude, not left behind
 a finite cutoff or an abstract normalization hypothesis.
 
+The same normalized amplitudes now define the divisor-resolved logarithmic shift analysis
+
+```text
+A_sigma f=(w_sigma(n) U_(-log n)f)_n
+  :L2(R)->ell2(N;L2(R)).
+```
+
+Lean proves `A_sigma` is a genuine complex-linear isometry. Thus the arithmetic coordinates and
+their logarithmic translations coexist in one countable Hilbert carrier before scalar synthesis;
+the prime/divisor state is not represented only by its coefficient vector or by a finite sum.
+
 ## Main declarations
 
 - `summable_squarefreeMobiusMass`
@@ -95,6 +107,8 @@ a finite cutoff or an abstract normalization hypothesis.
 - `summable_infiniteMobiusShiftTerm`
 - `infiniteMobiusShiftAverage`
 - `norm_infiniteMobiusShiftAverage_le`
+- `infiniteMobiusShiftAnalysis`
+- `norm_infiniteMobiusShiftAnalysisValue`
 - `additiveTranslationUnitary_hasAELowerSupport_zero`
 - `infiniteMobiusShiftAverage_hasAELowerSupport_zero`
 - `causalLaplacePairing_additiveTranslationUnitary_neg`
@@ -128,6 +142,7 @@ charged graph, no floor-discrepancy coupling, and no contour-jump estimate is pr
 - [x] idempotent contractive source-line projection
 - [x] RHTower aggregate import
 - [x] infinite logarithmic `L^2` signed translation average and contraction
+- [x] divisor-resolved logarithmic shift analysis as an `ell^2(N;L^2)` linear isometry
 - [x] causal zero-threshold restriction
 - [x] exact reciprocal-zeta Laplace multiplier
 - [ ] Xi-pointed charged continuation graph

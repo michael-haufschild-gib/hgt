@@ -106,10 +106,11 @@ This formalizes the complete finite-aperture algebraic and right-half-plane cont
 cofinal squarefree normalization has since been formalized separately in
 `formal/GaloisForLFunctions/RHTower/SquarefreeMoebiusNormalization.lean`, including
 `L(mu^2,s)=zeta(s)/zeta(2s)` and the infinite Euler product. The resulting normalized all-prime
-unit vector, coisometry, source-line projection, and ambient logarithmic `L^2` signed translation
-average are now formalized in `InfiniteMobiusSignedChannel.lean`. The causal Hardy restriction and
-exact Laplace multiplier identity are not yet formalized, nor is meromorphic contour transport
-across zeta-zero poles. The latter remains the RH-bearing continuation seam in the paper card.
+unit vector, coisometry, source-line projection, ambient logarithmic `L^2` signed translation
+average, divisor-resolved `ell^2(N;L^2)` shift analysis, causal restriction, and exact
+reciprocal-zeta Laplace multiplier are now formalized in the `InfiniteMobius*` modules.
+Meromorphic contour transport across zeta-zero poles is not formalized. It remains the RH-bearing
+continuation seam in the paper card.
 
 ## Gates
 
@@ -123,6 +124,7 @@ across zeta-zero poles. The latter remains the RH-bearing continuation seam in t
 - [x] infinite signed `ell^2` source line and coisometry available in
   `InfiniteMobiusSignedChannel.lean`
 - [x] ambient infinite logarithmic `L^2` shift-average contraction
-- [ ] causal Hardy restriction and exact multiplier identity
+- [x] divisor-resolved infinite shift analysis isometry
+- [x] causal Hardy restriction and exact multiplier identity
 - [ ] orbit-sensitive meromorphic continuation graph
 - [ ] four-unit Xi-source upper bound

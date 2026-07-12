@@ -41,6 +41,10 @@ import GaloisForLFunctions.IterateDerivativeSupport
 import GaloisForLFunctions.DifferentialMonomialUnique
 import GaloisForLFunctions.CoefficientIsolation
 import GaloisForLFunctions.RatioShiftGrowth
+import GaloisForLFunctions.DifferentialMonomialGapNonzero
+import GaloisForLFunctions.IterateDerivativeFalling
+import GaloisForLFunctions.WeightPolynomial
+import GaloisForLFunctions.WeightPolynomialDependence
 import GaloisForLFunctions.ArchimedeanBendLaw
 import GaloisForLFunctions.TaylorDerivativeCoefficient
 import GaloisForLFunctions.ExponentialGaugeSelection
@@ -251,3 +255,4 @@ import GaloisForLFunctions.SVDExpansion
 import GaloisForLFunctions.PolarDecomposition
 import GaloisForLFunctions.LidskiiSelfAdjoint
 import GaloisForLFunctions.RHTower.SquarefreeMoebiusNormalization
+import GaloisForLFunctions.RHTower.MFreeLadder
