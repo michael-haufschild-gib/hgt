@@ -151,6 +151,10 @@ the actual Xi divisor; finite-cutoff positivity alone does not supply that trans
    simple-zero assumption is permitted.
 6. **Parent-theory attack.**  Landau oscillation and Weil positivity are classical.  Candidate
    novelty is the one-window restriction and its exact nonvanishing mechanism, not either parent.
+   Suzuki's 2025 Corollary 4.3 already gives an RH-equivalent one-parameter tail equality for a
+   screw line, so "one parameter" alone is not novel.  The comparison must isolate the stronger
+   claim here: one fixed-width translated rectangular Weil profile, positivity rather than a
+   constructed norm equality, and forced divergence to `-infinity` under false RH.
 7. **Formal gate.**  The standalone paper may claim `(4)`--`(5)` only after the complete Landau,
    divisor-series, and bounded-remainder proof is formalized unconditionally on the actual Xi
    divisor.
@@ -165,8 +169,10 @@ the actual Xi divisor; finite-cutoff positivity alone does not supply that trans
    rectangular value on `XiZeroCopy`.  The growing edge is selected by the sign of the transverse
    coordinate, and the full multiplicity-exact polarization differs from its dominant-edge sum by
    an explicitly bounded remainder, uniformly for every aperture `a>=L`.
-4. Build the shifted-zeta Dirichlet continuation `(9a)` and prove local normal convergence off its
-   poles, using the now-formal uniform Xi ordinate gap.
+4. **Safe half-plane complete.**  The right-half coefficient series is absolutely summable, every
+   coefficient is nonzero for `L>0`, logarithmic sampling gives the exact monomial `n^w`, and the
+   shifted-zeta series converges absolutely on `Re s>=3/2+eps`.  Local normal continuation to the
+   Landau boundary remains open and uses the now-formal uniform Xi ordinate gap.
 5. Specialize the existing formal nonnegative-Dirichlet-series Landau theorem to `(9a)`.
 6. Identify the exact abscissa and specialize the theorem to the actual Xi divisor.
 7. Prove `(4)`--`(5a)` without a simplicity, RH, or source-positivity hypothesis.

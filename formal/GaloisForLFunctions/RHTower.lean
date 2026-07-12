@@ -565,6 +565,9 @@ import GaloisForLFunctions.RHTower.XiHadamardFactorization
 import GaloisForLFunctions.RHTower.XiWeilPolarization
 import GaloisForLFunctions.RHTower.XiHedenmalmFourierEquation
 import GaloisForLFunctions.RHTower.XiHedenmalmMultiplicityChain
+import GaloisForLFunctions.RHTower.XiHedenmalmDeBrangesSeam
+import GaloisForLFunctions.RHTower.XiHedenmalmMomentDeterminacy
+import GaloisForLFunctions.RHTower.XiHedenmalmOrientationGate
 import GaloisForLFunctions.RHTower.XiHedenmalmSymmetricMultiplicity
 import GaloisForLFunctions.RHTower.XiHedenmalmJordanMatrix
 import GaloisForLFunctions.RHTower.XiWeilResolventSource
@@ -717,6 +720,7 @@ import GaloisForLFunctions.RHTower.ModulusSlopeMirror
 import GaloisForLFunctions.RHTower.ModulusSlopeBudget
 import GaloisForLFunctions.RHTower.BakerProof.BakerIteration
 import GaloisForLFunctions.RHTower.RayCompleteTranslationFaithful
+import GaloisForLFunctions.RHTower.VonMangoldtTranslationValueConstraint
 import GaloisForLFunctions.RHTower.SquarefreeMoebiusNormalization
 import GaloisForLFunctions.RHTower.InfiniteMobiusSignedChannel
 import GaloisForLFunctions.RHTower.InfiniteMobiusCausalShift
@@ -731,3 +735,6 @@ import GaloisForLFunctions.RHTower.SqrtCarrierWindowBridge
 import GaloisForLFunctions.RHTower.CompletedBornReflectionNoGo
 import GaloisForLFunctions.RHTower.CreaseBudgetPrimeMass
 import GaloisForLFunctions.RHTower.BornEtaGrading
+import GaloisForLFunctions.RHTower.SquareSupportPrimeMass
+import GaloisForLFunctions.RHTower.BornSectorExchange
+import GaloisForLFunctions.RHTower.WeightOneInversion

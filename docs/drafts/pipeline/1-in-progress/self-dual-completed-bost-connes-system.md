@@ -1,7 +1,7 @@
 # Graded self-dual completed Bost--Connes system: the functional equation as an operator-algebra duality
 
 - **ID:** `self-dual-completed-bost-connes-system`
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Source:** collapse theorem and dihedral correction of
   `../3-formalized/not_new_scientific_knowledge/born-temperature-kms-factor-type-duality.md` §8;
@@ -87,9 +87,14 @@ square-summability assumptions must not enter the construction.
 
 ## Gates
 
-- [ ] 0 → 1 in-progress: the graded algebra carrying the archimedean mode is fixed; the candidate
-  duality map is written on generators; kill tests 1--5 of the parent card re-run against it; the
-  non-normal exchange functor's category is named (constraint 5).
+- [x] 0 → 1 in-progress: the graded algebra carrying the archimedean mode is fixed (the ungraded
+  Gaussian scale mode welded to the parity-graded `log sqrt(n)` system; the twisted module lives
+  inside the same system — Approach step 3); the candidate duality map is written on generators
+  (weight-one inversion on scale profiles, signed sector swap on the two-adic pair; scalar shadow
+  and seed-level dynamics proven); kill tests re-run (the map is source-derived from the Gaussian
+  and inversion, no `xi` input; it acts on profiles, not the Born diagonal); the exchange functor's
+  shape is named (grading-odd involution on the doubled system) — its KMS-categorical realization
+  is the open core below.
 - [ ] 1 → 2 fully-proven: existence of the system, its graded KMS_beta classification, and the
   duality with fixed locus `beta=1` proved on paper; `[OPEN CORE]` `Lambda` hypertranscendence
   settled or explicitly bypassed.
@@ -132,14 +137,61 @@ square-summability assumptions must not enter the construction.
      with two-adic cocycle `(1-2^s)/(1-2^(1-s))`; strip convergence and exact self-duality
      exclude each other under the parity grading. The system must either compensate the cocycle
      (a `2`-adic counter-mode) or let the duality act on the pair (grading, reflected grading).
-2. **Weld** (constraints 1, 8): tensor with the `log sqrt(n)` prime system so the total signed
-   partition function is `Z(beta)=Lambda(beta/2)`; verify the scalar self-duality
-   `Z(2-beta)=Z(beta)` lifts to a candidate algebra map exchanging the two boundary-pole phases —
-   now sharpened by constraint 10: the lift must resolve the two-adic reflection cocycle.
-3. **Name the exchange category** (constraint 5): the duality relates `III_1` to type I, so it is
-   not a normal *-isomorphism; decide among graded equivalence, antilinear (Tomita-conjugation)
-   equivalence, or correspondence/bimodule equivalence, and prove which one the scalar identity
-   can support.
+2. **Weld — EXECUTED 2026-07-12, the lift exists as a signed sector swap
+   `[PROVED HERE + FORMALIZED]`** (`formal/GaloisForLFunctions/RHTower/BornSectorExchange.lean`,
+   axiom-clean, lint green). The self-duality does NOT lift as a symmetry of the parity-graded
+   weld (constraint 10); it lifts as a **Kramers--Wannier order/disorder exchange**. Findings:
+   - Fourier duality of the two-torsion sends the parity character `n -> (-1)^n` to the
+     half-integer coset `Z + 1/2`. The second sector is real: for `Re s > 1`,
+     `sum_(m>=0) (m+1/2)^(-s) = (2^s - 1) zeta(s)` (`hzeta_one_half`, on the Hurwitz lane's
+     `hzeta`), and its completion is `Lambda_2(s) = (2^s-1) Lambda(s)`
+     (`lambdaHalfShift_eq_halfLevels`).
+   - **Sector exchange with a sign**: `Lambda_4(1-s) = -Lambda_2(s)` and
+     `Lambda_2(1-s) = -Lambda_4(s)` (`lambdaParity_one_sub`, `lambdaHalfShift_one_sub`): the
+     reflection acts on the doubled sector pair as swap-with-negation, an involution. In Born
+     form `Z_4(2-beta) = -Z_2(beta)` (`lambdaParity_born_reflect`). The two-adic cocycle is
+     resolved by **sector doubling**, not compensation: on (untwisted parity-graded, half-twisted
+     ungraded) the reflection is an honest involutive symmetry.
+   - **The pole pair splits one per sector and is exchanged**: `s·Lambda_4 -> 1` at `s=0`
+     (`tendsto_mul_lambdaParity_zero`), `(s-1)·Lambda_2 -> 1` at `s=1`
+     (`tendsto_mul_lambdaHalfShift_one`), and the graded sector is **regular at the ungraded
+     transition with value `log 2` = `Gammaℝ(1)·eta(1)`** (`tendsto_lambdaParity_one`).
+   - **Convergence regimes swap**: the order sector converges as a supertrace on the whole
+     temperature strip `beta > 0`; the disorder sector is an ordinary trace converging only at
+     low temperature `beta > 2`. High-temperature graded order and low-temperature displaced
+     disorder are exchanged — the literal Kramers--Wannier high-T/low-T shape, over the prime `2`.
+   - The reflection eigenvectors of the doubled system are `Lambda_4 ∓ Lambda_2 =
+     (2 - 2^s - 2^(1-s)) Lambda` (even) and `(2^s - 2^(1-s)) Lambda` (odd).
+3. **Name the exchange category — EXECUTED 2026-07-12, both operator questions answered
+   `[PROVED HERE + FORMALIZED]`** (`BornSectorExchange.lean` extension +
+   `WeightOneInversion.lean`, axiom-clean, lint green).
+   - **Which algebra hosts `Z + 1/2`: the same one.** The twisted module lives inside the
+     `log sqrt(n)` system itself: unconditionally,
+     `sum (m+1/2)^(-s) = 2^s * sum (2k+1)^(-s)` (`hzeta_one_half_eq_twisted_odd`,
+     `oddLevelZeta_eq`) — the half-integer levels are the **grading-odd subspace**
+     (range of `1 - mu_2 mu_2*`) with the Hamiltonian displaced by one half `2`-dilation
+     quantum `-½ log 2`. Moreover `sum (m+1/2)^(-s) + zeta(s) = 2^s zeta(s)`
+     (`hzeta_one_half_add_zeta`): adjoining the twisted sector reproduces the whole system at
+     half-quantum shift, spectrum `½N` — **sector doubling is one rung of the `m=2` dilation
+     tower** (`mPart` self-similarity). The doubled welded algebra is the original algebra one
+     rung down; grading and twist are `P = mu_2 mu_2*` and `1 - P` of the same isometry.
+   - **The archimedean swap is the weight-one inversion.** `J f(t) = t⁻¹ f(t⁻¹)` is an
+     involution (`weightOneInversion_weightOneInversion`), anti-conjugates the scale generator:
+     `J D J = -(D+1)` (`multiplicativeDeriv_weightOneInversion`), hence **commutes with the
+     scaling Hamiltonian** `D²+D = D(D+1)` (`scalingHamiltonian_weightOneInversion`); on the
+     Gaussian seed, `(D²+D)(J g₀) = J h` with `h` the theta-cusp seed
+     (`scalingHamiltonian_weightOneInversion_thetaCuspGaussian`). On Dirichlet power profiles,
+     `(D²+D) t^{-w} = w(w-1) t^{-w}` — the completed-zeta polynomial as Hamiltonian eigenvalue —
+     and `J(t^{-w}) = t^{-(1-w)}` exchanges the profiles within each eigenspace
+     (`scalingHamiltonian_rpow`, `weightOneInversion_rpow`). `J` moves the Gaussian state
+     (`weightOneInversion_thetaCuspGaussian_ne`): the swap preserves dynamics, exchanges states.
+   - **Remaining open core of this step:** the `J`-fixed profile is the lattice-summed theta;
+     Poisson summation (`theta_4(x) = x⁻¹ theta_2(1/x)`, mathlib pointer:
+     `jacobiTheta₂` functional equation) is the analytic brick converting the profile swap into
+     the sector swap. And the KMS-categorical status: the duality relates `III_1` to type I off
+     the fixed locus, so it is not normal there; with the doubled-rung identification the
+     candidate is now precise — the grading-odd involution `J ⊗ (P ↔ 1-P)` on the one-rung-down
+     welded system; its graded KMS classification is the step-4 target.
 4. **Kill tests inherited:** diagonal action is Born-invisible (parent Theorem 5) — dead; scalar
    partition identity alone — dead; measured trace — dead; declaring FE a gauge symmetry —
    circular. The map must act on archimedean off-diagonal structure (constraint 4) and be
@@ -162,3 +214,19 @@ square-summability assumptions must not enter the construction.
   FE-breaking cocycle proved. All formalized in `BornEtaGrading.lean` (11 declarations,
   axiom-clean); `ZetaRealStrip.lean` eta interface made public for reuse. Card gains constraint 10;
   next open move = Approach step 2 (the weld) under the cocycle-resolution requirement.
+- 2026-07-12 — Approach step 2 executed: the self-duality lifts as a Kramers--Wannier signed
+  sector swap between the parity-graded sector and the half-integer (Fourier-dual coset) sector;
+  the two-adic cocycle is resolved by sector doubling. Poles split one per sector and are
+  exchanged; the graded sector is regular at the ungraded transition with value `log 2`;
+  convergence regimes swap (supertrace on the strip vs low-temperature trace). All formalized in
+  `BornSectorExchange.lean` (9 declarations, axiom-clean, reusing the Hurwitz lane's `hzeta`);
+  `hzeta_one_half` is a reusable Hurwitz brick. Step 3 sharpened to the doubled-algebra involution.
+- 2026-07-12 — Approach step 3 executed: both operator questions answered and formalized. The
+  `Z+1/2` module is in-system (grading-odd subspace at half-quantum shift; sector doubling = one
+  `m=2` tower rung; `hzeta_one_half_eq_twisted_odd` unconditional, `hzeta_one_half_add_zeta`,
+  `oddLevelZeta_eq` in `BornSectorExchange.lean`). The archimedean swap is the weight-one
+  inversion: involution, `J D J = -(D+1)`, commutes with `D²+D`, `(D²+D)(J g₀) = J h` on the
+  theta-cusp seed, exchanges `t^{-w} ↔ t^{-(1-w)}` inside eigenspaces of eigenvalue `w(w-1)`,
+  moves the Gaussian state (`WeightOneInversion.lean`, 10 declarations, axiom-clean). Gate 0→1
+  ticked; card moved to 1-in-progress. Open core: Poisson/theta brick for the profile-to-sector
+  conversion + graded KMS classification of the doubled-rung involution.

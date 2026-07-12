@@ -19,7 +19,28 @@ line floor at σ₂  ∧  budget condition to 1/2
     ==>  sum_{p <= sqrt N} 1/p < 2·(1 + 1/(2σ₂-1))                                (3)
 sum_{k ∈ [1,M]} k^(-c) <= 1 + 1/(c-1)                 for c > 1, uniform in M     (4)
 |dpoly2 sqrtMoebiusCoeff (Icc 1 N) z| <= 1 + 1/(2σ₂-1)   on re z >= σ₂ > 1/2      (5)
+sum_{n <= M} 1/n <= prod_{p <= M} (1 - 1/p)^(-1)          (Euler domination)      (6)
+log log(M+1) <= 2·sum_{p <= M} 1/p                        (effective Mertens)     (7)
+line floor at σ₂  ∧  budget condition to 1/2
+    ==>  sqrt(N) + 1 < exp exp(4·(1 + 1/(2σ₂-1)))         (closed-form cutoff)    (8)
+sum_{p <= sqrt y} 1/p <= sum_{n <= y} (sqrtMoebiusCoeff n · n^(-1/4))²            (9)
+detCoeffW y y σ (p²) = -(p^(-σ))²                for sqrt y < p <= y             (10)
+sum_{sqrt y < p <= y} 1/p <= sum_k detCoeffW y y (1/4) k ²                       (11)
+|b(p²)| >= δ·p^(-1/2) on P  ==>  δ²·sum_P 1/p <= sum_S b²   (abstract law)       (12)
+|a(p²)| >= δ on primes  ==>  δ²·sum_{p<=sqrt y} 1/p
+    <= sum_{n<=y} (a n · n^(-1/4))²                      (quarter-weighted form) (13)
+sum_{k ∈ [1,M]} 1/k <= 1 + log M                          (harmonic upper)       (14)
+lineBudget σ₂ N = sum_{k <= sqrt N} |μ(k)|·|k⁻¹ - k^(-2σ₂)|   (square coords)    (15)
+(1/2)·log log(sqrt N + 1) - (1 + 1/(2σ₂-1)) <= lineBudget σ₂ N
+    <= 1 + log(sqrt N)                                    (the budget bracket)   (16)
 ```
+
+`(12)`–`(13)` are the abstract forced-content law: both instances `(9)` and `(11)` are
+now derived from `(12)` (proofs refactored), and any future square-supported carrier
+inherits it.  `(16)` with the meter reading
+`(1/2)·log log(√N+1) ≤ ∑_{p≤√N} 1/p ≤ lineBudget + cap` makes the budget a certified
+Mertens-mass meter: its forced content is log-log (primes), its total is log
+(squarefree); the gap between the two laws is exactly the non-prime squarefree mass.
 
 ## Proof
 
@@ -64,9 +85,36 @@ File: `formal/GaloisForLFunctions/RHTower/CreaseBudgetPrimeMass.lean`.
 - `lineBudget`, `lineBudget_term_sq_prime`: the budget and its prime-square terms;
 - `primeMass_le_lineBudget_add`: the forced Mertens content `(1)`;
 - `tendsto_primeMass_atTop`, `tendsto_lineBudget_atTop`: the growth law `(2)`;
-- `line_crossing_cutoff_primeMass_lt`: the forced constraint `(3)`.
+- `line_crossing_cutoff_primeMass_lt`: the forced constraint `(3)`;
+- `recipHom`, `harmonic_le_prod_primesBelow`: Euler's finite product domination `(6)`,
+  via mathlib's geometric Euler product over smooth numbers — applied directly at
+  `s = 1`, where only `‖f p‖ < 1` at primes is needed;
+- `log_inv_one_sub_le`, `mertens_lower`: the effective Mertens lower bound `(7)` with
+  explicit constant `2`, from `(6)`, the banked harmonic bound
+  (`SecondMoment.harmonic_Icc_ge_log`), and `log(1-t)⁻¹ ≤ 2t` on `[0, 1/2]`;
+- `line_crossing_cutoff_lt_expexp`: the closed-form cutoff constraint `(8)` — the
+  explicit double-exponential reach of budget technology.
 
-The module is imported by `GaloisForLFunctions.RHTower` and `GaloisForLFunctions`.
+Companion file: `formal/GaloisForLFunctions/RHTower/SquareSupportPrimeMass.lean` — the
+same square-support mechanism in the tree's other quadratic functionals:
+
+- `primeMass_le_sqrtQuarter_diagonal`: the quarter-weighted mollifier second-moment
+  diagonal must carry the Mertens mass `(9)` (each prime square contributes exactly
+  `p⁻¹`);
+- `filter_mul_eq_prime_sq`, `detCoeffW_prime_sq`: the detection coefficient at prime
+  squares in the window `√y < p ≤ y` — the convolution fiber collapses to the diagonal
+  pair `(10)`;
+- `windowPrimeMass_le_detection_diagonal`: the detection diagonal at weight `1/4` must
+  carry the window prime mass `(11)` — detection mass is not free below weight
+  `1/4 + ε`;
+- `primeMass_le_sq_sum_of_forced`, `primeMass_le_quarter_weighted_sq_sum`: the abstract
+  law `(12)`–`(13)`, from which `(9)` and `(11)` are re-derived;
+- (back in `CreaseBudgetPrimeMass.lean`) `sum_Icc_one_div_le`: the harmonic upper
+  `(14)`; `lineBudget_eq_sum_sqrt`: the exact square-coordinates form `(15)`;
+  `lineBudget_le_one_add_log`, `lineBudget_measures_primeMass`, `lineBudget_bracket`:
+  the meter and the two-sided bracket `(16)`.
+
+Both modules are imported by `GaloisForLFunctions.RHTower` and `GaloisForLFunctions`.
 
 ## Gates
 
@@ -76,18 +124,19 @@ The module is imported by `GaloisForLFunctions.RHTower` and `GaloisForLFunctions
 - [x] targeted module build passes
 - [x] generated indexes, axiom audit, and formal lint gate pass
 
-The umbrella build reaches and accepts `CreaseBudgetPrimeMass`; the independent existing
-failure is `SummableEulerCalkinInjectivity.lean`.  All eleven public declarations use
-only `propext`, `Classical.choice`, and `Quot.sound`.
+The umbrella build reaches and accepts both modules; the sole independent existing
+failure is `SummableEulerCalkinInjectivity.lean`.  All twenty-six public declarations
+across the two files use only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Opens
 
-The cap in `(3)` is `2(1 + 1/(2σ₂-1))`, minimized near `σ₂` large — with Mertens'
-second theorem (`∑_{p≤x} 1/p ≈ log log x + M`) the constraint becomes an explicit
-double-log bound `√N ≲ exp exp (2 + 2/(2σ₂-1))`: formalizing an effective Mertens lower
-bound (`log log x − c ≤ ∑_{p≤x} 1/p`) would turn `(3)` into a closed-form cutoff bound
-`N(σ₂)`.  Complementarily, `(1)` says the budget IS a Mertens-mass carrier: read
-forward, a budget-shaped functional on square-supported coefficients measures prime
-mass — a coefficient-level bridge between the carrier machinery and Mertens sums worth
-its own object: which other tree functionals (second moments, detection diagonals)
-carry forced prime-mass content under square support?
+The bracket `(16)` has a log-log floor and a log ceiling; the gap is the non-prime
+squarefree mass, so the meter reads prime mass only through the additive cap.  Two
+sharpenings: (i) a prime-mass *upper* law (`∑_{p≤x} 1/p ≤ log log x + C`) would tighten
+the meter to a two-sided log-log reading of the prime-restricted budget — its elementary
+route is Chebyshev's primorial bound plus partial summation, one self-contained analytic
+brick; (ii) the abstract law `(12)` is stated for squares of primes only — the same
+injection argument at cubes `p³` inside `m`-th-power supports (the `mPart m` carriers of
+`MFreeLadder`) gives forced mass `∑ p^(-3σ·…)` per rung: a tower of forced-content laws,
+one per dilation, with the weight threshold `1/(2m)` replacing `1/4` — the `m`-free
+ladder's spectral fingerprint.

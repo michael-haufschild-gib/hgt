@@ -328,6 +328,76 @@ transform. -/
 def rectangularTwoEdgeRemainderBound (L : ℝ) : ℝ :=
   (1 + Real.exp (|L| / 2)) ^ 2 * (2 * Real.exp (|L| / 2) + 4)
 
+/-- At logarithmic aperture `a=(log n)/2`, the positive growing edge becomes
+the ordinary Dirichlet monomial `n^w`. -/
+theorem rectangularTwoEdgeDominant_logSample_of_pos
+    {L : ℝ} {n : ℕ} (hn : 1 ≤ n) {w : ℂ} (hwre : 0 < w.re) :
+    rectangularTwoEdgeDominant L (Real.log n / 2) w =
+      rectangularWindowAmplitude L w ^ 2 * (n : ℂ) ^ w := by
+  rw [rectangularTwoEdgeDominant, if_pos hwre]
+  congr 1
+  rw [Complex.cpow_def_of_ne_zero (Nat.cast_ne_zero.mpr (by omega : n ≠ 0))]
+  have hlog : Complex.log (n : ℂ) = (Real.log n : ℂ) := by
+    rw [← Complex.ofReal_natCast, ← Complex.ofReal_log (Nat.cast_nonneg n)]
+  rw [hlog]
+  congr 1
+  push_cast
+  ring
+
+/-- At the same logarithmic aperture, the negative growing edge is the
+reflected monomial `n^(-w)`. -/
+theorem rectangularTwoEdgeDominant_logSample_of_neg
+    {L : ℝ} {n : ℕ} (hn : 1 ≤ n) {w : ℂ} (hwre : w.re < 0) :
+    rectangularTwoEdgeDominant L (Real.log n / 2) w =
+      rectangularWindowAmplitude L (-w) ^ 2 * (n : ℂ) ^ (-w) := by
+  rw [rectangularTwoEdgeDominant, if_neg (not_lt.mpr hwre.le), if_pos hwre]
+  congr 1
+  rw [Complex.cpow_def_of_ne_zero (Nat.cast_ne_zero.mpr (by omega : n ≠ 0))]
+  have hlog : Complex.log (n : ℂ) = (Real.log n : ℂ) := by
+    rw [← Complex.ofReal_natCast, ← Complex.ofReal_log (Nat.cast_nonneg n)]
+  rw [hlog]
+  congr 1
+  push_cast
+  ring
+
+/-- The sign-selected dominant edge is even. -/
+theorem rectangularTwoEdgeDominant_even (L a : ℝ) (w : ℂ) :
+    rectangularTwoEdgeDominant L a (-w) = rectangularTwoEdgeDominant L a w := by
+  rcases lt_trichotomy w.re 0 with hneg | hzero | hpos
+  · have hnpos : 0 < (-w).re := by simpa using neg_pos.mpr hneg
+    rw [rectangularTwoEdgeDominant, if_pos hnpos,
+      rectangularTwoEdgeDominant, if_neg (not_lt.mpr hneg.le), if_pos hneg]
+    rw [show 2 * (a : ℂ) * (-w) = -2 * (a : ℂ) * w by ring]
+  · have hnzero : (-w).re = 0 := by simpa using congrArg Neg.neg hzero
+    rw [rectangularTwoEdgeDominant, if_neg (by linarith), if_neg (by linarith),
+      rectangularTwoEdgeDominant, if_neg (by linarith), if_neg (by linarith)]
+  · have hnneg : (-w).re < 0 := by simpa using neg_lt_zero.mpr hpos
+    rw [rectangularTwoEdgeDominant, if_neg (not_lt.mpr hnneg.le), if_pos hnneg,
+      rectangularTwoEdgeDominant, if_pos hpos]
+    rw [show -2 * (a : ℂ) * (-w) = 2 * (a : ℂ) * w by ring]
+    simp only [neg_neg]
+
+/-- The sign-selected dominant edge respects Schwarz conjugation. -/
+theorem rectangularTwoEdgeDominant_conj (L a : ℝ) (w : ℂ) :
+    (starRingEnd ℂ) (rectangularTwoEdgeDominant L a w) =
+      rectangularTwoEdgeDominant L a ((starRingEnd ℂ) w) := by
+  rcases lt_trichotomy w.re 0 with hneg | hzero | hpos
+  · have hcneg : ((starRingEnd ℂ) w).re < 0 := by simpa using hneg
+    rw [rectangularTwoEdgeDominant, if_neg (not_lt.mpr hneg.le), if_pos hneg,
+      rectangularTwoEdgeDominant, if_neg (not_lt.mpr hcneg.le), if_pos hcneg,
+      map_mul, map_pow, rectangularWindowAmplitude_conj, ← Complex.exp_conj]
+    congr 2
+    simp only [map_mul, map_neg, Complex.conj_ofReal, map_ofNat]
+  · have hczero : ((starRingEnd ℂ) w).re = 0 := by simpa using hzero
+    rw [rectangularTwoEdgeDominant, if_neg (by linarith), if_neg (by linarith),
+      rectangularTwoEdgeDominant, if_neg (by linarith), if_neg (by linarith), map_zero]
+  · have hcpos : 0 < ((starRingEnd ℂ) w).re := by simpa using hpos
+    rw [rectangularTwoEdgeDominant, if_pos hpos,
+      rectangularTwoEdgeDominant, if_pos hcpos,
+      map_mul, map_pow, rectangularWindowAmplitude_conj, ← Complex.exp_conj]
+    congr 2
+    simp only [map_mul, Complex.conj_ofReal, map_ofNat]
+
 /-- Exact positive-transverse decomposition after removing the growing edge. -/
 theorem rectangularTwoEdgeTransform_sq_sub_dominant_of_pos
     {L a : ℝ} {w : ℂ} (hwre : 0 < w.re) :
@@ -357,15 +427,8 @@ theorem rectangularTwoEdgeTransform_sq_sub_dominant_of_neg
   have h := rectangularTwoEdgeTransform_sq_sub_dominant_of_pos
     (L := L) (a := a) (w := -w) hnpos
   rw [rectangularTwoEdgeDominant, if_pos hnpos] at h
-  simpa only [neg_neg] using (show
-    rectangularTwoEdgeTransform L a (-w) ^ 2 -
-        rectangularWindowAmplitude L (-w) ^ 2 * Complex.exp (-2 * (a : ℂ) * w) =
-      rectangularWindowAmplitude L (-w) ^ 2 *
-        (2 * Complex.exp ((L : ℂ) * (-w)) +
-          Complex.exp (-2 * (a - L : ℂ) * (-w))) by
-    convert h using 1
-    all_goals congr 2
-    all_goals ring)
+  rw [show 2 * (a : ℂ) * (-w) = -2 * (a : ℂ) * w by ring] at h
+  simpa only [neg_neg] using h
 
 /-- On the critical line the selected dominant edge is zero. -/
 @[simp] theorem rectangularTwoEdgeDominant_of_re_eq_zero
@@ -686,6 +749,60 @@ theorem xiRectangularTwoEdgeTransform_quartet_square (L a : ℝ) (q : XiZeroCopy
     ring
   · simp only [add_im, conj_im, ofReal_im]
     ring
+
+/-- Functional-equation reflection preserves the sign-selected Xi dominant
+edge. -/
+theorem xiRectangularTwoEdgeDominant_reflect (L a : ℝ) (q : XiZeroCopy) :
+    xiRectangularTwoEdgeDominant L a
+        (xiSpectralPoint (xiZeroCopyReflectEquiv q)) =
+      xiRectangularTwoEdgeDominant L a (xiSpectralPoint q) := by
+  rw [xiRectangularTwoEdgeDominant, xiRectangularTwoEdgeDominant,
+    xiSpectralPoint_reflect]
+  rw [show I * (-xiSpectralPoint q) = -(I * xiSpectralPoint q) by ring]
+  exact rectangularTwoEdgeDominant_even L a (I * xiSpectralPoint q)
+
+/-- Schwarz conjugation conjugates the sign-selected Xi dominant edge. -/
+theorem xiRectangularTwoEdgeDominant_copyConj (L a : ℝ) (q : XiZeroCopy) :
+    xiRectangularTwoEdgeDominant L a
+        (xiSpectralPoint (xiZeroCopyConjEquiv q)) =
+      (starRingEnd ℂ)
+        (xiRectangularTwoEdgeDominant L a (xiSpectralPoint q)) := by
+  rw [xiRectangularTwoEdgeDominant, xiRectangularTwoEdgeDominant,
+    I_mul_xiSpectralPoint_copyConj]
+  exact (rectangularTwoEdgeDominant_conj L a (I * xiSpectralPoint q)).symm
+
+/-- The full multiplicity-exact dominant-edge sum is real. -/
+theorem star_tsum_xiRectangularTwoEdgeDominant
+    (L a : ℝ) :
+    (starRingEnd ℂ) (∑' q : XiZeroCopy,
+        xiRectangularTwoEdgeDominant L a (xiSpectralPoint q)) =
+      ∑' q : XiZeroCopy,
+        xiRectangularTwoEdgeDominant L a (xiSpectralPoint q) := by
+  calc
+    (starRingEnd ℂ) (∑' q : XiZeroCopy,
+        xiRectangularTwoEdgeDominant L a (xiSpectralPoint q)) =
+      ∑' q : XiZeroCopy,
+        (starRingEnd ℂ)
+          (xiRectangularTwoEdgeDominant L a (xiSpectralPoint q)) := by
+        exact Complex.conj_tsum _
+    _ = ∑' q : XiZeroCopy,
+        xiRectangularTwoEdgeDominant L a
+          (xiSpectralPoint (xiZeroCopyConjEquiv q)) := by
+        apply tsum_congr
+        intro q
+        exact (xiRectangularTwoEdgeDominant_copyConj L a q).symm
+    _ = ∑' q : XiZeroCopy,
+        xiRectangularTwoEdgeDominant L a (xiSpectralPoint q) := by
+      simpa only using xiZeroCopyConjEquiv.tsum_eq
+        (fun q : XiZeroCopy =>
+          xiRectangularTwoEdgeDominant L a (xiSpectralPoint q))
+
+/-- Therefore the imaginary part of the dominant-edge sum vanishes. -/
+theorem tsum_xiRectangularTwoEdgeDominant_im_eq_zero
+    (L a : ℝ) :
+    (∑' q : XiZeroCopy,
+      xiRectangularTwoEdgeDominant L a (xiSpectralPoint q)).im = 0 := by
+  exact Complex.conj_eq_iff_im.mp (star_tsum_xiRectangularTwoEdgeDominant L a)
 
 /-! ## A uniform zero-height gap -/
 

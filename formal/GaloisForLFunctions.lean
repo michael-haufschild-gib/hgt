@@ -275,3 +275,7 @@ import GaloisForLFunctions.WedgeRealization
 import GaloisForLFunctions.LatticeIncongruence
 import GaloisForLFunctions.RHTower.CreaseBudgetPrimeMass
 import GaloisForLFunctions.FaithfulFacetDimension
+import GaloisForLFunctions.FaithfulFacetVertexDimension
+import GaloisForLFunctions.FaithfulFacetComplementSpan
+import GaloisForLFunctions.RHTower.SquareSupportPrimeMass
+import GaloisForLFunctions.WedgeFacetLowerBound

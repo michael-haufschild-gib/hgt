@@ -25,6 +25,93 @@ retains every required divided level, and makes coordinate multiplication symmet
 No object indexed by the Xi zeros, no premise equivalent to positivity of the Weil form, and no
 assumed faithful quotient counts as progress on this core.
 
+The unconditional de Branges seam further compresses the target. With `A=XiC` and
+`E=A+iA'`, the source-defined commutator of `E` and `E#` is exactly the removable derivative
+Bezoutian
+
+```text
+B_A(z,v)=(A'(z)A(v)-A(z)A'(v))/(v-z),
+```
+
+with the diagonal filled by `A'(z)^2-A(z)A''(z)`. Distinct Xi zeros are orthogonal for this kernel,
+and its diagonal at a divisor point is nonzero exactly at multiplicity one. This identifies the
+Hedenmalm terminal metric with the classical de Branges/Weil kernel rather than producing a second
+independent route. The constructive open core is therefore a theta/all-prime Gram factorization of
+this fixed critical Bezoutian; abstract RKHS construction after assuming positivity does not count.
+
+## Determinacy and extremality gate
+
+An unpointed all-order moment sequence or formal asymptotic expansion is not a rigid carrier.
+Indeterminate Hamburger fibers can retain global analytic and differential freedom after every
+moment has been fixed. Therefore no argument may infer the theta/all-prime Gram factorization from
+formal coefficient agreement alone.
+
+The fixed prime--archimedean carrier crosses the local determinacy gate in a stronger category.
+Put
+
+```text
+G(z)=normalizedPrimeArchMomentGerm(z),
+T(z)=continuedPrimeArchSourceRelativeTrace(z).
+```
+
+The pointed analytic lift is exact:
+
+```text
+T(z)=-z G(z).                                              (D1)
+```
+
+Every analytic germ with the complete Taylor jet of `G` equals `G` near the center, so `(D1)`
+recovers the distinguished Euler--Gamma trace rather than an arbitrary representative of a moment
+fiber. Moreover,
+
+```text
+XiC'(z)+z G(z)XiC(z)=0                                    (D2)
+```
+
+near the center. Hence the same pointed germ reconstructs locally
+
+```text
+E(z)=XiC(z)(1-i z G(z))                                   (D3)
+```
+
+and, off the diagonal,
+
+```text
+B_A(z,v)
+ =XiC(z)XiC(v)
+   *[(vG(v)-zG(z))/(v-z)].                                (D4)
+```
+
+Together with the central normalization `XiC(0)`, `(D2)` determines `XiC` uniquely among entire
+solutions: the difference of two solutions satisfies a homogeneous analytic first-order
+constraint and vanishes at the center, hence vanishes locally by analytic-order comparison and
+globally by the identity theorem. Thus moment reconstruction is not the remaining
+Hilbert--Polya problem in this route. The
+remaining datum is global orientation: a source-derived positive Gram factorization or canonical
+extremal selection for the kernel represented by `(D4)`, compatible with the full all-prime trace.
+Determinacy of the scalar theta measure alone does not imply that positivity.
+
+For the implication to RH, full Gram positivity is stronger than necessary. On the centered upper
+half-strip the Hermitian specialization satisfies
+
+```text
+B_A(z,conj(z))
+ =|XiC(z)|^2
+  *[(T(conj(z))-T(z))/(z-conj(z))].                       (D5)
+```
+
+The factor `|XiC(z)|^2` is strictly positive on the source domain. Therefore
+
+```text
+B_A(z,conj(z))>=0 at every regular upper-strip point
+  <-> the continued source is anti-Herglotz there
+  <-> RH.                                                  (D6)
+```
+
+This localizes the orientation core to one scalar inequality per source point. A full positive
+kernel remains necessary for the intended de Branges Hilbert-space realization, but it is not
+necessary merely to prove RH.
+
 ## Proposed theorem package
 
 Let
@@ -73,6 +160,11 @@ The target package is:
 - `SquarefreeMoebiusNormalization.lean` and the infinite signed-channel modules provide an exact
   all-prime Hilbert carrier and reciprocal-zeta half-plane normalization. They are supporting
   carrier infrastructure, not yet the missing source-to-divisor incidence.
+- `XiHedenmalmMomentDeterminacy.lean` verifies `(D1)`--`(D4)` in the analytic-germ category and
+  proves that the complete Taylor jet of `G` has a unique analytic lift to the distinguished
+  continued Euler--Gamma trace and uniquely determines `XiC` among entire normalized solutions of
+  `(D2)`.
+- `XiHedenmalmOrientationGate.lean` verifies `(D5)` and the unconditional equivalence `(D6)`.
 
 ## Open proof obligations
 
@@ -104,6 +196,12 @@ The target package is:
 5. **Squarefree normalization overclaim.** The identity `1/zeta(2s)=sum mu(n)n^(-2s)` in
    `Re s>1/2` is zero-preserving carrier infrastructure, not a positivity or divisor-transfer
    theorem.
+6. **All-order moment overclaim.** Equality of every formal moment or asymptotic coefficient does
+   not select a global carrier without determinacy, extremality, or a nonflat pointing. Here the
+   exact analytic lift `(D1)` supplies the pointing; it does not supply the positive orientation.
+7. **Diagonal-equivalence overclaim.** The equivalence `(D6)` identifies the exact scalar sign but
+   does not prove it. Rewriting the sign as anti-Herglotzness, vertical modulus monotonicity, or a
+   Schur multiplier bound is coordinate change, not an orientation mechanism.
 
 ## Independent constraint--orientation geometry
 

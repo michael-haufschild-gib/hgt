@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SqrtCarrierCertificate
 import Mathlib.NumberTheory.SumPrimeReciprocals
+import Mathlib.NumberTheory.EulerProduct.Basic
 
 /-!
 # The line budget carries the Mertens mass
@@ -214,5 +215,241 @@ theorem line_crossing_cutoff_primeMass_lt {σ₂ : ℝ} (hσ₂ : 1 / 2 < σ₂)
     (z := (σ₂ : ℂ) + (τ : ℂ) * I) (by simp) N
   have hmass := primeMass_le_lineBudget_add hσ₂ N
   linarith
+
+/-! ## The effective Mertens lower bound -/
+
+/-- The reciprocal monoid homomorphism `n ↦ (n:ℝ)⁻¹`. -/
+def recipHom : ℕ →* ℝ where
+  toFun n := (n : ℝ)⁻¹
+  map_one' := by norm_num
+  map_mul' m n := by push_cast; rw [mul_inv]
+
+/-- **Euler's finite product domination**: the harmonic sum up to `M` is bounded by the
+Euler product over the primes up to `M`, via the geometric Euler product over the
+`(M+1)`-smooth numbers. -/
+theorem harmonic_le_prod_primesBelow (M : ℕ) :
+    ∑ n ∈ Finset.Icc 1 M, 1 / (n : ℝ)
+      ≤ ∏ p ∈ Nat.primesBelow (M + 1), (1 - (p : ℝ)⁻¹)⁻¹ := by
+  have hlt : ∀ {p : ℕ}, p.Prime → ‖recipHom p‖ < 1 := by
+    intro p hp
+    have h2 : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp.two_le
+    show ‖((p : ℝ))⁻¹‖ < 1
+    rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+    calc (p : ℝ)⁻¹ ≤ (2 : ℝ)⁻¹ := inv_anti₀ (by norm_num) h2
+      _ < 1 := by norm_num
+  have hhs := (EulerProduct.summable_and_hasSum_smoothNumbers_prod_primesBelow_geometric
+    (f := recipHom) hlt (M + 1)).2
+  have htsum : ∑' m : (Nat.smoothNumbers (M + 1)), ((m : ℕ) : ℝ)⁻¹
+      = ∏ p ∈ Nat.primesBelow (M + 1), (1 - (p : ℝ)⁻¹)⁻¹ := hhs.tsum_eq
+  have hsummable : Summable (fun m : (Nat.smoothNumbers (M + 1)) => ((m : ℕ) : ℝ)⁻¹) :=
+    hhs.summable
+  calc ∑ n ∈ Finset.Icc 1 M, 1 / (n : ℝ)
+      = ∑ n ∈ Finset.Icc 1 M,
+          Set.indicator (Nat.smoothNumbers (M + 1)) (fun n => ((n : ℕ) : ℝ)⁻¹) n := by
+        refine Finset.sum_congr rfl fun n hn => ?_
+        obtain ⟨hn1, hnM⟩ := Finset.mem_Icc.mp hn
+        rw [Set.indicator_of_mem (Nat.mem_smoothNumbers'.mpr fun p _ hpd =>
+          lt_of_le_of_lt (Nat.le_of_dvd (by omega) hpd) (by omega)), one_div]
+    _ ≤ ∑' n : ℕ, Set.indicator (Nat.smoothNumbers (M + 1)) (fun n => ((n : ℕ) : ℝ)⁻¹) n := by
+        refine Summable.sum_le_tsum _
+          (fun i _ => Set.indicator_nonneg (fun j _ => by positivity) i) ?_
+        exact summable_subtype_iff_indicator.mp hsummable
+    _ = ∑' m : (Nat.smoothNumbers (M + 1)), ((m : ℕ) : ℝ)⁻¹ := (tsum_subtype _ _).symm
+    _ = ∏ p ∈ Nat.primesBelow (M + 1), (1 - (p : ℝ)⁻¹)⁻¹ := htsum
+
+/-- `log((1-t)⁻¹) ≤ 2t` on `[0, 1/2]`. -/
+theorem log_inv_one_sub_le {t : ℝ} (ht0 : 0 ≤ t) (ht : t ≤ 1 / 2) :
+    Real.log (1 - t)⁻¹ ≤ 2 * t := by
+  have h1t : 0 < 1 - t := by linarith
+  have hle := Real.log_le_sub_one_of_pos (inv_pos.mpr h1t)
+  have heq : (1 - t)⁻¹ - 1 = t / (1 - t) := by
+    field_simp
+    ring
+  have hfrac : t / (1 - t) ≤ 2 * t := by
+    rw [div_le_iff₀ h1t]
+    nlinarith
+  linarith
+
+/-- **The effective Mertens lower bound**: `log log(M+1) ≤ 2·∑_{p ≤ M} 1/p`.  Euler's
+product domination, the banked harmonic lower bound, and the elementary logarithm
+estimate — fully explicit constants. -/
+theorem mertens_lower {M : ℕ} (hM : 1 ≤ M) :
+    Real.log (Real.log ((M : ℝ) + 1)) ≤ 2 * ∑ p ∈ Nat.primesBelow (M + 1), (p : ℝ)⁻¹ := by
+  have hM1 : (1 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
+  have hHpos : 0 < Real.log ((M : ℝ) + 1) := Real.log_pos (by linarith)
+  have hH := harmonic_Icc_ge_log M
+  have hprod := harmonic_le_prod_primesBelow M
+  have hfacpos : ∀ p ∈ Nat.primesBelow (M + 1), (0 : ℝ) < (1 - (p : ℝ)⁻¹)⁻¹ := by
+    intro p hp
+    have hpp := (Nat.mem_primesBelow.mp hp).2
+    have h2 : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hpp.two_le
+    have hhalf : (p : ℝ)⁻¹ ≤ 1 / 2 := by
+      calc (p : ℝ)⁻¹ ≤ (2 : ℝ)⁻¹ := inv_anti₀ (by norm_num) h2
+        _ = 1 / 2 := by norm_num
+    exact inv_pos.mpr (by linarith)
+  calc Real.log (Real.log ((M : ℝ) + 1))
+      ≤ Real.log (∑ n ∈ Finset.Icc 1 M, 1 / (n : ℝ)) := Real.log_le_log hHpos hH
+    _ ≤ Real.log (∏ p ∈ Nat.primesBelow (M + 1), (1 - (p : ℝ)⁻¹)⁻¹) :=
+        Real.log_le_log (by linarith) hprod
+    _ = ∑ p ∈ Nat.primesBelow (M + 1), Real.log ((1 - (p : ℝ)⁻¹)⁻¹) :=
+        Real.log_prod (fun p hp => (hfacpos p hp).ne')
+    _ ≤ ∑ p ∈ Nat.primesBelow (M + 1), 2 * (p : ℝ)⁻¹ := by
+        refine Finset.sum_le_sum fun p hp => ?_
+        have hpp := (Nat.mem_primesBelow.mp hp).2
+        have h2 : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hpp.two_le
+        refine log_inv_one_sub_le (by positivity) ?_
+        calc (p : ℝ)⁻¹ ≤ (2 : ℝ)⁻¹ := inv_anti₀ (by norm_num) h2
+          _ = 1 / 2 := by norm_num
+    _ = 2 * ∑ p ∈ Nat.primesBelow (M + 1), (p : ℝ)⁻¹ := by rw [Finset.mul_sum]
+
+/-- **The closed-form cutoff constraint.**  Combining the forced prime mass with the
+effective Mertens lower bound: any Lipschitz line-crossing datum forces the cutoff under
+the double exponential `√N + 1 < exp exp(4(1 + 1/(2σ₂-1)))` — the explicit reach of
+budget technology, in closed form. -/
+theorem line_crossing_cutoff_lt_expexp {σ₂ : ℝ} (hσ₂ : 1 / 2 < σ₂) {N : ℕ}
+    (hN : 1 ≤ Nat.sqrt N) {t₀ ε₁ τ : ℝ} (hε₁ : 0 < ε₁)
+    (hline : t₀ < ‖dpoly2 sqrtMoebiusCoeff (Finset.Icc 1 N) ((σ₂ : ℂ) + (τ : ℂ) * I)‖)
+    (hbudget : lineBudget σ₂ N ≤ t₀ - ε₁) :
+    ((Nat.sqrt N : ℝ)) + 1 < Real.exp (Real.exp (4 * (1 + 1 / (2 * σ₂ - 1)))) := by
+  have hmass := line_crossing_cutoff_primeMass_lt hσ₂ hε₁ hline hbudget
+  have hmert := mertens_lower hN
+  have hN1 : (1 : ℝ) ≤ (Nat.sqrt N : ℝ) := by exact_mod_cast hN
+  have h1 : Real.log (Real.log ((Nat.sqrt N : ℝ) + 1)) < 4 * (1 + 1 / (2 * σ₂ - 1)) := by
+    linarith
+  have hpos1 : 0 < Real.log ((Nat.sqrt N : ℝ) + 1) := Real.log_pos (by linarith)
+  have h2 : Real.log ((Nat.sqrt N : ℝ) + 1)
+      < Real.exp (4 * (1 + 1 / (2 * σ₂ - 1))) := by
+    have := Real.exp_lt_exp.mpr h1
+    rwa [Real.exp_log hpos1] at this
+  have h3 := Real.exp_lt_exp.mpr h2
+  rwa [Real.exp_log (by positivity : (0 : ℝ) < (Nat.sqrt N : ℝ) + 1)] at h3
+
+/-! ## The budget as a certified Mertens-mass meter -/
+
+/-- Harmonic upper bound: `∑_{k ∈ [1,M]} 1/k ≤ 1 + log M`, by the integral test. -/
+theorem sum_Icc_one_div_le {M : ℕ} (hM : 1 ≤ M) :
+    ∑ k ∈ Finset.Icc 1 M, 1 / (k : ℝ) ≤ 1 + Real.log M := by
+  rcases M with _ | n
+  · omega
+  · have hIcc : Finset.Icc 1 (n + 1) = Finset.Ico 1 (n + 2) := by
+      ext x
+      simp only [Finset.mem_Icc, Finset.mem_Ico]
+      omega
+    rw [hIcc, Finset.sum_Ico_eq_sum_range, show n + 2 - 1 = n + 1 from rfl,
+      Finset.sum_range_succ']
+    have h0 : 1 / ((1 + 0 : ℕ) : ℝ) = 1 := by norm_num
+    have hant : AntitoneOn (fun x : ℝ => 1 / x) (Set.Icc 1 (1 + (n : ℝ))) :=
+      fun x hx _ _ hxy => one_div_le_one_div_of_le (lt_of_lt_of_le one_pos hx.1) hxy
+    have heval : ∫ x in (1 : ℝ)..(1 + (n : ℝ)), 1 / x = Real.log ((n : ℝ) + 1) := by
+      rw [integral_one_div (fun h => by
+        rcases Set.mem_uIcc.mp h with ⟨h1, _⟩ | ⟨_, h2⟩ <;>
+          nlinarith [Nat.cast_nonneg (α := ℝ) n]), div_one]
+      ring_nf
+    have hsum : ∑ i ∈ Finset.range n, 1 / ((1 + (i + 1) : ℕ) : ℝ)
+        ≤ Real.log ((n : ℝ) + 1) := by
+      rw [← heval]
+      refine le_trans (le_of_eq (Finset.sum_congr rfl fun i _ => ?_))
+        hant.sum_le_integral
+      congr 1
+      push_cast
+      ring
+    rw [h0]
+    have hlog : Real.log ((n : ℝ) + 1) = Real.log ((n + 1 : ℕ) : ℝ) := by push_cast; ring_nf
+    linarith [hsum, hlog.ge, hlog.le]
+
+/-- The line budget in square coordinates: it is exactly the Möbius-weighted reciprocal
+defect sum over `[1, √N]`. -/
+theorem lineBudget_eq_sum_sqrt (σ₂ : ℝ) (N : ℕ) :
+    lineBudget σ₂ N = ∑ k ∈ Finset.Icc 1 (Nat.sqrt N),
+      |((ArithmeticFunction.moebius k : ℤ) : ℝ)| *
+        |(k : ℝ)⁻¹ - (k : ℝ) ^ (-(2 * σ₂))| := by
+  rw [lineBudget,
+    ← Finset.sum_filter_of_ne (p := fun n => n.sqrt * n.sqrt = n) (fun x _ hx => ?_)]
+  · refine Finset.sum_nbij' (fun n => n.sqrt) (fun k => k * k) ?_ ?_ ?_ ?_ ?_
+    · intro n hn
+      obtain ⟨hn1, hnsq⟩ := Finset.mem_filter.mp hn
+      obtain ⟨h1n, hnN⟩ := Finset.mem_Icc.mp hn1
+      exact Finset.mem_Icc.mpr ⟨Nat.le_sqrt.mpr (by omega), Nat.sqrt_le_sqrt hnN⟩
+    · intro k hk
+      obtain ⟨h1k, hkN⟩ := Finset.mem_Icc.mp hk
+      refine Finset.mem_filter.mpr ⟨Finset.mem_Icc.mpr
+        ⟨Nat.one_le_iff_ne_zero.mpr (by positivity), Nat.le_sqrt.mp hkN⟩, ?_⟩
+      show (k * k).sqrt * (k * k).sqrt = k * k
+      rw [Nat.sqrt_eq]
+    · intro n hn
+      exact (Finset.mem_filter.mp hn).2
+    · intro k _
+      show (k * k).sqrt = k
+      exact Nat.sqrt_eq k
+    · intro n hn
+      obtain ⟨-, hnsq⟩ := Finset.mem_filter.mp hn
+      conv_lhs => rw [← hnsq]
+      have hcoeff : sqrtMoebiusCoeff (n.sqrt * n.sqrt)
+          = ((ArithmeticFunction.moebius n.sqrt : ℤ) : ℝ) := by
+        rw [sqrtMoebiusCoeff, sqrtPart_apply_mul_self]
+      have hpow1 : ((n.sqrt * n.sqrt : ℕ) : ℝ) ^ (-(1 / 2 : ℝ))
+          = ((n.sqrt : ℕ) : ℝ)⁻¹ := by
+        rw [show n.sqrt * n.sqrt = n.sqrt ^ 2 from (pow_two n.sqrt).symm, natCast_sq_rpow,
+          show (2 : ℝ) * -(1 / 2) = -1 by norm_num, Real.rpow_neg_one]
+      have hpow2 : ((n.sqrt * n.sqrt : ℕ) : ℝ) ^ (-σ₂)
+          = ((n.sqrt : ℕ) : ℝ) ^ (-(2 * σ₂)) := by
+        rw [show n.sqrt * n.sqrt = n.sqrt ^ 2 from (pow_two n.sqrt).symm, natCast_sq_rpow]
+        congr 1
+        ring
+      rw [hcoeff, hpow1, hpow2]
+  · by_contra hpx
+    refine hx ?_
+    have hzero : sqrtMoebiusCoeff x = 0 := by
+      rw [sqrtMoebiusCoeff, sqrtPart_apply_of_not_isSquare]
+      · norm_num
+      · rintro ⟨r, hr⟩
+        refine hpx ?_
+        show x.sqrt * x.sqrt = x
+        rw [hr, Nat.sqrt_eq]
+    rw [hzero, abs_zero, zero_mul]
+
+/-- **The log upper law**: the line budget is at most the squarefree harmonic mass,
+`lineBudget σ₂ N ≤ 1 + log √N`. -/
+theorem lineBudget_le_one_add_log {σ₂ : ℝ} (hσ₂ : 1 / 2 ≤ σ₂) {N : ℕ}
+    (hN : 1 ≤ Nat.sqrt N) :
+    lineBudget σ₂ N ≤ 1 + Real.log (Nat.sqrt N) := by
+  rw [lineBudget_eq_sum_sqrt]
+  refine le_trans (Finset.sum_le_sum fun k hk => ?_) (sum_Icc_one_div_le hN)
+  obtain ⟨h1k, hkS⟩ := Finset.mem_Icc.mp hk
+  have hk1 : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast h1k
+  have habs : |((ArithmeticFunction.moebius k : ℤ) : ℝ)| ≤ 1 := by
+    exact_mod_cast ArithmeticFunction.abs_moebius_le_one
+  have hord : (k : ℝ) ^ (-(2 * σ₂)) ≤ (k : ℝ)⁻¹ := by
+    have h := Real.rpow_le_rpow_of_exponent_le hk1 (show -(2 * σ₂) ≤ -1 by linarith)
+    rwa [Real.rpow_neg_one] at h
+  have hnn : (0 : ℝ) ≤ (k : ℝ) ^ (-(2 * σ₂)) := Real.rpow_nonneg (by positivity) _
+  calc |((ArithmeticFunction.moebius k : ℤ) : ℝ)| * |(k : ℝ)⁻¹ - (k : ℝ) ^ (-(2 * σ₂))|
+      ≤ 1 * |(k : ℝ)⁻¹ - (k : ℝ) ^ (-(2 * σ₂))| :=
+        mul_le_mul_of_nonneg_right habs (abs_nonneg _)
+    _ = (k : ℝ)⁻¹ - (k : ℝ) ^ (-(2 * σ₂)) := by
+        rw [one_mul, abs_of_nonneg (by linarith)]
+    _ ≤ 1 / (k : ℝ) := by
+        rw [one_div]
+        linarith
+
+/-- **The budget as a certified Mertens-mass meter**: the prime mass up to `√N` is pinned
+between the explicit log-log law and the budget-plus-cap reading. -/
+theorem lineBudget_measures_primeMass {σ₂ : ℝ} (hσ₂ : 1 / 2 < σ₂) {N : ℕ}
+    (hN : 1 ≤ Nat.sqrt N) :
+    (1 / 2) * Real.log (Real.log ((Nat.sqrt N : ℝ) + 1))
+        ≤ ∑ p ∈ Nat.primesBelow (Nat.sqrt N + 1), (p : ℝ)⁻¹
+      ∧ ∑ p ∈ Nat.primesBelow (Nat.sqrt N + 1), (p : ℝ)⁻¹
+        ≤ lineBudget σ₂ N + (1 + 1 / (2 * σ₂ - 1)) :=
+  ⟨by linarith [mertens_lower hN], primeMass_le_lineBudget_add hσ₂ N⟩
+
+/-- **The two-sided budget bracket**: the line budget sits between the explicit log-log
+lower law (its forced prime mass) and the explicit log upper law (its total squarefree
+mass). -/
+theorem lineBudget_bracket {σ₂ : ℝ} (hσ₂ : 1 / 2 < σ₂) {N : ℕ} (hN : 1 ≤ Nat.sqrt N) :
+    (1 / 2) * Real.log (Real.log ((Nat.sqrt N : ℝ) + 1)) - (1 + 1 / (2 * σ₂ - 1))
+        ≤ lineBudget σ₂ N
+      ∧ lineBudget σ₂ N ≤ 1 + Real.log (Nat.sqrt N) := by
+  obtain ⟨h1, h2⟩ := lineBudget_measures_primeMass hσ₂ hN
+  exact ⟨by linarith, lineBudget_le_one_add_log hσ₂.le hN⟩
 
 end RHTower

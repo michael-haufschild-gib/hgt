@@ -86,8 +86,8 @@ theorem exists_strictMono_separatingShellUpper
 set_option maxHeartbeats 4000000 in
 theorem scaledEvenShellCutoff_summableDilationCombination_apply
     {a b : ℝ} (r : ℕ → ℝ) (hr : ∀ j, 1 < r j)
-    (hmono : StrictMono r) (c : ℕ → ℂ) (hc : Summable fun j => ‖c j‖)
-    (k : ℕ) (hk : c k ≠ 0) (hmin : ∀ j, j < k → c j = 0)
+    (c : ℕ → ℂ) (hc : Summable fun j => ‖c j‖)
+    (k : ℕ) (hmin : ∀ j, j < k → c j = 0)
     (ha : 0 < a) (hab : a < b) (hba : b ≤ r k * a)
     (hsep : ∀ j, k < j → b * r k < a * r j) (m : ℕ) :
     scaledEvenShellCutoff (r k) a b
@@ -102,8 +102,9 @@ theorem scaledEvenShellCutoff_summableDilationCombination_apply
   calc
     A (summableDilationCombination r hr c g) =
         A (∑' j, (c j • dilationSum (r j) (hr j)) g) := by
-      rw [summableDilationCombination,
-        (ContinuousLinearMap.apply ℂ SoninL2 g).map_tsum hterms]
+      change A ((∑' j, c j • dilationSum (r j) (hr j)) g) = _
+      exact congrArg A
+        ((ContinuousLinearMap.apply ℂ SoninL2 g).map_tsum hterms)
     _ = ∑' j, A ((c j • dilationSum (r j) (hr j)) g) := by
       rw [A.map_tsum heval]
     _ = A ((c k • dilationSum (r k) (hr k)) g) := by
@@ -123,7 +124,7 @@ theorem scaledEvenShellCutoff_summableDilationCombination_apply
       rw [ContinuousLinearMap.smul_apply, dilationSum_apply, map_smul, map_add,
         scaledEvenShellCutoff_target_inward hk0 ha hab m,
         scaledEvenShellCutoff_outward hk0 (hr k) ha hab hba m]
-      simp
+      rw [add_zero]
 
 /-- **Summable Calkin injectivity.** Every nonzero absolutely summable combination of an increasing
 family of dilation corners remains noncompact. -/
@@ -147,7 +148,7 @@ theorem summableDilationCorners_calkinInjective
     (summableDilationCombination r hr c)
   intro m
   rw [scaledEvenShellCutoff_summableDilationCombination_apply
-    r hr hmono c hc k hk hmin ha hab hba hsep m]
+    r hr c hc k hmin ha hab hba hsep m]
   rw [norm_smul, (dilation (r k) (zero_lt_one.trans (hr k))).norm_map,
     (evenShellVector_orthonormal a b ha hab).norm_eq_one m, mul_one]
 
@@ -159,11 +160,14 @@ theorem norm_evenDilationSum_le_two (r : ℝ) (hr : 1 < r) :
   exact (dilationSum r hr).le_opNorm f |>.trans
     (mul_le_mul_of_nonneg_right (norm_dilationSum_le_two r hr) (norm_nonneg _))
 
+set_option maxHeartbeats 1000000 in
 theorem summable_smul_evenDilationSum
     (r : ℕ → ℝ) (hr : ∀ j, 1 < r j) (c : ℕ → ℂ)
     (hc : Summable fun j => ‖c j‖) :
     Summable fun j => c j • evenDilationSum (r j) (hr j) := by
-  apply Summable.of_norm_bounded (Summable.mul_left 2 hc)
+  apply Summable.of_norm_bounded
+    (f := fun j => c j • evenDilationSum (r j) (hr j))
+    (Summable.mul_left 2 hc)
   intro j
   calc
     ‖c j • evenDilationSum (r j) (hr j)‖
@@ -179,6 +183,7 @@ def summableEvenDilationCombination
     evenSubspace →L[ℂ] evenSubspace :=
   ∑' j, c j • evenDilationSum (r j) (hr j)
 
+set_option maxHeartbeats 4000000 in
 theorem summableEvenDilationCombination_coe_apply
     (r : ℕ → ℝ) (hr : ∀ j, 1 < r j) (c : ℕ → ℂ)
     (hc : Summable fun j => ‖c j‖) (f : evenSubspace) :
@@ -186,16 +191,26 @@ theorem summableEvenDilationCombination_coe_apply
       summableDilationCombination r hr c f := by
   have heven := summable_smul_evenDilationSum r hr c hc
   have hamb := summable_smul_dilationSum r hr c hc
-  change (evenSubspace.subtype : evenSubspace →ₗ[ℂ] SoninL2)
+  change evenSubspace.subtypeL
       ((∑' j, c j • evenDilationSum (r j) (hr j)) f) =
     (∑' j, c j • dilationSum (r j) (hr j)) (f : SoninL2)
-  rw [(ContinuousLinearMap.apply ℂ evenSubspace f).map_tsum heven,
-    (ContinuousLinearMap.apply ℂ SoninL2 (f : SoninL2)).map_tsum hamb]
-  rw [(evenSubspace.subtypeL).map_tsum
-    ((ContinuousLinearMap.apply ℂ evenSubspace f).summable heven)]
-  apply tsum_congr
-  intro j
-  simp
+  calc
+    evenSubspace.subtypeL
+        ((∑' j, c j • evenDilationSum (r j) (hr j)) f) =
+        evenSubspace.subtypeL
+          (∑' j, (c j • evenDilationSum (r j) (hr j)) f) := by
+      exact congrArg evenSubspace.subtypeL
+        ((ContinuousLinearMap.apply ℂ evenSubspace f).map_tsum heven)
+    _ = ∑' j, evenSubspace.subtypeL
+        ((c j • evenDilationSum (r j) (hr j)) f) := by
+      exact evenSubspace.subtypeL.map_tsum
+        ((ContinuousLinearMap.apply ℂ evenSubspace f).summable heven)
+    _ = ∑' j, (c j • dilationSum (r j) (hr j)) (f : SoninL2) := by
+      apply tsum_congr
+      intro j
+      simp
+    _ = (∑' j, c j • dilationSum (r j) (hr j)) (f : SoninL2) := by
+      exact ((ContinuousLinearMap.apply ℂ SoninL2 (f : SoninL2)).map_tsum hamb).symm
 
 /-- The lower corner of the summable dilation series on the actual even Sonin carrier. -/
 def summableEvenDilationCorner
@@ -231,9 +246,12 @@ theorem summableEvenDilationCorner_not_isCompactOperator
         evenShellVector a b ha hab m := by
       rw [evenProjection_apply, l2Reflection_evenShellVector a b ha hab m]
       module
-    simpa [WEven, W, E, heven] using
-      congrArg norm (scaledEvenShellCutoff_summableDilationCombination_apply
-        r hr hmono c hc k hk hmin ha hab hba hsep m)
+    dsimp only [WEven, ContinuousLinearMap.comp_apply, E, W]
+    rw [heven]
+    rw [scaledEvenShellCutoff_summableDilationCombination_apply
+      r hr c hc k hmin ha hab hba hsep m]
+    rw [norm_smul, (dilation (r k) (zero_lt_one.trans (hr k))).norm_map,
+      (evenShellVector_orthonormal a b ha hab).norm_eq_one m, mul_one]
   intro hcompact
   have hextCompact : IsCompactOperator
       (evenSubspace.subtypeL ∘L summableEvenDilationCorner a r hr c ∘L
@@ -255,7 +273,9 @@ theorem summableEvenDilationCorner_not_isCompactOperator
     simp only [summableEvenDilationCorner, crossBoundary,
       ContinuousLinearMap.mul_apply, ContinuousLinearMap.one_apply,
       ContinuousLinearMap.sub_apply]
+    rw [Submodule.coe_sub]
     rw [summableEvenDilationCombination_coe_apply r hr c hc]
+    simp only [coe_evenCentralSoninProjection_apply]
     rw [summableEvenDilationCombination_coe_apply r hr c hc]
     change W (centralSoninProjection a (E f)) -
         centralSoninProjection a (W (centralSoninProjection a (E f))) =
