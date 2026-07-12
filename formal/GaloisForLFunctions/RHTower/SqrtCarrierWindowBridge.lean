@@ -186,4 +186,128 @@ theorem sqrtCarrier_exceeds_detection_window {ε t₀ : ℝ} (hε : 0 < ε) (ht�
     (detectionW_secondMoment_bound σ (by linarith) hmin T U hU)
     (lt_of_lt_of_le hsep (sqrtCarrier_window_mass hε ht₀ hσ hN hgap T U hU))
 
+/-! ## Effective divisor tail and the numeric separation witness -/
+
+/-- Pointwise effective divisor bound: `d(k)²·k^(-2σ) ≤ k^(2-2σ)` for `k ≥ 1`, by the
+trivial bound `d(k) ≤ k`. -/
+theorem divisor_sq_rpow_le {k : ℕ} (hk : 1 ≤ k) (σ : ℝ) :
+    ((k.divisors.card : ℝ)) ^ 2 * (k : ℝ) ^ (-2 * σ) ≤ (k : ℝ) ^ (2 - 2 * σ) := by
+  have hk0 : (0 : ℝ) < (k : ℝ) := by exact_mod_cast hk
+  have hd : ((k.divisors.card : ℝ)) ^ 2 ≤ ((k : ℝ)) ^ (2 : ℕ) := by
+    have hcast : (k.divisors.card : ℝ) ≤ (k : ℝ) := by
+      exact_mod_cast Nat.card_divisors_le_self k
+    exact pow_le_pow_left₀ (by positivity) hcast 2
+  calc ((k.divisors.card : ℝ)) ^ 2 * (k : ℝ) ^ (-2 * σ)
+      ≤ ((k : ℝ)) ^ (2 : ℕ) * (k : ℝ) ^ (-2 * σ) :=
+        mul_le_mul_of_nonneg_right hd (Real.rpow_nonneg hk0.le _)
+    _ = (k : ℝ) ^ (2 - 2 * σ) := by
+        rw [← Real.rpow_natCast ((k : ℝ)) 2, ← Real.rpow_add hk0]
+        congr 1
+        push_cast
+        ring
+
+/-- **Effective divisor-tail bound.**  For `σ > 3/2` the divisor-square tail of the
+detection diagonal is bounded by the explicit p-series constant:
+`∑'_{k>m} d(k)²·k^(-2σ) ≤ m^(3-2σ)/(2σ-3)`. -/
+theorem divisor_tail_tsum_le {m : ℕ} (hm : 1 ≤ m) {σ : ℝ} (hσ : 3 / 2 < σ) :
+    ∑' k : ℕ, Set.indicator {j | m < j}
+        (fun k => ((k.divisors.card : ℝ)) ^ 2 * (k : ℝ) ^ (-2 * σ)) k
+      ≤ (m : ℝ) ^ (3 - 2 * σ) / (2 * σ - 3) := by
+  set f : ℕ → ℝ := fun k => ((k.divisors.card : ℝ)) ^ 2 * (k : ℝ) ^ (-2 * σ) with hf
+  have hc : 1 < 2 * σ - 2 := by linarith
+  have hnonneg : ∀ k, 0 ≤ Set.indicator {j | m < j} f k := fun k =>
+    Set.indicator_nonneg (fun j _ => by positivity) k
+  have hmaj : Summable (fun k : ℕ => (k : ℝ) ^ (-(2 * σ - 2))) := by
+    refine (Real.summable_nat_rpow_inv.mpr hc).congr fun k => ?_
+    rw [← Real.rpow_neg (Nat.cast_nonneg k)]
+  have hind_le : ∀ k, Set.indicator {j | m < j} f k ≤ (k : ℝ) ^ (-(2 * σ - 2)) := by
+    intro k
+    rcases Nat.lt_or_ge m k with hkm | hkm
+    · rw [Set.indicator_of_mem (by simpa using hkm)]
+      refine le_trans (divisor_sq_rpow_le (le_trans hm hkm.le) σ) (le_of_eq ?_)
+      congr 1
+      ring
+    · rw [Set.indicator_of_notMem (by simpa using Nat.not_lt.mpr hkm)]
+      positivity
+  have hsummable : Summable (Set.indicator {j | m < j} f) :=
+    Summable.of_nonneg_of_le hnonneg hind_le hmaj
+  have hsplit := Summable.sum_add_tsum_nat_add (m + 1) hsummable
+  have hzero : ∑ k ∈ Finset.range (m + 1), Set.indicator {j | m < j} f k = 0 := by
+    refine Finset.sum_eq_zero fun k hk => ?_
+    have hkm : ¬ m < k := by
+      have := Finset.mem_range.mp hk
+      omega
+    rw [Set.indicator_of_notMem (by simpa using hkm)]
+  have htail_eq : ∑' k, Set.indicator {j | m < j} f k
+      = ∑' i, Set.indicator {j | m < j} f (i + (m + 1)) := by
+    rw [← hsplit, hzero, zero_add]
+  rw [htail_eq]
+  have hfinal : (m : ℝ) ^ (1 - (2 * σ - 2)) / ((2 * σ - 2) - 1)
+      = (m : ℝ) ^ (3 - 2 * σ) / (2 * σ - 3) := by
+    rw [show (1 : ℝ) - (2 * σ - 2) = 3 - 2 * σ by ring,
+      show (2 * σ - 2) - 1 = 2 * σ - 3 by ring]
+  rw [← hfinal]
+  refine Real.tsum_le_of_sum_range_le (fun i => hnonneg _) fun n => ?_
+  calc ∑ i ∈ Finset.range n, Set.indicator {j | m < j} f (i + (m + 1))
+      ≤ ∑ i ∈ Finset.range n, ((i + (m + 1) : ℕ) : ℝ) ^ (-(2 * σ - 2)) :=
+        Finset.sum_le_sum fun i _ => hind_le _
+    _ ≤ (m : ℝ) ^ (1 - (2 * σ - 2)) / ((2 * σ - 2) - 1) := sum_range_add_rpow_neg_le hc hm n
+
+/-- **The first numeric window separation.**  At parameters
+`(N, (Nd, y), σ, t₀, U) = (9, (2, 2), 2, 73/100, 40)` and on every window `[T, T+40]`,
+the σ-weighted detection second moment is strictly smaller than the σ-weighted
+square-dilated carrier second moment: the gap hypothesis is discharged by `norm_num`
+through the divisor-tail bound (`≤ 1/2`), the exact harmonic sum `H(4) = 25/12`, and the
+banked coefficient bounds (`∑ e_k² ≤ 9/256`); the carrier floor is the certificate at
+`ε = 3/2` with exact radius `3⁻³/3 = 1/81`. -/
+theorem sqrtCarrier_exceeds_detection_witness (T : ℝ) :
+    (∫ t in T..(T + 40), ‖dpoly (detCoeffW 2 2 2)
+        (prodSupport (Finset.Icc 1 2) (Finset.Icc 1 2)) t‖ ^ 2)
+      < ∫ t in T..(T + 40),
+        ‖dpoly (fun n => sqrtMoebiusCoeff n * (n : ℝ) ^ (-(2 : ℝ)))
+          (Finset.Icc 1 9) t‖ ^ 2 := by
+  have hsqrt9 : Nat.sqrt 9 = 3 := by rw [show (9 : ℕ) = 3 ^ 2 by norm_num, Nat.sqrt_eq']
+  refine sqrtCarrier_exceeds_detection_window (ε := 3 / 2) (t₀ := 73 / 100)
+    (by norm_num) (by norm_num) (σ := 2) (by norm_num) (N := 9)
+    (by rw [hsqrt9]; norm_num) ?_ (Nd := 2) (y := 2) (by norm_num) T 40 (by norm_num) ?_
+  · rw [hsqrt9, show -(2 * (3 / 2 : ℝ)) = ((-3 : ℤ) : ℝ) by norm_num, Real.rpow_intCast]
+    norm_num
+  · have htail : ∑' k : ℕ, Set.indicator {j | min 2 2 < j}
+        (fun k : ℕ => ((k.divisors.card : ℝ)) ^ 2 * (k : ℝ) ^ (-2 * (2 : ℝ))) k ≤ 1 / 2 := by
+      rw [Nat.min_self]
+      refine le_trans (divisor_tail_tsum_le (by norm_num) (by norm_num)) (le_of_eq ?_)
+      rw [show (3 - 2 * (2 : ℝ)) = -1 by norm_num, Real.rpow_neg_one]
+      norm_num
+    have hd4 : (4 : ℕ).divisors.card = 3 := by decide
+    have h4 := sq_detCoeffW_le (N := 2) (y := 2) (2 : ℝ)
+      (by norm_num : 1 ≤ 4) (by norm_num : (4 : ℕ) ≠ 1)
+    rw [hd4, show (-2 * (2 : ℝ)) = ((-4 : ℤ) : ℝ) by norm_num, Real.rpow_intCast] at h4
+    have h4' : (detCoeffW 2 2 2 4) ^ 2 ≤ 9 / 256 := by
+      refine le_trans h4 (le_of_eq ?_)
+      norm_num
+    have hdetsum : ∑ k ∈ prodSupport (Finset.Icc 1 2) (Finset.Icc 1 2),
+        (detCoeffW 2 2 2 k) ^ 2 ≤ 9 / 256 := by
+      rw [show prodSupport (Finset.Icc 1 2) (Finset.Icc 1 2) = {1, 2, 4} by decide,
+        Finset.sum_insert (by decide), Finset.sum_insert (by decide),
+        Finset.sum_singleton,
+        detCoeffW_eq_zero_of_le 2 le_rfl (by norm_num) (by norm_num),
+        detCoeffW_eq_zero_of_le 2 (by norm_num) le_rfl le_rfl]
+      calc (0 : ℝ) ^ 2 + ((0 : ℝ) ^ 2 + (detCoeffW 2 2 2 4) ^ 2)
+          = (detCoeffW 2 2 2 4) ^ 2 := by ring
+        _ ≤ 9 / 256 := h4'
+    have hH : ∑ j ∈ Finset.Icc (1 : ℕ) (2 * 2), 1 / (j : ℝ) = 25 / 12 := by
+      rw [show Finset.Icc (1 : ℕ) (2 * 2) = {1, 2, 3, 4} by decide,
+        Finset.sum_insert (by decide), Finset.sum_insert (by decide),
+        Finset.sum_insert (by decide), Finset.sum_singleton]
+      norm_num
+    calc (40 : ℝ) * (∑' k : ℕ, Set.indicator {j | min 2 2 < j}
+            (fun k : ℕ => ((k.divisors.card : ℝ)) ^ 2 * (k : ℝ) ^ (-2 * (2 : ℝ))) k)
+          + 4 * ((2 * 2 : ℕ) : ℝ) * (∑ j ∈ Finset.Icc (1 : ℕ) (2 * 2), 1 / (j : ℝ))
+            * ∑ k ∈ prodSupport (Finset.Icc 1 2) (Finset.Icc 1 2), (detCoeffW 2 2 2 k) ^ 2
+        ≤ 40 * (1 / 2) + 4 * ((2 * 2 : ℕ) : ℝ) * (25 / 12) * (9 / 256) := by
+          rw [hH]
+          refine add_le_add (mul_le_mul_of_nonneg_left htail (by norm_num)) ?_
+          exact mul_le_mul_of_nonneg_left hdetsum (by positivity)
+      _ < (73 / 100) ^ 2 * 40 := by norm_num
+
 end RHTower

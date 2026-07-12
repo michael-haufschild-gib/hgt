@@ -44,6 +44,13 @@ entrywise, and their leading determinants are equal.
 - `completedMovingMomentGerm_one_half_eventuallyEq`;
 - `completedMovingHankelMatrix_one_half`;
 - `completedMovingHankelDet_one_half`.
+- `completedCenteredCoordinate`;
+- `primeArchSourceRelativeTrace_completedCenteredCoordinate`;
+- `completedMovingRelativeTrace_eq_primeArchSource_value_sub`;
+- `primeArchSourceValueDifference`;
+- `primeArchSourceValueMomentGerm`;
+- `primeArchSourceValueHankelMatrix`;
+- `completedMovingHankelMatrix_eq_primeArchSourceValueHankelMatrix`.
 
 ## Proof
 
@@ -58,6 +65,17 @@ The existing continued prime--Gamma trace equals this Xi logarithmic derivative 
 Normalized divided difference preserves germ equality, as do all iterated derivatives at the base
 point.  Therefore every analytic trace moment, matrix entry, and finite determinant agrees.
 
+On `Re s>1`, the moving family has the stronger two-value description
+
+\[
+T_s(z)=P(w_s+z)-P(w_s),
+\qquad w_s=-i(s-1/2),
+\]
+
+where `P=primeArchSourceRelativeTrace`.  This is proved first pointwise and then as an equality of
+analytic germs.  Thus every moving Hankel matrix in the Euler half-plane is computed solely from
+translated values of the one fixed source function.
+
 ## Top-down consequence
 
 The far-right determinant route now has one fixed source-defined family rather than two matrices
@@ -71,6 +89,9 @@ far-right positivity of completedMovingHankelDet n                         [PAPE
 ```
 
 The bridge does not assert the winding hypothesis and therefore does not redress RH.
+
+The moving family is not an auxiliary flow: it is the normalized two-point constraint of the
+prime--Gamma source under translation.
 
 ## Scientific status
 

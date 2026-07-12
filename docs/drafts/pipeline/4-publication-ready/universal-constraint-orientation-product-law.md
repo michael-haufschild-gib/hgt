@@ -252,8 +252,10 @@ constraint--polarization product theorem is found, the novelty score must be red
 ## Standalone paper
 
 The complete theorem and proof are presented in
-`docs/reports/universal_oriented_ht_constraint_product.tex`, with the rendered manuscript at
-`output/pdf/universal_oriented_ht_constraint_product.pdf`.  The paper builds independently from
+`docs/drafts/pipeline/4-publication-ready/universal-constraint-orientation-product-law/main.tex`,
+with the rendered manuscript beside it as
+`docs/drafts/pipeline/4-publication-ready/universal-constraint-orientation-product-law/main.pdf`.
+The paper builds independently from
 the research corpus, contains the source-selection, rational-gauge, Herglotz chamber, facet-sewing,
 operator-row, product, and pointing proofs, and states the RH-facing consequence only as a
 conditional carrier-selection law.  Its mathematical exposition contains no reference to the

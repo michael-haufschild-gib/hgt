@@ -28,16 +28,13 @@ theorem int_lattice_eq_zero_of_linearIndependent {α β : ℝ}
     linarith
   have hz := Fintype.linearIndependent_iff.mp hLI _ hcomb
   refine ⟨?_, ?_, ?_⟩
-  · have h1 := hz 1
-    simp only [Matrix.cons_val_one, Matrix.head_cons] at h1
+  · have h1 : (m : ℚ) = 0 := hz 1
     exact_mod_cast h1
-  · have h2 := hz 2
-    simp only [Matrix.cons_val_two, Matrix.tail_cons, Matrix.head_cons] at h2
+  · have h2 : (n : ℚ) = 0 := hz 2
     exact_mod_cast h2
-  · have h0 := hz 0
-    simp only [Matrix.cons_val_zero] at h0
-    have : (k : ℚ) = 0 := by linarith
-    exact_mod_cast this
+  · have h0 : (-k : ℚ) = 0 := hz 0
+    have hk0 : (k : ℚ) = 0 := by linarith
+    exact_mod_cast hk0
 
 /-- **Pairwise incongruence.**  Distinct integer lattice points of a rationally independent pair
 are incongruent modulo `ℤ`. -/

@@ -173,7 +173,7 @@ shows that both defects are visible in one closed chain.
 
 ## Formal verification
 
-- targeted builds of all three modules pass;
+- targeted builds of all four modules pass;
 - the modules are imported by `GaloisForLFunctions.RHTower`;
 - no `sorry`, `admit`, custom `axiom`, `opaque`, or `unsafe` declaration occurs;
 - every headline theorem prints only the standard kernel foundations

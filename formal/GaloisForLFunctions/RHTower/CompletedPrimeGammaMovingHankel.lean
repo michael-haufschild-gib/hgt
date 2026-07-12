@@ -97,6 +97,99 @@ theorem completedMovingHankelDet_one_half (n : ℕ) :
       (primeArchSourceMomentHankelMatrix n).det := by
   rw [completedMovingHankelDet, completedMovingHankelMatrix_one_half]
 
+/-! ## Euler-half-plane source-value realization -/
+
+/-- The centered spectral coordinate corresponding to a completed `s`-coordinate. -/
+def completedCenteredCoordinate (s : ℂ) : ℂ :=
+  -(s - 1 / 2) * Complex.I
+
+theorem one_half_add_completedCenteredCoordinate_mul_I (s : ℂ) :
+    1 / 2 + completedCenteredCoordinate s * Complex.I = s := by
+  rw [completedCenteredCoordinate]
+  ring_nf
+  rw [Complex.I_sq]
+  ring
+
+/-- On the Euler half-plane, one prime--Gamma source value is exactly the completed logarithmic
+derivative at the corresponding `s`-coordinate. -/
+theorem primeArchSourceRelativeTrace_completedCenteredCoordinate
+    {s : ℂ} (hs : 1 < s.re) :
+    primeArchSourceRelativeTrace (completedCenteredCoordinate s) =
+      Complex.I * logDeriv xi s := by
+  rw [primeArchSourceRelativeTrace,
+    one_half_add_completedCenteredCoordinate_mul_I]
+  rw [← infinitePrimeFlux_eq_vonMangoldtLSeries hs,
+    ← seamFluxCochain_eq_prime_add_archimedean_of_one_lt_re hs,
+    seamFluxCochain]
+  ring
+
+theorem completedCenteredCoordinate_add_spectral (s z : ℂ) :
+    completedCenteredCoordinate (s + z * Complex.I) =
+      completedCenteredCoordinate s + z := by
+  rw [completedCenteredCoordinate, completedCenteredCoordinate]
+  ring_nf
+  rw [Complex.I_sq]
+  ring
+
+/-- **Two-value source law.** The moving completed trace is literally the difference of two
+values of the fixed prime--Gamma source after the centered coordinate change. -/
+theorem completedMovingRelativeTrace_eq_primeArchSource_value_sub
+    {s z : ℂ} (hs : 1 < s.re) (hsz : 1 < (s + z * Complex.I).re) :
+    completedMovingRelativeTrace s z =
+      primeArchSourceRelativeTrace (completedCenteredCoordinate s + z) -
+        primeArchSourceRelativeTrace (completedCenteredCoordinate s) := by
+  rw [← completedCenteredCoordinate_add_spectral]
+  rw [primeArchSourceRelativeTrace_completedCenteredCoordinate hsz,
+    primeArchSourceRelativeTrace_completedCenteredCoordinate hs,
+    completedMovingRelativeTrace]
+  ring
+
+/-- The two-point prime--Gamma value difference that determines the moving trace. -/
+def primeArchSourceValueDifference (s z : ℂ) : ℂ :=
+  primeArchSourceRelativeTrace (completedCenteredCoordinate s + z) -
+    primeArchSourceRelativeTrace (completedCenteredCoordinate s)
+
+/-- Normalized germ constructed solely from two values of the fixed prime--Gamma source. -/
+def primeArchSourceValueMomentGerm (s : ℂ) : ℂ → ℂ :=
+  normalizedTraceMomentGerm (primeArchSourceValueDifference s)
+
+/-- Moving source Hankel matrix written entirely in the prime--Gamma value language. -/
+def primeArchSourceValueHankelMatrix (n : ℕ) (s : ℂ) :
+    Matrix (Fin n) (Fin n) ℝ :=
+  fun i j => analyticTraceMoments (primeArchSourceValueMomentGerm s)
+    ((i : ℕ) + (j : ℕ))
+
+/-- The pointwise two-value law holds as a germ around every Euler-half-plane base point. -/
+theorem completedMovingRelativeTrace_eventuallyEq_primeArchSourceValueDifference
+    {s : ℂ} (hs : 1 < s.re) :
+    completedMovingRelativeTrace s =ᶠ[nhds 0]
+      primeArchSourceValueDifference s := by
+  have hcont : ContinuousAt (fun z : ℂ => (s + z * Complex.I).re) 0 := by
+    fun_prop
+  have hev : ∀ᶠ z : ℂ in nhds 0, 1 < (s + z * Complex.I).re := by
+    exact hcont.eventually_const_lt (by simpa using hs)
+  filter_upwards [hev] with z hsz
+  exact completedMovingRelativeTrace_eq_primeArchSource_value_sub hs hsz
+
+/-- The moving normalized germ is fixed by the two-point prime--Gamma value germ. -/
+theorem completedMovingMomentGerm_eventuallyEq_primeArchSourceValueMomentGerm
+    {s : ℂ} (hs : 1 < s.re) :
+    completedMovingMomentGerm s =ᶠ[nhds 0]
+      primeArchSourceValueMomentGerm s := by
+  rw [completedMovingMomentGerm, primeArchSourceValueMomentGerm]
+  exact normalizedTraceMomentGerm_eventuallyEq_of_eventuallyEq
+    (completedMovingRelativeTrace_eventuallyEq_primeArchSourceValueDifference hs)
+
+/-- Every finite moving Hankel matrix on the Euler half-plane is determined by static values of
+the fixed prime--Gamma source. -/
+theorem completedMovingHankelMatrix_eq_primeArchSourceValueHankelMatrix
+    (n : ℕ) {s : ℂ} (hs : 1 < s.re) :
+    completedMovingHankelMatrix n s = primeArchSourceValueHankelMatrix n s := by
+  ext i j
+  rw [completedMovingHankelMatrix, primeArchSourceValueHankelMatrix]
+  unfold analyticTraceMoments
+  rw [(completedMovingMomentGerm_eventuallyEq_primeArchSourceValueMomentGerm hs).iteratedDeriv_eq]
+
 end
 
 end RHTower

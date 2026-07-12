@@ -272,3 +272,4 @@ import GaloisForLFunctions.RHTower.MFreeTower
 import GaloisForLFunctions.RHTower.SqrtCarrierWindowBridge
 import GaloisForLFunctions.AntidiagCardBound
 import GaloisForLFunctions.WedgeRealization
+import GaloisForLFunctions.LatticeIncongruence

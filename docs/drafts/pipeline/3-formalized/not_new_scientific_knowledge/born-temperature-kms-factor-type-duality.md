@@ -216,20 +216,36 @@ theorem depends only on `propext`, `Classical.choice`, `Quot.sound`.
 - `fe_reflection_fixed_iff`, `reflectedPhaseMatch_iff_reflection_fixed`,
   `riemannHypothesis_iff_xiZero_reflection_fixed` — Theorems 3--4.
 
-## 8. What this opens `[CONJECTURE]`
+## 8. What this opens `[CONJECTURE]` — corrected by the 2026-07-12 review
 
 The collapse localizes the residue precisely: the Born channel is diagonal, and the Bost--Connes
 symmetry group `R_+ x Zhat*` has no `beta -> 2-beta` element, so no existing arithmetic
-quantum-statistical system carries the functional equation natively. The forward object is a
-**self-dual completed Bost--Connes system**: a C*-dynamical system whose partition function is the
-completed `Lambda(beta)=pi^(-beta/2) Gamma(beta/2) zeta(beta)` — the discrete prime modes welded to
-one continuous archimedean scale mode contributing `Gamma(beta/2)` — built so that `beta -> 2-beta`
-is a duality of the system itself, not of scalar values. `[CONJECTURE]` Such a system exists, its
-phase diagram is symmetric about `beta=1`, and the Kramers--Wannier-type functor exchanging its two
-phases degenerates on the fixed line into the type-`III_1` sector — making the completed functional
-equation an operator-algebra duality rather than an identity of analytic continuations. The open
-question it must answer to escape this card's collapse: the duality has to act on the off-diagonal
-algebra, where Theorem 5 does not apply.
+quantum-statistical system carries the functional equation natively.
+
+**Theorem 6 (dihedral no-go) `[PROVED HERE + FORMALIZED]`.** The completed `Lambda(beta)` itself
+cannot be the self-dual partition function. Its scalar functional equation reflects the argument
+about `1/2` while the Born reflection acts about `1`; two reflections at distance `1/2` generate
+the unit translation, so a function carrying both would be `1`-periodic — excluded because
+`Lambda` has a pole at `0` and is regular at `2`. Formalized:
+`doubly_reflected_periodic`, `tendsto_mul_completedRiemannZeta_zero`,
+`completedRiemannZeta_no_born_reflection` in
+`formal/GaloisForLFunctions/RHTower/CompletedBornReflectionNoGo.lean`.
+
+**Theorem 7 (self-dual gauge and grading) `[PROVED HERE + FORMALIZED]`.** The unique dilation
+gauge carrying the Born reflection is the half-dilated `Z(beta) = Lambda(beta/2)` — discrete
+Hamiltonian `log sqrt(n)` — with `Z(2-beta)=Z(beta)`
+(`completedRiemannZeta_half_dilated_born_reflection`). Its self-dual value
+`Z(1) = Lambda(1/2) = -8 xi(1/2)` is a strictly negative real
+(`completedRiemannZeta_half_eq`, `completedRiemannZeta_half_neg`, via the positive real `xi`
+anchor). No ungraded Gibbs trace attains a negative partition value, so any dynamical realization
+must carry a grading.
+
+`[CONJECTURE]` The forward object is a **graded self-dual completed Bost--Connes system** with
+partition function `Z(beta)=Lambda(beta/2)`: `log sqrt(n)` prime modes welded to one continuous
+archimedean scale mode, poles at both temperature ends `beta=0,2`, regular negative self-dual
+value at `beta=1`, and `beta -> 2-beta` acting as a duality of the system itself on the
+off-diagonal algebra, where Theorem 5 does not apply. Successor card:
+`0-backlog/self-dual-completed-bost-connes-system.md`.
 
 ## Log
 
@@ -244,3 +260,8 @@ algebra, where Theorem 5 does not apply.
   dualities, Born-invisibility of the Gamma-completion. Formalized all of it in
   `BornTemperatureFactorType.lean` (build + lint + axiom audit clean). Final grade BRIDGE /
   not new scientific knowledge; card moved to 3-formalized. Successor object seeded in Section 8.
+- 2026-07-12 (review) — corpus review for the successor construction found and repaired a defect in
+  the original Section 8: `Lambda(beta)` cannot carry the Born reflection (dihedral no-go, Theorem
+  6); the self-dual gauge is `Z(beta)=Lambda(beta/2)` with `log sqrt(n)` Hamiltonian, and its
+  negative self-dual value forces a graded realization (Theorem 7). Both formalized axiom-clean in
+  `CompletedBornReflectionNoGo.lean`; lint green.

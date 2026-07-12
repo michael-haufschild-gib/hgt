@@ -11,8 +11,9 @@ librarian/apply agent:
 - record the pointing consequence: Herglotz positivity is the unique base chamber and therefore
   must be supplied as source-sensitive data beyond the unpointed field and finite constraint
   matroid;
-- link the standalone paper `docs/reports/universal_oriented_ht_constraint_product.tex` and the
-  pipeline card under `4-publication-ready/new_scientific_knowledge/`;
+- link the standalone paper
+  `docs/drafts/pipeline/4-publication-ready/universal-constraint-orientation-product-law/main.tex`
+  and the pipeline card under `4-publication-ready/new_scientific_knowledge/`;
 - preserve the scope boundary: this is a carrier-selection constraint relevant to RH architectures,
   not an RH proof and not a claim that the zeta function is the constructed source.
 

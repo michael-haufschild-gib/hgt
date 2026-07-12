@@ -137,9 +137,10 @@ the actual Xi divisor; finite-cutoff positivity alone does not supply that trans
 
 ## Lean program
 
-1. Define `A_L` and `F_(a,L)` and prove `(2)`, `(3)`, and `(6)`.
-2. Prove square summability of `F_(a,L)` on `XiZeroCopy` from the existing inverse-square divisor
-   summability.
+1. **Complete.** `CCMRectangularTwoEdge.lean` defines `A_L` and `F_(a,L)` and proves `(2)`, `(3)`,
+   and `(6)`, together with evenness and exact compatibility with `xiWeilSharp`.
+2. **Complete.** The same module proves square summability of `F_(a,L)` on the actual
+   multiplicity-exact `XiZeroCopy` divisor by an explicit reciprocal-square majorant.
 3. Formalize the off-line quartet decomposition and the bounded remainder.
 4. Build the weighted resolvent series `(9)` and prove local normal convergence off its poles.
 5. Formalize the continuous-Laplace Landau boundary-singularity theorem.
@@ -150,9 +151,9 @@ the actual Xi divisor; finite-cutoff positivity alone does not supply that trans
 
 - [x] candidate explicit profile and nonvanishing mechanism isolated
 - [x] exact transform and leading/remainder decomposition proved on paper
+- [x] scalar transform, symmetry, strip bound, and Xi-divisor square summability formalized in Lean
 - [ ] complete paper proof audited at indicator-class and abscissa boundaries
 - [ ] unconditional Lean formalization of every promoted claim
 - [ ] primary-literature novelty audit
 - [ ] independent proof audit
 - [ ] standalone paper score at least 90/100
-

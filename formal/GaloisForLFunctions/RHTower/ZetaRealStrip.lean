@@ -35,11 +35,11 @@ noncomputable section
 open Complex Set
 
 /-- The `n`-th paired eta summand `(2n+1)^{-s} − (2n+2)^{-s}` (real bases). -/
-private def etaTerm (s : ℂ) (n : ℕ) : ℂ :=
+def etaTerm (s : ℂ) (n : ℕ) : ℂ :=
   ((2 * n + 1 : ℝ) : ℂ) ^ (-s) - ((2 * n + 2 : ℝ) : ℂ) ^ (-s)
 
 /-- The paired Dirichlet eta series `E(s) = ∑ₙ ((2n+1)^{-s} − (2n+2)^{-s})`. -/
-private def etaPair (s : ℂ) : ℂ := ∑' n : ℕ, etaTerm s n
+def etaPair (s : ℂ) : ℂ := ∑' n : ℕ, etaTerm s n
 
 /-- **Mean-value term bound.**  On the real segment `[2n+1, 2n+2]` the map `x ↦ x^{-s}` has
 derivative `-s·x^{-s-1}` of norm at most `‖s‖·(2n+1)^{-Re s−1}`, so the increment of the
@@ -79,7 +79,7 @@ private theorem norm_etaTerm_le (s : ℂ) (hs : 0 < s.re) (n : ℕ) :
 
 /-- **Absolute convergence for `Re s > 0`.**  The term bound is dominated by the summable
 `p`-series `∑ ‖s‖·(n+1)^{-Re s−1}` (exponent `< −1`). -/
-private theorem summable_etaTerm (s : ℂ) (hs : 0 < s.re) : Summable (etaTerm s) := by
+theorem summable_etaTerm (s : ℂ) (hs : 0 < s.re) : Summable (etaTerm s) := by
   have hg : Summable (fun n : ℕ => ‖s‖ * ((n : ℝ) + 1) ^ (-s.re - 1)) := by
     apply Summable.mul_left
     have h2 := (summable_nat_add_iff 1).mpr
@@ -264,7 +264,7 @@ private theorem isPreconnected_posStrip_diff_one :
 /-- **The eta–zeta identity on all of `{Re s > 0} ∖ {1}`.**  Both `E` and `(1 − 2^{1−s})·ζ`
 are analytic on the preconnected punctured half-plane and agree on `{Re s > 1}`, so the
 identity theorem propagates the equality. -/
-private theorem etaPair_eq (s : ℂ) (hs0 : 0 < s.re) (hs1 : s ≠ 1) :
+theorem etaPair_eq (s : ℂ) (hs0 : 0 < s.re) (hs1 : s ≠ 1) :
     etaPair s = (1 - (2 : ℂ) ^ (1 - s)) * riemannZeta s := by
   set U : Set ℂ := {s : ℂ | 0 < s.re} \ {1} with hUdef
   have hUopen : IsOpen U :=
@@ -295,7 +295,7 @@ private theorem etaPair_eq (s : ℂ) (hs0 : 0 < s.re) (hs1 : s ≠ 1) :
   exact hEqOn ⟨hs0, hs1⟩
 
 /-- Each paired summand at a real argument is the cast of a real difference of `rpow`s. -/
-private theorem etaTerm_ofReal (σ : ℝ) (n : ℕ) :
+theorem etaTerm_ofReal (σ : ℝ) (n : ℕ) :
     etaTerm (σ : ℂ) n = (((2 * n + 1 : ℝ) ^ (-σ) - (2 * n + 2 : ℝ) ^ (-σ) : ℝ) : ℂ) := by
   rw [etaTerm]
   have h1 : ((2 * (n : ℝ) + 1 : ℝ) : ℂ) ^ (-(σ : ℂ)) = (((2 * (n : ℝ) + 1 : ℝ) ^ (-σ) : ℝ) : ℂ) := by
@@ -307,7 +307,7 @@ private theorem etaTerm_ofReal (σ : ℝ) (n : ℕ) :
   rw [h1, h2, ← Complex.ofReal_sub]
 
 /-- The real paired summand is strictly positive on `(0, ∞)`: `(2n+1)^{-σ} > (2n+2)^{-σ}`. -/
-private theorem etaRealTerm_pos (σ : ℝ) (hσ : 0 < σ) (n : ℕ) :
+theorem etaRealTerm_pos (σ : ℝ) (hσ : 0 < σ) (n : ℕ) :
     0 < (2 * n + 1 : ℝ) ^ (-σ) - (2 * n + 2 : ℝ) ^ (-σ) := by
   have : (2 * (n : ℝ) + 2) ^ (-σ) < (2 * (n : ℝ) + 1) ^ (-σ) :=
     Real.rpow_lt_rpow_of_neg (by positivity) (by linarith) (by linarith)

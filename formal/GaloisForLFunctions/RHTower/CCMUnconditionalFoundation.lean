@@ -7,6 +7,8 @@ Connes--Consani--Moscovici route:
 * finite diagonal-Fock defect/passivity and source incidence;
 * bilateral polarization of an off-line quartet resolvent;
 * exact Sonin resolvent dressing of the boundary commutator.
+* an explicit rectangular two-edge Xi test family, including its exact
+  transform decomposition and unconditional divisor square-summability.
 
 The source incidence includes the complete complex right-half-plane polar--prime critical Mellin
 colligation, not only its positive-real-ray restriction.
@@ -27,6 +29,7 @@ import GaloisForLFunctions.HTGeometry.PrimeLogCauchySeamRank
 import GaloisForLFunctions.RHTower.GammaDampedPrimeLogCauchyDomain
 import GaloisForLFunctions.RHTower.PolarPrimeMellinDefect
 import GaloisForLFunctions.RHTower.CCMComplexMellinColligation
+import GaloisForLFunctions.RHTower.CCMRectangularTwoEdge
 import GaloisForLFunctions.RHTower.SoninTimeBandHilbertSchmidt
 import GaloisForLFunctions.RHTower.XiThetaSquareRateLaplace
 import GaloisForLFunctions.RHTower.XiWeilPositivityCriterion
