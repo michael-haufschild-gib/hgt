@@ -416,10 +416,10 @@ must positively add: a canonical pointing of the otherwise universal constraint 
    directly here by facet-orbit freeness and the exact restriction embedding (15).
 4. Two-thickness is unnecessary for this direct construction.  It is retained in the explicit
    example because it closes the realization gate of the abstract constraint-tower bridge.
-5. The diagonal-specialization proof would fail without full nonlinear complex-translation
-   freeness of `g`, or if the vertex step sizes admitted integer collisions.  The prime-log source
-   now has unconditional differential-linear freeness for every finite complex-translation packet;
-   nonlinear freeness remains the exact analytic gap.
+5. The diagonal-specialization proof would fail without full nonlinear restricted-translation
+   freeness of `g`, or if the vertex step sizes admitted integer collisions.  That restricted
+   freeness is now formalized inside the upper-end meromorphic field.  The remaining gap is the
+   theorem-specific assembly of its facet orbits with the structural restriction rows.
 6. The scientific limitation is naturality, not correctness: arbitrary combinatorics are sewn from
    independent facet coordinates.  The next research object must explain canonical source
    selection rather than construct further arbitrary complexes.
@@ -536,9 +536,28 @@ The current Lean tree contains genuine supporting components, but not this theor
 - `GaloisForLFunctions.HTGeometry.AlgebraicIndependentLinearForms` proves the nonlinear algebraic
   core of the rank lemma: a full-row-rank matrix has a right inverse, and its row linear forms in
   an algebraically independent family remain algebraically independent.
+- `GaloisForLFunctions.HTGeometry.DifferentialOperatorToeplitzRank` proves the exact nonlinear
+  differential-operator matroid law: on a differentially independent source family, a finite
+  family of operator-row outputs is differentially independent if and only if its rows are
+  linearly independent over the polynomial operator ring.
+- `GaloisForLFunctions.HTGeometry.FacetRestrictionEmbedding` proves that the localized
+  Stanley--Reisner quotient embeds in the product of its facet quotients and that complete facet
+  restriction preserves and reflects linear independence over the coefficient field.
+- `GaloisForLFunctions.HTGeometry.FiniteFinsuppOperatorRows` proves that every finite family of
+  facetwise finitely supported polynomial operator coefficients expands on one common finite orbit
+  packet without changing its linear matroid, and identifies that matroid with the nonlinear
+  differential matroid of the resulting outputs on a free source packet.
+- `GaloisForLFunctions.HTGeometry.LocalizationQuotient`, `FacetPolynomialQuotient`,
+  `StanleyReisnerFacetCoordinates`, `DifferenceTranslationCoordinates`, and
+  `FacetTranslationCoordinates` prove that finite localized quotient families have a common
+  denominator, their numerator facet quotients are ordinary facet polynomial rings, and the exact
+  change `x_v=t_v-1` yields faithful finite translation-orbit coefficient rows.
+- `GaloisForLFunctions.HTGeometry.StanleyReisnerNumeratorDifferentialMatroid` combines those rows
+  with the operator theorem and proves that their full nonlinear differential matroid is exactly
+  the `C[D]`-linear matroid of the Stanley--Reisner numerator classes.
 
-The following theorem-specific obligations determine Lean completion.  Items 1, 2, and 4 are
-formalized; items 3, 5, and the final assembly remain:
+The following theorem-specific obligations determine Lean completion.  Items 1--4 are formalized;
+item 5 and the final assembly remain:
 
 1. `[FORMALIZED]` `GaloisForLFunctions.HTGeometry.PrimeLogHerglotz` defines (S1), proves
    absolute convergence at every complex argument after totalized-inverse interpretation,
@@ -578,15 +597,22 @@ formalized; items 3, 5, and the final assembly remain:
 2. `[FORMALIZED]` the arbitrary finite-complex facet-prime identity and its preservation under an
    arbitrary localization are proved in
    `GaloisForLFunctions.HTGeometry.StanleyReisnerFacetIdeal`;
-3. `[PARTIALLY FORMALIZED]` the full-row-rank linear-form preservation theorem underlying (14) is
-   formalized.  The remaining differential step is the polynomial-operator Toeplitz lift: row
-   independence over `C(delta)` must imply full row rank for every finite packet of shifted output
-   jets, after which the formalized linear-form theorem gives differential independence.  The
-   resulting rank statement must then be instantiated in the upper-end meromorphic field;
+3. `[FORMALIZED]` the full-row-rank linear-form theorem and the polynomial-operator Toeplitz lift
+   are formalized.  For every finite polynomial differential-operator matrix acting on a
+   differentially independent source, the output family is differentially independent exactly
+   when the operator rows are linearly independent.  This is the full nonlinear matroid statement
+   behind (14), including both absence of hidden nonlinear circuits and detection of every operator
+   circuit;
 4. `[FORMALIZED]` the explicit six-vertex facet family (16), its exact minimal nonfaces (17),
    nonpurity, facet-antichain property, and two-thickness are proved in
    `GaloisForLFunctions.HTGeometry.WedgeTwoThick`;
-5. the analytic-algebraic assembly yielding (4) for every finite operator family.
+5. `[PARTIALLY FORMALIZED]` the commutative-algebraic facet embedding, quotient-localization
+   compatibility, common-denominator reduction, exact facet polynomial quotient, difference-to-
+   translation coordinate equivalence, finite-support operator expansion, and the complete
+   numerator nonlinear differential matroid are formalized.  It remains to represent the common
+   translation denominator by its exponent, reindex the numerator supports by the corresponding
+   negative Laurent shift, and instantiate that finite packet inside the formalized upper-end
+   prime-log translation family.
 
 Formalizing an abstract interface that assumes any of these five items would be useful
 infrastructure but would not formalize this card.  Stage 3 requires all five and the final assembly
@@ -647,6 +673,15 @@ unconditionally.
   Lean
 - [x] full-row-rank matrix linear forms preserve algebraic independence, including construction of
   a right inverse from row independence, formalized unconditionally in Lean
+- [x] exact polynomial differential-operator matroid law via finite Toeplitz jet lifts formalized
+  unconditionally in Lean
+- [x] localized Stanley--Reisner quotient embedding into facet quotients and exact facet-restriction
+  linear-independence equivalence formalized unconditionally in Lean
+- [x] finite facetwise support union, operator-matrix expansion, and exact differential-matroid
+  equivalence formalized unconditionally in Lean
+- [x] quotient-localization compatibility, common-denominator reduction, exact facet polynomial
+  coordinates, `x_v=t_v-1` translation expansion, and the complete Stanley--Reisner numerator
+  differential matroid formalized unconditionally in Lean
 - [ ] complete unconditional Lean formalization before stage 3
 
 ## Log

@@ -6,9 +6,10 @@
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [ERRATUM CANDIDATE] [NOT AN RH PROOF]`
 - **Lean status:** `[PARTIALLY FORMALIZED]` — the unconditional finite-dimensional kernel,
   signature, corrected zero-frequency multiplier, full real-cutoff Abel identity `(12)`, its
-  von Mangoldt specialization, and the zero-frequency defect `(13)` are verified in
+  von Mangoldt specialization, the zero-frequency defect `(13)`, and the infinite real-ray
+  Laplace colligation `(22)`--`(25)` are verified in
   `formal/GaloisForLFunctions/RHTower/PolarPrimeMellinDefect.lean`; the distributional source-sign
-  derivation, autocorrelation identities, and infinite Laplace identity remain paper-level
+  derivation, autocorrelation identities, and full complex Stieltjes continuation remain paper-level
 - **Parent source:** Suzuki, *Weil's quadratic form via the screw function*, arXiv:2606.09096,
   equations (2.5), (2.7), and (2.11)
 - **Statement:** The exact finite-aperture Fourier symbol contains an aperture-dependent rank-two
@@ -121,14 +122,20 @@ criticalMellinError_identity
 vonMangoldt_criticalMellinError_identity
 polarPrimeZero_defect_identity
 criticalMellinDefect_cancellation
+continuousPolarLaplaceChannel_eq
+vonMangoldtPrimeLaplaceChannel_eq_logDeriv
+vonMangoldtPrimeLaplaceChannel_pos
+cauchy_eq_prime_sub_shiftedPolar_add_criticalMellinDefect
+cauchyKernel_eq_prime_sub_shiftedPolar_add_criticalMellinDefect
 ```
 
 Thus Lean checks the exact `(+,-)` two-channel signature, the positive zero-frequency sign for
 positive aperture, the exact real-cutoff Abel formula for every coefficient sequence with zero
-constant term, its specialization to the von Mangoldt coefficients, and the complete finite
-polar--prime cancellation `(13)` for `X=exp(2a)`. The formal theorem deliberately does not claim
-the source-level distributional sign derivation, the autocorrelation Stieltjes carrier, the zeta
-logarithmic derivative, or the infinite Laplace transform `(22)`.
+constant term, its specialization to the von Mangoldt coefficients, the complete finite
+polar--prime cancellation `(13)` for `X=exp(2a)`, the Euler-region zeta logarithmic derivative,
+strict positivity of the resolved prime channel, and the infinite real-kernel colligation `(25)`.
+The formal theorem deliberately does not claim the source-level distributional sign derivation,
+the autocorrelation Stieltjes carrier, or the full complex Stieltjes continuation of `(22)`.
 
 ## 3. Critical Mellin defect at zero
 
@@ -306,7 +313,9 @@ knowledge.
 - [x] unconditional finite-dimensional core formalized in Lean and axiom-audited
 - [x] real-cutoff Abel and von Mangoldt critical Mellin identities formalized in Lean
 - [x] complete finite zero-frequency defect `(13)` formalized in Lean
+- [x] infinite real-ray polar--prime Laplace identity and four-channel kernel colligation
+  formalized in Lean
 - [ ] independent source/author audit of the printed sign
-- [ ] formalize the distributional/autocorrelation Stieltjes and infinite Laplace-source layers
+- [ ] formalize the distributional/autocorrelation Stieltjes layers and full complex continuation
 - [ ] control the full compressed symbol on `PW_a`
 - [ ] RH

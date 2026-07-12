@@ -618,3 +618,54 @@ not the relevant limit.
 source graph is contractive on the complete diagonal residue bundle and that its cofinal defect
 index is preserved.  This is the common operator statement behind the finite-degree Gram target,
 the four-unit boundary relative-trace bound, and the square restricted-Weil Evans line.
+
+`[PROVED SOURCE DICTIONARY]` For each off-line quartet, the Euler-ray defect and the boundary trace
+are not merely equivalent counters.  Writing the causal and anti-causal resolvents as
+`f_lambda(x)=(x-lambda)^(-1)` and
+`g_lambda(x)=(x+conjugate(lambda))^(-1)`, their Hermitian packet is
+
+```text
+|u_lambda><u_lambda|-|v_lambda><v_lambda|,
+u_lambda=(f_lambda+g_lambda)/sqrt(2),
+v_lambda=(f_lambda-g_lambda)/sqrt(2).
+```
+
+The negative coordinate has Laplace density `exp(i gamma t)sinh(a t)`; the decaying half
+`exp(-a t)exp(i gamma t)` is exactly the residue mode whose norm gives the boundary trace slope.
+Thus cofinal index preservation and the four-unit metric budget are two required readings of the
+same bilateral source channel.  The proof is in
+`../2-fully-proven/not_new_scientific_knowledge/ccm-quartet-resolvent-bilateral-polarization-law.md`.
+
+## Sharp Sonin position-domain reduction
+
+`[PROVED BRIDGE]` The viable logarithmic-position commutator cannot be transported through the
+sharp Sonin cutoff as a bounded-operator identity.  If `Q_0=I-P_a-B_a` is the formal physical and
+Fourier complement, then on a Schwartz core
+
+```text
+-i <[X,Q_0]f,g>
+ =1/(2pi)
+   [hat(f)(a)conjugate(hat(g)(a))
+    -hat(f)(-a)conjugate(hat(g)(-a))].
+```
+
+This is a signed two-edge Sobolev trace pairing the even and odd sectors.  Moreover `Q_0` does not
+generically preserve the position domain: the sharp Fourier cutoff creates jumps at `+/-a`.
+Writing the exact Sonin projection as `Q=Q_0+C`, existing Lean proves `C` Hilbert--Schmidt, but the
+position transport requires the strictly stronger first relative moment `[X,C]`, whose kernel is
+`(x-y)K_C(x,y)`.
+
+The current source-side open theorem is therefore concrete:
+
+```text
+signed frequency-edge trace
+  + first-moment Sonin projection correction
+  + odd Euler-dilation leakage
+  + Gamma/boundary conductor
+  -> a relative trace satisfying the four-unit budget.
+```
+
+The complete proof of the sharp-cutoff reduction is in
+`../2-fully-proven/not_new_scientific_knowledge/ccm-sonin-log-position-edge-trace-correction-law.md`.
+Compactness or the ordinary Hilbert--Schmidt norm of the projection correction cannot substitute
+for the required position moment.

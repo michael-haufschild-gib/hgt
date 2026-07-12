@@ -219,6 +219,13 @@ Sonin compression of the closed Xi graph is contractive on the complete diagonal
 `(15i)`, with cofinal defect index preserved.  This is neither an arbitrary RKHS factorization nor
 an external choice of damping.
 
+For an off-line zero `lambda=a+i gamma`, the corresponding causal and anti-causal resolvents
+diagonalize into a positive `cosh(a t)` channel and a negative `sinh(a t)` channel.  The latter is
+exactly one expanding direction of `I-T_0^*T_0`; its decaying anti-causal half has the inverse-depth
+energy measured by the four-unit boundary relative trace.  Hence Fock defect index and boundary
+trace slope are the quantized and metric readings of one bilateral residue coordinate.  See
+`ccm-quartet-resolvent-bilateral-polarization-law.md`.
+
 ## Relation to the finite local-ratio Fock carrier
 
 `ccm-higher-subset-covariance-fock-lift.md` constructs, for every finite place set, the positive
@@ -272,6 +279,7 @@ Lean file is added.
 - [x] formal prime-log transport wall converted into a source-topology obligation
 - [x] diagonal Laplace coordinate decomposed into exact polar--prime Mellin source channels
 - [x] diagonal Laplace coordinate identified with the closed Xi graph's anti-causal residue bundle
+- [x] Fock negative index and boundary trace slope linked on each off-line quartet
 - [ ] prove finite Gauss/Sonin degree-two columns converge to `T_0`
 - [ ] prove the limiting lift is contractive
 - [ ] RH

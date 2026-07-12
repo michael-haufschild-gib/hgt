@@ -200,10 +200,20 @@ is the conductor/position corner. The existing bounded projection-correction sca
 the Euler cross with a different Hilbert--Schmidt operator and consequently had uniformly bounded
 response. Equation `(11i)` identifies the source-compatible replacement.
 
+`[PROVED SHARP-CUTOFF NORMAL FORM]` The position corner is not an ordinary Hilbert--Schmidt
+operator.  For the formal physical/Fourier complement, `[X,Q_0]` is a two-edge distributional
+Sobolev trace at the frequency endpoints `+/-a`, pairing the even and odd sectors.  If
+`Q=Q_0+C` is the exact Sonin projection, the formal tree proves `C` Hilbert--Schmidt, but the
+position transport requires the stronger weighted commutator whose kernel is `(x-y)K_C(x,y)`.
+This first relative moment is not controlled by the unweighted Hilbert--Schmidt norm.  The exact
+proof and positive edge-carrier law are in
+`ccm-sonin-log-position-edge-trace-correction-law.md`.
+
 The algebraic projection transport is therefore closed. The remaining analytic theorem is to
-construct a common closed graph on which the leakage cross and, if nonzero, the trace-defect
-cocycle have the genuine semilocal relative trace, and to complete the full prime--Gamma form into
-a positive square or contraction.
+construct a common Sobolev form graph on which the signed edge trace, the first-moment projection
+correction, the Euler leakage cross, and the internal trace-defect cocycle have the genuine
+semilocal relative trace, and to complete the full prime--Gamma form into a positive square or
+contraction.
 
 ## Completed source form
 
@@ -311,6 +321,7 @@ the actual Sonin/CCM carrier.
 - [x] exact unitary transport to the semilocal logarithmic coefficient proved
 - [x] exact projection-compressed commutator/Gram identity proved
 - [x] renormalized trace-defect/leakage decomposition proved
+- [x] sharp Sonin position leakage identified as a signed Sobolev edge trace plus first-moment correction
 - [x] arithmetic-complement faithfulness retained
 - [ ] determine the internal trace-defect cocycle on the genuine semilocal cutoff
 - [ ] prove the resulting degree-one pair has the genuine semilocal relative trace

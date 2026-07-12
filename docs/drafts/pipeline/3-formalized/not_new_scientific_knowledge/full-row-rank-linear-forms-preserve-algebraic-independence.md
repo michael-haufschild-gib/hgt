@@ -27,10 +27,10 @@ the first substituted polynomial zero, and the left inverse makes the original r
 
 ## Boundary
 
-This is the finite algebraic core of the facet-sewn differential Smith/rank lemma.  It does not yet
-prove that polynomial differential-operator row independence makes every finite Toeplitz packet of
-shifted output jets full row rank.  That differential lift remains part of the Stage 2 facet-sewn
-card.
+This is the finite algebraic core of the facet-sewn differential rank lemma.  The formerly open
+Toeplitz lift and its converse are now formalized separately in
+`differential-operator-toeplitz-matroid-law`; the facet restriction assembly remains part of the
+Stage 2 facet-sewn card.
 
 ## Gates
 

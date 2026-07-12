@@ -190,7 +190,8 @@ energies diverge, and the extended value is `+infinity`.
 This metric residue coordinate is the anti-causal half of the exact bilateral resolvent packet
 seen by the infinitesimal Euler-ray kernel.  For `lambda=a+i gamma`, the Euler kernel's negative
 coordinate is the antisymmetric causal/anti-causal combination whose Laplace density is
-`exp(i gamma t)sinh(a t)`, while `(15)` is its decaying half `exp(-a t)exp(-i gamma t)`.  Therefore
+`exp(i gamma t)sinh(a t)`, up to the fixed Fourier conjugation convention, while `(15)` is its
+decaying half.  Therefore
 the negative index and the relative-trace slope are respectively the quantized and metric readings
 of the same source-graph channel.  See
 `ccm-quartet-resolvent-bilateral-polarization-law.md`.

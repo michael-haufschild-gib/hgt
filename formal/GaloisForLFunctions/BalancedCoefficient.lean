@@ -464,7 +464,8 @@ theorem gap_series_no_polynomial_relation {bnat : ℕ → ℕ}
       · rw [hge, mul_zero]
       · exfalso
         have hcΔ : c ≤ Δ := le_trans (Polynomial.le_natDegree_of_ne_zero hpc)
-          (Finset.le_sup (Finset.mem_univ j))
+          (Finset.le_sup (f := fun j : Fin (d + 1) => (p j).natDegree)
+            (Finset.mem_univ j))
         obtain ⟨e, hene, hesum⟩ := exists_rep_of_coeff_pow_ne_zero hge
         have hle : ∀ i, e i ≤ bnat m := by
           intro i
@@ -487,7 +488,6 @@ theorem gap_series_no_polynomial_relation {bnat : ℕ → ℕ}
     rw [PowerSeries.coeff_mul]
     have hmem : ((τ, d * bnat m) : ℕ × ℕ) ∈ Finset.antidiagonal K := by
       rw [Finset.mem_antidiagonal]
-      omega
     rw [Finset.sum_eq_single_of_mem _ hmem ?_]
     · rw [Polynomial.coeff_coe,
         coeff_pow_unique_rep (E := {k | PowerSeries.coeff k G ≠ 0}) (fun k hk => hk) huniq]
@@ -503,7 +503,8 @@ theorem gap_series_no_polynomial_relation {bnat : ℕ → ℕ}
             push Not at hlt
             exact hpc (Polynomial.coeff_eq_zero_of_lt_natTrailingDegree hlt)
           have hcΔ : c ≤ Δ := le_trans (Polynomial.le_natDegree_of_ne_zero hpc)
-            (Finset.le_sup (Finset.mem_univ (Fin.last d)))
+            (Finset.le_sup (f := fun j : Fin (d + 1) => (p j).natDegree)
+              (Finset.mem_univ (Fin.last d)))
           obtain ⟨e, hene, hesum⟩ := exists_rep_of_coeff_pow_ne_zero hge
           have hle : ∀ i, e i ≤ bnat m := by
             intro i

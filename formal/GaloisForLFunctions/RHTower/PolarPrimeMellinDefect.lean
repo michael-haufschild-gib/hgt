@@ -1,6 +1,9 @@
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.NumberTheory.AbelSummation
 import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
+import Mathlib.NumberTheory.LSeries.Dirichlet
+import Mathlib.NumberTheory.LSeries.Positivity
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 import Mathlib.Tactic
 
@@ -8,8 +11,8 @@ import Mathlib.Tactic
 # Polar prime critical Mellin defect
 
 This file formalizes the unconditional finite-dimensional core of the polar-prime
-Mellin calculation.  It does not formalize the von Mangoldt Stieltjes measure, the
-zeta logarithmic derivative, or the infinite Laplace-transform identity.
+Mellin calculation and its real positive-parameter infinite Laplace-transform identity.
+It does not formalize the full complex Stieltjes-transform continuation.
 
 The main structural result is the signed rank-two decomposition of the polar
 kernel.  Its finite complex quadratic form has one positive `cosh` channel and one
@@ -18,8 +21,8 @@ of the polar multiplier and the exact algebraic cancellation used after Abel
 summation.
 -/
 
-open scoped BigOperators ComplexConjugate
-open Finset MeasureTheory ArithmeticFunction
+open scoped BigOperators ComplexConjugate ComplexOrder
+open Finset MeasureTheory ArithmeticFunction Complex Set Filter
 
 noncomputable section
 
@@ -351,5 +354,103 @@ theorem criticalMellinDefect_cancellation
     m - 2 * S + P = m + 2 - 4 / r - 2 * E / r - I := by
   rw [hS, hP]
   ring
+
+
+/-! ## Infinite real Laplace-source colligation -/
+
+/-- The continuous polar half-line channel in the critical Mellin coordinate.  Its density is the
+positive source `2 cosh(h/2)`. -/
+def continuousPolarLaplaceChannel (s : ℝ) : ℝ :=
+  ∫ h : ℝ in Ioi 0,
+    Real.exp (-(s + 1 / 2) * h) * (2 * Real.cosh (h / 2))
+
+/-- The resolved von Mangoldt prime-power channel at the matching shifted coordinate. -/
+def vonMangoldtPrimeLaplaceChannel (s : ℝ) : ℂ :=
+  LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ)) ((s + 1 : ℝ) : ℂ)
+
+/-- The signed critical Mellin-defect channel: continuous polar source minus the discrete
+von Mangoldt atoms.  This is the Laplace transform of
+`d(4 sinh(h/2) - sum_(n ≤ exp h) Λ(n)n⁻¹ᐟ²)` on the real convergence ray. -/
+def criticalMellinDefectLaplaceChannel (s : ℝ) : ℂ :=
+  (continuousPolarLaplaceChannel s : ℂ) - vonMangoldtPrimeLaplaceChannel s
+
+/-- The continuous polar density splits into its two positive Laplace coordinates. -/
+theorem continuousPolarLaplaceChannel_eq {s : ℝ} (hs : 0 < s) :
+    continuousPolarLaplaceChannel s = 1 / s + 1 / (s + 1) := by
+  rw [continuousPolarLaplaceChannel]
+  have hs1 : -(s + 1) < 0 := by linarith
+  have hs0 : -s < 0 := by linarith
+  have hfun : (fun h : ℝ =>
+      Real.exp (-(s + 1 / 2) * h) * (2 * Real.cosh (h / 2))) =
+      fun h : ℝ => Real.exp (-s * h) + Real.exp (-(s + 1) * h) := by
+    funext h
+    rw [Real.cosh_eq]
+    ring_nf
+    rw [← Real.exp_add, ← Real.exp_add]
+    congr 1 <;> ring_nf
+  rw [hfun, integral_add]
+  · rw [integral_exp_mul_Ioi hs0 0, integral_exp_mul_Ioi hs1 0]
+    simp only [mul_zero, Real.exp_zero]
+    field_simp
+  · exact integrableOn_exp_mul_Ioi hs0 0
+  · exact integrableOn_exp_mul_Ioi hs1 0
+
+/-- The prime channel is exactly the Euler-region negative logarithmic derivative of zeta. -/
+theorem vonMangoldtPrimeLaplaceChannel_eq_logDeriv {s : ℝ} (hs : 0 < s) :
+    vonMangoldtPrimeLaplaceChannel s =
+      -deriv riemannZeta ((s + 1 : ℝ) : ℂ) / riemannZeta ((s + 1 : ℝ) : ℂ) := by
+  rw [vonMangoldtPrimeLaplaceChannel]
+  exact ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div (by
+    norm_num
+    linarith)
+
+private theorem complex_vonMangoldt_nonneg (n : ℕ) :
+    0 ≤ (ArithmeticFunction.vonMangoldt n : ℂ) := by
+  apply Complex.nonneg_iff.mpr
+  exact ⟨by simp [ArithmeticFunction.vonMangoldt_nonneg], by simp⟩
+
+private theorem complex_vonMangoldt_two_pos :
+    0 < (ArithmeticFunction.vonMangoldt 2 : ℂ) := by
+  rw [ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
+  change 0 < ((Real.log (2 : ℝ) : ℝ) : ℂ)
+  rw [Complex.pos_iff]
+  change 0 < Real.log (2 : ℝ) ∧ (0 : ℝ) = 0
+  exact ⟨Real.log_pos (by norm_num), rfl⟩
+
+/-- The resolved prime-power channel is strictly positive on the real convergence ray. -/
+theorem vonMangoldtPrimeLaplaceChannel_pos {s : ℝ} (hs : 0 < s) :
+    0 < vonMangoldtPrimeLaplaceChannel s := by
+  rw [vonMangoldtPrimeLaplaceChannel, LSeries]
+  have hhalf : 1 < (((s + 1 : ℝ) : ℂ)).re := by
+    norm_num
+    linarith
+  exact (ArithmeticFunction.LSeriesSummable_vonMangoldt hhalf).tsum_pos
+    (fun n => LSeries.term_nonneg (a := fun n =>
+      (ArithmeticFunction.vonMangoldt n : ℂ)) (complex_vonMangoldt_nonneg n) (s + 1))
+    2 (LSeries.term_pos (a := fun n =>
+      (ArithmeticFunction.vonMangoldt n : ℂ)) (by norm_num)
+      complex_vonMangoldt_two_pos (s + 1))
+
+/-- **Polar--prime critical Mellin colligation.**  On the real convergence ray, the universal
+Cauchy coordinate is the resolved von Mangoldt channel minus the shifted polar channel plus the
+signed critical Mellin defect.  No Xi divisor or zero-location hypothesis enters this identity. -/
+theorem cauchy_eq_prime_sub_shiftedPolar_add_criticalMellinDefect
+    {s : ℝ} (hs : 0 < s) :
+    (1 / s : ℂ) = vonMangoldtPrimeLaplaceChannel s - (1 / (s + 1) : ℂ) +
+      criticalMellinDefectLaplaceChannel s := by
+  rw [criticalMellinDefectLaplaceChannel, continuousPolarLaplaceChannel_eq hs]
+  push_cast
+  ring
+
+/-- Real-kernel specialization of the four-channel colligation used by the diagonal Fock
+coordinate. -/
+theorem cauchyKernel_eq_prime_sub_shiftedPolar_add_criticalMellinDefect
+    {x y : ℝ} (hx : 0 < x) (hy : 0 < y) :
+    (1 / (x + y) : ℂ) =
+      vonMangoldtPrimeLaplaceChannel (x + y) - (1 / (x + y + 1) : ℂ) +
+        criticalMellinDefectLaplaceChannel (x + y) := by
+  simpa only [Complex.ofReal_add, Complex.ofReal_one] using
+    (cauchy_eq_prime_sub_shiftedPolar_add_criticalMellinDefect
+      (s := x + y) (by linarith))
 
 end RHTower
