@@ -1,0 +1,428 @@
+# Joint hypertranscendence of Hurwitz zeta functions in the shift parameter
+
+## Abstract
+
+Let (s_1,ldots,s_rinmathbb C) satisfy (Re s_j>1), and suppose that
+(1,s_1,ldots,s_r) are linearly independent over (mathbb Q). We prove that the functions
+
+\[
+  a\longmapsto \zeta(s_j+k,a),
+  \qquad 1\le j\le r,\quad k\ge 0,
+\]
+
+are algebraically independent over (mathbb C(a)), in the sense that every finite subfamily is
+algebraically independent. Since
+
+\[
+  \frac{\partial^k}{\partial a^k}\zeta(s,a)
+  =(-1)^k(s)_k\zeta(s+k,a),
+\]
+
+it follows that (zeta(s_1,a),ldots,zeta(s_r,a)) are jointly differentially algebraically
+independent over (mathbb C(a)). Thus no nonzero mixed algebraic differential equation of any
+finite order or degree couples this family. The proof is based on a delocalized monodromy
+construction. Independent loops around finitely many branch points produce a product of cyclic
+monodromy orbits; rational independence makes each orbit Zariski dense in an algebraic torus; and
+a block-Vandermonde map sends the resulting deformation variety onto the full space of ladder
+values. The argument also gives a local uniqueness form: a relation valid near a single branch
+point already vanishes identically.
+
+## 1. Introduction
+
+For (Re s>1) and (Re a>0), the Hurwitz zeta function is defined by
+
+\[
+  \zeta(s,a)=\sum_{n=0}^{\infty}(n+a)^{-s}.                     \tag{1.1}
+\]
+
+Its dependence on the two variables is markedly asymmetric. As a function of (s), (1.1) is a
+Dirichlet series and belongs to the classical differential-transcendence theory initiated by
+Hilbert and Ostrowski. As a function of (a) with (s) fixed, it has an infinite arithmetic array
+of branch points at (0,-1,-2,ldots), and differentiation moves the exponent upward:
+
+\[
+  \partial_a\zeta(s,a)=-s\zeta(s+1,a).                         \tag{1.2}
+\]
+
+The multivalued continuation of the Hurwitz and Lerch zeta functions, including their monodromy
+functions, has been studied in detail by Lagarias and Li. Those results determine the linear
+monodromy spaces. The question considered here is nonlinear and fixed-exponent: can several
+Hurwitz ladders, or equivalently several complete differential jets in (a), satisfy a mixed
+algebraic relation?
+
+The answer is negative under the sharp nonresonance condition naturally seen by monodromy. If
+
+\[
+  q_j=e^{-2\pi i s_j},                                         \tag{1.3}
+\]
+
+then a loop around any branch point acts on the (j)-th ladder by (q_j). The cyclic orbit
+(m\mapsto(q_1^m,ldots,q_r^m)) is Zariski dense in ((\mathbb C^\times)^r) exactly when its
+characters are distinct. The hypothesis that (1,s_1,ldots,s_r) are (mathbb Q)-linearly
+independent guarantees this character separation.
+
+The main point is that one loop supplies one common exponent (m) for all (j); the exponent
+coordinates cannot be varied independently. Zariski density of the common cyclic orbit is therefore
+essential. Once this is established, loops around different branch points are independent. Their
+deformation directions form a block-Vandermonde system, which is nonsingular at every point of the
+upper half-plane.
+
+The resulting theorem is stronger than separate hypertranscendence of the individual functions.
+Separate statements do not exclude mixed equations. Here every finite collection of derivatives
+across all (r) functions is algebraically independent.
+
+## 2. Statements of the results
+
+Write
+
+\[
+  \mathbb H=\{a\in\mathbb C:\Im a>0\}.
+\]
+
+All powers in (1.1) are taken with the principal logarithm on (mathbb H). For a finite family
+(s=(s_1,ldots,s_r)), put
+
+\[
+  \mathcal L_N(s)=
+  \bigl(\zeta(s_j+k,a)\bigr)_{
+    1\le j\le r,\,0\le k\le N}.
+\]
+
+### Theorem 2.1 — joint ladder independence
+
+Let (s_1,ldots,s_r\in\mathbb C) satisfy (Re s_j>1). If
+(1,s_1,ldots,s_r) are linearly independent over (mathbb Q), then for every (N\ge0) the
+entries of (mathcal L_N(s)) are algebraically independent over (mathbb C(a)).
+
+Equivalently, if
+
+\[
+  P\in\mathbb C(a)
+    [Y_{1,0},\ldots,Y_{1,N},\ldots,Y_{r,0},\ldots,Y_{r,N}]
+\]
+
+and
+
+\[
+  P\bigl(a;\mathcal L_N(s)(a)\bigr)=0                         \tag{2.1}
+\]
+
+throughout a nonempty open subset of (mathbb H), then (P=0).
+
+### Theorem 2.2 — joint differential algebraic independence
+
+Under the hypotheses of Theorem 2.1, the functions
+
+\[
+  a\longmapsto\zeta(s_1,a),\ldots,a\longmapsto\zeta(s_r,a)
+\]
+
+are differentially algebraically independent over (mathbb C(a)). More explicitly, for every
+(N\ge0), the (r(N+1)) functions
+
+\[
+  \partial_a^k\zeta(s_j,a),
+  \qquad 1\le j\le r,\quad0\le k\le N,                       \tag{2.2}
+\]
+
+are algebraically independent over (mathbb C(a)).
+
+In particular,
+
+\[
+  \operatorname{trdeg}_{\mathbb C(a)}
+  \mathbb C(a)\bigl(\partial_a^k\zeta(s_j,a):
+  1\le j\le r,\ 0\le k\le N\bigr)=r(N+1),                  \tag{2.3}
+\]
+
+and the differential transcendence degree of the differential field generated by
+(zeta(s_1,a),\ldots,zeta(s_r,a)) is (r).
+
+### Corollary 2.3 — infinite independent exponent sets
+
+Let (S\subset\{s\in\mathbb C:\Re s>1\}) be such that ({1}\cup S) is linearly independent
+over (mathbb Q). Then
+
+\[
+  \{\partial_a^k\zeta(s,a):s\in S,\ k\ge0\}
+\]
+
+is algebraically independent over (mathbb C(a)) in the finite-subfamily sense.
+
+## 3. Two algebraic lemmas
+
+The first lemma records the Zariski density of the common monodromy orbit.
+
+### Lemma 3.1 — cyclic power-orbit density
+
+Let (q=(q_1,\ldots,q_r)\in(\mathbb C^\times)^r). Suppose that
+
+\[
+  \alpha\longmapsto q^\alpha:=\prod_{j=1}^r q_j^{\alpha_j}
+  \quad(\alpha\in\mathbb N^r)                                \tag{3.1}
+\]
+
+is injective. If (R\in\mathbb C[X_1,\ldots,X_r]) satisfies
+
+\[
+  R(q_1^m,\ldots,q_r^m)=0\qquad(m\in\mathbb N),              \tag{3.2}
+\]
+
+then (R=0).
+
+#### Proof
+
+Write (R=\sum_{\alpha\in A}c_\alpha X^\alpha), with (A) finite. Equation (3.2) becomes
+
+\[
+  \sum_{\alpha\in A}c_\alpha(q^\alpha)^m=0
+  \qquad(m\in\mathbb N).                                    \tag{3.3}
+\]
+
+The bases (q^\alpha) are pairwise distinct. Evaluating (3.3) for
+(m=0,1,\ldots,|A|-1) gives a nonsingular Vandermonde system, hence every
+(c_\alpha=0). ∎
+
+### Lemma 3.2 — product power-orbit density
+
+Under the hypotheses of Lemma 3.1, let (L\ge1). If a polynomial in the variables
+((X_{j,n})_{1\le j\le r,\,0\le n<L}) vanishes whenever
+
+\[
+  X_{j,n}=q_j^{m_n}\qquad(m_0,\ldots,m_{L-1}\in\mathbb N),   \tag{3.4}
+\]
+
+then it is zero.
+
+#### Proof
+
+Fix all columns except one. Lemma 3.1 kills the resulting polynomial in that column and therefore
+allows the column to range freely over (mathbb C^r). Repeating this argument for all (L)
+columns proves the assertion. ∎
+
+### Lemma 3.3 — arithmetic criterion
+
+Let (q_j=e^{-2\pi i s_j}). If (1,s_1,\ldots,s_r) are linearly independent over
+(mathbb Q), then (3.1) is injective.
+
+#### Proof
+
+If (q^\alpha=q^\beta), then
+
+\[
+  \exp\!\left(-2\pi i\sum_{j=1}^r(\alpha_j-\beta_j)s_j\right)=1.
+\]
+
+Thus (sum_j(\alpha_j-\beta_j)s_j\in\mathbb Z). This is a rational linear relation among
+(1,s_1,\ldots,s_r), so all coefficients vanish and (alpha=\beta). ∎
+
+## 4. Simultaneous branch deformation
+
+Fix (N\ge0), put (M=N), and introduce deformation parameters
+
+\[
+  c=(c_{j,n})_{1\le j\le r,\,0\le n\le M}\in
+  \mathbb C^{r(M+1)}.
+\]
+
+Define
+
+\[
+ F_{j,k}^{c}(a)=\zeta(s_j+k,a)
+  +\sum_{n=0}^{M}(c_{j,n}-1)(a+n)^{-s_j-k},
+ \qquad 0\le k\le N.                                       \tag{4.1}
+\]
+
+The genuine family is (F^{\mathbf1}).
+
+### Proposition 4.1 — one-branch simultaneous monodromy
+
+Let
+
+\[
+ P\in\mathbb C[a][Y_{j,k}:1\le j\le r,\ 0\le k\le N].
+\]
+
+Suppose
+
+\[
+ P(a;F^c(a))=0\qquad(a\in\mathbb H).                         \tag{4.2}
+\]
+
+Fix (n\in\{0,\ldots,M\}). Then (4.2) remains true after replacing the entire (n)-th
+column by
+
+\[
+  c_{j,n}\longmapsto q_jc_{j,n},\qquad 1\le j\le r,          \tag{4.3}
+\]
+
+and leaving all other columns fixed.
+
+#### Proof
+
+Set (a=-n+e^z). On the strip (0<\Im z<\pi), direct separation of the (n)-th summand gives
+
+\[
+ F_{j,k}^{c}(-n+e^z)
+ =c_{j,n}e^{-(s_j+k)z}+T_{j,k,n}^{c}(e^z),                   \tag{4.4}
+\]
+
+where (T_{j,k,n}^{c}) is holomorphic for (|e^z|<1/2). Indeed, every summand other than the
+(n)-th has the form
+
+\[
+ (m-n)^{-s_j-k}
+ \left(1+\frac{e^z}{m-n}\right)^{-s_j-k},
+\]
+
+and the series converges locally uniformly there. The same assertion holds for the finite
+deformation correction.
+
+Substituting (4.4) into (P) produces a holomorphic function (G(z)) on the connected half-plane
+(Re z<-\log2). It vanishes on the open substrip (0<\Im z<\pi) by (4.2), and hence vanishes
+throughout that half-plane. Under (z\mapsto z+2\pi i), the coefficient and every tail term are
+unchanged because they depend on (e^z), while
+
+\[
+ e^{-(s_j+k)(z+2\pi i)}=q_j e^{-(s_j+k)z}.                   \tag{4.5}
+\]
+
+Thus (G(z+2\pi i)=0) is precisely the relation with (4.3). Reversing (4.4) gives the updated
+relation on a punctured upper half-disc at (-n); the identity theorem then propagates it to all
+of (mathbb H). ∎
+
+### Corollary 4.2 — the monodromy product grid
+
+If (P(a;F^{\mathbf1}(a))=0) on (mathbb H), then
+
+\[
+ P\left(a;F^{c(m)}(a)\right)=0,
+ \qquad c(m)_{j,n}=q_j^{m_n},                                \tag{4.6}
+\]
+
+for every ((m_0,\ldots,m_M)\in\mathbb N^{M+1}) and every (a\in\mathbb H).
+
+#### Proof
+
+Apply Proposition 4.1 a total of (m_n) times at each branch point (-n). The branch loops are
+independent, so the order of the operations is immaterial. ∎
+
+## 5. Proof of joint ladder independence
+
+We now prove Theorem 2.1. Clearing denominators reduces (2.1) to a relation with
+(P\in\mathbb C[a][Y_{j,k}]). The identity theorem allows us to assume that the relation holds on
+all of (mathbb H).
+
+Fix (a\in\mathbb H). By Corollary 4.2 and Lemmas 3.2–3.3, the polynomial
+
+\[
+  c\longmapsto P(a;F^c(a))                                   \tag{5.1}
+\]
+
+vanishes identically on (mathbb C^{r(N+1)}).
+
+It remains to determine the range of (c\mapsto F^c(a)). For each (j), its linear part is the
+((N+1)\times(N+1)) matrix
+
+\[
+  W^{(j)}_{k,n}(a)=(a+n)^{-s_j-k}
+  =(a+n)^{-s_j}\bigl((a+n)^{-1}\bigr)^k.                     \tag{5.2}
+\]
+
+The values ((a+n)^{-1}), (0\le n\le N), are pairwise distinct, and every
+((a+n)^{-s_j}) is nonzero. Hence
+
+\[
+ \det W^{(j)}(a)=
+ \left(\prod_{n=0}^{N}(a+n)^{-s_j}\right)
+ \prod_{0\le n<m\le N}
+ \left((a+m)^{-1}-(a+n)^{-1}\right)\ne0.                    \tag{5.3}
+\]
+
+The complete deformation map is block diagonal with blocks (W^{(j)}(a)), and is therefore an
+affine automorphism of (mathbb C^{r(N+1)}). Equation (5.1) consequently implies
+
+\[
+  P(a;y)=0\qquad\text{for every }y\in\mathbb C^{r(N+1)}.      \tag{5.4}
+\]
+
+Every coefficient of (P), regarded as a polynomial in (a), vanishes at every point of
+(mathbb H); hence every coefficient is zero. Thus (P=0), proving Theorem 2.1. ∎
+
+## 6. Differential consequences
+
+Termwise differentiation of (1.1), locally uniformly on (mathbb H), gives
+
+\[
+  \partial_a\zeta(s,a)=-s\zeta(s+1,a).
+\]
+
+Induction yields
+
+\[
+  \partial_a^k\zeta(s,a)=(-1)^k(s)_k\zeta(s+k,a),            \tag{6.1}
+\]
+
+where ((s)_k=s(s+1)\cdots(s+k-1)). Since (Re s_j>1), every ((s_j)_k) is nonzero.
+For fixed (N), (6.1) is therefore an invertible diagonal change of coordinates between the ladder
+family in Theorem 2.1 and the jet family (2.2). Algebraic independence is preserved by such a
+change, proving Theorem 2.2. Corollary 2.3 follows by applying the finite-family theorem to every
+finite subset of (S). ∎
+
+## 7. Local form and the resonance boundary
+
+The proof uses global vanishing on (mathbb H) only to invoke the identity theorem. Consequently,
+Theorems 2.1 and 2.2 remain valid if the proposed relation is assumed merely on a nonempty open
+subset of (mathbb H), including a punctured upper half-disc at a single branch point.
+
+The arithmetic hypothesis has an exact monodromy meaning. If
+(1,s_1,ldots,s_r) are rationally dependent, then the cyclic subgroup generated by
+((q_1,ldots,q_r)) lies in a proper algebraic subtorus. The power-orbit argument then supplies only
+that smaller deformation variety. The theorem does not assert dependence in this resonant case:
+finite monodromy may fail to detect relations that are nevertheless absent. In particular, rational
+nonintegral exponents require information beyond the cyclic monodromy orbit. This is a boundary of
+the method, not a converse to the theorem.
+
+## 8. Relation to previous work
+
+The derivative identity (6.1) is classical. The multivalued analytic continuation and monodromy of
+the Hurwitz–Lerch family were determined systematically by Lagarias and Li; their fixed-parameter
+monodromy spaces are linear spaces of branches. Costin and Garoufalidis computed closely related
+monodromy phenomena for fractional polylogarithms. These works provide the analytic monodromy
+background but do not state the fixed-exponent algebraic independence of Hurwitz shift ladders.
+
+Differential transcendence results for the Hurwitz zeta function in the exponent variable belong to
+a different theory. Amou and Katsurada treat (zeta(s,a)) as a generalized Dirichlet series in
+(s), with (a) fixed. Likewise, the functional-independence results derived from universality of
+periodic Hurwitz zeta functions concern derivatives in the Dirichlet-series variable (s), not the
+shift parameter (a).
+
+The distinction is substantive. Here the exponent values (s_j) are fixed and the complete
+differential algebra is taken in (a). The proof uses the arithmetic array of branch points in
+(a), a common cyclic monodromy vector across several exponent families, product-orbit Zariski
+density, and block-Vandermonde surjectivity. To the best of our knowledge, neither Theorem 2.1 nor
+the mixed differential-algebraic statement of Theorem 2.2 appears in the existing Hurwitz or Lerch
+literature.
+
+## References
+
+1. M. Amou and M. Katsurada, “Differential transcendence of a class of generalized Dirichlet
+   series,” *Illinois Journal of Mathematics* **45** (2001), 939–948.
+   [doi:10.1215/ijm/1258138161](https://doi.org/10.1215/ijm/1258138161).
+2. O. Costin and S. Garoufalidis, “Resurgence of the fractional polylogarithms,”
+   *Mathematical Research Letters* **16** (2009), 817–826.
+   [doi:10.4310/MRL.2009.v16.n5.a5](https://doi.org/10.4310/MRL.2009.v16.n5.a5).
+3. NIST Digital Library of Mathematical Functions, §25.11, “Hurwitz Zeta Function,” especially
+   Eq. 25.11.17. [https://dlmf.nist.gov/25.11](https://dlmf.nist.gov/25.11).
+4. J. C. Lagarias and W.-C. W. Li, “The Lerch zeta function II. Analytic continuation,”
+   *Forum Mathematicum* **24** (2012), 49–84.
+   [doi:10.1515/FORM.2011.048](https://doi.org/10.1515/FORM.2011.048).
+5. J. C. Lagarias and W.-C. W. Li, “The Lerch zeta function III. Polylogarithms and special
+   values,” *Research in the Mathematical Sciences* **3** (2016), Article 2.
+   [arXiv:1506.06161](https://arxiv.org/abs/1506.06161).
+6. A. Laurinčikas, “Functional independence of periodic Hurwitz zeta functions,”
+   *Mathematical Notes* **83** (2008), 65–71.
+   [doi:10.1134/S0001434608010082](https://doi.org/10.1134/S0001434608010082).
+7. A. Ostrowski, “Über Dirichletsche Reihen und algebraische Differentialgleichungen,”
+   *Mathematische Zeitschrift* **8** (1920), 241–298; English translation by E. C. Hansen,
+   Y. Stone, and J. Wolfson, [arXiv:2211.02088](https://arxiv.org/abs/2211.02088).

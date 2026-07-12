@@ -127,6 +127,8 @@ vonMangoldtPrimeLaplaceChannel_eq_logDeriv
 vonMangoldtPrimeLaplaceChannel_pos
 vonMangoldtPrimeLaplaceGram
 vonMangoldtPrimeLaplaceGram_posSemidef
+vonMangoldtPrimeLaplaceGram_posDef
+det_vonMangoldtPrimeLaplaceGram_pos
 cauchy_eq_prime_sub_shiftedPolar_add_criticalMellinDefect
 cauchyKernel_eq_prime_sub_shiftedPolar_add_criticalMellinDefect
 cauchyLaplaceGram
@@ -142,6 +144,9 @@ polar--prime cancellation `(13)` for `X=exp(2a)`, the Euler-region zeta logarith
 strict positivity of the resolved prime channel, positive semidefiniteness of every finite
 positive-node resolved von Mangoldt matrix through its unsquared prime-power Gram expansion, and
 the scalar and finite-matrix real-kernel colligations `(25)`.
+The companion module `PrimeLaplaceGramStrict.lean` strengthens this matrix statement: distinct
+positive nodes give a positive-definite matrix and a strictly positive determinant.  The strictness
+is witnessed already by the Vandermonde ladder of powers of the single prime `2`.
 The formal theorem deliberately does not claim the source-level distributional sign derivation,
 the autocorrelation Stieltjes carrier, or the full complex Stieltjes continuation of `(22)`.
 

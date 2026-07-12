@@ -43,3 +43,7 @@ import GaloisForLFunctions.Hurwitz.QuadraticDifferentialIndependence
 import GaloisForLFunctions.Hurwitz.Hypertranscendence
 import GaloisForLFunctions.Hurwitz.LadderDeformationBridge
 import GaloisForLFunctions.Hurwitz.LadderIndependence
+import GaloisForLFunctions.Hurwitz.JointPowerOrbit
+import GaloisForLFunctions.Hurwitz.JointLadderDeformationBridge
+import GaloisForLFunctions.Hurwitz.JointLadderIndependence
+import GaloisForLFunctions.Hurwitz.JointHypertranscendence

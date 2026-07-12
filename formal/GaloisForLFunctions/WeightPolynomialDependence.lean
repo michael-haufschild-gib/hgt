@@ -1,4 +1,5 @@
 import GaloisForLFunctions.WeightPolynomial
+import GaloisForLFunctions.PolynomialDistinctDegree
 
 /-!
 # The leading symbol can degenerate: a falling-factorial dependence
@@ -48,5 +49,16 @@ theorem weightPolynomial_class44_dependence :
     simp [weightPolynomial, Fin.prod_univ_four, descPochhammer_zero]; ring
   rw [e1, e2, e3]
   exact descPochhammer_class44_dependence
+
+/-- **Distinct-order leading symbols are independent.**  Weight polynomials of differential
+monomials (fixed degree `r`) with pairwise distinct total order are linearly independent — the
+positive counterpart of the same-order degeneracy above. -/
+theorem weightPolynomial_linearIndependent_of_sum_injective {ι : Type*} [Fintype ι] {r : ℕ}
+    (js : ι → (Fin r → ℕ)) (hinj : Function.Injective fun i => ∑ t, js i t) :
+    LinearIndependent ℚ fun i => weightPolynomial (js i) := by
+  refine linearIndependent_of_natDegree_injective
+    (fun i => (weightPolynomial_monic (js i)).ne_zero) (fun a b hab => ?_)
+  simp only [weightPolynomial_natDegree] at hab
+  exact hinj hab
 
 end GaloisForLFunctions

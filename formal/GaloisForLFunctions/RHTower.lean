@@ -544,6 +544,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspReflection
 import GaloisForLFunctions.RHTower.ThetaCuspSchwartz
 import GaloisForLFunctions.RHTower.ThetaCuspMellinPole
 import GaloisForLFunctions.RHTower.PolarPrimeMellinDefect
+import GaloisForLFunctions.RHTower.PrimeLaplaceGramStrict
 import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeResolvent
 import GaloisForLFunctions.RHTower.LandauSummabilityTransfer
 import GaloisForLFunctions.RHTower.QuietCrossingCocycle
@@ -563,6 +564,8 @@ import GaloisForLFunctions.RHTower.XiHadamardFactorization
 import GaloisForLFunctions.RHTower.XiWeilPolarization
 import GaloisForLFunctions.RHTower.XiWeilResolventSource
 import GaloisForLFunctions.RHTower.XiWeilHilbertCore
+import GaloisForLFunctions.RHTower.XiHedenmalmEigenbasis
+import GaloisForLFunctions.RHTower.XiHedenmalmReciprocalOperator
 import GaloisForLFunctions.RHTower.XiWeilLineConjHilbert
 import GaloisForLFunctions.RHTower.XiWeilOneCauchyGate
 import GaloisForLFunctions.RHTower.PrimeArchSourceUpperBoundGate
@@ -591,6 +594,7 @@ import GaloisForLFunctions.RHTower.XiLaguerrePolya
 import GaloisForLFunctions.RHTower.TraceHankelConverse
 import GaloisForLFunctions.RHTower.XiTraceHankelCriterion
 import GaloisForLFunctions.RHTower.XiTraceHankelCountableCriterion
+import GaloisForLFunctions.RHTower.XiCentralHankelDeterminantCriterion
 import GaloisForLFunctions.RHTower.TraceHankelSequenceCone
 import GaloisForLFunctions.RHTower.TraceHankelAnalyticInstability
 import GaloisForLFunctions.RHTower.ReBoundAffine
@@ -658,6 +662,7 @@ import GaloisForLFunctions.RHTower.PrimeArchCentralMomentGerm
 import GaloisForLFunctions.RHTower.PrimeArchThetaFirstMoment
 import GaloisForLFunctions.RHTower.PrimeArchThetaCumulantMinor
 import GaloisForLFunctions.RHTower.PrimeArchThetaAllOrderCumulant
+import GaloisForLFunctions.RHTower.PrimeArchHankelDeterminantCriterion
 import GaloisForLFunctions.RHTower.ThetaCuspSchwartzFourierXi
 import GaloisForLFunctions.RHTower.OrbitwiseSourceDivisorSeam
 import GaloisForLFunctions.RHTower.SoninDeBrangesCarrier
@@ -708,4 +713,7 @@ import GaloisForLFunctions.RHTower.InfiniteMobiusSignedChannel
 import GaloisForLFunctions.RHTower.InfiniteMobiusCausalShift
 import GaloisForLFunctions.RHTower.InfiniteMobiusShiftAnalysis
 import GaloisForLFunctions.RHTower.InfiniteMobiusLaplaceMultiplier
+import GaloisForLFunctions.RHTower.PrimeWeylSamplingIdealizer
 import GaloisForLFunctions.RHTower.MFreeLadder
+import GaloisForLFunctions.RHTower.SqrtCarrierCertificate
+import GaloisForLFunctions.RHTower.MFreeTower

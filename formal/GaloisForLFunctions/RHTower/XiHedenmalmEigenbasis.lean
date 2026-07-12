@@ -1,0 +1,180 @@
+import GaloisForLFunctions.RHTower.XiWeilHilbertCore
+import GaloisForLFunctions.RHTower.XiHadamardFactorization
+import GaloisForLFunctions.RHTower.XiDivisorSupportedMetric
+import GaloisForLFunctions.HilbertSchmidtMatrix
+
+/-!
+# The Hedenmalm eigenfunctions span the Xi evaluation carrier under simplicity
+
+The multiplicity-exact Xi evaluation space is indexed by `XiZeroCopy`. If every Xi zero is
+simple, that copy index has one point over each centered zero. The removable Hedenmalm quotient
+at a zero then evaluates to `I * XiC'` at its own coordinate and to zero at every other coordinate.
+It is therefore a nonzero scalar multiple of the canonical `ell^2` basis vector.
+
+Consequently the algebraic span of the actual Hedenmalm eigenfunction evaluations is dense in the
+whole Xi `ell^2` carrier. This is the formal completion core needed before constructing the closed
+diagonal realization of the Hedenmalm differential pair. No RH or simplicity assumption is
+asserted: both enter explicitly as theorem hypotheses.
+-/
+
+open Complex
+open HilbertSchmidt
+
+namespace RHTower
+
+noncomputable section
+
+/-- Every centered Xi zero is simple. -/
+def XiZerosSimple : Prop :=
+  ∀ {alpha : ℂ}, XiC alpha = 0 → deriv XiC alpha ≠ 0
+
+/-- Simplicity makes the analytic divisor multiplicity at every support point exactly one. -/
+theorem xiDivisorMultiplicity_eq_one_of_simple
+    (hsimple : XiZerosSimple) (rho : XiDivisorSupport) :
+    Int.toNat ((MeromorphicOn.divisor xi Set.univ) (rho : ℂ)) = 1 := by
+  have hpos := xi_divisor_pos_on_support rho
+  have hn : 0 < Int.toNat ((MeromorphicOn.divisor xi Set.univ) (rho : ℂ)) := by
+    omega
+  let q : XiZeroCopy := ⟨rho, ⟨0, hn⟩⟩
+  have hzero : XiC (xiSpectralPointSupport rho) = 0 := by
+    simpa only [q, xiSpectralPoint_eq_support] using XiC_xiSpectralPoint_eq_zero q
+  have horder :=
+    (XiC_analytic (xiSpectralPointSupport rho) (Set.mem_univ _)).analyticOrderAt_eq_one_of_zero_deriv_ne_zero
+      hzero (hsimple hzero)
+  rw [XiC_analyticOrderAt_support] at horder
+  exact ENat.coe_inj.mp horder
+
+/-- Under simplicity, two divisor copies with the same centered spectral coordinate are equal. -/
+theorem xiSpectralPoint_injective_of_simple (hsimple : XiZerosSimple) :
+    Function.Injective xiSpectralPoint := by
+  intro q r hqr
+  have hbase : q.1 = r.1 := by
+    apply xiSpectralPointSupport_injective
+    simpa only [xiSpectralPoint_eq_support] using hqr
+  apply Sigma.eq hbase
+  have hmult := xiDivisorMultiplicity_eq_one_of_simple hsimple r.1
+  haveI : Subsingleton
+      (Fin (Int.toNat ((MeromorphicOn.divisor xi Set.univ) (r.1 : ℂ)))) := by
+    rw [hmult]
+    infer_instance
+  apply Subsingleton.elim
+
+/-- The actual Xi-divisor evaluation vector of the Hedenmalm eigenfunction at the copy `q`. -/
+def xiThetaEigenEvaluationLp (q : XiZeroCopy) :
+    lp (fun _ : XiZeroCopy => ℂ) 2 :=
+  xiWeilEvaluationLp (xiThetaEigenFourier (xiSpectralPoint q))
+    (xiThetaEigenFourier_squareSummable (XiC_xiSpectralPoint_eq_zero q))
+
+@[simp] theorem xiThetaEigenEvaluationLp_apply (q r : XiZeroCopy) :
+    xiThetaEigenEvaluationLp q r =
+      xiThetaEigenFourier (xiSpectralPoint q) (xiSpectralPoint r) := rfl
+
+/-- Under simplicity, an evaluated Hedenmalm eigenfunction is exactly its nonzero derivative
+amplitude times one canonical `ell^2` coordinate vector. -/
+theorem xiThetaEigenEvaluationLp_eq_smul_single
+    (hsimple : XiZerosSimple) (q : XiZeroCopy) :
+    xiThetaEigenEvaluationLp q =
+      (I * deriv XiC (xiSpectralPoint q)) • lp.single 2 q (1 : ℂ) := by
+  apply Subtype.ext
+  funext r
+  by_cases hrq : r = q
+  · subst r
+    rw [xiThetaEigenEvaluationLp_apply, xiThetaEigenFourier_self]
+    change I * deriv XiC (xiSpectralPoint q) =
+      (I * deriv XiC (xiSpectralPoint q)) *
+        (lp.single 2 q (1 : ℂ) : lp (fun _ : XiZeroCopy => ℂ) 2) q
+    rw [lp.single_apply_self, mul_one]
+  · have hpoint : xiSpectralPoint r ≠ xiSpectralPoint q := by
+      intro h
+      exact hrq ((xiSpectralPoint_injective_of_simple hsimple) h)
+    rw [xiThetaEigenEvaluationLp_apply,
+      xiThetaEigenFourier_spectralPoint_eq_zero
+        (XiC_xiSpectralPoint_eq_zero q) r hpoint]
+    change 0 = (I * deriv XiC (xiSpectralPoint q)) *
+      (lp.single 2 q (1 : ℂ) : lp (fun _ : XiZeroCopy => ℂ) 2) r
+    rw [lp.single_apply_ne _ _ _ hrq, mul_zero]
+
+/-- Algebraic span of all actual Hedenmalm eigenfunction evaluation vectors. -/
+def xiThetaEigenAlgebraicSubspace :
+    Submodule ℂ (lp (fun _ : XiZeroCopy => ℂ) 2) :=
+  Submodule.span ℂ (Set.range xiThetaEigenEvaluationLp)
+
+/-- Simplicity makes the Hedenmalm eigenfunction evaluation span dense in the full Xi carrier. -/
+theorem xiThetaEigenAlgebraicSubspace_dense_of_simple
+    (hsimple : XiZerosSimple) :
+    Dense (xiThetaEigenAlgebraicSubspace :
+      Set (lp (fun _ : XiZeroCopy => ℂ) 2)) := by
+  have hbasisDense : Dense
+      (Submodule.span ℂ (Set.range (lpBasis XiZeroCopy)) :
+        Set (lp (fun _ : XiZeroCopy => ℂ) 2)) :=
+    Submodule.dense_iff_topologicalClosure_eq_top.mpr (lpBasis XiZeroCopy).dense_span
+  have hle : Submodule.span ℂ (Set.range (lpBasis XiZeroCopy)) ≤
+      xiThetaEigenAlgebraicSubspace := by
+    refine Submodule.span_le.mpr ?_
+    rintro _ ⟨q, rfl⟩
+    rw [lpBasis_apply]
+    have heig : xiThetaEigenEvaluationLp q ∈ xiThetaEigenAlgebraicSubspace :=
+      Submodule.subset_span (Set.mem_range_self q)
+    have hc : I * deriv XiC (xiSpectralPoint q) ≠ 0 :=
+      mul_ne_zero I_ne_zero (hsimple (XiC_xiSpectralPoint_eq_zero q))
+    have hscaled := xiThetaEigenAlgebraicSubspace.smul_mem
+      (I * deriv XiC (xiSpectralPoint q))⁻¹ heig
+    rw [xiThetaEigenEvaluationLp_eq_smul_single hsimple q,
+      inv_smul_smul₀ hc] at hscaled
+    exact hscaled
+  exact hbasisDense.mono hle
+
+/-- Equivalently, the Hilbert closure of the eigenfunction evaluation span is the whole carrier. -/
+theorem xiThetaEigenHilbertClosure_eq_top_of_simple
+    (hsimple : XiZerosSimple) :
+    xiThetaEigenAlgebraicSubspace.topologicalClosure = ⊤ :=
+  Submodule.dense_iff_topologicalClosure_eq_top.mp
+    (xiThetaEigenAlgebraicSubspace_dense_of_simple hsimple)
+
+/-- Under RH, unit mass on every divisor copy is a real-divisor weight. -/
+def xiUnitRealDivisorWeight (hRH : RiemannHypothesis) : XiRealDivisorWeight where
+  weight := fun _ => 1
+  supported_real := fun q _ => xiSpectralPoint_real_of_rh hRH q
+
+/-- The mass of the unit divisor weight is exactly the analytic multiplicity. -/
+theorem xiRealDivisorMass_unit (hRH : RiemannHypothesis) (alpha : ℂ) :
+    xiRealDivisorMass (xiUnitRealDivisorWeight hRH) alpha =
+      xiSpectralMultiplicity alpha := by
+  simp [xiRealDivisorMass, xiUnitRealDivisorWeight, xiSpectralMultiplicity]
+
+/-- Under RH and simplicity, the unit divisor metric is conservative on every theta
+eigenfunction. -/
+theorem xiUnitRealDivisorWeight_conservative_of_simple
+    (hRH : RiemannHypothesis) (hsimple : XiZerosSimple) :
+    XiThetaMetricConservative (xiUnitRealDivisorWeight hRH) := by
+  rw [xiThetaMetricConservative_iff_mass_pos_and_simple]
+  intro alpha halpha
+  constructor
+  · rw [xiRealDivisorMass_unit]
+    exact_mod_cast xiSpectralMultiplicity_pos_of_XiC_eq_zero halpha
+  · exact hsimple halpha
+
+/-- A conservative divisor-supported Hedenmalm metric exists exactly under RH plus simplicity. -/
+theorem exists_conservative_xiThetaMetric_iff_rh_and_simple :
+    (∃ c : XiRealDivisorWeight, XiThetaMetricConservative c) ↔
+      RiemannHypothesis ∧ XiZerosSimple := by
+  constructor
+  · rintro ⟨c, hc⟩
+    exact xiThetaMetricConservative_implies_rh_and_simple c hc
+  · rintro ⟨hRH, hsimple⟩
+    exact ⟨xiUnitRealDivisorWeight hRH,
+      xiUnitRealDivisorWeight_conservative_of_simple hRH hsimple⟩
+
+/-- The direct route chain: conservativity forces RH and simplicity, and simplicity then makes the
+actual Hedenmalm eigenfunction evaluations complete in the full Xi Hilbert carrier. -/
+theorem conservative_xiThetaMetric_implies_rh_simple_and_eigen_dense
+    (c : XiRealDivisorWeight) (hcon : XiThetaMetricConservative c) :
+    RiemannHypothesis ∧ XiZerosSimple ∧
+      Dense (xiThetaEigenAlgebraicSubspace :
+        Set (lp (fun _ : XiZeroCopy => ℂ) 2)) := by
+  obtain ⟨hRH, hsimple⟩ := xiThetaMetricConservative_implies_rh_and_simple c hcon
+  exact ⟨hRH, hsimple, xiThetaEigenAlgebraicSubspace_dense_of_simple hsimple⟩
+
+end
+
+end RHTower

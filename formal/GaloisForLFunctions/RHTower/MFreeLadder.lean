@@ -347,7 +347,7 @@ private theorem coe_natCoe_zeta' :
     ⇑((ζ : ArithmeticFunction ℕ) : ArithmeticFunction ℂ) = ↗ζ := by
   funext n; simp [natCoe_apply]
 
-private theorem one_lt_natCast_mul_re {m : ℕ} (hm : m ≠ 0) {s : ℂ}
+theorem one_lt_natCast_mul_re {m : ℕ} (hm : m ≠ 0) {s : ℂ}
     (hs : 1 / (m : ℝ) < s.re) : 1 < ((m : ℂ) * s).re := by
   have hm0 : (0 : ℝ) < (m : ℝ) := Nat.cast_pos.mpr (Nat.pos_of_ne_zero hm)
   have hre : ((m : ℂ) * s).re = (m : ℝ) * s.re := by simp [Complex.mul_re]
@@ -370,7 +370,7 @@ theorem LSeries_mPart_moebius {m : ℕ} (hm : m ≠ 0) {s : ℂ}
   rw [← coe_mPart_moebius_intCoe, LSeries_mPart hm, coe_intCoe_moebius',
     LSeries_moebius_eq_inv_riemannZeta (one_lt_natCast_mul_re hm hs)]
 
-private theorem one_div_natCast_lt_re {m : ℕ} (hm : m ≠ 0) {s : ℂ} (hs : 1 < s.re) :
+theorem one_div_natCast_lt_re {m : ℕ} (hm : m ≠ 0) {s : ℂ} (hs : 1 < s.re) :
     1 / (m : ℝ) < s.re := by
   have hm1 : (1 : ℝ) ≤ (m : ℝ) := Nat.one_le_cast.mpr (Nat.pos_of_ne_zero hm)
   have : 1 / (m : ℝ) ≤ 1 :=
@@ -433,20 +433,12 @@ theorem tsum_mFree_cpow {m : ℕ} (hm : m ≠ 0) {s : ℂ} (hs : 1 < s.re) :
 
 /-! ## The off-line carrier bridge: `dpoly2` truncations converge to the L-series -/
 
-/-- **Truncation-convergence bridge.**  For any real coefficient sequence whose L-series
-converges at `z`, the off-line carrier polynomials `dpoly2 a (Icc 1 N) z` converge to the
-L-series value as the cutoff grows.  This is what turns an L-series identity on a
-half-plane into a statement about the finite Dirichlet carriers of the mollifier/carrier
-machinery. -/
-theorem tendsto_dpoly2_Icc_of_LSeriesSummable {a : ℕ → ℝ} {z : ℂ}
-    (h : LSeriesSummable (fun n => (a n : ℂ)) z) :
-    Tendsto (fun N => dpoly2 a (Finset.Icc 1 N) z) atTop
-      (nhds (LSeries (fun n => (a n : ℂ)) z)) := by
-  have h1 := h.hasSum.tendsto_sum_nat
-  have hcomp := h1.comp (tendsto_add_atTop_nat 1)
-  refine hcomp.congr fun N => ?_
-  show ∑ i ∈ Finset.range (N + 1), term (fun n => (a n : ℂ)) z i
-      = dpoly2 a (Finset.Icc 1 N) z
+/-- The off-line carrier polynomial on `[1, N]` is the range-`(N+1)` partial sum of the
+L-series terms: the `0`-term vanishes and the remaining terms are the carrier summands. -/
+theorem dpoly2_Icc_eq_sum_range_term (a : ℕ → ℝ) (z : ℂ) (N : ℕ) :
+    dpoly2 a (Finset.Icc 1 N) z
+      = ∑ i ∈ Finset.range (N + 1), term (fun n => (a n : ℂ)) z i := by
+  symm
   rw [dpoly2, ← Finset.sum_subset (fun i hi => Finset.mem_range.mpr
       (Nat.lt_succ_of_le (Finset.mem_Icc.mp hi).2))
     (fun x hxmem hx => ?_)]
@@ -459,6 +451,19 @@ theorem tendsto_dpoly2_Icc_of_LSeriesSummable {a : ℕ → ℝ} {z : ℂ}
         Nat.lt_succ_iff.mp (Finset.mem_range.mp hxmem)⟩)
     subst hx0
     exact LSeries.term_zero _ _
+
+/-- **Truncation-convergence bridge.**  For any real coefficient sequence whose L-series
+converges at `z`, the off-line carrier polynomials `dpoly2 a (Icc 1 N) z` converge to the
+L-series value as the cutoff grows.  This is what turns an L-series identity on a
+half-plane into a statement about the finite Dirichlet carriers of the mollifier/carrier
+machinery. -/
+theorem tendsto_dpoly2_Icc_of_LSeriesSummable {a : ℕ → ℝ} {z : ℂ}
+    (h : LSeriesSummable (fun n => (a n : ℂ)) z) :
+    Tendsto (fun N => dpoly2 a (Finset.Icc 1 N) z) atTop
+      (nhds (LSeries (fun n => (a n : ℂ)) z)) := by
+  have h1 := h.hasSum.tendsto_sum_nat
+  have hcomp := h1.comp (tendsto_add_atTop_nat 1)
+  exact hcomp.congr fun N => (dpoly2_Icc_eq_sum_range_term a z N).symm
 
 /-- The Möbius mollifier coefficients (`Mollifier.moebiusCoeff`), read as complex values,
 are the Möbius L-series coefficients. -/

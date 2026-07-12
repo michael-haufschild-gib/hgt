@@ -273,8 +273,9 @@ supp(mu) subset Z_Xi^R.                                           (30)
 ```
 
 This recovers the divisor-supported metric classification from only two discrete prime dilations;
-infinitesimal `D`-symmetry need not be assumed. If the metric is conservative on every real theta
-eigenmode, then `supp(mu)=Z_Xi^R`, and `(23)` applies to its null quotient.
+infinitesimal `D`-symmetry need not be assumed. If the metric has full real-divisor support, then
+`supp(mu)=Z_Xi^R`, and `(23)` applies to its null quotient. Full support is an additional
+conservativity condition; it is not inferred merely from positivity.
 
 ## 6. Positive Hilbert--Pólya carrier law
 
@@ -342,7 +343,27 @@ Primary comparison points:
 3. J. C. McConnell and J. J. Pettit, *Crossed Products and Multiplicative Analogues of Weyl
    Algebras*, J. London Math. Soc. 38 (1988), 47--55.
 
-## 9. Significance assessment
+## 9. Lean formalization status
+
+`formal/GaloisForLFunctions/RHTower/PrimeWeylSamplingIdealizer.lean` formalizes the algebraic
+separation core. It represents finite jets as freely prescribable sample fields and proves:
+
+```text
+infinite failure of a nonzero shift
+  -> every polynomial coefficient at that shift is zero,
+
+infinite sampling set
+  -> every positive-order zero-shift jet coefficient is zero,
+
+therefore
+  -> only the zero-shift, zero-jet polynomial multiplier remains. (32)
+```
+
+The analytic inputs turning the full real Xi divisor into the hypotheses of `(32)` remain paper
+theorems: compactly supported smooth jet interpolation, the superlinear aperiodicity lemma, and
+Conrey's zero-density theorem.
+
+## 10. Significance assessment
 
 Provisional rubric:
 
@@ -368,5 +389,5 @@ Fields-Medal-level score because it does not construct that carrier or prove RH.
 - [x] CCR and finite prime-local consequences proved
 - [x] boundary cases and sharp lattice counterexample supplied
 - [x] preliminary primary-literature and parent-theory audit completed
+- [x] Lean formalization of the algebraic coefficient-collapse core
 - [ ] independent expert proof and novelty review
-- [ ] Lean formalization of the abstract rigidity core

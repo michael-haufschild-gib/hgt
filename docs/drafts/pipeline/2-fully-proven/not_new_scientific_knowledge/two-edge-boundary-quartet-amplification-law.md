@@ -149,7 +149,7 @@ The proof remains valid for an infinite divisor if the maximal transverse layer 
 remaining divisor has a uniform horizontal gap `delta<=delta_*-epsilon` together with the standard
 locally uniform zero-sum bounds.
 
-## 5. Exact zeta open core
+## 5. Globalization is complete
 
 Existence of an off-line zeta zero does not imply that
 
@@ -157,27 +157,26 @@ Existence of an off-line zeta zero does not imply that
 sup_rho |Re rho-1/2|                                        (16)
 ```
 
-is attained, that the rightmost layer is finite, or that it is separated by a horizontal gap. This
-is the same dominant-zero defect that invalidates maximal-real-part arguments in singular Rindler
-models. Consequently `(13)` cannot be applied to the complete zeta divisor by selecting a
-rightmost quartet.
+is attained, that the rightmost layer is finite, or that it is separated by a horizontal gap. The
+finite-layer argument above therefore cannot by itself handle the complete divisor.
 
-The positive globalization theorem required by the CCM route is:
+This gap is closed in
+`../new_scientific_knowledge/cofinal-two-edge-weil-completeness-landau-oscillation.md`. For every
+fixed nontrivial boundary window, a residual set of real smooth profiles satisfies
 
 ```text
-[CONJECTURE] If the completed zeta divisor has any off-line point, then there are
-f in C_c^infinity(0,L) and a_j->infinity such that
-QW(phi_(a_j),phi_(a_j))<0.                                  (17)
+RH false
+ ->liminf_(a->infinity)QW(phi_(a,f),phi_(a,f))=-infinity.     (17)
 ```
 
-Equivalently, the full off-line exponential almost-periodic divisor sum must have negative liminf
-on some two-edge Laplace coefficient, without assuming an attained transverse indicator. A proof
-must use a global indicator/spectral-synthesis theorem for the complete divisor, not single-zero
-dominance.
+The proof applies Landau's oscillation theorem to the full exponential divisor sum. Its Laplace
+transform has genuine poles at every off-line centered zero, its convergence abscissa is twice the
+supremal transverse displacement, and it is holomorphic at the corresponding real point because
+there is no real nontrivial zeta zero. Eventual one-sided boundedness would force a singularity at
+that real abscissa, a contradiction. This removes the attained-layer hypothesis completely.
 
-Equation `(17)` is a detector theorem, not yet a positivity proof. If established, it would show
-that the two-edge boundary carrier is complete for RH; one would still need the source-side CCM
-lower-frame inequality to rule out its negative values.
+Thus the two-edge boundary carrier is a complete RH detector. The remaining CCM obligation is the
+source-side cofinal lower-frame/nonnegativity theorem.
 
 ## Classification
 
@@ -199,6 +198,6 @@ not certify `(17)`, so no Lean file is added.
 - [x] cofinal negative detector sequence constructed
 - [x] finite isolated rightmost layer detected
 - [x] nonattained-transverse-indicator obstruction isolated
-- [ ] prove the full zeta divisor globalization theorem `(17)`
+- [x] prove the full zeta divisor globalization theorem `(17)`
 - [ ] prove the source-side lower-frame inequality
 - [ ] RH

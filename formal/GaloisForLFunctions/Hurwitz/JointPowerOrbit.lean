@@ -1,0 +1,242 @@
+import GaloisForLFunctions.Hurwitz.LadderIndependence
+
+/-!
+# Zariski density of joint monodromy power orbits
+
+For a finite vector `q = (q_j)`, assume its nonnegative monomials are pairwise distinct.  Then the
+cyclic orbit `m ↦ (q_j^m)` is Zariski dense.  More generally, choosing one common loop count at each
+of finitely many branch points gives a product orbit that is Zariski dense in the full deformation
+space.  This is the algebraic engine for joint Hurwitz-ladder independence.
+-/
+
+open Complex HurwitzOrbit
+
+namespace HurwitzJointOrbit
+
+/-- Evaluation of the monomial encoded by `d` at the point `q`. -/
+noncomputable def monomialValue {ι : Type*} (q : ι → ℂ) (d : ι →₀ ℕ) : ℂ :=
+  d.prod fun i n => q i ^ n
+
+/-- A monomial evaluated on the common power orbit is the corresponding monomial value raised to
+that common power. -/
+theorem monomialValue_pow {ι : Type*} (q : ι → ℂ) (d : ι →₀ ℕ) (m : ℕ) :
+    monomialValue (fun i => q i ^ m) d = monomialValue q d ^ m := by
+  rw [monomialValue, monomialValue, Finsupp.prod, Finsupp.prod, ← Finset.prod_pow]
+  apply Finset.prod_congr rfl
+  intro i _
+  rw [← pow_mul, ← pow_mul, mul_comm m]
+
+/-- Distinct exponential sequences `m ↦ b_i^m` are linearly independent. -/
+theorem power_sum_coeff_zero {n : ℕ} {b c : Fin n → ℂ} (hb : Function.Injective b)
+    (h : ∀ m : ℕ, ∑ i, c i * b i ^ m = 0) : c = 0 := by
+  apply Matrix.eq_zero_of_mulVec_eq_zero (M := (Matrix.vandermonde b).transpose)
+  · rw [Matrix.det_transpose, Matrix.det_vandermonde_ne_zero_iff]
+    exact hb
+  · funext m
+    simp only [Matrix.mulVec, dotProduct, Matrix.transpose_apply,
+      Matrix.vandermonde_apply, Pi.zero_apply]
+    simpa [mul_comm] using h (m : ℕ)
+
+/-- **Power-orbit density.**  If distinct monomials in `q` have distinct values, a polynomial
+vanishing at every point `(q_i^m)_i` of the cyclic orbit is zero. -/
+theorem mv_power_orbit_zero {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (q : ι → ℂ) (hq : Function.Injective (monomialValue q))
+    (P : MvPolynomial ι ℂ)
+    (h : ∀ m : ℕ, MvPolynomial.eval (fun i => q i ^ m) P = 0) : P = 0 := by
+  classical
+  let e := Fintype.equivFin P.support
+  let b : Fin (Fintype.card P.support) → ℂ := fun k => monomialValue q (e.symm k)
+  let c : Fin (Fintype.card P.support) → ℂ := fun k => MvPolynomial.coeff (e.symm k) P
+  have hb : Function.Injective b := by
+    intro k l hkl
+    apply e.symm.injective
+    apply Subtype.ext
+    exact hq hkl
+  have hsum : ∀ m : ℕ, ∑ k, c k * b k ^ m = 0 := by
+    intro m
+    have hm := h m
+    rw [MvPolynomial.eval_eq] at hm
+    have hm' : ∑ d : P.support,
+        MvPolynomial.coeff d.1 P * monomialValue (fun i => q i ^ m) d.1 = 0 := by
+      rw [← Finset.sum_attach] at hm
+      simpa [monomialValue, Finsupp.prod] using hm
+    simp_rw [monomialValue_pow] at hm'
+    have he := e.symm.sum_comp (fun d : P.support =>
+      MvPolynomial.coeff d.1 P * monomialValue q d.1 ^ m)
+    simpa [b, c] using he.trans hm'
+  have hc := power_sum_coeff_zero hb hsum
+  apply MvPolynomial.ext
+  intro d
+  by_cases hd : d ∈ P.support
+  · let ds : P.support := ⟨d, hd⟩
+    have hcd := congrFun hc (e ds)
+    simpa [c, ds] using hcd
+  · simpa [MvPolynomial.mem_support_iff] using hd
+
+/-- Substitute constants in every branch column except `n`, whose coordinates remain variables. -/
+noncomputable def columnPolynomial {ι : Type*} {L : ℕ}
+    (n : Fin L) (v : (ι × Fin L) → ℂ) (P : MvPolynomial (ι × Fin L) ℂ) :
+    MvPolynomial ι ℂ :=
+  (MvPolynomial.bind₁ (R := ℂ) fun jk : ι × Fin L =>
+    if jk.2 = n then MvPolynomial.X jk.1 else MvPolynomial.C (v jk)) P
+
+/-- Evaluation of `columnPolynomial` varies exactly the selected branch column. -/
+theorem eval_columnPolynomial {ι : Type*} {L : ℕ}
+    (n : Fin L) (v : (ι × Fin L) → ℂ) (x : ι → ℂ)
+    (P : MvPolynomial (ι × Fin L) ℂ) :
+    MvPolynomial.eval x (columnPolynomial n v P) =
+      MvPolynomial.eval (fun jk => if jk.2 = n then x jk.1 else v jk) P := by
+  rw [columnPolynomial]
+  change MvPolynomial.eval₂Hom (RingHom.id ℂ) x
+      (MvPolynomial.bind₁
+        (fun jk => if jk.2 = n then MvPolynomial.X jk.1 else MvPolynomial.C (v jk)) P) = _
+  rw [MvPolynomial.eval₂Hom_bind₁]
+  change MvPolynomial.eval
+      (fun jk => MvPolynomial.eval x
+        (if jk.2 = n then MvPolynomial.X jk.1 else MvPolynomial.C (v jk))) P = _
+  apply RingHom.congr_fun
+  apply MvPolynomial.ringHom_ext'
+  · ext r
+    simp
+  · intro jk
+    by_cases h : jk.2 = n
+    · simp [h]
+    · simp [h]
+
+/-- **Product power-grid density.**  At each of `L` branch columns choose one common orbit time
+`m_n`.  If a polynomial vanishes on every resulting point `(q_j^{m_n})_{j,n}`, it is zero. -/
+theorem mv_power_grid_zero {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (q : ι → ℂ) (hq : Function.Injective (monomialValue q)) :
+    ∀ (L : ℕ) (P : MvPolynomial (ι × Fin L) ℂ),
+      (∀ m : Fin L → ℕ,
+        MvPolynomial.eval (fun jk => q jk.1 ^ m jk.2) P = 0) → P = 0 := by
+  intro L P h
+  apply MvPolynomial.funext
+  intro y
+  suffices H : ∀ K : ℕ, K ≤ L →
+      ∀ v : (ι × Fin L) → ℂ,
+        (∀ n : Fin L, K ≤ (n : ℕ) → ∃ m : ℕ, ∀ j : ι, v (j, n) = q j ^ m) →
+        MvPolynomial.eval v P = 0 by
+    exact H L le_rfl y (fun n hbad => absurd hbad (Nat.not_le_of_lt n.isLt))
+  intro K hKL
+  induction K with
+  | zero =>
+      intro v hv
+      choose m hm using fun n : Fin L => hv n (Nat.zero_le _)
+      have hvm : v = fun jk => q jk.1 ^ m jk.2 := by
+        funext jk
+        exact hm jk.2 jk.1
+      rw [hvm]
+      exact h m
+  | succ K ih =>
+      intro v hv
+      have hKlt : K < L := Nat.lt_of_succ_le hKL
+      let nK : Fin L := ⟨K, hKlt⟩
+      let Q := columnPolynomial nK v P
+      have hQ : Q = 0 := by
+        apply mv_power_orbit_zero q hq Q
+        intro m
+        rw [eval_columnPolynomial]
+        apply ih (Nat.le_of_lt hKlt)
+        intro n hn
+        by_cases hnK : n = nK
+        · subst hnK
+          exact ⟨m, fun j => by simp [nK]⟩
+        · obtain ⟨m', hm'⟩ := hv n (by
+            have hne : (n : ℕ) ≠ K := by
+              intro heq
+              apply hnK
+              apply Fin.ext
+              simpa [nK] using heq
+            omega)
+          refine ⟨m', fun j => ?_⟩
+          simp [hnK, hm' j]
+      have hEvalQ : MvPolynomial.eval (fun j => v (j, nK)) Q = 0 := by
+        rw [hQ, map_zero]
+      rw [eval_columnPolynomial] at hEvalQ
+      have hsame : (fun jk : ι × Fin L =>
+          if jk.2 = nK then v (jk.1, nK) else v jk) = v := by
+        funext jk
+        by_cases heq : jk.2 = nK
+        · rw [if_pos heq]
+          exact congrArg (fun n => v (jk.1, n)) heq.symm
+        · simp [heq]
+      rwa [hsame] at hEvalQ
+
+/-- The exponent family consisting of `1` and the selected Hurwitz exponents. -/
+noncomputable def exponentFamily {ι : Type*} (s : ι → ℂ) : Option ι → ℂ
+  | none => 1
+  | some j => s j
+
+/-- The exponent encoded by a nonnegative monomial in a family of Hurwitz exponents. -/
+noncomputable def exponentWeight {ι : Type*} (s : ι → ℂ) (d : ι →₀ ℕ) : ℂ :=
+  d.sum fun j n => (n : ℂ) * s j
+
+/-- A monomial in the Hurwitz monodromy scalars is the exponential of its weighted exponent. -/
+theorem monomialValue_monoScalar {ι : Type*} (s : ι → ℂ) (d : ι →₀ ℕ) :
+    monomialValue (fun j => monoScalar (s j)) d =
+      Complex.exp (-(2 * (Real.pi : ℂ) * Complex.I * exponentWeight s d)) := by
+  classical
+  rw [monomialValue, Finsupp.prod, exponentWeight, Finsupp.sum]
+  induction d.support using Finset.induction_on with
+  | empty => simp
+  | insert j T hj ih =>
+      rw [Finset.prod_insert hj, Finset.sum_insert hj, ih]
+      rw [monoScalar, ← Complex.exp_nat_mul, ← Complex.exp_add]
+      congr 1
+      ring
+
+/-- Rational linear independence of `1` and the exponent family makes all nonnegative monomials
+in the corresponding monodromy scalars pairwise distinct. -/
+theorem monomialValue_monoScalar_injective_of_linearIndependent
+    {ι : Type*} [Fintype ι] [DecidableEq ι] (s : ι → ℂ)
+    (hs : LinearIndependent ℚ (exponentFamily s)) :
+    Function.Injective (monomialValue (fun j => monoScalar (s j))) := by
+  intro d e hde
+  rw [monomialValue_monoScalar, monomialValue_monoScalar] at hde
+  have hone : Complex.exp (-(2 * (Real.pi : ℂ) * Complex.I *
+      (exponentWeight s d - exponentWeight s e))) = 1 := by
+    rw [show -(2 * (Real.pi : ℂ) * Complex.I * (exponentWeight s d - exponentWeight s e)) =
+        -(2 * (Real.pi : ℂ) * Complex.I * exponentWeight s d) -
+          (-(2 * (Real.pi : ℂ) * Complex.I * exponentWeight s e)) by ring,
+      Complex.exp_sub, hde]
+    simp
+  rw [Complex.exp_eq_one_iff] at hone
+  obtain ⟨k, hk⟩ := hone
+  have hpi : (2 * (Real.pi : ℂ) * Complex.I) ≠ 0 := by
+    have hp : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+    simp [hp, Complex.I_ne_zero]
+  have hweight : exponentWeight s d - exponentWeight s e = -(k : ℂ) := by
+    have hmul : (2 * (Real.pi : ℂ) * Complex.I) *
+        (-(exponentWeight s d - exponentWeight s e)) =
+        (2 * (Real.pi : ℂ) * Complex.I) * (k : ℂ) := by
+      linear_combination hk
+    have hc := mul_left_cancel₀ hpi hmul
+    linear_combination -hc
+  have hrel : ∑ x : Option ι,
+      (match x with
+        | none => (k : ℚ)
+        | some j => ((d j : ℤ) - (e j : ℤ) : ℤ)) • exponentFamily s x = 0 := by
+    rw [Fintype.sum_option]
+    simp only [exponentFamily]
+    simp only [Rat.smul_def, mul_one]
+    have hsum : ∑ j : ι, ((((d j : ℤ) - (e j : ℤ) : ℤ) : ℚ) : ℂ) * s j =
+        exponentWeight s d - exponentWeight s e := by
+      rw [exponentWeight, exponentWeight, Finsupp.sum_fintype, Finsupp.sum_fintype]
+      · push_cast
+        simp_rw [sub_mul]
+        rw [Finset.sum_sub_distrib]
+      · simp
+      · simp
+    rw [hsum, hweight]
+    push_cast
+    ring
+  have hcoeff := Fintype.linearIndependent_iff.mp hs _ hrel
+  apply Finsupp.ext
+  intro j
+  have hj := hcoeff (some j)
+  change (((d j : ℤ) - (e j : ℤ) : ℤ) : ℚ) = 0 at hj
+  have hz : (d j : ℤ) - (e j : ℤ) = 0 := by exact_mod_cast hj
+  exact_mod_cast sub_eq_zero.mp hz
+
+end HurwitzJointOrbit

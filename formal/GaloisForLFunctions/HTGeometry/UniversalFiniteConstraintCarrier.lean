@@ -114,6 +114,22 @@ theorem universalFacetOrbit_stanleyReisnerLaurentDifferentialMatroid
     (C := ℂ) (K := upperEndMeroField)
     upperEndMero_deriv_complexConstant d facets N source hsource
 
+/-- The fixed universal source retains the positive Herglotz sign on the upper half-plane. -/
+theorem universalFacetOrbitGauge_primeLogHerglotz_im_nonneg
+    {z : ℂ} (hz : 0 < z.im) :
+    0 ≤ (primeLogHerglotz (fun q => universalFacetOrbitGauge q) z).im :=
+  primeLogHerglotz_im_nonneg (fun q => universalFacetOrbitGauge q)
+    ‖universalFacetOrbitGauge‖
+    (fun q => (le_abs_self (universalFacetOrbitGauge q)).trans
+      (universalFacetOrbitGauge.norm_coe_le_norm q)) z hz
+
+/-- The fixed source's pole carrier has infinite rational rank, independently of every later
+finite sewing. -/
+theorem universalFacetOrbitGauge_primeLogSupport_not_contained_finite_span :
+    ¬ ∃ s : Set ℝ, s.Finite ∧
+      Set.range primeLogSupport ⊆ Submodule.span ℚ s :=
+  primeLogSupport_not_contained_finite_span
+
 /-- Every prime logarithm remains an exact simple pole of the single universal source, with the
 same explicit positive-weight residue data in every finite realization. -/
 theorem universalFacetOrbitGauge_hasSimplePoleAt (p : Nat.Primes) :

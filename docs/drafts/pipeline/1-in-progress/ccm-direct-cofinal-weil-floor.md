@@ -203,11 +203,13 @@ while an all-line reference divisor contributes a uniformly bounded amount. A co
 sequence makes `(11b)` tend to `-infinity`. The result extends to a finite horizontally isolated
 rightmost layer and is proved in `two-edge-boundary-quartet-amplification-law.md`.
 
-This does not yet globalize to the zeta divisor. An off-line divisor need not have an attained or
-horizontally isolated maximal displacement. The corresponding positive detector theorem is a full
-indicator/spectral-synthesis statement: without selecting a rightmost zero, an off-line completed
-divisor must force negative liminf on some cofinal two-edge boundary family. Single-zero dominance
-cannot be used.
+The globalization to the complete zeta divisor is now proved in
+`cofinal-two-edge-weil-completeness-landau-oscillation.md`. The off-line contribution is an
+exponential divisor sum whose Laplace transform has poles at the centered zeros. Its convergence
+abscissa is twice the supremal transverse displacement, but the transform is holomorphic at the
+corresponding real point because zeta has no real nontrivial zero. Landau's oscillation theorem
+therefore forces the contribution to be unbounded below for a residual set of fixed profiles. No
+attained or horizontally isolated maximal displacement is needed.
 
 The nonattained-layer problem nevertheless has an exact scalar carrier. For the cumulative defect
 `R` in `ccm-polar-prime-critical-mellin-defect-law.md`, put
@@ -228,10 +230,10 @@ Under RH the classical von Koch error gives the stronger polynomial bound `R(h)=
 Conversely, any subexponential bound on `R` excludes all transverse poles at once, without a
 rightmost-zero hypothesis. The proof is in `ccm-critical-mellin-defect-abscissa-rh-law.md`.
 
-Thus a boundary proof can globalize either by establishing negative liminf of the full two-edge
-divisor sum under RH failure, or positively by proving zero exponential type of `R`. The latter is
-the sharper source-side target, but it is already an exact RH criterion; prime-number-theorem
-control stops at `omega_R<=1/2`.
+Thus the divisor-side two-edge detector is complete. The remaining positive source theorem may be
+stated either as cofinal nonnegativity on that complete boundary family or as zero exponential type
+of `R`. The latter is already an exact RH criterion; prime-number-theorem control stops at
+`omega_R<=1/2`.
 
 The causal Möbius coordinate reaches the same boundary and no farther for free. If
 

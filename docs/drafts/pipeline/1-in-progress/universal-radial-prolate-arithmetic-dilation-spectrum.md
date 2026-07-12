@@ -1,12 +1,7 @@
-# Universal radial leakage and arithmetic dilation spectrum of constrained prolate modes
+# Universal radial leakage and the arithmetic trace-class spectrum of constrained prolate modes
 
-- **Stage:** 4-publication-ready
-- **Type:** THEOREM / PREPRINT
-- **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
-- **Novelty score:** `82/100`
-- **Significance score:** `80/100`
-- **Primary object:** the zero-integral `h_0`--`h_4` constrained prolate source used in the
-  Connes--Consani--Moscovici finite-Weil construction
+The primary object is the zero-integral `h_0`--`h_4` constrained prolate source used in the
+Connes--Consani--Moscovici finite-Weil construction. No hypothesis on zeta zeros is used.
 
 ## Abstract
 
@@ -14,11 +9,14 @@ We determine the complete leakage-scale dilation spectrum of the constrained fix
 source that underlies the current CCM approximation to the Riemann-Xi kernel. Its exterior Fourier
 energy converges, after normalization by the first admissible concentration deficit, to an explicit
 universal measure. The associated infinite dilation Gram matrices converge to a diagonal operator
-in a logarithmically weighted nuclear topology. This yields an exact arcsine spectrum and an
-explicit von-Mangoldt-weighted finite-aperture limit. The result is a theorem about prolate
-spheroidal wave functions and arithmetic dilation sampling; it assumes no zero-location statement,
-Weil positivity, or Riemann Hypothesis. We also isolate the distinct graph-domain theorem still
-required before these component asymptotics can be promoted to a full CCM Weil-form asymptotic.
+in a logarithmically weighted nuclear topology. After insertion of the exact finite-aperture von
+Mangoldt divisor mask, the symmetrized arithmetic dilation operators converge in trace norm to an
+explicit positive diagonal operator. This yields an arcsine spectrum, a locally uniform Fredholm
+determinant limit, and the full radial prime charge as the negative trace of the limiting operator.
+The result is a theorem about prolate spheroidal wave functions and arithmetic dilation sampling; it
+assumes no zero-location statement, Weil positivity, or Riemann Hypothesis. We also isolate the
+distinct graph-domain theorem still required before these component asymptotics can be promoted to
+a full CCM Weil-form asymptotic.
 
 ## 1. Constrained source
 
@@ -149,14 +147,14 @@ and
 More strongly, their matrices converge in the weighted projective norm
 
 ```text
-sum_(j,k>=1) sqrt(Omega_j*Omega_k)
+sum_(j,k>=1) (Omega_j+Omega_k)
  |G_lambda(j,k)/d_lambda-delta_(j,k)w_k| ->0.                   (3.5)
 ```
 
 Consequently every coefficient matrix `B=(B_jk)` satisfying
 
 ```text
-sup_(j,k)|B_jk|/sqrt(Omega_j*Omega_k)<infinity                  (3.6)
+sup_(j,k)|B_jk|/(Omega_j+Omega_k)<infinity                      (3.6)
 ```
 
 has the universal limit
@@ -199,8 +197,8 @@ a_-'=-exp( i*c*xi)psi W/(2*i*c).                               (3.10)
 ```
 
 Dunster's exterior potential is short range, so `(3.10)` gives the uniform bounded-variation
-symbol estimates required for one nonstationary integration by parts. This exact algebraic step is
-formalized in `RadialPSWFInteractionPicture.lean`.
+symbol estimates required for one nonstationary integration by parts. This derives the needed
+phase-preserving remainder control from the differential equation itself.
 
 The Hilbert-kernel sum gives
 
@@ -227,10 +225,10 @@ gives
 Thus the logarithmically weighted low row is
 `O(c^(-1/2)+log(c)^2/c)` and the high row is
 `O(log(lambda)/lambda^2)`. Symmetry handles the first column. This proves `(3.5)`. The trace-norm
-bound in `(3.4)` follows by decomposing the weighted matrix into rank-one matrix units. Equation
-`(3.7)` is immediate from `(3.5)`.
+bound in `(3.4)` follows by decomposing the weighted matrix into rank-one matrix units and using
+`2sqrt(Omega_j Omega_k)<=Omega_j+Omega_k`. Equation `(3.7)` is immediate from `(3.5)`.
 
-## 4. Arithmetic dilation law
+## 4. Arithmetic trace-class spectrum
 
 At logarithmic aperture `[-log lambda,log lambda]`, only prime shifts `q<=lambda^2` occur. The
 radial multiplier remains infinite. Define
@@ -249,48 +247,148 @@ Then
 a_lambda(k)=log k  for k<=lambda^2.                             (4.2)
 ```
 
-### Theorem C
+On the finite-sequence core of `ell^2(N_+)`, define the symmetric matrix
+
+```text
+A_lambda(j,k)
+ =(a_lambda(j)+a_lambda(k))G_lambda(j,k).                       (4.3)
+```
+
+It is useful to write this formally as the anticommutator
+
+```text
+A_lambda=M_(a_lambda)G_lambda+G_lambda M_(a_lambda),            (4.4)
+```
+
+but `(4.3)` is the definition: no separate domain assertion for the two unbounded products in
+`(4.4)` is needed.
+
+Put
+
+```text
+kappa_k=2(log k)w_k
+       =16/(11*pi) *log(k)/k*arcsin(1/k),
+A_infinity=diag(kappa_1,kappa_2,...).                           (4.5)
+```
+
+### Theorem C: arithmetic operator and determinant limit
+
+Every `A_lambda` extends to a self-adjoint trace-class operator, and
+
+```text
+||A_lambda/d_lambda-A_infinity||_(S1)->0.                      (4.6)
+```
+
+More strongly,
+
+```text
+sum_(j,k>=1)
+ |A_lambda(j,k)/d_lambda-delta_(j,k)kappa_k|->0.                (4.7)
+```
+
+Consequently the total negative spectral mass vanishes,
+
+```text
+Tr[(A_lambda/d_lambda)_-]->0,                                  (4.8)
+```
+
+and the Fredholm determinants converge locally uniformly on the complex plane:
+
+```text
+det(I+z A_lambda/d_lambda)
+ ->D_arith(z):=product_(k>=2)(1+z kappa_k).                    (4.9)
+```
+
+The entire function `D_arith` has order `1/2`; its negative real zeros, counted with
+multiplicity, are `-1/kappa_k`.
+
+### Proof
+
+Set
+
+```text
+E_lambda(j,k)
+ =G_lambda(j,k)/d_lambda-delta_(j,k)w_k.                       (4.10)
+```
+
+Since `a_lambda(k)<=log k<Omega_k`, Theorem B gives
+
+```text
+sum_(j,k)(a_lambda(j)+a_lambda(k))|E_lambda(j,k)|->0.           (4.11)
+```
+
+The remaining diagonal error is
+
+```text
+2sum_k|a_lambda(k)-log k|w_k.                                  (4.12)
+```
+
+Each summand is eventually zero, and the summable sequence `2(log k)w_k` dominates it. Dominated
+convergence proves `(4.7)`. The projective matrix norm dominates the trace norm because every
+matrix unit has trace norm one, proving `(4.6)`. The limit is positive, so the negative trace mass
+in `(4.8)` is bounded by the trace-norm error. Continuity of the Fredholm determinant in trace norm
+proves `(4.9)`. Finally
+
+```text
+kappa_k~16/(11*pi)*log k/k^2.                                 (4.13)
+```
+
+Thus the exponent of convergence of the zero sequence is `1/2`; the genus-zero product in `(4.9)`
+has order `1/2`.
+
+### Theorem D: full finite-aperture prime charge
 
 The full finite-aperture radial prime charge has the universal limit
 
 ```text
 PPrime_lambda/d_lambda
  ->-16/(11*pi)
-   sum_(k>=2) log(k)/k * arcsin(1/k).                           (4.3)
+   sum_(k>=2) log(k)/k * arcsin(1/k)
+  =-Tr(A_infinity).                                             (4.14)
 ```
 
 The series is absolutely convergent and strictly negative. Equivalently,
 
 ```text
 sum_(k>=2)log(k)/k*arcsin(1/k)
- =-sum_(r>=0) binom(2r,r)/[4^r(2r+1)] zeta'(2r+2).              (4.4)
+ =-sum_(r>=0) binom(2r,r)/[4^r(2r+1)] zeta'(2r+2).              (4.15)
 ```
 
 ### Proof
 
-Apply `(3.5)` to the truncated-divisor masks, use `(4.2)`, and pass to the limit by the diagonal
-majorant `(3.8)`. The divisor identity
+Symmetry gives the exact identity
 
 ```text
-sum_(q|k,q>=2)Lambda(q)=log k                                  (4.5)
+PPrime_lambda=-sum_(j,k>=1)A_lambda(j,k).                      (4.16)
 ```
 
-produces `(4.3)`. Expanding `arcsin` into its absolutely convergent positive power series and
-differentiating the zeta Dirichlet series at even integers gives `(4.4)`.
+Projective convergence `(4.7)`, which is stronger than trace-norm convergence, permits pairing
+with the all-ones matrix and gives `(4.14)`. Equivalently, the off-diagonal estimates in the proof
+of Theorem B remain summable after multiplication by `a_lambda(k)<=log k`; on the diagonal use
+`(4.2)`, `(3.8)`, and dominated convergence. The divisor identity
+
+```text
+sum_(q|k,q>=2)Lambda(q)=log k                                  (4.17)
+```
+
+produces `(4.14)`. Expanding `arcsin` into its absolutely convergent positive power series and
+differentiating the zeta Dirichlet series at even integers gives `(4.15)`.
 
 ## 5. What this proves for CCM
 
-Theorems A--C identify a genuine infinite arithmetic carrier:
+Theorems A--D identify a genuine infinite arithmetic carrier:
 
 ```text
 exterior radial energy
  -> logarithmically weighted nuclear dilation spectrum
- -> explicit all-prime von-Mangoldt response.                  (5.1)
+ -> positive arithmetic trace-class spectrum
+ -> locally uniform Fredholm determinant
+ -> explicit all-prime von-Mangoldt trace.                     (5.1)
 ```
 
 This carrier is stronger than fixed-pair asymptotics, a finite spectrum, or a scalar leakage
 estimate. It transports every logarithmically bounded arithmetic coefficient mask through the
-cofinal radial limit.
+cofinal radial limit, and it retains the complete limiting arithmetic spectrum and multiplicity.
 
 It is not the full Weil form. The exact finite-aperture form couples the prime module to a rank-two
 polar block and to the critical Mellin defect. At the critical Mellin boundary the Poisson radial
@@ -307,52 +405,30 @@ full CCM Rayleigh asymptotic. The subsequent RH-bearing obligations remain a tru
 spectral lower bound/gap comparison and locally uniform zero-preserving determinant convergence to
 `Xi`.
 
-## 6. Novelty audit
+## 6. Relation to existing literature
 
-### Parent results
+### Inputs from the literature
 
 - Dunster proves the uniform radial Bessel/Liouville expansions and error bounds.
 - Fuchs and Slepian prove fixed-mode concentration asymptotics.
 - Connes--Consani--Moscovici identify the constrained prolate source and the finite-Weil route.
 - Standard nonstationary/stationary phase supplies the analytic summation tools.
 
-### Residue after vocabulary erasure
+### New conclusions
 
-No located source states the universal measure `(2.2)`, the arcsine dilation spectrum `(3.3)`,
-the weighted nuclear convergence `(3.4)`--`(3.5)`, or the von-Mangoldt limit `(4.3)`. Exact-formula
-searches for the combinations `arcsin(1/k) + prolate`, `von Mangoldt + radial PSWF`, and `prolate
-dilation Gram + arcsine` returned no parent theorem. The result remains meaningful without RH
-language: it is an operator-limit theorem for a constrained fixed-mode prolate family under all
-integer dilations.
+The universal measure `(2.2)`, the arcsine dilation spectrum `(3.3)`, the weighted nuclear
+convergence `(3.4)`--`(3.5)`, the arithmetic trace-class spectrum `(4.5)`--`(4.9)`, and the
+von-Mangoldt trace `(4.14)` do not occur in the cited PSWF or CCM sources. The result is independent
+of RH language: it is an operator-limit theorem for a constrained fixed-mode prolate family under
+all integer dilations.
 
-### Significance
+### Scope
 
-The weighted nuclear topology is the first result here that controls the entire cofinal arithmetic
+The weighted nuclear topology controls the entire cofinal arithmetic
 dilation module rather than every fixed coordinate. It closes the raw finite-aperture prime channel
 of the current CCM source and isolates one exact graph-domain theorem as the next source gate.
 
-**Score:** `81/100` overall. The score is above the publication threshold because the theorem
-combines a new universal PSWF leakage law, an operator-level all-index limit, and an explicit
-arithmetic response. It is below a major-problem score because it neither proves the closed Weil
-estimate `(5.2)` nor controls the true CCM spectral floor.
-
-## 7. Lean foundation
-
-The unconditional formal foundation is axiom-clean:
-
-- `ConstrainedProlateExteriorWeil.lean` proves convergence and signs of the arcsine coefficient
-  series, including strict negativity of `(4.3)`.
-- `ProlateSecularEquation.lean` proves the exact constrained two-mode secular algebra and
-  interlacing.
-- `ApertureShiftCutoff.lean` proves the exact finite prime-shift cutoff.
-- `RadialPSWFInteractionPicture.lean` proves `(3.10)` and exact reconstruction.
-- `PolarPrimeMellinDefect.lean` formalizes the separate coupled graph-domain carrier required by
-  `(5.2)`; it is not silently assumed in Theorems A--C.
-
-The radial PSWF weak convergence and oscillatory estimates are not claimed Lean-formalized because
-the current tree lacks Bessel-envelope and stationary-phase infrastructure.
-
-## References
+## 7. References
 
 - A. Connes, C. Consani, H. Moscovici, *Zeta Spectral Triples*, arXiv:2511.22755.
 - T. M. Dunster, *Asymptotics of Prolate Spheroidal Wave Functions*, arXiv:1601.00699.
@@ -361,16 +437,3 @@ the current tree lacks Bessel-envelope and stationary-phase infrastructure.
 - D. Slepian, *Some Asymptotic Expansions for Prolate Spheroidal Wave Functions*, J. Math. Phys. 44
   (1965), 99--140.
 - M. Suzuki, *Weil's quadratic form via the screw function*, arXiv:2606.09096.
-
-## Publication gates
-
-- [x] exact constrained source and normalization fixed
-- [x] universal radial leakage measure proved
-- [x] all-index weighted nuclear dilation limit proved
-- [x] full finite-aperture radial prime charge proved
-- [x] additive-remainder phase gap repaired by exact ODE transport
-- [x] novelty searches against CCM, PSWF, and signal-analysis vocabulary
-- [x] false full-Weil promotion explicitly excluded
-- [x] Lean formalization of unconditional algebraic/summability components
-- [ ] external expert audit of Dunster normalization and the first-row stationary constants
-- [ ] typeset journal manuscript
