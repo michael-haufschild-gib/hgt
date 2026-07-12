@@ -2,7 +2,7 @@
 
 - **ID:** inverse-gamma-branch-shift-cocycle-law
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper + Lean one-step value law)
+- **Type:** THEOREM (paper + Lean analytic branch/value law)
 - **Status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED]`
 - **Statement:** The local inverse branches of reciprocal Gamma at its negative-integer zeros are
   joined by an exact birational shift cocycle; their residue interpolants transform by its Möbius
@@ -211,12 +211,52 @@ cross-branch recurrences among polygamma values.
 
 `formal/GaloisForLFunctions/CompositionResidueLaw.lean` contains
 `gamma_inverseValue_logSlope_eq_digamma`, `gamma_inverseValue_residueTransport_add_one`,
-`gamma_inverseValue_logSlope_add_one`, and `gamma_inverseValue_reciprocalResidue_add_one`.  They
+`gamma_inverseValue_logSlope_add_one`, `gamma_inverseValue_reciprocalResidue_add_one`,
+`gamma_inverseValue_logSlope_add_nat`, and
+`gamma_inverseValue_reciprocalResidue_add_nat`, together with
+`ascPochhammer_derivative_eval_eq_mul_sum` and
+`gamma_inverseValue_residueTransport_add_nat`.  They
 identify the additive coordinate with digamma and prove the pointwise one-step Möbius identity,
 its scaled-derivative linearization, and the translated reciprocal-residue coordinate directly
-from the formalized Gamma identities.  The analytic branch selection and
-finite-shift iteration remain
-paper-level until the reciprocal-Gamma local inverses are introduced in Lean.
+from the formalized Gamma identities.  The two finite-shift theorems now formalize the exact
+ascending-factorial law
+
+\[
+-\frac{x}{(z)_k}\Gamma'(z+k)
+=-x\Gamma'(z)+\sum_{j<k}\frac1{z+j}
+\]
+
+and its reciprocal-residue form.  Thus the complete pointwise finite-shift value law is Lean
+certified.  The derivative identity
+
+\[
+(z)_k'=(z)_k\sum_{j<k}\frac1{z+j}
+\]
+
+then yields the exact finite Möbius transport
+
+\[
+-\frac1{\Gamma'(z+k)}
+=\frac{x\rho}{x(z)_k+\rho(z)_k'}.
+\]
+
+`formal/GaloisForLFunctions/ReciprocalGammaPoleBranch.lean` closes the analytic branch gap.  It
+proves that reciprocal Gamma has derivative ((-1)^n n!) at (-n), constructs a normalized
+analytic inverse germ `ReciprocalGammaPoleBranch n` with
+
+\[
+H(z_n(x))=-x,
+\qquad
+z_n(0)=-n,
+\qquad
+z_n'(0)=-\frac{(-1)^n}{n!},
+\]
+
+and proves both `ReciprocalGammaPoleBranch.one_step_cocycle` and
+`ReciprocalGammaPoleBranch.finite_cocycle`.  The latter is exactly the finite rising-factorial
+branch relation in Theorem 3, for arbitrary choices of the normalized local inverse germs.  Thus
+analytic existence, normalization, local uniqueness, and the complete finite branch conjugacy are
+Lean certified; only the displayed higher Taylor-coefficient extraction remains paper-level.
 
 The direct module build passes.  The axiom audit reports only `propext`, `Classical.choice`, and
 `Quot.sound`.
@@ -230,7 +270,11 @@ back through the inverse value.  The factorial and digamma coefficient recurrenc
 classical shadows.  The candidate-new content is therefore restricted to the explicit
 cross-branch conjugacy \(\mathcal T(z,x)=(z+1,x/z)\), its finite rising-factorial iteration, and the
 organization of all negative-index inverse germs as one analytic value system.  Targeted searches
-did not locate that branch-level theorem.
+did not locate that branch-level theorem.  A renewed primary-source audit checked the full
+Jeffrey–Watt complex-branch paper, Pedersen's Pick-function inverse construction, and the available
+inverse-Gamma series literature.  Those sources construct and expand individual branches, including
+polygamma-valued coefficients, but do not state the cross-branch conjugacy, its rising-factorial
+iteration, or the residue Möbius cocycle formalized here.
 
 - **Novelty estimate:** 0.70 pending specialist review, after removing the classical digamma
   coordinate from the novelty claim.
@@ -243,6 +287,8 @@ Primary parents:
 - [DLMF §5.5](https://dlmf.nist.gov/5.5), Gamma and digamma recurrences.
 - Jeffrey–Watt, [*The Inverse of the Complex Gamma Function*](https://arxiv.org/abs/2311.16583).
 - Pedersen, [*Inverses of gamma functions*](https://arxiv.org/abs/1309.2167).
+- Ulgenes, [*Series and Product Representations of Gamma, Pseudogamma and Inverse Gamma
+  Functions*](https://arxiv.org/abs/2301.09699).
 
 ## Gates
 
@@ -251,5 +297,7 @@ Primary parents:
 - [x] additive reciprocal-residue coordinate identified exactly with the classical digamma value
 - [x] factorial and digamma coefficient recurrences extracted
 - [x] one-step residue transform and additive log-slope law formalized
-- [ ] reciprocal-Gamma inverse branches formalized
+- [x] finite ascending-factorial log-slope and reciprocal-residue laws formalized
+- [x] finite rising-factorial Möbius residue law formalized at noncritical endpoints
+- [x] reciprocal-Gamma inverse branches and finite branch conjugacy formalized
 - [ ] specialist novelty audit

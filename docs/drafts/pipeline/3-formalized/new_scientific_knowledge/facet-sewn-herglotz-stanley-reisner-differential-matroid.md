@@ -1,9 +1,9 @@
 # Facet-sewn Herglotz systems realize every finite Stanley--Reisner differential matroid
 
 - **ID:** `facet-sewn-herglotz-stanley-reisner-differential-matroid`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / GENERAL HT REALIZATION GEOMETRY
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM / GENERAL HT REALIZATION GEOMETRY
+- **Scientific status:** `[FORMALIZED UNCONDITIONALLY] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Novelty verdict:** The individual analytic and algebraic ingredients are established parents.
   The scientific object is their resulting geometry: every finite simplicial complex occurs as an
   exact compatible relation geometry of a non-Gamma HT system, with no nonlinear dependencies
@@ -417,9 +417,11 @@ must positively add: a canonical pointing of the otherwise universal constraint 
 4. Two-thickness is unnecessary for this direct construction.  It is retained in the explicit
    example because it closes the realization gate of the abstract constraint-tower bridge.
 5. The diagonal-specialization proof would fail without full nonlinear restricted-translation
-   freeness of `g`, or if the vertex step sizes admitted integer collisions.  That restricted
-   freeness is now formalized inside the upper-end meromorphic field.  The remaining gap is the
-   theorem-specific assembly of its facet orbits with the structural restriction rows.
+   freeness of `g`, or if the vertex step sizes admitted integer collisions.  The Lean realization
+   replaces this paper presentation by one collision-free complex palette: rationally independent
+   real integral-orbit displacements together with distinct imaginary facet tags.  Its complete
+   orbit is formalized inside the upper-end meromorphic field and assembled with the structural
+   restriction rows.
 6. The scientific limitation is naturality, not correctness: arbitrary combinatorics are sewn from
    independent facet coordinates.  The next research object must explain canonical source
    selection rather than construct further arbitrary complexes.
@@ -444,9 +446,11 @@ constraint geometry they jointly prove.  Its geometric companion,
 supports only principal pure geometry.  Together the two theorems establish a nontrivial analytic
 dimension stratification of HT relation complexes.
 
-## Exact Lean completion boundary
+## Exact Lean theorem surface
 
-The current Lean tree contains genuine supporting components, but not this theorem:
+The theorem is formalized by a modular arbitrary-complex realization and a single explicit
+capstone assembly.  The formal statement uses independence of every finite structural family as
+the exact matroid equality; it does not merely prove a rank bound or linearized approximation.
 
 - `GaloisForLFunctions.SimplicialConstraintTower` defines faces, facet antichains, and
   `TwoThick`, and proves general pure/ridge-thick implications;
@@ -556,8 +560,7 @@ The current Lean tree contains genuine supporting components, but not this theor
   with the operator theorem and proves that their full nonlinear differential matroid is exactly
   the `C[D]`-linear matroid of the Stanley--Reisner numerator classes.
 
-The following theorem-specific obligations determine Lean completion.  Items 1--4 are formalized;
-item 5 and the final assembly remain:
+The five theorem-specific obligations and their assembly are formalized unconditionally:
 
 1. `[FORMALIZED]` `GaloisForLFunctions.HTGeometry.PrimeLogHerglotz` defines (S1), proves
    absolute convergence at every complex argument after totalized-inverse interpretation,
@@ -606,17 +609,31 @@ item 5 and the final assembly remain:
 4. `[FORMALIZED]` the explicit six-vertex facet family (16), its exact minimal nonfaces (17),
    nonpurity, facet-antichain property, and two-thickness are proved in
    `GaloisForLFunctions.HTGeometry.WedgeTwoThick`;
-5. `[PARTIALLY FORMALIZED]` the commutative-algebraic facet embedding, quotient-localization
-   compatibility, common-denominator reduction, exact facet polynomial quotient, difference-to-
-   translation coordinate equivalence, finite-support operator expansion, and the complete
-   numerator nonlinear differential matroid are formalized.  It remains to represent the common
-   translation denominator by its exponent, reindex the numerator supports by the corresponding
-   negative Laurent shift, and instantiate that finite packet inside the formalized upper-end
-   prime-log translation family.
+5. `[FORMALIZED]` `LocalizationQuotient`, `FacetPolynomialQuotient`,
+   `StanleyReisnerFacetCoordinates`, `DifferenceTranslationCoordinates`,
+   `FacetTranslationCoordinates`, `TranslationDenominatorLaurentShift`, and
+   `StanleyReisnerLaurentRows` formalize the commutative-algebraic facet embedding,
+   quotient-localization compatibility, common-denominator reduction, exact facet polynomial
+   quotient, `x_v=t_v-1` coordinate equivalence, the denominator exponent, and the injective
+   negative Laurent support shift.  `LocalizedStanleyReisnerDifferentialMatroid` proves the exact
+   finite-family independence equivalence after localization.  `RationalIndependentWeights` and
+   `FacetOrbitShift` construct a collision-free complex translation palette, and
+   `UpperEndConstantField` restricts the established upper-end freeness from `C(z)` to `C`.
 
-Formalizing an abstract interface that assumes any of these five items would be useful
-infrastructure but would not formalize this card.  Stage 3 requires all five and the final assembly
-unconditionally.
+`UpperEndStanleyReisnerRealization.exists_upperEndFacetOrbit_differentialIndependent_ratfunc`
+chooses one bounded prime-log source for every finite facet complex and proves that its complete
+facet orbit is differentially independent over `C(z)`, hence is hypertranscendental in the
+conventional sense.  For the induced complex-constant structure on that fixed source,
+`upperEnd_stanleyReisnerLaurentDifferentialMatroid` proves simultaneously for every finite common-
+denominator Laurent family that analytic differential independence is equivalent to linear
+independence of its localized Stanley--Reisner numerator classes.
+
+`FacetSewnHerglotzStanleyReisner.exists_wedgeFacetSewnUpperEndSystem` is the final explicit
+capstone.  In one unconditional theorem it packages the nonpure two-thick wedge certificate, the
+infinite-rational-rank prime-log carrier, exact simple poles with explicit nonzero residues, full
+facet-orbit differential independence, the analytic face-output zero/nonface equivalence, and the
+complete finite-family localized differential-matroid equivalence.  Its `#print axioms` output is
+exactly `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
@@ -682,13 +699,17 @@ unconditionally.
 - [x] quotient-localization compatibility, common-denominator reduction, exact facet polynomial
   coordinates, `x_v=t_v-1` translation expansion, and the complete Stanley--Reisner numerator
   differential matroid formalized unconditionally in Lean
-- [ ] complete unconditional Lean formalization before stage 3
-
-## Log
-
-- 2026-07-11 -- Opened from the explicit goal of realizing a nonpure two-thick compatible relation
-  complex by a non-multiple-Gamma HT system.
-- 2026-07-11 -- Strengthened the target to every finite simplicial complex and closed the paper
-  proof by diagonal specialization, facet-prime decomposition, and differential Smith normal form.
-- 2026-07-11 -- Corrected the novelty unit from the contributing lemmas to the realized geometry:
-  universal finite HT constraint realization, paired with the scalar principalization lower bound.
+- [x] translation-denominator exponent extraction and injective negative Laurent support shift
+  formalized unconditionally in Lean
+- [x] rationally independent real weights, collision-free facet-tagged complex orbit palette,
+  complete-orbit differential independence over `C(z)`, and its restriction to complex constants
+  formalized unconditionally in Lean
+- [x] one fixed upper-end prime-log source realizing the localized Stanley--Reisner differential
+  matroid simultaneously for every finite structural family formalized unconditionally in Lean
+- [x] analytic compatible-face output vanishes exactly on nonfaces formalized unconditionally in
+  Lean
+- [x] explicit non-multiple-Gamma, nonpure two-thick capstone theorem assembled unconditionally in
+  Lean
+- [x] exact capstone module and HTGeometry umbrella build
+- [x] formal lint and `#print axioms` promotion gates
+- [x] complete unconditional Lean formalization; Stage 3 gate cleared

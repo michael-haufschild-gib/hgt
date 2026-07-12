@@ -188,6 +188,11 @@ Already formalized:
 - `reciprocalPosition_residueInterpolation`: exact interpolation
   \(-1/d=-x^2z'(x)\).
 - `polygamma_comp_Gamma_principalPart`: all-order factorial-power leading block.
+- `ReciprocalGammaPoleBranch`: analytic inverse germs at every negative-integer zero of reciprocal
+  Gamma, including their exact first derivative.
+- `ReciprocalGammaPoleBranch.finite_cocycle`: the finite rising-factorial conjugacy relating all
+  branch indices.  Hence the cross-branch recurrences are now a formal input to the remaining
+  determinant problem, rather than an unformalized compatibility assumption.
 
 Next formal objects:
 

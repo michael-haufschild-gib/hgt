@@ -356,9 +356,19 @@ knowledge.
 
 ## 8. Lean decision
 
-The formal tree does not contain the squarefree probability channel, the Hardy/Laplace shift
-multiplier, or the meromorphic contour graph. Formalizing only the Euler product `(9)` would not
-certify the RH-bearing continuation `(25)`, so no Lean file is added.
+The unconditional finite-aperture layer is formalized in
+`formal/GaloisForLFunctions/RHTower/FiniteSignedChannelCoisometry.lean` and
+`formal/GaloisForLFunctions/RHTower/MobiusFiniteSchurTransfer.lean`.  Lean proves the exact
+squarefree probability normalization, the signed coisometry and idempotent channel projection,
+the squarefree Euler expansion, and the local and finite-product Schur bounds on `Re z>=0`.
+
+The formal certificate is recorded in
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/mobius-finite-schur-coisometry-core.md`.
+The cofinal squarefree normalization is now formalized independently in
+`formal/GaloisForLFunctions/RHTower/SquarefreeMoebiusNormalization.lean`, including the arithmetic,
+L-series, and Euler-product faces of `sum mu(n)^2 n^(-s)=zeta(s)/zeta(2s)`. The infinite Hardy
+shift operator and meromorphic contour graph are not formalized; these are the layers where the
+paper theorem leaves scalar Euler normalization and where RH-bearing continuation begins.
 
 ## Gates
 
@@ -373,6 +383,8 @@ certify the RH-bearing continuation `(25)`, so no Lean file is added.
 - [x] rational-orbit marking obligation attached
 - [x] universal bounded orbit-covariant continuation excluded
 - [x] inverse-horizontal residue charge forced into the graph norm
+- [x] finite squarefree probability, coisometry, Euler expansion, and Schur contraction formalized
+- [x] cofinal squarefree Möbius--zeta normalization formalized
 - [ ] construct the Xi-pointed charged continuation graph
 - [ ] prove nonexpansive pole-to-divisor renormalization in that graph
 - [ ] four-unit boundary norm

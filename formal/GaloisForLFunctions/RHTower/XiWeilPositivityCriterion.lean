@@ -142,7 +142,7 @@ theorem xiWeilPolarization_offRealSignTest_re_neg
   simp only [neg_re, Complex.natCast_re, neg_lt_zero]
   exact_mod_cast Finset.card_pos.mpr (by
     refine ⟨q, Finset.mem_union_left _ ?_⟩
-    exact Set.Finite.mem_toFinset.mpr rfl)
+    simp only [Set.Finite.mem_toFinset, Set.mem_setOf_eq])
 
 /-- Positivity of the complete square-summable Xi Weil form forces every
 centered divisor point to be real, hence forces RH. -/

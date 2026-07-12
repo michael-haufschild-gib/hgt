@@ -52,8 +52,9 @@ theorem ccmFiniteFeatureGram_diagonalTensor {m k l : ℕ}
       ccmDiagonalLeakageGram (ccmFiniteFeatureGram u) (ccmFiniteFeatureGram v) := by
   ext i j
   simp only [ccmFiniteFeatureGram, ccmDiagonalTensorFeature, Matrix.of_apply,
-    ccmDiagonalLeakageGram, Matrix.hadamard_apply, map_mul]
-  rw [Finset.sum_product]
+    ccmDiagonalLeakageGram, Matrix.hadamard_apply]
+  rw [Fintype.sum_prod_type]
+  simp only [star_mul]
   simp_rw [mul_assoc, mul_left_comm (v i _), mul_comm (v i _)]
   rw [Finset.sum_mul]
   apply Finset.sum_congr rfl

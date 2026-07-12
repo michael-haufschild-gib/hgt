@@ -563,6 +563,7 @@ import GaloisForLFunctions.RHTower.XiHadamardFactorization
 import GaloisForLFunctions.RHTower.XiWeilPolarization
 import GaloisForLFunctions.RHTower.XiWeilResolventSource
 import GaloisForLFunctions.RHTower.XiWeilHilbertCore
+import GaloisForLFunctions.RHTower.XiWeilLineConjHilbert
 import GaloisForLFunctions.RHTower.XiDivisorSupportedMetric
 import GaloisForLFunctions.SchwartzSesquilinear
 import GaloisForLFunctions.SchwartzProduct
@@ -677,6 +678,11 @@ import GaloisForLFunctions.RHTower.XiThetaHeatNodeObstruction
 import GaloisForLFunctions.RHTower.XiThetaSquareRateReader
 import GaloisForLFunctions.RHTower.XiThetaSquareRateBoundary
 import GaloisForLFunctions.RHTower.XiThetaSquareRateLaplace
+import GaloisForLFunctions.RHTower.FiniteSignedChannelCoisometry
+import GaloisForLFunctions.RHTower.MobiusFiniteSchurTransfer
+import GaloisForLFunctions.RHTower.FiniteOfflineCauchyEnergy
+import GaloisForLFunctions.RHTower.FiniteOfflineCauchyL2
+import GaloisForLFunctions.RHTower.OrbitSensitiveContinuationCharge
 import GaloisForLFunctions.RHTower.EulerPoleBoundaryBudget
 import GaloisForLFunctions.RHTower.XiThetaSquareRateReflectedAction
 import GaloisForLFunctions.RHTower.XiThetaPositiveL2Perron
@@ -692,3 +698,4 @@ import GaloisForLFunctions.RHTower.ModulusSlopeMirror
 import GaloisForLFunctions.RHTower.ModulusSlopeBudget
 import GaloisForLFunctions.RHTower.BakerProof.BakerIteration
 import GaloisForLFunctions.RHTower.RayCompleteTranslationFaithful
+import GaloisForLFunctions.RHTower.SquarefreeMoebiusNormalization

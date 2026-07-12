@@ -35,6 +35,12 @@ sum_{0 <= k < n} psi^(r+1)(z+k/n)
 
 The case `r=0` of `(2)` and `(4)` is trigamma multiplication.
 
+Duplication at `s=1` also collapses the orbit to the all-order special-value relation
+
+```text
+psi^(r+1)(1/2) = (2^(r+2)-1) psi^(r+1)(1).                (5)
+```
+
 ## Proof
 
 The existing reciprocal-Gamma multiplication theorem is an equality of globally defined complex
@@ -66,6 +72,7 @@ File: `formal/GaloisForLFunctions/PolygammaMultiplication.lean`.
 - `digamma_multiplication`: scaled digamma law `(1)`;
 - `trigamma_multiplication`: first positive-order case of `(2)`;
 - `polygamma_multiplication`: complete positive-order family `(2)`;
+- `polygamma_one_half_eq_mul_one`: half-argument/unit relation `(5)`;
 - `digamma_multiplication_rescaled`: standard argument form `(3)`;
 - `trigamma_multiplication_rescaled`: standard trigamma form;
 - `polygamma_multiplication_rescaled`: complete standard family `(4)`.
@@ -105,8 +112,9 @@ orbit shape required for direct discharge, so no unrelated consumer was rewritte
 - [x] digamma and trigamma multiplication formalized
 - [x] all positive polygamma orders formalized
 - [x] scaled and standard argument forms formalized
+- [x] all-order half-argument/unit value relation formalized
 - [x] RHTower and parent consumer audit completed
 - [x] targeted source verification passes
 - [x] generated indexes, axiom audit, and formal lint gate pass
 
-All six public theorems use only `propext`, `Classical.choice`, and `Quot.sound`.
+All seven public theorems use only `propext`, `Classical.choice`, and `Quot.sound`.

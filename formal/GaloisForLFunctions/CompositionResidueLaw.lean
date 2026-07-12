@@ -1,4 +1,5 @@
 import GaloisForLFunctions.GammaDifferentialFE
+import GaloisForLFunctions.GammaShiftCasoratian
 
 /-!
 # Residues transported by a noncritical value map
@@ -12,7 +13,7 @@ The second pair of theorems records the companion value law for an analytic posi
 interpolation sampled by the transported digamma residues, is `-x²z'(x)`.
 -/
 
-open Complex Filter Topology
+open Complex Filter Topology Polynomial
 
 namespace GaloisForLFunctions
 
@@ -167,6 +168,90 @@ theorem gamma_inverseValue_logSlope_add_one
   field_simp [hx, hz0]
   ring
 
+/-- The ascending-factorial transport multiplier is nonzero at every point off the Gamma pole
+lattice. -/
+private theorem ascPochhammer_eval_ne_zero_of_off_poles (k : ℕ) {z : ℂ}
+    (hz : ∀ m : ℕ, z ≠ -(m : ℂ)) :
+    (ascPochhammer ℂ k).eval z ≠ 0 := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+      rw [ascPochhammer_succ_eval]
+      exact mul_ne_zero ih (by
+        intro h0
+        apply hz k
+        linear_combination h0)
+
+/-- **Logarithmic derivative of the finite Gamma-shift multiplier.**  Away from its roots,
+
+`(z)_k' = (z)_k · Σ_{j<k} 1/(z+j)`.
+
+This identifies the harmonic increment in the finite inverse-Gamma cocycle with the derivative of
+the ascending-factorial value that transports the Gamma branch. -/
+theorem ascPochhammer_derivative_eval_eq_mul_sum (k : ℕ) {z : ℂ}
+    (hz : ∀ m : ℕ, z ≠ -(m : ℂ)) :
+    (ascPochhammer ℂ k).derivative.eval z =
+      (ascPochhammer ℂ k).eval z *
+        ∑ j ∈ Finset.range k, 1 / (z + (j : ℂ)) := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+      have hzk0 : z + (k : ℂ) ≠ 0 := by
+        intro h0
+        apply hz k
+        linear_combination h0
+      rw [ascPochhammer_succ_right, derivative_mul]
+      simp only [derivative_add, derivative_X, derivative_natCast, add_zero,
+        eval_add, eval_mul, eval_X, eval_natCast, mul_one]
+      rw [Finset.sum_range_succ, ih]
+      field_simp [hzk0]
+
+/-- **Finite inverse-Gamma log-slope cocycle.**  Iterating the one-step value law through the
+ascending-factorial multiplier gives
+
+`-(x/(z)_k) Γ'(z+k) = -x Γ'(z) + Σ_{j<k} 1/(z+j)`
+
+whenever `Γ(z)=-1/x`.  This is the pointwise finite-shift core of the inverse-branch cocycle: it
+does not require the local inverse branches themselves to have been selected. -/
+theorem gamma_inverseValue_logSlope_add_nat (k : ℕ) {z x : ℂ} (hx : x ≠ 0)
+    (hz : ∀ m : ℕ, z ≠ -(m : ℂ))
+    (hvalue : Complex.Gamma z = -1 / x) :
+    -(x / (ascPochhammer ℂ k).eval z) * deriv Complex.Gamma (z + k) =
+      -x * deriv Complex.Gamma z +
+        ∑ j ∈ Finset.range k, 1 / (z + (j : ℂ)) := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+      have hzk0 : z + (k : ℂ) ≠ 0 := by
+        intro h0
+        apply hz k
+        linear_combination h0
+      have hPne : (ascPochhammer ℂ k).eval z ≠ 0 :=
+        ascPochhammer_eval_ne_zero_of_off_poles k hz
+      have hxk : x / (ascPochhammer ℂ k).eval z ≠ 0 := div_ne_zero hx hPne
+      have hzshift : ∀ m : ℕ, z + (k : ℂ) ≠ -(m : ℂ) := by
+        intro m hm
+        apply hz (m + k)
+        push_cast
+        linear_combination hm
+      have hGammaShift := Complex.Gamma_add_nat_eq_ascPochhammer_mul z k (by
+        intro j hj hzero
+        apply hz j
+        linear_combination hzero)
+      have hvalueShift : Complex.Gamma (z + (k : ℂ)) =
+          -1 / (x / (ascPochhammer ℂ k).eval z) := by
+        rw [hGammaShift, hvalue]
+        field_simp [hx, hPne]
+      have hstep := gamma_inverseValue_logSlope_add_one hxk hzshift hvalueShift
+      rw [show z + (↑(k + 1) : ℂ) = (z + (k : ℂ)) + 1 by push_cast; ring,
+        ascPochhammer_succ_eval, Finset.sum_range_succ]
+      have hquot : (x / (ascPochhammer ℂ k).eval z) / (z + (k : ℂ)) =
+          x / ((ascPochhammer ℂ k).eval z * (z + (k : ℂ))) := by
+        field_simp [hPne, hzk0]
+      rw [hquot] at hstep
+      rw [hstep, ih]
+      ring
+
 /-- **Additive reciprocal-residue coordinate.**  If `rho = -1/Gamma'(z)` at the reciprocal value
 `Gamma z = -1/x`, then the scaled reciprocal residue transforms by translation:
 
@@ -188,6 +273,66 @@ theorem gamma_inverseValue_reciprocalResidue_add_one
     _ = -x * deriv Complex.Gamma z + 1 / z := hlog
     _ = x / (-1 / deriv Complex.Gamma z) + 1 / z := by field_simp
     _ = x / rho + 1 / z := by rw [hrho]
+
+/-- **Finite additive reciprocal-residue cocycle.**  The finite log-slope law written in the
+scaled reciprocal-residue coordinate is
+
+`(x/(z)_k)/(-1/Γ'(z+k)) = x/rho + Σ_{j<k} 1/(z+j)`.
+
+At noncritical inverse values this is precisely the finite branch-residue transport law in its
+linearized coordinate. -/
+theorem gamma_inverseValue_reciprocalResidue_add_nat (k : ℕ)
+    {z x rho : ℂ} (hx : x ≠ 0)
+    (hz : ∀ m : ℕ, z ≠ -(m : ℂ))
+    (hvalue : Complex.Gamma z = -1 / x)
+    (hrho : rho = -1 / deriv Complex.Gamma z) :
+    (x / (ascPochhammer ℂ k).eval z) /
+        (-1 / deriv Complex.Gamma (z + k)) =
+      x / rho + ∑ j ∈ Finset.range k, 1 / (z + (j : ℂ)) := by
+  have hlog := gamma_inverseValue_logSlope_add_nat k hx hz hvalue
+  calc
+    (x / (ascPochhammer ℂ k).eval z) /
+        (-1 / deriv Complex.Gamma (z + k)) =
+        -(x / (ascPochhammer ℂ k).eval z) *
+          deriv Complex.Gamma (z + k) := by field_simp
+    _ = -x * deriv Complex.Gamma z +
+        ∑ j ∈ Finset.range k, 1 / (z + (j : ℂ)) := hlog
+    _ = x / (-1 / deriv Complex.Gamma z) +
+        ∑ j ∈ Finset.range k, 1 / (z + (j : ℂ)) := by field_simp
+    _ = x / rho + ∑ j ∈ Finset.range k, 1 / (z + (j : ℂ)) := by rw [hrho]
+
+/-- **Finite inverse-Gamma residue Möbius cocycle.**  If both endpoint inverse values are
+noncritical, the finite shift transports the reciprocal derivative by
+
+`-1/Γ'(z+k) = x rho / (x (z)_k + rho (z)_k')`.
+
+Together with `ascPochhammer_derivative_eval_eq_mul_sum`, this is the finite rising-factorial form
+of the one-step fractional-linear residue law. -/
+theorem gamma_inverseValue_residueTransport_add_nat (k : ℕ)
+    {z x rho : ℂ} (hx : x ≠ 0)
+    (hz : ∀ m : ℕ, z ≠ -(m : ℂ))
+    (hvalue : Complex.Gamma z = -1 / x)
+    (hrho : rho = -1 / deriv Complex.Gamma z)
+    (hd : deriv Complex.Gamma z ≠ 0)
+    (hdk : deriv Complex.Gamma (z + k) ≠ 0) :
+    -1 / deriv Complex.Gamma (z + k) =
+      x * rho /
+        (x * (ascPochhammer ℂ k).eval z +
+          rho * (ascPochhammer ℂ k).derivative.eval z) := by
+  have hlog := gamma_inverseValue_logSlope_add_nat k hx hz hvalue
+  have hder := ascPochhammer_derivative_eval_eq_mul_sum k hz
+  have hPne := ascPochhammer_eval_ne_zero_of_off_poles k hz
+  rw [hrho, hder]
+  have hdeneq : x * (ascPochhammer ℂ k).eval z +
+      (-1 / deriv Complex.Gamma z) *
+        ((ascPochhammer ℂ k).eval z *
+          ∑ j ∈ Finset.range k, 1 / (z + (j : ℂ))) =
+      x * deriv Complex.Gamma (z + k) / deriv Complex.Gamma z := by
+    field_simp [hd]
+    field_simp [hPne] at hlog
+    linear_combination hlog
+  rw [hdeneq]
+  field_simp [hx, hd, hdk]
 
 /-- **One-step inverse-Gamma residue transport.**  At an inverse value
 `Gamma z = -1/x`, write `rho = -1/Gamma'(z)`.  The differentiated Gamma recurrence transports

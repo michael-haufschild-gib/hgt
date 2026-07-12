@@ -125,15 +125,23 @@ criticalMellinDefect_cancellation
 continuousPolarLaplaceChannel_eq
 vonMangoldtPrimeLaplaceChannel_eq_logDeriv
 vonMangoldtPrimeLaplaceChannel_pos
+vonMangoldtPrimeLaplaceGram
+vonMangoldtPrimeLaplaceGram_posSemidef
 cauchy_eq_prime_sub_shiftedPolar_add_criticalMellinDefect
 cauchyKernel_eq_prime_sub_shiftedPolar_add_criticalMellinDefect
+cauchyLaplaceGram
+shiftedPolarLaplaceGram
+criticalMellinDefectLaplaceGram
+cauchyLaplaceGram_eq_prime_sub_shiftedPolar_add_criticalMellinDefect
 ```
 
 Thus Lean checks the exact `(+,-)` two-channel signature, the positive zero-frequency sign for
 positive aperture, the exact real-cutoff Abel formula for every coefficient sequence with zero
 constant term, its specialization to the von Mangoldt coefficients, the complete finite
 polar--prime cancellation `(13)` for `X=exp(2a)`, the Euler-region zeta logarithmic derivative,
-strict positivity of the resolved prime channel, and the infinite real-kernel colligation `(25)`.
+strict positivity of the resolved prime channel, positive semidefiniteness of every finite
+positive-node resolved von Mangoldt matrix through its unsquared prime-power Gram expansion, and
+the scalar and finite-matrix real-kernel colligations `(25)`.
 The formal theorem deliberately does not claim the source-level distributional sign derivation,
 the autocorrelation Stieltjes carrier, or the full complex Stieltjes continuation of `(22)`.
 

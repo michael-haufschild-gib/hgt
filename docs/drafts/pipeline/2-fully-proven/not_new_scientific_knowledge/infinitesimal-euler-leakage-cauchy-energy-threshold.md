@@ -316,6 +316,12 @@ Scientific novelty would begin with the unconditional Euler-source estimate in t
 
 - [x] 0 -> 1: global phase cancellation and the first-order residue coefficient isolated.
 - [x] 1 -> 2: profile limit, positive Cauchy energy, and absolute strip threshold proved on paper.
-- [ ] 2 -> 3: no Lean formalization selected; the source-side energy estimate is open and the
-  present finite exponential Gram calculation is standard parent theory.
+- [x] 2 -> 3 (finite profile): the complex resolvent identity, entrywise positivity, exact
+  diagonal lower bound, explicit exponential-profile integral, exact `L^2` identity, and strict
+  four-unit-per-zero threshold are formalized in
+  `formal/GaloisForLFunctions/RHTower/FiniteOfflineCauchyEnergy.lean` and
+  `formal/GaloisForLFunctions/RHTower/FiniteOfflineCauchyL2.lean`; the certificate is
+  `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/finite-offline-cauchy-energy-threshold-core.md`.
+- [ ] Complete Lean formalization: derive the explicit finite profile from the differentiated Xi
+  leakage quotient and formalize the source-side construction.
 - [ ] 3 -> 4: no unconditional RH proof.

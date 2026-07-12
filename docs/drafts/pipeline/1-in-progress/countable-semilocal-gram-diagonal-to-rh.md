@@ -669,3 +669,77 @@ The complete proof of the sharp-cutoff reduction is in
 `../2-fully-proven/not_new_scientific_knowledge/ccm-sonin-log-position-edge-trace-correction-law.md`.
 Compactness or the ordinary Hilbert--Schmidt norm of the projection correction cannot substitute
 for the required position moment.
+
+## Full-divisor Lean reduction
+
+`[PROVED IN LEAN]` The non-q62 formal corpus already contains more of the global target/source
+incidence than the finite-section formulation exposes.  `XiWeilResolventSource.lean` proves that
+on every separated finite Cauchy packet the multiplicity-exact Xi--Weil polarization is exactly the
+continued prime-plus-archimedean relative-resolvent source form.  `XiWeilHilbertCore.lean` supplies
+the algebraic Cauchy span and its closed Hilbert completion.
+
+The missing converse positivity statement is now formalized in
+`XiWeilPositivityCriterion.lean`.  For every nonreal centered divisor point `alpha`, the finite
+sign test which is `1` at `alpha`, `-1` at `conjugate(alpha)`, and zero elsewhere has exact Weil
+square
+
+```text
+-card { divisor copies over alpha or conjugate(alpha) } < 0.
+```
+
+Consequently Lean proves
+
+```text
+RH
+  iff
+xiWeilPolarization is nonnegative on every square-summable divisor test.
+```
+
+The finite diagonal-Fock layer is also formalized: the Gram matrix of diagonal tensor features is
+the Hadamard product of the factor Gram matrices; defect nonnegativity, diagonal-lift passivity,
+and the four-channel source inequality are exactly equivalent, both sectionwise and cofinally.
+
+`[OPEN RH CORE, FULL-CARRIER FORM]` Construct the distinguished principal-relative Sonin/source
+form as a positive form on the Cauchy core and prove that its exact continued source realization
+extends continuously and cofinally to the complete square-summable Xi-divisor carrier.  This must
+retain the finite conjugate-orbit sign directions above.  Such an extension supplies
+`CCMGlobalWeilPassivity` and therefore RH.  The remaining problem is no longer the separated
+Cauchy-packet target/source identity; it is positive carrier-complete extension through the actual
+semilocal operator.
+
+## Rank-two Cauchy exhaustion
+
+`[PROVED IN LEAN]` Full Cauchy-core density is not required. For every centered point `alpha`,
+analytic isolation of the Xi divisor gives a positive gap from the complete `alpha` multiplicity
+fiber. There are regular points `z_n -> alpha` for which
+
+```text
+(alpha-z_n) * (lambda_q-z_n)^(-1)
+  -> 1_{lambda_q=alpha}
+```
+
+in the multiplicity-exact divisor `ell^2` norm. The proof uses the uniform majorant
+
+```text
+|(alpha-z_n)/(lambda_q-z_n)|^2
+  <= 4 |lambda_q-alpha|^(-2)
+```
+
+and the formal Cauchy square-summability theorem.
+
+Subtracting the corresponding conjugate-fiber limit shows that regular two-pole Cauchy packets
+exhaust every off-line negative sign direction. Boundedness of the line-conjugation Hilbert form
+then gives the exact Lean criterion
+
+```text
+RH iff every regular two-pole Cauchy packet has nonnegative Xi--Weil square.
+```
+
+The formal proof is in `XiWeilCauchyPoleExhaustion.lean`; its pipeline card is
+`../3-formalized/not_new_scientific_knowledge/ccm-normalized-cauchy-pole-fiber-exhaustion.md`.
+
+`[OPEN RH CORE, RANK-TWO SOURCE FORM]` Prove positivity of the distinguished principal-relative
+Sonin/prime--archimedean source form on these moving regular two-pole packets, retaining the
+normalized pole approach to every functional-equation conjugate pair. Neither full test-space
+density nor a general all-degree extension theorem is needed. The surviving source theorem is a
+cofinal rank-two contraction/positivity law.

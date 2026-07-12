@@ -8,10 +8,12 @@ Connes--Consani--Moscovici route:
 * bilateral polarization of an off-line quartet resolvent;
 * exact Sonin resolvent dressing of the boundary commutator.
 
-It also states the cofinal finite-section law.  The remaining RH-bearing input
-is now a single named predicate: source-resolved passivity at every finite
-section for the actual Euler/boundary/Mellin incidence.  Nothing in this file
-asserts that predicate for zeta.
+It also states the cofinal finite-section law and imports the exact global
+Xi--Weil/source identities already present in the non-q62 formal corpus.  The
+global RH-bearing input is named `CCMGlobalWeilPassivity` and proved equivalent
+to RH.  At finite level it is represented by source-resolved passivity at every
+section.  Nothing in this file asserts either passivity condition for the
+distinguished semilocal Sonin source construction.
 -/
 import GaloisForLFunctions.RHTower.CCMFiniteFockPassivity
 import GaloisForLFunctions.RHTower.CCMQuartetResolventPolarization
@@ -22,10 +24,40 @@ import GaloisForLFunctions.RHTower.GammaDampedPrimeLogCauchyDomain
 import GaloisForLFunctions.RHTower.PolarPrimeMellinDefect
 import GaloisForLFunctions.RHTower.SoninTimeBandHilbertSchmidt
 import GaloisForLFunctions.RHTower.XiThetaSquareRateLaplace
+import GaloisForLFunctions.RHTower.XiWeilPositivityCriterion
+import GaloisForLFunctions.RHTower.XiWeilCauchyPoleExhaustion
+import GaloisForLFunctions.RHTower.XiWeilResolventSource
+import GaloisForLFunctions.RHTower.HermitianDeterminantRH
+import GaloisForLFunctions.RHTower.PrimeEnergyZeroTransfer
 
 namespace RHTower
 
 noncomputable section
+
+/-- The exact global RH-bearing passivity condition on the multiplicity-exact
+Xi divisor. -/
+def CCMGlobalWeilPassivity : Prop :=
+  ∀ F : ℂ → ℂ, XiWeilSquareSummable F →
+    0 ≤ (xiWeilPolarization F F).re
+
+/-- The global CCM/Weil passivity condition is exactly RH.  A successful
+semilocal construction must therefore transport its source positivity to this
+complete divisor domain. -/
+theorem ccmGlobalWeilPassivity_iff_riemannHypothesis :
+    CCMGlobalWeilPassivity ↔ RiemannHypothesis := by
+  rw [CCMGlobalWeilPassivity, riemannHypothesis_iff_xiWeilPolarization_nonneg]
+
+/-- Positivity on the moving regular two-pole Cauchy carrier.  Normalized pole
+exhaustion proves that this much smaller condition already contains every
+off-line conjugate-fiber negative direction. -/
+def CCMRegularTwoPolePassivity : Prop :=
+  XiWeilRegularTwoCauchyNonneg
+
+/-- Exact rank-two CCM criterion: regular two-pole Cauchy passivity is RH. -/
+theorem ccmRegularTwoPolePassivity_iff_riemannHypothesis :
+    CCMRegularTwoPolePassivity ↔ RiemannHypothesis := by
+  rw [CCMRegularTwoPolePassivity,
+    ← riemannHypothesis_iff_regularTwoCauchy_nonneg]
 
 /-- Cofinal source-resolved passivity for a family of finite CCM sections. -/
 def CCMCofinalSourceResolvedPassivity

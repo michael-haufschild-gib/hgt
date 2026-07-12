@@ -7,6 +7,7 @@ both equal `∑_{m≠n} (m−n)^{−s}` (the `m=n` term is `0^{−s}=0` in `hzet
 `tailFactored`; the `(1+0/(m−n))^{−s} = 1` factor is trivial). This feeds `survivor_q_eq_zero`'s `V_n`.
 -/
 import GaloisForLFunctions.Hurwitz.N2Tail
+import GaloisForLFunctions.PolygammaHurwitzValue
 
 open Complex
 
@@ -25,5 +26,18 @@ theorem tailFactored_zero_eq (s : ℂ) (hs : s ≠ 0) (n : ℕ) :
       Complex.zero_cpow (neg_ne_zero.mpr hs)]
   · rw [if_neg hm, Nat.cast_zero, add_zero, zero_div, add_zero, Complex.one_cpow, mul_one,
       show ((m : ℂ) + -(n : ℂ)) = (m : ℂ) - (n : ℂ) from by ring]
+
+/-- **The factored tail's exact Riemann-zeta endpoint.**  In the convergence half-plane, the
+regular value at the negative-integer shift is the Riemann zeta value plus its finite principal-
+branch harmonic correction. -/
+theorem tailFactored_zero_eq_riemannZeta_add (s : ℂ) (hs : 1 < s.re) (n : ℕ) :
+    tailFactored s 0 n 0 = riemannZeta s
+      + Complex.exp (-((Real.pi : ℂ) * Complex.I * s))
+        * ∑ l ∈ Finset.range n, ((l : ℂ) + 1) ^ (-s) := by
+  rw [tailFactored_zero_eq s (by
+    intro h
+    rw [h] at hs
+    norm_num at hs) n]
+  exact GaloisForLFunctions.hzeta_neg_nat_eq_riemannZeta_add hs n
 
 end HurwitzN2Tail

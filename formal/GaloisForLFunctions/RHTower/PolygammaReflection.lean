@@ -147,7 +147,11 @@ theorem trigamma_one :
   have h := GaloisForLFunctions.polygamma_one_half_eq_mul_one 0
   simp only [iteratedDeriv_succ, iteratedDeriv_zero] at h
   rw [trigamma_one_half] at h
-  norm_num at h ⊢
-  linear_combination (1 / 3 : ℂ) * h
+  norm_num at h
+  have h' : deriv Complex.digamma 1 = ((Real.pi : ℂ) ^ 2 / 2) / 3 := by
+    apply (eq_div_iff (by norm_num : (3 : ℂ) ≠ 0)).2
+    simpa [mul_comm] using h.symm
+  rw [h']
+  ring
 
 end RHTower

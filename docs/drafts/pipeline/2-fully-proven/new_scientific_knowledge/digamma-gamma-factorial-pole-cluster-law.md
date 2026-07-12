@@ -221,12 +221,13 @@ The formal core is in `formal/GaloisForLFunctions/CompositionResidueLaw.lean`:
 The module builds directly.  Each theorem has only the standard Mathlib axioms
 `propext`, `Classical.choice`, and `Quot.sound`.
 
-The analytic existence and Taylor coefficients of the inverse-Gamma branch remain paper-level
-until the reciprocal-Gamma local inverse is added to the formal library.
+`formal/GaloisForLFunctions/ReciprocalGammaPoleBranch.lean` now formalizes the analytic existence,
+normalization, first derivative, and finite rising-factorial conjugacy of the inverse-Gamma pole
+branches.  The displayed second- and third-order Taylor coefficients remain paper-level.
 
 ## Gates
 
 - [x] 0 → 1: exact values and relation isolated
 - [x] 1 → 2: complete complex-analytic proof, no computational dependency
-- [ ] 2 → 3: formal core complete; inverse-Gamma branch existence and Taylor coefficients remain
+- [ ] 2 → 3: formal core and branch existence complete; higher Taylor coefficients remain
 - [ ] 3 → 4: expert novelty audit and standalone exposition

@@ -556,6 +556,31 @@ The project already contains most of the functional-analytic shell required by a
     closed operator `G_omega` on the chosen carrier and prove
     `Y_omega in D(G_omega^(direct sum))` with the critical graph-norm control.
 
+20. **Ordinary-Hardy continuation is now formally excluded; the charged graph is mandatory.**
+    `OrbitSensitiveContinuationCharge.lean` proves the actual one-pole identities
+
+    ```text
+    integral_R |q_(a,gamma,c)(x+iY)|^2 dx=pi|c|^2/(Y-a),
+    integral_0^infinity |Jq_(a,gamma,c)(t)|^2dt=|c|^2/(2a),
+    ```
+
+    their exact ratio `(Y-a)/(2 pi a)`, and a quantified theorem that no finite fixed-line energy
+    constant controls every `a downarrow 0`. Any bounded residue graph with bound `M` is forced to
+    put at least `(|c|^2/(2a))/M^2` into its domain budget. The same module identifies the two
+    right-half modes with actual zeros of the formalized centered FE--Schwarz quartet gauge and
+    proves their exact residue energy
+
+    ```text
+    4m^2/a+4m^2 a/(a^2+gamma^2) >= 4m^2/a.              (12o)
+    ```
+
+    Therefore `(12b)` cannot mean bounded continuation from an ordinary Euler-line Hardy norm.
+    It must mean nonexpansive renormalization inside a graph norm which has already paid the
+    inverse-horizontal charge. Merely asserting the existence of some contraction taking
+    `ell_pole` to `ell_E` is equivalent to the desired norm inequality and has no independent
+    content. The live theorem must construct the graph and the renormalization from the exact
+    coupled source before reading `ell_E` as a divisor expansion.
+
 The audit therefore isolates one zeta-specific construction theorem, with two inseparable clauses:
 
 ```text

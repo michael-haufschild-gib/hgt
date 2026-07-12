@@ -5,6 +5,7 @@ import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
 import Mathlib.NumberTheory.LSeries.Dirichlet
 import Mathlib.NumberTheory.LSeries.Positivity
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
+import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.Tactic
 
 /-!
@@ -22,7 +23,7 @@ summation.
 -/
 
 open scoped BigOperators ComplexConjugate ComplexOrder
-open Finset MeasureTheory ArithmeticFunction Complex Set Filter
+open Finset MeasureTheory ArithmeticFunction Complex Matrix Set Filter
 
 noncomputable section
 
@@ -431,6 +432,185 @@ theorem vonMangoldtPrimeLaplaceChannel_pos {s : ℝ} (hs : 0 < s) :
       (ArithmeticFunction.vonMangoldt n : ℂ)) (by norm_num)
       complex_vonMangoldt_two_pos (s + 1))
 
+/-! ## The resolved Euler channel is an actual finite Gram kernel -/
+
+private abbrev vonMangoldtComplexCoeff (n : ℕ) : ℂ :=
+  (ArithmeticFunction.vonMangoldt n : ℂ)
+
+private def vonMangoldtLaplaceWeight (n : ℕ) : ℂ :=
+  LSeries.term vonMangoldtComplexCoeff 1 n
+
+private def primePowerLaplaceFeature (x : ℝ) (n : ℕ) : ℂ :=
+  ((n : ℂ) ^ (x : ℂ))⁻¹
+
+private theorem vonMangoldtLaplaceWeight_nonneg (n : ℕ) :
+    0 ≤ vonMangoldtLaplaceWeight n :=
+  LSeries.term_nonneg (complex_vonMangoldt_nonneg n) 1
+
+private theorem primePowerLaplaceFeature_pos {x : ℝ} {n : ℕ} (hn : n ≠ 0) :
+    0 < primePowerLaplaceFeature x n := by
+  exact Complex.inv_natCast_cpow_ofReal_pos hn x
+
+private theorem primePowerLaplaceFeature_star {x : ℝ} (hx : 0 < x) (n : ℕ) :
+    (starRingEnd ℂ) (primePowerLaplaceFeature x n) =
+      primePowerLaplaceFeature x n := by
+  by_cases hn : n = 0
+  · subst n
+    simp [primePowerLaplaceFeature,
+      Complex.zero_cpow (Complex.ofReal_ne_zero.mpr hx.ne')]
+  · have h := (primePowerLaplaceFeature_pos (x := x) hn).le
+    rcases Complex.nonneg_iff.mp h with ⟨_, him⟩
+    exact RCLike.conj_eq_iff_im.mpr him.symm
+
+private theorem vonMangoldtTerm_eq_weight_mul_features
+    {x y : ℝ} (hx : 0 < x) (hy : 0 < y) (n : ℕ) :
+    LSeries.term vonMangoldtComplexCoeff (((x + y + 1 : ℝ) : ℂ)) n =
+      vonMangoldtLaplaceWeight n * primePowerLaplaceFeature x n *
+        primePowerLaplaceFeature y n := by
+  by_cases hn : n = 0
+  · subst n
+    simp [vonMangoldtLaplaceWeight, primePowerLaplaceFeature, LSeries.term,
+      Complex.zero_cpow (Complex.ofReal_ne_zero.mpr hx.ne'),
+      Complex.zero_cpow (Complex.ofReal_ne_zero.mpr hy.ne')]
+  · rw [LSeries.term_of_ne_zero hn]
+    simp only [vonMangoldtLaplaceWeight, primePowerLaplaceFeature]
+    rw [LSeries.term_of_ne_zero hn]
+    simp only [Complex.ofReal_add, Complex.ofReal_one]
+    rw [show (x : ℂ) + (y : ℂ) + 1 = (1 : ℂ) + (x : ℂ) + (y : ℂ) by ring]
+    rw [Complex.cpow_add ((1 : ℂ) + (x : ℂ)) (y : ℂ) (Nat.cast_ne_zero.mpr hn),
+      Complex.cpow_add (1 : ℂ) (x : ℂ) (Nat.cast_ne_zero.mpr hn)]
+    simp only [div_eq_mul_inv]
+    rw [_root_.mul_inv_rev, _root_.mul_inv_rev]
+    ac_rfl
+
+private theorem summable_vonMangoldtWeight_mul_features
+    {x y : ℝ} (hx : 0 < x) (hy : 0 < y) :
+    Summable (fun n => vonMangoldtLaplaceWeight n * primePowerLaplaceFeature x n *
+      primePowerLaplaceFeature y n) := by
+  have hs : 1 < ((((x + y + 1 : ℝ) : ℂ))).re := by
+    norm_num
+    linarith
+  exact (ArithmeticFunction.LSeriesSummable_vonMangoldt hs).congr
+    (fun n => vonMangoldtTerm_eq_weight_mul_features hx hy n)
+
+/-- The finite resolved von Mangoldt channel on positive Laplace nodes. -/
+def vonMangoldtPrimeLaplaceGram {N : ℕ} (x : Fin N → ℝ) :
+    Matrix (Fin N) (Fin N) ℂ :=
+  fun i j => vonMangoldtPrimeLaplaceChannel (x i + x j)
+
+private def resolvedVonMangoldtPrimeLaplaceGram {N : ℕ} (x : Fin N → ℝ) :
+    Matrix (Fin N) (Fin N) ℂ :=
+  fun i j => ∑' n, vonMangoldtLaplaceWeight n * primePowerLaplaceFeature (x i) n *
+    primePowerLaplaceFeature (x j) n
+
+private theorem resolvedVonMangoldtPrimeLaplaceGram_eq
+    {N : ℕ} (x : Fin N → ℝ) (hx : ∀ i, 0 < x i) :
+    resolvedVonMangoldtPrimeLaplaceGram x = vonMangoldtPrimeLaplaceGram x := by
+  ext i j
+  rw [resolvedVonMangoldtPrimeLaplaceGram, vonMangoldtPrimeLaplaceGram,
+    vonMangoldtPrimeLaplaceChannel, LSeries]
+  apply tsum_congr
+  intro n
+  exact (vonMangoldtTerm_eq_weight_mul_features (hx i) (hx j) n).symm
+
+/-- **Resolved Euler Gram positivity.** Every finite positive-node packet of the actual von
+Mangoldt channel is positive semidefinite.  The proof retains the unsquared arithmetic weight:
+the quadratic form is the convergent prime-power sum
+`sum_n LSeries.term Lambda 1 n * |sum_i c_i n^(-x_i)|^2`. -/
+theorem vonMangoldtPrimeLaplaceGram_posSemidef
+    {N : ℕ} (x : Fin N → ℝ) (hx : ∀ i, 0 < x i) :
+    (vonMangoldtPrimeLaplaceGram x).PosSemidef := by
+  rw [← resolvedVonMangoldtPrimeLaplaceGram_eq x hx]
+  have hherm : (resolvedVonMangoldtPrimeLaplaceGram x).IsHermitian := by
+    ext i j
+    simp only [Matrix.conjTranspose_apply]
+    rw [resolvedVonMangoldtPrimeLaplaceGram_eq x hx]
+    change star (vonMangoldtPrimeLaplaceChannel (x j + x i)) =
+      vonMangoldtPrimeLaplaceChannel (x i + x j)
+    rw [add_comm (x j) (x i)]
+    have hp := vonMangoldtPrimeLaplaceChannel_pos
+      (s := x i + x j) (by linarith [hx i, hx j])
+    rcases Complex.pos_iff.mp hp with ⟨_, him⟩
+    rw [RCLike.star_def]
+    exact Complex.conj_eq_iff_im.mpr him.symm
+  refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg hherm (fun c => ?_)
+  let P : ℕ → ℂ := fun n => ∑ k, c k * primePowerLaplaceFeature (x k) n
+  have hpairs : ∀ i j : Fin N,
+      Summable (fun n => star (c i) * (c j *
+        (vonMangoldtLaplaceWeight n * primePowerLaplaceFeature (x i) n *
+          primePowerLaplaceFeature (x j) n))) := by
+    intro i j
+    exact (((summable_vonMangoldtWeight_mul_features (hx i) (hx j)).mul_left (c j)).mul_left
+      (star (c i))).congr (fun n => by ring)
+  have key : star c ⬝ᵥ (resolvedVonMangoldtPrimeLaplaceGram x).mulVec c =
+      ∑' n, star (P n) * (vonMangoldtLaplaceWeight n * P n) := by
+    simp only [dotProduct, Pi.star_apply]
+    have hswap : ∀ i,
+        star (c i) * (resolvedVonMangoldtPrimeLaplaceGram x).mulVec c i =
+          ∑' n, ∑ j, star (c i) * (c j *
+            (vonMangoldtLaplaceWeight n * primePowerLaplaceFeature (x i) n *
+              primePowerLaplaceFeature (x j) n)) := by
+      intro i
+      simp only [Matrix.mulVec, dotProduct]
+      rw [Finset.mul_sum]
+      rw [Summable.tsum_finsetSum]
+      · apply Finset.sum_congr rfl
+        intro j hj
+        rw [resolvedVonMangoldtPrimeLaplaceGram]
+        rw [← (summable_vonMangoldtWeight_mul_features (hx i) (hx j)).tsum_mul_right (c j)]
+        rw [← ((summable_vonMangoldtWeight_mul_features (hx i) (hx j)).mul_right
+          (c j)).tsum_mul_left (star (c i))]
+        apply tsum_congr
+        intro n
+        ring
+      · intro j hj
+        exact hpairs i j
+    calc
+      (∑ i, star (c i) * (resolvedVonMangoldtPrimeLaplaceGram x).mulVec c i) =
+          ∑ i, ∑' n, ∑ j, star (c i) * (c j *
+            (vonMangoldtLaplaceWeight n * primePowerLaplaceFeature (x i) n *
+              primePowerLaplaceFeature (x j) n)) :=
+        Finset.sum_congr rfl (fun i _ => hswap i)
+      _ = ∑' n, star (P n) * (vonMangoldtLaplaceWeight n * P n) := by
+        rw [← Summable.tsum_finsetSum]
+        · apply tsum_congr
+          intro n
+          change (∑ i, ∑ j, star (c i) * (c j *
+              (vonMangoldtLaplaceWeight n * primePowerLaplaceFeature (x i) n *
+                primePowerLaplaceFeature (x j) n))) =
+            (starRingEnd ℂ) (∑ k, c k * primePowerLaplaceFeature (x k) n) *
+              (vonMangoldtLaplaceWeight n *
+                ∑ k, c k * primePowerLaplaceFeature (x k) n)
+          rw [map_sum]
+          have hstar (k : Fin N) :
+              (starRingEnd ℂ) (c k * primePowerLaplaceFeature (x k) n) =
+                (starRingEnd ℂ) (c k) * primePowerLaplaceFeature (x k) n := by
+            rw [map_mul, primePowerLaplaceFeature_star (hx k)]
+          simp_rw [hstar]
+          rw [Finset.sum_mul]
+          apply Finset.sum_congr rfl
+          intro i hi
+          rw [Finset.mul_sum, Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro j hj
+          have hcstar : (starRingEnd ℂ) (c i) = star (c i) := rfl
+          rw [hcstar]
+          ring
+        · intro i hi
+          exact summable_sum (fun j hj => hpairs i j)
+  rw [key]
+  apply tsum_nonneg
+  intro n
+  have hw := vonMangoldtLaplaceWeight_nonneg n
+  have hsq : 0 ≤ star (P n) * P n := by
+    change 0 ≤ (starRingEnd ℂ) (P n) * P n
+    rw [← Complex.normSq_eq_conj_mul_self]
+    exact Complex.nonneg_iff.mpr ⟨Complex.normSq_nonneg _, rfl⟩
+  have hprod := mul_nonneg hw hsq
+  rw [show star (P n) * (vonMangoldtLaplaceWeight n * P n) =
+    vonMangoldtLaplaceWeight n * (star (P n) * P n) by ring]
+  exact hprod
+
 /-- **Polar--prime critical Mellin colligation.**  On the real convergence ray, the universal
 Cauchy coordinate is the resolved von Mangoldt channel minus the shifted polar channel plus the
 signed critical Mellin defect.  No Xi divisor or zero-location hypothesis enters this identity. -/
@@ -452,5 +632,28 @@ theorem cauchyKernel_eq_prime_sub_shiftedPolar_add_criticalMellinDefect
   simpa only [Complex.ofReal_add, Complex.ofReal_one] using
     (cauchy_eq_prime_sub_shiftedPolar_add_criticalMellinDefect
       (s := x + y) (by linarith))
+
+/-- The universal Cauchy/Laplace transport Gram on a finite positive node packet. -/
+def cauchyLaplaceGram {N : ℕ} (x : Fin N → ℝ) : Matrix (Fin N) (Fin N) ℂ :=
+  fun i j => (1 / (x i + x j) : ℂ)
+
+/-- The shifted elementary polar channel in the same finite packet. -/
+def shiftedPolarLaplaceGram {N : ℕ} (x : Fin N → ℝ) : Matrix (Fin N) (Fin N) ℂ :=
+  fun i j => (1 / (x i + x j + 1) : ℂ)
+
+/-- The signed critical Mellin-defect channel in the same finite packet. -/
+def criticalMellinDefectLaplaceGram {N : ℕ} (x : Fin N → ℝ) :
+    Matrix (Fin N) (Fin N) ℂ :=
+  fun i j => criticalMellinDefectLaplaceChannel (x i + x j)
+
+/-- **Actual finite source incidence.** The Cauchy transport matrix is exactly the resolved
+von Mangoldt Gram minus the shifted polar Gram plus the signed critical Mellin-defect matrix.
+This discharges the abstract channel-incidence hypothesis for every positive real node packet. -/
+theorem cauchyLaplaceGram_eq_prime_sub_shiftedPolar_add_criticalMellinDefect
+    {N : ℕ} (x : Fin N → ℝ) (hx : ∀ i, 0 < x i) :
+    cauchyLaplaceGram x = vonMangoldtPrimeLaplaceGram x - shiftedPolarLaplaceGram x +
+      criticalMellinDefectLaplaceGram x := by
+  ext i j
+  exact cauchyKernel_eq_prime_sub_shiftedPolar_add_criticalMellinDefect (hx i) (hx j)
 
 end RHTower

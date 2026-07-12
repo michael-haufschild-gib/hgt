@@ -6,7 +6,8 @@
 - **Scientific status:** `[SEARCH] [FORMALIZATION] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** Every reflected polygamma pair away from the integers is exactly the corresponding
   derivative of the cotangent carrier.  In particular,
-  `psi'(z)+psi'(1-z)=pi^2/sin(pi z)^2` and `psi'(1/2)=pi^2/2`.
+  `psi'(z)+psi'(1-z)=pi^2/sin(pi z)^2`, `psi'(1/2)=pi^2/2`, and
+  `psi'(1)=pi^2/6`.
 
 ## Exact relations
 
@@ -29,6 +30,12 @@ The fixed point of reflection then gives the exact value
 psi'(1/2)=pi^2/2.                                          (3)
 ```
 
+Combining the centre value with duplication gives
+
+```text
+psi'(1)=pi^2/6.                                            (4)
+```
+
 ## Proof
 
 The banked digamma reflection identity holds on the nonintegral locus.  Continuity of
@@ -36,7 +43,8 @@ The banked digamma reflection identity holds on the nonintegral locus.  Continui
 neighbourhood may therefore be differentiated `n` times.  The affine involution contributes the
 factor `(-1)^n` through `iteratedDeriv_comp_const_sub`; constant multiplication extracts `-pi`.
 For `n=1`, the quotient rule and `sin^2+cos^2=1` identify the derivative of `cot(pi z)` with
-`-pi/sin(pi z)^2`.  Substitution of `z=1/2` proves `(3)`.
+`-pi/sin(pi z)^2`.  Substitution of `z=1/2` proves `(3)`.  The duplication relation
+`psi'(1/2)=3 psi'(1)` then proves `(4)`.
 
 ## Parent classification
 
@@ -54,7 +62,8 @@ File: `formal/GaloisForLFunctions/RHTower/PolygammaReflection.lean`.
 
 - `polygamma_reflection`: all-order reflected value law `(1)`;
 - `trigamma_reflection`: exact cosecant-square law `(2)`;
-- `trigamma_one_half`: exact central value `(3)`.
+- `trigamma_one_half`: exact central value `(3)`;
+- `trigamma_one`: exact unit value `(4)`.
 
 The module is imported by `GaloisForLFunctions.RHTower`.
 
@@ -86,11 +95,13 @@ no hypothesis-discharge or gap-closure claim is made for this relation.
 - [x] local and mathlib declaration search confirms the all-order relation was absent
 - [x] all-order reflected value law formalized
 - [x] trigamma and central-value specializations formalized
+- [x] exact unit trigamma value formalized through duplication
 - [x] RHTower and parent consumer audit completed
 - [x] targeted module build passes
 - [x] generated indexes, axiom audit, and formal lint gate pass
 
 The umbrella build reaches and accepts `PolygammaReflection`; its independent existing failure is
 `SummableEulerCalkinInjectivity.lean`, whose rewrite, type, and heartbeat errors do not depend on
-this module.  The three public reflection theorems use only `propext`, `Classical.choice`, and
+this module.  The four public reflection and special-value theorems use only `propext`,
+`Classical.choice`, and
 `Quot.sound`.

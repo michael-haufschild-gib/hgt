@@ -42,6 +42,25 @@ Consequently, for `x,y>0`,
  =E(x+y)-1/(x+y+1)+M(x+y).
 ```
 
+For every finite positive-node packet `x_i`, Lean now also proves that the resolved Euler matrix
+
+```text
+E_ij=E(x_i+x_j)
+```
+
+is positive semidefinite.  Its quadratic form is the convergent prime-power Gram sum
+
+```text
+sum_n [Lambda(n)/n] |sum_i c_i n^(-x_i)|^2 >= 0.
+```
+
+Thus the arithmetic coefficient remains unsquared, and all mixed node terms are retained.  The
+scalar colligation simultaneously lifts entrywise to the exact finite matrix identity
+
+```text
+CauchyGram = EulerGram - ShiftedPolarGram + CriticalMellinDefectGram.
+```
+
 This is the real-kernel polar--prime Mellin colligation required by the diagonal Fock source
 coordinate.  The signed channel is defined before the identity as the Laplace transform of the
 continuous polar density minus the discrete von Mangoldt atoms.  No Xi divisor, zero location,
@@ -56,8 +75,14 @@ criticalMellinDefectLaplaceChannel
 continuousPolarLaplaceChannel_eq
 vonMangoldtPrimeLaplaceChannel_eq_logDeriv
 vonMangoldtPrimeLaplaceChannel_pos
+vonMangoldtPrimeLaplaceGram
+vonMangoldtPrimeLaplaceGram_posSemidef
 cauchy_eq_prime_sub_shiftedPolar_add_criticalMellinDefect
 cauchyKernel_eq_prime_sub_shiftedPolar_add_criticalMellinDefect
+cauchyLaplaceGram
+shiftedPolarLaplaceGram
+criticalMellinDefectLaplaceGram
+cauchyLaplaceGram_eq_prime_sub_shiftedPolar_add_criticalMellinDefect
 ```
 
 ## Route consequence
@@ -68,10 +93,14 @@ ray:
 ```text
 continuous polar input + resolved von Mangoldt output + signed critical Mellin defect
   -> exact universal Cauchy coordinate.                              [Lean]
+finite positive node packet
+  -> actual von Mangoldt prime-power Gram is positive semidefinite   [Lean]
+  -> exact finite Cauchy/Euler/polar/Mellin matrix incidence         [Lean]
 ```
 
-What remains RH-bearing is not this identity.  It is the source-selected Gauss/Sonin graph
-realization and its cofinal passivity or four-unit relative-trace bound:
+The finite Euler channel is therefore no longer part of the open sign problem.  What remains
+RH-bearing is the signed critical Mellin-defect coupling inside the source-selected Gauss/Sonin
+graph and its cofinal passivity or four-unit relative-trace bound:
 
 ```text
 formal real-kernel colligation
@@ -85,7 +114,7 @@ formal real-kernel colligation
 
 - `lake env lean GaloisForLFunctions/RHTower/PolarPrimeMellinDefect.lean` passed.
 - `lake build GaloisForLFunctions.RHTower.PolarPrimeMellinDefect` passed.
-- Scratch `#print axioms` for the five new theorems reports only
+- Scratch `#print axioms` for the seven new theorems reports only
   `[propext, Classical.choice, Quot.sound]`.
 - No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration is introduced.
 
@@ -100,8 +129,10 @@ knowledge and not an RH proof.
 - [x] continuous polar channel defined and evaluated
 - [x] resolved von Mangoldt channel identified with the zeta logarithmic derivative
 - [x] strict real-ray prime-channel positivity proved
+- [x] all finite positive-node resolved Euler matrices proved positive semidefinite
 - [x] signed critical Mellin-defect channel defined independently of the target identity
 - [x] scalar and two-variable real-kernel colligations formalized
+- [x] exact finite Cauchy/Euler/polar/Mellin matrix incidence formalized
 - [ ] construct the corresponding source-selected Gauss/Sonin graph
 - [ ] prove cofinal passivity or the four-unit boundary relative-trace estimate
 - [ ] RH

@@ -263,15 +263,19 @@ This does not rule out a pointed Xi-specific theorem, the full Weil criterion, o
 self-adjoint realization. It rules out the universal bounded-continuation implementation and
 identifies the precise state a successful replacement must carry.
 
-## 6. Scientific classification and Lean decision
+## 6. Scientific classification and Lean formalization
 
 The proof is an elementary specialization of Cauchy-kernel and exponential-mode norm formulas.
 It is a route bridge, not new scientific knowledge. Its value is to convert a failed bounded-map
 proposal into the positive inverse-horizontal carrier law `(21)`.
 
-The formal tree has the rational quartet and its exact source marking, but not the analytic Hardy
-line norm or residue graph. Formalizing only the algebraic quartet would not certify `(18)` or
-`(21)`, so no Lean file is added.
+`OrbitSensitiveContinuationCharge.lean` now formalizes the actual one-pole Hardy-line integral,
+the actual crossed-residue integral, their exact ratio `(6)`, the quantified failure of every
+uniform finite energy bound, and the positive domain-budget law `(21)`. It also identifies the two
+right-half Cauchy modes with actual zeros of `centeredQuartetGauge` and proves their exact
+`L^2` residue energy `(15)` and inverse-horizontal lower charge. The remaining paper-only analytic
+piece is the four-pole fixed-line triangle estimate `(16)`--`(18)` for the complete symmetric
+logarithmic correction. No pointed Xi graph or four-unit source-specific upper bound is asserted.
 
 ## Gates
 
@@ -280,6 +284,8 @@ line norm or residue graph. Formalizing only the algebraic quartet would not cer
 - [x] full FE--Schwarz quartet divergence
 - [x] positive inverse-horizontal graph-charge law
 - [x] consequence for the CCM continuation seam
+- [x] exact one-pole obstruction and right-half quartet residue charge formalized in Lean
+- [ ] full symmetric four-pole fixed-line estimate formalized in Lean
 - [ ] construct the pointed Xi residue graph
 - [ ] prove source-specific four-unit nonexpansive renormalization
 - [ ] RH
