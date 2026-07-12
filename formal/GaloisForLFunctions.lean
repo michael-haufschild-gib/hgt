@@ -279,3 +279,4 @@ import GaloisForLFunctions.FaithfulFacetVertexDimension
 import GaloisForLFunctions.FaithfulFacetComplementSpan
 import GaloisForLFunctions.RHTower.SquareSupportPrimeMass
 import GaloisForLFunctions.WedgeFacetLowerBound
+import GaloisForLFunctions.RHTower.PiTranscendenceSetup

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.SqrtCarrierCertificate
 import Mathlib.NumberTheory.SumPrimeReciprocals
 import Mathlib.NumberTheory.EulerProduct.Basic
+import Mathlib.NumberTheory.Primorial
 
 /-!
 # The line budget carries the Mertens mass
@@ -451,5 +452,162 @@ theorem lineBudget_bracket {σ₂ : ℝ} (hσ₂ : 1 / 2 < σ₂) {N : ℕ} (hN 
       ∧ lineBudget σ₂ N ≤ 1 + Real.log (Nat.sqrt N) := by
   obtain ⟨h1, h2⟩ := lineBudget_measures_primeMass hσ₂ hN
   exact ⟨by linarith, lineBudget_le_one_add_log hσ₂.le hN⟩
+
+/-! ## The prime-mass upper law -/
+
+/-- Chebyshev's bound in logarithmic form: `∑_{p ≤ n} log p ≤ n·log 4`, from the
+primorial bound `primorial n ≤ 4^n`. -/
+theorem sum_primesBelow_log_le (n : ℕ) :
+    ∑ p ∈ Nat.primesBelow (n + 1), Real.log p ≤ n * Real.log 4 := by
+  have hset : Nat.primesBelow (n + 1) = {p ∈ Finset.range (n + 1) | p.Prime} := by
+    ext p
+    simp [Nat.mem_primesBelow]
+  have hprodeq : ∏ p ∈ Nat.primesBelow (n + 1), (p : ℝ) = ((primorial n : ℕ) : ℝ) := by
+    rw [hset, primorial]
+    push_cast
+    rfl
+  have hlogprod : ∑ p ∈ Nat.primesBelow (n + 1), Real.log p
+      = Real.log (∏ p ∈ Nat.primesBelow (n + 1), (p : ℝ)) :=
+    (Real.log_prod (fun p hp => by
+      exact_mod_cast (Nat.mem_primesBelow.mp hp).2.pos.ne')).symm
+  rw [hlogprod, hprodeq]
+  calc Real.log ((primorial n : ℕ) : ℝ)
+      ≤ Real.log ((4 : ℝ) ^ n) :=
+        Real.log_le_log (by exact_mod_cast primorial_pos n)
+          (by exact_mod_cast primorial_le_four_pow n)
+    _ = n * Real.log 4 := by rw [Real.log_pow]
+
+private theorem one_le_log_two_of_prime {p : ℕ} (hp : p.Prime) : 1 ≤ Nat.log 2 p := by
+  rcases Nat.eq_zero_or_pos (Nat.log 2 p) with h0 | h1
+  · rcases Nat.log_eq_zero_iff.mp h0 with h | h
+    · have := hp.two_le
+      omega
+    · omega
+  · exact h1
+
+/-- **The prime-mass upper law**: `∑_{p ≤ x} 1/p ≤ 4·(1 + log(Nat.log 2 x))`.  Dyadic
+blocks: the `j`-th block holds at most `2^(j+2)/j` primes by Chebyshev's primorial bound,
+each of reciprocal at most `2^(-j)`, so each block carries mass at most `4/j`; the block
+count is logarithmic, and the harmonic bound closes. -/
+theorem primeMass_upper {x : ℕ} (hx : 2 ≤ x) :
+    ∑ p ∈ Nat.primesBelow (x + 1), (p : ℝ)⁻¹ ≤ 4 * (1 + Real.log (Nat.log 2 x)) := by
+  have hmaps : ∀ p ∈ Nat.primesBelow (x + 1),
+      Nat.log 2 p ∈ Finset.Icc 1 (Nat.log 2 x) := by
+    intro p hp
+    obtain ⟨hplt, hpp⟩ := Nat.mem_primesBelow.mp hp
+    exact Finset.mem_Icc.mpr ⟨one_le_log_two_of_prime hpp, Nat.log_mono_right (by omega)⟩
+  rw [← Finset.sum_fiberwise_of_maps_to hmaps]
+  have hblock : ∀ j ∈ Finset.Icc 1 (Nat.log 2 x),
+      ∑ p ∈ (Nat.primesBelow (x + 1)).filter (fun p => Nat.log 2 p = j), (p : ℝ)⁻¹
+        ≤ 4 / j := by
+    intro j hj
+    obtain ⟨hj1, hjx⟩ := Finset.mem_Icc.mp hj
+    set B := (Nat.primesBelow (x + 1)).filter (fun p => Nat.log 2 p = j) with hB
+    have hmem : ∀ p ∈ B, 2 ^ j ≤ p ∧ p < 2 ^ (j + 1) ∧ p.Prime := by
+      intro p hp
+      obtain ⟨hpmem, hlog⟩ := Finset.mem_filter.mp hp
+      obtain ⟨-, hpp⟩ := Nat.mem_primesBelow.mp hpmem
+      refine ⟨?_, ?_, hpp⟩
+      · rw [← hlog]
+        exact Nat.pow_log_le_self 2 hpp.pos.ne'
+      · rw [← hlog]
+        exact Nat.lt_pow_succ_log_self one_lt_two p
+    have hlog2pos : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
+    have hjpos : (0 : ℝ) < (j : ℝ) := by exact_mod_cast hj1
+    have h1 : (B.card : ℝ) * ((j : ℝ) * Real.log 2) ≤ ∑ p ∈ B, Real.log p := by
+      rw [show (B.card : ℝ) * ((j : ℝ) * Real.log 2)
+          = B.card • ((j : ℝ) * Real.log 2) from by rw [nsmul_eq_mul]]
+      refine Finset.card_nsmul_le_sum B _ _ fun p hp => ?_
+      obtain ⟨hlow, -, -⟩ := hmem p hp
+      calc (j : ℝ) * Real.log 2 = Real.log ((2 : ℝ) ^ j) := by rw [Real.log_pow]
+        _ ≤ Real.log p := Real.log_le_log (by positivity) (by exact_mod_cast hlow)
+    have h2 : ∑ p ∈ B, Real.log p ≤ (2 : ℝ) ^ (j + 1) * Real.log 4 := by
+      have hsub : B ⊆ Nat.primesBelow (2 ^ (j + 1) - 1 + 1) := by
+        intro p hp
+        obtain ⟨-, hup, hpp⟩ := hmem p hp
+        exact Nat.mem_primesBelow.mpr ⟨by omega, hpp⟩
+      refine le_trans (Finset.sum_le_sum_of_subset_of_nonneg hsub fun p hp _ =>
+        Real.log_nonneg (by exact_mod_cast (Nat.mem_primesBelow.mp hp).2.one_lt.le)) ?_
+      refine le_trans (sum_primesBelow_log_le (2 ^ (j + 1) - 1)) ?_
+      have hcast : ((2 ^ (j + 1) - 1 : ℕ) : ℝ) ≤ (2 : ℝ) ^ (j + 1) := by
+        rw [Nat.cast_sub (Nat.one_le_two_pow)]
+        push_cast
+        linarith
+      exact mul_le_mul_of_nonneg_right hcast (Real.log_nonneg (by norm_num))
+    have hlog4 : Real.log 4 = 2 * Real.log 2 := by
+      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+      push_cast
+      ring
+    have hcard' : (B.card : ℝ) ≤ (2 : ℝ) ^ (j + 2) / j := by
+      rw [le_div_iff₀ hjpos]
+      have hstep : (B.card : ℝ) * (j : ℝ) * Real.log 2 ≤ (2 : ℝ) ^ (j + 2) * Real.log 2 := by
+        have h2' : (2 : ℝ) ^ (j + 1) * Real.log 4 = (2 : ℝ) ^ (j + 2) * Real.log 2 := by
+          rw [hlog4, show j + 2 = (j + 1) + 1 from rfl, pow_succ]
+          ring
+        calc (B.card : ℝ) * (j : ℝ) * Real.log 2
+            = (B.card : ℝ) * ((j : ℝ) * Real.log 2) := by ring
+          _ ≤ ∑ p ∈ B, Real.log p := h1
+          _ ≤ (2 : ℝ) ^ (j + 1) * Real.log 4 := h2
+          _ = (2 : ℝ) ^ (j + 2) * Real.log 2 := h2'
+      exact le_of_mul_le_mul_right hstep hlog2pos
+    have hmass : ∑ p ∈ B, (p : ℝ)⁻¹ ≤ (B.card : ℝ) * ((2 : ℝ) ^ j)⁻¹ := by
+      rw [show (B.card : ℝ) * ((2 : ℝ) ^ j)⁻¹ = B.card • (((2 : ℝ) ^ j)⁻¹) from by
+        rw [nsmul_eq_mul]]
+      refine Finset.sum_le_card_nsmul B _ _ fun p hp => ?_
+      obtain ⟨hlow, -, -⟩ := hmem p hp
+      exact inv_anti₀ (by positivity) (by exact_mod_cast hlow)
+    calc ∑ p ∈ B, (p : ℝ)⁻¹
+        ≤ (B.card : ℝ) * ((2 : ℝ) ^ j)⁻¹ := hmass
+      _ ≤ ((2 : ℝ) ^ (j + 2) / j) * ((2 : ℝ) ^ j)⁻¹ :=
+          mul_le_mul_of_nonneg_right hcard' (by positivity)
+      _ = 4 / j := by
+          rw [show j + 2 = j + 2 from rfl, pow_add]
+          field_simp
+          ring
+  have hL1 : 1 ≤ Nat.log 2 x := by
+    have h2 : Nat.log 2 2 ≤ Nat.log 2 x := Nat.log_mono_right hx
+    have : Nat.log 2 2 = 1 := by
+      rw [Nat.log_eq_one_iff']
+      omega
+    omega
+  calc ∑ j ∈ Finset.Icc 1 (Nat.log 2 x),
+        ∑ p ∈ (Nat.primesBelow (x + 1)).filter (fun p => Nat.log 2 p = j), (p : ℝ)⁻¹
+      ≤ ∑ j ∈ Finset.Icc 1 (Nat.log 2 x), 4 / (j : ℝ) := Finset.sum_le_sum hblock
+    _ = 4 * ∑ j ∈ Finset.Icc 1 (Nat.log 2 x), 1 / (j : ℝ) := by
+        rw [Finset.mul_sum]
+        exact Finset.sum_congr rfl fun j _ => by ring
+    _ ≤ 4 * (1 + Real.log (Nat.log 2 x)) :=
+        mul_le_mul_of_nonneg_left (sum_Icc_one_div_le hL1) (by norm_num)
+
+/-- The prime-mass upper law in log-log form: `∑_{p ≤ x} 1/p ≤ 4 + 4·log(2·log x)`.
+Together with `mertens_lower` this pins the prime mass between two explicit log-log
+laws. -/
+theorem primeMass_upper_log_log {x : ℕ} (hx : 2 ≤ x) :
+    ∑ p ∈ Nat.primesBelow (x + 1), (p : ℝ)⁻¹ ≤ 4 + 4 * Real.log (2 * Real.log x) := by
+  refine le_trans (primeMass_upper hx) ?_
+  have hL1 : 1 ≤ Nat.log 2 x := by
+    have h2 : Nat.log 2 2 ≤ Nat.log 2 x := Nat.log_mono_right hx
+    have : Nat.log 2 2 = 1 := by
+      rw [Nat.log_eq_one_iff']
+      omega
+    omega
+  have hexphalf : Real.exp (1 / 2) < 2 := by
+    have hsq : Real.exp (1 / 2) * Real.exp (1 / 2) = Real.exp 1 := by
+      rw [← Real.exp_add]
+      norm_num
+    nlinarith [Real.exp_one_lt_d9, Real.exp_pos (1 / 2 : ℝ)]
+  have hhalf : (1 / 2 : ℝ) < Real.log 2 := by
+    calc (1 / 2 : ℝ) = Real.log (Real.exp (1 / 2)) := (Real.log_exp _).symm
+      _ < Real.log 2 := Real.log_lt_log (Real.exp_pos _) hexphalf
+  have hkey : ((Nat.log 2 x : ℕ) : ℝ) ≤ 2 * Real.log x := by
+    have hpow := Nat.pow_log_le_self 2 (by omega : x ≠ 0)
+    have hlogle : (Nat.log 2 x : ℝ) * Real.log 2 ≤ Real.log x := by
+      rw [show (Nat.log 2 x : ℝ) * Real.log 2 = Real.log ((2 : ℝ) ^ Nat.log 2 x) by
+        rw [Real.log_pow]]
+      exact Real.log_le_log (by positivity) (by exact_mod_cast hpow)
+    nlinarith [Nat.cast_nonneg (α := ℝ) (Nat.log 2 x)]
+  have hmono : Real.log (Nat.log 2 x) ≤ Real.log (2 * Real.log x) :=
+    Real.log_le_log (by exact_mod_cast hL1) hkey
+  linarith
 
 end RHTower

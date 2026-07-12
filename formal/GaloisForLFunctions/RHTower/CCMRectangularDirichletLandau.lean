@@ -336,6 +336,8 @@ theorem norm_xiRectangularLandauCoefficient_le
       _ ≤ 2 * xiRectangularRightCoefficientNormSum L * (n : ℝ) ^ δ +
           |C| * (n : ℝ) ^ δ := by
         gcongr
+        simpa only [mul_one] using
+          (mul_le_mul_of_nonneg_left hpow1 (abs_nonneg C))
       _ = (2 * xiRectangularRightCoefficientNormSum L + |C|) *
           (n : ℝ) ^ δ := by ring
   · simp only [abs_zero]
@@ -347,18 +349,182 @@ theorem xiRectangularLandauCoefficient_LSeriesSummable
     (L C : ℝ) (N : ℕ) {δ : ℝ} (hδ0 : 0 ≤ δ)
     (hupper : ∀ q : XiRightZeroCopy, (xiRightCenteredZero q).re ≤ δ)
     {s : ℂ} (hs : 1 + δ < s.re) :
-    LSeries.LSeriesSummable
+    LSeriesSummable
       (fun n => ((xiRectangularLandauCoefficient L C N n : ℝ) : ℂ)) s := by
-  apply LSeries.LSeriesSummable_of_le_const_mul_rpow (x := 1 + δ) hs
+  apply LSeriesSummable_of_le_const_mul_rpow (x := 1 + δ) hs
   refine ⟨2 * xiRectangularRightCoefficientNormSum L + |C|, fun n hn => ?_⟩
-  convert norm_xiRectangularLandauCoefficient_le
-    L C N hδ0 hupper n hn using 1 <;> ring
+  simpa only [add_sub_cancel_left] using
+    norm_xiRectangularLandauCoefficient_le L C N hδ0 hupper n hn
+
+/-- The L-series of one right-half exponential coefficient is its shifted
+zeta factor. -/
+theorem LSeries_xiRectangularRightDirichletTerm_eq
+    (L : ℝ) (q : XiRightZeroCopy) {s : ℂ}
+    (hs : 1 + (xiRightCenteredZero q).re < s.re) :
+    LSeries (fun n =>
+      2 * xiRectangularRightDirichletTerm L n q) s =
+      2 * xiRectangularRightCoefficient L q *
+        riemannZeta (s - xiRightCenteredZero q) := by
+  have hsw : 1 < (s - xiRightCenteredZero q).re := by
+    rw [Complex.sub_re]
+    linarith
+  rw [zeta_eq_tsum_one_div_nat_cpow hsw, ← tsum_mul_left]
+  apply tsum_congr
+  intro n
+  rcases n.eq_zero_or_pos with rfl | hn
+  · rw [LSeries.term_zero]
+    simp only [Nat.cast_zero]
+    rw [Complex.zero_cpow (by
+      intro h
+      have := congrArg Complex.re h
+      simp only [Complex.sub_re, Complex.zero_re] at this
+      linarith)]
+    simp
+  · rw [LSeries.term_of_ne_zero hn.ne']
+    simp only [xiRectangularRightDirichletTerm]
+    have hn0 : (n : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hn.ne'
+    have hpow : (n : ℂ) ^ (xiRightCenteredZero q) / (n : ℂ) ^ s =
+        1 / (n : ℂ) ^ (s - xiRightCenteredZero q) := by
+      rw [← Complex.cpow_sub _ _ hn0]
+      have hneg : xiRightCenteredZero q - s =
+          -(s - xiRightCenteredZero q) := by ring
+      rw [hneg, Complex.cpow_neg]
+      ring
+    calc
+      2 * (xiRectangularRightCoefficient L q *
+          (n : ℂ) ^ xiRightCenteredZero q) / (n : ℂ) ^ s =
+        2 * xiRectangularRightCoefficient L q *
+          ((n : ℂ) ^ xiRightCenteredZero q / (n : ℂ) ^ s) := by ring
+      _ = 2 * xiRectangularRightCoefficient L q *
+          (1 / (n : ℂ) ^ (s - xiRightCenteredZero q)) := by rw [hpow]
+
+theorem summable_prod_LSeriesTerm_xiRectangularRightDirichletTerm
+    (L : ℝ) {δ : ℝ}
+    (hupper : ∀ q : XiRightZeroCopy, (xiRightCenteredZero q).re ≤ δ)
+    {s : ℂ} (hs : 1 + δ < s.re) :
+    Summable (fun qn : XiRightZeroCopy × ℕ =>
+      LSeries.term
+        (fun n => 2 * xiRectangularRightDirichletTerm L n qn.1) s qn.2) := by
+  let p : ℝ := s.re - δ
+  have hp : 1 < p := by dsimp only [p]; linarith
+  let g : ℕ → ℝ := fun n => 1 / (n : ℝ) ^ p
+  have hg : Summable g := by
+    exact Real.summable_one_div_nat_rpow.mpr hp
+  have hcoeff : Summable (fun q : XiRightZeroCopy =>
+      2 * ‖xiRectangularRightCoefficient L q‖) :=
+    (xiRectangularRightCoefficient_summable L).norm.mul_left 2
+  have hcoeffNorm : Summable (fun q : XiRightZeroCopy =>
+      ‖2 * ‖xiRectangularRightCoefficient L q‖‖) := by
+    refine hcoeff.congr (fun q => ?_)
+    rw [Real.norm_eq_abs, abs_of_nonneg]
+    positivity
+  have hgNorm : Summable (fun n => ‖g n‖) := by
+    refine hg.congr (fun n => ?_)
+    rw [Real.norm_eq_abs, abs_of_nonneg]
+    dsimp only [g]
+    positivity
+  have hmajor : Summable (fun qn : XiRightZeroCopy × ℕ =>
+      (2 * ‖xiRectangularRightCoefficient L qn.1‖) * g qn.2) :=
+    summable_mul_of_summable_norm hcoeffNorm hgNorm
+  apply Summable.of_norm_bounded hmajor
+  rintro ⟨q, n⟩
+  rcases n.eq_zero_or_pos with rfl | hn
+  · rw [LSeries.term_zero, norm_zero]
+    dsimp only [g]
+    norm_num only [Nat.cast_zero]
+    rw [Real.zero_rpow (by linarith : p ≠ 0), div_zero, mul_zero]
+  · have hnRpos : (0 : ℝ) < n := by exact_mod_cast hn
+    have hnRone : (1 : ℝ) ≤ n := by exact_mod_cast hn
+    rw [LSeries.term_of_ne_zero hn.ne', norm_div, norm_mul,
+      norm_ofNat, xiRectangularRightDirichletTerm, norm_mul,
+      Complex.norm_natCast_cpow_of_pos hn,
+      Complex.norm_natCast_cpow_of_pos hn]
+    dsimp only [g, p]
+    calc
+      2 * (‖xiRectangularRightCoefficient L q‖ *
+          (n : ℝ) ^ (xiRightCenteredZero q).re) / (n : ℝ) ^ s.re =
+        2 * ‖xiRectangularRightCoefficient L q‖ *
+          (n : ℝ) ^ ((xiRightCenteredZero q).re - s.re) := by
+            rw [Real.rpow_sub hnRpos]
+            ring
+      _ ≤ 2 * ‖xiRectangularRightCoefficient L q‖ *
+          (n : ℝ) ^ (δ - s.re) := by
+        gcongr
+        exact hupper q
+      _ = (2 * ‖xiRectangularRightCoefficient L q‖) *
+          (1 / (n : ℝ) ^ (s.re - δ)) := by
+        rw [show δ - s.re = -(s.re - δ) by ring,
+          Real.rpow_neg hnRpos.le]
+        ring
 
 /-- The right-half shifted-zeta series attached to the rectangular window. -/
 def xiRectangularShiftedZetaSeries (L : ℝ) (s : ℂ) : ℂ :=
   ∑' q : XiRightZeroCopy,
     xiRectangularRightCoefficient L q *
       riemannZeta (s - xiRightCenteredZero q)
+
+set_option maxHeartbeats 800000 in
+/-- On the half-plane to the right of the transverse supremum, the ordinary
+Dirichlet series of the real logarithmic samples is exactly twice the
+right-half shifted-zeta carrier. -/
+theorem LSeries_xiRectangularRightDirichletComplex_eq_shiftedZeta
+    (L : ℝ) {δ : ℝ}
+    (hupper : ∀ q : XiRightZeroCopy, (xiRightCenteredZero q).re ≤ δ)
+    {s : ℂ} (hs : 1 + δ < s.re) :
+    LSeries (fun n => xiRectangularRightDirichletComplex L n) s =
+      2 * xiRectangularShiftedZetaSeries L s := by
+  have hdouble :=
+    summable_prod_LSeriesTerm_xiRectangularRightDirichletTerm L hupper hs
+  have hterm (n : ℕ) :
+      LSeries.term (fun n => xiRectangularRightDirichletComplex L n) s n =
+        ∑' q : XiRightZeroCopy,
+          LSeries.term
+            (fun n => 2 * xiRectangularRightDirichletTerm L n q) s n := by
+    rcases n.eq_zero_or_pos with rfl | hn
+    · simp only [LSeries.term_zero]
+      rw [tsum_zero]
+    · rw [LSeries.term_of_ne_zero hn.ne']
+      simp only [xiRectangularRightDirichletComplex]
+      calc
+        (2 * ∑' q : XiRightZeroCopy,
+            xiRectangularRightDirichletTerm L n q) / (n : ℂ) ^ s =
+          (∑' q : XiRightZeroCopy,
+            2 * xiRectangularRightDirichletTerm L n q) / (n : ℂ) ^ s := by
+              rw [tsum_mul_left]
+        _ = ∑' q : XiRightZeroCopy,
+            (2 * xiRectangularRightDirichletTerm L n q) / (n : ℂ) ^ s := by
+              rw [tsum_div_const]
+        _ = ∑' q : XiRightZeroCopy,
+            LSeries.term
+              (fun n => 2 * xiRectangularRightDirichletTerm L n q) s n := by
+          apply tsum_congr
+          intro q
+          rw [LSeries.term_of_ne_zero hn.ne']
+  rw [LSeries]
+  calc
+    (∑' n, LSeries.term
+        (fun n => xiRectangularRightDirichletComplex L n) s n) =
+      ∑' n, ∑' q : XiRightZeroCopy,
+        LSeries.term
+          (fun n => 2 * xiRectangularRightDirichletTerm L n q) s n :=
+      tsum_congr hterm
+    _ = ∑' q : XiRightZeroCopy, ∑' n,
+        LSeries.term
+          (fun n => 2 * xiRectangularRightDirichletTerm L n q) s n :=
+      hdouble.tsum_comm
+    _ = ∑' q : XiRightZeroCopy,
+        (2 * xiRectangularRightCoefficient L q *
+          riemannZeta (s - xiRightCenteredZero q)) := by
+      apply tsum_congr
+      intro q
+      exact LSeries_xiRectangularRightDirichletTerm_eq L q (by
+        have := hupper q
+        linarith)
+    _ = 2 * xiRectangularShiftedZetaSeries L s := by
+      rw [xiRectangularShiftedZetaSeries, ← tsum_mul_left]
+      apply tsum_congr
+      intro q
+      ring
 
 /-- On `Re s >= 3/2+eps`, every shifted zeta factor has the uniform elementary
 bound `1+1/eps`. -/

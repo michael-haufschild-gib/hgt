@@ -226,6 +226,43 @@ Neither maximal translated hypertranscendence nor the Krein index alone can supp
 The Weil polarization is the canonical candidate coupling because its source formula contains the
 prime tail while its Pick/Krein signature reads the centered divisor.
 
+## Wigner--Eisenstein orientation carrier
+
+The theta-tail Bezoutian has a sharper phase-space coordinate.  If `k` is the normalized
+Hedenmalm source and
+
+```text
+W_k(y,b)=integral_R k(y+t)k(y-t)exp(2 i b t)dt,
+```
+
+then for `w=a+i b`, `a>0`,
+
+```text
+B_X(w,w)=a^(-1) integral_0^infinity
+  r sinh(a r)W_k(r/2,b)dr.                               (D7)
+```
+
+The exact atom expansion of `k` groups the ordered theta indices by their product and gives
+
+```text
+W_k(y,b)=exp(y) sum_(n>=1)
+  tau_b(n) Kcal_b(2pi n exp(2y)),                         (D8)
+
+tau_b(n)=n^(i b)sigma_(-2 i b)(n)
+        =sum_(d e=n)(e/d)^(i b).                         (D9)
+```
+
+Thus the orientation current itself carries every prime-log character.  In completed
+automorphic coordinates it is a fourth-order vertical differential image of the real-analytic
+Eisenstein series at `s=1/2+i b`; the first differential factor annihilates both Eisenstein
+constant terms, leaving exactly the divisor-character/Bessel tail.
+
+This is a viable carrier shape but not yet a sign theorem.  Hudson rigidity also rules out the
+most tempting proof: nonnegativity of every Wigner slice would force `k` to be Gaussian, whereas
+the theta source is not.  Therefore a successful proof must obtain orientation only after the
+cofinal radial mixing in `(D7)`.  The complete formulas and audit live in
+`theta-wigner-eisenstein-orientation-current.md`.
+
 ## Publication boundary
 
 The final paper must be a standalone mathematical article. It must contain complete analytic and

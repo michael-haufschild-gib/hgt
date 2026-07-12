@@ -42,6 +42,26 @@ inherits it.  `(16)` with the meter reading
 Mertens-mass meter: its forced content is log-log (primes), its total is log
 (squarefree); the gap between the two laws is exactly the non-prime squarefree mass.
 
+The prime-mass upper law and the rung tower complete the picture:
+
+```text
+sum_{p <= n} log p <= n·log 4                        (Chebyshev, from primorial)  (17)
+sum_{p <= x} 1/p <= 4·(1 + log(Nat.log 2 x))         (dyadic-block upper law)     (18)
+sum_{p <= x} 1/p <= 4 + 4·log(2·log x)               (log-log form, x >= 2)       (19)
+|a(p^m)| >= δ on primes  ==>  δ²·sum_{p^m <= y} 1/p
+    <= sum_{n <= y} (a n · n^(-1/(2m)))²             (the tower, rung m)          (20)
+sum_{p^m <= y} 1/p <= sum_{n <= y} (mPartMoebiusCoeff m n · n^(-1/(2m)))²         (21)
+```
+
+`(18)` is elementary and effective: the `j`-th dyadic block holds at most `2^(j+2)/j`
+primes by `(17)`, each of reciprocal at most `2^(-j)`, so blocks carry mass at most
+`4/j` and the harmonic bound closes.  With `(7)` the prime mass is pinned between two
+explicit log-log laws — the meter is two-sided.  `(20)`–`(21)` are the forced-content
+tower: the square rung's threshold `1/4` generalizes to `1/(2m)` at dilation `m`
+(`p^m`-supported coefficients of size `δ` force `δ²·(rung prime mass)` at weight
+`1/(2m)`), with the `mPart m` Möbius carrier as the instance at every rung — the
+`m`-free ladder's spectral fingerprint, machine-checked.
+
 ## Proof
 
 `(1)` the budget's square-only support evaluates exactly at prime squares:
@@ -112,7 +132,13 @@ same square-support mechanism in the tree's other quadratic functionals:
 - (back in `CreaseBudgetPrimeMass.lean`) `sum_Icc_one_div_le`: the harmonic upper
   `(14)`; `lineBudget_eq_sum_sqrt`: the exact square-coordinates form `(15)`;
   `lineBudget_le_one_add_log`, `lineBudget_measures_primeMass`, `lineBudget_bracket`:
-  the meter and the two-sided bracket `(16)`.
+  the meter and the two-sided bracket `(16)`;
+- `sum_primesBelow_log_le`: Chebyshev `(17)` from mathlib's `primorial_le_four_pow`;
+- `primeMass_upper`, `primeMass_upper_log_log`: the upper laws `(18)`–`(19)`;
+- (in `SquareSupportPrimeMass.lean`) `primeMass_le_pow_sum_of_forced`: the tower core
+  (the square core is now its `m = 2` instance); `natCast_pow_rpow`;
+  `primeMass_le_rung_weighted_sq_sum`: rung `m` of the tower `(20)`;
+  `primeMass_le_mPart_weighted_diagonal`: the `mPart` carrier instance `(21)`.
 
 Both modules are imported by `GaloisForLFunctions.RHTower` and `GaloisForLFunctions`.
 
@@ -125,18 +151,18 @@ Both modules are imported by `GaloisForLFunctions.RHTower` and `GaloisForLFuncti
 - [x] generated indexes, axiom audit, and formal lint gate pass
 
 The umbrella build reaches and accepts both modules; the sole independent existing
-failure is `SummableEulerCalkinInjectivity.lean`.  All twenty-six public declarations
+failure is `SummableEulerCalkinInjectivity.lean`.  All thirty-three public declarations
 across the two files use only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Opens
 
-The bracket `(16)` has a log-log floor and a log ceiling; the gap is the non-prime
-squarefree mass, so the meter reads prime mass only through the additive cap.  Two
-sharpenings: (i) a prime-mass *upper* law (`∑_{p≤x} 1/p ≤ log log x + C`) would tighten
-the meter to a two-sided log-log reading of the prime-restricted budget — its elementary
-route is Chebyshev's primorial bound plus partial summation, one self-contained analytic
-brick; (ii) the abstract law `(12)` is stated for squares of primes only — the same
-injection argument at cubes `p³` inside `m`-th-power supports (the `mPart m` carriers of
-`MFreeLadder`) gives forced mass `∑ p^(-3σ·…)` per rung: a tower of forced-content laws,
-one per dilation, with the weight threshold `1/(2m)` replacing `1/4` — the `m`-free
-ladder's spectral fingerprint.
+The meter is now two-sided (`(7)` + `(19)`), so the prime mass of any cutoff is a
+certified interval `[½·log log, 4·log log + C]` — the constants `2` (below) and `4`
+(above) both trace to single elementary estimates (`log(1-t)⁻¹ ≤ 2t`; dyadic block width
+`2`): base-`e` blocks and the `t + t²` bound would drive both toward `1 + o(1)`, an
+optimization pass on two lemmas.  The tower `(20)` prices every rung: forced mass at
+weight `1/(2m)` — read across the mixed-radix telescope, a product carrier over moduli
+`m₀, m₁, …` carries forced mass at the harmonic-mean weight of its rungs, suggesting the
+next object: the forced-content law for *convolutions* of dilated carriers, where the
+`mFreeIndicator` telescope should compound the rung fingerprints into a single
+mixed-radix spectral signature.

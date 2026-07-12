@@ -29,31 +29,81 @@ open Complex
 
 /-! ## The abstract forced-content law -/
 
-/-- **The abstract forced-content law, core form.**  Any quadratic functional over an
-index set containing the squares of a prime family, whose coefficients at those prime
-squares are at least `δ·p^(-1/2)` in absolute value, dominates `δ²` times the prime
-reciprocal mass of the family.  Prime squares inject their full reciprocal weight into
-every square-supported quadratic functional. -/
-theorem primeMass_le_sq_sum_of_forced {S P : Finset ℕ} {b : ℕ → ℝ} {δ : ℝ} (hδ0 : 0 ≤ δ)
-    (hmem : ∀ p ∈ P, p ^ 2 ∈ S)
-    (hval : ∀ p ∈ P, δ * ((p : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) ≤ |b (p ^ 2)|) :
+/-- **The abstract forced-content law, tower core.**  Any quadratic functional over an
+index set containing the `m`-th powers of a prime family, whose coefficients at those
+prime powers are at least `δ·p^(-1/2)` in absolute value, dominates `δ²` times the prime
+reciprocal mass of the family.  Prime powers inject their full reciprocal weight into
+every power-supported quadratic functional — one law per dilation rung. -/
+theorem primeMass_le_pow_sum_of_forced {S P : Finset ℕ} {b : ℕ → ℝ} {δ : ℝ} {m : ℕ}
+    (hm : m ≠ 0) (hδ0 : 0 ≤ δ) (hmem : ∀ p ∈ P, p ^ m ∈ S)
+    (hval : ∀ p ∈ P, δ * ((p : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) ≤ |b (p ^ m)|) :
     δ ^ 2 * ∑ p ∈ P, (p : ℝ)⁻¹ ≤ ∑ k ∈ S, (b k) ^ 2 := by
-  have himg : P.image (fun p => p ^ 2) ⊆ S := by
+  have himg : P.image (fun p => p ^ m) ⊆ S := by
     intro n hn
     obtain ⟨p, hp, rfl⟩ := Finset.mem_image.mp hn
     exact hmem p hp
-  have hsub : ∑ n ∈ P.image (fun p => p ^ 2), (b n) ^ 2 ≤ ∑ k ∈ S, (b k) ^ 2 :=
+  have hsub : ∑ n ∈ P.image (fun p => p ^ m), (b n) ^ 2 ≤ ∑ k ∈ S, (b k) ^ 2 :=
     Finset.sum_le_sum_of_subset_of_nonneg himg fun i _ _ => by positivity
   refine le_trans ?_ hsub
-  rw [Finset.sum_image ((Nat.pow_left_injective two_ne_zero).injOn), Finset.mul_sum]
+  rw [Finset.sum_image ((Nat.pow_left_injective hm).injOn), Finset.mul_sum]
   refine Finset.sum_le_sum fun p hp => ?_
-  have hsq : (δ * ((p : ℕ) : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 ≤ (b (p ^ 2)) ^ 2 := by
-    rw [← sq_abs (b (p ^ 2))]
+  have hsq : (δ * ((p : ℕ) : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 ≤ (b (p ^ m)) ^ 2 := by
+    rw [← sq_abs (b (p ^ m))]
     exact pow_le_pow_left₀ (by positivity) (hval p hp) 2
   refine le_trans (le_of_eq ?_) hsq
   rw [mul_pow, ← Real.rpow_natCast (((p : ℕ) : ℝ) ^ (-(1 / 2 : ℝ))) 2,
     ← Real.rpow_mul (Nat.cast_nonneg p),
     show (-(1 / 2 : ℝ)) * ((2 : ℕ) : ℝ) = -1 by push_cast; ring, Real.rpow_neg_one]
+
+/-- The square case of the tower core. -/
+theorem primeMass_le_sq_sum_of_forced {S P : Finset ℕ} {b : ℕ → ℝ} {δ : ℝ} (hδ0 : 0 ≤ δ)
+    (hmem : ∀ p ∈ P, p ^ 2 ∈ S)
+    (hval : ∀ p ∈ P, δ * ((p : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) ≤ |b (p ^ 2)|) :
+    δ ^ 2 * ∑ p ∈ P, (p : ℝ)⁻¹ ≤ ∑ k ∈ S, (b k) ^ 2 :=
+  primeMass_le_pow_sum_of_forced two_ne_zero hδ0 hmem hval
+
+/-- Real `m`-th-power dilation: `((k^m:ℕ):ℝ)^y = (k:ℝ)^(m·y)`. -/
+theorem natCast_pow_rpow (k m : ℕ) (y : ℝ) :
+    ((k ^ m : ℕ) : ℝ) ^ y = ((k : ℕ) : ℝ) ^ ((m : ℝ) * y) := by
+  push_cast
+  rw [← Real.rpow_natCast ((k : ℕ) : ℝ) m, ← Real.rpow_mul (Nat.cast_nonneg k)]
+
+/-- **The forced-content tower, rung `m`.**  If `|a(p^m)| ≥ δ` on primes, the
+`1/(2m)`-weighted quadratic functional of `a` dominates `δ²` times the prime mass of the
+rung: the weight threshold `1/4` of the square rung generalizes to `1/(2m)` at dilation
+`m` — the `m`-free ladder's spectral fingerprint. -/
+theorem primeMass_le_rung_weighted_sq_sum {a : ℕ → ℝ} {δ : ℝ} {m : ℕ} (hm : m ≠ 0)
+    (hδ0 : 0 ≤ δ) (hδ : ∀ p : ℕ, p.Prime → δ ≤ |a (p ^ m)|) (y : ℕ) :
+    δ ^ 2 * ∑ p ∈ (Nat.primesBelow (y + 1)).filter (fun p => p ^ m ≤ y), (p : ℝ)⁻¹
+      ≤ ∑ n ∈ Finset.Icc 1 y, (a n * (n : ℝ) ^ (-(1 / (2 * (m : ℝ))))) ^ 2 := by
+  refine primeMass_le_pow_sum_of_forced hm hδ0 (fun p hp => ?_) fun p hp => ?_
+  · obtain ⟨hpmem, hpm⟩ := Finset.mem_filter.mp hp
+    obtain ⟨-, hpp⟩ := Nat.mem_primesBelow.mp hpmem
+    exact Finset.mem_Icc.mpr ⟨Nat.one_le_pow _ _ hpp.pos, hpm⟩
+  · obtain ⟨hpmem, -⟩ := Finset.mem_filter.mp hp
+    obtain ⟨-, hpp⟩ := Nat.mem_primesBelow.mp hpmem
+    have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hpp.pos
+    have hm0 : ((m : ℕ) : ℝ) ≠ 0 := by exact_mod_cast hm
+    have hpow : ((p ^ m : ℕ) : ℝ) ^ (-(1 / (2 * (m : ℝ))))
+        = ((p : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) := by
+      rw [natCast_pow_rpow]
+      congr 1
+      field_simp
+    rw [abs_mul, hpow, abs_of_nonneg (Real.rpow_nonneg hp0.le _)]
+    exact mul_le_mul_of_nonneg_right (hδ p hpp) (Real.rpow_nonneg hp0.le _)
+
+/-- **The `mPart` carrier instance of rung `m`**: the `1/(2m)`-weighted second-moment
+diagonal of the `m`-th-power-dilated Möbius carrier must carry the prime mass of its
+rung. -/
+theorem primeMass_le_mPart_weighted_diagonal {m : ℕ} (hm : m ≠ 0) (y : ℕ) :
+    ∑ p ∈ (Nat.primesBelow (y + 1)).filter (fun p => p ^ m ≤ y), (p : ℝ)⁻¹
+      ≤ ∑ n ∈ Finset.Icc 1 y,
+          (mPartMoebiusCoeff m n * (n : ℝ) ^ (-(1 / (2 * (m : ℝ))))) ^ 2 := by
+  have h := primeMass_le_rung_weighted_sq_sum (a := mPartMoebiusCoeff m) (δ := 1) hm
+    zero_le_one (fun p hpp => ?_) y
+  · simpa using h
+  · rw [mPartMoebiusCoeff, mPart_apply_pow hm, ArithmeticFunction.moebius_apply_prime hpp]
+    norm_num
 
 /-- **The abstract forced-content law, quarter-weighted form.**  If `|a(p²)| ≥ δ` on
 primes, the `1/4`-weighted quadratic functional of `a` dominates `δ²` times the Mertens

@@ -273,16 +273,16 @@ theorem linearIndependent_iff_monomialValue_monoScalar_injective
     have hsum : ∑ j : ι, ((g (some j) : ℤ) : ℂ) * s j = -((g none : ℤ) : ℂ) := by
       rw [Fintype.sum_option] at hrel
       simp only [exponentFamily] at hrel
-      push_cast at hrel
-      simpa only [add_eq_zero_iff_eq_neg] using hrel
+      simp only [zsmul_eq_mul, mul_one] at hrel
+      linear_combination hrel
     have hweight : exponentWeight s d - exponentWeight s e = -((g none : ℤ) : ℂ) := by
       rw [exponentWeight, exponentWeight, Finsupp.sum_fintype, Finsupp.sum_fintype]
-      · simp only [d, e, Finsupp.equivFunOnFinite_symm_apply_toFun]
+      · simp only [d, e, ← Finsupp.equivFunOnFinite_apply, Equiv.apply_symm_apply]
         rw [← Finset.sum_sub_distrib]
         calc
-          ∑ j : ι,
+          ∑ j : ι, (
               ((↑(g (some j)).toNat : ℕ) : ℂ) * s j -
-                ((↑(-g (some j)).toNat : ℕ) : ℂ) * s j =
+                ((↑(-g (some j)).toNat : ℕ) : ℂ) * s j) =
               ∑ j : ι, ((g (some j) : ℤ) : ℂ) * s j := by
                 apply Finset.sum_congr rfl
                 intro j _
@@ -311,7 +311,7 @@ theorem linearIndependent_iff_monomialValue_monoScalar_injective
     | none =>
         have hsome : ∀ j : ι, g (some j) = 0 := by
           intro j
-          have hj := Finsupp.congr_fun hde j
+          have hj := congrFun (congrArg (fun x : ι →₀ ℕ => (x : ι → ℕ)) hde) j
           change (g (some j)).toNat = (-g (some j)).toNat at hj
           have hz := Int.toNat_sub_toNat_neg (g (some j))
           rw [hj, sub_self] at hz
@@ -320,7 +320,7 @@ theorem linearIndependent_iff_monomialValue_monoScalar_injective
         simp only [exponentFamily, hsome, zero_smul, Finset.sum_const_zero, add_zero] at hrel
         simpa using hrel
     | some j =>
-        have hj := Finsupp.congr_fun hde j
+        have hj := congrFun (congrArg (fun x : ι →₀ ℕ => (x : ι → ℕ)) hde) j
         change (g (some j)).toNat = (-g (some j)).toNat at hj
         have hz := Int.toNat_sub_toNat_neg (g (some j))
         rw [hj, sub_self] at hz

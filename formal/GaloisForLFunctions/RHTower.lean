@@ -738,3 +738,4 @@ import GaloisForLFunctions.RHTower.BornEtaGrading
 import GaloisForLFunctions.RHTower.SquareSupportPrimeMass
 import GaloisForLFunctions.RHTower.BornSectorExchange
 import GaloisForLFunctions.RHTower.WeightOneInversion
+import GaloisForLFunctions.RHTower.QuadraticScaleSpectralRH

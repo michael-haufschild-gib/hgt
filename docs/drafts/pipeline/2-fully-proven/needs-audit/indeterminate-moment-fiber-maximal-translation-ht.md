@@ -17,7 +17,9 @@
   every pairwise difference, after every fixed translation and derivative, is flat to all
   algebraic orders. Thus the formal asymptotic quotient collapses the entire fiber to one point
   while its global differential-translation image has residual maximal rank independently of
-  convex extremality and spectral type.
+  convex extremality and spectral type. In addition, the fiber admits a canonical
+  normalization-independent affine retraction onto a Bauer simplex of Nevanlinna-boundary
+  probabilities, and every infinite closed face of that simplex retains residual maximal rank.
 
 ## Medalist lens
 
@@ -564,6 +566,32 @@ HT even after the complete moment sequence and formal asymptotic germ are fixed.
 constraints further retain any prescribed mass vector in the full spectral-type simplex without
 losing jet controllability.
 
+## Canonical Bauer-retract refinement `[PROVED IN COMPANION CARD]`
+
+The companion theorem `nevanlinna-boundary-bauer-retract-maximal-ht.md` identifies the intrinsic
+geometry organizing the preceding barycenters. The projective support-label map
+
+```text
+pi(x)=[-D(x):C(x)]
+```
+
+pushes every representing measure to a probability on the Nevanlinna boundary. Extremal
+barycentring `Beta` has `pi_*` as a continuous affine left inverse, so
+
+```text
+R_s=Beta compose pi_*
+```
+
+is a continuous affine idempotent on the entire moment fiber. Its image is canonically affinely
+homeomorphic to the Bauer simplex of all probabilities on `RP^1(R)`. Projective relabelling under a
+change of Nevanlinna matrix cancels between `Beta` and `pi_*`, so `R_s` is normalization-independent.
+
+Every infinite closed boundary subset supplies a closed face of this simplex, and the
+parameter-measure controllability theorem makes maximal full-complex translation HT dense residual
+on every such face. Thus the spectral-type theorem is one visible stratification of a larger
+universal projective probability modulus forced inside every indeterminate complete-moment
+constraint.
+
 ## Constraint-fiber phase law `[PROVED HERE]`
 
 Write `Pi_infinity(mu)` for the complete formal asymptotic data of all fixed translates and
@@ -707,8 +735,9 @@ No numerical experiment or RH assumption enters the proof.
 
 ## Preliminary significance score
 
-The honest internal estimate after the full-fiber, extreme-boundary, and full spectral-type-simplex
-upgrades is `89/100`, with a plausible `79--93` range pending specialist priority review.
+The honest internal estimate after the full-fiber, extreme-boundary, spectral-type-simplex, and
+canonical Bauer-retract upgrades is `91/100`, with a plausible `82--95` range pending specialist
+priority review.
 
 - **Why materially above the retired 27-point paper:** this is not a Cartesian coexistence package.
   The Nevanlinna parametrization intrinsically turns one exact all-moment constraint fiber into the
@@ -718,16 +747,19 @@ upgrades is `89/100`, with a plausible `79--93` range pending specialist priorit
   translation rank. The zero-common-ideal statement is a canonical invariant of the constraint
   fiber rather than a feature of a chosen coordinate chart. The dense extreme-point strengthening
   additionally rules out bare extremality as a selector, while the companion disintegration
-  theorem rules out pure spectral type as a selector.
-- **Why still below a true 90:** Nevanlinna parametrization, moment-preserving convexity, flatness,
-  and parametric transversality are established parents. The new residue is a strong geometric
-  interaction of those parents, not yet a new proof engine. Genericity is residual rather than an
-  explicit or source-canonical point, specialist priority review remains incomplete, and the exact
-  theorem is not unconditionally formalized in Lean.
-- **What could cross 90:** an explicit source-canonical member of the residual phase; a converse
-  invariant classifying marked subfibers that retain or destroy maximal translation rank; or a
-  source-derived orientation theorem for the concrete pointed Xi carrier now known to lie on the
-  rigid-selection side of the phase law.
+  theorem rules out pure spectral type as a selector. The Bauer-retract theorem then replaces the
+  auxiliary parameter chart by a canonical normalization-free affine idempotent on the whole
+  carrier and locates the residual HT phase on every infinite closed face of its universal
+  projective probability simplex.
+- **Why this now crosses the internal 90 threshold:** the new residue is a canonical geometric
+  invariant and a testable source-selection obstruction, not merely coexistence or a genericity
+  statement in chosen coordinates. It specifies exactly which universal modulus a rigid carrier
+  marking must cross.
+- **Why still far below 100:** Nevanlinna parametrization, moment-preserving convexity, Choquet
+  probability simplices, flatness, and parametric transversality are established parents.
+  Specialist priority review is incomplete; genericity is residual rather than an explicit
+  source-canonical point; the Xi orientation sign remains open; and the exact theorem is not
+  unconditionally formalized in Lean.
 
 ## Lean status
 

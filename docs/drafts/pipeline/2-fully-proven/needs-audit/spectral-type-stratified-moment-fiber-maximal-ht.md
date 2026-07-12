@@ -306,12 +306,13 @@ No numerical experiment and no RH assumption enter the theorem.
 
 ## Preliminary significance
 
-The combined moment-fiber route is now estimated honestly at `89/100`, with a plausible `79--93`
-range pending specialist review. The new theorem removes the entire spectral-type simplex and bare
-convex extremality as rigidity mechanisms inside one exact all-order moment fiber. It still remains
-below a true 90 estimate because the mechanism is assembled from classical disintegration plus the
-existing transversality engine, and it supplies neither a source-canonical representative nor the
-missing global orientation law for a concrete RH carrier.
+Taken alone, the spectral-stratification theorem supports the earlier `89/100` estimate: it removes
+the entire spectral-type simplex and bare convex extremality as rigidity mechanisms, but is still
+assembled from classical disintegration plus the existing transversality engine. The combined
+route now reaches an internal `91/100` estimate, with a plausible `82--95` range, only after the
+separate companion `nevanlinna-boundary-bauer-retract-maximal-ht.md` proves that these charts form a
+canonical normalization-independent Bauer retract of the whole moment fiber. Neither theorem
+supplies the missing global orientation law for the concrete RH carrier.
 
 ## Lean status
 
@@ -330,6 +331,7 @@ passage. Those layers are not present together in the current Lean tree.
 - [x] infinite-support parameter-measure jet controllability proved
 - [x] full complex configuration theorem proved in each type chart
 - [x] concrete RH carrier consequence scoped
+- [x] embedded in the canonical boundary-Bauer retract companion
 - [x] preliminary exact-search audit
 - [ ] independent specialist proof audit
 - [ ] full primary-source priority audit across all parent fields

@@ -26,7 +26,8 @@ noncomputable section
 namespace RHTower
 
 /-- The weight-one scale inversion `(J f)(t) = t⁻¹ · f(t⁻¹)`: the profile-level unitary of
-`L²(ℝ_{>0}, dt/t)` whose Mellin action is `s ↦ 1 - s`. -/
+`L²(ℝ_{>0}, dt)` whose Mellin action is `s ↦ 1 - s`.  (For the multiplicative measure
+`dt/t`, the unweighted inversion `f(t⁻¹)` is the unitary one.) -/
 def weightOneInversion (f : ℝ → ℝ) (t : ℝ) : ℝ := t⁻¹ * f t⁻¹
 
 /-- The weight-one inversion is an involution away from `0`. -/

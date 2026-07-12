@@ -716,6 +716,18 @@ theorem continuedHzeta_hasDerivAt {s a : ℂ} (ha : a ∈ UHP) :
     (continuedAt_eq_of_adequate (K := K) (L := regularizationOrder (s + 1))
       ha hshift (regularizationOrder_adequate (s + 1))).symm
 
+/-- The concrete continued Hurwitz function is holomorphic on the upper half-plane for every
+complex exponent. -/
+theorem continuedHzeta_differentiableOn (s : ℂ) :
+    DifferentiableOn ℂ (continuedHzeta s) UHP := by
+  intro a ha
+  exact (continuedHzeta_hasDerivAt ha).differentiableAt.differentiableWithinAt
+
+/-- Analytic form of unrestricted upper-half-plane continuation. -/
+theorem continuedHzeta_analyticOnNhd (s : ℂ) :
+    AnalyticOnNhd ℂ (continuedHzeta s) UHP :=
+  (continuedHzeta_differentiableOn s).analyticOnNhd isOpen_UHP
+
 /-- **All-order unrestricted Hurwitz differential ladder.**  For every complex exponent,
 `d^r/da^r ζ(s,a) = (-1)^r (s)_r ζ(s+r,a)` on the upper half-plane. -/
 theorem continuedHzeta_iteratedDeriv (r : ℕ) {s a : ℂ} (ha : a ∈ UHP) :
@@ -738,6 +750,38 @@ theorem continuedHzeta_iteratedDeriv (r : ℕ) {s a : ℂ} (ha : a ∈ UHP) :
       push_cast
       rw [pow_succ]
       ring_nf
+
+lemma taylorPoly_at_one (K : ℕ) (s : ℂ) (m : ℕ) :
+    taylorPoly K s 1 m = (((m + 1 : ℕ) : ℂ) ^ (-s)) := by
+  rw [taylorPoly]
+  rw [Finset.sum_eq_single 0]
+  · simp [taylorTerm]
+  · intro r hr hr0
+    simp [taylorTerm, hr0]
+  · simp
+
+lemma restoration_at_one (K : ℕ) (s : ℂ) :
+    restoration K s 1 = riemannZeta s := by
+  rw [restoration]
+  rw [Finset.sum_eq_single 0]
+  · simp [restoreTerm]
+  · intro r hr hr0
+    simp [restoreTerm, hr0]
+  · simp
+
+/-- The continuation is normalized by the meromorphically continued Riemann zeta value at the
+reference shift. -/
+theorem continuedHzeta_at_one (s : ℂ) :
+    continuedHzeta s 1 = riemannZeta s := by
+  rw [continuedHzeta, continuedAt, restoration_at_one]
+  have hrem : (fun m : ℕ => remainder (regularizationOrder s) s 1 m) = 0 := by
+    funext m
+    rw [remainder, taylorPoly_at_one]
+    push_cast
+    simp
+  rw [hrem]
+  change (∑' _m : ℕ, (0 : ℂ)) + riemannZeta s = riemannZeta s
+  simp
 
 lemma taylorPoly_zero (s a : ℂ) (m : ℕ) :
     taylorPoly 0 s a m = (((m + 1 : ℕ) : ℂ) ^ (-s)) := by
