@@ -39,7 +39,12 @@ psi^(m+1)(1) = (-1)^(m+2) (m+1)! riemannZeta(m+2).         (7)
 psi^(m+1)(1/2)
   = (2^(m+2)-1)(-1)^(m+2)(m+1)! riemannZeta(m+2),          (8)
 
-hzeta(m+2,1/2) = (2^(m+2)-1) riemannZeta(m+2).             (9)
+hzeta(s,1/2) = (2^s-1) riemannZeta(s)       (Re s > 1),    (9)
+
+hzeta(m+2,1/2) = (2^(m+2)-1) riemannZeta(m+2).            (10)
+
+sum_(0<=k<n) hzeta(s,(a+k)/n) = n^s hzeta(s,a)             (11)
+    (Re s > 1, n > 0).
 ```
 
 Here `hzeta` is `HurwitzZetaShift.hzeta`, the convergent complex-shift series constructed inside
@@ -68,8 +73,12 @@ Separating the first Hurwitz-series term proves `(4)`.  At `a=0` that term vanis
 convergence half-plane, while the remaining series is exactly mathlib's Dirichlet-series
 representation of `riemannZeta`; this proves `(5)`.  Rewriting the banked negative-integer tail law
 with `(5)` gives `(6)`, and specializing `(1)` at `z=1` gives `(7)`.  Combining `(7)` with the
-complete half-argument multiplication law gives `(8)`; cancelling the nonzero factorial-sign
-coefficient in `(1)` then gives `(9)`.
+complete half-argument multiplication law gives `(8)`.  Splitting the absolutely convergent
+Dirichlet series into its even- and odd-denominator parts proves `(9)` for every exponent in the
+convergence half-plane; `(10)` is its positive-integer specialization.
+Finally, Euclidean division writes every natural index uniquely as (mn+k), with (0\leq k<n).
+Absolute summability permits this reindexing, and positive-real scaling of principal complex powers
+then proves the complete rational-fiber distribution relation `(11)`.
 
 ## Parent classification
 
@@ -77,6 +86,8 @@ coefficient in `(1)` then gives `(9)`.
 
 - https://dlmf.nist.gov/5.15.E2
 - the Hurwitz recurrence is DLMF 25.11.3: https://dlmf.nist.gov/25.11.E3
+- the half-shift value is DLMF 25.11.11: https://dlmf.nist.gov/25.11.E11
+- the distribution relation is DLMF 25.11.15: https://dlmf.nist.gov/25.11.E15
 - the Riemann-zeta Dirichlet series is DLMF 25.2.1: https://dlmf.nist.gov/25.2.E1
 
 Both sides and all analytic ingredients were already formalized locally, but the exact equality
@@ -93,7 +104,9 @@ File: `formal/GaloisForLFunctions/PolygammaHurwitzValue.lean`.
 - `hzeta_neg_nat_eq_riemannZeta_add`: the strengthened tail value `(6)`;
 - `polygamma_one_eq_riemannZeta`: the all-order unit-value law `(7)`;
 - `polygamma_one_half_eq_riemannZeta`: the all-order half-value law `(8)`;
-- `hzeta_nat_one_half_eq_mul_riemannZeta`: the integer-exponent Hurwitz half-value law `(9)`;
+- `hzeta_one_half_eq_mul_riemannZeta`: the full convergence-half-plane law `(9)`;
+- `hzeta_nat_one_half_eq_mul_riemannZeta`: the integer-exponent specialization `(10)`;
+- `hzeta_distribution`: the complete rational-fiber relation `(11)`;
 - `trigamma_eq_hzeta_two`: the trigamma specialization `(2)`;
 - `hzeta_two_one`, `hzeta_two_one_half`: exact custom-Hurwitz values `(3)`.
 
@@ -122,10 +135,15 @@ The module is imported by `GaloisForLFunctions`.
    argument remains unchanged.  The value-sensitive parent module now exports
    `HurwitzN2Tail.tailFactored_zero_eq_riemannZeta_add`, which identifies the analytic factored
    tail's endpoint directly with the RH tree's zeta value and finite harmonic correction.
-7. The isolated `hzeta_two_one_half` endpoint is now a specialization of the all-order half-value
-   theorem `(9)`.  Every integer-exponent half-shift value is therefore controlled by one
-   multiplication relation, while noninteger Hurwitz consumers retain their genuinely different
-   monodromy hypotheses.
+7. The isolated `hzeta_two_one_half` endpoint is now a specialization of `(9)`, which holds for
+   every complex exponent with real part greater than one.  This gives noninteger Hurwitz consumers
+   the same exact half-shift endpoint without changing their genuinely different monodromy
+   hypotheses.
+8. Combining `hzeta_distribution` with `polygamma_eq_hzeta` recovers the positive-order
+   polygamma multiplication law on the right half-plane.  The existing differentiated-Gamma proof
+   remains useful because it is formulated directly in the polygamma API; the new theorem supplies
+   the more general complex-exponent Hurwitz value relation and avoids duplicating rational-fiber
+   reindexing in future parent consumers.
 
 The positive integration result is a genuine identification of previously separate value APIs.
 No current hypothesis is removed: the consumers that remain use order, norm, or nonrational
@@ -141,9 +159,10 @@ monodromy information not contained in the equality alone.
 - [x] Hurwitz shift recurrence and `hzeta(s,0/1)=riemannZeta(s)` formalized
 - [x] negative-integer tail law strengthened with the actual Riemann zeta
 - [x] all-order unit polygamma/Riemann-zeta value law formalized
-- [x] all-order half polygamma and integer-exponent Hurwitz half-value laws formalized
+- [x] all-order half polygamma and full convergence-half-plane Hurwitz half-value laws formalized
+- [x] full positive-modulus Hurwitz rational-fiber distribution relation formalized
 - [x] RHTower and parent consumer audit completed
 - [x] targeted source verification passes
 - [x] targeted build, axiom audit, generated indexes, and formal lint pass
 
-Both public bridge theorems use only `propext`, `Classical.choice`, and `Quot.sound`.
+Every audited public bridge theorem uses only `propext`, `Classical.choice`, and `Quot.sound`.

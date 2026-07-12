@@ -3,7 +3,8 @@
 - **ID:** `completed-prime-gamma-left-half-accretivity-to-rh`
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE / `[RH-SUFFICIENT SOURCE ROUTE]`
-- **Source:** `PrimeArchAntiHerglotzGate.lean`, `XiRelativeResolventFlux.lean`,
+- **Source:** `PrimeArchAntiHerglotzGate.lean`, `XiWeilOneCauchyGate.lean`,
+  `CCMCompletedPrimeGammaAccretivityCriterion.lean`, `XiRelativeResolventFlux.lean`,
   `CompletedPrimeFluxFittingAttachment.lean`, and the corpus-wide carrier Pick machinery
 - **Statement:** A source-only proof that the completed continued prime--Gamma flux is accretive on
   the left half of the critical strip proves RH.
@@ -22,13 +23,13 @@ whenever
 0 < Re(s) < 1/2  and  riemannZeta(s) != 0.                 (A)
 ```
 
-Lean now proves the exact chain
+Lean now proves the exact equivalence chain
 
 ```text
-(A)
-  -> the centered continued prime--archimedean trace is anti-Herglotz
-  -> no centered Xi zero lies in the open upper half-plane
-  -> RH.
+RH
+  iff (A)
+  iff the centered continued prime--archimedean trace is anti-Herglotz
+  iff every upper-half-strip one-Cauchy source diagonal is nonnegative.
 ```
 
 The open problem is not to assume `(A)` under another name. It is to produce its sign from an
@@ -43,19 +44,20 @@ independent positive source construction.
 
 ## Lean endpoint already proved
 
-`formal/GaloisForLFunctions/RHTower/PrimeArchAntiHerglotzGate.lean` defines
+`formal/GaloisForLFunctions/RHTower/PrimeArchAntiHerglotzGate.lean` and
+`formal/GaloisForLFunctions/RHTower/CCMCompletedPrimeGammaAccretivityCriterion.lean` define
 
 ```text
 CompletedPrimeGammaLeftHalfAccretive
 ContinuedPrimeArchUpperAntiHerglotz
 ```
 
-and proves
+and prove
 
 ```text
 CompletedPrimeGammaLeftHalfAccretive
-  -> ContinuedPrimeArchUpperAntiHerglotz
-  -> RiemannHypothesis.
+  iff ContinuedPrimeArchUpperAntiHerglotz
+  iff RiemannHypothesis.
 ```
 
 The second implication is a local pole argument with full zero multiplicity. If a right-half Xi
@@ -146,17 +148,25 @@ If the completed prime--Gamma flux has nonnegative real part at every regular `s
 dense, and the completed flux is continuous wherever `zeta` is nonzero, so any strict negative
 value would persist on an open ball containing a Gaussian-rational witness.
 
-The strengthened formal chain is
+The strengthened formal equivalence is
 
 ```text
 CompletedPrimeGammaGaussianRatLeftHalfAccretive
-  -> CompletedPrimeGammaLeftHalfAccretive
-  -> ContinuedPrimeArchUpperAntiHerglotz
-  -> RiemannHypothesis.
+  iff CompletedPrimeGammaLeftHalfAccretive
+  iff ContinuedPrimeArchUpperAntiHerglotz
+  iff RiemannHypothesis.
 ```
 
-Thus the open source theorem is a countable family of explicit continued prime--Gamma value
-inequalities, rather than an uncountable Pick-matrix condition.
+The still weaker exact criterion in `PrimeArchSourceUpperBoundGate.lean` requires only
+
+```text
+exists L, every regular Gaussian-rational left-half-strip value satisfies
+  L <= Re(completedPrimeGammaFlux(s)).
+```
+
+Lean proves this countable finite-lower-floor condition equivalent to RH. Thus the open source
+theorem is not necessarily a countable family of nonnegative values: any independently produced
+uniform finite floor suffices.
 
 ## Corpus-wide producer boundary
 

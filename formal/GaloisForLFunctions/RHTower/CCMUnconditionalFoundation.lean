@@ -18,6 +18,7 @@ distinguished semilocal Sonin source construction.
 import GaloisForLFunctions.RHTower.CCMFiniteFockPassivity
 import GaloisForLFunctions.RHTower.CCMQuartetResolventPolarization
 import GaloisForLFunctions.RHTower.CCMSoninResolventCommutator
+import GaloisForLFunctions.RHTower.SoninSemilocalRelativeTrace
 import GaloisForLFunctions.HTGeometry.PrimeLogHerglotz
 import GaloisForLFunctions.HTGeometry.PrimeLogCauchySeamRank
 import GaloisForLFunctions.RHTower.GammaDampedPrimeLogCauchyDomain
@@ -27,6 +28,10 @@ import GaloisForLFunctions.RHTower.XiThetaSquareRateLaplace
 import GaloisForLFunctions.RHTower.XiWeilPositivityCriterion
 import GaloisForLFunctions.RHTower.XiWeilCauchyPoleExhaustion
 import GaloisForLFunctions.RHTower.XiWeilResolventSource
+import GaloisForLFunctions.RHTower.CCMTwoPoleSourceCriterion
+import GaloisForLFunctions.RHTower.CCMCompletedPrimeGammaAccretivityCriterion
+import GaloisForLFunctions.RHTower.PrimeArchSourceUpperBoundGate
+import GaloisForLFunctions.RHTower.SoninLogCoordinateScattering
 import GaloisForLFunctions.RHTower.HermitianDeterminantRH
 import GaloisForLFunctions.RHTower.PrimeEnergyZeroTransfer
 
@@ -58,6 +63,13 @@ theorem ccmRegularTwoPolePassivity_iff_riemannHypothesis :
     CCMRegularTwoPolePassivity ↔ RiemannHypothesis := by
   rw [CCMRegularTwoPolePassivity,
     ← riemannHypothesis_iff_regularTwoCauchy_nonneg]
+
+/-- The explicit continued prime--archimedean rank-two source condition is
+already RH-equivalent.  The construction problem is to prove this positivity
+from the distinguished semilocal Sonin model. -/
+theorem ccmContinuedTwoPoleSourcePassivity_iff_riemannHypothesis :
+    CCMContinuedTwoPoleSourcePassivity ↔ RiemannHypothesis := by
+  rw [← riemannHypothesis_iff_ccmContinuedTwoPoleSourcePassivity]
 
 /-- Cofinal source-resolved passivity for a family of finite CCM sections. -/
 def CCMCofinalSourceResolvedPassivity

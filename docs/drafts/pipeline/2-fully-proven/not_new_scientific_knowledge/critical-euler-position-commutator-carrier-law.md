@@ -200,20 +200,21 @@ is the conductor/position corner. The existing bounded projection-correction sca
 the Euler cross with a different Hilbert--Schmidt operator and consequently had uniformly bounded
 response. Equation `(11i)` identifies the source-compatible replacement.
 
-`[PROVED SHARP-CUTOFF NORMAL FORM]` The position corner is not an ordinary Hilbert--Schmidt
-operator.  For the formal physical/Fourier complement, `[X,Q_0]` is a two-edge distributional
-Sobolev trace at the frequency endpoints `+/-a`, pairing the even and odd sectors.  If
-`Q=Q_0+C` is the exact Sonin projection, the formal tree proves `C` Hilbert--Schmidt, but the
-position transport requires the stronger weighted commutator whose kernel is `(x-y)K_C(x,y)`.
-This first relative moment is not controlled by the unweighted Hilbert--Schmidt norm.  The exact
-proof and positive edge-carrier law are in
-`ccm-sonin-log-position-edge-trace-correction-law.md`.
+`[PROVED IN LEAN; COORDINATE CORRECTION]` In the original Sonin coordinate the generator in
+`(11i)` is `log|x|`, not ordinary position `x`. The standard two-edge formula for `[x,Q_0]` is
+therefore not the orbital-length carrier. Under the exact even logarithmic unitary, dilations become
+translations, but the Sonin Fourier constraint becomes the involutive translation-reversing
+scattering operator `J_log`, not the ordinary Fourier transform. The corrected theorem is in
+`../../3-formalized/not_new_scientific_knowledge/sonin-log-coordinate-mellin-scattering-carrier.md`.
+
+The required position transport is consequently the nonlocal commutator `[M_t,J_log]`, equivalently
+`[log|x|,B_a]` before logarithmic transport. This is the Burnol conductor/Mellin-scattering channel;
+compactness of the Sonin projection correction does not control it.
 
 The algebraic projection transport is therefore closed. The remaining analytic theorem is to
-construct a common Sobolev form graph on which the signed edge trace, the first-moment projection
-correction, the Euler leakage cross, and the internal trace-defect cocycle have the genuine
-semilocal relative trace, and to complete the full prime--Gamma form into a positive square or
-contraction.
+construct a common Mellin-scattering form graph on which the conductor commutator, Euler leakage
+cross, and internal trace-defect cocycle have the genuine semilocal relative trace, and to derive a
+uniform finite lower floor for the completed prime--Gamma flux.
 
 ## Completed source form
 

@@ -1,4 +1,4 @@
-# The sharp Sonin log-position leakage is a two-edge Sobolev trace bundle
+# The ordinary-position Fourier-cutoff leakage is a two-edge Sobolev trace bundle
 
 - **ID:** `ccm-sonin-log-position-edge-trace-correction-law`
 - **Stage:** 2-fully-proven / not-new
@@ -6,6 +6,27 @@
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** Fourier differentiation, Sobolev boundary traces,
   `critical-euler-position-commutator-carrier-law.md`, and the exact Sonin projection correction
+
+## Coordinate scope
+
+`[PROVED IN LEAN; ROUTE CORRECTION]` The multiplier in this card is ordinary position `x`. It is
+not the logarithmic position `log|x|` forced by the Euler orbital-length identity. Lean now proves
+
+```text
+[log|x|,U_p]=-log(p)U_p,
+[x,U_p]=(1-p)xU_p,
+```
+
+and proves that the second commutator is not a scalar multiple of `U_p` when `p != 1`.
+
+After the exact logarithmic-coordinate unitary makes `U_p` an additive translation, the original
+Sonin Fourier transform becomes an involutive translation-reversing scattering operator `J_log`,
+not the ordinary Fourier transform used below. The formal theorem and corrected carrier law are in
+`../../3-formalized/not_new_scientific_knowledge/sonin-log-coordinate-mellin-scattering-carrier.md`.
+
+Consequently the edge calculation below is correct standard Fourier distribution theory, but its
+identification as the degree-one Euler/Sonin source carrier is retired. The live commutator is
+`[log|x|,B_a]` in the original coordinate, equivalently `[M_t,J_log]` in the logarithmic coordinate.
 
 ## Statement
 
@@ -25,7 +46,7 @@ Q_(0,a)=I-P_a-B_a.                                       (2)
 ```
 
 The operator `Q_(0,a)` is the formal physical/Fourier Sonin complement used as the principal part
-of the exact intersection projection.  On Schwartz functions, the log-position commutator is the
+of the exact intersection projection. On Schwartz functions, the ordinary-position commutator is the
 distribution
 
 ```text
@@ -193,7 +214,7 @@ Accordingly, the compressed position commutator cannot be defined by pretending 
 formal complement preserves an operator core.  It must be constructed as a boundary form or by
 proving an exact cancellation with `C_a`.
 
-## Positive CCM carrier law
+## Ordinary-position carrier law
 
 The exact Sonin projection is
 
@@ -207,44 +228,40 @@ with `C_a` Hilbert--Schmidt.  On any common form core where the terms are meanin
 [X,Q_a]=[X,Q_(0,a)]+[X,C_a].                            (16)
 ```
 
-Equations `(4)`, `(6)`, and `(6c)` identify the complete resource forced on the logarithmic-position
-channel:
+Equations `(4)`, `(6)`, and `(6c)` identify the complete resource for the ordinary-position
+commutator:
 
 ```text
 two signed frequency-edge evaluations
   + their exact prolate-resolvent dressing V
   + the equivalent first relative moment (x-y)K_a(x,y)
-  + the odd Euler-dilation leakage
-  + a source-defined boundary/relative trace.            (17)
+  + a boundary/relative trace.                           (17)
 ```
 
-A proof may show that `[X,C_a]` cancels the distributional edge charge, or that the sum in `(16)`
-has a finite relative trace after pairing with Euler leakage.  It may not infer either conclusion
-from compactness or the unweighted Hilbert--Schmidt norm of `C_a`.
+A proof may show that `[X,C_a]` cancels the distributional edge charge or gives a finite relative
+trace. It may not infer either conclusion from compactness or the unweighted Hilbert--Schmidt norm
+of `C_a`.
 
-This is the positive form of the sharp-cutoff obstruction: a successful CCM construction must
-exhibit a **Sobolev edge-trace carrier with its prolate boundary resolvent and one relative
-position moment**.
+This carrier does not generate `log(p)` under dilation. It is therefore not an RH-closing CCM
+carrier. A successful construction must instead exhibit the nonlocal Mellin-scattering commutator
+`[M_t,J_log]`, together with its source-defined relative trace.
 
 ## Relation to the bilateral zero channel
 
-The even/odd polarization in `(12)` is the source-side analogue of the quartet resolvent split
+The even/odd polarization in `(12)` has the same signature pattern as the quartet resolvent split
 
 ```text
 cosh(a t) channel minus sinh(a t) channel.
 ```
 
-The edge trace supplies the causal/anti-causal incidence before a zero is read; an off-line zero
-turns that incidence into the nonzero hyperbolic-odd coordinate whose rank and metric cost are
-computed in `ccm-quartet-resolvent-bilateral-polarization-law.md`.
+This is a formal analogy only. The edge trace does not supply the Euler orbital-length incidence.
 
 ## Scope and classification
 
 The theorem is standard Fourier distribution and Sobolev trace calculus applied to the precise
-formal Sonin complement.  It is a route bridge, not new scientific knowledge.  The formal tree has
-the `L2` cutoff and Hilbert--Schmidt correction but not tempered distributions, Sobolev trace
-evaluation, or the unbounded position operator.  A finite-dimensional shadow would miss `(14)`,
-so no Lean wrapper is added.
+formal Sonin complement. It is not new scientific knowledge. Its earlier identification with the
+Euler logarithmic source was a coordinate mismatch. The corrected logarithmic scattering theorem
+is formalized in Lean.
 
 ## Gates
 
@@ -253,9 +270,6 @@ so no Lean wrapper is added.
 - [x] failure of sharp-cutoff position-domain invariance proved
 - [x] Hilbert--Schmidt correction separated from its required first relative moment
 - [x] exact Sonin position anomaly factored through the resolvent-dressed two-edge trace
-- [x] positive Sobolev edge-trace carrier law stated
-- [ ] construct the prolate resolvent on a compatible rigged Sobolev boundary pair
-- [ ] prove relative traceability of the dressed edge form `(6c)`
-- [ ] pair the resulting position leakage with the exact Euler leakage
-- [ ] prove the nonexpansive four-unit budget
-- [ ] RH
+- [x] ordinary-position scope separated from the Euler orbital-length carrier
+- [x] corrected logarithmic-coordinate Sonin scattering formalized
+- [x] ordinary-position scalar-commutator substitution retired

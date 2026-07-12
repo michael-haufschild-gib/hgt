@@ -17,7 +17,14 @@ multiplicity fiber:
 \lambda_q\ne\alpha\Longrightarrow |\lambda_q-\alpha|\ge\delta.
 \]
 
-There is a sequence of regular centered points `z_n -> alpha` such that the normalized Cauchy
+For every prescribed positive approach cap, there is a positive speed below that cap and a sequence
+of regular centered points `z_n -> alpha` of the explicit form
+
+\[
+z_n=\alpha+\frac{c}{n+1}
+\]
+
+such that the normalized Cauchy
 evaluation vectors satisfy
 
 \[
@@ -59,9 +66,9 @@ functional-equation conjugate pair. That family already exhausts every RH-decidi
 direction.
 
 Consequently the remaining source theorem is precise: prove positivity of the distinguished
-semilocal prime--archimedean/Sonin form on every regular two-pole Cauchy packet, with the required
-cofinal pole approach retained. This positivity is itself RH-equivalent after the unconditional
-target/source identities are applied.
+semilocal prime--archimedean/Sonin form on every admissible regular two-pole Cauchy packet, with the
+required cofinal pole approach retained. The separately formalized continued two-pole source
+criterion proves this explicit source positivity itself equivalent to RH.
 
 Multiplicity is not an obstruction. Cauchy evaluation vectors and the limiting indicators are
 constant on each multiplicity fiber, and the negative square counts the full fiber multiplicity.
@@ -73,6 +80,7 @@ RHTower.xiWeilFiberIndicator
 RHTower.xiWeilFiberIndicator_squareSummable
 RHTower.exists_xiSpectralPoint_gap
 RHTower.norm_normalizedCauchy_le
+RHTower.exists_normalizedCauchyLp_tendsto_fiberIndicator_with_cap
 RHTower.exists_normalizedCauchyLp_tendsto_fiberIndicator
 RHTower.xiWeilTwoCauchyPacket
 RHTower.xiWeilTwoCauchyPacket_squareSummable
@@ -81,6 +89,8 @@ RHTower.XiWeilRegularTwoCauchyNonneg
 RHTower.riemannHypothesis_iff_regularTwoCauchy_nonneg
 RHTower.CCMRegularTwoPolePassivity
 RHTower.ccmRegularTwoPolePassivity_iff_riemannHypothesis
+RHTower.CCMContinuedTwoPoleSourcePassivity
+RHTower.riemannHypothesis_iff_ccmContinuedTwoPoleSourcePassivity
 ```
 
 ## Verification

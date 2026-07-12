@@ -161,14 +161,17 @@ The project already contains the following unconditional pieces.
    `[X_A,T_(A,h)]=hT_(A,h)`, so the missing orbital length is produced intrinsically. After
    compression, the degree-one source splits into an internal trace-defect cocycle and the
    polarized position/Euler leakage cross.
-8. `ccm-sonin-three-grade-relative-carrier-law.md` synthesizes the forced carrier: principal Calkin
+8. `SoninLogCoordinateScattering.lean` now proves the exact coordinate compatibility: the original
+   Sonin Fourier transform becomes an involutive translation-reversing scattering operator `J_log`
+   after logarithmic transport. The ordinary Fourier two-edge commutator is not the Euler carrier.
+9. `ccm-sonin-three-grade-relative-carrier-law.md` synthesizes the forced carrier: principal Calkin
    shell, degree-one Hilbert--Schmidt relative cross with the exact logarithmic response, positive
    trace-class residual energy, and the archimedean/Gamma channel. The closed carrier and its
    positive contraction are not yet constructed.
-9. The formal tree already contains the principal Calkin faithfulness, relative ideal tower,
+10. The formal tree already contains the principal Calkin faithfulness, relative ideal tower,
    positive residual energy, exact unsquared coefficient exposure, finite Hankel expansion, and RH
-   endpoint. It does not yet contain the weighted log-position commutator on the actual Sonin
-   carrier, the genuine semilocal relative trace on that pair, or the completed contraction.
+   endpoint. It does not yet contain the closed commutator `[M_t,J_log]`, the genuine semilocal
+   relative trace on that pair, or the completed lower-floor estimate.
 
 ## Corrected finite-degree Gram target
 
@@ -638,9 +641,9 @@ same bilateral source channel.  The proof is in
 
 ## Sharp Sonin position-domain reduction
 
-`[PROVED BRIDGE]` The viable logarithmic-position commutator cannot be transported through the
-sharp Sonin cutoff as a bounded-operator identity.  If `Q_0=I-P_a-B_a` is the formal physical and
-Fourier complement, then on a Schwartz core
+`[PROVED IN LEAN; COORDINATE CORRECTION]` The ordinary-position commutator with the sharp Fourier
+cutoff is a two-edge Sobolev trace, but it is not the Euler orbital-length carrier. If
+`Q_0=I-P_a-B_a`, then on a Schwartz core
 
 ```text
 -i <[X,Q_0]f,g>
@@ -649,26 +652,26 @@ Fourier complement, then on a Schwartz core
     -hat(f)(-a)conjugate(hat(g)(-a))].
 ```
 
-This is a signed two-edge Sobolev trace pairing the even and odd sectors.  Moreover `Q_0` does not
-generically preserve the position domain: the sharp Fourier cutoff creates jumps at `+/-a`.
-Writing the exact Sonin projection as `Q=Q_0+C`, existing Lean proves `C` Hilbert--Schmidt, but the
-position transport requires the strictly stronger first relative moment `[X,C]`, whose kernel is
-`(x-y)K_C(x,y)`.
+Here `X=x`. Lean proves that `[x,U_p]=(1-p)xU_p` is not a scalar multiple of the dilation, whereas
+the required identity is `[log|x|,U_p]=-log(p)U_p`.
+
+After the exact even logarithmic unitary sends dilations to translations, the original Sonin
+Fourier transform becomes an involutive translation-reversing scattering operator `J_log`, not the
+ordinary Fourier transform used in the edge formula. Therefore the current source-side open theorem
+is
 
 The current source-side open theorem is therefore concrete:
 
 ```text
-signed frequency-edge trace
-  + first-moment Sonin projection correction
-  + odd Euler-dilation leakage
-  + Gamma/boundary conductor
-  -> a relative trace satisfying the four-unit budget.
+closed Mellin-scattering commutator [M_t,J_log]
+  + Euler translation leakage
+  + Gamma/Burnol conductor
+  -> a source-defined relative trace with a uniform finite lower floor.
 ```
 
-The complete proof of the sharp-cutoff reduction is in
-`../2-fully-proven/not_new_scientific_knowledge/ccm-sonin-log-position-edge-trace-correction-law.md`.
-Compactness or the ordinary Hilbert--Schmidt norm of the projection correction cannot substitute
-for the required position moment.
+The corrected Lean theorem is in
+`../3-formalized/not_new_scientific_knowledge/sonin-log-coordinate-mellin-scattering-carrier.md`.
+The ordinary edge formula remains valid but is retired as an Euler source carrier.
 
 ## Full-divisor Lean reduction
 
@@ -698,14 +701,6 @@ xiWeilPolarization is nonnegative on every square-summable divisor test.
 The finite diagonal-Fock layer is also formalized: the Gram matrix of diagonal tensor features is
 the Hadamard product of the factor Gram matrices; defect nonnegativity, diagonal-lift passivity,
 and the four-channel source inequality are exactly equivalent, both sectionwise and cofinally.
-
-`[OPEN RH CORE, FULL-CARRIER FORM]` Construct the distinguished principal-relative Sonin/source
-form as a positive form on the Cauchy core and prove that its exact continued source realization
-extends continuously and cofinally to the complete square-summable Xi-divisor carrier.  This must
-retain the finite conjugate-orbit sign directions above.  Such an extension supplies
-`CCMGlobalWeilPassivity` and therefore RH.  The remaining problem is no longer the separated
-Cauchy-packet target/source identity; it is positive carrier-complete extension through the actual
-semilocal operator.
 
 ## Rank-two Cauchy exhaustion
 
@@ -738,8 +733,75 @@ RH iff every regular two-pole Cauchy packet has nonnegative Xi--Weil square.
 The formal proof is in `XiWeilCauchyPoleExhaustion.lean`; its pipeline card is
 `../3-formalized/not_new_scientific_knowledge/ccm-normalized-cauchy-pole-fiber-exhaustion.md`.
 
-`[OPEN RH CORE, RANK-TWO SOURCE FORM]` Prove positivity of the distinguished principal-relative
-Sonin/prime--archimedean source form on these moving regular two-pole packets, retaining the
-normalized pole approach to every functional-equation conjugate pair. Neither full test-space
-density nor a general all-degree extension theorem is needed. The surviving source theorem is a
-cofinal rank-two contraction/positivity law.
+## Exact continued source criterion
+
+`[PROVED IN LEAN]` The rank-two target criterion has now been pulled completely to the explicit
+prime-plus-archimedean source side. For the continued relative trace `T`, define
+
+```text
+K(z,w) = (T(conjugate(w))-T(z))/(z-conjugate(w))
+```
+
+and let `E(z,w;a,b)` be its four-term Hermitian two-pole energy. On the natural continued domain,
+with both poles separated from both reflected poles, Lean proves
+
+```text
+E(z,w;a,b)
+  = xiWeilPolarization(twoCauchy(z,w;a,b), twoCauchy(z,w;a,b)).
+```
+
+The normalized pole approaches can be chosen with arbitrarily small unequal positive speeds. They
+stay inside the open-strip source domain and avoid every reflected collision. Hence Lean proves the
+source-side equivalence
+
+```text
+RH iff CCMContinuedTwoPoleSourcePassivity.
+```
+
+The proof is in `CCMTwoPoleSourceCriterion.lean`; its pipeline card is
+`../3-formalized/not_new_scientific_knowledge/ccm-continued-two-pole-source-criterion.md`.
+
+## Minimal rank-one source criterion
+
+`[PROVED IN LEAN]` The general non-q62 formal audit reduces the RH-bearing sign further. The
+diagonal of one regular Cauchy kernel is exactly
+
+```text
+(T(conjugate(z))-T(z))/(z-conjugate(z)) = -Im(T(z))/Im(z).
+```
+
+Under `s=1/2+zI`, its nonnegativity is precisely
+
+```text
+0 <= Re(infinitePrimeFlux(s) - logDeriv(archFactor)(s))
+```
+
+on the pole-free left half-strip. Lean proves
+
+```text
+RH iff CompletedPrimeGammaLeftHalfAccretive
+   iff CompletedPrimeGammaGaussianRatLeftHalfAccretive.
+```
+
+The corpus proves a weaker exact criterion as well:
+
+```text
+RH iff CompletedPrimeGammaGaussianRatLeftHalfBoundedBelow.
+```
+
+This asks only for one finite uniform lower floor on the completed flux over the regular
+Gaussian-rational points; the floor may be negative and need not be explicit. Failure of RH forces
+the flux below every floor near a reflected off-line pole. The formal proofs are in
+`CCMCompletedPrimeGammaAccretivityCriterion.lean` and `PrimeArchSourceUpperBoundGate.lean`; their
+pipeline cards are
+`../3-formalized/not_new_scientific_knowledge/ccm-completed-prime-gamma-accretivity-criterion.md`
+and `../3-formalized/not_new_scientific_knowledge/prime-arch-source-upper-bound-rh-gate.md`.
+
+`[OPEN RH CORE, DISTINGUISHED SONIN FORM]` The non-q62 corpus already constructs the finite-support
+semilocal Sonin relative trace, proves its Hilbert--Schmidt pairing and reality, and isolates
+`SoninSemilocalFluxNormalization` as the exact one-mode geometric source-identity gate. The
+surviving construction theorem must positively derive a uniform finite lower floor for the
+completed prime--Gamma flux from the distinguished Sonin principal/residual graph. Accretivity or
+rank-two source passivity are stronger sufficient producers, but the smallest currently formalized
+resource is countable rank-one boundedness. No divisor-density, target/source, pole-admissibility,
+determinant-limit, or finite-section transfer theorem remains outside Lean.

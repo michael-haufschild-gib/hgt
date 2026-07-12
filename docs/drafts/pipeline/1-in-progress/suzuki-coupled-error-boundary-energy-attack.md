@@ -581,6 +581,42 @@ The project already contains most of the functional-analytic shell required by a
     content. The live theorem must construct the graph and the renormalization from the exact
     coupled source before reading `ell_E` as a divisor expansion.
 
+21. **The rank-two Cauchy kernel is an exact endpoint, not a source producer.** The concurrent
+    `XiWeilCauchyPoleExhaustion.lean` theorem proves
+
+    ```text
+    RH iff every regular two-pole Cauchy packet has nonnegative Xi--Weil square.
+    ```
+
+    `XiWeilResolventSource.lean` identifies each separated packet entry with the divided difference
+    of `continuedPrimeArchSourceRelativeTrace`. Thus the corresponding two-by-two source kernel is
+    a minimal Hilbert--Pólya endpoint: a source Gram factorization of that kernel would prove RH.
+    But its positivity cannot be imported as a property of the continued trace, because the
+    pole-exhaustion theorem proves that this positivity is already equivalent to RH. Generalized
+    Pick/Krein--Langer theory supplies the coordinate and counts negative squares; it does not
+    remove them. The positive construction obligation is therefore to build the two-vector Gram
+    factorization from the coupled Euler--Gamma carrier before using the Xi divisor. This is the
+    rank-two resolvent form of the same charged-graph seam, not a separate CCM shortcut.
+
+22. **The all-prime causal arithmetic channel and its exact multiplier are now formal.**
+    `InfiniteMobiusCausalShift.lean` proves that every positive logarithmic right shift preserves
+    zero-threshold causal `L^2`, and that the absolutely summable Möbius average preserves it.
+    `InfiniteMobiusLaplaceMultiplier.lean` then proves, for `sigma>1` and `x>0`,
+
+    ```text
+    L_x(T_sigma f)=tau_sigma(x)L_x(f),
+    tau_sigma(x)=zeta(2sigma)/
+      (zeta(sigma)zeta(sigma+pi*x)).                    (12p)
+    ```
+
+    Here `T_sigma` is the actual signed all-prime logarithmic shift average, already proved
+    contractive on ambient `L^2`; no formal scalar multiplier or finite cutoff remains. This is
+    the positive carrier forced by the Möbius normalization: a successful construction must
+    extend `(12p)` from the causal half-plane to the common Xi-pointed charged graph while coupling
+    the floor discrepancy through the archimedean kernel. The remaining theorem is not the Euler
+    multiplier identity; it is the nonexpansive charged continuation that converts this exact
+    arithmetic factor into the pole-to-divisor transfer `(16)`.
+
 The audit therefore isolates one zeta-specific construction theorem, with two inseparable clauses:
 
 ```text
@@ -623,9 +659,14 @@ exact weighted all-prime tail and archimedean completion to the distinguished di
 moments, in a topology strong enough to retain the contour-jump residues.
 
 The arithmetic part of the pointed projection candidate `(10)` is therefore no longer
-conjectural: `Pi_omega` in `(12l)` constructs it exactly. What remains conjectural is its
-archimedean continuation to the common doubled graph domain and the critical estimate converting
-`(12l)` into the pole-to-divisor contraction `(16)`.
+conjectural. `InfiniteMobiusSignedChannel.lean` realizes the normalized all-prime amplitude as an
+actual unit vector in `ell^2(N)`, proves that `R_omega` is a surjective coisometry, and proves that
+`Pi_omega=R_omega^*R_omega` is a contractive idempotent projection. This removes the finite-cutoff
+surrogate from `(12l)`. The causal-shift and Laplace-multiplier modules prove that its signed
+logarithmic translation average preserves the causal Hardy carrier and has the exact normalized
+reciprocal-zeta multiplier `(12p)`. What remains is the archimedean continuation to the common
+doubled charged graph, the coupled floor-discrepancy cancellation, and the critical estimate
+converting `(12l)` into the pole-to-divisor contraction `(16)`.
 
 The coupled derivative `2(psi-X)` is the arithmetic coordinate of this replacement.  Any
 finite-prime autonomous ADE implementation retaining `{log p:p<=N}` must additionally expose
@@ -703,6 +744,7 @@ Only after this operator is constructed is there a legitimate Lean target.  Form
 - [x] critical derivative law `(5)` proved
 - [x] causal-source/anti-causal-defect distinction proved
 - [x] finite-energy reduction `(12)`--`(14)` proved
+- [x] all-prime causal Möbius shift channel and exact reciprocal-zeta multiplier `(12p)` proved
 - [ ] distributional critical limit of the completed transform
 - [ ] pointed projection, sum rule, or renewal contraction
 - [ ] unconditional boundary norm `(1)`

@@ -87,6 +87,16 @@ theorem DifferentialIndependent.algebraicIndependent
     exact congrArg Prod.fst h)
   simpa using h
 
+/-- A differentially independent family is faithfully indexed: two equal members have equal
+indices.  In orbit applications this says that differential freeness forces the acting palette to
+have trivial stabilizer on the chosen source. -/
+theorem DifferentialIndependent.injective
+    {F K : Type*} [CommRing F] [Nontrivial F] [CommRing K]
+    [Algebra F K] [Differential K]
+    {ι : Type*} {x : ι → K} (hx : DifferentialIndependent F x) :
+    Function.Injective x :=
+  hx.algebraicIndependent.injective
+
 /-- Replacing each member of a differentially independent family by any fixed derivative of that
 member preserves differential independence. -/
 theorem DifferentialIndependent.jetShift

@@ -105,9 +105,11 @@ hypothesis.
 This formalizes the complete finite-aperture algebraic and right-half-plane contractive layer. The
 cofinal squarefree normalization has since been formalized separately in
 `formal/GaloisForLFunctions/RHTower/SquarefreeMoebiusNormalization.lean`, including
-`L(mu^2,s)=zeta(s)/zeta(2s)` and the infinite Euler product. The present modules do not construct
-the infinite Hardy shift operator or formalize meromorphic contour transport across zeta-zero
-poles. Those operations remain the RH-bearing continuation seam in the paper card.
+`L(mu^2,s)=zeta(s)/zeta(2s)` and the infinite Euler product. The resulting normalized all-prime
+unit vector, coisometry, source-line projection, and ambient logarithmic `L^2` signed translation
+average are now formalized in `InfiniteMobiusSignedChannel.lean`. The causal Hardy restriction and
+exact Laplace multiplier identity are not yet formalized, nor is meromorphic contour transport
+across zeta-zero poles. The latter remains the RH-bearing continuation seam in the paper card.
 
 ## Gates
 
@@ -118,6 +120,9 @@ poles. Those operations remain the RH-bearing continuation seam in the paper car
 - [x] arithmetic squarefree channel instantiated
 - [x] RHTower aggregate import added
 - [x] infinite squarefree zeta normalization available in `SquarefreeMoebiusNormalization.lean`
-- [ ] infinite Hardy shift-average realization
+- [x] infinite signed `ell^2` source line and coisometry available in
+  `InfiniteMobiusSignedChannel.lean`
+- [x] ambient infinite logarithmic `L^2` shift-average contraction
+- [ ] causal Hardy restriction and exact multiplier identity
 - [ ] orbit-sensitive meromorphic continuation graph
 - [ ] four-unit Xi-source upper bound

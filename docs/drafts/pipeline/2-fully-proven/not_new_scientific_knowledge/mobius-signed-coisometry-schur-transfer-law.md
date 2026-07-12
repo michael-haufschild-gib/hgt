@@ -366,9 +366,16 @@ The formal certificate is recorded in
 `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/mobius-finite-schur-coisometry-core.md`.
 The cofinal squarefree normalization is now formalized independently in
 `formal/GaloisForLFunctions/RHTower/SquarefreeMoebiusNormalization.lean`, including the arithmetic,
-L-series, and Euler-product faces of `sum mu(n)^2 n^(-s)=zeta(s)/zeta(2s)`. The infinite Hardy
-shift operator and meromorphic contour graph are not formalized; these are the layers where the
-paper theorem leaves scalar Euler normalization and where RH-bearing continuation begins.
+L-series, and Euler-product faces of `sum mu(n)^2 n^(-s)=zeta(s)/zeta(2s)`.
+
+`formal/GaloisForLFunctions/RHTower/InfiniteMobiusSignedChannel.lean` now consumes that
+normalization to construct the actual all-prime signed amplitude as a unit vector in `ell^2(N)`.
+It proves the infinite synthesis is a surjective coisometry, its adjoint is the analysis map, and
+`R^*R` is a contractive idempotent projection onto the distinguished Möbius source line. The same
+module constructs the absolutely summable average of the actual logarithmic `L^2(R)` translation
+unitaries and proves it contractive. Thus the arithmetic cofinal projection and ambient shift
+average are fully formalized. Causal-subspace preservation, the exact Laplace multiplier identity,
+and the meromorphic continuation graph remain unformalized; the last is the RH-bearing layer.
 
 ## Gates
 
@@ -385,6 +392,9 @@ paper theorem leaves scalar Euler normalization and where RH-bearing continuatio
 - [x] inverse-horizontal residue charge forced into the graph norm
 - [x] finite squarefree probability, coisometry, Euler expansion, and Schur contraction formalized
 - [x] cofinal squarefree Möbius--zeta normalization formalized
+- [x] all-prime signed Möbius unit vector, coisometry, and contractive projection formalized
+- [x] infinite logarithmic `L^2` signed shift average and contraction formalized
+- [ ] causal Hardy restriction and exact multiplier identity formalized
 - [ ] construct the Xi-pointed charged continuation graph
 - [ ] prove nonexpansive pole-to-divisor renormalization in that graph
 - [ ] four-unit boundary norm

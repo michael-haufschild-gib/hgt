@@ -134,7 +134,7 @@ The reverse direction uses an explicit finite conjugate-orbit sign test. Every n
 divisor point produces a strictly negative square equal to minus the total multiplicity of its
 conjugate pair.
 
-Lean further proves the sharper rank-two criterion
+Lean further proves the sharper rank-two target criterion
 
 \[
 \texttt{CCMRegularTwoPolePassivity}\quad\Longleftrightarrow\quad\mathrm{RH}.
@@ -144,19 +144,66 @@ Normalized regular Cauchy poles approaching a divisor point converge in the divi
 to its complete multiplicity-fiber indicator. Subtracting the conjugate limit recovers the negative
 sign test. Full Cauchy-core density is therefore unnecessary.
 
-The existing corpus also proves that the Xi--Weil form on every separated finite Cauchy packet is
-exactly the continued prime-plus-archimedean relative-resolvent source form. Therefore the remaining
-CCM construction theorem has the following positive form:
+The source side is now equally explicit. For the continued relative trace `T`, Lean defines
+
+\[
+K(z,w)=\frac{T(\overline w)-T(z)}{z-\overline w}
+\]
+
+and proves that the corresponding four-term two-pole source energy is exactly the Xi--Weil square.
+It then proves the source-side criterion
+
+\[
+\texttt{CCMContinuedTwoPoleSourcePassivity}
+\quad\Longleftrightarrow\quad\mathrm{RH}.
+\]
+
+The admissible pole sequences stay inside the continued prime--archimedean domain and use unequal
+real approach speeds to avoid every reflected collision. Therefore the remaining CCM construction
+theorem has the following positive form:
 
 ```text
-the distinguished semilocal Sonin/source form is positive on every regular
-two-pole Cauchy packet and retains the normalized cofinal pole approach.
+the distinguished semilocal Sonin principal/residual graph supplies
+CCMContinuedTwoPoleSourcePassivity on the normalized moving pole family.
 ```
 
-This supplies `CCMRegularTwoPolePassivity` and hence RH. The missing theorem is not full test-space
-density or the target/source identity on separated Cauchy packets; both are unnecessary or already
-available. The missing content is source-side rank-two positivity through the principal-relative
-Sonin graph.
+The non-q62 corpus already constructs one finite-support semilocal Sonin relative trace and proves
+its Hilbert--Schmidt pairing and reality. It also proves
+`not_soninSemilocalFluxNormalization`: that fixed projection-correction scalarization has uniformly
+bounded geometric response and cannot carry `log(p^m)`. The genuine source graph must therefore
+use the logarithmic-position/conductor channel rather than normalize that pairing.
+
+Lean now proves the exact coordinate law. After logarithmic transport, dilations become additive
+translations while the original Sonin Fourier constraint becomes the involutive
+translation-reversing scattering operator `soninLogFourierScattering`. Ordinary position cannot
+produce a scalar dilation commutator; `log|x|` produces exactly `-log(p)`. Thus the remaining graph
+is the nonlocal Mellin-scattering commutator `[M_t,J_log]`, not the ordinary Fourier two-edge bundle.
+
+The general formal audit yields a still smaller equivalent carrier. Lean proves that the diagonal
+of one regular Cauchy kernel is the anti-Herglotz divided difference
+
+\[
+\frac{T(\overline z)-T(z)}{z-\overline z}
+=-\frac{\Im T(z)}{\Im z}.
+\]
+
+After the coordinate change `s=1/2+zI`, this is exactly accretivity of the completed prime--Gamma
+flux on the pole-free left half-strip. Both the full condition and its restriction to a fixed
+countable Gaussian-rational family are Lean-equivalent to RH.
+
+The corpus proves a further quantitative weakening. Failure of RH forces the source imaginary part
+above every real bound, equivalently the completed prime--Gamma flux below every real floor. Hence
+the current smallest formal source obligation is
+
+```text
+CompletedPrimeGammaGaussianRatLeftHalfBoundedBelow.
+```
+
+This asks only for the existence of one finite uniform lower floor on the regular Gaussian-rational
+left-half-strip values; the floor may be negative and need not be explicit. The rank-two source
+criterion remains the Hermitian packet formulation needed to connect with the finite Gram/Sonin
+architecture, while the boundedness criterion identifies the smallest currently formalized analytic
+resource it must pay.
 
 At the finite diagonal-Fock level the same obligation is represented by the named predicate
 
@@ -203,6 +250,16 @@ RHTower.ccmGlobalWeilPassivity_iff_riemannHypothesis
 RHTower.exists_normalizedCauchyLp_tendsto_fiberIndicator
 RHTower.riemannHypothesis_iff_regularTwoCauchy_nonneg
 RHTower.ccmRegularTwoPolePassivity_iff_riemannHypothesis
+RHTower.xiWeilPolarization_twoCauchy_eq_continuedSourceEnergy
+RHTower.CCMContinuedTwoPoleSourcePassivity
+RHTower.riemannHypothesis_iff_ccmContinuedTwoPoleSourcePassivity
+RHTower.ccmContinuedTwoPoleSourcePassivity_iff_riemannHypothesis
+RHTower.XiWeilUpperOneCauchyNonnegative
+RHTower.continuedPrimeArchUpperCauchyDiagonalNonnegative_iff_riemannHypothesis
+RHTower.completedPrimeGammaLeftHalfAccretive_iff_riemannHypothesis
+RHTower.completedPrimeGammaGaussianRatLeftHalfAccretive_iff_riemannHypothesis
+RHTower.CompletedPrimeGammaGaussianRatLeftHalfBoundedBelow
+RHTower.completedPrimeGammaGaussianRatLeftHalfBoundedBelow_iff_riemannHypothesis
 ```
 
 ## Verification
@@ -218,6 +275,14 @@ RHTower.ccmRegularTwoPolePassivity_iff_riemannHypothesis
 - [x] normalized Cauchy-pole fiber exhaustion compiled
 - [x] exact regular two-pole positivity criterion compiled
 - [x] exact finite Cauchy packet prime-plus-archimedean source formula reused
+- [x] exact continued two-pole source energy compiled
+- [x] continued source passivity criterion compiled
+- [x] finite-support semilocal Sonin trace and failed-normalization obstruction reused
+- [x] logarithmic-coordinate Sonin scattering and orbital-length commutator compiled
+- [x] rank-one Cauchy/anti-Herglotz gate reused
+- [x] full completed prime--Gamma accretivity criterion compiled
+- [x] countable Gaussian-rational criterion compiled
+- [x] finite-lower-floor Gaussian-rational criterion reused
 - [x] axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`
 - [ ] distinguished semilocal source form proved positive on regular two-pole packets
 - [ ] full actual Euler/boundary/Mellin finite-section incidence constructed
