@@ -28,6 +28,18 @@ R(h)
   -(1/2) integral_[1,exp(h)] E(t)t^(-3/2)dt.               (1)
 ```
 
+Equivalently, with the critical-scale logarithmic error
+
+```text
+e(h)=E(exp(h))/sqrt(exp(h)),
+```
+
+the same value is the causal Volterra potential
+
+```text
+R(h)=1-2exp(-h/2)-e(h)-(1/2)integral_[0,h]e(u)du.          (1')
+```
+
 For `L>=0` and `x>=2L`, put
 
 ```text
@@ -44,10 +56,15 @@ the same constants, to the corresponding lower problem for the normalized Chebys
 - `criticalMellinCompletedError`
 - `criticalMellinChebyshevPotential`
 - `criticalMellinCompletedError_eq_chebyshevPotential`
+- `criticalMellinNormalizedChebyshevError`
+- `criticalMellinError_integral_exp_substitution`
+- `criticalMellinChebyshevVolterraPotential`
+- `criticalMellinCompletedError_eq_volterraPotential`
 - `criticalMellinAdjacentBlock`
 - `criticalMellinChebyshevAdjacentBlock`
 - `criticalMellinAdjacentBlock_eq_chebyshevAdjacentBlock`
 - `completedAdjacentBlock_subpowerLower_iff_chebyshevAdjacentBlock`
+- `completedAdjacentBlock_subpowerLower_iff_volterraAdjacentBlock`
 
 ## Proof
 
@@ -65,14 +82,16 @@ The exact polar identity gives
 4sinh(h/2)=2sqrt(exp(h))-2/sqrt(exp(h)).
 ```
 
-Subtracting proves `(1)`.  Pointwise equality on the two nonnegative logarithmic blocks proves the
-integral identity and then the direct quantifier equivalence.
+Subtracting proves `(1)`.  The change of variables `t=exp(u)` proves `(1')`.  Pointwise equality on
+the two nonnegative logarithmic blocks proves the integral identities and then the direct
+quantifier equivalences.
 
 ## RH relevance
 
 This theorem removes the separate square-root polar and von Mangoldt main terms from the open
 estimate.  The remaining RH-bearing statement is a one-sided subpower lower bound for one fixed
-Haar filter of the normalized Chebyshev error.  It does not prove that bound.
+causal Volterra--Haar filter of the normalized logarithmic Chebyshev error.  It does not prove that
+bound.
 
 The piecewise-linear Guinand--Weil identification with the rectangular Xi--Weil coefficient is a
 separate formal bridge.  Suzuki's continuous screw-kernel formulation and Bombieri's localized

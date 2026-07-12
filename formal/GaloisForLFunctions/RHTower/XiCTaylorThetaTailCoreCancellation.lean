@@ -204,5 +204,149 @@ theorem integral_thetaCuspTailSecondDensity_mul_coreAtom_eq_seam_sub_tail
             (thetaCuspTailDerivative 0 x : ℂ) *
               truncatedCosineSection d z x := by ring
 
+/-- The core current after integrating by parts in exactly the value variable.  The first term is
+the uncancelled seam and the second is the mixed `rho`--`T` correlation.  Keeping these terms
+together is essential: neither has a useful sign separately. -/
+theorem xiCTaylorThetaTailCore_current_eq_seam_sub_mixed
+    (d : ℕ) (z : ℂ) :
+    orientedPolynomialCurrent (xiCTaylorThetaTailCorePolynomial d) z =
+      (1 / 4 : ℝ) *
+        (∫ x : ℝ in Ioi 0,
+          (thetaCuspTailSecondDensity x : ℂ) *
+            thetaCuspTailSecondCoreAtomDerivative d z x).im -
+      ((∫ x : ℝ in Ioi 0,
+          (thetaCuspTailSecondDensity x : ℂ) *
+            thetaCuspTailSecondCoreAtomDerivative d z x) *
+        (starRingEnd ℂ)
+          ((z ^ 2 + 1 / 4) *
+            ∫ y : ℝ in Ioi 0,
+              (thetaCuspTailDerivative 0 y : ℂ) *
+                truncatedCosineSection d z y)).im := by
+  have hder :=
+    xiCTaylorThetaTailCorePolynomial_derivative_eval_eq_second_integral d z
+  have hval := xiCTaylorThetaTailCorePolynomial_eval_eq_integral d z
+  unfold orientedPolynomialCurrent
+  rw [hder, hval]
+  let I : ℂ := ∫ x : ℝ in Ioi 0,
+    (thetaCuspTailSecondDensity x : ℂ) *
+      thetaCuspTailSecondCoreAtomDerivative d z x
+  let M : ℂ := ∫ y : ℝ in Ioi 0,
+    (thetaCuspTailDerivative 0 y : ℂ) * truncatedCosineSection d z y
+  let A : ℂ := z ^ 2 + 1 / 4
+  change (((1 / 2 : ℂ) * I) *
+      (starRingEnd ℂ) (1 / 2 - A * (2 * M))).im =
+    (1 / 4 : ℝ) * I.im - (I * (starRingEnd ℂ) (A * M)).im
+  have hcomplex : ((1 / 2 : ℂ) * I) *
+      (starRingEnd ℂ) (1 / 2 - A * (2 * M)) =
+        (1 / 4 : ℂ) * I - I * (starRingEnd ℂ) (A * M) := by
+    simp only [map_sub, map_mul, map_div₀, map_one, map_ofNat]
+    ring
+  rw [hcomplex, Complex.sub_im]
+  rw [show ((1 / 4 : ℂ) * I).im = (1 / 4 : ℝ) * I.im by
+    rw [Complex.mul_im]
+    norm_num]
+
+theorem integrableOn_thetaCuspTailDerivative_mul_truncatedCosineSection
+    (d : ℕ) (z : ℂ) :
+    IntegrableOn (fun x : ℝ =>
+      (thetaCuspTailDerivative 0 x : ℂ) *
+        truncatedCosineSection d z x) (Ioi 0) := by
+  unfold truncatedCosineSection
+  rw [show (fun x : ℝ => (thetaCuspTailDerivative 0 x : ℂ) *
+      ∑ k ∈ Finset.range (d + 1),
+        (-1 : ℂ) ^ k * (z * (x : ℂ)) ^ (2 * k) / (2 * k).factorial) =
+      fun x : ℝ => ∑ k ∈ Finset.range (d + 1),
+        (thetaCuspTailDerivative 0 x : ℂ) *
+          ((-1 : ℂ) ^ k * (z * (x : ℂ)) ^ (2 * k) /
+            (2 * k).factorial) by
+    funext x
+    rw [Finset.mul_sum]]
+  exact MeasureTheory.integrable_finset_sum _ fun k _ => by
+    have hbase : IntegrableOn
+        (fun x : ℝ => ((x ^ (2 * k) * thetaCuspTailDerivative 0 x : ℝ) : ℂ))
+        (Ioi 0) :=
+      (integrableOn_pow_mul_thetaCuspTailDerivative (2 * k) 0).ofReal
+    have hscaled := hbase.const_mul
+      (((-1 : ℂ) ^ k * z ^ (2 * k)) /
+        (((2 * k).factorial : ℕ) : ℂ))
+    convert hscaled using 1
+    funext x
+    push_cast
+    rw [mul_pow]
+    ring
+
+def xiCTaylorThetaTailCoreMixedCorrelationKernel
+    (d : ℕ) (z : ℂ) (p : ℝ × ℝ) : ℝ :=
+  (((thetaCuspTailSecondDensity p.1 : ℂ) *
+      thetaCuspTailSecondCoreAtomDerivative d z p.1) *
+    (starRingEnd ℂ)
+      ((z ^ 2 + 1 / 4) *
+        ((thetaCuspTailDerivative 0 p.2 : ℂ) *
+          truncatedCosineSection d z p.2))).im
+
+/-- Product-measure form of the asymmetric integration-by-parts identity.  This is the exact
+finite object on which any source-specific cancellation estimate must act. -/
+theorem xiCTaylorThetaTailCore_current_eq_seam_sub_mixedCorrelationIntegral
+    (d : ℕ) (z : ℂ) :
+    orientedPolynomialCurrent (xiCTaylorThetaTailCorePolynomial d) z =
+      (1 / 4 : ℝ) *
+        (∫ x : ℝ in Ioi 0,
+          ((thetaCuspTailSecondDensity x : ℂ) *
+            thetaCuspTailSecondCoreAtomDerivative d z x).im) -
+      ∫ p : ℝ × ℝ,
+        xiCTaylorThetaTailCoreMixedCorrelationKernel d z p
+          ∂((volume.restrict (Ioi 0)).prod (volume.restrict (Ioi 0))) := by
+  let mu : Measure ℝ := volume.restrict (Ioi 0)
+  let f : ℝ → ℂ := fun x =>
+    (thetaCuspTailSecondDensity x : ℂ) *
+      thetaCuspTailSecondCoreAtomDerivative d z x
+  let g : ℝ → ℂ := fun y =>
+    (z ^ 2 + 1 / 4) *
+      ((thetaCuspTailDerivative 0 y : ℂ) * truncatedCosineSection d z y)
+  have hf : Integrable f mu :=
+    integrableOn_thetaCuspTailSecondDensity_mul_coreAtomDerivative d z
+  have hg : Integrable g mu :=
+    (integrableOn_thetaCuspTailDerivative_mul_truncatedCosineSection d z).const_mul
+      (z ^ 2 + 1 / 4)
+  have hgconj : Integrable (fun y => (starRingEnd ℂ) (g y)) mu :=
+    (RCLike.conjCLE : ℂ ≃L[ℝ] ℂ).toContinuousLinearMap.integrable_comp hg
+  have hprod : Integrable (fun p : ℝ × ℝ =>
+      f p.1 * (starRingEnd ℂ) (g p.2)) (mu.prod mu) :=
+    hf.mul_prod hgconj
+  have hmul : (∫ p : ℝ × ℝ,
+      f p.1 * (starRingEnd ℂ) (g p.2) ∂mu.prod mu) =
+      (∫ x : ℝ, f x ∂mu) *
+        (starRingEnd ℂ) (∫ y : ℝ, g y ∂mu) := by
+    have h := MeasureTheory.integral_prod_mul (μ := mu) (ν := mu)
+      f (fun y => (starRingEnd ℂ) (g y))
+    rw [integral_conj] at h
+    exact h
+  have him : (∫ p : ℝ × ℝ,
+      f p.1 * (starRingEnd ℂ) (g p.2) ∂mu.prod mu).im =
+      ∫ p : ℝ × ℝ,
+        (f p.1 * (starRingEnd ℂ) (g p.2)).im ∂mu.prod mu := by
+    simpa using (integral_im hprod).symm
+  have hfim : (∫ x : ℝ, f x ∂mu).im =
+      ∫ x : ℝ, (f x).im ∂mu := by
+    simpa using (integral_im hf).symm
+  rw [xiCTaylorThetaTailCore_current_eq_seam_sub_mixed]
+  change (1 / 4 : ℝ) * (∫ x : ℝ, f x ∂mu).im -
+      ((∫ x : ℝ, f x ∂mu) *
+        (starRingEnd ℂ)
+          ((z ^ 2 + 1 / 4) *
+            ∫ y : ℝ, (thetaCuspTailDerivative 0 y : ℂ) *
+              truncatedCosineSection d z y ∂mu)).im = _
+  rw [hfim]
+  have hgIntegral : (∫ y : ℝ, g y ∂mu) =
+      (z ^ 2 + 1 / 4) *
+        ∫ y : ℝ, (thetaCuspTailDerivative 0 y : ℂ) *
+          truncatedCosineSection d z y ∂mu := by
+    simpa only [g] using
+      (MeasureTheory.integral_const_mul (μ := mu) (z ^ 2 + 1 / 4)
+        (fun y : ℝ => (thetaCuspTailDerivative 0 y : ℂ) *
+          truncatedCosineSection d z y))
+  rw [← hgIntegral, ← hmul, him]
+  simp only [mu, f, g, xiCTaylorThetaTailCoreMixedCorrelationKernel]
+
 end
 end RHTower

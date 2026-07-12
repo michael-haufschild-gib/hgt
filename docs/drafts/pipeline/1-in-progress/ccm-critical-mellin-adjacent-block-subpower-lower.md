@@ -47,6 +47,33 @@ Thus `(1)` is now literally a one-sided subpower lower problem for one fixed Haa
 the normalized Chebyshev potential `(2)`.  The polar and von Mangoldt square-root main terms have
 already cancelled in Lean; they are not separate remaining estimates.
 
+Writing
+
+```text
+e(h)=E(exp(h))/sqrt(exp(h)),
+```
+
+the same formal theorem gives the local causal form
+
+```text
+R(h)=1-2exp(-h/2)-e(h)-(1/2)integral_[0,h]e(u)du.          (3)
+```
+
+The open inequality is therefore exactly a fixed Volterra--Haar value constraint on `e`; no
+Gamma value, polar main term, or unsmoothed prime sum remains in the unresolved scalar.
+
+The formalized mode law in
+`../3-formalized/not_new_scientific_knowledge/ccm-critical-mellin-volterra-haar-mode-faithfulness.md`
+computes the transfer multiplier
+
+```text
+M_L(w)=-(2w+1)(1-exp(-Lw))^2/(2w^2)                       (4)
+```
+
+and proves `M_L(w)!=0` whenever `L>0` and `Re(w)>0`.  Hence the fixed Volterra--Haar filter
+faithfully retains every positive-growth exponential mode.  The remaining theorem must constrain
+the normalized Chebyshev input itself; filter censorship is excluded.
+
 The paper-proved rectangular critical-Mellin law identifies the actual fixed-width Weil value with
 `2 I_L(n)` plus a fixed term and an `n`-uniformly bounded Gamma term. The Lean theorem
 `riemannHypothesis_of_xiRectangularWeilTailSubpowerLower` therefore turns `(1)` into RH.
@@ -108,6 +135,9 @@ RH-equivalent limiting measure.
    determinant, relative trace, or compressed graph which retains the prime--polar coupling and
    cancels the half-unit atom before scalar absolute values are taken.  The permitted residual
    boundary loss remains `n^o(1)`.
+8. `[PROVED, POSITIVE FILTER LAW]` The exact Volterra--Haar multiplier `(4)` is nonzero throughout
+   the open right half-plane.  Every positive-growth mode is visible, so fixed-window linear
+   filtering loses none of the RH-bearing exponent.
 
 ## Formal endpoint
 
@@ -132,6 +162,7 @@ interface.
 - [x] weaker one-sided subpower endpoint proved sufficient in Lean
 - [x] bounded Gamma term shown harmless on paper
 - [x] square-root polar/prime cancellation reduced in Lean to the normalized Chebyshev potential
+- [x] causal Volterra--Haar transfer multiplier computed and proved right-half-plane faithful
 - [ ] prove `(1)` unconditionally from the completed source
 - [ ] formalize the critical-Mellin Stieltjes/autocorrelation identity
 - [ ] compose to RH

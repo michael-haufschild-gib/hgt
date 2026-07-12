@@ -73,7 +73,11 @@ rectangular power exponent.
 1. **Collision-free density.** Prove that finite Cauchy packets with `(1)` are dense in the
    continued Cauchy algebraic span.  Real horizontal perturbations preserve the continued domain;
    avoiding finitely many conjugate-collision values should preserve packet values in `ell^2`.
-   This closes `(5)` mechanically but remains target-fed unless combined with the source firewall.
+   Norm continuity of the divisor-valued Cauchy map is now formalized, and deleting every
+   self-conjugate pole leaves the continued Hilbert closure unchanged.  Thus diagonal collisions
+   are removed.  The remaining mechanical step is simultaneous finite perturbation excluding
+   `z=conjugate(w)` for distinct packet points.  This closes `(5)` mechanically but remains
+   target-fed unless combined with the source firewall.
 2. **Diagonal kernel extension.** Extend `(5)` continuously across `z=conjugate(w)` with diagonal
    value `-T'(z)`.  This removes collision avoidance but requires a termwise/analytic theorem
    identifying the diagonal Cauchy polarization with the derivative of the continued relative
@@ -85,7 +89,9 @@ rectangular power exponent.
 - [x] abstract finite-span sequence and quadratic-value limit proved
 - [x] off-diagonal finite-packet divided-difference formula proved
 - [x] phase-energy-growth witness bridge proved
-- [ ] collision-free packet density or diagonal kernel extension
+- [x] norm continuity of the Xi-divisor Cauchy evaluation map
+- [x] self-conjugate pole deletion preserves the continued Cauchy Hilbert closure
+- [ ] pairwise collision-free finite-packet density or diagonal kernel extension
 - [ ] explicit packet representation for one reconstructing sequence
 - [ ] packet selection independent of Xi divisor input
 - [ ] exact source formula `(5)` and limit `(6)` assembled in one Lean theorem
@@ -94,3 +100,6 @@ rectangular power exponent.
 ## Log
 
 - 2026-07-12 — isolated from the full-corpus top-down sweep after the continued-source closure and principal-phase growth additions.
+- 2026-07-12 — formalized Cauchy `ell^2` norm continuity and proved that removing all real poles
+  preserves the continued source Hilbert closure; only pairwise finite-packet collision avoidance
+  remains in the mechanical value-formula layer.
