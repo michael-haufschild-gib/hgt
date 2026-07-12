@@ -270,6 +270,99 @@ theorem euclideanFrameOpNorm_tendsto_atTop_of_normalizedGramDetRoot_tendsto_zero
   apply tendsto_atTop_mono (fun N => ?_) hsqrt
   exact euclideanMatrixOpNorm_ge_leastEigenvalue_inv_sqrt (C N) (G N) (hG N) (hC N)
 
+/-- Coordinates of the nonsingular inverse in the original Gram eigenbasis are obtained by
+reciprocating the positive Gram eigenvalues. -/
+theorem nonsingInv_eigenbasis_repr_apply
+    {N : ℕ} (G : Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ) (hG : G.PosDef)
+    (x : EuclideanSpace ℂ (Fin (N + 1))) (i : Fin (N + 1)) :
+    hG.isHermitian.eigenvectorBasis.repr
+      (G⁻¹.toEuclideanLin x) i =
+      (hG.isHermitian.eigenvalues i)⁻¹ *
+        hG.isHermitian.eigenvectorBasis.repr x i := by
+  let b := hG.isHermitian.eigenvectorBasis
+  have hKbasis (j : Fin (N + 1)) :
+      G⁻¹.toEuclideanLin (b j) =
+        ((hG.isHermitian.eigenvalues j)⁻¹ : ℂ) • b j := by
+    apply WithLp.ofLp_injective 2
+    simpa [Matrix.toLpLin_apply] using
+      (nonsingInv_mulVec_eq_inv_smul_of_mulVec_eq_smul G hG (b j).ofLp
+        (hG.isHermitian.eigenvalues j) (hG.eigenvalues_pos j)
+        (hG.isHermitian.mulVec_eigenvectorBasis j))
+  rw [← b.sum_repr x]
+  simp_rw [map_sum, map_smul, hKbasis]
+  classical
+  simp [b, OrthonormalBasis.repr_apply_apply, Pi.single_apply]
+  ring
+
+/-- The Euclidean operator norm of the positive inverse Gram operator is at most the reciprocal
+of the least Gram eigenvalue. -/
+theorem nonsingInv_euclidean_opNorm_le_leastEigenvalue_inv
+    {N : ℕ} (G : Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ) (hG : G.PosDef) :
+    ‖LinearMap.toContinuousLinearMap G⁻¹.toEuclideanLin‖ ≤
+      (leastEigenvalue G hG)⁻¹ := by
+  let b := hG.isHermitian.eigenvectorBasis
+  let ell := leastEigenvalue G hG
+  have hell : 0 < ell := leastEigenvalue_pos G hG
+  apply ContinuousLinearMap.opNorm_le_bound _ (inv_nonneg.mpr hell.le)
+  intro x
+  have hsqK : ‖G⁻¹.toEuclideanLin x‖ ^ 2 =
+      ∑ i : Fin (N + 1),
+        ‖(hG.isHermitian.eigenvalues i)⁻¹ * b.repr x i‖ ^ 2 := by
+    rw [← b.repr.norm_map (G⁻¹.toEuclideanLin x), EuclideanSpace.norm_sq_eq]
+    apply Finset.sum_congr rfl
+    intro i hi
+    rw [nonsingInv_eigenbasis_repr_apply G hG x i]
+  have hsqX : ‖x‖ ^ 2 = ∑ i : Fin (N + 1), ‖b.repr x i‖ ^ 2 := by
+    rw [← b.repr.norm_map x, EuclideanSpace.norm_sq_eq]
+  rw [← sq_le_sq₀ (norm_nonneg _) (mul_nonneg (inv_nonneg.mpr hell.le) (norm_nonneg x))]
+  change ‖G⁻¹.toEuclideanLin x‖ ^ 2 ≤ (ell⁻¹ * ‖x‖) ^ 2
+  rw [mul_pow, hsqK, hsqX, Finset.mul_sum]
+  apply Finset.sum_le_sum
+  intro i hi
+  have hli : ell ≤ hG.isHermitian.eigenvalues i :=
+    leastEigenvalue_le_eigenvalue G hG i
+  have hieig : 0 < hG.isHermitian.eigenvalues i := hG.eigenvalues_pos i
+  have hinv : (hG.isHermitian.eigenvalues i)⁻¹ ≤ ell⁻¹ := by
+    exact (inv_le_inv₀ hieig hell).2 hli
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hieig)]
+  rw [mul_pow]
+  apply mul_le_mul_of_nonneg_right
+  · nlinarith [inv_pos.mpr hieig, inv_pos.mpr hell]
+  · positivity
+
+/-- **Exact finite repair norm law.** The Euclidean operator norm of a canonical
+inverse-Cholesky frame is the reciprocal square root of the least Gram eigenvalue. -/
+theorem euclideanMatrixOpNorm_eq_leastEigenvalue_inv_sqrt
+    {N : ℕ} (C G : Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ)
+    (hG : G.PosDef) (hC : IsCanonicalInverseCholeskyFrame C G) :
+    euclideanMatrixOpNorm C = (leastEigenvalue G hG)⁻¹.sqrt := by
+  let L : EuclideanSpace ℂ (Fin (N + 1)) →L[ℂ] EuclideanSpace ℂ (Fin (N + 1)) :=
+    LinearMap.toContinuousLinearMap C.toEuclideanLin
+  let K : EuclideanSpace ℂ (Fin (N + 1)) →L[ℂ] EuclideanSpace ℂ (Fin (N + 1)) :=
+    LinearMap.toContinuousLinearMap (G⁻¹).toEuclideanLin
+  have hcomp : L† ∘L L = K := by
+    apply ContinuousLinearMap.ext
+    intro y
+    change (L†) (L y) = K y
+    rw [show (L†) = LinearMap.toContinuousLinearMap C.toEuclideanLin.adjoint by
+      exact (LinearMap.adjoint_toContinuousLinearMap C.toEuclideanLin).symm]
+    rw [← Matrix.toEuclideanLin_conjTranspose_eq_adjoint]
+    change WithLp.toLp 2 (Cᴴ *ᵥ (C *ᵥ y.ofLp)) =
+      WithLp.toLp 2 (G⁻¹ *ᵥ y.ofLp)
+    rw [mulVec_mulVec, ← inverse_eq_conjTranspose_mul_of_inverseCholesky C G hC.1]
+  have hlower := euclideanMatrixOpNorm_ge_leastEigenvalue_inv_sqrt C G hG hC
+  apply le_antisymm ?_ hlower
+  have hell : 0 < leastEigenvalue G hG := leastEigenvalue_pos G hG
+  change ‖L‖ ≤ (leastEigenvalue G hG)⁻¹.sqrt
+  rw [← sq_le_sq₀ (norm_nonneg L) (Real.sqrt_nonneg _)]
+  rw [Real.sq_sqrt (inv_nonneg.mpr hell.le)]
+  calc
+    ‖L‖ ^ 2 = ‖L† ∘L L‖ := by
+      rw [ContinuousLinearMap.norm_adjoint_comp_self, pow_two]
+    _ = ‖K‖ := by rw [hcomp]
+    _ ≤ (leastEigenvalue G hG)⁻¹ :=
+      nonsingInv_euclidean_opNorm_le_leastEigenvalue_inv G hG
+
 end
 
 end GaloisForLFunctions.HTGeometry

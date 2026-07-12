@@ -80,6 +80,48 @@ possibility is therefore the asymmetric or mixed representation obtained by inte
 source variable at a time: its seam term and mixed `H_d/C_d` kernel must be tested together rather
 than signed separately.
 
+The exact one-variable identity, now proved in Lean, is
+
+```text
+integral rho(x) H_d(z,x) dx
+ = 1 - 4(z^2+1/4) integral T(y) C_d(z,y)dy,                (3)
+
+J_(U_d)(z)
+ = (1/4) integral Im(rho(x) partial_z H_d(z,x))dx
+   - integral integral rho(x)T(y)
+       Im(partial_z H_d(z,x)
+          conjugate((z^2+1/4)C_d(z,y)))dxdy.              (4)
+```
+
+The seam term in `(4)` is not disposable: the mixed term is a cross energy, not a square, and the
+already proved Wigner--Eisenstein analysis shows that the corresponding ambient pair form is
+indefinite.  Thus `(4)` is an exact coordinate but not yet a producer.
+
+There is a second finite value relation, also proved in Lean,
+
+```text
+z^2 S_d(z,x) = 1-C_(d+1)(z,x),
+z^2 H_d(z,x) = (z^2+1/4)C_(d+1)(z,x)-1/4.                (5)
+```
+
+Equation `(5)` exposes the completion boundary `|Im z|=1/2` without division at `z=0`.  The live
+residue is a completion-compensated cosine correlation.  A proof must orient this distinguished
+canonical average; positivity of every cosine atom or of the ambient coefficient form is neither
+true nor required.
+
+The canonical density has the further exact completed-source split
+
+```text
+rho(x)=T(x)+4 Phi(x),
+Phi(x)=T''(x)-(1/4)T(x),                                  (6)
+```
+
+where `Phi` is the even theta-cusp source.  Unlike `rho=4T''` alone, `(6)` retains the modular
+completion.  Substitution into `(4)` separates a universal raw-tail cross term from the completed
+theta correlation.  The latter is the only live place for a canonical orientation law; the
+Wigner--Eisenstein calculation shows it cannot be replaced by positivity of the ambient pair
+kernel.
+
 ## Gates
 
 - [x] positive normalized density coordinate formalized
@@ -87,7 +129,9 @@ than signed separately.
 - [x] derivative integral identity formalized
 - [x] exact symmetric two-point current identity formalized
 - [x] positive-current atom shortcut excluded
-- [ ] derive the exact one-variable integration-by-parts correlation identity
+- [x] derive the exact one-variable integration-by-parts correlation identity
+- [x] derive the completion-compensated finite cosine identity
+- [x] expose the raw-tail plus completed-source density split
 - [ ] prove or refute a favorable sign/cancellation for the mixed kernel plus seam
 - [ ] obtain the eventual scaled core-current inequality on every anisotropic fibre
 - [ ] complete paper proof and Lean theorem

@@ -174,6 +174,91 @@ theorem thetaCuspTailSecondCoreAtom_sourceSecondDerivative
   rw [hfirst]
   exact (hasDerivAt_thetaCuspTailSecondCoreAtomSourceDerivative d z x).deriv
 
+/-- The canonical density contains both the raw positive tail and the completed even theta source.
+This is the first identity in the cancellation analysis that uses the full theta completion, rather
+than positivity and two derivatives alone. -/
+theorem thetaCuspTailSecondDensity_eq_tail_add_four_fullSource (x : ℝ) :
+    thetaCuspTailSecondDensity x =
+      thetaCuspTailDerivative 0 x + 4 * thetaCuspFullSource x := by
+  rw [thetaCuspFullSource_eq_tail_second_sub]
+  unfold thetaCuspTailSecondDensity
+  ring
+
+/-- Exact finite-section completion identity.  The shifted second section is not an independent
+kernel: after multiplication by `z^2` it is the defect of the next ordinary cosine section. -/
+theorem truncatedCosineSection_succ_eq_one_sub_sq_mul_secondSection
+    (d : ℕ) (z : ℂ) (x : ℝ) :
+    truncatedCosineSection (d + 1) z x =
+      1 - z ^ 2 * thetaCuspTailSecondSection d z x := by
+  unfold truncatedCosineSection thetaCuspTailSecondSection
+  rw [Finset.sum_range_succ']
+  simp only [Nat.mul_zero, pow_zero, Nat.factorial_zero, Nat.cast_one, div_one,
+    one_mul]
+  rw [show z ^ 2 *
+      (∑ k ∈ Finset.range (d + 1),
+        (-1 : ℂ) ^ k * z ^ (2 * k) *
+          ((x : ℂ) ^ (2 * k + 2) / (2 * k + 2).factorial)) =
+      ∑ k ∈ Finset.range (d + 1),
+        z ^ 2 * ((-1 : ℂ) ^ k * z ^ (2 * k) *
+          ((x : ℂ) ^ (2 * k + 2) / (2 * k + 2).factorial)) by
+    rw [Finset.mul_sum]]
+  have hsum :
+      (∑ k ∈ Finset.range (d + 1),
+        (-1 : ℂ) ^ (k + 1) * (z * (x : ℂ)) ^ (2 * (k + 1)) /
+          (2 * (k + 1)).factorial) =
+      -(∑ k ∈ Finset.range (d + 1),
+        z ^ 2 * ((-1 : ℂ) ^ k * z ^ (2 * k) *
+          ((x : ℂ) ^ (2 * k + 2) / (2 * k + 2).factorial))) := by
+    rw [← Finset.sum_neg_distrib]
+    apply Finset.sum_congr rfl
+    intro k _
+    rw [show 2 * (k + 1) = 2 * k + 2 by omega]
+    rw [show (-1 : ℂ) ^ (k + 1) = -((-1 : ℂ) ^ k) by
+      rw [pow_succ]
+      ring]
+    rw [mul_pow]
+    rw [show z ^ (2 * k + 2) = z ^ 2 * z ^ (2 * k) by
+      rw [pow_add]
+      ring]
+    ring
+  rw [hsum]
+  ring
+
+/-- The completion-compensated form of each convex-core atom.  It exposes the exact seam
+`-1/4` and the next finite cosine section without dividing by `z`. -/
+theorem sq_mul_thetaCuspTailSecondCoreAtom_eq_completion_mul_cosine_sub
+    (d : ℕ) (z : ℂ) (x : ℝ) :
+    z ^ 2 * thetaCuspTailSecondCoreAtom d z x =
+      (z ^ 2 + 1 / 4) * truncatedCosineSection (d + 1) z x - 1 / 4 := by
+  have hsection : z ^ 2 * thetaCuspTailSecondSection d z x =
+      1 - truncatedCosineSection (d + 1) z x := by
+    rw [truncatedCosineSection_succ_eq_one_sub_sq_mul_secondSection]
+    ring
+  unfold thetaCuspTailSecondCoreAtom
+  calc
+    z ^ 2 * (1 - (z ^ 2 + 1 / 4) * thetaCuspTailSecondSection d z x) =
+        z ^ 2 - (z ^ 2 + 1 / 4) *
+          (z ^ 2 * thetaCuspTailSecondSection d z x) := by ring
+    _ = z ^ 2 - (z ^ 2 + 1 / 4) *
+          (1 - truncatedCosineSection (d + 1) z x) := by rw [hsection]
+    _ = (z ^ 2 + 1 / 4) * truncatedCosineSection (d + 1) z x - 1 / 4 := by ring
+
+/-- Multiplication by the completion monomial `z^2` has one exact radial current cost.  This
+identity isolates that cost from the completion-compensated cosine correlation. -/
+theorem orientedPolynomialCurrent_X_sq_mul
+    (P : Polynomial ℂ) (z : ℂ) :
+    orientedPolynomialCurrent (X ^ 2 * P) z =
+      Complex.normSq z ^ 2 * orientedPolynomialCurrent P z -
+        2 * Complex.normSq z * z.im * Complex.normSq (P.eval z) := by
+  unfold orientedPolynomialCurrent
+  simp only [derivative_mul, derivative_X_pow, Nat.cast_ofNat, eval_add, eval_mul,
+    eval_C, eval_pow, eval_X, map_mul, map_pow]
+  rw [Complex.normSq_apply, Complex.normSq_apply]
+  simp only [pow_two, Complex.add_re, Complex.add_im, Complex.mul_im, Complex.mul_re,
+    Complex.conj_re, Complex.conj_im]
+  norm_num
+  ring
+
 /-- The exact one-source integration-by-parts identity, including its boundary seam.  It is
 stated at the finite-section level and follows by comparing the two already proved canonical
 representations of the same core polynomial. -/

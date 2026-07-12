@@ -438,8 +438,11 @@ inverse-Cholesky frames, vanishing normalized Gram determinants force: normalize
 determinants to tend to infinity, the least Gram eigenvalue to tend to zero, and the Euclidean
 operator norms of the frames to tend to infinity. The norm proof uses a unit least-eigenvalue
 eigenvector and the exact identity `G⁻¹=CᴴC`, so it introduces no dimension-dependent determinant
-estimate. This does not yet formalize the OPUC/Szegő theorem that supplies normalized determinant
-vanishing for a purely singular circle measure, nor the asserted exact finite norm equality.
+estimate. The same module proves the asserted exact finite identity
+`||C_N||_2=sqrt(lambda_min(G_N)^(-1))` by diagonalizing `G_N⁻¹` in the Gram eigenbasis and combining
+the matching lower eigenvector bound with `||C||_2^2=||C^*C||_2`. This does not yet formalize the
+OPUC/Szegő theorem that supplies normalized determinant vanishing for a purely singular circle
+measure.
 
 All nine exact builds pass. `#print axioms` on the capstone declarations reports only `propext`,
 `Classical.choice`, and `Quot.sound`. The touched modules contain no proof debt, and the
@@ -451,8 +454,8 @@ construction and weak continuity of the actual N-extremal Nevanlinna
 kernel and projective support label, the full Bauer-simplex/topological and spectral-type layer,
 finite-frame Hilbert-cube fibers, constrained full-shift transversality, topological continuity of
 the complete-tower coordinate, F. and M. Riesz, graph closure as a linear relation,
-the OPUC/Szegő determinant-vanishing input and Bernstein--Szegő approximation, the exact finite
-operator-norm identity, and the final residual-set capstone.
+the OPUC/Szegő determinant-vanishing input and Bernstein--Szegő approximation, and the final
+residual-set capstone.
 
 ## Gates
 
