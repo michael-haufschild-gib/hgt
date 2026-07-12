@@ -470,28 +470,37 @@ umbrella for graph or measure-theoretic steps.
 The unconditional module `GaloisForLFunctions.HTGeometry.CompleteGramTowerTopology` proves that
 the complete Toeplitz Gram tower is continuous and injective on real probability measures, and
 that its restriction to every compact carrier family is a closed topological embedding. This
-formalizes the complete-tower topological selector in the equivalent Gram coordinate. Continuity
-of the positive-diagonal inverse-Cholesky factor itself remains open, so the paper's literal
-matrix-`C_N` topological statement is not yet promoted.
+formalizes the complete-tower topological selector in the equivalent Gram coordinate.
 
 The unconditional module `GaloisForLFunctions.HTGeometry.CanonicalFrameClosedGraph` proves that
 the strict positive-diagonal inverse-Cholesky normalization is equivalent, on its algebraic
 inverse-frame locus, to the closed condition of real nonnegative diagonal. The determinant-one
 identity rules out every zero diagonal entry. Consequently the graph of the literal canonical
-inverse-Cholesky factor over the positive-definite cone is closed. Compact-range control, and then
-the closed-graph-to-continuity promotion, remain; strict positivity is no longer the obstruction.
+inverse-Cholesky factor over the positive-definite cone is closed.
 
-All fourteen exact builds pass. `#print axioms` on the capstone declarations reports only `propext`,
+The unconditional module `GaloisForLFunctions.HTGeometry.CanonicalFrameContinuity` proves the
+missing compact-range control and promotes that closed graph to actual continuity. Its key bound
+is `|C i j|² ≤ (G⁻¹ j j).re`, hence `||C|| ≤ ||G⁻¹||+1` in the elementwise finite-matrix
+norm. Local continuity of matrix inversion therefore traps all nearby canonical frames in one
+compact ball; every cluster point lies in the closed canonical graph and uniqueness identifies it
+with the limiting frame.
+
+The unconditional module `GaloisForLFunctions.HTGeometry.CompleteFrameTowerTopology` applies this
+fixed-level theorem to Cayley--Toeplitz probability measures with positive-definite sections at
+every level. The literal complete positive-diagonal inverse-Cholesky tower is continuous and
+injective in the weak/product topologies, and its restriction to every compact carrier family is
+a closed topological embedding. Thus the paper's exact `C_N` topological selector, rather than
+only its equivalent Gram coordinate, is now formalized.
+
+All sixteen exact builds pass. `#print axioms` on the capstone declarations reports only `propext`,
 `Classical.choice`, and `Quot.sound`. The touched modules contain no proof debt, and the
 repository-wide formal lint passes. This validates only the declarations listed above, not the
 still-unformalized claims in the paper.
 
-The remaining formalization requires compact-range control and continuity of the triangular
-positive-diagonal factor (its graph is now formally closed),
-construction and weak continuity of the actual N-extremal Nevanlinna
+The remaining formalization requires construction and weak continuity of the actual N-extremal Nevanlinna
 kernel and projective support label, the full Bauer-simplex/topological and spectral-type layer,
-finite-frame Hilbert-cube fibers, constrained full-shift transversality, topological continuity of
-the complete-tower coordinate, the one-sided Fourier/F. and M. Riesz rigidity input and its
+finite-frame Hilbert-cube fibers, constrained full-shift transversality,
+the one-sided Fourier/F. and M. Riesz rigidity input and its
 pure-singular graph-saturation consequence,
 the OPUC/Szegő determinant-vanishing input and Bernstein--Szegő approximation, and the final
 residual-set capstone.

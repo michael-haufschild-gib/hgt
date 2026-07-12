@@ -14,6 +14,8 @@ open Complex MeasureTheory Set
 
 namespace RHTower
 
+open MellinL2
+
 noncomputable section
 
 /-- A jointly continuous complex sesquilinear form on a normed space, linear
@@ -77,7 +79,7 @@ theorem isClosed_leftRadical (Q : ContinuousSesquilinearForm H) :
 
 end ContinuousSesquilinearForm
 
-abbrev XiThetaL2 := Lp (alpha := ℝ) ℂ 2
+abbrev XiThetaL2 := Lp (α := ℝ) ℂ 2 volume
 
 /-- Simultaneous invariance under the ordinary real translation
 representation. -/

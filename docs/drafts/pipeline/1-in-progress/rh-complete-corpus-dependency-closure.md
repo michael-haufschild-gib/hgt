@@ -59,10 +59,11 @@ The chain may have arbitrarily many middle gaps.  It is retired only when one en
 when the proposed invariant is proved blind to horizontal displacement or multiplicity, or when
 the source object is constructed from the Xi divisor it is meant to constrain.
 
-## Current leading chain — rectangular Landau pole jet
+## Concurrent mapped chain — rectangular Landau pole jet
 
-The strongest two-ended chain is now closed from a false-RH divisor to an exact one-window RH
-criterion:
+This exact chain is being pursued by a concurrent agent and is excluded from the present research
+lane.  It remains in the dependency map because its right end is closed from a false-RH divisor to
+an exact one-window RH criterion:
 
 ```text
 not RH
@@ -83,7 +84,7 @@ because local normal convergence preserves a common finite order floor.  Functio
 reflection folds the full dominant divisor sum to the right-half coefficient, and the remaining
 part of the Weil value is bounded uniformly in aperture.
 
-The exact positive open core is therefore source-side and strictly weaker than positivity:
+The concurrently owned positive open core is source-side and strictly weaker than positivity:
 
 ```text
 [OPEN CORE]
@@ -97,7 +98,9 @@ This one lower bound proves RH by
 `riemannHypothesis_iff_rectangular_logSample_weil_eventually_bddBelow`.  It must not be obtained by assuming
 global Weil passivity, a zero-free half-strip, an Xi-divisor-selected domain, or any equivalent RH
 criterion.  The prime explicit-formula side is expected to contain a main-term cancellation plus a
-cofinal error term; proving the finite floor is the remaining scientific theorem.
+cofinal error term; proving the finite floor is the remaining scientific theorem on that external
+lane.  The present sweep does not develop this estimate, its critical-Mellin reformulations, or its
+Hurwitz principal-phase growth equivalent.
 
 The concurrent screw-coordinate formalization compresses the same target further.  With
 `Psi=xiScrewDivisor`, Lean now proves
@@ -253,20 +256,82 @@ Fock realization preserve its complete negative index.  Consequently proving any
 three carriers nonnegative proves RH, but transporting between them cannot by itself remove the
 charge.
 
+## Independent interface audit
+
+The following interfaces have been checked against the exact live declarations.  They do not
+close RH, but they prevent false cross-corpus compositions and isolate what a genuinely different
+provider would have to supply.
+
+1. **Complex versus real negative index.**  The FE seam carrier has complex negative index equal to
+   its number of off-line conjugate-pole pairs.  The polarization theorem makes the negative index
+   of the realified `J`-invariant form even.  These statements do not combine with the rank-one
+   Krein bound to force zero: one complex negative square is already a real two-plane.  Any parity
+   argument must prove parity of the complex index itself, not parity after realification.
+2. **Complete Gram topology.**  The complete Cayley--Toeplitz Gram tower is continuous and injective
+   on real probability measures, and the canonical inverse-Cholesky graph is closed.  Hence measure
+   uniqueness and finite-frame graph closure are no longer missing.  They apply only after a real
+   positive measure or positive-definite Gram tower has been produced; they do not turn the signed
+   Xi reciprocal moments into such a tower.
+3. **Hurwitz reflection variables.**  Xi functional-equation reflection conjugates the Hurwitz
+   monodromy character, but the available Hurwitz functional equation is an identity in the
+   exponent variable at a fixed shift.  Xi-zero differential independence concerns functions of
+   the shift variable with the exponent frozen.  A scalar specialization or an exponent-variable
+   reflection identity therefore gives no differential relation between the two frozen Hurwitz
+   functions.  A usable bridge must be a genuine identity in the shift variable.
+4. **Prime-clock category.**  Shale summability and the reflected clock-scale wall select the
+   critical line exactly.  The completed-flux Fitting attachment supplies a nonzero finite
+   algebraic seam at every zero, but it is not a bounded normal intertwiner of the infinite prime
+   CCR sectors.  A source construction must produce an on-shell normal intertwiner or an equivalent
+   representation-theoretic object; finite seam transversality alone cannot discharge Shale
+   implementability.
+5. **Theta raw moments versus Xi cumulants.**  The positive theta-cusp density gives nonnegative raw
+   even moments and closes the constant source-Hankel level.  The higher normalized Xi trace moments
+   are logarithmic cumulants.  The first nonconstant minor is already a sixth-moment concentration
+   inequality, so raw-density positivity and the all-order recurrence do not close the Hankel cone.
+
+The shortest independent source-value target left by this audit is the continued prime--Gamma
+Cauchy kernel.  A source-built positive-kernel factorization on the pole-free upper strip would
+imply the one-Cauchy diagonal sign and hence RH.  Merely postulating such a factorization is
+equivalent to the missing sign; the new content would have to be an explicit prime--Gamma
+construction whose positivity is visible before the Xi divisor is read.  The distinct
+determinant-line alternative remains a source-selected null-homotopy or no-first-crossing theorem
+for a family retaining the full negative index.
+
 ## Two-ended detour audit
+
+Two previously separate right ends now meet exactly.  On every right-half Xi zero, the principal
+argument of the negative Hurwitz monodromy character is its transverse displacement, and its
+supremum is the sharp power-growth exponent of the fixed-width rectangular Weil sequence.  The
+bounded Hurwitz sine defect is also the coordinate of the canonical orientation vector; that
+vector lies unconditionally in the Hilbert closure of pairwise-conjugate-separated continued
+Cauchy source packets, whose explicit prime--Gamma energies converge to the negative orientation
+energy.  Thus the Hurwitz and rectangular branches do not supply independent orientation
+mechanisms:
+
+```text
+positive Hurwitz principal phase
+  = positive transverse Xi displacement
+  = positive rectangular power exponent
+  -> an eventually negative separated prime--Gamma source sequence.
+```
+
+The remaining choices are genuinely source-side: prove nonnegativity on the separated packet
+sequence, prove positivity on the algebraic continued-Cauchy source span, or prove a subpower
+bound for the rectangular source values.  The divisor-to-source closure and the phase/growth
+identifications are no longer missing interfaces.
 
 | Starting point | Source end | Missing middle | RH end | Verdict |
 |---|---|---|---|---|
-| Rectangular Landau pole jet | fixed-width two-edge divisor family, shifted-zeta continuation, and Xi cancellation are exact and unconditional | prove one source-defined finite lower bound for the sampled rectangular Weil values | `RH <->` this one family is bounded below is formalized | **Leading chain; divisor side closed** |
+| Rectangular Landau pole jet | fixed-width two-edge divisor family, shifted-zeta continuation, and Xi cancellation are exact and unconditional | prove one source-defined finite lower bound for the sampled rectangular Weil values | `RH <->` this one family is bounded below is formalized | **Concurrent owned chain; excluded from this lane** |
 | Multiplicative screw curvature | the rectangular value is exactly a second difference of the real Xi screw profile; at `L=log m` it is the multiplicative midpoint curvature on `n,mn,m^2n` | construct an all-prime Gamma-completed covariance or norm-square with a uniform boundary term; fixed-multiple subsequence formalization is optional | feeds the same bounded-below rectangular endpoint | **Live detour; source route no longer waits on subsequence Lean** |
 | Critical-Mellin adjacent blocks | the rectangular autocorrelation splits into one fixed tent and one moving tent; the Gamma term is uniformly bounded | prove a source lower bound for the difference of the two adjacent equal-scale averages of `R` | exactly equivalent to the sampled rectangular lower floor | **Positive source readout closed; inequality open** |
 | Quadratic scale/Hedenmalm scattering | Gaussian theta seed, `D(D+1)`, weight-one inversion, exact source Bezoutian, and Wigner--Eisenstein prime current are source-defined | close the operator on `L²(dt)`; identify the Wigner radial form as its boundary/scattering form; prove a source sign or norm-square law and the determinant identity without divisor-selected data | `XiQuadraticSpectralReality <-> RH` is formalized | **Secondary live detour** |
-| Graded order/disorder system | parity grading and half-integer Hurwitz sector are canonical and formalized | realize the signed swap as the boundary involution of the quadratic source operator; prove graded KMS/scattering classification; show a partition zero is a spectral degeneration | feeds the quadratic endpoint | **Live feeder**; Poisson wiring would close the profile-to-sector brick, but its current untracked draft still fails to typecheck |
+| Graded order/disorder system | parity grading, half-integer sector, Poisson profile exchange, and graded KMS phase classification are formalized | realize the signed swap as the boundary involution of a source-selected quadratic operator and prove that its determinant zeros are spectral rather than resonant | feeds the quadratic endpoint | **Constraint layer closed, orientation open**; equality of reflected phase labels is itself equivalent to the reflection fixing the zero, so KMS classification alone is not a provider |
 | Hyperbolic/adelic scattering | prime logarithms and the Gamma ladder can be read as length and cusp data | construct an actual self-adjoint two-dimensional or adelic scattering object; identify its determinant with Xi; exclude nonreal resonances by source geometry | the same real quadratic energy endpoint | **Live geometric variant**, but the determinant realization is wholly open |
 | Multivariate stable prime section | finite Euler/simplicial incidence objects and canonical finite orientations exist | build a completed prime--archimedean multiaffine section, prove stability survives the Gamma weld and cofinal limit, and identify the diagonal limit with Xi | locally uniform real-zero transfer to RH is formalized | **Live only with a new completed section**; bare Euler sections are RH-blind and a shifted local orbit already fails PF2 |
 | Function-field purity degeneration | fixed-`q` Frobenius purity is a genuine theorem; coefficient FE and degree collapse exist in Lean | construct a single differentiable determinant family linking arithmetic curves to Xi and prove locally uniform zero-preserving convergence | locally uniform closed-locus transfer is formalized | **End presently untyped**: prime powers have no sequence `q -> 1`; formal `q -> 1` language is not an arithmetic family |
 | Determinant-line/spectral-flow index | completed source Fredholm and seam families exist | prove a source no-first-crossing law or a null-homotopy retaining the complete defect index | the index equals off-line multiplicity | **Secondary live chain**; orientation counts crossings but does not forbid the first |
-| Hurwitz monodromy/hypertranscendence | joint monodromy-character and differential-independence laws are formalized | turn a scalar zeta zero into a functional relation in the Hurwitz shift variable | no typed zero-to-function bridge exists | **Not a closed chain standalone**; usable only as rigidity inside another construction |
+| Hurwitz monodromy/Cauchy source | the Xi-indexed Hurwitz family is differentially free; its character phase is the exact transverse coordinate; the canonical orientation vector is reconstructed by separated continued-Cauchy packets with exact prime--Gamma energies | prove nonnegativity for the explicit separated source packets, or on their algebraic span, without importing a zero-location sign | eventual nonnegativity of one reconstructed source sequence is equivalent to RH; the same phase is the sharp rectangular growth exponent | **Live source-sign chain**; closure, multiplicity, and source-domain interfaces are discharged |
 | Resurgence/Stokes alignment | explicit-formula trans-series language can be source-defined | identify Borel singularities without first taking `log xi`; prove source Stokes positivity/alignment | alignment is RH | **Target-fed in current form**; using the Xi logarithmic divisor builds the answer into the source |
 | Böttcher/Brolin, chromatic sphere, QECC, hyperreal prime | each has a native source object or analogy | no source-defined functor to the completed zeta zero set or quadratic energy is presently typed | absent | **Fringe feeders, not proof chains yet**; retained for new functor construction, not ranked by proximity |
 
@@ -288,7 +353,13 @@ perturbation or of the determinant-line no-crossing law, not the search boundary
 - [PROVED] On the source side, the moving rectangular term is one critical-Mellin tent pairing, equivalently the imbalance of two adjacent equal logarithmic blocks; the remaining Gamma term is uniformly bounded at fixed width.
 - [PROVED] A constant floor is stronger than necessary: an eventual lower floor `-C n^alpha` forces every zero into `Re rho<=1/2+alpha`; hence any `n^o(1)` or polylogarithmic lower loss already proves RH.  The all-epsilon observable subpower gate is now formalized in `CCMRectangularSubpowerLowerGate.lean`.
 - [PROVED] The Wigner cross-energy obstruction has an exact positive dual floor controlled by the primal `p_b` energy and reciprocal-symbol boundary energy.
-- [OPEN CORE] Prove one unconditional source-defined subpower lower bound for that rectangular family.  The weaker endpoint permits polynomial losses in aperture and reciprocal powers of a diagonal regulator; the Möbius/Sonin, Wigner--Eisenstein, and quadratic scattering constructions remain competing providers.
+- [PROVED] The normalized principal Hurwitz phase is exactly the right-half transverse displacement and its supremum is the sharp rectangular power-growth exponent.
+- [PROVED] The full Hurwitz orientation vector belongs to the Hilbert closure of pairwise-conjugate-separated continued Cauchy packets in the analytically continued prime--Gamma source domain; their exact source energies converge to the negative orientation energy.
+- [PROVED] Poisson wiring and graded KMS classification are formalized, but they do not discharge orientation: reflected-label equality at a zero is equivalent to the reflection already fixing that zero.
+- [PROVED] Ordinary `L²` theta cyclicity cannot discharge Hedenmalm completeness: every nonzero Hedenmalm form is forced to be singular relative to the ordinary `L²` topology.
+- [PROVED] The new square-root vertical zeta bound does not close the Hardy-sign-change endpoint; that endpoint still requires a local completed-carrier second-moment floor dominating its closed first-moment budget and the remaining seam/Jensen transfer data.
+- [EXTERNAL ACTIVE CORE] Prove one unconditional source-defined subpower lower bound for the rectangular family.  This exact `Q_{L,n}` route and its equivalent critical-Mellin, screw-curvature, and principal-phase growth estimates are owned by a concurrent agent and excluded from this lane.
+- [OPEN CORE] Independently construct either a source-visible positive-kernel factorization of the continued prime--Gamma Cauchy kernel or a source-selected determinant-line null-homotopy retaining the complete negative index.  Neither statement may be obtained from the Xi divisor, an RH-equivalent limiting measure, or a hidden zero-free assumption.
 - [NOVELTY UNVERIFIED] Any completed glue theorem remains scientifically unclassified until the proof, parent-theory, literature, and rediscovery gates are run.
 
 ## Log
@@ -297,6 +368,7 @@ perturbation or of the determinant-line no-crossing law, not the search boundary
 - 2026-07-12 — replaced shortcut ranking by a two-ended detour audit.  Formalized the quadratic
   scale-spectrum RH endpoint, corrected the Hilbert measure of the weight-one inversion, and
   selected the source-defined self-adjoint scattering determinant as the leading long-chain core.
-- 2026-07-12 — live-corpus refresh consumed the committed Hedenmalm Bezoutian/orientation and
-  Wigner--Eisenstein carrier work. The concurrent Poisson sector wiring was tested but remains an
-  untracked failing draft, so it is not yet a closed dependency.
+- 2026-07-12 — live-corpus refresh consumed the committed Hedenmalm Bezoutian/orientation,
+  Wigner--Eisenstein, Hurwitz phase/source reconstruction, Poisson wiring, and graded KMS work.
+  The Hurwitz and rectangular right ends now share one exact transverse coordinate; their common
+  open content is a source sign or subpower estimate, not another divisor-to-source bridge.

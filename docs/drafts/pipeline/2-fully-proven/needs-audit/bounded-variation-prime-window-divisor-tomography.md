@@ -289,12 +289,24 @@ globally.
 The publication paper must not be strengthened until all items below are concrete Lean theorems.
 
 1. Formalize compactly supported bounded-variation windows and the cellwise quadrature inequality.
-2. Prove locally uniform holomorphy of the error series `(9)` on `Re s>1/2`.
+   **Dyadic specialization complete:** `CCMSharpPrimeWindowQuadrature.lean` proves the exact
+   unit-cell decomposition and the global bound `norm E_k(s) <= norm(s) k^(-Re s)`.
+2. **Absolute convergence complete; local holomorphy open.** The same module proves absolute
+   summability of the von-Mangoldt-weighted error series throughout `Re s>1/2`. It remains to prove
+   locally uniform convergence and parameter-holomorphy of the summands.
 3. Prove the initial-half-plane identity `(10)` with `ArithmeticFunction.vonMangoldt`.
 4. Define the concrete continuation `(12)` and formalize zeta-pole cancellation.
 5. Prove the exact Mellin-censorship law `(13)`--`(14)` using analytic multiplicity.
-6. Formalize the sharp rectangle `(17)`--`(22)` and its half-plane nonvanishing.
-7. Prove the common-zero classification `(23)`--`(24)` and full two-window divisor recovery.
+6. **Partly complete.** `CCMSharpPrimeWindow.lean` defines the exact finite sharp prime mass and
+   prime--polar coefficient, identifies it with one first difference of the completed
+   critical-Mellin error plus the explicit decaying endpoint correction, and rewrites it through
+   both the normalized Chebyshev-error increment and the direct Abel endpoint-plus-primitive
+   increment.  The requested dyadic upper bound is proved equivalent to each error-increment
+   bound with unchanged exponent. `CCMSharpPrimeWindowNoncensorship.lean` proves the sharp Mellin
+   factor's half-plane nonvanishing. The Dirichlet-series continuation remains open.
+7. **Partly complete.** `CCMSharpPrimeWindowNoncensorship.lean` proves the common-zero
+   classification `(23)`--`(24)` for two irrationally related widths. Full divisor recovery still
+   awaits the concrete continuation and residue theorem.
 8. Prove the normalized holomorphic quotient `(15)` and connect it to the existing CCM
    observable divisor class.
 
@@ -308,6 +320,10 @@ No abstract meromorphic-continuation hypothesis, `Prop` interface, project axiom
 - [x] sharp unsmoothed one-window RH equivalence
 - [x] two-window full nontrivial-divisor recovery
 - [x] positive carrier formulation
+- [x] exact finite sharp-window coefficient and completed-error first-difference law formalized
+- [x] dyadic inequality converted exactly to normalized and unnormalized Chebyshev-error increments
+- [x] dyadic quadrature error is `O_s(k^(-Re s))` and its weighted series converges for `Re s>1/2`
+- [x] sharp Mellin half-plane noncensorship and irrational-width common-zero law formalized
 - [ ] unconditional Lean formalization
 - [x] parent-theory novelty gate failed; scientific-novelty promotion retired
 - [ ] primary-literature placement audit for citation and historical attribution

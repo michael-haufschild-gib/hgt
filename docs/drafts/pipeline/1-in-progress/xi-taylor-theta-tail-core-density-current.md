@@ -122,14 +122,18 @@ The exact finite transform and core identities are
 2 integral Phi(x) C_d(z,x) dx = P_(2d+1)(z),
 
 z^2 [2 integral Phi(x) H_d(z,x) dx]
- = (z^2+1/4)P_(2(d+1)+1)(z) - (1/4)P_1(0).               (7)
+ = (z^2+1/4)P_(2(d+1)+1)(z) - (1/4)P_1(0),
+
+z^4 [2 integral Phi(x) partial_z H_d(z,x) dx]
+ =z^2(z^2+1/4)P'_(2(d+1)+1)(z)
+   +(z/2)(P_1(0)-P_(2(d+1)+1)(z)).                       (7)
 ```
 
 Thus substitution of `(6)` feeds the next canonical Taylor section directly back into the current.
 Any attempted positive bound on the `Phi` term is circular.  The only unresolved producer is the
 raw `T` cross correlation together with the seam in `(4)`.
 
-The completion boundary gives a genuine non-circular value relation:
+The central completion seam point gives a genuine non-circular value relation:
 
 ```text
 U_d(i/2)=1/2,
@@ -137,8 +141,9 @@ J_(U_d)(i/2)=-(1/2) A_d(1/4)<0,                           (8)
 ```
 
 where `A_d=thetaCuspTailEvenPolynomial d` has strictly positive coefficients.  Equation `(8)` is
-proved in Lean.  It localizes every possible positive-current obstruction to the open strip
-`0<Im z<1/2`; it does not control the interior by itself.
+proved in Lean.  It signs only the single point `z=i/2`: on the rest of the horizontal line
+`Im z=1/2`, the factor `z^2+1/4` does not vanish.  Thus `(8)` supplies no boundary-line control and
+does not localize the positive-current obstruction by itself.
 
 For every polynomial `P`, Lean also proves the exact value-coordinate identity
 
@@ -146,10 +151,130 @@ For every polynomial `P`, Lean also proves the exact value-coordinate identity
 d/dy |P(x+iy)|^2 = -2 J_P(x+iy).                           (9)
 ```
 
-Hence the narrowed target is equivalently a sublinear lower bound for the vertical derivative of
-the finite core modulus on the anisotropic fibres.  The boundary value `(8)` gives the favorable
-derivative at `y=1/2`; the open problem is to prevent an interior reversal of `(9)` at linear mesh
-scale.  Such a reversal is exactly what a nearby nonreal zero produces.
+The whole real boundary, unlike the isolated point `(8)`, has an exact value relation.  Since
+`U_d` has real coefficients,
+
+```text
+J_(U_d)(x)=0,
+
+J_(U_d)(x+iy)
+ = integral_(0..y) [Re(U_d'' conjugate(U_d))-|U_d'|^2](x+it)dt.  (10)
+```
+
+Equation `(10)` is proved in Lean.  It is the genuine boundary-to-interior formula on every
+anisotropic fibre.  In the density coordinate its integrand is
+
+```text
+Re(U_d'' conjugate(U_d))-|U_d'|^2
+ = (1/4) integral integral rho(a)rho(b) L_d(z;a,b) da db,
+
+L_d(z;a,b)
+ = (1/2) Re(
+     partial_z^2 H_d(z,a) conjugate(H_d(z,b))
+     + partial_z^2 H_d(z,b) conjugate(H_d(z,a))
+     - 2 partial_z H_d(z,a) conjugate(partial_z H_d(z,b))). (11)
+```
+
+Thus the narrowed target is an integrated upper bound for the canonical complex Laguerre defect
+`(11)`, not pointwise positivity of `rho`.  In the raw-tail coordinate
+
+```text
+w=-z^2,
+B_d(w)=1/2+(w-1/4)A_d(w),
+U_d(z)=B_d(-z^2),
+
+Re(U_d'' conjugate(U_d))-|U_d'|^2
+ = -2 Re(B_d' conjugate(B_d))
+   -4 Re(w B_d'' conjugate(B_d))
+   -4 |z|^2 |B_d'|^2.                                   (12)
+```
+
+The last term in `(12)` is favorable.  The open producer is a cancellation estimate for the first
+two raw moment terms after integrating over `0<=t<=Im z`; imposing their pointwise sign would be a
+complex Laguerre/anti-Herglotz condition and would simply repackage the target.
+
+## Critical-Laguerre scale coordinate
+
+The mechanism of Haufschild's critical-Laguerre moment deformation yields one exact new coordinate.
+Let
+
+```text
+L_d(u)=sum_(k=0)^d (-1)^k d^(falling k) u^(2k)/(d^k(2k)!),
+G_d ~ Gamma(shape=d+1, rate=d).
+```
+
+Then, for `0<=k<=d`,
+
+```text
+E[G_d^(-k)]=d^k/d^(falling k),
+```
+
+and hence the ordinary truncated cosine has the exact positive scale average
+
+```text
+C_d(z,x)=E[L_d(zx/sqrt(G_d))].                            (13)
+```
+
+Thus the raw theta transform in `(3)` is a double positive average of rescaled critical-Laguerre
+polynomials.  Equation `(13)` is proved on paper by a finite coefficient comparison.  It is not yet
+a sign theorem: the inverse-gamma scale law is continuous, unbounded, and has no identity atom,
+whereas Haufschild's sign-transfer theorem uses an atom of mass `p>1/2` at scale one.  Indeed generic
+positive scale averaging has exactly the cross-current obstruction already exposed in `(4)`.
+The loss is already exact at degree three: writing the ordinary section as
+
+```text
+Q_3(s)=1-s/2+s^2/24-s^3/720,  s=z^2,
+Q_3'(s)=-(s^2-20s+120)/240<0  for every real s,
+```
+
+shows that `Q_3` has only one real root and hence its even lift has four nonreal zeros, despite
+being the positive inverse-gamma average `(13)` of hyperbolic critical-Laguerre copies.
+
+The live question suggested by `(13)` is narrower: combine the horizontal Laguerre energy identity
+
+```text
+partial_x (|L_d|^2+|L_d'|^2)=(x/d)|L_d'|^2
+```
+
+with the *specific product scale* `x/sqrt(G_d)` and the raw theta weight `T(x)` to bound the two
+cross terms in `(12)`.  A proof must control the averaged cross current; hyperbolicity of each
+Laguerre copy separately is insufficient.
+
+The identity-atom part of the Theorem-M mechanism is in fact unavailable for *any* critical-
+Laguerre representation of the raw moment section.  Normalize the raw moments to `mu_0=1`, write
+`r_k=mu_(k+1)/mu_k`, and note that positivity of the tail measure makes `r_k` nondecreasing.  If
+
+```text
+sum_(k=0)^d (-1)^k mu_k z^(2k)/(2k)!
+  = integral_[0,1] L_d(lambda v z) dnu(v),
+```
+
+then coefficient comparison gives
+
+```text
+M_k := integral v^(2k)dnu(v)
+     = mu_k d^k/(lambda^(2k) d^(falling k)).              (14)
+```
+
+If `nu` has an identity atom of mass `p`, then `p<=M_d`.  Since `[0,1]` moments decrease,
+`M_d<=M_(d-1)`, so the last ratio in `(14)` gives `d r_(d-1)/lambda^2<=1`.  For every `k<d`,
+
+```text
+M_(k+1)/M_k
+ = d r_k/(lambda^2(d-k)) <= 1/(d-k).
+```
+
+Multiplication yields
+
+```text
+p <= M_d <= 1/d!.                                       (15)
+```
+
+Thus for every `d>=2` an identity atom of mass `p>1/2` is impossible, even if one allows an
+alternative truncated Hausdorff representing measure instead of the natural inverse-gamma law.
+Equations `(14)`--`(15)` are proved on paper.  Theorem M therefore supplies the Laguerre coordinate
+and energy identity, but its coercive sign-copy step is rigorously retired for the raw theta
+moments.  Any surviving use of `(13)` must estimate the averaged cross current directly.
 
 ## Literature/value-relation audit
 
@@ -173,6 +298,32 @@ scale.  Such a reversal is exactly what a nearby nonreal zero produces.
   ordered-pair kernel.  Positivity on a real Mellin line is not a positive power-mixture
   representation, because Mellin inversion uses a complex vertical line.  Hence it does not orient
   the distinguished raw mixed correlation.
+- Schoenberg total positivity does not provide an independent source-side shortcut.  For the
+  symmetric coordinate `Xi(s)=Xi_1(-s^2)`, a one-sided Pólya-frequency representation of
+  `1/Xi_1` is equivalent to RH, while the Pólya-frequency condition on its Taylor coefficients is
+  the restricted Laguerre--Pólya condition.  The totally positive Jacobi-theta example attached to
+  the zero set `{-n^2}` is a different transform and does not orient the differentiated Riemann
+  theta-tail correlation `(4)`.
+- Csordas's positive-definite-kernel results connect theta-kernel concavity to generalized *real*
+  Laguerre inequalities.  They control restrictions to the real axis, where `(10)` already starts
+  from zero, but do not sign the complex defect on `x+it`, `t>0`; making that extension for every
+  fibre is a Laguerre--Pólya/RH condition.
+- Effective Jensen-polynomial hyperbolicity applies to fixed degree and sufficiently large
+  coefficient shift.  The cores here are unshifted initial sections whose degree grows with the
+  approximation stage.  The literature explicitly retains all degrees and all shifts in the RH
+  equivalence, so the high-shift Hermite asymptotic does not bound `(12)`.
+- Haufschild's critical-Laguerre theorem is genuinely family-specific: an explicit moment law with
+  an identity atom of mass `sqrt(2/e)>1/2` transfers the alternating critical signs of a Kummer-ODE
+  base polynomial.  Its conclusion does not apply to `U_d`, but its mechanism gives the exact
+  inverse-gamma scale representation `(13)` and a concrete energy estimate to test.
+- The existing theta-tail first-moment Bezoutian and critical-tilt cards already contain the
+  relevant full-source correlation identity.  Their positive-entry kernel is not a positive
+  operator: its quadratic form on exponential packets is the Xi Hermitian orientation diagonal,
+  and nonnegativity on the required cofinal family is equivalent to RH.  Replacing the exponential
+  by its finite Taylor packet produces the same finite cross-current rather than a new square.
+  Consequently the Volterra contraction in those cards can close the present task only if it is
+  constructed on the finite source packets independently; assuming its contractivity merely
+  renames the desired sign.
 
 ## Gates
 
@@ -185,9 +336,10 @@ scale.  Such a reversal is exactly what a nearby nonreal zero produces.
 - [x] derive the completion-compensated finite cosine identity
 - [x] expose the raw-tail plus completed-source density split
 - [x] prove the completed-source feedback identity and remove that circular channel
-- [x] prove the exact negative upper-completion-boundary current
+- [x] prove the exact negative current at the central completion seam point
 - [x] identify the current with the vertical derivative of the finite squared modulus
+- [x] derive and formalize the real-boundary-to-interior complex Laguerre-defect identity
 - [x] audit classical theta, orthogonal-polynomial, spectral, and Wigner value relations
-- [ ] prove a favorable interior sign/cancellation for the raw mixed kernel plus seam
+- [ ] prove an integrated cancellation bound for the raw moment terms in `(12)`
 - [ ] obtain the eventual scaled core-current inequality on every anisotropic fibre
 - [ ] complete paper proof and Lean theorem

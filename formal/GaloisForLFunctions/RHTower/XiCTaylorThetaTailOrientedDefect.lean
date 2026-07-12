@@ -14,6 +14,114 @@ theorem evenMagnitudeLift_eval (B : Polynomial ℝ) (z : ℂ) :
     (evenMagnitudeLift B).eval z = B.eval₂ (algebraMap ℝ ℂ) (-z ^ 2) := by
   simp [evenMagnitudeLift, Polynomial.aeval_def]
 
+theorem evenMagnitudeLift_derivative_eval (B : Polynomial ℝ) (z : ℂ) :
+    (evenMagnitudeLift B).derivative.eval z =
+      -2 * z * B.derivative.eval₂ (algebraMap ℝ ℂ) (-z ^ 2) := by
+  simp [evenMagnitudeLift, Polynomial.derivative_comp, Polynomial.aeval_def]
+  left
+  left
+  norm_num
+
+theorem evenMagnitudeLift_secondDerivative_eval (B : Polynomial ℝ) (z : ℂ) :
+    (evenMagnitudeLift B).derivative.derivative.eval z =
+      -2 * B.derivative.eval₂ (algebraMap ℝ ℂ) (-z ^ 2) +
+        4 * z ^ 2 * B.derivative.derivative.eval₂
+          (algebraMap ℝ ℂ) (-z ^ 2) := by
+  simp [evenMagnitudeLift, Polynomial.derivative_comp,
+    Polynomial.derivative_mul, Polynomial.aeval_def]
+  ring
+
+/-- Exact raw-coordinate decomposition of the complex Laguerre defect.  The final norm-square
+term has a favorable sign; all unresolved orientation is in the first two raw value correlations. -/
+theorem evenMagnitudeLift_verticalLaguerreDefect_eq_raw
+    (B : Polynomial ℝ) (z : ℂ) :
+    (((evenMagnitudeLift B).derivative.derivative.eval z *
+          (starRingEnd ℂ) ((evenMagnitudeLift B).eval z)).re -
+        Complex.normSq ((evenMagnitudeLift B).derivative.eval z)) =
+      -2 *
+          (B.derivative.eval₂ (algebraMap ℝ ℂ) (-z ^ 2) *
+            (starRingEnd ℂ)
+              (B.eval₂ (algebraMap ℝ ℂ) (-z ^ 2))).re +
+        4 *
+          (z ^ 2 *
+            B.derivative.derivative.eval₂ (algebraMap ℝ ℂ) (-z ^ 2) *
+              (starRingEnd ℂ)
+                (B.eval₂ (algebraMap ℝ ℂ) (-z ^ 2))).re -
+        4 * Complex.normSq z *
+          Complex.normSq
+            (B.derivative.eval₂ (algebraMap ℝ ℂ) (-z ^ 2)) := by
+  rw [evenMagnitudeLift_eval, evenMagnitudeLift_derivative_eval,
+    evenMagnitudeLift_secondDerivative_eval]
+  rw [Complex.normSq_mul, Complex.normSq_mul]
+  norm_num
+  ring
+
+/-- Every even-magnitude lift has zero oriented current on the real axis.  This supplies the
+whole boundary line from which its vertical current can be integrated. -/
+theorem orientedPolynomialCurrent_evenMagnitudeLift_real_eq_zero
+    (B : Polynomial ℝ) (x : ℝ) :
+    orientedPolynomialCurrent (evenMagnitudeLift B) (x : ℂ) = 0 := by
+  have hlift : evenMagnitudeLift B =
+      (B.comp (-(X ^ 2))).map (algebraMap ℝ ℂ) := by
+    rw [evenMagnitudeLift, Polynomial.map_comp]
+    simp
+  rw [hlift]
+  exact orientedPolynomialCurrent_map_real_eq_zero (B.comp (-(X ^ 2))) x
+
+/-- The whole vertical current of an even-magnitude lift is the integrated complex Laguerre
+defect from its zero-current real boundary. -/
+theorem orientedPolynomialCurrent_evenMagnitudeLift_eq_integral_verticalLaguerreDefect
+    (B : Polynomial ℝ) (x y : ℝ) :
+    orientedPolynomialCurrent (evenMagnitudeLift B)
+        ((x : ℂ) + (y : ℂ) * I) =
+      ∫ t : ℝ in 0..y,
+        (((evenMagnitudeLift B).derivative.derivative.eval
+              ((x : ℂ) + (t : ℂ) * I) *
+            (starRingEnd ℂ)
+              ((evenMagnitudeLift B).eval
+                ((x : ℂ) + (t : ℂ) * I))).re -
+          Complex.normSq
+            ((evenMagnitudeLift B).derivative.eval
+              ((x : ℂ) + (t : ℂ) * I))) := by
+  have hlift : evenMagnitudeLift B =
+      (B.comp (-(X ^ 2))).map (algebraMap ℝ ℂ) := by
+    rw [evenMagnitudeLift, Polynomial.map_comp]
+    simp
+  rw [hlift]
+  exact orientedPolynomialCurrent_map_real_eq_integral_verticalLaguerreDefect
+    (B.comp (-(X ^ 2))) x y
+
+/-- Raw-coordinate form of the exact boundary-to-interior identity.  It isolates the favorable
+norm square and leaves precisely two value correlations to be controlled after vertical
+integration. -/
+theorem orientedPolynomialCurrent_evenMagnitudeLift_eq_integral_rawDefect
+    (B : Polynomial ℝ) (x y : ℝ) :
+    orientedPolynomialCurrent (evenMagnitudeLift B)
+        ((x : ℂ) + (y : ℂ) * I) =
+      ∫ t : ℝ in 0..y,
+        (-2 *
+            (B.derivative.eval₂ (algebraMap ℝ ℂ)
+                (-((x : ℂ) + (t : ℂ) * I) ^ 2) *
+              (starRingEnd ℂ)
+                (B.eval₂ (algebraMap ℝ ℂ)
+                  (-((x : ℂ) + (t : ℂ) * I) ^ 2))).re +
+          4 *
+            (((x : ℂ) + (t : ℂ) * I) ^ 2 *
+              B.derivative.derivative.eval₂ (algebraMap ℝ ℂ)
+                (-((x : ℂ) + (t : ℂ) * I) ^ 2) *
+                (starRingEnd ℂ)
+                  (B.eval₂ (algebraMap ℝ ℂ)
+                    (-((x : ℂ) + (t : ℂ) * I) ^ 2))).re -
+          4 * Complex.normSq ((x : ℂ) + (t : ℂ) * I) *
+            Complex.normSq
+              (B.derivative.eval₂ (algebraMap ℝ ℂ)
+                (-((x : ℂ) + (t : ℂ) * I) ^ 2))) := by
+  rw [orientedPolynomialCurrent_evenMagnitudeLift_eq_integral_verticalLaguerreDefect]
+  apply intervalIntegral.integral_congr
+  intro t _ht
+  exact evenMagnitudeLift_verticalLaguerreDefect_eq_raw B
+    ((x : ℂ) + (t : ℂ) * I)
+
 theorem xiCTaylorPolynomial_oddCutoff_eq_evenMagnitudeLift (d : ℕ) :
     xiCTaylorPolynomial (2 * d + 1) =
       evenMagnitudeLift (xiCTaylorEvenMagnitudePolynomial d) := by
@@ -104,6 +212,31 @@ theorem orientedPolynomialCurrent_sub_le
 def xiCTaylorThetaTailCorePolynomial (d : ℕ) : Polynomial ℂ :=
   evenMagnitudeLift
     (C (1 / 2) + (X - C (1 / 4)) * thetaCuspTailEvenPolynomial d)
+
+/-- The finite theta-tail core has zero oriented current at every real point. -/
+theorem xiCTaylorThetaTailCorePolynomial_current_real_eq_zero
+    (d : ℕ) (x : ℝ) :
+    orientedPolynomialCurrent (xiCTaylorThetaTailCorePolynomial d) (x : ℂ) = 0 := by
+  rw [xiCTaylorThetaTailCorePolynomial]
+  exact orientedPolynomialCurrent_evenMagnitudeLift_real_eq_zero _ x
+
+/-- Exact boundary-to-interior current identity for the finite canonical theta-tail core. -/
+theorem xiCTaylorThetaTailCorePolynomial_current_eq_integral_verticalLaguerreDefect
+    (d : ℕ) (x y : ℝ) :
+    orientedPolynomialCurrent (xiCTaylorThetaTailCorePolynomial d)
+        ((x : ℂ) + (y : ℂ) * I) =
+      ∫ t : ℝ in 0..y,
+        (((xiCTaylorThetaTailCorePolynomial d).derivative.derivative.eval
+              ((x : ℂ) + (t : ℂ) * I) *
+            (starRingEnd ℂ)
+              ((xiCTaylorThetaTailCorePolynomial d).eval
+                ((x : ℂ) + (t : ℂ) * I))).re -
+          Complex.normSq
+            ((xiCTaylorThetaTailCorePolynomial d).derivative.eval
+              ((x : ℂ) + (t : ℂ) * I))) := by
+  rw [xiCTaylorThetaTailCorePolynomial]
+  exact orientedPolynomialCurrent_evenMagnitudeLift_eq_integral_verticalLaguerreDefect
+    _ x y
 
 /-- The one top coefficient omitted from the theta-tail core. -/
 def xiCTaylorThetaTailTopDefectPolynomial (d : ℕ) : Polynomial ℂ :=

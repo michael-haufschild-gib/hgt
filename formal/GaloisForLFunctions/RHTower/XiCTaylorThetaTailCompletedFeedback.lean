@@ -320,11 +320,11 @@ theorem completedFullSource_coreAtom_derivative_balance (d : ℕ) (z : ℂ) :
     funext x
     rw [sq_mul_tailSecondCoreAtomDerivative_add]
   have hint :
-      (\int x : ℝ in Ioi 0,
+      (∫ x : ℝ in Ioi 0,
         (thetaCuspFullSource x : ℂ) *
           (z ^ 2 * thetaCuspTailSecondCoreAtomDerivative d z x +
             2 * z * thetaCuspTailSecondCoreAtom d z x)) =
-        \int x : ℝ in Ioi 0,
+        ∫ x : ℝ in Ioi 0,
           (thetaCuspFullSource x : ℂ) *
             ((z ^ 2 + 1 / 4) * truncatedCosineSectionDerivative (d + 1) z x +
               2 * z * truncatedCosineSection (d + 1) z x) := by

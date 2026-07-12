@@ -548,6 +548,62 @@ theorem two_mul_sq_rectangularEvenPolarFeature
   rw [rectangularEvenPolarFeature_eq hL]
   ring
 
+/-- Coefficients of the growing and decaying polar edges. -/
+def rectangularPolarAlpha (L : ℝ) : ℝ := 1 - Real.exp (-L / 2)
+
+def rectangularPolarBeta (L : ℝ) : ℝ := Real.exp (L / 2) - 1
+
+/-- Exact three-scale expansion of the corrected even polar square. -/
+theorem rectangularPolarSquare_expansion (L t : ℝ) :
+    32 * (Real.sinh t - Real.sinh (t - L / 2)) ^ 2 =
+      8 * rectangularPolarAlpha L ^ 2 * Real.exp (2 * t) +
+        16 * rectangularPolarAlpha L * rectangularPolarBeta L +
+        8 * rectangularPolarBeta L ^ 2 * Real.exp (-2 * t) := by
+  rw [Real.sinh_eq, Real.sinh_eq]
+  have hpos : Real.exp (t - L / 2) = Real.exp t * Real.exp (-L / 2) := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  have hneg : Real.exp (-(t - L / 2)) = Real.exp (-t) * Real.exp (L / 2) := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  have hsqPos : Real.exp t ^ 2 = Real.exp (2 * t) := by
+    rw [pow_two, ← Real.exp_add]
+    congr 1
+    ring
+  have hsqNeg : Real.exp (-t) ^ 2 = Real.exp (-2 * t) := by
+    rw [pow_two, ← Real.exp_add]
+    congr 1
+    ring
+  have hcross : Real.exp t * Real.exp (-t) = 1 := by
+    rw [← Real.exp_add]
+    simp
+  rw [hpos, hneg, rectangularPolarAlpha, rectangularPolarBeta]
+  rw [← hsqPos, ← hsqNeg]
+  ring_nf
+  rw [hcross]
+  ring
+
+/-- Arithmetic-aperture form of the polar expansion: growing square-root main term, constant
+cross term, and decaying reciprocal-square-root edge. -/
+theorem rectangularPolarSquare_logAperture_expansion
+    {N : ℝ} (hN : 0 < N) (L : ℝ) :
+    32 * (Real.sinh (Real.log N / 4) -
+        Real.sinh (Real.log N / 4 - L / 2)) ^ 2 =
+      8 * rectangularPolarAlpha L ^ 2 * Real.sqrt N +
+        16 * rectangularPolarAlpha L * rectangularPolarBeta L +
+        8 * rectangularPolarBeta L ^ 2 / Real.sqrt N := by
+  rw [rectangularPolarSquare_expansion]
+  have hexpHalf : Real.exp (Real.log N / 2) = Real.sqrt N := by
+    rw [← Real.log_sqrt hN.le, Real.exp_log (Real.sqrt_pos.mpr hN)]
+  have hexpNegHalf : Real.exp (-(Real.log N / 2)) = (Real.sqrt N)⁻¹ := by
+    rw [Real.exp_neg, hexpHalf]
+  rw [show 2 * (Real.log N / 4) = Real.log N / 2 by ring,
+    show -2 * (Real.log N / 4) = -(Real.log N / 2) by ring,
+    hexpHalf, hexpNegHalf]
+  rw [div_eq_mul_inv]
+
 /-- Corrected prime--polar source coefficient at finite aperture. -/
 def rectangularPrimePolarSourceCoefficient (L a : ℝ) : ℝ :=
   -2 * rectangularPrimeAutocorrelationSum L a +
@@ -570,6 +626,21 @@ theorem rectangularPrimePolarSourceCoefficient_logAperture
   · ring
   · congr 2
     all_goals ring
+
+/-- Fully expanded arithmetic prime--polar coefficient.  The square-root main term is displayed
+with the exact coefficient that must cancel the moving von Mangoldt main mass. -/
+theorem rectangularPrimePolarSourceCoefficient_logAperture_expanded
+    {L N : ℝ} (hL : 0 ≤ L) (hN : 0 < N)
+    (hNL : 2 * L ≤ Real.log N) :
+    rectangularPrimePolarSourceCoefficient L (Real.log N / 2) =
+      -4 * rectangularFixedPrimeTentSum L (Nat.floor N) -
+        2 * rectangularMovingPrimeTentSum L N (Nat.floor N) +
+        8 * rectangularPolarAlpha L ^ 2 * Real.sqrt N +
+        16 * rectangularPolarAlpha L * rectangularPolarBeta L +
+        8 * rectangularPolarBeta L ^ 2 / Real.sqrt N := by
+  rw [rectangularPrimePolarSourceCoefficient_logAperture hL hN hNL,
+    rectangularPolarSquare_logAperture_expansion hN]
+  ring
 
 end
 

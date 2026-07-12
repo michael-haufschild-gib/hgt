@@ -34,7 +34,10 @@ theorem sharpPrimeWindowMellin_three_halves {L : ℝ} :
     sharpPrimeWindowMellin L (3 / 2 : ℂ) =
       2 * (1 - Complex.exp (-(L : ℂ) / 2)) := by
   have hw : (3 / 2 : ℂ) - 1 ≠ 0 := by norm_num
-  rw [sharpPrimeWindowMellin, rectangularWindowAmplitude_eq_div hw]
+  have harg : -(L : ℂ) * ((3 / 2 : ℂ) - 1) = -(L : ℂ) / 2 := by ring
+  rw [sharpPrimeWindowMellin, rectangularWindowAmplitude_eq_div hw, harg]
+  norm_num [div_eq_mul_inv]
+  ring
 
 /-- Exact zero classification for the rectangular amplitude: a positive-width
 amplitude vanishes precisely at a nonzero integral exponential period. -/

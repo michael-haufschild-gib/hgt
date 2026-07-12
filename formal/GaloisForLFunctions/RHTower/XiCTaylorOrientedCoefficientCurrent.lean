@@ -22,6 +22,18 @@ noncomputable section
 def orientedPolynomialCurrent (P : Polynomial ℂ) (z : ℂ) : ℝ :=
   (P.derivative.eval z * (starRingEnd ℂ) (P.eval z)).im
 
+/-- A polynomial obtained from real coefficients has zero oriented current on the real axis. -/
+theorem orientedPolynomialCurrent_map_real_eq_zero
+    (Q : Polynomial ℝ) (x : ℝ) :
+    orientedPolynomialCurrent (Q.map (algebraMap ℝ ℂ)) (x : ℂ) = 0 := by
+  unfold orientedPolynomialCurrent
+  rw [Polynomial.derivative_map]
+  change
+    (((Q.derivative.map (algebraMap ℝ ℂ)).eval ((algebraMap ℝ ℂ) x)) *
+      (starRingEnd ℂ) ((Q.map (algebraMap ℝ ℂ)).eval ((algebraMap ℝ ℂ) x))).im = 0
+  rw [Polynomial.eval_map_apply, Polynomial.eval_map_apply]
+  simp
+
 /-- The oriented current is minus one half of the vertical derivative of the squared modulus.
 This is the value-coordinate form of the upper-current problem and requires no nonvanishing
 hypothesis. -/
@@ -64,6 +76,83 @@ theorem hasDerivAt_normSq_polynomial_vertical
     simp only [mul_re, mul_im, I_re, I_im, mul_zero, mul_one,
       Complex.conj_re, Complex.conj_im]
     ring
+
+/-- The vertical derivative of the oriented current is the finite complex Laguerre defect.
+Together with `hasDerivAt_normSq_polynomial_vertical`, this identifies the exact curvature that
+would be needed to propagate a current sign between horizontal fibres. -/
+theorem hasDerivAt_orientedPolynomialCurrent_vertical
+    (P : Polynomial ℂ) (x y : ℝ) :
+    HasDerivAt
+      (fun t : ℝ => orientedPolynomialCurrent P
+        ((x : ℂ) + (t : ℂ) * I))
+      ((P.derivative.derivative.eval ((x : ℂ) + (y : ℂ) * I) *
+          (starRingEnd ℂ) (P.eval ((x : ℂ) + (y : ℂ) * I))).re -
+        Complex.normSq
+          (P.derivative.eval ((x : ℂ) + (y : ℂ) * I))) y := by
+  let z : ℂ := (x : ℂ) + (y : ℂ) * I
+  have hz : HasDerivAt (fun t : ℝ => (x : ℂ) + (t : ℂ) * I) I y := by
+    have h := (Complex.ofRealCLM.hasDerivAt (x := y)).mul_const I
+    simpa using h.const_add (x : ℂ)
+  have hP : HasDerivAt
+      (fun t : ℝ => P.eval ((x : ℂ) + (t : ℂ) * I))
+      (P.derivative.eval z * I) y := by
+    simpa [z] using (P.hasDerivAt z).comp y hz
+  have hPd : HasDerivAt
+      (fun t : ℝ => P.derivative.eval ((x : ℂ) + (t : ℂ) * I))
+      (P.derivative.derivative.eval z * I) y := by
+    simpa [z] using (P.derivative.hasDerivAt z).comp y hz
+  have hconj : HasDerivAt
+      (fun t : ℝ => (starRingEnd ℂ)
+        (P.eval ((x : ℂ) + (t : ℂ) * I)))
+      ((starRingEnd ℂ) (P.derivative.eval z * I)) y := by
+    simpa only [Complex.conjCLE_apply] using
+      Complex.conjCLE.hasFDerivAt.comp_hasDerivAt y hP
+  have hprod := hPd.mul hconj
+  have him := Complex.imCLM.hasFDerivAt.comp_hasDerivAt y hprod
+  convert him using 1
+  dsimp [z]
+  simp only [Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im,
+    mul_zero, mul_one, Complex.conj_re, Complex.conj_im,
+    Complex.normSq_apply]
+  ring
+
+/-- For a polynomial with real coefficients, the current on a vertical fibre is the integral from
+the real axis of its finite complex Laguerre defect. -/
+theorem orientedPolynomialCurrent_map_real_eq_integral_verticalLaguerreDefect
+    (Q : Polynomial ℝ) (x y : ℝ) :
+    orientedPolynomialCurrent (Q.map (algebraMap ℝ ℂ))
+        ((x : ℂ) + (y : ℂ) * I) =
+      ∫ t : ℝ in 0..y,
+        (((Q.map (algebraMap ℝ ℂ)).derivative.derivative.eval
+              ((x : ℂ) + (t : ℂ) * I) *
+            (starRingEnd ℂ)
+              ((Q.map (algebraMap ℝ ℂ)).eval
+                ((x : ℂ) + (t : ℂ) * I))).re -
+          Complex.normSq
+            ((Q.map (algebraMap ℝ ℂ)).derivative.eval
+              ((x : ℂ) + (t : ℂ) * I))) := by
+  let P : Polynomial ℂ := Q.map (algebraMap ℝ ℂ)
+  let g : ℝ → ℝ := fun t =>
+    ((P.derivative.derivative.eval ((x : ℂ) + (t : ℂ) * I) *
+        (starRingEnd ℂ) (P.eval ((x : ℂ) + (t : ℂ) * I))).re -
+      Complex.normSq (P.derivative.eval ((x : ℂ) + (t : ℂ) * I)))
+  have hderiv : ∀ t ∈ Set.uIcc (0 : ℝ) y,
+      HasDerivAt
+        (fun s : ℝ => orientedPolynomialCurrent P
+          ((x : ℂ) + (s : ℂ) * I)) (g t) t := by
+    intro t _ht
+    exact hasDerivAt_orientedPolynomialCurrent_vertical P x t
+  have hg : Continuous g := by
+    dsimp only [g]
+    fun_prop
+  have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv
+    (hg.intervalIntegrable 0 y)
+  have hzero : orientedPolynomialCurrent P (x : ℂ) = 0 := by
+    exact orientedPolynomialCurrent_map_real_eq_zero Q x
+  change orientedPolynomialCurrent P ((x : ℂ) + (y : ℂ) * I) =
+    ∫ t : ℝ in 0..y, g t
+  rw [hftc]
+  simp only [ofReal_zero, zero_mul, add_zero, hzero, sub_zero]
 
 /-- The imaginary logarithmic derivative is the oriented polynomial current divided by the
 squared modulus. -/

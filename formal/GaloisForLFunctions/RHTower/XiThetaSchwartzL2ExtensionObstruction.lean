@@ -15,14 +15,14 @@ respect to the ordinary `L²` topology.
 -/
 
 open Complex MeasureTheory Set
-open scoped ENNReal
+open scoped ENNReal SchwartzMap
 
 namespace RHTower
 
 noncomputable section
 
 /-- The two right-translation implementations on Schwartz space agree. -/
-theorem mellinL2_schwartzTranslate_eq_translateCLM (a : ℝ) (f : 𝒮(ℝ, ℂ)) :
+theorem mellinL2_schwartzTranslate_eq_translateCLM (a : ℝ) (f : 𝓢(ℝ, ℂ)) :
     MellinL2.schwartzTranslate a f = SchwartzMap.translateCLM ℂ a f := by
   ext x
   rfl
@@ -33,12 +33,14 @@ theorem xiThetaSchwartzForm_eq_zero_of_l2_extension
     (QS : SchwartzMap.ContinuousSchwartzSesquilinearForm)
     (Q2 : ContinuousSesquilinearForm XiThetaL2)
     (hMomentum : QS.MomentumSymmetric)
-    (hThetaNull : ∀ v : 𝒮(ℝ, ℂ), QS xiThetaSchwartzSource v = 0)
-    (hExtension : ∀ u v : 𝒮(ℝ, ℂ),
+    (hThetaNull : ∀ v : 𝓢(ℝ, ℂ), QS xiThetaSchwartzSource v = 0)
+    (hExtension : ∀ u v : 𝓢(ℝ, ℂ),
       Q2 (u.toLp 2 volume) (v.toLp 2 volume) = QS u v) :
-    ∀ u v : 𝒮(ℝ, ℂ), QS u v = 0 := by
-  have hdense := SchwartzMap.denseRange_toLpCLM (F := ℂ) (p := 2)
-    ENNReal.ofNat_ne_top
+    ∀ u v : 𝓢(ℝ, ℂ), QS u v = 0 := by
+  have hdense : DenseRange
+      (SchwartzMap.toLpCLM ℝ ℂ 2 (volume : Measure ℝ)) :=
+    SchwartzMap.denseRange_toLpCLM (E := ℝ) (F := ℂ) (p := 2)
+      ENNReal.ofNat_ne_top
   have hinvariant : XiThetaL2TranslationInvariant Q2 := by
     intro a u v
     let P : XiThetaL2 → XiThetaL2 → Prop := fun x y ↦
@@ -57,8 +59,6 @@ theorem xiThetaSchwartzForm_eq_zero_of_l2_extension
         mellinL2_schwartzTranslate_eq_translateCLM,
         mellinL2_schwartzTranslate_eq_translateCLM]
       exact QS.translate_pair_invariant hMomentum f g a
-    · exact u
-    · exact v
   have hnullL2 : ∀ v : XiThetaL2, Q2 xiThetaSourceL2 v = 0 := by
     intro v
     let P : XiThetaL2 → Prop := fun w ↦ Q2 xiThetaSourceL2 w = 0
@@ -81,9 +81,9 @@ theorem not_exists_nonzero_xiThetaSchwartzForm_l2_extension :
     ¬ ∃ (QS : SchwartzMap.ContinuousSchwartzSesquilinearForm)
         (Q2 : ContinuousSesquilinearForm XiThetaL2),
       QS.MomentumSymmetric ∧
-      (∀ v : 𝒮(ℝ, ℂ), QS xiThetaSchwartzSource v = 0) ∧
-      (∀ u v : 𝒮(ℝ, ℂ), Q2 (u.toLp 2 volume) (v.toLp 2 volume) = QS u v) ∧
-      ∃ u v : 𝒮(ℝ, ℂ), QS u v ≠ 0 := by
+      (∀ v : 𝓢(ℝ, ℂ), QS xiThetaSchwartzSource v = 0) ∧
+      (∀ u v : 𝓢(ℝ, ℂ), Q2 (u.toLp 2 volume) (v.toLp 2 volume) = QS u v) ∧
+      ∃ u v : 𝓢(ℝ, ℂ), QS u v ≠ 0 := by
   rintro ⟨QS, Q2, hMomentum, hThetaNull, hExtension, u, v, huv⟩
   exact huv (xiThetaSchwartzForm_eq_zero_of_l2_extension
     QS Q2 hMomentum hThetaNull hExtension u v)
