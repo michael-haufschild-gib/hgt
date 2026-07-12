@@ -57,14 +57,6 @@ theorem differentialJet_differentialPolynomial_X
   | succ n ih =>
       rw [differentialJet_succ, ih, differentialPolynomial_deriv_X]
 
-theorem differentialJet_add_apply
-    {K : Type*} [CommRing K] [Differential K] (n : ℕ) (x y : K) :
-    differentialJet n (x + y) = differentialJet n x + differentialJet n y := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-      rw [differentialJet_succ, differentialJet_succ, differentialJet_succ, ih, map_add]
-
 @[simp]
 theorem differentialPolynomial_deriv_C
     {ι C : Type*} [CommRing C] (c : C) :

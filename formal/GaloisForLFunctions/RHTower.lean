@@ -562,10 +562,12 @@ import GaloisForLFunctions.RHTower.CentralReciprocalMoments
 import GaloisForLFunctions.RHTower.XiCanonicalProduct
 import GaloisForLFunctions.RHTower.XiHadamardFactorization
 import GaloisForLFunctions.RHTower.XiWeilPolarization
+import GaloisForLFunctions.RHTower.XiHedenmalmFourierEquation
 import GaloisForLFunctions.RHTower.XiWeilResolventSource
 import GaloisForLFunctions.RHTower.XiWeilHilbertCore
 import GaloisForLFunctions.RHTower.XiHedenmalmEigenbasis
 import GaloisForLFunctions.RHTower.XiHedenmalmReciprocalOperator
+import GaloisForLFunctions.RHTower.XiHedenmalmSourceCapstone
 import GaloisForLFunctions.RHTower.XiWeilLineConjHilbert
 import GaloisForLFunctions.RHTower.XiWeilOneCauchyGate
 import GaloisForLFunctions.RHTower.PrimeArchSourceUpperBoundGate
@@ -657,6 +659,7 @@ import GaloisForLFunctions.RHTower.SoninSemilocalFluxSource
 import GaloisForLFunctions.RHTower.SoninSemilocalTraceObstruction
 import GaloisForLFunctions.RHTower.XiRelativeResolventTrace
 import GaloisForLFunctions.RHTower.XiRelativeResolventFlux
+import GaloisForLFunctions.RHTower.PrimeArchPolarSeamRemoval
 import GaloisForLFunctions.RHTower.PrimeArchAntiHerglotzGate
 import GaloisForLFunctions.RHTower.PrimeArchCentralMomentGerm
 import GaloisForLFunctions.RHTower.PrimeArchThetaFirstMoment
@@ -717,3 +720,5 @@ import GaloisForLFunctions.RHTower.PrimeWeylSamplingIdealizer
 import GaloisForLFunctions.RHTower.MFreeLadder
 import GaloisForLFunctions.RHTower.SqrtCarrierCertificate
 import GaloisForLFunctions.RHTower.MFreeTower
+import GaloisForLFunctions.RHTower.BornTemperatureFactorType
+import GaloisForLFunctions.RHTower.SqrtCarrierWindowBridge

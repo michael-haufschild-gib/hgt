@@ -16,11 +16,20 @@ For `a, b, m >= 1`:
 
 ```text
 mPart a (mPart b f) = mPart (a*b) f          (mPart 1 f = f)                     (1)
-prod_{k<K} mPart (m^k) [·, m-free] = [·, m^K-free]     (Dirichlet convolution)   (2)
-prod_{k<K} L([·, m-free], m^k s) = zeta(s)/zeta(m^K s)          on re s > 1      (3)
+[·, E-free] ⍟ mPart E [·, m-free] = [·, E·m-free]      (independent moduli)      (2)
+prod_{k<K} mPart (m^k) [·, m-free] = [·, m^K-free]     (Dirichlet convolution)   (3)
+prod_{k<K} L([·, m-free], m^k s) = zeta(s)/zeta(m^K s)          on re s > 1      (4)
 dpoly2 (mPartMoebiusCoeff (m^k)) (Icc 1 N) z -> zeta(m^k z)^(-1)
-                                                on re z > 1/m^k, per rung k      (4)
+                                                on re z > 1/m^k, per rung k      (5)
+prod_{k<K} mPart (P_k) [·, m_k-free] = [·, P_K-free],   P_k = m_0⋯m_{k-1}        (6)
+prod_{k<K} L([·, m_k-free], P_k s) = zeta(s)/zeta(P_K s)        on re s > 1      (7)
+dpoly2 (mPartMoebiusCoeff P_K) (Icc 1 N) z -> zeta(P_K z)^(-1)  on re z > 1/P_K  (8)
 ```
+
+Relations `(6)`–`(8)` are the mixed-radix tower: the moduli sequence is arbitrary, so the
+partial products `P_K` — and with them the nested carrier domains `re z > 1/P_K` — grow
+as fast as desired.  The single telescoping step `(2)` (base-`E` division with remainder
+at every prime power) drives both the pure-power and the mixed-radix towers.
 
 ## Proof
 
@@ -66,10 +75,14 @@ File: `formal/GaloisForLFunctions/RHTower/MFreeTower.lean`.
 
 - `mPart_one`, `mPart_mPart`, `mPart_pow_succ`: relation `(1)`;
 - `mFreeIndicator_one`, `forall_pow_ne_prime_pow_of_not_dvd`,
-  `mPart_mFreeIndicator_apply_prime_pow`, `mFreeIndicator_mul_mPart_mFreeIndicator`,
-  `prod_mPart_mFreeIndicator`: relation `(2)`;
-- `prod_LSeries_mFreeIndicator_telescope`: relation `(3)`;
-- `tendsto_dpoly2_mPartMoebiusCoeff_pow`: relation `(4)`.
+  `mPart_mFreeIndicator_apply_prime_pow`, `mFreeIndicator_mul_mPart_mFreeIndicator`:
+  the step `(2)` for independent moduli;
+- `prod_mPart_mFreeIndicator`: relation `(3)`;
+- `prod_LSeries_mFreeIndicator_telescope`: relation `(4)`;
+- `tendsto_dpoly2_mPartMoebiusCoeff_pow`: relation `(5)`;
+- `prod_mPart_mFreeIndicator_mixed`: relation `(6)`;
+- `prod_LSeries_mFreeIndicator_mixed`: relation `(7)`;
+- `tendsto_dpoly2_mixed_radix`: relation `(8)`.
 
 The module is imported by `GaloisForLFunctions.RHTower` and `GaloisForLFunctions`.
 
@@ -83,17 +96,16 @@ The module is imported by `GaloisForLFunctions.RHTower` and `GaloisForLFunctions
 - [x] generated indexes, axiom audit, and formal lint gate pass
 
 The umbrella build reaches and accepts `MFreeTower`; the independent existing failure is
-`SummableEulerCalkinInjectivity.lean`.  All ten public theorems use only `propext`,
+`SummableEulerCalkinInjectivity.lean`.  All thirteen public theorems use only `propext`,
 `Classical.choice`, and `Quot.sound`.
 
 ## Opens
 
-The telescope `(2)` presents `[·, m^K-free]` as a `K`-fold convolution of dilations of
-one atom — a factorization system on indicators.  Two forward objects: (i) the inverse
-telescope — convolving `(2)` against dilated Möbius factors to expand `mPart (m^K) mu`
-as `prod_{k<K} mPart (m^k) (dilated mu-atom)`, giving a product presentation of the
-`zeta(m^K z)^(-1)` carrier coefficients themselves; (ii) the mixed-radix version — for a
-sequence `m_0, m_1, …` of moduli the same digit argument telescopes
-`prod_k mPart (m_0⋯m_{k-1}) [·, m_k-free]` to the indicator of exponents below
-`m_0⋯m_{K-1}`, a factorial-base ladder whose carrier limits live on half-planes shrinking
-as fast as desired — a knob for approaching `re z = 1/2` along certified carriers.
+The remaining forward object is the inverse telescope: convolving `(2)` against dilated
+Möbius factors to expand `mPart (P_K) mu` as a `K`-fold convolution of dilated
+Möbius atoms, giving a product presentation of the `zeta(P_K z)^(-1)` carrier
+coefficients themselves — the coefficient-level counterpart of `(7)`.  Beyond it, the
+mixed-radix freedom in `(6)`–`(8)` invites a diagonal object: choose `m_k` growing so
+that `P_K`-rung certificates (via `sqrt-carrier-finite-cutoff-certificate`) hold with a
+single uniform gap sequence — a certified carrier family indexed by one parameter whose
+domains exhaust `re z > 0`.

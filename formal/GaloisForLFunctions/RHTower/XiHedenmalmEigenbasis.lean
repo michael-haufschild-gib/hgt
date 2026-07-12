@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiWeilHilbertCore
+import GaloisForLFunctions.RHTower.XiHedenmalmFourierEquation
 import GaloisForLFunctions.RHTower.XiHadamardFactorization
 import GaloisForLFunctions.RHTower.XiDivisorSupportedMetric
 import GaloisForLFunctions.HilbertSchmidtMatrix
@@ -28,6 +29,24 @@ noncomputable section
 def XiZerosSimple : Prop :=
   ∀ {alpha : ℂ}, XiC alpha = 0 → deriv XiC alpha ≠ 0
 
+/-- A nonzero derivative at one divisor support point makes that local analytic multiplicity
+exactly one, without assuming simplicity elsewhere. -/
+theorem xiDivisorMultiplicity_eq_one_of_deriv_ne_zero
+    (rho : XiDivisorSupport)
+    (hderiv : deriv XiC (xiSpectralPointSupport rho) ≠ 0) :
+    Int.toNat ((MeromorphicOn.divisor xi Set.univ) (rho : ℂ)) = 1 := by
+  have hpos := xi_divisor_pos_on_support rho
+  have hn : 0 < Int.toNat ((MeromorphicOn.divisor xi Set.univ) (rho : ℂ)) := by
+    omega
+  let q : XiZeroCopy := ⟨rho, ⟨0, hn⟩⟩
+  have hzero : XiC (xiSpectralPointSupport rho) = 0 := by
+    simpa only [q, xiSpectralPoint_eq_support] using XiC_xiSpectralPoint_eq_zero q
+  have horder :=
+    (XiC_analytic (xiSpectralPointSupport rho) (Set.mem_univ _)).analyticOrderAt_eq_one_of_zero_deriv_ne_zero
+      hzero hderiv
+  rw [XiC_analyticOrderAt_support] at horder
+  exact ENat.coe_inj.mp horder
+
 /-- Simplicity makes the analytic divisor multiplicity at every support point exactly one. -/
 theorem xiDivisorMultiplicity_eq_one_of_simple
     (hsimple : XiZerosSimple) (rho : XiDivisorSupport) :
@@ -53,6 +72,23 @@ theorem xiSpectralPoint_injective_of_simple (hsimple : XiZerosSimple) :
     simpa only [xiSpectralPoint_eq_support] using hqr
   apply Sigma.eq hbase
   have hmult := xiDivisorMultiplicity_eq_one_of_simple hsimple r.1
+  haveI : Subsingleton
+      (Fin (Int.toNat ((MeromorphicOn.divisor xi Set.univ) (r.1 : ℂ)))) := by
+    rw [hmult]
+    infer_instance
+  apply Subsingleton.elim
+
+/-- A divisor copy over a simple centered zero is the unique copy at that spectral point. -/
+theorem xiZeroCopy_eq_of_spectralPoint_eq_of_deriv_ne_zero
+    (q r : XiZeroCopy) (hqr : xiSpectralPoint q = xiSpectralPoint r)
+    (hderiv : deriv XiC (xiSpectralPoint q) ≠ 0) : q = r := by
+  have hbase : q.1 = r.1 := by
+    apply xiSpectralPointSupport_injective
+    simpa only [xiSpectralPoint_eq_support] using hqr
+  apply Sigma.eq hbase
+  have hderivSupport : deriv XiC (xiSpectralPointSupport r.1) ≠ 0 := by
+    simpa only [← hbase, ← xiSpectralPoint_eq_support] using hderiv
+  have hmult := xiDivisorMultiplicity_eq_one_of_deriv_ne_zero r.1 hderivSupport
   haveI : Subsingleton
       (Fin (Int.toNat ((MeromorphicOn.divisor xi Set.univ) (r.1 : ℂ)))) := by
     rw [hmult]
@@ -94,10 +130,93 @@ theorem xiThetaEigenEvaluationLp_eq_smul_single
       (lp.single 2 q (1 : ℂ) : lp (fun _ : XiZeroCopy => ℂ) 2) r
     rw [lp.single_apply_ne _ _ _ hrq, mul_zero]
 
+/-- The coordinate formula is local: a nonzero derivative at `q` alone makes its theta
+eigenfunction evaluation a nonzero multiple of the single coordinate `q`. -/
+theorem xiThetaEigenEvaluationLp_eq_smul_single_of_deriv_ne_zero
+    (q : XiZeroCopy) (hderiv : deriv XiC (xiSpectralPoint q) ≠ 0) :
+    xiThetaEigenEvaluationLp q =
+      (I * deriv XiC (xiSpectralPoint q)) • lp.single 2 q (1 : ℂ) := by
+  apply Subtype.ext
+  funext r
+  by_cases hrq : r = q
+  · subst r
+    rw [xiThetaEigenEvaluationLp_apply, xiThetaEigenFourier_self]
+    change I * deriv XiC (xiSpectralPoint q) =
+      (I * deriv XiC (xiSpectralPoint q)) *
+        (lp.single 2 q (1 : ℂ) : lp (fun _ : XiZeroCopy => ℂ) 2) q
+    rw [lp.single_apply_self, mul_one]
+  · have hpoint : xiSpectralPoint r ≠ xiSpectralPoint q := by
+      intro h
+      exact hrq (xiZeroCopy_eq_of_spectralPoint_eq_of_deriv_ne_zero q r h.symm hderiv).symm
+    rw [xiThetaEigenEvaluationLp_apply,
+      xiThetaEigenFourier_spectralPoint_eq_zero
+        (XiC_xiSpectralPoint_eq_zero q) r hpoint]
+    change 0 = (I * deriv XiC (xiSpectralPoint q)) *
+      (lp.single 2 q (1 : ℂ) : lp (fun _ : XiZeroCopy => ℂ) 2) r
+    rw [lp.single_apply_ne _ _ _ hrq, mul_zero]
+
+/-- At a multiple Xi zero, the corresponding Hedenmalm theta eigenfunction is literally the zero
+vector in the multiplicity-exact Weil evaluation carrier. -/
+theorem xiThetaEigenEvaluationLp_eq_zero_of_deriv_eq_zero
+    (q : XiZeroCopy) (hderiv : deriv XiC (xiSpectralPoint q) = 0) :
+    xiThetaEigenEvaluationLp q = 0 := by
+  apply Subtype.ext
+  funext r
+  rw [xiThetaEigenEvaluationLp_apply]
+  by_cases hrq : xiSpectralPoint r = xiSpectralPoint q
+  · rw [hrq, xiThetaEigenFourier_self, hderiv, mul_zero]
+    rfl
+  · exact xiThetaEigenFourier_spectralPoint_eq_zero
+      (XiC_xiSpectralPoint_eq_zero q) r hrq
+
 /-- Algebraic span of all actual Hedenmalm eigenfunction evaluation vectors. -/
 def xiThetaEigenAlgebraicSubspace :
     Submodule ℂ (lp (fun _ : XiZeroCopy => ℂ) 2) :=
   Submodule.span ℂ (Set.range xiThetaEigenEvaluationLp)
+
+/-- Canonical basis coordinates lying over simple Xi zeros. -/
+def xiSimpleCoordinateBasisSet :
+    Set (lp (fun _ : XiZeroCopy => ℂ) 2) :=
+  Set.range (fun q : {q : XiZeroCopy // deriv XiC (xiSpectralPoint q) ≠ 0} =>
+    lp.single 2 q.1 (1 : ℂ))
+
+/-- Algebraic coordinate space supported on the simple part of the actual Xi divisor. -/
+def xiSimpleCoordinateAlgebraicSubspace :
+    Submodule ℂ (lp (fun _ : XiZeroCopy => ℂ) 2) :=
+  Submodule.span ℂ xiSimpleCoordinateBasisSet
+
+/-- Exact unconditional defect law: the Hedenmalm theta eigenfunction span is precisely the
+algebraic span of the divisor coordinates lying over simple Xi zeros. Every multiple-zero fiber is
+deleted in full. -/
+theorem xiThetaEigenAlgebraicSubspace_eq_simpleCoordinateSubspace :
+    xiThetaEigenAlgebraicSubspace = xiSimpleCoordinateAlgebraicSubspace := by
+  apply le_antisymm
+  · refine Submodule.span_le.mpr ?_
+    rintro _ ⟨q, rfl⟩
+    by_cases hderiv : deriv XiC (xiSpectralPoint q) ≠ 0
+    · rw [xiThetaEigenEvaluationLp_eq_smul_single_of_deriv_ne_zero q hderiv]
+      exact xiSimpleCoordinateAlgebraicSubspace.smul_mem _
+        (Submodule.subset_span ⟨⟨q, hderiv⟩, rfl⟩)
+    · have hzero : deriv XiC (xiSpectralPoint q) = 0 := not_ne_iff.mp hderiv
+      rw [xiThetaEigenEvaluationLp_eq_zero_of_deriv_eq_zero q hzero]
+      exact xiSimpleCoordinateAlgebraicSubspace.zero_mem
+  · refine Submodule.span_le.mpr ?_
+    rintro _ ⟨q, rfl⟩
+    have heig : xiThetaEigenEvaluationLp q.1 ∈ xiThetaEigenAlgebraicSubspace :=
+      Submodule.subset_span (Set.mem_range_self q.1)
+    have hc : I * deriv XiC (xiSpectralPoint q.1) ≠ 0 :=
+      mul_ne_zero I_ne_zero q.2
+    have hscaled := xiThetaEigenAlgebraicSubspace.smul_mem
+      (I * deriv XiC (xiSpectralPoint q.1))⁻¹ heig
+    rw [xiThetaEigenEvaluationLp_eq_smul_single_of_deriv_ne_zero q.1 q.2,
+      inv_smul_smul₀ hc] at hscaled
+    exact hscaled
+
+/-- The same exact defect law after Hilbert completion. -/
+theorem xiThetaEigenHilbertClosure_eq_simpleCoordinateClosure :
+    xiThetaEigenAlgebraicSubspace.topologicalClosure =
+      xiSimpleCoordinateAlgebraicSubspace.topologicalClosure := by
+  rw [xiThetaEigenAlgebraicSubspace_eq_simpleCoordinateSubspace]
 
 /-- Simplicity makes the Hedenmalm eigenfunction evaluation span dense in the full Xi carrier. -/
 theorem xiThetaEigenAlgebraicSubspace_dense_of_simple
@@ -155,9 +274,8 @@ theorem xiCoordinateZeroSubspace_isClosed (q : XiZeroCopy) :
       Set (lp (fun _ : XiZeroCopy => ℂ) 2)) := by
   change IsClosed {v : lp (fun _ : XiZeroCopy => ℂ) 2 | v q = 0}
   have hcont : Continuous
-      (fun v : lp (fun _ : XiZeroCopy => ℂ) 2 => v q) := by
-    simpa only [Function.comp_apply] using
-      ((PiLp.continuous_apply 2 (fun _ : XiZeroCopy => ℂ) q).comp continuous_subtype_val)
+      (fun v : lp (fun _ : XiZeroCopy => ℂ) 2 => v q) :=
+    (lp.evalCLM ℂ (fun _ : XiZeroCopy => ℂ) 2 q).continuous
   exact isClosed_eq hcont continuous_const
 
 /-- If the derivative at one Xi zero vanishes, every theta eigenfunction evaluation lies in the

@@ -8,6 +8,9 @@ Connes--Consani--Moscovici route:
 * bilateral polarization of an off-line quartet resolvent;
 * exact Sonin resolvent dressing of the boundary commutator.
 
+The source incidence includes the complete complex right-half-plane polar--prime critical Mellin
+colligation, not only its positive-real-ray restriction.
+
 It also states the cofinal finite-section law and imports the exact global
 Xi--Weil/source identities already present in the non-q62 formal corpus.  The
 global RH-bearing input is named `CCMGlobalWeilPassivity` and proved equivalent
@@ -23,6 +26,7 @@ import GaloisForLFunctions.HTGeometry.PrimeLogHerglotz
 import GaloisForLFunctions.HTGeometry.PrimeLogCauchySeamRank
 import GaloisForLFunctions.RHTower.GammaDampedPrimeLogCauchyDomain
 import GaloisForLFunctions.RHTower.PolarPrimeMellinDefect
+import GaloisForLFunctions.RHTower.CCMComplexMellinColligation
 import GaloisForLFunctions.RHTower.SoninTimeBandHilbertSchmidt
 import GaloisForLFunctions.RHTower.XiThetaSquareRateLaplace
 import GaloisForLFunctions.RHTower.XiWeilPositivityCriterion

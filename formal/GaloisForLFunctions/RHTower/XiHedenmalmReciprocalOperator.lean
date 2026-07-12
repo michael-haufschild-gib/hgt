@@ -93,6 +93,18 @@ theorem xiReciprocalOperator_isSelfAdjoint_iff_rh :
   ⟨riemannHypothesis_of_xiReciprocalOperator_isSelfAdjoint,
     xiReciprocalOperator_isSelfAdjoint_of_rh⟩
 
+/-- Closed Hilbert--Polya capstone: existence of a conservative divisor-supported Hedenmalm
+metric is equivalent to simultaneous self-adjointness of the reciprocal Xi operator and
+completeness of the actual theta eigenfunction evaluations. This theorem has no assumptions. -/
+theorem exists_conservative_xiThetaMetric_iff_selfAdjoint_and_eigenComplete :
+    (∃ c : XiRealDivisorWeight, XiThetaMetricConservative c) ↔
+      IsSelfAdjoint xiReciprocalOperator ∧
+        Dense (xiThetaEigenAlgebraicSubspace :
+          Set (lp (fun _ : XiZeroCopy => ℂ) 2)) := by
+  rw [exists_conservative_xiThetaMetric_iff_rh_and_simple,
+    xiReciprocalOperator_isSelfAdjoint_iff_rh,
+    xiThetaEigenAlgebraicSubspace_dense_iff_simple]
+
 theorem xiReciprocalOperator_single (q : XiZeroCopy) :
     xiReciprocalOperator (lp.single 2 q (1 : ℂ)) =
       (xiSpectralPoint q)⁻¹ • lp.single 2 q (1 : ℂ) := by

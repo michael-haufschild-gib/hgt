@@ -216,4 +216,130 @@ theorem sqrtCarrier_floor_of_inv_zeta_floor {ε t₀ : ℝ} (hε : 0 < ε) {z : 
     norm_sub_norm_le _ _
   linarith
 
+/-! ## The elementary zeta bound and the certified chart floor -/
+
+/-- **The elementary zeta bound.**  Termwise triangle inequality plus the integral-test
+tail: on `re w ≥ 1 + ε'`, `‖ζ(w)‖ ≤ 1 + 1/ε'`. -/
+theorem norm_riemannZeta_le {ε' : ℝ} (hε' : 0 < ε') {w : ℂ} (hw : 1 + ε' ≤ w.re) :
+    ‖riemannZeta w‖ ≤ 1 + 1 / ε' := by
+  have hw1 : 1 < w.re := by linarith
+  have hre0 : w.re ≠ 0 := by linarith
+  have hmaj : Summable (fun n : ℕ => 1 / (n : ℝ) ^ w.re) :=
+    Real.summable_one_div_nat_rpow.mpr hw1
+  have hterm : ∀ n : ℕ, ‖1 / (n : ℂ) ^ w‖ = 1 / (n : ℝ) ^ w.re := by
+    intro n
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · rw [Nat.cast_zero, Complex.zero_cpow
+          (fun h => by rw [h] at hw1; simp at hw1; exact absurd hw1 (by norm_num)),
+        div_zero, norm_zero, Nat.cast_zero, Real.zero_rpow hre0, div_zero]
+    · rw [norm_div, norm_one, Complex.norm_natCast_cpow_of_pos hn]
+  have hnorm : Summable (fun n : ℕ => ‖1 / (n : ℂ) ^ w‖) :=
+    (summable_congr fun n => hterm n).mpr hmaj
+  rw [zeta_eq_tsum_one_div_nat_cpow hw1]
+  refine le_trans (norm_tsum_le_tsum_norm hnorm) ?_
+  rw [tsum_congr hterm]
+  have hsplit := Summable.sum_add_tsum_nat_add 2 hmaj
+  have h01 : ∑ i ∈ Finset.range 2, 1 / ((i : ℕ) : ℝ) ^ w.re = 1 := by
+    simp [Finset.sum_range_succ, Real.zero_rpow hre0]
+  have htail : ∑' i : ℕ, 1 / ((i + 2 : ℕ) : ℝ) ^ w.re ≤ 1 / (w.re - 1) := by
+    have hb := tsum_add_rpow_neg_le hw1 (M := 1) le_rfl
+    rw [Nat.cast_one, Real.one_rpow] at hb
+    refine le_trans (le_of_eq (tsum_congr fun i => ?_)) hb
+    rw [Real.rpow_neg (Nat.cast_nonneg _), one_div]
+  have h1ε : 1 / (w.re - 1) ≤ 1 / ε' := by
+    gcongr
+    linarith
+  rw [← hsplit, h01]
+  linarith
+
+/-- **Inverse-zeta floor.**  On `re w ≥ 1 + ε'` the reciprocal zeta value has the
+explicit floor `ε'/(1+ε')`. -/
+theorem inv_zeta_floor {ε' : ℝ} (hε' : 0 < ε') {w : ℂ} (hw : 1 + ε' ≤ w.re) :
+    ε' / (1 + ε') ≤ ‖(riemannZeta w)⁻¹‖ := by
+  have hw1 : 1 < w.re := by linarith
+  have hpos : 0 < ‖riemannZeta w‖ :=
+    norm_pos_iff.mpr (riemannZeta_ne_zero_of_one_lt_re hw1)
+  rw [norm_inv]
+  refine le_trans (le_of_eq ?_) (inv_anti₀ hpos (norm_riemannZeta_le hε' hw))
+  rw [eq_comm, inv_eq_iff_eq_inv, eq_comm, inv_div]
+  field_simp
+  ring
+
+/-- **Certified chart floor, parametric.**  A purely numeric gap condition in
+`(ε, N, t₀)` — the certificate radius plus `t₀` below the elementary inverse-zeta floor —
+forces the explicit floor `t₀` on the finite square-dilated carrier, everywhere on the
+half-plane `re z ≥ 1/2 + ε`.  No unproved input remains. -/
+theorem sqrtCarrier_certified_floor {ε t₀ : ℝ} (hε : 0 < ε) {z : ℂ}
+    (hz : 1 / 2 + ε ≤ z.re) {N : ℕ} (hN : 1 ≤ Nat.sqrt N)
+    (hgap : t₀ + (Nat.sqrt N : ℝ) ^ (-(2 * ε)) / (2 * ε) < 2 * ε / (1 + 2 * ε)) :
+    t₀ < ‖dpoly2 sqrtMoebiusCoeff (Finset.Icc 1 N) z‖ := by
+  refine sqrtCarrier_floor_of_inv_zeta_floor hε hz hN (lt_of_lt_of_le hgap ?_)
+  refine inv_zeta_floor (by linarith : (0 : ℝ) < 2 * ε) ?_
+  rw [two_mul_re']
+  linarith
+
+/-- **The first certified chart floor** (numeric witness): on the half-plane `re z ≥ 1`,
+the cutoff-`16` square-dilated carrier is bounded below by `1/8`, unconditionally. -/
+theorem sqrtCarrier_floor_witness {z : ℂ} (hz : 1 ≤ z.re) :
+    (1 / 8 : ℝ) < ‖dpoly2 sqrtMoebiusCoeff (Finset.Icc 1 16) z‖ := by
+  have hsqrt : Nat.sqrt 16 = 4 := by
+    rw [show (16 : ℕ) = 4 ^ 2 by norm_num, Nat.sqrt_eq']
+  refine sqrtCarrier_certified_floor (ε := 1 / 2) (by norm_num) (by linarith) ?_ ?_
+  · rw [hsqrt]
+    norm_num
+  · rw [hsqrt, show -(2 * (1 / 2 : ℝ)) = -1 by norm_num, Real.rpow_neg_one]
+    norm_num
+
+/-! ## Certified rpow bracketing and the strip witness -/
+
+/-- **Certified rpow bracketing.**  The transcendental bound `x^(-(a/b)) ≤ r` reduces to
+the pure-power certificate `1 ≤ r^b · x^a`, checkable by `norm_num` — the brick that lets
+the certified floor emit numeric witnesses at any rational `ε`, not only where the rpow
+exponent is an integer. -/
+theorem rpow_neg_div_le_of_one_le_pow {x r : ℝ} (hx : 1 ≤ x) (hr : 0 < r) {a b : ℕ}
+    (hb : b ≠ 0) (h : 1 ≤ r ^ b * x ^ a) : x ^ (-((a : ℝ) / (b : ℝ))) ≤ r := by
+  have hx0 : (0 : ℝ) < x := by linarith
+  have hxq : (0 : ℝ) < x ^ ((a : ℝ) / (b : ℝ)) := Real.rpow_pos_of_pos hx0 _
+  have key : 1 / r ≤ x ^ ((a : ℝ) / (b : ℝ)) := by
+    have hxab : (x ^ ((a : ℝ) / (b : ℝ))) ^ b = x ^ (a : ℕ) := by
+      rw [← Real.rpow_natCast (x ^ ((a : ℝ) / (b : ℝ))) b, ← Real.rpow_mul hx0.le,
+        div_mul_cancel₀ _ (by exact_mod_cast hb : ((b : ℕ) : ℝ) ≠ 0), Real.rpow_natCast]
+    have hpow : (1 / r) ^ b ≤ (x ^ ((a : ℝ) / (b : ℝ))) ^ b := by
+      rw [hxab, div_pow, one_pow, div_le_iff₀ (by positivity)]
+      calc (1 : ℝ) ≤ r ^ b * x ^ a := h
+        _ = x ^ a * r ^ b := mul_comm _ _
+    exact le_of_pow_le_pow_left₀ hb hxq.le hpow
+  calc x ^ (-((a : ℝ) / (b : ℝ))) = (x ^ ((a : ℝ) / (b : ℝ)))⁻¹ := Real.rpow_neg hx0.le _
+    _ ≤ (1 / r)⁻¹ := inv_anti₀ (by positivity) key
+    _ = r := by rw [one_div, inv_inv]
+
+/-- Certified-radius form of the chart floor: any bracketing bound `r` for the rpow
+radius may replace it in the gap condition. -/
+theorem sqrtCarrier_certified_floor_of_le {ε t₀ r : ℝ} (hε : 0 < ε) {z : ℂ}
+    (hz : 1 / 2 + ε ≤ z.re) {N : ℕ} (hN : 1 ≤ Nat.sqrt N)
+    (hr : (Nat.sqrt N : ℝ) ^ (-(2 * ε)) ≤ r)
+    (hgap : t₀ + r / (2 * ε) < 2 * ε / (1 + 2 * ε)) :
+    t₀ < ‖dpoly2 sqrtMoebiusCoeff (Finset.Icc 1 N) z‖ := by
+  refine sqrtCarrier_certified_floor hε hz hN (lt_of_le_of_lt ?_ hgap)
+  have h2ε : (0 : ℝ) < 2 * ε := by linarith
+  have hdiv : (Nat.sqrt N : ℝ) ^ (-(2 * ε)) / (2 * ε) ≤ r / (2 * ε) :=
+    div_le_div₀ (le_trans (Real.rpow_nonneg (by positivity) _) hr) hr h2ε le_rfl
+  linarith
+
+/-- **Strip-adjacent certified floor witness**: at `ε = 1/4`, on the half-plane
+`re z ≥ 3/4`, the cutoff-`10000` square-dilated carrier has the certified floor `1/10`.
+The rpow radius is certified by the pure-power bracketing `(1/10)² · 100 = 1`. -/
+theorem sqrtCarrier_floor_witness_strip {z : ℂ} (hz : 3 / 4 ≤ z.re) :
+    (1 / 10 : ℝ) < ‖dpoly2 sqrtMoebiusCoeff (Finset.Icc 1 10000) z‖ := by
+  have hsqrt : Nat.sqrt 10000 = 100 := by
+    rw [show (10000 : ℕ) = 100 ^ 2 by norm_num, Nat.sqrt_eq']
+  refine sqrtCarrier_certified_floor_of_le (ε := 1 / 4) (r := 1 / 10) (by norm_num)
+    (by linarith) ?_ ?_ ?_
+  · rw [hsqrt]
+    norm_num
+  · rw [hsqrt, show -(2 * (1 / 4 : ℝ)) = -(((1 : ℕ) : ℝ) / ((2 : ℕ) : ℝ)) by norm_num]
+    refine rpow_neg_div_le_of_one_le_pow (by norm_num) (by norm_num) (by norm_num) ?_
+    norm_num
+  · norm_num
+
 end RHTower

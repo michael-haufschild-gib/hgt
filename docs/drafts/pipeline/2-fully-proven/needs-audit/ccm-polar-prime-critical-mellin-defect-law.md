@@ -6,10 +6,11 @@
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [ERRATUM CANDIDATE] [NOT AN RH PROOF]`
 - **Lean status:** `[PARTIALLY FORMALIZED]` — the unconditional finite-dimensional kernel,
   signature, corrected zero-frequency multiplier, full real-cutoff Abel identity `(12)`, its
-  von Mangoldt specialization, the zero-frequency defect `(13)`, and the infinite real-ray
-  Laplace colligation `(22)`--`(25)` are verified in
-  `formal/GaloisForLFunctions/RHTower/PolarPrimeMellinDefect.lean`; the distributional source-sign
-  derivation, autocorrelation identities, and full complex Stieltjes continuation remain paper-level
+  von Mangoldt specialization, the zero-frequency defect `(13)`, the infinite real-ray Laplace
+  colligation `(22)`--`(25)`, and its full complex right-half-plane scalar and finite-matrix lift
+  are verified in `formal/GaloisForLFunctions/RHTower/PolarPrimeMellinDefect.lean` and
+  `formal/GaloisForLFunctions/RHTower/CCMComplexMellinColligation.lean`; the distributional
+  source-sign derivation and autocorrelation identities remain paper-level
 - **Parent source:** Suzuki, *Weil's quadratic form via the screw function*, arXiv:2606.09096,
   equations (2.5), (2.7), and (2.11)
 - **Statement:** The exact finite-aperture Fourier symbol contains an aperture-dependent rank-two

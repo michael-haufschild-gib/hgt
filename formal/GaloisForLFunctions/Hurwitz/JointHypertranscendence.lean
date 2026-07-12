@@ -125,4 +125,47 @@ theorem joint_hzeta_rational_hypertranscendental_in_shift_of_linearIndependent
   joint_hzeta_rational_hypertranscendental_in_shift hs1
     (monomialValue_monoScalar_injective_of_linearIndependent s hsQ) N Q hrel
 
+/-- **Arbitrary-family ladder law.**  Every finite subfamily of an arbitrarily indexed rationally
+independent exponent family has rational-coefficient joint Hurwitz-ladder independence. -/
+theorem joint_hurwitz_ladder_rational_independence_on_finset
+    {κ : Type*} [DecidableEq κ] {s : κ → ℂ} (hs1 : ∀ j, 1 < (s j).re)
+    (hsQ : LinearIndependent ℚ (exponentFamily s))
+    (J : Finset κ) (N : ℕ)
+    (Q : MvPolynomial (J × Fin (N + 1)) (RatFunc ℂ))
+    (hrel : ∀ a : ℂ, 0 < a.im →
+      MvPolynomial.eval₂ (Polynomial.evalRingHom a)
+        (fun jk => hzeta (s jk.1.1 + ((jk.2 : ℕ) : ℂ)) a)
+        (GaloisForLFunctions.HTGeometry.clearRatFuncCoefficients Q) = 0) :
+    Q = 0 := by
+  classical
+  let sJ : J → ℂ := fun j => s j.1
+  have hs1J : ∀ j, 1 < (sJ j).re := fun j => hs1 j.1
+  have hsQJ : LinearIndependent ℚ (exponentFamily sJ) := by
+    simpa [sJ] using exponentFamily_linearIndependent_comp s hsQ
+      (fun j : J => j.1) Subtype.val_injective
+  exact joint_hurwitz_ladder_rational_independence_of_linearIndependent
+    hs1J hsQJ N Q hrel
+
+/-- **Arbitrary-family differential law.**  Every finite mixed jet packet drawn from an
+arbitrarily indexed rationally independent exponent family is algebraically independent over
+`ℂ(a)` in the canonical denominator-cleared functional semantics. -/
+theorem joint_hzeta_rational_hypertranscendental_on_finset
+    {κ : Type*} [DecidableEq κ] {s : κ → ℂ} (hs1 : ∀ j, 1 < (s j).re)
+    (hsQ : LinearIndependent ℚ (exponentFamily s))
+    (J : Finset κ) (N : ℕ)
+    (Q : MvPolynomial (J × Fin (N + 1)) (RatFunc ℂ))
+    (hrel : ∀ a : ℂ, 0 < a.im →
+      MvPolynomial.eval₂ (Polynomial.evalRingHom a)
+        (fun jk => iteratedDeriv (jk.2 : ℕ) (hzeta (s jk.1.1)) a)
+        (GaloisForLFunctions.HTGeometry.clearRatFuncCoefficients Q) = 0) :
+    Q = 0 := by
+  classical
+  let sJ : J → ℂ := fun j => s j.1
+  have hs1J : ∀ j, 1 < (sJ j).re := fun j => hs1 j.1
+  have hsQJ : LinearIndependent ℚ (exponentFamily sJ) := by
+    simpa [sJ] using exponentFamily_linearIndependent_comp s hsQ
+      (fun j : J => j.1) Subtype.val_injective
+  exact joint_hzeta_rational_hypertranscendental_in_shift_of_linearIndependent
+    hs1J hsQJ N Q hrel
+
 end HurwitzJointLadder

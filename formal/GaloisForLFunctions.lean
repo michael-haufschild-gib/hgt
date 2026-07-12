@@ -47,6 +47,9 @@ import GaloisForLFunctions.HomogeneousDiffPolyGap
 import GaloisForLFunctions.SuperlacunaryExists
 import GaloisForLFunctions.GapOvershoot
 import GaloisForLFunctions.DifferentialMonomialGapVanish
+import GaloisForLFunctions.GapWindowThreshold
+import GaloisForLFunctions.DegreeHomogeneousDiffPolyGap
+import GaloisForLFunctions.ArchimedeanValuationGap
 import GaloisForLFunctions.IterateDerivativeFalling
 import GaloisForLFunctions.WeightPolynomial
 import GaloisForLFunctions.WeightPolynomialDependence
@@ -67,6 +70,7 @@ import GaloisForLFunctions.PrimeLogPhaseBudget
 import GaloisForLFunctions.GammaMultiplication
 import GaloisForLFunctions.PolygammaMultiplication
 import GaloisForLFunctions.PolygammaHurwitzValue
+import GaloisForLFunctions.Hurwitz.JointUpperEndDifferentialIndependence
 import GaloisForLFunctions.RHTower.ConstrainedProlateOperator
 import GaloisForLFunctions.RHTower.ConstrainedProlateConstrainedSpectrum
 import GaloisForLFunctions.RHTower.ConstrainedProlateSignedSpectrum
@@ -265,3 +269,4 @@ import GaloisForLFunctions.RHTower.SquarefreeMoebiusNormalization
 import GaloisForLFunctions.RHTower.MFreeLadder
 import GaloisForLFunctions.RHTower.SqrtCarrierCertificate
 import GaloisForLFunctions.RHTower.MFreeTower
+import GaloisForLFunctions.RHTower.SqrtCarrierWindowBridge

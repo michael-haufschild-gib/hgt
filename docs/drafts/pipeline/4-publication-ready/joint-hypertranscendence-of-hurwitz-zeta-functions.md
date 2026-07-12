@@ -1,4 +1,4 @@
-# Joint hypertranscendence of Hurwitz zeta functions in the shift parameter
+# The monodromy-character law for joint Hurwitz hypertranscendence
 
 ## Abstract
 
@@ -13,9 +13,10 @@ $(q_1,\ldots,q_r)$ have distinct values. We prove that, for every $N\geq 0$, the
 are algebraically independent over $\mathbb C(a)$. Consequently the functions
 $a\mapsto\zeta(s_1,a),\ldots,a\mapsto\zeta(s_r,a)$ satisfy no nonzero mixed algebraic
 differential equation over $\mathbb C(a)$. A sufficient arithmetic condition is the rational
-linear independence of $1,s_1,\ldots,s_r$. The proof combines simultaneous branch monodromy,
-Zariski density of a common cyclic power orbit, independent branch-point columns, and a
-block-Vandermonde automorphism.
+linear independence of $1,s_1,\ldots,s_r$. The result also holds in the finite-subfamily sense
+for an arbitrarily indexed rationally independent exponent family. The proof combines simultaneous
+branch monodromy, Zariski density of a common cyclic power orbit, independent branch-point columns,
+and a block-Vandermonde automorphism.
 
 ## 1. Introduction
 
@@ -74,11 +75,18 @@ For $N\geq0$, define the finite ladder
   \bigl(\zeta(s_j+k,a)\bigr)_{j\in I,\ 0\leq k\leq N}.
 \]
 
+Let $\mathcal A_\infty$ be the integral domain of germs represented by functions analytic on some
+half-plane $\operatorname{Im}a>H$, where two representatives agree when they coincide on a
+possibly higher half-plane, and put $\mathcal M_\infty=\operatorname{Frac}(\mathcal A_\infty)$.
+Ordinary differentiation makes $\mathcal M_\infty$ a differential field, and evaluation embeds
+$\mathbb C(a)$ in it.
+
 ### Theorem 2.1 — monodromy-character law
 
-Assume $\operatorname{Re}s_j>1$ for every $j\in I$ and condition **(NR)**. Then, for every
-$N\geq0$, the entries of $\mathcal L_N(s)$ are algebraically independent over
-$\mathbb C(a)$.
+Assume $\operatorname{Re}s_j>1$ for every $j\in I$ and condition **(NR)**. The germs of
+$a\mapsto\zeta(s_j,a)$ in $\mathcal M_\infty$ are differentially algebraically independent over
+$\mathbb C(a)$. Equivalently, for every $N\geq0$, the entries of $\mathcal L_N(s)$ are
+algebraically independent over $\mathbb C(a)$.
 
 More explicitly, the polynomial-coefficient form says that if
 
@@ -122,6 +130,21 @@ Corollary 2.2, for every $N\geq0$ the functions
 are algebraically independent over $\mathbb C(a)$. Hence no nonzero mixed algebraic
 differential equation of finite order and degree over $\mathbb C(a)$ couples the family
 $a\mapsto\zeta(s_j,a)$.
+
+### Corollary 2.4 — arbitrary exponent families
+
+Let $(s_j)_{j\in K}$ be an arbitrarily indexed family with $\operatorname{Re}s_j>1$, and assume
+that the augmented family consisting of $1$ and all $s_j$ is linearly independent over
+$\mathbb Q$. Then
+
+\[
+  \{\partial_a^k\zeta(s_j,a):j\in K,\ k\geq0\}
+\]
+
+is algebraically independent over $\mathbb C(a)$ in the finite-subfamily sense: every relation
+involves a finite set $J\subset K$ and a finite maximum derivative order, and every such relation
+is zero. The analogous statement holds for the shifted ladders
+$\{\zeta(s_j+k,a):j\in K,\ k\geq0\}$.
 
 ## 3. Power-orbit density
 
@@ -243,7 +266,7 @@ Iterating Proposition 4.1 independently at the branch points $0,-1,\ldots,-N$ gi
 
 \[
   P(a;F^{c(m)}(a))=0,
-  \qquad c(m)_{j,n}=q_j^{m_n},quad m\in\mathbb N^{N+1}.     \tag{4.6}
+  \qquad c(m)_{j,n}=q_j^{m_n},\quad m\in\mathbb N^{N+1}.   \tag{4.6}
 \]
 
 This is the product grid of Lemma 3.2. Notice that each branch point supplies an independent
@@ -291,11 +314,19 @@ half-plane, so $P=0$.
 For coefficients in $\mathbb C(a)$, multiply a proposed relation by the product of the reduced
 denominators of its finitely many nonzero coefficients. The resulting polynomial-coefficient
 relation is zero, and this clearing operation preserves nonzeroness. Thus the original relation is
-zero. This proves Theorem 2.1. Lemma 3.3 gives Corollary 2.2.
+zero.
+
+The same argument gives the object-level statement in $\mathcal M_\infty$. If a rational-coefficient
+polynomial in finitely many differential-field jets is zero as an upper-end germ, denominator
+clearing gives an analytic polynomial relation that vanishes on some sufficiently high half-plane.
+The identity theorem extends it to the whole upper half-plane, where the preceding argument forces
+the cleared polynomial, and hence the original polynomial, to be zero. This proves Theorem 2.1.
+Lemma 3.3 gives Corollary 2.2.
 
 Finally, (1.2) is an invertible diagonal change of coordinates on every finite jet because
 $\operatorname{Re}s_j>1$ makes each $(s_j)_k$ nonzero. Applying Theorem 2.1 after this change of
-coordinates proves Corollary 2.3. ∎
+coordinates proves Corollary 2.3. Rational linear independence passes to every finite subfamily,
+so Corollary 2.2 applied to each finite index set proves Corollary 2.4. ∎
 
 ## 6. Scope and relation to previous work
 
@@ -305,11 +336,24 @@ polylogarithms. Those results concern the analytic continuation and the linear s
 the theorem here concerns nonlinear algebraic relations among fixed-exponent functions of the shift
 variable.
 
+Joyner proves algebraic independence over the constant field $\mathbb C$ for Hurwitz polyzeta
+functions at positive integral indices, using their difference equations and stuffle algebra. That
+result concerns an integral-index polyzeta algebra. The monodromy-character law instead treats
+arbitrary complex exponents satisfying **(NR)**, uses coefficients in the larger field
+$\mathbb C(a)$, and proves independence of all mixed derivatives across an arbitrary exponent
+family.
+
 Differential-transcendence results of Amou and Katsurada treat generalized Dirichlet series in the
 Dirichlet-series variable, with the shift fixed. Functional-independence results for periodic
 Hurwitz zeta functions likewise concern the Dirichlet-series variable. The present theorem fixes
 the exponents and differentiates in the shift variable. Its joint content is the exclusion of
 mixed equations across a finite exponent family.
+
+The general shift-equation dichotomy of Adamczewski, Dreyfus, and Hardouin applies to solutions of
+homogeneous linear shift equations over the rational function field. For nonintegral fixed $s$, the
+Hurwitz relation
+$\zeta(s,a+1)-\zeta(s,a)=-a^{-s}$ has a nonrational forcing term. Their theorem therefore does not
+state the present fixed-exponent result, and it does not provide the joint monodromy-character law.
 
 The theorem is sufficient, not a converse: failure of **(NR)** reduces the Zariski closure of the
 common monodromy orbit and therefore reduces the deformation space supplied by this proof. No
@@ -317,23 +361,28 @@ dependence assertion is made in that case.
 
 ## References
 
-1. M. Amou and M. Katsurada, “Differential transcendence of a class of generalized Dirichlet
+1. B. Adamczewski, T. Dreyfus, and C. Hardouin, “Hypertranscendence and linear difference
+   equations,” *Journal of the American Mathematical Society* **34** (2021), 475–503.
+   [doi:10.1090/jams/960](https://doi.org/10.1090/jams/960).
+2. M. Amou and M. Katsurada, “Differential transcendence of a class of generalized Dirichlet
    series,” *Illinois Journal of Mathematics* **45** (2001), 939–948.
    [doi:10.1215/ijm/1258138161](https://doi.org/10.1215/ijm/1258138161).
-2. O. Costin and S. Garoufalidis, “Resurgence of the fractional polylogarithms,”
+3. O. Costin and S. Garoufalidis, “Resurgence of the fractional polylogarithms,”
    *Mathematical Research Letters* **16** (2009), 817–826.
    [doi:10.4310/MRL.2009.v16.n5.a5](https://doi.org/10.4310/MRL.2009.v16.n5.a5).
-3. NIST Digital Library of Mathematical Functions, §25.11, “Hurwitz Zeta Function,” especially
+4. NIST Digital Library of Mathematical Functions, §25.11, “Hurwitz Zeta Function,” especially
    Eq. 25.11.17. [https://dlmf.nist.gov/25.11](https://dlmf.nist.gov/25.11).
-4. J. C. Lagarias and W.-C. W. Li, “The Lerch zeta function II. Analytic continuation,”
+5. S. Joyner, “On an algebraic version of the Knizhnik–Zamolodchikov equation,”
+   [arXiv:1009.5659](https://arxiv.org/abs/1009.5659).
+6. J. C. Lagarias and W.-C. W. Li, “The Lerch zeta function II. Analytic continuation,”
    *Forum Mathematicum* **24** (2012), 49–84.
    [doi:10.1515/FORM.2011.048](https://doi.org/10.1515/FORM.2011.048).
-5. J. C. Lagarias and W.-C. W. Li, “The Lerch zeta function III. Polylogarithms and special
+7. J. C. Lagarias and W.-C. W. Li, “The Lerch zeta function III. Polylogarithms and special
    values,” *Research in the Mathematical Sciences* **3** (2016), Article 2.
    [arXiv:1506.06161](https://arxiv.org/abs/1506.06161).
-6. A. Laurinčikas, “Functional independence of periodic Hurwitz zeta functions,”
+8. A. Laurinčikas, “Functional independence of periodic Hurwitz zeta functions,”
    *Mathematical Notes* **83** (2008), 65–71.
    [doi:10.1134/S0001434608010082](https://doi.org/10.1134/S0001434608010082).
-7. A. Ostrowski, “Über Dirichletsche Reihen und algebraische Differentialgleichungen,”
+9. A. Ostrowski, “Über Dirichletsche Reihen und algebraische Differentialgleichungen,”
    *Mathematische Zeitschrift* **8** (1920), 241–298; English translation by E. C. Hansen,
    Y. Stone, and J. Wolfson, [arXiv:2211.02088](https://arxiv.org/abs/2211.02088).

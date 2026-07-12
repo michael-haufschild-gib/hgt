@@ -57,7 +57,7 @@ theorem coeff_prod_iterate_derivative_eq_zero_of_ne {bnat : ℕ → ℕ} (hmono 
   have hsum_nat : ∑ t, bnat (nt t) = N + ∑ t, j t := by
     rw [← hksum]; exact Finset.sum_congr rfl fun t _ => (hnt t).symm
   have hle := all_le_of_sum_bnat_lt hmono hsum_nat hub
-  have heq := all_eq_of_sum_bnat_gt hmono hsum_nat hle (by rw [hsum_nat]; exact hlb)
+  have heq := all_eq_of_sum_bnat_gt hmono hsum_nat hle hlb
   have hT : ∑ t, bnat (nt t) = r * bnat M := by
     rw [Finset.sum_congr rfl fun t _ => by rw [heq t], Finset.sum_const, Finset.card_univ,
       Fintype.card_fin, smul_eq_mul]

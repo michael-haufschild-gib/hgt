@@ -52,6 +52,10 @@ import GaloisForLFunctions.HTGeometry.FacetOrbitShift
 import GaloisForLFunctions.HTGeometry.UpperEndConstantField
 import GaloisForLFunctions.HTGeometry.UpperEndStanleyReisnerRealization
 import GaloisForLFunctions.HTGeometry.UniversalFiniteConstraintCarrier
+import GaloisForLFunctions.HTGeometry.UpperEndRationalGauge
+import GaloisForLFunctions.HTGeometry.UniversalConstraintOrientation
+import GaloisForLFunctions.HTGeometry.UniversalOrientedHerglotz
+import GaloisForLFunctions.HTGeometry.UniversalOrientedConstraintProduct
 import GaloisForLFunctions.HTGeometry.FacetSewnHerglotzStanleyReisner
 
 /-! # Hypertranscendental constraint geometry -/

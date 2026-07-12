@@ -96,64 +96,60 @@ theorem mPart_mFreeIndicator_apply_prime_pow {M m p : ℕ} (hM : M ≠ 0) (hm : 
   · rw [mPart_apply_of_forall_pow_ne _ _ (forall_pow_ne_prime_pow_of_not_dvd hM hp hdvd),
       if_neg fun hc => hdvd hc.1]
 
-/-- One telescoping step: convolving the `m^K`-free indicator with the `m^K`-dilated
-`m`-free indicator produces the `m^(K+1)`-free indicator.  At a prime power `p^i` this is
-base-`m^K` division with remainder: `i = j + m^K·t` with `j < m^K` and digit `t < m`
-exists (uniquely) exactly when `i < m^(K+1)`. -/
-theorem mFreeIndicator_mul_mPart_mFreeIndicator {m : ℕ} (hm : m ≠ 0) (K : ℕ) :
-    mFreeIndicator (m ^ K) * mPart (m ^ K) (mFreeIndicator m)
-      = mFreeIndicator (m ^ (K + 1)) := by
-  have hE : m ^ K ≠ 0 := pow_ne_zero K hm
+/-- One telescoping step, for independent moduli: convolving the `E`-free indicator with
+the `E`-dilated `m`-free indicator produces the `E·m`-free indicator.  At a prime power
+`p^i` this is base-`E` division with remainder: `i = j + E·t` with `j < E` and digit
+`t < m` exists (uniquely) exactly when `i < E·m`. -/
+theorem mFreeIndicator_mul_mPart_mFreeIndicator {E m : ℕ} (hE : E ≠ 0) (hm : m ≠ 0) :
+    mFreeIndicator E * mPart E (mFreeIndicator m) = mFreeIndicator (E * m) := by
   refine (IsMultiplicative.eq_iff_eq_on_prime_powers _
     ((isMultiplicative_mFreeIndicator hE).mul
       (isMultiplicative_mPart hE (isMultiplicative_mFreeIndicator hm)))
-    _ (isMultiplicative_mFreeIndicator (pow_ne_zero (K + 1) hm))).mpr fun p i hp => ?_
+    _ (isMultiplicative_mFreeIndicator (mul_ne_zero hE hm))).mpr fun p i hp => ?_
   rw [ArithmeticFunction.mul_apply, Nat.sum_divisorsAntidiagonal
-    (fun d e => mFreeIndicator (m ^ K) d * mPart (m ^ K) (mFreeIndicator m) e),
-    Nat.sum_divisors_prime_pow hp, mFreeIndicator_apply_prime_pow (pow_ne_zero (K + 1) hm) hp]
-  have hEpos : 0 < m ^ K := Nat.pos_of_ne_zero hE
+    (fun d e => mFreeIndicator E d * mPart E (mFreeIndicator m) e),
+    Nat.sum_divisors_prime_pow hp, mFreeIndicator_apply_prime_pow (mul_ne_zero hE hm) hp]
+  have hEpos : 0 < E := Nat.pos_of_ne_zero hE
   have hpow : ∀ j ∈ Finset.range (i + 1),
-      mFreeIndicator (m ^ K) (p ^ j) * mPart (m ^ K) (mFreeIndicator m) (p ^ i / p ^ j)
-        = (if j < m ^ K then 1 else 0)
-            * (if m ^ K ∣ (i - j) ∧ (i - j) / m ^ K < m then 1 else 0) := by
+      mFreeIndicator E (p ^ j) * mPart E (mFreeIndicator m) (p ^ i / p ^ j)
+        = (if j < E then 1 else 0)
+            * (if E ∣ (i - j) ∧ (i - j) / E < m then 1 else 0) := by
     intro j hj
     have hji : j ≤ i := Nat.lt_succ_iff.mp (Finset.mem_range.mp hj)
     rw [Nat.pow_div hji hp.pos, mFreeIndicator_apply_prime_pow hE hp,
       mPart_mFreeIndicator_apply_prime_pow hE hm hp]
   rw [Finset.sum_congr rfl hpow]
-  rcases Nat.lt_or_ge i (m ^ (K + 1)) with hi | hi
+  rcases Nat.lt_or_ge i (E * m) with hi | hi
   · rw [if_pos hi]
-    have hdm := Nat.div_add_mod i (m ^ K)
-    have hj₀i : i % m ^ K ≤ i := Nat.mod_le _ _
-    have hdig : m ^ K ∣ i - i % m ^ K ∧ (i - i % m ^ K) / m ^ K < m := by
-      have hsub : i - i % m ^ K = m ^ K * (i / m ^ K) := by omega
-      refine ⟨⟨i / m ^ K, hsub⟩, ?_⟩
+    have hdm := Nat.div_add_mod i E
+    have hj₀i : i % E ≤ i := Nat.mod_le _ _
+    have hdig : E ∣ i - i % E ∧ (i - i % E) / E < m := by
+      have hsub : i - i % E = E * (i / E) := by omega
+      refine ⟨⟨i / E, hsub⟩, ?_⟩
       rw [hsub, Nat.mul_div_cancel_left _ hEpos]
-      rw [pow_succ] at hi
       exact (Nat.div_lt_iff_lt_mul hEpos).mpr (by rw [mul_comm]; exact hi)
-    rw [Finset.sum_eq_single_of_mem (i % m ^ K)
+    rw [Finset.sum_eq_single_of_mem (i % E)
       (Finset.mem_range.mpr (Nat.lt_succ_of_le hj₀i)) (fun j hj hjne => ?_),
       if_pos (Nat.mod_lt _ hEpos), if_pos hdig, one_mul]
     have hji : j ≤ i := Nat.lt_succ_iff.mp (Finset.mem_range.mp hj)
-    by_cases hjE : j < m ^ K
+    by_cases hjE : j < E
     · rw [if_pos hjE, one_mul, if_neg]
       rintro ⟨⟨t, ht⟩, -⟩
       refine hjne ?_
-      have hit : i = j + m ^ K * t := by omega
+      have hit : i = j + E * t := by omega
       rw [hit, Nat.add_mul_mod_self_left, Nat.mod_eq_of_lt hjE]
     · rw [if_neg hjE, zero_mul]
   · rw [if_neg (by omega)]
     refine Finset.sum_eq_zero fun j hj => ?_
     have hji : j ≤ i := Nat.lt_succ_iff.mp (Finset.mem_range.mp hj)
-    by_cases hjE : j < m ^ K
+    by_cases hjE : j < E
     · rw [if_pos hjE, one_mul, if_neg]
       rintro ⟨⟨t, ht⟩, htm⟩
       rw [ht, Nat.mul_div_cancel_left _ hEpos] at htm
-      have hit : i = j + m ^ K * t := by omega
+      have hit : i = j + E * t := by omega
       have htm' : t + 1 ≤ m := htm
-      have hmul : m ^ K * (t + 1) ≤ m ^ K * m := Nat.mul_le_mul_left _ htm'
+      have hmul : E * (t + 1) ≤ E * m := Nat.mul_le_mul_left _ htm'
       rw [Nat.mul_succ] at hmul
-      rw [pow_succ] at hi
       omega
     · rw [if_neg hjE, zero_mul]
 
@@ -166,7 +162,8 @@ theorem prod_mPart_mFreeIndicator {m : ℕ} (hm : m ≠ 0) (K : ℕ) :
   induction K with
   | zero => simp [mFreeIndicator_one]
   | succ K ih =>
-    rw [Finset.prod_range_succ, ih, mFreeIndicator_mul_mPart_mFreeIndicator hm K]
+    rw [Finset.prod_range_succ, ih,
+      mFreeIndicator_mul_mPart_mFreeIndicator (pow_ne_zero K hm) hm, ← pow_succ]
 
 /-! ## The L-series telescope -/
 
@@ -210,5 +207,64 @@ theorem tendsto_dpoly2_mPartMoebiusCoeff_pow {m : ℕ} (hm : m ≠ 0) (k : ℕ) 
     Tendsto (fun N => dpoly2 (mPartMoebiusCoeff (m ^ k)) (Finset.Icc 1 N) z) atTop
       (nhds ((riemannZeta (((m ^ k : ℕ) : ℂ) * z))⁻¹)) :=
   tendsto_dpoly2_mPartMoebiusCoeff (pow_ne_zero k hm) hz
+
+/-! ## The mixed-radix tower -/
+
+/-- **The mixed-radix arithmetic telescope.**  For any sequence of moduli, convolving the
+dilated `m_k`-free indicators along the partial products `P_k = m₀⋯m_{k-1}` telescopes to
+the indicator of the full product: unique mixed-radix digit expansion of every exponent
+below `m₀⋯m_{K-1}`. -/
+theorem prod_mPart_mFreeIndicator_mixed (m : ℕ → ℕ) (hm : ∀ k, m k ≠ 0) (K : ℕ) :
+    ∏ k ∈ Finset.range K,
+        mPart (∏ j ∈ Finset.range k, m j) (mFreeIndicator (m k))
+      = mFreeIndicator (∏ k ∈ Finset.range K, m k) := by
+  induction K with
+  | zero => simp [mFreeIndicator_one]
+  | succ K ih =>
+    have hP : (∏ j ∈ Finset.range K, m j) ≠ 0 :=
+      Finset.prod_ne_zero_iff.mpr fun j _ => hm j
+    rw [Finset.prod_range_succ, ih,
+      mFreeIndicator_mul_mPart_mFreeIndicator hP (hm K), ← Finset.prod_range_succ]
+
+/-- **The mixed-radix L-series telescope.**
+`∏_{k<K} L([·, m_k-free], P_k·s) = ζ(s)/ζ(P_K·s)` on `re s > 1`, with
+`P_k = m₀⋯m_{k-1}`. -/
+theorem prod_LSeries_mFreeIndicator_mixed (m : ℕ → ℕ) (hm : ∀ k, m k ≠ 0) {s : ℂ}
+    (hs : 1 < s.re) (K : ℕ) :
+    ∏ k ∈ Finset.range K,
+        L ↗(mFreeIndicator (m k)) (((∏ j ∈ Finset.range k, m j : ℕ) : ℂ) * s)
+      = riemannZeta s / riemannZeta (((∏ k ∈ Finset.range K, m k : ℕ) : ℂ) * s) := by
+  induction K with
+  | zero =>
+    rw [Finset.prod_range_zero, Finset.prod_range_zero,
+      show (((1 : ℕ) : ℂ)) * s = s by norm_num,
+      div_self (riemannZeta_ne_zero_of_one_lt_re hs)]
+  | succ K ih =>
+    have hP : (∏ j ∈ Finset.range K, m j) ≠ 0 :=
+      Finset.prod_ne_zero_iff.mpr fun j _ => hm j
+    have hres : 1 < (((∏ j ∈ Finset.range K, m j : ℕ) : ℂ) * s).re :=
+      one_lt_natCast_mul_re hP (one_div_natCast_lt_re hP hs)
+    have hcast : (m K : ℂ) * (((∏ j ∈ Finset.range K, m j : ℕ) : ℂ) * s)
+        = ((∏ j ∈ Finset.range (K + 1), m j : ℕ) : ℂ) * s := by
+      push_cast [Finset.prod_range_succ]
+      ring
+    have hres' : 1 < (((∏ j ∈ Finset.range (K + 1), m j : ℕ) : ℂ) * s).re := by
+      rw [← hcast]
+      exact one_lt_natCast_mul_re (hm K) (one_div_natCast_lt_re (hm K) hres)
+    rw [Finset.prod_range_succ, ih, LSeries_mFree_eq_riemannZeta_div (hm K) hres, hcast,
+      div_mul_div_comm]
+    rw [div_eq_div_iff (mul_ne_zero (riemannZeta_ne_zero_of_one_lt_re hres)
+      (riemannZeta_ne_zero_of_one_lt_re hres')) (riemannZeta_ne_zero_of_one_lt_re hres')]
+    ring
+
+/-- **The mixed-radix carrier ladder.**  Rung `K` of the tower carries the `ζ(P_K·z)⁻¹`
+limit on the half-plane `re z > 1/P_K`; since the partial products grow as fast as the
+chosen moduli, the certified carrier domains descend as fast as desired. -/
+theorem tendsto_dpoly2_mixed_radix (m : ℕ → ℕ) (hm : ∀ k, m k ≠ 0) (K : ℕ) {z : ℂ}
+    (hz : 1 / ((∏ k ∈ Finset.range K, m k : ℕ) : ℝ) < z.re) :
+    Tendsto (fun N => dpoly2 (mPartMoebiusCoeff (∏ k ∈ Finset.range K, m k))
+        (Finset.Icc 1 N) z) atTop
+      (nhds ((riemannZeta (((∏ k ∈ Finset.range K, m k : ℕ) : ℂ) * z))⁻¹)) :=
+  tendsto_dpoly2_mPartMoebiusCoeff (Finset.prod_ne_zero_iff.mpr fun j _ => hm j) hz
 
 end RHTower

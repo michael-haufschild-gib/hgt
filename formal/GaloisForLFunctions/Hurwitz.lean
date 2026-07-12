@@ -47,3 +47,4 @@ import GaloisForLFunctions.Hurwitz.JointPowerOrbit
 import GaloisForLFunctions.Hurwitz.JointLadderDeformationBridge
 import GaloisForLFunctions.Hurwitz.JointLadderIndependence
 import GaloisForLFunctions.Hurwitz.JointHypertranscendence
+import GaloisForLFunctions.Hurwitz.JointUpperEndDifferentialIndependence
