@@ -60,10 +60,9 @@ theorem exists_faithfulFacetSeparation {V : Type*} [Fintype V] [DecidableEq V] {
   · intro i v
     rw [ha]
     by_cases hv : v ∈ fac i
-    · simp only [hv, if_true]
-      constructor
-      · exact fun h => absurd h (pow_ne_zero _ hτne)
-      · exact fun h => absurd hv h
-    · simp only [hv, if_false, eq_self_iff_true, true_iff, not_false_iff]
+    · rw [if_pos hv]
+      exact ⟨fun h => (pow_ne_zero _ hτne h).elim, fun h => (h hv).elim⟩
+    · rw [if_neg hv]
+      exact ⟨fun _ => hv, fun _ => rfl⟩
 
 end GaloisForLFunctions

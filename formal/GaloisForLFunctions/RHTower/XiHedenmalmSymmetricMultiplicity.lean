@@ -133,16 +133,17 @@ theorem xiSupportMultiplicity_eq_one_of_symmetric_sourceQuotient
         J (xiCoordinateMultiplication
           (xiThetaDividedChain (xiSpectralPointSupport rho) 1)))
     (hintertwine_two :
-      S (J (xiThetaDividedChain (xiSpectralPointSupport rho) 2)) =
-        J (xiCoordinateMultiplication
-          (xiThetaDividedChain (xiSpectralPointSupport rho) 2))) :
+      2 ≤ xiSupportMultiplicity rho →
+        S (J (xiThetaDividedChain (xiSpectralPointSupport rho) 2)) =
+          J (xiCoordinateMultiplication
+            (xiThetaDividedChain (xiSpectralPointSupport rho) 2))) :
     xiSupportMultiplicity rho = 1 := by
   by_contra hne
   have hm : 2 ≤ xiSupportMultiplicity rho := by
     have hp := xiSupportMultiplicity_pos rho
     omega
   exact no_symmetric_sourceQuotient_realization_of_multiple_xi_zero
-    rho hm J S hsym hsource hfaithful hintertwine_one hintertwine_two
+    rho hm J S hsym hsource hfaithful hintertwine_one (hintertwine_two hm)
 
 /-- Global carrier theorem. A single faithful symmetric source quotient carrying the first two
 canonical divided levels at every Xi zero forces both RH and simplicity. -/
@@ -157,9 +158,10 @@ theorem symmetric_xiSourceQuotient_implies_rh_and_simple
         J (xiCoordinateMultiplication
           (xiThetaDividedChain (xiSpectralPointSupport rho) 1)))
     (hintertwine_two : ∀ rho : XiDivisorSupport,
-      S (J (xiThetaDividedChain (xiSpectralPointSupport rho) 2)) =
-        J (xiCoordinateMultiplication
-          (xiThetaDividedChain (xiSpectralPointSupport rho) 2))) :
+      2 ≤ xiSupportMultiplicity rho →
+        S (J (xiThetaDividedChain (xiSpectralPointSupport rho) 2)) =
+          J (xiCoordinateMultiplication
+            (xiThetaDividedChain (xiSpectralPointSupport rho) 2))) :
     RiemannHypothesis ∧ XiZerosSimple := by
   constructor
   · apply riemannHypothesis_of_xiSpectralPoint_real

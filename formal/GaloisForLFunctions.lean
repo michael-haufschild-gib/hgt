@@ -273,3 +273,4 @@ import GaloisForLFunctions.RHTower.SqrtCarrierWindowBridge
 import GaloisForLFunctions.AntidiagCardBound
 import GaloisForLFunctions.WedgeRealization
 import GaloisForLFunctions.LatticeIncongruence
+import GaloisForLFunctions.RHTower.CreaseBudgetPrimeMass
