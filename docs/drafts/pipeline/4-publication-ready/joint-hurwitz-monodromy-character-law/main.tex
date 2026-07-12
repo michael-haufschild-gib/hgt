@@ -1,0 +1,717 @@
+\documentclass[11pt,reqno]{amsart}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!55!black,
+  citecolor=blue!55!black,
+  urlcolor=blue!55!black,
+  pdftitle={The monodromy-character law for joint Hurwitz hypertranscendence},
+  pdfauthor={Michael Haufschild}
+}
+
+\setlist[enumerate]{leftmargin=2.2em,itemsep=0.25em,topsep=0.4em}
+\setlist[itemize]{leftmargin=2.0em,itemsep=0.25em,topsep=0.4em}
+\setlength{\emergencystretch}{2em}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\HH}{\mathbb H}
+\newcommand{\Ainf}{\mathcal A_{\infty}}
+\newcommand{\Minf}{\mathcal M_{\infty}}
+\newcommand{\mc}{\mathrm{MC}}
+\newcommand{\dd}{\,\mathrm d}
+\DeclareMathOperator{\Frac}{Frac}
+\DeclareMathOperator{\trdeg}{trdeg}
+
+\title[Joint Hurwitz hypertranscendence]
+  {The monodromy-character law for joint Hurwitz hypertranscendence}
+
+\author{Michael Haufschild}
+\date{}
+
+\subjclass[2020]{Primary 11M35, 12H05; Secondary 30F99, 39A06}
+\keywords{Hurwitz zeta function, hypertranscendence, differential algebraic independence,
+monodromy, Zariski density, Vandermonde matrix}
+
+\begin{document}
+
+\begin{abstract}
+Let $I$ be a finite set, let $(s_j)_{j\in I}$ be complex numbers with
+$\operatorname{Re}s_j>1$, and put $q_j=\exp(-2\pi i s_j)$.  Assume that the
+monomial-character map
+\[
+  \N^I\longrightarrow\C^\times,
+  \qquad \alpha\longmapsto q^\alpha:=\prod_{j\in I}q_j^{\alpha_j},
+\]
+is injective.  We prove that the germs of the functions
+$a\mapsto\zeta(s_j,a)$ are differentially algebraically independent over
+$\C(a)$.  Equivalently, for every $N\geq 0$, all functions
+\[
+  \zeta(s_j+k,a),\qquad j\in I,\quad 0\leq k\leq N,
+\]
+are algebraically independent over $\C(a)$.  Rational linear independence of
+$1$ and the exponents $(s_j)_{j\in I}$ implies the monomial-character
+hypothesis.  The result extends, in the finite-subfamily sense, to an
+arbitrarily indexed rationally independent exponent family.  The proof uses
+simultaneous monodromy at the branch points $0,-1,-2,\ldots$, Zariski density
+of a common cyclic power orbit, independent branch-point columns, and a
+block-Vandermonde automorphism.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+For $\operatorname{Re}s>1$ and $\operatorname{Im}a>0$, the Hurwitz zeta
+function in the shift variable is represented by the normally convergent
+series
+\begin{equation}\label{eq:hurwitz-series}
+  \zeta(s,a)=\sum_{n=0}^{\infty}(n+a)^{-s},
+\end{equation}
+where powers are defined using the principal logarithm.  The dependence on
+the two variables is asymmetric.  In the Dirichlet-series variable $s$, the
+terms have fixed frequencies $\log(n+a)$.  In the shift variable $a$, the
+function has an infinite arithmetic array of branch points at
+$0,-1,-2,\ldots$, and differentiation raises the exponent:
+\begin{equation}\label{eq:derivative-law-intro}
+  \partial_a^k\zeta(s,a)=(-1)^k(s)_k\zeta(s+k,a),
+  \qquad
+  (s)_k=s(s+1)\cdots(s+k-1).
+\end{equation}
+The first derivative is classical; see, for example,
+\cite[Eq.~25.11.17]{DLMF}.  Formula \eqref{eq:derivative-law-intro} follows by
+iteration.
+
+The problem considered here is joint and nonlinear.  Fix several exponents
+$s_j$.  Can the functions $a\mapsto\zeta(s_j,a)$ satisfy a mixed algebraic
+differential equation over $\C(a)$?  Separate hypertranscendence of the
+individual functions would not answer this question: it excludes an equation
+in one differential indeterminate at a time, but not an equation coupling
+several exponent families.
+
+The branch geometry identifies the relevant arithmetic datum.  A positive
+loop around $a=-n$ multiplies the singular germ contributed by the $n$th
+summand in the $j$th family by
+\begin{equation}\label{eq:qj-intro}
+  q_j=\exp(-2\pi i s_j).
+\end{equation}
+The same geometric loop acts simultaneously on every $j$.  Thus one does not
+obtain independent powers of the $q_j$ at a fixed branch point.  The native
+orbit is the common-time orbit
+\[
+  m\longmapsto(q_j^m)_{j\in I},\qquad m\in\N.
+\]
+Its polynomial Zariski density is equivalent to separation of its monomial
+characters.  Different branch points, in contrast, can be looped around
+independently.  Their product orbit supplies one common-time column per branch
+point.  A block-Vandermonde map then converts the branch parameters into
+arbitrary finite ladder values.
+
+This mechanism yields the following law.  Monomial separation of the common
+monodromy character forces complete joint differential freeness of the
+corresponding Hurwitz family.  Rational linear independence of
+$1,(s_j)_{j\in I}$ is a directly checkable sufficient condition.  The theorem
+holds over $\C(a)$, not merely over the constant field, and it includes all
+mixed derivatives of all finite orders.
+
+The analytic continuation and linear monodromy spaces of the Hurwitz-Lerch
+family were developed systematically by Lagarias and Li
+\cite{LagariasLiII,LagariasLiIII}.  Related monodromy calculations for
+fractional polylogarithms appear in Costin and Garoufalidis
+\cite{CostinGaroufalidis}.  Joyner proved algebraic independence over $\C$ for
+an integral-index Hurwitz polyzeta algebra by difference equations and
+stuffle methods \cite{Joyner}.  Differential-transcendence results of Amou
+and Katsurada concern generalized Dirichlet series in the variable $s$
+\cite{AmouKatsurada}; universality-based functional-independence results also
+vary the Dirichlet-series variable \cite{Laurincikas}.  The general
+shift-equation theorem of Adamczewski, Dreyfus, and Hardouin concerns
+homogeneous linear shift equations over the rational function field
+\cite{ADH}.  For nonintegral fixed $s$, the elementary Hurwitz relation
+\[
+  \zeta(s,a+1)-\zeta(s,a)=-a^{-s}
+\]
+has a forcing term outside $\C(a)$.  The present result instead uses the full
+branch array in the shift variable and gives a joint monodromy-character
+criterion.
+
+The paper is organized as follows.  Section~\ref{sec:field} fixes the
+differential-field setting.  Section~\ref{sec:statements} states the main
+results.  Section~\ref{sec:orbits} proves the power-orbit lemmas.
+Section~\ref{sec:deformation} establishes simultaneous branch deformation.
+Section~\ref{sec:main-proof} proves ladder independence, and
+Section~\ref{sec:differential} derives the differential-field and
+arbitrary-family forms.  The final section records the exact boundary of the
+method.
+
+\section{The upper-end differential field}\label{sec:field}
+
+Let
+\[
+  \HH=\{a\in\C:\operatorname{Im}a>0\}.
+\]
+For $H\in\mathbb R$, write
+\[
+  \HH_H=\{a\in\C:\operatorname{Im}a>H\}.
+\]
+
+\begin{definition}[Analytic germs at the upper end]
+Two functions analytic on upper half-planes are equivalent if they agree on
+some upper half-plane on which both are defined.  Let $\Ainf$ denote the ring
+of the resulting germs.  Its fraction field is denoted by
+\[
+  \Minf=\Frac(\Ainf).
+\]
+\end{definition}
+
+The identity theorem shows that $\Ainf$ is an integral domain.  Indeed, if
+the product of two analytic upper-end germs is zero, choose one half-plane on
+which both representatives are analytic and their product vanishes.  On the
+connected domain $\HH_H$, one of the two analytic representatives vanishes
+identically.  Hence one of the two germs is zero.
+
+Ordinary complex differentiation descends to $\Ainf$: if two analytic
+representatives agree on an upper half-plane, their derivatives agree there
+as well.  The quotient rule extends this derivation to $\Minf$.  Polynomial
+evaluation embeds $\C[a]$ faithfully in $\Ainf$, because a nonzero polynomial
+cannot vanish on an upper half-plane.  Passing to fraction fields gives a
+faithful differential-field embedding
+\begin{equation}\label{eq:ratfunc-embedding}
+  \C(a)\hookrightarrow\Minf.
+\end{equation}
+
+For $\operatorname{Re}s>1$, the function $a\mapsto\zeta(s,a)$ is analytic on
+$\HH$, hence defines an element of $\Ainf$ and therefore of $\Minf$.  We use
+the same notation $\zeta(s,a)$ for this germ.
+
+\begin{definition}[Differential algebraic independence]
+Let $(K,\partial)$ be a differential field extension of a field $F$.  A
+family $(x_j)_{j\in I}\subset K$ is \emph{differentially algebraically
+independent over $F$} if the family of all jets
+\[
+  \{\partial^k x_j:j\in I,\ k\in\N\}
+\]
+is algebraically independent over $F$ in the finite-subfamily sense.
+\end{definition}
+
+\section{Main results}\label{sec:statements}
+
+Let $I$ be a finite set.  For $s=(s_j)_{j\in I}$ with
+$\operatorname{Re}s_j>1$, define
+\begin{equation}\label{eq:monodromy-vector}
+  q_j=\exp(-2\pi i s_j),\qquad j\in I.
+\end{equation}
+For $\alpha=(\alpha_j)_{j\in I}\in\N^I$, put
+\[
+  q^\alpha=\prod_{j\in I}q_j^{\alpha_j}.
+\]
+
+\begin{definition}[Monodromy-character separation]\label{def:MC}
+The exponent family $s=(s_j)_{j\in I}$ satisfies condition $\mc$ if
+\begin{equation}\label{eq:MC}
+  \alpha\longmapsto q^\alpha
+  \quad\text{is injective on }\N^I.
+\end{equation}
+\end{definition}
+
+For $N\geq0$, write
+\begin{equation}\label{eq:ladder}
+  \mathcal L_N(s)=
+  \bigl(\zeta(s_j+k,a)\bigr)_{j\in I,\ 0\leq k\leq N}.
+\end{equation}
+
+\begin{theorem}[Monodromy-character law]\label{thm:main}
+Let $I$ be finite, let $s_j\in\C$ satisfy
+$\operatorname{Re}s_j>1$, and assume condition $\mc$.  Then the elements
+\[
+  \zeta(s_j,a)\in\Minf,\qquad j\in I,
+\]
+are differentially algebraically independent over $\C(a)$.  Equivalently,
+for every $N\geq0$, the entries of $\mathcal L_N(s)$ are algebraically
+independent over $\C(a)$.
+\end{theorem}
+
+\begin{theorem}[Polynomial-coefficient form]\label{thm:polynomial}
+Under the hypotheses of Theorem~\ref{thm:main}, fix $N\geq0$.  If
+\[
+  P\in\C[a][Y_{j,k}:j\in I,\ 0\leq k\leq N]
+\]
+satisfies
+\begin{equation}\label{eq:polynomial-relation}
+  P\bigl(a;(\zeta(s_j+k,a))_{j,k}\bigr)=0
+  \qquad(a\in\HH),
+\end{equation}
+then $P=0$.
+\end{theorem}
+
+\begin{corollary}[Arithmetic form]\label{cor:arithmetic}
+Let $I$ be finite and let $s_j\in\C$ satisfy
+$\operatorname{Re}s_j>1$.  If the family consisting of $1$ and
+$(s_j)_{j\in I}$ is linearly independent over $\Q$, then the conclusions of
+Theorems~\ref{thm:main} and~\ref{thm:polynomial} hold.
+\end{corollary}
+
+\begin{corollary}[Arbitrary exponent families]\label{cor:arbitrary}
+Let $K$ be any index set, and let $(s_j)_{j\in K}$ satisfy
+$\operatorname{Re}s_j>1$.  Assume that $1$ together with all $s_j$ is
+linearly independent over $\Q$.  Then
+\[
+  \{\partial_a^k\zeta(s_j,a):j\in K,\ k\in\N\}
+\]
+is algebraically independent over $\C(a)$ in the finite-subfamily sense.
+The same conclusion holds for
+\[
+  \{\zeta(s_j+k,a):j\in K,\ k\in\N\}.
+\]
+\end{corollary}
+
+\section{Cyclic power orbits}\label{sec:orbits}
+
+The common loop count at one branch point is the central constraint.  The
+following lemma converts character separation into Zariski density.
+
+\begin{lemma}[Power-orbit density]\label{lem:power-orbit}
+Let $I$ be finite and let $q=(q_j)_{j\in I}\in(\C^\times)^I$.  Suppose that
+$\alpha\mapsto q^\alpha$ is injective on $\N^I$.  If
+$R\in\C[X_j:j\in I]$ satisfies
+\begin{equation}\label{eq:orbit-vanish}
+  R((q_j^m)_{j\in I})=0\qquad(m\in\N),
+\end{equation}
+then $R=0$.
+\end{lemma}
+
+\begin{proof}
+Write
+\[
+  R=\sum_{\alpha\in A}c_\alpha X^\alpha,
+\]
+where $A\subset\N^I$ is finite.  Equation
+\eqref{eq:orbit-vanish} becomes
+\begin{equation}\label{eq:power-sum}
+  \sum_{\alpha\in A}c_\alpha(q^\alpha)^m=0
+  \qquad(m\in\N).
+\end{equation}
+The numbers $q^\alpha$, $\alpha\in A$, are pairwise distinct.  Evaluating
+\eqref{eq:power-sum} for $m=0,1,\ldots,|A|-1$ gives a square Vandermonde
+system with determinant
+\[
+  \prod_{\substack{\alpha,\beta\in A\\ \alpha<\beta}}
+  (q^\beta-q^\alpha)\neq0,
+\]
+after choosing any ordering of $A$.  Hence every $c_\alpha$ is zero.
+\end{proof}
+
+\begin{lemma}[Product-grid density]\label{lem:product-grid}
+Under the hypotheses of Lemma~\ref{lem:power-orbit}, let $L\geq1$.  Suppose
+that
+\[
+  R\in\C[X_{j,n}:j\in I,\ 0\leq n<L]
+\]
+vanishes at every point
+\begin{equation}\label{eq:product-grid}
+  X_{j,n}=q_j^{m_n},
+  \qquad (m_0,\ldots,m_{L-1})\in\N^L.
+\end{equation}
+Then $R=0$.
+\end{lemma}
+
+\begin{proof}
+Fix orbit values in columns $1,\ldots,L-1$ and regard $R$ as a polynomial
+in column $0$.  It vanishes on the full cyclic power orbit, so
+Lemma~\ref{lem:power-orbit} makes it the zero polynomial in column $0$.
+Thus column $0$ may be replaced by an arbitrary point of $\C^I$.  Repeat
+the argument for columns $1,\ldots,L-1$.  After the final step, $R$ vanishes
+on all of $\C^{I\times\{0,\ldots,L-1\}}$, and hence $R=0$.
+\end{proof}
+
+\begin{lemma}[Arithmetic criterion]\label{lem:arithmetic}
+Let $I$ be finite and set $q_j=\exp(-2\pi i s_j)$.  If $1$ and
+$(s_j)_{j\in I}$ are linearly independent over $\Q$, then
+$\alpha\mapsto q^\alpha$ is injective on $\N^I$.
+\end{lemma}
+
+\begin{proof}
+Suppose $q^\alpha=q^\beta$.  Then
+\[
+  \exp\left(-2\pi i\sum_{j\in I}(\alpha_j-\beta_j)s_j\right)=1,
+\]
+so
+\[
+  \sum_{j\in I}(\alpha_j-\beta_j)s_j\in\Z.
+\]
+This is a rational linear relation among $1$ and the $s_j$.  Their linear
+independence forces $\alpha_j=\beta_j$ for every $j$.
+\end{proof}
+
+\section{Simultaneous branch deformation}\label{sec:deformation}
+
+Fix $N\geq0$.  For parameters
+\[
+  c=(c_{j,n})_{j\in I,\ 0\leq n\leq N}
+  \in\C^{I\times\{0,\ldots,N\}},
+\]
+define
+\begin{equation}\label{eq:deformation}
+  F_{j,k}^{c}(a)=\zeta(s_j+k,a)
+  +\sum_{n=0}^{N}(c_{j,n}-1)(a+n)^{-s_j-k},
+  \qquad 0\leq k\leq N.
+\end{equation}
+The original ladder is $F^{\mathbf 1}$.
+
+\begin{proposition}[Analyticity of the deformation]\label{prop:analyticity}
+If $\operatorname{Re}s_j>1$, then every function
+$a\mapsto F_{j,k}^{c}(a)$ is analytic on $\HH$.
+\end{proposition}
+
+\begin{proof}
+The series \eqref{eq:hurwitz-series} is normally convergent on compact
+subsets of $\HH$.  Indeed, on a compact set the finitely many initial terms
+are analytic principal powers, while the tail is dominated uniformly by a
+constant multiple of $m^{-\operatorname{Re}s_j-k}$.  The finite correction
+in \eqref{eq:deformation} is analytic on $\HH$ because every $a+n$ lies off
+the principal logarithm cut.  The conclusion follows.
+\end{proof}
+
+For a fixed branch point $-n$, define the column update
+\begin{equation}\label{eq:column-update}
+  (\mathcal T_n c)_{j,r}=
+  \begin{cases}
+    q_jc_{j,n},&r=n,\\
+    c_{j,r},&r\neq n.
+  \end{cases}
+\end{equation}
+
+\begin{proposition}[One-branch simultaneous monodromy]
+\label{prop:one-branch}
+Let
+\[
+  P\in\C[a][Y_{j,k}:j\in I,\ 0\leq k\leq N]
+\]
+and suppose that
+\begin{equation}\label{eq:deformed-relation}
+  P(a;F^c(a))=0\qquad(a\in\HH).
+\end{equation}
+Then, for every $n\in\{0,\ldots,N\}$,
+\begin{equation}\label{eq:moved-relation}
+  P(a;F^{\mathcal T_n c}(a))=0\qquad(a\in\HH).
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Fix $n$ and put
+\[
+  a=-n+e^z.
+\]
+On the upper strip $0<\operatorname{Im}z<\pi$, the $n$th singular summand
+separates as
+\begin{equation}\label{eq:local-model}
+  F_{j,k}^{c}(-n+e^z)
+  =c_{j,n}e^{-(s_j+k)z}+T_{j,k,n}^{c}(e^z).
+\end{equation}
+Here $T_{j,k,n}^{c}$ is holomorphic for $|e^z|<1/2$.  To see this, remove
+the $n$th summand.  For $m\neq n$, the function
+\[
+  w\longmapsto(m-n+w)^{-s_j-k}
+\]
+has a holomorphic branch on $|w|<1/2$ obtained by continuation from the
+upper half-disc.  The remaining infinite series converges normally there,
+because $|m-n+w|$ is bounded below by a fixed positive multiple of
+$1+|m-n|$ outside finitely many indices.  The finite deformation correction
+has the same property.
+
+Substituting \eqref{eq:local-model} into $P$ gives a function $G(z)$
+holomorphic on the connected half-plane
+\[
+  \Omega=\{z\in\C:\operatorname{Re}z<-\log2\}.
+\]
+By \eqref{eq:deformed-relation}, it vanishes on the nonempty open subset
+$\Omega\cap\{0<\operatorname{Im}z<\pi\}$.  The identity theorem therefore
+gives $G\equiv0$ on $\Omega$.
+
+Translation by $2\pi i$ fixes $e^z$, the coefficient variable
+$a=-n+e^z$, and every tail term.  The singular term transforms by
+\[
+  e^{-(s_j+k)(z+2\pi i)}
+  =e^{-2\pi i s_j}e^{-2\pi i k}e^{-(s_j+k)z}
+  =q_je^{-(s_j+k)z}.
+\]
+Thus $G(z+2\pi i)=0$ is exactly the relation with column $n$ replaced by
+the updated column in \eqref{eq:column-update}.  Returning to the $a$-plane
+gives \eqref{eq:moved-relation} first on a punctured upper half-disc at
+$-n$.  Proposition~\ref{prop:analyticity} and the identity theorem extend it
+to all of $\HH$.
+\end{proof}
+
+\begin{corollary}[The monodromy product grid]\label{cor:grid}
+If
+\[
+  P(a;F^{\mathbf1}(a))=0\qquad(a\in\HH),
+\]
+then
+\begin{equation}\label{eq:grid-relation}
+  P(a;F^{c(m)}(a))=0\qquad(a\in\HH)
+\end{equation}
+for every $m=(m_0,\ldots,m_N)\in\N^{N+1}$, where
+\begin{equation}\label{eq:grid-parameters}
+  c(m)_{j,n}=q_j^{m_n}.
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+Apply Proposition~\ref{prop:one-branch} exactly $m_n$ times at the branch
+point $-n$.  Updates in different columns commute because they change
+disjoint coordinates.
+\end{proof}
+
+\section{Proof of ladder independence}\label{sec:main-proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:polynomial}]
+Let $P$ satisfy \eqref{eq:polynomial-relation}.  In the notation of
+Section~\ref{sec:deformation}, this is
+\[
+  P(a;F^{\mathbf1}(a))=0\qquad(a\in\HH).
+\]
+Fix $a\in\HH$.  Corollary~\ref{cor:grid} shows that the polynomial
+\begin{equation}\label{eq:parameter-polynomial}
+  c\longmapsto P(a;F^c(a))
+\end{equation}
+vanishes at every product-grid point \eqref{eq:grid-parameters}.  Condition
+$\mc$ and Lemma~\ref{lem:product-grid} imply that
+\eqref{eq:parameter-polynomial} is the zero polynomial in all parameters
+$c_{j,n}$.
+
+It remains to calculate the range of the affine deformation map
+\begin{equation}\label{eq:affine-map}
+  c\longmapsto(F_{j,k}^c(a))_{j,k}.
+\end{equation}
+For each fixed $j$, its linear part is the $(N+1)\times(N+1)$ matrix
+\begin{equation}\label{eq:W}
+  W^{(j)}(a)=\bigl(W^{(j)}_{k,n}(a)\bigr)_{0\leq k,n\leq N},
+  \qquad
+  W^{(j)}_{k,n}(a)=(a+n)^{-s_j-k}.
+\end{equation}
+Set $x_n=(a+n)^{-1}$.  Then
+\[
+  W^{(j)}_{k,n}(a)=(a+n)^{-s_j}x_n^k,
+\]
+so
+\begin{equation}\label{eq:det-W}
+  \det W^{(j)}(a)
+  =\left(\prod_{n=0}^{N}(a+n)^{-s_j}\right)
+   \prod_{0\leq n<m\leq N}(x_m-x_n).
+\end{equation}
+Every factor in the first product is nonzero, and the $x_n$ are pairwise
+distinct.  Hence \eqref{eq:det-W} is nonzero.
+
+The complete linear part of \eqref{eq:affine-map} is block diagonal with
+blocks $W^{(j)}(a)$.  It is therefore invertible, and
+\eqref{eq:affine-map} is an affine automorphism of
+$\C^{I\times\{0,\ldots,N\}}$.  Since \eqref{eq:parameter-polynomial}
+vanishes for every $c$, it follows that
+\begin{equation}\label{eq:all-y}
+  P(a;y)=0
+  \qquad
+  \text{for every }y\in\C^{I\times\{0,\ldots,N\}}.
+\end{equation}
+
+Regard $P$ as a polynomial in the variables $Y_{j,k}$ with coefficients in
+$\C[a]$.  Equation \eqref{eq:all-y} says that each coefficient, evaluated at
+the chosen $a$, is zero.  Since $a$ was arbitrary in the infinite set
+$\HH$, every coefficient polynomial vanishes identically.  Thus $P=0$.
+\end{proof}
+
+\begin{proposition}[Rational coefficients]\label{prop:rational}
+Under condition $\mc$, the entries of $\mathcal L_N(s)$ are algebraically
+independent over $\C(a)$.
+\end{proposition}
+
+\begin{proof}
+Let
+\[
+  Q\in\C(a)[Y_{j,k}:j\in I,\ 0\leq k\leq N]
+\]
+be a relation.  Only finitely many coefficients of $Q$ are nonzero.  Write
+each in reduced form and let $D(a)\in\C[a]$ be the product of their
+denominators.  Multiplication by $D$ produces
+\[
+  \widetilde Q\in\C[a][Y_{j,k}:j\in I,\ 0\leq k\leq N].
+\]
+Because $\C[a]$ is an integral domain, $\widetilde Q\neq0$ whenever
+$Q\neq0$.  The relation defined by $Q$ gives the relation defined by
+$\widetilde Q$ away from the finite zero set of $D$.  Its left-hand side is
+analytic on $\HH$, so the identity theorem extends the cleared relation
+across those points.  Theorem~\ref{thm:polynomial} gives
+$\widetilde Q=0$, hence $Q=0$.
+\end{proof}
+
+\section{Differential and arbitrary-family consequences}
+\label{sec:differential}
+
+\begin{lemma}[Jet-ladder identity]\label{lem:jet-ladder}
+If $\operatorname{Re}s>1$, then for every $k\in\N$ and $a\in\HH$,
+\begin{equation}\label{eq:jet-ladder}
+  \partial_a^k\zeta(s,a)=(-1)^k(s)_k\zeta(s+k,a).
+\end{equation}
+Moreover, $(s)_k\neq0$.
+\end{lemma}
+
+\begin{proof}
+Normal convergence of \eqref{eq:hurwitz-series} on compact subsets of
+$\HH$ permits termwise differentiation.  One differentiation gives
+\[
+  \partial_a\zeta(s,a)=-s\zeta(s+1,a).
+\]
+Induction gives \eqref{eq:jet-ladder}.  If $(s)_k=0$, then
+$s\in\{0,-1,\ldots,-k+1\}$, which contradicts
+$\operatorname{Re}s>1$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Proposition~\ref{prop:rational} proves algebraic independence of every finite
+ladder.  By Lemma~\ref{lem:jet-ladder}, a finite jet rectangle
+\[
+  (\partial_a^k\zeta(s_j,a))_{j\in I,\ 0\leq k\leq N}
+\]
+is obtained from $\mathcal L_N(s)$ by an invertible diagonal coordinate
+change over $\C$.  It is therefore algebraically independent over $\C(a)$.
+
+To express the conclusion inside $\Minf$, suppose a polynomial over $\C(a)$
+in finitely many differential-field jets vanishes in $\Minf$.  Clear its
+coefficient denominators.  The resulting analytic upper-end germ vanishes on
+some $\HH_H$.  The identity theorem extends this vanishing to $\HH$.
+Theorem~\ref{thm:polynomial}, followed by the invertible diagonal change from
+Lemma~\ref{lem:jet-ladder}, forces the polynomial to be zero.  Hence the
+Hurwitz germs are differentially algebraically independent over $\C(a)$.
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:arithmetic}]
+Apply Lemma~\ref{lem:arithmetic} and Theorem~\ref{thm:main}.
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:arbitrary}]
+Every polynomial relation involves finitely many indices
+$J\subset K$ and finitely many derivative orders.  Rational linear
+independence of the augmented family $1,(s_j)_{j\in K}$ passes to the
+subfamily $1,(s_j)_{j\in J}$.  Corollary~\ref{cor:arithmetic} kills the
+restricted relation.  This proves the jet statement.  The ladder statement
+follows from the same finite restriction and Lemma~\ref{lem:jet-ladder}.
+\end{proof}
+
+\section{The resonance boundary}\label{sec:boundary}
+
+Condition $\mc$ has an exact orbit-theoretic meaning.  If it fails, there
+exist $\alpha\neq\beta$ in $\N^I$ such that
+\[
+  q^\alpha=q^\beta.
+\]
+The nonzero polynomial $X^\alpha-X^\beta$ then vanishes on the common cyclic
+orbit.  Thus the orbit lies in a proper algebraic subvariety of
+$\C^I$, and the product-grid argument supplies only the corresponding
+smaller deformation variety at each branch point.
+
+This observation is a boundary of the theorem, not a converse.  Failure of
+$\mc$ does not by itself produce a differential relation among the Hurwitz
+functions.  It says that cyclic monodromy alone no longer spans the full
+parameter space.  The remaining positive datum is the resonance lattice
+\[
+  \left\{u\in\Z^I:\sum_{j\in I}u_js_j\in\Z\right\},
+\]
+which determines the character relations visible to the common loop.  A
+classification in resonant chambers would require additional analytic
+invariants beyond the cyclic power orbit.
+
+The restriction $\operatorname{Re}s_j>1$ is used to work directly with the
+normally convergent Hurwitz series and to ensure that all Pochhammer factors
+in the jet-ladder change of coordinates are nonzero.  No assertion is made
+here about continuation of the theorem to exponents outside that half-plane.
+
+\section{Conclusion}
+
+The joint differential algebra of fixed-exponent Hurwitz zeta functions in
+the shift variable is controlled by a simple monodromy-character condition.
+At one branch point, the exponent coordinates share one loop count.  Character
+separation makes that constrained orbit Zariski dense.  Across different
+branch points, the loop counts are independent, and a block-Vandermonde
+automorphism converts the resulting product geometry into full finite-jet
+controllability.  This yields differential algebraic independence over
+$\C(a)$ for every finite nonresonant family and, under rational linear
+independence, for arbitrary index families in the finite-subfamily sense.
+
+\begin{thebibliography}{99}
+
+\bibitem{ADH}
+B.~Adamczewski, T.~Dreyfus, and C.~Hardouin,
+\emph{Hypertranscendence and linear difference equations},
+J. Amer. Math. Soc. \textbf{34} (2021), 475--503.
+\href{https://doi.org/10.1090/jams/960}{doi:10.1090/jams/960}.
+
+\bibitem{AmouKatsurada}
+M.~Amou and M.~Katsurada,
+\emph{Differential transcendence of a class of generalized Dirichlet series},
+Illinois J. Math. \textbf{45} (2001), 939--948.
+\href{https://doi.org/10.1215/ijm/1258138161}{doi:10.1215/ijm/1258138161}.
+
+\bibitem{CostinGaroufalidis}
+O.~Costin and S.~Garoufalidis,
+\emph{Resurgence of the fractional polylogarithms},
+Math. Res. Lett. \textbf{16} (2009), 817--826.
+\href{https://doi.org/10.4310/MRL.2009.v16.n5.a5}{doi:10.4310/MRL.2009.v16.n5.a5}.
+
+\bibitem{DLMF}
+NIST Digital Library of Mathematical Functions,
+\emph{Hurwitz zeta function}, Section 25.11.
+\url{https://dlmf.nist.gov/25.11}.
+
+\bibitem{Joyner}
+S.~Joyner,
+\emph{On an algebraic version of the Knizhnik-Zamolodchikov equation},
+arXiv:1009.5659 (2010).
+\url{https://arxiv.org/abs/1009.5659}.
+
+\bibitem{LagariasLiII}
+J.~C. Lagarias and W.-C.~W. Li,
+\emph{The Lerch zeta function II. Analytic continuation},
+Forum Math. \textbf{24} (2012), 49--84.
+\href{https://doi.org/10.1515/FORM.2011.048}{doi:10.1515/FORM.2011.048}.
+
+\bibitem{LagariasLiIII}
+J.~C. Lagarias and W.-C.~W. Li,
+\emph{The Lerch zeta function III. Polylogarithms and special values},
+Res. Math. Sci. \textbf{3} (2016), Article 2.
+\url{https://arxiv.org/abs/1506.06161}.
+
+\bibitem{Laurincikas}
+A.~Laurin\v{c}ikas,
+\emph{Functional independence of periodic Hurwitz zeta functions},
+Math. Notes \textbf{83} (2008), 65--71.
+\href{https://doi.org/10.1134/S0001434608010082}{doi:10.1134/S0001434608010082}.
+
+\bibitem{Ostrowski}
+A.~Ostrowski,
+\emph{\"Uber Dirichletsche Reihen und algebraische Differentialgleichungen},
+Math. Z. \textbf{8} (1920), 241--298; English translation by E.~C. Hansen,
+Y.~Stone, and J.~Wolfson, arXiv:2211.02088.
+\url{https://arxiv.org/abs/2211.02088}.
+
+\end{thebibliography}
+
+\end{document}

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.PolarPrimeMellinDefect
+import GaloisForLFunctions.RHTower.CCMFiniteFockPassivity
 
 /-!
 # Complex CCM polar--prime Mellin colligation
@@ -88,6 +89,190 @@ def vonMangoldtPrimeRightHalfPlaneGram {N : ℕ} (w : Fin N → ℂ) :
     Matrix (Fin N) (Fin N) ℂ :=
   fun i j => vonMangoldtPrimeLaplaceChannelComplex (w i + star (w j))
 
+private abbrev vonMangoldtComplexCoefficient (n : ℕ) : ℂ :=
+  (ArithmeticFunction.vonMangoldt n : ℂ)
+
+private def vonMangoldtRightHalfPlaneWeight (n : ℕ) : ℂ :=
+  LSeries.term vonMangoldtComplexCoefficient 1 n
+
+private def primePowerRightHalfPlaneFeature (w : ℂ) (n : ℕ) : ℂ :=
+  ((n : ℂ) ^ w)⁻¹
+
+private lemma star_natCast_cpow (n : ℕ) (w : ℂ) (hn : n ≠ 0) :
+    star (((n : ℂ) ^ w)) = (n : ℂ) ^ star w := by
+  have hnpos : 0 < (n : ℝ) := by exact_mod_cast Nat.pos_of_ne_zero hn
+  have harg : ((n : ℂ).arg ≠ Real.pi) := by
+    rw [show (n : ℂ) = ((n : ℝ) : ℂ) by norm_num,
+      Complex.arg_ofReal_of_nonneg hnpos.le]
+    exact Real.pi_ne_zero.symm
+  have h := Complex.cpow_conj (n : ℂ) w harg
+  simpa using h.symm
+
+private lemma star_primePowerRightHalfPlaneFeature
+    (w : ℂ) (n : ℕ) (hn : n ≠ 0) :
+    star (primePowerRightHalfPlaneFeature w n) =
+      primePowerRightHalfPlaneFeature (star w) n := by
+  rw [primePowerRightHalfPlaneFeature, primePowerRightHalfPlaneFeature,
+    star_inv₀, star_natCast_cpow n w hn]
+
+private lemma vonMangoldtComplexTerm_eq_weight_mul_features
+    {w v : ℂ} (n : ℕ) :
+    LSeries.term vonMangoldtComplexCoefficient (w + star v + 1) n =
+      vonMangoldtRightHalfPlaneWeight n * primePowerRightHalfPlaneFeature w n *
+        star (primePowerRightHalfPlaneFeature v n) := by
+  by_cases hn : n = 0
+  · subst n
+    simp [vonMangoldtRightHalfPlaneWeight, primePowerRightHalfPlaneFeature, LSeries.term]
+  · rw [LSeries.term_of_ne_zero hn]
+    rw [vonMangoldtRightHalfPlaneWeight, LSeries.term_of_ne_zero hn]
+    rw [star_primePowerRightHalfPlaneFeature v n hn]
+    rw [primePowerRightHalfPlaneFeature, primePowerRightHalfPlaneFeature]
+    rw [Complex.cpow_add (w + star v) 1 (Nat.cast_ne_zero.mpr hn),
+      Complex.cpow_add w (star v) (Nat.cast_ne_zero.mpr hn)]
+    simp only [div_eq_mul_inv]
+    rw [_root_.mul_inv_rev, _root_.mul_inv_rev]
+    ring
+
+private lemma complex_vonMangoldtCoefficient_nonneg (n : ℕ) :
+    0 ≤ vonMangoldtComplexCoefficient n := by
+  apply Complex.nonneg_iff.mpr
+  exact ⟨by simp [vonMangoldtComplexCoefficient, ArithmeticFunction.vonMangoldt_nonneg],
+    by simp [vonMangoldtComplexCoefficient]⟩
+
+private lemma vonMangoldtRightHalfPlaneWeight_nonneg (n : ℕ) :
+    0 ≤ vonMangoldtRightHalfPlaneWeight n :=
+  LSeries.term_nonneg (complex_vonMangoldtCoefficient_nonneg n) 1
+
+private lemma star_vonMangoldtRightHalfPlaneWeight (n : ℕ) :
+    star (vonMangoldtRightHalfPlaneWeight n) = vonMangoldtRightHalfPlaneWeight n := by
+  have h := vonMangoldtRightHalfPlaneWeight_nonneg n
+  rcases Complex.nonneg_iff.mp h with ⟨_, him⟩
+  exact RCLike.conj_eq_iff_im.mpr him.symm
+
+private lemma summable_vonMangoldtRightHalfPlaneWeight_mul_features
+    {w v : ℂ} (hw : 0 < w.re) (hv : 0 < v.re) :
+    Summable (fun n => vonMangoldtRightHalfPlaneWeight n *
+      primePowerRightHalfPlaneFeature w n * star (primePowerRightHalfPlaneFeature v n)) := by
+  have hs : 1 < (w + star v + 1).re := by
+    change 1 < w.re + v.re + 1
+    linarith
+  exact (ArithmeticFunction.LSeriesSummable_vonMangoldt hs).congr
+    (fun n => vonMangoldtComplexTerm_eq_weight_mul_features n)
+
+private def resolvedVonMangoldtPrimeRightHalfPlaneGram
+    {N : ℕ} (w : Fin N → ℂ) : Matrix (Fin N) (Fin N) ℂ :=
+  fun i j => ∑' n, vonMangoldtRightHalfPlaneWeight n *
+    primePowerRightHalfPlaneFeature (w i) n * star (primePowerRightHalfPlaneFeature (w j) n)
+
+private lemma resolvedVonMangoldtPrimeRightHalfPlaneGram_eq
+    {N : ℕ} (w : Fin N → ℂ) :
+    resolvedVonMangoldtPrimeRightHalfPlaneGram w = vonMangoldtPrimeRightHalfPlaneGram w := by
+  ext i j
+  rw [resolvedVonMangoldtPrimeRightHalfPlaneGram, vonMangoldtPrimeRightHalfPlaneGram,
+    vonMangoldtPrimeLaplaceChannelComplex, LSeries]
+  apply tsum_congr
+  intro n
+  exact (vonMangoldtComplexTerm_eq_weight_mul_features n).symm
+
+/-- **Complex resolved Euler Gram positivity.**  Every finite packet of actual von Mangoldt
+right-half-plane channels is positive semidefinite.  Its quadratic form retains the unsquared
+arithmetic weights and is the convergent prime-power sum
+`sum_n (Lambda(n)/n) * |sum_i c_i n^(-conj(w_i))|^2`. -/
+theorem vonMangoldtPrimeRightHalfPlaneGram_posSemidef
+    {N : ℕ} (w : Fin N → ℂ) (hw : ∀ i, 0 < (w i).re) :
+    (vonMangoldtPrimeRightHalfPlaneGram w).PosSemidef := by
+  rw [← resolvedVonMangoldtPrimeRightHalfPlaneGram_eq w]
+  have hherm : (resolvedVonMangoldtPrimeRightHalfPlaneGram w).IsHermitian := by
+    ext i j
+    simp only [Matrix.conjTranspose_apply]
+    rw [resolvedVonMangoldtPrimeRightHalfPlaneGram,
+      resolvedVonMangoldtPrimeRightHalfPlaneGram, tsum_star]
+    apply tsum_congr
+    intro n
+    simp only [star_mul', star_star, star_vonMangoldtRightHalfPlaneWeight]
+    ring
+  refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg hherm (fun c => ?_)
+  let P : ℕ → ℂ := fun n =>
+    ∑ k, c k * star (primePowerRightHalfPlaneFeature (w k) n)
+  have hpairs : ∀ i j : Fin N,
+      Summable (fun n => star (c i) * (c j *
+        (vonMangoldtRightHalfPlaneWeight n * primePowerRightHalfPlaneFeature (w i) n *
+          star (primePowerRightHalfPlaneFeature (w j) n)))) := by
+    intro i j
+    exact (((summable_vonMangoldtRightHalfPlaneWeight_mul_features
+      (hw i) (hw j)).mul_left (c j)).mul_left (star (c i))).congr (fun n => by ring)
+  have key : star c ⬝ᵥ (resolvedVonMangoldtPrimeRightHalfPlaneGram w).mulVec c =
+      ∑' n, star (P n) * (vonMangoldtRightHalfPlaneWeight n * P n) := by
+    simp only [dotProduct, Pi.star_apply]
+    have hswap : ∀ i,
+        star (c i) * (resolvedVonMangoldtPrimeRightHalfPlaneGram w).mulVec c i =
+          ∑' n, ∑ j, star (c i) * (c j *
+            (vonMangoldtRightHalfPlaneWeight n * primePowerRightHalfPlaneFeature (w i) n *
+              star (primePowerRightHalfPlaneFeature (w j) n))) := by
+      intro i
+      simp only [Matrix.mulVec, dotProduct]
+      rw [Finset.mul_sum, Summable.tsum_finsetSum]
+      · apply Finset.sum_congr rfl
+        intro j hj
+        rw [resolvedVonMangoldtPrimeRightHalfPlaneGram]
+        rw [← (summable_vonMangoldtRightHalfPlaneWeight_mul_features
+          (hw i) (hw j)).tsum_mul_right (c j)]
+        rw [← ((summable_vonMangoldtRightHalfPlaneWeight_mul_features
+          (hw i) (hw j)).mul_right (c j)).tsum_mul_left (star (c i))]
+        apply tsum_congr
+        intro n
+        ring
+      · intro j hj
+        exact hpairs i j
+    calc
+      (∑ i, star (c i) * (resolvedVonMangoldtPrimeRightHalfPlaneGram w).mulVec c i) =
+          ∑ i, ∑' n, ∑ j, star (c i) * (c j *
+            (vonMangoldtRightHalfPlaneWeight n * primePowerRightHalfPlaneFeature (w i) n *
+              star (primePowerRightHalfPlaneFeature (w j) n))) :=
+        Finset.sum_congr rfl (fun i _ => hswap i)
+      _ = ∑' n, star (P n) * (vonMangoldtRightHalfPlaneWeight n * P n) := by
+        rw [← Summable.tsum_finsetSum]
+        · apply tsum_congr
+          intro n
+          change (∑ i, ∑ j, star (c i) * (c j *
+              (vonMangoldtRightHalfPlaneWeight n * primePowerRightHalfPlaneFeature (w i) n *
+                star (primePowerRightHalfPlaneFeature (w j) n)))) =
+            (starRingEnd ℂ)
+                (∑ k, c k * star (primePowerRightHalfPlaneFeature (w k) n)) *
+              (vonMangoldtRightHalfPlaneWeight n *
+                ∑ k, c k * star (primePowerRightHalfPlaneFeature (w k) n))
+          rw [map_sum]
+          have hstar (k : Fin N) :
+              (starRingEnd ℂ)
+                  (c k * star (primePowerRightHalfPlaneFeature (w k) n)) =
+                star (c k) * primePowerRightHalfPlaneFeature (w k) n := by
+            rw [map_mul]
+            change star (c k) *
+              star (star (primePowerRightHalfPlaneFeature (w k) n)) = _
+            rw [star_star]
+          simp_rw [hstar]
+          rw [Finset.sum_mul]
+          apply Finset.sum_congr rfl
+          intro i hi
+          rw [Finset.mul_sum, Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro j hj
+          ring
+        · intro i hi
+          exact summable_sum (fun j hj => hpairs i j)
+  rw [key]
+  apply tsum_nonneg
+  intro n
+  have hweight := vonMangoldtRightHalfPlaneWeight_nonneg n
+  have hsq : 0 ≤ star (P n) * P n := by
+    change 0 ≤ (starRingEnd ℂ) (P n) * P n
+    rw [← Complex.normSq_eq_conj_mul_self]
+    exact Complex.nonneg_iff.mpr ⟨Complex.normSq_nonneg _, rfl⟩
+  have hprod := mul_nonneg hweight hsq
+  rw [show star (P n) * (vonMangoldtRightHalfPlaneWeight n * P n) =
+    vonMangoldtRightHalfPlaneWeight n * (star (P n) * P n) by ring]
+  exact hprod
+
 /-- The shifted elementary polar Gram on the same complex packet. -/
 def shiftedPolarRightHalfPlaneGram {N : ℕ} (w : Fin N → ℂ) :
     Matrix (Fin N) (Fin N) ℂ :=
@@ -109,5 +294,31 @@ theorem cauchyRightHalfPlaneGram_eq_prime_sub_shiftedPolar_add_criticalMellinDef
     change 0 < (w i + conj (w j)).re
     rw [Complex.add_re, Complex.conj_re]
     linarith [hw i, hw j])
+
+/-- **Concrete complex finite-Fock reduction.**  For the actual complex polar--prime Mellin
+incidence, diagonal-Fock passivity is exactly the source-resolved inequality.  The theorem removes
+the abstract incidence hypothesis from the finite CCM algebra. -/
+theorem ccmComplexMellinFiniteFockPassivity_iff_sourceResolved
+    {N : ℕ} (A : Matrix (Fin N) (Fin N) ℂ)
+    (w : Fin N → ℂ) (hw : ∀ i, 0 < (w i).re) :
+    CCMFiniteFockPassivity A (cauchyRightHalfPlaneGram w) ↔
+      CCMSourceResolvedPassivity A (vonMangoldtPrimeRightHalfPlaneGram w)
+        (shiftedPolarRightHalfPlaneGram w) (criticalMellinDefectRightHalfPlaneGram w) := by
+  exact ccmFiniteFockPassivity_iff_sourceResolved
+    A (cauchyRightHalfPlaneGram w) (vonMangoldtPrimeRightHalfPlaneGram w)
+      (shiftedPolarRightHalfPlaneGram w) (criticalMellinDefectRightHalfPlaneGram w)
+      (cauchyRightHalfPlaneGram_eq_prime_sub_shiftedPolar_add_criticalMellinDefect w hw)
+
+/-- The same concrete complex reduction in the equivalent Krein-defect form. -/
+theorem ccmComplexMellinDiagonalDefect_nonneg_iff_sourceResolved
+    {N : ℕ} (A : Matrix (Fin N) (Fin N) ℂ)
+    (w : Fin N → ℂ) (hw : ∀ i, 0 < (w i).re) :
+    KreinNonneg (ccmDiagonalDefectGram A (cauchyRightHalfPlaneGram w)) ↔
+      CCMSourceResolvedPassivity A (vonMangoldtPrimeRightHalfPlaneGram w)
+        (shiftedPolarRightHalfPlaneGram w) (criticalMellinDefectRightHalfPlaneGram w) := by
+  exact ccmDiagonalDefect_kreinNonneg_iff_sourceResolved
+    A (cauchyRightHalfPlaneGram w) (vonMangoldtPrimeRightHalfPlaneGram w)
+      (shiftedPolarRightHalfPlaneGram w) (criticalMellinDefectRightHalfPlaneGram w)
+      (cauchyRightHalfPlaneGram_eq_prime_sub_shiftedPolar_add_criticalMellinDefect w hw)
 
 end RHTower

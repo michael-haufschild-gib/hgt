@@ -38,6 +38,17 @@ Consequently, for arbitrary nodes `w_1,...,w_N` with positive real part,
 This is the complex source incidence used by the CCM resolvent and Pick-kernel architecture.  It
 is unconditional and contains no statement about the sign of the defect matrix.
 
+The resolved prime matrix in `(2)` is positive semidefinite for arbitrary complex
+right-half-plane nodes.  Its quadratic form is the convergent unsquared-weight expansion
+
+```text
+sum_(n>=1) (Lambda(n)/n)
+  |sum_i c_i n^(-conj(w_i))|^2 >= 0.                         (3)
+```
+
+Thus complexification preserves the genuine Euler Gram structure; it does not replace the
+von Mangoldt coefficients by their squares.
+
 ## Positive carrier law
 
 The complex Cauchy transport is not an independent auxiliary kernel.  On every finite
@@ -51,6 +62,21 @@ Thus any positive CCM factorization must orient the complete three-channel colli
 remaining sign-bearing datum in `(2)` is the critical Mellin-defect matrix after coupling to the
 completed archimedean channel.
 
+For every auxiliary base Gram `A`, the exact incidence also discharges the abstract hypothesis in
+the finite diagonal-Fock algebra:
+
+```text
+finite-Fock passivity for A and the Cauchy Gram
+  <-> source-resolved prime--polar--defect passivity,
+
+nonnegative diagonal-Fock defect
+  <-> source-resolved prime--polar--defect passivity.          (4)
+```
+
+Accordingly, the finite complex construction problem has no remaining algebraic or incidence
+gap.  The RH-bearing step is the cofinal source-resolved inequality for the distinguished
+completed semilocal base Grams.
+
 ## Formal certificate
 
 The module
@@ -59,7 +85,10 @@ The module
 - `continuousPolarLaplaceChannelComplex_eq`;
 - `vonMangoldtPrimeLaplaceChannelComplex_eq_logDeriv`;
 - `cauchy_eq_prime_sub_shiftedPolar_add_criticalMellinDefect_complex`;
-- `cauchyRightHalfPlaneGram_eq_prime_sub_shiftedPolar_add_criticalMellinDefect`.
+- `vonMangoldtPrimeRightHalfPlaneGram_posSemidef`;
+- `cauchyRightHalfPlaneGram_eq_prime_sub_shiftedPolar_add_criticalMellinDefect`;
+- `ccmComplexMellinFiniteFockPassivity_iff_sourceResolved`;
+- `ccmComplexMellinDiagonalDefect_nonneg_iff_sourceResolved`.
 
 The exact module and `CCMUnconditionalFoundation` both build.  `#print axioms` reports only
 `propext`, `Classical.choice`, and `Quot.sound`.  There is no project axiom, `sorry`, `admit`,
@@ -75,8 +104,9 @@ as independently new scientific knowledge.
 
 - [x] complex polar integral evaluated on `Re s>0`
 - [x] complex von Mangoldt channel identified with `-zeta'/zeta`
+- [x] arbitrary complex-node von Mangoldt Gram proved positive semidefinite
 - [x] scalar complex colligation proved
 - [x] arbitrary finite right-half-plane packet lifted entrywise
+- [x] abstract finite-Fock incidence hypothesis discharged for the actual source matrices
 - [x] exact module build
 - [x] accepted-axiom audit
-

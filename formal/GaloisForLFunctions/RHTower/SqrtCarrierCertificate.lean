@@ -313,6 +313,22 @@ theorem rpow_neg_div_le_of_one_le_pow {x r : ℝ} (hx : 1 ≤ x) (hr : 0 < r) {a
     _ ≤ (1 / r)⁻¹ := inv_anti₀ (by positivity) key
     _ = r := by rw [one_div, inv_inv]
 
+/-- **Lower bracketing** — the two-sided companion: `r ≤ x^(-(a/b))` from the pure-power
+certificate `r^b · x^a ≤ 1`.  Together with the upper bracket this pins any rpow value
+between rationals by `norm_num`-checkable power inequalities. -/
+theorem le_rpow_neg_div_of_pow_le_one {x r : ℝ} (hx : 1 ≤ x) {a b : ℕ}
+    (hb : b ≠ 0) (h : r ^ b * x ^ a ≤ 1) : r ≤ x ^ (-((a : ℝ) / (b : ℝ))) := by
+  have hx0 : (0 : ℝ) < x := by linarith
+  have hxq : (0 : ℝ) < x ^ ((a : ℝ) / (b : ℝ)) := Real.rpow_pos_of_pos hx0 _
+  have hxab : (x ^ ((a : ℝ) / (b : ℝ))) ^ b = x ^ (a : ℕ) := by
+    rw [← Real.rpow_natCast (x ^ ((a : ℝ) / (b : ℝ))) b, ← Real.rpow_mul hx0.le,
+      div_mul_cancel₀ _ (by exact_mod_cast hb : ((b : ℕ) : ℝ) ≠ 0), Real.rpow_natCast]
+  have hpow : r ^ b ≤ ((x ^ ((a : ℝ) / (b : ℝ)))⁻¹) ^ b := by
+    rw [inv_pow, hxab, ← one_div, le_div_iff₀ (by positivity)]
+    exact h
+  have hle := le_of_pow_le_pow_left₀ hb (by positivity) hpow
+  rwa [Real.rpow_neg hx0.le]
+
 /-- Certified-radius form of the chart floor: any bracketing bound `r` for the rpow
 radius may replace it in the gap condition. -/
 theorem sqrtCarrier_certified_floor_of_le {ε t₀ r : ℝ} (hε : 0 < ε) {z : ℂ}

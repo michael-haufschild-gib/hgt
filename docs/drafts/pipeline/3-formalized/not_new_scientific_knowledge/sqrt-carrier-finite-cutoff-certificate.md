@@ -49,6 +49,30 @@ machinery: the vertical-line form, the `FloorFailureCofinal` good-heights form, 
 through `dpoly2_chart_floor` (real parts below `1/2 + eps` on a variation budget), and
 the closed-ball/chart form through `dpoly2_ball_floor` (log-Lipschitz budget).
 
+The two placements are executed:
+
+```text
+r^b · x^a <= 1  ==>  r <= x^(-(a/b))            (lower bracket; two-sided with (11))  (13)
+3/10 < |dpoly2 sqrtMoebiusCoeff (Icc 1 4) ((9/20) + τI)|       for every height τ     (14)
+t0²·U <= ∫_T^{T+U} |dpoly (sqrtMoebiusCoeff·n^(-σ)) (Icc 1 N)|²                       (15)
+detection window bound < t0²·U  ==>
+    ∫ |detection_W|² < ∫ |carrier_W|²           on the common window [T, T+U]         (16)
+```
+
+`(14)` is the first certified floor at a real part strictly below the abscissa of
+convergence `1/2` — at `re = 9/20` the square-dilated Möbius series diverges — obtained
+by strip transfer from the certified line `re = 5` (exact radius `2^(-9) = 1/512`) with
+the single nontrivial budget term bracketed by `(11/20)²⁰·4⁹ >= 20²⁰`.  A structural
+observation `[SEARCH]`: the budget's square support contributes `~k^(-2σ₁) >= k^(-1)` per
+square below the abscissa, so the floor ceiling `< 1` admits only the `k = 2` term —
+budget crossings below `1/2` are confined to cutoffs `N <= 8`; reaching the line at
+growing cutoff needs the density machinery of `FloorFailureCofinal`, not Lipschitz
+budgets.  `(15)`–`(16)` are the window inequality: on a common window and at a common
+weight σ, the carrier second moment is bounded below by `t0²·U` (pointwise floor ×
+length, via `dpoly_continuous`) while the σ-weighted detection second moment obeys
+`detectionW_secondMoment_bound`; when the detection bound is below `t0²·U` the carrier
+mass strictly dominates — the quantitative separation the zero-density argument runs on.
+
 ## Proof
 
 `(1)` the square-dilated coefficients vanish off squares; reindexing the carrier sum along
@@ -120,7 +144,11 @@ Bridge file: `formal/GaloisForLFunctions/RHTower/SqrtCarrierWindowBridge.lean`.
 - `sqrtCarrier_weighted_dpoly_floor`: detection-native σ-weighted `dpoly` nondegeneracy
   at every height;
 - `sqrtCarrier_strip_floor`: sub-abscissa extension via `dpoly2_chart_floor`;
-- `sqrtCarrier_ball_floor`: chart/ball spreading via `dpoly2_ball_floor`.
+- `sqrtCarrier_ball_floor`: chart/ball spreading via `dpoly2_ball_floor`;
+- `le_rpow_neg_div_of_pow_le_one` (in the certificate file): lower bracket `(13)`;
+- `sqrtCarrier_floor_witness_below_abscissa`: the below-abscissa floor `(14)`;
+- `sqrtCarrier_window_mass`: the carrier window mass `(15)`;
+- `sqrtCarrier_exceeds_detection_window`: the window separation `(16)`.
 
 The module is imported by `GaloisForLFunctions.RHTower` and `GaloisForLFunctions`.
 
@@ -134,19 +162,18 @@ The module is imported by `GaloisForLFunctions.RHTower` and `GaloisForLFunctions
 
 The umbrella build reaches and accepts `SqrtCarrierCertificate` and
 `SqrtCarrierWindowBridge`; the independent existing failure is
-`SummableEulerCalkinInjectivity.lean`.  All twenty-one public theorems across the two
+`SummableEulerCalkinInjectivity.lean`.  All twenty-six public theorems across the two
 files use only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Opens
 
-Two placements are now one budget check away.  (i) In `sqrtCarrier_strip_floor`, the
-variation budget `∑ |a_n|·|n^(-σ₁) - n^(-(1/2+eps))|` at the strip witness's parameters
-is a finite sum of `norm_num`-accessible rpow differences once `(11)` is extended to
-two-sided brackets (`r₁ <= x^(-q) <= r₂`); a numeric budget evaluation would yield the
-first certified floor at a real part strictly below the carrier's abscissa `1/2 + eps` —
-a floor certificate inside the region where the infinite series no longer converges.
-(ii) `sqrtCarrier_weighted_dpoly_floor` and `detection_secondMoment` now speak the same
-`dpoly`-coefficient dialect; the forward object is a window inequality combining the
-carrier floor with the detection polynomial's small second moment on a common window
-`[T, T+U]` — carrier mass bounded below while detection mass is small, the quantitative
-separation the density argument runs on.
+The separation `(16)` is stated against an abstract gap hypothesis; instantiating it
+numerically needs a certified upper evaluation of the divisor-tail tsum
+`∑_{k>min} d(k)²·k^(-2σ)` — the forward brick is an effective divisor bound
+`d(k) <= C·k^δ` in the tree, which would turn the tail into a p-series the banked
+integral-test lemma already bounds, making `(16)`'s hypothesis a `norm_num` gap in
+`(N, y, σ, t0, U)`.  On the other side, the `N <= 8` confinement of budget crossings
+invites its own formalization: a lower bound on the budget at `σ₁ = 1/2` growing like
+the harmonic sum of squares would turn the observed no-go into a theorem — the crease
+is provably invisible to Lipschitz budgets, delimiting exactly which technology
+(cofinal density, not budgets) can reach the line.

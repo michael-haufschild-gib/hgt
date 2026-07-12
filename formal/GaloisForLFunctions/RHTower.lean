@@ -545,6 +545,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspSchwartz
 import GaloisForLFunctions.RHTower.ThetaCuspMellinPole
 import GaloisForLFunctions.RHTower.PolarPrimeMellinDefect
 import GaloisForLFunctions.RHTower.PrimeLaplaceGramStrict
+import GaloisForLFunctions.RHTower.EulerNormalizedTraceHankelFarRight
 import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeResolvent
 import GaloisForLFunctions.RHTower.LandauSummabilityTransfer
 import GaloisForLFunctions.RHTower.QuietCrossingCocycle
@@ -563,6 +564,7 @@ import GaloisForLFunctions.RHTower.XiCanonicalProduct
 import GaloisForLFunctions.RHTower.XiHadamardFactorization
 import GaloisForLFunctions.RHTower.XiWeilPolarization
 import GaloisForLFunctions.RHTower.XiHedenmalmFourierEquation
+import GaloisForLFunctions.RHTower.XiHedenmalmMultiplicityChain
 import GaloisForLFunctions.RHTower.XiWeilResolventSource
 import GaloisForLFunctions.RHTower.XiWeilHilbertCore
 import GaloisForLFunctions.RHTower.XiHedenmalmEigenbasis
@@ -666,6 +668,7 @@ import GaloisForLFunctions.RHTower.PrimeArchThetaFirstMoment
 import GaloisForLFunctions.RHTower.PrimeArchThetaCumulantMinor
 import GaloisForLFunctions.RHTower.PrimeArchThetaAllOrderCumulant
 import GaloisForLFunctions.RHTower.PrimeArchHankelDeterminantCriterion
+import GaloisForLFunctions.RHTower.CompletedPrimeGammaMovingHankel
 import GaloisForLFunctions.RHTower.ThetaCuspSchwartzFourierXi
 import GaloisForLFunctions.RHTower.OrbitwiseSourceDivisorSeam
 import GaloisForLFunctions.RHTower.SoninDeBrangesCarrier
