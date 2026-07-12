@@ -170,6 +170,11 @@ finite lower-denominator/upper-current inequality, not coefficient positivity by
   value lower bound and does not assume whether the target is a zero.  Thus the top defect is now
   completely discharged: the sole remaining producer is sublinear upper current of `U_d` itself.
   This reduction is proved in `XiCTaylorThetaTailFiniteCoefficientGate.lean`.
+- `[PROVED INTERFACE DISCHARGE]` The joint schedule is now fixed once and for all as
+  `xiCTaylorOddThetaTailCanonicalSchedule`.  The interface-free capstone
+  `riemannHypothesis_of_xiCTaylorThetaTailCanonicalCoreCurrentSublinearUpper` therefore has only
+  the core-current inequality for that canonical source schedule as a hypothesis; no schedule or
+  approximation interface remains to be supplied.
 - `[PROVED BRIDGE]` The remaining core now has a literal finite source coordinate.  With
   `C_d(z,x)=sum_(k<=d)(-1)^k(zx)^(2k)/(2k)!`, one has
   `Q_d(-z^2)=2 integral_0^infinity T(x)C_d(z,x)dx` and
@@ -227,6 +232,7 @@ finite lower-denominator/upper-current inequality, not coefficient positivity by
 - [x] prior pipeline, failed routes, and formal theorem surface audited
 - [x] exact RH-equivalent endpoint separated from the requested source producer
 - [x] several genuinely different coefficient mechanisms constructed and attacked
+- [x] existential superaccurate schedule interface discharged by a fixed canonical schedule
 - [ ] finite source predicate stated without target-oracle content
 - [ ] canonical Xi coefficients proved to satisfy the predicate
 - [ ] predicate proved to imply `(1)` on every compact anisotropic mesh

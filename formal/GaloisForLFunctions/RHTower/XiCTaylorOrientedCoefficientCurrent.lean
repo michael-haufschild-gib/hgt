@@ -22,6 +22,49 @@ noncomputable section
 def orientedPolynomialCurrent (P : Polynomial ℂ) (z : ℂ) : ℝ :=
   (P.derivative.eval z * (starRingEnd ℂ) (P.eval z)).im
 
+/-- The oriented current is minus one half of the vertical derivative of the squared modulus.
+This is the value-coordinate form of the upper-current problem and requires no nonvanishing
+hypothesis. -/
+theorem hasDerivAt_normSq_polynomial_vertical
+    (P : Polynomial ℂ) (x y : ℝ) :
+    HasDerivAt
+      (fun t : ℝ => Complex.normSq
+        (P.eval ((x : ℂ) + (t : ℂ) * I)))
+      (-2 * orientedPolynomialCurrent P ((x : ℂ) + (y : ℂ) * I)) y := by
+  let z : ℂ := (x : ℂ) + (y : ℂ) * I
+  have hz : HasDerivAt (fun t : ℝ => (x : ℂ) + (t : ℂ) * I) I y := by
+    have h := (Complex.ofRealCLM.hasDerivAt (x := y)).mul_const I
+    simpa using h.const_add (x : ℂ)
+  have hf : HasDerivAt
+      (fun t : ℝ => P.eval ((x : ℂ) + (t : ℂ) * I))
+      (P.derivative.eval z * I) y := by
+    simpa [z] using (P.hasDerivAt z).comp y hz
+  have hre := Complex.reCLM.hasFDerivAt.comp_hasDerivAt y hf
+  have him := Complex.imCLM.hasFDerivAt.comp_hasDerivAt y hf
+  have h := (hre.mul hre).add (him.mul him)
+  rw [show (fun t : ℝ => Complex.normSq
+      (P.eval ((x : ℂ) + (t : ℂ) * I))) =
+      fun t : ℝ =>
+        (P.eval ((x : ℂ) + (t : ℂ) * I)).re ^ 2 +
+          (P.eval ((x : ℂ) + (t : ℂ) * I)).im ^ 2 by
+    funext t
+    rw [Complex.normSq_apply]
+    ring]
+  convert h using 1
+  · funext t
+    simp only [Function.comp_apply, Pi.add_apply, Pi.mul_apply, pow_two]
+    change _ =
+      (P.eval ((x : ℂ) + (t : ℂ) * I)).re *
+          (P.eval ((x : ℂ) + (t : ℂ) * I)).re +
+        (P.eval ((x : ℂ) + (t : ℂ) * I)).im *
+          (P.eval ((x : ℂ) + (t : ℂ) * I)).im
+    rfl
+  · dsimp [z]
+    unfold orientedPolynomialCurrent
+    simp only [mul_re, mul_im, I_re, I_im, mul_zero, mul_one,
+      Complex.conj_re, Complex.conj_im]
+    ring
+
 /-- The imaginary logarithmic derivative is the oriented polynomial current divided by the
 squared modulus. -/
 theorem polynomial_logDeriv_im_eq_orientedCurrent_div_normSq

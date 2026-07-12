@@ -58,7 +58,7 @@ import GaloisForLFunctions.HTGeometry.UniversalOrientedHerglotz
 import GaloisForLFunctions.HTGeometry.UniversalOrientedConstraintProduct
 import GaloisForLFunctions.HTGeometry.FacetSewnHerglotzStanleyReisner
 
-/-! # Hypertranscendental constraint geometry -/
+/- # Hypertranscendental constraint geometry -/
 import GaloisForLFunctions.HTGeometry.CofinalCholeskyFiniteFrame
 import GaloisForLFunctions.HTGeometry.CayleyMomentFrame
 import GaloisForLFunctions.HTGeometry.CauchyJetFrame
@@ -69,3 +69,7 @@ import GaloisForLFunctions.HTGeometry.NevanlinnaBoundaryAlgebra
 import GaloisForLFunctions.HTGeometry.NevanlinnaBoundaryKernel
 import GaloisForLFunctions.HTGeometry.CholeskyDeterminantDivergence
 import GaloisForLFunctions.HTGeometry.GraphSaturationCore
+import GaloisForLFunctions.HTGeometry.ToeplitzPolynomialGraph
+import GaloisForLFunctions.HTGeometry.CompleteGramTowerTopology
+import GaloisForLFunctions.HTGeometry.RieszBrothersReduction
+import GaloisForLFunctions.HTGeometry.CanonicalFrameClosedGraph

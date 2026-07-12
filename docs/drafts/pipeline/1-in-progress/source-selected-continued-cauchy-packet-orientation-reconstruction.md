@@ -38,8 +38,12 @@ W(V_n) -> -E_Xi.                                          (6)
 Equation `(5)` is already available for each collision-free finite packet through
 `xiWeilPolarization_cauchyPacket_eq_continuedPrimeArchSource`.  Equations `(4)` and `(6)` are
 available for abstract algebraic-span vectors through
-`xiHurwitzOrientationEnergy_continuedCauchy_reconstruction`.  The missing bridge is to obtain the
-same sequence with an explicit packet representation satisfying `(1)`.
+`xiHurwitzOrientationEnergy_continuedCauchy_reconstruction`.  The bridge is now closed in
+`XiContinuedCauchyPacketDensity.lean` and
+`XiHurwitzOrientationSeparatedSourceReconstruction.lean`: Lean constructs an actual sequence of
+finite packets satisfying `(1)`, proves `(4)`, identifies every energy by `(5)`, and proves `(6)`.
+The surviving gap is no longer representation or collision avoidance; it is source-pure selection
+and sign.
 
 ## Source-purity firewall
 
@@ -70,14 +74,12 @@ rectangular power exponent.
 
 ## Two technical routes
 
-1. **Collision-free density.** Prove that finite Cauchy packets with `(1)` are dense in the
-   continued Cauchy algebraic span.  Real horizontal perturbations preserve the continued domain;
-   avoiding finitely many conjugate-collision values should preserve packet values in `ell^2`.
-   Norm continuity of the divisor-valued Cauchy map is now formalized, and deleting every
-   self-conjugate pole leaves the continued Hilbert closure unchanged.  Thus diagonal collisions
-   are removed.  The remaining mechanical step is simultaneous finite perturbation excluding
-   `z=conjugate(w)` for distinct packet points.  This closes `(5)` mechanically but remains
-   target-fed unless combined with the source firewall.
+1. **Collision-free density.** Finite Cauchy packets with `(1)` are now proved dense in the
+   continued Cauchy algebraic span.  Norm continuity handles the divisor-valued evaluations, and
+   one common vanishing `1+i` perturbation simultaneously excludes every equation
+   `z=conjugate(w)`.  The indexed packet formula then identifies the finite prime--Gamma energies
+   exactly.  This closes `(4)`--`(6)` mechanically but remains target-fed unless combined with the
+   source firewall.
 2. **Diagonal kernel extension.** Extend `(5)` continuously across `z=conjugate(w)` with diagonal
    value `-T'(z)`.  This removes collision avoidance but requires a termwise/analytic theorem
    identifying the diagonal Cauchy polarization with the derivative of the continued relative
@@ -91,10 +93,10 @@ rectangular power exponent.
 - [x] phase-energy-growth witness bridge proved
 - [x] norm continuity of the Xi-divisor Cauchy evaluation map
 - [x] self-conjugate pole deletion preserves the continued Cauchy Hilbert closure
-- [ ] pairwise collision-free finite-packet density or diagonal kernel extension
-- [ ] explicit packet representation for one reconstructing sequence
+- [x] pairwise collision-free finite-packet density
+- [x] explicit packet representation for one reconstructing sequence
 - [ ] packet selection independent of Xi divisor input
-- [ ] exact source formula `(5)` and limit `(6)` assembled in one Lean theorem
+- [x] exact source formula `(5)` and limit `(6)` assembled in one Lean theorem
 - [ ] independent source sign theorem or source-positive value collision
 
 ## Log
@@ -103,3 +105,7 @@ rectangular power exponent.
 - 2026-07-12 — formalized Cauchy `ell^2` norm continuity and proved that removing all real poles
   preserves the continued source Hilbert closure; only pairwise finite-packet collision avoidance
   remains in the mechanical value-formula layer.
+- 2026-07-12 — closed pairwise collision avoidance by a simultaneous vanishing complex
+  perturbation; extracted actual finite separated packets from every algebraic-span vector and
+  composed their exact prime--Gamma energies into a sequence converging to `-E_Xi`.  The remaining
+  target is exclusively source-pure packet selection or eventual sign.

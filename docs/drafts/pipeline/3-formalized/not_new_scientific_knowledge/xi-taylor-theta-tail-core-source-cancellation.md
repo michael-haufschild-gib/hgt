@@ -4,7 +4,8 @@
 - **Stage:** 3-formalized
 - **Type:** EXACT FINITE SOURCE IDENTITY / REDUCTION
 - **Scientific status:** `[BRIDGE] [NOT A PRODUCER]`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCoreCancellation.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCoreCancellation.lean`,
+  `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedSource.lean`
 - **Parent target:**
   `../../1-in-progress/xi-taylor-theta-tail-core-density-current.md`
 
@@ -61,13 +62,38 @@ Phi(x)=T''(x)-(1/4)T(x),                                  (6)
 
 with `Phi` the completed even theta-cusp source.
 
+The finite completed-source transform is exactly the canonical Taylor section:
+
+```text
+2 integral Phi(x)C_d(z,x)dx=P_(2d+1)(z),
+
+z^2[2 integral Phi(x)H_d(z,x)dx]
+ =(z^2+1/4)P_(2(d+1)+1)(z)-(1/4)P_1(0).                 (7)
+```
+
+At the upper completion boundary the raw seam is strictly favorable:
+
+```text
+U_d(i/2)=1/2,
+J_(U_d)(i/2)=-(1/2)A_d(1/4)<0,                          (8)
+```
+
+where every coefficient of the raw tail polynomial `A_d` is strictly positive.
+
+For any complex polynomial `P`, the current is also the vertical value derivative
+
+```text
+d/dy |P(x+iy)|^2=-2J_P(x+iy).                            (9)
+```
+
 ## Scope
 
-Equations `(1)`--`(5)` retain the boundary seam and separate the completion radial cost from the
-cosine correlation.  They use no Xi divisor data, real-rootedness, anti-Herglotz positivity, or
-limiting measure.  They do not sign the mixed cross energy: the distinguished canonical density
-still has to supply a cancellation estimate.  Therefore this package is a formalized reduction,
-not the sublinear-current producer and not an RH proof.
+Equations `(1)`--`(9)` retain the boundary seam and separate the completion radial cost from the
+cosine correlation.  Equation `(7)` proves that the completed-source channel is a feedback copy of
+the unknown Taylor section, so treating it as an independently positive correction is circular.
+Equation `(8)` signs the completion boundary but not the open strip.  The remaining producer is
+exactly the raw `T` mixed correlation plus seam in `(3)`.  Therefore this package is a formalized
+reduction, not the sublinear-current producer and not an RH proof.
 
 ## Verification
 

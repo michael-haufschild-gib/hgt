@@ -121,6 +121,9 @@ xiCTaylorAnisotropicLogDerivSublinearUpper_of_thetaTailCoreInterference
 riemannHypothesis_of_xiCTaylorThetaTailCoreInterferenceSublinearUpper
 xiCTaylorAnisotropicLogDerivSublinearUpper_of_thetaTailCoreCurrent
 riemannHypothesis_of_xiCTaylorThetaTailCoreCurrentSublinearUpper
+xiCTaylorOddThetaTailCanonicalSchedule
+xiCTaylorOddThetaTailCanonicalSchedule_spec
+riemannHypothesis_of_xiCTaylorThetaTailCanonicalCoreCurrentSublinearUpper
 ```
 
 The capstones use only the standard mathlib axioms
@@ -129,9 +132,11 @@ The capstones use only the standard mathlib axioms
 ## Status boundary
 
 This card proves the finite orientation-sensitive forcing theorem and discharges every explicit
-top-defect term from source estimates.  It does not prove that the theta-tail core satisfies
-`(7)`.  Since `(7)` plus the unconditionally existing joint schedule implies RH, claiming that
-source inequality without a new proof would be circular.
+top-defect term from source estimates.  The unconditionally existing joint schedule is now fixed
+once and for all as `xiCTaylorOddThetaTailCanonicalSchedule`; consequently the interface-free
+capstone has only `(7)` for this canonical schedule as a hypothesis.  The card does not prove that
+the theta-tail core satisfies `(7)`.  Claiming that source inequality without a new proof would be
+circular.
 
 ## Gates
 
@@ -142,6 +147,7 @@ source inequality without a new proof would be circular.
 - [x] top-defect cross-interference discharged unconditionally on every mesh fibre
 - [x] target reduced to the theta-tail core current alone
 - [x] anisotropic sublinear-flux implication proved
+- [x] existential schedule interface discharged by a fixed canonical source schedule
 - [x] RH terminal implication proved
 - [x] all statements formalized in Lean
 - [ ] unconditional theta-tail core-current estimate `(7)`

@@ -5,9 +5,9 @@
 - **Type:** THEOREM TARGET / DIRECT SOURCE PRODUCER
 - **Scientific status:** `[OPEN CORE] [NOVELTY UNVERIFIED]`
 - **Parent target:** `xi-taylor-oriented-finite-coefficient-sublinear-flux.md`
-- **Statement:** Prove directly from the explicit finite theta-tail integral and the canonical
-  density `rho=4T''` that the finite core `U_d` has sublinear upper oriented current on every
-  anisotropic rational-mesh fibre.
+- **Statement:** Prove anisotropic sublinear upper current for the raw theta-tail/seam mixed
+  correlation `(4)`.  The completed-source channel is an exact feedback copy of the next Xi
+  Taylor section and supplies no independent positive term.
 
 ## Exact target
 
@@ -26,12 +26,11 @@ z_n = xiCTaylorAnisotropicCenteredPoint sigma n.
 
 This is `XiCTaylorThetaTailCoreCurrentSublinearUpper D` in Lean.
 
-## Firewall
+## Non-circularity boundary
 
-The proof may use only the explicit finite theta-tail coefficients, the finite sections, and exact
-identities of the canonical density.  It may not use Xi divisor data, real-rootedness,
-Hermite--Biehler or anti-Herglotz positivity, complete limiting-measure selection, or an
-RH-equivalent continued-Cauchy sequence sign.
+No method class is excluded.  Any input must nevertheless prove a sign or cancellation for `(4)`
+rather than restating the target Taylor current, assuming an RH-equivalent sign, or routing the
+unknown Taylor section through an identity and calling the returned copy an error term.
 
 ## Exact source coordinate
 
@@ -116,11 +115,64 @@ rho(x)=T(x)+4 Phi(x),
 Phi(x)=T''(x)-(1/4)T(x),                                  (6)
 ```
 
-where `Phi` is the even theta-cusp source.  Unlike `rho=4T''` alone, `(6)` retains the modular
-completion.  Substitution into `(4)` separates a universal raw-tail cross term from the completed
-theta correlation.  The latter is the only live place for a canonical orientation law; the
-Wigner--Eisenstein calculation shows it cannot be replaced by positivity of the ambient pair
-kernel.
+where `Phi` is the even theta-cusp source.  The completed part is not an independent correction.
+The exact finite transform and core identities are
+
+```text
+2 integral Phi(x) C_d(z,x) dx = P_(2d+1)(z),
+
+z^2 [2 integral Phi(x) H_d(z,x) dx]
+ = (z^2+1/4)P_(2(d+1)+1)(z) - (1/4)P_1(0).               (7)
+```
+
+Thus substitution of `(6)` feeds the next canonical Taylor section directly back into the current.
+Any attempted positive bound on the `Phi` term is circular.  The only unresolved producer is the
+raw `T` cross correlation together with the seam in `(4)`.
+
+The completion boundary gives a genuine non-circular value relation:
+
+```text
+U_d(i/2)=1/2,
+J_(U_d)(i/2)=-(1/2) A_d(1/4)<0,                           (8)
+```
+
+where `A_d=thetaCuspTailEvenPolynomial d` has strictly positive coefficients.  Equation `(8)` is
+proved in Lean.  It localizes every possible positive-current obstruction to the open strip
+`0<Im z<1/2`; it does not control the interior by itself.
+
+For every polynomial `P`, Lean also proves the exact value-coordinate identity
+
+```text
+d/dy |P(x+iy)|^2 = -2 J_P(x+iy).                           (9)
+```
+
+Hence the narrowed target is equivalently a sublinear lower bound for the vertical derivative of
+the finite core modulus on the anisotropic fibres.  The boundary value `(8)` gives the favorable
+derivative at `y=1/2`; the open problem is to prevent an interior reversal of `(9)` at linear mesh
+scale.  Such a reversal is exactly what a nearby nonreal zero produces.
+
+## Literature/value-relation audit
+
+- The classical theta-kernel formulas give positivity and modular balance of `Phi`, the Mellin
+  representation of `xi`, the Fourier/cosine representation of `Xi`, and the raw even-moment
+  formula.  These relations are present in Lean.
+- Romik's orthogonal-polynomial expansions give positive coefficient sequences and compact-uniform
+  convergence in the Hermite, Meixner--Pollaczek, and continuous-Hahn bases.  Their finite partial
+  sums are not the monomial Taylor cores `U_d`; the Meixner--Pollaczek Poisson flow does not preserve
+  hyperbolicity.  No transfer theorem in that work supplies the sign of `(4)`.
+- Hedenmalm's theta-source boundary-value problem gives an eigenvalue characterization and a
+  conditional self-adjointness program.  It supplies no finite Taylor-section identity beyond the
+  theta/Mellin relations already used here, and the required inner-product sign remains an input.
+- The 2025 backward-parabolic-barrier preprint claiming to propagate Pick positivity from a
+  de Bruijn real-zero slice cannot supply the sign.  Its collision bridge requires a uniform
+  differential inequality up to a collision.  The exact heat-flow polynomial
+  `E_t(z)=z^2+1-2t` is a counterexample: `E_1` has two real zeros, `E_0` has zeros `+-i`, and the
+  zero speed and separation constants blow up at the collision `t=1/2`.  Continuity of a tube
+  energy at that time does not imply it remains zero on the earlier side.
+- The Wigner--Eisenstein/Bessel coordinate has a positive real Mellin signature but an indefinite
+  ordered-pair kernel.  Positivity on a real Mellin line is not a positive power-mixture
+  representation, because Mellin inversion uses a complex vertical line.  Hence it does not orient
+  the distinguished raw mixed correlation.
 
 ## Gates
 
@@ -132,6 +184,10 @@ kernel.
 - [x] derive the exact one-variable integration-by-parts correlation identity
 - [x] derive the completion-compensated finite cosine identity
 - [x] expose the raw-tail plus completed-source density split
-- [ ] prove or refute a favorable sign/cancellation for the mixed kernel plus seam
+- [x] prove the completed-source feedback identity and remove that circular channel
+- [x] prove the exact negative upper-completion-boundary current
+- [x] identify the current with the vertical derivative of the finite squared modulus
+- [x] audit classical theta, orthogonal-polynomial, spectral, and Wigner value relations
+- [ ] prove a favorable interior sign/cancellation for the raw mixed kernel plus seam
 - [ ] obtain the eventual scaled core-current inequality on every anisotropic fibre
 - [ ] complete paper proof and Lean theorem

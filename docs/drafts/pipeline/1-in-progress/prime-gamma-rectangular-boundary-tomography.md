@@ -326,10 +326,14 @@ coefficients.
 
 ## Lean program
 
-1. Formalize the interval autocorrelation and prove `(3)` without a measure-zero endpoint gap.
-2. Prove the explicit Fourier transform `(2)` and absolute Gamma-integrability.
-3. Formalize the even polar feature and its exact value `(6)`.
-4. Define the finite von Mangoldt tent functional and prove the support localization `(8)`--`(9)`.
+1. **Complete.** `CCMRectangularAutocorrelation.lean` formalizes the half-open interval profile,
+   proves its exact Lebesgue autocorrelation, and proves `(3)` without an endpoint convention gap.
+2. **Transform complete; Gamma integrability open.** The same module proves that the physical
+   profile's bilateral Laplace integral is exactly `(2)`.
+3. **Complete.** The even polar feature and its exact value `(6)` are formalized; the odd polar
+   channel is proved to vanish.
+4. **Complete.** The finite von Mangoldt autocorrelation functional, fixed/moving tent split, and
+   support localization `(8)`--`(9)` are formalized.
 5. Prove the compact-uniform Riemann-sum estimate `(18)` and the holomorphy of `H_L`.
 6. Construct the prime--polar continuation `(20)`, prove the pole cancellation `(21)`, and compute
    every zero residue `(23)`.
@@ -347,7 +351,10 @@ coefficients.
 - [x] stronger Gamma-free prime--polar carrier isolated
 - [x] exact pole-cancellation constant derived
 - [x] parent-theory and source-purity attacks stated
-- [ ] interval autocorrelation and Fourier transform formalized
+- [x] interval autocorrelation and Fourier transform formalized in
+  `CCMRectangularAutocorrelation.lean`, at the exact half-open indicator regularity
+- [x] corrected rank-two polar feature formalized: the odd channel vanishes and the even energy
+  is `32*(sinh(a/2)-sinh((a-L)/2))^2`
 - [ ] Gamma integral convergence formalized
 - [ ] compact-uniform moving-tent Riemann-sum theorem formalized
 - [ ] prime--polar divisor tomography formalized

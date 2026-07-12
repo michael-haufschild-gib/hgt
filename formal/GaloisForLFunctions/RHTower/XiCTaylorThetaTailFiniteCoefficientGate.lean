@@ -545,6 +545,25 @@ theorem riemannHypothesis_of_xiCTaylorThetaTailCoreCurrentSublinearUpper
   riemannHypothesis_of_xiCTaylorThetaTailCoreInterferenceSublinearUpper hD.1
     (xiCTaylorThetaTailCoreInterferenceSublinearUpper_of_coreCurrent hD hcore)
 
+/-- A fixed source-selected odd theta-tail schedule.  Its existence uses only the canonical Xi
+Taylor coefficients and the explicit theta-tail top defect; it contains no zero-location input. -/
+noncomputable def xiCTaylorOddThetaTailCanonicalSchedule : ℕ → ℕ :=
+  Classical.choose exists_xiCTaylorOddThetaTailSuperaccurateSchedule
+
+theorem xiCTaylorOddThetaTailCanonicalSchedule_spec :
+    XiCTaylorOddThetaTailSuperaccurateSchedule
+      xiCTaylorOddThetaTailCanonicalSchedule :=
+  Classical.choose_spec exists_xiCTaylorOddThetaTailSuperaccurateSchedule
+
+/-- Interface-free Taylor endpoint.  For the fixed canonical source schedule, the raw theta-tail
+core-current inequality is the only remaining hypothesis on the chain to RH. -/
+theorem riemannHypothesis_of_xiCTaylorThetaTailCanonicalCoreCurrentSublinearUpper
+    (hcore : XiCTaylorThetaTailCoreCurrentSublinearUpper
+      xiCTaylorOddThetaTailCanonicalSchedule) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_xiCTaylorThetaTailCoreCurrentSublinearUpper
+    xiCTaylorOddThetaTailCanonicalSchedule_spec hcore
+
 end
 
 end RHTower

@@ -444,16 +444,55 @@ the matching lower eigenvector bound with `||C||_2^2=||C^*C||_2`. This does not 
 OPUC/Szegő theorem that supplies normalized determinant vanishing for a purely singular circle
 measure.
 
-All nine exact builds pass. `#print axioms` on the capstone declarations reports only `propext`,
+The unconditional modules `GaloisForLFunctions.HTGeometry.GraphSaturationCore` and
+`GaloisForLFunctions.HTGeometry.ToeplitzPolynomialGraph` now formalize the Hilbert-product graph
+as an actual submodule, identify its orthogonal complement exactly, and prove that triviality of
+the joint annihilator forces full-product graph closure. For the circle-measure polynomial map,
+the coefficient inclusion, monomial synthesis, the exact monomial inner-product integral, and the
+reduction from all finitely supported polynomials to monomial tests are formalized. This isolates
+the remaining analytic input precisely: a one-sided Fourier rigidity theorem strong enough to
+deduce triviality of the monomial annihilator for a purely singular measure. Neither module
+assumes graph saturation or F. and M. Riesz. One-sided Fourier rigidity is also proved to force
+density of the analytic-monomial span in `L²(μ)`, the completeness statement needed for the
+unitary repaired representation.
+
+The unconditional module `GaloisForLFunctions.HTGeometry.RieszBrothersReduction` defines
+normalized Lebesgue measure on `Circle` as transported Haar probability and reduces the entire
+pure-singular graph theorem to one exact classical statement: square summability of the analytic
+Fourier half-line of `y · μ` makes that complex density measure absolutely continuous with
+respect to circle Lebesgue measure. It proves unconditionally that the density measure is also
+absolutely continuous with respect to `μ`, that a vector measure absolutely continuous with
+respect to two mutually singular positive measures is zero, that zero density measure forces
+`y=0` in `L²(μ)`, and hence that the monomial annihilator vanishes and the raw graph saturates.
+Thus F. and M. Riesz is now the sole unproved analytic implication in this chain, not an informal
+umbrella for graph or measure-theoretic steps.
+
+The unconditional module `GaloisForLFunctions.HTGeometry.CompleteGramTowerTopology` proves that
+the complete Toeplitz Gram tower is continuous and injective on real probability measures, and
+that its restriction to every compact carrier family is a closed topological embedding. This
+formalizes the complete-tower topological selector in the equivalent Gram coordinate. Continuity
+of the positive-diagonal inverse-Cholesky factor itself remains open, so the paper's literal
+matrix-`C_N` topological statement is not yet promoted.
+
+The unconditional module `GaloisForLFunctions.HTGeometry.CanonicalFrameClosedGraph` proves that
+the strict positive-diagonal inverse-Cholesky normalization is equivalent, on its algebraic
+inverse-frame locus, to the closed condition of real nonnegative diagonal. The determinant-one
+identity rules out every zero diagonal entry. Consequently the graph of the literal canonical
+inverse-Cholesky factor over the positive-definite cone is closed. Compact-range control, and then
+the closed-graph-to-continuity promotion, remain; strict positivity is no longer the obstruction.
+
+All fourteen exact builds pass. `#print axioms` on the capstone declarations reports only `propext`,
 `Classical.choice`, and `Quot.sound`. The touched modules contain no proof debt, and the
 repository-wide formal lint passes. This validates only the declarations listed above, not the
 still-unformalized claims in the paper.
 
-The remaining formalization requires continuity of the triangular positive-diagonal factor,
+The remaining formalization requires compact-range control and continuity of the triangular
+positive-diagonal factor (its graph is now formally closed),
 construction and weak continuity of the actual N-extremal Nevanlinna
 kernel and projective support label, the full Bauer-simplex/topological and spectral-type layer,
 finite-frame Hilbert-cube fibers, constrained full-shift transversality, topological continuity of
-the complete-tower coordinate, F. and M. Riesz, graph closure as a linear relation,
+the complete-tower coordinate, the one-sided Fourier/F. and M. Riesz rigidity input and its
+pure-singular graph-saturation consequence,
 the OPUC/Szegő determinant-vanishing input and Bernstein--Szegő approximation, and the final
 residual-set capstone.
 

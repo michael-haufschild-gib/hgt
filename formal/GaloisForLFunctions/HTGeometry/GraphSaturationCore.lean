@@ -61,6 +61,27 @@ theorem linearGraphSubmodule_closure_eq_top_of_annihilator
     _ = (⊥ : Submodule ℂ (WithLp 2 (H₁ × H₂)))ᗮ := by rw [horth]
     _ = ⊤ := Submodule.bot_orthogonal_eq_top
 
+/-- **Exact graph-saturation criterion.** A linear graph is dense in the full Hilbert product if
+and only if its joint inner-product annihilator is trivial. -/
+theorem linearGraphSubmodule_closure_eq_top_iff_annihilator
+    (i : D →ₗ[ℂ] H₁) (A : D →ₗ[ℂ] H₂) :
+    (linearGraphSubmodule i A).topologicalClosure = ⊤ ↔
+      ∀ x : H₁, ∀ y : H₂,
+        (∀ d : D, inner ℂ (i d) x + inner ℂ (A d) y = 0) → x = 0 ∧ y = 0 := by
+  constructor
+  · intro hclosure x y hrel
+    let z : WithLp 2 (H₁ × H₂) := WithLp.toLp 2 (x, y)
+    have hz : z ∈ (linearGraphSubmodule i A)ᗮ :=
+      (mem_linearGraphSubmodule_orthogonal_iff i A z).mpr hrel
+    have horth : (linearGraphSubmodule i A)ᗮ = ⊥ := by
+      rw [← Submodule.orthogonal_closure, hclosure, Submodule.top_orthogonal_eq_bot]
+    rw [horth] at hz
+    have hz0 : z = 0 := hz
+    have hprod : (x, y) = 0 := WithLp.toLp_injective 2 hz0
+    exact ⟨congrArg Prod.fst hprod, congrArg Prod.snd hprod⟩
+  · intro hann
+    exact linearGraphSubmodule_closure_eq_top_of_annihilator i A hann
+
 end
 
 end GaloisForLFunctions.HTGeometry
