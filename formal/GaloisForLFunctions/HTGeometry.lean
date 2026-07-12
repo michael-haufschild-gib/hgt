@@ -59,3 +59,5 @@ import GaloisForLFunctions.HTGeometry.UniversalOrientedConstraintProduct
 import GaloisForLFunctions.HTGeometry.FacetSewnHerglotzStanleyReisner
 
 /-! # Hypertranscendental constraint geometry -/
+import GaloisForLFunctions.HTGeometry.CofinalCholeskyFiniteFrame
+import GaloisForLFunctions.HTGeometry.CayleyMomentFrame

@@ -4,7 +4,13 @@
 - **Stage:** 3-formalized
 - **Type:** `[BRIDGE]` / unconditional CCM Dirichlet foundation
 - **Novelty status:** not promoted separately as new scientific knowledge
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMRectangularDirichletLandau.lean`
+- **Lean modules:**
+  `formal/GaloisForLFunctions/RHTower/CCMRectangularDirichletLandau.lean`,
+  `CCMShiftedXiCancellation.lean`, `CCMShiftedXiNormalConvergence.lean`,
+  `CCMShiftedXiPoleJet.lean`, `CCMShiftedXiGlobalOrder.lean`,
+  `CCMShiftedXiLandauContinuation.lean`, `CCMShiftedXiLandauPoleContradiction.lean`,
+  `CCMRectangularDominantFold.lean`, `CCMRectangularWeilCompleteness.lean`, and
+  `CCMRectangularScrewCurvature.lean`, and `CCMRectangularTransverseGrowth.lean`
 
 ## Theorem
 
@@ -52,6 +58,37 @@ Unconditionally:
    and deleting a finite prefix gives a nonnegative Dirichlet series.  A
    scale-local Landau theorem, with arbitrary Taylor displacement `h>0`, forces
    this series to converge at a real point strictly left of `1+delta_*`.
+8. Multiplication by `xi(s-1/2)` cancels every shifted-zeta pole.  At a pole
+   associated with a Xi zero of multiplicity `m`, the equal-support fiber has
+   exact analytic order `m-1`, whereas every off-support term and its locally
+   normally convergent infinite sum have order at least `m`.  Landau continuation
+   therefore gives an impossible order comparison.
+9. Hence a nonempty right Xi divisor forces the logarithmically sampled
+   coefficients below every real level cofinally.  Functional-equation folding
+   and the aperture-uniform remainder transfer this to the actual rectangular
+   Weil values.
+10. For every fixed `L>0`, RH is equivalent both to pointwise nonnegativity and
+    to eventual lower boundedness of this single sampled family.
+11. The divisor-side screw profile
+
+    ```text
+    Psi_Xi(t)=sum_q [cosh(t(rho_q-1/2))-1]/(rho_q-1/2)^2
+    ```
+
+    is absolutely convergent and real-valued, and the exact identity
+
+    ```text
+    Q_L(a)=2[Psi_Xi(2a)+Psi_Xi(2a-2L)-2Psi_Xi(2a-L)+2Psi_Xi(L)]
+    ```
+
+    turns the theorem into a fixed-width discrete-curvature criterion on the
+    arithmetic mesh `t=log n`.
+12. If the right Xi divisor is nonempty, the same scalar sequence has sharp
+    power exponent equal to the supremal transverse displacement `delta_*`:
+    it is `O(n^delta_*)`, but exceeds `C n^alpha` cofinally for every
+    `0<=alpha<delta_*` and every `C>=0`.  Under RH it is uniformly bounded.
+    Thus norm boundedness is another exact RH criterion, and the carrier
+    quantitatively recovers the horizontal defect when one exists.
 
 The earlier safe-half-plane estimate remains available: for every `eps>0` and
 `Re s>=3/2+eps`,
@@ -89,15 +126,38 @@ The earlier safe-half-plane estimate remains available: for every `eps>0` and
 - `LSeries_xiRectangularLandauCoefficient_eq_continuation`
 - `exists_xiRectangularLandauCoefficient_summable_left_of_boundary`
 - `xiRectangularTwoEdgeDominant_logSample_of_right`
+- `xiRectangularCancelledSeries_order`
+- `xiRightShiftedPole_re_le_of_landau_summable`
+- `xiRectangularRightDirichletCoefficientReal_cofinally_unbounded_below`
+- `tsum_xiRectangularTwoEdgeDominant_logSample_eq_ofReal_rightCoefficient`
+- `xiWeilPolarization_rectangular_logSample_cofinally_unbounded_below`
+- `riemannHypothesis_iff_rectangular_logSample_weil_nonneg`
+- `riemannHypothesis_iff_rectangular_logSample_weil_eventually_bddBelow`
+- `xiScrewDivisorTerm_summable`
+- `star_xiScrewDivisor`
+- `xiWeilPolarization_rectangular_eq_screwCurvature`
+- `not_riemannHypothesis_implies_xiScrewWindowCurvature_logSample_cofinally_unbounded_below`
+- `riemannHypothesis_iff_xiScrewWindowCurvature_logSample_nonneg`
+- `riemannHypothesis_iff_xiScrewWindowCurvature_logSample_eventually_bddBelow`
+- `xiRectangularRightDirichletCoefficientReal_cofinally_exceeds_power`
+- `norm_xiWeilPolarization_rectangular_le_of_riemannHypothesis`
+- `norm_xiWeilPolarization_rectangular_logSample_le_transverse_power`
+- `xiWeilPolarization_rectangular_logSample_cofinally_exceeds_power`
+- `xiRightTransverseSup_is_sharp_rectangular_power_exponent`
+- `riemannHypothesis_iff_rectangular_logSample_weil_norm_bdd`
 
 ## Boundary
 
-The real-boundary continuation and the scale-local Landau transfer are complete.
-The remaining theorem is the multiplicity-safe pole-jet contradiction: the
-left-boundary convergence must be shown incompatible with at least one genuine
-shifted pole `s=1+w`.  No simple-zero hypothesis is available.
+The divisor-side theorem is complete, including arbitrary multiplicity, the
+nonattained transverse supremum, the fixed rectangular profile, and the
+logarithmic integer sampling.  The remaining RH-bearing theorem is source-side:
+derive one eventual finite lower bound for this explicit curvature family from
+an unconditional prime--Gamma--theta or semilocal operator construction.  Such
+a source floor must not be imported from the Xi divisor or from an equivalent
+RH sign hypothesis.
 
 ## Verification
 
 - exact module build: passed
 - no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration is introduced
+- capstone axioms: `[propext, Classical.choice, Quot.sound]`

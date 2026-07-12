@@ -74,6 +74,34 @@ theorem xiCTaylorScheduleTolerance_stage_le_inv_pow
     ((((n + 1 : ℕ) : ℝ) ^ d)⁻¹)
   exact inv_anti₀ (by positivity) (hbasePow.trans hexpPow)
 
+/-- The super-accurate tolerance at the moving anisotropic stage, multiplied by any fixed power
+of the mesh resolution, tends to zero. -/
+theorem tendsto_xiCTaylorScheduleTolerance_stage_mul_pow (sigma : ℂ) (d : ℕ) :
+    Tendsto
+      (fun n : ℕ =>
+        xiCTaylorScheduleTolerance (xiCTaylorAnisotropicScheduleStage sigma n) *
+          (((n + 1 : ℕ) : ℝ) ^ d))
+      atTop (nhds 0) := by
+  apply squeeze_zero'
+    (Eventually.of_forall fun n => mul_nonneg
+      (xiCTaylorScheduleTolerance_pos _).le (pow_nonneg (by positivity) _))
+    ?_
+    (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+  filter_upwards [eventually_ge_atTop d] with n hn
+  have htol := xiCTaylorScheduleTolerance_stage_le_inv_pow sigma
+    (show d + 1 ≤ n + 1 by omega)
+  calc
+    xiCTaylorScheduleTolerance (xiCTaylorAnisotropicScheduleStage sigma n) *
+        (((n + 1 : ℕ) : ℝ) ^ d) ≤
+      ((((n + 1 : ℕ) : ℝ) ^ (d + 1))⁻¹) *
+        (((n + 1 : ℕ) : ℝ) ^ d) :=
+      mul_le_mul_of_nonneg_right htol (pow_nonneg (by positivity) _)
+    _ = 1 / ((n : ℝ) + 1) := by
+      push_cast
+      rw [pow_succ, mul_inv_rev, mul_assoc,
+        inv_mul_cancel₀ (pow_ne_zero _ (by positivity)), mul_one]
+      ring
+
 /-- The centered mesh point lies in the expanding ball controlled by its explicit schedule
 stage. -/
 theorem xiCTaylorAnisotropicCenteredPoint_mem_closedBall_stage

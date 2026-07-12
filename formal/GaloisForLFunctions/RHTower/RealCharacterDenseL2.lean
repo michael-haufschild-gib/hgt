@@ -49,7 +49,7 @@ theorem realProbCharacterLp_ae (mu : Measure ℝ) [IsFiniteMeasure mu] (t : ℝ)
 /-- Uniqueness for a real integrable density: if every probability-character
 moment vanishes, then the density vanishes almost everywhere. -/
 theorem ae_eq_zero_of_integral_realProbCharacter_mul_eq_zero
-    (mu : Measure ℝ) [IsFiniteMeasure mu] {f : ℝ → ℝ}
+    (mu : Measure ℝ) {f : ℝ → ℝ}
     (hfmeas : Measurable f) (hf : Integrable f mu)
     (hfourier : ∀ t : ℝ,
       ∫ x, realProbCharacter t x * (f x : ℂ) ∂mu = 0) :
@@ -136,7 +136,7 @@ theorem integral_realProbCharacter_neg_mul_ofReal
 
 /-- Uniqueness for a complex integrable density. -/
 theorem ae_eq_zero_of_integral_realProbCharacter_mul_eq_zero_complex
-    (mu : Measure ℝ) [IsFiniteMeasure mu] {f : ℝ → ℂ}
+    (mu : Measure ℝ) {f : ℝ → ℂ}
     (hfmeas : Measurable f) (hf : Integrable f mu)
     (hfourier : ∀ t : ℝ,
       ∫ x, realProbCharacter t x * f x ∂mu = 0) :

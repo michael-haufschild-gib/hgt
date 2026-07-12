@@ -390,12 +390,24 @@ def columnTuple {L : ℕ} (f : Fin L → ι) : (ι × Fin L) →₀ ℕ :=
 theorem columnTuple_apply {L : ℕ} (f : Fin L → ι) (j : ι) (n : Fin L) :
     columnTuple f (j, n) = if j = f n then 1 else 0 := by
   classical
-  simp only [columnTuple, Finset.sum_apply, Finsupp.single_apply]
-  rw [Finset.sum_eq_single n]
-  · simp [eq_comm]
-  · intro r _ hr
-    simp [show (j, n) ≠ (f r, r) from fun h => hr (congrArg Prod.snd h).symm]
-  · simp
+  rw [columnTuple]
+  rw [Finsupp.finsetSum_apply]
+  simp_rw [Finsupp.single_apply]
+  change (∑ r : Fin L, if (f r, r) = (j, n) then 1 else 0) = _
+  by_cases hj : j = f n
+  · rw [if_pos hj]
+    rw [Finset.sum_eq_single n]
+    · simp [hj]
+    · intro r _ hr
+      simp [Prod.ext_iff, hr]
+    · simp
+  · rw [if_neg hj]
+    apply Finset.sum_eq_zero
+    intro r _
+    by_cases hr : r = n
+    · subst r
+      simp [show f n ≠ j from fun h => hj h.symm]
+    · simp [Prod.ext_iff, hr]
 
 theorem columnSlice_columnTuple {L : ℕ} (f : Fin L → ι) (n : Fin L) :
     columnSlice (columnTuple f) n = Finsupp.single (f n) 1 := by
@@ -419,7 +431,9 @@ theorem columnTuple_injective {L : ℕ} :
   have hs := congrArg (fun d => columnSlice d n) h
   change columnSlice (columnTuple f) n = columnSlice (columnTuple g) n at hs
   rw [columnSlice_columnTuple, columnSlice_columnTuple] at hs
-  exact Finsupp.single_left_injective hs
+  by_contra hne
+  have hv := congrFun (congrArg DFunLike.coe hs) (f n)
+  simpa [Finsupp.single_apply, hne] using hv
 
 theorem eq_columnTuple_of_columnDegree_eq_one {L : ℕ}
     (d : (ι × Fin L) →₀ ℕ) (h : ∀ n : Fin L, columnDegree d n = 1) :
@@ -441,6 +455,99 @@ theorem monomialValue_powerGrid_columnTuple {L : ℕ} (q : ι → ℂ)
   intro n _
   rw [columnMonomialValue_of_columnSlice_eq_single q (columnTuple f) n (f n)
     (columnSlice_columnTuple f n)]
+
+/-- A polynomial whose nonzero monomials have degree one in every column is the finite sum of its
+`columnTuple` monomials. -/
+theorem eq_sum_monomial_columnTuple_of_columnDegree_eq_one {L : ℕ}
+    (Q : MvPolynomial (ι × Fin L) ℂ)
+    (hlinear : ∀ d : (ι × Fin L) →₀ ℕ, MvPolynomial.coeff d Q ≠ 0 →
+      ∀ n : Fin L, columnDegree d n = 1) :
+    Q = ∑ f : Fin L → ι,
+      MvPolynomial.monomial (columnTuple f)
+        (MvPolynomial.coeff (columnTuple f) Q) := by
+  classical
+  apply MvPolynomial.ext
+  intro d
+  by_cases hex : ∃ f : Fin L → ι, columnTuple f = d
+  · obtain ⟨f, hf⟩ := hex
+    rw [← hf]
+    rw [MvPolynomial.coeff_sum]
+    simp only [MvPolynomial.coeff_monomial]
+    rw [Finset.sum_eq_single f]
+    · simp
+    · intro g _ hgf
+      simp [show columnTuple g ≠ columnTuple f from
+        fun h => hgf (columnTuple_injective h)]
+    · simp
+  · have hd : MvPolynomial.coeff d Q = 0 := by
+      by_contra hd
+      obtain ⟨f, hf⟩ := eq_columnTuple_of_columnDegree_eq_one d (hlinear d hd)
+      exact hex ⟨f, hf.symm⟩
+    rw [hd]
+    rw [MvPolynomial.coeff_sum]
+    simp only [MvPolynomial.coeff_monomial]
+    symm
+    apply Finset.sum_eq_zero
+    intro f _
+    simp [show columnTuple f ≠ d from fun h => hex ⟨f, h⟩]
+
+/-- The tensor power grid is separating on the component that is linear in every column. -/
+theorem columnMultilinear_powerGrid_zero {L : ℕ} (q : ι → ℂ)
+    (hq : Function.Injective q) (Q : MvPolynomial (ι × Fin L) ℂ)
+    (hlinear : ∀ d : (ι × Fin L) →₀ ℕ, MvPolynomial.coeff d Q ≠ 0 →
+      ∀ n : Fin L, columnDegree d n = 1)
+    (hgrid : ∀ m : Fin L → ℕ,
+      MvPolynomial.eval (fun jk : ι × Fin L => q jk.1 ^ m jk.2) Q = 0) :
+    Q = 0 := by
+  let c : (Fin L → ι) → ℂ := fun f => MvPolynomial.coeff (columnTuple f) Q
+  have hcgrid : ∀ m : Fin L → ℕ,
+      ∑ f : Fin L → ι, c f * ∏ n : Fin L, q (f n) ^ m n = 0 := by
+    intro m
+    have hm := hgrid m
+    rw [eq_sum_monomial_columnTuple_of_columnDegree_eq_one Q hlinear] at hm
+    simp only [map_sum, MvPolynomial.eval_monomial] at hm
+    change (∑ f : Fin L → ι,
+      MvPolynomial.coeff (columnTuple f) Q *
+        monomialValue (fun jk : ι × Fin L => q jk.1 ^ m jk.2) (columnTuple f)) = 0 at hm
+    simpa only [c, monomialValue_powerGrid_columnTuple] using hm
+  have hc : c = 0 := tensor_power_sum_coeff_zero q hq L c hcgrid
+  rw [eq_sum_monomial_columnTuple_of_columnDegree_eq_one Q hlinear]
+  apply Finset.sum_eq_zero
+  intro f _
+  have hf := congrFun hc f
+  simp only [c, Pi.zero_apply] at hf
+  rw [hf, MvPolynomial.monomial_zero]
+
+theorem support_columnDifferenceSet_subset {L : ℕ} (q : ι → ℂ)
+    (S : Finset (Fin L)) (P : MvPolynomial (ι × Fin L) ℂ) :
+    (columnDifferenceSet q S P).support ⊆ P.support := by
+  intro d hd
+  rw [MvPolynomial.mem_support_iff] at hd ⊢
+  rw [coeff_columnDifferenceSet] at hd
+  exact fun h => hd (by rw [h, zero_mul])
+
+theorem totalDegree_columnDifferenceSet_le {L : ℕ} (q : ι → ℂ)
+    (S : Finset (Fin L)) (P : MvPolynomial (ι × Fin L) ℂ) :
+    (columnDifferenceSet q S P).totalDegree ≤ P.totalDegree :=
+  MvPolynomial.totalDegree_le_of_support_subset
+    (support_columnDifferenceSet_subset q S P)
+
+/-- **Multicolumn top-degree separator.**  If a polynomial has total degree at most the number of
+independently powered columns, then taking one finite difference in every column kills it.  The only
+input on the power nodes is pairwise distinctness; higher multiplicative resonances are irrelevant. -/
+theorem columnDifferenceSet_univ_eq_zero_of_totalDegree_le {L : ℕ}
+    (q : ι → ℂ) (hq : Function.Injective q)
+    (P : MvPolynomial (ι × Fin L) ℂ) (hdeg : P.totalDegree ≤ L)
+    (hgrid : ∀ m : Fin L → ℕ,
+      MvPolynomial.eval (fun jk : ι × Fin L => q jk.1 ^ m jk.2) P = 0) :
+    columnDifferenceSet q Finset.univ P = 0 := by
+  apply columnMultilinear_powerGrid_zero q hq
+  · intro d hd
+    apply columnDegree_eq_one_of_coeff_columnDifferenceSet_univ_ne_zero q P d _ hd
+    exact (MvPolynomial.le_totalDegree
+      ((support_columnDifferenceSet_subset q Finset.univ P)
+        (MvPolynomial.mem_support_iff.mpr hd))).trans hdeg
+  · exact columnDifferenceSet_grid_zero q P hgrid Finset.univ
 
 end
 

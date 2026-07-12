@@ -192,6 +192,15 @@ The current corpus already supplies:
   simultaneous value/derivative errors there;
 - `xiCTaylorScheduleTolerance_stage_le_inv_pow`: the super-accurate error at that moving stage is
   bounded by every prescribed fixed inverse power of the mesh resolution;
+- `tendsto_xiCTaylorScheduleTolerance_stage_mul_pow`: after multiplication by any fixed power of
+  the mesh resolution, the moving-stage error still tends to zero;
+- `eventually_xiC_anisotropic_value_lower` and `eventually_xiC_anisotropic_deriv_upper`: Xi peeling
+  gives the local `c n^{-m}` value floor while the Xi derivative stays bounded;
+- `tendsto_norm_xiCTaylor_logDeriv_sub_XiC_at_anisotropic`: on every anisotropic mesh fibre, the
+  finite Taylor logarithmic derivative tracks the moving Xi logarithmic derivative with norm
+  error tending to zero;
+- `eventually_xiOrder_div_twenty_lt_xiCTaylor_logDeriv_anisotropicMesh_im_div`: the finite Taylor
+  logarithmic derivative consequently inherits a positive normalized linear flux;
 - `xiTaylorAnisotropicRightApprox_re_sub_bounds` and
   `abs_xiTaylorAnisotropicRightApprox_im_sub_lt`: the explicit `1/n` by `1/n^2` mesh geometry
   `(8)`;
@@ -205,16 +214,18 @@ The current corpus already supplies:
   logarithmic derivative is eventually below every positive rate on each explicit mesh fibre;
 - `riemannHypothesis_of_xiAnisotropicLogDerivSublinearUpper`: the axiom-clean formal endpoint
   `sublinear anisotropic Xi mesh flux -> RiemannHypothesis`;
+- `XiCTaylorAnisotropicLogDerivSublinearUpper` and
+  `riemannHypothesis_of_xiCTaylorAnisotropicLogDerivSublinearUpper`: the axiom-clean formal chain
+  `finite canonical Taylor sublinear flux -> inherited linear pole exclusion -> RiemannHypothesis`;
 - `xi_normalizedLogDeriv_tendsto_order` for the local pole residue;
 - `continuedPrimeArchSourceRelativeTrace_eventuallyEq_logDeriv_XiC`;
 - `riemannHypothesis_of_xiCTaylorGaussianRatLeftHalfImEventuallyBoundedAbove` for the older
   uniform-bound/fixed-rational quantifier pattern.
 
-The direct Xi endpoint is formalized.  The remaining Lean infrastructure for the finite-polynomial
-criterion is the finite compact-mesh maximum and the specialization of the generic quotient bound
-to the super-accurate Xi schedule near a zero.  The diagonal selector, the decisive one-point
-anisotropic mesh geometry, its linear reciprocal amplifier, the exact Xi linear pole-growth
-theorem, and the generic quotient perturbation estimate are formalized.
+The pointwise finite-polynomial chain to RH is formalized, including the specialization of the
+generic quotient bound to the super-accurate Xi schedule near a zero.  Only the finite compact-mesh
+maximum remains to formalize the card's stronger uniform formulation `(5)` verbatim.  It is not
+needed by the formal pointwise finite Taylor premise already implying RH.
 
 ## Non-circularity gate
 
@@ -244,9 +255,8 @@ that retains the completed prime--archimedean orientation.
 
 - [x] 0 -> 1 in-progress: explicit source objects, mesh, and non-circularity gate
 - [x] 1 -> 2 fully-proven: complete paper proof of schedule existence and equivalence `(5)`
-- [ ] 2 -> 3 formalized: compact mesh maximum and Xi-specific asymptotic specialization remain;
-  selector, one-point mesh geometry, reciprocal amplifier, Xi pole growth, and generic quotient
-  perturbation complete
+- [ ] 2 -> 3 formalized: the pointwise finite Taylor chain to RH is complete; only the compact mesh
+  maximum remains for the stronger uniform statement `(5)`
 - [ ] 3 -> 4 publication-ready: only after a non-circular proof of `(15)`
 
 ## Formalization log
@@ -277,3 +287,11 @@ that retains the completed prime--archimedean orientation.
   `formal/GaloisForLFunctions/RHTower/XiCTaylorAnisotropicScheduleLookup.lean`.  The remaining
   finite-Taylor transfer is now local zero-factor bookkeeping rather than a compactness or
   diagonal-selection gap.
+- 2026-07-12 — Formalized the local `c n^{-m}` Xi value floor and eventual derivative bound in
+  `formal/GaloisForLFunctions/RHTower/XiCTaylorAnisotropicLocalBounds.lean`; these feed the moving
+  quotient transfer `|P'/P-XiC'/XiC| -> 0` inside the finite Taylor capstone.
+- 2026-07-12 — Closed the axiom-clean formal chain
+  `finite canonical Taylor sublinear flux -> Xi anisotropic sublinear flux -> RiemannHypothesis`
+  in `formal/GaloisForLFunctions/RHTower/XiCTaylorAnisotropicSublinearGate.lean`.  Exact module and
+  axiom checks pass; all three capstone declarations use only `propext`, `Classical.choice`, and
+  `Quot.sound`.

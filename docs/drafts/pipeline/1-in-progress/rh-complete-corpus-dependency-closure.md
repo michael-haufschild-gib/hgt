@@ -59,7 +59,67 @@ The chain may have arbitrarily many middle gaps.  It is retired only when one en
 when the proposed invariant is proved blind to horizontal displacement or multiplicity, or when
 the source object is constructed from the Xi divisor it is meant to constrain.
 
-## Current Open Core — quadratic scale scattering
+## Current leading chain — rectangular Landau pole jet
+
+The strongest two-ended chain is now closed from a false-RH divisor to an exact one-window RH
+criterion:
+
+```text
+not RH
+  -> nonempty right-half Xi divisor
+  -> logarithmic rectangular dominant coefficients
+  -> nonnegative-tail Landau transfer left of the transverse supremum
+  -> analytic shifted-zeta continuation
+  -> Xi-cancelled normal carrier
+  -> impossible order comparison m <= m-1
+  -> dominant coefficients cofinally unbounded below
+  -> full rectangular Weil values cofinally unbounded below
+  -> RH iff one fixed-width sampled family is bounded below.
+```
+
+Every arrow is formalized without a simple-zero assumption.  The local shifted pole over a zero of
+multiplicity `m` retains order exactly `m-1`; the off-support infinite sum has order at least `m`
+because local normal convergence preserves a common finite order floor.  Functional-equation
+reflection folds the full dominant divisor sum to the right-half coefficient, and the remaining
+part of the Weil value is bounded uniformly in aperture.
+
+The exact positive open core is therefore source-side and strictly weaker than positivity:
+
+```text
+[OPEN CORE]
+For one fixed L>0, prove one finite lower bound for
+  Re Q_Xi(F_(log n/2,L))
+over all sufficiently large n,
+from an unconditional theta--prime--Gamma source identity.
+```
+
+This one lower bound proves RH by
+`riemannHypothesis_iff_rectangular_logSample_weil_eventually_bddBelow`.  It must not be obtained by assuming
+global Weil passivity, a zero-free half-strip, an Xi-divisor-selected domain, or any equivalent RH
+criterion.  The prime explicit-formula side is expected to contain a main-term cancellation plus a
+cofinal error term; proving the finite floor is the remaining scientific theorem.
+
+The concurrent screw-coordinate formalization compresses the same target further.  With
+`Psi=xiScrewDivisor`, Lean now proves
+
+```text
+Q_L(a)=2[Psi(2a)+Psi(2a-2L)-2Psi(2a-L)+2Psi(L)].
+```
+
+For an integer `m>=2`, taking `L=log m` and `2a=log(m^2 n)` gives the exact multiplicative
+midpoint curvature
+
+```text
+2[Psi(log(m^2 n))+Psi(log n)-2Psi(log(mn))+2Psi(log m)].
+```
+
+This identity is formalized in `CCMMultiplicativeScrewCurvature.lean`.  The live detour is to
+parameterize the Landau pole-jet chain by a fixed multiplicative subsequence and then construct an
+all-prime Gamma-completed covariance or norm-square law for this multiplicative curvature.  A
+finite-prime KMS or projective Born/Fisher metric cannot supply the identification: the formal
+corpus proves those data are divisor- and phase-blind.
+
+## Secondary open core — quadratic scale scattering
 
 [OPEN CORE] Construct, before reading the Xi divisor, a closed self-adjoint source realization
 `H_source` of the positive quadratic scale Hamiltonian
@@ -94,6 +154,17 @@ radial weight paired with the theta Wigner current, and the current has an exact
 divisor-character/Bessel expansion carrying every prime-log character. This is the current
 source-side candidate for the scattering boundary form; it does not yet prove its sign.
 
+The bulk-coercivity no-go now has a formal positive dual rather than only a rejection.
+`ThetaWignerEisensteinCrossEnergy.lean` proves the exact completed-square bound
+
+```text
+Re(conj(z)w) >= -(p_b(tau) normSq(z)+normSq(w)/p_b(tau))/2.
+```
+
+Thus the Wigner branch is reduced to a reciprocal-symbol boundary/scattering energy bound.  Sharp
+Garding without that dual channel controls the wrong object, and Maass--Selberg positivity on the
+unitary boundary line does not transport across the fixed half-unit continuation seam.
+
 The right end is now closed in Lean:
 
 ```text
@@ -114,7 +185,7 @@ xi(rho)=0 -> lambda(rho) belongs to spectrum(H_source),
 with `H_source` and its domain constructed from the theta--prime--Gamma source rather than from the
 zeros.  A zero-free entire normalization is allowed; a divisor-selected domain is not.
 
-## Environment-wide audit `[PROVED]`
+## Environment-wide audit `[SNAPSHOT; refresh required]`
 
 - The current tree contains 1,672 Lean files.  The root umbrella reaches 1,624 and misses 48.
 - Three RH-bearing modules are outside the root closure:
@@ -124,8 +195,9 @@ zeros.  A zero-free entire normalization is allowed; a divisor-selected domain i
 - The omitted criteria are exact readers or selectors.  None supplies an unconditional producer
   for its RH-bearing premise.
 
-Thus the umbrella gap concealed criteria but not a completed proof.  The dependency search must
-construct one new source-to-orientation edge.
+Thus that snapshot's umbrella gap concealed criteria but not a completed proof.  Concurrent work
+has since added the complete rectangular pole-jet chain outside the earlier snapshot; every future
+environment count must be regenerated before use.
 
 ## Corpus-wide charge collapse `[PROVED FROM CURRENT CARDS]`
 
@@ -151,7 +223,9 @@ charge.
 
 | Starting point | Source end | Missing middle | RH end | Verdict |
 |---|---|---|---|---|
-| Quadratic scale/Hedenmalm scattering | Gaussian theta seed, `D(D+1)`, weight-one inversion, exact source Bezoutian, and Wigner--Eisenstein prime current are source-defined | close the operator on `L²(dt)`; identify the Wigner radial form as its boundary/scattering form; prove a source sign or norm-square law and the determinant identity without divisor-selected data | `XiQuadraticSpectralReality <-> RH` is formalized | **Leading detour** |
+| Rectangular Landau pole jet | fixed-width two-edge divisor family, shifted-zeta continuation, and Xi cancellation are exact and unconditional | prove one source-defined finite lower bound for the sampled rectangular Weil values | `RH <->` this one family is bounded below is formalized | **Leading chain; divisor side closed** |
+| Multiplicative screw curvature | the rectangular value is exactly a second difference of the real Xi screw profile; at `L=log m` it is the multiplicative midpoint curvature on `n,mn,m^2n` | formalize fixed-multiple subsequence completeness; construct an all-prime Gamma-completed covariance or norm-square with a uniform boundary term | feeds the same bounded-below rectangular endpoint | **New live detour; exact coordinate typed** |
+| Quadratic scale/Hedenmalm scattering | Gaussian theta seed, `D(D+1)`, weight-one inversion, exact source Bezoutian, and Wigner--Eisenstein prime current are source-defined | close the operator on `L²(dt)`; identify the Wigner radial form as its boundary/scattering form; prove a source sign or norm-square law and the determinant identity without divisor-selected data | `XiQuadraticSpectralReality <-> RH` is formalized | **Secondary live detour** |
 | Graded order/disorder system | parity grading and half-integer Hurwitz sector are canonical and formalized | realize the signed swap as the boundary involution of the quadratic source operator; prove graded KMS/scattering classification; show a partition zero is a spectral degeneration | feeds the quadratic endpoint | **Live feeder**; Poisson wiring would close the profile-to-sector brick, but its current untracked draft still fails to typecheck |
 | Hyperbolic/adelic scattering | prime logarithms and the Gamma ladder can be read as length and cusp data | construct an actual self-adjoint two-dimensional or adelic scattering object; identify its determinant with Xi; exclude nonreal resonances by source geometry | the same real quadratic energy endpoint | **Live geometric variant**, but the determinant realization is wholly open |
 | Multivariate stable prime section | finite Euler/simplicial incidence objects and canonical finite orientations exist | build a completed prime--archimedean multiaffine section, prove stability survives the Gamma weld and cofinal limit, and identify the diagonal limit with Xi | locally uniform real-zero transfer to RH is formalized | **Live only with a new completed section**; bare Euler sections are RH-blind and a shifted local orbit already fails PF2 |
@@ -173,7 +247,11 @@ perturbation or of the determinant-line no-crossing law, not the search boundary
 - [PROVED] Reality of the quadratic scale energy at every Xi zero is equivalent to RH in Lean.
 - [PROVED] The weight-one inversion uses `L²(dt)`, and the corresponding formal differential expression is `-D(D+1)=D*D`; the earlier `L²(dt/t)` description was incorrect.
 - [PROVED] The Hedenmalm source Bezoutian diagonal is the exact prime--Gamma one-Cauchy diagonal times `|XiC|²`, and its orientation is equivalent to RH.
-- [OPEN CORE] Prove that the mixed Wigner--Eisenstein radial current is a nonnegative source boundary form, or construct a different source-selected self-adjoint scattering realization whose spectral determinant is Xi in the quadratic energy parameter.
+- [PROVED] For every fixed `L>0`, false RH forces the logarithmically sampled rectangular Weil values below every real level cofinally, with exact analytic multiplicity.
+- [PROVED] For every fixed `L>0`, RH is equivalent to this one sampled rectangular family being nonnegative, and also equivalent to its being merely bounded below.
+- [PROVED] The same rectangular value is the fixed discrete curvature of the real Xi screw profile; for `L=log m` its multiplicative midpoint form on `n,mn,m^2n` is formalized.
+- [PROVED] The Wigner cross-energy obstruction has an exact positive dual floor controlled by the primal `p_b` energy and reciprocal-symbol boundary energy.
+- [OPEN CORE] Prove one unconditional source-defined finite lower bound for that rectangular family.  The Wigner--Eisenstein boundary form and quadratic scattering construction remain competing providers of the same missing source floor.
 - [NOVELTY UNVERIFIED] Any completed glue theorem remains scientifically unclassified until the proof, parent-theory, literature, and rediscovery gates are run.
 
 ## Log

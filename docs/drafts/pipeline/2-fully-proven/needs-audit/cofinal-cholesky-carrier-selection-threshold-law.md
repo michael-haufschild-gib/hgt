@@ -367,10 +367,18 @@ formalization.
 
 ## Lean status
 
-No Stage 3 claim is made. Formalization requires the canonical Nevanlinna Bauer simplex,
-finite-jet constrained transversality, circle measures and moments, positive-definite Toeplitz
-matrices, Cholesky uniqueness and continuity, F. and M. Riesz, graph closure as a linear relation,
-and residual-set arguments. These layers are not jointly available in the current Lean tree.
+Formalization is in progress; no Stage 3 claim is made. The unconditional module
+`GaloisForLFunctions.HTGeometry.CofinalCholeskyFiniteFrame` now proves the Cayley triangular
+prefix equivalence, finite Hermitian Toeplitz moment equivalence, the inverse Gram identity
+`G_N⁻¹=C_NᴴC_N`, and uniqueness of the Gram matrix determined by a fixed inverse-Cholesky frame.
+Its exact build passes, and `#print axioms` reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+The remaining formalization requires the positive-diagonal triangular Cholesky construction and
+uniqueness, the canonical Nevanlinna Bauer simplex, measure-level Cayley and spectral transport,
+finite-frame Hilbert-cube fibers, constrained full-shift transversality, complete-tower selection,
+F. and M. Riesz, graph closure as a linear relation, OPUC/Bernstein--Szegő repair and divergence,
+and the final residual-set capstone.
 
 ## Gates
 

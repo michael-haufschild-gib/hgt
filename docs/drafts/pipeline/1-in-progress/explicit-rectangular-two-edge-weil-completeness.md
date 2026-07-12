@@ -122,11 +122,13 @@ an eventual lower bound for `S_L(n)` produces a nonnegative tail series that con
 point strictly left of `1+delta_*`.  The ordinary L-series of this tail is proved to equal `(9a)`
 plus the constant-zeta term and a finite Dirichlet polynomial on `Re s>1+delta_*`.
 
-The sole remaining analytic core is now the genuine-pole contradiction: continuation from the
-right half-plane must retain a nonzero pole jet at some `s=1+w` with `Re w` beyond the transferred
-abscissa.  Multiplicity must be handled without assuming a simple Xi zero.  Restoring the uniformly
-bounded middle, decaying, and on-line terms will then yield `(5)` and the stronger sampled assertion
-`(5a)`.
+The pole core is now closed.  Multiplication by `xi(s-1/2)` cancels every shifted-zeta pole, but at
+a zero of multiplicity `m` the equal-support fiber retains exact order `m-1`; all off-support terms
+have order at least `m`.  Local normal convergence preserves the latter order floor through the
+infinite tail.  Landau continuation would make the complete cancelled carrier divisible by order
+`m`, contradicting its exact order `m-1`.  Therefore false RH forces the sampled dominant
+coefficients below every real level cofinally.  The FE fold identifies those coefficients with the
+full dominant sum, and the aperture-uniform remainder gives `(5)` and `(5a)`.
 
 ## Positive CCM law
 
@@ -141,22 +143,26 @@ Accordingly, a successful CCM source construction need only prove nonnegativity 
 one-parameter boundary section.  It must still transport the completed Euler--Gamma incidence to
 the actual Xi divisor; finite-cutoff positivity alone does not supply that transport.
 
+The positive dual of the completed no-go is stronger: for every `L>0`, RH is equivalent to this
+single logarithmically sampled family being merely bounded below.  Thus any source theorem giving
+one finite cofinal lower bound—not necessarily positivity—closes RH.
+
 ## Attacks
 
 1. **Indicator regularity.**  The rectangle is not smooth.  The theorem must be stated directly
    on the multiplicity-exact divisor polarization, or the admissible Weil class must be shown to
    contain the indicator by completion.  No distributional explicit-formula claim is allowed
    without that closure theorem.
-2. **Abscissa attack.**  The scale-local Landau transfer now supplies convergence left of the real
-   boundary.  The remaining obligation is to turn that convergence into a contradiction with an
-   actual shifted-zeta pole jet; no asserted meromorphic continuation may be substituted.
+2. **Abscissa attack — closed.**  Scale-local Landau convergence is converted into an analytic
+   shifted-zeta continuation and identified with the normally convergent Xi-cancelled carrier on a
+   connected half-plane.  The exact order mismatch at an actual shifted pole gives the contradiction.
 3. **Real-boundary attack — closed.**  Holomorphy at `1+delta_*` is proved from the actual Xi
    divisor, its unconditional zero count, and a qualitative uniform ordinate gap, not from an
    asserted numerical first-zero height.
-4. **Cancellation attack.**  Opposite poles in `(9)` are distinct because off-line zeros have
-   nonzero height.  The nonzero coefficients `(3)` prevent residue cancellation at each pole.
-5. **Multiplicity attack.**  Every divisor copy must enter `(7)` with analytic multiplicity; no
-   simple-zero assumption is permitted.
+4. **Cancellation attack — closed.**  The equal-support fiber is finite and consists of identical
+   nonzero weighted terms; every other support is divisible by one additional local factor.
+5. **Multiplicity attack — closed.**  The proof computes exact analytic order `m-1` and never uses
+   simplicity.
 6. **Parent-theory attack.**  Landau oscillation and Weil positivity are classical.  Candidate
    novelty is the one-window restriction and its exact nonvanishing mechanism, not either parent.
    Suzuki's 2025 Corollary 4.3 already gives an RH-equivalent one-parameter tail equality for a
@@ -185,10 +191,55 @@ the actual Xi divisor; finite-cutoff positivity alone does not supply that trans
 5. **Scale-local Landau transfer complete.**  The arbitrary-shift Landau theorem, real coefficient
    construction, `O(n^delta_*)` growth bound, right-half L-series identity, finite-prefix correction,
    and forced convergence strictly left of `1+delta_*` are formalized unconditionally.
-6. Prove the noncancelling pole-jet contradiction at `s=1+w`, retaining arbitrary Xi multiplicity.
-7. Identify the full dominant sum with the right-half real coefficients and combine it with the
-   already formalized bounded remainder.
-8. Prove `(4)`--`(5a)` without a simplicity, RH, or source-positivity hypothesis.
+6. **Complete.** `CCMShiftedXiPoleJet.lean`, `CCMShiftedXiGlobalOrder.lean`,
+   `CCMShiftedXiLandauContinuation.lean`, and `CCMShiftedXiLandauPoleContradiction.lean` prove the
+   noncancelling arbitrary-multiplicity pole-jet contradiction.
+7. **Complete.** `CCMRectangularDominantFold.lean` identifies the full dominant sum with the
+   right-half real coefficient at logarithmic aperture.
+8. **Complete.** `CCMRectangularWeilCompleteness.lean` combines the fold with the uniform remainder,
+   proves `(5a)`, and proves RH equivalent to either nonnegativity or boundedness below of this one
+   fixed-width sampled family.
+
+9. **Complete screw-coordinate form.** `CCMRectangularScrewCurvature.lean` defines the
+   multiplicity-exact real Xi screw profile
+
+   ```text
+   Psi_Xi(t)=sum_q [cosh(t(rho_q-1/2))-1]/(rho_q-1/2)^2
+   ```
+
+   by an absolutely convergent reciprocal-square series and proves the exact identity
+
+   ```text
+   Q_L(a)=2[Psi_Xi(2a)+Psi_Xi(2a-2L)-2Psi_Xi(2a-L)+2Psi_Xi(L)].
+   ```
+
+   Consequently false RH forces this fixed-width discrete curvature below every real level
+   cofinally on `t=log n`, and RH is equivalent to either its nonnegativity or its eventual lower
+   boundedness on that one arithmetic mesh.
+
+10. **Complete transverse-growth law.** `CCMRectangularTransverseGrowth.lean` proves that if the
+    right Xi divisor is nonempty and
+
+    ```text
+    delta_*=sup_Re(rho)>1/2 (Re(rho)-1/2),
+    ```
+
+    then the single fixed-width sampled sequence has sharp power exponent `delta_*`:
+
+    ```text
+    |Q_L(log n/2)| <= C_L n^(delta_*)
+    ```
+
+    at every admissible sample, while for every `0<=alpha<delta_*`, every `C>=0`, and every
+    starting index, a later sample satisfies
+
+    ```text
+    |Q_L(log n/2)| > C n^alpha.
+    ```
+
+    Under RH the same family is uniformly bounded.  Hence RH is equivalent to boundedness of the
+    norm of this one sampled family, and, when RH is false, the family recovers the exact supremal
+    horizontal displacement rather than merely detecting its existence.
 
 ## Gates
 
@@ -199,8 +250,13 @@ the actual Xi divisor; finite-cutoff positivity alone does not supply that trans
 - [x] reciprocal-`3/2` Xi-divisor summability and square-root vertical zeta bound formalized
 - [x] local normal continuation at the actual transverse boundary formalized
 - [x] scale-local Landau transfer and forced left-boundary convergence formalized
-- [ ] complete paper proof audited at indicator-class and abscissa boundaries
-- [ ] unconditional Lean formalization of every promoted claim
+- [x] arbitrary-multiplicity global pole-jet contradiction formalized
+- [x] dominant fold and uniform-remainder restoration formalized
+- [x] exact RH equivalence, cofinal divergence, and bounded-below criterion formalized
+- [x] exact screw-function discrete-curvature identity and logarithmic-mesh criterion formalized
+- [x] sharp transverse power exponent and norm-boundedness criterion formalized
+- [x] complete paper proof audited at the divisor-polarization and abscissa boundaries
+- [x] unconditional Lean formalization of every promoted divisor-side claim
 - [ ] primary-literature novelty audit
 - [ ] independent proof audit
 - [ ] standalone paper score at least 90/100
