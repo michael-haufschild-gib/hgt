@@ -35,7 +35,7 @@
 
 \title{Cofinal Cholesky Selection for Singular\
 Hypertranscendental Herglotz Carriers}
-\author{}
+\author{Michael Haufschild \and GPT 5.6 Sol \and Fable 5 \and Grok 4.5}
 \date{}
 
 \begin{document}
@@ -47,7 +47,7 @@ Fix an indeterminate Hamburger moment sequence and its canonical Nevanlinna boun
 After Cayley transport to the circle, associate with each representing measure the compatible
 inverse-Cholesky matrices of its Toeplitz moment sections.  We prove a sharp selection law.  The
 complete matrix tower is a faithful topological coordinate for the carrier, but every finite
-prefix level contains infinite-dimensional positive charts on which maximal differential
+prefix level contains positive Hilbert cubes and charts on which maximal differential
 algebraic independence of complex translates is residual, even with spectral type fixed.  On the
 residual singular-continuous phase, the unrenormalized analytic-polynomial graph is dense in the
 full source--carrier product.  The same Cholesky tower is the unique compatible triangular repair;
@@ -86,8 +86,8 @@ $C_N(\nu)$ denotes the inverse-Cholesky matrix through degree $N$, then
 \[
   \nu\longmapsto \bigl(C_0(\nu),C_1(\nu),\ldots\bigr)
 \]
-is a homeomorphism onto its image.  Nevertheless, fixing any one $C_N$ leaves an
-infinite-dimensional positive chart.  On a dense residual subset of that exact level, all finite
+is a homeomorphism onto its image.  Nevertheless, fixing any one $C_N$ leaves a positive
+Hilbert cube and an infinite-dimensional chart.  On a dense residual subset of that exact level, all finite
 families of distinct complex translates of the Cauchy transform are differentially algebraically
 independent over $\C(z)$.  The chart can be chosen to preserve spectral type.
 
@@ -195,6 +195,35 @@ acts on $\mathbf T$ by a real projective transformation, and the relabeling of $
 the opposite relabeling of $\Beta$.  Thus $\cK_s$ and the retraction
 $\Beta\pi_*:\cM(s)\to\cK_s$ are intrinsic.
 
+\begin{proposition}[Spectral transport]\label{prop:spectral-transport}
+For every $\eta\in\cP(\mathbf T)$ and every bounded nonnegative $w$ with
+$\int w\,d\eta=1$,
+\begin{equation}\label{eq:density-transport}
+  d\Beta(w\eta)(x)=w(\pi(x))\,d\Beta(\eta)(x).
+\end{equation}
+In particular, positive bounded reweighting preserves the spectral type of the carrier.  Moreover,
+if $\eta$ is atomless and singular with respect to projective Lebesgue measure, then
+$\Beta(\eta)$ is singular continuous on $\R$.
+\end{proposition}
+
+\begin{proof}
+For every bounded Borel function $f$, support labeling gives
+\[
+ \int f(x)w(\pi(x))\,d\Beta(\eta)(x)
+ =\int_{\mathbf T}w(\tau)\left(\int f\,d\nu_\tau\right)d\eta(\tau),
+\]
+which is \eqref{eq:density-transport}.  If $\eta$ is atomless, then for fixed $x$ only the leaf
+$\tau=\pi(x)$ can charge $x$; its singleton parameter has zero $\eta$-mass.  Hence
+$\Beta(\eta)$ has no atoms.
+
+If $E\subset\mathbf T$ has projective Lebesgue measure zero and $\eta(E)=1$, then
+$\Beta(\eta)$ is supported on $\pi^{-1}(E)$.  On the real line, $\pi$ is a nonconstant real
+analytic projective map.  After removing its discrete critical and polar set, the line is a
+countable union of intervals on which $\pi$ is a local real-analytic diffeomorphism.  The preimage
+of $E$ is therefore Lebesgue-null.  Thus $\Beta(\eta)$ is singular and, by the preceding paragraph,
+singular continuous.
+\end{proof}
+
 \section{The inverse-Cholesky frame coordinate}\label{sec:frame}
 
 Use the Cayley map
@@ -276,16 +305,16 @@ Fix $\nu_0=\Beta(\eta_0)$ with $\eta_0$ of infinite support.  For $0<\delta<1$ a
 let $X_{N,\delta}(\eta_0)$ be the set of real $w\in L^\infty(\eta_0)$ satisfying
 \begin{equation}\label{eq:chart}
   \|w-1\|_\infty<\delta,\qquad
-  \int w\,d\eta_0=1,qquad
+  \int w\,d\eta_0=1,\qquad
   \int w(\tau)m_\tau^{(r)}(-i)\,d\eta_0(\tau)
-   =m_{\nu_0}^{(r)}(-i)quad(0\leq r<N).
+   =m_{\nu_0}^{(r)}(-i)\quad(0\leq r<N).
 \end{equation}
 The carrier associated with $w$ is
 \begin{equation}\label{eq:weighted-carrier}
   \nu_w=\Beta(w\eta_0).
 \end{equation}
-All weights are strictly positive.  Hence $w\eta_0$ and $\eta_0$ are equivalent, and the spectral
-type transported by the mutually singular $N$-extremal leaves is unchanged.
+All weights are strictly positive.  Hence $w\eta_0$ and $\eta_0$ are equivalent, and
+Proposition~\ref{prop:spectral-transport} shows that the carrier spectral type is unchanged.
 
 \begin{lemma}[Infinite positive frame aperture]\label{lem:aperture}
 The chart $X_{N,\delta}(\eta_0)$ is an open subset of an infinite-dimensional real affine Banach
@@ -300,7 +329,61 @@ infinite-dimensional.  Its sufficiently small balls preserve positivity.  The la
 Lemma~\ref{lem:frame-jet}.
 \end{proof}
 
+\begin{proposition}[Hilbert-cube frame fibers]\label{prop:hilbert-cube}
+If $\eta_0$ is atomless, then every $\mathfrak F_N(\nu_0)$ contains a topologically embedded copy
+of the Hilbert cube $[-1,1]^{\N}$.  All carriers in this copy have the same complete Hamburger
+moments, the same frame through degree $N$, and the same spectral type as $\nu_0$.
+\end{proposition}
+
+\begin{proof}
+Write the real normalization and jet constraints defining~\eqref{eq:chart} as integration against
+$K$ bounded real functions.  Atomlessness lets us choose pairwise disjoint measurable blocks
+$B_j$, each split into $K+1$ subsets of positive measure.  The $K+1$ corresponding indicator
+functions have a nonzero real linear combination $v_j$, supported on $B_j$, that annihilates all
+$K$ constraints.  Normalize $\|v_j\|_\infty=1$.
+
+For $t=(t_j)_{j\geq1}\in[-1,1]^{\N}$, put
+\begin{equation}\label{eq:hilbert-cube}
+  w_t=1+\frac{\delta}{2}\sum_{j\geq1}2^{-j}t_jv_j.
+\end{equation}
+The series converges in $L^\infty$, satisfies every constraint, and remains strictly positive.
+Disjoint supports make $t\mapsto w_t$ injective.  The factors $2^{-j}$ make it continuous from the
+product topology to the uniform norm.  Hence it is a topological embedding because its domain is
+compact and the target is Hausdorff.  Composition with $w\mapsto\Beta(w\eta_0)$ remains injective
+by Proposition~\ref{prop:beta}.  Lemma~\ref{lem:frame-jet} and
+Proposition~\ref{prop:spectral-transport} give the final assertions.
+\end{proof}
+
 For completeness, we isolate the transversality input.  It is stated in the exact form used here.
+
+\begin{lemma}[Evaluation codimension]\label{lem:evaluation-codim}
+Let $M_1,\ldots,M_t$ be distinct monomials on a finite-dimensional complex jet space, let
+$q_0\geq0$, and set $P=t(q_0+1)$.  Choose distinct complex numbers
+$z_1,\ldots,z_R$.  If $R>P+q_0$, then the set of packets
+$(x_1,\ldots,x_R)$ for which
+\begin{equation}\label{eq:evaluation-matrix}
+  \mathcal E(x)_{b,(a,d)}=z_b^dM_a(x_b),\qquad
+  1\leq b\leq R,\quad 1\leq a\leq t,\quad 0\leq d\leq q_0,
+\end{equation}
+has column rank smaller than $P$ has complex codimension at least
+$R-P-q_0+1$.
+\end{lemma}
+
+\begin{proof}
+Introduce the incidence set of packets and projective coefficient vectors $[c]\in\mathbb P^{P-1}$
+for which
+\[
+  \sum_{a=1}^t\sum_{d=0}^{q_0}c_{a,d}z_b^dM_a(x_b)=0
+  \qquad(1\leq b\leq R).
+\]
+For fixed nonzero $c$, the polynomial in $x_b$ is identically zero only when every coefficient
+polynomial $\sum_dc_{a,d}z_b^d$ vanishes.  Unless all $c_{a,d}$ vanish, this can occur for at most
+$q_0$ of the distinct $z_b$.  Each of the remaining at least $R-q_0$ rows imposes one nonzero
+polynomial equation in its own variable $x_b$, hence one complex codimension.  The incidence set
+therefore has codimension at least $(R-q_0)-(P-1)$ after allowing the projective coefficient
+parameter.  Projection to the packet space cannot increase dimension.  This is the asserted
+bound.
+\end{proof}
 
 \begin{proposition}[Constrained translate transversality]\label{prop:transversality}
 Let $J$ be a finite packet of Cauchy jets frozen in a positive boundary chart of the form
@@ -328,11 +411,16 @@ parts, from the highest order downwards at every target pole, kills every target
 Thus the target map is onto.
 
 It remains to pass from a fixed tuple of shifts to all tuples.  Fix a differential relation
-pattern: finitely many shifts and jet orders, finitely many distinct differential monomials, and a
-degree bound after clearing coefficients in $\C(z)$.  Choose more evaluation rows than the number
-of coefficient monomials plus the complex dimension of the shift configuration.  The failure of
-the resulting evaluation matrix to have full column rank is a complex algebraic rank-defect set.
-Its natural rank stratification has complex codimension larger than the shift dimension.
+pattern: finitely many shifts and jet orders, distinct differential monomials
+$M_1,\ldots,M_t$, and a degree bound $q_0$ after clearing coefficients in $\C(z)$.  Put
+$P=t(q_0+1)$ and choose $R$ so large that
+\[
+  R-P-q_0+1
+\]
+exceeds the complex dimension of the shift configuration.  A relation with this pattern supplies
+a nonzero null vector for the evaluation matrix~\eqref{eq:evaluation-matrix}.  By
+Lemma~\ref{lem:evaluation-codim}, the bad packet set has a finite algebraic stratification whose
+every stratum has complex codimension greater than the shift dimension.
 
 The function $q$ has no nonzero translation period.  Indeed, all its poles are real and at least
 one exists.  A nonreal period would move a real pole off the real axis; a nonzero real period would
@@ -342,11 +430,14 @@ shift configuration space by countably many relatively compact patches and, on e
 evaluation rows for which all target parameter poles remain separated from one another and from
 the frozen poles.
 
-The surjectivity proved in the first paragraph supplies a finite-dimensional perturbation family
-that is submersive onto all row-jet coordinates.  Parametric transversality applied to each smooth
-rank stratum makes the row-evaluation map transverse to the rank-defect set for a dense set of
-weights.  The codimension choice makes its preimage in the compact shift patch empty.  Normal
-convergence of the Cauchy jets on compact upper-half-plane packets makes this avoidance open.
+The surjectivity proved in the first paragraph supplies, at every shift configuration, a
+finite-dimensional perturbation family that is submersive onto all row-jet coordinates.
+Surjectivity persists locally; compactness reduces a configuration patch to finitely many such
+families.  Parametric transversality~\cite[Chapter~3]{Hirsch1976}, applied successively to the
+finitely many smooth algebraic strata, makes the row-evaluation map transverse to the bad set for
+a dense set of weights in every neighborhood.  The codimension choice makes its preimage in the
+shift patch empty.  Normal convergence of the Cauchy jets on compact upper-half-plane packets
+makes this avoidance open.
 
 There are countably many relation patterns and compact configuration patches.  Their open dense
 avoidance sets have dense residual intersection by Baire's theorem.  If a relation is first given
@@ -361,14 +452,15 @@ infinite-dimensional positive chart
 $\{\nu_w:w\in X_{N,\delta}(\eta_0)\}$.  Within that chart, maximally translation-HT carriers form
 a dense residual set.  Every carrier in the chart has the same complete Hamburger moments, the
 same frame through degree $N$, and the same pure-point, singular-continuous, or absolutely
-continuous spectral type as $\nu_0$.
+continuous spectral type as $\nu_0$.  If $\eta_0$ is atomless, the frame fiber also contains the
+positive Hilbert cube of Proposition~\ref{prop:hilbert-cube}.
 \end{theorem}
 
 \begin{proof}
-Combine Lemma~\ref{lem:aperture} and Proposition~\ref{prop:transversality}.  Exact moment
-preservation follows from barycentring measures that all represent $s$.  Equivalence of
-$w\eta_0$ and $\eta_0$, together with disjoint support fibers, preserves the transported spectral
-type.
+Combine Lemma~\ref{lem:aperture}, Proposition~\ref{prop:hilbert-cube}, and
+Proposition~\ref{prop:transversality}.  Exact moment
+preservation follows from barycentring measures that all represent $s$.
+Proposition~\ref{prop:spectral-transport} preserves the transported spectral type.
 \end{proof}
 
 \section{The complete tower selects the carrier}\label{sec:selection}
@@ -467,8 +559,8 @@ $d\mu=w\,dm+d\mu_s$, Szeg\H{o}'s theorem states
 For pure singularity $w=0$ almost everywhere, so the limit is zero.  Since the diagonal of $G_N$
 is one, $\operatorname{tr}G_N=N+1$ and $\lambda_{\max}(G_N)\geq1$.  Therefore
 \begin{equation}\label{eq:divergence}
-  \lambda_{\min}(G_N)\longrightarrow0,qquad
-  \|C_N\|\longrightarrow\infty,qquad
+  \lambda_{\min}(G_N)\longrightarrow0,\qquad
+  \|C_N\|\longrightarrow\infty,\qquad
   (\det C_N)^{1/(N+1)}\longrightarrow\infty.
 \end{equation}
 
@@ -504,10 +596,15 @@ raw graph \eqref{eq:saturation}.  What fails is uniform control of the compatibl
 
 \section{The cofinal frame-selection law}\label{sec:combined}
 
-Singular-continuous probabilities form a dense $G_\delta$ in $\cP(\mathbf T)$.  The same is true
-for the maximal-translation-HT condition after transport by $\Beta$, by
-Proposition~\ref{prop:transversality} and Baire intersection.  Their intersection is therefore
-residual in $\cK_s$.
+Atomless singular probabilities form a dense $G_\delta$ in $\cP(\mathbf T)$ and are transported
+to singular-continuous carriers by Proposition~\ref{prop:spectral-transport}.  The
+maximal-translation-HT condition is also residual after transport by $\Beta$.  Indeed, each fixed
+relation-pattern avoidance condition on a compact shift patch is open by normal convergence.  It
+is dense in every weak neighborhood: first insert an arbitrarily small infinite-support component
+into the boundary law, then use a positive $L^\infty$ chart contained in that neighborhood and
+Proposition~\ref{prop:transversality}.  Countably many patterns and compact patches give the
+residual set by Baire's theorem.  Intersecting the two residual sets gives a residual subset of
+$\cK_s$.
 
 \begin{theorem}[Cofinal Cholesky selection]\label{thm:main}
 For every indeterminate normalized Hamburger moment sequence, the canonical simplex $\cK_s$
@@ -516,9 +613,9 @@ Cauchy transforms.  For every $\nu_0\in\cR_s$:
 \begin{enumerate}[leftmargin=*,label=\textup{(\arabic*)}]
   \item the compatible inverse-Cholesky tower $\Theta(\nu_0)$ determines $\nu_0$ uniquely and
   topologically;
-  \item every finite prefix fiber $\mathfrak F_N(\nu_0)$ contains an infinite-dimensional
-  positive chart with residual maximal translation-HT and fixed singular-continuous spectral
-  type;
+  \item every finite prefix fiber $\mathfrak F_N(\nu_0)$ contains a positive Hilbert cube and a
+  chart of infinite dimension with residual maximal translation-HT and fixed singular-continuous
+  spectral type;
   \item the unrenormalized analytic-polynomial graph has full-product closure;
   \item the same tower is the unique compatible positive-diagonal triangular repair, produces a
   unitary carrier representation, and obeys the divergence laws~\eqref{eq:divergence};
@@ -607,6 +704,11 @@ S. Hassi, Z. Sebesty\'en, H. S. V. de Snoo, and F. H. Szafraniec,
 Acta Math. Hungar. \textbf{115} (2007), 281--307;
 \href{https://arxiv.org/abs/math/0611045}{arXiv:math/0611045}.
 
+\bibitem{Hirsch1976}
+M. W. Hirsch,
+\emph{Differential Topology},
+Graduate Texts in Mathematics, vol.~33, Springer, New York, 1976.
+
 \bibitem{PrucknerEtAl2023}
 R. Pruckner, J. Reiffenstein, and H. Woracek,
 \emph{An upper bound for the Nevanlinna matrix of an indeterminate moment sequence},
@@ -614,15 +716,14 @@ R. Pruckner, J. Reiffenstein, and H. Woracek,
 
 \bibitem{Simon2005}
 B. Simon,
-\emph{Orthogonal polynomials on the unit circle: new results},
-Int. Math. Res. Not. 2004, no.~53, 2837--2880;
-expanded survey \emph{OPUC on one foot},
-\href{https://web.ma.utexas.edu/mp_arc/c/05/05-78.pdf}{MP\_ARC 05-78} (2005).
+\emph{OPUC on one foot},
+Bull. Amer. Math. Soc. \textbf{42} (2005), 431--460;
+\href{https://web.ma.utexas.edu/mp_arc/c/05/05-78.pdf}{MP\_ARC 05-78}.
 
 \bibitem{Yafaev2016}
 D. R. Yafaev,
 \emph{On semibounded Toeplitz operators},
-J. Operator Theory \textbf{77} (2017), 3--17;
+J. Operator Theory \textbf{77} (2017), 205--216;
 \href{https://arxiv.org/abs/1603.06229}{arXiv:1603.06229}.
 
 \end{thebibliography}

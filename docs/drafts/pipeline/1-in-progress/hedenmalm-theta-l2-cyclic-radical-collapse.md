@@ -28,7 +28,7 @@ The exact abstract statement `(2)` is proved in
 `formal/GaloisForLFunctions/RHTower/CyclicRadicalCollapse.lean`, including both family and orbit
 forms.  It uses no zeta, zero, positivity, or spectral hypothesis.
 
-## 2. The theta source is `L²`-cyclic `[PROVED ON PAPER; LEAN OPEN]`
+## 2. The theta source is `L²`-cyclic `[PROVED ON PAPER AND IN LEAN]`
 
 Let
 
@@ -114,12 +114,41 @@ The divisor-supported Schwartz riggings already classified in the corpus exhibit
 behavior: point evaluation in Fourier space is continuous on Schwartz space but not on ordinary
 `L²`, and an atomic real-divisor metric is therefore singular relative to the `L²` topology.
 
+The formal adapter now proves the stronger extension statement directly. Let `Q_S` be a jointly
+continuous Schwartz sesquilinear form which is momentum-symmetric and theta-null. If a jointly
+continuous sesquilinear form `Q_2` on ordinary `L²(R)` agrees with `Q_S` on every pair of Schwartz
+vectors, then momentum symmetry and density transport simultaneous-translation invariance to
+`Q_2`, theta-nullity extends to the full second `L²` slot, and cyclicity forces
+
+```text
+Q_2=0 and Q_S=0.                                           (11a)
+```
+
+Thus a nonzero admissible Schwartz form does not merely lack a bounded multiplier
+representation: it admits no jointly continuous ordinary-`L²` sesquilinear extension at all.
+
 ## 4. Relation to the orientation seam
 
 Moment determinacy reconstructs the theta source but does not orient its Bezoutian.  The present
 theorem proves that orientation cannot be supplied by completing the reconstructed source in its
 ordinary `L²` translation representation: that completion kills every admissible pullback metric.
 The carrier is forced to add a genuinely singular marking.
+
+This gives the exact positive junction between the two formal theorem packages:
+
+```text
+all-order pointed moment germ
+  => unique analytic source and reconstructed Bezoutian;
+
+nonzero orientation of that Bezoutian
+  => no ordinary-L²-continuous extension
+  => singular source--divisor rigging.                    (11b)
+```
+
+The first implication is source determinacy; the second is the topology theorem. Neither is the
+missing sign theorem. Together they prove that a successful sign theorem must orient the unique
+reconstructed kernel inside a singular topology rather than recover a different kernel from more
+moment data.
 
 Combined with the ordered-pair Krein signature law, a successful construction must therefore carry
 
@@ -157,5 +186,7 @@ orientation by itself.
 - [x] formalize density of real Fourier characters in `L²` of every finite Borel measure;
 - [x] deduce `L²` cyclicity of the theta source from Plancherel;
 - [x] define the pullback radical of an `L²`-continuous Hedenmalm metric and instantiate `(10)`;
+- [x] prove that every momentum-symmetric theta-null Schwartz form with an ordinary-`L²`
+      continuous extension vanishes;
 - [ ] complete a primary-source novelty audit around Hedenmalm's June 2026 proposal and
       Wiener--Tauberian cyclic vectors.

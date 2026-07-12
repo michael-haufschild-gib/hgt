@@ -52,7 +52,7 @@ theorem tsum_xiRectangularTwoEdgeDominant_left_eq_right
 /-- The full dominant Xi sum folds exactly to twice its positive-transverse
 half. -/
 theorem tsum_xiRectangularTwoEdgeDominant_eq_two_mul_right
-    (L a : ℝ) :
+    {L a : ℝ} (ha : L ≤ a) :
     (∑' q : XiZeroCopy,
       xiRectangularTwoEdgeDominant L a (xiSpectralPoint q)) =
     2 * ∑' q : XiRightZeroCopy,
@@ -61,7 +61,7 @@ theorem tsum_xiRectangularTwoEdgeDominant_eq_two_mul_right
     xiRectangularTwoEdgeDominant L a (xiSpectralPoint q)
   let P : Set XiZeroCopy := {q | 0 < (I * xiSpectralPoint q).re}
   let M : Set XiZeroCopy := {q | (I * xiSpectralPoint q).re < 0}
-  have hsum : Summable f := xiRectangularTwoEdgeDominant_summable L a
+  have hsum : Summable f := xiRectangularTwoEdgeDominant_summable ha
   have hpoint : f = P.indicator f + M.indicator f := by
     funext q
     rcases lt_trichotomy (I * xiSpectralPoint q).re 0 with hneg | hzero | hpos
@@ -74,8 +74,10 @@ theorem tsum_xiRectangularTwoEdgeDominant_eq_two_mul_right
       · dsimp only [f, xiRectangularTwoEdgeDominant]
         rw [rectangularTwoEdgeDominant, if_neg (by linarith),
           if_neg (by linarith)]
-      · exact not_lt.mpr hzero.le
-      · exact not_lt.mpr (by linarith)
+      · change ¬(I * xiSpectralPoint q).re < 0
+        linarith
+      · change ¬0 < (I * xiSpectralPoint q).re
+        linarith
     · rw [Pi.add_apply, Set.indicator_of_mem, Set.indicator_of_notMem,
         add_zero]
       · exact not_lt.mpr hpos.le
@@ -85,8 +87,9 @@ theorem tsum_xiRectangularTwoEdgeDominant_eq_two_mul_right
         xiRectangularTwoEdgeDominant L a (xiSpectralPoint q)) =
       ∑' q : XiZeroCopy, f q := rfl
     _ = ∑' q : XiZeroCopy, (P.indicator f q + M.indicator f q) := by
-      rw [hpoint]
-      rfl
+      apply tsum_congr
+      intro q
+      exact congrFun hpoint q
     _ = (∑' q : XiZeroCopy, P.indicator f q) +
         ∑' q : XiZeroCopy, M.indicator f q :=
       (hsum.indicator P).tsum_add (hsum.indicator M)
@@ -107,12 +110,12 @@ theorem tsum_xiRectangularTwoEdgeDominant_eq_two_mul_right
 /-- At logarithmic aperture the complete dominant carrier is the real
 right-divisor Dirichlet coefficient. -/
 theorem tsum_xiRectangularTwoEdgeDominant_logSample_eq_rightCoefficient
-    (L : ℝ) {n : ℕ} (hn : 1 ≤ n) :
+    (L : ℝ) {n : ℕ} (hn : 1 ≤ n) (hLa : L ≤ Real.log n / 2) :
     (∑' q : XiZeroCopy,
       xiRectangularTwoEdgeDominant L (Real.log n / 2)
         (xiSpectralPoint q)) =
       xiRectangularRightDirichletComplex L n := by
-  rw [tsum_xiRectangularTwoEdgeDominant_eq_two_mul_right,
+  rw [tsum_xiRectangularTwoEdgeDominant_eq_two_mul_right hLa,
     xiRectangularRightDirichletComplex]
   congr 1
   apply tsum_congr
@@ -120,12 +123,12 @@ theorem tsum_xiRectangularTwoEdgeDominant_logSample_eq_rightCoefficient
   exact xiRectangularTwoEdgeDominant_logSample_of_right hn q
 
 theorem tsum_xiRectangularTwoEdgeDominant_logSample_eq_ofReal_rightCoefficient
-    (L : ℝ) {n : ℕ} (hn : 1 ≤ n) :
+    (L : ℝ) {n : ℕ} (hn : 1 ≤ n) (hLa : L ≤ Real.log n / 2) :
     (∑' q : XiZeroCopy,
       xiRectangularTwoEdgeDominant L (Real.log n / 2)
         (xiSpectralPoint q)) =
       (xiRectangularRightDirichletCoefficientReal L n : ℂ) := by
-  rw [tsum_xiRectangularTwoEdgeDominant_logSample_eq_rightCoefficient L hn,
+  rw [tsum_xiRectangularTwoEdgeDominant_logSample_eq_rightCoefficient L hn hLa,
     ofReal_xiRectangularRightDirichletCoefficientReal]
 
 end

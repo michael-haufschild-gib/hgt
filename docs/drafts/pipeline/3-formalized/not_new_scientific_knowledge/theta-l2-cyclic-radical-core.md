@@ -9,6 +9,7 @@
   - `GaloisForLFunctions/RHTower/RealCharacterDenseL2.lean`
   - `GaloisForLFunctions/RHTower/XiThetaL2Cyclicity.lean`
   - `GaloisForLFunctions/RHTower/XiThetaL2MetricSingularity.lean`
+  - `GaloisForLFunctions/RHTower/XiThetaSchwartzL2ExtensionObstruction.lean`
 
 ## Theorem package
 
@@ -21,12 +22,20 @@ The formal chain proves unconditionally:
 4. a closed submodule containing a cyclic orbit is the whole ambient space;
 5. every jointly continuous sesquilinear form on ordinary `L²(R)` which is invariant under
    simultaneous translation and annihilates the theta source is identically zero;
-6. consequently no nonzero metric with those properties exists.
+6. consequently no nonzero metric with those properties exists;
+7. a momentum-symmetric theta-null continuous Schwartz form which extends jointly continuously
+   to ordinary `L²(R)` is identically zero.
 
 The final source-specific theorem is
 
 ```text
 not_exists_nonzero_xiThetaL2_continuousForm.
+```
+
+The Schwartz-to-`L²` capstone is
+
+```text
+not_exists_nonzero_xiThetaSchwartzForm_l2_extension.
 ```
 
 It contains no RH hypothesis, zero-location hypothesis, positivity interface, assumed cyclicity,
@@ -45,3 +54,7 @@ The theorem forces a positive implementation law:
 > ordinary translation-stable source domain.  A conventional `L²` completion cannot carry the
 > missing orientation.
 
+Combined with the pointed analytic-moment determinacy theorem, this locates the remaining carrier
+without claiming its sign: all moments determine the source and its Bezoutian, while any nonzero
+orientation of that reconstructed Bezoutian is forced to live in a topology singular to ordinary
+`L²`.

@@ -287,3 +287,5 @@ import GaloisForLFunctions.RHTower.SubsetSumPolynomial
 import GaloisForLFunctions.RHTower.ReducedSubsetSumPoly
 import GaloisForLFunctions.RHTower.OrbitSumDegree
 import GaloisForLFunctions.RHTower.ExpEulerRelation
+import GaloisForLFunctions.RHTower.TranscendentalPi
+import GaloisForLFunctions.HolderDifferenceBricks

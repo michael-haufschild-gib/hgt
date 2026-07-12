@@ -10,7 +10,8 @@
   `nevanlinna-boundary-bauer-retract-maximal-ht.md`
 - **Statement:** On the canonical Bauer simplex of every indeterminate Hamburger moment problem,
   the complete compatible inverse-Cholesky tower is a faithful topological coordinate for the
-  carrier. Every finite prefix of that tower leaves an infinite-dimensional positive chart with
+  carrier. Every finite prefix of that tower leaves a positive Hilbert cube and an
+  infinite-dimensional chart with
   residual maximal full-translation hypertranscendence at fixed spectral type. On the residual
   singular-continuous maximal-HT phase, the raw polynomial graph saturates the full
   source--carrier product, whereas the uniquely selecting Cholesky tower diverges and yields the
@@ -141,6 +142,22 @@ subject to the `N` complex linear equations in `(10)`. The tangent is the kernel
 real continuous functionals on `L^infinity(eta_0;R)`. It is therefore infinite-dimensional and
 contains positive balls of every prescribed finite dimension after scaling.
 
+If `eta_0` is atomless, the same exact frame fiber contains a topologically embedded Hilbert cube.
+Write the real normalization and frozen-jet equations as `K` bounded integration constraints.
+Choose disjoint measurable blocks `B_j`, each split into `K+1` positive-measure pieces. On every
+block, a nonzero linear combination `v_j` of the piece indicators annihilates all `K` constraints;
+normalize `||v_j||_infinity=1`. Then
+
+```text
+w_t=1+(delta/2) sum_(j>=1) 2^(-j)t_j v_j,
+t=(t_j) in [-1,1]^(mathbb N),                             (13a)
+```
+
+is strictly positive and satisfies the exact prefix equations. Disjoint supports make the map
+injective; the weights `2^(-j)` make it continuous from the product topology to `L^infinity`.
+Compactness of the Hilbert cube and injectivity of `Beta` make `(13a)` a topological embedding in
+`F_N(nu_0)`. All its carriers have the same spectral type by positive bounded equivalence.
+
 By `(12)`, every carrier in this chart belongs to `F_N(nu_0)`. Because `w` is bounded above and
 below by positive constants, `eta_w` is equivalent to `eta_0`; exact spectral-type transport in
 the Bauer parent theorem therefore keeps the pure-point / singular-continuous /
@@ -161,6 +178,8 @@ exact spectral type,
 exact inverse-Cholesky frame through level N,
 residual maximal full-translation HT.                     (14)
 ```
+
+For an atomless base law it additionally contains the positive Hilbert cube `(13a)`.
 
 This conclusion is local to the positive chart and makes no claim that the residual subset is
 residual in every component of the whole fiber `(6)`.
@@ -251,7 +270,8 @@ residual. Their intersection `R_s` is residual. Every `nu in R_s` simultaneously
 3. every finite frame prefix lies in the positive-definite Toeplitz interior;
 4. the full raw graph saturates as in `(19)`;
 5. the complete frame coordinate selects `nu` but escapes by `(20)--(21)`;
-6. every finite prefix fiber contains the positive maximal-HT aperture `(14)`.
+6. every finite prefix fiber contains the positive Hilbert cube `(13a)` and maximal-HT aperture
+   `(14)`.
 
 Hence the selection threshold is generic inside one exact complete-moment constraint. It is not a
 comparison between unrelated carriers.
@@ -260,7 +280,7 @@ comparison between unrelated carriers.
 
 > **In an indeterminate complete-moment constraint, the canonical inverse-Cholesky tower is a
 > faithful carrier coordinate, but none of its finite prefixes is a selector: every finite prefix
-> retains an infinite-dimensional positive chart with residual maximal translation
+> retains a positive Hilbert cube and an infinite-dimensional chart with residual maximal translation
 > hypertranscendence at fixed spectral type. On the generic singular-continuous HT phase, the raw
 > polynomial graph saturates the full product and the uniquely selecting tower diverges. The
 > carrier survives only as coherently renormalized boundary data installed before closure.**
@@ -331,16 +351,19 @@ zero-preserving source weld must carry.
 
 ## Honest significance score
 
-**90/100 candidate; plausible range 80--95.** This crosses the internal 90 threshold only as a
-candidate because it supplies a sharp geometric selection theorem: a canonical faithful carrier
-coordinate whose every finite projection retains residual maximal-HT freedom, and whose singular
-limit simultaneously repairs a fully saturated graph. The interaction is not built into two
-independently chosen gadgets; the same matrices define the finite fibers, the complete selector,
-and the unique unitary repair.
+**72/100 current; plausible range 60--82.** The result is materially stronger than the retired
+orientation-product paper: the same canonical matrices define exact Hilbert-cube fibers, the
+complete selector, and the unique divergent unitary repair, so the interaction is real rather than
+an independently engineered Cartesian product.
 
-It is **not yet a verified true 90**. The transversality parent and several operator/OPUC inputs
-remain classical ingredients; priority is not established by database searches; and the theorem
-has not received an independent specialist proof audit or unconditional Lean formalization.
+It is **not a true 90**. The residual HT theorem is inherited from the constrained-transversality
+parent; complete-tower injectivity is adjacent to classical Verblunsky determinacy; graph
+saturation and OPUC repair are classical separately; and the theorem is generic rather than an
+explicit source-canonical construction. A field-level score would require a new intrinsic source
+law that forces or orients the complete tower for a distinguished HT function, not only a sharp
+description of the modulus that remains without such a law. Priority is also unverified, and the
+theorem has not received an independent specialist proof audit or unconditional Lean
+formalization.
 
 ## Lean status
 
@@ -354,6 +377,7 @@ and residual-set arguments. These layers are not jointly available in the curren
 - [x] complete compatible frame coordinate defined
 - [x] finite Cholesky prefix identified with finite Cauchy jet
 - [x] infinite-dimensional positive aperture in every finite prefix fiber proved
+- [x] embedded Hilbert cube in every atomless finite prefix fiber proved
 - [x] residual maximal full-translation HT in the exact prefix chart proved via parent
 - [x] spectral type held fixed in the prefix chart
 - [x] complete tower proved injective and topologically faithful

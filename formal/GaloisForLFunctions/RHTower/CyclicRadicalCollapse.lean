@@ -91,15 +91,8 @@ theorem continuousLinearFunctional_eq_zero_of_isCyclicFamily
     (L : E →L[ℂ] ℂ) (hL : ∀ i, L (v i) = 0) :
     L = 0 := by
   refine ContinuousLinearMap.ext_on hcyclic ?_
-  intro x hx
-  change L x = 0
-  induction hx using Submodule.span_induction with
-  | mem y hy =>
-      obtain ⟨i, rfl⟩ := hy
-      exact hL i
-  | zero => simp
-  | add x y hx hy ihx ihy => simp [ihx, ihy]
-  | smul c x hx ihx => simp [ihx]
+  rintro _ ⟨i, rfl⟩
+  exact hL i
 
 end
 

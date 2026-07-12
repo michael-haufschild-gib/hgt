@@ -395,3 +395,36 @@ purely a formalization frontier, now exactly delimited: Hölder's theorem in Lea
 named Gamma frontier, `GammaDifferentialFE` being its staging) plus sectorial Gevrey/Watson
 infrastructure absent from mathlib. Gate 1→2's item (A) is closed as mathematics; item (B)
 (graded KMS uniqueness) remains the single open wall of the card.
+
+### A5. Hölder's theorem in Lean: the analytic content is now proven (2026-07-12, third pass)
+
+The classical difference-equation proof of Hölder's theorem was decomposed; its only two
+non-bookkeeping steps are proven and formalized in
+`formal/GaloisForLFunctions/HolderDifferenceBricks.lean` (axiom-clean, lint green):
+
+- `shift_periodic_quotient_constant` — **shift-periodic rational functions are constant**:
+  `p(X+1)·q = p·q(X+1)` with `p, q` coprime forces both constant (shift preserves degree and
+  leading coefficient; a shift-invariant polynomial is constant on `ℕ`).
+- `difference_single_pole_free` — **no rational function has a difference-derivative with a
+  single-point pole**: `w(X+1) - w(X) = A(X)/X^{n+1}` (cross-multiplied form) forces `A = 0`.
+  The classical pole-propagation argument fully algebraizes: the largest integer root of the
+  denominator is pinched to `0`, the smallest to `1` — contradiction — so no integer roots;
+  evaluation at `0` kills the constant coefficient of `A` and one factor of `X` cancels,
+  descending by induction.  Purely polynomial; no Laurent expansions, no asymptotics.
+
+**Remaining for full `Hölder` in Lean (pure differential-polynomial bookkeeping, no further
+analytic input):** (i) minimal-rank irreducible relation selection (well-founded rank, UFD of
+`MvPolynomial` over `RatFunc ℂ`, identity theorem for factor selection — machinery present in
+tree); (ii) the shift substitution `P ↦ P^σ` and its evaluation compatibility from
+`ψ(s+1) = ψ(s) + 1/s` and `iteratedDeriv_inv_add_const` (both in `GammaDifferentialFE`);
+(iii) leading-coefficient elimination `I·P^σ - I^σ·P = 0` by minimality, giving
+`P^σ = u·P`; (iv) top-homogeneous-part analysis via brick one, degree-`(D-1)` layer via brick
+two, closing with the characteristic-zero Euler identity.  Estimated as one focused
+formalization campaign; every analytic ingredient is now machine-checked.
+
+### B3 status
+
+Not advanced this pass beyond the formalized covariance shadow (B2).  Next brick: diagonal
+uniqueness — the graded weight is the unique dilation-covariant graded functional on the
+diagonal up to normalization — an arithmetic statement on `ℕ` formalizable with current
+tools; the off-diagonal (ergodicity) part remains the research-scale wall.

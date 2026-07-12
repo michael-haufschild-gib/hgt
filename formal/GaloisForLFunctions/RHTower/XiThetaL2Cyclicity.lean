@@ -16,22 +16,24 @@ open scoped FourierTransform SchwartzMap
 
 namespace RHTower
 
+open MellinL2
+
 noncomputable section
 
 /-- The normalized Hedenmalm theta source in ordinary complex `L²`. -/
-def xiThetaSourceL2 : Lp (alpha := ℝ) ℂ 2 :=
+def xiThetaSourceL2 : Lp (α := ℝ) ℂ 2 :=
   xiThetaSchwartzSource.toLp 2 volume
 
 /-- Its exact Schwartz Fourier profile as an `L²` vector. -/
-def xiThetaFourierSourceL2 : Lp (alpha := ℝ) ℂ 2 :=
+def xiThetaFourierSourceL2 : Lp (α := ℝ) ℂ 2 :=
   (𝐕 xiThetaSchwartzSource).toLp 2 volume
 
 /-- The Fourier-character orbit of the completed theta source. -/
-def xiThetaFourierPhaseOrbit (a : ℝ) : Lp (alpha := ℝ) ℂ 2 :=
+def xiThetaFourierPhaseOrbit (a : ℝ) : Lp (α := ℝ) ℂ 2 :=
   fourierPhaseMulUnitary a xiThetaFourierSourceL2
 
 /-- The physical translation orbit of the completed theta source. -/
-def xiThetaTranslationOrbit (a : ℝ) : Lp (alpha := ℝ) ℂ 2 :=
+def xiThetaTranslationOrbit (a : ℝ) : Lp (α := ℝ) ℂ 2 :=
   additiveTranslationUnitary a xiThetaSourceL2
 
 /-- The `L²` Fourier profile is almost everywhere the actual centered
@@ -39,7 +41,7 @@ completed function on the real spectral axis. -/
 theorem xiThetaFourierSourceL2_ae :
     xiThetaFourierSourceL2 =ᵐ[volume] fun t : ℝ ↦ XiC (t : ℂ) := by
   filter_upwards [(𝐕 xiThetaSchwartzSource).coeFn_toLp
-    (p := 2) (mu := (volume : Measure ℝ))] with t ht
+    (p := 2) (μ := (volume : Measure ℝ))] with t ht
   rw [ht, fourier_xiThetaSchwartzSource]
 
 /-- The probability-character and mathlib Fourier-character conventions
@@ -55,11 +57,11 @@ theorem fourierPhase_neg_div_twoPi_eq_realProbCharacter (t x : ℝ) :
 /-- The all-height Fourier-character orbit of the completed theta source is
 cyclic in ordinary `L²`. -/
 theorem isCyclicFamily_xiThetaFourierPhaseOrbit :
-    IsCyclicFamily (k := ℂ) xiThetaFourierPhaseOrbit := by
+    IsCyclicFamily (𝕜 := ℂ) xiThetaFourierPhaseOrbit := by
   apply dense_span_of_forall_dual_eq_zero
   intro L hL
-  let g : Lp (alpha := ℝ) ℂ 2 :=
-    (InnerProductSpace.toDual ℂ (Lp (alpha := ℝ) ℂ 2)).symm L
+  let g : Lp (α := ℝ) ℂ 2 :=
+    (InnerProductSpace.toDual ℂ (Lp (α := ℝ) ℂ 2)).symm L
   have hinner (a : ℝ) : inner ℂ g (xiThetaFourierPhaseOrbit a) = 0 := by
     have h := hL a
     change L (xiThetaFourierPhaseOrbit a) = 0 at h
@@ -100,9 +102,9 @@ theorem isCyclicFamily_xiThetaFourierPhaseOrbit :
     have := congrArg (starRingEnd ℂ) hgstar
     simpa using this
   calc
-    L = (InnerProductSpace.toDual ℂ (Lp (alpha := ℝ) ℂ 2)) g := by
+    L = (InnerProductSpace.toDual ℂ (Lp (α := ℝ) ℂ 2)) g := by
       symm
-      exact (InnerProductSpace.toDual ℂ (Lp (alpha := ℝ) ℂ 2)).apply_symm_apply L
+      exact (InnerProductSpace.toDual ℂ (Lp (α := ℝ) ℂ 2)).apply_symm_apply L
     _ = 0 := by rw [hgzero]; simp
 
 /-- Plancherel sends the normalized physical theta source to its displayed
@@ -123,10 +125,10 @@ theorem fourier_xiThetaTranslationOrbit (a : ℝ) :
 closed complex linear span of all real translations of the normalized
 theta-cusp source is the whole ambient `L²(R)`. -/
 theorem isCyclicFamily_xiThetaTranslationOrbit :
-    IsCyclicFamily (k := ℂ) xiThetaTranslationOrbit := by
+    IsCyclicFamily (𝕜 := ℂ) xiThetaTranslationOrbit := by
   apply dense_span_of_forall_dual_eq_zero
   intro L hL
-  let LF : Lp (alpha := ℝ) ℂ 2 →L[ℂ] ℂ :=
+  let LF : Lp (α := ℝ) ℂ 2 →L[ℂ] ℂ :=
     L.comp (Lp.fourierTransformₗᵢ ℝ ℂ).symm.toLinearIsometry.toContinuousLinearMap
   have hLF (a : ℝ) : LF (xiThetaFourierPhaseOrbit a) = 0 := by
     change L ((Lp.fourierTransformₗᵢ ℝ ℂ).symm
@@ -138,7 +140,7 @@ theorem isCyclicFamily_xiThetaTranslationOrbit :
     isCyclicFamily_xiThetaFourierPhaseOrbit LF hLF
   apply ContinuousLinearMap.ext
   intro x
-  have hx := congrArg (fun M : Lp (alpha := ℝ) ℂ 2 →L[ℂ] ℂ ↦ M (𝐕 x)) hLFzero
+  have hx := congrArg (fun M : Lp (α := ℝ) ℂ 2 →L[ℂ] ℂ ↦ M (𝐕 x)) hLFzero
   change L ((Lp.fourierTransformₗᵢ ℝ ℂ).symm (𝐕 x)) = 0 at hx
   simpa using hx
 

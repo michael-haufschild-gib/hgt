@@ -186,6 +186,12 @@ The current corpus already supplies:
 - `xiCTaylorApprox_logDeriv_tendsto` at fixed pole-free points;
 - `exists_xiCTaylorSuperaccurateSchedule`: an axiom-clean source-selected schedule satisfying
   the simultaneous expanding-ball value and derivative estimate `(3)`;
+- `xiCTaylorAnisotropicScheduleStage` and
+  `xiCTaylorSuperaccurateSchedule_at_anisotropicCenteredPoint`: an explicit moving stage that
+  places every centered anisotropic mesh point inside the schedule's controlled ball and returns
+  simultaneous value/derivative errors there;
+- `xiCTaylorScheduleTolerance_stage_le_inv_pow`: the super-accurate error at that moving stage is
+  bounded by every prescribed fixed inverse power of the mesh resolution;
 - `xiTaylorAnisotropicRightApprox_re_sub_bounds` and
   `abs_xiTaylorAnisotropicRightApprox_im_sub_lt`: the explicit `1/n` by `1/n^2` mesh geometry
   `(8)`;
@@ -265,3 +271,9 @@ that retains the completed prime--archimedean orientation.
   `riemannHypothesis_of_xiAnisotropicLogDerivSublinearUpper` in
   `formal/GaloisForLFunctions/RHTower/XiAnisotropicSublinearGate.lean`.  This closes a direct
   `x -> RH` interface before the remaining finite-Taylor transfer.
+- 2026-07-12 — Formalized the centered moving evaluation point, its automatic expanding-ball
+  schedule stage, simultaneous Taylor value/derivative lookup, and arbitrary fixed inverse-power
+  tolerance domination in
+  `formal/GaloisForLFunctions/RHTower/XiCTaylorAnisotropicScheduleLookup.lean`.  The remaining
+  finite-Taylor transfer is now local zero-factor bookkeeping rather than a compactness or
+  diagonal-selection gap.

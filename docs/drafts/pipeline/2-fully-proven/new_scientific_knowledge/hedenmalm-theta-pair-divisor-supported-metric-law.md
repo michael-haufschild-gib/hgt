@@ -461,6 +461,14 @@ The remaining formal gap is only the central Schwartz-kernel plus Bochner--Schwa
 taking an arbitrary positive continuous translation-invariant Schwartz form to its positive tempered
 spectral measure. Mathlib supplies the component theories but not this assembled representation theorem.
 
+`formal/GaloisForLFunctions/RHTower/XiThetaSchwartzL2ExtensionObstruction.lean` proves a stronger
+ordinary-topology boundary without using that missing representation theorem. If a continuous
+momentum-symmetric theta-null Schwartz form admits any jointly continuous sesquilinear extension
+to ordinary `L²(R)`, then the extension inherits translation invariance and source nullity and is
+identically zero by theta-source cyclicity. Hence every nonzero form in the proposed metric class
+is formally forced to be singular relative to ordinary `L²`, not merely nonlocal or outside the
+bounded-multiplier class.
+
 ## Gates
 
 - [x] latest direct Hilbert--Polya parent identified and read at theorem level
@@ -491,4 +499,6 @@ spectral measure. Mathlib supplies the component theories but not this assembled
 - [x] Lean theta-cusp reflection, smoothness, and all-derivative parity
 - [x] Lean actual global theta-cusp Schwartz decay and Schwartz-space object
 - [x] Lean exact Fourier transform of the normalized theta-cusp Schwartz object equals `XiC`
+- [x] Lean no nonzero momentum-symmetric theta-null Schwartz form extends continuously to ordinary
+      `L²(R)`
 - [ ] Lean Schwartz translation-invariance to Bochner--Schwartz classification bridge

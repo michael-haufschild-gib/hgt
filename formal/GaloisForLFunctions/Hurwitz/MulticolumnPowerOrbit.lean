@@ -250,8 +250,17 @@ lemma eq_one_of_one_le_of_sum_le_card {L : ℕ} (f : Fin L → ℕ)
   have htotal : f n + ∑ r ∈ (Finset.univ : Finset (Fin L)).erase n, f r ≤ L := by
     rw [hsplit]
     exact hsum
-  have hL : 1 ≤ L := by omega
-  omega
+  have hL : 1 ≤ L := by
+    exact Nat.one_le_iff_ne_zero.mpr (fun h => by subst L; exact Fin.elim0 n)
+  have hpred : L - 1 + 1 = L := Nat.sub_add_cancel hL
+  apply Nat.le_antisymm _ (hpos n)
+  apply Nat.le_of_add_le_add_right (b := L - 1)
+  calc
+    f n + (L - 1) ≤ f n + ∑ r ∈ (Finset.univ : Finset (Fin L)).erase n, f r :=
+      Nat.add_le_add_left hrest _
+    _ ≤ L := htotal
+    _ = L - 1 + 1 := hpred.symm
+    _ = 1 + (L - 1) := Nat.add_comm _ _
 
 /-- After differencing every column, every coefficient below the number of columns vanishes. -/
 theorem coeff_columnDifferenceSet_univ_eq_zero_of_degree_lt {L : ℕ} (q : ι → ℂ)
@@ -298,6 +307,140 @@ theorem columnDegree_eq_one_of_coeff_columnDifferenceSet_univ_ne_zero {L : ℕ}
     exact Finset.prod_eq_zero (Finset.mem_univ n) hfactor
   apply eq_one_of_one_le_of_sum_le_card (fun n => columnDegree d n) hpos
   rwa [← degree_eq_sum_columnDegree]
+
+/-- Vandermonde separation for a finite index type rather than an explicitly enumerated `Fin`. -/
+theorem power_sum_coeff_zero_fintype (b c : ι → ℂ) (hb : Function.Injective b)
+    (h : ∀ m : ℕ, ∑ i : ι, c i * b i ^ m = 0) : c = 0 := by
+  let e := Fintype.equivFin ι
+  let b' : Fin (Fintype.card ι) → ℂ := fun k => b (e.symm k)
+  let c' : Fin (Fintype.card ι) → ℂ := fun k => c (e.symm k)
+  have hb' : Function.Injective b' := hb.comp e.symm.injective
+  have h' : ∀ m : ℕ, ∑ k, c' k * b' k ^ m = 0 := by
+    intro m
+    simpa [b', c'] using (e.symm.sum_comp (fun i => c i * b i ^ m)).trans (h m)
+  have hc' := power_sum_coeff_zero hb' h'
+  funext i
+  have hi := congrFun hc' (e i)
+  simpa [c'] using hi
+
+/-- Tensor Vandermonde separation.  Independent column times and pairwise distinct nodes separate
+every coefficient indexed by one label in each column. -/
+theorem tensor_power_sum_coeff_zero (q : ι → ℂ) (hq : Function.Injective q) :
+    ∀ (L : ℕ) (c : (Fin L → ι) → ℂ),
+      (∀ m : Fin L → ℕ,
+        ∑ f : Fin L → ι, c f * ∏ n : Fin L, q (f n) ^ m n = 0) →
+      c = 0 := by
+  intro L
+  induction L with
+  | zero =>
+      intro c h
+      funext f
+      have h0 := h (fun n => Fin.elim0 n)
+      have hf : f = default := Subsingleton.elim _ _
+      rw [hf]
+      simpa only [Fintype.prod_empty, mul_one, Fintype.sum_unique] using h0
+  | succ L ih =>
+      intro c h
+      have hhead : ∀ mtail : Fin L → ℕ, ∀ m0 : ℕ,
+          ∑ j : ι,
+            (∑ g : Fin L → ι,
+              c (Fin.cons j g) * ∏ n : Fin L, q (g n) ^ mtail n) * q j ^ m0 = 0 := by
+        intro mtail m0
+        have hm := h (Fin.cons m0 mtail)
+        rw [← (Fin.consEquiv (fun _ : Fin (L + 1) => ι)).sum_comp] at hm
+        rw [Fintype.sum_prod_type] at hm
+        have hm' :
+            ∑ j : ι, ∑ g : Fin L → ι,
+              c (Fin.cons j g) *
+                (q j ^ m0 * ∏ n : Fin L, q (g n) ^ mtail n) = 0 := by
+          simpa only [Fin.prod_univ_succ, Fin.cons_zero, Fin.cons_succ] using hm
+        calc
+          ∑ j : ι,
+              (∑ g : Fin L → ι,
+                c (Fin.cons j g) * ∏ n : Fin L, q (g n) ^ mtail n) * q j ^ m0 =
+            ∑ j : ι, ∑ g : Fin L → ι,
+              c (Fin.cons j g) *
+                (q j ^ m0 * ∏ n : Fin L, q (g n) ^ mtail n) := by
+                  apply Finset.sum_congr rfl
+                  intro j _
+                  rw [Finset.sum_mul]
+                  apply Finset.sum_congr rfl
+                  intro g _
+                  ring
+          _ = 0 := hm'
+      have htail : ∀ j : ι, ∀ mtail : Fin L → ℕ,
+          ∑ g : Fin L → ι,
+            c (Fin.cons j g) * ∏ n : Fin L, q (g n) ^ mtail n = 0 := by
+        intro j mtail
+        let A : ι → ℂ := fun r =>
+          ∑ g : Fin L → ι,
+            c (Fin.cons r g) * ∏ n : Fin L, q (g n) ^ mtail n
+        have hA : A = 0 := power_sum_coeff_zero_fintype q A hq (hhead mtail)
+        exact congrFun hA j
+      funext f
+      rw [← Fin.cons_self_tail f]
+      have hcj := ih (fun g : Fin L → ι => c (Fin.cons (f 0) g)) (htail (f 0))
+      exact congrFun hcj (Fin.tail f)
+
+/-- The monomial selecting one label in every column. -/
+def columnTuple {L : ℕ} (f : Fin L → ι) : (ι × Fin L) →₀ ℕ :=
+  ∑ n : Fin L, Finsupp.single (f n, n) 1
+
+@[simp]
+theorem columnTuple_apply {L : ℕ} (f : Fin L → ι) (j : ι) (n : Fin L) :
+    columnTuple f (j, n) = if j = f n then 1 else 0 := by
+  classical
+  simp only [columnTuple, Finset.sum_apply, Finsupp.single_apply]
+  rw [Finset.sum_eq_single n]
+  · simp [eq_comm]
+  · intro r _ hr
+    simp [show (j, n) ≠ (f r, r) from fun h => hr (congrArg Prod.snd h).symm]
+  · simp
+
+theorem columnSlice_columnTuple {L : ℕ} (f : Fin L → ι) (n : Fin L) :
+    columnSlice (columnTuple f) n = Finsupp.single (f n) 1 := by
+  ext j
+  simp [columnTuple_apply, Finsupp.single_apply, eq_comm]
+
+theorem columnDegree_columnTuple {L : ℕ} (f : Fin L → ι) (n : Fin L) :
+    columnDegree (columnTuple f) n = 1 := by
+  rw [columnDegree, columnSlice_columnTuple]
+  simp
+
+theorem degree_columnTuple {L : ℕ} (f : Fin L → ι) :
+    (columnTuple f).degree = L := by
+  rw [degree_eq_sum_columnDegree]
+  simp [columnDegree_columnTuple]
+
+theorem columnTuple_injective {L : ℕ} :
+    Function.Injective (columnTuple : (Fin L → ι) → (ι × Fin L) →₀ ℕ) := by
+  intro f g h
+  funext n
+  have hs := congrArg (fun d => columnSlice d n) h
+  change columnSlice (columnTuple f) n = columnSlice (columnTuple g) n at hs
+  rw [columnSlice_columnTuple, columnSlice_columnTuple] at hs
+  exact Finsupp.single_left_injective hs
+
+theorem eq_columnTuple_of_columnDegree_eq_one {L : ℕ}
+    (d : (ι × Fin L) →₀ ℕ) (h : ∀ n : Fin L, columnDegree d n = 1) :
+    ∃ f : Fin L → ι, d = columnTuple f := by
+  choose f hf using fun n => exists_columnSlice_eq_single_of_columnDegree_eq_one d n (h n)
+  refine ⟨f, ?_⟩
+  ext jk
+  have hjk := congrFun (congrArg DFunLike.coe (hf jk.2)) jk.1
+  rw [columnSlice_apply] at hjk
+  rw [columnTuple_apply]
+  simpa [Finsupp.single_apply, eq_comm] using hjk
+
+theorem monomialValue_powerGrid_columnTuple {L : ℕ} (q : ι → ℂ)
+    (m : Fin L → ℕ) (f : Fin L → ι) :
+    monomialValue (fun jk : ι × Fin L => q jk.1 ^ m jk.2) (columnTuple f) =
+      ∏ n : Fin L, q (f n) ^ m n := by
+  rw [monomialValue_powerGrid]
+  apply Finset.prod_congr rfl
+  intro n _
+  rw [columnMonomialValue_of_columnSlice_eq_single q (columnTuple f) n (f n)
+    (columnSlice_columnTuple f n)]
 
 end
 
