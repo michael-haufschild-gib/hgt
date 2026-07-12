@@ -58,7 +58,7 @@ theorem exists_faithfulFacetSeparation {V : Type*} [Fintype V] [DecidableEq V] {
       (transcendental_pow_comp_linearIndependent hτ (fun x y h => Subtype.ext (ginj h)))
       (fun w => q w.1) hsub ⟨v, hvi⟩
   · intro i v
-    rw [ha]
+    simp only [ha]
     by_cases hv : v ∈ fac i
     · rw [if_pos hv]
       exact ⟨fun h => (pow_ne_zero _ hτne h).elim, fun h => (h hv).elim⟩

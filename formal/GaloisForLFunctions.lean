@@ -274,3 +274,4 @@ import GaloisForLFunctions.AntidiagCardBound
 import GaloisForLFunctions.WedgeRealization
 import GaloisForLFunctions.LatticeIncongruence
 import GaloisForLFunctions.RHTower.CreaseBudgetPrimeMass
+import GaloisForLFunctions.FaithfulFacetDimension

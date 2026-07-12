@@ -42,6 +42,23 @@ The following statements are unconditional.
 
 5. The resulting test is square-summable over every multiplicity copy of the
    actual Xi divisor.
+6. Functional-equation reflection preserves each test value, Schwarz
+   conjugation conjugates it, and the four FE--Schwarz copies contribute
+   exactly four times the real part of one squared value.  This last identity
+   is pointwise on `XiZeroCopy`, so analytic multiplicity is retained.
+7. There exists an unconditional `eta>0` such that every Xi-divisor point has
+   `|Im rho|>=eta`.  The proof uses compact-disc zero finiteness and absence of
+   real Xi zeros, with no numerical first-zero input.
+8. For every `a>=L`, selecting the exponentially growing edge according to the
+   sign of `Re(rho-1/2)` leaves a full Xi-divisor remainder whose norm is at
+   most
+
+   ```text
+   R_L sum_q |z_q|^-2,
+   R_L=[1+exp(|L|/2)]^2[2exp(|L|/2)+4],
+   ```
+
+   uniformly in `a`.
 
 ## Exact formal surface
 
@@ -59,6 +76,20 @@ The following statements are unconditional.
 - `abs_re_I_mul_xiSpectralPoint_le_half`
 - `xiRectangularTwoEdgeTransform_square_le`
 - `xiRectangularTwoEdgeTransform_squareSummable`
+- `I_mul_xiSpectralPoint_copyConj`
+- `xiRectangularTwoEdgeTransform_reflect`
+- `xiRectangularTwoEdgeTransform_copyConj`
+- `xiRectangularTwoEdgeTransform_lineConj`
+- `xiRectangularTwoEdgeTransform_quartet_square`
+- `exists_xiDivisorSupport_abs_im_lower_bound`
+- `exists_xiZeroCopy_abs_im_lower_bound`
+- `rectangularTwoEdgeDominant`
+- `rectangularTwoEdgeTransform_sq_sub_dominant_of_pos`
+- `rectangularTwoEdgeTransform_sq_sub_dominant_of_neg`
+- `norm_rectangularTwoEdgeTransform_sq_sub_dominant_le`
+- `xiRectangularTwoEdgeRemainderTerm_summable`
+- `xiWeilPolarization_rectangular_sub_dominant_eq_tsum_remainder`
+- `norm_xiWeilPolarization_rectangular_sub_dominant_le`
 
 ## Boundary
 

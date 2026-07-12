@@ -2,8 +2,8 @@
 
 - **ID:** `hedenmalm-weil-source-to-operator-capstone`
 - **Stage:** 3-formalized
-- **Type:** THEOREM PACKAGE / DIRECT HILBERT--POLYA COMPLETION
-- **Scientific status:** `[FORMALIZED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY AUDIT OPEN]`
+- **Type:** BRIDGE / TARGET-FED TERMINAL CRITERION
+- **Scientific status:** `[FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE] [SIGNIFICANCE GATE FAILED]`
 - **Lean:**
   `formal/GaloisForLFunctions/RHTower/XiHedenmalmFourierEquation.lean`,
   `formal/GaloisForLFunctions/RHTower/XiHedenmalmEigenbasis.lean`,
@@ -179,11 +179,11 @@ shows that both defects are visible in one closed chain.
 - every headline theorem prints only the standard kernel foundations
   `propext`, `Classical.choice`, and `Quot.sound`.
 
-## Novelty and significance boundary
+## Parent-theory and significance boundary
 
-The reciprocal diagonal model and the individual implications `real divisor <-> self-adjoint
-diagonal` are classical bridge material. Candidate novelty attaches to the exact theorem package
-for Hedenmalm's June 2026 theta pair:
+The reciprocal diagonal model and the implication `real divisor <-> self-adjoint diagonal` are
+classical bridge material. The remaining statements specialize removable division, coordinate
+span, and positive atomic metrics to Hedenmalm's theta pair:
 
 1. uniqueness of the removable entire solution of the transformed theta-source equation;
 2. the exact simple-support defect law `(1b)` and the if-and-only-if completeness law `(1)`,
@@ -193,8 +193,11 @@ for Hedenmalm's June 2026 theta pair:
 5. the identification of multiplicity as the precise obstruction separating the source Cauchy
    Hilbert carrier from the one-eigenfunction-per-zero theta family.
 
-No RH proof is claimed. Independent operator-theory and contemporaneous-literature review remains
-required before assigning the requested publication significance score.
+The package does not construct its Hilbert space or metric from the theta/prime source. It indexes
+the terminal operator by the actual Xi divisor and makes conservativity equivalent to the desired
+divisor condition. This is a precise criterion, but the RH-bearing datum is already present in the
+premises or indexing. Honest score: **35/100**. The package is retained as formal infrastructure
+and a guard against target-fed Hilbert--Polya arguments, not as new scientific knowledge.
 
 ## Gates
 
@@ -212,5 +215,6 @@ required before assigning the requested publication significance score.
 - [x] continued prime--Gamma source sign coupled to theta completeness
 - [x] exact module builds
 - [x] axiom audit
-- [ ] full literature audit
-- [ ] standalone paper with no formal-verification references
+- [x] target-fed dependence isolated
+- [x] reclassified as not new scientific knowledge
+- [ ] construct a source-defined nondegenerate metric or quotient without Xi-divisor input

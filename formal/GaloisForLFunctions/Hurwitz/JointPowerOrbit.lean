@@ -255,4 +255,75 @@ theorem monomialValue_monoScalar_injective_of_linearIndependent
   have hz : (d j : ℤ) - (e j : ℤ) = 0 := by exact_mod_cast hj
   exact_mod_cast sub_eq_zero.mp hz
 
+/-- **Exact arithmetic form of monodromy-character separation.**  Pairwise separation of all
+nonnegative monomials in the Hurwitz monodromy scalars is equivalent to rational linear
+independence of the augmented exponent family `(1, s_j)`. -/
+theorem linearIndependent_iff_monomialValue_monoScalar_injective
+    {ι : Type*} [Fintype ι] [DecidableEq ι] (s : ι → ℂ) :
+    LinearIndependent ℚ (exponentFamily s) ↔
+      Function.Injective (monomialValue (fun j => monoScalar (s j))) := by
+  constructor
+  · exact monomialValue_monoScalar_injective_of_linearIndependent s
+  · intro hmono
+    apply (LinearIndependent.iff_fractionRing ℤ ℚ).mp
+    rw [Fintype.linearIndependent_iff]
+    intro g hrel x
+    let d : ι →₀ ℕ := Finsupp.equivFunOnFinite.symm (fun j => (g (some j)).toNat)
+    let e : ι →₀ ℕ := Finsupp.equivFunOnFinite.symm (fun j => (-g (some j)).toNat)
+    have hsum : ∑ j : ι, ((g (some j) : ℤ) : ℂ) * s j = -((g none : ℤ) : ℂ) := by
+      rw [Fintype.sum_option] at hrel
+      simp only [exponentFamily] at hrel
+      push_cast at hrel
+      simpa only [add_eq_zero_iff_eq_neg] using hrel
+    have hweight : exponentWeight s d - exponentWeight s e = -((g none : ℤ) : ℂ) := by
+      rw [exponentWeight, exponentWeight, Finsupp.sum_fintype, Finsupp.sum_fintype]
+      · simp only [d, e, Finsupp.equivFunOnFinite_symm_apply_toFun]
+        rw [← Finset.sum_sub_distrib]
+        calc
+          ∑ j : ι,
+              ((↑(g (some j)).toNat : ℕ) : ℂ) * s j -
+                ((↑(-g (some j)).toNat : ℕ) : ℂ) * s j =
+              ∑ j : ι, ((g (some j) : ℤ) : ℂ) * s j := by
+                apply Finset.sum_congr rfl
+                intro j _
+                rw [← sub_mul]
+                congr 1
+                exact_mod_cast Int.toNat_sub_toNat_neg (g (some j))
+          _ = -((g none : ℤ) : ℂ) := hsum
+      · simp
+      · simp
+    have hone : Complex.exp (-(2 * (Real.pi : ℂ) * Complex.I *
+        (exponentWeight s d - exponentWeight s e))) = 1 := by
+      rw [hweight]
+      have hk := Complex.exp_int_mul_two_pi_mul_I (g none)
+      convert hk using 1 <;> ring
+    have hdeVal : monomialValue (fun j => monoScalar (s j)) d =
+        monomialValue (fun j => monoScalar (s j)) e := by
+      rw [monomialValue_monoScalar, monomialValue_monoScalar]
+      have hsplit :
+          -(2 * (Real.pi : ℂ) * Complex.I * exponentWeight s d) =
+            -(2 * (Real.pi : ℂ) * Complex.I *
+              (exponentWeight s d - exponentWeight s e)) +
+            -(2 * (Real.pi : ℂ) * Complex.I * exponentWeight s e) := by ring
+      rw [hsplit, Complex.exp_add, hone, one_mul]
+    have hde : d = e := hmono hdeVal
+    cases x with
+    | none =>
+        have hsome : ∀ j : ι, g (some j) = 0 := by
+          intro j
+          have hj := Finsupp.congr_fun hde j
+          change (g (some j)).toNat = (-g (some j)).toNat at hj
+          have hz := Int.toNat_sub_toNat_neg (g (some j))
+          rw [hj, sub_self] at hz
+          exact hz.symm
+        rw [Fintype.sum_option] at hrel
+        simp only [exponentFamily, hsome, zero_smul, Finset.sum_const_zero, add_zero] at hrel
+        simpa using hrel
+    | some j =>
+        have hj := Finsupp.congr_fun hde j
+        change (g (some j)).toNat = (-g (some j)).toNat at hj
+        have hz := Int.toNat_sub_toNat_neg (g (some j))
+        rw [hj, sub_self] at hz
+        exact hz.symm
+
 end HurwitzJointOrbit

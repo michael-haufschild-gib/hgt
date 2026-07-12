@@ -101,14 +101,41 @@ square-summability assumptions must not enter the construction.
 
 ## Approach
 
-1. **Archimedean mode first** (constraint 9): fix the graded one-mode system on the half-line with
-   Gaussian weight whose supertrace of `e^(-beta H)` is `Gammaℝ(beta/2)`; identify what the
-   grading is for this single mode (the sign of `Z(1)` must ultimately come from somewhere — the
-   candidate is the eta/paired-sign structure that makes `xi(1/2)>0` with `zeta(1/2)<0`, already
-   formalized in `ZetaRealStrip.lean`/`XiRealAnchorPositive.lean`).
+1. **Archimedean mode first — EXECUTED 2026-07-12, grading identified `[PROVED HERE + FORMALIZED]`**
+   (`formal/GaloisForLFunctions/RHTower/BornEtaGrading.lean`, axiom-clean, lint green). The answer
+   corrects the expectation: **the grading is not archimedean.** Findings:
+   - The archimedean mode is **ungraded**: `Gammaℝ(beta/2)` is a strictly positive real on the
+     whole strip (`Gammaℝ_real_strip_pos`, derived in-tree as `Lambda/zeta`, quotient of two
+     negative reals), so its supertrace is its trace and carries no sign.
+   - The grading lives on the prime side and is the **parity grading** `n -> (-1)^(n-1)` — in
+     Bost--Connes terms the range-projection grading `1 - 2 mu_2 mu_2*` of the `2`-isometry. It is
+     canonical: the Euler deletion at `q` has unimodular (`±1`) coefficients iff `q = 2`
+     (`eulerDeletionCoefficient_unimodular_iff`).
+   - The graded doublets `{2n+1, 2n+2}` of the `log sqrt(n)` Hamiltonian have absolutely
+     convergent, strictly positive supertrace on the whole strip (`bornSupertrace_pos`) — where
+     the ungraded trace diverges.
+   - **Positive factorization of the sign** (`bornPartition_positive_factorization`): for
+     `0 < beta < 2`, `Z(beta) * etaCoupling(beta) = Gammaℝ(beta/2) * bornSupertrace(beta)` with
+     both right factors positive and `etaCoupling(beta) = 1 - 2^(1-beta/2) < 0`. The sign of `Z`
+     on the whole strip — not only at `beta=1` — is carried entirely by the eta coupling scalar,
+     i.e. by the deleted Euler factor at the grading prime, NOT by either trace. The
+     eta/paired-sign mechanism of `ZetaRealStrip.lean` is confirmed as the source, in this exact
+     localized form.
+   - **Pole-mechanism exchange** (`etaCoupling_eq_zero_iff`, `etaCoupling_reflect_eq_zero_iff`):
+     the coupling vanishes exactly at `beta=2` (grading resonance `2^(1-beta/2)=1`) and its Born
+     reflection exactly at `beta=0` (the archimedean wall, the pole already formalized in
+     `CompletedBornReflectionNoGo.lean`). The Born reflection exchanges the two boundary-pole
+     mechanisms — so the conjectured duality must exchange the archimedean IR divergence with the
+     `2`-adic grading resonance.
+   - **New constraint 10 — the grading breaks self-duality** (`graded_reflection_cocycle`): the
+     graded completed object `Gammaℝ · etaPair` satisfies only the twisted reflection identity
+     with two-adic cocycle `(1-2^s)/(1-2^(1-s))`; strip convergence and exact self-duality
+     exclude each other under the parity grading. The system must either compensate the cocycle
+     (a `2`-adic counter-mode) or let the duality act on the pair (grading, reflected grading).
 2. **Weld** (constraints 1, 8): tensor with the `log sqrt(n)` prime system so the total signed
    partition function is `Z(beta)=Lambda(beta/2)`; verify the scalar self-duality
-   `Z(2-beta)=Z(beta)` lifts to a candidate algebra map exchanging the two boundary-pole phases.
+   `Z(2-beta)=Z(beta)` lifts to a candidate algebra map exchanging the two boundary-pole phases —
+   now sharpened by constraint 10: the lift must resolve the two-adic reflection cocycle.
 3. **Name the exchange category** (constraint 5): the duality relates `III_1` to type I, so it is
    not a normal *-isomorphism; decide among graded equivalence, antilinear (Tomita-conjugation)
    equivalence, or correspondence/bimodule equivalence, and prove which one the scalar identity
@@ -129,3 +156,9 @@ square-summability assumptions must not enter the construction.
   formalized in `CompletedBornReflectionNoGo.lean`, axiom-clean); constraints 1--9 recorded with
   their in-tree Lean anchors; `Lambda`-hypertranscendence isolated as the `[OPEN CORE]`
   no-finite-handle certificate.
+- 2026-07-12 — Approach step 1 executed: grading identified as the parity grading `1 - 2 mu_2 mu_2*`
+  (unique unimodular Euler deletion), archimedean mode proven ungraded-positive, sign of `Z` on the
+  whole strip localized in the eta coupling scalar, pole-mechanism exchange and the two-adic
+  FE-breaking cocycle proved. All formalized in `BornEtaGrading.lean` (11 declarations,
+  axiom-clean); `ZetaRealStrip.lean` eta interface made public for reuse. Card gains constraint 10;
+  next open move = Approach step 2 (the weld) under the cocycle-resolution requirement.

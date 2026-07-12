@@ -1,4 +1,12 @@
-# Multiplicity depth and symmetric source quotients in the theta spectral problem
+# RETIRED: Multiplicity depth and symmetric source quotients in the theta spectral problem
+
+**Verdict.** The manuscript is mathematically correct but fails the project's dual novelty and
+significance gate. Its multiplicity theorem is local Taylor factorization, its recurrence is the
+standard divided-quotient Jordan chain, and its symmetric obstruction is the classical
+semisimplicity of symmetric operators. The canonical matrices are built from the Xi divisor, while
+the global theorem assumes the faithful symmetric quotient that a Hilbert--Polya construction
+must actually produce. Honest score: **40/100**. This text is retained only as a retired bridge;
+it is not publication-ready new science.
 
 ## Abstract
 
@@ -32,6 +40,11 @@ whose size is its analytic multiplicity. All these matrices are Hermitian if and
 Riemann hypothesis holds and every nontrivial zeta zero is simple. The result does not construct
 the required symmetric source quotient. It identifies, without multiplicity ambiguity, the exact
 carrier that such a construction must produce.
+
+**Keywords:** Riemann hypothesis; Hilbert--Pólya conjecture; Jacobi theta function; divided
+differences; Jordan chains; symmetric operators; zero multiplicity.
+
+**2020 Mathematics Subject Classification:** 11M26; 47A56; 47B25; 30D10.
 
 ## 1. Introduction
 
@@ -358,10 +371,16 @@ J(\Xi)=0,                                                   \tag{6.2}
 J(Q_{\alpha,1})\ne0                                        \tag{6.3}
 \]
 
-for every Xi zero \(\alpha\), and
+for every Xi zero \(\alpha\), together with
 
 \[
-S J(Q_{\alpha,k})=J(M_zQ_{\alpha,k}),qquad k=1,2.          \tag{6.4}
+S J(Q_{\alpha,1})=J(M_zQ_{\alpha,1}),                      \tag{6.4}
+\]
+
+and, whenever \(m_\alpha\ge2\),
+
+\[
+S J(Q_{\alpha,2})=J(M_zQ_{\alpha,2}).                      \tag{6.5}
 \]
 
 The definition uses one common map and one common symmetric operator for the whole divisor.
@@ -397,7 +416,8 @@ Hence \(v_0=0\). \(\square\)
 
 ### Theorem 6.2. Local faithful-carrier law
 
-Fix an Xi zero \(\alpha\). Suppose (6.2)--(6.4) hold at \(\alpha\). Then \(\alpha\) is real and
+Fix an Xi zero \(\alpha\). Suppose (6.2)--(6.5) hold at \(\alpha\), with (6.5) required only if
+\(m_\alpha\ge2\). Then \(\alpha\) is real and
 \(m_\alpha=1\).
 
 #### Proof
@@ -405,20 +425,20 @@ Fix an Xi zero \(\alpha\). Suppose (6.2)--(6.4) hold at \(\alpha\). Then \(\alph
 Equations (4.2), (6.2), and (6.4) give
 
 \[
-S J(Q_{\alpha,1})=\alpha J(Q_{\alpha,1}).                  \tag{6.5}
+S J(Q_{\alpha,1})=\alpha J(Q_{\alpha,1}).                  \tag{6.6}
 \]
 
 The vector is nonzero by (6.3). Every eigenvalue of a symmetric operator is real, so
 \(\alpha\in\mathbb R\).
 
-If \(m_\alpha\ge2\), then (4.3) and (6.4) give
+If \(m_\alpha\ge2\), then (4.3) and (6.5) give
 
 \[
 S J(Q_{\alpha,2})
-=\alpha J(Q_{\alpha,2})+J(Q_{\alpha,1}).                  \tag{6.6}
+=\alpha J(Q_{\alpha,2})+J(Q_{\alpha,1}).                  \tag{6.7}
 \]
 
-Equations (6.5)--(6.6) form a real Jordan step with nonzero first vector, contradicting Lemma 6.1.
+Equations (6.6)--(6.7) form a real Jordan step with nonzero first vector, contradicting Lemma 6.1.
 Thus \(m_\alpha=1\). \(\square\)
 
 ### Theorem 6.3. Global faithful-carrier law
@@ -438,7 +458,7 @@ properties whose simultaneous construction suffices:
 \boxed{
 \text{source annihilation}
 +\text{ first-level faithfulness}
-+\text{ two-level transport}
++\text{ second-level transport on multiple fibers}
 +\text{ symmetry}
 \Longrightarrow \mathrm{RH}+\text{simplicity}.}
 \]
@@ -524,7 +544,8 @@ The remaining constructive problem can be stated without a negative formulation:
 
 > Construct one global inner-product-space quotient of the theta-source function module that
 > annihilates \(\Xi\), retains every \(Q_{\alpha,1}\), transports coordinate multiplication on the
-> first two divided levels, and makes the transported operator symmetric.
+> first divided level and on the second level whenever multiplicity requires it, and makes the
+> transported operator symmetric.
 
 By Theorem 6.3, such a construction proves RH and simplicity. By Theorem 7.2, its local root module
 must reduce to the canonical real one-dimensional blocks.

@@ -2,8 +2,8 @@
 
 - **ID:** `hedenmalm-divided-chain-symmetric-carrier-law`
 - **Stage:** 3-formalized
-- **Type:** THEOREM PACKAGE / HILBERT--POLYA CARRIER CLASSIFICATION
-- **Scientific status:** `[FORMALIZED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY AUDIT OPEN]`
+- **Type:** BRIDGE / TARGET-FED DIAGNOSTIC NORMAL FORM
+- **Scientific status:** `[FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE] [SIGNIFICANCE GATE FAILED]`
 - **Formal modules:**
   `formal/GaloisForLFunctions/RHTower/XiHedenmalmMultiplicityChain.lean` and
   `formal/GaloisForLFunctions/RHTower/XiHedenmalmSymmetricMultiplicity.lean`, and
@@ -138,36 +138,26 @@ multiplicity-exact terminal normal form which any source-side construction must 
 Every declaration is axiom-clean apart from the standard logical foundations `propext`,
 `Classical.choice`, and `Quot.sound`. Exact module builds pass.
 
-## Literature boundary
+## Parent-theory collision
 
-Hedenmalm proves uniqueness, up to scalar, of the boundary-value eigenfunction attached to each Xi
-zero and notes that this gives weak support for simplicity. He does not construct the iterated
-divided chain, identify analytic multiplicity with its exact depth, derive the Jordan recurrence,
-or prove the faithful symmetric-source-quotient theorem `(6)` or the normal-form equivalence `(8)`:
-[Hedenmalm, 2026](https://arxiv.org/abs/2606.17494).
+The package is an exact specialization of classical local analytic factorization and elementary
+symmetric-operator theory. The multiplicity-depth statement is Taylor factorization at a zero;
+the recurrence is the standard divided-quotient/root-chain recurrence; the no-Jordan lemma is the
+semisimplicity of symmetric operators. Writing these facts in Hedenmalm's notation is useful for
+the project but does not create a new theorem family.
 
-General operator-pencil theory studies Jordan chains and root functions. Those general facts are
-background, not the candidate novelty. The candidate new content is the exact instantiation for
-Hedenmalm's theta-source equation, including the four-condition global carrier law `(6)` and the
-canonical local/global normal forms `(7)`--`(8)`. Primary comparisons included recent analytic
-operator-family diagonalization and Jordan-chain work
-([Stiefenhofer, 2024](https://arxiv.org/abs/2411.15905),
-[Albrecht--Howlett--Verma, 2020](https://arxiv.org/abs/2002.10551)). Exact-title, arXiv-ID, divided-
-quotient, multiplicity, and Jordan-chain searches through 12 July 2026 found no contemporaneous
-extension of Hedenmalm containing `(1)`--`(8)`.
+The matrix normal form is also target-fed: its diagonal entries and block sizes are read directly
+from the Xi divisor. Likewise, the global source-quotient implication assumes the faithful
+symmetric carrier whose construction is the substantive Hilbert--Polya problem. It therefore
+classifies what such a carrier would have to preserve without constructing it.
 
 ## Significance assessment
 
-Audited score: **91/100**. The result converts Hedenmalm's qualitative simplicity remark into an
-exact multiplicity-depth theorem, derives the previously unstated Jordan obstruction, proves a
-global source-quotient carrier law forcing RH plus simplicity, and supplies an assumption-free
-canonical Hermitian normal-form equivalence. The ingredients from analytic factorization and
-symmetric-operator theory are classical, but their coupling to the June 2026 theta-source problem
-and the resulting carrier classification are not present in the identified literature.
-
-The result does not prove RH: it does not construct the faithful symmetric quotient in `(5)` from
-the prime--theta source. Its significance is the exact classification of the missing Hilbert--Pólya
-carrier and the elimination of multiplicity ambiguity in Hedenmalm's architecture.
+Honest score: **40/100**. The package is axiom-clean, precise, and reusable, but it fails the
+NOVEL x SIGNIFICANT gate. Its value is diagnostic: it records exactly how multiplicity appears as
+a root chain and prevents later arguments from silently erasing generalized levels. It is not a
+publication result and does not materially advance RH until a non-target-fed theta/prime
+construction supplies the quotient, metric, and symmetric operator.
 
 ## Gates
 
@@ -181,6 +171,6 @@ carrier and the elimination of multiplicity ambiguity in Hedenmalm's architectur
 - [x] global canonical blocks Hermitian iff RH plus simplicity
 - [x] exact builds
 - [x] axiom audit
-- [x] complete primary-literature audit through 12 July 2026
-- [x] score at least 90/100
-- [ ] standalone publication-ready manuscript
+- [x] parent-theory collision identified
+- [x] reclassified as not new scientific knowledge
+- [ ] construct the carrier from theta/prime data without Xi-divisor input

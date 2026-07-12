@@ -51,6 +51,7 @@ entrywise, and their leading determinants are equal.
 - `primeArchSourceValueMomentGerm`;
 - `primeArchSourceValueHankelMatrix`;
 - `completedMovingHankelMatrix_eq_primeArchSourceValueHankelMatrix`.
+- `completedMovingRelativeTrace_eq_arch_sub_prime_valueDifferences`.
 
 ## Proof
 
@@ -75,6 +76,18 @@ T_s(z)=P(w_s+z)-P(w_s),
 where `P=primeArchSourceRelativeTrace`.  This is proved first pointwise and then as an equality of
 analytic germs.  Thus every moving Hankel matrix in the Euler half-plane is computed solely from
 translated values of the one fixed source function.
+
+Expanding those two values gives the channel-resolved constraint
+
+\[
+T_s(z)=i\left(
+  [A(s+iz)-A(s)]-[E(s+iz)-E(s)]
+\right),
+\]
+
+where `A=logDeriv archFactor` and
+`E(s)=sum Lambda(n)n^(-s)`.  This retains the unsquared infinite prime carrier and the
+archimedean/boundary correction separately.
 
 ## Top-down consequence
 

@@ -1,9 +1,9 @@
 # Prime-residue Krein--Hamming product geometry in one HT field
 
 - **ID:** `prime-residue-krein-hamming-product-law`
-- **Stage:** 2-fully-proven on paper
-- **Type:** THEOREM / UNIVERSAL EULER-ORIENTED HT GEOMETRY
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED]`
+- **Stage:** 2-fully-proven on paper / not new scientific knowledge
+- **Type:** THEOREM / FINITE SIGNED-CAUCHY INERTIA BRIDGE
+- **Scientific status:** `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** One positive prime-log maximal-translation HT field carries every finite localized
   Stanley--Reisner differential matroid over every finite prime-residue orientation cube, and the
   relative Pick-kernel inertia between any two chambers recovers their two directed Hamming
@@ -253,6 +253,25 @@ This improves the previous pointing law in three ways: the orientation is on the
 carrier, the index is reconstructed from an analytic kernel, and every pairwise cube distance is
 recovered rather than only distance from a declared basepoint.
 
+## Novelty verdict
+
+The theorem is correct but does not pass the new-science gate. After cancellation of the common
+Herglotz background, the relative kernel is a finite signed sum of rank-one Cauchy features. An
+invertible Cauchy evaluation matrix and Sylvester inertia recover the two sign counts. This is an
+elementary finite-dimensional consequence of the signed atomic divisor; it is already contained
+in the broader finite-support chamber geometry of
+`herglotz-full-translation-ht-krein-index-orthogonality.md`.
+
+Moving the auxiliary poles onto the prime-log carrier improves interpretation but introduces no
+arithmetic interaction: the proof uses only distinct real poles and positive nonzero weights.
+Combining this inertia calculation with an independently free Stanley--Reisner encoding remains
+packaging, not an emergent product law. The exact positive residue is therefore narrower:
+
+> Every finite signed atomic Cauchy divisor carries its Boolean order and Hamming metric faithfully
+> in pairwise relative Pick-kernel inertia.
+
+This is a useful bridge and a formalization target, not a `90/100` theorem.
+
 ## RH-facing consequence
 
 An HT-based RH architecture cannot merely name an Euler orientation after constructing an unpointed
@@ -268,8 +287,8 @@ not supply that arithmetic section and does not claim RH.
 - [ ] exact relative-inertia theorem formalized unconditionally
 - [ ] prime-residue Herglotz chamber law formalized unconditionally
 - [ ] same-field and all-constraint product formalized unconditionally
-- [ ] parent-theory and exact-literature audit
-- [ ] significance rescored against the publication-ready predecessor
+- [x] parent-mechanism audit: finite signed Cauchy factorization plus Sylvester inertia
+- [x] significance rescored: bridge / not new scientific knowledge
 
 ## Log
 

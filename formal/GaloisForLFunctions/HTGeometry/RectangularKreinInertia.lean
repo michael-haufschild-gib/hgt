@@ -12,9 +12,24 @@ inertias are exactly the two feature counts.
 namespace GaloisForLFunctions.HTGeometry
 
 open Complex Matrix GaloisForLFunctions
-open scoped BigOperators
+open scoped BigOperators ComplexOrder
 
 noncomputable section
+
+/-- Rescaling each vector of a finite independent family by a nonzero scalar preserves
+independence. -/
+theorem linearIndependent_smul_nonzero
+    {ι V : Type*} [Fintype ι] [DecidableEq ι]
+    [AddCommGroup V] [Module ℂ V]
+    (v : ι → V) (c : ι → ℂ) (hv : LinearIndependent ℂ v)
+    (hc : ∀ i, c i ≠ 0) :
+    LinearIndependent ℂ (fun i => c i • v i) := by
+  rw [Fintype.linearIndependent_iff] at hv ⊢
+  intro d hd i
+  have hscaled : ∑ j, (d j * c j) • v j = 0 := by
+    simpa [mul_smul] using hd
+  have hi := hv (fun j => d j * c j) hscaled i
+  exact (mul_eq_zero.mp hi).resolve_right (hc i)
 
 /-- A Hermitian feature form with independently sized positive and negative packets. -/
 def rectangularKreinForm {N kp kn : ℕ}
@@ -143,7 +158,9 @@ theorem rectangular_eval_surjective_swap {N kp kn : ℕ}
       ((rectangularFeatureEval u).prod (rectangularFeatureEval w)) := by
   rintro ⟨a, b⟩
   obtain ⟨x, hx⟩ := hT (b, a)
-  exact ⟨x, by simpa only [Prod.ext_iff] using And.intro hx.2 hx.1⟩
+  refine ⟨x, Prod.ext ?_ ?_⟩
+  · exact congrArg Prod.snd hx
+  · exact congrArg Prod.fst hx
 
 /-- The positive inertia of a rectangular factored form is exactly the positive feature count when
 the combined evaluation is surjective. -/
@@ -166,12 +183,22 @@ theorem rectangular_exact_pos_inertia {N kp kn : ℕ}
     apply hneg.1 W
     intro y hy hy0
     have hp := hW y hy hy0
-    simpa using (neg_lt_zero.mpr hp)
+    have hquad :
+        (star y ⬝ᵥ (-rectangularKreinForm w u).mulVec y).re =
+          -(star y ⬝ᵥ (rectangularKreinForm w u).mulVec y).re := by
+      rw [neg_mulVec, dotProduct_neg, Complex.neg_re]
+    rw [hquad]
+    exact neg_lt_zero.mpr hp
   · obtain ⟨W, hWdim, hW⟩ := hneg.2
     refine ⟨W, hWdim, ?_⟩
     intro y hy hy0
     have hn := hW y hy hy0
-    simpa using (neg_pos.mpr hn)
+    have hquad :
+        (star y ⬝ᵥ (-rectangularKreinForm w u).mulVec y).re =
+          -(star y ⬝ᵥ (rectangularKreinForm w u).mulVec y).re := by
+      rw [neg_mulVec, dotProduct_neg, Complex.neg_re]
+    rw [hquad] at hn
+    exact neg_pos.mp hn
 
 /-- Combined feature independence gives the surjectivity required by the exact rectangular inertia
 theorems. -/

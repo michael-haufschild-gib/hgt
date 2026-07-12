@@ -190,6 +190,29 @@ theorem completedMovingHankelMatrix_eq_primeArchSourceValueHankelMatrix
   unfold analyticTraceMoments
   rw [(completedMovingMomentGerm_eventuallyEq_primeArchSourceValueMomentGerm hs).iteratedDeriv_eq]
 
+theorem one_half_add_completedCenteredCoordinate_add_mul_I (s z : ℂ) :
+    1 / 2 + (completedCenteredCoordinate s + z) * Complex.I =
+      s + z * Complex.I := by
+  rw [← completedCenteredCoordinate_add_spectral,
+    one_half_add_completedCenteredCoordinate_mul_I]
+
+/-- **Static channel constraint.** On the Euler half-plane the moving trace is exactly the
+translated archimedean/boundary value difference minus the translated von Mangoldt value
+difference.  No continuation path or prime cutoff occurs. -/
+theorem completedMovingRelativeTrace_eq_arch_sub_prime_valueDifferences
+    {s z : ℂ} (hs : 1 < s.re) (hsz : 1 < (s + z * Complex.I).re) :
+    completedMovingRelativeTrace s z =
+      Complex.I *
+        ((logDeriv archFactor (s + z * Complex.I) - logDeriv archFactor s) -
+          (LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
+              (s + z * Complex.I) -
+            LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ)) s)) := by
+  rw [completedMovingRelativeTrace_eq_primeArchSource_value_sub hs hsz,
+    primeArchSourceRelativeTrace, primeArchSourceRelativeTrace,
+    one_half_add_completedCenteredCoordinate_add_mul_I,
+    one_half_add_completedCenteredCoordinate_mul_I]
+  ring
+
 end
 
 end RHTower

@@ -7,6 +7,24 @@
 - **Target significance:** at least `90/100` only if every theorem below is proved, the direct
   literature parents are cleared, and the final manuscript is self-contained.
 
+## Current route verdict
+
+The divisor-indexed reciprocal operator, divided-chain/Jordan package, and faithful-quotient
+implications are formalized but retired as new science. They score only `35--45/100`: the first is
+target-fed, the second is classical local factorization, and the third assumes the carrier whose
+construction is the problem. They remain useful theorem-level guards.
+
+The open core is now deliberately narrower and constructive:
+
+```text
+from the theta kernel and completed all-prime source alone,
+construct a nondegenerate quotient or Hilbert metric which annihilates the common source,
+retains every required divided level, and makes coordinate multiplication symmetric.
+```
+
+No object indexed by the Xi zeros, no premise equivalent to positivity of the Weil form, and no
+assumed faithful quotient counts as progress on this core.
+
 ## Proposed theorem package
 
 Let

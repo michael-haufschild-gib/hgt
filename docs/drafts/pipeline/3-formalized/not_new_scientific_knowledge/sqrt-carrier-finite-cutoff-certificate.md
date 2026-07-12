@@ -148,7 +148,16 @@ Bridge file: `formal/GaloisForLFunctions/RHTower/SqrtCarrierWindowBridge.lean`.
 - `le_rpow_neg_div_of_pow_le_one` (in the certificate file): lower bracket `(13)`;
 - `sqrtCarrier_floor_witness_below_abscissa`: the below-abscissa floor `(14)`;
 - `sqrtCarrier_window_mass`: the carrier window mass `(15)`;
-- `sqrtCarrier_exceeds_detection_window`: the window separation `(16)`.
+- `sqrtCarrier_exceeds_detection_window`: the window separation `(16)`;
+- `divisor_sq_rpow_le`, `divisor_tail_tsum_le`: the effective divisor tail
+  `∑'_{k>m} d(k)²k^(-2σ) ≤ m^(3-2σ)/(2σ-3)` for `σ > 3/2`, from mathlib's
+  `Nat.card_divisors_le_self` (the `C = 1, δ = 1` divisor bound) plus the banked
+  integral-test lemma;
+- `sqrtCarrier_exceeds_detection_witness`: the first fully numeric window separation, at
+  `(N, (Nd, y), σ, t₀, U) = (9, (2,2), 2, 73/100, 40)` on every window `[T, T+40]` —
+  the gap hypothesis discharged by `norm_num` through the divisor tail (`≤ 1/2`), the
+  exact harmonic sum `H(4) = 25/12`, and the banked detection-coefficient bounds
+  (`∑ e_k² ≤ 9/256`); check `20 + 75/64 < 5329/250`.
 
 The module is imported by `GaloisForLFunctions.RHTower` and `GaloisForLFunctions`.
 

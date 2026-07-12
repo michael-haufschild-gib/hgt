@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiWeilPolarization
+import GaloisForLFunctions.RHTower.WindingXiCircle
 
 /-!
 # Explicit rectangular two-edge Weil profiles
@@ -310,6 +311,445 @@ theorem xiRectangularTwoEdgeTransform_squareSummable (L a : ℝ) :
   · intro q
     exact xiRectangularTwoEdgeTransform_square_le L a q
   · exact xiSpectralPoint_inv_sq_summable.mul_left (C ^ 2)
+
+/-! ## Dominant edge and bounded-remainder decomposition -/
+
+/-- The exponentially growing edge selected by the sign of the transverse
+coordinate.  It vanishes on the critical line. -/
+def rectangularTwoEdgeDominant (L a : ℝ) (w : ℂ) : ℂ :=
+  if 0 < w.re then
+    rectangularWindowAmplitude L w ^ 2 * Complex.exp (2 * (a : ℂ) * w)
+  else if w.re < 0 then
+    rectangularWindowAmplitude L (-w) ^ 2 * Complex.exp (-2 * (a : ℂ) * w)
+  else 0
+
+/-- A uniform strip majorant for the non-growing part of the squared two-edge
+transform. -/
+def rectangularTwoEdgeRemainderBound (L : ℝ) : ℝ :=
+  (1 + Real.exp (|L| / 2)) ^ 2 * (2 * Real.exp (|L| / 2) + 4)
+
+/-- Exact positive-transverse decomposition after removing the growing edge. -/
+theorem rectangularTwoEdgeTransform_sq_sub_dominant_of_pos
+    {L a : ℝ} {w : ℂ} (hwre : 0 < w.re) :
+    rectangularTwoEdgeTransform L a w ^ 2 - rectangularTwoEdgeDominant L a w =
+      rectangularWindowAmplitude L w ^ 2 *
+        (2 * Complex.exp ((L : ℂ) * w) +
+          Complex.exp (-2 * (a - L : ℂ) * w)) := by
+  have hw : w ≠ 0 := by
+    intro h
+    rw [h] at hwre
+    simp at hwre
+  rw [rectangularTwoEdgeTransform_sq_decomposition hw,
+    rectangularTwoEdgeDominant, if_pos hwre]
+  ring
+
+/-- Exact negative-transverse decomposition after removing the reflected
+growing edge. -/
+theorem rectangularTwoEdgeTransform_sq_sub_dominant_of_neg
+    {L a : ℝ} {w : ℂ} (hwre : w.re < 0) :
+    rectangularTwoEdgeTransform L a w ^ 2 - rectangularTwoEdgeDominant L a w =
+      rectangularWindowAmplitude L (-w) ^ 2 *
+        (2 * Complex.exp ((L : ℂ) * (-w)) +
+          Complex.exp (-2 * (a - L : ℂ) * (-w))) := by
+  have hnpos : 0 < (-w).re := by simpa using neg_pos.mpr hwre
+  rw [rectangularTwoEdgeDominant, if_neg (not_lt.mpr hwre.le), if_pos hwre]
+  rw [← rectangularTwoEdgeTransform_even L a w]
+  have h := rectangularTwoEdgeTransform_sq_sub_dominant_of_pos
+    (L := L) (a := a) (w := -w) hnpos
+  rw [rectangularTwoEdgeDominant, if_pos hnpos] at h
+  simpa only [neg_neg] using (show
+    rectangularTwoEdgeTransform L a (-w) ^ 2 -
+        rectangularWindowAmplitude L (-w) ^ 2 * Complex.exp (-2 * (a : ℂ) * w) =
+      rectangularWindowAmplitude L (-w) ^ 2 *
+        (2 * Complex.exp ((L : ℂ) * (-w)) +
+          Complex.exp (-2 * (a - L : ℂ) * (-w))) by
+    convert h using 1
+    all_goals congr 2
+    all_goals ring)
+
+/-- On the critical line the selected dominant edge is zero. -/
+@[simp] theorem rectangularTwoEdgeDominant_of_re_eq_zero
+    (L a : ℝ) {w : ℂ} (hwre : w.re = 0) :
+    rectangularTwoEdgeDominant L a w = 0 := by
+  rw [rectangularTwoEdgeDominant, if_neg (by linarith), if_neg (by linarith)]
+
+/-- In the positive transverse half-strip, the squared transform after removal
+of its growing edge is uniformly `O(1/‖w‖²)` in the aperture `a>=L`. -/
+theorem norm_rectangularTwoEdgeTransform_sq_sub_dominant_of_pos_le
+    {L a : ℝ} {w : ℂ} (ha : L ≤ a) (hwre : 0 < w.re)
+    (hstrip : |w.re| ≤ (1 / 2 : ℝ)) :
+    ‖rectangularTwoEdgeTransform L a w ^ 2 - rectangularTwoEdgeDominant L a w‖ ≤
+      rectangularTwoEdgeRemainderBound L / ‖w‖ ^ 2 := by
+  have hw : w ≠ 0 := by
+    intro h
+    rw [h] at hwre
+    simp at hwre
+  rw [rectangularTwoEdgeTransform_sq_sub_dominant_of_pos hwre,
+    norm_mul, norm_pow]
+  have hA := norm_rectangularWindowAmplitude_le L hw hstrip
+  have hA2 : ‖rectangularWindowAmplitude L w‖ ^ 2 ≤
+      ((1 + Real.exp (|L| / 2)) / ‖w‖) ^ 2 :=
+    pow_le_pow_left₀ (norm_nonneg _) hA 2
+  have hLexp : ‖Complex.exp ((L : ℂ) * w)‖ ≤ Real.exp (|L| / 2) := by
+    rw [Complex.norm_exp]
+    exact Real.exp_le_exp.mpr (real_mul_re_le_abs_half hstrip)
+  have hdecRe : (-2 * (a - L : ℂ) * w).re ≤ 0 := by
+    norm_num [Complex.mul_re]
+    nlinarith
+  have hdec : ‖Complex.exp (-2 * (a - L : ℂ) * w)‖ ≤ 1 := by
+    rw [Complex.norm_exp, ← Real.exp_zero]
+    exact Real.exp_le_exp.mpr hdecRe
+  have hinner :
+      ‖2 * Complex.exp ((L : ℂ) * w) +
+          Complex.exp (-2 * (a - L : ℂ) * w)‖ ≤
+        2 * Real.exp (|L| / 2) + 1 := by
+    calc
+      ‖2 * Complex.exp ((L : ℂ) * w) +
+          Complex.exp (-2 * (a - L : ℂ) * w)‖ ≤
+          ‖2 * Complex.exp ((L : ℂ) * w)‖ +
+            ‖Complex.exp (-2 * (a - L : ℂ) * w)‖ := norm_add_le _ _
+      _ ≤ 2 * Real.exp (|L| / 2) + 1 := by
+        rw [norm_mul, norm_ofNat]
+        gcongr
+  calc
+    ‖rectangularWindowAmplitude L w‖ ^ 2 *
+        ‖2 * Complex.exp ((L : ℂ) * w) +
+          Complex.exp (-2 * (a - L : ℂ) * w)‖ ≤
+      ((1 + Real.exp (|L| / 2)) / ‖w‖) ^ 2 *
+        (2 * Real.exp (|L| / 2) + 1) := by gcongr
+    _ ≤ ((1 + Real.exp (|L| / 2)) / ‖w‖) ^ 2 *
+        (2 * Real.exp (|L| / 2) + 4) := by
+      gcongr
+      norm_num
+    _ = rectangularTwoEdgeRemainderBound L / ‖w‖ ^ 2 := by
+      rw [rectangularTwoEdgeRemainderBound]
+      field_simp
+
+/-- The negative transverse half-strip has the same uniform remainder bound by
+functional-equation reflection. -/
+theorem norm_rectangularTwoEdgeTransform_sq_sub_dominant_of_neg_le
+    {L a : ℝ} {w : ℂ} (ha : L ≤ a) (hwre : w.re < 0)
+    (hstrip : |w.re| ≤ (1 / 2 : ℝ)) :
+    ‖rectangularTwoEdgeTransform L a w ^ 2 - rectangularTwoEdgeDominant L a w‖ ≤
+      rectangularTwoEdgeRemainderBound L / ‖w‖ ^ 2 := by
+  have hnpos : 0 < (-w).re := by simpa using neg_pos.mpr hwre
+  have hnstrip : |(-w).re| ≤ (1 / 2 : ℝ) := by simpa using hstrip
+  have h := norm_rectangularTwoEdgeTransform_sq_sub_dominant_of_pos_le
+    (L := L) (a := a) (w := -w) ha hnpos hnstrip
+  rw [rectangularTwoEdgeTransform_sq_sub_dominant_of_pos hnpos] at h
+  rw [rectangularTwoEdgeTransform_sq_sub_dominant_of_neg hwre]
+  simpa only [norm_neg] using h
+
+/-- On the critical line the entire squared transform is uniformly
+`O(1/‖w‖²)` because all aperture exponentials have unit norm. -/
+theorem norm_rectangularTwoEdgeTransform_sq_sub_dominant_of_re_eq_zero_le
+    {L a : ℝ} {w : ℂ} (hw : w ≠ 0) (hwre : w.re = 0) :
+    ‖rectangularTwoEdgeTransform L a w ^ 2 - rectangularTwoEdgeDominant L a w‖ ≤
+      rectangularTwoEdgeRemainderBound L / ‖w‖ ^ 2 := by
+  rw [rectangularTwoEdgeDominant_of_re_eq_zero L a hwre, sub_zero, norm_pow]
+  have hstrip : |w.re| ≤ (1 / 2 : ℝ) := by rw [hwre]; norm_num
+  have hnstrip : |(-w).re| ≤ (1 / 2 : ℝ) := by simpa using hstrip
+  have hA := norm_rectangularWindowAmplitude_le L hw hstrip
+  have hAn := norm_rectangularWindowAmplitude_le L (neg_ne_zero.mpr hw) hnstrip
+  rw [norm_neg] at hAn
+  have hpa : ‖Complex.exp ((a : ℂ) * w)‖ = 1 := by
+    rw [Complex.norm_exp, show ((a : ℂ) * w).re = 0 by
+      simp [Complex.mul_re, hwre]]
+    exact Real.exp_zero
+  have hna : ‖Complex.exp (-(a : ℂ) * w)‖ = 1 := by
+    rw [Complex.norm_exp, show (-(a : ℂ) * w).re = 0 by
+      simp [Complex.mul_re, hwre]]
+    exact Real.exp_zero
+  have hF : ‖rectangularTwoEdgeTransform L a w‖ ≤
+      2 * (1 + Real.exp (|L| / 2)) / ‖w‖ := by
+    rw [rectangularTwoEdgeTransform]
+    calc
+      ‖Complex.exp ((a : ℂ) * w) * rectangularWindowAmplitude L w +
+          Complex.exp (-(a : ℂ) * w) * rectangularWindowAmplitude L (-w)‖ ≤
+        ‖Complex.exp ((a : ℂ) * w) * rectangularWindowAmplitude L w‖ +
+          ‖Complex.exp (-(a : ℂ) * w) * rectangularWindowAmplitude L (-w)‖ :=
+        norm_add_le _ _
+      _ ≤ (1 + Real.exp (|L| / 2)) / ‖w‖ +
+          (1 + Real.exp (|L| / 2)) / ‖w‖ := by
+        rw [norm_mul, norm_mul, hpa, hna, one_mul, one_mul]
+        gcongr
+      _ = 2 * (1 + Real.exp (|L| / 2)) / ‖w‖ := by ring
+  have hF2 : ‖rectangularTwoEdgeTransform L a w‖ ^ 2 ≤
+      (2 * (1 + Real.exp (|L| / 2)) / ‖w‖) ^ 2 :=
+    pow_le_pow_left₀ (norm_nonneg _) hF 2
+  calc
+    ‖rectangularTwoEdgeTransform L a w‖ ^ 2 ≤
+        (2 * (1 + Real.exp (|L| / 2)) / ‖w‖) ^ 2 := hF2
+    _ ≤ rectangularTwoEdgeRemainderBound L / ‖w‖ ^ 2 := by
+      rw [rectangularTwoEdgeRemainderBound]
+      have hwNorm : ‖w‖ ≠ 0 := norm_ne_zero_iff.mpr hw
+      field_simp
+      have hexp : 0 < Real.exp (|L| / 2) := Real.exp_pos _
+      nlinarith [sq_nonneg (1 + Real.exp (|L| / 2))]
+
+/-- Uniform remainder bound on the whole centered critical strip. -/
+theorem norm_rectangularTwoEdgeTransform_sq_sub_dominant_le
+    {L a : ℝ} {w : ℂ} (ha : L ≤ a) (hw : w ≠ 0)
+    (hstrip : |w.re| ≤ (1 / 2 : ℝ)) :
+    ‖rectangularTwoEdgeTransform L a w ^ 2 - rectangularTwoEdgeDominant L a w‖ ≤
+      rectangularTwoEdgeRemainderBound L / ‖w‖ ^ 2 := by
+  rcases lt_trichotomy w.re 0 with hneg | hzero | hpos
+  · exact norm_rectangularTwoEdgeTransform_sq_sub_dominant_of_neg_le ha hneg hstrip
+  · exact norm_rectangularTwoEdgeTransform_sq_sub_dominant_of_re_eq_zero_le hw hzero
+  · exact norm_rectangularTwoEdgeTransform_sq_sub_dominant_of_pos_le ha hpos hstrip
+
+/-- Dominant edge in the centered Xi spectral coordinate. -/
+def xiRectangularTwoEdgeDominant (L a : ℝ) (z : ℂ) : ℂ :=
+  rectangularTwoEdgeDominant L a (I * z)
+
+/-- The multiplicity-exact Xi remainder term after removing the selected
+growing edge. -/
+def xiRectangularTwoEdgeRemainderTerm (L a : ℝ) (q : XiZeroCopy) : ℂ :=
+  xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2 -
+    xiRectangularTwoEdgeDominant L a (xiSpectralPoint q)
+
+/-- Every Xi remainder term is dominated by the canonical reciprocal-square
+majorant, uniformly for `a>=L`. -/
+theorem norm_xiRectangularTwoEdgeRemainderTerm_le
+    {L a : ℝ} (ha : L ≤ a) (q : XiZeroCopy) :
+    ‖xiRectangularTwoEdgeRemainderTerm L a q‖ ≤
+      rectangularTwoEdgeRemainderBound L / ‖xiSpectralPoint q‖ ^ 2 := by
+  have hz : I * xiSpectralPoint q ≠ 0 :=
+    mul_ne_zero I_ne_zero (xiSpectralPoint_ne_zero q)
+  have h := norm_rectangularTwoEdgeTransform_sq_sub_dominant_le
+    (L := L) (a := a) (w := I * xiSpectralPoint q) ha hz
+    (le_of_lt (abs_re_I_mul_xiSpectralPoint_le_half q))
+  rw [norm_mul, norm_I, one_mul] at h
+  simpa only [xiRectangularTwoEdgeRemainderTerm,
+    xiRectangularTwoEdgeTransform, xiRectangularTwoEdgeDominant] using h
+
+/-- The full multiplicity-exact remainder series is absolutely summable for
+every aperture `a>=L`. -/
+theorem xiRectangularTwoEdgeRemainderTerm_summable
+    {L a : ℝ} (ha : L ≤ a) :
+    Summable (xiRectangularTwoEdgeRemainderTerm L a) := by
+  apply Summable.of_norm_bounded
+    (xiSpectralPoint_inv_sq_summable.mul_left
+      (rectangularTwoEdgeRemainderBound L))
+  intro q
+  calc
+    ‖xiRectangularTwoEdgeRemainderTerm L a q‖ ≤
+        rectangularTwoEdgeRemainderBound L / ‖xiSpectralPoint q‖ ^ 2 :=
+      norm_xiRectangularTwoEdgeRemainderTerm_le ha q
+    _ = rectangularTwoEdgeRemainderBound L *
+        (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring
+
+/-- The zero-side polarization of a rectangular test is literally the sum of
+its squared values, because the test is fixed by `xiWeilSharp`. -/
+theorem xiWeilPolarization_rectangular_eq_tsum_sq (L a : ℝ) :
+    xiWeilPolarization (xiRectangularTwoEdgeTransform L a)
+        (xiRectangularTwoEdgeTransform L a) =
+      ∑' q : XiZeroCopy,
+        xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2 := by
+  unfold xiWeilPolarization
+  apply tsum_congr
+  intro q
+  rw [xiWeilSharp_xiRectangularTwoEdgeTransform]
+  ring
+
+/-- Squared rectangular values are absolutely summable as complex terms. -/
+theorem xiRectangularTwoEdgeTransform_sq_summable (L a : ℝ) :
+    Summable (fun q : XiZeroCopy =>
+      xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2) := by
+  apply Summable.of_norm
+  simpa only [norm_pow] using
+    (xiRectangularTwoEdgeTransform_squareSummable L a)
+
+/-- The selected dominant-edge series is summable at every fixed aperture. -/
+theorem xiRectangularTwoEdgeDominant_summable
+    {L a : ℝ} (ha : L ≤ a) :
+    Summable (fun q : XiZeroCopy =>
+      xiRectangularTwoEdgeDominant L a (xiSpectralPoint q)) := by
+  have hsq := xiRectangularTwoEdgeTransform_sq_summable L a
+  have hrem := xiRectangularTwoEdgeRemainderTerm_summable ha
+  refine (hsq.sub hrem).congr (fun q => ?_)
+  rw [xiRectangularTwoEdgeRemainderTerm]
+  ring
+
+/-- The difference between the actual rectangular Xi polarization and the
+selected dominant-edge sum is exactly the absolutely convergent remainder
+series. -/
+theorem xiWeilPolarization_rectangular_sub_dominant_eq_tsum_remainder
+    {L a : ℝ} (ha : L ≤ a) :
+    xiWeilPolarization (xiRectangularTwoEdgeTransform L a)
+          (xiRectangularTwoEdgeTransform L a) -
+        ∑' q : XiZeroCopy,
+          xiRectangularTwoEdgeDominant L a (xiSpectralPoint q) =
+      ∑' q : XiZeroCopy, xiRectangularTwoEdgeRemainderTerm L a q := by
+  rw [xiWeilPolarization_rectangular_eq_tsum_sq]
+  have hsq := xiRectangularTwoEdgeTransform_sq_summable L a
+  have hdom := xiRectangularTwoEdgeDominant_summable ha
+  rw [← hsq.tsum_sub hdom]
+  apply tsum_congr
+  intro q
+  rfl
+
+/-- The full multiplicity-exact remainder is bounded by one aperture-independent
+constant times the canonical reciprocal-square Xi mass. -/
+theorem norm_xiWeilPolarization_rectangular_sub_dominant_le
+    {L a : ℝ} (ha : L ≤ a) :
+    ‖xiWeilPolarization (xiRectangularTwoEdgeTransform L a)
+          (xiRectangularTwoEdgeTransform L a) -
+        ∑' q : XiZeroCopy,
+          xiRectangularTwoEdgeDominant L a (xiSpectralPoint q)‖ ≤
+      rectangularTwoEdgeRemainderBound L *
+        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2 := by
+  rw [xiWeilPolarization_rectangular_sub_dominant_eq_tsum_remainder ha]
+  have hrem := xiRectangularTwoEdgeRemainderTerm_summable ha
+  have hmajor := xiSpectralPoint_inv_sq_summable.mul_left
+    (rectangularTwoEdgeRemainderBound L)
+  calc
+    ‖∑' q : XiZeroCopy, xiRectangularTwoEdgeRemainderTerm L a q‖ ≤
+        ∑' q : XiZeroCopy, ‖xiRectangularTwoEdgeRemainderTerm L a q‖ :=
+      norm_tsum_le_tsum_norm hrem.norm
+    _ ≤ ∑' q : XiZeroCopy,
+        rectangularTwoEdgeRemainderBound L *
+          (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+      exact hrem.norm.tsum_le_tsum (fun q => by
+        calc
+          ‖xiRectangularTwoEdgeRemainderTerm L a q‖ ≤
+              rectangularTwoEdgeRemainderBound L / ‖xiSpectralPoint q‖ ^ 2 :=
+            norm_xiRectangularTwoEdgeRemainderTerm_le ha q
+          _ = rectangularTwoEdgeRemainderBound L *
+              (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring) hmajor
+    _ = rectangularTwoEdgeRemainderBound L *
+        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2 := by
+      rw [tsum_mul_left]
+
+/-! ## Exact FE--Schwarz quartet identities -/
+
+/-- Conjugating a Xi-divisor copy conjugates its literal centered-zero
+coordinate `i z`. -/
+theorem I_mul_xiSpectralPoint_copyConj (q : XiZeroCopy) :
+    I * xiSpectralPoint (xiZeroCopyConjEquiv q) =
+      (starRingEnd ℂ) (I * xiSpectralPoint q) := by
+  rw [xiSpectralPoint_copyConj]
+  simp only [map_mul, conj_I]
+  ring
+
+/-- Functional-equation reflection leaves every rectangular two-edge Xi value
+unchanged. -/
+theorem xiRectangularTwoEdgeTransform_reflect (L a : ℝ) (q : XiZeroCopy) :
+    xiRectangularTwoEdgeTransform L a
+        (xiSpectralPoint (xiZeroCopyReflectEquiv q)) =
+      xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) := by
+  rw [xiSpectralPoint_reflect, xiRectangularTwoEdgeTransform]
+  rw [show I * (-xiSpectralPoint q) = -(I * xiSpectralPoint q) by ring]
+  exact rectangularTwoEdgeTransform_even L a (I * xiSpectralPoint q)
+
+/-- Schwarz conjugation of a divisor copy conjugates every rectangular
+two-edge Xi value. -/
+theorem xiRectangularTwoEdgeTransform_copyConj (L a : ℝ) (q : XiZeroCopy) :
+    xiRectangularTwoEdgeTransform L a
+        (xiSpectralPoint (xiZeroCopyConjEquiv q)) =
+      (starRingEnd ℂ)
+        (xiRectangularTwoEdgeTransform L a (xiSpectralPoint q)) := by
+  rw [xiRectangularTwoEdgeTransform, xiRectangularTwoEdgeTransform,
+    I_mul_xiSpectralPoint_copyConj]
+  exact (rectangularTwoEdgeTransform_conj L a (I * xiSpectralPoint q)).symm
+
+/-- Critical-line reflection also conjugates every rectangular two-edge Xi
+value. -/
+theorem xiRectangularTwoEdgeTransform_lineConj (L a : ℝ) (q : XiZeroCopy) :
+    xiRectangularTwoEdgeTransform L a
+        (xiSpectralPoint (xiZeroCopyLineConjEquiv q)) =
+      (starRingEnd ℂ)
+        (xiRectangularTwoEdgeTransform L a (xiSpectralPoint q)) := by
+  rw [xiZeroCopyLineConjEquiv, Equiv.trans_apply,
+    xiRectangularTwoEdgeTransform_reflect,
+    xiRectangularTwoEdgeTransform_copyConj]
+
+/-- The four FE--Schwarz copies contribute exactly four times the real part of
+one squared rectangular value.  The identity is pointwise and retains analytic
+multiplicity because it is stated on `XiZeroCopy`. -/
+theorem xiRectangularTwoEdgeTransform_quartet_square (L a : ℝ) (q : XiZeroCopy) :
+    xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2 +
+        xiRectangularTwoEdgeTransform L a
+          (xiSpectralPoint (xiZeroCopyReflectEquiv q)) ^ 2 +
+        xiRectangularTwoEdgeTransform L a
+          (xiSpectralPoint (xiZeroCopyConjEquiv q)) ^ 2 +
+        xiRectangularTwoEdgeTransform L a
+          (xiSpectralPoint (xiZeroCopyLineConjEquiv q)) ^ 2 =
+      (((4 * (xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2).re : ℝ) : ℂ)) := by
+  rw [xiRectangularTwoEdgeTransform_reflect,
+    xiRectangularTwoEdgeTransform_copyConj,
+    xiRectangularTwoEdgeTransform_lineConj, ← map_pow]
+  let y : ℂ := xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2
+  change y + y + (starRingEnd ℂ) y + (starRingEnd ℂ) y = ((4 * y.re : ℝ) : ℂ)
+  apply Complex.ext
+  · simp only [add_re, conj_re, ofReal_re]
+    ring
+  · simp only [add_im, conj_im, ofReal_im]
+    ring
+
+/-! ## A uniform zero-height gap -/
+
+/-- The actual Xi divisor is uniformly separated from the real segment of the
+critical strip.  This is qualitative and uses only finiteness of zeros in a
+compact disc plus the unconditional absence of real nontrivial Xi zeros. -/
+theorem exists_xiDivisorSupport_abs_im_lower_bound :
+    ∃ η : ℝ, 0 < η ∧ ∀ ρ : XiDivisorSupport, η ≤ |(ρ : ℂ).im| := by
+  let Zset : Set ℂ :=
+    {z ∈ Metric.closedBall ((1 / 2 : ℝ) : ℂ) 3 | xi z = 0}
+  have hZfinite : Zset.Finite := xi_zeros_closedBall_finite ((1 / 2 : ℝ) : ℂ) 3
+  let Z : Finset ℂ := hZfinite.toFinset
+  let V : Finset ℝ := insert 1 (Z.image fun z => |z.im|)
+  have hV : V.Nonempty := ⟨1, Finset.mem_insert_self 1 _⟩
+  let η : ℝ := V.min' hV
+  have hηmem : η ∈ V := Finset.min'_mem V hV
+  have hηpos : 0 < η := by
+    rcases Finset.mem_insert.mp hηmem with hηone | hηimage
+    · rw [hηone]
+      norm_num
+    · obtain ⟨z, hzZ, hzη⟩ := Finset.mem_image.mp hηimage
+      rw [← hzη]
+      apply abs_pos.mpr
+      have hzset : z ∈ Zset := by
+        exact hZfinite.mem_toFinset.mp hzZ
+      have hzsupport : z ∈ (MeromorphicOn.divisor xi Set.univ).support :=
+        mem_xi_divisor_support_of_eq_zero hzset.2
+      exact xi_divisor_support_im_ne_zero ⟨z, hzsupport⟩
+  refine ⟨η, hηpos, fun ρ => ?_⟩
+  by_cases hsmall : |(ρ : ℂ).im| < 1
+  · have hstrip := xi_divisor_support_re_mem_open_unit ρ
+    have hreabs : |((ρ : ℂ) - ((1 / 2 : ℝ) : ℂ)).re| < 1 := by
+      simp only [Complex.sub_re, Complex.ofReal_re]
+      rw [abs_lt]
+      constructor <;> linarith
+    have himabs : |((ρ : ℂ) - ((1 / 2 : ℝ) : ℂ)).im| < 1 := by
+      simpa only [Complex.sub_im, Complex.ofReal_im, sub_zero] using hsmall
+    have hball : (ρ : ℂ) ∈ Metric.closedBall ((1 / 2 : ℝ) : ℂ) 3 := by
+      rw [Metric.mem_closedBall, dist_eq_norm]
+      apply le_of_lt
+      calc
+        ‖(ρ : ℂ) - ((1 / 2 : ℝ) : ℂ)‖ ≤
+            |((ρ : ℂ) - ((1 / 2 : ℝ) : ℂ)).re| +
+              |((ρ : ℂ) - ((1 / 2 : ℝ) : ℂ)).im| :=
+          Complex.norm_le_abs_re_add_abs_im _
+        _ < 1 + 1 := add_lt_add hreabs himabs
+        _ < 3 := by norm_num
+    have hzset : (ρ : ℂ) ∈ Zset :=
+      ⟨hball, xi_eq_zero_of_mem_divisor_support ρ⟩
+    have hzZ : (ρ : ℂ) ∈ Z := hZfinite.mem_toFinset.mpr hzset
+    have himV : |(ρ : ℂ).im| ∈ V := by
+      exact Finset.mem_insert_of_mem (Finset.mem_image.mpr ⟨(ρ : ℂ), hzZ, rfl⟩)
+    have hmin : V.min' hV ≤ |(ρ : ℂ).im| := Finset.min'_le V _ himV
+    simpa only [η] using hmin
+  · have hmin : V.min' hV ≤ 1 :=
+      Finset.min'_le V 1 (Finset.mem_insert_self 1 (Z.image fun z => |z.im|))
+    have hηone : η ≤ 1 := by simpa only [η] using hmin
+    exact hηone.trans (not_lt.mp hsmall)
+
+/-- The same uniform height gap on multiplicity copies. -/
+theorem exists_xiZeroCopy_abs_im_lower_bound :
+    ∃ η : ℝ, 0 < η ∧ ∀ q : XiZeroCopy, η ≤ |((q.1 : XiDivisorSupport) : ℂ).im| := by
+  obtain ⟨η, hη, hbound⟩ := exists_xiDivisorSupport_abs_im_lower_bound
+  exact ⟨η, hη, fun q => hbound q.1⟩
 
 end
 

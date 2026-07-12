@@ -46,6 +46,15 @@ More sharply, if RH is false then
 liminf_(a->infinity) Q_Xi(F_(a,L))=-infinity.                (5)
 ```
 
+The proposed theorem is stronger on the aperture coordinate.  It should suffice
+to test the single logarithmic sequence
+
+```text
+a_n=(1/2)log n,  n>exp(2L).                                 (5a)
+```
+
+Thus false RH should force `liminf_n Q_Xi(F_(a_n,L))=-infinity`.
+
 ## Why the rectangle removes the genericity layer
 
 For a smooth compact profile `f`, the earlier two-edge theorem needed a residual choice satisfying
@@ -75,7 +84,7 @@ S_L(a)=4 Re sum_(w in Z_+) m_w A_L(w)^2 exp(2aw),            (7)
 where `Z_+` contains one representative `w=delta+i gamma`, `delta>0`, from each off-line
 FE--Schwarz quartet.
 
-## Landau globalization program
+## Logarithmically sampled Landau globalization
 
 Put
 
@@ -83,23 +92,34 @@ Put
 delta_*=sup_(w in Z_+) Re w.                                 (8)
 ```
 
-Under false RH, `0<delta_*<=1/2`.  For `Re s>2delta_*`, termwise Laplace transformation gives
+Under false RH, `0<delta_*<=1/2`.  At the sampled apertures `(5a)`, the growing term becomes the
+ordinary generalized Dirichlet coefficient
 
 ```text
-L S_L(s)
- =2 sum_(w in Z_+) m_w
-   [A_L(w)^2/(s-2w)+conj(A_L(w)^2)/(s-2conj(w))].            (9)
+S_L(n)=2 sum_(w in Z_right) m_w A_L(w)^2 n^w,               (9)
 ```
 
-The `O(|gamma|^-2)` coefficient bound and the Xi zero-counting bound give locally normal
-convergence away from the displayed poles.  Every pole is genuine by `(3)`.  Hence the Laplace
-abscissa is exactly `2delta_*`: a smaller abscissa would make the Laplace transform holomorphic at
-some genuine pole with larger real part.
+where `Z_right` includes every multiplicity copy with `Re w>0`, hence is closed under conjugation
+and makes `S_L(n)` real.  If `S_L(n)` were bounded below, choose `C` so that its tail plus `C` is
+nonnegative.  Its ordinary Dirichlet series has, initially for `Re s>1+delta_*`, the continuation
 
-The meromorphic continuation `(9)` is holomorphic near the real point `2delta_*`.  A pole there
-would be a real nontrivial zeta zero, while nonreal poles cannot accumulate at a finite point.
-Landau's oscillation theorem therefore rules out a lower bound for `S_L` on any tail and yields
-`(5)` after restoring the uniformly bounded terms.
+```text
+sum_(n>=N) [S_L(n)+C]n^(-s)
+ =2 sum_(w in Z_right) m_w A_L(w)^2
+    [zeta(s-w)-sum_(n<N)n^(w-s)]
+  +C[zeta(s)-sum_(n<N)n^(-s)].                              (9a)
+```
+
+Every shifted pole `s=1+w` is genuine by `(3)`, so the abscissa is exactly `1+delta_*`.  The Xi
+divisor has a uniform positive ordinate gap from the real strip segment; that gap is now proved in
+Lean.  Together with the `O(|gamma|^-2)` amplitude, zero counting, and a vertical-strip polynomial
+bound for zeta, it should make `(9a)` locally normal and holomorphic near the real point
+`1+delta_*`.
+
+The already formalized nonnegative-Dirichlet-series Landau theorem then rules out the assumed lower
+bound.  Restoring the uniformly bounded middle, decaying, and on-line terms yields `(5)` and the
+stronger sampled assertion `(5a)`.  This reduction removes the need to formalize a separate
+continuous-Laplace Landau theorem.
 
 ## Positive CCM law
 
@@ -141,17 +161,22 @@ the actual Xi divisor; finite-cutoff positivity alone does not supply that trans
    and `(6)`, together with evenness and exact compatibility with `xiWeilSharp`.
 2. **Complete.** The same module proves square summability of `F_(a,L)` on the actual
    multiplicity-exact `XiZeroCopy` divisor by an explicit reciprocal-square majorant.
-3. Formalize the off-line quartet decomposition and the bounded remainder.
-4. Build the weighted resolvent series `(9)` and prove local normal convergence off its poles.
-5. Formalize the continuous-Laplace Landau boundary-singularity theorem.
+3. **Complete.**  The FE--Schwarz orbit contributes exactly four times the real part of one squared
+   rectangular value on `XiZeroCopy`.  The growing edge is selected by the sign of the transverse
+   coordinate, and the full multiplicity-exact polarization differs from its dominant-edge sum by
+   an explicitly bounded remainder, uniformly for every aperture `a>=L`.
+4. Build the shifted-zeta Dirichlet continuation `(9a)` and prove local normal convergence off its
+   poles, using the now-formal uniform Xi ordinate gap.
+5. Specialize the existing formal nonnegative-Dirichlet-series Landau theorem to `(9a)`.
 6. Identify the exact abscissa and specialize the theorem to the actual Xi divisor.
-7. Prove `(4)`--`(5)` without a simplicity, RH, or source-positivity hypothesis.
+7. Prove `(4)`--`(5a)` without a simplicity, RH, or source-positivity hypothesis.
 
 ## Gates
 
 - [x] candidate explicit profile and nonvanishing mechanism isolated
 - [x] exact transform and leading/remainder decomposition proved on paper
 - [x] scalar transform, symmetry, strip bound, and Xi-divisor square summability formalized in Lean
+- [x] exact dominant-edge decomposition and global aperture-uniform remainder bound formalized
 - [ ] complete paper proof audited at indicator-class and abscissa boundaries
 - [ ] unconditional Lean formalization of every promoted claim
 - [ ] primary-literature novelty audit
