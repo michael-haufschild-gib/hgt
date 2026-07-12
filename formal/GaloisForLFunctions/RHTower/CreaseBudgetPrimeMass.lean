@@ -610,4 +610,122 @@ theorem primeMass_upper_log_log {x : ℕ} (hx : 2 ≤ x) :
     Real.log_le_log (by exact_mod_cast hL1) hkey
   linarith
 
+/-! ## The sharp Mertens lower bound: coefficient one -/
+
+/-- The telescoping correction: `∑_{p ≤ x} 1/(p(p-1)) ≤ 1`. -/
+theorem sum_primesBelow_inv_mul_sub_one_le (x : ℕ) :
+    ∑ p ∈ Nat.primesBelow x, 1 / ((p : ℝ) * ((p : ℝ) - 1)) ≤ 1 := by
+  have hsub : Nat.primesBelow x ⊆ Finset.Icc 2 x := by
+    intro p hp
+    obtain ⟨hplt, hpp⟩ := Nat.mem_primesBelow.mp hp
+    exact Finset.mem_Icc.mpr ⟨hpp.two_le, by omega⟩
+  refine le_trans (Finset.sum_le_sum_of_subset_of_nonneg hsub fun k hk _ => ?_) ?_
+  · have h2 : 2 ≤ k := (Finset.mem_Icc.mp hk).1
+    have : (1 : ℝ) ≤ (k : ℝ) - 1 := by
+      have : (2 : ℝ) ≤ (k : ℝ) := by exact_mod_cast h2
+      linarith
+    positivity
+  · rcases Nat.lt_or_ge x 2 with hx | hx
+    · rw [Finset.Icc_eq_empty (by omega), Finset.sum_empty]
+      norm_num
+    · have hIcc : Finset.Icc 2 x = Finset.Ico 2 (x + 1) := by
+        ext k
+        simp only [Finset.mem_Icc, Finset.mem_Ico]
+        omega
+      rw [hIcc, Finset.sum_Ico_eq_sum_range]
+      have hterm : ∀ i ∈ Finset.range (x + 1 - 2),
+          1 / (((2 + i : ℕ) : ℝ) * (((2 + i : ℕ) : ℝ) - 1))
+            = 1 / ((i : ℝ) + 1) - 1 / ((i : ℝ) + 2) := by
+        intro i _
+        have h1 : ((i : ℝ) + 1) ≠ 0 := by positivity
+        have h2 : ((i : ℝ) + 2) ≠ 0 := by positivity
+        push_cast
+        rw [div_sub_div _ _ h1 h2]
+        congr 1
+        · ring
+        · ring
+      have htele : ∑ i ∈ Finset.range (x + 1 - 2), (1 / ((i : ℝ) + 1) - 1 / ((i : ℝ) + 2))
+          = 1 / ((0 : ℕ) + 1 : ℝ) - 1 / (((x + 1 - 2 : ℕ) : ℝ) + 1) := by
+        refine Eq.trans (Finset.sum_congr rfl fun i _ => ?_)
+          (Finset.sum_range_sub' (f := fun j : ℕ => 1 / ((j : ℝ) + 1)) (n := x + 1 - 2))
+        push_cast
+        ring
+      rw [Finset.sum_congr rfl hterm, htele]
+      have hpos : (0 : ℝ) ≤ 1 / (((x + 1 - 2 : ℕ) : ℝ) + 1) := by positivity
+      norm_num
+      linarith
+
+/-- The sharp per-prime logarithm estimate:
+`log((1-p⁻¹)⁻¹) ≤ 1/p + 1/(p(p-1))`, exactly the reciprocal plus the telescoping
+correction. -/
+theorem log_inv_one_sub_inv_le {p : ℕ} (hp : 2 ≤ p) :
+    Real.log (1 - (p : ℝ)⁻¹)⁻¹ ≤ (p : ℝ)⁻¹ + 1 / ((p : ℝ) * ((p : ℝ) - 1)) := by
+  have hp2 : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
+  have hp0 : (0 : ℝ) < (p : ℝ) := by linarith
+  have ht : (0 : ℝ) < 1 - (p : ℝ)⁻¹ := by
+    have : (p : ℝ)⁻¹ ≤ (2 : ℝ)⁻¹ := inv_anti₀ (by norm_num) hp2
+    have h2 : (2 : ℝ)⁻¹ < 1 := by norm_num
+    linarith
+  have hle := Real.log_le_sub_one_of_pos (inv_pos.mpr ht)
+  have heq : (1 - (p : ℝ)⁻¹)⁻¹ - 1 = (p : ℝ)⁻¹ + 1 / ((p : ℝ) * ((p : ℝ) - 1)) := by
+    have hpm1 : ((p : ℝ) - 1) ≠ 0 := by linarith
+    field_simp
+    ring
+  linarith
+
+/-- **The sharp effective Mertens lower bound**: `log log(M+1) ≤ ∑_{p ≤ M} 1/p + 1` —
+coefficient one on the prime mass, the multiplicative constant of `mertens_lower`
+replaced by a telescoped additive constant. -/
+theorem mertens_lower_add_one {M : ℕ} (hM : 1 ≤ M) :
+    Real.log (Real.log ((M : ℝ) + 1))
+      ≤ (∑ p ∈ Nat.primesBelow (M + 1), (p : ℝ)⁻¹) + 1 := by
+  have hM1 : (1 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
+  have hHpos : 0 < Real.log ((M : ℝ) + 1) := Real.log_pos (by linarith)
+  have hH := harmonic_Icc_ge_log M
+  have hprod := harmonic_le_prod_primesBelow M
+  have hfacpos : ∀ p ∈ Nat.primesBelow (M + 1), (0 : ℝ) < (1 - (p : ℝ)⁻¹)⁻¹ := by
+    intro p hp
+    have hpp := (Nat.mem_primesBelow.mp hp).2
+    have h2 : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hpp.two_le
+    have hhalf : (p : ℝ)⁻¹ ≤ 1 / 2 := by
+      calc (p : ℝ)⁻¹ ≤ (2 : ℝ)⁻¹ := inv_anti₀ (by norm_num) h2
+        _ = 1 / 2 := by norm_num
+    exact inv_pos.mpr (by linarith)
+  calc Real.log (Real.log ((M : ℝ) + 1))
+      ≤ Real.log (∑ n ∈ Finset.Icc 1 M, 1 / (n : ℝ)) := Real.log_le_log hHpos hH
+    _ ≤ Real.log (∏ p ∈ Nat.primesBelow (M + 1), (1 - (p : ℝ)⁻¹)⁻¹) :=
+        Real.log_le_log (by linarith) hprod
+    _ = ∑ p ∈ Nat.primesBelow (M + 1), Real.log ((1 - (p : ℝ)⁻¹)⁻¹) :=
+        Real.log_prod (fun p hp => (hfacpos p hp).ne')
+    _ ≤ ∑ p ∈ Nat.primesBelow (M + 1),
+          ((p : ℝ)⁻¹ + 1 / ((p : ℝ) * ((p : ℝ) - 1))) :=
+        Finset.sum_le_sum fun p hp =>
+          log_inv_one_sub_inv_le (Nat.mem_primesBelow.mp hp).2.two_le
+    _ = (∑ p ∈ Nat.primesBelow (M + 1), (p : ℝ)⁻¹)
+          + ∑ p ∈ Nat.primesBelow (M + 1), 1 / ((p : ℝ) * ((p : ℝ) - 1)) :=
+        Finset.sum_add_distrib
+    _ ≤ (∑ p ∈ Nat.primesBelow (M + 1), (p : ℝ)⁻¹) + 1 := by
+        linarith [sum_primesBelow_inv_mul_sub_one_le (M + 1)]
+
+/-- **The sharp closed-form cutoff constraint**: with the coefficient-one Mertens bound,
+any Lipschitz line-crossing datum forces `√N + 1 < exp exp(2(1 + 1/(2σ₂-1)) + 1)` — the
+exponent of `line_crossing_cutoff_lt_expexp` halved up to the telescoped constant. -/
+theorem line_crossing_cutoff_lt_expexp' {σ₂ : ℝ} (hσ₂ : 1 / 2 < σ₂) {N : ℕ}
+    (hN : 1 ≤ Nat.sqrt N) {t₀ ε₁ τ : ℝ} (hε₁ : 0 < ε₁)
+    (hline : t₀ < ‖dpoly2 sqrtMoebiusCoeff (Finset.Icc 1 N) ((σ₂ : ℂ) + (τ : ℂ) * I)‖)
+    (hbudget : lineBudget σ₂ N ≤ t₀ - ε₁) :
+    ((Nat.sqrt N : ℝ)) + 1 < Real.exp (Real.exp (2 * (1 + 1 / (2 * σ₂ - 1)) + 1)) := by
+  have hmass := line_crossing_cutoff_primeMass_lt hσ₂ hε₁ hline hbudget
+  have hmert := mertens_lower_add_one hN
+  have hN1 : (1 : ℝ) ≤ (Nat.sqrt N : ℝ) := by exact_mod_cast hN
+  have h1 : Real.log (Real.log ((Nat.sqrt N : ℝ) + 1))
+      < 2 * (1 + 1 / (2 * σ₂ - 1)) + 1 := by linarith
+  have hpos1 : 0 < Real.log ((Nat.sqrt N : ℝ) + 1) := Real.log_pos (by linarith)
+  have h2 : Real.log ((Nat.sqrt N : ℝ) + 1)
+      < Real.exp (2 * (1 + 1 / (2 * σ₂ - 1)) + 1) := by
+    have := Real.exp_lt_exp.mpr h1
+    rwa [Real.exp_log hpos1] at this
+  have h3 := Real.exp_lt_exp.mpr h2
+  rwa [Real.exp_log (by positivity : (0 : ℝ) < (Nat.sqrt N : ℝ) + 1)] at h3
+
 end RHTower

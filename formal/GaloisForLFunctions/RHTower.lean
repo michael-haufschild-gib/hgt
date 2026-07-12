@@ -541,6 +541,7 @@ import GaloisForLFunctions.RHTower.ThetaHalfPlaneBound
 import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeSource
 import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeDerivatives
 import GaloisForLFunctions.RHTower.ThetaCuspReflection
+import GaloisForLFunctions.RHTower.ThetaWignerEisensteinSymbol
 import GaloisForLFunctions.RHTower.ThetaCuspSchwartz
 import GaloisForLFunctions.RHTower.ThetaCuspMellinPole
 import GaloisForLFunctions.RHTower.PolarPrimeMellinDefect
@@ -739,3 +740,5 @@ import GaloisForLFunctions.RHTower.SquareSupportPrimeMass
 import GaloisForLFunctions.RHTower.BornSectorExchange
 import GaloisForLFunctions.RHTower.WeightOneInversion
 import GaloisForLFunctions.RHTower.QuadraticScaleSpectralRH
+import GaloisForLFunctions.RHTower.BornPoissonWiring
+import GaloisForLFunctions.RHTower.BornGradedKMSClassification

@@ -280,3 +280,5 @@ import GaloisForLFunctions.FaithfulFacetComplementSpan
 import GaloisForLFunctions.RHTower.SquareSupportPrimeMass
 import GaloisForLFunctions.WedgeFacetLowerBound
 import GaloisForLFunctions.RHTower.PiTranscendenceSetup
+import GaloisForLFunctions.RHTower.ScaledSymmetricPolynomial
+import GaloisForLFunctions.RHTower.NonmonicSymmetricIntegral

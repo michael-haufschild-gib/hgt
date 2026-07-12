@@ -73,6 +73,39 @@ theorem differentialJet_continuedHzetaUpperEndMero (s : ℂ) (n : ℕ) :
         upperEndMeroFieldDifferential_algebraMap,
         upperEndAnalyticDeriv_continuedHzetaJet]
 
+/-- The analytic jet is the signed Pochhammer coefficient times the exponent-shifted continued
+Hurwitz germ. -/
+theorem continuedHzetaUpperEndAnalyticJet_eq (s : ℂ) (n : ℕ) :
+    continuedHzetaUpperEndAnalyticJet s n =
+      upperEndPolyToAnalytic
+        (Polynomial.C ((-1 : ℂ) ^ n * (ascPochhammer ℂ n).eval s)) *
+          continuedHzetaUpperEndAnalytic (s + n) := by
+  apply Subtype.ext
+  apply Germ.coe_eq.mpr
+  have h : ∀ᶠ a in upperEndFilter,
+      iteratedDeriv n (continuedHzeta s) a =
+        ((-1 : ℂ) ^ n * (ascPochhammer ℂ n).eval s) * continuedHzeta (s + n) a := by
+    rw [upperEndFilter_basis.eventually_iff]
+    exact ⟨0, trivial, fun _ ha => continuedHzeta_iteratedDeriv n ha⟩
+  simpa [upperEndPolyToAnalytic] using h
+
+/-- Differential jets in the meromorphic field obey the unrestricted Hurwitz ladder. -/
+theorem differentialJet_continuedHzetaUpperEndMero_eq (s : ℂ) (n : ℕ) :
+    letI := isDomain_upperEndAnalyticSubring
+    letI := upperEndMeroFieldDifferential
+    differentialJet n (continuedHzetaUpperEndMero s) =
+      upperEndPolyToMero
+        (Polynomial.C ((-1 : ℂ) ^ n * (ascPochhammer ℂ n).eval s)) *
+          continuedHzetaUpperEndMero (s + n) := by
+  letI := isDomain_upperEndAnalyticSubring
+  letI : Algebra ℤ upperEndAnalyticSubring := Ring.toIntAlgebra _
+  letI : Algebra ℤ upperEndMeroField := Ring.toIntAlgebra _
+  letI := upperEndMeroFieldDifferential
+  rw [differentialJet_continuedHzetaUpperEndMero,
+    continuedHzetaUpperEndAnalyticJet_eq]
+  rw [map_mul]
+  rfl
+
 /-- In the convergence chamber, the continued analytic germ is the original series germ. -/
 theorem continuedHzetaUpperEndAnalytic_eq_hzetaUpperEndAnalytic
     (s : ℂ) (hs : 1 < s.re) :

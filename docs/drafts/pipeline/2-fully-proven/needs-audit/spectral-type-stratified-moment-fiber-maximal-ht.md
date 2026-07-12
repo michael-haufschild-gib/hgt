@@ -306,13 +306,14 @@ No numerical experiment and no RH assumption enter the theorem.
 
 ## Preliminary significance
 
-Taken alone, the spectral-stratification theorem supports the earlier `89/100` estimate: it removes
-the entire spectral-type simplex and bare convex extremality as rigidity mechanisms, but is still
-assembled from classical disintegration plus the existing transversality engine. The combined
-route now reaches an internal `91/100` estimate, with a plausible `82--95` range, only after the
-separate companion `nevanlinna-boundary-bauer-retract-maximal-ht.md` proves that these charts form a
-canonical normalization-independent Bauer retract of the whole moment fiber. Neither theorem
-supplies the missing global orientation law for the concrete RH carrier.
+Taken alone, the spectral-stratification theorem is a substantial but classically parented
+strengthening: it removes the entire spectral-type simplex and bare convex extremality as rigidity
+mechanisms, but uses classical disintegration plus the existing transversality engine. After the
+Bauer retract, Hilbert splitting, and finite-jet threshold companions, the combined route is an
+internal **90/100 candidate**, with a deliberately wide **72--94** range pending proof and priority
+review. It is not honest to call this a verified 90 yet: none of the theorems supplies the missing
+global orientation law, an explicit source-canonical point, a specialist priority audit, or Lean
+formalization.
 
 ## Lean status
 
@@ -344,3 +345,5 @@ passage. Those layers are not present together in the current Lean tree.
   pure point / singular-continuous / absolutely-continuous type through the extremal support
   fibration, `L-infinity` mean-zero jet controllability, and residual maximal full-complex
   translation HT in every fixed-type chart.
+- 2026-07-12 -- Extended the three pure spectral vertices to every exact spectral mass vector and
+  embedded the construction into the normalization-independent Nevanlinna boundary-Bauer retract.

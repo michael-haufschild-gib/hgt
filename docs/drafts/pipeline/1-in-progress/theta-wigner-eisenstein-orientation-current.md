@@ -79,12 +79,14 @@ The scalar Hermitian-diagonal orientation gate and `(2)` give
 RH
  iff integral_0^infinity
        r sinh(a r) W_k(r/2,b)dr >= 0
-     for every a>1/2 and every b in R.                    (7)
+     for every 0<a<1/2 and every b in R.                  (7)
 ```
 
 The right side is not an unpointed moment condition.  The frequency `b` retains the complete
-horizontal phase, and the cofinal family `a>1/2` retains the global divisor rather than a finite
-prefix.
+horizontal phase, and the full critical-width family `0<a<1/2` retains the transverse divisor
+rather than a finite prefix.  Full matrix positivity may be tested on the Euler half-plane
+`a>1/2`, but the scalar-diagonal equivalence in `(7)` uses the critical half-strip; these two
+statements must not be conflated.
 
 ## 3. Fiberwise positivity is impossible
 
@@ -187,14 +189,14 @@ Substitution into `(7)` gives the explicit source orientation current
 O(a,b)
  =sum_(r>=1) tau_b(r)
     integral_0^infinity
-      u sinh(2a u) exp(2u)
-      Kcal_b(2pi r exp(4u))du,                            (18)
+      u sinh(2a u) exp(u)
+      Kcal_b(2pi r exp(2u))du,                            (18)
 
-RH iff O(a,b)>=0 for every a>1/2 and b in R,              (19)
+RH iff O(a,b)>=0 for every 0<a<1/2 and b in R,            (19)
 ```
 
-up to the positive constant produced by `r=2u`.  Formula `(18)` is to be normalized carefully in
-the formal proof; `(15)`--`(16)` are the primary exact coordinates.
+up to the positive factor `4/a` produced by `r=2u`.  Formula `(18)` records only the sign-relevant
+normalization; `(15)`--`(16)` are the primary exact coordinates.
 
 ### Exact Eisenstein differential realization
 
@@ -236,25 +238,126 @@ W_k(y,b)
        E*(x+iY,1/2+i b)]_(x=0,Y=exp(2y)).                (18d)
 ```
 
-The weight-zero Laplace eigenvalue equation replaces `A` by
+The horizontal operator does not commute with `D_Y`; rather,
 
 ```text
-A=(D_Y-1/2)^2+b^2                                       (18e)
+A Q(D_Y)=Q(D_Y-2)A.                                      (18e)
 ```
 
-on this Eisenstein eigenspace.  Hence `(18d)` is the purely vertical fourth-order identity
+The weight-zero Laplace eigenvalue equation gives, on the Eisenstein eigenspace,
+
+```text
+A=(D_Y-1/2)^2+b^2.                                       (18f)
+```
+
+Combining the commutation shift with `(18f)` turns `(18d)` into the purely vertical fourth-order
+identity
 
 ```text
 W_k(y,b)
- =1/4 [P_b(D_Y)E*(iY,1/2+i b)]_(Y=exp(2y)),              (18f)
+ =1/4 [P_b(D_Y)E*(iY,1/2+i b)]_(Y=exp(2y)),              (18g)
 
-P_b(D)=((D-1/2)^2+b^2)((D+5/2)^2+b^2).                  (18g)
+P_b(D)=((D-1/2)^2+b^2)((D+1/2)^2+b^2).                  (18h)
 ```
 
-The first factor in `(18g)` annihilates both constant terms `Y^(1/2+i b)` and
-`Y^(1/2-i b)`.  Thus the archimedean differential operator removes the Eisenstein constant term
-exactly, while the surviving nonconstant modes are precisely the all-prime divisor characters
-`tau_b(r)`.  This is the promised source--completion incidence, not a later spectral decoration.
+The first factor in `(18h)` annihilates both constant terms `Y^(1/2+i b)` and
+`Y^(1/2-i b)`.  The full polynomial is even in `D`, exactly as required by modular inversion
+`Y -> 1/Y` and evenness of the Wigner current in `y`.  Thus the archimedean differential operator
+removes the Eisenstein constant term exactly, while the surviving nonconstant modes are precisely
+the all-prime divisor characters `tau_b(r)`.  This is the promised source--completion incidence,
+not a later spectral decoration.
+
+### Sharp archimedean coercivity `[PROVED IN LEAN]`
+
+On logarithmic Fourier frequency `tau`, `(18h)` has symbol
+
+```text
+p_b(tau)
+ =|((i tau-1/2)^2+b^2)|^2
+ =(b^2+1/4-tau^2)^2+tau^2.                               (18i)
+```
+
+Its exact lower edge is
+
+```text
+m(b)= (b^2+1/4)^2,  |b|<=1/2,
+      b^2,            |b|>1/2,                           (18j)
+```
+
+and
+
+```text
+0<m(b)<=p_b(tau)                                         (18k)
+```
+
+for every real `b,tau`.  Equality occurs at `tau=0` in the first regime and at
+`tau=+-sqrt(b^2-1/4)` in the second.  Thus the archimedean differential current has no negative or
+null frequency.  The unresolved orientation cannot be blamed on that operator: it lies in the
+mixed arithmetic/radial pairing after the coercive image has been formed.
+
+The elementary completion polynomial has a different, equally exact radial law.  If
+
+```text
+q_b(a)=|((a+i b)^2-1/4)|^2,
+```
+
+then
+
+```text
+q_b'(a)=4a(a^2+b^2-1/4).                                  (18l)
+```
+
+Hence its radial contribution is positive outside the radius-`1/2` central disk and negative
+inside it.  This sign turnover is fully formalized.  It also prevents a false inference from
+coercivity of `(18h)` to orientation of `(7)`: operator energy is positive, but its critical-strip
+radial readout still crosses an exact boundary chamber.
+
+### Boundary-energy attack and exact residual
+
+Let `E_b(t)=E*(i exp(t),1/2+i b)` and subtract its two Eisenstein constant modes, writing the
+decaying nonconstant part as `N_b(t)`.  With
+
+```text
+g_a(t)=t sinh(a t),
+P_b(lambda)=((lambda-1/2)^2+b^2)((lambda+1/2)^2+b^2),
+```
+
+the diagonal current is
+
+```text
+B_X(a+i b,a+i b)
+ =(4a)^(-1) integral_0^infinity g_a(t)P_b(D)N_b(t)dt.     (18m)
+```
+
+Since `N_b` decays at the cusp, four integrations by parts are legitimate.  The values
+
+```text
+g_a(0)=g_a'(0)=g_a'''(0)=0,
+g_a''(0)=2a
+```
+
+give the exact Green identity
+
+```text
+B_X(a+i b,a+i b)
+ =-N_b'(0)/2
+  +P_b(a)/(4a) integral_0^infinity t sinh(a t)N_b(t)dt
+  +(a^2+b^2-1/4) integral_0^infinity cosh(a t)N_b(t)dt.  (18n)
+```
+
+Here `P_b'(a)=4a(a^2+b^2-1/4)` was used.  Formula `(18n)` attacks the apparent positive operator
+directly: coercivity of `P_b(D)` turns the orientation into a **cross energy**, not a squared norm.
+The cusp boundary jet and the two nonconstant Eisenstein periods remain coupled, and neither
+period has a source-independent sign.
+
+Therefore the positive carrier obligation is sharper than `P_b(D)>=0`:
+
+> a successful construction must align the source-selected radial Green vector with the
+> divisor-character Eisenstein current, including the cusp boundary jet.  Bulk coercivity alone
+> cannot choose the orientation chamber.
+
+This retires the naive positive-elliptic-operator proof while leaving `(18n)` as a concrete
+boundary-energy target.
 
 ## 5. Why this is a live source architecture
 
@@ -279,7 +382,8 @@ inside the `y`-fibers; it must arise from the complete radial/arithmetic couplin
 - [x] derive the atom-pair Bessel kernel `(13)`--`(14)` on paper;
 - [x] group ordered pairs into the divisor character `(16)` on paper;
 - [x] identify the Wigner current with the completed Eisenstein differential current
-      `(18d)`--`(18g)` on paper;
+      `(18d)`--`(18h)` on paper;
+- [x] prove and formalize the sharp positive symbol floor `(18i)`--`(18k)`;
 - [x] identify the fiberwise-positive producer as impossible by Hudson rigidity;
 - [ ] complete a primary-source audit for the precise theta-product/Eisenstein parent identity;
 - [ ] formalize `(2)` and `(13)`--`(16)` in Lean without assuming RH or positivity;

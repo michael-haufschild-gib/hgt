@@ -26,6 +26,14 @@ The authoritative corpus is exactly:
 
 Prior Route A–D summaries and umbrella-level capstone lists are excluded from the proof search.
 
+## Live-corpus refresh protocol
+
+Other research agents are adding and committing Lean and pipeline work concurrently. Every phase
+boundary therefore starts by refreshing the recent commit range, modified and untracked Lean
+files, RH-bearing declaration surface, and generated declaration index. A result is consumed as
+stable only after it is present in the live tree and typechecks; an untracked or failing in-flight
+module is recorded as a candidate dependency but does not close a chain.
+
 ## Attack
 
 1. Enumerate every formal theorem concluding `RiemannHypothesis` or an equivalent proposition.
@@ -35,20 +43,76 @@ Prior Route A–D summaries and umbrella-level capstone lists are excluded from 
 5. Attack the best chain through boundary, symmetric, degenerate, fake-family, and parent-theory cases.
 6. Promote an edge only after its paper proof is complete; promote the terminal chain only after Lean verification.
 
-## Current Open Core
+## Two-ended closure rule
 
-[OPEN CORE] Construct, from the completed Euler--Gamma source before reading the Xi divisor, the
-cofinal Gauss/Sonin realization of the diagonal Fock lift
+No candidate is rejected because its present gap is remote from RH.  Starting from any corpus
+object, the required audit is
 
 ```text
-T_0 k_x = k_x tensor (t |-> exp(-x t)),
+unconditional source object
+  -> source-defined intermediate objects
+  -> exact zero-, multiplicity-, or index-preserving bridge
+  -> a formal RH endpoint.
 ```
 
-and prove it contractive on the safe completed-source RKHS.  Equivalently, prove the
-source-resolved four-channel passivity inequality for every finite rational-node packet and pass
-to the closed cofinal graph without losing the defect index.  This is the narrowest surviving
-source-side statement found in the complete corpus; its defect index is exactly the total
-right-half off-line Xi multiplicity.
+The chain may have arbitrarily many middle gaps.  It is retired only when one end cannot be typed,
+when the proposed invariant is proved blind to horizontal displacement or multiplicity, or when
+the source object is constructed from the Xi divisor it is meant to constrain.
+
+## Current Open Core — quadratic scale scattering
+
+[OPEN CORE] Construct, before reading the Xi divisor, a closed self-adjoint source realization
+`H_source` of the positive quadratic scale Hamiltonian
+
+```text
+H_0 = -D(D+1),                 D = t d/dt,
+```
+
+on `L²(R_+, dt)`, together with a source-selected boundary/scattering perturbation whose spectral
+determinant is the completed theta--Euler--Gamma function in the quadratic parameter
+
+```text
+lambda(s) = -s(s-1) = 1/4 - (s-1/2)^2.
+```
+
+The Hilbert geometry is important: the weight-one inversion
+`Jf(t)=t^(-1)f(t^(-1))` is unitary for `dt`, not for `dt/t`; there `D*=-D-1` and hence
+`H_0=D*D`.  The tree already proves the source identity `h=(D²+D)g_0`, the involutive reflection
+`JDJ=-(D+1)`, the commutation with `D(D+1)`, the theta-cusp Fourier identity for Xi, and the
+parity/half-shift sector exchange.
+
+The committed Hedenmalm seam makes the intended perturbation concrete. Its source-defined
+derivative Bezoutian has Hermitian diagonal
+
+```text
+B_X(z,conj z)
+  = |XiC(z)|² * oneCauchyDiagonal(continuedPrimeArchSourceRelativeTrace,z),
+```
+
+whose nonnegativity is equivalent to anti-Herglotzness and RH. Its Wigner form is a positive
+radial weight paired with the theta Wigner current, and the current has an exact
+divisor-character/Bessel expansion carrying every prime-log character. This is the current
+source-side candidate for the scattering boundary form; it does not yet prove its sign.
+
+The right end is now closed in Lean:
+
+```text
+XiQuadraticSpectralReality
+  := every xi zero rho has Im(-rho(rho-1)) = 0
+
+XiQuadraticSpectralReality <-> RiemannHypothesis.
+```
+
+Thus a source-built self-adjoint spectral realization would prove RH because its spectral
+parameters are real.  The remaining theorem is not abstract self-adjointness and not the algebraic
+critical-line calculation.  It is the non-circular determinant/boundary identification:
+
+```text
+xi(rho)=0 -> lambda(rho) belongs to spectrum(H_source),
+```
+
+with `H_source` and its domain constructed from the theta--prime--Gamma source rather than from the
+zeros.  A zero-free entire normalization is allowed; a divisor-selected domain is not.
 
 ## Environment-wide audit `[PROVED]`
 
@@ -83,42 +147,41 @@ Fock realization preserve its complete negative index.  Consequently proving any
 three carriers nonnegative proves RH, but transporting between them cannot by itself remove the
 charge.
 
-## Candidate attacks and verdicts
+## Two-ended detour audit
 
-1. **Square Evans/source normalization.**  The finite Evans determinant and the non-Schatten
-   Birman--Schwinger line exactly detect the aperture spectrum.  The final inequality
-   `bar_mu_a ||(A_a^+ + bar_mu_a I)^(-1)|| < 1` is algebraically equivalent to `A_a^+>0` and
-   therefore contributes no coercivity.  `[BRIDGE; NOT THE MISSING EDGE]`
-2. **Aperture spectral flow.**  The charge starts at zero, is integer-valued and nondecreasing, and
-   every off-line packet appears at a finite aperture.  Orientation of the determinant line counts
-   crossings but does not forbid the first crossing.  `[BRIDGE; NEEDS A SOURCE NO-CROSSING LAW]`
-3. **Real Euler-ray complete positivity.**  The cofinal shifted family collapses to the single
-   kernel `J` above.  Pointwise positivity of `Q` and the safe kernel with denominator `x+y-1` do
-   not cross the half-unit seam: the scalar Schur ratio is indefinite on every distinct pair.
-   `[LIVE, BUT RH-EQUIVALENT UNTIL A SOURCE FACTORIZATION IS BUILT]`
-4. **Finite Gauss/subset Fock carriers.**  Every finite place set has a canonical positive graded
-   carrier and compact Hardy realization.  The missing theorem is uniform channel-resolved
-   Gauss/Sonin convergence to `T_0` with contraction and index preservation.  This is the strongest
-   surviving constructive path because its finite objects are unconditionally positive and retain
-   prime labels, Gamma covariance, and the critical Mellin defect.  `[SELECTED]`
-5. **Critical contour-jump energy.**  A source bound `||ell_E||_2^2<=4` would exclude even one
-   off-line zero.  Current source identities determine the causal Euler-line continuation, whereas
-   `ell_E` is the difference between that continuation and the critical Hardy boundary.  Identifying
-   the two without a new boundary theorem is circular.  `[SECONDARY LIVE PATH]`
-6. **Differential/hypertranscendental forcing.**  Finite rational quartet or residue surgery
-   preserves the complete translated differential field and every finite structural matroid while
-   changing the orientation index arbitrarily.  Joint Hurwitz monodromy and universal constraint
-   geometry therefore cannot select the RH chamber without an additional pointed infinite source
-   section.  `[NO-GO AS A STANDALONE SELECTOR]`
+| Starting point | Source end | Missing middle | RH end | Verdict |
+|---|---|---|---|---|
+| Quadratic scale/Hedenmalm scattering | Gaussian theta seed, `D(D+1)`, weight-one inversion, exact source Bezoutian, and Wigner--Eisenstein prime current are source-defined | close the operator on `L²(dt)`; identify the Wigner radial form as its boundary/scattering form; prove a source sign or norm-square law and the determinant identity without divisor-selected data | `XiQuadraticSpectralReality <-> RH` is formalized | **Leading detour** |
+| Graded order/disorder system | parity grading and half-integer Hurwitz sector are canonical and formalized | realize the signed swap as the boundary involution of the quadratic source operator; prove graded KMS/scattering classification; show a partition zero is a spectral degeneration | feeds the quadratic endpoint | **Live feeder**; Poisson wiring would close the profile-to-sector brick, but its current untracked draft still fails to typecheck |
+| Hyperbolic/adelic scattering | prime logarithms and the Gamma ladder can be read as length and cusp data | construct an actual self-adjoint two-dimensional or adelic scattering object; identify its determinant with Xi; exclude nonreal resonances by source geometry | the same real quadratic energy endpoint | **Live geometric variant**, but the determinant realization is wholly open |
+| Multivariate stable prime section | finite Euler/simplicial incidence objects and canonical finite orientations exist | build a completed prime--archimedean multiaffine section, prove stability survives the Gamma weld and cofinal limit, and identify the diagonal limit with Xi | locally uniform real-zero transfer to RH is formalized | **Live only with a new completed section**; bare Euler sections are RH-blind and a shifted local orbit already fails PF2 |
+| Function-field purity degeneration | fixed-`q` Frobenius purity is a genuine theorem; coefficient FE and degree collapse exist in Lean | construct a single differentiable determinant family linking arithmetic curves to Xi and prove locally uniform zero-preserving convergence | locally uniform closed-locus transfer is formalized | **End presently untyped**: prime powers have no sequence `q -> 1`; formal `q -> 1` language is not an arithmetic family |
+| Determinant-line/spectral-flow index | completed source Fredholm and seam families exist | prove a source no-first-crossing law or a null-homotopy retaining the complete defect index | the index equals off-line multiplicity | **Secondary live chain**; orientation counts crossings but does not forbid the first |
+| Hurwitz monodromy/hypertranscendence | joint monodromy-character and differential-independence laws are formalized | turn a scalar zeta zero into a functional relation in the Hurwitz shift variable | no typed zero-to-function bridge exists | **Not a closed chain standalone**; usable only as rigidity inside another construction |
+| Resurgence/Stokes alignment | explicit-formula trans-series language can be source-defined | identify Borel singularities without first taking `log xi`; prove source Stokes positivity/alignment | alignment is RH | **Target-fed in current form**; using the Xi logarithmic divisor builds the answer into the source |
+| Böttcher/Brolin, chromatic sphere, QECC, hyperreal prime | each has a native source object or analogy | no source-defined functor to the completed zeta zero set or quadratic energy is presently typed | absent | **Fringe feeders, not proof chains yet**; retained for new functor construction, not ranked by proximity |
+
+The previous finite Gauss/Sonin contraction remains a legitimate short chain, but its earlier
+`[SELECTED]` status is revoked.  It is now one possible construction of the boundary/scattering
+perturbation or of the determinant-line no-crossing law, not the search boundary.
 
 ## Status Registers
 
 - [CONJECTURE] A long cross-coordinate chain exists and is hidden by the present file and card partitioning.
 - [PROVED] The corpus contains no active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration according to the current generated gap report.
 - [PROVED] No unconditional Lean declaration of `RiemannHypothesis` exists in the combined current RH-bearing environment.
-- [OPEN CORE] Prove the source-resolved diagonal-Fock contraction, or construct a genuinely different source law that annihilates the same integer charge.
+- [PROVED] Reality of the quadratic scale energy at every Xi zero is equivalent to RH in Lean.
+- [PROVED] The weight-one inversion uses `L²(dt)`, and the corresponding formal differential expression is `-D(D+1)=D*D`; the earlier `L²(dt/t)` description was incorrect.
+- [PROVED] The Hedenmalm source Bezoutian diagonal is the exact prime--Gamma one-Cauchy diagonal times `|XiC|²`, and its orientation is equivalent to RH.
+- [OPEN CORE] Prove that the mixed Wigner--Eisenstein radial current is a nonnegative source boundary form, or construct a different source-selected self-adjoint scattering realization whose spectral determinant is Xi in the quadratic energy parameter.
 - [NOVELTY UNVERIFIED] Any completed glue theorem remains scientifically unclassified until the proof, parent-theory, literature, and rediscovery gates are run.
 
 ## Log
 
 - 2026-07-12 — moved directly into progress for complete-corpus dependency reconstruction.
+- 2026-07-12 — replaced shortcut ranking by a two-ended detour audit.  Formalized the quadratic
+  scale-spectrum RH endpoint, corrected the Hilbert measure of the weight-one inversion, and
+  selected the source-defined self-adjoint scattering determinant as the leading long-chain core.
+- 2026-07-12 — live-corpus refresh consumed the committed Hedenmalm Bezoutian/orientation and
+  Wigner--Eisenstein carrier work. The concurrent Poisson sector wiring was tested but remains an
+  untracked failing draft, so it is not yet a closed dependency.

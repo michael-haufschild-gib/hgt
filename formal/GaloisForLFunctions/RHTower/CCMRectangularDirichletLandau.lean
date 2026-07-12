@@ -526,6 +526,154 @@ theorem LSeries_xiRectangularRightDirichletComplex_eq_shiftedZeta
       intro q
       ring
 
+theorem xiRectangularRightDirichletComplex_zero (L : ℝ) :
+    xiRectangularRightDirichletComplex L 0 = 0 := by
+  rw [xiRectangularRightDirichletComplex]
+  have hterm : ∀ q : XiRightZeroCopy,
+      xiRectangularRightDirichletTerm L 0 q = 0 := by
+    intro q
+    rw [xiRectangularRightDirichletTerm]
+    simp only [Nat.cast_zero]
+    rw [Complex.zero_cpow (xiRightCenteredZero_ne_zero q), mul_zero]
+  rw [tsum_congr hterm, tsum_zero, mul_zero]
+
+/-- The finite prefix removed when a lower bound is imposed only from index
+`N` onward. -/
+def xiRectangularLandauPrefixCoefficient
+    (L C : ℝ) (N n : ℕ) : ℂ :=
+  if n < N then xiRectangularRightDirichletComplex L n + C else 0
+
+theorem ofReal_xiRectangularLandauCoefficient_eq_full_sub_prefix
+    (L C : ℝ) (N n : ℕ) :
+    ((xiRectangularLandauCoefficient L C N n : ℝ) : ℂ) =
+      xiRectangularRightDirichletComplex L n + C -
+        xiRectangularLandauPrefixCoefficient L C N n := by
+  rw [xiRectangularLandauCoefficient,
+    xiRectangularLandauPrefixCoefficient]
+  by_cases hN : N ≤ n
+  · rw [if_pos hN, if_neg (not_lt.mpr hN)]
+    rw [ofReal_add,
+      ofReal_xiRectangularRightDirichletCoefficientReal]
+    ring
+  · have hnN : n < N := Nat.lt_of_not_ge hN
+    rw [if_neg hN, if_pos hnN]
+    push_cast
+    ring
+
+theorem xiRectangularRightDirichletComplex_LSeriesSummable
+    (L : ℝ) {δ : ℝ}
+    (hupper : ∀ q : XiRightZeroCopy, (xiRightCenteredZero q).re ≤ δ)
+    {s : ℂ} (hs : 1 + δ < s.re) :
+    LSeriesSummable (fun n => xiRectangularRightDirichletComplex L n) s := by
+  apply LSeriesSummable_of_le_const_mul_rpow (x := 1 + δ) hs
+  refine ⟨2 * xiRectangularRightCoefficientNormSum L, fun n hn => ?_⟩
+  have hn1 : 1 ≤ n := Nat.one_le_iff_ne_zero.mpr hn
+  simpa only [add_sub_cancel_left] using
+    norm_xiRectangularRightDirichletComplex_le L hupper hn1
+
+theorem xiRectangularLandauPrefixCoefficient_LSeriesSummable
+    (L C : ℝ) (N : ℕ) (s : ℂ) :
+    LSeriesSummable (xiRectangularLandauPrefixCoefficient L C N) s := by
+  apply summable_of_ne_finset_zero (s := Finset.range N)
+  intro n hn
+  have hNn : N ≤ n := by
+    simpa only [Finset.mem_range, not_lt] using hn
+  rcases n.eq_zero_or_pos with rfl | hnpos
+  · exact LSeries.term_zero _ _
+  · rw [LSeries.term_of_ne_zero hnpos.ne',
+      xiRectangularLandauPrefixCoefficient, if_neg (not_lt.mpr hNn),
+      zero_div]
+
+/-- The finite Dirichlet polynomial represented by the removed prefix. -/
+def xiRectangularLandauPrefixSeries
+    (L C : ℝ) (N : ℕ) (s : ℂ) : ℂ :=
+  ∑ n ∈ Finset.range N,
+    LSeries.term (xiRectangularLandauPrefixCoefficient L C N) s n
+
+theorem LSeries_xiRectangularLandauPrefixCoefficient_eq
+    (L C : ℝ) (N : ℕ) (s : ℂ) :
+    LSeries (xiRectangularLandauPrefixCoefficient L C N) s =
+      xiRectangularLandauPrefixSeries L C N s := by
+  rw [LSeries, xiRectangularLandauPrefixSeries]
+  apply tsum_eq_sum
+  intro n hn
+  have hNn : N ≤ n := by
+    simpa only [Finset.mem_range, not_lt] using hn
+  rcases n.eq_zero_or_pos with rfl | hnpos
+  · exact LSeries.term_zero _ _
+  · rw [LSeries.term_of_ne_zero hnpos.ne',
+      xiRectangularLandauPrefixCoefficient, if_neg (not_lt.mpr hNn),
+      zero_div]
+
+theorem differentiable_xiRectangularLandauPrefixSeries
+    (L C : ℝ) (N : ℕ) :
+    Differentiable ℂ (xiRectangularLandauPrefixSeries L C N) := by
+  intro s
+  change DifferentiableAt ℂ
+    (fun z => ∑ n ∈ Finset.range N,
+      LSeries.term (xiRectangularLandauPrefixCoefficient L C N) z n) s
+  apply DifferentiableAt.fun_sum
+  intro n hn
+  rcases n.eq_zero_or_pos with rfl | hnpos
+  · simpa only [LSeries.term_zero] using
+      (differentiableAt_const (c := (0 : ℂ)))
+  · simp only [LSeries.term_of_ne_zero hnpos.ne']
+    have hn0 : (n : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hnpos.ne'
+    exact (differentiableAt_const
+      (c := xiRectangularLandauPrefixCoefficient L C N n)).div
+      (differentiableAt_id.const_cpow (Or.inl hn0))
+      (Complex.cpow_ne_zero_iff.mpr (Or.inl hn0))
+
+/-- The meromorphic continuation expression attached to the tail-shifted
+nonnegative coefficient sequence. -/
+def xiRectangularLandauContinuation
+    (L C : ℝ) (N : ℕ) (s : ℂ) : ℂ :=
+  2 * xiRectangularShiftedZetaSeries L s + C * riemannZeta s -
+    xiRectangularLandauPrefixSeries L C N s
+
+set_option maxHeartbeats 800000 in
+theorem LSeries_xiRectangularLandauCoefficient_eq_continuation
+    (L C : ℝ) (N : ℕ) {δ : ℝ} (hδ0 : 0 ≤ δ)
+    (hupper : ∀ q : XiRightZeroCopy, (xiRightCenteredZero q).re ≤ δ)
+    {s : ℂ} (hs : 1 + δ < s.re) :
+    LSeries
+        (fun n => ((xiRectangularLandauCoefficient L C N n : ℝ) : ℂ)) s =
+      xiRectangularLandauContinuation L C N s := by
+  have hcomplex := xiRectangularRightDirichletComplex_LSeriesSummable
+    L hupper hs
+  have hsone : 1 < s.re := by linarith
+  have hconst : LSeriesSummable (fun _n : ℕ => (C : ℂ)) s := by
+    apply LSeriesSummable_of_bounded_of_one_lt_re
+      (m := |C|) (fun n hn => ?_) hsone
+    rw [norm_real, Real.norm_eq_abs]
+  have hprefix := xiRectangularLandauPrefixCoefficient_LSeriesSummable L C N s
+  have hcoeffEq : LSeries
+      (fun n => ((xiRectangularLandauCoefficient L C N n : ℝ) : ℂ)) s =
+      LSeries ((fun n => xiRectangularRightDirichletComplex L n + C) -
+        xiRectangularLandauPrefixCoefficient L C N) s := by
+    apply LSeries_congr
+    intro n hn
+    exact ofReal_xiRectangularLandauCoefficient_eq_full_sub_prefix L C N n
+  have hfun : (fun n => xiRectangularRightDirichletComplex L n + (C : ℂ)) =
+      (fun n => xiRectangularRightDirichletComplex L n) +
+        (fun _n : ℕ => (C : ℂ)) := by
+    funext n
+    rfl
+  rw [hcoeffEq, hfun, LSeries_sub (hcomplex.add hconst) hprefix,
+    LSeries_add hcomplex hconst,
+    LSeries_xiRectangularRightDirichletComplex_eq_shiftedZeta L hupper hs]
+  have hconstEq : LSeries (fun _n : ℕ => (C : ℂ)) s = C * riemannZeta s := by
+    calc
+      LSeries (fun _n : ℕ => (C : ℂ)) s =
+          LSeries ((C : ℂ) • (1 : ℕ → ℂ)) s := by
+        apply LSeries_congr
+        intro n hn
+        simp
+      _ = C * LSeries (1 : ℕ → ℂ) s := LSeries_smul _ _ _
+      _ = C * riemannZeta s := by rw [LSeries_one_eq_riemannZeta hsone]
+  rw [hconstEq, xiRectangularLandauContinuation,
+    LSeries_xiRectangularLandauPrefixCoefficient_eq]
+
 /-- On `Re s >= 3/2+eps`, every shifted zeta factor has the uniform elementary
 bound `1+1/eps`. -/
 theorem norm_riemannZeta_sub_xiRightCenteredZero_le
@@ -769,24 +917,163 @@ holomorphic. -/
 theorem exists_analyticOnNhd_xiRectangularShiftedZetaSeries_actualLandauBall
     (L : ℝ) (hne : Nonempty XiRightZeroCopy) :
     ∃ η r : ℝ, 0 < η ∧ 0 < r ∧ r ≤ 1 / 4 ∧ r ≤ η / 2 ∧
+      r ≤ xiRightTransverseSup / 2 ∧
       AnalyticOnNhd ℂ (xiRectangularShiftedZetaSeries L)
         (Metric.ball (((1 + xiRightTransverseSup : ℝ) : ℂ)) r) := by
   obtain ⟨η, hη, hordinate⟩ :=
     exists_xiRightCenteredZero_abs_im_lower_bound
-  let r : ℝ := min (1 / 8) (η / 4)
+  let r : ℝ := min (min (1 / 8) (η / 4)) (xiRightTransverseSup / 2)
   have hr : 0 < r := by
     dsimp only [r]
-    exact lt_min (by norm_num) (div_pos hη (by norm_num))
+    exact lt_min
+      (lt_min (by norm_num) (div_pos hη (by norm_num)))
+      (div_pos (xiRightTransverseSup_pos hne) (by norm_num))
   have hrquarter : r ≤ 1 / 4 := by
-    exact (min_le_left _ _).trans (by norm_num)
+    exact (min_le_left _ _).trans ((min_le_left _ _).trans (by norm_num))
   have hrη : r ≤ η / 2 := by
-    exact (min_le_right _ _).trans (by linarith)
-  refine ⟨η, r, hη, hr, hrquarter, hrη, ?_⟩
+    exact (min_le_left _ _).trans ((min_le_right _ _).trans (by linarith))
+  have hrδ : r ≤ xiRightTransverseSup / 2 := min_le_right _ _
+  refine ⟨η, r, hη, hr, hrquarter, hrη, hrδ, ?_⟩
   exact analyticOnNhd_xiRectangularShiftedZetaSeries_landauBall L
     (xiRightTransverseSup_pos hne).le
     (xiRightTransverseSup_le_half hne)
     hη hr hrquarter hrη
     (fun q => xiRightCenteredZero_re_le_sup q) hordinate
+
+/-- Holomorphy of the tail-shifted continuation on an admissible pole-free
+Landau ball. -/
+theorem differentiableOn_xiRectangularLandauContinuation_landauBall
+    (L C : ℝ) (N : ℕ) {δ η r : ℝ}
+    (hδ : 0 < δ) (hδhalf : δ ≤ 1 / 2)
+    (hη : 0 < η) (hr : 0 < r)
+    (hrquarter : r ≤ 1 / 4) (hrη : r ≤ η / 2)
+    (hrδ : r ≤ δ / 2)
+    (hupper : ∀ q : XiRightZeroCopy, (xiRightCenteredZero q).re ≤ δ)
+    (hordinate : ∀ q : XiRightZeroCopy, η ≤ |(xiRightCenteredZero q).im|) :
+    DifferentiableOn ℂ (xiRectangularLandauContinuation L C N)
+      (Metric.ball (((1 + δ : ℝ) : ℂ)) r) := by
+  have hshift := differentiableOn_xiRectangularShiftedZetaSeries_landauBall L
+    hδ.le hδhalf hη hr hrquarter hrη hupper hordinate
+  intro s hs
+  have hsne : s ≠ 1 := by
+    intro heq
+    subst s
+    have hball : ‖(1 : ℂ) - (((1 + δ : ℝ) : ℂ))‖ < r := by
+      simpa [dist_eq_norm] using (Metric.mem_ball.mp hs)
+    have hnorm : ‖(1 : ℂ) - (((1 + δ : ℝ) : ℂ))‖ = δ := by
+      rw [show (1 : ℂ) - (((1 + δ : ℝ) : ℂ)) = ((-δ : ℝ) : ℂ) by
+        push_cast
+        ring]
+      rw [Complex.norm_real, Real.norm_eq_abs, abs_neg, abs_of_pos hδ]
+    rw [hnorm] at hball
+    linarith
+  have hzeta : DifferentiableWithinAt ℂ riemannZeta
+      (Metric.ball (((1 + δ : ℝ) : ℂ)) r) s :=
+    (differentiableAt_riemannZeta hsne).differentiableWithinAt
+  have hprefix : DifferentiableWithinAt ℂ
+      (xiRectangularLandauPrefixSeries L C N)
+      (Metric.ball (((1 + δ : ℝ) : ℂ)) r) s :=
+    (differentiable_xiRectangularLandauPrefixSeries L C N s).differentiableWithinAt
+  simpa only [xiRectangularLandauContinuation] using
+    (((hshift s hs).const_mul (2 : ℂ)).add
+      (hzeta.const_mul (C : ℂ))).sub hprefix
+
+/-- An eventual lower bound on the logarithmic rectangular coefficients
+forces absolute convergence of the resulting nonnegative Dirichlet series at
+a real point strictly left of its transverse boundary.  This is the exact
+scale-local Landau output used by the pole contradiction. -/
+theorem exists_xiRectangularLandauCoefficient_summable_left_of_boundary
+    (L C : ℝ) (N : ℕ) (hne : Nonempty XiRightZeroCopy)
+    (hlower : ∀ n, N ≤ n →
+      0 ≤ xiRectangularRightDirichletCoefficientReal L n + C) :
+    ∃ σ : ℝ, σ < 1 + xiRightTransverseSup ∧
+      LSeriesSummable
+        (fun n => ((xiRectangularLandauCoefficient L C N n : ℝ) : ℂ))
+        (σ : ℂ) := by
+  let δ : ℝ := xiRightTransverseSup
+  have hδ : 0 < δ := xiRightTransverseSup_pos hne
+  have hδhalf : δ ≤ 1 / 2 := xiRightTransverseSup_le_half hne
+  have hupper : ∀ q : XiRightZeroCopy,
+      (xiRightCenteredZero q).re ≤ δ :=
+    fun q => xiRightCenteredZero_re_le_sup q
+  obtain ⟨η, hη, hordinate⟩ :=
+    exists_xiRightCenteredZero_abs_im_lower_bound
+  let r : ℝ := min (min (1 / 8) (η / 4)) (δ / 2)
+  have hr : 0 < r := by
+    dsimp only [r]
+    exact lt_min
+      (lt_min (by norm_num) (div_pos hη (by norm_num)))
+      (div_pos hδ (by norm_num))
+  have hrquarter : r ≤ 1 / 4 :=
+    (min_le_left _ _).trans ((min_le_left _ _).trans (by norm_num))
+  have hrη : r ≤ η / 2 :=
+    (min_le_left _ _).trans ((min_le_right _ _).trans (by linarith))
+  have hrδ : r ≤ δ / 2 := min_le_right _ _
+  have hcont := differentiableOn_xiRectangularLandauContinuation_landauBall
+    L C N hδ hδhalf hη hr hrquarter hrη hrδ hupper hordinate
+  let σ₁ : ℝ := 1 + δ + r / 8
+  let h : ℝ := r / 8
+  let R : NNReal := ⟨r / 2, (div_nonneg hr.le (by norm_num))⟩
+  let σ : ℝ := 1 + δ - r / 8
+  have hh : 0 < h := by dsimp only [h]; positivity
+  have hsum : LSeriesSummable
+      (fun n => ((xiRectangularLandauCoefficient L C N n : ℝ) : ℂ))
+      (σ₁ : ℂ) := by
+    apply xiRectangularLandauCoefficient_LSeriesSummable
+      L C N hδ.le hupper
+    dsimp only [σ₁]
+    simp only [Complex.ofReal_re]
+    linarith
+  have hGd : DifferentiableOn ℂ
+      (xiRectangularLandauContinuation L C N)
+      (Metric.closedBall ((σ₁ + h : ℝ) : ℂ) (R : ℝ)) := by
+    apply hcont.mono
+    intro z hz
+    rw [Metric.mem_ball, dist_eq_norm]
+    rw [Metric.mem_closedBall, dist_eq_norm] at hz
+    have hcenter :
+        ‖(((σ₁ + h : ℝ) : ℂ) - (((1 + δ : ℝ) : ℂ)))‖ = r / 4 := by
+      have heq : (((σ₁ + h : ℝ) : ℂ) - (((1 + δ : ℝ) : ℂ))) =
+          ((r / 4 : ℝ) : ℂ) := by
+        dsimp only [σ₁, h]
+        push_cast
+        ring
+      rw [heq, Complex.norm_real, Real.norm_eq_abs, abs_of_pos]
+      positivity
+    calc
+      ‖z - (((1 + δ : ℝ) : ℂ))‖ ≤
+          ‖z - (((σ₁ + h : ℝ) : ℂ))‖ +
+            ‖(((σ₁ + h : ℝ) : ℂ) - (((1 + δ : ℝ) : ℂ)))‖ := by
+        have := norm_add_le
+          (z - (((σ₁ + h : ℝ) : ℂ)))
+          ((((σ₁ + h : ℝ) : ℂ)) - (((1 + δ : ℝ) : ℂ)))
+        simpa only [sub_add_sub_cancel] using this
+      _ ≤ r / 2 + r / 4 := by
+        rw [hcenter]
+        exact add_le_add hz le_rfl
+      _ < r := by linarith
+  have hagree : ∀ s : ℂ, σ₁ < s.re →
+      xiRectangularLandauContinuation L C N s =
+        LSeries
+          (fun n => ((xiRectangularLandauCoefficient L C N n : ℝ) : ℂ)) s := by
+    intro s hsright
+    symm
+    apply LSeries_xiRectangularLandauCoefficient_eq_continuation
+      L C N hδ.le hupper
+    dsimp only [σ₁] at hsright
+    linarith
+  have hnonneg := xiRectangularLandauCoefficient_nonneg hlower
+  have hineq : σ₁ + h - (R : ℝ) < σ := by
+    change σ₁ + h - r / 2 < σ
+    dsimp only [σ₁, h, σ]
+    linarith
+  have htransfer := landau_local_summability_transfer
+    (a := xiRectangularLandauCoefficient L C N)
+    hnonneg hh hsum (R := R)
+    (G := xiRectangularLandauContinuation L C N) hGd hagree hineq
+  refine ⟨σ, ?_, htransfer⟩
+  dsimp only [σ, δ]
+  linarith
 
 /-- At logarithmic aperture, a right-half Xi dominant edge is exactly its
 rectangular coefficient times the Dirichlet monomial `n^w`. -/

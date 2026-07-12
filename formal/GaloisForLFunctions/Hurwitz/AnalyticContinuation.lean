@@ -56,6 +56,38 @@ lemma term_factor {s a : ℂ} (ha : 0 < a.im) (m : ℕ) :
   · push_cast
     simp
 
+/-- A cut-free factorization criterion that does not require `a` to lie in the upper half-plane.
+It applies whenever the Taylor coordinate stays in the unit disk. -/
+lemma term_factor_of_norm_lt_one {s a : ℂ} (m : ℕ)
+    (hy : ‖(a - 1) / ((m + 1 : ℕ) : ℂ)‖ < 1) :
+    ((m : ℂ) + a) ^ (-s) =
+      (((m + 1 : ℕ) : ℂ) ^ (-s)) *
+        (1 + (a - 1) / ((m + 1 : ℕ) : ℂ)) ^ (-s) := by
+  let r : ℝ := (m + 1 : ℕ)
+  let y : ℂ := (a - 1) / ((m + 1 : ℕ) : ℂ)
+  have hr : 0 < r := by dsimp [r]; positivity
+  have hy' : ‖y‖ < 1 := by simpa [y] using hy
+  have hy0 : 1 + y ≠ 0 := by
+    intro h
+    have : y = -1 := by linear_combination h
+    rw [this, norm_neg, norm_one] at hy'
+    linarith
+  have hbase : (m : ℂ) + a = (r : ℂ) * (1 + y) := by
+    dsimp only [r, y]
+    have hm : (((m + 1 : ℕ) : ℂ)) ≠ 0 := by exact_mod_cast (by omega : m + 1 ≠ 0)
+    push_cast
+    field_simp
+    ring
+  have hr0 : (r : ℂ) ≠ 0 := ofReal_ne_zero.mpr hr.ne'
+  have hlogr : Complex.log (r : ℂ) = (Real.log r : ℂ) := by
+    simpa using (Complex.log_ofReal_mul hr (x := (1 : ℂ)) one_ne_zero)
+  rw [hbase]
+  rw [Complex.cpow_def_of_ne_zero (mul_ne_zero hr0 hy0),
+    Complex.log_ofReal_mul hr hy0, add_mul, Complex.exp_add]
+  change Complex.exp ((Real.log r : ℂ) * -s) * Complex.exp (Complex.log (1 + y) * -s) =
+    (r : ℂ) ^ (-s) * (1 + y) ^ (-s)
+  rw [Complex.cpow_def_of_ne_zero hr0, Complex.cpow_def_of_ne_zero hy0, hlogr]
+
 /-- The subtracted Taylor packet is the corresponding binomial partial sum after factorization. -/
 lemma taylor_factor (K : ℕ) (s a : ℂ) (m : ℕ) :
     taylorPoly K s a m =

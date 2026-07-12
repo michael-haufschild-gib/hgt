@@ -62,6 +62,30 @@ tower: the square rung's threshold `1/4` generalizes to `1/(2m)` at dilation `m`
 `1/(2m)`), with the `mPart m` Möbius carrier as the instance at every rung — the
 `m`-free ladder's spectral fingerprint, machine-checked.
 
+The optimization pass and the compound signature:
+
+```text
+sum_{p <= x} 1/(p(p-1)) <= 1                      (telescoping correction)        (22)
+log log(M+1) <= (sum_{p <= M} 1/p) + 1            (sharp Mertens: coefficient 1)  (23)
+line crossing  ==>  sqrt N + 1 < exp exp(2(1 + 1/(2σ₂-1)) + 1)  (sharp cutoff)    (24)
+e < M  ==>  sum_{p^e <= y} 1/p
+    <= sum_{n <= y} ([n is M-free]·n^(-1/(2e)))²   (full fingerprint ladder)      (25)
+telescope product of dilated carriers = the M-free carrier, hence (25) holds for
+the convolution at every rung e < P_K            (mixed-radix compound signature) (26)
+```
+
+`(23)` sharpens `(7)` beyond the conjectured `t + t²` target: `log(1-t)⁻¹ ≤ t/(1-t)`
+splits exactly as `1/p + 1/(p(p-1))`, and the correction telescopes to `≤ 1` — the
+multiplicative constant `2` becomes coefficient `1` with a telescoped additive `+1`.
+`(24)` halves the cutoff exponent accordingly.  The upper constant `4` in `(18)` is not
+similarly free: with primorial-only input the dyadic method's floor is `≈ e·log 4`
+(base-`e` blocks), and `1 + o(1)` above needs Mertens-first-grade input — the remaining
+analytic gap, stated plainly.  `(25)`–`(26)` are the compound signature: the `M`-free
+indicator satisfies the rung-`e` law for *every* `e < M` simultaneously (`M - 1`
+spectral lines in one carrier), and by the mixed-radix telescope the convolution of
+dilated carriers inherits the whole ladder below its modulus `P_K` — the telescope
+compounds the per-rung fingerprints into a single carrier.
+
 ## Proof
 
 `(1)` the budget's square-only support evaluates exactly at prime squares:
@@ -138,7 +162,15 @@ same square-support mechanism in the tree's other quadratic functionals:
 - (in `SquareSupportPrimeMass.lean`) `primeMass_le_pow_sum_of_forced`: the tower core
   (the square core is now its `m = 2` instance); `natCast_pow_rpow`;
   `primeMass_le_rung_weighted_sq_sum`: rung `m` of the tower `(20)`;
-  `primeMass_le_mPart_weighted_diagonal`: the `mPart` carrier instance `(21)`.
+  `primeMass_le_mPart_weighted_diagonal`: the `mPart` carrier instance `(21)`;
+- `sum_primesBelow_inv_mul_sub_one_le`, `log_inv_one_sub_inv_le`,
+  `mertens_lower_add_one`: the sharp coefficient-one Mertens bound `(22)`–`(23)`;
+- `line_crossing_cutoff_lt_expexp'`: the sharp cutoff `(24)`;
+- (in `SquareSupportPrimeMass.lean`) `primeMass_le_mFreeIndicator_weighted_diagonal`:
+  the full fingerprint ladder `(25)`;
+- `telescope_compound_fingerprint`: the mixed-radix compound signature `(26)` — the
+  convolution product of the dilated carriers, evaluated through
+  `prod_mPart_mFreeIndicator_mixed`.
 
 Both modules are imported by `GaloisForLFunctions.RHTower` and `GaloisForLFunctions`.
 
@@ -151,18 +183,18 @@ Both modules are imported by `GaloisForLFunctions.RHTower` and `GaloisForLFuncti
 - [x] generated indexes, axiom audit, and formal lint gate pass
 
 The umbrella build reaches and accepts both modules; the sole independent existing
-failure is `SummableEulerCalkinInjectivity.lean`.  All thirty-three public declarations
+failure is `SummableEulerCalkinInjectivity.lean`.  All thirty-nine public declarations
 across the two files use only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Opens
 
-The meter is now two-sided (`(7)` + `(19)`), so the prime mass of any cutoff is a
-certified interval `[½·log log, 4·log log + C]` — the constants `2` (below) and `4`
-(above) both trace to single elementary estimates (`log(1-t)⁻¹ ≤ 2t`; dyadic block width
-`2`): base-`e` blocks and the `t + t²` bound would drive both toward `1 + o(1)`, an
-optimization pass on two lemmas.  The tower `(20)` prices every rung: forced mass at
-weight `1/(2m)` — read across the mixed-radix telescope, a product carrier over moduli
-`m₀, m₁, …` carries forced mass at the harmonic-mean weight of its rungs, suggesting the
-next object: the forced-content law for *convolutions* of dilated carriers, where the
-`mFreeIndicator` telescope should compound the rung fingerprints into a single
-mixed-radix spectral signature.
+The meter now reads `[log log − 1, 4·log log + C]`: coefficient one below, and the
+remaining constant lives entirely above — closing it to `1 + o(1)` needs an effective
+Mertens first theorem (`∑_{p≤x} log p / p = log x + O(1)`), whose elementary route
+(primorial bound + Abel summation over `primesBelow`) is now the single missing analytic
+brick of the lane.  The compound signature `(26)` reads the telescope's spectrum only
+rung by rung; the forward object is the *joint* spectral statement — a single weighted
+functional (weight varying with `n` through its exponent profile) whose forced content
+is the sum over all rungs `∑_{e<P_K} (rung-e mass)` at once, which would make the
+mixed-radix carrier a certified multi-scale prime detector: one carrier, one functional,
+the whole Mertens spectrum below its modulus.

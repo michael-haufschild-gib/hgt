@@ -185,18 +185,51 @@ square-summability assumptions must not enter the construction.
      and `J(t^{-w}) = t^{-(1-w)}` exchanges the profiles within each eigenspace
      (`scalingHamiltonian_rpow`, `weightOneInversion_rpow`). `J` moves the Gaussian state
      (`weightOneInversion_thetaCuspGaussian_ne`): the swap preserves dynamics, exchanges states.
-   - **Remaining open core of this step:** the `J`-fixed profile is the lattice-summed theta;
-     Poisson summation (`theta_4(x) = x⁻¹ theta_2(1/x)`, mathlib pointer:
-     `jacobiTheta₂` functional equation) is the analytic brick converting the profile swap into
-     the sector swap. And the KMS-categorical status: the duality relates `III_1` to type I off
-     the fixed locus, so it is not normal there; with the doubled-rung identification the
-     candidate is now precise — the grading-odd involution `J ⊗ (P ↔ 1-P)` on the one-rung-down
-     welded system; its graded KMS classification is the step-4 target.
-4. **Kill tests inherited:** diagonal action is Born-invisible (parent Theorem 5) — dead; scalar
+4. **Poisson brick — EXECUTED 2026-07-12, closed by wiring `[PROVED + FORMALIZED]`**
+   (`formal/GaloisForLFunctions/RHTower/BornPoissonWiring.lean`, axiom-clean, lint green).
+   Mathlib's even Hurwitz development already carries the Poisson-summed pair; at the
+   two-torsion point it IS the sector pair:
+   - `completedCosZeta (1/2) = -Lambda_4` and `completedHurwitzZetaEven (1/2) = Lambda_2`,
+     proven on `Re s > 1` by the series identifications (alternating series; `Z`-lattice
+     folding `n <-> -(n+1)` onto the half-integers) and globalized off `{0,1}` by the identity
+     theorem on the countable-complement-connected plane
+     (`completedCosZeta_one_half`, `completedHurwitzZetaEven_one_half`).
+   - Hence mathlib's `completedHurwitzZetaEven_one_sub` — proven by theta inversion, i.e.
+     genuine Poisson summation — specializes to the signed sector swap:
+     `lambdaHalfShift_one_sub_poisson`, agreeing with the independent scalar-FE proof
+     (`lambdaHalfShift_one_sub`). Two disjoint derivations, one identity.
+   - Kernel level: theta inversion IS the weight-one inversion of sector profiles:
+     `disorderThetaProfile = J(orderThetaProfile)` and conversely
+     (`disorderThetaProfile_eq_inversion`, via mathlib's `evenKernel_functional_equation`),
+     and both profiles are lattice sums of dilated `thetaCuspGaussian` seeds — parity-signed
+     integer dilations vs half-integer dilations (`orderThetaProfile_hasSum`,
+     `disorderThetaProfile_hasSum`). The profile-swap-to-sector-swap conversion is closed.
+5. **Graded KMS classification — EXECUTED 2026-07-12, theorem replaces shape, WITH A
+   CORRECTION `[PROVED + FORMALIZED]`**
+   (`formal/GaloisForLFunctions/RHTower/BornGradedKMSClassification.lean`, axiom-clean).
+   - **Walls:** both sector traces have the same Gibbs wall `beta = 2` in the half-dilated
+     gauge (`summable_halfDilatedWeight_iff`, `summable_halfLevelWeight_iff`), and throughout
+     the high-temperature phase `0 < beta <= 2` the parity supertrace converges while the
+     Gibbs trace diverges (`gradedOrder_beyond_wall`): the strip KMS datum is intrinsically
+     graded.
+   - **The involution's phase action (label form, classification as hypothesis):** the
+     KW sector swap `beta -> 2-beta` acts WITHIN the high-temperature `III_1` phase — it never
+     reaches the type-I phase (`label_sectorSwap_within_highTemp`). The gauge's own KMS
+     reflection is `beta -> 4-beta`, crossing the wall exactly at its fixed point `2`
+     (`label_bornReflect_eq_iff`), and the unit tower shift `beta -> beta+2` — the difference
+     of the two involutions — always crosses (`label_towerShift_ne`).
+   - **Correction to the conjecture's shape:** the duality does NOT exchange the
+     `III_1`/type-I pair. The phase exchange belongs to the KMS reflection = swap ∘ shift; the
+     KW swap itself is phase-internal. Consequently **constraint 5's non-normality obstruction
+     dissolves for the true involution**: both swapped sectors sit in the `III_1` phase, so
+     the sector swap may be realized by a normal graded equivalence — the conjectured system
+     MATERIALIZES as a phase-internal graded involution and dies in its original
+     phase-exchanging form.
+6. **Kill tests inherited:** diagonal action is Born-invisible (parent Theorem 5) — dead; scalar
    partition identity alone — dead; measured trace — dead; declaring FE a gauge symmetry —
-   circular. The map must act on archimedean off-diagonal structure (constraint 4) and be
-   non-normal off the fixed locus (constraint 5).
-5. **Degenerate control:** drop the archimedean mode — the parent card proves no duality exists
+   circular. The map acts on archimedean off-diagonal structure (constraint 4); by step 5 it
+   need not be non-normal — that demand transfers to the tower shift, not the duality.
+7. **Degenerate control:** drop the archimedean mode — the parent card proves no duality exists
    for bare Bost--Connes; the archimedean mode is load-bearing or the conjecture is false. Drop
    the grading — constraint 2 proves the ungraded version false outright.
 
@@ -230,3 +263,16 @@ square-summability assumptions must not enter the construction.
   moves the Gaussian state (`WeightOneInversion.lean`, 10 declarations, axiom-clean). Gate 0→1
   ticked; card moved to 1-in-progress. Open core: Poisson/theta brick for the profile-to-sector
   conversion + graded KMS classification of the doubled-rung involution.
+- 2026-07-12 — Approach steps 4 and 5 executed; both remaining bricks closed. Poisson brick closed
+  by WIRING: mathlib's even-Hurwitz pair at `a=1/2` identified with the sector pair
+  (`BornPoissonWiring.lean`: series identifications + identity-theorem globalization off `{0,1}`;
+  `lambdaHalfShift_one_sub_poisson` re-derives the swap from genuine Poisson summation, agreeing
+  with the scalar-FE proof; kernel-level `disorderThetaProfile = J(orderThetaProfile)` with both
+  profiles as lattice sums of dilated theta-cusp Gaussian seeds). Graded KMS classification proved
+  in label form (`BornGradedKMSClassification.lean`): walls at `beta=2` for both sectors, graded
+  supertrace beyond the wall, and the involution's phase action — **correction**: the KW swap is
+  phase-INTERNAL (III_1 to III_1); the phase exchange belongs to the KMS reflection = swap ∘ tower
+  shift. Constraint 5's non-normality obstruction dissolves for the duality itself. The system
+  materializes as a phase-internal graded involution; its original phase-exchanging form is dead.
+  Open next: the paper-level C*-existence with graded KMS uniqueness on the strip, and the
+  `[OPEN CORE]` `Lambda`-hypertranscendence certificate.

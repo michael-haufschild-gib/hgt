@@ -326,4 +326,34 @@ theorem linearIndependent_iff_monomialValue_monoScalar_injective
         rw [hj, sub_self] at hz
         exact hz.symm
 
+/-- Adding an independently chosen natural-number offset to every exponent preserves augmented
+rational linear independence. -/
+theorem exponentFamily_linearIndependent_natShift
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (s : ι → ℂ) (m : ι → ℕ)
+    (hs : LinearIndependent ℚ (exponentFamily s)) :
+    LinearIndependent ℚ (exponentFamily (fun j => s j + m j)) := by
+  rw [Fintype.linearIndependent_iff]
+  intro g hrel x
+  let c0 : ℚ := g none + ∑ j : ι, g (some j) * m j
+  let h : Option ι → ℚ
+    | none => c0
+    | some j => g (some j)
+  have hold : ∑ y : Option ι, h y • exponentFamily s y = 0 := by
+    rw [Fintype.sum_option]
+    rw [Fintype.sum_option] at hrel
+    simp only [h, c0, exponentFamily, Rat.smul_def, mul_one] at hrel ⊢
+    push_cast at hrel ⊢
+    simp_rw [mul_add] at hrel
+    rw [Finset.sum_add_distrib] at hrel
+    linear_combination hrel
+  have hc := Fintype.linearIndependent_iff.mp hs h hold
+  cases x with
+  | some j => exact hc (some j)
+  | none =>
+      have hj : ∀ j : ι, g (some j) = 0 := fun j => hc (some j)
+      have hnone := hc none
+      simp [h, c0, hj] at hnone
+      exact hnone
+
 end HurwitzJointOrbit

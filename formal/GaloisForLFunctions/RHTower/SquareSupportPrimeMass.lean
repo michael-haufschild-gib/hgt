@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.CreaseBudgetPrimeMass
 import GaloisForLFunctions.RHTower.MollifierDetection
+import GaloisForLFunctions.RHTower.MFreeTower
 
 /-!
 # Square support forces prime-mass content
@@ -104,6 +105,41 @@ theorem primeMass_le_mPart_weighted_diagonal {m : ℕ} (hm : m ≠ 0) (y : ℕ) 
   · simpa using h
   · rw [mPartMoebiusCoeff, mPart_apply_pow hm, ArithmeticFunction.moebius_apply_prime hpp]
     norm_num
+
+/-! ## The mixed-radix compound fingerprint -/
+
+/-- **The full ladder of fingerprints in one carrier.**  The `M`-free indicator is
+supported at *every* prime power `p^e` with `e < M`, so it satisfies the rung-`e`
+forced-content law for every such `e` simultaneously: one carrier, `M - 1` spectral
+lines. -/
+theorem primeMass_le_mFreeIndicator_weighted_diagonal {M e : ℕ} (hM : M ≠ 0)
+    (he : e ≠ 0) (hlt : e < M) (y : ℕ) :
+    ∑ p ∈ (Nat.primesBelow (y + 1)).filter (fun p => p ^ e ≤ y), (p : ℝ)⁻¹
+      ≤ ∑ n ∈ Finset.Icc 1 y,
+          (((mFreeIndicator M n : ℤ) : ℝ) * (n : ℝ) ^ (-(1 / (2 * (e : ℝ))))) ^ 2 := by
+  have h := primeMass_le_rung_weighted_sq_sum
+    (a := fun n => ((mFreeIndicator M n : ℤ) : ℝ)) (δ := 1) he
+    zero_le_one (fun p hpp => ?_) y
+  · simpa using h
+  · show (1 : ℝ) ≤ |((mFreeIndicator M (p ^ e) : ℤ) : ℝ)|
+    rw [mFreeIndicator_apply_prime_pow hM hpp, if_pos hlt]
+    norm_num
+
+/-- **The mixed-radix compound spectral signature.**  The convolution of the dilated
+`m_k`-free carriers along the telescope carries the entire ladder of rung fingerprints
+at once: for every exponent `e` below the full modulus `P_K = m₀⋯m_(K-1)`, the
+`1/(2e)`-weighted diagonal of the convolved carrier dominates the rung-`e` prime mass.
+The telescope compounds the per-rung fingerprints into one carrier. -/
+theorem telescope_compound_fingerprint (m : ℕ → ℕ) (hm : ∀ k, m k ≠ 0) (K : ℕ)
+    {e : ℕ} (he : e ≠ 0) (hlt : e < ∏ k ∈ Finset.range K, m k) (y : ℕ) :
+    ∑ p ∈ (Nat.primesBelow (y + 1)).filter (fun p => p ^ e ≤ y), (p : ℝ)⁻¹
+      ≤ ∑ n ∈ Finset.Icc 1 y,
+          ((((∏ k ∈ Finset.range K,
+              mPart (∏ j ∈ Finset.range k, m j) (mFreeIndicator (m k))) n : ℤ) : ℝ)
+            * (n : ℝ) ^ (-(1 / (2 * (e : ℝ))))) ^ 2 := by
+  rw [prod_mPart_mFreeIndicator_mixed m hm K]
+  exact primeMass_le_mFreeIndicator_weighted_diagonal
+    (Finset.prod_ne_zero_iff.mpr fun k _ => hm k) he hlt y
 
 /-- **The abstract forced-content law, quarter-weighted form.**  If `|a(p²)| ≥ δ` on
 primes, the `1/4`-weighted quadratic functional of `a` dominates `δ²` times the Mertens

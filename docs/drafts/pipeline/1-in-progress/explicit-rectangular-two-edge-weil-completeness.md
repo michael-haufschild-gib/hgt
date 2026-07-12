@@ -112,14 +112,21 @@ sum_(n>=N) [S_L(n)+C]n^(-s)
 
 Every shifted pole `s=1+w` is genuine by `(3)`, so the abscissa is exactly `1+delta_*`.  The Xi
 divisor has a uniform positive ordinate gap from the real strip segment; that gap is now proved in
-Lean.  Together with the `O(|gamma|^-2)` amplitude, zero counting, and a vertical-strip polynomial
-bound for zeta, it should make `(9a)` locally normal and holomorphic near the real point
-`1+delta_*`.
+Lean.  The zero-density estimate `N_Xi(R)=O(R log R)` now yields the multiplicity-exact
+reciprocal-`3/2` law.  A square-root vertical zeta bound then proves that `(9a)` is locally normally
+convergent and holomorphic on an explicit ball centred at the real point `1+delta_*`.
 
-The already formalized nonnegative-Dirichlet-series Landau theorem then rules out the assumed lower
-bound.  Restoring the uniformly bounded middle, decaying, and on-line terms yields `(5)` and the
-stronger sampled assertion `(5a)`.  This reduction removes the need to formalize a separate
-continuous-Laplace Landau theorem.
+The required Landau theorem has also been sharpened.  Its Taylor centre may be placed an arbitrary
+positive distance `h` to the right of a convergence point; there is no fixed unit aperture.  Hence
+an eventual lower bound for `S_L(n)` produces a nonnegative tail series that converges at a real
+point strictly left of `1+delta_*`.  The ordinary L-series of this tail is proved to equal `(9a)`
+plus the constant-zeta term and a finite Dirichlet polynomial on `Re s>1+delta_*`.
+
+The sole remaining analytic core is now the genuine-pole contradiction: continuation from the
+right half-plane must retain a nonzero pole jet at some `s=1+w` with `Re w` beyond the transferred
+abscissa.  Multiplicity must be handled without assuming a simple Xi zero.  Restoring the uniformly
+bounded middle, decaying, and on-line terms will then yield `(5)` and the stronger sampled assertion
+`(5a)`.
 
 ## Positive CCM law
 
@@ -140,11 +147,12 @@ the actual Xi divisor; finite-cutoff positivity alone does not supply that trans
    on the multiplicity-exact divisor polarization, or the admissible Weil class must be shown to
    contain the indicator by completion.  No distributional explicit-formula claim is allowed
    without that closure theorem.
-2. **Abscissa attack.**  Conditional Laplace convergence left of `2delta_*` must imply
-   holomorphy on the corresponding half-plane.  This is a real theorem, not a formal consequence
-   of the meromorphic series.
-3. **Real-boundary attack.**  Holomorphy at `2delta_*` must be proved from the actual Xi entire
-   function, not from an asserted first-zero height.
+2. **Abscissa attack.**  The scale-local Landau transfer now supplies convergence left of the real
+   boundary.  The remaining obligation is to turn that convergence into a contradiction with an
+   actual shifted-zeta pole jet; no asserted meromorphic continuation may be substituted.
+3. **Real-boundary attack — closed.**  Holomorphy at `1+delta_*` is proved from the actual Xi
+   divisor, its unconditional zero count, and a qualitative uniform ordinate gap, not from an
+   asserted numerical first-zero height.
 4. **Cancellation attack.**  Opposite poles in `(9)` are distinct because off-line zeros have
    nonzero height.  The nonzero coefficients `(3)` prevent residue cancellation at each pole.
 5. **Multiplicity attack.**  Every divisor copy must enter `(7)` with analytic multiplicity; no
@@ -169,13 +177,18 @@ the actual Xi divisor; finite-cutoff positivity alone does not supply that trans
    rectangular value on `XiZeroCopy`.  The growing edge is selected by the sign of the transverse
    coordinate, and the full multiplicity-exact polarization differs from its dominant-edge sum by
    an explicitly bounded remainder, uniformly for every aperture `a>=L`.
-4. **Safe half-plane complete.**  The right-half coefficient series is absolutely summable, every
-   coefficient is nonzero for `L>0`, logarithmic sampling gives the exact monomial `n^w`, and the
-   shifted-zeta series converges absolutely on `Re s>=3/2+eps`.  Local normal continuation to the
-   Landau boundary remains open and uses the now-formal uniform Xi ordinate gap.
-5. Specialize the existing formal nonnegative-Dirichlet-series Landau theorem to `(9a)`.
-6. Identify the exact abscissa and specialize the theorem to the actual Xi divisor.
-7. Prove `(4)`--`(5a)` without a simplicity, RH, or source-positivity hypothesis.
+4. **Boundary continuation complete.**  The right-half coefficient series is absolutely summable,
+   every coefficient is nonzero for `L>0`, logarithmic sampling gives the exact monomial `n^w`, and
+   the shifted-zeta series is locally normally convergent and holomorphic on a positive-radius ball
+   centred at `1+delta_*`.  The proof uses the formal reciprocal-`3/2` Xi-divisor law and the formal
+   square-root vertical zeta bound.
+5. **Scale-local Landau transfer complete.**  The arbitrary-shift Landau theorem, real coefficient
+   construction, `O(n^delta_*)` growth bound, right-half L-series identity, finite-prefix correction,
+   and forced convergence strictly left of `1+delta_*` are formalized unconditionally.
+6. Prove the noncancelling pole-jet contradiction at `s=1+w`, retaining arbitrary Xi multiplicity.
+7. Identify the full dominant sum with the right-half real coefficients and combine it with the
+   already formalized bounded remainder.
+8. Prove `(4)`--`(5a)` without a simplicity, RH, or source-positivity hypothesis.
 
 ## Gates
 
@@ -183,6 +196,9 @@ the actual Xi divisor; finite-cutoff positivity alone does not supply that trans
 - [x] exact transform and leading/remainder decomposition proved on paper
 - [x] scalar transform, symmetry, strip bound, and Xi-divisor square summability formalized in Lean
 - [x] exact dominant-edge decomposition and global aperture-uniform remainder bound formalized
+- [x] reciprocal-`3/2` Xi-divisor summability and square-root vertical zeta bound formalized
+- [x] local normal continuation at the actual transverse boundary formalized
+- [x] scale-local Landau transfer and forced left-boundary convergence formalized
 - [ ] complete paper proof audited at indicator-class and abscissa boundaries
 - [ ] unconditional Lean formalization of every promoted claim
 - [ ] primary-literature novelty audit
