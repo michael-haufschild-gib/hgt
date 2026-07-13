@@ -45,7 +45,9 @@ We construct an ordinary Dirichlet series from one explicit inverse-tilted dyadi
 window.  Its canonical continuation $\cS_-$ is meromorphic on $\Re s>\frac12$; its simple poles
 are exactly $s=\rho+\frac12$, where $\XiR(\rho)=0$, and normalized residues recover the analytic
 multiplicity.  The intrinsic Connes critical-Mellin defect has the corresponding complete pole
-divisor $u=\rho-1$, again with multiplicity as residue.
+divisor $u=\rho-1$, again with multiplicity as residue.  At the exact sharp rectangular
+regularity, the divisor polarization also satisfies a complete prime--Gamma Guinand--Weil
+identity; no smoothing limit or spectral cutoff remains in that formula.
 
 Fix any rectangular Weil width $L>0$, and let $q_{L,N}^-$ be the negative part of an admissible
 logarithmically sampled tail.  For every $\alpha\ge0$ we prove the exact equivalence
@@ -103,6 +105,13 @@ screw-line equality criterion on a cofinal interval~\cite{Suzuki2025}.  His rece
 places the Yoshida, Bombieri, Connes, and Connes--Consani--Moscovici forms in one screw-function
 framework~\cite{Suzuki2026}.  Finite Galerkin values have also been identified exactly with
 finite Guinand--Weil zero sums~\cite{Groskin2026}.
+
+The sharp rectangle used below is not inserted formally into the classical smooth test space.
+Instead we prove its complete Guinand--Weil identity directly by symmetric contour exhaustion.
+The vertical edges vanish cofinally, the bottom edge is absolutely integrable, and the resulting
+zero sum equals an explicit finite von Mangoldt autocorrelation plus an archimedean integral.
+This closes the exact source realization at the piecewise-linear boundary and distinguishes the
+complete identity here from a finite Galerkin dictionary.
 
 There is also a classical superzeta literature in which Dirichlet series are formed directly over
 the Riemann zeros and their meromorphic polar structure is studied~\cite{Voros2003}.  That
@@ -979,6 +988,78 @@ Weil form~\cite{Suzuki2023,Suzuki2025,Suzuki2026}.  The additional feature here 
 rectangular stencil and the arithmetic logarithmic mesh, which produce the Dirichlet continuation
 and pole tomography of Section~5.
 
+\subsection{Exact sharp prime--Gamma realization}
+
+Let
+\[
+ h_{L,a}(x)=\mathbf 1_{[a-L,a]}(x)+\mathbf 1_{[-a,-a+L]}(x),
+ \qquad
+ R_{L,a}(t)=\int_{\R}h_{L,a}(x+t)h_{L,a}(x)\,dx,
+ \tag{6.3}
+\]
+and put $\widehat h_{L,a}(z)=F_{a,L}(iz)$.  Define the finite prime autocorrelation
+\[
+ \mathcal P_{L,a}
+ =\sum_{2\le n\le e^{2a}}
+   \frac{\Lambda(n)}{\sqrt n}\,R_{L,a}(\log n).
+ \tag{6.4}
+\]
+For the completed archimedean factor
+\[
+ \mathcal G(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2),
+\]
+define
+\[
+ \mathcal A_{\infty,L,a}
+ =\frac1\pi\int_{\R}
+   \widehat h_{L,a}(x-i)^2
+   \frac{\mathcal G'}{\mathcal G}\!\left(\frac32+ix\right)\,dx.
+ \tag{6.5}
+\]
+The integral in \textup{(6.5)} is absolutely convergent.
+
+\begin{theorem}[Complete sharp rectangular Guinand--Weil formula]
+\label{thm:sharp-guinand-weil}
+If $0\le L\le a$, then
+\[
+ \boxed{Q_L(a)=-2\mathcal P_{L,a}+\mathcal A_{\infty,L,a}.}
+ \tag{6.6}
+\]
+Thus the exact divisor polarization of the nonsmooth two-edge profile has a cutoff-free
+prime--Gamma realization.  Every prime term is contained in the finite multiplicative window
+$n\le e^{2a}$.
+\end{theorem}
+
+\begin{proof}
+Write $\Xi_C(z)=\XiR(\frac12+iz)$ and apply the argument principle to
+$\widehat h_{L,a}(z)^2\Xi_C'(z)/\Xi_C(z)$ on symmetric depth-one rectangles whose vertical
+edges avoid the zero coordinates.  The finite contour value is the multiplicity-counted sum of
+$\widehat h_{L,a}^2$ over the enclosed xi divisor.  Absolute divisor summability exhausts this
+sum as the width tends to infinity.  The vertical resolvent integrals tend cofinally to zero,
+while the bottom edge converges absolutely.  Splitting the logarithmic derivative of xi into its
+zeta and completed archimedean factors gives \textup{(6.5)} for the latter.  In the Euler region,
+absolute convergence of $-\zeta'/\zeta$ permits termwise Fourier inversion; the transform square
+is the autocorrelation $R_{L,a}$, whose compact support truncates the prime-power sum at
+$e^{2a}$.  This gives $-2\mathcal P_{L,a}$ and proves \textup{(6.6)}.
+\end{proof}
+
+Let
+\[
+ B_{L,a}=\int_{\R}h_{L,a}(x)\cosh(x/2)\,dx.
+ \tag{6.7}
+\]
+The corrected observable therefore satisfies the exact source identity
+\[
+ Q_L(a)-\mathcal A_{\infty,L,a}+2B_{L,a}^2
+ =-2\mathcal P_{L,a}+2B_{L,a}^2.
+ \tag{6.8}
+\]
+At $a=\frac12\log N$, the autocorrelation in \textup{(6.3)} is a sum of fixed and moving tents;
+the moving tent is supported in $Ne^{-2L}<n<N$.  Hence \textup{(6.8)} is a finite
+prime--Gamma--polar source identity on the same arithmetic aperture used by the logarithmic
+carrier.  Theorem~\ref{thm:sharp-guinand-weil} is the cutoff-free counterpart of the finite
+Galerkin dictionary in~\cite{Groskin2026}.
+
 \section{One-source complete-divisor tomography}
 
 We now remove the target-defined coefficient from the source side.  Put
@@ -1138,7 +1219,7 @@ von Mangoldt Laplace channel.  Put
 
 \begin{theorem}[Exact inverse-tilted/critical-Mellin factorization]
 \label{thm:inverse-tilted-critical-mellin-factorization}
-For every $s\in\C$,
+As an identity of meromorphic functions,
 \[
  \cS_-(s)=2M_-(s)\widetilde D(s-3/2)+C_-(s).
  \tag{7.17}
@@ -1330,6 +1411,7 @@ A sequence $a:\N\to\R$ is an \emph{admissible positive correction} of $c$ when
  \qquad(n\ge1).
  \tag{7.31}
 \]
+Write $c^-(n)=\max\{-c(n),0\}$ for the coefficientwise negative part.
 
 \begin{theorem}[Optimal positive correction for the sharp-prime source]
 \label{thm:minimal-sharp-correction}
@@ -1376,8 +1458,9 @@ $y+b\ge0$.  Applying this pointwise to $y=c(n)$ proves admissibility and minimal
 \textup{(7.32)} follows immediately from \textup{(7.28)} and \textup{(7.30)}.  Comparison of
 nonnegative Dirichlet series gives the abscissa inequality in \textup{(7.33)}.  Since $c^-$ is
 itself admissible, the asserted equivalence of abscissa sublevel sets follows in both directions.
-The unconditional square-root envelope
-$E(n)\le C\sqrt n$ gives $c^-(n)\le2C\sqrt n$; comparison with
+The elementary Chebyshev bound gives
+$W(n)\le C_0\sqrt n$ with $C_0=\sqrt2(\log4+4)$, hence
+$E(n)\le C_0\sqrt n$ and $c^-(n)\le2C_0\sqrt n$; comparison with
 $\zeta(s-1/2)$ proves \textup{(7.34)}.
 
 If $\sigma_{\rm abs}(a)\le1+\alpha$, then for every $\varepsilon>0$ the series of $a$ converges
@@ -1439,6 +1522,9 @@ statements proves RH.  A Connes or
 Connes--Consani realization may obtain this through a positive relative trace, a Sonin
 compression, or a cofinal near-radical section, but the resulting scalar channel must agree with
 \textup{(7.14)}--\textup{(7.17)} and retain the multiplicity normalization \textup{(7.11)}.
+The sharp-window observable itself already has the exact prime--Gamma realization
+\textup{(6.6)}; the missing operator theorem is therefore a positivity or critical-energy
+estimate for this realized source, not an unproved passage from a discontinuous test function.
 
 Theorem~\ref{thm:minimal-sharp-correction} makes the corresponding positivity obligation
 canonical.  If a semilocal construction corrects the signed sharp-prime coefficient $c$ by any
@@ -1552,7 +1638,9 @@ principal quantitative theorem and summable-family aggregate law are formalized 
 formalized in \texttt{CCMInverseTiltedDyadicPrimeTomography.lean}; the intrinsic defect divisor in
 \texttt{CCMCriticalMellinDivisorTomography.lean}; and finite positive-channel conservation in
 \texttt{CCMRectangularFiniteChannelNonDilution.lean}.  The complete fixed-window theorem chain is
-collected by \texttt{CCMUnconditionalFoundation.lean}.
+collected by \texttt{CCMUnconditionalFoundation.lean}.  The sharp contour exhaustion and exact
+prime--Gamma identity \textup{(6.6)} are formalized in
+\texttt{XiGuinandWeilRectangularFullFormula.lean}.
 
 The explicit source endpoints in Corollary~\ref{cor:explicit-source-endpoints} are formalized in
 the sharp-prime-window modules identified in the supplementary claim-trace table.  The least
@@ -1585,11 +1673,11 @@ abscissa.  What is not established is the critical estimate
 $\sigma_{\rm abs}(2E)\le1$ itself.
 
 The rectangle is deliberately nonsmooth.  We avoid an inadmissible appeal to the classical smooth
-test space by defining $Q_L$ through the absolutely convergent xi divisor polarization.  A
-prime-side explicit-formula realization of this exact boundary value requires either an
-appropriate completion theorem or a justified approximation whose limit preserves the scalar
-sequence.  This regularity issue remains open for the rectangular identity, but it is no longer
-the source bridge for the paper's main detector:
+test space by defining $Q_L$ through the absolutely convergent xi divisor polarization.
+Theorem~\ref{thm:sharp-guinand-weil} closes the corresponding regularity bridge directly: contour
+exhaustion proves the exact prime--Gamma identity at the sharp boundary without importing the
+rectangle into the classical smooth test space.  Thus no smoothing limit or finite spectral
+cutoff is assumed in the main observable.
 Theorem~\ref{thm:inverse-tilted-source-tomography} constructs a separate exact prime source
 directly.  Theorem~\ref{thm:inverse-tilted-critical-mellin-factorization} identifies it, up to a
 holomorphic correction and zero-free multiplier, with the Connes critical-Mellin defect.  Its

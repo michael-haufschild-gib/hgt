@@ -23,17 +23,17 @@ noncomputable section
 /-- The expanded evaluation matrix-vector product, grouped first by monomial label and then by
 coefficient degree. -/
 theorem expandedDifferentialEvaluationMatrix_mulVec
-    {row κ : Type*} [Fintype row] [Fintype κ]
+    {row κ : Type} [Fintype row] [Fintype κ]
     (q n : ℕ) (z : row → ℂ) (exponent : κ → (Fin n →₀ ℕ))
     (y : row × Fin n → ℂ) (c : κ × Fin (q + 1) → ℂ) (b : row) :
     (expandedDifferentialEvaluationMatrix q n z exponent y).mulVec c b =
       ∑ a, (∑ d, c (a, d) * z b ^ (d : ℕ)) *
         (exponent a).prod (fun k e => y (b, k) ^ e) := by
   classical
-  rw [Matrix.mulVec, Finset.sum_product]
+  rw [Matrix.mulVec, dotProduct, ← Finset.univ_product_univ, Finset.sum_product]
   apply Finset.sum_congr rfl
   intro a ha
-  rw [Finset.mul_sum]
+  rw [Finset.sum_mul]
   apply Finset.sum_congr rfl
   intro d hd
   rw [expandedDifferentialEvaluationMatrix_apply]
@@ -42,7 +42,7 @@ theorem expandedDifferentialEvaluationMatrix_mulVec
 /-- Packet points lying under some affine chart of the projectivized null-vector incidence.  The
 existential union over `j` is the finite standard projective cover. -/
 def projectiveChartIncidenceProjection
-    {row κ : Type*} [Fintype κ] [DecidableEq κ]
+    {row κ : Type} [Fintype κ] [DecidableEq κ]
     (q n : ℕ) (z : row → ℂ) (exponent : κ → (Fin n →₀ ℕ)) :
     Set (row × Fin n → ℂ) :=
   {y | ∃ j : κ × Fin (q + 1), ∃ x : projectiveChartVar j → ℂ,
@@ -51,7 +51,7 @@ def projectiveChartIncidenceProjection
 /-- The literal rectangular rank defect is exactly the projection of the projectivized
 null-vector incidence. -/
 theorem expandedDifferentialEvaluationRankDefect_eq_projectiveChartIncidenceProjection
-    {row κ : Type*} [Fintype row] [Fintype κ]
+    {row κ : Type} [Fintype row] [Fintype κ]
     [DecidableEq κ]
     (q n : ℕ) (z : row → ℂ) (exponent : κ → (Fin n →₀ ℕ)) :
     expandedDifferentialEvaluationRankDefect q n z exponent =
@@ -77,16 +77,24 @@ theorem expandedDifferentialEvaluationRankDefect_eq_projectiveChartIncidenceProj
     intro b
     have hb := congrFun hvzero b
     rw [Pi.zero_apply, expandedDifferentialEvaluationMatrix_mulVec] at hb
-    rw [← mul_eq_zero_of_left hscale]
-    calc
-      scale *
+    have hscaled : scale *
           (∑ a, (∑ d, projectiveChartHomogenize j x (a, d) * z b ^ (d : ℕ)) *
-            (exponent a).prod (fun k e => y (b, k) ^ e)) =
+            (exponent a).prod (fun k e => y (b, k) ^ e)) = 0 := by
+      calc
+        scale *
+            (∑ a, (∑ d, projectiveChartHomogenize j x (a, d) * z b ^ (d : ℕ)) *
+              (exponent a).prod (fun k e => y (b, k) ^ e)) =
           ∑ a, (∑ d, v (a, d) * z b ^ (d : ℕ)) *
             (exponent a).prod (fun k e => y (b, k) ^ e) := by
-        simp_rw [Finset.mul_sum, ← mul_assoc, hreconstruct]
-        ring
-      _ = 0 := hb
+          simp_rw [hreconstruct, Finset.mul_sum, Finset.sum_mul]
+          simp_rw [Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro a ha
+          apply Finset.sum_congr rfl
+          intro d hd
+          ring
+        _ = 0 := hb
+    exact (mul_eq_zero.mp hscaled).resolve_left hscale
   · rintro ⟨j, x, hincidence⟩ hinjective
     let c : κ × Fin (q + 1) → ℂ := projectiveChartHomogenize j x
     have hcne : c ≠ 0 := by

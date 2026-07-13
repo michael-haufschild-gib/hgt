@@ -829,4 +829,88 @@ theorem rectangularEulerGaussTermValue_eq_integral_timeTerm
   dsimp only [A0]
   exact (rectangularEulerGaussTimeTerm_eq_difference L a n t).symm
 
+def rectangularGammaCancellationPartialKernel (L a : ℝ) (N : ℕ) (t : ℝ) : ℝ :=
+  rectangularGammaCancellationKernel L a t *
+    (1 - Real.exp (-((N : ℝ) * t)))
+
+theorem sum_exp_mul_rectangularGammaCancellationNumerator_eq_partialKernel
+    (L a : ℝ) (N : ℕ) {t : ℝ} (ht : 0 < t) :
+    ∑ n ∈ Finset.range N,
+        Real.exp (-((n : ℝ) * t)) * rectangularGammaCancellationNumerator L a t =
+      rectangularGammaCancellationPartialKernel L a N t := by
+  let x : ℝ := Real.exp (-t)
+  have hxne : 1 - x ≠ 0 := by
+    have : x < 1 := by
+      dsimp only [x]
+      exact Real.exp_lt_one_iff.mpr (by linarith)
+    linarith
+  have hpow : ∀ n : ℕ, Real.exp (-((n : ℝ) * t)) = x ^ n := by
+    intro n
+    dsimp only [x]
+    rw [← Real.exp_nat_mul]
+    congr 1
+    ring
+  have hnum : rectangularGammaCancellationNumerator L a t =
+      rectangularGammaCancellationKernel L a t * (1 - x) := by
+    rw [rectangularGammaCancellationKernel]
+    dsimp only [x]
+    rw [div_mul_cancel₀]
+    exact hxne
+  rw [show (∑ n ∈ Finset.range N,
+      Real.exp (-((n : ℝ) * t)) * rectangularGammaCancellationNumerator L a t) =
+      (∑ n ∈ Finset.range N, x ^ n) * rectangularGammaCancellationNumerator L a t by
+    rw [Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro n hn
+    rw [hpow n]]
+  rw [hnum]
+  unfold rectangularGammaCancellationPartialKernel
+  rw [show Real.exp (-((N : ℝ) * t)) = x ^ N by exact hpow N]
+  have hgeo : (∑ n ∈ Finset.range N, x ^ n) * (1 - x) = 1 - x ^ N := by
+    have h := geom_sum_mul x N
+    nlinarith
+  calc
+    (∑ n ∈ Finset.range N, x ^ n) *
+        (rectangularGammaCancellationKernel L a t * (1 - x)) =
+      rectangularGammaCancellationKernel L a t *
+        ((∑ n ∈ Finset.range N, x ^ n) * (1 - x)) := by ring
+    _ = rectangularGammaCancellationKernel L a t * (1 - x ^ N) := by rw [hgeo]
+
+theorem sum_rectangularEulerGaussTimeTerm_eq_partialKernel
+    (L a : ℝ) (N : ℕ) {t : ℝ} (ht : 0 < t) :
+    ∑ n ∈ Finset.range N, rectangularEulerGaussTimeTerm L a n t =
+      (rectangularGammaCancellationPartialKernel L a N t : ℂ) := by
+  rw [show (∑ n ∈ Finset.range N, rectangularEulerGaussTimeTerm L a n t) =
+      ((∑ n ∈ Finset.range N,
+        Real.exp (-((n : ℝ) * t)) * rectangularGammaCancellationNumerator L a t : ℝ) : ℂ) by
+    push_cast
+    apply Finset.sum_congr rfl
+    intro n hn
+    rw [rectangularEulerGaussTimeTerm]]
+  exact_mod_cast
+    sum_exp_mul_rectangularGammaCancellationNumerator_eq_partialKernel L a N ht
+
+theorem rectangularEulerGaussPartialValue_eq_integral_partialKernel
+    (L a : ℝ) (N : ℕ) :
+    rectangularEulerGaussPartialValue L a N =
+      ∫ t : ℝ in Ioi 0, (rectangularGammaCancellationPartialKernel L a N t : ℂ) := by
+  unfold rectangularEulerGaussPartialValue
+  calc
+    (∑ n ∈ Finset.range N, rectangularEulerGaussTermValue L a n) =
+        ∑ n ∈ Finset.range N,
+          ∫ t : ℝ in Ioi 0, rectangularEulerGaussTimeTerm L a n t := by
+      apply Finset.sum_congr rfl
+      intro n hn
+      exact rectangularEulerGaussTermValue_eq_integral_timeTerm L a n
+    _ = ∫ t : ℝ in Ioi 0,
+        ∑ n ∈ Finset.range N, rectangularEulerGaussTimeTerm L a n t := by
+      rw [MeasureTheory.integral_finset_sum]
+      intro n hn
+      exact integrableOn_rectangularEulerGaussTimeTerm L a n
+    _ = ∫ t : ℝ in Ioi 0,
+        (rectangularGammaCancellationPartialKernel L a N t : ℂ) := by
+      apply integral_congr_ae
+      filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with t ht
+      exact sum_rectangularEulerGaussTimeTerm_eq_partialKernel L a N ht
+
 end RHTower

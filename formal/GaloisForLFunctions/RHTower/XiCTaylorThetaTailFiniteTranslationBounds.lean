@@ -71,6 +71,44 @@ theorem integral_abs_pow_mul_thetaCuspTailDerivative_zero_div_factorial_le_nat_r
     _ = (thetaCuspTailNatExpConstant p / (p : ℝ) ^ (m + 1)) *
           (m.factorial : ℝ) := by ring
 
+/-- Double integration by parts on a positive half-line, with all four endpoint values retained.
+This abstract form is used for translated theta potentials: it prevents a seam term from being
+silently lost when a reflected Haar packet is moved back to the positive source half-line. -/
+theorem integral_Ioi_secondDerivative_mul_eq_boundary_add
+    {a : ℝ} {f f' f'' : ℝ → ℂ} {g g' g'' : ℝ → ℂ}
+    {A₁ B₁ A₂ B₂ : ℂ}
+    (hf : ∀ x ∈ Ioi a, HasDerivAt f (f' x) x)
+    (hf' : ∀ x ∈ Ioi a, HasDerivAt f' (f'' x) x)
+    (hg : ∀ x ∈ Ioi a, HasDerivAt g (g' x) x)
+    (hg' : ∀ x ∈ Ioi a, HasDerivAt g' (g'' x) x)
+    (hgf'' : IntegrableOn (g * f'') (Ioi a))
+    (hg'f' : IntegrableOn (g' * f') (Ioi a))
+    (hg''f : IntegrableOn (g'' * f) (Ioi a))
+    (hzero₁ : Tendsto (g * f') (𝓝[>] a) (𝓝 A₁))
+    (hinfty₁ : Tendsto (g * f') atTop (𝓝 B₁))
+    (hzero₂ : Tendsto (g' * f) (𝓝[>] a) (𝓝 A₂))
+    (hinfty₂ : Tendsto (g' * f) atTop (𝓝 B₂)) :
+    (∫ x : ℝ in Ioi a, f'' x * g x) =
+      (B₁ - A₁) - (B₂ - A₂) +
+        ∫ x : ℝ in Ioi a, f x * g'' x := by
+  have hfirst := MeasureTheory.integral_Ioi_mul_deriv_eq_deriv_mul
+    hg hf' hgf'' hg'f' hzero₁ hinfty₁
+  have hsecond := MeasureTheory.integral_Ioi_mul_deriv_eq_deriv_mul
+    hg' hf hg'f' hg''f hzero₂ hinfty₂
+  rw [show (∫ x : ℝ in Ioi a, f'' x * g x) =
+      ∫ x : ℝ in Ioi a, g x * f'' x by
+        apply integral_congr_ae
+        filter_upwards [] with x
+        ring,
+    hfirst, hsecond]
+  have hcomm : (∫ x : ℝ in Ioi a, g'' x * f x) =
+      ∫ x : ℝ in Ioi a, f x * g'' x := by
+    apply integral_congr_ae
+    filter_upwards [] with x
+    ring
+  rw [hcomm]
+  ring
+
 end
 
 
