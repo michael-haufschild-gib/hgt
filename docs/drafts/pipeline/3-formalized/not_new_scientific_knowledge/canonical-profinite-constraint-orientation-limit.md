@@ -89,7 +89,7 @@ pole-rigidity theorem.
 - [x] Herglotz law: the all-positive sequence is the unique positive point
 - [x] strong product claim excluded from the theorem
 - [x] novelty audit: canonical completion and analytic bridge, not a new HT-independence mechanism
-- [ ] publication theorem revised to distinguish inverse-limit existence from strong field invariance
+- [x] publication theorem revised to distinguish inverse-limit existence from strong field invariance
 
 ## Approach
 
@@ -121,3 +121,6 @@ The implementations are in `CanonicalConstraintOrientationLimit.lean` and
 - 2026-07-13 — proved the exact coherent-thread equivalence, arbitrary-sign normal convergence,
   exact finite-chamber restriction, signed simple-pole law, and unique infinite Herglotz point;
   moved the theorem to the formalized stage.
+- 2026-07-13 — replaced the manuscript's auxiliary finite-only orientation with intrinsic
+  prime-residue chambers, added the canonical profinite completion theorem and proof, and stated
+  the infinite same-field boundary explicitly.

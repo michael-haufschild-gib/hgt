@@ -16,7 +16,8 @@ open scoped BigOperators
 
 noncomputable section
 
-/-- The signed residue attached to an arbitrary point of the prime-labelled Cantor cube. -/
+/-- The signed Cauchy mass attached to a point of the prime-labelled Cantor cube.  Its negative is
+the ordinary meromorphic residue in the local coordinate `z - primeLogSupport p`. -/
 def universalPrimeOrientationWeight
     (ε : Nat.Primes → Bool) (p : Nat.Primes) : ℝ :=
   if ε p = true then -universalPrimeWeight p else universalPrimeWeight p

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteResponseLiouvillian
+import GaloisForLFunctions.HTGeometry.FiniteKMSWightman
 import GaloisForLFunctions.RHTower.PrimeArchMomentMeasureRH
 import GaloisForLFunctions.RHTower.PrimeArchReflectionPositiveHankelRH
 import GaloisForLFunctions.RHTower.TraceHankelSequenceCone
@@ -33,6 +34,23 @@ def FiniteThermalKrylovMomentSequence (m : ℕ → ℝ) : Prop :=
   ∃ d : ℕ, ∃ intensity : Fin d → Fin d → ℝ, ∃ energy : Fin d → ℝ,
     (∀ a b, 0 ≤ intensity a b) ∧
     m = HTGeometry.thermalEvenGapMoment intensity energy
+
+/-- A moment sequence realized by canonical finite-temperature Wightman values.  Writing the
+dimension as `d + 1` makes nonemptiness, and hence partition-function positivity, structural. -/
+def FiniteKMSWightmanMomentSequence (m : ℕ → ℝ) : Prop :=
+  ∃ d : ℕ, ∃ β : ℝ, ∃ energy : Fin (d + 1) → ℝ,
+    ∃ amplitude : Fin (d + 1) → Fin (d + 1) → ℂ,
+      m = HTGeometry.thermalEvenGapMoment
+        (HTGeometry.finiteKMSWightmanTransitionIntensity β energy amplitude) energy
+
+/-- Canonical finite Wightman realization discharges the arbitrary nonnegative-intensity witness
+in the generic finite thermal interface. -/
+theorem finiteKMSWightmanMomentSequence_finiteThermalKrylov
+    {m : ℕ → ℝ} (hm : FiniteKMSWightmanMomentSequence m) :
+    FiniteThermalKrylovMomentSequence m := by
+  obtain ⟨d, β, energy, amplitude, rfl⟩ := hm
+  exact ⟨d + 1, _, _,
+    HTGeometry.finiteKMSWightmanTransitionIntensity_nonneg β energy amplitude, rfl⟩
 
 /-- Every finite thermal even-gap sequence belongs to the full trace-Hankel cone. -/
 theorem sequenceTraceHankelNonnegative_of_thermalEvenGapMoments
@@ -82,13 +100,15 @@ theorem primeArchSourceTraceHankelIntNonnegative_of_thermalEvenGapMoments
     PrimeArchSourceTraceHankelIntNonnegative := by
   intro p
   rw [re_primeArchSourceTraceHankel_eq_momentFunctional_sq]
-  rw [show HTGeometry.momentFunctional normalizedPrimeArchMoment (p ^ 2) =
+  rw [show HTGeometry.momentFunctional normalizedPrimeArchMoment
+        ((p.map (Int.castRingHom ℝ)) ^ 2) =
       HTGeometry.momentFunctional
-        (HTGeometry.thermalEvenGapMoment intensity energy) (p ^ 2) by
+        (HTGeometry.thermalEvenGapMoment intensity energy)
+          ((p.map (Int.castRingHom ℝ)) ^ 2) by
     apply HTGeometry.momentFunctional_congr
     exact hmom]
   exact HTGeometry.momentFunctional_thermalEvenGapMoment_sq_nonneg
-    intensity energy hintensity p
+    intensity energy hintensity (p.map (Int.castRingHom ℝ))
 
 /-- **Exact thermal-value RH capstone.** -/
 theorem riemannHypothesis_of_primeArchThermalEvenGapMoments
@@ -101,6 +121,32 @@ theorem riemannHypothesis_of_primeArchThermalEvenGapMoments
   riemannHypothesis_of_primeArchSourceTraceHankelIntNonnegative
     (primeArchSourceTraceHankelIntNonnegative_of_thermalEvenGapMoments
       intensity energy hintensity hmom)
+
+/-- Canonical KMS/Wightman weights remove the separate transition-intensity positivity hypothesis
+from the exact source-moment bridge. -/
+theorem primeArchSourceTraceHankelIntNonnegative_of_finiteKMSWightmanMoments
+    {α : Type*} [Fintype α] [Nonempty α]
+    (β : ℝ) (energy : α → ℝ) (amplitude : α → α → ℂ)
+    (hmom : ∀ n, normalizedPrimeArchMoment n =
+      HTGeometry.thermalEvenGapMoment
+        (HTGeometry.finiteKMSWightmanTransitionIntensity β energy amplitude) energy n) :
+    PrimeArchSourceTraceHankelIntNonnegative :=
+  primeArchSourceTraceHankelIntNonnegative_of_thermalEvenGapMoments
+    _ energy
+    (HTGeometry.finiteKMSWightmanTransitionIntensity_nonneg β energy amplitude) hmom
+
+/-- **Canonical finite-temperature Wightman RH capstone.**  Its only mathematical input beyond the
+finite quantum data is the exact comparison with the normalized source values. -/
+theorem riemannHypothesis_of_primeArchFiniteKMSWightmanMoments
+    {α : Type*} [Fintype α] [Nonempty α]
+    (β : ℝ) (energy : α → ℝ) (amplitude : α → α → ℂ)
+    (hmom : ∀ n, normalizedPrimeArchMoment n =
+      HTGeometry.thermalEvenGapMoment
+        (HTGeometry.finiteKMSWightmanTransitionIntensity β energy amplitude) energy n) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_primeArchSourceTraceHankelIntNonnegative
+    (primeArchSourceTraceHankelIntNonnegative_of_finiteKMSWightmanMoments
+      β energy amplitude hmom)
 
 /-- The response-theory squared Liouvillian automatically supplies the self-adjoint observable and
 its vacuum moments to the existing complex-observable source consumer. -/
@@ -143,7 +189,7 @@ theorem primeArchSourceTraceHankelIntNonnegative_of_finiteThermalKrylov_tendsto
     sequenceTraceHankelNonnegative_of_finiteThermalKrylov_tendsto m _ hm hconv
   intro p
   rw [re_primeArchSourceTraceHankel_eq_momentFunctional_sq]
-  exact hseq p
+  exact hseq (p.map (Int.castRingHom ℝ))
 
 /-- **Thermodynamic-limit thermal Krylov RH capstone.**  The remaining input is the source-defined
 pointwise value convergence, not a separate positivity hypothesis. -/
@@ -154,6 +200,17 @@ theorem riemannHypothesis_of_primeArchFiniteThermalKrylov_tendsto
     RiemannHypothesis :=
   riemannHypothesis_of_primeArchSourceTraceHankelIntNonnegative
     (primeArchSourceTraceHankelIntNonnegative_of_finiteThermalKrylov_tendsto m hm hconv)
+
+/-- **Canonical Wightman thermodynamic-limit RH capstone.**  Canonical finite KMS systems
+automatically meet every finite positivity hypothesis; only pointwise convergence to the source
+values remains. -/
+theorem riemannHypothesis_of_primeArchFiniteKMSWightman_tendsto
+    (m : ℕ → ℕ → ℝ)
+    (hm : ∀ N, FiniteKMSWightmanMomentSequence (m N))
+    (hconv : Tendsto m atTop (nhds normalizedPrimeArchMoment)) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_primeArchFiniteThermalKrylov_tendsto m
+    (fun N => finiteKMSWightmanMomentSequence_finiteThermalKrylov (hm N)) hconv
 
 end
 

@@ -843,4 +843,75 @@ theorem tendsto_poissonConv_of_symmLebesgue {φ : ℝ → ℝ}
     _ = ε / 2 + c * poissonKer r δ := harith
     _ < ε := by linarith [htl]
 
+/-- Symmetric interval fold (no kernel): `∫_{-s}^s H = ∫₀^s (H(t) + H(-t))`. -/
+theorem interval_fold {H : ℝ → ℝ} {s : ℝ} (hs : 0 ≤ s)
+    (hH : IntervalIntegrable H volume (-s) s) :
+    (∫ t in (-s)..s, H t) = ∫ t in (0:ℝ)..s, (H t + H (-t)) := by
+  have hmemn : (-s:ℝ) ∈ Set.uIcc (-s) s := Set.left_mem_uIcc
+  have hmemp : (s:ℝ) ∈ Set.uIcc (-s) s := Set.right_mem_uIcc
+  have hmem0 : (0:ℝ) ∈ Set.uIcc (-s) s := by
+    rw [Set.uIcc_of_le (by linarith)]; exact ⟨by linarith, by linarith⟩
+  have hHL : IntervalIntegrable H volume (-s) 0 := hH.mono_set (Set.uIcc_subset_uIcc hmemn hmem0)
+  have hHR : IntervalIntegrable H volume 0 s := hH.mono_set (Set.uIcc_subset_uIcc hmem0 hmemp)
+  have hHNeg : IntervalIntegrable (fun t => H (-t)) volume 0 s := by
+    have h := (IntervalIntegrable.iff_comp_neg).1 hHL; simpa using h.symm
+  have hsplit : (∫ t in (-s)..s, H t)
+      = (∫ t in (-s)..(0:ℝ), H t) + ∫ t in (0:ℝ)..s, H t :=
+    (intervalIntegral.integral_add_adjacent_intervals hHL hHR).symm
+  have hneg : (∫ t in (-s)..(0:ℝ), H t) = ∫ t in (0:ℝ)..s, H (-t) := by
+    have h := intervalIntegral.integral_comp_neg (a := 0) (b := s) H
+    rw [neg_zero] at h; rw [← h]
+  rw [hsplit, hneg, ← intervalIntegral.integral_add hHNeg hHR]
+  exact intervalIntegral.integral_congr (fun t _ => by ring)
+
+/-- **A.e. Fatou for the Poisson integral.**  For `g` locally integrable, the Poisson integral
+`(2π)⁻¹∫_{-π}^{π} P_r(t) g(θ+t) dt` converges to `g(θ)` for almost every `θ` as `r → 1⁻`. -/
+theorem tendsto_poissonConv_ae {g : ℝ → ℝ} (hg : LocallyIntegrable g volume) :
+    ∀ᵐ θ, Tendsto (fun r => (2 * π)⁻¹ * ∫ t in (-π)..π, poissonKer r t * g (θ + t))
+      (𝓝[<] 1) (𝓝 (g θ)) := by
+  filter_upwards [IsUnifLocDoublingMeasure.ae_tendsto_average_norm_sub (volume : Measure ℝ) hg 1]
+    with θ hθ
+  set φ : ℝ → ℝ := fun t => g (θ + t) with hφdef
+  have hφ0 : φ 0 = g θ := by simp [hφdef]
+  have hφI : IntervalIntegrable φ volume (-π) π := by
+    have hg' : IntervalIntegrable g volume (θ + -π) (θ + π) :=
+      (hg.integrableOn_isCompact isCompact_uIcc).intervalIntegrable
+    have h := hg'.comp_add_left θ; simpa [hφdef] using h
+  -- Lebesgue-average condition at θ
+  have havg : Tendsto (fun r : ℝ => ⨍ y in closedBall θ r, ‖g y - g θ‖ ∂volume) (𝓝[>] 0) (𝓝 0) := by
+    refine hθ (fun _ => θ) id tendsto_id ?_
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    exact mem_closedBall_self (by rw [one_mul]; exact (Set.mem_Ioi.1 hr).le)
+  -- convert ⨍ to the symmetric local mean
+  have hleb : Tendsto (fun s => (∫ t in (0:ℝ)..s, |φ t - φ 0| + |φ (-t) - φ 0|) / s)
+      (𝓝[>] 0) (𝓝 0) := by
+    have h2 : Tendsto (fun s => (2:ℝ) * ⨍ y in closedBall θ s, ‖g y - g θ‖ ∂volume)
+        (𝓝[>] 0) (𝓝 0) := by simpa using havg.const_mul 2
+    refine h2.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with s hs
+    have hs0 : (0:ℝ) < s := hs
+    have hvol : volume.real (closedBall θ s) = 2 * s := by
+      rw [Measure.real, Real.volume_closedBall, ENNReal.toReal_ofReal (by positivity)]
+    have hint : (∫ y in closedBall θ s, ‖g y - g θ‖ ∂volume)
+        = ∫ t in (0:ℝ)..s, |φ t - φ 0| + |φ (-t) - φ 0| := by
+      simp_rw [Real.norm_eq_abs]
+      rw [Real.closedBall_eq_Icc, integral_Icc_eq_integral_Ioc,
+        ← intervalIntegral.integral_of_le (by linarith : θ - s ≤ θ + s),
+        show (θ - s) = θ + (-s) by ring,
+        ← intervalIntegral.integral_comp_add_left (fun y => |g y - g θ|) θ]
+      have hHI : IntervalIntegrable (fun t => |g (θ + t) - g θ|) volume (-s) s := by
+        have hg' : IntervalIntegrable g volume (θ + -s) (θ + s) :=
+          (hg.integrableOn_isCompact isCompact_uIcc).intervalIntegrable
+        have h := ((hg'.comp_add_left θ).sub (_root_.intervalIntegrable_const (c := g θ))).abs
+        simpa using h
+      rw [interval_fold hs0.le hHI]
+      refine intervalIntegral.integral_congr (fun t _ => ?_)
+      simp only [hφdef, add_zero]
+    have hsne : s ≠ 0 := hs0.ne'
+    rw [setAverage_eq, hvol, hint, smul_eq_mul]
+    field_simp
+  have hres := tendsto_poissonConv_of_symmLebesgue hφI hleb
+  rw [hφ0] at hres
+  exact hres
+
 end GaloisForLFunctions.HTGeometry

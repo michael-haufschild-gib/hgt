@@ -371,3 +371,21 @@ satisfiability (`⟹`) is `windowObservable_regular_of_RH` built on `differentia
 (`-ζ'/ζ` holomorphic off `ζ`'s zeros/pole).  The general window form `RH_iff_windowObservable_regular`
 gives the same equivalence for any continuous window nonvanishing on the right half-plane (the tent
 `-2·A_L(s-1)²` is the other instance).
+
+FORMALIZED (axiom-clean) — sharp-window RH criterion + two-width amplitude core.
+`RHTower/PolarPrimeRegularity.lean`:
+- `RH_iff_sharpWindowPolar_regular (L)(0<L)` — the card's canonically polar-renormalized sharp
+  observable `2·A_L(½)·ζ(s-½) − 2·A_L(s-1)·(-ζ'/ζ)(s-½)` (counterterm `R_W(N)=2·I_W(3/2)·√N` + prime
+  channel `-2·T_W`) has a finite limit at EVERY point of Re s>1 ⟺ RH — exclusion-free (`W(3/2) =
+  -2·A_L(½) = -κ` by construction). Reuses the general `RH_iff_polarPrimeObservable_regular`.
+`RHTower/SharpWindowCommensurability.lean` (the `[BRIDGE]` two-width core):
+- `rectangularWindowAmplitude_eq_zero_forces` — off-origin zeros of `A_L` lie on the imaginary period
+  lattice: `A_L(w)=0, w≠0 ⟹ L·w = -m·2πi`, `m≠0`.
+- `rectangularWindowAmplitude_joint_vanishing_commensurable` — `A_{L₁}(w)=A_{L₂}(w)=0` (w≠0) FORCES
+  `L₁·n = L₂·m` with `m,n≠0` (commensurable widths).
+- `sharpAmplitude_imaginary_not_both_zero` — irrational `L₁/L₂` ⟹ for every critical-line height `γ≠0`,
+  at least one `A_{Lⱼ}(iγ)≠0`: every critical-line height is detected by at least one width (the
+  amplitude core of complete divisor recovery, valid where the half-plane nonvanishing law fails).
+Remaining for the FULL "critical-line divisor recovery": the continuation of the observable to Re s>½
+(needs `H_W` holomorphy on the wider strip, currently only Re>1) so critical-line poles `s=ρ+½` (Re=1)
+enter the domain; then the amplitude core above pins each nontrivial zero to ≥1 width's residue.

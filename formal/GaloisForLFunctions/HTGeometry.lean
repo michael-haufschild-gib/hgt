@@ -286,6 +286,7 @@ import GaloisForLFunctions.HTGeometry.FrequencyRank
 import GaloisForLFunctions.HTGeometry.PrimeFrequencyInfiniteRank
 import GaloisForLFunctions.HTGeometry.HullJetEmbedding
 import GaloisForLFunctions.HTGeometry.SmallInductiveDimension
+import GaloisForLFunctions.HTGeometry.HullDimensionBound
 import GaloisForLFunctions.HTGeometry.GammaShiftCasoratian
 import GaloisForLFunctions.HTGeometry.GammaShiftEigenrelation
 import GaloisForLFunctions.HTGeometry.GammaTranscendental
@@ -473,6 +474,7 @@ import GaloisForLFunctions.HTGeometry.SzegoFirstLimitInterface
 import GaloisForLFunctions.HTGeometry.TaylorDerivativeCoefficient
 import GaloisForLFunctions.HTGeometry.TelescopeIdeal
 import GaloisForLFunctions.HTGeometry.ThermalKrylovMoments
+import GaloisForLFunctions.HTGeometry.FiniteKMSWightman
 import GaloisForLFunctions.HTGeometry.ThermalKrylovDeterminant
 import GaloisForLFunctions.HTGeometry.TorsionFaceExactification
 import GaloisForLFunctions.HTGeometry.TranscendentalPowerIndependence
@@ -488,6 +490,7 @@ import GaloisForLFunctions.HTGeometry.BorelGrowthLemma
 import GaloisForLFunctions.HTGeometry.AnalyticSquareRoot
 import GaloisForLFunctions.HTGeometry.FiniteBlaschkeBoundary
 import GaloisForLFunctions.HTGeometry.FiniteResponseLiouvillian
+import GaloisForLFunctions.HTGeometry.FinitePassiveResponse
 import GaloisForLFunctions.HTGeometry.HardyRadialConvergence
 import GaloisForLFunctions.HTGeometry.FourierParseval
 import GaloisForLFunctions.HTGeometry.HardyBoundaryValues

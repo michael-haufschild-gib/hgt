@@ -1136,6 +1136,13 @@ multiplier in the open strip, not a removable tail error.  The pointwise identit
 formalized in `XiCTaylorThetaTailProuhetSeamInvariant.lean`; the transform statement is currently
 used only at paper level.
 
+The associated one-sided-potential Hermite--Biehler shortcut is false.  If
+`E(z)=integral_(0..infinity)V(x)exp(-izx)dx`, high-precision evaluation of
+`|E(z)|^2-|E#(z)|^2` changes sign near `z=15.5+0.02i` (stable from 40 through 100 digits).
+Thus positivity, monotonicity, and the observed log-concavity of `V` do not supply the missing
+orientation; a proof must use an additional arithmetic constraint rather than a generic shape
+criterion for the completed potential.
+
 The translate operator has an exact signed inverse on the canonical source.  For `x>=0`, Lean
 proves absolute convergence and the critical Möbius identity
 

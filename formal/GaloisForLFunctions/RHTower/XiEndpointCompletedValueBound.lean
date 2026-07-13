@@ -173,6 +173,14 @@ theorem xiRawReciprocalHermitianMass_le_three_halves_mul_endpointCurvature :
   have hdef := xiEndpointReflectionDefectEnergy_le_endpointCurvature
   nlinarith
 
+/-- Strict form of the `3/2` endpoint norm budget. -/
+theorem xiRawReciprocalHermitianMass_lt_three_halves_mul_endpointCurvature :
+    xiRawReciprocalHermitianMass <
+      (3 / 2) * xiEndpointCompletedCurvature := by
+  have hid := xiEndpointReflectionDefectEnergy_eq_mass_sub_source
+  have hdef := xiEndpointReflectionDefectEnergy_lt_endpointCurvature
+  nlinarith
+
 end
 
 end RHTower

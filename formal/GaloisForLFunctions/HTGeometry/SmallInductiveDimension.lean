@@ -20,6 +20,8 @@ targets (`ind ℝ^N ≤ N`, subspace monotonicity, and the Pontryagin `dim = cha
 the load-bearing pieces still under construction.
 -/
 
+open Topology
+
 namespace GaloisForLFunctions
 
 /-- `SmallIndDimLE X n` : the small inductive dimension of `X` is at most `n`.  Menger–Urysohn
@@ -67,6 +69,96 @@ theorem smallIndDimLE_zero_of_discrete (X : Type*) [TopologicalSpace X] [Discret
   refine ⟨{x}, (isOpen_discrete _).mem_nhds (Set.mem_singleton x),
     Set.singleton_subset_iff.mpr (mem_of_mem_nhds hU), ?_⟩
   exact IsClopen.frontier_eq ⟨isClosed_discrete _, isOpen_discrete _⟩
+
+/-- The topological frontier of a preimage under a continuous map is contained in the preimage of
+the frontier.  This is the key monotonicity input for the subspace/embedding behaviour of small
+inductive dimension. -/
+theorem frontier_preimage_subset {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+    {f : X → Y} (hf : Continuous f) (s : Set Y) :
+    frontier (f ⁻¹' s) ⊆ f ⁻¹' (frontier s) := by
+  intro x hx
+  exact ⟨hf.closure_preimage_subset s hx.1,
+    fun hxi => hx.2 (preimage_interior_subset_interior_preimage hf hxi)⟩
+
+/-- **Topological invariance.**  Small inductive dimension is a homeomorphism invariant: a
+homeomorphism `e : X ≃ₜ Y` transports the bound `ind X ≤ n` to `ind Y ≤ n`.  This is what lets a
+dimension bound pass across the finite jet-sample embedding `hull ≅ image ⊆ ℂ^N`. -/
+theorem SmallIndDimLE.of_homeomorph :
+    ∀ {n : ℕ} {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+      (_ : X ≃ₜ Y), SmallIndDimLE X n → SmallIndDimLE Y n := by
+  intro n
+  induction n with
+  | zero =>
+      intro X Y _ _ e h y V hV
+      have hxU : e ⁻¹' V ∈ nhds (e.symm y) :=
+        e.continuous.continuousAt.preimage_mem_nhds (by rw [Homeomorph.apply_symm_apply]; exact hV)
+      obtain ⟨W', hW'n, hW'sub, hW'fr⟩ := h (e.symm y) (e ⁻¹' V) hxU
+      refine ⟨e '' W', ?_, (Set.image_mono hW'sub).trans (Set.image_preimage_subset e V), ?_⟩
+      · have hmap : e '' W' ∈ Filter.map e (nhds (e.symm y)) := Filter.image_mem_map hW'n
+        rwa [e.map_nhds_eq, Homeomorph.apply_symm_apply] at hmap
+      · rw [← e.image_frontier, hW'fr, Set.image_empty]
+  | succ n ih =>
+      intro X Y _ _ e h y V hV
+      have hxU : e ⁻¹' V ∈ nhds (e.symm y) :=
+        e.continuous.continuousAt.preimage_mem_nhds (by rw [Homeomorph.apply_symm_apply]; exact hV)
+      obtain ⟨W', hW'n, hW'sub, hW'dim⟩ := h (e.symm y) (e ⁻¹' V) hxU
+      refine ⟨e '' W', ?_, (Set.image_mono hW'sub).trans (Set.image_preimage_subset e V), ?_⟩
+      · have hmap : e '' W' ∈ Filter.map e (nhds (e.symm y)) := Filter.image_mem_map hW'n
+        rwa [e.map_nhds_eq, Homeomorph.apply_symm_apply] at hmap
+      · rw [show frontier (e '' W') = e '' frontier W' from (e.image_frontier W').symm]
+        exact ih (e.image (frontier W')) hW'dim
+
+/-- **Monotonicity under inducing maps (embedding / subspace monotonicity).**  If `f : X → Y` is an
+inducing map (the topology on `X` is induced from `Y` — e.g. a subspace inclusion), then a dimension
+bound transfers backwards: `ind Y ≤ n` implies `ind X ≤ n`.  The frontier of a preimage sits inside
+the preimage of the frontier, and `f` corestricts to an inducing map of those frontiers, closing the
+induction with a single inductive call. -/
+theorem SmallIndDimLE.of_isInducing :
+    ∀ {n : ℕ} {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+      {f : X → Y}, IsInducing f → SmallIndDimLE Y n → SmallIndDimLE X n := by
+  intro n
+  induction n with
+  | zero =>
+      intro X Y _ _ f hf h x U hU
+      rw [hf.nhds_eq_comap, Filter.mem_comap] at hU
+      obtain ⟨U', hU'nhds, hU'sub⟩ := hU
+      obtain ⟨V', hV'nhds, hV'sub, hV'fr⟩ := h (f x) U' hU'nhds
+      refine ⟨f ⁻¹' V', ?_, (Set.preimage_mono hV'sub).trans hU'sub, ?_⟩
+      · rw [hf.nhds_eq_comap]; exact Filter.preimage_mem_comap hV'nhds
+      · have hfr := frontier_preimage_subset hf.continuous V'
+        rw [hV'fr, Set.preimage_empty] at hfr
+        exact Set.subset_empty_iff.mp hfr
+  | succ n ih =>
+      intro X Y _ _ f hf h x U hU
+      rw [hf.nhds_eq_comap, Filter.mem_comap] at hU
+      obtain ⟨U', hU'nhds, hU'sub⟩ := hU
+      obtain ⟨V', hV'nhds, hV'sub, hV'dim⟩ := h (f x) U' hU'nhds
+      refine ⟨f ⁻¹' V', ?_, (Set.preimage_mono hV'sub).trans hU'sub, ?_⟩
+      · rw [hf.nhds_eq_comap]; exact Filter.preimage_mem_comap hV'nhds
+      · have hsub : frontier (f ⁻¹' V') ⊆ f ⁻¹' (frontier V') :=
+          frontier_preimage_subset hf.continuous V'
+        have hmaps : ∀ z : ↥(frontier (f ⁻¹' V')), f z.val ∈ frontier V' := fun z => hsub z.2
+        exact ih ((hf.comp IsInducing.subtypeVal).codRestrict hmaps) hV'dim
+
+/-- **Subspace monotonicity.**  A subspace has small inductive dimension at most that of the whole
+space: `ind ↥A ≤ ind X`. -/
+theorem SmallIndDimLE.subtype {X : Type*} [TopologicalSpace X] {n : ℕ} (A : Set X)
+    (h : SmallIndDimLE X n) : SmallIndDimLE (↥A) n :=
+  SmallIndDimLE.of_isInducing IsInducing.subtypeVal h
+
+/-- **Product of zero-dimensional spaces (base case of the addition theorem).**  If `ind X ≤ 0` and
+`ind Y ≤ 0` then `ind (X × Y) ≤ 0`: products of clopen neighbourhoods form a clopen basis of the
+product, and the frontier of a product of clopen sets is empty. -/
+theorem smallIndDimLE_prod_zero {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+    (hX : SmallIndDimLE X 0) (hY : SmallIndDimLE Y 0) : SmallIndDimLE (X × Y) 0 := by
+  rintro ⟨x, y⟩ U hU
+  rw [nhds_prod_eq, Filter.mem_prod_iff] at hU
+  obtain ⟨A, hA, B, hB, hAB⟩ := hU
+  obtain ⟨V, hVnhds, hVA, hVfr⟩ := hX x A hA
+  obtain ⟨W, hWnhds, hWB, hWfr⟩ := hY y B hB
+  refine ⟨V ×ˢ W, ?_, (Set.prod_mono hVA hWB).trans hAB, ?_⟩
+  · rw [nhds_prod_eq]; exact Filter.prod_mem_prod hVnhds hWnhds
+  · rw [frontier_prod_eq, hVfr, hWfr]; simp
 
 /-- **The real line is one-dimensional: `ind ℝ ≤ 1`.**  Every neighbourhood of a point contains an
 open interval, whose topological frontier is the two-point set `{a, b}` — a discrete (hence

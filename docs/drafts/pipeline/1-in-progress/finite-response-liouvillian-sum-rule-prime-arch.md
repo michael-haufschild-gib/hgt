@@ -52,8 +52,8 @@ the exact finite spectral algebra behind that relation.
 
 - [x] physics value relation isolated
 - [x] numerical pre-certification completed
-- [ ] finite self-adjoint Liouvillian and orbit sum rule formalized
-- [ ] squared-Liouvillian thermal moment specialization formalized
-- [ ] existing self-adjoint/Hankel consumers connected
+- [x] finite self-adjoint Liouvillian and orbit sum rule formalized
+- [x] squared-Liouvillian thermal moment specialization formalized
+- [x] existing self-adjoint/Hankel consumers connected
 - [ ] source-defined all-order response comparison constructed
 - [ ] RH

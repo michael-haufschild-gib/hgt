@@ -46,14 +46,28 @@ theorem Eterm_differentiable (L : ℝ) {k : ℕ} (hk : 0 < k) : Differentiable �
 /-- The holomorphic correction `H_L(s) = ∑_k (Λ(k)/√k)·E_{k,L}(s)`. -/
 noncomputable def HL (L : ℝ) (s : ℂ) : ℂ := ∑' k, (Λ k / Real.sqrt k) • Eterm L k s
 
-theorem HL_differentiableOn (L : ℝ) (hL : 0 ≤ L) :
-    DifferentiableOn ℂ (HL L) {s : ℂ | 1 < s.re} := by
+/-- **Holomorphy of `H_L` on the maximal strip `{Re s > ½} ∖ {1}`.**  The weighted error series
+`∑_k (Λ(k)/√k)·E_{k,L}(s)` converges absolutely and locally uniformly wherever the dominating
+von Mangoldt series `∑ Λ(k) k^{-σ-½}` converges, i.e. `σ > ½` — the full half-plane `Re s > ½`, not just
+the Euler region `Re s > 1`.  The single point `s = 1` is removed because the leading integral identity
+`∫ g_s = A_L(s-1)²` (hence `E_kL_bound_explicit`) is proved off the amplitude's removable singularity at
+`s = 1`; the ball around each `s₀ ≠ 1` is shrunk to avoid it.  This is the strip in which every
+nontrivial-zeta-zero pole `s = ρ + ½` (including the critical-line heights `s = 1 + iγ`, `γ ≠ 0`) lives. -/
+theorem HL_differentiableOn_gt_half (L : ℝ) (hL : 0 ≤ L) :
+    DifferentiableOn ℂ (HL L) ({s : ℂ | 1 / 2 < s.re} \ {1}) := by
   intro s₀ hs₀
-  simp only [Set.mem_setOf_eq] at hs₀
-  set σ : ℝ := (s₀.re + 1) / 2 with hσdef
-  have hσ1 : 1 < σ := by rw [hσdef]; linarith
-  set r : ℝ := s₀.re - σ with hrdef
-  have hr0 : 0 < r := by rw [hrdef, hσdef]; linarith
+  obtain ⟨hs₀re, hs₀ne⟩ := hs₀
+  simp only [Set.mem_setOf_eq] at hs₀re
+  simp only [Set.mem_singleton_iff] at hs₀ne
+  set σ : ℝ := (s₀.re + 1 / 2) / 2 with hσdef
+  have hσhalf : 1 / 2 < σ := by rw [hσdef]; linarith
+  have hσlt : σ < s₀.re := by rw [hσdef]; linarith
+  have hd1 : (0 : ℝ) < ‖s₀ - 1‖ := by
+    rw [norm_pos_iff]; exact sub_ne_zero.mpr hs₀ne
+  set r : ℝ := min (s₀.re - σ) (‖s₀ - 1‖ / 2) with hrdef
+  have hr0 : 0 < r := by rw [hrdef]; exact lt_min (by linarith) (by linarith)
+  have hrle1 : r ≤ s₀.re - σ := by rw [hrdef]; exact min_le_left _ _
+  have hrle2 : r ≤ ‖s₀ - 1‖ / 2 := by rw [hrdef]; exact min_le_right _ _
   set R : ℝ := ‖s₀‖ + r with hRdef
   have hBsub : ∀ s ∈ Metric.ball s₀ r, σ < s.re := by
     intro s hs
@@ -61,9 +75,13 @@ theorem HL_differentiableOn (L : ℝ) (hL : 0 ≤ L) :
     have h1 : |s.re - s₀.re| ≤ dist s s₀ := by
       rw [Complex.dist_eq, ← Complex.sub_re]; exact Complex.abs_re_le_norm _
     have h2 := (abs_lt.mp (lt_of_le_of_lt h1 hd)).1
-    rw [hrdef] at h2; linarith
+    linarith [hrle1]
   have hBne : ∀ s ∈ Metric.ball s₀ r, s ≠ 1 := by
-    intro s hs h1; have := hBsub s hs; rw [h1] at this; simp at this; linarith
+    intro s hs h1
+    have hd : dist s s₀ < r := hs
+    rw [h1] at hd
+    rw [dist_comm, Complex.dist_eq] at hd
+    linarith [hrle2]
   have hBbdd : ∀ s ∈ Metric.ball s₀ r, ‖s‖ ≤ R := by
     intro s hs
     have hd : dist s s₀ < r := hs
@@ -75,7 +93,6 @@ theorem HL_differentiableOn (L : ℝ) (hL : 0 ≤ L) :
     -- constants
   set KR : ℝ := (L * R + 1) * Real.exp (R * (2 * L)) with hKRdef
   set MB : ℝ := KR * (Real.exp (2 * L) + 1) / 2 with hMBdef
-  have hσhalf : 1 / 2 < σ := by linarith
   have hu : Summable (fun k : ℕ => MB * ((Λ k) * (k : ℝ) ^ (-(σ + 1 / 2)))) :=
     (vonMangoldt_shifted_summable σ hσhalf).mul_left MB
   -- differentiability of each term on the ball
@@ -133,5 +150,17 @@ theorem HL_differentiableOn (L : ℝ) (hL : 0 ≤ L) :
   have hdiff := differentiableOn_tsum_of_summable_norm hu hf Metric.isOpen_ball hF_le
   exact ((hdiff.differentiableAt
     (Metric.isOpen_ball.mem_nhds (Metric.mem_ball_self hr0))).differentiableWithinAt)
+
+/-- **Holomorphy of `H_L` on the Euler region `Re s > 1`** — the specialization of
+`HL_differentiableOn_gt_half` to the absolute-convergence half-plane, where the divisor poles
+`s = ρ + ½` of the off-critical zeros (`Re ρ > ½`) live. -/
+theorem HL_differentiableOn (L : ℝ) (hL : 0 ≤ L) :
+    DifferentiableOn ℂ (HL L) {s : ℂ | 1 < s.re} :=
+  (HL_differentiableOn_gt_half L hL).mono (by
+    intro s hs
+    simp only [Set.mem_setOf_eq] at hs
+    refine ⟨by simp only [Set.mem_setOf_eq]; linarith, ?_⟩
+    simp only [Set.mem_singleton_iff]
+    intro h; rw [h] at hs; simp at hs)
 
 end RHTower

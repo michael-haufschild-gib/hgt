@@ -31,8 +31,8 @@
 \newcommand{\Res}{\operatorname{Res}}
 \newcommand{\supp}{\operatorname{supp}}
 
-\title{An Exact Cumulative Prime--Polar Spectrum for the Riemann Xi Function:\\
-Sharp Weil Tomography and Optimal Positive Carriers}
+\title{Fixed-Window Prime--Polar Spectra and a Contractive\\
+Endpoint Reflection Law for the Riemann Xi Function}
 \author{Michael Haufschild \and GPT 5.6 Sol \and Fable 5 \and Grok 4.5}
 \date{}
 
@@ -41,58 +41,52 @@ Sharp Weil Tomography and Optimal Positive Carriers}
 \maketitle
 
 \begin{abstract}
-We evaluate the Guinand--Weil formula for a sharp two-edge rectangle at its exact
-piecewise-linear boundary.  If $Q_L(a)$ is its Xi-divisor polarization, then
+We prove two complementary source theorems for the completed Riemann Xi function.  First, the
+Guinand--Weil formula is evaluated at a sharp two-edge rectangle without smoothing or spectral
+cutoff.  Its logarithmic samples form an explicit finite prime--Gamma sequence $g_L(n)$.  After
+removing an asymptotically constant Gamma--polar term, one obtains a literal finite prime--polar
+sequence $S_L(n)$.  If $S_{L,N}^-$ is its retained negative part and
+$A_{L,N}(X)=\sum_{n\le X}S_{L,N}^-(n)$, then, for every $\alpha\ge0$,
 \[
- Q_L(a)=-2\mathcal P_{L,a}+\mathcal A_{\infty,L,a}\qquad(0\le L\le a),
-\]
-where $\mathcal P_{L,a}$ is a finite von Mangoldt autocorrelation supported on
-$n\le e^{2a}$ and $\mathcal A_{\infty,L,a}$ is an absolutely convergent Gamma integral.  The
-proof uses an explicit $R^{-1/2}+R^{-1}$ vertical-edge estimate and leaves no smoothing limit or
-spectral cutoff.  At $a=\frac12\log n$, let
-$g_L(n)=-2\mathcal P_{L,a}+\Re\mathcal A_{\infty,L,a}$.  For every fixed $L>0$ and every
-admissible tail we prove
-\[
- \mathrm{RH}\Longleftrightarrow g_L(n)\ge0\text{ at every retained sample}.
-\]
-Removing the uniformly bounded Gamma--polar correction leaves the literal finite prime--polar
-coefficient
-\[
- S_L(n)=-2\mathcal P_{L,a}+2B_{L,a}^2.
-\]
-If $S_{L,N}^-$ is its retained negative part and
-$A_{L,N}(X)=\sum_{n\le X}S_{L,N}^-(n)$, then for every $\alpha\ge0$,
-\[
- \Re\rho\le\tfrac12+\alpha\ (\XiR(\rho)=0)
+ \Re\rho\le\tfrac12+\alpha\quad(\Xi(\rho)=0)
  \Longleftrightarrow
  \sigma_{\rm abs}(S_{L,N}^-)\le1+\alpha
  \Longleftrightarrow
- A_{L,N}(X)=O_\varepsilon(X^{1+\alpha+\varepsilon})
- \quad(\varepsilon>0).
+ A_{L,N}(X)=O_\varepsilon(X^{1+\alpha+\varepsilon}).
 \]
-Consequently
-\[
- \mathrm{RH}\Longleftrightarrow
- \sigma_{\rm abs}(S_{L,N}^-)\le1
- \Longleftrightarrow
- A_{L,N}(X)=O_\varepsilon(X^{1+\varepsilon})
- \quad(\varepsilon>0).
-\]
-The cumulative exponent is sharp: it is at most $1+\delta_*+\varepsilon$ for every
-$\varepsilon>0$, but under false RH no exponent $1+\delta_*-\eta$ with
-$0<\eta<\delta_*$ is admissible.  Thus one explicit finite prime--polar sequence records every
-right half-plane containing the Xi divisor.  The exact prime--Gamma negative channel retains the
-stronger dichotomy $-\infty$ under RH and $1+\delta_*$ otherwise.  Finite exact positive splits
-conserve this threshold as their maximum channel abscissa, and pointwise-summable positive covers
-conserve it in their aggregate.
+The exponent is sharp at $1+\delta_*$, where $\delta_*$ is the supremal horizontal displacement
+of a Xi zero.  Under false RH the exact prime--Gamma samples have two-sided excursions exceeding
+every power $n^\alpha$ with $\alpha<\delta_*$.  The Gamma--polar correction equals an explicit
+constant plus $O_L(n^{-1/2})$.  A perfect-square restriction already suffices for the remaining
+sharp dyadic source estimate.
 
-Independently, an inverse-tilted dyadic prime source has a canonical continuation $\cS_-$ whose
-poles are exactly $s=\rho+\frac12$, with normalized residues equal to Xi multiplicities; its
-critical-Mellin factor has pole divisor $u=\rho-1$.  We also identify the least nonnegative
-correction of a signed sharp-prime source and its optimal abscissa cost.  These results isolate
-precise source and positivity obligations for Connes-type realizations.  The paper does not
-establish the required tail positivity or critical correction bound and therefore does not prove
-RH.
+Second, write $r_\rho=\rho^{-1}$, $\rho^\dagger=1-\overline\rho$, and define
+\[
+ H=\sum_\rho |r_\rho|^2,\qquad
+ E=\sum_\rho |r_\rho-r_{\rho^\dagger}|^2,\qquad
+ C=\Re\!\left(-\frac{(\Xi_C'/\Xi_C)(i/2)}{i/2}\right).
+\]
+We obtain the exact identity $E=2(H-C)$ and the completed value
+\[
+ C=2+\gamma-\log(4\pi),\qquad 0<C<\tfrac12.
+\]
+The resulting unconditional endpoint estimate is
+\[
+ E\le\frac{C^2}{1-C}<C,\qquad C\le H<\frac32C.
+\]
+Thus every reciprocal Xi coordinate lies uniformly inside the unit disk, and functional-equation
+reflection has the absolutely convergent reconstruction
+\[
+ r_{\rho^\dagger}=-\sum_{m\ge1}\overline{r_\rho}^{\,m},
+ \qquad
+ -\frac{(\Xi_C'/\Xi_C)(i/2)}{i/2}
+   =-\sum_{m\ge0}\sum_\rho r_\rho^{m+2}.
+\]
+Finally, RH is equivalent to each sharp endpoint condition $E=0$, $H=C$, positivity of the
+complete source Hankel form, existence of a reflection-positive Gram orbit, and existence of a
+bounded self-adjoint vacuum realization of the normalized prime--Gamma moments.  The strict
+contraction is progress on the missing endpoint estimate, but it does not establish its zero
+value; the paper therefore does not prove RH.
 \end{abstract}
 
 \noindent\textbf{2020 Mathematics Subject Classification.}

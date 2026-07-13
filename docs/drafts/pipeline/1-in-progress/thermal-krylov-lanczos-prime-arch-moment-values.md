@@ -79,12 +79,16 @@ not merely their signs.
 
 - `HTGeometry.ThermalKrylovMoments` proves the odd-moment cancellation, the exact squared-gap
   moment-functional value, ordinary Hankel positivity, and shifted Stieltjes-Hankel positivity.
+- `HTGeometry.FiniteKMSWightman` defines the canonical Gibbs partition and Wightman half-density,
+  proves normalization, positivity, symmetry, and the exact geometric-mean value
+  `w_ab² = p_a p_b`, and consequently removes the free weight-positivity and symmetry assumptions.
 - `HTGeometry.ThermalKrylovDeterminant` constructs the finite Krylov vectors, proves their exact
   Gram values, proves the determinant/residual product, proves residual nontermination equivalent
   to finite linear independence, and proves the corrected normalized Lanczos exponent law `(5)`.
 - `RHTower.PrimeArchThermalKrylovRH` applies the result to the general trace-Hankel sequence cone,
   to pointwise limits of growing finite thermal systems, to the prime--archimedean source
-  hypothesis, and to the existing RH consumer.
+  hypothesis, and to the existing RH consumer.  Its canonical KMS specialization now leaves only
+  exact source-moment equality or thermodynamic convergence.
 - `RHTower.PrimeArchKrylovResidualRH` adds the previously missing strict complex producer, records
   exact determinant values for both the source and Xi central moment matrices, and rewrites both
   towers in the normalized Lanczos coefficients with exponent `2(N-j)`.
@@ -92,8 +96,9 @@ not merely their signs.
 ## Verification boundary
 
 - The finite spectral identities `(1)--(4)` are unconditional finite-dimensional algebra.
-- The Wightman symmetry used for odd-moment cancellation is an explicit hypothesis on weights and
-  transition intensities; no KMS state is inferred from a name.
+- For arbitrary weights, Wightman symmetry remains explicit.  For the canonical Gibbs
+  half-density it is proved from the exact formula, and Hermiticity of the observable is the only
+  remaining input to odd-moment cancellation.
 - Equation `(6)` is the source-comparison target and is not assumed to follow from generic thermal
   positivity.
 - Numerical pre-certification on random finite Hamiltonian spectra confirmed odd-moment
@@ -108,5 +113,6 @@ not merely their signs.
 - [x] finite Wightman spectral moments formalized in Lean
 - [x] exact Krylov residual determinant factorization formalized in Lean
 - [x] source-Hankel and RH consumers connected in Lean
+- [x] canonical KMS/Wightman positivity and symmetry hypotheses discharged in Lean
 - [ ] source-defined thermal spectral comparison constructed
 - [ ] RH
