@@ -96,13 +96,29 @@ The premise contains no negative-real character condition, zero-location sign, r
 Weil positivity, or RH-equivalent limiting measure. It is nevertheless only a formal bridge: the
 source differential circuit is not proved.
 
+## Exact anchor-locus audit
+
+The circuit has now been classified for every open-strip anchor.  At an actual Xi zero `rho`,
+
+```text
+ContinuedHurwitzFEAnchorTripleDependent rho tau
+  iff tau = rho or tau = 1-rho.
+```
+
+Therefore a circuit with the fixed regular half anchor is not a hidden weak consequence of the
+Hurwitz matroid: it is impossible at every actual Xi zero.  Conversely, using an anchor already
+equal to `rho` or `1-rho` merely repeats the divisor and supplies no orientation information.
+
 ## Principal declarations
 
 - `continuedHurwitzFEAnchorTripleExponent`
 - `ContinuedHurwitzFEAnchorTripleDependent`
 - `monoScalar_collision_of_continuedHurwitzFEAnchorTripleDependent`
+- `continuedHurwitzFEAnchorTripleDependent_iff_monoScalar_collision`
 - `monoScalar_one_sub_eq_inv`
 - `xi_ne_zero_of_openCriticalStrip_of_monoScalar_eq_oneSub`
+- `xiZero_continuedHurwitzFEAnchorTripleDependent_iff_anchor_eq_orbit`
+- `xiZero_continuedHurwitzFEAnchorTriple_independent_of_anchor_ne_zero`
 - `XiRightArakelovAlgebraicHurwitzFEAnchorCircuit`
 - `riemannHypothesis_of_xiRightArakelovAlgebraicHurwitzFEAnchorCircuit`
 - `monoScalar_half_eq_neg_one`

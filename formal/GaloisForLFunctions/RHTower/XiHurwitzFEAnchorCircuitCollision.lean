@@ -298,24 +298,13 @@ collisions, and each collision is excluded by strip rigidity and positivity on t
 theorem xiZero_continuedHurwitzHalfFEAnchorTriple_independent
     {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1) (hzero : xi rho = 0) :
     ¬ ContinuedHurwitzFEAnchorTripleDependent rho (1 / 2 : ℂ) := by
-  intro hdep
-  have hrefstrip : 0 < (1 - rho).re ∧ (1 - rho).re < 1 := by
-    simp only [Complex.sub_re, Complex.one_re]
-    constructor <;> linarith
-  have hcollision :=
-    monoScalar_collision_of_continuedHurwitzFEAnchorTripleDependent
-      (fun m => openCriticalStrip_point_ne_int hstrip m)
-      (fun m => openCriticalStrip_point_ne_int hrefstrip m)
-      (fun m => openCriticalStrip_point_ne_int (s := (1 / 2 : ℂ)) (by norm_num) m)
-      hdep
-  rcases hcollision with hreflect | hhalf | hhalf
-  · exact xi_ne_zero_of_openCriticalStrip_of_monoScalar_eq_oneSub
-      hstrip hreflect hzero
-  · exact xi_ne_zero_of_openCriticalStrip_of_monoScalar_eq_half
-      hstrip hhalf hzero
-  · have hrefzero : xi (1 - rho) = 0 := by rw [xi_one_sub, hzero]
-    exact xi_ne_zero_of_openCriticalStrip_of_monoScalar_eq_half
-      hrefstrip hhalf hrefzero
+  apply xiZero_continuedHurwitzFEAnchorTriple_independent_of_anchor_ne_zero
+    hstrip hzero (by norm_num)
+  intro hhalfZero
+  have hpos := xi_pos_on_real_anchor (σ := (1 / 2 : ℝ)) (by norm_num) (by norm_num)
+  have hz : xi ((1 / 2 : ℝ) : ℂ) = 0 := by simpa using hhalfZero
+  rw [hz] at hpos
+  norm_num at hpos
 
 /-- In particular, the canonical half-exponent anchor has algebraic monodromy character. -/
 theorem monoScalar_half_isAlgebraic :

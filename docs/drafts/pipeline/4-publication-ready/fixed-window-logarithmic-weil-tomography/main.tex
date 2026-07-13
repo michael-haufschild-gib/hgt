@@ -84,7 +84,9 @@ corresponding sharp statement is aggregate conservation:
 Consequently, an aggregate bound $\sigma_{\rm abs}(b)\le1+\alpha$ forces the same xi zero-free
 half-plane, and the bound $\sigma_{\rm abs}(b)\le1$ proves RH.  Thus finite channelization cannot
 dilute the transverse exponent, while unrestricted summable channelization must retain it in its
-aggregate.
+aggregate.  A completely explicit source corollary shows that RH follows from all-epsilon
+Dirichlet energy of only the positive overshoot of one dyadic von Mangoldt window; the stronger
+pointwise version reduces, with logarithmic loss, to genuine primes alone.
 
 The paper also proves cofinal fixed-window Weil completeness, the exact one-sided exponent
 spectrum $[\delta_*,\infty)$, multiplicity-exact tomography of the actual Weil sequence, and a
@@ -1304,6 +1306,52 @@ $1+\alpha+\varepsilon$.  Domination gives (7.25), and the first part of the theo
 remaining conclusions.
 \end{proof}
 
+\subsection{Explicit source endpoint criteria}
+
+The endpoint can be expressed without the divisor-defined coefficient $q_{L,N}^-$.  Define the
+source-only dyadic von Mangoldt window and its unfavorable positive excess by
+\[
+ W(n)=\sum_{n/2<k\le n}\frac{\Lambda(k)}{\sqrt{k}},
+ \qquad
+ E(n)=\left(W(n)-2\left(1-\frac1{\sqrt2}\right)\sqrt n\right)_+.
+ \tag{7.28}
+\]
+Also let
+\[
+ P(n)=\sum_{n/2<p\le n}\frac{\log p}{\sqrt p}
+ \tag{7.29}
+\]
+be the genuine-prime part of the same window.
+
+\begin{corollary}[Explicit dyadic source endpoints]
+\label{cor:explicit-source-endpoints}
+Each of the following conditions implies RH.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item For every $\varepsilon>0$,
+\[
+ \sum_{n\ge1}\frac{E(n)}{n^{1+\varepsilon}}<\infty.
+ \tag{7.30}
+\]
+\item For every $\varepsilon>0$ there are $C_\varepsilon\ge0$ and $N_\varepsilon$ such that
+\[
+ P(n)\le2\left(1-\frac1{\sqrt2}\right)\sqrt n
+       +C_\varepsilon n^\varepsilon
+ \qquad(n\ge N_\varepsilon).
+ \tag{7.31}
+\]
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+The negative part of the exact sharp prime--polar source coefficient is $2E(n)$.  Under (i),
+adding that correction gives a nonnegative Dirichlet series at every abscissa
+$1+\varepsilon$.  The quantitative Landau argument excludes every shifted xi pole with real
+part greater than one, hence proves RH.  For (ii), the proper-prime-power contribution to $W(n)$
+is nonnegative and $O(\log n)$, hence $O_\varepsilon(n^\varepsilon)$ for every
+$\varepsilon>0$.  Thus (7.31) lifts to the corresponding all-epsilon bound for $W(n)$, which
+implies (7.30).
+\end{proof}
+
 \section{Implications for the Connes route}
 
 Theorem~\ref{thm:inverse-tilted-source-tomography} closes the complete source--divisor incidence
@@ -1422,12 +1470,15 @@ formalized in \texttt{CCMInverseTiltedDyadicPrimeTomography.lean}; the intrinsic
 \texttt{CCMRectangularFiniteChannelNonDilution.lean}.  The complete fixed-window theorem chain is
 collected by \texttt{CCMUnconditionalFoundation.lean}.
 
-The declarations corresponding to Theorem~\ref{thm:principal-conservation} are
-\texttt{ccmQuantitativeSourceDivisorEnergySpectrum\_capstone},
-\texttt{summableNegativeChannelCover\_aggregate\_forces\_full\_abscissa},
-\texttt{xiZeroHalfPlaneBound\_of\_summableNegativeChannelCover\_aggregate\_abscissa}, and
-\texttt{riemannHypothesis\_iff\_ccmSourceDivisorEnergyEndpoint}.  An axiom audit of these
-declarations reports only \texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}.
+The explicit source endpoints in Corollary~\ref{cor:explicit-source-endpoints} are formalized in
+the two sharp-prime-window modules identified in the supplementary claim-trace table.
+
+Within the principal module, separate declarations prove the two shifted holomorphy equivalences,
+the negative-energy equivalence, summable-family aggregate domination, the aggregate zero-free
+theorem, and the RH endpoint; one capstone packages the quantitative equivalence.  The
+supplementary claim-trace table records the exact declaration attached to every manuscript claim.
+An axiom audit of the principal declarations reports only \texttt{propext},
+\texttt{Classical.choice}, and \texttt{Quot.sound}.
 The project lint gate excludes active \texttt{sorry}, \texttt{admit}, project \texttt{axiom},
 \texttt{opaque}, and \texttt{unsafe} declarations.
 
@@ -1439,7 +1490,9 @@ energy law.  What is not proved is holomorphy of $\widetilde D$ on $\Re u>-\frac
 holomorphy of $\cS_-$ on $\Re s>1$, or an operator theorem forcing that statement.  The paper
 therefore does not prove RH.  It reduces the remaining source problem to analytic continuation of
 the actual polar--prime critical-Mellin defect and gives an independent universal energy geometry
-for every fixed rectangular Weil window.
+for every fixed rectangular Weil window.  Corollary~\ref{cor:explicit-source-endpoints} gives a
+fully arithmetic sufficient endpoint: prove the all-epsilon positive-excess energy (7.30), or the
+stronger prime-only estimate (7.31).  Neither estimate is established here.
 
 The rectangle is deliberately nonsmooth.  We avoid an inadmissible appeal to the classical smooth
 test space by defining $Q_L$ through the absolutely convergent xi divisor polarization.  A

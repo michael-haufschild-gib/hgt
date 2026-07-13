@@ -98,4 +98,32 @@ theorem norm_finBlaschke_le_one {n : ℕ} {a : Fin n → ℂ} (ha : ∀ i, ‖a 
           (fun i _ => norm_blaschkeFactor_le_one (ha i) hz)
     _ = 1 := by simp
 
+/-- A Blaschke product over an arbitrary finite index set has boundary modulus `1`. -/
+theorem norm_finsetBlaschke_eq_one {ι : Type*} (s : Finset ι) {a : ι → ℂ}
+    (ha : ∀ i ∈ s, ‖a i‖ < 1) {z : ℂ} (hz : ‖z‖ = 1) :
+    ‖∏ i ∈ s, ((z - a i) / (1 - star (a i) * z))‖ = 1 := by
+  rw [norm_prod, Finset.prod_eq_one]
+  intro i hi
+  exact norm_blaschkeFactor_eq_one (ha i hi) hz
+
+/-- A Blaschke product over an arbitrary finite index set maps the closed disk into itself. -/
+theorem norm_finsetBlaschke_le_one {ι : Type*} (s : Finset ι) {a : ι → ℂ}
+    (ha : ∀ i ∈ s, ‖a i‖ < 1) {z : ℂ} (hz : ‖z‖ ≤ 1) :
+    ‖∏ i ∈ s, ((z - a i) / (1 - star (a i) * z))‖ ≤ 1 := by
+  rw [norm_prod]
+  calc ∏ i ∈ s, ‖(z - a i) / (1 - star (a i) * z)‖ ≤ ∏ _i ∈ s, (1 : ℝ) :=
+        Finset.prod_le_prod (fun i _ => norm_nonneg _)
+          (fun i hi => norm_blaschkeFactor_le_one (ha i hi) hz)
+    _ = 1 := by simp
+
+/-- A Blaschke product over an arbitrary finite index set is holomorphic on the closed disk. -/
+theorem differentiableOn_finsetBlaschke {ι : Type*} (s : Finset ι) {a : ι → ℂ}
+    (ha : ∀ i ∈ s, ‖a i‖ < 1) :
+    DifferentiableOn ℂ (fun z => ∏ i ∈ s, ((z - a i) / (1 - star (a i) * z)))
+      (Metric.closedBall 0 1) := by
+  refine DifferentiableOn.fun_finsetProd (fun i hi => ?_)
+  refine DifferentiableOn.div (by fun_prop) (by fun_prop) (fun z hz => ?_)
+  exact blaschkeFactor_den_ne_zero (ha i hi)
+    (by simpa [Metric.mem_closedBall, dist_eq_norm] using hz)
+
 end GaloisForLFunctions.HTGeometry

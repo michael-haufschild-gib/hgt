@@ -169,6 +169,15 @@ The quantitative equivalence is bundled by
 | aggregate abscissa at most `1+alpha` forces the matching Xi zero-free half-plane | xiZeroHalfPlaneBound_of_summableNegativeChannelCover_aggregate_abscissa |
 | aggregate abscissa at most one proves RH | riemannHypothesis_of_summableNegativeChannelCover_aggregate_abscissa_le_one |
 
+## Explicit dyadic source endpoints
+
+| Manuscript claim | Unconditional Lean declaration |
+|---|---|
+| Dirichlet energy of the positive dyadic von Mangoldt-window excess at every abscissa `1+epsilon` proves RH | riemannHypothesis_of_dyadicWeightedPrimeWindowPositiveExcessEnergy |
+| the proper-prime-power channel is nonnegative and bounded by an explicit logarithmic cost | dyadicWeightedHigherPrimePowerWindow_nonneg, dyadicWeightedHigherPrimePowerWindow_le_log |
+| the all-epsilon source estimate is equivalent after removing every proper prime power | dyadicWeightedPrimeWindowSubpowerUpper_iff_primeOnly |
+| the displayed prime-only estimate proves RH | riemannHypothesis_of_eventually_dyadicWeightedPrimeOnlyWindow_upper |
+
 ## Complete critical-Mellin divisor tomography
 
 The stronger intrinsic theorem is bundled by

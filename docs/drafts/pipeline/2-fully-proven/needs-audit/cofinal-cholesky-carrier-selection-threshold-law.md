@@ -733,6 +733,29 @@ Therefore `InjectiveShiftConfiguration` is an open finite-dimensional complex co
 space and is sigma-compact. The compact exhaustion used above is thus obtained without replacing
 the uncountable complex shifts by a countable palette.
 
+The unconditional modules
+`GaloisForLFunctions.HTGeometry.EvaluationRankDefectTopology` and
+`ExpandedEvaluationConfigurationBaire` close the concrete bad-locus side of this reduction. For
+the literal rectangular matrix whose columns are the coefficient-degree/differential-monomial
+labels, loss of coefficient-uniform rank is exactly `det(A^* A)=0`; hence the complete rank-defect
+locus is closed without choosing a square minor. The expanded matrix depends continuously on the
+finite row-jet packet. Combining this with the compact-configuration theorem proves, in Lean, that
+compact-patch density for every countable relation pattern promotes to one dense residual
+parameter set having full evaluation rank for every complex shift configuration. Thus neither
+closedness of the rank defect, its semantic identification with failure of coefficient-uniform
+rank, nor the countable/global Baire quantifiers remain in the transversality gap.
+
+The unconditional module `GaloisForLFunctions.HTGeometry.CompactUniformFiniteProbe` closes the
+finite-dimensional-parameter reduction that precedes Hirsch transversality. A surjective member
+of a continuous family of controls with fixed finite-dimensional target has a linear right
+inverse; nonvanishing of the determinant after composing nearby controls with that right inverse
+produces an open neighborhood controlled by one finitely generated probe subspace. Compactness
+then selects finitely many such neighborhoods, and the finite sum of their probe spaces is
+surjective at every point of the compact family. Thus compact pointwise Cauchy-jet controllability
+forces one common finite-dimensional perturbation manifold on the whole patch. In the carrier
+application, the remaining analytic obligation for this theorem is continuity, in operator norm,
+of the shift-dependent constrained Nevanlinna control family.
+
 The unconditional modules `GaloisForLFunctions.HTGeometry.MinimalTypeNoArithmeticProgression`,
 `MinimalTypeNevanlinnaAperiodicity`, `MinimalTypeProjectiveSeparation`, and
 `MinimalTypeProjectiveForbiddenSeparation` close the manuscript's translation-separation input.
@@ -927,8 +950,9 @@ full-translation HT residual set remains part of the final carrier capstone.
 
 All listed exact modules pass. `#print axioms` on the new frame-fiber, selector,
 constrained-control, triangular-jet, evaluation root-count, bounded-density, and projective
-Nevanlinna-control/escape/genericity, compact-configuration Baire assembly and
-sigma-compact injective-shift topology,
+Nevanlinna-control/escape/genericity, compact-configuration Baire assembly,
+sigma-compact injective-shift topology, rectangular evaluation-rank-defect topology, and expanded
+evaluation configuration Baire assembly, compact uniform finite-probe reduction,
 minimal-type projective-separation, compact-atlas, and
 noncriticality, disjoint-block independence, scalar hypersurface, iterated Krull-dimension, and
 fixed-incidence-fiber, coefficient-prime, projective affine-chart, and all-row local incidence
@@ -951,8 +975,11 @@ unrelated sign-direction error in `RectangularKreinInertia`; no theorem in the c
 chain depends on that module. This
 validates only the declarations listed above, not the still-unformalized claims in the paper.
 
-The remaining original formalization requires finite algebraic/Whitney stratification with smooth
-parametric transversality at the genuine global incidence locus. The classical N-extremal source
+The remaining original formalization requires the project-specific compact-patch density
+deduction from projective incidence projection, finite algebraic/Whitney stratification, and
+smooth parametric transversality at the genuine global incidence locus. Closedness of the literal
+rectangular rank defect and every subsequent compact-exhaustion/Baire quantifier are already
+formalized. The classical N-extremal source
 is now matched convention-by-convention by `NevanlinnaClassicalInterface`; its existence for an
 indeterminate Hamburger sequence remains a cited classical theorem rather than a Lean reproof.
 The Riesz-brothers and Szegő boundaries are isolated at their exact

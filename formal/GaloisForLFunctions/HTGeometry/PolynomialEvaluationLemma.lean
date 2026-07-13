@@ -130,4 +130,27 @@ theorem exists_eval_matrix_det_ne_zero :
             hMdef, Fin.lastCases_castSucc, eval_C]
     rw [hfinal]; exact hx
 
+/-- **Linear independence of evaluated polynomials.**  A `K`-linearly independent family of
+multivariate polynomials over an infinite field is linearly independent as a family of functions
+`(σ → K) → K` under evaluation.  This is the conclusion the affine-jet argument extracts from the
+nonsingular evaluation matrix: a vanishing `K`-combination of the evaluation functions, sampled at the
+points supplied by `exists_eval_matrix_det_ne_zero`, lies in the kernel of a nonsingular matrix, hence
+is zero. -/
+theorem linearIndependent_eval {n : ℕ} {f : Fin n → MvPolynomial σ K}
+    (hf : LinearIndependent K f) :
+    LinearIndependent K (fun i => (fun x : σ → K => eval x (f i))) := by
+  obtain ⟨p, hp⟩ := exists_eval_matrix_det_ne_zero n f hf
+  rw [Fintype.linearIndependent_iff]
+  intro c hc
+  set M : Matrix (Fin n) (Fin n) K := Matrix.of fun i j => eval (p j) (f i) with hM
+  have hvec : c ᵥ* M = 0 := by
+    funext j
+    have hcj := congrFun hc (p j)
+    simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply] at hcj
+    simp only [Matrix.vecMul, dotProduct, hM, Matrix.of_apply, Pi.zero_apply]
+    exact hcj
+  have hc0 : c = 0 := eq_zero_of_vecMul_eq_zero hp hvec
+  intro i
+  exact congrFun hc0 i
+
 end AffineJet
