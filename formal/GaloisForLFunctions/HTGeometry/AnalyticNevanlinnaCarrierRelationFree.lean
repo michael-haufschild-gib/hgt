@@ -14,6 +14,7 @@ mass-one chart of the normalized frozen tangent.
 namespace GaloisForLFunctions.HTGeometry
 
 open MeasureTheory OnePoint Filter Set Topology
+open Polynomial
 open scoped ENNReal OnePoint Topology
 
 noncomputable section
@@ -33,6 +34,21 @@ abbrev CarrierPatternMonomial (p : FiniteDifferentialPattern Unit) :=
 abbrev CarrierPatternShift (p : FiniteDifferentialPattern Unit) :=
   Fin p.shiftCount
 
+/-- Enumerate the dependent within-shift jet variables in the finite coordinate type used by the
+expanded evaluation matrix. -/
+noncomputable def carrierPatternExponent (p : FiniteDifferentialPattern Unit) :
+    CarrierPatternMonomial p →
+      (Fin (Fintype.card (Σ i : CarrierPatternShift p, Fin (p.orders i))) →₀ ℕ) :=
+  fun b => Finsupp.equivCongrLeft
+    (Fintype.equivFin (Σ i : CarrierPatternShift p, Fin (p.orders i)))
+    (p.jetExponent b)
+
+theorem carrierPatternExponent_injective (p : FiniteDifferentialPattern Unit) :
+    Function.Injective (carrierPatternExponent p) :=
+  (Finsupp.equivCongrLeft
+    (Fintype.equivFin (Σ i : CarrierPatternShift p, Fin (p.orders i)))).injective.comp
+      p.jetExponent_injective
+
 theorem carrierPattern_rows_strictly_dominate_columns
     (p : FiniteDifferentialPattern Unit) :
     Fintype.card
@@ -51,6 +67,46 @@ theorem carrierPattern_shift_dimension_below_codimension
   rw [Module.finrank_pi_fintype]
   simp [CarrierPatternRow, CarrierPatternShift, CarrierPatternMonomial, PatternShape]
   omega
+
+/-- The dependent jet coordinates of a one-shift packet are canonically the ordinary finite jet
+coordinates. -/
+def singleShiftJetEquiv (n : ℕ) : (Σ _ : Fin 1, Fin n) ≃ Fin n where
+  toFun := fun s => s.2
+  invFun := fun j => ⟨0, j⟩
+  left_inv := by
+    rintro ⟨i, j⟩
+    have hi : i = 0 := Subsingleton.elim _ _
+    subst i
+    rfl
+  right_inv := fun _ => rfl
+
+/-- Move an ordinary finite-jet polynomial into the dependent coordinates of a one-shift
+packet. -/
+noncomputable def renameToSingleShiftJets {R : Type*} [CommSemiring R] (n : ℕ)
+    (Q : MvPolynomial (Fin n) R) : MvPolynomial (Σ _ : Fin 1, Fin n) R :=
+  MvPolynomial.rename (singleShiftJetEquiv n).symm Q
+
+theorem renameToSingleShiftJets_injective {R : Type*} [CommSemiring R] (n : ℕ) :
+    Function.Injective (renameToSingleShiftJets (R := R) n) := by
+  exact MvPolynomial.rename_injective _ (singleShiftJetEquiv n).symm.injective
+
+/-- Reshaping the point variable into polynomial coefficients commutes with specialization and
+arbitrary jet evaluation. -/
+theorem eval_specialize_reshapeJet (n : ℕ) (z : ℂ) (v : Fin (n + 1) → ℂ)
+    (P : MvPolynomial (Fin (n + 2)) ℂ) :
+    MvPolynomial.eval v (specializePolynomialCoefficients z (reshapeJet n P)) =
+      MvPolynomial.eval (Fin.cons z v) P := by
+  rw [specializePolynomialCoefficients, MvPolynomial.eval_map]
+  have hhom : ((MvPolynomial.eval₂Hom (Polynomial.evalRingHom z) v).comp (reshapeJet n)) =
+      (MvPolynomial.eval (Fin.cons z v) : _ →+* ℂ) := by
+    apply MvPolynomial.ringHom_ext
+    · intro c
+      simp [reshapeJet]
+    · intro i
+      induction i using Fin.cases with
+      | zero => simp [reshapeJet]
+      | succ j => simp [reshapeJet, Fin.cons_succ]
+  exact RingHom.congr_fun hhom P
 
 /-- A polynomial-coefficient relation evaluated on the actual derivatives of the Cauchy
 transform of one weighted Nevanlinna carrier. -/
@@ -281,12 +337,12 @@ theorem allFinitePatterns_abstractCarrier_relationFree_dense_residual
     let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
       F.amplitude F.quotient zf nf haf hqdf eta hupperf
     let S := LinearMap.ker frozen.toLinearMap
-    let relationFree : Set S := {w | ∀ p : FiniteDifferentialPattern Unit
+    let relationFree : Set S := {w | ∀ (p : FiniteDifferentialPattern Unit)
       (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
       (coeff : CarrierPatternMonomial p × Fin (p.coefficientDegree + 1) → ℂ),
       actualNevanlinnaExpandedPatternRelationHolds
         (row := CarrierPatternRow p) F.background F.amplitude F.quotient
-          p.coefficientDegree p.orders p.jetExponent eta (linftyOne eta)
+          p.coefficientDegree p.orders (carrierPatternExponent p) eta (linftyOne eta)
           S w shift coeff →
         ∀ col, coeff col = 0}
     Dense relationFree ∧ relationFree ∈ residual S := by
@@ -300,13 +356,13 @@ theorem allFinitePatterns_abstractCarrier_relationFree_dense_residual
         (row := CarrierPatternRow p) (κ := CarrierPatternMonomial p)
         (ι := CarrierPatternShift p)
         F.background F.amplitude F.quotient p.coefficientDegree p.orders
-          p.jetExponent eta (linftyOne eta) S w shift}
-  let relationFree : Set S := {w | ∀ p : FiniteDifferentialPattern Unit
+          (carrierPatternExponent p) eta (linftyOne eta) S w shift}
+  let relationFree : Set S := {w | ∀ (p : FiniteDifferentialPattern Unit)
     (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
     (coeff : CarrierPatternMonomial p × Fin (p.coefficientDegree + 1) → ℂ),
     actualNevanlinnaExpandedPatternRelationHolds
       (row := CarrierPatternRow p) F.background F.amplitude F.quotient
-        p.coefficientDegree p.orders p.jetExponent eta (linftyOne eta)
+        p.coefficientDegree p.orders (carrierPatternExponent p) eta (linftyOne eta)
         S w shift coeff →
       ∀ col, coeff col = 0}
   have hupperMap' : ∀ z, 0 < z.im →
@@ -334,7 +390,8 @@ theorem allFinitePatterns_abstractCarrier_relationFree_dense_residual
         projectiveGeometry parametricAvoidance hCmin F.differentiable_d
         hnoCommon hCp hCc hupperMap' F.background
         F.contDiffOn_iteratedDeriv_background zf hqf_inj' hupperf' nf haf' hqdf'
-        p.coefficientDegree p.orders p.jetExponent p.jetExponent_injective
+        p.coefficientDegree p.orders (carrierPatternExponent p)
+        (carrierPatternExponent_injective p)
         (carrierPattern_rows_strictly_dominate_columns p)
         eta heta (linftyOne eta)
         (carrierPattern_shift_dimension_below_codimension p))
@@ -344,10 +401,252 @@ theorem allFinitePatterns_abstractCarrier_relationFree_dense_residual
     intro w hw p shift coeff hrelation
     exact actualNevanlinnaExpandedPatternRelation_coefficients_eq_zero_of_fullRankWitness
       F.background F.amplitude F.quotient p.coefficientDegree p.orders
-      p.jetExponent eta (linftyOne eta) S w shift
+      (carrierPatternExponent p) eta (linftyOne eta) S w shift
       (Set.mem_iInter.mp hw p shift) coeff hrelation
   exact ⟨(dense_of_mem_residual hfullResidual).mono hsubset,
     Filter.mem_of_superset hfullResidual hsubset⟩
+
+/-- **All finite shapes, actual positive-carrier form.**  In the normalized positive chart, a
+dense residual family of actual weighted Nevanlinna carrier transforms admits no nonzero relation
+of any canonical finite differential-pattern shape. -/
+theorem allFinitePatterns_positiveActualCarrier_relationFree_dense_residual
+    (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
+    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
+    {ιf : Type} [Fintype ιf] [DecidableEq ιf]
+    (hCmin : HasMinimalExponentialType F.c)
+    (hnoCommon : ∀ z, ¬ (F.c z = 0 ∧ F.d z = 0))
+    {p0 : ℂ} (hCp : F.c p0 = 0) {c0 : ℂ} (hCc : F.c c0 ≠ 0)
+    (hupperMap : ∀ z, 0 < z.im → 0 < (F.quotient z).im)
+    (zf : ιf → ℂ)
+    (hqf_inj : Function.Injective (fun i => F.quotient (zf i)))
+    (hupperf : ∀ i, 0 < (F.quotient (zf i)).im)
+    (nf : ιf → ℕ) (haf : ∀ i, F.amplitude (zf i) ≠ 0)
+    (hqdf : ∀ i, deriv F.quotient (zf i) ≠ 0)
+    (eta : Measure (OnePoint ℝ)) [IsProbabilityMeasure eta] (heta : eta.support.Infinite) :
+    let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
+      F.amplitude F.quotient zf nf haf hqdf eta hupperf
+    let S := LinearMap.ker frozen.toLinearMap
+    let positiveChart : Set S := Metric.ball 0 1
+    let actualRelationFree : Set positiveChart := {w | ∀
+      (p : FiniteDifferentialPattern Unit)
+      (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
+      (coeff : CarrierPatternMonomial p × Fin (p.coefficientDegree + 1) → ℂ),
+      F.weightedBoundaryCarrierExpandedPatternRelationHolds
+        (row := CarrierPatternRow p) eta (linftyOne eta + w.1.1)
+          p.coefficientDegree p.orders (carrierPatternExponent p) shift coeff →
+        ∀ col, coeff col = 0}
+    Dense actualRelationFree ∧ actualRelationFree ∈ residual positiveChart ∧
+      ∀ w : positiveChart,
+        LinftyStrictlyPositive eta (linftyOne eta + w.1.1) ∧
+          ∫ t, (linftyOne eta + w.1.1) t ∂eta = 1 := by
+  dsimp only
+  let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
+    F.amplitude F.quotient zf nf haf hqdf eta hupperf
+  let S := LinearMap.ker frozen.toLinearMap
+  let relationFree : Set S := {w | ∀ (p : FiniteDifferentialPattern Unit)
+    (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
+    (coeff : CarrierPatternMonomial p × Fin (p.coefficientDegree + 1) → ℂ),
+    actualNevanlinnaExpandedPatternRelationHolds
+      (row := CarrierPatternRow p) F.background F.amplitude F.quotient
+        p.coefficientDegree p.orders (carrierPatternExponent p) eta (linftyOne eta)
+        S w shift coeff →
+      ∀ col, coeff col = 0}
+  have habstract : Dense relationFree ∧ relationFree ∈ residual S := by
+    simpa [relationFree, frozen, S] using
+      (F.allFinitePatterns_abstractCarrier_relationFree_dense_residual
+        projectiveGeometry parametricAvoidance hCmin hnoCommon hCp hCc hupperMap
+        zf hqf_inj hupperf nf haf hqdf eta heta)
+  exact F.normalizedPositiveChart_actualCarrier_relationFree_dense_residual
+    zf nf haf hqdf eta hupperf
+    (fun p : FiniteDifferentialPattern Unit => CarrierPatternRow p)
+    (fun p : FiniteDifferentialPattern Unit => CarrierPatternMonomial p)
+    (fun p : FiniteDifferentialPattern Unit => CarrierPatternShift p)
+    (fun p => p.coefficientDegree) (fun p => p.orders)
+    (fun p => carrierPatternExponent p) hupperMap relationFree habstract.2 (by
+      intro w hw p shift coeff
+      exact hw p shift coeff)
+
+/-- Avoiding every canonical finite actual-carrier pattern forces literal hypertranscendence of
+the weighted carrier's Cauchy transform. -/
+theorem hypertranscendental_weightedBoundaryCarrierCauchy_of_allFinitePatterns_relationFree
+    (eta : Measure (OnePoint ℝ)) [IsFiniteMeasure eta]
+    (density : Lp ℝ (⊤ : ENNReal) eta)
+    (hfree : ∀ (p : FiniteDifferentialPattern Unit)
+      (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
+      (coeff : CarrierPatternMonomial p × Fin (p.coefficientDegree + 1) → ℂ),
+      F.weightedBoundaryCarrierExpandedPatternRelationHolds
+        (row := CarrierPatternRow p) eta density p.coefficientDegree p.orders
+          (carrierPatternExponent p) shift coeff →
+        ∀ col, coeff col = 0) :
+    Hypertranscendental
+      (fun z => ∫ x, ((x : ℂ) - z)⁻¹
+        ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta density) := by
+  intro hDA
+  obtain ⟨n, P, hPne, hPzero⟩ := hDA
+  let orders : Fin 1 → ℕ := fun _ => n + 1
+  let shiftCode : Fin 1 → Unit := fun _ => ()
+  have hshiftCode : Function.Injective shiftCode := fun _ _ _ => Subsingleton.elim _ _
+  let Q0 : MvPolynomial (Fin (n + 1)) ℂ[X] := reshapeJet n P
+  let Q : MvPolynomial (Σ i : Fin 1, Fin (orders i)) ℂ[X] :=
+    renameToSingleShiftJets (n + 1) Q0
+  let p : FiniteDifferentialPattern Unit :=
+    finitePatternOfPolynomial shiftCode hshiftCode orders Q
+  let shift0 : InjectiveShiftConfiguration (CarrierPatternShift p) :=
+    ⟨fun _ => 0, fun i j _ => p.shiftCode_injective (Subsingleton.elim _ _)⟩
+  let patternCoeff : PatternRow p → ℂ :=
+    polynomialPatternCoefficientVector shiftCode hshiftCode orders Q
+  let coeff : CarrierPatternMonomial p × Fin (p.coefficientDegree + 1) → ℂ :=
+    fun col => patternCoeff (Fintype.equivFin (PatternShape p) col)
+  let carrierTransform : ℂ → ℂ := fun z =>
+    ∫ x, ((x : ℂ) - z)⁻¹
+      ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta density
+  have hrelation : F.weightedBoundaryCarrierExpandedPatternRelationHolds
+      (row := CarrierPatternRow p) eta density p.coefficientDegree p.orders
+        (carrierPatternExponent p) shift0 coeff := by
+    intro packet hupper r
+    let z : ℂ := packet.1 r
+    let sigma := Σ i : CarrierPatternShift p, Fin (p.orders i)
+    let y : CarrierPatternRow p × Fin (Fintype.card sigma) → ℂ :=
+      F.weightedBoundaryCarrierExpandedPacketValue eta density p.orders packet shift0
+    let x : sigma → ℂ := fun s =>
+      iteratedDeriv s.2 carrierTransform (z + shift0.1 s.1)
+    have hy : ∀ s : sigma,
+        y (r, Fintype.equivFin sigma s) = x s := by
+      intro s
+      simp [y, x, z, carrierTransform,
+        weightedBoundaryCarrierExpandedPacketValue]
+      rw [(Fintype.equivFin sigma).symm_apply_apply s]
+    have hprod : ∀ a : CarrierPatternMonomial p,
+        (carrierPatternExponent p a).prod
+            (fun k e => y (r, k) ^ e) =
+          (p.jetExponent a).prod (fun s e => x s ^ e) := by
+      intro a
+      rw [carrierPatternExponent, Finsupp.equivCongrLeft_apply,
+        Finsupp.prod_equivMapDomain]
+      apply Finsupp.prod_congr
+      intro s hs
+      rw [hy s]
+    have hsum :
+        (∑ col, coeff col *
+          expandedDifferentialEvaluationMatrix p.coefficientDegree
+            (Fintype.card sigma) packet.1 (carrierPatternExponent p) y r col) =
+          ∑ b : PatternRow p,
+            patternCoeff b * z ^ patternDegree p b *
+              (patternExponent p b).prod (fun s e => x s ^ e) := by
+      apply Fintype.sum_equiv (Fintype.equivFin (PatternShape p))
+      intro col
+      rw [expandedDifferentialEvaluationMatrix_apply, hprod]
+      simp [coeff, patternCoeff, patternDegree, patternExponent, z]
+      ring
+    rw [hsum]
+    have hexpand := polynomialPatternCoefficientExpansion
+      shiftCode hshiftCode orders Q z x
+    rw [hexpand]
+    have hrename :
+        MvPolynomial.eval x (specializePolynomialCoefficients z Q) =
+          MvPolynomial.eval
+            (fun j => x ((singleShiftJetEquiv (n + 1)).symm j))
+            (specializePolynomialCoefficients z Q0) := by
+      simp only [Q, renameToSingleShiftJets, specializePolynomialCoefficients,
+        MvPolynomial.eval_map]
+      simpa [Function.comp_def] using
+        (MvPolynomial.eval₂_rename (Polynomial.evalRingHom z)
+          (singleShiftJetEquiv (n + 1)).symm x Q0)
+    have hx : (fun j => x ((singleShiftJetEquiv (n + 1)).symm j)) =
+        fun j : Fin (n + 1) => iteratedDeriv (j : ℕ) carrierTransform z := by
+      funext j
+      simp [x, p, orders, finitePatternOfPolynomial, shift0, singleShiftJetEquiv]
+    calc
+      MvPolynomial.eval x (specializePolynomialCoefficients z Q) =
+          MvPolynomial.eval
+            (fun j => x ((singleShiftJetEquiv (n + 1)).symm j))
+            (specializePolynomialCoefficients z Q0) := hrename
+      _ = MvPolynomial.eval
+          (Fin.cons z (fun j : Fin (n + 1) =>
+            iteratedDeriv (j : ℕ) carrierTransform z)) P := by
+        rw [hx]
+        exact eval_specialize_reshapeJet n z _ P
+      _ = 0 := hPzero z
+  have hcoeffZero := hfree p shift0 coeff hrelation
+  have hpatternZero : ∀ b : PatternRow p, patternCoeff b = 0 := by
+    intro b
+    let col : PatternShape p := (Fintype.equivFin (PatternShape p)).symm b
+    have hz := hcoeffZero col
+    simpa [coeff, col] using hz
+  have hQ : Q = 0 :=
+    polynomial_eq_zero_of_patternCoefficientVector_eq_zero
+      shiftCode hshiftCode orders Q (by
+        intro b
+        exact hpatternZero b)
+  have hQ0 : Q0 = 0 := renameToSingleShiftJets_injective (n + 1) (by
+    simpa [Q, orders] using hQ)
+  have hP : P = 0 := reshapeJet_injective n (by simpa [Q0] using hQ0)
+  exact hPne hP
+
+/-- **Residual hypertranscendental Nevanlinna-image law.**  Under the explicit classical
+incidence/projection/stratified-avoidance inputs, the positive mass-one chart contains a dense
+residual family whose actual weighted-carrier Cauchy transforms are hypertranscendental. -/
+theorem positiveActualCarrier_hypertranscendental_dense_residual
+    (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
+    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
+    {ιf : Type} [Fintype ιf] [DecidableEq ιf]
+    (hCmin : HasMinimalExponentialType F.c)
+    (hnoCommon : ∀ z, ¬ (F.c z = 0 ∧ F.d z = 0))
+    {p0 : ℂ} (hCp : F.c p0 = 0) {c0 : ℂ} (hCc : F.c c0 ≠ 0)
+    (hupperMap : ∀ z, 0 < z.im → 0 < (F.quotient z).im)
+    (zf : ιf → ℂ)
+    (hqf_inj : Function.Injective (fun i => F.quotient (zf i)))
+    (hupperf : ∀ i, 0 < (F.quotient (zf i)).im)
+    (nf : ιf → ℕ) (haf : ∀ i, F.amplitude (zf i) ≠ 0)
+    (hqdf : ∀ i, deriv F.quotient (zf i) ≠ 0)
+    (eta : Measure (OnePoint ℝ)) [IsProbabilityMeasure eta] (heta : eta.support.Infinite) :
+    let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
+      F.amplitude F.quotient zf nf haf hqdf eta hupperf
+    let S := LinearMap.ker frozen.toLinearMap
+    let positiveChart : Set S := Metric.ball 0 1
+    let hypertranscendentalCarrier : Set positiveChart := {w |
+      Hypertranscendental
+        (fun z => ∫ x, ((x : ℂ) - z)⁻¹
+          ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta
+            (linftyOne eta + w.1.1))}
+    Dense hypertranscendentalCarrier ∧
+      hypertranscendentalCarrier ∈ residual positiveChart ∧
+      ∀ w : positiveChart,
+        LinftyStrictlyPositive eta (linftyOne eta + w.1.1) ∧
+          ∫ t, (linftyOne eta + w.1.1) t ∂eta = 1 := by
+  dsimp only
+  let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
+    F.amplitude F.quotient zf nf haf hqdf eta hupperf
+  let S := LinearMap.ker frozen.toLinearMap
+  let positiveChart : Set S := Metric.ball 0 1
+  let actualRelationFree : Set positiveChart := {w | ∀
+    (p : FiniteDifferentialPattern Unit)
+    (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
+    (coeff : CarrierPatternMonomial p × Fin (p.coefficientDegree + 1) → ℂ),
+    F.weightedBoundaryCarrierExpandedPatternRelationHolds
+      (row := CarrierPatternRow p) eta (linftyOne eta + w.1.1)
+        p.coefficientDegree p.orders (carrierPatternExponent p) shift coeff →
+      ∀ col, coeff col = 0}
+  let hypertranscendentalCarrier : Set positiveChart := {w |
+    Hypertranscendental
+      (fun z => ∫ x, ((x : ℂ) - z)⁻¹
+        ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta
+          (linftyOne eta + w.1.1))}
+  have hpatterns : Dense actualRelationFree ∧
+      actualRelationFree ∈ residual positiveChart ∧
+      ∀ w : positiveChart,
+        LinftyStrictlyPositive eta (linftyOne eta + w.1.1) ∧
+          ∫ t, (linftyOne eta + w.1.1) t ∂eta = 1 := by
+    simpa [actualRelationFree, frozen, S, positiveChart] using
+      (F.allFinitePatterns_positiveActualCarrier_relationFree_dense_residual
+        projectiveGeometry parametricAvoidance hCmin hnoCommon hCp hCc hupperMap
+        zf hqf_inj hupperf nf haf hqdf eta heta)
+  have hsubset : actualRelationFree ⊆ hypertranscendentalCarrier := by
+    intro w hw
+    exact F.hypertranscendental_weightedBoundaryCarrierCauchy_of_allFinitePatterns_relationFree
+      eta (linftyOne eta + w.1.1) hw
+  exact ⟨hpatterns.1.mono hsubset,
+    Filter.mem_of_superset hpatterns.2.1 hsubset, hpatterns.2.2⟩
 
 end ClassicalAnalyticNevanlinnaCarrierFamily
 

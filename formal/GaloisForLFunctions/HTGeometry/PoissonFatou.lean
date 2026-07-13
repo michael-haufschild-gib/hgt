@@ -1,6 +1,7 @@
 import Mathlib.Analysis.Complex.Poisson
 import Mathlib.MeasureTheory.Covering.DensityTheorem
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 
 /-!
 # Fatou's theorem: a.e. boundary limits of Poisson integrals
@@ -99,5 +100,47 @@ theorem poissonKer_integral {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
   have hpi : (2 * π) ≠ 0 := by positivity
   field_simp at hr
   linarith [hr]
+
+/-- `1 - cos t ≥ 2t²/π²` on `[0, π]` (from Jordan's inequality). -/
+theorem one_sub_cos_ge {t : ℝ} (h0 : 0 ≤ t) (h1 : t ≤ π) :
+    2 * t ^ 2 / π ^ 2 ≤ 1 - Real.cos t := by
+  have hpi : 0 < π := Real.pi_pos
+  have hhalf : 1 - Real.cos t = 2 * Real.sin (t / 2) ^ 2 := by
+    have hc : Real.cos t = 2 * Real.cos (t / 2) ^ 2 - 1 := by
+      have := Real.cos_two_mul (t / 2); rwa [show 2 * (t / 2) = t by ring] at this
+    nlinarith [Real.sin_sq_add_cos_sq (t / 2)]
+  have hjordan : 2 / π * (t / 2) ≤ Real.sin (t / 2) := Real.mul_le_sin (by linarith) (by linarith)
+  have hlow : t / π ≤ Real.sin (t / 2) := by
+    have heq : (2:ℝ) / π * (t / 2) = t / π := by ring
+    linarith [heq ▸ hjordan]
+  have htpi : 0 ≤ t / π := by positivity
+  rw [hhalf]
+  have hsq : (t / π) ^ 2 ≤ Real.sin (t / 2) ^ 2 := pow_le_pow_left₀ htpi hlow 2
+  have hconv : 2 * (t / π) ^ 2 = 2 * t ^ 2 / π ^ 2 := by field_simp
+  nlinarith [hsq, hconv]
+
+/-- Lower bound on the denominator away from `0`: `denom ≥ 4r t²/π²` on `[0, π]`. -/
+theorem poissonKer_denom_ge {r : ℝ} (hr0 : 0 < r) {t : ℝ} (h0 : 0 ≤ t) (h1 : t ≤ π) :
+    4 * r * t ^ 2 / π ^ 2 ≤ 1 - 2 * r * Real.cos t + r ^ 2 := by
+  have hc := one_sub_cos_ge h0 h1
+  have key : 4 * r * t ^ 2 / π ^ 2 ≤ 2 * r * (1 - Real.cos t) := by
+    rw [show 4 * r * t ^ 2 / π ^ 2 = 2 * r * (2 * t ^ 2 / π ^ 2) by ring]
+    exact mul_le_mul_of_nonneg_left hc (by linarith)
+  nlinarith [key, sq_nonneg (1 - r)]
+
+/-- Decay bound: `P_r(t) ≤ (1-r²)π²/(4r t²)` on `(0, π]`, giving mass concentration at `0`. -/
+theorem poissonKer_le_decay {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1) {t : ℝ} (h0 : 0 < t) (h1 : t ≤ π) :
+    poissonKer r t ≤ (1 - r ^ 2) * π ^ 2 / (4 * r * t ^ 2) := by
+  rw [poissonKer]
+  have hden := poissonKer_denom_ge hr0 h0.le h1
+  have hdenpos : 0 < 1 - 2 * r * Real.cos t + r ^ 2 :=
+    poissonKer_denom_pos (by rw [abs_of_nonneg hr0.le]; exact hr1) t
+  have hnn : 0 ≤ 1 - r ^ 2 := by nlinarith
+  have hpi : 0 < π := Real.pi_pos
+  rw [div_le_div_iff₀ hdenpos (by positivity)]
+  have hpe : 4 * r * t ^ 2 ≤ π ^ 2 * (1 - 2 * r * Real.cos t + r ^ 2) := by
+    have := (div_le_iff₀ (by positivity : (0:ℝ) < π ^ 2)).mp hden
+    linarith [this]
+  nlinarith [mul_le_mul_of_nonneg_left hpe hnn]
 
 end GaloisForLFunctions.HTGeometry

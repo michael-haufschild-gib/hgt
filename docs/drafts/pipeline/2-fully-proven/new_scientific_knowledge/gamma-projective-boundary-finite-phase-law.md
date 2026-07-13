@@ -517,6 +517,20 @@ Primary sources:
   boundary `Γ'(σ + it) / Γ''(σ + it) → 0` for `σ > 0`;
 - the finite projective-relation limit lemma used by the recurrence collapse.
 
+`formal/GaloisForLFunctions/HTGeometry/GammaProjectivePrimeTorusCarrier.lean` proves the §7
+finite-aperture prime-torus carrier law (eq. 34) unconditionally:
+
+- `primesLE N` (the primes `≤ N`) has cardinality `Nat.primeCounting N = π(N)`;
+- the aperture-`N` character lattice `primeApertureCharacterModule N = span_ℚ {log p : p ≤ N}` is
+  `ℚ`-linearly independent (unique factorization) of rank exactly `π(N)`;
+- each coordinate character's diagonal-flow frequency `log p` lies in that module
+  (`primeLogFrequency (single p 1)`), grounding the lattice in the Kronecker spectrum;
+- **carrier lower bound**: any rational carrier character space receiving an injection of the
+  aperture lattice has `Module.finrank ℚ ≥ π(N)` — the covering-dimension `≥ π(N)` bound, with the
+  injection standing for the dual of the carrier's factor map onto the aperture hull;
+- **dimension divergence**: `∀ M, ∃ N, M ≤ π(N)`, so no fixed finite-dimensional carrier serves all
+  apertures.
+
 The remaining formal work is the full Laurent shift field, Poincare asymptotic field, general
 Gamma-field monomial valuation, holomorphic almost-periodic hull, and Bohr-frequency rank
 infrastructure. The card remains at stage 2 until the whole claim is formalized unconditionally.

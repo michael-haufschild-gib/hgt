@@ -674,3 +674,17 @@ whole theorem unconditionally in Lean.
 - [ ] independent audit of the directional Vandermonde boundary theorem
 - [ ] full parent-literature and priority audit
 - [ ] complete unconditional Lean formalization
+
+## Lean update — DA direction of the dichotomy (8), polynomial case
+
+`formal/GaloisForLFunctions/HTGeometry/ExpPolynomialDA.lean` proves
+`differentiallyAlgebraic_cexp_mul_polynomial`: for every `β : ℂ` and polynomial `P`, the function
+`s ↦ e^{βs}·P(s)` is differentially algebraic, axiom-clean. This is the DA half of `(8)`–`(10)` in the
+polynomial-`R` case: when all shift-orbit charges vanish, `G = C₀·e^{βs}·R` (eq. 9), and for `R = P`
+polynomial it satisfies the exhibited order-1 differential relation `P·G' − (β·P + P')·G = 0` (the
+polynomial form of eq. 10). The differential polynomial is `P(X₀)·X₂ − (β·P(X₀) + P'(X₀))·X₁` in
+`MvPolynomial (Fin 3) ℂ`; nonzeroness is witnessed at a non-root of `P`, and the vanishing on
+`[s, G, G']` uses the product-rule derivative `G' = e^{βs}(βP + P')`. Extends
+`differentiallyAlgebraic_cexp_linear` (the `R = 1` case) to `R` polynomial. The general rational `R`
+reduces to this after clearing denominators (polynomial coefficients times `D²`), and the HT direction
+(some charge nonzero) remains the deep ADH/discrete-residue input already carded above.

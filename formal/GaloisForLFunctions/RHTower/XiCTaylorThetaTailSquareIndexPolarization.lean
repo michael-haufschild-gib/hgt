@@ -1111,9 +1111,9 @@ theorem thetaSquareIndexDyadicHaarLayer_reflected_sum
   dsimp only [ex, ey]
   ring
 
-/-- Completion-free form of the cofinal reflected Haar sum.  The favorable negative elementary
-square remains, and the only other cofinal term is a single remote top row translated by
-`2 N log 2`; no intermediate seam survives. -/
+/-- Completion-free form of the cofinal reflected Haar sum.  The negative elementary source
+square remains; its standalone finite-core current has the opposite sign, so it must stay coupled
+to the single remote top row translated by `2 N log 2`.  No intermediate seam survives. -/
 theorem thetaSquareIndexDyadicHaarLayer_reflected_sum_eq_topDifference
     (N : ℕ) (x y : ℝ) :
     (∑ k ∈ Finset.range N,

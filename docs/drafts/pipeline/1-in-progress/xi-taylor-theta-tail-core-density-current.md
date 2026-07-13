@@ -729,8 +729,10 @@ Lean proves both formulas.  Equation `(12d.8b)` is the independent arithmetic si
 polarization of the full square-index translate packet: the two RH-bearing square channels
 disappear algebraically.  The growing completion character cancels as well: the sole surviving
 character is the universal decaying mode `-exp(-x/2)/2`, independent of `k`.  Thus `(12d.8b)`
-consists of two explicit odd-row/decaying-character cross terms and the favorable negative radial
-square `-2^(k-2)exp(-(x+y)/2)`.  This is stronger than the atomwise Lorentz polarization because it
+consists of two explicit odd-row/decaying-character cross terms and a negative radial source square
+`-2^(k-2)exp(-(x+y)/2)`.  The latter is not favorable by itself: its finite-core transform has
+strictly negative current in the upper half-plane, so the negative source coefficient contributes
+positive upper current.  This is stronger than the atomwise Lorentz polarization because it
 cancels the complete exact-valuation/parity pair before any sign is taken.
 
 The universal character can itself be removed without an estimate.  For every finite coefficient
@@ -1025,6 +1027,69 @@ bulk wave symbol a nonnegative square, but it acts on the sign-changing theta Wi
 does not make the mixed current a squared norm.  Equation `(12d')` is proved on paper and retires
 the unqualified diagonal-wave-square route.  A live polarized-jump theorem would need an
 additional arithmetic boundary relation not contained in `rho=4T''` or in the wave factorization.
+
+## Two-endpoint Prouhet prefix packet
+
+There is an exact finite arithmetic packet which simultaneously preserves a Haar-prefix identity,
+cancels its half-exponential square, and annihilates an arbitrarily high finite translation edge.
+Put
+
+```text
+q=2^(-1/2),
+B_m(X)=product_(r<m)(1-X^(2^r)).
+```
+
+For every `N,m` there is a unique affine factor `alpha+beta X` such that
+
+```text
+A_(N,m)(X)=B_m(X)(alpha+beta X),
+A_(N,m)(q)=1,
+A_(N,m)(q^(-1))=2^(-N).                                (12d.9k)
+```
+
+The interpolation is nonsingular because `B_m(q)` and `B_m(q^(-1))` are nonzero.  If
+`A_(N,m)(X)=sum_j a_j X^j` and `c_j=a_j q^j`, then `(12d.9k)` is exactly
+
+```text
+sum_j c_j=1,
+sum_j c_j 2^j=2^(-N),
+sum_j c_j(2^(N+j)-1)=0.                                (12d.9l)
+```
+
+Consequently a `c_j`-weighted combination of the exact Haar-prefix identities at depths `N+j`
+still has coefficient one on the original core current, while the entire elementary square in
+`(12d.8h)` cancels rather than being estimated.
+
+Every factor of `B_m` is divisible by `X-1`, so
+
+```text
+(X-1)^m divides A_(N,m)(X).                             (12d.9m)
+```
+
+Equivalently, for every polynomial `p` of degree `<m`,
+
+```text
+sum_j a_j p(N+j)=0.                                    (12d.9n)
+```
+
+The remote-row amplitude in the same prefix combination is
+
+```text
+c_j 2^((N+j)/2)=2^(N/2)a_j.                            (12d.9o)
+```
+
+Thus `(12d.9n)` applies directly to every finite cosine--sine translation defect once `m` is
+larger than its degree.  No estimate of that edge is needed.  The endpoint identities,
+nonvanishing of the two binary products, and divisibility `(12d.9m)` are formalized in
+`XiCTaylorThetaTailProuhetPacket.lean`.
+
+`[CONJECTURE]` Apply the same prefix packet before replacing the positive-half channels by their
+reflected translates.  The full-line part of the parity channel is a polynomial in the depth after
+Haar normalization and should vanish by `(12d.9n)`; the remaining one-sided tails are cofinal
+positive-cusp rows and can be made smaller than any prescribed scheduled error by choosing `N`
+after `(d,z)`.  Proving this exact full-line/tail split is the remaining fixed-half-line seam gate.
+It must be done at the combined value--derivative current level; cancelling only the value packet
+would not control the oriented current.
 
 The translate operator has an exact signed inverse on the canonical source.  For `x>=0`, Lean
 proves absolute convergence and the critical Möbius identity
