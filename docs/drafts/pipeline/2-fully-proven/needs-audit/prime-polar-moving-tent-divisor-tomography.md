@@ -333,6 +333,15 @@ finite-prime limit theorem or a target-fed determinant.
 No abstract meromorphic-continuation hypothesis, `Prop` interface, project axiom, `sorry`, or
 target-defined source is permitted.
 
+Formalization audit (needs-audit pass): this card is subsumed by
+`bounded-variation-prime-window-divisor-tomography.md` (smoothing, the squared Mellin multiplier, and
+the three-term polar sequence are unnecessary), and its continuation machinery `(20)`--`(22)` is the
+same as that card's. The shared analytic building block — entireness of the tent/rectangle Mellin
+factor `I_L(s)=A_L(s-1)^2` — is now available through
+`RHTower.rectangularWindowAmplitude_differentiable` (axiom-clean). The remaining continuation, polar
+cancellation `(23)`, and residue `(25)` are the open ANT chain tracked on the subsuming card; no
+separate file is added here.
+
 ## Gates
 
 - [x] complete paper proof

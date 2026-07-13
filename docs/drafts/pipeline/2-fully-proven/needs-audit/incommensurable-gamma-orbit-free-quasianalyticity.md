@@ -268,6 +268,19 @@ Gamma Stirling/Borel residue calculus, or analytic-to-formal ADE transfer. The c
 therefore not formalized and remains stage 2. Moving it to stage 3 requires an unconditional Lean
 theorem for the whole classification, not wrappers for the elementary finite-difference induction.
 
+The Section 2 many-shift peeling bridge (`(7)`–`(8)`) is formalized abstractly and axiom-free in
+`formal/GaloisForLFunctions/FiniteCommutingShiftPeeling.lean`:
+
+```text
+shiftWord_dichotomy   -- given the one-shift dichotomy `R(Δ i g) → R g ∨ H g` and DA-descent
+                      --   `H(Δ i g) → H g`, any shift word landing f in R forces R f ∨ H f
+ht_of_ht_shiftWord    -- differential algebraicity descends through a shift word
+```
+
+Here the one-shift Adamczewski–Dreyfus–Hardouin Laurent dichotomy enters as the hypothesis `dich`;
+mathlib has no difference-Galois substrate to discharge it, so the concrete classification `(9)`–`(10)`
+(and the scaled-Borel-residue branch selector) remains the open part of the stage-3 gate.
+
 ## Gates
 
 - [x] arbitrary positive scales allowed
@@ -278,4 +291,6 @@ theorem for the whole classification, not wrappers for the elementary finite-dif
 - [x] positive carrier and RH implementation laws stated
 - [x] edge cases and overclaims attacked
 - [ ] full parent-literature and priority audit
-- [ ] complete unconditional Lean formalization
+- [~] Lean formalization: Section 2 finite-commuting-shift peeling bridge formalized abstractly and
+  axiom-free (`FiniteCommutingShiftPeeling.lean`); concrete ADH one-shift dichotomy + scaled-Borel
+  branch selector `(9)`–`(10)` still open (mathlib lacks the difference-Galois substrate)

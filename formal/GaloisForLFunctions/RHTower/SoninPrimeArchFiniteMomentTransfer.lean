@@ -96,6 +96,43 @@ theorem soninAllPrimeTraceHankel_ofFn
       push_cast
       congr
 
+/-- The actual scalar value locus of the positive all-prime Sonin Gram functional for one fixed
+integer-polynomial test.  This retains the source family: it is not the whole nonnegative ray by
+definition. -/
+def soninPrimeArchPerTestValueLocus (p : Polynomial ℤ) : Set ℝ :=
+  (fun a : ℝ =>
+    (soninAllPrimeTraceHankel a (p.map (Int.castRingHom ℝ))).re) '' Set.Ioi 0
+
+/-- Static scalar source-value constraint: every fixed prime--Gamma integer-polynomial value lies
+in the closure of the values produced by the explicit positive-aperture Sonin family for that same
+test. -/
+def SoninPrimeArchPerTestValueClosure : Prop :=
+  ∀ p : Polynomial ℤ,
+    (primeArchSourceTraceHankel (p.map (Int.castRingHom ℝ))).re ∈
+      closure (soninPrimeArchPerTestValueLocus p)
+
+/-- Scalar value-locus closure transfers unconditional Sonin positivity to the fixed prime--Gamma
+trace-Hankel functional. -/
+theorem primeArchSourceTraceHankelIntNonnegative_of_soninPerTestValueClosure
+    (h : SoninPrimeArchPerTestValueClosure) :
+    PrimeArchSourceTraceHankelIntNonnegative := by
+  intro p
+  have hsubset : soninPrimeArchPerTestValueLocus p ⊆ Set.Ici 0 := by
+    rintro x ⟨a, _ha, rfl⟩
+    exact soninAllPrimeTraceHankel_re_nonneg a (p.map (Int.castRingHom ℝ))
+  have hclosure : closure (soninPrimeArchPerTestValueLocus p) ⊆ Set.Ici 0 :=
+    closure_minimal hsubset isClosed_Ici
+  exact hclosure (h p)
+
+/-- **Static scalar Sonin value-locus chain to RH.**  It is enough that every fixed prime--Gamma
+integer-polynomial trace-Hankel value be approximable by values of the actual positive Sonin Gram
+family for the same test. -/
+theorem riemannHypothesis_of_soninPrimeArchPerTestValueClosure
+    (h : SoninPrimeArchPerTestValueClosure) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_primeArchSourceTraceHankelIntNonnegative
+    (primeArchSourceTraceHankelIntNonnegative_of_soninPerTestValueClosure h)
+
 /-- One aperture sequence for each finite cutoff simultaneously matches every Sonin trace moment
 below that cutoff with the corresponding fixed prime--Gamma centered moment. -/
 def SoninPrimeArchFiniteMomentCoupling
@@ -106,6 +143,44 @@ def SoninPrimeArchFiniteMomentCoupling
         (fun j : ℕ => soninAllPrimeEnergyMoment (aperture N j) r)
         atTop
         (nhds ((normalizedPrimeArchMoment r : ℝ) : ℂ))
+
+/-- The first `N` intrinsic moments of the positive all-prime Sonin residual energy at aperture
+`a`. -/
+def soninAllPrimeMomentBlock (N : ℕ) (a : ℝ) : Fin N → ℂ :=
+  fun r => soninAllPrimeEnergyMoment a r
+
+/-- The first `N` moments of the fixed normalized prime--Gamma source germ. -/
+def primeArchMomentBlock (N : ℕ) : Fin N → ℂ :=
+  fun r => ((normalizedPrimeArchMoment r : ℝ) : ℂ)
+
+/-- Static value-locus form of the source weld: every finite prime--Gamma moment block lies in
+the closure of the positive-aperture Sonin moment curve. -/
+def SoninPrimeArchFiniteMomentClosure : Prop :=
+  ∀ N : ℕ, primeArchMomentBlock N ∈
+    closure (soninAllPrimeMomentBlock N '' Set.Ioi 0)
+
+/-- The static finite-block closure constraint supplies explicit simultaneous aperture schedules.
+This is the only sequential-topology step in the route. -/
+theorem exists_soninPrimeArchFiniteMomentCoupling_of_closure
+    (h : SoninPrimeArchFiniteMomentClosure) :
+    ∃ aperture : ℕ → ℕ → ℝ,
+      SoninPrimeArchFiniteMomentCoupling aperture := by
+  have hseq : ∀ N : ℕ, ∃ x : ℕ → (Fin N → ℂ),
+      (∀ j : ℕ, x j ∈ soninAllPrimeMomentBlock N '' Set.Ioi 0) ∧
+      Tendsto x atTop (nhds (primeArchMomentBlock N)) := by
+    intro N
+    exact mem_closure_iff_seq_limit.mp (h N)
+  choose x hxmem hxt using hseq
+  have hex : ∀ N j : ℕ, ∃ a : ℝ,
+      0 < a ∧ x N j = soninAllPrimeMomentBlock N a := by
+    intro N j
+    obtain ⟨a, ha, hxa⟩ := hxmem N j
+    exact ⟨a, ha, hxa.symm⟩
+  choose aperture hpos hx using hex
+  refine ⟨aperture, hpos, ?_⟩
+  intro N r hr
+  have hcoord := tendsto_pi_nhds.mp (hxt N) ⟨r, hr⟩
+  simpa only [hx, soninAllPrimeMomentBlock, primeArchMomentBlock] using hcoord
 
 /-- The per-polynomial schedule canonically extracted from a finite-moment-block schedule. -/
 def soninPrimeArchPerTestApertureOfFiniteMoment
@@ -185,7 +260,13 @@ theorem soninPrimeArchPerTestCoupling_of_finiteMomentCoupling
           intro i hi
           apply Finset.sum_congr rfl
           intro k hk
-          rw [primeArchSourceMoment_eq_xiCentralReciprocalMoment]
+          have hmoment :
+              ((normalizedPrimeArchMoment ((i : ℕ) + (k : ℕ)) : ℝ) : ℂ) =
+                xiCentralReciprocalMoment ((i : ℕ) + (k : ℕ)) := by
+            simpa [normalizedPrimeArchMoment, normalizedPrimeArchMomentGerm] using
+              primeArchSourceMoment_eq_xiCentralReciprocalMoment
+                ((i : ℕ) + (k : ℕ))
+          rw [hmoment]
         _ = xiCentralTraceHankel (Polynomial.ofFn n c) :=
           (xiCentralTraceHankel_ofFn n c).symm
         _ = xiCentralTraceHankel q := congrArg xiCentralTraceHankel hq
@@ -207,6 +288,15 @@ theorem riemannHypothesis_of_soninPrimeArchFiniteMomentCoupling
     RiemannHypothesis :=
   riemannHypothesis_of_soninPrimeArchPerTestTraceHankelCoupling
     (soninPrimeArchPerTestCoupling_of_finiteMomentCoupling h)
+
+/-- **Static Sonin value-locus chain to RH.**  If every finite prime--Gamma moment block belongs to
+the closure of the positive-aperture Sonin moment curve, then RH holds. -/
+theorem riemannHypothesis_of_soninPrimeArchFiniteMomentClosure
+    (h : SoninPrimeArchFiniteMomentClosure) :
+    RiemannHypothesis := by
+  obtain ⟨aperture, hcoupling⟩ :=
+    exists_soninPrimeArchFiniteMomentCoupling_of_closure h
+  exact riemannHypothesis_of_soninPrimeArchFiniteMomentCoupling hcoupling
 
 end
 

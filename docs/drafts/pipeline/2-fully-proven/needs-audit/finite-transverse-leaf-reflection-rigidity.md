@@ -150,3 +150,21 @@ and does not imply RH.  It must not be presented as an RH route.
 Standalone compilation and the named Lake build pass.  All four theorems have only
 `[propext, Classical.choice, Quot.sound]`.  The analytic wrapper from a finite transverse flank
 series to the two polynomial annihilators remains to be formalized before the 2 → 3 gate is checked.
+
+## 2026-07-13 Lean finish added
+
+The Liouville finish (Lean target step 4, "connect the resulting period to rigidity") is now a
+standalone reusable theorem in
+`formal/GaloisForLFunctions/RHTower/EvenPeriodicFlankRigidity.lean`, axiom-clean:
+
+- `even_periodic_flankBounded_const` — an even entire `G` that is invariant under a nonzero real
+  period `pR` and bounded on the lower flank `Im z ≤ -w` is constant (compact fundamental-cell bound
+  + evenness-reflected flank bound + Liouville).
+
+This decouples the finish from `periodic_spectrum_rigidity` (which was welded to the
+arithmetic-progression series).  The remaining glue for the 2 → 3 gate is steps 1–3: from the finite
+transverse flank series build the two shift annihilators (each flank slice `G_n` is a shift
+eigenfunction with eigenvalue `ω^n`; evenness gives the reflected eigenvalues `ω^{-n}`), promote
+`p(R)G = 0` from the flank to all of `ℂ` by the identity theorem, feed the coprime residuals to the
+existing `fixed_of_coprime_reflected_shift_annihilators` to obtain the real period, and close with
+`even_periodic_flankBounded_const`.

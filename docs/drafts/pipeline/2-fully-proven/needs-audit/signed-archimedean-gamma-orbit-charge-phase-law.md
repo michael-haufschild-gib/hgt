@@ -639,11 +639,24 @@ Formalized so far (axiom-clean; `propext, Classical.choice, Quot.sound` only):
   residue is not rationally shift-summable. Generalizes `OrbitBalance` (integer orbit) to any orbit
   and coefficient group. Axiom-clean.
 
-Still missing (no partial wrapper): the formal transseries / Adamczewski--Dreyfus--Hardouin shift
-dichotomy behind `(8)` (which combines the discrete-residue obstruction above with the formal
-Stirling expansion), the directional Vandermonde phase-jet carrier `(31b)`–`(31d)`, and the
-holomorphic Bohr-frequency hull behind `(31)`–`(38)`. Stage 3 requires the whole theorem
-unconditionally in Lean.
+The three generic framework steps this card shares with the Gamma-shift family are now formalized
+abstractly and axiom-clean, and apply here directly:
+
+- **Terminal one-point recession `C[z] -> C` `(31a)`.** `PolynomialOnePointRecession.lean`
+  (`HTGeometry.finiteTuple_polynomial_onePoint_recession`,
+  `HTGeometry.poly_scaled_translate_tendsto`) — a finite nonzero polynomial tuple, translated by
+  `iT` and rescaled by `(iT)^{-d}`, converges to its nonzero leading-coefficient vector.
+- **Finite commuting-shift peeling behind the DA/HT dichotomy `(8)`.**
+  `FiniteCommutingShiftPeeling.lean` (`HTGeometry.shiftWord_dichotomy`) — the many-shift
+  rational-or-HT dichotomy from the one-shift ADH input, taken as an interface hypothesis.
+- **Phase-budget arithmetic complement `(37)`--`(38)`.** `ArithmeticComplementRank.lean`
+  (`HTGeometry.finrank_le_arithmeticComplement_add`).
+
+Still missing (no partial wrapper): the concrete formal transseries / Adamczewski--Dreyfus--Hardouin
+shift dichotomy behind `(8)` (its one-shift input `dich`, which combines the discrete-residue
+obstruction above with the formal Stirling expansion), the directional Vandermonde phase-jet carrier
+`(31b)`–`(31d)`, and the holomorphic Bohr-frequency hull behind `(31)`–`(38)`. Stage 3 requires the
+whole theorem unconditionally in Lean.
 
 ## Gates
 

@@ -19,7 +19,7 @@ open scoped Topology ENNReal
 noncomputable section
 
 variable {X : Type*} [TopologicalSpace X] [MeasurableSpace X] [BorelSpace X]
-  [T2Space X] [HereditarilyLindelofSpace X]
+  [T2Space X]
   (μ : Measure X)
 
 noncomputable def infiniteSupportOpenPieces (hμ : μ.support.Infinite) :
@@ -27,21 +27,21 @@ noncomputable def infiniteSupportOpenPieces (hμ : μ.support.Infinite) :
   letI : Infinite μ.support := hμ.to_subtype
   exact Classical.choose (exists_seq_infinite_isOpen_pairwise_disjoint μ.support)
 
-omit [BorelSpace X] [HereditarilyLindelofSpace X] in
+omit [BorelSpace X] in
 lemma infiniteSupportOpenPieces_infinite (hμ : μ.support.Infinite) (n : ℕ) :
     (infiniteSupportOpenPieces μ hμ n).Infinite := by
   letI : Infinite μ.support := hμ.to_subtype
   exact (Classical.choose_spec
     (exists_seq_infinite_isOpen_pairwise_disjoint μ.support)).1 n
 
-omit [BorelSpace X] [HereditarilyLindelofSpace X] in
+omit [BorelSpace X] in
 lemma infiniteSupportOpenPieces_isOpen (hμ : μ.support.Infinite) (n : ℕ) :
     IsOpen (infiniteSupportOpenPieces μ hμ n) := by
   letI : Infinite μ.support := hμ.to_subtype
   exact (Classical.choose_spec
     (exists_seq_infinite_isOpen_pairwise_disjoint μ.support)).2.1 n
 
-omit [BorelSpace X] [HereditarilyLindelofSpace X] in
+omit [BorelSpace X] in
 lemma infiniteSupportOpenPieces_pairwiseDisjoint (hμ : μ.support.Infinite) :
     Pairwise (fun n m => Disjoint (infiniteSupportOpenPieces μ hμ n)
       (infiniteSupportOpenPieces μ hμ m)) := by
@@ -52,13 +52,12 @@ lemma infiniteSupportOpenPieces_pairwiseDisjoint (hμ : μ.support.Infinite) :
 noncomputable def infiniteSupportPositivePieces (hμ : μ.support.Infinite) : ℕ → Set X :=
   fun n => Subtype.val '' infiniteSupportOpenPieces μ hμ n
 
-omit [HereditarilyLindelofSpace X] in
 lemma measurableSet_infiniteSupportPositivePieces (hμ : μ.support.Infinite) (n : ℕ) :
     MeasurableSet (infiniteSupportPositivePieces μ hμ n) := by
   apply (MeasurableEmbedding.subtype_coe Measure.isClosed_support.measurableSet).measurableSet_image'
   exact (infiniteSupportOpenPieces_isOpen μ hμ n).measurableSet
 
-omit [BorelSpace X] [HereditarilyLindelofSpace X] in
+omit [BorelSpace X] in
 lemma infiniteSupportPositivePieces_pairwiseDisjoint (hμ : μ.support.Infinite) :
     Pairwise (fun n m => Disjoint (infiniteSupportPositivePieces μ hμ n)
       (infiniteSupportPositivePieces μ hμ m)) := by
@@ -67,7 +66,8 @@ lemma infiniteSupportPositivePieces_pairwiseDisjoint (hμ : μ.support.Infinite)
     (infiniteSupportOpenPieces_pairwiseDisjoint μ hμ hnm)
 
 omit [BorelSpace X] in
-lemma measure_infiniteSupportPositivePieces_pos (hμ : μ.support.Infinite) (n : ℕ) :
+lemma measure_infiniteSupportPositivePieces_pos (hμ : μ.support.Infinite)
+    (hμae : μ.support ∈ ae μ) (n : ℕ) :
     0 < μ (infiniteSupportPositivePieces μ hμ n) := by
   obtain ⟨y, hy⟩ := (infiniteSupportOpenPieces_infinite μ hμ n).nonempty
   obtain ⟨V, hVopen, hVpre⟩ := isOpen_induced_iff.mp
@@ -91,18 +91,18 @@ lemma measure_infiniteSupportPositivePieces_pos (hμ : μ.support.Infinite) (n :
       exact hxV
   rw [himage, measure_inter_conull]
   · exact hVpos
-  · exact mem_ae_iff.mp Measure.support_mem_ae
+  · exact mem_ae_iff.mp hμae
 
 omit [BorelSpace X] in
-lemma measure_infiniteSupportPositivePieces_ne_zero (hμ : μ.support.Infinite) (n : ℕ) :
+lemma measure_infiniteSupportPositivePieces_ne_zero (hμ : μ.support.Infinite)
+    (hμae : μ.support ∈ ae μ) (n : ℕ) :
     μ (infiniteSupportPositivePieces μ hμ n) ≠ 0 :=
-  ne_of_gt (measure_infiniteSupportPositivePieces_pos μ hμ n)
+  ne_of_gt (measure_infiniteSupportPositivePieces_pos μ hμ hμae n)
 
 noncomputable def infiniteSupportBlockPiece {k : ℕ} (hμ : μ.support.Infinite)
     (j : ℕ) (l : Fin (k + 1)) : Set X :=
   infiniteSupportPositivePieces μ hμ (Nat.pair j l)
 
-omit [HereditarilyLindelofSpace X] in
 lemma measurableSet_infiniteSupportBlockPiece {k : ℕ} (hμ : μ.support.Infinite)
     (j : ℕ) (l : Fin (k + 1)) :
     MeasurableSet (infiniteSupportBlockPiece μ hμ j l) :=
@@ -110,11 +110,11 @@ lemma measurableSet_infiniteSupportBlockPiece {k : ℕ} (hμ : μ.support.Infini
 
 omit [BorelSpace X] in
 lemma measure_infiniteSupportBlockPiece_ne_zero {k : ℕ} (hμ : μ.support.Infinite)
-    (j : ℕ) (l : Fin (k + 1)) :
+    (hμae : μ.support ∈ ae μ) (j : ℕ) (l : Fin (k + 1)) :
     μ (infiniteSupportBlockPiece μ hμ j l) ≠ 0 :=
-  measure_infiniteSupportPositivePieces_ne_zero μ hμ _
+  measure_infiniteSupportPositivePieces_ne_zero μ hμ hμae _
 
-omit [BorelSpace X] [HereditarilyLindelofSpace X] in
+omit [BorelSpace X] in
 lemma infiniteSupportBlockPiece_disjoint {k : ℕ} (hμ : μ.support.Infinite)
     (j m : ℕ) (l r : Fin (k + 1)) (h : (j, l) ≠ (m, r)) :
     Disjoint (infiniteSupportBlockPiece μ hμ j l)
@@ -130,7 +130,7 @@ variable [IsFiniteMeasure μ]
 /-- Every finite continuous-linear constraint fiber through density one over a measure with
 infinite topological support contains a closed Hilbert cube of strictly positive densities. -/
 theorem exists_positive_closedEmbeddedHilbertCube_in_infiniteSupportConstraintFiber
-    (hμ : μ.support.Infinite) {k : ℕ}
+    (hμ : μ.support.Infinite) (hμae : μ.support ∈ ae μ) {k : ℕ}
     (T : (Lp ℝ ⊤ μ) →L[ℝ] (Fin k → ℝ))
     {delta : ℝ} (hdelta0 : 0 < delta) (hdelta1 : delta < 1) :
     ∃ v : ℕ → Lp ℝ ⊤ μ, ∃ ell : ℕ → (Lp ℝ ⊤ μ) →L[ℝ] ℝ,
@@ -145,7 +145,7 @@ theorem exists_positive_closedEmbeddedHilbertCube_in_infiniteSupportConstraintFi
   exact exists_positive_closedEmbeddedHilbertCube_in_linfty_finiteConstraintFiber
     μ T hdelta0 hdelta1 (infiniteSupportBlockPiece μ hμ)
     (measurableSet_infiniteSupportBlockPiece μ hμ)
-    (measure_infiniteSupportBlockPiece_ne_zero μ hμ)
+    (measure_infiniteSupportBlockPiece_ne_zero μ hμ hμae)
     (fun j l m r h => infiniteSupportBlockPiece_disjoint μ hμ j m l r h)
 
 end

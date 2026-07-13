@@ -47,6 +47,15 @@ For the primitive dyadic phase `zeta=Bottcher.dyadicRoot(k)`, equation `(2)` imp
 2^k divides n+1.                                       (3)
 ```
 
+Before boundary completion, the canonical one-sided shift `S_0` obeys the exact Weyl law for
+every phase and every dimension:
+
+```text
+C_zeta S_0 = zeta S_0 C_zeta.                          (4)
+```
+
+The clock is invertible for `zeta != 0`, while `det(S_0)=0` because its top column vanishes.
+
 ## Proof
 
 The interior arrow from `X^j` to `X^(j+1)` has clock weights differing by the factor `zeta`, so
@@ -67,6 +76,11 @@ The surviving source target is sharper:
 > construct a nonzero boundary holonomy from the Euler--Gamma--SEM incidence itself, then prove
 > that the same source incidence annihilates `h(1-zeta^d)` without assuming `zeta^d=1`.
 
+Equation `(4)` gives the positive half of the obstruction.  The semilinear local-coordinate action
+is already canonical and exact; only its finite boundary closure is missing.  Thus the source does
+not need to invent the interior Weyl algebra.  It must supply exactly one nonzero top-to-bottom
+incidence and prove its holonomy closes.
+
 Thus the open core is not invertibility alone.  It is source annihilation of the canonical top-jet
 Weyl anomaly.
 
@@ -75,6 +89,9 @@ Weyl anomaly.
 - `truncatedJetClock`
 - `boundaryCompletedJetShift`
 - `boundaryCompletedJetWeylDefect_zero_last`
+- `truncatedJetClock_oneSidedShift_weyl`
+- `boundaryCompletedJetShift_zero_det`
+- `truncatedJetClock_det_ne_zero`
 - `boundaryCompletedJetWeyl_of_phase_pow_card`
 - `phase_pow_card_of_boundaryCompletedJetWeyl`
 - `boundaryCompletedJetWeyl_iff_phase_pow_card`

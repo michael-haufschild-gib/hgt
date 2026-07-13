@@ -291,9 +291,16 @@ The publication paper must not be strengthened until all items below are concret
 1. Formalize compactly supported bounded-variation windows and the cellwise quadrature inequality.
    **Dyadic specialization complete:** `CCMSharpPrimeWindowQuadrature.lean` proves the exact
    unit-cell decomposition and the global bound `norm E_k(s) <= norm(s) k^(-Re s)`.
-2. **Absolute convergence complete; local holomorphy open.** The same module proves absolute
-   summability of the von-Mangoldt-weighted error series throughout `Re s>1/2`. It remains to prove
-   locally uniform convergence and parameter-holomorphy of the summands.
+2. **Absolute convergence complete; local holomorphy unblocked.** The same module proves absolute
+   summability of the von-Mangoldt-weighted error series throughout `Re s>1/2`. The parameter-holomorphy
+   of the summands is now unblocked: `RectangularWindowAmplitudeAnalytic.lean` proves
+   `rectangularWindowAmplitude_differentiable` and `sharpPrimeWindowMellin_differentiable` (entireness
+   of the window amplitude via a removable singularity at `w=0`), axiom-clean, so each error summand
+   `E_k` — a finite `cpow` sum minus the closed form `k^{1-s}·sharpPrimeWindowMellin` — is entire.
+   Holomorphy of `H_W` on `Re s>1/2` then follows locally per bounded ball from
+   `differentiableOn_tsum_of_summable_norm` with the already-proved `O_s(k^{-Re s})` bound. The
+   remaining continuation items `(3)`--`(8)` (double-series identity, zeta-pole cancellation, residue
+   law, quotient) are the open ANT chain.
 3. Prove the initial-half-plane identity `(10)` with `ArithmeticFunction.vonMangoldt`.
 4. Define the concrete continuation `(12)` and formalize zeta-pole cancellation.
 5. Prove the exact Mellin-censorship law `(13)`--`(14)` using analytic multiplicity.

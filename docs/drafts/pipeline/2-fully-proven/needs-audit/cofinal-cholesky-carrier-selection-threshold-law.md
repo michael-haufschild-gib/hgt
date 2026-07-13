@@ -523,16 +523,258 @@ every carrier in the cube has exactly the same level-`N` Cayley--Toeplitz Gram s
 regular Cauchy jet through order `N-1` as the base barycenter. This is the paper's literal
 atomless Hilbert-cube frame-fiber proposition.
 
-All twenty-four exact builds pass. `#print axioms` on the new frame-fiber capstones reports only `propext`,
-`Classical.choice`, and `Quot.sound`. The touched modules contain no proof debt, and the
-repository-wide formal lint must be rerun after the current shared-worktree activity settles. This
+The unconditional module `GaloisForLFunctions.HTGeometry.InfiniteSupportPositiveAperture`
+strengthens the measurable-block input: atomlessness is unnecessary. Any finite Borel measure
+whose topological support is infinite and conull contains countably many pairwise-disjoint
+positive measurable pieces, obtained from disjoint open subsets of its support. Consequently every
+finite real `L¹` constraint fiber through density one contains a closed embedded positive Hilbert
+cube. The projective carrier and exact Cayley-frame capstones are now proved under the paper's
+weaker standing hypothesis that the parameter law has infinite support, while retaining mutual
+absolute continuity, all Hamburger moments, the level-`N` Gram section, and the regular Cauchy jet
+through order `N-1`.
+
+The unconditional module `GaloisForLFunctions.HTGeometry.InfiniteSupportCayleyGram` proves the
+paper's strict finite-section assertion rather than assuming it. The level-`N` Cayley--Toeplitz
+matrix is the literal `L²` Gram matrix of the conjugate Cayley monomials. A linear dependence would
+give a polynomial vanishing on the infinite injective Cayley image of the measure support, so every
+coefficient vanishes and the Gram matrix is positive definite. Thus infinite support alone supplies
+all finite inverse-Cholesky factors.
+
+The unconditional modules `GaloisForLFunctions.HTGeometry.InfiniteSupportFrameTowerTopology` and
+`InfiniteSupportBoundaryCarrier` propagate this fact through the complete selector. The complete
+canonical frame tower is continuous and injective on infinite-support real probabilities and is a
+closed topological embedding on each compact subfamily, with no separately supplied positivity
+proof. Exact projective-label recovery also transports infinite support from a Nevanlinna parameter
+law to its barycenter. Consequently the complete boundary-carrier tower directly selects every
+infinite-support projective law and is a closed embedding on compact subfamilies of that boundary
+domain.
+
+The unconditional module
+`GaloisForLFunctions.HTGeometry.ConstrainedCauchyJetControllability` now proves the exact finite
+surjectivity core used by constrained translate transversality. For disjoint frozen and target
+packets of distinct upper-half-plane Cauchy nodes, the target real-mass control map remains
+surjective after restriction to the exact kernel of the frozen packet. The proof applies the
+already-formalized controllability theorem to the combined packet with prescribed value
+`(0,target)`. Surjectivity is proved invariant under arbitrary invertible linear coordinate changes
+on the frozen and target packets, providing the exact interface for the Nevanlinna triangular
+conversion. The same module proves positive algebraic escape inside the frozen kernel: every
+nonzero polynomial relation on a disjoint finite target packet is broken by an arbitrarily small
+finitely supported real perturbation that preserves positivity and annihilates the frozen packet
+exactly. This closes the finite kernel-surjectivity and fixed-pattern escape statements.
+
+The unconditional module `GaloisForLFunctions.HTGeometry.NevanlinnaJetTriangular` proves the
+analytic conversion used in the manuscript rather than leaving it as a principal-part argument.
+For `a(w)(tau-q(w))^{-1}`, it recursively expands every genuine iterated `w`-derivative into
+parameter Cauchy powers, proves that the coefficient matrix is lower triangular with exact
+diagonal `r! a(z) (q'(z))^r`, and constructs the resulting finite complex-linear equivalence when
+`a(z)q'(z)` is nonzero. Products of these equivalences over arbitrary finite node packets identify
+the genuine jet packet exactly. Restricting scalars to the reals and composing with the Cauchy
+control map proves that a disjoint genuine target Nevanlinna-jet packet remains onto after a
+genuine frozen packet is annihilated exactly.
+
+The unconditional module `GaloisForLFunctions.HTGeometry.EvaluationCodimensionCore` proves the
+root-counting core of the evaluation-codimension lemma. A nonzero tensor of coefficient
+polynomials of degree at most `q`, evaluated at injectively indexed row parameters, can vanish
+identically across all monomial labels on at most `q` rows. Equivalently, at least
+`card(rows)-q` independent row variables carry a nonzero polynomial constraint. This validates
+the precise algebraic count used before projectivizing the coefficient vector. It does not yet
+formalize algebraic codimension, incidence projection, stratification, parametric transversality,
+or the uncountable-shift Baire promotion.
+
+The unconditional modules
+`GaloisForLFunctions.HTGeometry.DisjointBlockPolynomialIndependence` and
+`EvaluationIncidenceFiberIndependence` formalize the next fixed-coefficient layer without
+mislabeling it as codimension. Every nonconstant complex multivariate polynomial admits an affine
+line restriction of positive degree and hence a transcendental line restriction. Simultaneously
+specializing disjoint row-variable blocks to those lines proves that any family of nonconstant
+row polynomials becomes algebraically independent after disjoint-block embedding. Applied to a
+nonzero bounded coefficient tensor, root counting supplies at least `card(rows)-q` active row
+equations; either one is a nonzero constant, making the fixed incidence fiber empty, or all active
+row equations have algebraically independent disjoint-block embeddings. This is an exact
+fixed-coefficient independence certificate. It is not yet a regular-sequence, Krull-height,
+projective-incidence, projection-dimension, stratification, or parametric-transversality theorem;
+algebraic independence alone would not justify any of those stronger conclusions.
+
+The unconditional modules `GaloisForLFunctions.HTGeometry.NonconstantMvPolynomialRoot`,
+`ScalarExtendedPolynomialRegular`, `ScalarExtendedPolynomialProper`,
+`ScalarExtendedHypersurfaceDimension`, `IteratedBlockHypersurfaceDimension`,
+`FiniteFamilyBlockHypersurfaceDimension`, and `EvaluationIncidenceFiberDimension` now close the
+genuine fixed-coefficient Krull-dimension step. Every nonconstant complex multivariate polynomial
+has a zero. After scalar extension to any nontrivial complex coefficient algebra, it therefore
+remains a nonunit; independently, its nonzero scalar leading coefficient makes it a
+non-zero-divisor even if the coefficient algebra has zero divisors. Its principal hypersurface
+ideal is proper and its quotient lowers Krull dimension by at least one. Iterating this argument
+through fresh row-variable blocks proves that `r` nonconstant row equations lower the iterated
+coordinate-ring dimension by at least `r`. Consequently every nonzero bounded coefficient tensor
+has at least `card(rows)-q` active rows and its fixed incidence fiber is either empty or has this
+exact additive Krull-dimension drop. The remaining algebraic gap begins only when the coefficient
+tensor is allowed to vary projectively: affine/projective coefficient charts, total incidence
+dimension, projection to packet space, and the resulting finite algebraic stratification are not
+yet formalized.
+
+The unconditional modules `GaloisForLFunctions.HTGeometry.MvPolynomialCoefficientRegular`,
+`EvaluationCodimensionFieldCore`, `ProjectiveCoefficientPrimeActivity`, and
+`PrimeLocalizedRowRegularity` enter the genuinely projective layer. A finite-variable
+multivariate McCoy theorem is proved: one non-zero-divisor coefficient makes the entire
+multivariate polynomial a non-zero-divisor. The bounded root count is extended from complex
+coefficients to tensors over an arbitrary field. Applying it in the fraction field of every prime
+coefficient specialization proves the uniform projective constraint: at any coefficient prime
+where not all projective coordinates vanish, at least `card(rows)-q` universal row-coefficient
+polynomials lie outside that prime. Localizing at such a coefficient prime turns any surviving
+coefficient into a unit, and the associated row polynomial is formally a non-zero-divisor. Thus
+the pointwise/projective-prime activity count and the local row-regularity mechanism are closed.
+What remains is to assemble these locally regular active rows into the total incidence-ring height
+bound, subtract the projective coefficient dimension, control projection to packet space, and
+produce the finite algebraic stratification used by transversality.
+
+The unconditional modules `GaloisForLFunctions.HTGeometry.IteratedUnitCoefficientBlockDimension`
+and `ProjectivePrimeLocalIncidenceDimension` now perform that local assembly. Over an arbitrary
+Noetherian coefficient ring, any finite list of fresh finite-variable equations with one unit
+coefficient per equation defines an iterated quotient whose Krull dimension drops by at least the
+length of the list. Instantiating the coefficient ring by the localization at a projectively
+nonzero coefficient prime, the active rows are enumerated as a finite family; every surviving
+coefficient is a localization unit, and the complete active local incidence ring loses one Krull
+dimension per active row. Combined with the projective-prime root count, this proves the local
+total-incidence height mechanism at every projectively relevant coefficient prime. The remaining
+algebraic work is the comparison between these iterated local block rings and the single global
+incidence coordinate ring, the global/projective dimension bound after subtracting coefficient
+dimension, projection to packet space, and finite stratification.
+
+The unconditional modules `GaloisForLFunctions.HTGeometry.FiniteDimensionalDensityControl` and
+`GaloisForLFunctions.HTGeometry.LinftyDensityControl` close the abstract passage from atomic
+finite-support control to the manuscript's bounded-density tangent. A continuous vector-valued
+`L¹` kernel defines a continuous real `L∞` Bochner control. Normalized indicators of shrinking
+positive-measure neighborhoods approximate every kernel column on the topological measure
+support. Because a linear range in a finite-dimensional target is closed, surjectivity of finite
+support combinations of support columns implies exact surjectivity of the `L∞` density control.
+This theorem is unconditional and does not replace `L∞` densities by point masses.
+
+The unconditional module `GaloisForLFunctions.HTGeometry.ProjectiveCauchyDensityControl`
+instantiates that bridge on the paper's actual projective parameter line. Every nonreal-pole
+Cauchy power extends continuously to `OnePoint ℝ` with value zero at infinity. Infinite
+projective support remains infinite after removing the single infinity point, so its finite real
+support parameters supply the spanning columns. Consequently every finite upper-half-plane
+Cauchy packet is exactly controlled by real `L∞` densities, and every disjoint target packet stays
+onto on the exact kernel of a frozen packet. Composing with the triangular Nevanlinna packet
+equivalence proves the literal constrained genuine Nevanlinna-jet surjectivity asserted in the
+first half of Proposition `prop:transversality`. At finite projective parameters the formal column
+is proved equal to the actual iterated analytic jet; at infinity both perturbation columns vanish.
+
+The unconditional module
+`GaloisForLFunctions.HTGeometry.ProjectiveNevanlinnaPolynomialEscape` derives the literal positive
+fixed-pattern consequence in that Banach chart. For every prescribed nonzero multivariate
+polynomial on a disjoint finite target jet packet and every positive radius, there is a real
+`L∞` perturbation in the exact frozen genuine-jet kernel whose norm is below the radius, whose
+addition to density one is strictly positive almost everywhere, and whose target packet escapes
+the polynomial zero set. Thus fixed finite algebraic-pattern density is now formalized with exact
+frame preservation and positivity; only simultaneous parameter-family avoidance remains.
+
+The unconditional module `GaloisForLFunctions.HTGeometry.ProjectiveNevanlinnaGenericity` upgrades
+fixed escape to the full countable category layer. The projective Nevanlinna control is promoted
+to a continuous real-linear map. Every fixed nonzero affine target-polynomial defect in the exact
+frozen kernel is closed and nowhere dense. Since the kernel of a continuous frozen control is a
+complete normed space, every countable family of certified surjective target patterns is
+simultaneously avoided on a dense residual subset. Consequently ordinary Baire assembly is no
+longer a gap; what remains is precisely the uncountable shift-configuration reduction that must
+make each compact configuration patch one open dense condition by incidence codimension and
+parametric transversality.
+
+The unconditional modules `GaloisForLFunctions.HTGeometry.MinimalTypeNoArithmeticProgression`,
+`MinimalTypeNevanlinnaAperiodicity`, `MinimalTypeProjectiveSeparation`, and
+`MinimalTypeProjectiveForbiddenSeparation` close the manuscript's translation-separation input.
+The first proves quantitatively from Jensen's formula that an entire function of minimal
+exponential type cannot vanish on a nonconstant complex arithmetic progression. The next three
+upgrade this to the homogeneous geometry actually used by the Nevanlinna row: determinant/no-
+common-zero data make the projective quotient aperiodic, every finite injective complex-shift
+packet has arbitrarily high regular rows with pairwise distinct values of `-D/C`, and those rows
+can simultaneously avoid an arbitrary finite frozen parameter packet. Thus neither the
+real/nonreal period split nor an unproved row-selection step remains. This does not formalize the
+subsequent algebraic-incidence codimension or perturbative parametric-transversality argument.
+
+The unconditional modules `GaloisForLFunctions.HTGeometry.CompactProjectiveSeparationAtlas`,
+`ProjectiveDerivativeNoncritical`, and `CompactNoncriticalProjectiveSeparationAtlas` close the
+uniform compact-patch and noncriticality refinements that the manuscript's original paragraph
+left implicit. For each fixed row the complete separation condition is open in the finite complex
+shift configuration. Arbitrarily high good-row opens cover the injective configuration space, so
+every compact shift patch has a finite row atlas. The Wronskian numerator
+`D * deriv C - deriv D * C` is proved nonzero: if it vanished identically, `D/C` would be locally
+constant on a regular ball and hence globally projectively constant, contradicting a zero of `C`
+where `D` is nonzero. Multiplying its shifted values into the row certificate makes every atlas
+row satisfy the missing `q' != 0` hypothesis of the triangular Nevanlinna jet conversion. Thus
+compactness, finite row selection, openness, frozen-pole avoidance, and noncriticality are no
+longer part of the transversality gap.
+
+The unconditional modules `GaloisForLFunctions.HTGeometry.CoefficientPrimeActivityGeneral` and
+`CoefficientPrimeLocalIncidenceDimensionGeneral` remove the special dependence on the universal
+polynomial coefficient ring from the projective-prime argument. For an arbitrary finite complex
+coefficient algebra and every coefficient prime at which some bounded-degree coordinate survives,
+at least `card(rows)-q` row-coefficient polynomials survive. Localizing at that prime makes the
+selected coefficient in each surviving row a unit, so the complete active block ring has the
+corresponding additive Krull-dimension drop.
+
+The unconditional module `GaloisForLFunctions.HTGeometry.ProjectiveAffineChartIncidenceDimension`
+then dehomogenizes the projective coefficient tensor at an arbitrary nonzero coordinate. A chart
+with `P` homogeneous coefficient coordinates has exactly `P-1` affine coefficient variables.
+After adjoining the inactive row blocks freely and applying the localized active-row height bound,
+the chart-local incidence ring satisfies the manuscript's exact numerical threshold
+
+```text
+dim(local incidence) + (card(rows) - P - q + 1) <= card(rows) * n
+```
+
+whenever `P + q < card(rows)`. This is an exact local incidence-ring theorem at every coefficient
+prime of every affine projective chart. It does not identify these iterated local models with a
+single global incidence scheme, assemble the finite chart cover or a finite algebraic
+stratification, bound a projection to packet space, or prove smooth parametric transversality.
+
+The unconditional module
+`GaloisForLFunctions.HTGeometry.ProjectiveAffineChartFullIncidenceDimension` removes one remaining
+upper-model ambiguity. The active row equations are imposed in their disjoint blocks, every
+inactive row is then assigned its own remaining packet block, and the ideal generated by all
+inactive equations is quotiented out. This all-row coefficient-prime-localized incidence ring is
+a quotient of the previous free inactive-row model, so it inherits the same exact threshold. The
+dimension theorem therefore applies to a presentation containing every row equation, not merely
+to a ring in which the inactive equations were discarded. What remains algebraically is the
+comparison with a single global affine-chart incidence coordinate ring across its coefficient
+primes and the finite chart/stratum assembly.
+
+The unconditional module `GaloisForLFunctions.HTGeometry.ProjectiveCoefficientChartCover` proves
+the set-theoretic chart assembly used by the incidence argument. Every nonzero coefficient tensor
+has a nonzero coordinate, dehomogenizes in that coordinate's affine chart, and is reconstructed as
+a nonzero scalar multiple of the chart-normalized tensor. Evaluation of the chart's universal
+coefficient polynomials is proved equal to these literal normalized coordinates, and evaluation of
+each universal row-coefficient polynomial is proved equal to the corresponding bounded row sum.
+Thus the affine polynomial charts really cover the projective coefficient vectors and encode the
+paper's row equations. The unresolved assembly is now scheme-theoretic/local-dimension comparison
+and stratification, not the elementary projective cover or its equation semantics.
+
+All sixty-three exact builds pass. `#print axioms` on the new frame-fiber, selector,
+constrained-control, triangular-jet, evaluation root-count, bounded-density, and projective
+Nevanlinna-control/escape/genericity, minimal-type projective-separation, compact-atlas, and
+noncriticality, disjoint-block independence, scalar hypersurface, iterated Krull-dimension, and
+fixed-incidence-fiber, coefficient-prime, projective affine-chart, and all-row local incidence
+and projective-chart cover capstones reports only
+`propext`, `Classical.choice`, and `Quot.sound`. The touched
+modules contain no proof debt, and the
+aggregate `GaloisForLFunctions.HTGeometry` build passes with 8638 jobs, the repository-wide formal
+lint passes, and the generated declaration indexes are current. This
 validates only the declarations listed above, not the still-unformalized claims in the paper.
 
 The remaining formalization requires construction of the actual N-extremal Nevanlinna family from
-every normalized indeterminate Hamburger moment sequence, the infinite-support positive-chart
-statement outside the atomless branch, constrained full-complex-shift transversality, the
+every normalized indeterminate Hamburger moment sequence, the projective-incidence dimension and global
+finite-chart/global-incidence identification and full-complex-shift parametric-transversality/Baire argument, the
 one-sided Fourier/F. and M. Riesz rigidity theorem, the OPUC/Szegő determinant-vanishing theorem,
 Bernstein--Szegő approximation, and the final residual-set and paper-wide capstones.
+
+Formalization audit (needs-audit pass): the listed modules are confirmed present in the tree and
+spot-checked axiom-clean. Each remaining item is a research-scale classical theorem absent from
+mathlib: F. and M. Riesz was verified absent (so the `RieszBrothersReduction` chain is genuinely
+blocked on it, not on tree-internal glue), as are the OPUC/Szegő determinant-vanishing theorem, the
+Bernstein--Szegő approximation, and the indeterminate-Hamburger Nevanlinna-family construction.
+The separate differential-genericity gap now requires the projectivized total-incidence/projection
+or an equivalent direct universal-incidence transversality theorem, together with finite
+algebraic/Whitney stratification and a smooth parametric-transversality development. It does not
+require another fixed-pattern or fixed-coefficient wrapper.
 
 ## Gates
 

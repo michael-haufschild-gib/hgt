@@ -288,6 +288,17 @@ interfaces, but no Ritt--Raudenbush decomposition, Kolchin dimension polynomial,
 of inverse limits, Bohr hull, or Pontryagin duality package sufficient for `(14)`. Formalizing a
 regular jet wrapper would not formalize this theorem. The complete claim remains stage 2.
 
+Formalization audit (needs-audit pass): every load-bearing step here rests on a foundational theory
+absent from mathlib — (i) Ritt--Raudenbush finite prime decomposition of radical differential ideals,
+(ii) the Kolchin dimension polynomial and its eventual constancy, (iii) covering dimension of inverse
+limits of compact metric spaces under surjective bonding maps, (iv) the Bohr almost-periodic compact
+hull, and (v) Pontryagin--Takahashi dimension/rank duality for compact connected abelian groups. Each
+is itself a research-scale development, and no bounded self-contained sub-theorem survives their
+removal (the remaining steps — `X_m ⊆ V_{P,m}`, the final numeric floor `(18)` — are transitivity of
+the inequalities they supply, i.e. wrappers). No partial formalization is attempted, since it would
+either be such a wrapper or an unfinished chain carrying `sorry`. The card stays stage 2 pending those
+foundations.
+
 ## Gates
 
 - [x] singular Kolchin jet capacity defined

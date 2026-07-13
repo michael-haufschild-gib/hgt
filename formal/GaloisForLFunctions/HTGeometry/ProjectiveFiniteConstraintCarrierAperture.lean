@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.AtomlessProjectivePositiveAperture
 import GaloisForLFunctions.HTGeometry.InfiniteSupportPositiveAperture
+import Mathlib.Topology.Compactification.OnePoint.Sphere
 import Mathlib.MeasureTheory.Function.AEEqOfLIntegral
 import GaloisForLFunctions.HTGeometry.NevanlinnaBoundaryKernel
 import Mathlib.MeasureTheory.Function.LpSpace.ContinuousFunctions
@@ -331,9 +332,12 @@ theorem exists_positiveHilbertCube_weightedBoundaryCarriers_of_infiniteSupport
         Topology.IsClosedEmbedding carrier ∧
         ∀ t, (carrier t : Measure ℝ) = weightedBoundaryCarrier F eta
           (affinePositiveHilbertCubeMap (linftyOne eta) delta v t) := by
+  letI : SecondCountableTopology (OnePoint ℝ) :=
+    (onePointEquivSphereOfFinrankEq (V := ℝ) (ι := Fin 2) (by simp)).secondCountableTopology
   obtain ⟨v, ell, hvnorm, _hvker, hbio, hembed, hfiber⟩ :=
     exists_positive_closedEmbeddedHilbertCube_in_infiniteSupportConstraintFiber
-      eta heta (normalizedLinftyL1ConstraintOperator eta g) hdelta0 hdelta1
+      eta heta Measure.support_mem_ae
+        (normalizedLinftyL1ConstraintOperator eta g) hdelta0 hdelta1
   have hpos (t : SignedHilbertCube) : LinftyStrictlyPositive eta
       (affinePositiveHilbertCubeMap (linftyOne eta) delta v t) := (hfiber t).2
   have hint (t : SignedHilbertCube) : ∫ x,

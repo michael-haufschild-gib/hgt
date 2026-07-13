@@ -365,6 +365,12 @@ fiber, confluent Pick matrices, the singular/free interpolation theorem, rationa
 matrices, Schur-class compactness, triangular jet maps, parametric transversality, and the parent
 full-configuration HT theorem.
 
+Formalization audit (needs-audit pass): no bounded self-contained kernel closes a gate. Beyond the
+parent moment-fiber stack, this card additionally needs the classical confluent Nevanlinna--Pick
+singular/free dichotomy and its `J`-inner transfer-matrix parametrization `(8)`--`(9)` — itself a
+major theory absent from mathlib. The triangular jet-coordinate submersions `(5)`, `(11)` are
+elementary but inseparable from that absent interpolation surface. No partial file is added.
+
 ## Gates
 
 - [x] Cauchy-jet / Pick-jet coordinate equivalence proved

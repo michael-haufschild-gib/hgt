@@ -327,5 +327,58 @@ theorem exists_closedEmbeddedHilbertCube_in_exactCayleyFrameFiber
   rw [weightedBoundaryCarrier_linftyOne F eta] at hframe
   exact ⟨(hall t).2.1, (hall t).2.2, hac, hframe⟩
 
+/-- **Infinite-support projective Hilbert-cube frame fiber.** Infinite topological support of the
+projective parameter law already forces a closed Hilbert cube in every finite Cayley--Toeplitz
+frame fiber.  Atomlessness is unnecessary.  All carriers retain the complete Hamburger moment
+sequence and measure class, the level-`N` Gram section, and the regular Cauchy jet through order
+`N-1`. -/
+theorem exists_closedEmbeddedHilbertCube_in_exactCayleyFrameFiber_of_infiniteSupport
+    (heta : eta.support.Infinite) (N : ℕ)
+    {delta : ℝ} (hdelta0 : 0 < delta) (hdelta1 : delta < 1) :
+    ∃ v : ℕ → Lp ℝ ⊤ eta,
+      ∃ carrier : SignedHilbertCube → ProbabilityMeasure ℝ,
+      Topology.IsClosedEmbedding
+          (affinePositiveHilbertCubeMap (linftyOne eta) delta v) ∧
+      Topology.IsClosedEmbedding carrier ∧
+      (∀ t, (carrier t : Measure ℝ) = weightedBoundaryCarrier F eta
+        (affinePositiveHilbertCubeMap (linftyOne eta) delta v t)) ∧
+      ∀ t,
+        LinftyStrictlyPositive eta
+          (affinePositiveHilbertCubeMap (linftyOne eta) delta v t) ∧
+        HasHamburgerMoments s (carrier t : Measure ℝ) ∧
+        ((carrier t : Measure ℝ) ≪
+            boundaryBarycenter eta (fun q => (F.leaf q : Measure ℝ)) ∧
+          boundaryBarycenter eta (fun q => (F.leaf q : Measure ℝ)) ≪
+            (carrier t : Measure ℝ)) ∧
+        circleToeplitzGram N (cayleyMomentZ (carrier t : Measure ℝ)) =
+          circleToeplitzGram N (cayleyMomentZ
+            (boundaryBarycenter eta (fun q => (F.leaf q : Measure ℝ)))) ∧
+        ∀ n < N,
+          iteratedDeriv n (resolventTransform (carrier t : Measure ℝ)) (-I) =
+            iteratedDeriv n
+              (resolventTransform
+                (boundaryBarycenter eta (fun q => (F.leaf q : Measure ℝ)))) (-I) := by
+  obtain ⟨v, _ell, _hvnorm, _hbio, hwembed, hall, carrier, hcembed, hcarrier⟩ :=
+    exists_positiveHilbertCube_weightedBoundaryCarriers_of_infiniteSupport F eta heta
+      (boundaryCayleyConstraintL1 F eta N) hdelta0 hdelta1
+  have hbaseint : ∫ x, ⇑(linftyOne eta) x ∂eta = 1 := by
+    rw [← linftyIntegralCLM_apply]
+    exact linftyIntegralCLM_linftyOne eta
+  refine ⟨v, carrier, hwembed, hcembed, hcarrier, ?_⟩
+  intro t
+  have hframe := gram_and_cauchyJet_eq_of_normalizedCayleyConstraint_eq F eta N
+    (hall t).2.1 (linftyOne_strictlyPositive eta)
+    (by
+      rw [← linftyIntegralCLM_apply]
+      have hzero := congrFun (hall t).1 (0 : Fin (N + N + 1))
+      rw [normalizedLinftyL1ConstraintOperator_zero,
+        normalizedLinftyL1ConstraintOperator_zero, linftyIntegralCLM_linftyOne] at hzero
+      exact hzero)
+    hbaseint (hall t).1
+  have hac := weightedBoundaryCarrier_mutuallyAbsolutelyContinuous F eta (hall t).2.1
+  rw [hcarrier t]
+  rw [weightedBoundaryCarrier_linftyOne F eta] at hframe
+  exact ⟨(hall t).2.1, (hall t).2.2, hac, hframe⟩
+
 end
 end GaloisForLFunctions.HTGeometry

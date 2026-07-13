@@ -322,6 +322,14 @@ moment problems, Nevanlinna matrices, measurable extremal disintegration, spectr
 `L-infinity` mean-zero controllability, Whitney rank-defect transversality, and the complete Baire
 passage. Those layers are not present together in the current Lean tree.
 
+Formalization audit (needs-audit pass): no bounded self-contained kernel closes a gate. Every step
+routes through an absent deep theory — the Hamburger moment problem and Nevanlinna extremal family
+(barycenter moment preservation, `(4)`), Aleksandrov--Clark measurable disintegration (type transport,
+`(6)`--`(9)`), and Whitney transversality + Baire (the full-configuration HT step). Mathlib packages
+none of these. The one elementary-looking piece — the rational principal-part elimination in the
+controllability proof `(12)`--`(13)` — is inseparable from the Nevanlinna `m_τ` structure. No partial
+file is added.
+
 ## Gates
 
 - [x] parameter barycenters preserve the complete moment sequence

@@ -290,6 +290,11 @@ No Stage 3 claim is made. Exact formalization requires the parent Nevanlinna bou
 `L-infinity` finite-codimension geometry, rational principal-part independence, parameterized
 transversality over constrained Banach charts, analytic germ uniqueness, and Stieltjes inversion.
 
+Formalization audit (needs-audit pass): no bounded self-contained kernel closes a gate. Both the
+finite-jet infinite-aperture step `(3)`--`(5)` and the disjoint-pole controllability `(8)` are
+inseparable from the absent Nevanlinna `m_τ` structure and the parent transversality/Baire engine;
+the complete-germ closure `(11)`--`(13)` needs Stieltjes-transform uniqueness. No partial file is added.
+
 ## Gates
 
 - [x] arbitrary finite Cauchy-jet level defined

@@ -278,6 +278,15 @@ definitions and proofs of:
 
 The card cannot move to Stage 3 on the strength of a finite combinatorial surrogate.
 
+Formalization audit (needs-audit pass): no bounded self-contained kernel closes a gate here. The
+proof is a genuine chain (jet/Hermite interpolation → evaluation-determinant nonvanishing → dense
+nonvanishing of a polynomial functional → countable Baire intersection in `O(ℂ^d)` → monomial-to-DA
+conversion), and its assembly rests on a Fréchet space of entire functions of several variables with
+its Baire property and on multivariate all-order Hermite interpolation, neither packaged in mathlib.
+The individually extractable lemmas (steps 2–3) are moderate abstract analysis that, alone, certify
+nothing about the orbit matroid; no partial file is added, since it would be a surrogate rather than
+a gate-closing step.
+
 ## Gates
 
 - [x] exact stronger law stated

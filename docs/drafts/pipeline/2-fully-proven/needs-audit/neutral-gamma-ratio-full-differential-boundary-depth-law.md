@@ -337,6 +337,22 @@ compactness, or the Bohr-frequency theorem as one formal chain. Stage 3 requires
 including the recurrent consequence, to be formalized unconditionally. The card therefore remains
 paper-level stage 2.
 
+Section 5 (the terminal one-point recession `C[z] -> C`, the second stage of the boundary carrier)
+is formalized unconditionally in
+`formal/GaloisForLFunctions/PolynomialOnePointRecession.lean`, axiom-clean
+(`propext, Classical.choice, Quot.sound`):
+
+```text
+poly_scaled_translate_tendsto            -- q(z + iT)/(iT)^d -> coeff_d q  for deg q <= d
+finiteTuple_polynomial_onePoint_recession -- finite nonzero tuple: nonzero leading vector +
+                                          --   (iT)^{-d}-scaled translate -> that constant vector
+```
+
+The remaining chain (Poincare-field asymptotic injectivity, generalized-exponent independence,
+arbitrary translated-jet compactness of Sections 2--4, and the Bohr/autonomous-ADE frequency theorem
+of Sections 6--7) needs analytic infrastructure absent from mathlib and from the tree; it is the open
+part of the stage-3 gate.
+
 ## Gates
 
 - [x] perturbative amplitude field `E=L(U)` constructed
@@ -348,4 +364,6 @@ paper-level stage 2.
 - [x] recurrent finite-carrier law proved on paper
 - [x] arithmetic complement law proved from the boundary and frequency theorems
 - [ ] full parent-literature and priority audit
-- [ ] complete unconditional Lean formalization
+- [~] Lean formalization: terminal one-point recession `C[z] -> C` (Section 5) formalized
+  unconditionally (`PolynomialOnePointRecession.lean`); Poincare-field / jet-compactness /
+  Bohr-frequency chain of Sections 2--4, 6--7 still open (mathlib lacks the analytic substrate)

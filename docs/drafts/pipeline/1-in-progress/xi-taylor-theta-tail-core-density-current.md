@@ -26,6 +26,22 @@ z_n = xiCTaylorAnisotropicCenteredPoint sigma n.
 
 This is `XiCTaylorThetaTailCoreCurrentSublinearUpper D` in Lean.
 
+Its exact logical strength is now formalized.  For every source-selected odd super-accurate
+schedule `D`, Lean proves
+
+```text
+XiCTaylorThetaTailCoreCurrentSublinearUpper D <-> RiemannHypothesis.       (0)
+```
+
+The forward implication is the existing anisotropic pole-amplification gate.  For the reverse
+implication, RH keeps `XiC` nonzero at the limiting centered point of each open left-strip fibre;
+the Taylor value is then eventually bounded below, while the core value and derivative are bounded
+above by Taylor super-accuracy and rapid decay of the explicit top defect.  Hence the core current
+is `O(1)` and therefore `o(n)|P|^2`.  This reverse implication uses RH only as a logical audit and is
+not an admissible producer for the open direction.  Equation `(0)` proves that any unconditional
+estimate closing this card is itself a proof of RH, rather than a weaker finite approximation
+lemma.
+
 ## Non-circularity boundary
 
 No method class is excluded.  Any input must nevertheless prove a sign or cancellation for `(4)`
@@ -95,6 +111,101 @@ J_(U_d)(z)
 The seam term in `(4)` is not disposable: the mixed term is a cross energy, not a square, and the
 already proved Wigner--Eisenstein analysis shows that the corresponding ambient pair form is
 indefinite.  Thus `(4)` is an exact coordinate but not yet a producer.
+
+There is a distinct one-derivative polarization which retains a positive source without returning
+immediately to the cosine kernel.  Define the raw-tail survival function
+
+```text
+eta(x)=-4T'(x).
+```
+
+Then `rho=-eta'`, `eta(0)=1`, and `eta(infinity)=0`.  A single integration by parts gives the exact
+finite identity
+
+```text
+integral rho(x)H_d(z,x)dx
+ =1+integral eta(x) partial_x H_d(z,x)dx,                 (4a)
+
+partial_x H_d(z,x)
+ =-(z^2+1/4) sum_(k=0)^d (-1)^k z^(2k)x^(2k+1)/(2k+1)!.
+```
+
+Thus the seam-compensated core is a constant plus a weighted truncated-sine transform.  Equation
+`(4a)`, including integrability and both endpoint limits, is proved in Lean in
+`XiCTaylorThetaTailSurvivalPolarization.lean`.  Commuting the source and spectral derivatives gives
+the exact current polarization.  Put
+
+```text
+B_d(z)=integral eta(x) partial_x H_d(z,x)dx,
+A_d(z)=integral eta(x) partial_x partial_z H_d(z,x)dx.
+```
+
+Then, with all differentiations, integrability claims, and endpoint limits proved in Lean,
+
+```text
+U_d(z)=(1/2)(1+B_d(z)),  U_d'(z)=(1/2)A_d(z),
+
+J_(U_d)(z)
+ =(1/4)Im A_d(z)+(1/4)Im(A_d(z) conjugate(B_d(z))).       (4b)
+```
+
+This is formalized in `XiCTaylorThetaTailSurvivalMixedCurrent.lean`.  It avoids the indefinite
+cosine kernel, but it also shows that the seam is inseparable from the raw survival cross current:
+`A_d` is the spectral derivative of `B_d`, so `(4b)` is an exact new source coordinate rather than
+an independent positive correction.  The remaining producer must use an exact theta-specific
+relation inside the full `eta`-weighted sine cross term.
+
+The survival moments are not independent theta data.  A further exact integration by parts gives,
+for every `m>=0`,
+
+```text
+(m+1) integral x^m eta(x)dx = integral x^(m+1) rho(x)dx. (4c)
+```
+
+Equation `(4c)` is formalized as `integral_pow_mul_thetaCuspTailSurvival_shift`.  Thus the survival
+polarization reindexes the canonical density moments; any cancellation must use their full
+cross-phase relation, not a new favorable moment sequence hidden in `eta`.
+
+The reflection character nevertheless yields a non-generic positive completion remainder.  Put
+
+```text
+g(x)=exp(-x/2)-eta(x).
+```
+
+For every positive integer Gaussian atom, direct comparison of the first- and second-derivative
+atom polynomials gives
+
+```text
+rho_n(x) >= (1/2)eta_n(x),  x>=0.
+```
+
+Hence `rho>=(1/2)eta`, the function `exp(x/2)eta(x)` decreases from one, and
+
+```text
+g(x)>=0,  x>=0.                                          (4d)
+```
+
+These statements are formalized in
+`XiCTaylorThetaTailCompletedSurvivalRemainder.lean`.  The exponential moments telescope against
+the finite source derivative exactly:
+
+```text
+integral exp(-x/2) partial_x H_d(z,x)dx
+ =(-4z^2)^(d+1)-1.
+```
+
+Combining this with `(4a)` gives the exact completed-survival coordinate
+
+```text
+integral rho(x)H_d(z,x)dx
+ =(-4z^2)^(d+1)-integral g(x)partial_x H_d(z,x)dx.        (4e)
+```
+
+Equation `(4e)`, including the exponential moment evaluation and integrability, is formalized in
+`XiCTaylorThetaTailCompletedSurvivalTransform.lean`.  It is not a positive-error decomposition:
+the `g` transform cancels the explicit degree-`2d+2` monomial.  The live possibility is a
+polarized energy in which the favorable monomial current absorbs the mixed `g` cross current
+without replacing that cancellation by absolute values.
 
 There is a second finite value relation, also proved in Lean,
 
@@ -193,6 +304,60 @@ For every polynomial `P`, Lean also proves the exact value-coordinate identity
 d/dy |P(x+iy)|^2 = -2 J_P(x+iy).                           (9)
 ```
 
+There is no hidden boundary parameter left in a higher integration-by-parts scheme.  The modular
+reflection gives, for every odd `m`,
+
+```text
+Phi^(m)(0)=0,
+T^(m+2)(0)=(1/4)T^m(0),
+T^(2r+1)(0)=-4^(-(r+1)).                                  (8e)
+```
+
+These identities are proved in Lean.  They make every odd seam jet explicit, but repeated
+integration by parts still terminates in the raw two-variable correlation `(4)` or in the
+completed Taylor feedback `(7)`; the seam recurrence is therefore exact data, not a sign
+producer.
+
+The source dilation gives a further exact cancellation coordinate.  Put
+
+```text
+g(x)=rho(x)+x rho'(x),
+s(x)=g(x)/rho(x)=1+x rho'(x)/rho(x).
+```
+
+The finite section and core satisfy the Euler identities
+
+```text
+x partial_x S_d=z partial_z S_d+2S_d,
+z partial_z H_d=x partial_x H_d+(1/2)S_d.                 (8f)
+```
+
+Since `g=(x rho)'`, integration by parts gives
+
+```text
+integral g=0,
+integral x^m g(x)dx=-m integral x^m rho(x)dx,
+
+(z^2+1/4)z U_d'(z)
+ =-(1/2)(z^2+1/4) integral g(x)H_d(z,x)dx
+   +1/4-(1/2)U_d(z).                                     (8g)
+```
+
+Equations `(8f)`--`(8g)`, including all cusp and seam boundary terms, are proved in Lean.  They
+use the full canonical density and expose a literal mean-zero score covariance.  The score does
+not supply independent moments: its entire moment sequence is the Euler multiple `-m` of the
+original density moments.  Moreover the naive Chebyshev orientation of the core phase is false.
+For `d=2`, `z=2+i/5`, the ordered cross determinant
+
+```text
+Im(H_d(z,x) conjugate(H_d(z,y)))
+```
+
+is negative at `(x,y)=(1/10,0)` and positive at `(11/5,9/10)`; both strict rational evaluations
+are certified in Lean.  Hence monotonicity of the scalar score, even if established, cannot sign
+the covariance pointwise.  A surviving score proof must retain the complete weighted integral
+and obtain cancellation across the phase reversals.
+
 The whole real boundary has a second exact value relation.  Together with `(8b)` this signs the two
 coordinate axes, but the anisotropic target lies on general vertical fibres.  Since `U_d` has real
 coefficients,
@@ -235,6 +400,261 @@ Re(U_d'' conjugate(U_d))-|U_d'|^2
 The last term in `(12)` is favorable.  The open producer is a cancellation estimate for the first
 two raw moment terms after integrating over `0<=t<=Im z`; imposing their pointwise sign would be a
 complex Laguerre/anti-Herglotz condition and would simply repackage the target.
+
+## Dominant first density atom
+
+The exact density has a sharper source split than undifferentiated theta positivity.  If
+
+```text
+T_1(x)=exp(x/2-pi exp(2x)),
+rho_1(x)=4T_1''(x),
+```
+
+then direct evaluation of the endpoint derivative gives
+
+```text
+integral_(0..infinity) rho_1(x)dx
+  = -4T_1'(0) = (8pi-2)exp(-pi),                          (12a)
+```
+
+while the sum of all `n>=2` density atoms has mass
+`1-(8pi-2)exp(-pi)`.  Thus the first differentiated theta atom carries more than `0.999` of the
+canonical probability mass.  This does not by itself orient the core: the finite integrated
+`rho_1` cores already have nonreal zero pairs from degree two, so neither pointwise positivity nor
+dominant mass yields finite hyperbolicity.  `[CONJECTURE]` The only live first-atom use is a
+compact-window estimate in which the modular seam and the `n>=2` tail are retained together and
+the escaping finite-section zero pairs are controlled uniformly away from the window.  No such
+oriented estimate is yet proved.
+
+The density domination itself is now quantitative and formalized.  For `x>=0` and `n>=1`, Lean
+proves
+
+```text
+rho_n(x) <= 5 n^4 exp(-pi(n^2-1)) rho_1(x).              (12b)
+```
+
+The proof uses the exact quartic atom polynomial
+`P_2(u)=1/4-6pi u^2+4pi^2u^4`, the bounds
+`pi^2u^4<=P_2(u)<=5pi^2u^4` for `u>=1`, and Gaussian separation.  Equation `(12b)` controls every
+positive moment of the higher-atom tail by the corresponding first-atom moment.  It does not
+control an oscillatory transform relative to its value: near a cancellation of the first-atom
+transform, the absolute majorant furnished by `(12b)` remains positive.  Thus a Rouché/current
+argument would additionally require an expanding zero-free or quantitative phase region for the
+incomplete-gamma theta truncations.  That is not an independent known input: Haglund's truncation
+program isolates precisely such an expanding-region conjecture and observes that it would imply
+RH.  Dominant-atom mass and pointwise domination are therefore certified infrastructure, not the
+missing oriented producer.
+
+The density atoms do have one further exact arithmetic relation.  For every `n>=1`, every
+polynomial Gaussian profile `P`, and every real `x`,
+
+```text
+Atom_P(n,x)=n^(-1/2) Atom_P(1,x+log n),
+rho_n(x)=n^(-1/2) rho_1(x+log n),
+
+rho(x)=sum_(n>=1) n^(-1/2) rho_1(x+log n),
+
+integral_(0..infinity) rho_n(x)K(x)dx
+ =n^(-1/2) integral_(log n..infinity)
+    rho_1(u)K(u-log n)du.                                  (12c)
+```
+
+Equation `(12c)`, including the shifted-half-line pairing for an arbitrary complex test function
+`K`, is proved in Lean.  It identifies the non-generic datum that an eventual
+cancellation theorem must retain: one fixed differentiated Gaussian profile sampled on the
+logarithmic integer lattice.  Replacing the translates by their masses or absolute majorants
+removes the phases `z log n` and cannot control the mixed current.  The unresolved finite problem
+can therefore be restated as an upper estimate for the complete weighted pair interference of
+these arithmetic translates.
+
+The sum--integral exchange and the full ordered pair expansion are now also exact.  Put
+
+```text
+R_(m,n)(z;x,y)
+ =rho_m(x)rho_n(y)K_d(z;x,y),
+
+Q_(m,n)(z;x,y)
+ =rho_1(x+log m)rho_1(y+log n)K_d(z;x,y).
+```
+
+Lean proves, with the full symmetric correlation as the `L^1` majorant,
+
+```text
+integral x^r rho(x)dx
+ =sum_(n>=1) integral x^r rho_n(x)dx,
+
+J_(U_d)(z)
+ =(1/4)sum_(m,n>=1) integral integral R_(m,n)(z;x,y)dxdy
+ =(1/4)sum_(m,n>=1)(mn)^(-1/2)
+    integral integral Q_(m,n)(z;x,y)dxdy.                 (12d)
+```
+
+Thus `(12d)` is not a formal expansion of a conditionally convergent object: the ordered pair
+series is obtained by an explicit Bochner `L^1` interchange.  At a fixed translated profile
+coordinate `u`, only the integers `n<exp u` occur after shifting the lower endpoints, so the
+infinite translate sum becomes a finite Dirichlet packet.  Two integrations by parts against
+`rho_1=4T_1''` produce jump terms at `u=log n`; the value packet jumps by
+`n^(-1/2)H_d(z,0)=n^(-1/2)`, while its first source derivative has no jump.  Summing those jumps
+reconstructs the seam in `(3)`--`(4)`.  Hence ordinary coordinatewise integration by parts in the
+packet form is equivalent to the already indefinite mixed identity and supplies no new sign.
+
+`[CONJECTURE]` The remaining arithmetic possibility is a *polarized jump energy*: integrate in a
+diagonal or difference coordinate before resolving the jumps, so that paired jumps at
+`(log m,log n)` contribute a square or a summable top-edge defect rather than the asymmetric seam.
+Any viable identity must be checked against the exact phase reversals in `(8i)` and must not
+replace the off-diagonal pair current by its diagonal part.
+
+The translate operator has an exact signed inverse on the canonical source.  For `x>=0`, Lean
+proves absolute convergence and the critical Möbius identity
+
+```text
+rho_1(x)=sum_(n>=1) mu(n)n^(-1/2)rho(x+log n).             (12e)
+```
+
+The proof does not use a boundary value of `1/zeta`: Gaussian decay first supplies an absolutely
+summable double Lambert series, after which the finite divisor identity
+`sum_(d|k)mu(d)=[k=1]` is applied.  This is a genuine signed value relation specific to the full
+canonical density.
+
+It does not orient `(12d)`.  Substituting `(12e)` into each shifted `rho_1` factor and changing the
+lower endpoint turns every term into a function of the product index `k=mn`; Möbius regrouping
+then annihilates every `k>1` and returns the original `rho(x)rho(y)K_d(z;x,y)` integral.  Thus the
+critical Möbius constraint is an exact inverse coordinate, but its complete use is the identity
+operator rather than a negative square.  A truncated inverse leaves a cofinal divisor-edge defect;
+the existing critical-mass-escape theorem shows that no fixed compact synthesis can control that
+edge uniformly.  The Möbius-inverse route is therefore retired as a direct current producer.
+
+The reflection defect of a *finite* critical Möbius packet can nevertheless be removed exactly,
+without estimating a Mertens sum.  Write
+
+```text
+M_N=sum_(n<=N)mu(n),  H_N=sum_(n<=N)mu(n)/n,
+a=N+1, b=N+2,
+alpha_N=a M_N-ab H_N,  beta_N=ab H_N-b M_N.
+```
+
+Then
+
+```text
+M_N+alpha_N+beta_N=0,
+H_N+alpha_N/a+beta_N/b=0.                                (12f)
+```
+
+If `c_n=mu(n)` for `n<=N`, `c_a=alpha_N`, and `c_b=beta_N`, the exact source reflection law gives
+
+```text
+sum_n c_n n^(-1/2)rho(-x+log n)
+ =sum_n c_n n^(-1/2)rho(x-log n).                        (12g)
+```
+
+Lean proves `(12f)`--`(12g)`.  The two corrections are also negligible on the positive half-line.
+Indeed `|M_N|<=N`, `|H_N|<=N`, so
+
+```text
+|alpha_N|+|beta_N| <= 4(N+2)^3.
+```
+
+The Gaussian majorant already used in the absolute Möbius inversion gives, for
+`q=exp(-pi/2)<1` and `x>=0`,
+
+```text
+R_n(x):=n^(-1/2)rho(x+log n)
+       =sum_(m>=1)rho_(nm)(x)
+       <= C exp(-x) n q^n/(1-q)^2.
+```
+
+Consequently the total correction is `O((N+2)^4 q^N)`, uniformly for `x>=0`, and tends to zero.
+Lean now proves the row majorant, the polynomial coefficient bound, the explicit correction
+majorant, and its convergence to zero in
+`XiCTaylorThetaTailMobiusConstraint.lean`.
+
+Thus the two nonintegrable completion characters can be cancelled
+by two remote Gaussian translates rather than bounded by RH-strength Mertens information.  This
+permits full-line polarization at asymptotically zero positive-half-line cost.  It does not orient
+the pair current:
+after applying `(12g)` in both variables, the remaining right-shift/left-shift cross terms still
+contain the complete off-diagonal kernel `K_d`.  The next gate is to show that their polarized
+half-line boundary is a nonpositive square or an upper-sublinear finite edge, while retaining the
+two remote correction translates.
+
+The balancing equations are exactly two endpoint zeros of a finite Dirichlet symbol.  For the
+finite coefficient packet `c=(c_n)`, put
+
+```text
+C_c(s)=sum_n c_n n^(-s),
+R_c(x)=sum_n c_n n^(-1/2)rho(x+log n).
+```
+
+Then `(12f)` says
+
+```text
+C_c(0)=C_c(1)=0.                                         (12h)
+```
+
+Both endpoint identities are formalized as
+`finiteMoebiusBalancedCoefficientMoment_one` and
+`finiteMoebiusBalancedCoefficientMoment_inv`.  The exact reflection law and evenness of the core
+give the corresponding half-line identities
+
+```text
+integral_(0,infinity) R_c^left(x) H_d(z,x)dx
+  = integral_(-infinity,0] R_c(x) H_d(z,x)dx,
+
+integral_(0,infinity) R_c^left(x) partial_z H_d(z,x)dx
+  = integral_(-infinity,0] R_c(x) partial_z H_d(z,x)dx.   (12i)
+```
+
+These are formalized in `XiCTaylorThetaTailBalancedMobiusPairCurrent.lean`.  They show that the
+left packet is not a second positive source: it is exactly the missing negative half of the same
+signed bilateral packet, with the original orientation retained.
+
+The bilateral Mellin transform also identifies the limit of this route exactly.  Write
+`rho_k=4(d/dx)^2 exp(x/2-pi k^2 exp(2x))` and
+`b_k=sum_(n|k)c_n`.  In the half-plane of absolute convergence, Mellin substitution gives
+
+```text
+integral_R rho_k(x)exp(i t x)dx
+ =-2t^2 pi^(-(1/4+it/2)) Gamma(1/4+it/2) k^(-(1/2+it)),
+
+sum_k b_k k^(-s)=zeta(s)C_c(s).
+```
+
+The zeros `(12h)` cancel the two completion singularities, while `(12g)` gives rapid decay at
+both source ends.  Analytic continuation therefore yields, for real `t`,
+
+```text
+integral_R R_c(x)exp(i t x)dx
+ = [4t^2/(t^2+1/4)] XiC(t) C_c(1/2+it).                  (12j)
+```
+
+Thus bilateralization does not remove the RH-bearing factor: it multiplies `XiC` by a finite
+Dirichlet symbol.  A sign estimate for the bilateral current without a separate estimate of the
+right/left cross term would consequently be the target orientation in another coordinate.  The
+only surviving use of `(12j)` is an edge estimate proving that the logarithmic derivative of the
+finite symbol and the escaping bilateral mass are `o(n)` on the anisotropic mesh; no such estimate
+is currently proved.
+
+The survival source has the complementary reflection parity.  Differentiating the raw theta
+reflection gives
+
+```text
+eta(-x)=-eta(x)+exp(x/2)+exp(-x/2).                       (12k)
+```
+
+Consequently the same balanced coefficient packet `c`, using `C_c(0)=C_c(1)=0`, satisfies
+
+```text
+sum_n c_n n^(-1/2)eta(-x+log n)
+ =-sum_n c_n n^(-1/2)eta(x-log n).                       (12l)
+```
+
+Equations `(12k)`--`(12l)` are proved in Lean in
+`XiCTaylorThetaTailSurvivalMobiusReflection.lean`.  The source derivatives
+`partial_x H_d` and `partial_x partial_z H_d` are odd, so the two minus signs cancel in their
+pairing.  Lean therefore proves the survival analogues of `(12i)`: the reflected right-packet
+integrals equal the left-packet integrals on the opposite half-line with the original current
+orientation.  This supplies an exact odd bilateralization, but not an antisymmetric current
+cancellation.
 
 ## Critical-Laguerre scale coordinate
 
@@ -396,6 +816,26 @@ log-convexity and ratio monotonicity are
 
 ## Literature/value-relation audit
 
+- Haglund's incomplete-gamma truncations are the direct parent of the dominant-atom coordinate.
+  The proposed theorem is not that each truncation is hyperbolic; it is that a zero-free/ordered
+  region expands with the truncation, and the paper proves that such expansion would imply RH.
+  Hence importing that conjecture would rename the present compact-window obstruction rather than
+  discharge it.  Primary source: <https://arxiv.org/abs/0910.5228>.
+- Gershon's June 2026 revision proves strict log-concavity (`TP_2`) of the Riemann--Jacobi kernel
+  analytically, but explicitly leaves the passage to `TP_infinity`/Laguerre--Pólya open.  Thus it
+  is a genuine new exact source inequality, yet it does not orient the finite complex pair current
+  `(11)`.  The earlier version's suggestion that log-concavity alone implied RH is not the claim of
+  the revised paper.  Primary source: <https://www.preprints.org/manuscript/202604.0159>.
+- Polson's June 2026 incomplete-gamma/Thorin framework separates an unconditional Gaussian
+  "trivial tier" from a zero-ordinate tier whose generalized-gamma-convolution positivity is
+  equivalent to RH.  It supplies no finite cancellation between those tiers and cannot be used as
+  an independent sign for `(12d)`.  Primary source:
+  <https://papers.ssrn.com/sol3/Delivery.cfm/6954119.pdf?abstractid=6954119&mirid=1>.
+- Jenkins--McLaughlin prove a global growing-degree asymptotic for the Taylor sections of `xi`.
+  Their result separates outward-moving spurious zeros from bounded Hurwitz zeros converging
+  super-exponentially to the zeros of the limiting function.  It validates a moving top-edge
+  analysis for truncation artifacts, but it cannot sign a bounded anisotropic fibre independently
+  of the limiting theta transform.  Primary source: <https://arxiv.org/abs/1609.05965>.
 - The classical theta-kernel formulas give positivity and modular balance of `Phi`, the Mellin
   representation of `xi`, the Fourier/cosine representation of `Xi`, and the raw even-moment
   formula.  These relations are present in Lean.
@@ -442,6 +882,20 @@ log-convexity and ratio monotonicity are
   Consequently the Volterra contraction in those cards can close the present task only if it is
   constructed on the finite source packets independently; assuming its contractivity merely
   renames the desired sign.
+- The current formal tree now proves that Hedenmalm center mixing turns the full theta source into
+  an explicit strictly positive, even, continuous, integrable density whose Fourier transform is
+  the radial Wigner current.  This is a real source improvement, but Fourier nonnegativity of that
+  density throughout the critical aperture is exactly the RH-equivalent second positivity.  The
+  elementary Pólya shortcut by convex decrease is unavailable: a nonconstant smooth even density
+  decreasing from its central maximum is necessarily concave at the center, and the actual density
+  has that behavior.  A Gaussian-scale-mixture shortcut is also not supplied by the value relation;
+  it would require complete monotonicity in the squared center variable, a strictly stronger
+  factorization not present in the formal source identities.
+- The new finite-local-spectral-frame obstruction proves that no finite constant-coefficient
+  differential autocorrelation frame can orient the Hedenmalm diagonal: such a frame would create
+  an entire finite-difference coboundary and propagate every Xi zero out of the critical strip.
+  Thus the score covariance cannot be closed by replacing its phase reversals with finitely many
+  local spectral squares; a successful carrier must remain nonlocal or cofinally arithmetic.
 
 ## Gates
 
@@ -457,6 +911,10 @@ log-convexity and ratio monotonicity are
 - [x] prove the exact negative current at the central completion seam point
 - [x] strengthen the seam sign to strict negativity on the whole positive imaginary axis
 - [x] formalize the source and polynomial reflection laws and exclude reflected-fibre cancellation
+- [x] determine every odd raw-tail seam jet and close the repeated-IBP boundary data
+- [x] prove exact atom masses and pointwise Gaussian domination by the first density atom
+- [x] expose the exact logarithmic-integer translate law for every density atom
+- [x] derive the exact mean-zero density-score covariance and rule out pointwise phase ordering
 - [x] identify the current with the vertical derivative of the finite squared modulus
 - [x] derive and formalize the real-boundary-to-interior complex Laguerre-defect identity
 - [x] audit classical theta, orthogonal-polynomial, spectral, and Wigner value relations

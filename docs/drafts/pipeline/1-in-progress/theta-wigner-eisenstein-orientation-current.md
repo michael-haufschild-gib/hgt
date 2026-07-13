@@ -3,7 +3,7 @@
 - **ID:** `theta-wigner-eisenstein-orientation-current`
 - **Stage:** 1-in-progress
 - **Type:** THEOREM PACKAGE / DIRECT HILBERT--POLYA SOURCE COORDINATE
-- **Scientific status:** `[PAPER DERIVATION COMPLETE] [LEAN OPEN] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
+- **Scientific status:** `[PAPER DERIVATION COMPLETE] [LEAN PARTIAL] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
 - **Claim:** The Hermitian diagonal of the critical Xi Bezoutian is a positive radial moment of the
   Wigner distribution of Hedenmalm's theta source.  The Wigner distribution has an exact
   divisor-character/Bessel expansion carrying the full prime-log module.  Consequently the
@@ -475,6 +475,8 @@ inside the `y`-fibers; it must arise from the complete radial/arithmetic couplin
       Krein determinant `(18r)` on paper;
 - [x] formalize the affine-logarithmic determinant and its weighted strict negativity in Lean;
 - [x] identify the fiberwise-positive producer as impossible by Hudson rigidity;
+- [x] formalize the center-mixed theta density, its exact Fubini phase identity, and its
+      unconditional strict positivity, evenness, continuity, and integrability;
 - [ ] complete a primary-source audit for the precise theta-product/Eisenstein parent identity;
 - [ ] formalize `(2)` and `(13)`--`(16)` in Lean without assuming RH or positivity;
 - [ ] formalize the analytic Mellin integral `(18o)`--`(18p)` and its differentiation/summation

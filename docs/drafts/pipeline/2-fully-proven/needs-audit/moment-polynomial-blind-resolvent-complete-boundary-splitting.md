@@ -450,6 +450,12 @@ measure disintegration, conditional expectation on `L^2`, finite-moment polynomi
 complex-measure Hahn--Banach/Riesz duality, analytic continuation, and Stieltjes-transform
 uniqueness.
 
+Formalization audit (needs-audit pass): no bounded self-contained kernel closes a gate. The whole
+theorem — conditional-expectation identity `(5)`, `H_hor/H_ver` splitting `(8)`, polynomial blindness
+`(11)`, resolvent completeness `(21)`, and the three-layer Pick-Gram `(21h)` — is built on the same
+absent Nevanlinna/disintegration/Stieltjes-uniqueness stack as its parent moment-fiber cards. No
+partial file is added.
+
 ## Gates
 
 - [x] parent support fibration and Bauer projector used intrinsically

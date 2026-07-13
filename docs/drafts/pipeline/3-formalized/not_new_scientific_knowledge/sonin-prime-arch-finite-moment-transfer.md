@@ -27,6 +27,19 @@ S_r(a_{N,j})\longrightarrow M_r
 
 Then RH follows.
 
+Equivalently, no schedules need appear in the hypothesis.  Lean packages the same source weld as
+the static constraint
+
+\[
+(M_0,\ldots,M_{N-1})
+\in
+\overline{\{(S_0(a),\ldots,S_{N-1}(a)):a>0\}}
+\qquad\text{for every }N,
+\]
+
+and proves this closure membership directly implies RH.  Sequential schedules are extracted
+internally from finite-dimensional topology.
+
 In Lean the schedules are packaged as one function `aperture : Nat -> Nat -> Real`.  The predicate
 `SoninPrimeArchFiniteMomentCoupling aperture` requires positivity and the displayed finite-block
 convergence.  The capstone is
@@ -36,6 +49,15 @@ SoninPrimeArchFiniteMomentCoupling aperture
   -> SoninPrimeArchPerTestTraceHankelCoupling
   -> PrimeArchSourceTraceHankelIntNonnegative
   -> RiemannHypothesis.
+```
+
+The preferred constraint-form chain is therefore
+
+```text
+prime--Gamma finite moment blocks lie in the positive-aperture Sonin value-locus closure
+  -> simultaneous finite moment-block schedules
+  -> per-test positive Gram convergence
+  -> RH.
 ```
 
 ## Proof
@@ -83,12 +105,42 @@ The marked transverse Frostman profile retains prime labels but presently suppli
 the trace moments of `T_a`.  It may help identify the arithmetic content of a future limit, but it
 does not establish convergence.
 
+## Weaker scalar value-locus chain
+
+Lean also proves the strictly weaker sufficient condition
+
+\[
+Q_{\mathrm{PG}}(P)
+\in
+\overline{\{Q_a(P):a>0\}}
+\qquad(P\in\mathbb Z[X]),
+\]
+
+where `Q_a(P)` is the actual all-prime Sonin Gram value and `Q_PG(P)` is the fixed prime--Gamma
+trace-Hankel value.  Since every `Q_a(P)` is nonnegative and the nonnegative ray is closed, this
+scalar value-locus membership implies countable prime--Gamma positivity and hence RH.  No common
+aperture schedule between different polynomials is required.
+
+This formulation is source-specific rather than a sign premise: the closure is taken inside the
+range of one explicit Sonin family.  Its mandatory circularity test is now exact.  If for every
+nonzero `P` that range closure is all of `[0,infinity)`, the scalar condition collapses to the
+RH-equivalent sign and is not an independent mechanism.  If the range has a proper source-defined
+boundary containing `Q_PG(P)`, it is a genuinely weaker value-relation target than simultaneous
+moment-block convergence.
+
 ## Open core
 
-`[OPEN CORE]` Prove or refute the simultaneous finite-block closure relation above from the explicit
-Sonin residual kernel and the continued prime--Gamma source formula.  A valid proof must exhibit the
-aperture schedules before reading any Xi divisor and must control mixed moments on one common
-schedule per cutoff.
+`[OPEN CORE]` First classify the scalar closures
+
+\[
+\overline{\{Q_a(P):a>0\}}
+\]
+
+for integer polynomials `P`.  If these closures are proper, prove that each contains its fixed
+prime--Gamma value.  If the scalar closures carry no information beyond nonnegativity, return to
+the stronger simultaneous finite-block closure relation.  A proof of the stronger statement must
+exhibit the aperture schedules before reading any Xi divisor and control mixed moments on one
+common schedule per cutoff.
 
 The first structural attack should classify all possible finite-block cluster points of
 
@@ -106,14 +158,18 @@ The module proves:
 
 - `soninAllPrimeTraceHankel_ofFn`;
 - `SoninPrimeArchFiniteMomentCoupling`;
+- `SoninPrimeArchFiniteMomentClosure`;
+- `exists_soninPrimeArchFiniteMomentCoupling_of_closure`;
 - `soninPrimeArchPerTestCoupling_of_finiteMomentCoupling`;
-- `riemannHypothesis_of_soninPrimeArchFiniteMomentCoupling`.
+- `riemannHypothesis_of_soninPrimeArchFiniteMomentCoupling`;
+- `riemannHypothesis_of_soninPrimeArchFiniteMomentClosure`.
 
 ## Gates
 
 - [x] finite coefficient-vector Sonin moment identity
 - [x] simultaneous finite-block coupling implies per-test coupling
 - [x] formal chain from finite moment coupling to RH
+- [x] reformulate the route as static finite value-locus closure rather than a chosen flow
 - [x] separate the Calkin principal grade from the trace-class moment grade
 - [ ] classify finite Sonin moment-block cluster points
 - [ ] construct the prime--Gamma boundary point or prove it is excluded

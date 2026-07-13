@@ -30,7 +30,8 @@
 \newcommand{\Res}{\operatorname{Res}}
 \newcommand{\supp}{\operatorname{supp}}
 
-\title{Fixed-Window Logarithmic Weil Tomography}
+\title{Fixed-Window Logarithmic Weil Tomography\\
+and the Exact One-Sided Exponent Spectrum}
 \author{Michael Haufschild \and GPT 5.6 Sol \and Fable 5 \and Grok 4.5}
 \date{}
 
@@ -50,6 +51,10 @@ carrier.  The resulting single scalar sequence is a complete transverse detector
 hypothesis is equivalent to its nonnegativity, to its eventual lower boundedness, and to its norm
 boundedness.  If the hypothesis is false, the sequence is cofinally unbounded below, and its sharp
 power exponent is the supremal horizontal displacement of the xi divisor.
+More precisely, if $\delta_*$ denotes that displacement, then the exponents $\alpha\ge0$ for
+which the sequence has an eventual lower budget $q_L(n)\ge-Cn^\alpha$ form exactly the closed ray
+$[\delta_*,\infty)$.  Equivalently, such a budget exists precisely when every xi zero satisfies
+$\Re\rho\le\frac12+\alpha$.
 
 Our principal theorem is a cutoff-free multiplicity-exact tomography statement.  The Dirichlet
 series of the complete sequence of actual Weil values admits a canonical meromorphic continuation
@@ -124,10 +129,12 @@ multiplicity-exact divisor tomography: pole positions give the shifted right xi 
 normalized residues give the analytic multiplicities.  Functional-equation and Schwarz symmetry
 then recover the full off-critical divisor.  Companion theorems give three exact RH criteria,
 cofinal divergence under false RH, the sharp transverse exponent, and the exact screw-coordinate
-identity.
+identity.  The one-sided lower-loss spectrum is the exact closed ray beginning at the rightmost
+transverse divisor coordinate, so it yields every horizontal zero-free region, not only the RH
+endpoint.
 
 The novelty is the conjunction of fixed positive width, arithmetic logarithmic sampling,
-cofinal divergence, sharp transverse exponent, and observable multiplicity-exact pole tomography.  Landau's
+cofinal divergence, exact one-sided exponent spectrum, and observable multiplicity-exact pole tomography.  Landau's
 theorem, Weil positivity, shifted-zeta continuation, and screw functions are the parent
 mechanisms.  We keep this boundary explicit.  We also keep the logical boundary explicit: the
 paper does not prove RH.  It identifies the exact cofinal scalar carrier on which a successful
@@ -147,7 +154,7 @@ $\rho\mapsto\overline\rho$.  Write
 \]
 and let $\cZ$ denote the resulting centered multiset, with analytic multiplicity.  Then
 \[
-  |\Re w|<\frac12,qquad
+  |\Re w|<\frac12,\qquad
   \sum_{w\in\cZ}\frac1{|w|^2}<\infty.
   \tag{2.1}
 \]
@@ -438,6 +445,59 @@ The bounded difference between $d_L$ and $q_L$ is absorbed into $Cn^\alpha$ beca
 $n^\alpha\ge1$.
 \end{proof}
 
+The norm exponent does not by itself distinguish positive and negative excursions.  The negative
+part has an equally exact, and stronger, classification.  Define the one-sided exponent spectrum
+of the fixed-width observable by
+\[
+ \mathfrak E_L=
+ \left\{\alpha\ge0:
+ \begin{array}{c}
+ \text{there exist }C\ge0\text{ and }N\text{ such that}\\[-2pt]
+ q_L(n)\ge-Cn^\alpha\text{ for every admissible }n\ge N
+ \end{array}\right\}.
+ \tag{4.6}
+\]
+When RH holds, set $\delta_*=0$.
+
+\begin{theorem}[Exact one-sided transverse exponent spectrum]\label{thm:onesided-spectrum}
+For every fixed $L>0$,
+\[
+ \mathfrak E_L=[\delta_*,\infty).
+ \tag{4.7}
+\]
+Equivalently, for every $\alpha\ge0$,
+\[
+ \begin{split}
+ &\exists C\ge0\ \exists N\ \forall\text{ admissible }n\ge N,
+       \quad q_L(n)\ge-Cn^\alpha\\
+ &\hspace{35mm}\Longleftrightarrow\quad
+ \XiR(\rho)=0\Longrightarrow
+       \Re\rho\le\frac12+\alpha\quad(\rho\in\C).
+ \end{split}
+ \tag{4.8}
+\]
+Thus the polynomial lower-loss spectrum of one scalar observable is the horizontal support
+function of the complete xi divisor.  In particular, its endpoint is zero exactly under RH.
+\end{theorem}
+
+\begin{proof}
+Suppose first that an eventual lower budget of exponent $\alpha$ exists.  If RH holds, then
+$\delta_*=0\le\alpha$.  Otherwise, Proposition~\ref{prop:remainder} transfers the budget from
+$q_L(n)$ to the positive-transverse Dirichlet carrier $d_L(n)$.  Adding a constant multiple of
+$n^\alpha$ makes a finite-deletion tail nonnegative.  The quantitative Landau argument used in
+Theorem~\ref{thm:completeness}, together with Proposition~\ref{prop:polebound}, then puts every
+shifted divisor pole in $\Re s\le1+\alpha$.  Hence $\delta_*\le\alpha$.
+
+Conversely, assume $\delta_*\le\alpha$.  Under RH, Weil positivity gives the budget with $C=0$.
+If RH is false, (4.4) and $n^{\delta_*}\le n^\alpha$ for $n\ge1$ give
+$q_L(n)\ge-M_Ln^\alpha$.  This proves (4.7).
+
+Finally, $\delta_*\le\alpha$ says exactly that every right-hand zero has
+$\Re\rho-\frac12\le\alpha$.  Zeros on or to the left of the critical line already satisfy
+$\Re\rho\le\frac12+\alpha$, while the functional equation supplies the reflected right-hand
+copy of any left-hand zero.  This proves (4.8).
+\end{proof}
+
 \section{Cutoff-free multiplicity-exact divisor tomography}
 
 Proposition~\ref{prop:poles} concerns the isolated growing carrier.  We now remove every cutoff
@@ -633,8 +693,8 @@ not the unweighted pole set, is the intrinsic observable.
 
 Finally, the novelty claim is intentionally narrow.  Weil positivity, the Connes trace-formula
 architecture, Landau's theorem, and the screw function are established parent theories.  The new
-result is the fixed-window logarithmic compression and its quantitative and meromorphic
-consequences.
+result is the fixed-window logarithmic compression, its exact one-sided exponent spectrum, and its
+multiplicity-exact meromorphic tomography.
 
 \begin{thebibliography}{99}
 

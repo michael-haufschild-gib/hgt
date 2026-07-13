@@ -223,6 +223,7 @@ The universal countable-spectrum theorem and the actual Euler specialization are
 ```text
 formal/GaloisForLFunctions/RHTower/LowTemperatureCurvature.lean
 formal/GaloisForLFunctions/RHTower/EulerFisherLowTemperature.lean
+formal/GaloisForLFunctions/RHTower/EulerFisherColdEndDistance.lean
 ```
 
 Lean proves without new axioms:
@@ -239,12 +240,22 @@ eulerPrimePowerMoment_det_scaled_tendsto
 eulerFisherScalarCurvature_neg_scaled_tendsto
 eulerFisherScalarCurvature_tendsto_atBot
 eulerFisherScalarCurvature_log_rate_tendsto
+
+tendsto_expMul_tail_integral
+continuousOn_eulerConformalScale
+eulerColdEndSqrt_asymptotic
+eulerColdEndRadialDistance_tendsto
 ```
 
 Thus `(1)`, `(2)`, `(3)`, and all of `(4)` are formalized for the actual Euler prime-power
-spectrum.  The radial-distance asymptotic `(5)` remains paper-proved but is not yet in Lean.
-Focused builds and the repository formal lint pass.  The theorem family uses only the standard
-Mathlib axioms `propext`,
+spectrum.  The radial-distance asymptotic `(5)` is now formalized as
+`eulerColdEndRadialDistance_tendsto`: `2 ^ (β/2) · ∫_{u>β} √(M₂ u) du → 2`, where the conformal
+scale `M₂` is the second Euler prime-power moment.  Its analytic core is the reusable
+`tendsto_expMul_tail_integral` (for `c > 0`, `exp(c·u)·g(u) → L` forces
+`exp(c·β)·∫_{u>β} g → L/c`), together with `continuousOn_eulerConformalScale` (Weierstrass
+`M`-test continuity of `M₂` on every tail `β > 1`) and `eulerColdEndSqrt_asymptotic` (the
+square-root ground selection `exp((log 2 / 2)·u)·√(M₂ u) → log 2`).  Focused builds and the
+repository formal lint pass.  The theorem family uses only the standard Mathlib axioms `propext`,
 `Classical.choice`, and `Quot.sound`.
 
 ## Carrier verdict after the finite-Gamma boundary law
@@ -283,5 +294,6 @@ Routes A--D.
 - [x] 1 -> 2: complete paper proof with dominated-convergence majorants
 - [x] 2 -> 3 core: universal two-level law, actual Euler scaled limits, curvature coefficient,
   curvature divergence, logarithmic rate, and axiom audit completed in Lean
-- [ ] 2 -> 3 completion: formalize the radial-distance asymptotic and run its axiom audit
+- [x] 2 -> 3 completion: radial-distance asymptotic formalized as `eulerColdEndRadialDistance_tendsto`
+  (axiom audit: `propext`, `Classical.choice`, `Quot.sound` only)
 - [ ] 3 -> 4: primary-source novelty audit and standalone exposition

@@ -71,10 +71,13 @@ assumption in the target theorem or final paper.
 ## Formalization route
 
 1. Curry a continuous Schwartz sesquilinear form into continuous tempered distributions.
-2. Construct the difference-variable positive-definite tempered distribution using a formal
-   Schwartz factorization/kernel theorem.
-3. Prove the Bochner--Schwartz representation theorem for that distribution.
-4. Recover the unique measure representation of `Q` and invoke the already formalized theta
+2. Prove compact spectral locality directly from symmetric functional calculus, without a
+   Schwartz kernel theorem.
+3. Extend strict quadratic-packet locality to arbitrary disjoint compact supports and construct
+   the resulting positive order-zero distribution. The locality half is complete; the order-zero
+   distribution remains open.
+4. Apply Riesz--Markov/positive-distribution representation to recover the unique temperate
+   measure and invoke the already formalized theta
    support, atomicity, radical, and nonclosability theorems.
 5. Audit the divided-eigenstate conservativity statement for multiplicities without assuming
    simplicity.
@@ -89,8 +92,47 @@ The spectral transfer needed for Step 2 is also complete in
 `formal/GaloisForLFunctions/SchwartzSpectralPullbackForm.lean`.  It constructs the Fourier-pulled
 form, proves that nonnegativity survives the pullback, identifies physical momentum with exact
 multiplication by `2*pi*t`, and propagates symmetry to every power of that spectral coordinate.
-The next named lemma is the compact-support locality theorem: disjoint spectral supports must be
-orthogonal for the pulled form.
+The kernel-free algebraic core of compact-support locality is now complete.  For any symmetric
+continuous multiplier `A`, if `A^n f -> 0` and the second packet has inverse-power factors
+`h_n -> 0` with `A^n h_n=g`, continuity forces `Q(f,g)=0`.  The concrete positive quadratic
+separator
+
+```text
+A_(lambda,C)(t)=C^(-1)(1+(2*pi*t-lambda)^2)
+```
+
+is proved symmetric directly from momentum symmetry.  The complete analytic compact-packet
+contraction theorem is now formalized.  Faà di Bruno expresses every derivative of the `n`th
+separator power as a finite sum of terms
+
+```text
+n.descFactorial(k) q^(n-k),   0 ≤ q < 1,
+```
+
+and each term tends to zero.  Uniform compact support lifts the resulting derivative estimates to
+every polynomially weighted Schwartz seminorm.  The reciprocal multiplier
+
+```text
+C/(1+(2*pi*t-lambda)^2)
+```
+
+is proved temperate, its powers converge on every compact outer packet, and it is an exact
+inverse-power factor.  Hence a momentum-symmetric continuous form makes every strict inner packet
+orthogonal to every compact outer packet.  No Schwartz kernel theorem or representation measure
+is assumed.
+
+Arbitrary compact locality is now complete without a finite partition. Urysohn separation and
+Weierstrass approximation produce one real polynomial `P` near zero on the first compact spectral
+packet and near two on the second. The positive functional-calculus separator
+
+```text
+A_P(t)=(1+P(2*pi*t)^2)/2
+```
+
+is symmetric, temperate, and globally invertible; its direct powers contract the first packet and
+the reciprocal powers contract the second. Therefore any two Schwartz maps with disjoint compact
+spectral supports are orthogonal for the pulled form. The remaining Step 3 obligation is exactly
+the positive order-zero distribution construction, followed by Riesz--Markov representation.
 
 ## Significance gate
 

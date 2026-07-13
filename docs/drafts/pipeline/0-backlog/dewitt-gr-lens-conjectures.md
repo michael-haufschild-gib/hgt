@@ -25,6 +25,13 @@ Finding 3b (dBN heat-flow `H_t`) × rh-corp type-III spine (critic:1735, "type-I
 > **Conjecture C.** The de Bruijn time `t`, the **Tomita modular time** of the archimedean type-III₁ factor, and the Connes scaling flow are **one emergent WDW clock**. `Λ_dBN≥0` (Rodgers–Tao) = the **KMS/H-theorem entropy monotonicity** of the modular flow (measured/free half); **RH = modular faithfulness** (`κ₋=0`, the integer/upper half).
 *Payoff:* unifies my dBN free/RH split (Finding 3b) with the operator-algebra "measured vs faithful" mechanism (critic:2605); feeds the time bucket's M1 (KMS/Bost–Connes, `β=½` self-dual). *Grade:* D2 / EMBASSY — substantiates `constraint-not-flow` (no Hamiltonian, only a modular constraint), but RH-equivalent.
 
+**TEST DONE -> literal one-clock identification FALSIFIED (2026-07-13).**  Born `beta` is a state
+label, Tomita `tau` is an automorphism parameter, and de Bruijn `t` deforms the function.  More
+decisively, a modular automorphism is multiplicative while quadratic heat flow sends `X^2` to
+`X^2+2t` and fixes `X`, so it is multiplicative only at `t=0`.  Formal proof and the positive
+covariant-family replacement are recorded in
+`../5-failed/born-modular-dbn-one-clock-identification.md`.
+
 ## Seed D — ζ as the no-boundary extremum of L-superspace  `[SPLIT OUT → own card, 2026-06-19]`
 GR's "which entire geometries are admissible?" + Hartle–Hawking no-boundary = a **selection principle** for a
 distinguished state. The banked supermetric work (`../2-fully-proven/dewitt-supermetric-no-margin.md`) shows ζ

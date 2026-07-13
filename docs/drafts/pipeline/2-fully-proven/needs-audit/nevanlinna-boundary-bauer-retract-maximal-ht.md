@@ -423,6 +423,14 @@ fiber, real Nevanlinna matrices, projective support fibers, weak probability top
 barycentric kernels, the normalization covariance, Banach-space jet controllability, and
 parametric transversality. Those layers are not jointly available in the current Lean tree.
 
+Formalization audit (needs-audit pass): no bounded self-contained kernel closes a gate. The
+substantive content — the moment-preserving barycenter `(7)`, the Bauer-simplex identification `(10)`,
+the weak-Feller Markov projector `(17)`--`(22)`, and the residual HT on infinite faces — all rest on
+the absent Hamburger-moment/Nevanlinna/Choquet-simplex/transversality stack shared with the parent
+cards. The only coordinate-free step that abstracts cleanly (idempotence `R_s^2 = R_s` from the left
+inverse `π_* ∘ Β = id`) is a retraction-from-section triviality, not a gate-closing theorem. No
+partial file is added.
+
 ## Gates
 
 - [x] prior-research collision search in the local pipeline and formal tree

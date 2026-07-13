@@ -52,6 +52,9 @@ fixedWindowLogarithmicWeilCompleteness_capstone.
 | RH iff sampled norms are bounded | riemannHypothesis_iff_rectangular_logSample_weil_norm_bdd |
 | sharp power exponent is the supremal transverse displacement | xiRightTransverseSup_is_sharp_rectangular_power_exponent |
 | under RH the fixed-width family is uniformly bounded | norm_xiWeilPolarization_rectangular_le_of_riemannHypothesis |
+| an eventual lower budget of exponent \(\alpha\) exists iff the transverse supremum is at most \(\alpha\) | xiRectangularWeilTailPowerLower_iff_transverseSup_le_global |
+| the lower budget is equivalent to the zero-free half-plane \(\Re\rho\le1/2+\alpha\) | xiRectangularWeilTailPowerLower_iff_all_xiZeros_re_le, xiRectangularWeilTailPowerLower_iff_xi_zeroFree_right_halfPlane |
+| the complete one-sided exponent spectrum is exactly \([\delta_*,\infty)\) | xiRectangularOneSidedExponentSet_eq_Ici_transverseSup |
 
 ## Cutoff-free full-sequence tomography
 
@@ -85,7 +88,8 @@ fixedWindowFullObservableDivisorUniversality_capstone.
 
 ## Axiom and lint gate
 
-- Exact build target: GaloisForLFunctions.RHTower.CCMUnconditionalFoundation.
+- Exact build targets: GaloisForLFunctions.RHTower.CCMUnconditionalFoundation and
+  GaloisForLFunctions.RHTower.CCMRectangularOneSidedTransverseExponent.
 - Allowed foundational dependencies in the checked capstones:
   [propext, Classical.choice, Quot.sound].
 - Repository lint must report no active sorry, admit, axiom, opaque, or unsafe declaration.

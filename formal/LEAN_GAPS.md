@@ -34,13 +34,14 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 1511 | `formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean` |
 | 1502 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean` |
 | 1494 | `formal/GaloisForLFunctions/Bottcher/ZeroCircleBranchQ62.lean` |
+| 1454 | `formal/GaloisForLFunctions/SchwartzSpectralQuadraticSeparation.lean` |
 | 1417 | `formal/GaloisForLFunctions/Bottcher/CrossRatioNormalBridge.lean` |
-| 1372 | `formal/GaloisForLFunctions/Bottcher/W4LinPack.lean` |
 
 ## Gap Markers
 
 | Location | Text |
 |---|---|
+| `formal/GaloisForLFunctions/ArithmeticComplementRank.lean:9` | `V ⧸ comap V.subtype W` — carries the prime directions missing from `W`: |
 | `formal/GaloisForLFunctions/Bottcher/ArcContinuation.lean:9` | spreads any positive-length arc of continuation over the whole circle — the remaining step (a |
 | `formal/GaloisForLFunctions/Bottcher/BasinBranchGlue.lean:303` | the local form of the basin branch the index route consumes; the remaining inputs are the geometric ones: a |
 | `formal/GaloisForLFunctions/Bottcher/BasinBranching.lean:14` | remaining analytic build (the disconnected, Cantor-Julia-set covering structure). |
@@ -290,7 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62RadicalReduction.lean:24` | algebraic surface of the disconnected case: the lone remaining input is the *geometric* non-squareness |
 | `formal/GaloisForLFunctions/Bottcher/Q62ReflectionBridge.lean:20` | * `reflectionCore_of_arcReflectionData` — the **reduction**.  It isolates the one remaining input of |
 | `formal/GaloisForLFunctions/Bottcher/Q62ReflectionBridge.lean:52` | /-- **The reflected-extension datum — the one remaining input of `ReflectionCore`.**  For a |
-| `formal/GaloisForLFunctions/Bottcher/Q62ReflectionTransport.lean:17` | boundary `hnb`.  The remaining inputs are exactly the boundary datum of `F = β ∘ γ` at the arc |
 
 ## Historical Status Logs
 

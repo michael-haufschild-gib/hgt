@@ -259,6 +259,13 @@ No Stage 3 claim is made. The source anti-Herglotz/RH equivalence is formalized,
 normalization `(1)--(5)`, Schur coefficient theorem, OPUC carrier, Bernstein--Szego approximation,
 and condensation theorem are not jointly formalized in Lean.
 
+Formalization audit (needs-audit pass): the cited RH input is confirmed present and is the RH-facing
+anchor — `RHTower.continuedPrimeArchUpperAntiHerglotz_iff_riemannHypothesis` in
+`CCMCompletedPrimeGammaAccretivityCriterion.lean`. But the inverse-limit criterion `(9)` and the
+atomic-condensation law `(13)`--`(14)` need the Schur coefficient theorem, OPUC carrier, and
+Bernstein--Szego `L^p` blow-up, all absent from mathlib. No bounded self-contained kernel closes a
+gate; no partial file is added.
+
 ## Gates
 
 - [x] unconditional Xi disk germ fixed

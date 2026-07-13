@@ -56,6 +56,9 @@ ultraproduct); else EMBASSY.
   ω = the ∞·0 scale-mixing (regularization, R01); st keeps only the first jet, which is a derivation. Predicts
   the moonshot's untie #3 (restrict to where st is multiplicative) makes ω=0 VACUOUS. Two fresh routes
   (nonstandard + q→1) converge on the same log ∂_s. ~80% true (verified); moonshot stays <5% as stated.
+- 2026-07-13 — the R07 raw-shadow and renormalized-shadow limits are now formalized in Lean as
+  `infinitePrimeShadow_tendsto_one` and `infinitePrimeRenormalizedShadow_tendsto_log`; see
+  `../3-formalized/not_new_scientific_knowledge/infinite-prime-shadow-log-degeneration.md`.
 
 ## R15 finding (2026-06-20, novelty loop) — the pole of ζ IS the infinite prime; the regularization tower is its graded shadow; ω is localized at s=1 `[strengthen/extreme; high proof]`
 

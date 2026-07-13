@@ -139,6 +139,13 @@ inhabit `SEMDyadicWeylModel`.
 dilation or crossed product (the dyadic solenoid/torsion sector), then prove that its clock and shift
 descend internally to the SEM local algebra.  Scalar KMS covariance is not enough.
 
+`FiniteIsometryBoundaryNoGo.lean` now rules out literal preservation of the proper-isometry defect
+on the finite target.  Every finite matrix satisfying `U*U=1` automatically satisfies `UU*=1` and
+has nonzero determinant.  Thus the Bost--Connes/Toeplitz range projection is intrinsically
+infinite-dimensional: a unitary dilation enlarges the carrier, while a finite descent must replace
+the defect by a cyclic boundary arrow.  The positive successor is therefore the same source
+holonomy closure `h(1-zeta_k^d)=0`, not a separate KMS or Toeplitz mechanism.
+
 ### Hurwitz torsion sectors mix away the scalar zeta component
 
 Rational Hurwitz shifts at denominator `2^k` carry the expected finite Fourier character table, so
@@ -156,6 +163,12 @@ deliberately fail that hypothesis.
 independently controlled divisor modulo `2^k`, while retaining a nontrivial projective action on the
 trivial sector.  Without that arithmetic isolation theorem, finite Fourier symmetry reads only total
 packet multiplicity.
+
+The character-line failure is now formal rather than heuristic.  `WeylCommonEigenspaceNoGo.lean`
+proves that a nontrivial Weyl pair has no common nonzero eigendirection with nonzero eigenvalues.
+Therefore a projector onto the scalar-zeta character line must break at least one generator.  The
+positive replacement is a full `2^k`-orbit isolation or an independent modulo-`2^k` divisor theorem
+for the complementary packet; one-dimensional character extraction cannot carry the action.
 
 ### QECC and chromatic moonshots reduce to the same open core
 
@@ -258,6 +271,48 @@ This semilinear replacement is source-compatible with the global translation--Eu
 does not demand that both generators centralize the Jordan multiplication operator.  The sharpened
 open core is to construct this coordinate twist from the actual SEM annulus/presentation, show that
 it preserves the undoubled root space, and prove that its top-boundary holonomy closes.
+
+The interior part of this semilinear successor is now unconditional and formalized:
+`truncatedJetClock_oneSidedShift_weyl` gives the exact clock--one-sided-shift relation for every
+dimension and every phase.  The clock is invertible, but the shift has zero determinant.  The gap
+has therefore collapsed to a single boundary arrow: source the nonzero top-to-bottom incidence and
+prove that adding it does not break the Weyl law.  Its failure is exactly `h(1-zeta_k^d)`.
+
+The apparent Fitting/contour detour is now proven to be the same obstruction, not a second route.
+`SEMTruncatedJetWeylCharge.lean` proves for every actual SEM split and every nonzero `h` that
+
+```text
+integralCharge_(2^k)(completed SEM contour) = 0
+  iff zeta_k^d = 1
+  iff h(1-zeta_k^d) = 0
+  iff the top wrap entry of the truncated Weyl defect vanishes.
+```
+
+Thus “annihilate the source contour class” and “close the semilinear Weyl boundary” are literally
+one open core.  The next detours must attack its source annihilation, not move between equivalent
+charge readers.
+
+The target end is now closed in the same coordinates:
+`riemannHypothesis_iff_all_dyadicSEMPhaseHolonomies_close` proves that RH is equivalent to
+`zeta_k^d=1` for every dyadic depth and every actual right-half SEM hole count.  The complete chain
+is therefore typed from the source contour to RH.  Its sole unproved arrow is the source theorem
+forcing these phase holonomies to close.
+
+### Moving-fiber parallelogram: fixed-point escape but not charge annihilation
+
+The large-prime limit makes the dyadic translation step arbitrarily small, so one can try to move
+an isolating annulus around a four-edge prime translation--Euler commutator square rather than pin
+translation at one zero.  This avoids `primeDyadicClockStep_no_fixedPoint`.
+
+It also removes the determinant argument.  The edges act between different fibers, so the closed
+square is a groupoid holonomy; it may have arbitrary scalar determinant even in rank one.  On the
+unframed local divisor, scalar rescaling of the defining function is a unit gauge.  A framed
+determinant line retains the phase, but source triviality of its loop holonomy is an extra theorem.
+
+**Positive residue:** the moving square geometrizes the shared contour/Weyl class.  To turn it into
+an RH proof one must construct a source-canonical determinant-line trivialization around the square.
+By `SEMTruncatedJetWeylCharge.lean`, its failure is again exactly the completed-SEM dyadic contour
+charge.  See `moving-fiber-prime-weyl-parallelogram.md`.
 
 ## Gates
 

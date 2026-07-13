@@ -818,6 +818,16 @@ escape for unconstrained discrete mass gauges. It does not formalize indetermina
 problems, Nevanlinna matrices, extremal representing measures, barycentric measure mixtures, or the
 mean-zero parameter-pole theorem. No Stage 3 claim is made.
 
+Formalization audit (needs-audit pass): the concrete pointed-Xi gate check is confirmed formalized
+and axiom-clean (`RHTower.normalizedPrimeArchMomentGerm_allOrder_determinate`,
+`XiC_unique_entire_solution_of_pointedMomentConstraint` in `XiHedenmalmMomentDeterminacy.lean`). The
+abstract full-fiber theorem has no bounded self-contained kernel: aperiodicity `(4a)`,
+parameter-jet controllability `(10)`, and the full-configuration transversality all route through the
+absent Nevanlinna matrix / minimal-exponential-type Jensen bound / Whitney-transversality stack. The
+one genuinely coordinate-free classical step — extreme points of a compact metrizable convex set are
+`G_δ`, `(29)`--`(30)` — is absent from mathlib and buildable in isolation, but closes no gate on its
+own; it is noted as a future reusable Choquet lemma rather than added here.
+
 ## Gates
 
 - [x] project prior-research collision search

@@ -422,13 +422,33 @@ a nonzero null vector for the evaluation matrix~\eqref{eq:evaluation-matrix}.  B
 Lemma~\ref{lem:evaluation-codim}, the bad packet set has a finite algebraic stratification whose
 every stratum has complex codimension greater than the shift dimension.
 
-The function $q$ has no nonzero translation period.  Indeed, all its poles are real and at least
-one exists.  A nonreal period would move a real pole off the real axis; a nonzero real period would
-force a real arithmetic progression of poles.  The latter has linear counting density, contrary
-to the minimal exponential type of $C$ by Jensen's formula.  We may therefore cover the distinct
-shift configuration space by countably many relatively compact patches and, on each patch, choose
-evaluation rows for which all target parameter poles remain separated from one another and from
-the frozen poles.
+The function $q$ has no nonzero translation period.  More intrinsically, if
+\[
+ D(z+\omega)C(z)=D(z)C(z+\omega)
+\]
+for some $\omega\ne0$, then any zero of $C$ propagates along a nonconstant arithmetic progression:
+the determinant identity prevents $C$ and $D$ from vanishing together.  Such a progression has
+linear counting density, contrary to the minimal exponential type of $C$ by Jensen's formula.
+Consequently, for distinct shifts $h_i,h_j$, the entire cross-difference
+\[
+ D(z+h_i)C(z+h_j)-D(z+h_j)C(z+h_i)
+\]
+is not identically zero.  The derivative numerator
+\[
+ W(z)=D(z)C'(z)-D'(z)C(z)
+\]
+is also nonzero as an entire function.  Otherwise $D/C$ would be locally constant on a ball where
+$C\ne0$, hence globally projectively constant by the identity theorem, contradicting a zero of
+$C$ at which $D\ne0$.
+
+For a finite target-shift packet and finite frozen-pole packet $(t_k)$, take the product of the
+shifted denominators $C(z+h_i)$, all cross-differences above, all frozen-avoidance factors
+$D(z+h_i)+t_kC(z+h_i)$, and all noncriticality factors $W(z+h_i)$.  This is a nonzero entire
+function, so it is nonzero at points of arbitrarily large imaginary part.  At every such row all
+target parameter poles are regular, pairwise distinct, disjoint from the frozen poles, and satisfy
+$q'\ne0$.  Nonvanishing persists on an open neighborhood of the shift configuration.  We may
+therefore cover the distinct-shift configuration space by countably many relatively compact
+patches; compactness gives a finite open atlas of such rows on each patch.
 
 The surjectivity proved in the first paragraph supplies, at every shift configuration, a
 finite-dimensional perturbation family that is submersive onto all row-jet coordinates.

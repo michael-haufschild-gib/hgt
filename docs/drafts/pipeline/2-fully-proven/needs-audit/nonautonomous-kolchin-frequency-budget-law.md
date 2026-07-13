@@ -286,6 +286,14 @@ Pontryagin exact sequence, covering dimension, Ritt characteristic decomposition
 Kolchin dimension package. The complete theorem is not formalized and remains stage 2. Formalizing
 only rank additivity for an abstract exact sequence would not formalize the analytic claim.
 
+The arithmetic-complement conservation `(20)` (`dim A_N ≤ 2 kappa_rel`, in its purely linear form
+`dim V ≤ dim (V/(V ⊓ D)) + dim D`) is formalized abstractly and axiom-clean in
+`formal/GaloisForLFunctions/ArithmeticComplementRank.lean` as
+`HTGeometry.finrank_le_arithmeticComplement_add`; this is the reusable linear core shared by the
+frequency-budget cards.  The analytic substrate — joint Bohr hull, the Pontryagin exact sequence
+`(5)`, relative Kolchin capacity `(11)`, and covering dimension of inverse limits — remains absent
+from mathlib and is the open part of the stage-3 gate.
+
 ## Gates
 
 - [x] joint coefficient-solution hull defined
@@ -295,4 +303,6 @@ only rank additivity for an abstract exact sequence would not formalize the anal
 - [x] Gamma-coefficient consequence stated
 - [x] degeneracy and pole cases attacked
 - [ ] full cross-literature priority audit
-- [ ] complete unconditional Lean formalization
+- [~] Lean formalization: arithmetic-complement conservation `(20)` formalized abstractly and
+  axiom-clean (`ArithmeticComplementRank.lean`); Bohr-hull / Pontryagin exact-sequence / relative
+  Kolchin / inverse-limit covering-dimension substrate still absent from mathlib

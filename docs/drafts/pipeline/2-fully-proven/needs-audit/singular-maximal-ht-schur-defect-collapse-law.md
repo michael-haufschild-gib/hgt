@@ -456,6 +456,14 @@ No Stage 3 claim is made. Exact formalization requires Cayley transport of measu
 Lebesgue decomposition, Schur parameters, Verblunsky recursion, Toeplitz determinants, Szego's
 theorem, and the parent residual maximal-HT theorem. These layers are not jointly formalized.
 
+Formalization audit (needs-audit pass): no bounded self-contained kernel closes a gate. The
+substantive steps — strict finite defects `(5)` (Verblunsky), the zero Szego product `(6)`--`(9)`,
+Bernstein--Szego approximation `(10)`--`(14)`, and the cofinal `L^p`/coercivity collapse — all need
+OPUC/Szego theory absent from mathlib, layered on the parent Nevanlinna/transversality stack. The
+one abstractly-extractable linear-algebra identity (`λ_max/λ_min → ∞` from `trace = N+1` and
+`det → 0`) is a spectral wrapper that certifies nothing without the absent Szego determinant input.
+No partial file is added.
+
 ## Gates
 
 - [x] real-line singular measure transported to circle without changing type/support cardinality

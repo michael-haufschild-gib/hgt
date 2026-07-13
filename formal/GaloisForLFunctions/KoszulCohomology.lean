@@ -110,6 +110,70 @@ theorem koszul_euler_characteristic_eq_zero (n dimM : ℕ) (hn : 0 < n) :
   rw [koszul_alternating_choose_sum_eq_zero n hn]
   simp
 
+/-! ### The local-factor superdeterminant exponent -/
+
+/-- The exponent with which one fixed direction occurs in the alternating determinant of an
+`n`-direction Koszul grading.  In exterior degree `k`, the fixed direction has
+`choose (n - 1) k` complementary copies. -/
+def koszulComplementSuperExponent (n : ℕ) : ℤ :=
+  ∑ k ∈ Finset.range n, (-1 : ℤ) ^ k * ((n - 1).choose k : ℤ)
+
+/-- In a one-direction Koszul grading the unique local determinant survives with exponent one. -/
+@[aesop norm simp]
+theorem koszulComplementSuperExponent_one :
+    koszulComplementSuperExponent 1 = 1 := by
+  norm_num [koszulComplementSuperExponent]
+
+/-- **Multi-direction Koszul cancellation.**  Once there are at least two commuting directions,
+the alternating determinant exponent of every fixed local factor is zero.  Thus an absolute
+Koszul superdeterminant cancels the pure local factors together with the mixed terms; a relative
+or augmented boundary is necessary if an Euler factor is to survive. -/
+@[aesop safe]
+theorem koszulComplementSuperExponent_eq_zero {n : ℕ} (hn : 2 ≤ n) :
+    koszulComplementSuperExponent n = 0 := by
+  have hpos : 0 < n - 1 := by omega
+  have hsum := koszul_alternating_choose_sum_eq_zero (n - 1) hpos
+  simpa [koszulComplementSuperExponent, Nat.sub_add_cancel (by omega : 1 ≤ n)] using hsum
+
+/-! ### A marked-support successor -/
+
+/-- Mark one active direction and take the alternating Koszul exponent over its complement.
+The factor `n` counts the possible marked directions.  Unlike the absolute ambient Koszul
+superdeterminant, this support-sensitive incidence weight is attached to the directions actually
+used by a word. -/
+def koszulSupportMarkedExponent (n : ℕ) : ℤ :=
+  (n : ℤ) * koszulComplementSuperExponent n
+
+/-- **Singleton-support selector.**  The marked incidence exponent is one on a pure word (exactly
+one active prime direction) and zero on both the empty support and every mixed-prime support.
+This is the combinatorial shape required of a graded prime-word boundary: it retains pure prime
+repetitions while cancelling mixed words, without requiring the prime sectors to be orthogonal.
+The remaining problem is to realize this support-sensitive weight by a source-defined closed
+relative determinant. -/
+@[aesop norm simp]
+theorem koszulSupportMarkedExponent_eq (n : ℕ) :
+    koszulSupportMarkedExponent n = if n = 1 then 1 else 0 := by
+  by_cases h0 : n = 0
+  · simp [h0, koszulSupportMarkedExponent, koszulComplementSuperExponent]
+  by_cases h1 : n = 1
+  · subst n
+    rw [if_pos rfl, koszulSupportMarkedExponent, koszulComplementSuperExponent_one]
+    norm_num
+  have hn : 2 ≤ n := by omega
+  rw [if_neg h1, koszulSupportMarkedExponent, koszulComplementSuperExponent_eq_zero hn, mul_zero]
+
+/-- A word with at least two active directions has zero marked-support exponent. -/
+@[aesop safe]
+theorem koszulSupportMarkedExponent_eq_zero {n : ℕ} (hn : 2 ≤ n) :
+    koszulSupportMarkedExponent n = 0 := by
+  rw [koszulSupportMarkedExponent_eq, if_neg (by omega)]
+
+/-- A one-direction word retains exponent one. -/
+@[aesop norm simp]
+theorem koszulSupportMarkedExponent_one :
+    koszulSupportMarkedExponent 1 = 1 := by
+  exact koszulSupportMarkedExponent_eq 1
+
 end
 
 end GaloisForLFunctions

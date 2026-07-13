@@ -20,12 +20,14 @@ of the Riemann hypothesis.
     Connes--Consani--Moscovici, Voros's superzeta theory, Suzuki through June 2026, and Groskin
     through July 2026.
   - No located parent gives the conjunction of fixed arbitrary positive width, logarithmic mesh,
-    lower-bound and norm criteria, cofinal negative divergence, sharp transverse exponent, and
-    exact cutoff-free observable multiplicity-weighted pole tomography of the complete sequence.
+    lower-bound and norm criteria, cofinal negative divergence, the exact closed-ray one-sided
+    exponent spectrum, and exact cutoff-free observable multiplicity-weighted pole tomography of
+    the complete sequence.
   - The Landau and screw-function mechanisms are classical parents and are not claimed as new.
 - Significance: 21/22
   - One scalar cofinal family recovers every off-critical divisor coordinate, its exact analytic
-    multiplicity, and its supremal transverse displacement.
+    multiplicity, its supremal transverse displacement, and every horizontal zero-free region
+    through its one-sided polynomial lower-loss spectrum.
   - Pole locations recover support and normalized residues recover multiplicity, so the theorem
     identifies the weighted pole divisor rather than only an unweighted detector set.
   - The continuation is attached to the complete sequence itself; finite deletion is only an

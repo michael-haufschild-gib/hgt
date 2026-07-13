@@ -223,6 +223,13 @@ groups, noncompactness of the quotient, Hermitian forms, and the Capocasa--Catan
 Riemann relation are absent. This card cannot move to Stage 3 until those inputs and the assembled
 theorem are formalized unconditionally.
 
+Formalization audit (needs-audit pass): the combinatorial framework is confirmed present
+(`HTGeometry.jetPoleFingerprint_injective`, plus the finite Stanley--Reisner / Laurent-monomial
+support cited above). No bounded self-contained kernel survives removal of the analytic surface: the
+load-bearing steps (properties 3, 6 and the dimension bound) all route through the Capocasa--Catanese
+generalized-Riemann-relation criterion and complex-Lie period quotients, neither of which mathlib
+provides. Building that criterion is a research-scale development; no partial file is added.
+
 ## Gates
 
 - [x] facet carrier isolated without an atomic decomposition
