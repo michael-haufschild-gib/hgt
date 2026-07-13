@@ -406,11 +406,49 @@ The **Dirichlet-series backbone of §4** is also formalized axiom-clean, in
   for `Re s > 3/2`, the exact charge cancelled at `s = 3/2` (mathlib's
   `LSeries_vonMangoldt_eq_deriv_riemannZeta_div` at the shifted argument).
 
-The remaining open chain is the *coupling* of the two sides: assembling the cell bound `(15)` and the
-integral value into `E_{k,L}(s)` `(16)` and its per-`s` bound `(17)`; the summable error series `(19)`
-(via `LSeriesSummable_vonMangoldt`, already in mathlib, dominating `(18)`); the double-series
-interchange `(20)`; and the polar cancellation/residue `(23)`--`(25)` (a residue computation at the
-simple poles `s = 3/2` and `s = ρ+½`).
+The **residue cancellation `(23)` of §5 is now fully formalized** axiom-clean.  In
+`RHTower/ZetaLogDerivResidue.lean` (reusable):
+
+- `zetaResidueUnit` = the analytic continuation of `(s-1)ζ(s)` across `s = 1` (Riemann removable
+  singularity + `riemannZeta_residue_one`), with `zetaResidueUnit 1 = 1`;
+- `neg_logDeriv_zeta_residue` — **the residue of `-ζ'/ζ` at `s = 1` is `+1`**: `(s-1)·(-ζ'/ζ)(s) → 1`,
+  via `ζ'/ζ = G'/G - 1/(s-1)` with `G = zetaResidueUnit`.
+
+In `RHTower/PrimePolarDirichletBackbone.lean`: `shift_half_tendsto` (the change of variable
+`s ↦ s-½` onto the `ζ`-pole) and `polar_term_residue` (residue of `8α²ζ(s-½)` at `3/2` is `+8α²`).
+In `RHTower/TentMellinFactor.lean`: `rectangularWindowAmplitude_at_half` (`A_L(½) = 2α`) and
+`gTent_integral_three_halves` (`I_L(3/2) = 4α²`, eq. 12).  Assembled in
+`RHTower/PrimePolarResidueCancellation.lean`:
+
+- `polar_cancellation` — **eq. 23**: `(s - 3/2)·(8α²ζ(s-½) - 2·I_L(s)·(-ζ'/ζ)(s-½)) → 0`, i.e. the two
+  simple-pole terms cancel (`+8α²` and `-2·I_L(3/2) = -8α²`) and the combination is holomorphic at
+  `s = 3/2`.
+
+The **off-critical divisor tomography `(24)`--`(25)` is also formalized** axiom-clean.  The reusable
+core, in `RHTower/ZetaLogDerivResidue.lean`:
+
+- `logDeriv_residue_of_factorization` — **residue of a logarithmic derivative at a zero equals the
+  multiplicity**: if `f = (z-ρ)ⁿ·g` near `ρ` with `g` analytic, `g(ρ) ≠ 0`, then `(s-ρ)·(f'/f) → n`
+  (mathlib-missing);
+- `neg_logDeriv_zeta_zero_residue` — **at a zeta zero `ρ ≠ 1` of multiplicity `m ≥ 1`, `-ζ'/ζ` has
+  residue `-m`**: `(s-ρ)·(-ζ'/ζ) → -m`.  (The factorization is extracted from the analyticity of `ζ`
+  on the connected `{1}ᶜ` — not identically zero since `ζ(2) ≠ 0` — via
+  `exists_eventuallyEq_pow_smul_nonzero_iff`.)
+
+Assembled in `RHTower/PrimePolarResidueCancellation.lean`:
+
+- `offcritical_residue` — **eqs. 24–25**: each zeta zero `ρ` with `Re ρ > ½` gives a genuine simple
+  pole of the prime term at `s = ρ+½`, with residue `2·m(ρ)·A_L(ρ-½)²`, **nonzero** because `m ≥ 1`
+  and `A_L(ρ-½) ≠ 0` (`rectangularWindowAmplitude_ne_zero`, the nonvanishing law `(26)`).  So no
+  off-critical pole cancels, and the residue reads off the exact multiplicity.
+
+Thus the whole §5 divisor structure — the polar cancellation `(23)`, the pole support `(24)`, the
+multiplicity-exact residue `(25)`, and the nonvanishing `(26)` — is machine-checked.  The one remaining
+open piece is the *coupling* `(16)`--`(20)`: assembling `E_{k,L}(s)` from the cell bound `(15)` and the
+integral value into the source Dirichlet series, summing to `H_L` via `LSeriesSummable_vonMangoldt`
+(dominated by `vonMangoldt_shifted_summable`), and the double-series interchange `(20)` — i.e. proving
+that the coefficient series `Pcal_L` actually equals `(22)`, at which point the RH criterion `(28)`
+follows from the assembled residue facts.
 
 ## Gates
 

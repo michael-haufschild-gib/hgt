@@ -31,8 +31,8 @@
 \newcommand{\Res}{\operatorname{Res}}
 \newcommand{\supp}{\operatorname{supp}}
 
-\title{An Exact Sharp Prime--Gamma Spectrum for the Riemann Xi Function:\\
-Source--Divisor Tomography and Optimal Positive Carriers}
+\title{An Exact Cumulative Prime--Polar Spectrum for the Riemann Xi Function:\\
+Sharp Weil Tomography and Optimal Positive Carriers}
 \author{Michael Haufschild \and GPT 5.6 Sol \and Fable 5 \and Grok 4.5}
 \date{}
 
@@ -55,23 +55,36 @@ admissible tail we prove
 \[
  \mathrm{RH}\Longleftrightarrow g_L(n)\ge0\text{ at every retained sample}.
 \]
-More generally, if $g_{L,N}^-$ is the negative part and $\delta_*$ is the supremal horizontal
-displacement of the Xi divisor, then for every $\alpha\ge0$,
+Removing the uniformly bounded Gamma--polar correction leaves the literal finite prime--polar
+coefficient
+\[
+ S_L(n)=-2\mathcal P_{L,a}+2B_{L,a}^2.
+\]
+If $S_{L,N}^-$ is its retained negative part and
+$A_{L,N}(X)=\sum_{n\le X}S_{L,N}^-(n)$, then for every $\alpha\ge0$,
 \[
  \Re\rho\le\tfrac12+\alpha\ (\XiR(\rho)=0)
  \Longleftrightarrow
- \sum_{n\ge1}\frac{g_{L,N}^-(n)}{n^{1+\alpha+\varepsilon}}<\infty
- \quad(\varepsilon>0),
+ \sigma_{\rm abs}(S_{L,N}^-)\le1+\alpha
+ \Longleftrightarrow
+ A_{L,N}(X)=O_\varepsilon(X^{1+\alpha+\varepsilon})
+ \quad(\varepsilon>0).
 \]
-and
+Consequently
 \[
- \sigma_{\rm abs}(g_{L,N}^-)=
- \begin{cases}-\infty,&\mathrm{RH},\\1+\delta_*,&\neg\mathrm{RH}.
- \end{cases}
+ \mathrm{RH}\Longleftrightarrow
+ \sigma_{\rm abs}(S_{L,N}^-)\le1
+ \Longleftrightarrow
+ A_{L,N}(X)=O_\varepsilon(X^{1+\varepsilon})
+ \quad(\varepsilon>0).
 \]
-Thus one explicit prime--Gamma sequence records every right half-plane containing the Xi
-divisor.  Finite exact positive splits conserve this threshold as their maximum channel
-abscissa, and pointwise-summable positive covers conserve it in their aggregate.
+The cumulative exponent is sharp: it is at most $1+\delta_*+\varepsilon$ for every
+$\varepsilon>0$, but under false RH no exponent $1+\delta_*-\eta$ with
+$0<\eta<\delta_*$ is admissible.  Thus one explicit finite prime--polar sequence records every
+right half-plane containing the Xi divisor.  The exact prime--Gamma negative channel retains the
+stronger dichotomy $-\infty$ under RH and $1+\delta_*$ otherwise.  Finite exact positive splits
+conserve this threshold as their maximum channel abscissa, and pointwise-summable positive covers
+conserve it in their aggregate.
 
 Independently, an inverse-tilted dyadic prime source has a canonical continuation $\cS_-$ whose
 poles are exactly $s=\rho+\frac12$, with normalized residues equal to Xi multiplicities; its
@@ -124,36 +137,53 @@ Weil criterion into a source-only one: for every fixed $L>0$, nonnegativity of t
 finite-prime--Gamma samples on any admissible logarithmic tail is equivalent to RH.
 
 The headline theorem can be stated compactly.  For every $L>0$ and every integer cutoff
-$N\ge\lceil e^{2L}\rceil$, the explicitly defined prime--Gamma coefficient $g_L(n)$ satisfies
+$N\ge\lceil e^{2L}\rceil$, the explicitly defined prime--Gamma coefficient $g_L(n)$ and finite
+prime--polar coefficient $S_L(n)$ satisfy
 \[
- g_L(n)=Q_L\!\left(\tfrac12\log n\right)\qquad(n\ge N),
+ g_L(n)=Q_L\!\left(\tfrac12\log n\right),
+ \qquad
+ S_L(n)=-2\mathcal P_{L,\frac12\log n}+2B_{L,\frac12\log n}^{2}.
 \]
-and, for every $\alpha\ge0$,
+Write $A_{L,N}(X)=\sum_{n\le X}S_{L,N}^-(n)$.  Then, for every $\alpha\ge0$,
 \[
- \left(\Re\rho\le\tfrac12+\alpha\text{ for every xi zero }\rho\right)
- \Longleftrightarrow
- \sum_{n\ge1}\frac{g_{L,N}^-(n)}{n^{1+\alpha+\varepsilon}}<\infty
+ \begin{aligned}
+ &\left(\Re\rho\le\tfrac12+\alpha\text{ for every xi zero }\rho\right)\\
+ &\qquad\Longleftrightarrow
+ \sigma_{\rm abs}(S_{L,N}^-)\le1+\alpha\\
+ &\qquad\Longleftrightarrow
+ A_{L,N}(X)=O_\varepsilon(X^{1+\alpha+\varepsilon})
  \quad(\varepsilon>0).
+ \end{aligned}
  \tag{1.1}
 \]
 Consequently
 \[
- \mathrm{RH}\Longleftrightarrow g_L(n)\ge0\ (n\ge N),
+ \mathrm{RH}
+ \Longleftrightarrow g_L(n)\ge0\ (n\ge N)
+ \Longleftrightarrow \sigma_{\rm abs}(S_{L,N}^-)\le1
+ \Longleftrightarrow A_{L,N}(X)=O_\varepsilon(X^{1+\varepsilon})
+ \quad(\varepsilon>0),
+ \tag{1.2}
+ \]
+while the exact Weil negative channel obeys
+\[
  \qquad
  \sigma_{\rm abs}(g_{L,N}^-)=
  \begin{cases}
  -\infty,&\mathrm{RH},\\
  1+\delta_*,&\neg\mathrm{RH}.
  \end{cases}
- \tag{1.2}
+ \tag{1.3}
 \]
-This exact source spectrum is the main theorem; the subsequent divisor, energy, and positive
-carrier results identify its equivalent coordinates and its unavoidable positivity cost.
+The cumulative growth threshold is itself exact: every exponent above $1+\delta_*$ is
+admissible, while no exponent below it within the transverse range is.  This cumulative
+prime--polar spectrum is the main theorem; the subsequent divisor, energy, and positive-carrier
+results identify its equivalent coordinates and its unavoidable positivity cost.
 
 There is also a classical superzeta literature in which Dirichlet series are formed directly over
 the Riemann zeros and their meromorphic polar structure is studied~\cite{Voros2003}.  That
 construction takes the zero set as the Dirichlet indexing object.  Here the Dirichlet variable is
-the ordinary integer $n$.  More strongly, the source coefficient sequence in this paper is
+the ordinary integer $n$.  More strongly, a second source coefficient sequence in this paper is
 the explicit inverse-tilted dyadic von Mangoldt statistic $P_-(n)$ from the abstract.  Its Mellin
 poles recover the complete nontrivial divisor with multiplicity, without using zeros to define the coefficients.  This
 distinction is essential for the intended prime-side and semilocal interpretation.
@@ -186,8 +216,13 @@ fixed-window carrier pointwise with the negative part of an explicit finite-prim
 sequence.  For every $\alpha\ge0$, the xi zero-free half-plane
 $\Re\rho\le\frac12+\alpha$, holomorphy of $\cS_-$ on $\Re s>1+\alpha$, holomorphy of the
 intrinsic critical-Mellin defect on $\Re u>\alpha-\frac12$, and shifted Dirichlet energy of the
-explicit prime--Gamma negative tail are equivalent.  The theorem is therefore a source-only
-spectrum of exact half-plane criteria, not only an RH endpoint equivalence.
+explicit prime--Gamma negative tail are equivalent.  Removing the uniformly bounded
+Gamma--polar correction yields the literal finite prime--polar sequence $S_L$ with the same
+supercritical spectrum.  Its cumulative negative mass has exact power threshold
+$1+\delta_*$, and at $\alpha=0$ the bound
+$\sum_{n\le X}S_{L,N}^-(n)=O_\varepsilon(X^{1+\varepsilon})$ is equivalent to RH.  The theorem is
+therefore a source-only spectrum of exact half-plane criteria, not only an RH endpoint
+equivalence.
 
 The universal negative-channel abscissa law supplies the conservation statement behind this
 spectrum.  Under false RH the negative carrier has threshold $1+\delta_*$; under RH it vanishes.
@@ -630,6 +665,34 @@ For a nonnegative sequence $c$ write
  \tag{4.10}
 \]
 
+\begin{proposition}[Cumulative mass and Dirichlet abscissa]
+\label{prop:cumulative-abscissa}
+Let $c(n)\ge0$, put $C(X)=\sum_{1\le n\le X}c(n)$, and let $\sigma\ge0$.  Then
+\[
+ \sigma_{\rm abs}(c)\le\sigma
+ \quad\Longleftrightarrow\quad
+ C(X)=O_\varepsilon(X^{\sigma+\varepsilon})
+ \quad\text{for every }\varepsilon>0.
+ \tag{4.10a}
+\]
+\end{proposition}
+
+\begin{proof}
+Assume first that $\sigma_{\rm abs}(c)\le\sigma$ and fix $\varepsilon>0$.  With
+$t=\sigma+\varepsilon/2$, positivity gives
+\[
+ C(X)
+ =\sum_{n\le X}\frac{c(n)}{n^t}n^t
+ \le X^t\sum_{n\ge1}\frac{c(n)}{n^t}
+ =O(X^{\sigma+\varepsilon}).
+\]
+Conversely, suppose the displayed cumulative estimate holds and let $s>\sigma$.  Apply it with
+$\varepsilon=(s-\sigma)/2$.  Abel summation then shows that
+$\sum c(n)n^{-s}$ converges, because its partial-sum exponent
+$\sigma+\varepsilon$ is strictly smaller than $s$.  Thus the series converges at every real
+$s>\sigma$, which is equivalent to $\sigma_{\rm abs}(c)\le\sigma$.
+\end{proof}
+
 \begin{theorem}[Main Weil-energy theorem: universal negative-channel abscissa]
 \label{thm:universal-abscissa}
 Fix any $L>0$ and any admissible tail $N$.
@@ -677,6 +740,12 @@ of the positive width $L$, the admissible prefix $N$, and the chosen exact posit
  \sum_{n\ge1}\frac{q_{L,N}^-(n)}{n^{1+\alpha+\varepsilon}}<\infty;
  \tag{4.13}
 \]
+\item for every $\varepsilon>0$,
+\[
+ \sum_{n\le X}q_{L,N}^-(n)
+ =O_\varepsilon(X^{1+\alpha+\varepsilon});
+ \tag{4.13a}
+\]
 \item there is a nonnegative majorant $m\ge q_{L,N}^-$ satisfying \textup{(4.13)} with
 $m$ in place of $q_{L,N}^-$;
 \item there are nonnegative channels $a,b$ such that
@@ -689,7 +758,7 @@ $q_{L,N}^-\le a+b$ and, for every $\varepsilon>0$,
 \]
 \end{enumerate}
 \end{enumerate}
-At $\alpha=0$, each of \textup{(iv)(c)--(e)} is an exact RH criterion.
+At $\alpha=0$, each of \textup{(iv)(c)--(f)} is an exact RH criterion.
 \end{theorem}
 
 \begin{proof}
@@ -721,8 +790,10 @@ coordinate $d>\alpha$, apply \textup{(4.13)} with
 $\varepsilon=(d-\alpha)/2$ and Proposition~\ref{prop:one-abscissa-energy}; it gives
 $d\le(\alpha+d)/2<d$, a contradiction.
 
-Condition \textup{(iv)(c)} implies \textup{(iv)(d)} by taking $m=q_{L,N}^-$, while domination
-gives the reverse implication.  It implies \textup{(iv)(e)} by taking
+The equivalence of \textup{(iv)(c)} and \textup{(iv)(d)} is
+Proposition~\ref{prop:cumulative-abscissa} at $\sigma=1+\alpha$.
+Condition \textup{(iv)(c)} implies \textup{(iv)(e)} by taking $m=q_{L,N}^-$, while domination
+gives the reverse implication.  It implies \textup{(iv)(f)} by taking
 $(a,b)=(q_{L,N}^-,0)$.  Conversely, summing the two series in \textup{(4.14)} gives an
 energy majorant $a+b$ for $q_{L,N}^-$.  This completes all equivalences.
 \end{proof}
@@ -1246,6 +1317,76 @@ The corrected observable therefore satisfies the exact source identity
  \tag{6.21}
 \]
 
+\begin{proposition}[Uniform Gamma--polar cancellation]
+\label{prop:gamma-polar-uniform}
+For $0\le L\le a$, define
+\[
+ K_{L,a}(t)=
+ \frac{e^{-t}R_{L,a}(0)-e^{-t/4}R_{L,a}(t/2)}{1-e^{-t}}
+ \qquad(t>0).
+ \tag{6.21a}
+\]
+Then
+\[
+ \Re\mathcal A_{\infty,L,a}-2B_{L,a}^2
+ =\int_0^\infty K_{L,a}(t)\,dt
+  -(\gamma+\log\pi)(2L),
+ \tag{6.21b}
+\]
+and
+\[
+ |K_{L,a}(t)|\le
+ \begin{cases}
+  8L+3,&0<t\le1,\\[2mm]
+  \displaystyle\frac{5L}{1-e^{-1}}e^{-t/4},&t\ge1.
+ \end{cases}
+ \tag{6.21c}
+\]
+Consequently the Gamma--polar correction is uniformly bounded over the full aperture ray:
+\[
+ \left|\Re\mathcal A_{\infty,L,a}-2B_{L,a}^2\right|
+ \le C_L
+ \qquad(a\ge L),
+ \tag{6.21d}
+\]
+where one may take
+\[
+ C_L=8L+3+
+ \int_1^\infty\frac{5L}{1-e^{-1}}e^{-t/4}\,dt
+ +|(\gamma+\log\pi)(2L)|.
+\]
+\end{proposition}
+
+\begin{proof}
+The Gamma integral in Theorem~\ref{thm:sharp-guinand-weil}, written in the positive time
+variable, has numerator
+$e^{-t}R_{L,a}(0)-e^{-t/4}R_{L,a}(t/2)$.  Its apparent singularity at $t=0$ is removable because
+$R_{L,a}(0)=2L$.  Isolating the even polar square gives \textup{(6.21b)}.
+
+The explicit tent formula for $R_{L,a}$ gives, uniformly in $a\ge L$,
+\[
+ 0\le R_{L,a}(h)\le3L,
+ \qquad
+ |R_{L,a}(0)-R_{L,a}(h)|\le3h
+ \qquad(h\ge0).
+\]
+For $0<t\le1$, use
+$1-e^{-t}\ge t/2$ and $|e^{-t}-e^{-t/4}|\le2t$ to obtain
+\[
+ \left|e^{-t}R_{L,a}(0)-e^{-t/4}R_{L,a}(t/2)\right|
+ \le e^{-t/4}\frac{3t}{2}+2t(2L)
+ \le(8L+3)\frac t2.
+\]
+Division by $1-e^{-t}$ proves the first line of \textup{(6.21c)}.  For $t\ge1$,
+\[
+ \left|e^{-t}R_{L,a}(0)-e^{-t/4}R_{L,a}(t/2)\right|
+ \le2Le^{-t}+3Le^{-t/4}
+ \le5Le^{-t/4},
+\]
+while $1-e^{-t}\ge1-e^{-1}$.  This proves the tail estimate.  Splitting the integral at one
+now yields \textup{(6.21d)} and also proves absolute convergence directly.
+\end{proof}
+
 At the arithmetic aperture define the entirely source-side coefficient
 \[
  g_L(n)=-2\mathcal P_{L,\frac12\log n}
@@ -1261,6 +1402,26 @@ $1\le n$ and $L\le\frac12\log n$, and set
   0,&n<N.
  \end{cases}
  \tag{6.23}
+\]
+The same finite arithmetic data also define the Gamma-free prime--polar coefficient
+\[
+ S_L(n)=-2\mathcal P_{L,\frac12\log n}
+        +2B_{L,\frac12\log n}^{2},
+ \tag{6.23a}
+\]
+its retained negative part
+\[
+ S_{L,N}^-(n)=
+ \begin{cases}
+  \max\{-S_L(n),0\},&n\ge N,\\
+  0,&n<N,
+ \end{cases}
+ \tag{6.23b}
+\]
+and the cumulative negative mass
+\[
+ A_{L,N}(X)=\sum_{1\le n\le X}S_{L,N}^-(n).
+ \tag{6.23c}
 \]
 Such a cutoff exists for every $L$.  The following is the headline consequence of the sharp
 formula.
@@ -1312,6 +1473,85 @@ spectrum in Theorem~\ref{thm:universal-abscissa}\textup{(iv)} after the pointwis
 identification.  Part~\textup{(iv)} is
 Theorem~\ref{thm:universal-abscissa}\textup{(i)} under the same identification; under false RH,
 $\delta_*>0$, so its two values also give the final equivalences.
+\end{proof}
+
+\begin{theorem}[Gamma-free cumulative prime--polar spectrum]
+\label{thm:prime-polar-cumulative-spectrum}
+Fix $L>0$ and an admissible cutoff $N$.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item For every $\alpha\ge0$, the following are equivalent:
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item every xi zero satisfies $\Re\rho\le\frac12+\alpha$;
+\item
+\[
+ \sigma_{\rm abs}(S_{L,N}^-)\le1+\alpha;
+ \tag{6.28}
+\]
+\item for every $\varepsilon>0$,
+\[
+ \sum_{n\ge1}\frac{S_{L,N}^-(n)}{n^{1+\alpha+\varepsilon}}<\infty;
+ \tag{6.29}
+\]
+\item for every $\varepsilon>0$,
+\[
+ A_{L,N}(X)=O_\varepsilon(X^{1+\alpha+\varepsilon}).
+ \tag{6.30}
+\]
+\end{enumerate}
+
+\item At the critical endpoint,
+\[
+ \boxed{\quad
+ \mathrm{RH}
+ \Longleftrightarrow \sigma_{\rm abs}(S_{L,N}^-)\le1
+ \Longleftrightarrow
+ A_{L,N}(X)=O_\varepsilon(X^{1+\varepsilon})
+ \quad(\varepsilon>0).
+ \quad}
+ \tag{6.31}
+\]
+
+\item The cumulative transverse exponent is exact.  For every $\varepsilon>0$,
+\[
+ A_{L,N}(X)=O_\varepsilon
+   (X^{1+\delta_*+\varepsilon}),
+ \tag{6.32}
+\]
+whereas, for every $0<\eta<\delta_*$,
+\[
+ A_{L,N}(X)\ne O(X^{1+\delta_*-\eta}).
+ \tag{6.33}
+\]
+Thus under false RH the sharp cumulative power threshold is $1+\delta_*$; under RH
+\textup{(6.32)} is the critical all-$\varepsilon$ bound and \textup{(6.33)} is vacuous.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The exact identity \textup{(6.21)} and the prime--Gamma formula show that $S_L$ and $g_L$ differ
+by the Gamma--polar correction
+$\Re\mathcal A_{\infty,L,a}-2B_{L,a}^2$.
+Proposition~\ref{prop:gamma-polar-uniform} bounds it uniformly over $a\ge L$.  Since the
+negative-part map is $1$-Lipschitz, the same $C_L$ satisfies
+\[
+ |S_{L,N}^-(n)-g_{L,N}^-(n)|\le C_L
+ \qquad(n\ge1).
+ \tag{6.34}
+\]
+At every real exponent greater than one, adding a bounded nonnegative coefficient does not
+affect convergence.  The equivalence of (i)(a) and (i)(c) therefore follows from
+Theorem~\ref{thm:prime-gamma-spectrum}\textup{(iii)}.  Conditions (i)(b) and (i)(c) are
+equivalent by the definition of the absolute-convergence abscissa, and (i)(b) and (i)(d) are
+equivalent by Proposition~\ref{prop:cumulative-abscissa}.  Functional-equation symmetry at
+$\alpha=0$ gives part (ii).
+
+For \textup{(6.32)}, take $\alpha=\delta_*$ in part (i); the right-transverse supremum bounds
+every xi zero.  Conversely, suppose \textup{(6.33)} fails for some
+$0<\eta<\delta_*$.  Abel summation applied to the resulting
+$O(X^{1+\delta_*-\eta})$ estimate gives
+$\sigma_{\rm abs}(S_{L,N}^-)\le1+\delta_*-\eta$.  Part (i), now with
+$\alpha=\delta_*-\eta\ge0$, would place every xi zero in that smaller half-plane, contradicting
+the definition of $\delta_*$.  This proves the exact cumulative power law.
 \end{proof}
 
 At $a=\frac12\log N$, the autocorrelation in \textup{(6.3)} is a sum of fixed and moving tents;
@@ -1600,6 +1840,16 @@ $\Re u>\alpha-\frac12$.
  \sum_{n\ge1}\frac{g_{L,N}^-(n)}{n^{1+\alpha+\varepsilon}}<\infty.
  \tag{7.25}
 \]
+\item The literal finite prime--polar negative channel satisfies
+\[
+ \sigma_{\rm abs}(S_{L,N}^-)\le1+\alpha.
+ \tag{7.25a}
+\]
+\item Its cumulative negative mass satisfies, for every $\varepsilon>0$,
+\[
+ A_{L,N}(X)=O_\varepsilon(X^{1+\alpha+\varepsilon}).
+ \tag{7.25b}
+\]
 \end{enumerate}
 At $\alpha=0$, each condition is equivalent to RH.
 
@@ -1622,7 +1872,7 @@ $g_{L,N}^-\le b$.  Then
  \tag{7.27}
 \]
 If RH is false, then $\sigma_{\rm abs}(b)\ge1+\delta_*$.  More generally,
-$\sigma_{\rm abs}(b)\le1+\alpha$ implies all four equivalent conditions above.  In particular,
+$\sigma_{\rm abs}(b)\le1+\alpha$ implies all six equivalent conditions above.  In particular,
 $\sigma_{\rm abs}(b)\le1$ proves RH.
 \end{enumerate}
 \end{theorem}
@@ -1634,7 +1884,9 @@ Theorem~\ref{thm:inverse-tilted-source-tomography}, the poles of $\cS_-$ are exa
 $s=\rho+\frac12$.  Hence (a) and (b) are equivalent after translating the boundary by
 $\frac12$.  Theorem~\ref{thm:critical-mellin-divisor-tomography} identifies the poles of
 $\widetilde D$ as $u=\rho-1$, proving the equivalence of (a) and (c).  The equivalence of (a)
-and (d) is Theorem~\ref{thm:universal-abscissa}\textup{(iv)}.  Functional-equation symmetry
+and (d) is Theorem~\ref{thm:universal-abscissa}\textup{(iv)}.  Conditions (e) and (f) are
+equivalent to (a) by Theorem~\ref{thm:prime-polar-cumulative-spectrum}\textup{(i)}.
+Functional-equation symmetry
 identifies the endpoint $\alpha=0$ with RH.
 
 The finite statement is Theorem~\ref{thm:universal-abscissa}\textup{(ii)}.  For the summable
@@ -1792,9 +2044,21 @@ Connes-type architecture factors through this scalar coordinate.
 The sharp-window observable itself already has the exact prime--Gamma realization
 \textup{(6.6)}; the missing operator theorem is therefore a positivity or critical-energy
 estimate for this realized source, not an unproved passage from a discontinuous test function.
-In its strongest scalar form, Theorem~\ref{thm:prime-gamma-spectrum} says that it is enough---and
-for this family necessary---to prove $g_L(n)\ge0$ on one admissible tail.  Equivalently, one may
-prove $\sigma_{\rm abs}(g_{L,N}^-)\le1$.
+Theorem~\ref{thm:prime-gamma-spectrum} says that it is enough---and for this family
+necessary---to prove $g_L(n)\ge0$ on one admissible tail.  The Gamma-free carrier theorem gives
+a weaker and more arithmetic endpoint.  It is enough, and again necessary, to prove either
+\[
+ \sigma_{\rm abs}(S_{L,N}^-)\le1
+ \qquad\text{or}\qquad
+ \sum_{n\le X}S_{L,N}^-(n)=O_\varepsilon(X^{1+\varepsilon})
+ \quad(\varepsilon>0).
+ \tag{8.0}
+\]
+This is the strongest scalar conclusion of the paper: the final carrier contains only a finite
+von Mangoldt autocorrelation and its explicit polar background.  No Gamma term, analytic
+continuation hypothesis, pointwise lower floor, or separately quantified weighted-energy family
+remains in the statement.  The cumulative version is positive and monotone, so it is directly
+adapted to trace budgets and cofinal positive operator estimates.
 
 Theorem~\ref{thm:minimal-sharp-correction} makes the corresponding positivity obligation
 canonical.  If a semilocal construction corrects the signed sharp-prime coefficient $c$ by any
@@ -1907,10 +2171,14 @@ complete nontrivial divisor with multiplicity; the rectangular theorem identifie
 divisor-side energy pointwise with an explicit finite-prime--Gamma source.  What is not proved is
 nonnegativity of $g_L$ on an admissible tail, holomorphy of $\widetilde D$ on
 $\Re u>-\frac12$, equivalently
-holomorphy of $\cS_-$ on $\Re s>1$, or an operator theorem forcing that statement.  The paper
+holomorphy of $\cS_-$ on $\Re s>1$, the Gamma-free bound
+$\sigma_{\rm abs}(S_{L,N}^-)\le1$, the equivalent cumulative estimate
+$A_{L,N}(X)=O_\varepsilon(X^{1+\varepsilon})$, or an operator theorem forcing any of these
+statements.  The paper
 therefore does not prove RH.  It reduces the remaining source problem to analytic continuation of
-the actual polar--prime critical-Mellin defect and gives an independent universal energy geometry
-for every fixed rectangular Weil window.  Corollary~\ref{cor:explicit-source-endpoints} gives a
+the actual polar--prime critical-Mellin defect and, independently, to the critical growth of one
+explicit positive cumulative prime--polar mass.  It also gives a universal energy geometry for
+every fixed rectangular Weil window.  Corollary~\ref{cor:explicit-source-endpoints} gives a
 fully arithmetic sufficient endpoint: prove the all-epsilon positive-excess energy (7.36), or the
 stronger prime-only estimate (7.37).  Theorem~\ref{thm:minimal-sharp-correction} shows that the
 first condition is not an arbitrary choice of majorant: $2E$ is the pointwise least nonnegative
@@ -1945,11 +2213,13 @@ function are established parent mechanisms.  The inverse-tilted complete-divisor
 bridge infrastructure.  The contribution claimed here is the fixed-window logarithmic
 compression, the exact evaluated sharp rectangular prime--Gamma specialization, its source-only tail-sign RH
 criterion and exact one-sided exponent
-spectrum, universal negative-channel abscissa, exact
+spectrum, the Gamma-free finite prime--polar abscissa criterion, its exact cumulative
+negative-mass power spectrum, universal negative-channel abscissa, exact
 finite positive-channel non-dilution, summable-family aggregate conservation, quantitative
 source--divisor--energy equivalence, optimal sharp-source correction, thickness corollaries, and
 multiplicity-exact meromorphic tomography of the actual Weil observable.  The elementary
-least-negative-part order lemma is not claimed as independent novelty; its role is to prove that
+cumulative-mass/abscissa lemma and least-negative-part order lemma are not claimed as independent
+novelty; their roles are to expose the exact transverse source exponent and to prove that
 the explicit arithmetic channel $2E$ is the unavoidable positive payment in this Connes/Landau
 architecture.
 

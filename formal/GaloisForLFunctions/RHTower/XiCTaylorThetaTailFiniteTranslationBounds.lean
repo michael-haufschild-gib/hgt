@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.XiCTaylorThetaTailFiniteTranslationCurrent
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailRapidDecay
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailCompletedFeedback
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
+import Mathlib.Analysis.SpecialFunctions.Exponential
 
 /-!
 # Rapid moments for the finite translation edge
@@ -72,6 +73,399 @@ theorem integral_abs_pow_mul_thetaCuspTailDerivative_zero_div_factorial_le_nat_r
           (m.factorial / (p : ℝ) ^ (m + 1)) := h
     _ = (thetaCuspTailNatExpConstant p / (p : ℝ) ^ (m + 1)) *
           (m.factorial : ℝ) := by ring
+
+/-- Global factorial Taylor remainder for the real exponential.  The standard library estimate
+used below controls the complex remainder by the corresponding real tail; this lemma retains the
+factorial which is essential when the remainder is integrated against high source moments. -/
+theorem real_exp_sub_sum_le_factorial_tail
+    (r : ℝ) (hr : 0 ≤ r) (N : ℕ) :
+    Real.exp r - ∑ m ∈ Finset.range N, r ^ m / m.factorial ≤
+      (r ^ N / N.factorial) * Real.exp r := by
+  have hs : Summable (fun m : ℕ => r ^ m / m.factorial) :=
+    NormedSpace.expSeries_div_summable r
+  have hsum : (∑' m : ℕ, r ^ m / m.factorial) = Real.exp r := by
+    simpa only [Real.exp_eq_exp_ℝ] using
+      (NormedSpace.expSeries_div_hasSum_exp r).tsum_eq
+  have hsplit := hs.sum_add_tsum_nat_add N
+  have htail : Real.exp r - ∑ m ∈ Finset.range N, r ^ m / m.factorial =
+      ∑' j : ℕ, r ^ (j + N) / (j + N).factorial := by
+    rw [← hsum]
+    linarith
+  rw [htail]
+  have hfac (j : ℕ) :
+      (N.factorial : ℝ) * j.factorial ≤ (j + N).factorial := by
+    exact_mod_cast Nat.le_of_dvd (Nat.factorial_pos _) <|
+      (Nat.factorial_mul_factorial_dvd_factorial_add N j) |>.trans (by
+        rw [Nat.add_comm])
+  have hterm (j : ℕ) :
+      r ^ (j + N) / (j + N).factorial ≤
+        (r ^ N / N.factorial) * (r ^ j / j.factorial) := by
+    have hnum : r ^ (j + N) = r ^ N * r ^ j := by
+      rw [Nat.add_comm, pow_add]
+    rw [hnum]
+    have hden : (0 : ℝ) < (N.factorial : ℝ) * j.factorial := by positivity
+    rw [div_eq_mul_inv, div_eq_mul_inv, div_eq_mul_inv]
+    have hinv : (((j + N).factorial : ℝ))⁻¹ ≤
+        (((N.factorial : ℝ) * j.factorial))⁻¹ :=
+      inv_anti₀ hden (hfac j)
+    calc
+      r ^ N * r ^ j * (((j + N).factorial : ℝ))⁻¹ ≤
+          r ^ N * r ^ j * (((N.factorial : ℝ) * j.factorial))⁻¹ := by
+            gcongr
+      _ = (r ^ N * (N.factorial : ℝ)⁻¹) *
+          (r ^ j * (j.factorial : ℝ)⁻¹) := by
+            rw [mul_inv_rev]
+            ring
+  calc
+    (∑' j : ℕ, r ^ (j + N) / (j + N).factorial) ≤
+        ∑' j : ℕ, (r ^ N / N.factorial) * (r ^ j / j.factorial) := by
+      exact ((summable_nat_add_iff N).2 hs).tsum_le_tsum hterm (hs.mul_left _)
+    _ = (r ^ N / N.factorial) * ∑' j : ℕ, r ^ j / j.factorial := by
+      rw [tsum_mul_left]
+    _ = _ := by rw [hsum]
+
+/-- Global factorial remainder for the complex exponential. -/
+theorem norm_complex_exp_sub_sum_le_factorial_tail (w : ℂ) (N : ℕ) :
+    ‖Complex.exp w - ∑ m ∈ Finset.range N, w ^ m / m.factorial‖ ≤
+      (‖w‖ ^ N / N.factorial) * Real.exp ‖w‖ := by
+  calc
+    _ ≤ Real.exp ‖w‖ - ∑ m ∈ Finset.range N, ‖w‖ ^ m / m.factorial :=
+      Complex.norm_exp_sub_sum_le_exp_norm_sub_sum w N
+    _ ≤ _ := real_exp_sub_sum_le_factorial_tail ‖w‖ (norm_nonneg _) N
+
+/-- Evaluation of the diagonal phase polynomial as one contiguous exponential Taylor section. -/
+theorem eval_finitePositivePhasePolynomial_eq_sum
+    (d : ℕ) (z : ℂ) (x : ℝ) :
+    (finitePositivePhasePolynomial d x).eval z =
+      ∑ m ∈ Finset.range (2 * d + 1),
+        (((x : ℂ) * I * z) ^ m) / m.factorial := by
+  rw [finitePositivePhasePolynomial_eq_taylor]
+  unfold finitePositivePhaseTaylorPolynomial
+  rw [Polynomial.eval_finsetSum]
+  apply Finset.sum_congr rfl
+  intro m _hm
+  simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow,
+    Polynomial.eval_X]
+  rw [mul_pow]
+  ring
+
+/-- Factorial remainder of the finite positive phase, uniform in the source coordinate. -/
+theorem norm_exp_sub_eval_finitePositivePhasePolynomial_le
+    (d : ℕ) (z : ℂ) (x : ℝ) :
+    ‖Complex.exp ((x : ℂ) * I * z) -
+        (finitePositivePhasePolynomial d x).eval z‖ ≤
+      (‖(x : ℂ) * I * z‖ ^ (2 * d + 1) /
+          (2 * d + 1).factorial) *
+        Real.exp ‖(x : ℂ) * I * z‖ := by
+  rw [eval_finitePositivePhasePolynomial_eq_sum]
+  exact norm_complex_exp_sub_sum_le_factorial_tail
+    ((x : ℂ) * I * z) (2 * d + 1)
+
+/-- The spectral derivative of the common-cutoff phase section is the preceding exponential
+Taylor section multiplied by its source frequency. -/
+theorem eval_derivative_finitePositivePhasePolynomial_eq_sum
+    (d : ℕ) (z : ℂ) (x : ℝ) :
+    (finitePositivePhasePolynomial d x).derivative.eval z =
+      ((x : ℂ) * I) * ∑ m ∈ Finset.range (2 * d),
+        (((x : ℂ) * I * z) ^ m) / m.factorial := by
+  rw [finitePositivePhasePolynomial_eq_taylor]
+  unfold finitePositivePhaseTaylorPolynomial
+  rw [show 2 * d + 1 = 2 * d + 1 by rfl, Finset.sum_range_succ']
+  simp only [derivative_add, derivative_sum, derivative_C_mul, derivative_X_pow,
+    mul_zero, pow_zero, Nat.factorial_zero, Nat.cast_one, div_one, derivative_one,
+    add_zero]
+  rw [Polynomial.eval_finsetSum]
+  simp only [eval_mul, eval_C, eval_pow, eval_X]
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro m _hm
+  rw [show m + 1 - 1 = m by omega, Nat.factorial_succ]
+  push_cast
+  have hmne : (((m + 1 : ℕ) : ℂ)) ≠ 0 := by exact_mod_cast Nat.succ_ne_zero m
+  field_simp [hmne]
+  ring
+
+/-- The exact complex exponential is dominated by the exponential of the full complex norm. -/
+theorem norm_complex_exp_le_exp_norm (w : ℂ) :
+    ‖Complex.exp w‖ ≤ Real.exp ‖w‖ := by
+  rw [Complex.norm_exp]
+  exact Real.exp_le_exp.mpr (re_le_norm w)
+
+/-- A common-cutoff phase section is bounded by the full exponential series, uniformly in the
+Taylor degree. -/
+theorem norm_eval_finitePositivePhasePolynomial_le_exp_norm
+    (d : ℕ) (x : ℝ) (z : ℂ) :
+    ‖(finitePositivePhasePolynomial d x).eval z‖ ≤
+      Real.exp ‖(x : ℂ) * I * z‖ := by
+  rw [eval_finitePositivePhasePolynomial_eq_sum]
+  calc
+    ‖∑ m ∈ Finset.range (2 * d + 1),
+        ((x : ℂ) * I * z) ^ m / m.factorial‖ ≤
+        ∑ m ∈ Finset.range (2 * d + 1),
+          ‖((x : ℂ) * I * z) ^ m / m.factorial‖ := norm_sum_le _ _
+    _ = ∑ m ∈ Finset.range (2 * d + 1),
+        ‖(x : ℂ) * I * z‖ ^ m / m.factorial := by
+      apply Finset.sum_congr rfl
+      intro m _hm
+      simp only [norm_div, norm_pow, Complex.norm_natCast]
+    _ ≤ Real.exp ‖(x : ℂ) * I * z‖ :=
+      Real.sum_le_exp_of_nonneg (norm_nonneg _) _
+
+/-- The derivative of a common-cutoff phase section has the corresponding degree-free exponential
+envelope with one source-frequency factor. -/
+theorem norm_eval_derivative_finitePositivePhasePolynomial_le_exp_norm
+    (d : ℕ) (x : ℝ) (z : ℂ) :
+    ‖(finitePositivePhasePolynomial d x).derivative.eval z‖ ≤
+      ‖(x : ℂ) * I‖ * Real.exp ‖(x : ℂ) * I * z‖ := by
+  rw [eval_derivative_finitePositivePhasePolynomial_eq_sum, norm_mul]
+  gcongr
+  calc
+    ‖∑ m ∈ Finset.range (2 * d),
+        ((x : ℂ) * I * z) ^ m / m.factorial‖ ≤
+        ∑ m ∈ Finset.range (2 * d),
+          ‖((x : ℂ) * I * z) ^ m / m.factorial‖ := norm_sum_le _ _
+    _ = ∑ m ∈ Finset.range (2 * d),
+        ‖(x : ℂ) * I * z‖ ^ m / m.factorial := by
+      apply Finset.sum_congr rfl
+      intro m _hm
+      simp only [norm_div, norm_pow, Complex.norm_natCast]
+    _ ≤ Real.exp ‖(x : ℂ) * I * z‖ :=
+      Real.sum_le_exp_of_nonneg (norm_nonneg _) _
+
+/-- Factorial remainder for the spectral derivative of the positive phase section. -/
+theorem norm_exp_derivative_sub_eval_derivative_finitePositivePhasePolynomial_le
+    (d : ℕ) (x : ℝ) (z : ℂ) :
+    ‖((x : ℂ) * I) * Complex.exp ((x : ℂ) * I * z) -
+        (finitePositivePhasePolynomial d x).derivative.eval z‖ ≤
+      ‖(x : ℂ) * I‖ *
+        ((‖(x : ℂ) * I * z‖ ^ (2 * d) / (2 * d).factorial) *
+          Real.exp ‖(x : ℂ) * I * z‖) := by
+  rw [eval_derivative_finitePositivePhasePolynomial_eq_sum]
+  rw [show ((x : ℂ) * I) * Complex.exp ((x : ℂ) * I * z) -
+      (x : ℂ) * I * ∑ m ∈ Finset.range (2 * d),
+        ((x : ℂ) * I * z) ^ m / m.factorial =
+      ((x : ℂ) * I) * (Complex.exp ((x : ℂ) * I * z) -
+        ∑ m ∈ Finset.range (2 * d),
+          ((x : ℂ) * I * z) ^ m / m.factorial) by ring,
+    norm_mul]
+  gcongr
+  exact norm_complex_exp_sub_sum_le_factorial_tail
+    ((x : ℂ) * I * z) (2 * d)
+
+/-- Exact evaluated form of the positive phase translation edge. -/
+theorem eval_finitePositivePhaseTranslationTopEdge
+    (d : ℕ) (x a : ℝ) (z : ℂ) :
+    (finitePositivePhaseTranslationTopEdge d x a).eval z =
+      (finitePositivePhasePolynomial d x).eval z *
+          (finitePositivePhasePolynomial d a).eval z -
+        (finitePositivePhasePolynomial d (x + a)).eval z := by
+  rw [finitePositivePhaseTranslationTopEdge_eq_mul_sub, eval_sub, eval_mul]
+
+/-- The phase translation edge is a three-point factorial remainder.  The exact exponential
+addition law cancels before the triangle inequality, so no leading phase term survives. -/
+theorem norm_eval_finitePositivePhaseTranslationTopEdge_le
+    (d : ℕ) (x a : ℝ) (z : ℂ) :
+    ‖(finitePositivePhaseTranslationTopEdge d x a).eval z‖ ≤
+      (‖(x : ℂ) * I * z‖ ^ (2 * d + 1) / (2 * d + 1).factorial) *
+          Real.exp ‖(x : ℂ) * I * z‖ *
+          Real.exp ‖(a : ℂ) * I * z‖ +
+        Real.exp ‖(x : ℂ) * I * z‖ *
+          ((‖(a : ℂ) * I * z‖ ^ (2 * d + 1) / (2 * d + 1).factorial) *
+            Real.exp ‖(a : ℂ) * I * z‖) +
+        (‖((x + a : ℝ) : ℂ) * I * z‖ ^ (2 * d + 1) /
+            (2 * d + 1).factorial) *
+          Real.exp ‖((x + a : ℝ) : ℂ) * I * z‖ := by
+  let Px := (finitePositivePhasePolynomial d x).eval z
+  let Pa := (finitePositivePhasePolynomial d a).eval z
+  let Ps := (finitePositivePhasePolynomial d (x + a)).eval z
+  let wx : ℂ := (x : ℂ) * I * z
+  let wa : ℂ := (a : ℂ) * I * z
+  let ws : ℂ := ((x + a : ℝ) : ℂ) * I * z
+  have hsum : wx + wa = ws := by
+    dsimp [wx, wa, ws]
+    push_cast
+    ring
+  have hexp : Complex.exp wx * Complex.exp wa = Complex.exp ws := by
+    rw [← Complex.exp_add, hsum]
+  have halg : Px * Pa - Ps =
+      (Px - Complex.exp wx) * Pa +
+        Complex.exp wx * (Pa - Complex.exp wa) +
+          (Complex.exp ws - Ps) := by
+    rw [← hexp]
+    ring
+  rw [eval_finitePositivePhaseTranslationTopEdge]
+  change ‖Px * Pa - Ps‖ ≤ _
+  rw [halg]
+  calc
+    ‖(Px - Complex.exp wx) * Pa +
+        Complex.exp wx * (Pa - Complex.exp wa) +
+          (Complex.exp ws - Ps)‖ ≤
+        ‖(Px - Complex.exp wx) * Pa‖ +
+          ‖Complex.exp wx * (Pa - Complex.exp wa)‖ +
+            ‖Complex.exp ws - Ps‖ := by
+      calc
+        _ ≤ ‖(Px - Complex.exp wx) * Pa +
+              Complex.exp wx * (Pa - Complex.exp wa)‖ +
+              ‖Complex.exp ws - Ps‖ := norm_add_le _ _
+        _ ≤ _ := by
+          gcongr
+          exact norm_add_le _ _
+    _ = ‖Px - Complex.exp wx‖ * ‖Pa‖ +
+          ‖Complex.exp wx‖ * ‖Pa - Complex.exp wa‖ +
+            ‖Complex.exp ws - Ps‖ := by rw [norm_mul, norm_mul]
+    _ ≤
+        (‖wx‖ ^ (2 * d + 1) / (2 * d + 1).factorial) * Real.exp ‖wx‖ *
+            Real.exp ‖wa‖ +
+          Real.exp ‖wx‖ *
+            ((‖wa‖ ^ (2 * d + 1) / (2 * d + 1).factorial) * Real.exp ‖wa‖) +
+          (‖ws‖ ^ (2 * d + 1) / (2 * d + 1).factorial) * Real.exp ‖ws‖ := by
+      gcongr
+      · simpa only [Px, wx, norm_sub_rev] using
+          norm_exp_sub_eval_finitePositivePhasePolynomial_le d z x
+      · simpa only [Pa, wa] using
+          norm_eval_finitePositivePhasePolynomial_le_exp_norm d a z
+      · exact norm_complex_exp_le_exp_norm wx
+      · simpa only [Pa, wa, norm_sub_rev] using
+          norm_exp_sub_eval_finitePositivePhasePolynomial_le d z a
+      · simpa only [Ps, ws] using
+          norm_exp_sub_eval_finitePositivePhasePolynomial_le d z (x + a)
+    _ = _ := by rfl
+
+/-- Exact evaluated derivative of the positive phase translation edge. -/
+theorem eval_derivative_finitePositivePhaseTranslationTopEdge
+    (d : ℕ) (x a : ℝ) (z : ℂ) :
+    (finitePositivePhaseTranslationTopEdge d x a).derivative.eval z =
+      (finitePositivePhasePolynomial d x).derivative.eval z *
+          (finitePositivePhasePolynomial d a).eval z +
+        (finitePositivePhasePolynomial d x).eval z *
+          (finitePositivePhasePolynomial d a).derivative.eval z -
+        (finitePositivePhasePolynomial d (x + a)).derivative.eval z := by
+  rw [finitePositivePhaseTranslationTopEdge_derivative_eq, eval_sub, eval_add,
+    eval_mul, eval_mul]
+
+/-- The spectral derivative of the phase translation edge has the same factorial suppression.
+The five displayed terms are precisely the two value remainders, the two derivative remainders,
+and the summed-source derivative remainder after the exact exponential derivative cancels. -/
+theorem norm_eval_derivative_finitePositivePhaseTranslationTopEdge_le
+    (d : ℕ) (x a : ℝ) (z : ℂ) :
+    ‖(finitePositivePhaseTranslationTopEdge d x a).derivative.eval z‖ ≤
+      (‖(x : ℂ) * I‖ *
+          ((‖(x : ℂ) * I * z‖ ^ (2 * d) / (2 * d).factorial) *
+            Real.exp ‖(x : ℂ) * I * z‖)) *
+          Real.exp ‖(a : ℂ) * I * z‖ +
+        ‖(x : ℂ) * I‖ * Real.exp ‖(x : ℂ) * I * z‖ *
+          ((‖(a : ℂ) * I * z‖ ^ (2 * d + 1) / (2 * d + 1).factorial) *
+            Real.exp ‖(a : ℂ) * I * z‖) +
+        ((‖(x : ℂ) * I * z‖ ^ (2 * d + 1) / (2 * d + 1).factorial) *
+          Real.exp ‖(x : ℂ) * I * z‖) *
+          (‖(a : ℂ) * I‖ * Real.exp ‖(a : ℂ) * I * z‖) +
+        Real.exp ‖(x : ℂ) * I * z‖ *
+          (‖(a : ℂ) * I‖ *
+            ((‖(a : ℂ) * I * z‖ ^ (2 * d) / (2 * d).factorial) *
+              Real.exp ‖(a : ℂ) * I * z‖)) +
+        ‖((x + a : ℝ) : ℂ) * I‖ *
+          ((‖((x + a : ℝ) : ℂ) * I * z‖ ^ (2 * d) / (2 * d).factorial) *
+            Real.exp ‖((x + a : ℝ) : ℂ) * I * z‖) := by
+  let Px := (finitePositivePhasePolynomial d x).eval z
+  let Pa := (finitePositivePhasePolynomial d a).eval z
+  let Dx := (finitePositivePhasePolynomial d x).derivative.eval z
+  let Da := (finitePositivePhasePolynomial d a).derivative.eval z
+  let Ds := (finitePositivePhasePolynomial d (x + a)).derivative.eval z
+  let cx : ℂ := (x : ℂ) * I
+  let ca : ℂ := (a : ℂ) * I
+  let cs : ℂ := ((x + a : ℝ) : ℂ) * I
+  let wx : ℂ := cx * z
+  let wa : ℂ := ca * z
+  let ws : ℂ := cs * z
+  have hsum : wx + wa = ws := by
+    dsimp [wx, wa, ws, cx, ca, cs]
+    push_cast
+    ring
+  have hcoeff : cx + ca = cs := by
+    dsimp [cx, ca, cs]
+    push_cast
+    ring
+  have hexp : Complex.exp wx * Complex.exp wa = Complex.exp ws := by
+    rw [← Complex.exp_add, hsum]
+  have halg : Dx * Pa + Px * Da - Ds =
+      (Dx - cx * Complex.exp wx) * Pa +
+        (cx * Complex.exp wx) * (Pa - Complex.exp wa) +
+        (Px - Complex.exp wx) * Da +
+        Complex.exp wx * (Da - ca * Complex.exp wa) -
+        (Ds - cs * Complex.exp ws) := by
+    rw [← hexp]
+    rw [← hcoeff]
+    ring
+  rw [eval_derivative_finitePositivePhaseTranslationTopEdge]
+  change ‖Dx * Pa + Px * Da - Ds‖ ≤ _
+  rw [halg]
+  calc
+    ‖(Dx - cx * Complex.exp wx) * Pa +
+        (cx * Complex.exp wx) * (Pa - Complex.exp wa) +
+        (Px - Complex.exp wx) * Da +
+        Complex.exp wx * (Da - ca * Complex.exp wa) -
+        (Ds - cs * Complex.exp ws)‖ ≤
+      ‖(Dx - cx * Complex.exp wx) * Pa‖ +
+        ‖(cx * Complex.exp wx) * (Pa - Complex.exp wa)‖ +
+        ‖(Px - Complex.exp wx) * Da‖ +
+        ‖Complex.exp wx * (Da - ca * Complex.exp wa)‖ +
+        ‖Ds - cs * Complex.exp ws‖ := by
+      calc
+        _ ≤ ‖(Dx - cx * Complex.exp wx) * Pa +
+              (cx * Complex.exp wx) * (Pa - Complex.exp wa) +
+              (Px - Complex.exp wx) * Da +
+              Complex.exp wx * (Da - ca * Complex.exp wa)‖ +
+              ‖Ds - cs * Complex.exp ws‖ := norm_sub_le _ _
+        _ ≤ _ := by
+          gcongr
+          calc
+            _ ≤ ‖(Dx - cx * Complex.exp wx) * Pa +
+                  (cx * Complex.exp wx) * (Pa - Complex.exp wa) +
+                  (Px - Complex.exp wx) * Da‖ +
+                  ‖Complex.exp wx * (Da - ca * Complex.exp wa)‖ := norm_add_le _ _
+            _ ≤ _ := by
+              gcongr
+              calc
+                _ ≤ ‖(Dx - cx * Complex.exp wx) * Pa +
+                      (cx * Complex.exp wx) * (Pa - Complex.exp wa)‖ +
+                      ‖(Px - Complex.exp wx) * Da‖ := norm_add_le _ _
+                _ ≤ _ := by
+                  gcongr
+                  exact norm_add_le _ _
+    _ = ‖Dx - cx * Complex.exp wx‖ * ‖Pa‖ +
+        (‖cx‖ * ‖Complex.exp wx‖) * ‖Pa - Complex.exp wa‖ +
+        ‖Px - Complex.exp wx‖ * ‖Da‖ +
+        ‖Complex.exp wx‖ * ‖Da - ca * Complex.exp wa‖ +
+        ‖Ds - cs * Complex.exp ws‖ := by
+      repeat' rw [norm_mul]
+    _ ≤
+      (‖cx‖ * ((‖wx‖ ^ (2 * d) / (2 * d).factorial) * Real.exp ‖wx‖)) *
+          Real.exp ‖wa‖ +
+        ‖cx‖ * Real.exp ‖wx‖ *
+          ((‖wa‖ ^ (2 * d + 1) / (2 * d + 1).factorial) * Real.exp ‖wa‖) +
+        ((‖wx‖ ^ (2 * d + 1) / (2 * d + 1).factorial) * Real.exp ‖wx‖) *
+          (‖ca‖ * Real.exp ‖wa‖) +
+        Real.exp ‖wx‖ *
+          (‖ca‖ * ((‖wa‖ ^ (2 * d) / (2 * d).factorial) * Real.exp ‖wa‖)) +
+        ‖cs‖ * ((‖ws‖ ^ (2 * d) / (2 * d).factorial) * Real.exp ‖ws‖) := by
+      gcongr
+      · simpa only [Dx, cx, wx, norm_sub_rev] using
+          norm_exp_derivative_sub_eval_derivative_finitePositivePhasePolynomial_le d x z
+      · simpa only [Pa, wa] using
+          norm_eval_finitePositivePhasePolynomial_le_exp_norm d a z
+      · exact norm_complex_exp_le_exp_norm wx
+      · simpa only [Pa, wa, norm_sub_rev] using
+          norm_exp_sub_eval_finitePositivePhasePolynomial_le d z a
+      · simpa only [Px, wx, norm_sub_rev] using
+          norm_exp_sub_eval_finitePositivePhasePolynomial_le d z x
+      · simpa only [Da, ca, wa] using
+          norm_eval_derivative_finitePositivePhasePolynomial_le_exp_norm d a z
+      · exact norm_complex_exp_le_exp_norm wx
+      · simpa only [Da, ca, wa, norm_sub_rev] using
+          norm_exp_derivative_sub_eval_derivative_finitePositivePhasePolynomial_le d a z
+      · simpa only [Ds, cs, ws, norm_sub_rev] using
+          norm_exp_derivative_sub_eval_derivative_finitePositivePhasePolynomial_le d (x + a) z
+    _ = _ := by rfl
 
 /-- Every finite cosine section is dominated by the full exponential series, uniformly in its
 degree.  This is the degree-free envelope used for the dyadic top row. -/

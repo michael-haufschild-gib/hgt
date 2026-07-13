@@ -627,31 +627,49 @@ theorem finitePositivePhasePolynomial_eq_taylor
       simp [finitePositivePhasePolynomial, finiteCosinePolynomial,
         finiteSinePolynomial, finitePositivePhaseTaylorPolynomial]
   | succ d ih =>
-      unfold finitePositivePhasePolynomial finiteCosinePolynomial
-        finiteSinePolynomial at ih ⊢
-      rw [Finset.sum_range_succ, Finset.sum_range_succ]
-      rw [show 2 * (d + 1) + 1 = (2 * d + 1) + 2 by omega]
-      rw [Finset.sum_range_succ, Finset.sum_range_succ]
-      rw [show 2 * d + 2 = 2 * (d + 1) by omega]
+      let O : Polynomial ℂ :=
+        C (((-1 : ℂ) ^ d * (x : ℂ) ^ (2 * d + 1)) /
+          (2 * d + 1).factorial) * X ^ (2 * d + 1)
+      let E : Polynomial ℂ :=
+        C (((-1 : ℂ) ^ (d + 1) * (x : ℂ) ^ (2 * (d + 1))) /
+          (2 * (d + 1)).factorial) * X ^ (2 * (d + 1))
+      have hphase : finitePositivePhasePolynomial (d + 1) x =
+          finitePositivePhasePolynomial d x + C I * O + E := by
+        simp only [finitePositivePhasePolynomial, finiteCosinePolynomial,
+          finiteSinePolynomial, Finset.sum_range_succ]
+        dsimp only [O, E]
+        ring
       have hIeven : I ^ (2 * (d + 1)) = (-1 : ℂ) ^ (d + 1) := by
         rw [pow_mul, Complex.I_sq]
       have hIodd : I ^ (2 * d + 1) = (-1 : ℂ) ^ d * I := by
         rw [pow_add, pow_mul, Complex.I_sq, pow_one]
-      rw [mul_pow, mul_pow, hIeven, hIodd]
-      change
-        ((∑ j ∈ Finset.range (d + 1),
-            C ((-1) ^ j * (x : ℂ) ^ (2 * j) / ↑(2 * j).factorial) * X ^ (2 * j)) +
-          C ((-1) ^ (d + 1) * (x : ℂ) ^ (2 * (d + 1)) /
-            ↑(2 * (d + 1)).factorial) * X ^ (2 * (d + 1)) +
-        C I *
-          ((∑ j ∈ Finset.range d,
-              C ((-1) ^ j * (x : ℂ) ^ (2 * j + 1) /
-                ↑(2 * j + 1).factorial) * X ^ (2 * j + 1)) +
-            C ((-1) ^ d * (x : ℂ) ^ (2 * d + 1) /
-              ↑(2 * d + 1).factorial) * X ^ (2 * d + 1))) = _)
-      rw [← ih]
-      unfold finitePositivePhasePolynomial finiteCosinePolynomial finiteSinePolynomial
-      ring
+      have hodd :
+          C ((((x : ℂ) * I) ^ (2 * d + 1)) / (2 * d + 1).factorial) *
+              X ^ (2 * d + 1) = C I * O := by
+        dsimp only [O]
+        rw [mul_pow, hIodd]
+        rw [show C I *
+            (C (((-1 : ℂ) ^ d * (x : ℂ) ^ (2 * d + 1)) /
+                (2 * d + 1).factorial) * X ^ (2 * d + 1)) =
+              C (I * (((-1 : ℂ) ^ d * (x : ℂ) ^ (2 * d + 1)) /
+                (2 * d + 1).factorial)) * X ^ (2 * d + 1) by
+          rw [← mul_assoc, ← C_mul]]
+        congr 1
+        ring
+      have heven :
+          C ((((x : ℂ) * I) ^ (2 * (d + 1))) /
+              (2 * (d + 1)).factorial) * X ^ (2 * (d + 1)) = E := by
+        dsimp only [E]
+        rw [mul_pow, hIeven]
+        congr 1
+        ring
+      have htaylor : finitePositivePhaseTaylorPolynomial (d + 1) x =
+          finitePositivePhaseTaylorPolynomial d x + C I * O + E := by
+        unfold finitePositivePhaseTaylorPolynomial
+        rw [show 2 * (d + 1) + 1 = (2 * d + 1) + 2 by omega,
+          Finset.sum_range_succ, Finset.sum_range_succ]
+        rw [show 2 * d + 1 + 1 = 2 * (d + 1) by omega, hodd, heven]
+      rw [hphase, htaylor, ih]
 
 def finitePositivePhaseTranslationTopEdge
     (d : ℕ) (x a : ℝ) : Polynomial ℂ :=
@@ -694,6 +712,26 @@ theorem finiteNegativePhasePolynomial_add_eq_mul_sub_topEdge
   ring_nf
   rw [hI]
   ring
+
+/-- Rearranged positive-channel law: the entire finite translation defect is the product of the
+two common-cutoff exponential Taylor sections minus the section at the summed source point. -/
+theorem finitePositivePhaseTranslationTopEdge_eq_mul_sub
+    (d : ℕ) (x a : ℝ) :
+    finitePositivePhaseTranslationTopEdge d x a =
+      finitePositivePhasePolynomial d x * finitePositivePhasePolynomial d a -
+        finitePositivePhasePolynomial d (x + a) := by
+  have h := finitePositivePhasePolynomial_add_eq_mul_sub_topEdge d x a
+  linear_combination h
+
+/-- Spectral differentiation preserves the exact three-term product cancellation of the positive
+phase translation edge. -/
+theorem finitePositivePhaseTranslationTopEdge_derivative_eq
+    (d : ℕ) (x a : ℝ) :
+    (finitePositivePhaseTranslationTopEdge d x a).derivative =
+      (finitePositivePhasePolynomial d x).derivative * finitePositivePhasePolynomial d a +
+        finitePositivePhasePolynomial d x * (finitePositivePhasePolynomial d a).derivative -
+        (finitePositivePhasePolynomial d (x + a)).derivative := by
+  rw [finitePositivePhaseTranslationTopEdge_eq_mul_sub, derivative_sub, derivative_mul]
 
 theorem eval_finitePositivePhasePolynomial (d : ℕ) (z : ℂ) (x : ℝ) :
     (finitePositivePhasePolynomial d x).eval z =

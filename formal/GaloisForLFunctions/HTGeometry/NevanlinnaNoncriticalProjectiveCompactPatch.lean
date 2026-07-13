@@ -1,0 +1,467 @@
+import GaloisForLFunctions.HTGeometry.CompactNoncriticalProjectiveRowPacketAtlas
+import GaloisForLFunctions.HTGeometry.InjectiveShiftConfigurationTopology
+import GaloisForLFunctions.HTGeometry.NevanlinnaTranslatedExpandedEvaluationCompactPatch
+
+/-!
+# Actual compact-patch density on complete projective row atlases
+
+This module joins the complete `row × shift` projective atlas to the actual smooth Nevanlinna
+evaluation family.  Its local regularity locus is the complement of the denominator divisor;
+no global smooth extension of the meromorphic quotient is assumed.
+-/
+
+namespace GaloisForLFunctions.HTGeometry
+
+open Complex MeasureTheory Set Topology
+open scoped ENNReal OnePoint
+
+noncomputable section
+
+/-- The affine projective coordinate of a Nevanlinna matrix row. -/
+def projectiveNevanlinnaQuotient (C D : ℂ → ℂ) (z : ℂ) : ℂ :=
+  -D z / C z
+
+/-- The coefficient of the simple projective resolvent in the determinant-one chart. -/
+def projectiveNevanlinnaAmplitude (C : ℂ → ℂ) (z : ℂ) : ℂ :=
+  -1 / C z ^ 2
+
+/-- The denominator-regular locus of the affine projective chart. -/
+def projectiveRegularLocus (C : ℂ → ℂ) : Set ℂ :=
+  {z | C z ≠ 0}
+
+theorem projectiveRegularLocus_isOpen
+    {C : ℂ → ℂ} (hC : Differentiable ℂ C) :
+    IsOpen (projectiveRegularLocus C) :=
+  hC.continuous.isOpen_preimage {z : ℂ | z ≠ 0} isOpen_ne
+
+/-- The quotient and amplitude are smooth on the literal denominator-regular locus. -/
+theorem contDiffOn_projectiveNevanlinna_coordinates
+    {C D : ℂ → ℂ} (hC : Differentiable ℂ C) (hD : Differentiable ℂ D) :
+    ContDiffOn ℂ ⊤ (projectiveNevanlinnaAmplitude C) (projectiveRegularLocus C) ∧
+      ContDiffOn ℂ ⊤ (projectiveNevanlinnaQuotient C D) (projectiveRegularLocus C) := by
+  have hCs : ContDiff ℂ ⊤ C := hC.contDiff
+  have hDs : ContDiff ℂ ⊤ D := hD.contDiff
+  constructor
+  · exact (contDiff_const (c := (-1 : ℂ))).contDiffOn.div
+      (hCs.pow 2).contDiffOn (fun z hz => pow_ne_zero 2 hz)
+  · exact hDs.neg.contDiffOn.div hCs.contDiffOn (fun z hz => hz)
+
+/-- Strict positivity on a compact family with finitely many coordinates has one positive uniform
+lower bound. -/
+theorem compact_finite_strictPositive_uniformLowerBound
+    {H ρ : Type*} [TopologicalSpace H] [Fintype ρ]
+    (K : Set H) (hK : IsCompact K) (f : H → ρ → ℝ)
+    (hf : ∀ r, ContinuousOn (fun h => f h r) K)
+    (hpos : ∀ h ∈ K, ∀ r, 0 < f h r) :
+    ∃ η : ℝ, 0 < η ∧ ∀ h ∈ K, ∀ r, η ≤ f h r := by
+  classical
+  by_cases hKne : K.Nonempty
+  · letI : TopologicalSpace ρ := ⊥
+    letI : DiscreteTopology ρ := ⟨rfl⟩
+    let g : H × ρ → ℝ := fun p => f p.1 p.2
+    have hg : ContinuousOn g (K ×ˢ (Set.univ : Set ρ)) := by
+      rw [continuousOn_prod_of_discrete_right]
+      intro r
+      simpa using hf r
+    have hprodCompact : IsCompact (K ×ˢ (Set.univ : Set ρ)) :=
+      hK.prod (Set.toFinite (Set.univ : Set ρ)).isCompact
+    by_cases hρ : Nonempty ρ
+    · obtain ⟨h0, hh0⟩ := hKne
+      obtain ⟨r0⟩ := hρ
+      have hprodNe : (K ×ˢ (Set.univ : Set ρ)).Nonempty :=
+        ⟨(h0, r0), hh0, Set.mem_univ r0⟩
+      obtain ⟨p, hp, hpmin⟩ := hprodCompact.exists_isMinOn hprodNe hg
+      refine ⟨g p, hpos p.1 hp.1 p.2, ?_⟩
+      intro h hh r
+      exact hpmin (a := (h, r)) ⟨hh, Set.mem_univ r⟩
+    · refine ⟨1, zero_lt_one, ?_⟩
+      letI : IsEmpty ρ := not_nonempty_iff.mp hρ
+      intro h hh r
+      exact isEmptyElim r
+  · refine ⟨1, zero_lt_one, ?_⟩
+    intro h hh
+    exact (hKne ⟨h, hh⟩).elim
+
+/-- Uniform avoidance on a compact patch is open when the family is continuous on one ambient
+open collar of that patch.  This is the local meromorphic version of the global tube lemma. -/
+theorem compactConfigurationAvoidance_isOpen_of_continuousOn_open
+    {X H Y : Type*} [TopologicalSpace X] [TopologicalSpace H] [TopologicalSpace Y]
+    (F : X × H → Y) (bad : Set Y) (hbad : IsClosed bad)
+    (U : Set H) (hU : IsOpen U)
+    (hF : ContinuousOn F (Set.univ ×ˢ U))
+    (K : Set H) (hK : IsCompact K) (hKU : K ⊆ U) :
+    IsOpen (compactConfigurationAvoidance F bad K) := by
+  rw [isOpen_iff_mem_nhds]
+  intro x hx
+  let W : Set (X × H) := (Set.univ ×ˢ U) ∩ F ⁻¹' badᶜ
+  have hWopen : IsOpen W :=
+    hF.isOpen_inter_preimage (isOpen_univ.prod hU) hbad.isOpen_compl
+  have hprod : ({x} : Set X) ×ˢ K ⊆ W := by
+    rintro ⟨x', h⟩ ⟨hx', hh⟩
+    simp only [mem_singleton_iff] at hx'
+    subst x'
+    exact ⟨⟨Set.mem_univ x, hKU hh⟩, hx h hh⟩
+  obtain ⟨V, Z, hVopen, hZopen, hxV, hKZ, hVZ⟩ :=
+    generalized_tube_lemma isCompact_singleton hK hWopen hprod
+  refine Filter.mem_of_superset (hVopen.mem_nhds (hxV (mem_singleton x))) ?_
+  intro x' hx' h hh
+  exact (hVZ ⟨hx', hKZ hh⟩).2
+
+/-- A finite intersection of open dense sets is dense, without invoking a Baire-space instance. -/
+theorem dense_iInter_of_finite_isOpen
+    {X ρ : Type*} [TopologicalSpace X] [Fintype ρ]
+    (f : ρ → Set X) (ho : ∀ r, IsOpen (f r)) (hd : ∀ r, Dense (f r)) :
+    Dense (⋂ r, f r) := by
+  classical
+  have hfin : ∀ s : Finset ρ, Dense (⋂ r ∈ s, f r) := by
+    intro s
+    induction s using Finset.induction_on with
+    | empty => simp
+    | @insert r s hrs ih =>
+        have hopen : IsOpen (⋂ i ∈ s, f i) := by
+          apply isOpen_biInter_finset
+          intro i hi
+          exact ho i
+        have hinter := ih.inter_of_isOpen_left (hd r) hopen
+        simpa [hrs, inter_comm] using hinter
+  simpa using hfin Finset.univ
+
+/-- Extract the complete Nevanlinna control data from one combined row-packet chart. -/
+theorem noncriticalProjectiveUpperGoodCombinedRowPacket_complete_data
+    {row ι κ : Type*} [Fintype row]
+    [Fintype ι] [DecidableEq (row × ι)] [Fintype κ]
+    {C D : ℂ → ℂ} (hC : Differentiable ℂ C) (hD : Differentiable ℂ D)
+    (forbidden : κ → ℂ) (packet : InjectiveProjectiveRowPacket row)
+    {shift : InjectiveShiftConfiguration ι}
+    (hgood : shift ∈ noncriticalProjectiveUpperGoodCombinedRowPacketSet
+      (ι := ι) (κ := κ) C D forbidden packet) :
+    (∀ x, C (combinedProjectiveRowShiftPacket packet shift x) ≠ 0) ∧
+      Function.Injective (fun x => projectiveNevanlinnaQuotient C D
+        (combinedProjectiveRowShiftPacket packet shift x)) ∧
+      (∀ x k, projectiveNevanlinnaQuotient C D
+        (combinedProjectiveRowShiftPacket packet shift x) ≠ forbidden k) ∧
+      (∀ x, deriv (projectiveNevanlinnaQuotient C D)
+        (combinedProjectiveRowShiftPacket packet shift x) ≠ 0) := by
+  have hdata := noncriticalProjectiveSeparationProduct_complete_data
+    hC hD forbidden (combinedProjectiveRowShiftPacket packet shift) hgood.1
+  simpa [projectiveNevanlinnaQuotient] using hdata
+
+/-- The literal affine node family on the ambient finite-dimensional shift packet space. -/
+def ambientCombinedProjectiveNodes
+    {row ι : Type*} [Fintype row] [Fintype ι]
+    (packet : InjectiveProjectiveRowPacket row) (shift : ι → ℂ) : row × ι → ℂ :=
+  fun x => packet.1 x.1 + shift x.2
+
+/-- Forget the built-in injectivity proof on a compact shift piece. -/
+def ambientImageOfInjectiveShiftPiece
+    {ι : Type*} [Fintype ι] (piece : Set (InjectiveShiftConfiguration ι)) :
+    Set (ι → ℂ) :=
+  Subtype.val '' piece
+
+/-- **One complete atlas piece supplies the actual compact-patch density theorem.**  The theorem
+derives an ambient open regularity collar and a positive uniform projective height from the compact
+piece; it then instantiates the genuine smooth Nevanlinna row family and the uniform finite probe.
+The only upper-half-plane hypothesis is the classical Nevanlinna mapping property of `-D/C`. -/
+theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProbe
+    (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
+    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
+    {row κ ι ιf : Type}
+    [Fintype row] [DecidableEq row]
+    [Fintype κ] [DecidableEq κ]
+    [Fintype ι] [DecidableEq ι]
+    [Fintype ιf] [DecidableEq ιf]
+    {C D : ℂ → ℂ} (hC : Differentiable ℂ C) (hD : Differentiable ℂ D)
+    (hupperMap : ∀ z, 0 < z.im → 0 < (projectiveNevanlinnaQuotient C D z).im)
+    (zf : ιf → ℂ)
+    (hqf_inj : Function.Injective (fun i => projectiveNevanlinnaQuotient C D (zf i)))
+    (hupperf : ∀ i, 0 < (projectiveNevanlinnaQuotient C D (zf i)).im)
+    (nf : ιf → ℕ) (haf : ∀ i, projectiveNevanlinnaAmplitude C (zf i) ≠ 0)
+    (hqdf : ∀ i, deriv (projectiveNevanlinnaQuotient C D) (zf i) ≠ 0)
+    (degree : ℕ) (orders : ι → ℕ)
+    (packet : InjectiveProjectiveRowPacket row)
+    (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
+    (hexponent : Function.Injective exponent)
+    (hrows : Fintype.card (κ × Fin (degree + 1)) + degree < Fintype.card row)
+    (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
+    (piece : Set (InjectiveShiftConfiguration ι)) (hpiece : IsCompact piece)
+    (hpieceChart : piece ⊆ noncriticalProjectiveUpperGoodCombinedRowPacketSet
+      (ι := ι) (κ := ιf) C D
+      (fun i => projectiveNevanlinnaQuotient C D (zf i)) packet)
+    (hdim : Module.finrank ℝ (ι → ℂ) <
+      2 * (Fintype.card row - Fintype.card (κ × Fin (degree + 1)) - degree + 1)) :
+    let a := projectiveNevanlinnaAmplitude C
+    let q := projectiveNevanlinnaQuotient C D
+    let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+      a q zf nf haf hqdf mu hupperf
+    let S := LinearMap.ker frozen.toLinearMap
+    ∃ V : Submodule ℝ S, V.FG ∧
+      let nodes := ambientCombinedProjectiveNodes packet
+      let control := fun h =>
+        projectiveNevanlinnaJetExpansionSmoothControl
+          a q (fun x : row × ι => orders x.2) mu (nodes h)
+      let base := fun h =>
+        reshapeCombinedJetsFinCLM row ι orders (control h baseDensity)
+      let direction := fun h =>
+        (reshapeCombinedJetsFinCLM row ι orders).comp ((control h).domRestrict S)
+      Dense (compactConfigurationAvoidance
+          (smoothAffineControlFamily base direction)
+          (expandedDifferentialEvaluationRankDefect
+            degree (Fintype.card (Σ i, Fin (orders i))) packet.1 exponent)
+          (ambientImageOfInjectiveShiftPiece piece)) ∧
+        IsOpen (compactConfigurationAvoidance
+          (smoothAffineControlFamily base direction)
+          (expandedDifferentialEvaluationRankDefect
+            degree (Fintype.card (Σ i, Fin (orders i))) packet.1 exponent)
+          (ambientImageOfInjectiveShiftPiece piece)) := by
+  dsimp only
+  let a := projectiveNevanlinnaAmplitude C
+  let q := projectiveNevanlinnaQuotient C D
+  let Omega := projectiveRegularLocus C
+  let nodes : (ι → ℂ) → (row × ι → ℂ) :=
+    ambientCombinedProjectiveNodes (row := row) (ι := ι) packet
+  let K : Set (ι → ℂ) := ambientImageOfInjectiveShiftPiece (ι := ι) piece
+  have hOmega : IsOpen Omega := projectiveRegularLocus_isOpen hC
+  have hcoords := contDiffOn_projectiveNevanlinna_coordinates hC hD
+  have ha : ContDiffOn ℂ ⊤ a Omega := hcoords.1
+  have hq : ContDiffOn ℂ ⊤ q Omega := hcoords.2
+  have hK : IsCompact K := hpiece.image continuous_subtype_val
+  have hchartOpen := noncriticalProjectiveUpperGoodCombinedRowPacketSet_isOpen
+    (row := row) (ι := ι) (κ := ιf) hC hD
+      (fun i => q (zf i)) packet
+  rw [isOpen_induced_iff] at hchartOpen
+  obtain ⟨O, hOopen, hOeq⟩ := hchartOpen
+  let U0 : Set (ι → ℂ) := O ∩ injectiveShiftConfigurationSet ι
+  have hU0 : IsOpen U0 := hOopen.inter (injectiveShiftConfigurationSet_isOpen ι)
+  have hchartU0 : ∀ (h : ι → ℂ) (hh : h ∈ U0),
+      (⟨h, hh.2⟩ : InjectiveShiftConfiguration ι) ∈
+        noncriticalProjectiveUpperGoodCombinedRowPacketSet
+          (ι := ι) (κ := ιf) C D (fun i => q (zf i)) packet := by
+    intro h hh
+    have hpre : (⟨h, hh.2⟩ : InjectiveShiftConfiguration ι) ∈ Subtype.val ⁻¹' O := hh.1
+    rw [hOeq] at hpre
+    exact hpre
+  have hKU0 : K ⊆ U0 := by
+    intro h hh
+    obtain ⟨shift, hshiftPiece, rfl⟩ := hh
+    have hgood := hpieceChart hshiftPiece
+    constructor
+    · have hpre : shift ∈ Subtype.val ⁻¹' O := by
+        rw [hOeq]
+        exact hgood
+      exact hpre
+    · exact shift.2
+  have hdataU0 : ∀ h ∈ U0,
+      (∀ x, C (nodes h x) ≠ 0) ∧
+        Function.Injective (fun x => q (nodes h x)) ∧
+        (∀ x i, q (nodes h x) ≠ q (zf i)) ∧
+        (∀ x, deriv q (nodes h x) ≠ 0) := by
+    intro h hh
+    have hdata := noncriticalProjectiveUpperGoodCombinedRowPacket_complete_data
+      hC hD (fun i => q (zf i)) packet (hchartU0 h hh)
+    simpa [nodes, ambientCombinedProjectiveNodes, q,
+      projectiveNevanlinnaQuotient] using hdata
+  have hnodesOmegaU0 : ∀ h ∈ U0, ∀ x, nodes h x ∈ Omega := by
+    intro h hh x
+    exact (hdataU0 h hh).1 x
+  have hnodeContinuous : ∀ x, Continuous (fun h : ι → ℂ => nodes h x) := by
+    intro x
+    exact continuous_const.add (continuous_apply x.2)
+  have hheightContinuousU0 : ∀ x, ContinuousOn
+      (fun h : ι → ℂ => (q (nodes h x)).im) U0 := by
+    intro x
+    exact Complex.continuous_im.continuousOn.comp
+      (hq.continuousOn.comp (hnodeContinuous x).continuousOn
+        (fun h hh => hnodesOmegaU0 h hh x)) (fun _ _ => Set.mem_univ _)
+  have hpositiveK : ∀ h ∈ K, ∀ x, 0 < (q (nodes h x)).im := by
+    intro h hh x
+    have h0 := hKU0 hh
+    have hsource := (hchartU0 h h0).2 x
+    exact hupperMap (nodes h x) hsource
+  obtain ⟨η0, hη0, hη0K⟩ := compact_finite_strictPositive_uniformLowerBound
+    K hK (fun h x => (q (nodes h x)).im)
+      (fun x => (hheightContinuousU0 x).mono hKU0) hpositiveK
+  let η : ℝ := η0 / 2
+  have hη : 0 < η := by dsimp [η]; linarith
+  let upperSet : row × ι → Set (ι → ℂ) := fun x =>
+    U0 ∩ (fun h => (q (nodes h x)).im) ⁻¹' Set.Ioi η
+  have hupperSetOpen : ∀ x, IsOpen (upperSet x) := by
+    intro x
+    exact (hheightContinuousU0 x).isOpen_inter_preimage hU0 isOpen_Ioi
+  let U : Set (ι → ℂ) := U0 ∩ ⋂ x, upperSet x
+  have hU : IsOpen U := hU0.inter (isOpen_iInter_of_finite hupperSetOpen)
+  have hKU : K ⊆ U := by
+    intro h hh
+    refine ⟨hKU0 hh, Set.mem_iInter.mpr ?_⟩
+    intro x
+    refine ⟨hKU0 hh, ?_⟩
+    change η < (q (nodes h x)).im
+    have hle := hη0K h hh x
+    dsimp [η]
+    linarith
+  have hnodes : ContDiff ℝ ⊤ nodes := by
+    rw [contDiff_pi]
+    intro x
+    simpa [nodes, ambientCombinedProjectiveNodes] using
+      (contDiff_const.add (contDiff_apply ℝ ℂ x.2))
+  have hnodesOmega : ∀ h ∈ U, ∀ x, nodes h x ∈ Omega := by
+    intro h hh x
+    exact hnodesOmegaU0 h hh.1 x
+  have hupper : ∀ h ∈ U, ∀ x, η ≤ (q (nodes h x)).im := by
+    intro h hh x
+    have hx := Set.mem_iInter.mp hh.2 x
+    exact hx.2.le
+  have hqt_inj : ∀ h ∈ K, Function.Injective (fun x => q (nodes h x)) := by
+    intro h hh
+    exact (hdataU0 h (hKU0 hh)).2.1
+  have hcross : ∀ h ∈ K, ∀ i x, q (zf i) ≠ q (nodes h x) := by
+    intro h hh i x
+    exact ((hdataU0 h (hKU0 hh)).2.2.1 x i).symm
+  have hat : ∀ h ∈ K, ∀ x, a (nodes h x) ≠ 0 := by
+    intro h hh x
+    have hCnode := (hdataU0 h (hKU0 hh)).1 x
+    exact div_ne_zero (neg_ne_zero.mpr one_ne_zero) (pow_ne_zero 2 hCnode)
+  have hqdt : ∀ h ∈ K, ∀ x, deriv q (nodes h x) ≠ 0 := by
+    intro h hh x
+    exact (hdataU0 h (hKU0 hh)).2.2.2 x
+  obtain ⟨V, hVfg, hDense⟩ :=
+    compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
+    projectiveGeometry parametricAvoidance a q Omega hOmega ha hq η hη
+    zf hqf_inj hupperf nf haf hqdf degree orders packet.1 packet.2
+    exponent hexponent hrows mu hmu baseDensity nodes hnodes U K hU hK hKU
+    hnodesOmega hupper hqt_inj hcross hat hqdt hdim
+  refine ⟨V, hVfg, hDense, ?_⟩
+  let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+    a q zf nf haf hqdf mu hupperf
+  let S := LinearMap.ker frozen.toLinearMap
+  let control := fun h =>
+    projectiveNevanlinnaJetExpansionSmoothControl
+      a q (fun x : row × ι => orders x.2) mu (nodes h)
+  let base := fun h =>
+    reshapeCombinedJetsFinCLM row ι orders (control h baseDensity)
+  let direction := fun h =>
+    (reshapeCombinedJetsFinCLM row ι orders).comp ((control h).domRestrict S)
+  have hcontrol : ContDiffOn ℝ ⊤ control U := by
+    exact (contDiffOn_projectiveNevanlinnaJetExpansionSmoothControl_within
+      a q hOmega ha hq (fun x : row × ι => orders x.2) mu).comp hnodes.contDiffOn
+        (fun h hh => ⟨fun x => hη.trans_le (hupper h hh x),
+          fun x _ => hnodesOmega h hh x⟩)
+  have hbase : ContDiffOn ℝ ⊤ base U := by
+    exact (reshapeCombinedJetsFinCLM row ι orders).contDiff.comp_contDiffOn
+      (hcontrol.clm_apply contDiffOn_const)
+  have hdirection : ContDiffOn ℝ ⊤ direction U := by
+    have hS : ContDiffOn ℝ ⊤ (fun h => (control h).domRestrict S) U := by
+      have hsubS : ContDiffOn ℝ ⊤ (fun _ : ι → ℂ => S.subtypeL) U := contDiffOn_const
+      simpa only [ContinuousLinearMap.domRestrict] using hcontrol.clm_comp hsubS
+    have hreindex : ContDiffOn ℝ ⊤
+        (fun _ : ι → ℂ => reshapeCombinedJetsFinCLM row ι orders) U := contDiffOn_const
+    simpa only [direction] using hreindex.clm_comp hS
+  have hopen := compactConfigurationAvoidance_isOpen_of_continuousOn_open
+    (smoothAffineControlFamily base direction)
+    (expandedDifferentialEvaluationRankDefect
+      degree (Fintype.card (Σ i, Fin (orders i))) packet.1 exponent)
+    (expandedDifferentialEvaluationRankDefect_isClosed
+      degree (Fintype.card (Σ i, Fin (orders i))) packet.1 exponent)
+    U hU (contDiffOn_smoothAffineControlFamily hbase hdirection).continuousOn
+    K hK hKU
+  simpa [frozen, S, control, base, direction, K, nodes, a, q] using hopen
+
+/-- **Compact-patch complete-atlas density law.**  A compact collision-free shift patch admits a
+finite compact refinement by complete combined row charts.  For one and the same frozen tangent,
+the actual Nevanlinna expanded-evaluation rank condition on every member of that finite atlas is
+open dense.  Thus every shift in the original compact patch has at least one simultaneous row
+packet witnessing full coefficient-uniform rank. -/
+theorem compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
+    (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
+    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
+    {row κ ι ιf : Type}
+    [Fintype row] [DecidableEq row]
+    [Fintype κ] [DecidableEq κ]
+    [Fintype ι] [DecidableEq ι]
+    [Fintype ιf] [DecidableEq ιf]
+    {C D : ℂ → ℂ} (hCmin : HasMinimalExponentialType C) (hD : Differentiable ℂ D)
+    (hnoCommon : ∀ z, ¬ (C z = 0 ∧ D z = 0))
+    {p : ℂ} (hCp : C p = 0) {c : ℂ} (hCc : C c ≠ 0)
+    (hupperMap : ∀ z, 0 < z.im → 0 < (projectiveNevanlinnaQuotient C D z).im)
+    (zf : ιf → ℂ)
+    (hqf_inj : Function.Injective (fun i => projectiveNevanlinnaQuotient C D (zf i)))
+    (hupperf : ∀ i, 0 < (projectiveNevanlinnaQuotient C D (zf i)).im)
+    (nf : ιf → ℕ) (haf : ∀ i, projectiveNevanlinnaAmplitude C (zf i) ≠ 0)
+    (hqdf : ∀ i, deriv (projectiveNevanlinnaQuotient C D) (zf i) ≠ 0)
+    (degree : ℕ) (orders : ι → ℕ)
+    (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
+    (hexponent : Function.Injective exponent)
+    (hrows : Fintype.card (κ × Fin (degree + 1)) + degree < Fintype.card row)
+    (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
+    (Kshift : Set (InjectiveShiftConfiguration ι)) (hKshift : IsCompact Kshift)
+    (hdim : Module.finrank ℝ (ι → ℂ) <
+      2 * (Fintype.card row - Fintype.card (κ × Fin (degree + 1)) - degree + 1)) :
+    let a := projectiveNevanlinnaAmplitude C
+    let q := projectiveNevanlinnaQuotient C D
+    let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+      a q zf nf haf hqdf mu hupperf
+    let S := LinearMap.ker frozen.toLinearMap
+    ∃ n : ℕ, ∃ packets : Fin n → InjectiveProjectiveRowPacket row,
+      ∃ pieces : Fin n → Set (InjectiveShiftConfiguration ι),
+        Kshift ⊆ ⋃ j, pieces j ∧
+        (∀ j, IsCompact (pieces j)) ∧
+        (∀ j, pieces j ⊆ noncriticalProjectiveUpperGoodCombinedRowPacketSet
+          (ι := ι) (κ := ιf) C D (fun i => q (zf i)) (packets j)) ∧
+        let nodes := fun j => ambientCombinedProjectiveNodes (packets j)
+        let control := fun j h =>
+          projectiveNevanlinnaJetExpansionSmoothControl
+            a q (fun x : row × ι => orders x.2) mu (nodes j h)
+        let base := fun j h =>
+          reshapeCombinedJetsFinCLM row ι orders (control j h baseDensity)
+        let direction := fun j h =>
+          (reshapeCombinedJetsFinCLM row ι orders).comp ((control j h).domRestrict S)
+        let good := fun j => compactConfigurationAvoidance
+          (smoothAffineControlFamily (base j) (direction j))
+          (expandedDifferentialEvaluationRankDefect
+            degree (Fintype.card (Σ i, Fin (orders i))) (packets j).1 exponent)
+          (ambientImageOfInjectiveShiftPiece (pieces j))
+        Dense (⋂ j, good j) ∧ IsOpen (⋂ j, good j) := by
+  dsimp only
+  let a := projectiveNevanlinnaAmplitude C
+  let q := projectiveNevanlinnaQuotient C D
+  let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+    a q zf nf haf hqdf mu hupperf
+  let S := LinearMap.ker frozen.toLinearMap
+  letI normedAddCommGroupS : NormedAddCommGroup S := Submodule.normedAddCommGroup S
+  letI : NormedSpace ℝ S := Submodule.normedSpace S
+  obtain ⟨n, packets, pieces, hcover, hpiecesCompact, hpiecesChart⟩ :=
+    compact_injectiveShiftPatch_finite_noncriticalProjectiveUpperGoodCombinedRowPacket_refinement
+      (row := row) (ι := ι) (κ := ιf) hCmin hD hnoCommon hCp hCc
+      (fun i => q (zf i)) hKshift
+  let nodes : Fin n → (ι → ℂ) → (row × ι → ℂ) := fun j =>
+    ambientCombinedProjectiveNodes (row := row) (ι := ι) (packets j)
+  let control := fun j h =>
+    projectiveNevanlinnaJetExpansionSmoothControl
+      a q (fun x : row × ι => orders x.2) mu (nodes j h)
+  let base := fun j h =>
+    reshapeCombinedJetsFinCLM row ι orders (control j h baseDensity)
+  let direction := fun j h =>
+    (reshapeCombinedJetsFinCLM row ι orders).comp ((control j h).domRestrict S)
+  let good := fun j => compactConfigurationAvoidance
+    (smoothAffineControlFamily (base j) (direction j))
+    (expandedDifferentialEvaluationRankDefect
+      degree (Fintype.card (Σ i, Fin (orders i))) (packets j).1 exponent)
+    (ambientImageOfInjectiveShiftPiece (pieces j))
+  have hgood : ∀ j, Dense (good j) ∧ IsOpen (good j) := by
+    intro j
+    obtain ⟨V, hVfg, hj⟩ :=
+      compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProbe
+        projectiveGeometry parametricAvoidance hCmin.1 hD hupperMap
+        zf hqf_inj hupperf nf haf hqdf degree orders (packets j)
+        exponent hexponent hrows mu hmu baseDensity (pieces j)
+        (hpiecesCompact j) (hpiecesChart j) hdim
+    simpa [good, nodes, control, base, direction, frozen, S, a, q] using hj
+  refine ⟨n, packets, pieces, hcover, hpiecesCompact, hpiecesChart, ?_, ?_⟩
+  · exact dense_iInter_of_finite_isOpen good
+      (fun j => (hgood j).2) (fun j => (hgood j).1)
+  · exact isOpen_iInter_of_finite (fun j => (hgood j).2)
+
+end
+
+end GaloisForLFunctions.HTGeometry

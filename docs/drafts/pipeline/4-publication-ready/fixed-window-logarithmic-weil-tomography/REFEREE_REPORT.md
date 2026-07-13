@@ -2,171 +2,273 @@
 
 ## Recommendation
 
-**Major revision; invite resubmission after the central analytic and novelty comparisons are made fully explicit.**
+**Major revision; invite resubmission after the source hierarchy, classical comparison, and two
+central analytic transfers are made independently checkable.**
 
-The manuscript contains a potentially valuable theorem package. Its strongest result is not a proof of the Riemann hypothesis, but an exact source-defined scalar spectrum. For each fixed width *L > 0*, a finite-prime–Gamma coefficient *g_L(n)* agrees with the sharp rectangular Xi polarization at *a = (log n)/2*; its tail is nonnegative exactly under RH; and the abscissa of its negative part is either *−∞* under RH or *1 + δ\** under false RH. This gives a precise one-parameter encoding of every right half-plane containing the Xi divisor.
+The manuscript contains a strong theorem package.  Its sharpest formulation is now the
+Gamma-free cumulative prime--polar spectrum.  For each fixed width (L>0), the authors define a
+literal finite prime--polar sequence (S_L(n)), its retained negative part (S_{L,N}^-), and
 
-That theorem is interesting enough to be the paper. The present manuscript also combines it with an inverse-tilted dyadic source, critical-Mellin tomography, positive-channel conservation, sparse-exception criteria, and a minimal correction cone. The logical relations appear plausible, but the hierarchy and novelty boundary are not yet sharp enough for publication in the current form.
+\[
+A_{L,N}(X)=\sum_{n\le X}S_{L,N}^-(n).
+\]
+
+They claim, for every (alpha\ge0),
+
+\[
+\Re\rho\le\tfrac12+\alpha\quad(\Xi(\rho)=0)
+\iff \sigma_{\rm abs}(S_{L,N}^-)\le1+\alpha
+\iff A_{L,N}(X)=O_\varepsilon(X^{1+\alpha+\varepsilon}),
+\]
+
+and hence
+
+\[
+\mathrm{RH}
+\iff \sigma_{\rm abs}(S_{L,N}^-)\le1
+\iff A_{L,N}(X)=O_\varepsilon(X^{1+\varepsilon}).
+\]
+
+The paper also proves that the cumulative exponent is sharp at (1+\delta_*), while the exact
+prime--Gamma Weil channel retains the stronger pointwise sign criterion and the dichotomy
+(-\infty) under RH versus (1+\delta_*) under false RH.
+
+This is potentially publishable.  The manuscript nevertheless combines several logically
+distinct constructions, and the strongest new statement rests on transfers that are elementary
+in principle but easy to overstate at the endpoints.  A journal version should be reorganized
+around one combined Theorem A and should make the bounded Gamma removal and cumulative-abscissa
+argument completely transparent.
 
 ## Principal strengths
 
-1. The main coefficient *g_L(n)* is defined on the prime–Gamma side and does not use zeros as input.
-2. The fixed-width statement is genuinely cofinal: neither *L* nor deletion of a finite prefix changes the transverse abscissa.
-3. The false-RH alternative is quantitative. It recovers the exact supremal horizontal displacement *δ\**, not merely the existence of an off-line zero.
-4. Multiplicity is treated through residues and local orders rather than being silently reduced to the simple-zero case.
-5. The contour proof supplies an explicit *R^(−1/2) + R^(−1)* vertical-edge majorant, stronger than an unspecified zero-avoiding subsequence argument.
-6. The manuscript states its limitation correctly: it does not establish the required tail nonnegativity or critical correction estimate and therefore does not prove RH.
+1. The finite prime--polar coefficient is defined without using zeros as input.
+2. One positive monotone quantity, (A_{L,N}(X)), records every right half-plane containing the
+   Xi divisor.
+3. The false-RH alternative is quantitative: the sharp cumulative power threshold recovers the
+   full supremal displacement (delta_*).
+4. The exact prime--Gamma sequence remains available and gives a stronger pointwise sign
+   criterion, rather than being discarded when the Gamma-free carrier is introduced.
+5. The fixed-width statement is cofinal and insensitive to deletion of a finite prefix.
+6. Multiplicity is retained through residues and local analytic orders.
+7. The contour proof supplies an explicit (R^{-1/2}+R^{-1}) vertical-edge majorant.
+8. The manuscript correctly states that none of the critical source estimates is proved and that
+   the paper therefore does not prove RH.
 
 ## Mandatory mathematical revisions
 
-### 1. Make the prime–Gamma spectrum the unique Theorem A
+### 1. State one combined Theorem A
 
-The paper should announce one main theorem with four parts, in this order:
+The paper should announce a single main theorem with the following hierarchy:
 
-1. *g_L(n) = Q_L((log n)/2)*;
-2. *RH ⇔ g_L(n) ≥ 0* on any admissible tail;
-3. the complete half-plane energy equivalence for every *α ≥ 0*;
-4. the abscissa dichotomy *−∞* versus *1 + δ\**.
+1. (g_L(n)=Q_L((\log n)/2)), and RH is equivalent to (g_L(n)\ge0) on one admissible tail;
+2. (S_L) is obtained by removing the uniformly bounded Gamma--polar correction from (g_L);
+3. the half-plane bound, the abscissa bound for (S_{L,N}^-), and the cumulative bound for
+   (A_{L,N}) are equivalent for every (alpha\ge0);
+4. the cumulative exponent is exactly (1+\delta_*);
+5. the exact Weil channel (g_{L,N}^-), but not necessarily (S_{L,N}^-), vanishes under RH.
 
-All other results should be labeled as proof infrastructure, equivalent coordinates, or applications. The abstract and introduction still make the prime–Gamma sequence, the inverse-tilted source, the critical-Mellin defect, and the correction *c⁻ = 2E* compete for attention.
+This last distinction is essential.  The manuscript must never transfer the
+(-\infty)/(1+\delta_*) dichotomy from (g_{L,N}^-) to (S_{L,N}^-) without an additional
+argument.  A bounded Gamma correction preserves all convergence statements to the right of one,
+but it does not force the Gamma-free negative part to vanish under RH.
 
-### 2. Give a theorem-by-theorem comparison with Guinand, Weil, and Barner
+### 2. Expand the derivation of the named Gamma-removal proposition
 
-The autocorrelation *R_{L,a}* is compactly supported, continuous, and piecewise *C¹*, and therefore appears to lie in Barner's admissible class. The authors must state:
+The cumulative theorem depends on the uniform estimate
 
-- which part of the sharp identity follows by direct specialization of Barner after matching conventions;
-- which normalization, endpoint, or absolute-convergence assertion is not immediate from that specialization;
-- whether the finite von Mangoldt window *n ≤ exp(2a)* is a new evaluation or simply the support consequence of the classical formula;
-- precisely which logarithmic-sampling and abscissa results are claimed as new.
+\[
+|S_{L,N}^-(n)-g_{L,N}^-(n)|\le C_L.
+\]
 
-The paper should not claim a new general explicit formula. The defensible contribution is the exact evaluated two-edge specialization and the source-only spectrum built from it.
+Proposition 6.4 now gives an explicit kernel, near-zero bound, exponential tail bound, and
+aperture-uniform constant.  This is a substantial improvement.  The remaining presentation gap
+is the sentence asserting that the time-domain Gamma integral yields equation (6.21b).  The paper
+should derive explicitly:
 
-### 3. Expand the vertical-edge proof into a complete lemma
+- the exact identity relating (S_L), (g_L), and the Gamma--polar correction;
+- why the polar-square subtraction produces precisely ((\gamma+\log\pi)(2L));
+- the change of variables from the Gamma integral to (K_{L,a});
+- the (1)-Lipschitz property of the negative-part map;
+- both comparison inequalities (S^-\le g^-+C_L) and (g^-\le S^-+C_L);
+- why the constant channel is summable at every real exponent greater than one.
 
-The new bound is the analytic heart of the sharp contour argument. Its proof should show, without omitted interchange steps:
+This lemma, not a verbal appeal to boundedness, is the bridge that justifies calling the final
+criterion Gamma-free.
+
+### 3. Make the cumulative-abscissa theorem fully precise
+
+For (c(n)\ge0), (C(X)=\sum_{n\le X}c(n)), and (sigma\ge0), the paper uses
+
+\[
+\sigma_{\rm abs}(c)\le\sigma
+\iff C(X)=O_\varepsilon(X^{\sigma+\varepsilon})
+\quad(\varepsilon>0).
+\]
+
+The proof should state whether (X) ranges over positive integers or real numbers, make clear
+that the implied constant may depend on (arepsilon), and spell out the Abel-summation converse.
+It should also state the extended-real convention for the zero sequence.  This is elementary
+Tauberian infrastructure, not an independent novelty claim, but the exact quantifiers are central
+to Theorem A.
+
+### 4. Justify the sharp lower cumulative exponent without assuming a rightmost zero
+
+The lower statement
+
+\[
+A_{L,N}(X)\ne O(X^{1+\delta_*-\eta})
+\qquad(0<\eta<\delta_*)
+\]
+
+must be proved from the supremum property alone.  The authors should explain why no attainment of
+(delta_*) is needed: an assumed smaller cumulative exponent yields a smaller abscissa, hence a
+strictly smaller zero-free half-plane, contradicting the definition of the supremum.  The proof
+should not select a nonexistent rightmost zero.
+
+The phrase "exact power threshold" should be tied to precisely these upper and lower Big-O
+statements.  If the authors want to claim an equality involving a logarithmic limsup, that would
+require a separate theorem.
+
+### 5. Give a theorem-by-theorem comparison with Guinand, Weil, and Barner
+
+The autocorrelation (R_{L,a}) is compactly supported, continuous, and piecewise (C^1), and
+therefore appears to lie in Barner's admissible class.  The authors must state:
+
+- which part of the sharp identity follows by direct specialization of Barner after matching
+  conventions;
+- which normalization, endpoint, or absolute-convergence assertion is established by their
+  independent contour argument;
+- whether the finite support (n\le e^{2a}) is a new evaluation or the direct support consequence
+  of the classical formula;
+- precisely which logarithmic-sampling, Gamma-removal, abscissa, and cumulative-spectrum results
+  are claimed as new.
+
+The defensible contribution is not a new general explicit formula.  It is the exact evaluated
+sharp specialization and the source spectra built from it.
+
+### 6. Expand the vertical-edge proof into a complete lemma
+
+The analytic heart of the sharp contour argument should show:
 
 - the centered Hadamard relative-resolvent identity;
 - the per-zero integrated Cauchy estimate uniform in horizontal pole distance;
-- the derivative estimate giving *K_{L,a}*;
-- finiteness of *S_{3/2}* and *S_2*, with multiplicity;
-- the near/far split and exchange of divisor sum with the far-edge integral;
-- existence of arbitrarily large divisor-avoiding *R*;
-- why one cofinal admissible sequence suffices in the argument-principle exhaustion.
+- the derivative estimate giving the window constant;
+- finiteness of the required divisor sums, with multiplicity;
+- the near/far split and the exchange of the divisor sum with the far-edge integral;
+- existence of arbitrarily large divisor-avoiding heights;
+- why one cofinal admissible sequence suffices for the contour exhaustion.
 
-The displayed estimate is credible, but a referee should not have to reconstruct the logarithmic-primitive argument from a paragraph.
+### 7. Prove every Fourier and reality normalization
 
-### 4. Prove every normalization in the bottom-edge calculation
+The manuscript should prove explicitly
 
-The Fourier convention is easy to misread because the square of a bilateral transform is being inverted. The manuscript should prove explicitly
+\[
+\frac1\pi\int_{\mathbb R}\widehat h_{L,a}(x-i)^2e^{-ixt}\,dx
+=2e^tR_{L,a}(t),
+\]
 
-*(1/π) ∫ ĥ_{L,a}(x−i)² exp(−ixt) dx = 2 exp(t) R_{L,a}(t),*
+including the factor (2), the exponential tilt, the reflection convention, and the breakpoint
+values.  The reality of the archimedean contribution should be visible directly from its source
+integral.  Otherwise the claim that (g_L) is source-defined remains partly dependent on the zero
+side.
 
-including the factor *2*, the exponential tilt, the reflection convention, and the values at the finitely many breakpoints. It should explain why endpoint representatives do not affect the von Mangoldt sum or specify them.
+### 8. Keep the three source coordinates separate
 
-The reality of *A_{∞,L,a}* should be proved directly from its source integral, not inferred only after comparison with the real zero side. Since *g_L* is advertised as source-only, its reality should be source-visible.
+The manuscript uses:
 
-### 5. Make the completeness proof independently checkable
+- (g_L), the exact prime--Gamma Weil sample;
+- (S_L), the bounded-correction finite prime--polar sample;
+- (P_-), the independent inverse-tilted dyadic source whose continuation reconstructs the
+  divisor.
 
-The step from eventual lower boundedness of *Q_L((log n)/2)* to RH is the conceptual core. The exact scale-local Landau statement should include:
+These are not coefficientwise identical.  Their relationship should be summarized in one
+diagram or proposition.  In particular, the equivalence of their RH endpoints comes from proved
+transfers through the same divisor bounds, not from an unstated source-to-source identity.
 
-- the abscissa convention after deletion of a finite prefix;
-- the holomorphic disc crossing the real boundary *1 + δ\**;
-- the positive gap between that real point and the shifted nontrivial divisor;
-- local normal convergence of the filled shifted-zeta sum;
-- why nonattainment of *δ\** causes no problem;
-- why the multiplicity order calculation prevents cancellation at every shifted pole.
+The signed dyadic coefficient (c) and its least correction (c^-=2E) form a fourth, merely
+sufficient endpoint.  Its critical abscissa must not be described as necessary for RH unless that
+converse is separately proved.
 
-This proof should not remain a chain of references whose hypotheses must be mentally recombined.
+### 9. Moderate the Connes interpretation
 
-### 6. Clarify “source-only” and effective accessibility
-
-The authors should state explicitly that:
-
-- *P_{L,a}* is a finite von Mangoldt sum;
-- *A_{∞,L,a}* uses only elementary factors, Gamma, and an absolutely convergent integral;
-- the admissible cutoff depends only on *L*;
-- *g_L(n)* can be evaluated without locating a zeta zero.
-
-The paper need not supply an optimized algorithm, but it should distinguish definability from practical computability and provide at least one numerical sanity check of the identity and signs.
-
-### 7. Separate the two source constructions
-
-The prime–Gamma sequence *g_L* and the inverse-tilted dyadic source *P_-* are not the same sequence. Their equivalence in the principal theorem comes from each independently detecting the same zero-free half-plane. The paper must not suggest an unproved direct identity.
-
-The logical picture is
-
-*g_L⁻ ↔ sharp Weil energy*
-
-and, independently,
-
-*P_- ↔ S_- ↔ D̃*.
-
-If no direct source-to-source transform is proved, “one-source” and “shared source” should be revised. The clean alternative is to keep the prime–Gamma spectrum in the main paper and move the inverse-tilted Mellin tomography to a companion paper.
-
-### 8. Separate the exact RH criterion from the sufficient correction criterion
-
-The manuscript has two different endpoint statements:
-
-- *σ_abs(g_{L,N}⁻) ≤ 1* is equivalent to RH;
-- *σ_abs(c⁻) ≤ 1* is sufficient for RH, but necessity is not proved.
-
-These must remain visually and verbally distinct. Minimality of *c⁻* inside its correction cone does not make its critical abscissa an RH equivalence.
-
-### 9. Moderate the Connes claim
-
-The manuscript derives scalar obligations relevant to the Connes route. It does not construct a semilocal Sonin space, prove cofinal operator convergence, identify a self-adjoint spectrum with the Xi divisor, or produce a trace formula whose positive part equals *g_L*.
+The paper derives scalar obligations relevant to Connes's route.  It does not construct a
+semilocal Sonin space, prove cofinal operator convergence, identify a self-adjoint spectrum with
+the Xi divisor, or produce a positive trace formula whose scalar coefficient is (S_L).
 
 The warranted conclusion is:
 
-> Any Connes-type realization satisfying the stated scalar identification must dominate or reproduce this negative carrier.
+> Any Connes-type realization satisfying the stated scalar identification must control the
+> cumulative negative prime--polar mass at the corresponding exponent.
 
-The paper should not imply that every conceivable Connes architecture is exhausted by the scalar sequence without a theorem mapping that architecture to the coefficientwise order used here.
+The manuscript should not imply that every possible Connes architecture factors through this
+particular scalar sequence.
 
-### 10. Distinguish structural theorems from elementary order facts
+### 10. Separate structural content from elementary order theory
 
-The finite-channel maximum law, aggregate domination, and least-negative-part lemma are correct and useful, but much of their proof is elementary order theory for nonnegative Dirichlet coefficients. Their significance lies in identifying the particular carrier, not in the abstract inequalities. They should not be presented as comparable in novelty to the prime–Gamma spectrum.
+The finite-channel maximum law, aggregate domination, least-negative-part lemma, and
+cumulative-abscissa lemma are correct and useful.  Their significance lies in the identification
+of the explicit Xi carrier.  The abstract inequalities themselves should not be presented as
+novel results comparable to the sharp source spectrum.
 
 ## Questions the authors must answer
 
-1. Does Barner's theorem, with *F = R_{L,a}*, already imply equation (6.6) after a change of normalization? If not, identify the failed hypothesis exactly.
-2. Can the reality of *A_{∞,L,a}* be read directly from the Gamma integrand?
-3. Is *g_L(n)* independent of endpoint representatives of the sharp indicator?
-4. Why does positivity on one admissible logarithmic tail detect every remote off-line zero rather than only an attained rightmost zero?
-5. Which assertion uses *L > 0*, and what degenerates at *L = 0*?
-6. Are all sums over *Z* sums over multiplicity copies? State this once and use it consistently.
-7. Is *σ_abs(0) = −∞* the adopted convention? State it at first occurrence.
-8. Is the inverse-tilted source logically needed for the prime–Gamma spectrum, or only a second coordinate? If the latter, why is it in the same paper?
-9. Is there a direct formula connecting *g_L⁻* and *c⁻ = 2E*? If not, what justifies calling them manifestations of one carrier?
-10. What operator or trace-formula estimate would imply *g_L(n) ≥ 0* on a tail?
-11. What is the simplest consequence of the exact spectrum that is not an immediate restatement of Weil positivity or a known screw-function criterion?
-12. Can the authors give a numerical example comparing the finite prime–Gamma expression with the zero polarization?
+1. Is (S_L(n)) literally a finite von Mangoldt sum plus an explicit polar term for every retained
+   (n)?  State the finite summation range.
+2. What is the exact formula for (g_L-S_L), and where is its aperture-uniform bound proved?
+3. Under RH, can (S_{L,N}^-) be nonzero?  If so, state this immediately after Theorem A.
+4. Why does a bounded correction preserve the abscissa criterion at thresholds (1+\alpha) but
+   not the (-\infty) branch?
+5. Does the cumulative lower bound assert only failure of Big-O, or also an Omega result or a
+   logarithmic limsup?  The terminology must match the proved statement.
+6. Why does the supremum (delta_*) control all zeros even when it is not attained?
+7. Does Barner's theorem already imply the sharp identity after normalization?  If not, identify
+   the exact failed or unproved hypothesis.
+8. Is the Gamma integral real directly from its integrand?
+9. Are endpoint representatives of the sharp indicator immaterial to the von Mangoldt sum?
+10. Which assertion genuinely requires (L>0), and what degenerates at (L=0)?
+11. Are all divisor sums counted with multiplicity copies?
+12. Is (sigma_{\rm abs}(0)=-\infty) the convention throughout?
+13. Is the inverse-tilted source needed for the prime--polar cumulative spectrum, or only an
+    independent divisor coordinate?
+14. Is there a direct formula connecting (S_L^-) and (c^-=2E)?
+15. What operator or trace estimate would imply
+    (A_{L,N}(X)=O_\varepsilon(X^{1+\varepsilon}))?
+16. What is the simplest consequence of the cumulative spectrum that is not already a direct
+    restatement of Weil positivity?
 
 ## Expository and editorial revisions
 
-- Shorten the abstract and keep Theorem A dominant.
-- Add a notation table for *Q_L*, *q_L*, *g_L*, *d_L*, *P_-*, *c*, *E*, *S_-*, and *D̃*.
-- Replace “candidate-new” with a precise contribution statement supported by the literature comparison.
-- State Fourier and Mellin conventions at the beginning.
-- Use “Xi” and “xi” consistently.
+- Add a notation table for (Q_L), (g_L), (S_L), (A_{L,N}), (P_-), (mathcal S_-),
+  (widetilde D), (c), and (E).
+- Shorten the abstract if the target journal imposes a conventional word limit.
+- State Fourier and Mellin conventions before their first use.
+- Use "Xi" and "xi" consistently.
 - Explain why squares, rather than absolute squares, are real and nonnegative under RH.
-- State all abscissae in the extended real line and give the zero-series convention once.
-- Add stable identifiers for references and verify all 2025–2026 publication statuses at submission.
-- The target journal's authorship and accountability policy must be resolved before submission.
+- State every abscissa in the extended real line and give the zero-series convention once.
+- Verify the publication status of every 2025--2026 citation at submission.
+- Resolve the target journal's authorship and accountability policy before submission.
+- A small reproducible numerical identity check would improve accessibility, although it is not
+  a substitute for any analytic proof.
 
 ## Publication threshold
 
 I would support publication after the following minimum package is supplied:
 
-1. one Theorem A centered on *g_L*;
-2. a complete contour and Fourier-normalization proof;
-3. a precise Barner comparison;
-4. a clear separation of *g_L*, *P_-*, and *c⁻*;
-5. a moderated Connes interpretation;
-6. one reproducible numerical check;
-7. a shorter abstract and clearer notation.
+1. one combined Theorem A centered on (S_L) and (A_{L,N}), with (g_L) retained as the exact
+   Weil coordinate;
+2. a complete derivation of Proposition 6.4 and its two-sided negative-part comparison;
+3. a fully quantified cumulative-abscissa proof;
+4. a complete contour and Fourier-normalization proof;
+5. a precise Barner comparison;
+6. a clear separation of (g_L), (S_L), (P_-), and (c^-);
+7. a moderated Connes interpretation.
 
 The strongest publishable narrative is:
 
-> A fixed sharp two-edge Weil window, sampled only at logarithmic integer apertures, admits an exact finite-prime–Gamma realization. The negative part of that explicit arithmetic sequence has an absolute-convergence abscissa equal to the rightmost horizontal displacement of the Xi divisor plus one; it vanishes identically exactly under RH. Thus one scalar source sequence records the complete family of right half-plane bounds for the Xi divisor.
+> A fixed sharp two-edge Weil window, sampled at logarithmic integer apertures, admits an exact
+> finite-prime--Gamma realization.  Removing a uniformly bounded Gamma--polar correction produces
+> a literal finite prime--polar sequence whose cumulative negative mass has exact power threshold
+> (1+\delta_*).  Every horizontal zero-free region, and RH at the critical endpoint, is
+> equivalent to the corresponding cumulative growth bound.
 
-That statement is strong, precise, and does not overstate what remains open.
+That statement is strong, precise, and does not overstate the unresolved critical estimate.

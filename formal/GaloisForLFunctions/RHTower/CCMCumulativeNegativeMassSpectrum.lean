@@ -1,8 +1,9 @@
 import Mathlib.NumberTheory.LSeries.SumCoeff
 import GaloisForLFunctions.RHTower.CCMPrimeGammaSourceEnergySpectrum
+import GaloisForLFunctions.RHTower.XiGuinandWeilRectangularGammaPolarSourceLaw
 
 /-!
-# Cumulative negative-mass spectrum of the sharp prime--Gamma carrier
+# Cumulative negative-mass spectra of the sharp prime--Gamma and prime--polar carriers
 
 For a nonnegative Dirichlet coefficient, the absolute-convergence abscissa is exactly the
 threshold for supercritical power bounds on its cumulative mass.  Applying this general
@@ -13,8 +14,9 @@ cumulative source spectrum for the horizontal Xi divisor:
 * RH is equivalent to the critical cumulative bound at exponent one;
 * under false RH the exact cumulative-growth threshold is `1 + xiRightTransverseSup`.
 
-This replaces a convergence-only carrier by a positive monotone quantity visible directly in
-the source coefficients.
+The bounded Gamma--polar correction transfers the same spectrum to the literal finite
+prime--polar source.  This replaces a convergence-only carrier by a positive monotone quantity
+visible directly in finite arithmetic coefficients.
 -/
 
 open Complex Filter Function Set LSeries Finset Asymptotics
@@ -251,6 +253,91 @@ theorem primeGammaCumulativeNegativeMass_exactPowerOrder_of_not_rh
   rw [habscissaEq] at habscissa
   have : 1 + xiRightTransverseSup ≤ 1 + xiRightTransverseSup - eta := by
     exact_mod_cast habscissa
+  linarith
+
+/-- Every horizontal Xi zero bound is exactly a cumulative-growth law for the negative part of
+the literal finite prime--polar source. -/
+theorem all_xiZeros_re_le_iff_rectangularPrimePolarSource_cumulativeNegativeMassGrowth
+    {L alpha : ℝ} (hL : 0 < L) (halpha : 0 ≤ alpha) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n → 1 ≤ n ∧ L ≤ Real.log n / 2) :
+    (∀ rho : ℂ, xi rho = 0 → rho.re ≤ 1 / 2 + alpha) ↔
+      NonnegativeDirichletSummatoryGrowthAt
+        (rectangularPrimePolarSourceTailNegativePart L N) (1 + alpha) := by
+  have hnonneg : ∀ n, 0 ≤ rectangularPrimePolarSourceTailNegativePart L N n :=
+    rectangularPrimePolarSourceTailNegativePart_nonneg L N
+  rw [← abscissaOfAbsConv_le_iff_nonnegativeDirichletSummatoryGrowthAt
+    hnonneg (by linarith : 0 ≤ 1 + alpha)]
+  simpa only [rectangularPrimePolarSourceTailNegativeDirichletCoefficient] using
+    all_xiZeros_re_le_iff_rectangularPrimePolarSource_negativeAbscissa_le
+      hL halpha hN
+
+/-- RH is exactly the critical cumulative-mass law for the negative part of one literal finite
+prime--polar source sequence. -/
+theorem riemannHypothesis_iff_rectangularPrimePolarSource_cumulativeNegativeMassCriticalGrowth
+    {L : ℝ} (hL : 0 < L) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n → 1 ≤ n ∧ L ≤ Real.log n / 2) :
+    RiemannHypothesis ↔
+      NonnegativeDirichletSummatoryGrowthAt
+        (rectangularPrimePolarSourceTailNegativePart L N) 1 := by
+  have hnonneg : ∀ n, 0 ≤ rectangularPrimePolarSourceTailNegativePart L N n :=
+    rectangularPrimePolarSourceTailNegativePart_nonneg L N
+  rw [← abscissaOfAbsConv_le_iff_nonnegativeDirichletSummatoryGrowthAt hnonneg zero_le_one]
+  simpa only [rectangularPrimePolarSourceTailNegativeDirichletCoefficient] using
+    riemannHypothesis_iff_rectangularPrimePolarSource_negativeAbscissa_le_one hL hN
+
+/-- The cumulative negative finite prime--polar mass has exact transverse power order
+`1 + xiRightTransverseSup`: every larger power is an upper bound, while no smaller power within
+the transverse range is.  Under RH the lower assertion is vacuous and the upper assertion is the
+critical cumulative law. -/
+theorem rectangularPrimePolarSource_cumulativeNegativeMass_exactTransversePowerOrder
+    {L : ℝ} (hL : 0 < L) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n → 1 ≤ n ∧ L ≤ Real.log n / 2) :
+    (∀ epsilon : ℝ, 0 < epsilon →
+      (fun X : ℕ => ∑ n ∈ Finset.Icc 1 X,
+          rectangularPrimePolarSourceTailNegativePart L N n) =O[atTop]
+        (fun X : ℕ => (X : ℝ) ^ (1 + xiRightTransverseSup + epsilon))) ∧
+    (∀ eta : ℝ, 0 < eta → eta < xiRightTransverseSup →
+      ¬ (fun X : ℕ => ∑ n ∈ Finset.Icc 1 X,
+          rectangularPrimePolarSourceTailNegativePart L N n) =O[atTop]
+        (fun X : ℕ => (X : ℝ) ^ (1 + xiRightTransverseSup - eta))) := by
+  have hsupNonneg : 0 ≤ xiRightTransverseSup := xiRightTransverseSup_nonneg
+  have henergy :=
+    (xiRightTransverseSup_le_iff_negativePartEnergyAbove
+      hL hsupNonneg hN).mp le_rfl
+  have hzeros : XiZeroHalfPlaneBound xiRightTransverseSup :=
+    (xiZeroHalfPlaneBound_iff_rectangularNegativeEnergyAbove
+      hL hsupNonneg hN).mpr henergy
+  have hgrowth :=
+    (all_xiZeros_re_le_iff_rectangularPrimePolarSource_cumulativeNegativeMassGrowth
+      hL hsupNonneg hN).mp hzeros
+  refine ⟨hgrowth, ?_⟩
+  intro eta heta hetaSup hO
+  let alpha : ℝ := xiRightTransverseSup - eta
+  have halpha : 0 ≤ alpha := by
+    dsimp only [alpha]
+    linarith
+  have hnonneg : ∀ n, 0 ≤ rectangularPrimePolarSourceTailNegativePart L N n :=
+    rectangularPrimePolarSourceTailNegativePart_nonneg L N
+  have habscissa : LSeries.abscissaOfAbsConv
+      (rectangularPrimePolarSourceTailNegativeDirichletCoefficient L N) ≤
+        ((1 + alpha : ℝ) : EReal) := by
+    apply LSeries.abscissaOfAbsConv_le_of_forall_lt_LSeriesSummable
+    intro y hy
+    apply LSeriesSummable_of_sum_norm_bigO_and_nonneg hO hnonneg
+    · linarith
+    · simp only [ofReal_re]
+      dsimp only [alpha] at hy
+      linarith
+  have hzero : XiZeroHalfPlaneBound alpha := by
+    exact (all_xiZeros_re_le_iff_rectangularPrimePolarSource_negativeAbscissa_le
+      hL halpha hN).mpr habscissa
+  have henergyAlpha :=
+    (xiZeroHalfPlaneBound_iff_rectangularNegativeEnergyAbove
+      hL halpha hN).mp hzero
+  have hsupAlpha :=
+    (xiRightTransverseSup_le_iff_negativePartEnergyAbove
+      hL halpha hN).mpr henergyAlpha
+  dsimp only [alpha] at hsupAlpha
   linarith
 
 end

@@ -142,6 +142,14 @@ theorem gramSchmidt_causal (f g : ℕ → E) (n : ℕ) (h : ∀ m, m ≤ n → f
     have hin : i < n := Finset.mem_Iio.mp hi
     rw [ih i hin (fun m hm => h m (hm.trans hin.le))]
 
+/-- The correction `v k - gramSchmidt v k` lies in the span of the earlier Gram–Schmidt vectors. -/
+theorem sub_gramSchmidt_mem_span (v : ℕ → E) (k : ℕ) :
+    v k - gramSchmidt ℂ v k ∈ Submodule.span ℂ (gramSchmidt ℂ v '' Set.Iio k) := by
+  rw [gramSchmidt_def'' ℂ v k, add_sub_cancel_left]
+  apply Submodule.sum_mem
+  intro i hi
+  exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, Finset.mem_Iio.mp hi, rfl⟩)
+
 /-- **Gram–Schmidt minimizes the distance to the span of predecessors.**  `gramSchmidt v k` is the
 component of `v k` orthogonal to `span{gs₀,…,gs_{k-1}} = span{v₀,…,v_{k-1}}`, so its norm is a lower
 bound for `‖v k - w‖` over every `w` in that span.  This is the least-squares characterization that,
@@ -150,12 +158,7 @@ orthogonal polynomial norms. -/
 theorem norm_gramSchmidt_le_of_mem_span (v : ℕ → E) (k : ℕ) {w : E}
     (hw : w ∈ Submodule.span ℂ (gramSchmidt ℂ v '' Set.Iio k)) :
     ‖gramSchmidt ℂ v k‖ ≤ ‖v k - w‖ := by
-  have hdef := gramSchmidt_def'' ℂ v k
-  have hu : v k - gramSchmidt ℂ v k ∈ Submodule.span ℂ (gramSchmidt ℂ v '' Set.Iio k) := by
-    rw [hdef, add_sub_cancel_left]
-    apply Submodule.sum_mem
-    intro i hi
-    exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, Finset.mem_Iio.mp hi, rfl⟩)
+  have hu := sub_gramSchmidt_mem_span v k
   have horth : ∀ x ∈ Submodule.span ℂ (gramSchmidt ℂ v '' Set.Iio k),
       inner ℂ (gramSchmidt ℂ v k) x = (0 : ℂ) := by
     intro x hx
@@ -181,6 +184,25 @@ theorem norm_gramSchmidt_le_of_mem_span (v : ℕ → E) (k : ℕ) {w : E}
   simp only [map_zero, mul_zero, add_zero] at hpy
   nlinarith [norm_nonneg (gramSchmidt ℂ v k), norm_nonneg ((v k - gramSchmidt ℂ v k) - w),
     norm_nonneg (gramSchmidt ℂ v k + ((v k - gramSchmidt ℂ v k) - w))]
+
+/-- **The Gram–Schmidt length is the least distance to the span of predecessors.**  `‖gramSchmidt v k‖`
+is the minimum of `‖v k - w‖` over `w` in the span of the earlier vectors, attained at
+`w = v k - gramSchmidt v k`.  For the analytic monomials in `L²(μ)` this is exactly the monic
+orthogonal polynomial norm `‖Φₖ‖ = dist(zᵏ, {polynomials of degree < k})`. -/
+theorem isLeast_norm_gramSchmidt (v : ℕ → E) (k : ℕ) :
+    IsLeast ((fun w => ‖v k - w‖) '' (Submodule.span ℂ (gramSchmidt ℂ v '' Set.Iio k)))
+      ‖gramSchmidt ℂ v k‖ := by
+  constructor
+  · refine ⟨v k - gramSchmidt ℂ v k, sub_gramSchmidt_mem_span v k, ?_⟩
+    simp only [sub_sub_cancel]
+  · rintro _ ⟨w, hw, rfl⟩
+    exact norm_gramSchmidt_le_of_mem_span v k hw
+
+/-- The Gram–Schmidt length is the greatest lower bound of the distances to the predecessor span. -/
+theorem isGLB_norm_gramSchmidt (v : ℕ → E) (k : ℕ) :
+    IsGLB ((fun w => ‖v k - w‖) '' (Submodule.span ℂ (gramSchmidt ℂ v '' Set.Iio k)))
+      ‖gramSchmidt ℂ v k‖ :=
+  (isLeast_norm_gramSchmidt v k).isGLB
 
 /-- **Gram–Schmidt commutes with the `Fin (n+1)`-restriction of an `ℕ`-family.**  The Gram–Schmidt
 vector of the finite restriction `fun i : Fin (n+1) => w i` at index `k` equals the Gram–Schmidt

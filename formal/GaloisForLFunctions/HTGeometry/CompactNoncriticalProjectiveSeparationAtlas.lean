@@ -169,5 +169,77 @@ theorem noncriticalProjectiveGoodRow_deriv_ne_zero
   · exact (Finset.prod_ne_zero_iff.mp hCprod) i (Finset.mem_univ i)
   · exact (Finset.prod_ne_zero_iff.mp hWprod) i (Finset.mem_univ i)
 
+/-- A nonzero complete certificate on an arbitrary finite packet contains denominator regularity,
+affine projective separation, frozen avoidance, and noncriticality.  Packet injectivity is a
+consequence rather than a hypothesis: affine separation already forbids repeated source nodes. -/
+theorem noncriticalProjectiveSeparationProduct_complete_data
+    {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ]
+    {C D : ℂ → ℂ} (hC : Differentiable ℂ C) (hD : Differentiable ℂ D)
+    (forbidden : κ → ℂ) (shift : ι → ℂ) {z : ℂ}
+    (hgood : noncriticalProjectiveSeparationProduct C D shift forbidden z ≠ 0) :
+    (∀ i, C (z + shift i) ≠ 0) ∧
+      Function.Injective (fun i => -D (z + shift i) / C (z + shift i)) ∧
+      (∀ i k, -D (z + shift i) / C (z + shift i) ≠ forbidden k) ∧
+      (∀ i, deriv (fun w => -D w / C w) (z + shift i) ≠ 0) := by
+  change projectiveForbiddenSeparationProduct C D shift forbidden z *
+    (∏ i, projectiveDerivativeNumerator C D (z + shift i)) ≠ 0 at hgood
+  have hforbidden : projectiveForbiddenSeparationProduct C D shift forbidden z ≠ 0 := by
+    intro hzero
+    exact hgood (by rw [hzero, zero_mul])
+  have hWProduct : (∏ i, projectiveDerivativeNumerator C D (z + shift i)) ≠ 0 := by
+    intro hzero
+    exact hgood (by rw [hzero, mul_zero])
+  change projectiveSeparationProduct C D shift z *
+    (∏ x : ι × κ,
+      (D (z + shift x.1) + forbidden x.2 * C (z + shift x.1))) ≠ 0 at hforbidden
+  have hsep : projectiveSeparationProduct C D shift z ≠ 0 := by
+    intro hzero
+    exact hforbidden (by rw [hzero, zero_mul])
+  have hforbidProduct : (∏ x : ι × κ,
+      (D (z + shift x.1) + forbidden x.2 * C (z + shift x.1))) ≠ 0 := by
+    intro hzero
+    exact hforbidden (by rw [hzero, mul_zero])
+  change (∏ i, C (z + shift i)) *
+    (∏ x : {x : ι × ι // x.1 ≠ x.2},
+      projectiveShiftCollision C D (shift x.1.1) (shift x.1.2) z) ≠ 0 at hsep
+  have hregularProduct : (∏ i, C (z + shift i)) ≠ 0 := by
+    intro hzero
+    exact hsep (by rw [hzero, zero_mul])
+  have hcollisionProduct :
+      (∏ x : {x : ι × ι // x.1 ≠ x.2},
+        projectiveShiftCollision C D (shift x.1.1) (shift x.1.2) z) ≠ 0 := by
+    intro hzero
+    exact hsep (by rw [hzero, mul_zero])
+  have hregular : ∀ i, C (z + shift i) ≠ 0 := fun i =>
+    (Finset.prod_ne_zero_iff.mp hregularProduct) i (Finset.mem_univ i)
+  refine ⟨hregular, ?_, ?_, ?_⟩
+  · intro i j heq
+    by_contra hij
+    let x : {x : ι × ι // x.1 ≠ x.2} := ⟨(i, j), hij⟩
+    exact (quotient_ne_of_projectiveShiftCollision_ne_zero
+      (hregular i) (hregular j)
+      ((Finset.prod_ne_zero_iff.mp hcollisionProduct) x (Finset.mem_univ x))) heq
+  · intro i k
+    apply quotient_ne_forbidden_of_linearFactor_ne_zero (hregular i)
+    exact (Finset.prod_ne_zero_iff.mp hforbidProduct) (i, k) (Finset.mem_univ (i, k))
+  · intro i
+    apply deriv_neg_div_ne_zero_of_projectiveDerivativeNumerator_ne_zero hC hD
+    · exact hregular i
+    · exact (Finset.prod_ne_zero_iff.mp hWProduct) i (Finset.mem_univ i)
+
+/-- A nonzero complete row certificate contains exactly the four pieces of affine projective data
+used by the Nevanlinna transversality argument. -/
+theorem noncriticalProjectiveGoodRow_complete_data
+    {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ]
+    {C D : ℂ → ℂ} (hC : Differentiable ℂ C) (hD : Differentiable ℂ D)
+    (forbidden : κ → ℂ) {z : ℂ} {shift : InjectiveShiftConfiguration ι}
+    (hgood : shift ∈ noncriticalProjectiveGoodRowSet
+      (ι := ι) (κ := κ) C D forbidden z) :
+    (∀ i, C (z + shift.1 i) ≠ 0) ∧
+      Function.Injective (fun i => -D (z + shift.1 i) / C (z + shift.1 i)) ∧
+      (∀ i k, -D (z + shift.1 i) / C (z + shift.1 i) ≠ forbidden k) ∧
+      (∀ i, deriv (fun w => -D w / C w) (z + shift.1 i) ≠ 0) := by
+  exact noncriticalProjectiveSeparationProduct_complete_data hC hD forbidden shift.1 hgood
+
 end
 end GaloisForLFunctions.HTGeometry

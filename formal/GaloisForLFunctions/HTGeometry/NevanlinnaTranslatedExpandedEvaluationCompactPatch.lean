@@ -111,6 +111,7 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
     (hexponent : Function.Injective exponent)
     (hrows : Fintype.card (κ × Fin (degree + 1)) + degree < Fintype.card row)
     (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
     (nodes : H → (row × ι → ℂ)) (hnodes : ContDiff ℝ ⊤ nodes)
     (U K : Set H) (hU : IsOpen U) (hK : IsCompact K) (hKU : K ⊆ U)
     (hnodesOmega : ∀ h ∈ U, ∀ x, nodes h x ∈ Omega)
@@ -129,7 +130,7 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
         projectiveNevanlinnaJetExpansionSmoothControl
           a q (fun x : row × ι => orders x.2) mu (nodes h)
       let base := fun h =>
-        reshapeCombinedJetsFinCLM row ι orders (control h (linftyOne mu))
+        reshapeCombinedJetsFinCLM row ι orders (control h baseDensity)
       let direction := fun h =>
         (reshapeCombinedJetsFinCLM row ι orders).comp ((control h).domRestrict S)
       Dense (compactConfigurationAvoidance
@@ -220,7 +221,7 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
     projectiveNevanlinnaJetExpansionSmoothControl
       a q (fun x : row × ι => orders x.2) mu (nodes h)
   let base := fun h =>
-    reshapeCombinedJetsFinCLM row ι orders (control h (linftyOne mu))
+    reshapeCombinedJetsFinCLM row ι orders (control h baseDensity)
   let direction := fun h =>
     (reshapeCombinedJetsFinCLM row ι orders).comp ((control h).domRestrict S)
   let directionV := fun h =>
