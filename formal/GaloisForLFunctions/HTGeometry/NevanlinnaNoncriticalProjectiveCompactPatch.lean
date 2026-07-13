@@ -126,6 +126,36 @@ theorem dense_iInter_of_finite_isOpen
         simpa [hrs, inter_comm] using hinter
   simpa using hfin Finset.univ
 
+/-- Compact-local open dense witness sets assemble over a sigma-compact configuration space into
+one dense residual global witness set.  The witness may use different finite certificates on
+different compact patches. -/
+theorem globalWitness_dense_residual_of_sigmaCompact
+    {X H : Type*} [TopologicalSpace X] [BaireSpace X]
+    [TopologicalSpace H] [SigmaCompactSpace H]
+    (Witness : X → H → Prop)
+    (hcompact : ∀ K : Set H, IsCompact K →
+      ∃ G : Set X, IsOpen G ∧ Dense G ∧
+        ∀ x ∈ G, ∀ h ∈ K, Witness x h) :
+    Dense {x | ∀ h, Witness x h} ∧ {x | ∀ h, Witness x h} ∈ residual X := by
+  obtain ⟨K, hK, hcover⟩ := SigmaCompactSpace.exists_compact_covering (X := H)
+  let G : ℕ → Set X := fun n => Classical.choose (hcompact (K n) (hK n))
+  have hGopen : ∀ n, IsOpen (G n) := fun n =>
+    (Classical.choose_spec (hcompact (K n) (hK n))).1
+  have hGdense : ∀ n, Dense (G n) := fun n =>
+    (Classical.choose_spec (hcompact (K n) (hK n))).2.1
+  have hGwitness : ∀ n x, x ∈ G n → ∀ h ∈ K n, Witness x h := fun n =>
+    (Classical.choose_spec (hcompact (K n) (hK n))).2.2
+  have hresInter : (⋂ n, G n) ∈ residual X :=
+    countable_iInter_mem.mpr fun n => residual_of_dense_open (hGopen n) (hGdense n)
+  have hsubset : (⋂ n, G n) ⊆ {x | ∀ h, Witness x h} := by
+    intro x hx h
+    have hh : h ∈ ⋃ n, K n := by rw [hcover]; exact Set.mem_univ h
+    obtain ⟨n, hn⟩ := Set.mem_iUnion.mp hh
+    exact hGwitness n x (Set.mem_iInter.mp hx n) h hn
+  have hres : {x | ∀ h, Witness x h} ∈ residual X :=
+    Filter.mem_of_superset hresInter hsubset
+  exact ⟨dense_of_mem_residual hres, hres⟩
+
 /-- Extract the complete Nevanlinna control data from one combined row-packet chart. -/
 theorem noncriticalProjectiveUpperGoodCombinedRowPacket_complete_data
     {row ι κ : Type*} [Fintype row]
@@ -157,6 +187,134 @@ def ambientImageOfInjectiveShiftPiece
     {ι : Type*} [Fintype ι] (piece : Set (InjectiveShiftConfiguration ι)) :
     Set (ι → ℂ) :=
   Subtype.val '' piece
+
+/-- The literal expanded evaluation packet of the actual Nevanlinna carrier at one tangent
+parameter and one collision-free shift configuration. -/
+def actualNevanlinnaExpandedPacketValue
+    {row ι : Type} [Fintype row] [Fintype ι]
+    (a q : ℂ → ℂ) (orders : ι → ℕ)
+    (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu]
+    (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
+    (S : Submodule ℝ (Lp ℝ (⊤ : ENNReal) mu))
+    (packet : InjectiveProjectiveRowPacket row)
+    (w : S) (shift : InjectiveShiftConfiguration ι) :
+    row × Fin (Fintype.card (Σ i, Fin (orders i))) → ℂ :=
+  let control := projectiveNevanlinnaJetExpansionSmoothControl
+    a q (fun x : row × ι => orders x.2) mu
+      (ambientCombinedProjectiveNodes packet shift.1)
+  reshapeCombinedJetsFinCLM row ι orders (control (baseDensity + w.1))
+
+/-- One complete row packet witnesses full coefficient-uniform expanded-evaluation rank. -/
+def actualNevanlinnaExpandedFullRankWitness
+    {row κ ι : Type} [Fintype row] [Fintype κ] [DecidableEq κ] [Fintype ι]
+    (a q : ℂ → ℂ) (degree : ℕ) (orders : ι → ℕ)
+    (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
+    (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu]
+    (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
+    (S : Submodule ℝ (Lp ℝ (⊤ : ENNReal) mu))
+    (w : S) (shift : InjectiveShiftConfiguration ι) : Prop :=
+  ∃ packet : InjectiveProjectiveRowPacket row,
+    (∀ x, 0 < (combinedProjectiveRowShiftPacket packet shift x).im) ∧
+      Function.Injective
+        (expandedDifferentialEvaluationMatrix degree
+          (Fintype.card (Σ i, Fin (orders i))) packet.1 exponent
+          (actualNevanlinnaExpandedPacketValue
+            a q orders mu baseDensity S packet w shift)).mulVec
+
+/-- A polynomial-coefficient relation of one finite expanded pattern holds on every admissible
+evaluation packet.  This is the finite functional relation surface seen by the row geometry. -/
+def actualNevanlinnaExpandedPatternRelationHolds
+    {row κ ι : Type} [Fintype row] [Fintype κ] [DecidableEq κ] [Fintype ι]
+    (a q : ℂ → ℂ) (degree : ℕ) (orders : ι → ℕ)
+    (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
+    (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu]
+    (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
+    (S : Submodule ℝ (Lp ℝ (⊤ : ENNReal) mu))
+    (w : S) (shift : InjectiveShiftConfiguration ι)
+    (coeff : κ × Fin (degree + 1) → ℂ) : Prop :=
+  ∀ packet : InjectiveProjectiveRowPacket row,
+    (∀ x, 0 < (combinedProjectiveRowShiftPacket packet shift x).im) →
+    ∀ r, ∑ col, coeff col *
+      expandedDifferentialEvaluationMatrix degree
+        (Fintype.card (Σ i, Fin (orders i))) packet.1 exponent
+        (actualNevanlinnaExpandedPacketValue
+          a q orders mu baseDensity S packet w shift) r col = 0
+
+/-- A complete full-rank row witness kills every coefficient of a finite functional relation. -/
+theorem actualNevanlinnaExpandedPatternRelation_coefficients_eq_zero_of_fullRankWitness
+    {row κ ι : Type} [Fintype row] [Fintype κ] [DecidableEq κ] [Fintype ι]
+    (a q : ℂ → ℂ) (degree : ℕ) (orders : ι → ℕ)
+    (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
+    (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu]
+    (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
+    (S : Submodule ℝ (Lp ℝ (⊤ : ENNReal) mu))
+    (w : S) (shift : InjectiveShiftConfiguration ι)
+    (hwitness : actualNevanlinnaExpandedFullRankWitness
+      (row := row) (κ := κ) (ι := ι)
+      a q degree orders exponent mu baseDensity S w shift)
+    (coeff : κ × Fin (degree + 1) → ℂ)
+    (hrelation : actualNevanlinnaExpandedPatternRelationHolds
+      (row := row) a q degree orders exponent mu baseDensity S w shift coeff) :
+    ∀ col, coeff col = 0 := by
+  obtain ⟨packet, hupper, hinjective⟩ := hwitness
+  let A := expandedDifferentialEvaluationMatrix degree
+    (Fintype.card (Σ i, Fin (orders i))) packet.1 exponent
+    (actualNevanlinnaExpandedPacketValue
+      a q orders mu baseDensity S packet w shift)
+  have hmul : A.mulVec coeff = 0 := by
+    funext r
+    simpa [A, Matrix.mulVec, dotProduct, mul_comm] using hrelation packet hupper r
+  have hcoeff : coeff = 0 := hinjective (by simpa [A] using hmul)
+  intro col
+  exact congrFun hcoeff col
+
+/-- Countably simultaneous full-rank witnesses promote monotonically to coefficient rigidity for
+every encoded finite relation pattern. -/
+theorem countablePatterns_relationFree_dense_residual_of_fullRankWitness
+    (row κ ι : ℕ → Type)
+    [∀ n, Fintype (row n)]
+    [∀ n, Fintype (κ n)] [∀ n, DecidableEq (κ n)]
+    [∀ n, Fintype (ι n)]
+    (a q : ℂ → ℂ) (degree : ℕ → ℕ) (orders : ∀ n, ι n → ℕ)
+    (exponent : ∀ n,
+      κ n → (Fin (Fintype.card (Σ i, Fin (orders n i))) →₀ ℕ))
+    (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu]
+    (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
+    (S : Submodule ℝ (Lp ℝ (⊤ : ENNReal) mu))
+    [BaireSpace S]
+    (hfull :
+      Dense {w : S | ∀ n (shift : InjectiveShiftConfiguration (ι n)),
+        actualNevanlinnaExpandedFullRankWitness
+          (row := row n) (κ := κ n) (ι := ι n)
+          a q (degree n) (orders n) (exponent n) mu baseDensity S w shift} ∧
+      {w : S | ∀ n (shift : InjectiveShiftConfiguration (ι n)),
+        actualNevanlinnaExpandedFullRankWitness
+          (row := row n) (κ := κ n) (ι := ι n)
+          a q (degree n) (orders n) (exponent n) mu baseDensity S w shift} ∈ residual S) :
+    let relationFree : Set S := {w | ∀ n (shift : InjectiveShiftConfiguration (ι n))
+      (coeff : κ n × Fin (degree n + 1) → ℂ),
+      actualNevanlinnaExpandedPatternRelationHolds
+        (row := row n) a q (degree n) (orders n) (exponent n)
+          mu baseDensity S w shift coeff →
+        ∀ col, coeff col = 0}
+    Dense relationFree ∧ relationFree ∈ residual S := by
+  dsimp only
+  let full : Set S := {w | ∀ n (shift : InjectiveShiftConfiguration (ι n)),
+    actualNevanlinnaExpandedFullRankWitness
+      (row := row n) (κ := κ n) (ι := ι n)
+      a q (degree n) (orders n) (exponent n) mu baseDensity S w shift}
+  let relationFree : Set S := {w | ∀ n (shift : InjectiveShiftConfiguration (ι n))
+    (coeff : κ n × Fin (degree n + 1) → ℂ),
+    actualNevanlinnaExpandedPatternRelationHolds
+      (row := row n) a q (degree n) (orders n) (exponent n)
+        mu baseDensity S w shift coeff →
+      ∀ col, coeff col = 0}
+  have hsubset : full ⊆ relationFree := by
+    intro w hw n shift coeff hrelation
+    exact actualNevanlinnaExpandedPatternRelation_coefficients_eq_zero_of_fullRankWitness
+      a q (degree n) (orders n) (exponent n) mu baseDensity S w shift
+      (hw n shift) coeff hrelation
+  exact ⟨hfull.1.mono hsubset, Filter.mem_of_superset hfull.2 hsubset⟩
 
 /-- **One complete atlas piece supplies the actual compact-patch density theorem.**  The theorem
 derives an ambient open regularity collar and a positive uniform projective height from the compact
@@ -421,7 +579,11 @@ theorem compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
           (expandedDifferentialEvaluationRankDefect
             degree (Fintype.card (Σ i, Fin (orders i))) (packets j).1 exponent)
           (ambientImageOfInjectiveShiftPiece (pieces j))
-        Dense (⋂ j, good j) ∧ IsOpen (⋂ j, good j) := by
+        Dense (⋂ j, good j) ∧ IsOpen (⋂ j, good j) ∧
+          ∀ w ∈ ⋂ j, good j, ∀ shift ∈ Kshift,
+            actualNevanlinnaExpandedFullRankWitness
+              (row := row) (κ := κ) (ι := ι)
+              a q degree orders exponent mu baseDensity S w shift := by
   dsimp only
   let a := projectiveNevanlinnaAmplitude C
   let q := projectiveNevanlinnaQuotient C D
@@ -457,10 +619,238 @@ theorem compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
         exponent hexponent hrows mu hmu baseDensity (pieces j)
         (hpiecesCompact j) (hpiecesChart j) hdim
     simpa [good, nodes, control, base, direction, frozen, S, a, q] using hj
-  refine ⟨n, packets, pieces, hcover, hpiecesCompact, hpiecesChart, ?_, ?_⟩
+  refine ⟨n, packets, pieces, hcover, hpiecesCompact, hpiecesChart, ?_, ?_, ?_⟩
   · exact dense_iInter_of_finite_isOpen good
       (fun j => (hgood j).2) (fun j => (hgood j).1)
   · exact isOpen_iInter_of_finite (fun j => (hgood j).2)
+  · intro w hw shift hshift
+    obtain ⟨j, hjpiece⟩ := Set.mem_iUnion.mp (hcover hshift)
+    refine ⟨packets j, (hpiecesChart j hjpiece).2, ?_⟩
+    have hjgood := Set.mem_iInter.mp hw j
+    have hambient : shift.1 ∈ ambientImageOfInjectiveShiftPiece (pieces j) :=
+      ⟨shift, hjpiece, rfl⟩
+    have havoid := hjgood shift.1 hambient
+    have hinjective : Function.Injective
+        (expandedDifferentialEvaluationMatrix degree
+          (Fintype.card (Σ i, Fin (orders i))) (packets j).1 exponent
+          (smoothAffineControlFamily (base j) (direction j) (w, shift.1))).mulVec := by
+      simpa only [mem_expandedDifferentialEvaluationRankDefect_iff, not_not] using havoid
+    have hfamily : smoothAffineControlFamily (base j) (direction j) (w, shift.1) =
+        actualNevanlinnaExpandedPacketValue
+          a q orders mu baseDensity S (packets j) w shift := by
+      simp [smoothAffineControlFamily, base, direction, control, nodes,
+        actualNevanlinnaExpandedPacketValue,
+        ContinuousLinearMap.domRestrict_apply, map_add]
+    simpa [hfamily] using hinjective
+
+/-- **Global all-shift rank law for one finite differential-relation pattern.**  The compact atlas
+law and sigma-compactness of the collision-free shift configuration space produce one dense
+residual subset of the frozen tangent on which every distinct shift tuple has a complete row
+packet witnessing full expanded-evaluation rank. -/
+theorem global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
+    (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
+    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
+    {row κ ι ιf : Type}
+    [Fintype row] [DecidableEq row]
+    [Fintype κ] [DecidableEq κ]
+    [Fintype ι] [DecidableEq ι]
+    [Fintype ιf] [DecidableEq ιf]
+    {C D : ℂ → ℂ} (hCmin : HasMinimalExponentialType C) (hD : Differentiable ℂ D)
+    (hnoCommon : ∀ z, ¬ (C z = 0 ∧ D z = 0))
+    {p : ℂ} (hCp : C p = 0) {c : ℂ} (hCc : C c ≠ 0)
+    (hupperMap : ∀ z, 0 < z.im → 0 < (projectiveNevanlinnaQuotient C D z).im)
+    (zf : ιf → ℂ)
+    (hqf_inj : Function.Injective (fun i => projectiveNevanlinnaQuotient C D (zf i)))
+    (hupperf : ∀ i, 0 < (projectiveNevanlinnaQuotient C D (zf i)).im)
+    (nf : ιf → ℕ) (haf : ∀ i, projectiveNevanlinnaAmplitude C (zf i) ≠ 0)
+    (hqdf : ∀ i, deriv (projectiveNevanlinnaQuotient C D) (zf i) ≠ 0)
+    (degree : ℕ) (orders : ι → ℕ)
+    (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
+    (hexponent : Function.Injective exponent)
+    (hrows : Fintype.card (κ × Fin (degree + 1)) + degree < Fintype.card row)
+    (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
+    (hdim : Module.finrank ℝ (ι → ℂ) <
+      2 * (Fintype.card row - Fintype.card (κ × Fin (degree + 1)) - degree + 1)) :
+    let a := projectiveNevanlinnaAmplitude C
+    let q := projectiveNevanlinnaQuotient C D
+    let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+      a q zf nf haf hqdf mu hupperf
+    let S := LinearMap.ker frozen.toLinearMap
+    let good : Set S := {w | ∀ shift : InjectiveShiftConfiguration ι,
+      actualNevanlinnaExpandedFullRankWitness
+        (row := row) (κ := κ) (ι := ι)
+        a q degree orders exponent mu baseDensity S w shift}
+    Dense good ∧ good ∈ residual S := by
+  dsimp only
+  let a := projectiveNevanlinnaAmplitude C
+  let q := projectiveNevanlinnaQuotient C D
+  let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+    a q zf nf haf hqdf mu hupperf
+  let S := LinearMap.ker frozen.toLinearMap
+  letI normedAddCommGroupS : NormedAddCommGroup S := Submodule.normedAddCommGroup S
+  letI : NormedSpace ℝ S := Submodule.normedSpace S
+  have hSclosed : IsClosed (S : Set (Lp ℝ (⊤ : ENNReal) mu)) := frozen.isClosed_ker
+  letI : CompleteSpace S := hSclosed.completeSpace_coe
+  letI : BaireSpace S := by
+    set_option synthInstance.maxHeartbeats 100000 in
+      infer_instance
+  apply globalWitness_dense_residual_of_sigmaCompact
+    (fun w (shift : InjectiveShiftConfiguration ι) =>
+      actualNevanlinnaExpandedFullRankWitness
+        (row := row) (κ := κ) (ι := ι)
+        a q degree orders exponent mu baseDensity S w shift)
+  intro Kshift hKshift
+  obtain ⟨n, packets, pieces, hcover, hpiecesCompact, hpiecesChart,
+      hDense, hOpen, hWitness⟩ :=
+    compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
+      projectiveGeometry parametricAvoidance hCmin hD hnoCommon hCp hCc hupperMap
+      zf hqf_inj hupperf nf haf hqdf degree orders exponent hexponent hrows
+      mu hmu baseDensity Kshift hKshift hdim
+  exact ⟨_, hOpen, hDense, hWitness⟩
+
+/-- **Countable all-pattern all-shift rank law.**  One dense residual subset of the frozen tangent
+simultaneously has complete row-packet witnesses for every pattern in a countable family and every
+tuple of distinct complex shifts. -/
+theorem countablePatterns_global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
+    (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
+    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
+    (row κ ι : ℕ → Type)
+    [∀ n, Fintype (row n)] [∀ n, DecidableEq (row n)]
+    [∀ n, Fintype (κ n)] [∀ n, DecidableEq (κ n)]
+    [∀ n, Fintype (ι n)] [∀ n, DecidableEq (ι n)]
+    {ιf : Type} [Fintype ιf] [DecidableEq ιf]
+    {C D : ℂ → ℂ} (hCmin : HasMinimalExponentialType C) (hD : Differentiable ℂ D)
+    (hnoCommon : ∀ z, ¬ (C z = 0 ∧ D z = 0))
+    {p : ℂ} (hCp : C p = 0) {c : ℂ} (hCc : C c ≠ 0)
+    (hupperMap : ∀ z, 0 < z.im → 0 < (projectiveNevanlinnaQuotient C D z).im)
+    (zf : ιf → ℂ)
+    (hqf_inj : Function.Injective (fun i => projectiveNevanlinnaQuotient C D (zf i)))
+    (hupperf : ∀ i, 0 < (projectiveNevanlinnaQuotient C D (zf i)).im)
+    (nf : ιf → ℕ) (haf : ∀ i, projectiveNevanlinnaAmplitude C (zf i) ≠ 0)
+    (hqdf : ∀ i, deriv (projectiveNevanlinnaQuotient C D) (zf i) ≠ 0)
+    (degree : ℕ → ℕ) (orders : ∀ n, ι n → ℕ)
+    (exponent : ∀ n,
+      κ n → (Fin (Fintype.card (Σ i, Fin (orders n i))) →₀ ℕ))
+    (hexponent : ∀ n, Function.Injective (exponent n))
+    (hrows : ∀ n,
+      Fintype.card (κ n × Fin (degree n + 1)) + degree n < Fintype.card (row n))
+    (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
+    (hdim : ∀ n, Module.finrank ℝ (ι n → ℂ) <
+      2 * (Fintype.card (row n) -
+        Fintype.card (κ n × Fin (degree n + 1)) - degree n + 1)) :
+    let a := projectiveNevanlinnaAmplitude C
+    let q := projectiveNevanlinnaQuotient C D
+    let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+      a q zf nf haf hqdf mu hupperf
+    let S := LinearMap.ker frozen.toLinearMap
+    let good : Set S := {w | ∀ n (shift : InjectiveShiftConfiguration (ι n)),
+      actualNevanlinnaExpandedFullRankWitness
+        (row := row n) (κ := κ n) (ι := ι n)
+        a q (degree n) (orders n) (exponent n) mu baseDensity S w shift}
+    Dense good ∧ good ∈ residual S := by
+  dsimp only
+  let a := projectiveNevanlinnaAmplitude C
+  let q := projectiveNevanlinnaQuotient C D
+  let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+    a q zf nf haf hqdf mu hupperf
+  let S := LinearMap.ker frozen.toLinearMap
+  letI normedAddCommGroupS : NormedAddCommGroup S := Submodule.normedAddCommGroup S
+  letI : NormedSpace ℝ S := Submodule.normedSpace S
+  have hSclosed : IsClosed (S : Set (Lp ℝ (⊤ : ENNReal) mu)) := frozen.isClosed_ker
+  letI : CompleteSpace S := hSclosed.completeSpace_coe
+  letI : BaireSpace S := by
+    set_option synthInstance.maxHeartbeats 100000 in
+      infer_instance
+  let goodPattern : ℕ → Set S := fun n =>
+    {w | ∀ shift : InjectiveShiftConfiguration (ι n),
+      actualNevanlinnaExpandedFullRankWitness
+        (row := row n) (κ := κ n) (ι := ι n)
+        a q (degree n) (orders n) (exponent n) mu baseDensity S w shift}
+  have hgoodPattern : ∀ n, Dense (goodPattern n) ∧ goodPattern n ∈ residual S := by
+    intro n
+    simpa [goodPattern, a, q, frozen, S] using
+      (global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
+        projectiveGeometry parametricAvoidance hCmin hD hnoCommon hCp hCc hupperMap
+        zf hqf_inj hupperf nf haf hqdf (degree n) (orders n) (exponent n)
+        (hexponent n) (hrows n) mu hmu baseDensity (hdim n))
+  have hres : (⋂ n, goodPattern n) ∈ residual S :=
+    countable_iInter_mem.mpr fun n => (hgoodPattern n).2
+  have heq : (⋂ n, goodPattern n) =
+      {w | ∀ n (shift : InjectiveShiftConfiguration (ι n)),
+        actualNevanlinnaExpandedFullRankWitness
+          (row := row n) (κ := κ n) (ι := ι n)
+          a q (degree n) (orders n) (exponent n) mu baseDensity S w shift} := by
+    ext w
+    simp only [Set.mem_iInter, goodPattern, Set.mem_setOf_eq]
+  rw [heq] at hres
+  exact ⟨dense_of_mem_residual hres, hres⟩
+
+/-- **Actual Nevanlinna countable-pattern relation-rigidity capstone.**  Under the exact classical
+projective-incidence, stratified-transversality, and Nevanlinna upper-mapping inputs, a dense
+residual subset of every frozen tangent satisfies coefficient rigidity for every encoded finite
+differential pattern and every tuple of distinct complex shifts. -/
+theorem countablePatterns_actualNevanlinna_relationFree_dense_residual
+    (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
+    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
+    (row κ ι : ℕ → Type)
+    [∀ n, Fintype (row n)] [∀ n, DecidableEq (row n)]
+    [∀ n, Fintype (κ n)] [∀ n, DecidableEq (κ n)]
+    [∀ n, Fintype (ι n)] [∀ n, DecidableEq (ι n)]
+    {ιf : Type} [Fintype ιf] [DecidableEq ιf]
+    {C D : ℂ → ℂ} (hCmin : HasMinimalExponentialType C) (hD : Differentiable ℂ D)
+    (hnoCommon : ∀ z, ¬ (C z = 0 ∧ D z = 0))
+    {p : ℂ} (hCp : C p = 0) {c : ℂ} (hCc : C c ≠ 0)
+    (hupperMap : ∀ z, 0 < z.im → 0 < (projectiveNevanlinnaQuotient C D z).im)
+    (zf : ιf → ℂ)
+    (hqf_inj : Function.Injective (fun i => projectiveNevanlinnaQuotient C D (zf i)))
+    (hupperf : ∀ i, 0 < (projectiveNevanlinnaQuotient C D (zf i)).im)
+    (nf : ιf → ℕ) (haf : ∀ i, projectiveNevanlinnaAmplitude C (zf i) ≠ 0)
+    (hqdf : ∀ i, deriv (projectiveNevanlinnaQuotient C D) (zf i) ≠ 0)
+    (degree : ℕ → ℕ) (orders : ∀ n, ι n → ℕ)
+    (exponent : ∀ n,
+      κ n → (Fin (Fintype.card (Σ i, Fin (orders n i))) →₀ ℕ))
+    (hexponent : ∀ n, Function.Injective (exponent n))
+    (hrows : ∀ n,
+      Fintype.card (κ n × Fin (degree n + 1)) + degree n < Fintype.card (row n))
+    (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
+    (hdim : ∀ n, Module.finrank ℝ (ι n → ℂ) <
+      2 * (Fintype.card (row n) -
+        Fintype.card (κ n × Fin (degree n + 1)) - degree n + 1)) :
+    let a := projectiveNevanlinnaAmplitude C
+    let q := projectiveNevanlinnaQuotient C D
+    let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+      a q zf nf haf hqdf mu hupperf
+    let S := LinearMap.ker frozen.toLinearMap
+    let relationFree : Set S := {w | ∀ n (shift : InjectiveShiftConfiguration (ι n))
+      (coeff : κ n × Fin (degree n + 1) → ℂ),
+      actualNevanlinnaExpandedPatternRelationHolds
+        (row := row n) a q (degree n) (orders n) (exponent n)
+          mu baseDensity S w shift coeff →
+        ∀ col, coeff col = 0}
+    Dense relationFree ∧ relationFree ∈ residual S := by
+  dsimp only
+  let a := projectiveNevanlinnaAmplitude C
+  let q := projectiveNevanlinnaQuotient C D
+  let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+    a q zf nf haf hqdf mu hupperf
+  let S := LinearMap.ker frozen.toLinearMap
+  letI normedAddCommGroupS : NormedAddCommGroup S := Submodule.normedAddCommGroup S
+  letI : NormedSpace ℝ S := Submodule.normedSpace S
+  have hSclosed : IsClosed (S : Set (Lp ℝ (⊤ : ENNReal) mu)) := frozen.isClosed_ker
+  letI : CompleteSpace S := hSclosed.completeSpace_coe
+  letI : BaireSpace S := by
+    set_option synthInstance.maxHeartbeats 100000 in
+      infer_instance
+  have hfull :=
+    countablePatterns_global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
+      projectiveGeometry parametricAvoidance row κ ι hCmin hD hnoCommon hCp hCc
+      hupperMap zf hqf_inj hupperf nf haf hqdf degree orders exponent
+      hexponent hrows mu hmu baseDensity hdim
+  exact countablePatterns_relationFree_dense_residual_of_fullRankWitness
+    row κ ι a q degree orders exponent mu baseDensity S hfull
 
 end
 

@@ -16,7 +16,7 @@ concrete integral `∫ |monic polynomial|² dμ`, the object on which the classi
 namespace GaloisForLFunctions.HTGeometry
 
 open MeasureTheory InnerProductSpace
-open scoped InnerProductSpace
+open scoped InnerProductSpace ComplexConjugate
 
 /-- **Abstract-to-concrete polynomial bridge.**  A finite `ℂ`-linear combination of the analytic
 monomials in `L²(μ)` has, almost everywhere, the value of the corresponding polynomial. -/
@@ -98,5 +98,58 @@ theorem normSq_gramSchmidt_circleMonomial_eq_integral
   refine integral_congr_ae ?_
   filter_upwards [hc] with z hz
   rw [hz]
+
+/-- The monic degree-`N` polynomial `zᴺ - ∑_{i<N} cᵢ zⁱ`. -/
+noncomputable def monicPoly (c : ℕ → ℂ) (N : ℕ) (z : ℂ) : ℂ :=
+  z ^ N - ∑ i ∈ Finset.range N, c i * z ^ i
+
+/-- The reversed polynomial `1 - ∑_{i<N} conj(cᵢ) z^{N-i}`, analytic with value `1` at the origin
+and equal modulus to `monicPoly` on the unit circle. -/
+noncomputable def revPoly (c : ℕ → ℂ) (N : ℕ) (z : ℂ) : ℂ :=
+  1 - ∑ i ∈ Finset.range N, conj (c i) * z ^ (N - i)
+
+/-- The reversed polynomial takes the value `1` at the origin. -/
+theorem revPoly_zero (c : ℕ → ℂ) (N : ℕ) : revPoly c N 0 = 1 := by
+  unfold revPoly
+  have h : ∀ i ∈ Finset.range N, conj (c i) * (0 : ℂ) ^ (N - i) = 0 := fun i hi => by
+    rw [zero_pow (Nat.sub_pos_of_lt (Finset.mem_range.mp hi)).ne', mul_zero]
+  rw [Finset.sum_congr rfl h, Finset.sum_const_zero, sub_zero]
+
+/-- On the unit circle the reversed polynomial equals `zᴺ · conj(q z)`. -/
+theorem revPoly_eq_on_circle (c : ℕ → ℂ) (N : ℕ) (z : Circle) :
+    revPoly c N (z : ℂ) = (z : ℂ) ^ N * conj (monicPoly c N (z : ℂ)) := by
+  have hz : (z : ℂ) * conj (z : ℂ) = 1 := by
+    rw [Complex.mul_conj]; norm_cast
+    rw [Complex.normSq_eq_norm_sq, Circle.norm_coe]; norm_num
+  have hpow : ∀ i, i ≤ N → (z : ℂ) ^ N * conj (z : ℂ) ^ i = (z : ℂ) ^ (N - i) := by
+    intro i hi
+    conv_lhs => rw [show (z : ℂ) ^ N = (z : ℂ) ^ (N - i) * (z : ℂ) ^ i from by
+      rw [← pow_add, Nat.sub_add_cancel hi]]
+    rw [mul_assoc, ← mul_pow, hz, one_pow, mul_one]
+  unfold revPoly monicPoly
+  rw [map_sub, map_pow, mul_sub, map_sum, Finset.mul_sum]
+  congr 1
+  · rw [← mul_pow, hz, one_pow]
+  · refine Finset.sum_congr rfl (fun i hi => ?_)
+    rw [map_mul, map_pow, mul_left_comm, hpow i (Finset.mem_range.mp hi).le]
+
+/-- The reversed polynomial has the same modulus as the monic polynomial on the unit circle. -/
+theorem norm_revPoly_eq_on_circle (c : ℕ → ℂ) (N : ℕ) (z : Circle) :
+    ‖revPoly c N (z : ℂ)‖ = ‖monicPoly c N (z : ℂ)‖ := by
+  rw [revPoly_eq_on_circle, norm_mul, norm_pow, Circle.norm_coe, one_pow, one_mul,
+    RCLike.norm_conj]
+
+/-- **The squared monic OPUC norm equals `∫ |q*|² dμ` for the value-`1`-at-origin reversed
+polynomial.**  This is the form on which the classical Szegő inequality `∫|q*|²dμ ≥ |q*(0)|²·GM = GM`
+operates (Jensen against the absolutely continuous part). -/
+theorem normSq_gramSchmidt_circleMonomial_eq_integral_revPoly
+    (mu : Measure Circle) [IsFiniteMeasure mu] (N : ℕ) :
+    ∃ c : ℕ → ℂ, ‖gramSchmidt ℂ (circleMonomialLp mu) N‖ ^ 2
+      = ∫ z : Circle, ‖revPoly c N (z : ℂ)‖ ^ 2 ∂mu := by
+  obtain ⟨c, hc⟩ := normSq_gramSchmidt_circleMonomial_eq_integral mu N
+  refine ⟨c, ?_⟩
+  rw [hc]
+  refine integral_congr_ae (Filter.Eventually.of_forall (fun z => ?_))
+  simp only [norm_revPoly_eq_on_circle, monicPoly]
 
 end GaloisForLFunctions.HTGeometry

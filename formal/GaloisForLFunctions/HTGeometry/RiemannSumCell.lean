@@ -171,4 +171,65 @@ theorem lipschitzOnWith_log_Ici_one : LipschitzOnWith 1 Real.log (Set.Ici (1 : �
       abs_of_nonneg (by positivity)]
     rw [inv_le_one_iff₀]; right; exact hx1
 
+/-- **Gluing two half-line Lipschitz estimates.**  A function that is `K`-Lipschitz on `(-∞, c]` and
+`K`-Lipschitz on `[c, ∞)` is `K`-Lipschitz on all of `ℝ` — the estimate for a straddling pair `x ≤ c ≤ y`
+follows from the triangle inequality through `c`, since `|x−c| + |c−y| = |x−y|`.  Mathlib has no
+`LipschitzOnWith.union`; this is the ℝ-interval instance needed to promote a piecewise-Lipschitz
+integrand (flat on `[0,1]`, Lipschitz on its support) to a global bound. -/
+theorem lipschitzWith_of_lipschitzOnWith_Iic_Ici {E : Type*} [PseudoMetricSpace E] {K : NNReal}
+    {f : ℝ → E} {c : ℝ} (h1 : LipschitzOnWith K f (Set.Iic c))
+    (h2 : LipschitzOnWith K f (Set.Ici c)) : LipschitzWith K f := by
+  rw [lipschitzOnWith_iff_dist_le_mul] at h1 h2
+  rw [lipschitzWith_iff_dist_le_mul]
+  have key : ∀ x y : ℝ, x ≤ y → dist (f x) (f y) ≤ K * dist x y := by
+    intro x y hxy
+    rcases le_total y c with hyc | hyc
+    · exact h1 x (le_trans hxy hyc) y hyc
+    · rcases le_total x c with hxc | hxc
+      · calc dist (f x) (f y) ≤ dist (f x) (f c) + dist (f c) (f y) := dist_triangle _ _ _
+          _ ≤ K * dist x c + K * dist c y :=
+              add_le_add (h1 x hxc c Set.self_mem_Iic) (h2 c Set.self_mem_Ici y hyc)
+          _ = K * dist x y := by
+              rw [Real.dist_eq, Real.dist_eq, Real.dist_eq,
+                abs_of_nonpos (by linarith : x - c ≤ 0),
+                abs_of_nonpos (by linarith : c - y ≤ 0),
+                abs_of_nonpos (by linarith : x - y ≤ 0)]
+              ring
+      · exact h2 x hxc y (le_trans hxc hxy)
+  intro x y
+  rcases le_total x y with hxy | hxy
+  · exact key x y hxy
+  · rw [dist_comm, dist_comm x y]; exact key y x hxy
+
+/-- **Gluing on an order-connected set.**  On an order-connected `s ⊆ ℝ`, a function that is
+`K`-Lipschitz on `s ∩ (-∞, c]` and on `s ∩ [c, ∞)` is `K`-Lipschitz on `s`.  For a straddling pair
+`x ≤ c ≤ y` in `s`, order-connectedness puts `c ∈ s`, and the triangle inequality through `c` closes
+it.  With `s = [a, ∞)` this glues a flat piece to a support piece without a global bound. -/
+theorem lipschitzOnWith_of_glue {E : Type*} [PseudoMetricSpace E] {K : NNReal} {f : ℝ → E}
+    {s : Set ℝ} {c : ℝ} (hs : s.OrdConnected)
+    (h1 : LipschitzOnWith K f (s ∩ Set.Iic c)) (h2 : LipschitzOnWith K f (s ∩ Set.Ici c)) :
+    LipschitzOnWith K f s := by
+  rw [lipschitzOnWith_iff_dist_le_mul] at h1 h2 ⊢
+  have key : ∀ x ∈ s, ∀ y ∈ s, x ≤ y → dist (f x) (f y) ≤ K * dist x y := by
+    intro x hx y hy hxy
+    rcases le_total y c with hyc | hyc
+    · exact h1 x ⟨hx, le_trans hxy hyc⟩ y ⟨hy, hyc⟩
+    · rcases le_total x c with hxc | hxc
+      · have hcs : c ∈ s := hs.out hx hy ⟨hxc, hyc⟩
+        calc dist (f x) (f y) ≤ dist (f x) (f c) + dist (f c) (f y) := dist_triangle _ _ _
+          _ ≤ K * dist x c + K * dist c y :=
+              add_le_add (h1 x ⟨hx, hxc⟩ c ⟨hcs, Set.self_mem_Iic⟩)
+                (h2 c ⟨hcs, Set.self_mem_Ici⟩ y ⟨hy, hyc⟩)
+          _ = K * dist x y := by
+              rw [Real.dist_eq, Real.dist_eq, Real.dist_eq,
+                abs_of_nonpos (by linarith : x - c ≤ 0),
+                abs_of_nonpos (by linarith : c - y ≤ 0),
+                abs_of_nonpos (by linarith : x - y ≤ 0)]
+              ring
+      · exact h2 x ⟨hx, hxc⟩ y ⟨hy, le_trans hxc hxy⟩
+  intro x hx y hy
+  rcases le_total x y with hxy | hxy
+  · exact key x hx y hy hxy
+  · rw [dist_comm, dist_comm x y]; exact key y hy x hx hxy
+
 end HTGeometry

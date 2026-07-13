@@ -74,6 +74,101 @@ theorem integral_abs_pow_mul_thetaCuspTailDerivative_zero_div_factorial_le_nat_r
     _ = (thetaCuspTailNatExpConstant p / (p : ℝ) ^ (m + 1)) *
           (m.factorial : ℝ) := by ring
 
+/-- Exact shifted gamma moment.  This is the analytic reason a logarithmic source translation
+costs an exponential in the shift but retains geometric decay in the Taylor cutoff. -/
+theorem integral_add_pow_mul_exp_nat_neg
+    (N p : ℕ) (hp : 0 < p) (a : ℝ) :
+    (∫ x : ℝ in Ioi 0, (x + a) ^ N * Real.exp (-(p : ℝ) * x)) =
+      ∑ m ∈ Finset.range (N + 1),
+        (N.choose m : ℝ) * a ^ (N - m) *
+          (m.factorial / (p : ℝ) ^ (m + 1)) := by
+  have hInt (m : ℕ) : IntegrableOn
+      (fun x : ℝ => ((N.choose m : ℝ) * a ^ (N - m)) *
+        (x ^ m * Real.exp (-(p : ℝ) * x))) (Ioi 0) := by
+    have hb : IntegrableOn
+        (fun x : ℝ => x ^ m * Real.exp (-(p : ℝ) * x)) (Ioi 0) := by
+      apply Integrable.of_integral_ne_zero
+      rw [integral_pow_mul_exp_nat_neg m p hp]
+      positivity
+    exact hb.const_mul _
+  rw [show (fun x : ℝ => (x + a) ^ N * Real.exp (-(p : ℝ) * x)) =
+      fun x : ℝ => ∑ m ∈ Finset.range (N + 1),
+        ((N.choose m : ℝ) * a ^ (N - m)) *
+          (x ^ m * Real.exp (-(p : ℝ) * x)) by
+    funext x
+    rw [add_pow, Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro m _hm
+    ring]
+  rw [MeasureTheory.integral_finsetSum _ (fun m _hm => hInt m)]
+  apply Finset.sum_congr rfl
+  intro m _hm
+  rw [MeasureTheory.integral_const_mul, integral_pow_mul_exp_nat_neg m p hp]
+
+/-- The finite shifted gamma-moment sum is exactly a truncated exponential. -/
+theorem shifted_gamma_moment_sum_eq
+    (N p : ℕ) (hp : 0 < p) (a : ℝ) :
+    (∑ m ∈ Finset.range (N + 1),
+        (N.choose m : ℝ) * a ^ (N - m) *
+          (m.factorial / (p : ℝ) ^ (m + 1))) =
+      (N.factorial / (p : ℝ) ^ (N + 1)) *
+        ∑ j ∈ Finset.range (N + 1),
+          (((p : ℝ) * a) ^ j / j.factorial) := by
+  rw [← Finset.sum_range_reflect
+    (fun j : ℕ => (((p : ℝ) * a) ^ j / j.factorial)) (N + 1)]
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro m hm
+  have hmle : m ≤ N := by simpa using Nat.le_of_lt_succ (Finset.mem_range.mp hm)
+  rw [show N + 1 - 1 - m = N - m by omega]
+  have hfacNat := Nat.choose_mul_factorial_mul_factorial hmle
+  have hfac : (N.choose m : ℝ) * m.factorial * (N - m).factorial =
+      N.factorial := by exact_mod_cast hfacNat
+  have hpR : (p : ℝ) ≠ 0 := by positivity
+  have hmf : ((m.factorial : ℕ) : ℝ) ≠ 0 := by positivity
+  have hsubf : (((N - m).factorial : ℕ) : ℝ) ≠ 0 := by positivity
+  field_simp [hpR, hmf, hsubf]
+  rw [mul_pow]
+  rw [show N + 1 = (m + 1) + (N - m) by omega, pow_add]
+  rw [← hfac]
+  ring
+
+/-- Upper bound for the shifted gamma moment by the full exponential series. -/
+theorem shifted_gamma_moment_sum_le
+    (N p : ℕ) (hp : 0 < p) {a : ℝ} (ha : 0 ≤ a) :
+    (∑ m ∈ Finset.range (N + 1),
+        (N.choose m : ℝ) * a ^ (N - m) *
+          (m.factorial / (p : ℝ) ^ (m + 1))) ≤
+      (N.factorial / (p : ℝ) ^ (N + 1)) * Real.exp ((p : ℝ) * a) := by
+  rw [shifted_gamma_moment_sum_eq N p hp a]
+  gcongr
+  exact Real.sum_le_exp_of_nonneg (mul_nonneg (Nat.cast_nonneg _) ha) _
+
+/-- Integrability of the shifted polynomial-exponential gamma envelope. -/
+theorem integrableOn_add_pow_mul_exp_nat_neg
+    (N p : ℕ) (hp : 0 < p) (a : ℝ) :
+    IntegrableOn (fun x : ℝ =>
+      (x + a) ^ N * Real.exp (-(p : ℝ) * x)) (Ioi 0) := by
+  have hInt (m : ℕ) : IntegrableOn
+      (fun x : ℝ => ((N.choose m : ℝ) * a ^ (N - m)) *
+        (x ^ m * Real.exp (-(p : ℝ) * x))) (Ioi 0) := by
+    have hb : IntegrableOn
+        (fun x : ℝ => x ^ m * Real.exp (-(p : ℝ) * x)) (Ioi 0) := by
+      apply Integrable.of_integral_ne_zero
+      rw [integral_pow_mul_exp_nat_neg m p hp]
+      positivity
+    exact hb.const_mul _
+  rw [show (fun x : ℝ => (x + a) ^ N * Real.exp (-(p : ℝ) * x)) =
+      fun x : ℝ => ∑ m ∈ Finset.range (N + 1),
+        ((N.choose m : ℝ) * a ^ (N - m)) *
+          (x ^ m * Real.exp (-(p : ℝ) * x)) by
+    funext x
+    rw [add_pow, Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro m _hm
+    ring]
+  exact MeasureTheory.integrable_finsetSum _ (fun m _hm => hInt m)
+
 /-- Global factorial Taylor remainder for the real exponential.  The standard library estimate
 used below controls the complex remainder by the corresponding real tail; this lemma retains the
 factorial which is essential when the remainder is integrated against high source moments. -/
@@ -466,6 +561,277 @@ theorem norm_eval_derivative_finitePositivePhaseTranslationTopEdge_le
       · simpa only [Ds, cs, ws, norm_sub_rev] using
           norm_exp_derivative_sub_eval_derivative_finitePositivePhasePolynomial_le d (x + a) z
     _ = _ := by rfl
+
+/-- On a nonnegative source half-line and a bounded spectral fibre, the value edge is bounded by
+three copies of one shifted factorial envelope. -/
+theorem norm_eval_finitePositivePhaseTranslationTopEdge_le_shiftedFactorialEnvelope
+    (d R : ℕ) (x a : ℝ) (z : ℂ)
+    (hx : 0 ≤ x) (ha : 0 ≤ a) (hz : ‖z‖ ≤ R) :
+    ‖(finitePositivePhaseTranslationTopEdge d x a).eval z‖ ≤
+      3 * (((R : ℝ) * (x + a)) ^ (2 * d + 1) / (2 * d + 1).factorial *
+        Real.exp ((R : ℝ) * (x + a))) := by
+  let N : ℕ := 2 * d + 1
+  let rx : ℝ := ‖(x : ℂ) * I * z‖
+  let ra : ℝ := ‖(a : ℂ) * I * z‖
+  let rs : ℝ := ‖((x + a : ℝ) : ℂ) * I * z‖
+  let B : ℝ := (R : ℝ) * (x + a)
+  have hxa : 0 ≤ x + a := add_nonneg hx ha
+  have hR : 0 ≤ (R : ℝ) := Nat.cast_nonneg _
+  have hB : 0 ≤ B := mul_nonneg hR hxa
+  have hrx : rx = x * ‖z‖ := by simp [rx, abs_of_nonneg hx]
+  have hra : ra = a * ‖z‖ := by simp [ra, abs_of_nonneg ha]
+  have hrs : rs = (x + a) * ‖z‖ := by
+    simp only [rs, norm_mul, Complex.norm_real, Real.norm_eq_abs, norm_I,
+      mul_one, abs_of_nonneg hxa]
+  have hrsle : rs ≤ B := by
+    rw [hrs]
+    dsimp [B]
+    nlinarith [mul_le_mul_of_nonneg_left hz hxa]
+  have hrxle : rx ≤ B := by
+    rw [hrx]
+    dsimp [B]
+    nlinarith [mul_le_mul_of_nonneg_left hz hx]
+  have hrale : ra ≤ B := by
+    rw [hra]
+    dsimp [B]
+    nlinarith [mul_le_mul_of_nonneg_left hz ha]
+  have hsumle : rx + ra ≤ B := by
+    rw [hrx, hra]
+    dsimp [B]
+    nlinarith [mul_le_mul_of_nonneg_left hz hxa]
+  have htermX :
+      (rx ^ N / N.factorial) * Real.exp rx * Real.exp ra ≤
+        (B ^ N / N.factorial) * Real.exp B := by
+    rw [show (rx ^ N / N.factorial) * Real.exp rx * Real.exp ra =
+      (rx ^ N / N.factorial) * Real.exp (rx + ra) by rw [Real.exp_add]; ring]
+    gcongr
+  have htermA :
+      Real.exp rx * ((ra ^ N / N.factorial) * Real.exp ra) ≤
+        (B ^ N / N.factorial) * Real.exp B := by
+    rw [show Real.exp rx * ((ra ^ N / N.factorial) * Real.exp ra) =
+      (ra ^ N / N.factorial) * Real.exp (rx + ra) by rw [Real.exp_add]; ring]
+    gcongr
+  have htermS :
+      (rs ^ N / N.factorial) * Real.exp rs ≤
+        (B ^ N / N.factorial) * Real.exp B := by
+    gcongr
+  have h := norm_eval_finitePositivePhaseTranslationTopEdge_le d x a z
+  change ‖(finitePositivePhaseTranslationTopEdge d x a).eval z‖ ≤
+      (rx ^ N / N.factorial) * Real.exp rx * Real.exp ra +
+        Real.exp rx * ((ra ^ N / N.factorial) * Real.exp ra) +
+        (rs ^ N / N.factorial) * Real.exp rs at h
+  change ‖(finitePositivePhaseTranslationTopEdge d x a).eval z‖ ≤
+      3 * (B ^ N / N.factorial * Real.exp B)
+  nlinarith
+
+/-- Multiplication by one source coordinate advances a factorial envelope by one order. -/
+theorem mul_factorialEnvelope_eq_succ (N : ℕ) (B : ℝ) :
+    B * (B ^ N / N.factorial) =
+      (N + 1) * (B ^ (N + 1) / (N + 1).factorial) := by
+  rw [Nat.factorial_succ]
+  push_cast
+  field_simp
+  rw [pow_succ]
+  ring
+
+/-- Continuity in the source coordinate of the evaluated positive phase section. -/
+theorem continuous_eval_finitePositivePhasePolynomial (d : ℕ) (z : ℂ) :
+    Continuous (fun x : ℝ => (finitePositivePhasePolynomial d x).eval z) := by
+  have h : Continuous (fun x : ℝ =>
+      ∑ m ∈ Finset.range (2 * d + 1),
+        (((x : ℂ) * I * z) ^ m) / m.factorial) := by fun_prop
+  convert h using 1
+  funext x
+  exact eval_finitePositivePhasePolynomial_eq_sum d z x
+
+/-- Continuity in the source coordinate of the evaluated positive phase edge. -/
+theorem continuous_eval_finitePositivePhaseTranslationTopEdge
+    (d : ℕ) (a : ℝ) (z : ℂ) :
+    Continuous (fun x : ℝ =>
+      (finitePositivePhaseTranslationTopEdge d x a).eval z) := by
+  have hphase := continuous_eval_finitePositivePhasePolynomial d z
+  have h : Continuous (fun x : ℝ =>
+      (finitePositivePhasePolynomial d x).eval z *
+          (finitePositivePhasePolynomial d a).eval z -
+        (finitePositivePhasePolynomial d (x + a)).eval z) :=
+    (hphase.mul continuous_const).sub
+      (hphase.comp (continuous_id.add continuous_const))
+  convert h using 1
+  funext x
+  exact eval_finitePositivePhaseTranslationTopEdge d x a z
+
+/-- Continuity in the source coordinate of the evaluated spectral derivative of the phase. -/
+theorem continuous_eval_derivative_finitePositivePhasePolynomial (d : ℕ) (z : ℂ) :
+    Continuous (fun x : ℝ =>
+      (finitePositivePhasePolynomial d x).derivative.eval z) := by
+  have h : Continuous (fun x : ℝ =>
+      ((x : ℂ) * I) * ∑ m ∈ Finset.range (2 * d),
+        (((x : ℂ) * I * z) ^ m) / m.factorial) := by fun_prop
+  convert h using 1
+  funext x
+  exact eval_derivative_finitePositivePhasePolynomial_eq_sum d z x
+
+/-- Continuity in the source coordinate of the evaluated derivative edge. -/
+theorem continuous_eval_derivative_finitePositivePhaseTranslationTopEdge
+    (d : ℕ) (a : ℝ) (z : ℂ) :
+    Continuous (fun x : ℝ =>
+      (finitePositivePhaseTranslationTopEdge d x a).derivative.eval z) := by
+  have hphase := continuous_eval_finitePositivePhasePolynomial d z
+  have hderiv := continuous_eval_derivative_finitePositivePhasePolynomial d z
+  have h : Continuous (fun x : ℝ =>
+      (finitePositivePhasePolynomial d x).derivative.eval z *
+          (finitePositivePhasePolynomial d a).eval z +
+        (finitePositivePhasePolynomial d x).eval z *
+          (finitePositivePhasePolynomial d a).derivative.eval z -
+        (finitePositivePhasePolynomial d (x + a)).derivative.eval z) :=
+    ((hderiv.mul continuous_const).add (hphase.mul continuous_const)).sub
+      (hderiv.comp (continuous_id.add continuous_const))
+  convert h using 1
+  funext x
+  exact eval_derivative_finitePositivePhaseTranslationTopEdge d x a z
+
+/-- The derivative edge is bounded by three order-`2d+1` and two order-`2d+2` shifted factorial
+envelopes.  The only losses are the displayed linear cutoff factors. -/
+theorem norm_eval_derivative_finitePositivePhaseTranslationTopEdge_le_shiftedFactorialEnvelope
+    (d R : ℕ) (x a : ℝ) (z : ℂ)
+    (hRone : 1 ≤ R) (hx : 0 ≤ x) (ha : 0 ≤ a) (hz : ‖z‖ ≤ R) :
+    ‖(finitePositivePhaseTranslationTopEdge d x a).derivative.eval z‖ ≤
+      3 * (2 * d + 1 : ℕ) *
+          ((((R : ℝ) * (x + a)) ^ (2 * d + 1) / (2 * d + 1).factorial) *
+            Real.exp ((R : ℝ) * (x + a))) +
+        2 * (2 * d + 2 : ℕ) *
+          ((((R : ℝ) * (x + a)) ^ (2 * d + 2) / (2 * d + 2).factorial) *
+            Real.exp ((R : ℝ) * (x + a))) := by
+  let M : ℕ := 2 * d
+  let N : ℕ := M + 1
+  let rx : ℝ := ‖(x : ℂ) * I * z‖
+  let ra : ℝ := ‖(a : ℂ) * I * z‖
+  let rs : ℝ := ‖((x + a : ℝ) : ℂ) * I * z‖
+  let cx : ℝ := ‖(x : ℂ) * I‖
+  let ca : ℝ := ‖(a : ℂ) * I‖
+  let cs : ℝ := ‖((x + a : ℝ) : ℂ) * I‖
+  let B : ℝ := (R : ℝ) * (x + a)
+  let EN : ℝ := (B ^ N / N.factorial) * Real.exp B
+  let EN1 : ℝ := (B ^ (N + 1) / (N + 1).factorial) * Real.exp B
+  have hxa : 0 ≤ x + a := add_nonneg hx ha
+  have hR : (1 : ℝ) ≤ R := by exact_mod_cast hRone
+  have hB : 0 ≤ B := mul_nonneg (by positivity) hxa
+  have hrx : rx = x * ‖z‖ := by simp [rx, abs_of_nonneg hx]
+  have hra : ra = a * ‖z‖ := by simp [ra, abs_of_nonneg ha]
+  have hrs : rs = (x + a) * ‖z‖ := by
+    simp only [rs, norm_mul, Complex.norm_real, Real.norm_eq_abs, norm_I,
+      mul_one, abs_of_nonneg hxa]
+  have hcx : cx = x := by simp [cx, abs_of_nonneg hx]
+  have hca : ca = a := by simp [ca, abs_of_nonneg ha]
+  have hcs : cs = x + a := by
+    simp only [cs, norm_mul, Complex.norm_real, Real.norm_eq_abs, norm_I,
+      mul_one, abs_of_nonneg hxa]
+  have hrsle : rs ≤ B := by
+    rw [hrs]
+    dsimp [B]
+    nlinarith [mul_le_mul_of_nonneg_left hz hxa]
+  have hrxle : rx ≤ B := by
+    rw [hrx]
+    dsimp [B]
+    nlinarith [mul_le_mul_of_nonneg_left hz hx]
+  have hrale : ra ≤ B := by
+    rw [hra]
+    dsimp [B]
+    nlinarith [mul_le_mul_of_nonneg_left hz ha]
+  have hsumle : rx + ra ≤ B := by
+    rw [hrx, hra]
+    dsimp [B]
+    nlinarith [mul_le_mul_of_nonneg_left hz hxa]
+  have hcxle : cx ≤ B := by
+    rw [hcx]
+    dsimp [B]
+    nlinarith [mul_le_mul_of_nonneg_right hR hxa]
+  have hcale : ca ≤ B := by
+    rw [hca]
+    dsimp [B]
+    nlinarith [mul_le_mul_of_nonneg_right hR hxa]
+  have hcsle : cs ≤ B := by
+    rw [hcs]
+    dsimp [B]
+    simpa only [one_mul] using mul_le_mul_of_nonneg_right hR hxa
+  have hMN : N = 2 * d + 1 := by dsimp [N, M]
+  have hderX :
+      (cx * ((rx ^ M / M.factorial) * Real.exp rx)) * Real.exp ra ≤
+        N * EN := by
+    rw [show (cx * ((rx ^ M / M.factorial) * Real.exp rx)) * Real.exp ra =
+      cx * (rx ^ M / M.factorial) * Real.exp (rx + ra) by rw [Real.exp_add]; ring]
+    calc
+      _ ≤ B * (B ^ M / M.factorial) * Real.exp B := by gcongr
+      _ = N * EN := by
+        dsimp [EN, N]
+        rw [Nat.factorial_succ]
+        push_cast
+        field_simp
+        ring
+  have hderA :
+      Real.exp rx * (ca * ((ra ^ M / M.factorial) * Real.exp ra)) ≤
+        N * EN := by
+    rw [show Real.exp rx * (ca * ((ra ^ M / M.factorial) * Real.exp ra)) =
+      ca * (ra ^ M / M.factorial) * Real.exp (rx + ra) by rw [Real.exp_add]; ring]
+    calc
+      _ ≤ B * (B ^ M / M.factorial) * Real.exp B := by gcongr
+      _ = N * EN := by
+        dsimp [EN, N]
+        rw [Nat.factorial_succ]
+        push_cast
+        field_simp
+        ring
+  have hderS :
+      cs * ((rs ^ M / M.factorial) * Real.exp rs) ≤ N * EN := by
+    have htailS : (rs ^ M / M.factorial) * Real.exp rs ≤
+        (B ^ M / M.factorial) * Real.exp B := by gcongr
+    calc
+      _ ≤ B * ((B ^ M / M.factorial) * Real.exp B) :=
+        mul_le_mul hcsle htailS (by positivity) hB
+      _ = B * (B ^ M / M.factorial) * Real.exp B := by ring
+      _ = N * EN := by
+        dsimp [EN, N]
+        rw [Nat.factorial_succ]
+        push_cast
+        field_simp
+        ring
+  have hvalA :
+      cx * Real.exp rx * ((ra ^ N / N.factorial) * Real.exp ra) ≤
+        (N + 1) * EN1 := by
+    rw [show cx * Real.exp rx * ((ra ^ N / N.factorial) * Real.exp ra) =
+      cx * (ra ^ N / N.factorial) * Real.exp (rx + ra) by rw [Real.exp_add]; ring]
+    calc
+      _ ≤ B * (B ^ N / N.factorial) * Real.exp B := by gcongr
+      _ = (N + 1) * EN1 := by
+        dsimp only [EN1]
+        rw [← mul_assoc, mul_factorialEnvelope_eq_succ]
+  have hvalX :
+      ((rx ^ N / N.factorial) * Real.exp rx) *
+          (ca * Real.exp ra) ≤ (N + 1) * EN1 := by
+    rw [show ((rx ^ N / N.factorial) * Real.exp rx) *
+        (ca * Real.exp ra) =
+      ca * (rx ^ N / N.factorial) * Real.exp (rx + ra) by rw [Real.exp_add]; ring]
+    calc
+      _ ≤ B * (B ^ N / N.factorial) * Real.exp B := by gcongr
+      _ = (N + 1) * EN1 := by
+        dsimp only [EN1]
+        rw [← mul_assoc, mul_factorialEnvelope_eq_succ]
+  have h := norm_eval_derivative_finitePositivePhaseTranslationTopEdge_le d x a z
+  change ‖(finitePositivePhaseTranslationTopEdge d x a).derivative.eval z‖ ≤
+      (cx * ((rx ^ M / M.factorial) * Real.exp rx)) * Real.exp ra +
+        cx * Real.exp rx * ((ra ^ N / N.factorial) * Real.exp ra) +
+        ((rx ^ N / N.factorial) * Real.exp rx) * (ca * Real.exp ra) +
+        Real.exp rx * (ca * ((ra ^ M / M.factorial) * Real.exp ra)) +
+        cs * ((rs ^ M / M.factorial) * Real.exp rs) at h
+  have hcomb : ‖(finitePositivePhaseTranslationTopEdge d x a).derivative.eval z‖ ≤
+      3 * N * EN + 2 * (N + 1) * EN1 := by nlinarith
+  calc
+    _ ≤ 3 * N * EN + 2 * (N + 1) * EN1 := hcomb
+    _ = _ := by
+      dsimp only [EN, EN1, B]
+      rw [hMN]
+      push_cast
+      ring
 
 /-- Every finite cosine section is dominated by the full exponential series, uniformly in its
 degree.  This is the degree-free envelope used for the dyadic top row. -/

@@ -497,4 +497,289 @@ theorem finiteCoefficientL2Norm_matrixMulVec_le_norm_finitePrimeEvenDilationGram
     change finiteCoefficientL2Norm y ≤ finiteCoefficientL2Norm x * ‖T - K‖
     nlinarith
 
+/-! ### Reciprocal-weight difference specialization -/
+
+def finiteWeightMass {n : ℕ} (w : Fin n → ℝ) : ℝ := ∑ i, w i
+
+def finiteWeightedNormSq {n : ℕ} (w : Fin n → ℝ) (u : Fin n → ℂ) : ℝ :=
+  ∑ i, w i * ‖u i‖ ^ 2
+
+def finiteWeightedMean {n : ℕ} (w : Fin n → ℝ) (u : Fin n → ℂ) : ℂ :=
+  ∑ i, ((w i : ℝ) : ℂ) * u i
+
+def finiteWeightedDifferenceEnergy {n : ℕ}
+    (w : Fin n → ℝ) (u : Fin n → ℂ) : ℝ :=
+  ∑ i, ∑ j, w i * w j * ‖u i - u j‖ ^ 2
+
+/-- Finite complex weighted variance on a `Fin` carrier. -/
+theorem finiteWeightedDifferenceEnergy_eq_variance
+    {n : ℕ} (w : Fin n → ℝ) (u : Fin n → ℂ) :
+    finiteWeightedDifferenceEnergy w u =
+      2 * finiteWeightMass w * finiteWeightedNormSq w u -
+        2 * ‖finiteWeightedMean w u‖ ^ 2 := by
+  have hre0 := two_mul_weightedBilinear_eq_rankOne_add_pairwiseDispersion
+    (Finset.univ : Finset (Fin n)) w (fun i => (u i).re) (fun i => (u i).re)
+  have him0 := two_mul_weightedBilinear_eq_rankOne_add_pairwiseDispersion
+    (Finset.univ : Finset (Fin n)) w (fun i => (u i).im) (fun i => (u i).im)
+  have hre :
+      2 * (∑ i, w i) * (∑ i, w i * (u i).re ^ 2) =
+        2 * (∑ i, w i * (u i).re) ^ 2 +
+          ∑ i, ∑ j, w i * w j * ((u i).re - (u j).re) ^ 2 := by
+    simpa only [pow_two, mul_assoc] using hre0
+  have him :
+      2 * (∑ i, w i) * (∑ i, w i * (u i).im ^ 2) =
+        2 * (∑ i, w i * (u i).im) ^ 2 +
+          ∑ i, ∑ j, w i * w j * ((u i).im - (u j).im) ^ 2 := by
+    simpa only [pow_two, mul_assoc] using him0
+  have hmeanRe : (finiteWeightedMean w u).re = ∑ i, w i * (u i).re := by
+    simp [finiteWeightedMean]
+  have hmeanIm : (finiteWeightedMean w u).im = ∑ i, w i * (u i).im := by
+    simp [finiteWeightedMean]
+  have hrePair :
+      (∑ i, ∑ j, w i * w j *
+        (((u i).re - (u j).re) * ((u i).re - (u j).re))) =
+      (2 * ∑ i, w i) * (∑ i, w i * (u i).re * (u i).re) -
+        (2 * ∑ i, w i * (u i).re) * (∑ i, w i * (u i).re) := by
+    rw [eq_sub_iff_add_eq']
+    simpa only [mul_assoc] using hre0.symm
+  have himPair :
+      (∑ i, ∑ j, w i * w j *
+        (((u i).im - (u j).im) * ((u i).im - (u j).im))) =
+      (2 * ∑ i, w i) * (∑ i, w i * (u i).im * (u i).im) -
+        (2 * ∑ i, w i * (u i).im) * (∑ i, w i * (u i).im) := by
+    rw [eq_sub_iff_add_eq']
+    simpa only [mul_assoc] using him0.symm
+  unfold finiteWeightedDifferenceEnergy
+  simp_rw [Complex.sq_norm, Complex.normSq_apply, Complex.sub_re, Complex.sub_im,
+    mul_add, Finset.sum_add_distrib]
+  rw [hrePair, himPair]
+  rw [hmeanRe, hmeanIm]
+  unfold finiteWeightMass finiteWeightedNormSq
+  simp_rw [Complex.sq_norm, Complex.normSq_apply, mul_add, Finset.sum_add_distrib]
+  ring
+
+theorem sum_weighted_centered_sq
+    {n : ℕ} (w a : Fin n → ℝ) :
+    (∑ i, w i * ((∑ j, w j) * a i - ∑ j, w j * a j) ^ 2) =
+      (∑ i, w i) *
+        ((∑ i, w i) * (∑ i, w i * a i ^ 2) -
+          (∑ i, w i * a i) ^ 2) := by
+  let M : ℝ := ∑ i, w i
+  let A : ℝ := ∑ i, w i * a i
+  let S : ℝ := ∑ i, w i * a i ^ 2
+  change (∑ i, w i * (M * a i - A) ^ 2) = M * (M * S - A ^ 2)
+  have h1 : (∑ i, M ^ 2 * (w i * a i ^ 2)) = M ^ 2 * S := by
+    exact (Finset.mul_sum Finset.univ (fun i => w i * a i ^ 2) (M ^ 2)).symm
+  have h2 : (∑ i, (2 * M * A) * (w i * a i)) = (2 * M * A) * A := by
+    exact (Finset.mul_sum Finset.univ (fun i => w i * a i) (2 * M * A)).symm
+  have h3 : (∑ i, A ^ 2 * w i) = A ^ 2 * M := by
+    exact (Finset.mul_sum Finset.univ w (A ^ 2)).symm
+  calc
+    (∑ i, w i * (M * a i - A) ^ 2) =
+        ∑ i, (M ^ 2 * (w i * a i ^ 2) -
+          (2 * M * A) * (w i * a i) + A ^ 2 * w i) := by
+      apply Finset.sum_congr rfl
+      intro i hi
+      ring
+    _ = M ^ 2 * S - (2 * M * A) * A + A ^ 2 * M := by
+      rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, h1, h2, h3]
+    _ = M * (M * S - A ^ 2) := by ring
+
+/-- The zero-diagonal weighted difference matrix whose coefficient norm is the full pair
+energy. -/
+def finiteWeightedDifferenceMatrix {n : ℕ} (w : Fin n → ℝ) (u : Fin n → ℂ) :
+    Matrix (Fin n) (Fin n) ℂ :=
+  fun i j => ((Real.sqrt (w i) * Real.sqrt (w j) : ℝ) : ℂ) * (u i - u j)
+
+/-- The square-root weight vector used to read weighted variance from the difference matrix. -/
+def finiteSqrtWeightVector {n : ℕ} (w : Fin n → ℝ) : Fin n → ℂ :=
+  fun i => ((Real.sqrt (w i) : ℝ) : ℂ)
+
+theorem finiteWeightedDifferenceMatrix_diagonal
+    {n : ℕ} (w : Fin n → ℝ) (u : Fin n → ℂ) (i : Fin n) :
+    finiteWeightedDifferenceMatrix w u i i = 0 := by
+  simp [finiteWeightedDifferenceMatrix]
+
+theorem finiteCoefficientL2Norm_finiteSqrtWeightVector_sq
+    {n : ℕ} (w : Fin n → ℝ) (hw : ∀ i, 0 ≤ w i) :
+    finiteCoefficientL2Norm (finiteSqrtWeightVector w) ^ 2 = finiteWeightMass w := by
+  rw [finiteCoefficientL2Norm_sq]
+  unfold finiteSqrtWeightVector finiteWeightMass
+  apply Finset.sum_congr rfl
+  intro i hi
+  rw [Complex.norm_real, Real.norm_of_nonneg (Real.sqrt_nonneg _), Real.sq_sqrt (hw i)]
+
+/-- Applying the weighted difference matrix to the square-root weight vector produces the
+centered weighted packet. -/
+theorem finiteWeightedDifferenceMatrix_mulVec_sqrtWeight
+    {n : ℕ} (w : Fin n → ℝ) (u : Fin n → ℂ) (hw : ∀ i, 0 ≤ w i) (i : Fin n) :
+    finiteMatrixMulVec (finiteWeightedDifferenceMatrix w u)
+        (finiteSqrtWeightVector w) i =
+      ((Real.sqrt (w i) : ℝ) : ℂ) *
+        (((finiteWeightMass w : ℝ) : ℂ) * u i - finiteWeightedMean w u) := by
+  unfold finiteMatrixMulVec finiteWeightedDifferenceMatrix finiteSqrtWeightVector
+  unfold finiteWeightMass finiteWeightedMean
+  calc
+    (∑ j, ((Real.sqrt (w i) * Real.sqrt (w j) : ℝ) : ℂ) *
+        (u i - u j) * (Real.sqrt (w j) : ℂ)) =
+        ∑ j, ((Real.sqrt (w i) * w j : ℝ) : ℂ) * (u i - u j) := by
+      apply Finset.sum_congr rfl
+      intro j hj
+      push_cast
+      calc
+        (Real.sqrt (w i) : ℂ) * (Real.sqrt (w j) : ℂ) * (u i - u j) *
+            (Real.sqrt (w j) : ℂ) =
+            (Real.sqrt (w i) : ℂ) *
+              ((Real.sqrt (w j) : ℂ) * (Real.sqrt (w j) : ℂ)) * (u i - u j) := by
+          ring
+        _ = (Real.sqrt (w i) : ℂ) * (w j : ℂ) * (u i - u j) := by
+          rw [show (Real.sqrt (w j) : ℂ) * (Real.sqrt (w j) : ℂ) = (w j : ℂ) by
+            norm_cast
+            exact Real.mul_self_sqrt (hw j)]
+    _ = ((Real.sqrt (w i) : ℝ) : ℂ) *
+        (((∑ j, w j : ℝ) : ℂ) * u i - ∑ j, (w j : ℂ) * u j) := by
+      calc
+        (∑ j, ((Real.sqrt (w i) * w j : ℝ) : ℂ) * (u i - u j)) =
+            (Real.sqrt (w i) : ℂ) * ∑ j, (w j : ℂ) * (u i - u j) := by
+          rw [Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro j hj
+          push_cast
+          ring
+        _ = (Real.sqrt (w i) : ℂ) *
+            (((∑ j, w j : ℝ) : ℂ) * u i - ∑ j, (w j : ℂ) * u j) := by
+          congr 1
+          simp_rw [mul_sub]
+          rw [Finset.sum_sub_distrib, ← Finset.sum_mul]
+          push_cast
+          rfl
+
+theorem sum_weighted_complex_centered_norm_sq
+    {n : ℕ} (w : Fin n → ℝ) (u : Fin n → ℂ) :
+    (∑ i, w i *
+      ‖((finiteWeightMass w : ℝ) : ℂ) * u i - finiteWeightedMean w u‖ ^ 2) =
+      finiteWeightMass w *
+        (finiteWeightMass w * finiteWeightedNormSq w u -
+          ‖finiteWeightedMean w u‖ ^ 2) := by
+  have hre := sum_weighted_centered_sq w (fun i => (u i).re)
+  have him := sum_weighted_centered_sq w (fun i => (u i).im)
+  have hmeanRe : (finiteWeightedMean w u).re = ∑ i, w i * (u i).re := by
+    simp [finiteWeightedMean]
+  have hmeanIm : (finiteWeightedMean w u).im = ∑ i, w i * (u i).im := by
+    simp [finiteWeightedMean]
+  have hreMul :
+      (∑ i, w i * (((∑ j, w j) * (u i).re - ∑ j, w j * (u j).re) *
+        ((∑ j, w j) * (u i).re - ∑ j, w j * (u j).re))) =
+        (∑ i, w i) *
+          ((∑ i, w i) * ∑ i, w i * ((u i).re * (u i).re) -
+            (∑ i, w i * (u i).re) * ∑ i, w i * (u i).re) := by
+    simpa only [pow_two] using hre
+  have himMul :
+      (∑ i, w i * (((∑ j, w j) * (u i).im - ∑ j, w j * (u j).im) *
+        ((∑ j, w j) * (u i).im - ∑ j, w j * (u j).im))) =
+        (∑ i, w i) *
+          ((∑ i, w i) * ∑ i, w i * ((u i).im * (u i).im) -
+            (∑ i, w i * (u i).im) * ∑ i, w i * (u i).im) := by
+    simpa only [pow_two] using him
+  unfold finiteWeightMass finiteWeightedNormSq
+  simp only [Complex.sq_norm, Complex.normSq_apply, Complex.sub_re, Complex.sub_im,
+    Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero,
+    add_zero, mul_add, Finset.sum_add_distrib]
+  rw [hmeanRe, hmeanIm]
+  rw [hreMul, himMul]
+  ring
+
+/-- Exact extraction of weighted pair energy from the one-particle difference matrix. -/
+theorem finiteCoefficientL2Norm_weightedDifference_mulVec_sq
+    {n : ℕ} (w : Fin n → ℝ) (u : Fin n → ℂ) (hw : ∀ i, 0 ≤ w i) :
+    finiteCoefficientL2Norm
+        (finiteMatrixMulVec (finiteWeightedDifferenceMatrix w u)
+          (finiteSqrtWeightVector w)) ^ 2 =
+      finiteWeightMass w * finiteWeightedDifferenceEnergy w u / 2 := by
+  rw [finiteCoefficientL2Norm_sq]
+  simp_rw [finiteWeightedDifferenceMatrix_mulVec_sqrtWeight w u hw]
+  have hterm : ∀ i : Fin n,
+      ‖(Real.sqrt (w i) : ℂ) *
+        (((finiteWeightMass w : ℝ) : ℂ) * u i - finiteWeightedMean w u)‖ ^ 2 =
+      w i * ‖((finiteWeightMass w : ℝ) : ℂ) * u i - finiteWeightedMean w u‖ ^ 2 := by
+    intro i
+    rw [norm_mul, mul_pow]
+    rw [Complex.norm_real, Real.norm_of_nonneg (Real.sqrt_nonneg _), Real.sq_sqrt (hw i)]
+  simp_rw [hterm]
+  rw [sum_weighted_complex_centered_norm_sq]
+  rw [finiteWeightedDifferenceEnergy_eq_variance]
+  ring
+
+/-- **Weighted difference energy survives every compact perturbation.**  Common Sonin shells
+compress the full pair energy with no loss depending on the number of primes. -/
+theorem sqrt_half_finiteWeightedDifferenceEnergy_le_norm_primeGram_sub_compact
+    {n : ℕ} [Nonempty (Fin n)] (a : ℝ) (ha : 0 < a)
+    (p : Fin n → ℕ) (hp : ∀ i, (p i).Prime) (hinj : Function.Injective p)
+    (w : Fin n → ℝ) (u : Fin n → ℂ) (hw : ∀ i, 0 ≤ w i)
+    (hmass : 0 < finiteWeightMass w)
+    (K : evenSubspace →L[ℂ] evenSubspace) (hK : IsCompactOperator K) :
+    Real.sqrt (finiteWeightedDifferenceEnergy w u / 2) ≤
+      ‖finiteEvenDilationGramCombination a (fun i => (p i : ℝ))
+          (real_prime_one_lt p hp) (finiteWeightedDifferenceMatrix w u) - K‖ := by
+  let x : Fin n → ℂ := finiteSqrtWeightVector w
+  let y : Fin n → ℂ := finiteMatrixMulVec (finiteWeightedDifferenceMatrix w u) x
+  let T : evenSubspace →L[ℂ] evenSubspace :=
+    finiteEvenDilationGramCombination a (fun i => (p i : ℝ))
+      (real_prime_one_lt p hp) (finiteWeightedDifferenceMatrix w u)
+  have hcompression :=
+    finiteCoefficientL2Norm_matrixMulVec_le_norm_finitePrimeEvenDilationGram_sub_compact
+      a ha p hp hinj (finiteWeightedDifferenceMatrix w u)
+        (finiteWeightedDifferenceMatrix_diagonal w u) x K hK
+  have hxSq : finiteCoefficientL2Norm x ^ 2 = finiteWeightMass w := by
+    simpa [x] using finiteCoefficientL2Norm_finiteSqrtWeightVector_sq w hw
+  have hySq : finiteCoefficientL2Norm y ^ 2 =
+      finiteWeightMass w * finiteWeightedDifferenceEnergy w u / 2 := by
+    simpa [x, y] using finiteCoefficientL2Norm_weightedDifference_mulVec_sq w u hw
+  have hyNonneg : 0 ≤ finiteCoefficientL2Norm y := finiteCoefficientL2Norm_nonneg y
+  have hxNonneg : 0 ≤ finiteCoefficientL2Norm x := finiteCoefficientL2Norm_nonneg x
+  have hnormNonneg : 0 ≤ ‖T - K‖ := ContinuousLinearMap.opNorm_nonneg (T - K)
+  have hsquared : finiteCoefficientL2Norm y ^ 2 ≤
+      (finiteCoefficientL2Norm x * ‖T - K‖) ^ 2 :=
+    (sq_le_sq₀ hyNonneg (mul_nonneg hxNonneg hnormNonneg)).2 (by
+      simpa [x, y, T] using hcompression)
+  have henergy : finiteWeightedDifferenceEnergy w u / 2 ≤ ‖T - K‖ ^ 2 := by
+    rw [mul_pow, hxSq, hySq] at hsquared
+    nlinarith
+  rw [Real.sqrt_le_iff]
+  exact ⟨hnormNonneg, by simpa [T] using henergy⟩
+
+/-- Reciprocal-prime weights on a finite enumerated prime packet. -/
+def finitePrimeReciprocalWeight {n : ℕ} (p : Fin n → ℕ) : Fin n → ℝ :=
+  fun i => (p i : ℝ)⁻¹
+
+theorem finitePrimeReciprocalWeight_pos
+    {n : ℕ} (p : Fin n → ℕ) (hp : ∀ i, (p i).Prime) (i : Fin n) :
+    0 < finitePrimeReciprocalWeight p i := by
+  exact inv_pos.mpr (zero_lt_one.trans (real_prime_one_lt p hp i))
+
+theorem finitePrimeReciprocalWeight_mass_pos
+    {n : ℕ} [Nonempty (Fin n)] (p : Fin n → ℕ) (hp : ∀ i, (p i).Prime) :
+    0 < finiteWeightMass (finitePrimeReciprocalWeight p) := by
+  unfold finiteWeightMass
+  exact Finset.sum_pos (fun i hi => finitePrimeReciprocalWeight_pos p hp i)
+    Finset.univ_nonempty
+
+/-- **Reciprocal-prime seam lower bound.**  The square root of one half of the ordered
+reciprocal-prime pair energy is a lower bound for every compactly perturbed Sonin Gram
+coboundary. -/
+theorem sqrt_half_finitePrimeDifferenceEnergy_le_norm_primeGram_sub_compact
+    {n : ℕ} [Nonempty (Fin n)] (a : ℝ) (ha : 0 < a)
+    (p : Fin n → ℕ) (hp : ∀ i, (p i).Prime) (hinj : Function.Injective p)
+    (u : Fin n → ℂ) (K : evenSubspace →L[ℂ] evenSubspace)
+    (hK : IsCompactOperator K) :
+    Real.sqrt
+        (finiteWeightedDifferenceEnergy (finitePrimeReciprocalWeight p) u / 2) ≤
+      ‖finiteEvenDilationGramCombination a (fun i => (p i : ℝ))
+          (real_prime_one_lt p hp)
+          (finiteWeightedDifferenceMatrix (finitePrimeReciprocalWeight p) u) - K‖ := by
+  exact sqrt_half_finiteWeightedDifferenceEnergy_le_norm_primeGram_sub_compact
+    a ha p hp hinj (finitePrimeReciprocalWeight p) u
+      (fun i => (finitePrimeReciprocalWeight_pos p hp i).le)
+      (finitePrimeReciprocalWeight_mass_pos p hp) K hK
+
 end RHTower

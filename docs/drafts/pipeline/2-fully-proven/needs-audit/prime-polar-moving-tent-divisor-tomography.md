@@ -443,12 +443,35 @@ Assembled in `RHTower/PrimePolarResidueCancellation.lean`:
   off-critical pole cancels, and the residue reads off the exact multiplicity.
 
 Thus the whole §5 divisor structure — the polar cancellation `(23)`, the pole support `(24)`, the
-multiplicity-exact residue `(25)`, and the nonvanishing `(26)` — is machine-checked.  The one remaining
-open piece is the *coupling* `(16)`--`(20)`: assembling `E_{k,L}(s)` from the cell bound `(15)` and the
-integral value into the source Dirichlet series, summing to `H_L` via `LSeriesSummable_vonMangoldt`
-(dominated by `vonMangoldt_shifted_summable`), and the double-series interchange `(20)` — i.e. proving
-that the coefficient series `Pcal_L` actually equals `(22)`, at which point the RH criterion `(28)`
-follows from the assembled residue facts.
+multiplicity-exact residue `(25)`, and the nonvanishing `(26)` — is machine-checked.
+
+The **discretization input `(14)`--`(15)` is now also formalized** axiom-clean.  Two reusable gluing
+lemmas (mathlib has no `LipschitzOnWith.union`) in `HTGeometry/RiemannSumCell.lean`:
+
+- `lipschitzWith_of_lipschitzOnWith_Iic_Ici` — a function `K`-Lipschitz on `(-∞,c]` and on `[c,∞)` is
+  globally `K`-Lipschitz;
+- `lipschitzOnWith_of_glue` — the order-connected-set version, gluing at an interior point `c`.
+
+In `RHTower/MovingTentGridLipschitz.lean`:
+
+- `gGridPos` — the *truncated* moving integrand `τ_L(log u)·u^{-s}` (`≡ 0` off `[1, e^{2L}]`);
+- `gGridPos_lipschitzOnWith` — **`g_s` is Lipschitz on `[0, ∞)`**, assembled by gluing the flat pieces
+  `[0,1]`, `[e^{2L}, ∞)` to the support piece `[1, e^{2L}]` (where `g_s = gTent`).
+
+The **concrete uniform Riemann-sum estimate `(15)` is now formalized** axiom-clean, in
+`RHTower/MovingTentGridLipschitz.lean`:
+
+- `gGridPos_integral_eq` — `∫₀ᵀ g_s = A_L(s-1)² = I_L(s)` for any cutoff `T ≥ e^{2L}` (the integral
+  half of the comparison);
+- `gGridPos_riemann_bound` — for `k ≥ 1` and `N/k ≥ e^{2L}`,
+  `‖∑_{j<N} (1/k)·g_s(j/k) − I_L(s)‖ ≤ N·C/(2k²)` with a single Lipschitz constant `C` uniform in
+  `k, N`.  With `N ≈ k·e^{2L}` this is the `O(1/k)` bound of `(15)`.
+
+The remaining open piece is the last algebraic step of the *coupling* `(16)`--`(20)`: rescale the sum by
+`N^{-s} = k^{-s}(N/k)^{-s}` to turn `gGridPos_riemann_bound` into the entire-error bound
+`|E_{k,L}(s)| ≤ C·k^{-Re s}` `(17)`, sum against `Λ(k)/√k` under `vonMangoldt_shifted_summable` to get
+`H_L` holomorphic `(19)`, and interchange to `(20)` — i.e. prove the coefficient series `Pcal_L` equals
+`(22)`, at which point the RH criterion `(28)` follows from the assembled residue facts (§5, all proven).
 
 ## Gates
 

@@ -7,9 +7,9 @@
 - **Parents:** `sonin-two-particle-prime-coherence.md`;
   `xi-prime-seam-pair-asymptotics.md`
 - **Lean status:** the one-particle Euler corners, the arithmetic normalized-energy endpoint, and
-  the full finite zero-diagonal Gram-matrix compression modulo compacts are formalized.  The latter
-  removes the Hilbert tensor product from the route.  Only the final specialization of the generic
-  matrix-vector inequality to the reciprocal-prime difference matrix remains to be packaged.
+  the full finite zero-diagonal Gram-matrix compression modulo compacts are formalized.  Its exact
+  reciprocal-prime weighted-difference specialization proves `(8d)`--`(8e)` in Lean and removes
+  the Hilbert tensor product from the route.
 
 ## Statement
 
@@ -242,7 +242,7 @@ finite `F`, not this cofinal first-Euler Gram coboundary.
 - [x] top-down replacement of pairwise realization by one exterior tensor
 - [x] replace the tensor-square estimate by the one-particle common-shell Gram compression
 - [x] formalize the full finite matrix-vector Calkin lower estimate without cardinality loss
-- [ ] package the reciprocal-prime difference-matrix specialization `(8d)`--`(8e)` in Lean
+- [x] package the reciprocal-prime difference-matrix specialization `(8d)`--`(8e)` in Lean
 - [x] source realization of the scalar seam coefficients as finite Euler first coefficients
 - [x] exact scalar comparison of the empty and actual Euler tangent charts
 - [ ] bounded operator transfer of those coefficients to the seam-weighted Sonin section

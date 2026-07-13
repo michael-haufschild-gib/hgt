@@ -1084,6 +1084,7 @@ import GaloisForLFunctions.RHTower.TentMellinFactor
 import GaloisForLFunctions.RHTower.PrimePolarDirichletBackbone
 import GaloisForLFunctions.RHTower.ZetaLogDerivResidue
 import GaloisForLFunctions.RHTower.PrimePolarResidueCancellation
+import GaloisForLFunctions.RHTower.MovingTentGridLipschitz
 import GaloisForLFunctions.RHTower.FisherCurvatureMoment
 import GaloisForLFunctions.RHTower.FriableAuxiliary
 import GaloisForLFunctions.RHTower.FunctionFieldDegeneration

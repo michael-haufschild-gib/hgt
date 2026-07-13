@@ -66,6 +66,17 @@ Thus `(2)` gives a one-particle Calkin lower bound for half the complete pair en
 the Hilbert tensor product and the paper-only two-particle Calkin estimate from the prime-seam route.
 The remaining source theorem is an upper estimate for one concrete zero-diagonal Gram coboundary.
 
+The reciprocal-prime specialization is also formalized.  With `w_i=1/p_i`, the difference matrix
+and square-root weight vector satisfy
+
+```text
+||x||_2^2=sum_i w_i,
+||D_w(u)x||_2^2=(sum_i w_i) E_w(u)/2,
+sqrt(E_w(u)/2) <= ||T_(D_w(u))-K||
+```
+
+for every compact `K`.
+
 ## Formal declarations
 
 ```text
@@ -75,6 +86,9 @@ RHTower.finitePairedEvenSoninInputCombination_weakly_tendsto_zero
 RHTower.finitePrimeGram_pairedCombination_inner_tendsto_bilinear
 RHTower.norm_finiteMatrixBilinear_le_norm_finitePrimeEvenDilationGram_sub_compact
 RHTower.finiteCoefficientL2Norm_matrixMulVec_le_norm_finitePrimeEvenDilationGram_sub_compact
+RHTower.finiteCoefficientL2Norm_weightedDifference_mulVec_sq
+RHTower.sqrt_half_finiteWeightedDifferenceEnergy_le_norm_primeGram_sub_compact
+RHTower.sqrt_half_finitePrimeDifferenceEnergy_le_norm_primeGram_sub_compact
 ```
 
 ## Verification
@@ -86,6 +100,6 @@ RHTower.finiteCoefficientL2Norm_matrixMulVec_le_norm_finitePrimeEvenDilationGram
 - [x] no cardinality loss
 - [x] axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`
 - [ ] add the leaf import to the umbrella after concurrent umbrella edits settle
-- [ ] package the reciprocal-prime difference-matrix algebra as a final Lean corollary
+- [x] package the reciprocal-prime difference-matrix algebra as a final Lean corollary
 - [ ] prove the source-side cofinal upper estimate
 - [ ] RH

@@ -157,6 +157,7 @@ import GaloisForLFunctions.HTGeometry.BernsteinSzegoMeanValue
 import GaloisForLFunctions.HTGeometry.BernsteinSzegoMomentForm
 import GaloisForLFunctions.HTGeometry.BernsteinSzegoReconstruction
 import GaloisForLFunctions.HTGeometry.SzegoLowerBound
+import GaloisForLFunctions.HTGeometry.SzegoLowerBoundGeneral
 
 /- ## Complete area inventory -/
 import GaloisForLFunctions.HTGeometry.AlgebraicMatroidRank
@@ -386,6 +387,7 @@ import GaloisForLFunctions.HTGeometry.PermanentCoefficientIdentity
 import GaloisForLFunctions.HTGeometry.FiberPermanentIdentity
 import GaloisForLFunctions.HTGeometry.GaussComponentHaarAverage
 import GaloisForLFunctions.HTGeometry.DixmierIdeal
+import GaloisForLFunctions.HTGeometry.DirichletLinePartialSum
 import GaloisForLFunctions.HTGeometry.PermanentDistinctSymbol
 import GaloisForLFunctions.HTGeometry.PolarDecomposition
 import GaloisForLFunctions.HTGeometry.PoleHolonomicDegreeBudget
