@@ -129,13 +129,25 @@ Sonin spaces, but no asymptotic exterior-collinearity theorem for the two sectio
 
 The formal continuation `xi-prime-seam-euler-zero-tangent.md` closes the scalar coefficient part:
 the horizontal seam is exactly the derivative at local parameter zero of an explicit FE-paired
-finite Euler flux, both pointwise and in the compact-carrier Banach algebra.
+finite Euler flux, both pointwise and in the compact-carrier Banach algebra.  It now also closes the
+scalar tangent-chart comparison.  The actual `a=1` tangent equals the empty `a=0` coefficient plus
+the explicit Lambert tail
 
-`[OPEN CORE]` Transfer that empty-parameter Euler tangent functorially to `A_F(a(rho))` on the Sonin
-operator carrier, compare it with the actual-parameter tangent at `a=1`, retain the global Poisson
-normalization, and prove `(9)` without using Xi zero locations.  Finite quasi-innerness alone is
-insufficient because it controls the nonlinear completed product at each finite `F`, not this
-cofinal first-Euler exterior tangent.
+```text
+sum_(m>=2)m log(p)p^(-ms),
+```
+
+with FE pairing applied termwise.  Thus no unknown value relation remains between the two scalar
+charts.
+
+`[OPEN CORE]` Transfer the empty-parameter Euler tangent functorially to `A_F(a(rho))` on the Sonin
+operator carrier and prove that the explicit higher-grade Lambert tail has sufficiently small
+exterior Calkin image, while retaining the global Poisson normalization; then prove `(9)` without
+using Xi zero locations.  The paper-proven critical all-grade corona theorem kills the same tail in
+the Marcinkiewicz quotient, but this is not a Calkin theorem: each principal prime-power Sonin
+corner has nonzero essential norm and only its principal-subtracted residual is Hilbert--Schmidt.
+Finite quasi-innerness alone is insufficient because it controls the nonlinear completed product
+at each finite `F`, not this cofinal first-Euler exterior tangent.
 
 ## Gates
 
@@ -145,6 +157,7 @@ cofinal first-Euler exterior tangent.
 - [x] top-down replacement of pairwise realization by one exterior tensor
 - [ ] formalize the actual tensor-square Calkin estimate and `(3)` on the Sonin Hilbert tensor product
 - [x] source realization of the scalar seam coefficients as finite Euler first coefficients
+- [x] exact scalar comparison of the empty and actual Euler tangent charts
 - [ ] bounded operator transfer of those coefficients to the seam-weighted Sonin section
-- [ ] comparison of the empty-parameter and actual-parameter Euler tangent charts
+- [ ] exterior-Calkin control of the explicit higher-grade Lambert principal tail
 - [ ] source-pure asymptotic Calkin collinearity `(9)`

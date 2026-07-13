@@ -7,7 +7,9 @@
 - **Statement:** For every fixed positive rectangular width, the normalized archimedean bottom
   value minus the elementary polar square is uniformly bounded over all separated apertures.
   Consequently RH is equivalent to uniform boundedness, and to eventual all-epsilon one-sided
-  subpower lower control, of the corresponding finite prime--polar source values.
+  subpower lower control, of the corresponding finite prime--polar source values. Quantitatively,
+  every horizontal Xi zero-free region is exactly the absolute-convergence-abscissa threshold of
+  the negative part of this finite source.
 
 ## Main law
 
@@ -27,6 +29,23 @@ RH iff exists N, forall epsilon > 0, exists C >= 0,
 There is no named proposition interface, test-function hypothesis, archimedean hypothesis, or
 zero datum in either statement.
 
+Delete any admissible finite prefix and let `source^-(L,N,n)` be the negative part of the remaining
+finite prime--polar value. The quantified energy family compresses to one intrinsic number:
+
+```text
+all Xi zeros satisfy Re(rho) <= 1/2 + alpha
+iff abscissaAbs(sum_n source^-(L,N,n) n^(-s)) <= 1 + alpha.   (3)
+```
+
+At `alpha=0`, this is the source-only critical law
+
+```text
+RH iff abscissaAbs(sum_n source^-(L,N,n) n^(-s)) <= 1.        (4)
+```
+
+This is weaker than pointwise subpower control and removes both the pointwise quantifier and the
+explicit family indexed by `epsilon`.
+
 ## Exact Gamma--polar identity
 
 For `A_(L,a)(t)` equal to `rectangularTwoEdgeAutocorrelation L a t`, Gauss's digamma integral and
@@ -37,7 +56,7 @@ normalizedBottomArch(L,a) - 2 polarFeature(L,a)^2
  = 2 integral_0^infinity
      [exp(-2t) A_(L,a)(0) - exp(-t/2) A_(L,a)(t)]
        /(1-exp(-2t)) dt
-   - (gamma + log pi) A_(L,a)(0).                            (3)
+   - (gamma + log pi) A_(L,a)(0).                            (5)
 ```
 
 For `a >= L >= 0`, the four-tent law reduces on `t >= 0` to two fixed self-overlap tents and one
@@ -45,7 +64,7 @@ moving cross tent.  Here `A_(L,a)(0)=2L`, while the moving tent is bounded by `m
 the Gamma--polar correction is bounded by an explicit nonnegative constant depending only on
 `L`, uniformly in `a`.
 
-Combining `(3)` with
+Combining `(5)` with
 
 ```text
 Weil(L,a) = -2 primeAutocorrelation(L,a) + normalizedBottomArch(L,a)
@@ -55,7 +74,7 @@ source(L,a) = -2 primeAutocorrelation(L,a) + 2 polarFeature(L,a)^2
 gives the exact source law
 
 ```text
-Weil(L,a) = source(L,a) + GammaCorrection(L,a).               (4)
+Weil(L,a) = source(L,a) + GammaCorrection(L,a).               (6)
 ```
 
 Under RH the reciprocal-square spectral estimate bounds `Weil(L,a)` uniformly in `a`; hence the
@@ -71,7 +90,16 @@ exists N, forall epsilon > 0, exists C >= 0, forall n >= N,
   0 <= criticalMellinAdjacentBlock(L, log n) + C*n^epsilon.
 ```
 
-This is the sole RH-bearing value estimate left by the rectangular formula.
+The negative-energy form is
+
+```text
+for every epsilon > 0,
+  sum_n source^-(L,N,n) / n^(1+epsilon) < infinity,            (7)
+```
+
+and is equivalent to RH. Since the Gamma--polar correction is uniformly bounded, it changes
+neither `(7)` nor the threshold in `(3)`. The critical obligation is therefore the single
+prime--polar abscissa inequality `(4)`.
 
 ## Lean formalization
 
@@ -83,7 +111,11 @@ exact Gamma integral, its integrability, and its aperture-uniform bound.  The ca
 - `rectangularWeil_subpowerLower_iff_primePolarSource`;
 - `riemannHypothesis_iff_rectangularPrimePolarSource_uniformlyBounded`;
 - `riemannHypothesis_iff_exists_eventually_rectangularPrimePolarSource_subpowerLower`;
-- `riemannHypothesis_iff_exists_eventually_criticalMellinAdjacentBlock_subpowerLower`.
+- `riemannHypothesis_iff_exists_eventually_criticalMellinAdjacentBlock_subpowerLower`;
+- `all_xiZeros_re_le_iff_rectangularPrimePolarSource_negativeEnergyAbove`;
+- `riemannHypothesis_iff_rectangularPrimePolarSource_negativeEnergy`;
+- `all_xiZeros_re_le_iff_rectangularPrimePolarSource_negativeAbscissa_le`;
+- `riemannHypothesis_iff_rectangularPrimePolarSource_negativeAbscissa_le_one`.
 
 The module builds under the project toolchain.  `#print axioms` reports only Lean's standard
 `propext`, `Classical.choice`, and `Quot.sound`; there are no project axioms, `sorry`, `admit`,
@@ -97,8 +129,9 @@ value-only majorant for the sharp dyadic window.  The positive formulation of th
 constraint is that a successful sharp transfer must retain cancellation at the local slope or
 positive-excess-energy level; a scalar first secant has cost `h*sqrt(n) + 1/h`.
 
-The formal sharp-window stack reduces the pointwise target further.  It is enough to prove, for
-every `epsilon > 0`, absolute convergence of
+The formal sharp-window stack reduces the pointwise target further. It is enough to prove that the
+positive-excess Dirichlet series has absolute-convergence abscissa at most one. Equivalently, for
+every `epsilon > 0`, it is enough to prove absolute convergence of
 
 ```text
 sum_n positiveExcess(n) / n^(1+epsilon),
@@ -115,13 +148,19 @@ is exactly the positive backward-variation energy of the completed critical-Mell
 - [x] exact prime--polar source decomposition
 - [x] direct uniform-boundedness equivalence with RH
 - [x] direct all-epsilon source and adjacent-block equivalences with RH
+- [x] quantitative prime--polar negative-energy equivalence for every horizontal zero-free region
+- [x] single-abscissa prime--polar criterion `RH iff abscissa <= 1`
 - [x] axiom audit and focused module build
-- [ ] sharp-window completion: formal RH Chebyshev error or an equally strong local value relation
+- [ ] source completion: prove the critical negative-part abscissa bound from an unconditional
+      arithmetic value relation
 - [ ] RH
 
 ## Literature boundary
 
 Gauss's integral representation of the digamma function is classical (DLMF 5.9.12).  Schoenfeld's
 conditional estimate `|psi(x)-x| <= sqrt(x) log(x)^2/(8 pi)` is an explicit form of the classical
-von Koch consequence of RH.  The scientific content here is the exact rectangular Gamma--polar
-source decomposition and its direct bounded-source RH law, not either classical ingredient.
+von Koch consequence of RH. Johnston's averaged sign criteria for `theta(x)-x` are themselves
+equivalent to RH, while his unconditional `t^(-2)`-weighted inequalities control one cumulative
+signed average rather than the negative variation or abscissa in `(4)`. The scientific content
+here is the exact rectangular Gamma--polar source decomposition and its direct source-abscissa
+law, not those classical or conditional ingredients.

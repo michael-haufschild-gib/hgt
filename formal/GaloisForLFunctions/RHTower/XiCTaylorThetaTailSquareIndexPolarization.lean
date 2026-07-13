@@ -563,6 +563,60 @@ theorem thetaSquareIndexDyadicParityLayer_neg_reflection_simplified
     thetaSquareIndexDyadicCompletionDefect_eq]
   ring
 
+/-- Dual all-depth reflection.  Solving the parity reflection at the translated argument shows
+that the exact-valuation row reflects back to the parity row.  The growing half-exponential is
+kept in its cancellation-compatible form; separating it before pairing would destroy the
+reflection cancellation. -/
+theorem thetaSquareIndexDyadicOddLayer_neg_reflection
+    (k : ℕ) (x : ℝ) :
+    thetaSquareIndexDyadicOddLayer k (-x) =
+      (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+          thetaSquareIndexDyadicParityLayer k
+            (x - thetaSquareIndexDyadicReflectionShift k) +
+        (1 / 2 : ℝ) * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+          Real.exp
+            (-(thetaSquareIndexDyadicReflectionShift k - x) / 2) := by
+  have h := thetaSquareIndexDyadicParityLayer_neg_reflection_simplified k
+    (thetaSquareIndexDyadicReflectionShift k - x)
+  have hneg : -(thetaSquareIndexDyadicReflectionShift k - x) =
+      x - thetaSquareIndexDyadicReflectionShift k := by ring
+  have hshift : thetaSquareIndexDyadicReflectionShift k - x -
+      thetaSquareIndexDyadicReflectionShift k = -x := by ring
+  rw [hneg, hshift] at h
+  have hexp : Real.exp
+      ((x - thetaSquareIndexDyadicReflectionShift k) / 2) =
+      Real.exp
+        (-(thetaSquareIndexDyadicReflectionShift k - x) / 2) := by
+    congr 1
+    ring
+  rw [hexp] at h
+  have hw : (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+      (2 * (2 : ℝ) ^ (-(1 / 2 : ℝ))) = 1 := by
+    rw [show (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+        (2 * (2 : ℝ) ^ (-(1 / 2 : ℝ))) =
+      2 * ((2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+        (2 : ℝ) ^ (-(1 / 2 : ℝ))) by ring]
+    rw [← Real.rpow_add (by norm_num : (0 : ℝ) < 2)]
+    norm_num
+  have hsolve :
+      2 * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+          thetaSquareIndexDyadicOddLayer k (-x) =
+        thetaSquareIndexDyadicParityLayer k
+            (x - thetaSquareIndexDyadicReflectionShift k) +
+          (1 / 2 : ℝ) * Real.exp
+            (-(thetaSquareIndexDyadicReflectionShift k - x) / 2) := by
+    rw [h]
+    ring
+  calc
+    thetaSquareIndexDyadicOddLayer k (-x) =
+        ((2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+          (2 * (2 : ℝ) ^ (-(1 / 2 : ℝ)))) *
+            thetaSquareIndexDyadicOddLayer k (-x) := by rw [hw, one_mul]
+    _ = (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+        (2 * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+          thetaSquareIndexDyadicOddLayer k (-x)) := by ring
+    _ = _ := by rw [hsolve]; ring
+
 /-- Every finite coefficient packet of total mass zero removes the universal completion character
 exactly.  What remains is a pure signed arithmetic translate packet of exact-valuation rows. -/
 theorem thetaSquareIndexDyadicBalancedParityPacket_neg_reflection

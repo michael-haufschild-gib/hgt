@@ -3,6 +3,7 @@ import GaloisForLFunctions.HTGeometry.DeterminantRatioRoot
 import GaloisForLFunctions.HTGeometry.RieszBrothersReduction
 import GaloisForLFunctions.HTGeometry.SzegoFirstLimitInterface
 import GaloisForLFunctions.HTGeometry.GramDeterminantDistance
+import GaloisForLFunctions.HTGeometry.SzegoMonomialShift
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Analysis.InnerProductSpace.GramMatrix
 
@@ -191,6 +192,40 @@ theorem consecutiveGramDeterminantRatio_eq_normSq
   unfold consecutiveGramDeterminantRatio
   rw [circleMeasureGramTower_det_succ mu hmu N, hnorm, Complex.mul_re, Complex.ofReal_re,
     Complex.ofReal_im, mul_zero, sub_zero, mul_comm, mul_div_assoc, div_self hposN.ne', mul_one]
+
+/-- **The consecutive Toeplitz determinant ratio converges to the infimum of the squared monic-OPUC
+norms.**  The ratio equals `‖Φₙ₊₁‖²`, which is antitone (shift isometry) and bounded below by `0`, so
+it converges to its infimum.  This isolates the entire remaining analytic content of the first Szegő
+limit theorem into the single identity `⨅ₙ ‖Φₙ₊₁‖² = ` Szegő geometric mean of the density. -/
+theorem consecutiveGramDeterminantRatio_tendsto_ciInf
+    (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite) :
+    Tendsto (consecutiveGramDeterminantRatio (circleMeasureGramTower mu)) atTop
+      (𝓝 (⨅ N, ‖gramSchmidt ℂ (circleMonomialLp mu) (N + 1)‖ ^ 2)) := by
+  have hratio : consecutiveGramDeterminantRatio (circleMeasureGramTower mu)
+      = fun N => ‖gramSchmidt ℂ (circleMonomialLp mu) (N + 1)‖ ^ 2 :=
+    funext (consecutiveGramDeterminantRatio_eq_normSq mu hmu)
+  rw [hratio]
+  apply tendsto_atTop_ciInf
+  · refine antitone_nat_of_succ_le (fun N => ?_)
+    gcongr
+    exact norm_gramSchmidt_circleMonomial_succ_le mu (N + 1)
+  · exact ⟨0, by rintro _ ⟨N, rfl⟩; positivity⟩
+
+/-- **Reduction of the first Szegő limit theorem to one identity.**  For an infinite-support finite
+circle measure, the full determinant-ratio conclusion `HasSzegoFirstLimitConclusion` holds as soon as
+the infimum of the squared monic-OPUC norms equals the Szegő geometric mean of the reference density.
+The determinant algebra, the shift-isometry monotonicity, and the monotone-convergence limit are all
+discharged unconditionally here; the residual identity is the classical analytic core (the Szegő
+lower bound together with the outer-function upper bound). -/
+theorem hasSzegoFirstLimitConclusion_of_ciInf_eq
+    (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (m : Measure Circle)
+    (hGM : (⨅ N, ‖gramSchmidt ℂ (circleMonomialLp mu) (N + 1)‖ ^ 2)
+      = szegoGeometricMean m (mu.rnDeriv m)) :
+    HasSzegoFirstLimitConclusion (circleMeasureGramTower mu) mu m := by
+  unfold HasSzegoFirstLimitConclusion
+  rw [← hGM]
+  exact consecutiveGramDeterminantRatio_tendsto_ciInf mu hmu
 
 /-- The canonical positive-diagonal inverse-Cholesky tower of an infinite-support circle
 measure. -/
