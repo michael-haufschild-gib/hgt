@@ -421,6 +421,51 @@ theorem constrainedNormalizedProjectiveCauchyJet_linftyControl_surjective
   rw [linftyBochnerControl_apply_pi] at hq
   simpa [x, n, z, projectiveCauchyJetColumn] using hq
 
+/-- **Mixed constrained controllability.**  A disjoint genuine Nevanlinna target packet remains
+onto when the exact frozen constraints are imposed in projective Cauchy coordinates.  In
+particular, no noncriticality or nonvanishing-amplitude hypothesis is needed at the frozen
+points; those hypotheses occur only at the movable target nodes. -/
+theorem constrainedNormalizedProjectiveCauchyFrozenNevanlinnaTarget_linftyControl_surjective
+    {ιf ιt : Type*} [Fintype ιf] [DecidableEq ιf]
+    [Fintype ιt] [DecidableEq ιt]
+    (a q : ℂ → ℂ)
+    (xf : ιf → ℂ) (hxf_inj : Function.Injective xf)
+    (zt : ιt → ℂ) (hqt_inj : Function.Injective (fun i => q (zt i)))
+    (hcross : ∀ i j, xf i ≠ q (zt j))
+    (hupperf : ∀ i, 0 < (xf i).im) (huppert : ∀ i, 0 < (q (zt i)).im)
+    (nf : ιf → ℕ) (nt : ιt → ℕ)
+    (hat : ∀ i, a (zt i) ≠ 0) (hqdt : ∀ i, deriv q (zt i) ≠ 0)
+    (mu : Measure (OnePoint ℝ)) [IsProbabilityMeasure mu]
+    (hmu : mu.support.Infinite) :
+    let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+      xf nf mu hupperf
+    let target := projectiveNevanlinnaJetLinftyContinuousControl
+      a q zt nt hat hqdt mu huppert
+    Function.Surjective (target.toLinearMap.domRestrict
+      (LinearMap.ker frozen.toLinearMap)) := by
+  dsimp only
+  let frozenCauchy := normalizedProjectiveCauchyJetLinftyContinuousControl
+    xf nf mu hupperf
+  let targetCauchy := linftyBochnerControl mu
+    (projectiveCauchyJetColumn (fun i => q (zt i)) nt)
+    (memLp_projectiveCauchyJetColumn (fun i => q (zt i))
+      (fun i => (huppert i).ne') nt mu)
+  let targetEquiv :=
+    (nevanlinnaJetPacketLinearEquiv a q zt nt hat hqdt).restrictScalars ℝ
+  have hsurj : Function.Surjective
+      (targetCauchy.toLinearMap.domRestrict
+        (LinearMap.ker frozenCauchy.toLinearMap)) := by
+    exact constrainedNormalizedProjectiveCauchyJet_linftyControl_surjective
+      xf hxf_inj (fun i => q (zt i)) hqt_inj hcross
+      hupperf huppert nf nt mu hmu
+  have hconverted := constrainedControl_surjective_of_linearEquiv
+    frozenCauchy.toLinearMap targetCauchy.toLinearMap
+    (LinearEquiv.refl ℝ _) targetEquiv hsurj
+  simpa [frozenCauchy, targetCauchy, targetEquiv,
+    projectiveNevanlinnaJetLinftyContinuousControl,
+    projectiveNevanlinnaJetLinftyControl,
+    projectiveNevanlinnaJetLinftyContinuousControl_toLinearMap] using hconverted
+
 /-- The normalized genuine Nevanlinna frozen control: total mass together with a finite analytic
 Nevanlinna-jet packet. -/
 def normalizedProjectiveNevanlinnaJetLinftyContinuousControl

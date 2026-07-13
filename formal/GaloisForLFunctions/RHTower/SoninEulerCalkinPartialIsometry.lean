@@ -473,6 +473,154 @@ theorem evenFourierCutoff_mul_of_le
   apply Subtype.ext
   exact DFunLike.congr_fun (fourierCutoff_central_mul_of_le s t hst) (f : SoninL2)
 
+/-! ### Aperture covariance of the Sonin carrier -/
+
+/-- A normalized dilation by a scale `r ≥ 1` sends the Sonin carrier at aperture `a`
+into the carrier at the enlarged aperture level `r⁻¹ a`.  The physical gap is transported
+exactly; the Fourier gap becomes larger, so cutoff nesting supplies the second constraint. -/
+theorem dilation_mem_centralSoninCarrier_inv_mul
+    {a r : ℝ} (ha : 0 ≤ a) (hr : 1 ≤ r)
+    {f : SoninL2} (hf : f ∈ centralSoninCarrier a) :
+    dilation r (lt_of_lt_of_le zero_lt_one hr) f ∈
+      centralSoninCarrier (r⁻¹ * a) := by
+  have hr0 : 0 < r := lt_of_lt_of_le zero_lt_one hr
+  constructor
+  · change dilation r hr0 f ∈
+      (physicalForbidden (centralInterval (r⁻¹ * a))
+        (measurableSet_centralInterval (r⁻¹ * a)))ᗮ
+    apply (Submodule.starProjection_apply_eq_zero_iff
+      (K := physicalForbidden (centralInterval (r⁻¹ * a))
+        (measurableSet_centralInterval (r⁻¹ * a)))).mp
+    rw [← indicatorCutoff_eq_physicalForbidden_starProjection]
+    rw [indicatorCutoff_dilation]
+    have hcut : indicatorCutoff (centralInterval a)
+        (measurableSet_centralInterval a) f = 0 := by
+      rw [indicatorCutoff_eq_physicalForbidden_starProjection]
+      exact (Submodule.starProjection_apply_eq_zero_iff
+        (K := centralPhysicalForbidden a)).mpr hf.1
+    have hscale : r * (r⁻¹ * a) = a := by
+      field_simp [hr0.ne']
+    rw [hscale, hcut, map_zero]
+  · change dilation r hr0 f ∈
+      (fourierForbidden (centralInterval (r⁻¹ * a))
+        (measurableSet_centralInterval (r⁻¹ * a)))ᗮ
+    apply (Submodule.starProjection_apply_eq_zero_iff
+      (K := fourierForbidden (centralInterval (r⁻¹ * a))
+        (measurableSet_centralInterval (r⁻¹ * a)))).mp
+    rw [← fourierCutoff_eq_fourierForbidden_starProjection]
+    rw [fourierCutoff_dilation]
+    have hcutA : fourierCutoff (centralInterval a)
+        (measurableSet_centralInterval a) f = 0 := by
+      rw [fourierCutoff_eq_fourierForbidden_starProjection]
+      exact (Submodule.starProjection_apply_eq_zero_iff
+        (K := centralFourierForbidden a)).mpr hf.2
+    have hinv : r⁻¹ ≤ 1 := (inv_le_one₀ hr0).2 hr
+    have hinv0 : 0 ≤ r⁻¹ := (inv_pos.mpr hr0).le
+    have hsq : r⁻¹ * r⁻¹ ≤ 1 := by
+      calc
+        r⁻¹ * r⁻¹ ≤ 1 * r⁻¹ := mul_le_mul_of_nonneg_right hinv hinv0
+        _ ≤ 1 := by simpa using hinv
+    have hsmall : r⁻¹ * (r⁻¹ * a) ≤ a := by
+      calc
+        r⁻¹ * (r⁻¹ * a) = (r⁻¹ * r⁻¹) * a := by ring
+        _ ≤ 1 * a := mul_le_mul_of_nonneg_right hsq ha
+        _ = a := one_mul a
+    have hnest := fourierCutoff_central_mul_of_le
+      (r⁻¹ * (r⁻¹ * a)) a hsmall
+    have hsmallzero : fourierCutoff
+        (centralInterval (r⁻¹ * (r⁻¹ * a)))
+        (measurableSet_centralInterval (r⁻¹ * (r⁻¹ * a))) f = 0 := by
+      calc
+        fourierCutoff
+            (centralInterval (r⁻¹ * (r⁻¹ * a)))
+            (measurableSet_centralInterval (r⁻¹ * (r⁻¹ * a))) f =
+            (fourierCutoff
+              (centralInterval (r⁻¹ * (r⁻¹ * a)))
+              (measurableSet_centralInterval (r⁻¹ * (r⁻¹ * a))) *
+              fourierCutoff (centralInterval a)
+                (measurableSet_centralInterval a)) f := by rw [hnest]
+        _ = 0 := by rw [ContinuousLinearMap.mul_apply, hcutA, map_zero]
+    simpa using congrArg (dilation r hr0) hsmallzero
+
+/-- The inverse normalized dilation by `r ≥ 1` obeys the same aperture loss.  This is the
+Fourier-reflected half of `dilation_mem_centralSoninCarrier_inv_mul`. -/
+theorem inverseDilation_mem_centralSoninCarrier_inv_mul
+    {a r : ℝ} (ha : 0 ≤ a) (hr : 1 ≤ r)
+    {f : SoninL2} (hf : f ∈ centralSoninCarrier a) :
+    dilation r⁻¹ (inv_pos.mpr (lt_of_lt_of_le zero_lt_one hr)) f ∈
+      centralSoninCarrier (r⁻¹ * a) := by
+  have hr0 : 0 < r := lt_of_lt_of_le zero_lt_one hr
+  have hri0 : 0 < r⁻¹ := inv_pos.mpr hr0
+  have hinv : r⁻¹ ≤ 1 := (inv_le_one₀ hr0).2 hr
+  have hinv0 : 0 ≤ r⁻¹ := hri0.le
+  have hsq : r⁻¹ * r⁻¹ ≤ 1 := by
+    calc
+      r⁻¹ * r⁻¹ ≤ 1 * r⁻¹ := mul_le_mul_of_nonneg_right hinv hinv0
+      _ ≤ 1 := by simpa using hinv
+  have hsmall : r⁻¹ * (r⁻¹ * a) ≤ a := by
+    calc
+      r⁻¹ * (r⁻¹ * a) = (r⁻¹ * r⁻¹) * a := by ring
+      _ ≤ 1 * a := mul_le_mul_of_nonneg_right hsq ha
+      _ = a := one_mul a
+  constructor
+  · change dilation r⁻¹ hri0 f ∈
+      (physicalForbidden (centralInterval (r⁻¹ * a))
+        (measurableSet_centralInterval (r⁻¹ * a)))ᗮ
+    apply (Submodule.starProjection_apply_eq_zero_iff
+      (K := physicalForbidden (centralInterval (r⁻¹ * a))
+        (measurableSet_centralInterval (r⁻¹ * a)))).mp
+    rw [← indicatorCutoff_eq_physicalForbidden_starProjection]
+    rw [indicatorCutoff_dilation]
+    have hcutA : indicatorCutoff (centralInterval a)
+        (measurableSet_centralInterval a) f = 0 := by
+      rw [indicatorCutoff_eq_physicalForbidden_starProjection]
+      exact (Submodule.starProjection_apply_eq_zero_iff
+        (K := centralPhysicalForbidden a)).mpr hf.1
+    have hnest := indicatorCutoff_central_mul_of_le
+      (r⁻¹ * (r⁻¹ * a)) a hsmall
+    have hsmallzero : indicatorCutoff
+        (centralInterval (r⁻¹ * (r⁻¹ * a)))
+        (measurableSet_centralInterval (r⁻¹ * (r⁻¹ * a))) f = 0 := by
+      calc
+        indicatorCutoff
+            (centralInterval (r⁻¹ * (r⁻¹ * a)))
+            (measurableSet_centralInterval (r⁻¹ * (r⁻¹ * a))) f =
+            (indicatorCutoff
+              (centralInterval (r⁻¹ * (r⁻¹ * a)))
+              (measurableSet_centralInterval (r⁻¹ * (r⁻¹ * a))) *
+              indicatorCutoff (centralInterval a)
+                (measurableSet_centralInterval a)) f := by rw [hnest]
+        _ = 0 := by rw [ContinuousLinearMap.mul_apply, hcutA, map_zero]
+    simpa only [inv_inv, map_zero] using
+      congrArg (dilation r⁻¹ hri0) hsmallzero
+  · change dilation r⁻¹ hri0 f ∈
+      (fourierForbidden (centralInterval (r⁻¹ * a))
+        (measurableSet_centralInterval (r⁻¹ * a)))ᗮ
+    apply (Submodule.starProjection_apply_eq_zero_iff
+      (K := fourierForbidden (centralInterval (r⁻¹ * a))
+        (measurableSet_centralInterval (r⁻¹ * a)))).mp
+    rw [← fourierCutoff_eq_fourierForbidden_starProjection]
+    rw [fourierCutoff_dilation]
+    have hcut : fourierCutoff (centralInterval a)
+        (measurableSet_centralInterval a) f = 0 := by
+      rw [fourierCutoff_eq_fourierForbidden_starProjection]
+      exact (Submodule.starProjection_apply_eq_zero_iff
+        (K := centralFourierForbidden a)).mpr hf.2
+    have hscale : (r⁻¹)⁻¹ * (r⁻¹ * a) = a := by
+      field_simp [hr0.ne']
+    rw [hscale, hcut, map_zero]
+
+/-- The symmetric prime-dilation generator `U_p + U_p⁻¹` therefore preserves the inductive
+Sonin aperture tower, losing at most the factor `p` in the aperture. -/
+theorem dilationSum_mem_centralSoninCarrier_inv_mul
+    {a p : ℝ} (ha : 0 ≤ a) (hp : 1 < p)
+    {f : SoninL2} (hf : f ∈ centralSoninCarrier a) :
+    dilationSum p hp f ∈ centralSoninCarrier (p⁻¹ * a) := by
+  rw [dilationSum_apply]
+  exact (centralSoninCarrier (p⁻¹ * a)).add_mem
+    (dilation_mem_centralSoninCarrier_inv_mul ha hp.le hf)
+    (inverseDilation_mem_centralSoninCarrier_inv_mul ha hp.le hf)
+
 theorem evenDilationSum_eq
     (p : ℝ) (hp : 1 < p) :
     evenDilationSum p hp =

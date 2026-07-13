@@ -688,3 +688,14 @@ polynomial form of eq. 10). The differential polynomial is `P(X₀)·X₂ − (�
 `differentiallyAlgebraic_cexp_linear` (the `R = 1` case) to `R` polynomial. The general rational `R`
 reduces to this after clearing denominators (polynomial coefficients times `D²`), and the HT direction
 (some charge nonzero) remains the deep ADH/discrete-residue input already carded above.
+
+Also in `ExpPolynomialDA.lean`: `differentiallyAlgebraic_exp_polynomial` — `s ↦ e^{P(s)}` is
+differentially algebraic for any polynomial `P` (order-1 relation `G' − P'·G = 0`), axiom-clean. This
+is the DA phase-carrier when the exponential phase of the normal form is a general polynomial rather
+than the linear `βs`, complementing `differentiallyAlgebraic_cexp_mul_polynomial`.
+
+General entire DA carrier: `differentiallyAlgebraic_exp_poly_mul_poly (P Q)` — `s ↦ e^{P(s)}·Q(s)` is
+differentially algebraic for polynomials `P, Q` (order-1 relation `Q·G' − (P'Q + Q')·G = 0`), axiom-clean.
+Subsumes both `differentiallyAlgebraic_cexp_mul_polynomial` (linear phase) and
+`differentiallyAlgebraic_exp_polynomial` (`Q = 1`); it is the complete DA exponential-rational carrier
+of the orbit normal form `(9)` in the entire (polynomial phase and polynomial `R`) case.

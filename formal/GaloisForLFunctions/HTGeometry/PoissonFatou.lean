@@ -19,7 +19,7 @@ elementary estimates.
 
 namespace GaloisForLFunctions.HTGeometry
 
-open Real MeasureTheory Complex intervalIntegral Metric
+open Real MeasureTheory Complex intervalIntegral Metric Filter Topology
 open scoped Real
 
 /-- The angular Poisson kernel `P_r(t) = (1-r²)/(1 - 2r cos t + r²)`. -/
@@ -142,5 +142,62 @@ theorem poissonKer_le_decay {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1) {t : ℝ} (h0 
     have := (div_le_iff₀ (by positivity : (0:ℝ) < π ^ 2)).mp hden
     linarith [this]
   nlinarith [mul_le_mul_of_nonneg_left hpe hnn]
+
+/-- The Poisson kernel `t ↦ P_r(t)` is continuous for `|r| < 1`. -/
+theorem poissonKer_continuous {r : ℝ} (hr : |r| < 1) : Continuous (poissonKer r) := by
+  apply Continuous.div continuous_const
+  · fun_prop
+  · intro t; exact (poissonKer_denom_pos hr t).ne'
+
+/-- **Mass concentration**: away from `0`, the Poisson integral tends to `0` as `r → 1⁻`.  Together
+with nonnegativity and the normalization `∫ P_r = 2π`, this is the approximate-identity property of
+the Poisson kernel that drives a.e. boundary convergence. -/
+theorem poissonKer_concentration {δ : ℝ} (hδ0 : 0 < δ) (hδπ : δ ≤ π) :
+    Tendsto (fun r : ℝ => ∫ t in δ..π, poissonKer r t) (𝓝[<] 1) (𝓝 0) := by
+  have hπ : 0 < π := Real.pi_pos
+  set C := π ^ 2 * (π - δ) / (2 * δ ^ 2) with hC
+  have hupper : Tendsto (fun r : ℝ => C * (1 - r ^ 2)) (𝓝[<] 1) (𝓝 0) := by
+    rw [show (0:ℝ) = C * 0 by ring]
+    apply Tendsto.const_mul
+    have h : Tendsto (fun r : ℝ => 1 - r ^ 2) (𝓝 1) (𝓝 0) := by
+      have hc : Tendsto (fun r : ℝ => 1 - r ^ 2) (𝓝 1) (𝓝 (1 - 1 ^ 2)) :=
+        (by fun_prop : Continuous (fun r : ℝ => 1 - r ^ 2)).tendsto 1
+      simpa using hc
+    exact h.mono_left nhdsWithin_le_nhds
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hupper ?_ ?_
+  · filter_upwards [mem_nhdsWithin_of_mem_nhds (Ioi_mem_nhds (show (1/2:ℝ) < 1 by norm_num)),
+      self_mem_nhdsWithin] with r hr hr1
+    have hr0 : (0:ℝ) < r := by simp only [Set.mem_Ioi] at hr; linarith
+    have hr1' : r < 1 := by simpa using hr1
+    exact intervalIntegral.integral_nonneg hδπ (fun t _ => poissonKer_nonneg hr0.le hr1' t)
+  · filter_upwards [mem_nhdsWithin_of_mem_nhds (Ioi_mem_nhds (show (1/2:ℝ) < 1 by norm_num)),
+      self_mem_nhdsWithin] with r hr hr1
+    simp only [Set.mem_Ioi] at hr
+    have hr0 : (0:ℝ) < r := by linarith
+    have hr1' : r < 1 := by simpa using hr1
+    have habs : |r| < 1 := by rw [abs_of_nonneg hr0.le]; exact hr1'
+    have hcont : Continuous (poissonKer r) := poissonKer_continuous habs
+    calc ∫ t in δ..π, poissonKer r t
+        ≤ ∫ _t in δ..π, (1 - r ^ 2) * π ^ 2 / (4 * r * δ ^ 2) := by
+          apply intervalIntegral.integral_mono_on hδπ (hcont.intervalIntegrable δ π)
+            intervalIntegrable_const
+          intro t ht
+          have ht0 : 0 < t := by linarith [ht.1]
+          calc poissonKer r t ≤ (1 - r ^ 2) * π ^ 2 / (4 * r * t ^ 2) :=
+                poissonKer_le_decay hr0 hr1' ht0 ht.2
+            _ ≤ (1 - r ^ 2) * π ^ 2 / (4 * r * δ ^ 2) := by
+                have hnn : 0 ≤ (1 - r ^ 2) * π ^ 2 := by
+                  have : (0:ℝ) < 1 - r ^ 2 := by
+                    nlinarith [mul_pos (show (0:ℝ) < 1 - r by linarith)
+                      (show (0:ℝ) < 1 + r by linarith)]
+                  positivity
+                gcongr
+                exact ht.1
+      _ = (1 - r ^ 2) * (π ^ 2 * (π - δ) / (4 * r * δ ^ 2)) := by
+          rw [intervalIntegral.integral_const, smul_eq_mul]; ring
+      _ ≤ C * (1 - r ^ 2) := by
+          have hX : π ^ 2 * (π - δ) / (4 * r * δ ^ 2) ≤ C := by
+            rw [hC]; gcongr; nlinarith [pow_pos hδ0 2]
+          nlinarith [mul_le_mul_of_nonneg_left hX (show (0:ℝ) ≤ 1 - r ^ 2 by nlinarith)]
 
 end GaloisForLFunctions.HTGeometry

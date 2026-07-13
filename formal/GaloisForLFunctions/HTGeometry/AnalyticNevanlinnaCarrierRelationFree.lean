@@ -648,6 +648,79 @@ theorem positiveActualCarrier_hypertranscendental_dense_residual
   exact ⟨hpatterns.1.mono hsubset,
     Filter.mem_of_superset hpatterns.2.1 hsubset, hpatterns.2.2⟩
 
+/-- **Singular-continuous residual HT carrier capstone.**  If the projective parameter law is
+singular continuous and its label pullback has the classical null-set property, then every point
+of the positive chart is an atomless singular probability solution of the same Hamburger moment
+problem, while a dense residual subfamily has hypertranscendental Cauchy transform. -/
+theorem positiveSingularContinuousCarrier_hypertranscendental_dense_residual
+    (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
+    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
+    {ιf : Type} [Fintype ιf] [DecidableEq ιf]
+    (hCmin : HasMinimalExponentialType F.c)
+    (hnoCommon : ∀ z, ¬ (F.c z = 0 ∧ F.d z = 0))
+    {p0 : ℂ} (hCp : F.c p0 = 0) {c0 : ℂ} (hCc : F.c c0 ≠ 0)
+    (hupperMap : ∀ z, 0 < z.im → 0 < (F.quotient z).im)
+    (zf : ιf → ℂ)
+    (hqf_inj : Function.Injective (fun i => F.quotient (zf i)))
+    (hupperf : ∀ i, 0 < (F.quotient (zf i)).im)
+    (nf : ιf → ℕ) (haf : ∀ i, F.amplitude (zf i) ≠ 0)
+    (hqdf : ∀ i, deriv F.quotient (zf i) ≠ 0)
+    (eta : ProbabilityMeasure (OnePoint ℝ))
+    (hetaInfinite : (eta : Measure (OnePoint ℝ)).support.Infinite)
+    (hetaSC : eta ∈ projectiveSingularContinuousProbabilityLaws)
+    (hnull : ∀ E : Set (OnePoint ℝ), MeasurableSet E →
+      (projectiveLebesgueProbability : Measure (OnePoint ℝ)) E = 0 →
+      (volume : Measure ℝ)
+        (F.base.toBoundaryFamily.matrix.projectiveLabel ⁻¹' E) = 0) :
+    let mu : Measure (OnePoint ℝ) := eta
+    let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
+      F.amplitude F.quotient zf nf haf hqdf mu hupperf
+    let S := LinearMap.ker frozen.toLinearMap
+    let positiveChart : Set S := Metric.ball 0 1
+    let hypertranscendentalCarrier : Set positiveChart := {w |
+      Hypertranscendental
+        (fun z => ∫ x, ((x : ℂ) - z)⁻¹
+          ∂weightedBoundaryCarrier F.base.toBoundaryFamily mu
+            (linftyOne mu + w.1.1))}
+    Dense hypertranscendentalCarrier ∧
+      hypertranscendentalCarrier ∈ residual positiveChart ∧
+      ∀ w : positiveChart,
+        let density := linftyOne mu + w.1.1
+        let carrier := weightedBoundaryCarrier F.base.toBoundaryFamily mu density
+        LinftyStrictlyPositive mu density ∧
+          ∫ t, density t ∂mu = 1 ∧
+          IsProbabilityMeasure carrier ∧ NoAtoms carrier ∧
+          carrier ⟂ₘ (volume : Measure ℝ) ∧ HasHamburgerMoments s carrier := by
+  dsimp only
+  let mu : Measure (OnePoint ℝ) := eta
+  let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
+    F.amplitude F.quotient zf nf haf hqdf mu hupperf
+  let S := LinearMap.ker frozen.toLinearMap
+  let positiveChart : Set S := Metric.ball 0 1
+  let hypertranscendentalCarrier : Set positiveChart := {w |
+    Hypertranscendental
+      (fun z => ∫ x, ((x : ℂ) - z)⁻¹
+        ∂weightedBoundaryCarrier F.base.toBoundaryFamily mu
+          (linftyOne mu + w.1.1))}
+  letI : IsProbabilityMeasure mu := eta.prop
+  have hht : Dense hypertranscendentalCarrier ∧
+      hypertranscendentalCarrier ∈ residual positiveChart ∧
+      ∀ w : positiveChart,
+        LinftyStrictlyPositive mu (linftyOne mu + w.1.1) ∧
+          ∫ t, (linftyOne mu + w.1.1) t ∂mu = 1 := by
+    simpa [hypertranscendentalCarrier, positiveChart, frozen, S, mu] using
+      (F.positiveActualCarrier_hypertranscendental_dense_residual
+        projectiveGeometry parametricAvoidance hCmin hnoCommon hCp hCc hupperMap
+        zf hqf_inj hupperf nf haf hqdf mu hetaInfinite)
+  refine ⟨hht.1, hht.2.1, ?_⟩
+  intro w
+  let density := linftyOne mu + w.1.1
+  let carrier := weightedBoundaryCarrier F.base.toBoundaryFamily mu density
+  have hstruct := weightedBoundaryCarrier_singularContinuous_probability
+    F.base.toBoundaryFamily eta hetaSC hnull density (hht.2.2 w).1 (hht.2.2 w).2
+  exact ⟨(hht.2.2 w).1, (hht.2.2 w).2,
+    hstruct.1, hstruct.2.1, hstruct.2.2.1, hstruct.2.2.2⟩
+
 end ClassicalAnalyticNevanlinnaCarrierFamily
 
 end

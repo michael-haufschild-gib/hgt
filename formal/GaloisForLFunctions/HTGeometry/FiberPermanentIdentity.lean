@@ -88,4 +88,34 @@ theorem fiber_perm_single {D : ℕ} (s : Fin D → ℕ) (hs : Function.Injective
   · intro π _
     exact Finset.prod_congr rfl (fun t _ => by rw [hlofsrc])
 
+theorem perm_descFactorial_sum_pos {D : ℕ} (s : Fin D → ℕ) (μ : Fin D → ℕ)
+    (hsμ : ∀ i t, μ t ≤ s i) :
+    0 < ∑ π : Equiv.Perm (Fin D), ∏ t, ((s (π t)).descFactorial (μ t) : ℤ) := by
+  apply Finset.sum_pos
+  · intro π _
+    apply Finset.prod_pos
+    intro t _
+    exact_mod_cast Nat.descFactorial_pos.mpr (hsμ (π t) t)
+  · exact Finset.univ_nonempty
+
+/-- The antidiagonal-fiber weight of a single differential monomial at an injective, order-dominating
+scale is strictly positive: it equals the coordinate permanent (`fiber_perm_single`), a sum of
+positive descending-factorial products. -/
+theorem fiber_weight_pos {D : ℕ} (s : Fin D → ℕ) (hs : Function.Injective s)
+    (μ : Fin D → ℕ) (hsμ : ∀ i t, μ t ≤ s i) :
+    0 < ∑ l ∈ (Finset.univ.finsuppAntidiag (∑ t, (s t - μ t))).filter
+        (fun l => key (fun t => l t + μ t) = key s),
+      ∏ t, ((l t + μ t).descFactorial (μ t) : ℤ) := by
+  rw [fiber_perm_single s hs μ hsμ]
+  exact perm_descFactorial_sum_pos s μ hsμ
+
+/-- Consequently the fiber weight is nonzero — the `w_ν ≠ 0` input feeding the minimal-valuation
+domination in the magnitude-lacunary survival argument. -/
+theorem fiber_weight_ne_zero {D : ℕ} (s : Fin D → ℕ) (hs : Function.Injective s)
+    (μ : Fin D → ℕ) (hsμ : ∀ i t, μ t ≤ s i) :
+    (∑ l ∈ (Finset.univ.finsuppAntidiag (∑ t, (s t - μ t))).filter
+        (fun l => key (fun t => l t + μ t) = key s),
+      ∏ t, ((l t + μ t).descFactorial (μ t) : ℤ)) ≠ 0 :=
+  ne_of_gt (fiber_weight_pos s hs μ hsμ)
+
 end GaloisForLFunctions

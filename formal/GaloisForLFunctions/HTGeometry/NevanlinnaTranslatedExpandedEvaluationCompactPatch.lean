@@ -104,8 +104,7 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
     (η : ℝ) (hη : 0 < η)
     (zf : ιf → ℂ) (hqf_inj : Function.Injective (fun i => q (zf i)))
     (hupperf : ∀ i, 0 < (q (zf i)).im)
-    (nf : ιf → ℕ) (haf : ∀ i, a (zf i) ≠ 0)
-    (hqdf : ∀ i, deriv q (zf i) ≠ 0)
+    (nf : ιf → ℕ)
     (degree : ℕ) (orders : ι → ℕ)
     (rowBase : row → ℂ) (hrowBase : Function.Injective rowBase)
     (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
@@ -125,8 +124,8 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
     (hqdt : ∀ h ∈ K, ∀ x, deriv q (nodes h x) ≠ 0)
     (hdim : Module.finrank ℝ H <
       2 * (Fintype.card row - Fintype.card (κ × Fin (degree + 1)) - degree + 1)) :
-    let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
-      a q zf nf haf hqdf mu hupperf
+    let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+      (fun i => q (zf i)) nf mu hupperf
     let S := LinearMap.ker frozen.toLinearMap
     ∃ V : Submodule ℝ S, V.FG ∧
       let control := fun h =>
@@ -141,8 +140,8 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
         (expandedDifferentialEvaluationRankDefect
           degree (Fintype.card (Σ i, Fin (orders i))) rowBase exponent) K) := by
   dsimp only
-  let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
-    a q zf nf haf hqdf mu hupperf
+  let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+    (fun i => q (zf i)) nf mu hupperf
   let S := LinearMap.ker frozen.toLinearMap
   letI normedAddCommGroupS : NormedAddCommGroup S := Submodule.normedAddCommGroup S
   letI : NormedSpace ℝ S := Submodule.normedSpace S
@@ -208,10 +207,10 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
           hat_z hqdt_z mu (fun x => hη.trans_le (z x).2)).domRestrict S) := by
       simpa [frozen, S,
         projectiveNevanlinnaJetLinftyContinuousControl_toLinearMap] using
-        (constrainedNormalizedProjectiveNevanlinnaJet_linftyControl_surjective
-          a q zf (fun x => (z x).1) hqf_inj hqt_z hcross_z
+        (constrainedNormalizedProjectiveCauchyFrozenNevanlinnaTarget_linftyControl_surjective
+          a q (fun i => q (zf i)) hqf_inj (fun x => (z x).1) hqt_z hcross_z
           hupperf (fun x => hη.trans_le (z x).2)
-          nf (fun x : row × ι => orders x.2) haf hat_z hqdf hqdt_z mu hmu)
+          nf (fun x : row × ι => orders x.2) hat_z hqdt_z mu hmu)
     simpa [L, target, heq, heqExisting] using hexisting
   obtain ⟨V, hVfg, hVsurj⟩ :=
     compact_surjectiveControls_have_uniform_finiteProbe_of_continuousOn
