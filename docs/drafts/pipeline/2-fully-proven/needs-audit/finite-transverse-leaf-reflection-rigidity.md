@@ -210,3 +210,29 @@ All axiom-clean (`propext, Classical.choice, Quot.sound`).  The eigenslice hypot
 `hωinf` of `finiteTransverse_reflection_rigidity` are therefore all discharged from the explicit
 two-generator flank series; the only inputs the top-level theorem still reads off the concrete
 `A·P_N` construction are the analytic ones (evenness, differentiability, lower-flank boundedness).
+
+## 2026-07-13 Top-level theorem assembled
+
+The eigenslice module now also carries the assembled top-level statement, axiom-clean:
+
+- `differentiable_expFlankSlice` — every eigenslice is entire (finite sum of scalar multiples of
+  exponentials of a `ℂ`-linear map);
+- `expFlank_reflection_rigidity` — an even two-generator flank series `G = ∑_{n∈S} Gₙ` with `β/α`
+  irrational, bounded on the lower flank `Im z ≤ -w`, is constant.  Internally it instantiates
+  `finiteTransverse_reflection_rigidity`: differentiability is discharged by
+  `differentiable_expFlankSlice`, `hslice` is definitional, `heig` is `expFlankSlice_shiftEig`
+  (with `ω^{↑n:ℤ} = ω^{n:ℕ}` via `zpow_natCast`), and `hωinf` is `expOmega_pow_ne_one`.
+
+Only two genuinely analytic inputs remain as hypotheses of `expFlank_reflection_rigidity` — evenness
+of the concrete series and its lower-flank boundedness — both of which the explicit `A·P_N` guarded
+construction supplies; the `2 → 3` Lean gate is closed modulo discharging those two on the concrete
+family.
+
+The lower-flank boundedness is now itself discharged from a purely combinatorial hypothesis:
+
+- `expFlank_lowerFlank_bounded` — if every flank frequency `mα + nβ ≤ 0`, the series is bounded on the
+  whole lower half-plane by `∑‖aₘₙ‖` (each `‖e^{i(mα+nβ)z}‖ = e^{-(mα+nβ)·Im z} ≤ 1` there);
+- `expFlank_reflection_rigidity_of_freqNonpos` — the assembled statement: an **even** two-generator
+  flank series with irrational `β/α` and all flank frequencies `≤ 0` is constant.  The only remaining
+  non-combinatorial input is **evenness**, a coefficient-symmetry condition of the concrete `A·P_N`
+  family; both are axiom-clean.

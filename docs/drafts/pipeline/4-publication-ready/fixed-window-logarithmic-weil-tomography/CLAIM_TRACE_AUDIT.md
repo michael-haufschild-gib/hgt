@@ -178,6 +178,22 @@ The quantitative equivalence is bundled by
 | the all-epsilon source estimate is equivalent after removing every proper prime power | dyadicWeightedPrimeWindowSubpowerUpper_iff_primeOnly |
 | the displayed prime-only estimate proves RH | riemannHypothesis_of_eventually_dyadicWeightedPrimeOnlyWindow_upper |
 
+## Optimal positive correction of the signed sharp-prime source
+
+The source-facing optimization theorem is bundled by
+`dyadicSharpPrimeMinimalPositiveCorrection_capstone`.
+
+| Manuscript claim | Unconditional Lean declaration |
+|---|---|
+| the negative part of the signed sharp-prime source is an admissible positive correction | dyadicSharpPrimeSourceNegativePart_isPositiveCorrection |
+| the canonical correction equals twice the positive dyadic-window excess | dyadicSharpPrimeSourceNegativePart_eq_two_mul_positiveExcess |
+| every admissible positive correction dominates the canonical correction pointwise | dyadicSharpPrimeSourceNegativePart_le_of_positiveCorrection |
+| the canonical correction has no larger absolute-convergence abscissa than any admissible correction | dyadicSharpPrimeSourceNegativePart_abscissa_le_of_positiveCorrection |
+| at every extended-real threshold, an admissible correction exists below that threshold iff the canonical correction does | exists_dyadicSharpPositiveCorrection_abscissa_le_iff |
+| existence of any all-epsilon correction-energy carrier is equivalent to energy of the canonical correction | exists_dyadicSharpPositiveCorrectionEnergy_iff_negativePartEnergy |
+| an admissible correction of abscissa at most `1+alpha` forces the Xi zero-free half-plane `Re rho <= 1/2+alpha` | xiZeroHalfPlaneBound_of_dyadicSharpPositiveCorrection_abscissa |
+| an admissible correction of abscissa at most one proves RH | riemannHypothesis_of_dyadicSharpPositiveCorrection_abscissa_le_one |
+
 ## Complete critical-Mellin divisor tomography
 
 The stronger intrinsic theorem is bundled by
@@ -203,6 +219,7 @@ The stronger intrinsic theorem is bundled by
   GaloisForLFunctions.RHTower.CCMRectangularNegativeDirichletAbscissa, and
   GaloisForLFunctions.RHTower.CCMRectangularFiniteChannelNonDilution, and
   GaloisForLFunctions.RHTower.CCMSourceDivisorEnergySpectrum, and
+  GaloisForLFunctions.RHTower.CCMSharpPrimeWindowMinimalPositiveCorrection, and
   GaloisForLFunctions.RHTower.CCMInverseTiltedDyadicPrimeTomography, and
   GaloisForLFunctions.RHTower.CCMInverseTiltedCriticalMellinFactorization, and
   GaloisForLFunctions.RHTower.CCMCriticalMellinDivisorTomography.

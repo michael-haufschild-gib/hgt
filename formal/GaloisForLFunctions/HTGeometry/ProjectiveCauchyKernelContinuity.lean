@@ -51,7 +51,9 @@ lemma projectiveResolventContinuousMap_pointwise_dist_le
   | infty =>
       simp only [projectiveResolventContinuousMap, ContinuousMap.coe_mk,
         projectiveCauchyPower_infty, dist_zero_left]
-      positivity
+      rw [norm_zero]
+      exact mul_nonneg (sq_nonneg η⁻¹)
+        (dist_nonneg : 0 ≤ dist x y)
   | coe t =>
       have hxη : η ≤ ‖(t : ℂ) - x.1‖ := by
         exact x.2.trans (le_trans (le_abs_self x.1.im)
@@ -71,12 +73,19 @@ lemma projectiveResolventContinuousMap_pointwise_dist_le
       simp only [projectiveResolventContinuousMap, ContinuousMap.coe_mk,
         projectiveCauchyPower_coe, Nat.zero_add, pow_one]
       rw [inv_sub_inv' hx0 hy0, norm_mul, norm_mul, norm_inv, norm_inv]
-      have hxinv : ‖(t : ℂ) - x.1‖⁻¹ ≤ η⁻¹ := inv_le_inv₀ hη hxη
-      have hyinv : ‖(t : ℂ) - y.1‖⁻¹ ≤ η⁻¹ := inv_le_inv₀ hη hyη
+      have hxinv : ‖(t : ℂ) - x.1‖⁻¹ ≤ η⁻¹ :=
+        (inv_le_inv₀ (hη.trans_le hxη) hη).2 hxη
+      have hyinv : ‖(t : ℂ) - y.1‖⁻¹ ≤ η⁻¹ :=
+        (inv_le_inv₀ (hη.trans_le hyη) hη).2 hyη
       have hxy : ‖((t : ℂ) - y.1) - ((t : ℂ) - x.1)‖ = dist x y := by
-        simp [dist_eq_norm, norm_sub_rev]
+        rw [Subtype.dist_eq, dist_eq_norm]
+        congr 1
+        ring
       rw [hxy]
-      nlinarith [norm_nonneg (x.1 - y.1), inv_pos.mpr hη]
+      calc
+        ‖(t : ℂ) - x.1‖⁻¹ * dist x y * ‖(t : ℂ) - y.1‖⁻¹ ≤
+            η⁻¹ * dist x y * η⁻¹ := by gcongr
+        _ = η⁻¹ ^ 2 * dist x y := by ring
 
 /-- The complete projective resolvent varies continuously in sup norm with its upper node. -/
 theorem continuous_projectiveResolventContinuousMap
@@ -86,7 +95,10 @@ theorem continuous_projectiveResolventContinuousMap
   apply (LipschitzWith.of_dist_le_mul (K := C) ?_).continuous
   intro x y
   rw [dist_eq_norm]
-  apply (ContinuousMap.norm_le (mul_nonneg (sq_nonneg η⁻¹) (dist_nonneg))).2
+  change ‖projectiveResolventContinuousMap η hη x -
+      projectiveResolventContinuousMap η hη y‖ ≤ η⁻¹ ^ 2 * dist x y
+  apply (ContinuousMap.norm_le _
+    (mul_nonneg (sq_nonneg η⁻¹) (dist_nonneg))).2
   intro t
   simpa [C, dist_eq_norm] using
     projectiveResolventContinuousMap_pointwise_dist_le η hη x y t
@@ -133,12 +145,17 @@ theorem continuous_projectiveCauchyJetContinuousMap
   apply ContinuousMap.continuous_of_continuous_uncurry
   apply continuous_pi
   intro s
+  change Continuous (fun p : (ι → UpperNodeAtLeast η) × OnePoint ℝ =>
+    projectiveCauchyPower (p.1 s.1).1 s.2 p.2)
   have hx : Continuous
       (fun p : (ι → UpperNodeAtLeast η) × OnePoint ℝ => p.1 s.1) := by
     fun_prop
-  exact continuous_eval.comp
-    (((continuous_projectiveCauchyPowerContinuousMap η hη s.2).comp
-      hx).prodMk continuous_snd)
+  have hp : Continuous (fun p : (ι → UpperNodeAtLeast η) × OnePoint ℝ =>
+      projectiveCauchyPowerContinuousMap η hη s.2 (p.1 s.1) p.2) :=
+    continuous_eval.comp
+      (((continuous_projectiveCauchyPowerContinuousMap η hη s.2).comp
+        hx).prodMk continuous_snd)
+  simpa only [projectiveCauchyPowerContinuousMap_apply] using hp
 
 /-- The canonical `L¹` class of the finite projective Cauchy-jet kernel. -/
 def projectiveCauchyJetLpKernel

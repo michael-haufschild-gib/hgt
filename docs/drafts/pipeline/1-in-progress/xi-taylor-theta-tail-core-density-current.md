@@ -791,6 +791,59 @@ the finite-section translation defect: the terms lost when `exp(iaz)` and the tr
 transform are both truncated to the canonical degree schedule.  Controlling that defect requires
 the exact triangular cosine/sine coefficient relation, not another source positivity estimate.
 
+That triangular relation is now exact on paper and in Lean.  Write
+
+```text
+C_d(z,x)=sum_(0<=j<=d) (-1)^j (zx)^(2j)/(2j)!,
+S_d(z,x)=sum_(0<=j<d)  (-1)^j (zx)^(2j+1)/(2j+1)!.
+```
+
+Then there is a unique top-edge polynomial `E_d(z;x,a)` such that
+
+```text
+C_d(z,x+a)=C_d(z,x)C_d(z,a)-S_d(z,x)S_d(z,a)-E_d(z;x,a). (12d.9a)
+```
+
+It has no odd coefficients and no even coefficient through degree `2d`.  More precisely, for
+`d<r<=2d`,
+
+```text
+[z^(2r)]E_d=(-1)^r(
+  sum_(p+q=r, p,q<=d) x^(2p)a^(2q)/((2p)!(2q)!)
+ +sum_(p+q=r-1, p,q<d) x^(2p+1)a^(2q+1)/((2p+1)!(2q+1)!)).  (12d.9b)
+```
+
+For `r<=d`, the unrestricted even--even and odd--odd binomial splits add to
+`(x+a)^(2r)/(2r)!`; this is the exact cancellation that removes the entire low triangle.  Hence,
+for `x,a>=0`,
+
+```text
+|E_d(z;x,a)|
+ <= sum_(r>d) (|z|(x+a))^(2r)/(2r)!,                    (12d.9c)
+|partial_z E_d(z;x,a)|
+ <= (x+a) sum_(r>d) (|z|(x+a))^(2r-1)/(2r-1)!.         (12d.9d)
+```
+
+The completion-compensated core therefore obeys the exact two-component law
+
+```text
+z^2 H_d(z,x+a)
+ =(z^2+1/4)(C_(d+1)(z,x)C_(d+1)(z,a)
+            -S_(d+1)(z,x)S_(d+1)(z,a)
+            -E_(d+1)(z;x,a))-1/4.                     (12d.9e)
+```
+
+Lean proves `(12d.9a)` and `(12d.9e)` in
+`XiCTaylorThetaTailFiniteTranslation`; the formal top edge is defined as the product minus its
+power-series truncation and is proved coefficientwise zero below the cutoff, with the corresponding
+one-degree-lower derivative support law.  `XiCTaylorThetaTailFiniteTranslationCurrent` also proves
+the exact oriented-current subtraction formula, retaining both mixed value--derivative currents and
+the edge self-current.  This completes the algebraic part of the requested finite translation
+theorem.  It does **not** complete the current estimate: the remaining gate is to prove that exact
+three-term edge current has integrated sum `o(n)|P_(2d+3)(z_n)|^2` on the anisotropic mesh.
+Estimating its value and derivative factors separately before the signed Haar summation would
+discard exactly the cancellation required near scheduled small values of `P`.
+
 `[CONJECTURE]` The remaining arithmetic possibility is a *polarized jump energy*: integrate in a
 diagonal or difference coordinate before resolving the jumps, so that paired jumps at
 `(log m,log n)` contribute a square or a summable top-edge defect rather than the asymmetric seam.
@@ -1172,6 +1225,11 @@ log-convexity and ratio monotonicity are
   super-exponentially to the zeros of the limiting function.  It validates a moving top-edge
   analysis for truncation artifacts, but it cannot sign a bounded anisotropic fibre independently
   of the limiting theta transform.  Primary source: <https://arxiv.org/abs/1609.05965>.
+- DeFranco derives positive integral formulas and integration-by-parts recurrences for the Xi
+  Taylor coefficients.  Those relations control the scalar coefficient sequence; they contain no
+  finite logarithmic-translation law and no cancellation of the mixed value--derivative current
+  created by `E_d`.  They therefore complement `(12d.9b)` but do not discharge its oriented-current
+  estimate.  Primary source: <https://arxiv.org/abs/1907.08984>.
 - The classical theta-kernel formulas give positivity and modular balance of `Phi`, the Mellin
   representation of `xi`, the Fourier/cosine representation of `Xi`, and the raw even-moment
   formula.  These relations are present in Lean.

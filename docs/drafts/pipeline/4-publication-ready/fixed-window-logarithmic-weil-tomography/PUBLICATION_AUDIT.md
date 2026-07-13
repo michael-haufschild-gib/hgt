@@ -24,6 +24,10 @@ of the Riemann hypothesis.
     one quantitative theorem for every `alpha >= 0`, with RH as the exact zero endpoint.
   - Arbitrary pointwise-summable nonnegative channel families are covered at their aggregate: the
     aggregate abscissa dominates the carrier abscissa and its critical bound proves RH.
+  - The signed sharp-prime source now has a formalized least admissible positive correction,
+    exactly twice the displayed dyadic-window overshoot.  Pointwise minimality, abscissa
+    minimality, exact feasible-abscissa sublevel sets, quantitative zero-free transfer, and the
+    critical RH corollary are all unconditional Lean theorems.
   - The manuscript capstones compile from the concrete Xi divisor, shifted-zeta carrier, Landau
     transfer, and global analytic remainder; there is no abstract proposition standing in for the
     hard input.
@@ -70,6 +74,11 @@ of the Riemann hypothesis.
     the bound one proves RH.  Exact source splitting and pointwise control of one channel are
     unnecessary.  At every exponent this is equivalent to the corresponding
     horizontal zero-free region; the RH criterion is exactly its zero endpoint.
+  - On the explicit prime-source side the obligation is optimal inside the full cone of
+    coefficientwise-positive corrections: every such realization must dominate the canonical
+    correction `2E`, and no admissible auxiliary carrier can have smaller absolute-convergence
+    abscissa.  Thus the remaining target is positively identified as
+    `sigma_abs(2E) <= 1`, not merely as failure of alternative finite mechanisms.
   - The remaining prime/semilocal line-selection theorem is open: one must prove holomorphy of the
     regularized critical-Mellin defect on `Re(u)>-1/2`, equivalently of the complete
     inverse-tilted source on `Re(s)>1`, or furnish the corresponding critical positive carrier or
@@ -80,7 +89,8 @@ of the Riemann hypothesis.
 - Exposition and standalone quality: 19/20
   - Definitions, multiplicity-safe continuation, Landau pole bound, completeness, exact growth,
     universal abscissa, finite split-conservation and summable-family aggregate laws,
-    the quantitative source--divisor--energy spectrum, order-ideal carrier spectrum,
+    the quantitative source--divisor--energy spectrum, the least positive source correction,
+    order-ideal carrier spectrum,
     amplitude--thickness corollaries, observable tomography, screw identity, literature boundary,
     complete prime-source divisor equivalence, and limitations are included.
   - The note is concise; a journal may request expansion of standard zero-count and vertical-zeta

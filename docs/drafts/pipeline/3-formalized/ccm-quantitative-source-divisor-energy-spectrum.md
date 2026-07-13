@@ -62,6 +62,25 @@ This is the valid infinite-channel strengthening of finite non-dilution.  A fini
 conserves the carrier abscissa in a maximum channel.  An unrestricted pointwise-summable family
 conserves it in its aggregate coefficient.
 
+## Optimal source-side correction
+
+The companion module
+
+```text
+GaloisForLFunctions.RHTower.CCMSharpPrimeWindowMinimalPositiveCorrection
+```
+
+proves that the negative part of the signed dyadic sharp-prime source is the pointwise least
+nonnegative correction making that source nonnegative.  It equals twice the explicit
+prime-window positive excess.  Every admissible correction dominates it pointwise and in
+absolute-convergence abscissa, and the attainable correction-abscissa sublevel sets are exactly
+those of the canonical correction.  Hence an admissible correction of abscissa at most
+`1+alpha` forces the quantitative Xi half-plane bound; at abscissa one it proves RH.
+
+This converts the correction no-go into a positive carrier theorem: every coefficientwise-
+positive source realization must carry the canonical negative channel, and the remaining
+arithmetic target is its critical abscissa bound.
+
 ## Formal boundary
 
 The module proves equivalences and carrier obligations.  It does not prove the endpoint analytic
@@ -83,6 +102,9 @@ or one of the equivalent endpoint holomorphy/negative-energy statements.
 - [x] arbitrary pointwise-summable aggregate conservation
 - [x] aggregate zero-free-region theorem
 - [x] aggregate RH endpoint
+- [x] least positive sharp-source correction
+- [x] exact feasible correction-abscissa law
+- [x] correction-abscissa zero-free transfer
 - [x] unconditional Lean proof
 - [ ] primary-literature novelty audit of the combined theorem surface
 - [ ] source construction proving the critical endpoint

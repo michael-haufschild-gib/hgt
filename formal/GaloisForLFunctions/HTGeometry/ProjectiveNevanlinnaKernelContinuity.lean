@@ -33,7 +33,8 @@ def nevanlinnaUpperNodeImage (q : ℂ → ℂ) (η : ℝ)
 theorem continuous_nevanlinnaUpperNodeImage
     {q : ℂ → ℂ} {η : ℝ} (hq : Continuous q) :
     Continuous (nevanlinnaUpperNodeImage q η) := by
-  fun_prop
+  simpa only [nevanlinnaUpperNodeImage] using
+    (hq.comp continuous_subtype_val).subtype_mk (fun z => z.2)
 
 /-- The forward triangular projective Nevanlinna-jet expansion.  It is defined without any
 regularity assumption on the diagonal. -/
@@ -48,7 +49,7 @@ def projectiveNevanlinnaJetExpansionColumn
 on the entire projective parameter line. -/
 theorem continuous_projectiveNevanlinnaJetExpansionColumn
     {ι : Type*} [Fintype ι]
-    {a q : ℂ → ℂ} (ha : ContDiff ℂ ⊤ a) (hq : ContDiff ℂ ⊤ q)
+    {a q : ℂ → ℂ}
     (η : ℝ) (hη : 0 < η) (n : ι → ℕ)
     (z : ι → NevanlinnaUpperNodeAtLeast q η) :
     Continuous (projectiveNevanlinnaJetExpansionColumn
@@ -64,20 +65,20 @@ theorem continuous_projectiveNevanlinnaJetExpansionColumn
 parameter line. -/
 def projectiveNevanlinnaJetExpansionContinuousMap
     {ι : Type*} [Fintype ι]
-    {a q : ℂ → ℂ} (ha : ContDiff ℂ ⊤ a) (hq : ContDiff ℂ ⊤ q)
+    {a q : ℂ → ℂ}
     (η : ℝ) (hη : 0 < η) (n : ι → ℕ)
     (z : ι → NevanlinnaUpperNodeAtLeast q η) :
     C(OnePoint ℝ, (Σ i, Fin (n i)) → ℂ) :=
   ⟨projectiveNevanlinnaJetExpansionColumn a q (fun i => (z i).1) n,
-    continuous_projectiveNevanlinnaJetExpansionColumn ha hq η hη n z⟩
+    continuous_projectiveNevanlinnaJetExpansionColumn η hη n z⟩
 
 @[simp]
 theorem projectiveNevanlinnaJetExpansionContinuousMap_apply
     {ι : Type*} [Fintype ι]
-    {a q : ℂ → ℂ} (ha : ContDiff ℂ ⊤ a) (hq : ContDiff ℂ ⊤ q)
+    {a q : ℂ → ℂ}
     (η : ℝ) (hη : 0 < η) (n : ι → ℕ)
     (z : ι → NevanlinnaUpperNodeAtLeast q η) (t : OnePoint ℝ) :
-    projectiveNevanlinnaJetExpansionContinuousMap ha hq η hη n z t =
+    projectiveNevanlinnaJetExpansionContinuousMap (a := a) (q := q) η hη n z t =
       projectiveNevanlinnaJetExpansionColumn a q (fun i => (z i).1) n t :=
   rfl
 
@@ -87,11 +88,16 @@ theorem continuous_projectiveNevanlinnaJetExpansionContinuousMap
     {ι : Type*} [Fintype ι]
     {a q : ℂ → ℂ} (ha : ContDiff ℂ ⊤ a) (hq : ContDiff ℂ ⊤ q)
     (η : ℝ) (hη : 0 < η) (n : ι → ℕ) :
-    Continuous (projectiveNevanlinnaJetExpansionContinuousMap ha hq η hη n) := by
+    Continuous (projectiveNevanlinnaJetExpansionContinuousMap
+      (a := a) (q := q) η hη n) := by
   apply ContinuousMap.continuous_of_continuous_uncurry
   apply continuous_pi
   intro s
-  exact continuous_finsetSum Finset.univ fun k _ => by
+  change Continuous (fun p :
+      (ι → NevanlinnaUpperNodeAtLeast q η) × OnePoint ℝ =>
+    ∑ k : Fin (n s.1), nevanlinnaJetCoeff a q s.2 k (p.1 s.1).1 *
+      projectiveCauchyPower (q (p.1 s.1).1) k p.2)
+  exact continuous_finsetSum (Finset.univ : Finset (Fin (n s.1))) fun k _ => by
     have hz : Continuous
         (fun p : (ι → NevanlinnaUpperNodeAtLeast q η) × OnePoint ℝ =>
           ((p.1 s.1).1 : ℂ)) := by
@@ -104,25 +110,30 @@ theorem continuous_projectiveNevanlinnaJetExpansionContinuousMap
         (fun p : (ι → NevanlinnaUpperNodeAtLeast q η) × OnePoint ℝ =>
           nevanlinnaUpperNodeImage q η (p.1 s.1)) :=
       (continuous_nevanlinnaUpperNodeImage hq.continuous).comp (by fun_prop)
+    have hp' : Continuous
+        (fun p : (ι → NevanlinnaUpperNodeAtLeast q η) × OnePoint ℝ =>
+          projectiveCauchyPowerContinuousMap η hη k
+            (nevanlinnaUpperNodeImage q η (p.1 s.1)) p.2) :=
+      continuous_eval.comp
+        (((continuous_projectiveCauchyPowerContinuousMap η hη k).comp hx).prodMk
+          continuous_snd)
     have hp : Continuous
         (fun p : (ι → NevanlinnaUpperNodeAtLeast q η) × OnePoint ℝ =>
           projectiveCauchyPower (q (p.1 s.1).1) k p.2) := by
-      simpa only [projectiveCauchyPowerContinuousMap_apply] using
-        continuous_eval.comp
-          (((continuous_projectiveCauchyPowerContinuousMap η hη k).comp hx).prodMk
-            continuous_snd)
+      simpa only [projectiveCauchyPowerContinuousMap_apply,
+        nevanlinnaUpperNodeImage] using hp'
     exact hc.mul hp
 
 /-- The canonical `L¹` class of the genuine forward Nevanlinna jet kernel. -/
 def projectiveNevanlinnaJetExpansionLpKernel
     {ι : Type*} [Fintype ι]
-    {a q : ℂ → ℂ} (ha : ContDiff ℂ ⊤ a) (hq : ContDiff ℂ ⊤ q)
+    {a q : ℂ → ℂ}
     (η : ℝ) (hη : 0 < η) (n : ι → ℕ)
     (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu]
     (z : ι → NevanlinnaUpperNodeAtLeast q η) :
     Lp ((Σ i, Fin (n i)) → ℂ) 1 mu :=
   ContinuousMap.toLp 1 mu ℝ
-    (projectiveNevanlinnaJetExpansionContinuousMap ha hq η hη n z)
+    (projectiveNevanlinnaJetExpansionContinuousMap (a := a) (q := q) η hη n z)
 
 /-- Genuine forward Nevanlinna jet kernels vary continuously as `L¹` classes. -/
 theorem continuous_projectiveNevanlinnaJetExpansionLpKernel
@@ -130,34 +141,36 @@ theorem continuous_projectiveNevanlinnaJetExpansionLpKernel
     {a q : ℂ → ℂ} (ha : ContDiff ℂ ⊤ a) (hq : ContDiff ℂ ⊤ q)
     (η : ℝ) (hη : 0 < η) (n : ι → ℕ)
     (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu] :
-    Continuous (projectiveNevanlinnaJetExpansionLpKernel ha hq η hη n mu) := by
+    Continuous (projectiveNevanlinnaJetExpansionLpKernel
+      (a := a) (q := q) η hη n mu) := by
   exact (ContinuousMap.toLp 1 mu ℝ).continuous.comp
     (continuous_projectiveNevanlinnaJetExpansionContinuousMap ha hq η hη n)
 
 /-- The forward expansion is `L¹` for every finite projective measure. -/
 theorem memLp_projectiveNevanlinnaJetExpansionColumn
     {ι : Type*} [Fintype ι]
-    {a q : ℂ → ℂ} (ha : ContDiff ℂ ⊤ a) (hq : ContDiff ℂ ⊤ q)
+    {a q : ℂ → ℂ}
     (η : ℝ) (hη : 0 < η) (n : ι → ℕ)
     (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu]
     (z : ι → NevanlinnaUpperNodeAtLeast q η) :
     MemLp (projectiveNevanlinnaJetExpansionColumn a q (fun i => (z i).1) n) 1 mu := by
-  exact (continuous_projectiveNevanlinnaJetExpansionColumn ha hq η hη n z)
+  exact (continuous_projectiveNevanlinnaJetExpansionColumn η hη n z)
     |>.memLp_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
 
 /-- The continuous-function `L¹` class is the class used by the direct Bochner control. -/
 theorem projectiveNevanlinnaJetExpansionLpKernel_eq_memLpToLp
     {ι : Type*} [Fintype ι]
-    {a q : ℂ → ℂ} (ha : ContDiff ℂ ⊤ a) (hq : ContDiff ℂ ⊤ q)
+    {a q : ℂ → ℂ}
     (η : ℝ) (hη : 0 < η) (n : ι → ℕ)
     (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu]
     (z : ι → NevanlinnaUpperNodeAtLeast q η) :
-    projectiveNevanlinnaJetExpansionLpKernel ha hq η hη n mu z =
-      (memLp_projectiveNevanlinnaJetExpansionColumn ha hq η hη n mu z).toLp
+    projectiveNevanlinnaJetExpansionLpKernel (a := a) (q := q) η hη n mu z =
+      (memLp_projectiveNevanlinnaJetExpansionColumn η hη n mu z).toLp
         (projectiveNevanlinnaJetExpansionColumn a q (fun i => (z i).1) n) := by
   apply Lp.ext
   exact (ContinuousMap.coeFn_toLp mu
-    (projectiveNevanlinnaJetExpansionContinuousMap ha hq η hη n z)).trans
+    (projectiveNevanlinnaJetExpansionContinuousMap
+      (a := a) (q := q) η hη n z)).trans
       (MemLp.coeFn_toLp _).symm
 
 /-- **Projective Nevanlinna control continuity.** On a uniformly upper source-node packet, the
@@ -171,15 +184,16 @@ theorem continuous_projectiveNevanlinnaJetExpansionLinftyBochnerControl
     Continuous (fun z : ι → NevanlinnaUpperNodeAtLeast q η =>
       linftyBochnerControl mu
         (projectiveNevanlinnaJetExpansionColumn a q (fun i => (z i).1) n)
-        (memLp_projectiveNevanlinnaJetExpansionColumn ha hq η hη n mu z)) := by
+        (memLp_projectiveNevanlinnaJetExpansionColumn η hη n mu z)) := by
   apply continuous_linftyBochnerControl_of_continuous_toLp
   have heq : (fun z : ι → NevanlinnaUpperNodeAtLeast q η =>
-      (memLp_projectiveNevanlinnaJetExpansionColumn ha hq η hη n mu z).toLp
+      (memLp_projectiveNevanlinnaJetExpansionColumn η hη n mu z).toLp
         (projectiveNevanlinnaJetExpansionColumn a q (fun i => (z i).1) n)) =
-      projectiveNevanlinnaJetExpansionLpKernel ha hq η hη n mu := by
+      projectiveNevanlinnaJetExpansionLpKernel
+        (a := a) (q := q) η hη n mu := by
     funext z
     exact (projectiveNevanlinnaJetExpansionLpKernel_eq_memLpToLp
-      ha hq η hη n mu z).symm
+      η hη n mu z).symm
   rw [heq]
   exact continuous_projectiveNevanlinnaJetExpansionLpKernel ha hq η hη n mu
 

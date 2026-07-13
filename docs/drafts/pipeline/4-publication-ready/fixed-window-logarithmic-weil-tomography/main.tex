@@ -32,7 +32,7 @@
 \newcommand{\supp}{\operatorname{supp}}
 
 \title{Prime-Source--Divisor--Energy Tomography for the Riemann Xi Function:\\
-Quantitative Half-Plane Equivalence and Positive-Channel Conservation}
+Exact Half-Plane Spectrum and Optimal Positive Carriers}
 \author{Michael Haufschild \and GPT 5.6 Sol \and Fable 5 \and Grok 4.5}
 \date{}
 
@@ -41,26 +41,14 @@ Quantitative Half-Plane Equivalence and Positive-Channel Conservation}
 \maketitle
 
 \begin{abstract}
-Let $A_L(s)=(1-e^{-Ls})/s$ and define the explicit inverse-tilted dyadic prime statistic
-\[
- T_-(n)=\sum_{n/2<k\le n}\frac{\Lambda(k)}{\sqrt{k}}\frac{k}{n},
- \qquad
- P_-(n)=2A_{\log2}(3/2)\sqrt n-2T_-(n).
-\]
-Its ordinary Dirichlet series has a canonical continuation $\cS_-$, meromorphic on
-$\Re s>\frac12$, whose complete simple-pole divisor is
-$s=\rho+\frac12$, where $\XiR(\rho)=0$.  Normalized residues recover the analytic multiplicity
-of every nontrivial xi zero.  The intrinsic critical-Mellin defect
-\[
- \widetilde D(u)=\frac1{u+1}+\frac{Z_*'(u+1)}{Z_*(u+1)}
-\]
-is meromorphic on $\Re u>-1$, has complete pole divisor $u=\rho-1$, and has residue
-$m(\rho)$ at that pole.
+We construct an ordinary Dirichlet series from one explicit inverse-tilted dyadic von Mangoldt
+window.  Its canonical continuation $\cS_-$ is meromorphic on $\Re s>\frac12$; its simple poles
+are exactly $s=\rho+\frac12$, where $\XiR(\rho)=0$, and normalized residues recover the analytic
+multiplicity.  The intrinsic Connes critical-Mellin defect has the corresponding complete pole
+divisor $u=\rho-1$, again with multiplicity as residue.
 
-For a fixed rectangular Weil window $L>0$, let $q_{L,N}^-$ be the negative part of its
-logarithmically sampled tail, and let $\delta_*$ be the supremal horizontal displacement of the
-xi divisor.  The principal result is quantitative.  For every $\alpha\ge0$, the following are
-equivalent:
+Fix any rectangular Weil width $L>0$, and let $q_{L,N}^-$ be the negative part of an admissible
+logarithmically sampled tail.  For every $\alpha\ge0$ we prove the exact equivalence
 \[
 \begin{gathered}
  \XiR(\rho)=0\Longrightarrow \Re\rho\le\tfrac12+\alpha,\\
@@ -70,29 +58,20 @@ equivalent:
  \quad\text{for every }\varepsilon>0.
 \end{gathered}
 \]
-At $\alpha=0$ these conditions are equivalent to the Riemann hypothesis.  Under false RH,
-\[
- \sigma_{\rm abs}(q_{L,N}^-)=1+\delta_*.
-\]
-Every finite exact nonnegative split conserves this abscissa as the maximum of its channel
-abscissae.  Every finite positive cover has a channel with at least the carrier abscissa.  For an
-arbitrary pointwise-summable nonnegative channel family with aggregate $b\ge q_{L,N}^-$, the
-corresponding sharp statement is aggregate conservation:
-\[
- \sigma_{\rm abs}(q_{L,N}^-)\le\sigma_{\rm abs}(b).
-\]
-Consequently, an aggregate bound $\sigma_{\rm abs}(b)\le1+\alpha$ forces the same xi zero-free
-half-plane, and the bound $\sigma_{\rm abs}(b)\le1$ proves RH.  Thus finite channelization cannot
-dilute the transverse exponent, while unrestricted summable channelization must retain it in its
-aggregate.  A completely explicit source corollary shows that RH follows from all-epsilon
-Dirichlet energy of only the positive overshoot of one dyadic von Mangoldt window; the stronger
-pointwise version reduces, with logarithmic loss, to genuine primes alone.
+At $\alpha=0$ each condition is equivalent to RH.  If RH is false, then
+$\sigma_{\rm abs}(q_{L,N}^-)=1+\delta_*$, where $\delta_*$ is the maximal horizontal divisor
+displacement.  Finite exact nonnegative splits conserve this abscissa as their maximum channel
+abscissa; arbitrary pointwise-summable positive covers conserve it in their aggregate.
 
-The paper also proves cofinal fixed-window Weil completeness, the exact one-sided exponent
-spectrum $[\delta_*,\infty)$, multiplicity-exact tomography of the actual Weil sequence, and a
-fixed-width xi screw-curvature identity.  All stated results are formalized unconditionally in
-Lean~4 without project axioms.  The paper does not prove RH: the remaining theorem is a genuine
-source-orientation statement forcing any one of the equivalent endpoint conditions above.
+For the signed sharp-prime coefficient
+$c(n)=4(1-2^{-1/2})\sqrt n-2\sum_{n/2<k\le n}\Lambda(k)/\sqrt k$, we further prove that
+$c^-=2E$ is the least nonnegative correction making $c$ coefficientwise nonnegative.  Every
+admissible correction $a$ therefore satisfies $c^-\le a$ and
+$\sigma_{\rm abs}(c^-)\le\sigma_{\rm abs}(a)$; the converse choice $a=c^-$ makes this optimal at
+every abscissa threshold.  An admissible correction of abscissa at most $1+\alpha$ forces the
+same xi zero-free half-plane, and abscissa at most one proves RH.  All claims are formalized
+unconditionally in Lean~4.  The paper does not prove the remaining critical estimate
+$\sigma_{\rm abs}(c^-)\le1$ and therefore does not prove RH.
 \end{abstract}
 
 \noindent\textbf{2020 Mathematics Subject Classification.}
@@ -170,6 +149,18 @@ carrier.  An aggregate bound by $1+\alpha$ forces the corresponding horizontal z
 and the critical aggregate bound proves RH.  This summable-family theorem is the maximal
 channel-independent form of positive non-dilution used in the paper.
 
+The source-facing analogue is sharper because the correction cone has a least element.  For the
+signed dyadic sharp-prime coefficient $c(n)$, call $a(n)$ admissible when $a\ge0$ and $c+a\ge0$
+coefficientwise.  We prove that $c^-$ is the least admissible correction, that
+$c^-=2E$ for the explicit positive window overshoot $E$, and that every admissible correction
+has absolute-convergence abscissa at least that of $c^-$.  Thus positive auxiliary channels do
+not soften the arithmetic endpoint: a coefficientwise-positive Connes/Landau implementation
+must pay the canonical overshoot channel.  Conversely the canonical correction itself is
+admissible, so the attainable correction-abscissa sublevel sets are determined exactly by this
+one sequence.  This turns the earlier sufficient prime-window condition into an optimality law
+for the entire positive-correction architecture, while leaving the critical estimate itself as
+the RH-bearing step.
+
 Exceptional sets and fractional selectors are special coordinates, and RH is the zero endpoint.
 A second reconstruction theorem attaches a cutoff-free meromorphic continuation to the complete
 actual Weil sequence and proves multiplicity-exact divisor tomography.  Companion theorems give
@@ -181,7 +172,8 @@ horizontal zero-free region, not only RH.
 The candidate novelty lies in the quantitative source--divisor--energy synthesis: fixed positive
 width, arithmetic logarithmic sampling, cofinal divergence, the exact one-sided spectrum,
 universal negative-channel abscissae, finite maximum conservation, summable-family aggregate
-conservation, and observable multiplicity-exact pole tomography.  The inverse-tilted source
+conservation, the least sharp-source positive correction, and observable multiplicity-exact pole
+tomography.  The inverse-tilted source
 tomography is classified separately as bridge infrastructure: it is a sharpened application of
 the Euler logarithmic derivative, bounded-variation quadrature, and meromorphic divisor calculus.
 Landau's theorem, Weil positivity, shifted-zeta continuation, and screw functions are likewise
@@ -1323,6 +1315,60 @@ Also let
 \]
 be the genuine-prime part of the same window.
 
+Set
+\[
+ c(n)=4\left(1-\frac1{\sqrt2}\right)\sqrt n-2W(n).
+ \tag{7.30}
+\]
+A sequence $a:\N\to\R$ is an \emph{admissible positive correction} of $c$ when
+\[
+ a(n)\ge0,
+ \qquad c(n)+a(n)\ge0
+ \qquad(n\ge1).
+ \tag{7.31}
+\]
+
+\begin{theorem}[Optimal positive correction for the sharp-prime source]
+\label{thm:minimal-sharp-correction}
+The canonical negative channel $c^-$ is admissible and
+\[
+ c^-(n)=2E(n).
+ \tag{7.32}
+\]
+It is the least admissible correction in pointwise order.  More precisely, every admissible
+$a$ satisfies
+\[
+ c^-(n)\le a(n)\quad(n\ge1),
+ \qquad
+ \sigma_{\rm abs}(c^-)\le\sigma_{\rm abs}(a).
+ \tag{7.33}
+\]
+For every $x\in\overline{\R}$, there exists an admissible correction $a$ with
+$\sigma_{\rm abs}(a)\le x$ if and only if $\sigma_{\rm abs}(c^-)\le x$.
+
+If $\alpha\ge0$ and one admissible correction satisfies
+$\sigma_{\rm abs}(a)\le1+\alpha$, then every nontrivial xi zero satisfies
+$\Re\rho\le\frac12+\alpha$.  In particular, an admissible correction with abscissa at most one
+proves RH.  The same conclusion follows when the Dirichlet series of $a$ converges absolutely at
+every real abscissa $1+\varepsilon$, $\varepsilon>0$.
+\end{theorem}
+
+\begin{proof}
+For a real number $y$, its negative part $y^-=\max\{-y,0\}$ is the least $b\ge0$ for which
+$y+b\ge0$.  Applying this pointwise to $y=c(n)$ proves admissibility and minimality.  Formula
+\textup{(7.32)} follows immediately from \textup{(7.28)} and \textup{(7.30)}.  Comparison of
+nonnegative Dirichlet series gives the abscissa inequality in \textup{(7.33)}.  Since $c^-$ is
+itself admissible, the asserted equivalence of abscissa sublevel sets follows in both directions.
+
+If $\sigma_{\rm abs}(a)\le1+\alpha$, then for every $\varepsilon>0$ the series of $a$ converges
+absolutely at $1+\alpha+\varepsilon$.  Since $2E=c^-\le a$, the same holds for $E$.
+The one-abscissa Landau transfer gives
+$\Re\rho\le\frac12+\alpha+\varepsilon$ for every xi zero; letting
+$\varepsilon\downarrow0$ proves the quantitative assertion.  At $\alpha=0$, functional-equation
+symmetry gives RH.  The all-epsilon formulation is the same argument without first passing
+through the abscissa.
+\end{proof}
+
 \begin{corollary}[Explicit dyadic source endpoints]
 \label{cor:explicit-source-endpoints}
 Each of the following conditions implies RH.
@@ -1330,14 +1376,14 @@ Each of the following conditions implies RH.
 \item For every $\varepsilon>0$,
 \[
  \sum_{n\ge1}\frac{E(n)}{n^{1+\varepsilon}}<\infty.
- \tag{7.30}
+ \tag{7.34}
 \]
 \item For every $\varepsilon>0$ there are $C_\varepsilon\ge0$ and $N_\varepsilon$ such that
 \[
  P(n)\le2\left(1-\frac1{\sqrt2}\right)\sqrt n
        +C_\varepsilon n^\varepsilon
  \qquad(n\ge N_\varepsilon).
- \tag{7.31}
+ \tag{7.35}
 \]
 \end{enumerate}
 \end{corollary}
@@ -1348,8 +1394,8 @@ adding that correction gives a nonnegative Dirichlet series at every abscissa
 $1+\varepsilon$.  The quantitative Landau argument excludes every shifted xi pole with real
 part greater than one, hence proves RH.  For (ii), the proper-prime-power contribution to $W(n)$
 is nonnegative and $O(\log n)$, hence $O_\varepsilon(n^\varepsilon)$ for every
-$\varepsilon>0$.  Thus (7.31) lifts to the corresponding all-epsilon bound for $W(n)$, which
-implies (7.30).
+$\varepsilon>0$.  Thus (7.35) lifts to the corresponding all-epsilon bound for $W(n)$, which
+implies (7.34).
 \end{proof}
 
 \section{Implications for the Connes route}
@@ -1368,6 +1414,19 @@ statements proves RH.  A Connes or
 Connes--Consani realization may obtain this through a positive relative trace, a Sonin
 compression, or a cofinal near-radical section, but the resulting scalar channel must agree with
 \textup{(7.14)}--\textup{(7.17)} and retain the multiplicity normalization \textup{(7.11)}.
+
+Theorem~\ref{thm:minimal-sharp-correction} makes the corresponding positivity obligation
+canonical.  If a semilocal construction corrects the signed sharp-prime coefficient $c$ by any
+nonnegative source channel $a$ so that $c+a\ge0$, then it is forced to carry
+$c^-=2E$ pointwise.  Its analytic cost can therefore never be smaller than
+$\sigma_{\rm abs}(c^-)$.  Extra positive channels, alternate allocations, and positive operator
+majorants cannot bypass this payment; at best they realize the least correction itself.  The
+critical target is consequently the positive theorem
+\[
+ \sigma_{\rm abs}(c^-)\le1.
+\]
+This single arithmetic estimate proves RH and is optimal among all coefficientwise-positive
+corrections of the exact signed source.
 
 The rectangular theorem gives a complementary positive-allocation route.  It is not necessary to
 establish positivity on an unspecified compact family, nor to match finitely many spectral
@@ -1471,7 +1530,9 @@ formalized in \texttt{CCMInverseTiltedDyadicPrimeTomography.lean}; the intrinsic
 collected by \texttt{CCMUnconditionalFoundation.lean}.
 
 The explicit source endpoints in Corollary~\ref{cor:explicit-source-endpoints} are formalized in
-the two sharp-prime-window modules identified in the supplementary claim-trace table.
+the sharp-prime-window modules identified in the supplementary claim-trace table.  The least
+positive-correction theorem, its exact feasible-abscissa law, and its quantitative Xi transfer are
+formalized in \texttt{CCMSharpPrimeWindowMinimalPositiveCorrection.lean}.
 
 Within the principal module, separate declarations prove the two shifted holomorphy equivalences,
 the negative-energy equivalence, summable-family aggregate domination, the aggregate zero-free
@@ -1491,8 +1552,12 @@ holomorphy of $\cS_-$ on $\Re s>1$, or an operator theorem forcing that statemen
 therefore does not prove RH.  It reduces the remaining source problem to analytic continuation of
 the actual polar--prime critical-Mellin defect and gives an independent universal energy geometry
 for every fixed rectangular Weil window.  Corollary~\ref{cor:explicit-source-endpoints} gives a
-fully arithmetic sufficient endpoint: prove the all-epsilon positive-excess energy (7.30), or the
-stronger prime-only estimate (7.31).  Neither estimate is established here.
+fully arithmetic sufficient endpoint: prove the all-epsilon positive-excess energy (7.34), or the
+stronger prime-only estimate (7.35).  Theorem~\ref{thm:minimal-sharp-correction} shows that the
+first condition is not an arbitrary choice of majorant: $2E$ is the pointwise least nonnegative
+correction of the exact signed source, and its abscissa is the least attainable correction
+abscissa.  What is not established is the critical estimate
+$\sigma_{\rm abs}(2E)\le1$ itself.
 
 The rectangle is deliberately nonsmooth.  We avoid an inadmissible appeal to the classical smooth
 test space by defining $Q_L$ through the absolutely convergent xi divisor polarization.  A
@@ -1520,8 +1585,11 @@ function are established parent mechanisms.  The inverse-tilted complete-divisor
 bridge infrastructure.  The candidate-new contribution is the fixed-window logarithmic
 compression, its exact one-sided exponent spectrum, universal negative-channel abscissa, exact
 finite positive-channel non-dilution, summable-family aggregate conservation, quantitative
-source--divisor--energy equivalence, thickness corollaries, and multiplicity-exact meromorphic
-tomography of the actual Weil observable.
+source--divisor--energy equivalence, optimal sharp-source correction, thickness corollaries, and
+multiplicity-exact meromorphic tomography of the actual Weil observable.  The elementary
+least-negative-part order lemma is not claimed as independent novelty; its role is to prove that
+the explicit arithmetic channel $2E$ is the unavoidable positive payment in this Connes/Landau
+architecture.
 
 \begin{thebibliography}{99}
 

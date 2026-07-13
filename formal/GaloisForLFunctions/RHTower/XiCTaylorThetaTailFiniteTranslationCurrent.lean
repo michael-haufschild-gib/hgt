@@ -1,0 +1,42 @@
+import GaloisForLFunctions.RHTower.XiCTaylorThetaTailFiniteTranslation
+import GaloisForLFunctions.RHTower.XiCTaylorThetaTailOrientedDefect
+
+/-!
+# Exact current carried by the finite cosine translation edge
+
+The finite cosine section translates as a cosine--sine packet minus a polynomial supported above
+the truncation cutoff.  This module keeps the two mixed value--derivative terms of that subtraction
+exact.  Those terms cannot be estimated independently near a scheduled small Taylor value.
+-/
+
+open Polynomial Complex
+
+namespace RHTower
+
+noncomputable section
+
+/-- The untruncated two-component packet appearing in finite cosine translation. -/
+def finiteCosineTranslationPacket
+    (d : ℕ) (x a : ℝ) : Polynomial ℂ :=
+  finiteCosinePolynomial d x * finiteCosinePolynomial d a -
+    finiteSinePolynomial d x * finiteSinePolynomial d a
+
+/-- Exact oriented-current translation law.  Besides the current of the untruncated
+cosine--sine packet, the entire finite-section loss consists of the two displayed mixed currents
+and the self-current of the explicit top edge. -/
+theorem orientedPolynomialCurrent_finiteCosinePolynomial_add
+    (d : ℕ) (x a : ℝ) (z : ℂ) :
+    orientedPolynomialCurrent (finiteCosinePolynomial d (x + a)) z =
+      orientedPolynomialCurrent (finiteCosineTranslationPacket d x a) z -
+        ((finiteCosineTranslationPacket d x a).derivative.eval z *
+          (starRingEnd ℂ) ((finiteCosineTranslationTopEdge d x a).eval z)).im -
+        ((finiteCosineTranslationTopEdge d x a).derivative.eval z *
+          (starRingEnd ℂ) ((finiteCosineTranslationPacket d x a).eval z)).im +
+        orientedPolynomialCurrent (finiteCosineTranslationTopEdge d x a) z := by
+  rw [finiteCosinePolynomial_add_eq_product_sub_topEdge]
+  exact orientedPolynomialCurrent_sub_exact _ _ _
+
+end
+
+
+end RHTower
