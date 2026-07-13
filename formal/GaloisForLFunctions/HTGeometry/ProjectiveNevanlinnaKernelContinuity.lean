@@ -21,6 +21,45 @@ open scoped ENNReal OnePoint
 
 noncomputable section
 
+/-- Continuous linear maps commute with bounded-density Bochner control when the transformed
+kernel is supplied with its `L¹` certificate. -/
+theorem linftyBochnerControl_comp
+    {α V W : Type*} [MeasurableSpace α]
+    [NormedAddCommGroup V] [NormedSpace ℝ V] [CompleteSpace V]
+    [NormedAddCommGroup W] [NormedSpace ℝ W] [CompleteSpace W]
+    (mu : Measure α) [IsFiniteMeasure mu] (T : V →L[ℝ] W)
+    (K : α → V) (hK : MemLp K 1 mu)
+    (hTK : MemLp (fun x => T (K x)) 1 mu) :
+    T.comp (linftyBochnerControl mu K hK) =
+      linftyBochnerControl mu (fun x => T (K x)) hTK := by
+  apply ContinuousLinearMap.ext
+  intro w
+  rw [ContinuousLinearMap.comp_apply, linftyBochnerControl_apply,
+    linftyBochnerControl_apply]
+  have hint : Integrable (fun x => (w x) • K x) mu := by
+    exact (ContinuousLinearMap.lsmul ℝ ℝ :
+      ℝ →L[ℝ] V →L[ℝ] V).integrable_of_bilin_of_bdd_left
+        ‖w‖ (Lp.memLp w).1 (linfty_ae_abs_le_norm mu w)
+        (hK.integrable (by norm_num))
+  calc
+    T (∫ x, (w x) • K x ∂mu) = ∫ x, T ((w x) • K x) ∂mu :=
+      (T.integral_comp_comm hint).symm
+    _ = ∫ x, (w x) • T (K x) ∂mu := by
+      apply integral_congr_ae
+      filter_upwards with x
+      exact T.map_smul_of_tower (w x) (K x)
+
+/-- Restriction of a continuous operator family to one fixed domain submodule remains continuous
+in operator norm. -/
+theorem continuous_clm_domRestrict
+    {H X Y : Type*} [TopologicalSpace H]
+    [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y]
+    (L : H → (X →L[ℝ] Y)) (hL : Continuous L) (S : Submodule ℝ X) :
+    Continuous (fun h => (L h).domRestrict S) := by
+  simpa only [ContinuousLinearMap.domRestrict] using
+    hL.clm_comp continuous_const
+
 /-- Source nodes whose projective image has a fixed positive imaginary lower bound. -/
 abbrev NevanlinnaUpperNodeAtLeast (q : ℂ → ℂ) (η : ℝ) :=
   {z : ℂ // η ≤ (q z).im}
@@ -44,6 +83,20 @@ def projectiveNevanlinnaJetExpansionColumn
   fun s => ∑ k : Fin (n s.1),
     nevanlinnaJetCoeff a q s.2 k (z s.1) *
       projectiveCauchyPower (q (z s.1)) k t
+
+/-- At regular nodes, the forward expansion is exactly the existing genuine Nevanlinna-jet
+column; no inverse triangular matrix occurs in the formula. -/
+theorem projectiveNevanlinnaJetExpansionColumn_eq_projectiveNevanlinnaJetColumn
+    {ι : Type*}
+    (a q : ℂ → ℂ) (z : ι → ℂ) (n : ι → ℕ)
+    (ha : ∀ i, a (z i) ≠ 0) (hq : ∀ i, deriv q (z i) ≠ 0) :
+    projectiveNevanlinnaJetExpansionColumn a q z n =
+      projectiveNevanlinnaJetColumn a q z n ha hq := by
+  funext t s
+  simp only [projectiveNevanlinnaJetExpansionColumn,
+    projectiveNevanlinnaJetColumn, nevanlinnaJetPacketLinearEquiv_apply,
+    nevanlinnaJetLinearEquiv_apply, nevanlinnaJetMatrix_mulVec_apply,
+    projectiveCauchyJetColumn]
 
 /-- At a fixed source packet in an upper collar, the forward Nevanlinna expansion is continuous
 on the entire projective parameter line. -/
@@ -196,6 +249,44 @@ theorem continuous_projectiveNevanlinnaJetExpansionLinftyBochnerControl
       η hη n mu z).symm
   rw [heq]
   exact continuous_projectiveNevanlinnaJetExpansionLpKernel ha hq η hη n mu
+
+/-- On the regular locus, the direct expansion control is exactly the previously defined
+triangularly composed genuine Nevanlinna-jet control. -/
+theorem projectiveNevanlinnaJetExpansionLinftyControl_eq_existing
+    {ι : Type*} [Fintype ι]
+    (a q : ℂ → ℂ) (η : ℝ) (hη : 0 < η) (n : ι → ℕ)
+    (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu]
+    (z : ι → NevanlinnaUpperNodeAtLeast q η)
+    (ha : ∀ i, a (z i).1 ≠ 0) (hq : ∀ i, deriv q (z i).1 ≠ 0) :
+    linftyBochnerControl mu
+        (projectiveNevanlinnaJetExpansionColumn a q (fun i => (z i).1) n)
+        (memLp_projectiveNevanlinnaJetExpansionColumn η hη n mu z) =
+      projectiveNevanlinnaJetLinftyContinuousControl
+        a q (fun i => (z i).1) n ha hq mu (fun i => hη.trans_le (z i).2) := by
+  let zv : ι → ℂ := fun i => (z i).1
+  let K := projectiveCauchyJetColumn (fun i => q (zv i)) n
+  let T : ((Σ i, Fin (n i)) → ℂ) →L[ℝ] ((Σ i, Fin (n i)) → ℂ) :=
+    (((nevanlinnaJetPacketLinearEquiv a q zv n ha hq).restrictScalars ℝ).toContinuousLinearEquiv
+      |>.toContinuousLinearMap)
+  let hK : MemLp K 1 mu :=
+    memLp_projectiveCauchyJetColumn (fun i => q (zv i))
+      (fun i => ne_of_gt (hη.trans_le (z i).2)) n mu
+  have hcol : (fun t => T (K t)) =
+      projectiveNevanlinnaJetExpansionColumn a q zv n := by
+    rw [projectiveNevanlinnaJetExpansionColumn_eq_projectiveNevanlinnaJetColumn
+      a q zv n ha hq]
+    rfl
+  have hTK : MemLp (fun t => T (K t)) 1 mu := by
+    rw [hcol]
+    exact memLp_projectiveNevanlinnaJetExpansionColumn η hη n mu z
+  have hcomp := linftyBochnerControl_comp mu T K hK hTK
+  have hdirect : T.comp (linftyBochnerControl mu K hK) =
+      linftyBochnerControl mu
+        (projectiveNevanlinnaJetExpansionColumn a q zv n)
+        (memLp_projectiveNevanlinnaJetExpansionColumn η hη n mu z) := by
+    simpa only [hcol] using hcomp
+  simpa [zv, K, T, hK, projectiveNevanlinnaJetLinftyContinuousControl] using
+    hdirect.symm
 
 end
 

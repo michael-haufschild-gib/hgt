@@ -1,5 +1,7 @@
-import GaloisForLFunctions.RHTower.XiHurwitzAnchorTransversality
+import GaloisForLFunctions.Hurwitz.AnchorTransversality
 import GaloisForLFunctions.RHTower.OrbitwiseSourceDivisorSeam
+import GaloisForLFunctions.RHTower.XiCanonicalProduct
+import Mathlib.NumberTheory.LSeries.Injectivity
 
 /-!
 # The Hurwitz anchor tail and the prime flux have the same first-prime seam
@@ -101,8 +103,8 @@ theorem anchorShiftedZetaTailCoeff_abscissa_lt_top (a : ℂ) :
   have hdelta : abscissaOfAbsConv LSeries.delta < ⊤ := by
     have hs : LSeriesSummable LSeries.delta 0 := by
       rw [LSeriesSummable]
-      simp only [LSeries.term_delta]
-      exact summable_ite_eq 1 1
+      apply (summable_congr (fun n => LSeries.term_delta 0 n)).mpr
+      exact (hasSum_ite_eq 1 (1 : ℂ)).summable
     exact hs.abscissaOfAbsConv_le.trans_lt (by simp)
   exact (LSeries.abscissaOfAbsConv_sub_le
     (anchorShiftedZetaCoeff a) LSeries.delta).trans_lt
@@ -115,7 +117,8 @@ theorem LSeries_anchorShiftedZetaTailCoeff_eq (a : ℂ) {x : ℝ}
       riemannZeta (a + (x : ℂ)) - 1 := by
   have hshift : LSeriesSummable (anchorShiftedZetaCoeff a) (x : ℂ) := by
     rw [LSeriesSummable]
-    have hs := (LSeriesHasSum_one hx).summable
+    have hs : LSeriesSummable (1 : ℕ → ℂ) (a + (x : ℂ)) :=
+      LSeriesSummable_one_iff.mpr hx
     rw [LSeriesSummable] at hs
     apply hs.congr
     intro n
@@ -129,8 +132,8 @@ theorem LSeries_anchorShiftedZetaTailCoeff_eq (a : ℂ) {x : ℝ}
       field_simp
   have hdelta : LSeriesSummable LSeries.delta (x : ℂ) := by
     rw [LSeriesSummable]
-    simp only [LSeries.term_delta]
-    exact summable_ite_eq 1 1
+    apply (summable_congr (fun n => LSeries.term_delta (x : ℂ) n)).mpr
+    exact (hasSum_ite_eq 1 (1 : ℂ)).summable
   rw [anchorShiftedZetaTailCoeff, LSeries_sub hshift hdelta,
     LSeries_anchorShiftedZetaCoeff, LSeries_delta,
     LSeries_one_eq_riemannZeta hx]
@@ -146,7 +149,8 @@ theorem tendsto_two_cpow_mul_riemannZeta_shift_sub_one (a : ℂ) :
     (fun m hm => by interval_cases m <;> simp)
     (anchorShiftedZetaTailCoeff_abscissa_lt_top a)
   norm_num at h
-  apply h.congr'
+  rw [anchorShiftedZetaTailCoeff_two] at h
+  refine h.congr' ?_
   filter_upwards [eventually_gt_atTop (1 - a.re)] with x hx
   rw [LSeries_anchorShiftedZetaTailCoeff_eq a (by
     simp only [Complex.add_re, Complex.ofReal_re]
@@ -156,17 +160,17 @@ theorem tendsto_two_cpow_mul_riemannZeta_shift_sub_one (a : ℂ) :
 subtract the unit Dirichlet atom. -/
 def normalizedHurwitzAnchorTail (s : ℂ) (r : ℕ) : ℂ :=
   iteratedDeriv r (HurwitzZetaContinuation.continuedHzeta s) 1 /
-      ((-1 : ℂ) ^ r * (Polynomial.ascPochhammer ℂ r).eval s) - 1
+      ((-1 : ℂ) ^ r * (ascPochhammer ℂ r).eval s) - 1
 
 /-- The normalized anchor tail is exactly the translated zeta tail. -/
 theorem normalizedHurwitzAnchorTail_eq (r : ℕ) {s : ℂ} (hs : 0 < s.re) :
     normalizedHurwitzAnchorTail s r = riemannZeta (s + r) - 1 := by
   rw [normalizedHurwitzAnchorTail,
     HurwitzZetaContinuation.continuedHzeta_iteratedDeriv_at_one r hs]
-  have hden : (-1 : ℂ) ^ r * (Polynomial.ascPochhammer ℂ r).eval s ≠ 0 :=
-    mul_ne_zero (pow_ne_zero _ (by norm_num))
-      (HurwitzZetaContinuation.ascPochhammer_eval_ne_zero_of_pos_re r hs)
-  field_simp [hden]
+  have hsign : (-1 : ℂ) ^ r ≠ 0 := pow_ne_zero _ (by norm_num)
+  have hp : (ascPochhammer ℂ r).eval s ≠ 0 :=
+    HurwitzZetaContinuation.ascPochhammer_eval_ne_zero_of_pos_re r hs
+  field_simp [hsign, hp]
 
 /-- The normalized Hurwitz anchor tail recovers the first prime character `2^(-s)`. -/
 theorem tendsto_two_cpow_mul_normalizedHurwitzAnchorTail
@@ -204,8 +208,6 @@ theorem tendsto_xiHurwitzAnchorPrimeTwoSeam
   · funext r
     simp only [xiHurwitzAnchorPrimeTwoSeam]
     ring
-  · simp only [orbitwiseFirstPrimeSeamCharge]
-    ring
 
 /-- The corresponding first-prime-scaled difference of the actual continued prime flux. -/
 def xiPrimeFluxPrimeTwoSeam (rho : ℂ) (r : ℕ) : ℂ :=
@@ -219,8 +221,6 @@ theorem tendsto_xiPrimeFluxPrimeTwoSeam (rho : ℂ) :
   have h := (tendsto_orbitwiseFirstPrimeSeamCharge_infinitePrimeFlux rho).comp
     tendsto_natCast_atTop_atTop
   convert h using 1
-  funext r
-  norm_num [xiPrimeFluxPrimeTwoSeam]
 
 /-- **Common-seam theorem.**  The local Hurwitz anchor coefficient channel and the far-right
 all-prime flux channel agree asymptotically after first-prime normalization. -/
