@@ -148,6 +148,18 @@ Euler multiplication is invertible and preserves source multiplication.  Transla
 preserve the ideal `(A)` and therefore does not automatically act on `Q_Omega` or its socle.  The
 open theorem is:
 
+There is now a sharp restriction on what such a descent can mean.  The paper theorem
+`prime-modulated-weyl-idealizer-collapse-on-xi-sampling.md`, with algebraic core formalized in
+`PrimeWeylSamplingIdealizer.lean`, proves that every finite shift--differential prime operator
+preserving the full real-Xi sampling nullspace collapses to a polynomial multiplier; all descended
+operators commute.  This does not by itself exclude an action on one finite off-line socle, since
+finite sampling support is an explicit boundary case.  It does exclude any cofinal construction
+whose finite-prime operators extend compatibly to an idealizer of the full Xi sampling quotient.
+
+**Positive statement:** a surviving cofinal descent must remain an integral boundary-completed
+action before passage to the full sampling quotient, or use a genuinely all-prime/nonlocal
+incidence operator.  The finite-prime idealizer cannot be the final carrier.
+
 > `[OPEN CORE]` Construct, from the global prime translation--Euler pair and the admissible-domain
 > source quotient, a cutoff or derived reduction whose induced operators preserve `im L_C`, are
 > invertible there, and satisfy `(2)` at one depth above the domain's zero-count envelope.
@@ -178,6 +190,10 @@ divisibility is requested.
 7. **Moving-fiber holonomy alone.**  A projective loop between different fibers has no determinant
    divisibility consequence on one finite space.  **Positive target:** close the loop as actual
    endomorphisms of the fixed aggregate socle.
+8. **Cofinal finite-prime sampling idealizer.**  On the full real-Xi sampling quotient every such
+   idealizer collapses to commuting polynomial multiplication.  **Positive target:** retain the
+   integral cutoff boundary before the full-divisor limit, or construct a closed all-prime/nonlocal
+   incidence whose finite reductions act internally on `im L_C`.
 
 ## Formalization decision
 

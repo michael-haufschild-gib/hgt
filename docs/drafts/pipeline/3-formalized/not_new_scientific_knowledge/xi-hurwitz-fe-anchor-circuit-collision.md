@@ -93,8 +93,10 @@ The proof instead resolves the full three-node circuit and treats its three coll
 separately. The new theorem is therefore not an instance of finite algebraic-anchor capture.
 
 The premise contains no negative-real character condition, zero-location sign, real-rootedness,
-Weil positivity, or RH-equivalent limiting measure. It is nevertheless only a formal bridge: the
-source differential circuit is not proved.
+Weil positivity, or RH-equivalent limiting measure.  The exact anchor-locus audit below shows,
+however, that the fixed-half source circuit cannot be a weaker intermediate theorem: it is false at
+every actual Xi zero.  Its global right-half formulation is therefore already equivalent to the
+absence of right-half zeros.
 
 ## Exact anchor-locus audit
 
@@ -109,6 +111,31 @@ Therefore a circuit with the fixed regular half anchor is not a hidden weak cons
 Hurwitz matroid: it is impossible at every actual Xi zero.  Conversely, using an anchor already
 equal to `rho` or `1-rho` merely repeats the divisor and supplies no orientation information.
 
+The useful reflection specialization is instead the moving Schwarz anchor `tau=conj(rho)`.  Lean
+first proves the stronger rank-two law, without an Xi-zero hypothesis,
+
+```text
+dependence of {H_(1-rho), H_(conj rho)}
+  iff Re(rho)=1/2.
+```
+
+Consequently it also proves at every actual Xi zero
+
+```text
+dependence of {H_rho, H_(1-rho), H_(conj rho)}
+  iff Re(rho)=1/2.
+```
+
+Indeed the exact anchor locus gives `conj(rho)=rho` or `conj(rho)=1-rho`.  The first equality would
+make `rho` a real open-strip zero and is excluded by positivity; the second is precisely the
+critical-line equation.  Thus one finite differential circuit joins holomorphic functional-
+equation reflection to Schwarz reflection.  Globally this circuit law is equivalent to RH, so the
+remaining source problem is to produce such a relation without first reading the horizontal zero
+coordinate.  The pair relation has now been identified exactly with the already formalized common
+first-prime seam charge and scalar orientation energy.  It therefore does not define an independent
+source-producer problem: its surviving source obligation is precisely regular-Cauchy source-core
+nonnegativity.
+
 ## Principal declarations
 
 - `continuedHurwitzFEAnchorTripleExponent`
@@ -118,7 +145,14 @@ equal to `rho` or `1-rho` merely repeats the divisor and supplies no orientation
 - `monoScalar_one_sub_eq_inv`
 - `xi_ne_zero_of_openCriticalStrip_of_monoScalar_eq_oneSub`
 - `xiZero_continuedHurwitzFEAnchorTripleDependent_iff_anchor_eq_orbit`
+- `continuedHurwitzFESchwarzPairDifferentiallyDependent_iff_re_eq_half`
+- `XiHurwitzFESchwarzPairCircuit`
+- `xiHurwitzFESchwarzPairCircuit_iff_riemannHypothesis`
+- `xiZero_continuedHurwitzFESchwarzTripleDependent_iff_re_eq_half`
 - `xiZero_continuedHurwitzFEAnchorTriple_independent_of_anchor_ne_zero`
+- `XiHurwitzFESchwarzTripleCircuit`
+- `xiHurwitzFESchwarzTripleCircuit_iff_riemannHypothesis`
+- `riemannHypothesis_of_xiHurwitzFESchwarzTripleCircuit`
 - `XiRightArakelovAlgebraicHurwitzFEAnchorCircuit`
 - `riemannHypothesis_of_xiRightArakelovAlgebraicHurwitzFEAnchorCircuit`
 - `monoScalar_half_eq_neg_one`
@@ -131,11 +165,11 @@ equal to `rho` or `1-rho` merely repeats the divisor and supplies no orientation
 
 ## Open core
 
-`[OPEN CORE]` Produce, from one completed arithmetic source and before inspecting zero location, a
-moving differential circuit coupling the two holomorphic functional-equation exponents to the
-fixed half-exponent Hurwitz function. A relation which merely equates two monodromy characters does
-not discharge this task; the required input is an actual differential identity or bounded-rank
-source module.
+`[OPEN CORE]` Prove nonnegativity of the Weil form on the concrete algebraic regular-Cauchy
+prime--Gamma source span.  The already formalized source closure then forces zero orientation
+energy, equivalently the two-function relation between `H_(1-rho)` and `H_(conj rho)`.  Do not
+target the fixed half anchor: its circuit is positively ruled out at every actual Xi zero and its
+global right-half formulation merely restates RH.
 
 ## Gates
 
@@ -147,5 +181,9 @@ source module.
 - [x] anchor choice eliminated using the canonical algebraic character `q(1/2)=-1`
 - [x] Arakelov algebraicity eliminated from the fixed half-anchor circuit
 - [x] unconditional differential freeness of the actual Xi FE/half-anchor triple proved
+- [x] fixed-half source route retired positively by the exact anchor-locus law
+- [x] finite FE--Schwarz circuit characterized pointwise and globally
+- [x] FE--Schwarz interface reduced further to a rank-two circuit with no pointwise Xi hypothesis
+- [x] rank-two circuit identified with common first-prime charge and scalar orientation energy
 - [x] RH capstone formalized without new axioms
-- [ ] source differential circuit
+- [ ] regular-Cauchy source-core nonnegativity

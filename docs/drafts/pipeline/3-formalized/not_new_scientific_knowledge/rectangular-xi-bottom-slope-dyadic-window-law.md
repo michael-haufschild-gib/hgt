@@ -1,4 +1,4 @@
-# The sharp dyadic prime window is a corrected Xi bottom-edge slope
+# The sharp dyadic prime window is a corrected full Xi-Weil slope
 
 - **ID:** `rectangular-xi-bottom-slope-dyadic-window-law`
 - **Stage:** 3-formalized
@@ -60,9 +60,37 @@ implies exactly
 W(n)<=2*(1-1/sqrt(2))*sqrt(n)+C_epsilon*n^epsilon.
 ```
 
-Thus the remaining arithmetic inequality is now a lower bound for a literal corrected Xi
+At this intermediate stage the arithmetic inequality is a lower bound for a literal corrected Xi
 bottom-edge derivative.  No constant is lost; the closed-shell discrepancy is a nonnegative
-endpoint atom.
+endpoint atom.  The next section eliminates this intermediate contour value.
+
+## Full spectral identification
+
+Lean now also proves the missing infinite symmetric-contour passage.  The right vertical edge is
+split into a finite near spectrum controlled by an integrated Cauchy cancellation and an
+inverse-square summable far spectrum.  The resulting exact-multiplicity bound is
+
+```text
+O(R^(-1/2))*sum_q |p_q|^(-3/2) + O(R^(-1))*sum_q |p_q|^(-2),
+```
+
+and therefore vanishes on cofinal divisor-avoiding radii.  Absolute far-spectrum control plus
+finiteness of the near spectrum justifies the sum--integral exchange.  Symmetric residue
+exhaustion and bottom-edge convergence then give, unconditionally,
+
+```text
+xiWeilPolarization(T_(L,a),T_(L,a)) = B_Xi(L,a).
+```
+
+Consequently the corrected *full spectral value*
+
+```text
+Qcorr(L,a)=Re(xiWeilPolarization(T,T)-B_infinity(L,a))+2*P(L,a)^2
+```
+
+equals `rectangularPrimePolarSourceCoefficient(L,a)`, and its diagonal right derivative is the
+same sharp dyadic shell displayed above.  The contour is no longer part of the remaining RH
+burden.
 
 ## Lean implementation
 
@@ -79,6 +107,16 @@ GaloisForLFunctions.RHTower.XiGuinandWeilRectangularBottomSlope
   dyadicPrimePolarSourceDiagonalRightSlope_eq_closedShell
   hasDerivWithinAt_dyadicCorrectedBottomXiValue_diagonal_logSample
   dyadicWeightedPrimeWindow_upper_of_correctedBottomXiSlope_lower
+
+GaloisForLFunctions.RHTower.XiGuinandWeilRectangularVerticalResolvent
+  exists_large_integral_rectangular_mul_logDeriv_XiC_norm_lt
+  integral_tsum_xiRectangularVerticalRawTerm_eq_tsum_integral
+
+GaloisForLFunctions.RHTower.XiGuinandWeilRectangularFullFormula
+  xiWeilPolarization_rectangular_eq_normalizedBottomXiContribution
+  rectangularCorrectedXiWeilValue_eq_primePolarSource
+  hasDerivWithinAt_dyadicCorrectedXiWeilValue_diagonal_logSample
+  dyadicWeightedPrimeWindow_upper_of_correctedXiWeilSlope_lower
 ```
 
 The focused build is green.  `#print axioms` for all capstone declarations reports only
@@ -86,11 +124,12 @@ The focused build is green.  `#print axioms` for all capstone declarations repor
 
 ## Remaining RH burden
 
-The relation closes the prime/Gamma/bottom-edge identification and the transfer to the target
-dyadic window.  It does not supply the lower bound for `D_+V(n)`.  The next analytic step is to
-pass the symmetric rectangular contour to its spectral residue value by proving vertical-edge
-vanishing, and then establish a one-sided subpower lower bound for the resulting spectral
-diagonal derivative.  That last sign/size statement is RH-bearing.
+The relation closes the prime/Gamma/bottom-edge identification, the full symmetric spectral
+passage, and the transfer to the target dyadic window.  It does not supply the lower bound for the
+corrected full Xi-Weil diagonal derivative.  The remaining sign/size statement is RH-bearing:
+prove its one-sided all-epsilon subpower lower estimate.  Equivalently, control the
+Gamma--polar correction strongly enough to transfer RH nonnegativity of the raw Weil value to
+this derivative.
 
 ## Gates
 
@@ -100,7 +139,12 @@ diagonal derivative.  That last sign/size statement is RH-bearing.
 - [x] corrected bottom edge equals the finite prime--polar source
 - [x] corrected-bottom diagonal derivative reads the closed dyadic shell
 - [x] direct corrected-slope-to-requested-window theorem
+- [x] integrated near-spectrum Cauchy cancellation
+- [x] inverse-square far-spectrum domination and sum--integral exchange
+- [x] cofinal divisor-avoiding vertical-edge vanishing
+- [x] infinite symmetric-contour and residue exhaustion
+- [x] full sharp rectangular Guinand--Weil identity
+- [x] corrected full Xi-Weil slope reads the dyadic shell
 - [x] focused build, axiom audit, and formal lint
-- [ ] vertical-edge vanishing and infinite symmetric-contour passage
 - [ ] unconditional one-sided subpower lower bound for the spectral slope
 - [ ] RH

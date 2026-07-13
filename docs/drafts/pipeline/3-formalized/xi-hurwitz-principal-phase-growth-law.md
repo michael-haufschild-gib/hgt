@@ -107,14 +107,14 @@ has one tail satisfying
   \qquad(\varepsilon>0,\ n\gg1).
 \]
 
-Two analytic steps remain outside Lean:
+One analytic step remains outside Lean:
 
-1. the exact Guinand--Weil identification of the piecewise-linear rectangular source coefficient
-   with `xiRectangularWeilLogCoefficient`;
-2. the one-sided subpower lower estimate for that completed source coefficient.
+1. the one-sided subpower lower estimate for the completed rectangular source coefficient.
 
-The first is a bridge theorem at bounded-variation regularity.  The second is the RH-bearing
-source estimate; the present work does not claim it.
+The exact Guinand--Weil identification at piecewise-linear rectangular regularity is now proved
+in `XiGuinandWeilRectangularFullFormula`: cofinal vertical-edge vanishing, sum--integral exchange,
+residue exhaustion, and the complete bottom value are all discharged internally.  The remaining
+source estimate is RH-bearing; the present work does not claim it.
 
 ## Verification
 

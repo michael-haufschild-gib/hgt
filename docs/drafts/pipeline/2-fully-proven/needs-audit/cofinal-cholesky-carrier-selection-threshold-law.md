@@ -756,6 +756,20 @@ forces one common finite-dimensional perturbation manifold on the whole patch. I
 application, the remaining analytic obligation for this theorem is continuity, in operator norm,
 of the shift-dependent constrained Nevanlinna control family.
 
+The unconditional module `GaloisForLFunctions.HTGeometry.LinftyKernelControlContinuity` reduces
+that operator-topology obligation to the natural analytic statement. The map sending an `L^1`
+vector kernel to its `L^infinity` density-control operator is itself continuous linear in operator
+norm. Therefore any shift-dependent projective Cauchy-jet kernel that is continuous as an `L^1`
+class automatically yields the continuous control family required by the compact uniform-probe
+law. The unconditional module
+`GaloisForLFunctions.HTGeometry.ProjectiveCauchyKernelContinuity` closes the first concrete
+analytic step. On every upper-half-plane collar `Im x >= eta > 0`, the projective resolvent obeys
+the uniform bound `dist ((t-x)^-1) ((t-y)^-1) <= eta^-2 dist x y`, including the point at infinity.
+Finite Cauchy-power packets therefore vary continuously in the projective sup norm, hence in
+`L^1`, and their actual `L^infinity` density-control operators vary continuously in operator norm.
+The remaining analytic step is the node-dependent finite forward triangular Nevanlinna jet
+conversion and its restriction to the fixed frozen tangent kernel.
+
 The unconditional modules `GaloisForLFunctions.HTGeometry.MinimalTypeNoArithmeticProgression`,
 `MinimalTypeNevanlinnaAperiodicity`, `MinimalTypeProjectiveSeparation`, and
 `MinimalTypeProjectiveForbiddenSeparation` close the manuscript's translation-separation input.
@@ -952,7 +966,8 @@ All listed exact modules pass. `#print axioms` on the new frame-fiber, selector,
 constrained-control, triangular-jet, evaluation root-count, bounded-density, and projective
 Nevanlinna-control/escape/genericity, compact-configuration Baire assembly,
 sigma-compact injective-shift topology, rectangular evaluation-rank-defect topology, and expanded
-evaluation configuration Baire assembly, compact uniform finite-probe reduction,
+evaluation configuration Baire assembly, compact uniform finite-probe reduction, and `L^1`-kernel
+to `L^infinity`-control operator-norm continuity,
 minimal-type projective-separation, compact-atlas, and
 noncriticality, disjoint-block independence, scalar hypersurface, iterated Krull-dimension, and
 fixed-incidence-fiber, coefficient-prime, projective affine-chart, and all-row local incidence

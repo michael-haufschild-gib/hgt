@@ -1,22 +1,23 @@
 import GaloisForLFunctions.RHTower.XiArakelovHurwitzDependenceCollision
 
 /-!
-# Functional-equation Hurwitz circuits collide with Arakelov algebraicity
+# Exact functional-equation Hurwitz anchor-circuit loci
 
-The existing finite-anchor theorem captures one Xi-indexed Hurwitz function inside a family whose
-anchor characters are all algebraic.  Here the moving functional-equation partner `1 - rho` is
-adjoined as a deliberately nonalgebraic anchor.  A differential circuit on
+The moving functional-equation partner `1 - rho` is adjoined to one auxiliary anchor `tau`.  A
+differential circuit on
 
 `{H_rho, H_(1-rho), H_tau}`
 
-has exactly three possible monodromy-character collisions.  Collision of the two Xi exponents
-forces `rho = 1-rho` inside the open critical strip and contradicts the real zero-free interval.
-Collision with the algebraic-character anchor makes either `q(rho)` or its inverse algebraic; an
-algebraic Arakelov coordinate then invokes the Gelfond--Schneider exclusion.
+has exactly three possible monodromy-character collisions.  At an actual Xi zero in the open
+strip, dependence occurs exactly when `tau = rho` or `tau = 1-rho`.  This classifies the complete
+anchor locus rather than merely extracting a collision.
 
-Thus a moving three-function value relation, rather than a sign or a zero-location condition,
-closes to RH.  The relation is not subsumed by the fixed finite-anchor result because the
-functional-equation partner is not assumed to have algebraic character.
+Two specializations have opposite meanings.  The canonical half anchor lies outside this
+two-point locus and therefore gives an unconditionally independent triple at every Xi zero; the
+older Arakelov field is superfluous in the corresponding RH consumer.  In contrast, the Schwarz
+anchor `tau = conj rho` belongs to the locus exactly when `1-rho = conj rho`, so this one finite
+differential circuit is an exact functional-equation/Schwarz-reflection characterization of the
+critical line.  The older arbitrary algebraic-anchor/Arakelov collision remains available below.
 -/
 
 open Complex Set
@@ -146,6 +147,71 @@ theorem monoScalar_one_sub_eq_inv (rho : ℂ) :
   congr 1
   ring
 
+/-- **Rank-two FE--Schwarz value law.**  For every exponent in the open critical strip, the two
+continued-Hurwitz functions indexed by its holomorphic functional-equation reflection and its
+Schwarz reflection are differentially dependent exactly when the exponent lies on the critical
+line.  No Xi-zero hypothesis is used. -/
+theorem continuedHurwitzFESchwarzPairDifferentiallyDependent_iff_re_eq_half
+    {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1) :
+    ContinuedHurwitzPairDifferentiallyDependent
+      (1 - rho) ((starRingEnd ℂ) rho) ↔ rho.re = 1 / 2 := by
+  have hrefstrip : 0 < (1 - rho).re ∧ (1 - rho).re < 1 := by
+    simp only [Complex.sub_re, Complex.one_re]
+    constructor <;> linarith
+  have hconjstrip : 0 < ((starRingEnd ℂ) rho).re ∧
+      ((starRingEnd ℂ) rho).re < 1 := by
+    simpa using hstrip
+  rw [continuedHurwitzPairDifferentiallyDependent_iff_monoScalar_eq
+    (fun m => openCriticalStrip_point_ne_int hrefstrip m)
+    (fun m => openCriticalStrip_point_ne_int hconjstrip m)]
+  constructor
+  · intro hq
+    obtain ⟨m, hm⟩ :=
+      (monoScalar_eq_monoScalar_iff_integerDifference
+        (1 - rho) ((starRingEnd ℂ) rho)).mp hq
+    have heq := openCriticalStrip_eq_of_sub_eq_int hrefstrip hconjstrip m hm
+    have hre := congrArg Complex.re heq
+    simp only [Complex.sub_re, Complex.one_re, Complex.conj_re] at hre
+    linarith
+  · intro hre
+    have heq : 1 - rho = (starRingEnd ℂ) rho := by
+      apply Complex.ext
+      · simp only [Complex.sub_re, Complex.one_re, Complex.conj_re]
+        linarith
+      · simp
+    rw [heq]
+
+/-- The rank-two differential-dependence constraint joining holomorphic FE reflection to Schwarz
+reflection at every Xi divisor point. -/
+def XiHurwitzFESchwarzPairCircuit : Prop :=
+  ∀ rho : XiDivisorSupport,
+    ContinuedHurwitzPairDifferentiallyDependent
+      (1 - (rho : ℂ)) ((starRingEnd ℂ) (rho : ℂ))
+
+/-- **Rank-two differential-circuit criterion.**  Dependence of just the FE-reflected and
+Schwarz-reflected continued-Hurwitz functions at every Xi divisor point is equivalent to RH. -/
+theorem xiHurwitzFESchwarzPairCircuit_iff_riemannHypothesis :
+    XiHurwitzFESchwarzPairCircuit ↔ RiemannHypothesis := by
+  constructor
+  · intro h
+    rw [rh_iff_xi_ne_zero_right]
+    intro rho hrho hzero
+    let support : XiDivisorSupport :=
+      ⟨rho, mem_xi_divisor_support_of_eq_zero hzero⟩
+    have hre :=
+      (continuedHurwitzFESchwarzPairDifferentiallyDependent_iff_re_eq_half
+        (xi_divisor_support_re_mem_open_unit support)).mp (h support)
+    exact (ne_of_gt (mem_rightHalf.mp hrho)) hre
+  · intro hRH rho
+    apply (continuedHurwitzFESchwarzPairDifferentiallyDependent_iff_re_eq_half
+      (xi_divisor_support_re_mem_open_unit rho)).mpr
+    exact xi_divisor_support_re_eq_half_of_rh hRH rho
+
+/-- One rank-two FE--Schwarz Hurwitz circuit at every Xi divisor point implies RH. -/
+theorem riemannHypothesis_of_xiHurwitzFESchwarzPairCircuit
+    (h : XiHurwitzFESchwarzPairCircuit) : RiemannHypothesis :=
+  xiHurwitzFESchwarzPairCircuit_iff_riemannHypothesis.mp h
+
 /-- The two functional-equation exponents of an Xi zero cannot have the same Hurwitz character.
 Inside the open strip, character equality makes the exponents equal modulo `Z`, hence equal; the
 point is then real, where Xi is strictly positive. -/
@@ -202,6 +268,74 @@ theorem xiZero_continuedHurwitzFEAnchorTripleDependent_iff_anchor_eq_orbit
   · rintro (rfl | rfl)
     · exact hclass.mpr (Or.inr (Or.inl rfl))
     · exact hclass.mpr (Or.inr (Or.inr rfl))
+
+/-- **FE--Schwarz circuit locus.**  At an actual Xi zero, adjoining the Schwarz-reflected exponent
+to the functional-equation pair creates a differential circuit exactly on the critical line.
+The alternative anchor collision `conj rho = rho` would make the Xi zero real and is excluded by
+positivity on the open real strip. -/
+theorem xiZero_continuedHurwitzFESchwarzTripleDependent_iff_re_eq_half
+    {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1) (hzero : xi rho = 0) :
+    ContinuedHurwitzFEAnchorTripleDependent rho ((starRingEnd ℂ) rho) ↔
+      rho.re = 1 / 2 := by
+  have hconjStrip : 0 < ((starRingEnd ℂ) rho).re ∧
+      ((starRingEnd ℂ) rho).re < 1 := by
+    simpa using hstrip
+  rw [xiZero_continuedHurwitzFEAnchorTripleDependent_iff_anchor_eq_orbit
+    hstrip hzero hconjStrip]
+  constructor
+  · rintro (hreal | hcritical)
+    · have him := congrArg Complex.im hreal
+      have him0 : rho.im = 0 := by
+        simp only [Complex.conj_im] at him
+        linarith
+      have hrhoReal : rho = (rho.re : ℂ) := by
+        apply Complex.ext <;> simp [him0]
+      have hpos := xi_pos_on_real_anchor hstrip.1 hstrip.2
+      rw [hrhoReal] at hzero
+      rw [hzero] at hpos
+      simp at hpos
+    · have hre := congrArg Complex.re hcritical
+      simp only [Complex.conj_re, Complex.sub_re, Complex.one_re] at hre
+      linarith
+  · intro hre
+    exact Or.inr (by
+      apply Complex.ext
+      · simp only [Complex.conj_re, Complex.sub_re, Complex.one_re]
+        linarith
+      · simp)
+
+/-- The global finite-circuit constraint joining functional-equation and Schwarz reflection at
+every actual Xi divisor point. -/
+def XiHurwitzFESchwarzTripleCircuit : Prop :=
+  ∀ rho : XiDivisorSupport,
+    ContinuedHurwitzFEAnchorTripleDependent
+      (rho : ℂ) ((starRingEnd ℂ) (rho : ℂ))
+
+/-- **Finite differential-circuit criterion.**  The FE--Schwarz Hurwitz triple is dependent at
+every Xi divisor point exactly when RH holds.  Its substantive input is the exact pointwise
+anchor-locus classification above; the global predicate remains zero-indexed. -/
+theorem xiHurwitzFESchwarzTripleCircuit_iff_riemannHypothesis :
+    XiHurwitzFESchwarzTripleCircuit ↔ RiemannHypothesis := by
+  constructor
+  · intro h
+    rw [rh_iff_xi_ne_zero_right]
+    intro rho hrho hzero
+    let support : XiDivisorSupport :=
+      ⟨rho, mem_xi_divisor_support_of_eq_zero hzero⟩
+    have hre :=
+      (xiZero_continuedHurwitzFESchwarzTripleDependent_iff_re_eq_half
+        (xi_divisor_support_re_mem_open_unit support) hzero).mp (h support)
+    exact (ne_of_gt (mem_rightHalf.mp hrho)) hre
+  · intro hRH rho
+    apply (xiZero_continuedHurwitzFESchwarzTripleDependent_iff_re_eq_half
+      (xi_divisor_support_re_mem_open_unit rho)
+      (xi_eq_zero_of_mem_divisor_support rho)).mpr
+    exact xi_divisor_support_re_eq_half_of_rh hRH rho
+
+/-- One finite FE--Schwarz Hurwitz circuit at every Xi divisor point implies RH. -/
+theorem riemannHypothesis_of_xiHurwitzFESchwarzTripleCircuit
+    (h : XiHurwitzFESchwarzTripleCircuit) : RiemannHypothesis :=
+  xiHurwitzFESchwarzTripleCircuit_iff_riemannHypothesis.mp h
 
 /-- Every open-strip point outside the Xi divisor gives an independent FE-anchor triple at an
 actual Xi zero.  This is the positive complement of the exact two-point anchor-locus law. -/

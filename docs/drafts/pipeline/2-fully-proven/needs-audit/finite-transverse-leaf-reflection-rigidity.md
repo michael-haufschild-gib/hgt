@@ -191,3 +191,22 @@ force `R G = G` (or `G = 0` when `0 ∉ S`); and `even_periodic_flankBounded_con
 The only remaining step for a top-level theorem stated from the explicit two-generator flank
 exponential series is the elementary restatement supplying the eigenslice hypotheses `hslice`/`heig`
 from `e^{-iT(mα+nβ)} = ω^n` (with `T = 2π/α`), which the wrapper takes as inputs.
+
+## 2026-07-13 Eigenslice restatement formalized
+
+That elementary restatement is now formalized axiom-clean in
+`formal/GaloisForLFunctions/RHTower/FiniteTransverseExpEigenslice.lean`:
+
+- `expFlankFreq_shiftEig` — the per-frequency shift-eigenvalue `e^{i(mα+nβ)(z+T)} = ω^n e^{i(mα+nβ)z}`
+  with `T = 2π/α`, `ω = e^{2πi(β/α)}` (`e^{2πim}=1` kills the first generator, the second gives `ω^n`);
+- `expFlankSlice` / `expFlankSlice_shiftEig` — the second-generator eigenslice `Gₙ` and its exact
+  eigenvalue `Gₙ(z+T) = ω^n · Gₙ(z)`, i.e. the capstone's `heig` input;
+- `expFlankSeries_eq_sum_slices` — the series equals the sum of its slices (`hslice`, an exact
+  regrouping identity);
+- `expOmega_pow_ne_one` — `ω = e^{2πi(β/α)}` has infinite multiplicative order when `β/α` is
+  irrational, i.e. the capstone's `hωinf` input.
+
+All axiom-clean (`propext, Classical.choice, Quot.sound`).  The eigenslice hypotheses `hslice`, `heig`,
+`hωinf` of `finiteTransverse_reflection_rigidity` are therefore all discharged from the explicit
+two-generator flank series; the only inputs the top-level theorem still reads off the concrete
+`A·P_N` construction are the analytic ones (evenness, differentiability, lower-flank boundedness).
