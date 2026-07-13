@@ -150,6 +150,115 @@ theorem norm_truncatedSineCompanion_le_exp
       linarith [Real.exp_pos r]
     _ = _ := rfl
 
+/-- Explicit constant for arbitrary-rate decay of every derivative of the raw theta tail. -/
+def thetaCuspTailDerivativeNatExpConstant (m p : ℕ) : ℝ :=
+  let P := thetaCuspTailDerivativePolynomial m
+  thetaCuspCoeffMass P *
+    Real.exp (((p + P.natDegree + 1 : ℕ) : ℝ) ^ 2 / (2 * Real.pi)) *
+      ∑' n : ℕ,
+        ((n + 1 : ℕ) : ℝ) ^ P.natDegree *
+          Real.exp (-(Real.pi / 2) * ((n + 1 : ℕ) : ℝ) ^ 2)
+
+/-- A polynomial Gaussian atom retains arbitrary natural exponential decay; its polynomial factor
+is absorbed by the summable discrete Gaussian in the square index. -/
+theorem exp_nat_mul_abs_thetaCuspPolynomialAtom_le_of_pos
+    (P : ℝ[X]) (p : ℕ) {x : ℝ} (hx : 0 ≤ x) {q : ℕ} (hq : 0 < q) :
+    Real.exp ((p : ℝ) * x) * |thetaCuspPolynomialAtom P q x| ≤
+      thetaCuspCoeffMass P *
+        Real.exp (((p + P.natDegree + 1 : ℕ) : ℝ) ^ 2 / (2 * Real.pi)) *
+          (q : ℝ) ^ P.natDegree *
+            Real.exp (-(Real.pi / 2) * (q : ℝ) ^ 2) := by
+  let y : ℝ := (q : ℝ) * Real.exp x
+  have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast hq
+  have hexp1 : 1 ≤ Real.exp x := by simpa using Real.exp_le_exp.mpr hx
+  have hy1 : 1 ≤ y := by
+    dsimp [y]
+    nlinarith [Real.exp_pos x]
+  have heval := abs_eval_le_coeffMass_mul_pow P hy1
+  have hbase := exp_nat_mul_abs_thetaCuspTailAtom_le (p + P.natDegree) hx hq
+  simp only [thetaCuspPolynomialAtom, eval_one, mul_one, abs_mul,
+    abs_of_pos (Real.exp_pos _)] at hbase ⊢
+  change Real.exp ((p : ℝ) * x) *
+      (Real.exp (x / 2) * |eval y P| * Real.exp (-Real.pi * y ^ 2)) ≤ _
+  change Real.exp (((p + P.natDegree + 1 : ℕ) : ℝ) ^ 2 / (2 * Real.pi)) *
+      Real.exp (-(Real.pi / 2) * (q : ℝ) ^ 2) ≥
+        Real.exp (((p + P.natDegree : ℕ) : ℝ) * x) *
+          (Real.exp (x / 2) * Real.exp (-Real.pi * y ^ 2)) at hbase
+  have hyPow : y ^ P.natDegree =
+      (q : ℝ) ^ P.natDegree * Real.exp ((P.natDegree : ℝ) * x) := by
+    dsimp [y]
+    rw [mul_pow, ← Real.exp_nat_mul]
+  rw [hyPow] at heval
+  calc
+    Real.exp ((p : ℝ) * x) *
+        (Real.exp (x / 2) * |eval y P| * Real.exp (-Real.pi * y ^ 2)) ≤
+      thetaCuspCoeffMass P * (q : ℝ) ^ P.natDegree *
+        (Real.exp (((p + P.natDegree : ℕ) : ℝ) * x) *
+          (Real.exp (x / 2) * Real.exp (-Real.pi * y ^ 2))) := by
+      rw [show (((p + P.natDegree : ℕ) : ℝ)) =
+          (p : ℝ) + (P.natDegree : ℝ) by norm_num,
+        show ((p : ℝ) + (P.natDegree : ℝ)) * x =
+          (p : ℝ) * x + (P.natDegree : ℝ) * x by ring,
+        Real.exp_add]
+      have hnon : 0 ≤ Real.exp ((p : ℝ) * x) * Real.exp (x / 2) *
+          Real.exp (-Real.pi * y ^ 2) := by positivity
+      nlinarith
+    _ ≤ thetaCuspCoeffMass P * (q : ℝ) ^ P.natDegree *
+        (Real.exp (((p + P.natDegree + 1 : ℕ) : ℝ) ^ 2 / (2 * Real.pi)) *
+          Real.exp (-(Real.pi / 2) * (q : ℝ) ^ 2)) := by
+      apply mul_le_mul_of_nonneg_left hbase
+      exact mul_nonneg (thetaCuspCoeffMass_nonneg P)
+        (pow_nonneg (Nat.cast_nonneg q) _)
+    _ = _ := by ring
+
+/-- Every raw-tail derivative decays at every prescribed natural exponential rate.  In
+particular this gives degree-uniform domination of `rho = 4 T''` against bounded spectral
+exponential envelopes. -/
+theorem abs_thetaCuspTailDerivative_le_nat_exp_neg
+    (m p : ℕ) {x : ℝ} (hx : 0 ≤ x) :
+    |thetaCuspTailDerivative m x| ≤
+      thetaCuspTailDerivativeNatExpConstant m p * Real.exp (-(p : ℝ) * x) := by
+  let P : ℝ[X] := thetaCuspTailDerivativePolynomial m
+  let a : ℕ → ℝ := fun n => thetaCuspPolynomialAtom P (n + 1) x
+  let g : ℕ → ℝ := fun n =>
+    ((n + 1 : ℕ) : ℝ) ^ P.natDegree *
+      Real.exp (-(Real.pi / 2) * ((n + 1 : ℕ) : ℝ) ^ 2)
+  let B : ℝ := thetaCuspCoeffMass P *
+    Real.exp (((p + P.natDegree + 1 : ℕ) : ℝ) ^ 2 / (2 * Real.pi))
+  have ha : Summable a := by
+    simpa [a, P, thetaCuspTailDerivative] using summable_thetaCuspTailDerivative m x
+  have hg : Summable g := by
+    exact (summable_nat_add_iff 1).mpr
+      (summable_pow_mul_exp_neg_nat_sq P.natDegree (by positivity : 0 < Real.pi / 2))
+  have hag : Summable (fun n => Real.exp ((p : ℝ) * x) * |a n|) :=
+    ha.norm.mul_left _
+  have hBg : Summable (fun n => B * g n) := hg.mul_left _
+  have hterm (n : ℕ) : Real.exp ((p : ℝ) * x) * |a n| ≤ B * g n := by
+    dsimp [a, B, g, P]
+    simpa only [mul_assoc] using
+      exp_nat_mul_abs_thetaCuspPolynomialAtom_le_of_pos
+        (thetaCuspTailDerivativePolynomial m) p hx (Nat.succ_pos n)
+  have hsum : Real.exp ((p : ℝ) * x) * |∑' n, a n| ≤ B * ∑' n, g n := by
+    calc
+      Real.exp ((p : ℝ) * x) * |∑' n, a n| ≤
+          Real.exp ((p : ℝ) * x) * ∑' n, |a n| := by
+        gcongr
+        exact norm_tsum_le_tsum_norm ha.norm
+      _ = ∑' n, Real.exp ((p : ℝ) * x) * |a n| := by rw [tsum_mul_left]
+      _ ≤ ∑' n, B * g n := hag.tsum_le_tsum hterm hBg
+      _ = B * ∑' n, g n := by rw [tsum_mul_left]
+  rw [thetaCuspTailDerivative]
+  change |∑' n, a n| ≤ _
+  calc
+    |∑' n, a n| = Real.exp (-(p : ℝ) * x) *
+        (Real.exp ((p : ℝ) * x) * |∑' n, a n|) := by
+      rw [← mul_assoc, ← Real.exp_add]
+      simp
+    _ ≤ Real.exp (-(p : ℝ) * x) * (B * ∑' n, g n) := by gcongr
+    _ = thetaCuspTailDerivativeNatExpConstant m p * Real.exp (-(p : ℝ) * x) := by
+      simp [thetaCuspTailDerivativeNatExpConstant, B, P, g]
+      ring
+
 /-- Double integration by parts on a positive half-line, with all four endpoint values retained.
 This abstract form is used for translated theta potentials: it prevents a seam term from being
 silently lost when a reflected Haar packet is moved back to the positive source half-line. -/

@@ -89,4 +89,43 @@ theorem gram_entry_eq {n : ℕ} (v : Fin n → E) (hv : LinearIndependent ℂ v)
     rw [inner_smul_right, gramSchmidt_orthogonal ℂ v (Ne.symm hlk), mul_zero]
   · intro h; exact absurd (Finset.mem_univ k) h
 
+open Matrix in
+/-- **Gram determinant equals the product of squared Gram–Schmidt lengths.**  For a linearly
+independent family `v`, `det (gram v) = ∏ₖ ⟪gsₖ, gsₖ⟫ = ∏ₖ ‖gsₖ‖²`.  Consequently the consecutive
+Toeplitz/Gram determinant ratio `det Gₙ₊₁/det Gₙ` collapses to `‖gsₙ₊₁‖² = dist²(vₙ₊₁, span{v<ₙ₊₁})`,
+the monic-orthogonal-polynomial norm of the first Szegő limit theorem.  The proof factors
+`gram v = (conj B)·diag ⟪gsₖ,gsₖ⟫·Bᵀ` with `Bᵢₖ = ⟪gsₖ,vᵢ⟫/‖gsₖ‖²` lower-triangular with unit
+diagonal (`det B = 1`). -/
+theorem det_gram_eq_prod {n : ℕ} (v : Fin n → E) (hv : LinearIndependent ℂ v) :
+    (Matrix.gram ℂ v).det = ∏ k, ⟪gramSchmidt ℂ v k, gramSchmidt ℂ v k⟫_ℂ := by
+  set B : Matrix (Fin n) (Fin n) ℂ :=
+    Matrix.of (fun i k => ⟪gramSchmidt ℂ v k, v i⟫_ℂ / (‖gramSchmidt ℂ v k‖ : ℂ) ^ 2) with hB
+  set D : Fin n → ℂ := fun k => ⟪gramSchmidt ℂ v k, gramSchmidt ℂ v k⟫_ℂ with hD
+  have hgram : Matrix.gram ℂ v = B.map (starRingEnd ℂ) * Matrix.diagonal D * Bᵀ := by
+    ext i j
+    rw [Matrix.gram_apply, gram_entry_eq v hv i j, Matrix.mul_apply]
+    refine Finset.sum_congr rfl (fun k _ => ?_)
+    rw [Matrix.mul_diagonal, Matrix.map_apply, Matrix.transpose_apply]
+    simp only [hB, Matrix.of_apply, hD]
+    ring
+  have hlow : ∀ i j, i < j → B i j = 0 := by
+    intro i j hij
+    show ⟪gramSchmidt ℂ v j, v i⟫_ℂ / (‖gramSchmidt ℂ v j‖ : ℂ) ^ 2 = 0
+    rw [inner_gramSchmidt_left_eq_zero_of_lt v hij, zero_div]
+  have hdetB : B.det = 1 := by
+    rw [Matrix.det_of_lowerTriangular B hlow]
+    apply Finset.prod_eq_one
+    intro i _
+    show ⟪gramSchmidt ℂ v i, v i⟫_ℂ / (‖gramSchmidt ℂ v i‖ : ℂ) ^ 2 = 1
+    rw [gramSchmidt_inner_left_self]
+    have h : ⟪gramSchmidt ℂ v i, gramSchmidt ℂ v i⟫_ℂ = ((‖gramSchmidt ℂ v i‖ ^ 2 : ℝ) : ℂ) := by
+      apply Complex.ext <;> simp [inner_self_eq_norm_sq, inner_self_im]
+    rw [h, ← Complex.ofReal_pow, div_self]
+    exact Complex.ofReal_ne_zero.mpr
+      (pow_ne_zero 2 (norm_ne_zero_iff.mpr (gramSchmidt_ne_zero i hv)))
+  have hdetBmap : (B.map (starRingEnd ℂ)).det = 1 :=
+    (RingHom.map_det (starRingEnd ℂ) B).symm.trans (by rw [hdetB, map_one])
+  rw [hgram, Matrix.det_mul, Matrix.det_mul, hdetBmap, Matrix.det_transpose, hdetB,
+    Matrix.det_diagonal, one_mul, mul_one]
+
 end GaloisForLFunctions.HTGeometry

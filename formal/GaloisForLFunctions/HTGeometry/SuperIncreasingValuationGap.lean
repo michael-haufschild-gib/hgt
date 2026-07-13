@@ -15,9 +15,69 @@ balanced-atom estimates (`MagnitudeBalancedGap`) do not provide, letting the *mi
 appearing* atom dominate regardless of leading-symbol degeneracy.
 -/
 
-open Finset
+open Finset Filter Topology
 
 namespace GaloisForLFunctions
+
+/-- **Superlacunary implies super-increasing on a tail.**  If `b` is positive with successive ratios
+tending to infinity, then for every bound `C` there is a threshold past which `b` is
+`(C+1)`-super-increasing: `(C+1) · ∑_{n<k} b n ≤ b k`.  The tail of the partial sum is geometrically
+dominated by its last term, and `b → ∞` absorbs the fixed head. -/
+theorem exists_superIncreasing_of_ratio {b : ℕ → ℝ} (hbpos : ∀ n, 0 < b n)
+    (hratio : Tendsto (fun n => b (n + 1) / b n) atTop atTop) (C : ℕ) :
+    ∃ N₀, ∀ k, N₀ ≤ k → ((C : ℝ) + 1) * (∑ n ∈ Finset.range k, b n) ≤ b k := by
+  obtain ⟨N₁, hN₁⟩ := (hratio.eventually_ge_atTop (3 * ((C : ℝ) + 1))).exists_forall_of_atTop
+  have hstep : ∀ n, N₁ ≤ n → 3 * ((C : ℝ) + 1) * b n ≤ b (n + 1) := by
+    intro n hn
+    have h := hN₁ n hn
+    rw [le_div_iff₀ (hbpos n)] at h
+    linarith [h]
+  have hgeo : ∀ j, ∑ n ∈ Finset.Ico N₁ (N₁ + j + 1), b n ≤ 2 * b (N₁ + j) := by
+    intro j
+    induction j with
+    | zero =>
+      simp only [Nat.add_zero, Finset.sum_Ico_eq_sum_range, Nat.add_sub_cancel_left,
+        Finset.sum_range_one, Nat.add_zero]
+      linarith [hbpos N₁]
+    | succ j ih =>
+      have hsplit : ∑ n ∈ Finset.Ico N₁ (N₁ + j + 1 + 1), b n
+          = (∑ n ∈ Finset.Ico N₁ (N₁ + j + 1), b n) + b (N₁ + j + 1) :=
+        Finset.sum_Ico_succ_top (by omega) b
+      have hs := hstep (N₁ + j) (by omega)
+      have h2 : (2:ℝ) * b (N₁ + j) ≤ b (N₁ + j + 1) := by nlinarith [hbpos (N₁ + j)]
+      rw [show N₁ + (j + 1) = N₁ + j + 1 by omega, hsplit]
+      linarith [ih, h2]
+  have hgrow : ∀ j, (2:ℝ) ^ j * b N₁ ≤ b (N₁ + j) := by
+    intro j
+    induction j with
+    | zero => simp
+    | succ j ih =>
+      have hs := hstep (N₁ + j) (by omega)
+      have h2 : (2:ℝ) * b (N₁ + j) ≤ b (N₁ + j + 1) := by nlinarith [hbpos (N₁ + j)]
+      calc (2:ℝ) ^ (j + 1) * b N₁ = 2 * ((2:ℝ) ^ j * b N₁) := by ring
+        _ ≤ 2 * b (N₁ + j) := by linarith [ih]
+        _ ≤ b (N₁ + j + 1) := h2
+        _ = b (N₁ + (j + 1)) := by congr 1
+  set H := ∑ n ∈ Finset.range N₁, b n with hHdef
+  have hpow : Tendsto (fun j => (2:ℝ) ^ j * b N₁) atTop atTop :=
+    (tendsto_pow_atTop_atTop_of_one_lt (show (1:ℝ) < 2 by norm_num)).atTop_mul_const (hbpos N₁)
+  obtain ⟨j₀, hj₀⟩ := (hpow.eventually_ge_atTop H).exists_forall_of_atTop
+  refine ⟨N₁ + j₀ + 1, fun k hk => ?_⟩
+  obtain ⟨m, rfl⟩ : ∃ m, k = N₁ + m + 1 := ⟨k - N₁ - 1, by omega⟩
+  have hmj₀ : j₀ ≤ m := by omega
+  have hrangesplit : ∑ n ∈ Finset.range (N₁ + m + 1), b n
+      = H + ∑ n ∈ Finset.Ico N₁ (N₁ + m + 1), b n := by
+    rw [hHdef]
+    exact (Finset.sum_range_add_sum_Ico b (show N₁ ≤ N₁ + m + 1 by omega)).symm
+  have hHle : H ≤ b (N₁ + m) := le_trans (hj₀ m hmj₀) (hgrow m)
+  have hgeom := hgeo m
+  have hsm := hstep (N₁ + m) (by omega)
+  rw [hrangesplit]
+  calc ((C : ℝ) + 1) * (H + ∑ n ∈ Finset.Ico N₁ (N₁ + m + 1), b n)
+      ≤ ((C : ℝ) + 1) * (b (N₁ + m) + 2 * b (N₁ + m)) := by
+        apply mul_le_mul_of_nonneg_left _ (by positivity); linarith [hHle, hgeom]
+    _ = 3 * ((C : ℝ) + 1) * b (N₁ + m) := by ring
+    _ ≤ b (N₁ + m + 1) := hsm
 
 /-- **Super-increasing valuation gap.**  If `b` is nonnegative and `(C+1)`-super-increasing, then for a
 nonzero `g : ℕ →₀ ℤ` with `|g n| ≤ C`, the weighted valuation `∑ g n · b n` has absolute value at least

@@ -84,4 +84,18 @@ theorem norm_sum_smul_sub_integral_le {f : ℝ → ℂ} {K a h : ℝ} {N : ℕ} 
               norm_integral_sub_smul_le hh (hstep k ▸ hcell k hk') (hbound k hk')
     _ = N * K * h ^ 2 / 2 := by rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]; ring
 
+/-- **Uniform Riemann-sum error for a Lipschitz integrand.**  The `LipschitzWith`-hypothesised form of
+`norm_sum_smul_sub_integral_le`: for `f` globally `K`-Lipschitz, the left-endpoint Riemann sum over the
+grid `a + k·h` differs from `∫_a^{a+Nh} f` by at most `N·K·h²/2`.  Directly composable with any
+`LipschitzWith` bound (e.g. the tent window's). -/
+theorem norm_sum_smul_sub_integral_le_of_lipschitzWith {f : ℝ → ℂ} {K a h : ℝ} {N : ℕ}
+    (hh : 0 ≤ h) (hK : 0 ≤ K) (hint : IntervalIntegrable f volume a (a + N * h))
+    (hlip : LipschitzWith K.toNNReal f) :
+    ‖(∑ k ∈ Finset.range N, h • f (a + k * h)) - ∫ x in a..(a + N * h), f x‖
+      ≤ N * K * h ^ 2 / 2 := by
+  refine norm_sum_smul_sub_integral_le hh hint (fun k _ x hx => ?_)
+  have hxc : a + k * h ≤ x := hx.1
+  have hn := hlip.norm_sub_le x (a + k * h)
+  rwa [Real.coe_toNNReal K hK, Real.norm_eq_abs, abs_of_nonneg (by linarith)] at hn
+
 end HTGeometry

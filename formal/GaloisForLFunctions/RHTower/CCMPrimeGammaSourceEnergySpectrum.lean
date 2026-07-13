@@ -208,6 +208,34 @@ theorem riemannHypothesis_iff_primeGammaTailNegativePart_abscissa_eq_bot
     rw [habs] at hfinite
     exact EReal.bot_ne_coe _ hfinite
 
+/-- **Critical source-abscissa criterion.**  RH is equivalent to the explicit prime--Gamma
+negative source having absolute-convergence abscissa at most one. -/
+theorem riemannHypothesis_iff_primeGammaTailNegativePart_abscissa_le_one
+    {L : ℝ} (hL : 0 < L) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n → 1 ≤ n ∧ L ≤ Real.log n / 2) :
+    RiemannHypothesis ↔
+      LSeries.abscissaOfAbsConv
+        (xiRectangularPrimeGammaTailNegativeDirichletCoefficient L N) ≤
+          ((1 : ℝ) : EReal) := by
+  constructor
+  · intro hRH
+    rw [xiRectangularPrimeGammaTailNegativePart_abscissa_eq_bot_of_rh hL hN hRH]
+    exact bot_le
+  · intro habs
+    apply riemannHypothesis_of_xiRectangularWeilTailNegativePartEnergy hL hN
+    intro epsilon hepsilon
+    have hsum : LSeriesSummable
+        (xiRectangularPrimeGammaTailNegativeDirichletCoefficient L N)
+        (((1 + epsilon : ℝ) : ℂ)) := by
+      apply LSeriesSummable_of_abscissaOfAbsConv_lt_re
+      have hstrict : ((1 : ℝ) : EReal) <
+          ((1 + epsilon : ℝ) : EReal) := by
+        exact_mod_cast (by linarith : (1 : ℝ) < 1 + epsilon)
+      simpa only [ofReal_re] using habs.trans_lt hstrict
+    rw [xiRectangularPrimeGammaTailNegativeDirichletCoefficient_eq_weil hL.le hN]
+      at hsum
+    exact hsum
+
 end
 
 end RHTower
