@@ -467,11 +467,31 @@ The **concrete uniform Riemann-sum estimate `(15)` is now formalized** axiom-cle
   `‖∑_{j<N} (1/k)·g_s(j/k) − I_L(s)‖ ≤ N·C/(2k²)` with a single Lipschitz constant `C` uniform in
   `k, N`.  With `N ≈ k·e^{2L}` this is the `O(1/k)` bound of `(15)`.
 
-The remaining open piece is the last algebraic step of the *coupling* `(16)`--`(20)`: rescale the sum by
-`N^{-s} = k^{-s}(N/k)^{-s}` to turn `gGridPos_riemann_bound` into the entire-error bound
-`|E_{k,L}(s)| ≤ C·k^{-Re s}` `(17)`, sum against `Λ(k)/√k` under `vonMangoldt_shifted_summable` to get
-`H_L` holomorphic `(19)`, and interchange to `(20)` — i.e. prove the coefficient series `Pcal_L` equals
-`(22)`, at which point the RH criterion `(28)` follows from the assembled residue facts (§5, all proven).
+The **entire-error bound `(16)`--`(17)` is now also formalized** axiom-clean, in
+`RHTower/MovingTentGridLipschitz.lean`:
+
+- `gGridPos_rescale` — the per-term normalization `k^{-s}·g_s(j/k) = τ_L(log(j/k))·j^{-s}` (turning the
+  geometric grid value into the Dirichlet coefficient at `N = j`);
+- `E_kL_bound` — **eqs. 16–17**: the finite moving sum `∑_{j<N} τ_L(log(j/k))·j^{-s}` equals
+  `k^{1-s}·I_L(s)` up to `E_{k,L}(s)` with `‖E_{k,L}(s)‖ ≤ ‖k^{1-s}‖·N·C/(2k²)`.  As `‖k^{1-s}‖ =
+  k^{1-Re s}` and `N ≈ k·e^{2L}`, this is the `|E_{k,L}(s)| ≤ C·k^{-Re s}` of `(17)`.
+
+The **absolute convergence of the weighted error series `(18)`--`(19)` is now formalized** axiom-clean,
+in `RHTower/PrimePolarWeightedError.lean`:
+
+- `weighted_E_summable` — for `Re s > 1/2`, `∑_k (Λ(k)/√k)·‖E_{k,L}(s)‖ < ∞`, with
+  `E_{k,L}(s) = ∑_{j<⌈k·e^{2L}⌉} τ_L(log(j/k))·j^{-s} − k^{1-s}·I_L(s)`.  Proved by bounding each
+  `‖E_{k,L}(s)‖ ≤ C'·k^{-Re s}` (from `E_kL_bound` with the cutoff `N = ⌈k·e^{2L}⌉`) and comparing the
+  weighted term `≤ C'·Λ(k)·k^{-(Re s + 1/2)}` against `vonMangoldt_shifted_summable`.
+
+So the correction `H_L(s) = ∑_k (Λ(k)/√k)·E_{k,L}(s)` is a well-defined absolutely convergent series on
+`Re s > 1/2`.  The one remaining open piece is its **holomorphy `(19)` and the interchange `(20)`**:
+that the locally-uniformly convergent series of entire `E_{k,L}` is holomorphic (a Weierstrass M-test
+for holomorphy over the already-proven majorant), and that the double series may be interchanged so that
+`Pcal_L` equals `(22)` — a `tsum` Fubini bounded by the same majorant.  At that point the RH criterion
+`(28)` follows from the assembled §5 residue facts (all proven: `polar_cancellation`,
+`offcritical_residue`).  Every analytic, discretization, residue, and convergence brick the step needs
+is now in-tree.
 
 ## Gates
 

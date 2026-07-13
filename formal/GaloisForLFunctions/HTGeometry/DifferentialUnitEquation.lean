@@ -29,7 +29,7 @@ Descending to `ℂ[x₀]`, a final `∂_{x₁}` reads off `m·p·q = 0`, impossi
 
 * `totalDeriv` — the total derivative derivation.
 * `pderiv_succ_totalDeriv`, `pderiv_one_totalDeriv` — the two commutator identities.
-* `totalDegree_pderiv_lt`, `pderiv_ne_zero_of_mem_vars`, `pderiv_self_dvd_eq_zero` — helpers.
+* `totalDegree_pderiv_lt_natComplex`, `pderiv_ne_zero_of_mem_vars`, `pderiv_self_dvd_eq_zero` — helpers.
 * `differential_unit_no_go`, `no_differential_eigenrelation` — the obstruction.
 -/
 
@@ -122,7 +122,7 @@ theorem pderiv_one_totalDeriv (p : MvPolynomial ℕ ℂ) :
 /-! ## Degree and variable helpers -/
 
 /-- A partial derivative strictly lowers the total degree. -/
-theorem totalDegree_pderiv_lt {i : ℕ} {p : MvPolynomial ℕ ℂ} (h : pderiv i p ≠ 0) :
+theorem totalDegree_pderiv_lt_natComplex {i : ℕ} {p : MvPolynomial ℕ ℂ} (h : pderiv i p ≠ 0) :
     (pderiv i p).totalDegree < p.totalDegree := by
   classical
   have hsum : pderiv i p
@@ -172,7 +172,7 @@ theorem totalDegree_pderiv_lt {i : ℕ} {p : MvPolynomial ℕ ℂ} (h : pderiv i
 theorem pderiv_self_dvd_eq_zero {i : ℕ} {p : MvPolynomial ℕ ℂ}
     (hdvd : p ∣ pderiv i p) : pderiv i p = 0 := by
   by_contra h
-  have h1 := totalDegree_pderiv_lt h
+  have h1 := totalDegree_pderiv_lt_natComplex h
   have h2 := totalDegree_le_of_dvd_of_isDomain hdvd h
   omega
 

@@ -749,6 +749,137 @@ theorem thetaSquareIndexDyadicParityLayer_weightedSum (N : ℕ) (x : ℝ) :
       rw [pow_succ]
       ring
 
+/-- The entire weighted packet of reflected, translated exact-valuation rows telescopes to one
+reflected top row, the original density, and the universal decaying completion character. -/
+theorem thetaSquareIndexDyadicShiftedOddLayer_weightedSum
+    (N : ℕ) (x : ℝ) :
+    (∑ k ∈ Finset.range N,
+      (2 : ℝ) ^ k * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+        thetaSquareIndexDyadicOddLayer k
+          (x - thetaSquareIndexDyadicReflectionShift k)) =
+      (1 / 2 : ℝ) *
+        ((2 : ℝ) ^ N * thetaSquareIndexDyadicDensity N (-x) -
+          thetaCuspTailSecondDensity (-x) +
+          (((2 : ℝ) ^ N - 1) / 2) * Real.exp (-x / 2)) := by
+  have hpar := thetaSquareIndexDyadicParityLayer_weightedSum N (-x)
+  have href (k : ℕ) :
+      (2 : ℝ) * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+          thetaSquareIndexDyadicOddLayer k
+            (x - thetaSquareIndexDyadicReflectionShift k) =
+        thetaSquareIndexDyadicParityLayer k (-x) +
+          (1 / 2 : ℝ) * Real.exp (-x / 2) := by
+    rw [thetaSquareIndexDyadicParityLayer_neg_reflection_simplified]
+    ring
+  rw [show (∑ k ∈ Finset.range N,
+      (2 : ℝ) ^ k * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+        thetaSquareIndexDyadicOddLayer k
+          (x - thetaSquareIndexDyadicReflectionShift k)) =
+      (1 / 2 : ℝ) * ∑ k ∈ Finset.range N,
+        (2 : ℝ) ^ k *
+          (thetaSquareIndexDyadicParityLayer k (-x) +
+            (1 / 2 : ℝ) * Real.exp (-x / 2)) by
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro k _hk
+    rw [← href k]
+    ring]
+  simp_rw [mul_add]
+  rw [Finset.sum_add_distrib]
+  rw [hpar]
+  rw [← Finset.sum_mul]
+  norm_num [geom_sum_eq]
+  ring
+
+/-- One translated odd row is the discrete difference of two consecutively shifted dyadic top
+rows.  This is the local telescoping identity behind the cofinal seam collapse. -/
+theorem thetaSquareIndexDyadicShiftedOddLayer_oneStep
+    (k : ℕ) (x : ℝ) :
+    (2 : ℝ) ^ k * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+        thetaSquareIndexDyadicOddLayer k
+          (x - thetaSquareIndexDyadicReflectionShift k) =
+      (1 / 2 : ℝ) *
+        ((2 : ℝ) ^ (k + 1) *
+            thetaSquareIndexDyadicDensity (k + 1)
+              (x - 2 * ((k + 1 : ℕ) : ℝ) * Real.log 2) -
+          (2 : ℝ) ^ k * thetaSquareIndexDyadicDensity k
+            (x - 2 * (k : ℝ) * Real.log 2)) := by
+  rw [thetaSquareIndexDyadicOddLayer,
+    thetaSquareIndexDyadicDensity_eq_scaledDensity,
+    thetaSquareIndexDyadicDensity_eq_scaledDensity,
+    thetaSquareIndexDyadicDensity_eq_scaledDensity,
+    thetaSquareIndexDyadicDensity_eq_scaledDensity]
+  unfold thetaSquareIndexDyadicReflectionShift
+  have harg1 :
+      x - ((2 * k + 1 : ℕ) : ℝ) * Real.log 2 + (k : ℝ) * Real.log 2 =
+        x - ((k + 1 : ℕ) : ℝ) * Real.log 2 := by
+    push_cast
+    ring
+  have harg2 :
+      x - ((2 * k + 1 : ℕ) : ℝ) * Real.log 2 +
+          ((k + 1 : ℕ) : ℝ) * Real.log 2 =
+        x - (k : ℝ) * Real.log 2 := by
+    push_cast
+    ring
+  have harg3 :
+      x - 2 * ((k + 1 : ℕ) : ℝ) * Real.log 2 +
+          ((k + 1 : ℕ) : ℝ) * Real.log 2 =
+        x - ((k + 1 : ℕ) : ℝ) * Real.log 2 := by ring
+  have harg4 :
+      x - 2 * (k : ℝ) * Real.log 2 + (k : ℝ) * Real.log 2 =
+        x - (k : ℝ) * Real.log 2 := by ring
+  rw [harg1, harg2, harg3, harg4]
+  have hw :
+      ((((2 ^ (k + 1) : ℕ) : ℝ)) ^ (-(1 / 2 : ℝ))) =
+        (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+          ((((2 ^ k : ℕ) : ℝ)) ^ (-(1 / 2 : ℝ))) := by
+    rw [pow_succ]
+    push_cast
+    rw [Real.mul_rpow (by positivity : (0 : ℝ) ≤ (2 : ℝ) ^ k)
+      (by norm_num : (0 : ℝ) ≤ 2)]
+    ring
+  rw [hw]
+  have ha : (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+      (2 : ℝ) ^ (-(1 / 2 : ℝ)) = 1 / 2 := by
+    rw [← Real.rpow_add (by norm_num : (0 : ℝ) < 2)]
+    norm_num
+  have ha2 : ((2 : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 = 1 / 2 := by
+    simpa only [pow_two] using ha
+  let C : ℝ := (2 : ℝ) ^ k * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+    ((((2 ^ k : ℕ) : ℝ)) ^ (-(1 / 2 : ℝ))) *
+      thetaCuspTailSecondDensity (x - ((k + 1 : ℕ) : ℝ) * Real.log 2)
+  let K : ℝ := (2 : ℝ) ^ k *
+    ((((2 ^ k : ℕ) : ℝ)) ^ (-(1 / 2 : ℝ))) *
+      thetaCuspTailSecondDensity (x - (k : ℝ) * Real.log 2)
+  calc
+    _ = C - ((2 : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 * K := by
+      dsimp only [C, K]
+      ring
+    _ = C - (1 / 2 : ℝ) * K := by rw [ha2]
+    _ = _ := by
+      dsimp only [C, K]
+      rw [pow_succ]
+      ring
+
+/-- The weighted translated odd packet is exactly one remote dyadic top row minus the original
+density.  In particular all intermediate fixed-half-line seams cancel algebraically. -/
+theorem thetaSquareIndexDyadicShiftedOddLayer_weightedSum_eq_topDifference
+    (N : ℕ) (x : ℝ) :
+    (∑ k ∈ Finset.range N,
+      (2 : ℝ) ^ k * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+        thetaSquareIndexDyadicOddLayer k
+          (x - thetaSquareIndexDyadicReflectionShift k)) =
+      (1 / 2 : ℝ) *
+        ((2 : ℝ) ^ N * thetaSquareIndexDyadicDensity N
+            (x - 2 * (N : ℝ) * Real.log 2) -
+          thetaCuspTailSecondDensity x) := by
+  induction N with
+  | zero => simp [thetaSquareIndexDyadicDensity_zero]
+  | succ N ih =>
+      rw [Finset.sum_range_succ, ih,
+        thetaSquareIndexDyadicShiftedOddLayer_oneStep]
+      push_cast
+      ring
+
 /-- Weighted-variance polarization of the complete finite parity diagonal.  Every double-sum term
 is a balanced two-depth packet; the only unbalanced direction is the explicit top-row-minus-full-
 density rank one. -/
@@ -845,6 +976,223 @@ theorem thetaSquareIndexDyadicHaarLayer_reflected_polarization_simplified
     thetaSquareIndexDyadicCompletionDefect_eq,
     thetaSquareIndexDyadicCompletionDefect_eq]
   ring
+
+/-- Cofinal reflected Haar telescoping.  After summing all signed reflected layers, every
+intermediate translated odd row cancels.  Only the reflected top row, the original density cross,
+and one elementary exponential square remain. -/
+theorem thetaSquareIndexDyadicHaarLayer_reflected_sum
+    (N : ℕ) (x y : ℝ) :
+    (∑ k ∈ Finset.range N,
+      ((2 : ℝ) ^ (k + 1) *
+          thetaSquareIndexDyadicOddLayer k
+            (x - thetaSquareIndexDyadicReflectionShift k) *
+          thetaSquareIndexDyadicOddLayer k
+            (y - thetaSquareIndexDyadicReflectionShift k) -
+        (2 : ℝ) ^ k *
+          thetaSquareIndexDyadicParityLayer k (-x) *
+            thetaSquareIndexDyadicParityLayer k (-y))) =
+      (1 / 2 : ℝ) * (2 : ℝ) ^ N *
+          (thetaSquareIndexDyadicDensity N (-x) * Real.exp (-y / 2) +
+            Real.exp (-x / 2) * thetaSquareIndexDyadicDensity N (-y)) -
+        (1 / 2 : ℝ) *
+          (thetaCuspTailSecondDensity (-x) * Real.exp (-y / 2) +
+            Real.exp (-x / 2) * thetaCuspTailSecondDensity (-y)) +
+        (((2 : ℝ) ^ N - 1) / 4) *
+          Real.exp (-x / 2) * Real.exp (-y / 2) := by
+  let ex : ℝ := Real.exp (-x / 2)
+  let ey : ℝ := Real.exp (-y / 2)
+  let AX : ℝ := ∑ k ∈ Finset.range N,
+    (2 : ℝ) ^ k * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+      thetaSquareIndexDyadicOddLayer k
+        (x - thetaSquareIndexDyadicReflectionShift k)
+  let AY : ℝ := ∑ k ∈ Finset.range N,
+    (2 : ℝ) ^ k * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+      thetaSquareIndexDyadicOddLayer k
+        (y - thetaSquareIndexDyadicReflectionShift k)
+  have hAX : AX = (1 / 2 : ℝ) *
+      ((2 : ℝ) ^ N * thetaSquareIndexDyadicDensity N (-x) -
+        thetaCuspTailSecondDensity (-x) +
+        (((2 : ℝ) ^ N - 1) / 2) * ex) := by
+    simpa only [AX, ex] using
+      thetaSquareIndexDyadicShiftedOddLayer_weightedSum N x
+  have hAY : AY = (1 / 2 : ℝ) *
+      ((2 : ℝ) ^ N * thetaSquareIndexDyadicDensity N (-y) -
+        thetaCuspTailSecondDensity (-y) +
+        (((2 : ℝ) ^ N - 1) / 2) * ey) := by
+    simpa only [AY, ey] using
+      thetaSquareIndexDyadicShiftedOddLayer_weightedSum N y
+  rw [show (∑ k ∈ Finset.range N,
+      ((2 : ℝ) ^ (k + 1) *
+          thetaSquareIndexDyadicOddLayer k
+            (x - thetaSquareIndexDyadicReflectionShift k) *
+          thetaSquareIndexDyadicOddLayer k
+            (y - thetaSquareIndexDyadicReflectionShift k) -
+        (2 : ℝ) ^ k *
+          thetaSquareIndexDyadicParityLayer k (-x) *
+            thetaSquareIndexDyadicParityLayer k (-y))) =
+      ∑ k ∈ Finset.range N, (2 : ℝ) ^ k *
+        ((2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+            thetaSquareIndexDyadicOddLayer k
+              (x - thetaSquareIndexDyadicReflectionShift k) * ey +
+          (2 : ℝ) ^ (-(1 / 2 : ℝ)) * ex *
+            thetaSquareIndexDyadicOddLayer k
+              (y - thetaSquareIndexDyadicReflectionShift k) -
+          (1 / 4 : ℝ) * ex * ey) by
+    apply Finset.sum_congr rfl
+    intro k _hk
+    simpa only [ex, ey] using
+      thetaSquareIndexDyadicHaarLayer_reflected_polarization_simplified k x y]
+  rw [show (∑ k ∈ Finset.range N, (2 : ℝ) ^ k *
+      ((2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+          thetaSquareIndexDyadicOddLayer k
+            (x - thetaSquareIndexDyadicReflectionShift k) * ey +
+        (2 : ℝ) ^ (-(1 / 2 : ℝ)) * ex *
+          thetaSquareIndexDyadicOddLayer k
+            (y - thetaSquareIndexDyadicReflectionShift k) -
+        (1 / 4 : ℝ) * ex * ey)) =
+      AX * ey + ex * AY -
+        (∑ k ∈ Finset.range N, (2 : ℝ) ^ k) * (1 / 4 : ℝ) * ex * ey by
+    dsimp only [AX, AY]
+    calc
+      (∑ k ∈ Finset.range N, (2 : ℝ) ^ k *
+        ((2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+            thetaSquareIndexDyadicOddLayer k
+              (x - thetaSquareIndexDyadicReflectionShift k) * ey +
+          (2 : ℝ) ^ (-(1 / 2 : ℝ)) * ex *
+            thetaSquareIndexDyadicOddLayer k
+              (y - thetaSquareIndexDyadicReflectionShift k) -
+          (1 / 4 : ℝ) * ex * ey)) =
+        ∑ k ∈ Finset.range N,
+          ((2 : ℝ) ^ k * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+              thetaSquareIndexDyadicOddLayer k
+                (x - thetaSquareIndexDyadicReflectionShift k) * ey +
+            ex * ((2 : ℝ) ^ k * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+              thetaSquareIndexDyadicOddLayer k
+                (y - thetaSquareIndexDyadicReflectionShift k)) -
+            (2 : ℝ) ^ k * ((1 / 4 : ℝ) * ex * ey)) := by
+          apply Finset.sum_congr rfl
+          intro k _hk
+          ring
+      _ = (∑ k ∈ Finset.range N,
+            (2 : ℝ) ^ k * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+              thetaSquareIndexDyadicOddLayer k
+                (x - thetaSquareIndexDyadicReflectionShift k) * ey) +
+          (∑ k ∈ Finset.range N,
+            ex * ((2 : ℝ) ^ k * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+              thetaSquareIndexDyadicOddLayer k
+                (y - thetaSquareIndexDyadicReflectionShift k))) -
+          ∑ k ∈ Finset.range N,
+            (2 : ℝ) ^ k * ((1 / 4 : ℝ) * ex * ey) := by
+          rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
+      _ = AX * ey + ex * AY -
+          (∑ k ∈ Finset.range N, (2 : ℝ) ^ k) * (1 / 4 : ℝ) * ex * ey := by
+          have hXsum : (∑ k ∈ Finset.range N,
+              (2 : ℝ) ^ k * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+                thetaSquareIndexDyadicOddLayer k
+                  (x - thetaSquareIndexDyadicReflectionShift k) * ey) =
+              AX * ey := by
+            rw [Finset.sum_mul]
+          have hYsum : (∑ k ∈ Finset.range N,
+              ex * ((2 : ℝ) ^ k * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+                thetaSquareIndexDyadicOddLayer k
+                  (y - thetaSquareIndexDyadicReflectionShift k))) =
+              ex * AY := by
+            rw [Finset.mul_sum]
+          have hEsum : (∑ k ∈ Finset.range N,
+              (2 : ℝ) ^ k * ((1 / 4 : ℝ) * ex * ey)) =
+              (∑ k ∈ Finset.range N, (2 : ℝ) ^ k) * (1 / 4 : ℝ) * ex * ey := by
+            calc
+              _ = (∑ k ∈ Finset.range N, (2 : ℝ) ^ k) *
+                  ((1 / 4 : ℝ) * ex * ey) := by rw [Finset.sum_mul]
+              _ = _ := by ring
+          rw [hXsum, hYsum, hEsum]]
+  rw [hAX, hAY]
+  norm_num [geom_sum_eq]
+  dsimp only [ex, ey]
+  ring
+
+/-- Completion-free form of the cofinal reflected Haar sum.  The favorable negative elementary
+square remains, and the only other cofinal term is a single remote top row translated by
+`2 N log 2`; no intermediate seam survives. -/
+theorem thetaSquareIndexDyadicHaarLayer_reflected_sum_eq_topDifference
+    (N : ℕ) (x y : ℝ) :
+    (∑ k ∈ Finset.range N,
+      ((2 : ℝ) ^ (k + 1) *
+          thetaSquareIndexDyadicOddLayer k
+            (x - thetaSquareIndexDyadicReflectionShift k) *
+          thetaSquareIndexDyadicOddLayer k
+            (y - thetaSquareIndexDyadicReflectionShift k) -
+        (2 : ℝ) ^ k *
+          thetaSquareIndexDyadicParityLayer k (-x) *
+            thetaSquareIndexDyadicParityLayer k (-y))) =
+      (1 / 2 : ℝ) * (2 : ℝ) ^ N *
+          (thetaSquareIndexDyadicDensity N
+              (x - 2 * (N : ℝ) * Real.log 2) * Real.exp (-y / 2) +
+            Real.exp (-x / 2) * thetaSquareIndexDyadicDensity N
+              (y - 2 * (N : ℝ) * Real.log 2)) -
+        (1 / 2 : ℝ) *
+          (thetaCuspTailSecondDensity x * Real.exp (-y / 2) +
+            Real.exp (-x / 2) * thetaCuspTailSecondDensity y) -
+        (((2 : ℝ) ^ N - 1) / 4) *
+          Real.exp (-x / 2) * Real.exp (-y / 2) := by
+  rw [thetaSquareIndexDyadicHaarLayer_reflected_sum]
+  let ex : ℝ := Real.exp (-x / 2)
+  let ey : ℝ := Real.exp (-y / 2)
+  let c : ℝ := (2 : ℝ) ^ N - 1
+  have hX :
+      (2 : ℝ) ^ N * thetaSquareIndexDyadicDensity N (-x) -
+          thetaCuspTailSecondDensity (-x) + (c / 2) * ex =
+        (2 : ℝ) ^ N * thetaSquareIndexDyadicDensity N
+            (x - 2 * (N : ℝ) * Real.log 2) -
+          thetaCuspTailSecondDensity x := by
+    have hneg := thetaSquareIndexDyadicShiftedOddLayer_weightedSum N x
+    have hpos :=
+      thetaSquareIndexDyadicShiftedOddLayer_weightedSum_eq_topDifference N x
+    have h := hneg.symm.trans hpos
+    dsimp only [c, ex] at h ⊢
+    linarith
+  have hY :
+      (2 : ℝ) ^ N * thetaSquareIndexDyadicDensity N (-y) -
+          thetaCuspTailSecondDensity (-y) + (c / 2) * ey =
+        (2 : ℝ) ^ N * thetaSquareIndexDyadicDensity N
+            (y - 2 * (N : ℝ) * Real.log 2) -
+          thetaCuspTailSecondDensity y := by
+    have hneg := thetaSquareIndexDyadicShiftedOddLayer_weightedSum N y
+    have hpos :=
+      thetaSquareIndexDyadicShiftedOddLayer_weightedSum_eq_topDifference N y
+    have h := hneg.symm.trans hpos
+    dsimp only [c, ey] at h ⊢
+    linarith
+  calc
+    (1 / 2 : ℝ) * (2 : ℝ) ^ N *
+          (thetaSquareIndexDyadicDensity N (-x) * Real.exp (-y / 2) +
+            Real.exp (-x / 2) * thetaSquareIndexDyadicDensity N (-y)) -
+        (1 / 2 : ℝ) *
+          (thetaCuspTailSecondDensity (-x) * Real.exp (-y / 2) +
+            Real.exp (-x / 2) * thetaCuspTailSecondDensity (-y)) +
+        (((2 : ℝ) ^ N - 1) / 4) *
+          Real.exp (-x / 2) * Real.exp (-y / 2) =
+      (1 / 2 : ℝ) *
+          ((2 : ℝ) ^ N * thetaSquareIndexDyadicDensity N (-x) -
+            thetaCuspTailSecondDensity (-x) + (c / 2) * ex) * ey +
+        (1 / 2 : ℝ) * ex *
+          ((2 : ℝ) ^ N * thetaSquareIndexDyadicDensity N (-y) -
+            thetaCuspTailSecondDensity (-y) + (c / 2) * ey) -
+        (c / 4) * ex * ey := by
+          dsimp only [c, ex, ey]
+          ring
+    _ = (1 / 2 : ℝ) *
+          ((2 : ℝ) ^ N * thetaSquareIndexDyadicDensity N
+              (x - 2 * (N : ℝ) * Real.log 2) -
+            thetaCuspTailSecondDensity x) * ey +
+        (1 / 2 : ℝ) * ex *
+          ((2 : ℝ) ^ N * thetaSquareIndexDyadicDensity N
+              (y - 2 * (N : ℝ) * Real.log 2) -
+            thetaCuspTailSecondDensity y) -
+        (c / 4) * ex * ey := by rw [hX, hY]
+    _ = _ := by
+      dsimp only [c, ex, ey]
+      ring
 
 /-- The dyadic translate is exactly the full row of square indices divisible by `2^k`. -/
 theorem thetaSquareIndexDyadicDensity_eq_multiples_row (k : ℕ) (x : ℝ) :

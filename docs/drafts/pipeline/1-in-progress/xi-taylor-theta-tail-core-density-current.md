@@ -769,13 +769,39 @@ the finite core kernel and handling the single reappearing full-density rank-one
 shows why the variance identity alone is not a proof: moving it to the left rescales the original
 current rather than assigning it a sign.
 
-It is not yet the current theorem.  Reflecting the parity integral sends the positive quadrant to
-the negative quadrant, while the surviving odd row in `(12d.8b)` is translated by `ell_k`.
-Transport back to the positive source half-line sweeps a finite interval of length `ell_k`, and
-`H_d(z,x+log 2)` is not equal to `H_d(z,x)`: its finite cosine translation mixes the even and odd
-Taylor sections.  This identifies the next exact gate without a sign assumption: polarize that
-two-component finite translation and prove that its current change is a constant phase multiple
-of the squared translated value plus a schedule-superaccurate top defect.
+There is now a sharper telescoping identity that bypasses the pairwise variance expansion.  Put
+`L=log 2`, `D_k=thetaSquareIndexDyadicDensity k`, and keep `ell_k=(2k+1)L`.  Lean proves
+
+```text
+sum_(k<N) 2^k 2^(-1/2) O_k(x-ell_k)
+ =1/2[2^N D_N(x-2NL)-rho(x)].                            (12d.8g)
+```
+
+Every intermediate translated odd row cancels.  Combining `(12d.8g)` with the reflected
+one-layer polarization `(12d.8b)` gives the complete pointwise diagonal
+
+```text
+sum_(k<N){2^(k+1)O_k(x-ell_k)O_k(y-ell_k)
+          -2^k V_k(-x)V_k(-y)}
+ =2^(N-1)[D_N(x-2NL)e^(-y/2)+e^(-x/2)D_N(y-2NL)]
+  -1/2[rho(x)e^(-y/2)+e^(-x/2)rho(y)]
+  -(2^N-1)/4 e^(-(x+y)/2).                               (12d.8h)
+```
+
+Thus the conjectured cancellation of the *intermediate* fixed-half-line seams is exact.  It does
+not remove the RH-bearing direction: it concentrates it in the single remote row
+`D_N(x-2NL)`.  That row must be retained together with the density cross and the elementary
+exponential square.  Separating them is invalid: before their pointwise cancellation the reflected
+top and completion pieces are not individually integrable.  Equations `(12d.8g)`--`(12d.8h)` are
+formalized as `thetaSquareIndexDyadicShiftedOddLayer_weightedSum_eq_topDifference` and
+`thetaSquareIndexDyadicHaarLayer_reflected_sum_eq_topDifference`.
+
+It is not yet the current theorem.  Equation `(12d.8h)` has replaced all layerwise seams by the
+single remote translate `D_N(x-2N log 2)`.  Transporting that row to the already controlled
+positive top row `D_N(x)` sweeps one interval of length `2N log 2`, and `H_d(z,x+2N log 2)` is not
+equal to `H_d(z,x)`: its finite cosine translation mixes the even and odd Taylor sections.  The
+next exact gate is therefore to polarize this one two-component finite translation while retaining
+the two cross terms and exponential square in `(12d.8h)`.
 
 The infinite-phase part of that gate is now exact in Lean.  For
 `p_a(z)=exp(iaz)` and any value/derivative pair `(F,F')`,
@@ -853,24 +879,33 @@ such that, for every `m>=0`,
  <= A_p p^(-(m+1)).                                      (12d.9f)
 ```
 
-Lean proves `(12d.9f)` in `XiCTaylorThetaTailFiniteTranslationBounds`.  Combining it with the
-coefficient support `(12d.9b)` gives the following paper bound.  If `|z|<=R`, choose an integer
-`p>R+1`, put `lambda=(R+1)/p<1`, and let `a>=0`.  Then a constant `B_(p,R)` independent of `a,d`
-satisfies
+Lean proves `(12d.9f)` in `XiCTaylorThetaTailFiniteTranslationBounds`.  The same module now
+combines the exact shifted gamma moment with the arbitrary exponential decay of `T''` and proves
+the stronger density-integrated bounds below.  If `|z|<=R`, `p>0`, `a>=0`, and
+`A_(p,R)=thetaCuspTailDerivativeNatExpConstant(2,p+R)`, then
 
 ```text
-integral |T(x)| (|E_d(z;x,a)|+|partial_z E_d(z;x,a)|) dx
- <= B_(p,R)(d+1)/(1-lambda) *
-    [lambda^(d+1) exp((R+1)a)
-     +sum_(j>d) ((R+1)a)^j/j!].                          (12d.9g)
+integral |rho(x)| |E_d(z;x,a)| dx
+ <=12 A_(p,R) R^(2d+1)/p^(2d+2) exp((p+R)a),
+
+integral |rho(x)| |partial_z E_d(z;x,a)| dx
+ <=12(2d+1)A_(p,R) R^(2d+1)/p^(2d+2) exp((p+R)a)
+   +8(2d+2)A_(p,R) R^(2d+2)/p^(2d+3) exp((p+R)a).        (12d.9g)
 ```
 
-Indeed, after applying `(12d.9f)`, every edge monomial with source degree `j` and shift degree
-`q` is bounded by `A_p p^(-1) lambda^j ((R+1)a)^q/q!`.  Since `j+q>2d`, either `j>d` or `q>d`;
-the first part is a geometric tail times the full exponential series and the second is an
-exponential tail times `sum_j lambda^j`.  Spectral differentiation contributes at most the
-degree factor `4d`, absorbed in the displayed prefactor.  Thus if `d_n>=n` and
-`a_n=O(n^(1/4))`, `(12d.9g)` is smaller than every inverse power of `n`.
+The proof bounds the entire edge before expanding its source/shift bidegrees.  The finite phase
+product differs from the full exponential product by three factorial tails; its spectral
+derivative differs by three order-`2d+1` and two order-`2d+2` tails.  The exact formula
+
+```text
+integral_0^infinity (x+a)^N exp(-p x) dx
+ =sum_(m<=N) binom(N,m)a^(N-m)m!/p^(m+1)
+ <=N!/p^(N+1) exp(p a)
+```
+
+then cancels the Taylor factorial without separating the mixed terms.  Thus, after choosing
+`p>R`, `(12d.9g)` decays geometrically in `d` with only `exp((p+R)a)` translation loss.  In
+particular, if `d_n>=n` and `a_n=O(n^(1/4))`, it is smaller than every inverse power of `n`.
 
 `[CONJECTURE]` The exact diagonal should now be taken at Haar depth
 `N_n=floor(n^(1/4))`, not after an unrestricted fixed-`(d,z)` limit.  The critical rescaling
@@ -945,9 +980,12 @@ Lean proves `(12d.9j)` as `orientedPhaseCurrent_add_boundary_identity`.  The exi
 projection-commutator form of `J_a` were already formalized in `XiThetaLogTranslationSeam.lean`
 and `XiThetaBoundaryCoboundary.lean`.  Thus the bare phase theorem does not by itself reduce the
 untruncated fixed-half-line transport to `a|F|^2`: the seam self-current and two mixed currents
-remain.  The sharpened open gate is to prove that the **signed finite Haar-layer sum** cancels the
-three `J_a` terms in `(12d.9j)` up to the already discharged cofinal row.  Only after that identity
-is proved does `(12d.9g)` make the finite Taylor edge the sole analytic remainder.
+remain.  Equation `(12d.8h)` now performs the complete signed Haar summation: all intermediate
+`J_a` terms cancel, but their total is not the already discharged positive cofinal row.  It is the
+remote row `D_N(x-2N log 2)` coupled to the original-density/exponential cross and the negative
+exponential square.  The sharpened open gate is to orient this **combined three-term current**
+without separating its nonintegrable reflection pieces.  Once that untruncated identity is
+controlled, `(12d.9g)` makes its finite Taylor translation edge the sole analytic remainder.
 
 `[CONJECTURE]` The remaining arithmetic possibility is a *polarized jump energy*: integrate in a
 diagonal or difference coordinate before resolving the jumps, so that paired jumps at

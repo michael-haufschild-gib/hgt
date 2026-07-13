@@ -75,7 +75,9 @@ theorem restrictedWeilFloorPrimePolarCarrier_LSeriesSummable
       (sigma : ℂ) := by
   have hscaled : LSeriesSummable
       (fun n => (((2 * L : ℝ) : ℂ) * ((eta n : ℝ) : ℂ))) (sigma : ℂ) :=
-    LSeriesSummable.const_mul (((2 * L : ℝ) : ℂ)) heta
+    by
+      simpa only [Pi.smul_apply, smul_eq_mul] using
+        (heta.smul (((2 * L : ℝ) : ℂ)))
   have hconstant : LSeriesSummable
       (fun _n : ℕ => ((rectangularGammaPolarUniformBound L : ℝ) : ℂ))
       (sigma : ℂ) := by

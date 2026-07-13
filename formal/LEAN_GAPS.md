@@ -35,7 +35,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 1537 | `formal/GaloisForLFunctions/RHTower/XiGuinandWeilRectangularGammaCancellation.lean` |
 | 1511 | `formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean` |
 | 1502 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean` |
-| 1494 | `formal/GaloisForLFunctions/Bottcher/ZeroCircleBranchQ62.lean` |
+| 1495 | `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailFiniteTranslationBounds.lean` |
 
 ## Gap Markers
 

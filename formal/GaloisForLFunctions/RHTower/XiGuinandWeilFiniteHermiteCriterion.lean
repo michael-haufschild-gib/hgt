@@ -218,7 +218,7 @@ private theorem exists_ratCast_Ioo_not_mem_finset {a b : ℝ} (hab : a < b)
     ∃ x ∈ Set.Ioo a b, x ∉ F ∧ ∃ q : ℚ, x = (q : ℝ) := by
   let U : Set ℝ := Set.Ioo a b \ (F : Set ℝ)
   have hIoo : IsOpen (Set.Ioo a b) := _root_.isOpen_Ioo
-  have hUopen : IsOpen U := hIoo.diff F.finite_toSet.isClosed
+  have hUopen : IsOpen U := IsOpen.sdiff hIoo F.finite_toSet.isClosed
   have hUinfinite : U.Infinite := (Set.Ioo_infinite hab).diff F.finite_toSet
   have hUne : U.Nonempty := hUinfinite.nonempty
   obtain ⟨q, hq⟩ := Rat.denseRange_cast.exists_mem_open hUopen hUne

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.RectangularKreinInertia
 import GaloisForLFunctions.HTGeometry.UniversalConstraintOrientation
+import GaloisForLFunctions.HTGeometry.UniversalOrientedHerglotz
 
 /-!
 # Universal prime-residue Krein--Hamming geometry
@@ -160,6 +161,7 @@ theorem universalPrimeOrientedHerglotz_eq_regular_sub_atom
       (universalFacetOrbitGauge.norm_coe_le_norm q)) p z
   rw [show ((z - (primeLogSupport p : ℂ))⁻¹) =
       -(((primeLogSupport p : ℂ) - z)⁻¹) by rw [← inv_neg, neg_sub]] at htail
+  simp only [universalPrimeWeight]
   linear_combination htail
 
 /-- A negative Cauchy atom with any positive weight dominates a continuous background near its real
@@ -177,7 +179,6 @@ theorem exists_upper_im_neg_of_continuous_sub_weightedAtom
       (c : ℂ) * (h z - ((a : ℂ) - z)⁻¹) := by
     dsimp [h]
     field_simp
-    ring
   rw [heq, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero]
   exact mul_neg_of_pos_of_neg hc hneg
 

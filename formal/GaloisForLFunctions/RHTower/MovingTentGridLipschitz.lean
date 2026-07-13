@@ -166,4 +166,144 @@ theorem gGridPos_riemann_bound (L : ℝ) (hL : 0 ≤ L) (s : ℂ) (hs : s ≠ 1)
       ≤ (N : ℝ) * (C : ℝ) * (1 / (k : ℝ)) ^ 2 / 2 := hmain
     _ = (N : ℝ) * C / (2 * (k : ℝ) ^ 2) := by field_simp
 
+/-- **Per-term rescaling** (§3, the `N^{-s}` normalization of `(16)`).  For `j, k ≥ 1`,
+`k^{-s}·g_s(j/k) = τ_L(log(j/k))·j^{-s}` — this turns the geometric grid value `g_s(j/k)` into the
+Dirichlet coefficient at `N = j`.  Proved through the exponential form using `log(j/k) + log k = log j`. -/
+theorem gGridPos_rescale (L : ℝ) (s : ℂ) {j k : ℕ} (hj : 0 < j) (hk : 0 < k) :
+    (k : ℂ) ^ (-s) * gGridPos L s ((j : ℝ) / (k : ℝ))
+      = (tentPos L (Real.log ((j : ℝ) / (k : ℝ))) : ℂ) * (j : ℂ) ^ (-s) := by
+  have hjR : (0 : ℝ) < (j : ℝ) := by exact_mod_cast hj
+  have hkR : (0 : ℝ) < (k : ℝ) := by exact_mod_cast hk
+  have hjc : (j : ℂ) ≠ 0 := by exact_mod_cast hj.ne'
+  have hkc : (k : ℂ) ≠ 0 := by exact_mod_cast hk.ne'
+  have hke : (k : ℂ) ^ (-s) = Complex.exp (-s * (Real.log (k : ℝ) : ℂ)) := by
+    rw [Complex.cpow_def_of_ne_zero hkc, Complex.ofReal_log hkR.le, Complex.ofReal_natCast, mul_comm]
+  have hje : (j : ℂ) ^ (-s) = Complex.exp (-s * (Real.log (j : ℝ) : ℂ)) := by
+    rw [Complex.cpow_def_of_ne_zero hjc, Complex.ofReal_log hjR.le, Complex.ofReal_natCast, mul_comm]
+  rw [gGridPos, hke, hje, mul_comm ((tentPos L (Real.log ((j : ℝ) / (k : ℝ))) : ℂ)) _, ← mul_assoc,
+    ← Complex.exp_add, mul_comm _ ((tentPos L (Real.log ((j : ℝ) / (k : ℝ))) : ℂ))]
+  congr 2
+  rw [← mul_add]; congr 1
+  rw [← Complex.ofReal_add, Real.log_div hjR.ne' hkR.ne']; push_cast; ring
+
+/-- **The moving-prime-sum entire-error bound** (§3, eqs. 16–17).  The finite moving sum
+`∑_{j<N} τ_L(log(j/k))·j^{-s}` equals `k^{1-s}·I_L(s)` up to `E_{k,L}(s)` bounded by
+`‖k^{1-s}‖·N·C/(2k²)` — the source-Dirichlet-series form of the Riemann-sum estimate `(15)`.  Since
+`‖k^{1-s}‖ = k^{1-Re s}` and `N ≈ k·e^{2L}`, this is the `|E_{k,L}(s)| ≤ C·k^{-Re s}` of `(17)`, the
+per-`k` decay that makes the weighted error series `(19)` converge. -/
+theorem E_kL_bound (L : ℝ) (hL : 0 ≤ L) (s : ℂ) (hs : s ≠ 1) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (k N : ℕ), 0 < k → Real.exp (2 * L) ≤ (N : ℝ) / (k : ℝ) →
+      ‖(∑ j ∈ Finset.range N, (tentPos L (Real.log ((j : ℝ) / (k : ℝ))) : ℂ) * (j : ℂ) ^ (-s))
+          - (k : ℂ) ^ (1 - s) * (rectangularWindowAmplitude L (s - 1)) ^ 2‖
+        ≤ ‖(k : ℂ) ^ (1 - s)‖ * ((N : ℝ) * C / (2 * (k : ℝ) ^ 2)) := by
+  obtain ⟨C, hC0, hCb⟩ := gGridPos_riemann_bound L hL s hs
+  refine ⟨C, hC0, fun k N hk hN => ?_⟩
+  have hkc : (k : ℂ) ≠ 0 := by exact_mod_cast hk.ne'
+  have hcpow : (k : ℂ) ^ (1 - s) * (k : ℂ)⁻¹ = (k : ℂ) ^ (-s) := by
+    rw [show (1 : ℂ) - s = 1 + (-s) by ring, Complex.cpow_add _ _ hkc, Complex.cpow_one]
+    field_simp
+  have hsum : (∑ j ∈ Finset.range N,
+        (tentPos L (Real.log ((j : ℝ) / (k : ℝ))) : ℂ) * (j : ℂ) ^ (-s))
+      = (k : ℂ) ^ (1 - s)
+          * (∑ j ∈ Finset.range N, (1 / (k : ℝ)) • gGridPos L s ((j : ℝ) / (k : ℝ))) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl (fun j _ => ?_)
+    rcases Nat.eq_zero_or_pos j with hj0 | hj
+    · subst hj0
+      simp [gGridPos, Real.log_zero, tentPos_eq_zero_of_nonpos L (le_refl (0 : ℝ))]
+    · rw [Complex.real_smul, one_div, Complex.ofReal_inv, Complex.ofReal_natCast, ← mul_assoc, hcpow]
+      exact (gGridPos_rescale L s hj hk).symm
+  rw [hsum, ← mul_sub, norm_mul]
+  exact mul_le_mul_of_nonneg_left (hCb k N hk hN) (norm_nonneg _)
+
+/-- The explicit Lipschitz constant of the moving-tent integrand: `(L·‖s‖ + 1)·e^{|Re s|·2L}`. -/
+noncomputable def gGridK (L : ℝ) (s : ℂ) : NNReal :=
+  Real.toNNReal ((L * ‖s‖ + 1) * Real.exp (|s.re| * (2 * L)))
+
+/-- Explicit-constant form of `gGridPos_lipschitzOnWith`, with the bound `gGridK L s` exposed (needed
+for local-uniform estimates: on `‖s‖ ≤ R` it is `≤ (L·R+1)·e^{R·2L}`). -/
+theorem gGridPos_lipschitzOnWith_explicit (L : ℝ) (hL : 0 ≤ L) (s : ℂ) :
+    LipschitzOnWith (gGridK L s) (gGridPos L s) (Set.Ici 0) := by
+  have hC := gTent_lipschitzOnWith_explicit L hL s
+  set C := gGridK L s
+  have hP2 : LipschitzOnWith C (gGridPos L s) (Set.Icc 1 (Real.exp (2 * L))) := by
+    rw [lipschitzOnWith_iff_dist_le_mul] at hC ⊢
+    intro x hx y hy
+    rw [dist_eq_norm, dist_eq_norm, gGridPos_eq_gTent L s hx, gGridPos_eq_gTent L s hy,
+      ← dist_eq_norm, ← dist_eq_norm]
+    exact hC x hx y hy
+  have hP3 : LipschitzOnWith C (gGridPos L s) (Set.Ici (Real.exp (2 * L))) := by
+    rw [lipschitzOnWith_iff_dist_le_mul]; intro x hx y hy
+    rw [gGridPos_eq_zero_of_ge L s hx, gGridPos_eq_zero_of_ge L s hy, dist_self]; positivity
+  have hP1 : LipschitzOnWith C (gGridPos L s) (Set.Icc 0 1) := by
+    rw [lipschitzOnWith_iff_dist_le_mul]; intro x hx y hy
+    rw [gGridPos_eq_zero_of_mem_Icc L s hx.1 hx.2, gGridPos_eq_zero_of_mem_Icc L s hy.1 hy.2,
+      dist_self]; positivity
+  have hIci1 : LipschitzOnWith C (gGridPos L s) (Set.Ici 1) :=
+    lipschitzOnWith_of_glue (c := Real.exp (2 * L)) Set.ordConnected_Ici
+      (hP2.mono Set.Ici_inter_Iic.le) (hP3.mono Set.inter_subset_right)
+  exact lipschitzOnWith_of_glue (c := 1) Set.ordConnected_Ici
+    (hP1.mono Set.Ici_inter_Iic.le) (hIci1.mono Set.inter_subset_right)
+
+/-- Explicit-constant form of the Riemann-sum estimate `(15)`. -/
+theorem gGridPos_riemann_bound_explicit (L : ℝ) (hL : 0 ≤ L) (s : ℂ) (hs : s ≠ 1)
+    (k N : ℕ) (hk : 0 < k) (hN : Real.exp (2 * L) ≤ (N : ℝ) / (k : ℝ)) :
+    ‖(∑ j ∈ Finset.range N, (1 / (k : ℝ)) • gGridPos L s ((j : ℝ) / (k : ℝ)))
+        - (rectangularWindowAmplitude L (s - 1)) ^ 2‖
+      ≤ (N : ℝ) * ((gGridK L s : ℝ)) / (2 * (k : ℝ) ^ 2) := by
+  have hC := gGridPos_lipschitzOnWith_explicit L hL s
+  rw [lipschitzOnWith_iff_dist_le_mul] at hC
+  have hkR : (0 : ℝ) < (k : ℝ) := by exact_mod_cast hk
+  have hh : (0 : ℝ) ≤ 1 / (k : ℝ) := by positivity
+  have hcont := gGridPos_continuousOn L hL s
+  have hNk : Real.exp (2 * L) ≤ (0 : ℝ) + (N : ℝ) * (1 / (k : ℝ)) := by
+    rw [zero_add, mul_one_div]; exact hN
+  have hsubI : Set.uIcc (0 : ℝ) (0 + (N : ℝ) * (1 / (k : ℝ))) ⊆ Set.Ici 0 := by
+    rw [Set.uIcc_of_le (by positivity)]; intro z hz; exact hz.1
+  have hint : IntervalIntegrable (gGridPos L s) volume 0 (0 + (N : ℝ) * (1 / (k : ℝ))) :=
+    (hcont.mono hsubI).intervalIntegrable
+  have hbound : ∀ j : ℕ, j < N → ∀ x ∈ Set.Icc ((0 : ℝ) + (j : ℝ) * (1 / (k : ℝ)))
+      ((0 : ℝ) + (j : ℝ) * (1 / (k : ℝ)) + 1 / (k : ℝ)),
+      ‖gGridPos L s x - gGridPos L s ((0 : ℝ) + (j : ℝ) * (1 / (k : ℝ)))‖
+        ≤ ((gGridK L s : ℝ)) * (x - ((0 : ℝ) + (j : ℝ) * (1 / (k : ℝ)))) := by
+    intro j _ x hx
+    have hcpos : (0 : ℝ) ≤ (0 : ℝ) + (j : ℝ) * (1 / (k : ℝ)) := by positivity
+    have hxc : (0 : ℝ) + (j : ℝ) * (1 / (k : ℝ)) ≤ x := hx.1
+    have hxpos : (0 : ℝ) ≤ x := le_trans hcpos hxc
+    have hd := hC x hxpos ((0 : ℝ) + (j : ℝ) * (1 / (k : ℝ))) hcpos
+    rwa [dist_eq_norm, Real.dist_eq, abs_of_nonneg (by linarith)] at hd
+  have hmain := norm_sum_smul_sub_integral_le hh hint hbound
+  rw [gGridPos_integral_eq L hL s hs hNk] at hmain
+  have hgridpt : ∀ j : ℕ, (0 : ℝ) + (j : ℝ) * (1 / (k : ℝ)) = (j : ℝ) / (k : ℝ) :=
+    fun j => by rw [zero_add, mul_one_div]
+  simp only [hgridpt] at hmain
+  calc ‖(∑ j ∈ Finset.range N, (1 / (k : ℝ)) • gGridPos L s ((j : ℝ) / (k : ℝ)))
+        - (rectangularWindowAmplitude L (s - 1)) ^ 2‖
+      ≤ (N : ℝ) * ((gGridK L s : ℝ)) * (1 / (k : ℝ)) ^ 2 / 2 := hmain
+    _ = (N : ℝ) * (gGridK L s : ℝ) / (2 * (k : ℝ) ^ 2) := by field_simp
+
+/-- Explicit-constant form of the entire-error bound `(16)`--`(17)`, with `gGridK L s` exposed. -/
+theorem E_kL_bound_explicit (L : ℝ) (hL : 0 ≤ L) (s : ℂ) (hs : s ≠ 1)
+    (k N : ℕ) (hk : 0 < k) (hN : Real.exp (2 * L) ≤ (N : ℝ) / (k : ℝ)) :
+    ‖(∑ j ∈ Finset.range N, (tentPos L (Real.log ((j : ℝ) / (k : ℝ))) : ℂ) * (j : ℂ) ^ (-s))
+        - (k : ℂ) ^ (1 - s) * (rectangularWindowAmplitude L (s - 1)) ^ 2‖
+      ≤ ‖(k : ℂ) ^ (1 - s)‖ * ((N : ℝ) * (gGridK L s : ℝ) / (2 * (k : ℝ) ^ 2)) := by
+  have hkc : (k : ℂ) ≠ 0 := by exact_mod_cast hk.ne'
+  have hcpow : (k : ℂ) ^ (1 - s) * (k : ℂ)⁻¹ = (k : ℂ) ^ (-s) := by
+    rw [show (1 : ℂ) - s = 1 + (-s) by ring, Complex.cpow_add _ _ hkc, Complex.cpow_one]; field_simp
+  have hsum : (∑ j ∈ Finset.range N,
+        (tentPos L (Real.log ((j : ℝ) / (k : ℝ))) : ℂ) * (j : ℂ) ^ (-s))
+      = (k : ℂ) ^ (1 - s)
+          * (∑ j ∈ Finset.range N, (1 / (k : ℝ)) • gGridPos L s ((j : ℝ) / (k : ℝ))) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl (fun j _ => ?_)
+    rcases Nat.eq_zero_or_pos j with hj0 | hj
+    · subst hj0
+      simp [gGridPos, Real.log_zero, tentPos_eq_zero_of_nonpos L (le_refl (0 : ℝ))]
+    · rw [Complex.real_smul, one_div, Complex.ofReal_inv, Complex.ofReal_natCast, ← mul_assoc, hcpow]
+      exact (gGridPos_rescale L s hj hk).symm
+  rw [hsum, ← mul_sub, norm_mul]
+  exact mul_le_mul_of_nonneg_left (gGridPos_riemann_bound_explicit L hL s hs k N hk hN)
+    (norm_nonneg _)
+
 end RHTower

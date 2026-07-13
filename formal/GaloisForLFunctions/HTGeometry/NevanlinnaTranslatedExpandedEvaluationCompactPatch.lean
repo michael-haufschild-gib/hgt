@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.NevanlinnaExpandedEvaluationCompactPatch
 import GaloisForLFunctions.HTGeometry.CoefficientUniformJetEscape
+import GaloisForLFunctions.HTGeometry.NormalizedProjectiveCauchyDensityControl
 
 /-!
 # Compact-patch density for translated Nevanlinna jet packets
@@ -110,10 +111,12 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
     (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
     (hexponent : Function.Injective exponent)
     (hrows : Fintype.card (κ × Fin (degree + 1)) + degree < Fintype.card row)
-    (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (mu : Measure (OnePoint ℝ)) [IsProbabilityMeasure mu] (hmu : mu.support.Infinite)
     (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
+    (background : H → (row × Fin (Fintype.card (Σ i, Fin (orders i))) → ℂ))
     (nodes : H → (row × ι → ℂ)) (hnodes : ContDiff ℝ ⊤ nodes)
     (U K : Set H) (hU : IsOpen U) (hK : IsCompact K) (hKU : K ⊆ U)
+    (hbackground : ContDiffOn ℝ ⊤ background U)
     (hnodesOmega : ∀ h ∈ U, ∀ x, nodes h x ∈ Omega)
     (hupper : ∀ h ∈ U, ∀ x, η ≤ (q (nodes h x)).im)
     (hqt_inj : ∀ h ∈ K, Function.Injective (fun x => q (nodes h x)))
@@ -122,7 +125,7 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
     (hqdt : ∀ h ∈ K, ∀ x, deriv q (nodes h x) ≠ 0)
     (hdim : Module.finrank ℝ H <
       2 * (Fintype.card row - Fintype.card (κ × Fin (degree + 1)) - degree + 1)) :
-    let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+    let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
       a q zf nf haf hqdf mu hupperf
     let S := LinearMap.ker frozen.toLinearMap
     ∃ V : Submodule ℝ S, V.FG ∧
@@ -130,7 +133,7 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
         projectiveNevanlinnaJetExpansionSmoothControl
           a q (fun x : row × ι => orders x.2) mu (nodes h)
       let base := fun h =>
-        reshapeCombinedJetsFinCLM row ι orders (control h baseDensity)
+        background h + reshapeCombinedJetsFinCLM row ι orders (control h baseDensity)
       let direction := fun h =>
         (reshapeCombinedJetsFinCLM row ι orders).comp ((control h).domRestrict S)
       Dense (compactConfigurationAvoidance
@@ -138,7 +141,7 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
         (expandedDifferentialEvaluationRankDefect
           degree (Fintype.card (Σ i, Fin (orders i))) rowBase exponent) K) := by
   dsimp only
-  let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+  let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
     a q zf nf haf hqdf mu hupperf
   let S := LinearMap.ker frozen.toLinearMap
   letI normedAddCommGroupS : NormedAddCommGroup S := Submodule.normedAddCommGroup S
@@ -205,7 +208,7 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
           hat_z hqdt_z mu (fun x => hη.trans_le (z x).2)).domRestrict S) := by
       simpa [frozen, S,
         projectiveNevanlinnaJetLinftyContinuousControl_toLinearMap] using
-        (constrainedProjectiveNevanlinnaJet_linftyControl_surjective
+        (constrainedNormalizedProjectiveNevanlinnaJet_linftyControl_surjective
           a q zf (fun x => (z x).1) hqf_inj hqt_z hcross_z
           hupperf (fun x => hη.trans_le (z x).2)
           nf (fun x : row × ι => orders x.2) haf hat_z hqdf hqdt_z mu hmu)
@@ -221,7 +224,7 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
     projectiveNevanlinnaJetExpansionSmoothControl
       a q (fun x : row × ι => orders x.2) mu (nodes h)
   let base := fun h =>
-    reshapeCombinedJetsFinCLM row ι orders (control h baseDensity)
+    background h + reshapeCombinedJetsFinCLM row ι orders (control h baseDensity)
   let direction := fun h =>
     (reshapeCombinedJetsFinCLM row ι orders).comp ((control h).domRestrict S)
   let directionV := fun h =>
@@ -233,8 +236,9 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
         (fun h hh => ⟨fun x => hη.trans_le (hupper h hh x),
           fun x _ => hnodesOmega h hh x⟩)
   have hbase : ContDiffOn ℝ ⊤ base U := by
-    exact (reshapeCombinedJetsFinCLM row ι orders).contDiff.comp_contDiffOn
-      (hcontrol.clm_apply contDiffOn_const)
+    exact hbackground.add
+      ((reshapeCombinedJetsFinCLM row ι orders).contDiff.comp_contDiffOn
+        (hcontrol.clm_apply contDiffOn_const))
   have hdirection : ContDiffOn ℝ ⊤ direction U := by
     have hS : ContDiffOn ℝ ⊤ (fun h => (control h).domRestrict S) U := by
       have hsubS : ContDiffOn ℝ ⊤ (fun _ : H => S.subtypeL) U := contDiffOn_const

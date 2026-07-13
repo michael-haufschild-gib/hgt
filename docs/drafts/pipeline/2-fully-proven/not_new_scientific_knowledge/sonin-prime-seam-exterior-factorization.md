@@ -178,6 +178,77 @@ formalize and test: the lower estimate `(8e)` is already reduced to the existing
 compression, and the remaining source problem concerns one concrete zero-diagonal Gram coboundary
 on the original Sonin carrier.
 
+## Direct finite-pair alternative
+
+The later formal Calkin criterion removes even the cofinal norm rate if one can extract the
+zero-dependent seam from a completed finite-place source.  For every positive aperture and every
+pair of primes `p,q`, Lean proves
+
+```text
+essentialNorm((a_p(rho)-a_q(rho)) L_p^*L_q)
+ =|a_p(rho)-a_q(rho)|/sqrt(pq),                              (10)
+
+(a_p(rho)-a_q(rho)) L_p^*L_q is compact
+ <-> a_p(rho)=a_q(rho).                                     (11)
+```
+
+Consequently the following source theorem would already close the route without any
+prime-cutoff-uniform estimate:
+
+```text
+for every Xi divisor rho and every prime pair p,q,
+the completed prime--Gamma source realizes
+(a_p(rho)-a_q(rho)) L_p^*L_q modulo compact operators.       (12)
+```
+
+If the completed representative in `(12)` is compact, `(11)` gives pairwise coherence.  The
+formal cofinal-decay theorem then forces the common charge to be zero, and the orientation-energy
+criterion gives RH.
+
+`[OPEN ALTERNATIVE]` The finite quasi-inner theorem does not by itself prove `(12)`.  It proves
+compactness only after the prime and its allocated Gamma component have been multiplied.  An
+individual nonarchimedean ratio is not quasi-inner, and the Gamma component carries the
+noncompact counterterm.  The missing value relation is therefore an exact **Calkin extraction**:
+differentiate, polarize, or take a relative coboundary of the completed finite product in a way
+whose zero-dependent FE--Schwarz coefficient is `(a_p(rho)-a_q(rho))` and whose remaining Gamma
+term is compact.  This is a finite exact identity problem, not a cofinal rate problem, but its
+conclusion must not be assumed by separating the locally noncompact factors before completion.
+
+The finite alternative also eliminates the residual estimates from its open core.  At each fixed
+prime Lean proves that the full Sonin Gram minus its principal Gram is Hilbert--Schmidt, with the
+principal--residual linear cross itself Hilbert--Schmidt.  Therefore any exact finite completed-source
+identity for the **full** two-prime coboundary descends automatically to `(12)` in the Calkin
+quotient.  Only the completed-source value relation is missing; the residual and mixed terms need
+new uniform estimates only in the cofinal-rate branch `(8f)`.
+
+`[CONJECTURE — FINITE TANGENT-CURVATURE PRODUCER]` Introduce independent real Euler parameters
+`t_p,t_q` in the two local ratios while retaining the archimedean completion, and let `P(t_p,t_q)`
+be the semilocal Sonin kernel projection of the resulting completed quasi-inner multiplier.  Prove
+norm or graph differentiability at the empty Euler parameter and identify the two second-fundamental
+forms
+
+```text
+B_p=(1-P)(partial_p P)P,   B_q=(1-P)(partial_q P)P
+```
+
+with the corresponding principal Sonin dilation corners modulo compact operators.  The desired
+finite extraction would then be the Calkin curvature/polarization identity
+
+```text
+B_conj(a)^* B_1-B_1^* B_a
+ = sum_(r,s in {p,q})
+     (a_r(rho)-a_s(rho))/sqrt(rs) L_r^*L_s  modulo compacts. (13)
+```
+
+Compactness of the completed curvature would then make the right side compact, and the formal
+two-prime Gram compression would force `a_p(rho)=a_q(rho)`.
+
+This mechanism is source-defined and finite.  It does not assume a zero location or a cofinal
+limiting measure.  Its unproved points are substantial: Connes--Consani establish compactness for
+the exact completed local-factor products, not a differentiable multi-parameter Euler family; and
+the identification of kernel tangents with the formal Sonin principal corners is not in the
+literature or the Lean corpus.
+
 ## Literature boundary
 
 Equation `(3)` is the standard bilinearity identity `A wedge B=A tensor B-B tensor A`; `(4)` is the
@@ -224,6 +295,45 @@ cancellation in the full multiplicative product.  Hartman--Peller compact/Schatt
 the correct symbol-space language for testing such a cancellation, but no located theorem supplies
 the required prime-cutoff-uniform exterior norm rate.
 
+## Residual covariance is already uniformly trace class
+
+The coupled all-prime residual column closes one further part of the operator upper estimate.  Let
+`C_a` be the Hilbert--Schmidt column whose prime-power component is the weighted
+principal-subtracted Sonin residual `R_alpha`, and let `D_b` be diagonal multiplication by an
+arbitrary bounded charge field `b_alpha` on the prime-power output space.  Then
+
+```text
+T_a=C_a C_a^* is trace class,
+[D_b,T_a] is trace class,
+||[D_b,T_a]||_1 <= 2 ||b||_infinity ||C_a||_2^2.          (20)
+```
+
+Indeed, the trace ideal is two-sided and
+
+```text
+[D_b,C_a C_a^*]=D_b C_a C_a^*-C_a C_a^*D_b.
+```
+
+Both terms have trace norm at most `||b||_infinity ||C_a||_2^2`.  In the canonical prime-power
+block decomposition, the `(alpha,beta)` block of `(20)` is exactly
+
+```text
+(b_alpha-b_beta) R_alpha R_beta^*.                        (21)
+```
+
+Thus the complete antisymmetric Gram coboundary made from two residual legs is not part of the
+cofinal obstruction: it has a cutoff-independent trace-class realization.  Lean already proves
+the load-bearing inputs `soninAllPrimeColumnOperator_isHilbertSchmidt`, the exact cross-overlap
+block formula, and summability of all cross-overlap Hilbert--Schmidt energies in
+`SoninCoupledPrimeResidual.lean`.
+
+This reduction does not apply to the desired principal seam Gram by deleting the principal shell.
+After writing each local corner as `L_alpha=P_alpha+R_alpha`, it removes only the `R^*R`
+antisymmetric covariance.  The remaining source theorem must control the `P^*P` coboundary and
+the two principal--residual crosses, with their cancellation performed inside the completed
+prime--Gamma product.  Those are precisely the grades not assembled by the positive residual
+operator.
+
 `[OPEN CORE]` Transfer the empty-parameter Euler tangent functorially to the Schwarz-related
 one-particle sections in `(8g)` and prove that their explicit higher-grade Lambert tail has
 sufficiently small **Gram-coboundary Calkin image**, while retaining the global Poisson
@@ -245,6 +355,9 @@ finite `F`, not this cofinal first-Euler Gram coboundary.
 - [x] package the reciprocal-prime difference-matrix specialization `(8d)`--`(8e)` in Lean
 - [x] source realization of the scalar seam coefficients as finite Euler first coefficients
 - [x] exact scalar comparison of the empty and actual Euler tangent charts
+- [x] uniform trace-class control of the pure residual antisymmetric covariance
+- [ ] alternatively, finite completed-source Calkin extraction `(12)` for every prime pair
+- [ ] test the conjectural finite tangent-curvature producer `(13)`
 - [ ] bounded operator transfer of those coefficients to the seam-weighted Sonin section
-- [ ] Gram-coboundary Calkin control of the explicit higher-grade Lambert principal tail
+- [ ] Gram-coboundary Calkin control of the principal and principal--residual Lambert tail
 - [ ] source-pure one-particle upper estimate in `(8f)` (equivalently tensor collinearity `(9)`)

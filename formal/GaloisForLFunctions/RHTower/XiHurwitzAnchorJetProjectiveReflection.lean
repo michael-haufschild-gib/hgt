@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiHurwitzAnchorTransversality
+import GaloisForLFunctions.Hurwitz.LadderDeformation
 import GaloisForLFunctions.RHTower.XiArakelovHurwitzDependenceCollision
 import GaloisForLFunctions.RHTower.XiHedenmalmMomentDeterminacy
 import GaloisForLFunctions.RHTower.Reflection
@@ -25,7 +26,7 @@ from the prime--Gamma source and therefore does not by itself prove RH.
 open Complex Set Filter Metric Polynomial
 open scoped Topology Differential
 open GaloisForLFunctions GaloisForLFunctions.HTGeometry
-open HurwitzZetaContinuation HurwitzJointLadder HurwitzOrbit
+open HurwitzZetaContinuation HurwitzJointLadder HurwitzOrbit HurwitzLadder
 
 namespace RHTower
 
@@ -52,7 +53,8 @@ theorem continuedHzeta_anchorJet_conj (r : ℕ) {s : ℂ}
   rw [ascPochhammer_eval_conj]
   have hz := riemannZeta_conj_of_one_lt (s := s + r) (by
     rw [Complex.add_re, Complex.natCast_re]
-    exact_mod_cast (show (1 : ℝ) < s.re + r by omega))
+    have hr1 : (1 : ℝ) ≤ (r : ℝ) := by exact_mod_cast hr
+    linarith [hs])
   rw [show (starRingEnd ℂ) s + (r : ℂ) =
       (starRingEnd ℂ) (s + r) by simp, hz]
   simp
@@ -63,9 +65,9 @@ analytic identity theorem. -/
 theorem eventuallyEq_at_one_eqOn_UHP
     {f g : ℂ → ℂ}
     (hf : AnalyticOnNhd ℂ f UHP) (hg : AnalyticOnNhd ℂ g UHP)
-    (hlocal : f =ᶠ[𝒯 (1 : ℂ)] g) : Set.EqOn f g UHP := by
-  have hmem : {z : ℂ | f z = g z} ∈ 𝒯 (1 : ℂ) := hlocal
-  obtain ⟨t, htsub, htopen, h1t⟩ := mem_nhds_iff.mp hmem
+    (hlocal : f =ᶠ[𝓝 (1 : ℂ)] g) : Set.EqOn f g UHP := by
+  have hmem : {z : ℂ | f z = g z} ∈ 𝓝 (1 : ℂ) := hlocal
+  obtain ⟨t, htsub, htopen, h1t⟩ := _root_.mem_nhds_iff.mp hmem
   obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp htopen 1 h1t
   let a : ℂ := 1 + (ε / 2 : ℝ) * Complex.I
   have haU : a ∈ UHP := by
@@ -80,7 +82,7 @@ theorem eventuallyEq_at_one_eqOn_UHP
     rw [abs_of_pos (by positivity : 0 < ε / 2)]
     linarith
   have hat : a ∈ t := hball haBall
-  have haLocal : f =ᶠ[𝒯 a] g := by
+  have haLocal : f =ᶠ[𝓝 a] g := by
     filter_upwards [htopen.mem_nhds hat] with z hzt
     exact htsub hzt
   exact hf.eqOn_of_preconnected_of_eventuallyEq hg isPreconnected_UHP haU haLocal
@@ -132,7 +134,7 @@ theorem xi_re_eq_half_of_anchorJetProjectiveReflectionCompatible
   have hconj1 : (starRingEnd ℂ) rho ≠ 1 := by
     intro h
     have hre := congrArg Complex.re h
-    simp only [map_re, Complex.one_re] at hre
+    simp only [Complex.conj_re, Complex.one_re] at hre
     linarith
   have hder : ∀ r : ℕ,
       iteratedDeriv r (continuedHzeta (1 - rho)) 1 =
@@ -145,9 +147,10 @@ theorem xi_re_eq_half_of_anchorJetProjectiveReflectionCompatible
       rw [continuedHzeta_xiZero_at_one hrefstrip.1 href1 hzref,
         continuedHzeta_xiZero_at_one hconjstrip.1 hconj1 hzconj, mul_zero]
     · rw [GaloisForLFunctions.iteratedDeriv_const_mul_field,
-        hcompat r (Nat.pos_of_ne_zero hr),
-        continuedHzeta_anchorJet_conj r hstrip.1 (Nat.pos_of_ne_zero hr)]
-  have hlocal : continuedHzeta (1 - rho) =ᶠ[𝒯 (1 : ℂ)]
+        hcompat r (Nat.pos_of_ne_zero hr)]
+      beta_reduce
+      rw [continuedHzeta_anchorJet_conj r hstrip.1 (Nat.pos_of_ne_zero hr)]
+  have hlocal : continuedHzeta (1 - rho) =ᶠ[𝓝 (1 : ℂ)]
       (fun a => c * continuedHzeta ((starRingEnd ℂ) rho) a) :=
     analyticAt_eventuallyEq_of_all_iteratedDeriv_eq
       (continuedHzeta_analyticAt_one hrefstrip.1)
@@ -164,6 +167,7 @@ theorem xi_re_eq_half_of_anchorJetProjectiveReflectionCompatible
         continuedHzetaUpperEndAnalytic ((starRingEnd ℂ) rho) := by
     apply Subtype.ext
     apply Germ.coe_eq.mpr
+    simp only [Filter.EventuallyEq]
     rw [upperEndFilter_basis.eventually_iff]
     refine ⟨0, trivial, ?_⟩
     intro a ha
@@ -199,7 +203,7 @@ theorem xi_re_eq_half_of_anchorJetProjectiveReflectionCompatible
   have heq : 1 - rho = (starRingEnd ℂ) rho :=
     openCriticalStrip_eq_of_sub_eq_int hrefstrip hconjstrip m hm
   have hre := congrArg Complex.re heq
-  simp only [Complex.sub_re, Complex.one_re, map_re] at hre
+  simp only [Complex.sub_re, Complex.one_re, Complex.conj_re] at hre
   linarith
 
 /-- Global source-value hypothesis: every Xi divisor point has projectively reflected complete

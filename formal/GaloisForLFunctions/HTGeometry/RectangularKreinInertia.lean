@@ -198,7 +198,7 @@ theorem rectangular_exact_pos_inertia {N kp kn : ℕ}
           -(star y ⬝ᵥ (rectangularKreinForm w u).mulVec y).re := by
       rw [neg_mulVec, dotProduct_neg, Complex.neg_re]
     rw [hquad] at hn
-    exact neg_pos.mp hn
+    linarith [hn]
 
 /-- Combined feature independence gives the surjectivity required by the exact rectangular inertia
 theorems. -/

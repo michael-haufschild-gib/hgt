@@ -82,7 +82,8 @@ theorem multipleEllipticGammaAdditiveLogKernel_reindex
       multipleEllipticGammaAdditiveLogKernel τ z := by
   rw [multipleEllipticGammaAdditiveLogKernel,
     multipleEllipticGammaAdditiveLogKernel,
-    multipleEllipticGammaLogKernel_reindex]
+    multipleEllipticGammaLogKernel_reindex e (fun i => ellipticNome (τ i))
+      (multipleEllipticGammaCoordinate z)]
 
 theorem multipleEllipticGammaForwardFactor_reindex
     (e : κ ≃ ι) (τ : ι → ℂ) (n : κ → ℕ) (z : ℂ) :
@@ -91,7 +92,8 @@ theorem multipleEllipticGammaForwardFactor_reindex
         (multipleEllipticGammaReindexMultiIndex e n) z := by
   rw [multipleEllipticGammaForwardFactor,
     multipleEllipticGammaForwardFactor,
-    multipleEllipticGammaForwardArgument_reindex]
+    multipleEllipticGammaForwardArgument_reindex e (fun i => ellipticNome (τ i))
+      (multipleEllipticGammaCoordinate z) n]
 
 theorem multipleEllipticGammaBackwardFactor_reindex
     (e : κ ≃ ι) (τ : ι → ℂ) (n : κ → ℕ) (z : ℂ) :
@@ -100,7 +102,8 @@ theorem multipleEllipticGammaBackwardFactor_reindex
         (multipleEllipticGammaReindexMultiIndex e n) z := by
   rw [multipleEllipticGammaBackwardFactor,
     multipleEllipticGammaBackwardFactor,
-    multipleEllipticGammaBackwardArgument_reindex]
+    multipleEllipticGammaBackwardArgument_reindex e (fun i => ellipticNome (τ i))
+      (multipleEllipticGammaCoordinate z) n]
 
 theorem multipleEllipticGammaForwardProduct_reindex
     (e : κ ≃ ι) (τ : ι → ℂ) (z : ℂ) :

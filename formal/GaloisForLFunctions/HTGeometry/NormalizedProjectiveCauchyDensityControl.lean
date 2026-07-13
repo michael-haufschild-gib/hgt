@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ProjectiveCauchyDensityControl
 import GaloisForLFunctions.HTGeometry.ProjectiveFiniteConstraintCarrierAperture
+import GaloisForLFunctions.HTGeometry.ProjectiveNevanlinnaGenericity
 
 /-!
 # Normalized projective Cauchy and Nevanlinna density control
@@ -256,6 +257,235 @@ theorem normalizedCauchyJetRealLinearCombination_surjective
   rw [hexpand]
   simp only [map_sum, map_add, map_smul]
   simp_rw [sub_eq_zero.mp hr, hAeq, hBeq]
+
+/-- The mass functional and one projective Cauchy-jet packet as a single continuous control. -/
+def normalizedProjectiveCauchyJetLinftyContinuousControl
+    {ι : Type*} [Fintype ι]
+    (x : ι → ℂ) (n : ι → ℕ)
+    (mu : Measure (OnePoint ℝ)) [IsProbabilityMeasure mu]
+    (hupper : ∀ i, 0 < (x i).im) :
+    Lp ℝ (⊤ : ENNReal) mu →L[ℝ] (ℝ × ((Σ i, Fin (n i)) → ℂ)) :=
+  (linftyIntegralCLM mu).prod
+    (linftyBochnerControl mu (projectiveCauchyJetColumn x n)
+      (memLp_projectiveCauchyJetColumn x (fun i => (hupper i).ne') n mu))
+
+/-- On every density, the normalized projective control is literally total mass paired with the
+ordinary projective Cauchy-jet control. -/
+@[simp] theorem normalizedProjectiveCauchyJetLinftyContinuousControl_apply
+    {ι : Type*} [Fintype ι]
+    (x : ι → ℂ) (n : ι → ℕ)
+    (mu : Measure (OnePoint ℝ)) [IsProbabilityMeasure mu]
+    (hupper : ∀ i, 0 < (x i).im)
+    (w : Lp ℝ (⊤ : ENNReal) mu) :
+    normalizedProjectiveCauchyJetLinftyContinuousControl x n mu hupper w =
+      (linftyIntegralCLM mu w,
+        linftyBochnerControl mu (projectiveCauchyJetColumn x n)
+          (memLp_projectiveCauchyJetColumn x (fun i => (hupper i).ne') n mu) w) := by
+  rfl
+
+/-- Infinite projective support makes mass plus every finite upper-half-plane Cauchy packet
+jointly controllable by genuine bounded densities. -/
+theorem normalizedProjectiveCauchyJetLinftyContinuousControl_surjective
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (x : ι → ℂ) (hx : Function.Injective x) (hupper : ∀ i, 0 < (x i).im)
+    (n : ι → ℕ)
+    (mu : Measure (OnePoint ℝ)) [IsProbabilityMeasure mu]
+    (hmu : mu.support.Infinite) :
+    Function.Surjective
+      (normalizedProjectiveCauchyJetLinftyContinuousControl x n mu hupper) := by
+  let K : OnePoint ℝ → (ℝ × ((Σ i, Fin (n i)) → ℂ)) := fun t =>
+    (1, projectiveCauchyJetColumn x n t)
+  have hKcont : Continuous K :=
+    continuous_const.prodMk
+      (continuous_projectiveCauchyJetColumn x (fun i => (hupper i).ne') n)
+  have hKlp : MemLp K 1 mu :=
+    hKcont.memLp_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+  letI : Infinite (finiteProjectiveSupport mu) :=
+    infinite_finiteProjectiveSupport mu hmu
+  have hfinite : Function.Surjective
+      (Finsupp.linearCombination ℝ
+        (fun t : finiteProjectiveSupport mu => K (t.1 : OnePoint ℝ))) := by
+    simpa [K, normalizedCauchyJetRealLinearCombination,
+      normalizedCauchyJetColumn, projectiveCauchyJetColumn,
+      projectiveCauchyPower, cauchyJetColumn] using
+      (normalizedCauchyJetRealLinearCombination_surjective
+        x hx hupper n (fun t : finiteProjectiveSupport mu => t.1)
+          (fun _ _ h => Subtype.ext h))
+  have hbochner : Function.Surjective (linftyBochnerControl mu K hKlp) :=
+    linftyBochnerControl_surjective_of_support_finsupp mu K hKlp hKcont
+      (fun t : finiteProjectiveSupport mu => (t.1 : OnePoint ℝ))
+      (fun t => t.2) hfinite
+  have heq : linftyBochnerControl mu K hKlp =
+      normalizedProjectiveCauchyJetLinftyContinuousControl x n mu hupper := by
+    apply ContinuousLinearMap.ext
+    intro w
+    have hpair : Integrable (fun y => (w y) • K y) mu := by
+      exact (ContinuousLinearMap.lsmul ℝ ℝ :
+        ℝ →L[ℝ] (ℝ × ((Σ i, Fin (n i)) → ℂ)) →L[ℝ]
+          (ℝ × ((Σ i, Fin (n i)) → ℂ))).integrable_of_bilin_of_bdd_left
+            ‖w‖ (Lp.memLp w).1 (linfty_ae_abs_le_norm mu w)
+            (hKlp.integrable (by norm_num))
+    apply Prod.ext
+    · rw [normalizedProjectiveCauchyJetLinftyContinuousControl_apply,
+        linftyBochnerControl_apply, linftyIntegralCLM_apply]
+      let fstCLM : (ℝ × ((Σ i, Fin (n i)) → ℂ)) →L[ℝ] ℝ :=
+        ContinuousLinearMap.fst ℝ ℝ ((Σ i, Fin (n i)) → ℂ)
+      change fstCLM (∫ y, (w y) • K y ∂mu) = ∫ y, w y ∂mu
+      rw [← fstCLM.integral_comp_comm hpair]
+      apply integral_congr_ae
+      filter_upwards [] with y
+      simp [fstCLM, K]
+    · rw [normalizedProjectiveCauchyJetLinftyContinuousControl_apply,
+        linftyBochnerControl_apply, linftyBochnerControl_apply]
+      let sndCLM : (ℝ × ((Σ i, Fin (n i)) → ℂ)) →L[ℝ]
+          ((Σ i, Fin (n i)) → ℂ) :=
+        ContinuousLinearMap.snd ℝ ℝ ((Σ i, Fin (n i)) → ℂ)
+      change sndCLM (∫ y, (w y) • K y ∂mu) =
+        ∫ y, (w y) • projectiveCauchyJetColumn x n y ∂mu
+      rw [← sndCLM.integral_comp_comm hpair]
+      apply integral_congr_ae
+      filter_upwards [] with y
+      simp [sndCLM, K]
+  rw [← heq]
+  exact hbochner
+
+/-- Target projective Cauchy jets remain onto after both total mass and a disjoint frozen packet
+are fixed exactly. -/
+theorem constrainedNormalizedProjectiveCauchyJet_linftyControl_surjective
+    {ιf ιt : Type*} [Fintype ιf] [DecidableEq ιf]
+    [Fintype ιt] [DecidableEq ιt]
+    (xf : ιf → ℂ) (hxf : Function.Injective xf)
+    (xt : ιt → ℂ) (hxt : Function.Injective xt)
+    (hcross : ∀ i j, xf i ≠ xt j)
+    (hupperf : ∀ i, 0 < (xf i).im) (huppert : ∀ i, 0 < (xt i).im)
+    (nf : ιf → ℕ) (nt : ιt → ℕ)
+    (mu : Measure (OnePoint ℝ)) [IsProbabilityMeasure mu]
+    (hmu : mu.support.Infinite) :
+    let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+      xf nf mu hupperf
+    let target := linftyBochnerControl mu (projectiveCauchyJetColumn xt nt)
+      (memLp_projectiveCauchyJetColumn xt (fun i => (huppert i).ne') nt mu)
+    Function.Surjective (target.toLinearMap.domRestrict
+      (LinearMap.ker frozen.toLinearMap)) := by
+  dsimp only
+  let x : ιf ⊕ ιt → ℂ := Sum.elim xf xt
+  let n : ιf ⊕ ιt → ℕ := Sum.elim nf nt
+  have hx : Function.Injective x := by
+    intro a b hab
+    rcases a with i | i <;> rcases b with j | j
+    · exact congrArg Sum.inl (hxf hab)
+    · exact False.elim (hcross i j hab)
+    · exact False.elim (hcross j i hab.symm)
+    · exact congrArg Sum.inr (hxt hab)
+  have hupper : ∀ i, 0 < (x i).im := by
+    intro i
+    rcases i with i | i
+    · exact hupperf i
+    · exact huppert i
+  have hsurj := normalizedProjectiveCauchyJetLinftyContinuousControl_surjective
+    x hx hupper n mu hmu
+  intro y
+  let z : ℝ × ((Σ i, Fin (n i)) → ℂ) :=
+    (0, fun q => match q with
+      | ⟨Sum.inl _, _⟩ => 0
+      | ⟨Sum.inr i, j⟩ => y ⟨i, j⟩)
+  obtain ⟨w, hw⟩ := hsurj z
+  have hmass : linftyIntegralCLM mu w = 0 := by
+    exact congrArg Prod.fst hw
+  have hwf : linftyBochnerControl mu (projectiveCauchyJetColumn xf nf)
+      (memLp_projectiveCauchyJetColumn xf (fun i => (hupperf i).ne') nf mu) w = 0 := by
+    funext q
+    have hq := congrFun (congrArg Prod.snd hw) ⟨Sum.inl q.1, q.2⟩
+    rw [normalizedProjectiveCauchyJetLinftyContinuousControl_apply] at hq
+    change (linftyBochnerControl mu (projectiveCauchyJetColumn x n)
+      (memLp_projectiveCauchyJetColumn x (fun i => (hupper i).ne') n mu) w)
+        ⟨Sum.inl q.1, q.2⟩ = z.2 ⟨Sum.inl q.1, q.2⟩ at hq
+    rw [linftyBochnerControl_apply_pi] at hq
+    rw [linftyBochnerControl_apply_pi]
+    simpa [x, n, z, projectiveCauchyJetColumn] using hq
+  have hwker : (normalizedProjectiveCauchyJetLinftyContinuousControl
+      xf nf mu hupperf).toLinearMap w = 0 := by
+    apply Prod.ext
+    · simpa using hmass
+    · simpa using hwf
+  refine ⟨⟨w, hwker⟩, ?_⟩
+  funext q
+  have hq := congrFun (congrArg Prod.snd hw) ⟨Sum.inr q.1, q.2⟩
+  rw [normalizedProjectiveCauchyJetLinftyContinuousControl_apply] at hq
+  change (linftyBochnerControl mu (projectiveCauchyJetColumn x n)
+    (memLp_projectiveCauchyJetColumn x (fun i => (hupper i).ne') n mu) w)
+      ⟨Sum.inr q.1, q.2⟩ = z.2 ⟨Sum.inr q.1, q.2⟩ at hq
+  change linftyBochnerControl mu (projectiveCauchyJetColumn xt nt)
+    (memLp_projectiveCauchyJetColumn xt (fun i => (huppert i).ne') nt mu) w q = y q
+  rw [linftyBochnerControl_apply_pi]
+  rw [linftyBochnerControl_apply_pi] at hq
+  simpa [x, n, z, projectiveCauchyJetColumn] using hq
+
+/-- The normalized genuine Nevanlinna frozen control: total mass together with a finite analytic
+Nevanlinna-jet packet. -/
+def normalizedProjectiveNevanlinnaJetLinftyContinuousControl
+    {ι : Type*} [Fintype ι]
+    (a q : ℂ → ℂ) (z : ι → ℂ) (n : ι → ℕ)
+    (ha : ∀ i, a (z i) ≠ 0) (hq : ∀ i, deriv q (z i) ≠ 0)
+    (mu : Measure (OnePoint ℝ)) [IsProbabilityMeasure mu]
+    (hupper : ∀ i, 0 < (q (z i)).im) :
+    Lp ℝ (⊤ : ENNReal) mu →L[ℝ]
+      (ℝ × ((Σ i, Fin (n i)) → ℂ)) :=
+  (linftyIntegralCLM mu).prod
+    (projectiveNevanlinnaJetLinftyContinuousControl
+      a q z n ha hq mu hupper)
+
+/-- **Normalized constrained genuine Nevanlinna controllability.** Every disjoint finite target
+packet remains onto on the exact tangent that annihilates both total mass and the frozen genuine
+Nevanlinna packet. -/
+theorem constrainedNormalizedProjectiveNevanlinnaJet_linftyControl_surjective
+    {ιf ιt : Type*} [Fintype ιf] [DecidableEq ιf]
+    [Fintype ιt] [DecidableEq ιt]
+    (a q : ℂ → ℂ)
+    (zf : ιf → ℂ) (zt : ιt → ℂ)
+    (hqf_inj : Function.Injective (fun i => q (zf i)))
+    (hqt_inj : Function.Injective (fun i => q (zt i)))
+    (hcross : ∀ i j, q (zf i) ≠ q (zt j))
+    (hupperf : ∀ i, 0 < (q (zf i)).im) (huppert : ∀ i, 0 < (q (zt i)).im)
+    (nf : ιf → ℕ) (nt : ιt → ℕ)
+    (haf : ∀ i, a (zf i) ≠ 0) (hat : ∀ i, a (zt i) ≠ 0)
+    (hqdf : ∀ i, deriv q (zf i) ≠ 0) (hqdt : ∀ i, deriv q (zt i) ≠ 0)
+    (mu : Measure (OnePoint ℝ)) [IsProbabilityMeasure mu]
+    (hmu : mu.support.Infinite) :
+    let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
+      a q zf nf haf hqdf mu hupperf
+    let target := projectiveNevanlinnaJetLinftyContinuousControl
+      a q zt nt hat hqdt mu huppert
+    Function.Surjective (target.toLinearMap.domRestrict
+      (LinearMap.ker frozen.toLinearMap)) := by
+  dsimp only
+  let frozenCauchy := normalizedProjectiveCauchyJetLinftyContinuousControl
+    (fun i => q (zf i)) nf mu hupperf
+  let targetCauchy := linftyBochnerControl mu
+    (projectiveCauchyJetColumn (fun i => q (zt i)) nt)
+    (memLp_projectiveCauchyJetColumn (fun i => q (zt i))
+      (fun i => (huppert i).ne') nt mu)
+  let frozenEquiv :
+      (ℝ × ((Σ i, Fin (nf i)) → ℂ)) ≃ₗ[ℝ]
+        (ℝ × ((Σ i, Fin (nf i)) → ℂ)) :=
+    LinearEquiv.prodCongr (LinearEquiv.refl ℝ ℝ)
+      ((nevanlinnaJetPacketLinearEquiv a q zf nf haf hqdf).restrictScalars ℝ)
+  let targetEquiv :=
+    (nevanlinnaJetPacketLinearEquiv a q zt nt hat hqdt).restrictScalars ℝ
+  have hsurj : Function.Surjective
+      (targetCauchy.toLinearMap.domRestrict
+        (LinearMap.ker frozenCauchy.toLinearMap)) := by
+    exact constrainedNormalizedProjectiveCauchyJet_linftyControl_surjective
+      (fun i => q (zf i)) hqf_inj (fun i => q (zt i)) hqt_inj hcross
+      hupperf huppert nf nt mu hmu
+  have hconverted := constrainedControl_surjective_of_linearEquiv
+    frozenCauchy.toLinearMap targetCauchy.toLinearMap frozenEquiv targetEquiv hsurj
+  simpa [frozenCauchy, targetCauchy, frozenEquiv, targetEquiv,
+    normalizedProjectiveCauchyJetLinftyContinuousControl,
+    normalizedProjectiveNevanlinnaJetLinftyContinuousControl,
+    projectiveNevanlinnaJetLinftyContinuousControl,
+    projectiveNevanlinnaJetLinftyControl,
+    projectiveNevanlinnaJetLinftyContinuousControl_toLinearMap] using hconverted
 
 end
 

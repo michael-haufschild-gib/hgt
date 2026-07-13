@@ -213,6 +213,56 @@ theorem gTent_lipschitzOnWith (L : ℝ) (hL : 0 ≤ L) (s : ℂ) :
     nlinarith [le_abs_self s.re, neg_abs_le s.re, abs_nonneg s.re, hlu0, hlu2]
   exact ⟨_, lipschitzOnWith_mul_of_bound hA hB hboundA hboundB⟩
 
+/-- **Explicit Lipschitz constant for the moving-tent integrand.**  `gTent L s` is Lipschitz on the
+support `[1, e^{2L}]` with the concrete constant `(L·‖s‖ + 1)·e^{|Re s|·2L}`.  This exposed constant is
+what makes the moving-tent series' local-uniform bounds (hence the holomorphy of `H_L`) provable — on a
+ball `‖s‖ ≤ R` it is bounded by `(L·R + 1)·e^{R·2L}`. -/
+theorem gTent_lipschitzOnWith_explicit (L : ℝ) (hL : 0 ≤ L) (s : ℂ) :
+    LipschitzOnWith (Real.toNNReal ((L * ‖s‖ + 1) * Real.exp (|s.re| * (2 * L))))
+      (gTent L s) (Set.Icc 1 (Real.exp (2 * L))) := by
+  have hsub : Set.Icc (1 : ℝ) (Real.exp (2 * L)) ⊆ Set.Ici 1 := fun u hu => hu.1
+  have hlog : LipschitzOnWith 1 Real.log (Set.Icc 1 (Real.exp (2 * L))) :=
+    lipschitzOnWith_log_Ici_one.mono hsub
+  have htentC : LipschitzWith (1 * 1) (fun x : ℝ => (↑(tentFn L x) : ℂ)) :=
+    (Complex.isometry_ofReal.lipschitz).comp (lipschitzWith_tentFn L)
+  have hA : LipschitzOnWith ((1 * 1) * 1) (fun u => (↑(tentFn L (Real.log u)) : ℂ))
+      (Set.Icc 1 (Real.exp (2 * L))) :=
+    htentC.lipschitzOnWith.comp hlog (Set.mapsTo_univ _ _)
+  have hmaps : Set.MapsTo Real.log (Set.Icc 1 (Real.exp (2 * L))) (Set.Icc 0 (2 * L)) := by
+    intro u hu
+    refine ⟨Real.log_nonneg hu.1, ?_⟩
+    calc Real.log u ≤ Real.log (Real.exp (2 * L)) := Real.log_le_log (by linarith [hu.1]) hu.2
+      _ = 2 * L := Real.log_exp _
+  have hB : LipschitzOnWith (_ * 1) (fun u => Complex.exp (-s * (Real.log u : ℂ)))
+      (Set.Icc 1 (Real.exp (2 * L))) :=
+    (lipschitzOnWith_cexp_neg_mul s (2 * L) (by positivity)).comp hlog hmaps
+  have hboundA : ∀ u ∈ Set.Icc (1 : ℝ) (Real.exp (2 * L)), ‖(↑(tentFn L (Real.log u)) : ℂ)‖ ≤ L := by
+    intro u hu
+    have hlu0 : 0 ≤ Real.log u := Real.log_nonneg hu.1
+    have hlu2 : Real.log u ≤ 2 * L := (hmaps hu).2
+    rw [Complex.norm_real, Real.norm_eq_abs, tentFn_eq_min,
+      abs_of_nonneg (le_min hlu0 (by linarith))]
+    have h1 := min_le_left (Real.log u) (2 * L - Real.log u)
+    have h2 := min_le_right (Real.log u) (2 * L - Real.log u)
+    linarith
+  have hboundB : ∀ u ∈ Set.Icc (1 : ℝ) (Real.exp (2 * L)),
+      ‖Complex.exp (-s * (Real.log u : ℂ))‖ ≤ Real.exp (|s.re| * (2 * L)) := by
+    intro u hu
+    have hlu0 : 0 ≤ Real.log u := Real.log_nonneg hu.1
+    have hlu2 : Real.log u ≤ 2 * L := (hmaps hu).2
+    rw [Complex.norm_exp]
+    apply Real.exp_le_exp.mpr
+    have hre : (-s * (Real.log u : ℂ)).re = -(s.re) * Real.log u := by simp [Complex.mul_re]
+    rw [hre]
+    nlinarith [le_abs_self s.re, neg_abs_le s.re, abs_nonneg s.re, hlu0, hlu2]
+  refine (lipschitzOnWith_mul_of_bound hA hB hboundA hboundB).weaken (le_of_eq ?_)
+  rw [← NNReal.coe_inj]
+  push_cast [Real.coe_toNNReal _ hL,
+    Real.coe_toNNReal _ (by positivity : (0:ℝ) ≤ ‖s‖ * Real.exp (|s.re| * (2 * L))),
+    Real.coe_toNNReal _ (by positivity : (0:ℝ) ≤ Real.exp (|s.re| * (2 * L))),
+    Real.coe_toNNReal _ (by positivity : (0:ℝ) ≤ (L * ‖s‖ + 1) * Real.exp (|s.re| * (2 * L)))]
+  ring
+
 /-- **The integral of the moving-tent integrand equals the tent Mellin factor** (§3, connecting
 `(13)` to `(8)`).  Under the substitution `u = eˣ`, `∫₁^{e^{2L}} g_s(u) du = ∫₀^{2L} τ_L(x) e^{-(s-1)x} dx`.
 The improper `∫₀^∞` of `(8)` reduces to this compact integral because `g_s` is supported on

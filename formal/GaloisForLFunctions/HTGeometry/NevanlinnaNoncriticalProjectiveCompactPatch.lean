@@ -192,7 +192,7 @@ def ambientImageOfInjectiveShiftPiece
 parameter and one collision-free shift configuration. -/
 def actualNevanlinnaExpandedPacketValue
     {row ι : Type} [Fintype row] [Fintype ι]
-    (a q : ℂ → ℂ) (orders : ι → ℕ)
+    (m0 a q : ℂ → ℂ) (orders : ι → ℕ)
     (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu]
     (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
     (S : Submodule ℝ (Lp ℝ (⊤ : ENNReal) mu))
@@ -202,12 +202,16 @@ def actualNevanlinnaExpandedPacketValue
   let control := projectiveNevanlinnaJetExpansionSmoothControl
     a q (fun x : row × ι => orders x.2) mu
       (ambientCombinedProjectiveNodes packet shift.1)
-  reshapeCombinedJetsFinCLM row ι orders (control (baseDensity + w.1))
+  let centered := reshapeCombinedJetsFinCLM row ι orders
+    (control (baseDensity + w.1))
+  fun p =>
+    let s := (Fintype.equivFin (Σ i, Fin (orders i))).symm p.2
+    iteratedDeriv s.2 m0 (packet.1 p.1 + shift.1 s.1) + centered p
 
 /-- One complete row packet witnesses full coefficient-uniform expanded-evaluation rank. -/
 def actualNevanlinnaExpandedFullRankWitness
     {row κ ι : Type} [Fintype row] [Fintype κ] [DecidableEq κ] [Fintype ι]
-    (a q : ℂ → ℂ) (degree : ℕ) (orders : ι → ℕ)
+    (m0 a q : ℂ → ℂ) (degree : ℕ) (orders : ι → ℕ)
     (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
     (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu]
     (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
@@ -219,13 +223,13 @@ def actualNevanlinnaExpandedFullRankWitness
         (expandedDifferentialEvaluationMatrix degree
           (Fintype.card (Σ i, Fin (orders i))) packet.1 exponent
           (actualNevanlinnaExpandedPacketValue
-            a q orders mu baseDensity S packet w shift)).mulVec
+            m0 a q orders mu baseDensity S packet w shift)).mulVec
 
 /-- A polynomial-coefficient relation of one finite expanded pattern holds on every admissible
 evaluation packet.  This is the finite functional relation surface seen by the row geometry. -/
 def actualNevanlinnaExpandedPatternRelationHolds
     {row κ ι : Type} [Fintype row] [Fintype κ] [DecidableEq κ] [Fintype ι]
-    (a q : ℂ → ℂ) (degree : ℕ) (orders : ι → ℕ)
+    (m0 a q : ℂ → ℂ) (degree : ℕ) (orders : ι → ℕ)
     (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
     (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu]
     (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
@@ -238,12 +242,12 @@ def actualNevanlinnaExpandedPatternRelationHolds
       expandedDifferentialEvaluationMatrix degree
         (Fintype.card (Σ i, Fin (orders i))) packet.1 exponent
         (actualNevanlinnaExpandedPacketValue
-          a q orders mu baseDensity S packet w shift) r col = 0
+          m0 a q orders mu baseDensity S packet w shift) r col = 0
 
 /-- A complete full-rank row witness kills every coefficient of a finite functional relation. -/
 theorem actualNevanlinnaExpandedPatternRelation_coefficients_eq_zero_of_fullRankWitness
     {row κ ι : Type} [Fintype row] [Fintype κ] [DecidableEq κ] [Fintype ι]
-    (a q : ℂ → ℂ) (degree : ℕ) (orders : ι → ℕ)
+    (m0 a q : ℂ → ℂ) (degree : ℕ) (orders : ι → ℕ)
     (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
     (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu]
     (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
@@ -251,16 +255,16 @@ theorem actualNevanlinnaExpandedPatternRelation_coefficients_eq_zero_of_fullRank
     (w : S) (shift : InjectiveShiftConfiguration ι)
     (hwitness : actualNevanlinnaExpandedFullRankWitness
       (row := row) (κ := κ) (ι := ι)
-      a q degree orders exponent mu baseDensity S w shift)
+      m0 a q degree orders exponent mu baseDensity S w shift)
     (coeff : κ × Fin (degree + 1) → ℂ)
     (hrelation : actualNevanlinnaExpandedPatternRelationHolds
-      (row := row) a q degree orders exponent mu baseDensity S w shift coeff) :
+      (row := row) m0 a q degree orders exponent mu baseDensity S w shift coeff) :
     ∀ col, coeff col = 0 := by
   obtain ⟨packet, hupper, hinjective⟩ := hwitness
   let A := expandedDifferentialEvaluationMatrix degree
     (Fintype.card (Σ i, Fin (orders i))) packet.1 exponent
     (actualNevanlinnaExpandedPacketValue
-      a q orders mu baseDensity S packet w shift)
+      m0 a q orders mu baseDensity S packet w shift)
   have hmul : A.mulVec coeff = 0 := by
     funext r
     simpa [A, Matrix.mulVec, dotProduct, mul_comm] using hrelation packet hupper r
@@ -275,7 +279,7 @@ theorem countablePatterns_relationFree_dense_residual_of_fullRankWitness
     [∀ n, Fintype (row n)]
     [∀ n, Fintype (κ n)] [∀ n, DecidableEq (κ n)]
     [∀ n, Fintype (ι n)]
-    (a q : ℂ → ℂ) (degree : ℕ → ℕ) (orders : ∀ n, ι n → ℕ)
+    (m0 a q : ℂ → ℂ) (degree : ℕ → ℕ) (orders : ∀ n, ι n → ℕ)
     (exponent : ∀ n,
       κ n → (Fin (Fintype.card (Σ i, Fin (orders n i))) →₀ ℕ))
     (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu]
@@ -286,15 +290,15 @@ theorem countablePatterns_relationFree_dense_residual_of_fullRankWitness
       Dense {w : S | ∀ n (shift : InjectiveShiftConfiguration (ι n)),
         actualNevanlinnaExpandedFullRankWitness
           (row := row n) (κ := κ n) (ι := ι n)
-          a q (degree n) (orders n) (exponent n) mu baseDensity S w shift} ∧
+          m0 a q (degree n) (orders n) (exponent n) mu baseDensity S w shift} ∧
       {w : S | ∀ n (shift : InjectiveShiftConfiguration (ι n)),
         actualNevanlinnaExpandedFullRankWitness
           (row := row n) (κ := κ n) (ι := ι n)
-          a q (degree n) (orders n) (exponent n) mu baseDensity S w shift} ∈ residual S) :
+          m0 a q (degree n) (orders n) (exponent n) mu baseDensity S w shift} ∈ residual S) :
     let relationFree : Set S := {w | ∀ n (shift : InjectiveShiftConfiguration (ι n))
       (coeff : κ n × Fin (degree n + 1) → ℂ),
       actualNevanlinnaExpandedPatternRelationHolds
-        (row := row n) a q (degree n) (orders n) (exponent n)
+        (row := row n) m0 a q (degree n) (orders n) (exponent n)
           mu baseDensity S w shift coeff →
         ∀ col, coeff col = 0}
     Dense relationFree ∧ relationFree ∈ residual S := by
@@ -302,17 +306,17 @@ theorem countablePatterns_relationFree_dense_residual_of_fullRankWitness
   let full : Set S := {w | ∀ n (shift : InjectiveShiftConfiguration (ι n)),
     actualNevanlinnaExpandedFullRankWitness
       (row := row n) (κ := κ n) (ι := ι n)
-      a q (degree n) (orders n) (exponent n) mu baseDensity S w shift}
+      m0 a q (degree n) (orders n) (exponent n) mu baseDensity S w shift}
   let relationFree : Set S := {w | ∀ n (shift : InjectiveShiftConfiguration (ι n))
     (coeff : κ n × Fin (degree n + 1) → ℂ),
     actualNevanlinnaExpandedPatternRelationHolds
-      (row := row n) a q (degree n) (orders n) (exponent n)
+      (row := row n) m0 a q (degree n) (orders n) (exponent n)
         mu baseDensity S w shift coeff →
       ∀ col, coeff col = 0}
   have hsubset : full ⊆ relationFree := by
     intro w hw n shift coeff hrelation
     exact actualNevanlinnaExpandedPatternRelation_coefficients_eq_zero_of_fullRankWitness
-      a q (degree n) (orders n) (exponent n) mu baseDensity S w shift
+      m0 a q (degree n) (orders n) (exponent n) mu baseDensity S w shift
       (hw n shift) coeff hrelation
   exact ⟨hfull.1.mono hsubset, Filter.mem_of_superset hfull.2 hsubset⟩
 
@@ -330,6 +334,8 @@ theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProb
     [Fintype ιf] [DecidableEq ιf]
     {C D : ℂ → ℂ} (hC : Differentiable ℂ C) (hD : Differentiable ℂ D)
     (hupperMap : ∀ z, 0 < z.im → 0 < (projectiveNevanlinnaQuotient C D z).im)
+    (m0 : ℂ → ℂ)
+    (hm0 : ∀ k, ContDiffOn ℂ ⊤ (iteratedDeriv k m0) (projectiveRegularLocus C))
     (zf : ιf → ℂ)
     (hqf_inj : Function.Injective (fun i => projectiveNevanlinnaQuotient C D (zf i)))
     (hupperf : ∀ i, 0 < (projectiveNevanlinnaQuotient C D (zf i)).im)
@@ -340,7 +346,7 @@ theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProb
     (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
     (hexponent : Function.Injective exponent)
     (hrows : Fintype.card (κ × Fin (degree + 1)) + degree < Fintype.card row)
-    (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (mu : Measure (OnePoint ℝ)) [IsProbabilityMeasure mu] (hmu : mu.support.Infinite)
     (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
     (piece : Set (InjectiveShiftConfiguration ι)) (hpiece : IsCompact piece)
     (hpieceChart : piece ⊆ noncriticalProjectiveUpperGoodCombinedRowPacketSet
@@ -350,7 +356,7 @@ theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProb
       2 * (Fintype.card row - Fintype.card (κ × Fin (degree + 1)) - degree + 1)) :
     let a := projectiveNevanlinnaAmplitude C
     let q := projectiveNevanlinnaQuotient C D
-    let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+    let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
       a q zf nf haf hqdf mu hupperf
     let S := LinearMap.ker frozen.toLinearMap
     ∃ V : Submodule ℝ S, V.FG ∧
@@ -358,8 +364,11 @@ theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProb
       let control := fun h =>
         projectiveNevanlinnaJetExpansionSmoothControl
           a q (fun x : row × ι => orders x.2) mu (nodes h)
+      let background := fun h p =>
+        let s := (Fintype.equivFin (Σ i, Fin (orders i))).symm p.2
+        iteratedDeriv s.2 m0 (nodes h (p.1, s.1))
       let base := fun h =>
-        reshapeCombinedJetsFinCLM row ι orders (control h baseDensity)
+        background h + reshapeCombinedJetsFinCLM row ι orders (control h baseDensity)
       let direction := fun h =>
         (reshapeCombinedJetsFinCLM row ι orders).comp ((control h).domRestrict S)
       Dense (compactConfigurationAvoidance
@@ -462,9 +471,24 @@ theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProb
     intro x
     simpa [nodes, ambientCombinedProjectiveNodes] using
       (contDiff_const.add (contDiff_apply ℝ ℂ x.2))
+  let background : (ι → ℂ) →
+      (row × Fin (Fintype.card (Σ i, Fin (orders i))) → ℂ) := fun h p =>
+    let s := (Fintype.equivFin (Σ i, Fin (orders i))).symm p.2
+    iteratedDeriv s.2 m0 (nodes h (p.1, s.1))
   have hnodesOmega : ∀ h ∈ U, ∀ x, nodes h x ∈ Omega := by
     intro h hh x
     exact hnodesOmegaU0 h hh.1 x
+  have hbackground : ContDiffOn ℝ ⊤ background U := by
+    apply contDiffOn_pi'
+    intro p
+    let s := (Fintype.equivFin (Σ i, Fin (orders i))).symm p.2
+    have hnode : ContDiff ℝ ⊤ (fun h : ι → ℂ => nodes h (p.1, s.1)) := by
+      simpa [nodes, ambientCombinedProjectiveNodes] using
+        (contDiff_const.add (contDiff_apply ℝ ℂ s.1))
+    have hjetReal : ContDiffOn ℝ ⊤ (iteratedDeriv s.2 m0) Omega :=
+      contDiffOn_real_of_contDiffOn_complex_of_isOpen hOmega (hm0 s.2)
+    simpa [background, s] using hjetReal.comp hnode.contDiffOn
+      (fun h hh => hnodesOmega h hh (p.1, s.1))
   have hupper : ∀ h ∈ U, ∀ x, η ≤ (q (nodes h x)).im := by
     intro h hh x
     have hx := Set.mem_iInter.mp hh.2 x
@@ -486,17 +510,18 @@ theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProb
     compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
     projectiveGeometry parametricAvoidance a q Omega hOmega ha hq η hη
     zf hqf_inj hupperf nf haf hqdf degree orders packet.1 packet.2
-    exponent hexponent hrows mu hmu baseDensity nodes hnodes U K hU hK hKU
+    exponent hexponent hrows mu hmu baseDensity background nodes hnodes U K hU hK hKU
+    hbackground
     hnodesOmega hupper hqt_inj hcross hat hqdt hdim
   refine ⟨V, hVfg, hDense, ?_⟩
-  let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+  let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
     a q zf nf haf hqdf mu hupperf
   let S := LinearMap.ker frozen.toLinearMap
   let control := fun h =>
     projectiveNevanlinnaJetExpansionSmoothControl
       a q (fun x : row × ι => orders x.2) mu (nodes h)
   let base := fun h =>
-    reshapeCombinedJetsFinCLM row ι orders (control h baseDensity)
+    background h + reshapeCombinedJetsFinCLM row ι orders (control h baseDensity)
   let direction := fun h =>
     (reshapeCombinedJetsFinCLM row ι orders).comp ((control h).domRestrict S)
   have hcontrol : ContDiffOn ℝ ⊤ control U := by
@@ -505,8 +530,9 @@ theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProb
         (fun h hh => ⟨fun x => hη.trans_le (hupper h hh x),
           fun x _ => hnodesOmega h hh x⟩)
   have hbase : ContDiffOn ℝ ⊤ base U := by
-    exact (reshapeCombinedJetsFinCLM row ι orders).contDiff.comp_contDiffOn
-      (hcontrol.clm_apply contDiffOn_const)
+    exact hbackground.add
+      ((reshapeCombinedJetsFinCLM row ι orders).contDiff.comp_contDiffOn
+        (hcontrol.clm_apply contDiffOn_const))
   have hdirection : ContDiffOn ℝ ⊤ direction U := by
     have hS : ContDiffOn ℝ ⊤ (fun h => (control h).domRestrict S) U := by
       have hsubS : ContDiffOn ℝ ⊤ (fun _ : ι → ℂ => S.subtypeL) U := contDiffOn_const
@@ -522,7 +548,7 @@ theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProb
       degree (Fintype.card (Σ i, Fin (orders i))) packet.1 exponent)
     U hU (contDiffOn_smoothAffineControlFamily hbase hdirection).continuousOn
     K hK hKU
-  simpa [frozen, S, control, base, direction, K, nodes, a, q] using hopen
+  simpa [frozen, S, control, background, base, direction, K, nodes, a, q] using hopen
 
 /-- **Compact-patch complete-atlas density law.**  A compact collision-free shift patch admits a
 finite compact refinement by complete combined row charts.  For one and the same frozen tangent,
@@ -541,6 +567,8 @@ theorem compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
     (hnoCommon : ∀ z, ¬ (C z = 0 ∧ D z = 0))
     {p : ℂ} (hCp : C p = 0) {c : ℂ} (hCc : C c ≠ 0)
     (hupperMap : ∀ z, 0 < z.im → 0 < (projectiveNevanlinnaQuotient C D z).im)
+    (m0 : ℂ → ℂ)
+    (hm0 : ∀ k, ContDiffOn ℂ ⊤ (iteratedDeriv k m0) (projectiveRegularLocus C))
     (zf : ιf → ℂ)
     (hqf_inj : Function.Injective (fun i => projectiveNevanlinnaQuotient C D (zf i)))
     (hupperf : ∀ i, 0 < (projectiveNevanlinnaQuotient C D (zf i)).im)
@@ -550,14 +578,14 @@ theorem compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
     (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
     (hexponent : Function.Injective exponent)
     (hrows : Fintype.card (κ × Fin (degree + 1)) + degree < Fintype.card row)
-    (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (mu : Measure (OnePoint ℝ)) [IsProbabilityMeasure mu] (hmu : mu.support.Infinite)
     (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
     (Kshift : Set (InjectiveShiftConfiguration ι)) (hKshift : IsCompact Kshift)
     (hdim : Module.finrank ℝ (ι → ℂ) <
       2 * (Fintype.card row - Fintype.card (κ × Fin (degree + 1)) - degree + 1)) :
     let a := projectiveNevanlinnaAmplitude C
     let q := projectiveNevanlinnaQuotient C D
-    let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+    let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
       a q zf nf haf hqdf mu hupperf
     let S := LinearMap.ker frozen.toLinearMap
     ∃ n : ℕ, ∃ packets : Fin n → InjectiveProjectiveRowPacket row,
@@ -570,8 +598,12 @@ theorem compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
         let control := fun j h =>
           projectiveNevanlinnaJetExpansionSmoothControl
             a q (fun x : row × ι => orders x.2) mu (nodes j h)
+        let background := fun j h
+            (p : row × Fin (Fintype.card (Σ i, Fin (orders i)))) =>
+          let s := (Fintype.equivFin (Σ i, Fin (orders i))).symm p.2
+          iteratedDeriv s.2 m0 (nodes j h (p.1, s.1))
         let base := fun j h =>
-          reshapeCombinedJetsFinCLM row ι orders (control j h baseDensity)
+          background j h + reshapeCombinedJetsFinCLM row ι orders (control j h baseDensity)
         let direction := fun j h =>
           (reshapeCombinedJetsFinCLM row ι orders).comp ((control j h).domRestrict S)
         let good := fun j => compactConfigurationAvoidance
@@ -583,11 +615,11 @@ theorem compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
           ∀ w ∈ ⋂ j, good j, ∀ shift ∈ Kshift,
             actualNevanlinnaExpandedFullRankWitness
               (row := row) (κ := κ) (ι := ι)
-              a q degree orders exponent mu baseDensity S w shift := by
+              m0 a q degree orders exponent mu baseDensity S w shift := by
   dsimp only
   let a := projectiveNevanlinnaAmplitude C
   let q := projectiveNevanlinnaQuotient C D
-  let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+  let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
     a q zf nf haf hqdf mu hupperf
   let S := LinearMap.ker frozen.toLinearMap
   letI normedAddCommGroupS : NormedAddCommGroup S := Submodule.normedAddCommGroup S
@@ -601,8 +633,12 @@ theorem compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
   let control := fun j h =>
     projectiveNevanlinnaJetExpansionSmoothControl
       a q (fun x : row × ι => orders x.2) mu (nodes j h)
+  let background := fun j h
+      (p : row × Fin (Fintype.card (Σ i, Fin (orders i)))) =>
+    let s := (Fintype.equivFin (Σ i, Fin (orders i))).symm p.2
+    iteratedDeriv s.2 m0 (nodes j h (p.1, s.1))
   let base := fun j h =>
-    reshapeCombinedJetsFinCLM row ι orders (control j h baseDensity)
+    background j h + reshapeCombinedJetsFinCLM row ι orders (control j h baseDensity)
   let direction := fun j h =>
     (reshapeCombinedJetsFinCLM row ι orders).comp ((control j h).domRestrict S)
   let good := fun j => compactConfigurationAvoidance
@@ -615,10 +651,11 @@ theorem compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
     obtain ⟨V, hVfg, hj⟩ :=
       compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProbe
         projectiveGeometry parametricAvoidance hCmin.1 hD hupperMap
+        m0 hm0
         zf hqf_inj hupperf nf haf hqdf degree orders (packets j)
         exponent hexponent hrows mu hmu baseDensity (pieces j)
         (hpiecesCompact j) (hpiecesChart j) hdim
-    simpa [good, nodes, control, base, direction, frozen, S, a, q] using hj
+    simpa [good, nodes, control, background, base, direction, frozen, S, a, q] using hj
   refine ⟨n, packets, pieces, hcover, hpiecesCompact, hpiecesChart, ?_, ?_, ?_⟩
   · exact dense_iInter_of_finite_isOpen good
       (fun j => (hgood j).2) (fun j => (hgood j).1)
@@ -637,10 +674,11 @@ theorem compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
       simpa only [mem_expandedDifferentialEvaluationRankDefect_iff, not_not] using havoid
     have hfamily : smoothAffineControlFamily (base j) (direction j) (w, shift.1) =
         actualNevanlinnaExpandedPacketValue
-          a q orders mu baseDensity S (packets j) w shift := by
-      simp [smoothAffineControlFamily, base, direction, control, nodes,
-        actualNevanlinnaExpandedPacketValue,
-        ContinuousLinearMap.domRestrict_apply, map_add]
+          m0 a q orders mu baseDensity S (packets j) w shift := by
+      funext p
+      simp [smoothAffineControlFamily, background, base, direction, control, nodes,
+        actualNevanlinnaExpandedPacketValue, ambientCombinedProjectiveNodes,
+        ContinuousLinearMap.domRestrict_apply, map_add, add_assoc]
     simpa [hfamily] using hinjective
 
 /-- **Global all-shift rank law for one finite differential-relation pattern.**  The compact atlas
@@ -659,6 +697,8 @@ theorem global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
     (hnoCommon : ∀ z, ¬ (C z = 0 ∧ D z = 0))
     {p : ℂ} (hCp : C p = 0) {c : ℂ} (hCc : C c ≠ 0)
     (hupperMap : ∀ z, 0 < z.im → 0 < (projectiveNevanlinnaQuotient C D z).im)
+    (m0 : ℂ → ℂ)
+    (hm0 : ∀ k, ContDiffOn ℂ ⊤ (iteratedDeriv k m0) (projectiveRegularLocus C))
     (zf : ιf → ℂ)
     (hqf_inj : Function.Injective (fun i => projectiveNevanlinnaQuotient C D (zf i)))
     (hupperf : ∀ i, 0 < (projectiveNevanlinnaQuotient C D (zf i)).im)
@@ -668,24 +708,24 @@ theorem global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
     (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
     (hexponent : Function.Injective exponent)
     (hrows : Fintype.card (κ × Fin (degree + 1)) + degree < Fintype.card row)
-    (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (mu : Measure (OnePoint ℝ)) [IsProbabilityMeasure mu] (hmu : mu.support.Infinite)
     (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
     (hdim : Module.finrank ℝ (ι → ℂ) <
       2 * (Fintype.card row - Fintype.card (κ × Fin (degree + 1)) - degree + 1)) :
     let a := projectiveNevanlinnaAmplitude C
     let q := projectiveNevanlinnaQuotient C D
-    let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+    let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
       a q zf nf haf hqdf mu hupperf
     let S := LinearMap.ker frozen.toLinearMap
     let good : Set S := {w | ∀ shift : InjectiveShiftConfiguration ι,
       actualNevanlinnaExpandedFullRankWitness
         (row := row) (κ := κ) (ι := ι)
-        a q degree orders exponent mu baseDensity S w shift}
+        m0 a q degree orders exponent mu baseDensity S w shift}
     Dense good ∧ good ∈ residual S := by
   dsimp only
   let a := projectiveNevanlinnaAmplitude C
   let q := projectiveNevanlinnaQuotient C D
-  let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+  let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
     a q zf nf haf hqdf mu hupperf
   let S := LinearMap.ker frozen.toLinearMap
   letI normedAddCommGroupS : NormedAddCommGroup S := Submodule.normedAddCommGroup S
@@ -699,12 +739,13 @@ theorem global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
     (fun w (shift : InjectiveShiftConfiguration ι) =>
       actualNevanlinnaExpandedFullRankWitness
         (row := row) (κ := κ) (ι := ι)
-        a q degree orders exponent mu baseDensity S w shift)
+        m0 a q degree orders exponent mu baseDensity S w shift)
   intro Kshift hKshift
   obtain ⟨n, packets, pieces, hcover, hpiecesCompact, hpiecesChart,
       hDense, hOpen, hWitness⟩ :=
     compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
       projectiveGeometry parametricAvoidance hCmin hD hnoCommon hCp hCc hupperMap
+      m0 hm0
       zf hqf_inj hupperf nf haf hqdf degree orders exponent hexponent hrows
       mu hmu baseDensity Kshift hKshift hdim
   exact ⟨_, hOpen, hDense, hWitness⟩
@@ -724,6 +765,8 @@ theorem countablePatterns_global_injectiveShifts_actualNevanlinna_fullRankWitnes
     (hnoCommon : ∀ z, ¬ (C z = 0 ∧ D z = 0))
     {p : ℂ} (hCp : C p = 0) {c : ℂ} (hCc : C c ≠ 0)
     (hupperMap : ∀ z, 0 < z.im → 0 < (projectiveNevanlinnaQuotient C D z).im)
+    (m0 : ℂ → ℂ)
+    (hm0 : ∀ k, ContDiffOn ℂ ⊤ (iteratedDeriv k m0) (projectiveRegularLocus C))
     (zf : ιf → ℂ)
     (hqf_inj : Function.Injective (fun i => projectiveNevanlinnaQuotient C D (zf i)))
     (hupperf : ∀ i, 0 < (projectiveNevanlinnaQuotient C D (zf i)).im)
@@ -735,25 +778,25 @@ theorem countablePatterns_global_injectiveShifts_actualNevanlinna_fullRankWitnes
     (hexponent : ∀ n, Function.Injective (exponent n))
     (hrows : ∀ n,
       Fintype.card (κ n × Fin (degree n + 1)) + degree n < Fintype.card (row n))
-    (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (mu : Measure (OnePoint ℝ)) [IsProbabilityMeasure mu] (hmu : mu.support.Infinite)
     (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
     (hdim : ∀ n, Module.finrank ℝ (ι n → ℂ) <
       2 * (Fintype.card (row n) -
         Fintype.card (κ n × Fin (degree n + 1)) - degree n + 1)) :
     let a := projectiveNevanlinnaAmplitude C
     let q := projectiveNevanlinnaQuotient C D
-    let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+    let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
       a q zf nf haf hqdf mu hupperf
     let S := LinearMap.ker frozen.toLinearMap
     let good : Set S := {w | ∀ n (shift : InjectiveShiftConfiguration (ι n)),
       actualNevanlinnaExpandedFullRankWitness
         (row := row n) (κ := κ n) (ι := ι n)
-        a q (degree n) (orders n) (exponent n) mu baseDensity S w shift}
+        m0 a q (degree n) (orders n) (exponent n) mu baseDensity S w shift}
     Dense good ∧ good ∈ residual S := by
   dsimp only
   let a := projectiveNevanlinnaAmplitude C
   let q := projectiveNevanlinnaQuotient C D
-  let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+  let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
     a q zf nf haf hqdf mu hupperf
   let S := LinearMap.ker frozen.toLinearMap
   letI normedAddCommGroupS : NormedAddCommGroup S := Submodule.normedAddCommGroup S
@@ -767,12 +810,13 @@ theorem countablePatterns_global_injectiveShifts_actualNevanlinna_fullRankWitnes
     {w | ∀ shift : InjectiveShiftConfiguration (ι n),
       actualNevanlinnaExpandedFullRankWitness
         (row := row n) (κ := κ n) (ι := ι n)
-        a q (degree n) (orders n) (exponent n) mu baseDensity S w shift}
+        m0 a q (degree n) (orders n) (exponent n) mu baseDensity S w shift}
   have hgoodPattern : ∀ n, Dense (goodPattern n) ∧ goodPattern n ∈ residual S := by
     intro n
     simpa [goodPattern, a, q, frozen, S] using
       (global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
         projectiveGeometry parametricAvoidance hCmin hD hnoCommon hCp hCc hupperMap
+        m0 hm0
         zf hqf_inj hupperf nf haf hqdf (degree n) (orders n) (exponent n)
         (hexponent n) (hrows n) mu hmu baseDensity (hdim n))
   have hres : (⋂ n, goodPattern n) ∈ residual S :=
@@ -781,7 +825,7 @@ theorem countablePatterns_global_injectiveShifts_actualNevanlinna_fullRankWitnes
       {w | ∀ n (shift : InjectiveShiftConfiguration (ι n)),
         actualNevanlinnaExpandedFullRankWitness
           (row := row n) (κ := κ n) (ι := ι n)
-          a q (degree n) (orders n) (exponent n) mu baseDensity S w shift} := by
+          m0 a q (degree n) (orders n) (exponent n) mu baseDensity S w shift} := by
     ext w
     simp only [Set.mem_iInter, goodPattern, Set.mem_setOf_eq]
   rw [heq] at hres
@@ -803,6 +847,8 @@ theorem countablePatterns_actualNevanlinna_relationFree_dense_residual
     (hnoCommon : ∀ z, ¬ (C z = 0 ∧ D z = 0))
     {p : ℂ} (hCp : C p = 0) {c : ℂ} (hCc : C c ≠ 0)
     (hupperMap : ∀ z, 0 < z.im → 0 < (projectiveNevanlinnaQuotient C D z).im)
+    (m0 : ℂ → ℂ)
+    (hm0 : ∀ k, ContDiffOn ℂ ⊤ (iteratedDeriv k m0) (projectiveRegularLocus C))
     (zf : ιf → ℂ)
     (hqf_inj : Function.Injective (fun i => projectiveNevanlinnaQuotient C D (zf i)))
     (hupperf : ∀ i, 0 < (projectiveNevanlinnaQuotient C D (zf i)).im)
@@ -814,27 +860,27 @@ theorem countablePatterns_actualNevanlinna_relationFree_dense_residual
     (hexponent : ∀ n, Function.Injective (exponent n))
     (hrows : ∀ n,
       Fintype.card (κ n × Fin (degree n + 1)) + degree n < Fintype.card (row n))
-    (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (mu : Measure (OnePoint ℝ)) [IsProbabilityMeasure mu] (hmu : mu.support.Infinite)
     (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
     (hdim : ∀ n, Module.finrank ℝ (ι n → ℂ) <
       2 * (Fintype.card (row n) -
         Fintype.card (κ n × Fin (degree n + 1)) - degree n + 1)) :
     let a := projectiveNevanlinnaAmplitude C
     let q := projectiveNevanlinnaQuotient C D
-    let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+    let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
       a q zf nf haf hqdf mu hupperf
     let S := LinearMap.ker frozen.toLinearMap
     let relationFree : Set S := {w | ∀ n (shift : InjectiveShiftConfiguration (ι n))
       (coeff : κ n × Fin (degree n + 1) → ℂ),
       actualNevanlinnaExpandedPatternRelationHolds
-        (row := row n) a q (degree n) (orders n) (exponent n)
+        (row := row n) m0 a q (degree n) (orders n) (exponent n)
           mu baseDensity S w shift coeff →
         ∀ col, coeff col = 0}
     Dense relationFree ∧ relationFree ∈ residual S := by
   dsimp only
   let a := projectiveNevanlinnaAmplitude C
   let q := projectiveNevanlinnaQuotient C D
-  let frozen := projectiveNevanlinnaJetLinftyContinuousControl
+  let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
     a q zf nf haf hqdf mu hupperf
   let S := LinearMap.ker frozen.toLinearMap
   letI normedAddCommGroupS : NormedAddCommGroup S := Submodule.normedAddCommGroup S
@@ -847,10 +893,10 @@ theorem countablePatterns_actualNevanlinna_relationFree_dense_residual
   have hfull :=
     countablePatterns_global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
       projectiveGeometry parametricAvoidance row κ ι hCmin hD hnoCommon hCp hCc
-      hupperMap zf hqf_inj hupperf nf haf hqdf degree orders exponent
+      hupperMap m0 hm0 zf hqf_inj hupperf nf haf hqdf degree orders exponent
       hexponent hrows mu hmu baseDensity hdim
   exact countablePatterns_relationFree_dense_residual_of_fullRankWitness
-    row κ ι a q degree orders exponent mu baseDensity S hfull
+    row κ ι m0 a q degree orders exponent mu baseDensity S hfull
 
 end
 
