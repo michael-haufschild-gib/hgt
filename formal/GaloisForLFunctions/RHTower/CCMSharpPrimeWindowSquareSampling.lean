@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPrimeReduction
+import GaloisForLFunctions.RHTower.CCMRectangularDirectionalDerivative
 
 /-!
 # Perfect-square sampling for the dyadic sharp prime window
@@ -433,5 +434,62 @@ theorem riemannHypothesis_of_eventually_squareThetaErrorIncrement_upper
   apply riemannHypothesis_of_eventually_dyadicWeightedPrimeWindow_upper
   exact (eventually_dyadicWeightedPrimeWindow_upper_iff_squareThetaErrorIncrement hM).mpr
     htheta
+
+/-- A lower bound for the rectangular adjacent-block diagonal slope only at perfect-square
+logarithmic samples already proves RH.  Thus the source-side derivative estimate need not be
+established at every integer aperture. -/
+theorem riemannHypothesis_of_eventually_squareAdjacentBlockDiagonalRightSlope_lower
+    {M : ℕ} (hM : 2 ≤ M)
+    (hslope : ∀ epsilon : ℝ, 0 < epsilon →
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ m : ℕ, M ≤ m →
+        2 * (Real.sqrt 2 - 1) / (m : ℝ) -
+            C * ((m ^ 2 : ℕ) : ℝ) ^ epsilon ≤
+          dyadicAdjacentBlockDiagonalRightSlope (m ^ 2)) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_eventually_dyadicWeightedPrimeWindow_square_upper
+    (hM.trans' (by omega))
+  intro epsilon hepsilon
+  obtain ⟨C, hC, htail⟩ := hslope epsilon hepsilon
+  refine ⟨C, hC, fun m hm => ?_⟩
+  have hmTwo : 2 ≤ m := hM.trans hm
+  have hsqFour : 4 ≤ m ^ 2 := by nlinarith
+  have hslopeSquare :
+      2 * (Real.sqrt 2 - 1) / Real.sqrt ((m ^ 2 : ℕ) : ℝ) -
+            C * ((m ^ 2 : ℕ) : ℝ) ^ epsilon ≤
+          dyadicAdjacentBlockDiagonalRightSlope (m ^ 2) := by
+    simpa only [Nat.cast_pow, Real.sqrt_sq (Nat.cast_nonneg m)] using htail m hm
+  have hwindow :=
+    dyadicWeightedPrimeWindow_upper_of_adjacentBlockDiagonalRightSlope_lower
+      hsqFour C epsilon hslopeSquare
+  simpa only [Nat.cast_pow, Real.sqrt_sq (Nat.cast_nonneg m)] using hwindow
+
+/-- The same critical square-sampling reduction for the complete rectangular prime--polar source.
+Only the right diagonal slopes at `(log 2 / 2, log (m^2) / 2)` remain to be bounded. -/
+theorem riemannHypothesis_of_eventually_squarePrimePolarSourceDiagonalRightSlope_lower
+    {M : ℕ} (hM : 2 ≤ M)
+    (hslope : ∀ epsilon : ℝ, 0 < epsilon →
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ m : ℕ, M ≤ m →
+        8 * (Real.exp (Real.log 2 / 4) - Real.exp (-Real.log 2 / 4)) +
+              4 * (Real.sqrt 2 - 1) / (m : ℝ) -
+              2 * C * ((m ^ 2 : ℕ) : ℝ) ^ epsilon ≤
+          dyadicPrimePolarSourceDiagonalRightSlope (m ^ 2)) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_eventually_dyadicWeightedPrimeWindow_square_upper
+    (hM.trans' (by omega))
+  intro epsilon hepsilon
+  obtain ⟨C, hC, htail⟩ := hslope epsilon hepsilon
+  refine ⟨C, hC, fun m hm => ?_⟩
+  have hmTwo : 2 ≤ m := hM.trans hm
+  have hsqFour : 4 ≤ m ^ 2 := by nlinarith
+  have hslopeSquare :
+      8 * (Real.exp (Real.log 2 / 4) - Real.exp (-Real.log 2 / 4)) +
+              4 * (Real.sqrt 2 - 1) / Real.sqrt ((m ^ 2 : ℕ) : ℝ) -
+              2 * C * ((m ^ 2 : ℕ) : ℝ) ^ epsilon ≤
+          dyadicPrimePolarSourceDiagonalRightSlope (m ^ 2) := by
+    simpa only [Nat.cast_pow, Real.sqrt_sq (Nat.cast_nonneg m)] using htail m hm
+  have hwindow :=
+    dyadicWeightedPrimeWindow_upper_of_primePolarSourceDiagonalRightSlope_lower
+      hsqFour C epsilon hslopeSquare
+  simpa only [Nat.cast_pow, Real.sqrt_sq (Nat.cast_nonneg m)] using hwindow
 
 end RHTower

@@ -69,6 +69,21 @@ dyadicCriticalThetaMellinErrorIncrement(m^2)
 Therefore this one-sided theta-error increment bound at perfect squares already proves RH.  No
 proper prime powers and no nonsquare apertures remain in that source obligation.
 
+## Rectangular-source strengthening
+
+The square restriction also composes with the exact diagonal-derivative reading of the
+rectangular prime--polar source.  It is enough to prove the source slope lower bound only at
+`n=m^2`:
+
+```text
+2*(sqrt(2)-1)/m-C_epsilon*(m^2)^epsilon
+  <= dyadicAdjacentBlockDiagonalRightSlope(m^2).
+```
+
+There is a second axiom-clean capstone with the corresponding explicit width-only correction for
+`dyadicPrimePolarSourceDiagonalRightSlope(m^2)`.  Either square-only slope estimate implies the
+full prime-window estimate and hence RH.
+
 ## Lean implementation
 
 The axiom-clean implementation is
@@ -89,6 +104,8 @@ squareSample_dyadicWeightedPrimeOnlyWindow_upper_iff_thetaErrorIncrement
 eventually_dyadicWeightedPrimeWindow_upper_iff_squareThetaErrorIncrement
 riemannHypothesis_of_eventually_dyadicWeightedPrimeWindow_square_upper
 riemannHypothesis_of_eventually_squareThetaErrorIncrement_upper
+riemannHypothesis_of_eventually_squareAdjacentBlockDiagonalRightSlope_lower
+riemannHypothesis_of_eventually_squarePrimePolarSourceDiagonalRightSlope_lower
 ```
 
 ## Significance boundary
@@ -110,6 +127,8 @@ supplies the square-sample estimate.
 - [x] proper-prime-power channel removed on the square samples
 - [x] square-sampled theta-error equivalence formalized in Lean
 - [x] direct square-sample-to-RH capstones formalized
+- [x] square-only rectangular-slope-to-RH capstones formalized
 - [x] focused module build
+- [x] axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`
+- [x] formal lint and generated-index checks
 - [ ] unconditional square-sampled theta-error upper bound
-

@@ -428,6 +428,76 @@ def thetaSquareIndexDyadicCompletionDefect (k : ℕ) (x : ℝ) : ℝ :=
         thetaCuspReflectionMode (x - (k + 1 : ℕ) * Real.log 2) -
       thetaCuspReflectionMode (x - (k : ℝ) * Real.log 2))
 
+/-- At one dyadic step, the growing completion character cancels and only the decaying character
+survives. -/
+theorem thetaSquareIndexCompletionCharacter_cancel (x : ℝ) :
+    2 * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+        thetaCuspReflectionMode (x - Real.log 2) -
+      thetaCuspReflectionMode x = -(1 / 2 : ℝ) * Real.exp (-x / 2) := by
+  unfold thetaCuspReflectionMode
+  have h1 : Real.exp ((x - Real.log 2) / 2) =
+      Real.exp (x / 2) * Real.exp (-(Real.log 2) / 2) := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  have h2 : Real.exp (-(x - Real.log 2) / 2) =
+      Real.exp (-x / 2) * Real.exp (Real.log 2 / 2) := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  rw [h1, h2]
+  have hneg : Real.exp (-(Real.log 2) / 2) =
+      (2 : ℝ) ^ (-(1 / 2 : ℝ)) := by
+    rw [Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 2)]
+    congr 1
+    ring
+  have hpos : Real.exp (Real.log 2 / 2) =
+      (2 : ℝ) ^ (1 / 2 : ℝ) := by
+    rw [Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 2)]
+    congr 1
+    ring
+  rw [hneg, hpos]
+  have hww : (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+      (2 : ℝ) ^ (-(1 / 2 : ℝ)) = 1 / 2 := by
+    rw [← Real.rpow_add (by norm_num : (0 : ℝ) < 2)]
+    norm_num
+  have hwr : (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+      (2 : ℝ) ^ (1 / 2 : ℝ) = 1 := by
+    rw [← Real.rpow_add (by norm_num : (0 : ℝ) < 2)]
+    norm_num
+  linear_combination Real.exp (x / 2) * hww - Real.exp (-x / 2) * hwr
+
+/-- The completion defect in every reflected Haar layer is the same decaying character,
+independent of the arithmetic depth. -/
+theorem thetaSquareIndexDyadicCompletionDefect_eq (k : ℕ) (x : ℝ) :
+    thetaSquareIndexDyadicCompletionDefect k x =
+      -(1 / 2 : ℝ) * Real.exp (-x / 2) := by
+  unfold thetaSquareIndexDyadicCompletionDefect
+  have hinside :=
+    thetaSquareIndexCompletionCharacter_cancel (x - (k : ℝ) * Real.log 2)
+  have hshift : x - (k : ℝ) * Real.log 2 - Real.log 2 =
+      x - ((k + 1 : ℕ) : ℝ) * Real.log 2 := by
+    push_cast
+    ring
+  rw [hshift] at hinside
+  rw [hinside]
+  have hw : ((((2 ^ k : ℕ) : ℝ)) ^ (-(1 / 2 : ℝ))) *
+      Real.exp (-(x - (k : ℝ) * Real.log 2) / 2) =
+        Real.exp (-x / 2) := by
+    rw [show (((2 ^ k : ℕ) : ℝ)) = (2 : ℝ) ^ k by norm_num]
+    rw [Real.rpow_def_of_pos (by positivity : (0 : ℝ) < (2 : ℝ) ^ k)]
+    rw [show Real.log ((2 : ℝ) ^ k) = (k : ℝ) * Real.log 2 by
+      exact Real.log_pow 2 k]
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  rw [show ((((2 ^ k : ℕ) : ℝ)) ^ (-(1 / 2 : ℝ))) *
+      (-(1 / 2 : ℝ) * Real.exp (-(x - (k : ℝ) * Real.log 2) / 2)) =
+        -(1 / 2 : ℝ) *
+          (((((2 ^ k : ℕ) : ℝ)) ^ (-(1 / 2 : ℝ))) *
+            Real.exp (-(x - (k : ℝ) * Real.log 2) / 2)) by ring,
+    hw]
+
 private theorem thetaSquareIndexDyadicReflectionAmplitude_sq :
     (2 * (2 : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 = 2 := by
   have hw : (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
@@ -463,6 +533,177 @@ theorem thetaSquareIndexDyadicParityLayer_neg_reflection (k : ℕ) (x : ℝ) :
   rw [hodd, href]
   unfold thetaSquareIndexDyadicCompletionDefect
   ring
+
+/-- Simplified all-depth reflection: the only surviving completion character is universal and
+decays at the positive end. -/
+theorem thetaSquareIndexDyadicParityLayer_neg_reflection_simplified
+    (k : ℕ) (x : ℝ) :
+    thetaSquareIndexDyadicParityLayer k (-x) =
+      2 * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+          thetaSquareIndexDyadicOddLayer k
+            (x - thetaSquareIndexDyadicReflectionShift k) -
+        (1 / 2 : ℝ) * Real.exp (-x / 2) := by
+  rw [thetaSquareIndexDyadicParityLayer_neg_reflection,
+    thetaSquareIndexDyadicCompletionDefect_eq]
+  ring
+
+/-- Every finite coefficient packet of total mass zero removes the universal completion character
+exactly.  What remains is a pure signed arithmetic translate packet of exact-valuation rows. -/
+theorem thetaSquareIndexDyadicBalancedParityPacket_neg_reflection
+    (s : Finset ℕ) (c : ℕ → ℝ) (hc : ∑ k ∈ s, c k = 0) (x : ℝ) :
+    (∑ k ∈ s, c k * thetaSquareIndexDyadicParityLayer k (-x)) =
+      2 * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+        ∑ k ∈ s, c k * thetaSquareIndexDyadicOddLayer k
+          (x - thetaSquareIndexDyadicReflectionShift k) := by
+  calc
+    _ = ∑ k ∈ s, c k *
+        (2 * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+            thetaSquareIndexDyadicOddLayer k
+              (x - thetaSquareIndexDyadicReflectionShift k) -
+          (1 / 2 : ℝ) * Real.exp (-x / 2)) := by
+      apply Finset.sum_congr rfl
+      intro k _hk
+      rw [thetaSquareIndexDyadicParityLayer_neg_reflection_simplified]
+    _ = 2 * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+          (∑ k ∈ s, c k * thetaSquareIndexDyadicOddLayer k
+            (x - thetaSquareIndexDyadicReflectionShift k)) -
+        ((1 / 2 : ℝ) * Real.exp (-x / 2)) * (∑ k ∈ s, c k) := by
+      rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_sub_distrib]
+      apply Finset.sum_congr rfl
+      intro k _hk
+      ring
+    _ = _ := by rw [hc]; ring
+
+/-- Product polarization for a balanced finite packet.  The completion character has disappeared,
+and the square of the reflection amplitude is exactly `2`. -/
+theorem thetaSquareIndexDyadicBalancedParityPacket_mul_neg_reflection
+    (s : Finset ℕ) (c : ℕ → ℝ) (hc : ∑ k ∈ s, c k = 0) (x y : ℝ) :
+    (∑ k ∈ s, c k * thetaSquareIndexDyadicParityLayer k (-x)) *
+        (∑ k ∈ s, c k * thetaSquareIndexDyadicParityLayer k (-y)) =
+      2 *
+        (∑ k ∈ s, c k * thetaSquareIndexDyadicOddLayer k
+          (x - thetaSquareIndexDyadicReflectionShift k)) *
+        (∑ k ∈ s, c k * thetaSquareIndexDyadicOddLayer k
+          (y - thetaSquareIndexDyadicReflectionShift k)) := by
+  rw [thetaSquareIndexDyadicBalancedParityPacket_neg_reflection s c hc x,
+    thetaSquareIndexDyadicBalancedParityPacket_neg_reflection s c hc y]
+  have ha := thetaSquareIndexDyadicReflectionAmplitude_sq
+  calc
+    _ = (2 * (2 : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 *
+        (∑ k ∈ s, c k * thetaSquareIndexDyadicOddLayer k
+          (x - thetaSquareIndexDyadicReflectionShift k)) *
+        (∑ k ∈ s, c k * thetaSquareIndexDyadicOddLayer k
+          (y - thetaSquareIndexDyadicReflectionShift k)) := by ring
+    _ = _ := by rw [ha]
+
+/-- Finite weighted bilinear variance identity.  It splits a diagonal quadratic packet into one
+rank-one mean direction and pairwise balanced difference packets. -/
+theorem two_mul_weightedBilinear_eq_rankOne_add_pairwiseDispersion
+    {ι : Type*} (s : Finset ι) (w a b : ι → ℝ) :
+    2 * (∑ i ∈ s, w i) * (∑ i ∈ s, w i * a i * b i) =
+      2 * (∑ i ∈ s, w i * a i) * (∑ i ∈ s, w i * b i) +
+        ∑ i ∈ s, ∑ j ∈ s,
+          w i * w j * (a i - a j) * (b i - b j) := by
+  let L0 := ∑ i ∈ s, ∑ j ∈ s, w i * w j * a j * b j
+  let L1 := ∑ i ∈ s, ∑ j ∈ s, w i * w j * a i * b i
+  let C0 := ∑ i ∈ s, ∑ j ∈ s, w i * w j * a i * b j
+  let C1 := ∑ i ∈ s, ∑ j ∈ s, w i * w j * a j * b i
+  have hWC : (∑ i ∈ s, w i) * (∑ i ∈ s, w i * a i * b i) = L0 := by
+    dsimp [L0]
+    rw [Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro i _hi
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro j _hj
+    ring
+  have hAB : (∑ i ∈ s, w i * a i) * (∑ i ∈ s, w i * b i) = C0 := by
+    dsimp [C0]
+    rw [Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro i _hi
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro j _hj
+    ring
+  have hL : L0 = L1 := by
+    dsimp [L0, L1]
+    rw [Finset.sum_comm]
+    apply Finset.sum_congr rfl
+    intro i _hi
+    apply Finset.sum_congr rfl
+    intro j _hj
+    ring
+  have hC : C0 = C1 := by
+    dsimp [C0, C1]
+    rw [Finset.sum_comm]
+    apply Finset.sum_congr rfl
+    intro i _hi
+    apply Finset.sum_congr rfl
+    intro j _hj
+    ring
+  rw [show (2 * (∑ i ∈ s, w i)) * (∑ i ∈ s, w i * a i * b i) =
+      2 * ((∑ i ∈ s, w i) * (∑ i ∈ s, w i * a i * b i)) by ring,
+    show (2 * (∑ i ∈ s, w i * a i)) * (∑ i ∈ s, w i * b i) =
+      2 * ((∑ i ∈ s, w i * a i) * (∑ i ∈ s, w i * b i)) by ring,
+    hWC, hAB]
+  calc
+    2 * L0 = L0 + L1 := by rw [← hL]; ring
+    _ = 2 * C0 + (L1 + L0 - C0 - C1) := by rw [← hC]; ring
+    _ = 2 * C0 + ∑ i ∈ s, ∑ j ∈ s,
+        w i * w j * (a i - a j) * (b i - b j) := by
+      congr 1
+      dsimp [L0, L1, C0, C1]
+      rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib,
+        ← Finset.sum_sub_distrib]
+      apply Finset.sum_congr rfl
+      intro i _hi
+      rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib,
+        ← Finset.sum_sub_distrib]
+      apply Finset.sum_congr rfl
+      intro j _hj
+      ring
+
+/-- The weighted mean of the first `N` parity rows telescopes to one dyadic top row minus the full
+canonical density. -/
+theorem thetaSquareIndexDyadicParityLayer_weightedSum (N : ℕ) (x : ℝ) :
+    (∑ k ∈ Finset.range N,
+      (2 : ℝ) ^ k * thetaSquareIndexDyadicParityLayer k x) =
+        (2 : ℝ) ^ N * thetaSquareIndexDyadicDensity N x -
+          thetaCuspTailSecondDensity x := by
+  induction N with
+  | zero => simp [thetaSquareIndexDyadicDensity_zero]
+  | succ N ih =>
+      rw [Finset.sum_range_succ, ih]
+      unfold thetaSquareIndexDyadicParityLayer
+      rw [pow_succ]
+      ring
+
+/-- Weighted-variance polarization of the complete finite parity diagonal.  Every double-sum term
+is a balanced two-depth packet; the only unbalanced direction is the explicit top-row-minus-full-
+density rank one. -/
+theorem thetaSquareIndexDyadicParityDiagonal_variancePolarization
+    (N : ℕ) (x y : ℝ) :
+    2 * (∑ k ∈ Finset.range N, (2 : ℝ) ^ k) *
+        (∑ k ∈ Finset.range N,
+          (2 : ℝ) ^ k * thetaSquareIndexDyadicParityLayer k x *
+            thetaSquareIndexDyadicParityLayer k y) =
+      2 * ((2 : ℝ) ^ N * thetaSquareIndexDyadicDensity N x -
+          thetaCuspTailSecondDensity x) *
+        ((2 : ℝ) ^ N * thetaSquareIndexDyadicDensity N y -
+          thetaCuspTailSecondDensity y) +
+      ∑ i ∈ Finset.range N, ∑ j ∈ Finset.range N,
+        (2 : ℝ) ^ i * (2 : ℝ) ^ j *
+          (thetaSquareIndexDyadicParityLayer i x -
+            thetaSquareIndexDyadicParityLayer j x) *
+          (thetaSquareIndexDyadicParityLayer i y -
+            thetaSquareIndexDyadicParityLayer j y) := by
+  rw [← thetaSquareIndexDyadicParityLayer_weightedSum N x,
+    ← thetaSquareIndexDyadicParityLayer_weightedSum N y]
+  exact two_mul_weightedBilinear_eq_rankOne_add_pairwiseDispersion
+    (Finset.range N) (fun k => (2 : ℝ) ^ k)
+      (fun k => thetaSquareIndexDyadicParityLayer k x)
+      (fun k => thetaSquareIndexDyadicParityLayer k y)
 
 /-- After reflection, the positive exact-valuation square and negative parity square cancel
 exactly.  Only the two explicit completion-character cross terms and their square remain. -/
@@ -508,6 +749,32 @@ theorem thetaSquareIndexDyadicHaarLayer_reflected_polarization
           thetaSquareIndexDyadicCompletionDefect k x *
             thetaSquareIndexDyadicCompletionDefect k y) := by ring
     _ = _ := by rw [ha]; ring
+
+/-- Simplified reflected Haar polarization.  Its only source terms are two odd-row/decaying-
+character cross terms and one favorable negative radial square. -/
+theorem thetaSquareIndexDyadicHaarLayer_reflected_polarization_simplified
+    (k : ℕ) (x y : ℝ) :
+    (2 : ℝ) ^ (k + 1) *
+          thetaSquareIndexDyadicOddLayer k
+            (x - thetaSquareIndexDyadicReflectionShift k) *
+          thetaSquareIndexDyadicOddLayer k
+            (y - thetaSquareIndexDyadicReflectionShift k) -
+        (2 : ℝ) ^ k *
+          thetaSquareIndexDyadicParityLayer k (-x) *
+            thetaSquareIndexDyadicParityLayer k (-y) =
+      (2 : ℝ) ^ k *
+        ((2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+            thetaSquareIndexDyadicOddLayer k
+              (x - thetaSquareIndexDyadicReflectionShift k) *
+            Real.exp (-y / 2) +
+          (2 : ℝ) ^ (-(1 / 2 : ℝ)) * Real.exp (-x / 2) *
+            thetaSquareIndexDyadicOddLayer k
+              (y - thetaSquareIndexDyadicReflectionShift k) -
+          (1 / 4 : ℝ) * Real.exp (-x / 2) * Real.exp (-y / 2)) := by
+  rw [thetaSquareIndexDyadicHaarLayer_reflected_polarization,
+    thetaSquareIndexDyadicCompletionDefect_eq,
+    thetaSquareIndexDyadicCompletionDefect_eq]
+  ring
 
 /-- The dyadic translate is exactly the full row of square indices divisible by `2^k`. -/
 theorem thetaSquareIndexDyadicDensity_eq_multiples_row (k : ℕ) (x : ℝ) :
@@ -670,6 +937,204 @@ theorem tendsto_thetaSquareIndexDyadicRemainderSource_zero
       (thetaSquareIndexDyadicDensity_nonneg hy k)
   · exact thetaSquareIndexDyadicRemainderSource_le_majorant hx hy
   · exact tendsto_thetaSquareIndexDyadicRemainderMajorant_zero x y
+
+/-! ## Integrated dyadic top-row moments -/
+
+/-- Explicit Gaussian majorant for the `m`th moment of the depth-`k` dyadic top row. -/
+def thetaSquareIndexDyadicMomentMajorant (m k : ℕ) : ℝ :=
+  (4 * thetaCuspGaussianConstant (thetaCuspTailDerivativePolynomial 2)) *
+    ((2 ^ k : ℕ) : ℝ) *
+    (Real.exp (-(Real.pi / 2))) ^ (2 ^ k : ℕ) *
+    (∑' n : ℕ+, (n : ℝ) *
+      (Real.exp (-(Real.pi / 2))) ^ ((n : ℕ) - 1)) * m.factorial
+
+/-- Every polynomial moment of a dyadic top row is integrable on the positive source half-line. -/
+theorem integrableOn_pow_mul_thetaSquareIndexDyadicDensity (m k : ℕ) :
+    IntegrableOn (fun x : ℝ => x ^ m * thetaSquareIndexDyadicDensity k x)
+      (Ioi 0) := by
+  let A : ℝ :=
+    (4 * thetaCuspGaussianConstant (thetaCuspTailDerivativePolynomial 2)) *
+      ((2 ^ k : ℕ) : ℝ) *
+      (Real.exp (-(Real.pi / 2))) ^ (2 ^ k : ℕ) *
+      ∑' n : ℕ+, (n : ℝ) *
+        (Real.exp (-(Real.pi / 2))) ^ ((n : ℕ) - 1)
+  have hg : IntegrableOn (fun x : ℝ => A * (x ^ m * Real.exp (-x))) (Ioi 0) := by
+    have hbase : IntegrableOn (fun x : ℝ => x ^ m * Real.exp (-x)) (Ioi 0) := by
+      apply Integrable.of_integral_ne_zero
+      rw [show (∫ x : ℝ in Ioi 0, x ^ m * Real.exp (-x)) =
+          (m.factorial : ℝ) by
+        simpa using integral_pow_mul_exp_nat_neg m 1 (by omega)]
+      positivity
+    exact hbase.const_mul A
+  refine hg.mono' ?_ ?_
+  · have hrho : Continuous thetaCuspTailSecondDensity :=
+      continuous_iff_continuousAt.mpr fun x =>
+        (hasDerivAt_thetaCuspTailDerivative 2 x).continuousAt.const_mul 4
+    exact ((continuous_pow m).mul
+      ((hrho.comp (continuous_id.add continuous_const)).const_mul _)).aestronglyMeasurable
+  · filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+    have hx0 : 0 ≤ x := hx.le
+    have hrow := thetaSquareIndexDyadicDensity_le_geometric hx0 k
+    have hrow0 := thetaSquareIndexDyadicDensity_nonneg hx0 k
+    dsimp [A]
+    calc
+      ‖x ^ m * thetaSquareIndexDyadicDensity k x‖ =
+          x ^ m * thetaSquareIndexDyadicDensity k x := by
+        rw [Real.norm_eq_abs, abs_of_nonneg
+          (mul_nonneg (pow_nonneg hx0 _) hrow0)]
+      _ ≤ x ^ m * ((4 * thetaCuspGaussianConstant
+            (thetaCuspTailDerivativePolynomial 2) * Real.exp (-x)) *
+            ((2 ^ k : ℕ) : ℝ) *
+            (Real.exp (-(Real.pi / 2))) ^ (2 ^ k : ℕ) *
+            ∑' n : ℕ+, (n : ℝ) *
+              (Real.exp (-(Real.pi / 2))) ^ ((n : ℕ) - 1)) :=
+        mul_le_mul_of_nonneg_left hrow (pow_nonneg hx0 _)
+      _ = _ := by ring
+
+/-- The explicit majorant bounds the actual `m`th top-row moment. -/
+theorem integral_pow_mul_thetaSquareIndexDyadicDensity_le_majorant (m k : ℕ) :
+    (∫ x : ℝ in Ioi 0, x ^ m * thetaSquareIndexDyadicDensity k x) ≤
+      thetaSquareIndexDyadicMomentMajorant m k := by
+  let A : ℝ :=
+    (4 * thetaCuspGaussianConstant (thetaCuspTailDerivativePolynomial 2)) *
+      ((2 ^ k : ℕ) : ℝ) *
+      (Real.exp (-(Real.pi / 2))) ^ (2 ^ k : ℕ) *
+      ∑' n : ℕ+, (n : ℝ) *
+        (Real.exp (-(Real.pi / 2))) ^ ((n : ℕ) - 1)
+  have hf := integrableOn_pow_mul_thetaSquareIndexDyadicDensity m k
+  have hg : IntegrableOn (fun x : ℝ => A * (x ^ m * Real.exp (-x))) (Ioi 0) := by
+    have hbase : IntegrableOn (fun x : ℝ => x ^ m * Real.exp (-x)) (Ioi 0) := by
+      apply Integrable.of_integral_ne_zero
+      rw [show (∫ x : ℝ in Ioi 0, x ^ m * Real.exp (-x)) =
+          (m.factorial : ℝ) by
+        simpa using integral_pow_mul_exp_nat_neg m 1 (by omega)]
+      positivity
+    exact hbase.const_mul A
+  calc
+    _ ≤ ∫ x : ℝ in Ioi 0, A * (x ^ m * Real.exp (-x)) := by
+      apply MeasureTheory.integral_mono_ae hf hg
+      filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+      have hx0 : 0 ≤ x := hx.le
+      have hrow := thetaSquareIndexDyadicDensity_le_geometric hx0 k
+      dsimp [A]
+      calc
+        x ^ m * thetaSquareIndexDyadicDensity k x ≤
+            x ^ m * ((4 * thetaCuspGaussianConstant
+              (thetaCuspTailDerivativePolynomial 2) * Real.exp (-x)) *
+              ((2 ^ k : ℕ) : ℝ) *
+              (Real.exp (-(Real.pi / 2))) ^ (2 ^ k : ℕ) *
+              ∑' n : ℕ+, (n : ℝ) *
+                (Real.exp (-(Real.pi / 2))) ^ ((n : ℕ) - 1)) :=
+          mul_le_mul_of_nonneg_left hrow (pow_nonneg hx0 _)
+        _ = _ := by ring
+    _ = thetaSquareIndexDyadicMomentMajorant m k := by
+      rw [integral_const_mul]
+      rw [show (∫ x : ℝ in Ioi 0, x ^ m * Real.exp (-x)) =
+          (m.factorial : ℝ) by
+        simpa using integral_pow_mul_exp_nat_neg m 1 (by omega)]
+      rfl
+
+/-- Every fixed-moment majorant tends to zero at the same double-exponential rate as the row. -/
+theorem tendsto_thetaSquareIndexDyadicMomentMajorant_zero (m : ℕ) :
+    Tendsto (fun k : ℕ => thetaSquareIndexDyadicMomentMajorant m k)
+      atTop (nhds 0) := by
+  have h := (tendsto_thetaSquareIndexDyadicGeometricMajorant 0).mul_const
+    (m.factorial : ℝ)
+  convert h using 1
+  · funext k
+    simp [thetaSquareIndexDyadicMomentMajorant]
+  · ring
+
+/-- Every fixed polynomial moment of the cofinal dyadic top row tends to zero. -/
+theorem tendsto_integral_pow_mul_thetaSquareIndexDyadicDensity_zero (m : ℕ) :
+    Tendsto
+      (fun k : ℕ =>
+        ∫ x : ℝ in Ioi 0, x ^ m * thetaSquareIndexDyadicDensity k x)
+      atTop (nhds 0) := by
+  apply squeeze_zero
+  · intro k
+    apply MeasureTheory.integral_nonneg_of_ae
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+    exact mul_nonneg (pow_nonneg hx.le _)
+      (thetaSquareIndexDyadicDensity_nonneg hx.le k)
+  · exact integral_pow_mul_thetaSquareIndexDyadicDensity_le_majorant m
+  · exact tendsto_thetaSquareIndexDyadicMomentMajorant_zero m
+
+/-- Weighted product of two dyadic top-row moments, in the normalization occurring in the Haar
+remainder current. -/
+def thetaSquareIndexDyadicWeightedMomentProduct (m n k : ℕ) : ℝ :=
+  (2 : ℝ) ^ k *
+    (∫ x : ℝ in Ioi 0, x ^ m * thetaSquareIndexDyadicDensity k x) *
+    (∫ y : ℝ in Ioi 0, y ^ n * thetaSquareIndexDyadicDensity k y)
+
+/-- Explicit product majorant for two weighted dyadic moments. -/
+def thetaSquareIndexDyadicWeightedMomentProductMajorant (m n k : ℕ) : ℝ :=
+  (2 : ℝ) ^ k * thetaSquareIndexDyadicMomentMajorant m k *
+    thetaSquareIndexDyadicMomentMajorant n k
+
+theorem thetaSquareIndexDyadicWeightedMomentProduct_le_majorant (m n k : ℕ) :
+    thetaSquareIndexDyadicWeightedMomentProduct m n k ≤
+      thetaSquareIndexDyadicWeightedMomentProductMajorant m n k := by
+  unfold thetaSquareIndexDyadicWeightedMomentProduct
+    thetaSquareIndexDyadicWeightedMomentProductMajorant
+  have hm0 : 0 ≤ ∫ x : ℝ in Ioi 0,
+      x ^ m * thetaSquareIndexDyadicDensity k x := by
+    apply MeasureTheory.integral_nonneg_of_ae
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+    exact mul_nonneg (pow_nonneg hx.le _)
+      (thetaSquareIndexDyadicDensity_nonneg hx.le k)
+  have hn0 : 0 ≤ ∫ x : ℝ in Ioi 0,
+      x ^ n * thetaSquareIndexDyadicDensity k x := by
+    apply MeasureTheory.integral_nonneg_of_ae
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+    exact mul_nonneg (pow_nonneg hx.le _)
+      (thetaSquareIndexDyadicDensity_nonneg hx.le k)
+  have hMm0 : 0 ≤ thetaSquareIndexDyadicMomentMajorant m k :=
+    hm0.trans (integral_pow_mul_thetaSquareIndexDyadicDensity_le_majorant m k)
+  gcongr
+  · exact integral_pow_mul_thetaSquareIndexDyadicDensity_le_majorant m k
+  · exact integral_pow_mul_thetaSquareIndexDyadicDensity_le_majorant n k
+
+/-- The explicit weighted two-moment product majorant tends to zero. -/
+theorem tendsto_thetaSquareIndexDyadicWeightedMomentProductMajorant_zero
+    (m n : ℕ) :
+    Tendsto
+      (fun k : ℕ => thetaSquareIndexDyadicWeightedMomentProductMajorant m n k)
+      atTop (nhds 0) := by
+  have h := (tendsto_thetaSquareIndexDyadicRemainderMajorant_zero 0 0).mul_const
+    ((m.factorial : ℝ) * n.factorial)
+  convert h using 1
+  · funext k
+    unfold thetaSquareIndexDyadicWeightedMomentProductMajorant
+      thetaSquareIndexDyadicMomentMajorant
+      thetaSquareIndexDyadicRemainderMajorant
+      thetaSquareIndexDyadicGeometricMajorant
+    simp
+    ring
+  · ring
+
+/-- Every weighted product of two fixed polynomial moments in the Haar top row tends to zero. -/
+theorem tendsto_thetaSquareIndexDyadicWeightedMomentProduct_zero (m n : ℕ) :
+    Tendsto (fun k : ℕ => thetaSquareIndexDyadicWeightedMomentProduct m n k)
+      atTop (nhds 0) := by
+  apply squeeze_zero
+  · intro k
+    unfold thetaSquareIndexDyadicWeightedMomentProduct
+    have hm0 : 0 ≤ ∫ x : ℝ in Ioi 0,
+        x ^ m * thetaSquareIndexDyadicDensity k x := by
+      apply MeasureTheory.integral_nonneg_of_ae
+      filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+      exact mul_nonneg (pow_nonneg hx.le _)
+        (thetaSquareIndexDyadicDensity_nonneg hx.le k)
+    have hn0 : 0 ≤ ∫ x : ℝ in Ioi 0,
+        x ^ n * thetaSquareIndexDyadicDensity k x := by
+      apply MeasureTheory.integral_nonneg_of_ae
+      filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+      exact mul_nonneg (pow_nonneg hx.le _)
+        (thetaSquareIndexDyadicDensity_nonneg hx.le k)
+    exact mul_nonneg (mul_nonneg (by positivity) hm0) hn0
+  · exact thetaSquareIndexDyadicWeightedMomentProduct_le_majorant m n
+  · exact tendsto_thetaSquareIndexDyadicWeightedMomentProductMajorant_zero m n
 
 /-- One exact Haar step: a divisibility row is the positive exact-valuation square, minus the
 parity-wavelet square, plus the next divisibility row. -/

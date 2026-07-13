@@ -346,3 +346,5 @@ import GaloisForLFunctions.MomentFunctionalPositivity
 import GaloisForLFunctions.MomentHankelStrict
 import GaloisForLFunctions.StieltjesTransformPick
 import GaloisForLFunctions.LowTemperatureDispersionIdentity
+import GaloisForLFunctions.PolynomialEvaluationLemma
+import GaloisForLFunctions.MomentFunctionalHaviland

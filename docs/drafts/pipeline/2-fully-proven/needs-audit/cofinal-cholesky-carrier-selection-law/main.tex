@@ -565,19 +565,35 @@ triangular repair of this graph.  From \eqref{eq:gram-inverse},
   \qquad
   \det C_N=(\det G_N)^{-1/2}.
 \end{equation}
-Szeg\H{o}'s determinant formula gives
-\begin{equation}\label{eq:szego-det}
-  \det G_N=\prod_{j=0}^{N-1}(1-|\alpha_j|^2)^{N-j},
+Put $D_N=\det G_N$.  The extended Szeg\H{o} limit theorem in its determinant-ratio form
+states that, for an infinite-support finite positive measure
+$d\mu=w\,dm+d\mu_s$,
+\begin{equation}\label{eq:szego-ratio}
+  \lim_{N\to\infty}\frac{D_{N+1}}{D_N}
+  =\exp\left(\int_{\T}\log w\,dm\right),
 \end{equation}
-where $(\alpha_j)$ are the Verblunsky coefficients.  If
-$d\mu=w\,dm+d\mu_s$, Szeg\H{o}'s theorem states
+with the value zero when the logarithmic integral is $-\infty$~\cite[Theorem~1]{Lyons2003}.
+The following elementary passage is included because it is part of the new geometric deduction,
+not part of the cited Szeg\H{o} input.
+
+\begin{lemma}[Ratio-to-root collapse]\label{lem:ratio-root}
+If $a_N>0$ and $a_{N+1}/a_N\to0$, then
+$a_N^{1/(N+1)}\to0$.
+\end{lemma}
+
+\begin{proof}
+Fix $0<q<1$.  Eventually $a_{N+1}\leq q a_N$, hence for a suitable $M$ and every $N\geq M$,
+$a_N\leq a_Mq^{N-M}$.  Taking $(N+1)$-st roots gives
+$\limsup_N a_N^{1/(N+1)}\leq q$.  Letting $q\downarrow0$ proves the claim.
+\end{proof}
+
+For pure singularity $w=0$ almost everywhere, so \eqref{eq:szego-ratio} and
+Lemma~\ref{lem:ratio-root} give
 \begin{equation}\label{eq:szego}
-  \lim_{N\to\infty}(\det G_N)^{1/N}
-  =\prod_{j=0}^{\infty}(1-|\alpha_j|^2)
-  =\exp\left(\int_{\T}\log w\,dm\right).
+  (\det G_N)^{1/(N+1)}\longrightarrow0.
 \end{equation}
-For pure singularity $w=0$ almost everywhere, so the limit is zero.  Since the diagonal of $G_N$
-is one, $\operatorname{tr}G_N=N+1$ and $\lambda_{\max}(G_N)\geq1$.  Therefore
+Since the geometric mean of the positive eigenvalues dominates their minimum,
+$\lambda_{\min}(G_N)\leq(\det G_N)^{1/(N+1)}$.  Therefore
 \begin{equation}\label{eq:divergence}
   \lambda_{\min}(G_N)\longrightarrow0,\qquad
   \|C_N\|\longrightarrow\infty,\qquad
@@ -728,6 +744,12 @@ Acta Math. Hungar. \textbf{115} (2007), 281--307;
 M. W. Hirsch,
 \emph{Differential Topology},
 Graduate Texts in Mathematics, vol.~33, Springer, New York, 1976.
+
+\bibitem{Lyons2003}
+R. Lyons,
+\emph{Szeg\H{o} limit theorems},
+Geom. Funct. Anal. \textbf{13} (2003), 574--590;
+\href{https://arxiv.org/abs/math/0205052}{arXiv:math/0205052}.
 
 \bibitem{PrucknerEtAl2023}
 R. Pruckner, J. Reiffenstein, and H. Woracek,

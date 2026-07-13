@@ -906,20 +906,26 @@ lint passes, and the generated declaration indexes are current. This
 validates only the declarations listed above, not the still-unformalized claims in the paper.
 
 The remaining original formalization requires exact Lean interfaces for the cited construction of
-the N-extremal Nevanlinna family, finite algebraic/Whitney stratification and smooth parametric
-transversality, the vanishing-half-line F. and M. Riesz theorem, and the OPUC/Szegő
-determinant-vanishing theorem. From those literature inputs, the project must still prove in Lean
-the full-complex-shift Baire application, the exact Nevanlinna-image/maximal-HT residual
-intersection, and the final paper-wide relative capstone. The classical source theorems themselves
-need not be reproved in Lean for publication, but every original deduction from their exact
-hypotheses must be axiom-free.
+the N-extremal Nevanlinna family and for finite algebraic/Whitney stratification with smooth
+parametric transversality. The Riesz-brothers and Szegő boundaries are now isolated at their exact
+classical conclusions: one-sided square-summable Fourier coefficients imply absolute continuity,
+and consecutive Toeplitz-determinant ratios tend to the Szegő geometric mean. From those exact
+leaves, Lean now proves graph saturation, analytic-polynomial completeness, ratio-to-root collapse,
+least-eigenvalue collapse, and normalized-determinant and Euclidean-operator-norm escape. The
+project must still prove in Lean the full-complex-shift Baire application, the exact
+Nevanlinna-image/maximal-HT residual intersection, the unitary carrier realization if it remains a
+named conclusion, and the final paper-wide relative capstone. The classical source theorems
+themselves need not be reproved in Lean for publication, but every original deduction from their
+exact hypotheses must be axiom-free.
 
 Formalization audit (needs-audit pass): the listed modules are confirmed present in the tree and
 spot-checked axiom-clean. The remaining literature inputs are classical theorems absent from
-mathlib: F. and M. Riesz was verified absent (the `RieszBrothersRieszFischer` module now proves
-that its vanishing-half-line form is the sole remaining analytic input in the graph chain), as are
-the OPUC/Szegő determinant-vanishing theorem and the indeterminate-Hamburger Nevanlinna-family
-construction. Bernstein--Szegő finite-prefix reproduction is no longer an external input: the
+mathlib. The exact Riesz-brothers density conclusion is matched by Yafaev's formulation of the
+classical theorem, and the exact determinant-ratio conclusion is matched by Lyons's extended
+Szegő theorem; neither theorem is reproved in Lean. The
+`PureSingularCarrierTrichotomy` capstone contains every original deduction from those two inputs.
+The indeterminate-Hamburger Nevanlinna-family construction remains an external interface still to
+be matched convention-by-convention. Bernstein--Szegő finite-prefix reproduction is no longer an external input: the
 project proves it unconditionally by stable-terminal feedback reconstruction.
 The separate differential-genericity gap now requires the projectivized total-incidence/projection
 or an equivalent direct universal-incidence transversality theorem, together with finite

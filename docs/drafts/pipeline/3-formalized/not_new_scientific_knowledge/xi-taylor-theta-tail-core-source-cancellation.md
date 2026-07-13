@@ -426,6 +426,32 @@ V_0(-x)=2^(1/2)O_0(x-log 2)
 ```
 
 is formalized as `thetaSquareIndexParityDensity_neg_reflection`.
+Its all-depth form is
+
+```text
+V_k(-x)=sqrt(2)O_k(x-(2k+1)log 2)+D_k(x),
+
+2^(k+1)O_k(x-ell_k)O_k(y-ell_k)-2^kV_k(-x)V_k(-y)
+ =-2^k[sqrt(2)O_k(x-ell_k)D_k(y)
+       +sqrt(2)D_k(x)O_k(y-ell_k)+D_k(x)D_k(y)].
+```
+
+Here the explicit difference of the two elementary completion characters simplifies to
+`D_k(x)=-exp(-x/2)/2`, independent of `k`; this is formalized as
+`thetaSquareIndexDyadicCompletionDefect_eq`.  The
+declarations are `thetaSquareIndexDyadicParityLayer_neg_reflection` and
+`thetaSquareIndexDyadicHaarLayer_reflected_polarization`.  The identity cancels the complete
+RH-bearing square pair algebraically; the remaining obstruction is the half-line interval swept
+by the growing translate `(2k+1)log 2`.
+For every finite coefficient packet of total mass zero, the universal character cancels before
+integration.  The declarations
+`thetaSquareIndexDyadicBalancedParityPacket_neg_reflection` and
+`thetaSquareIndexDyadicBalancedParityPacket_mul_neg_reflection` prove the resulting linear and
+product polarizations with exact amplitude squares `sqrt(2)` and `2`.
+Finally, `thetaSquareIndexDyadicParityDiagonal_variancePolarization` decomposes the full finite
+weighted parity diagonal into pairwise balanced depth differences plus one rank-one mean, and
+`thetaSquareIndexDyadicParityLayer_weightedSum` identifies that mean exactly as
+`2^N F_N-rho`.
 The dyadic top row has the explicit Gaussian majorant
 `C_x 2^k exp(-pi 2^k/2)`, and both the row and the weighted two-variable remainder are proved to
 tend pointwise to zero on the closed positive source half-line.

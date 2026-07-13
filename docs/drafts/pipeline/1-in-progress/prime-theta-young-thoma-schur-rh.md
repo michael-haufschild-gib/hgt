@@ -5,6 +5,7 @@
 - **Type:** `[LARGE OUTLANDISH DETOUR] [CONJECTURE] [TWO-ENDED RH CLOSURE]`
 - **Lean inputs:** `formal/GaloisForLFunctions/RHTower/PrimeWordEnsembleBoundaryTomography.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeSupportMultivariateLiftMarker.lean`,
+  `formal/GaloisForLFunctions/RHTower/PrimeWordYoungShapeNoGo.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeArchThetaCumulantMinor.lean`,
   `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailTelescope.lean`,
   `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedSource.lean`,
@@ -145,6 +146,24 @@ where the Gamma/theta weld and `Renorm_N` must make all weights nonnegative, nor
 deletion-coherent.  The one-row value must reproduce `b_N` through `(JT)`; it may not be declared
 equal by definition.
 
+The required first map is now formalized with mathlib's finite partition type.  Lean also proves
+that the words `[0,0,0,1]` and `[0,0,1,1]` have the same support and complete scalar boundary germ
+but distinct multiplicity partitions `[3,1]` and `[2,2]`.  This closes the scalar-germ shortcut and
+positively certifies that the full-word packet contains the missing Young-shape datum.
+Both one-box branches are now formalized.  Adjoining a fresh prime label inserts a new row of
+length one.  If the label already has multiplicity `k`, adjoining it replaces that part by `k+1`.
+Consequently the complete labelled-word insertion map descends exactly to Young-graph adjacency.
+The remaining difficulty is entirely in the completed positive weight balance across all labelled
+preimages of an unlabelled shape; it is no longer hidden in the shape combinatorics.
+
+There is also now an exact interface to the finite Möbius channel.  Lean proves that a prime word
+has pure-column shape `[1^N]` if and only if it is squarefree.  Hence the normalized positive
+Bernoulli law underlying `MobiusFiniteSchurTransfer.lean` is already a canonical column-positive
+Young boundary, but it has no rows of length at least two.  The positive completion problem is to
+add a second archimedean alphabet whose binary incidences repeat prime rows while preserving the
+existing column law.  The dual-Cauchy/RSK version of that producer is separated in
+`prime-arch-dual-cauchy-rsk-fredholm-rh.md`.
+
 The first decisive source equation is the one-box balance.  For every shape `mu` of size `N-1`,
 group completed words by which prime letter was deleted and prove `(YG)` before summing over
 shapes.  Failure of shape-resolved balance cannot be repaired by the scalar theta moments.
@@ -257,6 +276,10 @@ restricted family of Schur-positive shapes, or exact signed transposition defect
 - [x] both directions between negative zeros of `A` and RH closed
 - [x] Edrei--Thoma entire/order reduction closed
 - [x] coherent Young system and exact source branching equation stated
+- [x] full prime word to multiplicity partition map and scalar-germ blindness formalized
+- [x] fresh-letter Young one-box branching formalized
+- [x] repeated-letter Young row-lengthening branching formalized
+- [x] squarefree Möbius sector identified exactly with the pure-column Young boundary
 - [x] direct raw-Euler row sector retired positively into the `omega` transposition target
 - [x] low-order Toeplitz and Jacobi--Trudi signs numerically pre-certified
 - [ ] completed prime-word weights on multiplicity partitions constructed
@@ -264,4 +287,3 @@ restricted family of Schur-positive shapes, or exact signed transposition defect
 - [ ] completion/KMS sector exchange identified with Young transposition
 - [ ] all-order Schur positivity proved source-first
 - [ ] RH capstone formalized
-

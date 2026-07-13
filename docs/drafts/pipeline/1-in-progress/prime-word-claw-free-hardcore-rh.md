@@ -206,7 +206,9 @@ replace the coefficient and local-uniform-limit identities.
 - `primeWordSupportConflict_explicit_claw`;
 - `primeWordSupportConflict_no_claw_of_center_card_le_two`.
 
-The exact module builds without `sorry`, `admit`, new axioms, `opaque`, or `unsafe` declarations.
+The exact module build is green.  Axiom audits report only `propext`, `Classical.choice`, and
+`Quot.sound`.  The formal theorem has its own stage-3 card at
+`../3-formalized/not_new_scientific_knowledge/prime-support-conflict-claw-threshold.md`.
 
 ## Kill conditions
 

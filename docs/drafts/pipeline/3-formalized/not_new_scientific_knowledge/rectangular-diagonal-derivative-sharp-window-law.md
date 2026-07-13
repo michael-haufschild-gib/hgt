@@ -122,6 +122,20 @@ variation estimate rather than by estimating the discontinuous prime window from
 The slope estimate `(4)` is still RH-strength.  Neither the derivative identity nor the present
 literature audit supplies its unconditional lower bound.
 
+The critical quadratic-sampling law now composes with this derivative bridge.  It is enough to
+prove `(4)` only at the square apertures `n=m^2`.  Equivalently, for every positive `epsilon`, it
+is enough to find `C_epsilon >= 0` such that eventually
+
+```text
+2(sqrt(2)-1)/m-C_epsilon*(m^2)^epsilon
+  <= D_+ A(log(2)/2,log(m^2)).                         (7)
+```
+
+The same square-only reduction is formalized for the complete rectangular prime--polar slope in
+`(6)`.  Thus the remaining source estimate is required only on the logarithmic lattice
+`x=2*log(m)`, rather than at every integer logarithmic sample.  The transfer from this lattice to
+all `n` costs only `O(log n)`, which is absorbed by every positive power.
+
 ## Lean implementation
 
 ```text
@@ -138,6 +152,10 @@ GaloisForLFunctions.RHTower.CCMRectangularDirectionalDerivative
   dyadicWeightedPrimeWindow_upper_of_primePolarSourceDiagonalRightSlope_lower
   riemannHypothesis_of_eventually_dyadicAdjacentBlockDiagonalRightSlope_lower
   riemannHypothesis_of_eventually_dyadicPrimePolarSourceDiagonalRightSlope_lower
+
+GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquareSampling
+  riemannHypothesis_of_eventually_squareAdjacentBlockDiagonalRightSlope_lower
+  riemannHypothesis_of_eventually_squarePrimePolarSourceDiagonalRightSlope_lower
 ```
 
 The focused module build is green.  `#print axioms` for the two capstone derivative theorems and
@@ -153,6 +171,7 @@ the direct dyadic implication reports only `propext`, `Classical.choice`, and `Q
 - [x] complete prime--polar source diagonal derivative formalized
 - [x] direct slope-to-dyadic-window implication formalized
 - [x] direct all-epsilon slope-to-RH implications formalized
+- [x] critical square-only slope-to-RH implications formalized
 - [x] focused build and axiom audit pass
 - [ ] prove an unconditional all-epsilon lower bound for the diagonal slope
 - [ ] transfer the slope through the completed rectangular Guinand--Weil identity

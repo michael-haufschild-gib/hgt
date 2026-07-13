@@ -683,8 +683,74 @@ V(-x)=2w O(x-log 2)+2w R(x-log 2)-R(x).                 (12d.8)
 
 Thus the coefficient ratio in `(12d.7)` is exactly the square of the reflection amplitude:
 `(2w)^2=2`.  After reflection, the positive exact-valuation square and the negative parity square
-therefore cancel at the source-amplitude level; only a translation by `log 2` and the two
-completion characters remain.  The cancellation is not yet a current theorem because
+therefore cancel at the source-amplitude level; only a translation and the two completion
+characters remain.  The relation persists at every arithmetic depth, but its displacement grows.
+Put
+
+```text
+a=2w=sqrt(2),  ell_k=(2k+1)log 2,
+D_k(x)=2^(-k/2)[a R(x-(k+1)log 2)-R(x-k log 2)]
+      =-(1/2)exp(-x/2).
+```
+
+The exact rescalings `O_k(x)=2^(-k/2)O(x+k log 2)` and
+`V_k(x)=2^(-k/2)V(x+k log 2)` give
+
+```text
+V_k(-x)=a O_k(x-ell_k)+D_k(x),                            (12d.8a)
+
+2^(k+1)O_k(x-ell_k)O_k(y-ell_k)-2^k V_k(-x)V_k(-y)
+ =-2^k[a O_k(x-ell_k)D_k(y)
+       +a D_k(x)O_k(y-ell_k)+D_k(x)D_k(y)].               (12d.8b)
+```
+
+Lean proves both formulas.  Equation `(12d.8b)` is the independent arithmetic signed
+polarization of the full square-index translate packet: the two RH-bearing square channels
+disappear algebraically.  The growing completion character cancels as well: the sole surviving
+character is the universal decaying mode `-exp(-x/2)/2`, independent of `k`.  Thus `(12d.8b)`
+consists of two explicit odd-row/decaying-character cross terms and the favorable negative radial
+square `-2^(k-2)exp(-(x+y)/2)`.  This is stronger than the atomwise Lorentz polarization because it
+cancels the complete exact-valuation/parity pair before any sign is taken.
+
+The universal character can itself be removed without an estimate.  For every finite coefficient
+packet `(c_k)` satisfying `sum_k c_k=0`, Lean proves
+
+```text
+sum_k c_k V_k(-x)
+ =sqrt(2) sum_k c_k O_k(x-(2k+1)log 2),                  (12d.8c)
+
+[sum_k c_k V_k(-x)][sum_k c_k V_k(-y)]
+ =2[sum_k c_k O_k(x-(2k+1)log 2)]
+    [sum_k c_k O_k(y-(2k+1)log 2)].                     (12d.8d)
+```
+
+This is a completion-free signed polarization of an arbitrary balanced finite square-index
+packet.  It is independent of Xi values and divisor data.  Its remaining difficulty is geometric:
+the different arithmetic depths carry different shifts, so the positive-half-line current does
+not identify the right side of `(12d.8d)` with the diagonal Haar form in `(12d.7)`.
+
+The whole finite parity diagonal can nevertheless be resolved into balanced packets.  If
+`w_k=2^k` and `W_N=sum_(k<N)w_k`, the weighted-variance identity gives
+
+```text
+2W_N sum_(k<N)w_k V_k(x)V_k(y)
+ =2[sum_(k<N)w_k V_k(x)][sum_(k<N)w_k V_k(y)]
+  +sum_(i,j<N)w_iw_j[V_i(x)-V_j(x)][V_i(y)-V_j(y)],      (12d.8e)
+
+sum_(k<N)2^k V_k(x)=2^N F_N(x)-rho(x).                  (12d.8f)
+```
+
+Lean proves `(12d.8e)`--`(12d.8f)`.  Every double-sum term is a completion-free balanced packet
+covered by `(12d.8c)`--`(12d.8d)`.  The entire non-balanced direction has rank one and is exactly
+`2^N F_N-rho`; no hidden completion mode remains.  Since `F_N` is the already controlled top row,
+the unresolved orientation is compressed to transporting the pairwise shifted odd packets through
+the finite core kernel and handling the single reappearing full-density rank-one term.  The latter
+shows why the variance identity alone is not a proof: moving it to the left rescales the original
+current rather than assigning it a sign.
+
+It is not yet the current theorem.  Reflecting the parity integral sends the positive quadrant to
+the negative quadrant, while the surviving odd row in `(12d.8b)` is translated by `ell_k`.
+Transport back to the positive source half-line sweeps a finite interval of length `ell_k`, and
 `H_d(z,x+log 2)` is not equal to `H_d(z,x)`: its finite cosine translation mixes the even and odd
 Taylor sections.  This identifies the next exact gate without a sign assumption: polarize that
 two-component finite translation and prove that its current change is a constant phase multiple

@@ -266,11 +266,14 @@ functional-transcendence statement is absent.  The reason for that score is the 
 
 ## Exact Lean boundary
 
-No analytic part of this theorem is currently formalized.  Stage 3 requires unconditional Lean
-definitions and proofs of:
+Item 2 below is now formalized (see the Formalization audit note); the remaining items are not.
+Stage 3 requires unconditional Lean definitions and proofs of:
 
 1. finite multivariate jet/Hermite interpolation;
-2. the nonzero evaluation-determinant lemma for linearly independent monomials;
+2. the nonzero evaluation-determinant lemma for linearly independent monomials — **DONE**,
+   `AffineJet.exists_eval_matrix_det_ne_zero` in `formal/GaloisForLFunctions/PolynomialEvaluationLemma.lean`
+   (proved for arbitrary linearly independent polynomials over an infinite field, a fortiori for
+   distinct monomials);
 3. nonzero continuous polynomial functionals having dense nonvanishing locus;
 4. the countable Baire intersection in `O(C^d)` or an equivalent complete coefficient model;
 5. conversion of decorated-monomial independence to differential algebraic independence;
@@ -283,9 +286,18 @@ proof is a genuine chain (jet/Hermite interpolation → evaluation-determinant n
 nonvanishing of a polynomial functional → countable Baire intersection in `O(ℂ^d)` → monomial-to-DA
 conversion), and its assembly rests on a Fréchet space of entire functions of several variables with
 its Baire property and on multivariate all-order Hermite interpolation, neither packaged in mathlib.
-The individually extractable lemmas (steps 2–3) are moderate abstract analysis that, alone, certify
-nothing about the orbit matroid; no partial file is added, since it would be a surrogate rather than
-a gate-closing step.
+The individually extractable lemmas (steps 2–3) are moderate abstract analysis. One of them — the
+**evaluation lemma** of step (11) (`### 2. Every determinant can be made nonzero`) — is now
+formalized axiom-clean in-tree in `formal/GaloisForLFunctions/PolynomialEvaluationLemma.lean`:
+`AffineJet.exists_eval_matrix_det_ne_zero` proves that a `K`-linearly independent family of
+multivariate polynomials over an infinite field `K` admits evaluation points at which the sampling
+matrix `(eval (p j) (f i))` is nonsingular (with the supporting `AffineJet.exists_eval_ne_zero`: a
+nonzero multivariate polynomial over an infinite field has a nonvanishing point). The proof is the
+classical induction — column-linearity of the determinant (`Matrix.cramer`) expands the incremental
+determinant as `∑ᵢ (det Nᵢ)·fᵢ` whose `f_last` coefficient is the previous nonsingular minor, so
+linear independence forces it nonzero and yields the next point. Both are axiom-clean
+(`propext, Classical.choice, Quot.sound`). What is still absent is the surrounding Fréchet/Baire
+passage in `O(ℂ^d)` and multivariate all-order Hermite interpolation, which mathlib does not package.
 
 ## Gates
 

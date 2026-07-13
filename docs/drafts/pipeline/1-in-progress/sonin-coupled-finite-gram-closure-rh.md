@@ -372,3 +372,9 @@ finite-polynomial Rayleigh upper bound between two explicit coupled-source squar
 contains no quotient or limiting equality.  Lean exposes it as
 `SoninCoupledPrimeArchPerTestRayleighUpperBound` and proves both its equivalence with the
 variational interface and its direct RH capstone.
+
+### Variational verification checkpoint
+
+`[PROVED IN LEAN]` The exact module build, project-module build, axiom inspection, formal lint, and
+generated-index refresh pass for the variational and Rayleigh capstones.  Axiom inspection reports
+only `propext`, `Classical.choice`, and `Quot.sound`.
