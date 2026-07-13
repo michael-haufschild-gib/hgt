@@ -142,6 +142,46 @@ theorem gramSchmidt_causal (f g : ℕ → E) (n : ℕ) (h : ∀ m, m ≤ n → f
     have hin : i < n := Finset.mem_Iio.mp hi
     rw [ih i hin (fun m hm => h m (hm.trans hin.le))]
 
+/-- **Gram–Schmidt minimizes the distance to the span of predecessors.**  `gramSchmidt v k` is the
+component of `v k` orthogonal to `span{gs₀,…,gs_{k-1}} = span{v₀,…,v_{k-1}}`, so its norm is a lower
+bound for `‖v k - w‖` over every `w` in that span.  This is the least-squares characterization that,
+combined with the multiplication-by-`z` isometry, gives the monotone decrease of the monic
+orthogonal polynomial norms. -/
+theorem norm_gramSchmidt_le_of_mem_span (v : ℕ → E) (k : ℕ) {w : E}
+    (hw : w ∈ Submodule.span ℂ (gramSchmidt ℂ v '' Set.Iio k)) :
+    ‖gramSchmidt ℂ v k‖ ≤ ‖v k - w‖ := by
+  have hdef := gramSchmidt_def'' ℂ v k
+  have hu : v k - gramSchmidt ℂ v k ∈ Submodule.span ℂ (gramSchmidt ℂ v '' Set.Iio k) := by
+    rw [hdef, add_sub_cancel_left]
+    apply Submodule.sum_mem
+    intro i hi
+    exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, Finset.mem_Iio.mp hi, rfl⟩)
+  have horth : ∀ x ∈ Submodule.span ℂ (gramSchmidt ℂ v '' Set.Iio k),
+      inner ℂ (gramSchmidt ℂ v k) x = (0 : ℂ) := by
+    intro x hx
+    induction hx using Submodule.span_induction with
+    | mem y hy =>
+        obtain ⟨i, hi, rfl⟩ := hy
+        exact gramSchmidt_orthogonal ℂ v (Set.mem_Iio.mp hi).ne'
+    | zero => rw [inner_zero_right]
+    | add a b _ _ ha hb => rw [inner_add_right, ha, hb, add_zero]
+    | smul c a _ ha => rw [inner_smul_right, ha, mul_zero]
+  have hmem2 : (v k - gramSchmidt ℂ v k) - w ∈ Submodule.span ℂ (gramSchmidt ℂ v '' Set.Iio k) :=
+    Submodule.sub_mem _ hu hw
+  have hip : inner ℂ (gramSchmidt ℂ v k) ((v k - gramSchmidt ℂ v k) - w) = (0 : ℂ) :=
+    horth _ hmem2
+  have hsplit : v k - w = gramSchmidt ℂ v k + ((v k - gramSchmidt ℂ v k) - w) := by abel
+  rw [hsplit]
+  have hpy : ‖gramSchmidt ℂ v k + ((v k - gramSchmidt ℂ v k) - w)‖ ^ 2
+      = ‖gramSchmidt ℂ v k‖ ^ 2
+        + 2 * RCLike.re (inner ℂ (gramSchmidt ℂ v k) ((v k - gramSchmidt ℂ v k) - w))
+        + ‖(v k - gramSchmidt ℂ v k) - w‖ ^ 2 :=
+    norm_add_sq (𝕜 := ℂ) _ _
+  rw [hip] at hpy
+  simp only [map_zero, mul_zero, add_zero] at hpy
+  nlinarith [norm_nonneg (gramSchmidt ℂ v k), norm_nonneg ((v k - gramSchmidt ℂ v k) - w),
+    norm_nonneg (gramSchmidt ℂ v k + ((v k - gramSchmidt ℂ v k) - w))]
+
 /-- **Gram–Schmidt commutes with the `Fin (n+1)`-restriction of an `ℕ`-family.**  The Gram–Schmidt
 vector of the finite restriction `fun i : Fin (n+1) => w i` at index `k` equals the Gram–Schmidt
 vector of the full `ℕ`-indexed family `w` at the coerced index `↑k`.  Both `ℕ` and `Fin (n+1)` are

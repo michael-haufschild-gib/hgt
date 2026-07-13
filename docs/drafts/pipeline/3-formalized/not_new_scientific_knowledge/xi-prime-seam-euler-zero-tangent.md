@@ -63,6 +63,30 @@ d/da|_(a=0) log(p)[a q/(1-aq)-a(q after tau)/(1-a(q after tau))]
 Thus the horizontal seam is not a divisor-fed coefficient invented at the RH endpoint.  It is the
 literal first coefficient of a finite FE-paired Euler source.
 
+The comparison with the actual local parameter is also exact.  If
+
+```text
+T_(p,s)^(>1)=primeEulerUnitTangent(p,s)-log(p)p^(-s),       (8)
+```
+
+then on the open right half-plane
+
+```text
+T_(p,s)^(>1)
+ =log(p)p^(-2s)(2-p^(-s))/(1-p^(-s))^2
+ =sum_(m>=2)m log(p)p^(-ms).                              (9)
+```
+
+After FE pairing, the actual-source tangent is therefore
+
+```text
+primeEulerUnitFETangent(p,s)
+ =F_(p,s)'(0)+T_(p,s)^(>1)-T_(p,1-s)^(>1).               (10)
+```
+
+Thus the two tangent charts differ by a completely explicit higher-prime-power tail and by no
+degree-one shell.
+
 ## Proof
 
 The scalar derivative of `a q/(1-aq)` at zero is `q`; subtraction and multiplication by `log p`
@@ -82,20 +106,22 @@ The remaining step is not coefficient discovery.  It is the operator transfer an
 ```text
 finite Euler first coefficients
   -> seam-weighted Sonin section A_F
-  -> dist_Calkin(A_F tensor B_F-B_F tensor A_F)=o(sqrt(sum_(p in F)1/p)).  (8)
+  -> dist_Calkin(A_F tensor B_F-B_F tensor A_F)=o(sqrt(sum_(p in F)1/p)).  (11)
 ```
 
 The existing critical-disc Euler-orbit density theorem gives qualitative local-uniform closure of
 FE-odd Schwarz-real analytic functions by genuine local Euler increments, even after deleting
-finitely many primes.  It does **not** supply the quotient-norm rate in `(8)`, nor a bounded map from
+finitely many primes.  It does **not** supply the quotient-norm rate in `(11)`, nor a bounded map from
 that uniform function topology to the tensor Calkin norm.  This is now the exact interface to
 research.
 
-The expansion point matters.  `a=0` extracts the degree-one Euler shell exactly.  The existing
-nonlinear orbit theorem differentiates at the actual local parameter `a=1`, where the coefficient
-is `q/(1-q)^2`.  A successful transfer must compare these two tangent charts or show that their
-difference contributes only a controlled relative/compact tail.  Treating them as identical would
-be a gap.
+The expansion point still matters, but the scalar comparison is no longer open.  Equations
+`(8)`--`(10)` identify the entire mismatch with the Lambert grades `m>=2`.  The paper-proven
+critical all-grade corona theorem shows that these grades vanish in the critical Marcinkiewicz
+quotient.  This does not imply Calkin compactness: the formal Sonin corpus proves that each
+principal prime-power corner has nonzero essential norm, while only its principal-subtracted
+residual is Hilbert--Schmidt.  The remaining chart-transfer theorem is therefore specifically a
+Sonin exterior estimate for the higher-grade principal tail, not another scalar Euler identity.
 
 ## Literature boundary
 
@@ -114,6 +140,9 @@ hasDerivAt_compactDegreeOneEulerLocalFlux_zero
 hasDerivAt_compactDegreeOneEulerFEFlux_zero
 compactDegreeOneEulerZeroFETangent_exponential_apply
 hasDerivAt_degreeOneEulerFEFlux_zero
+primeEulerUnitTangentHigherTail_eq
+primeEulerUnitTangentHigherTail_hasSum
+primeEulerUnitFETangent_eq_zeroTangent_add_higherTail
 degreeOneEulerFEFlux_deriv_zero_eq_horizontalPrimeSeam
 degreeOneEulerFEFlux_deriv_zero_weighted_norm_sq_eq_primeSeam
 degreeOneEulerFEFirstCoefficientEnergy_eq_primeSeamWeightedNormSq
@@ -129,6 +158,8 @@ horizontalDisplacement_sq_mul_log_two_pow_four_le_degreeOneEulerFEFirstCoefficie
 - [x] exact identification with the horizontal Xi seam
 - [x] full energy equality and quantitative horizontal coercivity
 - [x] no Xi zero-location or RH input
+- [x] exact actual-versus-empty tangent comparison
+- [x] chart mismatch isolated to the Lambert grades `m>=2`
 - [ ] bounded transfer from the compact-carrier source topology to the Sonin Calkin quotient
-- [ ] comparison of the empty-parameter and actual-parameter tangent charts
-- [ ] cofinal exterior-Calkin rate `(8)`
+- [ ] exterior-Calkin control of the higher-grade principal tangent tail
+- [ ] cofinal exterior-Calkin rate `(11)`

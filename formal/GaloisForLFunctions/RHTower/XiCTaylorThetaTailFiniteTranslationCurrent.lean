@@ -15,6 +15,21 @@ namespace RHTower
 
 noncomputable section
 
+/-- Oriented current is a derivation of polynomial products, weighted by the squared modulus of
+the complementary factor.  This is the exact finite analogue of additivity of logarithmic
+derivatives and does not require either factor to be nonzero. -/
+theorem orientedPolynomialCurrent_mul
+    (P Q : Polynomial ℂ) (z : ℂ) :
+    orientedPolynomialCurrent (P * Q) z =
+      Complex.normSq (Q.eval z) * orientedPolynomialCurrent P z +
+        Complex.normSq (P.eval z) * orientedPolynomialCurrent Q z := by
+  unfold orientedPolynomialCurrent
+  simp only [derivative_mul, eval_add, eval_mul, map_mul]
+  rw [Complex.normSq_apply, Complex.normSq_apply]
+  simp only [Complex.add_re, Complex.add_im, Complex.mul_im, Complex.mul_re,
+    Complex.conj_re, Complex.conj_im]
+  ring
+
 /-- Exact oriented-current translation law.  Besides the current of the untruncated
 cosine--sine packet, the entire finite-section loss consists of the two displayed mixed currents
 and the self-current of the explicit top edge. -/

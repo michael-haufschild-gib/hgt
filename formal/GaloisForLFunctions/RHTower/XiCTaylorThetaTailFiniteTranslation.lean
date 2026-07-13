@@ -629,6 +629,11 @@ theorem finitePositivePhasePolynomial_add_eq_mul_sub_topEdge
   unfold finitePositivePhasePolynomial finitePositivePhaseTranslationTopEdge
   rw [finiteCosinePolynomial_add_eq_product_sub_topEdge,
     finiteSinePolynomial_add_eq_product_sub_topEdge]
+  have hI : (C I : Polynomial ℂ) ^ 2 = -1 := by
+    rw [sq, ← C_mul, I_mul_I]
+    norm_num
+  ring_nf
+  rw [hI]
   ring
 
 /-- Exact diagonal form of the two-component finite translation law in the expanding channel. -/
@@ -640,6 +645,11 @@ theorem finiteNegativePhasePolynomial_add_eq_mul_sub_topEdge
   unfold finiteNegativePhasePolynomial finiteNegativePhaseTranslationTopEdge
   rw [finiteCosinePolynomial_add_eq_product_sub_topEdge,
     finiteSinePolynomial_add_eq_product_sub_topEdge]
+  have hI : (C I : Polynomial ℂ) ^ 2 = -1 := by
+    rw [sq, ← C_mul, I_mul_I]
+    norm_num
+  ring_nf
+  rw [hI]
   ring
 
 theorem eval_finitePositivePhasePolynomial (d : ℕ) (z : ℂ) (x : ℝ) :

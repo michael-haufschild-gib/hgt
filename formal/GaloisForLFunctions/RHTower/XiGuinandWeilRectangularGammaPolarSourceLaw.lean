@@ -242,6 +242,11 @@ theorem rectangularPrimePolarSourceTailNegativePart_nonneg
     0 ≤ rectangularPrimePolarSourceTailNegativePart L N n :=
   negPart_nonneg _
 
+/-- The negative finite prime--polar source mass regarded as a complex Dirichlet coefficient. -/
+def rectangularPrimePolarSourceTailNegativeDirichletCoefficient
+    (L : ℝ) (N n : ℕ) : ℂ :=
+  ((rectangularPrimePolarSourceTailNegativePart L N n : ℝ) : ℂ)
+
 /-- The observable rectangular Weil tail and the finite prime--polar source tail differ by at
 most the aperture-uniform Gamma--polar bound. -/
 theorem abs_xiRectangularWeilTail_re_sub_primePolarSourceTail_le
@@ -404,5 +409,70 @@ theorem riemannHypothesis_iff_rectangularPrimePolarSource_negativeEnergy
     · simp only [ofReal_re]
       linarith
     · exact hsource epsilon hepsilon
+
+/-- **Quantitative prime--polar source abscissa law.**  At every nonnegative transverse width,
+the horizontal Xi zero-free region is equivalent to one intrinsic threshold: the absolute-
+convergence abscissa of the negative finite prime--polar source is at most `1 + alpha`.  This
+compresses the all-epsilon energy family to a single source invariant. -/
+theorem all_xiZeros_re_le_iff_rectangularPrimePolarSource_negativeAbscissa_le
+    {L alpha : ℝ} (hL : 0 < L) (halpha : 0 ≤ alpha) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n →
+      1 ≤ n ∧ L ≤ Real.log n / 2) :
+    (∀ rho : ℂ, xi rho = 0 → rho.re ≤ 1 / 2 + alpha) ↔
+      LSeries.abscissaOfAbsConv
+          (rectangularPrimePolarSourceTailNegativeDirichletCoefficient L N) ≤
+        ((1 + alpha : ℝ) : EReal) := by
+  rw [all_xiZeros_re_le_iff_rectangularPrimePolarSource_negativeEnergyAbove
+    hL halpha hN]
+  constructor
+  · intro henergy
+    apply LSeries.abscissaOfAbsConv_le_of_forall_lt_LSeriesSummable
+    intro sigma hsigma
+    have hsigmaR : 1 + alpha < sigma := by
+      exact_mod_cast hsigma
+    have hepsilon : 0 < sigma - (1 + alpha) := by linarith
+    have hsum := henergy (sigma - (1 + alpha)) hepsilon
+    change LSeriesSummable
+      (fun n => ((rectangularPrimePolarSourceTailNegativePart L N n : ℝ) : ℂ))
+      (sigma : ℂ)
+    convert hsum using 1
+    norm_num
+  · intro habscissa epsilon hepsilon
+    apply LSeriesSummable_of_abscissaOfAbsConv_lt_re
+    have hstrict :
+        ((1 + alpha : ℝ) : EReal) <
+          ((1 + alpha + epsilon : ℝ) : EReal) := by
+      exact_mod_cast (by linarith : 1 + alpha < 1 + alpha + epsilon)
+    simpa only [ofReal_re] using habscissa.trans_lt hstrict
+
+/-- **Critical prime--polar source abscissa law.**  RH is equivalent to the negative part of one
+finite prime--polar source sequence having absolute-convergence abscissa at most one.  No Gamma
+term, continuation hypothesis, pointwise floor, or epsilon-indexed family remains in the statement. -/
+theorem riemannHypothesis_iff_rectangularPrimePolarSource_negativeAbscissa_le_one
+    {L : ℝ} (hL : 0 < L) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n →
+      1 ≤ n ∧ L ≤ Real.log n / 2) :
+    RiemannHypothesis ↔
+      LSeries.abscissaOfAbsConv
+          (rectangularPrimePolarSourceTailNegativeDirichletCoefficient L N) ≤
+        ((1 : ℝ) : EReal) := by
+  rw [riemannHypothesis_iff_rectangularPrimePolarSource_negativeEnergy hL hN]
+  constructor
+  · intro henergy
+    apply LSeries.abscissaOfAbsConv_le_of_forall_lt_LSeriesSummable
+    intro sigma hsigma
+    have hsigmaR : 1 < sigma := by exact_mod_cast hsigma
+    have hepsilon : 0 < sigma - 1 := by linarith
+    have hsum := henergy (sigma - 1) hepsilon
+    change LSeriesSummable
+      (fun n => ((rectangularPrimePolarSourceTailNegativePart L N n : ℝ) : ℂ))
+      (sigma : ℂ)
+    convert hsum using 1
+    norm_num
+  · intro habscissa epsilon hepsilon
+    apply LSeriesSummable_of_abscissaOfAbsConv_lt_re
+    have hstrict : ((1 : ℝ) : EReal) < ((1 + epsilon : ℝ) : EReal) := by
+      exact_mod_cast (by linarith : (1 : ℝ) < 1 + epsilon)
+    simpa only [ofReal_re] using habscissa.trans_lt hstrict
 
 end RHTower

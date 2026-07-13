@@ -99,4 +99,20 @@ theorem vonMangoldt_shifted_logDeriv (s : ℂ) (hs : 3 / 2 < s.re) :
     rw [show (1 : ℂ) / 2 = ((1 / 2 : ℝ) : ℂ) by norm_num, Complex.ofReal_re]
   rw [Complex.sub_re, e2]; linarith
 
+/-- **The weighted-error majorant** (§4, eq. 18).  For `σ > 1/2` the series `∑ Λ(k) k^{-(σ+½)}`
+converges absolutely.  This is the `Λ(k)/√k`-weighted Euler bound at `σ+½ > 1` that dominates the
+error series `(19)` and makes `H_L` holomorphic on `Re s > 1/2`.  It is the real absolute-convergence
+extract of `LSeriesSummable_vonMangoldt` at the shifted real argument. -/
+theorem vonMangoldt_shifted_summable (σ : ℝ) (hσ : 1 / 2 < σ) :
+    Summable (fun n : ℕ => (Λ n : ℝ) * (n : ℝ) ^ (-(σ + 1 / 2))) := by
+  have hw : (1 : ℝ) < ((σ + 1 / 2 : ℝ) : ℂ).re := by rw [Complex.ofReal_re]; linarith
+  have hs : Summable (fun n => ‖LSeries.term (fun m => (Λ m : ℂ)) ((σ + 1 / 2 : ℝ) : ℂ) n‖) :=
+    summable_norm_iff.mpr (LSeriesSummable_vonMangoldt hw)
+  refine hs.congr (fun n => ?_)
+  rw [LSeries.norm_term_eq, Complex.ofReal_re]
+  rcases eq_or_ne n 0 with h | h
+  · subst h; simp
+  · rw [if_neg h, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg vonMangoldt_nonneg,
+      Real.rpow_neg (Nat.cast_nonneg n), ← div_eq_mul_inv]
+
 end RHTower

@@ -256,6 +256,24 @@ theorem gTent_integral_eq_amplitude_sq (L : ℝ) (hL : 0 ≤ L) (s : ℂ) (hs : 
   rw [gTent_integral_eq_tentLaplace,
     tentLaplace_eq_rectangularWindowAmplitude_sq L hL (s - 1) (sub_ne_zero.mpr hs)]
 
+/-- **The window amplitude at the polar point** `s = 3/2` (`w = s − 1 = ½`):
+`A_L(½) = 2(1 − e^{-L/2}) = 2α`, with `α = 1 − e^{-L/2}` of `(4)`. -/
+theorem rectangularWindowAmplitude_at_half (L : ℝ) :
+    rectangularWindowAmplitude L (3 / 2 - 1) = 2 * (1 - (Real.exp (-(L / 2)) : ℂ)) := by
+  rw [show (3 / 2 - 1 : ℂ) = 1 / 2 by norm_num,
+    rectangularWindowAmplitude_eq_div (by norm_num : (1 / 2 : ℂ) ≠ 0),
+    show (-(L : ℂ) * (1 / 2)) = ((-(L / 2) : ℝ) : ℂ) by push_cast; ring, ← Complex.ofReal_exp]
+  ring
+
+/-- **The tent Mellin factor at `s = 3/2`** (§4, eq. 12): `I_L(3/2) = A_L(½)² = 4α²`.  This is the
+value whose polar charge `−2·I_L(3/2) = −8α²` cancels the `+8α²` residue of the polar term `8α²ζ(s-½)`
+at `s = 3/2` in `(23)`. -/
+theorem gTent_integral_three_halves (L : ℝ) (hL : 0 ≤ L) :
+    (∫ u in (1 : ℝ)..(Real.exp (2 * L)), gTent L (3 / 2) u)
+      = 4 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ 2 := by
+  rw [gTent_integral_eq_amplitude_sq L hL (3 / 2) (by norm_num), rectangularWindowAmplitude_at_half]
+  ring
+
 /-- The **truncated tent** `τ_L(x) = (L − |x − L|)₊ = max 0 (min x (2L−x))` (§1, eq. 1), the card's
 actual window: it coincides with `tentFn` on the support `[0, 2L]` but is `0` outside, which is what
 makes the moving-prime sum `(2)` finite via the support condition `(3)`. -/

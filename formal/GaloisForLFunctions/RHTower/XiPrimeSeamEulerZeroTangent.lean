@@ -115,8 +115,58 @@ theorem hasDerivAt_degreeOneEulerFEFlux_zero (p : ℕ) (s : ℂ) :
   change HasDerivAt
     (fun a : ℂ => (Real.log p : ℂ) *
       (a * q / (1 - a * q) - a * qFE / (1 - a * qFE)))
-    ((Real.log p : ℂ) * (q - qFE)) 0
+      ((Real.log p : ℂ) * (q - qFE)) 0
   exact hs
+
+/-- The difference between the actual-source Euler-unit tangent at `a = 1` and the
+empty-parameter first coefficient at `a = 0`. -/
+def primeEulerUnitTangentHigherTail (p : ℕ) (s : ℂ) : ℂ :=
+  primeEulerUnitTangent p s -
+    (Real.log p : ℂ) * (p : ℂ) ^ (-s)
+
+/-- Closed rational form of the chart difference. It has a double Euler zero at `q = 0`, so no
+degree-one prime shell remains. -/
+theorem primeEulerUnitTangentHigherTail_eq {p : ℕ} (hp : 2 ≤ p)
+    {s : ℂ} (hs : 0 < s.re) :
+    primeEulerUnitTangentHigherTail p s =
+      (Real.log p : ℂ) * ((p : ℂ) ^ (-s)) ^ 2 *
+        (2 - (p : ℂ) ^ (-s)) / (1 - (p : ℂ) ^ (-s)) ^ 2 := by
+  have hden := one_sub_prime_cpow_neg_ne_zero hp hs
+  unfold primeEulerUnitTangentHigherTail primeEulerUnitTangent
+  field_simp [hden]
+  ring
+
+/-- Exact Lambert expansion of the chart difference: the mismatch between the actual and empty
+Euler tangents starts at prime-power grade two. -/
+theorem primeEulerUnitTangentHigherTail_hasSum {p : ℕ} (hp : 2 ≤ p)
+    {s : ℂ} (hs : 0 < s.re) :
+    HasSum
+      (fun k : ℕ ↦ (Real.log p : ℂ) * ((k + 2 : ℕ) : ℂ) *
+        ((p : ℂ) ^ (-s)) ^ (k + 2))
+      (primeEulerUnitTangentHigherTail p s) := by
+  have hfull := primeEulerUnitTangent_hasSum hp hs
+  apply (hasSum_nat_add_iff
+    (f := fun m : ℕ ↦ (Real.log p : ℂ) * (m : ℂ) *
+      ((p : ℂ) ^ (-s)) ^ m) 2).mpr
+  simpa [primeEulerUnitTangentHigherTail, Finset.sum_range_succ] using hfull
+
+/-- FE-paired higher-grade chart difference. -/
+def primeEulerUnitFEHigherTail (p : ℕ) (s : ℂ) : ℂ :=
+  primeEulerUnitTangentHigherTail p s -
+    primeEulerUnitTangentHigherTail p (1 - s)
+
+/-- Exact comparison of the two Euler tangent charts. The actual-source tangent is the
+empty-parameter seam coefficient plus the FE-paired higher prime-power tail. -/
+theorem primeEulerUnitFETangent_eq_zeroTangent_add_higherTail
+    (p : ℕ) (s : ℂ) :
+    primeEulerUnitFETangent p s =
+      deriv (degreeOneEulerFEFlux p s) 0 +
+        primeEulerUnitFEHigherTail p s := by
+  rw [(hasDerivAt_degreeOneEulerFEFlux_zero p s).deriv]
+  unfold primeEulerUnitFETangent primeEulerUnitFEHigherTail
+    primeEulerUnitTangentHigherTail
+  norm_cast
+  ring
 
 /-- On the real axis the first Euler coefficient is exactly the canonical horizontal Xi seam. -/
 theorem degreeOneEulerFEFlux_deriv_zero_eq_horizontalPrimeSeam
