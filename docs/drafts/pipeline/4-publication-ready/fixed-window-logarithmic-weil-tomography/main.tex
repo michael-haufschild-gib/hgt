@@ -24,14 +24,15 @@
 \newcommand{\XiR}{\Xi}
 \newcommand{\cZ}{\mathcal Z}
 \newcommand{\cM}{\mathcal M}
+\newcommand{\cS}{\mathcal S}
 \newcommand{\cQ}{\mathcal Q}
 \newcommand{\cR}{\mathcal R}
 \newcommand{\ord}{\operatorname{ord}}
 \newcommand{\Res}{\operatorname{Res}}
 \newcommand{\supp}{\operatorname{supp}}
 
-\title{Complete Prime-Source and Fixed-Window Weil Tomography:\\
-A One-Source Xi-Divisor Equivalence and Universal Energy Abscissae}
+\title{Complete Critical-Mellin and Fixed-Window Weil Tomography:\\
+A One-Prime-Source Xi-Divisor Equivalence and Universal Energy Abscissae}
 \author{Michael Haufschild \and GPT 5.6 Sol \and Fable 5 \and Grok 4.5}
 \date{}
 
@@ -42,9 +43,11 @@ A One-Source Xi-Divisor Equivalence and Universal Energy Abscissae}
 \begin{abstract}
 Let
 \[
- T_-(n)=\sum_{n/2<k\le n}\frac{\Lambda(k)}{\sqrt{k}}\frac{k}{n},\qquad
- P_-(n)=2A_{\log 2}(3/2)\sqrt n-2T_-(n),
- \qquad A_L(w)=\frac{1-e^{-Lw}}w.
+ \begin{aligned}
+ T_-(n)&=\sum_{n/2<k\le n}\frac{\Lambda(k)}{\sqrt{k}}\frac{k}{n},\\
+ P_-(n)&=2A_{\log 2}(3/2)\sqrt n-2T_-(n),
+ &A_L(w)&=\frac{1-e^{-Lw}}w.
+ \end{aligned}
 \]
 We prove that the ordinary Dirichlet series of this one source-defined inverse-tilted dyadic
 statistic has a canonical meromorphic continuation $\cS_-$ to $\Re s>\frac12$.  Its complete
@@ -63,7 +66,25 @@ every shifted nontrivial xi zero.  Hence the affine shift $\rho\mapsto\rho+\frac
 equivalence between the complete nontrivial xi divisor support and the pole support of one real
 prime-source sequence, while normalized residues recover exact multiplicity.  In particular,
 RH is equivalent to every pole of $\cS_-$ lying on $\Re s=1$, and equivalently to holomorphy on
-$\Re s>1$.
+$\Re s>1$.  This source criterion is exactly the Connes critical-Mellin criterion, rather than
+merely adjacent to it.  If
+\[
+ \widetilde D(u)=\frac1{u+1}+\frac{Z_*'(u+1)}{Z_*(u+1)},
+\]
+then $\widetilde D$ agrees on $\Re u>0$ with the polar--prime critical-Mellin Laplace channel and
+\[
+ \cS_-(s)=2A_{\log2}(s)\widetilde D(s-\tfrac32)+C_-(s),
+\]
+where $C_-$ is holomorphic on $\Re s>\frac12$.  Since $A_{\log2}$ is nonzero there, RH is
+equivalent to holomorphy of $\widetilde D$ on $\Re u>-\frac12$.  More strongly,
+$\widetilde D$ is meromorphic on $\Re u>-1$, its simple-pole support is exactly
+$u=\rho-1$ over the complete nontrivial xi divisor, and
+\[
+ \operatorname*{Res}_{u=\rho-1}\widetilde D(u)=m(\rho).
+\]
+Thus $\rho\mapsto\rho-1$ is a canonical multiplicity-exact equivalence from the xi divisor to
+the critical-Mellin pole divisor, and RH is exactly concentration of that divisor on
+$\Re u=-\frac12$.
 
 As a complementary exact Weil-energy theorem, for every fixed width $L>0$ we introduce one
 translated rectangular two-edge family in the centered Weil form of the Riemann xi-function.
@@ -134,8 +155,9 @@ We also identify the sequence with a fixed-width second
 difference of the xi screw function.  All results are unconditional; the inverse-tilted theorem
 is an explicit complete prime-source realization, while the fixed-window energy theorem is
 divisor-side.  The remaining RH-bearing problem is now the line-selection theorem: prove that
-$\cS_-$ has no poles on $\Re s>1$.  A semilocal operator realization must reproduce this marked
-source divisor and force that line selection.
+$\widetilde D$ is holomorphic on $\Re u>-\frac12$, equivalently that $\cS_-$ has no poles on
+$\Re s>1$.  A semilocal operator realization must reproduce this marked source divisor and force
+that continuation.
 \end{abstract}
 
 \noindent\textbf{2020 Mathematics Subject Classification.}
@@ -984,7 +1006,7 @@ Weil form~\cite{Suzuki2023,Suzuki2025,Suzuki2026}.  The additional feature here 
 rectangular stencil and the arithmetic logarithmic mesh, which produce the Dirichlet continuation
 and pole tomography of Section~5.
 
-\section{Complete-divisor tomography from one inverse-tilted dyadic prime source}
+\section{One-source complete-divisor tomography}
 
 We now remove the target-defined coefficient from the source side.  Put
 \[
@@ -1122,23 +1144,140 @@ The functional equation reflects every left off-critical zero to such a right ze
 \textup{(7.13)}.
 \end{proof}
 
+The preceding source is exactly the regularized critical-Mellin defect occurring in the
+polar--prime Connes colligation.  Define
+\[
+ \widetilde D(u)=\frac1{u+1}+\frac{Z_*'(u+1)}{Z_*(u+1)}.
+ \tag{7.14}
+\]
+For $\Re u>0$, the Euler region is zero-free and
+\[
+ \widetilde D(u)
+ =\frac1u+\frac1{u+1}+\frac{\zeta'(u+1)}{\zeta(u+1)}.
+ \tag{7.15}
+\]
+Thus \textup{(7.14)} is the pole-filled continuation of the signed polar density minus the
+von Mangoldt Laplace channel.  Put
+\[
+ C_-(s)=D_{3/2}N_-(s)-\frac{2M_-(s)}{s-1/2}-2H_-(s).
+ \tag{7.16}
+\]
+
+\begin{theorem}[Exact inverse-tilted/critical-Mellin factorization]
+\label{thm:inverse-tilted-critical-mellin-factorization}
+For every $s\in\C$,
+\[
+ \cS_-(s)=2M_-(s)\widetilde D(s-3/2)+C_-(s).
+ \tag{7.17}
+\]
+The correction $C_-$ is holomorphic on $\Re s>\frac12$.  Consequently
+\[
+ \boxed{
+ \mathrm{RH}
+ \quad\Longleftrightarrow\quad
+ \widetilde D\text{ is holomorphic on }\Re u>-\frac12.}
+ \tag{7.18}
+\]
+\end{theorem}
+
+\begin{proof}
+Substitution of \textup{(7.14)} into the right side of \textup{(7.17)} gives
+\[
+ 2M_-(s)\left(\frac1{s-1/2}
+   +\frac{Z_*'(s-1/2)}{Z_*(s-1/2)}\right)+C_-(s),
+\]
+which is exactly \textup{(7.8)} after \textup{(7.16)}.  The divided difference is entire,
+$H_-$ is holomorphic on $\Re s>\frac12$, and $s-\frac12$ does not vanish there, so $C_-$ is
+holomorphic throughout that half-plane.  The multiplier $2M_-(s)$ is holomorphic and nonzero
+there by \textup{(7.3)}.  Therefore local division by it shows that $\cS_-$ is holomorphic on
+$\Re s>1$ if and only if $\widetilde D$ is holomorphic on the translated half-plane
+$\Re u>-\frac12$.  Equation \textup{(7.18)} follows from \textup{(7.13)}.
+\end{proof}
+
+The factorization admits a stronger intrinsic formulation in the critical-Mellin coordinate.
+It removes the window multiplier and holomorphic correction from the divisor statement itself.
+
+\begin{theorem}[Complete critical-Mellin divisor tomography]
+\label{thm:critical-mellin-divisor-tomography}
+The function $\widetilde D$ is meromorphic on $\Re u>-1$.  Throughout this half-plane,
+\[
+ \ord_u\widetilde D=-1
+ \quad\Longleftrightarrow\quad
+ u=\rho-1
+ \text{ for a nontrivial zero }\XiR(\rho)=0.
+ \tag{7.19}
+\]
+There are no other poles.  At every such point,
+\[
+ \operatorname*{Res}_{u=\rho-1}\widetilde D(u)=m(\rho).
+ \tag{7.20}
+\]
+Consequently the affine map
+\[
+ \{\rho:\XiR(\rho)=0\}
+ \simeq
+ \{u:\Re u>-1,\ \ord_u\widetilde D=-1\},
+ \qquad \rho\longmapsto\rho-1,
+ \tag{7.21}
+\]
+is a canonical equivalence carrying exact analytic multiplicity without any normalizing aperture
+factor.  Pointwise one has the sharper local law
+\[
+ \widetilde D\text{ is holomorphic at }u
+ \quad\Longleftrightarrow\quad
+ Z_*(u+1)\ne0
+ \qquad(\Re u>-1).
+ \tag{7.22}
+\]
+Finally,
+\[
+ \boxed{
+ \mathrm{RH}
+ \quad\Longleftrightarrow\quad
+ \text{every pole of }\widetilde D\text{ lies on }\Re u=-\frac12
+ \quad\Longleftrightarrow\quad
+ \widetilde D\text{ is holomorphic on }\Re u>-\frac12.}
+ \tag{7.23}
+\]
+\end{theorem}
+
+\begin{proof}
+The function $Z_*$ is entire, so $Z_*'/Z_*$ is meromorphic everywhere.  On $\Re u>-1$ the
+rational term $(u+1)^{-1}$ is holomorphic.  If $\rho$ is a nontrivial xi zero, then
+$0<\Re\rho<1$ and the regularizing and archimedean factors are local units at $\rho$; hence
+$Z_*$ has the same analytic order $m(\rho)$ there.  The logarithmic derivative therefore has a
+simple pole at $u=\rho-1$ with residue $m(\rho)$.  The rational term is holomorphic at that point
+because $\rho\ne0$, so it neither cancels the pole nor changes its residue.  Conversely, away
+from the zero set of $Z_*$ both terms are holomorphic, proving \textup{(7.19)}--\textup{(7.22)}.
+The nontrivial xi zeros satisfy RH exactly when their translated real parts all equal
+$-\frac12$; equivalently there is no pole in the open half-plane to its right.  This proves
+\textup{(7.23)}.
+\end{proof}
+
 The theorem is source-pure in the relevant sense: neither $P_-(n)$ nor its finite window uses a
 zero, zero ordinate, target divisor, or test-function approximation.  The regularized
 continuation is forced by the ordinary Dirichlet series and exact quadrature, not chosen by
 interpolation.  It also removes the last source-completeness ambiguity: one scalar prime sequence
 already carries the whole nontrivial divisor, including the critical-line part.  The remaining
-RH-bearing statement is therefore exactly the holomorphy assertion in \textup{(7.13)}.
+RH-bearing statement is therefore exactly the critical-Mellin continuation in
+\textup{(7.18)}--\textup{(7.23)}.
 
 \section{Implications for the Connes route}
 
 Theorem~\ref{thm:inverse-tilted-source-tomography} closes the complete source--divisor incidence
 without asking a semilocal construction to identify a target-defined Weil sequence.  The positive
 obligation is now explicit: realize the coefficient $P_-(n)$ and prove that its forced continuation
-$\cS_-$ is holomorphic on $\Re s>1$.  Equivalently, prove that the polar divisor reconstructed by
-\textup{(7.10)} is supported on $\Re s=1$.  Either statement proves RH.  A Connes or
+$\cS_-$ is holomorphic on $\Re s>1$.  By
+Theorem~\ref{thm:inverse-tilted-critical-mellin-factorization}, this is exactly the intrinsic
+Connes-source statement that $\widetilde D$ continues holomorphically to $\Re u>-\frac12$.
+Theorem~\ref{thm:critical-mellin-divisor-tomography} strengthens this to a canonical identity of
+weighted divisors: the complete critical-Mellin pole divisor is $\rho\mapsto\rho-1$, with residue
+$m(\rho)$.  Equivalently, prove that this divisor is supported on $\Re u=-\frac12$, or that the
+source divisor reconstructed by \textup{(7.10)} is supported on $\Re s=1$.  Any of these
+statements proves RH.  A Connes or
 Connes--Consani realization may obtain this through a positive relative trace, a Sonin
 compression, or a cofinal near-radical section, but the resulting scalar channel must agree with
-\textup{(7.1)} and retain the multiplicity normalization \textup{(7.11)}.
+\textup{(7.14)}--\textup{(7.17)} and retain the multiplicity normalization \textup{(7.11)}.
 
 The rectangular theorem gives a complementary positive-allocation route.  It is not necessary to
 establish positivity on an unspecified compact family, nor to match finitely many spectral
@@ -1222,10 +1361,11 @@ intrinsic carrier, not independent density scales.
 
 The results are unconditional.  The inverse-tilted theorem is source-side and recovers the
 complete nontrivial divisor with multiplicity; the rectangular theorem is an exact divisor-side
-energy law.  What is not proved is holomorphy of $\cS_-$ on $\Re s>1$, or an operator theorem
-forcing that statement.  The paper therefore does not prove RH.  It reduces the remaining source
-problem to line selection for one explicit prime channel and gives an independent universal
-energy geometry for every fixed rectangular Weil window.
+energy law.  What is not proved is holomorphy of $\widetilde D$ on $\Re u>-\frac12$, equivalently
+holomorphy of $\cS_-$ on $\Re s>1$, or an operator theorem forcing that statement.  The paper
+therefore does not prove RH.  It reduces the remaining source problem to analytic continuation of
+the actual polar--prime critical-Mellin defect and gives an independent universal energy geometry
+for every fixed rectangular Weil window.
 
 The rectangle is deliberately nonsmooth.  We avoid an inadmissible appeal to the classical smooth
 test space by defining $Q_L$ through the absolutely convergent xi divisor polarization.  A
@@ -1234,7 +1374,12 @@ appropriate completion theorem or a justified approximation whose limit preserve
 sequence.  This regularity issue remains open for the rectangular identity, but it is no longer
 the source bridge for the paper's main detector:
 Theorem~\ref{thm:inverse-tilted-source-tomography} constructs a separate exact prime source
-directly.  Holomorphy of that source on $\Re s>1$ is the remaining RH-bearing step.
+directly.  Theorem~\ref{thm:inverse-tilted-critical-mellin-factorization} identifies it, up to a
+holomorphic correction and zero-free multiplier, with the Connes critical-Mellin defect.  Its
+complete critical-Mellin pole divisor is given intrinsically by
+Theorem~\ref{thm:critical-mellin-divisor-tomography}.  Its confinement to
+$\Re u=-\frac12$, equivalently continuation without poles to $\Re u>-\frac12$, is the remaining
+RH-bearing step.
 
 Every off-critical zero, simple or multiple, produces a simple pole, so pole order alone forgets
 multiplicity.  Both tomography theorems repair exactly that loss.  The source residue is the

@@ -1434,17 +1434,92 @@ theorem tendsto_thetaSquareIndexDyadicWeightedCoreAverages_zero
   have h := hD0.sub (hDS.const_mul
     ((starRingEnd ℂ) (z ^ 2 + 1 / 4)))
   convert h using 1
-  funext k
-  rw [thetaSquareIndexDyadicCoreAtomDerivativeAverage_eq_momentPacket,
-    thetaSquareIndexDyadicCoreAtomAverage_eq_momentPacket]
-  rw [map_sub, map_mul, thetaSquareIndexDyadicComplexMoment_conj]
-  unfold thetaSquareIndexDyadicCoreAtomDerivativeMomentPacket
-    thetaSquareIndexDyadicSectionMomentPacket
-  rw [thetaSquareIndexDyadicFiniteMomentPacket_conj]
-  dsimp only [s, e, a, b]
-  simp only [thetaSquareIndexDyadicFiniteMomentPacket,
-    Finset.sum_singleton, id_eq, one_mul]
-  ring
+  · funext k
+    rw [thetaSquareIndexDyadicCoreAtomDerivativeAverage_eq_momentPacket,
+      thetaSquareIndexDyadicCoreAtomAverage_eq_momentPacket]
+    rw [map_sub, map_mul, thetaSquareIndexDyadicComplexMoment_conj]
+    unfold thetaSquareIndexDyadicCoreAtomDerivativeMomentPacket
+      thetaSquareIndexDyadicSectionMomentPacket
+    rw [thetaSquareIndexDyadicFiniteMomentPacket_conj]
+    dsimp only [s, e, a, b]
+    simp only [thetaSquareIndexDyadicFiniteMomentPacket,
+      Finset.sum_singleton, id_eq, one_mul]
+    ring
+  · ring
+
+theorem integrableOn_thetaSquareIndexDyadicDensity_mul_coreAtomDerivative
+    (d : ℕ) (z : ℂ) (k : ℕ) :
+    IntegrableOn (fun x : ℝ =>
+      (thetaSquareIndexDyadicDensity k x : ℂ) *
+        thetaCuspTailSecondCoreAtomDerivative d z x) (Ioi 0) := by
+  simp_rw [thetaCuspTailSecondCoreAtomDerivative_eq_sourcePowerPacket]
+  rw [show (fun x : ℝ =>
+      (thetaSquareIndexDyadicDensity k x : ℂ) *
+        ∑ r ∈ Finset.range (d + 1),
+          thetaCuspTailSecondCoreAtomDerivativeSourceCoefficient z r *
+            (x : ℂ) ^ (2 * r + 2)) =
+      fun x : ℝ => ∑ r ∈ Finset.range (d + 1),
+        thetaCuspTailSecondCoreAtomDerivativeSourceCoefficient z r *
+          ((thetaSquareIndexDyadicDensity k x : ℂ) *
+            (x : ℂ) ^ (2 * r + 2)) by
+    funext x
+    simp only [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro r _hr
+    ring]
+  exact MeasureTheory.integrable_finset_sum _ fun r _hr =>
+    (integrableOn_thetaSquareIndexDyadicDensity_mul_complexPower
+      (2 * r + 2) k).const_mul
+        (thetaCuspTailSecondCoreAtomDerivativeSourceCoefficient z r)
+
+theorem integrableOn_thetaSquareIndexDyadicDensity_mul_coreAtom
+    (d : ℕ) (z : ℂ) (k : ℕ) :
+    IntegrableOn (fun x : ℝ =>
+      (thetaSquareIndexDyadicDensity k x : ℂ) *
+        thetaCuspTailSecondCoreAtom d z x) (Ioi 0) := by
+  unfold thetaCuspTailSecondCoreAtom
+  simp_rw [thetaCuspTailSecondSection_eq_sourcePowerPacket]
+  rw [show (fun x : ℝ =>
+      (thetaSquareIndexDyadicDensity k x : ℂ) *
+        (1 - (z ^ 2 + 1 / 4) *
+          ∑ r ∈ Finset.range (d + 1),
+            thetaCuspTailSecondSectionSourceCoefficient z r *
+              (x : ℂ) ^ (2 * r + 2))) =
+      fun x : ℝ =>
+        (thetaSquareIndexDyadicDensity k x : ℂ) * (x : ℂ) ^ 0 -
+          (z ^ 2 + 1 / 4) *
+            ((thetaSquareIndexDyadicDensity k x : ℂ) *
+              ∑ r ∈ Finset.range (d + 1),
+                thetaCuspTailSecondSectionSourceCoefficient z r *
+                  (x : ℂ) ^ (2 * r + 2)) by
+    funext x
+    simp only [pow_zero]
+    ring]
+  have hp : IntegrableOn (fun x : ℝ =>
+      (thetaSquareIndexDyadicDensity k x : ℂ) *
+        ∑ r ∈ Finset.range (d + 1),
+          thetaCuspTailSecondSectionSourceCoefficient z r *
+            (x : ℂ) ^ (2 * r + 2)) (Ioi 0) := by
+    rw [show (fun x : ℝ =>
+        (thetaSquareIndexDyadicDensity k x : ℂ) *
+          ∑ r ∈ Finset.range (d + 1),
+            thetaCuspTailSecondSectionSourceCoefficient z r *
+              (x : ℂ) ^ (2 * r + 2)) =
+        fun x : ℝ => ∑ r ∈ Finset.range (d + 1),
+          thetaCuspTailSecondSectionSourceCoefficient z r *
+            ((thetaSquareIndexDyadicDensity k x : ℂ) *
+              (x : ℂ) ^ (2 * r + 2)) by
+      funext x
+      simp only [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro r _hr
+      ring]
+    exact MeasureTheory.integrable_finset_sum _ fun r _hr =>
+      (integrableOn_thetaSquareIndexDyadicDensity_mul_complexPower
+        (2 * r + 2) k).const_mul
+          (thetaCuspTailSecondSectionSourceCoefficient z r)
+  exact (integrableOn_thetaSquareIndexDyadicDensity_mul_complexPower 0 k).sub
+    (hp.const_mul (z ^ 2 + 1 / 4))
 
 /-- One exact Haar step: a divisibility row is the positive exact-valuation square, minus the
 parity-wavelet square, plus the next divisibility row. -/
@@ -1498,6 +1573,110 @@ def xiCTaylorThetaTailCoreDyadicHaarRemainderKernel
   ((2 : ℝ) ^ N *
       thetaSquareIndexDyadicDensity N p.1 * thetaSquareIndexDyadicDensity N p.2) *
     xiCTaylorThetaTailCorePairCurrent d z p
+
+/-- The integrated top row is exactly the imaginary part of the Haar-normalized product of its
+finite value and derivative moment packets. -/
+theorem integral_xiCTaylorThetaTailCoreDyadicHaarRemainderKernel_eq
+    (d : ℕ) (z : ℂ) (k : ℕ) :
+    (∫ p : ℝ × ℝ,
+      xiCTaylorThetaTailCoreDyadicHaarRemainderKernel d z k p
+        ∂((volume.restrict (Ioi 0)).prod (volume.restrict (Ioi 0)))) =
+      ((2 : ℂ) ^ k *
+        thetaSquareIndexDyadicCoreAtomDerivativeAverage d z k *
+        (starRingEnd ℂ) (thetaSquareIndexDyadicCoreAtomAverage d z k)).im := by
+  let mu : Measure ℝ := volume.restrict (Ioi 0)
+  let c : ℂ := Complex.ofReal ((2 : ℝ) ^ k)
+  let f : ℝ → ℂ := fun x => c *
+    ((thetaSquareIndexDyadicDensity k x : ℂ) *
+      thetaCuspTailSecondCoreAtomDerivative d z x)
+  let g : ℝ → ℂ := fun x =>
+    (thetaSquareIndexDyadicDensity k x : ℂ) *
+      thetaCuspTailSecondCoreAtom d z x
+  let H : ℝ × ℝ → ℝ := fun p =>
+    (f p.1 * (starRingEnd ℂ) (g p.2)).im
+  have hf : Integrable f mu :=
+    (integrableOn_thetaSquareIndexDyadicDensity_mul_coreAtomDerivative
+      d z k).const_mul c
+  have hg : Integrable g mu :=
+    integrableOn_thetaSquareIndexDyadicDensity_mul_coreAtom d z k
+  have hgconj : Integrable (fun x => (starRingEnd ℂ) (g x)) mu :=
+    (RCLike.conjCLE : ℂ ≃L[ℝ] ℂ).toContinuousLinearMap.integrable_comp hg
+  have hfg : Integrable (fun p : ℝ × ℝ =>
+      f p.1 * (starRingEnd ℂ) (g p.2)) (mu.prod mu) :=
+    hf.mul_prod hgconj
+  have hH : Integrable H (mu.prod mu) := hfg.im
+  have hswap : (∫ p : ℝ × ℝ, H p.swap ∂mu.prod mu) =
+      ∫ p : ℝ × ℝ, H p ∂mu.prod mu := by
+    exact MeasureTheory.integral_prod_swap (μ := mu) (ν := mu) H
+  have hsymm :
+      (∫ p : ℝ × ℝ, (H p + H p.swap) / 2 ∂mu.prod mu) =
+        ∫ p : ℝ × ℝ, H p ∂mu.prod mu := by
+    rw [show (fun p : ℝ × ℝ => (H p + H p.swap) / 2) =
+        fun p : ℝ × ℝ => (1 / 2 : ℝ) * (H p + H p.swap) by
+      funext p
+      ring]
+    rw [MeasureTheory.integral_const_mul]
+    rw [integral_add]
+    · rw [hswap]
+      ring
+    · exact hH
+    · exact hH.swap
+  have hmul : (∫ p : ℝ × ℝ,
+      f p.1 * (starRingEnd ℂ) (g p.2) ∂mu.prod mu) =
+      (∫ x : ℝ, f x ∂mu) *
+        (starRingEnd ℂ) (∫ y : ℝ, g y ∂mu) := by
+    have h := MeasureTheory.integral_prod_mul (μ := mu) (ν := mu)
+      f (fun y => (starRingEnd ℂ) (g y))
+    rw [integral_conj] at h
+    exact h
+  have him : (∫ p : ℝ × ℝ, H p ∂mu.prod mu) =
+      ((∫ x : ℝ, f x ∂mu) *
+        (starRingEnd ℂ) (∫ y : ℝ, g y ∂mu)).im := by
+    rw [← hmul]
+    simpa only [H] using integral_im hfg
+  rw [show (fun p : ℝ × ℝ =>
+      xiCTaylorThetaTailCoreDyadicHaarRemainderKernel d z k p) =
+      fun p : ℝ × ℝ => (H p + H p.swap) / 2 by
+    funext p
+    rcases p with ⟨x, y⟩
+    unfold xiCTaylorThetaTailCoreDyadicHaarRemainderKernel
+      xiCTaylorThetaTailCorePairCurrent H f g c
+    simp only [Prod.fst, Prod.snd, Prod.swap_prod_mk, map_mul,
+      Complex.conj_ofReal, Complex.mul_im, Complex.mul_re,
+      Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero,
+      zero_sub, mul_zero]
+    push_cast
+    ring]
+  rw [hsymm, him]
+  have hfint : (∫ x : ℝ, f x ∂mu) =
+      c * thetaSquareIndexDyadicCoreAtomDerivativeAverage d z k := by
+    dsimp only [f]
+    rw [MeasureTheory.integral_const_mul]
+    rfl
+  have hgint : (∫ x : ℝ, g x ∂mu) =
+      thetaSquareIndexDyadicCoreAtomAverage d z k := by
+    rfl
+  rw [hfint, hgint]
+  have hc : c = (2 : ℂ) ^ k := by
+    dsimp only [c]
+    norm_num [Complex.ofReal_pow]
+  rw [hc]
+
+/-- For every fixed finite Taylor section, the sole cofinal top-row current left by the arithmetic
+Haar polarization tends to zero. -/
+theorem tendsto_integral_xiCTaylorThetaTailCoreDyadicHaarRemainderKernel_zero
+    (d : ℕ) (z : ℂ) :
+    Tendsto (fun k : ℕ =>
+      ∫ p : ℝ × ℝ,
+        xiCTaylorThetaTailCoreDyadicHaarRemainderKernel d z k p
+          ∂((volume.restrict (Ioi 0)).prod (volume.restrict (Ioi 0))))
+      atTop (nhds 0) := by
+  have h := Complex.continuous_im.continuousAt.tendsto.comp
+    (tendsto_thetaSquareIndexDyadicWeightedCoreAverages_zero d z)
+  convert h using 1
+  · funext k
+    rw [integral_xiCTaylorThetaTailCoreDyadicHaarRemainderKernel_eq]
+  · simp
 
 /-- Pointwise current-source polarization into cofinal dyadic Haar layers and one shifted top
 row. -/

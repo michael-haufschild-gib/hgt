@@ -132,6 +132,34 @@ The complete prime-source theorem is bundled by
 | RH iff every source pole lies on \(\Re s=1\) | riemannHypothesis_iff_inverseTiltedDyadic_poles_on_line |
 | RH iff the source is analytic throughout \(\Re s>1\) | riemannHypothesis_iff_inverseTiltedDyadic_analytic_rightOne |
 
+## Exact critical-Mellin identification
+
+The direct Connes-source bridge is bundled by
+`inverseTiltedCriticalMellinFactorization_capstone`.
+
+| Manuscript claim | Unconditional Lean declaration |
+|---|---|
+| the pole-filled defect agrees with the polar--prime critical-Mellin Laplace channel on \(\Re u>0\) | regularizedCriticalMellinDefect_eq_continued, criticalMellinDefectLaplaceChannelComplex_eq_continued |
+| the inverse-tilted source is exactly a translated critical-Mellin defect times its Mellin aperture plus the explicit correction | inverseTiltedDyadicContinuedSource_eq_criticalMellinDefect_add_correction |
+| the correction is analytic throughout \(\Re s>1/2\) | analyticAt_inverseTiltedCriticalMellinCorrection |
+| source holomorphy on \(\Re s>1\) iff defect holomorphy on \(\Re u>-1/2\) | inverseTilted_source_analytic_rightOne_iff_regularizedCriticalMellin_analytic_rightNegHalf |
+| RH iff the regularized critical-Mellin defect is analytic throughout \(\Re u>-1/2\) | riemannHypothesis_iff_regularizedCriticalMellinDefect_analytic_rightNegHalf |
+
+## Complete critical-Mellin divisor tomography
+
+The stronger intrinsic theorem is bundled by
+`criticalMellinDivisorTomography_capstone`.
+
+| Manuscript claim | Unconditional Lean declaration |
+|---|---|
+| the regularized critical-Mellin defect is meromorphic on \(\Re u>-1\) | meromorphicOn_regularizedCriticalMellinDefect_rightNegOne |
+| pointwise holomorphy is equivalent to \(Z_*(u+1)\ne0\) | analyticAt_regularizedCriticalMellinDefect_iff_regularizedZeta_ne_zero |
+| every simple pole is uniquely \(u=\rho-1\) for a nontrivial Xi zero | meromorphicOrderAt_regularizedCriticalMellinDefect_eq_neg_one_iff, criticalMellinXiPole_injective |
+| the critical-Mellin pole residue is the exact analytic multiplicity | meromorphicTrailingCoeffAt_regularizedCriticalMellinDefect |
+| the complete Xi divisor is canonically equivalent to the critical-Mellin simple-pole support | criticalMellinXiDivisorEquivSimplePoleSupport |
+| RH iff every critical-Mellin pole lies on \(\Re u=-1/2\) | riemannHypothesis_iff_criticalMellin_poles_on_line |
+| RH iff the defect is analytic throughout \(\Re u>-1/2\) | riemannHypothesis_iff_regularizedCriticalMellinDefect_analytic_rightNegHalf |
+
 ## Axiom and lint gate
 
 - Exact build targets: GaloisForLFunctions.RHTower.CCMUnconditionalFoundation,
@@ -140,7 +168,9 @@ The complete prime-source theorem is bundled by
   GaloisForLFunctions.RHTower.CCMRectangularNegativeChannelSplitCompleteness, and
   GaloisForLFunctions.RHTower.CCMRectangularNegativeChannelSpectrum, and
   GaloisForLFunctions.RHTower.CCMRectangularNegativeDirichletAbscissa, and
-  GaloisForLFunctions.RHTower.CCMInverseTiltedDyadicPrimeTomography.
+  GaloisForLFunctions.RHTower.CCMInverseTiltedDyadicPrimeTomography, and
+  GaloisForLFunctions.RHTower.CCMInverseTiltedCriticalMellinFactorization, and
+  GaloisForLFunctions.RHTower.CCMCriticalMellinDivisorTomography.
 - Allowed foundational dependencies in the checked capstones:
   [propext, Classical.choice, Quot.sound].
 - Repository lint must report no active sorry, admit, axiom, opaque, or unsafe declaration.

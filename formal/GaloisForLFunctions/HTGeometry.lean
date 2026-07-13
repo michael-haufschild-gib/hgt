@@ -143,3 +143,4 @@ import GaloisForLFunctions.HTGeometry.BernsteinSzegoDensity
 import GaloisForLFunctions.HTGeometry.BernsteinSzegoMeanValue
 import GaloisForLFunctions.HTGeometry.BernsteinSzegoMomentForm
 import GaloisForLFunctions.HTGeometry.BernsteinSzegoReconstruction
+import GaloisForLFunctions.HTGeometry.SzegoLowerBound

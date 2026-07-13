@@ -273,11 +273,14 @@ provider would have to supply.
    positive measure or positive-definite Gram tower has been produced; they do not turn the signed
    Xi reciprocal moments into such a tower.
 3. **Hurwitz reflection variables.**  Xi functional-equation reflection conjugates the Hurwitz
-   monodromy character, but the available Hurwitz functional equation is an identity in the
-   exponent variable at a fixed shift.  Xi-zero differential independence concerns functions of
-   the shift variable with the exponent frozen.  A scalar specialization or an exponent-variable
-   reflection identity therefore gives no differential relation between the two frozen Hurwitz
-   functions.  A usable bridge must be a genuine identity in the shift variable.
+   monodromy character, while Xi-zero differential independence concerns functions of the shift
+   variable with the exponent frozen.  The missing coordinate change is now closed conditionally:
+   proportionality by one scalar of the complete positive-order anchor jets of `H_(1-rho)` and
+   `H_(conj rho)` gives equality of their normalized analytic germs at `a=1`; the identity theorem
+   promotes this to a genuine upper-half-plane shift relation, and the intrinsic Hurwitz matroid
+   forces `1-rho=conj rho`.  The remaining input is an independent source producer for that
+   projective all-order jet relation.  Finite analytic reflection jets alone cannot replace it,
+   because the corpus constructs arbitrarily delayed reflected-jet defects.
 4. **Prime-clock category.**  Shale summability and the reflected clock-scale wall select the
    critical line exactly.  The completed-flux Fitting attachment supplies a nonzero finite
    algebraic seam at every zero, but it is not a bounded normal intertwiner of the infinite prime
@@ -288,6 +291,13 @@ provider would have to supply.
    even moments and closes the constant source-Hankel level.  The higher normalized Xi trace moments
    are logarithmic cumulants.  The first nonconstant minor is already a sixth-moment concentration
    inequality, so raw-density positivity and the all-order recurrence do not close the Hankel cone.
+6. **Common first-prime seam versus Hurwitz orientation energy.**  The normalized Hurwitz anchor
+   tail and translated von Mangoldt source have one common first-prime charge `C_2(rho)`.  This
+   charge is odd under `rho -> 1-conj rho`, and Lean now proves pointwise
+   `C_2(rho)=0 <-> xiHurwitzOrientationDefect(rho)=0` and globally
+   `XiHurwitzAnchorPrimeTwoSeamsVanish <-> E_Xi=0`.  Hence common-charge vanishing is not an
+   additional open input: regular-Cauchy source-core nonnegativity discharges it automatically.
+   The only surviving mathematical gap in this splice is that source-core sign itself.
 
 The continued prime--Gamma Cauchy kernel has a complete value interface with the CCM Mellin
 channel:
@@ -384,6 +394,9 @@ perturbation or of the determinant-line no-crossing law, not the search boundary
 - [PROVED] The normalized principal Hurwitz phase is exactly the right-half transverse displacement and its supremum is the sharp rectangular power-growth exponent.
 - [PROVED] Relative to any actual critical-line Xi anchor, the reciprocal-square weighted sum of squared imaginary anchored two-node Hurwitz Vandermonde determinants is exactly the canonical orientation energy; the HGT separator, one-vector Weil obstruction, and scalar energy are one value relation.
 - [PROVED] The full Hurwitz orientation vector belongs to the Hilbert closure of pairwise-conjugate-separated continued Cauchy packets in the analytically continued prime--Gamma source domain; their exact source energies converge to the negative orientation energy.
+- [PROVED] The common first-prime Hurwitz-anchor/all-prime seam charge is reflection-odd, and
+  vanishing of every Xi-indexed common seam is exactly `E_Xi=0`; it introduces no gap beyond the
+  regular-Cauchy source-core sign.
 - [PROVED] The continued prime--Gamma trace and its RH-bearing Cauchy kernel factor globally through the canonical continued critical-Mellin defect; the defect agrees with the convergent polar--prime Laplace channel on its right-half-plane domain.
 - [PROVED] On the regular continued-source domain, the polar boundary terms cancel exactly against the rational part of the archimedean logarithmic derivative, leaving `i * (critical-Mellin defect + Gamma connection)`; polar--Gamma domination is therefore the original Xi source sign, not an independent discharge.
 - [PROVED] Static membership of every finite prime--Gamma moment block in the closure of the positive-aperture all-prime Sonin moment curve implies simultaneous block schedules, the existing per-test positive Gram coupling, and therefore RH; this is a source-value locus premise rather than a sign premise.

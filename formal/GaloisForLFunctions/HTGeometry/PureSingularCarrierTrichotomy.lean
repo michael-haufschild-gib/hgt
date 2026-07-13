@@ -172,6 +172,24 @@ theorem circleMeasureCanonicalFrameTower_isCanonical
     ⟨circleMeasureGramTower mu N,
       circleMeasureGramTower_posDef_of_infiniteSupport mu hmu N⟩
 
+/-- The classical Fourier Toeplitz sections are literally nested leading-principal blocks. -/
+theorem circleMeasureGramTower_leadingPrincipal
+    (mu : Measure Circle) (N : ℕ) :
+    leadingPrincipalSubmatrix (circleMeasureGramTower mu (N + 1)) =
+      circleMeasureGramTower mu N := by
+  rfl
+
+/-- The canonical circle inverse-Cholesky frames form a coherent leading-principal tower. -/
+theorem circleMeasureCanonicalFrameTower_leadingPrincipal
+    (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite) (N : ℕ) :
+    leadingPrincipalSubmatrix (circleMeasureCanonicalFrameTower mu hmu (N + 1)) =
+      circleMeasureCanonicalFrameTower mu hmu N := by
+  apply canonicalInverseCholeskyFrame_unique (circleMeasureGramTower mu N)
+  · rw [← circleMeasureGramTower_leadingPrincipal mu N]
+    exact leadingPrincipalSubmatrix_isCanonical _ _
+      (circleMeasureCanonicalFrameTower_isCanonical mu hmu (N + 1))
+  · exact circleMeasureCanonicalFrameTower_isCanonical mu hmu N
+
 /-- The normalized-root conclusion needed by the Cholesky geometry.  Unlike the ratio predicate,
 this is not the external literature interface. -/
 def HasSzegoNormalizedGramVanishingConclusion (mu : Measure Circle) : Prop :=

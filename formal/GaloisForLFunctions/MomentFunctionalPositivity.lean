@@ -183,6 +183,18 @@ theorem momentFunctional_X_pow (s : ℕ → ℝ) (k : ℕ) :
   rw [momentFunctional_eq_support_sum, Polynomial.support_X_pow one_ne_zero, Finset.sum_singleton,
     Polynomial.coeff_X_pow, if_pos rfl, one_mul]
 
+/-- The moment functional of `(∑ᵢ vᵢ Xⁱ)²` is the Hankel quadratic form `∑ᵢⱼ vᵢ vⱼ s_{i+j}`. -/
+theorem momentFunctional_sq_eq_hankelForm (s : ℕ → ℝ) {n : ℕ} (v : Fin n → ℝ) :
+    momentFunctional s ((∑ i : Fin n, v i • X ^ (i : ℕ)) ^ 2)
+      = ∑ i : Fin n, ∑ j : Fin n, v i * v j * s ((i : ℕ) + (j : ℕ)) := by
+  rw [sq, Finset.sum_mul_sum, momentFunctional_sum]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  rw [momentFunctional_sum]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  rw [show (v i • X ^ (i : ℕ)) * (v j • X ^ (j : ℕ))
+      = (v i * v j) • X ^ ((i : ℕ) + (j : ℕ)) from by rw [smul_mul_smul_comm, ← pow_add],
+    momentFunctional_smul, momentFunctional_X_pow]
+
 /-- **Hankel matrix positive-semidefiniteness (matrix form).**  A moment sequence with a representing
 measure has positive-semidefinite Hankel matrix `(sᵢ₊ⱼ)`: for every real vector `v`,
 `∑ᵢⱼ vᵢ vⱼ s_{i+j} ≥ 0`.  This is the quadratic form `L_s(p²)` for `p = ∑ᵢ vᵢ Xⁱ`, so nonnegativity
@@ -191,17 +203,89 @@ theorem hankelForm_nonneg {μ : Measure ℝ} (s : ℕ → ℝ)
     (hs : ∀ k, s k = ∫ x, (x : ℝ) ^ k ∂μ)
     (hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) μ) {n : ℕ} (v : Fin n → ℝ) :
     0 ≤ ∑ i : Fin n, ∑ j : Fin n, v i * v j * s ((i : ℕ) + (j : ℕ)) := by
-  set p : Polynomial ℝ := ∑ i : Fin n, v i • X ^ (i : ℕ) with hp
-  have hpsq : momentFunctional s (p ^ 2)
-      = ∑ i : Fin n, ∑ j : Fin n, v i * v j * s ((i : ℕ) + (j : ℕ)) := by
-    rw [sq, hp, Finset.sum_mul_sum, momentFunctional_sum]
-    refine Finset.sum_congr rfl (fun i _ => ?_)
-    rw [momentFunctional_sum]
-    refine Finset.sum_congr rfl (fun j _ => ?_)
-    rw [show (v i • X ^ (i : ℕ)) * (v j • X ^ (j : ℕ))
-        = (v i * v j) • X ^ ((i : ℕ) + (j : ℕ)) from by rw [smul_mul_smul_comm, ← pow_add],
-      momentFunctional_smul, momentFunctional_X_pow]
-  rw [← hpsq]
-  exact momentFunctional_pow_two_nonneg s hs hint p
+  rw [← momentFunctional_sq_eq_hankelForm s v]
+  exact momentFunctional_pow_two_nonneg s hs hint _
+
+/-- **Hankel matrix strict positive-definiteness (matrix form).**  When the representing measure is
+not supported on any finite set (the indeterminate / infinitely supported case), the Hankel matrix
+`(sᵢ₊ⱼ)` is strictly positive-definite: `∑ᵢⱼ vᵢ vⱼ s_{i+j} = 0` forces `v = 0`.  Vanishing of the
+quadratic form makes `∑ᵢ vᵢ Xⁱ` the zero polynomial (strict definiteness of `L_s`), whose coefficients
+are the `vᵢ`. -/
+theorem hankelForm_eq_zero {μ : Measure ℝ} (s : ℕ → ℝ)
+    (hs : ∀ k, s k = ∫ x, (x : ℝ) ^ k ∂μ)
+    (hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) μ)
+    (hμinf : ∀ F : Finset ℝ, 0 < μ {x : ℝ | x ∉ F}) {n : ℕ} (v : Fin n → ℝ)
+    (hzero : ∑ i : Fin n, ∑ j : Fin n, v i * v j * s ((i : ℕ) + (j : ℕ)) = 0) : v = 0 := by
+  have hp0 : momentFunctional s ((∑ i : Fin n, v i • X ^ (i : ℕ)) ^ 2) = 0 := by
+    rw [momentFunctional_sq_eq_hankelForm s v]; exact hzero
+  have hpe : (∑ i : Fin n, v i • X ^ (i : ℕ)) = 0 :=
+    momentFunctional_pow_two_eq_zero s hs hint hμinf _ hp0
+  funext i
+  have hcoeff : (∑ j : Fin n, v j • X ^ (j : ℕ)).coeff (i : ℕ) = v i := by
+    rw [Polynomial.finsetSum_coeff, Finset.sum_eq_single i]
+    · rw [Polynomial.coeff_smul, Polynomial.coeff_X_pow, if_pos rfl, smul_eq_mul, mul_one]
+    · intro j _ hj
+      rw [Polynomial.coeff_smul, Polynomial.coeff_X_pow,
+        if_neg (fun h => hj (Fin.val_injective h.symm)), smul_zero]
+    · intro h; exact absurd (Finset.mem_univ _) h
+  rw [hpe, Polynomial.coeff_zero] at hcoeff
+  exact hcoeff.symm
+
+/-- The Hankel matrix is symmetric (Hermitian over `ℝ`). -/
+theorem hankelMatrix_isHermitian (s : ℕ → ℝ) (n : ℕ) :
+    (Matrix.of fun i j : Fin n => s ((i : ℕ) + (j : ℕ))).IsHermitian := by
+  ext i j
+  simp only [Matrix.conjTranspose_apply, Matrix.of_apply, star_trivial, add_comm]
+
+/-- The Hankel quadratic form on finitely-supported vectors equals the Hankel double sum. -/
+theorem hankelMatrix_quadForm (s : ℕ → ℝ) {n : ℕ} (x : Fin n →₀ ℝ) :
+    (x.sum fun i xi => x.sum fun j xj =>
+      star xi * (Matrix.of fun i j : Fin n => s ((i : ℕ) + (j : ℕ))) i j * xj)
+      = ∑ i, ∑ j, (x i) * (x j) * s ((i : ℕ) + (j : ℕ)) := by
+  rw [Finsupp.sum_fintype _ _ (fun i => by simp)]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  rw [Finsupp.sum_fintype _ _ (fun j => by simp)]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  simp only [Matrix.of_apply, star_trivial]; ring
+
+/-- The Hankel matrix `(sᵢ₊ⱼ)` of a moment sequence with a representing measure is positive
+semidefinite as an actual matrix. -/
+theorem hankelMatrix_posSemidef {μ : Measure ℝ} (s : ℕ → ℝ)
+    (hs : ∀ k, s k = ∫ x, (x : ℝ) ^ k ∂μ)
+    (hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) μ) (n : ℕ) :
+    (Matrix.of fun i j : Fin n => s ((i : ℕ) + (j : ℕ))).PosSemidef :=
+  ⟨hankelMatrix_isHermitian s n, fun x => by
+    rw [hankelMatrix_quadForm]; exact hankelForm_nonneg s hs hint _⟩
+
+/-- **Hamburger's determinant criterion.**  Every Hankel determinant `det (sᵢ₊ⱼ)_{i,j<n}` of a moment
+sequence with a representing measure is nonnegative — the classical necessary condition for
+solvability of the Hamburger moment problem. -/
+theorem hankelMatrix_det_nonneg {μ : Measure ℝ} (s : ℕ → ℝ)
+    (hs : ∀ k, s k = ∫ x, (x : ℝ) ^ k ∂μ)
+    (hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) μ) (n : ℕ) :
+    0 ≤ (Matrix.of fun i j : Fin n => s ((i : ℕ) + (j : ℕ))).det :=
+  (hankelMatrix_posSemidef s hs hint n).det_nonneg
+
+/-- The Hankel matrix is strictly positive-definite when the representing measure is infinitely
+supported (the indeterminate case). -/
+theorem hankelMatrix_posDef {μ : Measure ℝ} (s : ℕ → ℝ)
+    (hs : ∀ k, s k = ∫ x, (x : ℝ) ^ k ∂μ)
+    (hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) μ)
+    (hμinf : ∀ F : Finset ℝ, 0 < μ {x : ℝ | x ∉ F}) (n : ℕ) :
+    (Matrix.of fun i j : Fin n => s ((i : ℕ) + (j : ℕ))).PosDef := by
+  refine ⟨hankelMatrix_isHermitian s n, fun x hx => ?_⟩
+  rw [hankelMatrix_quadForm]
+  rcases (hankelForm_nonneg s hs hint (⇑x)).lt_or_eq with h | h
+  · exact h
+  · exact absurd (DFunLike.coe_injective (hankelForm_eq_zero s hs hint hμinf (⇑x) h.symm)) hx
+
+/-- **Strict Hamburger determinant criterion.**  For an infinitely-supported representing measure
+every Hankel determinant is strictly positive: `0 < det (sᵢ₊ⱼ)_{i,j<n}`. -/
+theorem hankelMatrix_det_pos {μ : Measure ℝ} (s : ℕ → ℝ)
+    (hs : ∀ k, s k = ∫ x, (x : ℝ) ^ k ∂μ)
+    (hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) μ)
+    (hμinf : ∀ F : Finset ℝ, 0 < μ {x : ℝ | x ∉ F}) (n : ℕ) :
+    0 < (Matrix.of fun i j : Fin n => s ((i : ℕ) + (j : ℕ))).det :=
+  (hankelMatrix_posDef s hs hint hμinf n).det_pos
 
 end HTGeometry

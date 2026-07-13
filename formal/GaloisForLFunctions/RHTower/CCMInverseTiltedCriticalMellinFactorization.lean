@@ -166,11 +166,7 @@ theorem inverseTilted_source_analytic_rightOne_iff_regularizedCriticalMellin_ana
       rw [inverseTiltedDyadicContinuedSource_eq_criticalMellinDefect_add_correction]
       have hcoord : z + 3 / 2 - 3 / 2 = z := by ring
       rw [hcoord]
-      have hMz : inverseTiltedDyadicMellin (z + 3 / 2) ≠ 0 := by
-        intro hzero
-        apply hz
-        rw [hzero, mul_zero]
-      field_simp [hz, hMz]
+      apply (div_eq_iff hz).2
       ring
     exact hquot.congr heq
   · intro hdefect s hs

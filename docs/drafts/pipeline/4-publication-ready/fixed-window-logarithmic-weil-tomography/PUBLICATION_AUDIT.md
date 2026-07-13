@@ -14,6 +14,12 @@ of the Riemann hypothesis.
   - The inverse-tilted finite-prime source, its continuation, complete Xi-divisor support
     equivalence, exact multiplicity normalization, and RH holomorphy equivalence are formalized
     without an abstract continuation premise.
+  - The source is now identified exactly with the pole-filled polar--prime critical-Mellin defect,
+    up to an explicit holomorphic correction and zero-free Mellin multiplier.  The translated
+    defect-holomorphy RH criterion is formalized directly.
+  - The stronger intrinsic critical-Mellin theorem is formalized on its full natural half-plane:
+    its simple-pole support is canonically equivalent to the complete Xi divisor under
+    `rho |-> rho - 1`, and every residue equals the exact analytic multiplicity.
   - The manuscript capstones compile from the concrete Xi divisor, shifted-zeta carrier, Landau
     transfer, and global analytic remainder; there is no abstract proposition standing in for the
     hard input.
@@ -53,8 +59,12 @@ of the Riemann hypothesis.
     channel are unnecessary.  At every exponent this is equivalent to the corresponding
     horizontal zero-free region; the RH criterion is exactly its zero endpoint.
   - The remaining prime/semilocal line-selection theorem is open: one must prove holomorphy of the
-    complete inverse-tilted source on `Re(s)>1`, or furnish the corresponding critical positive
-    carrier for the Weil observable.  The note is not an RH proof.
+    regularized critical-Mellin defect on `Re(u)>-1/2`, equivalently of the complete
+    inverse-tilted source on `Re(s)>1`, or furnish the corresponding critical positive carrier
+    for the Weil observable.  The note is not an RH proof.
+  - Complete critical-Mellin tomography shows that this is precisely a pole-confinement problem,
+    not a missing divisor-identification problem: every possible obstruction is already marked by
+    an actual Xi zero and weighted by its multiplicity.
 - Exposition and standalone quality: 18/20
   - Definitions, multiplicity-safe continuation, Landau pole bound, completeness, exact growth,
     universal abscissa and split-conservation laws, order-ideal carrier spectrum,
@@ -63,8 +73,8 @@ of the Riemann hypothesis.
   - The note is concise; a journal may request expansion of standard zero-count and vertical-zeta
     estimates.
 - Reproducibility and artifact quality: 10/10
-  - Exact formal build, lint, axiom audit, claim trace, warning-free TeX build, and visual PDF review
-    passed.
+  - Exact formal build, lint, axiom audit, claim trace, warning-free TeX build, and visual PDF
+    review are the required release gates; they must be rerun after theorem-surface changes.
 
 ## Promotion boundary
 

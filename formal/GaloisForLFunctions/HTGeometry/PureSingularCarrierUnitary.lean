@@ -17,8 +17,8 @@ rigidity; the Hilbert-basis and unitary conclusions are unconditional Lean deduc
 
 namespace GaloisForLFunctions.HTGeometry
 
-open MeasureTheory Polynomial Submodule
-open scoped ENNReal NNReal
+open Matrix MeasureTheory Polynomial Submodule
+open scoped BigOperators ENNReal NNReal
 
 noncomputable section
 
@@ -30,29 +30,32 @@ theorem linearIndependent_circleMonomialLp_of_infiniteSupport
   rw [linearIndependent_iff']
   intro s c hc i hi
   let p : Polynomial ℂ :=
-    ∑ n in s, Polynomial.C (c n) * Polynomial.X ^ n
+    ∑ n ∈ s, Polynomial.C (c n) * Polynomial.X ^ n
   let f : Circle → ℂ := fun z => p.eval (z : ℂ)
   have hfcont : Continuous f :=
     p.continuous.comp continuous_subtype_val
-  have hsumcoe :
-      ⇑(∑ n in s, c n • circleMonomialLp mu n) =ᵐ[mu] f := by
-    dsimp only [f, p]
-    simp_rw [Polynomial.eval_finsetSum, Polynomial.eval_mul, Polynomial.eval_C,
-      Polynomial.eval_pow, Polynomial.eval_X]
-    induction s using Finset.induction_on with
+  have hsumcoe_general : ∀ t : Finset ℕ,
+      ⇑(∑ n ∈ t, c n • circleMonomialLp mu n) =ᵐ[mu]
+        fun z : Circle => ∑ n ∈ t, c n * (z : ℂ) ^ n := by
+    intro t
+    induction t using Finset.induction_on with
     | empty => simpa using (Lp.coeFn_zero ℂ 2 mu)
-    | @insert a t ha ih =>
+    | @insert a u ha ih =>
         rw [Finset.sum_insert ha]
         filter_upwards [Lp.coeFn_add
             (c a • circleMonomialLp mu a)
-            (∑ n in t, c n • circleMonomialLp mu n),
+            (∑ n ∈ u, c n • circleMonomialLp mu n),
           Lp.coeFn_smul (c a) (circleMonomialLp mu a),
           circleMonomialLp_coeFn_ae mu a, ih] with z hadd hsmul hmono htail
         rw [hadd]
         change ⇑(c a • circleMonomialLp mu a) z +
-          ⇑(∑ n in t, c n • circleMonomialLp mu n) z = _
+          ⇑(∑ n ∈ u, c n • circleMonomialLp mu n) z = _
         rw [hsmul, Pi.smul_apply, hmono, htail]
         simp [Finset.sum_insert ha]
+  have hsumcoe :
+      ⇑(∑ n ∈ s, c n • circleMonomialLp mu n) =ᵐ[mu] f := by
+    simpa [f, p, Polynomial.eval_finsetSum, Polynomial.eval_mul, Polynomial.eval_C,
+      Polynomial.eval_pow, Polynomial.eval_X] using hsumcoe_general s
   have hfzero : f =ᵐ[mu] 0 :=
     hsumcoe.symm.trans (Lp.eq_zero_iff_ae_eq_zero.mp hc)
   have hsuppzero : ∀ z ∈ mu.support, f z = 0 :=
@@ -90,6 +93,65 @@ theorem span_circleOrthonormalPolynomial_eq_analyticMonomialSpan
   unfold circleOrthonormalPolynomial analyticMonomialSpan
   rw [InnerProductSpace.span_gramSchmidtNormed_range,
     InnerProductSpace.span_gramSchmidt]
+
+/-- The polynomial synthesized by one row of the finite canonical inverse-Cholesky frame.  The
+coefficient is conjugated because mathlib's complex inner product is conjugate-linear in its
+first argument. -/
+noncomputable def circleCanonicalFramePolynomial
+    (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (N : ℕ) (i : Fin (N + 1)) : Lp ℂ 2 mu :=
+  ∑ k : Fin (N + 1),
+    star (circleMeasureCanonicalFrameTower mu hmu N i k) • circleMonomialLp mu k
+
+/-- Every finite canonical inverse-Cholesky frame synthesizes an actual orthonormal polynomial
+family in `L²(mu)`.  This is the exact Hilbert-space meaning of `C G Cᴴ = I`. -/
+theorem circleCanonicalFramePolynomial_orthonormal
+    (mu : Measure Circle) [IsFiniteMeasure mu]
+    (hmu : mu.support.Infinite) (N : ℕ) :
+    Orthonormal ℂ (circleCanonicalFramePolynomial mu hmu N) := by
+  rw [orthonormal_iff_ite]
+  intro i j
+  let C := circleMeasureCanonicalFrameTower mu hmu N
+  let b : Fin (N + 1) → Lp ℂ 2 mu := fun k => circleMonomialLp mu k
+  let x : Fin (N + 1) → ℂ := fun k => star (C i k)
+  let y : Fin (N + 1) → ℂ := fun k => star (C j k)
+  calc
+    inner ℂ (circleCanonicalFramePolynomial mu hmu N i)
+        (circleCanonicalFramePolynomial mu hmu N j) =
+        star x ⬝ᵥ (Matrix.gram ℂ b) *ᵥ y := by
+      exact (Matrix.star_dotProduct_gram_mulVec b x y).symm
+    _ = (C * circleMeasureGramTower mu N * Cᴴ) i j := by
+      rw [circleMeasureGramTower_eq_gram]
+      simp [C, b, x, y, Matrix.mul_apply, Matrix.mulVec, dotProduct]
+      simp_rw [Finset.mul_sum]
+      rw [Finset.sum_comm]
+      simp_rw [Finset.sum_mul, mul_assoc]
+    _ = if i = j then 1 else 0 := by
+      have h := congrFun (congrFun
+        (circleMeasureCanonicalFrameTower_isCanonical mu hmu N).1 i) j
+      simpa [C, Matrix.one_apply] using h
+
+/-- Passing from level `N` to level `N+1` leaves every previously synthesized polynomial
+unchanged.  This is the Hilbert-space form of leading-principal frame coherence. -/
+theorem circleCanonicalFramePolynomial_castSucc
+    (mu : Measure Circle) [IsFiniteMeasure mu]
+    (hmu : mu.support.Infinite) (N : ℕ) (i : Fin (N + 1)) :
+    circleCanonicalFramePolynomial mu hmu (N + 1) i.castSucc =
+      circleCanonicalFramePolynomial mu hmu N i := by
+  unfold circleCanonicalFramePolynomial
+  rw [Fin.sum_univ_castSucc]
+  have hcoh := circleMeasureCanonicalFrameTower_leadingPrincipal mu hmu N
+  have hentry : ∀ k : Fin (N + 1),
+      circleMeasureCanonicalFrameTower mu hmu (N + 1) i.castSucc k.castSucc =
+        circleMeasureCanonicalFrameTower mu hmu N i k := by
+    intro k
+    exact congrFun (congrFun hcoh i) k
+  simp_rw [hentry]
+  have hlast : circleMeasureCanonicalFrameTower mu hmu (N + 1)
+      i.castSucc (Fin.last (N + 1)) = 0 := by
+    exact (circleMeasureCanonicalFrameTower_isCanonical mu hmu (N + 1)).2.1 (by simp)
+  rw [hlast, star_zero, zero_smul, add_zero]
+  rfl
 
 /-- One-sided Fourier rigidity makes the canonical orthonormal polynomials complete. -/
 theorem circleOrthonormalPolynomial_closure_eq_top_of_oneSidedFourierRigid

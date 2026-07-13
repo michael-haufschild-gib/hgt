@@ -858,7 +858,17 @@ Two further self-contained steps are now formalized axiom-clean:
   from square-positivity via the discriminant of `t ↦ L((p+t·q)²)`) and, in
   `formal/GaloisForLFunctions/MomentFunctionalHaviland.lean`, `momentFunctional_nonneg_of_nonneg`
   (**Haviland positivity**: `L(p) ≥ 0` for every `p ≥ 0` on `ℝ`, the full Riesz–Haviland cone
-  condition) with its monotone consequence `momentFunctional_mono`.
+  condition) with its monotone consequence `momentFunctional_mono`. The **matrix form** of the same
+  fact — the literal statement "the Hankel matrix `(sᵢ₊ⱼ)` is positive-definite" that the finite-Pick
+  arguments invoke — is `hankelForm_nonneg` (`∑ᵢⱼ vᵢvⱼ s_{i+j} ≥ 0`, positive-semidefinite) and
+  `hankelForm_eq_zero` (strict positive-definiteness for infinitely-supported measures: the form
+  vanishes only at `v = 0`), bridged from the functional through `momentFunctional_sq_eq_hankelForm`.
+- **Cauchy transform as a Pick function.** `formal/GaloisForLFunctions/StieltjesTransformPick.lean`
+  now proves the Cauchy transform `Φ_μ` is a genuine Pick/Herglotz function — holomorphic on the upper
+  half-plane (`stieltjesTransform_differentiableOn`), positive imaginary part (`stieltjesTransform_im_pos`),
+  Herglotz growth `‖Φ_μ‖ ≤ μ(ℝ)/Im z` (`stieltjesTransform_norm_le`) — together with the Poisson and
+  conjugate-Poisson representations of its imaginary and real parts (`stieltjesTransform_im_eq_poisson`,
+  `stieltjesTransform_re_eq_conjPoisson`), the harmonic kernels whose boundary limits invert to `μ`.
 
 The barycentric construction, parameter-jet controllability, and full-configuration transversality
 still route through the absent Nevanlinna matrix / minimal-exponential-type Jensen bound / Whitney

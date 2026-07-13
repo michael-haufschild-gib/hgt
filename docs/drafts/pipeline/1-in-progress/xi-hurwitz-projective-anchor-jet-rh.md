@@ -84,6 +84,13 @@ now discharged.
 - A single scalar may vary with the divisor point; exact reflected equality is not assumed.
 - No Arakelov algebraicity, auxiliary anchor, zero simplicity, positivity cone, limiting measure,
   or rectangular asymptotic is used.
+- The all-order requirement is load-bearing at the present level of generality:
+  `FiniteJetGradedRealityNoGo.lean` constructs reflected analytic completed-flux germs agreeing
+  through any prescribed finite depth and first disagreeing later.  A finite-coefficient producer
+  would therefore need additional Hurwitz/zeta rigidity, not analytic determinacy alone.
+- The actual-zeta Euler-unit tangent completeness theorem rules out a continuous regular-flux
+  invariant as the producer: finite FE--Schwarz Euler-unit modifications are dense at fixed
+  divisor.  A viable producer must positively couple the divisor marking to the source relation.
 - `[NOT AN RH PROOF]` The global projective reflection law is itself forced by RH with scalar `1`.
   Without an independent source producer it is an exact criterion, not a breakthrough.
 - `[NOVELTY UNVERIFIED]` No new-scientific-knowledge claim is made for this conditional bridge.

@@ -333,6 +333,48 @@ theorem coeff_distinct_wrong_degree_vanish {bnat : ℕ → ℕ} (hmono : Monoton
   rw [coeff_prod_iterate_derivative_of_subset ν f (∑ i, bnat (M i) - O) ∅
     (Finset.empty_subset _) hvanish, Finset.sum_empty]
 
+/-- **Two-sided window vanishing.**  At an arbitrary index `K`, a differential monomial of degree
+`D'` vanishes whenever its required source mass `K + ∑ν` lies within the window `W` of the target
+mass `∑bnat Mᵢ` but does not equal it — any surviving source configuration would (card-free window
+uniqueness) coincide with the target multiset, forcing exact mass.  This subsumes both the wrong-order
+and wrong-degree vanishing and handles the integer offset `δ = m₀ − O` of the z-shifted probe with a
+single hypothesis, regardless of sign. -/
+theorem coeff_distinct_vanish_window {bnat : ℕ → ℕ} (hmono : Monotone bnat) {r W : ℕ}
+    (hb0 : 0 < bnat 0) (hWb : W < bnat 0) (hW : ∀ n, r * bnat n + W < bnat (n + 1))
+    {D D' : ℕ} (hDr : D ≤ r) (hD'r : D' ≤ r)
+    {ν : Fin D' → ℕ} {f : ℂ⟦X⟧} (hsupp : ∀ k, coeff k f ≠ 0 → ∃ n, k = bnat n)
+    (M : Fin D → ℕ) (hMinj : Function.Injective M) {K : ℕ}
+    (hne : K + ∑ t, ν t ≠ ∑ i, bnat (M i))
+    (hle1 : K + ∑ t, ν t ≤ (∑ i, bnat (M i)) + W)
+    (hle2 : (∑ i, bnat (M i)) ≤ K + ∑ t, ν t + W) :
+    coeff K (∏ t, (⇑(d⁄dX ℂ))^[ν t] f) = 0 := by
+  classical
+  have hvanish : ∀ l ∈ (Finset.univ : Finset (Fin D')).finsuppAntidiag K,
+      l ∉ (∅ : Finset (Fin D' →₀ ℕ)) → ∃ t, coeff (l t + ν t) f = 0 := by
+    intro l hl _
+    by_contra hcon
+    push Not at hcon
+    choose n hn using fun t => hsupp (l t + ν t) (hcon t)
+    have hsumK : ∑ t, l t = K := (Finset.mem_finsuppAntidiag.mp hl).1
+    have hnmass : ∑ t, bnat (n t) = K + ∑ t, ν t := by
+      have e : ∑ t, bnat (n t) = ∑ t, (l t + ν t) := Finset.sum_congr rfl (fun t _ => (hn t).symm)
+      rw [e, Finset.sum_add_distrib, hsumK]
+    have hmn : (Multiset.map bnat (Finset.univ.val.map n)).sum = ∑ t, bnat (n t) := by
+      rw [Multiset.map_map]; rfl
+    have hmM : (Multiset.map bnat (Finset.univ.val.map M)).sum = ∑ i, bnat (M i) := by
+      rw [Multiset.map_map]; rfl
+    have hseq := multiset_source_window_free hmono hb0 hWb hW
+      (s := Finset.univ.val.map n) (t := Finset.univ.val.map M)
+      (by simpa using hD'r) (by simpa using hDr) (Finset.univ.nodup.map hMinj)
+      (by rw [hmn, hmM]; omega) (by rw [hmn, hmM]; omega)
+    apply hne
+    have hmasseq : (Multiset.map bnat (Finset.univ.val.map n)).sum
+        = (Multiset.map bnat (Finset.univ.val.map M)).sum := by rw [hseq]
+    rw [hmn, hmM, hnmass] at hmasseq
+    exact hmasseq
+  rw [coeff_prod_iterate_derivative_of_subset ν f K ∅ (Finset.empty_subset _) hvanish,
+    Finset.sum_empty]
+
 /-- **Order-`O` reduction of the coefficient.**  At the order-`O` distinct index, the coefficient of
 a mixed-order differential polynomial equals that of its order-`O` subfamily — every other-order
 monomial contributes zero. -/

@@ -30,8 +30,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 1856 | `formal/GaloisForLFunctions/RHTower/SoninEulerCalkinPartialIsometry.lean` |
 | 1711 | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean` |
 | 1656 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean` |
+| 1651 | `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSquareIndexPolarization.lean` |
 | 1604 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean` |
-| 1576 | `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSquareIndexPolarization.lean` |
 | 1511 | `formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean` |
 | 1502 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean` |
 | 1494 | `formal/GaloisForLFunctions/Bottcher/ZeroCircleBranchQ62.lean` |
