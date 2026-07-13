@@ -57,6 +57,24 @@ def amplitude (z : ℂ) : ℂ := -1 / F.c z ^ 2
 
 def quotient (z : ℂ) : ℂ := -F.d z / F.c z
 
+/-- Every derivative of the meromorphic background is smooth on its literal denominator-regular
+locus.  Thus the compact-patch background regularity hypothesis is automatic for the classical
+analytic carrier family. -/
+theorem contDiffOn_iteratedDeriv_background (k : ℕ) :
+    ContDiffOn ℂ ⊤ (iteratedDeriv k F.background) (projectiveRegularLocus F.c) := by
+  let U := projectiveRegularLocus F.c
+  have hU : IsOpen U := projectiveRegularLocus_isOpen F.differentiable_c
+  have hbackground : DifferentiableOn ℂ F.background U := by
+    exact F.differentiable_a.differentiableOn.div F.differentiable_c.differentiableOn
+      (fun z hz => by simpa [U, projectiveRegularLocus] using hz)
+  have hiter : DifferentiableOn ℂ (iteratedDeriv k F.background) U := by
+    induction k with
+    | zero => simpa [iteratedDeriv_zero] using hbackground
+    | succ k ih =>
+        rw [iteratedDeriv_succ]
+        exact ih.deriv hU
+  exact hiter.contDiffOn hU
+
 /-- In a one-node packet, the finite projective expansion coordinate is literally the scalar
 Nevanlinna jet expansion. -/
 theorem projectiveNevanlinnaJetExpansionColumn_singleton_coe

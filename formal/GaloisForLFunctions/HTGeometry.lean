@@ -270,6 +270,7 @@ import GaloisForLFunctions.HTGeometry.GammaMultiplication
 import GaloisForLFunctions.HTGeometry.GammaNatShift
 import GaloisForLFunctions.HTGeometry.RiemannSumCell
 import GaloisForLFunctions.HTGeometry.GammaProjectiveBoundary
+import GaloisForLFunctions.HTGeometry.GammaProjectivePrimeTorusCarrier
 import GaloisForLFunctions.HTGeometry.GammaShiftCasoratian
 import GaloisForLFunctions.HTGeometry.GammaShiftEigenrelation
 import GaloisForLFunctions.HTGeometry.GammaTranscendental
