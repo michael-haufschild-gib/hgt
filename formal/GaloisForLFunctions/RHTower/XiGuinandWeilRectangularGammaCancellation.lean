@@ -913,4 +913,113 @@ theorem rectangularEulerGaussPartialValue_eq_integral_partialKernel
       filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with t ht
       exact sum_rectangularEulerGaussTimeTerm_eq_partialKernel L a N ht
 
+theorem tendsto_integral_rectangularGammaCancellationPartialKernel
+    {L a : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) :
+    Tendsto
+      (fun N : ℕ => ∫ t : ℝ in Ioi 0,
+        rectangularGammaCancellationPartialKernel L a N t)
+      atTop
+      (nhds (∫ t : ℝ in Ioi 0, rectangularGammaCancellationKernel L a t)) := by
+  apply tendsto_integral_of_dominated_convergence
+    (μ := volume.restrict (Ioi 0))
+    (fun t : ℝ => |rectangularGammaCancellationKernel L a t|)
+  · intro N
+    unfold rectangularGammaCancellationPartialKernel
+    exact ((aestronglyMeasurable_rectangularGammaCancellationKernel L a).mul
+      ((by fun_prop : Continuous (fun t : ℝ =>
+        1 - Real.exp (-((N : ℝ) * t)))).aestronglyMeasurable)).restrict
+  · exact (integrableOn_rectangularGammaCancellationKernel hL ha).norm
+  · intro N
+    filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with t ht
+    have hfac0 : 0 ≤ 1 - Real.exp (-((N : ℝ) * t)) := by
+      apply sub_nonneg.mpr
+      apply Real.exp_le_one_iff.mpr
+      have ht' : 0 < t := ht
+      have hN : 0 ≤ (N : ℝ) := Nat.cast_nonneg N
+      nlinarith
+    have hfac1 : 1 - Real.exp (-((N : ℝ) * t)) ≤ 1 := by
+      linarith [Real.exp_pos (-((N : ℝ) * t))]
+    rw [rectangularGammaCancellationPartialKernel, Real.norm_eq_abs, abs_mul,
+      abs_of_nonneg hfac0]
+    exact mul_le_of_le_one_right (abs_nonneg _) hfac1
+  · filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with t ht
+    have hx0 : 0 ≤ Real.exp (-t) := (Real.exp_pos _).le
+    have hx1 : Real.exp (-t) < 1 := Real.exp_lt_one_iff.mpr (by
+      have ht' : 0 < t := ht
+      linarith)
+    have hpow := tendsto_pow_atTop_nhds_zero_of_lt_one hx0 hx1
+    have heq : (fun N : ℕ => Real.exp (-((N : ℝ) * t))) =
+        fun N : ℕ => (Real.exp (-t)) ^ N := by
+      funext N
+      rw [← Real.exp_nat_mul]
+      congr 1
+      ring
+    have hexp : Tendsto (fun N : ℕ => Real.exp (-((N : ℝ) * t))) atTop (nhds 0) := by
+      rw [heq]
+      exact hpow
+    have hK : Tendsto (fun _ : ℕ => rectangularGammaCancellationKernel L a t) atTop
+        (nhds (rectangularGammaCancellationKernel L a t)) := tendsto_const_nhds
+    have hOne : Tendsto (fun _ : ℕ => (1 : ℝ)) atTop (nhds 1) := tendsto_const_nhds
+    simpa only [rectangularGammaCancellationPartialKernel, sub_zero, mul_one] using
+      hK.mul (hOne.sub hexp)
+
+theorem tendsto_rectangularEulerGaussPartialValue_to_cancellationKernel
+    {L a : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) :
+    Tendsto (rectangularEulerGaussPartialValue L a) atTop
+      (nhds ((∫ t : ℝ in Ioi 0,
+        rectangularGammaCancellationKernel L a t : ℝ) : ℂ)) := by
+  have hreal := tendsto_integral_rectangularGammaCancellationPartialKernel hL ha
+  have hcomplex : Tendsto
+      (fun N : ℕ => ((∫ t : ℝ in Ioi 0,
+        rectangularGammaCancellationPartialKernel L a N t : ℝ) : ℂ))
+      atTop
+      (nhds ((∫ t : ℝ in Ioi 0,
+        rectangularGammaCancellationKernel L a t : ℝ) : ℂ)) :=
+    Complex.continuous_ofReal.continuousAt.tendsto.comp hreal
+  apply hcomplex.congr'
+  filter_upwards with N
+  rw [rectangularEulerGaussPartialValue_eq_integral_partialKernel]
+  exact integral_ofReal.symm
+
+/-- Exact Gauss-to-time-domain identification.  This is the analytic core of the Gamma--polar
+cancellation: the literal digamma edge is the absolutely convergent removable-singularity
+integral, with no regularity or convergence hypothesis left exposed. -/
+theorem integral_rectangularEulerGaussLimitIntegrand_eq_cancellationKernel
+    {L a : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) :
+    (∫ xi : ℝ, rectangularEulerGaussLimitIntegrand L a xi) =
+      ((∫ t : ℝ in Ioi 0,
+        rectangularGammaCancellationKernel L a t : ℝ) : ℂ) := by
+  exact tendsto_nhds_unique
+    (tendsto_rectangularEulerGaussPartialValue hL a)
+    (tendsto_rectangularEulerGaussPartialValue_to_cancellationKernel hL ha)
+
+theorem integral_rectangularEulerDigammaIntegrand_eq_cancellationKernel_sub_euler
+    {L a : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) :
+    (∫ xi : ℝ, rectangularEulerDigammaIntegrand L a xi) =
+      ((∫ t : ℝ in Ioi 0,
+        rectangularGammaCancellationKernel L a t : ℝ) : ℂ) -
+        (Real.eulerMascheroniConstant : ℂ) * (2 * L : ℝ) := by
+  let F : ℝ → ℂ := fun xi =>
+    rectangularTwoEdgeTransform L a
+      (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2
+  have hF : Integrable F := by
+    simpa only [F] using integrable_rectangularTwoEdgeTransform_eulerLine_sq L a
+  have hzero := integral_rectangularEulerFourierKernel hL a 0
+  have hFzero : (∫ xi : ℝ, F xi) =
+      (rectangularTwoEdgeAutocorrelation L a 0 : ℂ) := by
+    simpa only [F, mul_zero, Complex.ofReal_zero, zero_mul, Complex.exp_zero, one_mul,
+      mul_one, zero_div] using hzero
+  have hcore := integral_rectangularEulerGaussLimitIntegrand_eq_cancellationKernel hL ha
+  rw [show (fun xi : ℝ => rectangularEulerGaussLimitIntegrand L a xi) =
+      fun xi : ℝ => rectangularEulerDigammaIntegrand L a xi +
+        (Real.eulerMascheroniConstant : ℂ) * F xi by
+    funext xi
+    rw [rectangularEulerGaussLimitIntegrand, rectangularEulerDigammaIntegrand]
+    dsimp only [F]
+    ring] at hcore
+  rw [integral_add (integrable_rectangularEulerDigammaIntegrand L a)
+    (hF.const_mul _), integral_const_mul, hFzero,
+    rectangularTwoEdgeAutocorrelation_zero hL ha] at hcore
+  exact eq_sub_iff_add_eq.mpr hcore
+
 end RHTower

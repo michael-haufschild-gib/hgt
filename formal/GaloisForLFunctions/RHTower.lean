@@ -977,6 +977,7 @@ import GaloisForLFunctions.RHTower.XiHurwitzAnchorPrimeTwoOrientationEnergy
 import GaloisForLFunctions.RHTower.CCMRectangularNegativeDirichletAbscissa
 import GaloisForLFunctions.RHTower.CCMRectangularFiniteChannelNonDilution
 import GaloisForLFunctions.RHTower.CCMSourceDivisorEnergySpectrum
+import GaloisForLFunctions.RHTower.CCMPrimeGammaSourceEnergySpectrum
 import GaloisForLFunctions.RHTower.SoninCoupledPrimeArchGramTransfer
 
 /- ## Complete area inventory -/

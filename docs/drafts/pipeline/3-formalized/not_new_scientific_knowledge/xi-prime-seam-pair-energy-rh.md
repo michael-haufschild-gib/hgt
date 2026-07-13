@@ -8,6 +8,7 @@
   `../../2-fully-proven/not_new_scientific_knowledge/sonin-two-particle-prime-coherence.md`
 - **Endpoint parent:** `xi-prime-seam-coherence-collapse.md`
 - **Value-relation continuation:** `xi-prime-seam-pair-variance.md`
+- **Asymptotic continuation:** `xi-prime-seam-pair-asymptotics.md`
 - **Lean:** `formal/GaloisForLFunctions/RHTower/XiPrimeSeamPairEnergy.lean`
 
 ## Statement
@@ -109,6 +110,16 @@ This reduces the prospective source construction from arbitrary pairwise coeffic
 mass-amplified one-particle seam norm plus a rank-one channel; it does not itself supply the missing
 operator upper bound.
 
+The asymptotic continuation proves more: if `M_F=sum_(p in F)1/p`, then
+
+```text
+E_F(rho)/M_F -> 2 sum_p |a_p(rho)|^2/p,
+```
+
+with a strictly positive limit at every off-line strip point.  Therefore a uniform Calkin upper
+bound is unnecessary.  The paper lower estimate closes the route from the weaker source target
+`dist(T_F(rho),Compact)=o(sqrt(M_F))`.
+
 ## Literature audit
 
 `[SEARCH]` Connes--Moscovici's
@@ -181,5 +192,5 @@ coherence-collapse endpoint.  It contains no placeholder axiom or numerical inpu
 - [x] exact finite rank-one weighted-variance factorization
 - [x] Lean proof
 - [ ] source-defined two-particle Sonin operator attached to `(3)`
-- [ ] uniform Calkin upper bound for that operator
+- [ ] sub-root reciprocal-mass Calkin growth for that operator
 - [ ] complete RH proof

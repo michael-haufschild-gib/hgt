@@ -182,7 +182,8 @@ the closed ray beginning at the rightmost transverse divisor coordinate, so it y
 horizontal zero-free region, not only RH.
 
 The candidate novelty lies in the quantitative source--divisor--energy synthesis: fixed positive
-width, arithmetic logarithmic sampling, cofinal divergence, the exact one-sided spectrum,
+width, the complete sharp prime--Gamma Guinand--Weil identity at piecewise-linear regularity,
+arithmetic logarithmic sampling, cofinal divergence, the exact one-sided spectrum,
 universal negative-channel abscissae, finite maximum conservation, summable-family aggregate
 conservation, the least sharp-source positive correction, and observable multiplicity-exact pole
 tomography.  The inverse-tilted source
@@ -1031,16 +1032,72 @@ $n\le e^{2a}$.
 \end{theorem}
 
 \begin{proof}
-Write $\Xi_C(z)=\XiR(\frac12+iz)$ and apply the argument principle to
-$\widehat h_{L,a}(z)^2\Xi_C'(z)/\Xi_C(z)$ on symmetric depth-one rectangles whose vertical
-edges avoid the zero coordinates.  The finite contour value is the multiplicity-counted sum of
-$\widehat h_{L,a}^2$ over the enclosed xi divisor.  Absolute divisor summability exhausts this
-sum as the width tends to infinity.  The vertical resolvent integrals tend cofinally to zero,
-while the bottom edge converges absolutely.  Splitting the logarithmic derivative of xi into its
-zeta and completed archimedean factors gives \textup{(6.5)} for the latter.  In the Euler region,
-absolute convergence of $-\zeta'/\zeta$ permits termwise Fourier inversion; the transform square
-is the autocorrelation $R_{L,a}$, whose compact support truncates the prime-power sum at
-$e^{2a}$.  This gives $-2\mathcal P_{L,a}$ and proves \textup{(6.6)}.
+Write $\Xi_C(z)=\XiR(\frac12+iz)$ and let $\mathcal R_R$ be the rectangle with corners
+$-R-i$ and $R+i$.  Choose $R>0$ so that neither vertical edge contains a zero coordinate.  The
+argument principle, with analytic multiplicity, gives
+\[
+ I_R:=\frac1{2\pi i}\int_{\partial\mathcal R_R}
+   \widehat h_{L,a}(z)^2\frac{\Xi_C'(z)}{\Xi_C(z)}\,dz
+ =\sum_{z_\rho\in\mathcal R_R}\widehat h_{L,a}(z_\rho)^2,
+ \qquad z_\rho=-i(\rho-\tfrac12).
+ \tag{6.9}
+\]
+The square transform is summable over the copied xi divisor.  Therefore the right side of
+\textup{(6.9)} tends to $Q_L(a)$ as $R\to\infty$.
+
+Evenness of $\Xi_C$ and $\widehat h_{L,a}$ folds the four edges into
+\[
+ I_R=B_R+V_R,
+ \tag{6.10}
+\]
+where
+\[
+ \begin{aligned}
+ B_R&=\frac1{2\pi i}\,2\int_{-R}^{R}
+   \widehat h_{L,a}(x-i)^2
+   \frac{\Xi_C'(x-i)}{\Xi_C(x-i)}\,dx,\\
+ V_R&=\frac1{2\pi i}\,2i\int_{-1}^{1}
+   \widehat h_{L,a}(R+iy)^2
+   \frac{\Xi_C'(R+iy)}{\Xi_C(R+iy)}\,dy.
+ \end{aligned}
+ \tag{6.11}
+\]
+The bottom integrand is absolutely integrable.  The vertical-resolvent estimate has the following
+cofinal form: for every $X>0$ and $\eta>0$ there is an admissible $R>X$ for which
+$|V_R|<\eta$.  It uses only the reciprocal-square decay of the rectangular transform, the
+finite-order growth of xi, and avoidance of the discrete vertical zero coordinates.  Thus along
+one cofinal admissible sequence, $V_R\to0$ and $B_R$ tends to its full real-line integral.
+
+On the bottom edge, $\frac12+i(x-i)=\frac32+ix$ and
+\[
+ \frac{\Xi_C'(x-i)}{\Xi_C(x-i)}
+ =i\left(\frac{\mathcal G'}{\mathcal G}
+          +\frac{\zeta'}{\zeta}\right)\!\left(\frac32+ix\right).
+ \tag{6.12}
+\]
+The archimedean term in the limit of $B_R$ is exactly \textup{(6.5)}.  For the Euler term,
+absolute convergence of
+\[
+ \frac{\zeta'}{\zeta}\!\left(\frac32+ix\right)
+ =-\sum_{n\ge2}\frac{\Lambda(n)}{n^{3/2}}e^{-ix\log n}
+ \tag{6.13}
+\]
+permits termwise integration.  Direct Fourier inversion of the compactly supported profile gives
+\[
+ \frac1\pi\int_{\R}\widehat h_{L,a}(x-i)^2e^{-ixt}\,dx
+ =2e^tR_{L,a}(t).
+ \tag{6.14}
+\]
+Substituting $t=\log n$ in \textup{(6.13)}--\textup{(6.14)} yields
+\[
+ \frac1\pi\int_{\R}\widehat h_{L,a}(x-i)^2
+   \frac{\zeta'}{\zeta}\!\left(\frac32+ix\right)\,dx
+ =-2\sum_{n\ge2}\frac{\Lambda(n)}{\sqrt n}R_{L,a}(\log n).
+ \tag{6.15}
+\]
+Since $h_{L,a}$ is supported in $[-a,a]$, its autocorrelation vanishes for $t>2a$; hence the
+right side of \textup{(6.15)} is $-2\mathcal P_{L,a}$.  Taking the cofinal limit in
+\textup{(6.9)}--\textup{(6.11)} proves \textup{(6.6)}.
 \end{proof}
 
 Let
@@ -1696,7 +1753,8 @@ Finally, the novelty claim is intentionally narrow.  Weil positivity, the Connes
 architecture, the Euler logarithmic-derivative source transform, Landau's theorem, and the screw
 function are established parent mechanisms.  The inverse-tilted complete-divisor theorem is
 bridge infrastructure.  The candidate-new contribution is the fixed-window logarithmic
-compression, its exact one-sided exponent spectrum, universal negative-channel abscissa, exact
+compression, the complete sharp rectangular prime--Gamma formula, its exact one-sided exponent
+spectrum, universal negative-channel abscissa, exact
 finite positive-channel non-dilution, summable-family aggregate conservation, quantitative
 source--divisor--energy equivalence, optimal sharp-source correction, thickness corollaries, and
 multiplicity-exact meromorphic tomography of the actual Weil observable.  The elementary

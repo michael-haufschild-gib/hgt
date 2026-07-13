@@ -49,4 +49,44 @@ theorem inner_gramSchmidt_left_eq_zero_of_lt {n : ℕ} (v : Fin n → E) {i j : 
   | add x y _ _ hx hy => rw [inner_add_left, hx, hy, add_zero]
   | smul c x _ hx => rw [inner_smul_left, hx, mul_zero]
 
+/-- **Change of basis to the Gram–Schmidt vectors.**  Each original vector expands as
+`vᵢ = ∑ⱼ (⟪gsⱼ, vᵢ⟫/‖gsⱼ‖²) • gsⱼ`.  The coefficient matrix is lower-triangular with unit diagonal,
+so its determinant is `1`; this is the transition making `det(gram v) = ∏‖gsⱼ‖²`. -/
+theorem eq_sum_gramSchmidt {n : ℕ} (v : Fin n → E) (hv : LinearIndependent ℂ v) (i : Fin n) :
+    v i = ∑ j, (⟪gramSchmidt ℂ v j, v i⟫_ℂ / (‖gramSchmidt ℂ v j‖ : ℂ) ^ 2) • gramSchmidt ℂ v j := by
+  have hzero : ∀ j ∈ Finset.univ, j ∉ Finset.Iic i →
+      (⟪gramSchmidt ℂ v j, v i⟫_ℂ / (‖gramSchmidt ℂ v j‖ : ℂ) ^ 2) • gramSchmidt ℂ v j = 0 := by
+    intro j _ hj
+    have hij : i < j := by simpa [Finset.mem_Iic] using hj
+    rw [inner_gramSchmidt_left_eq_zero_of_lt v hij, zero_div, zero_smul]
+  rw [← Finset.sum_subset (Finset.subset_univ (Finset.Iic i)) hzero,
+    ← Finset.add_sum_Iio_eq_sum_Iic i]
+  have hcoef : ⟪gramSchmidt ℂ v i, v i⟫_ℂ / (‖gramSchmidt ℂ v i‖ : ℂ) ^ 2 = 1 := by
+    rw [gramSchmidt_inner_left_self]
+    have h : ⟪gramSchmidt ℂ v i, gramSchmidt ℂ v i⟫_ℂ = ((‖gramSchmidt ℂ v i‖ ^ 2 : ℝ) : ℂ) := by
+      apply Complex.ext <;> simp [inner_self_eq_norm_sq, inner_self_im]
+    rw [h, ← Complex.ofReal_pow, div_self]
+    exact Complex.ofReal_ne_zero.mpr
+      (pow_ne_zero 2 (norm_ne_zero_iff.mpr (gramSchmidt_ne_zero i hv)))
+  rw [hcoef, one_smul]
+  exact gramSchmidt_def'' ℂ v i
+
+open Matrix in
+/-- **Gram entry via Gram–Schmidt.**  The Gram inner product `⟪vᵢ, vⱼ⟫` expands over the
+orthogonal Gram–Schmidt vectors as `∑ₖ conj(Bᵢₖ) Bⱼₖ ‖gsₖ‖²`, with `Bᵢₖ = ⟪gsₖ, vᵢ⟫/‖gsₖ‖²`.
+This is the entrywise form of the factorization `gram v = (conj B) · diag ‖gs‖² · Bᵀ`, whose
+determinant (with `det B = 1`, since `B` is lower-triangular with unit diagonal) is `∏ₖ ‖gsₖ‖²`. -/
+theorem gram_entry_eq {n : ℕ} (v : Fin n → E) (hv : LinearIndependent ℂ v) (i j : Fin n) :
+    ⟪v i, v j⟫_ℂ = ∑ k, (starRingEnd ℂ) (⟪gramSchmidt ℂ v k, v i⟫_ℂ / (‖gramSchmidt ℂ v k‖ : ℂ) ^ 2)
+      * (⟪gramSchmidt ℂ v k, v j⟫_ℂ / (‖gramSchmidt ℂ v k‖ : ℂ) ^ 2)
+      * ⟪gramSchmidt ℂ v k, gramSchmidt ℂ v k⟫_ℂ := by
+  conv_lhs => rw [eq_sum_gramSchmidt v hv i, eq_sum_gramSchmidt v hv j]
+  rw [sum_inner]
+  refine Finset.sum_congr rfl (fun k _ => ?_)
+  rw [inner_smul_left, inner_sum, Finset.sum_eq_single k]
+  · rw [inner_smul_right]; ring
+  · intro l _ hlk
+    rw [inner_smul_right, gramSchmidt_orthogonal ℂ v (Ne.symm hlk), mul_zero]
+  · intro h; exact absurd (Finset.mem_univ k) h
+
 end GaloisForLFunctions.HTGeometry

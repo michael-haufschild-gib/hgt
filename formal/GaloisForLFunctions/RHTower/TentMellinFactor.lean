@@ -45,6 +45,26 @@ theorem integral_id_mul_cexp (c : ℂ) (hc : c ≠ 0) (a b : ℝ) :
 /-- The tent (triangular) window of half-width `L`: `x` on `[0,L]`, `2L−x` on `[L,2L]`. -/
 noncomputable def tentFn (L x : ℝ) : ℝ := if x ≤ L then x else 2 * L - x
 
+/-- The tent is the pointwise minimum of the two edges `x` and `2L − x`. -/
+theorem tentFn_eq_min (L x : ℝ) : tentFn L x = min x (2 * L - x) := by
+  rw [tentFn]
+  by_cases h : x ≤ L
+  · rw [if_pos h, min_eq_left (by linarith)]
+  · rw [if_neg h, min_eq_right (by linarith)]
+
+/-- **The tent window is `1`-Lipschitz** — its two edges have slope `±1` and meet at the peak.  This
+is the modulus of continuity feeding the uniform Riemann-sum estimate for the moving-tent sum. -/
+theorem lipschitzWith_tentFn (L : ℝ) : LipschitzWith 1 (tentFn L) := by
+  have hg : LipschitzWith 1 (fun x : ℝ => 2 * L - x) := by
+    apply LipschitzWith.of_dist_le_mul
+    intro x y
+    simp only [Real.dist_eq, NNReal.coe_one, one_mul]
+    rw [show (2 * L - x) - (2 * L - y) = -(x - y) by ring, abs_neg]
+  have hmin : LipschitzWith 1 (fun x : ℝ => min x (2 * L - x)) := by
+    simpa using LipschitzWith.min LipschitzWith.id hg
+  have heq : tentFn L = fun x => min x (2 * L - x) := funext (tentFn_eq_min L)
+  rw [heq]; exact hmin
+
 /-- The box (rectangular-window) Laplace factor `A_L(w) = ∫₀ᴸ e^{-wx} dx`. -/
 noncomputable def boxLaplace (L : ℝ) (w : ℂ) : ℂ :=
   ∫ x in (0 : ℝ)..L, Complex.exp (-w * (x : ℂ))

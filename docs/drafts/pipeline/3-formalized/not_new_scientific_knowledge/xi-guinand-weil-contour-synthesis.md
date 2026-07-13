@@ -129,4 +129,6 @@ sum/contour-interchange hypothesis remains.
 - [x] exact finite copied-spectral-carrier contour law
 - [x] squared rectangular two-edge specialization with regularity discharged
 - [x] arbitrary-precision source-contour approximation of the full rectangular Weil value
-- [ ] continued source contour evaluation at rectangular autocorrelation regularity
+- [x] continued source contour evaluation at rectangular autocorrelation regularity, completed in
+  `XiGuinandWeilRectangularFullFormula.lean`; the full candidate-new theorem is tracked separately
+  in `complete-sharp-rectangular-guinand-weil-prime-gamma-law.md`

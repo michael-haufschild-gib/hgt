@@ -313,9 +313,12 @@ provider would have to supply.
    coherence, and on all Xi fibres equivalent to RH.  A cross-corpus value relation factors this
    energy exactly as `2 (sum 1/p)(sum |C_p|^2/p) - 2 |sum C_p/p|^2`, reusing the theta
    square-index weighted-variance theorem.  Thus the arithmetic obstruction is a mass-amplified
-   one-particle seam norm modulo one rank-one mean channel.  The exact remaining interface is the
-   source-pure operator realization and uniform Calkin bound, plus formalization of the actual
-   tensor lower estimate.  Existing all-prime
+   one-particle seam norm modulo one rank-one mean channel.  Lean further proves that the normalized
+   pair energy tends to twice the full one-particle seam norm, which is strictly positive off the
+   line.  The source hypothesis is therefore weakened from a uniform Calkin bound to sub-root
+   reciprocal-mass growth `D_F=o(sqrt(sum_(p in F)1/p))`.  The exact remaining interface is this
+   source-pure operator realization and growth estimate, plus formalization of the actual tensor
+   lower estimate.  Existing all-prime
    Hilbert--Schmidt results do not supply the bound: they delete the divergent principal prime
    shell and assemble only the compact prime-power residual.
 

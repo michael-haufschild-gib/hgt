@@ -40,6 +40,24 @@ theorem contDiff_smoothAffineControlFamily
   exact (hbase.comp contDiff_snd).add
     ((hdirection.comp contDiff_snd).clm_apply contDiff_fst)
 
+/-- Local form on an open configuration set.  No regularity away from the patch is required. -/
+theorem contDiffOn_smoothAffineControlFamily
+    {P H Y : Type*}
+    [NormedAddCommGroup P] [NormedSpace ℝ P]
+    [NormedAddCommGroup H] [NormedSpace ℝ H]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y]
+    {n : WithTop ℕ∞}
+    {base : H → Y} {direction : H → (P →L[ℝ] Y)} {U : Set H}
+    (hbase : ContDiffOn ℝ n base U)
+    (hdirection : ContDiffOn ℝ n direction U) :
+    ContDiffOn ℝ n (smoothAffineControlFamily base direction) (Set.univ ×ˢ U) := by
+  have hbase' : ContDiffOn ℝ n (fun p : P × H => base p.2) (Set.univ ×ˢ U) :=
+    hbase.comp contDiff_snd.contDiffOn (fun p hp => hp.2)
+  have hdirection' : ContDiffOn ℝ n
+      (fun p : P × H => direction p.2) (Set.univ ×ˢ U) :=
+    hdirection.comp contDiff_snd.contDiffOn (fun p hp => hp.2)
+  exact hbase'.add (hdirection'.clm_apply contDiff_fst.contDiffOn)
+
 /-- At fixed configuration `h`, the derivative in the probe variable is exactly the probe
 operator. -/
 theorem hasFDerivAt_smoothAffineControlFamily_probe

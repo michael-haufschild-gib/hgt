@@ -119,6 +119,19 @@ fixedWindowFullObservableDivisorUniversality_capstone.
 | exact fixed-width second-difference identity | xiWeilPolarization_rectangular_eq_screwCurvature |
 | screw nonnegativity and eventual-lower-bound RH criteria | riemannHypothesis_iff_xiScrewWindowCurvature_logSample_nonneg, riemannHypothesis_iff_xiScrewWindowCurvature_logSample_eventually_bddBelow |
 
+## Complete sharp rectangular Guinand--Weil formula
+
+| Manuscript claim | Unconditional Lean declaration |
+|---|---|
+| the finite symmetric contour equals the multiplicity-counted Xi divisor sum | rectIntegral_rectangularLogDeriv_symmetric_eq_xiZeroCopy_sum |
+| symmetric finite divisor rectangles exhaust the complete sharp polarization | tendsto_symmetric_xiZeroCopy_rectangular_sum_atTop |
+| the truncated bottom edge tends to the absolutely convergent complete bottom contribution | tendsto_normalizedRectangularTruncatedBottomXiContribution_atTop |
+| vertical resolvent edges become arbitrarily small along an admissible cofinal sequence | exists_large_integral_rectangular_mul_logDeriv_XiC_norm_lt |
+| the complete sharp divisor polarization equals the literal bottom-edge integral | xiWeilPolarization_rectangular_eq_normalizedBottomXiContribution |
+| the exact sharp value is the finite von Mangoldt autocorrelation plus the archimedean integral | xiWeilPolarization_rectangular_eq_prime_add_arch |
+| after the explicit Gamma and polar correction, the full spectral value is the finite prime--polar source | rectangularCorrectedXiWeilValue_eq_primePolarSource |
+| the arithmetic-aperture autocorrelation splits into a fixed tent and one moving multiplicative window | rectangularPrimeAutocorrelationSum_logAperture |
+
 ## Source-defined complete Xi-divisor carrier
 
 The complete prime-source theorem is bundled by

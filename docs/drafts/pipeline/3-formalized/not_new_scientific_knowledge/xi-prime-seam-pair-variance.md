@@ -6,6 +6,7 @@
 - **Scientific status:** `[PROVED] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Lean:** `formal/GaloisForLFunctions/RHTower/XiPrimeSeamPairVariance.lean`
 - **Parent:** `xi-prime-seam-pair-energy-rh.md`
+- **Asymptotic continuation:** `xi-prime-seam-pair-asymptotics.md`
 - **Reused theorem:**
   `XiCTaylorThetaTailSquareIndexPolarization.two_mul_weightedBilinear_eq_rankOne_add_pairwiseDispersion`
 
@@ -79,7 +80,8 @@ E_F(a(rho)) / M_F -> 2 S_infinity(rho).                    (4)
 
 Off the critical line, `S_infinity(rho)>0`; on the critical line it is zero.  Hence the qualitative
 unboundedness theorem in `XiPrimeSeamPairEnergy.lean` has a sharper logarithmic-prime-mass form.
-The convergence and limit statement `(4)` are not yet formalized here.
+The convergence, positivity, and limit statement `(4)` are now formalized in
+`XiPrimeSeamPairAsymptotics.lean`.
 
 This changes the missing source problem.  It is enough to seek an operator identity whose Calkin
 class realizes
@@ -119,8 +121,8 @@ orbitwisePrimeSeamPairEnergy_eq_weightedVariance
 - [x] finite weighted-mean inequality
 - [x] canonical Xi seam specialization
 - [x] Lean proof and axiom audit
-- [ ] formal canonical seam square summability on every open-strip fibre
-- [ ] formal canonical seam weighted-mean absolute summability
-- [ ] formal cofinal asymptotic `(4)`
+- [x] formal canonical seam square summability on every open-strip fibre
+- [x] formal canonical seam weighted-mean absolute summability
+- [x] formal cofinal asymptotic `(4)`
 - [ ] actual Sonin Calkin variance realization
 - [ ] source-pure uniform upper bound

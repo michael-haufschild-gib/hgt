@@ -22,6 +22,10 @@ of the Riemann hypothesis.
     `rho |-> rho - 1`, and every residue equals the exact analytic multiplicity.
   - The source, intrinsic defect, Xi half-plane, and fixed-window negative energy are bundled into
     one quantitative theorem for every `alpha >= 0`, with RH as the exact zero endpoint.
+  - The complete sharp rectangular Guinand--Weil identity is proved at the actual piecewise-linear
+    regularity: symmetric contour exhaustion, cofinal vertical-edge vanishing, absolute bottom
+    convergence, multiplicity accounting, and the exact finite prime--Gamma formula are all
+    unconditional Lean theorems.  This is a project result, not imported background.
   - Arbitrary pointwise-summable nonnegative channel families are covered at their aggregate: the
     aggregate abscissa dominates the carrier abscissa and its critical bound proves RH.
   - The signed sharp-prime source now has a formalized least admissible positive correction,
@@ -43,7 +47,8 @@ of the Riemann hypothesis.
   - Primary comparison includes Weil, Yoshida, Bombieri, Connes, Connes--Consani,
     Connes--Consani--Moscovici, Voros's superzeta theory, Suzuki through June 2026, and Groskin
     through July 2026.
-  - No located parent gives the conjunction of fixed arbitrary positive width, logarithmic mesh,
+  - No located parent gives the complete cutoff-free sharp rectangular prime--Gamma identity at
+    piecewise-linear regularity, nor the conjunction of fixed arbitrary positive width, logarithmic mesh,
     lower-bound and norm criteria, cofinal negative divergence, the exact closed-ray one-sided
     exponent spectrum, the universal negative-mass Dirichlet abscissa, maximum-abscissa
     conservation and non-dilution for every finite nonnegative allocation or cover,

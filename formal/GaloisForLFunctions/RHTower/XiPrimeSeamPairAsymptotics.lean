@@ -14,7 +14,7 @@ The proof uses the existing logarithmically weighted Dirichlet summability theor
 `EulerFisherCurvature.lean`; it uses no Xi zero-location information.
 -/
 
-set_option maxHeartbeats 800000
+set_option maxHeartbeats 4000000
 
 open scoped BigOperators
 
@@ -40,7 +40,9 @@ theorem summable_primeSeamSquareMajorant
   have hright : Summable (fun p : Nat.Primes =>
       |Real.log (p : ℝ)| ^ 2 * (p : ℝ) ^ (-(3 - 2 * rho.re))) := by
     exact hrightNat.comp_injective Subtype.coe_injective
-  exact (hleft.mul_left 2).add (hright.mul_left 2)
+  refine ((hleft.mul_left 2).add (hright.mul_left 2)).congr (fun p => ?_)
+  dsimp only [primeSeamSquareMajorant]
+  ring
 
 theorem orbitwiseNatPrimeSeamCharge_weighted_norm_sq_le_majorant
     (rho : ℂ) (p : Nat.Primes) :
@@ -94,9 +96,27 @@ theorem orbitwiseNatPrimeSeamCharge_weighted_norm_sq_le_majorant
         2 * |Real.log (p : ℝ)| ^ 2 * (p : ℝ) ^ (-(3 - 2 * rho.re)) := by
       rw [hsquareLeft, hsquareRight]
       rw [div_eq_mul_inv, ← Real.rpow_neg_one]
-      ring_nf
-      rw [← Real.rpow_add hp, ← Real.rpow_add hp]
-      ring_nf
+      have hmulLeft :
+          (p : ℝ) ^ (-2 * rho.re) * (p : ℝ) ^ (-1 : ℝ) =
+            (p : ℝ) ^ (-(1 + 2 * rho.re)) := by
+        rw [← Real.rpow_add hp]
+        congr 1
+        ring
+      have hmulRight :
+          (p : ℝ) ^ (-2 * (1 - rho.re)) * (p : ℝ) ^ (-1 : ℝ) =
+            (p : ℝ) ^ (-(3 - 2 * rho.re)) := by
+        rw [← Real.rpow_add hp]
+        congr 1
+        ring
+      calc
+        |Real.log (p : ℝ)| ^ 2 *
+              (2 * (p : ℝ) ^ (-2 * rho.re) +
+                2 * (p : ℝ) ^ (-2 * (1 - rho.re))) * (p : ℝ) ^ (-1 : ℝ) =
+            2 * |Real.log (p : ℝ)| ^ 2 *
+                ((p : ℝ) ^ (-2 * rho.re) * (p : ℝ) ^ (-1 : ℝ)) +
+              2 * |Real.log (p : ℝ)| ^ 2 *
+                ((p : ℝ) ^ (-2 * (1 - rho.re)) * (p : ℝ) ^ (-1 : ℝ)) := by ring
+        _ = _ := by rw [hmulLeft, hmulRight]
 
 /-- The canonical seam has finite reciprocal-prime one-particle square energy at every open-strip
 point. -/
@@ -168,10 +188,27 @@ theorem orbitwiseNatPrimeSeamCharge_weighted_norm_le_meanMajorant
     _ = |Real.log (p : ℝ)| * (p : ℝ) ^ (-(1 + rho.re)) +
         |Real.log (p : ℝ)| * (p : ℝ) ^ (-(2 - rho.re)) := by
       rw [one_div, ← Real.rpow_neg_one]
-      rw [mul_add]
-      ring_nf
-      rw [← Real.rpow_add hp, ← Real.rpow_add hp]
-      ring_nf
+      have hmulLeft :
+          (p : ℝ) ^ (-1 : ℝ) * (p : ℝ) ^ (-rho.re) =
+            (p : ℝ) ^ (-(1 + rho.re)) := by
+        rw [← Real.rpow_add hp]
+        congr 1
+        ring
+      have hmulRight :
+          (p : ℝ) ^ (-1 : ℝ) * (p : ℝ) ^ (-(1 - rho.re)) =
+            (p : ℝ) ^ (-(2 - rho.re)) := by
+        rw [← Real.rpow_add hp]
+        congr 1
+        ring
+      calc
+        (p : ℝ) ^ (-1 : ℝ) *
+              (|Real.log (p : ℝ)| *
+                ((p : ℝ) ^ (-rho.re) + (p : ℝ) ^ (-(1 - rho.re)))) =
+            |Real.log (p : ℝ)| *
+                ((p : ℝ) ^ (-1 : ℝ) * (p : ℝ) ^ (-rho.re)) +
+              |Real.log (p : ℝ)| *
+                ((p : ℝ) ^ (-1 : ℝ) * (p : ℝ) ^ (-(1 - rho.re))) := by ring
+        _ = _ := by rw [hmulLeft, hmulRight]
 
 theorem summable_norm_orbitwisePrimeSeam_weightedMean
     {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1) :
@@ -228,8 +265,16 @@ theorem tendsto_orbitwisePrimeSeamPairEnergy_div_mass
   have hS : Filter.Tendsto (fun s : Finset Nat.Primes =>
       primePairWeightedNormSq a s) Filter.atTop
       (nhds (orbitwisePrimeSeamWeightedNormSq rho)) := by
-    simpa only [primePairWeightedNormSq, div_eq_mul_inv, mul_comm,
-      orbitwisePrimeSeamWeightedNormSq, a] using hSsum.hasSum
+    have hShas := hSsum.hasSum
+    change Filter.Tendsto
+      (fun s : Finset Nat.Primes => ∑ p ∈ s, ‖a p‖ ^ 2 / (p : ℝ))
+      Filter.atTop (nhds (∑' p : Nat.Primes, ‖a p‖ ^ 2 / (p : ℝ))) at hShas
+    convert hShas using 1
+    · ext s
+      unfold primePairWeightedNormSq
+      apply Finset.sum_congr rfl
+      intro p hp
+      ring
   have hAsum : Summable (fun p : Nat.Primes =>
       (((1 / (p : ℝ) : ℝ) : ℂ) * a p)) := by
     simpa only [a] using summable_orbitwisePrimeSeam_weightedMean hstrip
@@ -246,7 +291,8 @@ theorem tendsto_orbitwisePrimeSeamPairEnergy_div_mass
         2 * (‖primePairWeightedMean a s‖ ^ 2 / primeReciprocalMass s))
       Filter.atTop (nhds (2 * orbitwisePrimeSeamWeightedNormSq rho)) := by
     convert ((tendsto_const_nhds.mul hS).sub
-      (tendsto_const_nhds.mul hAdiv)) using 1 <;> ring
+      (tendsto_const_nhds.mul hAdiv)) using 1
+    all_goals ring
   apply hmain.congr'
   filter_upwards [Filter.eventually_ge_atTop ({⟨2, by norm_num⟩} : Finset Nat.Primes)]
     with s hs
@@ -262,7 +308,6 @@ theorem tendsto_orbitwisePrimeSeamPairEnergy_div_mass
   rw [orbitwisePrimeSeamPairEnergy_eq_weightedVariance]
   dsimp only [a]
   field_simp [hmass.ne']
-  ring
 
 /-- The limiting one-particle seam energy is strictly positive at every off-critical open-strip
 point. -/
@@ -272,15 +317,85 @@ theorem orbitwisePrimeSeamWeightedNormSq_pos_of_re_ne_half
     0 < orbitwisePrimeSeamWeightedNormSq rho := by
   have hsum := summable_orbitwisePrimeSeam_weighted_norm_sq hstrip
   apply hsum.tsum_pos
-  · intro p
-    exact div_nonneg (sq_nonneg _) (by exact_mod_cast p.prop.pos.le)
-  · exact (⟨2, by norm_num⟩ : Nat.Primes)
-  · have hne : orbitwiseNatPrimeSeamCharge 2 rho ≠ 0 := by
+    (fun p => div_nonneg (sq_nonneg _) (by exact_mod_cast p.prop.pos.le))
+    (⟨2, by norm_num⟩ : Nat.Primes)
+  have hne : orbitwiseNatPrimeSeamCharge 2 rho ≠ 0 := by
       rw [orbitwiseNatPrimeSeamCharge_two_eq_firstPrime]
       exact (orbitwiseFirstPrimeSeamCharge_eq_zero_iff rho).not.mpr hoff
-    have hnorm : 0 < ‖orbitwiseNatPrimeSeamCharge 2 rho‖ := norm_pos_iff.mpr hne
-    norm_num
-    positivity
+  have hnorm : 0 < ‖orbitwiseNatPrimeSeamCharge 2 rho‖ := norm_pos_iff.mpr hne
+  exact div_pos (sq_pos_of_pos hnorm) (by norm_num)
+
+/-- The genuinely weaker top-down source interface: canonical pair energy is sublinear in the
+reciprocal-prime mass.  Uniform boundedness implies this condition, but is not required. -/
+def OrbitwisePrimeSeamPairEnergySubmass (rho : ℂ) : Prop :=
+  Filter.Tendsto
+    (fun s : Finset Nat.Primes =>
+      primePairDifferenceEnergy
+        (fun p : Nat.Primes => orbitwiseNatPrimeSeamCharge (p : ℕ) rho) s /
+          primeReciprocalMass s)
+    Filter.atTop (nhds 0)
+
+/-- Sublinear reciprocal-prime pair energy forces the critical-line equation.  This is the
+top-down consequence of the positive off-line asymptotic coefficient. -/
+theorem re_eq_half_of_orbitwisePrimeSeamPairEnergySubmass
+    {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1)
+    (hsub : OrbitwisePrimeSeamPairEnergySubmass rho) :
+    rho.re = 1 / 2 := by
+  by_contra hoff
+  have hpos := orbitwisePrimeSeamWeightedNormSq_pos_of_re_ne_half hstrip hoff
+  have heq : (0 : ℝ) = 2 * orbitwisePrimeSeamWeightedNormSq rho :=
+    tendsto_nhds_unique hsub
+      (tendsto_orbitwisePrimeSeamPairEnergy_div_mass hstrip)
+  nlinarith
+
+theorem orbitwisePrimeSeamPairEnergySubmass_of_re_eq_half
+    {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1)
+    (hre : rho.re = 1 / 2) :
+    OrbitwisePrimeSeamPairEnergySubmass rho := by
+  have hcoh : OrbitwisePrimeSeamChargesCoherent rho :=
+    (orbitwisePrimeSeamChargesCoherent_iff_re_eq_half hstrip).mpr hre
+  have htwo : orbitwiseNatPrimeSeamCharge 2 rho = 0 := by
+    rw [orbitwiseNatPrimeSeamCharge_two_eq_firstPrime]
+    exact (orbitwiseFirstPrimeSeamCharge_eq_zero_iff rho).mpr hre
+  have hzero : ∀ p : Nat.Primes,
+      orbitwiseNatPrimeSeamCharge (p : ℕ) rho = 0 := by
+    intro p
+    exact (hcoh (p : ℕ) 2 p.prop (by norm_num)).trans htwo
+  simpa [OrbitwisePrimeSeamPairEnergySubmass, primePairDifferenceEnergy,
+    primePairDifferenceRow, hzero] using
+      (tendsto_const_nhds : Filter.Tendsto (fun _ : Finset Nat.Primes => (0 : ℝ))
+        Filter.atTop (nhds 0))
+
+/-- Exact fiberwise endpoint of the weakened source interface. -/
+theorem orbitwisePrimeSeamPairEnergySubmass_iff_re_eq_half
+    {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1) :
+    OrbitwisePrimeSeamPairEnergySubmass rho ↔ rho.re = 1 / 2 := by
+  exact ⟨re_eq_half_of_orbitwisePrimeSeamPairEnergySubmass hstrip,
+    orbitwisePrimeSeamPairEnergySubmass_of_re_eq_half hstrip⟩
+
+/-- Submass growth on every actual Xi divisor fibre. -/
+def XiPrimeSeamPairEnergySubmass : Prop :=
+  ∀ rho : XiDivisorSupport, OrbitwisePrimeSeamPairEnergySubmass (rho : ℂ)
+
+/-- Global top-down chain: sublinear reciprocal-prime pair energy on every Xi fibre is equivalent
+to RH.  The unresolved source problem is to obtain this growth estimate from the actual Sonin
+finite sections without using Xi zero locations. -/
+theorem xiPrimeSeamPairEnergySubmass_iff_riemannHypothesis :
+    XiPrimeSeamPairEnergySubmass ↔ RiemannHypothesis := by
+  constructor
+  · intro hsub
+    apply riemannHypothesis_of_xiPrimeSeamChargesCoherent
+    intro rho
+    apply (orbitwisePrimeSeamChargesCoherent_iff_re_eq_half
+      (xi_divisor_support_re_mem_open_unit rho)).mpr
+    exact re_eq_half_of_orbitwisePrimeSeamPairEnergySubmass
+      (xi_divisor_support_re_mem_open_unit rho) (hsub rho)
+  · intro hRH rho
+    apply orbitwisePrimeSeamPairEnergySubmass_of_re_eq_half
+      (xi_divisor_support_re_mem_open_unit rho)
+    exact (orbitwisePrimeSeamChargesCoherent_iff_re_eq_half
+      (xi_divisor_support_re_mem_open_unit rho)).mp
+        (xiPrimeSeamChargesCoherent_iff_riemannHypothesis.mpr hRH rho)
 
 end
 

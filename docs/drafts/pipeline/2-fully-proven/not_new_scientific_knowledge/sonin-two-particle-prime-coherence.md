@@ -244,6 +244,24 @@ not recover every pair separately: it may realize the mass-amplified one-particl
 the second term is a single rank-one mean channel. This does not prove the Calkin upper bound, but
 it materially narrows the operator identity that must be sought.
 
+The further continuation `XiPrimeSeamPairAsymptotics.lean` proves for the canonical seam that
+
+```text
+E_F(rho) / (sum_(p in F)1/p)
+  -> 2 sum_p |a_p(rho)|^2/p,
+```
+
+and that the limit is strictly positive off the critical line. Consequently, the uniform bound in
+`(8)` is sufficient but not necessary. If `D_F(rho)` is the Calkin distance in `(8)`, the tensor
+lower estimate closes the RH chain already from
+
+```text
+D_F(rho)=o(sqrt(sum_(p in F)1/p)).
+```
+
+This sub-root reciprocal-mass growth is the sharp weaker source target currently exposed by the
+top-down endpoint.
+
 ## Non-results and falsifiers
 
 - This does not prove RH or an RH equivalent.

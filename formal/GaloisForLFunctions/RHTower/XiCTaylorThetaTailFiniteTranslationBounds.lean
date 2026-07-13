@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailFiniteTranslationCurrent
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailRapidDecay
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 
 /-!
 # Rapid moments for the finite translation edge
@@ -70,6 +71,84 @@ theorem integral_abs_pow_mul_thetaCuspTailDerivative_zero_div_factorial_le_nat_r
           (m.factorial / (p : ℝ) ^ (m + 1)) := h
     _ = (thetaCuspTailNatExpConstant p / (p : ℝ) ^ (m + 1)) *
           (m.factorial : ℝ) := by ring
+
+/-- Every finite cosine section is dominated by the full exponential series, uniformly in its
+degree.  This is the degree-free envelope used for the dyadic top row. -/
+theorem norm_truncatedCosineSection_le_exp
+    (d : ℕ) (z : ℂ) (x : ℝ) :
+    ‖truncatedCosineSection d z x‖ ≤ Real.exp (‖z‖ * |x|) := by
+  let r : ℝ := ‖z‖ * |x|
+  have hr : 0 ≤ r := mul_nonneg (norm_nonneg _) (abs_nonneg _)
+  have hsum :
+      ∑ k ∈ Finset.range (d + 1), r ^ (2 * k) / ((2 * k).factorial : ℝ) ≤
+        Real.cosh r := by
+    rw [Real.cosh_eq_tsum]
+    exact (r.hasSum_cosh.summable).sum_le_tsum (Finset.range (d + 1))
+      (fun k _hk => div_nonneg (pow_nonneg hr _) (Nat.cast_nonneg _))
+  calc
+    ‖truncatedCosineSection d z x‖ ≤
+        ∑ k ∈ Finset.range (d + 1),
+          r ^ (2 * k) / ((2 * k).factorial : ℝ) := by
+      unfold truncatedCosineSection
+      calc
+        ‖∑ k ∈ Finset.range (d + 1),
+            (-1 : ℂ) ^ k * (z * (x : ℂ)) ^ (2 * k) / (2 * k).factorial‖ ≤
+            ∑ k ∈ Finset.range (d + 1),
+              ‖(-1 : ℂ) ^ k * (z * (x : ℂ)) ^ (2 * k) /
+                (2 * k).factorial‖ := norm_sum_le _ _
+        _ ≤ ∑ k ∈ Finset.range (d + 1),
+            r ^ (2 * k) / ((2 * k).factorial : ℝ) := by
+          apply Finset.sum_le_sum
+          intro k _hk
+          simp only [norm_div, norm_mul, norm_pow, norm_neg, norm_one, one_pow, one_mul,
+            Complex.norm_natCast, Complex.norm_real, Real.norm_eq_abs]
+          dsimp [r]
+          exact le_rfl
+    _ ≤ Real.cosh r := hsum
+    _ ≤ Real.exp r := by
+      rw [Real.cosh_eq]
+      have hneg : Real.exp (-r) ≤ Real.exp r := Real.exp_le_exp.mpr (by linarith)
+      linarith
+    _ = _ := rfl
+
+/-- The odd companion enjoys the same degree-uniform exponential envelope. -/
+theorem norm_truncatedSineCompanion_le_exp
+    (d : ℕ) (z : ℂ) (x : ℝ) :
+    ‖truncatedSineCompanion d z x‖ ≤ Real.exp (‖z‖ * |x|) := by
+  let r : ℝ := ‖z‖ * |x|
+  have hr : 0 ≤ r := mul_nonneg (norm_nonneg _) (abs_nonneg _)
+  have hsum :
+      ∑ k ∈ Finset.range d, r ^ (2 * k + 1) / ((2 * k + 1).factorial : ℝ) ≤
+        Real.sinh r := by
+    rw [Real.sinh_eq_tsum]
+    exact (r.hasSum_sinh.summable).sum_le_tsum (Finset.range d)
+      (fun k _hk => div_nonneg (pow_nonneg hr _) (Nat.cast_nonneg _))
+  calc
+    ‖truncatedSineCompanion d z x‖ ≤
+        ∑ k ∈ Finset.range d,
+          r ^ (2 * k + 1) / ((2 * k + 1).factorial : ℝ) := by
+      unfold truncatedSineCompanion
+      calc
+        ‖∑ k ∈ Finset.range d,
+            (-1 : ℂ) ^ k * (z * (x : ℂ)) ^ (2 * k + 1) /
+              (2 * k + 1).factorial‖ ≤
+            ∑ k ∈ Finset.range d,
+              ‖(-1 : ℂ) ^ k * (z * (x : ℂ)) ^ (2 * k + 1) /
+                (2 * k + 1).factorial‖ := norm_sum_le _ _
+        _ ≤ ∑ k ∈ Finset.range d,
+            r ^ (2 * k + 1) / ((2 * k + 1).factorial : ℝ) := by
+          apply Finset.sum_le_sum
+          intro k _hk
+          simp only [norm_div, norm_mul, norm_pow, norm_neg, norm_one, one_pow, one_mul,
+            Complex.norm_natCast, Complex.norm_real, Real.norm_eq_abs]
+          dsimp [r]
+          exact le_rfl
+    _ ≤ Real.sinh r := hsum
+    _ ≤ Real.exp r := by
+      rw [Real.sinh_eq]
+      have hneg : 0 < Real.exp (-r) := Real.exp_pos _
+      linarith [Real.exp_pos r]
+    _ = _ := rfl
 
 /-- Double integration by parts on a positive half-line, with all four endpoint values retained.
 This abstract form is used for translated theta potentials: it prevents a seam term from being

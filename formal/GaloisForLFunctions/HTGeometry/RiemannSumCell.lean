@@ -47,4 +47,41 @@ theorem norm_integral_sub_smul_le {f : ℝ → ℂ} {K c h : ℝ} (hh : 0 ≤ h)
         intervalIntegral.integral_mono_on hcle hnorm_int hlin_int hbound
     _ = K * h ^ 2 / 2 := by rw [intervalIntegral.integral_const_mul, hxc]; ring
 
+/-- **Uniform Riemann-sum error.**  Iterating the single-cell bound over the uniform grid
+`a + k·h` (`k < N`): the left-endpoint Riemann sum differs from the integral over `[a, a+Nh]` by at
+most `N·K·h²/2 = K·(b−a)·h/2`, when `f` has slope-`K` modulus of continuity on each cell. -/
+theorem norm_sum_smul_sub_integral_le {f : ℝ → ℂ} {K a h : ℝ} {N : ℕ} (hh : 0 ≤ h)
+    (hint : IntervalIntegrable f volume a (a + N * h))
+    (hbound : ∀ k : ℕ, k < N → ∀ x ∈ Set.Icc (a + k * h) (a + k * h + h),
+      ‖f x - f (a + k * h)‖ ≤ K * (x - (a + k * h))) :
+    ‖(∑ k ∈ Finset.range N, h • f (a + k * h)) - ∫ x in a..(a + N * h), f x‖
+      ≤ N * K * h ^ 2 / 2 := by
+  set g : ℕ → ℝ := fun k => a + k * h with hg
+  have hstep : ∀ k : ℕ, g (k + 1) = g k + h := by intro k; simp only [hg]; push_cast; ring
+  have hcell : ∀ k, k < N → IntervalIntegrable f volume (g k) (g (k + 1)) := by
+    intro k hk
+    refine hint.mono_set ?_
+    have hkR : (k : ℝ) ≤ N := Nat.cast_le.mpr hk.le
+    have hk1R : ((k : ℝ) + 1) ≤ N := by exact_mod_cast Nat.succ_le_of_lt hk
+    rw [Set.uIcc_of_le (by simp only [hg]; push_cast; nlinarith [hh]),
+        Set.uIcc_of_le (by nlinarith [Nat.cast_nonneg (α := ℝ) N])]
+    refine Set.Icc_subset_Icc ?_ ?_
+    · simp only [hg]; nlinarith [Nat.cast_nonneg (α := ℝ) k]
+    · simp only [hg]; push_cast; nlinarith
+  have hgrid : (∫ x in a..(a + N * h), f x)
+      = ∑ k ∈ Finset.range N, ∫ x in (g k)..(g (k + 1)), f x := by
+    rw [intervalIntegral.sum_integral_adjacent_intervals hcell]
+    simp only [hg, Nat.cast_zero, zero_mul, add_zero]
+  rw [hgrid, ← Finset.sum_sub_distrib]
+  calc ‖∑ k ∈ Finset.range N, (h • f (g k) - ∫ x in (g k)..(g (k + 1)), f x)‖
+      ≤ ∑ k ∈ Finset.range N, ‖h • f (g k) - ∫ x in (g k)..(g (k + 1)), f x‖ := norm_sum_le _ _
+    _ ≤ ∑ _k ∈ Finset.range N, K * h ^ 2 / 2 := by
+        refine Finset.sum_le_sum (fun k hk => ?_)
+        have hk' : k < N := Finset.mem_range.mp hk
+        calc ‖h • f (g k) - ∫ x in (g k)..(g (k + 1)), f x‖
+            = ‖(∫ x in (g k)..(g k + h), f x) - h • f (g k)‖ := by rw [hstep k, norm_sub_rev]
+          _ ≤ K * h ^ 2 / 2 :=
+              norm_integral_sub_smul_le hh (hstep k ▸ hcell k hk') (hbound k hk')
+    _ = N * K * h ^ 2 / 2 := by rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]; ring
+
 end HTGeometry

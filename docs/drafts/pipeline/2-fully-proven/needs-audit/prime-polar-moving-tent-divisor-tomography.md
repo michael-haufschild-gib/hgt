@@ -353,8 +353,17 @@ entireness, is now formalized axiom-clean in `formal/GaloisForLFunctions/RHTower
 - `integral_id_mul_cexp` — the primitive `∫ₐᵇ x e^{cx}dx = [(cx-1)e^{cx}/c²]ₐᵇ`, a reusable
   mathlib-missing lemma the split needs.
 
-This closes step 2 of the Lean program (the tent Mellin factor `(10)`); the open chain remains the
-uniform Riemann-sum estimate `(15)`, the summable error series `(19)`, and the polar
+This closes step 2 of the Lean program (the tent Mellin factor `(10)`).  The **core of step 3** — the
+uniform cellwise Riemann-sum estimate `(15)` — is now also formalized axiom-clean, as reusable
+analysis, in `formal/GaloisForLFunctions/HTGeometry/RiemannSumCell.lean`:
+
+- `norm_integral_sub_smul_le` — single-cell error `‖∫_c^{c+h} f − h·f(c)‖ ≤ K·h²/2` for a
+  slope-`K` modulus of continuity;
+- `norm_sum_smul_sub_integral_le` — the summed uniform bound `‖∑_{k<N} h·f(a+kh) − ∫_a^{a+Nh} f‖ ≤
+  N·K·h²/2 = K·(b−a)·h/2` over the uniform grid, obtained by iterating the single-cell bound.
+
+Both are mathlib-missing (mathlib has no Riemann-sum error theory).  The remaining open chain is the
+summable error series `(19)` (applying this bound to the concrete moving-tent integrand) and the polar
 cancellation/residue `(23)`--`(25)` on the subsuming card.
 
 ## Gates
