@@ -162,8 +162,6 @@ densities whose actual weighted-carrier Cauchy transforms satisfy the same relat
 theorem normalizedPositiveChart_actualCarrier_relationFree_dense_residual
     {ιf α : Type*} [Fintype ιf] [Countable α]
     (zf : ιf → ℂ) (nf : ιf → ℕ)
-    (haf : ∀ i, F.amplitude (zf i) ≠ 0)
-    (hqdf : ∀ i, deriv F.quotient (zf i) ≠ 0)
     (eta : Measure (OnePoint ℝ)) [IsProbabilityMeasure eta]
     (hupperf : ∀ i, 0 < (F.quotient (zf i)).im)
     (row κ ι : α → Type)
@@ -175,23 +173,23 @@ theorem normalizedPositiveChart_actualCarrier_relationFree_dense_residual
       κ n → (Fin (Fintype.card (Σ i, Fin (orders n i))) →₀ ℕ))
     (hupperMap : ∀ z, 0 < z.im → 0 < (F.quotient z).im)
     (relationFree : Set (LinearMap.ker
-      (normalizedProjectiveNevanlinnaJetLinftyContinuousControl
-        F.amplitude F.quotient zf nf haf hqdf eta hupperf).toLinearMap))
+      (normalizedProjectiveCauchyJetLinftyContinuousControl
+        (fun i => F.quotient (zf i)) nf eta hupperf).toLinearMap))
     (hrelationFree : relationFree ∈ residual (LinearMap.ker
-      (normalizedProjectiveNevanlinnaJetLinftyContinuousControl
-        F.amplitude F.quotient zf nf haf hqdf eta hupperf).toLinearMap))
+      (normalizedProjectiveCauchyJetLinftyContinuousControl
+        (fun i => F.quotient (zf i)) nf eta hupperf).toLinearMap))
     (hfree : ∀ w ∈ relationFree, ∀ n (shift : InjectiveShiftConfiguration (ι n))
       (coeff : κ n × Fin (degree n + 1) → ℂ),
       actualNevanlinnaExpandedPatternRelationHolds
         (row := row n) F.background F.amplitude F.quotient
           (degree n) (orders n) (exponent n) eta (linftyOne eta)
           (LinearMap.ker
-            (normalizedProjectiveNevanlinnaJetLinftyContinuousControl
-              F.amplitude F.quotient zf nf haf hqdf eta hupperf).toLinearMap)
+            (normalizedProjectiveCauchyJetLinftyContinuousControl
+              (fun i => F.quotient (zf i)) nf eta hupperf).toLinearMap)
           w shift coeff →
         ∀ col, coeff col = 0) :
-    let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
-      F.amplitude F.quotient zf nf haf hqdf eta hupperf
+    let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+      (fun i => F.quotient (zf i)) nf eta hupperf
     let S := LinearMap.ker frozen.toLinearMap
     let positiveChart : Set S := Metric.ball 0 1
     let actualRelationFree : Set positiveChart := {w | ∀ n
@@ -206,8 +204,8 @@ theorem normalizedPositiveChart_actualCarrier_relationFree_dense_residual
         LinftyStrictlyPositive eta (linftyOne eta + w.1.1) ∧
           ∫ t, (linftyOne eta + w.1.1) t ∂eta = 1 := by
   dsimp only
-  let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
-    F.amplitude F.quotient zf nf haf hqdf eta hupperf
+  let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+    (fun i => F.quotient (zf i)) nf eta hupperf
   let S := LinearMap.ker frozen.toLinearMap
   let positiveChart : Set S := Metric.ball 0 1
   let positiveAbstract : Set positiveChart := Subtype.val ⁻¹' relationFree
@@ -218,8 +216,8 @@ theorem normalizedPositiveChart_actualCarrier_relationFree_dense_residual
       (row := row n) eta (linftyOne eta + w.1.1)
         (degree n) (orders n) (exponent n) shift coeff →
       ∀ col, coeff col = 0}
-  have hpositive := normalizedProjectiveNevanlinna_positiveChart_dense_residual
-    F.amplitude F.quotient zf nf haf hqdf eta hupperf relationFree hrelationFree
+  have hpositive := normalizedProjectiveCauchy_positiveChart_dense_residual
+    (fun i => F.quotient (zf i)) nf eta hupperf relationFree hrelationFree
   have hsubset : positiveAbstract ⊆ actualRelationFree := by
     intro w hw n shift coeff hrelation
     have hprob := hpositive.2.2 w
@@ -249,8 +247,7 @@ theorem countablePatterns_positiveActualCarrier_relationFree_dense_residual
     (zf : ιf → ℂ)
     (hqf_inj : Function.Injective (fun i => F.quotient (zf i)))
     (hupperf : ∀ i, 0 < (F.quotient (zf i)).im)
-    (nf : ιf → ℕ) (haf : ∀ i, F.amplitude (zf i) ≠ 0)
-    (hqdf : ∀ i, deriv F.quotient (zf i) ≠ 0)
+    (nf : ιf → ℕ)
     (degree : ℕ → ℕ) (orders : ∀ n, ι n → ℕ)
     (exponent : ∀ n,
       κ n → (Fin (Fintype.card (Σ i, Fin (orders n i))) →₀ ℕ))
@@ -261,8 +258,8 @@ theorem countablePatterns_positiveActualCarrier_relationFree_dense_residual
     (hdim : ∀ n, Module.finrank ℝ (ι n → ℂ) <
       2 * (Fintype.card (row n) -
         Fintype.card (κ n × Fin (degree n + 1)) - degree n + 1)) :
-    let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
-      F.amplitude F.quotient zf nf haf hqdf eta hupperf
+    let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+      (fun i => F.quotient (zf i)) nf eta hupperf
     let S := LinearMap.ker frozen.toLinearMap
     let positiveChart : Set S := Metric.ball 0 1
     let actualRelationFree : Set positiveChart := {w | ∀ n
@@ -277,8 +274,8 @@ theorem countablePatterns_positiveActualCarrier_relationFree_dense_residual
         LinftyStrictlyPositive eta (linftyOne eta + w.1.1) ∧
           ∫ t, (linftyOne eta + w.1.1) t ∂eta = 1 := by
   dsimp only
-  let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
-    F.amplitude F.quotient zf nf haf hqdf eta hupperf
+  let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+    (fun i => F.quotient (zf i)) nf eta hupperf
   let S := LinearMap.ker frozen.toLinearMap
   let relationFree : Set S := {w | ∀ n
     (shift : InjectiveShiftConfiguration (ι n))
@@ -296,11 +293,6 @@ theorem countablePatterns_positiveActualCarrier_relationFree_dense_residual
   have hupperf' : ∀ i,
       0 < (projectiveNevanlinnaQuotient F.c F.d (zf i)).im := by
     simpa [quotient, projectiveNevanlinnaQuotient] using hupperf
-  have haf' : ∀ i, projectiveNevanlinnaAmplitude F.c (zf i) ≠ 0 := by
-    simpa [amplitude, projectiveNevanlinnaAmplitude] using haf
-  have hqdf' : ∀ i,
-      deriv (projectiveNevanlinnaQuotient F.c F.d) (zf i) ≠ 0 := by
-    simpa [quotient, projectiveNevanlinnaQuotient] using hqdf
   have habstract : Dense relationFree ∧ relationFree ∈ residual S := by
     simpa [relationFree, frozen, S, amplitude, quotient,
       projectiveNevanlinnaAmplitude, projectiveNevanlinnaQuotient] using
@@ -308,10 +300,10 @@ theorem countablePatterns_positiveActualCarrier_relationFree_dense_residual
         projectiveGeometry parametricAvoidance row κ ι hCmin F.differentiable_d
         hnoCommon hCp hCc hupperMap' F.background F.contDiffOn_iteratedDeriv_background
         zf hqf_inj' hupperf'
-        nf haf' hqdf' degree orders exponent hexponent hrows eta heta
+        nf degree orders exponent hexponent hrows eta heta
         (linftyOne eta) hdim)
   exact F.normalizedPositiveChart_actualCarrier_relationFree_dense_residual
-    zf nf haf hqdf eta hupperf row κ ι degree orders exponent hupperMap
+    zf nf eta hupperf row κ ι degree orders exponent hupperMap
     relationFree habstract.2 (by
       intro w hw n shift coeff
       exact hw n shift coeff)
@@ -331,11 +323,10 @@ theorem allFinitePatterns_abstractCarrier_relationFree_dense_residual
     (zf : ιf → ℂ)
     (hqf_inj : Function.Injective (fun i => F.quotient (zf i)))
     (hupperf : ∀ i, 0 < (F.quotient (zf i)).im)
-    (nf : ιf → ℕ) (haf : ∀ i, F.amplitude (zf i) ≠ 0)
-    (hqdf : ∀ i, deriv F.quotient (zf i) ≠ 0)
+    (nf : ιf → ℕ)
     (eta : Measure (OnePoint ℝ)) [IsProbabilityMeasure eta] (heta : eta.support.Infinite) :
-    let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
-      F.amplitude F.quotient zf nf haf hqdf eta hupperf
+    let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+      (fun i => F.quotient (zf i)) nf eta hupperf
     let S := LinearMap.ker frozen.toLinearMap
     let relationFree : Set S := {w | ∀ (p : FiniteDifferentialPattern Unit)
       (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
@@ -347,8 +338,8 @@ theorem allFinitePatterns_abstractCarrier_relationFree_dense_residual
         ∀ col, coeff col = 0}
     Dense relationFree ∧ relationFree ∈ residual S := by
   dsimp only
-  let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
-    F.amplitude F.quotient zf nf haf hqdf eta hupperf
+  let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+    (fun i => F.quotient (zf i)) nf eta hupperf
   let S := LinearMap.ker frozen.toLinearMap
   let goodPattern : FiniteDifferentialPattern Unit → Set S := fun p =>
     {w | ∀ shift : InjectiveShiftConfiguration (CarrierPatternShift p),
@@ -374,11 +365,6 @@ theorem allFinitePatterns_abstractCarrier_relationFree_dense_residual
   have hupperf' : ∀ i,
       0 < (projectiveNevanlinnaQuotient F.c F.d (zf i)).im := by
     simpa [quotient, projectiveNevanlinnaQuotient] using hupperf
-  have haf' : ∀ i, projectiveNevanlinnaAmplitude F.c (zf i) ≠ 0 := by
-    simpa [amplitude, projectiveNevanlinnaAmplitude] using haf
-  have hqdf' : ∀ i,
-      deriv (projectiveNevanlinnaQuotient F.c F.d) (zf i) ≠ 0 := by
-    simpa [quotient, projectiveNevanlinnaQuotient] using hqdf
   have hgoodPattern : ∀ p : FiniteDifferentialPattern Unit,
       Dense (goodPattern p) ∧ goodPattern p ∈ residual S := by
     intro p
@@ -389,7 +375,7 @@ theorem allFinitePatterns_abstractCarrier_relationFree_dense_residual
         (ι := CarrierPatternShift p)
         projectiveGeometry parametricAvoidance hCmin F.differentiable_d
         hnoCommon hCp hCc hupperMap' F.background
-        F.contDiffOn_iteratedDeriv_background zf hqf_inj' hupperf' nf haf' hqdf'
+        F.contDiffOn_iteratedDeriv_background zf hqf_inj' hupperf' nf
         p.coefficientDegree p.orders (carrierPatternExponent p)
         (carrierPatternExponent_injective p)
         (carrierPattern_rows_strictly_dominate_columns p)
@@ -420,11 +406,10 @@ theorem allFinitePatterns_positiveActualCarrier_relationFree_dense_residual
     (zf : ιf → ℂ)
     (hqf_inj : Function.Injective (fun i => F.quotient (zf i)))
     (hupperf : ∀ i, 0 < (F.quotient (zf i)).im)
-    (nf : ιf → ℕ) (haf : ∀ i, F.amplitude (zf i) ≠ 0)
-    (hqdf : ∀ i, deriv F.quotient (zf i) ≠ 0)
+    (nf : ιf → ℕ)
     (eta : Measure (OnePoint ℝ)) [IsProbabilityMeasure eta] (heta : eta.support.Infinite) :
-    let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
-      F.amplitude F.quotient zf nf haf hqdf eta hupperf
+    let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+      (fun i => F.quotient (zf i)) nf eta hupperf
     let S := LinearMap.ker frozen.toLinearMap
     let positiveChart : Set S := Metric.ball 0 1
     let actualRelationFree : Set positiveChart := {w | ∀
@@ -440,8 +425,8 @@ theorem allFinitePatterns_positiveActualCarrier_relationFree_dense_residual
         LinftyStrictlyPositive eta (linftyOne eta + w.1.1) ∧
           ∫ t, (linftyOne eta + w.1.1) t ∂eta = 1 := by
   dsimp only
-  let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
-    F.amplitude F.quotient zf nf haf hqdf eta hupperf
+  let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+    (fun i => F.quotient (zf i)) nf eta hupperf
   let S := LinearMap.ker frozen.toLinearMap
   let relationFree : Set S := {w | ∀ (p : FiniteDifferentialPattern Unit)
     (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
@@ -455,9 +440,9 @@ theorem allFinitePatterns_positiveActualCarrier_relationFree_dense_residual
     simpa [relationFree, frozen, S] using
       (F.allFinitePatterns_abstractCarrier_relationFree_dense_residual
         projectiveGeometry parametricAvoidance hCmin hnoCommon hCp hCc hupperMap
-        zf hqf_inj hupperf nf haf hqdf eta heta)
+        zf hqf_inj hupperf nf eta heta)
   exact F.normalizedPositiveChart_actualCarrier_relationFree_dense_residual
-    zf nf haf hqdf eta hupperf
+    zf nf eta hupperf
     (fun p : FiniteDifferentialPattern Unit => CarrierPatternRow p)
     (fun p : FiniteDifferentialPattern Unit => CarrierPatternMonomial p)
     (fun p : FiniteDifferentialPattern Unit => CarrierPatternShift p)
@@ -597,11 +582,10 @@ theorem positiveActualCarrier_hypertranscendental_dense_residual
     (zf : ιf → ℂ)
     (hqf_inj : Function.Injective (fun i => F.quotient (zf i)))
     (hupperf : ∀ i, 0 < (F.quotient (zf i)).im)
-    (nf : ιf → ℕ) (haf : ∀ i, F.amplitude (zf i) ≠ 0)
-    (hqdf : ∀ i, deriv F.quotient (zf i) ≠ 0)
+    (nf : ιf → ℕ)
     (eta : Measure (OnePoint ℝ)) [IsProbabilityMeasure eta] (heta : eta.support.Infinite) :
-    let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
-      F.amplitude F.quotient zf nf haf hqdf eta hupperf
+    let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+      (fun i => F.quotient (zf i)) nf eta hupperf
     let S := LinearMap.ker frozen.toLinearMap
     let positiveChart : Set S := Metric.ball 0 1
     let hypertranscendentalCarrier : Set positiveChart := {w |
@@ -615,8 +599,8 @@ theorem positiveActualCarrier_hypertranscendental_dense_residual
         LinftyStrictlyPositive eta (linftyOne eta + w.1.1) ∧
           ∫ t, (linftyOne eta + w.1.1) t ∂eta = 1 := by
   dsimp only
-  let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
-    F.amplitude F.quotient zf nf haf hqdf eta hupperf
+  let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+    (fun i => F.quotient (zf i)) nf eta hupperf
   let S := LinearMap.ker frozen.toLinearMap
   let positiveChart : Set S := Metric.ball 0 1
   let actualRelationFree : Set positiveChart := {w | ∀
@@ -640,7 +624,7 @@ theorem positiveActualCarrier_hypertranscendental_dense_residual
     simpa [actualRelationFree, frozen, S, positiveChart] using
       (F.allFinitePatterns_positiveActualCarrier_relationFree_dense_residual
         projectiveGeometry parametricAvoidance hCmin hnoCommon hCp hCc hupperMap
-        zf hqf_inj hupperf nf haf hqdf eta heta)
+        zf hqf_inj hupperf nf eta heta)
   have hsubset : actualRelationFree ⊆ hypertranscendentalCarrier := by
     intro w hw
     exact F.hypertranscendental_weightedBoundaryCarrierCauchy_of_allFinitePatterns_relationFree
@@ -663,8 +647,7 @@ theorem positiveSingularContinuousCarrier_hypertranscendental_dense_residual
     (zf : ιf → ℂ)
     (hqf_inj : Function.Injective (fun i => F.quotient (zf i)))
     (hupperf : ∀ i, 0 < (F.quotient (zf i)).im)
-    (nf : ιf → ℕ) (haf : ∀ i, F.amplitude (zf i) ≠ 0)
-    (hqdf : ∀ i, deriv F.quotient (zf i) ≠ 0)
+    (nf : ιf → ℕ)
     (eta : ProbabilityMeasure (OnePoint ℝ))
     (hetaInfinite : (eta : Measure (OnePoint ℝ)).support.Infinite)
     (hetaSC : eta ∈ projectiveSingularContinuousProbabilityLaws)
@@ -673,8 +656,8 @@ theorem positiveSingularContinuousCarrier_hypertranscendental_dense_residual
       (volume : Measure ℝ)
         (F.base.toBoundaryFamily.matrix.projectiveLabel ⁻¹' E) = 0) :
     let mu : Measure (OnePoint ℝ) := eta
-    let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
-      F.amplitude F.quotient zf nf haf hqdf mu hupperf
+    let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+      (fun i => F.quotient (zf i)) nf mu hupperf
     let S := LinearMap.ker frozen.toLinearMap
     let positiveChart : Set S := Metric.ball 0 1
     let hypertranscendentalCarrier : Set positiveChart := {w |
@@ -693,8 +676,8 @@ theorem positiveSingularContinuousCarrier_hypertranscendental_dense_residual
           carrier ⟂ₘ (volume : Measure ℝ) ∧ HasHamburgerMoments s carrier := by
   dsimp only
   let mu : Measure (OnePoint ℝ) := eta
-  let frozen := normalizedProjectiveNevanlinnaJetLinftyContinuousControl
-    F.amplitude F.quotient zf nf haf hqdf mu hupperf
+  let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+    (fun i => F.quotient (zf i)) nf mu hupperf
   let S := LinearMap.ker frozen.toLinearMap
   let positiveChart : Set S := Metric.ball 0 1
   let hypertranscendentalCarrier : Set positiveChart := {w |
@@ -711,7 +694,7 @@ theorem positiveSingularContinuousCarrier_hypertranscendental_dense_residual
     simpa [hypertranscendentalCarrier, positiveChart, frozen, S, mu] using
       (F.positiveActualCarrier_hypertranscendental_dense_residual
         projectiveGeometry parametricAvoidance hCmin hnoCommon hCp hCc hupperMap
-        zf hqf_inj hupperf nf haf hqdf mu hetaInfinite)
+        zf hqf_inj hupperf nf mu hetaInfinite)
   refine ⟨hht.1, hht.2.1, ?_⟩
   intro w
   let density := linftyOne mu + w.1.1

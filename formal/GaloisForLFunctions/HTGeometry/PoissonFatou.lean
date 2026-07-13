@@ -200,4 +200,37 @@ theorem poissonKer_concentration {δ : ℝ} (hδ0 : 0 < δ) (hδπ : δ ≤ π) 
             rw [hC]; gcongr; nlinarith [pow_pos hδ0 2]
           nlinarith [mul_le_mul_of_nonneg_left hX (show (0:ℝ) ≤ 1 - r ^ 2 by nlinarith)]
 
+/-- The Poisson kernel is even in `t`. -/
+theorem poissonKer_even (r t : ℝ) : poissonKer r (-t) = poissonKer r t := by
+  simp [poissonKer, Real.cos_neg]
+
+/-- The Poisson kernel is `2π`-periodic in `t`. -/
+theorem poissonKer_periodic (r : ℝ) : Function.Periodic (poissonKer r) (2 * π) := by
+  intro t; simp [poissonKer, Real.cos_add, Real.cos_two_pi, Real.sin_two_pi]
+
+/-- `∫_{δ}^{π} P_r = ∫_{-π}^{-δ} P_r` by evenness. -/
+theorem poissonKer_integral_neg (r δ : ℝ) :
+    ∫ t in δ..π, poissonKer r t = ∫ t in (-π)..(-δ), poissonKer r t := by
+  have h1 : ∫ t in δ..π, poissonKer r t = ∫ t in δ..π, poissonKer r (-t) :=
+    intervalIntegral.integral_congr (fun t _ => (poissonKer_even r t).symm)
+  rw [h1, intervalIntegral.integral_comp_neg (fun t => poissonKer r t)]
+
+/-- **Normalization on the symmetric interval**: `∫_{-π}^{π} P_r = 2π`. -/
+theorem poissonKer_integral_symm {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
+    ∫ t in (-π)..π, poissonKer r t = 2 * π := by
+  have h := (poissonKer_periodic r).intervalIntegral_add_eq (-π) 0
+  rw [show (-π) + 2 * π = π by ring, show (0:ℝ) + 2 * π = 2 * π by ring] at h
+  rw [h]; exact poissonKer_integral hr0 hr1
+
+/-- **Concentration on the symmetric interval**: `∫_{-π}^{-δ} P_r + ∫_{δ}^{π} P_r → 0` as `r → 1⁻`. -/
+theorem poissonKer_concentration_symm {δ : ℝ} (hδ0 : 0 < δ) (hδπ : δ ≤ π) :
+    Tendsto (fun r : ℝ => (∫ t in (-π)..(-δ), poissonKer r t) + ∫ t in δ..π, poissonKer r t)
+      (𝓝[<] 1) (𝓝 0) := by
+  have key : Tendsto
+      (fun r : ℝ => (∫ t in δ..π, poissonKer r t) + ∫ t in δ..π, poissonKer r t) (𝓝[<] 1) (𝓝 0) := by
+    rw [show (0:ℝ) = 0 + 0 by ring]
+    exact (poissonKer_concentration hδ0 hδπ).add (poissonKer_concentration hδ0 hδπ)
+  refine key.congr (fun r => ?_)
+  rw [poissonKer_integral_neg r δ]
+
 end GaloisForLFunctions.HTGeometry

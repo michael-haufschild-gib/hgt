@@ -118,110 +118,132 @@ theorem bellVal_div_pow_tendsto_one (n : ℕ) {σ : ℝ} (hσ : 0 < σ) :
       (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)) ^ n) atTop (nhds 1) := by
   induction n with
   | zero =>
-      have : (fun t : ℝ => bellVal 0 ((σ : ℂ) + (t : ℂ) * Complex.I) /
+      have h : (fun t : ℝ => bellVal 0 ((σ : ℂ) + (t : ℂ) * Complex.I) /
           (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)) ^ 0) = fun _ => 1 := by
-        funext t
-        simp [bellVal, gammaBell]
-      rw [this]
-      exact tendsto_const_nhds
+        funext t; simp [bellVal, gammaBell]
+      rw [h]; exact tendsto_const_nhds
   | succ n ih =>
-      set ψ : ℝ → ℂ := fun t => Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) with hψdef
-      -- abbreviation for the jet correction term
-      set Q : ℝ → ℂ := fun t => ∑ j : Fin n, MvPolynomial.eval
-          (fun k : Fin n => iteratedDeriv (k : ℕ) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I))
-          (pderiv j (gammaBell n)) * iteratedDeriv ((j : ℕ) + 1) Complex.digamma
-          ((σ : ℂ) + (t : ℂ) * Complex.I) with hQdef
-      have hψ∞ : Tendsto (fun t => ‖ψ t‖) atTop atTop := norm_digamma_vertical_tendsto_atTop hσ.le
-      have hψge1 : ∀ᶠ t in atTop, (1 : ℝ) ≤ ‖ψ t‖ := hψ∞.eventually_ge_atTop 1
-      have hψne : ∀ᶠ t in atTop, ψ t ≠ 0 := by
+      have hψinf : Tendsto
+          (fun t : ℝ => ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖) atTop atTop :=
+        norm_digamma_vertical_tendsto_atTop hσ.le
+      have hψge1 : ∀ᶠ (t : ℝ) in atTop,
+          (1 : ℝ) ≤ ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖ :=
+        hψinf.eventually_ge_atTop 1
+      have hψne : ∀ᶠ (t : ℝ) in atTop, Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) ≠ 0 := by
         filter_upwards [hψge1] with t ht
         intro h; rw [h, norm_zero] at ht; linarith
-      -- each jet-correction summand divided by ψ^{n+1} tends to 0
-      have hQdiv : Tendsto (fun t => Q t / (ψ t) ^ (n + 1)) atTop (nhds 0) := by
-        rw [hQdef]
-        have : (fun t => (∑ j : Fin n, MvPolynomial.eval
+      -- eventual uniform jet bound: every jet coordinate is ≤ 1 + ‖ψ‖
+      have hjetEv : ∀ᶠ (t : ℝ) in atTop, ∀ k : Fin n,
+          ‖iteratedDeriv (k : ℕ) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖
+            ≤ 1 + ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖ := by
+        rw [eventually_all]
+        intro k
+        rcases Nat.eq_zero_or_pos (k : ℕ) with hk | hk
+        · filter_upwards with t
+          rw [hk, iteratedDeriv_zero]
+          linarith [norm_nonneg (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I))]
+        · obtain ⟨m, hm⟩ := Nat.exists_eq_succ_of_ne_zero hk.ne'
+          have hz0 : Tendsto (fun t : ℝ => ‖iteratedDeriv (m + 1) Complex.digamma
+              ((σ : ℂ) + (t : ℂ) * Complex.I)‖) atTop (nhds 0) := by
+            simpa using (iteratedDeriv_digamma_vertical_tendsto_zero m hσ).norm
+          have hev : ∀ᶠ (t : ℝ) in atTop, ‖iteratedDeriv (m + 1) Complex.digamma
+              ((σ : ℂ) + (t : ℂ) * Complex.I)‖ < 1 :=
+            hz0.eventually (Iio_mem_nhds (show (0 : ℝ) < 1 by norm_num))
+          filter_upwards [hev] with t htv
+          rw [hm]
+          linarith [norm_nonneg (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I))]
+      -- the jet-correction term divided by ψ^{n+1} tends to 0
+      have hQdiv : Tendsto (fun t : ℝ => (∑ j : Fin n, MvPolynomial.eval
+          (fun k : Fin n => iteratedDeriv (k : ℕ) Complex.digamma
+            ((σ : ℂ) + (t : ℂ) * Complex.I)) (pderiv j (gammaBell n))
+          * iteratedDeriv ((j : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I))
+          / (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)) ^ (n + 1)) atTop (nhds 0) := by
+        have hrw : (fun t : ℝ => (∑ j : Fin n, MvPolynomial.eval
             (fun k : Fin n => iteratedDeriv (k : ℕ) Complex.digamma
               ((σ : ℂ) + (t : ℂ) * Complex.I)) (pderiv j (gammaBell n))
             * iteratedDeriv ((j : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I))
-            / (ψ t) ^ (n + 1))
-            = fun t => ∑ j : Fin n,
-              (MvPolynomial.eval (fun k : Fin n => iteratedDeriv (k : ℕ) Complex.digamma
+            / (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)) ^ (n + 1))
+            = fun t => ∑ j : Fin n, (MvPolynomial.eval
+              (fun k : Fin n => iteratedDeriv (k : ℕ) Complex.digamma
                 ((σ : ℂ) + (t : ℂ) * Complex.I)) (pderiv j (gammaBell n))
               * iteratedDeriv ((j : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I))
-              / (ψ t) ^ (n + 1) := by
+              / (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)) ^ (n + 1) := by
           funext t; rw [Finset.sum_div]
-        rw [this]
-        rw [show (0 : ℂ) = ∑ _j : Fin n, (0 : ℂ) by simp]
+        rw [hrw, show (0 : ℂ) = ∑ _j : Fin n, (0 : ℂ) by simp]
         apply tendsto_finset_sum
         intro j _
-        -- constant coefficient mass of pderiv j (gammaBell n)
         set Cj : ℝ := ∑ d ∈ (pderiv j (gammaBell n)).support,
           ‖MvPolynomial.coeff d (pderiv j (gammaBell n))‖ with hCjdef
         have hCj0 : 0 ≤ Cj := Finset.sum_nonneg (fun _ _ => norm_nonneg _)
+        have htd : (pderiv j (gammaBell n)).totalDegree ≤ n :=
+          (totalDegree_pderiv_le j (gammaBell n)).trans (totalDegree_gammaBell_le n)
         refine squeeze_zero_norm' ?_
           (by
-            have hz : Tendsto (fun t => iteratedDeriv ((j : ℕ) + 1) Complex.digamma
+            have hz : Tendsto (fun t : ℝ => iteratedDeriv ((j : ℕ) + 1) Complex.digamma
                 ((σ : ℂ) + (t : ℂ) * Complex.I)) atTop (nhds 0) :=
               iteratedDeriv_digamma_vertical_tendsto_zero (j : ℕ) hσ
-            have := (hz.norm).const_mul (Cj * 2 ^ n)
+            have := hz.norm.const_mul (Cj * 2 ^ n)
             simpa using this)
-        filter_upwards [hψge1] with t ht
-        -- uniform jet bound
-        have hjet : ∀ k : Fin n, ‖iteratedDeriv (k : ℕ) Complex.digamma
-            ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤ 1 + ‖ψ t‖ := by
-          intro k
-          rcases Nat.eq_zero_or_pos (k : ℕ) with hk | hk
-          · rw [hk, iteratedDeriv_zero]
-            have : ‖ψ t‖ ≤ 1 + ‖ψ t‖ := by linarith
-            simpa [hψdef] using this
-          · -- positive-order polygammas are eventually small; but here we only need ≤ 1 + ‖ψ‖
-            sorry
-        have hB : (1 : ℝ) ≤ 1 + ‖ψ t‖ := by linarith [norm_nonneg (ψ t)]
+        filter_upwards [hψge1, hjetEv] with t ht hjet
+        have hB : (1 : ℝ) ≤ 1 + ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖ := by
+          linarith [norm_nonneg (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I))]
+        have hw0 : (0 : ℝ) < ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖ := by linarith
         have heval : ‖MvPolynomial.eval (fun k : Fin n => iteratedDeriv (k : ℕ) Complex.digamma
             ((σ : ℂ) + (t : ℂ) * Complex.I)) (pderiv j (gammaBell n))‖
-            ≤ Cj * (1 + ‖ψ t‖) ^ n := by
-          refine (norm_eval_le_pow (pderiv j (gammaBell n)) _ (1 + ‖ψ t‖) hB hjet).trans ?_
+            ≤ Cj * (1 + ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖) ^ n := by
+          refine (norm_eval_le_pow (pderiv j (gammaBell n)) _
+            (1 + ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖) hB hjet).trans ?_
           rw [← hCjdef]
-          apply mul_le_mul_of_nonneg_left _ hCj0
-          apply pow_le_pow_right₀ hB
-          exact (totalDegree_pderiv_le j (gammaBell n)).trans (totalDegree_gammaBell_le n)
-        -- assemble the summand bound
+          exact mul_le_mul_of_nonneg_left (pow_le_pow_right₀ hB htd) hCj0
+        have hstep : ‖MvPolynomial.eval (fun k : Fin n => iteratedDeriv (k : ℕ) Complex.digamma
+            ((σ : ℂ) + (t : ℂ) * Complex.I)) (pderiv j (gammaBell n))‖
+            ≤ Cj * 2 ^ n * ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ^ n := by
+          refine heval.trans ?_
+          have hple : (1 + ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖) ^ n
+              ≤ (2 * ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖) ^ n :=
+            pow_le_pow_left₀ (by positivity) (by linarith) n
+          calc Cj * (1 + ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖) ^ n
+              ≤ Cj * (2 * ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖) ^ n :=
+                mul_le_mul_of_nonneg_left hple hCj0
+            _ = Cj * 2 ^ n * ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ^ n := by
+                rw [mul_pow]; ring
         rw [norm_div, norm_mul, norm_pow]
-        have hψpos : 0 < ‖ψ t‖ := by linarith
-        have h2 : (1 + ‖ψ t‖) ^ n ≤ (2 * ‖ψ t‖) ^ n := by
-          apply pow_le_pow_left₀ (by positivity)
-          linarith
         calc ‖MvPolynomial.eval (fun k : Fin n => iteratedDeriv (k : ℕ) Complex.digamma
                   ((σ : ℂ) + (t : ℂ) * Complex.I)) (pderiv j (gammaBell n))‖
-              * ‖iteratedDeriv ((j : ℕ) + 1) Complex.digamma
-                  ((σ : ℂ) + (t : ℂ) * Complex.I)‖ / ‖ψ t‖ ^ (n + 1)
-            ≤ (Cj * (2 * ‖ψ t‖) ^ n)
-              * ‖iteratedDeriv ((j : ℕ) + 1) Complex.digamma
-                  ((σ : ℂ) + (t : ℂ) * Complex.I)‖ / ‖ψ t‖ ^ (n + 1) := by
+              * ‖iteratedDeriv ((j : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖
+              / ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ^ (n + 1)
+            ≤ (Cj * 2 ^ n * ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ^ n)
+              * ‖iteratedDeriv ((j : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖
+              / ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ^ (n + 1) := by
                 gcongr
-                exact heval.trans (by nlinarith [hCj0, h2, pow_nonneg (by positivity : (0:ℝ) ≤ 2 * ‖ψ t‖) n])
-          _ = (Cj * 2 ^ n) * ‖iteratedDeriv ((j : ℕ) + 1) Complex.digamma
-                  ((σ : ℂ) + (t : ℂ) * Complex.I)‖ * (‖ψ t‖ ^ n / ‖ψ t‖ ^ (n + 1)) := by
-                rw [mul_pow]; ring
-          _ ≤ (Cj * 2 ^ n) * ‖iteratedDeriv ((j : ℕ) + 1) Complex.digamma
-                  ((σ : ℂ) + (t : ℂ) * Complex.I)‖ * 1 := by
+          _ = Cj * 2 ^ n
+              * ‖iteratedDeriv ((j : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖
+              * (‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ^ n
+                  / ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ^ (n + 1)) := by ring
+          _ ≤ Cj * 2 ^ n
+              * ‖iteratedDeriv ((j : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖
+              * 1 := by
                 gcongr
                 · positivity
-                · rw [pow_succ]
-                  rw [div_le_one (by positivity)]
-                  nlinarith [pow_nonneg hψpos.le n, ht]
-          _ = Cj * 2 ^ n * ‖iteratedDeriv ((j : ℕ) + 1) Complex.digamma
-                  ((σ : ℂ) + (t : ℂ) * Complex.I)‖ := by ring
+                · rw [div_le_one (by positivity), pow_succ]
+                  nlinarith [pow_pos hw0 n, ht]
+          _ = Cj * 2 ^ n
+              * ‖iteratedDeriv ((j : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖ := by
+                ring
       -- combine via the recurrence
-      have hmodel : Tendsto (fun t => bellVal n ((σ : ℂ) + (t : ℂ) * Complex.I) / (ψ t) ^ n
-          + Q t / (ψ t) ^ (n + 1)) atTop (nhds 1) := by
-        have := ih.add hQdiv
-        simpa using this
+      have hmodel : Tendsto (fun t =>
+          bellVal n ((σ : ℂ) + (t : ℂ) * Complex.I)
+            / (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)) ^ n
+          + (∑ j : Fin n, MvPolynomial.eval
+              (fun k : Fin n => iteratedDeriv (k : ℕ) Complex.digamma
+                ((σ : ℂ) + (t : ℂ) * Complex.I)) (pderiv j (gammaBell n))
+              * iteratedDeriv ((j : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I))
+            / (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)) ^ (n + 1)) atTop (nhds 1) := by
+        simpa using ih.add hQdiv
       refine hmodel.congr' ?_
       filter_upwards [hψne] with t ht
       rw [bellVal_succ]
-      have hpow : (ψ t) ^ (n + 1) ≠ 0 := pow_ne_zero _ ht
-      field_simp [hψdef]
+      field_simp
       ring
 
 /-- **The full Gamma-jet projective boundary.**  For every order `n` and every `σ > 0`,
@@ -233,31 +255,32 @@ theorem iteratedDeriv_Gamma_div_succ_vertical_tendsto_zero (n : ℕ) {σ : ℝ} 
       iteratedDeriv n Complex.Gamma ((σ : ℂ) + (t : ℂ) * Complex.I) /
         iteratedDeriv (n + 1) Complex.Gamma ((σ : ℂ) + (t : ℂ) * Complex.I))
       atTop (nhds 0) := by
-  set ψ : ℝ → ℂ := fun t => Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) with hψdef
   have hA := bellVal_div_pow_tendsto_one n hσ
   have hB := bellVal_div_pow_tendsto_one (n + 1) hσ
-  have hBinv : Tendsto (fun t => (ψ t) ^ (n + 1) /
+  have hBinv : Tendsto (fun t : ℝ => (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)) ^ (n + 1) /
       bellVal (n + 1) ((σ : ℂ) + (t : ℂ) * Complex.I)) atTop (nhds 1) := by
-    have := (hB.inv₀ (by norm_num : (1 : ℂ) ≠ 0))
-    simpa [one_div, div_eq_mul_inv, mul_comm] using this
-  have hψinv : Tendsto (fun t => (ψ t)⁻¹) atTop (nhds 0) := inv_digamma_vertical_tendsto_zero hσ.le
+    simpa only [inv_div, inv_one] using hB.inv₀ (by norm_num : (1 : ℂ) ≠ 0)
+  have hψinv : Tendsto (fun t : ℝ => (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I))⁻¹)
+      atTop (nhds 0) := inv_digamma_vertical_tendsto_zero hσ.le
   have hmodel : Tendsto (fun t =>
-      (bellVal n ((σ : ℂ) + (t : ℂ) * Complex.I) / (ψ t) ^ n)
-      * ((ψ t) ^ (n + 1) / bellVal (n + 1) ((σ : ℂ) + (t : ℂ) * Complex.I))
-      * (ψ t)⁻¹) atTop (nhds 0) := by
-    have := (hA.mul hBinv).mul hψinv
-    simpa using this
-  have hψ∞ : Tendsto (fun t => ‖ψ t‖) atTop atTop := norm_digamma_vertical_tendsto_atTop hσ.le
-  have hψge1 : ∀ᶠ t in atTop, (1 : ℝ) ≤ ‖ψ t‖ := hψ∞.eventually_ge_atTop 1
-  have hbne : ∀ᶠ t in atTop, bellVal (n + 1) ((σ : ℂ) + (t : ℂ) * Complex.I) ≠ 0 := by
-    have hb := hB.eventually (eventually_ne_nhds (by norm_num : (1 : ℂ) ≠ 0))
-    filter_upwards [hb, hψge1] with t ht htψ
-    intro h
-    rw [h, zero_div] at ht
-    exact ht rfl
+      (bellVal n ((σ : ℂ) + (t : ℂ) * Complex.I)
+        / (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)) ^ n)
+      * ((Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)) ^ (n + 1)
+        / bellVal (n + 1) ((σ : ℂ) + (t : ℂ) * Complex.I))
+      * (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I))⁻¹) atTop (nhds 0) := by
+    simpa using (hA.mul hBinv).mul hψinv
+  have hψinf : Tendsto
+      (fun t : ℝ => ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖) atTop atTop :=
+    norm_digamma_vertical_tendsto_atTop hσ.le
+  have hψge1 : ∀ᶠ (t : ℝ) in atTop,
+      (1 : ℝ) ≤ ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖ := hψinf.eventually_ge_atTop 1
+  have hbne : ∀ᶠ (t : ℝ) in atTop, bellVal (n + 1) ((σ : ℂ) + (t : ℂ) * Complex.I) ≠ 0 := by
+    have hb := hB.eventually ((isOpen_ne (a := (0 : ℂ))).mem_nhds (by norm_num : (1 : ℂ) ≠ 0))
+    filter_upwards [hb] with t ht
+    intro h; rw [h, zero_div] at ht; exact ht rfl
   refine hmodel.congr' ?_
   filter_upwards [hψge1, hbne] with t ht hbnet
-  have hψnet : ψ t ≠ 0 := by
+  have hψnet : Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) ≠ 0 := by
     intro h; rw [h, norm_zero] at ht; linarith
   have hpoles : ∀ p : ℕ, ((σ : ℂ) + (t : ℂ) * Complex.I) ≠ -(p : ℂ) := by
     intro p heq
@@ -265,12 +288,16 @@ theorem iteratedDeriv_Gamma_div_succ_vertical_tendsto_zero (n : ℕ) {σ : ℝ} 
     simp at hre
     linarith [Nat.cast_nonneg (α := ℝ) p]
   have hΓ : Complex.Gamma ((σ : ℂ) + (t : ℂ) * Complex.I) ≠ 0 := Complex.Gamma_ne_zero hpoles
-  have hGn := gamma_iteratedDeriv_eq_gamma_mul_eval_gammaBell n ((σ : ℂ) + (t : ℂ) * Complex.I) hpoles
-  have hGn1 := gamma_iteratedDeriv_eq_gamma_mul_eval_gammaBell (n + 1)
-    ((σ : ℂ) + (t : ℂ) * Complex.I) hpoles
+  have hGn : iteratedDeriv n Complex.Gamma ((σ : ℂ) + (t : ℂ) * Complex.I)
+      = Complex.Gamma ((σ : ℂ) + (t : ℂ) * Complex.I)
+        * bellVal n ((σ : ℂ) + (t : ℂ) * Complex.I) :=
+    gamma_iteratedDeriv_eq_gamma_mul_eval_gammaBell n ((σ : ℂ) + (t : ℂ) * Complex.I) hpoles
+  have hGn1 : iteratedDeriv (n + 1) Complex.Gamma ((σ : ℂ) + (t : ℂ) * Complex.I)
+      = Complex.Gamma ((σ : ℂ) + (t : ℂ) * Complex.I)
+        * bellVal (n + 1) ((σ : ℂ) + (t : ℂ) * Complex.I) :=
+    gamma_iteratedDeriv_eq_gamma_mul_eval_gammaBell (n + 1) ((σ : ℂ) + (t : ℂ) * Complex.I) hpoles
   rw [hGn, hGn1]
-  change _ = Complex.Gamma _ * bellVal n _ / (Complex.Gamma _ * bellVal (n + 1) _)
-  field_simp [hψdef]
+  field_simp
   ring
 
 end

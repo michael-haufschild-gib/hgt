@@ -159,6 +159,7 @@ import GaloisForLFunctions.HTGeometry.BernsteinSzegoReconstruction
 import GaloisForLFunctions.HTGeometry.SzegoLowerBound
 import GaloisForLFunctions.HTGeometry.SzegoLowerBoundGeneral
 import GaloisForLFunctions.HTGeometry.SzegoOuterFunction
+import GaloisForLFunctions.HTGeometry.PoissonFatou
 
 /- ## Complete area inventory -/
 import GaloisForLFunctions.HTGeometry.AlgebraicMatroidRank

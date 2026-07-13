@@ -104,6 +104,85 @@ theorem normalizedProjectiveNevanlinna_positiveChart_dense_residual
   exact normalizedProjectiveNevanlinna_frozenTangent_unitBall_is_probabilityDensity
     a q z n ha hq mu hupper w.1 hwball
 
+/-- Membership in a normalized projective Cauchy frozen tangent forces zero total mass. -/
+theorem normalizedProjectiveCauchy_frozenTangent_mass_zero
+    {ι : Type*} [Fintype ι]
+    (x : ι → ℂ) (n : ι → ℕ)
+    (mu : Measure (OnePoint ℝ)) [IsProbabilityMeasure mu]
+    (hupper : ∀ i, 0 < (x i).im)
+    (w : LinearMap.ker
+      (normalizedProjectiveCauchyJetLinftyContinuousControl
+        x n mu hupper).toLinearMap) :
+    linftyIntegralCLM mu w.1 = 0 := by
+  have hw := LinearMap.mem_ker.mp w.2
+  exact congrArg Prod.fst hw
+
+/-- The unit ball in a normalized projective Cauchy frozen tangent translates to strictly
+positive probability densities. -/
+theorem normalizedProjectiveCauchy_frozenTangent_unitBall_is_probabilityDensity
+    {ι : Type*} [Fintype ι]
+    (x : ι → ℂ) (n : ι → ℕ)
+    (mu : Measure (OnePoint ℝ)) [IsProbabilityMeasure mu]
+    (hupper : ∀ i, 0 < (x i).im)
+    (w : LinearMap.ker
+      (normalizedProjectiveCauchyJetLinftyContinuousControl
+        x n mu hupper).toLinearMap)
+    (hw : ‖w‖ < 1) :
+    LinftyStrictlyPositive mu (linftyOne mu + w.1) ∧
+      ∫ t, (linftyOne mu + w.1) t ∂mu = 1 := by
+  constructor
+  · exact linftyOne_add_strictlyPositive_of_norm_lt_one mu w.1
+      (by simpa using hw)
+  · rw [← linftyIntegralCLM_apply, map_add,
+      GaloisForLFunctions.HTGeometry.linftyIntegralCLM_linftyOne,
+      normalizedProjectiveCauchy_frozenTangent_mass_zero x n mu hupper w]
+    norm_num
+
+/-- A residual locus in a normalized projective Cauchy frozen tangent remains dense residual in
+its positive mass-one chart.  This version has no amplitude or coordinate-derivative hypothesis
+at the frozen points. -/
+theorem normalizedProjectiveCauchy_positiveChart_dense_residual
+    {ι : Type*} [Fintype ι]
+    (x : ι → ℂ) (n : ι → ℕ)
+    (mu : Measure (OnePoint ℝ)) [IsProbabilityMeasure mu]
+    (hupper : ∀ i, 0 < (x i).im)
+    (good : Set (LinearMap.ker
+      (normalizedProjectiveCauchyJetLinftyContinuousControl
+        x n mu hupper).toLinearMap))
+    (hgood : good ∈ residual (LinearMap.ker
+      (normalizedProjectiveCauchyJetLinftyContinuousControl
+        x n mu hupper).toLinearMap)) :
+    let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+      x n mu hupper
+    let S := LinearMap.ker frozen.toLinearMap
+    let positiveChart : Set S := Metric.ball 0 1
+    let positiveGood : Set positiveChart := Subtype.val ⁻¹' good
+    Dense positiveGood ∧ positiveGood ∈ residual positiveChart ∧
+      ∀ w : positiveChart,
+        LinftyStrictlyPositive mu (linftyOne mu + w.1.1) ∧
+          ∫ t, (linftyOne mu + w.1.1) t ∂mu = 1 := by
+  dsimp only
+  let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+    x n mu hupper
+  let S := LinearMap.ker frozen.toLinearMap
+  have hSclosed : IsClosed (S : Set (Lp ℝ (⊤ : ENNReal) mu)) := frozen.isClosed_ker
+  letI : CompleteSpace S := hSclosed.completeSpace_coe
+  letI : BaireSpace S := by
+    set_option synthInstance.maxHeartbeats 100000 in
+      infer_instance
+  let positiveChart : Set S := Metric.ball 0 1
+  have hpositiveOpen : IsOpen positiveChart := Metric.isOpen_ball
+  letI : BaireSpace positiveChart := hpositiveOpen.baireSpace
+  have hres : Subtype.val ⁻¹' good ∈ residual positiveChart :=
+    (tendsto_residual_of_isOpenMap continuous_subtype_val
+      hpositiveOpen.isOpenMap_subtype_val) hgood
+  refine ⟨dense_of_mem_residual hres, hres, ?_⟩
+  intro w
+  have hwball : ‖w.1‖ < 1 := by
+    simpa only [Metric.mem_ball, dist_zero_right] using w.property
+  exact normalizedProjectiveCauchy_frozenTangent_unitBall_is_probabilityDensity
+    x n mu hupper w.1 hwball
+
 /-- Absolute continuity toward an atomless carrier transfers atomlessness to a positive
 reweighting. -/
 theorem weightedBoundaryCarrier_noAtoms_of_base
