@@ -164,7 +164,7 @@ Weierstrass-prep/Puiseux, formalizable separately). Card returned to `2-fully-pr
 ## Lean anchor update — 2026-06-19 (Leaner)
 
 Formalized the algebraic mirror-frequency balance step in Lean:
-`formal/GaloisForLFunctions/SusceptibilityBalance.lean` proves
+`formal/GaloisForLFunctions/RHTower/SusceptibilityBalance.lean` proves
 `susceptibilityExponent_zero_iff` and
 `susceptibilityMirrorFrequencyFactor_eq_one_forall_iff`, i.e. for finite
 multiplicity `m ≠ 0`, the exponent `(1 - 2 beta) / m` vanishes iff

@@ -27,7 +27,7 @@ boundary subspace; its norm is nonnegative because a quotient seminorm of a posi
 the `ξ`-divisor stays the final RH-strength step (`SeamCrossingTower.seam_spectral_iff_rh`).
 -/
 import GaloisForLFunctions.RHTower.ZetaCarrier
-import GaloisForLFunctions.ArchimedeanGamma
+import GaloisForLFunctions.RHTower.ArchimedeanGamma
 
 noncomputable section
 

@@ -42,7 +42,7 @@ not satisfy this criterion.
 
 ## Current unconditional Lean evidence
 
-`formal/GaloisForLFunctions/SimplicialConstraintTower.lean` proves:
+`formal/GaloisForLFunctions/HTGeometry/SimplicialConstraintTower.lean` proves:
 
 ```text
 pureOfCard_uniformFacets
@@ -50,7 +50,7 @@ ridgeThick_uniformFacets
 exists_two_coface_directions_of_pure_ridgeThick
 ```
 
-`formal/GaloisForLFunctions/DifferentialIndependence.lean` now supplies the field-relative
+`formal/GaloisForLFunctions/HTGeometry/DifferentialIndependence.lean` now supplies the field-relative
 definitions needed by the actual matroid theorem:
 
 ```text
@@ -68,7 +68,7 @@ derivation-closed intermediate fields.
 Both modules build under the repository toolchain. `#print axioms` for their principal theorems
 reports only `propext`, `Classical.choice`, and `Quot.sound`.
 
-`formal/GaloisForLFunctions/PeriodRigidity.lean` proves two constant-field cores. A continuous
+`formal/GaloisForLFunctions/HTGeometry/PeriodRigidity.lean` proves two constant-field cores. A continuous
 function invariant under a dense additive subgroup is constant. More importantly, a
 complex-differentiable function invariant under a sequence of nonzero periods tending to zero is
 constant; this covers nondiscrete period groups whose closure is not all of `ℂ`. The remaining
@@ -76,20 +76,20 @@ meromorphic step is also proved for `MeromorphicNFOn`: translation invariance pr
 meromorphic order, isolated poles cannot recur along periods tending to zero, and the resulting
 pole-free function reduces to the differentiable theorem.
 
-`formal/GaloisForLFunctions/RankThreePeriods.lean` proves that the integer span of three
+`formal/GaloisForLFunctions/HTGeometry/RankThreePeriods.lean` proves that the integer span of three
 `Q`-linearly independent complex periods is nondiscrete, extracts nonzero periods converging to
 zero, and composes this with normal-form meromorphic rigidity. Thus the analytic joint-constant
 collapse used by the paired system is now unconditional in Lean. Normal-form function-field
 packaging remains.
 
-`formal/GaloisForLFunctions/OrbitResidueVector.lean` strengthens the earlier single-orbit integer
+`formal/GaloisForLFunctions/HTGeometry/OrbitResidueVector.lean` strengthens the earlier single-orbit integer
 augmentation lemma to coefficient-valued residue vectors on every orbit of an arbitrary
 translation action. Every finite translation coboundary has zero residue on every orbit, while a
 lone nonzero coefficient or two opposite coefficients on distinct orbits cannot be a coboundary.
 This is the exact finite principal-part obstruction required after a meromorphic elliptic function
 has been mapped to its fixed-order Laurent coefficients.
 
-`formal/GaloisForLFunctions/PrincipalPartDifferentialOperator.lean` computes the action of an
+`formal/GaloisForLFunctions/HTGeometry/PrincipalPartDifferentialOperator.lean` computes the action of an
 arbitrary nonzero constant-coefficient differential operator on a simple-pole principal part. In
 characteristic zero the highest resulting Laurent coefficient is the original residue multiplied
 by a nonzero factorial and the operator's leading coefficient. Consequently two opposite simple
@@ -99,7 +99,7 @@ from the common base orbit and every other indexed pole orbit, its nonzero opera
 the entire simultaneous family from being a coboundary. This is the exact local obstruction used
 in the defect-matroid independence argument, not only the one-defect spectrum argument.
 
-`formal/GaloisForLFunctions/EllipticOrbitQuotient.lean` now identifies the orbit quotient of
+`formal/GaloisForLFunctions/HTGeometry/EllipticOrbitQuotient.lean` now identifies the orbit quotient of
 `G/H` under translation by `q` with the subgroup condition in `G`: two representatives have
 distinct orbit classes exactly when their difference is outside `H ⊔ ℤq`. In particular, the
 paper's elliptic nonresonance condition `h ∉ Λ + ℤq` is formally equivalent to distinctness of
@@ -107,23 +107,23 @@ the pole classes represented by `0` and `-h`. Thus the lattice-to-orbit-residue 
 longer an informal step. Theta realization is now complete; the remaining local gap is a
 functorial meromorphic principal-part map for arbitrary elliptic coboundaries.
 
-`formal/GaloisForLFunctions/DifferenceDifferential.lean` defines several commuting field
+`formal/GaloisForLFunctions/HTGeometry/DifferenceDifferential.lean` defines several commuting field
 automorphisms which fix the coefficient field and commute with the derivation. It proves that
 constant-coefficient differential operators commute with all difference defects, that compatible
 primitive systems satisfy the pairwise cocycle equations, and that one differential-linear
 relation yields one common primitive in every simultaneous telescoping equation.
 
-`formal/GaloisForLFunctions/FractionRingDerivation.lean` constructs the extension of an arbitrary
+`formal/GaloisForLFunctions/HTGeometry/FractionRingDerivation.lean` constructs the extension of an arbitrary
 derivation through a fraction field by lifting its square-zero graph. Together with a
 transcendence-basis extension and formally étale base change,
-`formal/GaloisForLFunctions/KaehlerKernel.lean` proves in characteristic zero the exact field
+`formal/GaloisForLFunctions/HTGeometry/KaehlerKernel.lean` proves in characteristic zero the exact field
 theorem
 
 ```text
 KaehlerDifferential.D K L g = 0 ↔ IsAlgebraic K g.
 ```
 
-`formal/GaloisForLFunctions/ElementaryOstrowski.lean` combines this kernel theorem with the
+`formal/GaloisForLFunctions/HTGeometry/ElementaryOstrowski.lean` combines this kernel theorem with the
 semilinear least-support Kähler circuit descent. Algebraic dependence of additive primitives now
 unconditionally produces a nonzero joint-constant finite linear combination of the increment
 cocycles that is the coboundary of one and the same base element in every automorphism direction.
@@ -131,22 +131,22 @@ Applying the theorem to the full jet family gives the exact contrapositive neede
 all finite simultaneous jet telescopers implies differential algebraic independence. This closes
 the algebraic several-automorphism dependence-to-telescoping gate without a PPV construction.
 
-`formal/GaloisForLFunctions/AutomorphismFamilyOstrowski.lean` proves that pairwise commutativity is
+`formal/GaloisForLFunctions/HTGeometry/AutomorphismFamilyOstrowski.lean` proves that pairwise commutativity is
 not needed. The same simultaneous single-base-element conclusion and all-jet criterion hold for an
 arbitrary family of compatible automorphisms, even an infinite noncommuting family. The elliptic
 gamma shifts are therefore a commuting specialization of a strictly stronger formal theorem.
 
-`formal/GaloisForLFunctions/MeromorphicDifferentialField.lean` reuses the genuine meromorphic germ
+`formal/GaloisForLFunctions/HTGeometry/MeromorphicDifferentialField.lean` reuses the genuine meromorphic germ
 field `Bottcher.meroField U`, differentiates analytic germs on an open set, proves the additive and
 Leibniz laws, and extends the derivation through the fraction field by the quotient rule.
-`formal/GaloisForLFunctions/MeromorphicTranslation.lean` then lifts every translation
+`formal/GaloisForLFunctions/HTGeometry/MeromorphicTranslation.lean` then lifts every translation
 `z ↦ z + q` to a field automorphism of `meroField univ` and proves that it commutes with this
 derivation. Thus the concrete global meromorphic difference-differential carrier now exists. The
 remaining field-level tasks are to identify the common fixed field of a generic rank-three
 translation family with the constants and to realize theta and elliptic-gamma elements and their
 divisors in the carrier.
 
-`formal/GaloisForLFunctions/MeromorphicTranslationFixedField.lean` now closes the first of those
+`formal/GaloisForLFunctions/HTGeometry/MeromorphicTranslationFixedField.lean` now closes the first of those
 tasks. A fraction of entire analytic germs fixed by arbitrarily small nonzero translations has
 zero quotient-rule Wronskian: translation invariance kills its difference quotients wherever the
 denominator is nonzero, and analytic continuation makes the Wronskian vanish globally. The
@@ -155,7 +155,7 @@ this with `exists_small_rankThree_periods` proves that the common fixed field of
 span of three `Q`-linearly independent complex translations is exactly the embedded complex
 constant field. No fixed-field assumption remains at the global meromorphic carrier level.
 
-`formal/GaloisForLFunctions/MeromorphicTheta.lean` embeds the actual Jacobi theta function and its
+`formal/GaloisForLFunctions/HTGeometry/MeromorphicTheta.lean` embeds the actual Jacobi theta function and its
 `z`-derivative as analytic germs and defines their logarithmic derivative in the meromorphic
 fraction field. The exact translation laws are formal field identities:
 
@@ -167,8 +167,8 @@ phi(z + tau) = phi(z) - 2*pi*i.
 Thus theta existence, analyticity, nonvanishing as a field denominator, and its two basic
 functional equations are no longer assumptions.
 
-`formal/GaloisForLFunctions/JacobiThetaDivisor.lean` and
-`formal/GaloisForLFunctions/JacobiThetaDivisorSimple.lean` establish the expected theta lattice
+`formal/GaloisForLFunctions/HTGeometry/JacobiThetaDivisor.lean` and
+`formal/GaloisForLFunctions/HTGeometry/JacobiThetaDivisorSimple.lean` establish the expected theta lattice
 orbit and its local divisor law. The exact
 evenness, period, and quasiperiod constraints force the odd half-period `(1+tau)/2` to be a zero,
 and every `Z + tau Z` translate is also a zero. Simplicity is proved globally without a product
@@ -183,8 +183,8 @@ The normalized punctured limit
 
 is proved at the half-period and at every lattice translate.
 
-`formal/GaloisForLFunctions/JacobiThetaRectangleCharge.lean` and
-`formal/GaloisForLFunctions/JacobiThetaExactDivisor.lean` close the converse without a product
+`formal/GaloisForLFunctions/HTGeometry/JacobiThetaRectangleCharge.lean` and
+`formal/GaloisForLFunctions/HTGeometry/JacobiThetaExactDivisor.lean` close the converse without a product
 formula. A translated axis-aligned rectangle of width `1` and height `im tau` has zero-free
 boundary. Its vertical edges cancel by period one. On the top edge, translation by
 `tau-re tau` and interval invariance of a one-periodic integral turn quasiperiodicity into the
@@ -199,7 +199,7 @@ jacobiTheta₂ z tau = 0
 
 Thus the complete theta pole orbit and residue-one law are unconditional.
 
-`formal/GaloisForLFunctions/JacobiThetaDefectPrincipalPart.lean` now defines the translated
+`formal/GaloisForLFunctions/HTGeometry/JacobiThetaDefectPrincipalPart.lean` now defines the translated
 logarithmic-derivative defect
 
 ```text
@@ -210,7 +210,7 @@ and proves its exact two-orbit local data whenever `h` is outside `Z+tau Z`: res
 base half-period lattice and residue `+1` on its translate by `-h`. Exact zero classification proves
 the opposite summand is regular at each pole, so no hidden pole orbit remains.
 
-`formal/GaloisForLFunctions/MeromorphicThetaDefect.lean` realizes this same defect as an actual
+`formal/GaloisForLFunctions/HTGeometry/MeromorphicThetaDefect.lean` realizes this same defect as an actual
 element of the global meromorphic fraction field. It proves translation composition in the germ
 and fraction carriers, supplies one explicit entire cross numerator and product denominator, and
 proves that the fraction is fixed by both period translations `1` and `tau`. For every nonlattice
@@ -221,7 +221,7 @@ about the same named object. The remaining order-one issue is to exclude this po
 the image of an arbitrary elliptic meromorphic translation coboundary and then instantiate the
 actual elliptic-gamma defect identity.
 
-`formal/GaloisForLFunctions/MeromorphicPoleOrbitBoundary.lean` removes the proposed Laurent-
+`formal/GaloisForLFunctions/HTGeometry/MeromorphicPoleOrbitBoundary.lean` removes the proposed Laurent-
 coefficient extraction from the order-one obstruction. For a meromorphic `g`, assume its pole
 indices on one integer translation orbit are finite. If `g(z+q)-g(z)` had exactly one pole on that
 orbit, the pole-index set of `g` would be nonempty. Its least pole index produces a pole one step
@@ -230,7 +230,7 @@ at each boundary one summand is singular and the other is regular. These are dis
 contradiction. Lean proves this directly with `meromorphicOrderAt`. The remaining realization is
 therefore finiteness of pole indices for a lattice-periodic meromorphic coboundary primitive.
 
-`formal/GaloisForLFunctions/JacobiThetaDefectMeromorphicOrder.lean` translates the previously
+`formal/GaloisForLFunctions/HTGeometry/JacobiThetaDefectMeromorphicOrder.lean` translates the previously
 proved normalized limits into exact meromorphic orders. A general lemma shows that
 `(z-p)f(z) -> c != 0` for a meromorphic `f` forces `ord_p(f)=-1`. Applied to both theta-defect
 lattices, it proves exact simple poles there; exact theta zero classification and analytic division
@@ -238,7 +238,7 @@ prove the converse, so Lean now knows the complete pole set of the undifferentia
 next module propagates this exact support through arbitrary nonzero constant-coefficient
 differential operators.
 
-`formal/GaloisForLFunctions/MeromorphicSimplePoleDifferentialOperator.lean` proves the required
+`formal/GaloisForLFunctions/HTGeometry/MeromorphicSimplePoleDifferentialOperator.lean` proves the required
 propagation generically. The `j`th derivative of any meromorphic simple pole has exact order
 `-(j+1)`. Hence a nonzero `L in C[delta]` has exact order `-(deg L+1)`: its leading derivative is
 strictly more singular than every lower term and cannot cancel. Analyticity is preserved off the
@@ -246,13 +246,13 @@ original poles. Applied to the theta defect, this gives an exact iff theorem say
 `L(phi(z+h)-phi(z))` has precisely the same two pole lattices and no others. The local
 singleton-support side of the order-one obstruction is now complete.
 
-`formal/GaloisForLFunctions/JacobiThetaDifferentialOrbitObstruction.lean` combines exact
+`formal/GaloisForLFunctions/HTGeometry/JacobiThetaDifferentialOrbitObstruction.lean` combines exact
 differentiated support with the coefficient-free boundary theorem. Under nontorsion of `q` modulo
 `Z+Z tau` and nonresonance of `h` modulo `Z+Z tau+Zq`, the differentiated theta defect has exactly
 one pole on its distinguished `q`-orbit. It therefore cannot equal `g(z+q)-g(z)` whenever the pole
 indices of `g` on that orbit are finite.
 
-`formal/GaloisForLFunctions/CompactEllipticPoleFiniteness.lean` discharges that finiteness
+`formal/GaloisForLFunctions/HTGeometry/CompactEllipticPoleFiniteness.lean` discharges that finiteness
 hypothesis for every genuine elliptic meromorphic primitive. Fractional coordinates reduce the
 orbit into a compact fundamental parallelogram; local finiteness of the native meromorphic divisor
 makes its pole set there finite; and nontorsion makes orbit reduction injective. The resulting
@@ -266,7 +266,7 @@ for every nonzero `L in C[delta]` and every globally meromorphic `g` with period
 local analytic noncoboundary theorem needed at order one is complete without a residue extractor or
 a compactness assumption shell.
 
-`formal/GaloisForLFunctions/JacobiThetaFamilyOrbitObstruction.lean` strengthens the analytic
+`formal/GaloisForLFunctions/HTGeometry/JacobiThetaFamilyOrbitObstruction.lean` strengthens the analytic
 statement from one defect to every finite separated family. Choose any member whose operator is
 nonzero. Pairwise nonresonance makes all other differentiated defects analytic on its shifted pole
 orbit, while exact simple-pole differentiation makes the chosen member singular at precisely the
@@ -275,7 +275,7 @@ elliptic coboundary for the entire differential combination. This is the genuine
 finite-family input for the defect-coset matroid; it is no longer represented only by an abstract
 principal-part vector theorem.
 
-`formal/GaloisForLFunctions/FiniteTypeSpecialization.lean` proves the product-specialization
+`formal/GaloisForLFunctions/HTGeometry/FiniteTypeSpecialization.lean` proves the product-specialization
 descent used after simultaneous telescoping. For a finite-type domain `R` over an algebraically
 closed field `C`, every nonzero element survives under some `C`-point of `R`; the proof localizes
 away from that element and applies Nullstellensatz through a maximal quotient. A basis of the left
@@ -291,7 +291,7 @@ rational product certificate to one factor is unconditional and axiom-clean. Wha
 concrete identification of the paired elliptic compositum with the relevant fraction field and the
 actual multiple-elliptic-gamma hierarchy realization.
 
-`formal/GaloisForLFunctions/EllipticGammaLogKernel.lean` begins that actual realization from the
+`formal/GaloisForLFunctions/HTGeometry/EllipticGammaLogKernel.lean` begins that actual realization from the
 standard double-product logarithmic derivative, not from an assumed functional equation. It
 defines the forward and backward rational atoms and proves exact finite telescoping under
 `x -> p*x` and `x -> q*x`. In each direction the complete rectangular slice collapses to the
@@ -341,26 +341,26 @@ nonnegative native meromorphic order at the half-period. It remains to transport
 the full lattice and conclude the elliptic discrepancy is constant. The resulting equality then
 packages the constructed boundary in the existing global meromorphic field.
 
-`formal/GaloisForLFunctions/JacobiThetaParallelogramCharge.lean` proves the global constraint-side
+`formal/GaloisForLFunctions/HTGeometry/JacobiThetaParallelogramCharge.lean` proves the global constraint-side
 counting input. On every zero-free fundamental boundary, the integral of the theta logarithmic
 derivative is exactly `2*pi*i`: the period-one edges cancel and the quasiperiodic pair contributes
 the single charge. This uses no product formula and no assumed divisor classification. The separate
 axis-aligned rectangle argument above supplies the argument-principle bridge with the already
 formalized rectangle residue theorem.
 
-`formal/GaloisForLFunctions/JacobiThetaBoundaryRegular.lean` discharges the contour-selection gate.
+`formal/GaloisForLFunctions/HTGeometry/JacobiThetaBoundaryRegular.lean` discharges the contour-selection gate.
 The fixed-parameter theta zero set is finite in every compact disc. Real coordinates in the basis
 `(1,tau)` then permit a diagonal translate of the fundamental parallelogram whose bottom and left
 edges avoid the finite zero set; periodicity and quasiperiodicity make the complete boundary
 zero-free. No zero-set classification is assumed.
 
-`formal/GaloisForLFunctions/DifferentialPolynomialOver.lean` supplies the total differential
+`formal/GaloisForLFunctions/HTGeometry/DifferentialPolynomialOver.lean` supplies the total differential
 polynomial derivation over a nonconstant differential base: coefficients are differentiated while
 formal jets are shifted. Evaluation intertwines this derivation, so the relation ideal over the
 base field is a differential ideal. Differential independence is now proved equivalent to
 triviality of this full base-relative relation ideal.
 
-`formal/GaloisForLFunctions/ParameterizedPrimitiveAction.lean` constructs the semilinear affine
+`formal/GaloisForLFunctions/HTGeometry/ParameterizedPrimitiveAction.lean` constructs the semilinear affine
 action belonging to a compatible additive cocycle, including its inverse. The action commutes with
 the total derivation; compatible cocycles give commuting actions. For an actual primitive system in
 a difference-differential extension, evaluation intertwines the formal affine action with the
@@ -368,17 +368,17 @@ extension automorphism. Hence differential dependence produces a nonzero proper 
 relation ideal invariant under every affine action. No PPV or Galois conclusion is assumed in this
 theorem.
 
-`formal/GaloisForLFunctions/ParameterizedPrimitiveMaximalIdeal.lean` proves the Zorn existence
+`formal/GaloisForLFunctions/HTGeometry/ParameterizedPrimitiveMaximalIdeal.lean` proves the Zorn existence
 step: every proper affine differential ideal lies in a maximal proper affine differential ideal.
 Applied to an actual dependent primitive tuple, its nonzero relation ideal embeds in such a
-maximal ideal. `formal/GaloisForLFunctions/ParameterizedPrimitiveQuotient.lean` descends the total
+maximal ideal. `formal/GaloisForLFunctions/HTGeometry/ParameterizedPrimitiveQuotient.lean` descends the total
 derivation and all affine actions to the quotient, proves that they commute, constructs the
 universal primitive tuple there, and proves the quotient is affine-differentially simple. This is
 the additive unipotent PPV quotient-ring construction. Its translation torsor and Galois
 correspondence remain incomplete, but they are no longer dependencies of the present route because
 the elementary Kähler proof supplies the required simultaneous telescoping theorem directly.
 
-`formal/GaloisForLFunctions/DifferentialPolynomial.lean` now constructs the constant-coefficient
+`formal/GaloisForLFunctions/HTGeometry/DifferentialPolynomial.lean` now constructs the constant-coefficient
 differential polynomial ring as a polynomial ring on formal jets, proves that jet evaluation
 commutes with derivation, and gives relation ideals their differential structure. It also defines
 the additive Hopf comultiplication. The characteristic-zero primitive classification is complete:
@@ -386,8 +386,8 @@ folding `P(X+Y)` along `Y=X` gives `P(2X)=2P(X)`, coefficient comparison forces 
 monomial to have total jet-degree one, and every primitive is reconstructed as an explicit finite
 constant-coefficient sum of jets.
 
-`formal/GaloisForLFunctions/DifferentialHopfIdeal.lean` and
-`formal/GaloisForLFunctions/DifferentialHopfPrimitive.lean` close the existence direction. Additive
+`formal/GaloisForLFunctions/HTGeometry/DifferentialHopfIdeal.lean` and
+`formal/GaloisForLFunctions/HTGeometry/DifferentialHopfPrimitive.lean` close the existence direction. Additive
 comultiplication makes a Hopf ideal stable under doubling. A least-total-degree nonzero relation is
 homogeneous; first-order extraction at the additive identity sends its right partial derivatives
 back into the same ideal. In characteristic zero a degree-at-least-two relation has a nonzero
@@ -698,22 +698,22 @@ analytic capstone is already formalized.
 The actual elliptic-gamma bridge is now formalized, rather than represented by a kernel or
 functional-equation assumption.
 
-`formal/GaloisForLFunctions/EllipticGammaProduct.lean` constructs the forward and backward entire
+`formal/GaloisForLFunctions/HTGeometry/EllipticGammaProduct.lean` constructs the forward and backward entire
 double products, proves locally uniform convergence on the whole additive plane, proves both
 products nonzero, and identifies the logarithmic derivative of their quotient with the additive
 double-sum kernel on its regular locus.
 
-`formal/GaloisForLFunctions/MeromorphicEllipticGamma.lean` embeds this quotient as a nonzero element
+`formal/GaloisForLFunctions/HTGeometry/MeromorphicEllipticGamma.lean` embeds this quotient as a nonzero element
 of the global meromorphic differential field and gives an explicit one-fraction presentation of
 its logarithmic derivative.
 
-`formal/GaloisForLFunctions/AnalyticSubringEvaluation.lean` and
+`formal/GaloisForLFunctions/HTGeometry/AnalyticSubringEvaluation.lean` and
 `AnalyticSubringFractionEvaluation.lean` prove the missing identity-theorem interface: global
 analytic germs admit point evaluation; local equality promotes to analytic-subring equality; and
 equality of meromorphic fractions gives equality of quotient representatives on every punctured
 neighborhood.
 
-`formal/GaloisForLFunctions/EllipticGammaMixedFace.lean` proves the unconditional field identity
+`formal/GaloisForLFunctions/HTGeometry/EllipticGammaMixedFace.lean` proves the unconditional field identity
 
 ```text
 T_sigma(T_h psi - psi) - (T_h psi - psi)
@@ -725,9 +725,9 @@ clears the global fractions, proves the identity on a nonempty common regular ne
 normally convergent kernel calculation, and promotes it globally by analytic continuation. No
 regular-locus hypothesis remains in the theorem.
 
-`formal/GaloisForLFunctions/MeromorphicPoleOrbitBoundaryLocal.lean` strengthens the theta
+`formal/GaloisForLFunctions/HTGeometry/MeromorphicPoleOrbitBoundaryLocal.lean` strengthens the theta
 pole-orbit obstruction to punctured-local meromorphic equality. Combining it with the mixed-face
-theorem, `formal/GaloisForLFunctions/EllipticGammaExternalDefectNonElliptic.lean` proves:
+theorem, `formal/GaloisForLFunctions/HTGeometry/EllipticGammaExternalDefectNonElliptic.lean` proves:
 
 ```text
 T_h psi - psi
@@ -753,14 +753,14 @@ output is exactly `propext`, `Classical.choice`, and `Quot.sound`; the formal li
 
 The previously named compatibility gap is now closed unconditionally.
 
-`formal/GaloisForLFunctions/MeromorphicFractionJets.lean` recursively constructs entire
+`formal/GaloisForLFunctions/HTGeometry/MeromorphicFractionJets.lean` recursively constructs entire
 numerator/denominator pairs for every differential jet of a global meromorphic fraction and proves
 that their pointwise quotients are the ordinary iterated derivatives on the regular locus.
 `MeromorphicPuncturedRepresentation.lean` packages this as a punctured-local representation
 relation, proves closure under sums and scalar multiplication, and proves closure under every
 constant-coefficient operator `L in C[delta]`.
 
-`formal/GaloisForLFunctions/MeromorphicTranslationDifferentialOperator.lean` proves that additive
+`formal/GaloisForLFunctions/HTGeometry/MeromorphicTranslationDifferentialOperator.lean` proves that additive
 translation commutes with every meromorphic-field jet and every `L in C[delta]`.
 `MeromorphicThetaDefectPunctured.lean` identifies the actual field theta defect and all its
 constant-coefficient derivatives with the literal pointwise differentiated theta defect on every
@@ -820,14 +820,14 @@ differential-transcendence-rank and multiplicative product formulas.
 The all-order hierarchy is now represented by an actual convergent special-function kernel rather
 than an assumed family of functional equations.
 
-`formal/GaloisForLFunctions/MultipleEllipticGammaLogKernel.lean` defines, for an arbitrary finite
+`formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaLogKernel.lean` defines, for an arbitrary finite
 nome index type `I`, the forward and backward product arguments on `N^I`. The backward logarithmic
 atom carries the parity factor `(-1)^|I|`; this is the unique sign for which deleting one coordinate
 produces the next lower-order kernel. For every chosen coordinate `q`, it proves exact finite
 fiberwise telescoping. The boundary is precisely the parity-correct kernel on `I \ {q}`, plus two
 explicit terminal tails.
 
-`formal/GaloisForLFunctions/FinitePiProductSummability.lean` proves the required all-dimensional
+`formal/GaloisForLFunctions/HTGeometry/FinitePiProductSummability.lean` proves the required all-dimensional
 majorant theorem: a finite product of nonnegative summable sequences is summable over the finite
 Cartesian power. `MultipleEllipticGammaLogConvergence.lean` applies it to the forward and backward
 multi-geometric arguments, proves absolute summability after the logarithmic atom, and defines the
@@ -837,7 +837,7 @@ actual convergent kernel
 multipleEllipticGammaLogKernel : (I -> C) -> C -> C.
 ```
 
-`formal/GaloisForLFunctions/MultipleEllipticGammaHierarchy.lean` proves terminal-tail vanishing,
+`formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaHierarchy.lean` proves terminal-tail vanishing,
 Fubini decomposition along every coordinate, and the unconditional all-order identity
 
 ```text
@@ -870,7 +870,7 @@ Stanley--Reisner rank theorem; the hierarchy equations themselves are no longer 
 
 The remaining realization gap stated above is now closed.
 
-`formal/GaloisForLFunctions/MultipleEllipticGammaProduct.lean` defines the forward and backward
+`formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaProduct.lean` defines the forward and backward
 infinite factors for an arbitrary finite parameter set, proves locally uniform convergence on the
 whole additive plane, and proves that both products are entire and nonzero. It defines the genuine
 parity-dependent multiple elliptic gamma: for an even number of nomes the backward product occurs
@@ -878,12 +878,12 @@ in the denominator, while for an odd number it occurs in the numerator. This par
 the hierarchy and gives the standard alternating multiple-gamma product. The logarithmic
 derivative of the product is proved, on its regular locus, to equal the convergent all-order kernel.
 
-`formal/GaloisForLFunctions/MeromorphicMultipleEllipticGamma.lean` embeds both entire products in
+`formal/GaloisForLFunctions/HTGeometry/MeromorphicMultipleEllipticGamma.lean` embeds both entire products in
 the global analytic germ domain, constructs the parity-dependent product or quotient as a nonzero
 global meromorphic-field element, defines its quotient-rule logarithmic derivative, and gives an
 explicit entire numerator/product-denominator fraction for that derivative.
 
-`formal/GaloisForLFunctions/MultipleEllipticGammaFieldHierarchy.lean` clears those fractions,
+`formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaFieldHierarchy.lean` clears those fractions,
 proves the pointwise kernel identity on a common nonempty regular neighborhood, and promotes it by
 analytic continuation to the unconditional field identity
 

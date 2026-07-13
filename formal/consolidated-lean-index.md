@@ -28,9 +28,9 @@ Status key:
 | Artifact | Status | Notes |
 |---|---|---|
 | `formal/GaloisForLFunctions.lean` | Lean aggregation | Imports the current library modules, including `ConsolidatedBridges`. |
-| `formal/GaloisForLFunctions/ConsolidatedBridges.lean` | Lean proved, conditional | Adds `twoLemmaBridge_forces_onLine`, `supportBridge_forces_onLine`, `rhFalseBridge_forces_onLine`, `faithfulIndex_zero_forces_finiteRHLike`, `signedCarrier_separates`. These do not prove RH; they prove the logic after missing hypotheses are supplied. |
-| `formal/GaloisForLFunctions/FieldConjectures.lean` | Lean statement + finite theorem | Represents DSS/realization as `Prop`s and proves the finite carrier Herglotz iff on-line shadow. |
-| `formal/GaloisForLFunctions/SigmaOrbit.lean` | Lean proved | Now includes `sigma_fixed_iff_eq_half` for the holomorphic FE involution's single fixed point and `sigmaConj_fixed_iff_critical` for the full anti-holomorphic critical-line fixed locus. |
+| `formal/GaloisForLFunctions/RHTower/ConsolidatedBridges.lean` | Lean proved, conditional | Adds `twoLemmaBridge_forces_onLine`, `supportBridge_forces_onLine`, `rhFalseBridge_forces_onLine`, `faithfulIndex_zero_forces_finiteRHLike`, `signedCarrier_separates`. These do not prove RH; they prove the logic after missing hypotheses are supplied. |
+| `formal/GaloisForLFunctions/RHTower/FieldConjectures.lean` | Lean statement + finite theorem | Represents DSS/realization as `Prop`s and proves the finite carrier Herglotz iff on-line shadow. |
+| `formal/GaloisForLFunctions/RHTower/SigmaOrbit.lean` | Lean proved | Now includes `sigma_fixed_iff_eq_half` for the holomorphic FE involution's single fixed point and `sigmaConj_fixed_iff_critical` for the full anti-holomorphic critical-line fixed locus. |
 
 ## Deep-Research Report Addendum
 

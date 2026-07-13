@@ -3,7 +3,7 @@
 - **ID:** `finite-graded-spectrum-positive-cohomology`
 - **Stage:** 3-formalized
 - **Type:** `[POSITIVE SUCCESSOR TO A NO-GO] [NOT NEW SCIENTIFIC KNOWLEDGE]`
-- **Lean:** `formal/GaloisForLFunctions/GradedSpectrumCancellation.lean`
+- **Lean:** `formal/GaloisForLFunctions/HTGeometry/GradedSpectrumCancellation.lean`
 - **Parent:** `../../1-in-progress/prime-arch-koszul-spectral-quotient-cancellation-rh.md`
 
 ## Statement

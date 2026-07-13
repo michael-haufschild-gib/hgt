@@ -6,7 +6,7 @@ series.  Thus a proof that an operator is merely Hilbert--Schmidt cannot justify
 ordinary diagonal trace.  In particular, the principal/residual linear Sonin cross term needs a
 specific trace-class or semilocal smoothing theorem; the abstract `S₂` interface is insufficient.
 -/
-import GaloisForLFunctions.HilbertSchmidtTrace
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtTrace
 import Mathlib.Analysis.PSeries
 
 open scoped BigOperators

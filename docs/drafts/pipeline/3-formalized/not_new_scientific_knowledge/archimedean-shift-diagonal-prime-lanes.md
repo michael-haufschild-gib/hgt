@@ -18,7 +18,7 @@ Applying this identity for every prime gives the coordinatewise function equalit
 ## Gates
 - [x] 0 -> 1  in-progress: exact coordinate identity extracted from the archimedean/prime-lane cards.
 - [x] 1 -> 2  fully-proven: paper proof above, using the complex-power subtraction identity.
-- [x] 2 -> 3  formalized: Lean theorems `primeDiagonal_shift_apply` and `primeDiagonal_shift` in `formal/GaloisForLFunctions/ArchimedeanLane.lean`; names checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean theorems `primeDiagonal_shift_apply` and `primeDiagonal_shift` in `formal/GaloisForLFunctions/RHTower/ArchimedeanLane.lean`; names checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the formal coordinate lemma for the archimedean-lane note.
 
 ## Log

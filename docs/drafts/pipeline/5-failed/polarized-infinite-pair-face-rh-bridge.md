@@ -9,7 +9,7 @@
   prime-period action. The proposed pair-potential Sonin mechanism therefore fails before the RH
   negative-index identity is reached.
 - **Formal endpoint:**
-  `formal/GaloisForLFunctions/OrbitQuotientLiftNoGo.lean`
+  `formal/GaloisForLFunctions/HTGeometry/OrbitQuotientLiftNoGo.lean`
 
 ## Proposed bridge
 

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.AlgebraicIndependentLinearForms
-import GaloisForLFunctions.DifferenceDifferential
+import GaloisForLFunctions.HTGeometry.DifferenceDifferential
 import Mathlib.Algebra.Polynomial.Degree.Support
 
 /-!

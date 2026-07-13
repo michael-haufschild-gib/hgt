@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiWeilHilbertCore
-import GaloisForLFunctions.HilbertSchmidtMatrix
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtMatrix
 
 /-!
 # Unconditional Hilbert realization of the Xi Weil form

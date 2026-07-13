@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CCMPrimePoleLaplaceBoundary
-import GaloisForLFunctions.HilbertSchmidtMatrix
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtMatrix
 
 /-!
 # Hilbert realization of the normalized CCM prime-pole vectors

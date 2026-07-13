@@ -27,7 +27,7 @@ For the global shift equation, set `c=exp(lambda)` and
 ## Gates
 - [x] 0 -> 1  in-progress: exact CC gauge, global shift, and local ODE identities extracted from multiplier dichotomy case (I).
 - [x] 1 -> 2  fully-proven: paper proof above, using group cancellation, `exp((z+1)lambda)=exp(z lambda)exp(lambda)`, and the product rule.
-- [x] 2 -> 3  formalized: Lean theorems `ccGaugeMultiplier_eq_const`, `ccShiftSolution_eq`, and `hasDerivAt_mul_exp_const_ode` in `formal/GaloisForLFunctions/MultiplierDichotomy.lean`; names checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean theorems `ccGaugeMultiplier_eq_const`, `ccShiftSolution_eq`, and `hasDerivAt_mul_exp_const_ode` in `formal/GaloisForLFunctions/HTGeometry/MultiplierDichotomy.lean`; names checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the formal certificate for multiplier dichotomy case (I).
 
 ## Log

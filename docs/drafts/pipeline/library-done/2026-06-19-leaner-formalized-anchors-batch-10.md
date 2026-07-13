@@ -12,7 +12,7 @@
 Please update the shared door/status/index ledgers to reflect one new `3-formalized` card:
 
 1. `docs/drafts/pipeline/3-formalized/rank-one-scalar-cocycle-quotient.md`
-   - Lean module: `formal/GaloisForLFunctions/RankOneCohomology.lean`
+   - Lean module: `formal/GaloisForLFunctions/HTGeometry/RankOneCohomology.lean`
    - Lean anchors: `scalarCocycle_mul`, `scalarCocycle_inv`, `rankOneCoboundary_cocycle`,
      `rankOneCoboundaryCocycle_mul`, `rankOneCoboundaryCocycle_inv`, `rankOnePicard_commGroup`
    - Source: split from `docs/drafts/pipeline/2-fully-proven/multi-q-shafarevich-gluing-group.md` R0

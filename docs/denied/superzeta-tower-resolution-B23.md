@@ -88,7 +88,7 @@ closed, so no Euler product either way. Verdict stands.
 ### 2. Ledger witness — the superzeta is an additive resolvent trace  [PROVED HERE]
 
 The structural core of the verdict is now **machine-checked**
-(`formal/GaloisForLFunctions/SuperzetaResolvent.lean`, axiom-clean, full tree
+(`formal/GaloisForLFunctions/RHTower/SuperzetaResolvent.lean`, axiom-clean, full tree
 green, audit PASS). For a finite multiset of reciprocal-zeros `r_i = ρ_i⁻¹`:
 
 - `geom_eq_inv`: each `Σ_m r_iᵐ Xᵐ = (1 − r_iX)⁻¹` (the per-zero **resolvent**).

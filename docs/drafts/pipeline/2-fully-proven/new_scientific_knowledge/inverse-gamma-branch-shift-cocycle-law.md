@@ -209,7 +209,7 @@ cross-branch recurrences among polygamma values.
 
 ## Lean certificate
 
-`formal/GaloisForLFunctions/CompositionResidueLaw.lean` contains
+`formal/GaloisForLFunctions/HTGeometry/CompositionResidueLaw.lean` contains
 `gamma_inverseValue_logSlope_eq_digamma`, `gamma_inverseValue_residueTransport_add_one`,
 `gamma_inverseValue_logSlope_add_one`, `gamma_inverseValue_reciprocalResidue_add_one`,
 `gamma_inverseValue_logSlope_add_nat`, and
@@ -240,7 +240,7 @@ then yields the exact finite Möbius transport
 =\frac{x\rho}{x(z)_k+\rho(z)_k'}.
 \]
 
-`formal/GaloisForLFunctions/ReciprocalGammaPoleBranch.lean` closes the analytic branch gap.  It
+`formal/GaloisForLFunctions/HTGeometry/ReciprocalGammaPoleBranch.lean` closes the analytic branch gap.  It
 proves that reciprocal Gamma has derivative ((-1)^n n!) at (-n), constructs a normalized
 analytic inverse germ `ReciprocalGammaPoleBranch n` with
 

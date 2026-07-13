@@ -2,7 +2,7 @@ import GaloisForLFunctions.RHTower.XiWeilHilbertCore
 import GaloisForLFunctions.RHTower.XiHedenmalmFourierEquation
 import GaloisForLFunctions.RHTower.XiHadamardFactorization
 import GaloisForLFunctions.RHTower.XiDivisorSupportedMetric
-import GaloisForLFunctions.HilbertSchmidtMatrix
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtMatrix
 
 /-!
 # The Hedenmalm eigenfunctions span the Xi evaluation carrier under simplicity

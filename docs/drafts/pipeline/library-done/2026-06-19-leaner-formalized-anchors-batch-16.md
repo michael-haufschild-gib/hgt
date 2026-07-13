@@ -13,7 +13,7 @@ Record the following new `3-formalized` card in the shared door/status/index led
 - `docs/drafts/pipeline/3-formalized/adams-rankin-selberg-second-moment.md`
 
 ## Lean Certificate
-- Lean module: `formal/GaloisForLFunctions/AdamsOperations.lean`
+- Lean module: `formal/GaloisForLFunctions/RHTower/AdamsOperations.lean`
 - Definition/theorem anchors:
   - `adamsPowerSum`
   - `adamsPowerSum_tensor`

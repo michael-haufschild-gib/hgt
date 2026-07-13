@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Priority:** FOUNDATIONAL
-- **Source:** split from `../2-fully-proven/g4-over-fq-deligne-katz.md` §1, `../2-fully-proven/c6-specialization-functors.md` §2, and the function-field `⊗`/tensor-of-sheaves recovery; Lean file `formal/GaloisForLFunctions/SatakeTensor.lean`
+- **Source:** split from `../2-fully-proven/g4-over-fq-deligne-katz.md` §1, `../2-fully-proven/c6-specialization-functors.md` §2, and the function-field `⊗`/tensor-of-sheaves recovery; Lean file `formal/GaloisForLFunctions/RHTower/SatakeTensor.lean`
 - **Statement:** For finite Satake parameter lists `alpha` and `beta`, the tensor product has pairwise-product parameters `alpha_i beta_j`; the diagonal Kronecker product has those entries, and the local factor is the double product over all pairwise products.
 
 ## Goal

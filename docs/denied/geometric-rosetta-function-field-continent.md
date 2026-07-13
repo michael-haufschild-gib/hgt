@@ -328,7 +328,7 @@ inequality* on the dynamics continent's home turf, the most actionable form the 
 ## Ledger update — the Weil functional equation of the `L`-polynomial is now machine-checked (Critic, 2026-06-19)
 
 The algebraic core of the function-field functional equation is now in the Lean
-ledger (`formal/GaloisForLFunctions/FunctionFieldFE.lean`, axiom-clean
+ledger (`formal/GaloisForLFunctions/RHTower/FunctionFieldFE.lean`, axiom-clean
 `[propext, Classical.choice, Quot.sound]`, full tree green, audit PASS). For a
 curve `C/F_q` with zeta `Z(T)=L(T)/((1−T)(1−qT))`, `L(T)=∏_i(1−ω_iT)`, the FE is
 the closure of the Frobenius-eigenvalue multiset `S={ω_i}` under the weight-`1`

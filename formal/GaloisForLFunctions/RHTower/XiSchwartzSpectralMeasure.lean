@@ -1,4 +1,4 @@
-import GaloisForLFunctions.SchwartzSpectralMeasureForm
+import GaloisForLFunctions.HTGeometry.SchwartzSpectralMeasureForm
 import GaloisForLFunctions.RHTower.XiSchwartzMetricSupport
 
 /-!

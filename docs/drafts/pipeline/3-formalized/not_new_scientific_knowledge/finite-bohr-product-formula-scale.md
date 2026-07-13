@@ -37,7 +37,7 @@ dilations:
 - [x] 1 -> 2  fully-proven: paper proof above by finite support and commutativity.
 - [x] 2 -> 3  formalized: Lean definitions/theorems `scaleAllCoordinates`,
   `bohrCharacter_scaleAllCoordinates`, `primeComplexUnit`, `archimedeanSquareScale`, and
-  `bohrCharacter_archimedeanSquareScale` in `formal/GaloisForLFunctions/BohrGenerators.lean`; scratch
+  `bohrCharacter_archimedeanSquareScale` in `formal/GaloisForLFunctions/HTGeometry/BohrGenerators.lean`; scratch
   `#check`/`#print axioms`, `lake build`, and `scripts/check_axioms.sh` pass.
 - [ ] 3 -> 4  publication-ready: cite as the finite character certificate for the product-formula action on
   the completed base.

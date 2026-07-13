@@ -10,7 +10,7 @@
 
 ## Details
 New Lean module:
-- `formal/GaloisForLFunctions/RankOneDuality.lean`
+- `formal/GaloisForLFunctions/HTGeometry/RankOneDuality.lean`
 
 Formalized theorem names:
 - `GaloisForLFunctions.rankOneDualMultiplier_mul`

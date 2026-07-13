@@ -149,7 +149,7 @@ pro-algebraic closure of the diagonal flow  =  𝕋^∞   (extended by σ-invers
 
 **Lean note (ledger-proven character algebra).** The finite-support monomial identity
 `χ_m(F(t))=(∏_p p^{m_p})^{-it}` is machine-checked as
-`GaloisForLFunctions.diagonal_character_eq_dirichlet` in `formal/GaloisForLFunctions/DiagonalCharacter.lean`.
+`GaloisForLFunctions.diagonal_character_eq_dirichlet` in `formal/GaloisForLFunctions/RHTower/DiagonalCharacter.lean`.
 The finite sum-level form is also checked as `GaloisForLFunctions.auxiliary_diagonal_eq`: a finite Bohr auxiliary
 restricted to the diagonal is a Dirichlet polynomial. The Weyl/equidistribution step and infinite-torus closure
 remain outside these ledger theorems.

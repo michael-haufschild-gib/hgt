@@ -314,6 +314,6 @@ only if a substantive algebraic or summability core can be proved without axioma
 expansion.
 
 The substantive digamma core is now formalized in
-`formal/GaloisForLFunctions/ReflectedDigammaAnomaly.lean`: strict horizontal monotonicity,
+`formal/GaloisForLFunctions/HTGeometry/ReflectedDigammaAnomaly.lean`: strict horizontal monotonicity,
 conjugation, and the anomaly-reality equivalence are checked without new axioms.  The full expansion
 `(3)` and tomography theorem `(13)` remain paper-only.

@@ -155,7 +155,7 @@ finite determinant of inverse-Gamma pole-jet Laurent coefficients must be nonzer
 
 ## Lean status
 
-Formalized in `formal/GaloisForLFunctions/CompositionResidueLaw.lean`:
+Formalized in `formal/GaloisForLFunctions/HTGeometry/CompositionResidueLaw.lean`:
 
 - `residue_comp_of_hasDerivAt`;
 - `digamma_comp_Gamma_residue`;

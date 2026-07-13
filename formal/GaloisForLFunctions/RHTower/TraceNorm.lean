@@ -24,7 +24,7 @@ Proved here:
 * `memSchattenClass_one_add`, `memSchattenClass_one_smul`, `memSchattenClass_one_comp_left`,
   `memSchattenClass_one_comp_right` — the Schatten 1-class ideal axioms.
 -/
-import GaloisForLFunctions.PolarDecomposition
+import GaloisForLFunctions.HTGeometry.PolarDecomposition
 import GaloisForLFunctions.RHTower.TraceNormBound
 
 noncomputable section

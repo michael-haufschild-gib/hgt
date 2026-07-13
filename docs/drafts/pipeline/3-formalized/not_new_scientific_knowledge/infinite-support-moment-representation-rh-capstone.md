@@ -3,7 +3,7 @@
 - **ID:** `infinite-support-moment-representation-rh-capstone`
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean) / `[COMMON CONSUMER] [NOT NEW SCIENTIFIC KNOWLEDGE]`
-- **Lean:** `formal/GaloisForLFunctions/MomentHankelStrict.lean` and
+- **Lean:** `formal/GaloisForLFunctions/HTGeometry/MomentHankelStrict.lean` and
   `formal/GaloisForLFunctions/RHTower/PrimeArchMomentMeasureRH.lean`
 - **Consumers:** `../../1-in-progress/completed-seam-thorin-subordinator-rh.md`,
   `../../1-in-progress/prime-gamma-free-poisson-cumulant-rh.md`, and

@@ -120,7 +120,7 @@ the thermodynamic-formalism literature.
 
 ## Lean certificate
 
-`formal/GaloisForLFunctions/FeigenbaumValueRelations.lean` proves:
+`formal/GaloisForLFunctions/HTGeometry/FeigenbaumValueRelations.lean` proves:
 
 ```text
 deriv_iterate_eq_orbitProduct

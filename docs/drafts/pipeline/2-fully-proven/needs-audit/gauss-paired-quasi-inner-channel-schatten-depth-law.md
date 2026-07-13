@@ -278,7 +278,7 @@ analytic endpoint `(8)`. No Lean file is added for the operator-analytic core.
 The one framework-level step here, the coefficient--state allocation `(19)`--`(20)`
 (`dim A_N ≤ 2 kappa_rel`, linear form `dim V ≤ dim (V/(V ⊓ D)) + dim D`), is formalized abstractly
 and axiom-clean by the shared lemma `HTGeometry.finrank_le_arithmeticComplement_add` in
-`formal/GaloisForLFunctions/ArithmeticComplementRank.lean`.  The endpoint residue `(8)` and the
+`formal/GaloisForLFunctions/HTGeometry/ArithmeticComplementRank.lean`.  The endpoint residue `(8)` and the
 weak-Schatten depth `(12)`--`(13)` remain blocked on the absent Dixmier-trace / weak-Schatten
 substrate and on the needs-audit parent residue theorem.
 

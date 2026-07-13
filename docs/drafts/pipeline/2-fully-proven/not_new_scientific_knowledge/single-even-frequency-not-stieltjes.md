@@ -119,7 +119,7 @@ For any proof claiming Euler positivity implies the seam-log Stieltjes cone:
 - [x] 0 -> 1 in-progress: single-frequency extreme case isolated.
 - [x] 1 -> 2 fully-proven: coefficient and determinant calculation written.
 - [x] 2 -> 3 formalized: arithmetic determinant identity and negativity proved
-  in `formal/GaloisForLFunctions/SingleEvenFrequency.lean`; analytic coefficient
+  in `formal/GaloisForLFunctions/HTGeometry/SingleEvenFrequency.lean`; analytic coefficient
   extraction remains paper-level.
 
 ## Log

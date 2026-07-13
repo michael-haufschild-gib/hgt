@@ -155,7 +155,7 @@ atom `γ_E ∉ ℚ` sits in the complement of all of them. Nine concrete attacks
 
 ### Formalized — the linear-forms criterion + the γ₀ atom localization (Lean, axiom-clean)
 
-`formal/GaloisForLFunctions/ExponentialPeriodCorank.lean` (3 theorems, `[propext, Classical.choice,
+`formal/GaloisForLFunctions/HTGeometry/ExponentialPeriodCorank.lean` (3 theorems, `[propext, Classical.choice,
 Quot.sound]`, lint green):
 - `irrational_of_linearForms` — nonzero integer forms `pₙ + qₙα → 0` ⟹ `Irrational α` (the
   Rivoal–Ball/Nesterenko engine; **absent from mathlib**, built from scratch).

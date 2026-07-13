@@ -78,7 +78,7 @@ premise is concealed in the statement.
 The infinite support and residue layers are in
 
 ```text
-formal/GaloisForLFunctions/TranslatedStripBoundary.lean
+formal/GaloisForLFunctions/HTGeometry/TranslatedStripBoundary.lean
 formal/GaloisForLFunctions/RHTower/HedenmalmInfiniteOrientationSingularities.lean
 formal/GaloisForLFunctions/RHTower/HedenmalmOrientationResidues.lean.
 ```

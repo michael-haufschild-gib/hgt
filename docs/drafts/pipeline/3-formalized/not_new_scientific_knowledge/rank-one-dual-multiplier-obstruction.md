@@ -25,7 +25,7 @@ be self-dual.
 - [x] 2 -> 3  formalized: Lean definition/theorems `rankOneDualMultiplier`,
   `rankOneDualMultiplier_mul`, `rankOneDualMultiplier_mul_left`,
   `rankOne_selfDualMultiplier_iff_sq_eq_one`, and `rankOne_noSelfDualMultiplier_of_sq_ne_one` in
-  `formal/GaloisForLFunctions/RankOneDuality.lean`; scratch `#check`/`#print axioms`, `lake build`, and
+  `formal/GaloisForLFunctions/HTGeometry/RankOneDuality.lean`; scratch `#check`/`#print axioms`, `lake build`, and
   `scripts/check_axioms.sh` pass.
 - [ ] 3 -> 4  publication-ready: cite as the finite algebraic certificate for the rank-one obstruction in
   the orthogonality meta-theorem.

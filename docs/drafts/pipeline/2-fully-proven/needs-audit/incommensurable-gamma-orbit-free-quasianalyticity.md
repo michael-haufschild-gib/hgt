@@ -269,7 +269,7 @@ therefore not formalized and remains stage 2. Moving it to stage 3 requires an u
 theorem for the whole classification, not wrappers for the elementary finite-difference induction.
 
 The Section 2 many-shift peeling bridge (`(7)`–`(8)`) is formalized abstractly and axiom-free in
-`formal/GaloisForLFunctions/FiniteCommutingShiftPeeling.lean`:
+`formal/GaloisForLFunctions/HTGeometry/FiniteCommutingShiftPeeling.lean`:
 
 ```text
 shiftWord_dichotomy   -- given the one-shift dichotomy `R(Δ i g) → R g ∨ H g` and DA-descent

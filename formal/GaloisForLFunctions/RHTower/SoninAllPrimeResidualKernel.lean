@@ -13,8 +13,8 @@ that the complete block matrix is Hilbert--Schmidt, and forms its positive trace
 kernel.  No zero set and no RH statement enter the construction.
 -/
 import GaloisForLFunctions.RHTower.SoninTimeBandHilbertSchmidt
-import GaloisForLFunctions.HilbertSchmidtCompact
-import GaloisForLFunctions.HilbertSchmidtMatrix
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtCompact
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtMatrix
 
 noncomputable section
 

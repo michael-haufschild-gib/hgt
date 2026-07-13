@@ -1,4 +1,4 @@
-import GaloisForLFunctions.CayleySchur
+import GaloisForLFunctions.HTGeometry.CayleySchur
 
 /-!
 # Cayley unit-circle reality bridge

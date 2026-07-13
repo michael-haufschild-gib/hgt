@@ -11,7 +11,7 @@
 ## Details
 New Lean theorem:
 - `GaloisForLFunctions.bohrCharacter_archimedeanSquareScale` in
-  `formal/GaloisForLFunctions/BohrGenerators.lean`
+  `formal/GaloisForLFunctions/HTGeometry/BohrGenerators.lean`
 
 Supporting Lean theorem:
 - `GaloisForLFunctions.bohrCharacter_scaleAllCoordinates`

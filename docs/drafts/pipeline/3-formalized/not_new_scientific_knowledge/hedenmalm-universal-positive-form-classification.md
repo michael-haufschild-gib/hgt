@@ -61,8 +61,8 @@ must be oriented; they do not determine its sign.
 Files:
 
 ```text
-formal/GaloisForLFunctions/SchwartzCompactPositiveFunctional.lean
-formal/GaloisForLFunctions/SchwartzPositiveMeasureRepresentation.lean
+formal/GaloisForLFunctions/HTGeometry/SchwartzCompactPositiveFunctional.lean
+formal/GaloisForLFunctions/HTGeometry/SchwartzPositiveMeasureRepresentation.lean
 formal/GaloisForLFunctions/RHTower/HedenmalmUniversalPositiveFormClassification.lean
 ```
 

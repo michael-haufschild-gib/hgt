@@ -2,15 +2,18 @@
 
 ## What This Is
 
-This folder is the Lean 4 proof project.  The three main proof programs are:
+This folder is the Lean 4 proof project.  Every research module belongs to one
+of five theorem areas:
 
 | Area | Umbrella | Capstone surface |
 |---|---|---|
+| RH / Xi / L-function criteria | `GaloisForLFunctions.RHTower` | RH characterizations and their source/constraint bridges |
+| General hypertranscendental geometry | `GaloisForLFunctions.HTGeometry` | Reusable differential, constraint, value-relation, moment, and operator geometry |
 | Hurwitz | `GaloisForLFunctions.Hurwitz` | `hurwitz_n2_unconditional` |
 | u0_pui | `GaloisForLFunctions.U0` | `U0CardTheorems.u0_phi_independence_all_parameters` |
 | q62 Böttcher | `GaloisForLFunctions.Bottcher` | `Bottcher.q62_independence`, `Bottcher.q62_mixed`, `Bottcher.q62_phiMero_norm_gap`, `Bottcher.q62_phiMero_linGap`, `Bottcher.q62_phiMero_linGap_roots`, `Bottcher.q62_phiMero_norm_gap_roots`, `Bottcher.q62_phiMero_mixed_far_roots`, `Bottcher.q62_phiMero_mixed_far_roots_swapped` |
 
-`GaloisForLFunctions.MainTheorems` imports all three.
+`GaloisForLFunctions.MainTheorems` imports all five.
 
 ## Start Here
 
@@ -27,7 +30,7 @@ Run from `formal/` unless noted:
 
 ```bash
 lake env lean GaloisForLFunctions/<path>.lean
-lake build GaloisForLFunctions.<Area>
+lake build +GaloisForLFunctions.<Area>
 ../scripts/formal_tools.py lint --check-generated
 ```
 
@@ -41,6 +44,18 @@ This gate fails on Lean build warnings.
 
 ## Keep It Organized
 
+- Put RH-, Xi-, critical-line-, Weil-, Li-, or L-function-specific research in
+  `GaloisForLFunctions/RHTower/`.
+- Put reusable hypertranscendence, differential algebra, constraint geometry,
+  value-relation, analytic, moment, and operator infrastructure in
+  `GaloisForLFunctions/HTGeometry/`.
+- Put theorem-program-specific work for the three toy problems only in
+  `GaloisForLFunctions/U0/`, `GaloisForLFunctions/Bottcher/`, or
+  `GaloisForLFunctions/Hurwitz/`.
+- Do not add research leaf modules directly under `GaloisForLFunctions/`.
+  That level is reserved for `Core.lean`, the five area umbrellas,
+  `MainTheorems.lean`, and the two cross-area aggregators
+  `FullyProvenNewTargets.lean` and `KummerRootApplications.lean`.
 - No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
 - **Comments are mathematics, not diary.** No references to research docs, task numbers,
   sessions, dates, or process notes ("pre-certified", "banked", "round N") — in two days

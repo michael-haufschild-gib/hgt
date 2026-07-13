@@ -209,7 +209,7 @@ level-compatible pairs (original), quadratic gap (unconditional), linear gap `�
 The abstract two-coordinate Kummer descent `KummerRootApplications.noRelation_pow_descent_both`
 (`χ^m = F`, `η^n = G`, `NoRelation K F G ⟹ NoRelation K χ η`; descend first coord, flip with
 `Bottcher.noRelation_symm`, descend second, flip back) is field-generic, so it applies to the two
-shipped disconnected-pair capstones directly.  `GaloisForLFunctions/Q62RootTower.lean` (top-level,
+shipped disconnected-pair capstones directly.  `GaloisForLFunctions/Bottcher/Q62RootTower.lean` (top-level,
 imported by `MainTheorems`) instantiates it at the CONCRETE inverse-Böttcher coordinates:
 
 * `q62_phiMero_linGap_roots` — for the linear-gap regime (`‖c₁‖≥1000`, `‖c₂‖≥2`,

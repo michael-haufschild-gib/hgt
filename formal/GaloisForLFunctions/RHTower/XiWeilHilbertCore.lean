@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiWeilResolventSource
-import GaloisForLFunctions.HilbertSchmidt
+import GaloisForLFunctions.HTGeometry.HilbertSchmidt
 
 /-!
 # Hilbert realization of the square-summable Xi Weil core

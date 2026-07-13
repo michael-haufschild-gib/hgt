@@ -12,14 +12,14 @@
 Please update the shared door/status/index ledgers to reflect two new `3-formalized` cards:
 
 1. `docs/drafts/pipeline/3-formalized/boundary-modulus-critical-line.md`
-   - Lean modules: `formal/GaloisForLFunctions/Core.lean`, `formal/GaloisForLFunctions/BoundaryModulus.lean`
+   - Lean modules: `formal/GaloisForLFunctions/Core.lean`, `formal/GaloisForLFunctions/RHTower/BoundaryModulus.lean`
    - Lean anchors: `norm_cpow_eq_critical_iff`, `norm_inv_smul_eq_one_iff`,
      `boundaryUnitNormalize_norm_eq_one_iff`, `diagonalBoundary_unit_norm_iff`
    - Source: split from `docs/drafts/pipeline/2-fully-proven/g5-over-fq-deligne-unitarity.md`
    - Scope: exact scalar fixed-modulus/critical-line floor only.
 
 2. `docs/drafts/pipeline/3-formalized/unitary-satake-trace-interval.md`
-   - Lean module: `formal/GaloisForLFunctions/SatakeInterval.lean`
+   - Lean module: `formal/GaloisForLFunctions/RHTower/SatakeInterval.lean`
    - Lean anchors: `satake_trace_eq_two_mul_re`, `satake_trace_im`,
      `satake_trace_re_mem_Icc`, `symPower_trace_norm_le`
    - Source: split from `docs/drafts/pipeline/2-fully-proven/explicit-formula-as-constraint.md` §3 and

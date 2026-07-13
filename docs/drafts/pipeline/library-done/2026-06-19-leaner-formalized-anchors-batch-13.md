@@ -13,7 +13,7 @@ Record the following new `3-formalized` card in the shared door/status/index led
 - `docs/drafts/pipeline/3-formalized/local-factor-self-duality.md`
 
 ## Lean Certificate
-- Lean module: `formal/GaloisForLFunctions/LocalFactorDuality.lean`
+- Lean module: `formal/GaloisForLFunctions/RHTower/LocalFactorDuality.lean`
 - Theorem anchor: `selfDual_localFactor_eq`
 - Source card: split from `docs/drafts/pipeline/2-fully-proven/orthogonality-meta-theorem.md` §5.
 - Scope: finite inversion-closed Satake multiset local-factor self-duality only.

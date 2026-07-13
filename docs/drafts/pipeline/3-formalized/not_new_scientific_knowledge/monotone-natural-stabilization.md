@@ -19,7 +19,7 @@ induction on `B`. If `B=0`, every `c_n=0`, so the sequence is constant. For `B+1
 ## Gates
 - [x] 0 -> 1  in-progress: exact integer-valued stabilization step extracted from the corank-tower argument.
 - [x] 1 -> 2  fully-proven: paper proof above, by induction on a natural-number upper bound.
-- [x] 2 -> 3  formalized: Lean theorem `monotoneNat_eventually_constant_of_bddAbove` in `formal/GaloisForLFunctions/HolonomicityLimit.lean`; name checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean theorem `monotoneNat_eventually_constant_of_bddAbove` in `formal/GaloisForLFunctions/HTGeometry/HolonomicityLimit.lean`; name checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the formal certificate for the stabilization corollary.
 
 ## Log

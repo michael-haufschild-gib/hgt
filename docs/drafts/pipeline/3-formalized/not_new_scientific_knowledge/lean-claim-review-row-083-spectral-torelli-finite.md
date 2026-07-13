@@ -13,7 +13,7 @@
 Audit the claim from scratch. Researchers must pin down the finite statement precisely and separate it from any infinite or actual-`xi` reconstruction claim. Leaner checks formalization after that scope review.
 
 ## Claimed Lean footholds to verify
-- `formal/GaloisForLFunctions/SpectralTorelli.lean`
+- `formal/GaloisForLFunctions/RHTower/SpectralTorelli.lean`
 - Candidate names: `spectralTorelli_faithful`, `spectralPoly_coeff_zero`, `selfDual_spectralPoly_coeff_real`
 
 These names are leads, not certification.

@@ -208,7 +208,7 @@ an expert-level full-text search in the composition and inverse-special-function
 
 ## Formalization surface
 
-The formal core is in `formal/GaloisForLFunctions/CompositionResidueLaw.lean`:
+The formal core is in `formal/GaloisForLFunctions/HTGeometry/CompositionResidueLaw.lean`:
 
 1. `residue_comp_of_hasDerivAt`: generic residue pullback by a noncritical value map;
 2. `digamma_comp_Gamma_residue`: the actual composite residue \(-1/\Gamma'(z_0)\);
@@ -221,7 +221,7 @@ The formal core is in `formal/GaloisForLFunctions/CompositionResidueLaw.lean`:
 The module builds directly.  Each theorem has only the standard Mathlib axioms
 `propext`, `Classical.choice`, and `Quot.sound`.
 
-`formal/GaloisForLFunctions/ReciprocalGammaPoleBranch.lean` now formalizes the analytic existence,
+`formal/GaloisForLFunctions/HTGeometry/ReciprocalGammaPoleBranch.lean` now formalizes the analytic existence,
 normalization, first derivative, and finite rising-factorial conjugacy of the inverse-Gamma pole
 branches.  The displayed second- and third-order Taylor coefficients remain paper-level.
 

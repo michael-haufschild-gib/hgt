@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Priority:** FOUNDATIONAL
-- **Source:** split from `../2-fully-proven/multi-q-shafarevich-gluing-group.md` R0; Lean file `formal/GaloisForLFunctions/KoszulCohomology.lean`
+- **Source:** split from `../2-fully-proven/multi-q-shafarevich-gluing-group.md` R0; Lean file `formal/GaloisForLFunctions/HTGeometry/KoszulCohomology.lean`
 - **Statement:** For commuting additive difference actions, the first Koszul differential detects joint invariants, the second detects additive 1-cocycles, and every first coboundary is an additive 1-cocycle.
 
 ## Goal

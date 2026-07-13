@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean), split from the finite carrier/off-line-zero inertia ledger
 - **Priority:** FOUNDATIONAL
-- **Source:** `formal/GaloisForLFunctions/FECarrier.lean`; row #32 finite carrier inertia; `../1-in-progress/archimedean-weil-ii-bedrock.md`
+- **Source:** `formal/GaloisForLFunctions/RHTower/FECarrier.lean`; row #32 finite carrier inertia; `../1-in-progress/archimedean-weil-ii-bedrock.md`
 - **Statement:** For one off-line zero representative `t0` with `0 < Im(t0)` and `Re(t0) != 0`, the functional-equation closure gives two upper-half-plane conjugate-pair representatives `t0` and `-conj(t0)`. In the finite FE-faithful carrier with those two representatives and no collisions with the sample points, every negative-definite subspace has complex dimension at most `2`, and there exists a negative-definite subspace of dimension `2`. Hence one FE quadruple contributes negative inertia exactly `2`.
 
 ## Paper Proof
@@ -32,7 +32,7 @@ This is precisely negative inertia `2` for the FE quadruple.
 ## Lean Certificate
 
 - Lean theorem: `GaloisForLFunctions.fe_quadruple_kappa_two`
-- File: `formal/GaloisForLFunctions/FECarrier.lean`
+- File: `formal/GaloisForLFunctions/RHTower/FECarrier.lean`
 - Axiom audit: standard/mathlib axioms only (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 
 Verification:

@@ -11,8 +11,8 @@ operator of rank at most `n` kills a nonzero vector of the `(n+1)`-dimensional s
 Combining with the master identity `∑ᵢ ‖T bᵢ‖² = ∑ₙ μₙ`, the Schatten 2-class coincides with the
 Hilbert–Schmidt class, with `‖T‖²_HS = ∑ₙ aₙ(T)²`.
 -/
-import GaloisForLFunctions.SingularValues
-import GaloisForLFunctions.HilbertSchmidtCompact
+import GaloisForLFunctions.HTGeometry.SingularValues
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtCompact
 import GaloisForLFunctions.RHTower.SchattenApproximation
 
 noncomputable section

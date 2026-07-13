@@ -1,4 +1,4 @@
-import GaloisForLFunctions.IharaBlockSelector
+import GaloisForLFunctions.RHTower.IharaBlockSelector
 
 /-!
 # The first nontrivial self-dual binary code zeta block

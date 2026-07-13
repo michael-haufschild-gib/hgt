@@ -26,7 +26,7 @@ For a fixed coordinate `p`, replace `x_p` by `c x_p` and leave all other coordin
 ## Gates
 - [x] 0 -> 1  in-progress: finite Bohr-character identities extracted from the broader generator-axis-mode theorem.
 - [x] 1 -> 2  fully-proven: paper proof above, using only finite products in a commutative group.
-- [x] 2 -> 3  formalized: Lean theorems `bohrCharacter_zero`, `bohrCharacter_add`, and `bohrCharacter_scaleCoordinate` in `formal/GaloisForLFunctions/BohrGenerators.lean`; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean theorems `bohrCharacter_zero`, `bohrCharacter_add`, and `bohrCharacter_scaleCoordinate` in `formal/GaloisForLFunctions/HTGeometry/BohrGenerators.lean`; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the finite algebraic lemma in the generator-level C5-localization note.
 
 ## Log

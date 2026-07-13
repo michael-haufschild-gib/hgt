@@ -24,7 +24,7 @@ If a single simultaneous conjugacy carried `(A2,A3)` to `(B2,B3)`, then cyclicit
 ## Gates
 - [x] 0 -> 1  in-progress: explicit two-prime matrix witness extracted.
 - [x] 1 -> 2  fully-proven: paper proof above, using matrix multiplication and trace cyclicity.
-- [x] 2 -> 3  formalized: Lean theorem `gluing_per_prime_same_but_joint_distinct` and supporting theorems in `formal/GaloisForLFunctions/GluingWitness.lean`; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean theorem `gluing_per_prime_same_but_joint_distinct` and supporting theorems in `formal/GaloisForLFunctions/RHTower/GluingWitness.lean`; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the concrete witness in the C3 gluing note.
 
 ## Log

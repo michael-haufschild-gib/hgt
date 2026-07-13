@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.XiZerosInfinite
 import GaloisForLFunctions.RHTower.CompletedPrimeFluxFittingAttachment
-import GaloisForLFunctions.GammaDifferentialFE
-import GaloisForLFunctions.PoleHolonomicDegreeBudget
+import GaloisForLFunctions.HTGeometry.GammaDifferentialFE
+import GaloisForLFunctions.HTGeometry.PoleHolonomicDegreeBudget
 
 /-!
 # The completed-zeta logarithmic derivative is not holonomic

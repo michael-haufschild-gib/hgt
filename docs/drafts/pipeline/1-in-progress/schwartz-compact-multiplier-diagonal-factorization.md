@@ -26,7 +26,7 @@ Bezoutian may be assumed.
 
 Polynomial functional calculus of spectral momentum is symmetric.  A single positive polynomial
 separator proves that disjoint compact spectral supports are orthogonal.  These inputs are in
-`formal/GaloisForLFunctions/SchwartzCompactPolynomialSeparation.lean`.
+`formal/GaloisForLFunctions/HTGeometry/SchwartzCompactPolynomialSeparation.lean`.
 
 ## Attack
 

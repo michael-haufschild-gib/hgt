@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.BakerProof.AuxiliaryFunction
-import GaloisForLFunctions.ZeroEstimateOrder
+import GaloisForLFunctions.RHTower.ZeroEstimateOrder
 
 /-!
 # The local zero estimate for the Baker auxiliary function

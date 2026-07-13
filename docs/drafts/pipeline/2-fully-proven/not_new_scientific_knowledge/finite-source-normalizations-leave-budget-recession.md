@@ -167,7 +167,7 @@ for all-order source domination.
 
 `../../3-formalized/source-budget-recession-gates.md` records the Lean
 formalization of the algebraic core in
-`formal/GaloisForLFunctions/SourceRecession.lean`:
+`formal/GaloisForLFunctions/RHTower/SourceRecession.lean`:
 
 - `source_budget_one_sided_recession_nonnegative`: a budget inequality holding
   along every `t>=0` point of a ray forces the recession direction to be

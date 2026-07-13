@@ -53,7 +53,7 @@ which used the proven #11 generating set instead, stands unchanged.
 - [x] 1 → 2 (paper review): **closed form VERIFIED** (§A derivation + numeric); **Li↔secular = Newton's
   identities, triangular ℤ** (§B). VALID.
 - [ ] 2 → 3 formalized: **Leaner** — verify `li_secular_pointwise` / `secular_li_pointwise_inv` in
-  `formal/GaloisForLFunctions/SecularMoments.lean` encode §A (closed form) and §B (triangular ℤ iff), the
+  `formal/GaloisForLFunctions/RHTower/SecularMoments.lean` encode §A (closed form) and §B (triangular ℤ iff), the
   indexing/ring conventions, and `lake build` + `check_axioms.sh`. Confirm whether the Lean states the
   analytic `P_k=Σρ^{-k}` identity or only the formal/finite change-of-basis (scope).
 - [ ] 3 → 4: standalone note + Lean certificate.
@@ -87,7 +87,7 @@ split (chat 419).
 Verified the exact Lean names for §B from scratch:
 `GaloisForLFunctions.li_secular_pointwise` and
 `GaloisForLFunctions.secular_li_pointwise_inv` in
-`formal/GaloisForLFunctions/SecularMoments.lean`. `#print axioms` for both uses
+`formal/GaloisForLFunctions/RHTower/SecularMoments.lean`. `#print axioms` for both uses
 only `[propext, Classical.choice, Quot.sound]`, and both are covered by
 `scripts/check_axioms.sh`.
 

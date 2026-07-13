@@ -3,7 +3,7 @@
 - **ID:** ihara-quadratic-block-selector-lean-model
 - **Stage:** 3-formalized
 - **Type:** PROOF-LAB / NOT-NEW
-- **Lean:** `formal/GaloisForLFunctions/IharaBlockSelector.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/IharaBlockSelector.lean`
 
 ## Purpose
 
@@ -73,7 +73,7 @@ object where the missing ingredient is visible in Lean.
 
 Targeted checks run:
 
-- `lake env lean GaloisForLFunctions/IharaBlockSelector.lean`
+- `lake env lean GaloisForLFunctions/RHTower/IharaBlockSelector.lean`
 - `lake build GaloisForLFunctions.IharaBlockSelector`
 - `/tmp/ihara_axioms.lean` importing the module and printing axioms for:
   - `zerosOnCriticalCircle_iff_spectral_bound`

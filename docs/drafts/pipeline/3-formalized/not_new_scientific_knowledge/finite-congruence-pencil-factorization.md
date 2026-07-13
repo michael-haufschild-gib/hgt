@@ -28,7 +28,7 @@ Adding `P` to both sides gives the companion rearrangement
 - [x] 0 -> 1  in-progress: finite algebraic core extracted from Finding 3c.
 - [x] 1 -> 2  fully-proven: paper proof above by distributivity, associativity, and the two inverse identities.
 - [x] 2 -> 3  formalized: Lean theorems `congruencePencil_factorization` and
-  `congruencePencil_add_primeBlock` in `formal/GaloisForLFunctions/CongruencePencil.lean`; scratch
+  `congruencePencil_add_primeBlock` in `formal/GaloisForLFunctions/HTGeometry/CongruencePencil.lean`; scratch
   `#check`/`#print axioms`, `lake build`, and `scripts/check_axioms.sh` pass.
 - [ ] 3 -> 4  publication-ready: cite as the finite algebraic certificate for the no-margin congruence
   comparison.

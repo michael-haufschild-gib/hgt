@@ -29,7 +29,7 @@ Since this evaluation homomorphism is injective, the family `e_1, ..., e_n` is a
   formal finite DSS-face foothold.
 - [x] 1 -> 2 fully-proven: paper proof above, using the fundamental theorem of symmetric polynomials.
 - [x] 2 -> 3 formalized: Lean theorem `spectrum_esymm_algIndep` in
-  `formal/GaloisForLFunctions/SpectrumGenericity.lean`; `lake build` green; `check_axioms.sh` PASS.
+  `formal/GaloisForLFunctions/HTGeometry/SpectrumGenericity.lean`; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4 publication-ready: cite as the finite genericity lemma, not as arithmetic DSS.
 
 ## Log

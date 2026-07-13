@@ -30,7 +30,7 @@ those of `s`, so `sigmaConj(s)=s`.
 - [x] 1 -> 2  fully-proven: paper proof above by elementary complex arithmetic.
 - [x] 2 -> 3  formalized: Lean theorems `sigma_involutive`, `sigmaConj_involutive`, and
   `sigmaConj_fixed_iff_critical` in `formal/GaloisForLFunctions/Core.lean` and
-  `formal/GaloisForLFunctions/SigmaOrbit.lean`; names checked by scratch file; `#print axioms` uses only the
+  `formal/GaloisForLFunctions/RHTower/SigmaOrbit.lean`; names checked by scratch file; `#print axioms` uses only the
   allowed standard subset `[propext, Classical.choice, Quot.sound]`; `lake build` green; `check_axioms.sh`
   PASS.
 - [ ] 3 -> 4  publication-ready: include as the FE-constraint lemma in the Hilbert-Polya re-posed note.
@@ -48,7 +48,7 @@ Its value is as the Lean-certified fixed-locus anchor for the broader constraint
 
 ## 2026-06-24 (Turing) — build was BROKEN, now repaired + re-certified
 
-Found during a ledger Lean-verification pass: this card's Lean dependency `GaloisForLFunctions/SigmaOrbit.lean`
+Found during a ledger Lean-verification pass: this card's Lean dependency `GaloisForLFunctions/RHTower/SigmaOrbit.lean`
 did NOT compile in toolchain v4.30.0 — the backward branch of `sigma_fixed_iff_eq_half` used a bare `ext` on a
 ℂ goal (no `ext` lemma for ℂ). The `.olean` was missing and the umbrella `import GaloisForLFunctions` failed,
 so this "formalized (Lean)" claim was, for some time, backed by non-compiling code (worse than a sorry).

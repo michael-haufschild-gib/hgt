@@ -73,7 +73,7 @@ The signs and leading digits are stable under independent precision, radius, and
 changes.  Therefore the canonical scalar residual tower fails the necessary Hankel condition for
 a positive measure or positive compact-operator spectrum.  This is a high-precision source
 calculation, not an interval-arithmetic proof.  The formal positive no-go is the general exact
-two-atom quotient theorem in `formal/GaloisForLFunctions/MomentTowerQuotientGhost.lean`.
+two-atom quotient theorem in `formal/GaloisForLFunctions/HTGeometry/MomentTowerQuotientGhost.lean`.
 
 Positive successor
 ------------------

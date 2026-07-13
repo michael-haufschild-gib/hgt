@@ -22,7 +22,7 @@ Conversely, map a positive integer `n` to its prime-exponent vector `p |-> v_p(n
 ## Gates
 - [x] 0 -> 1  in-progress: exact finite smooth-number dictionary extracted from the friable auxiliary object.
 - [x] 1 -> 2  fully-proven: paper proof above, using unique factorization.
-- [x] 2 -> 3  formalized: Lean definitions/theorems `boundedExponentVectorEquivSmooth` and `primeProduct_isBoundedSmooth_iff` in `formal/GaloisForLFunctions/SmoothNumbers.lean`; names checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean definitions/theorems `boundedExponentVectorEquivSmooth` and `primeProduct_isBoundedSmooth_iff` in `formal/GaloisForLFunctions/RHTower/SmoothNumbers.lean`; names checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the finite support/frequency dictionary for the auxiliary-space note.
 
 ## Log

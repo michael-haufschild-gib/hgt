@@ -12,7 +12,7 @@
 Please update the shared door/status/index ledgers to reflect one new `3-formalized` card:
 
 1. `docs/drafts/pipeline/3-formalized/derivation-not-frobenius-twist.md`
-   - Lean module: `formal/GaloisForLFunctions/DifferentialABP.lean`
+   - Lean module: `formal/GaloisForLFunctions/HTGeometry/DifferentialABP.lean`
    - Lean anchors: `map_one_eq_zero_of_leibniz`, `map_eq_zero_of_map_one_zero_of_map_mul`,
      `map_eq_zero_of_leibniz_of_map_mul`, `not_map_mul_of_leibniz_of_exists_ne_zero`
    - Source: split from `docs/drafts/pipeline/2-fully-proven/multi-q-abp-criterion.md` and

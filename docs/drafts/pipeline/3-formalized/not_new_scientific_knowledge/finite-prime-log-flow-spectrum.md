@@ -26,7 +26,7 @@ Exponentiating gives equality of two positive integers with prime factorizations
 ## Gates
 - [x] 0 -> 1  in-progress: finite-character frequency statement extracted from the broader flow card.
 - [x] 1 -> 2  fully-proven: paper proof above, using only the diagonal-flow character computation and unique factorization.
-- [x] 2 -> 3  formalized: Lean theorems `primeLogFrequency_single`, `primeLogFrequency_eq_zero_iff`, `primeLogFrequency_ne_zero`, and `primeLogFrequency_single_ne_zero` in `formal/GaloisForLFunctions/KroneckerFlow.lean`; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean theorems `primeLogFrequency_single`, `primeLogFrequency_eq_zero_iff`, `primeLogFrequency_ne_zero`, and `primeLogFrequency_single_ne_zero` in `formal/GaloisForLFunctions/HTGeometry/KroneckerFlow.lean`; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the finite Source-B flow lemma in the HP/constraint note.
 
 ## Log

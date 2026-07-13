@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean) — a constraint-front reduction (index prong)
 - **Source:** §4 "Flagship: Hilbert–Pólya as a polarization / index constraint" of
   `../../rh-monodromy-weight-mismatch/123-constraint-reframe-catalog.md` (forward-move #2);
-  finite anchor `formal/GaloisForLFunctions/KreinLangerInertia.lean` (`exact_neg_inertia`,
+  finite anchor `formal/GaloisForLFunctions/HTGeometry/KreinLangerInertia.lean` (`exact_neg_inertia`,
   `conj_pair_pick_neg_inertia_le_one`); polarization surface
   `formal/GaloisForLFunctions/RHTower/OmegaComplexStructure.lean`; order face
   `formal/GaloisForLFunctions/RHTower/RiemannTower.lean` (`rh_iff_xi_ne_zero_right`).

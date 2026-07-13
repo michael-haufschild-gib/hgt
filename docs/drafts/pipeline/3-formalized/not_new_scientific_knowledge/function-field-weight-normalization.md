@@ -38,7 +38,7 @@ Thus normalized Frobenius is unitary exactly on the Frobenius weight circle.
 - [x] 1 -> 2  fully-proven: paper proof above by positivity of `q^(w*d/2)` and norm homogeneity.
 - [x] 2 -> 3  formalized: Lean definitions `functionFieldWeightRadius`,
   `functionFieldWeightNormalize`, and theorem `functionFieldWeightNormalize_norm_eq_one_iff` in
-  `formal/GaloisForLFunctions/BoundaryModulus.lean`; scratch `#check`/`#print axioms`, `lake build`, and
+  `formal/GaloisForLFunctions/RHTower/BoundaryModulus.lean`; scratch `#check`/`#print axioms`, `lake build`, and
   `scripts/check_axioms.sh` pass.
 - [ ] 3 -> 4  publication-ready: cite as the scalar weight-circle certificate for G5 over function fields.
 

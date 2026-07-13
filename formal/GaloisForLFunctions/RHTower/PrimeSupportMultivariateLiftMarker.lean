@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeSupportLiftParityNoGo
-import GaloisForLFunctions.PrimeWordSupportSelector
-import GaloisForLFunctions.SquarefreeVeroneseIdeal
+import GaloisForLFunctions.RHTower.PrimeWordSupportSelector
+import GaloisForLFunctions.HTGeometry.SquarefreeVeroneseIdeal
 
 /-!
 # A multivariate lift marker retains the prime-support germ

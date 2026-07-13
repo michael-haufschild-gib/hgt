@@ -3,7 +3,7 @@
 - **ID:** `additive-orbit-balance-principal-parts`
 - **Stage:** 3-formalized
 - **Type:** BRIDGE THEOREM (Lean) — not new scientific knowledge
-- **Source:** `formal/GaloisForLFunctions/OrbitBalanceAdditive.lean`
+- **Source:** `formal/GaloisForLFunctions/HTGeometry/OrbitBalanceAdditive.lean`
 - **Statement:** For coefficients in any additive commutative group, every finitely supported
   integer-orbit shift coboundary has total coefficient zero.  Hence a single nonzero coefficient on
   one orbit cannot be a shift coboundary.

@@ -235,7 +235,7 @@ logarithmic cross-term summation, and finite-aperture center estimate.
 
 ## Lean decision
 
-`formal/GaloisForLFunctions/ConstrainedProlateExteriorWeil.lean` now formalizes both universal
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateExteriorWeil.lean` now formalizes both universal
 series coefficients used by the paper theorem. In particular, Lean proves absolute convergence,
 `D_arch > 0`, the stronger explicit bound `4/11 <= D_arch`, and strict negativity of the signed
 lower-order prime coefficient in `(13)`. These results are unconditional and assume no Weil-operator

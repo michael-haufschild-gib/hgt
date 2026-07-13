@@ -19,7 +19,7 @@ in `C^x`.
 ## Gates
 - [x] 0 -> 1  in-progress: exact no-fixed-point lemma extracted from the repaired R3 non-retraction argument.
 - [x] 1 -> 2  fully-proven: paper proof above, using only `p != 1` and cancellation in `C`.
-- [x] 2 -> 3  formalized: Lean theorems `primeDilation_fixed_eq_zero`, `primeDilation_no_fixed_unit`, and `no_primeDilation_fixed_torus_point` in `formal/GaloisForLFunctions/OrbitFreeness.lean`; names checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean theorems `primeDilation_fixed_eq_zero`, `primeDilation_no_fixed_unit`, and `no_primeDilation_fixed_torus_point` in `formal/GaloisForLFunctions/HTGeometry/OrbitFreeness.lean`; names checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the Lean certificate for the non-retraction sublemma.
 
 ## Log

@@ -22,7 +22,7 @@ For a finite sum, derivatives pass through the finite sum term-by-term. If `n_m=
 ## Gates
 - [x] 0 -> 1  in-progress: derivative-at-one identity extracted.
 - [x] 1 -> 2  fully-proven: paper proof above, by repeated differentiation of finite exponential sums.
-- [x] 2 -> 3  formalized: Lean theorem `iteratedDeriv_friableExponentDirichletExp_at_one` and supporting theorems in `formal/GaloisForLFunctions/FriableAuxiliary.lean`; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean theorem `iteratedDeriv_friableExponentDirichletExp_at_one` and supporting theorems in `formal/GaloisForLFunctions/RHTower/FriableAuxiliary.lean`; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the derivative identity in the friable auxiliary note.
 
 ## Log

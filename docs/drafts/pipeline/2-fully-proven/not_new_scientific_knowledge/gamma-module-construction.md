@@ -63,7 +63,7 @@ diagonal section; the FE `Λ(s)=Λ(1−s)` acts on it. `M_∞` is the rigorous a
   digits); `M_Λ=M_∞⊗M_ζ` diagonal `=Λ`; `F_q` degeneration. Grade BRIDGE (Source A alone).
 - [ ] 2 → 3 formalized: Lean anchors **DONE** for the scalar Gamma recurrence and connection compatibility:
   `gammaReal_shift_two`, `digamma_half_add_one`, and `gammaRealLogConnection_shift_compat` in
-  `formal/GaloisForLFunctions/ArchimedeanGamma.lean`, with split certificate
+  `formal/GaloisForLFunctions/RHTower/ArchimedeanGamma.lean`, with split certificate
   `../3-formalized/archimedean-gamma-shift-connection.md`. Remaining Lean targets are the full rank-one
   `(σ∞, ∂s)` module packaging, the Lerch inverse-ζ-reg-det import
   `Γ(a)·exp(−ζ_H'(0,a))=√2π`, and the completed object `M_Λ`.
@@ -110,6 +110,6 @@ should read M_∞'s determinant as **inverse** ζ-det where they cite it.
 The scalar recurrence/connection part of Result (1)-(2) is already Lean-backed by
 `../3-formalized/archimedean-gamma-shift-connection.md`: `gammaReal_shift_two`,
 `digamma_half_add_one`, and `gammaRealLogConnection_shift_compat` are in
-`formal/GaloisForLFunctions/ArchimedeanGamma.lean` and audited in `scripts/check_axioms.sh`.
+`formal/GaloisForLFunctions/RHTower/ArchimedeanGamma.lean` and audited in `scripts/check_axioms.sh`.
 The parent ticket remains in `2-fully-proven` because the full rank-one module construction,
 Lerch inverse determinant import, and completed-object wiring are not formalized as Lean theorems.

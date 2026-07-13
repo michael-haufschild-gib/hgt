@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean certificate split from `../2-fully-proven/friable-dirichlet-auxiliary.md`)
 - **Owner:** Leaner
-- **Lean file:** `formal/GaloisForLFunctions/FriableAuxiliary.lean`
+- **Lean file:** `formal/GaloisForLFunctions/RHTower/FriableAuxiliary.lean`
 
 ## Statement
 

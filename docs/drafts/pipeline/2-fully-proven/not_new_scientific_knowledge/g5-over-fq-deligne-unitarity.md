@@ -90,7 +90,7 @@ Catalogue what made G5 a **theorem** over `F_q` and is **absent** over ℚ — t
   (FE=Poincaré duality + polarization ⟹ unitarity, §2); difference = archimedean isolated (§3, conjecture
   feed). BRIDGE, content beyond import (§4). **Completes the FF gatekeeper campaign (G1–G5).**
 - [ ] 2 → 3  formalized — Lean anchor **DONE** for the scalar weight-normalization step:
-  `functionFieldWeightNormalize_norm_eq_one_iff` in `formal/GaloisForLFunctions/BoundaryModulus.lean`
+  `functionFieldWeightNormalize_norm_eq_one_iff` in `formal/GaloisForLFunctions/RHTower/BoundaryModulus.lean`
   proves that normalized Frobenius has unit norm iff the original eigenvalue lies on the radius
   `q^(w*deg/2)` weight circle. Remaining Lean targets: `Fix(ι)` = weight circle (reuse
   `functionField_esymm_FE`, `BoundaryModulus`); `κ₋=0 ⟺` all eigenvalues on the circle (reuse the
@@ -118,7 +118,7 @@ Catalogue what made G5 a **theorem** over `F_q` and is **absent** over ℚ — t
   of #125. Door **BRIDGE**, content beyond import (places G5 in the weight torus, opposite g4's angles).
   **FF gatekeeper campaign G1–G5 now complete.**
 - 2026-06-19 (Leaner) - added Lean anchor for the scalar weight-normalization step:
-  `functionFieldWeightNormalize_norm_eq_one_iff` in `formal/GaloisForLFunctions/BoundaryModulus.lean`.
+  `functionFieldWeightNormalize_norm_eq_one_iff` in `formal/GaloisForLFunctions/RHTower/BoundaryModulus.lean`.
   It formalizes that normalizing a Frobenius eigenvalue by `q^(w*deg/2)` has unit norm iff the original
   eigenvalue lies on the weight circle of radius `q^(w*deg/2)`. Created
   `../3-formalized/function-field-weight-normalization.md`. Parent remains in `2-fully-proven` because

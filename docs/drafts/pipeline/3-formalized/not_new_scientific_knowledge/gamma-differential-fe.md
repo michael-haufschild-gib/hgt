@@ -13,7 +13,7 @@
   - `gamma_deriv_residue (k) : (s+k)²·Γ′(s) → −(−1)^k/k!` — the residue of Γ′, as the PRODUCT [(s+k)ψ]·[(s+k)Γ] (using Γ′=ψΓ). This is the derivative-residue the higher-rung pole-counting argument needs; higher orders follow via the polygamma analogues.
   All absent from mathlib; the leading Laurent data for the (k!)-domination Hölder argument.
 - **Proof mechanism:** shift Γ(x+1)=iteratedDeriv of s↦Γ(s+1) (`iteratedDeriv_comp_add_const`); Γ(s+1)=s·Γ(s) as an EventuallyEq near x≠0 (`Gamma_add_one` + `EventuallyEq.iteratedDeriv_eq`); Leibniz (`iteratedDeriv_mul`) on s·Γ(s), where only the order-0 and order-1 derivatives of the factor s survive (the rest vanish by `iteratedDeriv_id_add_two`).
-- **Lean:** `formal/GaloisForLFunctions/GammaDifferentialFE.lean`. Axiom-clean, builds standalone.
+- **Lean:** `formal/GaloisForLFunctions/HTGeometry/GammaDifferentialFE.lean`. Axiom-clean, builds standalone.
 - **Significance:** this is how the functional equation enters the DIFFERENTIAL structure. mathlib had only k=0 (Gamma_add_one) and k=1 (deriv_Gamma_add_one); the general-k recurrence is new. It is the load-bearing tool for attacking `P(s, Γ, Γ', …) = 0` — the order-≥1 rungs the order-0 pole argument cannot reach.
 
 ## Log

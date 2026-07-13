@@ -14,7 +14,7 @@ It formalizes why Hilbertizing the exact Kapustin point spectrum is the RH step
 itself unless a separate source theorem produces the Hilbert structure.
 -/
 
-import GaloisForLFunctions.BerryKeating
+import GaloisForLFunctions.RHTower.BerryKeating
 import GaloisForLFunctions.RHTower.CentralReciprocalMoments
 import Mathlib.Analysis.InnerProductSpace.Spectrum
 

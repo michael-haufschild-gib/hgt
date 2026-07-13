@@ -33,7 +33,7 @@ passing through the orbit-degree classifier.
   equality.
 - [x] 2 -> 3  formalized: Lean theorems `orbitDegree_ne_zero_ne_of_orbitDegree_zero` and
   `orbitDegree_single_ne_zero_ne_of_orbitDegree_zero` in
-  `formal/GaloisForLFunctions/OrbitBalance.lean`; names checked by scratch file; `#print axioms` uses only the
+  `formal/GaloisForLFunctions/HTGeometry/OrbitBalance.lean`; names checked by scratch file; `#print axioms` uses only the
   allowed standard subset `[propext, Classical.choice, Quot.sound]`; `lake build` green; `check_axioms.sh`
   PASS.
 - [ ] 3 -> 4  publication-ready: include as the finite orbit-degree separation lemma in the seam/two-lattices

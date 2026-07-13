@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RiemannTower
 import GaloisForLFunctions.RHTower.XiLogDerivNotHolonomic
-import GaloisForLFunctions.QuantitativeHolderInterface
+import GaloisForLFunctions.HTGeometry.QuantitativeHolderInterface
 
 /-!
 # The hypertranscendence chain for the completed ξ

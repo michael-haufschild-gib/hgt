@@ -20,7 +20,7 @@ Conversely, if `x` is algebraically independent over `F` and `y` is algebraicall
 ## Gates
 - [x] 0 -> 1  in-progress: tower-law core extracted from the bigraded-corank §G factorization.
 - [x] 1 -> 2  fully-proven: paper proof above, by the standard algebraic-independence tower law.
-- [x] 2 -> 3  formalized: Lean theorem `algebraicIndependent_sumElim_intermediateField_iff` in `formal/GaloisForLFunctions/BigradedCorank.lean`; scratch `#check`/`#print axioms`, `lake build`, and `scripts/check_axioms.sh` pass.
+- [x] 2 -> 3  formalized: Lean theorem `algebraicIndependent_sumElim_intermediateField_iff` in `formal/GaloisForLFunctions/HTGeometry/BigradedCorank.lean`; scratch `#check`/`#print axioms`, `lake build`, and `scripts/check_axioms.sh` pass.
 - [ ] 3 -> 4  publication-ready: cite as the formal certificate for the relative-exponential-apex factorization.
 
 ## Log

@@ -263,7 +263,7 @@ The **exact** finite-sum dispersion identity underlying them — stated in the A
 `2(M₂M₄ − M₃²) = ∑_{a,b} w_a w_b x_a² x_b² (x_a − x_b)²`, previously used only inside the
 dominated-convergence limit for infinite spectra — is now formalized as a standalone algebraic theorem
 over an arbitrary commutative ring in
-`formal/GaloisForLFunctions/LowTemperatureDispersionIdentity.lean`:
+`formal/GaloisForLFunctions/RHTower/LowTemperatureDispersionIdentity.lean`:
 `ZetaFisher.two_mul_dispersion` (the exact symmetrization identity) and `ZetaFisher.dispersion_nonneg`
 (its manifest nonnegativity `M₂M₄ − M₃² ≥ 0` for nonnegative weights, each summand a product of a
 weight product with a perfect square).  Both are axiom-clean (`propext, Classical.choice, Quot.sound`).

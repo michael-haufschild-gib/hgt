@@ -1,4 +1,4 @@
-import GaloisForLFunctions.KreinLangerInertia
+import GaloisForLFunctions.HTGeometry.KreinLangerInertia
 
 /-!
 # Rectangular factored Krein inertia

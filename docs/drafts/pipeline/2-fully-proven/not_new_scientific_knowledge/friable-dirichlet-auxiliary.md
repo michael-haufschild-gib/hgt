@@ -173,7 +173,7 @@ linear form it must bound.
   explicit C-input, which is correctly external (a different card's open core).
 - [ ] 2 → 3  formalized — Lean anchor **DONE** for the term-by-term derivative identity:
   `iteratedDeriv_friableExponentDirichletExp_at_one` in
-  `formal/GaloisForLFunctions/FriableAuxiliary.lean` proves
+  `formal/GaloisForLFunctions/RHTower/FriableAuxiliary.lean` proves
   `F^{(T)}(1)=(-1)^T Σ_m λ_m (Σ_p m_p log p)^T/n_m` for a finite exponent-vector auxiliary.
   Lean anchor **DONE** for the word-level multinomial/log-monomial expansion:
   `primeLogDot_pow_wordExpansion` and
@@ -208,7 +208,7 @@ linear form it must bound.
   to polynomial height bookkeeping. "Difficulty conserved / no bypass" upgraded from heuristic to **theorem**.
   Grade unchanged (BRIDGE); the C-bound itself stays the open Fields-Medal core. No runpod used.
 - 2026-06-19 (Leaner) — added Lean anchor `iteratedDeriv_friableExponentDirichletExp_at_one` in
-  `formal/GaloisForLFunctions/FriableAuxiliary.lean`: for a finite coefficient family indexed by prime
+  `formal/GaloisForLFunctions/RHTower/FriableAuxiliary.lean`: for a finite coefficient family indexed by prime
   exponent vectors, the exponential Dirichlet model satisfies
   `F^{(T)}(1)=(-1)^T Σ_m λ_m (Σ_p m_p log p)^T/n_m`. Also added supporting audited theorems for
   `d^T exp(-sL)`, `exp(-log n)=1/n`, and finite term-by-term differentiation. Card remains in

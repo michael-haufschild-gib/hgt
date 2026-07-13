@@ -656,7 +656,7 @@ review.
 
 ## Lean status `[FORMALIZATION]`
 
-`GaloisForLFunctions/SimplicialConstraintTower.lean` now formalizes the complete combinatorial
+`GaloisForLFunctions/HTGeometry/SimplicialConstraintTower.lean` now formalizes the complete combinatorial
 principalization capstone:
 
 - `FacetComplementRankOne` records the analytic output `|V\F| <= 1` for every facet;

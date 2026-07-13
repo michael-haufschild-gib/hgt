@@ -9,7 +9,7 @@
   `../3-formalized/two-axis-bohr-combination-mode.md`.
 
 ## Details
-New Lean theorems in `formal/GaloisForLFunctions/BohrGenerators.lean`:
+New Lean theorems in `formal/GaloisForLFunctions/HTGeometry/BohrGenerators.lean`:
 - `GaloisForLFunctions.twoAxisMode_support_eq`
 - `GaloisForLFunctions.bohrCharacter_twoAxis_product`
 - `GaloisForLFunctions.twoAxisMode_ne_zero`

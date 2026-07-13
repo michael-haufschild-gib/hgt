@@ -181,7 +181,7 @@ the missing single Frobenius with the missing non-CC place.
   Source-A/B corollary + `F_q` shadow established; hard converse (III) attributed import (Hölder + ADH).
   **Grade BRIDGE.**
 - [ ] 2 → 3  formalized: Lean anchors **DONE** for (I)'s gauge multiplier identity and local DA-ODE:
-  `ccGaugeMultiplier_eq_const` in `formal/GaloisForLFunctions/MultiplierDichotomy.lean` proves
+  `ccGaugeMultiplier_eq_const` in `formal/GaloisForLFunctions/HTGeometry/MultiplierDichotomy.lean` proves
   `a·σ(1/g)/(1/g)=c` when `a=c·σ(g)/g`, and `hasDerivAt_mul_exp_const_ode` proves the local derivative
   identity for `f(z)=g(z) exp(z*lam)`, i.e. `f'=(g'/g+lam)f` where `g z ≠ 0`. The global shift equation
   `σf=a·f` is also Lean-backed by `ccShiftSolution_eq`. Remaining Lean targets: Picard-Vessiot
@@ -212,7 +212,7 @@ the missing single Frobenius with the missing non-CC place.
   archimedean–prime divide; C5 = the weld) and the `F_q` all-CC ⟹ holonomic Door-5 shadow (predicts the
   `corank` 1 vs ∞ split, #121). Library-backlog ticket filed for 00-status #130 / new theorem row.
 - 2026-06-19 (Leaner) — added Lean anchors `ccGaugeMultiplier_eq_const` and
-  `hasDerivAt_mul_exp_const_ode` in `formal/GaloisForLFunctions/MultiplierDichotomy.lean`, proving the
+  `hasDerivAt_mul_exp_const_ode` in `formal/GaloisForLFunctions/HTGeometry/MultiplierDichotomy.lean`, proving the
   case-(I) gauge identity `a·σ(1/g)/(1/g)=c` from `a=c·σ(g)/g` in abstract commutative group notation and
   the local analytic ODE identity for `f(z)=g(z) exp(z*lam)`. Added the module to the root import and axiom
   audit; `lake build` and `scripts/check_axioms.sh` pass with 250 audited theorem outputs and no `sorry`.

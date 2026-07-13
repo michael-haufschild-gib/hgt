@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PrimeSupportBoundaryJets
-import GaloisForLFunctions.PrimeWordSupportSelector
+import GaloisForLFunctions.RHTower.PrimeWordSupportSelector
 
 /-!
 # Weighted prime-word ensemble tomography

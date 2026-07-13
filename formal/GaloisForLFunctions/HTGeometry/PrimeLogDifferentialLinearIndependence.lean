@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PrimeLogTranslationGeometry
-import GaloisForLFunctions.MeromorphicSimplePoleDifferentialOperator
+import GaloisForLFunctions.HTGeometry.MeromorphicSimplePoleDifferentialOperator
 
 /-!
 # Differential-linear independence of prime-log translates

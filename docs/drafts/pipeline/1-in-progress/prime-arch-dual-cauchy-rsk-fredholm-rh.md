@@ -6,9 +6,9 @@
 - **Lean inputs:** `formal/GaloisForLFunctions/RHTower/MobiusFiniteSchurTransfer.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeWordYoungShapeNoGo.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeArchDualCauchyTensor.lean`,
-  `formal/GaloisForLFunctions/FredholmDeterminantExamples.lean`,
-  `formal/GaloisForLFunctions/FredholmDeterminantZeta.lean`,
-  `formal/GaloisForLFunctions/AdamsOperations.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/FredholmDeterminantExamples.lean`,
+  `formal/GaloisForLFunctions/RHTower/FredholmDeterminantZeta.lean`,
+  `formal/GaloisForLFunctions/RHTower/AdamsOperations.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeArchThetaAllOrderCumulant.lean`, and
   `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedSource.lean`
 - **Consumer:** `prime-theta-young-thoma-schur-rh.md`
@@ -202,7 +202,7 @@ negative, and at `sigma=1.5` size four is negative.  The later source computatio
 `sigma=2` also fails, only deeper in the Hankel tower.  The positive classification is therefore
 not a damping threshold: pointwise division is the wrong operation in the positive moment cone.
 Pointwise multiplication remains positive, while division creates a signed ghost spectrum.  Lean
-formalizes both facts in `formal/GaloisForLFunctions/MomentTowerQuotientGhost.lean`.
+formalizes both facts in `formal/GaloisForLFunctions/HTGeometry/MomentTowerQuotientGhost.lean`.
 
 ## 5. Hard attacks and positive successors
 
@@ -240,7 +240,7 @@ formalizes both facts in `formal/GaloisForLFunctions/MomentTowerQuotientGhost.le
    **Positive successor:** retain its negative modes in a graded spectral Grothendieck completion,
    tensor with the prime sector, and construct an equal-weight differential whose positive
    cohomology has traces `c_n`; the finite cancellation theorem is already formalized in
-   `formal/GaloisForLFunctions/GradedSpectrumCancellation.lean`.
+   `formal/GaloisForLFunctions/HTGeometry/GradedSpectrumCancellation.lean`.
 
 ## 6. Exact open cores
 

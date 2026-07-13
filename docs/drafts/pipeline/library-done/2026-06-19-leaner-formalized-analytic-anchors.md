@@ -6,19 +6,19 @@
 
 ## New formalized cards
 - `docs/drafts/pipeline/3-formalized/log-zeta-prime-coefficient-identities.md`
-  - Lean file: `formal/GaloisForLFunctions/C5JensenPrimeKernel.lean`
+  - Lean file: `formal/GaloisForLFunctions/RHTower/C5JensenPrimeKernel.lean`
   - Theorems: `logZetaPrimeCoeff_prime`, `logZetaPrimeCoeff_primePower`
   - Split from `c5-jensen-prime-kernel.md`.
 - `docs/drafts/pipeline/3-formalized/function-field-local-factor-fe-algebra.md`
-  - Lean file: `formal/GaloisForLFunctions/FunctionFieldFE.lean`
+  - Lean file: `formal/GaloisForLFunctions/RHTower/FunctionFieldFE.lean`
   - Theorems: `multiset_esymm_map_mul`, `functionField_esymm_FE`, `functionField_localFactor_FE`
   - Split from the function-field/C6 border material.
 - `docs/drafts/pipeline/3-formalized/stieltjes-pairing-cauchy-product.md`
-  - Lean file: `formal/GaloisForLFunctions/StieltjesWeld.lean`
+  - Lean file: `formal/GaloisForLFunctions/RHTower/StieltjesWeld.lean`
   - Theorem: `stieltjes_pairing_cauchy_j`
   - Split from `stieltjes-log-weld.md`.
 - `docs/drafts/pipeline/3-formalized/friable-dirichlet-derivative-at-one.md`
-  - Lean file: `formal/GaloisForLFunctions/FriableAuxiliary.lean`
+  - Lean file: `formal/GaloisForLFunctions/RHTower/FriableAuxiliary.lean`
   - Theorem: `iteratedDeriv_friableExponentDirichletExp_at_one`
   - Split from `friable-dirichlet-auxiliary.md`.
 

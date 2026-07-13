@@ -24,7 +24,7 @@ turning "is `γ₀` irrational" into the precise, machine-checked interface "con
 
 ## The Lean certificate (axiom-clean)
 
-`GaloisForLFunctions/ExponentialPeriodCorank.lean` (all `[propext, Classical.choice, Quot.sound]`,
+`GaloisForLFunctions/HTGeometry/ExponentialPeriodCorank.lean` (all `[propext, Classical.choice, Quot.sound]`,
 lint green):
 
 - `irrational_of_linearForms (α p q …)` — **the engine**: nonzero integer forms `pₙ + qₙ·α → 0` ⟹

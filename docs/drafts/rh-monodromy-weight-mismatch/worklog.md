@@ -6340,7 +6340,7 @@ Cauchy). Roadmap `docs/denied/formalization-roadmap-finite-to-apex.md`: Stage 1 
 (infinite m_ξ) = "construct m_ξ = -Ξ'/Ξ" = FLOW IN DISGUISE (rule 7) + RH-equivalent. Corpus
 faithful-vs-measured dichotomy: the type-II₁ MEASURED index (what T3 named, τ(P₋)) is RH-blind.
 
-Built axiom-clean: `formal/GaloisForLFunctions/MeasuredIndexBlindness.lean` — measured index RH-blind
+Built axiom-clean: `formal/GaloisForLFunctions/RHTower/MeasuredIndexBlindness.lean` — measured index RH-blind
 two ways: (i) density normalization (faithful_measured_dichotomy: κ₋=0,1,∞ all → measured 0);
 (ii) type-III scaling obstruction (typeIII_scaling_forces_zero: covariant+invariant ⟹ 0). lint green.
 Card: `pipeline/3-formalized/measured-index-blindness.md`.

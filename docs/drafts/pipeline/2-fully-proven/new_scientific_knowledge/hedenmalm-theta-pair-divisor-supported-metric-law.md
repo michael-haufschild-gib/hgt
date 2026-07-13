@@ -403,13 +403,13 @@ criterion is also formalized: conservativity is equivalent to positive mass on e
 plus simplicity. No RH, positivity, or source-conservativity assertion is introduced as an
 assumption inside these results.
 
-`formal/GaloisForLFunctions/SchwartzTranslation.lean` supplies the first missing upstream layer
+`formal/GaloisForLFunctions/HTGeometry/SchwartzTranslation.lean` supplies the first missing upstream layer
 that mathlib did not package: additive translation as a continuous linear action on Schwartz
 space, with its group and inverse laws, exact commutation with every directional derivative,
 strong continuity, and strong differentiability of every translation orbit in the Schwartz
 topology.
 
-`formal/GaloisForLFunctions/SchwartzSesquilinear.lean` packages jointly continuous sesquilinear
+`formal/GaloisForLFunctions/HTGeometry/SchwartzSesquilinear.lean` packages jointly continuous sesquilinear
 forms on complex Schwartz space. Lean proves directly that momentum symmetry makes the derivative
 of every simultaneous-translation matrix coefficient vanish, and hence forces exact simultaneous
 translation invariance. No differentiability assumption on the form is added.
@@ -420,12 +420,12 @@ integrable `|XiC|^2` with zero integral, its support lies in that set and the me
 the sum of its point masses there. The countability proof is extracted from local finiteness of
 the actual global Xi divisor and sigma-compactness of the complex plane.
 
-`formal/GaloisForLFunctions/SchwartzProduct.lean` supplies the jointly continuous pointwise
+`formal/GaloisForLFunctions/HTGeometry/SchwartzProduct.lean` supplies the jointly continuous pointwise
 Schwartz algebra that mathlib did not package. It proves explicit defining-seminorm product bounds,
 joint continuity of multiplication, continuous complex conjugation, and joint continuity of
 `f * conjugate(g)`.
 
-`formal/GaloisForLFunctions/SchwartzSpectralMeasureForm.lean` formalizes the constructive half of
+`formal/GaloisForLFunctions/HTGeometry/SchwartzSpectralMeasureForm.lean` formalizes the constructive half of
 the Bochner--Schwartz classification. Every positive measure of temperate growth now produces,
 without further hypotheses, a jointly continuous nonnegative Hermitian Schwartz form through the
 Fourier integral in `(9)`. Lean proves directly that momentum is symmetric for this form and that

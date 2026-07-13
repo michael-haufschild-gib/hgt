@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Priority:** FOUNDATIONAL
-- **Source:** split from the Rankin-Selberg/`⊗`-power positivity references in `../2-fully-proven/g5-over-fq-deligne-unitarity.md` §2-§3 and the prime-block "positivity for free" clause of `../2-fully-proven/explicit-formula-as-constraint.md` §3; Lean file `formal/GaloisForLFunctions/AdamsOperations.lean`
+- **Source:** split from the Rankin-Selberg/`⊗`-power positivity references in `../2-fully-proven/g5-over-fq-deligne-unitarity.md` §2-§3 and the prime-block "positivity for free" clause of `../2-fully-proven/explicit-formula-as-constraint.md` §3; Lean file `formal/GaloisForLFunctions/RHTower/AdamsOperations.lean`
 - **Statement:** For finite Satake parameter data, Adams power sums multiply under tensor product; in the self-dual conjugate tensor square the Adams power sum is the norm square of the original power sum, so any finite nonnegative weighted second-moment sum is nonnegative.
 
 ## Goal

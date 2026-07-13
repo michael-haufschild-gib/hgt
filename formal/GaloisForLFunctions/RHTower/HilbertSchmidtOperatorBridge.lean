@@ -12,8 +12,8 @@ The seam crossing kernels on `ℓ²(ℤ)` transfer along the kernel → operator
 energy law `⟨B_r, B_s⟩_HS = r·δ_{r,s}` holds for the coordinate-free Hilbert–Schmidt inner
 product.
 -/
-import GaloisForLFunctions.HilbertSchmidtCompact
-import GaloisForLFunctions.HilbertSchmidtMatrix
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtCompact
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtMatrix
 import GaloisForLFunctions.RHTower.SchattenApproximation
 import GaloisForLFunctions.RHTower.SeamCrossingHS
 

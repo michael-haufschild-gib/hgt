@@ -34,7 +34,7 @@ The contrapositive gives the initial-moment form: if `c` is nonzero, then some m
 - [x] 1 -> 2  fully-proven: paper proof above by Lagrange complement polynomials.
 - [x] 2 -> 3  formalized: Lean theorems `vandermonde_moments_eq_zero_of_injective` and
   `vandermonde_initial_moment_nonzero_of_nonzero_coeff` in
-  `formal/GaloisForLFunctions/ZeroEstimate.lean`; names checked by scratch file; `#print axioms` uses only
+  `formal/GaloisForLFunctions/RHTower/ZeroEstimate.lean`; names checked by scratch file; `#print axioms` uses only
   the allowed standard subset `[propext, Classical.choice, Quot.sound]`; `lake build` green;
   `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the Vandermonde algebra lemma inside the G2 zero-estimate note.

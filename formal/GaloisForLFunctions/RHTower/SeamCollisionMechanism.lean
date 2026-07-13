@@ -28,7 +28,7 @@ signature collision: `u` grows from `0` precisely as the pair leaves the line.  
 the collision locus of the FE-forced Krein form.
 -/
 import GaloisForLFunctions.RHTower.SeamInertiaCharge
-import GaloisForLFunctions.CarrierPickKernel
+import GaloisForLFunctions.HTGeometry.CarrierPickKernel
 
 open Complex Matrix GaloisForLFunctions
 open scoped BigOperators ComplexOrder

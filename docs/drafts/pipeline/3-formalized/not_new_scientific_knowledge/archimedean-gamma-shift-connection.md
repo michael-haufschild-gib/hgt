@@ -37,7 +37,7 @@ Substituting this identity into `A(s+2)` gives
 - [x] 1 -> 2 fully-proven: paper proof above, using the standard Gamma and digamma recurrences.
 - [x] 2 -> 3 formalized: Lean definitions/theorems `gammaRealLogConnection`, `gammaReal_shift_two`,
   `digamma_half_add_one`, and `gammaRealLogConnection_shift_compat` in
-  `formal/GaloisForLFunctions/ArchimedeanGamma.lean`; names checked by scratch file; `lake build` green;
+  `formal/GaloisForLFunctions/RHTower/ArchimedeanGamma.lean`; names checked by scratch file; `lake build` green;
   `check_axioms.sh` PASS.
 - [ ] 3 -> 4 publication-ready: cite as the scalar Gamma recurrence/connection lemma in the gamma-module note.
 

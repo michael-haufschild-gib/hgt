@@ -56,7 +56,7 @@ import GaloisForLFunctions.Bottcher.HDiscLoopDeck
 import GaloisForLFunctions.Bottcher.Brolin.LargeNormBrolin
 import GaloisForLFunctions.Bottcher.Q62EquilibriumVanishing
 import GaloisForLFunctions.Bottcher.Q62WeylDischarge
-import GaloisForLFunctions.Q62RootTower
+import GaloisForLFunctions.Bottcher.Q62RootTower
 import GaloisForLFunctions.Hurwitz.MixedClose
 import GaloisForLFunctions.Hurwitz.AllNComplete
 import GaloisForLFunctions.Hurwitz.LadderIndependence

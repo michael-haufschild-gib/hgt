@@ -11,7 +11,7 @@
 ## Details
 New Lean theorem:
 - `GaloisForLFunctions.familyTwistedProduct_split` in
-  `formal/GaloisForLFunctions/FamilyCrossResonance.lean`
+  `formal/GaloisForLFunctions/HTGeometry/FamilyCrossResonance.lean`
 
 Supporting Lean theorems:
 - `GaloisForLFunctions.bohrCharacter_finset_sum`

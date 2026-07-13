@@ -12,7 +12,7 @@
 Please update the shared door/status/index ledgers to reflect one new `3-formalized` card:
 
 1. `docs/drafts/pipeline/3-formalized/vandermonde-initial-moment-core.md`
-   - Lean module: `formal/GaloisForLFunctions/ZeroEstimate.lean`
+   - Lean module: `formal/GaloisForLFunctions/RHTower/ZeroEstimate.lean`
    - Lean anchors: `vandermonde_moments_eq_zero_of_injective`,
      `vandermonde_initial_moment_nonzero_of_nonzero_coeff`
    - Source: split from `docs/drafts/pipeline/2-fully-proven/zero-estimate-uniformity.md` part (a)

@@ -194,10 +194,10 @@ unchanged. Re-submitting for review.
   Grade BRIDGE; surplus over C5★ negative. Re-submitted for Lean review.
 - [ ] 2 → 3  formalized — Lean anchor **DONE** for the repaired no-fixed-point replacement:
   `primeDilation_fixed_eq_zero`, `primeDilation_no_fixed_unit`, and
-  `no_primeDilation_fixed_torus_point` in `formal/GaloisForLFunctions/OrbitFreeness.lean` prove that
+  `no_primeDilation_fixed_torus_point` in `formal/GaloisForLFunctions/HTGeometry/OrbitFreeness.lean` prove that
   prime-lane dilations have no nonzero/torus fixed point, the algebraic core of the non-retraction
   argument. Lean anchor **DONE** for the rank-one semisimple vanishing core:
-  `diagonalKer_mul_eq_sum_ker` in `formal/GaloisForLFunctions/ShafarevichGluing.lean` proves the
+  `diagonalKer_mul_eq_sum_ker` in `formal/GaloisForLFunctions/HTGeometry/ShafarevichGluing.lean` proves the
   joint-eigenbasis identity `ker(ST)=ker(S)+ker(T)` used in R1. Full formalization still requires
   nonabelian `H¹`, the character-variety/Procesi import, and the direct C5★ coboundary-regularity
   identification.
@@ -245,12 +245,12 @@ unchanged. Re-submitting for review.
   missing fixed base point** (seam, #121). No runpod used (exact algebra). Ledger note to follow.
 - 2026-06-19 (Leaner) — added Lean anchor for the repaired R3 no-fixed-point claim:
   `primeDilation_fixed_eq_zero`, `primeDilation_no_fixed_unit`, and `no_primeDilation_fixed_torus_point`
-  in `formal/GaloisForLFunctions/OrbitFreeness.lean`. These prove that `z ↦ p^{-1}z` has no nonzero
+  in `formal/GaloisForLFunctions/HTGeometry/OrbitFreeness.lean`. These prove that `z ↦ p^{-1}z` has no nonzero
   fixed point and no coordinatewise fixed point on `(ℂ^*)^P`, supporting the no-equivariant-retraction
   replacement. Card remains in 2-fully-proven: nonabelian `H¹`, Procesi/character-variety, and C5★
   coboundary regularity are not fully formalized.
 - 2026-06-19 (Leaner) — added Lean anchor for the R1 rank-one semisimple vanishing core:
-  `diagonalKer_mul_eq_sum_ker` in `formal/GaloisForLFunctions/ShafarevichGluing.lean`. It formalizes the
+  `diagonalKer_mul_eq_sum_ker` in `formal/GaloisForLFunctions/HTGeometry/ShafarevichGluing.lean`. It formalizes the
   joint-eigenbasis identity `ker(ST)=ker(S)+ker(T)` as a coordinatewise decomposition for diagonal scalar
   multipliers, matching the paper proof of `Ш_{p,q}^{(1)}=0`. Added the module to the root import and axiom
   audit; `lake build` and `scripts/check_axioms.sh` pass with 247 audited theorem outputs and no `sorry`.

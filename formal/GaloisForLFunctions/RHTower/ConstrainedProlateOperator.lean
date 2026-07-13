@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SoninEulerCalkinPartialIsometry
-import GaloisForLFunctions.GreedySingularValues
+import GaloisForLFunctions.HTGeometry.GreedySingularValues
 import Mathlib.Analysis.InnerProductSpace.Positive
 import Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional
 

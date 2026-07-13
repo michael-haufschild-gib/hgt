@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean certificate split from `../2-fully-proven/prime-zero-susceptibility-transverse.md`)
 - **Owner:** Leaner
-- **Lean file:** `formal/GaloisForLFunctions/SusceptibilityBalance.lean`
+- **Lean file:** `formal/GaloisForLFunctions/RHTower/SusceptibilityBalance.lean`
 
 ## Statement
 
@@ -63,6 +63,6 @@ theorem susceptibilityMirrorFrequencyFactor_eq_one_forall_iff {beta : ℝ} {m : 
 
 ## Verification
 
-- `cd formal && lake env lean GaloisForLFunctions/SusceptibilityBalance.lean`
+- `cd formal && lake env lean GaloisForLFunctions/RHTower/SusceptibilityBalance.lean`
 - `cd formal && lake build GaloisForLFunctions`
 - `bash scripts/check_axioms.sh`

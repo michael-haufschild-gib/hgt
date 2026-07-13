@@ -2184,7 +2184,7 @@ identity logDeriv det(1−zK) = −resolventTrace (the shape logDeriv ξ = tr((s
 
 ## Fredholm determinant + Plemelj identity BUILT (gate green 9316)
 
-New module formal/GaloisForLFunctions/FredholmDeterminant.lean (all axiom-clean, full gate green):
+New module formal/GaloisForLFunctions/HTGeometry/FredholmDeterminant.lean (all axiom-clean, full gate green):
 - fredholmExp K z := ∑_{n≥2} zⁿ/n·tr(Kⁿ) = ∑ₙ z^(n+2)/(n+2)·tr(K^(n+2)); fredholmExp_summable for |z|·‖K‖_HS<1.
 - hasDerivAt_fredholmExp — TERMWISE DIFFERENTIATION on |z|<r (r·‖K‖_HS<1): (fredholmExp K)′(z)=resolventTrace K z,
   via hasDerivAt_tsum_of_isPreconnected (uniform geometric bound on term derivatives over the ball).

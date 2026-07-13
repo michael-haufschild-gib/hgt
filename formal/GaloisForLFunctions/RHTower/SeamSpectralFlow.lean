@@ -30,8 +30,8 @@ holds iff the FE-forced Krein form is everywhere definite.  No operator or carri
 definiteness is a constraint on a given form, and its invariance under congruence is what pins it.
 -/
 import GaloisForLFunctions.RHTower.RiemannTower
-import GaloisForLFunctions.CarrierPickKernel
-import GaloisForLFunctions.KreinLangerInertia
+import GaloisForLFunctions.HTGeometry.CarrierPickKernel
+import GaloisForLFunctions.HTGeometry.KreinLangerInertia
 
 open Complex Matrix Submodule GaloisForLFunctions
 

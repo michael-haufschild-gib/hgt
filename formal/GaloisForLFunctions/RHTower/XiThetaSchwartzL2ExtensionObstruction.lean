@@ -1,4 +1,4 @@
-import GaloisForLFunctions.SchwartzSesquilinear
+import GaloisForLFunctions.HTGeometry.SchwartzSesquilinear
 import GaloisForLFunctions.RHTower.XiThetaL2MetricSingularity
 
 /-!

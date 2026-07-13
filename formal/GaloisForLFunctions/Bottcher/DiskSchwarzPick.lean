@@ -6,7 +6,7 @@ map from a Euclidean disk to the closed unit disk is contracted by the Blaschke 
 the center value.
 -/
 import Mathlib.Analysis.Complex.Schwarz
-import GaloisForLFunctions.CayleySchur
+import GaloisForLFunctions.HTGeometry.CayleySchur
 import GaloisForLFunctions.Bottcher.ModularLambdaLift
 
 open Complex Metric Set

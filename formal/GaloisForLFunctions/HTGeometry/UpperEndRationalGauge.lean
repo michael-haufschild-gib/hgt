@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.UpperEndPrimeLogCarrier
-import GaloisForLFunctions.DifferentialIndependence
+import GaloisForLFunctions.HTGeometry.DifferentialIndependence
 import Mathlib.Analysis.Analytic.Polynomial
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 

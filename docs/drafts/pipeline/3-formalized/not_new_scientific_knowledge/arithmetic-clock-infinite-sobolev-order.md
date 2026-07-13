@@ -5,7 +5,7 @@
 - **Type:** THEOREM / WHEELER--DEWITT LOCALITY GATE
 - **Scientific status:** `[BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** `dirichlet-diagonal-hilbert-rigging-abscissa-barrier`; separate from RHTower Routes A--D
-- **Lean:** `formal/GaloisForLFunctions/DirichletHilbertRiggingBarrier.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/DirichletHilbertRiggingBarrier.lean`
 
 ## Statement
 

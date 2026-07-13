@@ -111,7 +111,7 @@ exactly what ℚ adds (#130/#134). ✓
   degeneration checked (§5). Grade BRIDGE-prerequisite.
 - [ ] 2 → 3  formalized: Lean anchor **DONE** for the finite-support product-formula scale
   `σ_∞ e_m = (∏_p p^{-2m_p})e_m`, as `bohrCharacter_archimedeanSquareScale` in
-  `formal/GaloisForLFunctions/BohrGenerators.lean`. Lean anchor **DONE** for the finite coordinate-map
+  `formal/GaloisForLFunctions/HTGeometry/BohrGenerators.lean`. Lean anchor **DONE** for the finite coordinate-map
   commutations (`../3-formalized/finite-coordinate-scale-commutation.md`): `scaleCoordinate_commute`,
   `scaleAllCoordinates_commute`, and `scaleCoordinate_scaleAllCoordinates_commute`. Remaining Lean targets:
   `[∂_s,σ_∞]=0` reduces to `ψ(s/2+1)=ψ(s/2)+2/s` (mathlib `Complex.digamma`?); the single-factor
@@ -138,7 +138,7 @@ exactly what ℚ adds (#130/#134). ✓
   operator form. `F_q` shadow §5 (no `g`). Numerically certified (≤2.5e−32). → 2-fully-proven,
   BRIDGE-prerequisite. The native theorems (the connection's holonomy, RH) are what R⁺ now enables.
 - 2026-06-19 (Leaner) - added Lean anchor for the finite-support product-formula scale:
-  `bohrCharacter_archimedeanSquareScale` in `formal/GaloisForLFunctions/BohrGenerators.lean`. It
+  `bohrCharacter_archimedeanSquareScale` in `formal/GaloisForLFunctions/HTGeometry/BohrGenerators.lean`. It
   formalizes that applying the simultaneous square of all prime dilations `x_p -> p^-2 x_p` to a finite
   Bohr character multiplies it by the finite product of the corresponding scale factors. Created
   `../3-formalized/finite-bohr-product-formula-scale.md`. Parent remains in `2-fully-proven` because the
@@ -146,20 +146,20 @@ exactly what ℚ adds (#130/#134). ✓
   full completed-base construction are not fully Lean-formalized.
 - 2026-06-19 (Leaner) - added Lean anchor for finite coordinate-scale commutation:
   `scaleCoordinate_commute`, `scaleAllCoordinates_commute`, and
-  `scaleCoordinate_scaleAllCoordinates_commute` in `formal/GaloisForLFunctions/BohrGenerators.lean`.
+  `scaleCoordinate_scaleAllCoordinates_commute` in `formal/GaloisForLFunctions/HTGeometry/BohrGenerators.lean`.
   Created `../3-formalized/finite-coordinate-scale-commutation.md`. Parent remains in `2-fully-proven`
   because the Gamma symbol, digamma recurrence, analytic derivation, full `R+` ring, and archimedean-symbol
   action are not fully Lean-formalized.
 
 ## Lean progress note — 2026-06-19 (Leaner)
 
-Added `formal/GaloisForLFunctions/ArchimedeanGamma.lean` and root/audit imports. The new audited theorems are:
+Added `formal/GaloisForLFunctions/RHTower/ArchimedeanGamma.lean` and root/audit imports. The new audited theorems are:
 
 - `gammaReal_shift_two`: formalizes `Gamma_R(s+2) = (s/(2*pi)) Gamma_R(s)` using mathlib's `Complex.Gammaℝ_add_two`.
 - `digamma_half_add_one`: formalizes `psi(s/2+1)=psi(s/2)+2/s` under the standard pole-avoidance condition.
 - `gammaRealLogConnection_shift_compat`: formalizes the scalar compatibility identity behind `[d/ds, sigma_infty] g = 0` after cancelling the Gamma symbol `g`.
 
-Validation: `cd formal && lake env lean GaloisForLFunctions/ArchimedeanGamma.lean`, `cd formal && lake build GaloisForLFunctions`, and `bash scripts/check_axioms.sh` all pass; the axiom audit now checks 310 theorem outputs and no `sorry`.
+Validation: `cd formal && lake env lean GaloisForLFunctions/RHTower/ArchimedeanGamma.lean`, `cd formal && lake build GaloisForLFunctions`, and `bash scripts/check_axioms.sh` all pass; the axiom audit now checks 310 theorem outputs and no `sorry`.
 
 Parent remains in `2-fully-proven`: this closes the Gamma/digamma recurrence gap only. The full completed `R+` difference-differential ring, analytic derivation action, and generator-level commutation package are still not fully formalized as one Lean object.
 

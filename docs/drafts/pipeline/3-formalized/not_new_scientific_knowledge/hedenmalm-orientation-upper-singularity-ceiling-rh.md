@@ -67,7 +67,7 @@ and reflection.
 ## Formal theorem surface
 
 The general predecessor theorems are in
-`formal/GaloisForLFunctions/TranslatedStripBoundary.lean`:
+`formal/GaloisForLFunctions/HTGeometry/TranslatedStripBoundary.lean`:
 
 ```text
 exists_nat_le_sub_mem_leftShiftBoundary_of_re_lt

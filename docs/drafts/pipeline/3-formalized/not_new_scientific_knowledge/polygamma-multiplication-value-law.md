@@ -67,7 +67,7 @@ relations are not new scientific knowledge.
 
 ## Lean certificate
 
-File: `formal/GaloisForLFunctions/PolygammaMultiplication.lean`.
+File: `formal/GaloisForLFunctions/HTGeometry/PolygammaMultiplication.lean`.
 
 - `digamma_multiplication`: scaled digamma law `(1)`;
 - `trigamma_multiplication`: first positive-order case of `(2)`;

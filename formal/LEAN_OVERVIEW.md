@@ -7,14 +7,16 @@ Use this as the quick map before opening large proof files.
 
 | Area | Umbrella | Lean modules | Declarations | Capstones |
 |---|---|---:|---:|---|
-| `hurwitz` | `GaloisForLFunctions.Hurwitz` | 55 | 524 | `hurwitz_n2_unconditional` |
-| `u0_pui` | `GaloisForLFunctions.U0` | 72 | 881 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 372 | 5296 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `rh_tower` | `GaloisForLFunctions.RHTower` | 1157 | 13662 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
+| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 433 | 3742 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
+| `hurwitz` | `GaloisForLFunctions.Hurwitz` | 56 | 537 | `hurwitz_n2_unconditional` |
+| `u0_pui` | `GaloisForLFunctions.U0` | 73 | 889 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 377 | 5359 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Wiring
 
 - Root imports `GaloisForLFunctions.MainTheorems`: **yes**.
-- Shared and bridge declarations outside the three theorem areas: **18103**.
+- Package-level declarations outside the five theorem areas: **630**.
 - Active proof-debt findings: **0**.
 
 ## Local Commands
@@ -34,7 +36,7 @@ Use this as the quick map before opening large proof files.
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
 | 5221 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3982 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
-| 3802 | `formal/GaloisForLFunctions/GammaDifferentialFE.lean` |
+| 3802 | `formal/GaloisForLFunctions/HTGeometry/GammaDifferentialFE.lean` |
 | 3722 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3644 | `formal/GaloisForLFunctions/U0/U0SliceViableB.lean` |
 | 3593 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |

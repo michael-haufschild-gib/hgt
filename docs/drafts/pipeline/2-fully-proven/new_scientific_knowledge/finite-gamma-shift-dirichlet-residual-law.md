@@ -404,7 +404,7 @@ Primary adjacent sources:
 
 ## Lean status
 
-`formal/GaloisForLFunctions/GammaShiftCasoratian.lean` proves, without new axioms:
+`formal/GaloisForLFunctions/HTGeometry/GammaShiftCasoratian.lean` proves, without new axioms:
 
 - `det_ascPochhammerEvalMatrix`;
 - `Complex.Gamma_add_nat_eq_ascPochhammer_mul`;

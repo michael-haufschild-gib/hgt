@@ -13,7 +13,7 @@ Record the following new `3-formalized` card in the shared door/status/index led
 - `docs/drafts/pipeline/3-formalized/sato-tate-chebyshev-orthogonality.md`
 
 ## Lean Certificate
-- Lean module: `formal/GaloisForLFunctions/SatoTateMoment.lean`
+- Lean module: `formal/GaloisForLFunctions/RHTower/SatoTateMoment.lean`
 - Theorem anchors:
   - `integral_cos_nat_mul`
   - `integral_sin_succ_mul_sin`

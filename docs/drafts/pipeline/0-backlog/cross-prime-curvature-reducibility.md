@@ -149,10 +149,10 @@ route. **Terminal grade: BRIDGE / RH-blind.**
   it restates the same apex; arithmetic residue = C5★ (consistent #117). Verdict module-independent. Moved
   1-in-progress → 2-fully-proven.
 - 2026-06-19 (Leaner) — added Lean anchors `upperUnipotentE_mul` and `upperUnipotentE_curvature_eq` in
-  `formal/GaloisForLFunctions/CrossPrimeCurvature.lean`, formalizing the square-zero upper-unipotent matrix
+  `formal/GaloisForLFunctions/HTGeometry/CrossPrimeCurvature.lean`, formalizing the square-zero upper-unipotent matrix
   algebra behind §1: `(I+aE)(I+bE)=I+(a+b)E` and
   `(I-b_qE)(I-σ_q(b_p)E)(I+b_pE)(I+σ_p(b_q)E)=I+(b_p+σ_p(b_q)-b_q-σ_q(b_p))E`. Added the module to the root
-  import and axiom audit. `cd formal && lake env lean GaloisForLFunctions/CrossPrimeCurvature.lean`,
+  import and axiom audit. `cd formal && lake env lean GaloisForLFunctions/HTGeometry/CrossPrimeCurvature.lean`,
   `cd formal && lake build`, and `bash scripts/check_axioms.sh` pass with 252 audited theorem outputs and no
   `sorry`. Card remains in `2-fully-proven`; the semilinear action, Fourier-support reading,
   coboundary/trivializability equivalence, and RH-blind A1/A2 verdict are not fully Lean-formalized.

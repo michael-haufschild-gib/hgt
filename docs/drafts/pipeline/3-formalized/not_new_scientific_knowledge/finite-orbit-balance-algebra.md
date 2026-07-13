@@ -29,7 +29,7 @@ On the integer orbit, each consecutive shift term `[z-1]-[z]` has degree zero, s
 ## Gates
 - [x] 0 -> 1  in-progress: finite orbit-degree algebra extracted.
 - [x] 1 -> 2  fully-proven: paper proof above, using only finite sums and telescoping.
-- [x] 2 -> 3  formalized: Lean theorems `orbitDegree_zero`, `orbitDegree_single`, `orbitDegree_add`, `orbitDegree_sub`, `orbitDegree_ne_zero_ne_of_orbitDegree_zero`, `orbitDegree_single_ne_zero_ne_of_orbitDegree_zero`, `orbitDegree_single_sub_single`, `eq_sum_single_sub_base_of_orbitDegree_zero`, `orbitDegree_intShiftCoboundary`, and `sum_intShiftTerm_right` in `formal/GaloisForLFunctions/OrbitBalance.lean`; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean theorems `orbitDegree_zero`, `orbitDegree_single`, `orbitDegree_add`, `orbitDegree_sub`, `orbitDegree_ne_zero_ne_of_orbitDegree_zero`, `orbitDegree_single_ne_zero_ne_of_orbitDegree_zero`, `orbitDegree_single_sub_single`, `eq_sum_single_sub_base_of_orbitDegree_zero`, `orbitDegree_intShiftCoboundary`, and `sum_intShiftTerm_right` in `formal/GaloisForLFunctions/HTGeometry/OrbitBalance.lean`; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the finite algebra lemma in the orbit-balance invariant note.
 
 ## Log

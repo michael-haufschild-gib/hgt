@@ -25,7 +25,7 @@ Thus the curvature product is
 ## Gates
 - [x] 0 -> 1  in-progress: square-zero upper-unipotent matrix computation extracted.
 - [x] 1 -> 2  fully-proven: paper proof above, by direct multiplication in a commutative ring.
-- [x] 2 -> 3  formalized: Lean theorems `upperUnipotentE_mul` and `upperUnipotentE_curvature_eq` in `formal/GaloisForLFunctions/CrossPrimeCurvature.lean`; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean theorems `upperUnipotentE_mul` and `upperUnipotentE_curvature_eq` in `formal/GaloisForLFunctions/HTGeometry/CrossPrimeCurvature.lean`; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the algebraic computation inside the curvature-reducibility note.
 
 ## Log

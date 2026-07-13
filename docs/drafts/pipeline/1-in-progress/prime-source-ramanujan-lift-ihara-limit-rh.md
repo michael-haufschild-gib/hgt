@@ -3,9 +3,9 @@
 - **ID:** `prime-source-ramanujan-lift-ihara-limit-rh`
 - **Stage:** 1-in-progress
 - **Type:** `[LARGE OUTLANDISH DETOUR] [CONJECTURE] [FORMALIZED FINITE CONSUMER]`
-- **Lean inputs:** `formal/GaloisForLFunctions/IharaBlockSelector.lean`,
-  `formal/GaloisForLFunctions/SpectralTorelli.lean`,
-  `formal/GaloisForLFunctions/PrimeWordSupportSelector.lean`,
+- **Lean inputs:** `formal/GaloisForLFunctions/RHTower/IharaBlockSelector.lean`,
+  `formal/GaloisForLFunctions/RHTower/SpectralTorelli.lean`,
+  `formal/GaloisForLFunctions/RHTower/PrimeWordSupportSelector.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeSupportBoundaryJets.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeWordEnsembleBoundaryTomography.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeSupportMultivariateLiftMarker.lean`, and

@@ -245,7 +245,7 @@ with `K_d(p)` the degree-`d` **finite-free prime kernel** — the real-rooted po
 
 **Falsify/support `[HEUR, runnable]`.** For small `d`, compute the finite-free cumulants of the degree-`d` Jensen section `J^{d,n}` of `Ξ` and of candidate prime kernels `K_d(p)`; test whether `J^{d,n}`'s cumulants `≈` the additive sum `Σ_p κ_k(p)`. A match installs the finite-free flow as the right coordinate; a mismatch falsifies the additive-drift form (and is itself informative — it would mean the prime drift is *non-linear* in cumulants, i.e. the Euler product is not finite-free-additive).
 
-**Ledger update — the finite floor of Attack 5 is now ledger-proven.** Formalized in `formal/GaloisForLFunctions/MultiplierScaling.lean`, passing the axiom audit (`[propext, Classical.choice, Quot.sound]`, zero `sorry`):
+**Ledger update — the finite floor of Attack 5 is now ledger-proven.** Formalized in `formal/GaloisForLFunctions/RHTower/MultiplierScaling.lean`, passing the axiom audit (`[propext, Classical.choice, Quot.sound]`, zero `sorry`):
 - `sigmaScale_eval` — `(σ_c P)(r) = P(c·r)`;
 - `sigmaScale_isRoot` — `r` is a root of `σ_c P` iff `c·r` is a root of `P` (the real bijection `r↦c·r`);
 - `sigmaScale_splits` — for `c≠0`, `σ_c` preserves `Polynomial.Splits` over `ℝ` (real-rootedness), via `X−C a ↦ C c·(X−C(c⁻¹a))`.

@@ -109,7 +109,7 @@ where `p_μ = ∏ p_{μ_i}` and `χ^λ_μ` are the symmetric-group characters. *
 
 ---
 
-**Ledger update — B30 §8(a) is now ledger-proven.** Formalized in `formal/GaloisForLFunctions/AdamsOperations.lean`, passing the axiom audit (`[propext, Classical.choice, Quot.sound]`, zero `sorry`):
+**Ledger update — B30 §8(a) is now ledger-proven.** Formalized in `formal/GaloisForLFunctions/RHTower/AdamsOperations.lean`, passing the axiom audit (`[propext, Classical.choice, Quot.sound]`, zero `sorry`):
 - `adamsPowerSum α m := Σ_i (α i)^m` — the prime power sum / Adams operation `ψ^m`;
 - `adamsPowerSum_tensor` — `p_m(π₁⊗π₂)=p_m(π₁)·p_m(π₂)` (⊗-multiplicativity, via `Finset.sum_mul_sum` over the pairwise-product `satakeTensorParameters`);
 - `adamsPowerSum_conj` — the contragredient's Adams operation is `conj(p_m)`;
@@ -119,7 +119,7 @@ This closes the §8(a) prime/Satake-side identities in Lean. The **zero-side rea
 
 **Ledger update (cont.) — the additive λ-ring operation.** Also formalized in `AdamsOperations.lean`: `adamsPowerSum_isobaricSum` — `p_m(π₁⊞π₂)=p_m(π₁)+p_m(π₂)` for the isobaric direct sum (Satake parameters = disjoint union `Sum.elim α β`). With `adamsPowerSum_tensor` this exhibits **both** λ-ring operations on the Adams generators at ledger grade: `⊕` (isobaric sum) *adds* the prime power sums, `⊗` (Rankin–Selberg) *multiplies* them — i.e. `𝓜|_p` is the representation ring with `p_m=ψ^m` the Adams operations, exactly as §8's structure theorem states (Satake side). The current full-project audit count is tracked in `scripts/check_axioms.sh`.
 
-**Ledger update — B30 §7 Chebyshev plethysm core is now ledger-proven.** Formalized in `formal/GaloisForLFunctions/SymPowerPlethysm.lean` (`chebyshevS_eval_add_inv`, `chebyshevU_eval_plethysm`), passing the axiom audit (`[propext, Classical.choice, Quot.sound]`, zero `sorry`):
+**Ledger update — B30 §7 Chebyshev plethysm core is now ledger-proven.** Formalized in `formal/GaloisForLFunctions/RHTower/SymPowerPlethysm.lean` (`chebyshevS_eval_add_inv`, `chebyshevU_eval_plethysm`), passing the axiom audit (`[propext, Classical.choice, Quot.sound]`, zero `sorry`):
 ```
    z^k · S_k(z + z⁻¹)  =  Σ_{i=0}^{k} (z²)^i        (z ≠ 0),
 ```
@@ -156,7 +156,7 @@ This **e–h duality** is exactly the statement that the exterior and symmetric 
 ## 10. Brick: the `e–h` Koszul duality is now LEDGER-PROVEN `[Tier A → ledger]`
 
 The `e–h` duality flagged in §9 is now **machine-checked**
-(`formal/GaloisForLFunctions/EHKoszulDuality.lean`, axiom-clean
+(`formal/GaloisForLFunctions/RHTower/EHKoszulDuality.lean`, axiom-clean
 `[propext, Classical.choice, Quot.sound]`). The "genuine mathlib gap" (no `e–h`
 duality, no complete-homogeneous generating function in mathlib — only `e–p`
 Newton) was filled from scratch:

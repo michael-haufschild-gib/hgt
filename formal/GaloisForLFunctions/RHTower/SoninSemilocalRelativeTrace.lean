@@ -10,7 +10,7 @@ This constructs the Sonin-side scalarization.  Identifying it with the already p
 prime--archimedean source trace remains the source-specific open identity.
 -/
 import GaloisForLFunctions.RHTower.SoninRelativeGramDefect
-import GaloisForLFunctions.HilbertSchmidtTrace
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtTrace
 
 noncomputable section
 

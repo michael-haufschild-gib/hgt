@@ -96,7 +96,7 @@ new formal infrastructure, not new scientific knowledge.
 
 ## Lean certificate
 
-File: `formal/GaloisForLFunctions/PolygammaHurwitzValue.lean`.
+File: `formal/GaloisForLFunctions/Hurwitz/PolygammaHurwitzValue.lean`.
 
 - `polygamma_eq_hzeta`: the all-order identity `(1)`;
 - `hzeta_add_one`: the shift recurrence `(4)`;

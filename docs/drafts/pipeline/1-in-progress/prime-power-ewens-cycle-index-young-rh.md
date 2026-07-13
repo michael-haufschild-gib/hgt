@@ -6,7 +6,7 @@
 - **Lean inputs:** `formal/GaloisForLFunctions/RHTower/PrimeCycleDeletionCoherence.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeWordYoungShapeNoGo.lean`,
   `formal/GaloisForLFunctions/RHTower/BornEtaGrading.lean`,
-  `formal/GaloisForLFunctions/ExteriorParity.lean`, and
+  `formal/GaloisForLFunctions/RHTower/ExteriorParity.lean`, and
   `formal/GaloisForLFunctions/RHTower/PrimeArchThetaAllOrderCumulant.lean`
 - **Consumer:** `prime-theta-young-thoma-schur-rh.md`
 - **Statement:** `[CONJECTURE]` A colored virtual-permutation process whose cycles are prime-power

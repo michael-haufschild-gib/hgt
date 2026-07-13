@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.XiHedenmalmEigenbasis
-import GaloisForLFunctions.FredholmDeterminantZeta
-import GaloisForLFunctions.HilbertSchmidtTrace
-import GaloisForLFunctions.HilbertSchmidtCompact
+import GaloisForLFunctions.RHTower.FredholmDeterminantZeta
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtTrace
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtCompact
 
 /-!
 # The reciprocal Xi divisor operator and the Hedenmalm eigenbasis

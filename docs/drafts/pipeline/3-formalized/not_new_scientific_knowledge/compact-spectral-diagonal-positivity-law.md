@@ -59,13 +59,13 @@ presented as modulus squares.
 
 ## Formal artifacts
 
-- `formal/GaloisForLFunctions/PolynomialSmoothApproximation.lean`
-- `formal/GaloisForLFunctions/SchwartzSmoothMultiplierApproximation.lean`
-- `formal/GaloisForLFunctions/SchwartzSmoothMultiplierSymmetry.lean`
-- `formal/GaloisForLFunctions/SchwartzCompactDiagonalFunctional.lean`
-- `formal/GaloisForLFunctions/SchwartzPositiveCompactDiagonal.lean`
-- `formal/GaloisForLFunctions/SchwartzCompactDiagonalOrderZero.lean`
-- `formal/GaloisForLFunctions/SchwartzCompactContinuousDensity.lean`
+- `formal/GaloisForLFunctions/HTGeometry/PolynomialSmoothApproximation.lean`
+- `formal/GaloisForLFunctions/HTGeometry/SchwartzSmoothMultiplierApproximation.lean`
+- `formal/GaloisForLFunctions/HTGeometry/SchwartzSmoothMultiplierSymmetry.lean`
+- `formal/GaloisForLFunctions/HTGeometry/SchwartzCompactDiagonalFunctional.lean`
+- `formal/GaloisForLFunctions/HTGeometry/SchwartzPositiveCompactDiagonal.lean`
+- `formal/GaloisForLFunctions/HTGeometry/SchwartzCompactDiagonalOrderZero.lean`
+- `formal/GaloisForLFunctions/HTGeometry/SchwartzCompactContinuousDensity.lean`
 
 The modules contain no `sorry`, `admit`, new axioms, opaque declarations, or unsafe
 declarations.

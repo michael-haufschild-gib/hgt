@@ -5,8 +5,8 @@ The block-diagonal all-prime operator separates prime powers and therefore delet
 prime words.  The canonical coupled assembly instead stacks every weighted residual over the
 same Sonin source space.  Its Gram operator is positive and retains cross-prime overlaps.
 -/
-import GaloisForLFunctions.HilbertSchmidtRectangular
-import GaloisForLFunctions.HilbertSchmidtTrace
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtRectangular
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtTrace
 import GaloisForLFunctions.RHTower.SoninAllPrimeResidualKernel
 
 noncomputable section

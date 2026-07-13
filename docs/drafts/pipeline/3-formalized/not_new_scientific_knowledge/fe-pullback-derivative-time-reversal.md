@@ -37,7 +37,7 @@ Equivalently,
 - [x] 2 -> 3  formalized: Lean definitions/theorems `fePullback`, `fePullback_involutive`,
   `hasDerivAt_sigma`, `hasDerivAt_fePullback`, `deriv_fePullback_eq_neg`,
   `deriv_fePullback_at_sigma_eq_neg`, and `fePullback_deriv_fePullback_eq_neg_deriv` in
-  `formal/GaloisForLFunctions/PTInvolution.lean`; scratch `#check`/`#print axioms`, `lake build`, and
+  `formal/GaloisForLFunctions/HTGeometry/PTInvolution.lean`; scratch `#check`/`#print axioms`, `lake build`, and
   `scripts/check_axioms.sh` pass.
 - [ ] 3 -> 4  publication-ready: cite as the formal certificate for the FE time-reversal half of the
   completed PT-involution.

@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean) / route-boundary certificate
 - **Scientific status:** `[FORMALIZED] [UNCONDITIONAL] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lean files:**
-  - `formal/GaloisForLFunctions/PoleHolonomicDegreeBudget.lean`
+  - `formal/GaloisForLFunctions/HTGeometry/PoleHolonomicDegreeBudget.lean`
   - `formal/GaloisForLFunctions/RHTower/XiZerosInfinite.lean`
   - `formal/GaloisForLFunctions/RHTower/XiLogDerivNonholonomic.lean`
   - `formal/GaloisForLFunctions/RHTower/FiniteSpectralTraceNoGo.lean`

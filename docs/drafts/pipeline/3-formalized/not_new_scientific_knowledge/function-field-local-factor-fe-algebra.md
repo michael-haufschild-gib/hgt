@@ -24,7 +24,7 @@ For the polynomial local factor, closure under the same multiset map gives
 ## Gates
 - [x] 0 -> 1  in-progress: finite-multiset FE algebra extracted.
 - [x] 1 -> 2  fully-proven: paper proof above, using multiset closure and homogeneity of elementary symmetric functions.
-- [x] 2 -> 3  formalized: Lean theorems `multiset_esymm_map_mul`, `functionField_esymm_FE`, and `functionField_localFactor_FE` in `formal/GaloisForLFunctions/FunctionFieldFE.lean`; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean theorems `multiset_esymm_map_mul`, `functionField_esymm_FE`, and `functionField_localFactor_FE` in `formal/GaloisForLFunctions/RHTower/FunctionFieldFE.lean`; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the algebraic FE lemma in the function-field border note.
 
 ## Log

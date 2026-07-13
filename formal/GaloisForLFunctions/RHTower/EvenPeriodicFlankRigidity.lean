@@ -1,5 +1,5 @@
 import Mathlib
-import GaloisForLFunctions.CarrierDichotomy
+import GaloisForLFunctions.HTGeometry.CarrierDichotomy
 
 /-!
 # Even + periodic + flank-bounded ⟹ constant

@@ -37,7 +37,7 @@ Thus multiplying two distinct nonzero axis modes produces a genuine two-axis com
   multiplicativity.
 - [x] 2 -> 3  formalized: Lean theorems `twoAxisMode_support_eq`,
   `bohrCharacter_twoAxis_product`, and `twoAxisMode_ne_zero` in
-  `formal/GaloisForLFunctions/BohrGenerators.lean`; scratch `#check` / `#print axioms`, `lake build`, and
+  `formal/GaloisForLFunctions/HTGeometry/BohrGenerators.lean`; scratch `#check` / `#print axioms`, `lake build`, and
   `scripts/check_axioms.sh` pass.
 - [ ] 3 -> 4  publication-ready: cite as the finite combination-mode certificate in the generator-level
   C5-localization note.

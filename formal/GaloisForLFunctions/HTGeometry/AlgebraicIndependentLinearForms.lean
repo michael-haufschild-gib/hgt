@@ -1,4 +1,4 @@
-import GaloisForLFunctions.DifferentialIndependence
+import GaloisForLFunctions.HTGeometry.DifferentialIndependence
 import Mathlib.Algebra.Module.LinearMap.Polynomial
 import Mathlib.Algebra.MvPolynomial.Monad
 import Mathlib.LinearAlgebra.Matrix.Rank

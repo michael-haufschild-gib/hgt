@@ -136,7 +136,7 @@ A rigorous check (using the kernel) of Wheeler's PSD-resonance conjecture (`fini
   simple-node perturbation; structure (§3) and the C5-crux hand-off (§4) recorded. BRIDGE.
 - [ ] 2 → 3  formalized — Lean anchor **DONE** for the arithmetic coefficient:
   `logZetaPrimeCoeff_prime` and `logZetaPrimeCoeff_primePower` in
-  `formal/GaloisForLFunctions/C5JensenPrimeKernel.lean` prove
+  `formal/GaloisForLFunctions/RHTower/C5JensenPrimeKernel.lean` prove
   `Λ(p)/log(p)·p^{-1/2}=p^{-1/2}` and `Λ(p^k)/log(p^k)·(p^k)^{-1/2}=p^{-k/2}/k`.
   Remaining targets: the Leibniz first-order expansion, the `B_i` definition, and the explicit-formula /
   Jensen-section regularization infrastructure.
@@ -169,7 +169,7 @@ A rigorous check (using the kernel) of Wheeler's PSD-resonance conjecture (`fini
   target: BRIDGE iff a parent large-values method (Halász/Montgomery) suffices, native iff the support-`≤2d`
   near-resonance (Baker/integer-gap) is essential — the exact win/lose point for C5.
 - 2026-06-19 (Leaner) — added Lean anchor `logZetaPrimeCoeff_prime` and
-  `logZetaPrimeCoeff_primePower` in `formal/GaloisForLFunctions/C5JensenPrimeKernel.lean`, formalizing
+  `logZetaPrimeCoeff_primePower` in `formal/GaloisForLFunctions/RHTower/C5JensenPrimeKernel.lean`, formalizing
   the von-Mangoldt coefficient identities `c_p=p^{-1/2}` and `c_{p^k}=p^{-k/2}/k`. Added the module to the
   root import and axiom audit. Card remains in 2-fully-proven; the first-order Jensen kernel, `B_i`
   definition, and explicit-formula regularization are not fully formalized.

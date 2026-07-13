@@ -144,7 +144,7 @@ label remains provisional pending independent expert and MathSciNet/Zentralblatt
 
 ## Lean certificate
 
-`formal/GaloisForLFunctions/AutomorphismFamilyOstrowski.lean` proves:
+`formal/GaloisForLFunctions/HTGeometry/AutomorphismFamilyOstrowski.lean` proves:
 
 ```text
 automorphismFamily_algebraicPrimitive_traceCoordinate_fixed

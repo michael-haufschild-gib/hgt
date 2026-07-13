@@ -19,7 +19,7 @@ gives the same identity term by term for any finitely supported auxiliary form.
 ## Gates
 - [x] 0 -> 1  in-progress: exact finite diagonal-pullback statement extracted from the friable auxiliary object.
 - [x] 1 -> 2  fully-proven: paper proof above, using finite products and complex-power identities.
-- [x] 2 -> 3  formalized: Lean theorems `diagonalMonomial_eq_frequency` and `diagonalAuxiliaryForm_eq_dirichletPolynomial` in `formal/GaloisForLFunctions/SmoothNumbers.lean`; names checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean theorems `diagonalMonomial_eq_frequency` and `diagonalAuxiliaryForm_eq_dirichletPolynomial` in `formal/GaloisForLFunctions/RHTower/SmoothNumbers.lean`; names checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the formal diagonal-pullback certificate for the auxiliary-space note.
 
 ## Log

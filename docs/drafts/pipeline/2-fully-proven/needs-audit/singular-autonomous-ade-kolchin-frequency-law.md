@@ -294,7 +294,7 @@ absent from mathlib — (i) Ritt--Raudenbush finite prime decomposition of radic
 limits of compact metric spaces under surjective bonding maps, (iv) the Bohr almost-periodic compact
 hull, and (v) Pontryagin--Takahashi dimension/rank duality for compact connected abelian groups. Each
 is itself a research-scale development. Component (iii), covering dimension, is now begun in
-`formal/GaloisForLFunctions/CoveringDimension.lean`: `HasCoverDimLE` is defined and the load-bearing
+`formal/GaloisForLFunctions/HTGeometry/CoveringDimension.lean`: `HasCoverDimLE` is defined and the load-bearing
 **inverse-limit dimension bound** is proved axiom-clean as `HasCoverDimLE.of_refinedByStages` (if every
 finite open cover of `X` refines through a stage `Y i` of dimension `≤ n` — the compactness property of
 an inverse limit — then `dim X ≤ n`), together with monotonicity and homeomorphism invariance. The

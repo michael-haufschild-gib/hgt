@@ -3,7 +3,7 @@
 - **ID:** seam-non-splitting-quadratic-obstruction
 - **Stage:** 3-formalized
 - **Type:** FORMAL THEOREM — BRIDGE / substrate-supporting algebraic obstruction hierarchy
-- **Lean:** `formal/GaloisForLFunctions/SeamNonSplitting.lean`
+- **Lean:** `formal/GaloisForLFunctions/HTGeometry/SeamNonSplitting.lean`
 - **Root declarations:** `separableCounterterms`, `quadraticWeldTerm_not_mem_separableCounterterms`,
   `seamEpsilonOne_ne_zero`, `seamQuadraticDetector`, `seamQuadraticDetector_seamEpsilonOne`,
   `quadraticCoeff_eq_of_sub_mem_separableCounterterms`, `gammaOneVisibleClass`,
@@ -57,7 +57,7 @@ must realize functorially in the completed `(σ_p, ∂_s)` object.
 
 ## Verification
 
-- `cd formal && lake env lean GaloisForLFunctions/SeamNonSplitting.lean`
+- `cd formal && lake env lean GaloisForLFunctions/HTGeometry/SeamNonSplitting.lean`
 - `cd formal && lake build GaloisForLFunctions.SeamNonSplitting`
 - `scripts/formal_tools.py lint --check-generated`
 

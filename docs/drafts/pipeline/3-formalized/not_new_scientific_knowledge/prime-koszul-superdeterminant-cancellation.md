@@ -4,8 +4,8 @@
 - **Stage:** 3-formalized
 - **Type:** `[PROVED] [NO-GO] [POSITIVE SUCCESSOR]`
 - **Scientific status:** not new scientific knowledge
-- **Lean:** `formal/GaloisForLFunctions/KoszulCohomology.lean`,
-  `formal/GaloisForLFunctions/PrimeWordSupportSelector.lean`
+- **Lean:** `formal/GaloisForLFunctions/HTGeometry/KoszulCohomology.lean`,
+  `formal/GaloisForLFunctions/RHTower/PrimeWordSupportSelector.lean`
 - **Inputs:** `prime-loop-connectivity-mixed-word-obstruction.md`,
   `prime-coshift-koszul-derived-limit-conjecture.md`, `EHKoszulDuality.lean`,
   `FredholmDeterminantEuler.lean`, `FredholmDeterminantZeta.lean`

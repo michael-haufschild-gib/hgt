@@ -6,7 +6,7 @@
 - **Source:** T3 of `../../rh-monodromy-weight-mismatch/123-constraint-reframe-catalog.md`;
   parent `docs/rh/opus_faithful_vs_measured_trace_dichotomy_20260615.md`,
   `opus_transverse_current_c8_test_20260615.md`, `object_x.md` (transverse-current face);
-  finite anchor `formal/GaloisForLFunctions/KreinLangerInertia.lean` (`exact_neg_inertia`).
+  finite anchor `formal/GaloisForLFunctions/HTGeometry/KreinLangerInertia.lean` (`exact_neg_inertia`).
 - **Statement:** The negative index `κ₋` of the FE-forced indefinite Weil/Krein form counts off-line
   zeros. The **faithful** (integer) count is point-resolving and `= 0 ⟺ RH`. The **measured**
   (normalized, type-II₁/III₁, flow-invariant) index is the ratio `Noff/N`, and it is **blind to RH**:
@@ -26,7 +26,7 @@ T3's residue precisely at the **faithful** referee (which is T2 / the HP-index, 
 
 ## The Lean certificate (axiom-clean)
 
-`GaloisForLFunctions/MeasuredIndexBlindness.lean`:
+`GaloisForLFunctions/RHTower/MeasuredIndexBlindness.lean`:
 
 - `MeasuredIndexZero Noff N` — the measured index vanishes: `Noff(n)/N(n) → 0`.
 - `measuredIndexZero_const` — a bounded (constant) off-line count normalizes to `0` (`c/n → 0`): a

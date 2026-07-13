@@ -1,5 +1,5 @@
 import Mathlib.Tactic
-import GaloisForLFunctions.Resonance
+import GaloisForLFunctions.HTGeometry.Resonance
 import GaloisForLFunctions.RHTower.OmegaComplexStructure
 
 /-!

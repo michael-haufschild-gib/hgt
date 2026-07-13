@@ -6,11 +6,11 @@
 
 ## New formalized cards
 - `docs/drafts/pipeline/3-formalized/finite-prime-log-flow-spectrum.md`
-  - Lean file: `formal/GaloisForLFunctions/KroneckerFlow.lean`
+  - Lean file: `formal/GaloisForLFunctions/HTGeometry/KroneckerFlow.lean`
   - Theorems: `primeLogFrequency_single`, `primeLogFrequency_eq_zero_iff`, `primeLogFrequency_ne_zero`, `primeLogFrequency_single_ne_zero`
   - Split from `constraint-not-flow-theorem.md` §1.
 - `docs/drafts/pipeline/3-formalized/finite-bohr-character-generator-identities.md`
-  - Lean file: `formal/GaloisForLFunctions/BohrGenerators.lean`
+  - Lean file: `formal/GaloisForLFunctions/HTGeometry/BohrGenerators.lean`
   - Theorems: `bohrCharacter_zero`, `bohrCharacter_add`, `bohrCharacter_scaleCoordinate`
   - Split from `archimedean-generator-axis-mode.md`.
 

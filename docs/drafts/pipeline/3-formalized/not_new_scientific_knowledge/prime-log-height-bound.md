@@ -33,7 +33,7 @@ argument applies to `b/a` and absolute values. Since `H(m)=ab`, this gives
 - [x] 1 -> 2  fully-proven: paper proof above by unique factorization and the elementary logarithm estimate.
 - [x] 2 -> 3  formalized: Lean definitions/theorems `primeLogHeight`,
   `logPrime_int_sum_eq_log_pos_sub_log_neg`, and `logPrime_height_bound` in
-  `formal/GaloisForLFunctions/ZeroEstimate.lean`; names checked by scratch file; `#print axioms` uses only
+  `formal/GaloisForLFunctions/RHTower/ZeroEstimate.lean`; names checked by scratch file; `#print axioms` uses only
   the allowed standard subset `[propext, Classical.choice, Quot.sound]`; `lake build` green;
   `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the size-bound lemma inside the G2 zero-estimate note.

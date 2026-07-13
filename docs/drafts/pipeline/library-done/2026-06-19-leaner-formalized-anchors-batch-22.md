@@ -11,7 +11,7 @@
 ## Details
 New Lean theorem:
 - `GaloisForLFunctions.fePullback_deriv_fePullback_eq_neg_deriv` in
-  `formal/GaloisForLFunctions/PTInvolution.lean`
+  `formal/GaloisForLFunctions/HTGeometry/PTInvolution.lean`
 
 Supporting Lean theorems:
 - `GaloisForLFunctions.fePullback_involutive`

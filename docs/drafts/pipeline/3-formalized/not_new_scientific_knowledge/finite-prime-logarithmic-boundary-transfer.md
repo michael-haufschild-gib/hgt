@@ -251,7 +251,7 @@ physicality of both reflected modes is enough; exact inverse channels are unnece
 ## Lean surface
 
 The new module
-`formal/GaloisForLFunctions/FinitePrimeBoundaryTransfer.lean` proves:
+`formal/GaloisForLFunctions/RHTower/FinitePrimeBoundaryTransfer.lean` proves:
 
 - `FinitePrimeBoundaryTransfer.norm_le_one_add_of_approx_eigenmode`;
 - `FinitePrimeBoundaryTransfer.exponent_eq_zero_of_uniform_reflected_bounds`;

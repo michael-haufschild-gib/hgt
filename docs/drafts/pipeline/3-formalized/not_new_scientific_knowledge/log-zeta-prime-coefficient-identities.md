@@ -23,7 +23,7 @@ If `n=p^k` with `k>0`, then `Lambda(p^k)=log p` and `log(p^k)=k log p`, so
 ## Gates
 - [x] 0 -> 1  in-progress: von Mangoldt coefficient identities extracted.
 - [x] 1 -> 2  fully-proven: paper proof above, using the standard values of `Lambda` on primes and prime powers.
-- [x] 2 -> 3  formalized: Lean theorems `logZetaPrimeCoeff_prime` and `logZetaPrimeCoeff_primePower` in `formal/GaloisForLFunctions/C5JensenPrimeKernel.lean`; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean theorems `logZetaPrimeCoeff_prime` and `logZetaPrimeCoeff_primePower` in `formal/GaloisForLFunctions/RHTower/C5JensenPrimeKernel.lean`; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the coefficient lemma in the Jensen prime-kernel note.
 
 ## Log

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.KoszulCohomology
+import GaloisForLFunctions.HTGeometry.KoszulCohomology
 
 /-!
 # Prime-support tomography from Koszul boundary jets

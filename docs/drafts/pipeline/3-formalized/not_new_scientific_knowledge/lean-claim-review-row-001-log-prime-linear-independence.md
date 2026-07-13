@@ -55,7 +55,7 @@ argument runs through `exp`.)
 - [x] 2 → 3  formalized — Lean theorem `linearIndependent_log_primes` in
   `formal/GaloisForLFunctions/Core.lean` proves the stated `ℚ`-linear independence of `{log p : p prime}`;
   `logPrime_linearIndependent_int` proves the cleared-denominator `ℤ` form, and
-  `logPrime_no_rat_relation` in `formal/GaloisForLFunctions/OrbitFreeness.lean` gives the finite-relation
+  `logPrime_no_rat_relation` in `formal/GaloisForLFunctions/HTGeometry/OrbitFreeness.lean` gives the finite-relation
   reading. Leaner verified the names by scratch file and `#print axioms`; only the standard
   `[propext, Classical.choice, Quot.sound]` axioms appear. `lake build` green; `scripts/check_axioms.sh` PASS.
 - [ ] 3 → 4  publication-ready: standalone note (this proof + the Lean certificate).

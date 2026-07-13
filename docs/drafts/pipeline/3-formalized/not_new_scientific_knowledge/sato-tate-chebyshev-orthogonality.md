@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Priority:** FOUNDATIONAL
-- **Source:** split from `../2-fully-proven/g4-over-fq-deligne-katz.md` §1 and the `function-field-native-reproof` G4/Sato-Tate angle face; Lean file `formal/GaloisForLFunctions/SatoTateMoment.lean`
+- **Source:** split from `../2-fully-proven/g4-over-fq-deligne-katz.md` §1 and the `function-field-native-reproof` G4/Sato-Tate angle face; Lean file `formal/GaloisForLFunctions/RHTower/SatoTateMoment.lean`
 - **Statement:** The Chebyshev symmetric-power characters are orthonormal for the Sato-Tate measure `(2/pi) sin^2(theta) dtheta` on `[0,pi]`; in particular every nonzero Chebyshev moment vanishes.
 
 ## Goal

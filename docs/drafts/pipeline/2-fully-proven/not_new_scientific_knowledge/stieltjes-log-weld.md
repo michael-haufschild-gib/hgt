@@ -99,7 +99,7 @@ The honest transcendence target for the Stieltjes block is therefore the **joint
 - [x] 1 → 2  fully-proven: (★) proved (§2); the no-isolation theorem proved (§3, via triviality lemma +
   weight grading); consequences (§4) drawn. BRIDGE, content beyond imports (§5).
 - [ ] 2 → 3  formalized — Lean anchor **DONE** for the Cauchy-product identity (★), in
-  `formal/GaloisForLFunctions/StieltjesWeld.lean` as `stieltjes_pairing_cauchy_j` (the `j`-indexed form,
+  `formal/GaloisForLFunctions/RHTower/StieltjesWeld.lean` as `stieltjes_pairing_cauchy_j` (the `j`-indexed form,
   equivalent by `n=N-j-1`). Remaining Lean targets: linear independence of `\{n^{−s}\}` and a formal
   graded log-polynomial model for the no-isolation theorem; reuse `linearIndependent_log_primes`.
 - [ ] 3 → 4  publication-ready — pairs with corank-transcendence card and the seam bucket.
@@ -118,7 +118,7 @@ The honest transcendence target for the Stieltjes block is therefore the **joint
   residual); reframed the G2/DSS-cross target to the joint `trdeg_ℚ ℚ(\{\log p\}∪\{γ_n\})=∞` and identified
   the Schanuel-entanglement and the seam identity. Door **BRIDGE**, content beyond imports.
 - 2026-06-19 (Leaner) — added Lean anchor `stieltjes_pairing_cauchy_j` in
-  `formal/GaloisForLFunctions/StieltjesWeld.lean`, formalizing the Cauchy-product coefficient identity
+  `formal/GaloisForLFunctions/RHTower/StieltjesWeld.lean`, formalizing the Cauchy-product coefficient identity
   with the top `c_N/N!` term isolated. Added to the root import and axiom audit. Card remains in
   2-fully-proven; the analytic no-isolation/Dirichlet-independence and graded log-polynomial pieces are
   not fully formalized.

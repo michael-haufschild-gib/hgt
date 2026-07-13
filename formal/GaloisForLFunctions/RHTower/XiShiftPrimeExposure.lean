@@ -14,7 +14,7 @@ only.  It does not formalize Ostrowski's theorem or infer hypertranscendence fro
 prime support.
 -/
 import GaloisForLFunctions.RHTower.XiRelativeResolventFlux
-import GaloisForLFunctions.ArchimedeanGamma
+import GaloisForLFunctions.RHTower.ArchimedeanGamma
 import Mathlib.NumberTheory.LSeries.Linearity
 import Mathlib.NumberTheory.LSeries.Positivity
 

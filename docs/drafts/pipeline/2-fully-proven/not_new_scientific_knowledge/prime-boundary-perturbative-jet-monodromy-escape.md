@@ -292,7 +292,7 @@ boundary jet remain on the zero-charge side.
 
 ## 8. Lean surface
 
-`formal/GaloisForLFunctions/PrimeBoundaryDickmanWick.lean` now additionally defines and proves:
+`formal/GaloisForLFunctions/RHTower/PrimeBoundaryDickmanWick.lean` now additionally defines and proves:
 
 - `primeBoundaryLogMoment`;
 - `iteratedDeriv_primeBoundaryWickCumulant_even`;

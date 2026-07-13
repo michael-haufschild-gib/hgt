@@ -180,7 +180,7 @@ empirical "all BRIDGE" into a structural reason and **pins the entire RH-relevan
 - [ ] 2 → 3  formalized: Lean anchor **DONE** for the rank-one dual-multiplier algebra:
   `rankOneDualMultiplier_mul`, `rankOneDualMultiplier_mul_left`,
   `rankOne_selfDualMultiplier_iff_sq_eq_one`, and `rankOne_noSelfDualMultiplier_of_sq_ne_one` in
-  `formal/GaloisForLFunctions/RankOneDuality.lean`. Remaining Lean targets: categorical Source-B scope,
+  `formal/GaloisForLFunctions/HTGeometry/RankOneDuality.lean`. Remaining Lean targets: categorical Source-B scope,
   the Weil-positivity import wrapper, and any formal assembly with `LocalFactorDuality` and
   `linearIndependent_log_primes`.
 - [ ] 3 → 4  publication-ready: "why the independent prime structure is RH-blind: RH-positivity is the
@@ -207,7 +207,7 @@ empirical "all BRIDGE" into a structural reason and **pins the entire RH-relevan
 - 2026-06-19 — Leaner: added Lean anchor for the rank-one dual-multiplier algebra in §1:
   `rankOneDualMultiplier_mul`, `rankOneDualMultiplier_mul_left`,
   `rankOne_selfDualMultiplier_iff_sq_eq_one`, and `rankOne_noSelfDualMultiplier_of_sq_ne_one` in
-  `formal/GaloisForLFunctions/RankOneDuality.lean`. Created
+  `formal/GaloisForLFunctions/HTGeometry/RankOneDuality.lean`. Created
   `../3-formalized/rank-one-dual-multiplier-obstruction.md`. Parent remains in `2-fully-proven` because the
   categorical Source-B theorem, Weil-positivity import wrapper, and formal assembly with the function-field
   polarization anchors are not fully Lean-formalized.

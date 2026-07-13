@@ -133,7 +133,7 @@ weakens from "G1–G4 forces G5" to "**two apexes, seam-joined, transcendence �
   G5 core, handed to `weil-positivity-operator`/`carrier-herglotz-rh` **with the PT handle** (not a bare hand-off).
 - [ ] 2 → 3  formalized: Lean anchor **DONE** for the archimedean time-reversal derivative identity
   `ι∂_sι⁻¹=−∂_s`: `fePullback_deriv_fePullback_eq_neg_deriv` in
-  `formal/GaloisForLFunctions/PTInvolution.lean`. Remaining Lean targets: prime-lane parity packaging,
+  `formal/GaloisForLFunctions/HTGeometry/PTInvolution.lean`. Remaining Lean targets: prime-lane parity packaging,
   completed connection/category structure, `primeDiagonal_shift`/`FlatConnection`/`BerryKeating`/`κ₋`
   integration, global PT holonomy, spectral theory, and RH.
 - [ ] 3 → 4  publication-ready: "the completed connection and the functional equation as a PT-symmetry."
@@ -158,7 +158,7 @@ weakens from "G1–G4 forces G5" to "**two apexes, seam-joined, transcendence �
   handle**. `F_q`=P-only (Deligne, §5). → 2-fully-proven (construction + PT-decomposition, BRIDGE); G5 holonomy
   open.
 - 2026-06-19 (Leaner) - added Lean anchor for the archimedean time-reversal identity:
-  `fePullback_deriv_fePullback_eq_neg_deriv` in `formal/GaloisForLFunctions/PTInvolution.lean`. It
+  `fePullback_deriv_fePullback_eq_neg_deriv` in `formal/GaloisForLFunctions/HTGeometry/PTInvolution.lean`. It
   formalizes the chain-rule statement `sigma^* d/ds sigma^* = -d/ds` for the FE involution `sigma(s)=1-s`.
   Created `../3-formalized/fe-pullback-derivative-time-reversal.md`. Parent remains in `2-fully-proven`
   because the completed connection category, prime-lane parity packaging, global PT holonomy, spectral

@@ -21,7 +21,7 @@ If all derivatives `F^(k)(s0)` vanished for `k=0,...,n-1`, then
 ## Gates
 - [x] 0 -> 1  in-progress: exact finite exponential-sum order statement extracted from the broader zero-estimate card.
 - [x] 1 -> 2  fully-proven: paper proof above, using the Vandermonde initial-moment argument.
-- [x] 2 -> 3  formalized: Lean theorem `exponentialSum_has_nonzero_iteratedDeriv_lt_card` in `formal/GaloisForLFunctions/ZeroEstimateOrder.lean`; name checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean theorem `exponentialSum_has_nonzero_iteratedDeriv_lt_card` in `formal/GaloisForLFunctions/RHTower/ZeroEstimateOrder.lean`; name checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the order-bound lemma inside the G2 zero-estimate note.
 
 ## Log

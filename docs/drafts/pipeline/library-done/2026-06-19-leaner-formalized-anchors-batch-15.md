@@ -13,7 +13,7 @@ Record the following new `3-formalized` card in the shared door/status/index led
 - `docs/drafts/pipeline/3-formalized/satake-tensor-local-factor.md`
 
 ## Lean Certificate
-- Lean module: `formal/GaloisForLFunctions/SatakeTensor.lean`
+- Lean module: `formal/GaloisForLFunctions/RHTower/SatakeTensor.lean`
 - Definition/theorem anchors:
   - `satakeTensorParameters`
   - `satakeLocalFactor`

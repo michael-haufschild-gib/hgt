@@ -209,7 +209,7 @@ that produces only a zero bulk charge has not yet constructed the required objec
 
 ## 8. Lean surface
 
-`formal/GaloisForLFunctions/PrimeQuasiLocalCharge.lean` now proves the finite positive implication
+`formal/GaloisForLFunctions/RHTower/PrimeQuasiLocalCharge.lean` now proves the finite positive implication
 
 ```text
 PrimeQuasiLocalCharge.nonzero_winding_has_finiteAncestor.

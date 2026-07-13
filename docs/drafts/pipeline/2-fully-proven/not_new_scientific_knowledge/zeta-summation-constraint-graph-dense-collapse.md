@@ -5,7 +5,7 @@
 - **Type:** THEOREM / NON-FOCK CONSTRAINT ROUTE GATE
 - **Scientific status:** `[BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** `dirichlet-diagonal-hilbert-rigging-abscissa-barrier`; separate from RHTower Routes A--D
-- **Lean core:** `formal/GaloisForLFunctions/DirichletHilbertRiggingBarrier.lean`
+- **Lean core:** `formal/GaloisForLFunctions/RHTower/DirichletHilbertRiggingBarrier.lean`
 
 ## Statement
 

@@ -11,7 +11,7 @@ The finite-rectangle Fourier blocks therefore satisfy the actual
 the exact Sonin projection correction and the principal-subtracted dilation residual without
 any Hilbert--Schmidt hypothesis.
 -/
-import GaloisForLFunctions.HilbertSchmidtOperator
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtOperator
 import GaloisForLFunctions.RHTower.SoninPrimePowerRegularization
 import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
 

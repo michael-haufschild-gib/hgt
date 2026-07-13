@@ -42,7 +42,7 @@ the two values are `d c_p x_p` and `c_p d x_p`, equal by commutativity.
 - [x] 1 -> 2  fully-proven: paper proof above by coordinate evaluation and commutativity.
 - [x] 2 -> 3  formalized: Lean theorems `scaleCoordinate_commute`,
   `scaleAllCoordinates_commute`, and `scaleCoordinate_scaleAllCoordinates_commute` in
-  `formal/GaloisForLFunctions/BohrGenerators.lean`; scratch `#check` / `#print axioms`, `lake build`, and
+  `formal/GaloisForLFunctions/HTGeometry/BohrGenerators.lean`; scratch `#check` / `#print axioms`, `lake build`, and
   `scripts/check_axioms.sh` pass.
 - [ ] 3 -> 4  publication-ready: cite as the finite coordinate-map commutation certificate for the completed
   base.

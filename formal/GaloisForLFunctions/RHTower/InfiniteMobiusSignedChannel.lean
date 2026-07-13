@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SquarefreeMoebiusNormalization
-import GaloisForLFunctions.HilbertSchmidtMatrix
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtMatrix
 import GaloisForLFunctions.RHTower.L2MellinUnitary
 
 open Complex MeasureTheory

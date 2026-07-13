@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM; archimedean superspace selector
 - **Scientific status:** `[BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
-- **Lean:** `GaloisForLFunctions/ReflectedDigammaAnomaly.lean`
+- **Lean:** `GaloisForLFunctions/HTGeometry/ReflectedDigammaAnomaly.lean`
 - **Statement:** If `0<sigma<1` and `t>0`, then
 
 ```text

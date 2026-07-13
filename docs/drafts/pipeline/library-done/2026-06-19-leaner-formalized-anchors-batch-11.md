@@ -12,7 +12,7 @@
 Please update the shared door/status/index ledgers to reflect one new `3-formalized` card:
 
 1. `docs/drafts/pipeline/3-formalized/additive-koszul-cocycle-skeleton.md`
-   - Lean module: `formal/GaloisForLFunctions/KoszulCohomology.lean`
+   - Lean module: `formal/GaloisForLFunctions/HTGeometry/KoszulCohomology.lean`
    - Lean anchors: `koszulD0_eq_zero_iff_invariant`, `koszulD1_eq_zero_iff_additiveCocycle`,
      `koszulCoboundary_cocycle`, `koszulD1_koszulD0_eq_zero`
    - Source: split from `docs/drafts/pipeline/2-fully-proven/multi-q-shafarevich-gluing-group.md` R0

@@ -8,7 +8,7 @@
   `formal/GaloisForLFunctions/RHTower/XiRelativeResolventFlux.lean`,
   `formal/GaloisForLFunctions/RHTower/XiHedenmalmMomentDeterminacy.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeArchMomentMeasureRH.lean`, and
-  `formal/GaloisForLFunctions/PrimeBoundaryDickmanWick.lean`
+  `formal/GaloisForLFunctions/RHTower/PrimeBoundaryDickmanWick.lean`
 - **Statement:** `[CONJECTURE]` The reciprocal completed seam ratio is the Laplace transform of one
   source-defined generalized gamma convolution whose Thorin measure is constructed from the
   coupled theta--Euler--Gamma constraint without using the Xi divisor.  This representation forces

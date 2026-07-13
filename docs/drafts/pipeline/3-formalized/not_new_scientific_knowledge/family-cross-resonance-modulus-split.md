@@ -42,7 +42,7 @@ for every prime `p`. The remaining relation is only the twist/root-of-unity part
   `familyTwistedProduct_split`, `familyPrimeBalance`,
   `familyPrimeBalance_apply_eq_zero_of_primeProduct_eq`, and
   `familyPrimeBalance_apply_eq_zero_of_primeLogFrequency_eq_zero` in
-  `formal/GaloisForLFunctions/FamilyCrossResonance.lean`; scratch `#check` / `#print axioms`,
+  `formal/GaloisForLFunctions/HTGeometry/FamilyCrossResonance.lean`; scratch `#check` / `#print axioms`,
   `lake build`, and `scripts/check_axioms.sh` pass.
 - [ ] 3 -> 4  publication-ready: cite as the formal certificate for the modulus/root-of-unity split in the
   family-DSS/GSH resolution.

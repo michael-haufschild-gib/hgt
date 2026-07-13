@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiDeckCharge
 import GaloisForLFunctions.RHTower.Reflection
-import GaloisForLFunctions.ExponentialSumDA
+import GaloisForLFunctions.HTGeometry.ExponentialSumDA
 import Mathlib.Analysis.Meromorphic.Order
 
 /-!

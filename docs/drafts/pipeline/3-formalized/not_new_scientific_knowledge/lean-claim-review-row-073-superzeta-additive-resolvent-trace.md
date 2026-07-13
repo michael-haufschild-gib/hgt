@@ -12,7 +12,7 @@
 Audit the claim from scratch. Researchers first verify the finite formal statement, its relation to the named superzeta object, and the exact Sigma-versus-product content. Leaner checks formalization after that review.
 
 ## Claimed Lean footholds to verify
-- `formal/GaloisForLFunctions/SuperzetaResolvent.lean`
+- `formal/GaloisForLFunctions/RHTower/SuperzetaResolvent.lean`
 - Candidate names: `superzeta_eq_sum_resolvent`, `superzeta_coeff_eq_powerSum`
 
 These names are leads, not certification.

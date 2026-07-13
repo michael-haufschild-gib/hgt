@@ -7,7 +7,7 @@ both equal `∑_{m≠n} (m−n)^{−s}` (the `m=n` term is `0^{−s}=0` in `hzet
 `tailFactored`; the `(1+0/(m−n))^{−s} = 1` factor is trivial). This feeds `survivor_q_eq_zero`'s `V_n`.
 -/
 import GaloisForLFunctions.Hurwitz.N2Tail
-import GaloisForLFunctions.PolygammaHurwitzValue
+import GaloisForLFunctions.Hurwitz.PolygammaHurwitzValue
 
 open Complex
 

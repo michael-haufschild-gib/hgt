@@ -11,7 +11,7 @@ Every partial sum of approximation numbers is therefore bounded by `‖A‖_HS·
 summability — membership in the Schatten 1-class — and the trace-norm inequality.  A factorized
 trace-class operator in the `IsTraceClass` sense thus has finite trace norm.
 -/
-import GaloisForLFunctions.SVDExpansion
+import GaloisForLFunctions.HTGeometry.SVDExpansion
 import GaloisForLFunctions.RHTower.SchattenTwoIdentity
 import GaloisForLFunctions.RHTower.SoninTimeBandHilbertSchmidt
 

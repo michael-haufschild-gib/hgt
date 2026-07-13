@@ -12,8 +12,8 @@
 Audit the claim from scratch. Researchers must decide whether this compound row is a legitimate combined theorem or simply references two separate finite Lean footholds. Leaner verifies formalization only after the row is scoped.
 
 ## Claimed Lean footholds to verify
-- `formal/GaloisForLFunctions/CarrierCauchy.lean`
-- `formal/GaloisForLFunctions/SpectrumGenericity.lean`
+- `formal/GaloisForLFunctions/HTGeometry/CarrierCauchy.lean`
+- `formal/GaloisForLFunctions/HTGeometry/SpectrumGenericity.lean`
 - Candidate names: `multiPair_carrier_exact_neg_inertia`, `spectrum_esymm_algIndep`
 
 These names are leads, not certification.

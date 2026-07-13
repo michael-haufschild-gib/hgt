@@ -144,7 +144,7 @@ joint-`σ_p` theorem closes C3, C6 (native), and C7 together. This sharpens "C5 
   (`finitePrimeLogAnnihilator_eq_singleton`, `linearIndependent_log_primes`, both ledgered). The new
   fragment is the directed-sup corank identity. Lean anchor **DONE** for the integer-valued stabilization
   corollary: `monotoneNat_eventually_constant_of_bddAbove` in
-  `formal/GaloisForLFunctions/HolonomicityLimit.lean` proves that a monotone bounded natural-number
+  `formal/GaloisForLFunctions/HTGeometry/HolonomicityLimit.lean` proves that a monotone bounded natural-number
   sequence is eventually constant, matching §2's `sup c_T < ∞ ⟹ c_T` stabilizes step.
 - [ ] 3 → 4  publication-ready — standalone note: the inverse system, the two lemmas, the dichotomy, the
   non-reconstruction corollary, the Door/C7 passport.
@@ -169,7 +169,7 @@ joint-`σ_p` theorem closes C3, C6 (native), and C7 together. This sharpens "C5 
   C5★). Not a G3-reframe (Lemma 1 + §5 are new functor-family content) ⟹ banked to 2-fully-proven, not
   failed.
 - 2026-06-19 (Leaner) — added Lean anchor for the §2 stabilization corollary:
-  `monotoneNat_eventually_constant_of_bddAbove` in `formal/GaloisForLFunctions/HolonomicityLimit.lean`.
+  `monotoneNat_eventually_constant_of_bddAbove` in `formal/GaloisForLFunctions/HTGeometry/HolonomicityLimit.lean`.
   It proves that a monotone bounded natural-number sequence is eventually constant, the integer-valued step
   used after the directed-sup corank identity. Added the module to the root import and axiom audit; `lake build`
   and `scripts/check_axioms.sh` pass with 248 audited theorem outputs and no `sorry`. Card remains in

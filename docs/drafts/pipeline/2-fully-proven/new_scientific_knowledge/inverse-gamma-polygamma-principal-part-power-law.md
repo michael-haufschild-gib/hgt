@@ -221,7 +221,7 @@ single-order pole calculation.
 
 ## Lean certificate
 
-Formalized in `formal/GaloisForLFunctions/CompositionResidueLaw.lean`:
+Formalized in `formal/GaloisForLFunctions/HTGeometry/CompositionResidueLaw.lean`:
 
 - `principalPart_comp_of_hasDerivAt`: a pole of order \(P\) pulls back with leading coefficient
   divided by the \(P\)-th power of the inner derivative;

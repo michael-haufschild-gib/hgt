@@ -2,7 +2,7 @@
 
 - **ID:** single-even-frequency-determinant
 - **Stage:** 3-formalized
-- **Lean module:** `formal/GaloisForLFunctions/SingleEvenFrequency.lean`
+- **Lean module:** `formal/GaloisForLFunctions/HTGeometry/SingleEvenFrequency.lean`
 - **Paper parent:** `../2-fully-proven/single-even-frequency-not-stieltjes.md`
 - **Statement formalized:** For real `B` and `lambda`,
 

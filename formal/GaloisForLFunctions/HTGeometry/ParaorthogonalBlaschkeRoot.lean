@@ -1,4 +1,4 @@
-import GaloisForLFunctions.CayleySchur
+import GaloisForLFunctions.HTGeometry.CayleySchur
 import GaloisForLFunctions.HTGeometry.FiniteOPUCReversal
 import Mathlib.FieldTheory.IsAlgClosed.Basic
 import Mathlib.Data.Multiset.Fintype

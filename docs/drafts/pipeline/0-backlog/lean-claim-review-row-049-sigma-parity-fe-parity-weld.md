@@ -19,8 +19,8 @@ the difference-Galois `σ`-cohomology grading to analytic FE-parity. Leaner kept
 constants are `fe_odd_moment_vanish`, `fe_centered_odd_moment_vanish`, and `exteriorPower_map_neg_id`.
 
 ## Claimed Lean footholds to verify
-- `formal/GaloisForLFunctions/FunctionalEquationParity.lean`
-- `formal/GaloisForLFunctions/ExteriorParity.lean`
+- `formal/GaloisForLFunctions/RHTower/FunctionalEquationParity.lean`
+- `formal/GaloisForLFunctions/RHTower/ExteriorParity.lean`
 - Candidate names: `fe_odd_moment_vanish`, `fe_centered_odd_moment_vanish`, `exteriorPower_map_neg_id`
 
 These names are leads, not certification.

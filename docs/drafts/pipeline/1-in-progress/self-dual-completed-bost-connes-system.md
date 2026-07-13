@@ -400,7 +400,7 @@ infrastructure absent from mathlib. Gate 1→2's item (A) is closed as mathemati
 
 The classical difference-equation proof of Hölder's theorem was decomposed; its only two
 non-bookkeeping steps are proven and formalized in
-`formal/GaloisForLFunctions/HolderDifferenceBricks.lean` (axiom-clean, lint green):
+`formal/GaloisForLFunctions/HTGeometry/HolderDifferenceBricks.lean` (axiom-clean, lint green):
 
 - `shift_periodic_quotient_constant` — **shift-periodic rational functions are constant**:
   `p(X+1)·q = p·q(X+1)` with `p, q` coprime forces both constant (shift preserves degree and
@@ -434,7 +434,7 @@ tools; the off-diagonal (ergodicity) part remains the research-scale wall.
 **A6a. Hölder's theorem, digamma form `[PROVED HERE + FORMALIZED, axiom-clean]`.**
 `Hypertranscendental Complex.digamma` — psi = Gamma'/Gamma satisfies no algebraic
 differential equation over `C[s]` — is machine-checked
-(`formal/GaloisForLFunctions/DigammaHypertranscendental.lean`, riding
+(`formal/GaloisForLFunctions/HTGeometry/DigammaHypertranscendental.lean`, riding
 `HolderShiftElimination.lean`). The proof is a new fully algebraic execution of the classical
 difference-equation argument, with no Laurent expansions and no analytic minimality:
 
@@ -455,7 +455,7 @@ difference-equation argument, with no Laurent expansions and no analytic minimal
    `digamma_jet_annihilator_eq_zero` is exposed directly.
 
 **A6b. The QH interface formalized `[FORMALIZED, axiom-clean]`**
-(`formal/GaloisForLFunctions/QuantitativeHolderInterface.lean`):
+(`formal/GaloisForLFunctions/HTGeometry/QuantitativeHolderInterface.lean`):
 - `halfDigamma_jet_annihilator_eq_zero` — the VANISHING CASE OF QH IS NOW A THEOREM: a
   polynomial in `(s, psi(s/2)-jets)` vanishing off the poles is zero (substitution `s -> 2s`
   into Hölder).
@@ -575,7 +575,7 @@ minimal-frequency estimate.
 ### A9. The differential unit equation no-go PROVEN IN LEAN (2026-07-12, pass 6)
 
 **`differential_unit_no_go` / `no_differential_eigenrelation` `[PROVED HERE + FORMALIZED,
-axiom-clean]`** (`formal/GaloisForLFunctions/DifferentialUnitEquation.lean`) — the terminal
+axiom-clean]`** (`formal/GaloisForLFunctions/HTGeometry/DifferentialUnitEquation.lean`) — the terminal
 obstruction of XiFrequencyCollapse sub-brick (1), the differential twin of
 `no_shift_eigenrelation`.
 
@@ -620,7 +620,7 @@ recursion: a single case split on whether every variable is `x₀`.
 **`[PROVED HERE + FORMALIZED, axiom-clean]`** — sub-brick (1) of XiFrequencyCollapse is now
 built up to a single well-scoped Bell-graded wiring step. Two new modules:
 
-**`formal/GaloisForLFunctions/DifferentialPowerElimination.lean`** — the engine, the
+**`formal/GaloisForLFunctions/HTGeometry/DifferentialPowerElimination.lean`** — the engine, the
 `𝒟`-on-coefficients analog of `gammaPowerRel_eq_zero`:
 - `diffPowerRel_yields` — **THE ENGINE**: a power relation `∑_{d≤D} f^d·(uJet u z)(Q_d) = 0`
   on an open `Ω` (hypotheses `hf : f' = u·f`, `hJ : jet-eval differentiates by 𝒟`,
@@ -635,7 +635,7 @@ built up to a single well-scoped Bell-graded wiring step. Two new modules:
   `hasDerivAt_uJetEval` (**the chain rule** `(uJet u ·)(P)' = (uJet u z)(𝒟P)`), and the
   packaged capstone `logDeriv_DA_of_powerRel` (engine + bridge for `u = f'/f`).
 
-**`formal/GaloisForLFunctions/LogDerivBellTransfer.lean`** — the transfer bricks:
+**`formal/GaloisForLFunctions/HTGeometry/LogDerivBellTransfer.lean`** — the transfer bricks:
 - `iteratedDeriv_eq_bellCore_generic` — the **generic Bell identity**
   `f⁽ᵏ⁾ = f·B_k(u-jets)` for any analytic nonzero `f` (generalizes
   `gamma_iteratedDeriv_eq_bellCore`).
@@ -657,7 +657,7 @@ minimal-frequency/von Mangoldt-Vandermonde bookkeeping over `iteratedDeriv_xiLog
 ### A11. XiFrequencyCollapse sub-brick (1) DISCHARGED END-TO-END (2026-07-12, pass 7 cont.)
 
 **`logDeriv_DA_of_DA_full` `[PROVED HERE + FORMALIZED, axiom-clean]`**
-(`formal/GaloisForLFunctions/LogDerivPowerRelation.lean`): for any `f` analytic and nonzero on
+(`formal/GaloisForLFunctions/HTGeometry/LogDerivPowerRelation.lean`): for any `f` analytic and nonzero on
 an open `Ω` carrying a NONZERO differential-algebraic relation, its logarithmic derivative
 `u = f'/f` satisfies a nonzero differential-algebraic relation on `Ω`. Applied to `f = ξ`
 (entire, `Ω = {ξ ≠ 0}` open), this is exactly **"ξ DA ⟹ ξ'/ξ DA"** — sub-brick (1), complete.

@@ -603,7 +603,15 @@ $\lambda_{\min}(G_N)\leq(\det G_N)^{1/(N+1)}$.  Therefore
   (\det C_N)^{1/(N+1)}\longrightarrow\infty.
 \end{equation}
 
-Let $\varphi_n$ be the orthonormal polynomials of $\mu$.  Compatibility defines an isometry
+Write $C_N=(c^{(N)}_{jk})_{0\leq j,k\leq N}$ and define
+\[
+  \varphi_n(\zeta)=\sum_{k=0}^n\overline{c^{(n)}_{nk}}\,\zeta^k.
+\]
+The leading-principal coherence of the frames says that the polynomial attached to any earlier
+row is unchanged at every later level.  Moreover $C_NG_NC_N^*=I$ says exactly that the first
+$N+1$ such row polynomials are orthonormal in $L^2(\mu)$.  Since $C_N$ is invertible, those row
+polynomials span the same finite-dimensional subspace as $1,\zeta,\ldots,\zeta^N$.  Thus the
+stable diagonal rows assemble, without a separate limiting choice, into an isometry
 \begin{equation}\label{eq:unitary-map}
   U_\mu:\ell^2(\mathbb Z_+)\longrightarrow L^2(\mu),
   \qquad U_\mu e_n=\varphi_n.

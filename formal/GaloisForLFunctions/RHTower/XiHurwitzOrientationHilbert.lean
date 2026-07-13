@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiHurwitzOrientationEnergy
-import GaloisForLFunctions.HilbertSchmidtMatrix
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtMatrix
 
 /-!
 # Hilbert realization of the Xi--Hurwitz orientation energy

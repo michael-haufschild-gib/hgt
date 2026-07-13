@@ -262,7 +262,7 @@ translates of one fixed elliptic gamma function.
 ## Lean formalization
 
 The two abstract engines are formalized unconditionally and axiom-clean in
-`formal/GaloisForLFunctions/DifferentialMatroidGluing.lean`. Differential transcendence degree over
+`formal/GaloisForLFunctions/HTGeometry/DifferentialMatroidGluing.lean`. Differential transcendence degree over
 the fixed base is abstracted as a monotone submodular subcardinal `ℕ`-valued rank on finite
 coordinate sets (`Rank`), and derivation-commuting translations as its rank automorphisms
 (`rankAutSubgroup`). Over this:

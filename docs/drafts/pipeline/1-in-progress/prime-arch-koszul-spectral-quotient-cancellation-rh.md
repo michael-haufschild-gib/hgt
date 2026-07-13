@@ -3,10 +3,10 @@
 - **ID:** `prime-arch-koszul-spectral-quotient-cancellation-rh`
 - **Stage:** 1-in-progress
 - **Type:** `[LARGE OUTLANDISH DETOUR] [CONJECTURE] [GRADED SPECTRAL FACTORIZATION]`
-- **Lean inputs:** `formal/GaloisForLFunctions/MomentTowerQuotientGhost.lean`,
-  `formal/GaloisForLFunctions/GradedSpectrumCancellation.lean`,
-  `formal/GaloisForLFunctions/EHKoszulDuality.lean`,
-  `formal/GaloisForLFunctions/AdamsOperations.lean`,
+- **Lean inputs:** `formal/GaloisForLFunctions/HTGeometry/MomentTowerQuotientGhost.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/GradedSpectrumCancellation.lean`,
+  `formal/GaloisForLFunctions/RHTower/EHKoszulDuality.lean`,
+  `formal/GaloisForLFunctions/RHTower/AdamsOperations.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeArchDualCauchyTensor.lean`, and
   `formal/GaloisForLFunctions/RHTower/PrimeArchThetaAllOrderCumulant.lean`
 - **Consumer:** `prime-theta-young-thoma-schur-rh.md`

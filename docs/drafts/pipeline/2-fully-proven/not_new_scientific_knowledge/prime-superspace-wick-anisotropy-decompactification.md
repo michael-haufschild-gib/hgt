@@ -287,7 +287,7 @@ not new scientific knowledge.
 
 ## 9. Lean surface
 
-`formal/GaloisForLFunctions/PrimeSuperspaceWickAnisotropy.lean` proves:
+`formal/GaloisForLFunctions/RHTower/PrimeSuperspaceWickAnisotropy.lean` proves:
 
 - `primeClockVerticalEnergy_eq_cos`;
 - `primeClockVerticalEnergy_quadratic_upper`;

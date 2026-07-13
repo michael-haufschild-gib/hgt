@@ -220,7 +220,7 @@ same finite-ancestor obligation in another category.
 
 ## 7. Lean surface
 
-`formal/GaloisForLFunctions/PrimeQuasiLocalCharge.lean` proves:
+`formal/GaloisForLFunctions/RHTower/PrimeQuasiLocalCharge.lean` proves:
 
 - `PrimeQuasiLocalCharge.det_amplifyMatrix`;
 - `PrimeQuasiLocalCharge.det_amplifyMatrix_eq_zero_iff`;

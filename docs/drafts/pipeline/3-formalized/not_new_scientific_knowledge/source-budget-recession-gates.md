@@ -2,7 +2,7 @@
 
 - **ID:** source-budget-recession-gates
 - **Stage:** 3-formalized
-- **Lean module:** `formal/GaloisForLFunctions/SourceRecession.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/SourceRecession.lean`
 - **Paper parent:** `../2-fully-proven/finite-source-normalizations-leave-budget-recession.md`
 - **Statement formalized:** If a fixed budget inequality holds along every
   point of a one-sided affine ray, the recession direction is nonnegative on

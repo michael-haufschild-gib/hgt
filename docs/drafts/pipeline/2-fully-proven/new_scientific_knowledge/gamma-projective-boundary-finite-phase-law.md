@@ -503,7 +503,7 @@ Primary sources:
 
 ## 10. Lean status
 
-`formal/GaloisForLFunctions/GammaProjectiveBoundary.lean` now proves unconditionally:
+`formal/GaloisForLFunctions/HTGeometry/GammaProjectiveBoundary.lean` now proves unconditionally:
 
 - the nonzero orbit mass of the differentiated digamma shift datum;
 - the absence of a meromorphic finite-pole solution of

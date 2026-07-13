@@ -430,13 +430,13 @@ the absent Hamburger-moment/Nevanlinna/Choquet-simplex/transversality stack shar
 cards. Two coordinate-free layers of that stack are now formalized in-tree, axiom-clean:
 
 - The **topological retract dimension bound** — the load-bearing consequence of the Bauer retraction —
-  is `HasCoverDimLE.of_retract` in `formal/GaloisForLFunctions/CoveringDimension.lean`: a retract
+  is `HasCoverDimLE.of_retract` in `formal/GaloisForLFunctions/HTGeometry/CoveringDimension.lean`: a retract
   `Y` of `X` (continuous `i : Y → X`, `r : X → Y`, `r ∘ i = id`) has covering dimension at most that
   of `X`.  This is exactly the abstract fact that passing to the Nevanlinna Bauer retract cannot raise
   dimension; the idempotence `R_s^2 = R_s` from the left inverse `π_* ∘ Β = id` is its
   retraction-from-section shadow.
 - The **moment-functional / Hankel-positivity substrate** underlying the moment-preserving barycenter
-  and the representing-measure simplex is `formal/GaloisForLFunctions/MomentFunctionalPositivity.lean`
+  and the representing-measure simplex is `formal/GaloisForLFunctions/HTGeometry/MomentFunctionalPositivity.lean`
   (`momentFunctional`, `momentFunctional_pow_two_nonneg`, `momentFunctional_pow_two_eq_zero`).
 
 What remains absent is the analytic simplex identification itself (Nevanlinna matrix / Choquet

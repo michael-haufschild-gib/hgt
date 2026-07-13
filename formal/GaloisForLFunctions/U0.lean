@@ -74,3 +74,9 @@ import GaloisForLFunctions.U0.U0ParameterSpace
 import GaloisForLFunctions.U0.U0MStepInstances
 import GaloisForLFunctions.U0.U0Capstone
 import GaloisForLFunctions.U0.U0AllNonexceptionalDisconnected
+
+/- ## Complete area inventory -/
+import GaloisForLFunctions.U0.ThirdVelocityJet
+import GaloisForLFunctions.U0.U0AllNonexceptional
+import GaloisForLFunctions.U0.U0AllNonexceptionalConnected
+import GaloisForLFunctions.U0.U0PhiTower

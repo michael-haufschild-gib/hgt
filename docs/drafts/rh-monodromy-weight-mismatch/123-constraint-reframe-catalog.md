@@ -309,12 +309,12 @@ the open content onto the sign, not the magnitude.
 ## Status addendum — T3 built and graded (operator-spectral face)
 
 T3 (the transverse index `κ₋` / type-II₁) was taken to exhaustion. Rule-6 check found the finite
-faithful count already done: `formal/GaloisForLFunctions/KreinLangerInertia.lean` proves the exact
+faithful count already done: `formal/GaloisForLFunctions/HTGeometry/KreinLangerInertia.lean` proves the exact
 `κ₋ = #off-line pairs` (`exact_neg_inertia` + Cauchy non-degeneracy), the finite Krein–Langer inertia.
 The corpus's faithful-vs-measured dichotomy (`opus_faithful_vs_measured_trace_dichotomy`) shows the
 object T3 names — the type-II₁ *measured* index `τ(P₋)` — is the wrong one.
 
-**Built (axiom-clean):** `formal/GaloisForLFunctions/MeasuredIndexBlindness.lean` (lint green) — the
+**Built (axiom-clean):** `formal/GaloisForLFunctions/RHTower/MeasuredIndexBlindness.lean` (lint green) — the
 measured/type-II₁/III₁ index is **RH-blind**, two ways: (i) density normalization sends any bounded or
 density-zero off-line count to `0` (`faithful_measured_dichotomy`: configs with `κ₋ = 0,1,∞` share
 measured index `0`); (ii) the **type-III scaling obstruction** `typeIII_scaling_forces_zero` — a

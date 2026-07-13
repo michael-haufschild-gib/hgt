@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean certificate split from `../2-fully-proven/lean-claim-review-row-083-spectral-torelli-finite.md`)
 - **Owner:** Leaner
-- **Lean files:** `formal/GaloisForLFunctions/PowerSumTorelli.lean`; `formal/GaloisForLFunctions/SpectralTorelli.lean`
+- **Lean files:** `formal/GaloisForLFunctions/HTGeometry/PowerSumTorelli.lean`; `formal/GaloisForLFunctions/RHTower/SpectralTorelli.lean`
 
 ## Statement
 

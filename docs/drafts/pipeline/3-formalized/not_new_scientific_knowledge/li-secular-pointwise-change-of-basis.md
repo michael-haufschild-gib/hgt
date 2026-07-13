@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean certificate split from `../2-fully-proven/lean-claim-review-row-010-pk-li-secular-change-of-basis.md`)
 - **Owner:** Leaner
-- **Lean file:** `formal/GaloisForLFunctions/SecularMoments.lean`
+- **Lean file:** `formal/GaloisForLFunctions/RHTower/SecularMoments.lean`
 
 ## Statement
 
@@ -50,7 +50,7 @@ which is the Lean statement with `n = m + 1`.
 - [x] 0 -> 1 in-progress: pointwise Li/secular binomial identities isolated from row #10 §B.
 - [x] 1 -> 2 fully-proven: paper proof above by the binomial theorem and alternating binomial sum.
 - [x] 2 -> 3 formalized: Lean theorems `li_secular_pointwise` and `secular_li_pointwise_inv` in
-  `formal/GaloisForLFunctions/SecularMoments.lean`; scratch `#check` and `#print axioms` passed; both are
+  `formal/GaloisForLFunctions/RHTower/SecularMoments.lean`; scratch `#check` and `#print axioms` passed; both are
   audited in `scripts/check_axioms.sh`.
 - [ ] 3 -> 4 publication-ready: include as the finite algebra certificate for the Li/secular coordinate change.
 

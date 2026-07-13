@@ -1,4 +1,4 @@
-import GaloisForLFunctions.SchwartzPositiveMeasureRepresentation
+import GaloisForLFunctions.HTGeometry.SchwartzPositiveMeasureRepresentation
 import GaloisForLFunctions.RHTower.XiThetaSpectralOrientationClassification
 
 /-!

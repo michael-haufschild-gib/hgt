@@ -11,7 +11,7 @@
 ## Details
 New Lean theorem:
 - `GaloisForLFunctions.moritaGammaFinite_succ` in
-  `formal/GaloisForLFunctions/MoritaGamma.lean`
+  `formal/GaloisForLFunctions/HTGeometry/MoritaGamma.lean`
 
 Supporting Lean theorems:
 - `GaloisForLFunctions.moritaGammaProduct_succ_of_dvd`

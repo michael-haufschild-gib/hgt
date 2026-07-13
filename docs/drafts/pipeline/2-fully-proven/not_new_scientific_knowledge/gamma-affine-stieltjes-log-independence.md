@@ -143,7 +143,7 @@ substrate-load-bearing test. Both halves are certified.
 
 `Q_weld` and `ε₁` exist with properties (1)-(3):
 
-- **Formal core (already in tree):** `formal/GaloisForLFunctions/SeamNonSplitting.lean` builds the
+- **Formal core (already in tree):** `formal/GaloisForLFunctions/HTGeometry/SeamNonSplitting.lean` builds the
   quotient of cutoff germs by separable counterterms, the class `seamEpsilonOne`/
   `gammaOneVisibleClass`, its nonvanishing, the descending order-`n` detector hierarchy
   (`cutoffOrderClass_ne_zero`), and detector invariance under representative changes.

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.IharaBlockSelector
+import GaloisForLFunctions.RHTower.IharaBlockSelector
 
 /-!
 # The normalized two-spin Lee--Yang block

@@ -826,23 +826,23 @@ parameter-jet controllability `(10)`, and the full-configuration transversality 
 absent Nevanlinna matrix / minimal-exponential-type Jensen bound / Whitney-transversality stack. The
 coordinate-free classical step — extreme points of a compact convex set are `G_δ`, `(29)`--`(30)` —
 was absent from mathlib and is now formalized axiom-clean as `HTGeometry.isGδ_extremePoints` in
-`formal/GaloisForLFunctions/CompactConvexExtremeGdelta.lean` (real normed space, `K` compact convex;
+`formal/GaloisForLFunctions/HTGeometry/CompactConvexExtremeGdelta.lean` (real normed space, `K` compact convex;
 the non-extreme points form the `Fσ` union of midpoints of pairs at distance `≥ 1/(n+1)`). The rest
 of `(28)` — density of `Ext M(s)` — still needs the absent Nevanlinna N-extremal construction.
 
 Two further self-contained steps are now formalized axiom-clean:
 
-- **All-order flatness `(9)`.** `formal/GaloisForLFunctions/CauchyMomentFlatness.lean` proves the
+- **All-order flatness `(9)`.** `formal/GaloisForLFunctions/HTGeometry/CauchyMomentFlatness.lean` proves the
   finite-geometric Cauchy-kernel expansion `cauchy_kernel_finite_expansion`, its integrated form
   `cauchy_integral_expansion`, and `cauchy_transform_sub_of_moments_eq`: two finite measures with
   equal moments through order `N` have Cauchy transforms differing only by the `z^{-(N+1)}` remainder
   (the moment-cancellation mechanism of `(9a)`--`(9d)`).
 - **Isometric extremal simplex `(20)`--`(22)`.**
-  `formal/GaloisForLFunctions/MutuallySingularTotalVariation.lean` proves
+  `formal/GaloisForLFunctions/HTGeometry/MutuallySingularTotalVariation.lean` proves
   `totalVariation_toSignedMeasure_sub`: for finite `μ ⟂ ν`, `(μ − ν)` has total variation `μ + ν`
   (so mutually singular representing measures sit isometrically in total-variation geometry).
 - **Hankel positive-semidefiniteness / moment functional.**
-  `formal/GaloisForLFunctions/MomentFunctionalPositivity.lean` builds the moment functional
+  `formal/GaloisForLFunctions/HTGeometry/MomentFunctionalPositivity.lean` builds the moment functional
   `momentFunctional s p = ∑ₖ aₖ sₖ` (absent from mathlib), its `ℝ`-linearity, the representing-measure
   bridge `momentFunctional_eq_integral`, the moment bilinear/Gram form `momentFunctional_mul_eq_integral`
   (`L(p·q) = ∫ (eval p)(eval q) dμ`), and the load-bearing positivity
@@ -856,14 +856,14 @@ Two further self-contained steps are now formalized axiom-clean:
   Two further inner-product/cone properties of the Hankel form are formalized:
   `momentFunctional_cauchy_schwarz` (`L(p·q)² ≤ L(p²)·L(q²)`, the Cauchy–Schwarz inequality, proved
   from square-positivity via the discriminant of `t ↦ L((p+t·q)²)`) and, in
-  `formal/GaloisForLFunctions/MomentFunctionalHaviland.lean`, `momentFunctional_nonneg_of_nonneg`
+  `formal/GaloisForLFunctions/HTGeometry/MomentFunctionalHaviland.lean`, `momentFunctional_nonneg_of_nonneg`
   (**Haviland positivity**: `L(p) ≥ 0` for every `p ≥ 0` on `ℝ`, the full Riesz–Haviland cone
   condition) with its monotone consequence `momentFunctional_mono`. The **matrix form** of the same
   fact — the literal statement "the Hankel matrix `(sᵢ₊ⱼ)` is positive-definite" that the finite-Pick
   arguments invoke — is `hankelForm_nonneg` (`∑ᵢⱼ vᵢvⱼ s_{i+j} ≥ 0`, positive-semidefinite) and
   `hankelForm_eq_zero` (strict positive-definiteness for infinitely-supported measures: the form
   vanishes only at `v = 0`), bridged from the functional through `momentFunctional_sq_eq_hankelForm`.
-- **Cauchy transform as a Pick function.** `formal/GaloisForLFunctions/StieltjesTransformPick.lean`
+- **Cauchy transform as a Pick function.** `formal/GaloisForLFunctions/HTGeometry/StieltjesTransformPick.lean`
   now proves the Cauchy transform `Φ_μ` is a genuine Pick/Herglotz function — holomorphic on the upper
   half-plane (`stieltjesTransform_differentiableOn`), positive imaginary part (`stieltjesTransform_im_pos`),
   Herglotz growth `‖Φ_μ‖ ≤ μ(ℝ)/Im z` (`stieltjesTransform_norm_le`) — together with the Poisson and

@@ -128,7 +128,7 @@ points, where the same exponent might be encoded under a pressure or cocycle nor
 ## Lean status
 
 The complete arbitrary-order theorem is formalized in
-`formal/GaloisForLFunctions/FeigenbaumValueRelations.lean` as
+`formal/GaloisForLFunctions/HTGeometry/FeigenbaumValueRelations.lean` as
 
 ```text
 feigenbaum_criticalOrder_postcritical_deriv
@@ -136,7 +136,7 @@ feigenbaum_criticalOrder_postcritical_product
 ```
 
 Its reusable critical-jet input is formalized in
-`formal/GaloisForLFunctions/FirstNonzeroJetComposition.lean` as
+`formal/GaloisForLFunctions/HTGeometry/FirstNonzeroJetComposition.lean` as
 
 ```text
 iteratedDeriv_comp_of_firstNonzero_innerJet

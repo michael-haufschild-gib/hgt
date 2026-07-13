@@ -208,7 +208,7 @@ therefore fails the parent-theory and anti-theatre novelty gates and is not new 
 
 ## Lean status
 
-`formal/GaloisForLFunctions/CayleySchur.lean` proves the pointwise Herglotz-to-Schur Cayley bound,
+`formal/GaloisForLFunctions/HTGeometry/CayleySchur.lean` proves the pointwise Herglotz-to-Schur Cayley bound,
 its strict upper-half-plane version, finite Blaschke boundedness, and finite Szego-kernel positivity.
 The repository does not define analytic `H^2(D)`, boundary inner--outer factorization, closed cyclic
 subspaces, Beurling's theorem, model spaces, or maximal differential independence under rational

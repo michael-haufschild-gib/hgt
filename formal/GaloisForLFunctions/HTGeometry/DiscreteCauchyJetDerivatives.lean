@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.DiscreteCauchyJetPacket
-import GaloisForLFunctions.GammaDifferentialFE
-import GaloisForLFunctions.DifferentiallyAlgebraicInvariance
+import GaloisForLFunctions.HTGeometry.GammaDifferentialFE
+import GaloisForLFunctions.HTGeometry.DifferentiallyAlgebraicInvariance
 
 /-!
 # Normalized Cauchy packets are the actual differential jets

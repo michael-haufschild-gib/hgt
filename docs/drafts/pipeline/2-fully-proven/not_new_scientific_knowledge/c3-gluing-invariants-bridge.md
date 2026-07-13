@@ -106,7 +106,7 @@ it closes exactly when C5★ is proven.
 - [x] 1 → 2  fully-proven — (a) explicit witness, hand-verified exact `2×2` arithmetic; (b) Procesi/Artin
   (named import) + the Door-2/Door-3 reductions; no open lemma. (c) is the forward reduction to C5★.
 - [ ] 2 → 3  formalized — Lean foothold **DONE** for the explicit witness:
-  `gluing_per_prime_same_but_joint_distinct` in `formal/GaloisForLFunctions/GluingWitness.lean`
+  `gluing_per_prime_same_but_joint_distinct` in `formal/GaloisForLFunctions/RHTower/GluingWitness.lean`
   proves the `2×2` rational matrix per-prime conjugacy and joint word-trace obstruction, axiom-clean.
   The full card is **not** moved to `3-formalized`: the Procesi/Artin invariant-theory generation is an
   import and the C3-native reduction points to open C5★, so the whole theorem is not Lean-formalized.
@@ -121,7 +121,7 @@ it closes exactly when C5★ is proven.
 - 2026-06-19 — spawned two follow-up cards (0-backlog): `multi-q-shafarevich-gluing-group.md` (the
   gluing invariant's native home `Ш`; its arithmetic part vs C5★) and
   `cross-prime-curvature-reducibility.md` (the curvature-language C5★ carrier).
-- 2026-06-19 — Lean foothold added: `formal/GaloisForLFunctions/GluingWitness.lean` formalizes the
+- 2026-06-19 — Lean foothold added: `formal/GaloisForLFunctions/RHTower/GluingWitness.lean` formalizes the
   rank-2 two-prime witness (`gluing_per_prime_same_but_joint_distinct`) and the audit now checks eight
   gluing witness theorems. `lake build` and `scripts/check_axioms.sh` pass. Card stays in
   `2-fully-proven` because only the finite witness, not the Procesi/Artin import or C5★ reduction, is

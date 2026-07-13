@@ -98,7 +98,7 @@ framing.)*
   isolated as the sharpened conjecture (§3). BRIDGE with content beyond imports (§4).
 - [ ] 2 → 3  formalized — Lean anchor **DONE** for the elementary feeding identity
   `log_nat_eq_sum_factorization` (`log k = ∑ v_p(k) log p`) in
-  `formal/GaloisForLFunctions/SmoothNumbers.lean`, axiom-audited. Remaining targets: `\ln q`
+  `formal/GaloisForLFunctions/RHTower/SmoothNumbers.lean`, axiom-audited. Remaining targets: `\ln q`
   transcendental (Lindemann, likely import-gap in mathlib — check), transcendence-degree/corank
   infrastructure, and the #121 corank formalization.
 - [ ] 3 → 4  publication-ready — note paired with #119/#121: "transcendence of continuation data = corank."

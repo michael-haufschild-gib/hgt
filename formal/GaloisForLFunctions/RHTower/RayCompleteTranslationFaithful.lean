@@ -27,7 +27,7 @@ Sections mirror the paper:
   completed-zeta instance, over an abstract module of carriers with a rational subspace.
 -/
 import Mathlib
-import GaloisForLFunctions.ZeroEstimate
+import GaloisForLFunctions.RHTower.ZeroEstimate
 import GaloisForLFunctions.RHTower.GelfondSchneider
 import GaloisForLFunctions.RHTower.WeldZeroGenerator
 

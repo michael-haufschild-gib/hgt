@@ -468,7 +468,7 @@ These are the field's **Hecke characters** — the rank-1 "line bundles with con
 form an abelian group under `⊗` (multiply multipliers), the **Picard group of the planet**.
 
 **Lean note (ledger-proven algebraic skeleton).** The scalar group-cohomology core is now machine-checked in
-`formal/GaloisForLFunctions/RankOneCohomology.lean`: `scalarCocycle_mul` and `scalarCocycle_inv` prove closure of
+`formal/GaloisForLFunctions/HTGeometry/RankOneCohomology.lean`: `scalarCocycle_mul` and `scalarCocycle_inv` prove closure of
 rank-1 cocycles under tensor/dual, `rankOneCoboundary_cocycle` proves `σ_p(h)/h` is a cocycle for commuting
 actions, and `rankOnePicard_commGroup` records that cocycles modulo coboundaries form an abelian quotient group.
 This does **not** formalize Picard-Vessiot rings, the category of modules, or the full isomorphism-class theorem.
@@ -2706,7 +2706,7 @@ commuting shifts it *fails*, and holds precisely on the integrable locus. *So in
 — it is the precise content of "the several operators co-extend to one solution algebra."*
 
 **Lean ledger note.** The finite algebraic core of 47.1 is now formalized in
-`formal/GaloisForLFunctions/FlatConnection.lean`: `coextensionComposite_eq_iff_flatCondition` proves that, after
+`formal/GaloisForLFunctions/HTGeometry/FlatConnection.lean`: `coextensionComposite_eq_iff_flatCondition` proves that, after
 right-cancelling an invertible fundamental-solution value, equality of the two composite images is exactly
 `σ_i(A_j)A_i=σ_j(A_i)A_j`; `coextension_commutes_iff_flatCondition` packages the all-`X` version. This is the
 cancellative group/fundamental-solution-value skeleton only. It does **not** construct `K[X,1/det]`, prove the
@@ -3938,7 +3938,7 @@ is the standard diagonalizable-group duality, valid at any rank. *Precision wort
 the ind-torus; the duality is for the pro-torus, and the statement is exactly as in §43.2. *Verdict: confirmed, with
 the pro-versus-ind distinction made explicit.*
 
-**Lean ledger note.** The arithmetic `Λ=0` vertex is now machine-checked in `formal/GaloisForLFunctions/Resonance.lean`:
+**Lean ledger note.** The arithmetic `Λ=0` vertex is now machine-checked in `formal/GaloisForLFunctions/HTGeometry/Resonance.lean`:
 `primeLog_diagonalRelationLattice_eq_singleton` proves that the prime-log diagonal relation lattice is `{0}`, and
 `finitePrimeLogAnnihilator_eq_singleton` proves the same for every finite support slice. This is exactly the
 unique-factorization/log-prime-independence floor of §43.2. It does **not** formalize the diagonalizable-group

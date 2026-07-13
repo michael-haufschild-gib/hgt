@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.LocallyUniformZeroTransfer
-import GaloisForLFunctions.FinitePrimeBoundaryTransfer
+import GaloisForLFunctions.RHTower.FinitePrimeBoundaryTransfer
 import Mathlib.Analysis.Complex.TaylorSeries
 
 open Complex Metric Set Filter Topology

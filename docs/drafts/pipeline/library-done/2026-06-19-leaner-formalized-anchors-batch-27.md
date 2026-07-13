@@ -9,7 +9,7 @@
   `../3-formalized/finite-coordinate-scale-commutation.md`.
 
 ## Details
-New Lean theorems in `formal/GaloisForLFunctions/BohrGenerators.lean`:
+New Lean theorems in `formal/GaloisForLFunctions/HTGeometry/BohrGenerators.lean`:
 - `GaloisForLFunctions.scaleCoordinate_commute`
 - `GaloisForLFunctions.scaleAllCoordinates_commute`
 - `GaloisForLFunctions.scaleCoordinate_scaleAllCoordinates_commute`

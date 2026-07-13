@@ -125,7 +125,7 @@ GaloisForLFunctions.exists_two_coface_directions_of_pure_ridgeThick
 GaloisForLFunctions.ridgeThick_uniformFacets
 ```
 
-in `formal/GaloisForLFunctions/SimplicialConstraintTower.lean`.
+in `formal/GaloisForLFunctions/HTGeometry/SimplicialConstraintTower.lean`.
 
 The same module now defines the exact nonpure condition `TwoThick`, proves
 `twoThick_of_pure_ridgeThick`, and formalizes the antichain-star fresh-vertex step as

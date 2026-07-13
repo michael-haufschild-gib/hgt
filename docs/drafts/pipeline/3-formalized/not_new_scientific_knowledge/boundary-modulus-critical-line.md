@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Priority:** FOUNDATIONAL
-- **Source:** split from `../2-fully-proven/g5-over-fq-deligne-unitarity.md` and its `BoundaryModulus` σ-fixed-modulus floor; Lean files `formal/GaloisForLFunctions/Core.lean` and `formal/GaloisForLFunctions/BoundaryModulus.lean`
+- **Source:** split from `../2-fully-proven/g5-over-fq-deligne-unitarity.md` and its `BoundaryModulus` σ-fixed-modulus floor; Lean files `formal/GaloisForLFunctions/Core.lean` and `formal/GaloisForLFunctions/RHTower/BoundaryModulus.lean`
 - **Statement:** For a positive real base `p>1`, the diagonal Bohr coordinate `p^{-s}` has boundary radius `p^{-1/2}` exactly when `Re(s)=1/2`; equivalently, after scaling by the inverse boundary radius, it has unit norm exactly on the critical line.
 
 ## Goal

@@ -48,7 +48,7 @@ and
 - [x] 2 -> 3  formalized: Lean definitions/theorems `moritaGammaProduct`, `moritaGammaFinite`,
   `moritaGammaProduct_succ_of_dvd`, `moritaGammaProduct_succ_of_not_dvd`,
   `moritaGammaFinite_succ_of_dvd`, `moritaGammaFinite_succ_of_not_dvd`, and
-  `moritaGammaFinite_succ` in `formal/GaloisForLFunctions/MoritaGamma.lean`; scratch `#check` /
+  `moritaGammaFinite_succ` in `formal/GaloisForLFunctions/HTGeometry/MoritaGamma.lean`; scratch `#check` /
   `#print axioms`, `lake build`, and `scripts/check_axioms.sh` pass.
 - [ ] 3 -> 4  publication-ready: cite as the formal certificate for the finite Morita recurrence inside the
   per-place gamma-carrier exposition.

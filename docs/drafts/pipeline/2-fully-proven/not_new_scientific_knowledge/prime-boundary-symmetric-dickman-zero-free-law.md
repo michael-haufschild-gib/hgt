@@ -272,7 +272,7 @@ research question is the completed signed fluctuation `(23)`, not the leading Di
 
 ## 9. Lean surface
 
-`formal/GaloisForLFunctions/PrimeBoundaryDickmanWick.lean` proves:
+`formal/GaloisForLFunctions/RHTower/PrimeBoundaryDickmanWick.lean` proves:
 
 - `primeClockCutoffEnergy_half_eq_cosh`;
 - `primeBoundaryWickCumulant_ofReal`;

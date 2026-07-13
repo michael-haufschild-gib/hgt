@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ArakelovW
+import GaloisForLFunctions.RHTower.ArakelovW
 import GaloisForLFunctions.RHTower.BornTemperatureFactorType
 
 /-!

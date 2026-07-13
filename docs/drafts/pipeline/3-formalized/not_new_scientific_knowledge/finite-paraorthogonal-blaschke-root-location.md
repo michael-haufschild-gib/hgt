@@ -22,7 +22,15 @@ Lean proves `|z|=1`.  The key exact identity is
 ```
 
 Thus every factor in `(1)` is contractive inside the circle and expansive outside it.  The
-unimodular terminal equation can hold only on the boundary.
+unimodular terminal equation can hold only on the boundary.  Lean further proves, for every
+nonzero complex polynomial `p` whose roots lie strictly in the disk, that every root of
+
+```text
+w p(w) - tau (map_conj p).reverse(w)
+```
+
+lies on the unit circle.  Instantiating `p` with `finiteOPUCPolynomial` closes the concrete finite
+OPUC interface for every positive-definite Toeplitz section.
 
 ## Positive statement from the ordinary-OPUC no-go
 
@@ -37,6 +45,10 @@ The resulting roots lie exactly on the unit circle.
 blaschke_normSq_sub
 one_lt_norm_blaschke_of_norm_lt_one_of_one_lt_norm
 finiteBlaschke_paraorthogonal_root_norm_eq_one
+conjugateReverse_eval_eq_root_product
+finiteParaorthogonalPolynomial
+finiteParaorthogonalPolynomial_isRoot_norm_eq_one
+finiteOPUCParaorthogonalPolynomial_isRoot_norm_eq_one
 ```
 
 ## Gates
@@ -44,5 +56,6 @@ finiteBlaschke_paraorthogonal_root_norm_eq_one
 - [x] two-sided Blaschke modulus identity formalized
 - [x] strict exterior expansion formalized
 - [x] finite paraorthogonal unit-circle theorem formalized
-- [ ] connect the roots of `finiteOPUCPolynomial` to the factorized Blaschke parameters
-
+- [x] exact conjugate-reversal root product formalized
+- [x] generic paraorthogonal polynomial root theorem formalized
+- [x] `finiteOPUCPolynomial` and its reversal connected to the unit-circle theorem

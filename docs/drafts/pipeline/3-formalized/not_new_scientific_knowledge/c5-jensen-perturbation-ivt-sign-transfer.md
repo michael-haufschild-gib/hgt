@@ -21,7 +21,7 @@ For strict sign transfer, `|y-c| < |c|` first implies `c != 0`. If `c > 0`, the 
 
 ## Lean Certificate
 
-Lean file: `formal/GaloisForLFunctions/C5JensenPerturbation.lean`
+Lean file: `formal/GaloisForLFunctions/RHTower/C5JensenPerturbation.lean`
 
 Audited theorem names:
 

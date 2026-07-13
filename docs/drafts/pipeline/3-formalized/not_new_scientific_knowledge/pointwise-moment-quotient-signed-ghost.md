@@ -3,7 +3,7 @@
 - **ID:** `pointwise-moment-quotient-signed-ghost`
 - **Stage:** 3-formalized
 - **Type:** `[POSITIVE NO-GO] [NOT NEW SCIENTIFIC KNOWLEDGE]`
-- **Lean:** `formal/GaloisForLFunctions/MomentTowerQuotientGhost.lean`
+- **Lean:** `formal/GaloisForLFunctions/HTGeometry/MomentTowerQuotientGhost.lean`
 - **Parent:** `../../1-in-progress/prime-arch-dual-cauchy-rsk-fredholm-rh.md`
 
 ## Statement

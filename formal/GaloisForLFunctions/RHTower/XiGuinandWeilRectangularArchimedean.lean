@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.XiGuinandWeilRectangularFourier
 import GaloisForLFunctions.RHTower.XiShiftPrimeExposure
-import GaloisForLFunctions.GammaProjectiveBoundary
-import GaloisForLFunctions.ReflectedDigammaAnomaly
+import GaloisForLFunctions.HTGeometry.GammaProjectiveBoundary
+import GaloisForLFunctions.HTGeometry.ReflectedDigammaAnomaly
 
 /-!
 # Archimedean bottom edge for the sharp rectangular Guinand--Weil test

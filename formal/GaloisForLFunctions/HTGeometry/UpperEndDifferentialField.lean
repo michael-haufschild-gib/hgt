@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.UpperEndMeromorphicField
-import GaloisForLFunctions.FractionRingDerivation
+import GaloisForLFunctions.HTGeometry.FractionRingDerivation
 import Mathlib.RingTheory.Derivation.DifferentialRing
 import Mathlib.Analysis.Calculus.Deriv.Add
 import Mathlib.Analysis.Calculus.Deriv.Mul

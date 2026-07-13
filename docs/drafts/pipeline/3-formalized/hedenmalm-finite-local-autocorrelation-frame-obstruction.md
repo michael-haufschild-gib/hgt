@@ -172,7 +172,7 @@ handled without a simplicity assumption.  No RH, positivity, zero enumeration, o
 interface is assumed.
 
 The generic spatial harmonic-analysis layer is formalized in
-`formal/GaloisForLFunctions/SchwartzPolynomialDifferentialFrame.lean`.  Its theorem
+`formal/GaloisForLFunctions/HTGeometry/SchwartzPolynomialDifferentialFrame.lean`.  Its theorem
 `fourier_finitePolynomialAutocorrelationFrame` proves that every finite normalized differential
 autocorrelation frame has spectral density `sum_j |p_j(i t)|^2`; the same module constructs
 cross-correlation and its first variation.

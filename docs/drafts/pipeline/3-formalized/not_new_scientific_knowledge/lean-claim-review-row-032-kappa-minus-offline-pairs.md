@@ -12,7 +12,7 @@
 Audit the claim from scratch. Researchers first verify the finite-carrier mathematical theorem, including hypotheses and exact notion of negative inertia. Leaner checks the claimed formalization only after that review.
 
 ## Claimed Lean footholds to verify
-- `formal/GaloisForLFunctions/CarrierCauchy.lean`
+- `formal/GaloisForLFunctions/HTGeometry/CarrierCauchy.lean`
 - Candidate names: `multiPair_carrier_exact_neg_inertia`, `multiPair_carrier_linearIndependent`
 
 These names are leads, not certification.
@@ -31,7 +31,7 @@ Review the finite Pick matrix / carrier model, isolate the off-line conjugate-pa
 
 ## AUDIT — 2026-06-19 (Professor): claim VERIFIED from scratch (κ₋ = #off-line pairs, exactly)
 
-**Model (recovered from `formal/GaloisForLFunctions/CarrierCauchy.lean`).** `k` distinct off-line poles
+**Model (recovered from `formal/GaloisForLFunctions/HTGeometry/CarrierCauchy.lean`).** `k` distinct off-line poles
 `tᵢ` (`Im tᵢ ≠ 0`, taken in `C⁺`) with conjugates `t̄ᵢ`; `2k` distinct nodes `zⱼ`. Cauchy vectors in `ℂ^{2k}`:
 `aᵢ(j)=(tᵢ−zⱼ)⁻¹`, `eᵢ(j)=(t̄ᵢ−zⱼ)⁻¹`. Carrier vectors `wᵢ=eᵢ+aᵢ`, `uᵢ=eᵢ−aᵢ`. The factored carrier
 (Pick) form is `H = Σᵢ wᵢwᵢ* − Σᵢ uᵢuᵢ* = 2·multiPairPick`.

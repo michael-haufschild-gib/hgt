@@ -1,16 +1,35 @@
 # Formal Project Guide
 
-This Lean project has three theorem areas:
+This Lean project has five owned theorem areas:
 
 | Area | Umbrella import | Current capstone surface |
 |---|---|---|
+| RH / Xi / L-function criteria | `GaloisForLFunctions.RHTower` | RH characterizations and their source, reflection, positivity, and value-relation bridges |
+| General hypertranscendental geometry | `GaloisForLFunctions.HTGeometry` | Differential/constraint geometry and reusable analytic, moment, value-relation, and operator infrastructure |
 | Hurwitz | `GaloisForLFunctions.Hurwitz` | `hurwitz_n2_unconditional` |
 | u0_pui | `GaloisForLFunctions.U0` | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
 | q62 Böttcher | `GaloisForLFunctions.Bottcher` | `Bottcher.q62_independence`, `Bottcher.q62_mixed`, `Bottcher.q62_phiMero_norm_gap`, `Bottcher.q62_phiMero_linGap`, `Bottcher.q62_phiMero_linGap_roots`, `Bottcher.q62_phiMero_norm_gap_roots`, `Bottcher.q62_phiMero_mixed_far_roots`, `Bottcher.q62_phiMero_mixed_far_roots_swapped` |
 
-`GaloisForLFunctions.MainTheorems` imports all three areas.  The root module
-`GaloisForLFunctions` imports `MainTheorems`, so the default Lake build covers
-the shared infrastructure and the three proof programs.
+`GaloisForLFunctions.MainTheorems` imports all five areas.  The root module
+`GaloisForLFunctions` imports only `MainTheorems`, so the default Lake build
+follows the same ownership map without a second hand-maintained module list.
+
+## Module Ownership
+
+Research leaf modules never live directly under `GaloisForLFunctions/`:
+
+- RH-, Xi-, critical-line-, Weil-, Li-, or L-function-specific research belongs
+  in `RHTower/`.
+- Reusable hypertranscendence, differential algebra, constraint geometry,
+  value-relation, analytic, moment, and operator work belongs in `HTGeometry/`.
+- Work specific to the three toy theorem programs belongs in `U0/`,
+  `Bottcher/`, or `Hurwitz/`.
+
+The package root is reserved for `Core.lean`, the five area umbrellas,
+`MainTheorems.lean`, `FullyProvenNewTargets.lean`, and
+`KummerRootApplications.lean`.  Every area umbrella imports its complete area
+inventory, so building or scanning an umbrella does not silently omit leaf
+modules.
 
 Local agent entrypoints:
 
@@ -72,7 +91,7 @@ Before claiming a Lean change is clean:
 1. Run the target module:
    `lake env lean GaloisForLFunctions/<path>.lean`
 2. Run the theorem-area build:
-   `lake build GaloisForLFunctions.<Area>`
+   `lake build +GaloisForLFunctions.<Area>`
 3. Run the project lint:
    `../scripts/formal_tools.py lint --check-generated`
 

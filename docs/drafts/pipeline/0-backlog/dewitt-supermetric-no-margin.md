@@ -103,7 +103,7 @@ BRIDGE (substrate). Each leg is parent-provable (Weil positivity; Rodgers–Tao 
 - [x] 1 → 2: Finding 3 resolved — explicit family `𝔇_λ=λA−P`, margin `m(λ)=λ−λ_c`, `m(1)=0⟺RH`, GR mirror `2(1−λ)`, D2-strip done (substrate). No open dependency except RH itself (the apex, not a gap in the structural claim).
 - [ ] 2 → 3: Lean anchor **DONE** for the finite congruence-pencil algebra in Finding 3c:
   `congruencePencil_factorization` and `congruencePencil_add_primeBlock` in
-  `formal/GaloisForLFunctions/CongruencePencil.lean`. Remaining Lean targets, if wanted: the spectral
+  `formal/GaloisForLFunctions/HTGeometry/CongruencePencil.lean`. Remaining Lean targets, if wanted: the spectral
   `λ_c`/eigenvalue floor, the finite-to-infinite Hankel carrier limit, the Rodgers-Tao/de
   Bruijn-Newman transport, and the RH equivalence.
 - [ ] 3 → 4: "Canonical gravity and arithmetic both sit at the kinetic degeneracy of their defining symmetry."
@@ -124,7 +124,7 @@ BRIDGE (substrate). Each leg is parent-provable (Weil positivity; Rodgers–Tao 
 - 2026-06-19 — **Finding 3b added**: the free half `λ_c≥1 ⟺ Λ_dBN≥0` proven via the transport lemma (uniform Weil margin ⟹ `Λ<0`, by de Bruijn–Pólya + first-order heat perturbation), so Rodgers–Tao `Λ≥0` pins `λ_c≥1`. The Finding 3 "to verify" caveat is discharged; the dBN heat family and the arch-weight family are one no-margin, `Q_t` = infinite #104 Hankel carrier. No web search; reasoning + paper + corpus only.
 - 2026-06-19 — Leaner: added Lean anchor for Finding 3c's finite congruence-pencil algebra:
   `congruencePencil_factorization` and `congruencePencil_add_primeBlock` in
-  `formal/GaloisForLFunctions/CongruencePencil.lean`. Created the exact split card
+  `formal/GaloisForLFunctions/HTGeometry/CongruencePencil.lean`. Created the exact split card
   `../3-formalized/finite-congruence-pencil-factorization.md`. Parent remains in `2-fully-proven` because
   the spectral `lambda_c` statement, finite-to-infinite Hankel carrier limit, Rodgers-Tao/de
   Bruijn-Newman transport, and RH equivalence are not Lean-formalized.

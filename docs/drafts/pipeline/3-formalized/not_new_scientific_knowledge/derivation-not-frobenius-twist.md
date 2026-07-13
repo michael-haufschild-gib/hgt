@@ -32,7 +32,7 @@ If in addition `D` were multiplicative, `D(xy)=D(x)D(y)`, then for any `x`,
 - [x] 1 -> 2  fully-proven: paper proof above by applying Leibniz and multiplicativity at `1`.
 - [x] 2 -> 3  formalized: Lean theorems `map_one_eq_zero_of_leibniz`,
   `map_eq_zero_of_map_one_zero_of_map_mul`, `map_eq_zero_of_leibniz_of_map_mul`, and
-  `not_map_mul_of_leibniz_of_exists_ne_zero` in `formal/GaloisForLFunctions/DifferentialABP.lean`; names
+  `not_map_mul_of_leibniz_of_exists_ne_zero` in `formal/GaloisForLFunctions/HTGeometry/DifferentialABP.lean`; names
   checked by scratch file; `#print axioms` uses only the allowed standard subset
   `[propext, Classical.choice, Quot.sound]`; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the algebraic type-obstruction lemma in the ABP/F1 note.

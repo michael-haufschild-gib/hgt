@@ -6,7 +6,7 @@
 - **Scientific status:** `[BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE]` The invariant-vector mechanism is
   standard. Its role here is to close a specific HGT/RH bridge without conditional formalization.
 - **Source:** `../../5-failed/polarized-infinite-pair-face-rh-bridge.md`
-- **Lean endpoint:** `formal/GaloisForLFunctions/OrbitQuotientLiftNoGo.lean`
+- **Lean endpoint:** `formal/GaloisForLFunctions/HTGeometry/OrbitQuotientLiftNoGo.lean`
 
 ## Theorem
 

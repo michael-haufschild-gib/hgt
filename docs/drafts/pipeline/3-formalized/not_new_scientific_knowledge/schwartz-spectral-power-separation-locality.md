@@ -75,9 +75,9 @@ measure.
 Files:
 
 ```text
-formal/GaloisForLFunctions/SchwartzSpectralPullbackForm.lean
-formal/GaloisForLFunctions/SchwartzSpectralQuadraticSeparation.lean
-formal/GaloisForLFunctions/SchwartzCompactPolynomialSeparation.lean
+formal/GaloisForLFunctions/HTGeometry/SchwartzSpectralPullbackForm.lean
+formal/GaloisForLFunctions/HTGeometry/SchwartzSpectralQuadraticSeparation.lean
+formal/GaloisForLFunctions/HTGeometry/SchwartzCompactPolynomialSeparation.lean
 ```
 
 Theorem surface:

@@ -13,7 +13,7 @@
 Audit the claim from scratch. Researchers must distinguish the finite multiset/self-dual polynomial algebra from the full imported Weil theorem over function fields. Leaner checks the formalization only after that scope is fixed.
 
 ## Claimed Lean footholds to verify
-- `formal/GaloisForLFunctions/FunctionFieldFE.lean`
+- `formal/GaloisForLFunctions/RHTower/FunctionFieldFE.lean`
 - Candidate names: `functionField_esymm_FE`, `functionField_localFactor_FE`, `multiset_esymm_map_mul`
 
 These names are leads, not certification.

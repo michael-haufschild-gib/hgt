@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ProlateSecularEquation
+import GaloisForLFunctions.RHTower.ProlateSecularEquation
 import GaloisForLFunctions.RHTower.FuchsProlateScale
 
 /-!

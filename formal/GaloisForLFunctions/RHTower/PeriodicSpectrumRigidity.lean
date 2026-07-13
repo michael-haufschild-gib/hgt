@@ -24,7 +24,7 @@ quietness, or flank-bound hypothesis — periodicity of the spectrum substitutes
   convergent exponential series with arithmetic-progression spectrum is constant, equal to `b₀`.
 -/
 import Mathlib
-import GaloisForLFunctions.CarrierDichotomy
+import GaloisForLFunctions.HTGeometry.CarrierDichotomy
 
 open Complex Filter Topology
 

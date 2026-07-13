@@ -5,8 +5,8 @@
 - **Type:** `[LARGE OUTLANDISH DETOUR] [PROVED FINITE SOURCE END] [CONJECTURE]`
 - **Scientific status:** finite selector is not new scientific knowledge; the infinite completed
   source theorem is unclassified
-- **Lean:** `formal/GaloisForLFunctions/KoszulCohomology.lean`,
-  `formal/GaloisForLFunctions/PrimeWordSupportSelector.lean`
+- **Lean:** `formal/GaloisForLFunctions/HTGeometry/KoszulCohomology.lean`,
+  `formal/GaloisForLFunctions/RHTower/PrimeWordSupportSelector.lean`
 - **Inputs:** `prime-loop-connectivity-mixed-word-obstruction.md`,
   `prime-koszul-superdeterminant-cancellation.md`, `FredholmDeterminantEuler.lean`,
   `SoninCoupledPrimeResidual.lean`, `SeamSuspensionTrace.lean`

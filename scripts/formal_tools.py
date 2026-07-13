@@ -31,6 +31,19 @@ DEBT_RE = re.compile(r"^\s*(sorry|admit)\b|^\s*(axiom|opaque)\s+[A-Za-z_]|^\s*un
 MARKER_RE = re.compile(r"\b(TODO|FIXME|OPEN|NEXT|Remaining|remaining|blocked|missing)\b")
 
 THEOREM_AREAS = {
+    "rh_tower": {
+        "module": "GaloisForLFunctions.RHTower",
+        "path": SRC / "RHTower",
+        "capstones": ["RHTower.rh_iff_tower", "RHTower.rh_iff_forall_ladder"],
+    },
+    "ht_geometry": {
+        "module": "GaloisForLFunctions.HTGeometry",
+        "path": SRC / "HTGeometry",
+        "capstones": [
+            "hypertranscendental_gamma",
+            "HTGeometry.exists_wedgeFacetSewnUpperEndSystem",
+        ],
+    },
     "hurwitz": {
         "module": "GaloisForLFunctions.Hurwitz",
         "path": SRC / "Hurwitz",
@@ -49,6 +62,18 @@ THEOREM_AREAS = {
         "path": SRC / "Bottcher",
         "capstones": ["Bottcher.q62_independence", "Bottcher.q62_mixed"],
     },
+}
+
+ALLOWED_ROOT_LEAN = {
+    "Bottcher.lean",
+    "Core.lean",
+    "FullyProvenNewTargets.lean",
+    "HTGeometry.lean",
+    "Hurwitz.lean",
+    "KummerRootApplications.lean",
+    "MainTheorems.lean",
+    "RHTower.lean",
+    "U0.lean",
 }
 
 
@@ -298,7 +323,7 @@ def overview_markdown() -> str:
             "## Wiring",
             "",
             f"- Root imports `GaloisForLFunctions.MainTheorems`: **{root_wired}**.",
-            f"- Shared and bridge declarations outside the three theorem areas: **{len(other)}**.",
+            f"- Package-level declarations outside the five theorem areas: **{len(other)}**.",
             f"- Active proof-debt findings: **{len(debt)}**.",
             "",
             "## Local Commands",
@@ -412,7 +437,7 @@ def check_generated() -> list[str]:
 def run_lake_build(target: str | None) -> tuple[int, str]:
     cmd = ["lake", "build"]
     if target:
-        cmd.append(target)
+        cmd.append(target if target.startswith("+") else f"+{target}")
     result = subprocess.run(cmd, cwd=FORMAL, text=True, capture_output=True)
     if result.stdout:
         print(result.stdout, end="")
@@ -433,6 +458,14 @@ def lint(args: argparse.Namespace) -> int:
     root_imports = (FORMAL / "GaloisForLFunctions.lean").read_text(encoding="utf-8")
     if "import GaloisForLFunctions.MainTheorems" not in root_imports:
         errors.append("root module does not import GaloisForLFunctions.MainTheorems")
+
+    unexpected_root_modules = sorted(
+        path.name for path in SRC.glob("*.lean") if path.name not in ALLOWED_ROOT_LEAN
+    )
+    for name in unexpected_root_modules:
+        errors.append(
+            f"research leaf module at package root: {name}; move it into an owned theorem area"
+        )
 
     formal_claude = FORMAL / "CLAUDE.md"
     formal_agents = FORMAL / "AGENTS.md"

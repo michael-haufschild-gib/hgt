@@ -271,7 +271,7 @@ Stage 3 requires unconditional Lean definitions and proofs of:
 
 1. finite multivariate jet/Hermite interpolation;
 2. the nonzero evaluation-determinant lemma for linearly independent monomials — **DONE**,
-   `AffineJet.exists_eval_matrix_det_ne_zero` in `formal/GaloisForLFunctions/PolynomialEvaluationLemma.lean`
+   `AffineJet.exists_eval_matrix_det_ne_zero` in `formal/GaloisForLFunctions/HTGeometry/PolynomialEvaluationLemma.lean`
    (proved for arbitrary linearly independent polynomials over an infinite field, a fortiori for
    distinct monomials);
 3. nonzero continuous polynomial functionals having dense nonvanishing locus;
@@ -288,7 +288,7 @@ conversion), and its assembly rests on a Fréchet space of entire functions of s
 its Baire property and on multivariate all-order Hermite interpolation, neither packaged in mathlib.
 The individually extractable lemmas (steps 2–3) are moderate abstract analysis. One of them — the
 **evaluation lemma** of step (11) (`### 2. Every determinant can be made nonzero`) — is now
-formalized axiom-clean in-tree in `formal/GaloisForLFunctions/PolynomialEvaluationLemma.lean`:
+formalized axiom-clean in-tree in `formal/GaloisForLFunctions/HTGeometry/PolynomialEvaluationLemma.lean`:
 `AffineJet.exists_eval_matrix_det_ne_zero` proves that a `K`-linearly independent family of
 multivariate polynomials over an infinite field `K` admits evaluation points at which the sampling
 matrix `(eval (p j) (f i))` is nonsingular (with the supporting `AffineJet.exists_eval_ne_zero`: a

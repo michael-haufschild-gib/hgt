@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Priority:** FOUNDATIONAL
-- **Source:** split from `../2-fully-proven/explicit-formula-as-constraint.md` §3 prime-block input and `../2-fully-proven/g4-over-fq-deligne-katz.md` §2 angle/unit-circle split; Lean file `formal/GaloisForLFunctions/SatakeInterval.lean`
+- **Source:** split from `../2-fully-proven/explicit-formula-as-constraint.md` §3 prime-block input and `../2-fully-proven/g4-over-fq-deligne-katz.md` §2 angle/unit-circle split; Lean file `formal/GaloisForLFunctions/RHTower/SatakeInterval.lean`
 - **Statement:** If a rank-two Satake parameter is unitary, `|z|=1`, then its trace `z+z^{-1}` is the real number `2*Re(z)` and has real part in `[-2,2]`; more generally the `Sym^k` unitary trace has norm at most `k+1`.
 
 ## Goal

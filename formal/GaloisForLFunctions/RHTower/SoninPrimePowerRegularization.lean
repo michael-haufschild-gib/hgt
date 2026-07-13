@@ -6,7 +6,7 @@ that linear shell leaves the prime-power tail k >= 2. Its total square energy is
 it defines a genuine countable Hilbert--Schmidt diagonal carrier for det_2 regularization.
 -/
 import GaloisForLFunctions.RHTower.SoninTimeBandIdeal
-import GaloisForLFunctions.FredholmDeterminantInfinite
+import GaloisForLFunctions.HTGeometry.FredholmDeterminantInfinite
 import Mathlib.NumberTheory.SumPrimeReciprocals
 
 noncomputable section

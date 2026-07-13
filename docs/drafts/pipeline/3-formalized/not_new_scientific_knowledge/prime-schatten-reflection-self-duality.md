@@ -5,7 +5,7 @@
 - **Type:** THEOREM / OPERATOR-DIMENSION REFORMULATION
 - **Scientific status:** `[BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** superspace/phase-space search; separate from RHTower Routes A--D
-- **Lean:** `formal/GaloisForLFunctions/PrimeSchattenReflectionDuality.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/PrimeSchattenReflectionDuality.lean`
 
 ## Theorem
 

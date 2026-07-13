@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** `[PROVED] [LARGE-DETOUR NO-GO] [POSITIVE SUCCESSOR]`
 - **Scientific status:** not new scientific knowledge
-- **Lean:** `formal/GaloisForLFunctions/ArakelovModularLambdaFE.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/ArakelovModularLambdaFE.lean`
 - **Inputs:** `ArakelovW.lean`, `Bottcher/ModularLambdaCovering.lean`
 
 ## Claim

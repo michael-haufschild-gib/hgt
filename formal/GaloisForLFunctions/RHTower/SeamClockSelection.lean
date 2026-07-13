@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.WeldRateLattice
-import GaloisForLFunctions.SigmaOrbit
+import GaloisForLFunctions.RHTower.SigmaOrbit
 
 /-!
 # Clock selection for a seam object without a functional equation

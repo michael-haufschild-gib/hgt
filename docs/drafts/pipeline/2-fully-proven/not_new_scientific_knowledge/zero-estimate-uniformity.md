@@ -144,7 +144,7 @@ not need it — the diagonal restriction is both sufficient for G2 and elementar
   `H(m)^{-1} ≤ |Σ_p m_p log p|`, and
   `vandermonde_moments_eq_zero_of_injective` /
   `vandermonde_initial_moment_nonzero_of_nonzero_coeff` prove the Vandermonde moment core of the
-  order bound. `formal/GaloisForLFunctions/ZeroEstimateOrder.lean` adds
+  order bound. `formal/GaloisForLFunctions/RHTower/ZeroEstimateOrder.lean` adds
   `exponentialSum_has_nonzero_iteratedDeriv_lt_card`, proving that a nonzero finite exponential sum with
   `K` distinct frequencies has a nonzero derivative of order `< K` at any base point. Card remains in
   `2-fully-proven`: the Bohr-polynomial/support wrapper, the determinant product size estimate, and the
@@ -167,7 +167,7 @@ not need it — the diagonal restriction is both sufficient for G2 and elementar
   controlled** — the super-exp-in-support hazard is C5★-specific and does not touch B. **G2 lower-bound
   wall = obstruction C alone.** Ledger ticket filed for 00-status #13/#14.
 - 2026-06-19 (Leaner) — added Lean anchor `logPrime_height_bound` in
-  `formal/GaloisForLFunctions/ZeroEstimate.lean`: for nonzero finite integer prime-exponent vector `m`,
+  `formal/GaloisForLFunctions/RHTower/ZeroEstimate.lean`: for nonzero finite integer prime-exponent vector `m`,
   `H(m)^{-1} ≤ |Σ_p m_p log p|`. Also formalized
   `logPrime_int_sum_eq_log_pos_sub_log_neg`, the `log(a/b)` decomposition. Card remains in
   2-fully-proven; full formalization still needs the Vandermonde/order-bound target.
@@ -180,7 +180,7 @@ not need it — the diagonal restriction is both sufficient for G2 and elementar
   is also formalized.
 - 2026-06-19 (Leaner) — added the analytic exponential-sum order wrapper
   `exponentialSum_has_nonzero_iteratedDeriv_lt_card` in
-  `formal/GaloisForLFunctions/ZeroEstimateOrder.lean`: for `K` distinct frequencies and a nonzero
+  `formal/GaloisForLFunctions/RHTower/ZeroEstimateOrder.lean`: for `K` distinct frequencies and a nonzero
   coefficient vector, some derivative of order `< K` is nonzero at every base point. This closes the
   Lean gap between the Vandermonde moment core and the paper proof's vanishing-order argument. `lake build`
   and `scripts/check_axioms.sh` pass with 246 audited theorem outputs and no `sorry`. Card remains in

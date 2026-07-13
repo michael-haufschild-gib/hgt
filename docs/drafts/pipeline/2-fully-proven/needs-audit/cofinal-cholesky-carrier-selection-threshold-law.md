@@ -886,7 +886,7 @@ is unconditionally atomless and real-Lebesgue singular, exactly the paper's
 singular-continuous carrier conclusion. Only its intersection with the still-open maximal
 full-translation HT residual set remains part of the final carrier capstone.
 
-All eighty-six exact modules pass. `#print axioms` on the new frame-fiber, selector,
+All eighty-seven exact modules pass. `#print axioms` on the new frame-fiber, selector,
 constrained-control, triangular-jet, evaluation root-count, bounded-density, and projective
 Nevanlinna-control/escape/genericity, minimal-type projective-separation, compact-atlas, and
 noncriticality, disjoint-block independence, scalar hypersurface, iterated Krull-dimension, and
@@ -899,10 +899,12 @@ exact carrier-range transport, analytic null-preimage, projective-label nonflatn
 singular-continuous carrier, finite Toeplitz shift-isometry, normalized OPUC degree, strict
 OPUC root-location, reversal, reciprocal-square density, mean-value orthogonality, moment-form,
 stable-terminal reconstruction, exact Bernstein--Szegő prefix, ratio-to-root,
-source-faithful Szegő-interface, and pure-singular carrier-trichotomy capstones reports only
+source-faithful Szegő-interface, pure-singular carrier-trichotomy, coherent finite-frame
+polynomial, stable diagonal-row, exact coherent-span, and canonical Hilbert-basis/unitary
+capstones reports only
 `propext`, `Classical.choice`, and `Quot.sound`. The touched
 modules contain no proof debt, and the
-aggregate `GaloisForLFunctions.HTGeometry` build passes with 8661 jobs, the repository-wide formal
+aggregate `GaloisForLFunctions.HTGeometry` build passes with 8662 jobs, the repository-wide formal
 lint passes, and the generated declaration indexes are current. This
 validates only the declarations listed above, not the still-unformalized claims in the paper.
 
@@ -914,8 +916,11 @@ and consecutive Toeplitz-determinant ratios tend to the Szegő geometric mean. F
 leaves, Lean now proves graph saturation, analytic-polynomial completeness, ratio-to-root collapse,
 least-eigenvalue collapse, and normalized-determinant and Euclidean-operator-norm escape. The
 project must still prove in Lean the full-complex-shift Baire application, the exact
-Nevanlinna-image/maximal-HT residual intersection, the unitary carrier realization if it remains a
-named conclusion, and the final paper-wide relative capstone. The classical source theorems
+Nevanlinna-image/maximal-HT residual intersection, and the final paper-wide relative capstone.
+The unitary carrier realization is now closed: Lean proves that the finite canonical frames
+synthesize orthonormal polynomial families, leading-principal coherence stabilizes every row, the
+stable diagonal rows have exactly the analytic-monomial span, and the Riesz-brothers input upgrades
+them to a Hilbert basis and unitary `ell^2 -> L^2(mu)`. The classical source theorems
 themselves need not be reproved in Lean for publication, but every original deduction from their
 exact hypotheses must be axiom-free.
 
@@ -929,7 +934,9 @@ continuous part, including the standard zero convention. Lean proves that singul
 density vanish almost everywhere and therefore makes the geometric mean and determinant-ratio
 limit vanish. The old specialized external predicate that assumed the zero ratio directly has
 been removed. The `PureSingularCarrierTrichotomy` capstone contains every original deduction from
-these two exact inputs.
+these two exact inputs through frame escape. `PureSingularCarrierUnitary` contains the remaining
+original unitary-carrier deductions and constructs the unitary directly from the coherent finite
+inverse-Cholesky tower rather than from an unrelated limiting choice.
 The indeterminate-Hamburger Nevanlinna-family construction remains an external interface still to
 be matched convention-by-convention. Bernstein--Szegő finite-prefix reproduction is no longer an external input: the
 project proves it unconditionally by stable-terminal feedback reconstruction.
@@ -948,7 +955,7 @@ require another fixed-pattern or fixed-coefficient wrapper.
 - [x] spectral type held fixed in the prefix chart
 - [x] complete tower proved injective and topologically faithful
 - [x] pure-singular graph saturation imported with exact scope
-- [x] unique divergent unitary repair imported with exact scope
+- [x] unique divergent unitary repair assembled in Lean from exact classical scope
 - [x] residual singular-continuous probability phase on `P(T)` formalized unconditionally
 - [x] projective probability phase transported as dense `G_delta` to the exact carrier range
 - [x] projective-label null-preimage theorem and unconditional carrier singularity

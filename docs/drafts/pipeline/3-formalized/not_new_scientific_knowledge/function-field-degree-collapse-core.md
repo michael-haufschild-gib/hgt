@@ -19,7 +19,7 @@ If a degree-one place `v0` exists, then the degree map is surjective: any intege
 ## Gates
 - [x] 0 -> 1  in-progress: degree-collapse core extracted from the broader function-field degeneration card.
 - [x] 1 -> 2  fully-proven: paper proof above, by the kernel computation and first isomorphism theorem.
-- [x] 2 -> 3  formalized: Lean theorems `ffDegreeMap_apply`, `ffRelationLattice_mem_iff`, `ffDegreeMap_surjective`, `ffDegreeMap_range_eq_top`, and `ffRelationLattice_corank_eq_one` in `formal/GaloisForLFunctions/FunctionFieldDegeneration.lean`; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean theorems `ffDegreeMap_apply`, `ffRelationLattice_mem_iff`, `ffDegreeMap_surjective`, `ffDegreeMap_range_eq_top`, and `ffRelationLattice_corank_eq_one` in `formal/GaloisForLFunctions/RHTower/FunctionFieldDegeneration.lean`; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the algebraic collapse lemma in the function-field degeneration note.
 
 ## Log

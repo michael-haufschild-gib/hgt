@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Priority:** FOUNDATIONAL
-- **Source:** split from `../2-fully-proven/multi-q-shafarevich-gluing-group.md` R0; Lean file `formal/GaloisForLFunctions/RankOneCohomology.lean`
+- **Source:** split from `../2-fully-proven/multi-q-shafarevich-gluing-group.md` R0; Lean file `formal/GaloisForLFunctions/HTGeometry/RankOneCohomology.lean`
 - **Statement:** For commuting scalar difference actions on a commutative coefficient group, rank-one scalar cocycles form an abelian group, scalar coboundaries form a subgroup, and the quotient rank-one Picard skeleton is an abelian group.
 
 ## Goal

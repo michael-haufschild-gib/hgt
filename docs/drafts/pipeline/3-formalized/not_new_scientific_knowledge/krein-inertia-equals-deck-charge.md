@@ -23,7 +23,7 @@ computations into H² computations and back. Native throughout: both sides are c
 ## Proven inputs (both sides, this tree)
 - Krein side, exact count: `factoredKrein_kreinNonneg_iff`
   (`formal/GaloisForLFunctions/RHTower/SeamSpectralFlow.lean:246`) — the factored FE Krein form is
-  definite iff `k = 0`; `exact_neg_inertia` (`formal/GaloisForLFunctions/KreinLangerInertia.lean:603`)
+  definite iff `k = 0`; `exact_neg_inertia` (`formal/GaloisForLFunctions/HTGeometry/KreinLangerInertia.lean:603`)
   supplies a negative-definite subspace of dimension exactly `k`, with Cauchy nondegeneracy discharged
   by `cauchy_linearIndependent` (`KreinLangerInertia.lean:629`). The `k = ∞` face is
   `riemannHypothesis_iff_seam_polarization` (`SeamSpectralFlow.lean:141`).

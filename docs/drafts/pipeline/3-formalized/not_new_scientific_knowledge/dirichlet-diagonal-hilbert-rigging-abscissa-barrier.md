@@ -5,7 +5,7 @@
 - **Type:** THEOREM / SUPERSPACE ROUTE GATE
 - **Scientific status:** `[BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** `prime-fisher-superspace-unimodular-phase-blindness`; separate from RHTower Routes A--D
-- **Lean:** `formal/GaloisForLFunctions/DirichletHilbertRiggingBarrier.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/DirichletHilbertRiggingBarrier.lean`
 
 ## Statement
 

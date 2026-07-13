@@ -1,4 +1,4 @@
-import GaloisForLFunctions.SchwartzPolynomialDifferentialFrame
+import GaloisForLFunctions.HTGeometry.SchwartzPolynomialDifferentialFrame
 import GaloisForLFunctions.RHTower.ThetaCuspFourierLaplace
 import GaloisForLFunctions.RHTower.XiFiniteLocalSpectralFrameObstruction
 import GaloisForLFunctions.RHTower.CompletedFluxGradedReality

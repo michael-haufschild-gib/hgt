@@ -221,7 +221,7 @@ provable now; they are the precise open atoms the invariant exposes.
   Apex residue (`U ≥ 1` rungs) isolated and handed to `baker-for-stieltjes`.
 - [ ] 2 → 3  formalized: Lean anchor **DONE** for the §G tower factorization:
   `algebraicIndependent_sumElim_intermediateField_iff` in
-  `formal/GaloisForLFunctions/BigradedCorank.lean`. Remaining targets: reuse #125's anchors
+  `formal/GaloisForLFunctions/HTGeometry/BigradedCorank.lean`. Remaining targets: reuse #125's anchors
   (`linearIndependent_log_primes`, `finitePrimeLogAnnihilator_eq_singleton`) for the `U = 0` column; the
   bigraded span/relation-lattice bookkeeping; the `F_q` `U`-triviality collapse.
 - [ ] 3 → 4  publication-ready: note "the corank plane of DSS: regular periods × exponential periods, and

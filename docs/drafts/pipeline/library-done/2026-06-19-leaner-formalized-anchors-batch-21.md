@@ -11,7 +11,7 @@
 ## Details
 New Lean theorem:
 - `GaloisForLFunctions.functionFieldWeightNormalize_norm_eq_one_iff` in
-  `formal/GaloisForLFunctions/BoundaryModulus.lean`
+  `formal/GaloisForLFunctions/RHTower/BoundaryModulus.lean`
 
 Verification:
 - scratch `#check` / `#print axioms` passed

@@ -3,11 +3,11 @@
 - **ID:** `prime-syndrome-duursma-code-zeta-limit-rh`
 - **Stage:** 1-in-progress
 - **Type:** `[LARGE OUTLANDISH DETOUR] [CONJECTURE] [POSITIVE SUCCESSOR TO A FORMAL NO-GO]`
-- **Lean inputs:** `formal/GaloisForLFunctions/KoszulCohomology.lean`,
-  `formal/GaloisForLFunctions/PrimeWordSupportSelector.lean`,
+- **Lean inputs:** `formal/GaloisForLFunctions/HTGeometry/KoszulCohomology.lean`,
+  `formal/GaloisForLFunctions/RHTower/PrimeWordSupportSelector.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeSupportBoundaryJets.lean`,
   `formal/GaloisForLFunctions/RHTower/ReflectionStabilizerCodeBlindness.lean`, and
-  `formal/GaloisForLFunctions/IharaBlockSelector.lean`, and
+  `formal/GaloisForLFunctions/RHTower/IharaBlockSelector.lean`, and
   `formal/GaloisForLFunctions/RHTower/DuursmaDoubleRepetition.lean`
 - **Statement:** `[CONJECTURE]` The complete anti-invariant prime-support syndrome, retained with all
   of its boundary-jet weights, admits cofinal finite self-dual code realizations whose Duursma zeta

@@ -21,7 +21,7 @@ argument, so the finite annihilator is also `{0}`.
 ## Gates
 - [x] 0 -> 1  in-progress: exact finite relation-lattice statement extracted from the corank and holonomicity-limit cards.
 - [x] 1 -> 2  fully-proven: paper proof above, using unique factorization / log-prime linear independence.
-- [x] 2 -> 3  formalized: Lean theorems `logPrime_diagonalResonant_eq_zero`, `primeLog_diagonalRelationLattice_eq_singleton`, and `finitePrimeLogAnnihilator_eq_singleton` in `formal/GaloisForLFunctions/Resonance.lean`; names checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean theorems `logPrime_diagonalResonant_eq_zero`, `primeLog_diagonalRelationLattice_eq_singleton`, and `finitePrimeLogAnnihilator_eq_singleton` in `formal/GaloisForLFunctions/HTGeometry/Resonance.lean`; names checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the formal finite-annihilator certificate for the corank tower notes.
 
 ## Log

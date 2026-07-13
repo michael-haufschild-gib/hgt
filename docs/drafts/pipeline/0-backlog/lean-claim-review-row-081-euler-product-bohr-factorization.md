@@ -55,7 +55,7 @@ the Lean actually proves.
   correct corollary), with the **tier + genuine-iff + convergence scoping** specified for the Lean.
 - [ ] 2 → 3 formalized: **Leaner** — verify the exact names (`isMultiplicative_iff_bohr_factorization`,
   `fake_fails_factorization`, `davenportHeilbronnFakeCoeff_not_isMultiplicative`) in
-  `formal/GaloisForLFunctions/EulerProduct.lean`, that it is the **Tier-1 genuine iff** (not a proxy), the
+  `formal/GaloisForLFunctions/RHTower/EulerProduct.lean`, that it is the **Tier-1 genuine iff** (not a proxy), the
   convergence/formal scoping, and the DH witness; `lake build` + `check_axioms.sh`.
 - [ ] 3 → 4: standalone note + Lean certificate.
 

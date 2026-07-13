@@ -12,7 +12,7 @@ Record a new `3-formalized` Lean card:
 - `docs/drafts/pipeline/3-formalized/bigraded-corank-tower-factorization.md`
 
 ## Lean anchors
-- `formal/GaloisForLFunctions/BigradedCorank.lean`
+- `formal/GaloisForLFunctions/HTGeometry/BigradedCorank.lean`
 - theorem `GaloisForLFunctions.algebraicIndependent_sumElim_intermediateField_iff`
 
 ## Source ticket

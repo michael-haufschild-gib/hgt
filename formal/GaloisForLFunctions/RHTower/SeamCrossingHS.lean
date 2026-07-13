@@ -19,7 +19,7 @@ law on the genuine infinite index:
 This is the seam construction's §1 tower given its actual infinite-dimensional Hilbert-space home,
 independent of any finite truncation.
 -/
-import GaloisForLFunctions.HilbertSchmidt
+import GaloisForLFunctions.HTGeometry.HilbertSchmidt
 import GaloisForLFunctions.RHTower.SeamCrossingTower
 
 open scoped BigOperators

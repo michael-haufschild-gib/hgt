@@ -10,7 +10,7 @@
 
 ## Details
 New Lean module:
-- `formal/GaloisForLFunctions/CongruencePencil.lean`
+- `formal/GaloisForLFunctions/HTGeometry/CongruencePencil.lean`
 
 Formalized theorem names:
 - `GaloisForLFunctions.congruencePencil_factorization`

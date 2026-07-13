@@ -1,4 +1,4 @@
-import GaloisForLFunctions.MomentHankelStrict
+import GaloisForLFunctions.HTGeometry.MomentHankelStrict
 import GaloisForLFunctions.RHTower.PrimeArchHankelDeterminantCriterion
 
 /-!

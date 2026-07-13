@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** `[PROVED] [BRIDGE] [POSITIVE SUCCESSOR]`
 - **Scientific status:** not new scientific knowledge
-- **Lean:** `formal/GaloisForLFunctions/MarkedSupportQuadraticDiagonalization.lean`
+- **Lean:** `formal/GaloisForLFunctions/HTGeometry/MarkedSupportQuadraticDiagonalization.lean`
 - **Inputs:** `prime-koszul-superdeterminant-cancellation.md`,
   `quadratic-reflection-anomaly-rh.md`
 

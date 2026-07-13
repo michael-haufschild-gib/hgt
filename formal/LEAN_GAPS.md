@@ -14,7 +14,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
 | 5221 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3982 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
-| 3802 | `formal/GaloisForLFunctions/GammaDifferentialFE.lean` |
+| 3802 | `formal/GaloisForLFunctions/HTGeometry/GammaDifferentialFE.lean` |
 | 3722 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3644 | `formal/GaloisForLFunctions/U0/U0SliceViableB.lean` |
 | 3593 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
@@ -28,9 +28,9 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 2229 | `formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean` |
 | 1899 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean` |
 | 1856 | `formal/GaloisForLFunctions/RHTower/SoninEulerCalkinPartialIsometry.lean` |
+| 1755 | `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSquareIndexPolarization.lean` |
 | 1711 | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean` |
 | 1656 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean` |
-| 1651 | `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSquareIndexPolarization.lean` |
 | 1604 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean` |
 | 1511 | `formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean` |
 | 1502 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean` |
@@ -41,7 +41,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 
 | Location | Text |
 |---|---|
-| `formal/GaloisForLFunctions/ArithmeticComplementRank.lean:9` | `V ⧸ comap V.subtype W` — carries the prime directions missing from `W`: |
 | `formal/GaloisForLFunctions/Bottcher/ArcContinuation.lean:9` | spreads any positive-length arc of continuation over the whole circle — the remaining step (a |
 | `formal/GaloisForLFunctions/Bottcher/BasinBranchGlue.lean:303` | the local form of the basin branch the index route consumes; the remaining inputs are the geometric ones: a |
 | `formal/GaloisForLFunctions/Bottcher/BasinBranching.lean:14` | remaining analytic build (the disconnected, Cantor-Julia-set covering structure). |
@@ -270,6 +269,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:2773` | supplied by `SmoothArcSelection` in both orientations.  The remaining real-pair access input is exactly |
 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:3105` | `M` is discharged internally from `-2 ≤ c ≤ 1/4`; the remaining connected-case inputs are exactly |
 | `formal/GaloisForLFunctions/Bottcher/Q62BothConnectedExposed.lean:8` | point of one set off the other filled set (after a swap).  The *only* remaining gap to |
+| `formal/GaloisForLFunctions/Bottcher/Q62BrolinRootTower.lean:412` | parabolic fixed-point exclusion.  The only remaining non-disconnected inputs are fixed-point |
 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:20` | Half A is proved here modulo `BrolinScalingAt`; the two remaining inputs — the doubling law |
 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:132` | The remaining nontrivial GAP-A task is to prove the two measure invariances for |
 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:363` | /-- The remaining Half A analytic gate: the arbitrary-target compact-carrier |

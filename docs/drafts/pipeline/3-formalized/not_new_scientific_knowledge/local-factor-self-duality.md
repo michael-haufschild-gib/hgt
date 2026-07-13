@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Priority:** FOUNDATIONAL
-- **Source:** split from `../2-fully-proven/orthogonality-meta-theorem.md` §5 and its `LocalFactorDuality` function-field polarization check; Lean file `formal/GaloisForLFunctions/LocalFactorDuality.lean`
+- **Source:** split from `../2-fully-proven/orthogonality-meta-theorem.md` §5 and its `LocalFactorDuality` function-field polarization check; Lean file `formal/GaloisForLFunctions/RHTower/LocalFactorDuality.lean`
 - **Statement:** If a finite Satake multiset is closed under inversion, then the local factor product `prod (1 - a*x)` is unchanged when every Satake parameter `a` is replaced by `a^{-1}`.
 
 ## Goal

@@ -5,8 +5,8 @@ The digamma reflection identity is already banked in `DigammaBounds`.  Different
 open nonintegral locus gives the trigamma reflection law.  This module keeps the full value
 identity, including its exact pole exclusion, rather than exposing only a downstream bound.
 -/
-import GaloisForLFunctions.GammaDifferentialFE
-import GaloisForLFunctions.PolygammaMultiplication
+import GaloisForLFunctions.HTGeometry.GammaDifferentialFE
+import GaloisForLFunctions.HTGeometry.PolygammaMultiplication
 import GaloisForLFunctions.RHTower.DigammaBounds
 
 namespace RHTower

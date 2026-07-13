@@ -1,4 +1,4 @@
-import GaloisForLFunctions.GammaDifferentialFE
+import GaloisForLFunctions.HTGeometry.GammaDifferentialFE
 import GaloisForLFunctions.RHTower.RiemannTower
 
 /-!

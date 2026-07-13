@@ -7,7 +7,7 @@ two-index datum: associativity and trace cyclicity force it to be the `(m+n)`-th
 `T_a`.  Thus the remaining Xi weld is only the arithmetic identification of one source moment
 sequence with the centered Xi reciprocal moments.
 -/
-import GaloisForLFunctions.HilbertSchmidtAlgebra
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtAlgebra
 import GaloisForLFunctions.RHTower.SoninAllPrimeResidualKernel
 
 open scoped BigOperators

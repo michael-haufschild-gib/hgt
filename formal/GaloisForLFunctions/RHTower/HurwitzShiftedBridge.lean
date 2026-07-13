@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.LogIndependence
 import GaloisForLFunctions.RHTower.ShiftedMultIndependence
-import GaloisForLFunctions.Hypertranscendence
+import GaloisForLFunctions.HTGeometry.Hypertranscendence
 import Mathlib.NumberTheory.LSeries.HurwitzZeta
 
 /-!

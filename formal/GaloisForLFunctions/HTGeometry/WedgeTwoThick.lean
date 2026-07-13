@@ -1,4 +1,4 @@
-import GaloisForLFunctions.SimplicialConstraintTower
+import GaloisForLFunctions.HTGeometry.SimplicialConstraintTower
 
 /-!
 # The first nonpure two-thick HT relation geometry

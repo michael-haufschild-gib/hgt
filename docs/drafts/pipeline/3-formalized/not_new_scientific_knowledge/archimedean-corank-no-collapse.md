@@ -60,7 +60,7 @@ not sufficient; the binding obstruction is the DSS/corank-∞ side. This card is
 
 ## Lean certification - 2026-06-19 (Leaner)
 
-Formalized in `formal/GaloisForLFunctions/ArchimedeanCorank.lean` and imported by `formal/GaloisForLFunctions.lean`.
+Formalized in `formal/GaloisForLFunctions/RHTower/ArchimedeanCorank.lean` and imported by `formal/GaloisForLFunctions.lean`.
 
 Lean theorem surface matching the paper proof:
 - `primeLogFiniteSlice_linearIndependent`: finite prime-log slices remain `Q`-linearly independent.
@@ -70,6 +70,6 @@ Lean theorem surface matching the paper proof:
 - `primeLogFullSpan_rank` and `primeLogFullSpan_rank_with_archimedean`: the full prime-log span has rank `Cardinal.mk Nat.Primes`, and adjoining a finite dependent archimedean generator leaves that rank unchanged.
 
 Verification run:
-- `cd formal && lake env lean GaloisForLFunctions/ArchimedeanCorank.lean`
+- `cd formal && lake env lean GaloisForLFunctions/RHTower/ArchimedeanCorank.lean`
 - `cd formal && lake build GaloisForLFunctions`
 - `bash scripts/check_axioms.sh` (PASS: 335 audited theorem outputs; only `[propext, Classical.choice, Quot.sound]`; no `sorry`)

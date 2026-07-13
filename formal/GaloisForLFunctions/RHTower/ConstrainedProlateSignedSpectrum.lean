@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ConstrainedProlateOperator
-import GaloisForLFunctions.LidskiiSelfAdjoint
+import GaloisForLFunctions.HTGeometry.LidskiiSelfAdjoint
 
 /-!
 # Signed spectrum of the concrete prolate Fourier block

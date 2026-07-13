@@ -25,7 +25,7 @@ setting.
 ## Gates
 - [x] 0 -> 1  in-progress: exact joint-eigenbasis kernel statement extracted from the Shafarevich gluing R1 computation.
 - [x] 1 -> 2  fully-proven: paper proof above, using coordinatewise splitting and cancellation in a field.
-- [x] 2 -> 3  formalized: Lean theorem `diagonalKer_mul_eq_sum_ker` in `formal/GaloisForLFunctions/ShafarevichGluing.lean`; name checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean theorem `diagonalKer_mul_eq_sum_ker` in `formal/GaloisForLFunctions/HTGeometry/ShafarevichGluing.lean`; name checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the formal certificate for the rank-one semisimple vanishing lemma.
 
 ## Log

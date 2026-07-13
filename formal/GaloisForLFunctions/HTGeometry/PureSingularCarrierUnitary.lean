@@ -153,6 +153,170 @@ theorem circleCanonicalFramePolynomial_castSucc
   rw [hlast, star_zero, zero_smul, add_zero]
   rfl
 
+/-- A polynomial born at level `n` is unchanged after any finite number of level extensions. -/
+theorem circleCanonicalFramePolynomial_add_level
+    (mu : Measure Circle) [IsFiniteMeasure mu]
+    (hmu : mu.support.Infinite) (n d : ℕ) :
+    circleCanonicalFramePolynomial mu hmu (n + d) ⟨n, by omega⟩ =
+      circleCanonicalFramePolynomial mu hmu n (Fin.last n) := by
+  induction d with
+  | zero =>
+      congr 1
+  | succ d ih =>
+      have hstep := circleCanonicalFramePolynomial_castSucc mu hmu (n + d)
+        (⟨n, by omega⟩ : Fin (n + d + 1))
+      exact hstep.trans ih
+
+/-- Every row polynomial at every level is the stable polynomial born on its diagonal level. -/
+theorem circleCanonicalFramePolynomial_eq_diagonal
+    (mu : Measure Circle) [IsFiniteMeasure mu]
+    (hmu : mu.support.Infinite) (N : ℕ) (i : Fin (N + 1)) :
+    circleCanonicalFramePolynomial mu hmu N i =
+      circleCanonicalFramePolynomial mu hmu i.val (Fin.last i.val) := by
+  induction N with
+  | zero =>
+      have hi : i = 0 := Fin.eq_zero i
+      subst i
+      rfl
+  | succ N ih =>
+      refine Fin.lastCases ?_ (fun j => ?_) i
+      · rfl
+      · exact (circleCanonicalFramePolynomial_castSucc mu hmu N j).trans (ih j)
+
+/-- The global polynomial sequence assembled from the stable diagonal rows of the finite
+canonical frame tower. -/
+noncomputable def circleCoherentFramePolynomial
+    (mu : Measure Circle) [IsFiniteMeasure mu]
+    (hmu : mu.support.Infinite) (n : ℕ) : Lp ℂ 2 mu :=
+  circleCanonicalFramePolynomial mu hmu n (Fin.last n)
+
+/-- Leading-principal coherence assembles the finite orthonormal families into a global
+orthonormal sequence. -/
+theorem circleCoherentFramePolynomial_orthonormal
+    (mu : Measure Circle) [IsFiniteMeasure mu]
+    (hmu : mu.support.Infinite) :
+    Orthonormal ℂ (circleCoherentFramePolynomial mu hmu) := by
+  constructor
+  · intro n
+    exact (circleCanonicalFramePolynomial_orthonormal mu hmu n).norm_eq_one (Fin.last n)
+  · have hltcase : ∀ {i j : ℕ}, i < j →
+        inner ℂ (circleCoherentFramePolynomial mu hmu i)
+          (circleCoherentFramePolynomial mu hmu j) = 0 := by
+      intro i j hij
+      obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hij.le
+      have hfin :=
+        (circleCanonicalFramePolynomial_orthonormal mu hmu (i + d)).inner_eq_zero
+          (i := (⟨i, by omega⟩ : Fin (i + d + 1)))
+          (j := Fin.last (i + d)) (by
+            intro heq
+            have := congrArg Fin.val heq
+            simp at this
+            omega)
+      rw [circleCoherentFramePolynomial, circleCoherentFramePolynomial,
+        ← circleCanonicalFramePolynomial_add_level mu hmu i d]
+      exact hfin
+    intro i j hij
+    rcases lt_or_gt_of_ne hij with hlt | hgt
+    · exact hltcase hlt
+    · rw [inner_eq_zero_symm]
+      exact hltcase hgt
+
+/-- At every finite level, the canonical row polynomials span exactly the same subspace as the
+corresponding analytic monomials. -/
+theorem span_circleCanonicalFramePolynomial_eq_monomials
+    (mu : Measure Circle) [IsFiniteMeasure mu]
+    (hmu : mu.support.Infinite) (N : ℕ) :
+    Submodule.span ℂ (Set.range (circleCanonicalFramePolynomial mu hmu N)) =
+      Submodule.span ℂ
+        (Set.range (fun i : Fin (N + 1) => circleMonomialLp mu i)) := by
+  letI : FiniteDimensional ℂ
+      (Submodule.span ℂ
+        (Set.range (fun i : Fin (N + 1) => circleMonomialLp mu i))) :=
+    FiniteDimensional.span_of_finite ℂ (Set.finite_range _)
+  apply Submodule.eq_of_le_of_finrank_eq
+  · rw [span_le]
+    rintro _ ⟨i, rfl⟩
+    unfold circleCanonicalFramePolynomial
+    exact Submodule.sum_mem _ fun k _ => Submodule.smul_mem _ _
+      (Submodule.subset_span (Set.mem_range_self k))
+  · rw [finrank_span_eq_card
+        (circleCanonicalFramePolynomial_orthonormal mu hmu N).linearIndependent,
+      finrank_span_eq_card
+        (linearIndependent_circleMonomialLp_fin_of_infiniteSupport mu hmu N)]
+
+/-- **Coherent carrier span law.**  The stable sequence assembled from the finite canonical
+inverse-Cholesky tower has exactly the full analytic-polynomial span. -/
+theorem span_circleCoherentFramePolynomial_eq_analyticMonomialSpan
+    (mu : Measure Circle) [IsFiniteMeasure mu]
+    (hmu : mu.support.Infinite) :
+    Submodule.span ℂ (Set.range (circleCoherentFramePolynomial mu hmu)) =
+      analyticMonomialSpan mu := by
+  apply le_antisymm
+  · rw [span_le]
+    rintro _ ⟨n, rfl⟩
+    unfold circleCoherentFramePolynomial circleCanonicalFramePolynomial analyticMonomialSpan
+    exact Submodule.sum_mem _ fun k _ => Submodule.smul_mem _ _
+      (Submodule.subset_span (Set.mem_range_self (k : ℕ)))
+  · rw [analyticMonomialSpan, span_le]
+    intro _ hmono
+    rcases hmono with ⟨n, rfl⟩
+    have hfinite : circleMonomialLp mu n ∈
+        Submodule.span ℂ
+          (Set.range (fun i : Fin (n + 1) => circleMonomialLp mu i)) :=
+      Submodule.subset_span (Set.mem_range_self (Fin.last n))
+    rw [← span_circleCanonicalFramePolynomial_eq_monomials mu hmu n] at hfinite
+    have hincl : Set.range (circleCanonicalFramePolynomial mu hmu n) ⊆
+        Set.range (circleCoherentFramePolynomial mu hmu) := by
+      rintro _ ⟨i, rfl⟩
+      exact ⟨i.val, (circleCanonicalFramePolynomial_eq_diagonal mu hmu n i).symm⟩
+    exact (Submodule.span_mono hincl) hfinite
+
+/-- One-sided Fourier rigidity makes the coherently assembled frame polynomials complete. -/
+theorem circleCoherentFramePolynomial_closure_eq_top_of_oneSidedFourierRigid
+    (mu : Measure Circle) [IsFiniteMeasure mu]
+    (hmu : mu.support.Infinite) (hrigid : IsOneSidedFourierRigid mu) :
+    (Submodule.span ℂ
+      (Set.range (circleCoherentFramePolynomial mu hmu))).topologicalClosure = ⊤ := by
+  rw [span_circleCoherentFramePolynomial_eq_analyticMonomialSpan]
+  exact analyticMonomialSpan_closure_eq_top_of_oneSidedFourierRigid mu hrigid
+
+/-- The coherent finite frame tower itself, rather than a parallel construction, supplies a
+Hilbert basis of `L²(mu)` whenever analytic polynomials are dense. -/
+noncomputable def circleCanonicalCarrierHilbertBasis
+    (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (hrigid : IsOneSidedFourierRigid mu) :
+    HilbertBasis ℕ ℂ (Lp ℂ 2 mu) :=
+  HilbertBasis.mk (circleCoherentFramePolynomial_orthonormal mu hmu)
+    (circleCoherentFramePolynomial_closure_eq_top_of_oneSidedFourierRigid
+      mu hmu hrigid).ge
+
+@[simp]
+theorem circleCanonicalCarrierHilbertBasis_apply
+    (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (hrigid : IsOneSidedFourierRigid mu) (n : ℕ) :
+    circleCanonicalCarrierHilbertBasis mu hmu hrigid n =
+      circleCoherentFramePolynomial mu hmu n := by
+  exact congrFun (HilbertBasis.coe_mk
+    (circleCoherentFramePolynomial_orthonormal mu hmu)
+    (circleCoherentFramePolynomial_closure_eq_top_of_oneSidedFourierRigid
+      mu hmu hrigid).ge) n
+
+/-- The unitary carrier assembled directly from the coherent finite inverse-Cholesky tower. -/
+noncomputable def circleCanonicalCarrierUnitary
+    (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (hrigid : IsOneSidedFourierRigid mu) :
+    CoefficientL2 ≃ₗᵢ[ℂ] Lp ℂ 2 mu :=
+  (circleCanonicalCarrierHilbertBasis mu hmu hrigid).repr.symm
+
+@[simp]
+theorem circleCanonicalCarrierUnitary_apply_single
+    (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (hrigid : IsOneSidedFourierRigid mu) (n : ℕ) :
+    circleCanonicalCarrierUnitary mu hmu hrigid (lp.single 2 n 1) =
+      circleCoherentFramePolynomial mu hmu n := by
+  rw [circleCanonicalCarrierUnitary, HilbertBasis.repr_symm_single,
+    circleCanonicalCarrierHilbertBasis_apply]
+
 /-- One-sided Fourier rigidity makes the canonical orthonormal polynomials complete. -/
 theorem circleOrthonormalPolynomial_closure_eq_top_of_oneSidedFourierRigid
     (mu : Measure Circle) [IsFiniteMeasure mu] (hrigid : IsOneSidedFourierRigid mu) :
@@ -210,6 +374,21 @@ theorem exists_circlePolynomialCarrierUnitary_of_rieszBrothers
       mu circleLebesgue hsing hriesz
   exact ⟨circlePolynomialCarrierUnitary mu hmu hrigid,
     circlePolynomialCarrierUnitary_apply_single mu hmu hrigid⟩
+
+/-- **Coherent pure-singular unitary carrier law.**  From the exact Riesz-brothers input onward,
+the unitary is assembled from the stable rows of the finite canonical inverse-Cholesky tower
+entirely inside Lean. -/
+theorem exists_circleCanonicalCarrierUnitary_of_rieszBrothers
+    (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (hsing : mu ⟂ₘ circleLebesgue)
+    (hriesz : HasRieszBrothersDensityConclusion mu circleLebesgue) :
+    ∃ U : CoefficientL2 ≃ₗᵢ[ℂ] Lp ℂ 2 mu,
+      ∀ n : ℕ, U (lp.single 2 n 1) = circleCoherentFramePolynomial mu hmu n := by
+  let hrigid : IsOneSidedFourierRigid mu :=
+    oneSidedFourierRigid_of_mutuallySingular_of_rieszBrothers
+      mu circleLebesgue hsing hriesz
+  exact ⟨circleCanonicalCarrierUnitary mu hmu hrigid,
+    circleCanonicalCarrierUnitary_apply_single mu hmu hrigid⟩
 
 end
 

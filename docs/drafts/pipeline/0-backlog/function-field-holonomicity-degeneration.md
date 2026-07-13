@@ -99,7 +99,7 @@ recorded as conjecture, not banked.)*
   residue stated as conjecture (§3). BRIDGE, with content beyond the import (§4).
 - [ ] 2 → 3  formalized — Lean anchor **DONE** for the degree-collapse core:
   `ffRelationLattice_mem_iff`, `ffDegreeMap_surjective`, `ffDegreeMap_range_eq_top`, and
-  `ffRelationLattice_corank_eq_one` in `formal/GaloisForLFunctions/FunctionFieldDegeneration.lean`.
+  `ffRelationLattice_corank_eq_one` in `formal/GaloisForLFunctions/RHTower/FunctionFieldDegeneration.lean`.
   The card remains in `2-fully-proven`: the G3 holonomicity implication / Weil rationality imports and the
   #119 directed-sup corank fragment are not fully formalized here.
 - [ ] 3 → 4  publication-ready — short note paired with #119 and the C6 `S_ff` functor.
@@ -121,7 +121,7 @@ recorded as conjecture, not banked.)*
   grade **BRIDGE**, content beyond the import (§4). Remaining G2–G5-over-`F_q` native reproofs stay in the
   parent card.
 - 2026-06-19 (Leaner) — added Lean anchor for the function-field degree-collapse core in
-  `formal/GaloisForLFunctions/FunctionFieldDegeneration.lean`: the relation lattice is the kernel of the
+  `formal/GaloisForLFunctions/RHTower/FunctionFieldDegeneration.lean`: the relation lattice is the kernel of the
   finite-support degree map, a degree-one place makes the degree map onto `ℤ`, and the quotient by the
   relation lattice has `Module.rank ℤ = 1`. Added root import and axiom audit entries; `lake build` and
   `scripts/check_axioms.sh` pass with 243 theorem outputs. Not moved to `3-formalized` because the G3/Weil

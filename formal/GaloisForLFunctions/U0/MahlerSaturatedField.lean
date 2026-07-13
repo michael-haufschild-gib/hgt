@@ -12,7 +12,7 @@ telescoper obstruction holds on every layer, so `A` is differentially transcende
 -/
 import Mathlib
 import GaloisForLFunctions.U0.MahlerLayerEmbedding
-import GaloisForLFunctions.AutomorphismFamilyOstrowski
+import GaloisForLFunctions.HTGeometry.AutomorphismFamilyOstrowski
 
 namespace GaloisForLFunctions
 

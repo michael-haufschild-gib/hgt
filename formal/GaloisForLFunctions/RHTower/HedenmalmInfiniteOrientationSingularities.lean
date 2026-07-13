@@ -1,4 +1,4 @@
-import GaloisForLFunctions.TranslatedStripBoundary
+import GaloisForLFunctions.HTGeometry.TranslatedStripBoundary
 import GaloisForLFunctions.RHTower.HedenmalmCanonicalOrientationMultiplier
 
 /-!

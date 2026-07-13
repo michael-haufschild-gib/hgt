@@ -22,13 +22,13 @@ Substituting `L=m·ell` gives the claimed diagonal archimedean-generator action
 
 - Lean definitions: `primeLogFrequencyComplex`, `archimedeanPrimeMode`
 - Lean theorem: `GaloisForLFunctions.deriv_archimedeanPrimeMode`
-- File: `formal/GaloisForLFunctions/ArchimedeanAxisMode.lean`
+- File: `formal/GaloisForLFunctions/RHTower/ArchimedeanAxisMode.lean`
 - Scope: finite-support integer prime modes only. This does not formalize the infinite torus, the completed `(sigma, partial_s)` connection, the Gamma/digamma residue, or the C5-localization synthesis in the parent card.
 
 Verification:
 
 ```bash
-cd formal && lake env lean GaloisForLFunctions/ArchimedeanAxisMode.lean
+cd formal && lake env lean GaloisForLFunctions/RHTower/ArchimedeanAxisMode.lean
 cd formal && lake build GaloisForLFunctions
 bash scripts/check_axioms.sh
 ```

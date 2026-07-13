@@ -117,17 +117,17 @@ binding is certified (Newton duality), the top is named (`Λ`), and the lever is
 
 `[LEDGER-PROVEN, compiles green, sorry-free, axiom-audited by librarian]`
 
-- **`formal/GaloisForLFunctions/SigmaOrbit.lean`** — `sigmaConj_involutive` and
+- **`formal/GaloisForLFunctions/RHTower/SigmaOrbit.lean`** — `sigmaConj_involutive` and
   `sigmaConj_fixed_iff_critical`: the critical line is the fixed locus of `σ∘conj`
   (`1 − s̄ = s ⟺ Re s = ½`), the σ-real characterization, complementing
   `norm_cpow_eq_critical_iff`.
-- **`formal/GaloisForLFunctions/SecularNewton.lean`** — `secular_newton` (with
+- **`formal/GaloisForLFunctions/RHTower/SecularNewton.lean`** — `secular_newton` (with
   `secularPowerSum`, `secularESymm`, `secularPowerSum_eq_aeval`, `secularESymm_eq_sum`): the
   power-sum (Hankel/resolvent/Pick) face and the elementary-symmetric (Toeplitz/PF) face of a
   finite secular spectrum satisfy Newton's identity — **they are one object** (the ledger form of
   the `5·10⁻²⁶` numeric certification). This is the bridge to `CarrierPickKernel.lean` (Theorist):
   their Pick kernel reads the power-sum face, the ξ-coefficients read the elementary-symmetric face.
-- **`formal/GaloisForLFunctions/SecularHankel.lean`** — `secularHankel_posSemidef`: for a finite
+- **`formal/GaloisForLFunctions/RHTower/SecularHankel.lean`** — `secularHankel_posSemidef`: for a finite
   real spectrum, the Hankel moment matrix `H_{jk}=Σ_i t_i^(j+k)` is `B Bᴴ`, hence PSD. This is the
   ledger-safe Hermite/Hankel easy direction only: real finite points imply positive Hankel moments.
 

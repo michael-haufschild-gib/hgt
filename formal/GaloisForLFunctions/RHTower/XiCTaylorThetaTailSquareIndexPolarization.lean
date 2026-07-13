@@ -1674,9 +1674,9 @@ theorem tendsto_integral_xiCTaylorThetaTailCoreDyadicHaarRemainderKernel_zero
   have h := Complex.continuous_im.continuousAt.tendsto.comp
     (tendsto_thetaSquareIndexDyadicWeightedCoreAverages_zero d z)
   convert h using 1
-  · funext k
-    rw [integral_xiCTaylorThetaTailCoreDyadicHaarRemainderKernel_eq]
-  · simp
+  funext k
+  rw [integral_xiCTaylorThetaTailCoreDyadicHaarRemainderKernel_eq]
+  rfl
 
 /-- Pointwise current-source polarization into cofinal dyadic Haar layers and one shifted top
 row. -/

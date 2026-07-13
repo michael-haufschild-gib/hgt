@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.TwoEndedReflection
 import GaloisForLFunctions.HTGeometry.DiscreteCauchyJetDerivatives
-import GaloisForLFunctions.DifferentialIndependence
+import GaloisForLFunctions.HTGeometry.DifferentialIndependence
 
 /-!
 # Actual prime-log jets in the upper-end differential field

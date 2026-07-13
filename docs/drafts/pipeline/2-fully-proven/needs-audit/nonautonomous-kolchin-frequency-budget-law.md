@@ -288,15 +288,15 @@ only rank additivity for an abstract exact sequence would not formalize the anal
 
 The arithmetic-complement conservation `(20)` (`dim A_N ≤ 2 kappa_rel`, in its purely linear form
 `dim V ≤ dim (V/(V ⊓ D)) + dim D`) is formalized abstractly and axiom-clean in
-`formal/GaloisForLFunctions/ArithmeticComplementRank.lean` as
+`formal/GaloisForLFunctions/HTGeometry/ArithmeticComplementRank.lean` as
 `HTGeometry.finrank_le_arithmeticComplement_add`.  The exact frequency-conservation split `(6)`--`(7)`
 (`rank Γ(X) = rank Γ(B) + rank Γ(K)`, the rank additivity of the Pontryagin exact sequence `(5)`) is
-formalized axiom-clean in `formal/GaloisForLFunctions/ShortExactRankConservation.lean` as
+formalized axiom-clean in `formal/GaloisForLFunctions/HTGeometry/ShortExactRankConservation.lean` as
 `HTGeometry.rank_add_of_shortExact` / `finrank_add_of_shortExact` (for a short exact sequence
 `0 → A → B → C → 0` of vector spaces).  These are the reusable linear cores shared by the
 frequency-budget cards.  The **inverse-limit covering-dimension bound** `(15)` is now formalized
 axiom-clean as `HasCoverDimLE.of_refinedByStages` in
-`formal/GaloisForLFunctions/CoveringDimension.lean` (with the "finite cover refines through a stage"
+`formal/GaloisForLFunctions/HTGeometry/CoveringDimension.lean` (with the "finite cover refines through a stage"
 compactness property as its interface).  The remaining analytic substrate — joint Bohr hull, the
 compact-group side of `(5)`, and relative Kolchin capacity `(11)` — remains absent from mathlib and is
 the open part of the stage-3 gate.

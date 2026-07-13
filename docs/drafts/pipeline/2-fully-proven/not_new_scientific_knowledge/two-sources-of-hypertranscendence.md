@@ -145,27 +145,27 @@ orbit-balancing of the archimedean lane.
   places}`; seam/corank-`∞−1`/missing-Frobenius = the archimedean orbit-imbalance, vanishing over `F_q`
   (all-balanced). No runpod (exact divisor algebra). Library ticket filed.
 - 2026-06-19 (Leaner) — added Lean anchors `orbitDegree_single_sub_single` and
-  `eq_sum_single_sub_base_of_orbitDegree_zero` in `formal/GaloisForLFunctions/OrbitBalance.lean`. These
+  `eq_sum_single_sub_base_of_orbitDegree_zero` in `formal/GaloisForLFunctions/HTGeometry/OrbitBalance.lean`. These
   formalize the finite augmentation-kernel core of the σ-orbit-balance proof: balanced point-masses have
   orbit degree zero, and every integer-valued finitely supported orbit divisor of degree zero decomposes as a
   finite sum of balanced point-masses against any chosen base point. Added the module to the root import and
-  axiom audit; `cd formal && lake env lean GaloisForLFunctions/OrbitBalance.lean`, `cd formal && lake build`,
+  axiom audit; `cd formal && lake env lean GaloisForLFunctions/HTGeometry/OrbitBalance.lean`, `cd formal && lake build`,
   and `bash scripts/check_axioms.sh` pass with 254 audited theorem outputs and no `sorry`. Card remains in
   `2-fully-proven`; the rational-function divisor/orbit layer, consecutive shift-telescoping, full CC
   equivalence, `q`-orbit analog, and Hölder/ADH import are not fully Lean-formalized.
-- 2026-06-19 (Leaner) — extended `formal/GaloisForLFunctions/OrbitBalance.lean` with the orbit-degree
+- 2026-06-19 (Leaner) — extended `formal/GaloisForLFunctions/HTGeometry/OrbitBalance.lean` with the orbit-degree
   algebra (`orbitDegree_zero`, `orbitDegree_single`, `orbitDegree_add`, `orbitDegree_sub`) and the
   consecutive-shift coboundary theorem `orbitDegree_intShiftCoboundary`. This proves the formal
   `im(Δ) ⊆ ker(deg)` half on the integer orbit: every finite sum of consecutive differences `[z-1]-[z]`
-  has orbit degree zero. `cd formal && lake env lean GaloisForLFunctions/OrbitBalance.lean`,
+  has orbit degree zero. `cd formal && lake env lean GaloisForLFunctions/HTGeometry/OrbitBalance.lean`,
   `cd formal && lake build`, and `bash scripts/check_axioms.sh` pass with 259 audited theorem outputs and no
   `sorry`. The reverse telescoping inclusion, rational divisor/orbit infrastructure, full CC equivalence,
   `q`-orbit analog, and Hölder/ADH import remain unformalized.
 - 2026-06-19 (Leaner) — added `sum_intShiftTerm_right` to
-  `formal/GaloisForLFunctions/OrbitBalance.lean`, proving the explicit right-path telescoping identity
+  `formal/GaloisForLFunctions/HTGeometry/OrbitBalance.lean`, proving the explicit right-path telescoping identity
   `n[base+k]-n[base] = Σ_{j<k} (−n)([base+j]-[base+j+1])` in the integer-orbit divisor model. This is a
   concrete reverse-telescoping fragment of `ker(deg) ⊆ im(Δ)`. `cd formal && lake env lean
-  GaloisForLFunctions/OrbitBalance.lean`, `cd formal && lake build`, and `bash scripts/check_axioms.sh` pass
+  GaloisForLFunctions/HTGeometry/OrbitBalance.lean`, `cd formal && lake build`, and `bash scripts/check_axioms.sh` pass
   with 260 audited theorem outputs and no `sorry`. The arbitrary divisor assembly, rational-function divisor
   layer, full CC equivalence, `q`-orbit analog, and Hölder/ADH import remain unformalized.
 

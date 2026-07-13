@@ -17,7 +17,7 @@ Write the unique prime factorization `n=prod_p p^{v_p(n)}`. Taking the logarithm
 ## Gates
 - [x] 0 -> 1  in-progress: exact prime-log feeding identity extracted from the continuation block card.
 - [x] 1 -> 2  fully-proven: paper proof above, using unique factorization and logarithm of a finite product.
-- [x] 2 -> 3  formalized: Lean theorem `log_nat_eq_sum_factorization` in `formal/GaloisForLFunctions/SmoothNumbers.lean`; name checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
+- [x] 2 -> 3  formalized: Lean theorem `log_nat_eq_sum_factorization` in `formal/GaloisForLFunctions/RHTower/SmoothNumbers.lean`; name checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the finite prime-log feeding lemma in the continuation/transcendence note.
 
 ## Log

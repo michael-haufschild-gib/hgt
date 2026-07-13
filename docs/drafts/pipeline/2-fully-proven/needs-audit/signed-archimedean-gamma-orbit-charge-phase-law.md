@@ -598,7 +598,7 @@ Primary adjacent sources:
 
 Formalized so far (axiom-clean; `propext, Classical.choice, Quot.sound` only):
 
-- **Sharp neutral example `(40)`–`(41)`.** `formal/GaloisForLFunctions/SignedGammaSharpExample.lean`
+- **Sharp neutral example `(40)`–`(41)`.** `formal/GaloisForLFunctions/HTGeometry/SignedGammaSharpExample.lean`
   proves `sharpNeutralGammaRatio`: for `Gamma s != 0`,
   `Gamma(2s)/Gamma(s)^2 = 2^(2s-1)/sqrt(pi) * Gamma(s+1/2)/Gamma(s)`, i.e. the Legendre-duplication
   reduction of `G_*` to its single common-scale orbit pair, exhibiting the two signed orbit charges

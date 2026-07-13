@@ -12,9 +12,9 @@
 Audit the claim from scratch. Researchers must decide whether this broad row is one theorem, a bundle of independent finite algebra statements, or should be split before Leaner verifies formalization.
 
 ## Claimed Lean footholds to verify
-- `formal/GaloisForLFunctions/AdamsOperations.lean`
-- `formal/GaloisForLFunctions/SymPowerPlethysm.lean`
-- `formal/GaloisForLFunctions/EHKoszulDuality.lean`
+- `formal/GaloisForLFunctions/RHTower/AdamsOperations.lean`
+- `formal/GaloisForLFunctions/RHTower/SymPowerPlethysm.lean`
+- `formal/GaloisForLFunctions/RHTower/EHKoszulDuality.lean`
 - Candidate names include `adamsPowerSum_tensor`, `adamsPowerSum_isobaricSum`, `adamsPowerSum_comp`, `adamsPowerSum_one`, `chebyshevU_eval_plethysm`, `eh_koszul_duality`
 
 These names are leads, not certification.

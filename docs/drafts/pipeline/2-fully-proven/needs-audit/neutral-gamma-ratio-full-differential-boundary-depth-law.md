@@ -339,7 +339,7 @@ paper-level stage 2.
 
 Section 5 (the terminal one-point recession `C[z] -> C`, the second stage of the boundary carrier)
 is formalized unconditionally in
-`formal/GaloisForLFunctions/PolynomialOnePointRecession.lean`, axiom-clean
+`formal/GaloisForLFunctions/HTGeometry/PolynomialOnePointRecession.lean`, axiom-clean
 (`propext, Classical.choice, Quot.sound`):
 
 ```text

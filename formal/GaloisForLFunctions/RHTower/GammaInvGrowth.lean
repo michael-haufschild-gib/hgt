@@ -1,4 +1,4 @@
-import GaloisForLFunctions.GammaWeierstrass
+import GaloisForLFunctions.HTGeometry.GammaWeierstrass
 import Mathlib.NumberTheory.Harmonic.Bounds
 
 /-!

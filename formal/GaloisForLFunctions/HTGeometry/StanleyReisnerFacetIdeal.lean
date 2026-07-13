@@ -1,5 +1,5 @@
-import GaloisForLFunctions.SimplicialConstraintTower
-import GaloisForLFunctions.SquarefreeVeroneseIdeal
+import GaloisForLFunctions.HTGeometry.SimplicialConstraintTower
+import GaloisForLFunctions.HTGeometry.SquarefreeVeroneseIdeal
 import Mathlib.RingTheory.Localization.Ideal
 import Mathlib.RingTheory.MvPolynomial.Ideal
 

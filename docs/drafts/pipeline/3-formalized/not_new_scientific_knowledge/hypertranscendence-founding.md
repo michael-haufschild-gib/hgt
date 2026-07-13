@@ -9,7 +9,7 @@
   - `differentiallyAlgebraic_of_algebraic`: an algebraic function (root of a nonzero univariate P) is differentially algebraic (order-0 relation).
   - `hypertranscendental_imp_transcendental`: hypertranscendental ⟹ transcendental — the "hyper" strictly strengthens "transcendental", justifying the name.
   - `differentiallyAlgebraic_exp`: exp is DA (y'−y=0) — non-vacuity; the class strictly contains the polynomials.
-- **Lean:** `GaloisForLFunctions.{DifferentiallyAlgebraic, Hypertranscendental, differentiallyAlgebraic_of_algebraic, hypertranscendental_imp_transcendental, differentiallyAlgebraic_exp}` in `formal/GaloisForLFunctions/Hypertranscendence.lean`. Axiom-clean.
+- **Lean:** `GaloisForLFunctions.{DifferentiallyAlgebraic, Hypertranscendental, differentiallyAlgebraic_of_algebraic, hypertranscendental_imp_transcendental, differentiallyAlgebraic_exp}` in `formal/GaloisForLFunctions/HTGeometry/Hypertranscendence.lean`. Axiom-clean.
 
 ## What this is
 The mission's core object had no formal definition anywhere in the tree (grep-verified) or mathlib. This supplies it and proves the structural fact that anchors the name (hyper ⟹ ordinary transcendence), plus a non-vacuity witness. The frontier statement it sets up — Γ is hypertranscendental (Hölder) — is now expressible: `Hypertranscendental Complex.Gamma`.

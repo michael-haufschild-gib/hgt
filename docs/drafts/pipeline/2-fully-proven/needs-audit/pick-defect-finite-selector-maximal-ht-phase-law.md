@@ -371,7 +371,7 @@ singular/free dichotomy and its `J`-inner transfer-matrix parametrization `(8)`-
 major theory absent from mathlib. The triangular jet-coordinate submersions `(5)`, `(11)` are
 elementary but inseparable from that absent interpolation surface. The one classical layer that
 abstracts cleanly and is now formalized axiom-clean in-tree is the **Herglotz/Pick property of the
-Cauchy transform** `(6)` — `formal/GaloisForLFunctions/StieltjesTransformPick.lean`:
+Cauchy transform** `(6)` — `formal/GaloisForLFunctions/HTGeometry/StieltjesTransformPick.lean`:
 `stieltjesTransform_im_nonneg` and `stieltjesTransform_im_pos` prove `Im S_μ(z) ≥ 0` (resp. `> 0` for
 `μ ≠ 0`) throughout the open upper half-plane, via the pointwise kernel positivity
 `Im (x−z)⁻¹ = Im z / |x−z|²` (`cauchyKernel_im`, `cauchyKernel_im_pos`) and commuting `Im` through the
