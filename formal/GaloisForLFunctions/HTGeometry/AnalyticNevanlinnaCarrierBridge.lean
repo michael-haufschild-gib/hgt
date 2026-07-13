@@ -827,7 +827,7 @@ theorem cayleyMoment_prefix_weightedBoundaryCarrier_eq_base_of_cauchyFrozenTange
     intro hc
     have hqzero : F.quotient I = 0 := by simp [quotient, hc]
     rw [hqzero] at hupperI
-    simpa using hupperI
+    simp at hupperI
   have hjet :=
     F.iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_base_of_cauchyFrozenTangent
       (fun _ : Unit => I) (fun _ : Unit => N) eta (fun _ => hupperI)
@@ -894,7 +894,7 @@ theorem weightedBoundaryCarrierExpandedPacketValue_eq_actualNevanlinnaExpandedPa
     intro hcz
     have hqzero : F.quotient z = 0 := by simp [quotient, hcz]
     rw [hqzero] at hq
-    simpa using hq
+    simp at hq
   have hjet := F.iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_background_add_control
     eta (baseDensity + w.1) hw hint z hz hc hq s.2
   have hcoord :=

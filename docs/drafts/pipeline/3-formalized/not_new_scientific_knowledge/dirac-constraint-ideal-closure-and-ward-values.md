@@ -40,7 +40,22 @@ state vector, with the constraints alone governing finite-universe dynamics:
 <https://doi.org/10.1103/PhysRev.160.1113>. Ashtekar--Tate--Uggla formulate minisuperspace
 Dirac observables as phase-space functions that commute weakly with the scalar constraint:
 <https://arxiv.org/abs/gr-qc/9302027>. The Lean closure equation is the exact finite algebraic
-version of this weak commutation statement.
+version of this weak commutation statement. Marolf's refined algebraic quantization/group-averaging
+review constructs physical observables and the physical inner product for constrained quantum
+systems: <https://arxiv.org/abs/gr-qc/0011112>.  Its representative-independence principle is
+realized here by annihilating the two-sided constraint ideal between physical states.
+
+The off-diagonal strengthening proves
+
+`inner φ ((C*L + R*C) ψ) = 0`
+
+for physical `φ, ψ` and self-adjoint `C`.  Hence operators differing by a two-sided constraint-ideal
+term have identical physical matrix elements.  The quantitative companion identity
+
+`C(Aψ) = [C,A]ψ`
+
+also bounds constraint leakage by `‖[C,A]‖ ‖ψ‖`, providing an approximate-observable interface in
+addition to exact kernel preservation.
 
 ## Lean certificate
 
@@ -56,11 +71,19 @@ Principal declarations:
 - `closes_mod_constraint_of_commute`;
 - `preserves_jointPhysicalState_of_closes_mod_constraints`;
 - `constraintWardValue_eq_zero`;
-- `constraintCommutatorWardValue_eq_zero`.
+- `constraintCommutatorWardValue_eq_zero`;
+- `constraintLeftWardMatrixElement_eq_zero`;
+- `constraintRightWardMatrixElement_eq_zero`;
+- `constraintTwoSidedIdealMatrixElement_eq_zero`;
+- `physicalMatrixElement_congr_mod_constraintTwoSidedIdeal`;
+- `constraintLeakage_eq_commutator_apply`;
+- `norm_constraintLeakage_le_commutator`.
 
 Validation:
 
 - both modules build in the project toolchain;
+- random finite Hermitian-constraint matrices pre-certified two-sided-ideal matrix-element
+  invariance and the commutator leakage identity before formalization;
 - the HTGeometry umbrella imports the Ward module;
 - the formal lint gate passes;
 - the checked public theorems use only `propext`, `Classical.choice`, and `Quot.sound`, with the

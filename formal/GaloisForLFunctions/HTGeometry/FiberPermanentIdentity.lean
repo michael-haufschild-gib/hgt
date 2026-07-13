@@ -118,4 +118,85 @@ theorem fiber_weight_ne_zero {D : ℕ} (s : Fin D → ℕ) (hs : Function.Inject
       ∏ t, ((l t + μ t).descFactorial (μ t) : ℤ)) ≠ 0 :=
   ne_of_gt (fiber_weight_pos s hs μ hsμ)
 
+/-- When the atom `ν₀` has a singleton fiber `{p₀}` with nonzero coefficient, its grouped weight
+is `c(p₀.1)·∏ descFactorial ≠ 0` — every derivative order is `≤` its shifted index. -/
+theorem weight_singleton_ne_zero {D : ℕ} (N : ℕ) (S : Finset (Fin D → ℕ)) (c : (Fin D → ℕ) → ℤ)
+    (ν₀ : ℕ →₀ ℕ) (p₀ : (Fin D → ℕ) × (Fin D →₀ ℕ))
+    (hfiber : (S ×ˢ (Finset.univ.finsuppAntidiag N)).filter
+        (fun p => key (fun t => p.2 t + p.1 t) = ν₀) = {p₀})
+    (hc : c p₀.1 ≠ 0) :
+    (∑ p ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).filter
+        (fun p => key (fun t => p.2 t + p.1 t) = ν₀),
+      c p.1 * ∏ t, ((p.2 t + p.1 t).descFactorial (p.1 t) : ℤ)) ≠ 0 := by
+  rw [hfiber, Finset.sum_singleton]
+  refine mul_ne_zero hc ?_
+  refine Finset.prod_ne_zero_iff.mpr (fun t _ => ?_)
+  have hpos : 0 < (p₀.2 t + p₀.1 t).descFactorial (p₀.1 t) :=
+    Nat.descFactorial_pos.mpr (Nat.le_add_left _ _)
+  exact_mod_cast hpos.ne'
+
+/-- Two tuples have equal index-multiset `key` iff equal image multisets. -/
+theorem key_eq_iff_multiset {D : ℕ} (h h' : Fin D → ℕ) :
+    key h = key h' ↔ Multiset.map h Finset.univ.val = Multiset.map h' Finset.univ.val := by
+  constructor
+  · intro hk; apply Multiset.ext.mpr; intro n; rw [← key_count_map, ← key_count_map, hk]
+  · intro hm; ext n; rw [key_count_map, key_count_map, hm]
+
+/-- Complex singleton-fiber weight: nonzero when the coefficient is nonzero. -/
+theorem weight_singleton_ne_zero_complex {D : ℕ} (N : ℕ) (S : Finset (Fin D → ℕ))
+    (c : (Fin D → ℕ) → ℂ) (ν₀ : ℕ →₀ ℕ) (p₀ : (Fin D → ℕ) × (Fin D →₀ ℕ))
+    (hfiber : (S ×ˢ (Finset.univ.finsuppAntidiag N)).filter
+        (fun p => key (fun t => p.2 t + p.1 t) = ν₀) = {p₀})
+    (hc : c p₀.1 ≠ 0) :
+    (∑ p ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).filter
+        (fun p => key (fun t => p.2 t + p.1 t) = ν₀),
+      c p.1 * ∏ t, ((p.2 t + p.1 t).descFactorial (p.1 t) : ℂ)) ≠ 0 := by
+  rw [hfiber, Finset.sum_singleton]
+  refine mul_ne_zero hc ?_
+  refine Finset.prod_ne_zero_iff.mpr (fun t _ => ?_)
+  have hpos : 0 < (p₀.2 t + p₀.1 t).descFactorial (p₀.1 t) :=
+    Nat.descFactorial_pos.mpr (Nat.le_add_left _ _)
+  exact_mod_cast hpos.ne'
+
+/-- **Single-derivative-order fiber weight.**  When every `(μ,l)` in an atom's fiber shares the
+same order multi-index `μ₀` with nonzero coefficient, the weight `c μ₀ · ∑ ∏ descFactorial` is
+nonzero. -/
+theorem weight_single_mu_ne_zero_complex {D : ℕ} (N : ℕ) (S : Finset (Fin D → ℕ))
+    (c : (Fin D → ℕ) → ℂ) (ν₀ : ℕ →₀ ℕ) (μ₀ : Fin D → ℕ)
+    (hsingle : ∀ p ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).filter
+        (fun p => key (fun t => p.2 t + p.1 t) = ν₀), p.1 = μ₀)
+    (hne : ((S ×ˢ (Finset.univ.finsuppAntidiag N)).filter
+        (fun p => key (fun t => p.2 t + p.1 t) = ν₀)).Nonempty)
+    (hc : c μ₀ ≠ 0) :
+    (∑ p ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).filter
+        (fun p => key (fun t => p.2 t + p.1 t) = ν₀),
+      c p.1 * ∏ t, ((p.2 t + p.1 t).descFactorial (p.1 t) : ℂ)) ≠ 0 := by
+  classical
+  have hEq : (∑ p ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).filter
+        (fun p => key (fun t => p.2 t + p.1 t) = ν₀),
+      c p.1 * ∏ t, ((p.2 t + p.1 t).descFactorial (p.1 t) : ℂ))
+      = c μ₀ * ∑ p ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).filter
+        (fun p => key (fun t => p.2 t + p.1 t) = ν₀),
+        ∏ t, ((p.2 t + p.1 t).descFactorial (μ₀ t) : ℂ) := by
+    rw [Finset.mul_sum]
+    exact Finset.sum_congr rfl (fun p hp => by rw [hsingle p hp])
+  rw [hEq]
+  refine mul_ne_zero hc ?_
+  have hR : (∑ p ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).filter
+        (fun p => key (fun t => p.2 t + p.1 t) = ν₀),
+      ∏ t, ((p.2 t + p.1 t).descFactorial (μ₀ t) : ℂ))
+      = (((∑ p ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).filter
+        (fun p => key (fun t => p.2 t + p.1 t) = ν₀),
+      ∏ t, ((p.2 t + p.1 t).descFactorial (μ₀ t) : ℝ)) : ℝ) : ℂ) := by push_cast; rfl
+  rw [hR]
+  refine Complex.ofReal_ne_zero.mpr (ne_of_gt ?_)
+  apply Finset.sum_pos
+  · intro p hp
+    apply Finset.prod_pos
+    intro t _
+    have hp2 : 0 < (p.2 t + p.1 t).descFactorial (μ₀ t) :=
+      Nat.descFactorial_pos.mpr (by rw [← hsingle p hp]; exact Nat.le_add_left _ _)
+    exact_mod_cast hp2
+  · exact hne
+
 end GaloisForLFunctions

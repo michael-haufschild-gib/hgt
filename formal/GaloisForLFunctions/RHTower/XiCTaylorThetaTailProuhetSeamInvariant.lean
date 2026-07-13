@@ -54,6 +54,18 @@ theorem hasDerivAt_thetaCuspCompletedSurvivalRemainder
   convert hexp.sub (hasDerivAt_thetaCuspTailSurvival x) using 1
   ring
 
+/-- The invariant even remainder and the completed potential are not independent errors: their
+sum is exactly four times the canonical completed theta source.  This is the pointwise source
+identity behind the Fourier multiplier `4 z² / (z² + 1/4)` carried by the remainder. -/
+theorem thetaCuspTailSecondEvenRemainder_add_completedTailPotential
+    (x : ℝ) :
+    thetaCuspTailSecondEvenRemainder x + thetaCuspCompletedTailPotential x =
+      4 * thetaCuspFullSource x := by
+  unfold thetaCuspTailSecondEvenRemainder thetaCuspTailSecondDensity
+    thetaCuspCompletedTailPotential
+  rw [thetaCuspFullSource_eq_tail_second_sub]
+  ring
+
 private theorem integrableOn_exp_neg_half_mul_coreAtom
     (d : ℕ) (z : ℂ) :
     IntegrableOn (fun x : ℝ => (Real.exp (-x / 2) : ℂ) *

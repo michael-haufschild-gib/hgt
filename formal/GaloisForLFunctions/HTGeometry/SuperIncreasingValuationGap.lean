@@ -282,4 +282,224 @@ theorem exists_uniform_valuation_gap {b : ℕ → ℝ} (hbpos : ∀ n, 0 < b n) 
     have := hν₁min ν hν
     linarith
 
+/-- **Single-atom valuation levels.**  Under a `(D+1)`-super-increasing positive profile `b`,
+distinct `≤ D`-bounded multi-indices have distinct valuations: `V` is injective on them.  Hence the
+minimal-valuation appearing atom is unique — the structural fact that makes the leading-symbol
+degeneracy irrelevant in magnitude-lacunary survival. -/
+theorem valuation_injOn {b : ℕ → ℝ} (hbpos : ∀ n, 0 < b n) {D : ℕ}
+    (hsi : ∀ k, ((D : ℝ) + 1) * (∑ n ∈ Finset.range k, b n) ≤ b k)
+    {ν ν' : ℕ →₀ ℕ} (hν : ∀ n, ν n ≤ D) (hν' : ∀ n, ν' n ≤ D)
+    (hV : ν.sum (fun n k => (k : ℝ) * b n) = ν'.sum (fun n k => (k : ℝ) * b n)) :
+    ν = ν' := by
+  by_contra hne
+  obtain ⟨K, hK⟩ := finsupp_pair_valuation_gap (fun n => (hbpos n).le) hsi hν hν' hne
+  rw [hV, sub_self, abs_zero] at hK
+  have hpos : 0 < b K / ((D : ℝ) + 1) := by have := hbpos K; positivity
+  linarith
+
+theorem sum_ne_zero_of_dominant_complex {ι : Type*} [DecidableEq ι] (s : Finset ι) (w : ι → ℂ)
+    {i₀ : ι} (hi₀ : i₀ ∈ s) (hdom : ∑ i ∈ s.erase i₀, ‖w i‖ < ‖w i₀‖) :
+    ∑ i ∈ s, w i ≠ 0 := by
+  rw [← Finset.add_sum_erase s w hi₀]
+  intro heq
+  have h1 : w i₀ = -(∑ i ∈ s.erase i₀, w i) := eq_neg_of_add_eq_zero_left heq
+  have h2 : ‖w i₀‖ ≤ ∑ i ∈ s.erase i₀, ‖w i‖ := by
+    rw [h1, norm_neg]; exact norm_sum_le _ _
+  linarith
+
+/-- **Complex minimal-valuation domination.**  The integer-weight version, extended to complex
+coefficients `c : ι → ℂ`: the minimal-valuation atom `i₀` with nonzero coefficient dominates when the
+total coefficient norm mass is below `‖c i₀‖·exp G`.  This is what closes magnitude-lacunary survival
+for a general (complex-coefficient) algebraic differential relation, not just an integer one. -/
+theorem weighted_sum_ne_zero_of_min_valuation_complex {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    (V : ι → ℝ) (a : ι → ℂ) (ha : ∀ i, ‖a i‖ = Real.exp (- V i)) (c : ι → ℂ) {i₀ : ι}
+    (hi₀ : i₀ ∈ s) (hc : c i₀ ≠ 0) {G : ℝ} (hgap : ∀ i ∈ s.erase i₀, V i₀ + G ≤ V i)
+    (hG : (∑ i ∈ s, ‖c i‖) < ‖c i₀‖ * Real.exp G) :
+    ∑ i ∈ s, c i * a i ≠ 0 := by
+  apply sum_ne_zero_of_dominant_complex s (fun i => c i * a i) hi₀
+  rw [norm_mul, ha i₀]
+  have hstep : ∑ i ∈ s.erase i₀, ‖c i * a i‖
+      ≤ (∑ i ∈ s.erase i₀, ‖c i‖) * Real.exp (- V i₀ - G) := by
+    rw [Finset.sum_mul]
+    apply Finset.sum_le_sum
+    intro i hi
+    rw [norm_mul, ha i]
+    refine mul_le_mul_of_nonneg_left ?_ (norm_nonneg _)
+    exact Real.exp_le_exp.mpr (by linarith [hgap i hi])
+  refine lt_of_le_of_lt hstep ?_
+  have hc0 : 0 < ‖c i₀‖ := norm_pos_iff.mpr hc
+  have hpos : (0:ℝ) < Real.exp (- V i₀) := Real.exp_pos _
+  rw [show (- V i₀ - G) = (- V i₀) + (- G) by ring, Real.exp_add]
+  have h1 : (∑ i ∈ s.erase i₀, ‖c i‖) ≤ ∑ i ∈ s, ‖c i‖ :=
+    Finset.sum_le_sum_of_subset_of_nonneg (Finset.erase_subset _ _) (fun i _ _ => norm_nonneg _)
+  have hkey : (∑ i ∈ s.erase i₀, ‖c i‖) * Real.exp (-G) < ‖c i₀‖ := by
+    have : (∑ i ∈ s.erase i₀, ‖c i‖) * Real.exp (-G) ≤ (∑ i ∈ s, ‖c i‖) * Real.exp (-G) :=
+      mul_le_mul_of_nonneg_right h1 (Real.exp_pos _).le
+    have hlt : (∑ i ∈ s, ‖c i‖) * Real.exp (-G) < (‖c i₀‖ * Real.exp G) * Real.exp (-G) :=
+      mul_lt_mul_of_pos_right hG (Real.exp_pos _)
+    rw [mul_assoc, ← Real.exp_add, add_neg_cancel, Real.exp_zero, mul_one] at hlt
+    linarith
+  calc (∑ i ∈ s.erase i₀, ‖c i‖) * (Real.exp (- V i₀) * Real.exp (- G))
+      = ((∑ i ∈ s.erase i₀, ‖c i‖) * Real.exp (- G)) * Real.exp (- V i₀) := by ring
+    _ < ‖c i₀‖ * Real.exp (- V i₀) := mul_lt_mul_of_pos_right hkey hpos
+
+/-- Every index-multiset `key h` is `≤ D`-bounded. -/
+theorem key_apply_bounded {D : ℕ} (h : Fin D → ℕ) : ∀ n, (key h) n ≤ D :=
+  fun n => key_apply_le h n
+
+theorem valuation_key_injOn {b : ℕ → ℝ} (hbpos : ∀ n, 0 < b n) {D : ℕ}
+    (hsi : ∀ k, ((D : ℝ) + 1) * (∑ n ∈ Finset.range k, b n) ≤ b k)
+    {h h' : Fin D → ℕ}
+    (hV : (∑ t, b (h t)) = ∑ t, b (h' t)) : key h = key h' := by
+  apply valuation_injOn hbpos hsi (key_apply_bounded h) (key_apply_bounded h')
+  rw [valuation_eq_key_sum, valuation_eq_key_sum, hV]
+
+/-- **Valuation gap from the top-index super-increasing bound alone.**  The gap estimate needs the
+`(C+1)`-super-increasing inequality only at the top index `K = max' g.support` — enabling the
+superlacunar (tail-super-increasing) regime, where the bound holds only for large indices. -/
+theorem valuation_gap_of_hsi_at_max {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n) {C : ℕ}
+    {g : ℕ →₀ ℤ} (hg : ∀ n, (g n).natAbs ≤ C) (hg0 : g ≠ 0)
+    (hsiK : ((C : ℝ) + 1)
+        * (∑ n ∈ Finset.range (g.support.max' (Finsupp.support_nonempty_iff.mpr hg0)), b n)
+      ≤ b (g.support.max' (Finsupp.support_nonempty_iff.mpr hg0))) :
+    b (g.support.max' (Finsupp.support_nonempty_iff.mpr hg0)) / ((C : ℝ) + 1)
+      ≤ |∑ n ∈ g.support, (g n : ℝ) * b n| := by
+  classical
+  set K := g.support.max' (Finsupp.support_nonempty_iff.mpr hg0) with hKdef
+  have hKmem : K ∈ g.support := Finset.max'_mem _ _
+  have hKle : ∀ n ∈ g.support, n ≤ K := fun n hn => Finset.le_max' _ _ hn
+  have hsplit : ∑ n ∈ g.support, (g n : ℝ) * b n
+      = (g K : ℝ) * b K + ∑ n ∈ g.support.erase K, (g n : ℝ) * b n :=
+    (Finset.add_sum_erase _ _ hKmem).symm
+  have hsub : g.support.erase K ⊆ Finset.range K := by
+    intro n hn; rw [Finset.mem_erase] at hn
+    exact Finset.mem_range.mpr (lt_of_le_of_ne (hKle n hn.2) hn.1)
+  have htail : |∑ n ∈ g.support.erase K, (g n : ℝ) * b n| ≤ (C : ℝ) * ∑ n ∈ Finset.range K, b n := by
+    refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
+    have hbnd : ∀ n ∈ g.support.erase K, |(g n : ℝ) * b n| ≤ (C : ℝ) * b n := by
+      intro n _
+      rw [abs_mul, abs_of_nonneg (hb n)]
+      have hle : |(g n : ℝ)| ≤ (C : ℝ) := by
+        have hz : (|g n| : ℤ) ≤ (C : ℤ) := by rw [Int.abs_eq_natAbs]; exact_mod_cast hg n
+        rw [← Int.cast_abs]; exact_mod_cast hz
+      exact mul_le_mul_of_nonneg_right hle (hb n)
+    refine le_trans (Finset.sum_le_sum hbnd) ?_
+    rw [← Finset.mul_sum]
+    refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+    exact Finset.sum_le_sum_of_subset_of_nonneg hsub (fun n _ _ => hb n)
+  have hgK1 : (1 : ℝ) ≤ |(g K : ℝ)| := by
+    have hne : g K ≠ 0 := Finsupp.mem_support_iff.mp hKmem
+    have hz : (1 : ℤ) ≤ |g K| := by rw [Int.abs_eq_natAbs]; exact_mod_cast Int.natAbs_pos.mpr hne
+    rw [← Int.cast_abs]; exact_mod_cast hz
+  have hbK : 0 ≤ b K := hb K
+  rw [hsplit]
+  have hrev := abs_sub_abs_le_abs_add ((g K : ℝ) * b K)
+      (∑ n ∈ g.support.erase K, (g n : ℝ) * b n)
+  have habsGK : |(g K : ℝ) * b K| = |(g K : ℝ)| * b K := by rw [abs_mul, abs_of_nonneg hbK]
+  have hsum_le : ∑ n ∈ Finset.range K, b n ≤ b K / ((C:ℝ)+1) := by
+    rw [le_div_iff₀ (by positivity)]; nlinarith [hsiK]
+  have hstep : b K / ((C : ℝ) + 1) ≤ |(g K : ℝ)| * b K
+      - |∑ n ∈ g.support.erase K, (g n : ℝ) * b n| := by
+    have h1 : (C : ℝ) * ∑ n ∈ Finset.range K, b n ≤ (C : ℝ) / ((C:ℝ)+1) * b K := by
+      rw [div_mul_eq_mul_div, mul_div_assoc]
+      exact mul_le_mul_of_nonneg_left hsum_le (by positivity)
+    have h2 : b K ≤ |(g K : ℝ)| * b K := by
+      calc b K = 1 * b K := (one_mul _).symm
+        _ ≤ |(g K : ℝ)| * b K := mul_le_mul_of_nonneg_right hgK1 hbK
+    have h3 : b K - (C : ℝ) / ((C:ℝ)+1) * b K = b K / ((C:ℝ)+1) := by field_simp; ring
+    linarith [htail]
+  linarith [hrev, hstep, habsGK]
+
+/-- **Tail pairwise valuation gap.**  Two distinct `≤ D`-bounded multi-indices that agree below
+`N₀` differ at some top index `K ≥ N₀`, and their valuations are separated by `b K/(D+1)` under a
+tail-super-increasing profile — the superlacunar-compatible gap. -/
+theorem finsupp_pair_valuation_gap_tail {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n) {D N₀ : ℕ}
+    (hsi : ∀ k, N₀ ≤ k → ((D : ℝ) + 1) * (∑ n ∈ Finset.range k, b n) ≤ b k)
+    {ν ν' : ℕ →₀ ℕ} (hν : ∀ n, ν n ≤ D) (hν' : ∀ n, ν' n ≤ D) (hne : ν ≠ ν')
+    (hagree : ∀ n, n < N₀ → ν n = ν' n) :
+    ∃ K : ℕ, N₀ ≤ K ∧ b K / ((D : ℝ) + 1)
+      ≤ |ν.sum (fun n k => (k : ℝ) * b n) - ν'.sum (fun n k => (k : ℝ) * b n)| := by
+  classical
+  set g : ℕ →₀ ℤ := ν.mapRange (Nat.cast : ℕ → ℤ) Nat.cast_zero
+    - ν'.mapRange (Nat.cast : ℕ → ℤ) Nat.cast_zero with hg
+  have hgn : ∀ n, g n = (ν n : ℤ) - (ν' n : ℤ) := by
+    intro n; rw [hg]; simp [Finsupp.sub_apply, Finsupp.mapRange_apply]
+  have hgbound : ∀ n, (g n).natAbs ≤ D := by
+    intro n; rw [hgn]; have h1 := hν n; have h2 := hν' n; omega
+  have hg0 : g ≠ 0 := by
+    intro h0; apply hne; ext n
+    have := hgn n; rw [h0] at this; simp at this; omega
+  have hne0 := Finsupp.support_nonempty_iff.mpr hg0
+  set K := g.support.max' hne0 with hKdef
+  have hKmem : K ∈ g.support := Finset.max'_mem _ _
+  have hKge : N₀ ≤ K := by
+    by_contra hlt
+    push_neg at hlt
+    rw [Finsupp.mem_support_iff, hgn] at hKmem
+    apply hKmem
+    rw [hagree K hlt]; ring
+  have hval : ∑ n ∈ g.support, (g n : ℝ) * b n
+      = ν.sum (fun n k => (k : ℝ) * b n) - ν'.sum (fun n k => (k : ℝ) * b n) := by
+    rw [Finsupp.sum, Finsupp.sum]
+    have hsupp : g.support ⊆ ν.support ∪ ν'.support := by
+      intro n hn
+      rw [Finsupp.mem_support_iff, hgn] at hn
+      simp only [Finset.mem_union, Finsupp.mem_support_iff]
+      by_contra hc; push_neg at hc; rw [hc.1, hc.2] at hn; simp at hn
+    rw [Finset.sum_subset (Finset.subset_union_left (s₁ := ν.support) (s₂ := ν'.support))
+      (fun n _ hn => by rw [Finsupp.notMem_support_iff.mp hn]; simp)]
+    rw [Finset.sum_subset (Finset.subset_union_right (s₁ := ν.support) (s₂ := ν'.support))
+      (fun n _ hn => by rw [Finsupp.notMem_support_iff.mp hn]; simp)]
+    rw [Finset.sum_subset hsupp (fun n _ hn => by
+      rw [Finsupp.notMem_support_iff.mp hn]; simp), ← Finset.sum_sub_distrib]
+    apply Finset.sum_congr rfl
+    intro n _; rw [hgn]; push_cast; ring
+  have hgap := valuation_gap_of_hsi_at_max hb hgbound hg0 (hsi K hKge)
+  exact ⟨K, hKge, by rw [← hval]; exact hgap⟩
+
+/-- Tail version of single-atom levels: distinct `≤ D`-bounded multi-indices agreeing below `N₀`
+have distinct valuations under a tail-super-increasing profile. -/
+theorem valuation_injOn_tail {b : ℕ → ℝ} (hbpos : ∀ n, 0 < b n) {D N₀ : ℕ}
+    (hsi : ∀ k, N₀ ≤ k → ((D : ℝ) + 1) * (∑ n ∈ Finset.range k, b n) ≤ b k)
+    {ν ν' : ℕ →₀ ℕ} (hν : ∀ n, ν n ≤ D) (hν' : ∀ n, ν' n ≤ D)
+    (hagree : ∀ n, n < N₀ → ν n = ν' n)
+    (hV : ν.sum (fun n k => (k : ℝ) * b n) = ν'.sum (fun n k => (k : ℝ) * b n)) :
+    ν = ν' := by
+  by_contra hne
+  obtain ⟨K, _, hK⟩ :=
+    finsupp_pair_valuation_gap_tail (fun n => (hbpos n).le) hsi hν hν' hne hagree
+  rw [hV, sub_self, abs_zero] at hK
+  have hpos : 0 < b K / ((D : ℝ) + 1) := by have := hbpos K; positivity
+  linarith
+
+/-- Tail uniform valuation gap: a finite family of `≤ D`-bounded multi-indices all agreeing
+below `N₀` has a minimal-valuation member and a strictly positive gap below every other. -/
+theorem exists_uniform_valuation_gap_tail {b : ℕ → ℝ} (hbpos : ∀ n, 0 < b n) {D N₀ : ℕ}
+    (hsi : ∀ k, N₀ ≤ k → ((D : ℝ) + 1) * (∑ n ∈ Finset.range k, b n) ≤ b k)
+    (K : Finset (ℕ →₀ ℕ)) (hKbound : ∀ ν ∈ K, ∀ n, ν n ≤ D) (hKne : K.Nonempty)
+    (hKagree : ∀ ν ∈ K, ∀ ν' ∈ K, ∀ n, n < N₀ → ν n = ν' n) :
+    ∃ ν₀ ∈ K, ∃ G : ℝ, 0 < G ∧ ∀ ν ∈ K.erase ν₀,
+      ν₀.sum (fun n k => (k : ℝ) * b n) + G ≤ ν.sum (fun n k => (k : ℝ) * b n) := by
+  classical
+  obtain ⟨ν₀, hν₀K, hν₀min⟩ :=
+    K.exists_min_image (fun ν => ν.sum (fun n k => (k : ℝ) * b n)) hKne
+  refine ⟨ν₀, hν₀K, ?_⟩
+  rcases (K.erase ν₀).eq_empty_or_nonempty with he | hne
+  · exact ⟨1, one_pos, fun ν hν => absurd hν (he ▸ Finset.notMem_empty ν)⟩
+  · obtain ⟨ν₁, hν₁, hν₁min⟩ := (K.erase ν₀).exists_min_image
+      (fun ν => ν.sum (fun n k => (k : ℝ) * b n) - ν₀.sum (fun n k => (k : ℝ) * b n)) hne
+    have hgap1 : 0 < ν₁.sum (fun n k => (k : ℝ) * b n) - ν₀.sum (fun n k => (k : ℝ) * b n) := by
+      have hne' : ν₁ ≠ ν₀ := (Finset.mem_erase.mp hν₁).1
+      have hν₁K := Finset.mem_of_mem_erase hν₁
+      obtain ⟨Kidx, _, hK⟩ := finsupp_pair_valuation_gap_tail (fun n => (hbpos n).le) hsi
+        (hKbound ν₁ hν₁K) (hKbound ν₀ hν₀K) hne' (hKagree ν₁ hν₁K ν₀ hν₀K)
+      have hpos : 0 < b Kidx / ((D : ℝ) + 1) := by have := hbpos Kidx; positivity
+      have hge := hν₀min ν₁ hν₁K
+      rw [abs_of_nonneg (by linarith)] at hK
+      linarith
+    refine ⟨ν₁.sum (fun n k => (k : ℝ) * b n) - ν₀.sum (fun n k => (k : ℝ) * b n), hgap1,
+      fun ν hν => ?_⟩
+    have := hν₁min ν hν
+    linarith
+
 end GaloisForLFunctions

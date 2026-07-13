@@ -206,5 +206,117 @@ theorem diffPoly_coeff_ne_zero_of_dominant {D : ℕ} (f : ℂ⟦X⟧) (N : ℕ) 
   intro ν
   exact norm_aval (f := f) hb ν
 
+/-- **Weight-mass bound.**  The total weight mass `∑_ν |W(ν)|` over the appearing atoms is bounded
+by `∑_{(μ,l)} |c μ| · ∏ₜ descFactorial` — triangle inequality plus the fiber partition of the
+`(μ,l)`-pairs by their key.  Bounds the `hG` right side of the survival criterion. -/
+theorem weight_mass_le {D : ℕ} (N : ℕ) (S : Finset (Fin D → ℕ)) (c : (Fin D → ℕ) → ℤ) :
+    (∑ ν ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).image
+        (fun p => key (fun t => p.2 t + p.1 t)),
+      (|(∑ p ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).filter
+            (fun p => key (fun t => p.2 t + p.1 t) = ν),
+          c p.1 * ∏ t, ((p.2 t + p.1 t).descFactorial (p.1 t) : ℤ))| : ℝ))
+      ≤ ((∑ p ∈ S ×ˢ (Finset.univ.finsuppAntidiag N),
+          |c p.1| * ∏ t, ((p.2 t + p.1 t).descFactorial (p.1 t) : ℤ) : ℤ) : ℝ) := by
+  classical
+  have hZ : (∑ ν ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).image
+        (fun p => key (fun t => p.2 t + p.1 t)),
+      |(∑ p ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).filter
+            (fun p => key (fun t => p.2 t + p.1 t) = ν),
+          c p.1 * ∏ t, ((p.2 t + p.1 t).descFactorial (p.1 t) : ℤ))|)
+      ≤ ∑ p ∈ S ×ˢ (Finset.univ.finsuppAntidiag N),
+          |c p.1| * ∏ t, ((p.2 t + p.1 t).descFactorial (p.1 t) : ℤ) := by
+    refine le_trans (Finset.sum_le_sum fun ν _ => Finset.abs_sum_le_sum_abs _ _) ?_
+    rw [Finset.sum_fiberwise_of_maps_to
+      (fun x hx => Finset.mem_image_of_mem (fun p => key (fun t => p.2 t + p.1 t)) hx)]
+    refine Finset.sum_le_sum fun p _ => le_of_eq ?_
+    rw [abs_mul, abs_of_nonneg (Finset.prod_nonneg fun t _ => Int.natCast_nonneg _)]
+  exact_mod_cast hZ
+
+/-- Complex-coefficient regrouping: `coeff N (∑_μ c_μ ∏ f^{(μ)})` as `∑_ν a_ν·W_ν` with complex
+weights `W_ν = ∑_{fiber} c_μ ∏ descFactorial` — the general-HT analogue of the integer regrouping. -/
+theorem coeff_diffPoly_regrouped_complex {D : ℕ} (f : ℂ⟦X⟧) (N : ℕ) (S : Finset (Fin D → ℕ))
+    (c : (Fin D → ℕ) → ℂ) :
+    (coeff N) (∑ μ ∈ S, c μ • ∏ t, (⇑(d⁄dX ℂ))^[μ t] f)
+      = ∑ ν ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).image (fun p => key (fun t => p.2 t + p.1 t)),
+          (ν.prod (fun n k => (coeff n f) ^ k))
+            * (∑ p ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).filter
+                  (fun p => key (fun t => p.2 t + p.1 t) = ν),
+                c p.1 * ∏ t, ((p.2 t + p.1 t).descFactorial (p.1 t) : ℂ)) := by
+  classical
+  have hpair : (coeff N) (∑ μ ∈ S, c μ • ∏ t, (⇑(d⁄dX ℂ))^[μ t] f)
+      = ∑ p ∈ S ×ˢ (Finset.univ.finsuppAntidiag N),
+          c p.1 * ((key (fun t => p.2 t + p.1 t)).prod (fun n k => (coeff n f) ^ k))
+            * (∏ t, ((p.2 t + p.1 t).descFactorial (p.1 t) : ℂ)) := by
+    rw [map_sum, Finset.sum_product]
+    refine Finset.sum_congr rfl fun μ _ => ?_
+    rw [map_smul, smul_eq_mul, coeff_prod_iterate_deriv f μ N, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun l _ => ?_
+    rw [Finset.prod_mul_distrib, prod_eq_key_prod (fun t => l t + μ t) (fun n => coeff n f)]
+    ring
+  rw [hpair, ← Finset.sum_fiberwise_of_maps_to
+    (g := fun p => key (fun t => p.2 t + p.1 t))
+    (fun x hx => Finset.mem_image_of_mem (fun p => key (fun t => p.2 t + p.1 t)) hx)]
+  refine Finset.sum_congr rfl fun ν _ => ?_
+  rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl fun p hp => ?_
+  obtain ⟨_, hkey⟩ := Finset.mem_filter.mp hp
+  rw [hkey]; ring
+
+/-- **Complex magnitude survival criterion.**  General-HT version of
+`diffPoly_coeff_ne_zero_of_dominant`: a minimal-valuation atom with nonzero complex weight and gap
+exceeding `log(‖W ν₀‖⁻¹·mass)` forces the coefficient nonzero. -/
+theorem diffPoly_coeff_ne_zero_of_dominant_complex {D : ℕ} (f : ℂ⟦X⟧) (N : ℕ)
+    (S : Finset (Fin D → ℕ)) (c : (Fin D → ℕ) → ℂ) {b : ℕ → ℝ}
+    (hb : ∀ n, ‖coeff n f‖ = Real.exp (- b n))
+    (W : (ℕ →₀ ℕ) → ℂ)
+    (hW : ∀ ν, W ν = ∑ p ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).filter
+          (fun p => key (fun t => p.2 t + p.1 t) = ν),
+        c p.1 * ∏ t, ((p.2 t + p.1 t).descFactorial (p.1 t) : ℂ))
+    (ν₀ : ℕ →₀ ℕ)
+    (hν₀ : ν₀ ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).image
+      (fun p => key (fun t => p.2 t + p.1 t)))
+    (hw₀ : W ν₀ ≠ 0)
+    {G : ℝ}
+    (hgap : ∀ ν ∈ ((S ×ˢ (Finset.univ.finsuppAntidiag N)).image
+          (fun p => key (fun t => p.2 t + p.1 t))).erase ν₀,
+        ν₀.sum (fun n k => (k : ℝ) * b n) + G ≤ ν.sum (fun n k => (k : ℝ) * b n))
+    (hG : (∑ ν ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).image
+          (fun p => key (fun t => p.2 t + p.1 t)), ‖W ν‖) < ‖W ν₀‖ * Real.exp G) :
+    (coeff N) (∑ μ ∈ S, c μ • ∏ t, (⇑(d⁄dX ℂ))^[μ t] f) ≠ 0 := by
+  classical
+  rw [coeff_diffPoly_regrouped_complex f N S c]
+  simp only [← hW]
+  rw [Finset.sum_congr rfl fun ν (_ : ν ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).image
+      (fun p => key (fun t => p.2 t + p.1 t))) =>
+      mul_comm (ν.prod (fun n k => (coeff n f) ^ k)) (W ν)]
+  refine weighted_sum_ne_zero_of_min_valuation_complex _
+    (fun ν => ν.sum (fun n k => (k : ℝ) * b n)) _ ?_ W hν₀ hw₀ hgap hG
+  intro ν
+  exact norm_aval (f := f) hb ν
+
+/-- Complex weight-mass bound: `∑_ν ‖W ν‖ ≤ ∑_{(μ,l)} ‖c μ‖·∏ descFactorial`. -/
+theorem weight_mass_le_complex {D : ℕ} (N : ℕ) (S : Finset (Fin D → ℕ)) (c : (Fin D → ℕ) → ℂ) :
+    (∑ ν ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).image
+        (fun p => key (fun t => p.2 t + p.1 t)),
+      ‖(∑ p ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).filter
+            (fun p => key (fun t => p.2 t + p.1 t) = ν),
+          c p.1 * ∏ t, ((p.2 t + p.1 t).descFactorial (p.1 t) : ℂ))‖)
+      ≤ ∑ p ∈ S ×ˢ (Finset.univ.finsuppAntidiag N),
+          ‖c p.1‖ * ∏ t, ((p.2 t + p.1 t).descFactorial (p.1 t) : ℝ) := by
+  classical
+  have hfib : (∑ ν ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).image
+        (fun p => key (fun t => p.2 t + p.1 t)),
+      ∑ p ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).filter
+          (fun p => key (fun t => p.2 t + p.1 t) = ν),
+        ‖c p.1‖ * ∏ t, ((p.2 t + p.1 t).descFactorial (p.1 t) : ℝ))
+      = ∑ p ∈ S ×ˢ (Finset.univ.finsuppAntidiag N),
+          ‖c p.1‖ * ∏ t, ((p.2 t + p.1 t).descFactorial (p.1 t) : ℝ) :=
+    Finset.sum_fiberwise_of_maps_to (fun x hx => Finset.mem_image_of_mem _ hx) _
+  refine le_trans (Finset.sum_le_sum fun ν _ => ?_) hfib.le
+  refine le_trans (norm_sum_le _ _) (le_of_eq (Finset.sum_congr rfl fun p _ => ?_))
+  rw [norm_mul, norm_prod]
+  congr 1
+  refine Finset.prod_congr rfl fun t _ => ?_
+  rw [Complex.norm_natCast]
 
 end GaloisForLFunctions

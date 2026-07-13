@@ -160,4 +160,18 @@ theorem hypertranscendental_of_aeval_survives {f : ℂ → ℂ} (hf : ContDiff �
   rw [← taylorPS_jetFun f n hf Q, hjz, show (0 : ℂ → ℂ) = fun _ => (0 : ℂ) from rfl,
     taylorPS_const, map_zero]
 
+/-- **Coefficient survival ⟹ hypertranscendence.**  If every nonzero formal algebraic differential
+relation has *some* nonzero power-series coefficient after substitution, the smooth `f` is
+hypertranscendental. -/
+theorem hypertranscendental_of_diffPoly_coeff_ne_zero {f : ℂ → ℂ}
+    (hf : ContDiff ℂ (⊤ : ℕ∞) f)
+    (hsurv : ∀ (n : ℕ) (Q : MvPolynomial (Fin (n + 2)) ℂ), Q ≠ 0 →
+      ∃ N : ℕ, (PowerSeries.coeff N) (aeval (formalJets n (taylorPS f)) Q) ≠ 0) :
+    Hypertranscendental f := by
+  refine hypertranscendental_of_aeval_survives hf (fun n Q hQ => ?_)
+  obtain ⟨N, hN⟩ := hsurv n Q hQ
+  intro h0
+  rw [h0, map_zero] at hN
+  exact hN rfl
+
 end GaloisForLFunctions

@@ -1083,9 +1083,11 @@ larger than its degree.  No estimate of that edge is needed.  The endpoint ident
 nonvanishing of the two binary products, and divisibility `(12d.9m)` are formalized in
 `XiCTaylorThetaTailProuhetPacket.lean`.
 
-The converse coefficient statement is now formal at binomial-moment level: divisibility by
-`(X-1)^m` kills every binomial moment below `m`.  It is proved in
-`HTGeometry/ProuhetMomentDivisibility.lean` and specialized to the two-endpoint packet in
+The full converse coefficient statement is now formal.  Divisibility by `(X-1)^m` kills every
+binomial moment and, by triangular falling-factorial induction, every ordinary power moment below
+`m`.  Expanding an arbitrary polynomial in powers then proves `(12d.9n)` exactly, including the
+base-depth shift `N+j`.  The reusable theorems are in
+`HTGeometry/ProuhetMomentDivisibility.lean` and their two-endpoint specialization is in
 `XiCTaylorThetaTailProuhetPacket.lean`.
 
 The hoped-for removal of the whole fixed-half-line seam by this packet is false.  Put
@@ -1119,6 +1121,20 @@ independent of Haar and Prouhet depth.  The exact evenness of `g` and the curren
 also shows that `Q(U_d-E)` is positive at some low-degree upper-half-plane points, so the residual
 has no unconditional favorable sign.  The two-endpoint packet remains a valid exact annihilator
 of the finite translation polynomial, but it cannot by itself orient the fixed-half-line seam.
+
+The remainder also satisfies the exact pointwise value relation
+
+```text
+g(x)+V(x)=4 Phi(x),                                     (12d.9r)
+```
+
+where `V(x)=exp(-x/2)/2-T(x)` is the even completed potential and `Phi=T''-T/4` is the canonical
+Xi Fourier source.  Together with `V''=-g/4`, this gives on the Fourier--Laplace strip
+`g_hat(z)=4z^2 V_hat(z)` and `XiC(z)=(z^2+1/4)V_hat(z)`.  Hence
+`g_hat(z)=4z^2 XiC(z)/(z^2+1/4)`: the invariant is Xi itself times an elementary zero-free
+multiplier in the open strip, not a removable tail error.  The pointwise identity `(12d.9r)` is
+formalized in `XiCTaylorThetaTailProuhetSeamInvariant.lean`; the transform statement is currently
+used only at paper level.
 
 The translate operator has an exact signed inverse on the canonical source.  For `x>=0`, Lean
 proves absolute convergence and the critical Möbius identity

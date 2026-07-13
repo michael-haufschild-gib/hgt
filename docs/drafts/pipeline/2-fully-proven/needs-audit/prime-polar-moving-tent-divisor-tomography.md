@@ -553,3 +553,54 @@ holomorphic quotient `(30)` of step 8 remain as the standard `ζ'/ζ`-regularity
 - [ ] primary-literature novelty audit
 - [ ] independent proof audit
 - [ ] standalone paper integration
+
+Removable-singularity tool (`HTGeometry/RemovableSingularity.lean`, axiom-clean):
+`tendsto_div_sub_of_hasDerivAt_eq_zero` — for `f` differentiable at `a` with `f(a) = 0`,
+`f(s)/(s-a) → f'(a)` as `s → a`.  This is the workhorse for upgrading the bare-observable RH criterion
+(which excludes `s = 3/2`) to the *full* `Pcal_L`-holomorphy form of `(28)`: near `3/2`, writing
+`ζ(s-½) = G(s-½)/(s-3/2)` with `G = zetaResidueUnit` (analytic, `G(1)=1`) and
+`-ζ'/ζ(s-½) = -logDeriv G(s-½) + 1/(s-3/2)` (`logDeriv_zeta_eq`), the combined polar + prime term equals
+`N(s)/(s-3/2) + 2·A_L(s-1)²·logDeriv G(s-½)` with the analytic numerator
+`N(s) = 8α²·G(s-½) - 2·A_L(s-1)²` vanishing at `3/2` (`N(3/2) = 8α² - 8α² = 0`, the polar cancellation).
+This lemma then reads off the finite boundary value, so the renormalized `Pcal_L` is regular at `3/2`
+— the removal of the `s = 3/2` exclusion.  (Numerator-analyticity + the algebraic identity is the
+remaining assembly.)
+
+§5 exact polar cancellation — FORMALIZED (`RHTower/PolarPrimeRegularity.lean`, axiom-clean).
+`polarPrimeObservable_regular_at_pole (κ W) (hW : DifferentiableAt ℂ W (3/2)) (hmatch : W (3/2) = -κ)`:
+the renormalized observable `κ·ζ(s-½) + W(s)·(-ζ'/ζ)(s-½)` has a finite limit at `s = 3/2` whenever the
+window value matches the polar coefficient by `W(3/2) = -κ`.  This is the paper's residue cancellation
+`+κ` (from `ζ`'s residue `1`) against `W(3/2)` (from `-ζ'/ζ`'s residue `+1`) in abstract form; the tent
+instance is `κ = 8α²`, `W = -2·A_L(s-1)²`, `W(3/2) = -2·A_L(½)² = -2·(2α)² = -8α² = -κ`.  Mechanism: off
+`3/2`, the observable `= N(s)/(s-3/2) − W(s)·logDeriv G(s-½)` with `G = zetaResidueUnit`,
+`N(s) = κ·G(s-½) + W(s)`, `N(3/2) = 0`; `HTGeometry.tendsto_div_sub_of_hasDerivAt_eq_zero` reads off the
+finite boundary value.  This is the analytic core removing the `s = 3/2` exclusion of the bare-observable
+criterion `RH_iff_windowObservable_regular` for the renormalized (moving-tent) form.
+
+RH criterion `(28)` EXCLUSION-FREE form — FORMALIZED (`RHTower/PolarPrimeRegularity.lean`, axiom-clean).
+The bare-observable criterion `RH_iff_windowObservable_regular` had to exclude `s = 3/2`; the
+*renormalized* observable removes that exclusion.  `polarPrimeObservable κ W s = κ·ζ(s-½) +
+W(s)·(-ζ'/ζ)(s-½)`.
+- `RH_of_polarPrimeObservable_regular` — detection: regularity on all of `Re s > 1` ⟹ RH (at `ρ+½` the
+  polar term `κ·ζ(s-½)` is continuous since `ρ ≠ 1`, so it cannot hide the prime channel's genuine pole).
+- `polarPrimeObservable_regular_of_RH` — converse: RH ⟹ regular at every `Re s > 1` point, including
+  `3/2` (via `polarPrimeObservable_regular_at_pole`).
+- `RH_iff_polarPrimeObservable_regular (κ W)(hWdiff : Differentiable ℂ W)(hWne)(hW32 : W(3/2)=-κ)` —
+  the equivalence: RH ⟺ renormalized observable regular on **all** `Re s > 1` (no excluded point).
+- `RH_iff_primeObservable_polar_regular (L)(hL)` — the concrete tent instance: RH ⟺
+  `8α²·ζ(s-½) + primeObservable L s` regular on all `Re s > 1`.  This is the moving-tent `(28)` in its
+  exclusion-free renormalized form.  Remaining to reach the *full* `Pcal_L` of `(22)`: fold in
+  `16αβ·ζ(s) + 8β²·ζ(s+½) − 2H_L` (each already holomorphic near `3/2`; `H_L` = `HL_differentiableOn`).
+
+MAIN THEOREM (27)-(28) EXACT Pcal_L FORM — FORMALIZED (`RHTower/PolarPrimeRegularity.lean`, axiom-clean).
+`PcalObservable L s = 8α²·ζ(s-½) + primeObservable L s + PcalCorrection L s` — the full 5-term Dirichlet
+series `(22)` of `p_L` (α = 1-e^{-L/2}, β = e^{L/2}-1); `PcalCorrection L s = 16αβ·ζ(s) + 8β²·ζ(s+½) -
+2·HL L s`.  `RH_iff_PcalObservable_regular (L)(hL : 0 < L)` — the card's headline:
+
+  RH  ⟺  Pcal_L is regular (finite limit) at every point of Re s > 1.
+
+Assembly: `PcalCorrection_continuousAt` (the three correction terms are continuous on Re>1 — `ζ(s)`
+`a≠1`, `ζ(s+½)` `a+½≠1`, `HL` via `HL_differentiableOn`) + the reusable
+`exists_tendsto_add_continuousAt_iff` (a continuous shift preserves has-a-limit) reduce `Pcal_L`
+regularity to the renormalized-observable criterion `RH_iff_primeObservable_polar_regular`.  The
+moving-tent card's Main Theorem is now machine-checked in its verbatim statement.

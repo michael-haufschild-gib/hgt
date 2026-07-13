@@ -26,7 +26,7 @@ API_MD = FORMAL / "LEAN_API.md"
 GAPS_MD = FORMAL / "LEAN_GAPS.md"
 OVERVIEW_MD = FORMAL / "LEAN_OVERVIEW.md"
 
-DECL_RE = re.compile(r"^\s*(theorem|lemma|def|structure|class|abbrev|inductive)\s+([A-Za-z0-9_'.]+)")
+DECL_RE = re.compile(r"^\s*(theorem|lemma|def|structure|class|abbrev|inductive)\s+([\w'.]+)")
 DEBT_RE = re.compile(r"^\s*(sorry|admit)\b|^\s*(axiom|opaque)\s+[A-Za-z_]|^\s*unsafe\s+(def|theorem|axiom)\b")
 MARKER_RE = re.compile(r"\b(TODO|FIXME|OPEN|NEXT|Remaining|remaining|blocked|missing)\b")
 

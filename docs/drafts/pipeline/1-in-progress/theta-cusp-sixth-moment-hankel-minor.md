@@ -78,6 +78,26 @@ explicit polynomial-Gaussian atom expansion, and strict positivity on `x>0`.
    \]
    Hence `E(p)<0` for all `p>1` sufficiently close to `1`, although every `f_p` is log-concave. A viable shape theorem must therefore exploit a stronger theta-specific condition, such as a uniform curvature floor or an atom-dominance estimate that places the source on the Gaussian-or-lighter side of the cumulant boundary.
 
+   `[PROVED ON PAPER]` The scalar-field GHS/Newman convexity condition is also insufficient.  For
+   the normalized even scalar state
+   \[
+   d\mu_\lambda(x)=Z_\lambda^{-1}e^{-x^2/2-\lambda x^6}\,dx,
+   \qquad \lambda\ge0,
+   \]
+   the potential derivative `V'_lambda(x)=x+6lambda x^5` is convex on the positive half-line.
+   At `lambda=0`, Gaussian covariance differentiation gives
+   \[
+   m_2'=-90,\qquad m_4'=-900,\qquad m_6'=-10170.
+   \]
+   Therefore for
+   \[
+   T(\lambda)=3m_2m_6+15m_2^2m_4-10m_4^2
+   \]
+   one has `T(0)=0` and `T'(0)=-2160<0`.  Thus the target fails for all sufficiently small
+   positive `lambda`, despite the GHS convexity hypothesis.  The positive conclusion is that a
+   scalar-field proof must supply a theta-specific sixth-order or total-positivity relation; the
+   ordinary ferromagnetic convexity theorem cannot discharge this block by itself.
+
 ## Retired fourth-moment producer and positive replacement
 
 Write
@@ -173,6 +193,16 @@ linear-polynomial consequence.  Thus all algebraic and Fourier-transfer interfac
 unconditional in Lean. The original sixth-moment inequality and both source ratio inequalities
 remain open.
 
+`PrimeArchThetaSourceAtomDomination.lean` now proves the all-order source relation
+
+\[
+a_j\le m_j\le\frac{3005}{2997}a_j,
+\]
+
+where `a_j` is the `n=1` atom moment.  Hence the two full-source ratio inequalities reduce to two
+buffered inequalities involving only `a_0,a_1,a_2,a_3`; the complete higher-atom tail no longer
+appears as an open input.
+
 ## Completion condition
 
 - [x] General even derivative/moment identity in Lean
@@ -181,6 +211,8 @@ remain open.
 - [x] Fourth-moment concentration implies the sixth-moment criterion in Lean
 - [x] Numerically reject `7m₀m₂ ≤ 15m₁²` as an actual-source producer
 - [x] Formalize the exact two-ratio replacement
+- [x] Prove a uniform all-order first-atom enclosure with rational factor `3005/2997` in Lean
+- [x] Show on paper that ordinary scalar-field GHS/Newman convexity is insufficient
 - [ ] Prove `14m₂² ≤ 9m₁m₃` for the explicit theta-cusp source
 - [ ] Prove `16m₀m₂ ≤45m₁²` for the explicit theta-cusp source
 - [ ] Paper proof of `3r₂r₆ + 15r₂²r₄ - 10r₄² ≥ 0`

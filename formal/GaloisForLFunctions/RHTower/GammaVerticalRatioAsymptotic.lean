@@ -161,4 +161,23 @@ theorem gamma_vertical_ratio_conj_log_tendsto {a δ : ℝ} (ha : 0 ≤ a) (hδ :
     ring
   rw [hconj, norm_Gamma_conj]
 
+/-- Multiplicative form: `(‖Γ(a+iτ)‖/‖Γ((a+δ)+iτ)‖)·τ^δ → 1` — the directly-usable magnitude
+ratio behind `|ρ|=(2π/|t|)^{1/2m}`. -/
+theorem gamma_vertical_ratio_norm_rpow_tendsto {a δ : ℝ} (ha : 0 ≤ a) (hδ : 0 ≤ δ) :
+    Tendsto (fun τ : ℝ =>
+      (Real.exp (Real.log ‖Complex.Gamma ((a : ℂ) + (τ : ℂ) * Complex.I)‖
+        - Real.log ‖Complex.Gamma (((a + δ : ℝ) : ℂ) + (τ : ℂ) * Complex.I)‖)) * τ ^ δ)
+      atTop (nhds 1) := by
+  have hmain := gamma_vertical_ratio_log_tendsto ha hδ
+  have hexp : Tendsto (fun τ : ℝ =>
+      Real.exp ((Real.log ‖Complex.Gamma ((a : ℂ) + (τ : ℂ) * Complex.I)‖
+        - Real.log ‖Complex.Gamma (((a + δ : ℝ) : ℂ) + (τ : ℂ) * Complex.I)‖) + δ * Real.log τ))
+      atTop (nhds 1) := by
+    have := (Real.continuous_exp.continuousAt (x := 0)).tendsto.comp hmain
+    simpa using this
+  refine hexp.congr' ?_
+  filter_upwards [eventually_gt_atTop (0 : ℝ)] with τ hτ
+  rw [Real.exp_add, Real.rpow_def_of_pos hτ]
+  ring_nf
+
 end RHTower

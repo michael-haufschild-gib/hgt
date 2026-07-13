@@ -1000,24 +1000,41 @@ modules contain no proof debt, and the
 scoped carrier module builds pass, the repository-wide formal lint passes, and the generated
 declaration indexes are current. The current aggregate build is independently blocked by the
 unrelated sign-direction error in `RectangularKreinInertia`; no theorem in the carrier import
-chain depends on that module. This
-validates only the declarations listed above, not the still-unformalized claims in the paper.
+chain depends on that module. This validates only the declarations listed above and the relative
+capstones named below.
 
-The remaining original formalization requires the project-specific compact-patch density
-deduction from projective incidence projection, finite algebraic/Whitney stratification, and
-smooth parametric transversality at the genuine global incidence locus. Closedness of the literal
-rectangular rank defect and every subsequent compact-exhaustion/Baire quantifier are already
-formalized. The classical N-extremal source
+The project-specific compact-patch density chain is now formalized. The global incidence-ring
+bound is converted to a finite real-codimension stratification of the literal projected rank
+defect through the general classical proper-projection/Whitney interface
+`ClassicalComplexProjectiveIncidenceGeometry`. The actual Nevanlinna row-evaluation family is
+smooth in operator norm; constrained pointwise surjectivity is promoted to one uniform finite
+probe on each compact shift patch; the general classical parametric-transversality interface then
+gives compact-patch density. Sigma-compact exhaustion and countable Baire intersection produce
+one residual tangent locus simultaneously covering every finite differential pattern and every
+tuple of distinct complex shifts. The analytic bridge identifies the abstract evaluation packet
+with literal derivatives of the weighted-carrier Cauchy transform and promotes all finite pattern
+rigidity to repository-level `Hypertranscendental`.
+
+The frozen constraint is imposed in projective Cauchy-power coordinates while movable targets
+remain genuine Nevanlinna jets. The everywhere-defined forward triangular map proves that frozen
+actual jets are preserved without noncriticality at the frozen point. The upper source node `i`
+supplies the controllability chart; conjugation of real-measure Cauchy jets proves that this
+freezes the conventional frame at `-i`, and hence the exact finite Cayley Toeplitz/Cholesky prefix.
+For every fixed infinite-support projective singular-continuous law, the positive mass-one part of
+this exact frozen tangent consists entirely of atomless singular probability carriers with the
+same Hamburger moments, while a dense residual subset has a literal hypertranscendental Cauchy
+transform. Compact-patch density, actual Nevanlinna-image identification, the
+singular-continuous/HT intersection in the positive chart, and the relative carrier capstone are
+therefore closed in Lean.
+
+The classical N-extremal source
 is now matched convention-by-convention by `NevanlinnaClassicalInterface`; its existence for an
 indeterminate Hamburger sequence remains a cited classical theorem rather than a Lean reproof.
 The Riesz-brothers and Szegő boundaries are isolated at their exact
 classical conclusions: one-sided square-summable Fourier coefficients imply absolute continuity,
 and consecutive Toeplitz-determinant ratios tend to the Szegő geometric mean. From those exact
 leaves, Lean now proves graph saturation, analytic-polynomial completeness, ratio-to-root collapse,
-least-eigenvalue collapse, and normalized-determinant and Euclidean-operator-norm escape. The
-project must still prove in Lean patchwise density for the full-complex-shift incidence problem,
-the exact
-Nevanlinna-image/maximal-HT residual intersection, and the final paper-wide relative capstone.
+least-eigenvalue collapse, and normalized-determinant and Euclidean-operator-norm escape.
 The unitary carrier realization is now closed: Lean proves that the finite canonical frames
 synthesize orthonormal polynomial families, leading-principal coherence stabilizes every row, the
 stable diagonal rows have exactly the analytic-monomial span, and the Riesz-brothers input upgrades
@@ -1042,12 +1059,14 @@ The indeterminate-Hamburger Nevanlinna-family construction remains an exact sour
 external interface; every project-specific deduction from it is formalized. Bernstein--Szegő
 finite-prefix reproduction is no longer an external input: the
 project proves it unconditionally by stable-terminal feedback reconstruction.
-The separate differential-genericity gap now requires the projectivized total-incidence/projection
-or an equivalent direct universal-incidence transversality theorem, together with finite
-algebraic/Whitney stratification and a smooth parametric-transversality development. Once this
-supplies density on each compact configuration patch, `CompactConfigurationBaire` already gives
-simultaneous avoidance for every shift and every countable relation pattern. The gap does not
-require another fixed-pattern, fixed-coefficient, or Baire wrapper.
+No project-specific differential-genericity deduction remains outside Lean. The two general
+geometry inputs are isolated exactly as proper-projective-image/Whitney stratification and smooth
+finite-dimensional parametric avoidance. Reproving those general classical theorems in Lean would
+strengthen the verification base but is not part of the paper's new contribution. The remaining
+paper-status work is an independent specialist proof and priority audit, exact source matching for
+each classical interface, and, if the opening global residual statement is to be machine-checked
+as one declaration rather than assembled from the relative capstone, a final weak-topology gluing
+theorem on the entire carrier range.
 
 ## Gates
 
@@ -1064,13 +1083,16 @@ require another fixed-pattern, fixed-coefficient, or Baire wrapper.
 - [x] projective probability phase transported as dense `G_delta` to the exact carrier range
 - [x] projective-label null-preimage theorem and unconditional carrier singularity
 - [x] residual singular-continuous maximal-HT phase proved on paper via parents
+- [x] compact-patch density and actual-carrier HT capstone formalized relative to exact classical inputs
+- [x] upper-node Cauchy frozen tangent proved to preserve the conventional finite Cholesky frame
 - [x] RH consequence stated only as a carrier requirement
 - [x] local repository collision search
 - [x] targeted external collision search
 - [ ] independent specialist proof audit
 - [ ] full primary-source priority audit
 - [ ] exact primary-source match for every literature theorem interface
-- [ ] axiom-free Lean formalization of every original deduction and the relative paper capstone
+- [x] axiom-free Lean formalization of every original deduction in the relative paper capstone
+- [ ] optional single-declaration weak-topology gluing of the global carrier-range residual phase
 
 ## Log
 

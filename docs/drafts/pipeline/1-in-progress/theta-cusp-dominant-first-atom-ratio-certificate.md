@@ -51,27 +51,59 @@ I(s)=\pi^{-s-1}\Gamma(s+1,\pi).
 For `n>=2`, the lower endpoint `t>=n^2` exposes the factor `e^{-\pi n^2}` and gives a rapidly
 summable explicit tail majorant.
 
-## Target certificate
+## Uniform source-atom domination
 
-Prove rational bounds `R_0,R_2>=0` such that
+`[PROVED IN LEAN]` For every `x>=0` and `n>=1`, the exact source atoms satisfy
 
 \[
-r_0\le R_0,\qquad r_2\le R_2,                            \tag{2}
+\Phi_n(x)\le q_n\Phi_1(x),\qquad
+q_n=2n^4e^{-\pi(n^2-1)}.                                 \tag{2}
 \]
 
-together with the two finite first-atom inequalities
+The polynomial part gives the factor `2n^4`; the Gaussian exponent separates by
 
 \[
-14(a_2+R_2)^2\le9a_1a_3,                                \tag{3}
+n^2e^{2x}\ge (n^2-1)+e^{2x}.
+\]
+
+Moreover the full higher-atom weight has the unconditional rational bound
+
+\[
+Q:=\sum_{n\ge2}q_n\le\frac8{2997}.                       \tag{3}
+\]
+
+The Lean proof uses `pi>3.14`, a finite lower Taylor bound for `exp`, and the geometric
+majorant
+
+\[
+q_{k+2}\le \frac1{375}\left(\frac1{1000}\right)^k.
+\]
+
+Consequently the same relative enclosure holds at every moment order:
+
+\[
+0\le r_j\le Q a_j,\qquad
+a_j\le m_j\le\frac{3005}{2997}a_j.                       \tag{4}
+\]
+
+This replaces the former order-dependent tail bounds by one all-order value relation.
+
+## Remaining finite certificate
+
+It is now enough to prove only the two first-atom inequalities
+
+\[
+14\left(\frac{3005}{2997}a_2\right)^2\le9a_1a_3,         \tag{5}
 \]
 
 and
 
 \[
-16(a_0+R_0)(a_2+R_2)\le45a_1^2.                         \tag{4}
+16\left(\frac{3005}{2997}a_0\right)
+  \left(\frac{3005}{2997}a_2\right)\le45a_1^2.           \tag{6}
 \]
 
-Then positivity of all tail moments gives
+The enclosure `(4)` then gives
 
 \[
 14m_2^2\le9m_1m_3,
@@ -118,7 +150,7 @@ explicit incomplete-Gamma bounds for the n=1 atom
 
 ## Formal progress
 
-`PrimeArchThetaAtomMoments.lean` now proves unconditionally
+`PrimeArchThetaAtomMoments.lean` proves unconditionally
 
 \[
 m_j=\sum_{n\ge0}a_{j,n},
@@ -128,11 +160,16 @@ m_j=\sum_{n\ge0}a_{j,n},
 by an `L¹`-justified sum--integral interchange.  It also defines the exact remainder
 
 \[
-r_j=m_j-a_{j,1}ge0
+r_j=m_j-a_{j,1}\ge0
 \]
 
-and proves `m_j=a_{j,1}+r_j`.  Thus the atom decomposition and its positivity are no longer paper
-interfaces; only the explicit incomplete-Gamma and higher-atom tail estimates remain open.
+and proves `m_j=a_{j,1}+r_j`.
+
+`PrimeArchThetaSourceAtomDomination.lean` now proves unconditionally and without numerical
+approximation the pointwise domination `(2)`, the summable tail bound `(3)`, the all-order moment
+enclosure `(4)`, and the transfer from `(5)`--`(6)` to every linear-polynomial prime--Gamma
+source Hankel test.  The higher-atom tail is therefore closed.  Only the two explicit first-atom
+incomplete-Gamma inequalities remain open for this block.
 
 Principal declarations:
 
@@ -142,6 +179,11 @@ Principal declarations:
 - `thetaCuspHigherAtomRawEvenMoment`
 - `thetaCuspHigherAtomRawEvenMoment_nonneg`
 - `thetaCuspRawEvenMoment_eq_one_add_higher`
+- `thetaCuspSourceTerm_le_first`
+- `thetaCuspHigherAtomDominationWeight_le_geometric_rational`
+- `thetaCuspHigherAtomRawEvenMoment_le_first`
+- `thetaCuspRawEvenMoment_le_first_atom_factor`
+- `forall_primeArchSourceTraceHankel_linear_nonneg_of_first_atom`
 
 ## Gates
 
@@ -150,8 +192,10 @@ Principal declarations:
 - [x] viable rational ratio window identified numerically
 - [x] prove the sum-integral atom decomposition in Lean
 - [x] prove nonnegativity of every atom and the higher-atom remainder
+- [x] prove one pointwise domination valid for every source atom
+- [x] prove the all-order relative tail bound `Q <= 8/2997` in Lean
+- [x] reduce the full-source ratios to two buffered first-atom inequalities
 - [ ] prove explicit rational enclosures for `a_0,a_1,a_2,a_3`
-- [ ] prove explicit tail bounds `(2)`
-- [ ] prove inequalities `(3)` and `(4)`
-- [ ] formalize the complete first-atom certificate in Lean
+- [ ] prove inequalities `(5)` and `(6)`
+- [ ] formalize the remaining incomplete-Gamma certificate in Lean
 - [ ] extend the dominant-atom mechanism beyond the first Hankel block

@@ -134,7 +134,7 @@ theorem normalizedCauchyJetRealLinearCombination_surjective
         simp
       · funext s
         simp only [normalizedCauchyJetColumn, Prod.snd_add, Prod.snd_sum,
-          Prod.smul_snd, Finset.sum_apply]
+          Prod.smul_snd]
         simp [v, Pi.single_apply, Complex.re_add_im]
     change φ (normalizedCauchyJetColumn x n t a) =
       ψ (normalizedCauchyJetColumn x n t a) at ha
@@ -237,7 +237,7 @@ theorem normalizedCauchyJetRealLinearCombination_surjective
     · simp only [Prod.fst_add, Prod.fst_sum, Prod.smul_fst]
       simp
     · funext s
-      simp only [Prod.snd_add, Prod.snd_sum, Prod.smul_snd, Finset.sum_apply]
+      simp only [Prod.snd_add, Prod.snd_sum, Prod.smul_snd]
       simp [Pi.single_apply, Complex.re_add_im]
   have hAeq (s : Σ i, Fin (n i)) :
       φ (0, Pi.single s (1 : ℂ)) = ψ (0, Pi.single s (1 : ℂ)) := by

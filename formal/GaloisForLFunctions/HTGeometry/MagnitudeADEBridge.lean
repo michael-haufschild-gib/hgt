@@ -74,4 +74,31 @@ theorem coeff_aeval_monomial_flattened (n N : ℕ) (F : ℂ⟦X⟧) (m : Fin (n 
   obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hm
   rw [show m 0 + d = d + m 0 by omega, PowerSeries.coeff_X_pow_mul, Nat.add_sub_cancel]
 
+/-- The `N`-th coefficient of a jet monomial's evaluation is the `(N−m₀)`-th coefficient of the
+derivative power product, shifted by the `X`-degree `m₀` (zero when `m₀ > N`). -/
+theorem coeff_aeval_monomial_shift (n N : ℕ) (F : ℂ⟦X⟧) (m : Fin (n + 2) →₀ ℕ) :
+    (coeff N) (aeval (formalJets n F) (monomial m (1 : ℂ)))
+      = if m 0 ≤ N then
+          (coeff (N - m 0)) (∏ j : Fin (n + 1), ((⇑(d⁄dX ℂ))^[(j : ℕ)] F) ^ (m j.succ))
+        else 0 := by
+  rw [aeval_formalJets_monomial_eq]
+  split_ifs with h
+  · rw [PowerSeries.coeff_X_pow_mul']
+    simp [h]
+  · rw [PowerSeries.coeff_X_pow_mul']
+    simp [h]
+
+/-- `coeff N` of an ADE evaluation as a support sum of `X`-degree-shifted derivative-power
+coefficients — the base form for magnitude domination. -/
+theorem coeff_aeval_eq_shifted_sum (n N : ℕ) (F : ℂ⟦X⟧) (Q : MvPolynomial (Fin (n + 2)) ℂ) :
+    (coeff N) (aeval (formalJets n F) Q)
+      = ∑ m ∈ Q.support, MvPolynomial.coeff m Q
+          * (if m 0 ≤ N then
+              (coeff (N - m 0)) (∏ j : Fin (n + 1), ((⇑(d⁄dX ℂ))^[(j : ℕ)] F) ^ (m j.succ))
+             else 0) := by
+  rw [coeff_aeval_eq_support_sum]
+  refine Finset.sum_congr rfl fun m _ => ?_
+  congr 1
+  rw [PowerSeries.coeff_X_pow_mul']
+
 end GaloisForLFunctions

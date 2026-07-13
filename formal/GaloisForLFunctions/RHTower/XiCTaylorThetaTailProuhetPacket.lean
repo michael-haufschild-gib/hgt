@@ -144,6 +144,26 @@ theorem twoEndpointProuhetPolynomial_binomial_moment_eq_zero
   exact GaloisForLFunctions.binomial_moment_eq_zero_of_sub_one_pow_dvd
     (X_sub_one_pow_dvd_twoEndpointProuhetPolynomial m q r τ) hk
 
+/-- Every ordinary translation moment below the chosen Prouhet depth vanishes.  Consequently
+the signed packet kills every finite polynomial in the translate index whose degree is smaller
+than the depth. -/
+theorem twoEndpointProuhetPolynomial_power_moment_eq_zero
+    (m : ℕ) (q r τ : ℝ) {k : ℕ} (hk : k < m) :
+    ∑ i ∈ (twoEndpointProuhetPolynomial m q r τ).support,
+        (i : ℝ) ^ k * (twoEndpointProuhetPolynomial m q r τ).coeff i = 0 := by
+  exact GaloisForLFunctions.power_moment_eq_zero_of_sub_one_pow_dvd
+    (X_sub_one_pow_dvd_twoEndpointProuhetPolynomial m q r τ) hk
+
+/-- Exact finite-edge cancellation for the theta packet: every polynomial translate-index defect
+of degree below the packet depth vanishes, even after an arbitrary natural base-depth shift. -/
+theorem twoEndpointProuhetPolynomial_shifted_polynomial_pairing_eq_zero
+    (m N : ℕ) (q r τ : ℝ) (p : ℝ[X]) (hp : p.natDegree < m) :
+    ∑ i ∈ (twoEndpointProuhetPolynomial m q r τ).support,
+        (twoEndpointProuhetPolynomial m q r τ).coeff i *
+          p.eval (((N + i : ℕ) : ℝ)) = 0 := by
+  exact GaloisForLFunctions.shifted_polynomial_pairing_eq_zero_of_sub_one_pow_dvd N
+    (X_sub_one_pow_dvd_twoEndpointProuhetPolynomial m q r τ) hp
+
 end
 
 end RHTower

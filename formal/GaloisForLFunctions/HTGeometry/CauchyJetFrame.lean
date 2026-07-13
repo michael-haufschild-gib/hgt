@@ -163,7 +163,7 @@ theorem iteratedDeriv_resolventTransform_conj
   have hzsupport : z ∉ algebraMap ℝ ℂ '' μ.support := by
     rintro ⟨x, _hx, hxz⟩
     have him := congrArg Complex.im hxz
-    simp only [ofReal_im] at him
+    simp at him
     exact hz him.symm
   have hstarsupport : star z ∉ algebraMap ℝ ℂ '' μ.support := by
     rintro ⟨x, _hx, hxz⟩

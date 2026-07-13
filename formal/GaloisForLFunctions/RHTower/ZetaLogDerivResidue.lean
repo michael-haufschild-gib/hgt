@@ -189,4 +189,14 @@ theorem differentiableAt_neg_logDeriv_riemannZeta {s : ℂ} (hs1 : s ≠ 1)
     exact hdon.analyticOnNhd isOpen_compl_singleton s (by simpa using hs1)
   exact (hana.deriv.differentiableAt.neg).div (differentiableAt_riemannZeta hs1) hsz
 
+/-- **`-ζ'/ζ` is holomorphic on the Euler region `Re s > 1`** (where `ζ ≠ 0` and `s ≠ 1`).  This is the
+holomorphy of the prime logarithmic-derivative channel `∑ Λ(n) n^{-s} = -ζ'/ζ(s)` throughout its
+absolute-convergence half-plane — the analytic backbone shared by the Euler-region prime-Laplace
+channels of `ccm-polar-prime-critical-mellin-defect-law` and the moving-window tomographies. -/
+theorem differentiableAt_neg_logDeriv_riemannZeta_of_one_lt_re {s : ℂ} (hs : 1 < s.re) :
+    DifferentiableAt ℂ (fun z => -deriv riemannZeta z / riemannZeta z) s :=
+  differentiableAt_neg_logDeriv_riemannZeta
+    (fun h => by rw [h] at hs; simp at hs)
+    (riemannZeta_ne_zero_of_one_lt_re hs)
+
 end RHTower

@@ -54,6 +54,103 @@ theorem binomial_moment_eq_zero_of_sub_one_pow_dvd
   rw [← hasseDeriv_eval_one_eq_binomial_moment]
   exact hasseDeriv_eval_one_eq_zero_of_sub_one_pow_dvd hdiv hk
 
+/-- **Prouhet tangency, converse power-moment form.**  Over a characteristic-zero field, a
+zero of order `m` at one annihilates every ordinary coefficient power moment of order below
+`m`.  Falling factorials give a triangular basis: their moments vanish by the binomial-moment
+theorem above, and monicity recovers the top ordinary moment inductively. -/
+theorem power_moment_eq_zero_of_sub_one_pow_dvd
+    {R : Type*} [Field R] [CharZero R] {G : R[X]} {m k : ℕ}
+    (hdiv : (X - 1) ^ m ∣ G) (hk : k < m) :
+    ∑ i ∈ G.support, (i : R) ^ k * G.coeff i = 0 := by
+  induction k using Nat.strong_induction_on with
+  | h k ih =>
+      have hbin := binomial_moment_eq_zero_of_sub_one_pow_dvd hdiv hk
+      have hfall :
+          ∑ i ∈ G.support, eval (i : R) (descPochhammer R k) * G.coeff i = 0 := by
+        calc
+          ∑ i ∈ G.support, eval (i : R) (descPochhammer R k) * G.coeff i =
+              ∑ i ∈ G.support, (k.factorial : R) *
+                ((i.choose k : R) * G.coeff i) := by
+                  refine Finset.sum_congr rfl fun i _ => ?_
+                  rw [descPochhammer_eval_eq_descFactorial,
+                    Nat.descFactorial_eq_factorial_mul_choose]
+                  push_cast
+                  ring
+          _ = (k.factorial : R) *
+                ∑ i ∈ G.support, (i.choose k : R) * G.coeff i := by
+                  rw [Finset.mul_sum]
+          _ = 0 := by rw [hbin, mul_zero]
+      have hdeg : (descPochhammer R k).natDegree = k := descPochhammer_natDegree R k
+      have htotal :
+          ∑ j ∈ Finset.range (k + 1), (descPochhammer R k).coeff j *
+              (∑ i ∈ G.support, (i : R) ^ j * G.coeff i) = 0 := by
+        calc
+          ∑ j ∈ Finset.range (k + 1), (descPochhammer R k).coeff j *
+              (∑ i ∈ G.support, (i : R) ^ j * G.coeff i) =
+              ∑ i ∈ G.support,
+                (∑ j ∈ Finset.range (k + 1),
+                  (descPochhammer R k).coeff j * (i : R) ^ j) * G.coeff i := by
+                    simp_rw [Finset.mul_sum]
+                    rw [Finset.sum_comm]
+                    refine Finset.sum_congr rfl fun i _ => ?_
+                    rw [Finset.sum_mul]
+                    refine Finset.sum_congr rfl fun j _ => by ring
+          _ = ∑ i ∈ G.support,
+                eval (i : R) (descPochhammer R k) * G.coeff i := by
+                  refine Finset.sum_congr rfl fun i _ => ?_
+                  rw [Polynomial.eval_eq_sum_range, hdeg]
+          _ = 0 := hfall
+      have hlower :
+          ∑ j ∈ Finset.range k, (descPochhammer R k).coeff j *
+              (∑ i ∈ G.support, (i : R) ^ j * G.coeff i) = 0 := by
+        refine Finset.sum_eq_zero fun j hj => ?_
+        have hjk := Finset.mem_range.mp hj
+        rw [ih j hjk (hjk.trans hk), mul_zero]
+      rw [Finset.sum_range_succ, hlower, zero_add] at htotal
+      have hlead : (descPochhammer R k).coeff k = 1 := by
+        simpa only [hdeg] using (monic_descPochhammer R k).coeff_natDegree
+      simpa [hlead] using htotal
+
+/-- A Prouhet zero annihilates the coefficient pairing with every polynomial whose degree is
+strictly smaller than the zero order. -/
+theorem polynomial_pairing_eq_zero_of_sub_one_pow_dvd
+    {R : Type*} [Field R] [CharZero R] {G p : R[X]} {m : ℕ}
+    (hdiv : (X - 1) ^ m ∣ G) (hp : p.natDegree < m) :
+    ∑ i ∈ G.support, G.coeff i * p.eval (i : R) = 0 := by
+  calc
+    ∑ i ∈ G.support, G.coeff i * p.eval (i : R) =
+        ∑ i ∈ G.support, ∑ j ∈ Finset.range (p.natDegree + 1),
+          p.coeff j * ((i : R) ^ j * G.coeff i) := by
+            refine Finset.sum_congr rfl fun i _ => ?_
+            rw [Polynomial.eval_eq_sum_range, Finset.mul_sum]
+            refine Finset.sum_congr rfl fun j _ => by ring
+    _ = ∑ j ∈ Finset.range (p.natDegree + 1),
+        p.coeff j * (∑ i ∈ G.support, (i : R) ^ j * G.coeff i) := by
+          rw [Finset.sum_comm]
+          refine Finset.sum_congr rfl fun j _ => ?_
+          rw [Finset.mul_sum]
+    _ = 0 := by
+      refine Finset.sum_eq_zero fun j hj => ?_
+      have hjp : j ≤ p.natDegree := by
+        have := Finset.mem_range.mp hj
+        omega
+      rw [power_moment_eq_zero_of_sub_one_pow_dvd hdiv (lt_of_le_of_lt hjp hp), mul_zero]
+
+/-- Translation of the test polynomial does not change the cancellation: the coefficient packet
+annihilates `p(N+i)` for every natural base point `N`. -/
+theorem shifted_polynomial_pairing_eq_zero_of_sub_one_pow_dvd
+    {R : Type*} [Field R] [CharZero R] {G p : R[X]} {m : ℕ} (N : ℕ)
+    (hdiv : (X - 1) ^ m ∣ G) (hp : p.natDegree < m) :
+    ∑ i ∈ G.support, G.coeff i * p.eval ((N + i : ℕ) : R) = 0 := by
+  let q : R[X] := p.comp (X + C (N : R))
+  have hq : q.natDegree < m := by
+    calc
+      q.natDegree ≤ p.natDegree * (X + C (N : R)).natDegree := natDegree_comp_le
+      _ = p.natDegree := by rw [natDegree_X_add_C, mul_one]
+      _ < m := hp
+  have h := polynomial_pairing_eq_zero_of_sub_one_pow_dvd hdiv hq
+  simpa only [q, eval_comp, eval_add, eval_X, eval_C, Nat.cast_add, add_comm] using h
+
 /-- **Prouhet tangency, Taylor form.**  If every Taylor coefficient of `G` at `1` up to order
 `L` vanishes, then `G` is divisible by `(X-1)^{L+1}`.  The Taylor shift transports the
 vanishing into `X^{L+1} ∣ taylor 1 G`, and composing back with `X-1` restores `G`. -/

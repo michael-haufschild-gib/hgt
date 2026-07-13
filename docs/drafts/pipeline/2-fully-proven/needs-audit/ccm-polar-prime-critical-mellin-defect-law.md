@@ -333,3 +333,25 @@ knowledge.
 - [ ] formalize the distributional/autocorrelation Stieltjes layers and full complex continuation
 - [ ] control the full compressed symbol on `PW_a`
 - [ ] RH
+
+## Lean update — Euler-region holomorphy of the prime channel
+
+`formal/GaloisForLFunctions/RHTower/ZetaLogDerivResidue.lean` now proves
+`differentiableAt_neg_logDeriv_riemannZeta_of_one_lt_re`: `-ζ'/ζ(s)` is holomorphic at every `s` with
+`Re s > 1`, axiom-clean (from `-ζ'/ζ` holomorphic off `ζ`'s zeros and pole
+`differentiableAt_neg_logDeriv_riemannZeta`, together with `riemannZeta_ne_zero_of_one_lt_re`). Since the
+resolved von Mangoldt prime-Laplace channel equals `-ζ'/ζ(s+1)` on the Euler region
+(`vonMangoldtPrimeLaplaceChannel_eq_logDeriv`), this supplies the **complex-analytic holomorphy of the
+prime channel throughout its absolute-convergence half-plane** `Re s > 0` — the analytic backbone the
+full complex continuation extends past `Re s = 0` (the distributional/autocorrelation Stieltjes layer,
+which remains the open piece). Also available in-tree, for the *critical-strip* continuation of `-ζ'/ζ`:
+`neg_logDeriv_zeta_residue` (residue `+1` at the pole `s = 1`) and `neg_logDeriv_zeta_zero_residue`
+(residue `-m(ρ)` at a zero `ρ`) give its exact meromorphic pole/residue structure.
+
+Concrete complex channel: `formal/GaloisForLFunctions/RHTower/PolarPrimeChannelContinuation.lean`
+defines `vonMangoldtPrimeChannelComplex s = -ζ'(s+1)/ζ(s+1)` and proves, axiom-clean,
+`vonMangoldtPrimeChannelComplex_eq_channel` (it equals the resolved real channel for `s > 0`),
+`vonMangoldtPrimeChannelComplex_differentiableAt` / `vonMangoldtPrimeChannelComplex_differentiableOn`
+(holomorphic on the whole right half-plane `Re s > 0`).  This is the Euler-region holomorphic complex
+continuation of the prime channel; the remaining open piece of the "full complex continuation" is the
+distributional/autocorrelation Stieltjes continuation across `Re s = 0`.

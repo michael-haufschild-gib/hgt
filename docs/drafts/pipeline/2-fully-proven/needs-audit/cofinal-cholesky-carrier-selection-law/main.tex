@@ -113,8 +113,8 @@ simplex.  Section~\ref{sec:frame} identifies finite Cholesky frames with finite 
 Section~\ref{sec:aperture} proves that every finite frame level retains residual maximal
 translation hypertranscendence.  Section~\ref{sec:selection} proves complete-tower selection.
 Section~\ref{sec:graph} determines the singular graph and its forced repair.  The combined law and
-its verification boundary and scope are stated in
-Sections~\ref{sec:combined}, \ref{sec:formal}, and~\ref{sec:scope}.
+its proof dependencies and scope are stated in
+Sections~\ref{sec:combined}, \ref{sec:dependencies}, and~\ref{sec:scope}.
 
 \section{The canonical Nevanlinna boundary simplex}\label{sec:boundary}
 
@@ -143,9 +143,9 @@ Our Herglotz convention has kernel $(x-z)^{-1}$.  Consequently set
   C=\mathsf B,\qquad D=-\mathsf D.
 \]
 Then $AD-BC=1$, and the source denominator
-$\mathsf B\tau-\mathsf D$ is literally $C\tau+D$.  This four-sign conversion is also
-formalized: it preserves the determinant and the projective fibers and negates the fractional
-transform, exactly because $(x-z)^{-1}=-(z-x)^{-1}$.
+$\mathsf B\tau-\mathsf D$ is literally $C\tau+D$.  This four-sign conversion preserves the
+determinant and the projective fibers and negates the fractional transform, exactly because
+$(x-z)^{-1}=-(z-x)^{-1}$.
 
 The classical theorem supplies real entire entries, the weakly continuous family of
 $N$-extremal probability measures $(\nu_\tau)_{\tau\in\mathbf T}$, concentration of
@@ -625,8 +625,8 @@ $d\mu=w\,dm+d\mu_s$,
 \end{equation}
 with the value zero when the logarithmic integral is $-\infty$~\cite[Theorem~1]{Lyons2003}.
 Equivalently, $w$ is the Radon--Nikod\'ym derivative of the absolutely continuous part of $\mu$.
-Our formal interface uses exactly this general target; the specialization to $w=0$ for a singular
-measure is part of the machine-checked deduction below, not part of the cited hypothesis.
+We use exactly this general form.  Its specialization to $w=0$ for a singular measure is deduced
+below and is not included in the cited hypothesis.
 The following elementary passage is included because it is part of the new geometric deduction,
 not part of the cited Szeg\H{o} input.
 
@@ -730,42 +730,34 @@ from Theorem~\ref{thm:saturation}, Cholesky uniqueness, and
 Bernstein--Szeg\H{o} prefix identity following \eqref{eq:bs}.
 \end{proof}
 
-\section{Formal verification boundary}\label{sec:formal}
+\section{Proof dependencies and theorem boundary}\label{sec:dependencies}
 
-The project-specific compact-patch argument has been formalized in Lean~4.  The verification
-chain is deliberately split at the classical boundary.  The external inputs are the general
-proper-projective-image and finite Whitney-stratification theorem, the finite-dimensional smooth
-parametric-transversality theorem, and the source-faithful classical Nevanlinna family.  They are
-represented by the interfaces
-\path{ClassicalComplexProjectiveIncidenceGeometry},
-\path{ClassicalStratifiedParametricAvoidance}, and
-\path{ClassicalAnalyticNevanlinnaCarrierFamily}; none contains a carrier-genericity conclusion.
+The compact-patch argument uses three classical inputs: properness of projective projection
+together with finite Whitney stratification of complex algebraic sets, finite-dimensional smooth
+parametric transversality, and the classical Nevanlinna parametrization of an indeterminate
+Hamburger moment problem.  The first two are applied only after the incidence variety, its
+affine-chart dimension bounds, and the actual Nevanlinna evaluation family have been constructed
+explicitly.  The third supplies the boundary family in~\eqref{eq:nev-family}; it supplies no
+genericity conclusion.
 
-From those inputs, the formal development proves the following application-specific chain without
-additional axioms: the global affine-chart incidence-ring bound; equality of the projected
-projective incidence with the literal rectangular rank defect; the resulting real-codimension
-bound for every stratum; operator-norm smoothness of the actual Nevanlinna row-evaluation family;
-one uniform finite-dimensional probe on each compact shift patch; compact-patch avoidance;
-countable Baire intersection over every finite differential pattern and every tuple of distinct
-complex shifts; equality of the abstract packet with the derivatives of the actual weighted
-carrier Cauchy transform; and promotion from all finite pattern-rigidity statements to literal
-hypertranscendence.
+For clarity, the application-specific deduction is the following.  The affine-chart incidence
+bound and proper projective projection give the literal rectangular rank defect a finite smooth
+stratification of the required real codimension.  The actual Nevanlinna row-evaluation family is
+smooth in operator norm.  Surjectivity of the constrained pointwise control, compactness of a
+shift patch, and a finite-dimensional reduction give one common probe on that patch.  Parametric
+transversality then yields compact-patch avoidance.  A countable exhaustion over finite
+differential patterns and collision-free shift configurations gives the residual relation-free
+locus.  Finally, the evaluation packet is identified with the derivatives of the weighted-carrier
+Cauchy transform, so relation-freeness implies hypertranscendence.
 
-The frozen-frame interface is stronger than a symmetric jet-coordinate formulation.  The frozen
-constraints are total mass plus projective Cauchy powers, whereas the movable targets are genuine
-Nevanlinna jets.  The formal forward factorization shows that every frozen actual carrier jet is
-preserved even if $q'$ vanishes at the frozen point.  Noncriticality is required only at the
-movable rows, where the forward triangular map must be inverted.  Consequently, for every
+The frozen-frame formulation is stronger than a symmetric jet-coordinate formulation.  The
+frozen constraints are total mass plus projective Cauchy powers, whereas the movable targets are
+genuine Nevanlinna jets.  The forward triangular factorization shows that every frozen carrier jet
+is preserved even if $q'$ vanishes at the frozen point.  Noncriticality is required only at the
+movable rows, where that triangular map must be inverted.  Consequently, for every
 infinite-support singular-continuous projective law, the positive mass-one part of any exact
 finite-frame tangent consists entirely of singular-continuous solutions of the same Hamburger
-moment problem, and a dense residual subset has a genuinely hypertranscendental Cauchy transform.
-The corresponding declarations are in
-\path{ProjectiveIncidenceProjection},
-\path{ExpandedEvaluationProjectiveStratification},
-\path{ProjectiveNevanlinnaRowEvaluationSmoothness},
-\path{NevanlinnaTranslatedExpandedEvaluationCompactPatch},
-\path{AnalyticNevanlinnaCarrierBridge}, and
-\path{AnalyticNevanlinnaCarrierRelationFree}.
+moment problem, and a dense residual subset has a hypertranscendental Cauchy transform.
 
 The theorem is a positive necessity law.  It does not merely assert that finite Toeplitz data are
 insufficient.  It identifies what a faithful carrier construction must retain: a coherent frame
@@ -812,7 +804,6 @@ ingredients from being presented as new and separate the proved theorem from its
 assessment.
 
 \begin{thebibliography}{99}
-\sloppy
 
 \bibitem{ADH2021}
 B. Adamczewski, T. Dreyfus, and C. Hardouin,
@@ -860,8 +851,8 @@ Graduate Texts in Mathematics, vol.~33, Springer, New York, 1976.
 \bibitem{Lyons2003}
 R. Lyons,
 \emph{Szeg\H{o} limit theorems},
-Geom. Funct. Anal. \textbf{13} (2003), 574--590;
-\href{https://arxiv.org/abs/math/0205052}{arXiv:math/0205052}.
+Geom. Funct. Anal. \textbf{13} (2003), 574--590.
+Preprint: \href{https://arxiv.org/abs/math/0205052}{arXiv:math/0205052}.
 
 \bibitem{PrucknerEtAl2023}
 R. Pruckner, J. Reiffenstein, and H. Woracek,
@@ -874,18 +865,17 @@ B. Simon,
 Bull. Amer. Math. Soc. \textbf{42} (2005), 431--460;
 \href{https://web.ma.utexas.edu/mp_arc/c/05/05-78.pdf}{MP\_ARC 05-78}.
 
+\bibitem{Whitney1965}
+H. Whitney,
+\emph{Tangents to an analytic variety},
+Ann. of Math. (2) \textbf{81} (1965), 496--549.
+
 \bibitem{Yafaev2016}
 D. R. Yafaev,
 \emph{On semibounded Toeplitz operators},
 J. Operator Theory \textbf{77} (2017), 205--216;
 \href{https://arxiv.org/abs/1603.06229}{arXiv:1603.06229}.
 
-\bibitem{Whitney1965}
-H. Whitney,
-\emph{Tangents to an analytic variety},
-Ann. of Math. (2) \textbf{81} (1965), 496--549.
-
-\fussy
 \end{thebibliography}
 
 \end{document}
