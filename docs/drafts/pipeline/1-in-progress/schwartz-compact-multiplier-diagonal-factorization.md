@@ -3,7 +3,7 @@
 - **ID:** `schwartz-compact-multiplier-diagonal-factorization`
 - **Stage:** 1-in-progress
 - **Type:** THEOREM / BOCHNER--SCHWARTZ INFRASTRUCTURE
-- **Scientific status:** `[CONJECTURE] [OPEN CORE] [BRIDGE] [NOT AN RH PROOF]`
+- **Scientific status:** `[PARTIALLY FORMALIZED] [OPEN CORE] [BRIDGE] [NOT AN RH PROOF]`
 - **Parent:** `hedenmalm-universal-positive-form-classification.md`
 - **Statement:** A jointly continuous momentum-symmetric Schwartz form factors on compactly
   supported arguments through the single product `f * conj g`.
@@ -41,24 +41,24 @@ separator proves that disjoint compact spectral supports are orthogonal.  These 
 
 ## Exact open core
 
-The missing reusable lemma is the one-dimensional `C-infinity` Weierstrass theorem in the present
-toolchain:
-
-```text
-for smooth a on [A,B], there are real polynomials P_n such that
-sup_[A,B] |D^k(P_n-a)| -> 0 for every fixed k.
-```
-
-The intended proof is constructive: approximate the highest derivative by ordinary Weierstrass,
-then integrate the approximating polynomial while matching the lower jet at the left endpoint.
+The all-derivative Weierstrass lemma, smooth multiplier symmetry, canonical diagonal
+factorization, and cutoff stability are complete.  For a nonnegative momentum-symmetric form the
+stabilized local diagonal functional is now proved positive on every nonnegative compactly
+supported real smooth test and satisfies an explicit local sup-norm bound. Polynomial multiples of
+one fixed smooth cutoff are proved uniformly dense in each compact `C_c(R)` packet, with a common
+support. The remaining bridge is the compatible limit functional and Riesz--Markov. No representing
+measure may be inserted as an assumption.
 
 ## Gates
 
 - [x] compact spectral locality
 - [x] polynomial multiplier symmetry
-- [ ] all-derivative polynomial approximation
-- [ ] smooth compact-multiplier symmetry
-- [ ] diagonal product factorization
+- [x] all-derivative polynomial approximation
+- [x] smooth compact-multiplier symmetry
+- [x] diagonal product factorization
+- [x] canonical cutoff stability
+- [x] positivity on all nonnegative compact smooth tests
+- [x] local order-zero sup-norm estimate
+- [x] fixed-support uniform density in compact continuous packets
 - [ ] positive order-zero distribution
 - [ ] Riesz--Markov measure
-

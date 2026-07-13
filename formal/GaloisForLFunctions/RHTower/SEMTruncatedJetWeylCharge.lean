@@ -54,7 +54,7 @@ theorem completedSEMContourCharge_zero_iff_dyadicTopJetAnomaly_zero
   · intro hanomaly
     have hfactor : 1 - Bottcher.dyadicRoot k ^ zs.length = 0 :=
       (mul_eq_zero.mp hanomaly).resolve_left hholonomy
-    exact sub_eq_zero.mp hfactor
+    exact (sub_eq_zero.mp hfactor).symm
 
 /-- Matrix form: once the actual hole count is written as `n+1`, vanishing of the source contour
 charge is exactly vanishing of the unique wrap entry of the boundary-completed Weyl defect. -/

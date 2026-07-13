@@ -16,50 +16,72 @@ namespace RHTower
 def leftShiftBoundary (S : Set ℂ) (h : ℝ) : Set ℂ :=
   {z : ℂ | z ∈ S ∧ z - (h : ℂ) ∉ S}
 
+/-- A point sufficiently far inside a positive-real set reaches its left translation boundary
+in at most `N` predecessor steps.  This is the bounded form of predecessor exhaustion. -/
+theorem exists_nat_le_sub_mem_leftShiftBoundary_of_re_lt
+    {S : Set ℂ} (hpositive : ∀ z ∈ S, 0 < z.re)
+    {h : ℝ} {N : ℕ} {z : ℂ} (hz : z ∈ S)
+    (hzbound : z.re < ((N + 1 : ℕ) : ℝ) * h) :
+    ∃ n : ℕ, n ≤ N ∧
+      z - (((n : ℝ) * h : ℝ) : ℂ) ∈ leftShiftBoundary S h := by
+  induction N generalizing z with
+  | zero =>
+      refine ⟨0, by simp, ?_⟩
+      have hzBoundary : z ∈ leftShiftBoundary S h := by
+        rw [leftShiftBoundary]
+        constructor
+        · simpa using hz
+        · intro hprev
+          have hpos := hpositive (z - (h : ℂ)) hprev
+          simp only [sub_re, ofReal_re] at hpos
+          norm_num at hzbound
+          linarith
+      simpa using hzBoundary
+  | succ N ih =>
+      by_cases hprev : z - (h : ℂ) ∈ S
+      · have hprevBound : (z - (h : ℂ)).re < ((N + 1 : ℕ) : ℝ) * h := by
+          simp only [sub_re, ofReal_re]
+          calc
+            z.re - h < (N : ℝ) * h + h := by
+              push_cast at hzbound
+              ring_nf at hzbound
+              linarith
+            _ = ((N + 1 : ℕ) : ℝ) * h := by
+              push_cast
+              ring
+        obtain ⟨n, hn, hnboundary⟩ := ih hprev hprevBound
+        refine ⟨n + 1, Nat.succ_le_succ hn, ?_⟩
+        convert hnboundary using 1
+        push_cast
+        ring
+      · refine ⟨0, by simp, ?_⟩
+        rw [leftShiftBoundary]
+        simpa using ⟨hz, hprev⟩
+
+/-- Every point of a set contained in the positive real half-plane has a finite chain of left
+`h`-predecessors ending at the translation boundary. -/
+theorem exists_nat_sub_mem_leftShiftBoundary
+    {S : Set ℂ} (hpositive : ∀ z ∈ S, 0 < z.re)
+    {h : ℝ} (hh : 0 < h) {z : ℂ} (hz : z ∈ S) :
+    ∃ n : ℕ, z - (((n : ℝ) * h : ℝ) : ℂ) ∈ leftShiftBoundary S h := by
+  obtain ⟨N : ℕ, hN⟩ := exists_nat_gt (z.re / h)
+  have hzN : z.re < (N : ℝ) * h := (div_lt_iff₀ hh).mp hN
+  have hzbound : z.re < ((N + 1 : ℕ) : ℝ) * h := by
+    calc
+      z.re < (N : ℝ) * h := hzN
+      _ < ((N + 1 : ℕ) : ℝ) * h := by
+        push_cast
+        nlinarith
+  obtain ⟨n, -, hn⟩ :=
+    exists_nat_le_sub_mem_leftShiftBoundary_of_re_lt
+      (N := N) hpositive hz hzbound
+  exact ⟨n, hn⟩
+
 theorem infinite_leftShiftBoundary_of_infinite_in_openUnitStrip
     {S : Set ℂ} (hS : S.Infinite)
     (hstrip : ∀ z ∈ S, 0 < z.re ∧ z.re < 1)
     {h : ℝ} (hh : 0 < h) :
     (leftShiftBoundary S h).Infinite := by
-  have hreach : ∀ N : ℕ, ∀ z : ℂ, z ∈ S →
-      z.re < ((N + 1 : ℕ) : ℝ) * h →
-      ∃ n : ℕ, n ≤ N ∧ z - (((n : ℝ) * h : ℝ) : ℂ) ∈ leftShiftBoundary S h := by
-    intro N
-    induction N with
-    | zero =>
-        intro z hz hzbound
-        refine ⟨0, by simp, ?_⟩
-        have hzBoundary : z ∈ leftShiftBoundary S h := by
-          rw [leftShiftBoundary]
-          constructor
-          · simpa using hz
-          · intro hprev
-            have hpos := (hstrip (z - (h : ℂ)) hprev).1
-            simp only [sub_re, ofReal_re] at hpos
-            norm_num at hzbound
-            linarith
-        simpa using hzBoundary
-    | succ N ih =>
-        intro z hz hzbound
-        by_cases hprev : z - (h : ℂ) ∈ S
-        · have hprevBound : (z - (h : ℂ)).re < ((N + 1 : ℕ) : ℝ) * h := by
-            simp only [sub_re, ofReal_re]
-            calc
-              z.re - h < (N : ℝ) * h + h := by
-                push_cast at hzbound
-                ring_nf at hzbound
-                linarith
-              _ = ((N + 1 : ℕ) : ℝ) * h := by
-                push_cast
-                ring
-          obtain ⟨n, hn, hnboundary⟩ := ih (z - (h : ℂ)) hprev hprevBound
-          refine ⟨n + 1, Nat.succ_le_succ hn, ?_⟩
-          convert hnboundary using 1
-          push_cast
-          ring
-        · refine ⟨0, by simp, ?_⟩
-          rw [leftShiftBoundary]
-          simpa using ⟨hz, hprev⟩
   obtain ⟨N : ℕ, hN⟩ := exists_nat_gt (1 / h)
   have hNh : 1 < (N : ℝ) * h := (div_lt_iff₀ hh).mp hN
   by_contra hboundary
@@ -76,9 +98,11 @@ theorem infinite_leftShiftBoundary_of_infinite_in_openUnitStrip
       have : N = 0 := Nat.eq_zero_of_not_pos hNzero
       simp [this] at hNh
       linarith
-    obtain ⟨n, hn, hnBoundary⟩ := hreach (N - 1) z hz (by
-      have hNsub : N - 1 + 1 = N := by omega
-      simpa [hNsub] using hzlt)
+    obtain ⟨n, hn, hnBoundary⟩ :=
+      exists_nat_le_sub_mem_leftShiftBoundary_of_re_lt
+        (N := N - 1) (fun w hw => (hstrip w hw).1) hz (by
+          have hNsub : N - 1 + 1 = N := by omega
+          simpa [hNsub] using hzlt)
     have hnN : n < N := by omega
     let bn : leftShiftBoundary S h :=
       ⟨z - (((n : ℝ) * h : ℝ) : ℂ), hnBoundary⟩

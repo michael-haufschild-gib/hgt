@@ -1,5 +1,8 @@
 import GaloisForLFunctions.RHTower.CCMSharpPrimeWindowContinuation
 import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.NumberTheory.LSeries.Dirichlet
+
+set_option maxHeartbeats 800000
 
 open Complex Finset Set
 
@@ -18,7 +21,9 @@ theorem dyadicWeightedPrimeWindow_eq_floorSum (n : ℕ) :
     dyadicWeightedPrimeWindow n =
       ∑ k ∈ Ioc ⌊(n : ℝ) / 2⌋₊ n,
         ((k : ℝ) ^ (-1 / 2 : ℝ)) * ArithmeticFunction.vonMangoldt k := by
-  rw [dyadicWeightedPrimeWindow, Nat.floor_div_eq_div]
+  have hfloor : ⌊(n : ℝ) / 2⌋₊ = n / 2 := by
+    simpa using (Nat.floor_div_eq_div (K := ℝ) n 2)
+  rw [dyadicWeightedPrimeWindow, hfloor]
   apply Finset.sum_congr rfl
   intro k hk
   rcases k.eq_zero_or_pos with rfl | hkpos
@@ -213,8 +218,9 @@ theorem LSeries_dyadicWeightedPrimeWindow_eq_kernelSeries
       exact (antidiagonal_doubleTerm_eq_LSeriesTerm_window s n).symm
     _ = ∑' p : (n : ℕ) × ↥(Finset.antidiagonal n),
           dyadicSharpPrimeWindowDoubleTerm s (e p) := by
+      change (∑' n : ℕ, ∑' p : ↥(Finset.antidiagonal n),
+        dyadicSharpPrimeWindowDoubleTerm s (e ⟨n, p⟩)) = _
       rw [← hsigma.tsum_sigma]
-      rfl
     _ = ∑' kj : ℕ × ℕ, dyadicSharpPrimeWindowDoubleTerm s kj :=
       e.tsum_eq (dyadicSharpPrimeWindowDoubleTerm s)
     _ = ∑' k : ℕ, ∑' j : ℕ,
@@ -262,7 +268,7 @@ private theorem weighted_dyadicKernel_eq_main_add_error
       LSeries.term_of_ne_zero hk0]
     have hsqrt : ((Real.sqrt k : ℝ) : ℂ) = (k : ℂ) ^ (1 / 2 : ℂ) := by
       rw [Real.sqrt_eq_rpow]
-      exact Complex.ofReal_cpow (Nat.cast_nonneg k) (1 / 2)
+      simpa using Complex.ofReal_cpow (Nat.cast_nonneg k) (1 / 2 : ℝ)
     rw [ofReal_div, hsqrt]
     have hsqrt0 : (k : ℂ) ^ (1 / 2 : ℂ) ≠ 0 :=
       Complex.cpow_ne_zero_iff.mpr (Or.inl hkC)
@@ -271,9 +277,24 @@ private theorem weighted_dyadicKernel_eq_main_add_error
       rw [← Complex.cpow_sub _ _ hkC]
       rw [show (1 - s) - 1 / 2 = -(s - 1 / 2) by ring,
         Complex.cpow_neg]
-      rfl
-    field_simp [hsqrt0]
-    rw [← hpow]
+      simp only [one_div]
+    rw [mul_sub]
+    have hmain :
+        (((ArithmeticFunction.vonMangoldt k : ℝ) : ℂ) /
+            (k : ℂ) ^ (1 / 2 : ℂ)) *
+              ((k : ℂ) ^ (1 - s) * sharpPrimeWindowMellin (Real.log 2) s) =
+          sharpPrimeWindowMellin (Real.log 2) s *
+            (((ArithmeticFunction.vonMangoldt k : ℝ) : ℂ) /
+              (k : ℂ) ^ (s - 1 / 2)) := by
+      calc
+        (((ArithmeticFunction.vonMangoldt k : ℝ) : ℂ) /
+            (k : ℂ) ^ (1 / 2 : ℂ)) *
+              ((k : ℂ) ^ (1 - s) * sharpPrimeWindowMellin (Real.log 2) s) =
+            ((ArithmeticFunction.vonMangoldt k : ℝ) : ℂ) *
+              ((k : ℂ) ^ (1 - s) / (k : ℂ) ^ (1 / 2 : ℂ)) *
+                sharpPrimeWindowMellin (Real.log 2) s := by ring
+        _ = _ := by rw [hpow]; ring
+    rw [hmain]
     ring
 
 /-- The honest weighted-window Dirichlet series is the von-Mangoldt logarithmic derivative
@@ -285,7 +306,7 @@ theorem LSeries_dyadicWeightedPrimeWindow_eq_zetaLogDeriv
           zetaLogDeriv (s - 1 / 2) +
         dyadicSharpPrimeWindowErrorSeries s := by
   have hshift : 1 < (s - 1 / 2).re := by
-    simp only [Complex.sub_re, ofReal_re]
+    norm_num [Complex.sub_re] at hs ⊢
     linarith
   have hvm : LSeriesSummable
       (fun n => (ArithmeticFunction.vonMangoldt n : ℂ)) (s - 1 / 2) :=
@@ -315,7 +336,7 @@ theorem LSeries_dyadicWeightedPrimeWindow_eq_zetaLogDeriv
             LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
               (s - 1 / 2) k) +
         ∑' k : ℕ, dyadicSharpPrimeWindowErrorSummand s k :=
-      tsum_add hmain herr
+      hmain.tsum_add herr
     _ = sharpPrimeWindowMellin (Real.log 2) s *
           LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
             (s - 1 / 2) +
@@ -334,7 +355,7 @@ private theorem LSeries_sqrt_eq_riemannZeta_shift
     LSeries (fun n : ℕ => ((Real.sqrt n : ℝ) : ℂ)) s =
       riemannZeta (s - 1 / 2) := by
   have hshift : 1 < (s - 1 / 2).re := by
-    simp only [Complex.sub_re, ofReal_re]
+    norm_num [Complex.sub_re] at hs ⊢
     linarith
   rw [zeta_eq_tsum_one_div_nat_cpow hshift]
   unfold LSeries
@@ -346,13 +367,16 @@ private theorem LSeries_sqrt_eq_riemannZeta_shift
     have hne : s - 1 / 2 ≠ 0 := by
       intro h
       have hre := congrArg Complex.re h
-      simp only [Complex.sub_re, ofReal_re, Complex.zero_re] at hre
+      norm_num [Complex.sub_re] at hre
       linarith
-    rw [Complex.zero_cpow hne, div_zero]
+    rw [Complex.zero_cpow hne]
   · have hn0 : n ≠ 0 := Nat.ne_of_gt hn
     have hnC : (n : ℂ) ≠ 0 := by exact_mod_cast hn0
     rw [LSeries.term_of_ne_zero hn0, Real.sqrt_eq_rpow]
-    rw [Complex.ofReal_cpow (Nat.cast_nonneg n) (1 / 2)]
+    have hsqrt : (((n : ℝ) ^ (1 / 2 : ℝ) : ℝ) : ℂ) =
+        (n : ℂ) ^ (1 / 2 : ℂ) := by
+      simpa using Complex.ofReal_cpow (Nat.cast_nonneg n) (1 / 2 : ℝ)
+    rw [hsqrt]
     rw [Complex.cpow_sub _ _ hnC]
     have hhalf : (n : ℂ) ^ (1 / 2 : ℂ) ≠ 0 :=
       Complex.cpow_ne_zero_iff.mpr (Or.inl hnC)
@@ -363,27 +387,11 @@ private theorem LSeries_sqrt_eq_riemannZeta_shift
 private theorem sqrt_LSeriesSummable
     {s : ℂ} (hs : 3 / 2 < s.re) :
     LSeriesSummable (fun n : ℕ => ((Real.sqrt n : ℝ) : ℂ)) s := by
-  have hshift : 1 < (s - 1 / 2).re := by
-    simp only [Complex.sub_re, ofReal_re]
-    linarith
-  have hone : LSeriesSummable (1 : ℕ → ℂ) (s - 1 / 2) :=
-    LSeriesSummable_one hshift
-  change Summable (LSeries.term (fun n : ℕ => ((Real.sqrt n : ℝ) : ℂ)) s)
-  change Summable (LSeries.term (1 : ℕ → ℂ) (s - 1 / 2)) at hone
-  exact hone.congr fun n => by
-    rcases n.eq_zero_or_pos with rfl | hn
-    · simp only [LSeries.term_zero]
-    · have hn0 : n ≠ 0 := Nat.ne_of_gt hn
-      have hnC : (n : ℂ) ≠ 0 := by exact_mod_cast hn0
-      rw [LSeries.term_of_ne_zero hn0, LSeries.term_of_ne_zero hn0,
-        Pi.one_apply, one_div, Real.sqrt_eq_rpow,
-        Complex.ofReal_cpow (Nat.cast_nonneg n) (1 / 2),
-        Complex.cpow_sub _ _ hnC]
-      have hhalf : (n : ℂ) ^ (1 / 2 : ℂ) ≠ 0 :=
-        Complex.cpow_ne_zero_iff.mpr (Or.inl hnC)
-      have hs0 : (n : ℂ) ^ s ≠ 0 :=
-        Complex.cpow_ne_zero_iff.mpr (Or.inl hnC)
-      field_simp [hhalf, hs0]
+  apply LSeriesSummable_of_le_const_mul_rpow (x := 3 / 2) hs
+  refine ⟨1, fun n _hn => ?_⟩
+  rw [norm_real, Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg n),
+    Real.sqrt_eq_rpow]
+  norm_num
 
 /-- The source-defined sharp coefficient whose lower subpower control is the requested upper
 subpower estimate for the dyadic weighted prime window. -/
@@ -438,8 +446,7 @@ private theorem sharpPrimeWindowMellin_logTwo_three_halves :
   have hexpComplex : Complex.exp (-(Real.log 2 : ℂ) / 2) =
       ((Real.sqrt 2)⁻¹ : ℝ) := by
     rw [show -(Real.log 2 : ℂ) / 2 = ((-Real.log 2 / 2 : ℝ) : ℂ) by
-      norm_num
-      ring]
+      norm_num]
     rw [← Complex.ofReal_exp, hexpReal]
   rw [hexpComplex]
 

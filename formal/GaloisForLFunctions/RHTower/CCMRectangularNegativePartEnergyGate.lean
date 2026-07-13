@@ -485,6 +485,44 @@ private theorem xiRectangularObservableNegativePartMajorant_LSeriesSummable
     simp only [Pi.add_apply, xiRectangularObservableNegativePartMajorant,
       ofReal_add]
 
+/-- The finite prefix and bounded observable remainder transport negative-part summability at
+one specified real abscissa.  This is the quantitative form of the all-abscissa energy bridge. -/
+theorem xiRectangularRightNegativePart_LSeriesSummable_at_one_add_of_tailNegativePart_summable
+    {L : ℝ} {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n →
+      1 ≤ n ∧ L ≤ Real.log n / 2)
+    {alpha : ℝ} (halpha : 0 < alpha)
+    (htail : LSeriesSummable
+      (fun n => ((xiRectangularWeilTailNegativePart L N n : ℝ) : ℂ))
+      (((1 + alpha : ℝ) : ℂ))) :
+    LSeriesSummable
+      (fun n => ((xiRectangularRightNegativePart L n : ℝ) : ℂ))
+      (((1 + alpha : ℝ) : ℂ)) := by
+  have hprefix := xiRectangularLandauPrefixNorm_LSeriesSummable
+    L N (((1 + alpha : ℝ) : ℂ))
+  have hrem := xiRectangularWeilRemainderNorm_LSeriesSummable hN
+    (s := (((1 + alpha : ℝ) : ℂ))) (by simp only [ofReal_re]; linarith)
+  have hadd := (htail.add hprefix).add hrem
+  have hmajorant : LSeriesSummable
+      (fun n => ((xiRectangularObservableNegativePartMajorant L N n : ℝ) : ℂ))
+      (((1 + alpha : ℝ) : ℂ)) := by
+    change Summable (LSeries.term
+      (fun n => ((xiRectangularObservableNegativePartMajorant L N n : ℝ) : ℂ))
+      (((1 + alpha : ℝ) : ℂ)))
+    change Summable (LSeries.term _ (((1 + alpha : ℝ) : ℂ))) at hadd
+    exact hadd.congr fun n => by
+      rcases n.eq_zero_or_pos with rfl | hn
+      · simp only [LSeries.term_zero]
+      · have hn0 : n ≠ 0 := Nat.ne_of_gt hn
+        rw [LSeries.term_of_ne_zero hn0, LSeries.term_of_ne_zero hn0]
+        simp only [Pi.add_apply, xiRectangularObservableNegativePartMajorant,
+          ofReal_add]
+  exact LSeriesSummable_of_nonneg_of_le
+    (xiRectangularRightNegativePart_nonneg L)
+    (xiRectangularObservableNegativePartMajorant_nonneg L N)
+    (xiRectangularRightNegativePart_le_observableMajorant L N)
+    hmajorant
+
 /-- The bounded observable remainder and finite deleted prefix transport negative Dirichlet energy
 from the actual rectangular Weil values to the positive-transverse divisor carrier. -/
 theorem xiRectangularRightNegativePartEnergy_of_xiRectangularWeilTailNegativePartEnergy

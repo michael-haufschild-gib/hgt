@@ -42,7 +42,7 @@ theorem derivative_hermite_succ (n : ℕ) :
     linear_combination (-(m : Polynomial ℤ) - 1) * hs
 
 /-- The Hermite differential equation `He_n'' = X·He_n' − n·He_n`. -/
-theorem hermite_ode (n : ℕ) :
+theorem hermite_oscillator_ode (n : ℕ) :
     derivative (derivative (hermite n))
       = X * derivative (hermite n) - (n : Polynomial ℤ) * hermite n := by
   cases n with
@@ -124,7 +124,7 @@ theorem deriv2_probHermiteFun (n : ℕ) (x : ℝ) :
   have heval : Polynomial.aeval x (derivative (derivative (hermite n)))
       = x * Polynomial.aeval x (derivative (hermite n))
         - n * Polynomial.aeval x (hermite n) := by
-    rw [hermite_ode]
+    rw [hermite_oscillator_ode]
     simp [map_sub, map_mul, map_natCast, Polynomial.aeval_X]
   rw [heval]
   unfold probHermiteFun

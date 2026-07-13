@@ -30,8 +30,8 @@
 \newcommand{\Res}{\operatorname{Res}}
 \newcommand{\supp}{\operatorname{supp}}
 
-\title{Fixed-Window Logarithmic Weil Tomography\\
-and the Exact One-Sided Exponent Spectrum}
+\title{Complete Prime-Source and Fixed-Window Weil Tomography:\\
+A One-Source Xi-Divisor Equivalence and Universal Energy Abscissae}
 \author{Michael Haufschild \and GPT 5.6 Sol \and Fable 5 \and Grok 4.5}
 \date{}
 
@@ -40,8 +40,34 @@ and the Exact One-Sided Exponent Spectrum}
 \maketitle
 
 \begin{abstract}
-For every fixed width $L>0$ we introduce one translated rectangular two-edge family in the
-centered Weil form of the Riemann xi-function.  Its window transform
+Let
+\[
+ T_-(n)=\sum_{n/2<k\le n}\frac{\Lambda(k)}{\sqrt{k}}\frac{k}{n},\qquad
+ P_-(n)=2A_{\log 2}(3/2)\sqrt n-2T_-(n),
+ \qquad A_L(w)=\frac{1-e^{-Lw}}w.
+\]
+We prove that the ordinary Dirichlet series of this one source-defined inverse-tilted dyadic
+statistic has a canonical meromorphic continuation $\cS_-$ to $\Re s>\frac12$.  Its complete
+simple-pole support there is exactly
+\[
+ s=\rho+\frac12,\qquad \XiR(\rho)=0,
+\]
+for every nontrivial xi zero, including critical-line zeros.  If $m(\rho)$ is the analytic
+multiplicity, then
+\[
+ \operatorname*{Res}_{s=\rho+1/2}\cS_-(s)
+   =2m(\rho)A_{\log 2}(\rho+\tfrac12).
+\]
+The Mellin factor $A_{\log 2}(s)$ has all its zeros on $\Re s=0$ and is therefore nonzero at
+every shifted nontrivial xi zero.  Hence the affine shift $\rho\mapsto\rho+\frac12$ is a canonical
+equivalence between the complete nontrivial xi divisor support and the pole support of one real
+prime-source sequence, while normalized residues recover exact multiplicity.  In particular,
+RH is equivalent to every pole of $\cS_-$ lying on $\Re s=1$, and equivalently to holomorphy on
+$\Re s>1$.
+
+As a complementary exact Weil-energy theorem, for every fixed width $L>0$ we introduce one
+translated rectangular two-edge family in the centered Weil form of the Riemann xi-function.
+Its window transform
 \[
  A_L(w)=\frac{1-e^{-Lw}}{w}
 \]
@@ -55,9 +81,44 @@ More precisely, if $\delta_*$ denotes that displacement, then the exponents $\al
 which the sequence has an eventual lower budget $q_L(n)\ge-Cn^\alpha$ form exactly the closed ray
 $[\delta_*,\infty)$.  Equivalently, such a budget exists precisely when every xi zero satisfies
 $\Re\rho\le\frac12+\alpha$.
+Every nonnegative allocation $q_L^-=a+b$ carries the entire horizontal zero-free spectrum.
+In fact the intrinsic statement is stronger.  Let $\sigma_{\rm abs}(c)$ denote the extended-real
+absolute-convergence abscissa of $\sum c(n)n^{-s}$.  Under RH the negative carrier vanishes and
+$\sigma_{\rm abs}(q_{L,N}^-)=-\infty$; under false RH,
+\[
+ \sigma_{\rm abs}(q_{L,N}^-)=1+\delta_*.
+\]
+This value is independent of the positive window width and of the admissible deleted prefix.
+Every exact nonnegative allocation satisfies the conservation law
+\[
+ \sigma_{\rm abs}(q_{L,N}^-)
+ =\max\{\sigma_{\rm abs}(a),\sigma_{\rm abs}(b)\}.
+\]
+Thus no positive principal/residual split can dilute the transverse exponent.  For every
+$\alpha\ge0$, the bound $\delta_*\le\alpha$ is equivalent to
+\[
+ \sum_{n\ge1}\frac{q_{L,N}^-(n)}{n^{1+\alpha+\varepsilon}}<\infty
+ \qquad(\varepsilon>0),
+\]
+and to the existence of any nonnegative majorant $m\ge q_{L,N}^-$ with the same shifted energy.
+Equivalently one may use any two-channel cover $q_{L,N}^-\le a+b$, $a,b\ge0$, for which both
+shifted energies converge.  Exact splitting is therefore unnecessary in the source-facing
+direction.  These conditions are equivalent to $\Re\rho\le\frac12+\alpha$ for every xi zero;
+at $\alpha=0$ they are exact RH criteria.  The earlier mixed energy/subpower law remains as a
+useful corollary: for every exact split, one channel may have finite shifted energy while the
+other has pointwise order $n^{\alpha+o(1)}$.  Exceptional sets are its indicator-valued
+specialization.  If the observable has global cost $O(n^\beta)$, the exceptional energy condition
+follows from the explicit thickness budget
+\[
+  \sum_{n\in E}n^{\beta-1-\varepsilon}<\infty
+  \qquad(\varepsilon>0).
+\]
+At the sharp choice $\beta=\delta_*$ this is self-calibrating.  Thus, under false RH, any set
+carrying all non-subpower negative excursions is forced to be thick at the exact transverse
+exponent.  The unconditional half-power theorem follows from $\delta_*\le\frac12$.
 
-Our principal theorem is a cutoff-free multiplicity-exact tomography statement.  The Dirichlet
-series of the complete sequence of actual Weil values admits a canonical meromorphic continuation
+The carrier theorem is complemented by a cutoff-free multiplicity-exact tomography statement.
+The Dirichlet series of the complete sequence of actual Weil values admits a canonical meromorphic continuation
 $\cM_L$ to $\Re s>1$.  Its simple poles are exactly
 \[
   s=1+(\rho-\tfrac12),\qquad \XiR(\rho)=0,\quad \Re\rho>\tfrac12.
@@ -70,10 +131,11 @@ If $\rho$ has analytic multiplicity $m(\rho)$, then
 Since the window factor never vanishes, one fixed boundary window and one arithmetic mesh recover
 the complete off-critical divisor with multiplicity, not merely its support or rightmost displacement.
 We also identify the sequence with a fixed-width second
-difference of the xi screw function.  The results are unconditional divisor-side theorems; the
-remaining RH-bearing problem is to construct this completed observable from the
-prime--archimedean or semilocal operator realization and prove a cofinal lower floor or holomorphic
-right-half-plane continuation there.
+difference of the xi screw function.  All results are unconditional; the inverse-tilted theorem
+is an explicit complete prime-source realization, while the fixed-window energy theorem is
+divisor-side.  The remaining RH-bearing problem is now the line-selection theorem: prove that
+$\cS_-$ has no poles on $\Re s>1$.  A semilocal operator realization must reproduce this marked
+source divisor and force that line selection.
 \end{abstract}
 
 \noindent\textbf{2020 Mathematics Subject Classification.}
@@ -106,11 +168,20 @@ finite Guinand--Weil zero sums~\cite{Groskin2026}.
 There is also a classical superzeta literature in which Dirichlet series are formed directly over
 the Riemann zeros and their meromorphic polar structure is studied~\cite{Voros2003}.  That
 construction takes the zero set as the Dirichlet indexing object.  Here the Dirichlet variable is
-the ordinary integer $n$: the coefficients are one logarithmically sampled Weil sequence, and its
-Mellin poles recover the transverse divisor.  This distinction is essential for the intended
-prime-side and semilocal interpretation.
+the ordinary integer $n$.  More strongly, the principal coefficient sequence in this paper is
+the explicit dyadic von Mangoldt statistic $S(n)$ from the abstract.  Its Mellin poles recover the
+transverse divisor with multiplicity, without using zeros to define the coefficients.  This
+distinction is essential for the intended prime-side and semilocal interpretation.
 
-This paper isolates a different compression.  Fix any $L>0$ once and for all.  Translate the
+The main source theorem is multiplicity-exact tomography from one fixed dyadic window.  Reversing
+the finite window sum produces a Mellin factor and a holomorphic quadrature remainder.  Filling
+the pole of zeta at $1$ leaves a continued source whose only possible singularities on
+$\Re s>1$ are logarithmic-derivative poles.  The positive-width Mellin factor cannot cancel any
+of them.  Their locations recover the right xi support and their normalized residues recover the
+analytic multiplicities.  This closes the source-to-divisor incidence for the detector; it does
+not prove the remaining holomorphy or critical-energy estimate.
+
+The companion Weil theorem isolates a second compression.  Fix any $L>0$ once and for all.  Translate the
 same two-edge rectangle to aperture $a$, then sample only at $a=\frac12\log n$.  Three phenomena
 occur simultaneously.
 
@@ -123,23 +194,36 @@ $w=\rho-\frac12$.
 Dirichlet carrier controls the entire Weil sequence.
 \end{enumerate}
 
-The principal theorem attaches a cutoff-free meromorphic continuation to the complete actual
-scalar sequence and proves
+The universal negative-channel abscissa law is the main Weil-energy theorem.  The negative mass
+of every positive fixed window has one absolute-convergence threshold: under false RH it is
+$1+\delta_*$, and under RH the carrier vanishes.  The threshold is independent of the window and
+cutoff.  Every pointwise nonnegative exact split conserves it as the maximum of the two channel
+abscissae.  More generally, a positive majorant or two-channel cover with shifted Dirichlet
+energy yields the full horizontal zero-free spectrum; exact source equality is not required.
+Exceptional sets and fractional selectors are special coordinates, and RH is the zero endpoint.
+A second reconstruction theorem
+attaches a cutoff-free meromorphic continuation to the complete actual scalar sequence and proves
 multiplicity-exact divisor tomography: pole positions give the shifted right xi support and
 normalized residues give the analytic multiplicities.  Functional-equation and Schwarz symmetry
 then recover the full off-critical divisor.  Companion theorems give three exact RH criteria,
-cofinal divergence under false RH, the sharp transverse exponent, and the exact screw-coordinate
-identity.  The one-sided lower-loss spectrum is the exact closed ray beginning at the rightmost
-transverse divisor coordinate, so it yields every horizontal zero-free region, not only the RH
-endpoint.
+cofinal divergence under false RH, the sharp transverse exponent, exact positive-channel
+spectrum, universal Dirichlet-abscissa conservation, and the screw-coordinate identity.  The
+one-sided lower-loss spectrum is the exact closed
+ray beginning at the rightmost transverse divisor coordinate, so it yields every horizontal
+zero-free region, not only the RH endpoint.
 
-The novelty is the conjunction of fixed positive width, arithmetic logarithmic sampling,
-cofinal divergence, exact one-sided exponent spectrum, and observable multiplicity-exact pole tomography.  Landau's
+The candidate novelty is the conjunction of a source-defined fixed dyadic prime window with
+multiplicity-exact divisor recovery, together with fixed positive width, arithmetic logarithmic sampling,
+cofinal divergence, exact one-sided exponent spectrum, exact positive-channel spectrum,
+universal negative-channel abscissae, positive-split conservation,
+and observable multiplicity-exact pole tomography.  Landau's
 theorem, Weil positivity, shifted-zeta continuation, and screw functions are the parent
 mechanisms.  We keep this boundary explicit.  We also keep the logical boundary explicit: the
-paper does not prove RH.  It identifies the exact cofinal scalar carrier on which a successful
-prime-side or semilocal construction must establish a completed source--divisor coupling and a
-cofinal lower floor or holomorphic continuation.
+paper does not prove RH.  The dyadic theorem establishes the completed source--divisor coupling
+itself.  A successful prime-side or semilocal construction must now prove a positive critical
+shifted-energy estimate for this explicit source, or holomorphy of its canonical continuation.
+The rectangular theorem gives a second exact route through any positive majorant or finite-channel
+cover of the actual Weil negative mass.
 
 \section{The centered xi divisor and the rectangular window}
 
@@ -498,6 +582,265 @@ $\Re\rho\le\frac12+\alpha$, while the functional equation supplies the reflected
 copy of any left-hand zero.  This proves (4.8).
 \end{proof}
 
+The exact exponent spectrum still asks for a lower estimate at every sufficiently large sample.
+The following theorem replaces it by two positive channels while retaining every horizontal
+zero-free region.  Fix $N$ so that every $n\ge N$ is
+admissible, and extend
+\[
+ q_{L,N}^-(n)=\max\{-q_L(n),0\}
+\]
+by zero for $n<N$.
+
+\begin{proposition}[One-abscissa negative-energy bound]\label{prop:one-abscissa-energy}
+For every $\gamma>0$,
+\[
+ \sum_{n\ge1}\frac{q_{L,N}^-(n)}{n^{1+\gamma}}<\infty
+ \quad\Longrightarrow\quad
+ \Re\rho\le\frac12+\gamma
+ \quad\text{for every zero }\rho\text{ of }\XiR.
+ \tag{4.9}
+\]
+\end{proposition}
+
+\begin{proof}
+Add $q_{L,N}^-$ to the real sampled carrier.  The resulting Dirichlet coefficients are
+nonnegative.  The correction series is holomorphic to the right of its absolute-convergence
+abscissa, which is at most $1+\gamma$; the finite deleted prefix and bounded rectangular
+remainder do not change that abscissa.  If a right xi zero had transverse coordinate greater
+than $\gamma$, the same scale-local Landau continuation used in
+Proposition~\ref{prop:poles} would force absolute convergence strictly to the left of its shifted
+pole.  Subtracting the correction would give the original carrier there, contradicting the pole.
+\end{proof}
+
+For a nonnegative sequence $c$ write
+\[
+ \sigma_{\rm abs}(c)
+ =\inf\left\{\sigma\in\R:
+   \sum_{n\ge1}\frac{c(n)}{n^\sigma}<\infty\right\}
+ \in\R\cup\{-\infty,+\infty\}.
+ \tag{4.10}
+\]
+
+\begin{theorem}[Main Weil-energy theorem: universal negative-channel abscissa]
+\label{thm:universal-abscissa}
+Fix any $L>0$ and any admissible tail $N$.
+
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item The negative carrier satisfies the exact dichotomy
+\[
+ \sigma_{\rm abs}(q_{L,N}^-)=
+ \begin{cases}
+  -\infty,&\mathrm{RH},\\
+  1+\delta_*,&\neg\mathrm{RH}.
+ \end{cases}
+ \tag{4.11}
+\]
+In the first case $q_{L,N}^-$ is identically zero.
+
+\item Every pointwise nonnegative exact split $q_{L,N}^-=a+b$ obeys the conservation law
+\[
+ \sigma_{\rm abs}(q_{L,N}^-)
+ =\max\{\sigma_{\rm abs}(a),\sigma_{\rm abs}(b)\}.
+ \tag{4.12}
+\]
+
+\item The value in \textup{(4.11)}, and hence the maximum in \textup{(4.12)}, is independent
+of the positive width $L$, the admissible prefix $N$, and the chosen exact positive split.
+
+\item For every $\alpha\ge0$, the following are equivalent:
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item $\delta_*\le\alpha$;
+\item every xi zero satisfies $\Re\rho\le\frac12+\alpha$;
+\item for every $\varepsilon>0$,
+\[
+ \sum_{n\ge1}\frac{q_{L,N}^-(n)}{n^{1+\alpha+\varepsilon}}<\infty;
+ \tag{4.13}
+\]
+\item there is a nonnegative majorant $m\ge q_{L,N}^-$ satisfying \textup{(4.13)} with
+$m$ in place of $q_{L,N}^-$;
+\item there are nonnegative channels $a,b$ such that
+$q_{L,N}^-\le a+b$ and, for every $\varepsilon>0$,
+\[
+ \sum_{n\ge1}\frac{a(n)}{n^{1+\alpha+\varepsilon}}<\infty,
+ \qquad
+ \sum_{n\ge1}\frac{b(n)}{n^{1+\alpha+\varepsilon}}<\infty.
+ \tag{4.14}
+\]
+\end{enumerate}
+\end{enumerate}
+At $\alpha=0$, each of \textup{(iv)(c)--(e)} is an exact RH criterion.
+\end{theorem}
+
+\begin{proof}
+The sharp transverse estimate gives
+$q_{L,N}^-(n)\le C_Ln^{\delta_*}$, so comparison with
+$\sum n^{-1-\varepsilon}$ gives
+$\sigma_{\rm abs}(q_{L,N}^-)\le1+\delta_*$.  Suppose RH is false.  Then
+$\delta_*>0$.  If the abscissa were strictly smaller than $1+\delta_*$, choose
+\[
+ \max\{1,\sigma_{\rm abs}(q_{L,N}^-)\}<\sigma<1+\delta_*.
+\]
+The negative series converges at $\sigma$.  Proposition~\ref{prop:one-abscissa-energy}, with
+$\gamma=\sigma-1$, would imply $\delta_*\le\sigma-1$, contradicting the choice of $\sigma$.
+This proves the false-RH branch of \textup{(4.11)}.  Under RH every rectangular Weil value is
+nonnegative, hence $q_{L,N}^-=0$ and its abscissa is $-\infty$.
+
+For a nonnegative exact split, convergence of the total series at any real abscissa is equivalent
+to convergence of both channel series: the forward implication follows from
+$0\le a,b\le q_{L,N}^-$, and the reverse implication from addition.  Taking the boundary of the
+common convergence half-lines proves \textup{(4.12)}.  Formula \textup{(4.11)} then proves
+window, tail, and split independence.
+
+The equivalence of \textup{(iv)(a)} and \textup{(iv)(b)} is
+Theorem~\ref{thm:onesided-spectrum}.  If $\delta_*\le\alpha$, the same transverse estimate gives
+$q_{L,N}^-(n)\le C_Ln^\alpha$, hence \textup{(4.13)}.  Conversely, if a right zero has transverse
+coordinate $d>\alpha$, apply \textup{(4.13)} with
+$\varepsilon=(d-\alpha)/2$ and Proposition~\ref{prop:one-abscissa-energy}; it gives
+$d\le(\alpha+d)/2<d$, a contradiction.
+
+Condition \textup{(iv)(c)} implies \textup{(iv)(d)} by taking $m=q_{L,N}^-$, while domination
+gives the reverse implication.  It implies \textup{(iv)(e)} by taking
+$(a,b)=(q_{L,N}^-,0)$.  Conversely, summing the two series in \textup{(4.14)} gives an
+energy majorant $a+b$ for $q_{L,N}^-$.  This completes all equivalences.
+\end{proof}
+
+The order-ideal form \textup{(iv)(d)} is the minimal source-facing statement: a construction need
+not reproduce the negative mass channel by channel, but it must dominate it by a completed
+positive carrier.  The two-channel form \textup{(iv)(e)} is adapted to principal/residual,
+trace/transition, and bulk/leakage decompositions.  Exact positive splitting gives the stronger
+conservation law \textup{(4.12)}.
+
+\begin{corollary}[Mixed energy/subpower exact-split spectrum]
+\label{thm:exact-carrier}
+For every fixed $L>0$, every admissible tail, every $\alpha\ge0$, and every pointwise
+nonnegative split
+\[
+ q_{L,N}^-(n)=a(n)+b(n),\qquad a(n),b(n)\ge0,
+\]
+the following are equivalent:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item $\delta_*\le\alpha$;
+\item every xi zero satisfies $\Re\rho\le\frac12+\alpha$;
+\item
+\begin{align}
+ &\sum_{n\ge1}\frac{a(n)}{n^{1+\alpha+\varepsilon}}<\infty
+   &&\text{for every }\varepsilon>0,
+   \tag{4.15}\\
+ &\text{for every }\delta>0\text{ there is }C_\delta\ge0\text{ such that}
+   \quad b(n)\le C_\delta n^{\alpha+\delta}
+   && (n\ge1).
+   \tag{4.16}
+\end{align}
+\end{enumerate}
+Consequently, if $\delta_*>\alpha$, every positive allocation exposes at least one of two
+carrier channels: either \textup{(4.16)} fails, or for some $\varepsilon>0$ the channel energy
+in \textup{(4.15)} diverges.  At $\alpha=0$ this is exactly an RH equivalence.
+\end{corollary}
+
+\begin{proof}
+The equivalence of (i) and (ii) is Theorem~\ref{thm:onesided-spectrum}.  Assume (i).  The sharp
+transverse growth estimate gives $q_{L,N}^-(n)\le Cn^\alpha$.  Since the split is nonnegative,
+$0\le a(n),b(n)\le q_{L,N}^-(n)$.  Comparison with $\sum n^{-1-\varepsilon}$ proves
+\textup{(4.15)}, while $n^\alpha\le n^{\alpha+\delta}$ proves \textup{(4.16)}.
+
+Conversely, assume (iii) and suppose a right zero has transverse coordinate $d>\alpha$.  Put
+$\varepsilon=(d-\alpha)/2$ and $\delta=\varepsilon/2$.  Then the exact split and
+\textup{(4.15)}--\textup{(4.16)} give
+\[
+ \sum_{n\ge1}\frac{q_{L,N}^-(n)}{n^{1+\alpha+\varepsilon}}
+ \le
+ \sum_{n\ge1}\frac{a(n)}{n^{1+\alpha+\varepsilon}}
+ +C_{\varepsilon/2}\sum_{n\ge1}n^{-1-\varepsilon/2}<\infty.
+ \tag{4.17}
+\]
+Proposition~\ref{prop:one-abscissa-energy} bounds every right transverse coordinate by
+$\alpha+\varepsilon=(\alpha+d)/2<d$, a contradiction.  Hence (i) holds.  The dichotomy is the
+contrapositive for each split, and $\delta_*\le0$ is equivalent to RH.
+\end{proof}
+
+\begin{corollary}[Exact exceptional-set decomposition]\label{cor:exceptional-carrier}
+For every set $E\subset\N$, RH is equivalent to finite Dirichlet energy of the actual negative
+mass on $E$ and one-sided subpower lower control off $E$:
+\[
+ \sum_{\substack{n\ge N\\n\in E}}
+   \frac{q_L(n)^-}{n^{1+\varepsilon}}<\infty
+ \quad(\varepsilon>0),
+ \qquad
+ q_L(n)\ge-C_\delta n^\delta
+ \quad(n\ge N,\ n\notin E,\ \delta>0).
+\]
+\end{corollary}
+
+\begin{proof}
+Apply Corollary~\ref{thm:exact-carrier} to
+$a=1_Eq_{L,N}^-$ and $b=1_{E^c}q_{L,N}^-$.  More generally, every selector
+$0\le\omega(n)\le1$ gives the exact fractional split
+$a=\omega q_{L,N}^-$ and $b=(1-\omega)q_{L,N}^-$.
+\end{proof}
+
+The exact carrier theorem assumes no global growth estimate and charges only the negative mass
+that can obstruct positivity.  A power envelope converts it into an explicit amplitude--thickness
+law.  For $\beta\ge0$, call
+$E\subset\N$ \emph{$\beta$-thin} if
+\[
+  \sum_{n\in E}n^{\beta-1-\varepsilon}<\infty
+  \qquad\text{for every }\varepsilon>0.
+  \tag{4.18}
+\]
+Thus half-power thin means $\frac12$-thin.
+
+\begin{theorem}[Budget-matched sparse-exception completeness]
+\label{thm:sparse-exception}
+Fix $L>0$ and an admissible tail $n\ge N$.
+
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item Suppose $|q_L(n)|\le Bn^\beta$ on the tail for some $B\ge0$ and $\beta\ge0$.
+For every $\beta$-thin set $E$, the following condition implies RH: for every $\delta>0$ there
+is $C_\delta\ge0$ such that
+\[
+  q_L(n)\ge-C_\delta n^\delta
+  \qquad(n\ge N,\ n\notin E).
+  \tag{4.19}
+\]
+\item Take $\beta=\delta_*$, the sharp transverse exponent from \textup{(3.1)}.  For every
+$\delta_*$-thin set $E$, RH is equivalent to \textup{(4.19)}.  If RH is false and
+\textup{(4.19)} holds, then $E$ is forced to have exact transverse thickness: for some
+$\varepsilon>0$,
+\[
+  \sum_{n\in E}n^{\delta_*-1-\varepsilon}=\infty.
+  \tag{4.20}
+\]
+\item Since $0\le\delta_*\le\frac12$, every half-power-thin set is $\delta_*$-thin.
+Consequently positivity, or merely subpower one-sided control, may fail arbitrarily on any fixed
+half-power-thin set of apertures without weakening the RH conclusion.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Fix $\varepsilon>0$ and apply (4.19) with
+$\delta=\varepsilon/2$.  For $n\notin E$ one has
+$q_L(n)^-\le C_{\varepsilon/2}n^{\varepsilon/2}$, while for $n\in E$ the global power budget
+gives $q_L(n)^-\le Bn^\beta$.  Hence
+\[
+ \sum_{n\ge N}\frac{q_L(n)^-}{n^{1+\varepsilon}}
+ \le
+ C_{\varepsilon/2}\sum_{n\ge N}n^{-1-\varepsilon/2}
+ +B\sum_{n\in E}n^{\beta-1-\varepsilon}<\infty.
+ \tag{4.21}
+\]
+Apply Corollary~\ref{thm:exact-carrier} at $\alpha=0$ with
+$a=1_Eq_{L,N}^-$ and $b=1_{E^c}q_{L,N}^-$.  Estimate (4.21) verifies its energy channel and
+\textup{(4.19)} verifies its residual channel, so RH follows.  This proves (i).
+
+If RH is false, (4.4) supplies the global budget with $\beta=\delta_*$.  Therefore (i) proves the
+forward implication in (ii); conversely, RH gives $q_L(n)\ge0$ at every sample, so (4.19) holds
+with $C_\delta=0$.  Statement (4.20) is the contrapositive.  Finally, the strip bound gives
+$\delta_*\le\frac12$, and $n^{\delta_*-1-\varepsilon}\le n^{-1/2-\varepsilon}$ for $n\ge1$.
+This proves (iii).  Equivalently, one may use directly the unconditional square-root envelope
+$|q_L(n)|\le B_Ln^{1/2}$ obtained from the strip bound, absolute summability of the rectangular
+weights, and Proposition~\ref{prop:remainder}.
+\end{proof}
+
 \section{Cutoff-free multiplicity-exact divisor tomography}
 
 Proposition~\ref{prop:poles} concerns the isolated growing carrier.  We now remove every cutoff
@@ -520,7 +863,7 @@ The terms with $n<N$ form a finite sequence.  Consequently
 converges absolutely and is holomorphic on $\Re s>1$.  Although a cutoff proves this fact, neither
 $e_L$, $E_L$, nor the continuation below depends on it.
 
-\begin{theorem}[Main theorem: cutoff-free observable divisor tomography]\label{thm:tomography}
+\begin{theorem}[Cutoff-free observable divisor tomography]\label{thm:tomography}
 For every $L>0$, the ordinary Dirichlet series of the complete observable sequence
 \[
   \sum_{n\ge1}\frac{q_L(n)}{n^s}
@@ -640,26 +983,226 @@ Weil form~\cite{Suzuki2023,Suzuki2025,Suzuki2026}.  The additional feature here 
 rectangular stencil and the arithmetic logarithmic mesh, which produce the Dirichlet continuation
 and pole tomography of Section~5.
 
+\section{Multiplicity-exact tomography from one dyadic prime source}
+
+We now remove the target-defined coefficient from the source side.  Put
+\[
+ W(n)=\sum_{n/2<k\le n}\frac{\Lambda(k)}{\sqrt{k}},\qquad
+ \kappa=1-\frac1{\sqrt2},\qquad
+ S(n)=4\kappa\sqrt n-2W(n).
+ \tag{7.1}
+\]
+Every term is explicit and finite.  Define
+\[
+ M(s)=A_{\log 2}(s-1).
+ \tag{7.2}
+\]
+This is the Mellin transform of the sharp multiplicative interval $[1,2]$; in particular
+$M(3/2)=2\kappa$.  The unit-window noncensorship law gives
+\[
+ M(s)\ne0\qquad(\Re s>1).
+ \tag{7.3}
+\]
+
+For $k\ge1$ let
+\[
+ E_k(s)=\sum_{j=0}^{k-1}(k+j)^{-s}-\int_k^{2k}x^{-s}\,dx
+ \tag{7.4}
+\]
+and set
+\[
+ H(s)=\sum_{k\ge1}\frac{\Lambda(k)}{\sqrt{k}}E_k(s).
+ \tag{7.5}
+\]
+The cellwise quadrature bound is locally uniform and makes $H$ holomorphic on
+$\Re s>\frac12$.  Let $Z_*$ be zeta with its pole filled,
+\[
+ Z_*(t)=
+ \begin{cases}
+  (t-1)\zeta(t),&t\ne1,\\
+  1,&t=1,
+ \end{cases}
+ \tag{7.6}
+\]
+and define the entire numerator
+\[
+ N(s)=2M(3/2)Z_*(s-1/2)-2M(s).
+ \tag{7.7}
+\]
+Since $N(3/2)=0$, its divided difference
+\[
+ D_{3/2}N(s)=
+ \begin{cases}
+  \dfrac{N(s)-N(3/2)}{s-3/2},&s\ne3/2,\\[6pt]
+  N'(3/2),&s=3/2,
+ \end{cases}
+\]
+is entire.  The canonical source continuation is
+\[
+ \cS(s)=D_{3/2}N(s)
+   +2M(s)\frac{Z_*'(s-1/2)}{Z_*(s-1/2)}-2H(s).
+ \tag{7.8}
+\]
+
+\begin{theorem}[Main source theorem: one dyadic window recovers the divisor]
+\label{thm:dyadic-source-tomography}
+The ordinary Dirichlet series of the source coefficients in \textup{(7.1)} satisfies
+\[
+ \sum_{n\ge1}\frac{S(n)}{n^s}=\cS(s)
+ \qquad(\Re s>3/2).
+ \tag{7.9}
+\]
+The function $\cS$ is meromorphic on $\Re s>\frac12$.  On $\Re s>1$,
+\[
+ \ord_s\cS=-1
+ \quad\Longleftrightarrow\quad
+ s=\rho+\frac12
+ \text{ for a zero }\XiR(\rho)=0,\quad\Re\rho>\frac12.
+ \tag{7.10}
+\]
+There are no other poles there.  If $\rho$ has analytic multiplicity $m(\rho)$ and
+$p=\rho+\frac12$, then
+\[
+ \operatorname*{Res}_{s=p}\cS(s)=2M(p)m(\rho),
+ \qquad
+ m(\rho)=\frac{\operatorname*{Res}_{s=p}\cS(s)}{2M(p)}.
+ \tag{7.11}
+\]
+Consequently
+\[
+ \{\rho:\XiR(\rho)=0,\ \Re\rho>\tfrac12\}
+ =\{s-\tfrac12:\Re s>1,\ \ord_s\cS=-1\},
+ \tag{7.12}
+\]
+with multiplicities supplied by \textup{(7.11)}, and
+\[
+ \mathrm{RH}
+ \quad\Longleftrightarrow\quad
+ \cS\text{ is holomorphic on }\Re s>1.
+ \tag{7.13}
+\]
+
+For $\alpha\ge0$, define the positive source excess
+\[
+ E(n)=\left(W(n)-2\kappa\sqrt n\right)^+=\frac12 S(n)^-.
+ \tag{7.14}
+\]
+Then the one-abscissa energy implication
+\[
+ \sum_{n\ge1}\frac{E(n)}{n^{1+\alpha}}<\infty
+ \quad\Longrightarrow\quad
+ \Re\rho\le\frac12+\alpha
+ \quad\text{for every xi zero }\rho
+ \tag{7.15}
+\]
+holds.  At the single critical abscissa $\alpha=0$, the premise in \textup{(7.15)} proves RH.
+\end{theorem}
+
+\begin{proof}
+On $\Re s>3/2$, absolute convergence permits reversal of the finite dyadic windows.  The exact
+cell decomposition gives
+\[
+ \sum_{n\ge1}\frac{W(n)}{n^s}
+ =-M(s)\frac{\zeta'(s-1/2)}{\zeta(s-1/2)}+H(s).
+\]
+Together with $\sum\sqrt n\,n^{-s}=\zeta(s-1/2)$ and $M(3/2)=2\kappa$, elementary pole filling
+at $s=3/2$ yields \textup{(7.8)}--\textup{(7.9)}.  The locally normal quadrature estimate makes
+$H$ holomorphic on $\Re s>\frac12$; the divided difference is entire.  Hence the only possible
+poles of $\cS$ are those of $Z_*'/Z_*$.
+
+At a zero $\rho$ of analytic multiplicity $m(\rho)$,
+\[
+ (t-\rho)\frac{Z_*'(t)}{Z_*(t)}\longrightarrow m(\rho).
+\]
+Translation by $1/2$ preserves the order.  Thus at $p=\rho+1/2$ the singular term in
+\textup{(7.8)} has residue $2M(p)m(\rho)$, while both remaining terms are holomorphic.
+Noncensorship \textup{(7.3)} prevents cancellation.  Conversely, away from a zero of $Z_*$ all
+three terms are holomorphic.  In the strip in question, the regularizing linear factor and the
+archimedean xi factor are local units, so the zeros and analytic orders of $Z_*$ and xi agree.
+This proves \textup{(7.10)}--\textup{(7.13)}.
+
+Finally, adding $S(n)^-=2E(n)$ makes the source coefficients nonnegative.  Landau continuation
+at the real transverse boundary shows that convergence of this correction at $1+\alpha$ excludes
+every shifted xi pole to its right, which is \textup{(7.15)}.  For $\alpha=0$, the inequality
+$\Re\rho\le\frac12$ excludes every zero in the open right half of the critical strip and is
+equivalent to RH by functional-equation symmetry.
+\end{proof}
+
+The theorem is source-pure in the relevant sense: neither $S(n)$ nor its finite window uses a
+zero, zero ordinate, target divisor, or test-function approximation.  The regularized
+continuation is forced by the ordinary Dirichlet series and exact quadrature, not chosen by
+interpolation.  The remaining RH-bearing statement is therefore a concrete estimate on this
+single sequence: prove \textup{(7.15)} at $\alpha=0$, or prove the equivalent holomorphy in
+\textup{(7.13)}.
+
 \section{Implications for the Connes route}
 
-The theorem changes the positive obligation on a semilocal or prime-side construction.  It is not
-necessary to establish positivity on an unspecified compact family, nor to match finitely many
-spectral ordinates.  For any chosen $L>0$, it is enough to construct the actual completed
-source--divisor incidence along the single section $q_L(n)$ and prove one cofinal finite lower floor
+Theorem~\ref{thm:dyadic-source-tomography} closes the source--divisor incidence without asking a
+semilocal construction to identify the target-defined Weil sequence.  The sharp positive
+obligation is now explicit: realize the one dyadic coefficient $S(n)$ and prove
 \[
-  q_L(n)\ge-C\qquad(n\ge N).
-  \tag{7.1}
+ \sum_{n\ge1}\frac{S(n)^-}{n}<\infty,
 \]
-This closes RH by Theorem~\ref{thm:completeness}; norm boundedness and positivity are stronger
-sufficient special cases.  Alternatively, the same source construction may prove directly that
-the cutoff-free canonical continuation $\cM_L$ is holomorphic on $\Re s>1$.
+or prove directly that its forced continuation $\cS$ is holomorphic on $\Re s>1$.  Either
+statement proves RH.  A Connes or Connes--Consani realization may obtain this through a positive
+relative trace, a Sonin compression, or a cofinal near-radical section, but the resulting scalar
+channel must agree with \textup{(7.1)} and retain the multiplicity normalization
+\textup{(7.11)}.
+
+The rectangular theorem gives a complementary positive-allocation route.  It is not necessary to
+establish positivity on an unspecified compact family, nor to match finitely many spectral
+ordinates.  For any chosen $L>0$, it is enough to dominate the negative part of the actual
+completed section $q_L(n)$ by a positive operator majorant.  For every $\alpha\ge0$, the exact horizontal obligation is the
+existence of $m\ge q_{L,N}^-$, $m\ge0$, with
+\[
+ \sum_{n\ge1}\frac{m(n)}{n^{1+\alpha+\varepsilon}}<\infty
+ \qquad(\varepsilon>0).
+\]
+Equivalently, one may construct positive principal and residual channels with
+\[
+ q_{L,N}^-\le a+b,
+ \qquad
+ \sum_{n\ge1}\frac{a(n)}{n^{1+\alpha+\varepsilon}}<\infty,
+ \qquad
+ \sum_{n\ge1}\frac{b(n)}{n^{1+\alpha+\varepsilon}}<\infty
+ \quad(\varepsilon>0).
+\]
+These laws are equivalent to the zero-free half-plane
+$\Re\rho\le\frac12+\alpha$.  Thus a construction can prove progressively sharper zero-free
+regions without first reaching the endpoint; RH is precisely the case $\alpha=0$.
+This is adapted directly to principal/residual, trace/transition, or bulk/leakage decompositions;
+neither exact channel equality nor a binary aperture partition is required.  If exact equality
+is available, the stronger conservation law \textup{(4.12)} shows that the maximum channel
+abscissa is forced and is independent of every window, cutoff, and positive allocation.
+
+A useful indicator-valued coordinate is obtained by choosing one exceptional set $E$.  It asks,
+for every $\delta>0$, that
+\[
+  q_L(n)\ge-C_\delta n^\delta
+  \qquad(n\ge N,\ n\notin E).
+  \tag{8.1}
+\]
+The exact remaining payment is not a density condition but the actual negative-energy law
+\[
+ \sum_{\substack{n\ge N\\n\in E}}
+ \frac{q_L(n)^-}{n^{1+\varepsilon}}<\infty
+ \qquad(\varepsilon>0).
+ \tag{8.2}
+\]
+Corollary~\ref{cor:exceptional-carrier} says that (8.1)--(8.2) are jointly equivalent to RH.  A convenient
+source-side sufficient condition for (8.2) is the matching amplitude--thickness cost: a global
+estimate $|q_L(n)|=O(n^\beta)$ and
+$\sum_{n\in E}n^{\beta-1-\varepsilon}<\infty$ for every $\varepsilon>0$.  The sharp divisor-side
+choice is $\beta=\delta_*$; the fully unconditional source obligation may use
+$\beta=\frac12$.  A finite lower floor, norm boundedness, and positivity at every sample are
+stronger sufficient special cases.  Alternatively, the same source construction may prove
+directly that the cutoff-free canonical continuation $\cM_L$ is holomorphic on $\Re s>1$.
 
 This is a cofinal, noncompact carrier condition.  Finite-prime positivity or a finite
-self-adjoint spectrum does not imply (7.1): the construction must transport the completed
+self-adjoint spectrum does not imply the critical source energy or (8.1): the construction must transport the completed
 Euler--Gamma incidence into the complete actual sequence.  The compatible finite-factorization
 viewpoint is therefore useful only when its cofinal section controls the global remainder in
-(5.3).  Once
-that happens, Theorem~\ref{thm:tomography} gives a rigid alternative:
+(5.3).  Once that happens, Theorem~\ref{thm:tomography} gives a rigid alternative:
 
 \begin{quote}
 the residual Mellin channel is holomorphic on $\Re s>1$, or its weighted simple-pole divisor is
@@ -668,33 +1211,54 @@ exactly the shifted off-critical xi divisor, with multiplicities encoded by norm
 
 In particular, the noncompact escape required by prolate or near-radical Connes--Consani
 mechanisms is not an undirected loss of compactness.  Along the rectangular section it must be a
-coherent escape whose scalar trace values obey (7.1), or whose Mellin channel is holomorphic on the
+coherent escape whose scalar trace values identify the actual completed sequence.  After that
+identification, it can prove a zero-free region by supplying a positive split satisfying the two
+shifted-energy laws, or more generally one positive energy majorant; at the RH endpoint, the
+indicator coordinate is exactly (8.1)--(8.2).  A distinct
+sufficient finish is to prove directly that the canonical Mellin channel is holomorphic on the
 whole target half-plane.  The same obligation applies to recent
 finite-prime spectral triples.  Their normalized determinants must carry the completed divisor
 strongly enough to identify the full continuation, not only a finite list of real spectral zeros.
+The positive-allocation allowance is quantitative rather than permissive: for every
+$\alpha<\delta_*$, every positive exact split has maximum absolute-convergence abscissa
+$1+\delta_*$, and every positive cover must leave at least one channel without the full shifted
+energy required at $\alpha$.  The mixed energy/subpower and exceptional-set dichotomies are
+useful specializations.
+The transverse power and half-power thickness laws are explicit outer estimates for this exact
+intrinsic carrier, not independent density scales.
 
 \section{Scope and limitations}
 
-The results are unconditional, but they are divisor-side theorems.  They do not derive the lower
-bound (7.1) from primes, Gamma factors, a Sonin space, or a self-adjoint operator.  They therefore
-do not prove RH.  Their role is to isolate a minimal positive carrier and to show exactly what it
-remembers.
+The results are unconditional.  The dyadic theorem is source-side and recovers the complete right
+divisor with multiplicity; the rectangular theorem is an exact divisor-side energy law.  What is
+not proved is the critical estimate
+$\sum S(n)^-/n<\infty$, the equivalent holomorphy of $\cS$ on $\Re s>1$, or an operator theorem
+forcing either statement.  The paper therefore does not prove RH.  It reduces the remaining
+problem to one explicit prime-source channel and gives an independent universal energy geometry
+for every fixed rectangular Weil window.
 
 The rectangle is deliberately nonsmooth.  We avoid an inadmissible appeal to the classical smooth
 test space by defining $Q_L$ through the absolutely convergent xi divisor polarization.  A
 prime-side explicit-formula realization of this exact boundary value requires either an
 appropriate completion theorem or a justified approximation whose limit preserves the scalar
-sequence.  That source theorem is the remaining RH-bearing step.
+sequence.  This regularity issue remains open for the rectangular identity, but it is no longer
+the source bridge for the paper's main detector: Theorem~\ref{thm:dyadic-source-tomography}
+constructs a separate exact prime source directly.  Its critical energy or holomorphy estimate is
+the remaining RH-bearing step.
 
 Every off-critical zero, simple or multiple, produces a simple pole, so pole order alone forgets
-multiplicity.  The main theorem repairs exactly that loss: the pole residue is the analytic
-multiplicity times the explicit nonvanishing rectangular weight.  Thus the weighted pole divisor,
-not the unweighted pole set, is the intrinsic observable.
+multiplicity.  Both tomography theorems repair exactly that loss.  The source residue is the
+analytic multiplicity times the nonvanishing dyadic Mellin factor, while the Weil-observable
+residue uses the nonvanishing rectangular square weight.  Thus the weighted pole divisor, not the
+unweighted pole set, is the intrinsic observable.
 
-Finally, the novelty claim is intentionally narrow.  Weil positivity, the Connes trace-formula
+Finally, the novelty claim is intentionally narrow and remains subject to the dedicated audit of
+the dyadic formulation.  Weil positivity, the Connes trace-formula
 architecture, Landau's theorem, and the screw function are established parent theories.  The new
-result is the fixed-window logarithmic compression, its exact one-sided exponent spectrum, and its
-multiplicity-exact meromorphic tomography.
+candidate contribution is source-defined dyadic multiplicity tomography together with the
+fixed-window logarithmic compression, its exact one-sided exponent spectrum,
+universal negative-channel abscissa, exact positive-channel abscissa conservation and order-ideal
+cover spectrum, thickness corollaries, and multiplicity-exact meromorphic tomography.
 
 \begin{thebibliography}{99}
 

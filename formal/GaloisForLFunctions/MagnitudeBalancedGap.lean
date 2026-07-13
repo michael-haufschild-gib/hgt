@@ -197,4 +197,49 @@ theorem exists_dominates_log {b : ℕ → ℝ} (hpos : ∀ᶠ n in atTop, 0 < b 
   have hDM : 2 * |A| * (M : ℝ) + 2 * |K| * (M : ℝ) ≤ D * (M : ℝ) := by rw [hD]; nlinarith [hMpos]
   linarith [hbM, hA, hAbound, hKbound, hDM]
 
+/-- **Higher-jet magnitude ratio vanishes.**  For superlacunary `b`, the falling-factorial-
+weighted magnitude of a higher-order jet coefficient, normalised by the lowest order, tends to
+zero: `(N+j)^j · exp(-b (N+jmin)) → 0`.  The polynomial falling-factorial growth is beaten by the
+superlacunary decay (`b (N+jmin) ≥ (j+1)·log(N+jmin+2)` eventually).  This is the domination that
+makes the derivative jets `Fᵍ` linearly independent for a superlacunary-magnitude series. -/
+theorem jet_ratio_tendsto_zero {b : ℕ → ℝ} (hpos : ∀ᶠ n in atTop, 0 < b n)
+    (hratio : Tendsto (fun n => b (n + 1) / b n) atTop atTop) (jmin j : ℕ) :
+    Tendsto (fun N => (((N + j) ^ j : ℕ) : ℝ) * Real.exp (- b (N + jmin))) atTop (nhds 0) := by
+  obtain ⟨Nd, hNd⟩ := exists_dominates_log hpos hratio ((j : ℝ) + 1) 0
+  have hbound : ∀ᶠ N in atTop, (((N + j) ^ j : ℕ) : ℝ) * Real.exp (- b (N + jmin))
+      ≤ (2 : ℝ) ^ j / N := by
+    refine Filter.eventually_atTop.mpr ⟨max (max Nd j) 1, fun N hN => ?_⟩
+    have hNd' : Nd ≤ N + jmin := by
+      have : Nd ≤ N := le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) hN; omega
+    have hNj : j ≤ N := le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) hN
+    have hN1 : 1 ≤ N := le_trans (le_max_right _ _) hN
+    have hNr : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN1
+    have hg := hNd (N + jmin) hNd'
+    rw [add_zero] at hg
+    -- (N+j)^j = exp(j*log(N+j))
+    have hNjpos : (0 : ℝ) < (N : ℝ) + j := by positivity
+    have hpow : (((N + j) ^ j : ℕ) : ℝ) = Real.exp ((j : ℝ) * Real.log ((N : ℝ) + j)) := by
+      rw [Real.exp_nat_mul, Real.exp_log hNjpos]; push_cast; ring
+    rw [hpow, ← Real.exp_add]
+    have hexp_le : (j : ℝ) * Real.log ((N : ℝ) + j) + (- b (N + jmin))
+        ≤ (j : ℝ) * Real.log 2 - Real.log N := by
+      have hlogNj : Real.log ((N : ℝ) + j) ≤ Real.log 2 + Real.log N := by
+        rw [← Real.log_mul (by norm_num) (by linarith)]
+        apply Real.log_le_log hNjpos
+        have hjN : (j : ℝ) ≤ (N : ℝ) := by exact_mod_cast hNj
+        nlinarith [hNr, hjN]
+      have hxge : Real.log ↑N ≤ Real.log ((N : ℝ) + ↑jmin + 2) :=
+        Real.log_le_log (by linarith [hNr])
+          (by have := Nat.cast_nonneg jmin (α := ℝ); linarith)
+      have hgcast : ((j : ℝ) + 1) * Real.log ((N : ℝ) + ↑jmin + 2) ≤ b (N + jmin) := by
+        convert hg using 3; push_cast; ring
+      nlinarith [hlogNj, hxge, hgcast, mul_le_mul_of_nonneg_left hlogNj (by positivity : (0:ℝ) ≤ (j:ℝ))]
+    calc Real.exp ((j : ℝ) * Real.log ((N : ℝ) + j) + (- b (N + jmin)))
+        ≤ Real.exp ((j : ℝ) * Real.log 2 - Real.log N) := Real.exp_le_exp.mpr hexp_le
+      _ = (2 : ℝ) ^ j / N := by
+          rw [Real.exp_sub, Real.exp_nat_mul, Real.exp_log (by norm_num : (0:ℝ) < 2),
+            Real.exp_log (by linarith)]
+  refine squeeze_zero' (Filter.Eventually.of_forall (fun N => by positivity)) hbound ?_
+  simpa using (tendsto_const_div_atTop_nhds_zero_nat ((2 : ℝ) ^ j))
+
 end GaloisForLFunctions

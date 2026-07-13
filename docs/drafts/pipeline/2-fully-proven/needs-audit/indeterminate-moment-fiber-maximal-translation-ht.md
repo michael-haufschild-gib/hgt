@@ -824,9 +824,11 @@ and axiom-clean (`RHTower.normalizedPrimeArchMomentGerm_allOrder_determinate`,
 abstract full-fiber theorem has no bounded self-contained kernel: aperiodicity `(4a)`,
 parameter-jet controllability `(10)`, and the full-configuration transversality all route through the
 absent Nevanlinna matrix / minimal-exponential-type Jensen bound / Whitney-transversality stack. The
-one genuinely coordinate-free classical step — extreme points of a compact metrizable convex set are
-`G_δ`, `(29)`--`(30)` — is absent from mathlib and buildable in isolation, but closes no gate on its
-own; it is noted as a future reusable Choquet lemma rather than added here.
+coordinate-free classical step — extreme points of a compact convex set are `G_δ`, `(29)`--`(30)` —
+was absent from mathlib and is now formalized axiom-clean as `HTGeometry.isGδ_extremePoints` in
+`formal/GaloisForLFunctions/CompactConvexExtremeGdelta.lean` (real normed space, `K` compact convex;
+the non-extreme points form the `Fσ` union of midpoints of pairs at distance `≥ 1/(n+1)`). The rest
+of `(28)` — density of `Ext M(s)` — still needs the absent Nevanlinna N-extremal construction.
 
 ## Gates
 

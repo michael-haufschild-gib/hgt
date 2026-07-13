@@ -16,7 +16,7 @@ theorem integral_pow_mul_exp_neg_half (k : ℕ) :
       (∫ x : ℝ in Ioi 0, x ^ k * Real.exp (-((1 / 2 : ℝ) * x))) by
         congr 1
         funext x
-        ring]
+        ring_nf]
   rw [h, Real.Gamma_nat_eq_factorial]
   rw [show (k : ℝ) + 1 = ((k + 1 : ℕ) : ℝ) by norm_num,
     Real.rpow_natCast]
@@ -181,4 +181,3 @@ theorem integral_density_mul_coreAtom_eq_pow_sub_completedSurvival
 end
 
 end RHTower
-

@@ -15,7 +15,8 @@ open scoped BigOperators
 
 namespace RHTower
 
-local instance : DecidableEq SoninAllPrimeIndex := Classical.decEq _
+local instance soninCoupledPrimeDecidableEq : DecidableEq SoninAllPrimeIndex :=
+  Classical.decEq _
 
 /-- Rectangular matrix of the canonical column operator.  Rows are indexed by a prime power and
 an output Sonin coordinate; columns use the single common Sonin input coordinate. -/

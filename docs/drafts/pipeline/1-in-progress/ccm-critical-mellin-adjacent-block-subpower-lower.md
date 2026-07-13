@@ -113,6 +113,18 @@ The proof must be formulated directly from the von Mangoldt and Gamma data. It m
 zero locations, real-rootedness, anti-Herglotz positivity, the rectangular Weil lower bound, or an
 RH-equivalent limiting measure.
 
+The pointwise target is no longer the weakest available source obligation.  The formalized sharp
+positive-excess gate shows that it is enough to prove, for
+
+```text
+E(n)=(W(n)-2(1-1/sqrt(2))*sqrt(n))_+,
+```
+
+either `sum E(n)/n^(1+epsilon)<infinity` or
+`sum E(n)^2/n^(1+epsilon)<infinity` for every `epsilon>0`.  These conditions retain only the
+unfavorable overshoots and permit sparse pointwise failures.  Any covariance or norm-square attack
+should therefore target this weighted energy before attempting the stronger uniform estimate.
+
 ## Attacks and exclusions
 
 1. `[REJECTED]` Applying absolute values separately to the polar and prime terms loses their
@@ -138,6 +150,16 @@ RH-equivalent limiting measure.
 8. `[PROVED, POSITIVE FILTER LAW]` The exact Volterra--Haar multiplier `(4)` is nonzero throughout
    the open right half-plane.  Every positive-growth mode is visible, so fixed-window linear
    filtering loses none of the RH-bearing exponent.
+9. `[LIVE, WEAKER ENERGY TARGET]` Prove weighted `l1` or `l2` Dirichlet energy of only the positive
+   sharp-window excess.  The exact negative-part correction makes the coefficients nonnegative,
+   and the formal Landau gate turns either energy estimate directly into RH.
+10. `[LIVE, SPARSE-EXCEPTION TARGET]` Split apertures into a regular set with pointwise subpower
+    control and an exceptional set carrying finite positive-excess Dirichlet energy.  The two
+    estimates may be combined without controlling either channel globally.
+11. `[PROVED, HALF-POWER EXCEPTION ENVELOPE]` Chebyshev's unconditional bound controls the positive
+    excess by `sqrt(2)*(log 4+4)*sqrt(n)`.  Thus an exceptional set may be specified before seeing
+    any prime values: it is enough that `sum_(n in E)n^(-1/2-epsilon)` converge for every positive
+    `epsilon`, while the pointwise target is proved only on `E^c`.
 
 ## Formal endpoint
 
@@ -163,6 +185,7 @@ interface.
 - [x] bounded Gamma term shown harmless on paper
 - [x] square-root polar/prime cancellation reduced in Lean to the normalized Chebyshev potential
 - [x] causal Volterra--Haar transfer multiplier computed and proved right-half-plane faithful
+- [x] pointwise target weakened to positive-excess Dirichlet energy and square energy in Lean
 - [ ] prove `(1)` unconditionally from the completed source
 - [ ] formalize the critical-Mellin Stieltjes/autocorrelation identity
 - [ ] compose to RH

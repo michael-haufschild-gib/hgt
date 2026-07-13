@@ -219,6 +219,58 @@ theorem sharpPrimePolarCoefficient_logTwo_logSample
   rw [hexpNegHalf, hexpNegLogTwo]
   congr 3
 
+/-- The endpoint correction at the dyadic integer sample is an explicit positive decaying
+value.  This is the only term separating the square-root main term from one completed-error
+finite difference. -/
+theorem sharpPrimeWindowEndpointCorrection_logTwo_logSample
+    {n : ℕ} (hn : 0 < n) :
+    sharpPrimeWindowEndpointCorrection (Real.log 2) (Real.log n) =
+      4 * (Real.sqrt 2 - 1) / Real.sqrt n := by
+  rw [sharpPrimeWindowEndpointCorrection]
+  have hnreal : (0 : ℝ) < n := by exact_mod_cast hn
+  have hsqrt : Real.exp (Real.log n / 2) = Real.sqrt n := by
+    rw [← Real.log_sqrt hnreal.le, Real.exp_log (Real.sqrt_pos.mpr hnreal)]
+  have hexpNeg : Real.exp (-Real.log n / 2) = (Real.sqrt n)⁻¹ := by
+    rw [show -Real.log n / 2 = -(Real.log n / 2) by ring,
+      Real.exp_neg, hsqrt]
+  have hhalf : Real.exp (Real.log 2 / 2) = Real.sqrt 2 := by
+    rw [← Real.log_sqrt (by norm_num : (0 : ℝ) ≤ 2),
+      Real.exp_log (Real.sqrt_pos.mpr (by norm_num : (0 : ℝ) < 2))]
+  rw [hexpNeg, hhalf, div_eq_mul_inv]
+  ring
+
+/-- **Completed-error finite-difference law.**  The excess of the dyadic weighted prime window
+above its exact square-root main term is one backward `log 2` difference of the completed
+critical-Mellin error, plus a completely explicit positive `O(n⁻¹ᐟ²)` endpoint value. -/
+theorem dyadicWeightedPrimeWindow_eq_main_add_completedErrorDifference
+    {n : ℕ} (hn : 2 ≤ n) :
+    (∑ k ∈ Ioc ⌊(n : ℝ) / 2⌋₊ n,
+        ((k : ℝ) ^ (-1 / 2 : ℝ)) * ArithmeticFunction.vonMangoldt k) =
+      2 * (1 - (Real.sqrt 2)⁻¹) * Real.sqrt n +
+        (criticalMellinCompletedError (Real.log n - Real.log 2) -
+          criticalMellinCompletedError (Real.log n)) +
+        2 * (Real.sqrt 2 - 1) / Real.sqrt n := by
+  have hnpos : 0 < n := by omega
+  have hsource := sharpPrimePolarCoefficient_eq_completedErrorIncrement
+    (Real.log 2) (Real.log n)
+  rw [sharpPrimePolarCoefficient_logTwo_logSample hnpos,
+    sharpPrimeWindowEndpointCorrection_logTwo_logSample hnpos] at hsource
+  linear_combination (-1 / 2 : ℝ) * hsource
+
+/-- The requested prime-window estimate is exactly the matching one-sided finite-difference
+bound for the completed critical-Mellin error.  No averaging or loss of constants occurs. -/
+theorem dyadicWeightedPrimeWindow_upper_iff_completedErrorDifference
+    {n : ℕ} (hn : 2 ≤ n) (C epsilon : ℝ) :
+    (∑ k ∈ Ioc ⌊(n : ℝ) / 2⌋₊ n,
+        ((k : ℝ) ^ (-1 / 2 : ℝ)) * ArithmeticFunction.vonMangoldt k) ≤
+        2 * (1 - (Real.sqrt 2)⁻¹) * Real.sqrt n + C * (n : ℝ) ^ epsilon ↔
+      criticalMellinCompletedError (Real.log n - Real.log 2) -
+          criticalMellinCompletedError (Real.log n) +
+          2 * (Real.sqrt 2 - 1) / Real.sqrt n ≤
+        C * (n : ℝ) ^ epsilon := by
+  rw [dyadicWeightedPrimeWindow_eq_main_add_completedErrorDifference hn]
+  constructor <;> intro h <;> linarith
+
 /-- **Exact value relation for the dyadic RH inequality.**  The desired one-sided upper bound for
 the weighted von-Mangoldt window is equivalent, with the same exponent and twice the constant, to
 a lower bound for one polar-free normalized-Chebyshev increment. -/

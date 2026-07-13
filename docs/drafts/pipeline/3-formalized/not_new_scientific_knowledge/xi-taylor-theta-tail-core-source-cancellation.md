@@ -23,7 +23,8 @@
   `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSurvivalMixedCurrent.lean`,
   `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSurvivalMobiusReflection.lean`,
   `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedSurvivalRemainder.lean`,
-  `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedSurvivalTransform.lean`
+  `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedSurvivalTransform.lean`,
+  `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedPotential.lean`
 - **Parent target:**
   `../../1-in-progress/xi-taylor-theta-tail-core-density-current.md`
 
@@ -92,7 +93,8 @@ g(x)=exp(-x/2)-eta(x),
 
 then termwise Gaussian-polynomial comparison proves `rho_n>=(1/2)eta_n` on `x>=0`.  Therefore
 `exp(x/2)eta(x)` is decreasing from one and `g>=0`.  Lean formalizes the atom comparison, summed
-hazard bound, and completed-remainder positivity.  The elementary exponential moments also give
+hazard bound, odd reflection `g(-x)=-g(x)`, and completed-remainder positivity.  The elementary
+exponential moments also give
 
 ```text
 integral rho(x)H_d(z,x)dx
@@ -102,6 +104,27 @@ integral rho(x)H_d(z,x)dx
 The transform identity is exact and formalized with all integrability obligations.  Its positive
 term is not an error: it cancels the explicit top monomial and therefore must remain polarized in
 any current estimate.
+
+This remainder is the decreasing derivative of the even completed potential
+
+```text
+p(x)=(1/2)exp(-x/2)-T(x),
+p(-x)=p(x), p(x)>=0, p(x)->0,
+p'(x)=-(1/4)g(x), p''(x)-(1/4)p(x)=-Phi(x).
+```
+
+Writing `G_d=integral g partial_x H_d` and `M_d=(-4z^2)^(d+1)`, Lean differentiates the exact
+finite polynomial relation and proves
+
+```text
+2U_d=M_d-G_d,
+2U_d'=M_d'-G_d',
+J_(U_d)=(1/4)Im((M_d'-G_d')conjugate(M_d-G_d)).
+```
+
+No differentiation under the integral is assumed.  This proves that the favorable monomial and
+the positive-remainder transform cancel at both value and derivative level.  Separate norm bounds
+on their cross terms therefore discard the full canonical cancellation rather than control it.
 
 Differentiating the theta reflection also gives the complementary survival law
 

@@ -49,3 +49,4 @@ import GaloisForLFunctions.Hurwitz.JointLadderIndependence
 import GaloisForLFunctions.Hurwitz.JointHypertranscendence
 import GaloisForLFunctions.Hurwitz.JointUpperEndDifferentialIndependence
 import GaloisForLFunctions.Hurwitz.IntegerTranslationDifferentialMatroid
+import GaloisForLFunctions.Hurwitz.AnchorTransversality

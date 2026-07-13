@@ -81,6 +81,17 @@ theorem thetaCuspTailSecondDensity_ge_half_survival
 def thetaCuspCompletedSurvivalRemainder (x : ℝ) : ℝ :=
   Real.exp (-x / 2) - thetaCuspTailSurvival x
 
+@[simp] theorem thetaCuspCompletedSurvivalRemainder_zero :
+    thetaCuspCompletedSurvivalRemainder 0 = 0 := by
+  simp [thetaCuspCompletedSurvivalRemainder]
+
+theorem thetaCuspCompletedSurvivalRemainder_neg (x : ℝ) :
+    thetaCuspCompletedSurvivalRemainder (-x) =
+      -thetaCuspCompletedSurvivalRemainder x := by
+  unfold thetaCuspCompletedSurvivalRemainder
+  rw [thetaCuspTailSurvival_neg]
+  ring_nf
+
 theorem thetaCuspCompletedSurvivalRemainder_nonneg
     {x : ℝ} (hx : 0 ≤ x) :
     0 ≤ thetaCuspCompletedSurvivalRemainder x := by
@@ -124,4 +135,3 @@ theorem thetaCuspCompletedSurvivalRemainder_nonneg
 end
 
 end RHTower
-

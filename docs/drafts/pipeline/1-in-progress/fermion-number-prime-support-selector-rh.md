@@ -105,6 +105,14 @@ must retain one of the following before taking supertrace:
 3. a reflected positive cohomology class created by the Gamma boundary;
 4. an exhaustion anomaly measuring failure of scalar axis-factorization to commute with closure.
 
+There is now a concrete finite mechanism for retaining that information.  The scalar selector is
+the boundary value at `t=1` of the positive deformation
+`M_n(t)=n(1-t)^(n-1)`, where `n` is support size.  Its `r`th boundary derivative is nonzero exactly
+at `n=r+1`, with value `n(-1)^r r!`.  Hence the complete marked boundary germ recovers every
+mixed-support cardinality even though its zeroth value retains only singleton support.  This is
+proved in `PrimeSupportBoundaryJets.lean` and developed as the stable-determinant detour in
+`prime-support-boundary-jet-stability-rh.md`.
+
 At every finite level the class may be trivial while the cofinal completion is nontrivial.  This is
 not an unspecified derived limit: the marking and the finite character are fixed by `(1)`, so the
 only admissible defect is the failure of the marked-complex closure to commute with the

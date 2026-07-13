@@ -35,7 +35,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 1502 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean` |
 | 1494 | `formal/GaloisForLFunctions/Bottcher/ZeroCircleBranchQ62.lean` |
 | 1454 | `formal/GaloisForLFunctions/SchwartzSpectralQuadraticSeparation.lean` |
-| 1417 | `formal/GaloisForLFunctions/Bottcher/CrossRatioNormalBridge.lean` |
+| 1438 | `formal/GaloisForLFunctions/RHTower/CCMInverseTiltedDyadicPrimeTomography.lean` |
 
 ## Gap Markers
 

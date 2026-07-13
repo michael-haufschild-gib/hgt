@@ -2,7 +2,7 @@
 
 - **ID:** `moving-fiber-prime-weyl-parallelogram`
 - **Stage:** 1-in-progress
-- **Type:** CANDIDATE / LARGE DETOUR / SHORTCUT FALSIFIED
+- **Type:** CANDIDATE / LARGE DETOUR / SHORTCUT FALSIFIED / POSITIVE SUCCESSOR FOUND
 - **Parent:** `dyadic-weld-weyl-multiplicity-route.md`
 - **Source:** `PrimeDyadicWeyl.lean`, `SEMEventualSplit.lean`,
   `OrbitwiseSourceDivisorSeam.lean`, `SEMTruncatedJetWeylCharge.lean`
@@ -63,6 +63,13 @@ The detour identifies an exact additional datum:
 
 With such a trivialization, the loop determinant would be forced to one and the Weyl scalar would
 give `zeta_k^d=1`.  Without it, the phase is curvature rather than a multiplicity constraint.
+
+The stronger positive successor
+`algebraic-moving-fiber-prime-weyl-parallelogram-rh.md` no longer asks for this trivialization.
+At the rational-imaginary step `I/q`, a positive-rank determinant holonomy is
+`p^(-(d/q)I)` and hence transcendental by Gelfond--Schneider.  Mere number-field descent of the
+moving determinant transport would therefore force rank zero.  This is strictly weaker than
+flatness and remains available at arbitrarily small translation scale.
 
 `SEMTruncatedJetWeylCharge.lean` proves that this proposed determinant-line flatness is not a new
 gap: its scalar obstruction is exactly the completed-SEM contour charge modulo `2^k`.  Thus the

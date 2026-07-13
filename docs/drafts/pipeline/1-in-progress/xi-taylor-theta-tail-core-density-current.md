@@ -182,7 +182,7 @@ rho_n(x) >= (1/2)eta_n(x),  x>=0.
 Hence `rho>=(1/2)eta`, the function `exp(x/2)eta(x)` decreases from one, and
 
 ```text
-g(x)>=0,  x>=0.                                          (4d)
+g(-x)=-g(x),  g(x)>=0 for x>=0.                          (4d)
 ```
 
 These statements are formalized in
@@ -206,6 +206,74 @@ Equation `(4e)`, including the exponential moment evaluation and integrability, 
 the `g` transform cancels the explicit degree-`2d+2` monomial.  The live possibility is a
 polarized energy in which the favorable monomial current absorbs the mixed `g` cross current
 without replacing that cancellation by absolute values.
+
+The remainder is itself the derivative of an exact completed theta potential.  Put
+
+```text
+p(x)=(1/2)exp(-x/2)-T(x).
+```
+
+The theta reflection and `(4d)` give
+
+```text
+p(-x)=p(x),  p(x)>=0 for x>=0,  p(x)->0,
+p'(x)=-(1/4)g(x),
+p''(x)-(1/4)p(x)=-Phi(x).                                (4f)
+```
+
+Thus the positive remainder is the decreasing derivative of the classical even completed-tail
+potential; it is not a second independent source.  If
+
+```text
+G_d(z)=integral g(x) partial_x H_d(z,x)dx,
+M_d(z)=(-4z^2)^(d+1),
+```
+
+then the exact finite value relation and its derivative are
+
+```text
+2U_d=M_d-G_d,
+2U_d'=M_d'-G_d',
+
+J_(U_d)(z)
+ =(1/4) Im((M_d'(z)-G_d'(z)) conjugate(M_d(z)-G_d(z))).  (4g)
+```
+
+Here `G_d'` is obtained by differentiating the exact polynomial identity, so `(4g)` uses no
+unproved differentiation under the integral.  Equations `(4f)`--`(4g)` are formalized in
+`XiCTaylorThetaTailCompletedPotential.lean`.  They close the naive monomial-absorption route:
+`G_d` cancels `M_d` at both value and derivative level, and for `|2z|>1` the two terms can each
+grow exponentially with `d` while their difference remains the canonical core.  Bounding the
+cross terms by their norms therefore destroys precisely the cancellation to be proved.  A
+successful use of `g>=0` must furnish a signed polarization of the complete difference in `(4g)`;
+positivity or monotonicity of the potential alone supplies no such sign.
+
+These potential properties are rigorously insufficient even as a package.  Let `0<a<b`, `c>0`,
+and take the positive even decreasing Gaussian mixture whose bilateral Fourier transform is
+
+```text
+K(z)=exp(-a z^2)+c exp(-b z^2).
+```
+
+Its zeros satisfy
+
+```text
+z^2=(log c-(2m+1)pi i)/(b-a),  m in Z,                  (4h)
+```
+
+and are nonreal; choosing `c=1` and `b-a>2pi` puts a pair in `0<|Im z|<1/2`.  Convolve this
+source with the positive Green kernel `exp(-|x|/2)`.  The resulting potential `p` is positive,
+even, decreasing on the positive half-line, tends to zero, and satisfies
+
+```text
+p''-(1/4)p=-k,  g=-4p'>=0.
+```
+
+Its Fourier transform is `K(z)/(z^2+1/4)`, so it retains every zero in `(4h)`.  Therefore
+evenness, positive completion source, positive completed remainder, monotone potential, and the
+exact Green relation `(4f)` do not imply the required orientation.  The remaining proof must use
+an arithmetic value relation specific to the canonical theta sum inside the full polarization
+`(4g)`.
 
 There is a second finite value relation, also proved in Lean,
 
@@ -498,11 +566,141 @@ infinite translate sum becomes a finite Dirichlet packet.  Two integrations by p
 reconstructs the seam in `(3)`--`(4)`.  Hence ordinary coordinatewise integration by parts in the
 packet form is equivalent to the already indefinite mixed identity and supplies no new sign.
 
+There is nevertheless an independent signed polarization of the *full square-index packet*.
+For one ordered atom pair put
+
+```text
+X=pi m^2 exp(2x),  Y=pi n^2 exp(2y),
+w=exp(x/2+y/2-X-Y),
+Q=X+Y-3/4-12XY,  L=1-16XY.
+```
+
+The exact value polynomial of `rho=4T''` satisfies the algebraic identity
+
+```text
+(1-24X+16X^2)(1-24Y+16Y^2)=16Q^2-8L^2,               (12d.1)
+rho_m(x)rho_n(y)=w(16Q^2-8L^2).                       (12d.2)
+```
+
+Both channels in `(12d.2)` are pointwise nonnegative before the displayed subtraction.  Summing
+over all ordered positive square indices is justified by the existing absolute atom-pair
+expansion, so Lean proves
+
+```text
+rho(x)rho(y)=sum_(m,n>=1) w_(m,n)(x,y)
+  (16Q_(m,n)(x,y)^2-8L_(m,n)(x,y)^2),                 (12d.3)
+
+J_(U_d)(z)=(1/4)sum_(m,n>=1) integral integral
+  w_(m,n)(16Q_(m,n)^2-8L_(m,n)^2)K_d(z;x,y)dxdy.      (12d.4)
+```
+
+The polarization also has a genuinely arithmetic swap form.  In diagonal coordinates
+`x=u+v`, `y=u-v`, write
+
+```text
+A=pi exp(2u)(m^2+n^2)cosh(2v),
+B=pi exp(2u)(m^2-n^2)sinh(2v),
+P=pi^2 exp(4u)m^2n^2,
+C=A-3/4-12P,  L=1-16P.
+```
+
+Pairing `(m,n)` with `(n,m)` gives the exact signed hyperbolic packet
+
+```text
+rho_m(u+v)rho_n(u-v)+rho_n(u+v)rho_m(u-v)
+ =16 exp(u-A)
+   ((C-B)^2 exp(B)+(C+B)^2 exp(-B)-L^2 cosh(B)).       (12d.5)
+```
+
+Equations `(12d.1)`--`(12d.4)` are formalized in
+`XiCTaylorThetaTailSquareIndexPolarization.lean`; `(12d.5)` follows from them by the square-index
+swap and the exponential addition law.  This relation is specific to the full canonical second
+density: replacing `4T''` by a generic positive source destroys the two exact forms `Q` and `L`.
+It exposes the required cancellation channel without using Xi divisors, a limiting measure, or a
+sign of a Cauchy sequence.  The remaining sign problem is precise: the same oriented kernel
+`K_d` multiplies both squares, so pointwise comparison of the two source channels is not an
+oriented-current comparison.  A successful estimate must couple the swap in `(12d.5)` to the
+`v`-orientation of `K_d`, or show that the uncoupled top edge is `o(d)` on the anisotropic mesh.
+
+The multiples-row identity yields a second polarization which is global and cofinal rather than
+atomwise.  Let `S` be the critical dyadic shift
+
+```text
+(Sf)(x)=2^(-1/2)f(x+log 2).
+```
+
+The exact even-index row is `E=S rho`; hence the odd row and parity wavelet are
+
+```text
+O=(I-S)rho,  V=(2S-I)rho,
+V(x)=sqrt(2)rho(x+log 2)-rho(x).                         (12d.6)
+```
+
+At dyadic depth `k`, put `F_k=S^k rho`, `O_k=F_k-F_(k+1)`, and
+`V_k=2F_(k+1)-F_k`.  The row `F_k` is exactly the sum of the density atoms whose square index is
+divisible by `2^k`; `O_k` is therefore the row of exact `2`-adic valuation `k`.  The elementary
+Haar identity
+
+```text
+F_k(x)F_k(y)
+ =2O_k(x)O_k(y)-V_k(x)V_k(y)+2F_(k+1)(x)F_(k+1)(y)
+```
+
+telescopes with its exact arithmetic weights to
+
+```text
+rho(x)rho(y)
+ =sum_(0<=k<N) [2^(k+1)O_k(x)O_k(y)-2^k V_k(x)V_k(y)]
+  +2^N F_N(x)F_N(y).                                    (12d.7)
+```
+
+Lean proves the multiples-row interpretation, every finite identity `(12d.7)`, and its exact lift
+through `K_d` to `J_(U_d)`.  The remainder is a single row translated by `N log 2` toward the
+Gaussian cusp, so it is the correct candidate for a uniform top-edge estimate.  The finite sum is
+not yet oriented: each parity wavelet has bilateral Mellin factor
+`(2^(1-s)-1)zeta(s)` and therefore retains the nontrivial Xi factor.  Dropping the negative Haar
+currents would silently assume their sign.  The live theorem is consequently narrower: prove a
+joint upper estimate for the signed *finite sum* in `(12d.7)` while sending the explicit top row
+to zero; no termwise positivity statement is available.
+
 `[CONJECTURE]` The remaining arithmetic possibility is a *polarized jump energy*: integrate in a
 diagonal or difference coordinate before resolving the jumps, so that paired jumps at
 `(log m,log n)` contribute a square or a summable top-edge defect rather than the asymmetric seam.
 Any viable identity must be checked against the exact phase reversals in `(8i)` and must not
 replace the off-diagonal pair current by its diagonal part.
+
+The diagonal-coordinate differentiation itself is exact but does not produce that square.  Put
+
+```text
+x=u+v,  y=u-v,
+R(u,v)=T(u+v)T(u-v),
+Box=partial_u^2-partial_v^2.
+```
+
+Then direct differentiation gives
+
+```text
+Box R=4T'(x)T'(y),
+Box^2 R=16T''(x)T''(y)=rho(x)rho(y).                    (12d')
+```
+
+The positive quadrant becomes the characteristic cone `u>|v|`, and `dx dy=2 du dv`.  Thus the
+pair source is a literal square of the wave operator.  Its characteristic Green boundary is,
+however, exactly the two original seams `x=0` and `y=0`.  Using
+`H_d(z,0)=1`, `partial_x H_d(z,0)=0`, `T'(0)=-1/4`, and decay at infinity,
+the twice-integrated value is again
+
+```text
+integral rho(x)H_d(z,x)dx
+ =1-4(z^2+1/4)integral T(x)C_d(z,x)dx.
+```
+
+Hence the cone Green formula returns `(3)`--`(4)`: the bulk is the same indefinite cosine cross
+current and the null-boundary flux is the same seam.  Fourier transformation in `v` makes the
+bulk wave symbol a nonnegative square, but it acts on the sign-changing theta Wigner slice; it
+does not make the mixed current a squared norm.  Equation `(12d')` is proved on paper and retires
+the unqualified diagonal-wave-square route.  A live polarized-jump theorem would need an
+additional arithmetic boundary relation not contained in `rho=4T''` or in the wave factorization.
 
 The translate operator has an exact signed inverse on the canonical source.  For `x>=0`, Lean
 proves absolute convergence and the critical Möbius identity
@@ -826,6 +1024,16 @@ log-convexity and ratio monotonicity are
   is a genuine new exact source inequality, yet it does not orient the finite complex pair current
   `(11)`.  The earlier version's suggestion that log-concavity alone implied RH is not the claim of
   the revised paper.  Primary source: <https://www.preprints.org/manuscript/202604.0159>.
+- Michałowski gives an interval-certified negative order-five Toeplitz minor for the actual
+  de Bruijn--Newman kernel.  Hence a `PF_infinity` or all-order Toeplitz-total-positivity shortcut
+  is not merely unproved for this kernel: the reported `PF_5` obstruction rules out that proposed
+  source property.  Primary source: <https://arxiv.org/abs/2602.20313>.
+- Freedman's finite-core Volterra manuscript derives the same second-order theta-mode identity
+  and an exact boundary-plus-tail formula for a Weyl kernel.  It explicitly leaves the
+  quotient-to-original Weyl lift, uniform coverage of `|omega|<1/2`, and the final KLM/de Branges
+  bridge open.  Its normalized quotient certificate therefore supplies no sign theorem for the
+  present raw theta-tail current; the individual boundary and fixed-Volterra layers are also
+  reported indefinite.  Primary source: <https://arxiv.org/abs/2606.29555>.
 - Polson's June 2026 incomplete-gamma/Thorin framework separates an unconditional Gaussian
   "trivial tier" from a zero-ordinate tier whose generalized-gamma-convolution positivity is
   equivalent to RH.  It supplies no finite cancellation between those tiers and cannot be used as
@@ -914,6 +1122,8 @@ log-convexity and ratio monotonicity are
 - [x] determine every odd raw-tail seam jet and close the repeated-IBP boundary data
 - [x] prove exact atom masses and pointwise Gaussian domination by the first density atom
 - [x] expose the exact logarithmic-integer translate law for every density atom
+- [x] derive and formalize the exact signed square-index polarization of the full atom packet
+- [x] derive and formalize the cofinal dyadic Haar polarization and exact current lift
 - [x] derive the exact mean-zero density-score covariance and rule out pointwise phase ordering
 - [x] identify the current with the vertical derivative of the finite squared modulus
 - [x] derive and formalize the real-boundary-to-interior complex Laguerre-defect identity

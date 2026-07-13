@@ -144,7 +144,7 @@ Pointwise positivity of `M_(k,a)` is only the first half of this obligation.
 - [x] formalize strict positivity, evenness, continuity, and integrability of `M_(k,a)`;
 - [x] formalize `M_(k,a)(x/2)=partial_a R_(f_a)(x)`, extend integrability and continuity to
       `|a|<1`, and combine strict spatial positivity with the finite differential-frame exclusion;
-- [ ] formalize the RH equivalence in `(3)` without introducing a positivity premise;
+- [x] formalize the Fourier-sign/RH equivalence in `(3)` without introducing a positivity premise;
 - [ ] formalize the rank-two inertia statement `(5)`;
 - [ ] audit the exact center-mixed criterion against ambiguity-function, Wigner, and
       positive-definite-function literature;
@@ -162,6 +162,12 @@ The exact autocorrelation-path identification and full-aperture regularity are i
 `formal/GaloisForLFunctions/RHTower/HedenmalmAutocorrelationPath.lean`; their separate formalized
 card is `../3-formalized/not_new_scientific_knowledge/hedenmalm-autocorrelation-path-boundary.md`.
 
+The exact source-to-orientation boundary is in
+`formal/GaloisForLFunctions/RHTower/HedenmalmCenterMixedOrientationBoundary.lean`.  It proves that
+the actual and pointed-moment Bezoutian diagonals equal the theta-orbit Krein current divided by
+`2a`, and that nonnegativity of the corresponding center-mixed Fourier current throughout the
+critical aperture is equivalent to RH.  It does not prove that current nonnegative.
+
 The formal theorem surface is:
 
 ```text
@@ -169,6 +175,8 @@ integral_thetaWignerCenterMixedDensity_mul_phase_thetaCusp
 thetaCuspCenterMixedDensity_pos
 integrable_thetaCuspCenterMixedDensity
 continuous_thetaCuspCenterMixedDensity.
+thetaXiHankelOrbitNonnegative_iff_riemannHypothesis
+thetaCuspCenterMixedFourierNonnegative_iff_riemannHypothesis
 ```
 
 ## Parent-theory boundary

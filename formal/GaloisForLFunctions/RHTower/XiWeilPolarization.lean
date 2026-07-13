@@ -272,6 +272,43 @@ theorem finite_xiSpectralPoint_fiber (alpha : ℂ) :
 def xiSpectralMultiplicity (alpha : ℂ) : ℕ :=
   (finite_xiSpectralPoint_fiber alpha).toFinset.card
 
+/-- At every actual centered Xi zero, the number of divisor copies in the spectral carrier is
+exactly the analytic vanishing order of `XiC`. -/
+theorem xiSpectralMultiplicity_eq_analyticOrderAt_toNat
+    {alpha : ℂ} (halpha : XiC alpha = 0) :
+    xiSpectralMultiplicity alpha = (analyticOrderAt XiC alpha).toNat := by
+  obtain ⟨q, hq⟩ := (XiC_eq_zero_iff_exists_xiZeroCopy alpha).mp halpha
+  let S : Set XiZeroCopy := {r | xiSpectralPoint r = alpha}
+  let B : Set XiZeroCopy := {r | r.1 = q.1}
+  have hSB : S = B := by
+    ext r
+    simp only [S, B, Set.mem_setOf_eq]
+    constructor
+    · intro hr
+      apply xiSpectralPointSupport_injective
+      simpa only [xiSpectralPoint_eq_support] using hr.trans hq.symm
+    · intro hr
+      rw [← hq]
+      simp only [xiSpectralPoint_eq_support, hr]
+  letI : Fintype {r : XiZeroCopy // r ∈ B} :=
+    Fintype.ofEquiv
+      (Fin (Int.toNat ((MeromorphicOn.divisor xi Set.univ) (q.1 : ℂ))))
+      (by simpa only [B, Set.mem_setOf_eq] using xiZeroCopyFiberEquiv q.1)
+  calc
+    xiSpectralMultiplicity alpha = S.ncard := by
+      rw [xiSpectralMultiplicity]
+      exact (Set.ncard_eq_toFinset_card S (finite_xiSpectralPoint_fiber alpha)).symm
+    _ = B.ncard := congrArg Set.ncard hSB
+    _ = B.toFinset.card := Set.ncard_eq_toFinset_card' B
+    _ = Fintype.card {r : XiZeroCopy // r ∈ B} := Set.toFinset_card B
+    _ = Int.toNat ((MeromorphicOn.divisor xi Set.univ) (q.1 : ℂ)) := by
+      rw [Fintype.card_congr
+        (by simpa only [B, Set.mem_setOf_eq] using (xiZeroCopyFiberEquiv q.1).symm)]
+      exact Fintype.card_fin _
+    _ = (analyticOrderAt XiC alpha).toNat := by
+      rw [← hq, xiSpectralPoint_eq_support, XiC_analyticOrderAt_support]
+      simp
+
 /-- Every actual Xi zero has at least one multiplicity copy. -/
 theorem xiSpectralMultiplicity_pos_of_XiC_eq_zero
     {alpha : ℂ} (halpha : XiC alpha = 0) :

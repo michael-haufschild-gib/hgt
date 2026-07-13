@@ -162,9 +162,32 @@ standalone reusable theorem in
   + evenness-reflected flank bound + Liouville).
 
 This decouples the finish from `periodic_spectrum_rigidity` (which was welded to the
-arithmetic-progression series).  The remaining glue for the 2 → 3 gate is steps 1–3: from the finite
-transverse flank series build the two shift annihilators (each flank slice `G_n` is a shift
-eigenfunction with eigenvalue `ω^n`; evenness gives the reflected eigenvalues `ω^{-n}`), promote
-`p(R)G = 0` from the flank to all of `ℂ` by the identity theorem, feed the coprime residuals to the
-existing `fixed_of_coprime_reflected_shift_annihilators` to obtain the real period, and close with
-`even_periodic_flankBounded_const`.
+arithmetic-progression series).
+
+## 2026-07-13 Full analytic wrapper formalized
+
+The complete analytic mechanism is now formalized axiom-clean in
+`formal/GaloisForLFunctions/RHTower/FiniteTransverseReflectionRigidityAnalytic.lean`, capstone
+
+- `finiteTransverse_reflection_rigidity` — an even entire `G` whose lower-flank trace is a finite sum
+  of shift eigenfunctions `G = ∑_{n∈S} G_n` with `G_n(z+T) = ω^n G_n(z)` (`ω` of infinite
+  multiplicative order) and which is bounded on the lower flank, is constant.
+
+Supporting reusable pieces, all axiom-clean:
+
+- `shiftEnd` / `shiftEnd_pow_apply` / `polyShiftOp_shiftEnd_apply` — the shift endomorphism of
+  `ℂ → ℂ` and the pointwise value `polyShiftOp(shiftEnd c) p G z = ∑_e p.coeff e · G(z + e·c)`;
+- `polyShiftOp_eq_zero_on_of_eigenslice` — a shift polynomial vanishing at every slice eigenvalue
+  annihilates a finite eigenslice sum on any set closed under `+c`;
+- `polyShiftOp_eq_zero_of_eventually` — the identity-theorem promotion from a neighbourhood to `ℂ`;
+- `fullPhase_eq_mul` / `fullPhase_eq` (and the reflected versions) — the `(X−1)`-factorisation feeding
+  the coprime-residual Bézout core.
+
+The forward annihilator `∏_{n∈S}(R − ω^n)` is killed on the lower flank by the eigenslice; evenness
+gives the reflected eigenslice `G = ∑_{n∈S} G_n(−·)` with eigenvalues `ω^{−n}` on the upper flank, so
+`∏_{n∈S}(R − ω^{−n})` is killed there; the identity theorem globalises both; the coprime residuals
+force `R G = G` (or `G = 0` when `0 ∉ S`); and `even_periodic_flankBounded_const` finishes.
+
+The only remaining step for a top-level theorem stated from the explicit two-generator flank
+exponential series is the elementary restatement supplying the eigenslice hypotheses `hslice`/`heig`
+from `e^{-iT(mα+nβ)} = ω^n` (with `T = 2π/α`), which the wrapper takes as inputs.

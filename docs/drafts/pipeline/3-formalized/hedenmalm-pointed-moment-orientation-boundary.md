@@ -33,8 +33,32 @@ the continued prime--archimedean one-Cauchy diagonal is nonnegative there;
 RH.                                                        (2)
 ```
 
-Thus all-order moment determinacy removes source ambiguity but creates no order.  The remaining
-Hilbert--Polya theorem is exactly an orientation theorem for the uniquely selected Bezoutian.
+Thus all-order moment determinacy removes source ambiguity and determines every Bezoutian value.
+What it does not provide is a theorem placing those determined values in the nonnegative chamber.
+The remaining Hilbert--Polya theorem is exactly that global orientation theorem for the uniquely
+selected Bezoutian.
+
+The complementary theta-source normalization is now formalized as well.  For
+`z=b+ia`, `0<a<1/2`, at every regular point,
+
+```text
+B_M(z,conj z)
+  = B_Xi(z,conj z)
+  = Q_theta(a,b)/(2a),                                   (3)
+```
+
+where `Q_theta` is the split rank-four Hankel--Krein current and also the Fourier transform of the
+actual center-mixed theta autocorrelation tangent.  Hence moment reconstruction, theta-source
+incidence, and the Fourier current select exactly the same scalar, while none of the reconstruction
+identities proves its sign.
+
+The universal positive-form classification closes the adjacent analytic representation problem:
+every continuous nonnegative momentum-symmetric Schwartz form has a unique positive temperate
+spectral measure, and theta nullity forces that measure onto the real `Xi` divisor. This does not
+orient the reconstructed scalar. Nonnegativity is an input to that classification, while the
+pointed moment module supplies only the uniquely reconstructed Bezoutian. The remaining gap is
+therefore not measure existence, moment determinacy, or source ambiguity; it is exactly the sign
+of the actual source-selected Bezoutian.
 
 ## Positive implementation law
 
@@ -61,12 +85,17 @@ whose spectral density retains the same transverse data.  See
 File:
 `formal/GaloisForLFunctions/RHTower/XiHedenmalmMomentOrientationBoundary.lean`.
 
+The theta-source normalization and Fourier-sign equivalence are in
+`formal/GaloisForLFunctions/RHTower/HedenmalmCenterMixedOrientationBoundary.lean`.
+
 Theorem surface:
 
 ```text
 xiHedenmalmPointedMomentBezoutian_conj_eq_normSq_mul_sourceDiagonal
 xiHedenmalmPointedMomentUpperHermitianDiagonalNonnegative_iff_source
 xiHedenmalmPointedMomentUpperHermitianDiagonalNonnegative_iff_riemannHypothesis
+xiHedenmalmPointedMomentBezoutian_upper_conj_eq_krein_div
+thetaCuspCenterMixedFourierNonnegative_iff_riemannHypothesis
 ```
 
 The proofs assume neither RH nor positivity.  The final equivalence is a boundary theorem and

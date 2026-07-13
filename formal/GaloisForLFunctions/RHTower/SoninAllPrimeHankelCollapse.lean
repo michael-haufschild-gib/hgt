@@ -39,7 +39,8 @@ namespace RHTower
 
 noncomputable section
 
-local instance : DecidableEq SoninAllPrimeIndex := Classical.decEq _
+local instance soninAllPrimeHankelDecidableEq : DecidableEq SoninAllPrimeIndex :=
+  Classical.decEq _
 
 /-- The single source moment sequence carried by the positive all-prime Sonin energy.  With the
 shifted convention for `hsPow`, `soninAllPrimeEnergyMoment a r = Tr(T_a^(r+1))`. -/

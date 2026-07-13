@@ -31,12 +31,21 @@ theorem phase_eq_one_of_weyl_common_eigenvector {d : ℕ}
     (hweyl : U * V = zeta • (V * U)) :
     zeta = 1 := by
   have haction := congrArg (fun M : Matrix (Fin d) (Fin d) ℂ => M *ᵥ x) hweyl
+  change (U * V) *ᵥ x = (zeta • (V * U)) *ᵥ x at haction
+  have hleft : (U * V) *ᵥ x = (a * b) • x := by
+    rw [← Matrix.mulVec_mulVec, hV, Matrix.mulVec_smul, hU, smul_smul]
+    congr 1
+    ring
+  have hright : (zeta • (V * U)) *ᵥ x = (zeta * (a * b)) • x := by
+    rw [Matrix.smul_mulVec, ← Matrix.mulVec_mulVec, hU, Matrix.mulVec_smul, hV,
+      smul_smul, smul_smul]
+    congr 1
+    ring
   have hscalar : (a * b) • x = (zeta * (a * b)) • x := by
-    simpa [Matrix.mulVec_mulVec, hU, hV, Matrix.mulVec_smul,
-      Matrix.smul_mulVec, mul_comm, mul_left_comm, mul_assoc] using haction
+    rw [← hleft, haction, hright]
   have hex : ∃ i, x i ≠ 0 := by
     by_contra hnone
-    push_neg at hnone
+    push Not at hnone
     apply hx
     funext i
     exact hnone i

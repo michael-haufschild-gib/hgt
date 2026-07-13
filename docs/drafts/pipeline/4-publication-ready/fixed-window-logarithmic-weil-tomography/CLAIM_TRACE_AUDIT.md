@@ -55,6 +55,33 @@ fixedWindowLogarithmicWeilCompleteness_capstone.
 | an eventual lower budget of exponent \(\alpha\) exists iff the transverse supremum is at most \(\alpha\) | xiRectangularWeilTailPowerLower_iff_transverseSup_le_global |
 | the lower budget is equivalent to the zero-free half-plane \(\Re\rho\le1/2+\alpha\) | xiRectangularWeilTailPowerLower_iff_all_xiZeros_re_le, xiRectangularWeilTailPowerLower_iff_xi_zeroFree_right_halfPlane |
 | the complete one-sided exponent spectrum is exactly \([\delta_*,\infty)\) | xiRectangularOneSidedExponentSet_eq_Ici_transverseSup |
+| fixed-abscissa negative energy of the actual observable transports through the finite prefix and bounded remainder | xiRectangularRightNegativePart_LSeriesSummable_at_one_add_of_tailNegativePart_summable |
+| negative energy at the single abscissa \(1+\alpha\) bounds every Xi zero by \(\Re\rho\le1/2+\alpha\) | xi_zero_re_le_half_add_of_xiRectangularWeilTailNegativePart_summable |
+| \(\delta_*\le\alpha\) iff the actual negative-mass series converges at every abscissa \(1+\alpha+\varepsilon\) | xiRightTransverseSup_le_iff_negativePartEnergyAbove |
+| one real point of negative-mass convergence bounds \(\delta_*\) by that abscissa minus one | xiRightTransverseSup_le_sub_one_of_negativePart_summable |
+| the negative-mass series converges above \(1+\delta_*\) and diverges strictly between \(1\) and \(1+\delta_*\) | xiRectangularNegativePart_summable_above_transverseSup, not_xiRectangularNegativePart_summable_below_transverseSup |
+| under false RH the negative-mass absolute-convergence abscissa is exactly \(1+\delta_*\) | xiRectangularNegativePart_abscissa_eq_transverseSup_of_not_rh |
+| under RH the negative carrier vanishes and its abscissa is \(-\infty\) | xiRectangularNegativePart_abscissa_eq_bot_of_rh |
+| unconditional RH/false-RH abscissa dichotomy | xiRectangularNegativePart_abscissa_dichotomy |
+| the negative-mass abscissa is independent of positive window width and admissible prefix | xiRectangularNegativePart_abscissa_independent_of_window_tail |
+| at every real abscissa an exact positive split is summable iff both channels are summable | negativeChannelSplit_summable_iff |
+| every exact positive split conserves the total abscissa as the maximum channel abscissa | negativeChannelSplit_abscissa_eq_max |
+| maximum positive-channel abscissa is independent of window, cutoff, and exact allocation | negativeChannelSplit_max_abscissa_independent |
+| \(\delta_*\le\alpha\) iff there exists any positive shifted-energy majorant of the actual negative mass | xiRightTransverseSup_le_iff_exists_negativeEnergyMajorantAbove |
+| \(\delta_*\le\alpha\) iff there exists a positive two-channel energy cover, without exact splitting | xiRightTransverseSup_le_iff_exists_twoChannelEnergyCoverAbove |
+| for every exact nonnegative split and every \(\alpha\ge0\), shifted energy plus residual order \(\alpha\) is equivalent to \(\delta_*\le\alpha\) | xiRightTransverseSup_le_iff_negativeChannelSpectrum |
+| the positive-channel spectrum is equivalent to the full zero-free half-plane \(\Re\rho\le1/2+\alpha\) | all_xiZeros_re_le_iff_negativeChannelSpectrum |
+| the zero member of the positive-channel spectrum is exactly RH | riemannHypothesis_iff_negativeChannelSpectrum_zero |
+| every exact nonnegative split gives the endpoint energy/subpower RH equivalence | riemannHypothesis_iff_negativeChannelEnergy_and_subpowerChannel |
+| false RH forces every positive split to fail in its residual or energy channel | negativeChannelDichotomy_of_not_riemannHypothesis |
+| every fractional selector gives an exact continuous positive allocation | riemannHypothesis_iff_fractionalNegativeEnergy_and_complementarySubpower |
+| for every exceptional set, RH is equivalent to finite Dirichlet energy of its actual carried negative mass plus off-set subpower lower control | riemannHypothesis_iff_exceptionalNegativeEnergy_and_subpowerLowerOff |
+| under false RH every exceptional set exposes complementary non-subpower loss or divergent carried negative energy | exceptionalCarrierDichotomy_of_not_riemannHypothesis |
+| the complete observable has an unconditional square-root envelope | norm_xiRectangularWeilLogCoefficient_le_halfPower |
+| a global \(n^\beta\) budget plus \(\beta\)-thin exceptional support and off-support subpower lower control forces RH | riemannHypothesis_of_xiRectangularWeilSubpowerLowerOff_of_powerEnergy |
+| at the exact sharp exponent \(\delta_*\), transverse-thin sparse control is equivalent to RH | riemannHypothesis_iff_xiRectangularWeilSubpowerLowerOff_transverse |
+| under false RH every exceptional carrier of all non-subpower negative excursions is thick at the exact transverse exponent | exists_transverseExceptionalEnergy_divergence_of_not_riemannHypothesis |
+| the divisor-independent half-power specialization and its false-RH thickness law | riemannHypothesis_iff_xiRectangularWeilSubpowerLowerOff, exists_halfPowerExceptionalEnergy_divergence_of_not_riemannHypothesis |
 
 ## Cutoff-free full-sequence tomography
 
@@ -88,8 +115,12 @@ fixedWindowFullObservableDivisorUniversality_capstone.
 
 ## Axiom and lint gate
 
-- Exact build targets: GaloisForLFunctions.RHTower.CCMUnconditionalFoundation and
-  GaloisForLFunctions.RHTower.CCMRectangularOneSidedTransverseExponent.
+- Exact build targets: GaloisForLFunctions.RHTower.CCMUnconditionalFoundation,
+  GaloisForLFunctions.RHTower.CCMRectangularOneSidedTransverseExponent, and
+  GaloisForLFunctions.RHTower.CCMRectangularSparseExceptionCompleteness,
+  GaloisForLFunctions.RHTower.CCMRectangularNegativeChannelSplitCompleteness, and
+  GaloisForLFunctions.RHTower.CCMRectangularNegativeChannelSpectrum, and
+  GaloisForLFunctions.RHTower.CCMRectangularNegativeDirichletAbscissa.
 - Allowed foundational dependencies in the checked capstones:
   [propext, Classical.choice, Quot.sound].
 - Repository lint must report no active sorry, admit, axiom, opaque, or unsafe declaration.
