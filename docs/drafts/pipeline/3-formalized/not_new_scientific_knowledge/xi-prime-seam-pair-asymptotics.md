@@ -6,6 +6,7 @@
 - **Scientific status:** `[PROVED] [FORMALIZED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Lean:** `formal/GaloisForLFunctions/RHTower/XiPrimeSeamPairAsymptotics.lean`
 - **Parents:** `xi-prime-seam-pair-variance.md`; `xi-prime-seam-pair-energy-rh.md`
+- **Reflection continuation:** `xi-prime-seam-reflection-energy.md`
 - **Reused source theorem:**
   `EulerFisherCurvature.summable_abs_log_natCast_pow_mul_rpow_neg`
 
@@ -51,6 +52,19 @@ E_F(rho)=o(M_F) iff Re(rho)=1/2.                           (5)
 ```
 
 The global condition `(5)` on every actual Xi divisor fibre is equivalent to RH.
+
+The continuation `XiPrimeSeamReflectionEnergy.lean` identifies the coefficient exactly as
+
+```text
+S(rho)=K(1+2 Re(rho))+K(3-2 Re(rho))-2K(2),
+K(beta)=sum_p log(p)^2p^(-beta),
+```
+
+proves that it is independent of zero height, and proves the quantitative bound
+
+```text
+(Re(rho)-1/2)^2 log(2)^4 <= S(rho).
+```
 
 ## Proof
 

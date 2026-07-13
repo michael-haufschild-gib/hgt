@@ -157,4 +157,18 @@ theorem lipschitzOnWith_mul_of_bound {α E : Type*} [PseudoMetricSpace α] [Norm
     _ = (Real.toNNReal Mf * Kg + Real.toNNReal Mg * Kf) * dist x y := by
         rw [Real.coe_toNNReal Mf hfx, Real.coe_toNNReal Mg hgy]; ring
 
+/-- **`Real.log` is `1`-Lipschitz on `[1, ∞)`.**  Its derivative there is `x⁻¹ ≤ 1`.  This is the
+modulus of continuity of the logarithmic change of variables `u ↦ log u` on the multiplicative window
+`u ≥ 1`, feeding the moving-tent-of-log Lipschitz estimate. -/
+theorem lipschitzOnWith_log_Ici_one : LipschitzOnWith 1 Real.log (Set.Ici (1 : ℝ)) := by
+  apply Convex.lipschitzOnWith_of_nnnorm_hasDerivWithin_le (convex_Ici 1) (f' := fun x => x⁻¹)
+  · intro x hx
+    have hx0 : x ≠ 0 := by have : (1 : ℝ) ≤ x := hx; positivity
+    exact (Real.hasDerivAt_log hx0).hasDerivWithinAt
+  · intro x hx
+    have hx1 : (1 : ℝ) ≤ x := hx
+    rw [← NNReal.coe_le_coe, coe_nnnorm, NNReal.coe_one, Real.norm_eq_abs,
+      abs_of_nonneg (by positivity)]
+    rw [inv_le_one_iff₀]; right; exact hx1
+
 end HTGeometry

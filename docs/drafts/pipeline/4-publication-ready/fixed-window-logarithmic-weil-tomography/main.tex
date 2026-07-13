@@ -84,8 +84,8 @@ every abscissa threshold.  An admissible correction of abscissa at most $1+\alph
 same xi zero-free half-plane, and abscissa at most one proves RH.  Unconditionally
 $\sigma_{\rm abs}(c^-)\le3/2$; under false RH,
 $1+\delta_*\le\sigma_{\rm abs}(c^-)\le3/2$, and no admissible correction is summable at any
-$1+\alpha$ with $0\le\alpha<\delta_*$.  All claims are formalized unconditionally in Lean~4.
-The paper does not prove either $g_L(n)\ge0$ on an admissible tail or the sufficient critical
+$1+\alpha$ with $0\le\alpha<\delta_*$.  The paper does not prove either
+$g_L(n)\ge0$ on an admissible tail or the sufficient critical
 estimate $\sigma_{\rm abs}(c^-)\le1$, and therefore does not prove RH.
 \end{abstract}
 
@@ -116,7 +116,9 @@ places the Yoshida, Bombieri, Connes, and Connes--Consani--Moscovici forms in on
 framework~\cite{Suzuki2026}.  Finite Galerkin values have also been identified exactly with
 finite Guinand--Weil zero sums~\cite{Groskin2026}.
 
-The sharp rectangle used below is not inserted formally into the classical smooth test space.
+The parent explicit-formula mechanism is due to Guinand and Weil, with Barner's extension giving
+a broader analytic test-function framework~\cite{Guinand1949,Weil1952,Barner1981}.  The sharp
+rectangle used below is not inserted formally into the classical smooth test space.
 Instead we prove its complete Guinand--Weil identity directly by symmetric contour exhaustion.
 The vertical edges vanish cofinally, the bottom edge is absolutely integrable, and the resulting
 zero sum equals an explicit finite von Mangoldt autocorrelation plus an archimedean integral.
@@ -1776,44 +1778,6 @@ $\alpha$.  The mixed energy/subpower and exceptional-set dichotomies are useful 
 The transverse power and half-power thickness laws are explicit outer estimates for this exact
 intrinsic carrier, not independent density scales.
 
-\section{Formal verification}
-
-\begingroup\raggedright
-Every theorem stated in this article has an unconditional Lean~4 proof in the accompanying
-formalization, compiled with Lean~4.30.0 and the repository's pinned version of mathlib.  The
-headline source identity, tail-sign RH criterion, quantitative prime--Gamma energy spectrum,
-and unconditional source-abscissa dichotomy are formalized in
-\path{CCMPrimeGammaSourceEnergySpectrum.lean}.  The underlying principal quantitative theorem
-and summable-family aggregate law are formalized in
-\path{CCMSourceDivisorEnergySpectrum.lean}.  The complete inverse-tilted source tomography is
-formalized in \path{CCMInverseTiltedDyadicPrimeTomography.lean}; the intrinsic defect divisor in
-\path{CCMCriticalMellinDivisorTomography.lean}; and finite positive-channel conservation in
-\path{CCMRectangularFiniteChannelNonDilution.lean}.  The complete fixed-window theorem chain is
-collected by \path{CCMUnconditionalFoundation.lean}.  The sharp contour exhaustion and exact
-prime--Gamma identity \textup{(6.6)} are formalized in
-\path{XiGuinandWeilRectangularFullFormula.lean}.
-\par\endgroup
-
-The explicit source endpoints in Corollary~\ref{cor:explicit-source-endpoints} are formalized in
-the sharp-prime-window modules identified in the supplementary claim-trace table.  The least
-positive-correction theorem, its exact feasible-abscissa law, and its quantitative Xi transfer are
-formalized in \path{CCMSharpPrimeWindowMinimalPositiveCorrection.lean}.
-
-Within the principal module, separate declarations prove the two shifted holomorphy equivalences,
-the negative-energy equivalence, summable-family aggregate domination, the aggregate zero-free
-theorem, and the RH endpoint; one capstone packages the quantitative equivalence.  The
-supplementary claim-trace table records the exact declaration attached to every manuscript claim.
-An axiom audit of the principal declarations reports only \texttt{propext},
-\texttt{Classical.choice}, and \texttt{Quot.sound}.
-The project lint gate excludes active \texttt{sorry}, \texttt{admit}, project \texttt{axiom},
-\texttt{opaque}, and \texttt{unsafe} declarations.
-
-The development repository is
-\url{https://github.com/michael-haufschild-gib/hgt}.  The submission bundle includes the exact
-source tree, pinned Lean and mathlib manifests, the declaration-level claim trace, and the axiom
-audit used for this manuscript.  A tagged archival snapshot should be cited in the final journal
-version.
-
 \section{Scope and limitations}
 
 The results are unconditional.  The inverse-tilted theorem is source-side and recovers the
@@ -1870,11 +1834,16 @@ architecture.
 
 Michael Haufschild directed the research program, selected the mathematical route, and assumes
 responsibility for the submitted claims.  GPT 5.6 Sol, Fable 5, and Grok 4.5 contributed to proof
-search, formalization, adversarial checking, and manuscript development.  The Lean kernel checks
-the formal proof objects; mathematical novelty, exposition, and publication compliance remain
-the responsibility of the human author.
+search, proof development, adversarial checking, and manuscript development.  Mathematical
+correctness, novelty, exposition, and publication compliance remain the responsibility of the
+human author.
 
 \begin{thebibliography}{99}
+
+\bibitem{Barner1981}
+K.~Barner,
+\emph{On A. Weil's explicit formula},
+J. Reine Angew. Math. \textbf{323} (1981), 139--152.
 
 \bibitem{Bombieri2000}
 E.~Bombieri,
@@ -1911,6 +1880,11 @@ A.~Groskin,
 \emph{A finite Guinand--Weil dictionary and archimedean tail order for the truncated Weil
 quadratic form},
 arXiv:2607.02828, 2026.
+
+\bibitem{Guinand1949}
+A.~P. Guinand,
+\emph{Fourier reciprocities and the Riemann zeta-function},
+Proc. London Math. Soc. (2) \textbf{51} (1949), 401--414.
 
 \bibitem{Maurizi2010}
 B.~Maurizi,

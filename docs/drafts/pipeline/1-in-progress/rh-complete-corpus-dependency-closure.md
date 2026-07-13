@@ -320,7 +320,16 @@ provider would have to supply.
    source-pure operator realization and growth estimate, plus formalization of the actual tensor
    lower estimate.  Existing all-prime
    Hilbert--Schmidt results do not supply the bound: they delete the divergent principal prime
-   shell and assemble only the compact prime-power residual.
+   shell and assemble only the compact prime-power residual.  A further exact value relation now
+   identifies the one-particle norm with the centered prime-zeta curvature
+   `K(1+2 Re(rho))+K(3-2 Re(rho))-2K(2)` and with the squared prime-feature distance between
+   `conj(rho)` and `1-rho`.  It is independent of zero height and dominates
+   `(Re(rho)-1/2)^2 log(2)^4`, so any quantitative source estimate transfers directly to a
+   horizontal zero bound; vertical prime-phase cancellation cannot be the missing mechanism.  On
+   the operator side, the complete ordered pair section factors as one exterior tensor
+   `A_F(a) tensor B_F-B_F tensor A_F(a)`.  This removes the separate pair-face realization gap:
+   the remaining source theorem is asymptotic Calkin collinearity of the seam-weighted and
+   unweighted one-particle Euler sections at the sub-root reciprocal-mass scale.
 
 The continued prime--Gamma Cauchy kernel has a complete value interface with the CCM Mellin
 channel:

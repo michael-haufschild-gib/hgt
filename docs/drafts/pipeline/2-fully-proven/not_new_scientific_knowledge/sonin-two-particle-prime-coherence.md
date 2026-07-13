@@ -262,6 +262,26 @@ D_F(rho)=o(sqrt(sum_(p in F)1/p)).
 This sub-root reciprocal-mass growth is the sharp weaker source target currently exposed by the
 top-down endpoint.
 
+The ordered-pair continuation
+`sonin-prime-seam-exterior-factorization.md` removes one further algebraic gap.  If
+
+```text
+A_F(a)=sum_(p in F)a_p C_p,
+B_F=sum_(p in F)C_p,
+```
+
+then the complete ordered difference section factors exactly as
+
+```text
+sum_(p,q in F)(a_p-a_q)(C_p tensor C_q)
+  =A_F(a) tensor B_F-B_F tensor A_F(a).
+```
+
+Thus no independent pair-face realization is required for the canonical coboundary coefficients:
+the source target is asymptotic Calkin collinearity of two one-particle sections.  The tensor lower
+estimate and the normalized arithmetic limit show that sub-root growth of this single exterior
+tensor already forces the critical-line equation.
+
 ## Non-results and falsifiers
 
 - This does not prove RH or an RH equivalent.

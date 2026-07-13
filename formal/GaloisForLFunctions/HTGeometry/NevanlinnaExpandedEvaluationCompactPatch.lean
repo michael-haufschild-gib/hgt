@@ -138,7 +138,7 @@ theorem compact_nevanlinnaExpandedEvaluation_has_dense_finiteProbe
   let frozen := projectiveNevanlinnaJetLinftyContinuousControl
     a q zf nf haf hqdf mu hupperf
   let S := LinearMap.ker frozen.toLinearMap
-  letI : NormedSpace ℝ S := Submodule.normedSpace S
+  letI normedSpaceS : NormedSpace ℝ S := Submodule.normedSpace S
   let nodeLift : K → (row → NevanlinnaUpperNodeAtLeast q η) :=
     fun h i => ⟨nodes h.1 i, hupper h.1 (hKU h.2) i⟩
   have hnodeLift : Continuous nodeLift := by
@@ -166,7 +166,8 @@ theorem compact_nevanlinnaExpandedEvaluation_has_dense_finiteProbe
         exact hqdt h.1 h.2 i)
   refine ⟨V, hVfg, ?_⟩
   dsimp only
-  letI : NormedSpace ℝ V := Submodule.normedSpace V
+  letI normedSpaceV : NormedSpace ℝ V := Submodule.normedSpace V
+  have normedSpaceV_check : NormedSpace ℝ V := inferInstance
   let control := fun h =>
     projectiveNevanlinnaJetExpansionSmoothControl
       a q (fun _ : row => jetOrder) mu (nodes h)
