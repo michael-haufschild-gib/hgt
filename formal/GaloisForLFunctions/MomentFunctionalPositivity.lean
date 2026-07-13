@@ -168,4 +168,40 @@ theorem momentFunctional_cauchy_schwarz {μ : Measure ℝ} (s : ℕ → ℝ)
   rw [discrim] at hd
   nlinarith [hd]
 
+/-- Finite-sum linearity of the moment functional. -/
+theorem momentFunctional_sum (s : ℕ → ℝ) {ι : Type*} (t : Finset ι) (g : ι → Polynomial ℝ) :
+    momentFunctional s (∑ i ∈ t, g i) = ∑ i ∈ t, momentFunctional s (g i) := by
+  classical
+  induction t using Finset.induction_on with
+  | empty => simp
+  | insert a t ha ih =>
+      rw [Finset.sum_insert ha, momentFunctional_add, ih, Finset.sum_insert ha]
+
+/-- The moment functional sends the monomial `Xᵏ` to the moment `sₖ`. -/
+theorem momentFunctional_X_pow (s : ℕ → ℝ) (k : ℕ) :
+    momentFunctional s ((X : Polynomial ℝ) ^ k) = s k := by
+  rw [momentFunctional_eq_support_sum, Polynomial.support_X_pow one_ne_zero, Finset.sum_singleton,
+    Polynomial.coeff_X_pow, if_pos rfl, one_mul]
+
+/-- **Hankel matrix positive-semidefiniteness (matrix form).**  A moment sequence with a representing
+measure has positive-semidefinite Hankel matrix `(sᵢ₊ⱼ)`: for every real vector `v`,
+`∑ᵢⱼ vᵢ vⱼ s_{i+j} ≥ 0`.  This is the quadratic form `L_s(p²)` for `p = ∑ᵢ vᵢ Xⁱ`, so nonnegativity
+is exactly square-positivity of the moment functional. -/
+theorem hankelForm_nonneg {μ : Measure ℝ} (s : ℕ → ℝ)
+    (hs : ∀ k, s k = ∫ x, (x : ℝ) ^ k ∂μ)
+    (hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) μ) {n : ℕ} (v : Fin n → ℝ) :
+    0 ≤ ∑ i : Fin n, ∑ j : Fin n, v i * v j * s ((i : ℕ) + (j : ℕ)) := by
+  set p : Polynomial ℝ := ∑ i : Fin n, v i • X ^ (i : ℕ) with hp
+  have hpsq : momentFunctional s (p ^ 2)
+      = ∑ i : Fin n, ∑ j : Fin n, v i * v j * s ((i : ℕ) + (j : ℕ)) := by
+    rw [sq, hp, Finset.sum_mul_sum, momentFunctional_sum]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [momentFunctional_sum]
+    refine Finset.sum_congr rfl (fun j _ => ?_)
+    rw [show (v i • X ^ (i : ℕ)) * (v j • X ^ (j : ℕ))
+        = (v i * v j) • X ^ ((i : ℕ) + (j : ℕ)) from by rw [smul_mul_smul_comm, ← pow_add],
+      momentFunctional_smul, momentFunctional_X_pow]
+  rw [← hpsq]
+  exact momentFunctional_pow_two_nonneg s hs hint p
+
 end HTGeometry

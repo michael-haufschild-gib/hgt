@@ -292,6 +292,47 @@ theorem coeff_distinct_wrong_order_vanish {bnat : ℕ → ℕ} (hmono : Monotone
   rw [coeff_prod_iterate_derivative_of_subset ν f (∑ t, bnat (M t) - O) ∅
     (Finset.empty_subset _) hvanish, Finset.sum_empty]
 
+/-- **Wrong-degree vanishing at a distinct index.**  A differential monomial of total degree
+`D' ≠ D` has zero coefficient at the degree-`D` distinct-scale index: a surviving source
+configuration would have `D'` sources with `bnat`-mass within `W` of the `D` target scales, forcing
+(card-free window uniqueness) the source and target multisets to coincide — impossible when
+`D' ≠ D`. -/
+theorem coeff_distinct_wrong_degree_vanish {bnat : ℕ → ℕ} (hmono : Monotone bnat) {r W : ℕ}
+    (hb0 : 0 < bnat 0) (hWb : W < bnat 0) (hW : ∀ n, r * bnat n + W < bnat (n + 1))
+    {D D' : ℕ} (hDr : D ≤ r) (hD'r : D' ≤ r) (hDD' : D ≠ D')
+    {ν : Fin D' → ℕ} {O' : ℕ} (hν : ∑ t, ν t = O') (hO'W : O' ≤ W)
+    {f : ℂ⟦X⟧} (hsupp : ∀ k, coeff k f ≠ 0 → ∃ n, k = bnat n)
+    (M : Fin D → ℕ) (hMinj : Function.Injective M)
+    {O : ℕ} (hOle : O ≤ ∑ i, bnat (M i)) (hOW : O ≤ W) :
+    coeff (∑ i, bnat (M i) - O) (∏ t, (⇑(d⁄dX ℂ))^[ν t] f) = 0 := by
+  classical
+  have hvanish : ∀ l ∈ (Finset.univ : Finset (Fin D')).finsuppAntidiag (∑ i, bnat (M i) - O),
+      l ∉ (∅ : Finset (Fin D' →₀ ℕ)) → ∃ t, coeff (l t + ν t) f = 0 := by
+    intro l hl _
+    by_contra hcon
+    push Not at hcon
+    choose n hn using fun t => hsupp (l t + ν t) (hcon t)
+    have hsumN : ∑ t, l t = ∑ i, bnat (M i) - O := (Finset.mem_finsuppAntidiag.mp hl).1
+    have hnmass : ∑ t, bnat (n t) = ∑ i, bnat (M i) - O + O' := by
+      have e : ∑ t, bnat (n t) = ∑ t, (l t + ν t) := Finset.sum_congr rfl (fun t _ => (hn t).symm)
+      rw [e, Finset.sum_add_distrib, hsumN, hν]
+    have hmn : (Multiset.map bnat (Finset.univ.val.map n)).sum = ∑ t, bnat (n t) := by
+      rw [Multiset.map_map]; rfl
+    have hmM : (Multiset.map bnat (Finset.univ.val.map M)).sum = ∑ i, bnat (M i) := by
+      rw [Multiset.map_map]; rfl
+    have hcardn : (Finset.univ.val.map n : Multiset ℕ).card = D' := by simp
+    have hcardM : (Finset.univ.val.map M : Multiset ℕ).card = D := by simp
+    have hseq := multiset_source_window_free hmono hb0 hWb hW
+      (s := Finset.univ.val.map n) (t := Finset.univ.val.map M)
+      (by rw [hcardn]; exact hD'r) (by rw [hcardM]; exact hDr)
+      (Finset.univ.nodup.map hMinj)
+      (by rw [hmn, hmM]; omega) (by rw [hmn, hmM]; omega)
+    have hcardeq : D' = D := by
+      have := congrArg Multiset.card hseq; rw [hcardn, hcardM] at this; exact this
+    exact hDD' hcardeq.symm
+  rw [coeff_prod_iterate_derivative_of_subset ν f (∑ i, bnat (M i) - O) ∅
+    (Finset.empty_subset _) hvanish, Finset.sum_empty]
+
 /-- **Order-`O` reduction of the coefficient.**  At the order-`O` distinct index, the coefficient of
 a mixed-order differential polynomial equals that of its order-`O` subfamily — every other-order
 monomial contributes zero. -/

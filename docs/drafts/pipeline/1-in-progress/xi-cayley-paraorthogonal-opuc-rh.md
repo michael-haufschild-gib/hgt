@@ -5,8 +5,10 @@
 - **Type:** `[LARGE OUTLANDISH DETOUR] [CONJECTURE] [UNITARY CIRCLE MODEL]`
 - **Lean inputs:** `formal/GaloisForLFunctions/HTGeometry/FiniteOPUCRootLocation.lean`,
   `formal/GaloisForLFunctions/HTGeometry/FiniteOPUCReversal.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ParaorthogonalBlaschkeRoot.lean`,
   `formal/GaloisForLFunctions/HTGeometry/BernsteinSzegoReconstruction.lean`,
-  `formal/GaloisForLFunctions/Classical/BernsteinSzego.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/BernsteinSzegoDensity.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/BernsteinSzegoMomentForm.lean`,
   `formal/GaloisForLFunctions/HTGeometry/CayleyMomentFrame.lean`, and
   `formal/GaloisForLFunctions/HTGeometry/CayleyUnitCircleReality.lean`
 - **Consumer:** the classical Pólya--Jensen characterization of the Laguerre--Pólya class and the
@@ -57,10 +59,11 @@ The final transport is already formalized:
 |(z-i)/(z+i)|=1  <->  Im(z)=0.
 ```
 
-The corpus also already proves that finite OPUC roots lie strictly inside the disk and that their
-reversed polynomials have no zeros on the closed disk.  The missing finite parent-theory lemma is
-the standard paraorthogonal conclusion for `w Phi-tau Phi*`; it should be added once in Lean and
-then reused here.
+The corpus also proves that finite OPUC roots lie strictly inside the disk and that their reversed
+polynomials have no zeros on the closed disk.  The factorized finite paraorthogonal theorem is now
+formalized too: if all Blaschke parameters lie in the open disk and the terminal value is
+unimodular, every solution lies on the unit circle.  The remaining finite interface is to factor
+the OPUC polynomial into those disk roots and identify `w Phi-tau Phi*` with the Blaschke equation.
 
 ## Why paraorthogonal, not ordinary OPUC
 
@@ -117,8 +120,8 @@ not a failed approximation to RH; it identifies the exact missing boundary opera
 
 - `[OPEN CORE A]` Define the source circle moments for every Jensen shift and prove their Hermitian
   Toeplitz sections are positive definite.
-- `[OPEN CORE B]` Formalize paraorthogonal OPUC unit-circle root location from the existing strict
-  OPUC root and reversal modules.
+- `[OPEN CORE B]` Connect the now-formalized factorized Blaschke root theorem to
+  `finiteOPUCPolynomial` and its reversal.
 - `[OPEN CORE C]` Prove the source CMV/Verblunsky recurrence gives the coefficients in `(1)` at every
   degree and shift.
 - `[OPEN CORE D]` Formalize the Jensen-polynomial/Laguerre--Pólya consumer and compose it with the
@@ -138,8 +141,8 @@ bound, or maximal degree range as the positive statement.
 - [x] ordinary OPUC strict-disk and reversed zero-free inputs present in Lean
 - [x] finite Bernstein--Szego reconstruction inputs present in Lean
 - [x] both-end POPUC-to-RH chain specified
-- [ ] paraorthogonal unit-circle theorem formalized
+- [x] factorized paraorthogonal Blaschke unit-circle theorem formalized
+- [ ] finite OPUC polynomial/reversal connected to the factorized theorem
 - [ ] source moment/Verblunsky family constructed
 - [ ] all-degree coefficient comparison proved
 - [ ] Jensen/Laguerre--Pólya/RH capstone composed in Lean
-

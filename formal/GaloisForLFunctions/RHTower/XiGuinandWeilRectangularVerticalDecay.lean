@@ -23,13 +23,13 @@ def rectangularTransformStripBound (L a c : ℝ) : ℝ :=
   (1 + Real.exp (|L| * c)) *
     (Real.exp (|a| * c) + Real.exp (|a - L| * c))
 
-theorem rectangularTransformStripBound_nonneg (L a : ℝ) {c : ℝ} (hc : 0 ≤ c) :
+theorem rectangularTransformStripBound_nonneg (L a c : ℝ) :
     0 ≤ rectangularTransformStripBound L a c := by
   unfold rectangularTransformStripBound
   positivity
 
 private theorem real_mul_re_le_abs_mul
-    {b c : ℝ} {w : ℂ} (hb : 0 ≤ b) (hw : |w.re| ≤ b) :
+    {b c : ℝ} {w : ℂ} (hw : |w.re| ≤ b) :
     ((c : ℂ) * w).re ≤ |c| * b := by
   rw [Complex.mul_re]
   simp only [ofReal_re, ofReal_im, zero_mul, sub_zero]
@@ -41,7 +41,7 @@ private theorem real_mul_re_le_abs_mul
 /-- A rectangular-window amplitude is uniformly reciprocal-linear on every fixed vertical
 strip. -/
 theorem norm_rectangularWindowAmplitude_le_on_strip
-    (L : ℝ) {c : ℝ} (hc : 0 ≤ c) {w : ℂ} (hw : w ≠ 0)
+    (L : ℝ) {c : ℝ} {w : ℂ} (hw : w ≠ 0)
     (hwre : |w.re| ≤ c) :
     ‖rectangularWindowAmplitude L w‖ ≤
       (1 + Real.exp (|L| * c)) / ‖w‖ := by
@@ -55,11 +55,11 @@ theorem norm_rectangularWindowAmplitude_le_on_strip
     _ ≤ 1 + Real.exp (|L| * c) := by
       gcongr
       simpa only [ofReal_neg, neg_mul, abs_neg] using
-        (real_mul_re_le_abs_mul (c := -L) hc hwre)
+        (real_mul_re_le_abs_mul (c := -L) hwre)
 
 /-- The complete two-edge transform is uniformly `O(1/‖w‖)` on every fixed vertical strip. -/
 theorem norm_rectangularTwoEdgeTransform_le_on_strip
-    (L a : ℝ) {c : ℝ} (hc : 0 ≤ c) {w : ℂ} (hw : w ≠ 0)
+    (L a : ℝ) {c : ℝ} {w : ℂ} (hw : w ≠ 0)
     (hwre : |w.re| ≤ c) :
     ‖rectangularTwoEdgeTransform L a w‖ ≤
       rectangularTransformStripBound L a c / ‖w‖ := by
@@ -71,17 +71,17 @@ theorem norm_rectangularTwoEdgeTransform_le_on_strip
         (‖Complex.exp ((a : ℂ) * w)‖ +
           ‖Complex.exp (-(a - L : ℂ) * w)‖) := by
       gcongr
-      · exact norm_rectangularWindowAmplitude_le_on_strip L hc hw hwre
+      · exact norm_rectangularWindowAmplitude_le_on_strip L hw hwre
       · exact norm_add_le _ _
     _ ≤ ((1 + Real.exp (|L| * c)) / ‖w‖) *
         (Real.exp (|a| * c) + Real.exp (|a - L| * c)) := by
       gcongr
       · rw [Complex.norm_exp]
-        exact Real.exp_le_exp.mpr (real_mul_re_le_abs_mul hc hwre)
+        exact Real.exp_le_exp.mpr (real_mul_re_le_abs_mul hwre)
       · rw [Complex.norm_exp]
         exact Real.exp_le_exp.mpr (by
           simpa only [ofReal_neg, ofReal_sub, neg_mul, abs_neg] using
-            (real_mul_re_le_abs_mul (c := -(a - L)) hc hwre))
+            (real_mul_re_le_abs_mul (c := -(a - L)) hwre))
     _ = rectangularTransformStripBound L a c / ‖w‖ := by
       unfold rectangularTransformStripBound
       field_simp
@@ -107,13 +107,13 @@ theorem norm_xiRectangularTwoEdgeTransform_vertical_le
     simp at him
     exact (ne_of_gt hR) (abs_eq_zero.mpr him)
   have hraw := norm_rectangularTwoEdgeTransform_le_on_strip
-    L a (c := (1 : ℝ)) (by norm_num) hw hwre
+    L a (c := (1 : ℝ)) hw hwre
   have hRnorm : |R| ≤ ‖w‖ := by
     rw [← hwim]
     exact Complex.abs_im_le_norm w
   rw [xiRectangularTwoEdgeTransform]
   exact hraw.trans (div_le_div_of_nonneg_left
-    (rectangularTransformStripBound_nonneg L a (by norm_num)) hR hRnorm)
+    (rectangularTransformStripBound_nonneg L a 1) hR hRnorm)
 
 /-- The squared sharp Xi test has uniform `R^-2` decay along the complete vertical edge. -/
 theorem norm_xiRectangularTwoEdgeTransform_vertical_sq_le

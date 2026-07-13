@@ -29,54 +29,44 @@ open scoped ComplexOrder ENNReal InnerProductSpace NNReal Topology
 
 noncomputable section
 
-/-- The two-sided Fourier moment sequence of a finite measure on the multiplicative unit circle. -/
+/-- The two-sided Fourier coefficient sequence of a finite circle measure, in the classical
+Toeplitz convention `muHat(q) = integral z^(-q) dmu`. -/
 def circleMeasureMomentZ (mu : Measure Circle) (q : ℤ) : ℂ :=
-  ∫ z : Circle, (z : ℂ) ^ q ∂mu
+  ∫ z : Circle, (z : ℂ) ^ (-q) ∂mu
 
 /-- The Toeplitz Gram tower belonging to a circle measure. -/
 def circleMeasureGramTower (mu : Measure Circle) (N : ℕ) :
     Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ :=
   circleToeplitzGram N (circleMeasureMomentZ mu)
 
-/-- The conjugate `n`th circle monomial as an element of `L²(mu)`.  Conjugation aligns the
-project's Toeplitz indexing `c_(i-j)` with mathlib's inner-product convention. -/
-noncomputable def circleConjugateMonomialLp
-    (mu : Measure Circle) [IsFiniteMeasure mu] (n : ℕ) : Lp ℂ 2 mu :=
-  MemLp.toLp (fun z : Circle => star ((z : ℂ) ^ n)) <|
-    (circleMonomial_memLp mu n).star
-
-theorem circleConjugateMonomialLp_coeFn_ae
-    (mu : Measure Circle) [IsFiniteMeasure mu] (n : ℕ) :
-    ⇑(circleConjugateMonomialLp mu n) =ᵐ[mu]
-      fun z : Circle => star ((z : ℂ) ^ n) :=
-  (circleMonomial_memLp mu n).star.coeFn_toLp
-
-/-- Inner products of conjugate circle monomials are exactly the two-sided circle moments. -/
-theorem circleConjugateMonomialLp_inner
+/-- Inner products of analytic circle monomials are exactly the classical Fourier coefficients
+with Toeplitz index `i-j`. -/
+theorem circleMonomialLp_inner_exact
     (mu : Measure Circle) [IsFiniteMeasure mu] (i j : ℕ) :
-    inner ℂ (circleConjugateMonomialLp mu i) (circleConjugateMonomialLp mu j) =
+    inner ℂ (circleMonomialLp mu i) (circleMonomialLp mu j) =
       circleMeasureMomentZ mu ((i : ℤ) - (j : ℤ)) := by
   rw [MeasureTheory.L2.inner_def]
   apply integral_congr_ae
-  filter_upwards [circleConjugateMonomialLp_coeFn_ae mu i,
-    circleConjugateMonomialLp_coeFn_ae mu j] with z hi hj
+  filter_upwards [circleMonomialLp_coeFn_ae mu i,
+    circleMonomialLp_coeFn_ae mu j] with z hi hj
   rw [hi, hj]
   have hne : (z : ℂ) ≠ 0 := by
     intro hzero
     have := congrArg norm hzero
     rw [Circle.norm_coe] at this
     norm_num at this
+  rw [show -((i : ℤ) - (j : ℤ)) = (j : ℤ) - (i : ℤ) by omega,
+    zpow_natCast_sub_natCast₀ hne]
   simp [RCLike.inner_apply,
-    ← Complex.inv_eq_conj (Circle.norm_coe z),
-    zpow_natCast_sub_natCast₀ hne, div_eq_mul_inv, mul_comm]
+    ← Complex.inv_eq_conj (Circle.norm_coe z), div_eq_mul_inv]
 
 /-- Every finite circle Toeplitz section is literally a Hilbert-space Gram matrix. -/
 theorem circleMeasureGramTower_eq_gram
     (mu : Measure Circle) [IsFiniteMeasure mu] (N : ℕ) :
     circleMeasureGramTower mu N =
-      Matrix.gram ℂ (fun i : Fin (N + 1) => circleConjugateMonomialLp mu i) := by
+      Matrix.gram ℂ (fun i : Fin (N + 1) => circleMonomialLp mu i) := by
   ext i j
-  exact (circleConjugateMonomialLp_inner mu i j).symm
+  exact (circleMonomialLp_inner_exact mu i j).symm
 
 /-- A continuous complex function vanishing almost everywhere vanishes on the measure support. -/
 theorem circle_continuous_eq_zero_on_support_of_ae_eq_zero
@@ -94,21 +84,21 @@ theorem circle_continuous_eq_zero_on_support_of_ae_eq_zero
     exact mem_ae_iff.mp hfzero
   exact hpos.ne' hnull
 
-/-- Infinite support makes every finite family of conjugate circle monomials linearly
+/-- Infinite support makes every finite family of analytic circle monomials linearly
 independent in `L²(mu)`. -/
-theorem linearIndependent_circleConjugateMonomialLp_of_infiniteSupport
+theorem linearIndependent_circleMonomialLp_fin_of_infiniteSupport
     (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite) (N : ℕ) :
     LinearIndependent ℂ
-      (fun i : Fin (N + 1) => circleConjugateMonomialLp mu i) := by
+      (fun i : Fin (N + 1) => circleMonomialLp mu i) := by
   rw [Fintype.linearIndependent_iff]
   intro c hc
   let p : Polynomial ℂ :=
     ∑ i : Fin (N + 1), Polynomial.C (c i) * Polynomial.X ^ (i : ℕ)
-  let f : Circle → ℂ := fun z => p.eval (star (z : ℂ))
+  let f : Circle → ℂ := fun z => p.eval (z : ℂ)
   have hfcont : Continuous f :=
-    p.continuous.comp (continuous_star.comp continuous_subtype_val)
+    p.continuous.comp continuous_subtype_val
   have hsumcoe :
-      ⇑(∑ i : Fin (N + 1), c i • circleConjugateMonomialLp mu i) =ᵐ[mu] f := by
+      ⇑(∑ i : Fin (N + 1), c i • circleMonomialLp mu i) =ᵐ[mu] f := by
     classical
     dsimp only [f, p]
     simp_rw [Polynomial.eval_finsetSum, Polynomial.eval_mul, Polynomial.eval_C,
@@ -118,23 +108,23 @@ theorem linearIndependent_circleConjugateMonomialLp_of_infiniteSupport
     | @insert a S ha ih =>
         rw [Finset.sum_insert ha]
         filter_upwards [Lp.coeFn_add
-            (c a • circleConjugateMonomialLp mu a)
-            (∑ i ∈ S, c i • circleConjugateMonomialLp mu i),
-          Lp.coeFn_smul (c a) (circleConjugateMonomialLp mu a),
-          circleConjugateMonomialLp_coeFn_ae mu a, ih] with z hadd hsmul hmono htail
+            (c a • circleMonomialLp mu a)
+            (∑ i ∈ S, c i • circleMonomialLp mu i),
+          Lp.coeFn_smul (c a) (circleMonomialLp mu a),
+          circleMonomialLp_coeFn_ae mu a, ih] with z hadd hsmul hmono htail
         rw [hadd]
-        change ⇑(c a • circleConjugateMonomialLp mu a) z +
-          ⇑(∑ i ∈ S, c i • circleConjugateMonomialLp mu i) z = _
+        change ⇑(c a • circleMonomialLp mu a) z +
+          ⇑(∑ i ∈ S, c i • circleMonomialLp mu i) z = _
         rw [hsmul, Pi.smul_apply, hmono, htail]
         simp [Finset.sum_insert ha]
   have hfzero : f =ᵐ[mu] 0 :=
     hsumcoe.symm.trans (Lp.eq_zero_iff_ae_eq_zero.mp hc)
   have hsuppzero : ∀ z ∈ mu.support, f z = 0 :=
     circle_continuous_eq_zero_on_support_of_ae_eq_zero mu f hfcont hfzero
-  let S : Set ℂ := (fun z : Circle => star (z : ℂ)) '' mu.support
+  let S : Set ℂ := ((fun z : Circle => (z : ℂ)) '' mu.support)
   have hSinfinite : S.Infinite := by
     apply hmu.image
-    exact (star_injective.comp Subtype.val_injective).injOn
+    exact Subtype.val_injective.injOn
   have hSroot : S ⊆ {z : ℂ | p.IsRoot z} := by
     rintro z ⟨w, hw, rfl⟩
     exact hsuppzero w hw
@@ -163,7 +153,7 @@ theorem circleMeasureGramTower_posDef_of_infiniteSupport
     (circleMeasureGramTower mu N).PosDef := by
   rw [circleMeasureGramTower_eq_gram]
   exact Matrix.posDef_gram_of_linearIndependent
-    (linearIndependent_circleConjugateMonomialLp_of_infiniteSupport mu hmu N)
+    (linearIndependent_circleMonomialLp_fin_of_infiniteSupport mu hmu N)
 
 /-- The canonical positive-diagonal inverse-Cholesky tower of an infinite-support circle
 measure. -/
