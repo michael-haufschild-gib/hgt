@@ -222,3 +222,153 @@ with ordinary nonvanishing of the explicit source column.
 - 2026-07-13 — discharged the apparent degree-zero sign input to concrete source non-degeneracy:
   Lean proves `Re S_0(a) > 0` exactly when the coupled all-prime column `C_a` is nonzero.  The open
   core is now column nonvanishing plus finite normalized moment-ratio convergence.
+
+## Per-test canonical scalar weakening
+
+`[PROVED IN LEAN]` Simultaneous finite-block convergence is not required by the countable
+integer-polynomial criterion.  Let
+
+```text
+S_0(a) = Re Tr(C_a† C_a),
+λ_can(a) = normalizedPrimeArchMoment(0) / S_0(a),
+Q_a(P) = λ_can(a) · c(P)^T G_a c(P),
+```
+
+where `C_a` is the coupled all-prime Sonin column, `G_a` is its coupled moment Gram block at the
+finite coefficient support of `P`, and `C_a ≠ 0`.  Lean proves the strictly weaker chain
+
+```text
+for every P ∈ ℤ[X], independently,
+  primeArchSourceTraceHankel(P) ∈ closure {Q_a(P) : a > 0 and C_a ≠ 0}
+    -> prime--Gamma integer-polynomial Hankel positivity
+      -> RH.
+```
+
+A sequential interface allows a different nondegenerate aperture schedule for every `P`.  It asks
+for convergence of one real scalar per test, not `2N-1` normalized moments along one common
+cutoff schedule.  The normalizing scale is forced by `a`; allowing an arbitrary positive scale
+per polynomial was rejected because any single strictly positive source value would then generate
+the whole positive ray and the premise would collapse to the target sign criterion.
+
+`[OPEN CORE]` Prove this canonical per-test value relation directly from the coupled
+prime-power/Gamma source formulas.  This is now the weakest live coupled-Sonin interface.  It may
+be attacked polynomial by polynomial and retains the mixed-prime words absent from the older
+block-diagonal per-test Sonin locus.
+
+The formal declarations are
+`SoninCoupledPrimeArchPerTestNormalizedValueClosure`,
+`SoninCoupledPrimeArchPerTestNormalizedValueCoupling`, and the two RH capstones with the same name
+suffix in `RHTower/SoninCoupledPrimeArchGramTransfer.lean`.
+
+- 2026-07-13 — reduced the simultaneous normalized moment-ratio problem to a canonical scalar
+  value-closure problem for each integer polynomial separately.  Exact module build and axiom
+  audit passed; the capstones use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+### Exact source-norm form of the scalar target
+
+`[PROVED IN LEAN]` If `P` has real coefficient vector `c(P)` and
+
+```text
+V_a(P) = Σ_j c_j(P) · C_a (C_a† C_a)^j,
+```
+
+viewed in the Hilbert--Schmidt coordinate space, then
+
+```text
+c(P)^T G_a c(P) = ‖V_a(P)‖²,
+normalizedValue_a(P)
+  = normalizedPrimeArchMoment(0) / Re S_0(a) · ‖V_a(P)‖².
+```
+
+Thus the new open core is an equality/cluster relation between the prime--Gamma polynomial value
+and a canonically normalized squared norm of one explicit polynomial in the common-source energy
+operator.  No matrix surrogate remains in the analytic target.
+
+- 2026-07-13 — exposed the canonical per-test value as the exact squared norm of the polynomial
+  coupled power-column vector; the exact module build passed.
+
+### Verification checkpoint
+
+`[PROVED IN LEAN]` The exact source-norm identities and both per-test RH capstones build in the
+project target.  Axiom inspection reports only `propext`, `Classical.choice`, and `Quot.sound` for
+all four declarations.  The repository formal lint gate passes with no proof-debt findings.
+
+The fresh-corpus comparison found no stronger automatic producer.  Positive moment measures,
+Stieltjes--Pick transforms, Hedenmalm one-Cauchy signs, Lee--Yang localizations, and far-right
+moving Hankel anchors become RH-bearing only after an orientation, representation, convergence,
+or zero-winding input is supplied.  None currently implies the canonical coupled source-norm
+cluster relation.  The open core therefore remains the polynomial-by-polynomial source comparison,
+not construction of another positive carrier.
+
+- 2026-07-13 — exact target build, axiom audit, formal lint, and generated-index refresh passed;
+  fresh-corpus alternatives were rejected when their producer premise was RH-equivalent or belonged
+  to an already active route.
+
+## One-sided variational reduction
+
+`[PROVED IN LEAN]` Exact cluster matching is stronger than the positivity transfer uses.  Define
+
+```text
+G_a(P) = normalizedPrimeArchMoment(0) / Re S_0(a) * ||V_a(P)||^2,
+Q(P)   = Re primeArchSourceTraceHankel(P).
+```
+
+Every `G_a(P)` is nonnegative.  Therefore the following one-sided relation already suffices:
+
+```text
+for every P in Z[X] and every epsilon > 0,
+  there exists a > 0 with C_a != 0 and G_a(P) <= Q(P) + epsilon.
+```
+
+Indeed, if `Q(P) < 0`, choose `epsilon = -Q(P)/2`.  The displayed inequality would place the
+nonnegative value `G_a(P)` strictly below zero.  Hence every `Q(P)` is nonnegative, and the existing
+countable prime--Gamma Hankel criterion gives RH.
+
+This is strictly weaker as a theorem interface than equality or cluster convergence: it asks only
+that
+
+```text
+inf_{a > 0, C_a != 0} G_a(P) <= Q(P)
+```
+
+in epsilon form, separately for each integer polynomial.  No common aperture schedule, lower
+approximation, moment convergence, or finite-block convergence remains.  Lean also proves that the
+previous value-closure hypothesis implies this variational hypothesis.
+
+`[OPEN CORE]` Prove the one-sided variational comparison directly from the coupled prime-power and
+Gamma source formulas.  The useful target is now an upper-bound construction, not an asymptotic
+identification: for a fixed polynomial `P`, choose an aperture whose canonically normalized Sonin
+polynomial energy is no larger than the completed prime--Gamma quadratic value, up to arbitrary
+positive error.
+
+The formal declarations are
+`SoninCoupledPrimeArchPerTestVariationalUpperBound`,
+`soninCoupledPrimeArchPerTestVariationalUpperBound_of_valueClosure`,
+`primeArchSourceTraceHankelIntNonnegative_of_soninCoupledPerTestVariationalUpperBound`, and
+`riemannHypothesis_of_soninCoupledPrimeArchPerTestVariationalUpperBound` in
+`RHTower/SoninCoupledPrimeArchGramTransfer.lean`.
+
+The same sweep retired three tempting substitutions.  The fixed semilocal trace normalization is
+false by the proved bounded-response versus growing-log-scale obstruction.  Gamma-damped Cauchy
+packet energy is a genuine positive domain repair but is not the completed Gamma Hankel kernel.
+The two-point first-divided numerical sector is a reflected-zero sign test and hence only a
+re-expression of the orientation conclusion.
+
+- 2026-07-13 — replaced exact per-test value closure by the one-sided variational upper comparison;
+  the exact Lean module build passed.
+
+### Quotient-free Rayleigh form
+
+`[PROVED IN LEAN]` The variational comparison is equivalent to the cross-multiplied inequality
+
+```text
+normalizedPrimeArchMoment(0) * ||V_a(P)||^2
+  <= (Q(P) + epsilon) * Re S_0(a).
+```
+
+The nondegeneracy condition `C_a != 0` makes `Re S_0(a) > 0`, so division by the zeroth energy
+recovers the normalized formulation exactly.  This is the preferred analytic target: it is a
+finite-polynomial Rayleigh upper bound between two explicit coupled-source squared energies and
+contains no quotient or limiting equality.  Lean exposes it as
+`SoninCoupledPrimeArchPerTestRayleighUpperBound` and proves both its equivalence with the
+variational interface and its direct RH capstone.

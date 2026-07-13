@@ -444,15 +444,20 @@ the matching lower eigenvector bound with `||C||_2^2=||C^*C||_2`. This does not 
 OPUC/Szegő theorem that supplies normalized determinant vanishing for a purely singular circle
 measure.
 
-The unconditional module `GaloisForLFunctions.HTGeometry.FiniteOPUCRootLocation` begins the
-missing OPUC layer without importing it as an axiom. It defines the degree-`N` normalized
-orthogonal polynomial directly from the final Gram--Schmidt vector of a positive-definite
-Toeplitz section and proves that every one of its roots lies strictly inside the unit disk. The
-proof is the finite Toeplitz geometry itself: the low-coefficient embedding and its one-step shift
-have equal Gram norm, while orthogonality of a root factor forces a Pythagorean identity that
-excludes unit or exterior roots. Consequently the reversed polynomial needed by the
-Bernstein--Szegő density is zero-free on the closed disk once its reversal identity is formalized;
-normalization, finite-prefix reproduction, and rational Carathéodory form remain open.
+The unconditional OPUC modules `FiniteOPUCRootLocation`, `FiniteOPUCReversal`,
+`BernsteinSzegoDensity`, `BernsteinSzegoMeanValue`, `BernsteinSzegoMomentForm`, and
+`BernsteinSzegoReconstruction` close the complete finite Bernstein--Szegő layer. They construct
+the normalized terminal polynomial, prove strict open-disk root location, prove the exact
+reversal identity and closed-disk zero-freeness, and construct the positive reciprocal-square
+boundary density. Complex mean value gives exact normalization and lower-monomial
+orthogonality. The terminal polynomial then defines a finite feedback operator whose eigenvalues
+are roots of that polynomial. Gelfand's formula supplies a strictly contracting power. The
+difference of any two compatible Toeplitz sesquilinear forms is invariant under simultaneous
+feedback, so contraction forces the difference to vanish. Consequently the stable normalized
+terminal vector determines the complete finite Toeplitz section, and the Bernstein--Szegő moment
+law reproduces every positive and negative Fourier coefficient in that section exactly. This is
+an unconditional finite reconstruction theorem; only the separate rational Carathéodory formula
+remains outside this layer.
 
 The unconditional modules `GaloisForLFunctions.HTGeometry.GraphSaturationCore` and
 `GaloisForLFunctions.HTGeometry.ToeplitzPolynomialGraph` now formalize the Hilbert-product graph
@@ -881,7 +886,7 @@ is unconditionally atomless and real-Lebesgue singular, exactly the paper's
 singular-continuous carrier conclusion. Only its intersection with the still-open maximal
 full-translation HT residual set remains part of the final carrier capstone.
 
-All seventy-eight exact builds pass. `#print axioms` on the new frame-fiber, selector,
+All eighty-three exact builds pass. `#print axioms` on the new frame-fiber, selector,
 constrained-control, triangular-jet, evaluation root-count, bounded-density, and projective
 Nevanlinna-control/escape/genericity, minimal-type projective-separation, compact-atlas, and
 noncriticality, disjoint-block independence, scalar hypersurface, iterated Krull-dimension, and
@@ -891,28 +896,31 @@ active-block-evaluation, full-evaluation-surjectivity, genuine localized-inciden
 global-incidence-dimension, Riesz--Fischer reconstruction, atomless-law, singular-law,
 countable-quantization, Levy--Prokhorov, circle and projective residual singular-continuous, and
 exact carrier-range transport, analytic null-preimage, projective-label nonflatness, and
-singular-continuous carrier, finite Toeplitz shift-isometry, normalized OPUC degree, and strict
-OPUC root-location capstones reports only
+singular-continuous carrier, finite Toeplitz shift-isometry, normalized OPUC degree, strict
+OPUC root-location, reversal, reciprocal-square density, mean-value orthogonality, moment-form,
+stable-terminal reconstruction, and exact Bernstein--Szegő prefix capstones reports only
 `propext`, `Classical.choice`, and `Quot.sound`. The touched
 modules contain no proof debt, and the
-aggregate `GaloisForLFunctions.HTGeometry` build passes with 8653 jobs, the repository-wide formal
+aggregate `GaloisForLFunctions.HTGeometry` build passes with 8658 jobs, the repository-wide formal
 lint passes, and the generated declaration indexes are current. This
 validates only the declarations listed above, not the still-unformalized claims in the paper.
 
-The remaining formalization requires construction of the actual N-extremal Nevanlinna family from
-every normalized indeterminate Hamburger moment sequence, finite algebraic/Whitney stratification,
-and full-complex-shift
-parametric-transversality/Baire argument, the
-vanishing-half-line F. and M. Riesz theorem, the OPUC/Szegő determinant-vanishing theorem,
-Bernstein--Szegő approximation, the exact Nevanlinna-image/maximal-HT residual intersection, and
-the final paper-wide capstone.
+The remaining original formalization requires exact Lean interfaces for the cited construction of
+the N-extremal Nevanlinna family, finite algebraic/Whitney stratification and smooth parametric
+transversality, the vanishing-half-line F. and M. Riesz theorem, and the OPUC/Szegő
+determinant-vanishing theorem. From those literature inputs, the project must still prove in Lean
+the full-complex-shift Baire application, the exact Nevanlinna-image/maximal-HT residual
+intersection, and the final paper-wide relative capstone. The classical source theorems themselves
+need not be reproved in Lean for publication, but every original deduction from their exact
+hypotheses must be axiom-free.
 
 Formalization audit (needs-audit pass): the listed modules are confirmed present in the tree and
-spot-checked axiom-clean. Each remaining item is a research-scale classical theorem absent from
+spot-checked axiom-clean. The remaining literature inputs are classical theorems absent from
 mathlib: F. and M. Riesz was verified absent (the `RieszBrothersRieszFischer` module now proves
 that its vanishing-half-line form is the sole remaining analytic input in the graph chain), as are
-the OPUC/Szegő determinant-vanishing theorem, the
-Bernstein--Szegő approximation, and the indeterminate-Hamburger Nevanlinna-family construction.
+the OPUC/Szegő determinant-vanishing theorem and the indeterminate-Hamburger Nevanlinna-family
+construction. Bernstein--Szegő finite-prefix reproduction is no longer an external input: the
+project proves it unconditionally by stable-terminal feedback reconstruction.
 The separate differential-genericity gap now requires the projectivized total-incidence/projection
 or an equivalent direct universal-incidence transversality theorem, together with finite
 algebraic/Whitney stratification and a smooth parametric-transversality development. It does not
@@ -938,7 +946,8 @@ require another fixed-pattern or fixed-coefficient wrapper.
 - [x] targeted external collision search
 - [ ] independent specialist proof audit
 - [ ] full primary-source priority audit
-- [ ] unconditional Lean formalization of the entire theorem
+- [ ] exact primary-source match for every literature theorem interface
+- [ ] axiom-free Lean formalization of every original deduction and the relative paper capstone
 
 ## Log
 

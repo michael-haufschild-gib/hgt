@@ -6,7 +6,7 @@
 - **Lean inputs:** `formal/GaloisForLFunctions/RHTower/EulerSquarefreeWickDefect.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeWordEnsembleBoundaryTomography.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeArchThetaAllOrderCumulant.lean`, and
-  `formal/GaloisForLFunctions/RHTower/PrimeArchHankelDeterminantCriterion.lean`
+  `formal/GaloisForLFunctions/RHTower/PrimeArchMomentMeasureRH.lean`
 - **Statement:** `[CONJECTURE]` The canonical completed seam-log tower is the free-cumulant tower of
   one source-defined positive compound free-Poisson variable.  Positivity of its jump operator makes
   every shifted seam Hankel form a Gram form, and the existing seam-log consumer then proves RH.
@@ -48,6 +48,9 @@ sum_(i,j) c_i c_j T_(i+j+1)^src
 
 The paper theorem `seam-log-hankel-rh-equivalence.md` identifies all-order positivity in `(2)` with
 RH.  Thus `(1)` for one positive source-built jump law closes the consumer end exactly.
+The common infinite-support moment-measure-to-RH capstone is also formalized in Lean; the remaining
+formal bridge is the coefficient identification between this jump law and
+`normalizedPrimeArchMoment`.
 
 This is formally the same positive cone as the Stieltjes/Thorin route but proposes a different
 source mechanism.  Instead of first recovering a one-variable transform, it asks whether prime-word
@@ -97,8 +100,9 @@ degree-by-degree rescaling is forbidden.
 ## Hard attacks and positive residues
 
 1. **The raw shared spin is not already the positive jump variable.**  For positive real `a_i`, its
-   fourth Gaussian cumulant is negative.  The same signed higher-interaction issue persists in its
-   free cumulants.
+   fourth Gaussian cumulant is `-2a_0a_1a_2a_3`.  Lean now proves the sharper noncrossing statement:
+   its ordered fourth free cumulant is exactly `-a_0a_1a_2a_3`; the missing factor is the excluded
+   crossing pair partition.
    **Positive residue:** the shared Rademacher law is the correct interaction carrier, not the final
    scalar jump law.  Positivity must appear only after Gamma/polar completion and block compression.
 2. **Prime-by-prime scalar free convolution cannot work.**  A single positive FE-even frequency has
@@ -132,7 +136,8 @@ degree-by-degree rescaling is forbidden.
 The rank-four packet is the first compulsory test.
 
 1. Reconstruct its six two-support and one four-support coefficients from the shared-spin law.
-2. Perform the noncrossing moment--cumulant inversion explicitly.
+2. The noncrossing moment--cumulant inversion is now exact in Lean and gives the negative scalar
+   fourth free cumulant `-a_0a_1a_2a_3`.  Therefore the uncompleted scalar jump ansatz is retired.
 3. Add the finite Gamma/polar block in the same normalization as the seam recurrence.
 4. Solve for the smallest Hermitian `J_4` whose first four traces match the completed packet.
 5. Test positivity by exact principal minors.  If it fails, record the negative eigendirection as a
@@ -174,9 +179,11 @@ it is meant to prove.
 - [x] free-Poisson-to-shifted-Hankel-to-RH consumer chain closed
 - [x] raw Wick no-go upgraded in Lean to a positive shared-Rademacher cumulant identity
 - [x] scalar primewise, triangular-recoding, and finite-prefix shortcuts attacked
+- [x] infinite-support representing-measure-to-RH capstone formalized in Lean
+- [x] raw rank-four scalar free-Poisson jump ansatz retired by the exact negative fourth free
+      cumulant; completion-sensitive block successor isolated
 - [ ] rank-four noncrossing completed block constructed and tested exactly
 - [ ] all-aperture source rule for `J_N` defined
 - [ ] positivity and trace comparison proved
 - [ ] cofinal positive jump law constructed
-- [ ] RH capstone composed
-
+- [ ] free-cumulant coefficient dictionary composed with the formal RH capstone

@@ -135,3 +135,14 @@ are independent of the guarded family.
 Stage moves to 2-fully-proven/needs-audit: the mathematics and the formalization are complete;
 the outstanding gate is the parent-literature audit of compact-open density/closure results for
 symmetric exponential-type entire functions, which decides new/not-new placement at stage 3.
+
+Formalization audit (needs-audit pass): re-verified against the current toolchain. The module lives at
+`formal/GaloisForLFunctions/RHTower/GuardedFinitePassportClosure.lean` (the notes above cite the
+basename). `lake env lean` on the module compiles clean, and all three headline theorems are
+axiom-clean under `#print axioms` (`propext, Classical.choice, Quot.sound` only):
+`RHTower.guardedClosureApproximant_tendstoLocallyUniformly` (compact-open convergence
+`F_N → A`), `RHTower.guardedClosure_partner_fluxCorrection_germ_ne` (the two period-partner
+completed-flux-correction germs are never eventually equal near the origin), and
+`RHTower.guardedClosure_partner_factor_germ_ne` (no scalar multiple identifies the two factor germs).
+Every theorem the card proves unconditionally is formalized; no gap remains on the Lean side. The only
+open gate is the (non-formal) parent-literature novelty audit.

@@ -6,7 +6,8 @@
 - **Lean inputs:** `formal/GaloisForLFunctions/RHTower/PrimeArchThetaCumulantMinor.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeArchThetaAllOrderCumulant.lean`,
   `formal/GaloisForLFunctions/RHTower/XiRelativeResolventFlux.lean`,
-  `formal/GaloisForLFunctions/RHTower/XiHedenmalmMomentDeterminacy.lean`, and
+  `formal/GaloisForLFunctions/RHTower/XiHedenmalmMomentDeterminacy.lean`,
+  `formal/GaloisForLFunctions/RHTower/PrimeArchMomentMeasureRH.lean`, and
   `formal/GaloisForLFunctions/PrimeBoundaryDickmanWick.lean`
 - **Statement:** `[CONJECTURE]` The reciprocal completed seam ratio is the Laplace transform of one
   source-defined generalized gamma convolution whose Thorin measure is constructed from the
@@ -183,7 +184,9 @@ to be retained as an explicit completion-interaction coordinate.
 - `[OPEN CORE C]` Prove the Frullani/Laplace exponent equals `-log F_src` on an open convergence
   domain, including the cancellation of the divided prime and archimedean singularities.
 - `[OPEN CORE D]` Formalize the abstract bridge “exact GGC representation of `F_src` implies the
-  shifted seam Hankel cone,” then compose it with the existing RH consumer.
+  canonical normalized prime--arch moment representation.  The remaining measure-to-strict-Hankel
+  and RH capstone is already formalized by
+  `riemannHypothesis_of_primeArchInfiniteSupportMomentRepresentation`.
 
 ## Kill conditions
 
@@ -208,9 +211,9 @@ weld, and moment determinacy in one chain.
 - [x] direct infinitely-divisible Xi characteristic-function route retired with a positive
       reciprocal-seam successor
 - [x] Dickman and separated prime-delay shortcuts retired with completion-sensitive successors
+- [x] infinite-support representing-measure-to-RH capstone formalized in Lean
 - [ ] explicit completed finite Levy density constructed
 - [ ] finite packet positivity and exponent identity proved
 - [ ] tight positive Thorin limit proved
 - [ ] abstract GGC-to-seam-Hankel bridge formalized
-- [ ] RH capstone composed
-
+- [ ] GGC coefficient dictionary composed with the formal RH capstone

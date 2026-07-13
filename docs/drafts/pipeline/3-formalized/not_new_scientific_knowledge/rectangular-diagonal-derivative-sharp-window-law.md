@@ -68,6 +68,23 @@ W(n)<=2(1-2^(-1/2))*sqrt(n)+C*n^epsilon.                 (5)
 The only difference between `W_closed` and `W` is the possible lower endpoint `k=n/2`; its
 coefficient is nonnegative, so the implication `(4) -> (5)` loses no constant.
 
+This derivative also lifts exactly to the complete rectangular prime--polar coefficient `S`.
+Before the first prime logarithm, the fixed prime tent is empty and the width-only sewing term has
+derivative
+
+```text
+b=8(exp(log(2)/4)-exp(-log(2)/4)).
+```
+
+Lean therefore proves
+
+```text
+D_+ S(log(2)/2,log(n)/2)=b+2*D_+ A(log(2)/2,log(n)).     (6)
+```
+
+Thus a lower bound for the full prime--polar source slope, after subtracting `b`, directly implies
+`(5)`; no adjacent-block proposition is exposed at the RH theorem boundary.
+
 ## Proof
 
 For one logarithmic prime location `h=log(k)`, write
@@ -97,9 +114,10 @@ combining this inequality with `(3)` and `(4)` proves `(5)`.
 This is the reverse local bridge missing from the earlier sharp-to-rectangular sewing theorem.
 The sharp window is no longer an external arithmetic hypothesis: it is read directly from a
 one-sided derivative of the same two-parameter rectangular source family used by the Xi
-Guinand--Weil value.  After the remaining source identity is completed, the proof burden can be
-attacked on the spectral side as a diagonal variation estimate rather than by estimating the
-discontinuous prime window from scratch.
+Guinand--Weil value.  Lean now contains direct theorems from either the adjacent-block slope or the
+complete prime--polar source slope to `RiemannHypothesis`.  After the remaining Gamma and contour
+passages are completed, the proof burden can be attacked on the spectral side as a diagonal
+variation estimate rather than by estimating the discontinuous prime window from scratch.
 
 The slope estimate `(4)` is still RH-strength.  Neither the derivative identity nor the present
 literature audit supplies its unconditional lower bound.
@@ -114,7 +132,12 @@ GaloisForLFunctions.RHTower.CCMRectangularDirectionalDerivative
   hasDerivWithinAt_criticalMellinAdjacentBlock_diagonal_logSample
   dyadicWeightedPrimeWindow_le_rectangularClosedPrimeShellValue
   hasDerivWithinAt_dyadicAdjacentBlock_diagonal_logSample
+  hasDerivAt_rectangularFixedPrimePolarConstant_add
+  hasDerivWithinAt_dyadicPrimePolarSource_diagonal_logSample
   dyadicWeightedPrimeWindow_upper_of_adjacentBlockDiagonalRightSlope_lower
+  dyadicWeightedPrimeWindow_upper_of_primePolarSourceDiagonalRightSlope_lower
+  riemannHypothesis_of_eventually_dyadicAdjacentBlockDiagonalRightSlope_lower
+  riemannHypothesis_of_eventually_dyadicPrimePolarSourceDiagonalRightSlope_lower
 ```
 
 The focused module build is green.  `#print axioms` for the two capstone derivative theorems and
@@ -127,7 +150,9 @@ the direct dyadic implication reports only `propext`, `Classical.choice`, and `Q
 - [x] polar derivative has the target square-root coefficient
 - [x] integer exponential floor shown locally right-constant
 - [x] adjacent-block diagonal derivative formalized
+- [x] complete prime--polar source diagonal derivative formalized
 - [x] direct slope-to-dyadic-window implication formalized
+- [x] direct all-epsilon slope-to-RH implications formalized
 - [x] focused build and axiom audit pass
 - [ ] prove an unconditional all-epsilon lower bound for the diagonal slope
 - [ ] transfer the slope through the completed rectangular Guinand--Weil identity

@@ -427,9 +427,20 @@ Formalization audit (needs-audit pass): no bounded self-contained kernel closes 
 substantive content — the moment-preserving barycenter `(7)`, the Bauer-simplex identification `(10)`,
 the weak-Feller Markov projector `(17)`--`(22)`, and the residual HT on infinite faces — all rest on
 the absent Hamburger-moment/Nevanlinna/Choquet-simplex/transversality stack shared with the parent
-cards. The only coordinate-free step that abstracts cleanly (idempotence `R_s^2 = R_s` from the left
-inverse `π_* ∘ Β = id`) is a retraction-from-section triviality, not a gate-closing theorem. No
-partial file is added.
+cards. Two coordinate-free layers of that stack are now formalized in-tree, axiom-clean:
+
+- The **topological retract dimension bound** — the load-bearing consequence of the Bauer retraction —
+  is `HasCoverDimLE.of_retract` in `formal/GaloisForLFunctions/CoveringDimension.lean`: a retract
+  `Y` of `X` (continuous `i : Y → X`, `r : X → Y`, `r ∘ i = id`) has covering dimension at most that
+  of `X`.  This is exactly the abstract fact that passing to the Nevanlinna Bauer retract cannot raise
+  dimension; the idempotence `R_s^2 = R_s` from the left inverse `π_* ∘ Β = id` is its
+  retraction-from-section shadow.
+- The **moment-functional / Hankel-positivity substrate** underlying the moment-preserving barycenter
+  and the representing-measure simplex is `formal/GaloisForLFunctions/MomentFunctionalPositivity.lean`
+  (`momentFunctional`, `momentFunctional_pow_two_nonneg`, `momentFunctional_pow_two_eq_zero`).
+
+What remains absent is the analytic simplex identification itself (Nevanlinna matrix / Choquet
+extremal boundary / weak-Feller kernel), which no clean interface abstracts.
 
 ## Gates
 

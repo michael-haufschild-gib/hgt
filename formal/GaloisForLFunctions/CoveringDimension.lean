@@ -60,6 +60,25 @@ theorem HasCoverDimLE.of_homeomorph {Y : Type*} [TopologicalSpace Y] (e : X ≃�
     have hset : {i : ι | y ∈ e.symm ⁻¹' V i} = {i : ι | e.symm y ∈ V i} := rfl
     rw [hset]; exact hVord (e.symm y)
 
+/-- **Dimension of a retract.**  A retract `Y` of `X` (continuous `i : Y → X`, `r : X → Y` with
+`r ∘ i = id`) has covering dimension at most that of `X`.  This is the monotonicity behind the
+Bauer-retract boundary constructions: passing to a retract cannot raise covering dimension. -/
+theorem HasCoverDimLE.of_retract {Y : Type*} [TopologicalSpace Y] {n : ℕ}
+    (i : Y → X) (r : X → Y) (hi : Continuous i) (hr : Continuous r)
+    (hri : Function.LeftInverse r i) (h : HasCoverDimLE X n) : HasCoverDimLE Y n := by
+  intro κ _ U hU hcov
+  obtain ⟨V, hVo, hVs, hVc, hVord⟩ := h (fun k => r ⁻¹' U k) (fun k => (hU k).preimage hr)
+    (by rw [← Set.preimage_iUnion, hcov, Set.preimage_univ])
+  refine ⟨fun k => i ⁻¹' V k, fun k => (hVo k).preimage hi, ?_, ?_, ?_⟩
+  · intro k y hy
+    have hmem : i y ∈ r ⁻¹' U k := hVs k hy
+    rw [Set.mem_preimage, hri y] at hmem
+    exact hmem
+  · rw [← Set.preimage_iUnion, hVc, Set.preimage_univ]
+  · intro y
+    have hset : {k : κ | y ∈ i ⁻¹' V k} = {k : κ | i y ∈ V k} := rfl
+    rw [hset]; exact hVord (i y)
+
 /-- **Inverse-limit covering-dimension bound.**  If every finite open cover of `X` refines through
 one of the stages `Y i` (via continuous `f i : X → Y i`) — the compactness property that an inverse
 limit enjoys — and each stage has covering dimension `≤ n`, then so does `X`.  This is the

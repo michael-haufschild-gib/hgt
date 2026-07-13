@@ -337,6 +337,80 @@ noncomputable def dyadicAdjacentBlockDiagonalRightSlope (n : ℕ) : ℝ :=
       2 * (Real.sqrt 2 - 1) / Real.sqrt n -
     rectangularClosedPrimeShellValue (Real.log 2 / 2) (Real.log n) n
 
+/-- Below the first prime logarithm, the fixed rectangular prime tent is empty. -/
+theorem rectangularFixedPrimeTentSum_floorExp_eq_zero_of_lt_log_two
+    {L : ℝ} (hL : L < Real.log 2) :
+    rectangularFixedPrimeTentSum L ⌊Real.exp L⌋₊ = 0 := by
+  have hexp : Real.exp L < (2 : ℝ) := by
+    rw [← Real.exp_log (by norm_num : (0 : ℝ) < 2)]
+    exact Real.exp_lt_exp.mpr hL
+  have hfloor : ⌊Real.exp L⌋₊ < 2 :=
+    (Nat.floor_lt (Real.exp_pos L).le).mpr hexp
+  rw [rectangularFixedPrimeTentSum]
+  apply Finset.sum_eq_zero
+  intro k hk
+  simp only [Finset.mem_Icc] at hk
+  omega
+
+/-- The width-only correction in the rectangular sewing law has an elementary derivative before
+the first prime enters its fixed tent. -/
+theorem hasDerivAt_rectangularFixedPrimePolarConstant_add
+    {L : ℝ} (hL : L < Real.log 2) :
+    HasDerivAt
+      (fun t : ℝ => rectangularFixedPrimePolarConstant (L + t))
+      (8 * (Real.exp (L / 2) - Real.exp (-L / 2))) 0 := by
+  have hLt : HasDerivAt (fun t : ℝ => L + t) 1 0 := by
+    convert (hasDerivAt_const (x := (0 : ℝ)) L).add (hasDerivAt_id 0) using 1
+    simp
+  have hα : HasDerivAt (fun t : ℝ => rectangularPolarAlpha (L + t))
+      (Real.exp (-L / 2) / 2) 0 := by
+    unfold rectangularPolarAlpha
+    convert (hasDerivAt_const (x := (0 : ℝ)) (1 : ℝ)).sub
+      ((hLt.neg.div_const 2).exp) using 1
+    all_goals simp
+    all_goals ring
+  have hβ : HasDerivAt (fun t : ℝ => rectangularPolarBeta (L + t))
+      (Real.exp (L / 2) / 2) 0 := by
+    unfold rectangularPolarBeta
+    convert ((hLt.div_const 2).exp).sub
+      (hasDerivAt_const (x := (0 : ℝ)) (1 : ℝ)) using 1
+    all_goals simp
+    all_goals ring
+  have hpolar := (hα.mul hβ).const_mul 16
+  have hsmall : ∀ᶠ t in 𝓝 (0 : ℝ), L + t < Real.log 2 := by
+    have : ∀ᶠ t in 𝓝 (0 : ℝ), t < Real.log 2 - L :=
+      Iio_mem_nhds (sub_pos.mpr hL)
+    filter_upwards [this] with t ht
+    linarith
+  have heq :
+      (fun t : ℝ => rectangularFixedPrimePolarConstant (L + t)) =ᶠ[𝓝 0]
+        (fun t : ℝ =>
+          16 * (rectangularPolarAlpha (L + t) * rectangularPolarBeta (L + t))) := by
+    filter_upwards [hsmall] with t ht
+    rw [rectangularFixedPrimePolarConstant,
+      rectangularFixedPrimeTentSum_floorExp_eq_zero_of_lt_log_two ht]
+    ring
+  have hcross : Real.exp (-L / 2) * Real.exp (L / 2) = 1 := by
+    rw [← Real.exp_add]
+    convert Real.exp_zero using 1
+    ring
+  have hpolar' : HasDerivAt
+      (fun t : ℝ =>
+        16 * (rectangularPolarAlpha (L + t) * rectangularPolarBeta (L + t)))
+      (16 * (Real.exp (-L / 2) / 2 * rectangularPolarBeta (L + 0) +
+        rectangularPolarAlpha (L + 0) * (Real.exp (L / 2) / 2))) 0 := by
+    simpa only [Pi.mul_apply] using hpolar
+  have h := hpolar'.congr_of_eventuallyEq heq
+  convert h using 1
+  simp only [add_zero,
+    rectangularPolarAlpha, rectangularPolarBeta]
+  nlinarith [hcross]
+
+/-- Right diagonal slope of the complete rectangular prime--polar source at the dyadic width. -/
+noncomputable def dyadicPrimePolarSourceDiagonalRightSlope (n : ℕ) : ℝ :=
+  8 * (Real.exp (Real.log 2 / 4) - Real.exp (-Real.log 2 / 4)) +
+    2 * dyadicAdjacentBlockDiagonalRightSlope n
+
 /-- At dyadic width, the rectangular source slope has exactly the target main coefficient. -/
 theorem hasDerivWithinAt_dyadicAdjacentBlock_diagonal_logSample
     {n : ℕ} (hn : 0 < n) :
@@ -354,6 +428,61 @@ theorem hasDerivWithinAt_dyadicAdjacentBlock_diagonal_logSample
   unfold dyadicAdjacentBlockDiagonalRightSlope
   simpa only [hexpNegL, hexpL] using h
 
+/-- The same diagonal deformation reads the sharp shell from the complete rectangular
+prime--polar source.  The only additional slope is the explicit width-only polar cross term. -/
+theorem hasDerivWithinAt_dyadicPrimePolarSource_diagonal_logSample
+    {n : ℕ} (hn : 4 ≤ n) :
+    HasDerivWithinAt
+      (fun t : ℝ =>
+        rectangularPrimePolarSourceCoefficient (Real.log 2 / 2 + t)
+          ((Real.log n + t) / 2))
+      (dyadicPrimePolarSourceDiagonalRightSlope n) (Ici 0) 0 := by
+  have hnpos : 0 < n := by omega
+  have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  have hLlt : Real.log 2 / 2 < Real.log 2 := by linarith
+  have hconst :=
+    (hasDerivAt_rectangularFixedPrimePolarConstant_add hLlt).hasDerivWithinAt
+      (s := Ici 0)
+  have hadj :=
+    (hasDerivWithinAt_dyadicAdjacentBlock_diagonal_logSample hnpos).const_mul 2
+  have hsum := hconst.add hadj
+  have hnreal : (0 : ℝ) < n := by exact_mod_cast hnpos
+  have htwoN : (2 : ℝ) < n := by exact_mod_cast (show 2 < n by omega)
+  have hloglt : Real.log 2 < Real.log n :=
+    Real.strictMonoOn_log (by norm_num) hnreal htwoN
+  have hsmallNhds : ∀ᶠ t in 𝓝 (0 : ℝ), t < Real.log n - Real.log 2 :=
+    Iio_mem_nhds (sub_pos.mpr hloglt)
+  have hsmall : ∀ᶠ t in 𝓝[Ici 0] (0 : ℝ),
+      t < Real.log n - Real.log 2 :=
+    Filter.Eventually.filter_mono nhdsWithin_le_nhds hsmallNhds
+  have heq :
+      (fun t : ℝ =>
+        rectangularPrimePolarSourceCoefficient (Real.log 2 / 2 + t)
+          ((Real.log n + t) / 2)) =ᶠ[𝓝[Ici 0] 0]
+      (fun t : ℝ =>
+        rectangularFixedPrimePolarConstant (Real.log 2 / 2 + t) +
+          2 * criticalMellinAdjacentBlock (Real.log 2 / 2 + t)
+            (Real.log n + t)) := by
+    filter_upwards [hsmall, eventually_mem_nhdsWithin] with t ht htmem
+    simp only [mem_Ici] at htmem
+    rw [rectangularPrimePolarSourceCoefficient_eq_fixedConstant_add_adjacentBlock]
+    · exact le_of_lt (by linarith)
+    · linarith
+  have hsum' : HasDerivWithinAt
+      (fun t : ℝ =>
+        rectangularFixedPrimePolarConstant (Real.log 2 / 2 + t) +
+          2 * criticalMellinAdjacentBlock (Real.log 2 / 2 + t)
+            (Real.log n + t))
+      (8 * (Real.exp (Real.log 2 / 4) - Real.exp (-Real.log 2 / 4)) +
+        2 * dyadicAdjacentBlockDiagonalRightSlope n) (Ici 0) 0 := by
+    have hquarter : Real.log 2 / 2 / 2 = Real.log 2 / 4 := by ring
+    have hnegQuarter : -(Real.log 2 / 2) / 2 = -Real.log 2 / 4 := by ring
+    simpa only [Pi.add_apply, hquarter, hnegQuarter] using hsum
+  unfold dyadicPrimePolarSourceDiagonalRightSlope
+  apply hsum'.congr_of_eventuallyEq heq
+  simpa using rectangularPrimePolarSourceCoefficient_eq_fixedConstant_add_adjacentBlock
+    (L := Real.log 2 / 2) (x := Real.log n) (by positivity) (by linarith [hloglt])
+
 /-- A lower bound for one right diagonal slope of the rectangular adjacent-block value directly
 discharges the sharp dyadic von Mangoldt upper bound. -/
 theorem dyadicWeightedPrimeWindow_upper_of_adjacentBlockDiagonalRightSlope_lower
@@ -366,6 +495,24 @@ theorem dyadicWeightedPrimeWindow_upper_of_adjacentBlockDiagonalRightSlope_lower
         C * (n : ℝ) ^ epsilon := by
   have hwindow := dyadicWeightedPrimeWindow_le_rectangularClosedPrimeShellValue hn
   unfold dyadicAdjacentBlockDiagonalRightSlope at hslope
+  linarith
+
+/-- A lower bound for the complete rectangular prime--polar diagonal slope discharges the sharp
+window bound after subtracting its explicit width-only derivative. -/
+theorem dyadicWeightedPrimeWindow_upper_of_primePolarSourceDiagonalRightSlope_lower
+    {n : ℕ} (hn : 4 ≤ n) (C epsilon : ℝ)
+    (hslope :
+      8 * (Real.exp (Real.log 2 / 4) - Real.exp (-Real.log 2 / 4)) +
+          4 * (Real.sqrt 2 - 1) / Real.sqrt n -
+          2 * C * (n : ℝ) ^ epsilon ≤
+        dyadicPrimePolarSourceDiagonalRightSlope n) :
+    dyadicWeightedPrimeWindow n ≤
+      2 * (1 - (Real.sqrt 2)⁻¹) * Real.sqrt n +
+        C * (n : ℝ) ^ epsilon := by
+  apply dyadicWeightedPrimeWindow_upper_of_adjacentBlockDiagonalRightSlope_lower
+    hn C epsilon
+  unfold dyadicPrimePolarSourceDiagonalRightSlope at hslope
+  ring_nf at hslope ⊢
   linarith
 
 /-- The eventual all-epsilon diagonal-slope estimate discharges the existing sharp-window gate
@@ -383,6 +530,24 @@ theorem riemannHypothesis_of_eventually_dyadicAdjacentBlockDiagonalRightSlope_lo
   obtain ⟨C, hC, htail⟩ := hslope epsilon hepsilon
   refine ⟨C, hC, fun n hn => ?_⟩
   exact dyadicWeightedPrimeWindow_upper_of_adjacentBlockDiagonalRightSlope_lower
+    (hN.trans hn) C epsilon (htail n hn)
+
+/-- An eventual all-epsilon lower estimate for the complete rectangular prime--polar diagonal
+slope proves RH directly. -/
+theorem riemannHypothesis_of_eventually_dyadicPrimePolarSourceDiagonalRightSlope_lower
+    {N : ℕ} (hN : 4 ≤ N)
+    (hslope : ∀ epsilon : ℝ, 0 < epsilon →
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ, N ≤ n →
+        8 * (Real.exp (Real.log 2 / 4) - Real.exp (-Real.log 2 / 4)) +
+            4 * (Real.sqrt 2 - 1) / Real.sqrt n -
+            2 * C * (n : ℝ) ^ epsilon ≤
+          dyadicPrimePolarSourceDiagonalRightSlope n) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_eventually_dyadicWeightedPrimeWindow_upper
+  intro epsilon hepsilon
+  obtain ⟨C, hC, htail⟩ := hslope epsilon hepsilon
+  refine ⟨C, hC, fun n hn => ?_⟩
+  exact dyadicWeightedPrimeWindow_upper_of_primePolarSourceDiagonalRightSlope_lower
     (hN.trans hn) C epsilon (htail n hn)
 
 end RHTower

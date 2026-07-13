@@ -55,6 +55,18 @@ D_0123=E[X_0X_1X_2X_3]
 is its fourth joint cumulant.  Thus the no-go retires the Gaussian/dimer interpretation but
 positively selects a shared-spin/higher-cumulant interpretation.
 
+For the ordered noncrossing partition lattice, Lean also proves that the fourth free cumulant is
+
+```text
+kappa_4^free(X_0,X_1,X_2,X_3)=-a_0a_1a_2a_3.
+```
+
+The classical Wick defect is this free cumulant minus the excluded crossing pair product
+`E[X_0X_2]E[X_1X_3]`.  Thus the positive successor is exact on both sides: the raw packet is a valid
+shared-spin moment law, but for positive `a_i` it is not itself a positive compound-free-Poisson
+jump packet.  Any free-probability successor needs completion-sensitive block coupling before
+scalarization.
+
 A surviving monomer--dimer or stability route must now do one of three precise things:
 
 1. construct a new completed prime--Gamma pair kernel whose matching sums reproduce the completed
@@ -75,6 +87,8 @@ The module uses the existing formal `squarefreeMonomial` from
 - `eulerSquarefreeWickFourDefect_eq`;
 - `sharedRademacherMoment_eq_of_even_card`;
 - `eulerSquarefreeWickFourDefect_eq_sharedRademacherCumulant`;
+- `sharedRademacherFreeFourCumulant_eq`;
+- `eulerSquarefreeWickFourDefect_eq_freeCumulant_sub_crossing`;
 - `eulerSquarefreeWickFourLaw_iff`;
 - `not_eulerSquarefreeWickFourLaw_of_nonzero`.
 
@@ -88,6 +102,7 @@ The exact module builds.  Axiom audits report only `propext`, `Classical.choice`
 - [x] vanishing locus classified
 - [x] direct raw-Euler matching proposal retired
 - [x] raw even squarefree packet identified with a positive shared-Rademacher moment law
+- [x] exact negative fourth free cumulant and crossing-pair correction formalized
 - [x] completed-kernel, stable-hypergraph, and free-cumulant positive successors isolated
 - [x] exact Lean build
 - [x] accepted-axiom audit

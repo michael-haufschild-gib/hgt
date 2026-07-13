@@ -356,6 +356,159 @@ theorem thetaSquareIndexDyadicDensity_zero (x : ℝ) :
     thetaSquareIndexDyadicDensity 0 x = thetaCuspTailSecondDensity x := by
   simp [thetaSquareIndexDyadicDensity]
 
+private theorem real_log_two_pow (k : ℕ) :
+    Real.log (((2 ^ k : ℕ) : ℝ)) = (k : ℝ) * Real.log 2 := by
+  rw [show (((2 ^ k : ℕ) : ℝ)) = (2 : ℝ) ^ k by norm_num]
+  exact Real.log_pow 2 k
+
+private theorem thetaSquareIndexDyadicWeight_succ (k : ℕ) :
+    ((((2 ^ (k + 1) : ℕ) : ℝ)) ^ (-(1 / 2 : ℝ))) =
+      (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+        ((((2 ^ k : ℕ) : ℝ)) ^ (-(1 / 2 : ℝ))) := by
+  rw [pow_succ]
+  push_cast
+  rw [Real.mul_rpow (by positivity : (0 : ℝ) ≤ (2 : ℝ) ^ k)
+    (by norm_num : (0 : ℝ) ≤ 2)]
+  ring
+
+/-- Every dyadic divisibility row is a critical rescaling and logarithmic translate of the full
+canonical density. -/
+theorem thetaSquareIndexDyadicDensity_eq_scaledDensity (k : ℕ) (x : ℝ) :
+    thetaSquareIndexDyadicDensity k x =
+      ((((2 ^ k : ℕ) : ℝ)) ^ (-(1 / 2 : ℝ))) *
+        thetaCuspTailSecondDensity (x + (k : ℝ) * Real.log 2) := by
+  unfold thetaSquareIndexDyadicDensity
+  rw [real_log_two_pow]
+
+/-- The exact-valuation row at depth `k` is the translated level-zero odd row. -/
+theorem thetaSquareIndexDyadicOddLayer_eq_scaledOddDensity (k : ℕ) (x : ℝ) :
+    thetaSquareIndexDyadicOddLayer k x =
+      ((((2 ^ k : ℕ) : ℝ)) ^ (-(1 / 2 : ℝ))) *
+        thetaSquareIndexOddDensity (x + (k : ℝ) * Real.log 2) := by
+  rw [thetaSquareIndexDyadicOddLayer,
+    thetaSquareIndexDyadicDensity_eq_scaledDensity,
+    thetaSquareIndexDyadicDensity_eq_scaledDensity,
+    thetaSquareIndexDyadicWeight_succ]
+  unfold thetaSquareIndexOddDensity
+  rw [thetaSquareIndexEvenDensity_eq_dyadic_translate]
+  have hshift : x + ((k + 1 : ℕ) : ℝ) * Real.log 2 =
+      x + (k : ℝ) * Real.log 2 + Real.log 2 := by
+    push_cast
+    ring
+  rw [hshift]
+  ring
+
+/-- The parity row at depth `k` is the translated level-zero parity row. -/
+theorem thetaSquareIndexDyadicParityLayer_eq_scaledParityDensity
+    (k : ℕ) (x : ℝ) :
+    thetaSquareIndexDyadicParityLayer k x =
+      ((((2 ^ k : ℕ) : ℝ)) ^ (-(1 / 2 : ℝ))) *
+        thetaSquareIndexParityDensity (x + (k : ℝ) * Real.log 2) := by
+  rw [thetaSquareIndexDyadicParityLayer,
+    thetaSquareIndexDyadicDensity_eq_scaledDensity,
+    thetaSquareIndexDyadicDensity_eq_scaledDensity,
+    thetaSquareIndexDyadicWeight_succ]
+  rw [thetaSquareIndexParityDensity_eq_dyadic_difference]
+  have hshift : x + ((k + 1 : ℕ) : ℝ) * Real.log 2 =
+      x + (k : ℝ) * Real.log 2 + Real.log 2 := by
+    push_cast
+    ring
+  rw [hshift]
+  ring
+
+/-- The logarithmic displacement forced by reflecting the depth-`k` parity row into the
+depth-`k` exact-valuation row. -/
+def thetaSquareIndexDyadicReflectionShift (k : ℕ) : ℝ :=
+  (2 * k + 1 : ℕ) * Real.log 2
+
+/-- The two elementary completion characters left by the depth-`k` parity reflection. -/
+def thetaSquareIndexDyadicCompletionDefect (k : ℕ) (x : ℝ) : ℝ :=
+  ((((2 ^ k : ℕ) : ℝ)) ^ (-(1 / 2 : ℝ))) *
+    (2 * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+        thetaCuspReflectionMode (x - (k + 1 : ℕ) * Real.log 2) -
+      thetaCuspReflectionMode (x - (k : ℝ) * Real.log 2))
+
+private theorem thetaSquareIndexDyadicReflectionAmplitude_sq :
+    (2 * (2 : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 = 2 := by
+  have hw : (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+      (2 : ℝ) ^ (-(1 / 2 : ℝ)) = 1 / 2 := by
+    rw [← Real.rpow_add (by norm_num : (0 : ℝ) < 2)]
+    norm_num
+  nlinarith
+
+/-- All-depth arithmetic reflection.  The parity row becomes the exact-valuation row translated
+by `(2k+1) log 2`; its amplitude has square `2`, exactly the Haar coefficient ratio. -/
+theorem thetaSquareIndexDyadicParityLayer_neg_reflection (k : ℕ) (x : ℝ) :
+    thetaSquareIndexDyadicParityLayer k (-x) =
+      2 * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+          thetaSquareIndexDyadicOddLayer k
+            (x - thetaSquareIndexDyadicReflectionShift k) +
+        thetaSquareIndexDyadicCompletionDefect k x := by
+  rw [thetaSquareIndexDyadicParityLayer_eq_scaledParityDensity]
+  have harg : -x + (k : ℝ) * Real.log 2 =
+      -(x - (k : ℝ) * Real.log 2) := by ring
+  rw [harg, thetaSquareIndexParityDensity_neg_reflection]
+  rw [thetaSquareIndexDyadicOddLayer_eq_scaledOddDensity]
+  unfold thetaSquareIndexDyadicReflectionShift
+  have hodd :
+      x - ((2 * k + 1 : ℕ) : ℝ) * Real.log 2 +
+          (k : ℝ) * Real.log 2 =
+        x - (k : ℝ) * Real.log 2 - Real.log 2 := by
+    push_cast
+    ring
+  have href : x - (k : ℝ) * Real.log 2 - Real.log 2 =
+      x - ((k + 1 : ℕ) : ℝ) * Real.log 2 := by
+    push_cast
+    ring
+  rw [hodd, href]
+  unfold thetaSquareIndexDyadicCompletionDefect
+  ring
+
+/-- After reflection, the positive exact-valuation square and negative parity square cancel
+exactly.  Only the two explicit completion-character cross terms and their square remain. -/
+theorem thetaSquareIndexDyadicHaarLayer_reflected_polarization
+    (k : ℕ) (x y : ℝ) :
+    (2 : ℝ) ^ (k + 1) *
+          thetaSquareIndexDyadicOddLayer k
+            (x - thetaSquareIndexDyadicReflectionShift k) *
+          thetaSquareIndexDyadicOddLayer k
+            (y - thetaSquareIndexDyadicReflectionShift k) -
+        (2 : ℝ) ^ k *
+          thetaSquareIndexDyadicParityLayer k (-x) *
+            thetaSquareIndexDyadicParityLayer k (-y) =
+      -(2 : ℝ) ^ k *
+        (2 * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+            thetaSquareIndexDyadicOddLayer k
+              (x - thetaSquareIndexDyadicReflectionShift k) *
+            thetaSquareIndexDyadicCompletionDefect k y +
+          2 * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+            thetaSquareIndexDyadicCompletionDefect k x *
+            thetaSquareIndexDyadicOddLayer k
+              (y - thetaSquareIndexDyadicReflectionShift k) +
+          thetaSquareIndexDyadicCompletionDefect k x *
+            thetaSquareIndexDyadicCompletionDefect k y) := by
+  rw [thetaSquareIndexDyadicParityLayer_neg_reflection,
+    thetaSquareIndexDyadicParityLayer_neg_reflection, pow_succ]
+  have ha := thetaSquareIndexDyadicReflectionAmplitude_sq
+  calc
+    _ = (2 : ℝ) ^ k *
+        ((2 - (2 * (2 : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2) *
+            thetaSquareIndexDyadicOddLayer k
+              (x - thetaSquareIndexDyadicReflectionShift k) *
+            thetaSquareIndexDyadicOddLayer k
+              (y - thetaSquareIndexDyadicReflectionShift k) -
+          2 * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+            thetaSquareIndexDyadicOddLayer k
+              (x - thetaSquareIndexDyadicReflectionShift k) *
+            thetaSquareIndexDyadicCompletionDefect k y -
+          2 * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+            thetaSquareIndexDyadicCompletionDefect k x *
+            thetaSquareIndexDyadicOddLayer k
+              (y - thetaSquareIndexDyadicReflectionShift k) -
+          thetaSquareIndexDyadicCompletionDefect k x *
+            thetaSquareIndexDyadicCompletionDefect k y) := by ring
+    _ = _ := by rw [ha]; ring
+
 /-- The dyadic translate is exactly the full row of square indices divisible by `2^k`. -/
 theorem thetaSquareIndexDyadicDensity_eq_multiples_row (k : ℕ) (x : ℝ) :
     (∑' m : ℕ+,

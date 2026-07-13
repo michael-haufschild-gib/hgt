@@ -258,6 +258,16 @@ square-root ground selection `exp((log 2 / 2)·u)·√(M₂ u) → log 2`).  Foc
 repository formal lint pass.  The theorem family uses only the standard Mathlib axioms `propext`,
 `Classical.choice`, and `Quot.sound`.
 
+Formalization audit (needs-audit pass): the analytic core above formalizes the low-temperature limits.
+The **exact** finite-sum dispersion identity underlying them — stated in the Approach as
+`2(M₂M₄ − M₃²) = ∑_{a,b} w_a w_b x_a² x_b² (x_a − x_b)²`, previously used only inside the
+dominated-convergence limit for infinite spectra — is now formalized as a standalone algebraic theorem
+over an arbitrary commutative ring in
+`formal/GaloisForLFunctions/LowTemperatureDispersionIdentity.lean`:
+`ZetaFisher.two_mul_dispersion` (the exact symmetrization identity) and `ZetaFisher.dispersion_nonneg`
+(its manifest nonnegativity `M₂M₄ − M₃² ≥ 0` for nonnegative weights, each summand a product of a
+weight product with a perfect square).  Both are axiom-clean (`propext, Classical.choice, Quot.sound`).
+
 ## Carrier verdict after the finite-Gamma boundary law
 
 The finite archimedean Gamma-product theorem supplies one upper projective valuation direction,

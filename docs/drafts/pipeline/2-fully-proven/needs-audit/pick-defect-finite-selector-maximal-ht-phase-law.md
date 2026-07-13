@@ -369,7 +369,14 @@ Formalization audit (needs-audit pass): no bounded self-contained kernel closes 
 parent moment-fiber stack, this card additionally needs the classical confluent Nevanlinna--Pick
 singular/free dichotomy and its `J`-inner transfer-matrix parametrization `(8)`--`(9)` — itself a
 major theory absent from mathlib. The triangular jet-coordinate submersions `(5)`, `(11)` are
-elementary but inseparable from that absent interpolation surface. No partial file is added.
+elementary but inseparable from that absent interpolation surface. The one classical layer that
+abstracts cleanly and is now formalized axiom-clean in-tree is the **Herglotz/Pick property of the
+Cauchy transform** `(6)` — `formal/GaloisForLFunctions/StieltjesTransformPick.lean`:
+`stieltjesTransform_im_nonneg` and `stieltjesTransform_im_pos` prove `Im S_μ(z) ≥ 0` (resp. `> 0` for
+`μ ≠ 0`) throughout the open upper half-plane, i.e. every representing measure's Cauchy transform
+`Φ_μ` is a Pick function, via the pointwise kernel positivity `Im (x−z)⁻¹ = Im z / |x−z|²`
+(`cauchyKernel_im`, `cauchyKernel_im_pos`) and commuting `Im` through the Bochner integral
+(`im_integral`). The confluent interpolation surface itself remains absent.
 
 ## Gates
 

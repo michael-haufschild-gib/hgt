@@ -936,6 +936,42 @@ def soninAllPrimeCoupledPolynomialGramValue
   finiteRealMatrixQuadratic (Polynomial.toFn N p)
     (soninAllPrimeCoupledGramBlock N a)
 
+/-- The actual coupled source vector read by one polynomial.  It is the same polynomial linear
+combination of the Hilbert--Schmidt power columns whose Gram quadratic value appears above. -/
+def soninAllPrimeCoupledPolynomialPowerVector
+    (a : SoninPositiveAperture) (p : Polynomial ℝ) :
+    lp (fun _ : SoninAllPrimeIndex × SoninHilbertIndex => ℂ) 2 :=
+  let N := p.natDegree + 1
+  ∑ i : Fin N, ((Polynomial.toFn N p i : ℝ) : ℂ) •
+    soninAllPrimeCoupledPowerVector a (i : ℕ)
+
+/-- The per-test scalar is literally a squared Hilbert norm of the explicit coupled Sonin
+polynomial source vector. -/
+theorem soninAllPrimeCoupledPolynomialGramValue_eq_norm_sq
+    (a : SoninPositiveAperture) (p : Polynomial ℝ) :
+    soninAllPrimeCoupledPolynomialGramValue a p =
+      ‖soninAllPrimeCoupledPolynomialPowerVector a p‖ ^ 2 := by
+  let N := p.natDegree + 1
+  let c : Fin N → ℝ := Polynomial.toFn N p
+  change
+    (∑ i : Fin N, ∑ j : Fin N,
+      ((c i * c j : ℝ) : ℂ) *
+        soninAllPrimeCoupledGramBlock N a i j).re =
+      ‖∑ i : Fin N, ((c i : ℝ) : ℂ) •
+        soninAllPrimeCoupledPowerVector a (i : ℕ)‖ ^ 2
+  rw [← inner_self_eq_norm_sq (𝕜 := ℂ)]
+  apply congrArg Complex.re
+  rw [sum_inner]
+  simp_rw [inner_sum, inner_smul_left, inner_smul_right,
+    Complex.conj_ofReal]
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [soninAllPrimeCoupledGramBlock, Matrix.gram_apply]
+  push_cast
+  ring
+
 theorem soninAllPrimeCoupledPolynomialGramValue_nonneg
     (a : SoninPositiveAperture) (p : Polynomial ℝ) :
     0 ≤ soninAllPrimeCoupledPolynomialGramValue a p := by
@@ -961,6 +997,14 @@ def soninAllPrimeCoupledNormalizedPolynomialGramValue
     (a : SoninCoupledNondegenerateAperture) (p : Polynomial ℝ) : ℝ :=
   soninAllPrimeCoupledCanonicalScale a *
     soninAllPrimeCoupledPolynomialGramValue a.1 p
+
+theorem soninAllPrimeCoupledNormalizedPolynomialGramValue_eq_norm_sq
+    (a : SoninCoupledNondegenerateAperture) (p : Polynomial ℝ) :
+    soninAllPrimeCoupledNormalizedPolynomialGramValue a p =
+      soninAllPrimeCoupledCanonicalScale a *
+        ‖soninAllPrimeCoupledPolynomialPowerVector a.1 p‖ ^ 2 := by
+  rw [soninAllPrimeCoupledNormalizedPolynomialGramValue,
+    soninAllPrimeCoupledPolynomialGramValue_eq_norm_sq]
 
 theorem soninAllPrimeCoupledNormalizedPolynomialGramValue_nonneg
     (a : SoninCoupledNondegenerateAperture) (p : Polynomial ℝ) :
@@ -1032,6 +1076,140 @@ theorem riemannHypothesis_of_soninCoupledPrimeArchPerTestNormalizedValueCoupling
     RiemannHypothesis :=
   riemannHypothesis_of_soninCoupledPrimeArchPerTestNormalizedValueClosure
     (soninCoupledPrimeArchPerTestNormalizedValueClosure_of_coupling h)
+
+/-! ## One-sided variational reduction
+
+Exact cluster matching is stronger than positivity transfer needs.  Since every canonically
+normalized coupled Sonin value is nonnegative, it is enough to approximate the target from above:
+the source infimum for each polynomial may lie strictly below its prime--Gamma value. -/
+
+/-- One-sided per-test source domination.  For every integer polynomial and every positive error,
+some nondegenerate aperture has normalized coupled Gram value at most the target prime--Gamma
+quadratic value plus that error.  No convergence, equality, or simultaneous moment matching is
+required. -/
+def SoninCoupledPrimeArchPerTestVariationalUpperBound : Prop :=
+  ∀ (p : Polynomial ℤ) (ε : ℝ), 0 < ε →
+    ∃ a : SoninCoupledNondegenerateAperture,
+      soninAllPrimeCoupledNormalizedPolynomialGramValue a
+          (p.map (Int.castRingHom ℝ)) ≤
+        (primeArchSourceTraceHankel (p.map (Int.castRingHom ℝ))).re + ε
+
+/-- Cross-multiplied Rayleigh form of the same one-sided comparison.  It uses only the squared norm
+of the coupled polynomial source vector and the zeroth coupled source energy, so there is no
+quotient in the analytic target. -/
+def SoninCoupledPrimeArchPerTestRayleighUpperBound : Prop :=
+  ∀ (p : Polynomial ℤ) (ε : ℝ), 0 < ε →
+    ∃ a : SoninCoupledNondegenerateAperture,
+      normalizedPrimeArchMoment 0 *
+          ‖soninAllPrimeCoupledPolynomialPowerVector a.1
+            (p.map (Int.castRingHom ℝ))‖ ^ 2 ≤
+        ((primeArchSourceTraceHankel (p.map (Int.castRingHom ℝ))).re + ε) *
+          (soninAllPrimeCoupledTraceMoment a.1 0).re
+
+/-- The normalized variational interface and its cross-multiplied Rayleigh form are exactly
+equivalent.  Nondegeneracy supplies the strictly positive denominator. -/
+theorem soninCoupledPrimeArchPerTestRayleighUpperBound_iff_variationalUpperBound :
+    SoninCoupledPrimeArchPerTestRayleighUpperBound ↔
+      SoninCoupledPrimeArchPerTestVariationalUpperBound := by
+  constructor
+  · intro h p ε hε
+    obtain ⟨a, ha⟩ := h p ε hε
+    refine ⟨a, ?_⟩
+    have hden : 0 < (soninAllPrimeCoupledTraceMoment a.1 0).re :=
+      (soninAllPrimeCoupledTraceMoment_zero_re_pos_iff_column_ne_zero a.1).2 a.2
+    rw [soninAllPrimeCoupledNormalizedPolynomialGramValue_eq_norm_sq,
+      soninAllPrimeCoupledCanonicalScale]
+    have heq :
+        normalizedPrimeArchMoment 0 /
+              (soninAllPrimeCoupledTraceMoment a.1 0).re *
+            ‖soninAllPrimeCoupledPolynomialPowerVector a.1
+              (p.map (Int.castRingHom ℝ))‖ ^ 2 =
+          (normalizedPrimeArchMoment 0 *
+            ‖soninAllPrimeCoupledPolynomialPowerVector a.1
+              (p.map (Int.castRingHom ℝ))‖ ^ 2) /
+              (soninAllPrimeCoupledTraceMoment a.1 0).re := by
+      field_simp [hden.ne']
+    rw [heq]
+    exact (div_le_iff₀ hden).2 ha
+  · intro h p ε hε
+    obtain ⟨a, ha⟩ := h p ε hε
+    refine ⟨a, ?_⟩
+    have hden : 0 < (soninAllPrimeCoupledTraceMoment a.1 0).re :=
+      (soninAllPrimeCoupledTraceMoment_zero_re_pos_iff_column_ne_zero a.1).2 a.2
+    rw [soninAllPrimeCoupledNormalizedPolynomialGramValue_eq_norm_sq,
+      soninAllPrimeCoupledCanonicalScale] at ha
+    have heq :
+        normalizedPrimeArchMoment 0 /
+              (soninAllPrimeCoupledTraceMoment a.1 0).re *
+            ‖soninAllPrimeCoupledPolynomialPowerVector a.1
+              (p.map (Int.castRingHom ℝ))‖ ^ 2 =
+          (normalizedPrimeArchMoment 0 *
+            ‖soninAllPrimeCoupledPolynomialPowerVector a.1
+              (p.map (Int.castRingHom ℝ))‖ ^ 2) /
+              (soninAllPrimeCoupledTraceMoment a.1 0).re := by
+      field_simp [hden.ne']
+    rw [heq] at ha
+    exact (div_le_iff₀ hden).1 ha
+
+/-- Exact value closure implies the weaker one-sided variational interface. -/
+theorem soninCoupledPrimeArchPerTestVariationalUpperBound_of_valueClosure
+    (h : SoninCoupledPrimeArchPerTestNormalizedValueClosure) :
+    SoninCoupledPrimeArchPerTestVariationalUpperBound := by
+  intro p ε hε
+  obtain ⟨x, hx, hdist⟩ := Metric.mem_closure_iff.mp (h p) ε hε
+  obtain ⟨a, rfl⟩ := hx
+  refine ⟨a, ?_⟩
+  rw [Real.dist_eq] at hdist
+  have hneg := neg_lt_of_abs_lt hdist
+  linarith
+
+/-- Exact value closure also supplies the quotient-free Rayleigh comparison. -/
+theorem soninCoupledPrimeArchPerTestRayleighUpperBound_of_valueClosure
+    (h : SoninCoupledPrimeArchPerTestNormalizedValueClosure) :
+    SoninCoupledPrimeArchPerTestRayleighUpperBound :=
+  soninCoupledPrimeArchPerTestRayleighUpperBound_iff_variationalUpperBound.mpr
+    (soninCoupledPrimeArchPerTestVariationalUpperBound_of_valueClosure h)
+
+/-- One-sided variational domination already forces every integer prime--Gamma Hankel value to be
+nonnegative.  A hypothetical negative target is separated from zero by a positive error smaller
+than its absolute value, contradicting the nonnegative coupled Gram producer. -/
+theorem primeArchSourceTraceHankelIntNonnegative_of_soninCoupledPerTestVariationalUpperBound
+    (h : SoninCoupledPrimeArchPerTestVariationalUpperBound) :
+    PrimeArchSourceTraceHankelIntNonnegative := by
+  intro p
+  let q : Polynomial ℝ := p.map (Int.castRingHom ℝ)
+  let target : ℝ := (primeArchSourceTraceHankel q).re
+  by_contra htarget
+  have htargetNeg : target < 0 := lt_of_not_ge htarget
+  let ε : ℝ := -target / 2
+  have hε : 0 < ε := by
+    dsimp [ε]
+    linarith
+  obtain ⟨a, ha⟩ := h p ε hε
+  have hsource :
+      0 ≤ soninAllPrimeCoupledNormalizedPolynomialGramValue a q :=
+    soninAllPrimeCoupledNormalizedPolynomialGramValue_nonneg a q
+  have htargetε : target + ε < 0 := by
+    dsimp [ε]
+    linarith
+  change soninAllPrimeCoupledNormalizedPolynomialGramValue a q ≤ target + ε at ha
+  linarith
+
+/-- **One-sided variational coupled-Sonin chain to RH.**  It is enough to upper-approximate each
+prime--Gamma integer-polynomial value by one nonnegative normalized coupled Gram value, with
+arbitrarily small positive error.  Exact value convergence and finite-block coupling are absent. -/
+theorem riemannHypothesis_of_soninCoupledPrimeArchPerTestVariationalUpperBound
+    (h : SoninCoupledPrimeArchPerTestVariationalUpperBound) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_primeArchSourceTraceHankelIntNonnegative
+    (primeArchSourceTraceHankelIntNonnegative_of_soninCoupledPerTestVariationalUpperBound h)
+
+/-- Quotient-free Rayleigh form of the one-sided coupled-Sonin chain to RH. -/
+theorem riemannHypothesis_of_soninCoupledPrimeArchPerTestRayleighUpperBound
+    (h : SoninCoupledPrimeArchPerTestRayleighUpperBound) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_soninCoupledPrimeArchPerTestVariationalUpperBound
+    (soninCoupledPrimeArchPerTestRayleighUpperBound_iff_variationalUpperBound.mp h)
 
 private theorem primeArchSourceTraceHankelIntNonnegative_of_finiteQuadraticNonnegative
     (h : ∀ (N : ℕ) (c : Fin N → ℝ),
