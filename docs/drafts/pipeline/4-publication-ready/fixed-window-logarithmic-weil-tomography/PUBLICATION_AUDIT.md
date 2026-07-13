@@ -31,7 +31,8 @@ of the Riemann hypothesis.
   - No located parent gives the conjunction of fixed arbitrary positive width, logarithmic mesh,
     lower-bound and norm criteria, cofinal negative divergence, the exact closed-ray one-sided
     exponent spectrum, the universal negative-mass Dirichlet abscissa, maximum-abscissa
-    conservation for every nonnegative allocation, positive order-ideal cover equivalence, its
+    conservation and non-dilution for every finite nonnegative allocation or cover, positive
+    order-ideal cover equivalence, its
     exceptional and budget-matched power corollaries, and exact cutoff-free observable
     multiplicity-weighted pole tomography of the complete sequence.
   - The Landau and screw-function mechanisms are classical parents and are not claimed as new.
@@ -45,8 +46,9 @@ of the Riemann hypothesis.
     through both its one-sided polynomial lower-loss spectrum and its exact negative Dirichlet
     abscissa.
   - The negative-mass abscissa is universal across all positive rectangular widths and admissible
-    cutoffs.  Every exact positive principal/residual split conserves it as the maximum of the
-    channel abscissae, so the transverse exponent cannot be diluted by positive allocation.
+    cutoffs.  Every finite exact positive split conserves it as the maximum channel abscissa, and
+    every finite positive cover contains a channel carrying at least the total abscissa.  Thus the
+    transverse exponent cannot be diluted by any finite positive allocation architecture.
   - Pole locations recover support and normalized residues recover multiplicity, so the theorem
     identifies the weighted pole divisor rather than only an unweighted detector set.
   - The continuation is attached to the complete sequence itself; finite deletion is only an
@@ -55,8 +57,10 @@ of the Riemann hypothesis.
     the multiplicity-copy presentation.
   - The result isolates a weaker and precise positive source obligation for the Connes route:
     dominate the actual negative mass by any nonnegative carrier, or any positive two-channel
-    cover, having shifted Dirichlet energy.  Exact source splitting and pointwise control of one
-    channel are unnecessary.  At every exponent this is equivalent to the corresponding
+    cover, having shifted Dirichlet energy.  Equivalently, a finite positive cover whose channel
+    abscissae are all at most `1 + alpha` forces the corresponding horizontal zero-free region;
+    the bound one proves RH.  Exact source splitting and pointwise control of one channel are
+    unnecessary.  At every exponent this is equivalent to the corresponding
     horizontal zero-free region; the RH criterion is exactly its zero endpoint.
   - The remaining prime/semilocal line-selection theorem is open: one must prove holomorphy of the
     regularized critical-Mellin defect on `Re(u)>-1/2`, equivalently of the complete

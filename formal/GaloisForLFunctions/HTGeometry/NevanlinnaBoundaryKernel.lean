@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.HamburgerBoundaryKernel
 import GaloisForLFunctions.HTGeometry.NevanlinnaBoundaryAlgebra
+import GaloisForLFunctions.HTGeometry.AtomlessProbabilityLaws
 
 /-!
 # The labeled Nevanlinna boundary kernel
@@ -20,6 +21,28 @@ open scoped OnePoint Topology
 
 noncomputable section
 
+/-- A weakly continuous probability kernel over a Borel parameter space is automatically a
+measurable measure kernel.  The proof is an exact Portmanteau-to-Giry bridge: closed-set masses
+have open strict sublevel sets in the weak topology, and closed sets generate the Borel sigma
+algebra. -/
+theorem continuous_probabilityMeasureKernel_toMeasure_measurable
+    {T X : Type*}
+    [MeasurableSpace T] [TopologicalSpace T] [OpensMeasurableSpace T]
+    [MeasurableSpace X] [MetricSpace X] [BorelSpace X]
+    (nu : T → ProbabilityMeasure X) (hnu : Continuous nu) :
+    Measurable fun t => ((nu t : ProbabilityMeasure X) : Measure X) := by
+  letI (t : T) : IsProbabilityMeasure (nu t : Measure X) := (nu t).prop
+  refine Measurable.measure_of_isPiSystem_of_isProbabilityMeasure
+    ?_ isPiSystem_isClosed ?_
+  · calc
+      _ = borel X := BorelSpace.measurable_eq
+      _ = _ := borel_eq_generateFrom_isClosed
+  · intro K hK
+    apply measurable_of_Iio
+    intro a
+    change MeasurableSet (nu ⁻¹' closedMassBelow K a)
+    exact ((closedMassBelow_isOpen K hK a).preimage hnu).measurableSet
+
 /-- The concrete output data of an N-extremal Nevanlinna parametrization. The fields contain the
 Nevanlinna matrix, its probability leaves, their exact denominator-fiber support, and their common
 Hamburger moments. The boundary-simplex consequences are theorems below, not structure fields. -/
@@ -29,7 +52,6 @@ structure NevanlinnaBoundaryFamily (s : ℕ → ℝ) where
   continuous_d : Continuous matrix.d
   leaf : OnePoint ℝ → ProbabilityMeasure ℝ
   continuous_leaf : Continuous leaf
-  measurable_leaf : Measurable fun t => ((leaf t : ProbabilityMeasure ℝ) : Measure ℝ)
   finite_carried : ∀ tau : ℝ,
     (leaf tau : Measure ℝ) (matrix.finiteDenominatorFiber tau)ᶜ = 0
   infinity_carried :
@@ -39,6 +61,12 @@ structure NevanlinnaBoundaryFamily (s : ℕ → ℝ) where
 namespace NevanlinnaBoundaryFamily
 
 variable {s : ℕ → ℝ} (F : NevanlinnaBoundaryFamily s)
+
+/-- Weak continuity of the probability leaves already gives the Giry measurability required for
+measure-valued integration.  Thus measurability is a theorem, not an independent classical input. -/
+theorem measurable_leaf :
+    Measurable fun t => ((F.leaf t : ProbabilityMeasure ℝ) : Measure ℝ) :=
+  continuous_probabilityMeasureKernel_toMeasure_measurable F.leaf F.continuous_leaf
 
 /-- Denominator-fiber support forces every N-extremal leaf to have its exact projective label. -/
 theorem map_projectiveLabel_leaf (t : OnePoint ℝ) :

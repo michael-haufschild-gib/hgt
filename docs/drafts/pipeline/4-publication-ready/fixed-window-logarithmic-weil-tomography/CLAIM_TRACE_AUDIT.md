@@ -67,6 +67,12 @@ fixedWindowLogarithmicWeilCompleteness_capstone.
 | at every real abscissa an exact positive split is summable iff both channels are summable | negativeChannelSplit_summable_iff |
 | every exact positive split conserves the total abscissa as the maximum channel abscissa | negativeChannelSplit_abscissa_eq_max |
 | maximum positive-channel abscissa is independent of window, cutoff, and exact allocation | negativeChannelSplit_max_abscissa_independent |
+| every finite positive cover contains a channel whose abscissa is at least the carrier abscissa | finiteNegativeChannelCover_forces_full_abscissa |
+| under false RH every finite positive cover has a channel of abscissa at least $1+\delta_*$ | finiteNegativeChannelCover_forces_transverseSup_of_not_rh |
+| every finite positive exact split has a channel attaining the carrier abscissa | finiteNegativeChannelSplit_attains_full_abscissa |
+| under false RH every finite positive exact split has a channel of abscissa exactly $1+\delta_*$ | finiteNegativeChannelSplit_attains_transverseSup_of_not_rh |
+| channel abscissae at most $1+\alpha$ in one finite positive cover force $\delta_*\le\alpha$ | xiRightTransverseSup_le_of_finiteNegativeChannelCover_abscissa |
+| channel abscissae at most one in one finite positive cover prove RH | riemannHypothesis_of_finiteNegativeChannelCover_abscissa_le_one |
 | \(\delta_*\le\alpha\) iff there exists any positive shifted-energy majorant of the actual negative mass | xiRightTransverseSup_le_iff_exists_negativeEnergyMajorantAbove |
 | \(\delta_*\le\alpha\) iff there exists a positive two-channel energy cover, without exact splitting | xiRightTransverseSup_le_iff_exists_twoChannelEnergyCoverAbove |
 | for every exact nonnegative split and every \(\alpha\ge0\), shifted energy plus residual order \(\alpha\) is equivalent to \(\delta_*\le\alpha\) | xiRightTransverseSup_le_iff_negativeChannelSpectrum |
@@ -168,6 +174,7 @@ The stronger intrinsic theorem is bundled by
   GaloisForLFunctions.RHTower.CCMRectangularNegativeChannelSplitCompleteness, and
   GaloisForLFunctions.RHTower.CCMRectangularNegativeChannelSpectrum, and
   GaloisForLFunctions.RHTower.CCMRectangularNegativeDirichletAbscissa, and
+  GaloisForLFunctions.RHTower.CCMRectangularFiniteChannelNonDilution, and
   GaloisForLFunctions.RHTower.CCMInverseTiltedDyadicPrimeTomography, and
   GaloisForLFunctions.RHTower.CCMInverseTiltedCriticalMellinFactorization, and
   GaloisForLFunctions.RHTower.CCMCriticalMellinDivisorTomography.

@@ -162,6 +162,46 @@ theorem szego_inequality_normalized
   have h := szego_inequality p hp (by rw [hp0]; exact one_ne_zero) hpc w hwcont hwpos
   rwa [hp0, norm_one, one_pow, one_mul] at h
 
+/-- **Szegő geometric mean of a Bernstein–Szegő weight.**  For `h` analytic and nonvanishing on
+the closed unit disk, the geometric mean of the weight `w = |h|⁻²` is exactly `‖h(0)‖⁻²`.  This is
+Jensen's formula for the nonvanishing analytic function `h`: `(2π)⁻¹∫ log|h| = log|h(0)|`. -/
+theorem szego_geometricMean_bs (h : ℂ → ℂ) (hana : AnalyticOnNhd ℂ h (closedBall 0 1))
+    (hnz : ∀ z ∈ closedBall (0 : ℂ) 1, h z ≠ 0) :
+    Real.exp (circleAverage (fun z => Real.log ((‖h z‖ ^ 2)⁻¹)) 0 1) = (‖h 0‖ ^ 2)⁻¹ := by
+  have h00 : h 0 ≠ 0 := hnz 0 (by simp)
+  have hpos : (0 : ℝ) < ‖h 0‖ := norm_pos_iff.mpr h00
+  rw [show (fun z => Real.log ((‖h z‖ ^ 2)⁻¹)) = (fun z => (-2 : ℝ) • Real.log ‖h z‖) from by
+    funext z; rw [smul_eq_mul, Real.log_inv, Real.log_pow]; push_cast; ring]
+  rw [circleAverage_fun_smul,
+    AnalyticOnNhd.circleAverage_log_norm_of_ne_zero (by simpa using hana) (by simpa using hnz),
+    smul_eq_mul,
+    show (-2 : ℝ) * Real.log ‖h 0‖ = Real.log ((‖h 0‖ ^ 2)⁻¹) from by
+      rw [Real.log_inv, Real.log_pow]; push_cast; ring,
+    Real.exp_log (by positivity)]
+
+/-- **Sharp Szegő lower bound for a Bernstein–Szegő weight.**  For `h` analytic and nonvanishing
+on the closed unit disk and `p` analytic with `p(0) = 1` and nonvanishing on the circle, the
+weighted circle mean of `‖p‖²` against `w = |h|⁻²` is at least the geometric mean `‖h(0)‖⁻²`.
+Combining `szego_inequality_normalized` with `szego_geometricMean_bs`, the Szegő infimum for a
+Bernstein–Szegő weight is bounded below by its geometric mean. -/
+theorem szego_bs_lower (h : ℂ → ℂ) (hana : AnalyticOnNhd ℂ h (closedBall 0 1))
+    (hnz : ∀ z ∈ closedBall (0 : ℂ) 1, h z ≠ 0)
+    (p : ℂ → ℂ) (hp : AnalyticOnNhd ℂ p (closedBall 0 |(1:ℝ)|)) (hp0 : p 0 = 1)
+    (hpc : ∀ θ : ℝ, p (circleMap 0 1 θ) ≠ 0) :
+    (‖h 0‖ ^ 2)⁻¹ ≤ circleAverage (fun z => ‖p z‖ ^ 2 * (‖h z‖ ^ 2)⁻¹) 0 1 := by
+  have hcm_mem : ∀ θ : ℝ, circleMap 0 1 θ ∈ closedBall (0 : ℂ) 1 := fun θ => by
+    simp [Metric.mem_closedBall, dist_eq_norm]
+  have hh_cont : Continuous (fun θ : ℝ => h (circleMap 0 1 θ)) :=
+    hana.continuousOn.comp_continuous (continuous_circleMap 0 1) hcm_mem
+  have hne : ∀ θ : ℝ, h (circleMap 0 1 θ) ≠ 0 := fun θ => hnz _ (hcm_mem θ)
+  have hwcont : Continuous (fun θ : ℝ => ((‖h (circleMap 0 1 θ)‖ ^ 2)⁻¹ : ℝ)) :=
+    (hh_cont.norm.pow 2).inv₀ (fun θ => pow_ne_zero 2 (norm_ne_zero_iff.mpr (hne θ)))
+  have hwpos : ∀ θ : ℝ, (0 : ℝ) < (‖h (circleMap 0 1 θ)‖ ^ 2)⁻¹ := fun θ =>
+    inv_pos.mpr (pow_pos (norm_pos_iff.mpr (hne θ)) 2)
+  have hineq := szego_inequality_normalized p hp hp0 hpc
+    (fun z => (‖h z‖ ^ 2)⁻¹) hwcont hwpos
+  rwa [szego_geometricMean_bs h hana hnz] at hineq
+
 end
 
 end GaloisForLFunctions.HTGeometry

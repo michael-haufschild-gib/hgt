@@ -454,7 +454,23 @@ weighted parity diagonal into pairwise balanced depth differences plus one rank-
 `2^N F_N-rho`.
 The dyadic top row has the explicit Gaussian majorant
 `C_x 2^k exp(-pi 2^k/2)`, and both the row and the weighted two-variable remainder are proved to
-tend pointwise to zero on the closed positive source half-line.
+tend pointwise to zero on the closed positive source half-line.  The stronger integrated result is
+also formalized.  For every fixed source powers `m,n`,
+
+```text
+2^k (integral x^m F_k(x)dx)(integral y^n F_k(y)dy) -> 0.
+```
+
+The declarations
+`tendsto_thetaSquareIndexDyadicWeightedMomentProduct_zero` and
+`tendsto_thetaSquareIndexDyadicWeightedFiniteMomentPacketProduct_zero` extend this to arbitrary
+fixed finite complex moment packets.  The finite core value and derivative averages are identified
+with such packets by `thetaSquareIndexDyadicCoreAtomAverage_eq_momentPacket` and
+`thetaSquareIndexDyadicCoreAtomDerivativeAverage_eq_momentPacket`.  Product-measure factorization
+then gives
+`integral_xiCTaylorThetaTailCoreDyadicHaarRemainderKernel_eq`, and
+`tendsto_integral_xiCTaylorThetaTailCoreDyadicHaarRemainderKernel_zero` removes the cofinal top row
+at the actual oriented-current integral for every fixed `d,z`.
 
 ## Scope
 
@@ -464,7 +480,8 @@ the unknown Taylor section, so treating it as an independently positive correcti
 Equation `(8a)` signs the positive imaginary axis, not the general vertical fibres in the open
 strip.  The remaining producer is exactly the raw `T` mixed correlation plus seam in `(3)` away
 from that axis.  The signed square-index and dyadic Haar identities expose cofinal arithmetic
-cancellation, but the same oriented pair kernel multiplies both channels.  Their reflection also
+cancellation, and the cofinal dyadic top row now vanishes after integration for every finite core.
+The same oriented pair kernel still multiplies both finite Haar channels.  Their reflection also
 translates the finite cosine section, so a termwise sign would be an additional hypothesis rather
 than a consequence of the polarization.  Therefore this package is a formalized reduction, not the sublinear-current
 producer and not an RH proof.  The exact boundary theorem

@@ -664,14 +664,35 @@ Gaussian cusp.  Lean proves the explicit bound, for `x>=0` and
 0<=2^N F_N(x)F_N(y)<=C_(x,y) 2^(3N)q^(2^(N+1))->0.      (12d.7a)
 ```
 
-Thus the top row is now eliminated pointwise by a certified double-exponential majorant.  The
-remaining top-row task is only the degree-uniform moment estimate needed to pass `(12d.7a)`
-through `K_d` when `d` moves with the anisotropic schedule.  The finite Haar sum is not yet
-oriented: each parity wavelet has bilateral Mellin factor
+The top row is now eliminated at the integrated current level, not merely pointwise.  Put
+
+```text
+M_(m,N)=integral_(0..infinity) x^m F_N(x)dx.
+```
+
+Lean proves every fixed moment is integrable and satisfies an explicit Gaussian bound tending to
+zero, and more sharply
+
+```text
+2^N M_(m,N)M_(n,N) -> 0                                 (12d.7b)
+```
+
+for every fixed `m,n`.  Since both the finite core atom and its spectral derivative are finite
+linear combinations of source powers, product-measure factorization gives the exact identity
+
+```text
+integral integral 2^N F_N(x)F_N(y)K_d(z;x,y)dxdy
+ =Im(2^N D_(d,z,N) conjugate(A_(d,z,N))) -> 0,           (12d.7c)
+```
+
+where `A_(d,z,N)` and `D_(d,z,N)` are their explicit finite moment packets.  Thus no dominated-
+convergence or degree-uniform top-row hypothesis is needed: for each scheduled finite pair
+`(d,z)`, the exact Haar identity permits choosing the dyadic depth after `(d,z)`.  The finite Haar
+sum is still not oriented: each parity wavelet has bilateral Mellin factor
 `(2^(1-s)-1)zeta(s)` and therefore retains the nontrivial Xi factor.  Dropping the negative Haar
 currents would silently assume their sign.  The live theorem is consequently narrower: prove a
-joint upper estimate for the signed *finite sum* in `(12d.7)` while sending the explicit top row
-to zero; no termwise positivity statement is available.
+joint upper estimate for the signed *finite sum* in `(12d.7)`; its explicit top row has already
+been removed without a sign assumption.  No termwise positivity statement is available.
 
 The parity and odd layers also satisfy the exact Poisson reflection required for a possible joint
 estimate.  With `w=2^(-1/2)` and
@@ -1231,6 +1252,7 @@ log-convexity and ratio monotonicity are
 - [x] expose the exact logarithmic-integer translate law for every density atom
 - [x] derive and formalize the exact signed square-index polarization of the full atom packet
 - [x] derive and formalize the cofinal dyadic Haar polarization and exact current lift
+- [x] eliminate the cofinal dyadic top row at the integrated finite-core current level
 - [x] derive the exact mean-zero density-score covariance and rule out pointwise phase ordering
 - [x] identify the current with the vertical derivative of the finite squared modulus
 - [x] derive and formalize the real-boundary-to-interior complex Laguerre-defect identity

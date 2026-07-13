@@ -266,26 +266,4 @@ theorem hankelMatrix_det_nonneg {μ : Measure ℝ} (s : ℕ → ℝ)
     0 ≤ (Matrix.of fun i j : Fin n => s ((i : ℕ) + (j : ℕ))).det :=
   (hankelMatrix_posSemidef s hs hint n).det_nonneg
 
-/-- The Hankel matrix is strictly positive-definite when the representing measure is infinitely
-supported (the indeterminate case). -/
-theorem hankelMatrix_posDef {μ : Measure ℝ} (s : ℕ → ℝ)
-    (hs : ∀ k, s k = ∫ x, (x : ℝ) ^ k ∂μ)
-    (hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) μ)
-    (hμinf : ∀ F : Finset ℝ, 0 < μ {x : ℝ | x ∉ F}) (n : ℕ) :
-    (Matrix.of fun i j : Fin n => s ((i : ℕ) + (j : ℕ))).PosDef := by
-  refine ⟨hankelMatrix_isHermitian s n, fun x hx => ?_⟩
-  rw [hankelMatrix_quadForm]
-  rcases (hankelForm_nonneg s hs hint (⇑x)).lt_or_eq with h | h
-  · exact h
-  · exact absurd (DFunLike.coe_injective (hankelForm_eq_zero s hs hint hμinf (⇑x) h.symm)) hx
-
-/-- **Strict Hamburger determinant criterion.**  For an infinitely-supported representing measure
-every Hankel determinant is strictly positive: `0 < det (sᵢ₊ⱼ)_{i,j<n}`. -/
-theorem hankelMatrix_det_pos {μ : Measure ℝ} (s : ℕ → ℝ)
-    (hs : ∀ k, s k = ∫ x, (x : ℝ) ^ k ∂μ)
-    (hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) μ)
-    (hμinf : ∀ F : Finset ℝ, 0 < μ {x : ℝ | x ∉ F}) (n : ℕ) :
-    0 < (Matrix.of fun i j : Fin n => s ((i : ℕ) + (j : ℕ))).det :=
-  (hankelMatrix_posDef s hs hint hμinf n).det_pos
-
 end HTGeometry

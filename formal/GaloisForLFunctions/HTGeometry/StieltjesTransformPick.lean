@@ -205,6 +205,17 @@ theorem cauchyKernel_re (x : ℝ) (z : ℂ) :
   rw [Complex.inv_re]
   simp [Complex.sub_re, Complex.ofReal_re]
 
+/-- **Schwarz reflection (real symmetry).**  The Stieltjes transform of a (real) measure is
+real-symmetric: `S_μ(z̄) = conj(S_μ(z))`.  This is the defining symmetry of a **real-symmetric** Pick
+function, which is what represents a Hamburger moment sequence. -/
+theorem stieltjesTransform_conj {μ : Measure ℝ} (z : ℂ) :
+    ∫ x, ((x : ℂ) - (starRingEnd ℂ) z)⁻¹ ∂μ
+      = (starRingEnd ℂ) (∫ x, ((x : ℂ) - z)⁻¹ ∂μ) := by
+  rw [← integral_conj]
+  refine integral_congr_ae (ae_of_all μ (fun x => ?_))
+  show ((x : ℂ) - (starRingEnd ℂ) z)⁻¹ = (starRingEnd ℂ) (((x : ℂ) - z)⁻¹)
+  rw [map_inv₀, map_sub, Complex.conj_ofReal]
+
 /-- **Conjugate-Poisson representation of the real part.**  For `z = a + i b`,
 `Re S_μ(z) = ∫ (x − a) / ((x − a)² + b²) dμ(x)` — the conjugate harmonic of the Poisson integral. -/
 theorem stieltjesTransform_re_eq_conjPoisson {μ : Measure ℝ} (z : ℂ)
@@ -218,5 +229,17 @@ theorem stieltjesTransform_re_eq_conjPoisson {μ : Measure ℝ} (z : ℂ)
   simp only [Complex.sub_re, Complex.sub_im, Complex.ofReal_re, Complex.ofReal_im]
   congr 1
   ring
+
+/-- **Lower-half-plane image.**  By real symmetry, a nonzero measure's Stieltjes transform sends the
+open lower half-plane into itself: `Im S_μ(z) < 0` when `Im z < 0`.  With `stieltjesTransform_im_pos`
+this shows `S_μ` maps each open half-plane into itself — the full Pick mapping property. -/
+theorem stieltjesTransform_im_neg {μ : Measure ℝ} (z : ℂ) (hz : z.im < 0)
+    (hμ : 0 < μ Set.univ)
+    (hInt : Integrable (fun x : ℝ => ((x : ℂ) - (starRingEnd ℂ) z)⁻¹) μ) :
+    (∫ x, ((x : ℂ) - z)⁻¹ ∂μ).im < 0 := by
+  have hcz : 0 < ((starRingEnd ℂ) z).im := by rw [Complex.conj_im]; linarith
+  have hp := stieltjesTransform_im_pos ((starRingEnd ℂ) z) hcz hμ hInt
+  rw [stieltjesTransform_conj, Complex.conj_im] at hp
+  linarith
 
 end HTGeometry

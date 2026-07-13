@@ -102,7 +102,7 @@ More precisely, if $\delta_*$ denotes that displacement, then the exponents $\al
 which the sequence has an eventual lower budget $q_L(n)\ge-Cn^\alpha$ form exactly the closed ray
 $[\delta_*,\infty)$.  Equivalently, such a budget exists precisely when every xi zero satisfies
 $\Re\rho\le\frac12+\alpha$.
-Every nonnegative allocation $q_L^-=a+b$ carries the entire horizontal zero-free spectrum.
+Every finite nonnegative allocation of $q_L^-$ carries the entire horizontal zero-free spectrum.
 In fact the intrinsic statement is stronger.  Let $\sigma_{\rm abs}(c)$ denote the extended-real
 absolute-convergence abscissa of $\sum c(n)n^{-s}$.  Under RH the negative carrier vanishes and
 $\sigma_{\rm abs}(q_{L,N}^-)=-\infty$; under false RH,
@@ -110,12 +110,18 @@ $\sigma_{\rm abs}(q_{L,N}^-)=-\infty$; under false RH,
  \sigma_{\rm abs}(q_{L,N}^-)=1+\delta_*.
 \]
 This value is independent of the positive window width and of the admissible deleted prefix.
-Every exact nonnegative allocation satisfies the conservation law
+For every nonempty finite channel set $J$, every exact nonnegative allocation
+$q_{L,N}^-=\sum_{j\in J}a_j$ satisfies the conservation law
 \[
  \sigma_{\rm abs}(q_{L,N}^-)
- =\max\{\sigma_{\rm abs}(a),\sigma_{\rm abs}(b)\}.
+ =\max_{j\in J}\sigma_{\rm abs}(a_j).
 \]
-Thus no positive principal/residual split can dilute the transverse exponent.  For every
+More strongly, every finite positive cover $q_{L,N}^-\le\sum_{j\in J}a_j$ obeys
+$\sigma_{\rm abs}(q_{L,N}^-)\le\max_j\sigma_{\rm abs}(a_j)$; under false RH at least one
+channel therefore has abscissa at least $1+\delta_*$.  Thus no finite positive source
+architecture can dilute the transverse exponent.  Conversely, one finite positive cover whose
+every channel has abscissa at most $1+\alpha$ forces
+$\Re\rho\le\frac12+\alpha$ for every xi zero; the case $\alpha=0$ proves RH.  For every
 $\alpha\ge0$, the bound $\delta_*\le\alpha$ is equivalent to
 \[
  \sum_{n\ge1}\frac{q_{L,N}^-(n)}{n^{1+\alpha+\varepsilon}}<\infty
@@ -220,9 +226,11 @@ Dirichlet carrier controls the entire Weil sequence.
 The universal negative-channel abscissa law is the main Weil-energy theorem.  The negative mass
 of every positive fixed window has one absolute-convergence threshold: under false RH it is
 $1+\delta_*$, and under RH the carrier vanishes.  The threshold is independent of the window and
-cutoff.  Every pointwise nonnegative exact split conserves it as the maximum of the two channel
-abscissae.  More generally, a positive majorant or two-channel cover with shifted Dirichlet
-energy yields the full horizontal zero-free spectrum; exact source equality is not required.
+cutoff.  Every finite pointwise nonnegative exact split conserves it as the maximum channel
+abscissa.  More generally, every finite positive cover has a channel carrying at least the total
+abscissa, and channel abscissae bounded by $1+\alpha$ force the corresponding horizontal zero-free
+region.  A positive majorant or two-channel cover with shifted Dirichlet energy gives the same
+source criterion; exact source equality is not required.
 Exceptional sets and fractional selectors are special coordinates, and RH is the zero endpoint.
 A second reconstruction theorem
 attaches a cutoff-free meromorphic continuation to the complete actual scalar sequence and proves
@@ -660,12 +668,24 @@ Fix any $L>0$ and any admissible tail $N$.
 \]
 In the first case $q_{L,N}^-$ is identically zero.
 
-\item Every pointwise nonnegative exact split $q_{L,N}^-=a+b$ obeys the conservation law
+\item Let $J$ be any nonempty finite channel set and let $a_j(n)\ge0$.
+Every pointwise positive cover
+\[
+ q_{L,N}^-(n)\le\sum_{j\in J}a_j(n)
+\]
+obeys
 \[
  \sigma_{\rm abs}(q_{L,N}^-)
- =\max\{\sigma_{\rm abs}(a),\sigma_{\rm abs}(b)\}.
+ \le\max_{j\in J}\sigma_{\rm abs}(a_j).
+\]
+If the cover is an exact split, then equality holds:
+\[
+ \sigma_{\rm abs}(q_{L,N}^-)
+ =\max_{j\in J}\sigma_{\rm abs}(a_j).
  \tag{4.12}
 \]
+Consequently, under false RH every finite positive cover has a channel with abscissa at least
+$1+\delta_*$, and every finite exact split has a channel with abscissa exactly $1+\delta_*$.
 
 \item The value in \textup{(4.11)}, and hence the maximum in \textup{(4.12)}, is independent
 of the positive width $L$, the admissible prefix $N$, and the chosen exact positive split.
@@ -708,11 +728,13 @@ $\gamma=\sigma-1$, would imply $\delta_*\le\sigma-1$, contradicting the choice o
 This proves the false-RH branch of \textup{(4.11)}.  Under RH every rectangular Weil value is
 nonnegative, hence $q_{L,N}^-=0$ and its abscissa is $-\infty$.
 
-For a nonnegative exact split, convergence of the total series at any real abscissa is equivalent
-to convergence of both channel series: the forward implication follows from
-$0\le a,b\le q_{L,N}^-$, and the reverse implication from addition.  Taking the boundary of the
-common convergence half-lines proves \textup{(4.12)}.  Formula \textup{(4.11)} then proves
-window, tail, and split independence.
+For a finite positive cover, convergence of every channel series at a real abscissa implies
+convergence of their finite sum, and pointwise domination then implies convergence of the
+negative-carrier series.  Hence the carrier abscissa is at most the largest channel abscissa.
+For an exact positive split, every channel is itself dominated by $q_{L,N}^-$, giving the reverse
+inequality and proving \textup{(4.12)}.  A maximum is attained because the channel set is finite.
+Formula \textup{(4.11)} then proves window, tail, and split independence and the false-RH payment
+claim.
 
 The equivalence of \textup{(iv)(a)} and \textup{(iv)(b)} is
 Theorem~\ref{thm:onesided-spectrum}.  If $\delta_*\le\alpha$, the same transverse estimate gives
@@ -727,11 +749,33 @@ $(a,b)=(q_{L,N}^-,0)$.  Conversely, summing the two series in \textup{(4.14)} gi
 energy majorant $a+b$ for $q_{L,N}^-$.  This completes all equivalences.
 \end{proof}
 
+\begin{corollary}[Finite-channel source criterion]
+\label{cor:finite-channel-source}
+Let $J$ be nonempty and finite, let $a_j(n)\ge0$, and suppose
+\[
+ q_{L,N}^-(n)\le\sum_{j\in J}a_j(n).
+\]
+If, for some $\alpha\ge0$,
+\[
+ \sigma_{\rm abs}(a_j)\le1+\alpha\qquad(j\in J),
+\]
+then $\delta_*\le\alpha$, equivalently every xi zero satisfies
+$\Re\rho\le\frac12+\alpha$.  In particular, channel abscissae at most one prove RH.
+\end{corollary}
+
+\begin{proof}
+Part~\textup{(ii)} gives
+$\sigma_{\rm abs}(q_{L,N}^-)\le1+\alpha$.  Hence the negative-carrier series converges at every
+real abscissa $1+\alpha+\varepsilon$, $\varepsilon>0$.  Part~\textup{(iv)} gives
+$\delta_*\le\alpha$.  At $\alpha=0$, the transverse supremum vanishes and RH follows.
+\end{proof}
+
 The order-ideal form \textup{(iv)(d)} is the minimal source-facing statement: a construction need
 not reproduce the negative mass channel by channel, but it must dominate it by a completed
 positive carrier.  The two-channel form \textup{(iv)(e)} is adapted to principal/residual,
-trace/transition, and bulk/leakage decompositions.  Exact positive splitting gives the stronger
-conservation law \textup{(4.12)}.
+trace/transition, and bulk/leakage decompositions.  The finite-cover law shows that adding any
+finite number of positive internal channels cannot dilute the intrinsic abscissa, while exact
+positive splitting gives the stronger conservation law \textup{(4.12)}.
 
 \begin{corollary}[Mixed energy/subpower exact-split spectrum]
 \label{thm:exact-carrier}
@@ -1301,9 +1345,12 @@ These laws are equivalent to the zero-free half-plane
 $\Re\rho\le\frac12+\alpha$.  Thus a construction can prove progressively sharper zero-free
 regions without first reaching the endpoint; RH is precisely the case $\alpha=0$.
 This is adapted directly to principal/residual, trace/transition, or bulk/leakage decompositions;
-neither exact channel equality nor a binary aperture partition is required.  If exact equality
-is available, the stronger conservation law \textup{(4.12)} shows that the maximum channel
-abscissa is forced and is independent of every window, cutoff, and positive allocation.
+neither exact channel equality nor a binary aperture partition is required.  More generally,
+Corollary~\ref{cor:finite-channel-source} shows that every finite positive cover contains a
+channel carrying at least the total abscissa, and a uniform channel bound $\le1+\alpha$ forces the
+matching zero-free region.  If exact equality is available, the stronger conservation law
+\textup{(4.12)} shows that the maximum channel abscissa is forced and is independent of every
+window, cutoff, and positive allocation.
 
 A useful indicator-valued coordinate is obtained by choosing one exceptional set $E$.  It asks,
 for every $\delta>0$, that
@@ -1350,10 +1397,10 @@ whole target half-plane.  The same obligation applies to recent
 finite-prime spectral triples.  Their normalized determinants must carry the completed divisor
 strongly enough to identify the full continuation, not only a finite list of real spectral zeros.
 The positive-allocation allowance is quantitative rather than permissive: for every
-$\alpha<\delta_*$, every positive exact split has maximum absolute-convergence abscissa
-$1+\delta_*$, and every positive cover must leave at least one channel without the full shifted
-energy required at $\alpha$.  The mixed energy/subpower and exceptional-set dichotomies are
-useful specializations.
+$\alpha<\delta_*$, every finite positive exact split has maximum absolute-convergence abscissa
+$1+\delta_*$.  More strongly, every finite positive cover has a channel of abscissa at least
+$1+\delta_*$ and therefore leaves that channel without the full shifted energy required at
+$\alpha$.  The mixed energy/subpower and exceptional-set dichotomies are useful specializations.
 The transverse power and half-power thickness laws are explicit outer estimates for this exact
 intrinsic carrier, not independent density scales.
 
@@ -1392,7 +1439,7 @@ architecture, the Euler logarithmic-derivative source transform, Landau's theore
 function are established parent mechanisms.  The inverse-tilted complete-divisor theorem is
 bridge infrastructure.  The candidate-new contribution is the fixed-window logarithmic
 compression, its exact one-sided exponent spectrum, universal negative-channel abscissa, exact
-positive-channel abscissa conservation and order-ideal cover spectrum, thickness corollaries,
+finite positive-channel non-dilution and order-ideal cover spectrum, thickness corollaries,
 and multiplicity-exact meromorphic tomography of the actual Weil observable.
 
 \begin{thebibliography}{99}

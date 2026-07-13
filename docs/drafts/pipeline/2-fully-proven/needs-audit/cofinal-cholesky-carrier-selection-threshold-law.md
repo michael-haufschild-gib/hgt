@@ -41,6 +41,15 @@ Beta:P(T)->K_s subset M(s),
 T=RP^1(R).                                                  (1)
 ```
 
+The classical Nevanlinna input is used in its source convention
+`integral (z-x)^(-1)dnu=(A*tau-C)/(B*tau-D)`, `AD-BC=1`. The carrier convention
+`integral (x-z)^(-1)dnu` is obtained by the exact determinant-preserving change
+`(a,b,c,d)=(-A,C,B,-D)`. Thus the source support equation `B*tau-D=0` is literally the
+carrier fiber equation `c*tau+d=0`. The formal interface assumes only the classical outputs:
+weak continuity of the N-extremal leaves, concentration on these denominator fibers, and their
+common Hamburger moments. Projective labels, kernel measurability, and all simplex consequences
+are deductions, not literature hypotheses.
+
 Every `nu in K_s` has infinite support. Use the Cayley map
 
 ```text
@@ -427,9 +436,20 @@ moment sequence, its exact denominator-fiber support, and weak continuity of its
 exact projective labeling, complete Hamburger-moment preservation for every barycenter, and the
 closed topological embedding of projective parameter laws into real carrier laws. It also derives
 exact density transport through the projective label and atomlessness of the carrier from
-atomlessness of the parameter law. The still-open
-classical construction core is to construct this family in Lean from every normalized
-indeterminate Hamburger moment sequence; the assembled theorem does not discharge that existence.
+atomlessness of the parameter law. Weak continuity now also proves the Giry measurability required
+for barycentring through a general Portmanteau-to-Giry theorem, so measurability is no longer a
+second external assumption.
+
+The unconditional module `GaloisForLFunctions.HTGeometry.NevanlinnaClassicalInterface` formalizes
+the exact boundary with the classical theorem. It uses the source `A,C;B,D` convention and proves
+that `(a,b,c,d)=(-A,C,B,-D)` preserves determinant one, converts the source Stieltjes fraction to
+the negative carrier fraction, and identifies both finite and infinite denominator fibers and the
+projective label literally. Its minimal `ClassicalNevanlinnaExtremalFamily` contains no barycenter,
+label-recovery, simplex, density-transport, or atomlessness conclusion. The verified adapter builds
+`NevanlinnaBoundaryFamily` and derives exact source-label recovery and the closed boundary-simplex
+embedding. Existence of this classical input for a normalized indeterminate Hamburger moment
+sequence is invoked from the established Nevanlinna parametrization and is intentionally not
+reproved in Lean.
 
 The unconditional module
 `GaloisForLFunctions.HTGeometry.CholeskyDeterminantDivergence` now proves the repair-escape
@@ -904,8 +924,10 @@ polynomial, stable diagonal-row, exact coherent-span, and canonical Hilbert-basi
 capstones reports only
 `propext`, `Classical.choice`, and `Quot.sound`. The touched
 modules contain no proof debt, and the
-aggregate `GaloisForLFunctions.HTGeometry` build passes with 8662 jobs, the repository-wide formal
-lint passes, and the generated declaration indexes are current. This
+scoped carrier module builds pass, the repository-wide formal lint passes, and the generated
+declaration indexes are current. The current aggregate build is independently blocked by the
+unrelated sign-direction error in `RectangularKreinInertia`; no theorem in the carrier import
+chain depends on that module. This
 validates only the declarations listed above, not the still-unformalized claims in the paper.
 
 The remaining original formalization requires exact Lean interfaces for the cited construction of

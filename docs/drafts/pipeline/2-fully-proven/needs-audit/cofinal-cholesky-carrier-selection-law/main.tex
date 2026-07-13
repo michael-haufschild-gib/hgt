@@ -121,15 +121,37 @@ Let $s=(s_n)_{n\geq0}$ be a normalized indeterminate Hamburger moment sequence a
   \cM(s)=\left\{\nu\in\cP(\R):\int_{\R}x^n\,d\nu(x)=s_n
   \text{ for every }n\geq0\right\}.
 \]
-Choose a real Nevanlinna matrix
+To fix signs at the literature boundary, begin with the classical convention of
+Berg--Valent~\cite[\S2.1]{BergValent1994}:
 \[
-  W(z)=\begin{pmatrix}A(z)&B(z)\\ C(z)&D(z)\end{pmatrix},
-  \qquad A(z)D(z)-B(z)C(z)=1,
+ \widehat W(z)=
+ \begin{pmatrix}\mathsf A(z)&\mathsf C(z)\\
+                 \mathsf B(z)&\mathsf D(z)\end{pmatrix},
+ \qquad \mathsf A\mathsf D-\mathsf B\mathsf C=1,
 \]
-in the standard normalization.  Its entries are real entire functions of minimal exponential
-type~\cite{Akhiezer1965,PrucknerEtAl2023}.  For
-$\tau\in\R\cup\{\infty\}=:\mathbf T$, the constant Nevanlinna parameter gives an
-$N$-extremal measure $\nu_\tau\in\cM(s)$ with
+and
+\[
+ \int_{\R}\frac{d\nu_\tau(x)}{z-x}
+   =\frac{\mathsf A(z)\tau-\mathsf C(z)}
+          {\mathsf B(z)\tau-\mathsf D(z)}.
+\]
+Our Herglotz convention has kernel $(x-z)^{-1}$.  Consequently set
+\[
+  A=-\mathsf A,\qquad B=\mathsf C,\qquad
+  C=\mathsf B,\qquad D=-\mathsf D.
+\]
+Then $AD-BC=1$, and the source denominator
+$\mathsf B\tau-\mathsf D$ is literally $C\tau+D$.  This four-sign conversion is also
+formalized: it preserves the determinant and the projective fibers and negates the fractional
+transform, exactly because $(x-z)^{-1}=-(z-x)^{-1}$.
+
+The classical theorem supplies real entire entries, the weakly continuous family of
+$N$-extremal probability measures $(\nu_\tau)_{\tau\in\mathbf T}$, concentration of
+$\nu_\tau$ on the zero set of $\mathsf B\tau-\mathsf D$ (and of $\mathsf B$ at infinity),
+and membership $\nu_\tau\in\cM(s)$~\cite{Akhiezer1965,BergValent1994,PrucknerEtAl2023}.
+These are the only Nevanlinna-theoretic inputs below.  In particular, projective label recovery,
+kernel measurability, and the boundary-simplex assertions are not included in the input.
+For $\tau\in\R\cup\{\infty\}=:\mathbf T$ we now have
 \begin{equation}\label{eq:nev-family}
   m_\tau(z):=\int_{\R}\frac{d\nu_\tau(x)}{x-z}
   =\frac{A(z)\tau+B(z)}{C(z)\tau+D(z)}.
@@ -739,6 +761,13 @@ J. Eur. Math. Soc. \textbf{26} (2024), 1899--1932.
 N. I. Akhiezer,
 \emph{The Classical Moment Problem and Some Related Questions in Analysis},
 Oliver \& Boyd, Edinburgh, 1965.
+
+\bibitem{BergValent1994}
+C. Berg and G. Valent,
+\emph{The Nevanlinna parametrization for some indeterminate Stieltjes moment problems
+associated with birth and death processes},
+Methods Appl. Anal. \textbf{1} (1994), 169--209;
+\href{https://www.intlpress.com/site/pub/files/_fulltext/journals/maa/1994/0001/0002/MAA-1994-0001-0002-a003.pdf}{journal PDF}.
 
 \bibitem{Duren1970}
 P. L. Duren,

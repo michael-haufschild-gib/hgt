@@ -116,10 +116,59 @@ not a failed approximation to RH; it identifies the exact missing boundary opera
    **Positive statement:** require a coherent two-parameter family for every degree and every
    Taylor shift, or an equivalent cofinal theorem that covers the finite exceptional region.
 
+## Complete-selector detour and source-producer audit
+
+The complete Cayley/OPUC selector is already closed in Lean.  For probability measures on the real
+line, equality of all Cayley moments determines the measure; equality of the complete Toeplitz Gram
+tower or of every canonical inverse-Cholesky frame therefore determines the same measure.  Finite
+Cayley prefixes are exactly finite regular Cauchy jets at `-i`.  Consequently the indeterminate
+Hamburger-moment fiber is not an obstruction once a candidate carrier is given in all-order
+Cauchy/Cayley coordinates.
+
+This closes a selector, not a producer.  Four source constructions have different failures:
+
+1. A positive theta-density pushforward gives strict Toeplitz positivity without locating any Xi
+   root.  The missing coefficient identity with the Cayley-homogenized Jensen polynomials remains
+   the entire arithmetic load.
+2. The normalized Xi logarithmic-derivative germ supplies the correct Schur coefficients, but
+   positivity of all finite Pick/Toeplitz sections is already equivalent to RH.  Its singular
+   atomic carrier and Bernstein--Szego condensation are positive consequences of that positivity,
+   not independent inputs.
+3. The positive Sonin residual energies give genuine source-defined Hankel moment sequences.  A
+   cofinal aperture family whose moments converge to the prime--Gamma moment germ already proves RH
+   through `riemannHypothesis_of_soninPrimeArchSingleMomentCoupling`.  Passing those measures through
+   Cayley compactifies the family and selects subsequential carriers, but compactness alone does not
+   identify a cluster carrier with the prime--Gamma germ.  The positive residue is that OPUC can
+   make a proved Sonin moment weld canonical; it cannot prove the weld.
+4. A representing measure for all normalized prime--archimedean power moments immediately yields
+   RH through `riemannHypothesis_of_primeArchInfiniteSupportMomentRepresentation`.  Its Cayley
+   pushforward also yields every finite paraorthogonal unitary truncation.  This gives a coherent
+   OPUC realization after the measure is constructed, but does not weaken the measure-existence
+   theorem.
+
+Thus the strongest surviving use of this detour is
+
+```text
+source-defined positive cofinal carrier family
+  -> independently prove its all-order Cauchy or power-moment weld to the prime--Gamma germ
+  -> complete Cayley/frame selector makes the limiting carrier canonical
+  -> finite paraorthogonal unitary truncations at every level
+  -> prime--archimedean moment positivity
+  -> RH.
+```
+
+The load-bearing open theorem is the source weld in the second arrow.  Neither OPUC root location,
+weak compactness, nor complete-frame determinacy supplies it.  This is the positive statement of
+the no-go: any successful OPUC proof must enter through a source theorem that identifies a positive
+carrier before the Xi divisor is read; after that theorem, the corpus already closes selection,
+finite unitary geometry, and the RH consumer.
+
 ## Exact open cores
 
-- `[OPEN CORE A]` Define the source circle moments for every Jensen shift and prove their Hermitian
-  Toeplitz sections are positive definite.
+- `[CLOSED SELECTOR]` Complete Cayley moments, regular Cauchy jets, Toeplitz Gram towers, and canonical
+  inverse-Cholesky frame towers select the underlying probability measure uniquely.
+- `[OPEN CORE A]` Construct a source-positive carrier for every Jensen shift and prove, independently
+  of the Xi divisor, that its all-order Cauchy/Cayley data are the required source moments.
 - `[CLOSED FINITE BRIDGE]` `finiteOPUCPolynomial`, its conjugate reversal, and its paraorthogonal
   terminal polynomial are connected to the unit-circle root theorem in Lean.
 - `[OPEN CORE C]` Prove the source CMV/Verblunsky recurrence gives the coefficients in `(1)` at every
@@ -143,6 +192,8 @@ bound, or maximal degree range as the positive statement.
 - [x] both-end POPUC-to-RH chain specified
 - [x] factorized paraorthogonal Blaschke unit-circle theorem formalized
 - [x] finite OPUC polynomial/reversal connected to the paraorthogonal root theorem
+- [x] complete Cayley/Cauchy/frame selector and measure uniqueness formalized
+- [x] theta, Xi-Schur, singular-carrier, and Sonin producer variants attacked
 - [ ] source moment/Verblunsky family constructed
 - [ ] all-degree coefficient comparison proved
 - [ ] Jensen/Laguerre--Pólya/RH capstone composed in Lean
