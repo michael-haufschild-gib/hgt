@@ -4,6 +4,7 @@ import GaloisForLFunctions.RHTower.CCMDyadicSharpRectangularTransfer
 import GaloisForLFunctions.RHTower.CCMRectangularFullObservableDivisorTomography
 import GaloisForLFunctions.RHTower.CCMRectangularTransverseGrowth
 import GaloisForLFunctions.RHTower.CCMRectangularStieltjesAutocorrelation
+import GaloisForLFunctions.RHTower.CCMSourceDivisorEnergySpectrum
 
 /-!
 # Rectangular Gamma--polar source law
@@ -221,5 +222,187 @@ theorem riemannHypothesis_iff_exists_eventually_criticalMellinAdjacentBlock_subp
       exact ⟨C, hC, fun n hn => ht n ((Nat.le_max_left Na Nc).trans hn)⟩
     exact ⟨N,
       (rectangularPrimePolarSource_subpowerLower_iff_adjacentBlock hL.le hN).mpr haN⟩
+
+/-! ## Source-only negative-energy law -/
+
+/-- The finite prime--polar source after deletion of a finite prefix. -/
+def rectangularPrimePolarSourceTailCoefficient
+    (L : ℝ) (N n : ℕ) : ℝ :=
+  if N ≤ n then
+    rectangularPrimePolarSourceCoefficient L (Real.log n / 2)
+  else 0
+
+/-- Negative part of the finite prime--polar source tail. -/
+def rectangularPrimePolarSourceTailNegativePart
+    (L : ℝ) (N n : ℕ) : ℝ :=
+  (rectangularPrimePolarSourceTailCoefficient L N n)⁻
+
+theorem rectangularPrimePolarSourceTailNegativePart_nonneg
+    (L : ℝ) (N n : ℕ) :
+    0 ≤ rectangularPrimePolarSourceTailNegativePart L N n :=
+  negPart_nonneg _
+
+/-- The observable rectangular Weil tail and the finite prime--polar source tail differ by at
+most the aperture-uniform Gamma--polar bound. -/
+theorem abs_xiRectangularWeilTail_re_sub_primePolarSourceTail_le
+    {L : ℝ} (hL : 0 ≤ L) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n →
+      1 ≤ n ∧ L ≤ Real.log n / 2)
+    (n : ℕ) :
+    |(xiRectangularWeilTailCoefficient L N n).re -
+        rectangularPrimePolarSourceTailCoefficient L N n| ≤
+      rectangularGammaPolarUniformBound L := by
+  by_cases hn : N ≤ n
+  · obtain ⟨_hn1, hLn⟩ := hN n hn
+    rw [xiRectangularWeilTailCoefficient, if_pos hn,
+      rectangularPrimePolarSourceTailCoefficient, if_pos hn,
+      xiRectangularWeilLogCoefficient_re_eq_primePolarSource_add_gammaCorrection
+        hL hLn]
+    simpa only [add_sub_cancel_left] using
+      abs_rectangularGammaPolarCorrection_le_uniformBound hL hLn
+  · rw [xiRectangularWeilTailCoefficient, if_neg hn,
+      rectangularPrimePolarSourceTailCoefficient, if_neg hn]
+    simpa only [Complex.zero_re, sub_zero, abs_zero] using
+      rectangularGammaPolarUniformBound_nonneg hL
+
+/-- Bounded Gamma--polar correction transfers the negative Weil channel to the source channel. -/
+theorem xiRectangularWeilTailNegativePart_le_primePolarSourceTail
+    {L : ℝ} (hL : 0 ≤ L) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n →
+      1 ≤ n ∧ L ≤ Real.log n / 2)
+    (n : ℕ) :
+    xiRectangularWeilTailNegativePart L N n ≤
+      rectangularPrimePolarSourceTailNegativePart L N n +
+        rectangularGammaPolarUniformBound L := by
+  exact negPart_le_negPart_add_of_abs_sub_le _ _ _
+    (abs_xiRectangularWeilTail_re_sub_primePolarSourceTail_le hL hN n)
+
+/-- The same bounded correction transfers the source negative channel back to the Weil channel. -/
+theorem rectangularPrimePolarSourceTailNegativePart_le_xiRectangularWeilTail
+    {L : ℝ} (hL : 0 ≤ L) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n →
+      1 ≤ n ∧ L ≤ Real.log n / 2)
+    (n : ℕ) :
+    rectangularPrimePolarSourceTailNegativePart L N n ≤
+      xiRectangularWeilTailNegativePart L N n +
+        rectangularGammaPolarUniformBound L := by
+  apply negPart_le_negPart_add_of_abs_sub_le
+  rw [abs_sub_comm]
+  exact abs_xiRectangularWeilTail_re_sub_primePolarSourceTail_le hL hN n
+
+private theorem constantGammaPolarUniformBound_LSeriesSummable
+    {L : ℝ} (hL : 0 ≤ L) {s : ℂ} (hs : 1 < s.re) :
+    LSeriesSummable
+      (fun _n : ℕ => ((rectangularGammaPolarUniformBound L : ℝ) : ℂ)) s := by
+  apply LSeriesSummable_of_bounded_of_one_lt_re
+    (m := rectangularGammaPolarUniformBound L)
+  · intro n hn
+    rw [norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (rectangularGammaPolarUniformBound_nonneg hL)]
+  · exact hs
+
+private theorem add_gammaPolarUniformBound_LSeriesSummable
+    {f : ℕ → ℝ} {L : ℝ} (hL : 0 ≤ L) {s : ℂ} (hs : 1 < s.re)
+    (hsource : LSeriesSummable (fun n => ((f n : ℝ) : ℂ)) s) :
+    LSeriesSummable
+      (fun n => (((f n + rectangularGammaPolarUniformBound L : ℝ) : ℂ))) s := by
+  have hadd := hsource.add (constantGammaPolarUniformBound_LSeriesSummable hL hs)
+  change Summable (LSeries.term _ s)
+  change Summable (LSeries.term _ s) at hadd
+  exact hadd.congr fun n => by
+    rcases n.eq_zero_or_pos with rfl | hn
+    · simp only [LSeries.term_zero]
+    · rw [LSeries.term_of_ne_zero hn.ne', LSeries.term_of_ne_zero hn.ne']
+      simp only [Pi.add_apply, ofReal_add]
+
+/-- **Quantitative source negative-energy law.**  At every transverse width `alpha`, the global
+Xi zero-free half-plane is equivalent to all-abscissa negative Dirichlet energy of only the
+finite prime--polar source values.  The condition is averaged and one-sided; it is strictly
+weaker than pointwise all-epsilon lower control. -/
+theorem all_xiZeros_re_le_iff_rectangularPrimePolarSource_negativeEnergyAbove
+    {L alpha : ℝ} (hL : 0 < L) (halpha : 0 ≤ alpha) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n →
+      1 ≤ n ∧ L ≤ Real.log n / 2) :
+    (∀ rho : ℂ, xi rho = 0 → rho.re ≤ 1 / 2 + alpha) ↔
+      ∀ epsilon : ℝ, 0 < epsilon →
+        LSeriesSummable
+          (fun n => ((rectangularPrimePolarSourceTailNegativePart L N n : ℝ) : ℂ))
+          (((1 + alpha + epsilon : ℝ) : ℂ)) := by
+  rw [show (∀ rho : ℂ, xi rho = 0 → rho.re ≤ 1 / 2 + alpha) =
+      XiZeroHalfPlaneBound alpha by rfl]
+  constructor
+  · intro hzeros epsilon hepsilon
+    have hq :=
+      (xiZeroHalfPlaneBound_iff_rectangularNegativeEnergyAbove hL halpha hN).mp
+        hzeros epsilon hepsilon
+    apply LSeriesSummable_of_nonneg_of_le
+      (rectangularPrimePolarSourceTailNegativePart_nonneg L N)
+      (fun n => add_nonneg
+        (xiRectangularWeilTailNegativePart_nonneg L N n)
+        (rectangularGammaPolarUniformBound_nonneg hL.le))
+      (rectangularPrimePolarSourceTailNegativePart_le_xiRectangularWeilTail hL.le hN)
+    apply add_gammaPolarUniformBound_LSeriesSummable hL.le
+    · simp only [ofReal_re]
+      linarith
+    · exact hq
+  · intro hsource
+    apply (xiZeroHalfPlaneBound_iff_rectangularNegativeEnergyAbove hL halpha hN).mpr
+    intro epsilon hepsilon
+    apply LSeriesSummable_of_nonneg_of_le
+      (xiRectangularWeilTailNegativePart_nonneg L N)
+      (fun n => add_nonneg
+        (rectangularPrimePolarSourceTailNegativePart_nonneg L N n)
+        (rectangularGammaPolarUniformBound_nonneg hL.le))
+      (xiRectangularWeilTailNegativePart_le_primePolarSourceTail hL.le hN)
+    apply add_gammaPolarUniformBound_LSeriesSummable hL.le
+    · simp only [ofReal_re]
+      linarith
+    · exact hsource epsilon hepsilon
+
+/-- **Prime--polar negative-energy RH law.**  RH is equivalent to weighted negative-part energy
+of one finite prime--polar value sequence at every real abscissa strictly larger than one.  This
+direct, unbundled statement removes Gamma, polar, contour, and pointwise hypotheses from the
+remaining source obligation. -/
+theorem riemannHypothesis_iff_rectangularPrimePolarSource_negativeEnergy
+    {L : ℝ} (hL : 0 < L) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n →
+      1 ≤ n ∧ L ≤ Real.log n / 2) :
+    RiemannHypothesis ↔
+      ∀ epsilon : ℝ, 0 < epsilon →
+        LSeriesSummable
+          (fun n => ((rectangularPrimePolarSourceTailNegativePart L N n : ℝ) : ℂ))
+          (((1 + epsilon : ℝ) : ℂ)) := by
+  constructor
+  · intro hRH epsilon hepsilon
+    obtain ⟨C, hC, hsource⟩ :=
+      (riemannHypothesis_iff_rectangularPrimePolarSource_uniformlyBounded hL).mp hRH
+    apply LSeriesSummable_of_bounded_of_one_lt_re (m := C)
+    · intro n hn
+      rw [norm_real, Real.norm_eq_abs,
+        abs_of_nonneg (rectangularPrimePolarSourceTailNegativePart_nonneg L N n)]
+      rw [rectangularPrimePolarSourceTailNegativePart,
+        rectangularPrimePolarSourceTailCoefficient]
+      split_ifs with hNn
+      · change (rectangularPrimePolarSourceCoefficient L (Real.log n / 2))⁻ ≤ C
+        rw [negPart_def]
+        exact max_le
+          ((neg_le_abs _).trans (hsource _ (hN n hNn).2)) hC
+      · simp only [negPart_zero]
+        exact hC
+    · simp only [ofReal_re]
+      linarith
+  · intro hsource
+    apply riemannHypothesis_of_xiRectangularWeilTailNegativePartEnergy hL hN
+    intro epsilon hepsilon
+    apply LSeriesSummable_of_nonneg_of_le
+      (xiRectangularWeilTailNegativePart_nonneg L N)
+      (fun n => add_nonneg
+        (rectangularPrimePolarSourceTailNegativePart_nonneg L N n)
+        (rectangularGammaPolarUniformBound_nonneg hL.le))
+      (xiRectangularWeilTailNegativePart_le_primePolarSourceTail hL.le hN)
+    apply add_gammaPolarUniformBound_LSeriesSummable hL.le
+    · simp only [ofReal_re]
+      linarith
+    · exact hsource epsilon hepsilon
 
 end RHTower

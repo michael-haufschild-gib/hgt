@@ -393,10 +393,24 @@ The **integral evaluation** side of `(15)`--`(16)` is also formalized:
 
 With these, the entire analytic (non-arithmetic) content of §2--§3 is machine-checked: the tent Mellin
 factor `I_L = A_L²`, its entireness, the concrete integrand's modulus of continuity, the uniform
-Riemann-sum error bound, and the integral value `∫ g_s = I_L`.  The remaining open chain is purely
-arithmetic: assembling the cell bound and the integral value into `E_{k,L}(s)` `(16)`, the per-`s`
-bound `(17)`, the summable error series `(19)` (summing against `Λ(k)/√k` via the Euler product `(18)`),
-the double-series identity `(20)` with `-ζ'/ζ`, and the polar cancellation/residue `(23)`--`(25)`.
+Riemann-sum error bound, and the integral value `∫ g_s = I_L`.
+
+The **Dirichlet-series backbone of §4** is also formalized axiom-clean, in
+`formal/GaloisForLFunctions/RHTower/PrimePolarDirichletBackbone.lean`:
+
+- `lseries_cpow` / `lseriesSummable_cpow` / `lseries_cpow_eq_zeta` — a reusable power-weight argument
+  shift `∑ nᵃ n⁻ˢ = ∑ n^{-(s-a)} = ζ(s-a)`;
+- `polar_lseries` — the polar Dirichlet series `(21)`: `∑ (c₁N^{1/2}+c₂+c₃N^{-1/2}) N⁻ˢ =
+  c₁ζ(s-½)+c₂ζ(s)+c₃ζ(s+½)` for `Re s > 3/2` (the card's `P_L` is `c₁=8α², c₂=16αβ, c₃=8β²`);
+- `vonMangoldt_shifted_logDeriv` — the prime-side identity `(20)`: `∑ Λ(k) k^{-(s-½)} = -ζ'/ζ(s-½)`
+  for `Re s > 3/2`, the exact charge cancelled at `s = 3/2` (mathlib's
+  `LSeries_vonMangoldt_eq_deriv_riemannZeta_div` at the shifted argument).
+
+The remaining open chain is the *coupling* of the two sides: assembling the cell bound `(15)` and the
+integral value into `E_{k,L}(s)` `(16)` and its per-`s` bound `(17)`; the summable error series `(19)`
+(via `LSeriesSummable_vonMangoldt`, already in mathlib, dominating `(18)`); the double-series
+interchange `(20)`; and the polar cancellation/residue `(23)`--`(25)` (a residue computation at the
+simple poles `s = 3/2` and `s = ρ+½`).
 
 ## Gates
 

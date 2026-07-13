@@ -886,6 +886,69 @@ prove that no unbalanced seam term survives when `(12d.9g)` is inserted into the
 Haar packets.  The numerical check of the raw-tail edge shows the predicted exponential onset,
 including on a larger bounded fibre where the edge first grows for small degrees and then decays.
 
+The degree-uniform top-row assertion in that paragraph is now formal, without dominated
+convergence.  For `||z||<=r`, put
+
+```text
+A_r=4 thetaCuspTailDerivativeNatExpConstant(2,r+2),
+q(z)=||z^2+1/4||,  s_(r,k)=exp(-(r+2)k log 2).
+```
+
+Lean proves, uniformly in the finite cutoff `d`,
+
+```text
+||<F_k,H_d>|| <= A_r s_(r,k) (1/2+q(z)/4),
+||<F_k,partial_z H_d>||
+  <= A_r s_(r,k) (||z||/2+3q(z)/8),                    (12d.9h)
+```
+
+and hence the absolute integrated Haar top-row current is bounded by
+
+```text
+2^k [A_r s_(r,k)]^2
+ (1/2+q(z)/4)(||z||/2+3q(z)/8).                        (12d.9i)
+```
+
+The proof first establishes the cutoff-free pointwise envelopes
+
+```text
+||H_d(z,x)|| <= (1+q(z)x^2)exp(||z||x),
+||partial_z H_d(z,x)||
+ <= (2||z||x^2+q(z)x^3)exp(||z||x),
+```
+
+then pairs them with the arbitrary-rate exact bound for the translated density.  Since `(12d.9i)`
+decays like `exp(-(2r+3)k log 2)`, the cofinal top row is super-polynomially small at
+`k=floor(n^(1/4))`, independently of the scheduled Taylor degree.  These theorems are formalized
+in `XiCTaylorThetaTailFiniteTranslationTopRow.lean`.
+
+There is, however, a separate fixed-half-line translation seam which must not be conflated with
+the finite Taylor top edge.  Let `F,F'` be the positive-half value and spectral derivative before
+translation, and let `J_a,J_a'` be the value and derivative of the interval swept across the fixed
+boundary.  The exact translated pair is
+
+```text
+p_a(F+J_a),
+p_a(F'+J_a'+ia(F+J_a)).
+```
+
+Therefore the phase-current identity gives
+
+```text
+Q(p_a(F+J_a))=|p_a|^2[
+  Q(F)+Q(J_a)
+  +Im(F' conjugate(J_a))+Im(J_a' conjugate(F))
+  +a|F+J_a|^2].                                        (12d.9j)
+```
+
+Lean proves `(12d.9j)` as `orientedPhaseCurrent_add_boundary_identity`.  The existence and exact
+projection-commutator form of `J_a` were already formalized in `XiThetaLogTranslationSeam.lean`
+and `XiThetaBoundaryCoboundary.lean`.  Thus the bare phase theorem does not by itself reduce the
+untruncated fixed-half-line transport to `a|F|^2`: the seam self-current and two mixed currents
+remain.  The sharpened open gate is to prove that the **signed finite Haar-layer sum** cancels the
+three `J_a` terms in `(12d.9j)` up to the already discharged cofinal row.  Only after that identity
+is proved does `(12d.9g)` make the finite Taylor edge the sole analytic remainder.
+
 `[CONJECTURE]` The remaining arithmetic possibility is a *polarized jump energy*: integrate in a
 diagonal or difference coordinate before resolving the jumps, so that paired jumps at
 `(log m,log n)` contribute a square or a summable top-edge defect rather than the asymmetric seam.

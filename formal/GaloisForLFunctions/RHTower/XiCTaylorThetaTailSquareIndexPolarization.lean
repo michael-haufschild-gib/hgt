@@ -156,6 +156,22 @@ theorem orientedPhaseCurrent_identity (p F F' : ℂ) (a : ℝ) :
   simp [Complex.mul_im, Complex.mul_re, Complex.normSq_apply]
   ring
 
+/-- A fixed half-line boundary cannot be discarded when applying the phase-current identity.
+If translation produces a swept-window value `J` and derivative `J'`, their self-current and both
+mixed currents remain exactly, in addition to the harmless phase drift. -/
+theorem orientedPhaseCurrent_add_boundary_identity
+    (p F F' J J' : ℂ) (a : ℝ) :
+    (p * (F' + J' + ((a : ℂ) * I) * (F + J)) *
+        (starRingEnd ℂ) (p * (F + J))).im =
+      Complex.normSq p *
+        ((F' * (starRingEnd ℂ) F).im +
+          (J' * (starRingEnd ℂ) J).im +
+          (F' * (starRingEnd ℂ) J).im +
+          (J' * (starRingEnd ℂ) F).im +
+          a * Complex.normSq (F + J)) := by
+  simp [Complex.mul_im, Complex.mul_re, Complex.normSq_apply]
+  ring
+
 /-- The Gaussian scale belonging to the square index `n²` at logarithmic source position `x`. -/
 def thetaSquareIndexScale (n : ℕ) (x : ℝ) : ℝ :=
   Real.pi * ((n : ℝ) * Real.exp x) ^ 2

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CCMCompletedErrorDifferenceGate
-import GaloisForLFunctions.RHTower.CCMSharpPrimeWindowExcessEnergyGate
+import GaloisForLFunctions.RHTower.CCMSharpPrimeWindowDivisorTomography
 
 /-!
 # Positive variation energy of the completed error forces RH
@@ -75,5 +75,15 @@ theorem riemannHypothesis_of_completedErrorBackwardPositiveVariationSquareEnergy
   intro epsilon hepsilon
   simpa only [dyadicCompletedErrorBackwardPositiveVariation_eq_positiveExcess] using
     h2 epsilon hepsilon
+
+/-- **Critical positive-variation endpoint.**  Pointwise control is unnecessary: absolute
+Dirichlet summability at the single critical abscissa `1` of only the positive backward
+variations of the completed error already proves RH. -/
+theorem riemannHypothesis_of_completedErrorBackwardPositiveVariation_summable_at_one
+    (henergy : LSeriesSummable
+      (fun n => ((dyadicCompletedErrorBackwardPositiveVariation n : ℝ) : ℂ)) 1) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_dyadicWeightedPrimeWindowPositiveExcess_summable_at_one
+  simpa only [dyadicCompletedErrorBackwardPositiveVariation_eq_positiveExcess] using henergy
 
 end RHTower

@@ -149,6 +149,29 @@ theorem degreeOneEulerFEFirstCoefficientEnergy_eq_primeSeamWeightedNormSq
   apply tsum_congr
   exact degreeOneEulerFEFlux_deriv_zero_weighted_norm_sq_eq_primeSeam rho
 
+/-- Prime-zeta value form of the source coefficient energy. -/
+theorem degreeOneEulerFEFirstCoefficientEnergy_eq_primeLogSquareMoment_secondDifference
+    {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1) :
+    degreeOneEulerFEFirstCoefficientEnergy rho =
+      primeLogSquareMoment (1 + 2 * rho.re) +
+        primeLogSquareMoment (3 - 2 * rho.re) -
+          2 * primeLogSquareMoment 2 := by
+  rw [degreeOneEulerFEFirstCoefficientEnergy_eq_primeSeamWeightedNormSq]
+  exact orbitwisePrimeSeamWeightedNormSq_eq_primeLogSquareMoment_secondDifference hstrip
+
+/-- The cofinal two-prime seam slope is twice the empty-parameter Euler first-coefficient
+energy. -/
+theorem tendsto_orbitwisePrimeSeamPairEnergy_div_mass_to_degreeOneEulerFEFirstCoefficientEnergy
+    {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1) :
+    Filter.Tendsto
+      (fun s : Finset Nat.Primes =>
+        primePairDifferenceEnergy
+          (fun p : Nat.Primes => orbitwiseNatPrimeSeamCharge (p : ℕ) rho) s /
+            primeReciprocalMass s)
+      Filter.atTop (nhds (2 * degreeOneEulerFEFirstCoefficientEnergy rho)) := by
+  simpa [degreeOneEulerFEFirstCoefficientEnergy_eq_primeSeamWeightedNormSq] using
+    tendsto_orbitwisePrimeSeamPairEnergy_div_mass hstrip
+
 /-- Quantitative consequence: this source coefficient controls horizontal displacement from the
 critical line. -/
 theorem horizontalDisplacement_sq_mul_log_two_pow_four_le_degreeOneEulerFEFirstCoefficientEnergy

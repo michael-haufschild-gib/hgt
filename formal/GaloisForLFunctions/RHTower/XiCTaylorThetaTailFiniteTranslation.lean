@@ -418,6 +418,262 @@ theorem sq_mul_thetaCuspTailSecondCoreAtom_add_eq_cosine_sine_sub_topEdge
   rw [sq_mul_thetaCuspTailSecondCoreAtom_eq_completion_mul_cosine_sub,
     truncatedCosineSection_add]
 
+
+theorem spectralOddExponentialPowerSeries_add (x a : ℝ) :
+    (2 : PowerSeries ℂ) * spectralOddExponentialPowerSeries (x + a) =
+      spectralOddExponentialPowerSeries x * spectralEvenExponentialPowerSeries a +
+        spectralEvenExponentialPowerSeries x * spectralOddExponentialPowerSeries a := by
+  unfold spectralEvenExponentialPowerSeries spectralOddExponentialPowerSeries
+  simp only [mul_add, add_mul, mul_sub, sub_mul]
+  rw [PowerSeries.exp_mul_exp_eq_exp_add,
+    PowerSeries.exp_mul_exp_eq_exp_add,
+    PowerSeries.exp_mul_exp_eq_exp_add,
+    PowerSeries.exp_mul_exp_eq_exp_add]
+  ring_nf
+  congr 1 <;> congr 2 <;> push_cast <;> ring
+
+theorem finiteSinePolynomial_add_eq_trunc_product
+    (d : ℕ) (x a : ℝ) :
+    finiteSinePolynomial d (x + a) =
+      PowerSeries.trunc (2 * d + 1)
+        (((finiteSinePolynomial d x * finiteCosinePolynomial d a +
+          finiteCosinePolynomial d x * finiteSinePolynomial d a : Polynomial ℂ) :
+            PowerSeries ℂ)) := by
+  let n := 2 * d + 1
+  have h := congrArg (PowerSeries.trunc n)
+    (spectralOddExponentialPowerSeries_add x a)
+  dsimp only [n] at h ⊢
+  have htwo (f : PowerSeries ℂ) :
+      PowerSeries.trunc (2 * d + 1) ((2 : PowerSeries ℂ) * f) =
+        (2 : Polynomial ℂ) * PowerSeries.trunc (2 * d + 1) f := by
+    change PowerSeries.trunc (2 * d + 1) (PowerSeries.C 2 * f) = _
+    rw [PowerSeries.trunc_C_mul]
+    have hc : Polynomial.C (2 : ℂ) = (2 : Polynomial ℂ) := by
+      simpa only [map_ofNat] using Polynomial.C_eq_algebraMap (2 : ℂ)
+    rw [hc]
+  have hprod (f g : PowerSeries ℂ) :
+      PowerSeries.trunc (2 * d + 1) (f * g) =
+        PowerSeries.trunc (2 * d + 1)
+          (((PowerSeries.trunc (2 * d + 1) f : Polynomial ℂ) : PowerSeries ℂ) *
+            ((PowerSeries.trunc (2 * d + 1) g : Polynomial ℂ) : PowerSeries ℂ)) :=
+    (PowerSeries.trunc_trunc_mul_trunc f g).symm
+  rw [htwo, map_add,
+    hprod (spectralOddExponentialPowerSeries x)
+      (spectralEvenExponentialPowerSeries a),
+    hprod (spectralEvenExponentialPowerSeries x)
+      (spectralOddExponentialPowerSeries a),
+    trunc_spectralOddExponentialPowerSeries,
+    trunc_spectralOddExponentialPowerSeries,
+    trunc_spectralOddExponentialPowerSeries,
+    trunc_spectralEvenExponentialPowerSeries,
+    trunc_spectralEvenExponentialPowerSeries] at h
+  have hscale (c e : ℂ) (P Q : Polynomial ℂ) :
+      PowerSeries.trunc (2 * d + 1)
+          (((c • P : Polynomial ℂ) : PowerSeries ℂ) *
+            ((e • Q : Polynomial ℂ) : PowerSeries ℂ)) =
+        (c * e) • PowerSeries.trunc (2 * d + 1)
+          ((P * Q : Polynomial ℂ) : PowerSeries ℂ) := by
+    rw [Polynomial.coe_smul, Polynomial.coe_smul,
+      smul_mul_smul_comm, map_smul, ← Polynomial.coe_mul]
+  rw [hscale, hscale] at h
+  have hfourI : (2 : ℂ) * (2 * I) = 4 * I := by ring
+  have hfourI' : (2 * I : ℂ) * 2 = 4 * I := by ring
+  rw [hfourI, hfourI'] at h
+  have hleft : (2 : Polynomial ℂ) * ((2 * I : ℂ) • finiteSinePolynomial d (x + a)) =
+      (4 * I : ℂ) • finiteSinePolynomial d (x + a) := by
+    ext m
+    simp
+    ring
+  rw [hleft] at h
+  rw [show ((finiteSinePolynomial d x * finiteCosinePolynomial d a +
+      finiteCosinePolynomial d x * finiteSinePolynomial d a : Polynomial ℂ) :
+        PowerSeries ℂ) =
+      ((finiteSinePolynomial d x * finiteCosinePolynomial d a : Polynomial ℂ) :
+        PowerSeries ℂ) +
+      ((finiteCosinePolynomial d x * finiteSinePolynomial d a : Polynomial ℂ) :
+        PowerSeries ℂ) by norm_num,
+    map_add]
+  apply smul_right_injective (Polynomial ℂ) (by simp : (4 * I : ℂ) ≠ 0)
+  simpa only [smul_add] using h
+
+def finiteSineTranslationPacket
+    (d : ℕ) (x a : ℝ) : Polynomial ℂ :=
+  finiteSinePolynomial d x * finiteCosinePolynomial d a +
+    finiteCosinePolynomial d x * finiteSinePolynomial d a
+
+def finiteSineTranslationTopEdge
+    (d : ℕ) (x a : ℝ) : Polynomial ℂ :=
+  let P := finiteSineTranslationPacket d x a
+  P - PowerSeries.trunc (2 * d + 1) (P : PowerSeries ℂ)
+
+theorem finiteSinePolynomial_add_eq_product_sub_topEdge
+    (d : ℕ) (x a : ℝ) :
+    finiteSinePolynomial d (x + a) =
+      finiteSinePolynomial d x * finiteCosinePolynomial d a +
+        finiteCosinePolynomial d x * finiteSinePolynomial d a -
+          finiteSineTranslationTopEdge d x a := by
+  rw [finiteSinePolynomial_add_eq_trunc_product]
+  unfold finiteSineTranslationTopEdge finiteSineTranslationPacket
+  dsimp only
+  ring
+
+theorem trunc_finiteSineTranslationTopEdge
+    (d : ℕ) (x a : ℝ) :
+    PowerSeries.trunc (2 * d + 1)
+      ((finiteSineTranslationTopEdge d x a : Polynomial ℂ) : PowerSeries ℂ) = 0 := by
+  let P := finiteSineTranslationPacket d x a
+  change PowerSeries.trunc (2 * d + 1)
+    (((P - PowerSeries.trunc (2 * d + 1) (P : PowerSeries ℂ) : Polynomial ℂ) :
+      PowerSeries ℂ)) = 0
+  rw [show (((P - PowerSeries.trunc (2 * d + 1) (P : PowerSeries ℂ) : Polynomial ℂ) :
+      PowerSeries ℂ)) = (P : PowerSeries ℂ) -
+        ((PowerSeries.trunc (2 * d + 1) (P : PowerSeries ℂ) : Polynomial ℂ) :
+          PowerSeries ℂ) by norm_num,
+    map_sub, PowerSeries.trunc_trunc, sub_self]
+
+theorem finiteSineTranslationTopEdge_coeff_eq_zero_of_lt
+    (d : ℕ) (x a : ℝ) {m : ℕ} (hm : m < 2 * d + 1) :
+    (finiteSineTranslationTopEdge d x a).coeff m = 0 := by
+  have h := congrArg (Polynomial.coeff · m)
+    (trunc_finiteSineTranslationTopEdge d x a)
+  change (PowerSeries.trunc (2 * d + 1)
+    ((finiteSineTranslationTopEdge d x a : Polynomial ℂ) : PowerSeries ℂ)).coeff m = 0 at h
+  rw [PowerSeries.coeff_trunc, if_pos hm] at h
+  simpa using h
+
+theorem finiteSineTranslationPacket_comp_neg_X
+    (d : ℕ) (x a : ℝ) :
+    (finiteSineTranslationPacket d x a).comp (-X) =
+      -finiteSineTranslationPacket d x a := by
+  unfold finiteSineTranslationPacket
+  rw [add_comp, mul_comp, mul_comp, finiteCosinePolynomial_comp_neg_X,
+    finiteCosinePolynomial_comp_neg_X, finiteSinePolynomial_comp_neg_X,
+    finiteSinePolynomial_comp_neg_X]
+  ring
+
+theorem finiteSineTranslationTopEdge_comp_neg_X
+    (d : ℕ) (x a : ℝ) :
+    (finiteSineTranslationTopEdge d x a).comp (-X) =
+      -finiteSineTranslationTopEdge d x a := by
+  have hEdge : finiteSineTranslationTopEdge d x a =
+      finiteSineTranslationPacket d x a - finiteSinePolynomial d (x + a) := by
+    rw [finiteSinePolynomial_add_eq_product_sub_topEdge]
+    unfold finiteSineTranslationPacket
+    ring
+  rw [hEdge, sub_comp, finiteSineTranslationPacket_comp_neg_X,
+    finiteSinePolynomial_comp_neg_X]
+  ring
+
+theorem finiteSineTranslationTopEdge_coeff_eq_zero_of_even
+    (d : ℕ) (x a : ℝ) {m : ℕ} (hm : Even m) :
+    (finiteSineTranslationTopEdge d x a).coeff m = 0 := by
+  have h := congrArg (Polynomial.coeff · m)
+    (finiteSineTranslationTopEdge_comp_neg_X d x a)
+  change ((finiteSineTranslationTopEdge d x a).comp (-X)).coeff m =
+    (-finiteSineTranslationTopEdge d x a).coeff m at h
+  rw [coeff_comp_neg_X_complex, hm.neg_one_pow, one_mul, coeff_neg] at h
+  linear_combination (1 / 2 : ℂ) * h
+
+def finiteSineTranslationTopEdgeSection
+    (d : ℕ) (z : ℂ) (x a : ℝ) : ℂ :=
+  (finiteSineTranslationTopEdge d x a).eval z
+
+theorem truncatedSineCompanion_add
+    (d : ℕ) (z : ℂ) (x a : ℝ) :
+    truncatedSineCompanion d z (x + a) =
+      truncatedSineCompanion d z x * truncatedCosineSection d z a +
+        truncatedCosineSection d z x * truncatedSineCompanion d z a -
+          finiteSineTranslationTopEdgeSection d z x a := by
+  rw [← eval_finiteSinePolynomial,
+    finiteSinePolynomial_add_eq_product_sub_topEdge,
+    eval_sub, eval_add, eval_mul, eval_mul, eval_finiteCosinePolynomial,
+    eval_finiteCosinePolynomial, eval_finiteSinePolynomial, eval_finiteSinePolynomial]
+  rfl
+
+theorem truncatedCosineSine_add
+    (d : ℕ) (z : ℂ) (x a : ℝ) :
+    (truncatedCosineSection d z (x + a),
+      truncatedSineCompanion d z (x + a)) =
+    (truncatedCosineSection d z x * truncatedCosineSection d z a -
+        truncatedSineCompanion d z x * truncatedSineCompanion d z a -
+          finiteCosineTranslationTopEdgeSection d z x a,
+      truncatedSineCompanion d z x * truncatedCosineSection d z a +
+        truncatedCosineSection d z x * truncatedSineCompanion d z a -
+          finiteSineTranslationTopEdgeSection d z x a) := by
+  rw [truncatedCosineSection_add, truncatedSineCompanion_add]
+
+/-- The contracting exponential eigenchannel of the finite cosine--sine translation matrix. -/
+def finitePositivePhasePolynomial (d : ℕ) (x : ℝ) : Polynomial ℂ :=
+  finiteCosinePolynomial d x + C I * finiteSinePolynomial d x
+
+/-- The expanding exponential eigenchannel of the finite cosine--sine translation matrix. -/
+def finiteNegativePhasePolynomial (d : ℕ) (x : ℝ) : Polynomial ℂ :=
+  finiteCosinePolynomial d x - C I * finiteSinePolynomial d x
+
+def finitePositivePhaseTranslationTopEdge
+    (d : ℕ) (x a : ℝ) : Polynomial ℂ :=
+  finiteCosineTranslationTopEdge d x a +
+    C I * finiteSineTranslationTopEdge d x a
+
+def finiteNegativePhaseTranslationTopEdge
+    (d : ℕ) (x a : ℝ) : Polynomial ℂ :=
+  finiteCosineTranslationTopEdge d x a -
+    C I * finiteSineTranslationTopEdge d x a
+
+/-- Exact diagonal form of the two-component finite translation law in the contracting channel. -/
+theorem finitePositivePhasePolynomial_add_eq_mul_sub_topEdge
+    (d : ℕ) (x a : ℝ) :
+    finitePositivePhasePolynomial d (x + a) =
+      finitePositivePhasePolynomial d x * finitePositivePhasePolynomial d a -
+        finitePositivePhaseTranslationTopEdge d x a := by
+  unfold finitePositivePhasePolynomial finitePositivePhaseTranslationTopEdge
+  rw [finiteCosinePolynomial_add_eq_product_sub_topEdge,
+    finiteSinePolynomial_add_eq_product_sub_topEdge]
+  ring
+
+/-- Exact diagonal form of the two-component finite translation law in the expanding channel. -/
+theorem finiteNegativePhasePolynomial_add_eq_mul_sub_topEdge
+    (d : ℕ) (x a : ℝ) :
+    finiteNegativePhasePolynomial d (x + a) =
+      finiteNegativePhasePolynomial d x * finiteNegativePhasePolynomial d a -
+        finiteNegativePhaseTranslationTopEdge d x a := by
+  unfold finiteNegativePhasePolynomial finiteNegativePhaseTranslationTopEdge
+  rw [finiteCosinePolynomial_add_eq_product_sub_topEdge,
+    finiteSinePolynomial_add_eq_product_sub_topEdge]
+  ring
+
+theorem eval_finitePositivePhasePolynomial (d : ℕ) (z : ℂ) (x : ℝ) :
+    (finitePositivePhasePolynomial d x).eval z =
+      truncatedCosineSection d z x + I * truncatedSineCompanion d z x := by
+  simp [finitePositivePhasePolynomial, eval_finiteCosinePolynomial,
+    eval_finiteSinePolynomial]
+
+theorem eval_finiteNegativePhasePolynomial (d : ℕ) (z : ℂ) (x : ℝ) :
+    (finiteNegativePhasePolynomial d x).eval z =
+      truncatedCosineSection d z x - I * truncatedSineCompanion d z x := by
+  simp [finiteNegativePhasePolynomial, eval_finiteCosinePolynomial,
+    eval_finiteSinePolynomial]
+
+/-- The diagonal-channel edge has no coefficient below the common finite cutoff. -/
+theorem finitePositivePhaseTranslationTopEdge_coeff_eq_zero_of_lt
+    (d : ℕ) (x a : ℝ) {m : ℕ} (hm : m < 2 * d + 1) :
+    (finitePositivePhaseTranslationTopEdge d x a).coeff m = 0 := by
+  unfold finitePositivePhaseTranslationTopEdge
+  rw [coeff_add, coeff_C_mul,
+    finiteCosineTranslationTopEdge_coeff_eq_zero_of_lt d x a hm,
+    finiteSineTranslationTopEdge_coeff_eq_zero_of_lt d x a hm]
+  ring
+
+/-- The conjugate diagonal-channel edge has the same high-degree support. -/
+theorem finiteNegativePhaseTranslationTopEdge_coeff_eq_zero_of_lt
+    (d : ℕ) (x a : ℝ) {m : ℕ} (hm : m < 2 * d + 1) :
+    (finiteNegativePhaseTranslationTopEdge d x a).coeff m = 0 := by
+  unfold finiteNegativePhaseTranslationTopEdge
+  rw [coeff_sub, coeff_C_mul,
+    finiteCosineTranslationTopEdge_coeff_eq_zero_of_lt d x a hm,
+    finiteSineTranslationTopEdge_coeff_eq_zero_of_lt d x a hm]
+  ring
+
 end
 
 end RHTower
