@@ -604,3 +604,18 @@ Assembly: `PcalCorrection_continuousAt` (the three correction terms are continuo
 `exists_tendsto_add_continuousAt_iff` (a continuous shift preserves has-a-limit) reduce `Pcal_L`
 regularity to the renormalized-observable criterion `RH_iff_primeObservable_polar_regular`.  The
 moving-tent card's Main Theorem is now machine-checked in its verbatim statement.
+
+COMPLETE DIVISOR RECOVERY (critical-line included) — FORMALIZED (`RHTower/TentDivisorRecovery.lean`,
+axiom-clean).  Beyond the `Re s>1` RH criterion, the FULL nontrivial divisor is recovered on the maximal
+strip `Re s>½` by two incommensurable widths, enabled by the widened error holomorphy
+`HL_differentiableOn_gt_half : DifferentiableOn (HL L) ({Re>½}∖{1})` (the strip the summability
+`∑Λ(k)k^{-σ-½}`, σ>½, actually allows; `s=1` = amplitude removable singularity, dodged).
+- `PcalCorrection_continuousAt_gt_half` — the correction terms stay continuous on `{Re>½}∖{1}`.
+- `PcalObservable_no_limit_of_amplitude_ne (L)` — a nontrivial zero `ρ` (`ρ≠1`, `Re ρ>0`, `ρ≠½`) with
+  `A_L(ρ-½)≠0` is a genuine pole of `PcalObservable L` at `s=ρ+½` (correction continuous there, pole
+  purely from the prime channel).
+- `tent_twoWidth_divisor_recovery (L₁ L₂)(0<L₁)(0<L₂)(Irrational (L₁/L₂))` — every nontrivial zero `ρ`
+  (`ρ≠1, Re ρ>0, ρ≠½`), CRITICAL-LINE INCLUDED, is a genuine pole of `PcalObservable L₁` OR
+  `PcalObservable L₂` at `s=ρ+½`.  Single width misses a critical-line zero where `A_L(iγ)=0`, but
+  incommensurable widths never share such a zero (`sharpAmplitude_not_both_zero`), so the joint pole
+  divisor is the entire nontrivial zeta divisor.

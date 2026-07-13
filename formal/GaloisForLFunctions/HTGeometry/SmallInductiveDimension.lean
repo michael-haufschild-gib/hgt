@@ -2,6 +2,7 @@ import Mathlib.Topology.Separation.Basic
 import Mathlib.Topology.Order.Basic
 import Mathlib.Topology.Clopen
 import Mathlib.Topology.Instances.Real.Lemmas
+import Mathlib.Topology.UrysohnsLemma
 
 /-!
 # Small inductive dimension
@@ -146,6 +147,27 @@ theorem SmallIndDimLE.subtype {X : Type*} [TopologicalSpace X] {n : ℕ} (A : Se
     (h : SmallIndDimLE X n) : SmallIndDimLE (↥A) n :=
   SmallIndDimLE.of_isInducing IsInducing.subtypeVal h
 
+/-- The inclusion of one subset into a larger one is an inducing map. -/
+theorem isInducing_inclusion {X : Type*} [TopologicalSpace X] {s t : Set X} (h : s ⊆ t) :
+    IsInducing (Set.inclusion h) :=
+  IsInducing.of_comp (continuous_inclusion h) continuous_subtype_val IsInducing.subtypeVal
+
+/-- **Subset monotonicity.**  A smaller subspace has dimension at most that of a larger one:
+`s ⊆ t → ind ↥t ≤ n → ind ↥s ≤ n`. -/
+theorem SmallIndDimLE.subset {X : Type*} [TopologicalSpace X] {s t : Set X} (h : s ⊆ t) {n : ℕ}
+    (hd : SmallIndDimLE (↥t) n) : SmallIndDimLE (↥s) n :=
+  SmallIndDimLE.of_isInducing (isInducing_inclusion h) hd
+
+/-- Dimension transfers backwards along a topological embedding. -/
+theorem SmallIndDimLE.of_isEmbedding {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+    {f : X → Y} (hf : IsEmbedding f) {n : ℕ} (h : SmallIndDimLE Y n) : SmallIndDimLE X n :=
+  SmallIndDimLE.of_isInducing hf.toIsInducing h
+
+/-- Small inductive dimension is a topological invariant, as an equivalence. -/
+theorem smallIndDimLE_congr {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y] (e : X ≃ₜ Y)
+    {n : ℕ} : SmallIndDimLE X n ↔ SmallIndDimLE Y n :=
+  ⟨SmallIndDimLE.of_homeomorph e, SmallIndDimLE.of_homeomorph e.symm⟩
+
 /-- **Product of zero-dimensional spaces (base case of the addition theorem).**  If `ind X ≤ 0` and
 `ind Y ≤ 0` then `ind (X × Y) ≤ 0`: products of clopen neighbourhoods form a clopen basis of the
 product, and the frontier of a product of clopen sets is empty. -/
@@ -159,6 +181,151 @@ theorem smallIndDimLE_prod_zero {X Y : Type*} [TopologicalSpace X] [TopologicalS
   refine ⟨V ×ˢ W, ?_, (Set.prod_mono hVA hWB).trans hAB, ?_⟩
   · rw [nhds_prod_eq]; exact Filter.prod_mem_prod hVnhds hWnhds
   · rw [frontier_prod_eq, hVfr, hWfr]; simp
+
+/-- **Product with a zero-dimensional space preserves the dimension bound:**
+`ind Y ≤ 0 → ind X ≤ m → ind (X × Y) ≤ m`.  This is the `ind Y = 0` case of the addition theorem
+`ind (X × Y) ≤ ind X + ind Y`, proved by induction on `m`: a clopen neighbourhood `W` in `Y` makes
+the product frontier `frontier V ×ˢ closure W`, whose dimension the inductive hypothesis controls
+(via subspace monotonicity into `↥(frontier V) × Y` and the product-subtype homeomorphism). -/
+theorem smallIndDimLE_prod_of_zero_right {Y : Type*} [TopologicalSpace Y]
+    (hY : SmallIndDimLE Y 0) :
+    ∀ {m : ℕ} {X : Type*} [TopologicalSpace X], SmallIndDimLE X m → SmallIndDimLE (X × Y) m := by
+  intro m
+  induction m with
+  | zero => intro X _ hX; exact smallIndDimLE_prod_zero hX hY
+  | succ m ih =>
+      intro X _ hX
+      rintro ⟨x, y⟩ U hU
+      rw [nhds_prod_eq, Filter.mem_prod_iff] at hU
+      obtain ⟨A, hA, B, hB, hAB⟩ := hU
+      obtain ⟨V, hVnhds, hVA, hVdim⟩ := hX x A hA
+      obtain ⟨W, hWnhds, hWB, hWfr⟩ := hY y B hB
+      refine ⟨V ×ˢ W, ?_, (Set.prod_mono hVA hWB).trans hAB, ?_⟩
+      · rw [nhds_prod_eq]; exact Filter.prod_mem_prod hVnhds hWnhds
+      · rw [frontier_prod_eq, hWfr, Set.prod_empty, Set.empty_union]
+        have hprodY : SmallIndDimLE (↥(frontier V) × Y) m := ih hVdim
+        have hind : SmallIndDimLE (↥(frontier V) × ↥(closure W)) m :=
+          SmallIndDimLE.of_isInducing (IsInducing.id.prodMap IsInducing.subtypeVal) hprodY
+        exact SmallIndDimLE.of_homeomorph
+          (Homeomorph.Set.prod (frontier V) (closure W)).symm hind
+
+/-- `L` **separates** `C` from `D`: it is closed, and its complement splits into two disjoint open
+sets, one containing `C` and the other `D`.  Separators of small dimension are the mechanism behind
+the sum/addition theorems of dimension theory (the hard core of `ind(X×Y) ≤ ind X + ind Y`). -/
+def IsSeparator {X : Type*} [TopologicalSpace X] (L C D : Set X) : Prop :=
+  IsClosed L ∧ ∃ U V : Set X, IsOpen U ∧ IsOpen V ∧ Disjoint U V ∧ C ⊆ U ∧ D ⊆ V ∧ Lᶜ = U ∪ V
+
+/-- The frontier of an open set `V` separates `V` from the complement of its closure.  This is the
+canonical separator produced by the frontier appearing in the definition of small inductive
+dimension. -/
+theorem isSeparator_frontier {X : Type*} [TopologicalSpace X] {V : Set X} (hV : IsOpen V) :
+    IsSeparator (frontier V) V (closure V)ᶜ := by
+  refine ⟨isClosed_frontier, V, (closure V)ᶜ, hV, isClosed_closure.isOpen_compl, ?_,
+    subset_rfl, subset_rfl, ?_⟩
+  · rw [Set.disjoint_compl_right_iff_subset]; exact subset_closure
+  · rw [frontier, hV.interior_eq, Set.diff_eq, Set.compl_inter, compl_compl, Set.union_comm]
+
+/-- The frontier of an **arbitrary** set separates its interior from the complement of its closure.
+This is the separator produced directly by a neighbourhood `V` in the small-inductive-dimension
+definition (whose `V` need not be open). -/
+theorem isSeparator_frontier_interior {X : Type*} [TopologicalSpace X] (V : Set X) :
+    IsSeparator (frontier V) (interior V) (closure V)ᶜ := by
+  refine ⟨isClosed_frontier, interior V, (closure V)ᶜ, isOpen_interior,
+    isClosed_closure.isOpen_compl, ?_, subset_rfl, subset_rfl, ?_⟩
+  · rw [Set.disjoint_compl_right_iff_subset]; exact interior_subset.trans subset_closure
+  · rw [frontier, Set.diff_eq, Set.compl_inter, compl_compl, Set.union_comm]
+
+/-- A separator stays a separator when its two sides shrink. -/
+theorem IsSeparator.mono {X : Type*} [TopologicalSpace X] {L C D C' D' : Set X}
+    (h : IsSeparator L C D) (hC : C' ⊆ C) (hD : D' ⊆ D) : IsSeparator L C' D' := by
+  obtain ⟨hL, U, V, hU, hV, hUV, hCU, hDV, hLc⟩ := h
+  exact ⟨hL, U, V, hU, hV, hUV, hC.trans hCU, hD.trans hDV, hLc⟩
+
+/-- Separation is symmetric in its two sides. -/
+theorem IsSeparator.symm {X : Type*} [TopologicalSpace X] {L C D : Set X}
+    (h : IsSeparator L C D) : IsSeparator L D C := by
+  obtain ⟨hL, U, V, hU, hV, hUV, hCU, hDV, hLc⟩ := h
+  exact ⟨hL, V, U, hV, hU, hUV.symm, hDV, hCU, by rw [hLc, Set.union_comm]⟩
+
+/-- In a regular space, a point in an open set has a neighbourhood whose closure stays inside it. -/
+theorem exists_closure_subset_of_regular {X : Type*} [TopologicalSpace X] [RegularSpace X]
+    {x : X} {U : Set X} (hU : IsOpen U) (hx : x ∈ U) : ∃ V ∈ nhds x, closure V ⊆ U := by
+  obtain ⟨N, hNmem, hNclosed, hNU⟩ := exists_mem_nhds_isClosed_subset (hU.mem_nhds hx)
+  exact ⟨N, hNmem, by rw [hNclosed.closure_eq]; exact hNU⟩
+
+/-- **Forward separator characterization.**  In a regular space, if `ind X ≤ n+1` then any point `x`
+and closed set `C` not containing it are separated by a set `L` of small inductive dimension `≤ n`.
+This is the reformulation of small inductive dimension that drives the closed sum theorem. -/
+theorem exists_separator_of_smallIndDimLE {X : Type*} [TopologicalSpace X] [RegularSpace X] {n : ℕ}
+    (h : SmallIndDimLE X (n + 1)) {x : X} {C : Set X} (hC : IsClosed C) (hxC : x ∉ C) :
+    ∃ L : Set X, IsSeparator L {x} C ∧ SmallIndDimLE (↥L) n := by
+  obtain ⟨U₀, hU₀mem, hU₀closure⟩ := exists_closure_subset_of_regular hC.isOpen_compl hxC
+  obtain ⟨V, hVmem, hVU₀, hVdim⟩ := h x U₀ hU₀mem
+  refine ⟨frontier V, ?_, hVdim⟩
+  refine (isSeparator_frontier_interior V).mono
+    (Set.singleton_subset_iff.mpr (mem_interior_iff_mem_nhds.mpr hVmem)) ?_
+  have : closure V ⊆ Cᶜ := (closure_mono hVU₀).trans hU₀closure
+  rwa [Set.subset_compl_comm] at this
+
+/-- **Reverse separator characterization.**  In a regular space, if every point and disjoint closed
+set can be separated by a set of small inductive dimension `≤ n`, then `ind X ≤ n+1`.  Together with
+`exists_separator_of_smallIndDimLE` this is the separator characterization of small inductive
+dimension. -/
+theorem smallIndDimLE_succ_of_separators {X : Type*} [TopologicalSpace X] [RegularSpace X] {n : ℕ}
+    (H : ∀ (x : X) (C : Set X), IsClosed C → x ∉ C →
+      ∃ L : Set X, IsSeparator L {x} C ∧ SmallIndDimLE (↥L) n) :
+    SmallIndDimLE X (n + 1) := by
+  intro x U hU
+  have hxint : x ∈ interior U := mem_interior_iff_mem_nhds.mpr hU
+  obtain ⟨L, ⟨_, U₁, V₁, hU₁open, hV₁open, hdisj, hxU₁, hCV₁, hLc⟩, hLdim⟩ :=
+    H x (interior U)ᶜ isOpen_interior.isClosed_compl (by simpa using hxint)
+  have hU₁V₁c : U₁ ⊆ V₁ᶜ := hdisj.subset_compl_right
+  refine ⟨U₁, hU₁open.mem_nhds (Set.singleton_subset_iff.mp hxU₁), ?_, ?_⟩
+  · have hV₁c : V₁ᶜ ⊆ interior U := by
+      intro z hz; by_contra hzU; exact hz (hCV₁ hzU)
+    exact (hU₁V₁c.trans hV₁c).trans interior_subset
+  · have hfrL : frontier U₁ ⊆ L := by
+      have hcl : closure U₁ ⊆ V₁ᶜ := closure_minimal hU₁V₁c hV₁open.isClosed_compl
+      intro z hz
+      rw [frontier, Set.mem_diff, hU₁open.interior_eq] at hz
+      have hzUV : z ∉ U₁ ∪ V₁ := fun h => h.elim hz.2 (fun hv => hcl hz.1 hv)
+      rw [← hLc] at hzUV
+      exact not_not.mp hzUV
+    exact SmallIndDimLE.subset hfrL hLdim
+
+/-- **Separators are level sets of continuous functions.**  For a continuous real function `f` and a
+value `c`, the level set `f⁻¹{c}` separates `{f < c}` from `{f > c}`.  This is the bridge between
+Urysohn separating functions and separators that powers the enlargement step of the closed sum
+theorem in a normal space. -/
+theorem isSeparator_of_continuous {X : Type*} [TopologicalSpace X] {f : X → ℝ}
+    (hf : Continuous f) (c : ℝ) :
+    IsSeparator (f ⁻¹' {c}) (f ⁻¹' Set.Iio c) (f ⁻¹' Set.Ioi c) := by
+  refine ⟨isClosed_singleton.preimage hf, f ⁻¹' Set.Iio c, f ⁻¹' Set.Ioi c,
+    isOpen_Iio.preimage hf, isOpen_Ioi.preimage hf,
+    Disjoint.preimage f
+      (Set.disjoint_left.2 (fun x hx hx' => (Set.mem_Iio.mp hx).asymm (Set.mem_Ioi.mp hx'))),
+    subset_rfl, subset_rfl, ?_⟩
+  ext x
+  simp only [Set.mem_compl_iff, Set.mem_preimage, Set.mem_singleton_iff, Set.mem_union,
+    Set.mem_Iio, Set.mem_Ioi]
+  exact ne_iff_lt_or_gt
+
+/-- **Separators exist between disjoint closed sets** (in a normal space).  Urysohn's lemma supplies
+a continuous `f : X → ℝ` that is `0` on `C` and `1` on `D`; the level set `f⁻¹{1/2}` is a separator.
+This is the existence input for the enlargement step of the closed sum theorem. -/
+theorem exists_isSeparator_of_disjoint_closed {X : Type*} [TopologicalSpace X] [NormalSpace X]
+    {C D : Set X} (hC : IsClosed C) (hD : IsClosed D) (hCD : Disjoint C D) :
+    ∃ L : Set X, IsSeparator L C D := by
+  obtain ⟨f, hfC, hfD, _⟩ := exists_continuous_zero_one_of_isClosed hC hD hCD
+  refine ⟨⇑f ⁻¹' {1 / 2}, (isSeparator_of_continuous f.continuous (1 / 2)).mono ?_ ?_⟩
+  · intro x hx
+    simp only [Set.mem_preimage, Set.mem_Iio]
+    have hfx : f x = 0 := hfC hx
+    rw [hfx]; norm_num
+  · intro x hx
+    simp only [Set.mem_preimage, Set.mem_Ioi]
+    have hfx : f x = 1 := hfD hx
+    rw [hfx]; norm_num
 
 /-- **The real line is one-dimensional: `ind ℝ ≤ 1`.**  Every neighbourhood of a point contains an
 open interval, whose topological frontier is the two-point set `{a, b}` — a discrete (hence

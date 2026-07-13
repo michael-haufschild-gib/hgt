@@ -112,6 +112,31 @@ theorem logDeriv_zeta_eq {s : ℂ} (hs : s ≠ 1) (hGz : zetaResidueUnit s ≠ 0
     logDeriv_inv_sub_one hs]
   ring
 
+/-- **The derivative of the analytic unit `G = (s-1)ζ` at `1` is the Euler–Mascheroni constant `γ`.**
+Since `G(1) = 1` and, off the pole, `slope G 1 s = ((s-1)ζ(s) - 1)/(s-1) = ζ(s) - 1/(s-1)`, the slope
+limit `deriv G 1` is exactly `lim_{s→1}(ζ(s) - 1/(s-1)) = γ` (mathlib's `tendsto_riemannZeta_sub_one_div`).
+So `G(s) = 1 + γ(s-1) + O((s-1)²)`: the Laurent constant term of `ζ` at its pole. -/
+theorem deriv_zetaResidueUnit_one :
+    deriv zetaResidueUnit 1 = (Real.eulerMascheroniConstant : ℂ) := by
+  have hdiff : DifferentiableAt ℂ zetaResidueUnit 1 := zetaResidueUnit_analyticAt.differentiableAt
+  have hslope : Tendsto (slope zetaResidueUnit 1) (𝓝[≠] 1) (𝓝 (deriv zetaResidueUnit 1)) :=
+    hasDerivAt_iff_tendsto_slope.mp hdiff.hasDerivAt
+  have hEq : slope zetaResidueUnit 1 =ᶠ[𝓝[≠] (1 : ℂ)] fun s => riemannZeta s - 1 / (s - 1) := by
+    filter_upwards [self_mem_nhdsWithin] with s hs
+    have hs1 : s ≠ 1 := hs
+    have hsub : s - 1 ≠ 0 := sub_ne_zero.mpr hs1
+    have hGs : zetaResidueUnit s = (s - 1) * riemannZeta s := by
+      simp only [zetaResidueUnit, Function.update_of_ne hs1]
+    rw [slope_def_field, zetaResidueUnit_one, hGs]
+    field_simp
+  exact tendsto_nhds_unique hslope ((tendsto_congr' hEq).mpr tendsto_riemannZeta_sub_one_div)
+
+/-- **The residue-unit logarithmic derivative at `1` is `γ`** — since `G(1) = 1`, `logDeriv G 1 =
+deriv G 1 / G 1 = γ`.  This is the finite value the ratio `ζ'/ζ` leaves once its pole is removed. -/
+theorem logDeriv_zetaResidueUnit_one :
+    logDeriv zetaResidueUnit 1 = (Real.eulerMascheroniConstant : ℂ) := by
+  rw [logDeriv_apply, deriv_zetaResidueUnit_one, zetaResidueUnit_one, div_one]
+
 /-- **The residue of `-ζ'/ζ` at `s = 1` is `+1`.**  `(s-1)·(-ζ'(s)/ζ(s)) → 1` as `s → 1`. -/
 theorem neg_logDeriv_zeta_residue :
     Tendsto (fun s => (s - 1) * (-deriv riemannZeta s / riemannZeta s)) (𝓝[≠] 1) (𝓝 1) := by

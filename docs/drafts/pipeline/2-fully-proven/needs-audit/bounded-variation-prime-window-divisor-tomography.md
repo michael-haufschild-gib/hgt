@@ -389,3 +389,17 @@ FORMALIZED (axiom-clean) — sharp-window RH criterion + two-width amplitude cor
 Remaining for the FULL "critical-line divisor recovery": the continuation of the observable to Re s>½
 (needs `H_W` holomorphy on the wider strip, currently only Re>1) so critical-line poles `s=ρ+½` (Re=1)
 enter the domain; then the amplitude core above pins each nontrivial zero to ≥1 width's residue.
+
+COMPLETE DIVISOR RECOVERY (closed-form sharp observable) — FORMALIZED (axiom-clean).
+`RHTower/PolarPrimeRegularity.lean`: `polarPrimeObservable_no_limit (κ W)(Continuous W)(ζρ=0)(ρ≠1)(W(ρ+½)≠0)`
+— general genuine-pole primitive: the renormalized observable's polar counterterm `κ·ζ(s-½)` is
+continuous at `ρ+½` (ρ≠1), so the prime channel's simple pole survives; holds on the whole plane (the
+closed meromorphic form carries no error term, so NO H_W and NO strip restriction are needed).
+`RHTower/TentDivisorRecovery.lean`: `sharpObservable_twoWidth_divisor_recovery (L₁ L₂)(0<)(0<)(Irrational
+L₁/L₂){ρ}(ζρ=0)(ρ≠1)(ρ≠½)` — every nontrivial zero `ρ` (CRITICAL-LINE INCLUDED) is a genuine pole of
+`polarPrimeObservable (4α_j) (fun s=>-2·A_{L_j}(s-1))` for `j=1` or `j=2` at `s=ρ+½`.  Sharp window is
+linear ⟹ simple poles, residue `∝ A_L(ρ-½)`; incommensurable widths never share an amplitude zero
+(`sharpAmplitude_not_both_zero`).  This is the card's headline complete-recovery clause for the closed
+observable — the residual `H_W` (bounded-variation Riemann-sum quadrature error, absent from mathlib) is
+only needed to identify this closed form with the raw Dirichlet series of `p_W`; the divisor read itself
+is complete.

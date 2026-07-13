@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiTraceHankelCriterion
+import GaloisForLFunctions.HTGeometry.MomentFunctionalPositivity
 
 /-!
 # The algebraic trace-Hankel cone on moment sequences
@@ -21,6 +22,12 @@ through the coefficients of `p * p` packages the usual double sum
 `Σ i,j, p_i p_j m_(i+j)`. -/
 def sequenceTraceHankel (m : ℕ → ℝ) (p : Polynomial ℝ) : ℝ :=
   ∑ n ∈ (p * p).support, (p * p).coeff n * m n
+
+/-- The coefficient-level trace-Hankel form is exactly the moment functional evaluated on the
+polynomial square. -/
+theorem sequenceTraceHankel_eq_momentFunctional (m : ℕ → ℝ) (p : Polynomial ℝ) :
+    sequenceTraceHankel m p = HTGeometry.momentFunctional m (p ^ 2) := by
+  rw [sequenceTraceHankel, HTGeometry.momentFunctional_eq_support_sum, pow_two]
 
 /-- Membership in the all-order real trace-Hankel-positive cone. -/
 def SequenceTraceHankelNonnegative (m : ℕ → ℝ) : Prop :=

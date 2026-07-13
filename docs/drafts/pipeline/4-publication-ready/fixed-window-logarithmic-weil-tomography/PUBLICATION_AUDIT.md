@@ -11,6 +11,17 @@ of the Riemann hypothesis.
 
 - Correctness and proof closure: 25/25
   - Every substantive manuscript claim has a direct unconditional Lean declaration.
+  - The revised main theorem now includes the exact completed endpoint value
+    \(C=2+\gamma-\log(4\pi)\), the strict estimate
+    \(E\le C^2/(1-C)<C\), the Hermitian chamber \(C\le H<3C/2\), and the
+    absolutely convergent all-order reflection reconstruction.
+  - Endpoint saturation is identified simultaneously with RH, complete source Hankel
+    nonnegativity, a reflection-positive Gram orbit, and a bounded self-adjoint vacuum-moment
+    realization.
+  - The four referee strengthenings retained by the manuscript are formalized: two-sided
+    transverse power oscillation, asymptotic constancy of the Gamma correction with
+    \(O_L(n^{-1/2})\) error, the elementary complete-divisor source
+    \((\Lambda(n)-1)\sqrt n\), and perfect-square reduction of the sharp dyadic source estimate.
   - The inverse-tilted finite-prime source, its continuation, complete Xi-divisor support
     equivalence, exact multiplicity normalization, and RH holomorphy equivalence are formalized
     without an abstract continuation premise.
@@ -68,6 +79,9 @@ of the Riemann hypothesis.
     meromorphic-divisor argument.  It strengthens the source foundation but is not counted in the
     novelty score.
 - Significance: 21/22
+  - The endpoint theorem is estimate progress rather than another bare criterion: the complete
+    reflection defect is bounded quadratically by one explicit completed source value, and the
+    remaining RH-bearing assertion is the sharp saturation of this proven strict chamber.
   - The headline coefficient is now source-defined rather than divisor-defined: every sample is
     a finite von Mangoldt autocorrelation plus an absolutely convergent Gamma integral.  Its tail
     sign is an exact RH criterion, and its negative Dirichlet abscissa reads the full transverse

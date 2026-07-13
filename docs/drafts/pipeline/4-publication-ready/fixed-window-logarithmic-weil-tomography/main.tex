@@ -94,7 +94,7 @@ value; the paper therefore does not prove RH.
 
 \noindent\textbf{Keywords.}
 Riemann hypothesis, Weil quadratic form, screw function, Dirichlet series, Landau theorem,
-Connes trace formula, pole tomography.
+Connes trace formula, reflection positivity, Hankel moments, pole tomography.
 
 \section{Introduction}
 
@@ -130,38 +130,35 @@ identity here from a finite Galerkin dictionary.  More importantly, it turns the
 Weil criterion into a source-only one: for every fixed $L>0$, nonnegativity of the resulting
 finite-prime--Gamma samples on any admissible logarithmic tail is equivalent to RH.
 
-The headline theorem can be stated compactly.  For every $L>0$ and every integer cutoff
-$N\ge\lceil e^{2L}\rceil$, the explicitly defined prime--Gamma coefficient $g_L(n)$ and finite
-prime--polar coefficient $S_L(n)$ satisfy
+\begin{theorem}[Theorem A: source spectrum and endpoint reflection chamber]
+\label{thm:main}
+Fix $L>0$ and an admissible cutoff $N$.  Let $g_L$ be the exact finite
+prime--Gamma sample, $S_L$ the finite prime--polar sample, and
+$A_{L,N}(X)=\sum_{n\le X}S_{L,N}^-(n)$.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item The sharp rectangular formula gives
 \[
- g_L(n)=Q_L\!\left(\tfrac12\log n\right),
- \qquad
- S_L(n)=-2\mathcal P_{L,\frac12\log n}+2B_{L,\frac12\log n}^{2}.
-\]
-Write $A_{L,N}(X)=\sum_{n\le X}S_{L,N}^-(n)$.  Then, for every $\alpha\ge0$,
-\[
- \begin{aligned}
- &\left(\Re\rho\le\tfrac12+\alpha\text{ for every xi zero }\rho\right)\\
- &\qquad\Longleftrightarrow
- \sigma_{\rm abs}(S_{L,N}^-)\le1+\alpha\\
- &\qquad\Longleftrightarrow
- A_{L,N}(X)=O_\varepsilon(X^{1+\alpha+\varepsilon})
- \quad(\varepsilon>0).
- \end{aligned}
+ g_L(n)=Q_L\!\left(\tfrac12\log n\right),\qquad
+ S_L(n)=-2\mathcal P_{L,\frac12\log n}
+          +2B_{L,\frac12\log n}^{2}.
  \tag{1.1}
 \]
-Consequently
+\item For every $\alpha\ge0$,
 \[
- \mathrm{RH}
- \Longleftrightarrow g_L(n)\ge0\ (n\ge N)
- \Longleftrightarrow \sigma_{\rm abs}(S_{L,N}^-)\le1
- \Longleftrightarrow A_{L,N}(X)=O_\varepsilon(X^{1+\varepsilon})
- \quad(\varepsilon>0),
+ \begin{aligned}
+ &\Re\rho\le\tfrac12+\alpha\quad\text{for every xi zero }\rho\\
+ &\quad\Longleftrightarrow
+ \sigma_{\rm abs}(S_{L,N}^-)\le1+\alpha\\
+ &\quad\Longleftrightarrow
+ A_{L,N}(X)=O_\varepsilon(X^{1+\alpha+\varepsilon})
+ \quad\text{for every }\varepsilon>0.
+ \end{aligned}
  \tag{1.2}
- \]
-while the exact Weil negative channel obeys
+\]
+The sharp cumulative threshold is $1+\delta_*$ in the precise upper/lower Big-$O$ sense of
+Theorem~\ref{thm:prime-polar-cumulative-spectrum}.
+\item The exact Weil channel satisfies
 \[
- \qquad
  \sigma_{\rm abs}(g_{L,N}^-)=
  \begin{cases}
  -\infty,&\mathrm{RH},\\
@@ -169,10 +166,84 @@ while the exact Weil negative channel obeys
  \end{cases}
  \tag{1.3}
 \]
-The cumulative growth threshold is itself exact: every exponent above $1+\delta_*$ is
-admissible, while no exponent below it within the transverse range is.  This cumulative
-prime--polar spectrum is the main theorem; the subsequent divisor, energy, and positive-carrier
-results identify its equivalent coordinates and its unavoidable positivity cost.
+If RH is false, then for every $0\le\alpha<\delta_*$ the normalized samples
+$n^{-\alpha}g_L(n)$ are cofinally unbounded in both signs.
+\item There is an explicit constant $G_L$ such that
+\[
+ g_L(n)-S_L(n)=G_L+O_L(n^{-1/2}).
+ \tag{1.4}
+\]
+\item For the multiplicity-counted Xi divisor put
+\[
+ r_\rho=\rho^{-1},\quad \rho^\dagger=1-\overline\rho,\quad
+ H=\sum_\rho|r_\rho|^2,\quad
+ E=\sum_\rho|r_\rho-r_{\rho^\dagger}|^2,
+ \tag{1.5}
+\]
+and
+\[
+ C=\Re\!\left(-\frac{(\Xi_C'/\Xi_C)(i/2)}{i/2}\right).
+ \tag{1.6}
+\]
+Then
+\[
+ C=2+\gamma-\log(4\pi),\quad 0<C<\tfrac12,\quad
+ E=2(H-C),
+ \tag{1.7}
+\]
+and, unconditionally,
+\[
+ E\le\frac{C^2}{1-C}<C,\qquad
+ C\le H<\frac32C.
+ \tag{1.8}
+\]
+Moreover
+\[
+ r_{\rho^\dagger}=-\sum_{m\ge1}\overline{r_\rho}^{\,m},\qquad
+ -\frac{(\Xi_C'/\Xi_C)(i/2)}{i/2}
+   =-\sum_{m\ge0}\sum_\rho r_\rho^{m+2},
+ \tag{1.9}
+\]
+with pointwise and absolute double-series convergence, respectively.
+\item The following endpoint conditions are equivalent:
+\[
+ \begin{aligned}
+ \mathrm{RH}
+ &\Longleftrightarrow E=0
+ \Longleftrightarrow H=C\\
+ &\Longleftrightarrow
+ \text{the complete normalized source Hankel form is nonnegative}\\
+ &\Longleftrightarrow
+ \text{the normalized moments admit a reflection-positive Gram orbit}\\
+ &\Longleftrightarrow
+ \text{they are vacuum moments of a bounded self-adjoint observable}.
+ \end{aligned}
+ \tag{1.10}
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Parts~\textup{(i)}--\textup{(iv)} are proved in
+Theorems~\ref{thm:sharp-guinand-weil}, \ref{thm:prime-gamma-spectrum},
+\ref{thm:prime-polar-cumulative-spectrum}, and
+\ref{thm:source-strengthenings}.  Parts~\textup{(v)}--\textup{(vi)} are
+Theorem~\ref{thm:endpoint-reflection-main}.  The detailed arguments are given in the cited
+sections.
+\end{proof}
+
+At $\alpha=0$, parts~\textup{(ii)}, \textup{(iii)}, and \textup{(vi)} identify one common
+endpoint:
+\[
+ \mathrm{RH}
+ \Longleftrightarrow g_L(n)\ge0\ (n\ge N)
+ \Longleftrightarrow \sigma_{\rm abs}(S_{L,N}^-)\le1
+ \Longleftrightarrow E=0
+ \Longleftrightarrow H=C.
+ \tag{1.11}
+\]
+The new estimate \textup{(1.8)} advances the last inequality from the trivial orientation
+$C\le H$ to an explicit narrow chamber, but does not prove the sharp equality.
 
 There is also a classical superzeta literature in which Dirichlet series are formed directly over
 the Riemann zeros and their meromorphic polar structure is studied~\cite{Voros2003}.  That
@@ -232,7 +303,7 @@ channel-independent form of positive non-dilution used in the paper.
 The source-facing analogue is sharper because the correction cone has a least element.  For the
 signed dyadic sharp-prime coefficient $c(n)$, call $a(n)$ admissible when $a\ge0$ and $c+a\ge0$
 coefficientwise.  We prove that $c^-$ is the least admissible correction, that
-$c^-=2E$ for the explicit positive window overshoot $E$, and that every admissible correction
+$c^-=2E_{\rm dyad}$ for the explicit positive window overshoot $E_{\rm dyad}$, and that every admissible correction
 has absolute-convergence abscissa at least that of $c^-$.  Thus positive auxiliary channels do
 not soften the arithmetic endpoint: a coefficientwise-positive Connes/Landau implementation
 must pay the canonical overshoot channel.  Conversely the canonical correction itself is
@@ -249,19 +320,33 @@ positive-channel conservation, and the screw-coordinate identity.  The lower-los
 the closed ray beginning at the rightmost transverse divisor coordinate, so it yields every
 horizontal zero-free region, not only RH.
 
-The principal contribution claimed here is the exact evaluated sharp prime--Gamma specialization
-and its source-only RH spectrum: fixed positive width, arithmetic
+The endpoint reflection theorem supplies a second, quantitatively different advance.  The
+functional equation pairs $\rho$ with $\rho^\dagger=1-\overline\rho$.  At the completed boundary
+$i/2$, this pairing gives an exact squared reflection defect $E=2(H-C)$.  The source value
+$C=2+\gamma-\log(4\pi)$ is small enough to make the source-to-defect multiplier
+$C/(1-C)$ strictly contractive.  This yields the unconditional quadratic bound
+$E\le C^2/(1-C)$ and forces all reciprocal coordinates into one uniform disk.  The reflected
+coordinate is consequently a convergent M\"obius--Neumann series in the original coordinate, and
+the completed endpoint is the absolutely convergent sum of all holomorphic reciprocal-power
+traces.  This does not collapse the defect to zero; it replaces a bare RH-equivalent equality by
+an explicit strict chamber and an all-order source carrier on which a further positivity estimate
+can act.
+
+The principal contributions claimed here are the exact evaluated sharp prime--Gamma
+specialization and its source-only RH spectrum---fixed positive width, arithmetic
 logarithmic sampling, tail nonnegativity, cofinal divergence, the exact one-sided spectrum,
 universal negative-channel abscissae, finite maximum conservation, summable-family aggregate
 conservation, the least sharp-source positive correction, and observable multiplicity-exact pole
-tomography.  The inverse-tilted source
+tomography---together with the contractive endpoint reflection law and its all-order holomorphic
+trace reconstruction.  The inverse-tilted source
 tomography is classified separately as bridge infrastructure: it is a sharpened application of
 the Euler logarithmic derivative, bounded-variation quadrature, and meromorphic divisor calculus.
 Landau's theorem, Weil positivity, shifted-zeta continuation, and screw functions are likewise
 parent mechanisms.  The paper does not prove RH.  It proves that the explicit sharp
 prime--Gamma tail, the completed source divisor, and the intrinsic critical-Mellin divisor carry
-precisely the same horizontal spectrum.  A successful prime-side or semilocal construction must
-now force the critical endpoint in any one of these equivalent coordinates.
+precisely the same horizontal spectrum, and that the endpoint reflection defect already lies in
+the strict chamber \textup{(1.8)}.  A successful prime-side or semilocal construction must force
+the remaining saturation in any one of the equivalent coordinates in \textup{(1.10)}.
 
 \section{The centered xi divisor and the rectangular window}
 
@@ -1548,6 +1633,123 @@ $\alpha=\delta_*-\eta\ge0$, would place every xi zero in that smaller half-plane
 the definition of $\delta_*$.  This proves the exact cumulative power law.
 \end{proof}
 
+\begin{theorem}[Strengthened source laws]
+\label{thm:source-strengthenings}
+The preceding source construction has the following four refinements.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item If RH is false, $L>0$, and $0\le\alpha<\delta_*$, then, for every $C\ge0$ and every
+$N_0$, there are admissible $m,n\ge N_0$ such that
+\[
+ g_L(m)<-C m^\alpha,\qquad g_L(n)>C n^\alpha.
+ \tag{6.35}
+\]
+Thus the normalized admissible samples are cofinally unbounded in both signs.
+
+\item Put
+\[
+ G_L=\int_0^\infty
+ \frac{e^{-t}(2L)-e^{-t/4}\,2(L-t/2)_+}{1-e^{-t}}\,dt
+      -2L(\gamma+\log\pi).
+ \tag{6.37}
+\]
+Whenever $\frac12\log n\ge L+\frac14$,
+\[
+ |g_L(n)-S_L(n)-G_L|
+ \le
+ \frac{4L^2e^L}{1-e^{-1}}\,n^{-1/2}.
+ \tag{6.38}
+\]
+Thus the Gamma removal is an asymptotically constant translation, not merely a bounded
+perturbation.
+
+\item The elementary coefficient
+\[
+ a(n)=(\Lambda(n)-1)\sqrt n
+ \tag{6.39}
+\]
+has, initially for $\Re s>\frac32$, the Dirichlet series
+\[
+ F(s)=\sum_{n\ge1}\frac{a(n)}{n^s}
+ =-\frac{\zeta'}{\zeta}\!\left(s-\frac12\right)
+   -\zeta\!\left(s-\frac12\right).
+ \tag{6.40}
+\]
+The singularity at $s=\frac32$ is removable.  On $\Re s>\frac12$, the nontrivial poles are
+exactly $s=\rho+\frac12$, and
+\[
+ \Res_{s=\rho+1/2}F(s)=-m(\rho).
+ \tag{6.41}
+\]
+Consequently
+\[
+ \mathrm{RH}\Longleftrightarrow F\text{ is holomorphic on }\Re s>1.
+ \tag{6.42}
+\]
+
+\item Define the sharp dyadic prime window
+\[
+ W(n)=\sum_{n/2<k\le n}\frac{\Lambda(k)}{\sqrt k}.
+ \tag{6.43}
+\]
+For every fixed $M\ge1$, the all-$\varepsilon$ bound
+\[
+ W(n)\le2(1-2^{-1/2})\sqrt n+C_\varepsilon n^\varepsilon
+ \qquad(n\ge M^2)
+ \tag{6.44}
+\]
+is equivalent to its restriction to the zero-density set $n=m^2$, $m\ge M$.  In particular,
+the square-restricted bound alone proves RH.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+For \textup{(i)}, suppose first that $g_L(n)\le Cn^\alpha$ eventually.  After absorbing the
+uniform rectangular remainder and the finite prefix, the positive-transverse coefficient has a
+global upper power budget.  The nonnegative Landau coefficient
+\[
+ Cn^\alpha-d_L(n)
+\]
+has Dirichlet continuation
+$C\zeta(s-\alpha)-2\sum_{\Re w>0}A_L(w)^2\zeta(s-w)$.
+Landau's theorem moves its convergence line strictly to the left of $1+\delta_*$, while a shifted
+Xi pole remains there; this is impossible.  Applying the lower-budget argument to
+$d_L(n)+Cn^\alpha$ gives the negative excursion.  Since $g_L$ is the exact sampled Weil
+observable on every admissible tail, both conclusions give \textup{(6.35)} and hence
+\textup{(6.36)}.
+
+For \textup{(ii)}, the positive-time autocorrelation is the sum of the fixed tent
+$2(L-t/2)_+$ and a moving tent centered at $2a-L$.  After polar-square subtraction, the fixed
+tent gives \textup{(6.37)}.  The moving tent is supported in
+$4(a-L)<t<4a$ and is nonnegative.  On this support,
+$e^{-t/4}\le e^{-(a-L)}$ and $1-e^{-t}\ge1-e^{-1}$ when
+$a\ge L+\frac14$.  Its area is at most $4L^2$, whence
+\[
+ |\Gamma_L(a)-G_L|
+ \le\frac{4L^2}{1-e^{-1}}e^{-(a-L)}
+ =\frac{4L^2e^L}{1-e^{-1}}e^{-a}.
+\]
+Taking $a=\frac12\log n$ proves \textup{(6.38)}.
+
+For \textup{(iii)}, expand the two Dirichlet series in their common half-plane.  At
+$t=s-\frac12=1$ the residues of $-\zeta'/\zeta(t)$ and $-\zeta(t)$ are $+1$ and $-1$, so the
+pole cancels.  At a nontrivial zero $\rho$ of multiplicity $m(\rho)$, the logarithmic derivative
+has residue $m(\rho)$ and $\zeta$ is holomorphic, proving \textup{(6.41)}.  There are no other
+poles in $\Re s>\frac12$.  Functional-equation symmetry then turns holomorphy on $\Re s>1$
+into RH.
+
+For \textup{(iv)}, let $N=(\lfloor\sqrt n\rfloor+1)^2$.  The difference between $W(n)$ and
+$W(N)$ is supported on a terminal and an initial interval of total length $O(\sqrt n)$, and the
+elementary bound $\Lambda(k)\le\log k$ gives
+\[
+ W(n)\le W(N)+3\sqrt2\log N.
+ \tag{6.45}
+\]
+For each $\varepsilon>0$, both the square-sample error at exponent $\varepsilon/2$ and the
+logarithmic term in \textup{(6.45)} are $O_\varepsilon(n^\varepsilon)$.  This propagates the
+square estimate to all $n$; the converse is immediate.  The full estimate is the sharp dyadic
+prime-window endpoint criterion, so the square restriction proves RH.
+\end{proof}
+
 At $a=\frac12\log N$, the autocorrelation in \textup{(6.3)} is a sum of fixed and moving tents;
 the moving tent is supported in $Ne^{-2L}<n<N$.  Hence \textup{(6.21)} is a finite
 prime--Gamma--polar source identity on the same arithmetic aperture used by the logarithmic
@@ -1900,7 +2102,7 @@ pointwise identity.  Define
 \[
  W(n)=\sum_{n/2<k\le n}\frac{\Lambda(k)}{\sqrt{k}},
  \qquad
- E(n)=\left(W(n)-2\left(1-\frac1{\sqrt2}\right)\sqrt n\right)_+.
+ E_{\rm dyad}(n)=\left(W(n)-2\left(1-\frac1{\sqrt2}\right)\sqrt n\right)_+.
  \tag{7.28}
 \]
 Also let
@@ -1928,7 +2130,7 @@ Write $c^-(n)=\max\{-c(n),0\}$ for the coefficientwise negative part.
 \label{thm:minimal-sharp-correction}
 The canonical negative channel $c^-$ is admissible and
 \[
- c^-(n)=2E(n).
+ c^-(n)=2E_{\rm dyad}(n).
  \tag{7.32}
 \]
 It is the least admissible correction in pointwise order.  More precisely, every admissible
@@ -1971,11 +2173,12 @@ nonnegative Dirichlet series gives the abscissa inequality in \textup{(7.33)}.  
 itself admissible, the asserted equivalence of abscissa sublevel sets follows in both directions.
 The elementary Chebyshev bound gives
 $W(n)\le C_0\sqrt n$ with $C_0=\sqrt2(\log4+4)$, hence
-$E(n)\le C_0\sqrt n$ and $c^-(n)\le2C_0\sqrt n$; comparison with
+$E_{\rm dyad}(n)\le C_0\sqrt n$ and $c^-(n)\le2C_0\sqrt n$; comparison with
 $\zeta(s-1/2)$ proves \textup{(7.34)}.
 
 If $\sigma_{\rm abs}(a)\le1+\alpha$, then for every $\varepsilon>0$ the series of $a$ converges
-absolutely at $1+\alpha+\varepsilon$.  Since $2E=c^-\le a$, the same holds for $E$.
+absolutely at $1+\alpha+\varepsilon$.  Since $2E_{\rm dyad}=c^-\le a$, the same holds for
+$E_{\rm dyad}$.
 The one-abscissa Landau transfer gives
 $\Re\rho\le\frac12+\alpha+\varepsilon$ for every xi zero; letting
 $\varepsilon\downarrow0$ proves the quantitative assertion.  At $\alpha=0$, functional-equation
@@ -1994,7 +2197,7 @@ Each of the following conditions implies RH.
 \begin{enumerate}[label=\textup{(\roman*)}]
 \item For every $\varepsilon>0$,
 \[
- \sum_{n\ge1}\frac{E(n)}{n^{1+\varepsilon}}<\infty.
+ \sum_{n\ge1}\frac{E_{\rm dyad}(n)}{n^{1+\varepsilon}}<\infty.
  \tag{7.36}
 \]
 \item For every $\varepsilon>0$ there are $C_\varepsilon\ge0$ and $N_\varepsilon$ such that
@@ -2008,7 +2211,7 @@ Each of the following conditions implies RH.
 \end{corollary}
 
 \begin{proof}
-The negative part of the exact sharp prime--polar source coefficient is $2E(n)$.  Under (i),
+The negative part of the exact sharp prime--polar source coefficient is $2E_{\rm dyad}(n)$.  Under (i),
 adding that correction gives a nonnegative Dirichlet series at every abscissa
 $1+\varepsilon$.  The quantitative Landau argument excludes every shifted xi pole with real
 part greater than one, hence proves RH.  For (ii), the proper-prime-power contribution to $W(n)$
@@ -2016,6 +2219,313 @@ is nonnegative and $O(\log n)$, hence $O_\varepsilon(n^\varepsilon)$ for every
 $\varepsilon>0$.  Thus (7.37) lifts to the corresponding all-epsilon bound for $W(n)$, which
 implies (7.36).
 \end{proof}
+
+\section{A contractive endpoint reflection law}
+\label{sec:endpoint-reflection}
+
+We now pass from the cofinal window spectrum to a single completed boundary point.  Set
+\[
+ \Xi_C(z)=\XiR\!\left(\frac12+iz\right).
+ \tag{8.1}
+\]
+Let $\mathcal D_\Xi$ be the multiset of nontrivial Xi zeros, counted with analytic multiplicity,
+and let
+\[
+ \rho^\dagger=1-\overline\rho,\qquad r_\rho=\rho^{-1}.
+ \tag{8.2}
+\]
+The functional equation and Schwarz symmetry make $\rho\mapsto\rho^\dagger$ an involution of
+$\mathcal D_\Xi$.  The classical zero count gives
+$\sum_{\rho\in\mathcal D_\Xi}|r_\rho|^2<\infty$.
+
+Define the Hermitian mass, reflection defect, and completed endpoint curvature by
+\[
+ \begin{aligned}
+ H&=\sum_{\rho\in\mathcal D_\Xi}|r_\rho|^2,\\
+ E&=\sum_{\rho\in\mathcal D_\Xi}
+       |r_\rho-r_{\rho^\dagger}|^2,\\
+ C&=\Re\!\left(-\frac{(\Xi_C'/\Xi_C)(i/2)}{i/2}\right).
+ \end{aligned}
+ \tag{8.3}
+\]
+All three quantities are finite.  The importance of the endpoint $i/2$ is that it maps to
+$s=0$ under \textup{(8.1)}, where completion gives an exact value.
+
+\begin{lemma}[Endpoint polarization identities]
+\label{lem:endpoint-polarization}
+For $\rho=\beta+i\gamma\in\mathcal D_\Xi$, put
+\[
+ c_\rho=\Re\!\left(r_\rho\overline{r_{\rho^\dagger}}\right),\qquad
+ d_\rho=|r_\rho-r_{\rho^\dagger}|^2.
+\]
+Then
+\[
+ c_\rho=
+ \frac{\gamma^2+\beta(1-\beta)}
+ {(\beta^2+\gamma^2)((1-\beta)^2+\gamma^2)}>0,
+ \tag{8.4}
+\]
+\[
+ d_\rho=
+ \frac{(1-2\beta)^2}
+ {(\beta^2+\gamma^2)((1-\beta)^2+\gamma^2)},
+ \tag{8.5}
+\]
+and
+\[
+ C=\sum_\rho c_\rho,\qquad E=2(H-C).
+ \tag{8.6}
+\]
+\end{lemma}
+
+\begin{proof}
+Since
+\[
+ r_\rho\overline{r_{\rho^\dagger}}
+ =\frac1{\rho(1-\rho)},
+\]
+direct multiplication by the conjugate denominator gives \textup{(8.4)}; the critical-strip
+inequalities $0<\beta<1$ and $\gamma\ne0$ give strict positivity.  The same calculation applied
+to $\rho^{-1}-(1-\overline\rho)^{-1}$ gives \textup{(8.5)}.
+
+The centered Hadamard relative-resolvent identity at $z=i/2$ reads
+\[
+ -\frac{(\Xi_C'/\Xi_C)(i/2)}{i/2}
+ =\sum_{\rho\in\mathcal D_\Xi}
+   r_\rho\overline{r_{\rho^\dagger}}.
+ \tag{8.7}
+\]
+The series is absolutely convergent by Cauchy--Schwarz and the reciprocal-square sum.  Taking
+real parts proves the first identity in \textup{(8.6)}.  Finally,
+\[
+ |z-w|^2=|z|^2+|w|^2-2\Re(z\overline w).
+\]
+Summing this identity with $z=r_\rho$, $w=r_{\rho^\dagger}$ and reindexing the second norm sum by
+the involution gives $E=2H-2C$.
+\end{proof}
+
+\begin{proposition}[Prime--Gamma moment germ]
+\label{prop:prime-arch-moment-germ}
+Put
+\[
+ \mathcal A(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2),\qquad
+ s(z)=\frac12+iz,
+\]
+and continue
+\[
+ \mathcal T(z)
+ =-i\left(-\frac{\zeta'}{\zeta}(s(z))
+          -\frac{\mathcal A'}{\mathcal A}(s(z))\right)
+ \tag{8.7a}
+\]
+through the regular center $z=0$.  Then $\mathcal T(0)=0$, the quotient
+$\mathcal M(z)=-\mathcal T(z)/z$ has a removable singularity at zero, and, in a neighborhood of
+zero,
+\[
+ \mathcal M(z)
+ =\sum_{\rho\in\mathcal D_\Xi}
+   \frac{\lambda_\rho}{1-z^2\lambda_\rho}
+ =\sum_{n\ge0}\mu_nz^{2n},
+ \tag{8.7b}
+\]
+where
+\[
+ \lambda_\rho=-\frac4{(2\rho-1)^2},\qquad
+ \mu_n=\sum_\rho\lambda_\rho^{n+1}.
+ \tag{8.7c}
+\]
+Both series are absolutely and locally uniformly convergent on a sufficiently small disk.
+\end{proposition}
+
+\begin{proof}
+On the Euler half-plane, \textup{(8.7a)} is the sum of the continued prime logarithmic flux and
+the fixed archimedean logarithmic derivative.  Since
+$\XiR(s)=\mathcal A(s)\zeta(s)$, the chain rule identifies it with
+$(\Xi_C'/\Xi_C)(z)$.  This identity gives its meromorphic continuation and, because $\Xi_C$ is
+even and nonzero at zero, also gives $\mathcal T(0)=0$ and removability of
+$-\mathcal T(z)/z$.
+
+Pairing the centered Hadamard logarithmic derivative at $z$ and at $0$ gives
+\[
+ -\frac{\mathcal T(z)}z
+ =\sum_\rho\frac{\lambda_\rho}{1-z^2\lambda_\rho}.
+\]
+The reciprocal-square sum is absolutely convergent and the coordinates $\lambda_\rho$ are
+uniformly bounded.  On a disk with
+$|z|^2\sup_\rho|\lambda_\rho|<1$, geometric expansion is dominated by
+$\sum_\rho|\lambda_\rho|$, so Tonelli's theorem gives the second equality in
+\textup{(8.7b)}.
+\end{proof}
+
+\begin{theorem}[Completed endpoint contraction and reflection reconstruction]
+\label{thm:endpoint-reflection-main}
+With the notation above:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item
+\[
+ C=2+\gamma-\log(4\pi),\qquad 0<C<\frac12.
+ \tag{8.8}
+\]
+\item
+\[
+ E\le\frac{C^2}{1-C}<C,\qquad
+ C\le H<\frac32C<\frac34.
+ \tag{8.9}
+\]
+In particular $|r_\rho|<9/10$ for every $\rho$.
+\item Functional-equation reflection is reconstructed pointwise by
+\[
+ r_{\rho^\dagger}
+ =-\frac{\overline{r_\rho}}{1-\overline{r_\rho}}
+ =-\sum_{m\ge1}\overline{r_\rho}^{\,m}.
+ \tag{8.10}
+\]
+If
+\[
+ T_k=\sum_{\rho\in\mathcal D_\Xi}r_\rho^k\qquad(k\ge2),
+ \tag{8.11}
+\]
+then the double series is absolutely convergent and
+\[
+ -\frac{(\Xi_C'/\Xi_C)(i/2)}{i/2}
+ =-\sum_{m\ge0}T_{m+2},\qquad
+ C=-\sum_{m\ge0}\Re T_{m+2}.
+ \tag{8.12}
+\]
+\item Let
+\[
+ \lambda_\rho=-\frac4{(2\rho-1)^2},\qquad
+ \mu_n=\sum_{\rho\in\mathcal D_\Xi}\lambda_\rho^{n+1}.
+ \tag{8.13}
+\]
+The real sequence $(\mu_n)_{n\ge0}$ is the normalized Taylor-moment sequence of the completed
+prime--Gamma source germ.  The following are equivalent:
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item RH;
+\item $E=0$;
+\item $H=C$;
+\item for every $p(X)=\sum_i a_iX^i\in\mathbb Z[X]$,
+\[
+ \sum_{i,j}a_i a_j\mu_{i+j}\ge0;
+ \tag{8.14}
+\]
+\item there are vectors $v_0,v_1,\ldots$ in a complex Hilbert space such that
+\[
+ \langle v_i,v_j\rangle=\mu_{i+j};
+ \tag{8.15}
+\]
+\item there are a bounded self-adjoint operator $A$ and a vector $\Omega$ such that
+\[
+ \langle\Omega,A^n\Omega\rangle=\mu_n\qquad(n\ge0).
+ \tag{8.16}
+\]
+\end{enumerate}
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The Laurent expansion of the completed zeta factor at $s=0$ gives
+\[
+ \XiR(0)=\frac12,\qquad
+ \XiR'(0)=-\frac14\bigl(2+\gamma-\log(4\pi)\bigr).
+ \tag{8.17}
+\]
+Differentiating \textup{(8.1)} at $z=i/2$ proves the value in \textup{(8.8)}.  Positivity follows
+from $C=\sum_\rho c_\rho$ in Lemma~\ref{lem:endpoint-polarization}; the Xi divisor is nonempty
+and every $c_\rho$ is positive.  For the upper bound, the elementary estimates
+$\gamma<2/3$ and $\log(4\pi)>13/6$ give
+\[
+ C<2+\frac23-\frac{13}6=\frac12.
+\]
+
+We next prove the quantitative estimate.  From \textup{(8.4)} and $0<\beta<1$,
+\[
+ \frac1{\gamma^2+1}\le c_\rho\le C.
+ \tag{8.18}
+\]
+Thus $1\le C(\gamma^2+1)$ and
+$\gamma^2\ge(1-C)/C$.  Equations \textup{(8.4)}--\textup{(8.5)} also give
+\[
+ d_\rho\le\frac1{\gamma^2}c_\rho
+ \le\frac{C}{1-C}c_\rho.
+ \tag{8.19}
+\]
+Summation and \textup{(8.6)} yield
+$E\le C^2/(1-C)$.  Since $0<C<1/2$, the multiplier $C/(1-C)$ is strictly less than one, hence
+$E<C$.  The identity $H=C+E/2$ now proves
+$C\le H<3C/2<3/4$.  Since $|r_\rho|^2\le H<3/4<81/100$, the stated uniform disk bound follows.
+
+Algebraically,
+\[
+ r_{\rho^\dagger}
+ =\frac1{1-\overline\rho}
+ =-\frac{\overline{r_\rho}}{1-\overline{r_\rho}}.
+\]
+The disk bound permits geometric expansion, proving \textup{(8.10)}.  After conjugation and
+multiplication by $r_\rho$,
+\[
+ r_\rho\overline{r_{\rho^\dagger}}
+ =-\frac{r_\rho^2}{1-r_\rho}
+ =-\sum_{m\ge0}r_\rho^{m+2}.
+ \tag{8.20}
+\]
+Moreover
+\[
+ \sum_{m,\rho}|r_\rho|^{m+2}
+ \le\sum_\rho|r_\rho|^2\sum_{m\ge0}(9/10)^m<\infty.
+\]
+Tonelli's theorem and \textup{(8.7)} prove both identities in \textup{(8.12)}.
+
+It remains to prove the equivalences.  By definition, $E=0$ if and only if every summand in
+\textup{(8.3)} vanishes.  Inversion then gives
+$\rho=\rho^\dagger$, equivalently $\Re\rho=1/2$; thus
+\textup{(a)} and \textup{(b)} are equivalent.  Lemma~\ref{lem:endpoint-polarization} gives the
+equivalence with \textup{(c)}.
+
+The exact completed source identity identifies its normalized Taylor moments with
+\textup{(8.13)}.  The reciprocal-square trace-Hankel criterion says that
+\textup{(8.14)} holds for all real polynomials if and only if every $\lambda_\rho$ is real and
+positive.  Integer polynomials suffice: at each fixed degree the quadratic form is continuous,
+rational coefficient vectors are dense, and clearing denominators preserves its sign.  For
+completeness, the converse direction of the trace-Hankel criterion is obtained by polynomially
+localizing one nonreal reciprocal-square orbit; the remaining tail is controlled by
+$\sum_\rho|\lambda_\rho|<\infty$.  Positivity would be violated unless every
+$\lambda_\rho\in[0,\infty)$.  Since
+$\lambda_\rho=-4/(2\rho-1)^2$, this is equivalent to
+$2\rho-1$ being purely imaginary, hence to RH.  This proves \textup{(a)}$\Longleftrightarrow$
+\textup{(d)}.
+
+Under RH, $\lambda_\rho>0$.  On
+$\ell^2(\mathcal D_\Xi)$ define
+\[
+ v_n(\rho)=\sqrt{\lambda_\rho}\,\lambda_\rho^n.
+ \tag{8.21}
+\]
+Absolute moment summability gives $v_n\in\ell^2$, and direct summation gives
+$\langle v_i,v_j\rangle=\mu_{i+j}$.  Thus \textup{(a)} implies \textup{(e)}.
+Conversely, \textup{(8.15)} turns the left side of \textup{(8.14)} into
+$\|\sum_i a_iv_i\|^2$, so \textup{(e)} implies \textup{(d)}.
+
+Finally, under RH let $A$ be coordinatewise multiplication by $\lambda_\rho$ and take
+$\Omega=v_0$.  The uniform spectral bound makes $A$ bounded and self-adjoint, and
+\textup{(8.16)} follows.  Conversely, a self-adjoint vacuum realization gives the Gram orbit
+$v_n=A^n\Omega$, because
+$\langle A^i\Omega,A^j\Omega\rangle=\langle\Omega,A^{i+j}\Omega\rangle$.
+This completes the proof.
+\end{proof}
+
+\begin{remark}[What the contraction proves]
+\label{rem:contraction-boundary}
+The estimate \textup{(8.9)} is not another reformulation of $E=0$: it is an unconditional upper
+bound for the complete off-line reflection energy in terms of one explicit completed source
+value.  It reduces the sharp norm factor from the a priori side $H\ge C$ to
+\[
+ 1\le\frac HC<\frac32.
+\]
+The remaining RH-bearing theorem is precisely the saturation $H/C=1$, or equivalently any one
+of the positivity statements in part~\textup{(iv)}.  No iteration of the strict bound alone forces
+saturation.
+\end{remark}
 
 \section{Implications for the Connes route}
 
@@ -2035,6 +2545,24 @@ compression, or a cofinal near-radical section.  If it is claimed to realize the
 constructed here, its scalar channel must agree with \textup{(7.14)}--\textup{(7.17)} and retain
 the multiplicity normalization \textup{(7.11)}.  No claim is made that every possible
 Connes-type architecture factors through this scalar coordinate.
+
+The endpoint theorem gives a second, operator-facing obligation.  The normalized completed
+prime--Gamma moments already have a canonical analytic source germ
+$\mathcal M$ in Proposition~\ref{prop:prime-arch-moment-germ}.  A Connes-type construction proves
+RH if it supplies either a reflection-positive Gram orbit for all of these moments or a bounded
+self-adjoint observable with these exact vacuum moments.  The exact moment identification is
+essential: self-adjointness of a finite or unrelated operator does not identify its moments with
+\textup{(8.7b)}.  The unconditional estimate
+\[
+ E\le\frac{C^2}{1-C}<C
+\]
+shows that the complete reflection mismatch is already quadratically controlled by one
+prime--archimedean source value.  The remaining operator estimate is the saturation $H\le C$,
+which combines with the unconditional $C\le H$ to give equality.  Equivalently, one must prove
+the complete source Hankel inequalities \textup{(8.14)}.  The Neumann expansion
+\textup{(8.12)} makes the required carrier cofinal and all-order: a finite moment prefix cannot
+force saturation.
+
 The sharp-window observable itself already has the exact prime--Gamma realization
 \textup{(6.6)}; the missing operator theorem is therefore a positivity or critical-energy
 estimate for this realized source, not an unproved passage from a discontinuous test function.
@@ -2046,9 +2574,9 @@ a weaker and more arithmetic endpoint.  It is enough, and again necessary, to pr
  \qquad\text{or}\qquad
  \sum_{n\le X}S_{L,N}^-(n)=O_\varepsilon(X^{1+\varepsilon})
  \quad(\varepsilon>0).
- \tag{8.0}
+ \tag{9.1}
 \]
-This is the strongest scalar conclusion of the paper: the final carrier contains only a finite
+This is the strongest cumulative scalar conclusion of the paper: the final carrier contains only a finite
 von Mangoldt autocorrelation and its explicit polar background.  No Gamma term, analytic
 continuation hypothesis, pointwise lower floor, or separately quantified weighted-energy family
 remains in the statement.  The cumulative version is positive and monotone, so it is directly
@@ -2057,7 +2585,7 @@ adapted to trace budgets and cofinal positive operator estimates.
 Theorem~\ref{thm:minimal-sharp-correction} makes the corresponding positivity obligation
 canonical.  If a semilocal construction corrects the signed sharp-prime coefficient $c$ by any
 nonnegative source channel $a$ so that $c+a\ge0$, then it is forced to carry
-$c^-=2E$ pointwise.  Its analytic cost can therefore never be smaller than
+$c^-=2E_{\rm dyad}$ pointwise.  Its analytic cost can therefore never be smaller than
 $\sigma_{\rm abs}(c^-)$.  Within this coefficientwise correction architecture, extra positive
 channels, alternate allocations, and positive operator majorants cannot bypass this payment; at
 best they realize the least correction itself.  The
@@ -2111,17 +2639,17 @@ for every $\delta>0$, that
 \[
   q_L(n)\ge-C_\delta n^\delta
   \qquad(n\ge N,\ n\notin E).
-  \tag{8.1}
+  \tag{9.2}
 \]
 The exact remaining payment is not a density condition but the actual negative-energy law
 \[
  \sum_{\substack{n\ge N\\n\in E}}
  \frac{q_L(n)^-}{n^{1+\varepsilon}}<\infty
  \qquad(\varepsilon>0).
- \tag{8.2}
+ \tag{9.3}
 \]
-Corollary~\ref{cor:exceptional-carrier} says that (8.1)--(8.2) are jointly equivalent to RH.  A convenient
-source-side sufficient condition for (8.2) is the matching amplitude--thickness cost: a global
+Corollary~\ref{cor:exceptional-carrier} says that (9.2)--(9.3) are jointly equivalent to RH.  A convenient
+source-side sufficient condition for (9.3) is the matching amplitude--thickness cost: a global
 estimate $|q_L(n)|=O(n^\beta)$ and
 $\sum_{n\in E}n^{\beta-1-\varepsilon}<\infty$ for every $\varepsilon>0$.  The sharp divisor-side
 choice is $\beta=\delta_*$; the fully unconditional source obligation may use
@@ -2130,7 +2658,7 @@ stronger sufficient special cases.  Alternatively, the same source construction 
 directly that the cutoff-free canonical continuation $\cM_L$ is holomorphic on $\Re s>1$.
 
 This is a cofinal, noncompact carrier condition.  Finite-prime positivity or a finite
-self-adjoint spectrum does not imply the critical source energy or (8.1): the construction must transport the completed
+self-adjoint spectrum does not imply the critical source energy or (9.2): the construction must transport the completed
 Euler--Gamma incidence into the complete actual sequence.  The compatible finite-factorization
 viewpoint is therefore useful only when its cofinal section controls the global remainder in
 (5.3).  Once that happens, Theorem~\ref{thm:tomography} gives a rigid alternative:
@@ -2145,7 +2673,7 @@ mechanisms is not an undirected loss of compactness.  Along the rectangular sect
 coherent escape whose scalar trace values identify the actual completed sequence.  After that
 identification, it can prove a zero-free region by supplying a positive split satisfying the two
 shifted-energy laws, or more generally one positive energy majorant; at the RH endpoint, the
-indicator coordinate is exactly (8.1)--(8.2).  A distinct
+indicator coordinate is exactly (9.2)--(9.3).  A distinct
 sufficient finish is to prove directly that the canonical Mellin channel is holomorphic on the
 whole target half-plane.  The same obligation applies to recent
 finite-prime spectral triples.  Their normalized determinants must carry the completed divisor
@@ -2158,7 +2686,7 @@ $\alpha$.  The mixed energy/subpower and exceptional-set dichotomies are useful 
 The transverse power and half-power thickness laws are explicit outer estimates for this exact
 intrinsic carrier, not independent density scales.
 
-\section{Scope and limitations}
+\section{Exact remaining theorem and limitations}
 
 The results are unconditional.  The inverse-tilted theorem is source-side and recovers the
 complete nontrivial divisor with multiplicity; the rectangular theorem identifies its
@@ -2171,14 +2699,41 @@ $A_{L,N}(X)=O_\varepsilon(X^{1+\varepsilon})$, or an operator theorem forcing an
 statements.  The paper
 therefore does not prove RH.  It reduces the remaining source problem to analytic continuation of
 the actual polar--prime critical-Mellin defect and, independently, to the critical growth of one
-explicit positive cumulative prime--polar mass.  It also gives a universal energy geometry for
-every fixed rectangular Weil window.  Corollary~\ref{cor:explicit-source-endpoints} gives a
+explicit positive cumulative prime--polar mass.
+
+The endpoint reflection theorem makes quantitative progress on a separate exact estimate.  It
+proves
+\[
+ 0\le H-C=\frac E2
+ \le\frac{C^2}{2(1-C)}
+ <\frac C2,
+ \qquad C=2+\gamma-\log(4\pi).
+ \tag{10.1}
+\]
+The sharp remaining inequality is $H\le C$.  Combining it with the unconditional reverse
+inequality yields
+\[
+ \boxed{\begin{gathered}
+ \mathrm{RH}\Longleftrightarrow H\le C\Longleftrightarrow E=0,\\
+ \mathrm{RH}\Longleftrightarrow
+ \sum_{i,j}a_i a_j\mu_{i+j}\ge0
+ \quad\text{for every finitely supported }(a_i)\subset\mathbb Z.
+ \end{gathered}}
+ \tag{10.2}
+\]
+Thus the work does not merely rename the missing estimate: it proves the strict source-controlled
+neighborhood \textup{(10.1)}, identifies its equality case, and reconstructs the reflected
+endpoint from the absolutely convergent all-order traces \textup{(8.12)}.  What remains is a
+source-side saturation or positivity mechanism; the contraction by itself cannot supply it.
+
+The paper also gives a universal energy geometry for every fixed rectangular Weil window.
+Corollary~\ref{cor:explicit-source-endpoints} gives a
 fully arithmetic sufficient endpoint: prove the all-epsilon positive-excess energy (7.36), or the
 stronger prime-only estimate (7.37).  Theorem~\ref{thm:minimal-sharp-correction} shows that the
-first condition is not an arbitrary choice of majorant: $2E$ is the pointwise least nonnegative
+first condition is not an arbitrary choice of majorant: $2E_{\rm dyad}$ is the pointwise least nonnegative
 correction of the exact signed source, and its abscissa is the least attainable correction
 abscissa.  What is not established is the critical estimate
-$\sigma_{\rm abs}(2E)\le1$ itself.
+$\sigma_{\rm abs}(2E_{\rm dyad})\le1$ itself.
 
 The rectangle is deliberately nonsmooth.  We avoid an inadmissible appeal to the classical smooth
 test space by defining $Q_L$ through the absolutely convergent xi divisor polarization.
@@ -2211,10 +2766,13 @@ spectrum, the Gamma-free finite prime--polar abscissa criterion, its exact cumul
 negative-mass power spectrum, universal negative-channel abscissa, exact
 finite positive-channel non-dilution, summable-family aggregate conservation, quantitative
 source--divisor--energy equivalence, optimal sharp-source correction, thickness corollaries, and
-multiplicity-exact meromorphic tomography of the actual Weil observable.  The elementary
+multiplicity-exact meromorphic tomography of the actual Weil observable.  The second contribution
+is the explicit completed endpoint value, the quadratic reflection-defect estimate
+\textup{(8.9)}, the all-order M\"obius--Neumann reconstruction, and the exact
+reflection-positive/self-adjoint saturation theorem.  The elementary
 cumulative-mass/abscissa lemma and least-negative-part order lemma are not claimed as independent
 novelty; their roles are to expose the exact transverse source exponent and to prove that
-the explicit arithmetic channel $2E$ is the unavoidable positive payment in this Connes/Landau
+the explicit arithmetic channel $2E_{\rm dyad}$ is the unavoidable positive payment in this Connes/Landau
 architecture.
 
 \section*{Author contributions and accountability}

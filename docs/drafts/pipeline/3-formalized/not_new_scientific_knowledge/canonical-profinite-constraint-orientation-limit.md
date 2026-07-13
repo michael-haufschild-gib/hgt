@@ -18,9 +18,10 @@ cofinal object.  The theorem contains two logically different assertions:
 1. the finite combinatorial systems have a canonical inverse limit;
 2. the fixed positive prime-log source realizes every point of the orientation limit analytically.
 
-It does not assert that the complete infinite orientation family preserves the same embedded
-differential field.  An infinite residue sign change is not a rational gauge, so finite-chamber
-field invariance cannot be passed to the limit.
+Infinite residue sign changes need not preserve the raw algebraic differential field by the finite
+rational-gauge argument.  The completed statement is now exact: every infinite orientation lies
+in the same compact-open completed rational Cauchy ring, and the stronger summable-residue law
+makes this ring independent of the source gauge as well.
 
 ## Canonical finite system
 
@@ -70,14 +71,15 @@ g_ε is Herglotz on the upper half-plane  iff  ε(p)=+1 for every p.  (3)
 The forward implication follows because any negative residue dominates the regular complement
 near its pole.  Thus positivity selects the compatible all-positive section intrinsically.
 
-## Boundary of the theorem
+## Completed algebra over the full fiber
 
-Finite sign changes are rational base-field gauges and retain the fixed differential field.
-Infinite sign changes give a
-normally convergent meromorphic correction with infinitely many poles and need not lie in
-`ℂ(z)`.  Consequently the canonical analytic inverse limit exists, but equality of the embedded
-differential fields at all its points is a separate conjecture requiring a sign-uniform
-pole-rigidity theorem.
+Finite sign changes are rational base-field gauges and retain the fixed raw differential field.
+For arbitrary infinite signs `ε,δ`, finite rational transitions from `g_ε` toward `g_δ`
+converge locally uniformly to `g_δ`.  Therefore all infinite orientations generate the same
+compact-open completed rational Cauchy ring once the common prime atoms and constants are included.
+The stronger summable-residue theorem gives the same completion for all bounded phase gauges, not
+only for different signs of one fixed source.  Raw differential-field equality and completed-ring
+equality remain correctly distinguished.
 
 ## Gates
 
@@ -87,7 +89,9 @@ pole-rigidity theorem.
 - [x] finite-stage compatibility: the infinite carrier restricts exactly to every finite chamber
 - [x] pole law: every prime-log pole is simple and has its prescribed nonzero signed mass
 - [x] Herglotz law: the all-positive sequence is the unique positive point
-- [x] strong product claim excluded from the theorem
+- [x] raw infinite differential-field claim excluded from the theorem
+- [x] exact compact-open completed-ring invariance proved over the full orientation fiber
+- [x] completed-ring invariance strengthened to the full source--orientation product
 - [x] novelty audit: canonical completion and analytic bridge, not a new HT-independence mechanism
 - [x] publication theorem revised to distinguish inverse-limit existence from strong field invariance
 
@@ -110,6 +114,8 @@ Thus Herglotz positivity is equivalent to the all-positive Boolean sequence.
 - `hasSimplePoleAt_universalPrimeOrientationLimit`
 - `universalPrimeOrientationLimit_nonneg_iff_allPositive`
 - `canonicalConstraintOrientationLimit_primeCarrier_nonneg_iff_allPositive`
+- `summablePrimeCauchyCompletedRing_eq`
+- `UniversalFacetSource.completedOrientationRing_eq`
 
 The implementations are in `CanonicalConstraintOrientationLimit.lean` and
 `UniversalPrimeOrientationLimit.lean`.
@@ -124,3 +130,6 @@ The implementations are in `CanonicalConstraintOrientationLimit.lean` and
 - 2026-07-13 — replaced the manuscript's auxiliary finite-only orientation with intrinsic
   prime-residue chambers, added the canonical profinite completion theorem and proof, and stated
   the infinite same-field boundary explicitly.
+- 2026-07-13 — resolved the analytic boundary at the correct completed level: all summable residue
+  carriers, hence all phase sources and infinite orientations, have one compact-open completed
+  rational Cauchy ring.

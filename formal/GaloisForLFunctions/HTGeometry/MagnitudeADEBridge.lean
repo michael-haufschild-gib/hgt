@@ -194,4 +194,21 @@ theorem coeff_aeval_eq_full_pair_sum (n N : ℕ) (F : ℂ⟦X⟧) (Q : MvPolynom
   · rw [prod_jet_eq_flatOrder, coeff_prod_iterate_deriv]
   · rfl
 
+/-- ADE evaluation coefficient over the contributing monomials (`X`-degree `≤ N`), each an
+antidiagonal convolution — the filtered atom form. -/
+theorem coeff_aeval_eq_filtered_pair_sum (n N : ℕ) (F : ℂ⟦X⟧) (Q : MvPolynomial (Fin (n + 2)) ℂ) :
+    (coeff N) (aeval (formalJets n F) Q)
+      = ∑ m ∈ Q.support.filter (fun m => m 0 ≤ N),
+          ∑ l ∈ (Finset.univ : Finset (Fin (∑ j : Fin (n + 1), m j.succ))).finsuppAntidiag
+              (N - m 0),
+            MvPolynomial.coeff m Q *
+              ∏ t, (coeff (l t + flatOrder (fun j => m j.succ) t)) F
+                * (((l t + flatOrder (fun j => m j.succ) t).descFactorial
+                    (flatOrder (fun j => m j.succ) t) : ℂ)) := by
+  rw [coeff_aeval_eq_full_pair_sum]
+  simp only [mul_ite, mul_zero]
+  rw [← Finset.sum_filter]
+  refine Finset.sum_congr rfl fun m _ => ?_
+  rw [Finset.mul_sum]
+
 end GaloisForLFunctions

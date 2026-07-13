@@ -98,4 +98,29 @@ theorem tent_twoWidth_divisor_recovery {L₁ L₂ : ℝ} (hL₁ : 0 < L₁) (hL�
   · exact Or.inl (PcalObservable_no_limit_of_amplitude_ne L₁ hL₁.le hζρ hρ1 hρ0 hρhalf hA)
   · exact Or.inr (PcalObservable_no_limit_of_amplitude_ne L₂ hL₂.le hζρ hρ1 hρ0 hρhalf hA)
 
+/-- **Sharp-window two-width complete divisor recovery.**  For irrationally related widths `L₁, L₂`,
+every nontrivial zeta zero `ρ` (`ρ ≠ 1`, `ρ ≠ ½`) — critical-line ones included — is a genuine pole of at
+least one of the two renormalized sharp observables `polarPrimeObservable (4α) (-2·A_L(s-1))` at
+`s = ρ+½`.  The sharp window `A_L(s-1)` is linear, so its poles are simple with residue `∝ A_L(ρ-½)`;
+incommensurable widths never share an amplitude zero (`sharpAmplitude_not_both_zero`), so the joint pole
+divisor is the entire nontrivial zeta divisor.  Cleaner than the tent version: the closed meromorphic
+form needs no error-term holomorphy, hence no strip restriction (`Re ρ > 0` not required). -/
+theorem sharpObservable_twoWidth_divisor_recovery {L₁ L₂ : ℝ} (hL₁ : 0 < L₁) (hL₂ : 0 < L₂)
+    (hirr : Irrational (L₁ / L₂)) {ρ : ℂ} (hζρ : riemannZeta ρ = 0) (hρ1 : ρ ≠ 1) (hρhalf : ρ ≠ 1 / 2) :
+    (¬ ∃ M : ℂ, Tendsto (polarPrimeObservable (4 * (1 - (Real.exp (-(L₁ / 2)) : ℂ)))
+        (fun s => -2 * rectangularWindowAmplitude L₁ (s - 1))) (𝓝[≠] (ρ + 1 / 2)) (𝓝 M))
+      ∨ (¬ ∃ M : ℂ, Tendsto (polarPrimeObservable (4 * (1 - (Real.exp (-(L₂ / 2)) : ℂ)))
+        (fun s => -2 * rectangularWindowAmplitude L₂ (s - 1))) (𝓝[≠] (ρ + 1 / 2)) (𝓝 M)) := by
+  have hw : ρ - 1 / 2 ≠ 0 := sub_ne_zero.mpr hρhalf
+  have hWcont : ∀ L : ℝ, Continuous (fun s => -2 * rectangularWindowAmplitude L (s - 1)) := fun L =>
+    (((rectangularWindowAmplitude_differentiable L).comp
+      (differentiable_id.sub_const 1)).const_mul (-2)).continuous
+  rcases sharpAmplitude_not_both_zero hL₁ hL₂ hirr hw with hA | hA
+  · refine Or.inl (polarPrimeObservable_no_limit _ _ (hWcont L₁) hζρ hρ1 ?_)
+    show -2 * rectangularWindowAmplitude L₁ (ρ + 1 / 2 - 1) ≠ 0
+    rw [show ρ + 1 / 2 - 1 = ρ - 1 / 2 by ring]; exact mul_ne_zero (by norm_num) hA
+  · refine Or.inr (polarPrimeObservable_no_limit _ _ (hWcont L₂) hζρ hρ1 ?_)
+    show -2 * rectangularWindowAmplitude L₂ (ρ + 1 / 2 - 1) ≠ 0
+    rw [show ρ + 1 / 2 - 1 = ρ - 1 / 2 by ring]; exact mul_ne_zero (by norm_num) hA
+
 end RHTower

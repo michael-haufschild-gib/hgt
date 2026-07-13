@@ -355,3 +355,25 @@ defines `vonMangoldtPrimeChannelComplex s = -ζ'(s+1)/ζ(s+1)` and proves, axiom
 (holomorphic on the whole right half-plane `Re s > 0`).  This is the Euler-region holomorphic complex
 continuation of the prime channel; the remaining open piece of the "full complex continuation" is the
 distributional/autocorrelation Stieltjes continuation across `Re s = 0`.
+
+CARRIER LAPLACE CLOSED FORM (22)/(25) — FORMALIZED (`RHTower/PolarPrimeChannelContinuation.lean`,
+axiom-clean).  In the shifted coordinate `s` (`z = s+½`):
+- `criticalMellinDefectLaplaceChannel_eq {s}(0<s)` — the real identity `(22)`:
+  `criticalMellinDefectLaplaceChannel s = 1/s + 1/(s+1) + ζ'/ζ(s+1)`, combining the already-proven
+  `continuousPolarLaplaceChannel_eq` (= 1/s+1/(s+1), Laplace of `2cosh(h/2)`) and
+  `vonMangoldtPrimeLaplaceChannel_eq_logDeriv` (= -ζ'/ζ(s+1)).  This is the completed logarithmic source;
+  the `ζ'/ζ` term is the divisor-sensitive pole data a PNT-main-term factorization would delete.
+- `criticalMellinDefectChannelComplex s = 1/s + 1/(s+1) - vonMangoldtPrimeChannelComplex s` — complex lift,
+  agrees with the real channel on `s>0` (`_eq_channel`), holomorphic on `Re s>0`
+  (`_differentiableAt`, `_differentiableOn`), reusing the proven `vonMangoldtPrimeChannelComplex` holomorphy.
+This is the Euler-region ("full complex continuation") part of the card's open piece; continuation past
+`Re s = 0` (the distributional/autocorrelation Stieltjes layer) remains the open frontier.
+
+BOUNDARY REGULARITY AT `Re s = 0` (`z = ½`) — FORMALIZED (axiom-clean).
+`criticalMellinDefectChannelComplex_regular_at_zero` — the carrier channel has a FINITE LIMIT at the
+critical-line boundary `s = 0`: though `1/s` and `ζ'/ζ(s+1)` each blow up (ζ's pole at 1), they cancel.
+Off `0` the carrier equals `1/(s+1) + logDeriv G(s+1)` (`G = zetaResidueUnit`, the analytic `(s-1)ζ`),
+continuous across `0` with value `1 + logDeriv G(1)`.  This is the SAME polar–prime cancellation as the
+window cards' `s = 3/2` (via `logDeriv_zeta_eq`), now at the CCM carrier's critical-line edge: the
+Euler-region continuation reaches `Re s = 0` regularly, so the open across-boundary Stieltjes layer only
+has to bridge from a finite boundary value, not a singularity.

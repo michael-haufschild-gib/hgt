@@ -105,8 +105,7 @@ theorem primeArchSourceTraceHankelIntNonnegative_of_thermalEvenGapMoments
       HTGeometry.momentFunctional
         (HTGeometry.thermalEvenGapMoment intensity energy)
           ((p.map (Int.castRingHom ℝ)) ^ 2) by
-    apply HTGeometry.momentFunctional_congr
-    exact hmom]
+    exact HTGeometry.momentFunctional_congr hmom _]
   exact HTGeometry.momentFunctional_thermalEvenGapMoment_sq_nonneg
     intensity energy hintensity (p.map (Int.castRingHom ℝ))
 
@@ -189,6 +188,7 @@ theorem primeArchSourceTraceHankelIntNonnegative_of_finiteThermalKrylov_tendsto
     sequenceTraceHankelNonnegative_of_finiteThermalKrylov_tendsto m _ hm hconv
   intro p
   rw [re_primeArchSourceTraceHankel_eq_momentFunctional_sq]
+  rw [← sequenceTraceHankel_eq_momentFunctional]
   exact hseq (p.map (Int.castRingHom ℝ))
 
 /-- **Thermodynamic-limit thermal Krylov RH capstone.**  The remaining input is the source-defined

@@ -225,6 +225,26 @@ theorem exists_tendsto_add_continuousAt_iff {f C : ℂ → ℂ} {a : ℂ} (hC : 
   · rintro ⟨M, hM⟩
     exact ⟨M + C a, hM.add hCt⟩
 
+/-- **General genuine pole of the renormalized observable.**  At a zeta zero `ρ ≠ 1`, if the window `W`
+is continuous with `W(ρ+½) ≠ 0`, then `polarPrimeObservable κ W` has no finite limit at `s = ρ+½`: the
+polar counterterm `κ·ζ(s-½)` is continuous there (`ρ ≠ 1`), so the prime channel's simple pole survives.
+This closed meromorphic form carries no error term, so the statement holds on the whole plane with no
+strip restriction — the detection primitive for two-width divisor recovery. -/
+theorem polarPrimeObservable_no_limit (κ : ℂ) (W : ℂ → ℂ) (hWcont : Continuous W) {ρ : ℂ}
+    (hζρ : riemannZeta ρ = 0) (hρ1 : ρ ≠ 1) (hWne : W (ρ + 1 / 2) ≠ 0) :
+    ¬ ∃ M : ℂ, Tendsto (polarPrimeObservable κ W) (𝓝[≠] (ρ + 1 / 2)) (𝓝 M) := by
+  have hζshift : ContinuousAt (fun s => κ * riemannZeta (s - 1 / 2)) (ρ + 1 / 2) := by
+    have hsd : DifferentiableAt ℂ (fun s : ℂ => s - 1 / 2) (ρ + 1 / 2) := differentiableAt_id.sub_const _
+    have hζρd : DifferentiableAt ℂ riemannZeta (ρ + 1 / 2 - 1 / 2) := by
+      rw [show ρ + 1 / 2 - 1 / 2 = ρ by ring]; exact differentiableAt_riemannZeta hρ1
+    exact continuousAt_const.mul (hζρd.comp (ρ + 1 / 2) hsd).continuousAt
+  have hwin_no := windowObservable_no_limit W hρ1 hζρ hWcont.continuousAt hWne
+  intro hlim
+  rw [show (polarPrimeObservable κ W)
+      = (fun s => windowObservable W s + κ * riemannZeta (s - 1 / 2))
+      from funext (fun s => by simp only [polarPrimeObservable]; ring)] at hlim
+  exact hwin_no ((exists_tendsto_add_continuousAt_iff hζshift).mp hlim)
+
 /-- The three terms of `Pcal_L` `(22)` that are holomorphic throughout `Re s > 1`: the two lower polar
 `ζ`-terms `16αβ·ζ(s) + 8β²·ζ(s+½)` and the holomorphic Riemann-sum error `-2·H_L(s)`.  Here
 `α = 1 - e^{-L/2}`, `β = e^{L/2} - 1`. -/

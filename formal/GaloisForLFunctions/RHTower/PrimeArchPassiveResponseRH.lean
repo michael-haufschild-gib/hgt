@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FinitePassiveResponse
-import GaloisForLFunctions.RHTower.PrimeArchAntiHerglotzGate
+import GaloisForLFunctions.RHTower.XiWeilOneCauchyGate
 
 /-!
 # Passive-response value producers for the prime--archimedean anti-Herglotz gate
@@ -34,6 +34,21 @@ theorem continuedPrimeArchUpperAntiHerglotz_of_finitePassiveResponse
   rw [hvalue z hzpos hzhalf hzeta]
   exact HTGeometry.finitePassiveResponse_im_nonpos
     intensity frequency hintensity hzpos
+
+/-- The same passive source representation directly supplies the one-Cauchy divided-difference
+gate used by the Weil and Hedenmalm consumers. -/
+theorem continuedPrimeArchUpperCauchyDiagonalNonnegative_of_finitePassiveResponse
+    {α : Type*} [Fintype α]
+    (intensity frequency : α → ℝ)
+    (hintensity : ∀ a, 0 ≤ intensity a)
+    (hvalue : ∀ z : ℂ, 0 < z.im → z.im < 1 / 2 →
+      riemannZeta (1 / 2 + z * Complex.I) ≠ 0 →
+        continuedPrimeArchSourceRelativeTrace z =
+          HTGeometry.finitePassiveResponse intensity frequency z) :
+    ContinuedPrimeArchUpperCauchyDiagonalNonnegative :=
+  continuedPrimeArchUpperCauchyDiagonalNonnegative_iff_antiHerglotz.mpr
+    (continuedPrimeArchUpperAntiHerglotz_of_finitePassiveResponse
+      intensity frequency hintensity hvalue)
 
 /-- A finite passive-response realization of the continued source proves RH. -/
 theorem riemannHypothesis_of_finitePassiveResponse
@@ -74,6 +89,22 @@ theorem continuedPrimeArchUpperAntiHerglotz_of_finiteKMSWightmanResponse_tendsto
     (Filter.Eventually.of_forall fun N ↦
       HTGeometry.finiteKMSWightmanTransitionPassiveResponse_im_nonpos
         (β N) (energy N) (amplitude N) hzpos)
+
+/-- The pointwise thermodynamic KMS limit also supplies the source one-Cauchy gate. -/
+theorem continuedPrimeArchUpperCauchyDiagonalNonnegative_of_finiteKMSWightmanResponse_tendsto
+    (d : ℕ → ℕ) (β : ℕ → ℝ)
+    (energy : ∀ N, Fin (d N + 1) → ℝ)
+    (amplitude : ∀ N, Fin (d N + 1) → Fin (d N + 1) → ℂ)
+    (hconv : ∀ z : ℂ, 0 < z.im → z.im < 1 / 2 →
+      riemannZeta (1 / 2 + z * Complex.I) ≠ 0 →
+        Tendsto (fun N ↦ HTGeometry.finiteTransitionPassiveResponse
+          (HTGeometry.finiteKMSWightmanTransitionIntensity
+            (β N) (energy N) (amplitude N)) (energy N) z)
+          atTop (nhds (continuedPrimeArchSourceRelativeTrace z))) :
+    ContinuedPrimeArchUpperCauchyDiagonalNonnegative :=
+  continuedPrimeArchUpperCauchyDiagonalNonnegative_iff_antiHerglotz.mpr
+    (continuedPrimeArchUpperAntiHerglotz_of_finiteKMSWightmanResponse_tendsto
+      d β energy amplitude hconv)
 
 /-- **Thermodynamic passive-response RH capstone.**  Canonical KMS positivity is structural; the
 only remaining input is pointwise convergence of the source-defined responses to the continued

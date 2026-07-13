@@ -24,8 +24,11 @@
 \newcommand{\N}{\mathbb N}
 \newcommand{\HH}{\mathbb H}
 \newcommand{\cF}{\mathcal F}
+\newcommand{\cG}{\mathcal G}
+\newcommand{\cA}{\mathcal A}
 \newcommand{\cK}{\mathcal K}
 \newcommand{\cM}{\mathcal M}
+\newcommand{\cR}{\mathcal R}
 \newcommand{\cU}{\mathcal U}
 \newcommand{\Fin}{\operatorname{Fin}}
 \newcommand{\Fac}{\operatorname{Fac}}
@@ -46,23 +49,25 @@ and Its Canonical Profinite Completion}
 \maketitle
 
 \begin{abstract}
-We construct one meromorphic Herglotz function whose countable translation palette is
-differentially algebraically independent over $\C(z)$ and which simultaneously supports every
-finite localized Stanley--Reisner differential matroid.  Over this single embedded differential
-field we then construct, for every finite set $S$, a cube of $2^{\card S}$ meromorphic
-representatives.  All vertices generate exactly the same embedded differential field and realize
-exactly the same finite constraint geometries.  Nevertheless, the Herglotz condition selects one
-and only one vertex.  The number of reversed Cauchy atoms is the graph distance from that positive
-vertex and can be prescribed arbitrarily.  Thus finite nonlinear differential constraint geometry
-and finite Herglotz orientation occur as independent coordinates of a Cartesian product carried
-by one hypertranscendental field.  The resulting pointing theorem identifies positivity as extra
-geometric data: it is not recoverable from the unpointed differential field together with any
-finite sewn constraint matroid.
-The finite products assemble canonically: their inverse limit is the product of the space of
-abstract countable simplicial complexes with the prime-labelled Cantor cube.  Every point of the
-orientation factor has a normally convergent signed prime-log Cauchy representative, and Herglotz
-positivity selects the all-positive sequence uniquely.  Finite chambers remain in one embedded
-differential field; no such field-equality assertion is made for infinitely many sign reversals.
+We identify a canonical dense residual phase of positive prime-log Cauchy sources whose fixed
+countable translation palette is differentially algebraically independent over $\C(z)$.  Every
+source in this phase simultaneously supports every finite localized Stanley--Reisner differential
+matroid.  For every finite prime set, its residue orientations form a cube of meromorphic
+representatives: all vertices generate the same embedded differential field and realize the same
+finite constraint geometries, while the Herglotz condition selects exactly one vertex.  Thus
+finite nonlinear differential constraint geometry and finite Herglotz orientation are independent
+coordinates.
+
+The finite products have a canonical inverse limit, the product of the space of abstract
+countable simplicial complexes with the prime-labelled Cantor cube.  Every orientation sequence
+has a normally convergent signed Cauchy representative, and positivity selects the all-positive
+sequence uniquely.  We further prove a summable-residue gauge law.  For any two absolutely
+summable residue assignments on the fixed prime-log divisor, each carrier is a compact-open limit
+of finite rational residue changes of the other.  Consequently the compact-open closed rational
+Cauchy ring, and hence its closed differential hull, is independent simultaneously of the source
+chosen in the residual phase and of every finite or infinite orientation.  The canonical objects
+are therefore the residual source phase and a single completed source--orientation algebra; no
+distinguished Baire-generic formula is required.
 \end{abstract}
 
 \section{Introduction}
@@ -83,38 +88,40 @@ Nevanlinna functions have an extensive theory of their own \cite{HassiWietsma201
 parent structures by itself asks whether arbitrary finite constraint geometry and analytic
 orientation can vary independently inside one fixed differential field.
 
-The construction below answers that question.  The source is a positive prime-log Cauchy
-transform
+The construction below answers that question without selecting a privileged generic source.  For
+every bounded gauge $u$ consider the positive prime-log Cauchy transform
 \begin{equation}\label{eq:source-intro}
-  g_*(z)=\sum_{p\ \mathrm{prime}}
-    \frac{2^{-p}e^{u_*(p)}}{\log p-z},
+  g_u(z)=\sum_{p\ \mathrm{prime}}
+    \frac{2^{-p}e^{u(p)}}{\log p-z}.
 \end{equation}
-where $u_*\colon\{p:p\text{ prime}\}\to\R$ is bounded and is chosen once.  A countable,
-collision-free palette of translates of $g_*$ is differentially algebraically independent over
-$\C(z)$.  The palette contains the complete facet--Laurent orbit required by every finite
-simplicial complex.  Facet restriction then realizes the exact linear matroid of every localized
-Stanley--Reisner module as the nonlinear differential matroid of analytic outputs.
+The gauges for which one fixed collision-free palette of translates is differentially
+algebraically independent form an intrinsically defined dense residual set $\cG_{\cU}$.  Every
+$u\in\cG_{\cU}$ carries the full construction.  The palette contains the complete
+facet--Laurent orbit required by every finite simplicial complex.  Facet restriction then realizes
+the exact linear matroid of every localized Stanley--Reisner module as the nonlinear differential
+matroid of analytic outputs.
 
-The orientation coordinate is attached intrinsically to the prime-log carrier.  Write
-$\lambda_p=\log p$ and $w_p=2^{-p}e^{u_*(p)}>0$.  For finite prime sets
+The orientation coordinate is attached intrinsically to the prime-log carrier.  Fix an arbitrary
+$u\in\cG_{\cU}$, write $\lambda_p=\log p$ and $w_p(u)=2^{-p}e^{u(p)}>0$.  For finite prime sets
 $J\subseteq S\subset\mathcal P$, set
 \begin{equation}\label{eq:chamber-intro}
-  g_{S,J}(z)=g_*(z)-2\sum_{p\in J}\frac{w_p}{\lambda_p-z}.
+  g_{u;S,J}(z)=g_u(z)-2\sum_{p\in J}\frac{w_p(u)}{\lambda_p-z}.
 \end{equation}
-Thus the Cauchy mass at $\lambda_p$ is $-w_p$ for $p\in J$ and $+w_p$ otherwise; $S$ records the
+Thus the Cauchy mass at $\lambda_p$ is $-w_p(u)$ for $p\in J$ and $+w_p(u)$ otherwise; $S$ records the
 finite set of coordinates allowed to vary.  The correction is rational, so every finite chamber
 generates the same embedded differential field.
 The same rational-gauge invariance preserves the complete translated differential matroid.  In
 contrast, a negative atom dominates the regular background near its own pole.  Consequently
-$g_{S,J}$ is Herglotz exactly when $J=\varnothing$.
+$g_{u;S,J}$ is Herglotz exactly when $J=\varnothing$.
 
 The main theorem therefore has the quantifier order
 \[
-  \exists\,g_*\quad\forall\,\Delta\quad\forall\,S
+  \forall\,u\in\cG_{\cU}\quad\forall\,\Delta\quad\forall\,S
   \quad\forall\,J\subseteq S,
 \]
-with $g_*$, its pole carrier, its translation palette, and its embedded differential field fixed
-before any finite simplicial complex or orientation cube is chosen.  The resulting geometry is
+with the source phase and palette fixed canonically before any finite simplicial complex or
+orientation cube is chosen.  For each $u$, its embedded differential field is fixed throughout
+the corresponding fiber.  The resulting geometry is
 the product
 \[
   \{\text{finite localized Stanley--Reisner constraint matroids}\}
@@ -122,15 +129,17 @@ the product
   \{\text{finite oriented cubes}\}.
 \]
 The Herglotz cone provides a distinguished pointing of the second factor.  The finite restriction
-maps have a canonical inverse limit, and the summability already built into the source realizes
-its complete orientation factor analytically.
+maps have a canonical inverse limit, and summability realizes its complete orientation factor
+analytically.  At the completed level, the source coordinate disappears as well: every pair of
+summable residue carriers are connected by a compact-open limit of finite rational gauges.
 
 Section~\ref{sec:upper} introduces the upper-end differential field.  Sections~\ref{sec:source}
-and \ref{sec:palette} construct the single universal source and palette.  Section~\ref{sec:gauge}
+and \ref{sec:palette} construct the universal source phase and palette.  Section~\ref{sec:gauge}
 proves rational-gauge invariance.  Section~\ref{sec:orientation} proves the exact Herglotz chamber
 law.  Sections~\ref{sec:sr} and \ref{sec:product} establish the constraint realization and the
-product theorem.  Section~\ref{sec:limit} identifies the canonical inverse limit and its analytic
-pointing.  The final section isolates the consequence and its precise scope.
+product theorem.  Section~\ref{sec:limit} identifies the canonical inverse limit, its analytic
+pointing, and the source--orientation invariant compact-open completion.  The final section
+isolates the consequence and its precise scope.
 
 \section{Upper-end germs and differential independence}\label{sec:upper}
 
@@ -263,7 +272,7 @@ The determinant in Lemma~\ref{lem:pattern} excludes all complex coefficient vect
 given monomial support and degree bound at once.  This is what permits a countable Baire argument
 despite the uncountability of $\C$.
 
-\begin{theorem}[Countable-palette differential freeness]\label{thm:source}
+\begin{theorem}[Countable-palette source phase]\label{thm:source}
 Let $\Gamma$ be countable and let $s\colon\Gamma\to\C$ be injective.  There is a dense residual set
 of gauges $u\in\mathcal B$ such that
 \begin{equation}\label{eq:palette-di}
@@ -319,13 +328,20 @@ $\sum_j(m_j-n_j)\omega_j=0$, and rational linear independence gives $m=n$.  The 
 arguments prove injectivity of \eqref{eq:facet-embed}.
 \end{proof}
 
-Apply Theorem~\ref{thm:source} to this fixed palette and choose one resulting gauge $u_*$.  From
-now on, set $g_*=g_{u_*}$ and never choose another gauge.  Define
+Apply Theorem~\ref{thm:source} to this fixed palette and define its intrinsic source phase
+\begin{equation}\label{eq:source-phase}
+  \cG_{\cU}=\left\{u\in\mathcal B:
+  \bigl(g_u(z+s(q))\bigr)_{q\in\cU}
+  \text{ is differentially algebraically independent over }\C(z)\right\}.
+\end{equation}
+This set is dense residual.  No point of it is selected.  For an arbitrary $u\in\cG_{\cU}$,
+define
 \begin{equation}\label{eq:fixed-field}
-  \cF_*=\C(z)\left\langle g_*(z+s(q)):q\in\cU\right\rangle\subseteq\cK.
+  \cF_u=\C(z)\left\langle g_u(z+s(q)):q\in\cU\right\rangle\subseteq\cK.
 \end{equation}
 The complete palette in \eqref{eq:fixed-field} is differentially algebraically independent over
-$\C(z)$, and $g_*$ is Herglotz on $\HH_0$.
+$\C(z)$, and $g_u$ is Herglotz on $\HH_0$.  All subsequent assertions are uniform in
+$u\in\cG_{\cU}$.
 
 \section{Rational gauges do not change the field}\label{sec:gauge}
 
@@ -357,7 +373,7 @@ of \eqref{eq:field-equality-general} contains the generators of the other.
 
 \section{The oriented Herglotz cube}\label{sec:orientation}
 
-For finite prime sets $J\subseteq S\subset\mathcal P$, define $g_{S,J}$ by
+Fix $u\in\cG_{\cU}$.  For finite prime sets $J\subseteq S\subset\mathcal P$, define $g_{u;S,J}$ by
 \eqref{eq:chamber-intro}.  The active coordinate set $S$ specifies a cube and $J$ is its set of
 reversed prime masses.  Define the orientation index
 \begin{equation}\label{eq:index}
@@ -367,7 +383,7 @@ reversed prime masses.  Define the orientation index
 \begin{theorem}[Exact Herglotz chamber law]\label{thm:herglotz}
 For arbitrary finite $J\subseteq S\subset\mathcal P$, the following are equivalent:
 \begin{enumerate}[label=(\roman*)]
-  \item $\im g_{S,J}(z)\geq 0$ for every $z\in\HH_0$;
+  \item $\im g_{u;S,J}(z)\geq 0$ for every $z\in\HH_0$;
   \item $J=\varnothing$;
   \item $\kappa(S,J)=0$.
 \end{enumerate}
@@ -377,7 +393,7 @@ distance from its all-positive vertex.
 \end{theorem}
 
 \begin{proof}
-If $J=\varnothing$, then $g_{S,J}=g_*$, which is Herglotz by
+If $J=\varnothing$, then $g_{u;S,J}=g_u$, which is Herglotz by
 \eqref{eq:base-herglotz}.  For reference, if $a\in\R$ and $z\in\HH_0$, then
 \begin{equation}\label{eq:atom-positive}
   \im\frac{1}{a-z}=\frac{\im z}{\lvert a-z\rvert^2}>0.
@@ -387,7 +403,7 @@ This proves (ii)$\Rightarrow$(i).
 Conversely, choose $p\in J$.  Delete the $p$th source atom and absorb every other finite reversal
 into the regular part.  Then
 \[
-  g_{S,J}(z)=G_p(z)-\frac{w_p}{\lambda_p-z}.
+  g_{u;S,J}(z)=G_p(z)-\frac{w_p(u)}{\lambda_p-z}.
 \]
 The function $G_p$ is continuous at $\lambda_p$: after deleting the $p$th term, normal convergence
 of the remaining prime-log series gives a holomorphic germ there, and the finitely many other
@@ -395,29 +411,29 @@ reversals have distinct poles.  Hence $\im G_p(\lambda_p+iy)$ is bounded for suf
 $y>0$.
 But
 \[
-  \im\left(-\frac{w_p}{\lambda_p-(\lambda_p+iy)}\right)=-\frac{w_p}{y},
+  \im\left(-\frac{w_p(u)}{\lambda_p-(\lambda_p+iy)}\right)=-\frac{w_p(u)}{y},
 \]
-so $\im g_{S,J}(\lambda_p+iy)<0$ for all sufficiently small $y>0$.  Thus (i) implies (ii).
+so $\im g_{u;S,J}(\lambda_p+iy)<0$ for all sufficiently small $y>0$.  Thus (i) implies (ii).
 Equivalence with (iii), the cube count, and the distance formula are immediate from finite-set
 combinatorics.
 \end{proof}
 
 For $q\in\cU$, put
 \begin{equation}\label{eq:chamber-palette}
-  G_{S,J,q}(z)=g_{S,J}(z+s(q)).
+  G_{u;S,J,q}(z)=g_{u;S,J}(z+s(q)).
 \end{equation}
 The translated correction
 \[
   r_{S,J,q}(z)=-2\sum_{p\in J}
-    \frac{w_p}{\lambda_p-(z+s(q))}
+    \frac{w_p(u)}{\lambda_p-(z+s(q))}
 \]
 belongs to $\C(z)$.  Proposition~\ref{prop:gauge} therefore gives the following exact statement.
 
 \begin{corollary}[One embedded field in every chamber]\label{cor:chamber-field}
-For every finite $J\subseteq S\subset\mathcal P$, the palette $(G_{S,J,q})_{q\in\cU}$ is differentially
+For every finite $J\subseteq S\subset\mathcal P$, the palette $(G_{u;S,J,q})_{q\in\cU}$ is differentially
 algebraically independent over $\C(z)$ and
 \begin{equation}\label{eq:chamber-field}
-  \C(z)\langle G_{S,J,q}:q\in\cU\rangle=\cF_*.
+  \C(z)\langle G_{u;S,J,q}:q\in\cU\rangle=\cF_u.
 \end{equation}
 \end{corollary}
 
@@ -479,7 +495,7 @@ the facet becomes $1$, while the remaining $t_v$ are invertible.  Thus the kerne
 Fix an injection $e\colon V\to\N$.  For a facet $A$ and an integral vector $m\in\Z^V$ supported on
 $A$, let
 \begin{equation}\label{eq:facet-source}
-  Y^{S,J}_{A,m}(z)=G_{S,J,(e(A),\widetilde m)}(z),
+  Y^{u;S,J}_{A,m}(z)=G_{u;S,J,(e(A),\widetilde m)}(z),
 \end{equation}
 where $\widetilde m$ is extended by zero to $\N$.  By Lemma~\ref{lem:palette} and
 Corollary~\ref{cor:chamber-field}, the complete family in \eqref{eq:facet-source} is
@@ -494,9 +510,9 @@ $N_1,\ldots,N_r\in P/I_\Delta$, write the finite Laurent expansion
 \end{equation}
 Define the sewn analytic output
 \begin{equation}\label{eq:sewn-output}
-  \Phi^{S,J}_{\Delta,d}(N_i)
+  \Phi^{u;S,J}_{\Delta,d}(N_i)
   =\sum_{A\in\Fac(\Delta)}\sum_{m\in\Z^A}
-      L_{i,A,m}(\D)Y^{S,J}_{A,m}.
+      L_{i,A,m}(\D)Y^{u;S,J}_{A,m}.
 \end{equation}
 Only finitely many terms occur.
 
@@ -524,11 +540,11 @@ differentially algebraically independent.
 \end{proof}
 
 \begin{theorem}[Exact localized Stanley--Reisner differential matroid]\label{thm:sr}
-For every finite $J\subseteq S\subset\mathcal P$, every finite simplicial complex $\Delta$, every common
+For every $u\in\cG_{\cU}$, every finite $J\subseteq S\subset\mathcal P$, every finite simplicial complex $\Delta$, every common
 translation denominator $d$, and every finite numerator family $(N_i)_{i\in I}$,
 \begin{equation}\label{eq:matroid-law}
   \begin{aligned}
-  &\bigl(\Phi^{S,J}_{\Delta,d}(N_i)\bigr)_{i\in I}
+  &\bigl(\Phi^{u;S,J}_{\Delta,d}(N_i)\bigr)_{i\in I}
     \text{ is differentially algebraically independent over }\C\\
   &\hspace{38mm}\Longleftrightarrow
     (N_i)_{i\in I}\text{ is linearly independent over }\C[\D].
@@ -551,34 +567,36 @@ differential dependencies, by analytic outputs in every orientation chamber.
 
 \section{The universal constraint--orientation product}\label{sec:product}
 
-We now collect the preceding results.  All existential choices occur before the finite data in the
-statement.
+We now collect the preceding results.  The source is quantified through its canonical phase rather
+than selected from it.
 
 \begin{theorem}[Universal constraint--orientation product]\label{thm:main}
-There exist one bounded gauge $u_*$, one positive prime-log source $g_*$, one countable injective
-translation palette $s\colon\cU\to\C$, and one embedded differential field $\cF_*\subseteq\cK$
-with the following simultaneous properties.
+There exist a countable injective translation palette $s\colon\cU\to\C$ and a canonically defined
+dense residual phase $\cG_{\cU}\subset\mathcal B$ with the following simultaneous properties.
+For every $u\in\cG_{\cU}$, let $g_u$ and $\cF_u\subseteq\cK$ be given by
+\eqref{eq:source-intro} and \eqref{eq:fixed-field}.
 
-For every finite $S\subseteq\mathcal P$, every chamber $J\subseteq S$, every finite simplicial complex
+For every such $u$, every finite $S\subseteq\mathcal P$, every chamber $J\subseteq S$, every finite simplicial complex
 $\Delta$, every common translation denominator $d$, and every finite family of numerator classes
 $(N_i)$:
 \begin{enumerate}[label=(\alph*)]
-  \item the complete chamber palette $(g_{S,J}(z+s(q)))_{q\in\cU}$ is differentially
+  \item the complete chamber palette $(g_{u;S,J}(z+s(q)))_{q\in\cU}$ is differentially
     algebraically independent over $\C(z)$;
-  \item it generates exactly $\cF_*$ as an embedded differential field;
+  \item it generates exactly $\cF_u$ as an embedded differential field;
   \item the sewn outputs realize the exact equivalence \eqref{eq:matroid-law};
-  \item $g_{S,J}$ is Herglotz on the upper half-plane if and only if $J=\varnothing$;
+  \item $g_{u;S,J}$ is Herglotz on the upper half-plane if and only if $J=\varnothing$;
   \item the orientation index is $\kappa(S,J)=\card J$, the cubical distance from the unique
     Herglotz vertex.
 \end{enumerate}
-Consequently, the same field carries the Cartesian product of all finite localized
-Stanley--Reisner differential matroids with all finite orientation cubes, and the two coordinates
-can be varied independently.
+Consequently, every field $\cF_u$ in the residual phase carries the Cartesian product of all
+finite localized Stanley--Reisner differential matroids with all finite orientation cubes, and
+the two coordinates can be varied independently.
 \end{theorem}
 
 \begin{proof}
-Choose the universal palette of Lemma~\ref{lem:palette} and the single source supplied by
-Theorem~\ref{thm:source}; this defines $\cF_*$ by \eqref{eq:fixed-field}.  For each $S,J$, the
+Choose the universal palette of Lemma~\ref{lem:palette}; Theorem~\ref{thm:source} makes
+$\cG_{\cU}$ dense residual.  Let $u\in\cG_{\cU}$ be arbitrary and define $\cF_u$ by
+\eqref{eq:fixed-field}.  For each $S,J$, the
 chamber correction and all its translated derivatives belong to $\C(z)$.  Proposition
 \ref{prop:gauge} and Corollary~\ref{cor:chamber-field} prove (a) and (b).  The universal palette
 contains the facet--Laurent orbit of every finite complex, so Theorem~\ref{thm:sr} proves (c) in
@@ -588,7 +606,7 @@ or $(N_i)$.  Hence the two projections vary independently, giving the stated pro
 \end{proof}
 
 \begin{corollary}[Arbitrary prescribed orientation index]\label{cor:index}
-For every $k\geq0$, the same field $\cF_*$ has a representative which realizes every finite
+For every $u\in\cG_{\cU}$ and every $k\geq0$, the field $\cF_u$ has a representative which realizes every finite
 localized Stanley--Reisner differential matroid, has orientation index exactly $k$, and is
 Herglotz if and only if $k=0$.
 \end{corollary}
@@ -636,23 +654,23 @@ There is a canonical homeomorphism
   \cong
   \operatorname{Simp}(\N)\times\{+1,-1\}^{\mathcal P}.
 \end{equation}
-The second factor has a distinguished point $\boldsymbol{+}=(+1,+1,\ldots)$.  Every sign sequence
-$\varepsilon\in\{+1,-1\}^{\mathcal P}$ has the canonical analytic representative
+The second factor has a distinguished point $\boldsymbol{+}=(+1,+1,\ldots)$.  For every
+$u\in\cG_{\cU}$ and every sign sequence $\varepsilon\in\{+1,-1\}^{\mathcal P}$, define
 \begin{equation}\label{eq:infinite-carrier}
-  g_{\varepsilon}(z)=
-  \sum_{p\in\mathcal P}\frac{\varepsilon(p)w_p}{\lambda_p-z}.
+  g_{u,\varepsilon}(z)=
+  \sum_{p\in\mathcal P}\frac{\varepsilon(p)w_p(u)}{\lambda_p-z}.
 \end{equation}
 This series converges normally on compact subsets of the complement of the prime-log divisor,
 and the following assertions hold.
 \begin{enumerate}[label=(\alph*)]
   \item If $\varepsilon$ is negative on a finite set $J$ and positive elsewhere, then
-  $g_{\varepsilon}=g_{S,J}$ for every finite $S\supseteq J$.
+  $g_{u,\varepsilon}=g_{u;S,J}$ for every finite $S\supseteq J$.
   \item For an arbitrary $\varepsilon$, put
   $J_T=\{p\in T:\varepsilon(p)=-1\}$ at a finite stage $T$.  Then the finite chambers
-  $g_{T,J_T}$ converge to $g_{\varepsilon}$, independently of the cofinal exhaustion of
+  $g_{u;T,J_T}$ converge to $g_{u,\varepsilon}$, independently of the cofinal exhaustion of
   $\mathcal P$.
-  \item At $\lambda_p$, the ordinary meromorphic residue is $-\varepsilon(p)w_p\neq0$.
-  \item The carrier $g_{\varepsilon}$ is Herglotz on $\HH_0$ if and only if
+  \item At $\lambda_p$, the ordinary meromorphic residue is $-\varepsilon(p)w_p(u)\neq0$.
+  \item The carrier $g_{u,\varepsilon}$ is Herglotz on $\HH_0$ if and only if
   $\varepsilon=\boldsymbol{+}$.
 \end{enumerate}
 Thus the all-positive vertices of all finite cubes form a compatible section whose limit is the
@@ -670,9 +688,9 @@ are inverse to restriction.  They are coordinatewise continuous, hence give
 $\{0,1\}^{\operatorname{Fin}(\N)}$ cut out by the implications
 $A\subseteq B$ and $x_B=1\Rightarrow x_A=1$; the other factor is the prime-labelled Cantor cube.
 
-Boundedness of $u_*$ gives
+Boundedness of $u$ gives
 \[
-  \sum_p w_p\leq e^{\lVert u_*\rVert_\infty}\sum_p2^{-p}<\infty.
+  \sum_p w_p(u)\leq e^{\lVert u\rVert_\infty}\sum_p2^{-p}<\infty.
 \]
 On a compact set away from the prime-log divisor, all sufficiently large $\lambda_p$ have
 $\lvert\lambda_p-z\rvert\geq1$, while the finitely many remaining denominators have a positive
@@ -680,8 +698,8 @@ minimum.  The Weierstrass test therefore proves normal convergence of
 \eqref{eq:infinite-carrier}.  Absolute convergence is unconditional, so every cofinal net of
 finite partial sums has the same limit.  Expanding the sign gives
 \[
-  g_{\varepsilon}(z)=g_*(z)-2
-    \sum_{\varepsilon(p)=-1}\frac{w_p}{\lambda_p-z},
+  g_{u,\varepsilon}(z)=g_u(z)-2
+    \sum_{\varepsilon(p)=-1}\frac{w_p(u)}{\lambda_p-z},
 \]
 which proves (a), (b), and the residue formula (c).
 
@@ -689,32 +707,106 @@ If every sign is positive, \eqref{eq:base-herglotz} gives the Herglotz inequalit
 $\varepsilon(p)=-1$, delete the $p$th atom.  Normal convergence on the complement of the other
 poles leaves a function $G_p$ holomorphic at $\lambda_p$, and
 \[
-  g_{\varepsilon}(z)=G_p(z)-\frac{w_p}{\lambda_p-z}.
+  g_{u,\varepsilon}(z)=G_p(z)-\frac{w_p(u)}{\lambda_p-z}.
 \]
-At $z=\lambda_p+iy$, the second term has imaginary part $-w_p/y$, whereas
+At $z=\lambda_p+iy$, the second term has imaginary part $-w_p(u)/y$, whereas
 $\im G_p(\lambda_p+iy)$ remains bounded as $y\downarrow0$.  Hence
-$g_{\varepsilon}$ fails the Herglotz inequality.  This proves (d) and the uniqueness statement.
+$g_{u,\varepsilon}$ fails the Herglotz inequality.  This proves (d) and the uniqueness statement.
 \end{proof}
 
-\begin{remark}[Field boundary of the completion]\label{rem:field-boundary}
-Every finite sign reversal in Theorem~\ref{thm:limit}(a) is a rational gauge and therefore remains
-inside the common embedded field $\cF_*$.  An infinite reversal produces a meromorphic correction
-with infinitely many poles and is generally not rational.  The inverse-limit and Herglotz
-statements do not assert that all infinite points generate $\cF_*$, nor do they require such an
-assertion.  Uniform differential freeness over the complete Cantor fiber is a separate problem.
+We next identify the common analytic completion.  Let $(a_p)$ be an absolutely summable real
+family indexed by the primes, and put
+\begin{equation}\label{eq:summable-carrier}
+  C_a(z)=\sum_{p\in\mathcal P}\frac{a_p}{\lambda_p-z},\qquad z\in\HH_0.
+\end{equation}
+Let $r_p(z)=(\lambda_p-z)^{-1}$, let $\cA_0$ be the complex algebra generated by the
+$r_p$, and let
+\begin{equation}\label{eq:completed-ring}
+  \widehat{\cA}_a=
+  \overline{\operatorname{alg}(\cA_0,C_a)}^{\,\mathrm{co}}
+  \subset \mathcal O(\HH_0),
+\end{equation}
+where the closure is taken in the compact-open topology.
+
+\begin{theorem}[Summable-residue gauge law]\label{thm:summable-gauge}
+Let $a,b\in\ell^1(\mathcal P,\R)$.  Then
+\begin{equation}\label{eq:finite-transition-limit}
+  C_a+\sum_{p\in F}(b_p-a_p)r_p
+  \longrightarrow C_b
+\end{equation}
+locally uniformly on $\HH_0$ as the finite set $F$ increases to $\mathcal P$.  Consequently
+\begin{equation}\label{eq:completed-ring-equality}
+  \widehat{\cA}_a=\widehat{\cA}_b.
+\end{equation}
+More generally, if $\cR\subset \mathcal O(\HH_0)$ is any compact-open closed subring containing all
+complex constants and all $r_p$, then
+\begin{equation}\label{eq:closed-ring-indistinguishability}
+  C_a\in\cR\quad\Longleftrightarrow\quad C_b\in\cR.
+\end{equation}
+In particular, the minimal compact-open closed differential subring containing the common atoms
+and one summable carrier is independent of that carrier.
+\end{theorem}
+
+\begin{proof}
+The difference $b-a$ is absolutely summable.  On a compact set $K\subset\HH_0$, all sufficiently
+large $\lambda_p$ satisfy $|\lambda_p-z|\geq1$ for $z\in K$, and the finitely many remaining
+denominators have a positive minimum on $K$.  The Weierstrass test therefore gives locally uniform
+and unconditional convergence of
+\[
+  \sum_p(b_p-a_p)r_p=C_b-C_a,
+\]
+which proves \eqref{eq:finite-transition-limit}.  Every finite approximant belongs to the algebra
+generated by $\cA_0$ and $C_a$, so closedness gives $C_b\in\widehat{\cA}_a$.  Interchanging $a$
+and $b$ yields the reverse containment of the generated closed algebras and proves
+\eqref{eq:completed-ring-equality}.  The same argument inside an arbitrary closed subring $\cR$
+proves \eqref{eq:closed-ring-indistinguishability}.  A closed differential subring is a special
+case; taking the intersection of all such subrings gives the final assertion.
+\end{proof}
+
+\begin{corollary}[Source--orientation completion invariance]\label{cor:source-orientation-completion}
+For arbitrary $u,v\in\cG_{\cU}$ and arbitrary sign sequences $\varepsilon,\delta$, set
+\[
+  a_p=\varepsilon(p)2^{-p}e^{u(p)},\qquad
+  b_p=\delta(p)2^{-p}e^{v(p)}.
+\]
+Then $a,b\in\ell^1(\mathcal P,\R)$ and
+\[
+  \widehat{\cA}_{u,\varepsilon}
+  :=\widehat{\cA}_a
+  =\widehat{\cA}_b
+  =:\widehat{\cA}_{v,\delta}.
+\]
+Thus the compact-open completed rational Cauchy algebra is constant on the entire product
+$\cG_{\cU}\times\{+1,-1\}^{\mathcal P}$.
+\end{corollary}
+
+\begin{proof}
+Boundedness of $u$ and $v$ reduces both absolute sums to constant multiples of $\sum_p2^{-p}$.
+Apply Theorem~\ref{thm:summable-gauge}.
+\end{proof}
+
+\begin{remark}[Algebraic and completed levels]\label{rem:field-boundary}
+At every finite orientation, rational-gauge invariance gives literal equality of the embedded
+differential fields $\cF_u$.  At the full inverse limit, Theorem~\ref{thm:summable-gauge} supplies
+the canonical invariant object: one compact-open closed rational Cauchy algebra, with a
+source-independent closed differential hull.  This statement neither identifies nor conflates
+the generally stricter raw differential fields generated by individual infinite carriers.
 \end{remark}
 
-\section{Carrier selection and scope}\label{sec:scope}
+\section{Canonical phases and scope}\label{sec:scope}
 
-Theorem~\ref{thm:main} separates three levels of information.
+Theorems~\ref{thm:main} and \ref{thm:summable-gauge} separate four levels of information.
 \begin{enumerate}
-  \item The unpointed differential field records the ambient hypertranscendental capacity.
+  \item The canonical residual phase $\cG_{\cU}$ records the admissible source family.
+  \item For each phase point, the unpointed differential field records hypertranscendental capacity.
   \item Facet sewing records an arbitrarily prescribed finite hereditary constraint geometry.
-  \item Herglotz positivity records a distinguished orientation of rational Cauchy directions.
+  \item Herglotz positivity records a distinguished orientation of Cauchy directions.
 \end{enumerate}
-The first two levels do not determine the third.  This is a positive structural law, not an
+The middle two levels do not determine the fourth.  This is a positive structural law, not an
 absence statement: every finite orientation fiber has a unique positive section, and its distance
-function is the exact integer $\kappa$.
+function is the exact integer $\kappa$.  At the completed analytic level, Corollary
+\ref{cor:source-orientation-completion} collapses the first and fourth coordinates to one common
+closed rational Cauchy algebra, while the Herglotz pointing remains unique.
 
 The pointing law applies directly to any proposed positivity argument whose input factors through
 an embedded differential field and finitely sewn differential constraints.  Such an argument must
@@ -725,18 +817,19 @@ Theorem~\ref{thm:limit} constructs the universal analytic section; it does not i
 arithmetic source.
 
 In particular, the theorem does not assert the Riemann hypothesis, does not identify the zeta
-function with the source $g_*$, and does not construct an arithmetic section of the orientation
+function with any source $g_u$, and does not construct an arithmetic section of the orientation
 fibers.  Its consequence for approaches to the Riemann hypothesis is conditional and exact: if a
 route attempts to derive the required positivity solely from the unpointed hypertranscendental
 field and finite constraint matroids, then its data are insufficient within the universal family.
-The route must positively supply a distinguished marking that is not erased by rational gauge
-equivalence.
+The route must positively supply a distinguished marking that survives both finite rational-gauge
+equivalence and the summable-residue completion law.
 
-Two limitations remain.  First, the source $u_*$ is selected from a dense residual set rather than
-by a canonical closed formula.  Second, the canonical completion preserves the common embedded
-differential field at every finite chamber, but Remark~\ref{rem:field-boundary} deliberately makes
-no same-field claim for an infinitely reversed sign sequence.  Neither limitation affects the
-inverse-limit identification or its unique Herglotz pointing.
+No generic point is selected in the strengthened statement: the intrinsic source object is the
+entire dense residual phase \eqref{eq:source-phase}.  No infinite sign sequence is left outside the
+canonical analytic object: all phase sources and all orientations determine the same completed
+algebra by Corollary~\ref{cor:source-orientation-completion}.  The raw differential field and its
+compact-open differential hull are deliberately distinguished, as they encode different
+categories of information.
 
 \begin{thebibliography}{99}
 

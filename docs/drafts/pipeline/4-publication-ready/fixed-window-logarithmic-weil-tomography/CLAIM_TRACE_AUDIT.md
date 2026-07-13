@@ -201,6 +201,42 @@ The quantitative equivalence is bundled by
 | aggregate abscissa at most `1+alpha` forces the matching Xi zero-free half-plane | xiZeroHalfPlaneBound_of_summableNegativeChannelCover_aggregate_abscissa |
 | aggregate abscissa at most one proves RH | riemannHypothesis_of_summableNegativeChannelCover_aggregate_abscissa_le_one |
 
+## Strengthened source laws
+
+| Manuscript claim | Unconditional Lean declaration |
+|---|---|
+| false RH forces cofinal power-scale excursions of both signs | not_riemannHypothesis_implies_rectangular_weil_twoSided_power_oscillation |
+| the Gamma--polar correction converges to an explicit limit at exponential aperture rate | abs_rectangularGammaPolarCorrection_sub_limit_le_exp |
+| the arithmetic logarithmic sample has explicit inverse-square-root error | abs_rectangularGammaPolarCorrection_logSample_sub_limit_le_inv_sqrt |
+| the elementary coefficient \((\Lambda(n)-1)\sqrt n\) has the stated zeta-logarithmic-derivative Dirichlet series | LSeries_simplePrimeDivisorSourceCoefficient_eq_zetaLogDeriv |
+| its continued source has a removable pole at \(3/2\) | analyticAt_simplePrimeDivisorContinuedSource_three_halves |
+| every shifted Xi zero gives a simple pole with exact multiplicity residue | meromorphicOrderAt_simplePrimeDivisorContinuedSource_eq_neg_one, tendsto_simplePrimeDivisorContinuedSource_residue |
+| holomorphy of the elementary source on \(\Re s>1\) is equivalent to RH | riemannHypothesis_iff_simplePrimeDivisorContinuedSource_analyticOn_rightOne |
+| the all-epsilon sharp dyadic estimate is equivalent to its restriction to perfect squares | eventually_dyadicWeightedPrimeWindow_upper_iff_squareSamples |
+| the perfect-square sharp dyadic estimate proves RH | riemannHypothesis_of_eventually_dyadicWeightedPrimeWindow_square_upper |
+
+## Contractive endpoint reflection law
+
+| Manuscript claim | Unconditional Lean declaration |
+|---|---|
+| the completed endpoint curvature is \(2+\gamma-\log(4\pi)\) | xiEndpointCompletedCurvature_eq_eulerMascheroni_log |
+| the completed endpoint curvature lies strictly between zero and one half | xiEndpointCompletedCurvature_pos, xiEndpointCompletedCurvature_lt_one_half |
+| the exact endpoint polarization identity is \(E=2(H-C)\) | xiEndpointReflectionDefectEnergy_eq_mass_sub_source |
+| the reflection defect satisfies \(E\le C^2/(1-C)<C\) | xiEndpointDefectEnergy_le_unconditional_source_factor, xiEndpointReflectionDefectEnergy_lt_endpointCurvature |
+| the raw Hermitian mass satisfies \(C\le H<3C/2<3/4\) | xiEndpointCompletedCurvature_le_rawMass, xiRawReciprocalHermitianMass_lt_three_halves_mul_endpointCurvature, xiRawReciprocalHermitianMass_lt_three_fourths |
+| every reciprocal coordinate lies in the uniform disk of radius \(9/10\) | xiRawReciprocalCoordinate_norm_lt_nine_tenths |
+| critical-line reflection is the exact Mobius transform of the conjugate reciprocal coordinate | xiRawReciprocalCoordinate_lineConj_eq_mobius |
+| the reflected coordinate is its pointwise convergent Neumann series | hasSum_xiRawReciprocalCoordinate_lineConj_neumann |
+| the endpoint cross trace is the absolutely convergent all-order holomorphic power-trace series | summable_xiRawReciprocalNeumann_double, hasSum_xiEndpointCrossTrace_allOrder |
+| the all-order trace sum equals the completed Xi logarithmic derivative | xiEndpointCrossTrace_eq_completedLogDeriv, hasSum_completedEndpointLogDeriv_holomorphicTraces |
+| the real all-order trace sum equals the completed endpoint curvature | hasSum_xiEndpointCompletedCurvature_holomorphicTraces |
+| the normalized prime--Gamma source germ is the reciprocal-square resolvent and has the stated moments | normalizedTraceMomentGerm_continuedPrimeArchSource_eventuallyEq_momentGerm, primeArchSourceMoment_eq_xiCentralReciprocalMoment |
+| endpoint saturation \(H=C\) is equivalent to RH | primeArchEndpointSaturation_iff_riemannHypothesis |
+| complete integer-polynomial source Hankel positivity is equivalent to RH | primeArchSourceTraceHankelIntNonnegative_iff_riemannHypothesis |
+| a reflection-positive Gram realization of the normalized moments is equivalent to RH | primeArchComplexReflectionPositiveGram_iff_riemannHypothesis |
+| a bounded self-adjoint vacuum realization of the normalized moments is equivalent to RH | primeArchSelfAdjointVacuumRealization_iff_riemannHypothesis |
+| the complete unconditional and sharp endpoint package is bundled in one theorem | primeArchConnesReflectionMain |
+
 ## Explicit dyadic source endpoints
 
 | Manuscript claim | Unconditional Lean declaration |

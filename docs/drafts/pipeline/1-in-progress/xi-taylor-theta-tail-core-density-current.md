@@ -1578,3 +1578,66 @@ log-convexity and ratio monotonicity are
 - [ ] prove an integrated cancellation bound for the raw moment terms in `(12)`
 - [ ] obtain the eventual scaled core-current inequality on every anisotropic fibre
 - [ ] complete paper proof and Lean theorem
+
+## Centered Green packet and product-fibre translation cancellation
+
+**[PROVED, BRIDGE]** Put `V=thetaCuspCompletedTailPotential` and
+`Phi=thetaCuspFullSource`.  The exact source relation gives
+
+```text
+-V''(x)+V(x)/4=Phi(x).
+```
+
+For every real `L,x`, the Wronskian endpoint identity in the two opposite translation directions
+cancels the completed-survival slope and yields
+
+```text
+2 cosh(L/2)V(x)-V(x+L)-V(x-L)
+ = integral_0^L 2 sinh((L-u)/2)(Phi(x+u)+Phi(x-u)) du.       (14)
+```
+
+For `L>=0` the right side is nonnegative.  Both the exact identity and its nonnegativity are
+formalized in `XiCTaylorThetaTailCenteredGreenPacket.lean`.  On the Fourier--Laplace strip its
+multiplier is
+
+```text
+2(cosh(L/2)-cos(Lz))/(z^2+1/4).
+```
+
+Thus `(14)` is not an independent orientation theorem: it is Xi multiplied by an elementary
+centered-translation factor.  In particular the limit `L->0` recovers the canonical source, so
+positive smoothing of `(14)` alone would re-state the missing Xi current sign.
+
+**[PROVED, LIVE REDUCTION]** There is a separate arithmetic cancellation on each positive product
+fibre.  For `mn=k`, set
+
+```text
+delta(m,n)=(log m-log n)/2.
+```
+
+Divisor reflection `(m,n)<->(n,m)` fixes `k` and sends `delta` to `-delta`; moreover the critical
+atom weights multiply to the fibre-constant `k^(-1/2)`, and
+
+```text
+rho_m(x)rho_n(y)
+ = k^(-1/2) rho_1(x+log(k)/2+delta)
+              rho_1(y+log(k)/2-delta).                     (15)
+```
+
+The finite sine section is exactly odd.  Hence, on every finite product fibre,
+
+```text
+sum_(mn=k) S_d(delta(m,n))=0,
+
+sum_(mn=k) H_d(x+delta(m,n))
+ = H_d(x) sum_(mn=k) H_d(delta(m,n))
+   - sum_(mn=k) TopEdge_d(x,delta(m,n)).                    (16)
+```
+
+All identities in `(15)`--`(16)` are formalized in
+`XiCTaylorThetaTailProductFiberTranslation.lean`.  This removes the entire cosine--sine mixing
+channel before any estimate and leaves only one even divisor-fibre top-edge packet.  The remaining
+open core is now precise: regroup the absolutely convergent atom-pair current by product fibres and
+prove that the sum of the even packets in the last term of `(16)` is `o(n)|P_{2d+3}(z_n)|^2` after
+the source-selected fibre/depth choice.  No positivity of an individual atom or scalar Xi
+multiplier can supply this bound.

@@ -48,6 +48,13 @@ theorem momentFunctional_eq_support_sum (s : ℕ → ℝ) (p : Polynomial ℝ) :
     momentFunctional s p = ∑ k ∈ p.support, p.coeff k * s k := by
   rw [momentFunctional, Polynomial.sum_def]
 
+/-- Pointwise-equal moment sequences define the same polynomial functional. -/
+theorem momentFunctional_congr {s t : ℕ → ℝ} (h : ∀ k, s k = t k)
+    (p : Polynomial ℝ) :
+    momentFunctional s p = momentFunctional t p := by
+  rw [momentFunctional_eq_support_sum, momentFunctional_eq_support_sum]
+  exact Finset.sum_congr rfl fun k _ => by rw [h k]
+
 /-- **Representing-measure bridge.**  If `s` is the moment sequence of a measure `μ` whose monomials
 are all integrable, the moment functional is integration of the evaluated polynomial. -/
 theorem momentFunctional_eq_integral {μ : Measure ℝ} (s : ℕ → ℝ)
