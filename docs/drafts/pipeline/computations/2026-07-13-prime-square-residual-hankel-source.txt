@@ -1,0 +1,84 @@
+Prime-square residual Hankel test from the theta/Xi Taylor source
+Date: 2026-07-13
+
+Target
+------
+A(u) is defined source-first by XiC(z)/XiC(0)=A(-z^2).  Its logarithmic power sums are
+
+  c_n=(-1)^(n-1) n [u^n] log A(u).
+
+The scalar prime-square tensor proposal requires
+
+  q_n=c_n/P(2n)
+
+to be the power-moment tower of a positive archimedean operator.
+
+Method
+------
+1. Evaluate the completed Xi function directly from
+
+     Xi(t)=1/2 s(s-1) pi^(-s/2) Gamma(s/2) zeta(s),  s=1/2+i t.
+
+2. Compute its even Taylor series at t=0 by Cauchy quadrature, through order 28.
+3. Convert the coefficients to A(u), then compute log A recursively from A'=A(log A)'.
+4. Compute the prime zeta values by Mobius inversion
+
+     P(s)=sum_(k>=1) mu(k) log zeta(k s)/k.
+
+5. Form the shifted Hankel matrices (q_(N+i+j)).
+
+This calculation uses no Xi zero table.  Two independent runs changed the Cauchy radius and
+working precision:
+
+  run 1: 85 decimal digits, radius 0.20, Mobius cutoff 80;
+  run 2: 110 decimal digits, radius 0.15, Mobius cutoff 100.
+
+Selected source values from run 1
+---------------------------------
+c_8  = 3.9464713999988461337963290663982087909266884033695e-19
+c_9  = 1.9732650737449672765235962218179485729311032240818e-21
+c_10 = 9.8721653832971575935702836879918766690462605701023e-24
+c_11 = 4.9402563522819790474708812445797392428941517580227e-26
+c_12 = 2.4724944443287693460590366409230930856388582413236e-28
+c_13 = 1.2374934443249966331504138343350314281088507449241e-30
+
+q_8  = 2.5824267956068561586418999327512382873158547498279e-14
+q_9  = 5.1692978877956093134288026146486867344846703224725e-16
+q_10 = 1.0348603453388527057653166167830765996768667250332e-17
+q_11 = 2.0718167811002916687029616912395663498517115182104e-19
+q_12 = 4.1479109348125542842856799983643691803127751373289e-21
+q_13 = 8.3044586757451852158973842262174279630057188928439e-23
+
+Negative minors
+---------------
+Run 1:
+
+  det(q_(2+i+j))_(0<=i,j<6)
+    = -8.1834946298800166283928325399170563232260641421174e-96
+
+  det(q_(8+i+j))_(0<=i,j<4)
+    = -1.4113752754693304625153323177365813061782696511064e-94
+
+Run 2:
+
+  det(q_(2+i+j))_(0<=i,j<6)
+    = -8.18349462988001662839283253991705638748520821203182330298977332343117582556e-96
+
+  det(q_(8+i+j))_(0<=i,j<4)
+    = -1.41137527546933046251533231804593283682884554901604385598768283888980377649e-94
+
+Verdict
+-------
+The signs and leading digits are stable under independent precision, radius, and Mobius-cutoff
+changes.  Therefore the canonical scalar residual tower fails the necessary Hankel condition for
+a positive measure or positive compact-operator spectrum.  This is a high-precision source
+calculation, not an interval-arithmetic proof.  The formal positive no-go is the general exact
+two-atom quotient theorem in `formal/GaloisForLFunctions/MomentTowerQuotientGhost.lean`.
+
+Positive successor
+------------------
+Pointwise moment multiplication remains a positive tensor operation.  The quotient must instead
+be retained as a virtual graded spectrum, with its negative modes explicitly paired after
+recombination with the prime sector.  The successor card is
+`prime-arch-koszul-spectral-quotient-cancellation-rh.md`.
+

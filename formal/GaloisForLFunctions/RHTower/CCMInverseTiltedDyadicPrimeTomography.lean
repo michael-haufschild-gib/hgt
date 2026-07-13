@@ -1403,6 +1403,49 @@ theorem riemannHypothesis_iff_inverseTiltedDyadic_poles_on_line :
     rw [mem_rightHalf] at hz
     linarith
 
+/-- Equivalent open-half-plane formulation: RH is exactly holomorphy of the complete prime
+source to the right of its critical polar line. -/
+theorem riemannHypothesis_iff_inverseTiltedDyadic_analytic_rightOne :
+    RiemannHypothesis ↔
+      ∀ s : ℂ, 1 < s.re →
+        AnalyticAt ℂ inverseTiltedDyadicContinuedSource s := by
+  constructor
+  · intro hRH s hs
+    have hsHalf : 1 / 2 < s.re := by linarith
+    apply analyticAt_inverseTiltedDyadicContinuedSource_of_regularizedZeta_ne_zero hsHalf
+    intro hzero
+    obtain ⟨rho, hrho⟩ :=
+      exists_xiDivisorSupport_of_inverseTilted_regularizedZeta_zero hsHalf hzero
+    have hrhoRight : (rho : ℂ) ∈ rightHalf := by
+      rw [mem_rightHalf]
+      have hre := congrArg Complex.re hrho
+      rw [inverseTiltedXiPole, Complex.add_re] at hre
+      norm_num at hre
+      linarith
+    exact (rh_iff_xi_ne_zero_right.mp hRH _ hrhoRight)
+      (xi_eq_zero_of_mem_divisor_support rho)
+  · intro han
+    apply rh_iff_xi_ne_zero_right.mpr
+    intro z hz hzero
+    let rho : XiDivisorSupport :=
+      ⟨z, mem_xi_divisor_support_of_eq_zero hzero⟩
+    let p : ℂ := inverseTiltedXiPole rho
+    have hpRight : 1 < p.re := by
+      dsimp only [p, inverseTiltedXiPole]
+      rw [mem_rightHalf] at hz
+      rw [Complex.add_re]
+      norm_num
+      linarith
+    have hpOrder :
+        meromorphicOrderAt inverseTiltedDyadicContinuedSource p =
+          ((-1 : ℤ) : WithTop ℤ) :=
+      meromorphicOrderAt_inverseTiltedDyadicContinuedSource_eq_neg_one rho
+    have hpNonneg := (han p hpRight).meromorphicOrderAt_nonneg
+    rw [hpOrder] at hpNonneg
+    have : ¬ ((0 : WithTop ℤ) ≤ ((-1 : ℤ) : WithTop ℤ)) := by
+      exact_mod_cast (show ¬ (0 : ℤ) ≤ -1 by omega)
+    exact this hpNonneg
+
 /-- Bundled source identity, meromorphic continuation, full support, multiplicity recovery, and
 RH line criterion. -/
 theorem inverseTiltedDyadicPrimeFullDivisorTomography_capstone :
@@ -1424,14 +1467,18 @@ theorem inverseTiltedDyadicPrimeFullDivisorTomography_capstone :
     (RiemannHypothesis ↔
       ∀ s : ℂ, 1 / 2 < s.re →
         meromorphicOrderAt inverseTiltedDyadicContinuedSource s =
-          ((-1 : ℤ) : WithTop ℤ) → s.re = 1) := by
+          ((-1 : ℤ) : WithTop ℤ) → s.re = 1) ∧
+    (RiemannHypothesis ↔
+      ∀ s : ℂ, 1 < s.re →
+        AnalyticAt ℂ inverseTiltedDyadicContinuedSource s) := by
   exact ⟨fun s hs =>
       LSeries_inverseTiltedDyadicRealSourceCoefficient_eq_continuedSource hs,
     meromorphicOn_inverseTiltedDyadicContinuedSource_rightHalf,
     fun s hs =>
       meromorphicOrderAt_inverseTiltedDyadicContinuedSource_eq_neg_one_iff hs,
     normalizedInverseTiltedDyadicResidue_eq_multiplicity,
-    riemannHypothesis_iff_inverseTiltedDyadic_poles_on_line⟩
+    riemannHypothesis_iff_inverseTiltedDyadic_poles_on_line,
+    riemannHypothesis_iff_inverseTiltedDyadic_analytic_rightOne⟩
 
 end
 

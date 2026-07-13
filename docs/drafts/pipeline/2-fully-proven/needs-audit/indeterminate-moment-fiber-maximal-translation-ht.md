@@ -853,6 +853,12 @@ Two further self-contained steps are now formalized axiom-clean:
   (an infinitely supported / indeterminate sequence), the Hankel form is strictly definite —
   `L(p²) = 0 ⟹ p = 0` — via `L²`-vanishing of `eval · p` against a nonzero polynomial's finite root
   set, together with `integrable_eval` (polynomials are `μ`-integrable when all monomials are).
+  Two further inner-product/cone properties of the Hankel form are formalized:
+  `momentFunctional_cauchy_schwarz` (`L(p·q)² ≤ L(p²)·L(q²)`, the Cauchy–Schwarz inequality, proved
+  from square-positivity via the discriminant of `t ↦ L((p+t·q)²)`) and, in
+  `formal/GaloisForLFunctions/MomentFunctionalHaviland.lean`, `momentFunctional_nonneg_of_nonneg`
+  (**Haviland positivity**: `L(p) ≥ 0` for every `p ≥ 0` on `ℝ`, the full Riesz–Haviland cone
+  condition) with its monotone consequence `momentFunctional_mono`.
 
 The barycentric construction, parameter-jet controllability, and full-configuration transversality
 still route through the absent Nevanlinna matrix / minimal-exponential-type Jensen bound / Whitney

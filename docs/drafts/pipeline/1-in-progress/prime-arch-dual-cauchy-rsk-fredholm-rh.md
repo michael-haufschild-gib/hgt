@@ -2,7 +2,7 @@
 
 - **ID:** `prime-arch-dual-cauchy-rsk-fredholm-rh`
 - **Stage:** 1-in-progress
-- **Type:** `[LARGE OUTLANDISH DETOUR] [CONJECTURE] [SOURCE TENSOR FACTORIZATION]`
+- **Type:** `[LARGE OUTLANDISH DETOUR] [SCALAR PRODUCER RETIRED] [POSITIVE FINITE TENSOR SURVIVES]`
 - **Lean inputs:** `formal/GaloisForLFunctions/RHTower/MobiusFiniteSchurTransfer.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeWordYoungShapeNoGo.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeArchDualCauchyTensor.lean`,
@@ -12,16 +12,18 @@
   `formal/GaloisForLFunctions/RHTower/PrimeArchThetaAllOrderCumulant.lean`, and
   `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedSource.lean`
 - **Consumer:** `prime-theta-young-thoma-schur-rh.md`
-- **Statement:** `[CONJECTURE]` The square-coordinate Xi Taylor determinant is the fermionic
-  Fredholm determinant of a positive trace-class tensor product
+- **Statement:** `[FALSIFIED FOR THE CANONICAL SCALAR SPLIT]` The proposed positive trace-class
+  factorization
 
   ```text
   prime diagonal diag(p^(-2)) tensor completed archimedean operator K_infinity.
   ```
 
-  Equivalently, finite prime--archimedean binary incidence matrices carry a dual-RSK Schur measure
-  whose locally uniform partition function limit is the normalized square-coordinate Xi function.
-  Positivity of the tensor spectrum forces every centered Xi zero onto the real axis and proves RH.
+  cannot exist: the required scalar residual tower has explicit negative shifted Hankel minors.
+  The finite dual-Cauchy tensor law remains valid and positive, but a completed construction must
+  retain the residual as a graded spectrum and cancel its negative modes after recombination with
+  the prime sector.  That positive successor is
+  `prime-arch-koszul-spectral-quotient-cancellation-rh.md`.
 
 ## 1. Exact determinant target
 
@@ -74,20 +76,20 @@ This is positive trace class and
 Tr(D_2^n)=P(2n).                                          (4)
 ```
 
-The proposed second alphabet is one positive trace-class operator `K_infinity`, built from the
+The proposed second alphabet was one positive trace-class operator `K_infinity`, built from the
 theta/Gamma completion before any Xi divisor is inspected.  Put
 
 ```text
 q_n=c_n/P(2n).                                            (5)
 ```
 
-The exact source theorem is
+The requested source theorem was
 
 ```text
 Tr(K_infinity^n)=q_n for every n>=1.                      (6)
 ```
 
-Then the positive tensor product `K=D_2 tensor K_infinity` obeys
+It would have made the positive tensor product `K=D_2 tensor K_infinity` obey
 
 ```text
 Tr(K^n)=Tr(D_2^n)Tr(K_infinity^n)=P(2n)q_n=c_n.           (7)
@@ -97,7 +99,8 @@ The multiplication in `(7)` is the operator version of the already-formalized Ad
 tensor law.  Equation `(5)` is allowed only as a falsification coordinate.  An acceptable proof of
 `(6)` must construct `K_infinity` from theta atoms, the Gamma/polar weld, or an existing positive
 Sonin incidence operator and then prove its traces equal `(5)`; reconstructing it abstractly from
-the target sequence is circular.
+the target sequence is circular.  The falsification coordinate now kills `(6)`: the tower `(5)` is
+not a positive moment tower.
 
 ## 3. Dual-Cauchy and RSK face
 
@@ -175,17 +178,31 @@ q_7 = 1.2904569473472594e-12
 q_8 = 2.5824267956068562e-14.
 ```
 
-The leading Hankel determinants of `(q_(i+j+1))` are positive through size six and the shifted
-ones through size five in this test.  This is necessary for a positive operator moment model but
-is far weaker than `(6)` and does not prove the route.
+The initial leading Hankel determinants of `(q_(i+j+1))` are positive through the low orders first
+tested.  This was a low-order illusion.  A direct source computation through Taylor order 28 gives
+
+```text
+det(q_(2+i+j))_(0<=i,j<6)
+  = -8.1834946298800166283928325399170564e-96,
+
+det(q_(8+i+j))_(0<=i,j<4)
+  = -1.4113752754693304625153323180459328e-94.
+```
+
+The signs and leading digits agree in independent 85- and 110-digit Cauchy-quadrature runs with
+different radii and prime-zeta cutoffs; see
+`../computations/2026-07-13-prime-square-residual-hankel-source.txt`.  The calculation uses the
+theta/Xi Taylor source directly, not a zero table.  It is high-precision falsification rather than
+an interval certificate, but it decisively redirects the construction.
 
 The exponent is load-bearing.  Replacing `p^(-2)` by `p^(-sigma)` gives residual moments
 `q_n(sigma)=c_n/P(sigma n)`.  The tested leading Hankel tower fails at finite order for weak prime
 damping: at `sigma=1.01` the size-two determinant is negative, at `sigma=1.1` size three is
-negative, and at `sigma=1.5` size four is negative.  The prime-square value `sigma=2` survives all
-tested orders.  This turns those no-gos into a positive threshold statement: any tensor producer
-of this form needs sufficient prime damping, and the square coordinate of Xi supplies the first
-canonical surviving exponent.
+negative, and at `sigma=1.5` size four is negative.  The later source computation shows that
+`sigma=2` also fails, only deeper in the Hankel tower.  The positive classification is therefore
+not a damping threshold: pointwise division is the wrong operation in the positive moment cone.
+Pointwise multiplication remains positive, while division creates a signed ghost spectrum.  Lean
+formalizes both facts in `formal/GaloisForLFunctions/MomentTowerQuotientGhost.lean`.
 
 ## 5. Hard attacks and positive successors
 
@@ -218,17 +235,22 @@ canonical surviving exponent.
    identify its trace powers with `(5)`.
    **Positive successor:** treat its moment mismatch as an explicit residual sequence and test
    whether a source-prescribed compression or tensor corner closes it; do not rename the operator.
+9. **Canonical scalar residual attack.**  The source-computed tower `(5)` has negative shifted
+   Hankel minors, so no positive measure or positive compact operator realizes it.
+   **Positive successor:** retain its negative modes in a graded spectral Grothendieck completion,
+   tensor with the prime sector, and construct an equal-weight differential whose positive
+   cohomology has traces `c_n`; the finite cancellation theorem is already formalized in
+   `formal/GaloisForLFunctions/GradedSpectrumCancellation.lean`.
 
 ## 6. Exact open cores
 
-- `[OPEN CORE A]` Construct the finite archimedean matrices `K_(infinity,N)>=0` directly from theta
-  atoms and the Gamma/polar completion.
-- `[OPEN CORE B]` Prove their trace powers converge to `q_n=c_n/P(2n)` simultaneously at every
-  finite cutoff, without using Xi zeros.
-- `[OPEN CORE C]` Prove trace-norm convergence to one positive trace-class `K_infinity` and identify
-  the tensor Fredholm determinant with `A` on an open disk.
-- `[OPEN CORE D]` Formalize the finite dual-Cauchy/Fredholm expansion and compose its locally uniform
-  limit with the existing square-coordinate Xi identity and RH endpoint.
+- `[CLOSED NEGATIVELY]` No positive `K_infinity` can have trace powers `q_n=c_n/P(2n)` because the
+  source tower has negative Hankel minors.
+- `[SURVIVING POSITIVE CORE]` The finite pair-product tensor, dual-Cauchy expansion, negative-real
+  zero law, and squarefree pure-column classification remain valid.
+- `[MOVED FORWARD]` Construct a graded archimedean spectrum and a prime-colored cancellation
+  differential before reading positive cohomology; see
+  `prime-arch-koszul-spectral-quotient-cancellation-rh.md`.
 
 ## 7. Parent results
 
@@ -240,7 +262,9 @@ canonical surviving exponent.
 
 ## Kill conditions
 
-Retire the tensor producer if a source-computed residual Hankel minor at `sigma=2` is negative; if
+The first kill condition has fired: a source-computed residual Hankel minor at `sigma=2` is
+negative.  Therefore the scalar tensor producer is retired.  The finite tensor/RSK algebra remains
+available to any non-scalar or graded successor.  Retire that surviving algebraic interface if
 every canonical theta/Gamma matrix has a negative eigenvalue; if the required spectrum is obtained
 only from the Xi divisor; if the trace identities hold only degree by degree with incompatible
 operators; or if the finite operators fail trace-norm compactness.  Preserve as positive output the
@@ -255,8 +279,9 @@ or any compatible positive finite-rank tensor corner.
 - [x] finite tensor power-sum law and negative-real zero classification formalized
 - [x] squarefree one-alphabet sector classified exactly in Lean as pure column
 - [x] first twelve logarithmic power sums and residual moment tests computed
-- [x] weak-damping no-go converted into a positive finite-order threshold
-- [ ] source-defined positive archimedean matrices constructed
-- [ ] simultaneous residual trace-power identities proved
-- [ ] trace-norm cofinal limit and Fredholm determinant comparison proved
-- [ ] RH capstone formalized
+- [x] weak-damping failures recorded
+- [x] canonical prime-square residual killed by stable source-computed negative Hankel minors
+- [x] scalar no-go converted into graded-spectrum positive successor
+- [x] finite graded common-spectrum cancellation formalized in the successor
+- [ ] graded source spectrum and prime-colored differential constructed in the successor
+- [ ] positive cohomology determinant comparison and RH capstone formalized in the successor

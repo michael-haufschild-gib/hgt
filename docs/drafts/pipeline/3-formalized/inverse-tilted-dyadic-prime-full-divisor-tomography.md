@@ -104,6 +104,8 @@ Its main declarations are:
 - `normalizedInverseTiltedDyadicResidue_eq_multiplicity`: exact multiplicity recovery.
 - `inverseTiltedXiDivisorEquivSimplePoleSupport`: canonical support equivalence.
 - `riemannHypothesis_iff_inverseTiltedDyadic_poles_on_line`: exact line-selection criterion.
+- `riemannHypothesis_iff_inverseTiltedDyadic_analytic_rightOne`: exact source-holomorphy
+  criterion on `Re(s)>1`.
 - `inverseTiltedDyadicPrimeFullDivisorTomography_capstone`: bundled source identity,
   continuation, support, multiplicity, and RH criterion.
 

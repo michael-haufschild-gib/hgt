@@ -373,10 +373,14 @@ elementary but inseparable from that absent interpolation surface. The one class
 abstracts cleanly and is now formalized axiom-clean in-tree is the **Herglotz/Pick property of the
 Cauchy transform** `(6)` — `formal/GaloisForLFunctions/StieltjesTransformPick.lean`:
 `stieltjesTransform_im_nonneg` and `stieltjesTransform_im_pos` prove `Im S_μ(z) ≥ 0` (resp. `> 0` for
-`μ ≠ 0`) throughout the open upper half-plane, i.e. every representing measure's Cauchy transform
-`Φ_μ` is a Pick function, via the pointwise kernel positivity `Im (x−z)⁻¹ = Im z / |x−z|²`
-(`cauchyKernel_im`, `cauchyKernel_im_pos`) and commuting `Im` through the Bochner integral
-(`im_integral`). The confluent interpolation surface itself remains absent.
+`μ ≠ 0`) throughout the open upper half-plane, via the pointwise kernel positivity
+`Im (x−z)⁻¹ = Im z / |x−z|²` (`cauchyKernel_im`, `cauchyKernel_im_pos`) and commuting `Im` through the
+Bochner integral (`im_integral`); and `stieltjes_hasDerivAt` / `stieltjesTransform_differentiableOn`
+prove `Φ_μ` is **holomorphic** on the open upper half-plane (derivative `∫ (x−z)⁻² dμ`, by
+differentiation under the integral with the local Lipschitz domination `‖(x−z)⁻²‖ ≤ (Im z₀/2)⁻²`).
+Together these formalize that every representing measure's Cauchy transform `Φ_μ` is genuinely a **Pick
+(Herglotz/Nevanlinna) function** — holomorphic with nonnegative imaginary part. The confluent
+interpolation surface (the `J`-inner transfer-matrix parametrization) itself remains absent.
 
 ## Gates
 

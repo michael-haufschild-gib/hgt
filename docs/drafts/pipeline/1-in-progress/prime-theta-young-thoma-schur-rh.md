@@ -164,6 +164,13 @@ add a second archimedean alphabet whose binary incidences repeat prime rows whil
 existing column law.  The dual-Cauchy/RSK version of that producer is separated in
 `prime-arch-dual-cauchy-rsk-fredholm-rh.md`.
 
+A second producer starts from the `1/k` cycle symmetry in the Euler logarithm and is recorded in
+`prime-power-ewens-cycle-index-young-rh.md`.  Its direct scalar form is now sharply excluded:
+shape-blind deletion forces geometric/Ewens cycle weights, while the Xi logarithmic power sums are
+nongeometric already in the first three ratios.  The positive remainder is a colored or latent
+cycle process, again forcing prime and archimedean labels to survive until after coherence is
+proved.
+
 The first decisive source equation is the one-box balance.  For every shape `mu` of size `N-1`,
 group completed words by which prime letter was deleted and prove `(YG)` before summing over
 shapes.  Failure of shape-resolved balance cannot be repaired by the scalar theta moments.

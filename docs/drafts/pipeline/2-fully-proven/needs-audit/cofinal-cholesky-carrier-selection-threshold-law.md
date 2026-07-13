@@ -886,7 +886,7 @@ is unconditionally atomless and real-Lebesgue singular, exactly the paper's
 singular-continuous carrier conclusion. Only its intersection with the still-open maximal
 full-translation HT residual set remains part of the final carrier capstone.
 
-All eighty-three exact builds pass. `#print axioms` on the new frame-fiber, selector,
+All eighty-six exact modules pass. `#print axioms` on the new frame-fiber, selector,
 constrained-control, triangular-jet, evaluation root-count, bounded-density, and projective
 Nevanlinna-control/escape/genericity, minimal-type projective-separation, compact-atlas, and
 noncriticality, disjoint-block independence, scalar hypersurface, iterated Krull-dimension, and
@@ -898,10 +898,11 @@ countable-quantization, Levy--Prokhorov, circle and projective residual singular
 exact carrier-range transport, analytic null-preimage, projective-label nonflatness, and
 singular-continuous carrier, finite Toeplitz shift-isometry, normalized OPUC degree, strict
 OPUC root-location, reversal, reciprocal-square density, mean-value orthogonality, moment-form,
-stable-terminal reconstruction, and exact Bernstein--Szegő prefix capstones reports only
+stable-terminal reconstruction, exact Bernstein--Szegő prefix, ratio-to-root,
+source-faithful Szegő-interface, and pure-singular carrier-trichotomy capstones reports only
 `propext`, `Classical.choice`, and `Quot.sound`. The touched
 modules contain no proof debt, and the
-aggregate `GaloisForLFunctions.HTGeometry` build passes with 8658 jobs, the repository-wide formal
+aggregate `GaloisForLFunctions.HTGeometry` build passes with 8661 jobs, the repository-wide formal
 lint passes, and the generated declaration indexes are current. This
 validates only the declarations listed above, not the still-unformalized claims in the paper.
 
@@ -922,8 +923,13 @@ Formalization audit (needs-audit pass): the listed modules are confirmed present
 spot-checked axiom-clean. The remaining literature inputs are classical theorems absent from
 mathlib. The exact Riesz-brothers density conclusion is matched by Yafaev's formulation of the
 classical theorem, and the exact determinant-ratio conclusion is matched by Lyons's extended
-Szegő theorem; neither theorem is reproved in Lean. The
-`PureSingularCarrierTrichotomy` capstone contains every original deduction from those two inputs.
+Szegő theorem; neither theorem is reproved in Lean. `SzegoFirstLimitInterface` represents the
+classical target as the geometric mean of the actual Radon--Nikodym derivative of the absolutely
+continuous part, including the standard zero convention. Lean proves that singularity makes this
+density vanish almost everywhere and therefore makes the geometric mean and determinant-ratio
+limit vanish. The old specialized external predicate that assumed the zero ratio directly has
+been removed. The `PureSingularCarrierTrichotomy` capstone contains every original deduction from
+these two exact inputs.
 The indeterminate-Hamburger Nevanlinna-family construction remains an external interface still to
 be matched convention-by-convention. Bernstein--Szegő finite-prefix reproduction is no longer an external input: the
 project proves it unconditionally by stable-terminal feedback reconstruction.

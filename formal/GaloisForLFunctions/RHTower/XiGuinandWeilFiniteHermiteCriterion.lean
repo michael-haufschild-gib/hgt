@@ -217,8 +217,8 @@ private theorem exists_ratCast_Ioo_not_mem_finset {a b : ℝ} (hab : a < b)
     (F : Finset ℝ) :
     ∃ x ∈ Set.Ioo a b, x ∉ F ∧ ∃ q : ℚ, x = (q : ℝ) := by
   let U : Set ℝ := Set.Ioo a b \ (F : Set ℝ)
-  have hUopen : IsOpen U :=
-    (isOpen_Ioo : IsOpen (Set.Ioo a b)).diff F.finite_toSet.isClosed
+  have hIoo : IsOpen (Set.Ioo a b) := _root_.isOpen_Ioo
+  have hUopen : IsOpen U := hIoo.diff F.finite_toSet.isClosed
   have hUinfinite : U.Infinite := (Set.Ioo_infinite hab).diff F.finite_toSet
   have hUne : U.Nonempty := hUinfinite.nonempty
   obtain ⟨q, hq⟩ := Rat.denseRange_cast.exists_mem_open hUopen hUne
@@ -709,6 +709,67 @@ theorem riemannHypothesis_of_symmetricPrimeArchTraceHankelNonnegative
     exact hsource R c hR hc hchalf hadm p
   have hreal := finite_shifted_traceHankel_nonneg_implies_real
     F w (R + 1) hw hconj hpos
+  have hqF : xiSpectralPoint q ∈ F := by
+    apply mem_xiCClosedRectangleZeros.mpr
+    constructor
+    · apply Complex.mem_reProdIm.mpr
+      rw [Set.uIcc_of_le hzre.le, Set.uIcc_of_le hzim.le]
+      dsimp only [z₁, z₂]
+      simpa [symmetricRectangleLower, symmetricRectangleUpper] using
+        And.intro (And.intro hqreL.le hqreR.le) (And.intro hqimL.le hqimR.le)
+    · exact XiC_xiSpectralPoint_eq_zero q
+  have himzero := hreal (xiSpectralPoint q) hqF
+  refine ⟨(xiSpectralPoint q).re, ?_⟩
+  apply Complex.ext
+  · simp
+  · simpa using himzero
+
+/-- The countable rational-rectangle, integer-polynomial continued prime--Gamma contour family
+already forces RH. -/
+theorem riemannHypothesis_of_countableSymmetricPrimeArchTraceHankelNonnegative
+    (hsource : XiCountableSymmetricPrimeArchTraceHankelNonnegative) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_xiSpectralPoint_real
+  intro q
+  obtain ⟨R, c, hR, hc, hchalf, hqreL, hqreR, hqimL, hqimR, hadm⟩ :=
+    exists_admissible_rational_symmetric_rectangle_containing_xiZeroCopy q
+  have hRrat : 0 < R := by exact_mod_cast hR
+  have hcrat : 0 < c := by exact_mod_cast hc
+  let z₁ := symmetricRectangleLower (R : ℝ) (c : ℝ)
+  let z₂ := symmetricRectangleUpper (R : ℝ) (c : ℝ)
+  let F := xiCClosedRectangleZeros z₁ z₂
+  let w : ℂ → ℝ := fun z => ((analyticOrderAt XiC z).toNat : ℝ)
+  have hzre : z₁.re < z₂.re := by
+    dsimp only [z₁, z₂]
+    simp [symmetricRectangleLower, symmetricRectangleUpper]
+    linarith [hRrat]
+  have hzim : z₁.im < z₂.im := by
+    dsimp only [z₁, z₂]
+    simp [symmetricRectangleLower, symmetricRectangleUpper]
+    linarith [hcrat]
+  have hw : ∀ z ∈ F, 0 < w z := by
+    intro z hz
+    have hz0 : XiC z = 0 := (mem_xiCClosedRectangleZeros.mp hz).2
+    have hmult := xiSpectralMultiplicity_pos_of_XiC_eq_zero hz0
+    rw [xiSpectralMultiplicity_eq_analyticOrderAt_toNat hz0] at hmult
+    change (0 : ℝ) < ((analyticOrderAt XiC z).toNat : ℝ)
+    exact_mod_cast hmult
+  have hconj : ∀ z ∈ F, (starRingEnd ℂ) z ∈ F := by
+    intro z hz
+    exact symmetricRectangleZeros_conj_closed hR.le hc.le z hz
+  have hpos : ∀ p : Polynomial ℤ,
+      0 ≤ (∑ z ∈ F, ((w z : ℝ) : ℂ) * ((((R : ℝ) + 1 : ℝ) : ℂ) + z) *
+        evalRealPolynomial (p.map (Int.castRingHom ℝ))
+          (((((R : ℝ) + 1 : ℝ) : ℂ) + z)) ^ 2).re := by
+    intro p
+    have hs := hsource R c hR hc hchalf hadm p
+    have heq :=
+      normalized_symmetricPrimeArchHermiteContour_eq_closedRectangleTraceHankel
+        hR hc hadm (p.map (Int.castRingHom ℝ))
+    rw [heq] at hs
+    simpa [F, w, z₁, z₂] using hs
+  have hreal := finite_shifted_traceHankel_int_nonneg_implies_real
+    F w ((R : ℝ) + 1) hw hconj hpos
   have hqF : xiSpectralPoint q ∈ F := by
     apply mem_xiCClosedRectangleZeros.mpr
     constructor

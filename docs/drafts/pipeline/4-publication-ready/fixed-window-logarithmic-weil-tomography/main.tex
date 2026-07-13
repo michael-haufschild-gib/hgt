@@ -168,18 +168,19 @@ finite Guinand--Weil zero sums~\cite{Groskin2026}.
 There is also a classical superzeta literature in which Dirichlet series are formed directly over
 the Riemann zeros and their meromorphic polar structure is studied~\cite{Voros2003}.  That
 construction takes the zero set as the Dirichlet indexing object.  Here the Dirichlet variable is
-the ordinary integer $n$.  More strongly, the principal coefficient sequence in this paper is
-the explicit dyadic von Mangoldt statistic $S(n)$ from the abstract.  Its Mellin poles recover the
-transverse divisor with multiplicity, without using zeros to define the coefficients.  This
+the ordinary integer $n$.  More strongly, the source coefficient sequence in this paper is
+the explicit inverse-tilted dyadic von Mangoldt statistic $P_-(n)$ from the abstract.  Its Mellin
+poles recover the complete nontrivial divisor with multiplicity, without using zeros to define the coefficients.  This
 distinction is essential for the intended prime-side and semilocal interpretation.
 
-The main source theorem is multiplicity-exact tomography from one fixed dyadic window.  Reversing
-the finite window sum produces a Mellin factor and a holomorphic quadrature remainder.  Filling
-the pole of zeta at $1$ leaves a continued source whose only possible singularities on
-$\Re s>1$ are logarithmic-derivative poles.  The positive-width Mellin factor cannot cancel any
-of them.  Their locations recover the right xi support and their normalized residues recover the
-analytic multiplicities.  This closes the source-to-divisor incidence for the detector; it does
-not prove the remaining holomorphy or critical-energy estimate.
+The main source theorem is multiplicity-exact tomography from one inverse-tilted dyadic window.
+Reversing the finite window sum produces a Mellin factor and a holomorphic quadrature remainder.
+Filling the pole of zeta at $1$ leaves a continued source whose only possible singularities on
+$\Re s>\frac12$ are logarithmic-derivative poles.  The inverse tilt changes the Mellin factor
+from $A_{\log2}(s-1)$ to $A_{\log2}(s)$, moving its zero lattice from $\Re s=1$ to $\Re s=0$.
+It therefore cannot cancel any shifted nontrivial xi zero.  Pole locations recover the complete
+xi support and normalized residues recover analytic multiplicities.  This closes the full
+source-to-divisor incidence; it does not prove that the resulting poles lie on $\Re s=1$.
 
 The companion Weil theorem isolates a second compression.  Fix any $L>0$ once and for all.  Translate the
 same two-edge rectangle to aperture $a$, then sample only at $a=\frac12\log n$.  Three phenomena
@@ -212,18 +213,18 @@ one-sided lower-loss spectrum is the exact closed
 ray beginning at the rightmost transverse divisor coordinate, so it yields every horizontal
 zero-free region, not only the RH endpoint.
 
-The candidate novelty is the conjunction of a source-defined fixed dyadic prime window with
-multiplicity-exact divisor recovery, together with fixed positive width, arithmetic logarithmic sampling,
-cofinal divergence, exact one-sided exponent spectrum, exact positive-channel spectrum,
-universal negative-channel abscissae, positive-split conservation,
-and observable multiplicity-exact pole tomography.  Landau's
-theorem, Weil positivity, shifted-zeta continuation, and screw functions are the parent
-mechanisms.  We keep this boundary explicit.  We also keep the logical boundary explicit: the
-paper does not prove RH.  The dyadic theorem establishes the completed source--divisor coupling
-itself.  A successful prime-side or semilocal construction must now prove a positive critical
-shifted-energy estimate for this explicit source, or holomorphy of its canonical continuation.
-The rectangular theorem gives a second exact route through any positive majorant or finite-channel
-cover of the actual Weil negative mass.
+The candidate novelty lies in the fixed-window Weil-energy theorem: fixed positive width,
+arithmetic logarithmic sampling, cofinal divergence, the exact one-sided and positive-channel
+spectra, universal negative-channel abscissae, positive-split conservation, and observable
+multiplicity-exact pole tomography.  The inverse-tilted source theorem is explicitly classified as
+bridge infrastructure: it is a sharpened application of the Euler logarithmic derivative,
+bounded-variation quadrature, and meromorphic divisor calculus.  Landau's theorem, Weil
+positivity, shifted-zeta continuation, and screw functions are likewise parent mechanisms.  We
+keep the logical boundary explicit: the paper does not prove RH.  The source theorem establishes
+the completed source--divisor coupling itself.  A successful prime-side or semilocal construction
+must now force holomorphy of its canonical continuation on $\Re s>1$.  The rectangular theorem
+gives a second exact route through any positive majorant or finite-channel cover of the actual
+Weil negative mass.
 
 \section{The centered xi divisor and the rectangular window}
 
@@ -983,38 +984,42 @@ Weil form~\cite{Suzuki2023,Suzuki2025,Suzuki2026}.  The additional feature here 
 rectangular stencil and the arithmetic logarithmic mesh, which produce the Dirichlet continuation
 and pole tomography of Section~5.
 
-\section{Multiplicity-exact tomography from one dyadic prime source}
+\section{Complete-divisor tomography from one inverse-tilted dyadic prime source}
 
 We now remove the target-defined coefficient from the source side.  Put
 \[
- W(n)=\sum_{n/2<k\le n}\frac{\Lambda(k)}{\sqrt{k}},\qquad
- \kappa=1-\frac1{\sqrt2},\qquad
- S(n)=4\kappa\sqrt n-2W(n).
+ T_-(n)=\sum_{n/2<k\le n}
+   \frac{\Lambda(k)}{\sqrt{k}}\frac{k}{n},\qquad
+ P_-(n)=2A_{\log2}(3/2)\sqrt n-2T_-(n).
  \tag{7.1}
 \]
 Every term is explicit and finite.  Define
 \[
- M(s)=A_{\log 2}(s-1).
+ M_-(s)=A_{\log2}(s).
  \tag{7.2}
 \]
-This is the Mellin transform of the sharp multiplicative interval $[1,2]$; in particular
-$M(3/2)=2\kappa$.  The unit-window noncensorship law gives
+This is the Mellin transform of the inverse-tilted sharp multiplicative window
+$u^{-1}\mathbf1_{[1,2]}(u)$.  Its nonzero zeros all lie on $\Re s=0$, so
 \[
- M(s)\ne0\qquad(\Re s>1).
+ M_-(s)\ne0\qquad(\Re s>0).
  \tag{7.3}
 \]
+Every shifted nontrivial xi zero has real part strictly between $1/2$ and $3/2$.
+Thus one inverse tilt moves the Mellin zero lattice completely away from the full shifted xi
+divisor.  No second incommensurable window is required.
 
 For $k\ge1$ let
 \[
- E_k(s)=\sum_{j=0}^{k-1}(k+j)^{-s}-\int_k^{2k}x^{-s}\,dx
+ E_k^-(s)=\sum_{j=0}^{k-1}(k+j)^{-(s+1)}
+             -\int_k^{2k}x^{-(s+1)}\,dx
  \tag{7.4}
 \]
 and set
 \[
- H(s)=\sum_{k\ge1}\frac{\Lambda(k)}{\sqrt{k}}E_k(s).
+ H_-(s)=\sum_{k\ge1}\Lambda(k)\sqrt{k}\,E_k^-(s).
  \tag{7.5}
 \]
-The cellwise quadrature bound is locally uniform and makes $H$ holomorphic on
+The cellwise quadrature bound is locally uniform and makes $H_-$ holomorphic on
 $\Re s>\frac12$.  Let $Z_*$ be zeta with its pole filled,
 \[
  Z_*(t)=
@@ -1026,128 +1031,114 @@ $\Re s>\frac12$.  Let $Z_*$ be zeta with its pole filled,
 \]
 and define the entire numerator
 \[
- N(s)=2M(3/2)Z_*(s-1/2)-2M(s).
+ N_-(s)=2M_-(3/2)Z_*(s-1/2)-2M_-(s).
  \tag{7.7}
 \]
-Since $N(3/2)=0$, its divided difference
+Since $N_-(3/2)=0$, its divided difference
 \[
- D_{3/2}N(s)=
+ D_{3/2}N_-(s)=
  \begin{cases}
-  \dfrac{N(s)-N(3/2)}{s-3/2},&s\ne3/2,\\[6pt]
-  N'(3/2),&s=3/2,
+  \dfrac{N_-(s)-N_-(3/2)}{s-3/2},&s\ne3/2,\\[6pt]
+  N_-'(3/2),&s=3/2,
  \end{cases}
 \]
 is entire.  The canonical source continuation is
 \[
- \cS(s)=D_{3/2}N(s)
-   +2M(s)\frac{Z_*'(s-1/2)}{Z_*(s-1/2)}-2H(s).
+ \cS_-(s)=D_{3/2}N_-(s)
+   +2M_-(s)\frac{Z_*'(s-1/2)}{Z_*(s-1/2)}-2H_-(s).
  \tag{7.8}
 \]
 
-\begin{theorem}[Main source theorem: one dyadic window recovers the divisor]
-\label{thm:dyadic-source-tomography}
+\begin{theorem}[Main source theorem: one prime source is the complete xi divisor]
+\label{thm:inverse-tilted-source-tomography}
 The ordinary Dirichlet series of the source coefficients in \textup{(7.1)} satisfies
 \[
- \sum_{n\ge1}\frac{S(n)}{n^s}=\cS(s)
+ \sum_{n\ge1}\frac{P_-(n)}{n^s}=\cS_-(s)
  \qquad(\Re s>3/2).
  \tag{7.9}
 \]
-The function $\cS$ is meromorphic on $\Re s>\frac12$.  On $\Re s>1$,
+The function $\cS_-$ is meromorphic on $\Re s>\frac12$, and throughout this entire half-plane
 \[
- \ord_s\cS=-1
+ \ord_s\cS_-=-1
  \quad\Longleftrightarrow\quad
  s=\rho+\frac12
- \text{ for a zero }\XiR(\rho)=0,\quad\Re\rho>\frac12.
+ \text{ for a nontrivial zero }\XiR(\rho)=0.
  \tag{7.10}
 \]
 There are no other poles there.  If $\rho$ has analytic multiplicity $m(\rho)$ and
 $p=\rho+\frac12$, then
 \[
- \operatorname*{Res}_{s=p}\cS(s)=2M(p)m(\rho),
+ \operatorname*{Res}_{s=p}\cS_-(s)=2M_-(p)m(\rho),
  \qquad
- m(\rho)=\frac{\operatorname*{Res}_{s=p}\cS(s)}{2M(p)}.
+ m(\rho)=\frac{\operatorname*{Res}_{s=p}\cS_-(s)}{2M_-(p)}.
  \tag{7.11}
 \]
 Consequently
 \[
- \{\rho:\XiR(\rho)=0,\ \Re\rho>\tfrac12\}
- =\{s-\tfrac12:\Re s>1,\ \ord_s\cS=-1\},
+ \{\rho:\XiR(\rho)=0\}
+ \simeq
+ \{s:\Re s>\tfrac12,\ \ord_s\cS_-=-1\},
+ \qquad \rho\longmapsto\rho+\tfrac12,
  \tag{7.12}
 \]
-with multiplicities supplied by \textup{(7.11)}, and
+with exact multiplicities supplied by \textup{(7.11)}.  Moreover,
 \[
  \mathrm{RH}
  \quad\Longleftrightarrow\quad
- \cS\text{ is holomorphic on }\Re s>1.
+ \text{every pole of }\cS_-\text{ lies on }\Re s=1
+ \quad\Longleftrightarrow\quad
+ \cS_-\text{ is holomorphic on }\Re s>1.
  \tag{7.13}
 \]
-
-For $\alpha\ge0$, define the positive source excess
-\[
- E(n)=\left(W(n)-2\kappa\sqrt n\right)^+=\frac12 S(n)^-.
- \tag{7.14}
-\]
-Then the one-abscissa energy implication
-\[
- \sum_{n\ge1}\frac{E(n)}{n^{1+\alpha}}<\infty
- \quad\Longrightarrow\quad
- \Re\rho\le\frac12+\alpha
- \quad\text{for every xi zero }\rho
- \tag{7.15}
-\]
-holds.  At the single critical abscissa $\alpha=0$, the premise in \textup{(7.15)} proves RH.
 \end{theorem}
 
 \begin{proof}
 On $\Re s>3/2$, absolute convergence permits reversal of the finite dyadic windows.  The exact
 cell decomposition gives
 \[
- \sum_{n\ge1}\frac{W(n)}{n^s}
- =-M(s)\frac{\zeta'(s-1/2)}{\zeta(s-1/2)}+H(s).
+ \sum_{n\ge1}\frac{T_-(n)}{n^s}
+ =-M_-(s)\frac{\zeta'(s-1/2)}{\zeta(s-1/2)}+H_-(s).
 \]
-Together with $\sum\sqrt n\,n^{-s}=\zeta(s-1/2)$ and $M(3/2)=2\kappa$, elementary pole filling
+Together with $\sum\sqrt n\,n^{-s}=\zeta(s-1/2)$, elementary pole filling
 at $s=3/2$ yields \textup{(7.8)}--\textup{(7.9)}.  The locally normal quadrature estimate makes
-$H$ holomorphic on $\Re s>\frac12$; the divided difference is entire.  Hence the only possible
-poles of $\cS$ are those of $Z_*'/Z_*$.
+$H_-$ holomorphic on $\Re s>\frac12$; the divided difference is entire.  Hence the only possible
+poles of $\cS_-$ are those of $Z_*'/Z_*$.
 
 At a zero $\rho$ of analytic multiplicity $m(\rho)$,
 \[
  (t-\rho)\frac{Z_*'(t)}{Z_*(t)}\longrightarrow m(\rho).
 \]
 Translation by $1/2$ preserves the order.  Thus at $p=\rho+1/2$ the singular term in
-\textup{(7.8)} has residue $2M(p)m(\rho)$, while both remaining terms are holomorphic.
+\textup{(7.8)} has residue $2M_-(p)m(\rho)$, while both remaining terms are holomorphic.
 Noncensorship \textup{(7.3)} prevents cancellation.  Conversely, away from a zero of $Z_*$ all
 three terms are holomorphic.  In the strip in question, the regularizing linear factor and the
 archimedean xi factor are local units, so the zeros and analytic orders of $Z_*$ and xi agree.
-This proves \textup{(7.10)}--\textup{(7.13)}.
+Because $0<\Re\rho<1$, every pole coordinate satisfies $\Re p>1/2$ and $M_-(p)\ne0$.
+This proves the support equivalence and multiplicity formula.
 
-Finally, adding $S(n)^-=2E(n)$ makes the source coefficients nonnegative.  Landau continuation
-at the real transverse boundary shows that convergence of this correction at $1+\alpha$ excludes
-every shifted xi pole to its right, which is \textup{(7.15)}.  For $\alpha=0$, the inequality
-$\Re\rho\le\frac12$ excludes every zero in the open right half of the critical strip and is
-equivalent to RH by functional-equation symmetry.
+Under RH every xi zero has $\Re\rho=1/2$, so every pole has $\Re p=1$ and $\cS_-$ is holomorphic
+on $\Re s>1$.  Conversely, a right off-critical zero produces a genuine pole with $\Re p>1$.
+The functional equation reflects every left off-critical zero to such a right zero.  This proves
+\textup{(7.13)}.
 \end{proof}
 
-The theorem is source-pure in the relevant sense: neither $S(n)$ nor its finite window uses a
+The theorem is source-pure in the relevant sense: neither $P_-(n)$ nor its finite window uses a
 zero, zero ordinate, target divisor, or test-function approximation.  The regularized
 continuation is forced by the ordinary Dirichlet series and exact quadrature, not chosen by
-interpolation.  The remaining RH-bearing statement is therefore a concrete estimate on this
-single sequence: prove \textup{(7.15)} at $\alpha=0$, or prove the equivalent holomorphy in
-\textup{(7.13)}.
+interpolation.  It also removes the last source-completeness ambiguity: one scalar prime sequence
+already carries the whole nontrivial divisor, including the critical-line part.  The remaining
+RH-bearing statement is therefore exactly the holomorphy assertion in \textup{(7.13)}.
 
 \section{Implications for the Connes route}
 
-Theorem~\ref{thm:dyadic-source-tomography} closes the source--divisor incidence without asking a
-semilocal construction to identify the target-defined Weil sequence.  The sharp positive
-obligation is now explicit: realize the one dyadic coefficient $S(n)$ and prove
-\[
- \sum_{n\ge1}\frac{S(n)^-}{n}<\infty,
-\]
-or prove directly that its forced continuation $\cS$ is holomorphic on $\Re s>1$.  Either
-statement proves RH.  A Connes or Connes--Consani realization may obtain this through a positive
-relative trace, a Sonin compression, or a cofinal near-radical section, but the resulting scalar
-channel must agree with \textup{(7.1)} and retain the multiplicity normalization
-\textup{(7.11)}.
+Theorem~\ref{thm:inverse-tilted-source-tomography} closes the complete source--divisor incidence
+without asking a semilocal construction to identify a target-defined Weil sequence.  The positive
+obligation is now explicit: realize the coefficient $P_-(n)$ and prove that its forced continuation
+$\cS_-$ is holomorphic on $\Re s>1$.  Equivalently, prove that the polar divisor reconstructed by
+\textup{(7.10)} is supported on $\Re s=1$.  Either statement proves RH.  A Connes or
+Connes--Consani realization may obtain this through a positive relative trace, a Sonin
+compression, or a cofinal near-radical section, but the resulting scalar channel must agree with
+\textup{(7.1)} and retain the multiplicity normalization \textup{(7.11)}.
 
 The rectangular theorem gives a complementary positive-allocation route.  It is not necessary to
 establish positivity on an unspecified compact family, nor to match finitely many spectral
@@ -1229,22 +1220,21 @@ intrinsic carrier, not independent density scales.
 
 \section{Scope and limitations}
 
-The results are unconditional.  The dyadic theorem is source-side and recovers the complete right
-divisor with multiplicity; the rectangular theorem is an exact divisor-side energy law.  What is
-not proved is the critical estimate
-$\sum S(n)^-/n<\infty$, the equivalent holomorphy of $\cS$ on $\Re s>1$, or an operator theorem
-forcing either statement.  The paper therefore does not prove RH.  It reduces the remaining
-problem to one explicit prime-source channel and gives an independent universal energy geometry
-for every fixed rectangular Weil window.
+The results are unconditional.  The inverse-tilted theorem is source-side and recovers the
+complete nontrivial divisor with multiplicity; the rectangular theorem is an exact divisor-side
+energy law.  What is not proved is holomorphy of $\cS_-$ on $\Re s>1$, or an operator theorem
+forcing that statement.  The paper therefore does not prove RH.  It reduces the remaining source
+problem to line selection for one explicit prime channel and gives an independent universal
+energy geometry for every fixed rectangular Weil window.
 
 The rectangle is deliberately nonsmooth.  We avoid an inadmissible appeal to the classical smooth
 test space by defining $Q_L$ through the absolutely convergent xi divisor polarization.  A
 prime-side explicit-formula realization of this exact boundary value requires either an
 appropriate completion theorem or a justified approximation whose limit preserves the scalar
 sequence.  This regularity issue remains open for the rectangular identity, but it is no longer
-the source bridge for the paper's main detector: Theorem~\ref{thm:dyadic-source-tomography}
-constructs a separate exact prime source directly.  Its critical energy or holomorphy estimate is
-the remaining RH-bearing step.
+the source bridge for the paper's main detector:
+Theorem~\ref{thm:inverse-tilted-source-tomography} constructs a separate exact prime source
+directly.  Holomorphy of that source on $\Re s>1$ is the remaining RH-bearing step.
 
 Every off-critical zero, simple or multiple, produces a simple pole, so pole order alone forgets
 multiplicity.  Both tomography theorems repair exactly that loss.  The source residue is the
@@ -1252,13 +1242,13 @@ analytic multiplicity times the nonvanishing dyadic Mellin factor, while the Wei
 residue uses the nonvanishing rectangular square weight.  Thus the weighted pole divisor, not the
 unweighted pole set, is the intrinsic observable.
 
-Finally, the novelty claim is intentionally narrow and remains subject to the dedicated audit of
-the dyadic formulation.  Weil positivity, the Connes trace-formula
-architecture, Landau's theorem, and the screw function are established parent theories.  The new
-candidate contribution is source-defined dyadic multiplicity tomography together with the
-fixed-window logarithmic compression, its exact one-sided exponent spectrum,
-universal negative-channel abscissa, exact positive-channel abscissa conservation and order-ideal
-cover spectrum, thickness corollaries, and multiplicity-exact meromorphic tomography.
+Finally, the novelty claim is intentionally narrow.  Weil positivity, the Connes trace-formula
+architecture, the Euler logarithmic-derivative source transform, Landau's theorem, and the screw
+function are established parent mechanisms.  The inverse-tilted complete-divisor theorem is
+bridge infrastructure.  The candidate-new contribution is the fixed-window logarithmic
+compression, its exact one-sided exponent spectrum, universal negative-channel abscissa, exact
+positive-channel abscissa conservation and order-ideal cover spectrum, thickness corollaries,
+and multiplicity-exact meromorphic tomography of the actual Weil observable.
 
 \begin{thebibliography}{99}
 

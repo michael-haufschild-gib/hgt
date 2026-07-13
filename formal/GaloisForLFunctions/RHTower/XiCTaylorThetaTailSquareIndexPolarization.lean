@@ -1136,6 +1136,316 @@ theorem tendsto_thetaSquareIndexDyadicWeightedMomentProduct_zero (m n : ℕ) :
   · exact thetaSquareIndexDyadicWeightedMomentProduct_le_majorant m n
   · exact tendsto_thetaSquareIndexDyadicWeightedMomentProductMajorant_zero m n
 
+/-! ## Finite Taylor packets carried by the dyadic top row -/
+
+/-- The complexified `m`th moment of the depth-`k` dyadic density row.  It is defined as the
+complexification of the real moment so that conjugation is definitionally transparent. -/
+def thetaSquareIndexDyadicComplexMoment (m k : ℕ) : ℂ :=
+  ((∫ x : ℝ in Ioi 0,
+    x ^ m * thetaSquareIndexDyadicDensity k x : ℝ) : ℂ)
+
+theorem thetaSquareIndexDyadicComplexMoment_conj (m k : ℕ) :
+    (starRingEnd ℂ) (thetaSquareIndexDyadicComplexMoment m k) =
+      thetaSquareIndexDyadicComplexMoment m k := by
+  simp [thetaSquareIndexDyadicComplexMoment]
+
+/-- Haar-normalized products of two complexified moments vanish. -/
+theorem tendsto_thetaSquareIndexDyadicWeightedComplexMomentProduct_zero
+    (m n : ℕ) :
+    Tendsto (fun k : ℕ =>
+      (2 : ℂ) ^ k * thetaSquareIndexDyadicComplexMoment m k *
+        thetaSquareIndexDyadicComplexMoment n k) atTop (nhds 0) := by
+  have h := Complex.continuous_ofReal.continuousAt.tendsto.comp
+    (tendsto_thetaSquareIndexDyadicWeightedMomentProduct_zero m n)
+  convert h using 1
+  funext k
+  unfold thetaSquareIndexDyadicComplexMoment
+    thetaSquareIndexDyadicWeightedMomentProduct
+  simp only [Function.comp_apply]
+  push_cast
+  ring
+
+/-- An arbitrary finite complex linear packet of dyadic top-row moments. -/
+def thetaSquareIndexDyadicFiniteMomentPacket {ι : Type*}
+    (s : Finset ι) (exponent : ι → ℕ) (coefficient : ι → ℂ)
+    (k : ℕ) : ℂ :=
+  ∑ i ∈ s, coefficient i *
+    thetaSquareIndexDyadicComplexMoment (exponent i) k
+
+/-- Any Haar-normalized product of two fixed finite moment packets vanishes.  This is the
+finite-coefficient form needed for every fixed Taylor section. -/
+theorem tendsto_thetaSquareIndexDyadicWeightedFiniteMomentPacketProduct_zero
+    {ι κ : Type*} (s : Finset ι) (t : Finset κ)
+    (m : ι → ℕ) (n : κ → ℕ) (a : ι → ℂ) (b : κ → ℂ) :
+    Tendsto (fun k : ℕ =>
+      (2 : ℂ) ^ k * thetaSquareIndexDyadicFiniteMomentPacket s m a k *
+        thetaSquareIndexDyadicFiniteMomentPacket t n b k)
+      atTop (nhds 0) := by
+  have hpair : ∀ i ∈ s, ∀ j ∈ t,
+      Tendsto (fun k : ℕ =>
+        (a i * b j) *
+          ((2 : ℂ) ^ k * thetaSquareIndexDyadicComplexMoment (m i) k *
+            thetaSquareIndexDyadicComplexMoment (n j) k))
+        atTop (nhds 0) := by
+    intro i _hi j _hj
+    simpa using (tendsto_const_nhds.mul
+      (tendsto_thetaSquareIndexDyadicWeightedComplexMomentProduct_zero
+        (m i) (n j)))
+  have hsum : Tendsto (fun k : ℕ =>
+      ∑ j ∈ t, ∑ i ∈ s,
+        (a i * b j) *
+          ((2 : ℂ) ^ k * thetaSquareIndexDyadicComplexMoment (m i) k *
+            thetaSquareIndexDyadicComplexMoment (n j) k))
+      atTop (nhds 0) := by
+    simpa using tendsto_finset_sum t (fun j hj =>
+      tendsto_finset_sum s (fun i hi => hpair i hi j hj))
+  convert hsum using 1
+  funext k
+  unfold thetaSquareIndexDyadicFiniteMomentPacket
+  simp only [Finset.mul_sum, Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro j _hj
+  apply Finset.sum_congr rfl
+  intro i _hi
+  ring
+
+theorem thetaSquareIndexDyadicComplexMoment_eq_integral (m k : ℕ) :
+    thetaSquareIndexDyadicComplexMoment m k =
+      ∫ x : ℝ in Ioi 0,
+        (thetaSquareIndexDyadicDensity k x : ℂ) * (x : ℂ) ^ m := by
+  unfold thetaSquareIndexDyadicComplexMoment
+  rw [show (fun x : ℝ =>
+      (thetaSquareIndexDyadicDensity k x : ℂ) * (x : ℂ) ^ m) =
+      fun x : ℝ => ((x ^ m * thetaSquareIndexDyadicDensity k x : ℝ) : ℂ) by
+    funext x
+    push_cast
+    ring]
+  exact (integral_ofReal (X := ℝ) (μ := volume.restrict (Ioi 0))
+    (𝕜 := ℂ)).symm
+
+theorem integrableOn_thetaSquareIndexDyadicDensity_mul_complexPower
+    (m k : ℕ) :
+    IntegrableOn (fun x : ℝ =>
+      (thetaSquareIndexDyadicDensity k x : ℂ) * (x : ℂ) ^ m) (Ioi 0) := by
+  have h : IntegrableOn (fun x : ℝ =>
+      ((x ^ m * thetaSquareIndexDyadicDensity k x : ℝ) : ℂ)) (Ioi 0) :=
+    (integrableOn_pow_mul_thetaSquareIndexDyadicDensity m k).ofReal
+  convert h using 1
+  funext x
+  push_cast
+  ring
+
+/-- Integration against a dyadic row sends a finite source-power packet to its finite moment
+packet exactly. -/
+theorem integral_thetaSquareIndexDyadicDensity_mul_finitePowerPacket
+    {ι : Type*} (s : Finset ι) (m : ι → ℕ) (a : ι → ℂ) (k : ℕ) :
+    (∫ x : ℝ in Ioi 0,
+      (thetaSquareIndexDyadicDensity k x : ℂ) *
+        (∑ i ∈ s, a i * (x : ℂ) ^ m i)) =
+      thetaSquareIndexDyadicFiniteMomentPacket s m a k := by
+  rw [show (fun x : ℝ =>
+      (thetaSquareIndexDyadicDensity k x : ℂ) *
+        (∑ i ∈ s, a i * (x : ℂ) ^ m i)) =
+      fun x : ℝ => ∑ i ∈ s,
+        a i * ((thetaSquareIndexDyadicDensity k x : ℂ) * (x : ℂ) ^ m i) by
+    funext x
+    simp only [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro i _hi
+    ring]
+  rw [MeasureTheory.integral_finset_sum]
+  · unfold thetaSquareIndexDyadicFiniteMomentPacket
+    apply Finset.sum_congr rfl
+    intro i _hi
+    rw [MeasureTheory.integral_const_mul,
+      ← thetaSquareIndexDyadicComplexMoment_eq_integral]
+  · intro i _hi
+    exact (integrableOn_thetaSquareIndexDyadicDensity_mul_complexPower
+      (m i) k).const_mul (a i)
+
+theorem thetaSquareIndexDyadicFiniteMomentPacket_conj
+    {ι : Type*} (s : Finset ι) (m : ι → ℕ) (a : ι → ℂ) (k : ℕ) :
+    (starRingEnd ℂ) (thetaSquareIndexDyadicFiniteMomentPacket s m a k) =
+      thetaSquareIndexDyadicFiniteMomentPacket s m
+        (fun i => (starRingEnd ℂ) (a i)) k := by
+  unfold thetaSquareIndexDyadicFiniteMomentPacket
+  rw [map_sum]
+  apply Finset.sum_congr rfl
+  intro i _hi
+  rw [map_mul, thetaSquareIndexDyadicComplexMoment_conj]
+
+/-- Coefficient of `x^(2r+2)` in the finite theta-tail section. -/
+def thetaCuspTailSecondSectionSourceCoefficient (z : ℂ) (r : ℕ) : ℂ :=
+  (-1 : ℂ) ^ r * z ^ (2 * r) / (2 * r + 2).factorial
+
+/-- Coefficient of `x^(2r+2)` in the spectral derivative of the section. -/
+def thetaCuspTailSecondSectionDerivativeSourceCoefficient
+    (z : ℂ) (r : ℕ) : ℂ :=
+  (-1 : ℂ) ^ r * ((2 * r : ℕ) : ℂ) * z ^ (2 * r - 1) /
+    (2 * r + 2).factorial
+
+/-- Coefficient of `x^(2r+2)` in the spectral derivative of the core atom. -/
+def thetaCuspTailSecondCoreAtomDerivativeSourceCoefficient
+    (z : ℂ) (r : ℕ) : ℂ :=
+  -2 * z * thetaCuspTailSecondSectionSourceCoefficient z r -
+    (z ^ 2 + 1 / 4) *
+      thetaCuspTailSecondSectionDerivativeSourceCoefficient z r
+
+/-- Dyadic moment packet representing the finite theta-tail section. -/
+def thetaSquareIndexDyadicSectionMomentPacket
+    (d : ℕ) (z : ℂ) (k : ℕ) : ℂ :=
+  thetaSquareIndexDyadicFiniteMomentPacket (Finset.range (d + 1))
+    (fun r => 2 * r + 2) (thetaCuspTailSecondSectionSourceCoefficient z) k
+
+/-- Dyadic moment packet representing the spectral derivative of the finite core atom. -/
+def thetaSquareIndexDyadicCoreAtomDerivativeMomentPacket
+    (d : ℕ) (z : ℂ) (k : ℕ) : ℂ :=
+  thetaSquareIndexDyadicFiniteMomentPacket (Finset.range (d + 1))
+    (fun r => 2 * r + 2)
+    (thetaCuspTailSecondCoreAtomDerivativeSourceCoefficient z) k
+
+theorem thetaCuspTailSecondSection_eq_sourcePowerPacket
+    (d : ℕ) (z : ℂ) (x : ℝ) :
+    thetaCuspTailSecondSection d z x =
+      ∑ r ∈ Finset.range (d + 1),
+        thetaCuspTailSecondSectionSourceCoefficient z r *
+          (x : ℂ) ^ (2 * r + 2) := by
+  unfold thetaCuspTailSecondSection
+    thetaCuspTailSecondSectionSourceCoefficient
+  apply Finset.sum_congr rfl
+  intro r _hr
+  ring
+
+theorem thetaCuspTailSecondCoreAtomDerivative_eq_sourcePowerPacket
+    (d : ℕ) (z : ℂ) (x : ℝ) :
+    thetaCuspTailSecondCoreAtomDerivative d z x =
+      ∑ r ∈ Finset.range (d + 1),
+        thetaCuspTailSecondCoreAtomDerivativeSourceCoefficient z r *
+          (x : ℂ) ^ (2 * r + 2) := by
+  unfold thetaCuspTailSecondCoreAtomDerivative
+    thetaCuspTailSecondSection thetaCuspTailSecondSectionDerivative
+    thetaCuspTailSecondCoreAtomDerivativeSourceCoefficient
+    thetaCuspTailSecondSectionSourceCoefficient
+    thetaCuspTailSecondSectionDerivativeSourceCoefficient
+  simp only [Finset.mul_sum]
+  rw [← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro r _hr
+  push_cast
+  ring
+
+/-- The core value averaged against the depth-`k` square-index row. -/
+def thetaSquareIndexDyadicCoreAtomAverage
+    (d : ℕ) (z : ℂ) (k : ℕ) : ℂ :=
+  ∫ x : ℝ in Ioi 0,
+    (thetaSquareIndexDyadicDensity k x : ℂ) *
+      thetaCuspTailSecondCoreAtom d z x
+
+/-- The core spectral derivative averaged against the depth-`k` square-index row. -/
+def thetaSquareIndexDyadicCoreAtomDerivativeAverage
+    (d : ℕ) (z : ℂ) (k : ℕ) : ℂ :=
+  ∫ x : ℝ in Ioi 0,
+    (thetaSquareIndexDyadicDensity k x : ℂ) *
+      thetaCuspTailSecondCoreAtomDerivative d z x
+
+theorem thetaSquareIndexDyadicCoreAtomAverage_eq_momentPacket
+    (d : ℕ) (z : ℂ) (k : ℕ) :
+    thetaSquareIndexDyadicCoreAtomAverage d z k =
+      thetaSquareIndexDyadicComplexMoment 0 k -
+        (z ^ 2 + 1 / 4) *
+          thetaSquareIndexDyadicSectionMomentPacket d z k := by
+  unfold thetaSquareIndexDyadicCoreAtomAverage thetaCuspTailSecondCoreAtom
+  simp_rw [thetaCuspTailSecondSection_eq_sourcePowerPacket]
+  rw [show (fun x : ℝ =>
+      (thetaSquareIndexDyadicDensity k x : ℂ) *
+        (1 - (z ^ 2 + 1 / 4) *
+          ∑ r ∈ Finset.range (d + 1),
+            thetaCuspTailSecondSectionSourceCoefficient z r *
+              (x : ℂ) ^ (2 * r + 2))) =
+      fun x : ℝ =>
+        (thetaSquareIndexDyadicDensity k x : ℂ) * (x : ℂ) ^ 0 -
+          (z ^ 2 + 1 / 4) *
+            ((thetaSquareIndexDyadicDensity k x : ℂ) *
+              ∑ r ∈ Finset.range (d + 1),
+                thetaCuspTailSecondSectionSourceCoefficient z r *
+                  (x : ℂ) ^ (2 * r + 2)) by
+    funext x
+    simp only [pow_zero]
+    ring]
+  rw [integral_sub]
+  · rw [MeasureTheory.integral_const_mul,
+      ← thetaSquareIndexDyadicComplexMoment_eq_integral]
+    unfold thetaSquareIndexDyadicSectionMomentPacket
+    rw [integral_thetaSquareIndexDyadicDensity_mul_finitePowerPacket]
+  · exact integrableOn_thetaSquareIndexDyadicDensity_mul_complexPower 0 k
+  · have hp : IntegrableOn (fun x : ℝ =>
+        (thetaSquareIndexDyadicDensity k x : ℂ) *
+          ∑ r ∈ Finset.range (d + 1),
+            thetaCuspTailSecondSectionSourceCoefficient z r *
+              (x : ℂ) ^ (2 * r + 2)) (Ioi 0) := by
+      rw [show (fun x : ℝ =>
+          (thetaSquareIndexDyadicDensity k x : ℂ) *
+            ∑ r ∈ Finset.range (d + 1),
+              thetaCuspTailSecondSectionSourceCoefficient z r *
+                (x : ℂ) ^ (2 * r + 2)) =
+          fun x : ℝ => ∑ r ∈ Finset.range (d + 1),
+            thetaCuspTailSecondSectionSourceCoefficient z r *
+              ((thetaSquareIndexDyadicDensity k x : ℂ) *
+                (x : ℂ) ^ (2 * r + 2)) by
+        funext x
+        simp only [Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intro r _hr
+        ring]
+      exact MeasureTheory.integrable_finset_sum _ fun r _hr =>
+        (integrableOn_thetaSquareIndexDyadicDensity_mul_complexPower
+          (2 * r + 2) k).const_mul
+            (thetaCuspTailSecondSectionSourceCoefficient z r)
+    exact hp.const_mul (z ^ 2 + 1 / 4)
+
+theorem thetaSquareIndexDyadicCoreAtomDerivativeAverage_eq_momentPacket
+    (d : ℕ) (z : ℂ) (k : ℕ) :
+    thetaSquareIndexDyadicCoreAtomDerivativeAverage d z k =
+      thetaSquareIndexDyadicCoreAtomDerivativeMomentPacket d z k := by
+  unfold thetaSquareIndexDyadicCoreAtomDerivativeAverage
+    thetaSquareIndexDyadicCoreAtomDerivativeMomentPacket
+  simp_rw [thetaCuspTailSecondCoreAtomDerivative_eq_sourcePowerPacket]
+  rw [integral_thetaSquareIndexDyadicDensity_mul_finitePowerPacket]
+
+/-- For every fixed Taylor section and spectral point, the Haar-normalized top-row value/derivative
+correlation tends to zero. -/
+theorem tendsto_thetaSquareIndexDyadicWeightedCoreAverages_zero
+    (d : ℕ) (z : ℂ) :
+    Tendsto (fun k : ℕ =>
+      (2 : ℂ) ^ k * thetaSquareIndexDyadicCoreAtomDerivativeAverage d z k *
+        (starRingEnd ℂ) (thetaSquareIndexDyadicCoreAtomAverage d z k))
+      atTop (nhds 0) := by
+  let s := Finset.range (d + 1)
+  let e : ℕ → ℕ := fun r => 2 * r + 2
+  let a : ℕ → ℂ :=
+    thetaCuspTailSecondCoreAtomDerivativeSourceCoefficient z
+  let b : ℕ → ℂ := thetaCuspTailSecondSectionSourceCoefficient z
+  have hD0 :=
+    tendsto_thetaSquareIndexDyadicWeightedFiniteMomentPacketProduct_zero
+      s ({0} : Finset ℕ) e id a (fun _ => 1)
+  have hDS :=
+    tendsto_thetaSquareIndexDyadicWeightedFiniteMomentPacketProduct_zero
+      s s e e a (fun r => (starRingEnd ℂ) (b r))
+  have h := hD0.sub (hDS.const_mul
+    ((starRingEnd ℂ) (z ^ 2 + 1 / 4)))
+  convert h using 1
+  funext k
+  rw [thetaSquareIndexDyadicCoreAtomDerivativeAverage_eq_momentPacket,
+    thetaSquareIndexDyadicCoreAtomAverage_eq_momentPacket]
+  rw [map_sub, map_mul, thetaSquareIndexDyadicComplexMoment_conj]
+  unfold thetaSquareIndexDyadicCoreAtomDerivativeMomentPacket
+    thetaSquareIndexDyadicSectionMomentPacket
+  rw [thetaSquareIndexDyadicFiniteMomentPacket_conj]
+  dsimp only [s, e, a, b]
+  simp only [thetaSquareIndexDyadicFiniteMomentPacket,
+    Finset.sum_singleton, id_eq, one_mul]
+  ring
+
 /-- One exact Haar step: a divisibility row is the positive exact-valuation square, minus the
 parity-wavelet square, plus the next divisibility row. -/
 theorem thetaSquareIndexDyadic_oneStep (k : ℕ) (x y : ℝ) :

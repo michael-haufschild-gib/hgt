@@ -113,6 +113,25 @@ fixedWindowFullObservableDivisorUniversality_capstone.
 | exact fixed-width second-difference identity | xiWeilPolarization_rectangular_eq_screwCurvature |
 | screw nonnegativity and eventual-lower-bound RH criteria | riemannHypothesis_iff_xiScrewWindowCurvature_logSample_nonneg, riemannHypothesis_iff_xiScrewWindowCurvature_logSample_eventually_bddBelow |
 
+## Source-defined complete Xi-divisor carrier
+
+The complete prime-source theorem is bundled by
+`inverseTiltedDyadicPrimeFullDivisorTomography_capstone`.
+
+| Manuscript claim | Unconditional Lean declaration |
+|---|---|
+| the inverse-tilted dyadic Mellin factor is \(A_{\log 2}(s)\) | inverseTiltedDyadicMellin_eq_rectangularAmplitude |
+| this factor is nonzero throughout \(\Re s>0\) | inverseTiltedDyadicMellin_ne_zero_of_re_pos |
+| the inverse-tilted quadrature remainder converges locally uniformly and is analytic on \(\Re s>1/2\) | summableLocallyUniformlyOn_inverseTiltedDyadicErrorSummand, differentiableOn_inverseTiltedDyadicErrorSeries_rightHalf |
+| the displayed real finite-prime coefficient has the canonical ordinary Dirichlet series initially | LSeries_inverseTiltedDyadicRealSourceCoefficient_eq_continuedSource |
+| the canonical source is meromorphic throughout \(\Re s>1/2\) | meromorphicOn_inverseTiltedDyadicContinuedSource_rightHalf |
+| every nontrivial Xi zero produces a genuine simple pole | meromorphicOrderAt_inverseTiltedDyadicContinuedSource_eq_neg_one |
+| every simple source pole in \(\Re s>1/2\) comes from a unique shifted Xi zero | meromorphicOrderAt_inverseTiltedDyadicContinuedSource_eq_neg_one_iff, inverseTiltedXiPole_injective |
+| the complete Xi support is canonically equivalent to the source simple-pole support | inverseTiltedXiDivisorEquivSimplePoleSupport |
+| normalized Laurent coefficients recover exact analytic multiplicity | normalizedInverseTiltedDyadicResidue_eq_multiplicity |
+| RH iff every source pole lies on \(\Re s=1\) | riemannHypothesis_iff_inverseTiltedDyadic_poles_on_line |
+| RH iff the source is analytic throughout \(\Re s>1\) | riemannHypothesis_iff_inverseTiltedDyadic_analytic_rightOne |
+
 ## Axiom and lint gate
 
 - Exact build targets: GaloisForLFunctions.RHTower.CCMUnconditionalFoundation,
@@ -120,7 +139,8 @@ fixedWindowFullObservableDivisorUniversality_capstone.
   GaloisForLFunctions.RHTower.CCMRectangularSparseExceptionCompleteness,
   GaloisForLFunctions.RHTower.CCMRectangularNegativeChannelSplitCompleteness, and
   GaloisForLFunctions.RHTower.CCMRectangularNegativeChannelSpectrum, and
-  GaloisForLFunctions.RHTower.CCMRectangularNegativeDirichletAbscissa.
+  GaloisForLFunctions.RHTower.CCMRectangularNegativeDirichletAbscissa, and
+  GaloisForLFunctions.RHTower.CCMInverseTiltedDyadicPrimeTomography.
 - Allowed foundational dependencies in the checked capstones:
   [propext, Classical.choice, Quot.sound].
 - Repository lint must report no active sorry, admit, axiom, opaque, or unsafe declaration.

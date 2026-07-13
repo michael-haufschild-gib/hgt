@@ -142,4 +142,30 @@ theorem momentFunctional_pow_two_eq_zero {μ : Measure ℝ} (s : ℕ → ℝ)
   have hle : μ {x : ℝ | x ∉ R} ≤ 0 := by rw [← hae']; exact measure_mono hsub
   exact absurd (le_antisymm hle zero_le') (ne_of_gt (hμinf R))
 
+/-- **Cauchy–Schwarz for the moment functional.**  The Hankel form is a positive-semidefinite inner
+product on polynomials: `L_s(p·q)² ≤ L_s(p²)·L_s(q²)` whenever `s` has a representing measure.  Proved
+purely from square-positivity (`momentFunctional_pow_two_nonneg`) via the nonnegative quadratic
+`t ↦ L_s((p + t·q)²)` and its discriminant. -/
+theorem momentFunctional_cauchy_schwarz {μ : Measure ℝ} (s : ℕ → ℝ)
+    (hs : ∀ k, s k = ∫ x, (x : ℝ) ^ k ∂μ)
+    (hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) μ) (p q : Polynomial ℝ) :
+    (momentFunctional s (p * q)) ^ 2
+      ≤ momentFunctional s (p ^ 2) * momentFunctional s (q ^ 2) := by
+  have hquad : ∀ x : ℝ, 0 ≤ (momentFunctional s (q ^ 2)) * (x * x)
+      + (2 * momentFunctional s (p * q)) * x + momentFunctional s (p ^ 2) := by
+    intro x
+    have hpoly : (p + x • q) ^ 2 = p ^ 2 + (2 * x) • (p * q) + (x ^ 2) • q ^ 2 := by
+      simp only [Polynomial.smul_eq_C_mul, map_mul, map_pow, map_ofNat]; ring
+    have hexp : momentFunctional s ((p + x • q) ^ 2)
+        = (momentFunctional s (q ^ 2)) * (x * x)
+          + (2 * momentFunctional s (p * q)) * x + momentFunctional s (p ^ 2) := by
+      rw [hpoly, momentFunctional_add, momentFunctional_add, momentFunctional_smul,
+        momentFunctional_smul]
+      ring
+    rw [← hexp]
+    exact momentFunctional_pow_two_nonneg s hs hint (p + x • q)
+  have hd := discrim_le_zero hquad
+  rw [discrim] at hd
+  nlinarith [hd]
+
 end HTGeometry

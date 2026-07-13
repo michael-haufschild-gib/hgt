@@ -11,6 +11,9 @@ of the Riemann hypothesis.
 
 - Correctness and proof closure: 25/25
   - Every substantive manuscript claim has a direct unconditional Lean declaration.
+  - The inverse-tilted finite-prime source, its continuation, complete Xi-divisor support
+    equivalence, exact multiplicity normalization, and RH holomorphy equivalence are formalized
+    without an abstract continuation premise.
   - The manuscript capstones compile from the concrete Xi divisor, shifted-zeta carrier, Landau
     transfer, and global analytic remainder; there is no abstract proposition standing in for the
     hard input.
@@ -26,6 +29,10 @@ of the Riemann hypothesis.
     exceptional and budget-matched power corollaries, and exact cutoff-free observable
     multiplicity-weighted pole tomography of the complete sequence.
   - The Landau and screw-function mechanisms are classical parents and are not claimed as new.
+  - The inverse-tilted complete-divisor source theorem is also classified as bridge
+    infrastructure: its proof is a direct Euler logarithmic-derivative, quadrature, and
+    meromorphic-divisor argument.  It strengthens the source foundation but is not counted in the
+    novelty score.
 - Significance: 21/22
   - One scalar cofinal family recovers every off-critical divisor coordinate, its exact analytic
     multiplicity, its supremal transverse displacement, and every horizontal zero-free region
@@ -45,13 +52,14 @@ of the Riemann hypothesis.
     cover, having shifted Dirichlet energy.  Exact source splitting and pointwise control of one
     channel are unnecessary.  At every exponent this is equivalent to the corresponding
     horizontal zero-free region; the RH criterion is exactly its zero endpoint.
-  - The remaining prime/semilocal construction of that critical energy majorant is open, so the
-    note is not an RH proof.
+  - The remaining prime/semilocal line-selection theorem is open: one must prove holomorphy of the
+    complete inverse-tilted source on `Re(s)>1`, or furnish the corresponding critical positive
+    carrier for the Weil observable.  The note is not an RH proof.
 - Exposition and standalone quality: 18/20
   - Definitions, multiplicity-safe continuation, Landau pole bound, completeness, exact growth,
     universal abscissa and split-conservation laws, order-ideal carrier spectrum,
     amplitude--thickness corollaries, observable tomography, screw identity, literature boundary,
-    and limitations are included.
+    complete prime-source divisor equivalence, and limitations are included.
   - The note is concise; a journal may request expansion of standard zero-count and vertical-zeta
     estimates.
 - Reproducibility and artifact quality: 10/10
@@ -61,6 +69,7 @@ of the Riemann hypothesis.
 ## Promotion boundary
 
 The paper may claim only the statements listed in CLAIM_TRACE_AUDIT.md. Any further strengthening,
-especially a prime-side lower bound, requires a new Lean declaration and a refreshed literature
-audit before inclusion. The residue refinement is not advertised as an independent novelty claim;
-it is the multiplicity-exact completion of the observable tomography theorem.
+especially source holomorphy or a prime-side lower bound, requires a new Lean declaration and a
+refreshed literature audit before inclusion. Neither source-divisor recovery nor the residue
+refinement is advertised as an independent novelty claim; the candidate-new theorem is the
+universal fixed-window Weil-energy geometry.

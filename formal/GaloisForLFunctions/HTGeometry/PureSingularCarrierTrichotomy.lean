@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.CanonicalFrameContinuity
 import GaloisForLFunctions.HTGeometry.DeterminantRatioRoot
 import GaloisForLFunctions.HTGeometry.RieszBrothersReduction
+import GaloisForLFunctions.HTGeometry.SzegoFirstLimitInterface
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Analysis.InnerProductSpace.GramMatrix
 
@@ -9,9 +10,10 @@ import Mathlib.Analysis.InnerProductSpace.GramMatrix
 
 This module draws a hard formal boundary around the two classical circle theorems used by the
 cofinal Cholesky paper.  The Riesz-brothers input is the already isolated predicate
-`HasRieszBrothersDensityConclusion`.  The Szegő input is its classical consecutive
-Toeplitz-determinant ratio conclusion `HasSzegoDeterminantRatioVanishingConclusion` below.  No
-assertion about normalized roots, graph closure,
+`HasRieszBrothersDensityConclusion`.  The Szegő input is the general classical conclusion
+`HasSzegoFirstLimitConclusion`, whose limit is the geometric mean of the Radon--Nikodym density.
+Pure singularity is specialized to a zero ratio inside Lean.  No assertion about normalized roots,
+graph closure,
 analytic completeness, Cholesky repair, eigenvalues, or operator norms is hidden in either input.
 
 From those two exact leaves, Lean proves the complete three-level geometry: full-product closure
@@ -180,23 +182,18 @@ theorem circleMeasureCanonicalFrameTower_isCanonical
     ⟨circleMeasureGramTower mu N,
       circleMeasureGramTower_posDef_of_infiniteSupport mu hmu N⟩
 
-/-- Exact ratio conclusion of the classical Szegő determinant theorem in the pure singular case.
-The indexing agrees with `D_N = det(circleMeasureGramTower mu N)`. -/
-def HasSzegoDeterminantRatioVanishingConclusion (mu : Measure Circle) : Prop :=
-  Tendsto (fun N =>
-    (circleMeasureGramTower mu (N + 1)).det.re /
-      (circleMeasureGramTower mu N).det.re) atTop (𝓝 0)
-
 /-- The normalized-root conclusion needed by the Cholesky geometry.  Unlike the ratio predicate,
 this is not the external literature interface. -/
 def HasSzegoNormalizedGramVanishingConclusion (mu : Measure Circle) : Prop :=
   Tendsto (normalizedGramDetRoot (circleMeasureGramTower mu)) atTop (𝓝 0)
 
-/-- The classical consecutive-ratio conclusion implies the normalized-root conclusion entirely
-inside Lean. -/
-theorem hasSzegoNormalizedGramVanishingConclusion_of_ratio
+/-- The general classical first Szegő conclusion specializes through Lebesgue decomposition and
+then implies the normalized-root conclusion entirely inside Lean. -/
+theorem hasSzegoNormalizedGramVanishingConclusion_of_classicalSzego
     (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
-    (hszego : HasSzegoDeterminantRatioVanishingConclusion mu) :
+    (hsing : mu ⟂ₘ circleLebesgue)
+    (hszego : HasSzegoFirstLimitConclusion (circleMeasureGramTower mu)
+      mu circleLebesgue) :
     HasSzegoNormalizedGramVanishingConclusion mu := by
   let a : ℕ → ℝ := fun N => (circleMeasureGramTower mu N).det.re
   have ha : ∀ N, 0 < a N := by
@@ -204,7 +201,11 @@ theorem hasSzegoNormalizedGramVanishingConclusion_of_ratio
     have hp := (circleMeasureGramTower_posDef_of_infiniteSupport mu hmu N).det_pos
     simp only [Complex.lt_def, Complex.zero_re, Complex.zero_im] at hp
     exact hp.1
-  have hroot := tendsto_rpow_inv_succ_zero_of_ratio_zero a ha hszego
+  have hratio :=
+    consecutiveGramDeterminantRatio_tendsto_zero_of_szego_of_mutuallySingular
+      (circleMeasureGramTower mu) mu circleLebesgue hsing hszego
+  have hroot := tendsto_rpow_inv_succ_zero_of_ratio_zero a ha (by
+    simpa only [a, consecutiveGramDeterminantRatio] using hratio)
   change Tendsto (fun N => (circleMeasureGramTower mu N).det.re ^
     (((N + 1 : ℕ) : ℝ)⁻¹)) atTop (𝓝 0)
   simpa only [a, Nat.cast_add, Nat.cast_one] using hroot
@@ -224,11 +225,13 @@ theorem pureSingular_graph_and_completeness_of_rieszBrothers
   exact ⟨polynomialGraph_closure_eq_top_of_oneSidedFourierRigid mu hrigid,
     analyticMonomialSpan_closure_eq_top_of_oneSidedFourierRigid mu hrigid⟩
 
-/-- From the exact pure-singular Szegő leaf, every spectral and canonical-repair escape statement
-is a formal consequence. -/
+/-- From the exact general Szegő leaf and pure singularity, every spectral and canonical-repair
+escape statement is a formal consequence. -/
 theorem circleMeasure_frame_escape_of_szego
     (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
-    (hszego : HasSzegoDeterminantRatioVanishingConclusion mu) :
+    (hsing : mu ⟂ₘ circleLebesgue)
+    (hszego : HasSzegoFirstLimitConclusion (circleMeasureGramTower mu)
+      mu circleLebesgue) :
     Tendsto (fun N => leastEigenvalue (circleMeasureGramTower mu N)
         (circleMeasureGramTower_posDef_of_infiniteSupport mu hmu N)) atTop (𝓝 0) ∧
       Tendsto (normalizedFrameDetRoot (circleMeasureCanonicalFrameTower mu hmu))
@@ -242,7 +245,7 @@ theorem circleMeasure_frame_escape_of_szego
   have hC : ∀ N, IsCanonicalInverseCholeskyFrame (C N) (G N) := fun N =>
     circleMeasureCanonicalFrameTower_isCanonical mu hmu N
   have hzero : HasSzegoNormalizedGramVanishingConclusion mu :=
-    hasSzegoNormalizedGramVanishingConclusion_of_ratio mu hmu hszego
+    hasSzegoNormalizedGramVanishingConclusion_of_classicalSzego mu hmu hsing hszego
   have hleast :=
     leastEigenvalue_tendsto_zero_of_normalizedGramDetRoot_tendsto_zero G hG hzero
   have hdet :=
@@ -259,7 +262,8 @@ theorem pureSingularCarrier_trichotomy_of_classical_inputs
     (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
     (hsing : mu ⟂ₘ circleLebesgue)
     (hriesz : HasRieszBrothersDensityConclusion mu circleLebesgue)
-    (hszego : HasSzegoDeterminantRatioVanishingConclusion mu) :
+    (hszego : HasSzegoFirstLimitConclusion (circleMeasureGramTower mu)
+      mu circleLebesgue) :
     (linearGraphSubmodule finsuppCoefficientL2
         (polynomialSynthesisL2 mu)).topologicalClosure = ⊤ ∧
       (analyticMonomialSpan mu).topologicalClosure = ⊤ ∧
@@ -270,7 +274,7 @@ theorem pureSingularCarrier_trichotomy_of_classical_inputs
       Tendsto (euclideanFrameOpNorm (circleMeasureCanonicalFrameTower mu hmu))
         atTop atTop := by
   have hgraph := pureSingular_graph_and_completeness_of_rieszBrothers mu hsing hriesz
-  have hescape := circleMeasure_frame_escape_of_szego mu hmu hszego
+  have hescape := circleMeasure_frame_escape_of_szego mu hmu hsing hszego
   exact ⟨hgraph.1, hgraph.2, hescape.1, hescape.2.1, hescape.2.2⟩
 
 end

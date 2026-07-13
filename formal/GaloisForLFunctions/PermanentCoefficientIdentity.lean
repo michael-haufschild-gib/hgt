@@ -257,4 +257,125 @@ theorem degHom_survives {bnat : ℕ → ℕ} (hmono : Monotone bnat) {r : ℕ}
     rw [← haM]; exact haΦ
   exact (mul_ne_zero hprodne (Int.cast_ne_zero.mpr hevalne)) hkey.symm
 
+/-- **Wrong-order vanishing at a distinct index.**  With the window hypotheses, a differential
+monomial of total order `O' ≠ O` (both `≤ W`) has zero coefficient at the order-`O` distinct-scale
+index: any surviving source configuration would have `bnat`-mass off the target by `|O' − O| ≤ W`,
+which the window uniqueness forbids. -/
+theorem coeff_distinct_wrong_order_vanish {bnat : ℕ → ℕ} (hmono : Monotone bnat) {r W : ℕ}
+    (hb0 : 0 < bnat 0) (hWb : W < bnat 0) (hW : ∀ n, r * bnat n + W < bnat (n + 1))
+    {ν : Fin r → ℕ} {O' : ℕ} (hν : ∑ t, ν t = O')
+    {f : ℂ⟦X⟧} (hsupp : ∀ k, coeff k f ≠ 0 → ∃ n, k = bnat n)
+    (M : Fin r → ℕ) (hMinj : Function.Injective M)
+    {O : ℕ} (hOle : O ≤ ∑ t, bnat (M t)) (hOW : O ≤ W) (hO'W : O' ≤ W) (hOO' : O ≠ O') :
+    coeff (∑ t, bnat (M t) - O) (∏ t, (⇑(d⁄dX ℂ))^[ν t] f) = 0 := by
+  classical
+  have hvanish : ∀ l ∈ (Finset.univ : Finset (Fin r)).finsuppAntidiag (∑ t, bnat (M t) - O),
+      l ∉ (∅ : Finset (Fin r →₀ ℕ)) → ∃ t, coeff (l t + ν t) f = 0 := by
+    intro l hl _
+    by_contra hcon
+    push Not at hcon
+    choose n hn using fun t => hsupp (l t + ν t) (hcon t)
+    have hsumN : ∑ t, l t = ∑ t, bnat (M t) - O := (Finset.mem_finsuppAntidiag.mp hl).1
+    have hnmass : ∑ t, bnat (n t) = ∑ t, bnat (M t) - O + O' := by
+      have e : ∑ t, bnat (n t) = ∑ t, (l t + ν t) := Finset.sum_congr rfl (fun t _ => (hn t).symm)
+      rw [e, Finset.sum_add_distrib, hsumN, hν]
+    have hmn : (Multiset.map bnat (Finset.univ.val.map n)).sum = ∑ t, bnat (n t) := by
+      rw [Multiset.map_map]; rfl
+    have hmM : (Multiset.map bnat (Finset.univ.val.map M)).sum = ∑ t, bnat (M t) := by
+      rw [Multiset.map_map]; rfl
+    obtain ⟨_, hmass⟩ := multiset_source_window_unique hmono hb0 hWb hW
+      (s := Finset.univ.val.map n) (t := Finset.univ.val.map M) (by simp) (by simp)
+      (Finset.univ.nodup.map hMinj)
+      (by rw [hmn, hmM]; omega) (by rw [hmn, hmM]; omega)
+    rw [hmn, hmM, hnmass] at hmass
+    exact hOO' (by omega)
+  rw [coeff_prod_iterate_derivative_of_subset ν f (∑ t, bnat (M t) - O) ∅
+    (Finset.empty_subset _) hvanish, Finset.sum_empty]
+
+/-- **Order-`O` reduction of the coefficient.**  At the order-`O` distinct index, the coefficient of
+a mixed-order differential polynomial equals that of its order-`O` subfamily — every other-order
+monomial contributes zero. -/
+theorem coeff_mixed_eq_orderO {bnat : ℕ → ℕ} (hmono : Monotone bnat) {r W : ℕ}
+    (hb0 : 0 < bnat 0) (hWb : W < bnat 0) (hW : ∀ n, r * bnat n + W < bnat (n + 1))
+    {S : Finset (Fin r → ℕ)} (hbound : ∀ ν ∈ S, ∑ t, ν t ≤ W)
+    (c : (Fin r → ℕ) → ℤ) {f : ℂ⟦X⟧} (hsupp : ∀ k, coeff k f ≠ 0 → ∃ n, k = bnat n)
+    (M : Fin r → ℕ) (hMinj : Function.Injective M)
+    {O : ℕ} (hOle : O ≤ ∑ t, bnat (M t)) (hOW : O ≤ W) :
+    coeff (∑ t, bnat (M t) - O) (∑ ν ∈ S, (c ν : ℂ) • ∏ t, (⇑(d⁄dX ℂ))^[ν t] f)
+      = coeff (∑ t, bnat (M t) - O)
+          (∑ ν ∈ S.filter (fun ν => ∑ t, ν t = O), (c ν : ℂ) • ∏ t, (⇑(d⁄dX ℂ))^[ν t] f) := by
+  classical
+  rw [map_sum, map_sum, ← Finset.sum_filter_add_sum_filter_not S (fun ν => ∑ t, ν t = O)]
+  have hrest : ∑ ν ∈ S.filter (fun ν => ¬ ∑ t, ν t = O),
+      coeff (∑ t, bnat (M t) - O) ((c ν : ℂ) • ∏ t, (⇑(d⁄dX ℂ))^[ν t] f) = 0 := by
+    apply Finset.sum_eq_zero
+    intro ν hν
+    rw [Finset.mem_filter] at hν
+    rw [map_smul,
+      coeff_distinct_wrong_order_vanish hmono hb0 hWb hW rfl hsupp M hMinj hOle hOW
+        (hbound ν hν.1) (fun h => hν.2 h.symm), smul_zero]
+  rw [hrest, add_zero]
+
+/-- **Fixed-degree survival, arbitrary orders.**  A nonzero degree-`r`-homogeneous differential
+polynomial with integer coefficients over a distinct-multiset family `S` of bounded order does not
+annihilate a tail-supported superlacunary gap series.  Reduces to `degHom_survives` on the order
+class of `μ₀`: the other-order monomials vanish at that class's distinct index. -/
+theorem diffPoly_fixedDegree_survives {bnat : ℕ → ℕ} (hmono : Monotone bnat) {r W : ℕ}
+    (hb0 : 0 < bnat 0) (hWb : W < bnat 0) (hW : ∀ n, r * bnat n + W < bnat (n + 1))
+    (hbnatinj : Function.Injective bnat) (hbtop : Filter.Tendsto bnat Filter.atTop Filter.atTop)
+    {S : Finset (Fin r → ℕ)} (hbound : ∀ ν ∈ S, ∑ t, ν t ≤ W)
+    (hdistinct : ∀ μ ∈ S, ∀ ν ∈ S, (∃ σ : Equiv.Perm (Fin r), ∀ j, μ j = ν (σ j)) → μ = ν)
+    (c : (Fin r → ℕ) → ℤ) {μ₀ : Fin r → ℕ} (hμ₀ : μ₀ ∈ S) (hc : c μ₀ ≠ 0)
+    {f : ℂ⟦X⟧} (hsupp : ∀ k, coeff k f ≠ 0 → ∃ n, k = bnat n)
+    (hinf : {M : ℕ | coeff (bnat M) f ≠ 0}.Infinite) :
+    (∑ ν ∈ S, (c ν : ℂ) • ∏ t, (⇑(d⁄dX ℂ))^[ν t] f) ≠ 0 := by
+  classical
+  intro hPzero
+  set O := ∑ t, μ₀ t with hOdef
+  set SO := S.filter (fun ν => ∑ t, ν t = O) with hSOdef
+  have hμ₀O : μ₀ ∈ SO := Finset.mem_filter.mpr ⟨hμ₀, rfl⟩
+  have hOall : ∀ ν ∈ SO, ∑ t, ν t = O := fun ν hν => (Finset.mem_filter.mp hν).2
+  have hdistinctSO : ∀ μ ∈ SO, ∀ ν ∈ SO,
+      (∃ σ : Equiv.Perm (Fin r), ∀ j, μ j = ν (σ j)) → μ = ν :=
+    fun μ hμ ν hν => hdistinct μ (Finset.mem_filter.mp hμ).1 ν (Finset.mem_filter.mp hν).1
+  have hΦne : (∑ ν ∈ SO, MvPolynomial.C (c ν) * permSymbolPoly ν) ≠ 0 :=
+    combination_permSymbolPoly_ne_zero hOall hdistinctSO c hμ₀O hc
+  have hstair : ∀ n, r * bnat n < bnat (n + 1) := fun n => lt_of_le_of_lt (Nat.le_add_right _ _) (hW n)
+  obtain ⟨NB, hNB⟩ := Filter.eventually_atTop.mp (hbtop.eventually_ge_atTop W)
+  set G := {n : ℕ | coeff (bnat n) f ≠ 0 ∧ NB ≤ n} with hGdef
+  have hGinf : G.Infinite := by
+    apply (hinf.diff (Set.finite_Iio NB)).mono
+    intro n hn; exact ⟨hn.1, not_lt.mp hn.2⟩
+  have hTinf : ((fun n => (bnat n : ℤ)) '' G).Infinite :=
+    hGinf.image (fun a _ b _ h => hbnatinj (by exact_mod_cast h))
+  obtain ⟨a, hainj, haT, haΦ⟩ :=
+    exists_injective_eval_ne_zero (∑ ν ∈ SO, MvPolynomial.C (c ν) * permSymbolPoly ν) hΦne hTinf
+  choose M hMG hMeq using fun i => haT i
+  have haM : a = fun i => ((bnat (M i) : ℤ)) := funext fun i => (hMeq i).symm
+  have hMinj : Function.Injective M := fun i j h => hainj (by rw [← hMeq i, ← hMeq j, h])
+  have hbig : ∀ ν ∈ SO, ∀ i t, ν t ≤ bnat (M i) := by
+    intro ν hν i t
+    calc ν t ≤ ∑ t, ν t := Finset.single_le_sum (fun _ _ => Nat.zero_le _) (Finset.mem_univ t)
+      _ = O := hOall ν hν
+      _ ≤ W := hOdef.symm ▸ hbound μ₀ hμ₀
+      _ ≤ bnat (M i) := hNB (M i) (hMG i).2
+  have hprodne : (∏ i, coeff (bnat (M i)) f) ≠ 0 :=
+    Finset.prod_ne_zero_iff.mpr fun i _ => (hMG i).1
+  have hOW : O ≤ W := hOdef.symm ▸ hbound μ₀ hμ₀
+  have hOle : O ≤ ∑ t, bnat (M t) := by
+    rcases Nat.eq_zero_or_pos r with hr0 | hr1
+    · subst hr0; simp [hOdef]
+    · obtain ⟨t0⟩ : Nonempty (Fin r) := Fin.pos_iff_nonempty.mp hr1
+      calc O ≤ bnat (M t0) := le_trans hOW (hNB (M t0) (hMG t0).2)
+        _ ≤ ∑ t, bnat (M t) :=
+            Finset.single_le_sum (f := fun t => bnat (M t)) (fun _ _ => Nat.zero_le _)
+              (Finset.mem_univ t0)
+  have hkey1 := coeff_mixed_eq_orderO hmono hb0 hWb hW hbound c hsupp M hMinj hOle hOW
+  have hkey2 := coeff_combination_eq hmono hb0 hstair hbnatinj hOall c hsupp M hMinj hbig
+  rw [hPzero, map_zero, hkey2] at hkey1
+  have hevalne : ((MvPolynomial.eval (fun i => (bnat (M i) : ℤ)))
+      (∑ ν ∈ SO, MvPolynomial.C (c ν) * permSymbolPoly ν) : ℤ) ≠ 0 := by
+    rw [← haM]; exact haΦ
+  exact (mul_ne_zero hprodne (Int.cast_ne_zero.mpr hevalne)) hkey1.symm
+
 end GaloisForLFunctions
