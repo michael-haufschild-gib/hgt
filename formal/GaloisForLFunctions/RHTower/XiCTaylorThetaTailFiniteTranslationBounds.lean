@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailFiniteTranslationCurrent
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailRapidDecay
+import GaloisForLFunctions.RHTower.XiCTaylorThetaTailCompletedFeedback
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 
 /-!
@@ -145,6 +146,64 @@ theorem norm_truncatedSineCompanion_le_exp
           exact le_rfl
     _ ≤ Real.sinh r := hsum
     _ ≤ Real.exp r := by
+      rw [Real.sinh_eq]
+      have hneg : 0 < Real.exp (-r) := Real.exp_pos _
+      linarith [Real.exp_pos r]
+    _ = _ := rfl
+
+/-- The spectral derivative of every finite cosine section has a degree-uniform exponential
+envelope with the expected single source-coordinate factor. -/
+theorem norm_truncatedCosineSectionDerivative_le
+    (d : ℕ) (z : ℂ) (x : ℝ) :
+    ‖truncatedCosineSectionDerivative d z x‖ ≤
+      |x| * Real.exp (‖z‖ * |x|) := by
+  let r : ℝ := ‖z‖ * |x|
+  have hr : 0 ≤ r := mul_nonneg (norm_nonneg _) (abs_nonneg _)
+  have hsum :
+      ∑ k ∈ Finset.range d,
+          r ^ (2 * k + 1) / ((2 * k + 1).factorial : ℝ) ≤ Real.sinh r := by
+    rw [Real.sinh_eq_tsum]
+    exact (r.hasSum_sinh.summable).sum_le_tsum (Finset.range d)
+      (fun k _hk => div_nonneg (pow_nonneg hr _) (Nat.cast_nonneg _))
+  calc
+    ‖truncatedCosineSectionDerivative d z x‖ ≤
+        |x| * ∑ k ∈ Finset.range d,
+          r ^ (2 * k + 1) / ((2 * k + 1).factorial : ℝ) := by
+      unfold truncatedCosineSectionDerivative
+      rw [Finset.sum_range_succ']
+      simp only [Nat.cast_zero, mul_zero, zero_mul, add_zero]
+      calc
+        ‖∑ k ∈ Finset.range d,
+            (-1 : ℂ) ^ (k + 1) * ((2 * (k + 1) : ℕ) : ℂ) *
+              z ^ (2 * (k + 1) - 1) *
+                ((x : ℂ) ^ (2 * (k + 1)) / (2 * (k + 1)).factorial)‖ ≤
+            ∑ k ∈ Finset.range d,
+              ‖(-1 : ℂ) ^ (k + 1) * ((2 * (k + 1) : ℕ) : ℂ) *
+                z ^ (2 * (k + 1) - 1) *
+                  ((x : ℂ) ^ (2 * (k + 1)) / (2 * (k + 1)).factorial)‖ :=
+          norm_sum_le _ _
+        _ = |x| * ∑ k ∈ Finset.range d,
+            r ^ (2 * k + 1) / ((2 * k + 1).factorial : ℝ) := by
+          rw [Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro k _hk
+          rw [show 2 * (k + 1) = 2 * k + 2 by omega,
+            show 2 * k + 2 - 1 = 2 * k + 1 by omega]
+          simp only [norm_mul, norm_pow, norm_neg, norm_one, one_pow, one_mul,
+            Complex.norm_natCast, norm_div, Complex.norm_real, Real.norm_eq_abs]
+          have hfac : (2 * k + 2).factorial =
+              (2 * k + 2) * (2 * k + 1).factorial := by
+            rw [show 2 * k + 2 = (2 * k + 1) + 1 by omega, Nat.factorial_succ]
+          rw [hfac]
+          push_cast
+          have hk : (0 : ℝ) < 2 * k + 2 := by positivity
+          field_simp
+          dsimp [r]
+          rw [mul_pow]
+          ring
+    _ ≤ |x| * Real.sinh r := by gcongr
+    _ ≤ |x| * Real.exp r := by
+      gcongr
       rw [Real.sinh_eq]
       have hneg : 0 < Real.exp (-r) := Real.exp_pos _
       linarith [Real.exp_pos r]

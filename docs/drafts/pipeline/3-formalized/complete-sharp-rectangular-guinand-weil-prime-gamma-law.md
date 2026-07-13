@@ -39,6 +39,10 @@ At `a = log(N)/2`, the autocorrelation splits into a fixed tent and one moving m
 window supported in `N*exp(-2L) < n < N`.  Thus the complete divisor observable and the finite
 arithmetic source are joined at the same cofinal aperture used by the RH energy spectrum.
 
+The source-only sign, energy, and abscissa consequences are tracked separately in
+`sharp-prime-gamma-rh-spectrum.md` and formalized in
+`CCMPrimeGammaSourceEnergySpectrum.lean`.
+
 ## Proof architecture
 
 1. Factor `XiC` on every closed symmetric depth-one rectangle and apply the weighted argument

@@ -1,4 +1,5 @@
 import Mathlib
+import GaloisForLFunctions.HTGeometry.ArchimedeanBendLaw
 
 /-!
 # Super-increasing valuation gap
@@ -134,5 +135,39 @@ theorem valuation_gap_of_superIncreasing {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b 
     have h3 : b K - (C : ℝ) / ((C:ℝ)+1) * b K = b K / ((C:ℝ)+1) := by field_simp; ring
     linarith [htail]
   linarith [hrev, hstep, habsGK]
+
+/-- **Minimal-valuation domination.**  A finite integer-weighted sum `∑ c_i · a_i` of complex atoms
+with prescribed magnitudes `‖a_i‖ = exp(−V_i)` is nonzero when one index `i₀` has nonzero weight and
+strictly minimal valuation, separated from the rest by a gap `G` exceeding `log ∑|c_i|`. -/
+theorem weighted_sum_ne_zero_of_min_valuation {ι : Type*} [DecidableEq ι] (s : Finset ι) (V : ι → ℝ)
+    (a : ι → ℂ) (ha : ∀ i, ‖a i‖ = Real.exp (- V i)) (c : ι → ℤ) {i₀ : ι} (hi₀ : i₀ ∈ s)
+    (hc : c i₀ ≠ 0) {G : ℝ} (hgap : ∀ i ∈ s.erase i₀, V i₀ + G ≤ V i)
+    (hG : (∑ i ∈ s, (|c i| : ℝ)) < Real.exp G) :
+    ∑ i ∈ s, (c i : ℂ) * a i ≠ 0 := by
+  apply sum_ne_zero_of_dominant s c a hi₀ hc
+  rw [ha i₀]
+  have hstep : ∑ i ∈ s.erase i₀, ‖(c i : ℂ) * a i‖
+      ≤ (∑ i ∈ s.erase i₀, (|c i| : ℝ)) * Real.exp (- V i₀ - G) := by
+    rw [Finset.sum_mul]
+    apply Finset.sum_le_sum
+    intro i hi
+    rw [norm_mul, Complex.norm_intCast, ha i]
+    refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+    apply Real.exp_le_exp.mpr
+    have := hgap i hi
+    linarith
+  refine lt_of_le_of_lt hstep ?_
+  rw [show (- V i₀ - G) = (- V i₀) + (- G) by ring, Real.exp_add,
+    ← mul_assoc, mul_comm _ (Real.exp (-V i₀))]
+  have hpos : (0:ℝ) < Real.exp (- V i₀) := Real.exp_pos _
+  rw [mul_assoc]
+  refine (mul_lt_iff_lt_one_right hpos).mpr ?_
+  have h1 : (∑ i ∈ s.erase i₀, (|c i| : ℝ)) ≤ ∑ i ∈ s, (|c i| : ℝ) :=
+    Finset.sum_le_sum_of_subset_of_nonneg (Finset.erase_subset _ _) (fun i _ _ => by positivity)
+  calc (∑ i ∈ s.erase i₀, (|c i| : ℝ)) * Real.exp (-G)
+      ≤ (∑ i ∈ s, (|c i| : ℝ)) * Real.exp (-G) :=
+        mul_le_mul_of_nonneg_right h1 (Real.exp_pos _).le
+    _ < Real.exp G * Real.exp (-G) := mul_lt_mul_of_pos_right hG (Real.exp_pos _)
+    _ = 1 := by rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
 
 end GaloisForLFunctions

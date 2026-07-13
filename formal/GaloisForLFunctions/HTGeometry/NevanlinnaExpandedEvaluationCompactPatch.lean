@@ -129,7 +129,7 @@ theorem compact_nevanlinnaExpandedEvaluation_has_dense_finiteProbe
         constantJetSigmaToProductCLM jetOrder (control h (linftyOne mu))
       let direction := fun h =>
         (constantJetSigmaToProductCLM jetOrder).comp
-          (((control h).domRestrict S).domRestrict V)
+          ((control h).domRestrict S)
       Dense (compactConfigurationAvoidance
         (smoothAffineControlFamily base direction)
         (expandedDifferentialEvaluationRankDefect
@@ -138,6 +138,7 @@ theorem compact_nevanlinnaExpandedEvaluation_has_dense_finiteProbe
   let frozen := projectiveNevanlinnaJetLinftyContinuousControl
     a q zf nf haf hqdf mu hupperf
   let S := LinearMap.ker frozen.toLinearMap
+  letI : NormedSpace ℝ S := Submodule.normedSpace S
   let nodeLift : K → (row → NevanlinnaUpperNodeAtLeast q η) :=
     fun h i => ⟨nodes h.1 i, hupper h.1 (hKU h.2) i⟩
   have hnodeLift : Continuous nodeLift := by
@@ -165,6 +166,7 @@ theorem compact_nevanlinnaExpandedEvaluation_has_dense_finiteProbe
         exact hqdt h.1 h.2 i)
   refine ⟨V, hVfg, ?_⟩
   dsimp only
+  letI : NormedSpace ℝ V := Submodule.normedSpace V
   let control := fun h =>
     projectiveNevanlinnaJetExpansionSmoothControl
       a q (fun _ : row => jetOrder) mu (nodes h)
@@ -172,8 +174,10 @@ theorem compact_nevanlinnaExpandedEvaluation_has_dense_finiteProbe
     constantJetSigmaToProductCLM jetOrder (control h (linftyOne mu))
   let direction := fun h =>
     (constantJetSigmaToProductCLM jetOrder).comp
+      ((control h).domRestrict S)
+  let directionV := fun h =>
+    (constantJetSigmaToProductCLM jetOrder).comp
       (((control h).domRestrict S).domRestrict V)
-  letI : Module.Finite ℝ V := Module.Finite.of_fg hVfg
   have hcontrol : ContDiffOn ℝ ⊤ control U := by
     exact (contDiffOn_projectiveNevanlinnaJetExpansionSmoothControl
       a q ha hq (fun _ : row => jetOrder) mu).comp hnodes.contDiffOn
@@ -186,13 +190,20 @@ theorem compact_nevanlinnaExpandedEvaluation_has_dense_finiteProbe
         (fun h => (control h).domRestrict S) U := by
       simpa only [ContinuousLinearMap.domRestrict] using
         hcontrol.clm_comp contDiffOn_const
+    simpa only [direction] using
+      contDiffOn_const.clm_comp hS
+  have hdirectionV : ContDiffOn ℝ ⊤ directionV U := by
+    have hS : ContDiffOn ℝ ⊤
+        (fun h => (control h).domRestrict S) U := by
+      simpa only [ContinuousLinearMap.domRestrict] using
+        hcontrol.clm_comp contDiffOn_const
     have hV : ContDiffOn ℝ ⊤
         (fun h => ((control h).domRestrict S).domRestrict V) U := by
       simpa only [ContinuousLinearMap.domRestrict] using
         hS.clm_comp contDiffOn_const
-    simpa only [direction] using
+    simpa only [directionV] using
       contDiffOn_const.clm_comp hV
-  have hdirectionSurjK : ∀ h ∈ K, Function.Surjective (direction h) := by
+  have hdirectionSurjK : ∀ h ∈ K, Function.Surjective (directionV h) := by
     intro h hh y
     obtain ⟨ys, hys⟩ := constantJetSigmaToProductCLM_surjective jetOrder y
     have hzmem : nodeLift ⟨h, hh⟩ ∈ Knode := Set.mem_range_self ⟨h, hh⟩
@@ -204,16 +215,23 @@ theorem compact_nevanlinnaExpandedEvaluation_has_dense_finiteProbe
       a q (fun _ : row => jetOrder) mu η hη (nodeLift ⟨h, hh⟩)
     rw [heq]
     rw [hv, hys]
-  let Usurj : Set H := U ∩ {h | Function.Surjective (direction h)}
+  let Usurj : Set H := U ∩ {h | Function.Surjective (directionV h)}
   have hUsurj : IsOpen Usurj :=
     isOpen_inter_surjective_continuousLinearMap_family
-      direction U hU hdirection.continuousOn
+      directionV U hU hdirectionV.continuousOn
   have hKUsurj : K ⊆ Usurj := fun h hh => ⟨hKU hh, hdirectionSurjK h hh⟩
-  exact expandedEvaluation_affineProbe_compactPatchAvoidance_dense
+  apply dense_compactConfigurationAvoidance_of_dense_submodule_perturbations
+    V base direction
+  intro center
+  letI : Module.Finite ℝ V := Module.Finite.of_fg hVfg
+  apply expandedEvaluation_affineProbe_compactPatchAvoidance_dense
     projectiveGeometry parametricAvoidance degree jetOrder rowBase hrowBase
-    exponent hexponent hrows base direction Usurj K hUsurj hK hKUsurj
-    (hbase.mono (inter_subset_left)) (hdirection.mono inter_subset_left)
-    (fun h hh => hh.2) hdim
+    exponent hexponent hrows (fun h => base h + direction h center)
+    directionV Usurj K hUsurj hK hKUsurj
+  · exact (hbase.add (hdirection.clm_apply contDiffOn_const)).mono inter_subset_left
+  · exact hdirectionV.mono inter_subset_left
+  · exact fun h hh => hh.2
+  · exact hdim
 
 end
 

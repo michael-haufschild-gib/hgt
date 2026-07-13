@@ -26,6 +26,11 @@ of the Riemann hypothesis.
     regularity: symmetric contour exhaustion, cofinal vertical-edge vanishing, absolute bottom
     convergence, multiplicity accounting, and the exact finite prime--Gamma formula are all
     unconditional Lean theorems.  This is a project result, not imported background.
+  - Its arithmetic logarithmic samples are now exposed as one explicit finite-prime--Gamma
+    sequence.  On every admissible tail, RH is equivalent to pointwise nonnegativity of that
+    sequence; every horizontal zero-free half-plane is equivalent to its shifted negative
+    Dirichlet energy; and its negative abscissa has the exact RH/false-RH dichotomy
+    `-infinity` versus `1+xiRightTransverseSup`.
   - Arbitrary pointwise-summable nonnegative channel families are covered at their aggregate: the
     aggregate abscissa dominates the carrier abscissa and its critical bound proves RH.
   - The signed sharp-prime source now has a formalized least admissible positive correction,
@@ -48,7 +53,8 @@ of the Riemann hypothesis.
     Connes--Consani--Moscovici, Voros's superzeta theory, Suzuki through June 2026, and Groskin
     through July 2026.
   - No located parent gives the complete cutoff-free sharp rectangular prime--Gamma identity at
-    piecewise-linear regularity, nor the conjunction of fixed arbitrary positive width, logarithmic mesh,
+    piecewise-linear regularity, its source-only admissible-tail sign criterion and exact
+    half-plane energy spectrum, nor the conjunction of fixed arbitrary positive width, logarithmic mesh,
     lower-bound and norm criteria, cofinal negative divergence, the exact closed-ray one-sided
     exponent spectrum, the universal negative-mass Dirichlet abscissa, maximum-abscissa
     conservation and non-dilution for every finite nonnegative allocation or cover,
@@ -62,6 +68,10 @@ of the Riemann hypothesis.
     meromorphic-divisor argument.  It strengthens the source foundation but is not counted in the
     novelty score.
 - Significance: 21/22
+  - The headline coefficient is now source-defined rather than divisor-defined: every sample is
+    a finite von Mangoldt autocorrelation plus an absolutely convergent Gamma integral.  Its tail
+    sign is an exact RH criterion, and its negative Dirichlet abscissa reads the full transverse
+    Xi displacement.
   - One scalar cofinal family recovers every off-critical divisor coordinate, its exact analytic
     multiplicity, its supremal transverse displacement, and every horizontal zero-free region
     through both its one-sided polynomial lower-loss spectrum and its exact negative Dirichlet
@@ -117,4 +127,5 @@ The paper may claim only the statements listed in CLAIM_TRACE_AUDIT.md. Any furt
 especially source holomorphy or a prime-side lower bound, requires a new Lean declaration and a
 refreshed literature audit before inclusion. Neither source-divisor recovery nor the residue
 refinement is advertised as an independent novelty claim; the candidate-new theorem is the
-universal fixed-window Weil-energy geometry.
+complete sharp prime--Gamma formula together with its source-only fixed-window RH spectrum and
+positive-carrier geometry.

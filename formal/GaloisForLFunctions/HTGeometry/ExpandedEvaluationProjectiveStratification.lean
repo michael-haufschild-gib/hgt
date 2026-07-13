@@ -29,7 +29,7 @@ noncomputable section
 The bound says that every affine chart of the projective null-vector incidence has complex
 dimension at most the packet dimension minus `c`.  The conclusion is a finite smooth
 stratification of its projected bad set with real codimension at least `2 * c`. -/
-structure ClassicalComplexProjectiveIncidenceGeometry : Prop where
+structure ClassicalComplexProjectiveIncidenceGeometry where
   finite_stratification_of_chart_krull_bounds :
     ∀ {row κ : Type}
       [Fintype row] [DecidableEq row] [Fintype κ] [DecidableEq κ]
@@ -49,7 +49,7 @@ formal complex excess
 
 All deductions specific to the expanded differential-evaluation matrix are proved here in Lean;
 `classicalInput` contains only the general algebraic-geometric theorem above. -/
-theorem expandedDifferentialEvaluationRankDefect_finiteRegularStratification
+noncomputable def expandedDifferentialEvaluationRankDefect_finiteRegularStratification
     (classicalInput : ClassicalComplexProjectiveIncidenceGeometry)
     {row κ : Type}
     [Fintype row] [DecidableEq row] [Fintype κ] [DecidableEq κ]

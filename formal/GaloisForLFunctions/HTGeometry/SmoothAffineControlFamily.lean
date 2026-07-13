@@ -99,6 +99,34 @@ theorem surjective_fderiv_smoothAffineControlFamily_probe
   rw [fderiv_smoothAffineControlFamily_probe]
   exact hDirection h
 
+/-- If every ambient center admits dense compact avoidance by perturbations from one submodule,
+then compact avoidance is dense in the full ambient parameter space. -/
+theorem dense_compactConfigurationAvoidance_of_dense_submodule_perturbations
+    {X H Y : Type*}
+    [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup H] [NormedSpace ℝ H]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y]
+    (V : Submodule ℝ X)
+    (base : H → Y) (direction : H → (X →L[ℝ] Y))
+    (bad : Set Y) (K : Set H)
+    (hdense : ∀ center : X,
+      Dense (compactConfigurationAvoidance
+        (smoothAffineControlFamily
+          (fun h => base h + direction h center)
+          (fun h => (direction h).domRestrict V)) bad K)) :
+    Dense (compactConfigurationAvoidance
+      (smoothAffineControlFamily base direction) bad K) := by
+  rw [Metric.dense_iff]
+  intro center r hr
+  obtain ⟨v, hvball, hvgood⟩ :=
+    (Metric.dense_iff.mp (hdense center) 0 r hr)
+  refine ⟨center + (v : X), ?_, ?_⟩
+  · simpa [Metric.mem_ball, dist_eq_norm] using hvball
+  · intro h hh
+    have hv := hvgood h hh
+    simpa only [smoothAffineControlFamily, map_add,
+      ContinuousLinearMap.domRestrict_apply, add_assoc] using hv
+
 end
 
 end GaloisForLFunctions.HTGeometry

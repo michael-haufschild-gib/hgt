@@ -7,7 +7,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 
 | Area | Umbrella | Declarations | Capstones |
 |---|---|---:|---|
-| `rh_tower` | `GaloisForLFunctions.RHTower` | 13985 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
+| `rh_tower` | `GaloisForLFunctions.RHTower` | 13986 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
 | `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 3944 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 537 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 889 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
@@ -859,6 +859,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `xiRectangularPrimeGammaTailNegativePart_abscissa_eq_bot_of_rh` | `GaloisForLFunctions.RHTower.CCMPrimeGammaSourceEnergySpectrum` | `formal/GaloisForLFunctions/RHTower/CCMPrimeGammaSourceEnergySpectrum.lean:172` | Under RH, the explicit negative-source abscissa is `-infinity`. |
 | theorem | `xiRectangularPrimeGammaTailNegativePart_abscissa_eq_transverseSup_of_not_rh` | `GaloisForLFunctions.RHTower.CCMPrimeGammaSourceEnergySpectrum` | `formal/GaloisForLFunctions/RHTower/CCMPrimeGammaSourceEnergySpectrum.lean:183` | Under false RH, the explicit negative-source abscissa is exactly the full shifted transverse Xi displacement. |
 | theorem | `riemannHypothesis_iff_primeGammaTailNegativePart_abscissa_eq_bot` | `GaloisForLFunctions.RHTower.CCMPrimeGammaSourceEnergySpectrum` | `formal/GaloisForLFunctions/RHTower/CCMPrimeGammaSourceEnergySpectrum.lean:195` | Critical abscissa RH criterion.** RH is equivalent to the explicit prime--Gamma negative source having absolute-convergence abscissa `-infinity`. |
+| theorem | `riemannHypothesis_iff_primeGammaTailNegativePart_abscissa_le_one` | `GaloisForLFunctions.RHTower.CCMPrimeGammaSourceEnergySpectrum` | `formal/GaloisForLFunctions/RHTower/CCMPrimeGammaSourceEnergySpectrum.lean:213` | Critical source-abscissa criterion.** RH is equivalent to the explicit prime--Gamma negative source having absolute-convergence abscissa at most one. |
 | theorem | `exists_fin_ccmPrimePole_projection_common_weaklyNull_sequence` | `GaloisForLFunctions.RHTower.CCMPrimePoleCalkinBoundary` | `formal/GaloisForLFunctions/RHTower/CCMPrimePoleCalkinBoundary.lean:23` |  |
 | def | `ccmPrimePoleProjectionAverage` | `GaloisForLFunctions.RHTower.CCMPrimePoleCalkinBoundary` | `formal/GaloisForLFunctions/RHTower/CCMPrimePoleCalkinBoundary.lean:74` |  |
 | theorem | `norm_ccmPrimePoleProjectionAverage_le_one` | `GaloisForLFunctions.RHTower.CCMPrimePoleCalkinBoundary` | `formal/GaloisForLFunctions/RHTower/CCMPrimePoleCalkinBoundary.lean:80` |  |

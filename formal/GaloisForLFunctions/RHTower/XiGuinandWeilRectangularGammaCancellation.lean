@@ -10,7 +10,7 @@ resolvent identities to converge to the literal archimedean bottom-edge integral
 -/
 
 open Complex Filter MeasureTheory Set
-open scoped BigOperators
+open scoped BigOperators Convolution
 
 noncomputable section
 
@@ -1021,5 +1021,299 @@ theorem integral_rectangularEulerDigammaIntegrand_eq_cancellationKernel_sub_eule
     (hF.const_mul _), integral_const_mul, hFzero,
     rectangularTwoEdgeAutocorrelation_zero hL ha] at hcore
   exact eq_sub_iff_add_eq.mpr hcore
+
+/-! ## The two rational resolvents are exactly the even polar square -/
+
+def rectangularPolarHalfTilt (L a : ℝ) (x : ℝ) : ℂ :=
+  (rectangularTwoEdgeProfile L a x : ℂ) * Complex.exp (x / 2)
+
+def rectangularPolarHalfReflectedTilt (L a : ℝ) (x : ℝ) : ℂ :=
+  (rectangularTwoEdgeProfile L a (-x) : ℂ) * Complex.exp (x / 2)
+
+def rectangularPolarHalfAutocorrelation (L a : ℝ) (h : ℝ) : ℂ :=
+  (rectangularTwoEdgeAutocorrelation L a h : ℂ) * Complex.exp (h / 2)
+
+theorem integrable_rectangularPolarHalfTilt (L a : ℝ) :
+    Integrable (rectangularPolarHalfTilt L a) := by
+  unfold rectangularPolarHalfTilt
+  convert integrable_rectangularTwoEdgeProfile_mul_exp L a (1 / 2) using 1
+  funext x
+  congr 2
+  push_cast
+  ring
+
+theorem integrable_rectangularPolarHalfReflectedTilt (L a : ℝ) :
+    Integrable (rectangularPolarHalfReflectedTilt L a) := by
+  have h := (integrable_rectangularTwoEdgeProfile_mul_exp L a (-1 / 2)).comp_neg
+  unfold rectangularPolarHalfReflectedTilt
+  convert h using 1
+  funext x
+  congr 2
+  push_cast
+  ring
+
+theorem rectangularPolarHalfAutocorrelation_eq_convolution (L a h : ℝ) :
+    rectangularPolarHalfAutocorrelation L a h =
+      (rectangularPolarHalfReflectedTilt L a ⋆[ContinuousLinearMap.mul ℂ ℂ]
+        rectangularPolarHalfTilt L a) h := by
+  rw [rectangularPolarHalfAutocorrelation, rectangularTwoEdgeAutocorrelation]
+  symm
+  change (∫ t : ℝ,
+    rectangularPolarHalfReflectedTilt L a t * rectangularPolarHalfTilt L a (h - t)) = _
+  rw [← MeasureTheory.integral_neg_eq_self]
+  simp only [rectangularPolarHalfReflectedTilt, rectangularPolarHalfTilt, neg_neg,
+    sub_neg_eq_add]
+  calc
+    _ = ∫ t : ℝ,
+        (((rectangularTwoEdgeProfile L a (t + h) *
+          rectangularTwoEdgeProfile L a t : ℝ) : ℂ) * Complex.exp (h / 2)) := by
+      apply integral_congr_ae
+      filter_upwards with t
+      rw [add_comm h t]
+      push_cast
+      have hexp : Complex.exp (-t / 2) * Complex.exp ((t + h) / 2) =
+          Complex.exp (h / 2) := by
+        rw [← Complex.exp_add]
+        congr 1
+        push_cast
+        ring
+      calc
+        _ = (rectangularTwoEdgeProfile L a (t + h) : ℂ) *
+            (rectangularTwoEdgeProfile L a t : ℂ) *
+              (Complex.exp (-t / 2) * Complex.exp ((t + h) / 2)) := by ring
+        _ = _ := by rw [hexp]
+    _ = (∫ t : ℝ,
+        ((rectangularTwoEdgeProfile L a (t + h) *
+          rectangularTwoEdgeProfile L a t : ℝ) : ℂ)) * Complex.exp (h / 2) := by
+      rw [integral_mul_const]
+    _ = ((∫ t : ℝ,
+        rectangularTwoEdgeProfile L a (t + h) *
+          rectangularTwoEdgeProfile L a t : ℝ) : ℂ) * Complex.exp (h / 2) := by
+      congr 1
+      exact integral_ofReal
+    _ = _ := by rfl
+
+theorem rectangularTwoEdgeTransform_half_eq_evenPolarFeature
+    {L : ℝ} (hL : 0 ≤ L) (a : ℝ) :
+    rectangularTwoEdgeTransform L a (1 / 2 : ℂ) =
+      (rectangularEvenPolarFeature L a : ℂ) := by
+  rw [rectangularTwoEdgeTransform]
+  rw [rectangularWindowAmplitude_eq_div (by norm_num : (1 / 2 : ℂ) ≠ 0),
+    rectangularWindowAmplitude_eq_div (by norm_num : -(1 / 2 : ℂ) ≠ 0)]
+  rw [rectangularEvenPolarFeature_eq hL, Real.sinh_eq, Real.sinh_eq]
+  push_cast
+  ring_nf
+  rw [← Complex.exp_add, ← Complex.exp_add]
+  ring
+
+theorem integral_rectangularPolarHalfTilt
+    {L : ℝ} (hL : 0 ≤ L) (a : ℝ) :
+    (∫ x : ℝ, rectangularPolarHalfTilt L a x) =
+      (rectangularEvenPolarFeature L a : ℂ) := by
+  unfold rectangularPolarHalfTilt
+  rw [show (fun x : ℝ =>
+      (rectangularTwoEdgeProfile L a x : ℂ) * Complex.exp (x / 2)) =
+      fun x : ℝ => (rectangularTwoEdgeProfile L a x : ℂ) *
+        Complex.exp ((1 / 2 : ℂ) * x) by
+    funext x
+    congr 2
+    push_cast
+    ring]
+  change rectangularTwoEdgeLaplaceIntegral L a (1 / 2 : ℂ) = _
+  rw [rectangularTwoEdgeLaplaceIntegral_eq_transform hL,
+    rectangularTwoEdgeTransform_half_eq_evenPolarFeature hL]
+
+theorem integral_rectangularPolarHalfReflectedTilt
+    {L : ℝ} (hL : 0 ≤ L) (a : ℝ) :
+    (∫ x : ℝ, rectangularPolarHalfReflectedTilt L a x) =
+      (rectangularEvenPolarFeature L a : ℂ) := by
+  rw [← MeasureTheory.integral_neg_eq_self]
+  unfold rectangularPolarHalfReflectedTilt
+  simp only [neg_neg]
+  rw [show (fun x : ℝ =>
+      (rectangularTwoEdgeProfile L a x : ℂ) * Complex.exp ((-x : ℝ) / 2)) =
+      fun x : ℝ => (rectangularTwoEdgeProfile L a x : ℂ) *
+        Complex.exp ((-1 / 2 : ℂ) * x) by
+    funext x
+    congr 2
+    push_cast
+    ring]
+  change rectangularTwoEdgeLaplaceIntegral L a (-1 / 2 : ℂ) = _
+  rw [rectangularTwoEdgeLaplaceIntegral_eq_transform hL,
+    show (-1 / 2 : ℂ) = -(1 / 2 : ℂ) by ring,
+    rectangularTwoEdgeTransform_even,
+    rectangularTwoEdgeTransform_half_eq_evenPolarFeature hL]
+
+theorem integral_rectangularPolarHalfAutocorrelation
+    {L : ℝ} (hL : 0 ≤ L) (a : ℝ) :
+    (∫ h : ℝ, rectangularPolarHalfAutocorrelation L a h) =
+      (rectangularEvenPolarFeature L a : ℂ) ^ 2 := by
+  rw [show rectangularPolarHalfAutocorrelation L a =
+      rectangularPolarHalfReflectedTilt L a ⋆[ContinuousLinearMap.mul ℂ ℂ]
+        rectangularPolarHalfTilt L a by
+    funext h
+    exact rectangularPolarHalfAutocorrelation_eq_convolution L a h]
+  rw [MeasureTheory.integral_convolution (ContinuousLinearMap.mul ℂ ℂ)
+    (integrable_rectangularPolarHalfReflectedTilt L a)
+    (integrable_rectangularPolarHalfTilt L a),
+    integral_rectangularPolarHalfReflectedTilt hL,
+    integral_rectangularPolarHalfTilt hL]
+  simp [pow_two]
+
+theorem rectangularTwoEdgeAutocorrelation_neg (L a h : ℝ) :
+    rectangularTwoEdgeAutocorrelation L a (-h) =
+      rectangularTwoEdgeAutocorrelation L a h := by
+  rw [rectangularTwoEdgeAutocorrelation_eq_four_tents,
+    rectangularTwoEdgeAutocorrelation_eq_four_tents]
+  rw [abs_neg]
+  have hleft : |-h - (2 * a - L)| = |h + (2 * a - L)| := by
+    rw [show -h - (2 * a - L) = -(h + (2 * a - L)) by ring, abs_neg]
+  have hright : |-h + (2 * a - L)| = |h - (2 * a - L)| := by
+    rw [show -h + (2 * a - L) = -(h - (2 * a - L)) by ring, abs_neg]
+  rw [hleft, hright]
+  ring
+
+theorem integrable_rectangularPolarHalfAutocorrelation (L a : ℝ) :
+    Integrable (rectangularPolarHalfAutocorrelation L a) := by
+  rw [show rectangularPolarHalfAutocorrelation L a =
+      rectangularPolarHalfReflectedTilt L a ⋆[ContinuousLinearMap.mul ℂ ℂ]
+        rectangularPolarHalfTilt L a by
+    funext h
+    exact rectangularPolarHalfAutocorrelation_eq_convolution L a h]
+  exact (integrable_rectangularPolarHalfReflectedTilt L a).integrable_convolution
+    (ContinuousLinearMap.mul ℂ ℂ) (integrable_rectangularPolarHalfTilt L a)
+
+theorem rectangularPolarResolventPair_eq_two_integral (L a : ℝ) :
+    (∫ t : ℝ in Ioi 0,
+        Complex.exp (-((3 / 4 : ℝ) : ℂ) * (t : ℂ)) *
+          ((rectangularTwoEdgeAutocorrelation L a (t / 2) : ℂ) *
+            Complex.exp (t / 2))) +
+      (∫ t : ℝ in Ioi 0,
+        Complex.exp (-((1 / 4 : ℝ) : ℂ) * (t : ℂ)) *
+          ((rectangularTwoEdgeAutocorrelation L a (t / 2) : ℂ) *
+            Complex.exp (t / 2))) =
+      2 * ∫ h : ℝ, rectangularPolarHalfAutocorrelation L a h := by
+  let H : ℝ → ℂ := rectangularPolarHalfAutocorrelation L a
+  have hH : Integrable H := integrable_rectangularPolarHalfAutocorrelation L a
+  have hsplit : (∫ h : ℝ in Iic 0, H h) + (∫ h : ℝ in Ioi 0, H h) =
+      ∫ h : ℝ, H h := by
+    convert! (setIntegral_union (Iic_disjoint_Ioi (Eq.le rfl)) measurableSet_Ioi
+      hH.integrableOn hH.integrableOn).symm
+    rw [Iic_union_Ioi, Measure.restrict_univ]
+  have hplus := MeasureTheory.integral_comp_mul_left_Ioi H 0
+    (by norm_num : (0 : ℝ) < 1 / 2)
+  have hminus := MeasureTheory.integral_comp_mul_left_Ioi (fun h : ℝ => H (-h)) 0
+    (by norm_num : (0 : ℝ) < 1 / 2)
+  have hfirst : (fun t : ℝ =>
+      Complex.exp (-((3 / 4 : ℝ) : ℂ) * (t : ℂ)) *
+        ((rectangularTwoEdgeAutocorrelation L a (t / 2) : ℂ) * Complex.exp (t / 2))) =
+      fun t : ℝ => H (-(t / 2)) := by
+    funext t
+    dsimp only [H, rectangularPolarHalfAutocorrelation]
+    rw [rectangularTwoEdgeAutocorrelation_neg]
+    calc
+      _ = (rectangularTwoEdgeAutocorrelation L a (t / 2) : ℂ) *
+          (Complex.exp (-((3 / 4 : ℝ) : ℂ) * (t : ℂ)) * Complex.exp (t / 2)) := by
+        ring
+      _ = _ := by
+        rw [← Complex.exp_add]
+        congr 1
+        push_cast
+        ring
+  have hsecond : (fun t : ℝ =>
+      Complex.exp (-((1 / 4 : ℝ) : ℂ) * (t : ℂ)) *
+        ((rectangularTwoEdgeAutocorrelation L a (t / 2) : ℂ) * Complex.exp (t / 2))) =
+      fun t : ℝ => H (t / 2) := by
+    funext t
+    dsimp only [H, rectangularPolarHalfAutocorrelation]
+    calc
+      _ = (rectangularTwoEdgeAutocorrelation L a (t / 2) : ℂ) *
+          (Complex.exp (-((1 / 4 : ℝ) : ℂ) * (t : ℂ)) * Complex.exp (t / 2)) := by
+        ring
+      _ = _ := by
+        rw [← Complex.exp_add]
+        congr 1
+        push_cast
+        ring
+  rw [hfirst, hsecond]
+  have hplus' : (∫ t : ℝ in Ioi 0, H (t / 2)) =
+      2 * ∫ h : ℝ in Ioi 0, H h := by
+    norm_num at hplus
+    simpa only [div_eq_mul_inv, mul_comm, one_mul] using hplus
+  have hminus' : (∫ t : ℝ in Ioi 0, H (-(t / 2))) =
+      2 * ∫ h : ℝ in Iic 0, H h := by
+    norm_num at hminus
+    simpa only [div_eq_mul_inv, mul_comm, one_mul] using hminus
+  rw [hplus', hminus']
+  rw [← mul_add, hsplit]
+
+theorem rectangularPolarResolventPair_eq_two_mul_sq
+    {L : ℝ} (hL : 0 ≤ L) (a : ℝ) :
+    (∫ t : ℝ in Ioi 0,
+        Complex.exp (-((3 / 4 : ℝ) : ℂ) * (t : ℂ)) *
+          ((rectangularTwoEdgeAutocorrelation L a (t / 2) : ℂ) *
+            Complex.exp (t / 2))) +
+      (∫ t : ℝ in Ioi 0,
+        Complex.exp (-((1 / 4 : ℝ) : ℂ) * (t : ℂ)) *
+          ((rectangularTwoEdgeAutocorrelation L a (t / 2) : ℂ) *
+            Complex.exp (t / 2))) =
+      (2 * rectangularEvenPolarFeature L a ^ 2 : ℝ) := by
+  rw [rectangularPolarResolventPair_eq_two_integral L a,
+    integral_rectangularPolarHalfAutocorrelation hL a]
+  push_cast
+  ring
+
+def rectangularEulerRationalIntegrand (L a : ℝ) (xi : ℝ) : ℂ :=
+  rectangularTwoEdgeTransform L a
+      (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2 *
+    (2 / rectangularEulerArchPoint xi + 2 / (rectangularEulerArchPoint xi - 1))
+
+theorem integral_rectangularEulerRationalIntegrand_eq_two_mul_polar_sq
+    {L : ℝ} (hL : 0 ≤ L) (a : ℝ) :
+    (∫ xi : ℝ, rectangularEulerRationalIntegrand L a xi) =
+      (2 * rectangularEvenPolarFeature L a ^ 2 : ℝ) := by
+  let F : ℝ → ℂ := fun xi =>
+    rectangularTwoEdgeTransform L a
+      (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2
+  let d0 : ℝ → ℂ := fun xi =>
+    ((3 / 4 : ℝ) : ℂ) - ((Real.pi * xi : ℝ) : ℂ) * I
+  let d1 : ℝ → ℂ := fun xi =>
+    ((1 / 4 : ℝ) : ℂ) - ((Real.pi * xi : ℝ) : ℂ) * I
+  have hd0 : ∀ xi, d0 xi ≠ 0 := by
+    intro xi h
+    have hre := congrArg Complex.re h
+    dsimp only [d0] at hre
+    simp [Complex.mul_re] at hre
+  have hd1 : ∀ xi, d1 xi ≠ 0 := by
+    intro xi h
+    have hre := congrArg Complex.re h
+    dsimp only [d1] at hre
+    simp [Complex.mul_re] at hre
+  have hfun : rectangularEulerRationalIntegrand L a =
+      fun xi => F xi * (d0 xi)⁻¹ + F xi * (d1 xi)⁻¹ := by
+    funext xi
+    rw [rectangularEulerRationalIntegrand]
+    dsimp only [F, d0, d1, rectangularEulerArchPoint]
+    have hs0 : (3 / 2 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) =
+        2 * (((3 / 4 : ℝ) : ℂ) - ((Real.pi * xi : ℝ) : ℂ) * I) := by
+      push_cast
+      ring
+    have hs1 : (3 / 2 - ((2 * Real.pi * xi : ℝ) : ℂ) * I - 1) =
+        2 * (((1 / 4 : ℝ) : ℂ) - ((Real.pi * xi : ℝ) : ℂ) * I) := by
+      push_cast
+      ring
+    rw [hs1, hs0]
+    field_simp [hd0 xi, hd1 xi]
+  rw [hfun]
+  have hi0 := integrable_rectangularEulerFourierKernel_mul_verticalResolvent
+    (c := (3 / 4 : ℝ)) (by norm_num) L a
+  have hi1 := integrable_rectangularEulerFourierKernel_mul_verticalResolvent
+    (c := (1 / 4 : ℝ)) (by norm_num) L a
+  rw [integral_add hi0 hi1,
+    integral_rectangularEulerFourierKernel_mul_verticalResolvent hL
+      (by norm_num : (0 : ℝ) < 3 / 4) a,
+    integral_rectangularEulerFourierKernel_mul_verticalResolvent hL
+      (by norm_num : (0 : ℝ) < 1 / 4) a,
+    rectangularPolarResolventPair_eq_two_mul_sq hL a]
 
 end RHTower

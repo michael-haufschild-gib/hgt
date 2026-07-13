@@ -1195,6 +1195,7 @@ import GaloisForLFunctions.RHTower.XiPrimeSeamCalkinGram
 import GaloisForLFunctions.RHTower.XiPrimeSeamPairEnergy
 import GaloisForLFunctions.RHTower.XiPrimeSeamPairVariance
 import GaloisForLFunctions.RHTower.XiPrimeSeamPairAsymptotics
+import GaloisForLFunctions.RHTower.XiPrimeSeamReflectionEnergy
 import GaloisForLFunctions.RHTower.XiLogDerivNonholonomic
 import GaloisForLFunctions.RHTower.XiRationalQuartetGauge
 import GaloisForLFunctions.RHTower.XiShiftPrimeExposure

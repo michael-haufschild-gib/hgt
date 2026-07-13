@@ -132,6 +132,25 @@ fixedWindowFullObservableDivisorUniversality_capstone.
 | after the explicit Gamma and polar correction, the full spectral value is the finite prime--polar source | rectangularCorrectedXiWeilValue_eq_primePolarSource |
 | the arithmetic-aperture autocorrelation splits into a fixed tent and one moving multiplicative window | rectangularPrimeAutocorrelationSum_logAperture |
 
+## Exact sharp prime--Gamma RH spectrum
+
+The source-only headline theorem is formalized in
+`CCMPrimeGammaSourceEnergySpectrum.lean`.
+
+| Manuscript claim | Unconditional Lean declaration |
+|---|---|
+| the arithmetic sample (g_L(n)) is a finite von Mangoldt autocorrelation plus the completed Gamma integral | xiRectangularPrimeGammaLogCoefficient |
+| on every admissible sample, (g_L(n)=Q_L(\frac12\log n)) | xiRectangularPrimeGammaLogCoefficient_eq_weilLogCoefficient_re |
+| the complete prime--Gamma tail is pointwise the real sharp Weil tail | xiRectangularPrimeGammaTailCoefficient_eq_weilTail_re |
+| its negative mass is pointwise the intrinsic fixed-window negative carrier | xiRectangularPrimeGammaTailNegativePart_eq_weilTailNegativePart |
+| RH iff every retained prime--Gamma sample is nonnegative | riemannHypothesis_iff_primeGammaLogCoefficient_tail_nonneg |
+| the Xi half-plane at width `alpha` iff the prime--Gamma negative tail has energy above `1+alpha` | xiZeroHalfPlaneBound_iff_primeGammaTailNegativeEnergyAbove |
+| the explicit prime--Gamma source, inverse-tilted source, critical-Mellin defect, and Xi half-plane form one quantitative spectrum | ccmPrimeGammaSourceDivisorEnergySpectrum_capstone |
+| the `alpha=0` endpoint of the explicit spectrum is RH | riemannHypothesis_iff_ccmPrimeGammaSourceDivisorEnergyEndpoint |
+| the source negative abscissa is `-infinity` under RH and `1+delta_*` under false RH | xiRectangularPrimeGammaTailNegativePart_abscissa_dichotomy |
+| RH iff the source negative abscissa is `-infinity` | riemannHypothesis_iff_primeGammaTailNegativePart_abscissa_eq_bot |
+| RH iff the source negative abscissa is at most one | riemannHypothesis_iff_primeGammaTailNegativePart_abscissa_le_one |
+
 ## Source-defined complete Xi-divisor carrier
 
 The complete prime-source theorem is bundled by
@@ -237,6 +256,7 @@ The stronger intrinsic theorem is bundled by
   GaloisForLFunctions.RHTower.CCMRectangularNegativeDirichletAbscissa, and
   GaloisForLFunctions.RHTower.CCMRectangularFiniteChannelNonDilution, and
   GaloisForLFunctions.RHTower.CCMSourceDivisorEnergySpectrum, and
+  GaloisForLFunctions.RHTower.CCMPrimeGammaSourceEnergySpectrum, and
   GaloisForLFunctions.RHTower.CCMSharpPrimeWindowMinimalPositiveCorrection, and
   GaloisForLFunctions.RHTower.CCMInverseTiltedDyadicPrimeTomography, and
   GaloisForLFunctions.RHTower.CCMInverseTiltedCriticalMellinFactorization, and

@@ -128,4 +128,18 @@ theorem det_gram_eq_prod {n : ℕ} (v : Fin n → E) (hv : LinearIndependent ℂ
   rw [hgram, Matrix.det_mul, Matrix.det_mul, hdetBmap, Matrix.det_transpose, hdetB,
     Matrix.det_diagonal, one_mul, mul_one]
 
+/-- **Gram–Schmidt is causal.**  `gramSchmidt f n` depends only on the values `f m` for `m ≤ n`.
+Two `ℕ`-indexed families agreeing up to `n` have the same `n`-th Gram–Schmidt vector.  This lets
+the consecutive Toeplitz determinant ratio telescope: adding one more monomial contributes exactly
+one new factor `‖gsₙ₊₁‖²` to `∏ₖ ‖gsₖ‖²`. -/
+theorem gramSchmidt_causal (f g : ℕ → E) (n : ℕ) (h : ∀ m, m ≤ n → f m = g m) :
+    gramSchmidt ℂ f n = gramSchmidt ℂ g n := by
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    rw [gramSchmidt_def ℂ f n, gramSchmidt_def ℂ g n, h n le_rfl]
+    congr 1
+    refine Finset.sum_congr rfl (fun i hi => ?_)
+    have hin : i < n := Finset.mem_Iio.mp hi
+    rw [ih i hin (fun m hm => h m (hm.trans hin.le))]
+
 end GaloisForLFunctions.HTGeometry

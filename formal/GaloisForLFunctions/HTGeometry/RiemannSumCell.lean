@@ -98,4 +98,31 @@ theorem norm_sum_smul_sub_integral_le_of_lipschitzWith {f : ℝ → ℂ} {K a h 
   have hn := hlip.norm_sub_le x (a + k * h)
   rwa [Real.coe_toNNReal K hK, Real.norm_eq_abs, abs_of_nonneg (by linarith)] at hn
 
+/-- **The Laplace exponential is Lipschitz on a bounded interval.**  `x ↦ e^{-wx}` is
+`(‖w‖·e^{|Re w|·T})`-Lipschitz on `[0, T]`, via its derivative bound.  This is the exponential factor's
+modulus of continuity underlying the moving-window Riemann-sum estimate. -/
+theorem lipschitzOnWith_cexp_neg_mul (w : ℂ) (T : ℝ) (hT : 0 ≤ T) :
+    LipschitzOnWith (Real.toNNReal (‖w‖ * Real.exp (|w.re| * T)))
+      (fun x : ℝ => Complex.exp (-w * (x : ℂ))) (Set.Icc 0 T) := by
+  have hd : ∀ x ∈ Set.Icc (0 : ℝ) T, HasDerivWithinAt (fun t : ℝ => Complex.exp (-w * (t : ℂ)))
+      (-w * Complex.exp (-w * (x : ℂ))) (Set.Icc 0 T) x := by
+    intro x _
+    have hx1 : HasDerivAt (fun t : ℝ => -w * (t : ℂ)) (-w) x := by
+      simpa using (Complex.ofRealCLM.hasDerivAt (x := x)).const_mul (-w)
+    have h2 : HasDerivAt (fun t : ℝ => Complex.exp (-w * (t : ℂ)))
+        (-w * Complex.exp (-w * (x : ℂ))) x := by
+      have := hx1.cexp; convert this using 1; ring
+    exact h2.hasDerivWithinAt
+  have hb : ∀ x ∈ Set.Icc (0 : ℝ) T,
+      ‖-w * Complex.exp (-w * (x : ℂ))‖₊ ≤ Real.toNNReal (‖w‖ * Real.exp (|w.re| * T)) := by
+    intro x hx
+    rw [← NNReal.coe_le_coe, coe_nnnorm, Real.coe_toNNReal _ (by positivity)]
+    rw [norm_mul, norm_neg, Complex.norm_exp]
+    apply mul_le_mul_of_nonneg_left _ (norm_nonneg w)
+    apply Real.exp_le_exp.mpr
+    have hre : (-w * (x : ℂ)).re = -(w.re) * x := by simp [Complex.mul_re]
+    rw [hre]
+    nlinarith [le_abs_self w.re, neg_abs_le w.re, hx.1, hx.2, abs_nonneg w.re]
+  exact Convex.lipschitzOnWith_of_nnnorm_hasDerivWithin_le (convex_Icc 0 T) hd hb
+
 end HTGeometry
