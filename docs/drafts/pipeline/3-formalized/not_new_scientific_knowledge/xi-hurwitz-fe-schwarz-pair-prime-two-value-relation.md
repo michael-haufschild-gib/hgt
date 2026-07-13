@@ -64,6 +64,18 @@ The closure and exact source-energy interfaces in this chain are already formali
 open mathematical input is the source-core sign; asserting any of the equivalent right-end
 conditions directly would be an RH recoding.
 
+## Literature boundary
+
+Lagarias--Li develop the relevant parent geometry: three-variable Lerch analytic continuation and
+explicit monodromy functions in
+[The Lerch Zeta Function II](https://arxiv.org/abs/1005.4967), the zeta-integral functional
+equations in [Part I](https://arxiv.org/abs/1005.4712), and finite-dimensional special-value
+monodromy representations in [Part III](https://arxiv.org/abs/1506.06161).  A targeted literature
+search did not locate the exact frozen-exponent shift-variable differential-matroid criterion, nor
+its identification with the prime-two seam.  This absence is not used as a novelty claim: the
+present theorem is a formal composition of already proved internal interfaces and is classified as
+a bridge.
+
 ## Principal declarations
 
 - `continuedHurwitzFESchwarzPairDependent_iff_firstPrimeSeamCharge_eq_zero`

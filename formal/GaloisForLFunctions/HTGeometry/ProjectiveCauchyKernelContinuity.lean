@@ -48,7 +48,10 @@ lemma projectiveResolventContinuousMap_pointwise_dist_le
         (projectiveResolventContinuousMap η hη y t) ≤
       η⁻¹ ^ 2 * dist x y := by
   cases t with
-  | infty => simp [projectiveResolventContinuousMap]
+  | infty =>
+      simp only [projectiveResolventContinuousMap, ContinuousMap.coe_mk,
+        projectiveCauchyPower_infty, dist_zero_left]
+      positivity
   | coe t =>
       have hxη : η ≤ ‖(t : ℂ) - x.1‖ := by
         exact x.2.trans (le_trans (le_abs_self x.1.im)
@@ -66,7 +69,7 @@ lemma projectiveResolventContinuousMap_pointwise_dist_le
         linarith
       rw [dist_eq_norm]
       simp only [projectiveResolventContinuousMap, ContinuousMap.coe_mk,
-        projectiveCauchyPower_coe, pow_one]
+        projectiveCauchyPower_coe, Nat.zero_add, pow_one]
       rw [inv_sub_inv' hx0 hy0, norm_mul, norm_mul, norm_inv, norm_inv]
       have hxinv : ‖(t : ℂ) - x.1‖⁻¹ ≤ η⁻¹ := inv_le_inv₀ hη hxη
       have hyinv : ‖(t : ℂ) - y.1‖⁻¹ ≤ η⁻¹ := inv_le_inv₀ hη hyη
@@ -80,7 +83,7 @@ theorem continuous_projectiveResolventContinuousMap
     (η : ℝ) (hη : 0 < η) :
     Continuous (projectiveResolventContinuousMap η hη) := by
   let C : ℝ≥0 := ⟨η⁻¹ ^ 2, sq_nonneg η⁻¹⟩
-  apply (show LipschitzWith C (projectiveResolventContinuousMap η hη) from ?_).continuous
+  apply (LipschitzWith.of_dist_le_mul (K := C) ?_).continuous
   intro x y
   rw [dist_eq_norm]
   apply (ContinuousMap.norm_le (mul_nonneg (sq_nonneg η⁻¹) (dist_nonneg))).2
@@ -112,8 +115,8 @@ def projectiveCauchyJetContinuousMap
     (x : ι → UpperNodeAtLeast η) : C(OnePoint ℝ, (Σ i, Fin (n i)) → ℂ) :=
   ⟨fun t s => projectiveCauchyPower (x s.1).1 s.2 t,
     continuous_pi fun s =>
-      by simpa only [projectiveCauchyPowerContinuousMap_apply] using
-        (projectiveCauchyPowerContinuousMap η hη s.2 (x s.1)).continuous⟩
+      continuous_projectiveCauchyPower (x s.1).1
+        (ne_of_gt (hη.trans_le (x s.1).2)) s.2⟩
 
 @[simp]
 theorem projectiveCauchyJetContinuousMap_apply
@@ -130,9 +133,12 @@ theorem continuous_projectiveCauchyJetContinuousMap
   apply ContinuousMap.continuous_of_continuous_uncurry
   apply continuous_pi
   intro s
+  have hx : Continuous
+      (fun p : (ι → UpperNodeAtLeast η) × OnePoint ℝ => p.1 s.1) := by
+    fun_prop
   exact continuous_eval.comp
     (((continuous_projectiveCauchyPowerContinuousMap η hη s.2).comp
-      ((continuous_apply s.1).comp continuous_fst)).prodMk continuous_snd)
+      hx).prodMk continuous_snd)
 
 /-- The canonical `L¹` class of the finite projective Cauchy-jet kernel. -/
 def projectiveCauchyJetLpKernel
@@ -161,7 +167,7 @@ theorem projectiveCauchyJetLpKernel_eq_memLpToLp
         (fun i => ne_of_gt (hη.trans_le (x i).2)) n mu).toLp
         (projectiveCauchyJetColumn (fun i => (x i).1) n) := by
   apply Lp.ext
-  exact (ContinuousMap.coeFn_toLp
+  exact (ContinuousMap.coeFn_toLp mu
     (projectiveCauchyJetContinuousMap η hη n x)).trans
       (MemLp.coeFn_toLp _).symm
 

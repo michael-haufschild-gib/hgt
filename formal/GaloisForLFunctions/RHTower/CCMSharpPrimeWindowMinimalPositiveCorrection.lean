@@ -1,6 +1,5 @@
 import GaloisForLFunctions.RHTower.CCMSharpPrimeWindowEnergySpectrum
 import GaloisForLFunctions.RHTower.CCMRectangularFiniteChannelNonDilution
-import GaloisForLFunctions.RHTower.CCMSourceDivisorEnergySpectrum
 
 /-!
 # The sharp-prime negative channel is the least positive correction
@@ -167,7 +166,7 @@ theorem xiZeroHalfPlaneBound_of_dyadicSharpPositiveCorrection_abscissa
     (habscissa :
       LSeries.abscissaOfAbsConv (rectangularNegativeChannelCoefficient a) ≤
         ((1 + alpha : ℝ) : EReal)) :
-    XiZeroHalfPlaneBound alpha := by
+    ∀ rho : ℂ, xi rho = 0 → rho.re ≤ 1 / 2 + alpha := by
   intro rho hzero
   by_contra hnot
   have hgap : 1 / 2 + alpha < rho.re := lt_of_not_ge hnot
@@ -197,7 +196,7 @@ theorem riemannHypothesis_of_dyadicSharpPositiveCorrection_abscissa_le_one
       LSeries.abscissaOfAbsConv (rectangularNegativeChannelCoefficient a) ≤
         ((1 : ℝ) : EReal)) :
     RiemannHypothesis := by
-  have hzeros : XiZeroHalfPlaneBound 0 :=
+  have hzeros : ∀ rho : ℂ, xi rho = 0 → rho.re ≤ 1 / 2 + 0 :=
     xiZeroHalfPlaneBound_of_dyadicSharpPositiveCorrection_abscissa
       (show (0 : ℝ) ≤ 0 by rfl) ha (by
         simpa only [add_zero] using habscissa)
