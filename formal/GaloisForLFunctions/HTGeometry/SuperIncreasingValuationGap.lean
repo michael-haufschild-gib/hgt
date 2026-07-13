@@ -170,4 +170,33 @@ theorem weighted_sum_ne_zero_of_min_valuation {ι : Type*} [DecidableEq ι] (s :
     _ < Real.exp G * Real.exp (-G) := mul_lt_mul_of_pos_right hG (Real.exp_pos _)
     _ = 1 := by rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
 
+/-- The **index-multiset** of a `Fin D`-tuple: `key h n` counts the coordinates hitting `n`. -/
+noncomputable def key {D : ℕ} (h : Fin D → ℕ) : ℕ →₀ ℕ := ∑ t, Finsupp.single (h t) 1
+
+/-- The valuation of a tuple is the key-weighted sum of `b`. -/
+theorem valuation_eq_key_sum {D : ℕ} (h : Fin D → ℕ) (b : ℕ → ℝ) :
+    (key h).sum (fun n k => (k : ℝ) * b n) = ∑ t, b (h t) := by
+  rw [key, ← Finsupp.sum_finsetSum_index (by intro i; simp) (by intro i k₁ k₂; push_cast; ring)]
+  refine Finset.sum_congr rfl (fun t _ => ?_)
+  rw [Finsupp.sum_single_index (by simp)]
+  simp
+
+/-- Each key entry is at most the tuple arity `D`. -/
+theorem key_apply_le {D : ℕ} (h : Fin D → ℕ) (n : ℕ) : (key h) n ≤ D := by
+  rw [key, Finsupp.finsetSum_apply]
+  calc ∑ t, (Finsupp.single (h t) 1) n ≤ ∑ _t : Fin D, 1 := by
+        apply Finset.sum_le_sum; intro t _
+        rw [Finsupp.single_apply]; split <;> simp
+    _ = D := by simp
+
+/-- A product over a tuple equals the key-weighted product: coordinates hitting `n` contribute
+`g n` each, so the whole product is `∏ₙ (g n)^{key n}`.  This factors the common atom value out of a
+same-multiset fiber. -/
+theorem prod_eq_key_prod {D : ℕ} (h : Fin D → ℕ) {M : Type*} [CommMonoid M] (g : ℕ → M) :
+    (key h).prod (fun n k => (g n) ^ k) = ∏ t, g (h t) := by
+  rw [key, ← Finsupp.prod_finsetSum_index (by intro i; simp) (by intro i k₁ k₂; rw [pow_add])]
+  refine Finset.prod_congr rfl (fun t _ => ?_)
+  rw [Finsupp.prod_single_index (by simp)]
+  simp
+
 end GaloisForLFunctions

@@ -1778,24 +1778,26 @@ intrinsic carrier, not independent density scales.
 
 \section{Formal verification}
 
+\begingroup\raggedright
 Every theorem stated in this article has an unconditional Lean~4 proof in the accompanying
 formalization, compiled with Lean~4.30.0 and the repository's pinned version of mathlib.  The
 headline source identity, tail-sign RH criterion, quantitative prime--Gamma energy spectrum,
 and unconditional source-abscissa dichotomy are formalized in
-\texttt{CCMPrimeGammaSourceEnergySpectrum.lean}.  The underlying principal quantitative theorem
+\path{CCMPrimeGammaSourceEnergySpectrum.lean}.  The underlying principal quantitative theorem
 and summable-family aggregate law are formalized in
-\texttt{CCMSourceDivisorEnergySpectrum.lean}.  The complete inverse-tilted source tomography is
-formalized in \texttt{CCMInverseTiltedDyadicPrimeTomography.lean}; the intrinsic defect divisor in
-\texttt{CCMCriticalMellinDivisorTomography.lean}; and finite positive-channel conservation in
-\texttt{CCMRectangularFiniteChannelNonDilution.lean}.  The complete fixed-window theorem chain is
-collected by \texttt{CCMUnconditionalFoundation.lean}.  The sharp contour exhaustion and exact
+\path{CCMSourceDivisorEnergySpectrum.lean}.  The complete inverse-tilted source tomography is
+formalized in \path{CCMInverseTiltedDyadicPrimeTomography.lean}; the intrinsic defect divisor in
+\path{CCMCriticalMellinDivisorTomography.lean}; and finite positive-channel conservation in
+\path{CCMRectangularFiniteChannelNonDilution.lean}.  The complete fixed-window theorem chain is
+collected by \path{CCMUnconditionalFoundation.lean}.  The sharp contour exhaustion and exact
 prime--Gamma identity \textup{(6.6)} are formalized in
-\texttt{XiGuinandWeilRectangularFullFormula.lean}.
+\path{XiGuinandWeilRectangularFullFormula.lean}.
+\par\endgroup
 
 The explicit source endpoints in Corollary~\ref{cor:explicit-source-endpoints} are formalized in
 the sharp-prime-window modules identified in the supplementary claim-trace table.  The least
 positive-correction theorem, its exact feasible-abscissa law, and its quantitative Xi transfer are
-formalized in \texttt{CCMSharpPrimeWindowMinimalPositiveCorrection.lean}.
+formalized in \path{CCMSharpPrimeWindowMinimalPositiveCorrection.lean}.
 
 Within the principal module, separate declarations prove the two shifted holomorphy equivalences,
 the negative-energy equivalence, summable-family aggregate domination, the aggregate zero-free

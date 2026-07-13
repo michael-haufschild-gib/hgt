@@ -203,6 +203,77 @@ theorem primeTwo_reflectionSecondDifference_le_orbitwisePrimeSeamWeightedNormSq
     orbitwisePrimeSeamWeightedNormSq rho at hle
   exact hle
 
+private lemma exp_neg_two_add_exp_two_sub_two_eq_four_sinh_sq (x : ℝ) :
+    Real.exp (-2 * x) + Real.exp (2 * x) - 2 = 4 * Real.sinh x ^ 2 := by
+  have hneg : Real.exp (-2 * x) = Real.exp (-x) * Real.exp (-x) := by
+    rw [show -2 * x = -x + -x by ring, Real.exp_add]
+  have hpos : Real.exp (2 * x) = Real.exp x * Real.exp x := by
+    rw [show 2 * x = x + x by ring, Real.exp_add]
+  rw [hneg, hpos, Real.sinh_eq]
+  have hprod : Real.exp x * Real.exp (-x) = 1 := by
+    rw [← Real.exp_add]
+    simp
+  nlinarith
+
+/-- Hyperbolic form of the per-prime reflection defect.  It makes both positivity and quadratic
+coercivity in the horizontal displacement explicit. -/
+theorem orbitwiseNatPrimeSeamCharge_weighted_norm_sq_eq_sinh
+    (rho : ℂ) (p : Nat.Primes) :
+    ‖orbitwiseNatPrimeSeamCharge (p : ℕ) rho‖ ^ 2 / (p : ℝ) =
+      4 * (Real.log (p : ℝ)) ^ 2 * (p : ℝ) ^ (-2 : ℝ) *
+        Real.sinh ((rho.re - 1 / 2) * Real.log (p : ℝ)) ^ 2 := by
+  rw [orbitwiseNatPrimeSeamCharge_weighted_norm_sq_eq_reflectionSecondDifference]
+  have hp : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.prop.pos
+  rw [Real.rpow_def_of_pos hp, Real.rpow_def_of_pos hp,
+    Real.rpow_def_of_pos hp]
+  let x := (rho.re - 1 / 2) * Real.log (p : ℝ)
+  have hleft : Real.exp (Real.log (p : ℝ) * (-(1 + 2 * rho.re))) =
+      Real.exp (Real.log (p : ℝ) * (-2 : ℝ)) * Real.exp (-2 * x) := by
+    rw [← Real.exp_add]
+    congr 1
+    dsimp [x]
+    ring
+  have hright : Real.exp (Real.log (p : ℝ) * (-(3 - 2 * rho.re))) =
+      Real.exp (Real.log (p : ℝ) * (-2 : ℝ)) * Real.exp (2 * x) := by
+    rw [← Real.exp_add]
+    congr 1
+    dsimp [x]
+    ring
+  rw [hleft, hright]
+  calc
+    (Real.log (p : ℝ)) ^ 2 *
+        (Real.exp (Real.log (p : ℝ) * (-2 : ℝ)) * Real.exp (-2 * x) +
+          Real.exp (Real.log (p : ℝ) * (-2 : ℝ)) * Real.exp (2 * x) -
+          2 * Real.exp (Real.log (p : ℝ) * (-2 : ℝ))) =
+      (Real.log (p : ℝ)) ^ 2 * Real.exp (Real.log (p : ℝ) * (-2 : ℝ)) *
+        (Real.exp (-2 * x) + Real.exp (2 * x) - 2) := by ring
+    _ = 4 * (Real.log (p : ℝ)) ^ 2 * Real.exp (Real.log (p : ℝ) * (-2 : ℝ)) *
+        Real.sinh x ^ 2 := by rw [exp_neg_two_add_exp_two_sub_two_eq_four_sinh_sq]; ring
+    _ = _ := by rfl
+
+/-- Quantitative horizontal coercivity from the single prime `2`: the full seam energy dominates
+the squared distance to the critical line with an explicit unconditional constant. -/
+theorem horizontalDisplacement_sq_mul_log_two_pow_four_le_orbitwisePrimeSeamWeightedNormSq
+    {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1) :
+    (rho.re - 1 / 2) ^ 2 * (Real.log 2) ^ 4 ≤
+      orbitwisePrimeSeamWeightedNormSq rho := by
+  have hterm := (summable_orbitwisePrimeSeam_weighted_norm_sq hstrip).le_tsum
+    (⟨2, by norm_num⟩ : Nat.Primes) (fun p _ =>
+      div_nonneg (sq_nonneg _) (by exact_mod_cast p.prop.pos.le))
+  rw [orbitwiseNatPrimeSeamCharge_weighted_norm_sq_eq_sinh] at hterm
+  change 4 * (Real.log 2) ^ 2 * (2 : ℝ) ^ (-2 : ℝ) *
+      Real.sinh ((rho.re - 1 / 2) * Real.log 2) ^ 2 ≤
+    orbitwisePrimeSeamWeightedNormSq rho at hterm
+  have hx : |(rho.re - 1 / 2) * Real.log 2| ≤
+      |Real.sinh ((rho.re - 1 / 2) * Real.log 2)| := by
+    rw [Real.abs_sinh]
+    exact Real.self_le_sinh_iff.mpr (abs_nonneg _)
+  have hsq := (sq_le_sq₀ (abs_nonneg _) (abs_nonneg _)).mpr hx
+  rw [sq_abs, sq_abs] at hsq
+  norm_num at hterm
+  have hlog : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
+  nlinarith [sq_nonneg (Real.log 2), sq_nonneg (rho.re - 1 / 2)]
+
 /-- The cofinal pair-energy slope is twice the symmetric prime-curvature defect. -/
 theorem tendsto_orbitwisePrimeSeamPairEnergy_div_mass_to_primeLogSquareMoment_secondDifference
     {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1) :

@@ -1316,4 +1316,126 @@ theorem integral_rectangularEulerRationalIntegrand_eq_two_mul_polar_sq
       (by norm_num : (0 : ℝ) < 1 / 4) a,
     rectangularPolarResolventPair_eq_two_mul_sq hL a]
 
+theorem integrable_rectangularEulerRationalIntegrand (L a : ℝ) :
+    Integrable (rectangularEulerRationalIntegrand L a) := by
+  let F : ℝ → ℂ := fun xi =>
+    rectangularTwoEdgeTransform L a
+      (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2
+  have hF : Integrable F := by
+    simpa only [F] using integrable_rectangularTwoEdgeTransform_eulerLine_sq L a
+  have hcomb : Integrable (fun xi : ℝ =>
+      2 * rectangularEulerArchIntegrand L a xi -
+        rectangularEulerDigammaIntegrand L a xi +
+          (Real.log Real.pi : ℂ) * F xi) :=
+    ((integrable_rectangularEulerArchIntegrand L a).const_mul 2).sub
+      (integrable_rectangularEulerDigammaIntegrand L a) |>.add
+        (hF.const_mul (Real.log Real.pi : ℂ))
+  apply hcomb.congr
+  filter_upwards with xi
+  rw [rectangularEulerRationalIntegrand, rectangularEulerArchIntegrand,
+    rectangularEulerDigammaIntegrand,
+    digamma_rectangularEulerDigammaPoint_eq_arch]
+  dsimp only [F]
+  ring
+
+theorem two_mul_integral_rectangularEulerArchIntegrand_eq
+    {L a : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) :
+    2 * (∫ xi : ℝ, rectangularEulerArchIntegrand L a xi) =
+      ((∫ t : ℝ in Ioi 0,
+        rectangularGammaCancellationKernel L a t : ℝ) : ℂ) +
+        (2 * rectangularEvenPolarFeature L a ^ 2 : ℝ) -
+          ((Real.eulerMascheroniConstant + Real.log Real.pi) : ℂ) * (2 * L : ℝ) := by
+  let F : ℝ → ℂ := fun xi =>
+    rectangularTwoEdgeTransform L a
+      (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2
+  have hF : Integrable F := by
+    simpa only [F] using integrable_rectangularTwoEdgeTransform_eulerLine_sq L a
+  have hfun : (fun xi : ℝ => 2 * rectangularEulerArchIntegrand L a xi) =
+      fun xi : ℝ => rectangularEulerDigammaIntegrand L a xi +
+        rectangularEulerRationalIntegrand L a xi - (Real.log Real.pi : ℂ) * F xi := by
+    funext xi
+    rw [rectangularEulerArchIntegrand, rectangularEulerDigammaIntegrand,
+      rectangularEulerRationalIntegrand,
+      digamma_rectangularEulerDigammaPoint_eq_arch]
+    dsimp only [F]
+    ring
+  rw [← integral_const_mul]
+  rw [hfun]
+  have hzero := integral_rectangularEulerFourierKernel hL a 0
+  have hFzero : (∫ xi : ℝ, F xi) = (2 * L : ℝ) := by
+    rw [show (∫ xi : ℝ, F xi) =
+        (rectangularTwoEdgeAutocorrelation L a 0 : ℂ) by
+      simpa only [F, mul_zero, Complex.ofReal_zero, zero_mul, Complex.exp_zero, one_mul,
+        mul_one, zero_div] using hzero,
+      rectangularTwoEdgeAutocorrelation_zero hL ha]
+  calc
+    (∫ xi : ℝ, rectangularEulerDigammaIntegrand L a xi +
+        rectangularEulerRationalIntegrand L a xi - (Real.log Real.pi : ℂ) * F xi) =
+      (∫ xi : ℝ, rectangularEulerDigammaIntegrand L a xi +
+        rectangularEulerRationalIntegrand L a xi) -
+          ∫ xi : ℝ, (Real.log Real.pi : ℂ) * F xi := by
+      exact integral_sub
+        ((integrable_rectangularEulerDigammaIntegrand L a).add
+          (integrable_rectangularEulerRationalIntegrand L a))
+        (hF.const_mul (Real.log Real.pi : ℂ))
+    _ =
+      (∫ xi : ℝ, rectangularEulerDigammaIntegrand L a xi) +
+        (∫ xi : ℝ, rectangularEulerRationalIntegrand L a xi) -
+          (Real.log Real.pi : ℂ) * ∫ xi : ℝ, F xi := by
+      rw [integral_add (integrable_rectangularEulerDigammaIntegrand L a)
+          (integrable_rectangularEulerRationalIntegrand L a), integral_const_mul]
+    _ = _ := by
+      rw [integral_rectangularEulerDigammaIntegrand_eq_cancellationKernel_sub_euler hL ha,
+        integral_rectangularEulerRationalIntegrand_eq_two_mul_polar_sq hL a, hFzero]
+      push_cast
+      ring
+
+theorem normalizedRectangularBottomArchContribution_eq_two_mul_eulerIntegral
+    (L a : ℝ) :
+    normalizedRectangularBottomArchContribution L a =
+      2 * ∫ xi : ℝ, rectangularEulerArchIntegrand L a xi := by
+  rw [normalizedRectangularBottomArchContribution_eq]
+  let g : ℝ → ℂ := rectangularBottomArchIntegrand L a
+  have hscale := MeasureTheory.Measure.integral_comp_mul_left g (-2 * Real.pi)
+  have hfactor : |(-2 * Real.pi)⁻¹| = (2 * Real.pi)⁻¹ := by
+    rw [abs_inv]
+    have hneg : -2 * Real.pi < 0 := mul_neg_of_neg_of_pos (by norm_num) Real.pi_pos
+    rw [abs_of_neg hneg]
+    congr 1
+    ring
+  rw [hfactor] at hscale
+  have hleft : (∫ xi : ℝ, g ((-2 * Real.pi) * xi)) =
+      ∫ xi : ℝ, rectangularEulerArchIntegrand L a xi := by
+    apply integral_congr_ae
+    filter_upwards with xi
+    exact rectangularBottomArchIntegrand_scale L a xi
+  rw [hleft] at hscale
+  dsimp only [g] at hscale
+  rw [Complex.real_smul] at hscale
+  have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+  push_cast at hscale ⊢
+  field_simp [hpi] at hscale
+  rw [← hscale]
+  field_simp [hpi]
+
+/-- The aperture-stable remainder after the exact growing polar square has been removed from the
+archimedean edge. -/
+def rectangularGammaPolarCorrection (L a : ℝ) : ℝ :=
+  (∫ t : ℝ in Ioi 0, rectangularGammaCancellationKernel L a t) -
+    (Real.eulerMascheroniConstant + Real.log Real.pi) * (2 * L)
+
+/-- **Exact Gamma--polar cancellation law.**  The entire aperture-growing part of the sharp
+rectangular archimedean contribution is the elementary even polar square.  What remains is the
+real, absolutely convergent cancellation kernel. -/
+theorem normalizedRectangularBottomArchContribution_sub_two_mul_polar_sq
+    {L a : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) :
+    normalizedRectangularBottomArchContribution L a -
+        (2 * rectangularEvenPolarFeature L a ^ 2 : ℝ) =
+      (rectangularGammaPolarCorrection L a : ℂ) := by
+  rw [normalizedRectangularBottomArchContribution_eq_two_mul_eulerIntegral,
+    two_mul_integral_rectangularEulerArchIntegrand_eq hL ha,
+    rectangularGammaPolarCorrection]
+  push_cast
+  ring
+
 end RHTower

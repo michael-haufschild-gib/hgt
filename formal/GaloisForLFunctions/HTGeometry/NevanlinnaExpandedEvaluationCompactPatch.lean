@@ -188,21 +188,33 @@ theorem compact_nevanlinnaExpandedEvaluation_has_dense_finiteProbe
   have hdirection : ContDiffOn ℝ ⊤ direction U := by
     have hS : ContDiffOn ℝ ⊤
         (fun h => (control h).domRestrict S) U := by
+      have hsubS : ContDiffOn ℝ ⊤
+          (fun _ : H => S.subtypeL) U := contDiffOn_const
       simpa only [ContinuousLinearMap.domRestrict] using
-        hcontrol.clm_comp contDiffOn_const
+        hcontrol.clm_comp hsubS
+    have hreindex : ContDiffOn ℝ ⊤
+        (fun _ : H => constantJetSigmaToProductCLM
+          (row := row) jetOrder) U := contDiffOn_const
     simpa only [direction] using
-      contDiffOn_const.clm_comp hS
+      hreindex.clm_comp hS
   have hdirectionV : ContDiffOn ℝ ⊤ directionV U := by
     have hS : ContDiffOn ℝ ⊤
         (fun h => (control h).domRestrict S) U := by
+      have hsubS : ContDiffOn ℝ ⊤
+          (fun _ : H => S.subtypeL) U := contDiffOn_const
       simpa only [ContinuousLinearMap.domRestrict] using
-        hcontrol.clm_comp contDiffOn_const
+        hcontrol.clm_comp hsubS
     have hV : ContDiffOn ℝ ⊤
         (fun h => ((control h).domRestrict S).domRestrict V) U := by
+      have hsubV : ContDiffOn ℝ ⊤
+          (fun _ : H => V.subtypeL) U := contDiffOn_const
       simpa only [ContinuousLinearMap.domRestrict] using
-        hS.clm_comp contDiffOn_const
+        hS.clm_comp hsubV
+    have hreindex : ContDiffOn ℝ ⊤
+        (fun _ : H => constantJetSigmaToProductCLM
+          (row := row) jetOrder) U := contDiffOn_const
     simpa only [directionV] using
-      contDiffOn_const.clm_comp hV
+      hreindex.clm_comp hV
   have hdirectionSurjK : ∀ h ∈ K, Function.Surjective (directionV h) := by
     intro h hh y
     obtain ⟨ys, hys⟩ := constantJetSigmaToProductCLM_surjective jetOrder y

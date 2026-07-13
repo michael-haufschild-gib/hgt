@@ -125,4 +125,36 @@ theorem lipschitzOnWith_cexp_neg_mul (w : ℂ) (T : ℝ) (hT : 0 ≤ T) :
     nlinarith [le_abs_self w.re, neg_abs_le w.re, hx.1, hx.2, abs_nonneg w.re]
   exact Convex.lipschitzOnWith_of_nnnorm_hasDerivWithin_le (convex_Icc 0 T) hd hb
 
+/-- **Product of two bounded Lipschitz functions is Lipschitz** (normed-ring valued).  If `f` is
+`Kf`-Lipschitz and bounded by `Mf` on `s`, and `g` is `Kg`-Lipschitz and bounded by `Mg`, then `f·g`
+is `(Mf·Kg + Mg·Kf)`-Lipschitz on `s`.  Mathlib's `LipschitzOnWith.mul` only covers a
+`SeminormedCommGroup` (the multiplicative *group*, which excludes a ring with a zero such as `ℂ`); this
+is the normed-ring form via `‖fg(x)−fg(y)‖ ≤ ‖f x‖‖g x−g y‖ + ‖f x−f y‖‖g y‖`.  It supplies the
+modulus of continuity of any windowed integrand `τ(x)·e^{-wx}` (bounded window × bounded exponential). -/
+theorem lipschitzOnWith_mul_of_bound {α E : Type*} [PseudoMetricSpace α] [NormedRing E]
+    {Kf Kg : NNReal} {Mf Mg : ℝ} {f g : α → E} {s : Set α}
+    (hf : LipschitzOnWith Kf f s) (hg : LipschitzOnWith Kg g s)
+    (hMf : ∀ x ∈ s, ‖f x‖ ≤ Mf) (hMg : ∀ x ∈ s, ‖g x‖ ≤ Mg) :
+    LipschitzOnWith (Real.toNNReal Mf * Kg + Real.toNNReal Mg * Kf) (fun x => f x * g x) s := by
+  rw [lipschitzOnWith_iff_dist_le_mul] at hf hg ⊢
+  intro x hx y hy
+  have hfx : (0 : ℝ) ≤ Mf := le_trans (norm_nonneg _) (hMf x hx)
+  have hgy : (0 : ℝ) ≤ Mg := le_trans (norm_nonneg _) (hMg y hy)
+  have hdf := hf x hx y hy
+  have hdg := hg x hx y hy
+  calc dist (f x * g x) (f y * g y)
+      = ‖f x * (g x - g y) + (f x - f y) * g y‖ := by
+        rw [dist_eq_norm, show f x * g x - f y * g y
+          = f x * (g x - g y) + (f x - f y) * g y from by noncomm_ring]
+    _ ≤ ‖f x‖ * ‖g x - g y‖ + ‖f x - f y‖ * ‖g y‖ :=
+        le_trans (norm_add_le _ _) (by gcongr <;> exact norm_mul_le _ _)
+    _ = ‖f x‖ * dist (g x) (g y) + dist (f x) (f y) * ‖g y‖ := by
+        rw [dist_eq_norm, dist_eq_norm]
+    _ ≤ Mf * (Kg * dist x y) + (Kf * dist x y) * Mg :=
+        add_le_add
+          (mul_le_mul (hMf x hx) hdg dist_nonneg hfx)
+          (mul_le_mul hdf (hMg y hy) (norm_nonneg _) (by positivity))
+    _ = (Real.toNNReal Mf * Kg + Real.toNNReal Mg * Kf) * dist x y := by
+        rw [Real.coe_toNNReal Mf hfx, Real.coe_toNNReal Mg hgy]; ring
+
 end HTGeometry
