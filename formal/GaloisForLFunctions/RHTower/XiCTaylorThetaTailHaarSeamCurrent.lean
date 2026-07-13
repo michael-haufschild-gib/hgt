@@ -1,13 +1,23 @@
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailCompletedSurvivalTransform
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailSquareIndexPolarization
 
+/-!
+# Exact exponential channel in the cofinal Haar seam
+
+The cofinal reflected Haar identity leaves an elementary `exp (-x/2)` source channel.  Its value
+and spectral-derivative transforms against the finite theta-tail core are exactly the leading
+monomial and its derivative.  In the upper half-plane that monomial current is strictly negative;
+therefore the negative source-square coefficient contributes positive current.  The exponential
+square cannot be assigned a favorable sign before it is coupled to the remote top row.
+-/
+
 open Complex Real MeasureTheory Set Filter Topology Polynomial
 
 namespace RHTower
 
 noncomputable section
 
-theorem test_integral_exp_neg_half_mul_complexPower (m : ℕ) :
+theorem integral_exp_neg_half_mul_complexPower (m : ℕ) :
     (∫ x : ℝ in Ioi 0,
       (Real.exp (-x / 2) : ℂ) * (x : ℂ) ^ m) =
       ((m.factorial * 2 ^ (m + 1) : ℕ) : ℂ) := by
@@ -18,7 +28,7 @@ theorem test_integral_exp_neg_half_mul_complexPower (m : ℕ) :
     ring]
   exact integral_pow_mul_exp_neg_half_complex m
 
-theorem test_integrable_exp_neg_half_mul_complexPower (m : ℕ) :
+theorem integrableOn_exp_neg_half_mul_complexPower (m : ℕ) :
     IntegrableOn (fun x : ℝ =>
       (Real.exp (-x / 2) : ℂ) * (x : ℂ) ^ m) (Ioi 0) := by
   rw [show (fun x : ℝ => (Real.exp (-x / 2) : ℂ) * (x : ℂ) ^ m) =
@@ -28,13 +38,13 @@ theorem test_integrable_exp_neg_half_mul_complexPower (m : ℕ) :
     ring]
   exact (integrableOn_pow_mul_exp_neg_half m).ofReal
 
-theorem test_integral_exp_neg_half_mul_coreAtom
+theorem integral_exp_neg_half_mul_coreAtom
     (d : ℕ) (z : ℂ) :
     (∫ x : ℝ in Ioi 0,
       (Real.exp (-x / 2) : ℂ) *
         thetaCuspTailSecondCoreAtom d z x) =
       2 * (-(4 * z ^ 2)) ^ (d + 1) := by
-  have hbase := test_integrable_exp_neg_half_mul_complexPower 0
+  have hbase := integrableOn_exp_neg_half_mul_complexPower 0
   have hsum : IntegrableOn (fun x : ℝ =>
       (Real.exp (-x / 2) : ℂ) *
         thetaCuspTailSecondSection d z x) (Ioi 0) := by
@@ -50,7 +60,7 @@ theorem test_integral_exp_neg_half_mul_coreAtom
       intro r _hr
       ring]
     exact MeasureTheory.integrable_finsetSum _ fun r _hr =>
-      (test_integrable_exp_neg_half_mul_complexPower (2 * r + 2)).const_mul _
+      (integrableOn_exp_neg_half_mul_complexPower (2 * r + 2)).const_mul _
   rw [show (fun x : ℝ => (Real.exp (-x / 2) : ℂ) *
       thetaCuspTailSecondCoreAtom d z x) =
     fun x : ℝ => (Real.exp (-x / 2) : ℂ) * (x : ℂ) ^ 0 -
@@ -62,7 +72,7 @@ theorem test_integral_exp_neg_half_mul_coreAtom
     simp only [pow_zero, mul_one]
     ring]
   rw [integral_sub hbase (hsum.const_mul (z ^ 2 + 1 / 4)),
-    test_integral_exp_neg_half_mul_complexPower,
+    integral_exp_neg_half_mul_complexPower,
     MeasureTheory.integral_const_mul]
   rw [show (∫ x : ℝ in Ioi 0,
       (Real.exp (-x / 2) : ℂ) * thetaCuspTailSecondSection d z x) =
@@ -84,9 +94,9 @@ theorem test_integral_exp_neg_half_mul_coreAtom
     · apply Finset.sum_congr rfl
       intro r _hr
       rw [MeasureTheory.integral_const_mul,
-        test_integral_exp_neg_half_mul_complexPower]
+        integral_exp_neg_half_mul_complexPower]
     · intro r _hr
-      exact (test_integrable_exp_neg_half_mul_complexPower (2 * r + 2)).const_mul _]
+      exact (integrableOn_exp_neg_half_mul_complexPower (2 * r + 2)).const_mul _]
   rw [show (∑ r ∈ Finset.range (d + 1),
       thetaCuspTailSecondSectionSourceCoefficient z r *
         ((2 * r + 2).factorial * 2 ^ (2 * r + 3) : ℕ)) =
@@ -126,18 +136,18 @@ theorem test_integral_exp_neg_half_mul_coreAtom
       rw [mul_geom_sum]
       ring
 
-def test_expNegHalfCoreDerivativePacket (d : ℕ) (z : ℂ) : ℂ :=
+def expNegHalfCoreDerivativePacket (d : ℕ) (z : ℂ) : ℂ :=
   ∑ r ∈ Finset.range (d + 1),
     thetaCuspTailSecondCoreAtomDerivativeSourceCoefficient z r *
       ((2 * r + 2).factorial * 2 ^ (2 * r + 3) : ℕ)
 
-theorem test_expNegHalfCoreDerivativePacket_eq
+theorem expNegHalfCoreDerivativePacket_eq
     (d : ℕ) (z : ℂ) :
-    test_expNegHalfCoreDerivativePacket d z =
+    expNegHalfCoreDerivativePacket d z =
       -16 * ((d + 1 : ℕ) : ℂ) * z * (-(4 * z ^ 2)) ^ d := by
   induction d with
   | zero =>
-      simp [test_expNegHalfCoreDerivativePacket,
+      simp [expNegHalfCoreDerivativePacket,
         thetaCuspTailSecondCoreAtomDerivativeSourceCoefficient,
         thetaCuspTailSecondSectionSourceCoefficient,
         thetaCuspTailSecondSectionDerivativeSourceCoefficient]
@@ -147,7 +157,7 @@ theorem test_expNegHalfCoreDerivativePacket_eq
         thetaCuspTailSecondCoreAtomDerivativeSourceCoefficient z r *
           ((2 * r + 2).factorial * 2 ^ (2 * r + 3) : ℕ)) = _
       rw [Finset.sum_range_succ]
-      change test_expNegHalfCoreDerivativePacket d z + _ = _
+      change expNegHalfCoreDerivativePacket d z + _ = _
       rw [ih]
       unfold thetaCuspTailSecondCoreAtomDerivativeSourceCoefficient
         thetaCuspTailSecondSectionSourceCoefficient
@@ -157,12 +167,41 @@ theorem test_expNegHalfCoreDerivativePacket_eq
       push_cast
       field_simp
       push_cast
-      rw [show (-(4 * z ^ 2)) ^ (d + 1) =
-          (-(4 * z ^ 2)) ^ d * (-(4 * z ^ 2)) by rw [pow_succ]]
-      rw [show (-1 : ℂ) ^ (d + 1) = (-1 : ℂ) ^ d * (-1) by rw [pow_succ]]
+      let A : ℂ := (-1 : ℂ) ^ d * (4 : ℂ) ^ d * z ^ (2 * d)
+      have hqd : (-(z ^ 2 * 4)) ^ d = A := by
+        dsimp only [A]
+        calc
+          (-(z ^ 2 * 4)) ^ d = ((-1 : ℂ) * z ^ 2 * 4) ^ d := by
+            congr 1
+            ring
+          _ = (-1 : ℂ) ^ d * (z ^ 2) ^ d * (4 : ℂ) ^ d := by
+            rw [mul_pow, mul_pow]
+          _ = _ := by rw [← pow_mul]; ring
+      have hqd1 : (-(z ^ 2 * 4)) ^ (d + 1) = -4 * z ^ 2 * A := by
+        rw [pow_succ, hqd]
+        dsimp only [A]
+        ring
+      have hzEven : z ^ (2 * (d + 1)) = z ^ (2 * d) * z ^ 2 := by
+        rw [show 2 * (d + 1) = 2 * d + 2 by omega, pow_add]
+      have hzOdd : z ^ (2 * (d + 1) - 1) = z ^ (2 * d) * z := by
+        rw [show 2 * (d + 1) - 1 = 2 * d + 1 by omega, pow_add]
+        ring
+      have hsign : (-1 : ℂ) ^ (d + 1) = (-1 : ℂ) ^ d * (-1) := by
+        rw [pow_succ]
+      have htwo : (2 : ℂ) ^ (2 * (d + 1) + 3) = 32 * (4 : ℂ) ^ d := by
+        rw [show 2 * (d + 1) + 3 = 2 * d + 5 by omega, pow_add]
+        rw [show (2 : ℂ) ^ (2 * d) = (4 : ℂ) ^ d by
+          calc
+            (2 : ℂ) ^ (2 * d) = (2 ^ 2 : ℂ) ^ d := by
+              rw [← pow_mul]
+            _ = (4 : ℂ) ^ d := by norm_num]
+        norm_num
+        ring
+      rw [hqd, hqd1, hzEven, hzOdd, hsign, htwo]
+      dsimp only [A]
       ring
 
-theorem test_integral_exp_neg_half_mul_coreAtomDerivative
+theorem integral_exp_neg_half_mul_coreAtomDerivative
     (d : ℕ) (z : ℂ) :
     (∫ x : ℝ in Ioi 0,
       (Real.exp (-x / 2) : ℂ) *
@@ -184,17 +223,17 @@ theorem test_integral_exp_neg_half_mul_coreAtomDerivative
         ∫ a : ℝ in Ioi 0,
           thetaCuspTailSecondCoreAtomDerivativeSourceCoefficient z i *
             ((Real.exp (-a / 2) : ℂ) * (a : ℂ) ^ (2 * i + 2))) =
-      test_expNegHalfCoreDerivativePacket d z by
-        unfold test_expNegHalfCoreDerivativePacket
+      expNegHalfCoreDerivativePacket d z by
+        unfold expNegHalfCoreDerivativePacket
         apply Finset.sum_congr rfl
         intro i _hi
         rw [MeasureTheory.integral_const_mul,
-          test_integral_exp_neg_half_mul_complexPower]]
-    exact test_expNegHalfCoreDerivativePacket_eq d z
+          integral_exp_neg_half_mul_complexPower]]
+    exact expNegHalfCoreDerivativePacket_eq d z
   · intro r _hr
-    exact (test_integrable_exp_neg_half_mul_complexPower (2 * r + 2)).const_mul _
+    exact (integrableOn_exp_neg_half_mul_complexPower (2 * r + 2)).const_mul _
 
-theorem test_expNegHalfCore_current
+theorem expNegHalfCore_current
     (d : ℕ) (z : ℂ) :
     ((-16 * ((d + 1 : ℕ) : ℂ) * z * (-(4 * z ^ 2)) ^ d) *
       (starRingEnd ℂ) (2 * (-(4 * z ^ 2)) ^ (d + 1))).im =
@@ -206,21 +245,42 @@ theorem test_expNegHalfCore_current
     dsimp only [w]
     rw [pow_succ]
   have hw : w * (starRingEnd ℂ) w = (Complex.normSq w : ℂ) := by
-    rw [Complex.normSq_apply]
-    norm_num
+    apply Complex.ext
+    · simp [Complex.normSq_apply, Complex.mul_re, Complex.mul_im]
+    · simp [Complex.normSq_apply, Complex.mul_re, Complex.mul_im]
+      ring
+  have hzq : (z * (starRingEnd ℂ) q).im =
+      4 * z.im * Complex.normSq z := by
+    have hconj : (starRingEnd ℂ) q =
+        -(4 * ((starRingEnd ℂ) z) ^ 2) := by
+      dsimp only [q]
+      simp only [map_neg, map_mul, map_ofNat, map_pow]
+    rw [hconj]
+    simp [pow_two, Complex.normSq_apply, Complex.mul_im, Complex.mul_re]
+    ring
   rw [show (-(4 * z ^ 2)) ^ d = w by rfl,
     show (-(4 * z ^ 2)) ^ (d + 1) = w * q by exact hsucc,
     map_mul]
+  simp only [map_ofNat]
   rw [show ((-16 * ((d + 1 : ℕ) : ℂ) * z * w) *
-      (starRingEnd ℂ) (2 * (w * q))) =
+      (2 * (starRingEnd ℂ) (w * q))) =
     (-32 * ((d + 1 : ℕ) : ℂ)) *
       (w * (starRingEnd ℂ) w) *
         (z * (starRingEnd ℂ) q) by
-      simp only [map_ofNat]
+      rw [map_mul]
       ring]
   rw [hw]
-  dsimp only [q, w]
-  simp [Complex.normSq_apply, Complex.mul_im, Complex.mul_re]
+  rw [show (-32 * ((d + 1 : ℕ) : ℂ)) * (Complex.normSq w : ℂ) *
+      (z * (starRingEnd ℂ) q) =
+    (((-32 : ℝ) * ((d + 1 : ℕ) : ℝ) * Complex.normSq w : ℝ) : ℂ) *
+      (z * (starRingEnd ℂ) q) by
+        push_cast
+        ring]
+  rw [Complex.mul_im]
+  simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero]
+  change (-32 : ℝ) * ((d + 1 : ℕ) : ℝ) * Complex.normSq w *
+      (z * (starRingEnd ℂ) q).im = _
+  rw [hzq]
   ring
 
 end

@@ -485,13 +485,25 @@ in `RHTower/PrimePolarWeightedError.lean`:
   weighted term `≤ C'·Λ(k)·k^{-(Re s + 1/2)}` against `vonMangoldt_shifted_summable`.
 
 So the correction `H_L(s) = ∑_k (Λ(k)/√k)·E_{k,L}(s)` is a well-defined absolutely convergent series on
-`Re s > 1/2`.  The one remaining open piece is its **holomorphy `(19)` and the interchange `(20)`**:
-that the locally-uniformly convergent series of entire `E_{k,L}` is holomorphic (a Weierstrass M-test
-for holomorphy over the already-proven majorant), and that the double series may be interchanged so that
-`Pcal_L` equals `(22)` — a `tsum` Fubini bounded by the same majorant.  At that point the RH criterion
-`(28)` follows from the assembled §5 residue facts (all proven: `polar_cancellation`,
-`offcritical_residue`).  Every analytic, discretization, residue, and convergence brick the step needs
-is now in-tree.
+`Re s > 1/2`.
+
+The **holomorphy `(19)` is now formalized** axiom-clean, in `RHTower/PrimePolarHLHolomorphic.lean`:
+
+- `Eterm` / `Eterm_differentiable` — the entire per-scale error `E_{k,L}(s)` (a finite sum of `j^{-s}`
+  terms minus `k^{1-s}·A_L(s-1)²`) is differentiable for `k ≥ 1`;
+- `HL` — the correction `H_L(s) = ∑'_k (Λ(k)/√k)·E_{k,L}(s)`;
+- `HL_differentiableOn` — **`H_L` is holomorphic on `{Re s > 1}`**.  Proved by the Weierstrass M-test
+  for holomorphy (`differentiableOn_tsum_of_summable_norm`): on a ball `B(s₀, r) ⊆ {Re s > 1}` the
+  weighted terms are uniformly bounded by the summable von Mangoldt majorant, using the *explicit*
+  Lipschitz constant `gGridK L s` (bounded on the ball) via `E_kL_bound_explicit`.  The region
+  `Re s > 1` is where the off-critical divisor poles `s = ρ + ½` (`Re ρ > ½`) live, so `H_L`
+  contributing no poles there is exactly what the pole-tomography `(24)`--`(25)` needs.
+
+The one remaining open piece is the **interchange `(20)`**: that the double series equals
+`I_L(s)·(-ζ'/ζ)(s-½) + H_L(s)` (a `tsum` Fubini bounded by the same majorant), so that `Pcal_L` equals
+`(22)`.  At that point the RH criterion `(28)` follows from the assembled §5 residue facts (all proven:
+`polar_cancellation`, `offcritical_residue`) together with `HL_differentiableOn` (no error-term poles).
+Every analytic, discretization, residue, convergence, and holomorphy brick the step needs is now in-tree.
 
 ## Gates
 

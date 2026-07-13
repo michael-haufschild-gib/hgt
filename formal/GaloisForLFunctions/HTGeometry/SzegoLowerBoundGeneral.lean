@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.SzegoLowerBound
 import GaloisForLFunctions.HTGeometry.RieszBrothersReduction
 import GaloisForLFunctions.HTGeometry.SzegoConcretePolynomial
+import GaloisForLFunctions.HTGeometry.SzegoFirstLimitInterface
 
 /-!
 # Transporting the Szegő lower bound to `circleLebesgue`
@@ -14,7 +15,7 @@ measure and its Radon–Nikodym density.
 
 namespace GaloisForLFunctions.HTGeometry
 
-open MeasureTheory Real Polynomial
+open MeasureTheory Real Polynomial InnerProductSpace
 open scoped ComplexConjugate
 
 /-- **Circle-measure ↔ angular-average bridge.**  Integrating a function of `z ∈ Circle` against the
@@ -167,5 +168,107 @@ theorem revPoly_ne_zero_ae (c : ℕ → ℂ) (N : ℕ) :
     ext z; simp [hPeval (z : ℂ)]
   rw [hset]
   exact (hfin.preimage hinj.injOn).measure_zero _
+
+open scoped ENNReal in
+/-- **The general Szegő inequality.**  For any finite circle measure `μ` and any level `N`, the Szegő
+geometric mean of the Radon–Nikodym density is a lower bound for `∫ |q*|² dμ`, where `q*` is the
+reversed polynomial (value `1` at the origin).  Drop the singular part, express the absolutely
+continuous part via the density, and apply Jensen's inequality (with the sub-mean-value factor
+`∫ log‖q*‖ ≥ log‖q*(0)‖ = 0`) against the reference probability measure. -/
+theorem szegoGeometricMean_le_integral_normSq_revPoly
+    (mu : Measure Circle) [IsFiniteMeasure mu] (c : ℕ → ℂ) (N : ℕ) :
+    szegoGeometricMean circleLebesgue (mu.rnDeriv circleLebesgue)
+      ≤ ∫ z : Circle, ‖revPoly c N (z : ℂ)‖ ^ 2 ∂mu := by
+  classical
+  set w := mu.rnDeriv circleLebesgue with hw
+  set Q : Circle → ℝ := fun z => ‖revPoly c N (z : ℂ)‖ ^ 2 with hQ
+  have hQnonneg : ∀ z, 0 ≤ Q z := fun z => by positivity
+  have hQint : Integrable Q mu := by
+    have hd : Differentiable ℂ (revPoly c N) := by unfold revPoly; fun_prop
+    have hcont : Continuous Q := (hd.continuous.comp (by fun_prop)).norm.pow 2
+    exact hcont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+  by_cases hgood : (∀ᵐ z ∂circleLebesgue, 0 < w z ∧ w z < ∞) ∧
+      Integrable (fun z => Real.log (w z).toReal) circleLebesgue
+  · rw [szegoGeometricMean_eq_exp_integral circleLebesgue w hgood.1 hgood.2]
+    obtain ⟨hpos, hlogint⟩ := hgood
+    set W : Circle → ℝ := fun z => (w z).toReal with hW
+    set H : Circle → ℝ := fun z => Q z * W z with hH
+    have hWint : Integrable W circleLebesgue := Measure.integrable_toReal_rnDeriv
+    have hd : Differentiable ℂ (revPoly c N) := by unfold revPoly; fun_prop
+    have hcontQ : Continuous Q :=
+      (hd.continuous.comp (by fun_prop : Continuous fun z : Circle => (z : ℂ))).norm.pow 2
+    obtain ⟨z0, hz0⟩ := isCompact_univ.exists_isMaxOn Set.univ_nonempty hcontQ.continuousOn
+    have hQbdd : ∀ z, ‖Q z‖ ≤ Q z0 := fun z => by
+      rw [Real.norm_eq_abs, abs_of_nonneg (hQnonneg z)]; exact hz0.2 (Set.mem_univ z)
+    have hHint : Integrable H circleLebesgue :=
+      hWint.bdd_mul hcontQ.aestronglyMeasurable (Filter.Eventually.of_forall hQbdd)
+    have hHpos : ∀ᵐ z ∂circleLebesgue, 0 < H z := by
+      filter_upwards [revPoly_ne_zero_ae c N, hpos] with z hz hwz
+      have h1 : 0 < Q z := by rw [hQ]; positivity
+      have h2 : 0 < W z := ENNReal.toReal_pos hwz.1.ne' hwz.2.ne
+      exact mul_pos h1 h2
+    have hlogH : (fun z => Real.log (H z)) =ᵐ[circleLebesgue]
+        fun z => Real.log (Q z) + Real.log (W z) := by
+      filter_upwards [hHpos, revPoly_ne_zero_ae c N, hpos] with z hHz hz hwz
+      have h1 : Q z ≠ 0 := by rw [hQ]; positivity
+      have h2 : W z ≠ 0 := (ENNReal.toReal_pos hwz.1.ne' hwz.2.ne).ne'
+      rw [hH, Real.log_mul h1 h2]
+    have hlogQ : (fun z => Real.log (Q z)) =ᵐ[circleLebesgue]
+        fun z => 2 * Real.log ‖revPoly c N (z : ℂ)‖ := by
+      filter_upwards with z
+      rw [hQ, Real.log_pow]; ring
+    have hlogQint : Integrable (fun z => Real.log (Q z)) circleLebesgue :=
+      (((integrable_log_revPoly c N).const_mul 2)).congr hlogQ.symm
+    have hlogQnonneg : 0 ≤ ∫ z, Real.log (Q z) ∂circleLebesgue := by
+      rw [integral_congr_ae hlogQ, integral_const_mul]
+      have := integral_log_revPoly_nonneg c N
+      positivity
+    have hlogHint : Integrable (fun z => Real.log (H z)) circleLebesgue :=
+      (hlogQint.add hlogint).congr hlogH.symm
+    have hjensen : Real.exp (∫ z, Real.log (H z) ∂circleLebesgue) ≤ ∫ z, H z ∂circleLebesgue := by
+      have hexpH : (fun z => Real.exp (Real.log (H z))) =ᵐ[circleLebesgue] H := by
+        filter_upwards [hHpos] with z hz; rw [Real.exp_log hz]
+      have hmap := convexOn_exp.map_integral_le (μ := circleLebesgue)
+        (f := fun z => Real.log (H z)) Real.continuous_exp.continuousOn isClosed_univ
+        (Filter.Eventually.of_forall fun _ => Set.mem_univ _) hlogHint
+        (hHint.congr hexpH.symm)
+      calc Real.exp (∫ z, Real.log (H z) ∂circleLebesgue)
+          ≤ ∫ z, Real.exp (Real.log (H z)) ∂circleLebesgue := hmap
+        _ = ∫ z, H z ∂circleLebesgue := integral_congr_ae hexpH
+    have hlogHge : ∫ z, Real.log (W z) ∂circleLebesgue ≤ ∫ z, Real.log (H z) ∂circleLebesgue := by
+      rw [integral_congr_ae hlogH, integral_add hlogQint hlogint]
+      linarith [hlogQnonneg]
+    have hstep1 : Real.exp (∫ z, Real.log (W z) ∂circleLebesgue) ≤ ∫ z, H z ∂circleLebesgue :=
+      le_trans (Real.exp_le_exp.mpr hlogHge) hjensen
+    have hWD : ∫ z, H z ∂circleLebesgue = ∫ z, Q z ∂(circleLebesgue.withDensity w) := by
+      rw [integral_withDensity_eq_integral_toReal_smul (Measure.measurable_rnDeriv mu circleLebesgue)
+        (Measure.rnDeriv_lt_top mu circleLebesgue)]
+      refine integral_congr_ae (Filter.Eventually.of_forall fun z => ?_)
+      show Q z * (w z).toReal = (w z).toReal • Q z
+      rw [smul_eq_mul, mul_comm]
+    have hdrop : ∫ z, Q z ∂(circleLebesgue.withDensity w) ≤ ∫ z, Q z ∂mu :=
+      integral_mono_measure (Measure.withDensity_rnDeriv_le mu circleLebesgue)
+        (Filter.Eventually.of_forall hQnonneg) hQint
+    calc Real.exp (∫ z, Real.log (W z) ∂circleLebesgue)
+        ≤ ∫ z, H z ∂circleLebesgue := hstep1
+      _ = ∫ z, Q z ∂(circleLebesgue.withDensity w) := hWD
+      _ ≤ ∫ z, Q z ∂mu := hdrop
+  · rw [szegoGeometricMean, dif_neg hgood]
+    exact integral_nonneg hQnonneg
+
+/-- **The Szegő lower bound (first limit theorem, `≥` half).**  For any finite circle measure the
+Szegő geometric mean of its Radon–Nikodym density is a lower bound for the infimum of the squared
+monic orthogonal polynomial norms `⨅ₙ ‖Φₙ₊₁‖²`.  Each `‖Φ_N‖²` equals `∫|q*|²dμ` for the reversed
+polynomial and the general Szegő inequality bounds every such integral below by the geometric
+mean. -/
+theorem szegoGeometricMean_le_ciInf_normSq_gramSchmidt
+    (mu : Measure Circle) [IsFiniteMeasure mu] :
+    szegoGeometricMean circleLebesgue (mu.rnDeriv circleLebesgue)
+      ≤ ⨅ N, ‖gramSchmidt ℂ (circleMonomialLp mu) (N + 1)‖ ^ 2 := by
+  apply le_ciInf
+  intro N
+  obtain ⟨c, hc⟩ := normSq_gramSchmidt_circleMonomial_eq_integral_revPoly mu (N + 1)
+  rw [hc]
+  exact szegoGeometricMean_le_integral_normSq_revPoly mu c (N + 1)
 
 end GaloisForLFunctions.HTGeometry
