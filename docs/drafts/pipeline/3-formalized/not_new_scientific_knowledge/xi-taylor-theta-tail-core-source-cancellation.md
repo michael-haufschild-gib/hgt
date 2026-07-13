@@ -24,7 +24,8 @@
   `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSurvivalMobiusReflection.lean`,
   `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedSurvivalRemainder.lean`,
   `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedSurvivalTransform.lean`,
-  `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedPotential.lean`
+  `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedPotential.lean`,
+  `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSquareIndexPolarization.lean`
 - **Parent target:**
   `../../1-in-progress/xi-taylor-theta-tail-core-density-current.md`
 
@@ -398,6 +399,37 @@ The last term is favorable.  No sign has been proved for the integrated sum of t
 The combined raw integral is the Lean declaration
 `orientedPolynomialCurrent_evenMagnitudeLift_eq_integral_rawDefect`.
 
+The full square-index density packet has two additional exact signed polarizations.  For
+`X=pi m^2 exp(2x)` and `Y=pi n^2 exp(2y)`, Lean proves
+
+```text
+(1-24X+16X^2)(1-24Y+16Y^2)
+ =16(X+Y-3/4-12XY)^2-8(1-16XY)^2.
+```
+
+It also splits the full packet by exact `2`-adic valuation.  If
+`F_k=2^(-k/2)rho(x+log(2^k))`, `O_k=F_k-F_(k+1)`, and
+`V_k=2F_(k+1)-F_k`, then for every finite `N`,
+
+```text
+rho(x)rho(y)
+ =sum_(k<N)(2^(k+1)O_k(x)O_k(y)-2^k V_k(x)V_k(y))
+  +2^N F_N(x)F_N(y).
+```
+
+Both identities are lifted exactly to the symmetric core kernel and its oriented-current
+integral.  The parity reflection
+
+```text
+V_0(-x)=2^(1/2)O_0(x-log 2)
+  +2^(1/2)R(x-log 2)-R(x)
+```
+
+is formalized as `thetaSquareIndexParityDensity_neg_reflection`.
+The dyadic top row has the explicit Gaussian majorant
+`C_x 2^k exp(-pi 2^k/2)`, and both the row and the weighted two-variable remainder are proved to
+tend pointwise to zero on the closed positive source half-line.
+
 ## Scope
 
 Equations `(1)`--`(11)` retain the boundary seam and separate the completion radial cost from the
@@ -405,7 +437,10 @@ cosine correlation.  Equation `(7)` proves that the completed-source channel is 
 the unknown Taylor section, so treating it as an independently positive correction is circular.
 Equation `(8a)` signs the positive imaginary axis, not the general vertical fibres in the open
 strip.  The remaining producer is exactly the raw `T` mixed correlation plus seam in `(3)` away
-from that axis.  Therefore this package is a formalized reduction, not the sublinear-current
+from that axis.  The signed square-index and dyadic Haar identities expose cofinal arithmetic
+cancellation, but the same oriented pair kernel multiplies both channels.  Their reflection also
+translates the finite cosine section, so a termwise sign would be an additional hypothesis rather
+than a consequence of the polarization.  Therefore this package is a formalized reduction, not the sublinear-current
 producer and not an RH proof.  The exact boundary theorem
 `xiCTaylorThetaTailCoreCurrentSublinearUpper_iff_riemannHypothesis` proves that, on every
 source-selected odd super-accurate schedule, the remaining core-current predicate is equivalent to

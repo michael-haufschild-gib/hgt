@@ -656,12 +656,53 @@ rho(x)rho(y)
 
 Lean proves the multiples-row interpretation, every finite identity `(12d.7)`, and its exact lift
 through `K_d` to `J_(U_d)`.  The remainder is a single row translated by `N log 2` toward the
-Gaussian cusp, so it is the correct candidate for a uniform top-edge estimate.  The finite sum is
-not yet oriented: each parity wavelet has bilateral Mellin factor
+Gaussian cusp.  Lean proves the explicit bound, for `x>=0` and
+`q=exp(-pi/2)<1`,
+
+```text
+0<=F_N(x)<=C_x 2^N q^(2^N),
+0<=2^N F_N(x)F_N(y)<=C_(x,y) 2^(3N)q^(2^(N+1))->0.      (12d.7a)
+```
+
+Thus the top row is now eliminated pointwise by a certified double-exponential majorant.  The
+remaining top-row task is only the degree-uniform moment estimate needed to pass `(12d.7a)`
+through `K_d` when `d` moves with the anisotropic schedule.  The finite Haar sum is not yet
+oriented: each parity wavelet has bilateral Mellin factor
 `(2^(1-s)-1)zeta(s)` and therefore retains the nontrivial Xi factor.  Dropping the negative Haar
 currents would silently assume their sign.  The live theorem is consequently narrower: prove a
 joint upper estimate for the signed *finite sum* in `(12d.7)` while sending the explicit top row
 to zero; no termwise positivity statement is available.
+
+The parity and odd layers also satisfy the exact Poisson reflection required for a possible joint
+estimate.  With `w=2^(-1/2)` and
+`R(x)=(exp(x/2)-exp(-x/2))/2`, Lean proves
+
+```text
+V(-x)=2w O(x-log 2)+2w R(x-log 2)-R(x).                 (12d.8)
+```
+
+Thus the coefficient ratio in `(12d.7)` is exactly the square of the reflection amplitude:
+`(2w)^2=2`.  After reflection, the positive exact-valuation square and the negative parity square
+therefore cancel at the source-amplitude level; only a translation by `log 2` and the two
+completion characters remain.  The cancellation is not yet a current theorem because
+`H_d(z,x+log 2)` is not equal to `H_d(z,x)`: its finite cosine translation mixes the even and odd
+Taylor sections.  This identifies the next exact gate without a sign assumption: polarize that
+two-component finite translation and prove that its current change is a constant phase multiple
+of the squared translated value plus a schedule-superaccurate top defect.
+
+The infinite-phase part of that gate is now exact in Lean.  For
+`p_a(z)=exp(iaz)` and any value/derivative pair `(F,F')`,
+
+```text
+Im(p_a(F'+iaF) conjugate(p_a F))
+ =|p_a|^2 (Im(F' conjugate(F))+a|F|^2).                 (12d.9)
+```
+
+Thus a genuine logarithmic translation contributes only the fixed drift `a|F|^2`, which is
+automatically sublinear after division by the mesh resolution.  The sole unresolved part is now
+the finite-section translation defect: the terms lost when `exp(iaz)` and the translated source
+transform are both truncated to the canonical degree schedule.  Controlling that defect requires
+the exact triangular cosine/sine coefficient relation, not another source positivity estimate.
 
 `[CONJECTURE]` The remaining arithmetic possibility is a *polarized jump energy*: integrate in a
 diagonal or difference coordinate before resolving the jumps, so that paired jumps at

@@ -17,6 +17,21 @@ namespace GaloisForLFunctions.RHTower
 
 open GaloisForLFunctions.RHProofLab
 
+/-! ### Positive successor: the raw even packet is a shared Rademacher packet -/
+
+/-- Average a squarefree local monomial over one shared sign `ε ∈ {+1,-1}`.  This is the
+finite algebraic moment functional of the rank-one Rademacher packet `Xᵢ = aᵢ ε`. -/
+noncomputable def sharedRademacherMoment (a : Fin 4 → ℂ) (S : Finset (Fin 4)) : ℂ :=
+  (squarefreeMonomial a S + squarefreeMonomial (fun i => -a i) S) / 2
+
+/-- Every even shared-Rademacher moment is exactly the corresponding squarefree Euler monomial. -/
+theorem sharedRademacherMoment_eq_of_even_card (a : Fin 4 → ℂ) (S : Finset (Fin 4))
+    (hS : Even S.card) :
+    sharedRademacherMoment a S = squarefreeMonomial a S := by
+  rw [sharedRademacherMoment, squarefreeMonomial, squarefreeMonomial,
+    Finset.prod_neg, hS.neg_one_pow]
+  ring
+
 /-- Defect between one four-index squarefree Euler coefficient and the sum of the three Wick
 pairings of its two-index coefficients. -/
 noncomputable def eulerSquarefreeWickFourDefect (a : Fin 4 → ℂ) : ℂ :=
@@ -31,6 +46,24 @@ theorem eulerSquarefreeWickFourDefect_eq (a : Fin 4 → ℂ) :
     eulerSquarefreeWickFourDefect a = -2 * a 0 * a 1 * a 2 * a 3 := by
   simp [eulerSquarefreeWickFourDefect, squarefreeMonomial]
   ring
+
+/-- The nonzero Euler Wick defect is not merely a failure of Gaussianity: it is exactly the
+fourth joint cumulant of one shared Rademacher spin whose even moments reproduce the raw
+squarefree packet. -/
+theorem eulerSquarefreeWickFourDefect_eq_sharedRademacherCumulant (a : Fin 4 → ℂ) :
+    eulerSquarefreeWickFourDefect a =
+      sharedRademacherMoment a {0, 1, 2, 3} -
+        (sharedRademacherMoment a {0, 1} * sharedRademacherMoment a {2, 3} +
+          sharedRademacherMoment a {0, 2} * sharedRademacherMoment a {1, 3} +
+          sharedRademacherMoment a {0, 3} * sharedRademacherMoment a {1, 2}) := by
+  rw [sharedRademacherMoment_eq_of_even_card a {0, 1, 2, 3} (by decide),
+    sharedRademacherMoment_eq_of_even_card a {0, 1} (by decide),
+    sharedRademacherMoment_eq_of_even_card a {2, 3} (by decide),
+    sharedRademacherMoment_eq_of_even_card a {0, 2} (by decide),
+    sharedRademacherMoment_eq_of_even_card a {1, 3} (by decide),
+    sharedRademacherMoment_eq_of_even_card a {0, 3} (by decide),
+    sharedRademacherMoment_eq_of_even_card a {1, 2} (by decide)]
+  rfl
 
 def eulerSquarefreeWickFourLaw (a : Fin 4 → ℂ) : Prop :=
   eulerSquarefreeWickFourDefect a = 0

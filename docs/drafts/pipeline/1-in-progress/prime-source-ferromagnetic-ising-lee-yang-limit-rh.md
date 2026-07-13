@@ -5,14 +5,18 @@
 - **Type:** `[LARGE OUTLANDISH DETOUR] [CONJECTURE] [FORMALIZED FINITE CONSUMER]`
 - **Lean inputs:** `formal/GaloisForLFunctions/RHTower/LeeYangQuadraticBlock.lean`,
   `formal/GaloisForLFunctions/RHTower/EulerReciprocalLeeYangNoGo.lean`,
+  `formal/GaloisForLFunctions/RHTower/PrimeLeeYangPolydisk.lean`,
+  `formal/GaloisForLFunctions/RHTower/PrimeEulerLeeYangAmplitudeNoGo.lean`,
+  `formal/GaloisForLFunctions/RHTower/PrimeEulerFerromagneticInteraction.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeWordEnsembleBoundaryTomography.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeSupportMultivariateLiftMarker.lean`, and
   `formal/GaloisForLFunctions/XiLaguerrePolya.lean`
 - **Prior no-go:** `../0-backlog/lee-yang-localization.md`
-- **Statement:** `[CONJECTURE]` A cofinal family of finite ferromagnetic Ising partition polynomials,
-  constructed functorially from the completed prime source, has Cayley transforms converging locally
-  uniformly to a zero-free entire factor times centered Xi.  Lee--Yang localization at every finite
-  stage then forces RH at the marginal limit.
+- **Statement:** `[CONJECTURE]` A cofinal family of finite multivariate ferromagnetic partition
+  functions, constructed functorially from the completed prime source and evaluated at the
+  inhomogeneous fields `z_p(z)=exp(-log(p) I z)`, converges locally uniformly to a zero-free entire
+  factor times `XiC`.  The multivariate Lee--Yang theorem makes every finite approximant zero-free
+  off the real centered axis, so the limit forces RH.
 
 ## Goal and the positive repair of the old marginality theorem
 
@@ -21,25 +25,41 @@ infinite-volume point is the marginal Poisson point where an interior crystallin
 does not act directly.  That kills the statement “zeta itself is a strict ferromagnet.”  It does not
 kill approximation from the interior of a closed zero-location cone.
 
-The present detour asks for finite source-defined ferromagnets first.  Their field-fugacity zeros
-are on the unit circle by the Lee--Yang theorem.  A Cayley transform converts those circles into
-real-rooted finite polynomials.  If the transformed partition polynomials converge locally
-uniformly to `E Xi`, with `E` entire and zero-free, nonreal Xi zeros are impossible.  The arithmetic
-point may be marginal in the limit; it need not carry a strict finite-volume interaction margin.
+The present detour asks for finite source-defined ferromagnets first.  Give each prime site its own
+field
+
+```text
+z_p(z)=exp(-log(p) I z),       XiC(z)=xi(1/2+I z).
+```
+
+Lean proves the exact geometry
+
+```text
+|z_p(z)|<1  <-> Im z<0,
+|z_p(z)|=1  <-> Im z=0,
+|z_p(z)|>1  <-> Im z>0.                                  (1)
+```
+
+Thus the real centered axis is the common prime unit torus, not merely the image of one artificial
+common fugacity.  Multivariate Lee--Yang nonvanishing in the open polydisk and its common exterior
+then makes each evaluated finite partition function zero-free on both nonreal half-planes.  A
+locally uniform nonzero limit `E XiC`, with `E` entire and zero-free, has the same property by
+Hurwitz.  The arithmetic point may be marginal in the limit; it need not carry a strict
+finite-volume interaction margin.
 
 This is a constraint construction.  No thermodynamic flow or claim that heat evolution transports
 zeta to the line is used.
 
 ## The closed chain
 
-For each finite source aperture `P`, choose a finite spin graph `G_P=(V_P,E_P)` and couplings
-`J_(P,e)>=0`, all determined from the Euler--Gamma/theta packet before inspecting any Xi zero.  With
-one common field fugacity `z`, normalize the partition function as a polynomial
+For each finite source aperture `P`, choose a finite spin graph `G_P=(V_P,E_P)`, a map from its
+distinguished sites to primes, and couplings `J_(P,e)>=0`, all determined from the Euler--Gamma/theta
+packet before inspecting any Xi zero.  Normalize its multiaffine field partition function as
 
 ```text
-Z_P(z) = sum_(sigma in {+1,-1}^V_P)
-           exp(sum_(e={i,j}) J_(P,e) sigma_i sigma_j)
-           z^(number of negative spins).
+Z_P((u_v)) = sum_(sigma in {+1,-1}^V_P)
+               exp(sum_(e={i,j}) J_(P,e) sigma_i sigma_j)
+               product_(v: sigma_v=-1) u_v.
 ```
 
 Then seek:
@@ -48,27 +68,25 @@ Then seek:
 finite Euler prime words and completed Gamma/theta boundary data
   -> squarefree support marker plus complete weighted boundary germ
        [PROVED IN LEAN]
-  -> source cumulants at aperture P
-  -> inverse ferromagnetic Ising realization J_(P,e)>=0
+  -> prime-labelled source cumulants at aperture P
+  -> inverse multivariate ferromagnetic realization J_(P,e)>=0
        [OPEN CORE A: source point lies in the ferromagnetic moment cone]
-  -> Z_P has every fugacity zero on |z|=1
-       [CLASSICAL LEE--YANG; TWO-SPIN BLOCK FORMALIZED]
-  -> Cayley polynomial
-       Q_P(w)=(w+i a_P)^deg(Z_P)
-              Z_P((w-i a_P)/(w+i a_P))
-     has only real finite zeros
-  -> normalized local-uniform limit
-       A_P Q_P(w) -> E(w) Xi(w), E entire and zero-free
+  -> Z_P((u_v)) != 0 whenever all |u_v|<1 or all |u_v|>1
+       [CLASSICAL MULTIVARIATE LEE--YANG]
+  -> F_P(z)=A_P(z) Z_P((z_(p(v))(z))) has no nonreal zero
+       [PRIME POLYDISK GEOMETRY PROVED IN LEAN]
+  -> F_P -> E XiC locally uniformly on C, with E entire and zero-free
        [OPEN CORE B: completed source comparison]
-  -> E Xi has no nonreal zero
-  -> Xi has no nonreal zero
+  -> E XiC has no nonreal zero by Hurwitz
+  -> XiC has no nonreal zero
   -> every nontrivial zeta zero has real centered coordinate
   -> RH.
 ```
 
-Roots at fugacity `z=1`, which Cayley sends to infinity, must be removed or tracked by degree loss.
-A constant phase normalization makes `Q_P` real.  Local-uniform convergence, not coefficientwise or
-thermodynamic free-energy convergence, is the zero-preserving topology.
+Here `A_P` is a source-defined entire normalization which must itself be zero-free.  Local-uniform
+convergence, not coefficientwise or thermodynamic free-energy convergence, is the zero-preserving
+topology.  A common-fugacity Cayley transform remains a secondary finite model, but it is no longer
+needed for the main closure.
 
 ## Exact finite floor in Lean
 
@@ -106,6 +124,54 @@ The resulting reciprocal block is Lee--Yang only at `a=1`; every contracting Eul
 as the Ising interaction.  Arithmetic data must be converted into a true ferromagnetic coupling
 `c=exp(-2J)<=1` or into another verified Lee--Yang measure.
 
+The multivariate prime-field selector is also formalized.  For every prime `p`,
+`PrimeLeeYangPolydisk.lean` proves `(1)`.  As a zero-interaction baseline it defines
+
+```text
+F_P(z)=product_(p in P) (1+exp(-log(p) I z))
+```
+
+and proves directly that every zero of `F_P` has `Im z=0`.  Hence incommensurable prime periods do
+not obstruct finite Lee--Yang localization: the common torus is the entire real centered axis and
+the upper and lower half-planes are the common exterior and interior.  This baseline does not
+approximate `XiC`; it isolates the actual new theorem as a completed-source interacting limit.
+
+The physical Euler amplitude is a separate obstruction.  The actual local monomial is
+
+```text
+p^(-1/2) exp(-log(p) I z).
+```
+
+`PrimeEulerLeeYangAmplitudeNoGo.lean` proves that its norm is
+
+```text
+exp(log(p)(Im z-1/2)),
+```
+
+so it is strictly inside the disk on `Im z=0` and reaches the unit circle only at `Im z=1/2`, the
+strip boundary `Re s=0`.  Therefore raw Euler monomials cannot be used as the Lee--Yang fields.
+The square-root amplitudes must be absorbed into true spin interactions or a separately zero-free
+completed normalization while the centered characters remain the field variables.
+
+The first positive conversion is now formalized.  The same amplitude
+
+```text
+c_p=p^(-1/2)=exp(-log(p)/2)
+```
+
+lies in the ferromagnetic chamber `0<c_p<=1`.  Keeping `u_p(z)` as the field and using `c_p` as the
+two-spin coefficient gives
+
+```text
+L_p(z)=1+2c_p u_p(z)+u_p(z)^2.
+```
+
+`PrimeEulerFerromagneticInteraction.lean` proves that every zero of `L_p`, and every zero of an
+arbitrary finite product of these prime blocks, has `Im z=0`.  The construction uses only prime
+weights and closes both finite ends of the Lee--Yang chain.  It is not yet the completed Euler
+factor: reciprocal Euler pairing has coefficient `c_p+c_p^(-1)` instead of `2c_p`.  That explicit
+coefficient defect is now the local source-comparison target.
+
 ## Source coordinates already available
 
 `PrimeWordEnsembleBoundaryTomography.lean` proves that the complete normal boundary germ of any
@@ -136,34 +202,51 @@ inequalities.  This is the first substantive arithmetic test, not a technical af
    this is now formalized.
    **Positive successor:** encode arithmetic values as interaction energies with
    `exp(-2J)<=1`, not as reciprocal local fields.
-5. **Signed-source attack.**  A pairwise ferromagnetic high-temperature expansion has nonnegative
+5. **One-common-field attack.**  Assigning all primes one artificial fugacity discards their
+   logarithmic scales and forces a later Cayley comparison.
+   **Positive successor:** use the inhomogeneous fields `z_p(z)=exp(-log(p) I z)`.  Their exact
+   common polydisk/torus/exterior geometry is proved in Lean and already gives a finite independent
+   partition function whose zeros are all real in the centered coordinate.
+6. **Physical-amplitude attack.**  The actual Euler monomial contains `p^(-1/2)`; its unit circle is
+   the strip boundary, not the critical line.  Directly inserting it as a fugacity destroys the
+   prime-torus selector.
+   **Positive successor:** keep `exp(-log(p) I z)` as the field and derive the square-root weights
+   from ferromagnetic interactions or a proved zero-free completed normalization.  The first option
+   is now achieved finitely: `p^(-1/2)` is a ferromagnetic pair coefficient and gives critical-line
+   prime blocks at every finite aperture.  Open Core A has narrowed to removal of the explicit
+   reciprocal-pair coefficient defect and construction of the interacting completed limit.
+7. **Signed-source attack.**  A pairwise ferromagnetic high-temperature expansion has nonnegative
    interaction weights, while completed source formulas contain cancellations.
    **Positive successor:** first test the actual connected source cumulants against the
    ferromagnetic moment cone.  If a low GKS/FKG inequality fails, direct pairwise Ising realization
    is retired.  The only live repair is a source-defined single-site or multispin measure with a
    separately proved Lee--Yang property; an arbitrary signed observable is not allowed.
-6. **Gauge-frustration attack.**  Absorbing negative couplings by spin flips works only when the sign
-   pattern is unfrustrated and may alter the common field variable.
+8. **Gauge-frustration attack.**  Absorbing negative couplings by spin flips works only when the sign
+   pattern is unfrustrated and may invert selected prime fields, destroying the all-inside or
+   all-outside chamber.
    **Positive successor:** require an explicit gauge with all transformed interactions
-   nonnegative and a uniform field, or record the frustrated cycle as a terminal obstruction.
-7. **Coefficient-matching attack.**  Positive coefficients of `Z_P` cannot directly reproduce every
+   nonnegative which preserves the common prime-field chamber, or record the frustrated cycle or
+   mixed-chamber inversion as a terminal obstruction.
+9. **Coefficient-matching attack.**  Positive coefficients of `Z_P` cannot directly reproduce every
    signed Taylor coefficient of Xi.
-   **Positive successor:** comparison is after the Cayley transform and zero-free Gamma
-   normalization, where phases and alternating coefficients are permitted.  No direct equality of
-   raw fugacity coefficients is required.
-8. **Thermodynamic-limit attack.**  Convergence of pressure or free energy away from the zero set
+   **Positive successor:** comparison occurs after substituting the complex prime fields and a
+   zero-free Gamma normalization, where phases and alternating centered Taylor coefficients are
+   permitted.  No direct equality of raw fugacity coefficients is required.
+10. **Thermodynamic-limit attack.**  Convergence of pressure or free energy away from the zero set
    does not preserve the divisor.
    **Positive successor:** prove locally uniform convergence of the normalized entire partition
    functions on every compact centered-coordinate set, with a nonzero limit.
-9. **Periodicity attack.**  Exponential field scaling produces vertically repeated zeros.
-   **Positive successor:** use the rational Cayley transform at finite degree.  If microscopic
-   exponential scaling is later needed, restrict to an expanding fundamental strip and prove the
-   extra sheets escape every compact set.
-10. **Trivial-factor attack.**  Decoupled auxiliary spins and field-independent normalizations can
+11. **Periodicity attack.**  Each single prime activity is periodic on the real axis, but distinct
+    prime periods are incommensurable and finite interacting exponential polynomials need not have
+    a common nonzero period.
+    **Positive successor:** no periodicity is assumed in the closure.  Prove local-uniform
+    convergence directly on compact subsets of the centered plane; any residual common period of a
+    proposed approximant family is a falsifying obstruction unless it escapes with the aperture.
+12. **Trivial-factor attack.**  Decoupled auxiliary spins and field-independent normalizations can
    introduce zeros or degree artifacts.
    **Positive successor:** split every auxiliary factor explicitly and prove that the limiting
    residual `E` is entire and zero-free.
-11. **Finite-moment attack.**  Matching a bounded number of correlations cannot determine a
+13. **Finite-moment attack.**  Matching a bounded number of correlations cannot determine a
     partition polynomial.
     **Positive successor:** use a triangular schedule in which aperture, interaction order, and
     retained source-cumulant depth grow together, with finite coefficient determination at every
@@ -176,8 +259,9 @@ a finite classification theorem rather than another metaphor.
 ## Concrete first theorem to test
 
 At the smallest aperture supporting two distinct prime labels, compute the complete marked source
-cumulants through order four.  Determine whether they are the correlations of a finite common-field
-pairwise Ising model with all `J_e>=0`.  This is a finite semialgebraic inverse problem:
+cumulants through order four.  Determine whether they are the correlations of a finite
+prime-labelled pairwise Ising model with all `J_e>=0`.  This is a finite semialgebraic inverse
+problem:
 
 ```text
 source cumulant packet belongs to ferromagnetic Ising moment cone?
@@ -204,8 +288,9 @@ realization or the completed determinant comparison.
 Retire pairwise Ising realization if the first exact completed source packet violates a necessary
 ferromagnetic correlation inequality; retire every Ising version if no source-defined Lee--Yang
 single-site measure survives that obstruction; retire the limit if the graphs or couplings are
-chosen from Xi zeros, if comparison introduces a zero-bearing factor, if Cayley sheets do not escape
-compact sets, or if convergence is weaker than locally uniform.
+chosen from Xi zeros, if comparison introduces a zero-bearing factor, if a gauge produces a mixed
+inside/outside prime-field chamber, if a nonzero common period persists on compact sets, or if
+convergence is weaker than locally uniform.
 
 ## Gates
 
@@ -213,10 +298,13 @@ compact sets, or if convergence is weaker than locally uniform.
 - [x] exact two-spin coefficient/circle selector formalized
 - [x] reciprocity-only failure formalized and converted to the coupling-inequality target
 - [x] reciprocal pairing of contracting Euler weights formally excluded; interaction-energy target isolated
+- [x] exact prime polydisk/critical-torus/exterior geometry formalized
+- [x] finite independent prime-spin partition proved zero-free off the centered real axis
+- [x] physical Euler square-root amplitude displacement formally excluded
 - [x] source-pure finite cumulant packet identified in formal Lean
-- [x] two-ended Cayley/locally-uniform chain to RH stated
+- [x] two-ended multivariate Lee--Yang/locally-uniform chain to RH stated
 - [ ] smallest completed source packet tested against the ferromagnetic moment cone
 - [ ] functorial finite ferromagnetic realization constructed at every aperture
 - [ ] full-volume Lee--Yang theorem imported or formalized for the chosen model class
-- [ ] Cayley-normalized local-uniform comparison with zero-free factor times Xi
+- [ ] prime-field local-uniform comparison with zero-free factor times `XiC`
 - [ ] RH capstone formalized

@@ -34,13 +34,35 @@ of the pairwise matching model obtained by using its raw two-index coefficients 
 
 ## Positive residue
 
-The nonzero defect is a canonical four-interaction coordinate.  A surviving monomer--dimer route
-must do one of two precise things:
+The nonzero defect is a canonical four-interaction coordinate, and it now has an exact positive
+realization.  Let one shared Rademacher spin `epsilon` take the values `+1,-1` with equal weight and
+put `X_i=a_i epsilon`.  For every even subset `S`,
+
+```text
+E product_(i in S) X_i=product_(i in S) a_i.
+```
+
+Hence the raw two- and four-index Euler squarefree coefficients are exactly the even moments of
+this rank-one spin packet, and
+
+```text
+D_0123=E[X_0X_1X_2X_3]
+  -E[X_0X_1]E[X_2X_3]
+  -E[X_0X_2]E[X_1X_3]
+  -E[X_0X_3]E[X_1X_2]
+```
+
+is its fourth joint cumulant.  Thus the no-go retires the Gaussian/dimer interpretation but
+positively selects a shared-spin/higher-cumulant interpretation.
+
+A surviving monomer--dimer or stability route must now do one of three precise things:
 
 1. construct a new completed prime--Gamma pair kernel whose matching sums reproduce the completed
    source, rather than use raw Euler products; or
-2. retain `D_0123` as a higher interaction and prove that the resulting source specialization lies
-   in a particular stable hypergraph-matching class.
+2. retain `D_0123` as the shared-Rademacher higher interaction and prove that the resulting source
+   specialization lies in a particular stable hypergraph-matching or ferromagnetic class; or
+3. treat the all-order shared-spin cumulants as input to a noncrossing/free-cumulant assembly, where
+   higher interactions are structural rather than defects.
 
 Arbitrary hypergraph matching polynomials do not inherit Heilmann--Lieb real-rootedness, so the
 second repair requires its own stability theorem.
@@ -51,6 +73,8 @@ The module uses the existing formal `squarefreeMonomial` from
 `RHProofLab/EulerProductArithmetic.lean` and proves:
 
 - `eulerSquarefreeWickFourDefect_eq`;
+- `sharedRademacherMoment_eq_of_even_card`;
+- `eulerSquarefreeWickFourDefect_eq_sharedRademacherCumulant`;
 - `eulerSquarefreeWickFourLaw_iff`;
 - `not_eulerSquarefreeWickFourLaw_of_nonzero`.
 
@@ -63,6 +87,7 @@ The exact module builds.  Axiom audits report only `propext`, `Classical.choice`
 - [x] exact defect proved
 - [x] vanishing locus classified
 - [x] direct raw-Euler matching proposal retired
-- [x] completed-kernel and stable-hypergraph positive successors isolated
+- [x] raw even squarefree packet identified with a positive shared-Rademacher moment law
+- [x] completed-kernel, stable-hypergraph, and free-cumulant positive successors isolated
 - [x] exact Lean build
 - [x] accepted-axiom audit

@@ -294,9 +294,12 @@ The arithmetic-complement conservation `(20)` (`dim A_N ≤ 2 kappa_rel`, in its
 formalized axiom-clean in `formal/GaloisForLFunctions/ShortExactRankConservation.lean` as
 `HTGeometry.rank_add_of_shortExact` / `finrank_add_of_shortExact` (for a short exact sequence
 `0 → A → B → C → 0` of vector spaces).  These are the reusable linear cores shared by the
-frequency-budget cards.  The analytic substrate — joint Bohr hull, the compact-group side of `(5)`,
-relative Kolchin capacity `(11)`, and covering dimension of inverse limits — remains absent from
-mathlib and is the open part of the stage-3 gate.
+frequency-budget cards.  The **inverse-limit covering-dimension bound** `(15)` is now formalized
+axiom-clean as `HasCoverDimLE.of_refinedByStages` in
+`formal/GaloisForLFunctions/CoveringDimension.lean` (with the "finite cover refines through a stage"
+compactness property as its interface).  The remaining analytic substrate — joint Bohr hull, the
+compact-group side of `(5)`, and relative Kolchin capacity `(11)` — remains absent from mathlib and is
+the open part of the stage-3 gate.
 
 ## Gates
 

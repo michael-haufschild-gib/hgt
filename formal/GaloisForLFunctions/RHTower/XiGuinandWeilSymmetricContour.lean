@@ -129,6 +129,20 @@ theorem rectIntegral_symmetric_eq_two_bottom_add_vertical
     simp [Complex.mul_re]
   have hz₂im : ((((R : ℝ) : ℂ) + c * I)).im = c := by
     simp [Complex.mul_im]
+  have hbottom :
+      (∫ x in -R..R, f ((x : ℂ) - c * I)) =
+        ∫ x in -R..R, f (-(c * I) + (x : ℂ)) := by
+    apply intervalIntegral.integral_congr
+    intro x _
+    congr 1
+    ring
+  have hbottomNeg :
+      (∫ x in -R..R, f ((x : ℂ) + (-c : ℂ) * I)) =
+        ∫ x in -R..R, f ((x : ℂ) - c * I) := by
+    apply intervalIntegral.integral_congr
+    intro x _
+    congr 1
+    ring
   unfold rectIntegral
   rw [hz₁re, hz₁im, hz₂re, hz₂im]
   simp only [sub_eq_add_neg, ofReal_neg]
@@ -137,7 +151,7 @@ theorem rectIntegral_symmetric_eq_two_bottom_add_vertical
   simp only [ofReal_neg] at hvertical
   rw [hvertical]
   simp only [smul_eq_mul]
-  ring
+  linear_combination hbottomNeg
 
 /-- Symmetric-contour reduction for the exact squared rectangular Xi test. -/
 theorem rectIntegral_rectangularLogDeriv_symmetric (L a R c : ℝ) :

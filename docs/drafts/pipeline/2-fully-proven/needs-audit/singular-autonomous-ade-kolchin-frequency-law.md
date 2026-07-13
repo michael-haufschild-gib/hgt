@@ -293,10 +293,13 @@ absent from mathlib — (i) Ritt--Raudenbush finite prime decomposition of radic
 (ii) the Kolchin dimension polynomial and its eventual constancy, (iii) covering dimension of inverse
 limits of compact metric spaces under surjective bonding maps, (iv) the Bohr almost-periodic compact
 hull, and (v) Pontryagin--Takahashi dimension/rank duality for compact connected abelian groups. Each
-is itself a research-scale development, and no bounded self-contained sub-theorem survives their
-removal (the remaining steps — `X_m ⊆ V_{P,m}`, the final numeric floor `(18)` — are transitivity of
-the inequalities they supply, i.e. wrappers). No partial formalization is attempted, since it would
-either be such a wrapper or an unfinished chain carrying `sorry`. The card stays stage 2 pending those
+is itself a research-scale development. Component (iii), covering dimension, is now begun in
+`formal/GaloisForLFunctions/CoveringDimension.lean`: `HasCoverDimLE` is defined and the load-bearing
+**inverse-limit dimension bound** is proved axiom-clean as `HasCoverDimLE.of_refinedByStages` (if every
+finite open cover of `X` refines through a stage `Y i` of dimension `≤ n` — the compactness property of
+an inverse limit — then `dim X ≤ n`), together with monotonicity and homeomorphism invariance. The
+Ritt--Raudenbush/Kolchin, Bohr-hull, and Pontryagin--Takahashi components remain absent. The card stays
+stage 2 pending those
 foundations.
 
 ## Gates

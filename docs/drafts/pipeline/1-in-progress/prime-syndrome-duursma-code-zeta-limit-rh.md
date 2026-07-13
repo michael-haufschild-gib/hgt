@@ -7,7 +7,8 @@
   `formal/GaloisForLFunctions/PrimeWordSupportSelector.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeSupportBoundaryJets.lean`,
   `formal/GaloisForLFunctions/RHTower/ReflectionStabilizerCodeBlindness.lean`, and
-  `formal/GaloisForLFunctions/IharaBlockSelector.lean`
+  `formal/GaloisForLFunctions/IharaBlockSelector.lean`, and
+  `formal/GaloisForLFunctions/RHTower/DuursmaDoubleRepetition.lean`
 - **Statement:** `[CONJECTURE]` The complete anti-invariant prime-support syndrome, retained with all
   of its boundary-jet weights, admits cofinal finite self-dual code realizations whose Duursma zeta
   polynomials satisfy the code Riemann hypothesis and have a source-normalized microscopic limit
@@ -105,6 +106,29 @@ semantics.  For `q>0`, its zeros lie on `|T|=q^(-1/2)` exactly when `lambda^2<=4
 symmetry alone does not imply that inequality.  Thus the first code-RH test reduces to one explicit
 weight-enumerator coefficient bound rather than an unspecified circle claim.
 
+The smallest abstract self-dual assembly is now exact in Lean.  The binary repetition code
+`[2,1,2]` has weight enumerator `x^2+y^2` and zeta polynomial `1`.  Its direct sum with itself is the
+self-dual `[4,2,2]` code with
+
+```text
+W(x,y)=(x^2+y^2)^2,
+P(T)=(1+2T^2)/3.
+```
+
+`DuursmaDoubleRepetition.lean` proves the defining coefficient-extraction identity, uniqueness of
+the three degree-two coefficients, and the binary critical-circle law `|T|^2=1/2` for every zero.
+It also proves
+
+```text
+P_(C direct-sum C)(T)
+  =P_C(T)^2 +(2/3)(T^2-1),
+```
+
+so Duursma zeta is already nonmultiplicative at the first direct sum.  This is positive for the RH
+detour: code assembly creates a genuine normalized cross-coordinate interaction instead of merely
+multiplying two disconnected local numerators.  It does not yet show that the actual prime
+syndrome realizes this code or its coefficient chamber.
+
 ## Source use of the boundary-jet tower
 
 The scalar Koszul selector kills every mixed-support word and retains only singleton support.  That
@@ -169,9 +193,11 @@ finite-field chain code without erasing the amplitudes that distinguish the comp
 
 ## First decisive finite test
 
-Restrict to a finite even number of prime/reflection coordinates and genus-one zeta numerator.
-Construct the smallest nontrivial source syndrome code and calculate its Duursma coefficient
-`lambda` symbolically from the marked support counts.  Test the source inequality
+The abstract two-coordinate baseline is complete: the double repetition code has `lambda=0`,
+satisfies `lambda^2<=4q`, and exhibits a nonmultiplicative quadratic interaction.  The remaining
+decisive test is source fidelity.  Restrict to the first two prime/reflection coordinates, construct
+the smallest genuine source syndrome code, and calculate its Duursma coefficient `lambda`
+symbolically from the marked support counts.  Test the source inequality
 
 ```text
 lambda^2 <= 4q.
@@ -195,11 +221,12 @@ factor; or if convergence is not locally uniform.
 - [x] stabilizer no-go converted to the complete-syndrome positive successor
 - [x] full prime-support boundary-jet tomography available in Lean
 - [x] genus-one reciprocal-quadratic circle selector available in Lean
+- [x] smallest abstract self-dual code zeta computed uniquely in Lean
+- [x] first direct-sum interaction and code critical-circle law formalized
 - [x] fixed-field periodicity obstruction and required microscopic scaling identified
 - [ ] smallest genuine source syndrome code and complete enumerator constructed
-- [ ] genus-one Duursma coefficient computed and spectral bound proved or refuted
+- [ ] source-syndrome genus-one Duursma coefficient computed and spectral bound proved or refuted
 - [ ] cofinal self-dual source-code construction
 - [ ] source-specific code-RH theorem
 - [ ] locally uniform microscopic limit to zero-free factor times Xi
 - [ ] RH capstone formalized
-

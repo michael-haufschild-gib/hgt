@@ -830,6 +830,34 @@ was absent from mathlib and is now formalized axiom-clean as `HTGeometry.isGδ_e
 the non-extreme points form the `Fσ` union of midpoints of pairs at distance `≥ 1/(n+1)`). The rest
 of `(28)` — density of `Ext M(s)` — still needs the absent Nevanlinna N-extremal construction.
 
+Two further self-contained steps are now formalized axiom-clean:
+
+- **All-order flatness `(9)`.** `formal/GaloisForLFunctions/CauchyMomentFlatness.lean` proves the
+  finite-geometric Cauchy-kernel expansion `cauchy_kernel_finite_expansion`, its integrated form
+  `cauchy_integral_expansion`, and `cauchy_transform_sub_of_moments_eq`: two finite measures with
+  equal moments through order `N` have Cauchy transforms differing only by the `z^{-(N+1)}` remainder
+  (the moment-cancellation mechanism of `(9a)`--`(9d)`).
+- **Isometric extremal simplex `(20)`--`(22)`.**
+  `formal/GaloisForLFunctions/MutuallySingularTotalVariation.lean` proves
+  `totalVariation_toSignedMeasure_sub`: for finite `μ ⟂ ν`, `(μ − ν)` has total variation `μ + ν`
+  (so mutually singular representing measures sit isometrically in total-variation geometry).
+- **Hankel positive-semidefiniteness / moment functional.**
+  `formal/GaloisForLFunctions/MomentFunctionalPositivity.lean` builds the moment functional
+  `momentFunctional s p = ∑ₖ aₖ sₖ` (absent from mathlib), its `ℝ`-linearity, the representing-measure
+  bridge `momentFunctional_eq_integral`, the moment bilinear/Gram form `momentFunctional_mul_eq_integral`
+  (`L(p·q) = ∫ (eval p)(eval q) dμ`), and the load-bearing positivity
+  `momentFunctional_pow_two_nonneg`: a moment sequence with a representing measure is positive on
+  squares, i.e. the Hankel matrix `(sᵢ₊ⱼ)` is positive-semidefinite — the necessary condition of
+  Hamburger solvability that carves out the indeterminate-moment fiber.  The strict/nondegenerate case
+  is `momentFunctional_pow_two_eq_zero`: when the representing measure charges every cofinite set
+  (an infinitely supported / indeterminate sequence), the Hankel form is strictly definite —
+  `L(p²) = 0 ⟹ p = 0` — via `L²`-vanishing of `eval · p` against a nonzero polynomial's finite root
+  set, together with `integrable_eval` (polynomials are `μ`-integrable when all monomials are).
+
+The barycentric construction, parameter-jet controllability, and full-configuration transversality
+still route through the absent Nevanlinna matrix / minimal-exponential-type Jensen bound / Whitney
+transversality stack.
+
 ## Gates
 
 - [x] project prior-research collision search

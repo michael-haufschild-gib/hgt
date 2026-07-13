@@ -12,7 +12,7 @@ are nonnegative; no divisor data or zero information enters the identities.
 -/
 
 open scoped BigOperators
-open Polynomial Real Set MeasureTheory Complex
+open Polynomial Real Set MeasureTheory Complex Filter Topology
 
 namespace RHTower
 
@@ -132,6 +132,29 @@ theorem squareIndexDensitySwap_polarization
       rw [hexp, hexp', hQ, hQ', hL, hL']
       exact squareIndexSignedSwap_hyperbolic W A B
         (A - 3 / 4 - 12 * P) (1 - 16 * P)
+
+/-! ## Current carried by a spectral translation phase -/
+
+/-- The entire phase induced by a real logarithmic source translation. -/
+def spectralTranslationPhase (a : ℝ) (z : ℂ) : ℂ :=
+  Complex.exp (((a : ℂ) * I) * z)
+
+theorem hasDerivAt_spectralTranslationPhase (a : ℝ) (z : ℂ) :
+    HasDerivAt (spectralTranslationPhase a)
+      (((a : ℂ) * I) * spectralTranslationPhase a z) z := by
+  unfold spectralTranslationPhase
+  convert (Complex.hasDerivAt_exp (((a : ℂ) * I) * z)).comp z
+    ((hasDerivAt_id z).const_mul ((a : ℂ) * I)) using 1 <;> ring
+
+/-- Multiplication by a spectral translation phase changes oriented current only by the explicit
+phase drift `a |F|²`, up to the positive squared modulus of the phase itself. -/
+theorem orientedPhaseCurrent_identity (p F F' : ℂ) (a : ℝ) :
+    (p * (F' + ((a : ℂ) * I) * F) *
+        (starRingEnd ℂ) (p * F)).im =
+      Complex.normSq p * ((F' * (starRingEnd ℂ) F).im +
+        a * Complex.normSq F) := by
+  simp [Complex.mul_im, Complex.mul_re, Complex.normSq_apply]
+  ring
 
 /-- The Gaussian scale belonging to the square index `n²` at logarithmic source position `x`. -/
 def thetaSquareIndexScale (n : ℕ) (x : ℝ) : ℝ :=
@@ -279,6 +302,30 @@ theorem thetaSquareIndexParityDensity_eq_dyadic_difference (x : ℝ) :
   rw [thetaSquareIndexEvenDensity_eq_dyadic_translate]
   ring
 
+/-- Poisson/parity reflection in density coordinates.  The parity row reflects to the odd row at
+the adjacent dyadic scale, with only the elementary completion character left over. -/
+theorem thetaSquareIndexParityDensity_neg_reflection (x : ℝ) :
+    thetaSquareIndexParityDensity (-x) =
+      2 * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+          thetaSquareIndexOddDensity (x - Real.log 2) +
+        2 * (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+          thetaCuspReflectionMode (x - Real.log 2) -
+        thetaCuspReflectionMode x := by
+  rw [thetaSquareIndexParityDensity_eq_dyadic_difference]
+  have harg : -x + Real.log 2 = -(x - Real.log 2) := by ring
+  rw [harg, thetaCuspTailSecondDensity_neg,
+    thetaCuspTailSecondDensity_neg]
+  unfold thetaSquareIndexOddDensity
+  rw [thetaSquareIndexEvenDensity_eq_dyadic_translate]
+  have hshift : x - Real.log 2 + Real.log 2 = x := by ring
+  rw [hshift]
+  have hw : (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
+      (2 : ℝ) ^ (-(1 / 2 : ℝ)) = 1 / 2 := by
+    rw [← Real.rpow_add (by norm_num : (0 : ℝ) < 2)]
+    norm_num
+  linear_combination
+    (2 * thetaCuspTailSecondDensity x) * hw
+
 /-- The full square-index product minus its parity-polarized product is exactly the two cross-parity
 channels. -/
 theorem thetaCuspTailSecondDensity_mul_sub_parity_mul
@@ -318,6 +365,158 @@ theorem thetaSquareIndexDyadicDensity_eq_multiples_row (k : ℕ) (x : ℝ) :
   simpa [thetaSquareIndexDyadicDensity] using
     (tsum_thetaCuspTailSecondDensityAtom_pnat_mul
       (⟨2 ^ k, pow_pos (by norm_num) k⟩ : ℕ+) x)
+
+theorem thetaSquareIndexDyadicDensity_nonneg
+    {x : ℝ} (hx : 0 ≤ x) (k : ℕ) :
+    0 ≤ thetaSquareIndexDyadicDensity k x := by
+  rw [← thetaSquareIndexDyadicDensity_eq_multiples_row]
+  exact tsum_nonneg fun m =>
+    (thetaCuspTailSecondDensityAtom_pos
+      (Nat.mul_pos (pow_pos (by norm_num) k) m.pos) hx).le
+
+/-- Explicit double-exponential Gaussian bound for the dyadic top row on the positive source
+half-line. -/
+theorem thetaSquareIndexDyadicDensity_le_geometric
+    {x : ℝ} (hx : 0 ≤ x) (k : ℕ) :
+    thetaSquareIndexDyadicDensity k x ≤
+      (4 * thetaCuspGaussianConstant (thetaCuspTailDerivativePolynomial 2) *
+          Real.exp (-x)) * ((2 ^ k : ℕ) : ℝ) *
+        (Real.exp (-(Real.pi / 2))) ^ (2 ^ k : ℕ) *
+          ∑' m : ℕ+, (m : ℝ) *
+            (Real.exp (-(Real.pi / 2))) ^ ((m : ℕ) - 1) := by
+  simpa [thetaSquareIndexDyadicDensity] using
+    (criticalThetaCuspDensityTranslate_le_geometric hx
+      (⟨2 ^ k, pow_pos (by norm_num) k⟩ : ℕ+))
+
+/-- The explicit dyadic top-row majorant tends to zero at a double-exponential rate. -/
+theorem tendsto_thetaSquareIndexDyadicGeometricMajorant (x : ℝ) :
+    Tendsto
+      (fun k : ℕ =>
+        (4 * thetaCuspGaussianConstant (thetaCuspTailDerivativePolynomial 2) *
+            Real.exp (-x)) * ((2 ^ k : ℕ) : ℝ) *
+          (Real.exp (-(Real.pi / 2))) ^ (2 ^ k : ℕ) *
+            ∑' m : ℕ+, (m : ℝ) *
+              (Real.exp (-(Real.pi / 2))) ^ ((m : ℕ) - 1))
+      atTop (nhds 0) := by
+  let q : ℝ := Real.exp (-(Real.pi / 2))
+  have hq0 : 0 ≤ q := (Real.exp_pos _).le
+  have hq1 : q < 1 := by
+    exact Real.exp_lt_one_iff.mpr (by have := Real.pi_pos; linarith)
+  have hpow : Tendsto (fun n : ℕ => (n : ℝ) * q ^ n) atTop (nhds 0) := by
+    simpa only [pow_one] using
+      (tendsto_pow_const_mul_const_pow_of_lt_one 1 hq0 hq1)
+  have htwo : Tendsto (fun k : ℕ => 2 ^ k) atTop atTop :=
+    tendsto_pow_atTop_atTop_of_one_lt one_lt_two
+  have hcomp := hpow.comp htwo
+  have hconst : Tendsto
+      (fun _ : ℕ =>
+        (4 * thetaCuspGaussianConstant (thetaCuspTailDerivativePolynomial 2) *
+          Real.exp (-x)) *
+          (∑' m : ℕ+, (m : ℝ) * q ^ ((m : ℕ) - 1)))
+      atTop (nhds
+        ((4 * thetaCuspGaussianConstant (thetaCuspTailDerivativePolynomial 2) *
+          Real.exp (-x)) *
+          (∑' m : ℕ+, (m : ℝ) * q ^ ((m : ℕ) - 1)))) := tendsto_const_nhds
+  have hmul := hconst.mul hcomp
+  convert hmul using 1
+  · funext k
+    simp only [Function.comp_apply, q]
+    ring
+  · ring
+
+/-- Every fixed positive-half-line value of the dyadic top row tends to zero. -/
+theorem tendsto_thetaSquareIndexDyadicDensity_zero
+    {x : ℝ} (hx : 0 ≤ x) :
+    Tendsto (fun k : ℕ => thetaSquareIndexDyadicDensity k x) atTop (nhds 0) := by
+  apply squeeze_zero
+  · exact thetaSquareIndexDyadicDensity_nonneg hx
+  · exact thetaSquareIndexDyadicDensity_le_geometric hx
+  · exact tendsto_thetaSquareIndexDyadicGeometricMajorant x
+
+/-- Named form of the explicit pointwise top-row majorant. -/
+def thetaSquareIndexDyadicGeometricMajorant (x : ℝ) (k : ℕ) : ℝ :=
+  (4 * thetaCuspGaussianConstant (thetaCuspTailDerivativePolynomial 2) *
+      Real.exp (-x)) * ((2 ^ k : ℕ) : ℝ) *
+    (Real.exp (-(Real.pi / 2))) ^ (2 ^ k : ℕ) *
+      ∑' m : ℕ+, (m : ℝ) *
+        (Real.exp (-(Real.pi / 2))) ^ ((m : ℕ) - 1)
+
+/-- Source coefficient of the top row in the finite Haar polarization. -/
+def thetaSquareIndexDyadicRemainderSource (k : ℕ) (x y : ℝ) : ℝ :=
+  (2 : ℝ) ^ k * thetaSquareIndexDyadicDensity k x *
+    thetaSquareIndexDyadicDensity k y
+
+/-- Product majorant for the dyadic Haar top-row source. -/
+def thetaSquareIndexDyadicRemainderMajorant (k : ℕ) (x y : ℝ) : ℝ :=
+  (2 : ℝ) ^ k * thetaSquareIndexDyadicGeometricMajorant x k *
+    thetaSquareIndexDyadicGeometricMajorant y k
+
+theorem thetaSquareIndexDyadicRemainderSource_le_majorant
+    {x y : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) (k : ℕ) :
+    thetaSquareIndexDyadicRemainderSource k x y ≤
+      thetaSquareIndexDyadicRemainderMajorant k x y := by
+  unfold thetaSquareIndexDyadicRemainderSource
+    thetaSquareIndexDyadicRemainderMajorant
+  have hdx := thetaSquareIndexDyadicDensity_nonneg hx k
+  have hdy := thetaSquareIndexDyadicDensity_nonneg hy k
+  have hmx : thetaSquareIndexDyadicDensity k x ≤
+      thetaSquareIndexDyadicGeometricMajorant x k := by
+    exact thetaSquareIndexDyadicDensity_le_geometric hx k
+  have hmy : thetaSquareIndexDyadicDensity k y ≤
+      thetaSquareIndexDyadicGeometricMajorant y k := by
+    exact thetaSquareIndexDyadicDensity_le_geometric hy k
+  have hmx0 : 0 ≤ thetaSquareIndexDyadicGeometricMajorant x k := hdx.trans hmx
+  gcongr
+
+/-- The explicit top-row product majorant tends to zero. -/
+theorem tendsto_thetaSquareIndexDyadicRemainderMajorant_zero (x y : ℝ) :
+    Tendsto (fun k : ℕ => thetaSquareIndexDyadicRemainderMajorant k x y)
+      atTop (nhds 0) := by
+  let q : ℝ := Real.exp (-(Real.pi / 2))
+  have hq0 : 0 ≤ q := (Real.exp_pos _).le
+  have hq1 : q < 1 := by
+    exact Real.exp_lt_one_iff.mpr (by have := Real.pi_pos; linarith)
+  have hqSq0 : 0 ≤ q * q := mul_nonneg hq0 hq0
+  have hqSq1 : q * q < 1 := by nlinarith
+  have hpow : Tendsto (fun n : ℕ => (n : ℝ) ^ 3 * (q * q) ^ n)
+      atTop (nhds 0) :=
+    tendsto_pow_const_mul_const_pow_of_lt_one 3 hqSq0 hqSq1
+  have htwo : Tendsto (fun k : ℕ => 2 ^ k) atTop atTop :=
+    tendsto_pow_atTop_atTop_of_one_lt one_lt_two
+  have hcomp := hpow.comp htwo
+  let C : ℝ :=
+    (4 * thetaCuspGaussianConstant (thetaCuspTailDerivativePolynomial 2) *
+        Real.exp (-x)) *
+      (∑' m : ℕ+, (m : ℝ) * q ^ ((m : ℕ) - 1)) *
+    ((4 * thetaCuspGaussianConstant (thetaCuspTailDerivativePolynomial 2) *
+        Real.exp (-y)) *
+      (∑' m : ℕ+, (m : ℝ) * q ^ ((m : ℕ) - 1)))
+  have hconst : Tendsto (fun _ : ℕ => C) atTop (nhds C) := tendsto_const_nhds
+  have hmul := hconst.mul hcomp
+  convert hmul using 1
+  · funext k
+    simp only [Function.comp_apply]
+    unfold thetaSquareIndexDyadicRemainderMajorant
+      thetaSquareIndexDyadicGeometricMajorant
+    dsimp [C, q]
+    rw [mul_pow]
+    push_cast
+    ring
+  · ring
+
+/-- Pointwise, the complete top-row source in the Haar polarization tends to zero. -/
+theorem tendsto_thetaSquareIndexDyadicRemainderSource_zero
+    {x y : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) :
+    Tendsto (fun k : ℕ => thetaSquareIndexDyadicRemainderSource k x y)
+      atTop (nhds 0) := by
+  apply squeeze_zero
+  · intro k
+    unfold thetaSquareIndexDyadicRemainderSource
+    exact mul_nonneg
+      (mul_nonneg (by positivity) (thetaSquareIndexDyadicDensity_nonneg hx k))
+      (thetaSquareIndexDyadicDensity_nonneg hy k)
+  · exact thetaSquareIndexDyadicRemainderSource_le_majorant hx hy
+  · exact tendsto_thetaSquareIndexDyadicRemainderMajorant_zero x y
 
 /-- One exact Haar step: a divisibility row is the positive exact-valuation square, minus the
 parity-wavelet square, plus the next divisibility row. -/

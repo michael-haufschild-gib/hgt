@@ -297,6 +297,52 @@ def soninAllPrimeCoupledTraceMoment (a : SoninPositiveAperture) (k : ℕ) : ℂ 
   ContinuousLinearMap.opTrace
     (soninAllPrimeCoupledCoordinateEnergy a ^ (k + 1))
 
+/-- The zeroth coupled moment is exactly the Hilbert--Schmidt energy of the common all-prime
+source column.  This identifies its strict-positivity premise with ordinary source
+non-degeneracy, before any comparison with the prime--Gamma target. -/
+theorem soninAllPrimeCoupledTraceMoment_zero_eq_column_hsNormSq
+    (a : SoninPositiveAperture) :
+    soninAllPrimeCoupledTraceMoment a 0 =
+      (ContinuousLinearMap.hsNormSq
+        (soninAllPrimeColumnCoordinateOperator a.1 a.2) : ℂ) := by
+  let C := soninAllPrimeColumnCoordinateOperator a.1 a.2
+  have hC : ContinuousLinearMap.IsHilbertSchmidt C :=
+    HilbertSchmidt.isHilbertSchmidt_toOperatorRect
+      (soninAllPrimeColumnKernel_isHSRect a.1 a.2)
+  calc
+    soninAllPrimeCoupledTraceMoment a 0 =
+        ContinuousLinearMap.hsInner C C := by
+      rw [soninAllPrimeCoupledTraceMoment]
+      simp only [zero_add, pow_one, soninAllPrimeCoupledCoordinateEnergy, C]
+      exact ContinuousLinearMap.opTrace_adjoint_comp_self C
+    _ = (ContinuousLinearMap.hsNormSq C : ℂ) := hsInner_self_eq_ofReal hC
+
+/-- Strict positivity of the normalizing moment is equivalent to the concrete all-prime Sonin
+column being nonzero.  Thus the scale-eliminated RH chain needs no independent sign estimate:
+its remaining degree-zero input is precisely source non-degeneracy. -/
+theorem soninAllPrimeCoupledTraceMoment_zero_re_pos_iff_column_ne_zero
+    (a : SoninPositiveAperture) :
+    0 < (soninAllPrimeCoupledTraceMoment a 0).re ↔
+      soninAllPrimeColumnCoordinateOperator a.1 a.2 ≠ 0 := by
+  rw [soninAllPrimeCoupledTraceMoment_zero_eq_column_hsNormSq,
+    Complex.ofReal_re]
+  let C := soninAllPrimeColumnCoordinateOperator a.1 a.2
+  have hC : ContinuousLinearMap.IsHilbertSchmidt C :=
+    HilbertSchmidt.isHilbertSchmidt_toOperatorRect
+      (soninAllPrimeColumnKernel_isHSRect a.1 a.2)
+  constructor
+  · intro hpos hzero
+    have hCzero : C = 0 := by simpa only [C] using hzero
+    have hnormzero : ContinuousLinearMap.hsNormSq C = 0 :=
+      (ContinuousLinearMap.hsNormSq_eq_zero_iff hC).mpr hCzero
+    linarith
+  · intro hne
+    have hne' : ContinuousLinearMap.hsNormSq C ≠ 0 := by
+      intro hzero
+      apply hne
+      simpa only [C] using (ContinuousLinearMap.hsNormSq_eq_zero_iff hC).mp hzero
+    exact lt_of_le_of_ne (ContinuousLinearMap.hsNormSq_nonneg C) (Ne.symm hne')
+
 /-- The zeroth coupled trace moment is already the zeroth block-diagonal Sonin moment.  Thus
 the coupled route adds no new scalar normalization at degree zero; its genuinely new arithmetic
 data begin with mixed words in the second trace moment. -/
@@ -760,6 +806,90 @@ theorem soninCoupledPrimeArchFiniteGramClosure_of_coupling
   exact mem_closure_of_tendsto (h N)
     (Eventually.of_forall fun j => Set.mem_range_self (aperture N j))
 
+/-! ## Projective finite-block coupling
+
+Positive semidefiniteness is homogeneous, so exact scalar normalization of the source moments is
+unnecessary.  A positive scale at each aperture removes the degree-zero matching obstruction and
+leaves only projective moment-shape convergence. -/
+
+/-- A strictly positive global scale for one coupled source block. -/
+def SoninPositiveScale := {r : ℝ // 0 < r}
+
+/-- A positively rescaled coupled Gram block, realized as an actual Gram matrix by scaling every
+source vector with the positive square root. -/
+def soninAllPrimeCoupledProjectiveGramBlock
+    (N : ℕ) (d : SoninPositiveScale × SoninPositiveAperture) :
+    Matrix (Fin N) (Fin N) ℂ :=
+  Matrix.gram ℂ (fun n : Fin N =>
+    ((Real.sqrt d.1.1 : ℝ) : ℂ) •
+      soninAllPrimeCoupledPowerVector d.2 (n : ℕ))
+
+theorem soninAllPrimeCoupledProjectiveGramBlock_apply
+    (N : ℕ) (d : SoninPositiveScale × SoninPositiveAperture)
+    (i j : Fin N) :
+    soninAllPrimeCoupledProjectiveGramBlock N d i j =
+      (d.1.1 : ℂ) *
+        soninAllPrimeCoupledTraceMoment d.2 ((i : ℕ) + (j : ℕ)) := by
+  rw [soninAllPrimeCoupledProjectiveGramBlock, Matrix.gram_apply]
+  rw [inner_smul_left, inner_smul_right]
+  simp only [Complex.conj_ofReal]
+  change ((Real.sqrt d.1.1 : ℝ) : ℂ) *
+      (((Real.sqrt d.1.1 : ℝ) : ℂ) *
+        soninAllPrimeCoupledGramBlock N d.2 i j) = _
+  rw [soninAllPrimeCoupledGramBlock_eq_traceMoment]
+  rw [← mul_assoc, ← Complex.ofReal_mul,
+    Real.mul_self_sqrt (le_of_lt d.1.2)]
+
+theorem soninAllPrimeCoupledProjectiveGramBlock_posSemidef
+    (N : ℕ) (d : SoninPositiveScale × SoninPositiveAperture) :
+    (soninAllPrimeCoupledProjectiveGramBlock N d).PosSemidef := by
+  exact Matrix.posSemidef_gram ℂ _
+
+/-- Scale-free source relation: every finite target block is a cluster point of positively
+rescaled coupled Sonin Gram blocks. -/
+def SoninCoupledPrimeArchProjectiveFiniteGramClosure : Prop :=
+  ∀ N : ℕ, primeArchNormalizedHankelBlock N ∈
+    closure (Set.range (soninAllPrimeCoupledProjectiveGramBlock N))
+
+/-- Sequential projective block coupling. -/
+def SoninCoupledPrimeArchProjectiveFiniteGramCoupling
+    (data : ℕ → ℕ → SoninPositiveScale × SoninPositiveAperture) : Prop :=
+  ∀ N : ℕ,
+    Tendsto (fun j : ℕ => soninAllPrimeCoupledProjectiveGramBlock N (data N j))
+      atTop (nhds (primeArchNormalizedHankelBlock N))
+
+/-- Reduced scale-free analytic target: only the shape of the first `2N-1` moments must match;
+one positive scalar is shared by the whole finite block. -/
+def SoninCoupledPrimeArchProjectiveFiniteMomentCoupling
+    (data : ℕ → ℕ → SoninPositiveScale × SoninPositiveAperture) : Prop :=
+  ∀ N k, k < 2 * N - 1 →
+    Tendsto (fun j : ℕ =>
+        ((data N j).1.1 : ℂ) *
+          soninAllPrimeCoupledTraceMoment (data N j).2 k)
+      atTop (nhds ((normalizedPrimeArchMoment k : ℝ) : ℂ))
+
+theorem soninCoupledPrimeArchProjectiveFiniteGramCoupling_of_momentCoupling
+    {data : ℕ → ℕ → SoninPositiveScale × SoninPositiveAperture}
+    (h : SoninCoupledPrimeArchProjectiveFiniteMomentCoupling data) :
+    SoninCoupledPrimeArchProjectiveFiniteGramCoupling data := by
+  intro N
+  apply tendsto_pi_nhds.mpr
+  intro i
+  apply tendsto_pi_nhds.mpr
+  intro j
+  have hij : (i : ℕ) + (j : ℕ) < 2 * N - 1 := by omega
+  simpa only [soninAllPrimeCoupledProjectiveGramBlock_apply,
+    primeArchNormalizedHankelBlock] using
+      h N ((i : ℕ) + (j : ℕ)) hij
+
+theorem soninCoupledPrimeArchProjectiveFiniteGramClosure_of_coupling
+    {data : ℕ → ℕ → SoninPositiveScale × SoninPositiveAperture}
+    (h : SoninCoupledPrimeArchProjectiveFiniteGramCoupling data) :
+    SoninCoupledPrimeArchProjectiveFiniteGramClosure := by
+  intro N
+  exact mem_closure_of_tendsto (h N)
+    (Eventually.of_forall fun j => Set.mem_range_self (data N j))
+
 private def finiteRealMatrixQuadratic {N : ℕ}
     (c : Fin N → ℝ) (M : Matrix (Fin N) (Fin N) ℂ) : ℝ :=
   (∑ i : Fin N, ∑ j : Fin N, ((c i * c j : ℝ) : ℂ) * M i j).re
@@ -786,8 +916,126 @@ private theorem finiteRealMatrixQuadratic_nonneg_of_posSemidef
     ring
   rwa [heq]
 
-theorem primeArchSourceTraceHankelIntNonnegative_of_soninCoupledFiniteGramClosure
-    (h : SoninCoupledPrimeArchFiniteGramClosure) :
+/-! ## Canonically normalized scalar value coupling
+
+Whole-block convergence asks one aperture schedule to match every coefficient vector at once.
+For the countable RH criterion this is stronger than necessary: one may keep the test polynomial
+fixed and transfer only its scalar Gram value.  An arbitrary positive rescaling would collapse
+this interface to the nonnegative ray and merely restate positivity, so the scale below is fixed
+canonically by the zeroth coupled moment. -/
+
+/-- Positive apertures at which the explicit coupled all-prime source column is nonzero. -/
+def SoninCoupledNondegenerateAperture :=
+  {a : SoninPositiveAperture //
+    soninAllPrimeColumnCoordinateOperator a.1 a.2 ≠ 0}
+
+/-- The scalar coupled Gram value of one real polynomial at one positive aperture. -/
+def soninAllPrimeCoupledPolynomialGramValue
+    (a : SoninPositiveAperture) (p : Polynomial ℝ) : ℝ :=
+  let N := p.natDegree + 1
+  finiteRealMatrixQuadratic (Polynomial.toFn N p)
+    (soninAllPrimeCoupledGramBlock N a)
+
+theorem soninAllPrimeCoupledPolynomialGramValue_nonneg
+    (a : SoninPositiveAperture) (p : Polynomial ℝ) :
+    0 ≤ soninAllPrimeCoupledPolynomialGramValue a p := by
+  unfold soninAllPrimeCoupledPolynomialGramValue
+  exact finiteRealMatrixQuadratic_nonneg_of_posSemidef _
+    (soninAllPrimeCoupledGramBlock_posSemidef _ a)
+
+/-- The unique source normalization which matches the target zeroth moment.  Its value is forced
+by the aperture; it is not an independently variable projective parameter. -/
+def soninAllPrimeCoupledCanonicalScale
+    (a : SoninCoupledNondegenerateAperture) : ℝ :=
+  normalizedPrimeArchMoment 0 /
+    (soninAllPrimeCoupledTraceMoment a.1 0).re
+
+theorem soninAllPrimeCoupledCanonicalScale_pos
+    (a : SoninCoupledNondegenerateAperture) :
+    0 < soninAllPrimeCoupledCanonicalScale a := by
+  exact div_pos normalizedPrimeArchMoment_zero_pos
+    ((soninAllPrimeCoupledTraceMoment_zero_re_pos_iff_column_ne_zero a.1).2 a.2)
+
+/-- The polynomial Gram value after the degree-zero source normalization forced by the aperture. -/
+def soninAllPrimeCoupledNormalizedPolynomialGramValue
+    (a : SoninCoupledNondegenerateAperture) (p : Polynomial ℝ) : ℝ :=
+  soninAllPrimeCoupledCanonicalScale a *
+    soninAllPrimeCoupledPolynomialGramValue a.1 p
+
+theorem soninAllPrimeCoupledNormalizedPolynomialGramValue_nonneg
+    (a : SoninCoupledNondegenerateAperture) (p : Polynomial ℝ) :
+    0 ≤ soninAllPrimeCoupledNormalizedPolynomialGramValue a p := by
+  exact mul_nonneg (le_of_lt (soninAllPrimeCoupledCanonicalScale_pos a))
+    (soninAllPrimeCoupledPolynomialGramValue_nonneg a.1 p)
+
+/-- The actual canonically normalized coupled-source values for one fixed integer polynomial.
+The aperture varies, but its scale is the forced zeroth-moment quotient rather than a free ray
+parameter. -/
+def soninCoupledPrimeArchPerTestNormalizedValueLocus
+    (p : Polynomial ℤ) : Set ℝ :=
+  Set.range (fun a : SoninCoupledNondegenerateAperture =>
+    soninAllPrimeCoupledNormalizedPolynomialGramValue a
+      (p.map (Int.castRingHom ℝ)))
+
+/-- Source-pure scalar closure: each integer-polynomial prime--Gamma value is a cluster value of
+the canonically normalized coupled Sonin value for that same polynomial.  The aperture may depend
+on the test, so no simultaneous moment or whole-block convergence is assumed. -/
+def SoninCoupledPrimeArchPerTestNormalizedValueClosure : Prop :=
+  ∀ p : Polynomial ℤ,
+    (primeArchSourceTraceHankel (p.map (Int.castRingHom ℝ))).re ∈
+      closure (soninCoupledPrimeArchPerTestNormalizedValueLocus p)
+
+/-- Sequential form of the scalar relation, with a separate nondegenerate aperture schedule for
+each integer polynomial. -/
+def SoninCoupledPrimeArchPerTestNormalizedValueCoupling
+    (aperture : Polynomial ℤ → ℕ → SoninCoupledNondegenerateAperture) : Prop :=
+  ∀ p : Polynomial ℤ,
+    Tendsto
+      (fun j : ℕ => soninAllPrimeCoupledNormalizedPolynomialGramValue
+        (aperture p j) (p.map (Int.castRingHom ℝ)))
+      atTop
+      (nhds (primeArchSourceTraceHankel
+        (p.map (Int.castRingHom ℝ))).re)
+
+theorem soninCoupledPrimeArchPerTestNormalizedValueClosure_of_coupling
+    {aperture : Polynomial ℤ → ℕ → SoninCoupledNondegenerateAperture}
+    (h : SoninCoupledPrimeArchPerTestNormalizedValueCoupling aperture) :
+    SoninCoupledPrimeArchPerTestNormalizedValueClosure := by
+  intro p
+  exact mem_closure_of_tendsto (h p)
+    (Eventually.of_forall fun j => Set.mem_range_self (aperture p j))
+
+theorem primeArchSourceTraceHankelIntNonnegative_of_soninCoupledPerTestNormalizedValueClosure
+    (h : SoninCoupledPrimeArchPerTestNormalizedValueClosure) :
+    PrimeArchSourceTraceHankelIntNonnegative := by
+  intro p
+  have hsubset : soninCoupledPrimeArchPerTestNormalizedValueLocus p ⊆ Set.Ici 0 := by
+    rintro x ⟨a, rfl⟩
+    exact soninAllPrimeCoupledNormalizedPolynomialGramValue_nonneg a
+      (p.map (Int.castRingHom ℝ))
+  exact closure_minimal hsubset isClosed_Ici (h p)
+
+/-- **Canonical scalar coupled-Sonin chain to RH.**  Per-test convergence of one actual
+normalized coupled Gram value is enough.  This is weaker than simultaneous finite-block or
+moment-ratio convergence and retains the mixed-prime words of the coupled source. -/
+theorem riemannHypothesis_of_soninCoupledPrimeArchPerTestNormalizedValueClosure
+    (h : SoninCoupledPrimeArchPerTestNormalizedValueClosure) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_primeArchSourceTraceHankelIntNonnegative
+    (primeArchSourceTraceHankelIntNonnegative_of_soninCoupledPerTestNormalizedValueClosure h)
+
+/-- Explicit sequential chain
+`per-test canonical coupled value convergence -> scalar closure -> prime--Gamma positivity -> RH`. -/
+theorem riemannHypothesis_of_soninCoupledPrimeArchPerTestNormalizedValueCoupling
+    {aperture : Polynomial ℤ → ℕ → SoninCoupledNondegenerateAperture}
+    (h : SoninCoupledPrimeArchPerTestNormalizedValueCoupling aperture) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_soninCoupledPrimeArchPerTestNormalizedValueClosure
+    (soninCoupledPrimeArchPerTestNormalizedValueClosure_of_coupling h)
+
+private theorem primeArchSourceTraceHankelIntNonnegative_of_finiteQuadraticNonnegative
+    (h : ∀ (N : ℕ) (c : Fin N → ℝ),
+      0 ≤ finiteRealMatrixQuadratic c (primeArchNormalizedHankelBlock N)) :
     PrimeArchSourceTraceHankelIntNonnegative := by
   intro p
   let q : Polynomial ℝ := p.map (Int.castRingHom ℝ)
@@ -796,16 +1044,7 @@ theorem primeArchSourceTraceHankelIntNonnegative_of_soninCoupledFiniteGramClosur
   have hN : q.natDegree < N := by omega
   have hq : Polynomial.ofFn N c = q :=
     Polynomial.ofFn_comp_toFn_eq_id_of_natDegree_lt hN
-  have hsubset : Set.range (soninAllPrimeCoupledGramBlock N) ⊆
-      finiteRealMatrixQuadratic c ⁻¹' Set.Ici 0 := by
-    rintro M ⟨a, rfl⟩
-    exact finiteRealMatrixQuadratic_nonneg_of_posSemidef c
-      (soninAllPrimeCoupledGramBlock_posSemidef N a)
-  have hclosed : IsClosed (finiteRealMatrixQuadratic c ⁻¹' Set.Ici 0) :=
-    isClosed_Ici.preimage (continuous_finiteRealMatrixQuadratic c)
-  have htarget : 0 ≤ finiteRealMatrixQuadratic c
-      (primeArchNormalizedHankelBlock N) :=
-    closure_minimal hsubset hclosed (h N)
+  have htarget := h N c
   have heq : finiteRealMatrixQuadratic c (primeArchNormalizedHankelBlock N) =
       (primeArchSourceTraceHankel q).re := by
     change (∑ i : Fin N, ∑ j : Fin N,
@@ -832,6 +1071,170 @@ theorem primeArchSourceTraceHankelIntNonnegative_of_soninCoupledFiniteGramClosur
           xiCentralTraceHankel_eq_primeArchSourceTraceHankel q
     exact congrArg Complex.re hmom
   simpa only [q, heq] using htarget
+
+theorem primeArchSourceTraceHankelIntNonnegative_of_soninCoupledFiniteGramClosure
+    (h : SoninCoupledPrimeArchFiniteGramClosure) :
+    PrimeArchSourceTraceHankelIntNonnegative := by
+  apply primeArchSourceTraceHankelIntNonnegative_of_finiteQuadraticNonnegative
+  intro N c
+  have hsubset : Set.range (soninAllPrimeCoupledGramBlock N) ⊆
+      finiteRealMatrixQuadratic c ⁻¹' Set.Ici 0 := by
+    rintro M ⟨a, rfl⟩
+    exact finiteRealMatrixQuadratic_nonneg_of_posSemidef c
+      (soninAllPrimeCoupledGramBlock_posSemidef N a)
+  have hclosed : IsClosed (finiteRealMatrixQuadratic c ⁻¹' Set.Ici 0) :=
+    isClosed_Ici.preimage (continuous_finiteRealMatrixQuadratic c)
+  exact closure_minimal hsubset hclosed (h N)
+
+theorem primeArchSourceTraceHankelIntNonnegative_of_soninCoupledProjectiveClosure
+    (h : SoninCoupledPrimeArchProjectiveFiniteGramClosure) :
+    PrimeArchSourceTraceHankelIntNonnegative := by
+  apply primeArchSourceTraceHankelIntNonnegative_of_finiteQuadraticNonnegative
+  intro N c
+  have hsubset : Set.range (soninAllPrimeCoupledProjectiveGramBlock N) ⊆
+      finiteRealMatrixQuadratic c ⁻¹' Set.Ici 0 := by
+    rintro M ⟨d, rfl⟩
+    exact finiteRealMatrixQuadratic_nonneg_of_posSemidef c
+      (soninAllPrimeCoupledProjectiveGramBlock_posSemidef N d)
+  have hclosed : IsClosed (finiteRealMatrixQuadratic c ⁻¹' Set.Ici 0) :=
+    isClosed_Ici.preimage (continuous_finiteRealMatrixQuadratic c)
+  exact closure_minimal hsubset hclosed (h N)
+
+/-- **Scale-free coupled Sonin chain to RH.**  Projective finite-block closure is enough; no
+absolute degree-zero normalization of the source moment sequence is required. -/
+theorem riemannHypothesis_of_soninCoupledPrimeArchProjectiveFiniteGramClosure
+    (h : SoninCoupledPrimeArchProjectiveFiniteGramClosure) : RiemannHypothesis :=
+  riemannHypothesis_of_primeArchSourceTraceHankelIntNonnegative
+    (primeArchSourceTraceHankelIntNonnegative_of_soninCoupledProjectiveClosure h)
+
+/-- Projective Gram convergence implies RH. -/
+theorem riemannHypothesis_of_soninCoupledPrimeArchProjectiveFiniteGramCoupling
+    {data : ℕ → ℕ → SoninPositiveScale × SoninPositiveAperture}
+    (h : SoninCoupledPrimeArchProjectiveFiniteGramCoupling data) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_soninCoupledPrimeArchProjectiveFiniteGramClosure
+    (soninCoupledPrimeArchProjectiveFiniteGramClosure_of_coupling h)
+
+/-- Projective trace-moment convergence implies RH.  The positive scale is common to all moments
+at one finite cutoff and may vary with the aperture. -/
+theorem riemannHypothesis_of_soninCoupledPrimeArchProjectiveFiniteMomentCoupling
+    {data : ℕ → ℕ → SoninPositiveScale × SoninPositiveAperture}
+    (h : SoninCoupledPrimeArchProjectiveFiniteMomentCoupling data) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_soninCoupledPrimeArchProjectiveFiniteGramCoupling
+    (soninCoupledPrimeArchProjectiveFiniteGramCoupling_of_momentCoupling h)
+
+/-! ## Normalized moment-ratio coupling
+
+The projective scale can be eliminated from the theorem interface.  Strict positivity of the
+zeroth coupled energy makes the canonical scale `m₀ / S₀(a)` available at every aperture.  The
+degree-zero target is then matched identically, so only the nonconstant projective coordinates
+`Sₖ(a) / S₀(a)` remain. -/
+
+/-- Source-only normalized moment-shape convergence.  At cutoff `N`, one positive-aperture
+schedule must match only the ratios of the first `2N-1` coupled moments, and the trivial degree-zero
+ratio is omitted. -/
+def SoninCoupledPrimeArchMomentRatioCoupling
+    (aperture : ℕ → ℕ → SoninPositiveAperture) : Prop :=
+  (∀ N j, 0 <
+      (soninAllPrimeCoupledTraceMoment (aperture N j) 0).re) ∧
+    ∀ N k, 0 < k → k < 2 * N - 1 →
+      Tendsto (fun j : ℕ =>
+          soninAllPrimeCoupledTraceMoment (aperture N j) k /
+            soninAllPrimeCoupledTraceMoment (aperture N j) 0)
+        atTop
+        (nhds ((((normalizedPrimeArchMoment k : ℝ) : ℂ) /
+          ((normalizedPrimeArchMoment 0 : ℝ) : ℂ))))
+
+private def soninCoupledPrimeArchRatioData
+    (aperture : ℕ → ℕ → SoninPositiveAperture)
+    (hpos : ∀ N j, 0 <
+      (soninAllPrimeCoupledTraceMoment (aperture N j) 0).re)
+    (N j : ℕ) : SoninPositiveScale × SoninPositiveAperture :=
+  (⟨normalizedPrimeArchMoment 0 /
+      (soninAllPrimeCoupledTraceMoment (aperture N j) 0).re,
+    div_pos normalizedPrimeArchMoment_zero_pos (hpos N j)⟩,
+    aperture N j)
+
+/-- **Scale-eliminated coupled Sonin chain to RH.**  Strictly positive source energy and
+convergence of the normalized coupled moment ratios are enough; no external scale sequence and no
+degree-zero convergence hypothesis remain. -/
+theorem riemannHypothesis_of_soninCoupledPrimeArchMomentRatioCoupling
+    {aperture : ℕ → ℕ → SoninPositiveAperture}
+    (h : SoninCoupledPrimeArchMomentRatioCoupling aperture) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_soninCoupledPrimeArchProjectiveFiniteMomentCoupling
+    (data := soninCoupledPrimeArchRatioData aperture h.1)
+  intro N k hk
+  by_cases hk0 : k = 0
+  · subst k
+    have hfun : (fun j : ℕ =>
+        (((soninCoupledPrimeArchRatioData aperture h.1 N j).1.1 : ℝ) : ℂ) *
+          soninAllPrimeCoupledTraceMoment
+            (soninCoupledPrimeArchRatioData aperture h.1 N j).2 0) =
+        fun _ : ℕ => ((normalizedPrimeArchMoment 0 : ℝ) : ℂ) := by
+      funext j
+      rw [soninCoupledPrimeArchRatioData]
+      change
+        (((normalizedPrimeArchMoment 0 /
+          (soninAllPrimeCoupledTraceMoment (aperture N j) 0).re : ℝ) : ℂ) *
+            soninAllPrimeCoupledTraceMoment (aperture N j) 0) =
+          ((normalizedPrimeArchMoment 0 : ℝ) : ℂ)
+      have hs0 : soninAllPrimeCoupledTraceMoment (aperture N j) 0 =
+          ((soninAllPrimeCoupledTraceMoment (aperture N j) 0).re : ℂ) := by
+        apply Complex.ext
+        · simp
+        · simp [soninAllPrimeCoupledTraceMoment_im_eq_zero]
+      have hs0ne : soninAllPrimeCoupledTraceMoment (aperture N j) 0 ≠ 0 := by
+        rw [hs0]
+        exact Complex.ofReal_ne_zero.mpr (ne_of_gt (h.1 N j))
+      have hscale :
+          ((normalizedPrimeArchMoment 0 /
+            (soninAllPrimeCoupledTraceMoment (aperture N j) 0).re : ℝ) : ℂ) =
+            ((normalizedPrimeArchMoment 0 : ℝ) : ℂ) /
+              soninAllPrimeCoupledTraceMoment (aperture N j) 0 := by
+        rw [hs0]
+        push_cast
+        simp
+      rw [hscale]
+      exact div_mul_cancel₀ _ hs0ne
+    rw [hfun]
+    exact tendsto_const_nhds
+  · have hkpos : 0 < k := Nat.pos_of_ne_zero hk0
+    have hratio := h.2 N k hkpos hk
+    have hmul :=
+      (tendsto_const_nhds : Tendsto
+        (fun _ : ℕ => ((normalizedPrimeArchMoment 0 : ℝ) : ℂ))
+        atTop (nhds ((normalizedPrimeArchMoment 0 : ℝ) : ℂ))).mul hratio
+    convert hmul using 1
+    · funext j
+      rw [soninCoupledPrimeArchRatioData]
+      change
+        (((normalizedPrimeArchMoment 0 /
+          (soninAllPrimeCoupledTraceMoment (aperture N j) 0).re : ℝ) : ℂ) *
+            soninAllPrimeCoupledTraceMoment (aperture N j) k) =
+          ((normalizedPrimeArchMoment 0 : ℝ) : ℂ) *
+            (soninAllPrimeCoupledTraceMoment (aperture N j) k /
+              soninAllPrimeCoupledTraceMoment (aperture N j) 0)
+      have hs0 : soninAllPrimeCoupledTraceMoment (aperture N j) 0 =
+          ((soninAllPrimeCoupledTraceMoment (aperture N j) 0).re : ℂ) := by
+        apply Complex.ext
+        · simp
+        · simp [soninAllPrimeCoupledTraceMoment_im_eq_zero]
+      have hs0ne : soninAllPrimeCoupledTraceMoment (aperture N j) 0 ≠ 0 := by
+        rw [hs0]
+        exact Complex.ofReal_ne_zero.mpr (ne_of_gt (h.1 N j))
+      have hscale :
+          ((normalizedPrimeArchMoment 0 /
+            (soninAllPrimeCoupledTraceMoment (aperture N j) 0).re : ℝ) : ℂ) =
+            ((normalizedPrimeArchMoment 0 : ℝ) : ℂ) /
+              soninAllPrimeCoupledTraceMoment (aperture N j) 0 := by
+        rw [hs0]
+        push_cast
+        simp
+      rw [hscale]
+      field_simp [hs0ne]
+    · field_simp [ne_of_gt normalizedPrimeArchMoment_zero_pos]
 
 /-- **Coupled Sonin finite-Gram chain to RH.**  Whole finite-block closure of the fixed
 prime--Gamma Hankel matrix inside the canonical coupled all-prime Sonin Gram family forces RH. -/
