@@ -179,6 +179,70 @@ theorem combination_permSymbolPolyC_ne_zero {S : Finset (Fin r → ℕ)} {O : �
   · intro h
     exact absurd hμ₀ h
 
+/-- **Indexed complex permanent combination.**  A combination `∑_{i∈T} c i · permSymbolPolyℂ (ν i)`
+indexed by a finset `T` through an injective, distinct-multiset assignment `ν` is a nonzero polynomial
+whenever some `c i₀ ≠ 0`.  The representative coefficient at `X^{ν i₀}` reads off `c i₀` times the
+positive stabiliser count. -/
+theorem combination_permSymbolPolyC_indexed_ne_zero {ι : Type*} (T : Finset ι)
+    (ν : ι → (Fin r → ℕ)) {O : ℕ} (hO : ∀ i ∈ T, ∑ t, ν i t = O)
+    (hdist : ∀ i ∈ T, ∀ i' ∈ T,
+      (∃ σ : Equiv.Perm (Fin r), ∀ j, ν i j = ν i' (σ j)) → ν i = ν i')
+    (hinj : ∀ i ∈ T, ∀ i' ∈ T, ν i = ν i' → i = i')
+    (c : ι → ℂ) {i₀ : ι} (hi₀ : i₀ ∈ T) (hc : c i₀ ≠ 0) :
+    (∑ i ∈ T, MvPolynomial.C (c i) * (permSymbolPoly (ν i)).map (Int.castRingHom ℂ)) ≠ 0 := by
+  classical
+  intro hzero
+  apply hc
+  have hsum1 : ∑ j, (permMon (ν i₀) (1 : Equiv.Perm (Fin r))) j = ∑ t, ν i₀ t := by
+    rw [← permMon_sum (ν i₀) 1]
+    symm
+    apply Finset.sum_subset (Finset.subset_univ _)
+    intro j _ hj
+    rw [Finsupp.mem_support_iff, not_not] at hj
+    exact hj
+  have hcoeff : MvPolynomial.coeff (permMon (ν i₀) (1 : Equiv.Perm (Fin r)))
+        (∑ i ∈ T, MvPolynomial.C (c i) * (permSymbolPoly (ν i)).map (Int.castRingHom ℂ))
+      = ∑ i ∈ T, c i *
+          (((∑ π : Equiv.Perm (Fin r),
+            (if permMon (ν i) π = permMon (ν i₀) (1 : Equiv.Perm (Fin r)) then (1 : ℤ) else 0)) : ℤ) : ℂ) := by
+    rw [MvPolynomial.coeff_sum]
+    apply Finset.sum_congr rfl
+    intro i hi
+    rw [MvPolynomial.coeff_C_mul, MvPolynomial.coeff_map,
+      coeff_permSymbolPoly_eq_card (ν i) (permMon (ν i₀) 1) (by rw [hsum1, hO i₀ hi₀, hO i hi])]
+    rfl
+  rw [hzero, MvPolynomial.coeff_zero] at hcoeff
+  rw [Finset.sum_eq_single i₀] at hcoeff
+  · have hpos : (0 : ℤ) < ∑ π : Equiv.Perm (Fin r),
+        (if permMon (ν i₀) π = permMon (ν i₀) (1 : Equiv.Perm (Fin r)) then (1 : ℤ) else 0) := by
+      apply Finset.sum_pos'
+      · intro π _; positivity
+      · exact ⟨1, Finset.mem_univ 1, by rw [if_pos rfl]; norm_num⟩
+    have hcast : (((∑ π : Equiv.Perm (Fin r),
+        (if permMon (ν i₀) π = permMon (ν i₀) (1 : Equiv.Perm (Fin r)) then (1 : ℤ) else 0)) : ℤ) : ℂ) ≠ 0 :=
+      Int.cast_ne_zero.mpr (ne_of_gt hpos)
+    rcases mul_eq_zero.mp hcoeff.symm with h | h
+    · exact h
+    · exact absurd h hcast
+  · intro i hi hine
+    have hzero_count : (∑ π : Equiv.Perm (Fin r),
+        (if permMon (ν i) π = permMon (ν i₀) (1 : Equiv.Perm (Fin r)) then (1 : ℤ) else 0)) = 0 := by
+      apply Finset.sum_eq_zero
+      intro π _
+      rw [if_neg]
+      intro hpm
+      apply hine
+      apply hinj i hi i₀ hi₀
+      apply hdist i hi i₀ hi₀
+      refine ⟨π, fun j => ?_⟩
+      have h1 := DFunLike.congr_fun hpm (π j)
+      rw [permMon_apply, permMon_apply] at h1
+      simpa using h1
+    rw [hzero_count]
+    simp
+  · intro h
+    exact absurd hi₀ h
+
 /-- **Complex coefficient identity.**  At the order-`O` distinct-scale index, the coefficient of a
 complex-coefficient order-`O` degree-`r`-homogeneous differential polynomial factors as the product
 of the source coefficients times the complex evaluation of the combined cast permanent symbol. -/

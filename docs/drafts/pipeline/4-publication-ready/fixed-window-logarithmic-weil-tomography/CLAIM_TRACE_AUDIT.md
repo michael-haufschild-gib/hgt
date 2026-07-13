@@ -151,6 +151,24 @@ The direct Connes-source bridge is bundled by
 | source holomorphy on \(\Re s>1\) iff defect holomorphy on \(\Re u>-1/2\) | inverseTilted_source_analytic_rightOne_iff_regularizedCriticalMellin_analytic_rightNegHalf |
 | RH iff the regularized critical-Mellin defect is analytic throughout \(\Re u>-1/2\) | riemannHypothesis_iff_regularizedCriticalMellinDefect_analytic_rightNegHalf |
 
+## Principal quantitative source--divisor--energy spectrum
+
+The quantitative equivalence is bundled by
+`ccmQuantitativeSourceDivisorEnergySpectrum_capstone`; its RH endpoint is bundled by
+`riemannHypothesis_iff_ccmSourceDivisorEnergyEndpoint`.
+
+| Manuscript claim | Unconditional Lean declaration |
+|---|---|
+| the Xi half-plane bound at width `alpha` is equivalent to inverse-tilted source holomorphy on `Re s > 1+alpha` | xiZeroHalfPlaneBound_iff_inverseTiltedDyadicSourceAnalyticAbove |
+| the same Xi bound is equivalent to critical-Mellin holomorphy on `Re u > alpha-1/2` | xiZeroHalfPlaneBound_iff_criticalMellinDefectAnalyticAbove |
+| the same Xi bound is equivalent to fixed-window negative energy above `1+alpha` | xiZeroHalfPlaneBound_iff_rectangularNegativeEnergyAbove |
+| the four quantitative coordinates form one exact spectrum | ccmQuantitativeSourceDivisorEnergySpectrum_capstone |
+| the `alpha=0` endpoint is exactly RH | riemannHypothesis_iff_ccmSourceDivisorEnergyEndpoint |
+| every pointwise-summable positive covering aggregate has abscissa at least the carrier abscissa | summableNegativeChannelCover_aggregate_forces_full_abscissa |
+| under false RH every such aggregate has abscissa at least `1+delta_*` | summableNegativeChannelCover_aggregate_forces_transverseSup_of_not_rh |
+| aggregate abscissa at most `1+alpha` forces the matching Xi zero-free half-plane | xiZeroHalfPlaneBound_of_summableNegativeChannelCover_aggregate_abscissa |
+| aggregate abscissa at most one proves RH | riemannHypothesis_of_summableNegativeChannelCover_aggregate_abscissa_le_one |
+
 ## Complete critical-Mellin divisor tomography
 
 The stronger intrinsic theorem is bundled by
@@ -175,6 +193,7 @@ The stronger intrinsic theorem is bundled by
   GaloisForLFunctions.RHTower.CCMRectangularNegativeChannelSpectrum, and
   GaloisForLFunctions.RHTower.CCMRectangularNegativeDirichletAbscissa, and
   GaloisForLFunctions.RHTower.CCMRectangularFiniteChannelNonDilution, and
+  GaloisForLFunctions.RHTower.CCMSourceDivisorEnergySpectrum, and
   GaloisForLFunctions.RHTower.CCMInverseTiltedDyadicPrimeTomography, and
   GaloisForLFunctions.RHTower.CCMInverseTiltedCriticalMellinFactorization, and
   GaloisForLFunctions.RHTower.CCMCriticalMellinDivisorTomography.

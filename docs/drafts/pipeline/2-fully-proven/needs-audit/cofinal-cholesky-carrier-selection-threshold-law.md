@@ -714,6 +714,25 @@ longer a gap; what remains is precisely the uncountable shift-configuration redu
 make each compact configuration patch one open dense condition by incidence codimension and
 parametric transversality.
 
+The unconditional module `GaloisForLFunctions.HTGeometry.CompactConfigurationBaire` closes the
+topological half of that uncountable reduction. For a jointly continuous defect map, avoidance of
+a closed bad locus uniformly over a compact configuration patch is proved open by the generalized
+tube lemma; pointwise continuity is not substituted for uniform patch control. A countable compact
+exhaustion then upgrades patchwise dense avoidance to global avoidance of every configuration on a
+dense residual set. The dependent theorem handles countably many relation patterns with different
+configuration and target spaces, and sigma-compactness supplies all compact exhaustions
+automatically. Consequently the only remaining uncountable-configuration input is patchwise
+density from the incidence-codimension/stratified parametric-transversality argument; compact-patch
+openness and the subsequent Baire promotion are now unconditional Lean.
+
+The unconditional module
+`GaloisForLFunctions.HTGeometry.InjectiveShiftConfigurationTopology` verifies the exhaustion
+hypothesis for the manuscript's literal configuration spaces. For every finite shift label type,
+the collision-free locus is the finite intersection of the open inequalities `h_i != h_j`.
+Therefore `InjectiveShiftConfiguration` is an open finite-dimensional complex configuration
+space and is sigma-compact. The compact exhaustion used above is thus obtained without replacing
+the uncountable complex shifts by a countable palette.
+
 The unconditional modules `GaloisForLFunctions.HTGeometry.MinimalTypeNoArithmeticProgression`,
 `MinimalTypeNevanlinnaAperiodicity`, `MinimalTypeProjectiveSeparation`, and
 `MinimalTypeProjectiveForbiddenSeparation` close the manuscript's translation-separation input.
@@ -906,9 +925,11 @@ is unconditionally atomless and real-Lebesgue singular, exactly the paper's
 singular-continuous carrier conclusion. Only its intersection with the still-open maximal
 full-translation HT residual set remains part of the final carrier capstone.
 
-All eighty-seven exact modules pass. `#print axioms` on the new frame-fiber, selector,
+All listed exact modules pass. `#print axioms` on the new frame-fiber, selector,
 constrained-control, triangular-jet, evaluation root-count, bounded-density, and projective
-Nevanlinna-control/escape/genericity, minimal-type projective-separation, compact-atlas, and
+Nevanlinna-control/escape/genericity, compact-configuration Baire assembly and
+sigma-compact injective-shift topology,
+minimal-type projective-separation, compact-atlas, and
 noncriticality, disjoint-block independence, scalar hypersurface, iterated Krull-dimension, and
 fixed-incidence-fiber, coefficient-prime, projective affine-chart, and all-row local incidence
 and projective-chart cover, global-incidence, incidence-base-change, and iterated-evaluation
@@ -930,14 +951,17 @@ unrelated sign-direction error in `RectangularKreinInertia`; no theorem in the c
 chain depends on that module. This
 validates only the declarations listed above, not the still-unformalized claims in the paper.
 
-The remaining original formalization requires exact Lean interfaces for the cited construction of
-the N-extremal Nevanlinna family and for finite algebraic/Whitney stratification with smooth
-parametric transversality. The Riesz-brothers and Szegő boundaries are now isolated at their exact
+The remaining original formalization requires finite algebraic/Whitney stratification with smooth
+parametric transversality at the genuine global incidence locus. The classical N-extremal source
+is now matched convention-by-convention by `NevanlinnaClassicalInterface`; its existence for an
+indeterminate Hamburger sequence remains a cited classical theorem rather than a Lean reproof.
+The Riesz-brothers and Szegő boundaries are isolated at their exact
 classical conclusions: one-sided square-summable Fourier coefficients imply absolute continuity,
 and consecutive Toeplitz-determinant ratios tend to the Szegő geometric mean. From those exact
 leaves, Lean now proves graph saturation, analytic-polynomial completeness, ratio-to-root collapse,
 least-eigenvalue collapse, and normalized-determinant and Euclidean-operator-norm escape. The
-project must still prove in Lean the full-complex-shift Baire application, the exact
+project must still prove in Lean patchwise density for the full-complex-shift incidence problem,
+the exact
 Nevanlinna-image/maximal-HT residual intersection, and the final paper-wide relative capstone.
 The unitary carrier realization is now closed: Lean proves that the finite canonical frames
 synthesize orthonormal polynomial families, leading-principal coherence stabilizes every row, the
@@ -959,13 +983,16 @@ been removed. The `PureSingularCarrierTrichotomy` capstone contains every origin
 these two exact inputs through frame escape. `PureSingularCarrierUnitary` contains the remaining
 original unitary-carrier deductions and constructs the unitary directly from the coherent finite
 inverse-Cholesky tower rather than from an unrelated limiting choice.
-The indeterminate-Hamburger Nevanlinna-family construction remains an external interface still to
-be matched convention-by-convention. Bernstein--Szegő finite-prefix reproduction is no longer an external input: the
+The indeterminate-Hamburger Nevanlinna-family construction remains an exact source-faithful
+external interface; every project-specific deduction from it is formalized. Bernstein--Szegő
+finite-prefix reproduction is no longer an external input: the
 project proves it unconditionally by stable-terminal feedback reconstruction.
 The separate differential-genericity gap now requires the projectivized total-incidence/projection
 or an equivalent direct universal-incidence transversality theorem, together with finite
-algebraic/Whitney stratification and a smooth parametric-transversality development. It does not
-require another fixed-pattern or fixed-coefficient wrapper.
+algebraic/Whitney stratification and a smooth parametric-transversality development. Once this
+supplies density on each compact configuration patch, `CompactConfigurationBaire` already gives
+simultaneous avoidance for every shift and every countable relation pattern. The gap does not
+require another fixed-pattern, fixed-coefficient, or Baire wrapper.
 
 ## Gates
 

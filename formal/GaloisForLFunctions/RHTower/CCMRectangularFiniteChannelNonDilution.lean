@@ -44,7 +44,7 @@ def rectangularNegativeChannelCoefficient (f : ℕ → ℝ) : ℕ → ℂ :=
 
 /-- Pointwise domination of nonnegative real coefficients orders their absolute-convergence
 abscissae. -/
-private theorem abscissaOfAbsConv_le_of_nonnegative_domination
+theorem abscissaOfAbsConv_le_of_nonnegative_domination
     {f g : ℕ → ℝ}
     (hf : ∀ n, 0 ≤ f n) (hg : ∀ n, 0 ≤ g n)
     (hfg : ∀ n, f n ≤ g n) :

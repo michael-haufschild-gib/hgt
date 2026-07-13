@@ -90,6 +90,50 @@ theorem monoScalar_collision_of_continuedHurwitzFEAnchorTripleDependent
         · exact hrho m
         · exact href m
 
+/-- Exact three-node circuit law.  For nonintegral exponents, dependence of the functional-
+equation/anchor triple is equivalent to one of the three pairwise monodromy-character collisions. -/
+theorem continuedHurwitzFEAnchorTripleDependent_iff_monoScalar_collision
+    {rho tau : ℂ}
+    (hrho : ∀ m : ℤ, rho ≠ (m : ℂ))
+    (href : ∀ m : ℤ, 1 - rho ≠ (m : ℂ))
+    (htau : ∀ m : ℤ, tau ≠ (m : ℂ)) :
+    ContinuedHurwitzFEAnchorTripleDependent rho tau ↔
+      monoScalar rho = monoScalar (1 - rho) ∨
+        monoScalar rho = monoScalar tau ∨
+        monoScalar (1 - rho) = monoScalar tau := by
+  constructor
+  · exact monoScalar_collision_of_continuedHurwitzFEAnchorTripleDependent
+      hrho href htau
+  · intro hcollision
+    letI := isDomain_upperEndAnalyticSubring
+    letI : Algebra ℤ upperEndAnalyticSubring := Ring.toIntAlgebra _
+    letI : Algebra ℤ upperEndMeroField := Ring.toIntAlgebra _
+    letI : Algebra (RatFunc ℂ) upperEndMeroField := upperEndRatfuncToMero.toAlgebra
+    letI := upperEndMeroFieldDifferential
+    intro hDI
+    have hinj := (continued_hurwitz_intrinsic_residue_differentialMatroid_law
+      (continuedHurwitzFEAnchorTripleExponent rho tau) (by
+        intro i m
+        cases i with
+        | none => exact htau m
+        | some b =>
+            cases b
+            · exact hrho m
+            · exact href m)).mp hDI
+    rcases hcollision with hFE | hrhoTau | hrefTau
+    · have : (some false : Option Bool) = some true := by
+        apply hinj
+        simpa [continuedHurwitzFEAnchorTripleExponent] using hFE
+      simp at this
+    · have : (some false : Option Bool) = none := by
+        apply hinj
+        simpa [continuedHurwitzFEAnchorTripleExponent] using hrhoTau
+      simp at this
+    · have : (some true : Option Bool) = none := by
+        apply hinj
+        simpa [continuedHurwitzFEAnchorTripleExponent] using hrefTau
+      simp at this
+
 /-- Holomorphic functional-equation reflection inverts the Hurwitz monodromy character. -/
 theorem monoScalar_one_sub_eq_inv (rho : ℂ) :
     monoScalar (1 - rho) = (monoScalar rho)⁻¹ := by
@@ -126,6 +170,53 @@ theorem xi_ne_zero_of_openCriticalStrip_of_monoScalar_eq_oneSub
   rw [hrhoReal] at hzero
   rw [hzero] at hpos
   simp at hpos
+
+/-- **Exact FE-anchor locus on an Xi zero.**  Fix an actual Xi zero `rho` in the open strip and
+let `tau` be any other open-strip exponent.  The Hurwitz triple at `rho`, `1-rho`, and `tau` is
+differentially dependent exactly when the anchor is one of the two points in the functional-
+equation orbit of `rho`. -/
+theorem xiZero_continuedHurwitzFEAnchorTripleDependent_iff_anchor_eq_orbit
+    {rho tau : ℂ}
+    (hstrip : 0 < rho.re ∧ rho.re < 1) (hzero : xi rho = 0)
+    (htauStrip : 0 < tau.re ∧ tau.re < 1) :
+    ContinuedHurwitzFEAnchorTripleDependent rho tau ↔
+      tau = rho ∨ tau = 1 - rho := by
+  have hrefstrip : 0 < (1 - rho).re ∧ (1 - rho).re < 1 := by
+    simp only [Complex.sub_re, Complex.one_re]
+    constructor <;> linarith
+  have hclass := continuedHurwitzFEAnchorTripleDependent_iff_monoScalar_collision
+    (fun m => openCriticalStrip_point_ne_int hstrip m)
+    (fun m => openCriticalStrip_point_ne_int hrefstrip m)
+    (fun m => openCriticalStrip_point_ne_int htauStrip m)
+  constructor
+  · intro hdep
+    rcases hclass.mp hdep with hFE | hrhoTau | hrefTau
+    · exact (xi_ne_zero_of_openCriticalStrip_of_monoScalar_eq_oneSub
+        hstrip hFE hzero).elim
+    · obtain ⟨m, hm⟩ :=
+        (monoScalar_eq_monoScalar_iff_integerDifference rho tau).mp hrhoTau
+      exact Or.inl (openCriticalStrip_eq_of_sub_eq_int hstrip htauStrip m hm).symm
+    · obtain ⟨m, hm⟩ :=
+        (monoScalar_eq_monoScalar_iff_integerDifference (1 - rho) tau).mp hrefTau
+      exact Or.inr (openCriticalStrip_eq_of_sub_eq_int hrefstrip htauStrip m hm).symm
+  · rintro (rfl | rfl)
+    · exact hclass.mpr (Or.inr (Or.inl rfl))
+    · exact hclass.mpr (Or.inr (Or.inr rfl))
+
+/-- Every open-strip point outside the Xi divisor gives an independent FE-anchor triple at an
+actual Xi zero.  This is the positive complement of the exact two-point anchor-locus law. -/
+theorem xiZero_continuedHurwitzFEAnchorTriple_independent_of_anchor_ne_zero
+    {rho tau : ℂ}
+    (hstrip : 0 < rho.re ∧ rho.re < 1) (hzero : xi rho = 0)
+    (htauStrip : 0 < tau.re ∧ tau.re < 1) (htau : xi tau ≠ 0) :
+    ¬ ContinuedHurwitzFEAnchorTripleDependent rho tau := by
+  intro hdep
+  rcases (xiZero_continuedHurwitzFEAnchorTripleDependent_iff_anchor_eq_orbit
+    hstrip hzero htauStrip).mp hdep with h | h
+  · apply htau
+    rw [h, hzero]
+  · apply htau
+    rw [h, xi_one_sub, hzero]
 
 /-- Source-value hypothesis on hypothetical right-half Xi points.  Besides an algebraic Arakelov
 coordinate, it asks for one nonintegral algebraic-character anchor which completes the moving
@@ -182,6 +273,50 @@ theorem monoScalar_half_eq_neg_one :
     (s := (1 / 2 : ℂ)) (by norm_num)
   simpa using h
 
+/-- A monodromy collision with the canonical half exponent excludes an Xi zero in the open
+critical strip.  No algebraicity input is needed: character equality identifies the exponents
+modulo `Z`, while the strip leaves only the real anchor `1/2`, where Xi is positive. -/
+theorem xi_ne_zero_of_openCriticalStrip_of_monoScalar_eq_half
+    {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1)
+    (hhalf : monoScalar rho = monoScalar (1 / 2 : ℂ)) :
+    xi rho ≠ 0 := by
+  intro hzero
+  obtain ⟨m, hm⟩ :=
+    (monoScalar_eq_monoScalar_iff_integerDifference rho (1 / 2 : ℂ)).mp hhalf
+  have heq : rho = (1 / 2 : ℂ) :=
+    openCriticalStrip_eq_of_sub_eq_int hstrip (by norm_num) m hm
+  have hpos := xi_pos_on_real_anchor (σ := (1 / 2 : ℝ)) (by norm_num) (by norm_num)
+  have hz : xi ((1 / 2 : ℝ) : ℂ) = 0 := by
+    simpa [heq] using hzero
+  rw [hz] at hpos
+  norm_num at hpos
+
+/-- **Unconditional Xi FE-anchor freeness.**  At every actual Xi zero in the open critical strip,
+the three analytically continued Hurwitz functions with exponents `rho`, `1-rho`, and `1/2` are
+differentially independent.  Every possible circuit would force one of three monodromy-character
+collisions, and each collision is excluded by strip rigidity and positivity on the real anchor. -/
+theorem xiZero_continuedHurwitzHalfFEAnchorTriple_independent
+    {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1) (hzero : xi rho = 0) :
+    ¬ ContinuedHurwitzFEAnchorTripleDependent rho (1 / 2 : ℂ) := by
+  intro hdep
+  have hrefstrip : 0 < (1 - rho).re ∧ (1 - rho).re < 1 := by
+    simp only [Complex.sub_re, Complex.one_re]
+    constructor <;> linarith
+  have hcollision :=
+    monoScalar_collision_of_continuedHurwitzFEAnchorTripleDependent
+      (fun m => openCriticalStrip_point_ne_int hstrip m)
+      (fun m => openCriticalStrip_point_ne_int hrefstrip m)
+      (fun m => openCriticalStrip_point_ne_int (s := (1 / 2 : ℂ)) (by norm_num) m)
+      hdep
+  rcases hcollision with hreflect | hhalf | hhalf
+  · exact xi_ne_zero_of_openCriticalStrip_of_monoScalar_eq_oneSub
+      hstrip hreflect hzero
+  · exact xi_ne_zero_of_openCriticalStrip_of_monoScalar_eq_half
+      hstrip hhalf hzero
+  · have hrefzero : xi (1 - rho) = 0 := by rw [xi_one_sub, hzero]
+    exact xi_ne_zero_of_openCriticalStrip_of_monoScalar_eq_half
+      hrefstrip hhalf hrefzero
+
 /-- In particular, the canonical half-exponent anchor has algebraic monodromy character. -/
 theorem monoScalar_half_isAlgebraic :
     IsAlgebraic ℚ (monoScalar (1 / 2 : ℂ)) := by
@@ -197,16 +332,33 @@ def XiRightArakelovAlgebraicHurwitzHalfFEAnchorCircuit : Prop :=
     IsAlgebraic ℚ (arakelovW (rho : ℂ)) ∧
       ContinuedHurwitzFEAnchorTripleDependent (rho : ℂ) (1 / 2 : ℂ)
 
+/-- The algebraicity-free fixed-anchor target.  A circuit is required only at hypothetical
+right-half Xi zeros; the half-anchor collision itself supplies the complete contradiction. -/
+def XiRightHurwitzHalfFEAnchorCircuit : Prop :=
+  ∀ rho : XiDivisorSupport, 1 / 2 < (rho : ℂ).re →
+    ContinuedHurwitzFEAnchorTripleDependent (rho : ℂ) (1 / 2 : ℂ)
+
+/-- **Algebraicity-free fixed-circuit chain to RH.**  The Arakelov-coordinate field in the older
+certificate is superfluous: the canonical half-anchor circuit alone forces RH. -/
+theorem riemannHypothesis_of_xiRightHurwitzHalfFEAnchorCircuit
+    (h : XiRightHurwitzHalfFEAnchorCircuit) :
+    RiemannHypothesis := by
+  rw [rh_iff_xi_ne_zero_right]
+  intro rho hrho hzero
+  let support : XiDivisorSupport :=
+    ⟨rho, mem_xi_divisor_support_of_eq_zero hzero⟩
+  exact xiZero_continuedHurwitzHalfFEAnchorTriple_independent
+    (xi_divisor_support_re_mem_open_unit support) hzero
+    (h support (mem_rightHalf.mp hrho))
+
 /-- **Canonical fixed-circuit chain to RH.**  It is enough to use the one anchor exponent `1/2`;
-its nonintegrality and algebraic character are unconditional. -/
+the Arakelov algebraicity component is now discharged by the algebraicity-free circuit theorem. -/
 theorem riemannHypothesis_of_xiRightArakelovAlgebraicHurwitzHalfFEAnchorCircuit
     (h : XiRightArakelovAlgebraicHurwitzHalfFEAnchorCircuit) :
     RiemannHypothesis := by
-  apply riemannHypothesis_of_xiRightArakelovAlgebraicHurwitzFEAnchorCircuit
+  apply riemannHypothesis_of_xiRightHurwitzHalfFEAnchorCircuit
   intro rho hrho
-  obtain ⟨hw, hdep⟩ := h rho hrho
-  refine ⟨hw, (1 / 2 : ℂ), ?_, monoScalar_half_isAlgebraic, hdep⟩
-  exact fun m => openCriticalStrip_point_ne_int (s := (1 / 2 : ℂ)) (by norm_num) m
+  exact (h rho hrho).2
 
 end
 

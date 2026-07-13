@@ -1,4 +1,5 @@
 import Mathlib.Topology.Baire.CompleteMetrizable
+import Mathlib.Topology.Compactness.SigmaCompact
 import Mathlib.Topology.GDelta.Basic
 
 /-!
@@ -96,6 +97,20 @@ theorem globalConfigurationAvoidance_dense_residual
   rw [iInter_compactConfigurationAvoidance_eq_global F bad K hcover] at hres
   exact ⟨dense_of_mem_residual hres, hres⟩
 
+/-- Sigma-compactness supplies the countable compact exhaustion automatically.  Therefore
+patchwise density on every compact set is already sufficient for global uncountable-configuration
+avoidance. -/
+theorem globalConfigurationAvoidance_dense_residual_of_sigmaCompact
+    {X H Y : Type*} [TopologicalSpace X] [BaireSpace X]
+    [TopologicalSpace H] [SigmaCompactSpace H] [TopologicalSpace Y]
+    (F : X × H → Y) (hF : Continuous F) (bad : Set Y) (hbad : IsClosed bad)
+    (hdense : ∀ K : Set H, IsCompact K → Dense (compactConfigurationAvoidance F bad K)) :
+    Dense (globalConfigurationAvoidance F bad) ∧
+      globalConfigurationAvoidance F bad ∈ residual X := by
+  obtain ⟨K, hK, hcover⟩ := SigmaCompactSpace.exists_compact_covering (X := H)
+  exact globalConfigurationAvoidance_dense_residual
+    F hF bad hbad K hK hcover (fun n ↦ hdense (K n) (hK n))
+
 /-- **Countable-pattern compact-configuration Baire law.**  Relation patterns may have different
 configuration and target spaces.  If each pattern has a countable compact exhaustion and every
 pattern--patch avoidance set is dense, then one dense residual set simultaneously avoids every
@@ -132,6 +147,32 @@ theorem countablePattern_globalConfigurationAvoidance_dense_residual
       exact hx n h
   rw [hA] at hres
   exact ⟨dense_of_mem_residual hres, hres⟩
+
+/-- Sigma-compact configuration spaces eliminate the exhaustion data from the dependent
+countable-pattern theorem.  This is the direct interface for countably many relation patterns:
+the sole remaining input is density of avoidance on each compact configuration patch. -/
+theorem countablePattern_globalConfigurationAvoidance_dense_residual_of_sigmaCompact
+    {X : Type*} [TopologicalSpace X] [BaireSpace X]
+    (H Y : ℕ → Type*) [∀ n, TopologicalSpace (H n)] [∀ n, SigmaCompactSpace (H n)]
+    [∀ n, TopologicalSpace (Y n)]
+    (F : (n : ℕ) → X × H n → Y n) (hF : ∀ n, Continuous (F n))
+    (bad : (n : ℕ) → Set (Y n)) (hbad : ∀ n, IsClosed (bad n))
+    (hdense : ∀ (n : ℕ) (K : Set (H n)), IsCompact K →
+      Dense (compactConfigurationAvoidance (F n) (bad n) K)) :
+    Dense {x | ∀ n h, F n (x, h) ∉ bad n} ∧
+      {x | ∀ n h, F n (x, h) ∉ bad n} ∈ residual X := by
+  let K : (n m : ℕ) → Set (H n) := fun n ↦
+    Classical.choose (SigmaCompactSpace.exists_compact_covering (X := H n))
+  have hK : ∀ n m, IsCompact (K n m) := by
+    intro n
+    exact (Classical.choose_spec
+      (SigmaCompactSpace.exists_compact_covering (X := H n))).1
+  have hcover : ∀ n, (⋃ m, K n m) = Set.univ := by
+    intro n
+    exact (Classical.choose_spec
+      (SigmaCompactSpace.exists_compact_covering (X := H n))).2
+  exact countablePattern_globalConfigurationAvoidance_dense_residual
+    H Y F hF bad hbad K hK hcover (fun n m ↦ hdense n (K n m) (hK n m))
 
 end
 

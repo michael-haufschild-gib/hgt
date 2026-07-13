@@ -16,11 +16,9 @@ q(s)   = exp(-2*pi*i*s),
 w(rho) = 1 - 1/rho.
 ```
 
-Suppose every hypothetical right-half Xi-divisor point has:
-
-1. algebraic Arakelov coordinate `w(rho)`;
-2. a nonintegral anchor `tau` with algebraic character `q(tau)`; and
-3. an algebraic differential relation over `C(a)` among
+Suppose every hypothetical right-half Xi-divisor point has a nonintegral anchor `tau` with
+algebraic character `q(tau)`, an algebraic Arakelov coordinate `w(rho)`, and an algebraic
+differential relation over `C(a)` among
 
 ```text
 H_rho, H_(1-rho), H_tau.
@@ -28,21 +26,22 @@ H_rho, H_(1-rho), H_tau.
 
 Then RH holds.
 
-The anchor can be fixed canonically. Lean proves
+For a general moving anchor, these inputs imply RH.  The canonical half anchor is substantially
+stronger. Lean proves
 
 ```text
 q(1/2) = -1,
 ```
 
-so it is enough to assume algebraicity of `w(rho)` and differential dependence of the single
-moving family
+and open-strip rigidity then excludes all three collision branches without using `w(rho)`.
+Consequently it is enough to assume differential dependence of the single moving family
 
 ```text
 H_rho, H_(1-rho), H_(1/2)
 ```
 
-for every hypothetical right-half divisor point. No anchor selection or separate
-character-algebraicity premise remains.
+for every hypothetical right-half divisor point. No anchor selection, Arakelov algebraicity, or
+separate character-algebraicity premise remains.
 
 ## Three-branch circuit resolution
 
@@ -69,30 +68,19 @@ rho = 1-rho.
 
 This point is real and lies strictly between zero and one, where Xi is positive.
 
-### First anchor branch
+### Half-anchor branches
 
-`q(rho)=q(tau)` transfers algebraicity from the anchor to `q(rho)`. Algebraicity of both `w(rho)`
-and `q(rho)` contradicts a nonreal Xi zero by the formalized Gelfond--Schneider collision; a real
-Xi zero in the open strip is also impossible.
-
-### Reflected anchor branch
-
-Lean proves
-
-```text
-q(1-rho) = q(rho)^(-1).
-```
-
-Thus algebraicity of `q(1-rho)=q(tau)` transfers through inversion to `q(rho)`, and the same
-Arakelov--Hurwitz collision applies.
+For `tau=1/2`, either collision with the anchor identifies the corresponding exponent with
+`1/2` modulo `Z`.  Open-strip rigidity removes the integer ambiguity, leaving the real point
+`1/2`, where Xi is strictly positive.  These branches therefore require no algebraicity theorem.
 
 The complete chain is
 
 ```text
-algebraic Arakelov coordinate
-  + moving differential circuit {H_rho,H_(1-rho),H_(1/2)}
+moving differential circuit {H_rho,H_(1-rho),H_(1/2)}
   -> one of three monodromy collisions
-  -> FE strip collision or Gelfond--Schneider collision
+  -> open-strip equality with the FE partner or the half anchor
+  -> positive real Xi value
   -> no right-half Xi zero
   -> RH.
 ```
@@ -106,7 +94,7 @@ separately. The new theorem is therefore not an instance of finite algebraic-anc
 
 The premise contains no negative-real character condition, zero-location sign, real-rootedness,
 Weil positivity, or RH-equivalent limiting measure. It is nevertheless only a formal bridge: the
-source differential circuit and algebraic Arakelov realization are not proved.
+source differential circuit is not proved.
 
 ## Principal declarations
 
@@ -118,6 +106,10 @@ source differential circuit and algebraic Arakelov realization are not proved.
 - `XiRightArakelovAlgebraicHurwitzFEAnchorCircuit`
 - `riemannHypothesis_of_xiRightArakelovAlgebraicHurwitzFEAnchorCircuit`
 - `monoScalar_half_eq_neg_one`
+- `xi_ne_zero_of_openCriticalStrip_of_monoScalar_eq_half`
+- `xiZero_continuedHurwitzHalfFEAnchorTriple_independent`
+- `XiRightHurwitzHalfFEAnchorCircuit`
+- `riemannHypothesis_of_xiRightHurwitzHalfFEAnchorCircuit`
 - `XiRightArakelovAlgebraicHurwitzHalfFEAnchorCircuit`
 - `riemannHypothesis_of_xiRightArakelovAlgebraicHurwitzHalfFEAnchorCircuit`
 
@@ -125,9 +117,9 @@ source differential circuit and algebraic Arakelov realization are not proved.
 
 `[OPEN CORE]` Produce, from one completed arithmetic source and before inspecting zero location, a
 moving differential circuit coupling the two holomorphic functional-equation exponents to the
-fixed half-exponent Hurwitz function. Independently realize the corresponding Arakelov coordinate
-algebraically. A relation which merely equates two monodromy characters does not discharge this
-task; the required input is an actual differential identity or bounded-rank source module.
+fixed half-exponent Hurwitz function. A relation which merely equates two monodromy characters does
+not discharge this task; the required input is an actual differential identity or bounded-rank
+source module.
 
 ## Gates
 
@@ -137,6 +129,7 @@ task; the required input is an actual differential identity or bounded-rank sour
 - [x] FE-pair collision excluded in the open strip
 - [x] both anchor branches reduced to the Arakelov--Hurwitz theorem
 - [x] anchor choice eliminated using the canonical algebraic character `q(1/2)=-1`
+- [x] Arakelov algebraicity eliminated from the fixed half-anchor circuit
+- [x] unconditional differential freeness of the actual Xi FE/half-anchor triple proved
 - [x] RH capstone formalized without new axioms
 - [ ] source differential circuit
-- [ ] algebraic Arakelov realization

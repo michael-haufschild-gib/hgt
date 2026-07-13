@@ -102,3 +102,85 @@ theorem HasCoverDimLE.of_refinedByStages {ι : Type*} {Y : ι → Type} [∀ i, 
   · intro x
     have hset : {k : κ | x ∈ (f i) ⁻¹' V k} = {k : κ | f i x ∈ V k} := rfl
     rw [hset]; exact hVord (f i x)
+
+/-- A space with at most one point has covering dimension `0`: any finite open cover shrinks to a
+single covering set (`Set.univ` at one index, `∅` elsewhere), so every point lies in exactly one. -/
+theorem HasCoverDimLE.of_subsingleton [Subsingleton X] : HasCoverDimLE X 0 := by
+  intro ι _ U hU hcov
+  by_cases hne : Nonempty X
+  · obtain ⟨a⟩ := hne
+    have ha : a ∈ ⋃ i, U i := by rw [hcov]; exact Set.mem_univ a
+    obtain ⟨i₀, hi₀⟩ := Set.mem_iUnion.mp ha
+    classical
+    refine ⟨fun i => if i = i₀ then Set.univ else ∅, ?_, ?_, ?_, ?_⟩
+    · intro i; by_cases h : i = i₀ <;> simp [h]
+    · intro i x hx
+      by_cases h : i = i₀
+      · subst h; exact (Subsingleton.elim x a) ▸ hi₀
+      · simp only [if_neg h, Set.mem_empty_iff_false] at hx
+    · rw [Set.eq_univ_iff_forall]; intro x
+      exact Set.mem_iUnion.mpr ⟨i₀, by simp⟩
+    · intro x
+      have hset : {i : ι | x ∈ (if i = i₀ then (Set.univ : Set X) else ∅)} = {i₀} := by
+        ext i; simp only [Set.mem_setOf_eq, Set.mem_singleton_iff]
+        by_cases h : i = i₀ <;> simp [h]
+      rw [hset, Set.ncard_singleton]
+  · exact ⟨U, hU, fun i => subset_rfl, hcov, fun x => absurd ⟨x⟩ hne⟩
+
+/-- A discrete space has covering dimension `0`: choosing for each point one covering index yields a
+partition into (cl)open sets in which every point lies in exactly one.  Composed with
+`HasCoverDimLE.of_refinedByStages`, this is the base case for the vanishing covering dimension of a
+profinite inverse limit of finite discrete stages. -/
+theorem HasCoverDimLE.of_discreteTopology [DiscreteTopology X] : HasCoverDimLE X 0 := by
+  intro ι _ U hU hcov
+  classical
+  have hmem : ∀ x, ∃ i, x ∈ U i := fun x =>
+    Set.mem_iUnion.mp (by rw [hcov]; exact Set.mem_univ x)
+  refine ⟨fun i => {x | (hmem x).choose = i}, fun i => isOpen_discrete _, ?_, ?_, ?_⟩
+  · intro i x hx
+    simp only [Set.mem_setOf_eq] at hx
+    have hspec := (hmem x).choose_spec
+    rwa [hx] at hspec
+  · rw [Set.eq_univ_iff_forall]; intro x
+    exact Set.mem_iUnion.mpr ⟨(hmem x).choose, rfl⟩
+  · intro x
+    have hset : {i : ι | x ∈ {y | (hmem y).choose = i}} = {(hmem x).choose} := by
+      ext i; simp only [Set.mem_setOf_eq, Set.mem_singleton_iff, eq_comm]
+    rw [hset, Set.ncard_singleton]
+
+/-- **Finite-coproduct sum theorem.**  Covering dimension does not increase under disjoint union:
+`dim (X ⊕ Y) ≤ max(dim X, dim Y)`, stated as `HasCoverDimLE X n → HasCoverDimLE Y n →
+HasCoverDimLE (X ⊕ Y) n`.  A cover of the sum restricts to covers of each summand; the shrinkings
+recombine via the open embeddings `Sum.inl`, `Sum.inr`, and each point sees only its own summand. -/
+theorem HasCoverDimLE.sum {Y : Type*} [TopologicalSpace Y] {n : ℕ}
+    (hX : HasCoverDimLE X n) (hY : HasCoverDimLE Y n) : HasCoverDimLE (X ⊕ Y) n := by
+  intro ι _ U hU hcov
+  obtain ⟨VX, hVXo, hVXs, hVXc, hVXord⟩ := hX (fun i => Sum.inl ⁻¹' U i)
+    (fun i => (hU i).preimage continuous_inl)
+    (by rw [← Set.preimage_iUnion, hcov, Set.preimage_univ])
+  obtain ⟨VY, hVYo, hVYs, hVYc, hVYord⟩ := hY (fun i => Sum.inr ⁻¹' U i)
+    (fun i => (hU i).preimage continuous_inr)
+    (by rw [← Set.preimage_iUnion, hcov, Set.preimage_univ])
+  refine ⟨fun i => Sum.inl '' VX i ∪ Sum.inr '' VY i, ?_, ?_, ?_, ?_⟩
+  · intro i; exact (isOpenMap_inl _ (hVXo i)).union (isOpenMap_inr _ (hVYo i))
+  · rintro i _ (⟨x, hx, rfl⟩ | ⟨y, hy, rfl⟩)
+    · exact hVXs i hx
+    · exact hVYs i hy
+  · rw [Set.eq_univ_iff_forall]; rintro (x | y)
+    · obtain ⟨i, hi⟩ := Set.mem_iUnion.mp (hVXc ▸ Set.mem_univ x : x ∈ ⋃ i, VX i)
+      exact Set.mem_iUnion.mpr ⟨i, Or.inl ⟨x, hi, rfl⟩⟩
+    · obtain ⟨i, hi⟩ := Set.mem_iUnion.mp (hVYc ▸ Set.mem_univ y : y ∈ ⋃ i, VY i)
+      exact Set.mem_iUnion.mpr ⟨i, Or.inr ⟨y, hi, rfl⟩⟩
+  · rintro (x | y)
+    · have hset : {i : ι | (Sum.inl x : X ⊕ Y) ∈ Sum.inl '' VX i ∪ Sum.inr '' VY i}
+          = {i : ι | x ∈ VX i} := by
+        ext i
+        simp only [Set.mem_setOf_eq, Set.mem_union, Set.mem_image, Sum.inl.injEq,
+          reduceCtorEq, and_false, exists_false, or_false, exists_eq_right]
+      rw [hset]; exact hVXord x
+    · have hset : {i : ι | (Sum.inr y : X ⊕ Y) ∈ Sum.inl '' VX i ∪ Sum.inr '' VY i}
+          = {i : ι | y ∈ VY i} := by
+        ext i
+        simp only [Set.mem_setOf_eq, Set.mem_union, Set.mem_image, Sum.inr.injEq,
+          reduceCtorEq, and_false, exists_false, false_or, exists_eq_right]
+      rw [hset]; exact hVYord y

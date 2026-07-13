@@ -41,9 +41,13 @@ order.  The existing adjacent-parity collision asks that every Xi order and ever
 order be even.  The new condition is aggregate, height-dependent, and requires no pointwise square
 root of either function.
 
-The finite-ring equality can be read as equality of boundary winding classes for the shifted
-regularized-zeta divisor and the common/gcd divisor it shares with the explicit pole-cancelled
-sharp source.  This is a determinant-line or resultant comparison, not a local root construction.
+The Lean object `cancelledSourceCommonCensusH` is not yet a source boundary invariant.  It evaluates
+the explicit cancelled source at the target-defined Xi box points and then sums the resulting
+orders.  A source proof must replace this target-sampled definition by an invariant constructed
+before the zero set is extracted.  The natural replacement is not the raw boundary homotopy class
+of the pair: common/gcd-divisor degree is unstable under such homotopy.  A viable replacement must
+retain the finite zero algebra, a subresultant/Fitting module, or an equivalent derived incidence
+object.
 
 ## Formal theorem
 
@@ -62,11 +66,31 @@ A pointwise attempt to identify the two divisors is impossible: their local orde
 at every zero.  A global analytic unit relating the two functions would therefore already imply
 zero-freeness and would hide RH in the premise.
 
-The positive statement is that equality is required only after taking one bounded boundary census
-modulo a source-independent finite modulus.  Local divisor equality, local Kummer roots, and
-compatibility between heights are unnecessary.  Any viable source proof should therefore seek a
-finite-ring boundary homotopy, resultant congruence, or determinant-line transport between the two
-adjacent divisors, not a global quotient unit.
+Raw boundary-pair homotopy is also insufficient.  Let `A,C` be holomorphic on a neighborhood of a
+bounded domain and suppose `(A,C)` has no common boundary zero.  For every sufficiently small
+generic nonzero constant `epsilon`, the boundary pairs
+
+```text
+(A,C)  and  (A,C+epsilon)
+```
+
+are homotopic through maps to `C^2 \ {0}`, while `A` and `C+epsilon` have no common interior zero.
+Indeed the zero set of `A` in the domain is finite, so `epsilon` may avoid the finitely many values
+`-C(z)` at those zeros; compact boundary separation preserves the homotopy.  Thus no invariant of
+the raw boundary-pair homotopy class can equal the common-divisor degree.
+
+The positive statement is algebraic.  For a source-defined bounded zero algebra
+
+```text
+Q = O(U)/(A),
+```
+
+multiplication by the cancelled source `C` has, at a zero of `A` of order `m`, one-dimensional
+image and cokernel dimension `m-1`.  Hence its global image is the socle of `Q`, its rank is the
+number of distinct zeros, and its cokernel dimension is the adjacent common-divisor census.  The
+finite-ring equality is therefore a rank-divisibility target on a source module, not a boundary
+winding target.  Local divisor equality, local Kummer roots, and compatibility between heights
+remain unnecessary.
 
 ## Two-ended audit
 
@@ -74,15 +98,19 @@ adjacent divisors, not a global quotient unit.
 - `[PROVED]` its order at each shifted right-half Xi zero is exactly one less than the Xi order;
 - `[PROVED]` the unconditional Xi zero-count envelope bounds the distinct count in every box;
 - `[PROVED]` one height-adapted adjacent-census equality per integer height implies RH;
+- `[PROVED ON PAPER]` raw boundary-pair homotopy cannot determine the common-divisor census;
+- `[PROVED ON PAPER]` cancelled-source multiplication on the bounded zero algebra has rank equal to
+  the distinct-zero count and cokernel dimension equal to the predecessor census;
 - `[OPEN CORE]` construct that finite-ring equality from the completed prime--Gamma/sharp-window
-  boundary without reading the Xi zero set or assuming a divisor classification;
+  source module without reading the Xi zero set or assuming a divisor classification;
 - `[KILL CONDITION]` retire any construction whose boundary homotopy is defined only after choosing
-  the enclosed Xi zeros, or whose equality is merely `(1)` reduced modulo the chosen modulus.
+  the enclosed Xi zeros, whose equality is merely `(1)` reduced modulo the chosen modulus, or which
+  treats common-divisor degree as an invariant of the raw pair-valued boundary map.
 
 ## Gates
 
 - [x] exact local order-loss adapter
 - [x] exact aggregate divisor decomposition
 - [x] height-adapted finite-ring capstone
-- [ ] source-defined adjacent boundary-census equality
+- [ ] source-defined adjacent zero-algebra rank congruence
 - [ ] RH

@@ -31,8 +31,8 @@
 \newcommand{\Res}{\operatorname{Res}}
 \newcommand{\supp}{\operatorname{supp}}
 
-\title{Complete Critical-Mellin and Fixed-Window Weil Tomography:\\
-A One-Prime-Source Xi-Divisor Equivalence and Universal Energy Abscissae}
+\title{Prime-Source--Divisor--Energy Tomography for the Riemann Xi Function:\\
+Quantitative Half-Plane Equivalence and Positive-Channel Conservation}
 \author{Michael Haufschild \and GPT 5.6 Sol \and Fable 5 \and Grok 4.5}
 \date{}
 
@@ -41,129 +41,56 @@ A One-Prime-Source Xi-Divisor Equivalence and Universal Energy Abscissae}
 \maketitle
 
 \begin{abstract}
-Let
+Let $A_L(s)=(1-e^{-Ls})/s$ and define the explicit inverse-tilted dyadic prime statistic
 \[
- \begin{aligned}
- T_-(n)&=\sum_{n/2<k\le n}\frac{\Lambda(k)}{\sqrt{k}}\frac{k}{n},\\
- P_-(n)&=2A_{\log 2}(3/2)\sqrt n-2T_-(n),
- &A_L(w)&=\frac{1-e^{-Lw}}w.
- \end{aligned}
+ T_-(n)=\sum_{n/2<k\le n}\frac{\Lambda(k)}{\sqrt{k}}\frac{k}{n},
+ \qquad
+ P_-(n)=2A_{\log2}(3/2)\sqrt n-2T_-(n).
 \]
-We prove that the ordinary Dirichlet series of this one source-defined inverse-tilted dyadic
-statistic has a canonical meromorphic continuation $\cS_-$ to $\Re s>\frac12$.  Its complete
-simple-pole support there is exactly
+Its ordinary Dirichlet series has a canonical continuation $\cS_-$, meromorphic on
+$\Re s>\frac12$, whose complete simple-pole divisor is
+$s=\rho+\frac12$, where $\XiR(\rho)=0$.  Normalized residues recover the analytic multiplicity
+of every nontrivial xi zero.  The intrinsic critical-Mellin defect
 \[
- s=\rho+\frac12,\qquad \XiR(\rho)=0,
+ \widetilde D(u)=\frac1{u+1}+\frac{Z_*'(u+1)}{Z_*(u+1)}
 \]
-for every nontrivial xi zero, including critical-line zeros.  If $m(\rho)$ is the analytic
-multiplicity, then
-\[
- \operatorname*{Res}_{s=\rho+1/2}\cS_-(s)
-   =2m(\rho)A_{\log 2}(\rho+\tfrac12).
-\]
-The Mellin factor $A_{\log 2}(s)$ has all its zeros on $\Re s=0$ and is therefore nonzero at
-every shifted nontrivial xi zero.  Hence the affine shift $\rho\mapsto\rho+\frac12$ is a canonical
-equivalence between the complete nontrivial xi divisor support and the pole support of one real
-prime-source sequence, while normalized residues recover exact multiplicity.  In particular,
-RH is equivalent to every pole of $\cS_-$ lying on $\Re s=1$, and equivalently to holomorphy on
-$\Re s>1$.  This source criterion is exactly the Connes critical-Mellin criterion, rather than
-merely adjacent to it.  If
-\[
- \widetilde D(u)=\frac1{u+1}+\frac{Z_*'(u+1)}{Z_*(u+1)},
-\]
-then $\widetilde D$ agrees on $\Re u>0$ with the polar--prime critical-Mellin Laplace channel and
-\[
- \cS_-(s)=2A_{\log2}(s)\widetilde D(s-\tfrac32)+C_-(s),
-\]
-where $C_-$ is holomorphic on $\Re s>\frac12$.  Since $A_{\log2}$ is nonzero there, RH is
-equivalent to holomorphy of $\widetilde D$ on $\Re u>-\frac12$.  More strongly,
-$\widetilde D$ is meromorphic on $\Re u>-1$, its simple-pole support is exactly
-$u=\rho-1$ over the complete nontrivial xi divisor, and
-\[
- \operatorname*{Res}_{u=\rho-1}\widetilde D(u)=m(\rho).
-\]
-Thus $\rho\mapsto\rho-1$ is a canonical multiplicity-exact equivalence from the xi divisor to
-the critical-Mellin pole divisor, and RH is exactly concentration of that divisor on
-$\Re u=-\frac12$.
+is meromorphic on $\Re u>-1$, has complete pole divisor $u=\rho-1$, and has residue
+$m(\rho)$ at that pole.
 
-As a complementary exact Weil-energy theorem, for every fixed width $L>0$ we introduce one
-translated rectangular two-edge family in the centered Weil form of the Riemann xi-function.
-Its window transform
+For a fixed rectangular Weil window $L>0$, let $q_{L,N}^-$ be the negative part of its
+logarithmically sampled tail, and let $\delta_*$ be the supremal horizontal displacement of the
+xi divisor.  The principal result is quantitative.  For every $\alpha\ge0$, the following are
+equivalent:
 \[
- A_L(w)=\frac{1-e^{-Lw}}{w}
+\begin{gathered}
+ \XiR(\rho)=0\Longrightarrow \Re\rho\le\tfrac12+\alpha,\\
+ \cS_-\text{ is holomorphic on }\Re s>1+\alpha,\\
+ \widetilde D\text{ is holomorphic on }\Re u>\alpha-\tfrac12,\\
+ \sum_{n\ge1}\frac{q_{L,N}^-(n)}{n^{1+\alpha+\varepsilon}}<\infty
+ \quad\text{for every }\varepsilon>0.
+\end{gathered}
 \]
-has no zeros in either open transverse half-plane.  We prove that logarithmic sampling of the
-translation parameter, $a=\frac12\log n$, turns the growing edge into an ordinary Dirichlet
-carrier.  The resulting single scalar sequence is a complete transverse detector: the Riemann
-hypothesis is equivalent to its nonnegativity, to its eventual lower boundedness, and to its norm
-boundedness.  If the hypothesis is false, the sequence is cofinally unbounded below, and its sharp
-power exponent is the supremal horizontal displacement of the xi divisor.
-More precisely, if $\delta_*$ denotes that displacement, then the exponents $\alpha\ge0$ for
-which the sequence has an eventual lower budget $q_L(n)\ge-Cn^\alpha$ form exactly the closed ray
-$[\delta_*,\infty)$.  Equivalently, such a budget exists precisely when every xi zero satisfies
-$\Re\rho\le\frac12+\alpha$.
-Every finite nonnegative allocation of $q_L^-$ carries the entire horizontal zero-free spectrum.
-In fact the intrinsic statement is stronger.  Let $\sigma_{\rm abs}(c)$ denote the extended-real
-absolute-convergence abscissa of $\sum c(n)n^{-s}$.  Under RH the negative carrier vanishes and
-$\sigma_{\rm abs}(q_{L,N}^-)=-\infty$; under false RH,
+At $\alpha=0$ these conditions are equivalent to the Riemann hypothesis.  Under false RH,
 \[
  \sigma_{\rm abs}(q_{L,N}^-)=1+\delta_*.
 \]
-This value is independent of the positive window width and of the admissible deleted prefix.
-For every nonempty finite channel set $J$, every exact nonnegative allocation
-$q_{L,N}^-=\sum_{j\in J}a_j$ satisfies the conservation law
+Every finite exact nonnegative split conserves this abscissa as the maximum of its channel
+abscissae.  Every finite positive cover has a channel with at least the carrier abscissa.  For an
+arbitrary pointwise-summable nonnegative channel family with aggregate $b\ge q_{L,N}^-$, the
+corresponding sharp statement is aggregate conservation:
 \[
- \sigma_{\rm abs}(q_{L,N}^-)
- =\max_{j\in J}\sigma_{\rm abs}(a_j).
+ \sigma_{\rm abs}(q_{L,N}^-)\le\sigma_{\rm abs}(b).
 \]
-More strongly, every finite positive cover $q_{L,N}^-\le\sum_{j\in J}a_j$ obeys
-$\sigma_{\rm abs}(q_{L,N}^-)\le\max_j\sigma_{\rm abs}(a_j)$; under false RH at least one
-channel therefore has abscissa at least $1+\delta_*$.  Thus no finite positive source
-architecture can dilute the transverse exponent.  Conversely, one finite positive cover whose
-every channel has abscissa at most $1+\alpha$ forces
-$\Re\rho\le\frac12+\alpha$ for every xi zero; the case $\alpha=0$ proves RH.  For every
-$\alpha\ge0$, the bound $\delta_*\le\alpha$ is equivalent to
-\[
- \sum_{n\ge1}\frac{q_{L,N}^-(n)}{n^{1+\alpha+\varepsilon}}<\infty
- \qquad(\varepsilon>0),
-\]
-and to the existence of any nonnegative majorant $m\ge q_{L,N}^-$ with the same shifted energy.
-Equivalently one may use any two-channel cover $q_{L,N}^-\le a+b$, $a,b\ge0$, for which both
-shifted energies converge.  Exact splitting is therefore unnecessary in the source-facing
-direction.  These conditions are equivalent to $\Re\rho\le\frac12+\alpha$ for every xi zero;
-at $\alpha=0$ they are exact RH criteria.  The earlier mixed energy/subpower law remains as a
-useful corollary: for every exact split, one channel may have finite shifted energy while the
-other has pointwise order $n^{\alpha+o(1)}$.  Exceptional sets are its indicator-valued
-specialization.  If the observable has global cost $O(n^\beta)$, the exceptional energy condition
-follows from the explicit thickness budget
-\[
-  \sum_{n\in E}n^{\beta-1-\varepsilon}<\infty
-  \qquad(\varepsilon>0).
-\]
-At the sharp choice $\beta=\delta_*$ this is self-calibrating.  Thus, under false RH, any set
-carrying all non-subpower negative excursions is forced to be thick at the exact transverse
-exponent.  The unconditional half-power theorem follows from $\delta_*\le\frac12$.
+Consequently, an aggregate bound $\sigma_{\rm abs}(b)\le1+\alpha$ forces the same xi zero-free
+half-plane, and the bound $\sigma_{\rm abs}(b)\le1$ proves RH.  Thus finite channelization cannot
+dilute the transverse exponent, while unrestricted summable channelization must retain it in its
+aggregate.
 
-The carrier theorem is complemented by a cutoff-free multiplicity-exact tomography statement.
-The Dirichlet series of the complete sequence of actual Weil values admits a canonical meromorphic continuation
-$\cM_L$ to $\Re s>1$.  Its simple poles are exactly
-\[
-  s=1+(\rho-\tfrac12),\qquad \XiR(\rho)=0,\quad \Re\rho>\tfrac12.
-\]
-If $\rho$ has analytic multiplicity $m(\rho)$, then
-\[
-  \operatorname*{Res}_{s=\rho+1/2}\cM_L(s)
-  =2m(\rho)A_L(\rho-\tfrac12)^2.
-\]
-Since the window factor never vanishes, one fixed boundary window and one arithmetic mesh recover
-the complete off-critical divisor with multiplicity, not merely its support or rightmost displacement.
-We also identify the sequence with a fixed-width second
-difference of the xi screw function.  All results are unconditional; the inverse-tilted theorem
-is an explicit complete prime-source realization, while the fixed-window energy theorem is
-divisor-side.  The remaining RH-bearing problem is now the line-selection theorem: prove that
-$\widetilde D$ is holomorphic on $\Re u>-\frac12$, equivalently that $\cS_-$ has no poles on
-$\Re s>1$.  A semilocal operator realization must reproduce this marked source divisor and force
-that continuation.
+The paper also proves cofinal fixed-window Weil completeness, the exact one-sided exponent
+spectrum $[\delta_*,\infty)$, multiplicity-exact tomography of the actual Weil sequence, and a
+fixed-width xi screw-curvature identity.  All stated results are formalized unconditionally in
+Lean~4 without project axioms.  The paper does not prove RH: the remaining theorem is a genuine
+source-orientation statement forcing any one of the equivalent endpoint conditions above.
 \end{abstract}
 
 \noindent\textbf{2020 Mathematics Subject Classification.}
@@ -223,38 +150,43 @@ $w=\rho-\frac12$.
 Dirichlet carrier controls the entire Weil sequence.
 \end{enumerate}
 
-The universal negative-channel abscissa law is the main Weil-energy theorem.  The negative mass
-of every positive fixed window has one absolute-convergence threshold: under false RH it is
-$1+\delta_*$, and under RH the carrier vanishes.  The threshold is independent of the window and
-cutoff.  Every finite pointwise nonnegative exact split conserves it as the maximum channel
-abscissa.  More generally, every finite positive cover has a channel carrying at least the total
-abscissa, and channel abscissae bounded by $1+\alpha$ force the corresponding horizontal zero-free
-region.  A positive majorant or two-channel cover with shifted Dirichlet energy gives the same
-source criterion; exact source equality is not required.
-Exceptional sets and fractional selectors are special coordinates, and RH is the zero endpoint.
-A second reconstruction theorem
-attaches a cutoff-free meromorphic continuation to the complete actual scalar sequence and proves
-multiplicity-exact divisor tomography: pole positions give the shifted right xi support and
-normalized residues give the analytic multiplicities.  Functional-equation and Schwarz symmetry
-then recover the full off-critical divisor.  Companion theorems give three exact RH criteria,
-cofinal divergence under false RH, the sharp transverse exponent, exact positive-channel
-spectrum, universal Dirichlet-abscissa conservation, and the screw-coordinate identity.  The
-one-sided lower-loss spectrum is the exact closed
-ray beginning at the rightmost transverse divisor coordinate, so it yields every horizontal
-zero-free region, not only the RH endpoint.
+The paper's principal theorem identifies the complete quantitative datum shared by the source and
+energy constructions.  For every $\alpha\ge0$, the xi zero-free half-plane
+$\Re\rho\le\frac12+\alpha$, holomorphy of $\cS_-$ on $\Re s>1+\alpha$, holomorphy of the
+intrinsic critical-Mellin defect on $\Re u>\alpha-\frac12$, and shifted Dirichlet energy of the
+negative fixed-window carrier are equivalent.  The theorem is therefore a spectrum of exact
+half-plane criteria, not only an RH endpoint equivalence.
 
-The candidate novelty lies in the fixed-window Weil-energy theorem: fixed positive width,
-arithmetic logarithmic sampling, cofinal divergence, the exact one-sided and positive-channel
-spectra, universal negative-channel abscissae, positive-split conservation, and observable
-multiplicity-exact pole tomography.  The inverse-tilted source theorem is explicitly classified as
-bridge infrastructure: it is a sharpened application of the Euler logarithmic derivative,
-bounded-variation quadrature, and meromorphic divisor calculus.  Landau's theorem, Weil
-positivity, shifted-zeta continuation, and screw functions are likewise parent mechanisms.  We
-keep the logical boundary explicit: the paper does not prove RH.  The source theorem establishes
-the completed source--divisor coupling itself.  A successful prime-side or semilocal construction
-must now force holomorphy of its canonical continuation on $\Re s>1$.  The rectangular theorem
-gives a second exact route through any positive majorant or finite-channel cover of the actual
-Weil negative mass.
+The universal negative-channel abscissa law supplies the conservation statement behind this
+spectrum.  Under false RH the negative carrier has threshold $1+\delta_*$; under RH it vanishes.
+The threshold is independent of the positive window and deleted prefix.  Every finite exact
+nonnegative split conserves it as the maximum channel abscissa, and every finite positive cover
+has a channel carrying at least the total abscissa.  For an arbitrary pointwise-summable positive
+family, a single channel need not carry the maximum; the correct invariant is its coefficientwise
+aggregate.  We prove that every such covering aggregate has abscissa at least that of the negative
+carrier.  An aggregate bound by $1+\alpha$ forces the corresponding horizontal zero-free region,
+and the critical aggregate bound proves RH.  This summable-family theorem is the maximal
+channel-independent form of positive non-dilution used in the paper.
+
+Exceptional sets and fractional selectors are special coordinates, and RH is the zero endpoint.
+A second reconstruction theorem attaches a cutoff-free meromorphic continuation to the complete
+actual Weil sequence and proves multiplicity-exact divisor tomography.  Companion theorems give
+cofinal divergence under false RH, the sharp transverse exponent, the exact one-sided spectrum,
+positive-channel conservation, and the screw-coordinate identity.  The lower-loss spectrum is
+the closed ray beginning at the rightmost transverse divisor coordinate, so it yields every
+horizontal zero-free region, not only RH.
+
+The candidate novelty lies in the quantitative source--divisor--energy synthesis: fixed positive
+width, arithmetic logarithmic sampling, cofinal divergence, the exact one-sided spectrum,
+universal negative-channel abscissae, finite maximum conservation, summable-family aggregate
+conservation, and observable multiplicity-exact pole tomography.  The inverse-tilted source
+tomography is classified separately as bridge infrastructure: it is a sharpened application of
+the Euler logarithmic derivative, bounded-variation quadrature, and meromorphic divisor calculus.
+Landau's theorem, Weil positivity, shifted-zeta continuation, and screw functions are likewise
+parent mechanisms.  The paper does not prove RH.  It proves that the completed source divisor,
+the intrinsic critical-Mellin divisor, and the negative Weil energy carry precisely the same
+horizontal spectrum.  A successful prime-side or semilocal construction must now force the
+critical endpoint in any one of these equivalent coordinates.
 
 \section{The centered xi divisor and the rectangular window}
 
@@ -1306,6 +1238,72 @@ already carries the whole nontrivial divisor, including the critical-line part. 
 RH-bearing statement is therefore exactly the critical-Mellin continuation in
 \textup{(7.18)}--\textup{(7.23)}.
 
+We can now state the source, divisor, and energy results as one quantitative theorem.  A family
+$(a_i)_{i\in I}$ of nonnegative channels is called pointwise summable if, for every $n$, the sum
+$b(n)=\sum_{i\in I}a_i(n)$ converges in $\R$.  The function $b$ is its aggregate coefficient.
+
+\begin{theorem}[Principal source--divisor--energy conservation theorem]
+\label{thm:principal-conservation}
+Fix $L>0$, an admissible tail $N$, and $\alpha\ge0$.  The following are equivalent.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item Every nontrivial xi zero satisfies
+\[
+ \Re\rho\le\frac12+\alpha.
+ \tag{7.24}
+\]
+\item The explicit inverse-tilted prime-source continuation $\cS_-$ is holomorphic on
+$\Re s>1+\alpha$.
+\item The intrinsic critical-Mellin defect $\widetilde D$ is holomorphic on
+$\Re u>\alpha-\frac12$.
+\item For every $\varepsilon>0$,
+\[
+ \sum_{n\ge1}\frac{q_{L,N}^-(n)}{n^{1+\alpha+\varepsilon}}<\infty.
+ \tag{7.25}
+\]
+\end{enumerate}
+At $\alpha=0$, each condition is equivalent to RH.
+
+The same spectrum obeys the following positive-channel conservation laws.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item For every nonempty finite exact split
+$q_{L,N}^-=\sum_{j\in J}a_j$ with $a_j\ge0$,
+\[
+ \sigma_{\rm abs}(q_{L,N}^-)
+ =\max_{j\in J}\sigma_{\rm abs}(a_j).
+ \tag{7.26}
+\]
+For every finite positive cover, the equality is replaced by
+$\sigma_{\rm abs}(q_{L,N}^-)\le\max_j\sigma_{\rm abs}(a_j)$.
+
+\item Let $(a_i)_{i\in I}$ be any pointwise-summable nonnegative family with aggregate $b$ and
+$q_{L,N}^-\le b$.  Then
+\[
+ \sigma_{\rm abs}(q_{L,N}^-)\le\sigma_{\rm abs}(b).
+ \tag{7.27}
+\]
+If RH is false, then $\sigma_{\rm abs}(b)\ge1+\delta_*$.  More generally,
+$\sigma_{\rm abs}(b)\le1+\alpha$ implies all four equivalent conditions above.  In particular,
+$\sigma_{\rm abs}(b)\le1$ proves RH.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+By Theorem~\ref{thm:inverse-tilted-source-tomography}, the poles of $\cS_-$ are exactly
+$s=\rho+\frac12$.  Hence (a) and (b) are equivalent after translating the boundary by
+$\frac12$.  Theorem~\ref{thm:critical-mellin-divisor-tomography} identifies the poles of
+$\widetilde D$ as $u=\rho-1$, proving the equivalence of (a) and (c).  The equivalence of (a)
+and (d) is Theorem~\ref{thm:universal-abscissa}\textup{(iv)}.  Functional-equation symmetry
+identifies the endpoint $\alpha=0$ with RH.
+
+The finite statement is Theorem~\ref{thm:universal-abscissa}\textup{(ii)}.  For the summable
+family, coefficientwise nonnegativity and $q_{L,N}^-\le b$ imply (7.27) by comparison of
+ordinary Dirichlet series.  Under false RH, (4.11) gives
+$1+\delta_*=\sigma_{\rm abs}(q_{L,N}^-)\le\sigma_{\rm abs}(b)$.  If the aggregate abscissa is at
+most $1+\alpha$, then the series for $b$ converges at every
+$1+\alpha+\varepsilon$.  Domination gives (7.25), and the first part of the theorem gives all
+remaining conclusions.
+\end{proof}
+
 \section{Implications for the Connes route}
 
 Theorem~\ref{thm:inverse-tilted-source-tomography} closes the complete source--divisor incidence
@@ -1351,6 +1349,15 @@ channel carrying at least the total abscissa, and a uniform channel bound $\le1+
 matching zero-free region.  If exact equality is available, the stronger conservation law
 \textup{(4.12)} shows that the maximum channel abscissa is forced and is independent of every
 window, cutoff, and positive allocation.
+
+Theorem~\ref{thm:principal-conservation}\textup{(ii)} removes finiteness at the correct level.
+For a pointwise-summable family, the invariant is the aggregate coefficient $b$, not a selected
+member of the family.  A semilocal construction may therefore distribute the carrier among
+arbitrarily many positive channels only while retaining a completed aggregate with
+$\sigma_{\rm abs}(b)\ge\sigma_{\rm abs}(q_{L,N}^-)$.  To prove a zero-free region it must produce
+the positive aggregate estimate $\sigma_{\rm abs}(b)\le1+\alpha$; at the endpoint this becomes a
+critical aggregate with abscissa at most one.  This is the precise positive form of the
+infinite-dimensional carrier obligation.
 
 A useful indicator-valued coordinate is obtained by choosing one exceptional set $E$.  It asks,
 for every $\delta>0$, that
@@ -1404,6 +1411,26 @@ $\alpha$.  The mixed energy/subpower and exceptional-set dichotomies are useful 
 The transverse power and half-power thickness laws are explicit outer estimates for this exact
 intrinsic carrier, not independent density scales.
 
+\section{Formal verification}
+
+Every theorem stated in this article has an unconditional Lean~4 proof in the accompanying
+formalization, compiled with Lean~4.30.0 and the repository's pinned version of mathlib.  The
+principal quantitative theorem and summable-family aggregate law are formalized in
+\texttt{CCMSourceDivisorEnergySpectrum.lean}.  The complete inverse-tilted source tomography is
+formalized in \texttt{CCMInverseTiltedDyadicPrimeTomography.lean}; the intrinsic defect divisor in
+\texttt{CCMCriticalMellinDivisorTomography.lean}; and finite positive-channel conservation in
+\texttt{CCMRectangularFiniteChannelNonDilution.lean}.  The complete fixed-window theorem chain is
+collected by \texttt{CCMUnconditionalFoundation.lean}.
+
+The declarations corresponding to Theorem~\ref{thm:principal-conservation} are
+\texttt{ccmQuantitativeSourceDivisorEnergySpectrum\_capstone},
+\texttt{summableNegativeChannelCover\_aggregate\_forces\_full\_abscissa},
+\texttt{xiZeroHalfPlaneBound\_of\_summableNegativeChannelCover\_aggregate\_abscissa}, and
+\texttt{riemannHypothesis\_iff\_ccmSourceDivisorEnergyEndpoint}.  An axiom audit of these
+declarations reports only \texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}.
+The project lint gate excludes active \texttt{sorry}, \texttt{admit}, project \texttt{axiom},
+\texttt{opaque}, and \texttt{unsafe} declarations.
+
 \section{Scope and limitations}
 
 The results are unconditional.  The inverse-tilted theorem is source-side and recovers the
@@ -1439,8 +1466,9 @@ architecture, the Euler logarithmic-derivative source transform, Landau's theore
 function are established parent mechanisms.  The inverse-tilted complete-divisor theorem is
 bridge infrastructure.  The candidate-new contribution is the fixed-window logarithmic
 compression, its exact one-sided exponent spectrum, universal negative-channel abscissa, exact
-finite positive-channel non-dilution and order-ideal cover spectrum, thickness corollaries,
-and multiplicity-exact meromorphic tomography of the actual Weil observable.
+finite positive-channel non-dilution, summable-family aggregate conservation, quantitative
+source--divisor--energy equivalence, thickness corollaries, and multiplicity-exact meromorphic
+tomography of the actual Weil observable.
 
 \begin{thebibliography}{99}
 
