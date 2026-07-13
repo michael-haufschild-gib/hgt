@@ -71,6 +71,92 @@ theorem projectiveNevanlinnaJetExpansionColumn_singleton_coe
       projectiveCauchyPower (q z) k (tau : OnePoint ℝ)) (n + 1)]
   simp only [projectiveCauchyPower_coe]
 
+/-- A selected jet coordinate only uses projective powers through its own derivative order.
+Hence a coordinate in a longer packet is exactly the last coordinate of the corresponding
+minimal one-node packet. -/
+theorem projectiveNevanlinnaJetExpansionColumn_coordinate_eq_singleton_last
+    {ι : Type} [Fintype ι]
+    (a q : ℂ → ℂ) (nodes : ι → ℂ) (orders : ι → ℕ)
+    (t : OnePoint ℝ) (i : ι) (j : Fin (orders i)) :
+    projectiveNevanlinnaJetExpansionColumn a q nodes orders t ⟨i, j⟩ =
+      projectiveNevanlinnaJetExpansionColumn
+        a q (fun _ : Unit => nodes i) (fun _ : Unit => j.1 + 1) t
+        ⟨(), Fin.last j.1⟩ := by
+  simp only [projectiveNevanlinnaJetExpansionColumn]
+  rw [Fin.sum_univ_eq_sum_range
+      (fun k : ℕ =>
+        nevanlinnaJetCoeff a q j k (nodes i) *
+          projectiveCauchyPower (q (nodes i)) k t),
+    Fin.sum_univ_eq_sum_range
+      (fun k : ℕ =>
+        nevanlinnaJetCoeff a q (Fin.last j.1) k (nodes i) *
+          projectiveCauchyPower (q (nodes i)) k t)]
+  symm
+  apply Finset.sum_subset
+  · intro k hk
+    simp only [Finset.mem_range] at hk ⊢
+    omega
+  · intro k hk hkn
+    simp only [Finset.mem_range, not_lt] at hk hkn
+    have hjk : j.1 < k := by omega
+    have hzero : nevanlinnaJetCoeff a q (Fin.last j.1) k = 0 := by
+      simpa using (nevanlinnaJetCoeff_eq_zero_of_lt a q hjk)
+    rw [hzero]
+    simp
+
+/-- Selecting one coordinate of a finite smooth projective control is independent of the other
+nodes in the packet.  This is the exact compatibility needed to compare the simultaneous
+transversality packet with the one-node analytic carrier identity. -/
+theorem projectiveNevanlinnaJetExpansionSmoothControl_coordinate_eq_singleton
+    {ι : Type} [Fintype ι]
+    (a q : ℂ → ℂ) (orders : ι → ℕ)
+    (eta : Measure (OnePoint ℝ)) [IsFiniteMeasure eta]
+    (η : ℝ) (hη : 0 < η) (nodes : ι → ℂ)
+    (hupper : ∀ i, η ≤ (q (nodes i)).im)
+    (w : Lp ℝ (⊤ : ENNReal) eta) (i : ι) (j : Fin (orders i)) :
+    (projectiveNevanlinnaJetExpansionSmoothControl
+        a q orders eta nodes w) ⟨i, j⟩ =
+      (projectiveNevanlinnaJetExpansionSmoothControl
+        a q (fun _ : Unit => orders i) eta (fun _ : Unit => nodes i) w) ⟨(), j⟩ := by
+  let z : ι → NevanlinnaUpperNodeAtLeast q η := fun k => ⟨nodes k, hupper k⟩
+  let zi : Unit → NevanlinnaUpperNodeAtLeast q η := fun _ => ⟨nodes i, hupper i⟩
+  rw [projectiveNevanlinnaJetExpansionSmoothControl_eq_existing
+      a q orders eta η hη z,
+    projectiveNevanlinnaJetExpansionSmoothControl_eq_existing
+      a q (fun _ : Unit => orders i) eta η hη zi,
+    linftyBochnerControl_apply_pi, linftyBochnerControl_apply_pi]
+  apply integral_congr_ae
+  filter_upwards [] with t
+  rfl
+
+/-- The same coordinate compatibility with the one-node packet truncated at the selected order.
+This is the form matched by the analytic all-order carrier identity. -/
+theorem projectiveNevanlinnaJetExpansionSmoothControl_coordinate_eq_singleton_last
+    {ι : Type} [Fintype ι]
+    (a q : ℂ → ℂ) (orders : ι → ℕ)
+    (eta : Measure (OnePoint ℝ)) [IsFiniteMeasure eta]
+    (η : ℝ) (hη : 0 < η) (nodes : ι → ℂ)
+    (hupper : ∀ i, η ≤ (q (nodes i)).im)
+    (w : Lp ℝ (⊤ : ENNReal) eta) (i : ι) (j : Fin (orders i)) :
+    (projectiveNevanlinnaJetExpansionSmoothControl
+        a q orders eta nodes w) ⟨i, j⟩ =
+      (projectiveNevanlinnaJetExpansionSmoothControl
+        a q (fun _ : Unit => j.1 + 1) eta (fun _ : Unit => nodes i) w)
+          ⟨(), Fin.last j.1⟩ := by
+  let z : ι → NevanlinnaUpperNodeAtLeast q η := fun k => ⟨nodes k, hupper k⟩
+  let zi : Unit → NevanlinnaUpperNodeAtLeast q η := fun _ => ⟨nodes i, hupper i⟩
+  rw [projectiveNevanlinnaJetExpansionSmoothControl_eq_existing
+      a q orders eta η hη z,
+    projectiveNevanlinnaJetExpansionSmoothControl_eq_existing
+      a q (fun _ : Unit => j.1 + 1) eta η hη zi,
+    linftyBochnerControl_apply_pi, linftyBochnerControl_apply_pi]
+  apply integral_congr_ae
+  filter_upwards [] with t
+  congr 1
+  simpa [z, zi] using
+    (projectiveNevanlinnaJetExpansionColumn_coordinate_eq_singleton_last
+      a q nodes orders t i j)
+
 /-- Complex determinant-one Mobius subtraction. -/
 theorem complex_mobius_difference
     {A B C D tau : ℂ} (hdet : A * D - B * C = 1)
@@ -247,7 +333,6 @@ inner-integral continuity hypothesis is automatic for the Cauchy jet functions u
 theorem weightedBoundaryCarrier_integral_eq_parameterIntegral
     (eta : Measure (OnePoint ℝ)) [IsProbabilityMeasure eta]
     (w : Lp ℝ (⊤ : ENNReal) eta) (hw : LinftyStrictlyPositive eta w)
-    (hint : ∫ t, w t ∂eta = 1)
     (f : ℝ → ℂ) (hf : Continuous f)
     (hcarrier : Integrable f
       (weightedBoundaryCarrier F.base.toBoundaryFamily eta w))
@@ -256,18 +341,8 @@ theorem weightedBoundaryCarrier_integral_eq_parameterIntegral
       ∫ x, f x ∂(F.base.leaf t : Measure ℝ))) :
     (∫ x, f x ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta w) =
       ∫ t, (w t) • (∫ x, f x ∂(F.base.leaf t : Measure ℝ)) ∂eta := by
-  letI : IsProbabilityMeasure (linftyDensityMeasure eta w) :=
-    linftyDensityMeasure_isProbabilityMeasure eta w hw hint
   letI (t : OnePoint ℝ) : IsProbabilityMeasure
       (F.base.leaf t : Measure ℝ) := (F.base.leaf t).prop
-  letI : IsProbabilityMeasure
-      (weightedBoundaryCarrier F.base.toBoundaryFamily eta w) := by
-    dsimp only [weightedBoundaryCarrier]
-    exact boundaryBarycenter_isProbabilityMeasure
-      (linftyDensityMeasure eta w)
-      (fun t => (F.base.toBoundaryFamily.leaf t : Measure ℝ))
-      F.base.toBoundaryFamily.measurable_leaf
-      (fun t => (F.base.toBoundaryFamily.leaf t).prop)
   let inner : OnePoint ℝ → ℂ := fun t =>
     ∫ x, f x ∂(F.base.leaf t : Measure ℝ)
   have hinnerLp : MemLp inner 1 eta :=
@@ -522,7 +597,7 @@ theorem iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_background_add_control
       (∫ x, f x ∂(F.base.leaf t : Measure ℝ)) =
           cauchyJetFunction (F.base.leaf t : Measure ℝ) n z := by
         rw [cauchyJetFunction, resolventPowerTransform, integral_const_mul]
-        simp only [resolvent]
+        simp only [resolvent, Ring.inverse_eq_inv, Complex.coe_algebraMap]
       _ = iteratedDeriv n
           (fun u => ∫ x, ((x : ℂ) - u)⁻¹
             ∂(F.base.leaf t : Measure ℝ)) z := by
@@ -545,10 +620,10 @@ theorem iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_background_add_control
     intro t
     exact (hleafIntegral t).symm
   have hFubini := F.weightedBoundaryCarrier_integral_eq_parameterIntegral
-    eta w hw hint f hf hfcarrier hfleaves hinner
+    eta w hw f hf hfcarrier hfleaves hinner
   change (n.factorial : ℂ) * resolventPowerTransform muw (n + 1) z = _
   rw [resolventPowerTransform, ← integral_const_mul]
-  simp only [resolvent]
+  simp only [resolvent, Ring.inverse_eq_inv, Complex.coe_algebraMap]
   change (∫ x, f x ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta w) = _
   rw [hFubini]
   have hwInt : Integrable (fun t => w t) eta :=
@@ -580,7 +655,85 @@ theorem iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_background_add_control
       have hcontrol := projectiveNevanlinnaJetExpansionSmoothControl_eq_existing
         F.amplitude F.quotient (fun _ : Unit => n + 1) eta eta0 heta0 zu
       rw [hcontrol, linftyBochnerControl_apply_pi]
-      rfl
+
+/-- The simultaneous finite packet of actual Cauchy-transform derivatives of one weighted
+Nevanlinna carrier. -/
+def weightedBoundaryCarrierExpandedPacketValue
+    {row ι : Type} [Fintype row] [Fintype ι]
+    (eta : Measure (OnePoint ℝ)) [IsFiniteMeasure eta]
+    (density : Lp ℝ (⊤ : ENNReal) eta) (orders : ι → ℕ)
+    (packet : InjectiveProjectiveRowPacket row)
+    (shift : InjectiveShiftConfiguration ι) :
+    row × Fin (Fintype.card (Σ i, Fin (orders i))) → ℂ :=
+  fun p =>
+    let s := (Fintype.equivFin (Σ i, Fin (orders i))).symm p.2
+    iteratedDeriv s.2
+      (fun u => ∫ x, ((x : ℂ) - u)⁻¹
+        ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta density)
+      (packet.1 p.1 + shift.1 s.1)
+
+/-- **Literal analytic/transversality packet identity.**  In the positive normalized chart, the
+abstract packet used by compact-patch transversality is exactly the packet of derivatives of the
+Cauchy transform of the weighted singular-continuous carrier.  The proof is simultaneous over all
+rows, shifts, and derivative orders. -/
+theorem weightedBoundaryCarrierExpandedPacketValue_eq_actualNevanlinnaExpandedPacketValue
+    {row ι : Type} [Fintype row] [Fintype ι]
+    (eta : Measure (OnePoint ℝ)) [IsProbabilityMeasure eta]
+    (baseDensity : Lp ℝ (⊤ : ENNReal) eta)
+    (S : Submodule ℝ (Lp ℝ (⊤ : ENNReal) eta)) (w : S)
+    (hw : LinftyStrictlyPositive eta (baseDensity + w.1))
+    (hint : ∫ t, (baseDensity + w.1) t ∂eta = 1)
+    (orders : ι → ℕ) (packet : InjectiveProjectiveRowPacket row)
+    (shift : InjectiveShiftConfiguration ι)
+    (hupperMap : ∀ z, 0 < z.im → 0 < (F.quotient z).im)
+    (hupper : ∀ x, 0 < (combinedProjectiveRowShiftPacket packet shift x).im) :
+    F.weightedBoundaryCarrierExpandedPacketValue
+        eta (baseDensity + w.1) orders packet shift =
+      actualNevanlinnaExpandedPacketValue
+        F.background F.amplitude F.quotient orders eta baseDensity S packet w shift := by
+  classical
+  let nodes : row × ι → ℂ := ambientCombinedProjectiveNodes packet shift.1
+  have hnodeUpper : ∀ x, 0 < (nodes x).im := by
+    intro x
+    simpa [nodes, ambientCombinedProjectiveNodes, combinedProjectiveRowShiftPacket] using hupper x
+  have hquotientUpper : ∀ x, 0 < (F.quotient (nodes x)).im := fun x =>
+    hupperMap (nodes x) (hnodeUpper x)
+  obtain ⟨η0, hη0, hη0nodes⟩ := compact_finite_strictPositive_uniformLowerBound
+    ({()} : Set Unit) isCompact_singleton
+    (fun (_ : Unit) (x : row × ι) => (F.quotient (nodes x)).im)
+    (fun _ => continuousOn_const) (by
+      intro _ _ x
+      exact hquotientUpper x)
+  have hη0all : ∀ x, η0 ≤ (F.quotient (nodes x)).im := fun x =>
+    hη0nodes () (Set.mem_singleton ()) x
+  funext p
+  let s := (Fintype.equivFin (Σ i, Fin (orders i))).symm p.2
+  let z : ℂ := nodes (p.1, s.1)
+  have hz : 0 < z.im := hnodeUpper (p.1, s.1)
+  have hq : 0 < (F.quotient z).im := hquotientUpper (p.1, s.1)
+  have hc : F.c z ≠ 0 := by
+    intro hcz
+    have hqzero : F.quotient z = 0 := by simp [quotient, hcz]
+    rw [hqzero] at hq
+    simpa using hq
+  have hjet := F.iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_background_add_control
+    eta (baseDensity + w.1) hw hint z hz hc hq s.2
+  have hcoord :=
+    projectiveNevanlinnaJetExpansionSmoothControl_coordinate_eq_singleton_last
+      F.amplitude F.quotient (fun x : row × ι => orders x.2)
+      eta η0 hη0 nodes hη0all (baseDensity + w.1) (p.1, s.1) s.2
+  change iteratedDeriv s.2
+      (fun u => ∫ x, ((x : ℂ) - u)⁻¹
+        ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta (baseDensity + w.1)) z =
+    iteratedDeriv s.2 F.background z +
+      (reshapeCombinedJetsFinCLM row ι orders
+        (projectiveNevanlinnaJetExpansionSmoothControl
+          F.amplitude F.quotient (fun x : row × ι => orders x.2)
+          eta nodes (baseDensity + w.1))) p
+  rw [hjet]
+  congr 1
+  symm
+  simpa [reshapeCombinedJetsFinCLM, s] using hcoord
 
 /-- The centered order-zero projective Nevanlinna control at one analytic node. -/
 def projectiveNevanlinnaValueLinftyControl

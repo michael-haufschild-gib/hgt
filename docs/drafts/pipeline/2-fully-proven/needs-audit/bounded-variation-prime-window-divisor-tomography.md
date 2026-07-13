@@ -336,3 +336,27 @@ No abstract meromorphic-continuation hypothesis, `Prop` interface, project axiom
 - [ ] primary-literature placement audit for citation and historical attribution
 - [ ] independent proof audit
 - [ ] standalone paper integration
+
+## Formalization status (Lean)
+
+The **sharp-window RH detection criterion is now formalized** axiom-clean, in
+`formal/GaloisForLFunctions/RHTower/WindowRHCriterion.lean`, sharing the entire tent-window machinery
+built for `prime-polar-moving-tent-divisor-tomography`:
+
+- `neg_logDeriv_zeta_shifted_residue` — at a zeta zero `ρ ≠ 1`, `-ζ'/ζ(s-½)` has a simple pole at
+  `s = ρ+½` with residue `-m(ρ)` (from `neg_logDeriv_zeta_zero_residue` + the half-shift);
+- `windowObservable W s = W(s)·(-ζ'/ζ)(s-½)` and `windowObservable_no_limit` — for any continuous `W`
+  nonzero at `ρ+½`, the observable has a genuine singularity at `s = ρ+½`;
+- `RH_of_windowObservable_regular` — regularity of the observable on `Re s > 1` ⟹ `ζ` has no zeros with
+  `Re > ½` (RH), for any such window;
+- `RH_of_sharpWindow_regular` — **the sharp bounded-variation window `A_L(s-1)` instance**: the
+  nonvanishing is `rectangularWindowAmplitude_ne_zero` on the open right half-plane.  This is the card's
+  headline "one sharp interval gives the RH holomorphy criterion", detection direction.
+
+The supporting analytic layer — the rectangular-window Mellin factor `A_L`, its half-plane
+nonvanishing, the uniform Riemann-sum discretization, the `ζ` logarithmic-derivative residue calculus,
+and the von Mangoldt Dirichlet-series backbone — is the same axiom-clean in-tree stack developed for the
+tent card (`RHTower/TentMellinFactor.lean`, `HTGeometry/RiemannSumCell.lean`,
+`RHTower/ZetaLogDerivResidue.lean`, `RHTower/PrimePolarDirichletBackbone.lean`).  The sharp-window
+continuation `Mcal_L` (the `A_L` analogue of the tent continuation `(20)`) reuses the same discretization
+and holomorphy bricks (`gGridPos`, `E_kL_bound`, `HL_differentiableOn`) with `A_L` in place of `A_L²`.

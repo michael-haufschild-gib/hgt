@@ -1090,6 +1090,7 @@ import GaloisForLFunctions.RHTower.PrimePolarWeightedError
 import GaloisForLFunctions.RHTower.PrimePolarHLHolomorphic
 import GaloisForLFunctions.RHTower.PrimePolarContinuation
 import GaloisForLFunctions.RHTower.PrimePolarRHCriterion
+import GaloisForLFunctions.RHTower.WindowRHCriterion
 import GaloisForLFunctions.RHTower.FisherCurvatureMoment
 import GaloisForLFunctions.RHTower.FriableAuxiliary
 import GaloisForLFunctions.RHTower.FunctionFieldDegeneration

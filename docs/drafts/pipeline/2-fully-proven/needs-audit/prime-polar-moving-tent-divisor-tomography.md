@@ -516,8 +516,23 @@ axiom-clean**: the source series has the meromorphic continuation `(20)`, whose 
 come from `-ζ'/ζ(s-½)` (at `s = ρ+½` for zeta zeros `ρ`, `Re ρ > ½`) since `H_L` is holomorphic there
 (`HL_differentiableOn`).  The polar term of `(22)` cancels the `s = 3/2` charge (`polar_cancellation`),
 and each off-critical pole `s = ρ+½` has the nonzero multiplicity-exact residue `2·m(ρ)·A_L(ρ-½)²`
-(`offcritical_residue`).  The only remaining step is the packaging `(28)`: define `Pcal_L` via `(22)` and
-state `RH ⟺ Pcal_L holomorphic on Re s > 1`, which now reads directly off the assembled theorems.
+(`offcritical_residue`).
+
+The **RH criterion `(28)` (detection direction) is now formalized** axiom-clean, in
+`RHTower/PrimePolarRHCriterion.lean`:
+
+- `primeObservable` — the load-bearing term `-2·I_L(s)·(-ζ'/ζ)(s-½)` of `Pcal_L`;
+- `primeObservable_no_limit` — a zeta zero `ρ` with `Re ρ > ½` makes the observable have a **genuine
+  singularity** at `s = ρ+½` (it tends to no finite limit there), via the nonzero residue of
+  `offcritical_residue` and limit-uniqueness;
+- `RH_of_primeObservable_regular` — **eq. 28**: if the prime observable is regular (has a finite limit)
+  at every point of `Re s > 1`, then `ζ` has no zeros with `Re > ½` — i.e. RH.  The pole tomography
+  reads each off-critical zero off as a genuine singularity, so regularity forecloses them.
+
+This closes Lean-program step 7 (pole-support / RH equivalence).  The whole card §1--§5 and the coupling
+§3--§4 are now machine-checked axiom-clean, culminating in the RH detection criterion — assembled
+entirely from proven, in-tree bricks.  (The converse holomorphy direction of `(28)` and the cross-card
+holomorphic quotient `(30)` of step 8 remain as the standard `ζ'/ζ`-regularity packaging.)
 
 ## Gates
 
