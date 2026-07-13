@@ -140,6 +140,26 @@ sum_(m>=2)m log(p)p^(-ms),
 with FE pairing applied termwise.  Thus no unknown value relation remains between the two scalar
 charts.
 
+The wider paper corpus sharpens the operator choice.  The one-prime quasi-inner defect has a
+nonzero prime-dependent Dixmier residue, and the Gauss-paired `m`-prime channel system has critical
+weak-Schatten depth `2m` (subject to the recorded independent audit of the residue theorem).
+Consequently separate-channel compactness cannot give a cutoff-uniform fixed Schatten estimate.
+On the positive side, the finite-product quantized-differential identity retains every local Weil
+term linearly after legitimate trace-class smoothing, and the exact logarithmic-position
+commutator produces the missing orbital factor `log(p^m)` before Sonin compression.  Lean already
+proves the correct coordinate identity
+
+```text
+[log|x|,U_p]=-log(p)U_p
+```
+
+and the resolvent dressing of a bounded commutator through the exact Sonin intersection projection.
+Thus a plausible completed-source mechanism must use a common Mellin-scattering form graph for
+`[M_t,J_log]`, the Euler leakage, and the Burnol conductor, or prove a source-defined covariance
+cancellation in the full multiplicative product.  Hartman--Peller compact/Schatten theory provides
+the correct symbol-space language for testing such a cancellation, but no located theorem supplies
+the required prime-cutoff-uniform exterior norm rate.
+
 `[OPEN CORE]` Transfer the empty-parameter Euler tangent functorially to `A_F(a(rho))` on the Sonin
 operator carrier and prove that the explicit higher-grade Lambert tail has sufficiently small
 exterior Calkin image, while retaining the global Poisson normalization; then prove `(9)` without

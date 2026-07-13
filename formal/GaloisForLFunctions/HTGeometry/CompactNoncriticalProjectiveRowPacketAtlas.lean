@@ -164,7 +164,6 @@ theorem injectiveShiftConfigurations_covered_by_noncriticalProjectiveUpperGoodRo
   refine ⟨packet, ?_⟩
   exact Set.mem_iInter.mpr fun r => hpacket r
 
-set_option maxHeartbeats 0 in
 /-- **Compact simultaneous row atlas with compact subordinate pieces.**  A compact shift patch is
 covered by finitely many compact pieces, each contained in one open simultaneous row-packet chart.
 The closed shrinking is what permits finitely many patchwise density statements to be intersected
@@ -177,13 +176,14 @@ theorem compact_injectiveShiftPatch_finite_noncriticalProjectiveUpperGoodRowPack
     {p : ℂ} (hCp : C p = 0) {c : ℂ} (hCc : C c ≠ 0)
     (forbidden : κ → ℂ)
     {K : Set (InjectiveShiftConfiguration ι)} (hK : IsCompact K) :
-    ∃ packets : Finset (InjectiveProjectiveRowPacket row),
-      ∃ pieces : packets → Set (InjectiveShiftConfiguration ι),
+    ∃ n : ℕ, ∃ packets : Fin n → InjectiveProjectiveRowPacket row,
+      ∃ pieces : Fin n → Set (InjectiveShiftConfiguration ι),
         K ⊆ ⋃ j, pieces j ∧
         (∀ j, IsCompact (pieces j)) ∧
         ∀ j, pieces j ⊆ noncriticalProjectiveUpperGoodRowPacketSet
-          (ι := ι) (κ := κ) C D forbidden j.1 := by
-  obtain ⟨packets, hpackets⟩ := hK.elim_finite_subcover
+          (ι := ι) (κ := κ) C D forbidden (packets j) := by
+  classical
+  obtain ⟨packetFinset, hpacketFinset⟩ := hK.elim_finite_subcover
     (fun packet : InjectiveProjectiveRowPacket row =>
       noncriticalProjectiveUpperGoodRowPacketSet
         (ι := ι) (κ := κ) C D forbidden packet)
@@ -192,23 +192,32 @@ theorem compact_injectiveShiftPatch_finite_noncriticalProjectiveUpperGoodRowPack
     (Set.Subset.trans (Set.subset_univ K)
       (injectiveShiftConfigurations_covered_by_noncriticalProjectiveUpperGoodRowPackets
         (row := row) hCmin hD hnoCommon hCp hCc forbidden))
-  let cover : packets → Set (InjectiveShiftConfiguration ι) := fun j =>
+  let n := packetFinset.card
+  let e : Fin n ≃ {packet // packet ∈ packetFinset} :=
+    by simpa [n] using (Fintype.equivFin {packet // packet ∈ packetFinset}).symm
+  let packets : Fin n → InjectiveProjectiveRowPacket row := fun j => (e j).1
+  let cover : Fin n → Set (InjectiveShiftConfiguration ι) := fun j =>
     noncriticalProjectiveUpperGoodRowPacketSet
-      (ι := ι) (κ := κ) C D forbidden j.1
+      (ι := ι) (κ := κ) C D forbidden (packets j)
   have hcover : K ⊆ ⋃ j, cover j := by
     intro shift hshift
-    have hs := hpackets hshift
-    simp only [Set.mem_iUnion] at hs ⊢
+    have hs := hpacketFinset hshift
+    simp only [Set.mem_iUnion] at hs
     obtain ⟨packet, hpacketMem, hgood⟩ := hs
-    exact ⟨⟨packet, hpacketMem⟩, hgood⟩
+    let j : Fin n := e.symm ⟨packet, hpacketMem⟩
+    apply Set.mem_iUnion.mpr
+    refine ⟨j, ?_⟩
+    change shift ∈ noncriticalProjectiveUpperGoodRowPacketSet
+      (ι := ι) (κ := κ) C D forbidden (packets j)
+    simpa [packets, j] using hgood
   obtain ⟨v, hKv, hvclosed, hvsub⟩ :=
     exists_subset_iUnion_closed_subset hK.isClosed
       (fun j => noncriticalProjectiveUpperGoodRowPacketSet_isOpen
-        hCmin.1 hD forbidden j.1)
+        hCmin.1 hD forbidden (packets j))
       (fun _ _ => Set.toFinite _)
       hcover
-  let pieces : packets → Set (InjectiveShiftConfiguration ι) := fun j => K ∩ v j
-  refine ⟨packets, pieces, ?_, ?_, ?_⟩
+  let pieces : Fin n → Set (InjectiveShiftConfiguration ι) := fun j => K ∩ v j
+  refine ⟨n, packets, pieces, ?_, ?_, ?_⟩
   · intro shift hshift
     obtain ⟨j, hj⟩ := Set.mem_iUnion.mp (hKv hshift)
     exact Set.mem_iUnion.mpr ⟨j, hshift, hj⟩

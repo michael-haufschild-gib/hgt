@@ -610,6 +610,49 @@ def finitePositivePhasePolynomial (d : ℕ) (x : ℝ) : Polynomial ℂ :=
 def finiteNegativePhasePolynomial (d : ℕ) (x : ℝ) : Polynomial ℂ :=
   finiteCosinePolynomial d x - C I * finiteSinePolynomial d x
 
+/-- The common-cutoff Taylor polynomial of the contracting exponential phase. -/
+def finitePositivePhaseTaylorPolynomial (d : ℕ) (x : ℝ) : Polynomial ℂ :=
+  ∑ m ∈ Finset.range (2 * d + 1),
+    C ((((x : ℂ) * I) ^ m) / m.factorial) * X ^ m
+
+/-- The diagonal cosine--sine channel is literally the Taylor section of `exp(i*x*X)` through
+degree `2*d`.  This coefficient identity is what permits the finite translation edge to be
+estimated without separating its cosine and sine cancellations. -/
+theorem finitePositivePhasePolynomial_eq_taylor
+    (d : ℕ) (x : ℝ) :
+    finitePositivePhasePolynomial d x =
+      finitePositivePhaseTaylorPolynomial d x := by
+  induction d with
+  | zero =>
+      simp [finitePositivePhasePolynomial, finiteCosinePolynomial,
+        finiteSinePolynomial, finitePositivePhaseTaylorPolynomial]
+  | succ d ih =>
+      unfold finitePositivePhasePolynomial finiteCosinePolynomial
+        finiteSinePolynomial at ih ⊢
+      rw [Finset.sum_range_succ, Finset.sum_range_succ]
+      rw [show 2 * (d + 1) + 1 = (2 * d + 1) + 2 by omega]
+      rw [Finset.sum_range_succ, Finset.sum_range_succ]
+      rw [show 2 * d + 2 = 2 * (d + 1) by omega]
+      have hIeven : I ^ (2 * (d + 1)) = (-1 : ℂ) ^ (d + 1) := by
+        rw [pow_mul, Complex.I_sq]
+      have hIodd : I ^ (2 * d + 1) = (-1 : ℂ) ^ d * I := by
+        rw [pow_add, pow_mul, Complex.I_sq, pow_one]
+      rw [mul_pow, mul_pow, hIeven, hIodd]
+      change
+        ((∑ j ∈ Finset.range (d + 1),
+            C ((-1) ^ j * (x : ℂ) ^ (2 * j) / ↑(2 * j).factorial) * X ^ (2 * j)) +
+          C ((-1) ^ (d + 1) * (x : ℂ) ^ (2 * (d + 1)) /
+            ↑(2 * (d + 1)).factorial) * X ^ (2 * (d + 1)) +
+        C I *
+          ((∑ j ∈ Finset.range d,
+              C ((-1) ^ j * (x : ℂ) ^ (2 * j + 1) /
+                ↑(2 * j + 1).factorial) * X ^ (2 * j + 1)) +
+            C ((-1) ^ d * (x : ℂ) ^ (2 * d + 1) /
+              ↑(2 * d + 1).factorial) * X ^ (2 * d + 1))) = _)
+      rw [← ih]
+      unfold finitePositivePhasePolynomial finiteCosinePolynomial finiteSinePolynomial
+      ring
+
 def finitePositivePhaseTranslationTopEdge
     (d : ℕ) (x a : ℝ) : Polynomial ℂ :=
   finiteCosineTranslationTopEdge d x a +
