@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.CanonicalFrameContinuity
 import GaloisForLFunctions.HTGeometry.DeterminantRatioRoot
 import GaloisForLFunctions.HTGeometry.RieszBrothersReduction
 import GaloisForLFunctions.HTGeometry.SzegoFirstLimitInterface
+import GaloisForLFunctions.HTGeometry.GramDeterminantDistance
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Analysis.InnerProductSpace.GramMatrix
 
@@ -24,7 +25,7 @@ canonical inverse-Cholesky tower.
 
 namespace GaloisForLFunctions.HTGeometry
 
-open Complex Matrix MeasureTheory Filter Polynomial Topology
+open Complex Matrix MeasureTheory Filter Polynomial Topology InnerProductSpace
 open scoped ComplexOrder ENNReal InnerProductSpace NNReal Topology
 
 noncomputable section
@@ -147,6 +148,22 @@ theorem linearIndependent_circleMonomialLp_fin_of_infiniteSupport
   rw [hi] at hcoeff
   exact hcoeff
 
+/-- **The circle Toeplitz determinant tower telescopes.**  Passing from level `N` to level `N+1`
+multiplies the determinant by exactly `⟪gsₙ₊₁, gsₙ₊₁⟫`, the squared `L²(mu)` distance from the
+monomial `zᴺ⁺¹` to the span of the lower ones — the monic orthogonal polynomial norm.  This is the
+`det Gₙ₊₁ = det Gₙ · ‖Φₙ₊₁‖²` recursion underlying the first Szegő limit theorem, obtained by
+identifying each Toeplitz section with a Hilbert-space Gram matrix and applying the Gram–Schmidt
+determinant factorization. -/
+theorem circleMeasureGramTower_det_succ
+    (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite) (N : ℕ) :
+    (circleMeasureGramTower mu (N + 1)).det
+      = (circleMeasureGramTower mu N).det
+        * ⟪gramSchmidt ℂ (circleMonomialLp mu) (N + 1),
+            gramSchmidt ℂ (circleMonomialLp mu) (N + 1)⟫_ℂ := by
+  rw [circleMeasureGramTower_eq_gram mu (N + 1), circleMeasureGramTower_eq_gram mu N]
+  exact det_gram_fin_succ (circleMonomialLp mu) (N + 1)
+    (linearIndependent_circleMonomialLp_fin_of_infiniteSupport mu hmu (N + 1))
+
 /-- Infinite support supplies strict positivity at every level of the circle Toeplitz tower. -/
 theorem circleMeasureGramTower_posDef_of_infiniteSupport
     (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite) (N : ℕ) :
@@ -154,6 +171,26 @@ theorem circleMeasureGramTower_posDef_of_infiniteSupport
   rw [circleMeasureGramTower_eq_gram]
   exact Matrix.posDef_gram_of_linearIndependent
     (linearIndependent_circleMonomialLp_fin_of_infiniteSupport mu hmu N)
+
+/-- **The consecutive Toeplitz determinant ratio is the squared monic-OPUC norm.**  For a measure
+with infinite support (so every Toeplitz section is positive definite), the ratio of consecutive
+determinants equals `‖gsₙ₊₁‖²`, the squared distance from `zᴺ⁺¹` to `span{1, …, zᴺ}` in `L²(mu)`.
+This is the exact quantity whose limit is the Szegő geometric mean. -/
+theorem consecutiveGramDeterminantRatio_eq_normSq
+    (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite) (N : ℕ) :
+    consecutiveGramDeterminantRatio (circleMeasureGramTower mu) N
+      = ‖gramSchmidt ℂ (circleMonomialLp mu) (N + 1)‖ ^ 2 := by
+  have hposN : (0 : ℝ) < (circleMeasureGramTower mu N).det.re := by
+    have hp := (circleMeasureGramTower_posDef_of_infiniteSupport mu hmu N).det_pos
+    simp only [Complex.lt_def, Complex.zero_re, Complex.zero_im] at hp
+    exact hp.1
+  have hnorm : ⟪gramSchmidt ℂ (circleMonomialLp mu) (N + 1),
+      gramSchmidt ℂ (circleMonomialLp mu) (N + 1)⟫_ℂ
+      = ((‖gramSchmidt ℂ (circleMonomialLp mu) (N + 1)‖ ^ 2 : ℝ) : ℂ) := by
+    apply Complex.ext <;> simp
+  unfold consecutiveGramDeterminantRatio
+  rw [circleMeasureGramTower_det_succ mu hmu N, hnorm, Complex.mul_re, Complex.ofReal_re,
+    Complex.ofReal_im, mul_zero, sub_zero, mul_comm, mul_div_assoc, div_self hposN.ne', mul_one]
 
 /-- The canonical positive-diagonal inverse-Cholesky tower of an infinite-support circle
 measure. -/

@@ -138,7 +138,8 @@ theorem compact_nevanlinnaExpandedEvaluation_has_dense_finiteProbe
   let frozen := projectiveNevanlinnaJetLinftyContinuousControl
     a q zf nf haf hqdf mu hupperf
   let S := LinearMap.ker frozen.toLinearMap
-  haveI normedSpaceS : NormedSpace ℝ S := Submodule.normedSpace S
+  letI normedAddCommGroupS : NormedAddCommGroup S := Submodule.normedAddCommGroup S
+  letI normedSpaceS : NormedSpace ℝ S := Submodule.normedSpace S
   let nodeLift : K → (row → NevanlinnaUpperNodeAtLeast q η) :=
     fun h i => ⟨nodes h.1 i, hupper h.1 (hKU h.2) i⟩
   have hnodeLift : Continuous nodeLift := by
@@ -166,7 +167,8 @@ theorem compact_nevanlinnaExpandedEvaluation_has_dense_finiteProbe
         exact hqdt h.1 h.2 i)
   refine ⟨V, hVfg, ?_⟩
   dsimp only
-  haveI normedSpaceV : NormedSpace ℝ V := Submodule.normedSpace V
+  letI normedAddCommGroupV : NormedAddCommGroup V := Submodule.normedAddCommGroup V
+  letI normedSpaceV : NormedSpace ℝ V := Submodule.normedSpace V
   let control := fun h =>
     projectiveNevanlinnaJetExpansionSmoothControl
       a q (fun _ : row => jetOrder) mu (nodes h)
@@ -218,15 +220,30 @@ theorem compact_nevanlinnaExpandedEvaluation_has_dense_finiteProbe
   have hdirectionSurjK : ∀ h ∈ K, Function.Surjective (directionV h) := by
     intro h hh y
     obtain ⟨ys, hys⟩ := constantJetSigmaToProductCLM_surjective jetOrder y
-    have hzmem : nodeLift ⟨h, hh⟩ ∈ Knode := Set.mem_range_self ⟨h, hh⟩
-    obtain ⟨v, hv⟩ := hVsurj (nodeLift ⟨h, hh⟩) hzmem ys
+    have hzmem : nodeLift (⟨h, hh⟩ : K) ∈ Knode :=
+      Set.mem_range_self (⟨h, hh⟩ : K)
+    obtain ⟨v, hv⟩ := hVsurj (nodeLift (⟨h, hh⟩ : K)) hzmem ys
     refine ⟨v, ?_⟩
     change constantJetSigmaToProductCLM jetOrder
       (control h v.1.1) = y
     have heq := projectiveNevanlinnaJetExpansionSmoothControl_eq_existing
-      a q (fun _ : row => jetOrder) mu η hη (nodeLift ⟨h, hh⟩)
-    rw [heq]
-    rw [hv, hys]
+      a q (fun _ : row => jetOrder) mu η hη (nodeLift (⟨h, hh⟩ : K))
+    have heq' : control h =
+        linftyBochnerControl mu
+          (projectiveNevanlinnaJetExpansionColumn
+            a q (nodes h) (fun _ : row => jetOrder))
+          (memLp_projectiveNevanlinnaJetExpansionColumn
+            η hη (fun _ : row => jetOrder) mu (nodeLift (⟨h, hh⟩ : K))) := by
+      simpa only [control, nodeLift] using heq
+    have hv' :
+        (linftyBochnerControl mu
+          (projectiveNevanlinnaJetExpansionColumn
+            a q (nodes h) (fun _ : row => jetOrder))
+          (memLp_projectiveNevanlinnaJetExpansionColumn
+            η hη (fun _ : row => jetOrder) mu (nodeLift (⟨h, hh⟩ : K)))) v.1.1 = ys := by
+      simpa only [nodeLift] using hv
+    rw [heq']
+    rw [hv', hys]
   let Usurj : Set H := U ∩ {h | Function.Surjective (directionV h)}
   have hUsurj : IsOpen Usurj :=
     isOpen_inter_surjective_continuousLinearMap_family

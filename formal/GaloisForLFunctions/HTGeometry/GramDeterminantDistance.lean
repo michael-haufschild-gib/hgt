@@ -64,7 +64,7 @@ theorem eq_sum_gramSchmidt {n : ℕ} (v : Fin n → E) (hv : LinearIndependent �
   have hcoef : ⟪gramSchmidt ℂ v i, v i⟫_ℂ / (‖gramSchmidt ℂ v i‖ : ℂ) ^ 2 = 1 := by
     rw [gramSchmidt_inner_left_self]
     have h : ⟪gramSchmidt ℂ v i, gramSchmidt ℂ v i⟫_ℂ = ((‖gramSchmidt ℂ v i‖ ^ 2 : ℝ) : ℂ) := by
-      apply Complex.ext <;> simp [inner_self_eq_norm_sq, inner_self_im]
+      apply Complex.ext <;> simp
     rw [h, ← Complex.ofReal_pow, div_self]
     exact Complex.ofReal_ne_zero.mpr
       (pow_ne_zero 2 (norm_ne_zero_iff.mpr (gramSchmidt_ne_zero i hv)))
@@ -119,7 +119,7 @@ theorem det_gram_eq_prod {n : ℕ} (v : Fin n → E) (hv : LinearIndependent ℂ
     show ⟪gramSchmidt ℂ v i, v i⟫_ℂ / (‖gramSchmidt ℂ v i‖ : ℂ) ^ 2 = 1
     rw [gramSchmidt_inner_left_self]
     have h : ⟪gramSchmidt ℂ v i, gramSchmidt ℂ v i⟫_ℂ = ((‖gramSchmidt ℂ v i‖ ^ 2 : ℝ) : ℂ) := by
-      apply Complex.ext <;> simp [inner_self_eq_norm_sq, inner_self_im]
+      apply Complex.ext <;> simp
     rw [h, ← Complex.ofReal_pow, div_self]
     exact Complex.ofReal_ne_zero.mpr
       (pow_ne_zero 2 (norm_ne_zero_iff.mpr (gramSchmidt_ne_zero i hv)))
@@ -148,18 +148,18 @@ vector of the full `ℕ`-indexed family `w` at the coerced index `↑k`.  Both `
 well-ordered with bottom, so the causal recursion (`gramSchmidt_def`) reindexes across the
 order-embedding `Fin.val`; this is what lets a `Fin`-indexed Gram determinant be read off the single
 `ℕ`-indexed Gram–Schmidt sequence. -/
-theorem gramSchmidt_fin_val (w : ℕ → E) (n : ℕ) (k : Fin (n + 1)) :
-    gramSchmidt ℂ (fun i : Fin (n + 1) => w (i : ℕ)) k = gramSchmidt ℂ w (k : ℕ) := by
-  have key : ∀ m : ℕ, ∀ hm : m < n + 1,
-      gramSchmidt ℂ (fun i : Fin (n + 1) => w (i : ℕ)) ⟨m, hm⟩ = gramSchmidt ℂ w m := by
+theorem gramSchmidt_fin_val (w : ℕ → E) (n : ℕ) (k : Fin n) :
+    gramSchmidt ℂ (fun i : Fin n => w (i : ℕ)) k = gramSchmidt ℂ w (k : ℕ) := by
+  have key : ∀ m : ℕ, ∀ hm : m < n,
+      gramSchmidt ℂ (fun i : Fin n => w (i : ℕ)) ⟨m, hm⟩ = gramSchmidt ℂ w m := by
     intro m
     induction m using Nat.strong_induction_on with
     | _ m ih =>
       intro hm
-      rw [gramSchmidt_def ℂ (fun i : Fin (n + 1) => w (i : ℕ)) ⟨m, hm⟩, gramSchmidt_def ℂ w m]
+      rw [gramSchmidt_def ℂ (fun i : Fin n => w (i : ℕ)) ⟨m, hm⟩, gramSchmidt_def ℂ w m]
       congr 1
-      refine Finset.sum_bij' (fun (i : Fin (n + 1)) _ => (i : ℕ))
-        (fun (j : ℕ) hj => (⟨j, lt_trans (Finset.mem_Iio.mp hj) hm⟩ : Fin (n + 1)))
+      refine Finset.sum_bij' (fun (i : Fin n) _ => (i : ℕ))
+        (fun (j : ℕ) hj => (⟨j, lt_trans (Finset.mem_Iio.mp hj) hm⟩ : Fin n))
         ?_ ?_ ?_ ?_ ?_
       · intro a ha
         rw [Finset.mem_Iio] at ha ⊢
@@ -170,7 +170,7 @@ theorem gramSchmidt_fin_val (w : ℕ → E) (n : ℕ) (k : Fin (n + 1)) :
       · intro a ha; rfl
       · intro b hb; rfl
       · intro a ha
-        have haf : a < (⟨m, hm⟩ : Fin (n + 1)) := Finset.mem_Iio.mp ha
+        have haf : a < (⟨m, hm⟩ : Fin n) := Finset.mem_Iio.mp ha
         have hlt : (a : ℕ) < m := haf
         have hia := ih (a : ℕ) hlt a.2
         rw [Fin.eta] at hia
@@ -192,20 +192,10 @@ theorem det_gram_fin_succ (w : ℕ → E) (N : ℕ)
     funext i; simp
   have h0 : LinearIndependent ℂ (fun i : Fin N => w (i : ℕ)) := by
     rw [hcast]; exact h1.comp _ (Fin.castSucc_injective N)
-  rw [det_gram_eq_prod _ h1, det_gram_eq_prod _ h0]
-  have e1 : ∀ k : Fin (N + 1), ⟪gramSchmidt ℂ (fun i : Fin (N + 1) => w (i : ℕ)) k,
-      gramSchmidt ℂ (fun i : Fin (N + 1) => w (i : ℕ)) k⟫_ℂ
-      = ⟪gramSchmidt ℂ w (k : ℕ), gramSchmidt ℂ w (k : ℕ)⟫_ℂ := fun k => by
-    rw [gramSchmidt_fin_val]
-  have e0 : ∀ k : Fin N, ⟪gramSchmidt ℂ (fun i : Fin N => w (i : ℕ)) k,
-      gramSchmidt ℂ (fun i : Fin N => w (i : ℕ)) k⟫_ℂ
-      = ⟪gramSchmidt ℂ w (k : ℕ), gramSchmidt ℂ w (k : ℕ)⟫_ℂ := fun k => by
-    rw [gramSchmidt_fin_val]
-  simp_rw [e1, e0]
-  rw [Fin.prod_univ_eq_prod_range
-        (fun m => ⟪gramSchmidt ℂ w m, gramSchmidt ℂ w m⟫_ℂ) (N + 1),
-      Fin.prod_univ_eq_prod_range
-        (fun m => ⟪gramSchmidt ℂ w m, gramSchmidt ℂ w m⟫_ℂ) N,
-      Finset.prod_range_succ]
+  rw [det_gram_eq_prod _ h1, det_gram_eq_prod _ h0, Fin.prod_univ_castSucc]
+  congr 1
+  · refine Finset.prod_congr rfl (fun i _ => ?_)
+    rw [gramSchmidt_fin_val w (N + 1) i.castSucc, gramSchmidt_fin_val w N i, Fin.val_castSucc]
+  · rw [gramSchmidt_fin_val w (N + 1) (Fin.last N), Fin.val_last]
 
 end GaloisForLFunctions.HTGeometry

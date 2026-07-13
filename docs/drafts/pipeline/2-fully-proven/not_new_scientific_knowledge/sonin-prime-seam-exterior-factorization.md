@@ -127,10 +127,15 @@ Connes--Consani--Moscovici's
 [*Zeta zeros and prolate wave operators*](https://arxiv.org/abs/2310.18423) supplies stable semilocal
 Sonin spaces, but no asymptotic exterior-collinearity theorem for the two sections `(1)` was located.
 
-`[OPEN CORE]` Realize `A_F(a(rho))` as a source-defined horizontal-reflection derivative of the
-completed prime--Gamma/Sonin section, retain the global Poisson normalization, and prove `(9)`
-without using Xi zero locations.  Finite quasi-innerness alone is insufficient because it controls
-the nonlinear completed product at each finite `F`, not this cofinal first-Euler exterior tangent.
+The formal continuation `xi-prime-seam-euler-zero-tangent.md` closes the scalar coefficient part:
+the horizontal seam is exactly the derivative at local parameter zero of an explicit FE-paired
+finite Euler flux, both pointwise and in the compact-carrier Banach algebra.
+
+`[OPEN CORE]` Transfer that empty-parameter Euler tangent functorially to `A_F(a(rho))` on the Sonin
+operator carrier, compare it with the actual-parameter tangent at `a=1`, retain the global Poisson
+normalization, and prove `(9)` without using Xi zero locations.  Finite quasi-innerness alone is
+insufficient because it controls the nonlinear completed product at each finite `F`, not this
+cofinal first-Euler exterior tangent.
 
 ## Gates
 
@@ -139,5 +144,7 @@ the nonlinear completed product at each finite `F`, not this cofinal first-Euler
 - [x] composition with normalized pair-energy asymptotics
 - [x] top-down replacement of pairwise realization by one exterior tensor
 - [ ] formalize the actual tensor-square Calkin estimate and `(3)` on the Sonin Hilbert tensor product
-- [ ] source realization of the seam-weighted one-particle section
+- [x] source realization of the scalar seam coefficients as finite Euler first coefficients
+- [ ] bounded operator transfer of those coefficients to the seam-weighted Sonin section
+- [ ] comparison of the empty-parameter and actual-parameter Euler tangent charts
 - [ ] source-pure asymptotic Calkin collinearity `(9)`

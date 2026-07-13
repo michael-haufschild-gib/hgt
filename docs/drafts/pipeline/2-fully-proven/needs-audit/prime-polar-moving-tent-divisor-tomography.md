@@ -381,9 +381,22 @@ In `TentMellinFactor.lean`:
   above via `log`-composition and the bounded-product rule.
 
 This discharges the discretization-modulus half of `(14)`--`(15)`: `gTent_lipschitzOnWith` feeds
-`norm_sum_smul_sub_integral_le` directly.  The remaining open chain is the per-`s` summable error
-series `(19)` (summing the cell bound against `Λ(k)/√k` via the Euler product) and the polar
-cancellation/residue `(23)`--`(25)` on the subsuming card.
+`norm_sum_smul_sub_integral_le` directly.
+
+The **integral evaluation** side of `(15)`--`(16)` is also formalized:
+
+- `gTent_integral_eq_tentLaplace` — `∫₁^{e^{2L}} g_s(u) du = ∫₀^{2L} τ_L(x) e^{-(s-1)x} dx`, the
+  substitution `u = eˣ` that reduces the improper `∫₀^∞` of `(8)` to the compact tent Laplace
+  integral, valid for all `s` (via `intervalIntegral.integral_deriv_smul_comp''`);
+- `gTent_integral_eq_amplitude_sq` — `∫₁^{e^{2L}} g_s = A_L(s-1)²` for `s ≠ 1`, chaining the
+  substitution with `tentLaplace_eq_rectangularWindowAmplitude_sq`.
+
+With these, the entire analytic (non-arithmetic) content of §2--§3 is machine-checked: the tent Mellin
+factor `I_L = A_L²`, its entireness, the concrete integrand's modulus of continuity, the uniform
+Riemann-sum error bound, and the integral value `∫ g_s = I_L`.  The remaining open chain is purely
+arithmetic: assembling the cell bound and the integral value into `E_{k,L}(s)` `(16)`, the per-`s`
+bound `(17)`, the summable error series `(19)` (summing against `Λ(k)/√k` via the Euler product `(18)`),
+the double-series identity `(20)` with `-ζ'/ζ`, and the polar cancellation/residue `(23)`--`(25)`.
 
 ## Gates
 

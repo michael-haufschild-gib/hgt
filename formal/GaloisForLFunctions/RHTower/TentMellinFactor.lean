@@ -213,4 +213,82 @@ theorem gTent_lipschitzOnWith (L : ℝ) (hL : 0 ≤ L) (s : ℂ) :
     nlinarith [le_abs_self s.re, neg_abs_le s.re, abs_nonneg s.re, hlu0, hlu2]
   exact ⟨_, lipschitzOnWith_mul_of_bound hA hB hboundA hboundB⟩
 
+/-- **The integral of the moving-tent integrand equals the tent Mellin factor** (§3, connecting
+`(13)` to `(8)`).  Under the substitution `u = eˣ`, `∫₁^{e^{2L}} g_s(u) du = ∫₀^{2L} τ_L(x) e^{-(s-1)x} dx`.
+The improper `∫₀^∞` of `(8)` reduces to this compact integral because `g_s` is supported on
+`[1, e^{2L}]`. -/
+theorem gTent_integral_eq_tentLaplace (L : ℝ) (s : ℂ) :
+    (∫ u in (1 : ℝ)..(Real.exp (2 * L)), gTent L s u)
+      = ∫ x in (0 : ℝ)..(2 * L), (tentFn L x : ℂ) * Complex.exp (-(s - 1) * (x : ℂ)) := by
+  have hgcont : ContinuousOn (gTent L s) (Set.Ioi 0) := by
+    have hlog : ContinuousOn Real.log (Set.Ioi 0) :=
+      Real.continuousOn_log.mono (fun x hx => ne_of_gt hx)
+    have h1 : ContinuousOn (fun u => (tentFn L (Real.log u) : ℂ)) (Set.Ioi 0) :=
+      Complex.continuous_ofReal.comp_continuousOn
+        ((lipschitzWith_tentFn L).continuous.comp_continuousOn hlog)
+    have h2 : ContinuousOn (fun u => Complex.exp (-s * (Real.log u : ℂ))) (Set.Ioi 0) :=
+      Complex.continuous_exp.comp_continuousOn
+        (continuousOn_const.mul (Complex.continuous_ofReal.comp_continuousOn hlog))
+    exact h1.mul h2
+  have himg : Real.exp '' Set.uIcc (0 : ℝ) (2 * L) ⊆ Set.Ioi 0 := by
+    intro y hy; obtain ⟨x, _, rfl⟩ := hy; exact Real.exp_pos x
+  have hcov := intervalIntegral.integral_deriv_smul_comp'' (a := 0) (b := 2 * L)
+    (f := Real.exp) (f' := Real.exp) (g := gTent L s)
+    Real.continuous_exp.continuousOn
+    (fun x _ => (Real.hasDerivAt_exp x).hasDerivWithinAt)
+    Real.continuous_exp.continuousOn
+    (hgcont.mono himg)
+  rw [Real.exp_zero] at hcov
+  rw [← hcov]
+  refine intervalIntegral.integral_congr (fun x _ => ?_)
+  simp only [Function.comp_apply, gTent, Real.log_exp]
+  rw [Complex.real_smul, Complex.ofReal_exp,
+    show Complex.exp (↑x) * (↑(tentFn L x) * Complex.exp (-s * ↑x))
+      = ↑(tentFn L x) * (Complex.exp (↑x) * Complex.exp (-s * ↑x)) from by ring,
+    ← Complex.exp_add]
+  congr 2
+  ring
+
+/-- **The moving-tent integral equals the squared window amplitude** (`I_L(s) = A_L(s-1)²`, `s ≠ 1`).
+Combines the change of variables with `tentLaplace_eq_rectangularWindowAmplitude_sq`. -/
+theorem gTent_integral_eq_amplitude_sq (L : ℝ) (hL : 0 ≤ L) (s : ℂ) (hs : s ≠ 1) :
+    (∫ u in (1 : ℝ)..(Real.exp (2 * L)), gTent L s u) = (rectangularWindowAmplitude L (s - 1)) ^ 2 := by
+  rw [gTent_integral_eq_tentLaplace,
+    tentLaplace_eq_rectangularWindowAmplitude_sq L hL (s - 1) (sub_ne_zero.mpr hs)]
+
+/-- The **truncated tent** `τ_L(x) = (L − |x − L|)₊ = max 0 (min x (2L−x))` (§1, eq. 1), the card's
+actual window: it coincides with `tentFn` on the support `[0, 2L]` but is `0` outside, which is what
+makes the moving-prime sum `(2)` finite via the support condition `(3)`. -/
+noncomputable def tentPos (L x : ℝ) : ℝ := max 0 (tentFn L x)
+
+/-- On the support `[0, 2L]` the truncated tent equals the plain (min) tent. -/
+theorem tentPos_eq_tentFn_of_mem (L : ℝ) {x : ℝ} (hx : x ∈ Set.Icc 0 (2 * L)) :
+    tentPos L x = tentFn L x := by
+  rw [tentPos, max_eq_right]
+  rw [tentFn_eq_min]
+  exact le_min hx.1 (by linarith [hx.2])
+
+/-- Outside `[0, 2L]` the truncated tent vanishes — the finiteness of the moving-prime sum. -/
+theorem tentPos_eq_zero_of_notMem (L : ℝ) {x : ℝ} (hx : x ∉ Set.Icc 0 (2 * L)) :
+    tentPos L x = 0 := by
+  rw [tentPos, max_eq_left]
+  rw [tentFn_eq_min]
+  rcases not_and_or.mp (fun h => hx ⟨h.1, h.2⟩) with h | h
+  · exact le_trans (min_le_left _ _) (le_of_not_ge h)
+  · exact le_trans (min_le_right _ _) (by linarith [le_of_not_ge h])
+
+/-- The truncated tent is `1`-Lipschitz (`max 0` preserves the Lipschitz constant of `tentFn`). -/
+theorem lipschitzWith_tentPos (L : ℝ) : LipschitzWith 1 (tentPos L) :=
+  (lipschitzWith_tentFn L).const_max 0
+
+/-- **Truncation does not change the Mellin factor.**  Since `tentPos` and `tentFn` agree on the
+integration interval `[0, 2L]`, `∫₀²ᴸ τ_L(x) e^{-wx} dx = A_L(w)²` for the truncated tent as well. -/
+theorem tentPosLaplace_eq_amplitude_sq (L : ℝ) (hL : 0 ≤ L) (w : ℂ) (hw : w ≠ 0) :
+    (∫ x in (0 : ℝ)..(2 * L), (tentPos L x : ℂ) * Complex.exp (-w * (x : ℂ)))
+      = (rectangularWindowAmplitude L w) ^ 2 := by
+  rw [← tentLaplace_eq_rectangularWindowAmplitude_sq L hL w hw]
+  refine intervalIntegral.integral_congr (fun x hx => ?_)
+  rw [Set.uIcc_of_le (by linarith)] at hx
+  rw [tentPos_eq_tentFn_of_mem L hx]
+
 end RHTower

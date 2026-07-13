@@ -40,6 +40,29 @@ theorem reshapeCombinedJetsCLM_surjective
     Function.Surjective (reshapeCombinedJetsCLM row ι orders) := by
   exact reshapeCombinedJets_surjective row ι orders
 
+/-- Reassociate combined translated jets and enumerate the finite within-row jet index by `Fin`.
+This is the literal target coordinate type of `expandedDifferentialEvaluationMatrix`. -/
+def reshapeCombinedJetsFinCLM
+    (row ι : Type*) [Fintype row] [Fintype ι] (orders : ι → ℕ) :
+    ((Σ x : row × ι, Fin (orders x.2)) → ℂ) →L[ℝ]
+      (row × Fin (Fintype.card (Σ i, Fin (orders i))) → ℂ) :=
+  LinearMap.toContinuousLinearMap
+    { toFun := fun x p =>
+        let s := (Fintype.equivFin (Σ i, Fin (orders i))).symm p.2
+        x ⟨(p.1, s.1), s.2⟩
+      map_add' := by intro x y; rfl
+      map_smul' := by intro c x; rfl }
+
+/-- The finite enumeration of the combined translated jets is onto. -/
+theorem reshapeCombinedJetsFinCLM_surjective
+    (row ι : Type*) [Fintype row] [Fintype ι] (orders : ι → ℕ) :
+    Function.Surjective (reshapeCombinedJetsFinCLM row ι orders) := by
+  intro y
+  refine ⟨fun s =>
+    y (s.1.1, Fintype.equivFin (Σ i, Fin (orders i)) ⟨s.1.2, s.2⟩), ?_⟩
+  funext p
+  simp [reshapeCombinedJetsFinCLM]
+
 /-- **Translated Nevanlinna compact-patch density law.**  A compact regular family of all
 row-by-translate nodes has a uniform finite-dimensional frozen-tangent probe.  The actual smooth
 Nevanlinna row evaluation, after the exact dependent reassociation, densely avoids the literal
@@ -61,7 +84,7 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
     (hqdf : ∀ i, deriv q (zf i) ≠ 0)
     (degree : ℕ) (orders : ι → ℕ)
     (rowBase : row → ℂ) (hrowBase : Function.Injective rowBase)
-    (exponent : κ → ((Σ i, Fin (orders i)) →₀ ℕ))
+    (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
     (hexponent : Function.Injective exponent)
     (hrows : Fintype.card (κ × Fin (degree + 1)) + degree < Fintype.card row)
     (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
@@ -82,9 +105,9 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
         projectiveNevanlinnaJetExpansionSmoothControl
           a q (fun x : row × ι => orders x.2) mu (nodes h)
       let base := fun h =>
-        reshapeCombinedJetsCLM row ι orders (control h (linftyOne mu))
+        reshapeCombinedJetsFinCLM row ι orders (control h (linftyOne mu))
       let direction := fun h =>
-        (reshapeCombinedJetsCLM row ι orders).comp ((control h).domRestrict S)
+        (reshapeCombinedJetsFinCLM row ι orders).comp ((control h).domRestrict S)
       Dense (compactConfigurationAvoidance
         (smoothAffineControlFamily base direction)
         (expandedDifferentialEvaluationRankDefect
@@ -93,6 +116,7 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
   let frozen := projectiveNevanlinnaJetLinftyContinuousControl
     a q zf nf haf hqdf mu hupperf
   let S := LinearMap.ker frozen.toLinearMap
+  letI normedAddCommGroupS : NormedAddCommGroup S := Submodule.normedAddCommGroup S
   letI : NormedSpace ℝ S := Submodule.normedSpace S
   let nodeLift : K → (row × ι → NevanlinnaUpperNodeAtLeast q η) :=
     fun h x => ⟨nodes h.1 x, hupper h.1 (hKU h.2) x⟩
@@ -122,30 +146,31 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
         exact hqdt h.1 h.2 x)
   refine ⟨V, hVfg, ?_⟩
   dsimp only
+  letI normedAddCommGroupV : NormedAddCommGroup V := Submodule.normedAddCommGroup V
   letI : NormedSpace ℝ V := Submodule.normedSpace V
   let control := fun h =>
     projectiveNevanlinnaJetExpansionSmoothControl
       a q (fun x : row × ι => orders x.2) mu (nodes h)
   let base := fun h =>
-    reshapeCombinedJetsCLM row ι orders (control h (linftyOne mu))
+    reshapeCombinedJetsFinCLM row ι orders (control h (linftyOne mu))
   let direction := fun h =>
-    (reshapeCombinedJetsCLM row ι orders).comp ((control h).domRestrict S)
+    (reshapeCombinedJetsFinCLM row ι orders).comp ((control h).domRestrict S)
   let directionV := fun h =>
-    (reshapeCombinedJetsCLM row ι orders).comp
+    (reshapeCombinedJetsFinCLM row ι orders).comp
       (((control h).domRestrict S).domRestrict V)
   have hcontrol : ContDiffOn ℝ ⊤ control U := by
     exact (contDiffOn_projectiveNevanlinnaJetExpansionSmoothControl
       a q ha hq (fun x : row × ι => orders x.2) mu).comp hnodes.contDiffOn
         (fun h hh x => hη.trans_le (hupper h hh x))
   have hbase : ContDiffOn ℝ ⊤ base U := by
-    exact (reshapeCombinedJetsCLM row ι orders).contDiff.comp_contDiffOn
+    exact (reshapeCombinedJetsFinCLM row ι orders).contDiff.comp_contDiffOn
       (hcontrol.clm_apply contDiffOn_const)
   have hdirection : ContDiffOn ℝ ⊤ direction U := by
     have hS : ContDiffOn ℝ ⊤ (fun h => (control h).domRestrict S) U := by
       have hsubS : ContDiffOn ℝ ⊤ (fun _ : H => S.subtypeL) U := contDiffOn_const
       simpa only [ContinuousLinearMap.domRestrict] using hcontrol.clm_comp hsubS
     have hreindex : ContDiffOn ℝ ⊤
-        (fun _ : H => reshapeCombinedJetsCLM row ι orders) U := contDiffOn_const
+        (fun _ : H => reshapeCombinedJetsFinCLM row ι orders) U := contDiffOn_const
     simpa only [direction] using hreindex.clm_comp hS
   have hdirectionV : ContDiffOn ℝ ⊤ directionV U := by
     have hS : ContDiffOn ℝ ⊤ (fun h => (control h).domRestrict S) U := by
@@ -156,18 +181,35 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
       have hsubV : ContDiffOn ℝ ⊤ (fun _ : H => V.subtypeL) U := contDiffOn_const
       simpa only [ContinuousLinearMap.domRestrict] using hS.clm_comp hsubV
     have hreindex : ContDiffOn ℝ ⊤
-        (fun _ : H => reshapeCombinedJetsCLM row ι orders) U := contDiffOn_const
+        (fun _ : H => reshapeCombinedJetsFinCLM row ι orders) U := contDiffOn_const
     simpa only [directionV] using hreindex.clm_comp hV
   have hdirectionSurjK : ∀ h ∈ K, Function.Surjective (directionV h) := by
     intro h hh y
-    obtain ⟨ys, hys⟩ := reshapeCombinedJetsCLM_surjective row ι orders y
-    have hzmem : nodeLift ⟨h, hh⟩ ∈ Knode := Set.mem_range_self ⟨h, hh⟩
-    obtain ⟨v, hv⟩ := hVsurj (nodeLift ⟨h, hh⟩) hzmem ys
+    obtain ⟨ys, hys⟩ := reshapeCombinedJetsFinCLM_surjective row ι orders y
+    have hzmem : nodeLift (⟨h, hh⟩ : K) ∈ Knode :=
+      Set.mem_range_self (⟨h, hh⟩ : K)
+    obtain ⟨v, hv⟩ := hVsurj (nodeLift (⟨h, hh⟩ : K)) hzmem ys
     refine ⟨v, ?_⟩
-    change reshapeCombinedJetsCLM row ι orders (control h v.1.1) = y
+    change reshapeCombinedJetsFinCLM row ι orders (control h v.1.1) = y
     have heq := projectiveNevanlinnaJetExpansionSmoothControl_eq_existing
-      a q (fun x : row × ι => orders x.2) mu η hη (nodeLift ⟨h, hh⟩)
-    rw [heq, hv, hys]
+      a q (fun x : row × ι => orders x.2) mu η hη
+        (nodeLift (⟨h, hh⟩ : K))
+    have heq' : control h =
+        linftyBochnerControl mu
+          (projectiveNevanlinnaJetExpansionColumn
+            a q (nodes h) (fun x : row × ι => orders x.2))
+          (memLp_projectiveNevanlinnaJetExpansionColumn η hη
+            (fun x : row × ι => orders x.2) mu (nodeLift (⟨h, hh⟩ : K))) := by
+      simpa only [control, nodeLift] using heq
+    have hv' :
+        (linftyBochnerControl mu
+          (projectiveNevanlinnaJetExpansionColumn
+            a q (nodes h) (fun x : row × ι => orders x.2))
+          (memLp_projectiveNevanlinnaJetExpansionColumn η hη
+            (fun x : row × ι => orders x.2) mu
+            (nodeLift (⟨h, hh⟩ : K)))) v.1.1 = ys := by
+      simpa only [nodeLift] using hv
+    rw [heq', hv', hys]
   let Usurj : Set H := U ∩ {h | Function.Surjective (directionV h)}
   have hUsurj : IsOpen Usurj :=
     isOpen_inter_surjective_continuousLinearMap_family

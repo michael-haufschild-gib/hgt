@@ -41,52 +41,45 @@ Source--Divisor Tomography and Optimal Positive Carriers}
 \maketitle
 
 \begin{abstract}
-We prove a complete Guinand--Weil formula for a sharp two-edge rectangle at its exact
-piecewise-linear regularity.  If $Q_L(a)$ is the corresponding Xi-divisor polarization, then
+We evaluate the Guinand--Weil formula for a sharp two-edge rectangle at its exact
+piecewise-linear boundary.  If $Q_L(a)$ is its Xi-divisor polarization, then
 \[
  Q_L(a)=-2\mathcal P_{L,a}+\mathcal A_{\infty,L,a}\qquad(0\le L\le a),
 \]
 where $\mathcal P_{L,a}$ is a finite von Mangoldt autocorrelation supported on
-$n\le e^{2a}$ and $\mathcal A_{\infty,L,a}$ is an absolutely convergent Gamma integral.  No
-smoothing limit or spectral cutoff remains.  At $a=\frac12\log n$, let
-$g_L(n)=-2\mathcal P_{L,a}+\Re\mathcal A_{\infty,L,a}$, and delete any finite prefix for which
-$L\le a$.  We prove the source-only criterion
+$n\le e^{2a}$ and $\mathcal A_{\infty,L,a}$ is an absolutely convergent Gamma integral.  The
+proof uses an explicit $R^{-1/2}+R^{-1}$ vertical-edge estimate and leaves no smoothing limit or
+spectral cutoff.  At $a=\frac12\log n$, let
+$g_L(n)=-2\mathcal P_{L,a}+\Re\mathcal A_{\infty,L,a}$.  For every fixed $L>0$ and every
+admissible tail we prove
 \[
- \mathrm{RH}\quad\Longleftrightarrow\quad g_L(n)\ge0
- \quad\hbox{at every retained sample}.
+ \mathrm{RH}\Longleftrightarrow g_L(n)\ge0\text{ at every retained sample}.
 \]
-Writing $g_{L,N}^-$ for the negative part of this explicit tail, for every $\alpha\ge0$ we prove
-the exact equivalence
+More generally, if $g_{L,N}^-$ is the negative part and $\delta_*$ is the supremal horizontal
+displacement of the Xi divisor, then for every $\alpha\ge0$,
 \[
-\begin{gathered}
- \XiR(\rho)=0\Longrightarrow \Re\rho\le\tfrac12+\alpha,\\
- \cS_-\text{ is holomorphic on }\Re s>1+\alpha,\\
- \widetilde D\text{ is holomorphic on }\Re u>\alpha-\tfrac12,\\
+ \Re\rho\le\tfrac12+\alpha\ (\XiR(\rho)=0)
+ \Longleftrightarrow
  \sum_{n\ge1}\frac{g_{L,N}^-(n)}{n^{1+\alpha+\varepsilon}}<\infty
- \quad\text{for every }\varepsilon>0.
-\end{gathered}
+ \quad(\varepsilon>0),
 \]
-Here $\cS_-$ is the canonical continuation of one explicit inverse-tilted dyadic prime source;
-its poles are exactly $s=\rho+\frac12$, with normalized residues equal to Xi multiplicities, and
-$\widetilde D$ is the intrinsic critical-Mellin defect with pole divisor $u=\rho-1$.  At
-$\alpha=0$ every displayed condition is equivalent to RH.  Under RH
-$\sigma_{\rm abs}(g_{L,N}^-)=-\infty$; under false RH it is exactly $1+\delta_*$, where
-$\delta_*$ is the supremal horizontal Xi displacement.  Finite exact positive splits conserve
-this threshold as their maximum channel abscissa, while arbitrary pointwise-summable positive
-covers conserve it in their aggregate.
+and
+\[
+ \sigma_{\rm abs}(g_{L,N}^-)=
+ \begin{cases}-\infty,&\mathrm{RH},\\1+\delta_*,&\neg\mathrm{RH}.
+ \end{cases}
+\]
+Thus one explicit prime--Gamma sequence records every right half-plane containing the Xi
+divisor.  Finite exact positive splits conserve this threshold as their maximum channel
+abscissa, and pointwise-summable positive covers conserve it in their aggregate.
 
-For the signed sharp-prime coefficient
-$c(n)=4(1-2^{-1/2})\sqrt n-2\sum_{n/2<k\le n}\Lambda(k)/\sqrt k$, we further prove that
-$c^-=2E$ is the least nonnegative correction making $c$ coefficientwise nonnegative.  Every
-admissible correction $a$ therefore satisfies $c^-\le a$ and
-$\sigma_{\rm abs}(c^-)\le\sigma_{\rm abs}(a)$; the converse choice $a=c^-$ makes this optimal at
-every abscissa threshold.  An admissible correction of abscissa at most $1+\alpha$ forces the
-same xi zero-free half-plane, and abscissa at most one proves RH.  Unconditionally
-$\sigma_{\rm abs}(c^-)\le3/2$; under false RH,
-$1+\delta_*\le\sigma_{\rm abs}(c^-)\le3/2$, and no admissible correction is summable at any
-$1+\alpha$ with $0\le\alpha<\delta_*$.  The paper does not prove either
-$g_L(n)\ge0$ on an admissible tail or the sufficient critical
-estimate $\sigma_{\rm abs}(c^-)\le1$, and therefore does not prove RH.
+Independently, an inverse-tilted dyadic prime source has a canonical continuation $\cS_-$ whose
+poles are exactly $s=\rho+\frac12$, with normalized residues equal to Xi multiplicities; its
+critical-Mellin factor has pole divisor $u=\rho-1$.  We also identify the least nonnegative
+correction of a signed sharp-prime source and its optimal abscissa cost.  These results isolate
+precise source and positivity obligations for Connes-type realizations.  The paper does not
+establish the required tail positivity or critical correction bound and therefore does not prove
+RH.
 \end{abstract}
 
 \noindent\textbf{2020 Mathematics Subject Classification.}
@@ -1064,6 +1057,11 @@ define
  \tag{6.5}
 \]
 The integral in \textup{(6.5)} is absolutely convergent.
+It is real already on the source side: because $h_{L,a}$ is real,
+$\overline{\widehat h_{L,a}(x-i)}=\widehat h_{L,a}(-x-i)$, while the real-type property of
+$\mathcal G$ gives
+$\overline{(\mathcal G'/\mathcal G)(3/2+ix)}=(\mathcal G'/\mathcal G)(3/2-ix)$; conjugation of
+the integral is therefore the change of variable $x\mapsto-x$.
 
 \begin{theorem}[Complete sharp rectangular Guinand--Weil formula]
 \label{thm:sharp-guinand-weil}
@@ -1183,7 +1181,30 @@ absolute convergence of
  =-\sum_{n\ge2}\frac{\Lambda(n)}{n^{3/2}}e^{-ix\log n}
  \tag{6.17}
 \]
-permits termwise integration.  Direct Fourier inversion of the compactly supported profile gives
+permits termwise integration.  We fix the Fourier normalization by
+\[
+ (\mathcal Ff)(\xi)=\int_{\R}f(t)e^{-2\pi i\xi t}\,dt,
+ \qquad
+ f(t)=\int_{\R}(\mathcal Ff)(\xi)e^{2\pi i\xi t}\,d\xi.
+\]
+Put $f_+(t)=h_{L,a}(t)e^t$ and $f_-(t)=h_{L,a}(-t)e^t$.  A change of variables gives
+\[
+ (f_-*f_+)(t)=e^tR_{L,a}(t),
+ \qquad
+ (\mathcal Ff_-)(\xi)=(\mathcal Ff_+)(\xi)
+   =F_{a,L}(1-2\pi i\xi),
+\]
+where the second equality uses the evenness of $h_{L,a}$.  Both functions and both Fourier
+transforms are integrable: compact support gives the first assertion, while the explicit
+quotient in \textup{(2.2)} gives $O(|\xi|^{-1})$ for each transform and hence
+$O(|\xi|^{-2})$ for their product.  The convolution theorem and pointwise Fourier inversion,
+applied to the continuous function $e^tR_{L,a}(t)$, therefore yield
+\[
+ \int_{\R}e^{2\pi i\xi t}F_{a,L}(1-2\pi i\xi)^2\,d\xi
+ =e^tR_{L,a}(t).
+\]
+Finally set $x=-2\pi\xi$ and use
+$\widehat h_{L,a}(x-i)=F_{a,L}(1+ix)$.  This proves, with all constants fixed,
 \[
  \frac1\pi\int_{\R}\widehat h_{L,a}(x-i)^2e^{-ixt}\,dx
  =2e^tR_{L,a}(t).
@@ -1200,6 +1221,18 @@ Since $h_{L,a}$ is supported in $[-a,a]$, its autocorrelation vanishes for $t>2a
 right side of \textup{(6.19)} is $-2\mathcal P_{L,a}$.  Taking the cofinal limit in
 \textup{(6.7)}--\textup{(6.9)} proves \textup{(6.6)}.
 \end{proof}
+
+\begin{remark}[Relation to the classical explicit formula]
+The function $R_{L,a}$ is compactly supported, continuous, and piecewise $C^1$; at each corner
+its value is the mean of its one-sided limits.  It therefore satisfies Barner's hypotheses after
+the standard centered change of variables.  Consequently the existence of an explicit formula
+for this autocorrelation is also obtainable by specializing the Guinand--Weil--Barner theorem.
+The proof above is included to establish the exact normalization \textup{(6.6)}, absolute
+convergence, and the sharp finite support $n\le e^{2a}$ directly in the conventions used here.
+The new claim is not a general explicit-formula principle, but the evaluated two-edge
+prime--Gamma identity together with the logarithmic sampling and transverse spectrum derived
+below.
+\end{remark}
 
 Let
 \[
@@ -1282,14 +1315,16 @@ $\delta_*>0$, so its two values also give the final equivalences.
 \end{proof}
 
 At $a=\frac12\log N$, the autocorrelation in \textup{(6.3)} is a sum of fixed and moving tents;
-the moving tent is supported in $Ne^{-2L}<n<N$.  Hence \textup{(6.15)} is a finite
+the moving tent is supported in $Ne^{-2L}<n<N$.  Hence \textup{(6.21)} is a finite
 prime--Gamma--polar source identity on the same arithmetic aperture used by the logarithmic
 carrier.  Theorem~\ref{thm:sharp-guinand-weil} is the cutoff-free counterpart of the finite
 Galerkin dictionary in~\cite{Groskin2026}.
 
-\section{One-source complete-divisor tomography}
+\section{An independent dyadic source and complete-divisor tomography}
 
-We now remove the target-defined coefficient from the source side.  Put
+This section constructs a second, logically independent source coordinate.  It is not asserted
+to coincide coefficientwise with $g_L$; the two sources meet only through their exact detection
+of the same xi half-plane bounds.  Put
 \[
  T_-(n)=\sum_{n/2<k\le n}
    \frac{\Lambda(k)}{\sqrt{k}}\frac{k}{n},\qquad
@@ -1750,8 +1785,10 @@ $m(\rho)$.  Equivalently, prove that this divisor is supported on $\Re u=-\frac1
 source divisor reconstructed by \textup{(7.10)} is supported on $\Re s=1$.  Any of these
 statements proves RH.  A Connes or
 Connes--Consani realization may obtain this through a positive relative trace, a Sonin
-compression, or a cofinal near-radical section, but the resulting scalar channel must agree with
-\textup{(7.14)}--\textup{(7.17)} and retain the multiplicity normalization \textup{(7.11)}.
+compression, or a cofinal near-radical section.  If it is claimed to realize the specific source
+constructed here, its scalar channel must agree with \textup{(7.14)}--\textup{(7.17)} and retain
+the multiplicity normalization \textup{(7.11)}.  No claim is made that every possible
+Connes-type architecture factors through this scalar coordinate.
 The sharp-window observable itself already has the exact prime--Gamma realization
 \textup{(6.6)}; the missing operator theorem is therefore a positivity or critical-energy
 estimate for this realized source, not an unproved passage from a discontinuous test function.
@@ -1763,8 +1800,9 @@ Theorem~\ref{thm:minimal-sharp-correction} makes the corresponding positivity ob
 canonical.  If a semilocal construction corrects the signed sharp-prime coefficient $c$ by any
 nonnegative source channel $a$ so that $c+a\ge0$, then it is forced to carry
 $c^-=2E$ pointwise.  Its analytic cost can therefore never be smaller than
-$\sigma_{\rm abs}(c^-)$.  Extra positive channels, alternate allocations, and positive operator
-majorants cannot bypass this payment; at best they realize the least correction itself.  The
+$\sigma_{\rm abs}(c^-)$.  Within this coefficientwise correction architecture, extra positive
+channels, alternate allocations, and positive operator majorants cannot bypass this payment; at
+best they realize the least correction itself.  The
 critical target is consequently the positive theorem
 \[
  \sigma_{\rm abs}(c^-)\le1.
@@ -1904,7 +1942,7 @@ Finally, the novelty claim is intentionally narrow.  The general Guinand--Weil--
 formula, Weil positivity, the Connes trace-formula
 architecture, the Euler logarithmic-derivative source transform, Landau's theorem, and the screw
 function are established parent mechanisms.  The inverse-tilted complete-divisor theorem is
-bridge infrastructure.  The candidate-new contribution is the fixed-window logarithmic
+bridge infrastructure.  The contribution claimed here is the fixed-window logarithmic
 compression, the exact evaluated sharp rectangular prime--Gamma specialization, its source-only tail-sign RH
 criterion and exact one-sided exponent
 spectrum, universal negative-channel abscissa, exact

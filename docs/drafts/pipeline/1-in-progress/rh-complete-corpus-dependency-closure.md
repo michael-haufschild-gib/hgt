@@ -329,7 +329,14 @@ provider would have to supply.
    the operator side, the complete ordered pair section factors as one exterior tensor
    `A_F(a) tensor B_F-B_F tensor A_F(a)`.  This removes the separate pair-face realization gap:
    the remaining source theorem is asymptotic Calkin collinearity of the seam-weighted and
-   unweighted one-particle Euler sections at the sub-root reciprocal-mass scale.
+   unweighted one-particle Euler sections at the sub-root reciprocal-mass scale.  A further
+   source-side value relation now closes coefficient discovery: at the horizontal projection,
+   `C_p` is exactly the derivative at local parameter zero of the FE-paired finite Euler flux
+   `log(p)[a p^(-s)/(1-a p^(-s))-a p^(-(1-s))/(1-a p^(-(1-s)))]`.  This is proved both pointwise
+   and in the compact-carrier Banach algebra.  What remains is a bounded transfer of that
+   empty-parameter tangent into the Sonin Calkin quotient, comparison with the actual-parameter
+   tangent at `a=1`, and the cofinal sub-root exterior estimate; it is no longer an unknown scalar
+   value relation.
 
 The continued prime--Gamma Cauchy kernel has a complete value interface with the CCM Mellin
 channel:
@@ -439,6 +446,10 @@ perturbation or of the determinant-line no-crossing law, not the search boundary
   actual Xi fibre with arbitrarily large finite pair energy.  This removes the extra normalization
   hypothesis from the paper-proven two-particle Sonin route; only its canonical source-side
   uniform Calkin bound and the actual tensor estimate remain open.
+- [PROVED] The height-free seam coefficient is the exact empty-parameter first derivative of a
+  finite FE-paired Euler flux, pointwise and in the compact-carrier Banach algebra.  Its total
+  reciprocal-prime energy equals the Xi seam reflection distance.  The Sonin route now lacks an
+  operator-topology transfer and cofinal rate, not a source origin for the coefficients.
 - [PROVED] The continued prime--Gamma trace and its RH-bearing Cauchy kernel factor globally through the canonical continued critical-Mellin defect; the defect agrees with the convergent polar--prime Laplace channel on its right-half-plane domain.
 - [PROVED] On the regular continued-source domain, the polar boundary terms cancel exactly against the rational part of the archimedean logarithmic derivative, leaving `i * (critical-Mellin defect + Gamma connection)`; polar--Gamma domination is therefore the original Xi source sign, not an independent discharge.
 - [PROVED] Static membership of every finite prime--Gamma moment block in the closure of the positive-aperture all-prime Sonin moment curve implies simultaneous block schedules, the existing per-test positive Gram coupling, and therefore RH; this is a source-value locus premise rather than a sign premise.

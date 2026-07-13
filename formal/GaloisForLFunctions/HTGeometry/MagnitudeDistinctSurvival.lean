@@ -65,4 +65,44 @@ theorem norm_aval {f : ℂ⟦X⟧} {b : ℕ → ℝ} (hb : ∀ n, ‖coeff n f�
   rw [norm_pow, hb n, ← Real.exp_nat_mul]
   ring_nf
 
+/-- **Difference at a large index.**  Two multi-indices of the same total count, one supported only on
+`[T,∞)`, that are unequal must differ at some index `≥ T`: agreeing on `[T,∞)` and matching counts
+forces the low part of the other to vanish too.  This is what makes the minimal-valuation atom's
+difference from any competitor land at a large scale, where `b` is super-increasing. -/
+theorem exists_diff_ge_of_count_eq {ν ν' : ℕ →₀ ℕ}
+    (hcount : (ν.sum fun _ k => k) = ν'.sum fun _ k => k)
+    {T : ℕ} (hν' : ∀ n, ν' n ≠ 0 → T ≤ n) (hne : ν ≠ ν') :
+    ∃ n, T ≤ n ∧ ν n ≠ ν' n := by
+  classical
+  by_contra hcon
+  simp only [not_exists, not_and, not_not] at hcon
+  apply hne
+  have hν'0 : ∀ n, n < T → ν' n = 0 := fun n hn => by
+    by_contra h; exact absurd (hν' n h) (not_le.mpr hn)
+  set U := ν.support ∪ ν'.support with hU
+  have hνsum : (ν.sum fun _ k => k) = ∑ n ∈ U, ν n := by
+    rw [Finsupp.sum]
+    exact Finset.sum_subset Finset.subset_union_left (fun n _ hn => Finsupp.notMem_support_iff.mp hn)
+  have hν'sum : (ν'.sum fun _ k => k) = ∑ n ∈ U, ν' n := by
+    rw [Finsupp.sum]
+    exact Finset.sum_subset Finset.subset_union_right (fun n _ hn => Finsupp.notMem_support_iff.mp hn)
+  rw [hνsum, hν'sum] at hcount
+  have hhigh : ∑ n ∈ U.filter (fun n => ¬ n < T), ν n = ∑ n ∈ U.filter (fun n => ¬ n < T), ν' n :=
+    Finset.sum_congr rfl (fun n hn => by rw [Finset.mem_filter] at hn; exact hcon n (not_lt.mp hn.2))
+  have e1 := Finset.sum_filter_add_sum_filter_not U (fun n => n < T) ν
+  have e2 := Finset.sum_filter_add_sum_filter_not U (fun n => n < T) ν'
+  have hloweq : ∑ n ∈ U.filter (fun n => n < T), ν n = ∑ n ∈ U.filter (fun n => n < T), ν' n := by omega
+  have hzero : ∑ n ∈ U.filter (fun n => n < T), ν' n = 0 :=
+    Finset.sum_eq_zero (fun n hn => by rw [Finset.mem_filter] at hn; exact hν'0 n hn.2)
+  rw [hzero] at hloweq
+  have hνlow : ∀ n, n < T → ν n = 0 := by
+    intro n hn
+    by_cases hnU : n ∈ U
+    · exact (Finset.sum_eq_zero_iff.mp hloweq) n (by rw [Finset.mem_filter]; exact ⟨hnU, hn⟩)
+    · exact Finsupp.notMem_support_iff.mp (fun h => hnU (Finset.mem_union_left _ h))
+  ext n
+  by_cases hnT : T ≤ n
+  · exact hcon n hnT
+  · rw [hνlow n (not_le.mp hnT), hν'0 n (not_le.mp hnT)]
+
 end GaloisForLFunctions
