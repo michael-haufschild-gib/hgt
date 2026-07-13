@@ -117,16 +117,45 @@ framework~\cite{Suzuki2026}.  Finite Galerkin values have also been identified e
 finite Guinand--Weil zero sums~\cite{Groskin2026}.
 
 The parent explicit-formula mechanism is due to Guinand and Weil, with Barner's extension giving
-a broader analytic test-function framework~\cite{Guinand1949,Weil1952,Barner1981}.  The sharp
-rectangle used below is not inserted formally into the classical smooth test space.
-Instead we prove its complete Guinand--Weil identity directly by symmetric contour exhaustion.
-The vertical edges vanish cofinally, the bottom edge is absolutely integrable, and the resulting
-zero sum equals an explicit finite von Mangoldt autocorrelation plus an archimedean integral.
-This is a theorem of the present work.  It closes the exact source realization at the
-piecewise-linear boundary and distinguishes the complete identity here from a finite Galerkin
-dictionary.  More importantly, it turns the fixed-width Weil criterion into a source-only one:
-for every fixed $L>0$, nonnegativity of the resulting finite-prime--Gamma samples on any
-admissible logarithmic tail is equivalent to RH.
+a broader analytic test-function framework~\cite{Guinand1949,Weil1952,Barner1981}.  After the
+sharp indicator is convolved with its reflection, its autocorrelation is compactly supported,
+continuous, and piecewise $C^1$, hence belongs to Barner's class.  We therefore do not claim a
+new general explicit-formula principle.  What we prove here is the exact evaluated two-edge
+prime--Gamma specialization, with all normalizations and endpoint conventions fixed, by an
+independent symmetric contour exhaustion.  The vertical edges satisfy an explicit
+$O(R^{-1/2})$ bound along divisor-avoiding edges, the bottom edge is absolutely integrable, and
+the zero polarization equals a finite von Mangoldt autocorrelation plus an archimedean integral.
+This closes the exact source realization at the sharp boundary and distinguishes the complete
+identity here from a finite Galerkin dictionary.  More importantly, it turns the fixed-width
+Weil criterion into a source-only one: for every fixed $L>0$, nonnegativity of the resulting
+finite-prime--Gamma samples on any admissible logarithmic tail is equivalent to RH.
+
+The headline theorem can be stated compactly.  For every $L>0$ and every integer cutoff
+$N\ge\lceil e^{2L}\rceil$, the explicitly defined prime--Gamma coefficient $g_L(n)$ satisfies
+\[
+ g_L(n)=Q_L\!\left(\tfrac12\log n\right)\qquad(n\ge N),
+\]
+and, for every $\alpha\ge0$,
+\[
+ \left(\Re\rho\le\tfrac12+\alpha\text{ for every xi zero }\rho\right)
+ \Longleftrightarrow
+ \sum_{n\ge1}\frac{g_{L,N}^-(n)}{n^{1+\alpha+\varepsilon}}<\infty
+ \quad(\varepsilon>0).
+ \tag{1.1}
+\]
+Consequently
+\[
+ \mathrm{RH}\Longleftrightarrow g_L(n)\ge0\ (n\ge N),
+ \qquad
+ \sigma_{\rm abs}(g_{L,N}^-)=
+ \begin{cases}
+ -\infty,&\mathrm{RH},\\
+ 1+\delta_*,&\neg\mathrm{RH}.
+ \end{cases}
+ \tag{1.2}
+\]
+This exact source spectrum is the main theorem; the subsequent divisor, energy, and positive
+carrier results identify its equivalent coordinates and its unavoidable positivity cost.
 
 There is also a classical superzeta literature in which Dirichlet series are formed directly over
 the Riemann zeros and their meromorphic polar structure is studied~\cite{Voros2003}.  That
@@ -198,8 +227,8 @@ positive-channel conservation, and the screw-coordinate identity.  The lower-los
 the closed ray beginning at the rightmost transverse divisor coordinate, so it yields every
 horizontal zero-free region, not only RH.
 
-The candidate novelty lies first in the complete sharp prime--Gamma Guinand--Weil identity at
-piecewise-linear regularity and its source-only RH spectrum: fixed positive width, arithmetic
+The principal contribution claimed here is the exact evaluated sharp prime--Gamma specialization
+and its source-only RH spectrum: fixed positive width, arithmetic
 logarithmic sampling, tail nonnegativity, cofinal divergence, the exact one-sided spectrum,
 universal negative-channel abscissae, finite maximum conservation, summable-family aggregate
 conservation, the least sharp-source positive correction, and observable multiplicity-exact pole
@@ -1079,61 +1108,116 @@ where
  \end{aligned}
  \tag{6.9}
 \]
-The bottom integrand is absolutely integrable.  The vertical-resolvent estimate has the following
-cofinal form: for every $X>0$ and $\eta>0$ there is an admissible $R>X$ for which
-$|V_R|<\eta$.  It uses only the reciprocal-square decay of the rectangular transform, the
-finite-order growth of xi, and avoidance of the discrete vertical zero coordinates.  Thus along
-one cofinal admissible sequence, $V_R\to0$ and $B_R$ tends to its full real-line integral.
+The vertical-resolvent estimate has the following quantitative form.  Put $p_w=-iw$ and
+\[
+ S_{3/2}=\sum_{w\in\cZ}|p_w|^{-3/2},\qquad
+ S_2=\sum_{w\in\cZ}|p_w|^{-2}.
+ \tag{6.10}
+\]
+Both sums are finite by the classical zero count.  For $c\ge0$ set
+\[
+ M_c=(1+e^{Lc})(e^{ac}+e^{(a-L)c}),\qquad
+ C_v=2(\log3+\pi),
+\]
+and
+\[
+ K_{L,a}=\frac32M_1^2C_v+24M_{3/2}^2+M_1^2.
+ \tag{6.11}
+\]
+The centered Hadamard product gives, away from the divisor,
+\[
+ \frac{\Xi_C'(z)}{\Xi_C(z)}
+ =\sum_{w\in\cZ}\frac{-z}{p_w(p_w-z)}.
+ \tag{6.12}
+\]
+For $R\ge2$ avoiding every $\Re p_w$, integration of a single summand on
+$z=R+iy$, $-1\le y\le1$, against $\widehat h_{L,a}(z)^2$ gives
+\[
+ \left|\int_{-1}^{1}\widehat h_{L,a}(R+iy)^2
+       \frac{-(R+iy)}{p_w(p_w-R-iy)}\,dy\right|
+ \le \frac{K_{L,a}}{R|p_w|}.
+ \tag{6.13}
+\]
+This bound is uniform in the horizontal distance from the edge to $p_w$.  Indeed, subtract the
+value of the analytic numerator at $y=\Im p_w$; the remainder is controlled by the derivative,
+whereas the constant part has the logarithmic primitive of $(R+iy-p_w)^{-1}$.  Since
+$|\Im p_w|<\frac12$, the two endpoint ratios lie between $1/2$ and $3$, giving the uniform
+logarithmic bound $C_v$.  Cauchy's estimate on the radius-$1/2$ circle gives the $M_{3/2}$ term
+in \textup{(6.11)}.  If $|p_w|\ge3R$, direct denominator separation improves
+\textup{(6.13)} to
+\[
+ \int_{-1}^{1}\left|\widehat h_{L,a}(R+iy)^2
+       \frac{-(R+iy)}{p_w(p_w-R-iy)}\right|dy
+ \le \frac{6M_1^2}{R|p_w|^2}.
+ \tag{6.14}
+\]
+Splitting the divisor at $|p_w|=3R$, using
+$|p_w|^{-1}\le\sqrt{3R}\,|p_w|^{-3/2}$ on the near part, and interchanging sum and integral on
+the far part yields the explicit full-edge estimate
+\[
+ |V_R|\le\frac1\pi\left(
+   \frac{K_{L,a}\sqrt{3R}}{R}S_{3/2}
+   +\frac{6M_1^2}{R}S_2\right).
+ \tag{6.15}
+\]
+The set of forbidden real coordinates is countable, so every nondegenerate interval contains an
+admissible $R$.  The right side of \textup{(6.15)} tends to zero.  Hence there is a cofinal
+admissible sequence with $V_R\to0$.
+
+Finally, $\widehat h_{L,a}(x-i)=O_{L,a}(|x|^{-1})$,
+$\mathcal G'/\mathcal G(3/2+ix)=O(\log(2+|x|))$, and the Euler logarithmic derivative is bounded
+on $\Re s=3/2$ by its absolutely convergent Dirichlet series.  The bottom integrand is therefore
+$O_{L,a}(\log(2+|x|)/(1+x^2))$.  Thus $B_R$ tends absolutely to its full real-line integral.
 
 On the bottom edge, $\frac12+i(x-i)=\frac32+ix$ and
 \[
  \frac{\Xi_C'(x-i)}{\Xi_C(x-i)}
  =i\left(\frac{\mathcal G'}{\mathcal G}
           +\frac{\zeta'}{\zeta}\right)\!\left(\frac32+ix\right).
- \tag{6.10}
+ \tag{6.16}
 \]
 The archimedean term in the limit of $B_R$ is exactly \textup{(6.5)}.  For the Euler term,
 absolute convergence of
 \[
  \frac{\zeta'}{\zeta}\!\left(\frac32+ix\right)
  =-\sum_{n\ge2}\frac{\Lambda(n)}{n^{3/2}}e^{-ix\log n}
- \tag{6.11}
+ \tag{6.17}
 \]
 permits termwise integration.  Direct Fourier inversion of the compactly supported profile gives
 \[
  \frac1\pi\int_{\R}\widehat h_{L,a}(x-i)^2e^{-ixt}\,dx
  =2e^tR_{L,a}(t).
- \tag{6.12}
+ \tag{6.18}
 \]
-Substituting $t=\log n$ in \textup{(6.11)}--\textup{(6.12)} yields
+Substituting $t=\log n$ in \textup{(6.17)}--\textup{(6.18)} yields
 \[
  \frac1\pi\int_{\R}\widehat h_{L,a}(x-i)^2
    \frac{\zeta'}{\zeta}\!\left(\frac32+ix\right)\,dx
  =-2\sum_{n\ge2}\frac{\Lambda(n)}{\sqrt n}R_{L,a}(\log n).
- \tag{6.13}
+ \tag{6.19}
 \]
 Since $h_{L,a}$ is supported in $[-a,a]$, its autocorrelation vanishes for $t>2a$; hence the
-right side of \textup{(6.13)} is $-2\mathcal P_{L,a}$.  Taking the cofinal limit in
+right side of \textup{(6.19)} is $-2\mathcal P_{L,a}$.  Taking the cofinal limit in
 \textup{(6.7)}--\textup{(6.9)} proves \textup{(6.6)}.
 \end{proof}
 
 Let
 \[
  B_{L,a}=\int_{\R}h_{L,a}(x)\cosh(x/2)\,dx.
- \tag{6.14}
+ \tag{6.20}
 \]
 The corrected observable therefore satisfies the exact source identity
 \[
  Q_L(a)-\mathcal A_{\infty,L,a}+2B_{L,a}^2
  =-2\mathcal P_{L,a}+2B_{L,a}^2.
- \tag{6.15}
+ \tag{6.21}
 \]
 
 At the arithmetic aperture define the entirely source-side coefficient
 \[
  g_L(n)=-2\mathcal P_{L,\frac12\log n}
        +\Re\mathcal A_{\infty,L,\frac12\log n}.
- \tag{6.16}
+ \tag{6.22}
 \]
 Call $N$ admissible for $L$ if $n\ge N$ implies
 $1\le n$ and $L\le\frac12\log n$, and set
@@ -1143,7 +1227,7 @@ $1\le n$ and $L\le\frac12\log n$, and set
   \max\{-g_L(n),0\},&n\ge N,\\
   0,&n<N.
  \end{cases}
- \tag{6.17}
+ \tag{6.23}
 \]
 Such a cutoff exists for every $L$.  The following is the headline consequence of the sharp
 formula.
@@ -1155,20 +1239,20 @@ Fix $L>0$ and any admissible cutoff $N$.
 \item For every $n\ge N$,
 \[
  g_L(n)=Q_L\!\left(\tfrac12\log n\right).
- \tag{6.18}
+ \tag{6.24}
 \]
 \item The following source-only sign condition is exact:
 \[
  \boxed{\quad\mathrm{RH}\quad\Longleftrightarrow\quad
  g_L(n)\ge0\ \text{ for every }n\ge N.\quad}
- \tag{6.19}
+ \tag{6.25}
 \]
 \item For every $\alpha\ge0$, all xi zeros satisfy
 $\Re\rho\le\frac12+\alpha$ if and only if
 \[
  \sum_{n\ge1}\frac{g_{L,N}^-(n)}{n^{1+\alpha+\varepsilon}}<\infty
  \qquad\text{for every }\varepsilon>0.
- \tag{6.20}
+ \tag{6.26}
 \]
 \item The absolute-convergence abscissa has the unconditional dichotomy
 \[
@@ -1177,7 +1261,7 @@ $\Re\rho\le\frac12+\alpha$ if and only if
   -\infty,&\mathrm{RH},\\
   1+\delta_*,&\neg\mathrm{RH}.
  \end{cases}
- \tag{6.21}
+ \tag{6.27}
 \]
 In particular, RH is equivalent both to
 $\sigma_{\rm abs}(g_{L,N}^-)=-\infty$ and to
@@ -1816,11 +1900,12 @@ analytic multiplicity times the nonvanishing dyadic Mellin factor, while the Wei
 residue uses the nonvanishing rectangular square weight.  Thus the weighted pole divisor, not the
 unweighted pole set, is the intrinsic observable.
 
-Finally, the novelty claim is intentionally narrow.  Weil positivity, the Connes trace-formula
+Finally, the novelty claim is intentionally narrow.  The general Guinand--Weil--Barner explicit
+formula, Weil positivity, the Connes trace-formula
 architecture, the Euler logarithmic-derivative source transform, Landau's theorem, and the screw
 function are established parent mechanisms.  The inverse-tilted complete-divisor theorem is
 bridge infrastructure.  The candidate-new contribution is the fixed-window logarithmic
-compression, the complete sharp rectangular prime--Gamma formula, its source-only tail-sign RH
+compression, the exact evaluated sharp rectangular prime--Gamma specialization, its source-only tail-sign RH
 criterion and exact one-sided exponent
 spectrum, universal negative-channel abscissa, exact
 finite positive-channel non-dilution, summable-family aggregate conservation, quantitative

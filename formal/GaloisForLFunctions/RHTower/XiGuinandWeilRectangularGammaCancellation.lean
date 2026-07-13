@@ -1438,4 +1438,100 @@ theorem normalizedRectangularBottomArchContribution_sub_two_mul_polar_sq
   push_cast
   ring
 
+/-- An aperture-independent integrable majorant for the tail of the Gamma cancellation kernel. -/
+def rectangularGammaCancellationTailMajorant (L t : ℝ) : ℝ :=
+  (5 * L / (1 - Real.exp (-1))) * Real.exp (-(t / 4))
+
+/-- One explicit aperture-independent bound for the Gamma--polar correction at fixed window length. -/
+def rectangularGammaPolarUniformBound (L : ℝ) : ℝ :=
+  (8 * L + 3) +
+    (∫ t : ℝ in Ioi 1, rectangularGammaCancellationTailMajorant L t) +
+      |(Real.eulerMascheroniConstant + Real.log Real.pi) * (2 * L)|
+
+theorem integrableOn_rectangularGammaCancellationTailMajorant (L : ℝ) :
+    IntegrableOn (rectangularGammaCancellationTailMajorant L) (Ioi 1) := by
+  have hexp : IntegrableOn (fun t : ℝ => Real.exp (-(t / 4))) (Ioi 1) := by
+    convert (integrableOn_exp_mul_Ioi (a := (-1 / 4 : ℝ)) (by norm_num) 1) using 1 <;>
+      ring_nf
+  exact hexp.const_mul _
+
+/-- **Uniform Gamma--polar remainder law.**  For fixed `L`, the exact cancellation remainder is
+bounded by one explicit constant for every aperture `a ≥ L`. -/
+theorem abs_rectangularGammaPolarCorrection_le_uniformBound
+    {L a : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) :
+    |rectangularGammaPolarCorrection L a| ≤ rectangularGammaPolarUniformBound L := by
+  let K : ℝ → ℝ := rectangularGammaCancellationKernel L a
+  let M : ℝ → ℝ := rectangularGammaCancellationTailMajorant L
+  have hK := integrableOn_rectangularGammaCancellationKernel hL ha
+  have hnearInt : IntegrableOn K (Ioc 0 1) := hK.mono_set (by
+    intro t ht
+    exact ht.1)
+  have htailInt : IntegrableOn K (Ioi 1) := hK.mono_set (by
+    intro t ht
+    change 0 < t
+    change 1 < t at ht
+    exact lt_trans zero_lt_one ht)
+  have hMInt : IntegrableOn M (Ioi 1) :=
+    integrableOn_rectangularGammaCancellationTailMajorant L
+  have hnear : |∫ t : ℝ in Ioc 0 1, K t| ≤ 8 * L + 3 := by
+    have h := norm_setIntegral_le_of_norm_le_const
+      (μ := volume) (f := K) (C := 8 * L + 3) measure_Ioc_lt_top fun t ht => by
+        simpa only [Real.norm_eq_abs, K] using
+          abs_rectangularGammaCancellationKernel_le_near_zero hL ha ht.1 ht.2
+    simpa only [Real.norm_eq_abs, Measure.real, ENNReal.toReal_one, ENNReal.ofReal_one,
+      mul_one, Real.volume_Ioc, sub_zero] using h
+  have htail : |∫ t : ℝ in Ioi 1, K t| ≤ ∫ t : ℝ in Ioi 1, M t := by
+    rw [← Real.norm_eq_abs]
+    apply norm_integral_le_of_norm_le hMInt
+    filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with t ht
+    rw [Real.norm_eq_abs]
+    simpa only [K, M, rectangularGammaCancellationTailMajorant] using
+      abs_rectangularGammaCancellationKernel_le_tail hL ha ht.le
+  have hcover : Ioc (0 : ℝ) 1 ∪ Ioi 1 = Ioi 0 := by
+    ext t
+    simp only [mem_union, mem_Ioc, mem_Ioi]
+    constructor
+    · rintro (h | h) <;> linarith
+    · intro h
+      by_cases ht : t ≤ 1
+      · exact Or.inl ⟨h, ht⟩
+      · exact Or.inr (by linarith)
+  have hsplit : (∫ t : ℝ in Ioi 0, K t) =
+      (∫ t : ℝ in Ioc 0 1, K t) + ∫ t : ℝ in Ioi 1, K t := by
+    rw [← hcover]
+    exact setIntegral_union (by
+      rw [disjoint_left]
+      intro t ht1 ht2
+      exact (not_lt_of_ge ht1.2) ht2) measurableSet_Ioi hnearInt htailInt
+  rw [rectangularGammaPolarCorrection,
+    show (∫ t : ℝ in Ioi 0, rectangularGammaCancellationKernel L a t) =
+      ∫ t : ℝ in Ioi 0, K t by rfl, hsplit]
+  unfold rectangularGammaPolarUniformBound
+  dsimp only [M] at htail
+  calc
+    |(∫ t : ℝ in Ioc 0 1, K t) + (∫ t : ℝ in Ioi 1, K t) -
+        (Real.eulerMascheroniConstant + Real.log Real.pi) * (2 * L)| ≤
+      |∫ t : ℝ in Ioc 0 1, K t| + |∫ t : ℝ in Ioi 1, K t| +
+        |(Real.eulerMascheroniConstant + Real.log Real.pi) * (2 * L)| := by
+      calc
+        |_ - _| ≤ |(∫ t : ℝ in Ioc 0 1, K t) + (∫ t : ℝ in Ioi 1, K t)| +
+            |(Real.eulerMascheroniConstant + Real.log Real.pi) * (2 * L)| := abs_sub _ _
+        _ ≤ _ := by gcongr; exact abs_add_le _ _
+    _ ≤ (8 * L + 3) +
+        (∫ t : ℝ in Ioi 1, rectangularGammaCancellationTailMajorant L t) +
+          |(Real.eulerMascheroniConstant + Real.log Real.pi) * (2 * L)| := by
+      gcongr
+
+theorem rectangularGammaPolarUniformBound_nonneg {L : ℝ} (hL : 0 ≤ L) :
+    0 ≤ rectangularGammaPolarUniformBound L := by
+  exact le_trans (abs_nonneg (rectangularGammaPolarCorrection L L))
+    (abs_rectangularGammaPolarCorrection_le_uniformBound hL le_rfl)
+
+theorem exists_nonnegative_uniform_bound_rectangularGammaPolarCorrection
+    {L : ℝ} (hL : 0 ≤ L) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ a : ℝ, L ≤ a → |rectangularGammaPolarCorrection L a| ≤ C := by
+  exact ⟨rectangularGammaPolarUniformBound L,
+    rectangularGammaPolarUniformBound_nonneg hL,
+    fun _ ha => abs_rectangularGammaPolarCorrection_le_uniformBound hL ha⟩
+
 end RHTower

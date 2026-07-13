@@ -144,6 +144,50 @@ theorem orbitwisePrimeSeamWeightedNormSq_one_sub_star
   congr 1
   ring
 
+/-- The prime logarithmic Hilbert feature at a right-half-plane node. -/
+def primeLogHilbertFeature (s : ℂ) (p : ℕ) : ℂ :=
+  (((Real.sqrt (p : ℝ))⁻¹ : ℝ) : ℂ) *
+    ((Real.log (p : ℝ) : ℂ) * (((p : ℝ) : ℂ) ^ (-s)))
+
+/-- The canonical seam is the difference of the Schwarz and FE prime features, coordinate by
+coordinate. -/
+theorem primeLogHilbertFeature_reflectionDifference
+    (rho : ℂ) (p : Nat.Primes) :
+    primeLogHilbertFeature ((starRingEnd ℂ) rho) (p : ℕ) -
+        primeLogHilbertFeature (1 - rho) (p : ℕ) =
+      (((Real.sqrt (p : ℝ))⁻¹ : ℝ) : ℂ) *
+        orbitwiseNatPrimeSeamCharge (p : ℕ) rho := by
+  simp only [primeLogHilbertFeature, orbitwiseNatPrimeSeamCharge,
+    orbitwiseScaleSeamCharge]
+  ring
+
+/-- Per-coordinate squared-distance form of the seam energy. -/
+theorem norm_sq_primeLogHilbertFeature_reflectionDifference
+    (rho : ℂ) (p : Nat.Primes) :
+    ‖primeLogHilbertFeature ((starRingEnd ℂ) rho) (p : ℕ) -
+        primeLogHilbertFeature (1 - rho) (p : ℕ)‖ ^ 2 =
+      ‖orbitwiseNatPrimeSeamCharge (p : ℕ) rho‖ ^ 2 / (p : ℝ) := by
+  rw [primeLogHilbertFeature_reflectionDifference, norm_mul,
+    Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (inv_nonneg.mpr (Real.sqrt_nonneg _))]
+  have hp : (0 : ℝ) ≤ (p : ℝ) := by exact_mod_cast p.prop.pos.le
+  rw [mul_pow, inv_pow, Real.sq_sqrt hp]
+  ring
+
+/-- Squared prime-feature distance between the Schwarz and FE endpoints. -/
+def primeLogHilbertReflectionDistanceSq (rho : ℂ) : ℝ :=
+  ∑' p : Nat.Primes,
+    ‖primeLogHilbertFeature ((starRingEnd ℂ) rho) (p : ℕ) -
+      primeLogHilbertFeature (1 - rho) (p : ℕ)‖ ^ 2
+
+/-- The limiting one-particle seam coefficient is exactly the Schwarz--FE prime-feature distance. -/
+theorem primeLogHilbertReflectionDistanceSq_eq_orbitwisePrimeSeamWeightedNormSq
+    (rho : ℂ) :
+    primeLogHilbertReflectionDistanceSq rho = orbitwisePrimeSeamWeightedNormSq rho := by
+  unfold primeLogHilbertReflectionDistanceSq orbitwisePrimeSeamWeightedNormSq
+  apply tsum_congr
+  exact norm_sq_primeLogHilbertFeature_reflectionDifference rho
+
 /-- Prime-only logarithmic second moment. -/
 def primeLogSquareMoment (beta : ℝ) : ℝ :=
   ∑' p : Nat.Primes, (Real.log (p : ℝ)) ^ 2 * (p : ℝ) ^ (-beta)

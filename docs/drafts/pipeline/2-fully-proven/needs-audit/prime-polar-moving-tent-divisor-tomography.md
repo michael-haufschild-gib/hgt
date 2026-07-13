@@ -362,8 +362,27 @@ analysis, in `formal/GaloisForLFunctions/HTGeometry/RiemannSumCell.lean`:
 - `norm_sum_smul_sub_integral_le` — the summed uniform bound `‖∑_{k<N} h·f(a+kh) − ∫_a^{a+Nh} f‖ ≤
   N·K·h²/2 = K·(b−a)·h/2` over the uniform grid, obtained by iterating the single-cell bound.
 
-Both are mathlib-missing (mathlib has no Riemann-sum error theory).  The remaining open chain is the
-summable error series `(19)` (applying this bound to the concrete moving-tent integrand) and the polar
+Both are mathlib-missing (mathlib has no Riemann-sum error theory).
+
+The **concrete moving-tent-of-log integrand and its Lipschitz modulus `(14)`** are now also formalized
+axiom-clean.  In `RiemannSumCell.lean` (reusable analysis):
+
+- `lipschitzOnWith_cexp_neg_mul` — `x ↦ e^{-wx}` is `(‖w‖·e^{|Re w|·T})`-Lipschitz on `[0,T]`;
+- `lipschitzOnWith_mul_of_bound` — product of two bounded Lipschitz functions valued in a normed ring
+  is Lipschitz (mathlib's `LipschitzOnWith.mul` covers only a `SeminormedCommGroup`, excluding `ℂ`);
+- `lipschitzOnWith_log_Ici_one` — `Real.log` is `1`-Lipschitz on `[1,∞)`.
+
+In `TentMellinFactor.lean`:
+
+- `gTent` — the integrand `g_s(u) = τ_L(log u)·e^{-s·log u}`, with `gTent_eq_cpow` identifying it with
+  `τ_L(log u)·u^{-s}` for `u > 0`;
+- `gTent_lipschitzOnWith` — `g_s` is Lipschitz on the multiplicative support `[1, e^{2L}]` with the
+  explicit finite constant `L·(‖s‖·e^{|Re s|·2L}) + e^{|Re s|·2L}`, assembled from the three bricks
+  above via `log`-composition and the bounded-product rule.
+
+This discharges the discretization-modulus half of `(14)`--`(15)`: `gTent_lipschitzOnWith` feeds
+`norm_sum_smul_sub_integral_le` directly.  The remaining open chain is the per-`s` summable error
+series `(19)` (summing the cell bound against `Λ(k)/√k` via the Euler product) and the polar
 cancellation/residue `(23)`--`(25)` on the subsuming card.
 
 ## Gates

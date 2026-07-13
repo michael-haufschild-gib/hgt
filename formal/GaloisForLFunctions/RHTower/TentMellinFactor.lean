@@ -1,5 +1,6 @@
 import Mathlib
 import GaloisForLFunctions.RHTower.RectangularWindowAmplitudeAnalytic
+import GaloisForLFunctions.HTGeometry.RiemannSumCell
 
 /-!
 # The rectangular-window and tent Mellin factors
@@ -16,7 +17,7 @@ being the additive self-convolution of the box).  These are entire in `s` and su
 -/
 
 open scoped Real
-open intervalIntegral
+open intervalIntegral HTGeometry
 
 namespace RHTower
 
@@ -151,5 +152,65 @@ of the shifted entire amplitude `A_L`, `s ↦ A_L(s−1)²` is holomorphic on al
 theorem tentMellinFactor_differentiable (L : ℝ) :
     Differentiable ℂ (fun s : ℂ => (rectangularWindowAmplitude L (s - 1)) ^ 2) :=
   ((rectangularWindowAmplitude_differentiable L).comp (differentiable_id.sub_const 1)).pow 2
+
+/-- The moving-tent-of-log integrand `g_s(u) = τ_L(log u)·e^{-s·log u}` (§3, eq. 13), written with the
+exponential in place of the complex power.  On `u > 0` this is exactly `τ_L(log u)·u^{-s}`
+(`gTent_eq_cpow`). -/
+noncomputable def gTent (L : ℝ) (s : ℂ) (u : ℝ) : ℂ :=
+  (tentFn L (Real.log u) : ℂ) * Complex.exp (-s * (Real.log u : ℂ))
+
+/-- The exponential form of `g_s` coincides with the complex power `τ_L(log u)·u^{-s}` for `u > 0`. -/
+theorem gTent_eq_cpow (L : ℝ) (s : ℂ) {u : ℝ} (hu : 0 < u) :
+    gTent L s u = (tentFn L (Real.log u) : ℂ) * (↑u : ℂ) ^ (-s) := by
+  have hune : (↑u : ℂ) ≠ 0 := by exact_mod_cast hu.ne'
+  have key : (↑u : ℂ) ^ (-s) = Complex.exp (-s * (Real.log u : ℂ)) := by
+    rw [Complex.cpow_def_of_ne_zero hune, Complex.ofReal_log hu.le,
+      mul_comm (Complex.log (↑u)) (-s)]
+  rw [gTent, key]
+
+/-- **The moving-tent-of-log integrand is Lipschitz on its support** (§3, eq. 14).  `g_s` is Lipschitz
+on `[1, e^{2L}]` — the multiplicative window covering the tent's support — with a finite constant.  The
+constant is `L·(‖s‖·e^{|Re s|·2L}) + e^{|Re s|·2L}`, built from: `τ_L(log u)` (`1`-Lipschitz `τ_L`
+composed with `1`-Lipschitz `log` on `[1,∞)`, bounded by `L`) times `u^{-s} = e^{-s·log u}` (the
+Laplace exponential composed with `log`, bounded by `e^{|Re s|·2L}`), via the bounded-product Lipschitz
+rule.  This is the modulus of continuity underlying the uniform Riemann-sum estimate `(15)`. -/
+theorem gTent_lipschitzOnWith (L : ℝ) (hL : 0 ≤ L) (s : ℂ) :
+    ∃ C : NNReal, LipschitzOnWith C (gTent L s) (Set.Icc 1 (Real.exp (2 * L))) := by
+  have hsub : Set.Icc (1 : ℝ) (Real.exp (2 * L)) ⊆ Set.Ici 1 := fun u hu => hu.1
+  have hlog : LipschitzOnWith 1 Real.log (Set.Icc 1 (Real.exp (2 * L))) :=
+    lipschitzOnWith_log_Ici_one.mono hsub
+  have htentC : LipschitzWith (1 * 1) (fun x : ℝ => (↑(tentFn L x) : ℂ)) :=
+    (Complex.isometry_ofReal.lipschitz).comp (lipschitzWith_tentFn L)
+  have hA : LipschitzOnWith ((1 * 1) * 1) (fun u => (↑(tentFn L (Real.log u)) : ℂ))
+      (Set.Icc 1 (Real.exp (2 * L))) :=
+    htentC.lipschitzOnWith.comp hlog (Set.mapsTo_univ _ _)
+  have hmaps : Set.MapsTo Real.log (Set.Icc 1 (Real.exp (2 * L))) (Set.Icc 0 (2 * L)) := by
+    intro u hu
+    refine ⟨Real.log_nonneg hu.1, ?_⟩
+    calc Real.log u ≤ Real.log (Real.exp (2 * L)) := Real.log_le_log (by linarith [hu.1]) hu.2
+      _ = 2 * L := Real.log_exp _
+  have hB : LipschitzOnWith (_ * 1) (fun u => Complex.exp (-s * (Real.log u : ℂ)))
+      (Set.Icc 1 (Real.exp (2 * L))) :=
+    (lipschitzOnWith_cexp_neg_mul s (2 * L) (by positivity)).comp hlog hmaps
+  have hboundA : ∀ u ∈ Set.Icc (1 : ℝ) (Real.exp (2 * L)), ‖(↑(tentFn L (Real.log u)) : ℂ)‖ ≤ L := by
+    intro u hu
+    have hlu0 : 0 ≤ Real.log u := Real.log_nonneg hu.1
+    have hlu2 : Real.log u ≤ 2 * L := (hmaps hu).2
+    rw [Complex.norm_real, Real.norm_eq_abs, tentFn_eq_min,
+      abs_of_nonneg (le_min hlu0 (by linarith))]
+    have h1 := min_le_left (Real.log u) (2 * L - Real.log u)
+    have h2 := min_le_right (Real.log u) (2 * L - Real.log u)
+    linarith
+  have hboundB : ∀ u ∈ Set.Icc (1 : ℝ) (Real.exp (2 * L)),
+      ‖Complex.exp (-s * (Real.log u : ℂ))‖ ≤ Real.exp (|s.re| * (2 * L)) := by
+    intro u hu
+    have hlu0 : 0 ≤ Real.log u := Real.log_nonneg hu.1
+    have hlu2 : Real.log u ≤ 2 * L := (hmaps hu).2
+    rw [Complex.norm_exp]
+    apply Real.exp_le_exp.mpr
+    have hre : (-s * (Real.log u : ℂ)).re = -(s.re) * Real.log u := by simp [Complex.mul_re]
+    rw [hre]
+    nlinarith [le_abs_self s.re, neg_abs_le s.re, abs_nonneg s.re, hlu0, hlu2]
+  exact ⟨_, lipschitzOnWith_mul_of_bound hA hB hboundA hboundB⟩
 
 end RHTower

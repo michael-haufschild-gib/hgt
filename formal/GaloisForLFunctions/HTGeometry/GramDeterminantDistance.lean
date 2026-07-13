@@ -142,4 +142,70 @@ theorem gramSchmidt_causal (f g : ℕ → E) (n : ℕ) (h : ∀ m, m ≤ n → f
     have hin : i < n := Finset.mem_Iio.mp hi
     rw [ih i hin (fun m hm => h m (hm.trans hin.le))]
 
+/-- **Gram–Schmidt commutes with the `Fin (n+1)`-restriction of an `ℕ`-family.**  The Gram–Schmidt
+vector of the finite restriction `fun i : Fin (n+1) => w i` at index `k` equals the Gram–Schmidt
+vector of the full `ℕ`-indexed family `w` at the coerced index `↑k`.  Both `ℕ` and `Fin (n+1)` are
+well-ordered with bottom, so the causal recursion (`gramSchmidt_def`) reindexes across the
+order-embedding `Fin.val`; this is what lets a `Fin`-indexed Gram determinant be read off the single
+`ℕ`-indexed Gram–Schmidt sequence. -/
+theorem gramSchmidt_fin_val (w : ℕ → E) (n : ℕ) (k : Fin (n + 1)) :
+    gramSchmidt ℂ (fun i : Fin (n + 1) => w (i : ℕ)) k = gramSchmidt ℂ w (k : ℕ) := by
+  have key : ∀ m : ℕ, ∀ hm : m < n + 1,
+      gramSchmidt ℂ (fun i : Fin (n + 1) => w (i : ℕ)) ⟨m, hm⟩ = gramSchmidt ℂ w m := by
+    intro m
+    induction m using Nat.strong_induction_on with
+    | _ m ih =>
+      intro hm
+      rw [gramSchmidt_def ℂ (fun i : Fin (n + 1) => w (i : ℕ)) ⟨m, hm⟩, gramSchmidt_def ℂ w m]
+      congr 1
+      refine Finset.sum_bij' (fun (i : Fin (n + 1)) _ => (i : ℕ))
+        (fun (j : ℕ) hj => (⟨j, lt_trans (Finset.mem_Iio.mp hj) hm⟩ : Fin (n + 1)))
+        ?_ ?_ ?_ ?_ ?_
+      · intro a ha
+        rw [Finset.mem_Iio] at ha ⊢
+        exact ha
+      · intro b hb
+        rw [Finset.mem_Iio] at hb ⊢
+        exact hb
+      · intro a ha; rfl
+      · intro b hb; rfl
+      · intro a ha
+        have haf : a < (⟨m, hm⟩ : Fin (n + 1)) := Finset.mem_Iio.mp ha
+        have hlt : (a : ℕ) < m := haf
+        have hia := ih (a : ℕ) hlt a.2
+        rw [Fin.eta] at hia
+        rw [hia]
+  exact key (k : ℕ) k.2
+
+/-- **The consecutive monomial Gram determinant telescopes.**  For a linearly independent
+`ℕ`-indexed family `w`, adding one vector multiplies the Gram determinant by exactly one new factor:
+`det Gₙ₊₁ = det Gₙ · ⟪gsₙ, gsₙ⟫`, where `gs` is the (single, `ℕ`-indexed) Gram–Schmidt sequence.
+Hence the ratio `det Gₙ₊₁ / det Gₙ = ‖gsₙ‖²` — the squared distance from `wₙ` to `span{w₀,…,wₙ₋₁}`,
+the monic orthogonal polynomial norm of the first Szegő limit theorem. -/
+theorem det_gram_fin_succ (w : ℕ → E) (N : ℕ)
+    (h1 : LinearIndependent ℂ (fun i : Fin (N + 1) => w (i : ℕ))) :
+    (Matrix.gram ℂ (fun i : Fin (N + 1) => w (i : ℕ))).det
+      = (Matrix.gram ℂ (fun i : Fin N => w (i : ℕ))).det
+        * ⟪gramSchmidt ℂ w N, gramSchmidt ℂ w N⟫_ℂ := by
+  have hcast : (fun i : Fin N => w (i : ℕ))
+      = (fun i : Fin (N + 1) => w (i : ℕ)) ∘ Fin.castSucc := by
+    funext i; simp
+  have h0 : LinearIndependent ℂ (fun i : Fin N => w (i : ℕ)) := by
+    rw [hcast]; exact h1.comp _ (Fin.castSucc_injective N)
+  rw [det_gram_eq_prod _ h1, det_gram_eq_prod _ h0]
+  have e1 : ∀ k : Fin (N + 1), ⟪gramSchmidt ℂ (fun i : Fin (N + 1) => w (i : ℕ)) k,
+      gramSchmidt ℂ (fun i : Fin (N + 1) => w (i : ℕ)) k⟫_ℂ
+      = ⟪gramSchmidt ℂ w (k : ℕ), gramSchmidt ℂ w (k : ℕ)⟫_ℂ := fun k => by
+    rw [gramSchmidt_fin_val]
+  have e0 : ∀ k : Fin N, ⟪gramSchmidt ℂ (fun i : Fin N => w (i : ℕ)) k,
+      gramSchmidt ℂ (fun i : Fin N => w (i : ℕ)) k⟫_ℂ
+      = ⟪gramSchmidt ℂ w (k : ℕ), gramSchmidt ℂ w (k : ℕ)⟫_ℂ := fun k => by
+    rw [gramSchmidt_fin_val]
+  simp_rw [e1, e0]
+  rw [Fin.prod_univ_eq_prod_range
+        (fun m => ⟪gramSchmidt ℂ w m, gramSchmidt ℂ w m⟫_ℂ) (N + 1),
+      Fin.prod_univ_eq_prod_range
+        (fun m => ⟪gramSchmidt ℂ w m, gramSchmidt ℂ w m⟫_ℂ) N,
+      Finset.prod_range_succ]
+
 end GaloisForLFunctions.HTGeometry
