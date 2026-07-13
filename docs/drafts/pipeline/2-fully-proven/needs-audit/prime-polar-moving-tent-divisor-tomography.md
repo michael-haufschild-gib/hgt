@@ -342,6 +342,21 @@ factor `I_L(s)=A_L(s-1)^2` — is now available through
 cancellation `(23)`, and residue `(25)` are the open ANT chain tracked on the subsuming card; no
 separate file is added here.
 
+Update: the **convolution/Mellin identity `(10)` itself** (Lean program step 2), not merely
+entireness, is now formalized axiom-clean in `formal/GaloisForLFunctions/RHTower/TentMellinFactor.lean`:
+
+- `boxLaplace_eq` / `boxLaplace_zero` — the box factor `A_L(w) = ∫₀ᴸ e^{-wx}dx = (1-e^{-wL})/w`,
+  with removable value `L` at `w = 0`;
+- `tentLaplace_eq_boxLaplace_sq` — the exact identity `∫₀²ᴸ τ_L(x) e^{-wx}dx = A_L(w)²` for the tent
+  window `τ_L` (`= x` on `[0,L]`, `2L-x` on `[L,2L]`), i.e. `I_L(s) = A_L(s-1)²`, proved by splitting
+  at `L` and computing the two pieces;
+- `integral_id_mul_cexp` — the primitive `∫ₐᵇ x e^{cx}dx = [(cx-1)e^{cx}/c²]ₐᵇ`, a reusable
+  mathlib-missing lemma the split needs.
+
+This closes step 2 of the Lean program (the tent Mellin factor `(10)`); the open chain remains the
+uniform Riemann-sum estimate `(15)`, the summable error series `(19)`, and the polar
+cancellation/residue `(23)`--`(25)` on the subsuming card.
+
 ## Gates
 
 - [x] complete paper proof

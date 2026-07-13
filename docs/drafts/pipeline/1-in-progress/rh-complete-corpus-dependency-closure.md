@@ -303,6 +303,21 @@ provider would have to supply.
    `XiHurwitzAnchorPrimeTwoSeamsVanish <-> E_Xi=0`.  Hence common-charge vanishing is not an
    additional open input: regular-Cauchy source-core nonnegativity discharges it automatically.
    The only surviving mathematical gap in this splice is that source-core sign itself.
+7. **Two-particle Sonin coherence versus common-charge normalization.**  The canonical all-prime
+   seam potentials
+   `C_p(rho)=log(p)(p^(-conj rho)-p^(-(1-rho)))` tend to zero along cofinal primes throughout the
+   open strip.  Therefore any theorem forcing these potentials to be pairwise coherent already
+   forces their common value to vanish; no archimedean normalization input remains.  The stage-2
+   tensor-square Sonin theorem supplies `uniform Calkin bound -> bounded pair energy` on paper.
+   Lean now proves that uniformly bounded finite reciprocal-prime pair energy is equivalent to
+   coherence, and on all Xi fibres equivalent to RH.  A cross-corpus value relation factors this
+   energy exactly as `2 (sum 1/p)(sum |C_p|^2/p) - 2 |sum C_p/p|^2`, reusing the theta
+   square-index weighted-variance theorem.  Thus the arithmetic obstruction is a mass-amplified
+   one-particle seam norm modulo one rank-one mean channel.  The exact remaining interface is the
+   source-pure operator realization and uniform Calkin bound, plus formalization of the actual
+   tensor lower estimate.  Existing all-prime
+   Hilbert--Schmidt results do not supply the bound: they delete the divergent principal prime
+   shell and assemble only the compact prime-power residual.
 
 The continued prime--Gamma Cauchy kernel has a complete value interface with the CCM Mellin
 channel:
@@ -406,6 +421,12 @@ perturbation or of the determinant-line no-crossing law, not the search boundary
 - [PROVED] The common first-prime Hurwitz-anchor/all-prime seam charge is reflection-odd, and
   vanishing of every Xi-indexed common seam is exactly `E_Xi=0`; it introduces no gap beyond the
   regular-Cauchy source-core sign.
+- [PROVED] The canonical seam charge tends to zero along cofinal primes, so all-prime coherence
+  forces the common charge to vanish and then forces RH.  Uniform boundedness of its finite
+  reciprocal-prime pair energies is now formally equivalent to RH, and false RH produces one
+  actual Xi fibre with arbitrarily large finite pair energy.  This removes the extra normalization
+  hypothesis from the paper-proven two-particle Sonin route; only its canonical source-side
+  uniform Calkin bound and the actual tensor estimate remain open.
 - [PROVED] The continued prime--Gamma trace and its RH-bearing Cauchy kernel factor globally through the canonical continued critical-Mellin defect; the defect agrees with the convergent polar--prime Laplace channel on its right-half-plane domain.
 - [PROVED] On the regular continued-source domain, the polar boundary terms cancel exactly against the rational part of the archimedean logarithmic derivative, leaving `i * (critical-Mellin defect + Gamma connection)`; polar--Gamma domination is therefore the original Xi source sign, not an independent discharge.
 - [PROVED] Static membership of every finite prime--Gamma moment block in the closure of the positive-aperture all-prime Sonin moment curve implies simultaneous block schedules, the existing per-test positive Gram coupling, and therefore RH; this is a source-value locus premise rather than a sign premise.
@@ -414,7 +435,7 @@ perturbation or of the determinant-line no-crossing law, not the search boundary
 - [PROVED] The new square-root vertical zeta bound does not close the Hardy-sign-change endpoint; that endpoint still requires a local completed-carrier second-moment floor dominating its closed first-moment budget and the remaining seam/Jensen transfer data.
 - [PROVED] Triviality or null-homotopy of the CCM determinant line over a spectral interval is blind to the Evans zero divisor: a trivial line admits sections with arbitrary finite zero divisors, and zero winding counts only signed crossings.  The positive replacement is a source homotopy through nowhere-zero sections, or boundary nonvanishing plus a source-derived one-sided crossing orientation; see `determinant-line-trivialization-zero-divisor-blindness.md`.
 - [EXTERNAL ACTIVE CORE] Prove one unconditional source-defined subpower lower bound for the rectangular family.  This exact `Q_{L,n}` route and its equivalent critical-Mellin, screw-curvature, and principal-phase growth estimates are owned by a concurrent agent and excluded from this lane.
-- [OPEN CORE] Independently pursue one of three non-sign producers: construct a source-selected nowhere-zero determinant-section homotopy or one-sided crossing law retaining the complete negative index; find genuinely additional structure of the coupled critical-Mellin--Gamma source beyond its Xi-kernel sign; or classify the simultaneous finite-block cluster points of the positive all-prime Sonin trace-moment curve and place the prime--Gamma vector in that closure.  None may be obtained from the Xi divisor, an RH-equivalent limiting measure, or a hidden zero-free assumption.
+- [OPEN CORE] Independently pursue one of four non-sign producers: construct a source-selected nowhere-zero determinant-section homotopy or one-sided crossing law retaining the complete negative index; prove the canonical two-particle Sonin finite sections uniformly bounded modulo compacts; find genuinely additional structure of the coupled critical-Mellin--Gamma source beyond its Xi-kernel sign; or classify the simultaneous finite-block cluster points of the positive all-prime Sonin trace-moment curve and place the prime--Gamma vector in that closure.  None may be obtained from the Xi divisor, an RH-equivalent limiting measure, or a hidden zero-free assumption.
 - [NOVELTY UNVERIFIED] Any completed glue theorem remains scientifically unclassified until the proof, parent-theory, literature, and rediscovery gates are run.
 
 ## Log

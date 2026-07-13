@@ -844,6 +844,48 @@ three-term edge current has integrated sum `o(n)|P_(2d+3)(z_n)|^2` on the anisot
 Estimating its value and derivative factors separately before the signed Haar summation would
 discard exactly the cancellation required near scheduled small values of `P`.
 
+The raw-tail moment estimate needed for the edge is now also formal.  The explicit Gaussian tail
+has every prescribed natural exponential rate: for each integer `p>0` there is `A_p<infinity`
+such that, for every `m>=0`,
+
+```text
+(1/m!) integral_(0..infinity) x^m |T(x)| dx
+ <= A_p p^(-(m+1)).                                      (12d.9f)
+```
+
+Lean proves `(12d.9f)` in `XiCTaylorThetaTailFiniteTranslationBounds`.  Combining it with the
+coefficient support `(12d.9b)` gives the following paper bound.  If `|z|<=R`, choose an integer
+`p>R+1`, put `lambda=(R+1)/p<1`, and let `a>=0`.  Then a constant `B_(p,R)` independent of `a,d`
+satisfies
+
+```text
+integral |T(x)| (|E_d(z;x,a)|+|partial_z E_d(z;x,a)|) dx
+ <= B_(p,R)(d+1)/(1-lambda) *
+    [lambda^(d+1) exp((R+1)a)
+     +sum_(j>d) ((R+1)a)^j/j!].                          (12d.9g)
+```
+
+Indeed, after applying `(12d.9f)`, every edge monomial with source degree `j` and shift degree
+`q` is bounded by `A_p p^(-1) lambda^j ((R+1)a)^q/q!`.  Since `j+q>2d`, either `j>d` or `q>d`;
+the first part is a geometric tail times the full exponential series and the second is an
+exponential tail times `sum_j lambda^j`.  Spectral differentiation contributes at most the
+degree factor `4d`, absorbed in the displayed prefactor.  Thus if `d_n>=n` and
+`a_n=O(n^(1/4))`, `(12d.9g)` is smaller than every inverse power of `n`.
+
+`[CONJECTURE]` The exact diagonal should now be taken at Haar depth
+`N_n=floor(n^(1/4))`, not after an unrestricted fixed-`(d,z)` limit.  The critical rescaling
+cancels the factors `2^k` against the two depth-`k` source amplitudes.  Hence the untruncated phase
+drifts in the finite diagonal have total size at worst `O(N_n^3)|P|^2=o(n)|P|^2` (the cubic count
+allows the pairwise balanced-packet decomposition), while every displacement is at most
+`(2N_n+1)log 2`.  Bound `(12d.9g)` then makes the complete translation edge exponentially small
+because every admissible odd schedule has `d_n>=n`.  The explicit Gaussian formula also gives a
+degree-uniform top-row bound by dominating all finite cosine/sine sections by `exp(Rx)` and using
+an exponential decay rate for `rho` larger than `R`; this makes the depth-`N_n` row smaller than
+every inverse power of `n`.  What remains before promotion is the exact integrated bookkeeping:
+prove that no unbalanced seam term survives when `(12d.9g)` is inserted into the formal balanced
+Haar packets.  The numerical check of the raw-tail edge shows the predicted exponential onset,
+including on a larger bounded fibre where the edge first grows for small degrees and then decays.
+
 `[CONJECTURE]` The remaining arithmetic possibility is a *polarized jump energy*: integrate in a
 diagonal or difference coordinate before resolving the jumps, so that paired jumps at
 `(log m,log n)` contribute a square or a summable top-edge defect rather than the asymmetric seam.

@@ -28,6 +28,13 @@ of the Riemann hypothesis.
     exactly twice the displayed dyadic-window overshoot.  Pointwise minimality, abscissa
     minimality, exact feasible-abscissa sublevel sets, quantitative zero-free transfer, and the
     critical RH corollary are all unconditional Lean theorems.
+  - The canonical correction has the unconditional square-root ceiling
+    `sigma_abs <= 3/2`.  Under false RH its abscissa lies between
+    `1+xiRightTransverseSup` and `3/2`; the lower endpoint is forced by the full transverse
+    divisor spectrum.
+  - Under false RH, every admissible sharp-source correction is now proved to diverge at each
+    abscissa `1+alpha` below the actual transverse exponent; the source correction cone therefore
+    retains the complete quantitative obstruction, not only the zero endpoint.
   - The manuscript capstones compile from the concrete Xi divisor, shifted-zeta carrier, Landau
     transfer, and global analytic remainder; there is no abstract proposition standing in for the
     hard input.

@@ -253,6 +253,7 @@ import GaloisForLFunctions.HTGeometry.FirstNonzeroJetComposition
 import GaloisForLFunctions.HTGeometry.FlatConnection
 import GaloisForLFunctions.HTGeometry.FormalMahlerDescent
 import GaloisForLFunctions.HTGeometry.FormalHypertranscendence
+import GaloisForLFunctions.HTGeometry.TaylorFormalBridge
 import GaloisForLFunctions.HTGeometry.FractionRingDerivation
 import GaloisForLFunctions.HTGeometry.FredholmDeterminant
 import GaloisForLFunctions.HTGeometry.FredholmDeterminantExamples
@@ -455,3 +456,4 @@ import GaloisForLFunctions.HTGeometry.FiniteBlaschkeBoundary
 import GaloisForLFunctions.HTGeometry.HardyRadialConvergence
 import GaloisForLFunctions.HTGeometry.FourierParseval
 import GaloisForLFunctions.HTGeometry.HardyBoundaryValues
+import GaloisForLFunctions.HTGeometry.GramDeterminantDistance

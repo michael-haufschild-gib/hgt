@@ -174,6 +174,32 @@ theorem integrable_rectangularEulerFourierKernel_mul_verticalResolvent
     hF.mul_bdd hdcont.aestronglyMeasurable
       (Filter.Eventually.of_forall hdbound)
 
+theorem integrable_rectangularEulerFourierKernel_mul_gaussDigammaSeriesTerm
+    (L a : ℝ) (n : ℕ) :
+    Integrable (fun ξ : ℝ =>
+      rectangularTwoEdgeTransform L a
+          (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ 2 *
+        gaussDigammaSeriesTerm
+          (((3 / 4 : ℝ) : ℂ) - ((Real.pi * ξ : ℝ) : ℂ) * I) n) := by
+  let F : ℝ → ℂ := fun ξ =>
+    rectangularTwoEdgeTransform L a
+      (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ 2
+  let c : ℝ := (n : ℝ) + 3 / 4
+  have hc : 0 < c := by dsimp only [c]; positivity
+  have hF : Integrable F := by
+    simpa only [F] using integrable_rectangularTwoEdgeTransform_eulerLine_sq L a
+  have hconst : Integrable (fun ξ : ℝ => F ξ * (1 / ((n : ℂ) + 1))) :=
+    hF.mul_const _
+  have hres : Integrable (fun ξ : ℝ =>
+      F ξ * (((c : ℝ) : ℂ) - ((Real.pi * ξ : ℝ) : ℂ) * I)⁻¹) := by
+    simpa only [F] using
+      integrable_rectangularEulerFourierKernel_mul_verticalResolvent hc L a
+  apply (hconst.sub hres).congr
+  filter_upwards with ξ
+  simp only [Pi.sub_apply, F, c, gaussDigammaSeriesTerm]
+  push_cast
+  ring
+
 /-- One Gauss-series summand paired with the rectangular Fourier square is the difference between
 the zero-lag autocorrelation and one positive vertical-resolvent Laplace value. -/
 theorem integral_rectangularEulerFourierKernel_mul_gaussDigammaSeriesTerm

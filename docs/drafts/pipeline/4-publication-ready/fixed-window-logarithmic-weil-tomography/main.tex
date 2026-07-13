@@ -59,7 +59,7 @@ logarithmically sampled tail.  For every $\alpha\ge0$ we prove the exact equival
 \end{gathered}
 \]
 At $\alpha=0$ each condition is equivalent to RH.  If RH is false, then
-$\sigma_{\rm abs}(q_{L,N}^-)=1+\delta_*$, where $\delta_*$ is the maximal horizontal divisor
+$\sigma_{\rm abs}(q_{L,N}^-)=1+\delta_*$, where $\delta_*$ is the supremal horizontal divisor
 displacement.  Finite exact nonnegative splits conserve this abscissa as their maximum channel
 abscissa; arbitrary pointwise-summable positive covers conserve it in their aggregate.
 
@@ -69,8 +69,11 @@ $c^-=2E$ is the least nonnegative correction making $c$ coefficientwise nonnegat
 admissible correction $a$ therefore satisfies $c^-\le a$ and
 $\sigma_{\rm abs}(c^-)\le\sigma_{\rm abs}(a)$; the converse choice $a=c^-$ makes this optimal at
 every abscissa threshold.  An admissible correction of abscissa at most $1+\alpha$ forces the
-same xi zero-free half-plane, and abscissa at most one proves RH.  All claims are formalized
-unconditionally in Lean~4.  The paper does not prove the remaining critical estimate
+same xi zero-free half-plane, and abscissa at most one proves RH.  Unconditionally
+$\sigma_{\rm abs}(c^-)\le3/2$; under false RH,
+$1+\delta_*\le\sigma_{\rm abs}(c^-)\le3/2$, and no admissible correction is summable at any
+$1+\alpha$ with $0\le\alpha<\delta_*$.  All claims are formalized unconditionally in Lean~4.
+The paper does not prove the remaining critical estimate
 $\sigma_{\rm abs}(c^-)\le1$ and therefore does not prove RH.
 \end{abstract}
 
@@ -1345,12 +1348,26 @@ $a$ satisfies
 \]
 For every $x\in\overline{\R}$, there exists an admissible correction $a$ with
 $\sigma_{\rm abs}(a)\le x$ if and only if $\sigma_{\rm abs}(c^-)\le x$.
+Unconditionally,
+\[
+ \sigma_{\rm abs}(c^-)\le\frac32,
+ \tag{7.34}
+\]
+so the feasible correction spectrum is nonempty at $3/2$.
 
 If $\alpha\ge0$ and one admissible correction satisfies
 $\sigma_{\rm abs}(a)\le1+\alpha$, then every nontrivial xi zero satisfies
 $\Re\rho\le\frac12+\alpha$.  In particular, an admissible correction with abscissa at most one
 proves RH.  The same conclusion follows when the Dirichlet series of $a$ converges absolutely at
 every real abscissa $1+\varepsilon$, $\varepsilon>0$.
+
+Conversely, if RH is false, then
+\[
+ 1+\delta_*\le\sigma_{\rm abs}(c^-)\le\frac32,
+ \tag{7.35}
+\]
+and for every $0\le\alpha<\delta_*$ and every admissible correction $a$, the Dirichlet series of
+$a$ fails to converge absolutely at $1+\alpha$.
 \end{theorem}
 
 \begin{proof}
@@ -1359,6 +1376,9 @@ $y+b\ge0$.  Applying this pointwise to $y=c(n)$ proves admissibility and minimal
 \textup{(7.32)} follows immediately from \textup{(7.28)} and \textup{(7.30)}.  Comparison of
 nonnegative Dirichlet series gives the abscissa inequality in \textup{(7.33)}.  Since $c^-$ is
 itself admissible, the asserted equivalence of abscissa sublevel sets follows in both directions.
+The unconditional square-root envelope
+$E(n)\le C\sqrt n$ gives $c^-(n)\le2C\sqrt n$; comparison with
+$\zeta(s-1/2)$ proves \textup{(7.34)}.
 
 If $\sigma_{\rm abs}(a)\le1+\alpha$, then for every $\varepsilon>0$ the series of $a$ converges
 absolutely at $1+\alpha+\varepsilon$.  Since $2E=c^-\le a$, the same holds for $E$.
@@ -1366,7 +1386,12 @@ The one-abscissa Landau transfer gives
 $\Re\rho\le\frac12+\alpha+\varepsilon$ for every xi zero; letting
 $\varepsilon\downarrow0$ proves the quantitative assertion.  At $\alpha=0$, functional-equation
 symmetry gives RH.  The all-epsilon formulation is the same argument without first passing
-through the abscissa.
+through the abscissa.  For the final assertion, summability of an admissible $a$ at
+$1+\alpha$ implies summability of $c^-$ by \textup{(7.33)}.  The one-abscissa theorem then bounds
+every positive transverse coordinate by $\alpha$, contradicting
+$\alpha<\delta_*$.  If the abscissa of $c^-$ were below $1+\delta_*$, a real point strictly
+between it and $1+\delta_*$ would give precisely such a forbidden summability point.  This proves
+the lower bound in \textup{(7.35)}; its upper bound is \textup{(7.34)}.
 \end{proof}
 
 \begin{corollary}[Explicit dyadic source endpoints]
@@ -1376,14 +1401,14 @@ Each of the following conditions implies RH.
 \item For every $\varepsilon>0$,
 \[
  \sum_{n\ge1}\frac{E(n)}{n^{1+\varepsilon}}<\infty.
- \tag{7.34}
+ \tag{7.36}
 \]
 \item For every $\varepsilon>0$ there are $C_\varepsilon\ge0$ and $N_\varepsilon$ such that
 \[
  P(n)\le2\left(1-\frac1{\sqrt2}\right)\sqrt n
        +C_\varepsilon n^\varepsilon
  \qquad(n\ge N_\varepsilon).
- \tag{7.35}
+ \tag{7.37}
 \]
 \end{enumerate}
 \end{corollary}
@@ -1394,8 +1419,8 @@ adding that correction gives a nonnegative Dirichlet series at every abscissa
 $1+\varepsilon$.  The quantitative Landau argument excludes every shifted xi pole with real
 part greater than one, hence proves RH.  For (ii), the proper-prime-power contribution to $W(n)$
 is nonnegative and $O(\log n)$, hence $O_\varepsilon(n^\varepsilon)$ for every
-$\varepsilon>0$.  Thus (7.35) lifts to the corresponding all-epsilon bound for $W(n)$, which
-implies (7.34).
+$\varepsilon>0$.  Thus (7.37) lifts to the corresponding all-epsilon bound for $W(n)$, which
+implies (7.36).
 \end{proof}
 
 \section{Implications for the Connes route}
@@ -1552,8 +1577,8 @@ holomorphy of $\cS_-$ on $\Re s>1$, or an operator theorem forcing that statemen
 therefore does not prove RH.  It reduces the remaining source problem to analytic continuation of
 the actual polar--prime critical-Mellin defect and gives an independent universal energy geometry
 for every fixed rectangular Weil window.  Corollary~\ref{cor:explicit-source-endpoints} gives a
-fully arithmetic sufficient endpoint: prove the all-epsilon positive-excess energy (7.34), or the
-stronger prime-only estimate (7.35).  Theorem~\ref{thm:minimal-sharp-correction} shows that the
+fully arithmetic sufficient endpoint: prove the all-epsilon positive-excess energy (7.36), or the
+stronger prime-only estimate (7.37).  Theorem~\ref{thm:minimal-sharp-correction} shows that the
 first condition is not an arbitrary choice of majorant: $2E$ is the pointwise least nonnegative
 correction of the exact signed source, and its abscissa is the least attainable correction
 abscissa.  What is not established is the critical estimate

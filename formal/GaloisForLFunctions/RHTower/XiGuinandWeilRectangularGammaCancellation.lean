@@ -1,0 +1,832 @@
+import GaloisForLFunctions.RHTower.XiGuinandWeilRectangularArchimedean
+import GaloisForLFunctions.RHTower.XiGuinandWeilRectangularResolventFourier
+
+/-!
+# Gamma--polar cancellation for the sharp rectangular Guinand--Weil value
+
+Gauss's absolutely convergent digamma series and the causal resolvent evaluation are combined
+here.  The first stage establishes a cutoff-independent integrable majorant, allowing the finite
+resolvent identities to converge to the literal archimedean bottom-edge integral.
+-/
+
+open Complex Filter MeasureTheory Set
+open scoped BigOperators
+
+noncomputable section
+
+namespace RHTower
+
+def rectangularEulerDigammaPoint (xi : ℝ) : ℂ :=
+  ((3 / 4 : ℝ) : ℂ) - ((Real.pi * xi : ℝ) : ℂ) * I
+
+theorem rectangularEulerDigammaPoint_eq (xi : ℝ) :
+    rectangularEulerDigammaPoint xi = rectangularEulerArchPoint xi / 2 := by
+  unfold rectangularEulerDigammaPoint rectangularEulerArchPoint
+  push_cast
+  ring
+
+theorem rectangularEulerDigammaPoint_re (xi : ℝ) :
+    (rectangularEulerDigammaPoint xi).re = 3 / 4 := by
+  simp [rectangularEulerDigammaPoint, Complex.mul_re]
+
+def rectangularEulerGaussLogWeight (xi : ℝ) : ℝ :=
+  1 + Real.log (1 + 2 * ‖rectangularEulerDigammaPoint xi - 1‖)
+
+theorem rectangularEulerGaussLogWeight_nonneg (xi : ℝ) :
+    0 ≤ rectangularEulerGaussLogWeight xi := by
+  unfold rectangularEulerGaussLogWeight
+  have hlog : 0 ≤ Real.log
+      (1 + 2 * ‖rectangularEulerDigammaPoint xi - 1‖) :=
+    Real.log_nonneg (by nlinarith [norm_nonneg (rectangularEulerDigammaPoint xi - 1)])
+  linarith
+
+theorem norm_rectangularEulerDigammaPoint_sub_one_le (xi : ℝ) :
+    ‖rectangularEulerDigammaPoint xi - 1‖ ≤ 1 / 4 + Real.pi * |xi| := by
+  have h := Complex.norm_le_abs_re_add_abs_im (rectangularEulerDigammaPoint xi - 1)
+  have hre : (rectangularEulerDigammaPoint xi - 1).re = -1 / 4 := by
+    rw [Complex.sub_re, rectangularEulerDigammaPoint_re]
+    norm_num
+  have him : (rectangularEulerDigammaPoint xi - 1).im = -Real.pi * xi := by
+    simp [rectangularEulerDigammaPoint, Complex.mul_im]
+  rw [hre, him] at h
+  norm_num [abs_mul, abs_of_pos Real.pi_pos] at h ⊢
+  linarith
+
+def rectangularEulerGaussLogGrowthConstant : ℝ :=
+  3 + Real.log (2 * Real.pi + 3)
+
+theorem rectangularEulerGaussLogGrowthConstant_nonneg :
+    0 ≤ rectangularEulerGaussLogGrowthConstant := by
+  unfold rectangularEulerGaussLogGrowthConstant
+  have hlog : 0 ≤ Real.log (2 * Real.pi + 3) :=
+    Real.log_nonneg (by linarith [Real.pi_pos])
+  linarith
+
+theorem rectangularEulerGaussLogWeight_le
+    {xi : ℝ} (hxi : 1 ≤ |xi|) :
+    rectangularEulerGaussLogWeight xi ≤
+      rectangularEulerGaussLogGrowthConstant *
+        (1 + xi ^ 2) ^ (1 / 4 : ℝ) := by
+  have habs : 0 < |xi| := lt_of_lt_of_le zero_lt_one hxi
+  have hnorm := norm_rectangularEulerDigammaPoint_sub_one_le xi
+  have harg : 1 + 2 * ‖rectangularEulerDigammaPoint xi - 1‖ ≤
+      (2 * Real.pi + 3) * |xi| := by
+    nlinarith
+  have hK : 0 < 2 * Real.pi + 3 := by linarith [Real.pi_pos]
+  have hlogarg : Real.log (1 + 2 * ‖rectangularEulerDigammaPoint xi - 1‖) ≤
+      Real.log (2 * Real.pi + 3) + Real.log |xi| := by
+    calc
+      Real.log (1 + 2 * ‖rectangularEulerDigammaPoint xi - 1‖) ≤
+          Real.log ((2 * Real.pi + 3) * |xi|) :=
+        Real.log_le_log (by positivity) harg
+      _ = Real.log (2 * Real.pi + 3) + Real.log |xi| := by
+        rw [Real.log_mul hK.ne' habs.ne']
+  have hbase : (1 : ℝ) ≤ 1 + xi ^ 2 := by nlinarith [sq_nonneg xi]
+  have hquarterOne : 1 ≤ (1 + xi ^ 2) ^ (1 / 4 : ℝ) :=
+    Real.one_le_rpow hbase (by norm_num)
+  have hlogabs : Real.log |xi| ≤
+      2 * (1 + xi ^ 2) ^ (1 / 4 : ℝ) := by
+    have hlogsq : 2 * Real.log |xi| = Real.log (xi ^ 2) := by
+      rw [← sq_abs, Real.log_pow]
+      ring
+    have hlogle : Real.log (xi ^ 2) ≤ Real.log (1 + xi ^ 2) :=
+      Real.log_le_log (sq_pos_of_ne_zero (abs_ne_zero.mp habs.ne')) (by linarith)
+    have hraw := Real.log_le_rpow_div
+      (x := 1 + xi ^ 2) (by positivity) (by norm_num : (0 : ℝ) < 1 / 4)
+    nlinarith
+  have hlogK : 0 ≤ Real.log (2 * Real.pi + 3) :=
+    Real.log_nonneg (by linarith [Real.pi_pos])
+  unfold rectangularEulerGaussLogWeight rectangularEulerGaussLogGrowthConstant
+  calc
+    1 + Real.log (1 + 2 * ‖rectangularEulerDigammaPoint xi - 1‖) ≤
+        1 + Real.log (2 * Real.pi + 3) + Real.log |xi| := by linarith
+    _ ≤ (1 + Real.log (2 * Real.pi + 3)) *
+          (1 + xi ^ 2) ^ (1 / 4 : ℝ) +
+        2 * (1 + xi ^ 2) ^ (1 / 4 : ℝ) := by
+      exact add_le_add
+        (le_mul_of_one_le_right (by positivity) hquarterOne) hlogabs
+    _ = (3 + Real.log (2 * Real.pi + 3)) *
+          (1 + xi ^ 2) ^ (1 / 4 : ℝ) := by ring
+
+def rectangularEulerGaussLogMajorant (L a : ℝ) (xi : ℝ) : ℝ :=
+  rectangularEulerFourierMajorant L a * rectangularEulerGaussLogGrowthConstant *
+    (1 + xi ^ 2) ^ (-3 / 4 : ℝ)
+
+theorem integrable_rectangularEulerGaussLogMajorant (L a : ℝ) :
+    Integrable (rectangularEulerGaussLogMajorant L a) := by
+  have hbase : Integrable (fun xi : ℝ => (1 + xi ^ 2) ^ (-3 / 4 : ℝ)) := by
+    have h := integrable_rpow_neg_one_add_norm_sq
+      (E := ℝ) (μ := MeasureTheory.volume) (r := (3 / 2 : ℝ)) (by
+        rw [Module.finrank_self]
+        norm_num)
+    refine h.congr (Filter.Eventually.of_forall fun xi => ?_)
+    change (1 + ‖xi‖ ^ 2) ^ (-(3 / 2 : ℝ) / 2) =
+      (1 + xi ^ 2) ^ (-3 / 4 : ℝ)
+    rw [Real.norm_eq_abs, sq_abs]
+    congr 1
+    ring
+  exact hbase.const_mul
+    (rectangularEulerFourierMajorant L a * rectangularEulerGaussLogGrowthConstant)
+
+theorem integrable_rectangularEulerFourierNorm_mul_gaussLogWeight (L a : ℝ) :
+    Integrable (fun xi : ℝ =>
+      ‖rectangularTwoEdgeTransform L a
+        (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2‖ *
+          rectangularEulerGaussLogWeight xi) := by
+  have htransform : Continuous (fun xi : ℝ =>
+      rectangularTwoEdgeTransform L a
+        (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2) := by
+    exact ((rectangularTwoEdgeTransform_differentiable L a).continuous.comp
+      (by fun_prop)).pow 2
+  have harg : Continuous (fun xi : ℝ =>
+      1 + 2 * ‖rectangularEulerDigammaPoint xi - 1‖) := by
+    unfold rectangularEulerDigammaPoint
+    fun_prop
+  have hargne : ∀ xi : ℝ,
+      1 + 2 * ‖rectangularEulerDigammaPoint xi - 1‖ ≠ 0 := by
+    intro xi
+    positivity
+  have hweight : Continuous rectangularEulerGaussLogWeight := by
+    unfold rectangularEulerGaussLogWeight
+    exact continuous_const.add (harg.log hargne)
+  have hfun : Continuous (fun xi : ℝ =>
+      ‖rectangularTwoEdgeTransform L a
+        (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2‖ *
+          rectangularEulerGaussLogWeight xi) :=
+    htransform.norm.mul hweight
+  let S : Set ℝ := {xi : ℝ | 1 ≤ |xi|}
+  have hS : MeasurableSet S := by
+    dsimp only [S]
+    exact measurableSet_le measurable_const continuous_abs.measurable
+  have htail : IntegrableOn (fun xi : ℝ =>
+      ‖rectangularTwoEdgeTransform L a
+        (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2‖ *
+          rectangularEulerGaussLogWeight xi) S := by
+    refine (integrable_rectangularEulerGaussLogMajorant L a).integrableOn.mono' ?_ ?_
+    · exact hfun.aestronglyMeasurable.restrict
+    · filter_upwards [self_mem_ae_restrict hS] with xi hxi
+      rw [Real.norm_eq_abs, abs_of_nonneg
+        (mul_nonneg (norm_nonneg _)
+          (rectangularEulerGaussLogWeight_nonneg xi))]
+      have hF := norm_rectangularTwoEdgeTransform_eulerLine_sq_le L a xi
+      have hW := rectangularEulerGaussLogWeight_le hxi
+      have hM : 0 ≤ rectangularEulerFourierMajorant L a := by
+        unfold rectangularEulerFourierMajorant
+        positivity
+      have hC := rectangularEulerGaussLogGrowthConstant_nonneg
+      have hpos : 0 < 1 + xi ^ 2 := by positivity
+      calc
+        ‖rectangularTwoEdgeTransform L a
+              (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2‖ *
+            rectangularEulerGaussLogWeight xi ≤
+          (rectangularEulerFourierMajorant L a * (1 + xi ^ 2)⁻¹) *
+            (rectangularEulerGaussLogGrowthConstant *
+              (1 + xi ^ 2) ^ (1 / 4 : ℝ)) := by
+          exact mul_le_mul hF hW (rectangularEulerGaussLogWeight_nonneg xi)
+            (mul_nonneg hM (inv_nonneg.mpr hpos.le))
+        _ = rectangularEulerGaussLogMajorant L a xi := by
+          unfold rectangularEulerGaussLogMajorant
+          rw [show (1 + xi ^ 2)⁻¹ = (1 + xi ^ 2) ^ (-1 : ℝ) by
+            exact (Real.rpow_neg_one (1 + xi ^ 2)).symm]
+          rw [show rectangularEulerFourierMajorant L a * (1 + xi ^ 2) ^ (-1 : ℝ) *
+              (rectangularEulerGaussLogGrowthConstant *
+                (1 + xi ^ 2) ^ (1 / 4 : ℝ)) =
+              rectangularEulerFourierMajorant L a *
+                rectangularEulerGaussLogGrowthConstant *
+                  ((1 + xi ^ 2) ^ (-1 : ℝ) *
+                    (1 + xi ^ 2) ^ (1 / 4 : ℝ)) by ring]
+          rw [← Real.rpow_add hpos]
+          norm_num
+  have hcompact : IntegrableOn (fun xi : ℝ =>
+      ‖rectangularTwoEdgeTransform L a
+        (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2‖ *
+          rectangularEulerGaussLogWeight xi) (Icc (-1) 1) := by
+    exact hfun.integrableOn_Icc
+  have hcover : Icc (-1 : ℝ) 1 ∪ S = univ := by
+    ext xi
+    simp only [mem_union, mem_Icc, mem_univ, iff_true, S, mem_setOf_eq]
+    by_cases h : |xi| ≤ 1
+    · exact Or.inl (abs_le.mp h)
+    · exact Or.inr (by linarith)
+  rw [← integrableOn_univ, ← hcover]
+  exact hcompact.union htail
+
+/-! ## An integrable cutoff-independent Gauss majorant -/
+
+theorem digamma_rectangularEulerDigammaPoint_eq_arch
+    (xi : ℝ) :
+    Complex.digamma (rectangularEulerDigammaPoint xi) =
+      2 * logDeriv archFactor (rectangularEulerArchPoint xi) -
+        2 / rectangularEulerArchPoint xi -
+        2 / (rectangularEulerArchPoint xi - 1) +
+        (Real.log Real.pi : ℂ) := by
+  have hsre := rectangularEulerArchPoint_re xi
+  have hs0 := rectangularEulerArchPoint_ne_zero xi
+  have hs1 := rectangularEulerArchPoint_ne_one xi
+  have hclosed := logDeriv_archFactor_closed
+    (s := rectangularEulerArchPoint xi) (by rw [hsre]; norm_num) hs0 hs1
+  rw [rectangularEulerDigammaPoint_eq, hclosed]
+  unfold GaloisForLFunctions.gammaRealLogConnection
+  ring
+
+def rectangularEulerDigammaIntegrand (L a : ℝ) (xi : ℝ) : ℂ :=
+  rectangularTwoEdgeTransform L a
+      (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2 *
+    Complex.digamma (rectangularEulerDigammaPoint xi)
+
+theorem integrable_rectangularEulerDigammaIntegrand (L a : ℝ) :
+    Integrable (rectangularEulerDigammaIntegrand L a) := by
+  let F : ℝ → ℂ := fun xi =>
+    rectangularTwoEdgeTransform L a
+      (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2
+  let s : ℝ → ℂ := rectangularEulerArchPoint
+  have hF : Integrable F := by
+    simpa only [F] using integrable_rectangularTwoEdgeTransform_eulerLine_sq L a
+  have hscont : Continuous s := by
+    unfold s rectangularEulerArchPoint
+    fun_prop
+  have hs0 : ∀ xi : ℝ, s xi ≠ 0 := rectangularEulerArchPoint_ne_zero
+  have hs1 : ∀ xi : ℝ, s xi - 1 ≠ 0 := fun xi =>
+    sub_ne_zero.mpr (rectangularEulerArchPoint_ne_one xi)
+  have hinv0cont : Continuous (fun xi : ℝ => (s xi)⁻¹) := hscont.inv₀ hs0
+  have hinv1cont : Continuous (fun xi : ℝ => (s xi - 1)⁻¹) :=
+    (hscont.sub continuous_const).inv₀ hs1
+  have hinv0bound : ∀ xi : ℝ, ‖(s xi)⁻¹‖ ≤ 1 := by
+    intro xi
+    have hre : 1 ≤ ‖s xi‖ := by
+      have h := Complex.re_le_norm (s xi)
+      have hsre : (s xi).re = 3 / 2 := rectangularEulerArchPoint_re xi
+      linarith
+    rw [norm_inv]
+    have h := one_div_le_one_div_of_le (by norm_num : (0 : ℝ) < 1) hre
+    norm_num at h ⊢
+    exact h
+  have hinv1bound : ∀ xi : ℝ, ‖(s xi - 1)⁻¹‖ ≤ 2 := by
+    intro xi
+    have hre : (1 / 2 : ℝ) ≤ ‖s xi - 1‖ := by
+      have h := Complex.re_le_norm (s xi - 1)
+      have hsre : (s xi).re = 3 / 2 := rectangularEulerArchPoint_re xi
+      rw [Complex.sub_re, hsre, Complex.one_re] at h
+      norm_num at h ⊢
+      exact h
+    rw [norm_inv]
+    have hpos : 0 < ‖s xi - 1‖ := lt_of_lt_of_le (by norm_num) hre
+    have h := one_div_le_one_div_of_le (by norm_num : (0 : ℝ) < 1 / 2) hre
+    norm_num at h ⊢
+    exact h
+  have hInv0 : Integrable (fun xi : ℝ => F xi * (s xi)⁻¹) :=
+    hF.mul_bdd hinv0cont.aestronglyMeasurable
+      (Filter.Eventually.of_forall hinv0bound)
+  have hInv1 : Integrable (fun xi : ℝ => F xi * (s xi - 1)⁻¹) :=
+    hF.mul_bdd hinv1cont.aestronglyMeasurable
+      (Filter.Eventually.of_forall hinv1bound)
+  have harch : Integrable (rectangularEulerArchIntegrand L a) :=
+    integrable_rectangularEulerArchIntegrand L a
+  have hcomb : Integrable (fun xi : ℝ =>
+      2 * rectangularEulerArchIntegrand L a xi -
+        2 * (F xi * (s xi)⁻¹) -
+        2 * (F xi * (s xi - 1)⁻¹) +
+        (Real.log Real.pi : ℂ) * F xi) :=
+    (((harch.const_mul 2).sub (hInv0.const_mul 2)).sub
+      (hInv1.const_mul 2)).add (hF.const_mul (Real.log Real.pi : ℂ))
+  apply hcomb.congr
+  filter_upwards with xi
+  rw [rectangularEulerDigammaIntegrand,
+    digamma_rectangularEulerDigammaPoint_eq_arch]
+  simp only [rectangularEulerArchIntegrand, F, s, one_div, div_eq_mul_inv]
+  ring
+
+def rectangularEulerGaussPartialMajorant (L a : ℝ) (xi : ℝ) : ℝ :=
+  ‖rectangularEulerDigammaIntegrand L a xi‖ +
+    (|Real.eulerMascheroniConstant| + 1) *
+      ‖rectangularTwoEdgeTransform L a
+        (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2‖ +
+    3 *
+      (‖rectangularTwoEdgeTransform L a
+        (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2‖ *
+          rectangularEulerGaussLogWeight xi)
+
+theorem integrable_rectangularEulerGaussPartialMajorant (L a : ℝ) :
+    Integrable (rectangularEulerGaussPartialMajorant L a) := by
+  have hD := (integrable_rectangularEulerDigammaIntegrand L a).norm
+  have hF := (integrable_rectangularTwoEdgeTransform_eulerLine_sq L a).norm.const_mul
+    (|Real.eulerMascheroniConstant| + 1)
+  have hW :=
+    (integrable_rectangularEulerFourierNorm_mul_gaussLogWeight L a).const_mul 3
+  apply ((hD.add hF).add hW).congr
+  filter_upwards with xi
+  unfold rectangularEulerGaussPartialMajorant
+  simp only [Pi.add_apply]
+
+theorem norm_rectangularEulerGaussPartial_le_majorant
+    (L a : ℝ) (N : ℕ) (xi : ℝ) :
+    ‖rectangularTwoEdgeTransform L a
+          (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2 *
+        (∑ n ∈ Finset.range N,
+          gaussDigammaSeriesTerm (rectangularEulerDigammaPoint xi) n)‖ ≤
+      rectangularEulerGaussPartialMajorant L a xi := by
+  have hsum := norm_sum_gaussDigammaSeriesTerm_threeQuarter_le
+    (rectangularEulerDigammaPoint_re xi) N
+  rw [norm_mul]
+  rw [rectangularEulerGaussPartialMajorant, rectangularEulerDigammaIntegrand, norm_mul]
+  have hsum' :
+      ‖∑ n ∈ Finset.range N,
+          gaussDigammaSeriesTerm (rectangularEulerDigammaPoint xi) n‖ ≤
+        ‖Complex.digamma (rectangularEulerDigammaPoint xi)‖ +
+          |Real.eulerMascheroniConstant| + 1 +
+            3 * rectangularEulerGaussLogWeight xi := by
+    simpa only [rectangularEulerGaussLogWeight] using hsum
+  calc
+    ‖rectangularTwoEdgeTransform L a
+          (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2‖ *
+        ‖∑ n ∈ Finset.range N,
+          gaussDigammaSeriesTerm (rectangularEulerDigammaPoint xi) n‖ ≤
+      ‖rectangularTwoEdgeTransform L a
+          (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2‖ *
+        (‖Complex.digamma (rectangularEulerDigammaPoint xi)‖ +
+          |Real.eulerMascheroniConstant| + 1 +
+            3 * rectangularEulerGaussLogWeight xi) :=
+      mul_le_mul_of_nonneg_left hsum' (norm_nonneg _)
+    _ = _ := by ring
+
+def rectangularEulerGaussPartialIntegrand (L a : ℝ) (N : ℕ) (xi : ℝ) : ℂ :=
+  rectangularTwoEdgeTransform L a
+      (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2 *
+    ∑ n ∈ Finset.range N,
+      gaussDigammaSeriesTerm (rectangularEulerDigammaPoint xi) n
+
+def rectangularEulerGaussLimitIntegrand (L a : ℝ) (xi : ℝ) : ℂ :=
+  rectangularTwoEdgeTransform L a
+      (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2 *
+    (Complex.digamma (rectangularEulerDigammaPoint xi) +
+      (Real.eulerMascheroniConstant : ℂ))
+
+theorem integrable_rectangularEulerGaussPartialIntegrand
+    (L a : ℝ) (N : ℕ) :
+    Integrable (rectangularEulerGaussPartialIntegrand L a N) := by
+  rw [show rectangularEulerGaussPartialIntegrand L a N = fun xi : ℝ =>
+      ∑ n ∈ Finset.range N,
+        rectangularTwoEdgeTransform L a
+            (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2 *
+          gaussDigammaSeriesTerm (rectangularEulerDigammaPoint xi) n by
+    funext xi
+    rw [rectangularEulerGaussPartialIntegrand, Finset.mul_sum]]
+  exact MeasureTheory.integrable_finset_sum _ fun n _ => by
+    simpa only [rectangularEulerDigammaPoint] using
+      integrable_rectangularEulerFourierKernel_mul_gaussDigammaSeriesTerm L a n
+
+theorem tendsto_integral_rectangularEulerGaussPartialIntegrand
+    (L a : ℝ) :
+    Tendsto
+      (fun N : ℕ => ∫ xi : ℝ, rectangularEulerGaussPartialIntegrand L a N xi)
+      atTop
+      (nhds (∫ xi : ℝ, rectangularEulerGaussLimitIntegrand L a xi)) := by
+  apply tendsto_integral_of_dominated_convergence
+    (rectangularEulerGaussPartialMajorant L a)
+  · intro N
+    exact (integrable_rectangularEulerGaussPartialIntegrand L a N).aestronglyMeasurable
+  · exact integrable_rectangularEulerGaussPartialMajorant L a
+  · intro N
+    exact Filter.Eventually.of_forall fun xi => by
+      simpa only [rectangularEulerGaussPartialIntegrand] using
+        norm_rectangularEulerGaussPartial_le_majorant L a N xi
+  · exact Filter.Eventually.of_forall fun xi => by
+      have hs : 0 < (rectangularEulerDigammaPoint xi).re := by
+        rw [rectangularEulerDigammaPoint_re]
+        norm_num
+      have hseries :=
+        (summable_gaussDigammaSeriesTerm hs).hasSum.tendsto_sum_nat
+      have hvalue :
+          ∑' n : ℕ, gaussDigammaSeriesTerm (rectangularEulerDigammaPoint xi) n =
+            Complex.digamma (rectangularEulerDigammaPoint xi) +
+              (Real.eulerMascheroniConstant : ℂ) := by
+        rw [digamma_eq_neg_euler_add_tsum_gauss hs]
+        ring
+      rw [hvalue] at hseries
+      unfold rectangularEulerGaussPartialIntegrand rectangularEulerGaussLimitIntegrand
+      exact tendsto_const_nhds.mul hseries
+
+def rectangularEulerGaussTermValue (L a : ℝ) (n : ℕ) : ℂ :=
+  (rectangularTwoEdgeAutocorrelation L a 0 : ℂ) / ((n : ℂ) + 1) -
+    ∫ t : ℝ in Ioi 0,
+      Complex.exp (-(((n : ℝ) + 3 / 4 : ℝ) : ℂ) * (t : ℂ)) *
+        ((rectangularTwoEdgeAutocorrelation L a (t / 2) : ℂ) *
+          Complex.exp (t / 2))
+
+def rectangularEulerGaussPartialValue (L a : ℝ) (N : ℕ) : ℂ :=
+  ∑ n ∈ Finset.range N, rectangularEulerGaussTermValue L a n
+
+theorem integral_rectangularEulerGaussPartialIntegrand_eq_value
+    {L : ℝ} (hL : 0 ≤ L) (a : ℝ) (N : ℕ) :
+    (∫ xi : ℝ, rectangularEulerGaussPartialIntegrand L a N xi) =
+      rectangularEulerGaussPartialValue L a N := by
+  rw [show rectangularEulerGaussPartialIntegrand L a N = fun xi : ℝ =>
+      ∑ n ∈ Finset.range N,
+        rectangularTwoEdgeTransform L a
+            (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2 *
+          gaussDigammaSeriesTerm (rectangularEulerDigammaPoint xi) n by
+    funext xi
+    rw [rectangularEulerGaussPartialIntegrand, Finset.mul_sum]]
+  rw [MeasureTheory.integral_finset_sum]
+  · unfold rectangularEulerGaussPartialValue
+    apply Finset.sum_congr rfl
+    intro n _
+    unfold rectangularEulerGaussTermValue
+    simpa only [rectangularEulerDigammaPoint] using
+      integral_rectangularEulerFourierKernel_mul_gaussDigammaSeriesTerm hL a n
+  · intro n _
+    simpa only [rectangularEulerDigammaPoint] using
+      integrable_rectangularEulerFourierKernel_mul_gaussDigammaSeriesTerm L a n
+
+theorem tendsto_rectangularEulerGaussPartialValue
+    {L : ℝ} (hL : 0 ≤ L) (a : ℝ) :
+    Tendsto (rectangularEulerGaussPartialValue L a) atTop
+      (nhds (∫ xi : ℝ, rectangularEulerGaussLimitIntegrand L a xi)) := by
+  have h := tendsto_integral_rectangularEulerGaussPartialIntegrand L a
+  exact h.congr' (Filter.Eventually.of_forall fun N =>
+    integral_rectangularEulerGaussPartialIntegrand_eq_value hL a N)
+
+/-! ## Aperture-uniform time-kernel geometry -/
+
+theorem rectangularMovingAutocorrelationTent_le_min
+    {L a h : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) (hh : 0 ≤ h) :
+    max 0 (L - |h - (2 * a - L)|) ≤ min L h := by
+  apply max_le
+  · exact le_min hL hh
+  · apply le_min
+    · linarith [abs_nonneg (h - (2 * a - L))]
+    · have habs := neg_le_abs (h - (2 * a - L))
+      linarith
+
+theorem rectangularTwoEdgeAutocorrelation_zero
+    {L a : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) :
+    rectangularTwoEdgeAutocorrelation L a 0 = 2 * L := by
+  rw [rectangularTwoEdgeAutocorrelation_eq_fixed_add_moving_tent hL ha (le_refl 0)]
+  have hcenter : L ≤ |0 - (2 * a - L)| := by
+    rw [abs_of_nonpos]
+    · linarith
+    · linarith
+  rw [sub_zero, max_eq_right hL,
+    max_eq_left (by linarith : L - |0 - (2 * a - L)| ≤ 0)]
+  ring
+
+theorem rectangularTwoEdgeAutocorrelation_nonneg
+    {L a h : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) (hh : 0 ≤ h) :
+    0 ≤ rectangularTwoEdgeAutocorrelation L a h := by
+  rw [rectangularTwoEdgeAutocorrelation_eq_fixed_add_moving_tent hL ha hh]
+  positivity
+
+theorem rectangularTwoEdgeAutocorrelation_le_three_mul
+    {L a h : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) (hh : 0 ≤ h) :
+    rectangularTwoEdgeAutocorrelation L a h ≤ 3 * L := by
+  rw [rectangularTwoEdgeAutocorrelation_eq_fixed_add_moving_tent hL ha hh]
+  have hfixed : max 0 (L - h) ≤ L := max_le hL (by linarith)
+  have hmoving := rectangularMovingAutocorrelationTent_le_min hL ha hh
+  have hmin : min L h ≤ L := min_le_left _ _
+  linarith
+
+theorem abs_rectangularTwoEdgeAutocorrelation_zero_sub_le
+    {L a h : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) (hh : 0 ≤ h) :
+    |rectangularTwoEdgeAutocorrelation L a 0 -
+        rectangularTwoEdgeAutocorrelation L a h| ≤ 3 * h := by
+  rw [rectangularTwoEdgeAutocorrelation_zero hL ha,
+    rectangularTwoEdgeAutocorrelation_eq_fixed_add_moving_tent hL ha hh]
+  let M : ℝ := max 0 (L - |h - (2 * a - L)|)
+  have hM0 : 0 ≤ M := by dsimp only [M]; positivity
+  have hMh : M ≤ h :=
+    (rectangularMovingAutocorrelationTent_le_min hL ha hh).trans (min_le_right _ _)
+  by_cases hhL : h ≤ L
+  · rw [max_eq_right (by linarith : 0 ≤ L - h)]
+    dsimp only [M] at hM0 hMh ⊢
+    rw [show 2 * L - (2 * (L - h) +
+        max 0 (L - |h - (2 * a - L)|)) =
+      2 * h - max 0 (L - |h - (2 * a - L)|) by ring]
+    rw [abs_le]
+    constructor <;> linarith
+  · rw [max_eq_left (by linarith : L - h ≤ 0)]
+    dsimp only [M] at hM0 hMh ⊢
+    rw [show 2 * L - (2 * 0 +
+        max 0 (L - |h - (2 * a - L)|)) =
+      2 * L - max 0 (L - |h - (2 * a - L)|) by ring]
+    rw [abs_le]
+    constructor <;> linarith
+
+/-! ## The removable Gamma singularity -/
+
+/-- The numerator in the time-domain Gamma correction.  Its two summands agree at zero; this is
+the cancellation which removes the apparent pole of `(1 - exp (-t))⁻¹`. -/
+def rectangularGammaCancellationNumerator (L a t : ℝ) : ℝ :=
+  Real.exp (-t) * rectangularTwoEdgeAutocorrelation L a 0 -
+    Real.exp (-(t / 4)) * rectangularTwoEdgeAutocorrelation L a (t / 2)
+
+/-- The absolutely integrable time-domain Gamma correction kernel. -/
+def rectangularGammaCancellationKernel (L a t : ℝ) : ℝ :=
+  rectangularGammaCancellationNumerator L a t / (1 - Real.exp (-t))
+
+theorem half_mul_le_one_sub_exp_neg
+    {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
+    t / 2 ≤ 1 - Real.exp (-t) := by
+  have hden : 0 < 1 + t := by linarith
+  have hexp : 1 + t ≤ Real.exp t := by
+    simpa [add_comm] using Real.add_one_le_exp t
+  have hinv : (Real.exp t)⁻¹ ≤ (1 + t)⁻¹ :=
+    (inv_le_inv₀ (Real.exp_pos t) hden).2 hexp
+  rw [← Real.exp_neg] at hinv
+  calc
+    t / 2 ≤ t / (1 + t) := div_le_div_of_nonneg_left ht0 hden (by linarith)
+    _ = 1 - (1 + t)⁻¹ := by field_simp; ring
+    _ ≤ 1 - Real.exp (-t) := by linarith
+
+theorem abs_exp_neg_sub_exp_neg_quarter_le
+    {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
+    |Real.exp (-t) - Real.exp (-(t / 4))| ≤ 2 * t := by
+  have hfac : Real.exp (-(t / 4)) ≤ 1 :=
+    Real.exp_le_one_iff.mpr (by linarith)
+  have hsmall : |-(3 * t / 4)| ≤ 1 := by
+    rw [abs_of_nonpos (by linarith)]
+    linarith
+  have hdefect := Real.abs_exp_sub_one_le hsmall
+  rw [show Real.exp (-t) =
+      Real.exp (-(t / 4)) * Real.exp (-(3 * t / 4)) by
+    rw [← Real.exp_add]
+    congr 1
+    ring]
+  rw [show Real.exp (-(t / 4)) * Real.exp (-(3 * t / 4)) -
+      Real.exp (-(t / 4)) =
+      Real.exp (-(t / 4)) * (Real.exp (-(3 * t / 4)) - 1) by ring]
+  rw [abs_mul, abs_of_pos (Real.exp_pos _)]
+  calc
+    Real.exp (-(t / 4)) * |Real.exp (-(3 * t / 4)) - 1| ≤
+        1 * (2 * |-(3 * t / 4)|) :=
+      mul_le_mul hfac hdefect (abs_nonneg _) (by norm_num)
+    _ ≤ 2 * t := by
+      rw [abs_of_nonpos (by linarith)]
+      linarith
+
+theorem abs_rectangularGammaCancellationNumerator_le_near_zero
+    {L a t : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
+    |rectangularGammaCancellationNumerator L a t| ≤
+      (8 * L + 3) * (t / 2) := by
+  let A0 := rectangularTwoEdgeAutocorrelation L a 0
+  let At := rectangularTwoEdgeAutocorrelation L a (t / 2)
+  have hA0 : A0 = 2 * L := rectangularTwoEdgeAutocorrelation_zero hL ha
+  have hdiff : |A0 - At| ≤ 3 * (t / 2) := by
+    simpa only [A0, At] using
+      abs_rectangularTwoEdgeAutocorrelation_zero_sub_le hL ha (by positivity : 0 ≤ t / 2)
+  rw [hA0] at hdiff
+  have hexp : Real.exp (-(t / 4)) ≤ 1 :=
+    Real.exp_le_one_iff.mpr (by linarith)
+  have hexpdiff := abs_exp_neg_sub_exp_neg_quarter_le ht0 ht1
+  rw [rectangularGammaCancellationNumerator]
+  change |Real.exp (-t) * A0 - Real.exp (-(t / 4)) * At| ≤ _
+  rw [show Real.exp (-t) * A0 - Real.exp (-(t / 4)) * At =
+      Real.exp (-(t / 4)) * (A0 - At) +
+        (Real.exp (-t) - Real.exp (-(t / 4))) * A0 by ring]
+  calc
+    |Real.exp (-(t / 4)) * (A0 - At) +
+        (Real.exp (-t) - Real.exp (-(t / 4))) * A0| ≤
+      |Real.exp (-(t / 4)) * (A0 - At)| +
+        |(Real.exp (-t) - Real.exp (-(t / 4))) * A0| := abs_add_le _ _
+    _ = Real.exp (-(t / 4)) * |A0 - At| +
+        |Real.exp (-t) - Real.exp (-(t / 4))| * |A0| := by
+      rw [abs_mul, abs_mul, abs_of_pos (Real.exp_pos _)]
+    _ ≤ 1 * (3 * (t / 2)) + (2 * t) * (2 * L) := by
+      rw [hA0, abs_of_nonneg (by positivity : 0 ≤ 2 * L)]
+      exact add_le_add
+        (mul_le_mul hexp hdiff (abs_nonneg _) (by norm_num))
+        (mul_le_mul hexpdiff (le_refl (2 * L)) (by positivity) (by positivity))
+    _ = (8 * L + 3) * (t / 2) := by ring
+
+theorem abs_rectangularGammaCancellationKernel_le_near_zero
+    {L a t : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) (ht0 : 0 < t) (ht1 : t ≤ 1) :
+    |rectangularGammaCancellationKernel L a t| ≤ 8 * L + 3 := by
+  have hhalf := half_mul_le_one_sub_exp_neg ht0.le ht1
+  have hden : 0 < 1 - Real.exp (-t) :=
+    sub_pos.mpr (Real.exp_lt_one_iff.mpr (by linarith))
+  have hC : 0 ≤ 8 * L + 3 := by positivity
+  rw [rectangularGammaCancellationKernel, abs_div, abs_of_pos hden]
+  rw [div_le_iff₀ hden]
+  calc
+    |rectangularGammaCancellationNumerator L a t| ≤
+        (8 * L + 3) * (t / 2) :=
+      abs_rectangularGammaCancellationNumerator_le_near_zero hL ha ht0.le ht1
+    _ ≤ (8 * L + 3) * (1 - Real.exp (-t)) :=
+      mul_le_mul_of_nonneg_left hhalf hC
+
+theorem abs_rectangularGammaCancellationNumerator_le_tail
+    {L a t : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) (ht : 1 ≤ t) :
+    |rectangularGammaCancellationNumerator L a t| ≤
+      5 * L * Real.exp (-(t / 4)) := by
+  have ht0 : 0 ≤ t := by linarith
+  have hA0 := rectangularTwoEdgeAutocorrelation_zero hL ha
+  have hAt0 := rectangularTwoEdgeAutocorrelation_nonneg hL ha
+    (by positivity : 0 ≤ t / 2)
+  have hAt3 := rectangularTwoEdgeAutocorrelation_le_three_mul hL ha
+    (by positivity : 0 ≤ t / 2)
+  have hexp : Real.exp (-t) ≤ Real.exp (-(t / 4)) := by
+    rw [Real.exp_le_exp]
+    linarith
+  rw [rectangularGammaCancellationNumerator]
+  calc
+    |Real.exp (-t) * rectangularTwoEdgeAutocorrelation L a 0 -
+        Real.exp (-(t / 4)) * rectangularTwoEdgeAutocorrelation L a (t / 2)| ≤
+      |Real.exp (-t) * rectangularTwoEdgeAutocorrelation L a 0| +
+        |Real.exp (-(t / 4)) * rectangularTwoEdgeAutocorrelation L a (t / 2)| :=
+      abs_sub _ _
+    _ = Real.exp (-t) * (2 * L) +
+        Real.exp (-(t / 4)) * rectangularTwoEdgeAutocorrelation L a (t / 2) := by
+      rw [abs_mul, abs_mul, abs_of_pos (Real.exp_pos _),
+        abs_of_pos (Real.exp_pos _), hA0,
+        abs_of_nonneg (by positivity : 0 ≤ 2 * L), abs_of_nonneg hAt0]
+    _ ≤ Real.exp (-(t / 4)) * (2 * L) +
+        Real.exp (-(t / 4)) * (3 * L) := by
+      exact add_le_add
+        (mul_le_mul_of_nonneg_right hexp (by positivity : 0 ≤ 2 * L))
+        (mul_le_mul_of_nonneg_left hAt3 (Real.exp_pos _).le)
+    _ = 5 * L * Real.exp (-(t / 4)) := by ring
+
+theorem abs_rectangularGammaCancellationKernel_le_tail
+    {L a t : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) (ht : 1 ≤ t) :
+    |rectangularGammaCancellationKernel L a t| ≤
+      (5 * L / (1 - Real.exp (-1))) * Real.exp (-(t / 4)) := by
+  have ht0 : 0 < t := by linarith
+  have hd : 0 < 1 - Real.exp (-1) :=
+    sub_pos.mpr (Real.exp_lt_one_iff.mpr (by norm_num))
+  have hden : 0 < 1 - Real.exp (-t) :=
+    sub_pos.mpr (Real.exp_lt_one_iff.mpr (by linarith))
+  have hdenlower : 1 - Real.exp (-1) ≤ 1 - Real.exp (-t) := by
+    have := Real.exp_le_exp.mpr (by linarith : -t ≤ -1)
+    linarith
+  have hnum := abs_rectangularGammaCancellationNumerator_le_tail hL ha ht
+  have hnonneg : 0 ≤ 5 * L * Real.exp (-(t / 4)) := by positivity
+  rw [rectangularGammaCancellationKernel, abs_div, abs_of_pos hden]
+  calc
+    |rectangularGammaCancellationNumerator L a t| / (1 - Real.exp (-t)) ≤
+        (5 * L * Real.exp (-(t / 4))) / (1 - Real.exp (-t)) :=
+      div_le_div_of_nonneg_right hnum hden.le
+    _ ≤ (5 * L * Real.exp (-(t / 4))) / (1 - Real.exp (-1)) :=
+      div_le_div_of_nonneg_left hnonneg hd hdenlower
+    _ = (5 * L / (1 - Real.exp (-1))) * Real.exp (-(t / 4)) := by ring
+
+theorem aestronglyMeasurable_rectangularGammaCancellationKernel (L a : ℝ) :
+    AEStronglyMeasurable (rectangularGammaCancellationKernel L a) := by
+  have hA : Continuous (rectangularTwoEdgeAutocorrelation L a) :=
+    continuous_rectangularTwoEdgeAutocorrelation L a
+  have hnum : Continuous (rectangularGammaCancellationNumerator L a) := by
+    unfold rectangularGammaCancellationNumerator
+    exact ((Real.continuous_exp.comp (by fun_prop)).mul (hA.comp continuous_const)).sub
+      ((Real.continuous_exp.comp (by fun_prop)).mul (hA.comp (by fun_prop)))
+  have hden : Continuous (fun t : ℝ => 1 - Real.exp (-t)) := by fun_prop
+  exact (hnum.measurable.div hden.measurable).aestronglyMeasurable
+
+theorem integrableOn_rectangularGammaCancellationKernel
+    {L a : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) :
+    IntegrableOn (rectangularGammaCancellationKernel L a) (Ioi 0) := by
+  have hmeas := aestronglyMeasurable_rectangularGammaCancellationKernel L a
+  have hnear : IntegrableOn (rectangularGammaCancellationKernel L a) (Ioc 0 1) := by
+    have hC : 0 ≤ 8 * L + 3 := by positivity
+    have hconst : IntegrableOn (fun _ : ℝ => 8 * L + 3) (Ioc 0 1) :=
+      integrableOn_const (ne_of_lt measure_Ioc_lt_top)
+    refine hconst.mono' hmeas.restrict ?_
+    filter_upwards [self_mem_ae_restrict measurableSet_Ioc] with t ht
+    exact abs_rectangularGammaCancellationKernel_le_near_zero hL ha ht.1 ht.2
+  have htail : IntegrableOn (rectangularGammaCancellationKernel L a) (Ioi 1) := by
+    let C : ℝ := 5 * L / (1 - Real.exp (-1))
+    have hd : 0 < 1 - Real.exp (-1) :=
+      sub_pos.mpr (Real.exp_lt_one_iff.mpr (by norm_num))
+    have hC : 0 ≤ C := by
+      dsimp only [C]
+      exact div_nonneg (by positivity) hd.le
+    have hexp : IntegrableOn (fun t : ℝ => Real.exp (-(t / 4))) (Ioi 1) := by
+      convert (integrableOn_exp_mul_Ioi (a := (-1 / 4 : ℝ)) (by norm_num) 1) using 1 <;>
+        ring
+    have hmajor : IntegrableOn (fun t : ℝ => C * Real.exp (-(t / 4))) (Ioi 1) :=
+      hexp.const_mul C
+    refine hmajor.mono' hmeas.restrict ?_
+    filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with t ht
+    simpa only [C] using
+      abs_rectangularGammaCancellationKernel_le_tail hL ha ht.le
+  have hcover : Ioc (0 : ℝ) 1 ∪ Ioi 1 = Ioi 0 := by
+    ext t
+    simp only [mem_union, mem_Ioc, mem_Ioi]
+    constructor
+    · rintro (h | h) <;> linarith
+    · intro h
+      by_cases ht : t ≤ 1
+      · exact Or.inl ⟨h, ht⟩
+      · exact Or.inr (by linarith)
+  rw [← hcover]
+  exact hnear.union htail
+
+/-! ## Finite Gauss sums as cutoff Gamma kernels -/
+
+def rectangularEulerGaussResolventTimeIntegrand (L a : ℝ) (n : ℕ) (t : ℝ) : ℂ :=
+  Complex.exp (-(((n : ℝ) + 3 / 4 : ℝ) : ℂ) * (t : ℂ)) *
+    ((rectangularTwoEdgeAutocorrelation L a (t / 2) : ℂ) * Complex.exp (t / 2))
+
+theorem integrableOn_rectangularEulerGaussResolventTimeIntegrand
+    (L a : ℝ) (n : ℕ) :
+    IntegrableOn (rectangularEulerGaussResolventTimeIntegrand L a n) (Ioi 0) := by
+  have hg : Integrable (fun t : ℝ => rectangularEulerAutocorrelation L a (t / 2)) := by
+    convert (integrable_rectangularEulerAutocorrelation L a).comp_mul_left'
+      (by norm_num : (1 / 2 : ℝ) ≠ 0) using 1 <;> ring
+  have hexpMeas : AEStronglyMeasurable (fun t : ℝ =>
+      Complex.exp (-(((n : ℝ) + 3 / 4 : ℝ) : ℂ) * (t : ℂ))) :=
+    (Complex.continuous_exp.comp (by fun_prop)).aestronglyMeasurable
+  have hexpBound : ∀ᵐ t : ℝ ∂volume.restrict (Ioi 0),
+      ‖Complex.exp (-(((n : ℝ) + 3 / 4 : ℝ) : ℂ) * (t : ℂ))‖ ≤ 1 := by
+    filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with t ht
+    rw [Complex.norm_exp]
+    apply Real.exp_le_one_iff.mpr
+    simp only [Complex.neg_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+      mul_zero, sub_zero]
+    have hn : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
+    have ht' : 0 < t := ht
+    nlinarith
+  have hmul := hg.integrableOn.mul_bdd hexpMeas.restrict hexpBound
+  apply hmul.congr
+  filter_upwards with t
+  rw [rectangularEulerGaussResolventTimeIntegrand, rectangularEulerAutocorrelation]
+  push_cast
+  ring
+
+def rectangularEulerGaussTimeTerm (L a : ℝ) (n : ℕ) (t : ℝ) : ℂ :=
+  Complex.exp (-((n : ℂ) * (t : ℂ))) *
+    (rectangularGammaCancellationNumerator L a t : ℂ)
+
+theorem rectangularEulerGaussTimeTerm_eq_difference
+    (L a : ℝ) (n : ℕ) (t : ℝ) :
+    rectangularEulerGaussTimeTerm L a n t =
+      Complex.exp (-((n : ℂ) + 1) * (t : ℂ)) *
+          (rectangularTwoEdgeAutocorrelation L a 0 : ℂ) -
+        rectangularEulerGaussResolventTimeIntegrand L a n t := by
+  rw [rectangularEulerGaussTimeTerm, rectangularGammaCancellationNumerator,
+    rectangularEulerGaussResolventTimeIntegrand]
+  push_cast
+  have he1 : Complex.exp (-((n : ℂ) + 1) * (t : ℂ)) =
+      Complex.exp (-((n : ℂ) * (t : ℂ))) * Complex.exp (-(t : ℂ)) := by
+    rw [← Complex.exp_add]
+    congr 1
+    ring
+  have he2 : Complex.exp (-((n : ℂ) + 3 / 4) * (t : ℂ)) *
+      Complex.exp ((t : ℂ) / 2) =
+      Complex.exp (-((n : ℂ) * (t : ℂ))) * Complex.exp (-((t : ℂ) / 4)) := by
+    rw [← Complex.exp_add, ← Complex.exp_add]
+    congr 1
+    ring
+  have hsec : Complex.exp (-((n : ℂ) + 3 / 4) * (t : ℂ)) *
+      ((rectangularTwoEdgeAutocorrelation L a (t / 2) : ℂ) * Complex.exp ((t : ℂ) / 2)) =
+      (Complex.exp (-((n : ℂ) * (t : ℂ))) * Complex.exp (-((t : ℂ) / 4))) *
+        (rectangularTwoEdgeAutocorrelation L a (t / 2) : ℂ) := by
+    calc
+      _ = (Complex.exp (-((n : ℂ) + 3 / 4) * (t : ℂ)) *
+          Complex.exp ((t : ℂ) / 2)) *
+            (rectangularTwoEdgeAutocorrelation L a (t / 2) : ℂ) := by ring
+      _ = _ := by rw [he2]
+  rw [he1, hsec]
+  ring
+
+theorem integrableOn_rectangularEulerGaussTimeTerm
+    (L a : ℝ) (n : ℕ) :
+    IntegrableOn (rectangularEulerGaussTimeTerm L a n) (Ioi 0) := by
+  have hq : (-((n : ℂ) + 1)).re < 0 := by
+    simp only [Complex.neg_re, Complex.add_re, Complex.natCast_re, Complex.one_re]
+    linarith [Nat.cast_nonneg (α := ℝ) n]
+  have hfirst : IntegrableOn (fun t : ℝ =>
+      Complex.exp (-((n : ℂ) + 1) * (t : ℂ)) *
+        (rectangularTwoEdgeAutocorrelation L a 0 : ℂ)) (Ioi 0) :=
+    (integrableOn_exp_mul_complex_Ioi hq 0).mul_const _
+  have hdiff := hfirst.sub (integrableOn_rectangularEulerGaussResolventTimeIntegrand L a n)
+  apply hdiff.congr
+  filter_upwards with t
+  exact (rectangularEulerGaussTimeTerm_eq_difference L a n t).symm
+
+theorem rectangularEulerGaussTermValue_eq_integral_timeTerm
+    (L a : ℝ) (n : ℕ) :
+    rectangularEulerGaussTermValue L a n =
+      ∫ t : ℝ in Ioi 0, rectangularEulerGaussTimeTerm L a n t := by
+  let A0 : ℝ := rectangularTwoEdgeAutocorrelation L a 0
+  have hq : (-((n : ℂ) + 1)).re < 0 := by
+    simp only [Complex.neg_re, Complex.add_re, Complex.natCast_re, Complex.one_re]
+    linarith [Nat.cast_nonneg (α := ℝ) n]
+  have hfirstInt : IntegrableOn (fun t : ℝ =>
+      Complex.exp (-((n : ℂ) + 1) * (t : ℂ)) * (A0 : ℂ)) (Ioi 0) :=
+    (integrableOn_exp_mul_complex_Ioi hq 0).mul_const _
+  have hfirst :
+      (A0 : ℂ) / ((n : ℂ) + 1) =
+        ∫ t : ℝ in Ioi 0,
+          Complex.exp (-((n : ℂ) + 1) * (t : ℂ)) * (A0 : ℂ) := by
+    rw [integral_mul_const, integral_exp_mul_complex_Ioi hq 0]
+    simp only [Complex.ofReal_zero, mul_zero, Complex.exp_zero]
+    field_simp
+  have hsecondInt := integrableOn_rectangularEulerGaussResolventTimeIntegrand L a n
+  rw [rectangularEulerGaussTermValue]
+  change (A0 : ℂ) / ((n : ℂ) + 1) -
+      (∫ t : ℝ in Ioi 0, rectangularEulerGaussResolventTimeIntegrand L a n t) = _
+  rw [hfirst, ← integral_sub hfirstInt hsecondInt]
+  apply integral_congr_ae
+  filter_upwards with t
+  dsimp only [A0]
+  exact (rectangularEulerGaussTimeTerm_eq_difference L a n t).symm
+
+end RHTower

@@ -81,6 +81,17 @@ This converts the correction no-go into a positive carrier theorem: every coeffi
 positive source realization must carry the canonical negative channel, and the remaining
 arithmetic target is its critical abscissa bound.
 
+Under false RH this payment is quantitative: every admissible correction fails absolute
+summability at each `1+alpha` below `1+xiRightTransverseSup`.  Thus the source correction cannot
+hide the actual transverse exponent even before the RH endpoint is reached.
+
+The canonical correction has unconditional abscissa at most `3/2`.  Therefore its feasible
+abscissa spectrum is nonempty and, under false RH, lies in the explicit interval
+
+```text
+1 + xiRightTransverseSup <= sigma_abs(c^-) <= 3/2.
+```
+
 ## Formal boundary
 
 The module proves equivalences and carrier obligations.  It does not prove the endpoint analytic
@@ -104,7 +115,10 @@ or one of the equivalent endpoint holomorphy/negative-energy statements.
 - [x] aggregate RH endpoint
 - [x] least positive sharp-source correction
 - [x] exact feasible correction-abscissa law
+- [x] unconditional `3/2` correction ceiling
 - [x] correction-abscissa zero-free transfer
+- [x] false-RH correction-divergence spectrum
+- [x] false-RH correction-abscissa interval
 - [x] unconditional Lean proof
 - [ ] primary-literature novelty audit of the combined theorem surface
 - [ ] source construction proving the critical endpoint

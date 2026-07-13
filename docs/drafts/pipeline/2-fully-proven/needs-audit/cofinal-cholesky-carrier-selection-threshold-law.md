@@ -767,8 +767,19 @@ analytic step. On every upper-half-plane collar `Im x >= eta > 0`, the projectiv
 the uniform bound `dist ((t-x)^-1) ((t-y)^-1) <= eta^-2 dist x y`, including the point at infinity.
 Finite Cauchy-power packets therefore vary continuously in the projective sup norm, hence in
 `L^1`, and their actual `L^infinity` density-control operators vary continuously in operator norm.
-The remaining analytic step is the node-dependent finite forward triangular Nevanlinna jet
-conversion and its restriction to the fixed frozen tangent kernel.
+The unconditional module
+`GaloisForLFunctions.HTGeometry.ProjectiveNevanlinnaKernelContinuity` closes the forward genuine-jet
+conversion without introducing continuity of an inverse triangular matrix. The finite forward
+Nevanlinna expansion remains continuous even where `a` or `q'` vanishes; those nonvanishing
+hypotheses enter only when surjectivity is invoked. On the regular locus the direct expansion
+control is proved equal to the existing triangular genuine-jet control. Finally,
+`GaloisForLFunctions.HTGeometry.CompactNevanlinnaUniformProbe` restricts this continuous family to
+the exact fixed frozen tangent and proves that every compact regular target-packet family has one
+common finitely generated perturbation subspace which remains surjective at every packet. Thus
+operator continuity, fixed-tangent restriction, and compact finite-dimensional uniformization no
+longer belong to the transversality gap. What remains is the projectivized incidence projection,
+finite algebraic/Whitney stratification, and the classical smooth parametric-transversality
+instantiation producing compact-patch density.
 
 The unconditional modules `GaloisForLFunctions.HTGeometry.MinimalTypeNoArithmeticProgression`,
 `MinimalTypeNevanlinnaAperiodicity`, `MinimalTypeProjectiveSeparation`, and
@@ -967,7 +978,9 @@ constrained-control, triangular-jet, evaluation root-count, bounded-density, and
 Nevanlinna-control/escape/genericity, compact-configuration Baire assembly,
 sigma-compact injective-shift topology, rectangular evaluation-rank-defect topology, and expanded
 evaluation configuration Baire assembly, compact uniform finite-probe reduction, and `L^1`-kernel
-to `L^infinity`-control operator-norm continuity,
+to `L^infinity`-control operator-norm continuity, projective Cauchy and forward genuine
+Nevanlinna-kernel continuity, exact equality with the regular triangular control, fixed frozen-
+tangent continuity, and compact regular-family uniform finite-probe control,
 minimal-type projective-separation, compact-atlas, and
 noncriticality, disjoint-block independence, scalar hypersurface, iterated Krull-dimension, and
 fixed-incidence-fiber, coefficient-prime, projective affine-chart, and all-row local incidence

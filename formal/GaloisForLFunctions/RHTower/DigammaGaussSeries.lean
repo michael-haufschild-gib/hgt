@@ -257,7 +257,7 @@ theorem norm_sum_gaussDigammaSeriesTerm_threeQuarter_le
             ring]
           rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hn1]
         _ ≤ 1 / ((n : ℝ) + 1) + (4 / 3) / ((n : ℝ) + 1) := by
-          apply add_le_add_left
+          apply add_le_add_right
           rw [div_le_div_iff₀ hsnpos hn1]
           nlinarith [hsnorm]
         _ ≤ 3 / ((n : ℝ) + 1) := by
@@ -290,7 +290,8 @@ theorem norm_sum_gaussDigammaSeriesTerm_threeQuarter_le
       calc
         (harmonic N : ℝ) ≤ 1 + Real.log N := harmonic_le_one_add_log N
         _ ≤ 1 + Real.log (1 + 2 * ‖s - 1‖) := by
-          exact add_le_add_left (Real.log_le_log (by positivity) hNlt.le) 1
+          have hlog := Real.log_le_log (by positivity : (0 : ℝ) < N) hNlt.le
+          linarith
     calc
       ‖∑ n ∈ Finset.range N, gaussDigammaSeriesTerm s n‖ ≤
           3 * (harmonic N : ℝ) := hsum

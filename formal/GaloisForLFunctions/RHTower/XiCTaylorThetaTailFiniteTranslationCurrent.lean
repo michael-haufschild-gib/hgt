@@ -15,12 +15,6 @@ namespace RHTower
 
 noncomputable section
 
-/-- The untruncated two-component packet appearing in finite cosine translation. -/
-def finiteCosineTranslationPacket
-    (d : ℕ) (x a : ℝ) : Polynomial ℂ :=
-  finiteCosinePolynomial d x * finiteCosinePolynomial d a -
-    finiteSinePolynomial d x * finiteSinePolynomial d a
-
 /-- Exact oriented-current translation law.  Besides the current of the untruncated
 cosine--sine packet, the entire finite-section loss consists of the two displayed mixed currents
 and the self-current of the explicit top edge. -/

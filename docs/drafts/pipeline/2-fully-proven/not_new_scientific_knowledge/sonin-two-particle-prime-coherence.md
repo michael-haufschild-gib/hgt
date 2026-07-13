@@ -222,16 +222,33 @@ functional-equation polarization potentials `a_p` such that:
 1. their differences are functorial images of prime-specialized pair-face charges;
 2. the resulting two-particle Sonin operator satisfies the uniform Calkin bound or a stronger
    positive-form estimate;
-3. the archimedean normalization fixes the surviving constant potential to zero; and
-4. vanishing of all local potentials forces `kappa_-(m_xi)=0`.
+3. the potentials specialize to the canonical FE--Schwarz seam
+   `log(p)(p^(-conj rho)-p^(-(1-rho)))` on each Xi divisor fibre.
 
-None of these four realization statements is proved here. The theorem proves that, if they are
-obtained, the infinite-prime coherence step is no longer missing.
+The downstream normalization and divisor-selection steps are now formalized in
+`XiPrimeSeamCoherenceCollapse.lean`. The canonical seam tends to zero along cofinal primes, so
+coherence automatically kills its common value; its prime-two member vanishes exactly on the
+critical line. No separate archimedean normalization assertion remains. Items 1--3 above,
+especially the source-pure uniform Calkin bound, are the remaining realization problem.
+
+The formal continuation `XiPrimeSeamPairVariance.lean` sharpens the arithmetic side by proving
+
+```text
+sum_(p,q in F) |a_p-a_q|^2/(p q)
+ = 2(sum_(p in F)1/p)(sum_(p in F)|a_p|^2/p)
+   - 2|sum_(p in F)a_p/p|^2.                               (10)
+```
+
+Hence the pair obstruction is exactly a weighted covariance defect. A source realization need
+not recover every pair separately: it may realize the mass-amplified one-particle seam norm, while
+the second term is a single rank-one mean channel. This does not prove the Calkin upper bound, but
+it materially narrows the operator identity that must be sought.
 
 ## Non-results and falsifiers
 
 - This does not prove RH or an RH equivalent.
-- No canonical map from orbit-residue divisors to the scalars `a_p` is known.
+- The canonical target scalars are now known, but no source-side map from the actual Sonin
+  pair-face operators to their differences is known.
 - Pair-face compatibility is an equalizer condition after pushforward, not automatically a scalar
   gradient representation `D_(pq)=a_p-a_q`.
 - The orbit quotient for the prime periods is incompatible with the strongly continuous Mellin
@@ -272,7 +289,9 @@ certificate.
 
 - [x] 0 -> 1: exact tensor-square statement, proof mechanism, and falsifiers isolated
 - [x] 1 -> 2: complete paper proof including compact perturbations and the all-prime consequence
-- [ ] 2 -> 3: formalize the Hilbert tensor-product estimate and prime-coherence endpoint in Lean
+- [x] arithmetic finite pair-energy bound `->` prime coherence `->` RH endpoint formalized in
+  `XiPrimeSeamPairEnergy.lean`
+- [ ] 2 -> 3: formalize the actual Hilbert tensor-product Calkin estimate in Lean
 - [ ] 3 -> 4: independent priority audit and construction of a genuine polarization-potential map
 
 ## Log
@@ -280,3 +299,6 @@ certificate.
 - 2026-07-10 -- Tensorized the common-shell matrix coefficient, proved the weighted pair Calkin
   lower bound, and used reciprocal-prime infinite mass to force exact coherence of prime
   potentials.
+- 2026-07-13 -- The canonical Xi seam potentials were formalized at all positive scales. Their
+  cofinal decay proves that prime coherence forces the common value to vanish, removing the extra
+  archimedean-normalization input from the prospective RH chain.

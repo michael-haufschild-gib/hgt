@@ -181,7 +181,7 @@ The quantitative equivalence is bundled by
 ## Optimal positive correction of the signed sharp-prime source
 
 The source-facing optimization theorem is bundled by
-`dyadicSharpPrimeMinimalPositiveCorrection_capstone`.
+`dyadicSharpPrimePositiveCorrectionAbscissaSpectrum_capstone`.
 
 | Manuscript claim | Unconditional Lean declaration |
 |---|---|
@@ -190,9 +190,14 @@ The source-facing optimization theorem is bundled by
 | every admissible positive correction dominates the canonical correction pointwise | dyadicSharpPrimeSourceNegativePart_le_of_positiveCorrection |
 | the canonical correction has no larger absolute-convergence abscissa than any admissible correction | dyadicSharpPrimeSourceNegativePart_abscissa_le_of_positiveCorrection |
 | at every extended-real threshold, an admissible correction exists below that threshold iff the canonical correction does | exists_dyadicSharpPositiveCorrection_abscissa_le_iff |
+| the canonical correction has unconditional absolute-convergence abscissa at most `3/2` | dyadicSharpPrimeSourceNegativePart_abscissa_le_three_halves |
+| the admissible correction spectrum is therefore nonempty at `3/2` | exists_dyadicSharpPositiveCorrection_abscissa_le_three_halves |
 | existence of any all-epsilon correction-energy carrier is equivalent to energy of the canonical correction | exists_dyadicSharpPositiveCorrectionEnergy_iff_negativePartEnergy |
 | an admissible correction of abscissa at most `1+alpha` forces the Xi zero-free half-plane `Re rho <= 1/2+alpha` | xiZeroHalfPlaneBound_of_dyadicSharpPositiveCorrection_abscissa |
 | an admissible correction of abscissa at most one proves RH | riemannHypothesis_of_dyadicSharpPositiveCorrection_abscissa_le_one |
+| under false RH every admissible correction fails summability at each `1+alpha` below the actual transverse exponent | not_dyadicSharpPositiveCorrection_summable_below_transverseSup_of_not_rh |
+| under false RH the canonical correction abscissa is bounded below by `1+xiRightTransverseSup` | transverseSup_le_dyadicSharpPrimeSourceNegativePart_abscissa_of_not_rh |
+| under false RH the canonical correction abscissa lies in the sharp unconditional interval from `1+xiRightTransverseSup` to `3/2` | dyadicSharpPrimeSourceNegativePart_abscissa_interval_of_not_rh |
 
 ## Complete critical-Mellin divisor tomography
 

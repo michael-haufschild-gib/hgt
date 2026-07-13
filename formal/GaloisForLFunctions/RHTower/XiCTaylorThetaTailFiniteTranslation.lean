@@ -216,6 +216,12 @@ theorem finiteCosinePolynomial_add_eq_trunc_product
     simpa only [neg_smul] using h
   simpa [smul_sub] using h'
 
+/-- The untruncated two-component packet appearing in finite cosine translation. -/
+def finiteCosineTranslationPacket
+    (d : ℕ) (x a : ℝ) : Polynomial ℂ :=
+  finiteCosinePolynomial d x * finiteCosinePolynomial d a -
+    finiteSinePolynomial d x * finiteSinePolynomial d a
+
 /-- The exact top edge discarded by the finite cosine--sine translation law. -/
 def finiteCosineTranslationTopEdge (d : ℕ) (x a : ℝ) : Polynomial ℂ :=
   let P := finiteCosinePolynomial d x * finiteCosinePolynomial d a -
@@ -267,6 +273,95 @@ theorem finiteCosineTranslationTopEdge_derivative_coeff_eq_zero_of_lt
     (finiteCosineTranslationTopEdge d x a).derivative.coeff m = 0 := by
   rw [Polynomial.coeff_derivative,
     finiteCosineTranslationTopEdge_coeff_eq_zero_of_lt d x a (by omega), zero_mul]
+
+/-- Coefficients under the spectral reflection `X ↦ -X`. -/
+theorem coeff_comp_neg_X_complex (P : Polynomial ℂ) (m : ℕ) :
+    (P.comp (-X)).coeff m = (-1 : ℂ) ^ m * P.coeff m := by
+  induction P using Polynomial.induction_on' with
+  | add P Q hP hQ =>
+      simp only [add_comp, coeff_add, hP, hQ]
+      ring
+  | monomial n c =>
+      rw [monomial_comp, neg_pow]
+      rw [show (-1 : Polynomial ℂ) = C (-1 : ℂ) by simp, ← map_pow]
+      rw [← mul_assoc, ← C_mul, C_mul_X_pow_eq_monomial]
+      simp only [coeff_monomial]
+      split_ifs with h
+      · subst m
+        ring
+      · simp only [mul_zero]
+
+/-- Every canonical finite cosine section is even in the spectral variable. -/
+theorem finiteCosinePolynomial_comp_neg_X (d : ℕ) (x : ℝ) :
+    (finiteCosinePolynomial d x).comp (-X) = finiteCosinePolynomial d x := by
+  unfold finiteCosinePolynomial
+  rw [Polynomial.sum_comp]
+  apply Finset.sum_congr rfl
+  intro k _hk
+  simp only [mul_comp, C_comp, X_pow_comp]
+  rw [show (-X : Polynomial ℂ) ^ (2 * k) = X ^ (2 * k) by
+    rw [neg_pow, (even_two_mul k).neg_one_pow, one_mul]]
+
+/-- Every finite sine companion is odd in the spectral variable. -/
+theorem finiteSinePolynomial_comp_neg_X (d : ℕ) (x : ℝ) :
+    (finiteSinePolynomial d x).comp (-X) = -finiteSinePolynomial d x := by
+  unfold finiteSinePolynomial
+  rw [Polynomial.sum_comp, ← Finset.sum_neg_distrib]
+  apply Finset.sum_congr rfl
+  intro k _hk
+  simp only [mul_comp, C_comp, X_pow_comp]
+  rw [show (-X : Polynomial ℂ) ^ (2 * k + 1) = -(X ^ (2 * k + 1)) by
+    rw [neg_pow, (odd_two_mul_add_one k).neg_one_pow, neg_one_mul]]
+  ring
+
+theorem finiteCosineTranslationPacket_comp_neg_X
+    (d : ℕ) (x a : ℝ) :
+    (finiteCosineTranslationPacket d x a).comp (-X) =
+      finiteCosineTranslationPacket d x a := by
+  unfold finiteCosineTranslationPacket
+  rw [sub_comp, mul_comp, mul_comp, finiteCosinePolynomial_comp_neg_X,
+    finiteCosinePolynomial_comp_neg_X, finiteSinePolynomial_comp_neg_X,
+    finiteSinePolynomial_comp_neg_X]
+  ring
+
+/-- The entire translation edge is even; all odd top coefficients vanish exactly. -/
+theorem finiteCosineTranslationTopEdge_comp_neg_X
+    (d : ℕ) (x a : ℝ) :
+    (finiteCosineTranslationTopEdge d x a).comp (-X) =
+      finiteCosineTranslationTopEdge d x a := by
+  have hEdge : finiteCosineTranslationTopEdge d x a =
+      finiteCosineTranslationPacket d x a - finiteCosinePolynomial d (x + a) := by
+    rw [finiteCosinePolynomial_add_eq_product_sub_topEdge]
+    unfold finiteCosineTranslationPacket
+    ring
+  rw [hEdge, sub_comp, finiteCosineTranslationPacket_comp_neg_X,
+    finiteCosinePolynomial_comp_neg_X]
+
+theorem finiteCosineTranslationTopEdge_coeff_eq_zero_of_odd
+    (d : ℕ) (x a : ℝ) {m : ℕ} (hm : Odd m) :
+    (finiteCosineTranslationTopEdge d x a).coeff m = 0 := by
+  have h := congrArg (Polynomial.coeff · m)
+    (finiteCosineTranslationTopEdge_comp_neg_X d x a)
+  change ((finiteCosineTranslationTopEdge d x a).comp (-X)).coeff m =
+    (finiteCosineTranslationTopEdge d x a).coeff m at h
+  rw [coeff_comp_neg_X_complex, hm.neg_one_pow] at h
+  linear_combination (-1 / 2 : ℂ) * h
+
+/-- The edge vanishes through degree `2*d+1`; its first possible term has degree `2*d+2`. -/
+theorem finiteCosineTranslationTopEdge_coeff_eq_zero_of_le
+    (d : ℕ) (x a : ℝ) {m : ℕ} (hm : m ≤ 2 * d + 1) :
+    (finiteCosineTranslationTopEdge d x a).coeff m = 0 := by
+  rcases hm.lt_or_eq with hm | rfl
+  · exact finiteCosineTranslationTopEdge_coeff_eq_zero_of_lt d x a hm
+  · exact finiteCosineTranslationTopEdge_coeff_eq_zero_of_odd d x a
+      (odd_two_mul_add_one d)
+
+/-- Differentiation of the edge first permits degree `2*d+1`. -/
+theorem finiteCosineTranslationTopEdge_derivative_coeff_eq_zero_of_lt_succ
+    (d : ℕ) (x a : ℝ) {m : ℕ} (hm : m < 2 * d + 1) :
+    (finiteCosineTranslationTopEdge d x a).derivative.coeff m = 0 := by
+  rw [Polynomial.coeff_derivative,
+    finiteCosineTranslationTopEdge_coeff_eq_zero_of_le d x a (by omega), zero_mul]
 
 /-- Evaluation of the finite odd companion. -/
 def truncatedSineCompanion (d : ℕ) (z : ℂ) (x : ℝ) : ℂ :=
