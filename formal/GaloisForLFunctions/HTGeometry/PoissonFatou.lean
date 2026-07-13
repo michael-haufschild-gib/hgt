@@ -233,4 +233,189 @@ theorem poissonKer_concentration_symm {δ : ℝ} (hδ0 : 0 < δ) (hδπ : δ ≤
   refine key.congr (fun r => ?_)
   rw [poissonKer_integral_neg r δ]
 
+theorem poissonKer_split_bound {f : ℝ → ℝ} (hf : Continuous f) {r ε δ M : ℝ}
+    (hr0 : 0 ≤ r) (hr1 : r < 1) (hδ0 : 0 < δ) (hδπ : δ ≤ π) (hε : 0 < ε) (hM0 : 0 ≤ M)
+    (hsmall : ∀ t ∈ Set.Icc (-δ) δ, |f t - f 0| ≤ ε / 2)
+    (hbig : ∀ t ∈ Set.Icc (-π) π, |f t - f 0| ≤ M) :
+    |∫ t in (-π)..π, poissonKer r t * (f t - f 0)|
+      ≤ ε / 2 * (2 * π) + M * ((∫ t in (-π)..(-δ), poissonKer r t) + ∫ t in δ..π, poissonKer r t) := by
+  have habs : |r| < 1 := by rw [abs_of_nonneg hr0]; exact hr1
+  have hcont : Continuous (poissonKer r) := poissonKer_continuous habs
+  have hg : Continuous (fun t => poissonKer r t * (f t - f 0)) := hcont.mul (hf.sub continuous_const)
+  have hnn : ∀ t, 0 ≤ poissonKer r t := fun t => poissonKer_nonneg hr0 hr1 t
+  have hπ : 0 < π := Real.pi_pos
+  set A := ∫ t in (-π)..(-δ), poissonKer r t * (f t - f 0)
+  set B := ∫ t in (-δ)..δ, poissonKer r t * (f t - f 0)
+  set Cc := ∫ t in δ..π, poissonKer r t * (f t - f 0)
+  have hsplit : (∫ t in (-π)..π, poissonKer r t * (f t - f 0)) = A + (B + Cc) := by
+    rw [← intervalIntegral.integral_add_adjacent_intervals (a := -π) (b := -δ) (c := π)
+      (hg.intervalIntegrable _ _) (hg.intervalIntegrable _ _),
+      ← intervalIntegral.integral_add_adjacent_intervals (a := -δ) (b := δ) (c := π)
+        (hg.intervalIntegrable _ _) (hg.intervalIntegrable _ _)]
+  have hmid : |B| ≤ ε / 2 * (2 * π) := by
+    have hb1 : |B| ≤ ∫ t in (-δ)..δ, ε / 2 * poissonKer r t := by
+      apply le_trans (intervalIntegral.abs_integral_le_integral_abs (by linarith))
+      apply intervalIntegral.integral_mono_on (by linarith)
+        (hg.abs.intervalIntegrable _ _) ((continuous_const.mul hcont).intervalIntegrable _ _)
+      intro t ht
+      rw [abs_mul, abs_of_nonneg (hnn t), mul_comm]
+      exact mul_le_mul_of_nonneg_right (hsmall t (Set.mem_Icc.mpr ⟨ht.1, ht.2⟩)) (hnn t)
+    rw [intervalIntegral.integral_const_mul] at hb1
+    refine hb1.trans ?_
+    apply mul_le_mul_of_nonneg_left _ (by linarith)
+    rw [← poissonKer_integral_symm hr0 hr1,
+      ← intervalIntegral.integral_add_adjacent_intervals (a := -π) (b := -δ) (c := π)
+        (hcont.intervalIntegrable _ _) (hcont.intervalIntegrable _ _),
+      ← intervalIntegral.integral_add_adjacent_intervals (a := -δ) (b := δ) (c := π)
+        (hcont.intervalIntegrable _ _) (hcont.intervalIntegrable _ _)]
+    have hL : 0 ≤ ∫ t in (-π)..(-δ), poissonKer r t :=
+      intervalIntegral.integral_nonneg (by linarith) (fun t _ => hnn t)
+    have hR : 0 ≤ ∫ t in δ..π, poissonKer r t :=
+      intervalIntegral.integral_nonneg hδπ (fun t _ => hnn t)
+    linarith
+  have hLc : |A| ≤ M * ∫ t in (-π)..(-δ), poissonKer r t := by
+    have : |A| ≤ ∫ t in (-π)..(-δ), M * poissonKer r t := by
+      apply le_trans (intervalIntegral.abs_integral_le_integral_abs (by linarith))
+      apply intervalIntegral.integral_mono_on (by linarith)
+        (hg.abs.intervalIntegrable _ _) ((continuous_const.mul hcont).intervalIntegrable _ _)
+      intro t ht
+      rw [abs_mul, abs_of_nonneg (hnn t), mul_comm]
+      exact mul_le_mul_of_nonneg_right (hbig t (Set.mem_Icc.mpr ⟨ht.1, by linarith [ht.2]⟩)) (hnn t)
+    rwa [intervalIntegral.integral_const_mul] at this
+  have hRc : |Cc| ≤ M * ∫ t in δ..π, poissonKer r t := by
+    have : |Cc| ≤ ∫ t in δ..π, M * poissonKer r t := by
+      apply le_trans (intervalIntegral.abs_integral_le_integral_abs hδπ)
+      apply intervalIntegral.integral_mono_on hδπ
+        (hg.abs.intervalIntegrable _ _) ((continuous_const.mul hcont).intervalIntegrable _ _)
+      intro t ht
+      rw [abs_mul, abs_of_nonneg (hnn t), mul_comm]
+      exact mul_le_mul_of_nonneg_right (hbig t (Set.mem_Icc.mpr ⟨by linarith [ht.1], ht.2⟩)) (hnn t)
+    rwa [intervalIntegral.integral_const_mul] at this
+  rw [hsplit, mul_add]
+  calc |A + (B + Cc)| ≤ |A| + |B + Cc| := abs_add_le A (B + Cc)
+    _ ≤ |A| + (|B| + |Cc|) := by linarith [abs_add_le B Cc]
+    _ ≤ _ := by linarith [hmid, hLc, hRc]
+
+/-- **Poisson approximate-identity convergence at a continuity point.**  For `f` continuous, the
+Poisson average `(2π)⁻¹∫_{-π}^{π} P_r(t) f(t) dt` converges to `f(0)` as `r → 1⁻`. -/
+theorem tendsto_poissonKerAvg_of_continuous {f : ℝ → ℝ} (hf : Continuous f) :
+    Tendsto (fun r : ℝ => (2 * π)⁻¹ * ∫ t in (-π)..π, poissonKer r t * f t) (𝓝[<] 1)
+      (𝓝 (f 0)) := by
+  have hπ : 0 < π := Real.pi_pos
+  obtain ⟨M, hM0, hM⟩ : ∃ M, 0 ≤ M ∧ ∀ t ∈ Set.Icc (-π) π, |f t - f 0| ≤ M := by
+    obtain ⟨t0, -, ht0⟩ := isCompact_Icc.exists_isMaxOn (Set.nonempty_Icc.mpr (by linarith))
+      (by fun_prop : ContinuousOn (fun t : ℝ => |f t - f 0|) (Set.Icc (-π) π))
+    exact ⟨|f t0 - f 0|, abs_nonneg _, fun t ht => isMaxOn_iff.mp ht0 t ht⟩
+  rw [Metric.tendsto_nhdsWithin_nhds]
+  intro ε hε
+  obtain ⟨δ0, hδ00, hδc⟩ := Metric.continuousAt_iff.mp hf.continuousAt (ε / 2) (by linarith)
+  set δ : ℝ := min (δ0 / 2) π with hδdef
+  have hδ0 : 0 < δ := lt_min (by linarith) hπ
+  have hδπ : δ ≤ π := min_le_right _ _
+  have hsmall : ∀ t ∈ Set.Icc (-δ) δ, |f t - f 0| ≤ ε / 2 := by
+    intro t ht
+    rw [Set.mem_Icc] at ht
+    have hlt : dist t 0 < δ0 := by
+      rw [Real.dist_eq, sub_zero, abs_lt]
+      constructor
+      · have : -δ ≤ t := ht.1
+        have : δ ≤ δ0 / 2 := min_le_left _ _
+        linarith [ht.1, min_le_left (δ0/2) π]
+      · linarith [ht.2, min_le_left (δ0/2) π]
+    have := hδc hlt
+    rw [Real.dist_eq] at this
+    linarith [this]
+  have hconc := poissonKer_concentration_symm hδ0 hδπ
+  rw [Metric.tendsto_nhdsWithin_nhds] at hconc
+  obtain ⟨η, hη0, hη⟩ := hconc (π * ε / (M + 1)) (by positivity)
+  refine ⟨min η (1 / 2), lt_min hη0 (by norm_num), fun r hrmem hrdist => ?_⟩
+  rw [Set.mem_Iio] at hrmem
+  have h12 : |r - 1| < 1 / 2 := by
+    rw [Real.dist_eq] at hrdist; exact lt_of_lt_of_le hrdist (min_le_right _ _)
+  rw [abs_lt] at h12
+  have hr0 : (0 : ℝ) ≤ r := by linarith [h12.1]
+  -- avg - f 0 rewritten
+  have habs : |r| < 1 := by rw [abs_of_nonneg hr0]; exact hrmem
+  have hcont : Continuous (poissonKer r) := poissonKer_continuous habs
+  have hf0 : (2 * π)⁻¹ * ∫ t in (-π)..π, poissonKer r t * f 0 = f 0 := by
+    rw [intervalIntegral.integral_mul_const, poissonKer_integral_symm hr0 hrmem]
+    field_simp
+  have hdiff : (2 * π)⁻¹ * (∫ t in (-π)..π, poissonKer r t * f t) - f 0
+      = (2 * π)⁻¹ * ∫ t in (-π)..π, poissonKer r t * (f t - f 0) := by
+    have hI1 : IntervalIntegrable (fun t => poissonKer r t * f t) volume (-π) π :=
+      (hcont.mul hf).intervalIntegrable _ _
+    have hI2 : IntervalIntegrable (fun t => poissonKer r t * f 0) volume (-π) π :=
+      (hcont.mul (continuous_const : Continuous fun _ : ℝ => f 0)).intervalIntegrable _ _
+    have hint : (∫ t in (-π)..π, poissonKer r t * (f t - f 0))
+        = (∫ t in (-π)..π, poissonKer r t * f t) - ∫ t in (-π)..π, poissonKer r t * f 0 := by
+      rw [← intervalIntegral.integral_sub hI1 hI2]
+      exact intervalIntegral.integral_congr (fun t _ => by ring)
+    rw [hint, mul_sub]; linarith [hf0]
+  rw [Real.dist_eq, hdiff, abs_mul, abs_of_nonneg (by positivity : (0:ℝ) ≤ (2 * π)⁻¹)]
+  have hbnd := poissonKer_split_bound hf hr0 hrmem hδ0 hδπ hε hM0 hsmall hM
+  have hcpos : (∫ t in (-π)..(-δ), poissonKer r t) + ∫ t in δ..π, poissonKer r t < π * ε / (M + 1) := by
+    have hd := hη (Set.mem_Iio.mpr hrmem) (lt_of_lt_of_le hrdist (min_le_left _ _))
+    rw [Real.dist_eq, sub_zero] at hd
+    exact lt_of_le_of_lt (le_abs_self _) hd
+  have hcnn : 0 ≤ (∫ t in (-π)..(-δ), poissonKer r t) + ∫ t in δ..π, poissonKer r t := by
+    have h1 : (0:ℝ) ≤ ∫ t in (-π)..(-δ), poissonKer r t :=
+      intervalIntegral.integral_nonneg (by linarith) (fun t _ => poissonKer_nonneg hr0 hrmem t)
+    have h2 : (0:ℝ) ≤ ∫ t in δ..π, poissonKer r t :=
+      intervalIntegral.integral_nonneg hδπ (fun t _ => poissonKer_nonneg hr0 hrmem t)
+    linarith
+  calc (2 * π)⁻¹ * |∫ t in (-π)..π, poissonKer r t * (f t - f 0)|
+      ≤ (2 * π)⁻¹ * (ε / 2 * (2 * π) + M *
+          ((∫ t in (-π)..(-δ), poissonKer r t) + ∫ t in δ..π, poissonKer r t)) :=
+        mul_le_mul_of_nonneg_left hbnd (by positivity)
+    _ < ε := by
+        have hMc : M * ((∫ t in (-π)..(-δ), poissonKer r t) + ∫ t in δ..π, poissonKer r t) < π * ε := by
+          calc M * _ ≤ M * (π * ε / (M + 1)) := mul_le_mul_of_nonneg_left hcpos.le hM0
+            _ < π * ε := by
+                rw [mul_div_assoc', div_lt_iff₀ (by linarith)]
+                nlinarith [hπ, hε]
+        have he1 : (2 * π)⁻¹ * (ε / 2 * (2 * π)) = ε / 2 := by field_simp
+        have he2 : (2 * π)⁻¹ * (π * ε) = ε / 2 := by field_simp
+        rw [mul_add, he1]
+        have : (2 * π)⁻¹ * (M * _) < (2 * π)⁻¹ * (π * ε) :=
+          mul_lt_mul_of_pos_left hMc (by positivity)
+        rw [he2] at this
+        linarith
+
+/-- The Poisson kernel is antitone (decreasing) in `t` on `[0, π]` for `0 ≤ r < 1`.  This is the
+monotonicity that lets the Lebesgue-point average estimate control the boundary limit. -/
+theorem poissonKer_antitoneOn {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
+    AntitoneOn (poissonKer r) (Set.Icc 0 π) := by
+  have habs : |r| < 1 := by rw [abs_of_nonneg hr0]; exact hr1
+  intro a ha b hb hab
+  rw [Set.mem_Icc] at ha hb
+  rw [poissonKer, poissonKer]
+  have hda : 0 < 1 - 2 * r * Real.cos a + r ^ 2 := poissonKer_denom_pos habs a
+  have hdb : 0 < 1 - 2 * r * Real.cos b + r ^ 2 := poissonKer_denom_pos habs b
+  have hcos : Real.cos b ≤ Real.cos a := by
+    rcases eq_or_lt_of_le hab with h | h
+    · rw [h]
+    · exact le_of_lt (Real.cos_lt_cos_of_nonneg_of_le_pi ha.1 hb.2 h)
+  have hden : 1 - 2 * r * Real.cos a + r ^ 2 ≤ 1 - 2 * r * Real.cos b + r ^ 2 := by
+    nlinarith [mul_le_mul_of_nonneg_left hcos (by linarith : (0:ℝ) ≤ 2 * r)]
+  have hnum : 0 ≤ 1 - r ^ 2 := by nlinarith
+  rw [div_le_div_iff₀ hdb hda]
+  nlinarith [mul_le_mul_of_nonneg_left hden hnum]
+
+/-- The `t`-derivative of the Poisson kernel: `P_r'(t) = -2r(1-r²)sin t / (1-2r cos t+r²)²`.  It is
+`≤ 0` on `[0,π]` (whence the monotonicity), and drives the decreasing-kernel integral estimate used
+in the Lebesgue-point boundary limit. -/
+theorem hasDerivAt_poissonKer {r : ℝ} (hr : |r| < 1) (t : ℝ) :
+    HasDerivAt (poissonKer r)
+      (-(2 * r * (1 - r ^ 2) * Real.sin t) / (1 - 2 * r * Real.cos t + r ^ 2) ^ 2) t := by
+  have hden0 : (1 - 2 * r * Real.cos t + r ^ 2) ≠ 0 := (poissonKer_denom_pos hr t).ne'
+  have hden : HasDerivAt (fun t => 1 - 2 * r * Real.cos t + r ^ 2) (2 * r * Real.sin t) t := by
+    have hc : HasDerivAt Real.cos (-Real.sin t) t := Real.hasDerivAt_cos t
+    have hd0 := ((hasDerivAt_const t (1:ℝ)).sub (hc.const_mul (2 * r))).add_const (r ^ 2)
+    convert hd0 using 1; ring
+  have hq := (hasDerivAt_const t (1 - r ^ 2)).div hden hden0
+  show HasDerivAt (fun t => (1 - r ^ 2) / (1 - 2 * r * Real.cos t + r ^ 2)) _ t
+  convert hq using 1
+  field_simp
+  ring
+
 end GaloisForLFunctions.HTGeometry

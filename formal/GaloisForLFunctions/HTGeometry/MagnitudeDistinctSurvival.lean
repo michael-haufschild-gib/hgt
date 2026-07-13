@@ -173,4 +173,38 @@ theorem min_index_ge_of_valuation_le {ν : ℕ →₀ ℕ} {b : ℕ → ℝ} {D 
     _ ≤ ν.support.min' hne + (D - 1) * K :=
         Nat.add_le_add_left (Nat.mul_le_mul_left _ hmax_le) _
 
+/-- **Magnitude survival criterion.**  Write the regrouped coefficient
+`coeff N (∑_μ c_μ ∏ f^{(μ)}) = ∑_ν (∏ₙ (coeff n f)^{ν n})·W(ν)` over the appearing index-multisets
+`ν`, with integer weights `W(ν)`.  If one atom `ν₀` has nonzero weight and strictly minimal
+valuation `V(ν) = ∑ₙ ν n · b n`, separated from every competitor by a gap `G` exceeding the log of
+the total weight mass, then the coefficient is nonzero. -/
+theorem diffPoly_coeff_ne_zero_of_dominant {D : ℕ} (f : ℂ⟦X⟧) (N : ℕ) (S : Finset (Fin D → ℕ))
+    (c : (Fin D → ℕ) → ℤ) {b : ℕ → ℝ} (hb : ∀ n, ‖coeff n f‖ = Real.exp (- b n))
+    (W : (ℕ →₀ ℕ) → ℤ)
+    (hW : ∀ ν, W ν = ∑ p ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).filter
+          (fun p => key (fun t => p.2 t + p.1 t) = ν),
+        c p.1 * ∏ t, ((p.2 t + p.1 t).descFactorial (p.1 t) : ℤ))
+    (ν₀ : ℕ →₀ ℕ)
+    (hν₀ : ν₀ ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).image
+      (fun p => key (fun t => p.2 t + p.1 t)))
+    (hw₀ : W ν₀ ≠ 0)
+    {G : ℝ}
+    (hgap : ∀ ν ∈ ((S ×ˢ (Finset.univ.finsuppAntidiag N)).image
+          (fun p => key (fun t => p.2 t + p.1 t))).erase ν₀,
+        ν₀.sum (fun n k => (k : ℝ) * b n) + G ≤ ν.sum (fun n k => (k : ℝ) * b n))
+    (hG : (∑ ν ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).image
+          (fun p => key (fun t => p.2 t + p.1 t)), (|W ν| : ℝ)) < Real.exp G) :
+    (coeff N) (∑ μ ∈ S, (c μ : ℂ) • ∏ t, (⇑(d⁄dX ℂ))^[μ t] f) ≠ 0 := by
+  classical
+  rw [coeff_diffPoly_regrouped f N S c]
+  simp only [← hW]
+  rw [Finset.sum_congr rfl fun ν (_ : ν ∈ (S ×ˢ (Finset.univ.finsuppAntidiag N)).image
+      (fun p => key (fun t => p.2 t + p.1 t))) =>
+      mul_comm (ν.prod (fun n k => (coeff n f) ^ k)) ((W ν : ℂ))]
+  refine weighted_sum_ne_zero_of_min_valuation _
+    (fun ν => ν.sum (fun n k => (k : ℝ) * b n)) _ ?_ W hν₀ hw₀ hgap hG
+  intro ν
+  exact norm_aval (f := f) hb ν
+
+
 end GaloisForLFunctions

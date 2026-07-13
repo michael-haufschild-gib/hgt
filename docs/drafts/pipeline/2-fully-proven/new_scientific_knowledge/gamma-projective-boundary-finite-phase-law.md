@@ -517,6 +517,44 @@ Primary sources:
   boundary `Γ'(σ + it) / Γ''(σ + it) → 0` for `σ > 0`;
 - the finite projective-relation limit lemma used by the recurrence collapse.
 
+`formal/GaloisForLFunctions/HTGeometry/GammaJetProjectiveBoundary.lean` promotes the two-jet
+boundary to the **all-orders Gamma-jet projective boundary** (`iteratedDeriv_Gamma_div_succ_vertical_tendsto_zero`):
+for every order `n` and every `σ > 0`, `Γ⁽ⁿ⁾(σ + it) / Γ⁽ⁿ⁺¹⁾(σ + it) → 0` as `t → +∞`.  This is
+the eq. (5) one-point projective boundary for the canonical Gamma jet tuple.  The full tuple
+statement `iteratedDeriv_Gamma_div_higher_vertical_tendsto_zero` (`Γ⁽ⁱ⁾/Γ⁽ʳ⁾ → 0` for every `i < r`)
+gives the single constant point `(0, …, 0, 1)` for the normalized jet tuple.  Supporting reusable
+lemmas proved along the way: a uniform `MvPolynomial.eval` norm bound (`norm_eval_le_pow`), the
+degree bound `totalDegree (pderiv i p) ≤ totalDegree p` (`totalDegree_pderiv_le`, absent in mathlib),
+`totalDegree (gammaBell n) ≤ n`, and the leading-term asymptotic `bellVal n (σ+it) / ψⁿ → 1`.
+
+`formal/GaloisForLFunctions/HTGeometry/GammaFiniteProjectiveLaw.lean` formalizes the remaining
+projective-law mechanisms with the mathlib-absent analytic inputs (the coefficient projective
+boundary and Bohr return) supplied as explicit hypotheses:
+
+- **eq. (3) lowest-power domination** (`polynomial_lowest_power_tendsto`,
+  `polynomial_lowest_power_ratio_tendsto`, `gamma_monomial_valuation_residue`): as `Γ → 0` the
+  smallest Gamma power dominates a rational expression `P(Γ)/Q(Γ)`, whose projective normalization
+  converges to the leading `L`-coefficient ratio `R(0)/S(0)`;
+- **eq. (27) → (29) recurrence collapse** (`recurrence_collapse_to_autonomous`): a finite Gamma-field
+  differential relation, translated along Bohr return times and normalized by a projectively
+  dominant coefficient, converges to a nontrivial constant-coefficient (autonomous) relation
+  (`d_β = 1`), so a recurrent solution differentially algebraic over `K_Γ` satisfies an autonomous
+  ADE — this is eq. (8).  The engine is the tree's `finiteProjectiveRelationCollapse`.
+
+`formal/GaloisForLFunctions/HTGeometry/GammaFormalResidueField.lean` formalizes the §3 algebraic
+residue (eq. 19) on the formal field itself.  Modeling `C(log s)((s⁻¹))` as
+`HahnSeries ℤ (RatFunc ℂ)`, `formalResidue_data` gives every nonzero element its leading data
+`(a, b, c)` — `a = order`, `b =` the `log s`-degree of the leading Laurent coefficient, `c ∈ ℂˣ` its
+leading constant (`formalResidue_const_ne_zero`) — and the residue is a genuine valuation
+(`formalResidue_order_mul` additive, `formalResidue_leadingCoeff_mul` multiplicative).
+
+Still genuinely open (mathlib-absent multi-year infrastructure, not fakeable): the analytic
+Poincaré transfer identifying the analytic `L` with this formal field (promoting eq. 19/3 from the
+formal-algebraic form above to unconditional analytic asymptotics); the holomorphic Bohr
+almost-periodic hull + Pontryagin exact sequence discharging the eq. (5)/return interfaces and
+giving the finite Bohr-rank conclusion eq. (9); and the relative differential Galois theory for
+eq. (32) (Wang–Yao, a known theorem).
+
 `formal/GaloisForLFunctions/HTGeometry/GammaProjectivePrimeTorusCarrier.lean` proves the §7
 finite-aperture prime-torus carrier law (eq. 34) unconditionally:
 

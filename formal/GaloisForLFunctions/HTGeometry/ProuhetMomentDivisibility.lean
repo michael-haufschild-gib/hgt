@@ -31,6 +31,29 @@ theorem hasseDeriv_eval_one_eq_binomial_moment {R : Type*} [CommRing R] (k : ℕ
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [eval_monomial, one_pow, mul_one]
 
+/-- **Prouhet tangency, converse Taylor form.**  Divisibility by `(X-1)^m` kills every
+Taylor coefficient at `1` below order `m`.  Translating by one sends the divisor to `X^m`,
+so this is the direct converse needed when a generating polynomial is constructed by factors. -/
+theorem hasseDeriv_eval_one_eq_zero_of_sub_one_pow_dvd
+    {R : Type*} [CommRing R] {G : R[X]} {m k : ℕ}
+    (hdiv : (X - 1) ^ m ∣ G) (hk : k < m) :
+    eval 1 (hasseDeriv k G) = 0 := by
+  rw [← taylor_coeff]
+  apply (X_pow_dvd_iff.mp ?_) k hk
+  obtain ⟨D, hD⟩ := hdiv
+  refine ⟨taylor 1 D, ?_⟩
+  rw [hD, taylor_mul, taylor_pow]
+  simp
+
+/-- **Prouhet tangency, converse binomial-moment form.**  A zero of order `m` at one
+annihilates all binomial coefficient moments of orders strictly below `m`. -/
+theorem binomial_moment_eq_zero_of_sub_one_pow_dvd
+    {R : Type*} [CommRing R] {G : R[X]} {m k : ℕ}
+    (hdiv : (X - 1) ^ m ∣ G) (hk : k < m) :
+    ∑ i ∈ G.support, (i.choose k : R) * G.coeff i = 0 := by
+  rw [← hasseDeriv_eval_one_eq_binomial_moment]
+  exact hasseDeriv_eval_one_eq_zero_of_sub_one_pow_dvd hdiv hk
+
 /-- **Prouhet tangency, Taylor form.**  If every Taylor coefficient of `G` at `1` up to order
 `L` vanishes, then `G` is divisible by `(X-1)^{L+1}`.  The Taylor shift transports the
 vanishing into `X^{L+1} ∣ taylor 1 G`, and composing back with `X-1` restores `G`. -/

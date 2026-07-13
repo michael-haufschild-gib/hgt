@@ -360,3 +360,14 @@ tent card (`RHTower/TentMellinFactor.lean`, `HTGeometry/RiemannSumCell.lean`,
 `RHTower/ZetaLogDerivResidue.lean`, `RHTower/PrimePolarDirichletBackbone.lean`).  The sharp-window
 continuation `Mcal_L` (the `A_L` analogue of the tent continuation `(20)`) reuses the same discretization
 and holomorphy bricks (`gGridPos`, `E_kL_bound`, `HL_differentiableOn`) with `A_L` in place of `A_L²`.
+
+Update — the sharp-window criterion is now a **full RH equivalence**, `RH_iff_sharpWindow_regular`
+(axiom-clean): `ζ` has no zeros with `Re > ½` **iff** the sharp observable `A_L(s-1)·(-ζ'/ζ)(s-½)` is
+regular (finite limit) at every point of `Re s > 1` other than `s = 3/2`.  The `s = 3/2` exclusion is
+forced — `-ζ'/ζ(s-½)` inherits `ζ`'s pole at `s-½ = 1` there unconditionally (the polar
+renormalization, not the bare observable, cancels it), and every off-critical zero shift is
+`s = ρ+½ ≠ 3/2` (`ρ ≠ 1`).  Detection (`⟸`) is `windowObservable_no_limit` (nonzero residue), and
+satisfiability (`⟹`) is `windowObservable_regular_of_RH` built on `differentiableAt_neg_logDeriv_riemannZeta`
+(`-ζ'/ζ` holomorphic off `ζ`'s zeros/pole).  The general window form `RH_iff_windowObservable_regular`
+gives the same equivalence for any continuous window nonvanishing on the right half-plane (the tent
+`-2·A_L(s-1)²` is the other instance).

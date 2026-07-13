@@ -7,6 +7,7 @@
 \usepackage{microtype}
 \usepackage{enumitem}
 \usepackage{xcolor}
+\usepackage{xurl}
 \usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,
   urlcolor=blue!55!black]{hyperref}
 
@@ -112,7 +113,8 @@ simplex.  Section~\ref{sec:frame} identifies finite Cholesky frames with finite 
 Section~\ref{sec:aperture} proves that every finite frame level retains residual maximal
 translation hypertranscendence.  Section~\ref{sec:selection} proves complete-tower selection.
 Section~\ref{sec:graph} determines the singular graph and its forced repair.  The combined law and
-its scope are stated in Sections~\ref{sec:combined} and~\ref{sec:scope}.
+its verification boundary and scope are stated in
+Sections~\ref{sec:combined}, \ref{sec:formal}, and~\ref{sec:scope}.
 
 \section{The canonical Nevanlinna boundary simplex}\label{sec:boundary}
 
@@ -324,12 +326,21 @@ is differentially algebraically independent over $\C(z)$ for every finite tuple 
 complex shifts.
 
 Fix $\nu_0=\Beta(\eta_0)$ with $\eta_0$ of infinite support.  For $0<\delta<1$ and $N\geq1$,
-let $X_{N,\delta}(\eta_0)$ be the set of real $w\in L^\infty(\eta_0)$ satisfying
+put $t_0=q(i)\in\HH$ and define the projective Cauchy powers
+\[
+  K_{t_0,k}(\tau)=
+  \begin{cases}(\tau-t_0)^{-k},&\tau\in\R,\\0,&\tau=\infty,
+  \end{cases}
+  \qquad 1\leq k\leq N.
+\]
+Let $X_{N,\delta}(\eta_0)$ be the set of real $w\in L^\infty(\eta_0)$ satisfying
 \begin{equation}\label{eq:chart}
-  \|w-1\|_\infty<\delta,\qquad
-  \int w\,d\eta_0=1,\qquad
-  \int w(\tau)m_\tau^{(r)}(-i)\,d\eta_0(\tau)
-   =m_{\nu_0}^{(r)}(-i)\quad(0\leq r<N).
+\begin{aligned}
+  \|w-1\|_\infty&<\delta, & \int w\,d\eta_0&=1,\\
+  \int w(\tau)K_{t_0,k}(\tau)\,d\eta_0(\tau)
+    &=\int K_{t_0,k}(\tau)\,d\eta_0(\tau),
+    & 1&\leq k\leq N.
+\end{aligned}
 \end{equation}
 The carrier associated with $w$ is
 \begin{equation}\label{eq:weighted-carrier}
@@ -348,7 +359,11 @@ The tangent space at $w=1$ is the common kernel of the real and imaginary parts 
 continuous linear functionals on $L^\infty(\eta_0;\R)$.  Since $\eta_0$ has infinite support,
 $L^\infty(\eta_0;\R)$ is infinite-dimensional; a finite-codimensional closed subspace remains
 infinite-dimensional.  Its sufficiently small balls preserve positivity.  The last assertion is
-Lemma~\ref{lem:frame-jet}.
+Lemma~\ref{lem:frame-jet} together with the finite forward expansion of every
+$m_\tau^{(r)}(i)$ in the powers $K_{t_0,k}$ for $k\leq r+1$.  Since the carriers are real
+measures, their jets at $-i$ are the complex conjugates of their jets at $i$.  Thus the upper-node
+constraints fix the conventional frame jets at $-i$.  This implication does not require
+$q'(i)\neq0$ or $q'(-i)\neq0$.
 \end{proof}
 
 \begin{proposition}[Hilbert-cube frame fibers]\label{prop:hilbert-cube}
@@ -403,8 +418,15 @@ polynomial $\sum_dc_{a,d}z_b^d$ vanishes.  Unless all $c_{a,d}$ vanish, this can
 $q_0$ of the distinct $z_b$.  Each of the remaining at least $R-q_0$ rows imposes one nonzero
 polynomial equation in its own variable $x_b$, hence one complex codimension.  The incidence set
 therefore has codimension at least $(R-q_0)-(P-1)$ after allowing the projective coefficient
-parameter.  Projection to the packet space cannot increase dimension.  This is the asserted
-bound.
+parameter.  More explicitly, cover $\mathbb P^{P-1}$ by its $P$ standard affine charts.  On every
+chart the incidence ideal has Krull dimension at most the packet dimension minus
+$R-P-q_0+1$.  The projection from the closed incidence subset of
+$\mathcal J^R\times\mathbb P^{P-1}$ to the packet space $\mathcal J^R$ is proper because the
+coefficient factor is projective~\cite[Chapter~II, \S4]{Hartshorne1977}.  Its image is therefore closed algebraic, has dimension no
+larger than the incidence variety, and is exactly the rank-defect locus: every nonzero null vector
+has a nonzero projective coordinate and hence belongs to one of the standard charts.  A finite
+Whitney stratification of the projected algebraic set~\cite{Whitney1965} has real codimension at
+least twice this complex codimension.  This proves the asserted bound in the form used below.
 \end{proof}
 
 \begin{proposition}[Constrained translate transversality]\label{prop:transversality}
@@ -420,9 +442,13 @@ We give the two parts because they are where positivity, the uncountable shift s
 differential coefficients meet.
 
 By \eqref{eq:mobius-difference}, every $z$-jet of $m_\tau(z)$ is a rational function of $\tau$.
-Its only parameter pole is $q(z)$, and the highest derivative contributes a nonzero highest-order
-principal part whenever $a(z)q'(z)\neq0$.  Reflected conjugates put the poles belonging to real
-functionals in the opposite half-plane.
+Its only parameter pole is $q(z)$.  The forward map from the Cauchy powers
+$(\tau-q(z))^{-1},\ldots,(\tau-q(z))^{-r-1}$ to the first $r$ genuine Nevanlinna jets is lower
+triangular and exists at every source point.  Its diagonal is $k!a(z)q'(z)^k$.  Thus
+noncriticality is needed only to invert this map at a movable target row; it is not needed at a
+frozen frame point.  Freezing the projective Cauchy powers already freezes all genuine carrier
+jets in that finite packet.  Reflected conjugates put the poles belonging to real functionals in
+the opposite half-plane.
 
 Let $E_J$ be the real tangent annihilating the frozen packet and normalization.  If a real
 functional on a target jet packet annihilates its image from $E_J$, then the corresponding real
@@ -472,14 +498,17 @@ $q'\ne0$.  Nonvanishing persists on an open neighborhood of the shift configurat
 therefore cover the distinct-shift configuration space by countably many relatively compact
 patches; compactness gives a finite open atlas of such rows on each patch.
 
-The surjectivity proved in the first paragraph supplies, at every shift configuration, a
-finite-dimensional perturbation family that is submersive onto all row-jet coordinates.
-Surjectivity persists locally; compactness reduces a configuration patch to finitely many such
-families.  Parametric transversality~\cite[Chapter~3]{Hirsch1976}, applied successively to the
-finitely many smooth algebraic strata, makes the row-evaluation map transverse to the bad set for
-a dense set of weights in every neighborhood.  The codimension choice makes its preimage in the
-shift patch empty.  Normal convergence of the Cauchy jets on compact upper-half-plane packets
-makes this avoidance open.
+The actual row-evaluation family is smooth in operator norm on the open regular locus: its kernel
+is the finite forward expansion above, and every projective Cauchy power varies smoothly in the
+sup norm on a uniform upper-half-plane collar.  At each shift configuration the constrained
+target control is onto.  A right inverse therefore gives one finite-dimensional probe on a
+neighborhood of that configuration.  Compactness of a shift patch and finite summation of these
+probe spaces produce one common finite-dimensional frozen-tangent probe that remains onto over
+the whole patch.  Parametric transversality~\cite[Chapter~3]{Hirsch1976}, applied successively to
+the finitely many Whitney strata supplied by Lemma~\ref{lem:evaluation-codim}, makes the smooth
+row-evaluation map transverse to the rank defect for a dense set of weights in every
+neighborhood.  The strict real-codimension excess makes every inverse image empty.  Operator-norm
+continuity on the compact patch makes the resulting uniform avoidance open.
 
 There are countably many relation patterns and compact configuration patches.  Their open dense
 avoidance sets have dense residual intersection by Baire's theorem.  If a relation is first given
@@ -701,6 +730,43 @@ from Theorem~\ref{thm:saturation}, Cholesky uniqueness, and
 Bernstein--Szeg\H{o} prefix identity following \eqref{eq:bs}.
 \end{proof}
 
+\section{Formal verification boundary}\label{sec:formal}
+
+The project-specific compact-patch argument has been formalized in Lean~4.  The verification
+chain is deliberately split at the classical boundary.  The external inputs are the general
+proper-projective-image and finite Whitney-stratification theorem, the finite-dimensional smooth
+parametric-transversality theorem, and the source-faithful classical Nevanlinna family.  They are
+represented by the interfaces
+\path{ClassicalComplexProjectiveIncidenceGeometry},
+\path{ClassicalStratifiedParametricAvoidance}, and
+\path{ClassicalAnalyticNevanlinnaCarrierFamily}; none contains a carrier-genericity conclusion.
+
+From those inputs, the formal development proves the following application-specific chain without
+additional axioms: the global affine-chart incidence-ring bound; equality of the projected
+projective incidence with the literal rectangular rank defect; the resulting real-codimension
+bound for every stratum; operator-norm smoothness of the actual Nevanlinna row-evaluation family;
+one uniform finite-dimensional probe on each compact shift patch; compact-patch avoidance;
+countable Baire intersection over every finite differential pattern and every tuple of distinct
+complex shifts; equality of the abstract packet with the derivatives of the actual weighted
+carrier Cauchy transform; and promotion from all finite pattern-rigidity statements to literal
+hypertranscendence.
+
+The frozen-frame interface is stronger than a symmetric jet-coordinate formulation.  The frozen
+constraints are total mass plus projective Cauchy powers, whereas the movable targets are genuine
+Nevanlinna jets.  The formal forward factorization shows that every frozen actual carrier jet is
+preserved even if $q'$ vanishes at the frozen point.  Noncriticality is required only at the
+movable rows, where the forward triangular map must be inverted.  Consequently, for every
+infinite-support singular-continuous projective law, the positive mass-one part of any exact
+finite-frame tangent consists entirely of singular-continuous solutions of the same Hamburger
+moment problem, and a dense residual subset has a genuinely hypertranscendental Cauchy transform.
+The corresponding declarations are in
+\path{ProjectiveIncidenceProjection},
+\path{ExpandedEvaluationProjectiveStratification},
+\path{ProjectiveNevanlinnaRowEvaluationSmoothness},
+\path{NevanlinnaTranslatedExpandedEvaluationCompactPatch},
+\path{AnalyticNevanlinnaCarrierBridge}, and
+\path{AnalyticNevanlinnaCarrierRelationFree}.
+
 The theorem is a positive necessity law.  It does not merely assert that finite Toeplitz data are
 insufficient.  It identifies what a faithful carrier construction must retain: a coherent frame
 tower, graph norm, boundary relation, or source marking that reconstructs the same unitary
@@ -746,6 +812,7 @@ ingredients from being presented as new and separate the proved theorem from its
 assessment.
 
 \begin{thebibliography}{99}
+\sloppy
 
 \bibitem{ADH2021}
 B. Adamczewski, T. Dreyfus, and C. Hardouin,
@@ -780,6 +847,11 @@ S. Hassi, Z. Sebesty\'en, H. S. V. de Snoo, and F. H. Szafraniec,
 Acta Math. Hungar. \textbf{115} (2007), 281--307;
 \href{https://arxiv.org/abs/math/0611045}{arXiv:math/0611045}.
 
+\bibitem{Hartshorne1977}
+R. Hartshorne,
+\emph{Algebraic Geometry},
+Graduate Texts in Mathematics, vol.~52, Springer, New York, 1977.
+
 \bibitem{Hirsch1976}
 M. W. Hirsch,
 \emph{Differential Topology},
@@ -808,6 +880,12 @@ D. R. Yafaev,
 J. Operator Theory \textbf{77} (2017), 205--216;
 \href{https://arxiv.org/abs/1603.06229}{arXiv:1603.06229}.
 
+\bibitem{Whitney1965}
+H. Whitney,
+\emph{Tangents to an analytic variety},
+Ann. of Math. (2) \textbf{81} (1965), 496--549.
+
+\fussy
 \end{thebibliography}
 
 \end{document}

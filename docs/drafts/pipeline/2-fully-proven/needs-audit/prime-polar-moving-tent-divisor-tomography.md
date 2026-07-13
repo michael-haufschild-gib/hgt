@@ -526,8 +526,14 @@ The **RH criterion `(28)` (detection direction) is now formalized** axiom-clean,
   singularity** at `s = ρ+½` (it tends to no finite limit there), via the nonzero residue of
   `offcritical_residue` and limit-uniqueness;
 - `RH_of_primeObservable_regular` — **eq. 28**: if the prime observable is regular (has a finite limit)
-  at every point of `Re s > 1`, then `ζ` has no zeros with `Re > ½` — i.e. RH.  The pole tomography
-  reads each off-critical zero off as a genuine singularity, so regularity forecloses them.
+  at every point of `Re s > 1` *other than `s = 3/2`*, then `ζ` has no zeros with `Re > ½` — i.e. RH.
+  (`s = 3/2` is excluded because `-ζ'/ζ(s-½)` carries `ζ`'s pole at `s-½ = 1` there unconditionally —
+  the singularity cancelled by the *polar* renormalization, not by the bare observable; every
+  off-critical zero shift `s = ρ+½ ≠ 3/2` since `ρ ≠ 1`, so the exclusion loses no detection.)  The pole
+  tomography reads each off-critical zero off as a genuine singularity, so regularity forecloses them.
+  The regularity hypothesis is *satisfiable* — `differentiableAt_neg_logDeriv_riemannZeta` shows `-ζ'/ζ`
+  is holomorphic at every `s ≠ 1` with `ζ(s) ≠ 0`, so under RH the observable is regular on
+  `Re s > 1 ∖ {3/2}`.
 
 This closes Lean-program step 7 (pole-support / RH equivalence).  The whole card §1--§5 and the coupling
 §3--§4 are now machine-checked axiom-clean, culminating in the RH detection criterion — assembled

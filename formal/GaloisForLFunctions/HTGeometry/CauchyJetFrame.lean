@@ -14,7 +14,7 @@ identify finite Cayley frames with finite Cauchy jets in the cofinal Cholesky se
 -/
 
 open MeasureTheory Measure Metric Complex spectrum
-open scoped Topology ComplexOrder
+open scoped Topology ComplexOrder ComplexConjugate
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -155,6 +155,36 @@ theorem iteratedDeriv_resolventTransform
       rw [hlocal.deriv_eq]
       exact (hasDerivAt_cauchyJetFunction n a ha).deriv
 
+/-- Cauchy jets of a real measure at conjugate nonreal nodes are complex conjugates. -/
+theorem iteratedDeriv_resolventTransform_conj
+    {μ : Measure ℝ} [IsFiniteMeasure μ] (n : ℕ) (z : ℂ) (hz : z.im ≠ 0) :
+    iteratedDeriv n (resolventTransform μ) (star z) =
+      star (iteratedDeriv n (resolventTransform μ) z) := by
+  have hzsupport : z ∉ algebraMap ℝ ℂ '' μ.support := by
+    rintro ⟨x, _hx, hxz⟩
+    have him := congrArg Complex.im hxz
+    simp only [ofReal_im] at him
+    exact hz him.symm
+  have hstarsupport : star z ∉ algebraMap ℝ ℂ '' μ.support := by
+    rintro ⟨x, _hx, hxz⟩
+    have him := congrArg Complex.im hxz
+    simp at him
+    exact hz him
+  rw [iteratedDeriv_resolventTransform n (star z) hstarsupport,
+    iteratedDeriv_resolventTransform n z hzsupport]
+  unfold cauchyJetFunction resolventPowerTransform
+  rw [star_mul, star_natCast]
+  rw [mul_comm (star (∫ (x : ℝ), resolvent z x ^ (n + 1) ∂μ))]
+  congr 1
+  change (∫ (x : ℝ), resolvent (star z) x ^ (n + 1) ∂μ) =
+    conj (∫ (x : ℝ), resolvent z x ^ (n + 1) ∂μ)
+  rw [← integral_conj]
+  apply integral_congr_ae
+  filter_upwards [] with x
+  rw [map_pow]
+  congr 1
+  simp [resolvent]
+
 /-- At `-i`, resolvent powers are the reciprocal moments from the Cayley frame module. -/
 theorem resolventPowerTransform_neg_I_eq_reciprocalMoment
     (μ : Measure ℝ) (r : ℕ) :
@@ -221,6 +251,25 @@ theorem cayleyMoment_prefix_iff_cauchyJet_prefix
           iteratedDeriv n (resolventTransform ν) (-I) := by
   rw [cayleyMoment_prefix_iff_reciprocalMoment_prefix,
     reciprocalMoment_prefix_iff_cauchyJet_prefix]
+
+/-- The same finite frame/jet equivalence at the upper regular node `i`.  For real measures this
+is equivalent to the conventional `-i` statement by conjugation. -/
+theorem cayleyMoment_prefix_iff_cauchyJet_pos_I_prefix
+    (μ ν : Measure ℝ) [IsProbabilityMeasure μ] [IsProbabilityMeasure ν] (N : ℕ) :
+    (∀ k ≤ N, cayleyMoment μ k = cayleyMoment ν k) ↔
+      ∀ n < N,
+        iteratedDeriv n (resolventTransform μ) I =
+          iteratedDeriv n (resolventTransform ν) I := by
+  rw [cayleyMoment_prefix_iff_cauchyJet_prefix]
+  constructor
+  · intro h n hn
+    have hμ := iteratedDeriv_resolventTransform_conj (μ := μ) n (-I) (by simp)
+    have hν := iteratedDeriv_resolventTransform_conj (μ := ν) n (-I) (by simp)
+    simpa using hμ.trans ((congrArg star (h n hn)).trans hν.symm)
+  · intro h n hn
+    have hμ := iteratedDeriv_resolventTransform_conj (μ := μ) n I (by simp)
+    have hν := iteratedDeriv_resolventTransform_conj (μ := ν) n I (by simp)
+    simpa using hμ.trans ((congrArg star (h n hn)).trans hν.symm)
 
 /-- Equality of Cayley Toeplitz Gram sections is exactly equality of the corresponding finite
 regular Cauchy jets. -/

@@ -42,14 +42,17 @@ theorem primeObservable_no_limit (L : ℝ) (hL : 0 < L) {ρ : ℂ}
   exact hne (tendsto_nhds_unique hres h0)
 
 /-- **The prime–polar RH criterion** (§5, eq. 28, detection direction).  If the prime observable has a
-finite limit at every point of `Re s > 1` (i.e. is regular there — no poles), then the Riemann zeta
-function has no zeros with `Re > 1/2`.  The pole tomography reads each such zero off as a genuine
-singularity at `s = ρ + ½` (`primeObservable_no_limit`), so regularity forecloses them. -/
+finite limit at every point of `Re s > 1` *other than the shifted `ζ`-pole* `s = 3/2`, then the Riemann
+zeta function has no zeros with `Re > 1/2`.  The point `s = 3/2` carries `ζ`'s pole (at `s-½ = 1`)
+unconditionally — cancelled by the polar renormalization, not the bare observable — while every
+off-critical zero gives a genuine singularity at `s = ρ + ½ ≠ 3/2` (`primeObservable_no_limit`), so the
+exclusion loses no detection and regularity forecloses those zeros. -/
 theorem RH_of_primeObservable_regular (L : ℝ) (hL : 0 < L)
-    (hreg : ∀ a : ℂ, 1 < a.re → ∃ M : ℂ, Tendsto (primeObservable L) (𝓝[≠] a) (𝓝 M)) :
+    (hreg : ∀ a : ℂ, 1 < a.re → a ≠ 3 / 2 → ∃ M : ℂ, Tendsto (primeObservable L) (𝓝[≠] a) (𝓝 M)) :
     ∀ ρ : ℂ, riemannZeta ρ = 0 → ρ ≠ 1 → ρ.re ≤ 1 / 2 := by
   intro ρ hζρ hρ1
   by_contra h
   have hgt : 1 / 2 < ρ.re := not_le.mp h
   have hre : 1 < (ρ + 1 / 2).re := by rw [Complex.add_re]; simp; linarith
-  exact primeObservable_no_limit L hL hρ1 hgt hζρ (hreg (ρ + 1 / 2) hre)
+  have hne32 : ρ + 1 / 2 ≠ 3 / 2 := fun heq => hρ1 (by linear_combination heq)
+  exact primeObservable_no_limit L hL hρ1 hgt hζρ (hreg (ρ + 1 / 2) hre hne32)

@@ -674,6 +674,167 @@ theorem iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_background_add_control
         F.amplitude F.quotient (fun _ : Unit => n + 1) eta eta0 heta0 zu
       rw [hcontrol, linftyBochnerControl_apply_pi]
 
+/-- **Cauchy-frozen packets kill the forward Nevanlinna variation.**  If a perturbation fixes
+total mass and a finite packet of projective Cauchy powers, then its complete forward genuine
+Nevanlinna jet packet vanishes.  This holds even when the Nevanlinna coordinate is critical at a
+frozen source node. -/
+theorem projectiveNevanlinnaJetExpansionSmoothControl_eq_zero_of_cauchyFrozenTangent
+    {ι : Type} [Fintype ι]
+    (a q : ℂ → ℂ) (z : ι → ℂ) (n : ι → ℕ)
+    (eta : Measure (OnePoint ℝ)) [IsProbabilityMeasure eta]
+    (hupper : ∀ i, 0 < (q (z i)).im)
+    (w : LinearMap.ker
+      (normalizedProjectiveCauchyJetLinftyContinuousControl
+        (fun i => q (z i)) n eta hupper).toLinearMap) :
+    projectiveNevanlinnaJetExpansionSmoothControl a q n eta z w.1 = 0 := by
+  obtain ⟨η0, hη0, hη0all⟩ := compact_finite_strictPositive_uniformLowerBound
+    ({()} : Set Unit) isCompact_singleton
+    (fun (_ : Unit) i => (q (z i)).im)
+    (fun _ => continuousOn_const) (by
+      intro _ _ i
+      exact hupper i)
+  let zu : ι → NevanlinnaUpperNodeAtLeast q η0 := fun i =>
+    ⟨z i, hη0all () (Set.mem_singleton ()) i⟩
+  have hsmooth := projectiveNevanlinnaJetExpansionSmoothControl_eq_existing
+    a q n eta η0 hη0 zu
+  have hfactor :=
+    projectiveNevanlinnaJetExpansionLinftyControl_eq_forwardCLM_comp_cauchyControl
+      a q η0 hη0 n eta zu
+  have hwzero : normalizedProjectiveCauchyJetLinftyContinuousControl
+      (fun i => q (z i)) n eta hupper w.1 = 0 :=
+    LinearMap.mem_ker.mp w.2
+  have hcauchy : linftyBochnerControl eta
+      (projectiveCauchyJetColumn (fun i => q (z i)) n)
+      (memLp_projectiveCauchyJetColumn (fun i => q (z i))
+        (fun i => (hupper i).ne') n eta) w.1 = 0 := by
+    exact congrArg Prod.snd hwzero
+  rw [hsmooth, hfactor, ContinuousLinearMap.comp_apply, hcauchy, map_zero]
+
+/-- **Finite-frame preservation without frozen noncriticality.**  Translating a positive
+probability density by a Cauchy-frozen tangent leaves every actual carrier derivative in the
+frozen packet unchanged.  The conclusion concerns the literal Cauchy transform of the weighted
+carrier, while the hypotheses impose no amplitude or `q'` condition at the frozen nodes. -/
+theorem iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_base_of_cauchyFrozenTangent
+    {ι : Type} [Fintype ι]
+    (zf : ι → ℂ) (nf : ι → ℕ)
+    (eta : Measure (OnePoint ℝ)) [IsProbabilityMeasure eta]
+    (hupperf : ∀ i, 0 < (F.quotient (zf i)).im)
+    (baseDensity : Lp ℝ (⊤ : ENNReal) eta)
+    (hbasePositive : LinftyStrictlyPositive eta baseDensity)
+    (hbaseIntegral : ∫ t, baseDensity t ∂eta = 1)
+    (w : LinearMap.ker
+      (normalizedProjectiveCauchyJetLinftyContinuousControl
+        (fun i => F.quotient (zf i)) nf eta hupperf).toLinearMap)
+    (hpositive : LinftyStrictlyPositive eta (baseDensity + w.1))
+    (hintegral : ∫ t, (baseDensity + w.1) t ∂eta = 1)
+    (i : ι) (j : Fin (nf i))
+    (hz : 0 < (zf i).im) (hc : F.c (zf i) ≠ 0) :
+    iteratedDeriv j.1
+        (fun u => ∫ x, ((x : ℂ) - u)⁻¹
+          ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta
+            (baseDensity + w.1)) (zf i) =
+      iteratedDeriv j.1
+        (fun u => ∫ x, ((x : ℂ) - u)⁻¹
+          ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta baseDensity) (zf i) := by
+  obtain ⟨η0, hη0, hη0all⟩ := compact_finite_strictPositive_uniformLowerBound
+    ({()} : Set Unit) isCompact_singleton
+    (fun (_ : Unit) k => (F.quotient (zf k)).im)
+    (fun _ => continuousOn_const) (by
+      intro _ _ k
+      exact hupperf k)
+  have hpacketZero :=
+    projectiveNevanlinnaJetExpansionSmoothControl_eq_zero_of_cauchyFrozenTangent
+      F.amplitude F.quotient zf nf eta hupperf w
+  have hsingletonZero :
+      (projectiveNevanlinnaJetExpansionSmoothControl
+        F.amplitude F.quotient (fun _ : Unit => j.1 + 1)
+        eta (fun _ : Unit => zf i) w.1) ⟨(), Fin.last j.1⟩ = 0 := by
+    rw [← projectiveNevanlinnaJetExpansionSmoothControl_coordinate_eq_singleton_last
+      F.amplitude F.quotient nf eta η0 hη0 zf
+      (fun k => hη0all () (Set.mem_singleton ()) k) w.1 i j]
+    exact congrFun hpacketZero ⟨i, j⟩
+  have hpert := F.iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_background_add_control
+    eta (baseDensity + w.1) hpositive hintegral (zf i) hz hc (hupperf i) j.1
+  have hbase := F.iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_background_add_control
+    eta baseDensity hbasePositive hbaseIntegral (zf i) hz hc (hupperf i) j.1
+  have hcontrolAdd :
+      (projectiveNevanlinnaJetExpansionSmoothControl
+        F.amplitude F.quotient (fun _ : Unit => j.1 + 1)
+        eta (fun _ : Unit => zf i) (baseDensity + w.1))
+          ⟨(), ⟨j.1, Nat.lt_succ_self j.1⟩⟩ =
+      (projectiveNevanlinnaJetExpansionSmoothControl
+        F.amplitude F.quotient (fun _ : Unit => j.1 + 1)
+        eta (fun _ : Unit => zf i) baseDensity)
+          ⟨(), ⟨j.1, Nat.lt_succ_self j.1⟩⟩ := by
+    rw [map_add]
+    change _ +
+      (projectiveNevanlinnaJetExpansionSmoothControl
+        F.amplitude F.quotient (fun _ : Unit => j.1 + 1)
+        eta (fun _ : Unit => zf i) w.1) ⟨(), Fin.last j.1⟩ = _
+    rw [hsingletonZero, add_zero]
+  rw [hcontrolAdd] at hpert
+  exact hpert.trans hbase.symm
+
+/-- **Exact upper-node frozen-frame law.**  Freezing the first `N` projective Cauchy powers at
+the upper source node `i` preserves the Cayley moments through level `N`, hence the complete
+finite Toeplitz/Cholesky frame through that level.  Conjugation of real-measure Cauchy jets is what
+connects the upper controllability chart to the conventional frame node `-i`. -/
+theorem cayleyMoment_prefix_weightedBoundaryCarrier_eq_base_of_cauchyFrozenTangent_at_I
+    (N : ℕ)
+    (eta : Measure (OnePoint ℝ)) [IsProbabilityMeasure eta]
+    (hupperI : 0 < (F.quotient I).im)
+    (baseDensity : Lp ℝ (⊤ : ENNReal) eta)
+    (hbasePositive : LinftyStrictlyPositive eta baseDensity)
+    (hbaseIntegral : ∫ t, baseDensity t ∂eta = 1)
+    (w : LinearMap.ker
+      (normalizedProjectiveCauchyJetLinftyContinuousControl
+        (fun _ : Unit => F.quotient I) (fun _ : Unit => N)
+        eta (fun _ => hupperI)).toLinearMap)
+    (hpositive : LinftyStrictlyPositive eta (baseDensity + w.1))
+    (hintegral : ∫ t, (baseDensity + w.1) t ∂eta = 1) :
+    ∀ k ≤ N,
+      cayleyMoment
+          (weightedBoundaryCarrier F.base.toBoundaryFamily eta
+            (baseDensity + w.1)) k =
+        cayleyMoment
+          (weightedBoundaryCarrier F.base.toBoundaryFamily eta baseDensity) k := by
+  letI : IsProbabilityMeasure (linftyDensityMeasure eta (baseDensity + w.1)) :=
+    linftyDensityMeasure_isProbabilityMeasure eta (baseDensity + w.1) hpositive hintegral
+  letI : IsProbabilityMeasure (linftyDensityMeasure eta baseDensity) :=
+    linftyDensityMeasure_isProbabilityMeasure eta baseDensity hbasePositive hbaseIntegral
+  let muPert : Measure ℝ :=
+    weightedBoundaryCarrier F.base.toBoundaryFamily eta (baseDensity + w.1)
+  let muBase : Measure ℝ :=
+    weightedBoundaryCarrier F.base.toBoundaryFamily eta baseDensity
+  letI : IsProbabilityMeasure muPert := by
+    dsimp only [muPert, weightedBoundaryCarrier]
+    exact boundaryBarycenter_isProbabilityMeasure
+      (linftyDensityMeasure eta (baseDensity + w.1))
+      (fun t => (F.base.toBoundaryFamily.leaf t : Measure ℝ))
+      F.base.toBoundaryFamily.measurable_leaf
+      (fun t => (F.base.toBoundaryFamily.leaf t).prop)
+  letI : IsProbabilityMeasure muBase := by
+    dsimp only [muBase, weightedBoundaryCarrier]
+    exact boundaryBarycenter_isProbabilityMeasure
+      (linftyDensityMeasure eta baseDensity)
+      (fun t => (F.base.toBoundaryFamily.leaf t : Measure ℝ))
+      F.base.toBoundaryFamily.measurable_leaf
+      (fun t => (F.base.toBoundaryFamily.leaf t).prop)
+  rw [cayleyMoment_prefix_iff_cauchyJet_pos_I_prefix]
+  intro n hn
+  let j : Fin N := ⟨n, hn⟩
+  have hcI : F.c I ≠ 0 := by
+    intro hc
+    have hqzero : F.quotient I = 0 := by simp [quotient, hc]
+    rw [hqzero] at hupperI
+    simpa using hupperI
+  have hjet :=
+    F.iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_base_of_cauchyFrozenTangent
+      (fun _ : Unit => I) (fun _ : Unit => N) eta (fun _ => hupperI)
+      baseDensity hbasePositive hbaseIntegral w hpositive hintegral () j
+      (by simp) hcI
+  simpa [muPert, muBase, resolventTransform_def, resolvent] using hjet
+
 /-- The simultaneous finite packet of actual Cauchy-transform derivatives of one weighted
 Nevanlinna carrier. -/
 def weightedBoundaryCarrierExpandedPacketValue

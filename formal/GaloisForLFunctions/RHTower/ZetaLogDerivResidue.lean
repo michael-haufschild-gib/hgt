@@ -175,4 +175,18 @@ theorem neg_logDeriv_zeta_zero_residue {ρ : ℂ} (hρ1 : ρ ≠ 1) (hζρ : rie
     (Filter.Eventually.of_forall (fun s => ?_))
   rw [logDeriv_apply]; ring
 
+/-- **`-ζ'/ζ` is holomorphic away from `ζ`'s zeros and its pole.**  At any `s ≠ 1` with `ζ(s) ≠ 0`,
+`s ↦ -ζ'(s)/ζ(s)` is differentiable.  This is the regularity that holds off the divisor: it makes the
+observable's regularity hypothesis in the RH criterion satisfiable (the only singularities of
+`-ζ'/ζ(s-½)` on `Re s > 1` are the `ζ`-pole shift `s = 3/2` and the off-critical zero shifts
+`s = ρ+½`). -/
+theorem differentiableAt_neg_logDeriv_riemannZeta {s : ℂ} (hs1 : s ≠ 1)
+    (hsz : riemannZeta s ≠ 0) :
+    DifferentiableAt ℂ (fun z => -deriv riemannZeta z / riemannZeta z) s := by
+  have hana : AnalyticAt ℂ riemannZeta s := by
+    have hdon : DifferentiableOn ℂ riemannZeta {(1 : ℂ)}ᶜ :=
+      fun z hz => (differentiableAt_riemannZeta (by simpa using hz)).differentiableWithinAt
+    exact hdon.analyticOnNhd isOpen_compl_singleton s (by simpa using hs1)
+  exact (hana.deriv.differentiableAt.neg).div (differentiableAt_riemannZeta hs1) hsz
+
 end RHTower

@@ -45,10 +45,6 @@ lemma endpoint_term_eq (q : XiZeroCopy) :
         (starRingEnd ℂ) (xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)) := by
   rw [xiReciprocalSquareResolventTerm, xiZeroCopyReciprocalSquare_eq]
   rw [xiRawReciprocalCoordinate, xiRawReciprocalCoordinate]
-  change xiCentralReciprocalSquare (q.1 : ℂ) /
-      (1 - (I / 2) ^ 2 * xiCentralReciprocalSquare (q.1 : ℂ)) =
-    (q.1 : ℂ)⁻¹ * (starRingEnd ℂ)
-      (((xiZeroCopyLineConjEquiv q).1 : ℂ)⁻¹)
   have hr0 : (q.1 : ℂ) ≠ 0 := by
     have hs := xi_divisor_support_re_mem_open_unit q.1
     intro h
@@ -98,9 +94,9 @@ lemma endpoint_term_eq (q : XiZeroCopy) :
         ((2 * (q.1 : ℂ) - 1) ^ 2 - 1) /
           (2 * (q.1 : ℂ) - 1) ^ 2 := by
     field_simp [hL]
-    ring
   rw [hden]
-  field_simp [hr0, hr1, hL, hquad]
+  have hone : 1 - (q.1 : ℂ) ≠ 0 := sub_ne_zero.mpr (Ne.symm hr1)
+  field_simp [hr0, hr1, hL, hquad, hone]
   ring
 
 theorem summable_norm_xiRawReciprocalCoordinate_sq :
@@ -139,7 +135,7 @@ lemma norm_sub_sq_eq (z w : ℂ) :
       2 * (z * (starRingEnd ℂ) w).re := by
   rw [Complex.sq_norm, Complex.normSq_apply, Complex.sq_norm,
     Complex.normSq_apply, Complex.sq_norm, Complex.normSq_apply]
-  simp [Complex.conj_re, Complex.conj_im, pow_two, Complex.mul_re]
+  simp [Complex.conj_re, Complex.conj_im, Complex.mul_re]
   ring
 
 theorem summable_xiEndpointReflectionDefectEnergy :
@@ -161,10 +157,14 @@ theorem summable_xiEndpointReflectionDefectEnergy :
         ‖xiRawReciprocalCoordinate q‖ +
           ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ :=
     norm_sub_le _ _
-  nlinarith [norm_nonneg (xiRawReciprocalCoordinate q),
-    norm_nonneg (xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)),
-    sq_nonneg (‖xiRawReciprocalCoordinate q‖ -
-      ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖)]
+  calc
+    _ ≤ (‖xiRawReciprocalCoordinate q‖ +
+        ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖) ^ 2 :=
+      pow_le_pow_left₀ (norm_nonneg _) hnorm 2
+    _ ≤ 2 * ‖xiRawReciprocalCoordinate q‖ ^ 2 +
+        2 * ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2 := by
+      nlinarith [sq_nonneg (‖xiRawReciprocalCoordinate q‖ -
+        ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖)]
 
 theorem summable_xiEndpointCrossTerm :
     Summable (fun q : XiZeroCopy =>
@@ -242,12 +242,13 @@ theorem xiEndpointReflectionDefectEnergy_eq_mass_sub_source :
       rw [hA.tsum_add hB, tsum_mul_left]
     _ = 2 * (xiRawReciprocalHermitianMass - xiEndpointCompletedCurvature) := by
       rw [hreindex, xiRawReciprocalHermitianMass,
-        xiEndpointCompletedCurvature_eq_cross_re]
+        xiEndpointCompletedCurvature_eq_cross_re,
+        ← Complex.re_tsum hC]
       ring
 
 theorem xiEndpointReflectionDefectEnergy_nonneg :
     0 ≤ xiEndpointReflectionDefectEnergy :=
-  tsum_nonneg (fun q => sq_nonneg _)
+  tsum_nonneg (fun _q => sq_nonneg _)
 
 theorem xiEndpointCompletedCurvature_le_rawMass :
     xiEndpointCompletedCurvature ≤ xiRawReciprocalHermitianMass := by

@@ -1083,13 +1083,42 @@ larger than its degree.  No estimate of that edge is needed.  The endpoint ident
 nonvanishing of the two binary products, and divisibility `(12d.9m)` are formalized in
 `XiCTaylorThetaTailProuhetPacket.lean`.
 
-`[CONJECTURE]` Apply the same prefix packet before replacing the positive-half channels by their
-reflected translates.  The full-line part of the parity channel is a polynomial in the depth after
-Haar normalization and should vanish by `(12d.9n)`; the remaining one-sided tails are cofinal
-positive-cusp rows and can be made smaller than any prescribed scheduled error by choosing `N`
-after `(d,z)`.  Proving this exact full-line/tail split is the remaining fixed-half-line seam gate.
-It must be done at the combined value--derivative current level; cancelling only the value packet
-would not control the oriented current.
+The converse coefficient statement is now formal at binomial-moment level: divisibility by
+`(X-1)^m` kills every binomial moment below `m`.  It is proved in
+`HTGeometry/ProuhetMomentDivisibility.lean` and specialized to the two-endpoint packet in
+`XiCTaylorThetaTailProuhetPacket.lean`.
+
+The hoped-for removal of the whole fixed-half-line seam by this packet is false.  Put
+
+```text
+g(x)=rho(x)-exp(-x/2)/2.
+```
+
+The exact reflection law gives `g(-x)=g(x)`.  If `R_k` denotes the positive-cusp transform of
+`rho(x+k log 2)` and `E` the transform of `exp(-x/2)`, then splitting a remote reflected row into
+its full-line part and its omitted negative tail gives, for the packet coefficients in
+`(12d.9k)`--`(12d.9o)`,
+
+```text
+2^(N/2) sum_j a_j integral_0^infinity g(x-(N+j)log 2)H_d(x)dx
+ = E/2-2^(N/2)sum_j a_j R_(N+j).                       (12d.9p)
+```
+
+The full-line polynomial vanishes by Prouhet and the remaining positive-cusp rows tend to zero.
+After the unshifted density cross is restored, however, the limiting value--derivative vector is
+not zero but `E-2U_d`.  Its symmetric polarization with `E`, divided by two, is identically
+
+```text
+Q(U_d-E)-Q(U_d).                                        (12d.9q)
+```
+
+This residual is forced by the two endpoint constraints: total packet mass one preserves the
+original prefix, while cancellation of the elementary square fixes the second endpoint.  It is
+independent of Haar and Prouhet depth.  The exact evenness of `g` and the current identity
+`(12d.9q)` are formalized in `XiCTaylorThetaTailProuhetSeamInvariant.lean`.  Numerical evaluation
+also shows that `Q(U_d-E)` is positive at some low-degree upper-half-plane points, so the residual
+has no unconditional favorable sign.  The two-endpoint packet remains a valid exact annihilator
+of the finite translation polynomial, but it cannot by itself orient the fixed-half-line seam.
 
 The translate operator has an exact signed inverse on the canonical source.  For `x>=0`, Lean
 proves absolute convergence and the critical Möbius identity

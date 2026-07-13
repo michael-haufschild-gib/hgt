@@ -699,3 +699,10 @@ differentially algebraic for polynomials `P, Q` (order-1 relation `Q·G' − (P'
 Subsumes both `differentiallyAlgebraic_cexp_mul_polynomial` (linear phase) and
 `differentiallyAlgebraic_exp_polynomial` (`Q = 1`); it is the complete DA exponential-rational carrier
 of the orbit normal form `(9)` in the entire (polynomial phase and polynomial `R`) case.
+
+Trigonometric reflection carriers (`TrigLinearDA.lean`, axiom-clean): `differentiallyAlgebraic_cos_linear`
+and `differentiallyAlgebraic_sin_linear` — `s ↦ cos(c·s)` and `s ↦ sin(c·s)` are differentially
+algebraic (order-2 relation `y'' + c²y = 0`; proved as two-term exponential sums via
+`differentiallyAlgebraic_finset_expSum`). These are the trigonometric factors that reflection introduces
+for negative-slope Gamma factors (§1, §10 attack 6); they stay inside the DA class, so the negative-slope
+boundary extension keeps its non-Gamma carrier differentially algebraic.

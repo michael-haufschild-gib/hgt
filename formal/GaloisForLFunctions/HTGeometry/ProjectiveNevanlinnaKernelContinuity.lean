@@ -84,6 +84,65 @@ def projectiveNevanlinnaJetExpansionColumn
     nevanlinnaJetCoeff a q s.2 k (z s.1) *
       projectiveCauchyPower (q (z s.1)) k t
 
+/-- The everywhere-defined forward linear map from projective Cauchy powers to genuine
+Nevanlinna jets.  Unlike the triangular equivalence, this map needs no nonvanishing diagonal
+hypothesis: criticality can destroy invertibility but never the forward jet expansion. -/
+def nevanlinnaJetPacketForwardLinearMap
+    {ι : Type*} [Fintype ι]
+    (a q : ℂ → ℂ) (z : ι → ℂ) (n : ι → ℕ) :
+    ((Σ i, Fin (n i)) → ℂ) →ₗ[ℂ] ((Σ i, Fin (n i)) → ℂ) where
+  toFun v s := ∑ k : Fin (n s.1),
+    nevanlinnaJetCoeff a q s.2 k (z s.1) * v ⟨s.1, k⟩
+  map_add' v w := by
+    funext s
+    simp only [Pi.add_apply, mul_add, Finset.sum_add_distrib]
+  map_smul' c v := by
+    funext s
+    simp only [smul_eq_mul, Pi.smul_apply]
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro k hk
+    simp only [RingHom.id_apply]
+    ring_nf
+
+@[simp]
+theorem nevanlinnaJetPacketForwardLinearMap_apply
+    {ι : Type*} [Fintype ι]
+    (a q : ℂ → ℂ) (z : ι → ℂ) (n : ι → ℕ)
+    (v : (Σ i, Fin (n i)) → ℂ) (s : Σ i, Fin (n i)) :
+    nevanlinnaJetPacketForwardLinearMap a q z n v s =
+      ∑ k : Fin (n s.1),
+        nevanlinnaJetCoeff a q s.2 k (z s.1) * v ⟨s.1, k⟩ :=
+  rfl
+
+/-- The forward expansion column factors through the projective Cauchy-power column at every
+source packet, including critical packets. -/
+theorem projectiveNevanlinnaJetExpansionColumn_eq_forwardLinearMap_cauchyColumn
+    {ι : Type*} [Fintype ι]
+    (a q : ℂ → ℂ) (z : ι → ℂ) (n : ι → ℕ) (t : OnePoint ℝ) :
+    projectiveNevanlinnaJetExpansionColumn a q z n t =
+      nevanlinnaJetPacketForwardLinearMap a q z n
+        (projectiveCauchyJetColumn (fun i => q (z i)) n t) := by
+  funext s
+  simp [projectiveNevanlinnaJetExpansionColumn, projectiveCauchyJetColumn]
+
+/-- The real continuous-linear realization of the everywhere-defined forward jet map. -/
+def nevanlinnaJetPacketForwardCLM
+    {ι : Type*} [Fintype ι]
+    (a q : ℂ → ℂ) (z : ι → ℂ) (n : ι → ℕ) :
+    ((Σ i, Fin (n i)) → ℂ) →L[ℝ] ((Σ i, Fin (n i)) → ℂ) :=
+  LinearMap.toContinuousLinearMap
+    ((nevanlinnaJetPacketForwardLinearMap a q z n).restrictScalars ℝ)
+
+@[simp]
+theorem nevanlinnaJetPacketForwardCLM_apply
+    {ι : Type*} [Fintype ι]
+    (a q : ℂ → ℂ) (z : ι → ℂ) (n : ι → ℕ)
+    (v : (Σ i, Fin (n i)) → ℂ) :
+    nevanlinnaJetPacketForwardCLM a q z n v =
+      nevanlinnaJetPacketForwardLinearMap a q z n v :=
+  rfl
+
 /-- At regular nodes, the forward expansion is exactly the existing genuine Nevanlinna-jet
 column; no inverse triangular matrix occurs in the formula. -/
 theorem projectiveNevanlinnaJetExpansionColumn_eq_projectiveNevanlinnaJetColumn
@@ -209,6 +268,39 @@ theorem memLp_projectiveNevanlinnaJetExpansionColumn
     MemLp (projectiveNevanlinnaJetExpansionColumn a q (fun i => (z i).1) n) 1 mu := by
   exact (continuous_projectiveNevanlinnaJetExpansionColumn η hη n z)
     |>.memLp_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+
+/-- **Forward-control factorization without noncriticality.**  The actual Nevanlinna expansion
+control is the everywhere-defined forward jet map composed with the projective Cauchy-power
+control.  No inverse triangular matrix, amplitude nonvanishing, or `q' ≠ 0` hypothesis occurs. -/
+theorem projectiveNevanlinnaJetExpansionLinftyControl_eq_forwardCLM_comp_cauchyControl
+    {ι : Type*} [Fintype ι]
+    (a q : ℂ → ℂ) (η : ℝ) (hη : 0 < η) (n : ι → ℕ)
+    (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu]
+    (z : ι → NevanlinnaUpperNodeAtLeast q η) :
+    linftyBochnerControl mu
+        (projectiveNevanlinnaJetExpansionColumn a q (fun i => (z i).1) n)
+        (memLp_projectiveNevanlinnaJetExpansionColumn η hη n mu z) =
+      (nevanlinnaJetPacketForwardCLM a q (fun i => (z i).1) n).comp
+        (linftyBochnerControl mu
+          (projectiveCauchyJetColumn (fun i => q (z i).1) n)
+          (memLp_projectiveCauchyJetColumn (fun i => q (z i).1)
+            (fun i => ne_of_gt (hη.trans_le (z i).2)) n mu)) := by
+  let zv : ι → ℂ := fun i => (z i).1
+  let K := projectiveCauchyJetColumn (fun i => q (zv i)) n
+  let T := nevanlinnaJetPacketForwardCLM a q zv n
+  let hK : MemLp K 1 mu :=
+    memLp_projectiveCauchyJetColumn (fun i => q (zv i))
+      (fun i => ne_of_gt (hη.trans_le (z i).2)) n mu
+  have hcol : (fun t => T (K t)) =
+      projectiveNevanlinnaJetExpansionColumn a q zv n := by
+    funext t
+    exact (projectiveNevanlinnaJetExpansionColumn_eq_forwardLinearMap_cauchyColumn
+      a q zv n t).symm
+  let hTK : MemLp (fun t => T (K t)) 1 mu := by
+    rw [hcol]
+    exact memLp_projectiveNevanlinnaJetExpansionColumn η hη n mu z
+  have hcomp := linftyBochnerControl_comp mu T K hK hTK
+  simpa [zv, K, T, hK, hTK, hcol] using hcomp.symm
 
 /-- The continuous-function `L¹` class is the class used by the direct Bochner control. -/
 theorem projectiveNevanlinnaJetExpansionLpKernel_eq_memLpToLp

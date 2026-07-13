@@ -199,4 +199,87 @@ theorem prod_eq_key_prod {D : ℕ} (h : Fin D → ℕ) {M : Type*} [CommMonoid M
   rw [Finsupp.prod_single_index (by simp)]
   simp
 
+/-- **Pairwise valuation gap.**  Two distinct `≤ D`-bounded multi-indices have valuations
+`V(ν) = ∑ₙ ν n·b n` separated by at least `b K / (D+1)` for some index `K` (the top index where they
+differ), under a `(D+1)`-super-increasing profile `b`.  This is the gap feeding the minimal-atom
+domination in the magnitude-lacunary survival argument. -/
+theorem finsupp_pair_valuation_gap {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n) {D : ℕ}
+    (hsi : ∀ k, ((D : ℝ) + 1) * (∑ n ∈ Finset.range k, b n) ≤ b k)
+    {ν ν' : ℕ →₀ ℕ} (hν : ∀ n, ν n ≤ D) (hν' : ∀ n, ν' n ≤ D) (hne : ν ≠ ν') :
+    ∃ K : ℕ, b K / ((D : ℝ) + 1)
+      ≤ |ν.sum (fun n k => (k : ℝ) * b n) - ν'.sum (fun n k => (k : ℝ) * b n)| := by
+  classical
+  set g : ℕ →₀ ℤ := ν.mapRange (Nat.cast : ℕ → ℤ) Nat.cast_zero
+    - ν'.mapRange (Nat.cast : ℕ → ℤ) Nat.cast_zero
+    with hg
+  have hgn : ∀ n, g n = (ν n : ℤ) - (ν' n : ℤ) := by
+    intro n; rw [hg]; simp [Finsupp.sub_apply, Finsupp.mapRange_apply]
+  have hgbound : ∀ n, (g n).natAbs ≤ D := by
+    intro n; rw [hgn]; have h1 := hν n; have h2 := hν' n; omega
+  have hg0 : g ≠ 0 := by
+    intro h0
+    apply hne
+    ext n
+    have := hgn n
+    rw [h0] at this
+    simp at this
+    omega
+  -- valuation difference equals ∑ g_n b_n
+  have hsupp : g.support ⊆ ν.support ∪ ν'.support := by
+    intro n hn
+    rw [Finsupp.mem_support_iff, hgn] at hn
+    simp only [Finset.mem_union, Finsupp.mem_support_iff]
+    by_contra hc
+    push_neg at hc
+    rw [hc.1, hc.2] at hn
+    simp at hn
+  have hval : ∑ n ∈ g.support, (g n : ℝ) * b n
+      = ν.sum (fun n k => (k : ℝ) * b n) - ν'.sum (fun n k => (k : ℝ) * b n) := by
+    rw [Finsupp.sum, Finsupp.sum]
+    rw [Finset.sum_subset (Finset.subset_union_left (s₁ := ν.support) (s₂ := ν'.support))
+      (fun n _ hn => by rw [Finsupp.notMem_support_iff.mp hn]; simp)]
+    rw [Finset.sum_subset (Finset.subset_union_right (s₁ := ν.support) (s₂ := ν'.support))
+      (fun n _ hn => by rw [Finsupp.notMem_support_iff.mp hn]; simp)]
+    rw [Finset.sum_subset hsupp (fun n _ hn => by
+      rw [Finsupp.notMem_support_iff.mp hn]; simp), ← Finset.sum_sub_distrib]
+    apply Finset.sum_congr rfl
+    intro n _
+    rw [hgn]; push_cast; ring
+  have hgap := valuation_gap_of_superIncreasing hb hsi hgbound hg0
+  refine ⟨g.support.max' (Finsupp.support_nonempty_iff.mpr hg0), ?_⟩
+  rw [← hval]
+  exact hgap
+
+/-- **Uniform valuation gap.**  A finite nonempty family of `≤ D`-bounded multi-indices has a
+minimal-valuation element `ν₀` and a strictly positive gap `G` below every other member's valuation
+— the finite minimum of the pairwise gaps.  Discharges the `hgap` hypothesis of the survival
+criterion. -/
+theorem exists_uniform_valuation_gap {b : ℕ → ℝ} (hbpos : ∀ n, 0 < b n) {D : ℕ}
+    (hsi : ∀ k, ((D : ℝ) + 1) * (∑ n ∈ Finset.range k, b n) ≤ b k)
+    (K : Finset (ℕ →₀ ℕ)) (hKbound : ∀ ν ∈ K, ∀ n, ν n ≤ D) (hKne : K.Nonempty) :
+    ∃ ν₀ ∈ K, ∃ G : ℝ, 0 < G ∧ ∀ ν ∈ K.erase ν₀,
+      ν₀.sum (fun n k => (k : ℝ) * b n) + G ≤ ν.sum (fun n k => (k : ℝ) * b n) := by
+  classical
+  obtain ⟨ν₀, hν₀K, hν₀min⟩ :=
+    K.exists_min_image (fun ν => ν.sum (fun n k => (k : ℝ) * b n)) hKne
+  refine ⟨ν₀, hν₀K, ?_⟩
+  rcases (K.erase ν₀).eq_empty_or_nonempty with he | hne
+  · exact ⟨1, one_pos, fun ν hν => absurd hν (he ▸ Finset.notMem_empty ν)⟩
+  · obtain ⟨ν₁, hν₁, hν₁min⟩ := (K.erase ν₀).exists_min_image
+      (fun ν => ν.sum (fun n k => (k : ℝ) * b n) - ν₀.sum (fun n k => (k : ℝ) * b n)) hne
+    have hgap1 : 0 < ν₁.sum (fun n k => (k : ℝ) * b n) - ν₀.sum (fun n k => (k : ℝ) * b n) := by
+      have hne' : ν₁ ≠ ν₀ := (Finset.mem_erase.mp hν₁).1
+      obtain ⟨Kidx, hKidx⟩ := finsupp_pair_valuation_gap (fun n => (hbpos n).le) hsi
+        (hKbound ν₁ (Finset.mem_of_mem_erase hν₁)) (hKbound ν₀ hν₀K) hne'
+      have hpos : 0 < b Kidx / ((D : ℝ) + 1) := by
+        have := hbpos Kidx; positivity
+      have hge : ν₀.sum (fun n k => (k : ℝ) * b n) ≤ ν₁.sum (fun n k => (k : ℝ) * b n) :=
+        hν₀min ν₁ (Finset.mem_of_mem_erase hν₁)
+      rw [abs_of_nonneg (by linarith)] at hKidx
+      linarith
+    refine ⟨ν₁.sum (fun n k => (k : ℝ) * b n) - ν₀.sum (fun n k => (k : ℝ) * b n), hgap1,
+      fun ν hν => ?_⟩
+    have := hν₁min ν hν
+    linarith
+
 end GaloisForLFunctions

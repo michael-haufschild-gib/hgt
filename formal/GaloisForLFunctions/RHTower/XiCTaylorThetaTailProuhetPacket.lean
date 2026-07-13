@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ThueMorseMellinFlatness
+import GaloisForLFunctions.HTGeometry.ProuhetMomentDivisibility
 
 /-!
 # Two-endpoint Prouhet packets for the finite theta-tail seam
@@ -133,6 +134,15 @@ theorem X_sub_one_pow_dvd_twoEndpointProuhetPolynomial
     (m : ℕ) (q r τ : ℝ) :
     (X - 1 : ℝ[X]) ^ m ∣ twoEndpointProuhetPolynomial m q r τ := by
   exact dvd_mul_of_dvd_left (X_sub_one_pow_dvd_thueMorseRealPolynomial m) _
+
+/-- Every binomial translation moment below the chosen Prouhet depth vanishes.  This is the
+coefficient-level form of the high-order zero, ready for finite translation packets. -/
+theorem twoEndpointProuhetPolynomial_binomial_moment_eq_zero
+    (m : ℕ) (q r τ : ℝ) {k : ℕ} (hk : k < m) :
+    ∑ i ∈ (twoEndpointProuhetPolynomial m q r τ).support,
+        (i.choose k : ℝ) * (twoEndpointProuhetPolynomial m q r τ).coeff i = 0 := by
+  exact GaloisForLFunctions.binomial_moment_eq_zero_of_sub_one_pow_dvd
+    (X_sub_one_pow_dvd_twoEndpointProuhetPolynomial m q r τ) hk
 
 end
 
