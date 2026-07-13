@@ -221,18 +221,25 @@ identity for the **full** two-prime coboundary descends automatically to `(12)` 
 quotient.  Only the completed-source value relation is missing; the residual and mixed terms need
 new uniform estimates only in the cofinal-rate branch `(8f)`.
 
-`[CONJECTURE — FINITE TANGENT-CURVATURE PRODUCER]` Introduce independent real Euler parameters
-`t_p,t_q` in the two local ratios while retaining the archimedean completion, and let `P(t_p,t_q)`
-be the semilocal Sonin kernel projection of the resulting completed quasi-inner multiplier.  Prove
-norm or graph differentiability at the empty Euler parameter and identify the two second-fundamental
-forms
+`[PARTLY DISCHARGED — FINITE TANGENT-CURVATURE PRODUCER]` Introduce independent real Euler
+parameters `t_p,t_q` in the two local ratios while retaining the archimedean completion.  The
+companion theorem `semilocal-euler-kernel-chart-differentiability.md` now proves that the resulting
+semilocal kernel is exactly the image of the archimedean Sonin space under the invertible finite
+Euler denominator.  Its orthogonal projection `P(t_p,t_q)` is operator-norm real analytic at the
+empty Euler parameter.  Its second-fundamental forms are the one-sided Mellin dilation corners,
+and the derivative of the pullback metric is exactly the full positive Euler dilation corner:
 
 ```text
-B_p=(1-P)(partial_p P)P,   B_q=(1-P)(partial_q P)P
+B_p=(1-P)(partial_p P)P=-(1-P)M_(p^(-z))P,
+
+(1-P) partial_p(M_t^*M_t)|_0 P
+  =-(1/sqrt(p))(1-P)(U_p+U_p^(-1))P.                       (13a)
 ```
 
-with the corresponding principal Sonin dilation corners modulo compact operators.  The desired
-finite extraction would then be the Calkin curvature/polarization identity
+Thus norm differentiability, finite operator transfer, and identification with the actual Sonin
+corner are closed; passage to the formal principal corner is already Hilbert--Schmidt modulo the
+existing residual theorem.  What remains conjectural is the **zero-fibre compact curvature** or
+polarization identity
 
 ```text
 B_conj(a)^* B_1-B_1^* B_a
@@ -240,14 +247,16 @@ B_conj(a)^* B_1-B_1^* B_a
      (a_r(rho)-a_s(rho))/sqrt(rs) L_r^*L_s  modulo compacts. (13)
 ```
 
-Compactness of the completed curvature would then make the right side compact, and the formal
-two-prime Gram compression would force `a_p(rho)=a_q(rho)`.
+Compactness of the completed curvature would make the right side compact, and the formal two-prime
+Gram compression would force `a_p(rho)=a_q(rho)`.
 
-This mechanism is source-defined and finite.  It does not assume a zero location or a cofinal
-limiting measure.  Its unproved points are substantial: Connes--Consani establish compactness for
-the exact completed local-factor products, not a differentiable multi-parameter Euler family; and
-the identification of kernel tangents with the formal Sonin principal corners is not in the
-literature or the Lean corpus.
+The remaining statement cannot follow from finite quasi-innerness alone.  The finite Euler chart
+contains no Xi divisor point, while `(13)` is required only on actual zero fibres.  The missing
+input is now a global source--divisor value relation: the Xi-zero radical or zeta-cycle evaluator
+must annihilate the tangential connection term in the primal--dual semilocal pairing, leaving the
+normal Gram coboundary compact.  Burnol's zero-indexed Sonine evaluators and the Connes spectral
+realization supply the two literature ends of this interface, but their identification with the
+semilocal connection is not proved in the literature or the corpus.
 
 ## Literature boundary
 
@@ -356,8 +365,12 @@ finite `F`, not this cofinal first-Euler Gram coboundary.
 - [x] source realization of the scalar seam coefficients as finite Euler first coefficients
 - [x] exact scalar comparison of the empty and actual Euler tangent charts
 - [x] uniform trace-class control of the pure residual antisymmetric covariance
+- [x] exact analytic finite Euler chart of the completed semilocal Sonin kernel
+- [x] operator-norm differentiability of its orthogonal projection at the empty parameter
+- [x] exact metric-tangent identification with the actual positive Euler Sonin corner
+- [x] finite bounded operator transfer of the scalar seam coefficients
 - [ ] alternatively, finite completed-source Calkin extraction `(12)` for every prime pair
-- [ ] test the conjectural finite tangent-curvature producer `(13)`
-- [ ] bounded operator transfer of those coefficients to the seam-weighted Sonin section
+- [ ] prove Xi-zero-fibre annihilation of the semilocal tangential connection
+- [ ] prove the remaining compact normal-curvature identity `(13)`
 - [ ] Gram-coboundary Calkin control of the principal and principal--residual Lambert tail
 - [ ] source-pure one-particle upper estimate in `(8f)` (equivalently tensor collinearity `(9)`)

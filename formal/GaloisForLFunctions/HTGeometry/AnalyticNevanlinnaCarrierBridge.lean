@@ -129,6 +129,92 @@ theorem continuous_leaf_cauchy
   intro t
   exact (F.leaf_cauchy_eq_background_add_projective t z hz hc hq).symm
 
+/-- Every classical leaf jet is the background jet plus the literal forward projective
+Nevanlinna expansion used by the transversality family.  This is local on the meromorphic regular
+locus, so no fictitious global smooth extension of `-1/c²` or `-d/c` is assumed. -/
+theorem iteratedDeriv_leafCauchy_eq_background_add_expansion
+    (t : OnePoint ℝ) (z : ℂ) (hz : 0 < z.im)
+    (hc : F.c z ≠ 0) (hq : 0 < (F.quotient z).im) (n : ℕ) :
+    iteratedDeriv n
+        (fun w => ∫ x, ((x : ℂ) - w)⁻¹ ∂(F.base.leaf t : Measure ℝ)) z =
+      iteratedDeriv n F.background z +
+        projectiveNevanlinnaJetExpansionColumn
+          F.amplitude F.quotient (fun _ : Unit => z) (fun _ : Unit => n + 1) t
+          ⟨(), ⟨n, Nat.lt_succ_self n⟩⟩ := by
+  let U : Set ℂ := projectiveRegularLocus F.c
+  have hU : IsOpen U := projectiveRegularLocus_isOpen F.differentiable_c
+  have hzU : z ∈ U := hc
+  have hcoords := contDiffOn_projectiveNevanlinna_coordinates
+    F.differentiable_c F.differentiable_d
+  have hamp : ContDiffOn ℂ ⊤ F.amplitude U := by
+    simpa [amplitude, U] using hcoords.1
+  have hquot : ContDiffOn ℂ ⊤ F.quotient U := by
+    simpa [quotient, U] using hcoords.2
+  have hbackground : ContDiffOn ℂ ⊤ F.background U := by
+    have ha : ContDiff ℂ ⊤ F.a := F.differentiable_a.contDiff
+    have hcDiff : ContDiff ℂ ⊤ F.c := F.differentiable_c.contDiff
+    exact ha.contDiffOn.div hcDiff.contDiffOn
+      (fun w hw => by simpa [U, projectiveRegularLocus] using hw)
+  have hbackgroundAt : ContDiffAt ℂ ⊤ F.background z :=
+    hbackground.contDiffAt (hU.mem_nhds hzU)
+  have hampAt : ContDiffAt ℂ ⊤ F.amplitude z :=
+    hamp.contDiffAt (hU.mem_nhds hzU)
+  have hquotAt : ContDiffAt ℂ ⊤ F.quotient z :=
+    hquot.contDiffAt (hU.mem_nhds hzU)
+  have hzEv : ∀ᶠ w in 𝓝 z, 0 < w.im :=
+    continuousAt_const.eventually_lt Complex.continuous_im.continuousAt hz
+  have hcEv : ∀ᶠ w in 𝓝 z, F.c w ≠ 0 :=
+    F.differentiable_c.continuous.continuousAt.eventually_ne hc
+  have hqEv : ∀ᶠ w in 𝓝 z, 0 < (F.quotient w).im :=
+    continuousAt_const.eventually_lt
+      (Complex.continuous_im.continuousAt.comp hquotAt.continuousAt) hq
+  induction t using OnePoint.rec with
+  | coe tau =>
+      have hden : (tau : ℂ) - F.quotient z ≠ 0 := by
+        intro heq
+        have him := congrArg Complex.im heq
+        simp only [sub_im, ofReal_im, zero_sub, zero_im] at him
+        linarith
+      have hcenteredAt : ContDiffAt ℂ ⊤
+          (fun w => F.amplitude w * ((tau : ℂ) - F.quotient w)⁻¹) z :=
+        hampAt.mul ((contDiffAt_const.sub hquotAt).inv hden)
+      have heq :
+          (fun w => ∫ x, ((x : ℂ) - w)⁻¹
+            ∂(F.base.leaf (tau : OnePoint ℝ) : Measure ℝ)) =ᶠ[𝓝 z]
+          (fun w => F.background w +
+            F.amplitude w * ((tau : ℂ) - F.quotient w)⁻¹) := by
+        filter_upwards [hzEv, hcEv, hqEv] with w hwUpper hwc hwq
+        simpa [projectiveCauchyPower, div_eq_mul_inv] using
+          F.leaf_cauchy_eq_background_add_projective
+            (tau : OnePoint ℝ) w hwUpper hwc hwq
+      calc
+        iteratedDeriv n
+            (fun w => ∫ x, ((x : ℂ) - w)⁻¹
+              ∂(F.base.leaf (tau : OnePoint ℝ) : Measure ℝ)) z =
+            iteratedDeriv n
+              (fun w => F.background w +
+                F.amplitude w * ((tau : ℂ) - F.quotient w)⁻¹) z :=
+          heq.iteratedDeriv_eq n
+        _ = iteratedDeriv n F.background z +
+            iteratedDeriv n
+              (fun w => F.amplitude w * ((tau : ℂ) - F.quotient w)⁻¹) z := by
+          exact iteratedDeriv_add
+            (hbackgroundAt.of_le (by simp)) (hcenteredAt.of_le (by simp))
+        _ = iteratedDeriv n F.background z +
+            nevanlinnaJetExpansion F.amplitude F.quotient tau n z := by
+          rw [iteratedDeriv_nevanlinnaKernel_eq_expansion_of_contDiffOn
+            hU hamp hquot tau z hzU hden n]
+        _ = _ := by
+          rw [projectiveNevanlinnaJetExpansionColumn_singleton_coe]
+  | infty =>
+      have heq :
+          (fun w => ∫ x, ((x : ℂ) - w)⁻¹
+            ∂(F.base.leaf ∞ : Measure ℝ)) =ᶠ[𝓝 z] F.background := by
+        filter_upwards [hzEv, hcEv] with w hwUpper hwc
+        exact F.infinity_cauchy w hwUpper hwc
+      rw [heq.iteratedDeriv_eq n]
+      simp [projectiveNevanlinnaJetExpansionColumn]
+
 /-- The Cauchy kernel at an upper-half-plane point is integrable against every finite real
 measure. -/
 theorem integrable_cauchyKernel_of_im_pos
@@ -142,6 +228,111 @@ theorem integrable_cauchyKernel_of_im_pos
     linarith
   simpa [resolvent, pow_one] using
     (integrable_resolvent_pow (μ := mu) hzsupport 1)
+
+/-- Every positive power of the upper-half-plane Cauchy kernel is integrable against a finite
+real measure. -/
+theorem integrable_cauchyKernel_pow_of_im_pos
+    (mu : Measure ℝ) [IsFiniteMeasure mu] (z : ℂ) (hz : 0 < z.im) (r : ℕ) :
+    Integrable (fun x : ℝ => (((x : ℂ) - z)⁻¹) ^ r) mu := by
+  have hzsupport : z ∉ algebraMap ℝ ℂ '' mu.support := by
+    rintro ⟨x, _hx, hzx⟩
+    have him := congrArg Complex.im hzx
+    change ((x : ℂ)).im = z.im at him
+    simp only [ofReal_im] at him
+    linarith
+  simpa [resolvent] using (integrable_resolvent_pow (μ := mu) hzsupport r)
+
+/-- Complex Fubini for a bounded-density reweighting of the Nevanlinna boundary kernel.  The
+inner-integral continuity hypothesis is automatic for the Cauchy jet functions used below. -/
+theorem weightedBoundaryCarrier_integral_eq_parameterIntegral
+    (eta : Measure (OnePoint ℝ)) [IsProbabilityMeasure eta]
+    (w : Lp ℝ (⊤ : ENNReal) eta) (hw : LinftyStrictlyPositive eta w)
+    (hint : ∫ t, w t ∂eta = 1)
+    (f : ℝ → ℂ) (hf : Continuous f)
+    (hcarrier : Integrable f
+      (weightedBoundaryCarrier F.base.toBoundaryFamily eta w))
+    (hleaf : ∀ t, Integrable f (F.base.leaf t : Measure ℝ))
+    (hinner : Continuous (fun t : OnePoint ℝ =>
+      ∫ x, f x ∂(F.base.leaf t : Measure ℝ))) :
+    (∫ x, f x ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta w) =
+      ∫ t, (w t) • (∫ x, f x ∂(F.base.leaf t : Measure ℝ)) ∂eta := by
+  letI : IsProbabilityMeasure (linftyDensityMeasure eta w) :=
+    linftyDensityMeasure_isProbabilityMeasure eta w hw hint
+  letI (t : OnePoint ℝ) : IsProbabilityMeasure
+      (F.base.leaf t : Measure ℝ) := (F.base.leaf t).prop
+  letI : IsProbabilityMeasure
+      (weightedBoundaryCarrier F.base.toBoundaryFamily eta w) := by
+    dsimp only [weightedBoundaryCarrier]
+    exact boundaryBarycenter_isProbabilityMeasure
+      (linftyDensityMeasure eta w)
+      (fun t => (F.base.toBoundaryFamily.leaf t : Measure ℝ))
+      F.base.toBoundaryFamily.measurable_leaf
+      (fun t => (F.base.toBoundaryFamily.leaf t).prop)
+  let inner : OnePoint ℝ → ℂ := fun t =>
+    ∫ x, f x ∂(F.base.leaf t : Measure ℝ)
+  have hinnerLp : MemLp inner 1 eta :=
+    hinner.memLp_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+  have hparam : Integrable (fun t => (w t) • inner t) eta :=
+    (ContinuousLinearMap.lsmul ℝ ℝ : ℝ →L[ℝ] ℂ →L[ℝ] ℂ).integrable_of_bilin_of_bdd_left
+      ‖w‖ (Lp.memLp w).1 (linfty_ae_abs_le_norm eta w)
+      (hinnerLp.integrable (by norm_num))
+  apply Complex.ext
+  · have hrecarrier := integral_re hcarrier
+    change (∫ x, (f x).re
+      ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta w) =
+        (∫ x, f x ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta w).re at hrecarrier
+    have hreparam := integral_re hparam
+    change (∫ t, (((w t) • inner t)).re ∂eta) =
+      (∫ t, (w t) • inner t ∂eta).re at hreparam
+    rw [← hrecarrier, ← hreparam]
+    rw [weightedBoundaryCarrier, boundaryBarycenter, integral_bind_real
+      (linftyDensityMeasure eta w)
+      (fun t => (F.base.toBoundaryFamily.leaf t : Measure ℝ))
+      (fun x : ℝ => (f x).re) F.base.toBoundaryFamily.measurable_leaf
+      (Complex.continuous_re.comp hf).measurable hcarrier.re]
+    rw [linftyDensityMeasure]
+    have hmeas : AEMeasurable (fun t => ENNReal.ofReal (w t)) eta :=
+      (Lp.memLp w).1.aemeasurable.ennreal_ofReal
+    rw [integral_withDensity_eq_integral_toReal_smul₀ hmeas
+      (Filter.Eventually.of_forall fun _ => ENNReal.ofReal_lt_top)]
+    apply integral_congr_ae
+    filter_upwards [hw] with t ht
+    rw [ENNReal.toReal_ofReal ht.le]
+    have hreleaf := integral_re (hleaf t)
+    change (∫ x, (f x).re ∂(F.base.leaf t : Measure ℝ)) =
+      (∫ x, f x ∂(F.base.leaf t : Measure ℝ)).re at hreleaf
+    change (w t) * (∫ x, (f x).re ∂(F.base.leaf t : Measure ℝ)) =
+      ((w t) • inner t).re
+    rw [hreleaf]
+    simp [inner, Complex.real_smul]
+  · have himcarrier := integral_im hcarrier
+    change (∫ x, (f x).im
+      ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta w) =
+        (∫ x, f x ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta w).im at himcarrier
+    have himparam := integral_im hparam
+    change (∫ t, (((w t) • inner t)).im ∂eta) =
+      (∫ t, (w t) • inner t ∂eta).im at himparam
+    rw [← himcarrier, ← himparam]
+    rw [weightedBoundaryCarrier, boundaryBarycenter, integral_bind_real
+      (linftyDensityMeasure eta w)
+      (fun t => (F.base.toBoundaryFamily.leaf t : Measure ℝ))
+      (fun x : ℝ => (f x).im) F.base.toBoundaryFamily.measurable_leaf
+      (Complex.continuous_im.comp hf).measurable hcarrier.im]
+    rw [linftyDensityMeasure]
+    have hmeas : AEMeasurable (fun t => ENNReal.ofReal (w t)) eta :=
+      (Lp.memLp w).1.aemeasurable.ennreal_ofReal
+    rw [integral_withDensity_eq_integral_toReal_smul₀ hmeas
+      (Filter.Eventually.of_forall fun _ => ENNReal.ofReal_lt_top)]
+    apply integral_congr_ae
+    filter_upwards [hw] with t ht
+    rw [ENNReal.toReal_ofReal ht.le]
+    have himleaf := integral_im (hleaf t)
+    change (∫ x, (f x).im ∂(F.base.leaf t : Measure ℝ)) =
+      (∫ x, f x ∂(F.base.leaf t : Measure ℝ)).im at himleaf
+    change (w t) * (∫ x, (f x).im ∂(F.base.leaf t : Measure ℝ)) =
+      ((w t) • inner t).im
+    rw [himleaf]
+    simp [inner, Complex.real_smul]
 
 /-- Integrating the Cauchy kernel through a positive bounded boundary reweighting is exactly
 integration of the leaf Cauchy transforms against that density.  This is the complex-valued
@@ -251,6 +442,145 @@ theorem weightedBoundaryCarrier_cauchy_eq_parameterIntegral
       ∂(F.base.leaf t : Measure ℝ)) = ((w t) • inner t).im
     rw [himleaf]
     simp [inner, Complex.real_smul]
+
+/-- **All-order actual-carrier jet identity.**  Every derivative of the Cauchy transform of a
+positive normalized weighted carrier is the background derivative plus the exact smooth forward
+projective control coordinate used by the compact-patch transversality theorem. -/
+theorem iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_background_add_control
+    (eta : Measure (OnePoint ℝ)) [IsProbabilityMeasure eta]
+    (w : Lp ℝ (⊤ : ENNReal) eta) (hw : LinftyStrictlyPositive eta w)
+    (hint : ∫ t, w t ∂eta = 1)
+    (z : ℂ) (hz : 0 < z.im) (hc : F.c z ≠ 0)
+    (hq : 0 < (F.quotient z).im) (n : ℕ) :
+    iteratedDeriv n
+        (fun u => ∫ x, ((x : ℂ) - u)⁻¹
+          ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta w) z =
+      iteratedDeriv n F.background z +
+        (projectiveNevanlinnaJetExpansionSmoothControl
+          F.amplitude F.quotient (fun _ : Unit => n + 1) eta (fun _ : Unit => z) w)
+          ⟨(), ⟨n, Nat.lt_succ_self n⟩⟩ := by
+  letI : IsProbabilityMeasure (linftyDensityMeasure eta w) :=
+    linftyDensityMeasure_isProbabilityMeasure eta w hw hint
+  letI (t : OnePoint ℝ) : IsProbabilityMeasure
+      (F.base.leaf t : Measure ℝ) := (F.base.leaf t).prop
+  letI : IsProbabilityMeasure
+      (weightedBoundaryCarrier F.base.toBoundaryFamily eta w) := by
+    dsimp only [weightedBoundaryCarrier]
+    exact boundaryBarycenter_isProbabilityMeasure
+      (linftyDensityMeasure eta w)
+      (fun t => (F.base.toBoundaryFamily.leaf t : Measure ℝ))
+      F.base.toBoundaryFamily.measurable_leaf
+      (fun t => (F.base.toBoundaryFamily.leaf t).prop)
+  let muw : Measure ℝ := weightedBoundaryCarrier F.base.toBoundaryFamily eta w
+  have hzsupport : z ∉ algebraMap ℝ ℂ '' muw.support := by
+    rintro ⟨x, _hx, hzx⟩
+    have him := congrArg Complex.im hzx
+    change ((x : ℂ)).im = z.im at him
+    simp only [ofReal_im] at him
+    linarith
+  have hactual := iteratedDeriv_resolventTransform n z hzsupport
+  rw [resolventTransform_def] at hactual
+  have hactual' : iteratedDeriv n
+      (fun u => ∫ x, ((x : ℂ) - u)⁻¹ ∂muw) z =
+      cauchyJetFunction muw n z := by
+    simpa [resolvent] using hactual
+  change iteratedDeriv n
+      (fun u => ∫ x, ((x : ℂ) - u)⁻¹ ∂muw) z = _
+  rw [hactual']
+  let f : ℝ → ℂ := fun x => (n.factorial : ℂ) * (((x : ℂ) - z)⁻¹) ^ (n + 1)
+  have hf : Continuous f := by
+    apply Continuous.const_mul
+    exact ((continuous_ofReal.sub continuous_const).inv₀ (fun x hzero => by
+      have him := congrArg Complex.im hzero
+      simp only [sub_im, ofReal_im, zero_sub, zero_im] at him
+      linarith)).pow (n + 1)
+  have hfcarrier : Integrable f muw :=
+    (integrable_cauchyKernel_pow_of_im_pos muw z hz (n + 1)).const_mul
+      (n.factorial : ℂ)
+  have hfleaves : ∀ t, Integrable f (F.base.leaf t : Measure ℝ) := by
+    intro t
+    exact (integrable_cauchyKernel_pow_of_im_pos
+      (F.base.leaf t : Measure ℝ) z hz (n + 1)).const_mul (n.factorial : ℂ)
+  let eta0 : ℝ := (F.quotient z).im / 2
+  have heta0 : 0 < eta0 := by dsimp [eta0]; linarith
+  let zu : Unit → NevanlinnaUpperNodeAtLeast F.quotient eta0 := fun _ =>
+    ⟨z, by dsimp [eta0]; linarith⟩
+  let coord : (Σ _ : Unit, Fin (n + 1)) :=
+    ⟨(), ⟨n, Nat.lt_succ_self n⟩⟩
+  let column : OnePoint ℝ → ℂ := fun t =>
+    projectiveNevanlinnaJetExpansionColumn
+      F.amplitude F.quotient (fun _ : Unit => z) (fun _ : Unit => n + 1) t coord
+  have hcolumn : Continuous column := by
+    exact (continuous_apply coord).comp
+      (continuous_projectiveNevanlinnaJetExpansionColumn
+        (a := F.amplitude) (q := F.quotient) eta0 heta0
+        (fun _ : Unit => n + 1) zu)
+  have hleafIntegral (t : OnePoint ℝ) :
+      (∫ x, f x ∂(F.base.leaf t : Measure ℝ)) =
+        iteratedDeriv n F.background z + column t := by
+    calc
+      (∫ x, f x ∂(F.base.leaf t : Measure ℝ)) =
+          cauchyJetFunction (F.base.leaf t : Measure ℝ) n z := by
+        rw [cauchyJetFunction, resolventPowerTransform, integral_const_mul]
+        simp only [resolvent]
+      _ = iteratedDeriv n
+          (fun u => ∫ x, ((x : ℂ) - u)⁻¹
+            ∂(F.base.leaf t : Measure ℝ)) z := by
+        symm
+        have hleafActual := iteratedDeriv_resolventTransform
+          (μ := (F.base.leaf t : Measure ℝ)) n z (by
+            rintro ⟨x, _hx, hzx⟩
+            have him := congrArg Complex.im hzx
+            change ((x : ℂ)).im = z.im at him
+            simp only [ofReal_im] at him
+            linarith)
+        rw [resolventTransform_def] at hleafActual
+        simpa [resolvent] using hleafActual
+      _ = iteratedDeriv n F.background z + column t := by
+        exact F.iteratedDeriv_leafCauchy_eq_background_add_expansion
+          t z hz hc hq n
+  have hinner : Continuous (fun t : OnePoint ℝ =>
+      ∫ x, f x ∂(F.base.leaf t : Measure ℝ)) := by
+    apply (continuous_const.add hcolumn).congr
+    intro t
+    exact (hleafIntegral t).symm
+  have hFubini := F.weightedBoundaryCarrier_integral_eq_parameterIntegral
+    eta w hw hint f hf hfcarrier hfleaves hinner
+  change (n.factorial : ℂ) * resolventPowerTransform muw (n + 1) z = _
+  rw [resolventPowerTransform, ← integral_const_mul]
+  simp only [resolvent]
+  change (∫ x, f x ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta w) = _
+  rw [hFubini]
+  have hwInt : Integrable (fun t => w t) eta :=
+    (Lp.memLp w).integrable (by simp)
+  have hbgInt : Integrable (fun t => (w t) • iteratedDeriv n F.background z) eta :=
+    hwInt.smul_const (iteratedDeriv n F.background z)
+  have hcolumnLp : MemLp column 1 eta :=
+    hcolumn.memLp_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+  have hcolumnInt : Integrable (fun t => (w t) • column t) eta :=
+    (ContinuousLinearMap.lsmul ℝ ℝ : ℝ →L[ℝ] ℂ →L[ℝ] ℂ).integrable_of_bilin_of_bdd_left
+      ‖w‖ (Lp.memLp w).1 (linfty_ae_abs_le_norm eta w)
+      (hcolumnLp.integrable (by norm_num))
+  calc
+    (∫ t, (w t) • (∫ x, f x ∂(F.base.leaf t : Measure ℝ)) ∂eta) =
+        ∫ t, (w t) • (iteratedDeriv n F.background z + column t) ∂eta := by
+      apply integral_congr_ae
+      filter_upwards [] with t
+      rw [hleafIntegral]
+    _ = ∫ t, ((w t) • iteratedDeriv n F.background z) +
+        ((w t) • column t) ∂eta := by
+      congr 1
+      funext t
+      exact smul_add (w t) (iteratedDeriv n F.background z) (column t)
+    _ = (∫ t, (w t) • iteratedDeriv n F.background z ∂eta) +
+        ∫ t, (w t) • column t ∂eta := integral_add hbgInt hcolumnInt
+    _ = iteratedDeriv n F.background z + ∫ t, (w t) • column t ∂eta := by
+      rw [integral_smul_const, hint, one_smul]
+    _ = _ := by
+      have hcontrol := projectiveNevanlinnaJetExpansionSmoothControl_eq_existing
+        F.amplitude F.quotient (fun _ : Unit => n + 1) eta eta0 heta0 zu
+      rw [hcontrol, linftyBochnerControl_apply_pi]
+      rfl
 
 /-- The centered order-zero projective Nevanlinna control at one analytic node. -/
 def projectiveNevanlinnaValueLinftyControl

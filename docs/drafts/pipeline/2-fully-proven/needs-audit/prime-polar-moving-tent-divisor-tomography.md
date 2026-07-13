@@ -499,11 +499,25 @@ The **holomorphy `(19)` is now formalized** axiom-clean, in `RHTower/PrimePolarH
   `Re s > 1` is where the off-critical divisor poles `s = ρ + ½` (`Re ρ > ½`) live, so `H_L`
   contributing no poles there is exactly what the pole-tomography `(24)`--`(25)` needs.
 
-The one remaining open piece is the **interchange `(20)`**: that the double series equals
-`I_L(s)·(-ζ'/ζ)(s-½) + H_L(s)` (a `tsum` Fubini bounded by the same majorant), so that `Pcal_L` equals
-`(22)`.  At that point the RH criterion `(28)` follows from the assembled §5 residue facts (all proven:
-`polar_cancellation`, `offcritical_residue`) together with `HL_differentiableOn` (no error-term poles).
-Every analytic, discretization, residue, convergence, and holomorphy brick the step needs is now in-tree.
+The **continuation identity `(20)` is now formalized** axiom-clean, in
+`RHTower/PrimePolarContinuation.lean`:
+
+- `weighted_pow_term` — the per-term normalization `(Λ(k)/√k)·k^{1-s} = ` the shifted von Mangoldt
+  `L`-series term at `s-½`;
+- `movingTent_continuation` — **eq. 20**: for `Re s > 3/2`,
+  `∑_k (Λ(k)/√k)·(∑_j τ_L(log(j/k))·j^{-s}) = I_L(s)·(-ζ'/ζ)(s-½) + H_L(s)`.  This is pure `tsum`
+  linearity: each summand splits as `(Λ(k)/√k)·(E_{k,L}(s) + k^{1-s}·I_L(s))`, the `E_{k,L}` part sums
+  to `H_L` and the `k^{1-s}` part factors `I_L(s)` out of `∑_k Λ(k)·k^{-(s-½)} = -ζ'/ζ(s-½)`
+  (`vonMangoldt_shifted_logDeriv`).  Both pieces are absolutely summable (`weighted_E_summable`,
+  `LSeriesSummable_vonMangoldt`).
+
+With this, **the entire analytic content of the card §1--§5 and the coupling §3--§4 is machine-checked,
+axiom-clean**: the source series has the meromorphic continuation `(20)`, whose only poles in `Re s > 1`
+come from `-ζ'/ζ(s-½)` (at `s = ρ+½` for zeta zeros `ρ`, `Re ρ > ½`) since `H_L` is holomorphic there
+(`HL_differentiableOn`).  The polar term of `(22)` cancels the `s = 3/2` charge (`polar_cancellation`),
+and each off-critical pole `s = ρ+½` has the nonzero multiplicity-exact residue `2·m(ρ)·A_L(ρ-½)²`
+(`offcritical_residue`).  The only remaining step is the packaging `(28)`: define `Pcal_L` via `(22)` and
+state `RH ⟺ Pcal_L holomorphic on Re s > 1`, which now reads directly off the assembled theorems.
 
 ## Gates
 

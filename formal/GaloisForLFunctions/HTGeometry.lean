@@ -158,6 +158,7 @@ import GaloisForLFunctions.HTGeometry.BernsteinSzegoMomentForm
 import GaloisForLFunctions.HTGeometry.BernsteinSzegoReconstruction
 import GaloisForLFunctions.HTGeometry.SzegoLowerBound
 import GaloisForLFunctions.HTGeometry.SzegoLowerBoundGeneral
+import GaloisForLFunctions.HTGeometry.SzegoOuterFunction
 
 /- ## Complete area inventory -/
 import GaloisForLFunctions.HTGeometry.AlgebraicMatroidRank
