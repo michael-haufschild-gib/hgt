@@ -40,6 +40,15 @@ For `P\in\mathbb R[X]`, define the source Hankel value by pairing the coefficien
 
 The constant-polynomial level is now unconditional: `PrimeArchThetaFirstMoment.lean` proves the zeroth source moment is strictly positive from the positive theta-cusp density. The remaining task is to construct a coefficient-linear positive carrier for every polynomial, or equivalently prove the higher logarithmic-cumulant Hankel inequalities. The first nonconstant two-by-two minor is the explicit sixth-order theta-source inequality recorded in `theta-cusp-prime-arch-first-hankel.md`. The moment transport, divisor multiplicities, convergence radius, rational-density reduction, and integer-polynomial reduction require no further hypothesis.
 
+The formalized `xi-endpoint-central-moment-dyadic-bridge` additionally reconstructs every moment
+from the raw endpoint reciprocal traces:
+\[
+M_m=(-1)^{m+1}\sum_{n\ge0}\binom{n+2m+1}{2m+1}2^{-n}T_{n+2m+2}.
+\]
+Thus the endpoint and central-Hankel carriers no longer have a value-identification gap.  This does
+not supply the missing Hankel positivity; it gives a second, explicit raw-trace interface on which
+such a source theorem may be proved.
+
 ## Lean certificate
 
 Module: `formal/GaloisForLFunctions/RHTower/PrimeArchCentralMomentGerm.lean`.

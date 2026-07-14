@@ -120,8 +120,8 @@ eventually nonnegative exactly when that set is finite, which is exactly equalit
 - [x] exact quotient order isolated
 - [x] complete paper proof
 - [x] source-level formal proof without project hypotheses
-- [ ] narrow module build and axiom audit
+- [x] narrow module build
+- [ ] axiom audit
 - [ ] connect to the analytic operator-tail capstone after the external classical bridge lands
 - [ ] complete parent-theory and literature audit
 - [ ] determine whether the combined two-stage prime pointing is scientifically non-routine
-

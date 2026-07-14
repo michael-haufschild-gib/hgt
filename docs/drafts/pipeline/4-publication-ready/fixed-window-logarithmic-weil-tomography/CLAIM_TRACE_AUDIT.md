@@ -342,12 +342,22 @@ scale-resolved free-energy and source-abscissa statement is bundled by
 | total Bernstein negative mass is nondecreasing under degree elevation | hausdorffBernsteinNegativeMass_monotone |
 | cofinal negative-mass decay is equivalent to exact zero at every degree | cofinalHausdorffBernsteinNegativeMassVanishing_iff_forall_eq_zero |
 | false RH is equivalent to a strictly positive finite-degree Bernstein defect which persists at every finer degree | not_riemannHypothesis_iff_exists_persistent_primeArchBernsteinNegativeMass |
+| Bernstein total variation is exactly the conserved zeroth mass plus twice the aggregate negative mass | bernsteinCoefficientL1_eq_mass_add_two_negativeMass |
+| the source Bernstein coefficient transform is exactly the multiplicity-exact reciprocal-square Xi pencil | bernsteinCoefficientTransform_source_eq_xiCentralBernsteinPencil |
+| every unit-disk pencil value is bounded by the Bernstein total variation | norm_bernsteinCoefficientTransform_le_l1 |
+| every nonreal normalized reciprocal-square coordinate has a unit phase whose affine Bernstein base has modulus greater than one | exists_unit_bernsteinBase_norm_gt_one_of_im_ne_zero |
+| a summable infinite pencil with a finite maximal-radius packet retains a nondecaying normalized mode despite all finite-mode collisions and the infinite tail | not_tendsto_tsum_normalizedExponentialPencil_zero_of_dominantFinset |
+| false RH forces a unit-circle direction and a radius greater than one for which the complete normalized Xi Bernstein pencil does not decay | exists_unit_xiCentralBernsteinPencil_not_subexponential_of_not_riemannHypothesis |
+| RH is equivalent to subexponential growth of the endpoint Bernstein total variation | riemannHypothesis_iff_primeArchEndpointBernsteinTotalVariation_subexponential |
+| subexponential endpoint negative mass and subexponential total variation are equivalent | primeArchBernsteinNegativeMassSubexponential_iff_totalVariation |
+| subexponential endpoint Bernstein negative mass is equivalent to RH | riemannHypothesis_iff_primeArchBernsteinNegativeMassSubexponential |
+| the subexponential Bernstein source obligation is equivalent to the critical prime--polar abscissa endpoint | primeArchBernsteinNegativeMassSubexponential_iff_rectangularPrimePolarSource_negativeAbscissa_le_one |
 | for every cofinal finite-volume/cooling schedule, the normalized logarithmic partition converges to the projective reflection radius | tendsto_xiThermalProjectiveColdTruncation_log_div_cold |
 | RH is equivalent to zero cofinal free-energy density | riemannHypothesis_iff_tendsto_thermalProjectiveCofinalFreeEnergy_zero |
 | RH is equivalent to subexponential growth along every, equivalently one, cofinal thermal schedule | riemannHypothesis_iff_thermalProjectiveCofinalSubexponential |
 | positivity on monic integer polynomials Eisenstein at `2` in any infinite exact-degree set is equivalent to RH | primeArchSourceTraceHankelIntTwoEisensteinDegreeSetNonnegative_iff_riemannHypothesis |
 | every positive-degree polynomial in the fixed Eisenstein chamber is irreducible | irreducible_of_monic_primeArchTwoEisenstein |
-| the source endpoint, sparse irreducible chamber, cofinal diagonals, aggregate negative-mass vanishing, exact all-degree zero-rigidity, deep quadrant, zero free energy, subexponential growth, finite KMS closure, Connes reflection positivity, and RH form one chain | primeArchCofinalSourceTemperatureMaster |
+| the source endpoint, sparse irreducible chamber, cofinal diagonals, aggregate negative-mass vanishing, exact all-degree zero-rigidity, subexponential Bernstein total variation and negative mass, deep quadrant, zero free energy, thermal subexponential growth, finite KMS closure, Connes reflection positivity, and RH form one chain | primeArchCofinalSourceTemperatureMaster |
 | under a verified prefix, the remaining ultraviolet response tail is equivalent to the same cofinal Bernstein defect | continuedPrimeArchPositiveFrequencyAbove_iff_cofinalBernsteinNegativeMass_of_verifiedHeight |
 
 ## Axiom and lint gate
@@ -378,6 +388,10 @@ scale-resolved free-energy and source-abscissa statement is bundled by
   GaloisForLFunctions.RHTower.PrimeArchVerifiedHeightAccretivity, and
   GaloisForLFunctions.RHTower.XiThermalProjectiveFreeEnergyRadius, and
   GaloisForLFunctions.RHTower.PrimeArchThetaHankelDegreeTail, and
+  GaloisForLFunctions.RHTower.FiniteExponentialPencilMeanSquare, and
+  GaloisForLFunctions.RHTower.PrimeArchBernsteinPencil, and
+  GaloisForLFunctions.RHTower.PrimeArchBernsteinExponentialPhase, and
+  GaloisForLFunctions.RHTower.PrimeArchBernsteinNegativeMassAbscissa, and
   GaloisForLFunctions.RHTower.PrimeArchCofinalSourceTemperatureMaster.
 - Allowed foundational dependencies in the checked capstones:
   [propext, Classical.choice, Quot.sound].

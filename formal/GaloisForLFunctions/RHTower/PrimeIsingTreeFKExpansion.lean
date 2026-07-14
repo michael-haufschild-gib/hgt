@@ -150,7 +150,7 @@ mutual
         rw [bondTreeConditionalWeights, bondTreeClusterData,
           bondForestConditionalFactors_eq_clusterData u branches]
         simp only [BondClusterData.detachedPartition]
-        ring
+        ext <;> ring
 
   /-- Forest form of the connected-component factorization. -/
   theorem bondForestConditionalFactors_eq_clusterData
@@ -171,13 +171,13 @@ mutual
             rw [hchild, htail]
             simp only [BondClusterData.detachedPartition, List.map_cons,
               List.map_append, List.prod_cons, List.prod_append]
-            ring
+            ext <;> ring
         | synchronized =>
             simp only [bondForestConditionalFactors, bondForestClusterData]
             rw [hchild, htail]
             simp only [BondClusterData.detachedPartition, List.map_append,
               List.prod_append]
-            ring
+            ext <;> ring
 end
 
 /-- Every fixed FK bond configuration factors exactly as the product of the synchronized
@@ -221,7 +221,6 @@ theorem treePartition_singleEdge_fields_eq_fkMixture
         ((1 - c.coefficient : ℝ) : ℂ) * (1 + u p * u q) := by
   simp [treePartition, singleEdgePrimeIsingTree, treeConditionalWeights,
     forestConditionalFactors]
-  push_cast
   ring
 
 /-- Common-field form: every Lee--Yang pair block interpolates exactly between the independent
@@ -371,7 +370,7 @@ mutual
             scaleConditionalPair, bondTreeConditionalWeights,
             treeBondCoefficient, weightedBondForestConditionalFactors]
         · rw [list_sum_snd, list_sum_snd]
-          simp only [Prod.snd, List.map_map, Function.comp_apply]
+          simp only [List.map_map]
           calc
             u p * (List.map (fun F => (weightedBondForestConditionalFactors u F).2)
                 (forestBondConfigurations branches)).sum =
@@ -385,9 +384,9 @@ mutual
                 (forestBondConfigurations branches)).sum := by
               apply sum_map_congr
               intro F hF
-              simp [Function.comp_def, weightedBondTreeConditionalWeights,
-                scaleConditionalPair, bondTreeConditionalWeights, treeBondCoefficient,
+              simp [weightedBondTreeConditionalWeights, scaleConditionalPair,
                 weightedBondForestConditionalFactors]
+              rw [treeBondCoefficient, bondTreeConditionalWeights]
               ring
 
   /-- Exact arbitrary-forest FK expansion of both conditional factors. -/
@@ -434,10 +433,52 @@ mutual
           have htailFst := congrArg Prod.fst htail
           rw [list_sum_fst] at hchildFst htailFst
           rw [list_sum_snd] at hchildSnd
-          simp only [List.map_map, Function.comp_apply,
-            weightedBondTreeConditionalWeights, weightedBondForestConditionalFactors,
-            scaleConditionalPair] at hchildFst hchildSnd htailFst
-          rw [← hchildFst, ← hchildSnd, ← htailFst]
+          have hchildFst' : (treeConditionalWeights u child).1 =
+              ((treeBondConfigurations child).map fun x =>
+                (treeBondCoefficient x : ℂ) *
+                  (bondTreeConditionalWeights u x).1).sum := by
+            simpa [Function.comp_def, weightedBondTreeConditionalWeights,
+              scaleConditionalPair] using hchildFst
+          have hchildSnd' : (treeConditionalWeights u child).2 =
+              ((treeBondConfigurations child).map fun x =>
+                (treeBondCoefficient x : ℂ) *
+                  (bondTreeConditionalWeights u x).2).sum := by
+            simpa [Function.comp_def, weightedBondTreeConditionalWeights,
+              scaleConditionalPair] using hchildSnd
+          have htailFst' : (forestConditionalFactors u tail).1 =
+              ((forestBondConfigurations tail).map fun y =>
+                (forestBondCoefficient y : ℂ) *
+                  (bondForestConditionalFactors u y).1).sum := by
+            simpa [Function.comp_def, weightedBondForestConditionalFactors,
+              scaleConditionalPair] using htailFst
+          have hfactor :
+              ((treeBondConfigurations child).map fun x =>
+                (treeBondCoefficient x : ℂ) *
+                    (bondTreeConditionalWeights u x).1 +
+                  (c.coefficient : ℂ) * (treeBondCoefficient x : ℂ) *
+                    (bondTreeConditionalWeights u x).2).sum =
+                (treeConditionalWeights u child).1 +
+                  (c.coefficient : ℂ) * (treeConditionalWeights u child).2 := by
+            calc
+              _ = ((treeBondConfigurations child).map fun x =>
+                    (treeBondCoefficient x : ℂ) *
+                      (bondTreeConditionalWeights u x).1).sum +
+                  ((treeBondConfigurations child).map fun x =>
+                    (c.coefficient : ℂ) *
+                      ((treeBondCoefficient x : ℂ) *
+                        (bondTreeConditionalWeights u x).2)).sum :=
+                by simpa only [mul_assoc] using (sum_map_add _ _ _).symm
+              _ = ((treeBondConfigurations child).map fun x =>
+                    (treeBondCoefficient x : ℂ) *
+                      (bondTreeConditionalWeights u x).1).sum +
+                  (c.coefficient : ℂ) *
+                    ((treeBondConfigurations child).map fun x =>
+                      (treeBondCoefficient x : ℂ) *
+                        (bondTreeConditionalWeights u x).2).sum := by
+                rw [List.sum_map_mul_left]
+              _ = _ := by rw [← hchildFst', ← hchildSnd']
+          rw [hfactor, ← htailFst']
+          ring
         · rw [list_sum_snd, List.map_map, sum_flatMap_flatMap_map]
           simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero]
           simp only [Function.comp_apply, weightedBondForestConditionalFactors,
@@ -466,10 +507,52 @@ mutual
           have htailSnd := congrArg Prod.snd htail
           rw [list_sum_fst] at hchildFst
           rw [list_sum_snd] at hchildSnd htailSnd
-          simp only [List.map_map, Function.comp_apply,
-            weightedBondTreeConditionalWeights, weightedBondForestConditionalFactors,
-            scaleConditionalPair] at hchildFst hchildSnd htailSnd
-          rw [← hchildFst, ← hchildSnd, ← htailSnd]
+          have hchildFst' : (treeConditionalWeights u child).1 =
+              ((treeBondConfigurations child).map fun x =>
+                (treeBondCoefficient x : ℂ) *
+                  (bondTreeConditionalWeights u x).1).sum := by
+            simpa [Function.comp_def, weightedBondTreeConditionalWeights,
+              scaleConditionalPair] using hchildFst
+          have hchildSnd' : (treeConditionalWeights u child).2 =
+              ((treeBondConfigurations child).map fun x =>
+                (treeBondCoefficient x : ℂ) *
+                  (bondTreeConditionalWeights u x).2).sum := by
+            simpa [Function.comp_def, weightedBondTreeConditionalWeights,
+              scaleConditionalPair] using hchildSnd
+          have htailSnd' : (forestConditionalFactors u tail).2 =
+              ((forestBondConfigurations tail).map fun y =>
+                (forestBondCoefficient y : ℂ) *
+                  (bondForestConditionalFactors u y).2).sum := by
+            simpa [Function.comp_def, weightedBondForestConditionalFactors,
+              scaleConditionalPair] using htailSnd
+          have hfactor :
+              ((treeBondConfigurations child).map fun x =>
+                (c.coefficient : ℂ) * (treeBondCoefficient x : ℂ) *
+                    (bondTreeConditionalWeights u x).1 +
+                  (treeBondCoefficient x : ℂ) *
+                    (bondTreeConditionalWeights u x).2).sum =
+                (c.coefficient : ℂ) * (treeConditionalWeights u child).1 +
+                  (treeConditionalWeights u child).2 := by
+            calc
+              _ = ((treeBondConfigurations child).map fun x =>
+                    (c.coefficient : ℂ) *
+                      ((treeBondCoefficient x : ℂ) *
+                        (bondTreeConditionalWeights u x).1)).sum +
+                  ((treeBondConfigurations child).map fun x =>
+                    (treeBondCoefficient x : ℂ) *
+                      (bondTreeConditionalWeights u x).2).sum :=
+                by simpa only [mul_assoc] using (sum_map_add _ _ _).symm
+              _ = (c.coefficient : ℂ) *
+                    ((treeBondConfigurations child).map fun x =>
+                      (treeBondCoefficient x : ℂ) *
+                        (bondTreeConditionalWeights u x).1).sum +
+                  ((treeBondConfigurations child).map fun x =>
+                    (treeBondCoefficient x : ℂ) *
+                      (bondTreeConditionalWeights u x).2).sum := by
+                rw [List.sum_map_mul_left]
+              _ = _ := by rw [← hchildFst', ← hchildSnd']
+          rw [hfactor, ← htailSnd']
+          ring
 end
 
 /-- **Positive FK expansion.**  The full Ising-tree partition is the finite sum over all bond
@@ -481,12 +564,11 @@ theorem treePartition_eq_sum_bondConfigurations
         (treeBondCoefficient B : ℂ) * bondTreePartition u B).sum := by
   rw [treePartition, treeConditionalWeights_eq_sum_bondConfigurations]
   rw [list_sum_fst, list_sum_snd]
-  simp only [weightedBondTreeConditionalWeights, scaleConditionalPair,
-    bondTreePartition, List.map_map, Function.comp_apply]
+  simp only [bondTreePartition, List.map_map]
   rw [sum_map_add]
   apply sum_map_congr
   intro B hB
-  simp [Function.comp_def, weightedBondTreeConditionalWeights, scaleConditionalPair]
+  simp [weightedBondTreeConditionalWeights, scaleConditionalPair]
   ring
 
 /-- Prime-field two-site consumer: an interacting edge is the positive interpolation between the

@@ -11,6 +11,7 @@
   `formal/GaloisForLFunctions/RHTower/TwoSpinFKGLeeYangBridge.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeIsingTreeCavity.lean`,
   `formal/GaloisForLFunctions/RHTower/IsingCavityRapidityAudioCascade.lean`,
+  `formal/GaloisForLFunctions/RHTower/PrimeIsingTreeFKExpansion.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeWordEnsembleBoundaryTomography.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeSupportMultivariateLiftMarker.lean`, and
   `formal/GaloisForLFunctions/XiLaguerrePolya.lean`
@@ -265,6 +266,28 @@ one without changing any zero, and supplies a locally uniform normalized-tree ca
 comparison problem can therefore impose unit central normalization canonically rather than carry
 an arbitrary nonzero scalar at each aperture.
 
+The Fortuin--Kasteleyn deletion--contraction expansion is now internal as well.  For every edge,
+
+```text
+(a+c b, c a+b) = c(a+b,a+b) + (1-c)(a,b).
+```
+
+`PrimeIsingTreeFKExpansion.lean` enumerates every cut/synchronized bond configuration of an
+arbitrary finite tree and proves
+
+```text
+Z_T(u) = sum_(bond configurations B) w_B Z_B(u),
+w_B >= 0,                 sum_B w_B = 1.
+```
+
+It further proves that every fixed `Z_B` factors exactly into the two-state synchronized partition
+blocks of its connected components.  Thus the tree class is a convex cone over the existing
+`synchronizedPrimeClusterPartition` basis, with independent spins at the all-cut endpoint and the
+fully synchronized cluster at the all-open endpoint.  Open Core A is correspondingly sharper:
+the completed source packet must admit this nonnegative, product-compatible cluster coefficient
+factorization.  A failed coefficient test now retires the entire tree-Ising subclass rather than
+only one proposed graph.
+
 ## Source coordinates already available
 
 `PrimeWordEnsembleBoundaryTomography.lean` proves that the complete normal boundary germ of any
@@ -406,5 +429,6 @@ convergence is weaker than locally uniform.
 - [ ] functorial finite ferromagnetic realization constructed at every aperture
 - [x] full-volume Lee--Yang theorem formalized for arbitrary finite rooted tree models
 - [x] serial cavity sections collapsed and canonical nonzero central normalization formalized
+- [x] arbitrary tree partitions decomposed as convex FK mixtures of synchronized cluster products
 - [ ] prime-field local-uniform comparison with zero-free factor times `XiC`
 - [x] RH capstone formalized from the tree comparison with a zero-free entire factor

@@ -1,9 +1,9 @@
 # Prime--archimedean Bernstein exponential phase selection
 
 - **ID:** `prime-arch-bernstein-exponential-phase-selection`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM / SOURCE--DIVISOR SELECTION
-- **Scientific status:** `[CONJECTURE] [PAPER PROOF IN DEVELOPMENT] [LEAN OPEN]`
+- **Scientific status:** `[THEOREM] [PAPER PROVED] [LEAN FORMALIZED]`
 
 ## Target
 
@@ -21,7 +21,7 @@ and let
 TV(n) = sum_{0 <= i <= n} |a(n,i)|.
 ```
 
-Prove the source-only phase law
+The source-only phase law is
 
 ```text
 RH
@@ -81,28 +81,29 @@ Choose `1 < r < |alpha_0|`.  Absolute summability of `lambda_q` makes the set of
 alpha_q = 1 - lambda_q / R + (lambda_q / R) * w
 ```
 
-with `|alpha_q| >= r` finite.  Apply the finite shift polynomial that kills every distinct such
-base except `alpha_0`.  Equal bases have equal nonzero reciprocal-square coordinate, so their
-multiplicity weights add and cannot cancel.  The filtered pencil is therefore
+with `|alpha_q| >= r` finite.  On the maximal-radius packet, equal bases have equal nonzero
+reciprocal-square coordinate, so their multiplicity weights add and cannot cancel.  After
+normalization by the maximal radius, the distinct surviving bases lie on the unit circle.  The
+exact Cesaro mean-square identity for a finite exponential pencil gives a positive limiting square
+mean, while the absolutely summable lower-radius tail tends to zero.  Therefore the full normalized
+pencil cannot tend to zero.
 
-```text
-c_0 * alpha_0^n + O(r^n),  c_0 != 0.
-```
-
-Any subexponential bound on `TV(n)` passes to every fixed finite shift filter of `P_n(w)`, which
-contradicts `|alpha_0| > r > 1`.  Thus subexponential source total variation forces every
+Since `|P_n(w)| <= TV(n)`, subexponential total variation would force every such normalized pencil
+to tend to zero, a contradiction.  Thus subexponential source total variation forces every
 reciprocal-square coordinate to be real and hence forces RH.
 
-## Formalization plan
+## Formal theorem surface
 
-1. Prove the generic summable exponential-family filtering lemma.
-2. Prove the unit-circle strict-ellipse lemma
-   `u not real -> exists |w|=1, 1 < |1-u+u*w|`.
-3. Prove equality of pencil bases implies equality of reciprocal-square coordinates when `w != 1`.
-4. Group the finite exceptional bases and prove their coefficients are nonzero multiplicity sums.
-5. Transfer subexponential Bernstein total variation through the pencil bound and the finite shift
-   filter.
-6. Close the RH equivalence and add it to the source--temperature master theorem.
+- `FiniteExponentialPencilMeanSquare.lean` proves the exact finite Cesaro mean-square identity,
+  collision-fiber aggregation, and the dominant-finset nondecay theorem for an absolutely summable
+  exponential family.
+- `PrimeArchBernsteinExponentialPhase.lean` proves the strict unit-circle ellipse witness, the
+  multiplicity-exact off-line exponential witness, and
+  `riemannHypothesis_iff_primeArchEndpointBernsteinTotalVariation_subexponential`.
+- `PrimeArchBernsteinNegativeMassAbscissa.lean` converts total variation to the exact scalar
+  Bernstein negative mass and identifies the condition with the critical prime--polar abscissa.
+- `PrimeArchCofinalSourceTemperatureMaster.lean` incorporates both subexponential endpoints into
+  the source--temperature equivalence chain.
 
 ## Gates
 
@@ -110,8 +111,8 @@ reciprocal-square coordinate to be real and hence forces RH.
 - [x] exact prime--Gamma/Xi pencil identity
 - [x] unit-disk total-variation bound
 - [x] numerical pre-certification on symmetric synthetic off-line packets
-- [ ] summable exponential-family filtering lemma
-- [ ] off-line reciprocal-square exponential witness
-- [ ] source subexponential phase law
-- [ ] Lean proof and axiom audit
-- [ ] manuscript integration
+- [x] summable exponential-family dominant-packet nondecay theorem
+- [x] off-line reciprocal-square exponential witness
+- [x] source subexponential phase law
+- [x] Lean proof and axiom audit
+- [x] manuscript integration

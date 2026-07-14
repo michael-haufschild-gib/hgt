@@ -1,7 +1,7 @@
 # Prime Ising trees as a positive FK cluster expansion
 
 - **ID:** `prime-ising-tree-fk-deletion-contraction`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** `[BRIDGE] [DIRECT CORPUS SIMPLIFICATION]`
 - **Lean inputs:** `formal/GaloisForLFunctions/RHTower/PrimeIsingTreeCavity.lean`,
   `formal/GaloisForLFunctions/RHTower/IsingCavityRapidityAudioCascade.lean`,
@@ -63,6 +63,26 @@ factorization.  A completed source packet outside that cone retires tree Ising r
 packet inside it provides explicit edge couplings and therefore inherits the already-proved
 finite zero localization and locally-uniform RH capstone.
 
+## Lean certificate
+
+`formal/GaloisForLFunctions/RHTower/PrimeIsingTreeFKExpansion.lean` proves:
+
+- `isingEdgeFactors_eq_cut_add_synchronized` and
+  `treePartition_singleEdge_fields_eq_fkMixture`;
+- `treeBondCoefficient_nonneg` and `forestBondCoefficient_nonneg`;
+- `sum_treeBondCoefficient_treeBondConfigurations`, so the bond weights form a probability
+  vector rather than only a positive cone;
+- `bondTreeConditionalWeights_eq_clusterData` and
+  `bondTreePartition_eq_clusterProduct`, the exact connected-component factorization;
+- `treeConditionalWeights_eq_sum_bondConfigurations` and
+  `treePartition_eq_sum_bondConfigurations`, the arbitrary-tree FK identity; and
+- `primeIsingTreePartition_singleEdge_eq_fkMixture`, which composes directly with the existing
+  independent prime partition and synchronized prime-cluster partition for distinct labels.
+
+The module is exported by `RHTower.lean`.  Its target build and the 10,096-job `RHTower` umbrella
+build pass.  The axiom audit of the principal theorems reports only `propext`, `Classical.choice`,
+and `Quot.sound`; the formal lint and `git diff --check` pass.
+
 ## Primary physics sources
 
 - C. M. Fortuin and P. W. Kasteleyn, *On the random-cluster model. I. Introduction and relation
@@ -76,7 +96,7 @@ finite zero localization and locally-uniform RH capstone.
 
 - [x] candidate has a direct consumer in the live Lean corpus
 - [x] local deletion--contraction identity derived on paper
-- [ ] local identity formalized
-- [ ] arbitrary-tree FK expansion formalized
-- [ ] synchronized-cluster and independent-spin consumers composed
-- [ ] target build, axiom audit, lint, and diff check pass
+- [x] local identity formalized
+- [x] arbitrary-tree FK expansion formalized
+- [x] synchronized-cluster and independent-spin consumers composed
+- [x] target build, axiom audit, lint, and diff check pass

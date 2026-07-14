@@ -178,7 +178,21 @@ Consequently cofinal vanishing rigidifies to $\eta_M=0$ at every degree, whereas
 produces a finite $M_0$ with a permanent gap
 $0<\eta_{M_0}\le\eta_M$ for all $M\ge M_0$.  This discharges 616 conditions of the exact RH
 criterion without assuming RH and reduces the remaining Hausdorff obligation from a
-two-parameter sign problem to one monotone scalar order parameter.  The same source Hankel form
+two-parameter sign problem to one monotone scalar order parameter.  The order-unit norm of that
+parameter has a strictly weaker exact phase law.  If
+\[
+ T_M=\sum_{i=0}^M|a_{M,i}|=s_0+2\eta_M,
+\]
+then
+\[
+ \mathrm{RH}\Longleftrightarrow
+ \frac{T_M}{r^M}\longrightarrow0\quad\text{for every }r>1.
+\]
+If RH is false, some unit phase $w$ and some $r>1$ make the complete multiplicity-exact
+reciprocal-square Bernstein pencil fail to decay after division by $r^M$.  A finite maximal-mode
+packet survives by a Ces\`aro mean-square identity, while the summable tail vanishes by dominated
+convergence.  Thus exact positivity, boundedness, and decay of $\eta_M$ are unnecessary: zero
+exponential rate is the sharp source obligation.  The same source Hankel form
 admits an independent
 sparse compression: for every infinite $D\subset\mathbb N$, it is enough to test monic integer
 polynomials whose exact degree lies in $D$ and which are Eisenstein at $2$, hence irreducible in
@@ -272,9 +286,12 @@ that both residual low-degree inequalities live on one positive Gibbs moment fib
 decisively, the endpoint-calibrated Hausdorff array is an exact reciprocal-square divisor value.
 The quartet sector bound and the opposite phases of $\lambda_\rho$ and $R_*-\lambda_\rho$ prove
 an unconditional $14\times44$ positivity rectangle.  The master theorem therefore identifies a
-monotone scalar aggregate-negativity defect as the minimal remaining Hausdorff order parameter.
+monotone scalar aggregate-negativity defect as the remaining Hausdorff order parameter.
 Its zero phase is rigid under degree elevation, and its positive phase has a persistent
-finite-degree gap.  In the thermal chart, every simultaneous cofinal finite-volume/cooling schedule
+finite-degree gap.  More sharply, the exact Bernstein order-unit identity and a
+cancellation-resistant maximal-mode theorem show that RH requires only zero exponential rate of
+the total variation $T_M=s_0+2\eta_M$, not vanishing, decay, or boundedness of $\eta_M$.
+In the thermal chart, every simultaneous cofinal finite-volume/cooling schedule
 has free-energy density exactly $\delta_*$, so the same endpoint is equivalently one
 subexponential partition estimate.  The later named results establish the individual clauses
 needed for this master statement.
@@ -672,6 +689,31 @@ Moreover $0\le\eta_M\le\eta_{M+1}$ for every $M\ge1$, and
  0<\eta_{M_0}\le\eta_M.
  \tag{1.20s}
 \]
+Put
+\[
+ T_M=\sum_{i=0}^M|a_{M,i}|=s_0+2\eta_M,
+ \qquad
+ P_M(w)=\sum_{i=0}^Ma_{M,i}w^i.
+ \tag{1.20t}
+\]
+Then the exact source--divisor pencil identity is
+\[
+ P_M(w)=\sum_\rho\lambda_\rho
+ \left(1-\frac{\lambda_\rho}{R_*}
+       +\frac{\lambda_\rho}{R_*}w\right)^M,
+ \qquad |w|\le1,
+ \tag{1.20u}
+\]
+and the source has the sharp exponential phase law
+\[
+ \boxed{\mathrm{RH}\Longleftrightarrow
+ \forall r>1,\qquad \frac{T_M}{r^M}\longrightarrow0.}
+ \tag{1.20v}
+\]
+If RH is false, there are $|w|=1$ and $r>1$ for which
+$r^{-M}P_M(w)\not\to0$.  Hence false RH forces a strictly positive exponential phase of the
+source order-unit norm; cancellations between conjugate zeros, reflected zeros, coincident
+reciprocal-square values, and the infinite divisor tail cannot remove it.
 The following critical conditions are equivalent:
 \[
  \begin{aligned}
@@ -709,6 +751,8 @@ The following critical conditions are equivalent:
  \text{arbitrarily large complete calibrated Hausdorff diagonals are nonnegative}\\
  &\Longleftrightarrow
  \exists M_j\to\infty,\quad\eta_{M_j}\to0\\
+ &\Longleftrightarrow
+ \frac{T_M}{r^M}\longrightarrow0\quad\text{for every }r>1\\
  &\Longleftrightarrow \mathcal K(R_0)\\
  &\Longleftrightarrow
  \text{the complete normalized source Hankel form is nonnegative}\\
@@ -736,7 +780,8 @@ Theorems~\ref{thm:sharp-guinand-weil}, \ref{thm:prime-gamma-spectrum},
 \ref{thm:prime-polar-cumulative-spectrum}, and
 \ref{thm:source-strengthenings}.  Part~\textup{(v)} is proved in
 Theorems~\ref{thm:endpoint-reflection-main} and~\ref{thm:projective-energy-budget}.
-Part~\textup{(vi)} follows from Theorem~\ref{thm:thermal-master} and
+Part~\textup{(vi)} follows from
+Theorems~\ref{thm:thermal-master} and~\ref{thm:bernstein-spectral-phase},
 Propositions~\ref{prop:morse-fisher-envelope},
 \ref{prop:endpoint-frequency-master}, and~\ref{prop:universal-kms-palette}, together with
 Corollary~\ref{cor:sparse-eisenstein-hankel}.
@@ -758,7 +803,9 @@ At $\alpha=0$, all clauses identify one common endpoint:
  \exists M\ \forall k,r\ge M,\ D^*_{k,r}\ge0\\
  &\Longleftrightarrow
  \exists M_j\to\infty,\ \eta_{M_j}\to0
- \Longleftrightarrow \forall M\ge1,\ \eta_M=0.
+ \Longleftrightarrow \forall M\ge1,\ \eta_M=0\\
+ &\Longleftrightarrow
+ \forall r>1,\quad T_M/r^M\longrightarrow0.
  \end{aligned}
  \tag{1.22}
 \]
@@ -767,10 +814,12 @@ The scale-resolved budget \textup{(1.11)}, the off-line self-charge law
 cubic source estimate \textup{(1.20)} are successive quantitative stages of this one theorem.
 In the thermal chart the source misses the positive divisor moment by less than $1/150000$ in
 absolute scale.  Every cofinal finite-volume/cooling section recovers the exact transverse radius
-as its free-energy density.  The remaining theorem now has a minimal monotone scalar source form:
-the aggregate negative Bernstein mass must vanish; degree-elevation rigidity then forces exact
-vanishing at every finite degree.  Conversely, false RH creates a strictly positive defect at
-one finite degree which persists under all later refinements.
+as its free-energy density.  The remaining theorem now has a strictly weaker scalar source form:
+the aggregate Bernstein order-unit norm must have zero exponential rate.  This permits nonzero,
+nondecaying, and unbounded subexponential defects.  Degree-elevation rigidity identifies the
+stronger cofinal-decay formulation with exact vanishing at every finite degree.  Conversely,
+false RH creates a strictly positive defect at one finite degree which persists under all later
+refinements and, by the Bernstein pencil law, forces positive exponential rate.
 Equivalently, one may prove subexponential growth of one faithful cofinal thermal section,
 positivity on one common deep Hausdorff quadrant, the endpoint saturation
 $M_2\le\mathcal Q_W$, or the ultraviolet condition $\mathrm{HF}(218/25)$.
@@ -3573,7 +3622,41 @@ and therefore
  \tag{9.22hfh}
 \]
 Thus the scalar condition is approximate only in syntax: degree elevation turns cofinal decay
-into exact zero-rigidity and turns false RH into a persistent positive phase.
+into exact zero-rigidity and turns false RH into a persistent positive phase.  There is,
+however, a genuinely weaker asymptotic criterion.
+
+\begin{theorem}[Bernstein spectral-radius phase law]
+\label{thm:bernstein-spectral-phase}
+For $M\ge1$ put
+\[
+ T_M=\sum_{i=0}^M|a_{M,i}|.
+\]
+Then
+\[
+ T_M=s_0+2\eta_M,
+ \qquad
+ \mathrm{RH}\Longleftrightarrow
+ \forall r>1,\quad T_M/r^M\longrightarrow0.
+ \tag{9.22hfi}
+\]
+Moreover, define the complete Bernstein pencil
+\[
+ P_M(w)=\sum_{i=0}^Ma_{M,i}w^i
+ =\sum_\rho\lambda_\rho
+ \left(1-\frac{\lambda_\rho}{R_*}
+       +\frac{\lambda_\rho}{R_*}w\right)^M.
+ \tag{9.22hfj}
+\]
+For $|w|\le1$ one has $|P_M(w)|\le T_M$.  If RH is false, there exist $|w|=1$ and $r>1$ such
+that
+\[
+ P_M(w)/r^M\not\longrightarrow0.
+ \tag{9.22hfk}
+\]
+Consequently the endpoint Bernstein negative mass has zero exponential rate if and only if RH;
+no exact sign, boundedness, or decay premise is required.
+\end{theorem}
+
 When these inequalities hold, the finite positive atomic approximants are canonical.  Write
 $\ell_\mu(\sum_ja_jX^j)=\sum_ja_j\mu_j$ and set
 \[
@@ -3619,6 +3702,8 @@ For every fixed $L>0$ and admissible $N$, the following conditions are equivalen
        \quad D^*_{i,M-i}\ge0\\
  &\Longleftrightarrow
  \exists M_j\to\infty,\quad\eta_{M_j}\to0\\
+ &\Longleftrightarrow
+ \forall r>1,\quad T_M/r^M\to0\\
  &\Longleftrightarrow\mathcal K(218/25)\\
  &\Longleftrightarrow\mathrm{RH}.
  \end{aligned}
@@ -3958,6 +4043,88 @@ implies cofinal vanishing.  Finally, if RH is false, some $\eta_{M_0}$ must be n
 the just-proved equivalence would give RH.  Since $\eta_{M_0}\ge0$, it is strictly positive, and
 \textup{(9.26ff)} gives $0<\eta_{M_0}\le\eta_M$ for every $M\ge M_0$.  This proves
 \textup{(9.22hfg)}--\textup{(9.22hfh)} and completes the scalar phase dichotomy.
+
+\begin{proof}[Proof of Theorem~\ref{thm:bernstein-spectral-phase}]
+Since the Bernstein basis sums to one,
+$\sum_i a_{M,i}=s_0$.  The elementary identity
+$|x|=x+2x^-$ therefore gives
+\[
+ T_M=\sum_i|a_{M,i}|=s_0+2\sum_i(a_{M,i})^-=s_0+2\eta_M.
+ \tag{9.26fpa}
+\]
+The binomial theorem and absolute convergence of the reciprocal-square divisor moments give
+\[
+ \begin{aligned}
+ P_M(w)
+ &=\sum_i\ell_s(B_{M,i})w^i\\
+ &=\sum_\rho\lambda_\rho
+   \sum_{i=0}^M\binom Mi
+   \left(\frac{\lambda_\rho}{R_*}w\right)^i
+   \left(1-\frac{\lambda_\rho}{R_*}\right)^{M-i},
+ \end{aligned}
+\]
+which is \textup{(9.22hfj)}.  If $|w|\le1$, the triangle inequality applied before summing in
+$i$ yields $|P_M(w)|\le T_M$.
+
+Under RH every $a_{M,i}$ is nonnegative.  Hence $T_M=s_0$, and
+$T_M/r^M\to0$ for every $r>1$.
+
+Conversely, suppose RH is false.  Choose a multiplicity copy $\rho_0$ for which
+\[
+ u_0=\lambda_{\rho_0}/R_*
+\]
+is nonreal.  Both $u_0$ and $1-u_0$ are nonzero.  The unit phase
+\[
+ w=\frac{\overline{u_0}}{|u_0|}
+   \frac{1-u_0}{|1-u_0|}
+ \tag{9.26fpb}
+\]
+aligns $u_0w$ with $1-u_0$, and therefore
+\[
+ |1-u_0+u_0w|=|1-u_0|+|u_0|>1.
+ \tag{9.26fpc}
+\]
+The strict inequality follows because a nonreal point does not lie on the line segment joining
+$0$ and $1$.
+
+For every divisor copy $\rho$ set
+\[
+ b_\rho=1-\lambda_\rho/R_*+(\lambda_\rho/R_*)w.
+\]
+The absolute summability of $(\lambda_\rho)$ implies $\lambda_\rho\to0$ off finite subsets;
+hence $b_\rho\to1$ in the same cofinite sense.  Since \textup{(9.26fpc)} supplies one mode of
+modulus greater than one, the family $|b_\rho|$ has a global maximum $r>1$, attained on a
+nonempty finite packet $D$.  Every mode outside $D$ has modulus strictly smaller than $r$.
+
+Normalize $z_\rho=b_\rho/r$.  On $D$ the numbers $z_\rho$ lie on the unit circle.  Because
+$w\ne1$, equality $b_\rho=b_\sigma$ is equivalent to
+$\lambda_\rho=\lambda_\sigma$.  Thus all copies in one coincident-mode fibre have the same
+nonzero coefficient, and their aggregate coefficient is a positive integer multiple of that
+coefficient.  In particular no maximal fibre has zero aggregate weight.  After grouping equal
+modes, the maximal packet is a finite exponential sum
+\[
+ F_M=\sum_{j=1}^dc_jz_j^M,
+ \qquad |z_j|=1,\quad z_j\ne z_k\ (j\ne k),\quad c_j\ne0.
+\]
+Its discrete Ces\`aro mean square satisfies
+\[
+ \frac1K\sum_{M<K}|F_M|^2\longrightarrow\sum_{j=1}^d|c_j|^2>0.
+ \tag{9.26fpd}
+\]
+Indeed, expansion of the square leaves the diagonal terms, while every off-diagonal geometric
+mean tends to zero.  Hence $F_M\not\to0$.
+
+The complementary divisor tail does tend to zero after normalization by $r^M$.  Pointwise this
+follows from $|z_\rho|<1$ off $D$, and it passes through the infinite sum by dominated
+convergence, with the summable majorant $|\lambda_\rho|$.  Splitting the complete pencil into
+$D$ and its complement now gives
+\[
+ P_M(w)/r^M\not\longrightarrow0.
+\]
+If $T_M/r^M\to0$, the inequality $|P_M(w)|\le T_M$ would force the opposite conclusion.  Thus
+subexponential total variation excludes every nonreal reciprocal-square coordinate and forces
+every Xi zero onto the critical line.  This proves \textup{(9.22hfi)}--\textup{(9.22hfk)}.
+\end{proof}
 
 We now prove the endpoint-calibrated quantitative refinement.  For a real polynomial $p$, absolute
 convergence of the reciprocal-square divisor moments and coefficientwise comparison with the
@@ -4736,8 +4903,12 @@ statements.  The paper
 therefore does not prove RH.  It reduces the remaining source problem to analytic continuation of
 the actual polar--prime critical-Mellin defect, with the critical growth of one explicit positive
 cumulative prime--polar mass as one equivalent monotone source chart.  In the canonical
-Hausdorff--KMS chart the weakest equivalent obligation obtained here is scalar: the aggregate
-negative Bernstein mass $\eta_M$ must tend to zero along one cofinal sequence of degrees.
+Hausdorff--KMS chart the weakest equivalent obligation obtained here is scalar and genuinely
+asymptotic: the Bernstein order-unit norm
+$T_M=s_0+2\eta_M$ must satisfy $T_M/r^M\to0$ for every $r>1$.  Unlike cofinal decay of
+$\eta_M$, this condition permits a nonzero, nondecaying, or unbounded defect; Theorem~
+\ref{thm:bernstein-spectral-phase} proves that any off-line zero nevertheless forces a positive
+exponential rate which survives all divisor cancellations.
 
 The projective--thermal master theorem places the endpoint and thermodynamic estimates in one
 scale-resolved spectrum.  It proves
@@ -4824,17 +4995,21 @@ negative mass of its degree-$M$ Bernstein system,
  \mathrm{RH}\Longleftrightarrow
  \exists M_j\to\infty,\ \eta_{M_j}\longrightarrow0
  \Longleftrightarrow
- \forall M\ge1,\ \eta_M=0.
+ \forall M\ge1,\ \eta_M=0
+ \Longleftrightarrow
+ \forall r>1,\ T_M/r^M\longrightarrow0.
  \tag{11.3bb}
 \]
 Degree elevation gives $0\le\eta_M\le\eta_{M+1}$, so false RH is equivalently the persistent-gap
-phase $0<\eta_{M_0}\le\eta_M$ for all $M\ge M_0$, for some finite $M_0$.  The quadrant theorem
+phase $0<\eta_{M_0}\le\eta_M$ for all $M\ge M_0$, for some finite $M_0$.  The sharper
+spectral-radius law shows that false RH also forces positive exponential rate of
+$T_M=s_0+2\eta_M$; persistence alone is not the detector.  The quadrant theorem
 remains useful because it removes both bounded-index arms:
 multiplication by $X^M(R_*-X)^M$ transfers deep-quadrant positivity to a positive moment
 functional, while any nonreal reciprocal-square atom survives that factor and is separated by a
 phase-corrected polynomial probe.  The finite southwest block is independently removed from the
 RH premise by an atomwise opposite-phase estimate.
-The same endpoint has two complementary cofinal compressions.  For every $J_m,k_m\to\infty$ and every
+The same endpoint has three complementary cofinal compressions.  For every $J_m,k_m\to\infty$ and every
 infinite $D\subset\mathbb N$,
 \[
  \boxed{\begin{aligned}
@@ -4845,15 +5020,18 @@ infinite $D\subset\mathbb N$,
  Z_{J_m,k_m}\le e^{\varepsilon k_m}\quad(m\gg1,\ \varepsilon>0),\\
  \mathrm{RH}
  &\Longleftrightarrow
+ T_M/r^M\longrightarrow0\quad\text{for every }r>1,\\
+ \mathrm{RH}
+ &\Longleftrightarrow
  \substack{\displaystyle\sum_{i,j}a_i a_j\mu_{i+j}\ge0
  \quad\text{for every monic }p(X)=\sum_i a_iX^i\in\mathbb Z[X]\\
  \text{that is Eisenstein at }2\text{ and satisfies }\deg p\in D.}
  \end{aligned}}
  \tag{11.3c}
 \]
-Thus the thermal endpoint requires only subexponential growth, and the reflection-positive source
-endpoint requires only one fixed irreducible Eisenstein chamber on an arbitrarily sparse
-unbounded set of polynomial degrees.
+Thus both the thermal partition and the source Bernstein order-unit require only subexponential
+growth, while the reflection-positive source endpoint requires only one fixed irreducible
+Eisenstein chamber on an arbitrarily sparse unbounded set of polynomial degrees.
 Independently, Proposition~\ref{prop:morse-fisher-envelope}
 improves the first local source estimate from a constant Fisher multiplier to a decaying
 exponential envelope and the finite moment upper value $U_{\rm quad}$.
@@ -4919,8 +5097,9 @@ abscissa law, the all-order M\"obius--Neumann reconstruction, the exact
 reflection-positive/self-adjoint saturation theorem, the thickness corollaries, and
 multiplicity-exact meromorphic tomography of the actual Weil observable, together with the exact
 ultraviolet--infrared selection law and the unconditional 616-condition endpoint Hausdorff
-rectangle, the common-deep-quadrant reduction, the exact cofinal zero-temperature free-energy
-law, and the sparse irreducible Eisenstein source-Hankel criterion.  The elementary
+rectangle, the common-deep-quadrant reduction, the cancellation-resistant Bernstein
+spectral-radius phase law, the exact cofinal zero-temperature free-energy law, and the sparse
+irreducible Eisenstein source-Hankel criterion.  The elementary
 cumulative-mass/abscissa lemma and least-negative-part order lemma are not claimed as independent
 novelty; their roles are to expose the exact transverse source exponent and to prove that
 the explicit arithmetic channel $2E_{\rm dyad}$ is the unavoidable positive payment in this Connes/Landau

@@ -26,7 +26,7 @@ def finiteSupportIdeal (ι : Type*) : Ideal (ι → ℝ) where
     intro a b ha hb
     apply (ha.union hb).subset
     intro i hi
-    simp only [Function.support, Set.mem_union, Set.mem_setOf_eq] at hi ⊢
+    simp only [Function.support, Set.mem_union, Set.mem_setOf_eq, Pi.add_apply] at hi ⊢
     by_cases hai : a i = 0
     · exact Or.inr fun hbi => hi (by rw [hai, hbi, add_zero])
     · exact Or.inl hai
@@ -34,7 +34,7 @@ def finiteSupportIdeal (ι : Type*) : Ideal (ι → ℝ) where
     intro c a ha
     apply ha.subset
     intro i hi
-    simp only [Function.support, Set.mem_setOf_eq, Pi.smul_apply, smul_eq_mul] at hi ⊢
+    simp only [Function.support, Set.mem_setOf_eq, smul_eq_mul, Pi.mul_apply] at hi ⊢
     intro hai
     exact hi (by rw [hai, mul_zero])
 
@@ -58,16 +58,24 @@ theorem tailHadamardClass_eq_iff
     tailHadamardClass a = tailHadamardClass b ↔ FiniteTailEquivalent a b := by
   constructor
   · intro h
-    have hzero : tailHadamardClass (a - b) = 0 := by
-      rw [tailHadamardClass, map_sub, h, sub_self]
+    change Ideal.Quotient.mk (finiteSupportIdeal ι) a =
+      Ideal.Quotient.mk (finiteSupportIdeal ι) b at h
+    have hzero : Ideal.Quotient.mk (finiteSupportIdeal ι) (a - b) = 0 := by
+      rw [map_sub, h, sub_self]
     have hmem : a - b ∈ finiteSupportIdeal ι :=
       Ideal.Quotient.eq_zero_iff_mem.mp hzero
-    simpa only [finiteSupportIdeal, support_sub_eq_neSet] using hmem
+    change (Function.support (a - b)).Finite at hmem
+    rw [support_sub_eq_neSet] at hmem
+    exact hmem
   · intro h
+    change Ideal.Quotient.mk (finiteSupportIdeal ι) a =
+      Ideal.Quotient.mk (finiteSupportIdeal ι) b
     apply sub_eq_zero.mp
     rw [← map_sub]
     apply Ideal.Quotient.eq_zero_iff_mem.mpr
-    simpa only [finiteSupportIdeal, support_sub_eq_neSet] using h
+    change (Function.support (a - b)).Finite
+    rw [support_sub_eq_neSet]
+    exact h
 
 @[simp]
 theorem tailHadamardClass_zero {ι : Type*} :

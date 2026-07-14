@@ -126,9 +126,9 @@ products are classical.
 - [x] exact algebra, cone, involution, and order-unit statements isolated
 - [x] complete paper proof
 - [x] source-level formal proof without project hypotheses
-- [ ] narrow build and axiom audit
+- [x] narrow module build
+- [ ] axiom audit
 - [ ] classify cone-preserving algebra automorphisms of the tail reduced product
 - [ ] derive or kill a non-routine compatibility law with the operator-tail differential matroid
 - [ ] derive or kill a non-routine compatibility law with Euler plethysm
 - [ ] complete primary-literature and parent-theory audit
-

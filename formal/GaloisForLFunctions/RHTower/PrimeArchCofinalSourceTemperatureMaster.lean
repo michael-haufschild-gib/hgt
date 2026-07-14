@@ -5,6 +5,8 @@ import GaloisForLFunctions.RHTower.XiThermalProjectiveFreeEnergyRadius
 import GaloisForLFunctions.RHTower.PrimeArchConnesReflectionMain
 import GaloisForLFunctions.RHTower.PrimeArchVerifiedHeightAccretivity
 import GaloisForLFunctions.RHTower.PrimeArchBernsteinPencil
+import GaloisForLFunctions.RHTower.PrimeArchBernsteinExponentialPhase
+import GaloisForLFunctions.RHTower.PrimeArchBernsteinNegativeMassAbscissa
 
 /-!
 # Cofinal prime-source, Hausdorff, and zero-temperature master theorem
@@ -68,6 +70,10 @@ theorem primeArchCofinalSourceTemperatureMaster
             (radiusNormalizedMoment primeArchEndpointHausdorffRadius
               normalizedPrimeArchMoment) (N + 1) =
           normalizedPrimeArchMoment 0
+    let bernsteinSubexponentialEndpoint : Prop :=
+      SubexponentialAtNatInfinity primeArchEndpointBernsteinTotalVariation
+    let bernsteinNegativeMassSubexponentialEndpoint : Prop :=
+      PrimeArchBernsteinNegativeMassSubexponential
     let subexponential : Prop :=
       ∀ epsilon : ℝ, 0 < epsilon → ∀ᶠ j : ℕ in atTop,
         Z j ≤ Real.exp (epsilon * (cold j : ℝ))
@@ -78,7 +84,10 @@ theorem primeArchCofinalSourceTemperatureMaster
     (cofinalDiagonalEndpoint ↔ aggregateNegativeMassEndpoint) ∧
     (aggregateNegativeMassEndpoint ↔ exactBernsteinZeroEndpoint) ∧
     (exactBernsteinZeroEndpoint ↔ exactBernsteinOrderUnitEndpoint) ∧
-    (exactBernsteinOrderUnitEndpoint ↔ hausdorffEndpoint) ∧
+    (exactBernsteinOrderUnitEndpoint ↔ bernsteinSubexponentialEndpoint) ∧
+    (bernsteinSubexponentialEndpoint ↔
+      bernsteinNegativeMassSubexponentialEndpoint) ∧
+    (bernsteinNegativeMassSubexponentialEndpoint ↔ hausdorffEndpoint) ∧
     (hausdorffEndpoint ↔ Tendsto F atTop (nhds 0)) ∧
     (Tendsto F atTop (nhds 0) ↔ subexponential) ∧
     (subexponential ↔ recurrentBound) ∧
@@ -135,6 +144,12 @@ theorem primeArchCofinalSourceTemperatureMaster
               normalizedPrimeArchMoment) (N + 1) =
           normalizedPrimeArchMoment 0 :=
     riemannHypothesis_iff_forall_primeArchBernsteinCoefficientL1_eq_mass
+  have hbernsteinSubexponential : RiemannHypothesis ↔
+      SubexponentialAtNatInfinity primeArchEndpointBernsteinTotalVariation :=
+    riemannHypothesis_iff_primeArchEndpointBernsteinTotalVariation_subexponential
+  have hbernsteinNegativeMassSubexponential : RiemannHypothesis ↔
+      PrimeArchBernsteinNegativeMassSubexponential :=
+    riemannHypothesis_iff_primeArchBernsteinNegativeMassSubexponential
   have hexactRH :
       (∀ N : ℕ,
           hausdorffBernsteinNegativeMass
@@ -167,7 +182,9 @@ theorem primeArchCofinalSourceTemperatureMaster
     hdiagonal.trans hnegativeMass.symm,
     hexactMass,
     hexactRH.trans horderUnit,
-    horderUnit.symm.trans hquadrant.symm,
+    horderUnit.symm.trans hbernsteinSubexponential,
+    primeArchBernsteinNegativeMassSubexponential_iff_totalVariation.symm,
+    hbernsteinNegativeMassSubexponential.symm.trans hquadrant.symm,
     hquadrant.trans hfree, hfree.symm.trans hsub,
     hsub.symm.trans hfreq, hfreq.symm.trans hKMS.symm,
     hKMS.trans hgram.symm, hgram⟩
