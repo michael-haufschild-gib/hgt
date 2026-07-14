@@ -313,3 +313,25 @@ The one-source form of the same geometry is
 the complete susceptibility is a double Gutzmer norm of a Möbius pullback of the continued
 prime--Gamma moment germ, and the dominant amplitude is the first pulled-back pole to reach that
 torus.
+
+## Paper-level half-order refinement
+
+[`prime-arch-bernstein-half-order-pringsheim-singularity.md`](../../2-fully-proven/not_new_scientific_knowledge/prime-arch-bernstein-half-order-pringsheim-singularity.md)
+uses this card's finite maximal packet, dominant-weight noncancellation, and ellipse-phase rigidity
+to sharpen false-RH divergence to
+
+\[
+ \texttt{primeArchEndpointBernsteinPurity}(n)
+ \sim \kappa B^{2n}n^{-1/2},\qquad \kappa>0.
+\]
+
+Its Abel transform more precisely has an exact local decomposition
+
+\[
+ \chi(t)=H(t)+\frac{A(t)}{\sqrt{1-B^2t}},\qquad A(B^{-2})>0,
+\]
+
+and therefore cannot be single-valued meromorphic at the exact critical radius.  The companion
+[`prime-arch-moment-pole-residue-pinch-law.md`](../../2-fully-proven/not_new_scientific_knowledge/prime-arch-moment-pole-residue-pinch-law.md)
+expresses the same nonzero coefficient through the ordinary source pole position and its
+quantized multiplicity residue.  These paper transfers are not yet formalized in Lean.

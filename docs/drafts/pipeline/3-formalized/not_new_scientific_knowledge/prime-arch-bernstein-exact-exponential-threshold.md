@@ -70,3 +70,19 @@ Equivalently, the Möbius-pullback law in
 [`prime-arch-bernstein-mobius-pullback-gutzmer-law.md`](../../2-fully-proven/not_new_scientific_knowledge/prime-arch-bernstein-mobius-pullback-gutzmer-law.md)
 shows that `B^(-1)` is the first radius at which a pulled-back prime--Gamma pole reaches the Gutzmer
 torus; squaring the torus radius produces the Abel branch point `B^(-2)`.
+
+## Paper-level local-order refinement
+
+The exact threshold `B^2` is also the base of the paper asymptotic in
+[`prime-arch-bernstein-half-order-pringsheim-singularity.md`](../../2-fully-proven/not_new_scientific_knowledge/prime-arch-bernstein-half-order-pringsheim-singularity.md):
+
+\[
+ \Pi_n\sim\kappa B^{2n}n^{-1/2},\qquad \kappa>0.
+\]
+
+Thus the reciprocal threshold `B^(-2)` is not merely the Abel radius; false RH forces an exact
+nonmeromorphic square-root term there.  The paper
+[`prime-arch-moment-pole-residue-pinch-law.md`](../../2-fully-proven/not_new_scientific_knowledge/prime-arch-moment-pole-residue-pinch-law.md)
+also writes `B=(1+|p-1|)/|p|` for the corresponding ordinary moment pole and identifies its residue
+as `-R` times the exact fibre multiplicity. A source-side single-valued meromorphic continuation
+through the explicit thin collar would therefore discharge RH.

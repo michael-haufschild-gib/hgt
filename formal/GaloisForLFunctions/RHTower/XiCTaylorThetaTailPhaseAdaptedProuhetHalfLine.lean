@@ -2523,6 +2523,48 @@ theorem phaseAdaptedProuhetBase_eval_dyadicDecay_ne_zero
       dyadicProuhetDecayCharacter_pos dyadicProuhetDecayCharacter_lt_one))
     (spectralTranslationPhase_logTwo_ne_dyadicProuhetDecayCharacter hz)
 
+theorem dyadicProuhetGrowthCharacter_pos :
+    0 < dyadicProuhetGrowthCharacter := by
+  unfold dyadicProuhetGrowthCharacter
+  exact Real.rpow_pos_of_pos (by norm_num) _
+
+theorem one_lt_dyadicProuhetGrowthCharacter :
+    1 < dyadicProuhetGrowthCharacter := by
+  unfold dyadicProuhetGrowthCharacter
+  exact Real.one_lt_rpow (by norm_num) (by norm_num)
+
+theorem dyadicProuhetDecayCharacter_ne_growthCharacter :
+    dyadicProuhetDecayCharacter ≠ dyadicProuhetGrowthCharacter := by
+  exact ne_of_lt
+    (dyadicProuhetDecayCharacter_lt_one.trans
+      one_lt_dyadicProuhetGrowthCharacter)
+
+theorem spectralTranslationPhase_logTwo_ne_dyadicProuhetGrowthCharacter
+    {z : ℂ} (hz : 0 < z.im) :
+    spectralTranslationPhase (Real.log 2) z ≠
+      (dyadicProuhetGrowthCharacter : ℂ) := by
+  intro h
+  have hnorm := congrArg norm h
+  rw [norm_spectralTranslationPhase_eq_exp_neg_mul_im_halfLine] at hnorm
+  simp only [Complex.norm_real, Real.norm_eq_abs,
+    abs_of_pos dyadicProuhetGrowthCharacter_pos] at hnorm
+  have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  have hphase : Real.exp (-Real.log 2 * z.im) < 1 :=
+    Real.exp_lt_one_iff.mpr (mul_neg_of_neg_of_pos (neg_neg_of_pos hlog) hz)
+  exact (hphase.trans one_lt_dyadicProuhetGrowthCharacter).ne hnorm
+
+theorem phaseAdaptedProuhetBase_eval_dyadicGrowth_ne_zero
+    (m : ℕ) {z : ℂ} (hz : 0 < z.im) :
+    (phaseAdaptedProuhetBase m
+      (spectralTranslationPhase (Real.log 2) z)).eval
+        dyadicProuhetGrowthCharacter ≠ 0 := by
+  exact phaseAdaptedProuhetBase_eval_ne_zero m
+    (spectralTranslationPhase (Real.log 2) z)
+    dyadicProuhetGrowthCharacter
+    (eval_thueMorseRealPolynomial_ne_zero_of_one_lt m
+      one_lt_dyadicProuhetGrowthCharacter)
+    (spectralTranslationPhase_logTwo_ne_dyadicProuhetGrowthCharacter hz)
+
 /-- Algebraic value of the positive-phase half-exponential transform. -/
 def thetaHalfExponentialPhaseValue (z : ℂ) : ℂ :=
   ((1 / 2 : ℂ) - I * z)⁻¹

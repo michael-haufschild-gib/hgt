@@ -222,5 +222,17 @@ reach the Gutzmer torus.
 - [x] atom pole surface and reflected pinch identified
 - [x] theta cumulant warning established from the formal corpus
 - [ ] Lean formalization
-- [ ] source-only `L2` or holomorphic collar theorem
+- [ ] source-only `L2` or single-valued meromorphic collar theorem
 - [ ] RH
+
+## Half-order Gutzmer pinch law
+
+The companion theorem
+`prime-arch-bernstein-half-order-pringsheim-singularity.md` expands the double Gutzmer kernel into
+the finitely many maximal same-pole packets plus a remainder holomorphic beyond the first contact.
+It obtains an exact local square-root term with nonzero coefficient; Laplace's method then gives
+the coefficient asymptotic as a corollary.  The source pole law
+`prime-arch-moment-pole-residue-pinch-law.md` further shows that every ordinary moment pole has
+residue exactly `-R` times its multiplicity and that this residue and pole position determine the
+square-root coefficient.  The remaining source target is only single-valued meromorphic
+continuation of the paired Gutzmer value; holomorphic continuation is stronger than necessary.

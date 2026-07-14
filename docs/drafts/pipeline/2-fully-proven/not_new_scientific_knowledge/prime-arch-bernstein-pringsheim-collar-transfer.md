@@ -154,3 +154,27 @@ prime--Gamma susceptibility radius to the source-specific algebraic kernel `(6)`
 - [ ] general Pringsheim theorem formalized in Lean
 - [ ] independent prime--Gamma collar continuation
 - [ ] RH
+
+## Meromorphic strengthening
+
+The companion theorem
+`prime-arch-bernstein-half-order-pringsheim-singularity.md` strengthens the positive-boundary
+singularity used here. Under false RH the susceptibility has the exact local form
+
+\[
+ \chi(t)=H(t)+\frac{A(t)}{\sqrt{1-B^2t}},\qquad A(B^{-2})>0,
+\]
+
+and in particular satisfies
+
+\[
+ \sqrt{1-B^2t}\,\chi(t)\longrightarrow c_B>0
+ \quad(t\uparrow B^{-2}).
+\]
+
+A meromorphic germ has integer local order, so it cannot have this finite nonzero half-order
+limit. Consequently the collar provider need only construct one coherent **single-valued
+meromorphic** continuation; isolated integer-order poles are allowed. This strictly weakens the
+holomorphic hypothesis in the present card.  The source-side value relation
+`prime-arch-moment-pole-residue-pinch-law.md` identifies the corresponding ordinary moment pole,
+its residue `-R` times multiplicity, and the exact nonzero coefficient `A(B^{-2})`.

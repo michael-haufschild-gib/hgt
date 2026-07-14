@@ -119,6 +119,25 @@ on every finite Weierstrass window.  The multiplication rank above is therefore 
 the square-free quotient `W_Omega/gcd(W_Omega,W_Omega')`.  The Hedenmalm value and the reflection
 pair read the same finite distinct-divisor charge.
 
+The source-level reflection algebra is formalized in Lean.  Centered functional-equation
+reflection exchanges the pair,
+
+```text
+E(-z)=E#(z),
+E#(-z)=E(z),
+```
+
+while its even and odd projections recover the two local-algebra generators exactly:
+
+```text
+E+E#=2F,
+E-E#=2i F'.
+```
+
+The corresponding two-variable de Branges commutator is odd under simultaneous reflection.  This
+closes the reflection-value API needed by a future finite Weierstrass/subresultant formalization;
+the finite multiplication-rank theorem itself remains paper-only.
+
 ## Bezoutian form
 
 The classical Bezout rank formula gives
@@ -220,5 +239,6 @@ the distinct Xi-zero census through the canonical Hedenmalm value `E=XiC+i XiC'`
 - [x] equivalent finite Bezoutian-rank formulation proved
 - [x] boundary moment/Newton reconstruction of the coefficient reader proved on paper
 - [x] connected to the wired height-adaptive Hedenmalm RH capstone
+- [x] centered `E`/`E#` reflection exchange and even/odd source recovery formalized in Lean
 - [ ] formalize the local multiplication-rank theorem in Lean
 - [ ] construct the subresultant reader directly from source boundary data

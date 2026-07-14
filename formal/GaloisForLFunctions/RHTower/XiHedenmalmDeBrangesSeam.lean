@@ -66,6 +66,51 @@ theorem xiWeilSharp_xiHedenmalmDeBrangesE (z : ℂ) :
   simp
   ring
 
+/-- The derivative of the centered even Xi function is odd. -/
+theorem deriv_XiC_neg (z : ℂ) :
+    deriv XiC (-z) = -deriv XiC z := by
+  have hcomp : HasDerivAt (fun w : ℂ => XiC (-w))
+      (deriv XiC (-z) * (-1)) z :=
+    (XiC_differentiable.differentiableAt.hasDerivAt.comp z
+      (hasDerivAt_neg z))
+  have heq : (fun w : ℂ => XiC (-w)) = XiC := by
+    funext w
+    exact XiC_even w
+  have h := congrArg (fun f : ℂ → ℂ => deriv f z) heq
+  change deriv (fun w : ℂ => XiC (-w)) z = deriv XiC z at h
+  rw [hcomp.deriv] at h
+  calc
+    deriv XiC (-z) = -(deriv XiC (-z) * (-1)) := by ring
+    _ = -deriv XiC z := congrArg Neg.neg h
+
+/-- Centered functional-equation reflection exchanges the Hedenmalm value with its sharp
+partner. -/
+theorem xiHedenmalmDeBrangesE_neg_eq_sharp (z : ℂ) :
+    xiHedenmalmDeBrangesE (-z) = xiHedenmalmDeBrangesESharp z := by
+  rw [xiHedenmalmDeBrangesE, xiHedenmalmDeBrangesESharp,
+    XiC_even, deriv_XiC_neg]
+  ring
+
+/-- The reverse centered reflection exchanges the sharp partner back with the Hedenmalm value. -/
+theorem xiHedenmalmDeBrangesESharp_neg_eq_E (z : ℂ) :
+    xiHedenmalmDeBrangesESharp (-z) = xiHedenmalmDeBrangesE z := by
+  rw [xiHedenmalmDeBrangesESharp, xiHedenmalmDeBrangesE,
+    XiC_even, deriv_XiC_neg]
+  ring
+
+/-- The reflection-even part of the Hedenmalm pair is exactly twice the completed source. -/
+theorem xiHedenmalmDeBrangesE_add_sharp (z : ℂ) :
+    xiHedenmalmDeBrangesE z + xiHedenmalmDeBrangesESharp z = 2 * XiC z := by
+  rw [xiHedenmalmDeBrangesE, xiHedenmalmDeBrangesESharp]
+  ring
+
+/-- The reflection-odd part of the Hedenmalm pair is exactly twice `i` times the Xi derivative. -/
+theorem xiHedenmalmDeBrangesE_sub_sharp (z : ℂ) :
+    xiHedenmalmDeBrangesE z - xiHedenmalmDeBrangesESharp z =
+      2 * I * deriv XiC z := by
+  rw [xiHedenmalmDeBrangesE, xiHedenmalmDeBrangesESharp]
+  ring
+
 /-- Division-free two-variable commutator of `E` and `E#`. -/
 def xiHedenmalmDeBrangesCommutator (z v : ℂ) : ℂ :=
   xiHedenmalmDeBrangesE z * xiHedenmalmDeBrangesESharp v -
@@ -77,6 +122,17 @@ theorem xiHedenmalmDeBrangesCommutator_eq (z v : ℂ) :
       2 * I * (deriv XiC z * XiC v - XiC z * deriv XiC v) := by
   simp only [xiHedenmalmDeBrangesCommutator, xiHedenmalmDeBrangesE,
     xiHedenmalmDeBrangesESharp]
+  ring
+
+/-- The two-variable de Branges commutator is odd under simultaneous centered reflection. -/
+theorem xiHedenmalmDeBrangesCommutator_neg_neg (z v : ℂ) :
+    xiHedenmalmDeBrangesCommutator (-z) (-v) =
+      -xiHedenmalmDeBrangesCommutator z v := by
+  rw [xiHedenmalmDeBrangesCommutator, xiHedenmalmDeBrangesCommutator,
+    xiHedenmalmDeBrangesE_neg_eq_sharp,
+    xiHedenmalmDeBrangesESharp_neg_eq_E,
+    xiHedenmalmDeBrangesE_neg_eq_sharp,
+    xiHedenmalmDeBrangesESharp_neg_eq_E]
   ring
 
 /-- The removable Xi derivative Bezoutian, defined on and off the diagonal. -/

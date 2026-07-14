@@ -12,6 +12,7 @@ the exact Sonin projection correction and the principal-subtracted dilation resi
 any Hilbert--Schmidt hypothesis.
 -/
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtOperator
+import GaloisForLFunctions.HTGeometry.TwoProjectionSupersymmetry
 import GaloisForLFunctions.RHTower.SoninPrimePowerRegularization
 import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
 
@@ -330,25 +331,21 @@ theorem norm_one_sub_centralSoninProjection_le_one (a : ℝ) :
   rw [← (centralSoninCarrier a).starProjection_orthogonal']
   exact Submodule.starProjection_norm_le _
 
-theorem norm_centralSoninFormalComplement_le_three (a : ℝ) :
-    ‖centralSoninFormalComplement a‖ ≤ 3 := by
-  dsimp [centralSoninFormalComplement]
-  calc
-    ‖(1 : SoninL2 →L[ℂ] SoninL2) -
-        indicatorCutoff (centralInterval a) (measurableSet_centralInterval a) -
-        fourierCutoff (centralInterval a) (measurableSet_centralInterval a)‖
-        ≤ ‖(1 : SoninL2 →L[ℂ] SoninL2)‖ +
-          ‖indicatorCutoff (centralInterval a) (measurableSet_centralInterval a)‖ +
-          ‖fourierCutoff (centralInterval a) (measurableSet_centralInterval a)‖ := by
-            exact (norm_sub_le _ _).trans (add_le_add (norm_sub_le _ _) le_rfl)
-    _ ≤ 1 + 1 + 1 := by
-      gcongr
-      · simp
-      · rw [indicatorCutoff_eq_physicalForbidden_starProjection]
-        exact Submodule.starProjection_norm_le _
-      · rw [fourierCutoff_eq_fourierForbidden_starProjection]
-        exact Submodule.starProjection_norm_le _
-    _ = 3 := by norm_num
+/-- **Sharp two-projection bound.**  The formal physical/Fourier complement is a contraction.
+This is the Sonin specialization of the anticommutative Pythagorean identity and removes the
+former triangle bound `≤ 3`. -/
+theorem norm_centralSoninFormalComplement_le_one (a : ℝ) :
+    ‖centralSoninFormalComplement a‖ ≤ 1 := by
+  rw [centralSoninFormalComplement,
+    indicatorCutoff_eq_physicalForbidden_starProjection,
+    fourierCutoff_eq_fourierForbidden_starProjection]
+  exact HTGeometry.norm_twoProjection_complement_le_one
+    (centralPhysicalForbidden a).starProjection
+    (centralFourierForbidden a).starProjection
+    (centralPhysicalForbidden a).isIdempotentElem_starProjection
+    (centralFourierForbidden a).isIdempotentElem_starProjection
+    (isSelfAdjoint_starProjection (centralPhysicalForbidden a)).star_eq
+    (isSelfAdjoint_starProjection (centralFourierForbidden a)).star_eq
 
 /-- **Uniform scale-independent residual bound.** The Hilbert--Schmidt energy of the exact
 principal-subtracted Sonin dilation residual is controlled solely by the fixed projection
@@ -356,7 +353,7 @@ correction.  In particular, the bound does not grow with the dilation scale `p`.
 theorem centralSoninDilationCornerResidual_hsNormSq_le
     (a p : ℝ) (ha : 0 < a) (hp : 1 < p) :
     ContinuousLinearMap.hsNormSq (centralSoninDilationCornerResidual a p hp) ≤
-      80 * ContinuousLinearMap.hsNormSq (centralSoninProjectionCorrection a) := by
+      16 * ContinuousLinearMap.hsNormSq (centralSoninProjectionCorrection a) := by
   open ContinuousLinearMap in
     let Q := centralSoninProjection a
     let Q₀ := centralSoninFormalComplement a
@@ -384,8 +381,8 @@ theorem centralSoninDilationCornerResidual_hsNormSq_le
         centralSoninPrincipalDilationCorner, Q, Q₀, D] using hgeneral
     have hQ : ‖(1 : SoninL2 →L[ℂ] SoninL2) - Q‖ ≤ 1 := by
       simpa [Q] using norm_one_sub_centralSoninProjection_le_one a
-    have hQ₀ : ‖Q₀‖ ≤ 3 := by
-      simpa [Q₀] using norm_centralSoninFormalComplement_le_three a
+    have hQ₀ : ‖Q₀‖ ≤ 1 := by
+      simpa [Q₀] using norm_centralSoninFormalComplement_le_one a
     have hD : ‖D‖ ≤ 2 := by
       dsimp [D]
       apply (dilationSum p hp).opNorm_le_bound (by norm_num)
@@ -405,11 +402,11 @@ theorem centralSoninDilationCornerResidual_hsNormSq_le
         ‖(1 - Q) * D‖ ≤ ‖1 - Q‖ * ‖D‖ := norm_mul_le _ _
         _ ≤ 1 * 2 := mul_le_mul hQ hD (norm_nonneg _) (by norm_num)
         _ = 2 := by norm_num
-    have hDQ₀ : ‖D * Q₀‖ ≤ 6 := by
+    have hDQ₀ : ‖D * Q₀‖ ≤ 2 := by
       calc
         ‖D * Q₀‖ ≤ ‖D‖ * ‖Q₀‖ := norm_mul_le _ _
-        _ ≤ 2 * 3 := mul_le_mul hD hQ₀ (norm_nonneg _) (by norm_num)
-        _ = 6 := by norm_num
+        _ ≤ 2 * 1 := mul_le_mul hD hQ₀ (norm_nonneg _) (by norm_num)
+        _ = 2 := by norm_num
     have hAbound : hsNormSq A ≤ 4 * hsNormSq C := by
       calc
         hsNormSq A ≤ ‖(1 - Q) * D‖ ^ 2 * hsNormSq C :=
@@ -417,19 +414,19 @@ theorem centralSoninDilationCornerResidual_hsNormSq_le
         _ ≤ 4 * hsNormSq C := by
           apply mul_le_mul_of_nonneg_right _ (hsNormSq_nonneg C)
           nlinarith [norm_nonneg ((1 - Q) * D)]
-    have hBbound : hsNormSq B ≤ 36 * hsNormSq C := by
+    have hBbound : hsNormSq B ≤ 4 * hsNormSq C := by
       calc
         hsNormSq B ≤ ‖D * Q₀‖ ^ 2 * hsNormSq C :=
           hsNormSq_comp_right_le hC (D * Q₀)
-        _ ≤ 36 * hsNormSq C := by
+        _ ≤ 4 * hsNormSq C := by
           apply mul_le_mul_of_nonneg_right _ (hsNormSq_nonneg C)
           nlinarith [norm_nonneg (D * Q₀)]
     rw [hEq]
     calc
       hsNormSq (A - B) ≤ 2 * hsNormSq A + 2 * hsNormSq B :=
         hsNormSq_sub_le hA hB
-      _ ≤ 2 * (4 * hsNormSq C) + 2 * (36 * hsNormSq C) := by gcongr
-      _ = 80 * hsNormSq C := by ring
+      _ ≤ 2 * (4 * hsNormSq C) + 2 * (4 * hsNormSq C) := by gcongr
+      _ = 16 * hsNormSq C := by ring
 
 /-- Every actual prime-power residual block is Hilbert--Schmidt. -/
 theorem centralSoninPrimePowerResidual_isHilbertSchmidt
@@ -448,7 +445,7 @@ the square of its logarithmic Euler coefficient. -/
 theorem centralSoninWeightedPrimePowerResidual_hsNormSq_le
     (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ) :
     ContinuousLinearMap.hsNormSq (centralSoninWeightedPrimePowerResidual a pk) ≤
-      (80 * ContinuousLinearMap.hsNormSq (centralSoninProjectionCorrection a)) *
+      (16 * ContinuousLinearMap.hsNormSq (centralSoninProjectionCorrection a)) *
         ‖soninLogPrimePowerCoefficient pk‖ ^ 2 := by
   open ContinuousLinearMap in
     have hR := centralSoninPrimePowerResidual_isHilbertSchmidt a ha pk
@@ -470,7 +467,7 @@ theorem summable_centralSoninWeightedPrimePowerResidual_hsNormSq
       (fun pk => hsNormSq_nonneg (centralSoninWeightedPrimePowerResidual a pk))
       (centralSoninWeightedPrimePowerResidual_hsNormSq_le a ha)
     exact summable_norm_soninLogPrimePowerCoefficient_sq.mul_left
-      (80 * hsNormSq (centralSoninProjectionCorrection a))
+      (16 * hsNormSq (centralSoninProjectionCorrection a))
 
 /-- Every finite regularized prime-power section is Hilbert--Schmidt, with no operator-ideal
 hypothesis left to supply. -/

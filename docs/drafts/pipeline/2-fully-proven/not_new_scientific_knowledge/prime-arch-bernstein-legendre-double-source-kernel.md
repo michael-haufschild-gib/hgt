@@ -193,6 +193,12 @@ This is not itself an RH proof.  Extending `(L_m tensor L_m)K` by defining it th
 coefficients would merely restate the Abel criterion.  A useful continuation must be obtained
 independently from the continued prime--Gamma or theta source formula.
 
+The companion pole--residue law
+`prime-arch-moment-pole-residue-pinch-law.md` makes the same obstruction entirely source-local:
+the ordinary moment germ has simple poles `p=1/u` with residue exactly `-R` times the divisor-fibre
+multiplicity, and the pole position and residue determine both the pinch radius and its nonzero
+half-order coefficient.
+
 ## Formalization target
 
 1. Define a bivariate polynomial moment functional and prove `(4)`.
@@ -221,3 +227,24 @@ functional, the endpoint amplitude, and the RH-critical Abel radius.
 - [ ] Lean formalization
 - [ ] independent source continuation across the Abel collar
 - [ ] RH
+
+## Half-order maximal-packet refinement
+
+The companion theorem
+`prime-arch-bernstein-half-order-pringsheim-singularity.md` combines this reflected factorization
+with the formal maximal-packet and ellipse-phase rigidity laws. Under false RH it proves the exact
+local decomposition
+
+\[
+ \chi(t)=H(t)+\frac{A(t)}{\sqrt{1-B^2t}},\qquad A(B^{-2})>0,
+\]
+
+and hence the positive asymptotic
+
+\[
+ \Pi_n\sim \kappa B^{2n}n^{-1/2},\qquad \kappa>0,
+\]
+
+so the `(1-B^2t)^(-1/2)` term has nonzero monodromy in the complete susceptibility. Therefore
+a single-valued **meromorphic**, rather than holomorphic, source continuation through the thin
+collar already implies RH.

@@ -140,3 +140,17 @@ gives a one-source form before the Legendre elimination:
 
 and recovers `chi(r^2)` as its exact double-torus Gutzmer norm.  This locates `R_A=B^(-2)` at the
 first Möbius-pulled prime--Gamma pole reaching the torus radius `r=B^(-1)`.
+
+## Paper-level meromorphic collar interface
+
+The exact Abel radius selected here is sharpened in
+[`prime-arch-bernstein-half-order-pringsheim-singularity.md`](../../2-fully-proven/not_new_scientific_knowledge/prime-arch-bernstein-half-order-pringsheim-singularity.md).
+If RH is false and the radius is `B^(-2)<1`, then
+
+\[
+ \sqrt{1-B^2t}\,\chi(t)\to c_B>0.
+\]
+
+Hence no single-valued meromorphic continuation exists at that radius. The top-down source
+hypothesis can therefore be weakened from a holomorphic collar to a meromorphic collar while
+retaining the implication to RH. This refinement is paper-proven and not yet formalized.

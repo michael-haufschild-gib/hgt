@@ -20,17 +20,17 @@ open ContinuousLinearMap
 /-- The formal-principal lower dilation corner has a scale-independent operator-norm bound. -/
 theorem norm_centralSoninPrincipalDilationCorner_le
     (a p : ℝ) (hp : 1 < p) :
-    ‖centralSoninPrincipalDilationCorner a p hp‖ ≤ 24 := by
+    ‖centralSoninPrincipalDilationCorner a p hp‖ ≤ 4 := by
   let Q₀ := centralSoninFormalComplement a
   let D := dilationSum p hp
-  have hQ₀ : ‖Q₀‖ ≤ 3 := by
-    simpa [Q₀] using norm_centralSoninFormalComplement_le_three a
-  have hOneSubQ₀ : ‖(1 : SoninL2 →L[ℂ] SoninL2) - Q₀‖ ≤ 4 := by
+  have hQ₀ : ‖Q₀‖ ≤ 1 := by
+    simpa [Q₀] using norm_centralSoninFormalComplement_le_one a
+  have hOneSubQ₀ : ‖(1 : SoninL2 →L[ℂ] SoninL2) - Q₀‖ ≤ 2 := by
     calc
       ‖(1 : SoninL2 →L[ℂ] SoninL2) - Q₀‖ ≤ ‖(1 : SoninL2 →L[ℂ] SoninL2)‖ + ‖Q₀‖ :=
         norm_sub_le _ _
-      _ ≤ 1 + 3 := add_le_add (by simp) hQ₀
-      _ = 4 := by norm_num
+      _ ≤ 1 + 1 := add_le_add (by simp) hQ₀
+      _ = 2 := by norm_num
   have hD : ‖D‖ ≤ 2 := by
     dsimp [D]
     apply (dilationSum p hp).opNorm_le_bound (by norm_num)
@@ -51,9 +51,9 @@ theorem norm_centralSoninPrincipalDilationCorner_le
         ≤ ‖(1 : SoninL2 →L[ℂ] SoninL2) - Q₀‖ * ‖D‖ * ‖Q₀‖ := by
           exact (norm_mul_le _ _).trans
             (mul_le_mul_of_nonneg_right (norm_mul_le _ _) (norm_nonneg Q₀))
-    _ ≤ 4 * 2 * 3 := by
+    _ ≤ 2 * 2 * 1 := by
       gcongr
-    _ = 24 := by norm_num
+    _ = 4 := by norm_num
 
 /-- The coefficient-free response of the projection-correction pairing is uniformly bounded in
 the prime-power scale.  The bound depends only on the fixed Sonin cutoff. -/
@@ -61,7 +61,7 @@ theorem norm_soninSemilocalGeometricTraceResponse_le
     (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ) :
     ‖soninSemilocalGeometricTraceResponse a pk‖ ≤
       Real.sqrt (hsNormSq (centralSoninProjectionCorrection a)) *
-        Real.sqrt (184320 * hsNormSq (centralSoninProjectionCorrection a)) := by
+        Real.sqrt (1024 * hsNormSq (centralSoninProjectionCorrection a)) := by
   let p := soninSemilocalPrimePowerScale pk
   let hp := one_lt_soninSemilocalPrimePowerScale pk
   let C := centralSoninProjectionCorrection a
@@ -74,11 +74,11 @@ theorem norm_soninSemilocalGeometricTraceResponse_le
     simpa [R] using centralSoninDilationCornerResidual_isHilbertSchmidt a p ha hp
   have hL : IsHilbertSchmidt L := by
     simpa [L] using centralSoninRelativeGramLinearCross_isHilbertSchmidt a p ha hp
-  have hP : ‖P‖ ≤ 24 := by
+  have hP : ‖P‖ ≤ 4 := by
     simpa [P] using norm_centralSoninPrincipalDilationCorner_le a p hp
-  have hRbound : hsNormSq R ≤ 80 * hsNormSq C := by
+  have hRbound : hsNormSq R ≤ 16 * hsNormSq C := by
     simpa [R, C] using centralSoninDilationCornerResidual_hsNormSq_le a p ha hp
-  have hPR : hsNormSq (ContinuousLinearMap.adjoint P * R) ≤ 576 * hsNormSq R := by
+  have hPR : hsNormSq (ContinuousLinearMap.adjoint P * R) ≤ 16 * hsNormSq R := by
     calc
       hsNormSq (ContinuousLinearMap.adjoint P * R)
           ≤ ‖ContinuousLinearMap.adjoint P‖ ^ 2 * hsNormSq R := by
@@ -88,20 +88,20 @@ theorem norm_soninSemilocalGeometricTraceResponse_le
         rw [(ContinuousLinearMap.adjoint :
           (SoninL2 →L[ℂ] SoninL2) ≃ₗᵢ⋆[ℂ]
             (SoninL2 →L[ℂ] SoninL2)).norm_map]
-      _ ≤ 576 * hsNormSq R := by
+      _ ≤ 16 * hsNormSq R := by
         apply mul_le_mul_of_nonneg_right _ (hsNormSq_nonneg R)
         nlinarith [norm_nonneg P]
-  have hRP : hsNormSq (ContinuousLinearMap.adjoint R * P) ≤ 576 * hsNormSq R := by
+  have hRP : hsNormSq (ContinuousLinearMap.adjoint R * P) ≤ 16 * hsNormSq R := by
     calc
       hsNormSq (ContinuousLinearMap.adjoint R * P)
           ≤ ‖P‖ ^ 2 * hsNormSq (ContinuousLinearMap.adjoint R) := by
             simpa only [ContinuousLinearMap.comp_def] using
               hsNormSq_comp_right_le hR.adjoint P
       _ = ‖P‖ ^ 2 * hsNormSq R := by rw [hR.hsNormSq_adjoint]
-      _ ≤ 576 * hsNormSq R := by
+      _ ≤ 16 * hsNormSq R := by
         apply mul_le_mul_of_nonneg_right _ (hsNormSq_nonneg R)
         nlinarith [norm_nonneg P]
-  have hLbound : hsNormSq L ≤ 184320 * hsNormSq C := by
+  have hLbound : hsNormSq L ≤ 1024 * hsNormSq C := by
     rw [show L = ContinuousLinearMap.adjoint P * R +
         ContinuousLinearMap.adjoint R * P by
       rfl]
@@ -112,17 +112,17 @@ theorem norm_soninSemilocalGeometricTraceResponse_le
             2 * hsNormSq (ContinuousLinearMap.adjoint R * P) :=
               hsNormSq_add_le (hR.comp_left (ContinuousLinearMap.adjoint P))
                 (hR.adjoint.comp_right P)
-      _ ≤ 2304 * hsNormSq R := by nlinarith
-      _ ≤ 184320 * hsNormSq C := by nlinarith [hsNormSq_nonneg R]
+      _ ≤ 64 * hsNormSq R := by nlinarith
+      _ ≤ 1024 * hsNormSq C := by nlinarith [hsNormSq_nonneg R]
   rw [soninSemilocalGeometricTraceResponse]
   change ‖hsInner C L‖ ≤ _
   calc
     ‖hsInner C L‖ ≤ hsNorm C * hsNorm L := norm_hsInner_le hC hL
     _ = Real.sqrt (hsNormSq C) * Real.sqrt (hsNormSq L) := rfl
-    _ ≤ Real.sqrt (hsNormSq C) * Real.sqrt (184320 * hsNormSq C) := by
+    _ ≤ Real.sqrt (hsNormSq C) * Real.sqrt (1024 * hsNormSq C) := by
       gcongr
     _ = Real.sqrt (hsNormSq (centralSoninProjectionCorrection a)) *
-        Real.sqrt (184320 * hsNormSq (centralSoninProjectionCorrection a)) := by
+        Real.sqrt (1024 * hsNormSq (centralSoninProjectionCorrection a)) := by
           rfl
 
 /-- **The projection-correction scalarization cannot be the semilocal source trace.**  Its
@@ -131,7 +131,7 @@ theorem not_soninSemilocalFluxNormalization :
     ¬ SoninSemilocalFluxNormalization := by
   intro hnorm
   let C := centralSoninProjectionCorrection 1
-  let B := Real.sqrt (hsNormSq C) * Real.sqrt (184320 * hsNormSq C)
+  let B := Real.sqrt (hsNormSq C) * Real.sqrt (1024 * hsNormSq C)
   have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
   obtain ⟨N : ℕ, hN⟩ := exists_nat_gt (B / Real.log 2)
   have hBN : B < (N : ℝ) * Real.log 2 := by

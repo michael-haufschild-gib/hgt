@@ -49,6 +49,14 @@ Thus the endpoint and central-Hankel carriers no longer have a value-identificat
 not supply the missing Hankel positivity; it gives a second, explicit raw-trace interface on which
 such a source theorem may be proved.
 
+The paper consequence
+[`prime-arch-moment-pole-residue-pinch-law.md`](../../2-fully-proven/not_new_scientific_knowledge/prime-arch-moment-pole-residue-pinch-law.md)
+regroups this card's reciprocal-square resolvent in the ordinary moment variable.  It proves that
+every source pole is simple with residue exactly `-R` times its divisor-fibre multiplicity, and
+transfers its position and residue to the exact reflected Bernstein pinch coefficient.  This is
+not additional Hankel positivity; it is a separate source-singularity interface into the
+meromorphic-collar route.
+
 ## Lean certificate
 
 Module: `formal/GaloisForLFunctions/RHTower/PrimeArchCentralMomentGerm.lean`.

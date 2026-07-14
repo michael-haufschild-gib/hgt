@@ -98,6 +98,22 @@ M J + J M = H_infinity J,                                (8)
 not the raw scattering commutator `[M,J]`.  Formula `(2)` cancels the naked unbounded position
 terms before the cutoff is differentiated.
 
+### Lean algebraic layer
+
+`formal/GaloisForLFunctions/RHTower/SoninBurnolConductorReflection.lean` now formalizes the
+division-free ring identities behind `(2)` and their insertion into the existing exact
+two-projection resolvent formula.  Its main declarations are:
+
+- `ccmCommutator_burnolConductor_reflection`;
+- `ccmCommutator_reflectedCutoff_eq_conductor`;
+- `ccmCommutator_burnolConductor_reflectedCutoff`;
+- `ccmCommutator_reflectedCutoff_eq_reflectedConductorEdge`;
+- `ccmCommutator_burnol_dressed_two_projection`.
+
+Thus the algebraic reflection and dressing no longer remain a Lean interface.  The analytic
+realization of `M` and `H_infinity` as unbounded multipliers, the common-core passage, and the BMO
+bounded extension are still paper-only.
+
 ## Boundedness proof
 
 In the Mellin spectral representation, Burnol proves that `H_infinity` is multiplication by the
@@ -181,11 +197,12 @@ correction used by the retired scalarization.
 ## Gates
 
 - [x] exact conductor/scattering reflection identity `(2)`
+- [x] algebraic reflection identity and exact resolvent dressing formalized in Lean
 - [x] BMO spectral multiplier criterion for the real-place conductor
 - [x] bounded half-line conductor commutator, uniform under aperture translation
 - [x] exact prolate-resolvent dressing `(5)`
 - [x] common-domain/closed-graph interface discharged on paper
-- [ ] formalize the unbounded multiplier/core and bounded commutator in Lean
+- [ ] formalize the unbounded multiplier/common core and BMO-bounded commutator in Lean
 - [ ] construct the genuine semilocal relative trace
 - [ ] prove the completed source comparison
 - [ ] prove RH
