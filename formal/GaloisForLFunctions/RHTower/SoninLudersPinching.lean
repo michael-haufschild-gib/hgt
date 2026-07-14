@@ -348,6 +348,21 @@ theorem re_inner_soninAlternatingBlock_sub_sq_eq_norm_transition
   exact HTGeometry.re_inner_quantumMasterConstraint_eq_normSq
     (crossBoundary B.starProjection A.starProjection) ψ
 
+/-- Vanishing of the prolate impurity constraint is exactly vanishing of the physical/Fourier
+transition corner.  The master-constraint kernel theorem discharges this equivalence with no
+spectral or positivity hypothesis. -/
+theorem physicalState_soninAlternatingBlock_sub_sq_iff_transition
+    (A B : Submodule ℂ H) [A.HasOrthogonalProjection] [B.HasOrthogonalProjection]
+    (ψ : H) :
+    GaloisForLFunctions.PhysicalState
+        (soninAlternatingBlock A B -
+          soninAlternatingBlock A B * soninAlternatingBlock A B).toLinearMap ψ ↔
+      GaloisForLFunctions.PhysicalState
+        (crossBoundary B.starProjection A.starProjection).toLinearMap ψ := by
+  rw [soninAlternatingBlock_sub_sq_eq_quantumMasterConstraint_transition]
+  exact HTGeometry.physicalState_quantumMasterConstraint_iff
+    (crossBoundary B.starProjection A.starProjection) ψ
+
 /-- **Pinched Sonin commutator law.**  Replacing an arbitrary observable by its nonselective
 Lüders pinching at the physical cutoff removes the commutation premise from the exact
 resolvent-dressed Sonin formula. -/

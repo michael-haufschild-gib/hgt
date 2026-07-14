@@ -61,6 +61,7 @@ Re <psi,(T-T^2)psi> = ||A psi||^2.
 - `quantumMasterConstraint_crossBoundary_eq_compression_sub_sq`
 - `soninAlternatingBlock_sub_sq_eq_quantumMasterConstraint_transition`
 - `re_inner_soninAlternatingBlock_sub_sq_eq_norm_transition`
+- `physicalState_soninAlternatingBlock_sub_sq_iff_transition`
 
 ## Verification boundary
 
