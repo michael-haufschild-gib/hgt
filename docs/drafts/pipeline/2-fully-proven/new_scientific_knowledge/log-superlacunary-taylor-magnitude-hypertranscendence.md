@@ -267,7 +267,20 @@ It does not exclude the complete de Bruijn--Newman, Hilbert--Polya, Connes, de B
 
 ## Lean status
 
-No Lean formalization is claimed. A complete formalization would require, at minimum, Mahler's integer-normalization theorem for DA formal series, generic differential-polynomial coefficient extraction, and the asymptotic convolution-dominance argument. None is currently available as a complete analytic/differential-algebraic substrate in the repository. The card cannot enter stage 3 until the entire unconditional theorem is formalized.
+Partially formalized (axiom-clean); not yet stage 3. The theorem is reduced in Lean to two named interfaces by the capstone `GaloisForLFunctions.hypertranscendental_of_mahler_and_int_dominance` (`HTGeometry/MagnitudeInhomogeneousSurvival.lean`):
+
+- `hmahler` — Mahler's integer-normalization (Mahler 1971). This is an external result absent from mathlib and from this tree; it is carried as an explicit hypothesis, not fabricated.
+- `hintdom` — the integer-dominance realization (Steps 1–3 of the paper proof).
+
+Everything between the two interfaces is discharged unconditionally: the inhomogeneous atom regrouping (`sigmaIdx`, `atomKeyOf`, `aevalWeight`; `coeff_aeval_regrouped_weight`), the integrality payoff `aevalWeight_norm_ge_one`, the mass bound `aevalWeight_mass_le`, existence of a nonzero-weight atom `exists_nonzero_aevalWeight`, and the minimal-valuation domination `aeval_coeff_ne_zero_of_int_dominant`.
+
+Toward discharging `hintdom` itself:
+- Step 3 (distinct balanced atoms have a superlacunary valuation gap) is complete in `HTGeometry/SuperIncreasingValuationGap.lean` (`exists_uniform_valuation_gap_tail`, `finsupp_pair_valuation_gap_tail`, `weighted_sum_ne_zero_of_min_valuation_on_support`, `valuation_injOn_tail`).
+- Step 2 mechanics (conserved count/index-mass gradings of an atom; index-mass floor on the valuation) are in `HTGeometry/MagnitudeAtomGrading.lean`.
+- Step 1 keystone — a nonzero source-index polynomial cannot vanish on an entire large *balanced* diagonal — is `exists_balanced_diagonal_ne_zero` in `HTGeometry/BalancedDiagonalNonvanishing.lean` (via `MvPolynomial.funext_set` on the natural-value box). This supplies a balanced nonzero atom with no leading-symbol nondegeneracy hypothesis.
+- The Mahler-free degree-homogeneous survival theorem `coeff_degHomDiffPoly_magnitude_ne_zero` (`HTGeometry/MagnitudePolynomialSurvival.lean`) assembles Steps 1–3 for a homogeneous relation with a nonzero leading symbol.
+
+Remaining for the fully unconditional `hintdom`: the polarization identity connecting the balanced source-index evaluation to a nonzero grouped `aevalWeight` atom, the polynomial (in `N`) mass bound feeding `mass < exp G`, and the lower-degree-part domination. The card cannot enter stage 3 until `hintdom` is discharged and Mahler's normalization is available.
 
 ## Gates
 

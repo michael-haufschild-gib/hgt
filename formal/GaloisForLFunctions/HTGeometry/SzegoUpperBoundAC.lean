@@ -89,4 +89,35 @@ theorem boundary_integral_partialSum_le {w : ℝ → ℝ} {c C : ℝ} (hc : 0 < 
         have h := mul_le_mul_of_nonneg_left htail hC.le
         linarith
 
+/-- **The interior Szegő bound tends to `1`.**  Since the coefficient tail vanishes, for every
+`δ > 0` there is a degree `n ≥ 1` with `(2π)⁻¹∫₀²π ‖Sₙ(e^{iφ})‖² w(φ) ≤ 1 + δ`. -/
+theorem exists_boundary_integral_partialSum_le {w : ℝ → ℝ} {c C : ℝ} (hc : 0 < c) (hC : 0 < C)
+    (hlogLI : LocallyIntegrable (fun θ => Real.log (w θ)) volume)
+    (hlog : IntervalIntegrable (fun θ => Real.log (w θ)) volume 0 (2 * π))
+    (hper : Function.Periodic (fun θ => Real.log (w θ)) (2 * π))
+    (hlogφ : ∀ φ, IntervalIntegrable (fun t => Real.log (w (φ + t))) volume (-π) π)
+    (hwc : ∀ θ, c ≤ w θ) (hwC : ∀ θ, w θ ≤ C)
+    {R₀ : NNReal} (hR₀0 : 0 < R₀) (hR₀1 : (R₀ : ℝ) < 1)
+    (hsum : Summable (fun k => ‖(cauchyPowerSeries (fun z => (szegoOuter w z)⁻¹) 0 R₀).coeff k‖ ^ 2))
+    {δ : ℝ} (hδ : 0 < δ) :
+    ∃ n : ℕ, 2 ≤ n ∧
+      (2 * π)⁻¹ * ∫ φ in (0:ℝ)..(2 * π),
+        ‖(cauchyPowerSeries (fun z => (szegoOuter w z)⁻¹) 0 R₀).partialSum n (circleMap 0 1 φ)‖ ^ 2
+          * w φ ≤ 1 + δ := by
+  set p := cauchyPowerSeries (fun z => (szegoOuter w z)⁻¹) 0 R₀ with hp
+  -- the tail multiplied by `C` tends to `0`
+  have htail0 : Tendsto (fun n => C * ∑' k, (if k < n then (0:ℝ) else ‖p.coeff k‖ ^ 2))
+      atTop (𝓝 0) := by
+    have := (tendsto_tsum_tail_ite hsum).const_mul C
+    simpa using this
+  -- eventually the tail term is `< δ` and `n ≥ 2`
+  have hev : ∀ᶠ n in atTop, C * ∑' k, (if k < n then (0:ℝ) else ‖p.coeff k‖ ^ 2) < δ :=
+    htail0.eventually_lt_const hδ
+  obtain ⟨n, hnδ, hn2⟩ := ((hev.and (eventually_ge_atTop 2))).exists
+  refine ⟨n, hn2, ?_⟩
+  have hmaster := boundary_integral_partialSum_le hc hC hlogLI hlog hper hlogφ hwc hwC
+    hR₀0 hR₀1 hsum (by omega : 1 ≤ n)
+  rw [← hp] at hmaster
+  linarith [hmaster, hnδ.le]
+
 end GaloisForLFunctions.HTGeometry

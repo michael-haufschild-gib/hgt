@@ -317,9 +317,11 @@ by `primeArchExactQuartetConnesBornWittenKMSMaster_twoHundredEighteen_twentyFift
 | countable Gaussian-rational source membership in that palette is exactly the positive-frequency response condition above the same radius | primeArchGaussianRatFiniteKMSPassiveClosureAbove_iff_positiveFrequency |
 | at every quartet-admissible radius, that countable passive membership condition is equivalent to RH | primeArchGaussianRatFiniteKMSPassiveClosureAbove_iff_riemannHypothesis |
 
-## Endpoint-calibrated Hausdorff source--temperature master law
+## Cofinal endpoint-calibrated source--temperature master law
 
-The headline synthesis is bundled by `primeArchEndpointHausdorffSourceTemperatureMaster`.
+The headline synthesis is bundled by `primeArchCofinalSourceTemperatureMaster`; its
+scale-resolved free-energy and source-abscissa statement is bundled by
+`primeArchCofinalSourceTemperatureSpectrum`.
 
 | Manuscript claim | Unconditional Lean declaration |
 |---|---|
@@ -327,11 +329,18 @@ The headline synthesis is bundled by `primeArchEndpointHausdorffSourceTemperatur
 | every individual divisor atom is nonnegative for `k <= 13`, `r <= 43` | re_xiCentral_scaledBasis_rectangle_nonneg |
 | the complete `14 x 44` southwest rectangle is nonnegative | scaledPrimeArchEndpointHausdorffDifference_rectangle_nonnegative |
 | the discharged rectangle contains exactly 616 indexed conditions | primeArchEndpointHausdorffRectangle_cardinality |
-| complete calibrated Hausdorff positivity is equivalent to positivity on the complementary tail | scaledPrimeArchHausdorffMomentDifferencesNonnegative_iff_rectangleTailNonnegative |
-| the complementary tail is equivalent to RH | primeArchEndpointHausdorffTailNonnegative_iff_riemannHypothesis |
-| the complementary tail is equivalent to the critical prime--polar abscissa endpoint | rectangularPrimePolarSource_negativeAbscissa_le_one_iff_rectangleHausdorffTailNonnegative |
-| the complementary tail is equivalent to the critical cumulative prime--polar growth law | primeArchEndpointHausdorffTailNonnegative_iff_cumulativeNegativeMassCriticalGrowth |
-| the complementary tail is equivalent to local finite KMS/Wightman moment closure | primeArchEndpointHausdorffTailNonnegative_iff_finiteKMSLocalMomentClosure |
+| positivity on one common deep calibrated Hausdorff quadrant is equivalent to RH | cofinalScaledPrimeArchHausdorffQuadrantNonnegative_iff_riemannHypothesis |
+| the critical prime--polar abscissa endpoint is equivalent to that deep quadrant | rectangularPrimePolarSource_negativeAbscissa_le_one_iff_cofinalHausdorffQuadrant |
+| arbitrarily large nonnegative complete calibrated Hausdorff diagonals are equivalent to RH | cofinalScaledPrimeArchHausdorffDiagonalsNonnegative_iff_riemannHypothesis |
+| cofinal vanishing of the aggregate negative Bernstein mass is equivalent to RH | cofinalPrimeArchHausdorffBernsteinNegativeMassVanishing_iff_riemannHypothesis |
+| the critical prime--polar abscissa endpoint is equivalent to cofinal aggregate negative-mass vanishing | rectangularPrimePolarSource_negativeAbscissa_le_one_iff_cofinalBernsteinNegativeMassVanishing |
+| positive-part Bernstein approximation differs from the signed approximation by at most the aggregate negative mass in every coordinate | hausdorffBernsteinPositiveAtomicMoment_sub_signed_nonneg, hausdorffBernsteinPositiveAtomicMoment_sub_signed_le_negativeMass |
+| for every cofinal finite-volume/cooling schedule, the normalized logarithmic partition converges to the projective reflection radius | tendsto_xiThermalProjectiveColdTruncation_log_div_cold |
+| RH is equivalent to zero cofinal free-energy density | riemannHypothesis_iff_tendsto_thermalProjectiveCofinalFreeEnergy_zero |
+| RH is equivalent to subexponential growth along every, equivalently one, cofinal thermal schedule | riemannHypothesis_iff_thermalProjectiveCofinalSubexponential |
+| positivity on monic integer polynomials Eisenstein at `2` in any infinite exact-degree set is equivalent to RH | primeArchSourceTraceHankelIntTwoEisensteinDegreeSetNonnegative_iff_riemannHypothesis |
+| every positive-degree polynomial in the fixed Eisenstein chamber is irreducible | irreducible_of_monic_primeArchTwoEisenstein |
+| the source endpoint, sparse irreducible chamber, cofinal diagonals, aggregate negative-mass vanishing, deep quadrant, zero free energy, subexponential growth, finite KMS closure, Connes reflection positivity, and RH form one chain | primeArchCofinalSourceTemperatureMaster |
 
 ## Axiom and lint gate
 
@@ -355,7 +364,12 @@ The headline synthesis is bundled by `primeArchEndpointHausdorffSourceTemperatur
   GaloisForLFunctions.HTGeometry.FiniteKMSPassivePalette, and
   GaloisForLFunctions.RHTower.PrimeArchCountablePassiveResponseEquivalence, and
   GaloisForLFunctions.RHTower.PrimeArchExactOffLineQuartetKMSMaster, and
-  GaloisForLFunctions.RHTower.PrimeArchEndpointHausdorffTemperatureMaster.
+  GaloisForLFunctions.RHTower.PrimeArchEndpointHausdorffTemperatureMaster, and
+  GaloisForLFunctions.RHTower.PrimeArchCofinalHausdorffQuadrantRH, and
+  GaloisForLFunctions.RHTower.PrimeArchCofinalHausdorffDiagonalRH, and
+  GaloisForLFunctions.RHTower.XiThermalProjectiveFreeEnergyRadius, and
+  GaloisForLFunctions.RHTower.PrimeArchThetaHankelDegreeTail, and
+  GaloisForLFunctions.RHTower.PrimeArchCofinalSourceTemperatureMaster.
 - Allowed foundational dependencies in the checked capstones:
   [propext, Classical.choice, Quot.sound].
 - Repository lint must report no active sorry, admit, axiom, opaque, or unsafe declaration.

@@ -38,7 +38,7 @@ theorem signedMoment_injective {r : ℕ} {lam : Fin r → ℂ} (hlam : Function.
   have hzero := Matrix.eq_zero_of_forall_pow_sum_mul_pow_eq_zero hlam hker
   funext i
   have hi := congrFun hzero i
-  simp only [Pi.sub_apply, Pi.zero_apply, sub_eq_zero] at hi
+  simp only [Pi.zero_apply, sub_eq_zero] at hi
   exact hi
 
 /-- **Finite Stirling-signature separation (integer exponents).**  Two integer exponent vectors

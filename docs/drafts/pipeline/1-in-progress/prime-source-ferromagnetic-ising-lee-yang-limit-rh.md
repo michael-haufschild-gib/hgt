@@ -8,6 +8,7 @@
   `formal/GaloisForLFunctions/RHTower/PrimeLeeYangPolydisk.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeEulerLeeYangAmplitudeNoGo.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeEulerFerromagneticInteraction.lean`,
+  `formal/GaloisForLFunctions/RHTower/TwoSpinFKGLeeYangBridge.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeWordEnsembleBoundaryTomography.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeSupportMultivariateLiftMarker.lean`, and
   `formal/GaloisForLFunctions/XiLaguerrePolya.lean`
@@ -172,6 +173,33 @@ weights and closes both finite ends of the Lee--Yang chain.  It is not yet the c
 factor: reciprocal Euler pairing has coefficient `c_p+c_p^(-1)` instead of `2c_p`.  That explicit
 coefficient defect is now the local source-comparison target.
 
+The first ferromagnetic moment-cone face is now source-facing in Lean.  For any symmetric two-site
+packet with aligned weight `A>0` and disagreement weight `B`,
+
+```text
+Z_(A,B)(z)=A+2Bz+Az^2,
+Delta_FKG(A,B)=A^2-B^2,
+```
+
+`TwoSpinFKGLeeYangBridge.lean` proves
+
+```text
+every zero of Z_(A,B) lies on |z|=1  <->  Delta_FKG(A,B)>=0.
+```
+
+After normalization, the same inequality is exactly the existing Ihara spectral bound at
+`(q,lambda)=(1,-2B/A)`.  The prime square-root packet satisfies this face strictly.  Reciprocal
+Euler pairing has the exact defect
+
+```text
+Delta_FKG(1,(a+a^(-1))/2)=-(a^2-1)^2/(4a^2),
+```
+
+and violates it strictly for `0<a<1`.  This discharges the two-site determinant check for the
+source-native prime interaction and turns the same check into a reusable hypothesis for any
+unnormalized completed source packet.  It does not establish positivity of every packet weight or
+membership of the higher completed packet in the full ferromagnetic moment cone.
+
 ## Source coordinates already available
 
 `PrimeWordEnsembleBoundaryTomography.lean` proves that the complete normal boundary germ of any
@@ -301,6 +329,8 @@ convergence is weaker than locally uniform.
 - [x] exact prime polydisk/critical-torus/exterior geometry formalized
 - [x] finite independent prime-spin partition proved zero-free off the centered real axis
 - [x] physical Euler square-root amplitude displacement formally excluded
+- [x] two-site FKG determinant made equivalent to the Lee--Yang and Ihara selectors
+- [x] prime interaction shown to satisfy the FKG face strictly; reciprocal Euler pairing shown to violate it strictly
 - [x] source-pure finite cumulant packet identified in formal Lean
 - [x] two-ended multivariate Lee--Yang/locally-uniform chain to RH stated
 - [ ] smallest completed source packet tested against the ferromagnetic moment cone

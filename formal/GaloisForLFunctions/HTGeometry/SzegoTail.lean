@@ -113,4 +113,27 @@ theorem circleMeanSq_partialSum_sub_inv_le {w : ℝ → ℝ}
           mul_le_mul_of_nonneg_left (pow_le_one₀ hr0 hr1.le) (by positivity)
       _ = _ := mul_one _
 
+/-- **The coefficient tail vanishes.**  For a summable nonnegative sequence, the tail
+`∑_{k≥n} a k` (written with an indicator) tends to `0` as `n → ∞`. -/
+theorem tendsto_tsum_tail_ite {a : ℕ → ℝ} (hsum : Summable a) :
+    Tendsto (fun n => ∑' k, (if k < n then (0:ℝ) else a k)) atTop (𝓝 0) := by
+  have hkey : ∀ n, (∑' k, (if k < n then (0:ℝ) else a k)) = ∑' k, a (k + n) := by
+    intro n
+    have hg : Function.Injective (fun k => k + n) := fun x y h => by simpa using h
+    have hf : ∀ x ∉ Set.range (fun k => k + n), (if x < n then (0:ℝ) else a x) = 0 := by
+      intro x hx
+      rw [if_pos]
+      by_contra hxn
+      exact hx ⟨x - n, by simp only []; omega⟩
+    have hcomp : ((fun k => if k < n then (0:ℝ) else a k) ∘ (fun k => k + n))
+        = fun k => a (k + n) := by
+      funext k
+      simp only [Function.comp]
+      rw [if_neg (by omega)]
+    have hsummable : Summable (fun k => a (k + n)) := (summable_nat_add_iff n).mpr hsum
+    have := (hg.hasSum_iff hf).mp (hcomp ▸ hsummable.hasSum)
+    rw [this.tsum_eq, hcomp]
+  simp only [hkey]
+  exact tendsto_sum_nat_add a
+
 end GaloisForLFunctions.HTGeometry

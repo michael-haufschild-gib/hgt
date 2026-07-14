@@ -1,8 +1,8 @@
 # Two-spin FKG defect as the Lee--Yang and Ihara selector
 
 - **ID:** `two-spin-fkg-lee-yang-ihara-selector`
-- **Stage:** 1-in-progress
-- **Type:** `[BRIDGE] [FORMALIZATION TARGET]`
+- **Stage:** 3-formalized
+- **Type:** `[BRIDGE] [FORMALIZED]`
 - **Lean targets:** `formal/GaloisForLFunctions/RHTower/TwoSpinFKGLeeYangBridge.lean`,
   `formal/GaloisForLFunctions/RHTower.lean`
 - **Consumers:** `LeeYangQuadraticBlock`, `IharaBlockSelector`,
@@ -31,6 +31,16 @@ Delta_FKG(c) >= 0
   <-> blockSpectralBound 1 (-2c).
 ```
 
+The source-facing version does not require prior normalization.  For an aligned weight `A>0`
+and disagreement weight `B`, Lean proves
+
+```text
+every zero of A+2Bz+Az^2 lies on |z|=1  <->  0 <= A^2-B^2.
+```
+
+When the table is used as a probability weight, `B>=0` remains a separate condition; the theorem
+identifies the exact determinant face, not membership in the full ferromagnetic moment cone.
+
 For the prime interaction `c_p=exp(-log(p)/2)`, the determinant is strictly positive.  For the
 reciprocal Euler coefficient `c(a)=(a+a^(-1))/2`, it is
 
@@ -53,11 +63,11 @@ the Lee--Yang and Ihara theorem families.
 
 ## Verification gates
 
-- [ ] theorem file compiles in the repository toolchain
-- [ ] prime and reciprocal Euler consumers compile
-- [ ] public umbrella exports the bridge
-- [ ] `#print axioms` reports only accepted foundational axioms
-- [ ] formal lint and generated-index checks pass
+- [x] theorem file compiles in the repository toolchain (`8,564` jobs)
+- [x] prime and reciprocal Euler consumers compile in the same target
+- [x] public umbrella exports the bridge
+- [x] `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`
+- [x] formal lint and generated declaration index pass
 
 ## Primary physics sources
 
@@ -69,4 +79,3 @@ the Lee--Yang and Ihara theorem families.
 - C. M. Fortuin, P. W. Kasteleyn, and J. Ginibre, *Correlation Inequalities on Some Partially
   Ordered Sets*, Communications in Mathematical Physics 22 (1971), 89--103,
   <https://doi.org/10.1007/BF01651330>.
-

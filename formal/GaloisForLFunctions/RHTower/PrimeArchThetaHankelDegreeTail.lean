@@ -527,35 +527,47 @@ theorem primeArch_twoEisenstein_plus (p : Polynomial ℤ) (d N : ℕ)
   have hmonic : (Polynomial.X ^ d + lower).Monic :=
     Polynomial.monic_X_pow_add hlowDegree
   have hne : primeArchTwoEisensteinIdeal ≠ ⊤ := by
-    apply Ideal.span_singleton_ne_top
-    norm_num
+    dsimp only [primeArchTwoEisensteinIdeal]
+    exact (Ideal.span_singleton_prime (by norm_num : (2 : ℤ) ≠ 0)).mpr (by norm_num) |>.ne_top
+  have hsumDegree : (Polynomial.X ^ d + lower).natDegree = d := by
+    have hlow' : lower.natDegree <
+        ((Polynomial.X : Polynomial ℤ) ^ d).natDegree := by
+      simpa only [Polynomial.natDegree_X_pow] using hlowNat
+    rw [Polynomial.natDegree_add_eq_left_of_natDegree_lt hlow',
+      Polynomial.natDegree_X_pow]
   have hmem : ∀ {n}, n < (Polynomial.X ^ d + lower).natDegree →
       (Polynomial.X ^ d + lower).coeff n ∈ primeArchTwoEisensteinIdeal := by
     intro n hn
-    rw [hmonic.natDegree] at hn
+    rw [hsumDegree] at hn
+    dsimp only [primeArchTwoEisensteinIdeal]
     rw [Ideal.mem_span_singleton]
-    have hnd : d ≠ n := Nat.ne_of_gt hn
+    have hnd : n ≠ d := Nat.ne_of_lt hn
     dsimp only [lower]
-    simp only [Polynomial.coeff_add, Polynomial.coeff_X_pow, hnd, if_false,
+    simp only [Polynomial.coeff_add, Polynomial.coeff_X_pow, if_neg hnd,
       zero_add, Polynomial.coeff_C_mul]
     by_cases hn0 : n = 0
     · subst n
-      simp only [Polynomial.coeff_C_zero, Int.reduceOfNat, Polynomial.coeff_zero_eq_eval_zero]
-      exact dvd_add (by norm_num)
-        (dvd_mul_of_dvd_left (by norm_num : (2 : ℤ) ∣ 4 * (N : ℤ)) _)
+      simp only [Polynomial.coeff_C_zero]
+      exact dvd_add (by norm_num) ⟨2 * (N : ℤ) * p.coeff 0, by ring⟩
     · rw [Polynomial.coeff_C, if_neg hn0, zero_add]
-      exact dvd_mul_of_dvd_left (by norm_num : (2 : ℤ) ∣ 4 * (N : ℤ)) _
+      exact ⟨2 * (N : ℤ) * p.coeff n, by ring⟩
   have hnotMem :
       (Polynomial.X ^ d + lower).coeff 0 ∉ primeArchTwoEisensteinIdeal ^ 2 := by
+    dsimp only [primeArchTwoEisensteinIdeal]
     rw [Ideal.span_singleton_pow, Ideal.mem_span_singleton]
     simp only [pow_two]
     dsimp only [lower]
-    simp only [Polynomial.coeff_add, Polynomial.coeff_X_pow, hd.ne', if_false,
-      zero_add, Polynomial.coeff_C_zero, Int.reduceOfNat, Polynomial.coeff_C_mul,
-      Polynomial.coeff_zero_eq_eval_zero]
+    simp only [Polynomial.coeff_add, Polynomial.coeff_X_pow,
+      if_neg (Nat.ne_of_lt hd), zero_add, Polynomial.coeff_C_zero,
+      Polynomial.coeff_C_mul]
     intro hfour
-    have hterm : (4 : ℤ) ∣ 4 * (N : ℤ) * p.coeff 0 := dvd_mul_right 4 _
-    have : (4 : ℤ) ∣ 2 := dvd_sub hfour hterm
+    have hterm : ((2 : ℤ) * 2) ∣ 4 * (N : ℤ) * p.coeff 0 := by
+      refine ⟨(N : ℤ) * p.coeff 0, ?_⟩
+      ring
+    have hdiff := dvd_sub hfour hterm
+    have : ((2 : ℤ) * 2) ∣ 2 := by
+      convert hdiff using 1
+      ring
     norm_num at this
   simpa only [lower, add_assoc] using
     hmonic.isEisensteinAt_of_mem_of_notMem hne hmem hnotMem
@@ -648,21 +660,35 @@ theorem primeArchSourceTraceHankelIntNonnegative_of_twoEisensteinInfiniteDegreeS
     rw [add_assoc]
     apply Polynomial.monic_X_pow_add
     by_cases hz : Polynomial.C 2 + lower = 0
-    · simp [hz]
+    · rw [hz]
+      simp
     · exact (Polynomial.natDegree_lt_iff_degree_lt hz).mp hcenterLower
   have hminusMonic : pminus.Monic := by
     dsimp only [pminus, qInt]
     rw [add_sub_assoc]
     apply Polynomial.monic_X_pow_add
     by_cases hz : Polynomial.C 2 - lower = 0
-    · simp [hz]
+    · rw [hz]
+      simp
     · exact (Polynomial.natDegree_lt_iff_degree_lt hz).mp hcenterMinusLower
   have hplus := hset pplus hplusMonic hplusE (hplusdeg ▸ hdD)
   have hminus := hset pminus hminusMonic hminusE (hminusdeg ▸ hdD)
   have hmapPlus : pplus.map (Int.castRingHom ℝ) = Q + (4 * (N : ℝ)) • P := by
-    simp [pplus, qInt, lower, P, Q, Polynomial.smul_eq_C_mul]
+    dsimp only [pplus, Q]
+    rw [Polynomial.map_add]
+    congr 1
+    dsimp only [lower, P]
+    rw [Polynomial.map_mul, Polynomial.map_C, Polynomial.smul_eq_C_mul]
+    congr 1
+    norm_num
   have hmapMinus : pminus.map (Int.castRingHom ℝ) = Q - (4 * (N : ℝ)) • P := by
-    simp [pminus, qInt, lower, P, Q, Polynomial.smul_eq_C_mul]
+    dsimp only [pminus, Q]
+    rw [Polynomial.map_sub]
+    congr 1
+    dsimp only [lower, P]
+    rw [Polynomial.map_mul, Polynomial.map_C, Polynomial.smul_eq_C_mul]
+    congr 1
+    norm_num
   rw [hmapPlus] at hplus
   rw [hmapMinus] at hminus
   have hsum := add_nonneg hplus hminus

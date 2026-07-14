@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.PrimeEulerFerromagneticInteraction
+import GaloisForLFunctions.RHTower.EulerReciprocalLeeYangNoGo
 
 /-!
 # The two-spin FKG defect is the Lee--Yang and Ihara selector
@@ -56,7 +57,6 @@ theorem symmetricTwoSpinBlock_eq_aligned_mul_leeYangPairBlock
   unfold symmetricTwoSpinBlock leeYangPairBlock
   push_cast
   field_simp [haligned]
-  ring
 
 /-- Circle localization is invariant under normalization by a nonzero aligned weight. -/
 theorem symmetricTwoSpinCircle_iff_leeYangPairCircle
@@ -73,7 +73,8 @@ theorem symmetricTwoSpinCircle_iff_leeYangPairCircle
     exact (mul_eq_zero.mp hz).resolve_left (by exact_mod_cast haligned)
 
 /-- Source-facing selector: for positive aligned weight, the raw FKG determinant is necessary and
-sufficient for every zero of the unnormalized source block to lie on the unit circle. -/
+sufficient for every zero of the unnormalized source block to lie on the unit circle.  For use as
+a probability weight table, nonnegativity of `disagreement` remains a separate condition. -/
 theorem symmetricTwoSpinCircle_iff_fkgDefect_nonneg
     {aligned disagreement : ℝ} (haligned : 0 < aligned) :
     symmetricTwoSpinCircle aligned disagreement ↔
@@ -100,7 +101,7 @@ theorem twoSpinFKGDefect_eq_crossProduct (c : ℝ) :
 theorem twoSpinFKGDefect_nonneg_iff (c : ℝ) :
     0 ≤ twoSpinFKGDefect c ↔ c ^ 2 ≤ 1 := by
   unfold twoSpinFKGDefect
-  linarith
+  constructor <;> intro h <;> linarith
 
 /-- Exact two-spin FKG--Lee--Yang equivalence. -/
 theorem leeYangPairCircle_iff_twoSpinFKGDefect_nonneg (c : ℝ) :
@@ -181,10 +182,14 @@ theorem reciprocalEulerPair_twoSpinFKGDefect_neg {a : ℝ}
     (ha : 0 < a) (ha1 : a < 1) :
     twoSpinFKGDefect (reciprocalEulerPairCoefficient a) < 0 := by
   rw [reciprocalEulerPair_twoSpinFKGDefect_eq ha.ne']
+  have hminus : 0 < 1 - a := sub_pos.mpr ha1
+  have hplus : 0 < 1 + a := by linarith
+  have hsquare_lt : a ^ 2 < 1 := by
+    nlinarith [mul_pos hminus hplus]
   have hnum : 0 < (a ^ 2 - 1) ^ 2 := by
-    positivity
+    exact sq_pos_of_ne_zero (by nlinarith)
   have hden : 0 < 4 * a ^ 2 := by
     positivity
-  positivity
+  exact div_neg_of_neg_of_pos (neg_neg_of_pos hnum) hden
 
 end GaloisForLFunctions.RHTower

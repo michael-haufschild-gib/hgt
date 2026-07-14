@@ -1880,6 +1880,60 @@ supply an independent terminal orientation: after exact reflection and telescopi
 lands on the same remote-row/density/exponential three-term source already present in `(12d.8h)`.
 The obstruction is universal under logarithmic scale, not a defect of dyadic parity.
 
+## Aggregate rank-two square difference
+
+**[PROVED, LEAN]** The complete reflected Haar prefix in `(31)` is a symmetric rank-two tensor,
+not a family of layerwise cross terms.  Put
+
+```text
+a_N=N log 2,
+E(x)=exp(-x/2),
+R_N(x)=2^N D_N(x-2N log 2)-rho(x)-(2^N-1)E(x)/4.
+```
+
+Then the source prefix is
+
+```text
+1/2[R_N(x)E(y)+E(x)R_N(y)].                              (32)
+```
+
+The residual is the critical coboundary of the unique quarter-completed profile
+
+```text
+h=rho-E/4,
+R_N(x)=exp(a_N/2)h(x-a_N)-h(x).                          (33)
+```
+
+There are two canonical square channels around this midpoint.  With
+`c_N=(2^N-1)/4` and `g=rho-E/2` (which is exactly even), Lean proves
+
+```text
+R_N+c_N E = exp(a_N/2)rho(x-a_N)-rho(x),
+R_N-c_N E = exp(a_N/2)g(x-a_N)-g(x).                    (34)
+```
+
+For the value--derivative transforms `(A,A')` of the first channel and `(E,E')` of the seam,
+the integrated current of `(32)` is therefore the normalized difference of the two aggregate
+square currents:
+
+```text
+1/2 Cross(A-c_N E,E)
+ = [Q(A)-Q(A-2c_N E)]/(2^N-1).                          (35)
+```
+
+The source identities `(32)`--`(34)` and the complex value--derivative identity `(35)` are
+formalized in `XiCTaylorThetaTailHaarResidualRankTwo.lean`.  Naming the Fubini instantiation that
+identifies the integral of `(32)` with its two transform pairs remains formal bookkeeping.  The
+identities retain the whole completion cancellation and do not compare packet norms.  The two
+square channels are the uncompleted density coboundary and the exactly-even-remainder coboundary.
+
+The apparent phase-contraction shortcut does not survive the fixed half-line.  Translating the
+even remainder through the endpoint contributes the limiting value--derivative vector `E-2U_d`;
+its seam polarization is exactly the invariant `(12d.9q)`.  Consequently moving the returned
+copy of `Q(U_d)` to the left cancels the same copy supplied by the swept window.  A closing
+estimate must orient the finite difference in `(35)` before this endpoint invariant is separated,
+or introduce an additional arithmetic value relation that also cancels the invariant.
+
 ## Finite cosine--sine translation edge: discharged
 
 **[PROVED, LEAN]** The finite-section obstruction created by logarithmic translation is closed in

@@ -27,9 +27,26 @@ noncomputable section
 def primeLeeYangLog (p : Nat.Primes) : ℝ :=
   Real.log (((p : ℕ) : ℝ))
 
+theorem primeLeeYangLog_pos (p : Nat.Primes) :
+    0 < primeLeeYangLog p := by
+  unfold primeLeeYangLog
+  exact Real.log_pos (by exact_mod_cast p.2.one_lt)
+
 /-- Inhomogeneous Lee--Yang activity at prime `p` in the centered `XiC` coordinate. -/
 def centeredPrimeLeeYangField (p : Nat.Primes) (z : ℂ) : ℂ :=
   centeredPrimeMark (p : ℕ) (1 / 2 + Complex.I * z)
+
+/-- At the positive imaginary anchor, the centered field evaluates to the prime itself. -/
+theorem centeredPrimeLeeYangField_I (p : Nat.Primes) :
+    centeredPrimeLeeYangField p Complex.I = ((p : ℕ) : ℂ) := by
+  rw [centeredPrimeLeeYangField, centeredPrimeMark]
+  have harg : (1 / 2 : ℂ) - (1 / 2 + Complex.I * Complex.I) = 1 := by
+    rw [Complex.I_mul_I]
+    ring
+  rw [harg, mul_one]
+  rw [← Complex.ofReal_exp,
+    Real.exp_log (by exact_mod_cast p.2.pos)]
+  norm_cast
 
 theorem norm_centeredPrimeLeeYangField (p : Nat.Primes) (z : ℂ) :
     ‖centeredPrimeLeeYangField p z‖ =
@@ -62,15 +79,9 @@ theorem one_lt_norm_centeredPrimeLeeYangField_iff
   rw [norm_centeredPrimeLeeYangField, ← Real.exp_zero, Real.exp_lt_exp]
   constructor
   · intro h
-    have hp : 0 < primeLeeYangLog p := by
-      unfold primeLeeYangLog
-      exact Real.log_pos (by exact_mod_cast p.2.one_lt)
-    exact (mul_pos_iff_of_pos_left hp).mp h
+    exact (mul_pos_iff_of_pos_left (primeLeeYangLog_pos p)).mp h
   · intro h
-    have hp : 0 < primeLeeYangLog p := by
-      unfold primeLeeYangLog
-      exact Real.log_pos (by exact_mod_cast p.2.one_lt)
-    exact mul_pos hp h
+    exact mul_pos (primeLeeYangLog_pos p) h
 
 /-- Zero-interaction finite prime-spin partition function. -/
 def independentPrimeLeeYangPartition

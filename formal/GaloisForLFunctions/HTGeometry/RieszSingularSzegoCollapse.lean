@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.SzegoUpperBound
+import GaloisForLFunctions.HTGeometry.RieszBrothersRieszFischer
 
 /-!
 # Riesz completeness forces singular Szegő collapse
@@ -46,7 +47,6 @@ private theorem circleZMulLp_surjective_aux
   apply Lp.ext
   filter_upwards [circleZMulLp_coeFn_ae mu g, hgmem.coeFn_toLp] with z hz hg
   rw [hz, hg]
-  change (z : ℂ) * (conj (z : ℂ) * f z) = f z
   rw [← mul_assoc, Complex.mul_conj]
   have hnormSq : Complex.normSq (z : ℂ) = 1 := by
     rw [Complex.normSq_eq_norm_sq, Circle.norm_coe]
@@ -100,13 +100,13 @@ private theorem revPoly_reverseCoefficients_aux
       ∑ i : Fin N, d (Fin.rev i) * z ^ ((Fin.rev i).1 + 1) := by
         apply Finset.sum_congr rfl
         intro i hi
-        rw [dif_pos i.2, map_star]
+        rw [dif_pos i.2]
         simp only [starRingEnd_apply, star_star]
         congr 2
         rw [Fin.val_rev]
         omega
     _ = ∑ j : Fin N, d j * z ^ (j.1 + 1) :=
-      Fin.revPerm.sum_comp (fun j : Fin N => d j * z ^ (j.1 + 1))
+      Equiv.sum_comp Fin.revPerm (fun j : Fin N => d j * z ^ (j.1 + 1))
 
 private theorem exists_revPoly_integral_lt_of_analyticMonomialSpan_dense_aux
     (mu : Measure Circle) [IsFiniteMeasure mu]
@@ -128,23 +128,25 @@ private theorem exists_revPoly_integral_lt_of_analyticMonomialSpan_dense_aux
   have hsupp : d.support ⊆ Finset.range N := by
     intro n hn
     rw [Finset.mem_range]
-    exact Nat.lt_succ_of_le (Finset.le_sup hn)
+    exact Nat.lt_succ_of_le (show n ≤ K from Finset.le_sup (f := id) hn)
   have hsumRange :
       ∑ n ∈ d.support, d n • circleMonomialLp mu n =
         ∑ n ∈ Finset.range N, d n • circleMonomialLp mu n := by
-    symm
     apply Finset.sum_subset hsupp
     intro n hnRange hnSupp
-    rw [Finsupp.not_mem_support_iff.mp hnSupp, zero_smul]
+    have hdn : d n = 0 := by
+      by_contra hne
+      exact hnSupp (Finsupp.mem_support_iff.mpr hne)
+    rw [hdn, zero_smul]
   have hd' : ∑ n ∈ d.support, d n • circleMonomialLp mu n = x := by
     simpa only [Finsupp.sum] using hd
-  have hdx : ∑ i : Fin N, d (i : ℕ) • circleMonomialLp mu (i : ℕ) = x := by
-    rw [Fin.sum_univ_eq_sum_range, ← hsumRange, hd']
+  have hdx : ∑ n ∈ Finset.range N, d n • circleMonomialLp mu n = x :=
+    hsumRange.symm.trans hd'
   let c : ℕ → ℂ := fun i =>
     if h : i < N then conj (d ((Fin.rev ⟨i, h⟩ : Fin N) : ℕ)) else 0
   have hxpoly : ⇑x =ᵐ[mu]
       fun z : Circle => ∑ n ∈ Finset.range N, d n * (z : ℂ) ^ n := by
-    rw [← hdx, Fin.sum_univ_eq_sum_range]
+    rw [← hdx]
     exact coeFn_sum_smul_circleMonomialLp mu (Finset.range N) d
   let f : Lp ℂ 2 mu := circleMonomialLp mu 0 - circleZMulLp mu x
   have hfpoly : ⇑f =ᵐ[mu] fun z : Circle => revPoly c N (z : ℂ) := by
@@ -155,11 +157,17 @@ private theorem exists_revPoly_integral_lt_of_analyticMonomialSpan_dense_aux
     simp only [pow_zero]
     rw [revPoly_reverseCoefficients_aux (fun i : Fin N => d (i : ℕ))]
     congr 1
-    rw [Fin.sum_univ_eq_sum_range, Finset.mul_sum]
-    apply Finset.sum_congr rfl
-    intro n hn
-    rw [pow_succ]
-    ring
+    calc
+      (z : ℂ) * ∑ n ∈ Finset.range N, d n * (z : ℂ) ^ n =
+          ∑ n ∈ Finset.range N, d n * (z : ℂ) ^ (n + 1) := by
+            rw [Finset.mul_sum]
+            apply Finset.sum_congr rfl
+            intro n hn
+            rw [pow_succ]
+            ring
+      _ = ∑ j : Fin N, d (j : ℕ) * (z : ℂ) ^ ((j : ℕ) + 1) :=
+        (Fin.sum_univ_eq_sum_range
+          (fun n => d n * (z : ℂ) ^ (n + 1)) N).symm
   have hintegral :
       (∫ z : Circle, ‖revPoly c N (z : ℂ)‖ ^ 2 ∂mu) = ‖f‖ ^ 2 := by
     rw [norm_sq_eq_integral_norm_sq]
@@ -168,7 +176,7 @@ private theorem exists_revPoly_integral_lt_of_analyticMonomialSpan_dense_aux
     rw [hz]
   have hnorm : ‖f‖ = dist g x := by
     calc
-      ‖f‖ = ‖circleZMulLp mu g - circleZMulLp mu x‖ := by rw [f, hg]
+      ‖f‖ = ‖circleZMulLp mu g - circleZMulLp mu x‖ := by simp only [f, hg]
       _ = ‖circleZMulLp mu (g - x)‖ := by
         rw [show circleZMulLp mu (g - x) =
           circleZMulLp mu g - circleZMulLp mu x from
@@ -178,7 +186,9 @@ private theorem exists_revPoly_integral_lt_of_analyticMonomialSpan_dense_aux
   refine ⟨K, c, ?_⟩
   change (∫ z : Circle, ‖revPoly c N (z : ℂ)‖ ^ 2 ∂mu) < ε
   rw [hintegral, hnorm]
-  nlinarith [Real.sq_sqrt hε.le, dist_nonneg g x]
+  have hsq : dist g x ^ 2 < Real.sqrt ε ^ 2 :=
+    (sq_lt_sq₀ dist_nonneg hsqrt.le).2 hgx
+  rwa [Real.sq_sqrt hε.le] at hsq
 
 /-- Density of analytic monomials forces the infimum of the squared monic OPUC norms to be zero.
 The proof constructs the required reversed-polynomial competitors explicitly. -/
@@ -234,6 +244,25 @@ theorem pureSingularCarrier_trichotomy_of_rieszBrothers
       mu hmu hsing hgraph.2
   exact pureSingularCarrier_trichotomy_of_classical_inputs
     mu hmu hsing hriesz hszego
+
+/-- **Pure-singular carrier trichotomy from the exact classical leaf.**  After the formal
+Riesz--Fischer reduction and the singular tail-density argument, the vanishing-half-line F. and
+M. Riesz conclusion is the only external circle theorem needed by the carrier trichotomy. -/
+theorem pureSingularCarrier_trichotomy_of_fAndMRieszVanishing
+    (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
+    (hsing : mu ⟂ₘ circleLebesgue)
+    (hfm : HasFAndMRieszVanishingConclusion mu) :
+    (linearGraphSubmodule finsuppCoefficientL2
+        (polynomialSynthesisL2 mu)).topologicalClosure = ⊤ ∧
+      (analyticMonomialSpan mu).topologicalClosure = ⊤ ∧
+      Tendsto (fun N => leastEigenvalue (circleMeasureGramTower mu N)
+        (circleMeasureGramTower_posDef_of_infiniteSupport mu hmu N)) atTop (𝓝 0) ∧
+      Tendsto (normalizedFrameDetRoot (circleMeasureCanonicalFrameTower mu hmu))
+        atTop atTop ∧
+      Tendsto (euclideanFrameOpNorm (circleMeasureCanonicalFrameTower mu hmu))
+        atTop atTop := by
+  exact pureSingularCarrier_trichotomy_of_rieszBrothers mu hmu hsing
+    (hasRieszBrothersDensityConclusion_of_fAndMRieszVanishing mu hfm)
 
 end
 

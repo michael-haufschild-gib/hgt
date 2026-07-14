@@ -1,18 +1,21 @@
 import GaloisForLFunctions.RHTower.PrimeArchCofinalHausdorffQuadrantRH
+import GaloisForLFunctions.RHTower.PrimeArchCofinalHausdorffDiagonalRH
 import GaloisForLFunctions.RHTower.PrimeArchThetaHankelDegreeTail
 import GaloisForLFunctions.RHTower.XiThermalProjectiveFreeEnergyRadius
 import GaloisForLFunctions.RHTower.PrimeArchConnesReflectionMain
+import GaloisForLFunctions.RHTower.PrimeArchVerifiedHeightAccretivity
 
 /-!
 # Cofinal prime-source, Hausdorff, and zero-temperature master theorem
 
-The endpoint prime-polar source, a deep calibrated Hausdorff quadrant, and one simultaneous
-finite-volume/zero-temperature section carry the same transverse Xi datum.  The finite thermal
-partition has an exact free-energy rate equal to the horizontal support radius.  At the critical
-value, uniform boundedness may be weakened all the way to subexponential growth; this is still
-equivalent to the source endpoint, positivity in the fixed Eisenstein-at-two chamber on any
-infinite sparse set of Hankel degrees, local finite KMS/Wightman closure, Connes reflection
-positivity, and RH.
+The endpoint prime-polar source, a scalar cofinal Bernstein negativity defect, a deep calibrated
+Hausdorff quadrant, and one simultaneous finite-volume/zero-temperature section carry the same
+transverse Xi datum.  The finite thermal partition has an exact free-energy rate equal to the
+horizontal support radius.  At the critical value, uniform boundedness may be weakened all the
+way to subexponential growth; pointwise Hausdorff positivity may be weakened to vanishing total
+negative Bernstein mass along one cofinal degree schedule.  These are still equivalent to the
+source endpoint, positivity in the fixed Eisenstein-at-two chamber on any infinite sparse set of
+Hankel degrees, local finite KMS/Wightman closure, Connes reflection positivity, and RH.
 -/
 
 open Filter Topology
@@ -23,10 +26,11 @@ noncomputable section
 
 /-- **Cofinal source--temperature master theorem.**  For every simultaneous cofinal finite-system
 and cooling schedule, the normalized logarithmic partition converges to the exact projective
-reflection radius.  At radius zero the arithmetic endpoint, a single deep Hausdorff quadrant,
-irreducible Eisenstein Hankel positivity on any infinite degree set, zero free-energy density,
-subexponential finite-system growth, recurrent boundedness, finite KMS closure, and Connes
-reflection positivity are one condition. -/
+reflection radius.  At radius zero the arithmetic endpoint, irreducible Eisenstein Hankel
+positivity on any infinite degree set, arbitrarily large positive complete Hausdorff diagonals,
+cofinal vanishing of the aggregate negative Bernstein mass, a single deep Hausdorff quadrant,
+zero free-energy density, subexponential finite-system growth, recurrent boundedness, finite KMS
+closure, and Connes reflection positivity are one condition. -/
 theorem primeArchCofinalSourceTemperatureMaster
     (size cold : ℕ → ℕ)
     (hsize : Tendsto size atTop atTop)
@@ -46,13 +50,27 @@ theorem primeArchCofinalSourceTemperatureMaster
         primeArchEndpointHausdorffRadius normalizedPrimeArchMoment
     let sparseEisensteinEndpoint : Prop :=
       PrimeArchSourceTraceHankelIntTwoEisensteinDegreeSetNonnegative D
+    let cofinalDiagonalEndpoint : Prop :=
+      CofinalScaledHausdorffDiagonalsNonnegative
+        primeArchEndpointHausdorffRadius normalizedPrimeArchMoment
+    let aggregateNegativeMassEndpoint : Prop :=
+      CofinalHausdorffBernsteinNegativeMassVanishing
+        primeArchEndpointHausdorffRadius normalizedPrimeArchMoment
+    let exactBernsteinZeroEndpoint : Prop :=
+      ∀ N : ℕ,
+        hausdorffBernsteinNegativeMass
+          (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+            normalizedPrimeArchMoment) N = 0
     let subexponential : Prop :=
       ∀ epsilon : ℝ, 0 < epsilon → ∀ᶠ j : ℕ in atTop,
         Z j ≤ Real.exp (epsilon * (cold j : ℝ))
     let recurrentBound : Prop := ∃ C : ℝ, ∃ᶠ j : ℕ in atTop, Z j ≤ C
     Tendsto F atTop (nhds xiProjectiveReflectionRadius) ∧
     (sourceEndpoint ↔ sparseEisensteinEndpoint) ∧
-    (sparseEisensteinEndpoint ↔ hausdorffEndpoint) ∧
+    (sparseEisensteinEndpoint ↔ cofinalDiagonalEndpoint) ∧
+    (cofinalDiagonalEndpoint ↔ aggregateNegativeMassEndpoint) ∧
+    (aggregateNegativeMassEndpoint ↔ exactBernsteinZeroEndpoint) ∧
+    (exactBernsteinZeroEndpoint ↔ hausdorffEndpoint) ∧
     (hausdorffEndpoint ↔ Tendsto F atTop (nhds 0)) ∧
     (Tendsto F atTop (nhds 0) ↔ subexponential) ∧
     (subexponential ↔ recurrentBound) ∧
@@ -75,6 +93,25 @@ theorem primeArchCofinalSourceTemperatureMaster
       PrimeArchSourceTraceHankelIntTwoEisensteinDegreeSetNonnegative D ↔
         RiemannHypothesis :=
     primeArchSourceTraceHankelIntTwoEisensteinDegreeSetNonnegative_iff_riemannHypothesis hD
+  have hdiagonal :
+      CofinalScaledHausdorffDiagonalsNonnegative
+          primeArchEndpointHausdorffRadius normalizedPrimeArchMoment ↔
+        RiemannHypothesis :=
+    cofinalScaledPrimeArchHausdorffDiagonalsNonnegative_iff_riemannHypothesis
+  have hnegativeMass :
+      CofinalHausdorffBernsteinNegativeMassVanishing
+          primeArchEndpointHausdorffRadius normalizedPrimeArchMoment ↔
+        RiemannHypothesis :=
+    cofinalPrimeArchHausdorffBernsteinNegativeMassVanishing_iff_riemannHypothesis
+  have hexactMass :
+      CofinalHausdorffBernsteinNegativeMassVanishing
+          primeArchEndpointHausdorffRadius normalizedPrimeArchMoment ↔
+        ∀ N : ℕ,
+          hausdorffBernsteinNegativeMass
+            (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+              normalizedPrimeArchMoment) N = 0 :=
+    cofinalHausdorffBernsteinNegativeMassVanishing_iff_forall_eq_zero
+      primeArchEndpointHausdorffRadius normalizedPrimeArchMoment
   have hsourceQuadrant :
       LSeries.abscissaOfAbsConv
             (rectangularPrimePolarSourceTailNegativeDirichletCoefficient L N) ≤
@@ -104,10 +141,28 @@ theorem primeArchCofinalSourceTemperatureMaster
     primeArchComplexReflectionPositiveGram_iff_riemannHypothesis
   refine ⟨hrate,
     hsourceQuadrant.trans (hquadrant.trans hsparse.symm),
-    hsparse.trans hquadrant.symm,
+    hsparse.trans hdiagonal.symm,
+    hdiagonal.trans hnegativeMass.symm,
+    hexactMass,
+    hexactMass.symm.trans (hnegativeMass.trans hquadrant.symm),
     hquadrant.trans hfree, hfree.symm.trans hsub,
     hsub.symm.trans hfreq, hfreq.symm.trans hKMS.symm,
     hKMS.trans hgram.symm, hgram⟩
+
+/-- **Verified-prefix ultraviolet compression.**  Once the Xi divisor is known to be critical
+through height `H`, the entire cofinal Hausdorff/KMS defect is equivalent to passivity only in the
+remaining positive-frequency tail above any `R` with `R + 1 / 2 ≤ H`.  The verified prefix is
+therefore spent exactly once: it removes the matching compact frequency band, while the scalar
+aggregate negative Bernstein mass carries the undischarged tail. -/
+theorem continuedPrimeArchPositiveFrequencyAbove_iff_cofinalBernsteinNegativeMass_of_verifiedHeight
+    (H R : ℝ) (hverified : RHVerifiedThrough H) (hband : R + 1 / 2 ≤ H) :
+    ContinuedPrimeArchPositiveFrequencyAbove R ↔
+      CofinalHausdorffBernsteinNegativeMassVanishing
+        primeArchEndpointHausdorffRadius normalizedPrimeArchMoment := by
+  exact
+    (continuedPrimeArchPositiveFrequencyAbove_iff_rh_of_verifiedHeight
+      H R hverified hband).trans
+      cofinalPrimeArchHausdorffBernsteinNegativeMassVanishing_iff_riemannHypothesis.symm
 
 /-- **Scale-resolved cofinal spectrum.**  At every nonnegative horizontal scale, the arithmetic
 abscissa bound and the projective support-radius bound are identical, while every cofinal thermal

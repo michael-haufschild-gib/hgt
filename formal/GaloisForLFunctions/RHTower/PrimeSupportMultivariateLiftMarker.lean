@@ -46,6 +46,17 @@ theorem eval_primeWordSquarefreeMarker {α : Type*} [DecidableEq α]
       ∏ i ∈ GaloisForLFunctions.primeWordSupport w, σ i := by
   simp [primeWordSquarefreeMarker]
 
+/-- Evaluation of the support marker in any commutative ring is the product over the distinct
+letters of the word.  This is the coefficient-changing form used by analytic and spectral
+specializations of the marker. -/
+theorem eval₂Hom_primeWordSquarefreeMarker
+    {α R : Type*} [DecidableEq α] [CommRing R]
+    (f : α → R) (w : List α) :
+    MvPolynomial.eval₂Hom (Int.castRingHom R) f
+        (primeWordSquarefreeMarker w) =
+      ∏ i ∈ GaloisForLFunctions.primeWordSupport w, f i := by
+  simp [primeWordSquarefreeMarker]
+
 /-- Word corresponding to the singleton multiplicity packet in the parity no-go. -/
 def singletonLiftWord : List (Fin 2) := [0]
 

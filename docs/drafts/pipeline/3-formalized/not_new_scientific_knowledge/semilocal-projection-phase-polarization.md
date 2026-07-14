@@ -9,7 +9,7 @@
 - **Statement:** Canonically phase-rotating one self-adjoint projection tangent converts the
   symmetric mixed-curvature identity into the antisymmetric normal Gram exactly; compactness of
   only the base-compressed mixed derivative therefore forces compactness of the orientation
-  sector.
+  sector, and exact real--imaginary polarization wires that sector to the finite Euler Gram.
 
 ## Goal
 
@@ -71,8 +71,8 @@ The finite Sonin extraction problem no longer needs two independently supplied c
 It is enough to construct a completed prime--Gamma two-parameter projection family whose first
 directions are:
 
-1. the unweighted real Euler tangent;
-2. the canonical phase rotation of a real seam-weighted Euler tangent;
+1. a real seam-weighted Euler `t`-tangent;
+2. the canonical phase rotation of the unweighted universal Euler `s`-tangent;
 
 and prove that its **base-compressed** mixed derivative is compact on each Xi zero fibre. Splitting
 the complex seam packet into real and imaginary parts then gives two such real phase-polarized
@@ -81,6 +81,22 @@ proved Calkin-faithful in Lean.
 
 This is a constraint formulation. The phase rotation is algebraic at the fixed base projection;
 no projection flow, zero enumeration, or limiting divisor measure is introduced.
+
+Lean also proves the exact source wiring. For every complex packet `u`,
+
+\[
+G(u)=G(\operatorname{Re}u)+iG(\operatorname{Im}u),
+\]
+
+and for a real packet `v`,
+
+\[
+G(v)=B_v^*B_1-B_1^*B_v.
+\]
+
+Thus two phase-polarized families with compact compressed mixed derivatives, one for
+`Re u` and one for `Im u`, make the complete complex finite Euler orientation Gram compact. This
+is the operator to which the existing finite Calkin-faithfulness theorem applies.
 
 ## Open core
 
@@ -92,9 +108,10 @@ performed inside the completed finite product.
 
 ## Lean certificate
 
-Module:
+Modules:
 
 - `formal/GaloisForLFunctions/RHTower/SemilocalProjectionPhasePolarization.lean`
+- `formal/GaloisForLFunctions/RHTower/SemilocalEulerPhasePolarization.lean`
 
 Main declarations:
 
@@ -105,6 +122,11 @@ Main declarations:
 - `selfAdjointIdempotentFamily_phaseRotated_mixed_identity`
 - `selfAdjointIdempotentFamily_phaseRotated_mixed_eq_connectionCurvature`
 - `selfAdjointIdempotentFamily_phaseRotated_normalSkewGram_isCompact`
+- `finiteEulerOrientationMatrix_re_im`
+- `finiteArchimedeanEulerOrientationGram_re_im`
+- `finiteArchimedeanEulerOrientationGram_ofReal_eq_boundarySkew`
+- `finiteArchimedeanEulerOrientationGram_isCompact_of_re_im_boundarySkew`
+- `finiteArchimedeanEulerOrientationGram_isCompact_of_phaseRotatedFamily`
 
 ## Gates
 
@@ -114,6 +136,9 @@ Main declarations:
 - [x] exact phase-polarized mixed-curvature identity proved
 - [x] connection-curvature reformulation proved
 - [x] compressed-mixed compactness transfer proved
+- [x] exact real--imaginary finite Euler orientation decomposition proved
+- [x] real finite Euler orientation identified with the literal boundary skew Gram
+- [x] phase-rotated family compactness wired to the finite Euler Calkin operator
 - [x] module imported by the `RHTower` umbrella
 - [ ] completed prime--Gamma phase families constructed
 - [ ] Xi-zero-fibre compressed mixed derivative proved compact

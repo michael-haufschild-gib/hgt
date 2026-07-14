@@ -259,6 +259,68 @@ theorem thetaSquareIndexDyadicHaarResidual_eq_quarterCompletedCoboundary
   dsimp only [a] at hcompletion ⊢
   linear_combination -(1 / 4 : ℝ) * hcompletion
 
+/-- Adding the exact half of the completion split to the quarter-completed residual recovers the
+uncompleted canonical-density translation coboundary.  This is the first of the two aggregate
+square channels in the normalized current difference below. -/
+theorem thetaSquareIndexDyadicHaarResidual_add_completion_eq_densityCoboundary
+    (N : ℕ) (x : ℝ) :
+    thetaSquareIndexDyadicHaarResidual N x +
+        (((2 : ℝ) ^ N - 1) / 4) * Real.exp (-x / 2) =
+      Real.exp (((N : ℝ) * Real.log 2) / 2) *
+          thetaCuspTailSecondDensity (x - (N : ℝ) * Real.log 2) -
+        thetaCuspTailSecondDensity x := by
+  let a : ℝ := (N : ℝ) * Real.log 2
+  have hlog : Real.exp a = (2 : ℝ) ^ N := by
+    dsimp only [a]
+    rw [← Real.rpow_natCast, Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 2)]
+    congr 1
+    ring
+  have hcompletion :
+      Real.exp (a / 2) * Real.exp (-(x - a) / 2) =
+        (2 : ℝ) ^ N * Real.exp (-x / 2) := by
+    rw [← Real.exp_add,
+      show a / 2 + -(x - a) / 2 = -x / 2 + a by ring,
+      Real.exp_add, hlog]
+    ring
+  rw [thetaSquareIndexDyadicHaarResidual_eq_quarterCompletedCoboundary]
+  unfold thetaCuspTailSecondQuarterCompletedProfile
+  dsimp only [a] at hcompletion ⊢
+  ring_nf at hcompletion ⊢
+  rw [hcompletion]
+  ring
+
+/-- Subtracting the other half of the completion split gives a coboundary of the exactly even
+remainder `rho - E/2`.  Hence the two aggregate square channels differ by exactly twice the
+completion coefficient and are not independent packet estimates. -/
+theorem thetaSquareIndexDyadicHaarResidual_sub_completion_eq_evenRemainderCoboundary
+    (N : ℕ) (x : ℝ) :
+    thetaSquareIndexDyadicHaarResidual N x -
+        (((2 : ℝ) ^ N - 1) / 4) * Real.exp (-x / 2) =
+      Real.exp (((N : ℝ) * Real.log 2) / 2) *
+          thetaCuspTailSecondEvenRemainder
+            (x - (N : ℝ) * Real.log 2) -
+        thetaCuspTailSecondEvenRemainder x := by
+  let a : ℝ := (N : ℝ) * Real.log 2
+  have hlog : Real.exp a = (2 : ℝ) ^ N := by
+    dsimp only [a]
+    rw [← Real.rpow_natCast, Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 2)]
+    congr 1
+    ring
+  have hcompletion :
+      Real.exp (a / 2) * Real.exp (-(x - a) / 2) =
+        (2 : ℝ) ^ N * Real.exp (-x / 2) := by
+    rw [← Real.exp_add,
+      show a / 2 + -(x - a) / 2 = -x / 2 + a by ring,
+      Real.exp_add, hlog]
+    ring
+  rw [thetaSquareIndexDyadicHaarResidual_eq_quarterCompletedCoboundary]
+  unfold thetaCuspTailSecondQuarterCompletedProfile
+    thetaCuspTailSecondEvenRemainder
+  dsimp only [a] at hcompletion ⊢
+  ring_nf at hcompletion ⊢
+  rw [hcompletion]
+  ring
+
 /-- Rank-two form with all completion pieces absorbed: the reflected Haar prefix is the symmetric
 cross of the universal seam with one quarter-completed translation coboundary. -/
 theorem thetaSquareIndexDyadicHaarLayer_reflected_sum_eq_quarterCompletedCoboundary
@@ -302,6 +364,64 @@ theorem hermitianCrossCurrent_add_square_eq_squareDifference
   simp [Complex.mul_im, Complex.mul_re]
   ring
 
+/-- Centered square-difference form of the surviving rank-two current.  If `A` is the
+uncompleted translation coboundary and `c * E` is its quarter-completion correction, then the
+Hermitian cross of `A - cE` with `E` is exactly the difference between the currents of the
+uncompleted and half-completed coboundaries.  This identity keeps the completion square inside
+the cancellation; no division by `c` is required. -/
+theorem hermitianCrossCurrent_centeredSquareDifference
+    (A A' E E' : ℂ) (c : ℝ) :
+    (A' * (starRingEnd ℂ) A).im -
+        ((A' - (((2 * c : ℝ) : ℂ) * E')) *
+          (starRingEnd ℂ) (A - (((2 * c : ℝ) : ℂ) * E))).im =
+      2 * c *
+        (((A' - ((c : ℂ) * E')) * (starRingEnd ℂ) E).im +
+          (E' * (starRingEnd ℂ) (A - ((c : ℂ) * E))).im) := by
+  simp only [map_sub, map_mul, Complex.conj_ofReal]
+  simp [Complex.mul_im, Complex.mul_re]
+  ring
+
+/-- Normalized form of the centered square-difference law.  At Haar depth `N > 0` the
+completion coefficient is `c = (2^N - 1) / 4`, so the denominator `4c` is exactly
+`2^N - 1`.  This is the aggregate (rather than packetwise) form in which the remaining
+rank-two current has to be estimated. -/
+theorem half_hermitianCrossCurrent_centered_eq_normalizedSquareDifference
+    (A A' E E' : ℂ) (c : ℝ) (hc : c ≠ 0) :
+    (1 / 2 : ℝ) *
+        (((A' - ((c : ℂ) * E')) * (starRingEnd ℂ) E).im +
+          (E' * (starRingEnd ℂ) (A - ((c : ℂ) * E))).im) =
+      ((A' * (starRingEnd ℂ) A).im -
+          ((A' - (((2 * c : ℝ) : ℂ) * E')) *
+            (starRingEnd ℂ) (A - (((2 * c : ℝ) : ℂ) * E))).im) /
+        (4 * c) := by
+  have h := hermitianCrossCurrent_centeredSquareDifference A A' E E' c
+  rw [h]
+  field_simp [hc]
+  <;> ring
+
+/-- Dyadic specialization of the normalized square-difference law.  The complete off-diagonal
+cross at depth `N > 0` is exactly the difference of the uncompleted and half-completed aggregate
+square currents divided by `2^N - 1`; no norm or triangle inequality has been used. -/
+theorem half_hermitianCrossCurrent_dyadicCentered_eq_normalizedSquareDifference
+    (A A' E E' : ℂ) {N : ℕ} (hN : 0 < N) :
+    let c : ℝ := ((2 : ℝ) ^ N - 1) / 4
+    (1 / 2 : ℝ) *
+        (((A' - ((c : ℂ) * E')) * (starRingEnd ℂ) E).im +
+          (E' * (starRingEnd ℂ) (A - ((c : ℂ) * E))).im) =
+      ((A' * (starRingEnd ℂ) A).im -
+          ((A' - (((2 * c : ℝ) : ℂ) * E')) *
+            (starRingEnd ℂ) (A - (((2 * c : ℝ) : ℂ) * E))).im) /
+        ((2 : ℝ) ^ N - 1) := by
+  dsimp only
+  have hpow : (1 : ℝ) < (2 : ℝ) ^ N := by
+    exact one_lt_pow₀ (by norm_num) (Nat.ne_of_gt hN)
+  have hc : (((2 : ℝ) ^ N - 1) / 4) ≠ 0 := by
+    positivity
+  rw [half_hermitianCrossCurrent_centered_eq_normalizedSquareDifference
+    A A' E E' (((2 : ℝ) ^ N - 1) / 4) hc]
+  congr 1
+  ring
+
 /-- Opposite logarithmic phase drifts cancel identically in the symmetric off-diagonal
 Hermitian current.  Only the real part of the relative phase survives; in particular no
 `a * |F|^2` drift remains in this channel. -/
@@ -326,9 +446,9 @@ theorem spectralTranslationPhase_mul_conj_neg_re
       (starRingEnd ℂ) (spectralTranslationPhase (-a) z)).re =
       Real.cos (2 * a * z.re) := by
   unfold spectralTranslationPhase
-  rw [map_exp, ← Complex.exp_add]
+  rw [← Complex.exp_conj, ← Complex.exp_add]
   rw [Complex.exp_re]
-  simp only [map_mul, map_ofReal, map_neg, map_I]
+  simp only [map_mul, Complex.conj_ofReal, map_neg, Complex.conj_I]
   norm_num
   ring_nf
 

@@ -33,20 +33,48 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteS
 def projectionPhaseRotation (P D : H →L[ℂ] H) : H →L[ℂ] H :=
   Complex.I • ((1 - P) * D * P - P * D * (1 - P))
 
+omit [CompleteSpace H] in
 /-- The canonical quarter-turn rotates the normal corner by exactly `i`. -/
 theorem projectionNormalCorner_phaseRotation
     (P D : H →L[ℂ] H) (hP2 : P * P = P) :
     projectionNormalCorner P (projectionPhaseRotation P D) =
       Complex.I • projectionNormalCorner P D := by
   unfold projectionPhaseRotation projectionNormalCorner
-  rw [mul_smul_comm, smul_mul_assoc]
-  have hQ2 : (1 - P) * (1 - P) = 1 - P := by
+  let Q : H →L[ℂ] H := 1 - P
+  let X : H →L[ℂ] H := Q * D * P
+  let Y : H →L[ℂ] H := P * D * Q
+  have hQ2 : Q * Q = Q := by
+    dsimp only [Q]
     calc
       (1 - P) * (1 - P) = 1 - P - P + P * P := by noncomm_ring
       _ = 1 - P - P + P := by rw [hP2]
       _ = 1 - P := by abel
-  have hQP : (1 - P) * P = 0 := by rw [sub_mul, one_mul, hP2, sub_self]
-  simp only [mul_sub, mul_assoc, hQ2, hQP, zero_mul, sub_zero]
+  have hQP : Q * P = 0 := by
+    dsimp only [Q]
+    rw [sub_mul, one_mul, hP2, sub_self]
+  have hQX : Q * X = X := by
+    dsimp only [X]
+    calc
+      Q * (Q * D * P) = (Q * Q) * D * P := by simp only [mul_assoc]
+      _ = Q * D * P := by rw [hQ2]
+  have hQY : Q * Y = 0 := by
+    dsimp only [Y]
+    calc
+      Q * (P * D * Q) = (Q * P) * D * Q := by simp only [mul_assoc]
+      _ = 0 := by simp [hQP]
+  have hXP : X * P = X := by
+    dsimp only [X]
+    calc
+      Q * D * P * P = Q * D * (P * P) := by simp only [mul_assoc]
+      _ = Q * D * P := by rw [hP2]
+  have hYP : Y * P = 0 := by
+    dsimp only [Y]
+    calc
+      P * D * Q * P = P * D * (Q * P) := by simp only [mul_assoc]
+      _ = 0 := by rw [hQP, mul_zero]
+  change Q * (Complex.I • (X - Y)) * P = Complex.I • X
+  rw [mul_smul_comm, smul_mul_assoc]
+  simp only [mul_sub, hQX, hQY, hXP, sub_zero]
 
 /-- The canonical quarter-turn preserves self-adjointness. -/
 theorem adjoint_projectionPhaseRotation
@@ -56,7 +84,7 @@ theorem adjoint_projectionPhaseRotation
   unfold projectionPhaseRotation
   change star (Complex.I • ((1 - P) * D * P - P * D * (1 - P))) = _
   rw [star_smul, star_sub]
-  simp only [starRingEnd_apply, map_neg, map_one, Complex.conj_I, neg_smul]
+  rw [show star (Complex.I : ℂ) = -Complex.I by exact Complex.conj_I]
   change -Complex.I •
       (adjoint (((1 - P) * D) ∘L P) - adjoint ((P * D) ∘L (1 - P))) = _
   rw [adjoint_comp, adjoint_comp]
@@ -64,6 +92,18 @@ theorem adjoint_projectionPhaseRotation
       (adjoint P ∘L adjoint ((1 - P) ∘L D) -
         adjoint (1 - P) ∘L adjoint (P ∘L D)) = _
   rw [adjoint_comp, adjoint_comp, adjoint_one_sub hPadj, hPadj, hDadj]
+  simp only [mul_assoc]
+  module
+
+/-- Phase polarization turns the symmetric normal Gram into `i` times the antisymmetric normal
+Gram exactly. -/
+theorem phasePolarized_normalGram_eq_smul_normalSkewGram
+    (A B : H →L[ℂ] H) :
+    adjoint A * (Complex.I • B) + adjoint (Complex.I • B) * A =
+      Complex.I • (adjoint A * B - adjoint B * A) := by
+  change adjoint A * (Complex.I • B) + star (Complex.I • B) * A = _
+  rw [star_smul, mul_smul_comm, smul_mul_assoc]
+  rw [show star (Complex.I : ℂ) = -Complex.I by exact Complex.conj_I]
   module
 
 /-- A compact symmetric Gram with one normal direction rotated by `i` forces the original
@@ -73,20 +113,21 @@ theorem phasePolarized_normalSkewGram_isCompact
     (h : IsCompactOperator
       (adjoint A * (Complex.I • B) + adjoint (Complex.I • B) * A)) :
     IsCompactOperator (adjoint A * B - adjoint B * A) := by
-  have hs := h.smul (-Complex.I)
-  have hEq :
-      (-Complex.I) •
-          (adjoint A * (Complex.I • B) + adjoint (Complex.I • B) * A) =
-        adjoint A * B - adjoint B * A := by
-    change (-Complex.I) •
-        (adjoint A * (Complex.I • B) +
-          star (Complex.I • B) * A) = _
-    rw [star_smul]
-    simp only [starRingEnd_apply, Complex.conj_I]
-    module
-  rw [hEq] at hs
+  rw [phasePolarized_normalGram_eq_smul_normalSkewGram] at h
+  let T : H →L[ℂ] H := adjoint A * B - adjoint B * A
+  change IsCompactOperator (Complex.I • T) at h
+  have hs : IsCompactOperator ((-Complex.I) • (Complex.I • T)) := by
+    exact h.smul (-Complex.I)
+  have hI : (-Complex.I) * Complex.I = (1 : ℂ) := by
+    rw [neg_mul, Complex.I_mul_I]
+    ring
+  have heq : (-Complex.I) • (Complex.I • T) = T := by
+    rw [smul_smul, hI, one_smul]
+  change IsCompactOperator T
+  rw [← heq]
   exact hs
 
+omit [CompleteSpace H] in
 /-- The canonical quarter-turn is tangent to the idempotent constraint, without requiring the
 input operator itself to satisfy the tangent equation. -/
 theorem projectionPhaseRotation_tangent
@@ -94,11 +135,39 @@ theorem projectionPhaseRotation_tangent
     projectionPhaseRotation P D * P + P * projectionPhaseRotation P D =
       projectionPhaseRotation P D := by
   unfold projectionPhaseRotation
+  let Q : H →L[ℂ] H := 1 - P
+  let X : H →L[ℂ] H := Q * D * P
+  let Y : H →L[ℂ] H := P * D * Q
+  have hQP : Q * P = 0 := by
+    dsimp only [Q]
+    rw [sub_mul, one_mul, hP2, sub_self]
+  have hPQ : P * Q = 0 := by
+    dsimp only [Q]
+    rw [mul_sub, mul_one, hP2, sub_self]
+  have hXP : X * P = X := by
+    dsimp only [X]
+    calc
+      Q * D * P * P = Q * D * (P * P) := by simp only [mul_assoc]
+      _ = Q * D * P := by rw [hP2]
+  have hYP : Y * P = 0 := by
+    dsimp only [Y]
+    calc
+      P * D * Q * P = P * D * (Q * P) := by simp only [mul_assoc]
+      _ = 0 := by rw [hQP, mul_zero]
+  have hPX : P * X = 0 := by
+    dsimp only [X]
+    calc
+      P * (Q * D * P) = (P * Q) * D * P := by simp only [mul_assoc]
+      _ = 0 := by simp [hPQ]
+  have hPY : P * Y = Y := by
+    dsimp only [Y]
+    calc
+      P * (P * D * Q) = (P * P) * D * Q := by simp only [mul_assoc]
+      _ = P * D * Q := by rw [hP2]
+  change (Complex.I • (X - Y)) * P + P * (Complex.I • (X - Y)) =
+    Complex.I • (X - Y)
   rw [smul_mul_assoc, mul_smul_comm]
-  have hQP : (1 - P) * P = 0 := by rw [sub_mul, one_mul, hP2, sub_self]
-  have hPQ : P * (1 - P) = 0 := by rw [mul_sub, mul_one, hP2, sub_self]
-  simp only [sub_mul, mul_sub, mul_assoc, hP2, hQP, hPQ, zero_mul, mul_zero,
-    sub_zero, zero_sub]
+  simp only [sub_mul, mul_sub, hXP, hYP, hPX, hPY, zero_sub, sub_zero]
   module
 
 /-- The base-compressed mixed derivative in a phase-rotated projection family is exactly minus
@@ -134,23 +203,7 @@ theorem selfAdjointIdempotentFamily_phaseRotated_mixed_identity
           (Complex.I • projectionNormalCorner (F 0 0) D) +
         adjoint (Complex.I • projectionNormalCorner (F 0 0) D) *
           projectionNormalCorner (F 0 0) (Dt 0)) at hmixed
-  rw [show
-      adjoint (projectionNormalCorner (F 0 0) (Dt 0)) *
-            (Complex.I • projectionNormalCorner (F 0 0) D) +
-          adjoint (Complex.I • projectionNormalCorner (F 0 0) D) *
-            projectionNormalCorner (F 0 0) (Dt 0) =
-        Complex.I •
-          (adjoint (projectionNormalCorner (F 0 0) (Dt 0)) *
-              projectionNormalCorner (F 0 0) D -
-            adjoint (projectionNormalCorner (F 0 0) D) *
-              projectionNormalCorner (F 0 0) (Dt 0)) by
-        change adjoint (projectionNormalCorner (F 0 0) (Dt 0)) *
-              (Complex.I • projectionNormalCorner (F 0 0) D) +
-            star (Complex.I • projectionNormalCorner (F 0 0) D) *
-              projectionNormalCorner (F 0 0) (Dt 0) = _
-        rw [star_smul]
-        simp only [starRingEnd_apply, Complex.conj_I]
-        module] at hmixed
+  rw [phasePolarized_normalGram_eq_smul_normalSkewGram] at hmixed
   exact hmixed
 
 /-- After the canonical phase rotation, symmetric mixed curvature is exactly `i` times the
@@ -210,9 +263,10 @@ theorem selfAdjointIdempotentFamily_phaseRotated_normalSkewGram_isCompact
     change Complex.I • (F 0 0 * Dst * F 0 0) = _
     rw [hmixed]
     dsimp only [O]
-    module
-  rw [hEq] at hscaled
-  exact hscaled
+    simp only [smul_neg, smul_smul, Complex.I_mul_I, neg_smul, one_smul, neg_neg]
+  change IsCompactOperator (O : H → H)
+  rw [← hEq]
+  simpa only [ContinuousLinearMap.coe_smul] using hscaled
 
 /-- Full mixed compactness is a sufficient, but not necessary, source input. -/
 theorem selfAdjointIdempotentFamily_phaseRotated_normalSkewGram_isCompact_of_mixed

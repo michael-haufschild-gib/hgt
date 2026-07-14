@@ -413,3 +413,16 @@ Euler directions and recombine the two skew Grams.
 finite prime--Gamma semilocal family and prove that their base-compressed mixed derivatives are
 compact on actual Xi zero fibres.  The phase rotation is now unconditional algebra; the remaining
 input is precisely the completed source--divisor value relation and its compact cancellation.
+
+The companion formal module `SemilocalEulerPhasePolarization.lean` now closes the finite complex
+recombination used above.  It proves exactly
+
+```text
+G(u)=G(Re u)+i G(Im u),
+G(v)=B_v^*B_1-B_1^*B_v  for real v,
+```
+
+and shows that a phase-rotated projection family with the literal weighted and universal Euler
+normal corners transfers compactness of `P D_st P` to compactness of `G(v)`.  Hence two completed
+families, for `Re a(rho)` and `Im a(rho)`, feed directly into the existing finite Euler Calkin
+faithfulness theorem.  No unformalized algebraic recombination remains in the reduction.

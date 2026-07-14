@@ -408,6 +408,9 @@ theorem integrableOn_neg_profileDerivative_mul_phaseDerivative
       _ = ‖((t * h t : ℝ) : ℂ)‖ := by
         rw [Complex.norm_real, Real.norm_eq_abs,
           abs_of_nonneg (mul_nonneg ht0 hh0)]
+        ring
+      _ = |t * -criticalLogPhaseTranslatedDensityProfileDerivative L N t| := by
+        simp only [h, Complex.norm_real, Real.norm_eq_abs]
 
 lemma integrableOn_ofReal_mul_spectralTranslationPhase
     {f : ℝ → ℝ} (hf : IntegrableOn f (Ioi 0))
@@ -499,6 +502,7 @@ theorem positiveTailCompletion_neg_profileDerivative_eq
       ‖p t‖ * ‖(g t : ℂ)‖ ≤ 1 * ‖(g t : ℂ)‖ :=
         mul_le_mul_of_nonneg_right hpNorm (norm_nonneg _)
       _ = ‖(g t : ℂ)‖ := by ring
+      _ = |g t| := by simp only [Complex.norm_real, Real.norm_eq_abs]
   have hpgzero : Tendsto (fun t : ℝ => p t * (g t : ℂ))
       (𝓝[>] 0) (nhds (g 0 : ℂ)) := by
     have h := (hp 0).continuousAt.mul (hg 0).ofReal_comp.continuousAt
@@ -623,6 +627,7 @@ theorem positiveTailCompletionDerivative_neg_profileDerivative_eq
       _ = ‖((t * g t : ℝ) : ℂ)‖ := by
         simp only [Complex.norm_real, Real.norm_eq_abs, abs_mul,
           abs_of_nonneg ht, mul_one]
+      _ = |t * g t| := by simp only [Complex.norm_real, Real.norm_eq_abs]
   have hibp := integral_Ioi_mul_deriv_eq_deriv_mul
     (a := (0 : ℝ)) (a' := (0 : ℂ)) (b' := (0 : ℂ))
     (u := q) (u' := q')
@@ -745,10 +750,77 @@ theorem norm_positiveTailCompletionDerivative_le_re_div
         ht.le (hh t ht) hz
     _ = (positiveTailCompletion h z).re / z.im := by
       rw [MeasureTheory.integral_div]
+      have hre :
+          (∫ t : ℝ in Ioi 0, (f t).re) =
+            (∫ t : ℝ in Ioi 0, f t).re :=
+        integral_re (μ := volume.restrict (Ioi 0)) hf
       calc
-        (∫ t : ℝ in Ioi 0, (f t).re) =
-            (∫ t : ℝ in Ioi 0, f t).re := integral_re hf
-        _ = (positiveTailCompletion h z).re := rfl
+        (∫ t : ℝ in Ioi 0, (f t).re) / z.im =
+            (∫ t : ℝ in Ioi 0, f t).re / z.im := by rw [hre]
+        _ = (positiveTailCompletion h z).re / z.im := rfl
+
+/-- The completion contraction controls the full derivative norm, not merely one orientation of
+the current.  This stronger form is what is needed after a bounded cosine rotates an opposite-phase
+Hermitian cross. -/
+theorem norm_derivative_le_two_div_im_of_completion_contraction
+    {F D G G' z : ℂ} (hz : 0 < z.im)
+    (hG : G = -I * z * F)
+    (hG' : G' = -I * (F + z * D))
+    (hcontract : ‖G'‖ ≤ ‖G‖ / z.im) :
+    ‖D‖ ≤ (2 / z.im) * ‖F‖ := by
+  have hzNorm : z.im ≤ ‖z‖ := by
+    simpa only [abs_of_pos hz] using Complex.abs_im_le_norm z
+  have hzNormPos : 0 < ‖z‖ := lt_of_lt_of_le hz hzNorm
+  have hGnorm : ‖G‖ = ‖z‖ * ‖F‖ := by
+    rw [hG, norm_mul, norm_mul]
+    norm_num
+  have hzd : z * D = I * G' - F := by
+    rw [hG']
+    ring_nf
+    rw [I_sq]
+    ring
+  have htri : ‖z‖ * ‖D‖ ≤ ‖G'‖ + ‖F‖ := by
+    rw [← norm_mul, hzd]
+    calc
+      ‖I * G' - F‖ ≤ ‖I * G'‖ + ‖F‖ := norm_sub_le _ _
+      _ = ‖G'‖ + ‖F‖ := by simp
+  have hc : ‖G'‖ ≤ (‖z‖ / z.im) * ‖F‖ := by
+    rw [hGnorm] at hcontract
+    calc
+      ‖G'‖ ≤ (‖z‖ * ‖F‖) / z.im := hcontract
+      _ = (‖z‖ / z.im) * ‖F‖ := by ring
+  have hdiv : ‖D‖ ≤ ‖F‖ / z.im + ‖F‖ / ‖z‖ := by
+    have hmul : ‖z‖ * ‖D‖ ≤
+        ‖z‖ * (‖F‖ / z.im + ‖F‖ / ‖z‖) := by
+      calc
+        ‖z‖ * ‖D‖ ≤ ‖G'‖ + ‖F‖ := htri
+        _ ≤ (‖z‖ / z.im) * ‖F‖ + ‖F‖ := by gcongr
+        _ = ‖z‖ * (‖F‖ / z.im + ‖F‖ / ‖z‖) := by
+          field_simp [ne_of_gt hzNormPos, ne_of_gt hz]
+          <;> ring
+    exact (mul_le_mul_iff_of_pos_left hzNormPos).mp hmul
+  calc
+    ‖D‖ ≤ ‖F‖ / z.im + ‖F‖ / ‖z‖ := hdiv
+    _ ≤ ‖F‖ / z.im + ‖F‖ / z.im := by gcongr
+    _ = (2 / z.im) * ‖F‖ := by ring
+
+theorem abs_orientedCurrent_le_two_div_im_of_completion_contraction
+    {F D G G' z : ℂ} (hz : 0 < z.im)
+    (hG : G = -I * z * F)
+    (hG' : G' = -I * (F + z * D))
+    (hcontract : ‖G'‖ ≤ ‖G‖ / z.im) :
+    |(D * (starRingEnd ℂ) F).im| ≤
+      (2 / z.im) * Complex.normSq F := by
+  have hD := norm_derivative_le_two_div_im_of_completion_contraction
+    hz hG hG' hcontract
+  calc
+    |(D * (starRingEnd ℂ) F).im| ≤ ‖D * (starRingEnd ℂ) F‖ :=
+      Complex.abs_im_le_norm _
+    _ = ‖D‖ * ‖F‖ := by simp
+    _ ≤ ((2 / z.im) * ‖F‖) * ‖F‖ := by gcongr
+    _ = (2 / z.im) * Complex.normSq F := by
+      rw [Complex.normSq_eq_norm_sq]
+      ring
 
 theorem orientedCurrent_le_two_div_im_of_completion_contraction
     {F D G G' z : ℂ} (hz : 0 < z.im)
@@ -826,6 +898,28 @@ theorem orientedCurrent_le_two_div_im_of_positiveTailCompletion
     _ ≤ ‖positiveTailCompletion h z‖ / z.im := by
       exact (div_le_div_iff_of_pos_right hz).2 (Complex.re_le_norm _)
 
+theorem abs_orientedCurrent_le_two_div_im_of_positiveTailCompletion
+    {h : ℝ → ℝ} {F D z : ℂ} (hz : 0 < z.im)
+    (hh : ∀ t ∈ Ioi (0 : ℝ), 0 ≤ h t)
+    (hcompletionInt : IntegrableOn (fun t : ℝ =>
+      (h t : ℂ) * (1 - spectralTranslationPhase t z)) (Ioi 0))
+    (hderivativeInt : IntegrableOn (fun t : ℝ =>
+      (h t : ℂ) * (-((t : ℂ) * I) * spectralTranslationPhase t z)) (Ioi 0))
+    (hcompletion : positiveTailCompletion h z = -I * z * F)
+    (hcompletionDerivative :
+      positiveTailCompletionDerivative h z = -I * (F + z * D)) :
+    |(D * (starRingEnd ℂ) F).im| ≤
+      (2 / z.im) * Complex.normSq F := by
+  apply abs_orientedCurrent_le_two_div_im_of_completion_contraction hz
+    hcompletion hcompletionDerivative
+  calc
+    ‖positiveTailCompletionDerivative h z‖ ≤
+        (positiveTailCompletion h z).re / z.im :=
+      norm_positiveTailCompletionDerivative_le_re_div hz hh
+        hcompletionInt hderivativeInt
+    _ ≤ ‖positiveTailCompletion h z‖ / z.im := by
+      exact (div_le_div_iff_of_pos_right hz).2 (Complex.re_le_norm _)
+
 /-- A complete finite critical translate packet has a uniform half-plane upper current budget.
 All off-diagonal Hermitian currents between its Abel blocks are retained in the norm of the final
 recombined packet value. -/
@@ -850,6 +944,40 @@ theorem criticalLogPhase_tail_packetCurrent_le_two_div_im
   let h : ℝ → ℝ := fun t =>
     -criticalLogPhaseTranslatedDensityProfileDerivative L N t
   apply orientedCurrent_le_two_div_im_of_positiveTailCompletion
+    (h := h) hz
+  · intro t ht
+    exact neg_criticalLogPhaseTranslatedDensityProfileDerivative_nonneg hL N ht.le
+  · simpa only [h] using
+      integrableOn_neg_profileDerivative_mul_one_sub_phase hL N hz.le
+  · simpa only [h] using
+      integrableOn_neg_profileDerivative_mul_phaseDerivative hL N hz.le
+  · simpa only [h] using positiveTailCompletion_neg_profileDerivative_eq hL N hz.le
+  · simpa only [h] using
+      positiveTailCompletionDerivative_neg_profileDerivative_eq hL N hz.le
+
+/-- Absolute form of the complete packet budget.  It is stable under the signed cosine rotation
+created by pairing the two reflected logarithmic phase channels. -/
+theorem abs_criticalLogPhase_tail_packetCurrent_le_two_div_im
+    {L : ℝ} (hL : 0 ≤ L) {z : ℂ} (hz : 0 < z.im) (N : ℕ) :
+    |(((∑ j ∈ Finset.range N,
+        (criticalLogPhaseCoefficient L j z *
+            thetaCuspTailSecondDensityAtomOnePhaseTailDerivative (j * L) z +
+          criticalLogPhaseCoefficientDerivative L j z *
+            thetaCuspTailSecondDensityAtomOnePhaseTail (j * L) z))) *
+      (starRingEnd ℂ)
+        (∑ j ∈ Finset.range N,
+          criticalLogPhaseCoefficient L j z *
+            thetaCuspTailSecondDensityAtomOnePhaseTail (j * L) z)).im| ≤
+      (2 / z.im) *
+        Complex.normSq
+          (∑ j ∈ Finset.range N,
+            criticalLogPhaseCoefficient L j z *
+              thetaCuspTailSecondDensityAtomOnePhaseTail (j * L) z) := by
+  rw [criticalLogPhase_tail_packetCurrent_eq_translatedProfile hL hz.le N,
+    criticalLogPhase_tail_packet_eq_translatedProfile hL hz.le N]
+  let h : ℝ → ℝ := fun t =>
+    -criticalLogPhaseTranslatedDensityProfileDerivative L N t
+  apply abs_orientedCurrent_le_two_div_im_of_positiveTailCompletion
     (h := h) hz
   · intro t ht
     exact neg_criticalLogPhaseTranslatedDensityProfileDerivative_nonneg hL N ht.le

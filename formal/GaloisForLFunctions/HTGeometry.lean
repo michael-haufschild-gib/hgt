@@ -52,6 +52,7 @@ import GaloisForLFunctions.HTGeometry.StanleyReisnerNumeratorDifferentialMatroid
 import GaloisForLFunctions.HTGeometry.TranslationDenominatorLaurentShift
 import GaloisForLFunctions.HTGeometry.StanleyReisnerLaurentRows
 import GaloisForLFunctions.HTGeometry.LocalizedStanleyReisnerDifferentialMatroid
+import GaloisForLFunctions.HTGeometry.StanleyReisnerTranslationRegular
 import GaloisForLFunctions.HTGeometry.RationalIndependentWeights
 import GaloisForLFunctions.HTGeometry.FacetOrbitShift
 import GaloisForLFunctions.HTGeometry.UpperEndConstantField
@@ -61,6 +62,7 @@ import GaloisForLFunctions.HTGeometry.UniversalFacetSourcePhase
 import GaloisForLFunctions.HTGeometry.UpperEndRationalGauge
 import GaloisForLFunctions.HTGeometry.UniversalConstraintOrientation
 import GaloisForLFunctions.HTGeometry.UniversalOrientedHerglotz
+import GaloisForLFunctions.HTGeometry.AtomicHerglotzResidueCone
 import GaloisForLFunctions.HTGeometry.UniversalOrientedConstraintProduct
 import GaloisForLFunctions.HTGeometry.FacetSewnHerglotzStanleyReisner
 
@@ -180,6 +182,7 @@ import GaloisForLFunctions.HTGeometry.SzegoRadialMean
 import GaloisForLFunctions.HTGeometry.SzegoBoundaryLimit
 import GaloisForLFunctions.HTGeometry.SzegoTail
 import GaloisForLFunctions.HTGeometry.SzegoUpperBoundAC
+import GaloisForLFunctions.HTGeometry.SzegoHapproxAC
 
 /- ## Complete area inventory -/
 import GaloisForLFunctions.HTGeometry.AlgebraicMatroidRank
@@ -231,6 +234,8 @@ import GaloisForLFunctions.HTGeometry.DifferentialHopfPrimitive
 import GaloisForLFunctions.HTGeometry.DifferentialIndependence
 import GaloisForLFunctions.HTGeometry.DifferentialAdjoinPairClassification
 import GaloisForLFunctions.HTGeometry.PrimeDirichletTailGroupoid
+import GaloisForLFunctions.HTGeometry.FiniteRangeProjectiveTail
+import GaloisForLFunctions.HTGeometry.RungeOneAtomAbsorption
 import GaloisForLFunctions.HTGeometry.PrimeOrientationConstraintOpacity
 import GaloisForLFunctions.HTGeometry.PrimeOrientationTailCluster
 import GaloisForLFunctions.HTGeometry.PrimeWalshTailConstraint
@@ -441,6 +446,7 @@ import GaloisForLFunctions.HTGeometry.FiberPermanentIdentity
 import GaloisForLFunctions.HTGeometry.MagnitudeSurvivalAssembly
 import GaloisForLFunctions.HTGeometry.MagnitudeInhomogeneousSurvival
 import GaloisForLFunctions.HTGeometry.MagnitudeAtomGrading
+import GaloisForLFunctions.HTGeometry.BalancedDiagonalNonvanishing
 import GaloisForLFunctions.HTGeometry.GaussComponentHaarAverage
 import GaloisForLFunctions.HTGeometry.DixmierIdeal
 import GaloisForLFunctions.HTGeometry.DirichletLinePartialSum

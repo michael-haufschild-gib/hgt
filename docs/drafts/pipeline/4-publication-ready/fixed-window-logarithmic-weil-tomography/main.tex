@@ -166,9 +166,20 @@ endpoint-calibrated differences satisfy the exact divisor law
 Opposite-phase sector cancellation proves unconditionally the complete $14\times44$ rectangle
 $D^*_{k,r}\ge0$ for $k\le13$ and $r\le43$.  Hence RH, the prime--polar abscissa endpoint, and
 finite KMS closure are each equivalent to positivity on one common deep quadrant $k,r\ge M$, for
-some finite $M$.  Every bounded-index arm is dispensable.  This discharges 616 conditions of the
-exact RH criterion without assuming RH and reduces the remaining Hausdorff obligation to a
-genuinely two-parameter cofinal asymptotic.  The same source Hankel form admits an independent
+some finite $M$.  Every bounded-index arm is dispensable.  More strongly, normalize
+$s_n=R_*^{-n}\mu_n$, let $a_{M,i}$ be its degree-$M$ Bernstein masses, and put
+$\eta_M=\sum_i(a_{M,i})^-$.  Then
+\[
+ \mathrm{RH}\Longleftrightarrow
+ \exists M_j\to\infty,\qquad \eta_{M_j}\longrightarrow0.
+\]
+Degree elevation gives the unconditional monotonicity law $0\le\eta_M\le\eta_{M+1}$.
+Consequently cofinal vanishing rigidifies to $\eta_M=0$ at every degree, whereas false RH
+produces a finite $M_0$ with a permanent gap
+$0<\eta_{M_0}\le\eta_M$ for all $M\ge M_0$.  This discharges 616 conditions of the exact RH
+criterion without assuming RH and reduces the remaining Hausdorff obligation from a
+two-parameter sign problem to one monotone scalar order parameter.  The same source Hankel form
+admits an independent
 sparse compression: for every infinite $D\subset\mathbb N$, it is enough to test monic integer
 polynomials whose exact degree lies in $D$ and which are Eisenstein at $2$, hence irreducible in
 positive degree.  Thus neither a bounded collection of degrees nor the complement of this fixed
@@ -194,6 +205,9 @@ $M_2=\mathcal Q_W$, convergence of the finite KMS systems to $\mathcal Q_W$, the
 reflection-positive realization, and RH are equivalent.  Thus the quartet budget, source
 abscissa, projective radius, thermal gap, and ultraviolet response are successive clauses of one
 master theorem rather than separate headline results.
+More generally, any verified critical-line prefix through height $H$ transfers passivity to every
+centered band $|\Re z|\le R$ with $R+\frac12\le H$; the remaining positive-frequency tail is then
+equivalent to the same monotone Bernstein order parameter and to RH.
 Full response convergence is unnecessary.  A universal countable family of one-state,
 zero-Hamiltonian KMS systems with rational observable amplitudes has imaginary response cluster
 set exactly $(-\infty,0]$ at every upper-half-plane point.  Hence it is enough to require the
@@ -257,12 +271,13 @@ Hankel obstruction into a literal finite moment inequality.  An exact Ward reduc
 that both residual low-degree inequalities live on one positive Gibbs moment fiber.  More
 decisively, the endpoint-calibrated Hausdorff array is an exact reciprocal-square divisor value.
 The quartet sector bound and the opposite phases of $\lambda_\rho$ and $R_*-\lambda_\rho$ prove
-an unconditional $14\times44$ positivity rectangle.  The master theorem therefore identifies one
-precise common deep quadrant---rather than two infinite coordinate arms or a collection of
-parallel criteria---as the remaining Hausdorff object.  In the thermal chart, every simultaneous
-cofinal finite-volume/cooling schedule has free-energy density exactly $\delta_*$, so the same
-endpoint is equivalently one subexponential partition estimate.  The later named results
-establish the individual clauses needed for this master statement.
+an unconditional $14\times44$ positivity rectangle.  The master theorem therefore identifies a
+monotone scalar aggregate-negativity defect as the minimal remaining Hausdorff order parameter.
+Its zero phase is rigid under degree elevation, and its positive phase has a persistent
+finite-degree gap.  In the thermal chart, every simultaneous cofinal finite-volume/cooling schedule
+has free-energy density exactly $\delta_*$, so the same endpoint is equivalently one
+subexponential partition estimate.  The later named results establish the individual clauses
+needed for this master statement.
 
 \begin{theorem}[Theorem A: endpoint-calibrated source--temperature master theorem]
 \label{thm:main}
@@ -618,10 +633,44 @@ Then
 \]
 For every infinite set $D\subset\mathbb N$, these conditions are also equivalent to
 \[
+ \begin{gathered}
  \sum_{i,j}a_i a_j\mu_{i+j}\ge0
- \quad\text{for every monic }p(X)=\sum_i a_iX^i\in\mathbb Z[X]
- \text{ Eisenstein at }2\text{ with }\deg p\in D.
+ \quad\text{for every monic }p(X)=\sum_i a_iX^i\in\mathbb Z[X]\\
+ \text{that is Eisenstein at }2\text{ and satisfies }\deg p\in D.
+ \end{gathered}
  \tag{1.20p}
+\]
+Normalize $s_n=R_*^{-n}\mu_n$, write
+$\ell_s(\sum_nc_nX^n)=\sum_nc_ns_n$, and, for $M\ge1$, put
+\[
+ B_{M,i}(X)=\binom MiX^i(1-X)^{M-i},\qquad
+ a_{M,i}=\ell_s(B_{M,i}),\qquad
+ \eta_M=\sum_{i=0}^M(a_{M,i})^-.
+ \tag{1.20q}
+\]
+Then the entire Hausdorff condition admits the scalar cofinal form
+\[
+ \boxed{\begin{aligned}
+ \mathrm{RH}
+ &\Longleftrightarrow
+ \forall M_0\ \exists M\ge M_0\ \forall 0\le i\le M,
+       \quad D^*_{i,M-i}\ge0\qquad\text{(complete diagonals)}\\
+ &\Longleftrightarrow
+ \exists M_j\to\infty,\qquad \eta_{M_j}\longrightarrow0
+       \qquad\text{(aggregate negative mass)}\notag\\
+ &\Longleftrightarrow
+ \eta_M=0\quad\text{for every }M\ge1
+       \qquad\text{(degree-elevation rigidity).}
+ \end{aligned}}
+ \tag{1.20r}
+\]
+Moreover $0\le\eta_M\le\eta_{M+1}$ for every $M\ge1$, and
+\[
+ \neg\mathrm{RH}
+ \Longleftrightarrow
+ \exists M_0\ge1\ \forall M\ge M_0,qquad
+ 0<\eta_{M_0}\le\eta_M.
+ \tag{1.20s}
 \]
 The following critical conditions are equivalent:
 \[
@@ -656,12 +705,16 @@ The following critical conditions are equivalent:
  &\Longleftrightarrow D_{k,r}\ge0\quad(k,r\ge0)\\
  &\Longleftrightarrow
  \exists M\ \forall k,r\ge M,\quad D^*_{k,r}\ge0\\
+ &\Longleftrightarrow
+ \text{arbitrarily large complete calibrated Hausdorff diagonals are nonnegative}\\
+ &\Longleftrightarrow
+ \exists M_j\to\infty,\quad\eta_{M_j}\to0\\
  &\Longleftrightarrow \mathcal K(R_0)\\
  &\Longleftrightarrow
  \text{the complete normalized source Hankel form is nonnegative}\\
  &\Longleftrightarrow
- \text{the irreducible Eisenstein-at-two source tests are nonnegative on any fixed infinite
- degree set}\\
+ \substack{\text{the irreducible Eisenstein-at-two source tests are nonnegative}\\
+ \text{on any fixed infinite degree set}}\\
  &\Longleftrightarrow
  \text{the normalized moments admit a reflection-positive Gram orbit}\\
  &\Longleftrightarrow
@@ -698,11 +751,14 @@ At $\alpha=0$, all clauses identify one common endpoint:
  &\Longleftrightarrow \mathrm{HF}(218/25)
  \Longleftrightarrow E=0
  \Longleftrightarrow H=C
- \Longleftrightarrow M_2=\mathcal Q_W
- \Longleftrightarrow
- \frac{\log Z_{J_m,k_m}}{k_m}\longrightarrow0
- \Longleftrightarrow
- \exists M\ \forall k,r\ge M,\ D^*_{k,r}\ge0.
+ \Longleftrightarrow M_2=\mathcal Q_W\\
+ &\Longleftrightarrow
+ \frac{\log Z_{J_m,k_m}}{k_m}\longrightarrow0\\
+ &\Longleftrightarrow
+ \exists M\ \forall k,r\ge M,\ D^*_{k,r}\ge0\\
+ &\Longleftrightarrow
+ \exists M_j\to\infty,\ \eta_{M_j}\to0
+ \Longleftrightarrow \forall M\ge1,\ \eta_M=0.
  \end{aligned}
  \tag{1.22}
 \]
@@ -711,10 +767,13 @@ The scale-resolved budget \textup{(1.11)}, the off-line self-charge law
 cubic source estimate \textup{(1.20)} are successive quantitative stages of this one theorem.
 In the thermal chart the source misses the positive divisor moment by less than $1/150000$ in
 absolute scale.  Every cofinal finite-volume/cooling section recovers the exact transverse radius
-as its free-energy density.  The remaining theorem may therefore be stated positively in either
-of two source-coupled forms: subexponential growth of one faithful cofinal thermal section, or
-eventual positivity in one common deep Hausdorff quadrant.  Equivalently it is the endpoint
-saturation $M_2\le\mathcal Q_W$ or the ultraviolet condition $\mathrm{HF}(218/25)$.
+as its free-energy density.  The remaining theorem now has a minimal monotone scalar source form:
+the aggregate negative Bernstein mass must vanish; degree-elevation rigidity then forces exact
+vanishing at every finite degree.  Conversely, false RH creates a strictly positive defect at
+one finite degree which persists under all later refinements.
+Equivalently, one may prove subexponential growth of one faithful cofinal thermal section,
+positivity on one common deep Hausdorff quadrant, the endpoint saturation
+$M_2\le\mathcal Q_W$, or the ultraviolet condition $\mathrm{HF}(218/25)$.
 
 There is also a classical superzeta literature in which Dirichlet series are formed directly over
 the Riemann zeros and their meromorphic polar structure is studied~\cite{Voros2003}.  That
@@ -3049,9 +3108,11 @@ This completes the proof.
 \label{cor:sparse-eisenstein-hankel}
 Let $D\subset\mathbb N$ be infinite.  Then RH is equivalent to
 \[
+ \begin{gathered}
  \sum_{i,j}a_i a_j\mu_{i+j}\ge0
- \quad\text{for every monic }p(X)=\sum_i a_iX^i\in\mathbb Z[X]
- \text{ Eisenstein at }2\text{ with }\deg p\in D.
+ \quad\text{for every monic }p(X)=\sum_i a_iX^i\in\mathbb Z[X]\\
+ \text{that is Eisenstein at }2\text{ and satisfies }\deg p\in D.
+ \end{gathered}
  \tag{8.23}
 \]
 Equivalently, every nonleading coefficient is even and the constant coefficient is not divisible
@@ -3069,7 +3130,7 @@ Under RH, (8.14) proves the stated inequalities.  Conversely, write
 and suppose that $\mathcal Q(p)<0$ for some $p\in\mathbb Z[X]$.  Since an infinite subset of
 $\mathbb N$ is unbounded, choose $d\in D$ with $d>\deg p$.  For every positive integer $N$, both
 \[
- q_{N,+}=X^d+2+4Np,qquad q_{N,-}=X^d+2-4Np
+ q_{N,+}=X^d+2+4Np,\qquad q_{N,-}=X^d+2-4Np
 \]
 are monic of exact degree $d$.  Every nonleading coefficient is even, while the constant term is
 $2$ modulo $4$; hence both polynomials are Eisenstein at $2$ and irreducible.  The assumed
@@ -3473,10 +3534,49 @@ holds unconditionally.  Consequently, for every fixed $L>0$ and admissible $N$,
  \end{aligned}
  \tag{9.22hfd}
 \]
-When these inequalities hold, the finite positive atomic approximants are canonical.  Let
-$\ell_\mu(\sum_ja_jX^j)=\sum_ja_j\mu_j$ and
+There is a scalar cofinal criterion with an additional rigidity law.  Set
 \[
- B_{M,i}(X)=\binom MiX^i(1-X)^{M-i},\qquad
+ \begin{aligned}
+ s_n&=R_*^{-n}\mu_n,&
+ B_{M,i}(X)&=\binom MiX^i(1-X)^{M-i},\\
+ \ell_s\!\left(\sum_nc_nX^n\right)&=\sum_nc_ns_n,&
+ a_{M,i}&=\ell_s(B_{M,i}),\\
+ \eta_M&=\sum_{i=0}^M(a_{M,i})^-.
+ \end{aligned}
+ \tag{9.22hfe}
+\]
+Then
+\[
+ \boxed{\begin{aligned}
+ \mathrm{RH}
+ &\Longleftrightarrow
+ \forall M_0\ \exists M\ge\max\{1,M_0\}\ \forall i\le M,
+       \quad D^*_{i,M-i}\ge0\\
+ &\Longleftrightarrow
+ \exists M_j\to\infty,\qquad \eta_{M_j}\longrightarrow0\notag\\
+ &\Longleftrightarrow
+ \forall M\ge1,\qquad \eta_M=0.
+ \end{aligned}}
+ \tag{9.22hff}
+\]
+Moreover,
+\[
+ 0\le\eta_M\le\eta_{M+1}\qquad(M\ge1),
+ \tag{9.22hfg}
+\]
+and therefore
+\[
+ \neg\mathrm{RH}
+ \Longleftrightarrow
+ \exists M_0\ge1\ \forall M\ge M_0,qquad
+ 0<\eta_{M_0}\le\eta_M.
+ \tag{9.22hfh}
+\]
+Thus the scalar condition is approximate only in syntax: degree elevation turns cofinal decay
+into exact zero-rigidity and turns false RH into a persistent positive phase.
+When these inequalities hold, the finite positive atomic approximants are canonical.  Write
+$\ell_\mu(\sum_ja_jX^j)=\sum_ja_j\mu_j$ and set
+\[
  \mu_n^{[M]}=
  \sum_{i=0}^{M}\ell_\mu(B_{M,i})\left(\frac{i}{M}\right)^n
  \quad(M\ge1).
@@ -3514,6 +3614,11 @@ For every fixed $L>0$ and admissible $N$, the following conditions are equivalen
  &\Longleftrightarrow D_{k,r}\ge0\quad(k,r\ge0)\\
  &\Longleftrightarrow
  \exists M\ \forall k,r\ge M,\quad D^*_{k,r}\ge0\\
+ &\Longleftrightarrow
+ \forall M_0\ \exists M\ge\max\{1,M_0\}\ \forall i\le M,
+       \quad D^*_{i,M-i}\ge0\\
+ &\Longleftrightarrow
+ \exists M_j\to\infty,\quad\eta_{M_j}\to0\\
  &\Longleftrightarrow\mathcal K(218/25)\\
  &\Longleftrightarrow\mathrm{RH}.
  \end{aligned}
@@ -3775,6 +3880,85 @@ proved then gives RH.  This proves \textup{(9.22hf)} and supplies the canonical 
 which are the constructive Hausdorff--Bernstein realization of the moment criterion
 \cite{Hausdorff1921}.
 
+We prove the cofinal-diagonal and aggregate negative-mass laws
+\textup{(9.22hfe)}--\textup{(9.22hff)}.  For the normalized sequence
+$s_n=R_*^{-n}\mu_n$, expansion of the Bernstein basis gives
+\[
+ a_{M,i}
+ =\binom Mi\sum_{j=0}^{M-i}(-1)^j\binom{M-i}{j}
+       \frac{\mu_{i+j}}{R_*^{\,i+j}}
+ =\frac{\binom Mi}{R_*^{\,M}}D^*_{i,M-i}.
+ \tag{9.26fa}
+\]
+In particular, a nonnegative complete calibrated diagonal gives a degree-$M$ positive atomic
+Bernstein approximation to $s$.  Independently of any sign assumption, its signed moments
+\[
+ s_n^{[M]}=\sum_{i=0}^Ma_{M,i}\left(\frac iM\right)^n
+ \tag{9.26fb}
+\]
+converge to $s_n$ for each fixed $n$.  Indeed, the same falling-factorial calculation as in
+\textup{(9.26f)} gives
+\[
+ s_n^{[M]}
+ =\sum_{j=0}^nS(n,j)\frac{(M)_j}{M^n}s_j
+ \longrightarrow s_n.
+ \tag{9.26fc}
+\]
+Thus arbitrarily large nonnegative complete diagonals yield a cofinal family of finite positive
+atomic systems converging coordinatewise to $s$.  Multiplication of the $n$th coordinate by
+$R_*^n$ yields local finite positive-atomic approximation of $(\mu_n)$, and hence RH.  Conversely,
+RH makes every calibrated difference nonnegative, so every complete diagonal is nonnegative.
+
+For the scalar condition replace each signed mass by its positive part and set
+\[
+ \widetilde s_n^{[M]}
+ =\sum_{i=0}^M(a_{M,i})^+\left(\frac iM\right)^n.
+\]
+This is a finite positive atomic moment sequence and, because $0\le i/M\le1$,
+\[
+ 0\le
+ \widetilde s_n^{[M]}-s_n^{[M]}
+ =\sum_{i=0}^M(a_{M,i})^-
+      \left(\frac iM\right)^n
+ \le\eta_M.
+ \tag{9.26fd}
+\]
+If $M_j\to\infty$ and $\eta_{M_j}\to0$, equations
+\textup{(9.26fc)}--\textup{(9.26fd)} show that
+$\widetilde s_n^{[M_j]}\to s_n$ for every fixed coordinate.  Rescaling again gives local finite
+positive-atomic approximation of $(\mu_n)$ and therefore RH.  Under RH, equation
+\textup{(9.26fa)} makes every $a_{M,i}$ nonnegative, so $\eta_M=0$ for every $M$.  This proves the
+cofinal implications in \textup{(9.22hff)}.
+
+The stronger rigidity comes from exact Bernstein degree elevation:
+\[
+ B_{M,i}
+ =\frac{M+1-i}{M+1}B_{M+1,i}
+  +\frac{i+1}{M+1}B_{M+1,i+1}.
+ \tag{9.26fe}
+\]
+Applying $\ell_s$, using $(u+v)^-\le u^-+v^-$ and
+$(cu)^-=c\,u^-$ for $c\ge0$, and then summing over $i$, gives
+\[
+ \begin{aligned}
+ \eta_M
+ &\le\sum_{i=0}^M
+ \left(\frac{M+1-i}{M+1}(a_{M+1,i})^-
+ +\frac{i+1}{M+1}(a_{M+1,i+1})^-\right)\\
+ &=\sum_{j=0}^{M+1}(a_{M+1,j})^-=\eta_{M+1}.
+ \end{aligned}
+ \tag{9.26ff}
+\]
+The last equality is the barycentric column-sum identity: the two coefficients incident to each
+interior index $j$ add to one, and the two endpoint columns each carry weight one.
+Now suppose $M_j\to\infty$ and $\eta_{M_j}\to0$.  For each fixed $M$, eventually $M\le M_j$;
+by \textup{(9.26ff)},
+$0\le\eta_M\le\eta_{M_j}\to0$, hence $\eta_M=0$.  Exact vanishing at every degree trivially
+implies cofinal vanishing.  Finally, if RH is false, some $\eta_{M_0}$ must be nonzero; otherwise
+the just-proved equivalence would give RH.  Since $\eta_{M_0}\ge0$, it is strictly positive, and
+\textup{(9.26ff)} gives $0<\eta_{M_0}\le\eta_M$ for every $M\ge M_0$.  This proves
+\textup{(9.22hfg)}--\textup{(9.22hfh)} and completes the scalar phase dichotomy.
+
 We now prove the endpoint-calibrated quantitative refinement.  For a real polynomial $p$, absolute
 convergence of the reciprocal-square divisor moments and coefficientwise comparison with the
 source moment germ give
@@ -3831,14 +4015,14 @@ are nonnegative, so the cofinal-quadrant condition in \textup{(9.22hfd)} is nece
 the converse without recovering either bounded-index arm.  Suppose that
 $D^*_{k,r}\ge0$ whenever $k,r\ge M_0$, and put
 \[
- a_M(X)=X^M(R_*-X)^M,qquad
+ a_M(X)=X^M(R_*-X)^M,\qquad
  t_M(n)=\ell_\mu\!\left(X^na_M(X)^2\right)
-       =D^*_{2M+n,,2M},qquad M\ge M_0.
+       =D^*_{2M+n,2M},\qquad M\ge M_0.
  \tag{9.26n}
 \]
 The exact shift identity gives, for every $k,r\ge0$,
 \[
- \Delta_{R_*}^{,r}t_M(k)=D^*_{2M+k,,2M+r}\ge0.
+ \Delta_{R_*}^{r}t_M(k)=D^*_{2M+k,2M+r}\ge0.
  \tag{9.26o}
 \]
 The Hausdorff--Bernstein theorem therefore makes $t_M$ a locally finite positive-atomic moment
@@ -3856,17 +4040,32 @@ are the real points $0$ and $R_*$, so $a_M(\lambda_0)\ne0$.  Choose a phase $c$ 
 $\Re(\lambda_0c^2)<0$.  For each $n$, real polynomial interpolation on the finite set of divisor
 coordinates with modulus at least $|\lambda_0|$ gives a polynomial $p_n$ such that
 \[
- a_M(\lambda_0)p_n(\lambda_0)=c,qquad
+ a_M(\lambda_0)p_n(\lambda_0)=c,\qquad
  a_M(\overline{\lambda_0})p_n(\overline{\lambda_0})=\overline c,
  \tag{9.26q}
 \]
 while all other coordinates in that finite outer set are annihilated.  Multiplication by a
-high power of the normalized real quadratic
-$(X-\lambda_0)(X-\overline{\lambda_0})$ makes the same evaluations tend to zero at every inner
-coordinate.  The resulting evaluations are uniformly bounded on the bounded reciprocal-square
-spectrum.  Since $\sum_\rho|\lambda_\rho|<\infty$, dominated convergence in \textup{(9.26p)}
-then leaves only the $\lambda_0$ and $\overline{\lambda_0}$ fibres, with a strictly negative real
-limit.  This contradicts \textup{(9.26p)}.  Hence every $\lambda_\rho$ is real, and
+phase-corrected radial monomial gives the required simultaneous localization explicitly.  Write
+$\alpha=\lambda_0$, $u=\alpha/|\alpha|$, let $s_F\in\mathbb R[X]$ vanish on every outer orbit
+except $\{\alpha,\overline\alpha\}$, and let $\ell_n\in\mathbb R[X]$ be the affine interpolant
+with
+\[
+ \ell_n(\alpha)=
+ \frac{c\,u^{-n}}{a_M(\alpha)s_F(\alpha)},\qquad
+ \ell_n(\overline\alpha)=\overline{\ell_n(\alpha)}.
+\]
+Then
+\[
+ p_n(X)=s_F(X)\ell_n(X)\left(\frac{X}{|\alpha|}\right)^n
+ \tag{9.26r}
+\]
+satisfies \textup{(9.26q)}, annihilates all other outer coordinates, and tends to zero at every
+inner coordinate because $|z/\alpha|<1$.  The affine interpolants are uniformly bounded on the
+bounded reciprocal-square spectrum since $|u^{-n}|=1$; hence so are
+$a_M(z)p_n(z)$.  Since $\sum_\rho|\lambda_\rho|<\infty$, dominated convergence in
+\textup{(9.26p)} leaves exactly the $\alpha$ and $\overline\alpha$ fibres, including all their
+positive multiplicity weights, and their real contribution is strictly negative by the choice
+of $c$.  This contradicts \textup{(9.26p)}.  Hence every $\lambda_\rho$ is real, and
 \textup{(9.25)} forces $\Re\rho=1/2$ for every zero.  Thus the common cofinal quadrant already
 implies RH.  Combining this principal-ideal detector with the source-abscissa criterion and the
 finite-KMS equivalence proves \textup{(9.22hfd)}.
@@ -4162,10 +4361,10 @@ Moreover,
  &\Longleftrightarrow\mathcal K(R)\\
  &\Longleftrightarrow\mathrm{RH}.
  \end{aligned}
- \tag{9.27a}
+ \tag{9.28a}
 \]
 In particular, $R_0=218/25$ is admissible, so the only response sign left in
-\textup{(9.27a)} is the positive-frequency tail $\Re z>218/25$.
+\textup{(9.28a)} is the positive-frequency tail $\Re z>218/25$.
 \end{proposition}
 
 \begin{proof}
@@ -4181,7 +4380,7 @@ $\overline{a_\rho}$.  For $z=x+iy$, direct reduction to a common denominator giv
  \frac{(x-\Re a)^2+y^2-(\Im a)^2}
  {\bigl((x-\Re a)^2+(y-\Im a)^2\bigr)
   \bigl((x-\Re a)^2+(y+\Im a)^2\bigr)}.
- \tag{9.27b}
+ \tag{9.28b}
 \]
 Here $\Re a_\rho=\Im\rho$ and
 $|\Im a_\rho|=|\Re\rho-\frac12|<\frac12$.  Suppose first that
@@ -4189,7 +4388,7 @@ $\rho=\beta+i\gamma$ is off the critical line.  Its four divisor points
 \[
  \rho,\qquad 1-\overline\rho,\qquad \overline\rho,
  \qquad 1-\rho
- \tag{9.27c}
+ \tag{9.28c}
 \]
 are distinct: equality across the line would give $\beta=1/2$, while equality across the real
 axis would give $\gamma=0$.  Formula \textup{(8.4)} is invariant under both reflections, so the
@@ -4198,22 +4397,22 @@ and \textup{(8.18)} gives $c_\rho\ge(1+\gamma^2)^{-1}$,
 \[
  \frac4{1+\gamma^2}\le4c_\rho\le C,
  \qquad 4\le C(1+\gamma^2).
- \tag{9.27d}
+ \tag{9.28d}
 \]
 Together with $C<93/2000$, this yields
 \[
  \gamma^2>\frac{8000}{93}-1=\frac{7907}{93}.
- \tag{9.27e}
+ \tag{9.28e}
 \]
-Now \textup{(1.20a)} and \textup{(9.27d)} imply
+Now \textup{(1.20a)} and \textup{(9.28d)} imply
 \[
  (R+\tfrac12)^2<\gamma^2=(\Re a_\rho)^2.
- \tag{9.27f}
+ \tag{9.28f}
 \]
 Consequently, if $|x|\le R$, then
 $|x-\Re a_\rho|>\frac12>|\Im a_\rho|$.  If $\rho$ lies on the critical line, then
-$\Im a_\rho=0$, and the numerator in \textup{(9.27b)} is positive directly.  Thus, for $y>0$,
-the numerator after $-2y$ in \textup{(9.27b)} is positive for every line-reflected pair, while
+$\Im a_\rho=0$, and the numerator in \textup{(9.28b)} is positive directly.  Thus, for $y>0$,
+the numerator after $-2y$ in \textup{(9.28b)} is positive for every line-reflected pair, while
 both denominator factors are positive.
 
 The same quartet inequality proves that the central upper band is zero-free.  Indeed, a zero
@@ -4224,14 +4423,14 @@ $\rho=\frac12+iz=(\frac12-y)+ix$.  If $|x|\le R$, then
    <C\bigl((R+\tfrac12)^2+1\bigr)<4,
 \]
 a contradiction.  The relative-resolvent expansion is therefore absolutely convergent on the
-band, and pairwise summation of \textup{(9.27b)} proves \textup{(1.20c)}.
+band, and pairwise summation of \textup{(9.28b)} proves \textup{(1.20c)}.
 
 The involution $z\mapsto-\overline z$ preserves the upper strip and satisfies
 \[
  \Im\mathfrak R_\Gamma(-\overline z)=\Im\mathfrak R_\Gamma(z).
- \tag{9.27g}
+ \tag{9.28g}
 \]
-Thus $\mathrm{HF}(R)$, the unconditional central-band sign, and \textup{(9.27g)} give the
+Thus $\mathrm{HF}(R)$, the unconditional central-band sign, and \textup{(9.28g)} give the
 anti-Herglotz sign throughout $0<\Im z<1/2$.  If an off-line Xi zero existed, reflect it into
 $0<\Re s<1/2$ and approach its logarithmic-derivative pole from the positive real direction.
 The residue is its positive analytic multiplicity, so $\Im\mathfrak R_\Gamma$ becomes positive,
@@ -4253,6 +4452,49 @@ Finally,
 and $R_0>0$, proving the rational assertion.
 \end{proof}
 
+\begin{proposition}[Verified-height passivity transfer]
+\label{prop:verified-height-frequency-transfer}
+Let $H,R\in\mathbb R$ satisfy $R+\frac12\le H$, and suppose every nontrivial Xi zero
+$\rho$ in the open critical strip with $0<|\Im\rho|\le H$ lies on the critical line.  Then
+\[
+ \Im\mathfrak R_\Gamma(z)\le0
+ \qquad\left(0<\Im z<\frac12,\ |\Re z|\le R\right).
+ \tag{9.28h}
+\]
+Consequently,
+\[
+ \mathrm{HF}(R)
+ \Longleftrightarrow
+ \exists M_j\to\infty,\ \eta_{M_j}\to0
+ \Longleftrightarrow
+ \forall M\ge1,\ \eta_M=0
+ \Longleftrightarrow\mathrm{RH}.
+ \tag{9.28i}
+\]
+\end{proposition}
+
+\begin{proof}
+Let $a_\rho=(\rho-\frac12)(-i)$ as above.  If $|\Im\rho|\le H$, the verified-height
+hypothesis, together with Schwarz conjugation for negative ordinates, gives
+$\Im a_\rho=0$.  The numerator in the paired-resolvent formula \textup{(9.28b)} is then
+strictly positive for every $z$ in the upper half-plane.
+
+If $|\Im\rho|>H$, then $|\Re a_\rho|>H$.  For $|\Re z|\le R$,
+\[
+ |\Re z-\Re a_\rho|
+ \ge |\Re a_\rho|-|\Re z|
+ >H-R\ge\frac12>|\Im a_\rho|.
+ \tag{9.28j}
+\]
+Hence the same numerator is again positive.  Absolute convergence of the relative-resolvent
+expansion and summation over line-conjugate pairs prove \textup{(9.28h)}.  The involution
+$z\mapsto-\overline z$ reduces the complementary negative-frequency tail to the positive one,
+so the proof of Proposition~\ref{prop:endpoint-frequency-master} gives
+$\mathrm{HF}(R)\Longleftrightarrow\mathrm{RH}$.  The remaining equivalences are the scalar
+Bernstein criterion and its degree-elevation rigidity proved in
+\textup{(9.22hff)}--\textup{(9.22hfh)}.
+\end{proof}
+
 \begin{remark}[The positive endpoint obligation]
 \label{rem:thermal-boundary}
 The unconditional theorem proves that the exact pure-state source captures more than $83/84$ of
@@ -4266,7 +4508,7 @@ The
 remaining endpoint is
 \[
  \boxed{M_2\le\mathcal Q_W.}
- \tag{9.28}
+ \tag{9.29}
 \]
 Together with $\mathcal Q_W\le M_2$, this forces the transverse energy to vanish and proves RH.
 Thus a successful completion must strengthen the source-retention factor from
@@ -4488,7 +4730,9 @@ $A_{L,N}(X)=O_\varepsilon(X^{1+\varepsilon})$, or an operator theorem forcing an
 statements.  The paper
 therefore does not prove RH.  It reduces the remaining source problem to analytic continuation of
 the actual polar--prime critical-Mellin defect, with the critical growth of one explicit positive
-cumulative prime--polar mass as its equivalent monotone source chart.
+cumulative prime--polar mass as one equivalent monotone source chart.  In the canonical
+Hausdorff--KMS chart the weakest equivalent obligation obtained here is scalar: the aggregate
+negative Bernstein mass $\eta_M$ must tend to zero along one cofinal sequence of degrees.
 
 The projective--thermal master theorem places the endpoint and thermodynamic estimates in one
 scale-resolved spectrum.  It proves
@@ -4569,12 +4813,23 @@ infinite condition explicit:
  \tag{11.3b}
 \]
 Thus 616 exact Hausdorff source inequalities are theorems, and the remaining obligation is a
-single common deep quadrant.  The two bounded-index arms are unnecessary: multiplying by the
-principal-ideal factor $X^M(R_*-X)^M$ transfers deep-quadrant positivity to a positive moment
+single monotone scalar order parameter.  Indeed, with $s_n=R_*^{-n}\mu_n$ and $\eta_M$ the total
+negative mass of its degree-$M$ Bernstein system,
+\[
+ \mathrm{RH}\Longleftrightarrow
+ \exists M_j\to\infty,\ \eta_{M_j}\longrightarrow0
+ \Longleftrightarrow
+ \forall M\ge1,\ \eta_M=0.
+ \tag{11.3bb}
+\]
+Degree elevation gives $0\le\eta_M\le\eta_{M+1}$, so false RH is equivalently the persistent-gap
+phase $0<\eta_{M_0}\le\eta_M$ for all $M\ge M_0$, for some finite $M_0$.  The quadrant theorem
+remains useful because it removes both bounded-index arms:
+multiplication by $X^M(R_*-X)^M$ transfers deep-quadrant positivity to a positive moment
 functional, while any nonreal reciprocal-square atom survives that factor and is separated by a
 phase-corrected polynomial probe.  The finite southwest block is independently removed from the
 RH premise by an atomwise opposite-phase estimate.
-The same endpoint has two further cofinal compressions.  For every $J_m,k_m\to\infty$ and every
+The same endpoint has two complementary cofinal compressions.  For every $J_m,k_m\to\infty$ and every
 infinite $D\subset\mathbb N$,
 \[
  \boxed{\begin{aligned}
@@ -4585,9 +4840,9 @@ infinite $D\subset\mathbb N$,
  Z_{J_m,k_m}\le e^{\varepsilon k_m}\quad(m\gg1,\ \varepsilon>0),\\
  \mathrm{RH}
  &\Longleftrightarrow
- \sum_{i,j}a_i a_j\mu_{i+j}\ge0
- \quad\text{for every monic }p(X)=\sum_i a_iX^i\in\mathbb Z[X]
- \text{ Eisenstein at }2\text{ with }\deg p\in D.
+ \substack{\displaystyle\sum_{i,j}a_i a_j\mu_{i+j}\ge0
+ \quad\text{for every monic }p(X)=\sum_i a_iX^i\in\mathbb Z[X]\\
+ \text{that is Eisenstein at }2\text{ and satisfies }\deg p\in D.}
  \end{aligned}}
  \tag{11.3c}
 \]
