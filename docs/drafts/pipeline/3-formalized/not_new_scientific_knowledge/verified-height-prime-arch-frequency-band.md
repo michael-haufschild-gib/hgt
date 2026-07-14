@@ -68,9 +68,12 @@ File:
 `formal/GaloisForLFunctions/RHTower/PrimeArchVerifiedHeightAccretivity.lean`
 
 - `xiZeroCopy_re_eq_half_of_verifiedThrough_of_abs_im_le`
+- `XiC_ne_zero_of_upperHalf_verifiedHeightBand`
 - `xiRelativeResolventTerm_lineConj_pair_im_nonpos_of_verifiedHeight`
 - `xiRelativeResolventTrace_im_nonpos_of_verifiedHeight`
+- `xiRelativeResolventTrace_im_nonpos_on_verifiedHeightBand`
 - `continuedPrimeArchSourceRelativeTrace_im_nonpos_of_verifiedHeight`
+- `continuedPrimeArchSourceRelativeTrace_im_nonpos_on_verifiedHeightBand`
 - `continuedPrimeArchUpperAntiHerglotz_of_verifiedHeight_and_positiveFrequencyAbove`
 - `continuedPrimeArchPositiveFrequencyAbove_iff_rh_of_verifiedHeight`
 - `continuedPrimeArchPositiveFrequencyAbove_plattTrudgianArbRadius_iff_rh`

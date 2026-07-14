@@ -246,6 +246,52 @@ theorem norm_xiCentralBernsteinPencil_le_mass_add_two_negativeMass
       bernsteinCoefficientL1_eq_mass_add_two_negativeMass _ _
     _ = _ := by simp [radiusNormalizedMoment]
 
+/-- **Exact Bernstein order-unit RH criterion.**  The endpoint source lies in the positive
+Hausdorff chamber exactly when every Bernstein coefficient vector has total variation equal to
+its conserved zeroth mass. -/
+theorem riemannHypothesis_iff_forall_primeArchBernsteinCoefficientL1_eq_mass :
+    RiemannHypothesis ↔
+      ∀ N : ℕ,
+        bernsteinCoefficientL1
+            (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+              normalizedPrimeArchMoment) (N + 1) =
+          normalizedPrimeArchMoment 0 := by
+  constructor
+  · intro hRH N
+    rw [bernsteinCoefficientL1_eq_mass_add_two_negativeMass]
+    have hcofinal :=
+      cofinalPrimeArchHausdorffBernsteinNegativeMassVanishing_iff_riemannHypothesis.mpr hRH
+    have hzero :=
+      hausdorffBernsteinNegativeMass_eq_zero_of_cofinalVanishing hcofinal N
+    rw [hzero]
+    simp [radiusNormalizedMoment]
+  · intro hL1
+    apply cofinalPrimeArchHausdorffBernsteinNegativeMassVanishing_iff_riemannHypothesis.mp
+    apply
+      (cofinalHausdorffBernsteinNegativeMassVanishing_iff_forall_eq_zero
+        primeArchEndpointHausdorffRadius normalizedPrimeArchMoment).2
+    intro N
+    have h := hL1 N
+    rw [bernsteinCoefficientL1_eq_mass_add_two_negativeMass] at h
+    simp only [radiusNormalizedMoment, pow_zero] at h
+    linarith
+
+/-- Under RH every unit-disk value of the complete reciprocal-square Bernstein pencil is bounded
+by the conserved zeroth prime--Gamma mass, uniformly in the degree. -/
+theorem norm_xiCentralBernsteinPencil_le_mass_of_riemannHypothesis
+    (hRH : RiemannHypothesis) (N : ℕ) {w : ℂ} (hw : ‖w‖ ≤ 1) :
+    ‖xiCentralBernsteinPencil primeArchEndpointHausdorffRadius (N + 1) w‖ ≤
+      normalizedPrimeArchMoment 0 := by
+  have hbound :=
+    norm_xiCentralBernsteinPencil_le_mass_add_two_negativeMass
+      primeArchEndpointHausdorffRadius N hw
+  have hcofinal :=
+    cofinalPrimeArchHausdorffBernsteinNegativeMassVanishing_iff_riemannHypothesis.mpr hRH
+  have hzero :=
+    hausdorffBernsteinNegativeMass_eq_zero_of_cofinalVanishing hcofinal N
+  rw [hzero] at hbound
+  simpa using hbound
+
 end
 
 end RHTower

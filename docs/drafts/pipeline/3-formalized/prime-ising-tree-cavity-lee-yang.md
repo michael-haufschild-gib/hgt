@@ -1,8 +1,8 @@
 # Prime Ising trees from the ferromagnetic cavity map
 
 - **ID:** `prime-ising-tree-cavity-lee-yang`
-- **Stage:** 1-in-progress
-- **Type:** `[BRIDGE] [CANDIDATE]`
+- **Stage:** 3-formalized
+- **Type:** `[BRIDGE] [FORMALIZATION]`
 - **Source:** Bethe--Peierls tree recursion, Lee--Yang ferromagnetism, and the existing `HTGeometry` Blaschke/Schur API
 - **Statement:** For every finite rooted prime-labelled tree with normalized disagreement weights `0 <= c_e <= 1`, the exact Ising cavity recursion preserves the unit disk; after substituting the centered prime fields, every zero of the finite interacting tree partition has zero imaginary part.
 
@@ -13,8 +13,8 @@ Extend the Lean corpus from products of independent or two-spin Lee--Yang blocks
 ## Gates
 
 - [x] 0 -> 1 in-progress: the cavity recurrence and disk invariant are exact; existing Blaschke infrastructure supplies the local inequality
-- [ ] 1 -> 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open finite dependency
-- [ ] 2 -> 3 formalized: Lean theorem names recorded, target build green, axiom audit and lint pass
+- [x] 1 -> 2 fully-proven: complete finite-tree proof, `[PROVED HERE]`, no open finite dependency
+- [x] 2 -> 3 formalized: Lean theorem names recorded, target build green, axiom audit and lint pass
 - [ ] 3 -> 4 publication-ready: standalone statement, proof, physics provenance, Lean certificate, and downstream source comparison
 
 ## Candidate competition
@@ -23,7 +23,7 @@ Extend the Lean corpus from products of independent or two-spin Lee--Yang blocks
 2. **Random-current switching.**  It derives correlation inequalities once an Ising representation exists, but does not solve inverse moment-cone membership.
 3. **Tree cavity recursion.**  It produces an arbitrary-size interacting model now, directly generalizes the corpus's synchronized and two-spin blocks, and reduces every finite zero theorem to the existing Blaschke disk map.  This is the selected bridge.
 
-## Exact identity and proof plan
+## Exact identity and proof
 
 For normalized disagreement weight `c in [0,1]`, the child-to-parent message transform is
 
@@ -45,12 +45,39 @@ For centered prime fields, `Im z < 0` puts every field inside the disk.  Global 
 
 so the common exterior `Im z > 0` is reduced to the interior.  The resulting zero theorem forces `Im z = 0`.
 
-## Required Lean consumers
+## Lean certificate and consumers
 
-- One-edge/common-field partition equals `leeYangPairBlock c u`.
-- All edge weights `c=0` recover `synchronizedPrimeClusterPartition` on the tree's prime support when labels are distinct, or an explicitly multiplicity-sensitive word version otherwise.
-- Arbitrary finite prime-labelled ferromagnetic trees are zero-free on both nonreal half-planes.
-- The module is exported by `RHTower.lean` and referenced from `prime-source-ferromagnetic-ising-lee-yang-limit-rh.md`.
+`formal/GaloisForLFunctions/RHTower/PrimeIsingTreeCavity.lean` contains:
+
+- `cavityTransfer_eq_blaschkeFactor` and `normSq_cavityTransfer_gap`;
+- `norm_cavityTransfer_le_one`, using `GaloisForLFunctions.blaschke_schur` directly;
+- `treeConditionalWeights_inside` and `treePartition_ne_zero_of_fields_inside` for arbitrary finite rooted trees;
+- `treePartition_reciprocal`, the exact global spin-inversion identity;
+- `treePartition_singleEdge_constantField`, identifying the one-edge model with `leeYangPairBlock`;
+- `primeIsingTreePartition_singleEdge_eq_primeEulerFerromagneticBlock`;
+- `primeIsingTreePartition_synchronizedPrimeChain_eq_cluster` for duplicate-free words; and
+- `primeIsingTreePartition_independentPrimeChain_eq_independent`, identifying the `c=1`
+  zero-interaction endpoint with the old independent-spin partition;
+- `differentiable_primeIsingTreePartition` and `primeIsingTreePartition_zero_im`; and
+- `riemannHypothesis_of_primeIsingTreePartition_tendstoLocallyUniformly_mul_XiC`, which discharges
+  entireness and real-zero hypotheses and reduces the full route to a locally uniform source
+  comparison with a zero-free entire factor.
+
+The module is exported by `RHTower.lean` and consumed by
+`prime-source-ferromagnetic-ising-lee-yang-limit-rh.md`.
+
+The target build passes.  The axiom audit reports only `propext`, `Classical.choice`, and
+`Quot.sound` for the principal identities, nonvanishing theorems, compatibility consumers, and
+zero theorem.  The formal lint gate reports no proof debt.
+
+## Physics provenance
+
+- H. A. Bethe, *Statistical Theory of Superlattices*,
+  <https://doi.org/10.1098/rspa.1935.0122>;
+- T. D. Lee and C. N. Yang, *Statistical Theory of Equations of State and Phase Transitions. II.
+  Lattice Gas and Ising Model*, <https://doi.org/10.1103/PhysRev.87.410>;
+- K. de'Bell and M. L. Glasser, *The Ising model on a closed Cayley tree: Zeros of the partition
+  function*, <https://doi.org/10.1016/0375-9601(84)90063-X>.
 
 ## Open core after this bridge
 
@@ -59,3 +86,5 @@ The completed Euler--Gamma/theta source has not been shown to select a cofinal f
 ## Log
 
 - 2026-07-14 -- Created in `1-in-progress` after the cavity identity survived comparison with Asano contraction and random-current switching and was found to reuse the existing `HTGeometry` Blaschke theorem.
+- 2026-07-14 -- Formalized the arbitrary-branching tree recursion, disk invariant, spin-inversion law, prime-field zero theorem, one-edge prime-Euler consumer, and synchronized-chain consumer; promoted to Stage 3 after target build, axiom audit, lint, and diff checks passed.
+- 2026-07-14 -- Applied the tree theory back to the rest of the corpus: `c=1` recovers the existing independent prime partition, all tree partitions are entire, and the locally uniform `E * XiC` comparison now implies RH directly.

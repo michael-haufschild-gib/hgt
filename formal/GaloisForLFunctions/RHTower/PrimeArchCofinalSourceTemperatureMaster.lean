@@ -4,6 +4,7 @@ import GaloisForLFunctions.RHTower.PrimeArchThetaHankelDegreeTail
 import GaloisForLFunctions.RHTower.XiThermalProjectiveFreeEnergyRadius
 import GaloisForLFunctions.RHTower.PrimeArchConnesReflectionMain
 import GaloisForLFunctions.RHTower.PrimeArchVerifiedHeightAccretivity
+import GaloisForLFunctions.RHTower.PrimeArchBernsteinPencil
 
 /-!
 # Cofinal prime-source, Hausdorff, and zero-temperature master theorem
@@ -61,6 +62,12 @@ theorem primeArchCofinalSourceTemperatureMaster
         hausdorffBernsteinNegativeMass
           (radiusNormalizedMoment primeArchEndpointHausdorffRadius
             normalizedPrimeArchMoment) N = 0
+    let exactBernsteinOrderUnitEndpoint : Prop :=
+      ∀ N : ℕ,
+        bernsteinCoefficientL1
+            (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+              normalizedPrimeArchMoment) (N + 1) =
+          normalizedPrimeArchMoment 0
     let subexponential : Prop :=
       ∀ epsilon : ℝ, 0 < epsilon → ∀ᶠ j : ℕ in atTop,
         Z j ≤ Real.exp (epsilon * (cold j : ℝ))
@@ -70,7 +77,8 @@ theorem primeArchCofinalSourceTemperatureMaster
     (sparseEisensteinEndpoint ↔ cofinalDiagonalEndpoint) ∧
     (cofinalDiagonalEndpoint ↔ aggregateNegativeMassEndpoint) ∧
     (aggregateNegativeMassEndpoint ↔ exactBernsteinZeroEndpoint) ∧
-    (exactBernsteinZeroEndpoint ↔ hausdorffEndpoint) ∧
+    (exactBernsteinZeroEndpoint ↔ exactBernsteinOrderUnitEndpoint) ∧
+    (exactBernsteinOrderUnitEndpoint ↔ hausdorffEndpoint) ∧
     (hausdorffEndpoint ↔ Tendsto F atTop (nhds 0)) ∧
     (Tendsto F atTop (nhds 0) ↔ subexponential) ∧
     (subexponential ↔ recurrentBound) ∧
@@ -120,6 +128,20 @@ theorem primeArchCofinalSourceTemperatureMaster
           primeArchEndpointHausdorffRadius normalizedPrimeArchMoment :=
     rectangularPrimePolarSource_negativeAbscissa_le_one_iff_cofinalHausdorffQuadrant
       hL hN
+  have horderUnit : RiemannHypothesis ↔
+      ∀ N : ℕ,
+        bernsteinCoefficientL1
+            (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+              normalizedPrimeArchMoment) (N + 1) =
+          normalizedPrimeArchMoment 0 :=
+    riemannHypothesis_iff_forall_primeArchBernsteinCoefficientL1_eq_mass
+  have hexactRH :
+      (∀ N : ℕ,
+          hausdorffBernsteinNegativeMass
+            (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+              normalizedPrimeArchMoment) N = 0) ↔
+        RiemannHypothesis :=
+    hexactMass.symm.trans hnegativeMass
   have hfree : RiemannHypothesis ↔ Tendsto F atTop (nhds 0) := by
     simpa only [F] using
       (riemannHypothesis_iff_tendsto_thermalProjectiveCofinalFreeEnergy_zero
@@ -144,7 +166,8 @@ theorem primeArchCofinalSourceTemperatureMaster
     hsparse.trans hdiagonal.symm,
     hdiagonal.trans hnegativeMass.symm,
     hexactMass,
-    hexactMass.symm.trans (hnegativeMass.trans hquadrant.symm),
+    hexactRH.trans horderUnit,
+    horderUnit.symm.trans hquadrant.symm,
     hquadrant.trans hfree, hfree.symm.trans hsub,
     hsub.symm.trans hfreq, hfreq.symm.trans hKMS.symm,
     hKMS.trans hgram.symm, hgram⟩

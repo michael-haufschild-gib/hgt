@@ -109,9 +109,15 @@ H\le C,
 \qquad
 \text{all normalized prime--archimedean Hankel forms are positive}.
 \]
-The quantitative result supplies the strict initial estimate \(E<C\); the missing step is a
-source-side mechanism that propagates this strict contraction through the full all-order trace
-carrier and forces its antisymmetric component to vanish.
+The reciprocal traces are not independent: the formalized
+`xi-endpoint-reciprocal-trace-reflection` theorem proves, for every \(k\ge2\),
+\[
+T_k=(-1)^k\sum_{n\ge0}\binom{n+k-1}{k-1}T_{k+n}.
+\]
+The quantitative result supplies the strict initial estimate \(E<C\), and the reflection law
+removes the corresponding higher-trace redundancy.  The missing step remains a source-side
+orientation mechanism that uses these constraints to force the antisymmetric component to vanish;
+the reflection law alone still permits nontrivial functional-equation two-cycles.
 
 ## Gates
 

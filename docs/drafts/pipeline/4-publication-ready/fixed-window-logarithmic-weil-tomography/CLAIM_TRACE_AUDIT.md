@@ -316,6 +316,9 @@ by `primeArchExactQuartetConnesBornWittenKMSMaster_twoHundredEighteen_twentyFift
 | the universal one-state zero-Hamiltonian KMS palette has imaginary response cluster set exactly \(( -\infty,0]\) at every upper-half-plane point | closure_range_universalOneStateKMSPassiveResponse_im |
 | countable Gaussian-rational source membership in that palette is exactly the positive-frequency response condition above the same radius | primeArchGaussianRatFiniteKMSPassiveClosureAbove_iff_positiveFrequency |
 | at every quartet-admissible radius, that countable passive membership condition is equivalent to RH | primeArchGaussianRatFiniteKMSPassiveClosureAbove_iff_riemannHypothesis |
+| a verified critical-line prefix through height (H) makes every centered upper-half band (R+1/2\le H) pole-free | XiC_ne_zero_of_upperHalf_verifiedHeightBand |
+| a verified critical-line prefix through height (H) transfers the anti-Herglotz sign to the complete centered band (R+1/2\le H), without a separate nonvanishing hypothesis | continuedPrimeArchSourceRelativeTrace_im_nonpos_on_verifiedHeightBand |
+| under that verified prefix, passivity only above (R) is equivalent to RH | continuedPrimeArchPositiveFrequencyAbove_iff_rh_of_verifiedHeight |
 
 ## Cofinal endpoint-calibrated source--temperature master law
 
@@ -335,12 +338,17 @@ scale-resolved free-energy and source-abscissa statement is bundled by
 | cofinal vanishing of the aggregate negative Bernstein mass is equivalent to RH | cofinalPrimeArchHausdorffBernsteinNegativeMassVanishing_iff_riemannHypothesis |
 | the critical prime--polar abscissa endpoint is equivalent to cofinal aggregate negative-mass vanishing | rectangularPrimePolarSource_negativeAbscissa_le_one_iff_cofinalBernsteinNegativeMassVanishing |
 | positive-part Bernstein approximation differs from the signed approximation by at most the aggregate negative mass in every coordinate | hausdorffBernsteinPositiveAtomicMoment_sub_signed_nonneg, hausdorffBernsteinPositiveAtomicMoment_sub_signed_le_negativeMass |
+| Bernstein degree elevation has the exact adjacent barycentric formula | bernsteinPolynomial_degree_elevation |
+| total Bernstein negative mass is nondecreasing under degree elevation | hausdorffBernsteinNegativeMass_monotone |
+| cofinal negative-mass decay is equivalent to exact zero at every degree | cofinalHausdorffBernsteinNegativeMassVanishing_iff_forall_eq_zero |
+| false RH is equivalent to a strictly positive finite-degree Bernstein defect which persists at every finer degree | not_riemannHypothesis_iff_exists_persistent_primeArchBernsteinNegativeMass |
 | for every cofinal finite-volume/cooling schedule, the normalized logarithmic partition converges to the projective reflection radius | tendsto_xiThermalProjectiveColdTruncation_log_div_cold |
 | RH is equivalent to zero cofinal free-energy density | riemannHypothesis_iff_tendsto_thermalProjectiveCofinalFreeEnergy_zero |
 | RH is equivalent to subexponential growth along every, equivalently one, cofinal thermal schedule | riemannHypothesis_iff_thermalProjectiveCofinalSubexponential |
 | positivity on monic integer polynomials Eisenstein at `2` in any infinite exact-degree set is equivalent to RH | primeArchSourceTraceHankelIntTwoEisensteinDegreeSetNonnegative_iff_riemannHypothesis |
 | every positive-degree polynomial in the fixed Eisenstein chamber is irreducible | irreducible_of_monic_primeArchTwoEisenstein |
-| the source endpoint, sparse irreducible chamber, cofinal diagonals, aggregate negative-mass vanishing, deep quadrant, zero free energy, subexponential growth, finite KMS closure, Connes reflection positivity, and RH form one chain | primeArchCofinalSourceTemperatureMaster |
+| the source endpoint, sparse irreducible chamber, cofinal diagonals, aggregate negative-mass vanishing, exact all-degree zero-rigidity, deep quadrant, zero free energy, subexponential growth, finite KMS closure, Connes reflection positivity, and RH form one chain | primeArchCofinalSourceTemperatureMaster |
+| under a verified prefix, the remaining ultraviolet response tail is equivalent to the same cofinal Bernstein defect | continuedPrimeArchPositiveFrequencyAbove_iff_cofinalBernsteinNegativeMass_of_verifiedHeight |
 
 ## Axiom and lint gate
 
@@ -367,6 +375,7 @@ scale-resolved free-energy and source-abscissa statement is bundled by
   GaloisForLFunctions.RHTower.PrimeArchEndpointHausdorffTemperatureMaster, and
   GaloisForLFunctions.RHTower.PrimeArchCofinalHausdorffQuadrantRH, and
   GaloisForLFunctions.RHTower.PrimeArchCofinalHausdorffDiagonalRH, and
+  GaloisForLFunctions.RHTower.PrimeArchVerifiedHeightAccretivity, and
   GaloisForLFunctions.RHTower.XiThermalProjectiveFreeEnergyRadius, and
   GaloisForLFunctions.RHTower.PrimeArchThetaHankelDegreeTail, and
   GaloisForLFunctions.RHTower.PrimeArchCofinalSourceTemperatureMaster.

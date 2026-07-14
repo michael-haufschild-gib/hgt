@@ -50,6 +50,40 @@ lemma xiZeroCopy_re_eq_half_of_verifiedThrough_of_abs_im_le
       hconjImPos hconjImLe
     simpa only [conj_re] using hconjRe
 
+/-- A verified Xi height gives a zero-free centered upper-half band.  A zero in that band
+would have ordinate at most `H`, hence would be on the critical line; in centered coordinates
+that would force its positive imaginary coordinate to vanish. -/
+theorem XiC_ne_zero_of_upperHalf_verifiedHeightBand
+    (H R : ℝ) (hverified : RHVerifiedThrough H)
+    (hband : R + 1 / 2 ≤ H)
+    (z : ℂ) (hzIm : 0 < z.im) (hzRe : |z.re| ≤ R) :
+    XiC z ≠ 0 := by
+  intro hzero
+  have hxi : xi (1 / 2 + z * I) = 0 := by
+    simpa only [XiC] using hzero
+  let rho : XiDivisorSupport :=
+    ⟨1 / 2 + z * I, mem_xi_divisor_support_of_eq_zero hxi⟩
+  let q : XiZeroCopy := by
+    have hpos := xi_divisor_pos_on_support rho
+    have hn : 0 < Int.toNat
+        ((MeromorphicOn.divisor xi Set.univ) (rho : ℂ)) := by
+      omega
+    exact ⟨rho, ⟨0, hn⟩⟩
+  have him : (q.1 : ℂ).im = z.re := by
+    dsimp only [q, rho]
+    simp [mul_im]
+  have hheight : |(q.1 : ℂ).im| ≤ H := by
+    rw [him]
+    linarith [abs_nonneg z.re]
+  have hline :=
+    xiZeroCopy_re_eq_half_of_verifiedThrough_of_abs_im_le H hverified q hheight
+  have hre : (q.1 : ℂ).re = 1 / 2 - z.im := by
+    dsimp only [q, rho]
+    simp [mul_re]
+    ring
+  rw [hre] at hline
+  linarith
+
 /-- Every line-conjugate relative-resolvent pair has the anti-Herglotz sign inside the band
 supplied by a verified Xi height. -/
 lemma xiRelativeResolventTerm_lineConj_pair_im_nonpos_of_verifiedHeight
@@ -163,6 +197,42 @@ theorem xiRelativeResolventTrace_im_nonpos_of_verifiedHeight
           (xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)).im)) ≤ 0 := by
     simpa only [add_im] using himsum
   linarith
+
+/-- The verified-height band is itself pole-free, so the full anti-Herglotz inequality needs no
+separate nonvanishing hypothesis there. -/
+theorem xiRelativeResolventTrace_im_nonpos_on_verifiedHeightBand
+    (H R : ℝ) (hverified : RHVerifiedThrough H)
+    (hband : R + 1 / 2 ≤ H)
+    (z : ℂ) (hzIm : 0 < z.im) (hzRe : |z.re| ≤ R) :
+    (xiRelativeResolventTrace z).im ≤ 0 := by
+  exact xiRelativeResolventTrace_im_nonpos_of_verifiedHeight H R hverified hband z hzIm
+    (XiC_ne_zero_of_upperHalf_verifiedHeightBand H R hverified hband z hzIm hzRe) hzRe
+
+/-- Source-side verified-height accretivity on the complete pole-free centered band. -/
+theorem continuedPrimeArchSourceRelativeTrace_im_nonpos_on_verifiedHeightBand
+    (H R : ℝ) (hverified : RHVerifiedThrough H)
+    (hband : R + 1 / 2 ≤ H)
+    (z : ℂ) (hzIm : 0 < z.im) (hzHalf : z.im < 1 / 2)
+    (hzRe : |z.re| ≤ R) :
+    (continuedPrimeArchSourceRelativeTrace z).im ≤ 0 := by
+  have hspos : 0 < (1 / 2 + z * I).re := by
+    simp [mul_re]
+    linarith
+  have hs1 : 1 / 2 + z * I ≠ 1 := by
+    intro h
+    have hre := congrArg Complex.re h
+    simp [mul_re] at hre
+    linarith
+  have hXi :=
+    XiC_ne_zero_of_upperHalf_verifiedHeightBand H R hverified hband z hzIm hzRe
+  have hzeta : riemannZeta (1 / 2 + z * I) ≠ 0 := by
+    intro hzeta
+    apply hXi
+    simpa only [XiC] using (xi_eq_zero_iff hspos hs1).mpr hzeta
+  rw [continuedPrimeArchSourceRelativeTrace_eq_xiRelativeResolventTrace
+    hspos hs1 hzeta]
+  exact xiRelativeResolventTrace_im_nonpos_on_verifiedHeightBand
+    H R hverified hband z hzIm hzRe
 
 /-- Source-side form of verified-height frequency accretivity. -/
 theorem continuedPrimeArchSourceRelativeTrace_im_nonpos_of_verifiedHeight

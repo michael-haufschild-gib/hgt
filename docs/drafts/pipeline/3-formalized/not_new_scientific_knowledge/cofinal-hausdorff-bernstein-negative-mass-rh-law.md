@@ -30,7 +30,10 @@ sigma_abs <= 1 iff exists cofinal d, E(d j) -> 0.
 Lean additionally proves that `E(N)` is nondecreasing under Bernstein degree elevation.
 Consequently, cofinal convergence `E(d(j)) -> 0` forces `E(N) = 0` at every degree. The scalar
 criterion is therefore an exact order-unit restatement of complete Bernstein positivity, not a
-strict weakening of it.
+strict weakening of it.  It also proves the complementary phase law:
+```text
+not RH iff exists N, 0 < E(N) and forall M >= N, E(N) <= E(M).
+```
 
 ## Proof
 
@@ -87,6 +90,9 @@ control excludes off-critical Xi values.
 - `bernsteinPolynomial_degree_elevation`
 - `hausdorffBernsteinNegativeMass_monotone`
 - `hausdorffBernsteinNegativeMass_eq_zero_of_cofinalVanishing`
+- `cofinalHausdorffBernsteinNegativeMassVanishing_iff_forall_eq_zero`
+- `exists_persistent_hausdorffBernsteinNegativeMass_of_not_cofinal`
+- `not_riemannHypothesis_iff_exists_persistent_primeArchBernsteinNegativeMass`
 - `CofinalHausdorffBernsteinNegativeMassVanishing`
 - `finitePositiveAtomicLocalMomentClosure_of_cofinalHausdorffBernsteinNegativeMassVanishing`
 - `riemannHypothesis_of_cofinalPrimeArchHausdorffBernsteinNegativeMassVanishing`
@@ -105,5 +111,5 @@ theorem, the RH equivalence, and the prime--polar absolute-abscissa equivalence 
 - [x] 0 -> 1: scalar source defect and positive-part approximation are well posed
 - [x] 1 -> 2: coordinatewise error bound and closure proof are complete
 - [x] 2 -> 3: Lean compilation, axiom audit, and formal lint pass
-- [ ] 3 -> 4: publication-ready treatment is not required for the active RH proof
+- [x] 3 -> 4: integrated as the monotone scalar phase law in the source--temperature master paper
 - [ ] RH: find a genuinely weaker unconditional source bound; cofinal vanishing is exact positivity

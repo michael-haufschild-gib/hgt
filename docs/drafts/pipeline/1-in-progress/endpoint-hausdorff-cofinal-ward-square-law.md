@@ -5,8 +5,9 @@
 - **Type:** `[CONJECTURE] RH route; source-pure cofinal estimate`
 - **Source:** endpoint-calibrated source--temperature master theorem
 - **Statement:** `[CONJECTURE]` The canonical endpoint-normalized Hausdorff--Bernstein systems
-  admit a cofinal theta-source estimate whose total negative mass tends to zero.  Pointwise
-  positivity of any selected system is not required.
+  lie in the exact zero phase of their monotone total-negative-mass order parameter.  Equivalently,
+  a source identity forces cofinal decay; degree-elevation rigidity then forces exact positivity
+  at every finite degree.
 
 ## Goal
 
@@ -28,29 +29,41 @@ Prove the remaining condition
 The formal master theorem proves
 
 \[
-\mathsf E_*\Longleftrightarrow\mathrm{RH}.
+0\le\eta_M\le\eta_{M+1},\qquad
+\mathsf E_*\Longleftrightarrow
+[\forall M\ge1,\ \eta_M=0]
+\Longleftrightarrow\mathrm{RH}.
 \]
 
-This target is strictly weaker than the common-quadrant condition
+It also proves the positive phase dichotomy
+
+\[
+\neg\mathrm{RH}
+\Longleftrightarrow
+\exists M_0\ge1\ \forall M\ge M_0,
+\qquad 0<\eta_{M_0}\le\eta_M.
+\]
+
+The cofinal formulation is therefore a scalar compression, not a weaker positivity condition.
+It is equivalent to the common-quadrant condition
 
 \[
 \mathsf Q_*:\qquad
 \exists M\ \forall k,r\ge M,\quad D^*_{k,r}\ge0.
 \]
 
-Indeed \(\mathsf Q_*\) forces positivity on a principal ideal, whereas \(\mathsf E_*\) permits
-negative Bernstein masses at every selected degree.  Only an unconditional source-side estimate
-for \(\eta_M\) counts as progress.  A bound obtained from assumed Hankel, Hausdorff, KMS, or RH
-positivity is circular.
+because both are equivalent to RH.  Only an unconditional source-side proof that the monotone
+order parameter is in its zero phase counts as progress.  A bound obtained from assumed Hankel,
+Hausdorff, KMS, or RH positivity is circular.
 
 ## Competing moves
 
-1. `[CONJECTURE] Aggregate Ward transform.`  Express the complete degree-`M` Bernstein mass vector
-   through the theta cusp density and use the all-order Liouville/Witten Ward identities to bound
-   the sum of its negative parts, without orienting each component.
-2. `[CONJECTURE] Positive-part source coupling.`  Construct a source-side positive atomic system
-   whose coordinatewise distance from the canonical signed Bernstein approximation is bounded by
-   a scalar defect tending to zero.  The defect must be estimated before invoking moment closure.
+1. `[CONJECTURE] Exact Ward zero-phase identity.`  Express the complete degree-`M` Bernstein mass
+   vector through the theta cusp density and use the all-order Liouville/Witten Ward identities to
+   prove its total negative mass is exactly zero.
+2. `[CONJECTURE] Cofinal upper collapse.`  Construct explicit source-side bounds
+   `eta_(M_j) <= e_j -> 0`.  Monotonicity makes this an exact theorem in disguise: it forces every
+   earlier and then every finite-degree defect to vanish.
 3. `[CONJECTURE] Bernstein/Gibbs comparison.`  Bound `eta_M` by a completed prime--Gamma Gibbs or
    transfer-operator partition whose source representation is subexponential on one cofinal
    schedule.  The comparison must be an exact source/divisor identity, not assumed passivity.
@@ -67,8 +80,9 @@ positivity is circular.
   sign.
 - Any finite rectangle can be defeated by a sufficiently remote off-line quartet; the required
   estimate must force the aggregate negative mass to vanish cofinally.
-- The Ward transform fails if its boundary term is an uncontrolled copy of `eta_M` or if its
-  error remains bounded away from zero.
+- The Ward transform fails if its boundary term is an uncontrolled copy of `eta_M`.  A merely
+  positive asymptotic error cannot establish the zero phase; a cofinal error tending to zero would
+  already prove exact vanishing by monotonicity.
 
 ## Physics-lane audit
 
@@ -83,15 +97,16 @@ The current formal tree supplies four distinct layers which must not be conflate
    
    together with the self-localized cubic bound in the off-line endpoint charge.  These are real
    estimate gains, but no positive gap separates a remote off-line quartet from zero charge.
-2. **Aggregate source-defect layer.**  The endpoint-normalized Bernstein masses satisfy
+2. **Monotone source-phase layer.**  The endpoint-normalized Bernstein masses satisfy
 
    \[
    \mathrm{RH}\Longleftrightarrow
    \exists M_j\to\infty,\quad\sum_i(a_{M_j,i})^-\to0.
    \]
 
-   This is strictly weaker than selected-diagonal positivity and the common deep quadrant.  It is
-   now the smallest source-side target in the route.
+   Degree elevation gives `eta_M <= eta_(M+1)`, so the displayed condition is equivalent to
+   `eta_M = 0` for every degree.  False RH is the complementary persistent-gap phase.  This is the
+   smallest scalar source-side order parameter in the route, but not a weakened sign theorem.
 3. **Exact detector layer.**  The faithful projective partition
    
    \[
@@ -118,15 +133,15 @@ The current formal tree supplies four distinct layers which must not be conflate
 
 The minimal missing theorem is therefore positive and source-specific:
 
-`[CONJECTURE]` **Cofinal source Bernstein-defect decay.**  Derive directly from the completed
-prime--Gamma/theta source a cofinal degree schedule `M_j` and explicit bounds `e_j -> 0` such that
+`[CONJECTURE]` **Source Bernstein zero-phase law.**  Derive directly from the completed
+prime--Gamma/theta source either exact identities `eta_M=0` for every `M`, or a cofinal degree
+schedule `M_j` and explicit bounds `e_j -> 0` such that
 
 \[
 \eta_{M_j}\le e_j.
 \]
 
-This alone implies RH.  It allows negative masses at every selected degree and is therefore
-strictly weaker than a cofinal sign theorem.
+By monotonicity, the cofinal version already forces exact zero at every degree and hence RH.
 
 An equivalent thermodynamic target remains useful when it admits a source comparison:
 
@@ -165,6 +180,8 @@ would close only the first nonconstant Hankel block, not the cofinal Hausdorff t
 ## Gates
 
 - [x] 0 → 1 in-progress: exact cofinal target, source-pure candidates, and circularity firewall stated
+- [x] prove and formalize Bernstein degree-elevation monotonicity, cofinal zero-rigidity, and the
+      false-RH persistent-gap phase law
 - [ ] derive a source-pure representation of the full degree-`M` Bernstein mass vector
 - [ ] prove an explicit aggregate bound `eta_M <= e_M` along one cofinal schedule with `e_M -> 0`
 - [ ] construct or rule out a source-pure comparison from the joint prime-log Gibbs limit to one

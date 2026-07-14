@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.CayleySchur
 import GaloisForLFunctions.RHTower.PrimeWordSynchronizedCluster
 import GaloisForLFunctions.RHTower.PrimeEulerFerromagneticInteraction
+import GaloisForLFunctions.RHTower.LocallyUniformZeroTransfer
 
 /-!
 # Prime Ising trees from the ferromagnetic cavity map
@@ -23,7 +24,7 @@ the one-edge constant-field tree is `leeYangPairBlock`, its prime-Euler speciali
 limit of these trees.
 -/
 
-open Complex
+open Complex Filter Topology
 open scoped BigOperators
 
 namespace GaloisForLFunctions.RHTower
@@ -102,6 +103,12 @@ def zeroFerromagneticCoupling : FerromagneticCoupling where
   nonneg := le_rfl
   le_one := by norm_num
 
+/-- Unit disagreement weight, equivalently zero physical interaction. -/
+def unitFerromagneticCoupling : FerromagneticCoupling where
+  coefficient := 1
+  nonneg := by norm_num
+  le_one := le_rfl
+
 /-- The tree with one edge and two prime-labelled vertices. -/
 def singleEdgePrimeIsingTree
     (p q : Nat.Primes) (c : FerromagneticCoupling) : PrimeIsingTree :=
@@ -112,6 +119,12 @@ def synchronizedPrimeChain : Nat.Primes → List Nat.Primes → PrimeIsingTree
   | p, [] => .node p .nil
   | p, q :: tail =>
       .node p (.cons zeroFerromagneticCoupling (synchronizedPrimeChain q tail) .nil)
+
+/-- A prime word represented as a chain of physically decoupled edges. -/
+def independentPrimeChain : Nat.Primes → List Nat.Primes → PrimeIsingTree
+  | p, [] => .node p .nil
+  | p, q :: tail =>
+      .node p (.cons unitFerromagneticCoupling (independentPrimeChain q tail) .nil)
 
 mutual
   /-- Conditional `(root plus, root minus)` partition weights. -/
@@ -323,6 +336,24 @@ theorem treePartition_synchronizedPrimeChain
   rw [treePartition, treeConditionalWeights_synchronizedPrimeChain]
   simp
 
+/-- Unit disagreement weight makes a connected tree presentation factor as independent spins. -/
+theorem treePartition_independentPrimeChain
+    (u : Nat.Primes → ℂ) (p : Nat.Primes) (tail : List Nat.Primes) :
+    treePartition u (independentPrimeChain p tail) =
+      ((p :: tail).map (fun q => 1 + u q)).prod := by
+  induction tail generalizing p with
+  | nil => simp [independentPrimeChain, treePartition, treeConditionalWeights,
+      forestConditionalFactors]
+  | cons q tail ih =>
+      simp [independentPrimeChain, treePartition, treeConditionalWeights,
+        forestConditionalFactors, unitFerromagneticCoupling]
+      change treePartition u (independentPrimeChain q tail) +
+          u p * treePartition u (independentPrimeChain q tail) =
+        (1 + u p) * ((1 + u q) * (tail.map (fun r => 1 + u r)).prod)
+      rw [ih q]
+      simp only [List.map_cons, List.prod_cons]
+      ring
+
 /-- Prime-field specialization of the finite Ising-tree partition. -/
 def primeIsingTreePartition (T : PrimeIsingTree) (z : ℂ) : ℂ :=
   treePartition (fun p => _root_.RHTower.centeredPrimeLeeYangField p z) T
@@ -360,6 +391,21 @@ theorem primeIsingTreePartition_synchronizedPrimeChain_eq_cluster
   exact (List.prod_toFinset
     (fun q => _root_.RHTower.centeredPrimeLeeYangField q z) hword).symm
 
+/-- On a duplicate-free word, its unit-disagreement chain is the existing independent partition. -/
+theorem primeIsingTreePartition_independentPrimeChain_eq_independent
+    (p : Nat.Primes) (tail : List Nat.Primes) (hword : (p :: tail).Nodup) (z : ℂ) :
+    primeIsingTreePartition (independentPrimeChain p tail) z =
+      _root_.RHTower.independentPrimeLeeYangPartition
+        (GaloisForLFunctions.primeWordSupport (p :: tail)) z := by
+  rw [primeIsingTreePartition, treePartition_independentPrimeChain]
+  rw [_root_.RHTower.independentPrimeLeeYangPartition]
+  change (((p :: tail).map
+      (fun q => 1 + _root_.RHTower.centeredPrimeLeeYangField q z)).prod) =
+    ∏ q ∈ (p :: tail).toFinset,
+      (1 + _root_.RHTower.centeredPrimeLeeYangField q z)
+  exact (List.prod_toFinset
+    (fun q => 1 + _root_.RHTower.centeredPrimeLeeYangField q z) hword).symm
+
 /-- Every centered prime field is nonzero. -/
 theorem centeredPrimeLeeYangField_ne_zero (p : Nat.Primes) (z : ℂ) :
     _root_.RHTower.centeredPrimeLeeYangField p z ≠ 0 := by
@@ -377,6 +423,57 @@ theorem centeredPrimeLeeYangField_neg (p : Nat.Primes) (z : ℂ) :
     _root_.RHTower.centeredPrimeMark, ← Complex.exp_neg]
   congr 1
   ring
+
+/-- Every centered prime field is entire in the centered spectral coordinate. -/
+theorem differentiable_centeredPrimeLeeYangField (p : Nat.Primes) :
+    Differentiable ℂ (_root_.RHTower.centeredPrimeLeeYangField p) := by
+  unfold _root_.RHTower.centeredPrimeLeeYangField _root_.RHTower.centeredPrimeMark
+  fun_prop
+
+mutual
+  /-- Conditional tree weights are entire whenever every input field is entire. -/
+  theorem differentiable_treeConditionalWeights
+      (u : Nat.Primes → ℂ → ℂ) (hu : ∀ p, Differentiable ℂ (u p))
+      (T : PrimeIsingTree) :
+      Differentiable ℂ (fun z => (treeConditionalWeights (fun p => u p z) T).1) ∧
+        Differentiable ℂ (fun z => (treeConditionalWeights (fun p => u p z) T).2) := by
+    cases T with
+    | node p branches =>
+        have hf := differentiable_forestConditionalFactors u hu branches
+        simp only [treeConditionalWeights]
+        constructor
+        · exact hf.1
+        · exact (hu p).mul hf.2
+
+  /-- Conditional forest factors are entire whenever every input field is entire. -/
+  theorem differentiable_forestConditionalFactors
+      (u : Nat.Primes → ℂ → ℂ) (hu : ∀ p, Differentiable ℂ (u p))
+      (F : PrimeIsingForest) :
+      Differentiable ℂ (fun z => (forestConditionalFactors (fun p => u p z) F).1) ∧
+        Differentiable ℂ (fun z => (forestConditionalFactors (fun p => u p z) F).2) := by
+    cases F with
+    | nil => simp [forestConditionalFactors]
+    | cons c child tail =>
+        have ht := differentiable_treeConditionalWeights u hu child
+        have hf := differentiable_forestConditionalFactors u hu tail
+        simp only [forestConditionalFactors]
+        constructor
+        · exact (ht.1.add ((differentiable_const _).mul ht.2)).mul hf.1
+        · exact (((differentiable_const _).mul ht.1).add ht.2).mul hf.2
+end
+
+/-- Every finite prime-labelled tree partition is entire. -/
+theorem differentiable_primeIsingTreePartition (T : PrimeIsingTree) :
+    Differentiable ℂ (primeIsingTreePartition T) := by
+  have h := differentiable_treeConditionalWeights
+    (fun p => _root_.RHTower.centeredPrimeLeeYangField p)
+    differentiable_centeredPrimeLeeYangField T
+  change Differentiable ℂ (fun z =>
+    (treeConditionalWeights
+      (fun p => _root_.RHTower.centeredPrimeLeeYangField p z) T).1 +
+    (treeConditionalWeights
+      (fun p => _root_.RHTower.centeredPrimeLeeYangField p z) T).2)
+  exact h.1.add h.2
 
 /-- Prime-labelled trees are zero-free below the centered critical line. -/
 theorem primeIsingTreePartition_ne_zero_of_im_lt_zero
@@ -416,6 +513,56 @@ theorem primeIsingTreePartition_zero_im
   rcases lt_or_gt_of_ne hne with hneg | hpos
   · exact primeIsingTreePartition_ne_zero_of_im_lt_zero T hneg hz
   · exact primeIsingTreePartition_ne_zero_of_im_gt_zero T hpos hz
+
+/-- Direct tree-model capstone: locally uniform convergence of prime Ising trees to `XiC` proves
+RH.  Entireness and real-zero localization are discharged by the tree theory. -/
+theorem riemannHypothesis_of_primeIsingTreePartition_tendstoLocallyUniformly
+    (T : ℕ → PrimeIsingTree)
+    (hconv : TendstoLocallyUniformly
+      (fun n => primeIsingTreePartition (T n)) _root_.RHTower.XiC atTop) :
+    RiemannHypothesis := by
+  apply _root_.RHTower.riemannHypothesis_of_XiC_locally_uniform_real_zero_approximants hconv
+  · exact Filter.Eventually.of_forall (fun n => differentiable_primeIsingTreePartition (T n))
+  · exact Filter.Eventually.of_forall (fun n z hz =>
+      primeIsingTreePartition_zero_im (T n) hz)
+
+/-- The route-facing capstone with a zero-free entire normalization: if prime Ising trees converge
+locally uniformly to `E * XiC`, then RH follows.  Every finite zero-location and entireness
+hypothesis is internal; only the source comparison and zero-free normalization remain. -/
+theorem riemannHypothesis_of_primeIsingTreePartition_tendstoLocallyUniformly_mul_XiC
+    (T : ℕ → PrimeIsingTree) (E : ℂ → ℂ)
+    (hE : AnalyticOnNhd ℂ E Set.univ) (hEne : ∀ z, E z ≠ 0)
+    (hconv : TendstoLocallyUniformly
+      (fun n => primeIsingTreePartition (T n))
+      (fun z => E z * _root_.RHTower.XiC z) atTop) :
+    RiemannHypothesis := by
+  rw [_root_.RHTower.rh_iff_xi_ne_zero_right]
+  intro ρ hρ hzero
+  let z : ℂ := (ρ - 1 / 2) * (-I)
+  have hXiC : _root_.RHTower.XiC z = 0 := by
+    rw [_root_.RHTower.XiC]
+    have harg : (1 : ℂ) / 2 + z * I = ρ := by
+      dsimp only [z]
+      rw [mul_assoc]
+      have hI : (-I) * I = (1 : ℂ) := by rw [neg_mul, I_mul_I]; ring
+      rw [hI, mul_one]
+      ring
+    rw [harg, hzero]
+  have htargetAnalytic : AnalyticOnNhd ℂ
+      (fun w => E w * _root_.RHTower.XiC w) Set.univ :=
+    hE.mul _root_.RHTower.XiC_analytic
+  have him : z.im = 0 := _root_.RHTower.zero_mem_closed_of_tendstoLocallyUniformly
+    hconv htargetAnalytic
+    (Filter.Eventually.of_forall (fun n => differentiable_primeIsingTreePartition (T n)))
+    (isClosed_eq Complex.continuous_im continuous_const)
+    (Filter.Eventually.of_forall (fun n w hw =>
+      primeIsingTreePartition_zero_im (T n) hw))
+    (mul_ne_zero (hEne 0) _root_.RHTower.XiC_zero_ne)
+    (by rw [hXiC, mul_zero])
+  have hzIm : z.im = 1 / 2 - ρ.re := by
+    simp [z]
+  have hre : ρ.re = 1 / 2 := by linarith [him, hzIm]
+  exact (ne_of_gt (_root_.RHTower.mem_rightHalf.mp hρ)) hre
 
 end
 

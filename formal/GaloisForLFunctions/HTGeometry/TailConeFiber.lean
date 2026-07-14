@@ -90,7 +90,7 @@ theorem exists_positiveCone_finiteTailEquivalent_iff
       simp only [negativeSupport, Set.mem_setOf_eq]
       by_contra hai
       have ha0 : 0 ≤ a i := le_of_not_gt hai
-      exact hi (max_eq_left ha0)
+      exact hi (max_eq_left ha0).symm
 
 /-- Every tail fibre containing a positive representative also contains a nonpositive one, as
 soon as the coordinate set is nonempty.  Positivity therefore cannot be a predicate of the tail
@@ -104,12 +104,13 @@ theorem exists_not_positiveCone_finiteTailEquivalent
   refine ⟨b, ?_, ?_⟩
   · apply Set.Finite.subset (Set.finite_singleton i₀)
     intro i hi
-    simp only [Set.mem_setOf_eq, Set.mem_singleton_iff]
+    simp only [Set.mem_singleton_iff]
     by_contra hne
     exact hi (by simp [b, hne])
   · intro hb
     have := hb i₀
     simp [b] at this
+    norm_num at this
 
 end
 

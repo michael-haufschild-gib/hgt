@@ -10,6 +10,7 @@
 \usepackage{xcolor}
 \usepackage[colorlinks=true,linkcolor=blue!55!black,citecolor=blue!55!black,
   urlcolor=blue!55!black]{hyperref}
+\emergencystretch=2em
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{proposition}[theorem]{Proposition}
@@ -41,11 +42,8 @@
 \maketitle
 
 \begin{abstract}
-Let
-\[
-  F_c(s)=\sum_{p\in\cP}c(p)p^{-s}
-\]
-for a bounded complex coefficient function on the primes.  We identify the exact
+For a bounded complex coefficient function on the primes, let
+\(F_c(s)=\sum_{p\in\cP}c(p)p^{-s}\).  We identify the exact
 coefficient-space invariant governing the differential algebraic independence of finite
 families of translates of such series.  In the tail quotient
 \(\cT=\C^{\cP}/\C^{(\cP)}\), multiplication by \(p^{-a}\) and by \(\log p\)
@@ -64,7 +62,10 @@ polynomial-weighted uniqueness lemma for Dirichlet series.
 We also record three boundary results that prevent overinterpretation of the construction:
 the exact nonnegative residue cone for atomic Herglotz functions, the collapse of any
 compact-open completion containing one Cauchy coordinate by Runge approximation, and the
-precise linear scope of localized Stanley--Reisner differential rows.
+precise linear scope of localized Stanley--Reisner differential rows.  Finally, we prove that
+positivity is a transverse fibre condition rather than a tail invariant, quantify its finite
+negative-mass defect by unit-disk value bounds, and isolate the even/odd splitting forced by an
+affine reflection law.
 \end{abstract}
 
 \noindent\textbf{Keywords.}
@@ -122,6 +123,15 @@ Stanley--Reisner, and completion constructions and described their product as un
 description obscured the mathematics.  Sections~\ref{sec:herglotz}--\ref{sec:rows} retain only
 the exact statements that survive scrutiny: a residue cone, a Runge collapse, and a linear row
 matroid.  No nonlinear universality claim is made.
+
+There is nevertheless one non-product synthesis.  Differential algebra is insensitive to finite
+prime changes and therefore lives on the tail quotient, whereas Herglotz and reflection
+positivity are coordinatewise cone conditions and do not descend to that quotient.  Theorem
+\ref{thm:tail-cone-fibre} determines their exact fibres.  The finite negative mass is then an
+order defect controlling a whole unit disk of value relations, while Theorem
+\ref{thm:reflection-folding} shows that affine reflection separates even positive data from an
+odd transverse sector.  Thus a positivity-based carrier is necessarily polarized: a tail-matroid
+base alone cannot encode its pointing.
 
 \section{The tail quotient and its operators}
 
@@ -507,6 +517,74 @@ Fourier transform of finite measures identify positive definiteness with positiv
 measure, which is equivalent to nonnegativity of every atomic mass~\cite{RudinFourier}.
 \end{proof}
 
+The relation between this cone and the tail quotient is not a product decomposition.  For
+functions \(a,b:\Lambda\to\R\), write \(a\sim_{\mathrm{fin}}b\) when
+\(\{\lambda:a_\lambda\neq b_\lambda\}\) is finite, and let
+\([a]_{\mathrm{fin}}\) denote the corresponding fibre.  Put
+\(\mathcal C_+=\R_+^\Lambda\).
+
+\begin{theorem}[Tail--cone fibre law]\label{thm:tail-cone-fibre}
+For every \(a:\Lambda\to\R\),
+\[
+  [a]_{\mathrm{fin}}\cap\mathcal C_+\neq\varnothing
+  \quad\Longleftrightarrow\quad
+  \{\lambda:a_\lambda<0\}\text{ is finite}.
+\]
+When these conditions hold,
+\[
+  [a]_{\mathrm{fin}}\cap\mathcal C_+
+  =\bigl\{a+u:\supp u\text{ is finite and }
+                   u_\lambda\geq-a_\lambda\text{ for every }\lambda\bigr\}.
+\]
+If \(\Lambda\neq\varnothing\), no fibre meeting \(\mathcal C_+\) is contained in
+\(\mathcal C_+\).
+\end{theorem}
+
+\begin{proof}
+If \(b\geq0\) and \(a\sim_{\mathrm{fin}}b\), every negative coordinate of \(a\)
+belongs to the finite difference set.  Conversely, if the negative support of \(a\) is finite,
+then \(b_\lambda=\max(a_\lambda,0)\) is a nonnegative representative of the same fibre.
+Writing \(b=a+u\) gives the displayed description.  Finally, changing one coordinate of any
+representative to \(-1\) stays in the fibre and leaves the positive cone.
+\end{proof}
+
+Thus differential tail data and positive pointing are transverse pieces of information.  The
+operator-tail matroid is constant along each finite-support fibre, while Theorem
+\ref{thm:residue-cone} changes truth value inside every repairable fibre.  In particular, no
+predicate of the projective tail class alone can recover Herglotz or Fourier positivity.
+
+There is also an exact finite-volume coordinate for the failure of pointing.  For a real packet
+\(b=(b_0,\ldots,b_n)\), set
+\[
+  \delta(b)=\sum_{i=0}^n b_i^- ,\qquad
+  m(b)=\sum_{i=0}^n b_i,\qquad
+  Z_b(w)=\sum_{i=0}^n b_iw^i,
+  \quad b_i^-=\max(-b_i,0).
+\]
+
+\begin{theorem}[Finite signed-value defect]\label{thm:signed-value-defect}
+For every real packet \(b\),
+\[
+  \sum_{i=0}^n|b_i|=m(b)+2\delta(b),
+  \qquad
+  |Z_b(w)|\leq m(b)+2\delta(b)\quad (|w|\leq1).
+\]
+Moreover, \(\delta(b)=0\) if and only if every \(b_i\) is nonnegative.
+\end{theorem}
+
+\begin{proof}
+The scalar identity \(|x|=x+2x^-\), summed over \(i\), gives the first formula.
+For \(|w|\leq1\), the triangle inequality gives
+\( |Z_b(w)|\leq\sum_i|b_i||w|^i\leq\sum_i|b_i|\).
+The last assertion follows because every negative part is nonnegative.
+\end{proof}
+
+If \(b_i\) are the degree-\(n\) Bernstein masses of a real polynomial functional
+\(\ell\), then \(m(b)=\ell(1)\).  Theorem~\ref{thm:signed-value-defect} therefore turns one
+scalar cone defect into simultaneous control of the entire closed-unit-disk value pencil.
+This is the finite coefficient mechanism behind the moment/Hankel and partition-function
+relations encountered in reflection-positive models; it uses no probabilistic interpretation.
+
 The compact-open completion carries much less information than the raw tail quotient.
 
 \begin{theorem}[One-atom Runge collapse]\label{thm:runge-collapse}
@@ -629,6 +707,72 @@ or nonlinear Stanley--Reisner relations themselves.  In particular, a nonface mo
 among the differential outputs.
 \end{remark}
 
+\section{Reflection folding and polarized moment data}
+\label{sec:reflection}
+
+The recent reflection-positive and KMS literature makes a sharp distinction between an
+involutive symmetry and positivity of the reflected kernel; the latter is additional structure
+\cite{NeebOlafsson2019,AdamoNeebSchober2021}.  The same distinction is forced here by an
+elementary but useful source law.
+
+Let \(T\) be holomorphic and suppose that, for a fixed \(\kappa\in\C\),
+\begin{equation}\label{eq:anti-reflection}
+  T(\kappa-s)=-T(s).
+\end{equation}
+At a moving base \(\sigma\), define
+\[
+  R_\sigma(z)=i\bigl(T(\sigma+iz)-T(\sigma)\bigr)
+\]
+and let \(G_\sigma\) be its normalized divided difference,
+\[
+  G_\sigma(z)=
+  \begin{cases}
+    -\dfrac{R_\sigma(z)-R_\sigma(0)}{z},&z\neq0,\\[1.1ex]
+    -R_\sigma'(0),&z=0.
+  \end{cases}
+\]
+
+\begin{theorem}[Affine reflection-folding law]\label{thm:reflection-folding}
+Under \eqref{eq:anti-reflection},
+\[
+  R_{\kappa-\sigma}(z)=-R_\sigma(-z),
+  \qquad
+  G_{\kappa-\sigma}(z)=G_\sigma(-z).
+\]
+Consequently, for every \(r\geq0\),
+\[
+  G_{\kappa-\sigma}^{(r)}(0)=(-1)^rG_\sigma^{(r)}(0).
+\]
+In particular, every even jet is reflection invariant.  Hence, for every \(N\), the
+even-jet Hankel matrix
+\[
+  \mathcal H_N(\sigma)
+  =\bigl(G_\sigma^{(2(i+j))}(0)\bigr)_{0\leq i,j<N}
+\]
+and its determinant satisfy
+\[
+  \mathcal H_N(\kappa-\sigma)=\mathcal H_N(\sigma),
+  \qquad
+  \det\mathcal H_N(\kappa-\sigma)=\det\mathcal H_N(\sigma).
+\]
+\end{theorem}
+
+\begin{proof}
+Applying \eqref{eq:anti-reflection} at \(s=\sigma-iz\) and at \(s=\sigma\)
+gives the first identity.  Dividing by the centered coordinate, with the derivative value at
+zero, cancels the additional minus sign and gives the second.  Differentiating the composite
+\(G_\sigma(-z)\) yields the parity law.  Substitution of the even orders \(2(i+j)\) proves the
+matrix and determinant identities.
+\end{proof}
+
+The theorem says exactly what reflection can and cannot determine.  The even moment/Hankel
+sector folds to one side of the reflection centre; the odd sector changes sign.  Reflection
+positivity can constrain the even sector, but reflection symmetry alone cannot determine the
+transverse odd orientation.  Thus any zero-location route built from reflected moments must be
+\emph{polarized}: it must couple its positive even data to an odd, anti-Hermitian, or otherwise
+orientation-sensitive defect.  This is a positive architectural requirement, not a no-go
+formulation.
+
 \section{The digamma orbit is already classified}
 
 The digamma example should not be presented as a coded special construction.  Its natural
@@ -666,13 +810,25 @@ particular, the Euler product couples all prime powers:
 whereas Theorems~\ref{thm:operator-tail} and
 \ref{thm:finite-range-collapse} classify series supported only at the first prime layer.
 
+There is, however, an exact reflection consequence.  The completed function satisfies
+\(\xi(1-s)=\xi(s)\), so its logarithmic derivative
+\(T=\xi'/\xi\) satisfies \(T(1-s)=-T(s)\) away from its poles.  Theorem
+\ref{thm:reflection-folding}, with \(\kappa=1\), therefore makes every even moving
+moment/Hankel determinant symmetric under \(\sigma\leftrightarrow1-\sigma\).  Such determinants
+can be studied on one side of the critical line, but their reflection symmetry alone contains no
+choice of transverse orientation.  A route using them must supply that missing odd or
+anti-Hermitian defect from independent arithmetic or analytic structure.
+
 They do impose a positive structural constraint on any route that uses finite-range prime
 masks.  Such a route must contain information beyond the projective tail differential matroid:
 for example, nonlinear prime-power coupling, the functional equation and continuation, or a
-positivity structure that is not invariant under finite prime changes.  Moreover, a
+positivity structure that is not invariant under finite prime changes.  By Theorem
+\ref{thm:tail-cone-fibre}, this extra pointing necessarily lives in the finite-support fibre rather
+than in the projective tail base.  Moreover, a
 compact-open completion containing one Cauchy coordinate cannot retain the required arithmetic
 tail information by Theorem~\ref{thm:runge-collapse}.  Therefore a viable zeta carrier must keep
-its arithmetic tail before completion and must couple it to genuinely global analytic data.
+its arithmetic tail before completion, retain a transverse positivity/orientation coordinate, and
+couple both to genuinely global analytic data.
 
 This is a restriction on the architecture of a possible proof, not evidence for a proof itself.
 
@@ -690,13 +846,21 @@ classification, and cleanly separates the new multi-source geometry from the cla
 arithmetic-function Jacobian theorem used in its analytic realization.
 
 The auxiliary results delimit the construction.  Herglotz pointing is a full nonnegative residue
-cone, not a preferred sign vertex.  A compact-open algebra containing one Cauchy coordinate
+cone, not a preferred sign vertex.  It lies in finite-support fibres transverse to the tail
+matroid, and its finite negative mass gives an exact unit-disk value defect.  Affine reflection
+folds the even Hankel sector but forces a separate odd orientation sector.  A compact-open algebra containing one Cauchy coordinate
 completes to all of \(\cO(\mathbb H)\).  Stanley--Reisner sewing controls finite linear
 differential rows, not nonlinear incidence relations.  These boundaries make the remaining
-claim both stronger and narrower: the new object is the projective operator-tail differential
-matroid of prime Dirichlet families.
+claim both stronger and narrower: the central object is the projective operator-tail differential
+matroid of prime Dirichlet families, while positivity and reflection supply explicitly transverse
+data rather than a decorative product factor.
 
 \begin{thebibliography}{99}
+
+\bibitem{AdamoNeebSchober2021}
+M.~S. Adamo, K.-H. Neeb, and J. Schober,
+Reflection positivity and Hankel operators---the multiplicity free case,
+arXiv:2105.08522, 2021.
 
 \bibitem{Conway}
 J.~B. Conway,
@@ -719,6 +883,11 @@ gen\"ugen,
 E.~R. Kolchin,
 \emph{Differential Algebra and Algebraic Groups},
 Pure and Applied Mathematics, vol.~54, Academic Press, New York, 1973.
+
+\bibitem{NeebOlafsson2019}
+K.-H. Neeb and G. \'Olafsson,
+KMS conditions, standard real subspaces and reflection positivity on the circle group,
+\emph{Pacific J. Math.} \textbf{299} (2019), no.~1, 117--169.
 
 \bibitem{Ostrowski1920}
 A.~Ostrowski,

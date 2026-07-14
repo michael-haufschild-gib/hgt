@@ -9,6 +9,8 @@
   `formal/GaloisForLFunctions/RHTower/PrimeEulerLeeYangAmplitudeNoGo.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeEulerFerromagneticInteraction.lean`,
   `formal/GaloisForLFunctions/RHTower/TwoSpinFKGLeeYangBridge.lean`,
+  `formal/GaloisForLFunctions/RHTower/PrimeIsingTreeCavity.lean`,
+  `formal/GaloisForLFunctions/RHTower/IsingCavityRapidityAudioCascade.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeWordEnsembleBoundaryTomography.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeSupportMultivariateLiftMarker.lean`, and
   `formal/GaloisForLFunctions/XiLaguerrePolya.lean`
@@ -200,6 +202,69 @@ source-native prime interaction and turns the same check into a reusable hypothe
 unnormalized completed source packet.  It does not establish positivity of every packet weight or
 membership of the higher completed packet in the full ferromagnetic moment cone.
 
+The finite-volume theorem is now internal for the tree model class.  The exact rooted-tree cavity
+update
+
+```text
+T_c(r)=(c+r)/(1+cr)
+```
+
+is the `HTGeometry.CayleySchur` Blaschke factor with node `-c`, and satisfies
+
+```text
+normSq(1+cr)-normSq(c+r)=(1-c^2)(1-normSq(r)).
+```
+
+`PrimeIsingTreeCavity.lean` formalizes arbitrary finite rooted prime-labelled trees with any finite
+branching and edge weights `0<=c_e<=1`.  It proves open-polydisk nonvanishing by the cavity ratio,
+the exact global spin-inversion law
+
+```text
+Z_T(u)=(product_(v in T) u_v) Z_T(u^(-1)),
+```
+
+and therefore `Im z=0` for every zero after substituting the centered prime fields.  This is a
+genuinely interacting finite class, not a product theorem.  The same module proves that the
+one-edge common-field tree is the existing `leeYangPairBlock`, that the prime-Euler one-edge tree is
+the existing `primeEulerFerromagneticBlock`, and that zero-disagreement duplicate-free chains are
+the existing synchronized prime clusters.  At the other endpoint, `c=1` is zero physical
+interaction and duplicate-free chains are exactly the existing independent prime partition.  Thus
+one formal tree class contains both old endpoints and the interacting interior.
+
+Every finite tree partition is also proved entire.  Applying the existing locally uniform
+zero-transfer theorem gives the route-facing capstone
+
+```text
+T_n finite prime Ising trees,
+E entire and nowhere zero,
+Z_(T_n) -> E XiC locally uniformly
+----------------------------------
+RH.
+```
+
+Consequently all generic analytic and finite zero-location hypotheses have been discharged.  The
+remaining source problem is exactly to realize the completed packets by a cofinal compatible tree
+family and prove this locally uniform comparison, or to extract the first obstruction to doing so.
+
+Audio scattering and special-relativistic rapidity supply a further exact simplification.  The
+cavity maps form the Möbius cascade
+
+```text
+T_c(T_d(r))=T_((c+d)/(1+cd))(r),       |r|<1,
+```
+
+so serial sections collapse to one effective ferromagnetic coupling.  At the centered origin all
+prime fields equal one, and `IsingCavityRapidityAudioCascade.lean` proves for every finite tree
+
+```text
+Z_T(0)=2 product_(e in T) (1+c_e) != 0.
+```
+
+The module packages this as `centralNormalizedPrimeIsingTreePartition`, proves its value at zero is
+one without changing any zero, and supplies a locally uniform normalized-tree capstone to RH.  The
+comparison problem can therefore impose unit central normalization canonically rather than carry
+an arbitrary nonzero scalar at each aperture.
+
 ## Source coordinates already available
 
 `PrimeWordEnsembleBoundaryTomography.lean` proves that the complete normal boundary germ of any
@@ -303,6 +368,10 @@ test the Lieb--Sokal/Newman single-site Lee--Yang extension rather than weakenin
 
 - T. D. Lee and C. N. Yang, *Statistical Theory of Equations of State and Phase Transitions. II.
   Lattice Gas and Ising Model*, <https://doi.org/10.1103/PhysRev.87.410>;
+- H. A. Bethe, *Statistical Theory of Superlattices*,
+  <https://doi.org/10.1098/rspa.1935.0122>;
+- K. de'Bell and M. L. Glasser, *The Ising model on a closed Cayley tree: Zeros of the partition
+  function*, <https://doi.org/10.1016/0375-9601(84)90063-X>;
 - C. M. Newman, *Zeros of the Partition Function for Generalized Ising Systems*,
   <https://doi.org/10.1002/cpa.3160270203>;
 - E. H. Lieb and A. D. Sokal, *A General Lee--Yang Theorem for One-Component and Multicomponent
@@ -335,6 +404,7 @@ convergence is weaker than locally uniform.
 - [x] two-ended multivariate Lee--Yang/locally-uniform chain to RH stated
 - [ ] smallest completed source packet tested against the ferromagnetic moment cone
 - [ ] functorial finite ferromagnetic realization constructed at every aperture
-- [ ] full-volume Lee--Yang theorem imported or formalized for the chosen model class
+- [x] full-volume Lee--Yang theorem formalized for arbitrary finite rooted tree models
+- [x] serial cavity sections collapsed and canonical nonzero central normalization formalized
 - [ ] prime-field local-uniform comparison with zero-free factor times `XiC`
-- [ ] RH capstone formalized
+- [x] RH capstone formalized from the tree comparison with a zero-free entire factor
