@@ -323,6 +323,94 @@ theorem finiteCyclicGaugeAverage_idempotent
     (finiteCyclicGaugeAverage U N ψ)).mp
       (finiteCyclicGaugeAverage_physical U N hperiod ψ)
 
+/-! ### Heisenberg-picture observable twirling -/
+
+/-- The unnormalized finite cyclic conjugation average, written recursively without inverse
+powers.  Its `N` terms are `U^k A U^(N-k)` for `0 ≤ k < N`; when `U^N = 1`, these are the usual
+conjugates `U^k A U^(-k)`. -/
+def finiteCyclicObservableTwirlNumerator
+    (U A : E →L[𝕜] E) : ℕ → E →L[𝕜] E
+  | 0 => 0
+  | n + 1 => U * finiteCyclicObservableTwirlNumerator U A n + A * U ^ (n + 1)
+
+/-- The normalized finite cyclic twirl of an observable. -/
+def finiteCyclicObservableTwirl
+    (U A : E →L[𝕜] E) (N : ℕ) : E →L[𝕜] E :=
+  ((N : 𝕜)⁻¹) • finiteCyclicObservableTwirlNumerator U A N
+
+/-- **Observable-twirl boundary law.**  The failure of the finite conjugation numerator to
+commute with `U` is exactly its two endpoint terms. -/
+theorem finiteCyclicObservableTwirlNumerator_commutator_telescope
+    (U A : E →L[𝕜] E) : ∀ N : ℕ,
+    U * finiteCyclicObservableTwirlNumerator U A N -
+        finiteCyclicObservableTwirlNumerator U A N * U =
+      U ^ N * A * U - A * U ^ (N + 1)
+  | 0 => by simp [finiteCyclicObservableTwirlNumerator]
+  | n + 1 => by
+      have ih := finiteCyclicObservableTwirlNumerator_commutator_telescope U A n
+      simp only [finiteCyclicObservableTwirlNumerator]
+      calc
+        U * (U * finiteCyclicObservableTwirlNumerator U A n + A * U ^ (n + 1)) -
+            (U * finiteCyclicObservableTwirlNumerator U A n + A * U ^ (n + 1)) * U =
+          U * (U * finiteCyclicObservableTwirlNumerator U A n -
+              finiteCyclicObservableTwirlNumerator U A n * U) +
+            U * A * U ^ (n + 1) - A * U ^ (n + 1) * U := by
+              noncomm_ring
+        _ = U * (U ^ n * A * U - A * U ^ (n + 1)) +
+            U * A * U ^ (n + 1) - A * U ^ (n + 1) * U := by rw [ih]
+        _ = (U * U ^ n) * A * U - A * (U ^ (n + 1) * U) := by
+          noncomm_ring
+        _ = U ^ (n + 1) * A * U - A * U ^ (n + 1 + 1) := by
+          rw [← pow_succ' U n, ← pow_succ U (n + 1)]
+
+/-- A finite-period gauge step commutes with every observable twirl numerator. -/
+theorem finiteCyclicObservableTwirlNumerator_commutes
+    (U A : E →L[𝕜] E) (N : ℕ) (hperiod : U ^ N = 1) :
+    U * finiteCyclicObservableTwirlNumerator U A N =
+      finiteCyclicObservableTwirlNumerator U A N * U := by
+  have htel := finiteCyclicObservableTwirlNumerator_commutator_telescope U A N
+  apply sub_eq_zero.mp
+  rw [htel, hperiod, show U ^ (N + 1) = U by rw [pow_succ, hperiod, one_mul]]
+  simp
+
+/-- Normalization preserves the commutant-valued property of finite cyclic twirling. -/
+theorem finiteCyclicObservableTwirl_commutes
+    (U A : E →L[𝕜] E) (N : ℕ) (hperiod : U ^ N = 1) :
+    U * finiteCyclicObservableTwirl U A N =
+      finiteCyclicObservableTwirl U A N * U := by
+  simp only [finiteCyclicObservableTwirl]
+  rw [mul_smul_comm, smul_mul_assoc,
+    finiteCyclicObservableTwirlNumerator_commutes U A N hperiod]
+
+/-- A twirled observable commutes with the static constraint `U - 1`. -/
+theorem finiteCyclicObservableTwirl_commutes_constraint
+    (U A : E →L[𝕜] E) (N : ℕ) (hperiod : U ^ N = 1) :
+    (U - 1) * finiteCyclicObservableTwirl U A N =
+      finiteCyclicObservableTwirl U A N * (U - 1) := by
+  have hcomm := finiteCyclicObservableTwirl_commutes U A N hperiod
+  calc
+    (U - 1) * finiteCyclicObservableTwirl U A N =
+        U * finiteCyclicObservableTwirl U A N -
+          finiteCyclicObservableTwirl U A N := by noncomm_ring
+    _ = finiteCyclicObservableTwirl U A N * U -
+          finiteCyclicObservableTwirl U A N := by rw [hcomm]
+    _ = finiteCyclicObservableTwirl U A N * (U - 1) := by noncomm_ring
+
+/-- Group twirling constructs a Dirac observable: it preserves every physical vector for the
+finite cyclic constraint `U - 1`, with no commutator premise left to supply. -/
+theorem finiteCyclicObservableTwirl_preserves_physicalState
+    (U A : E →L[𝕜] E) (N : ℕ) (hperiod : U ^ N = 1) {ψ : E}
+    (hψ : GaloisForLFunctions.PhysicalState (U - 1).toLinearMap ψ) :
+    GaloisForLFunctions.PhysicalState (U - 1).toLinearMap
+      (finiteCyclicObservableTwirl U A N ψ) := by
+  rw [GaloisForLFunctions.PhysicalState] at hψ ⊢
+  change (U - 1) ψ = 0 at hψ
+  change (U - 1) (finiteCyclicObservableTwirl U A N ψ) = 0
+  rw [← ContinuousLinearMap.mul_apply,
+    finiteCyclicObservableTwirl_commutes_constraint U A N hperiod,
+    ContinuousLinearMap.mul_apply, hψ]
+  simp
+
 end AlgebraicAverage
 
 section WardConsumers

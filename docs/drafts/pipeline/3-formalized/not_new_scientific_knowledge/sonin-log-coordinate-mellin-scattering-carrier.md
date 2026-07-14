@@ -88,10 +88,20 @@ additive Euler translations tau_(log p)
   + the logarithmic position/Burnol conductor commutator.
 ```
 
-An ordinary Fourier edge bundle cannot substitute for this graph. The next live theorem is a
-relative-trace or resolvent estimate for `[M_t,J_log]` after the physical cutoff is transported to
-the logarithmic half-line, strong enough to produce a uniform finite lower floor for the completed
-prime--Gamma flux.
+An ordinary Fourier edge bundle cannot substitute for this graph.  The paper theorem
+`../../2-fully-proven/not_new_scientific_knowledge/sonin-burnol-conductor-cutoff-bounded-graph-law.md`
+now closes the common-domain part of this problem.  Writing
+`H_infinity=M_t+J_log M_t J_log`, it proves
+
+```text
+[M_t,J_log P_tau J_log]
+  =J_log[H_infinity,P_tau]J_log,
+```
+
+uses Burnol's Gamma spectral multiplier and BMO Hankel boundedness to extend this commutator, and
+dresses it through the exact prolate resolvent.  The next live theorem is therefore the genuine
+semilocal **relative trace and source comparison** for the bounded conductor leakage, strong enough
+to produce the completed prime--Gamma Rayleigh/positivity bound.
 
 ## Formal declarations
 
@@ -114,6 +124,7 @@ RHTower.ordinaryPosition_commutator_not_scalar
 - [x] orbital-length commutator compiled
 - [x] ordinary-position scalar obstruction compiled
 - [x] narrow Lean module build
-- [ ] closed commutator graph for `[M_t,J_log]`
+- [x] bounded exact-Sonin commutator graph proved on paper through the Burnol conductor cutoff law
+- [ ] formalize the conductor multiplier and bounded commutator graph in Lean
 - [ ] uniform completed-flux lower floor
 - [ ] RH

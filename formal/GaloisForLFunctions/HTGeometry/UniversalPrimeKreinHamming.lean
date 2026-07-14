@@ -207,6 +207,145 @@ theorem universalPrimeOrientedHerglotz_nonneg_iff_empty (J : Finset Nat.Primes) 
     simpa [universalPrimeOrientedHerglotz] using
       universalFacetOrbitGauge_primeLogHerglotz_im_nonneg hz
 
+/-! ## Exact finite Krein signature on canonical response probes -/
+
+/-- Canonical unit-height upper-half-plane probes.  Their real coordinates enumerate the finite
+response channels, while the fixed positive imaginary part keeps every probe away from every real
+prime-log pole. -/
+def primeKreinProbeNode (N : ℕ) (j : Fin N) : ℂ :=
+  ((j : ℕ) : ℂ) + Complex.I
+
+theorem primeKreinProbeNode_injective (N : ℕ) :
+    Function.Injective (primeKreinProbeNode N) := by
+  intro i j hij
+  have hre := congrArg Complex.re hij
+  simp [primeKreinProbeNode] at hre
+  apply Fin.ext
+  exact_mod_cast hre
+
+theorem primeLogSupport_ne_primeKreinProbeNode
+    (p : Nat.Primes) (N : ℕ) (j : Fin N) :
+    (primeLogSupport p : ℂ) ≠ primeKreinProbeNode N j := by
+  intro h
+  have him := congrArg Complex.im h
+  simp [primeKreinProbeNode] at him
+
+/-- A prime response channel sampled on a finite upper-half-plane packet.  The square-root weight
+puts its outer product at the physical intensity `2 * universalPrimeWeight p`. -/
+def universalPrimeKreinFeature {k N : ℕ}
+    (p : Fin k → Nat.Primes) (z : Fin N → ℂ) (i : Fin k) : Fin N → ℂ :=
+  (Real.sqrt (2 * universalPrimeWeight (p i)) : ℂ) •
+    fun j => ((primeLogSupport (p i) : ℂ) - z j)⁻¹
+
+/-- The signed response Gram for `kp` positive and `kn` negative prime channels on the canonical
+unit-height probe packet. -/
+def universalPrimeKreinProbeForm {kp kn : ℕ}
+    (positivePrime : Fin kp → Nat.Primes)
+    (negativePrime : Fin kn → Nat.Primes) :
+    Matrix (Fin (kp + kn)) (Fin (kp + kn)) ℂ :=
+  rectangularKreinForm
+    (universalPrimeKreinFeature positivePrime (primeKreinProbeNode (kp + kn)))
+    (universalPrimeKreinFeature negativePrime (primeKreinProbeNode (kp + kn)))
+
+/-- Distinct positive and negative prime channels give a linearly independent combined response
+packet on the canonical probes.  This is the source-side controllability/minimality input that
+makes the Krein signature sharp rather than merely bounded. -/
+theorem universalPrimeKreinProbe_combined_linearIndependent {kp kn : ℕ}
+    (positivePrime : Fin kp → Nat.Primes)
+    (negativePrime : Fin kn → Nat.Primes)
+    (hprime : Function.Injective (Sum.elim positivePrime negativePrime)) :
+    LinearIndependent ℂ
+      (Sum.elim
+        (universalPrimeKreinFeature positivePrime (primeKreinProbeNode (kp + kn)))
+        (universalPrimeKreinFeature negativePrime (primeKreinProbeNode (kp + kn)))) := by
+  let e : Fin kp ⊕ Fin kn ≃ Fin (kp + kn) := finSumFinEquiv
+  let allPrime : Fin (kp + kn) → Nat.Primes :=
+    fun i => Sum.elim positivePrime negativePrime (e.symm i)
+  let raw : Fin (kp + kn) → (Fin (kp + kn) → ℂ) :=
+    fun i j => ((primeLogSupport (allPrime i) : ℂ) -
+      primeKreinProbeNode (kp + kn) j)⁻¹
+  have hallPrime : Function.Injective allPrime :=
+    hprime.comp e.symm.injective
+  have hpole : Function.Injective
+      (fun i => (primeLogSupport (allPrime i) : ℂ)) := by
+    intro i j hij
+    apply hallPrime
+    apply primeLogSupport_injective
+    exact Complex.ofReal_injective hij
+  have hraw : LinearIndependent ℂ raw := by
+    simpa [raw] using
+      cauchy_linearIndependent
+        (fun i => (primeLogSupport (allPrime i) : ℂ))
+        (primeKreinProbeNode (kp + kn)) hpole
+        (primeKreinProbeNode_injective (kp + kn))
+        (fun i j => primeLogSupport_ne_primeKreinProbeNode (allPrime i) (kp + kn) j)
+  have hreindexed : LinearIndependent ℂ (fun s => raw (e s)) :=
+    hraw.comp e e.injective
+  let scale : Fin kp ⊕ Fin kn → ℂ := fun s =>
+    (Real.sqrt (2 * universalPrimeWeight (Sum.elim positivePrime negativePrime s)) : ℂ)
+  have hscale : ∀ s, scale s ≠ 0 := by
+    intro s
+    apply Complex.ofReal_ne_zero.mpr
+    exact (Real.sqrt_pos.2
+      (mul_pos (by norm_num) (universalPrimeWeight_pos _))).ne'
+  have hscaled := linearIndependent_smul_nonzero
+    (fun s => raw (e s)) scale hreindexed hscale
+  convert hscaled using 1 with s
+  cases s <;>
+    simp [universalPrimeKreinFeature, scale, raw, allPrime, e]
+
+/-- **Exact negative-channel count.**  The signed prime-response Gram has negative inertia exactly
+`kn`: every negative-definite subspace has dimension at most `kn`, and one of dimension `kn`
+exists.  No arbitrary probe or surjectivity hypothesis remains. -/
+theorem universalPrimeKreinProbe_exact_neg_inertia {kp kn : ℕ}
+    (positivePrime : Fin kp → Nat.Primes)
+    (negativePrime : Fin kn → Nat.Primes)
+    (hprime : Function.Injective (Sum.elim positivePrime negativePrime)) :
+    (∀ W : Submodule ℂ (Fin (kp + kn) → ℂ),
+        (∀ y ∈ W, y ≠ 0 →
+          (star y ⬝ᵥ
+            (universalPrimeKreinProbeForm positivePrime negativePrime).mulVec y).re < 0) →
+        Module.finrank ℂ W ≤ kn) ∧
+      (∃ W : Submodule ℂ (Fin (kp + kn) → ℂ), Module.finrank ℂ W = kn ∧
+        ∀ y ∈ W, y ≠ 0 →
+          (star y ⬝ᵥ
+            (universalPrimeKreinProbeForm positivePrime negativePrime).mulVec y).re < 0) := by
+  let w := universalPrimeKreinFeature positivePrime (primeKreinProbeNode (kp + kn))
+  let u := universalPrimeKreinFeature negativePrime (primeKreinProbeNode (kp + kn))
+  have hlinear : LinearIndependent ℂ (Sum.elim w u) := by
+    simpa only [w, u] using
+      universalPrimeKreinProbe_combined_linearIndependent
+        positivePrime negativePrime hprime
+  have hsurjective := rectangular_eval_surjective_of_linearIndependent w u hlinear
+  simpa only [universalPrimeKreinProbeForm, w, u] using
+    rectangular_exact_neg_inertia w u hsurjective
+
+/-- **Exact positive-channel count.**  On the same canonical response packet, the positive inertia
+is exactly `kp`.  Together with the negative theorem, the intrinsic Krein signature recovers both
+directed channel counts. -/
+theorem universalPrimeKreinProbe_exact_pos_inertia {kp kn : ℕ}
+    (positivePrime : Fin kp → Nat.Primes)
+    (negativePrime : Fin kn → Nat.Primes)
+    (hprime : Function.Injective (Sum.elim positivePrime negativePrime)) :
+    (∀ W : Submodule ℂ (Fin (kp + kn) → ℂ),
+        (∀ y ∈ W, y ≠ 0 →
+          0 < (star y ⬝ᵥ
+            (universalPrimeKreinProbeForm positivePrime negativePrime).mulVec y).re) →
+        Module.finrank ℂ W ≤ kp) ∧
+      (∃ W : Submodule ℂ (Fin (kp + kn) → ℂ), Module.finrank ℂ W = kp ∧
+        ∀ y ∈ W, y ≠ 0 →
+          0 < (star y ⬝ᵥ
+            (universalPrimeKreinProbeForm positivePrime negativePrime).mulVec y).re) := by
+  let w := universalPrimeKreinFeature positivePrime (primeKreinProbeNode (kp + kn))
+  let u := universalPrimeKreinFeature negativePrime (primeKreinProbeNode (kp + kn))
+  have hlinear : LinearIndependent ℂ (Sum.elim w u) := by
+    simpa only [w, u] using
+      universalPrimeKreinProbe_combined_linearIndependent
+        positivePrime negativePrime hprime
+  have hsurjective := rectangular_eval_surjective_of_linearIndependent w u hlinear
+  simpa only [universalPrimeKreinProbeForm, w, u] using
+    rectangular_exact_pos_inertia w u hsurjective
+
 end
 
 

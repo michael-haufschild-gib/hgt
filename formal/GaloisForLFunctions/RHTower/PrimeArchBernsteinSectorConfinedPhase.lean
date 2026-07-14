@@ -292,6 +292,35 @@ theorem exists_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riem
       (tendsto_primeArchEndpointBernsteinPurity_div_pow_of_sectorBase_sq_lt hgt)
   exact ⟨r, hr, hrbase, hnot⟩
 
+/-- The false-RH witness may be chosen strictly below the narrow-sector squared ceiling. -/
+theorem exists_strict_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis
+    (hRH : ¬ RiemannHypothesis) :
+    ∃ s : ℝ,
+      1 < s ∧ s < xiSectorConfinedBernsteinAmplitudeBase ^ 2 ∧
+        ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / s ^ n)
+          atTop (nhds 0) := by
+  obtain ⟨r, hr, hrbase, hnot⟩ :=
+    exists_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis hRH
+  let s : ℝ := (1 + r) / 2
+  have hr0 : 0 < r := lt_trans zero_lt_one hr
+  have hs0 : 0 < s := by dsimp only [s]; linarith
+  have hones : 1 < s := by dsimp only [s]; linarith
+  have hsr : s < r := by dsimp only [s]; linarith
+  have hsbase : s < xiSectorConfinedBernsteinAmplitudeBase ^ 2 := hsr.trans_le hrbase
+  refine ⟨s, hones, hsbase, ?_⟩
+  intro hs
+  have hratio0 : 0 ≤ s / r := div_nonneg hs0.le hr0.le
+  have hratio1 : s / r < 1 := (div_lt_one hr0).2 hsr
+  have hpow : Tendsto (fun n : ℕ => (s / r) ^ n) atTop (nhds 0) :=
+    tendsto_pow_atTop_nhds_zero_of_lt_one hratio0 hratio1
+  have hprod := hs.mul hpow
+  apply hnot
+  convert hprod using 1
+  · funext n
+    simp only [div_pow]
+    field_simp [hr0.ne', hs0.ne']
+  · norm_num
+
 /-- A convenient five-per-mille corollary of the exact false-RH chamber. -/
 theorem exists_fivePerMille_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis
     (hRH : ¬ RiemannHypothesis) :
@@ -300,9 +329,10 @@ theorem exists_fivePerMille_primeArchEndpointBernsteinPurity_phase_of_not_rieman
         ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
           atTop (nhds 0) := by
   obtain ⟨r, hr, hrbase, hnot⟩ :=
-    exists_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis hRH
+    exists_strict_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis
+      hRH
   exact ⟨r, hr,
-    hrbase.trans_lt
+    hrbase.trans
       xiSectorConfinedBernsteinAmplitudeBase_sq_lt_twoHundredOne_over_twoHundred,
     hnot⟩
 
@@ -338,7 +368,7 @@ theorem primeArchBernsteinSectorConfinedLoschmidtPhaseMaster :
     (RiemannHypothesis ↔ PrimeArchEndpointBernsteinPurityBounded) ∧
     (¬ RiemannHypothesis →
       ∃ r : ℝ,
-        1 < r ∧ r ≤ xiSectorConfinedBernsteinAmplitudeBase ^ 2 ∧
+        1 < r ∧ r < xiSectorConfinedBernsteinAmplitudeBase ^ 2 ∧
           ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
             atTop (nhds 0)) := by
   exact ⟨
@@ -348,7 +378,7 @@ theorem primeArchBernsteinSectorConfinedLoschmidtPhaseMaster :
       primeArchEndpointBernsteinPurity_le_sectorConfined n⟩,
     riemannHypothesis_iff_primeArchEndpointBernsteinPurity_le_mass_sq,
     riemannHypothesis_iff_primeArchEndpointBernsteinPurity_bounded,
-    exists_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis⟩
+    exists_strict_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis⟩
 
 end
 

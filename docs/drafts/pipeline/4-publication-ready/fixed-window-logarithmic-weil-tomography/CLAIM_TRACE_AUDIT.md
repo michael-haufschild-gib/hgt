@@ -358,8 +358,18 @@ scale-resolved free-energy and source-abscissa statement is bundled by
 | endpoint purity has the unconditional polynomial floor and narrow-sector exponential ceiling | mass_sq_le_card_mul_primeArchEndpointBernsteinPurity, primeArchEndpointBernsteinPurity_le_sectorConfined |
 | RH is equivalent to uniform boundedness of the positive endpoint purity and to its sharp mass-squared ceiling | riemannHypothesis_iff_primeArchEndpointBernsteinPurity_bounded, riemannHypothesis_iff_primeArchEndpointBernsteinPurity_le_mass_sq |
 | `B_sec^2 = 251001/250000 < 201/200` exactly | xiSectorConfinedBernsteinAmplitudeBase_sq_eq, xiSectorConfinedBernsteinAmplitudeBase_sq_lt_twoHundredOne_over_twoHundred |
-| false RH forces a surviving energy exponent in `(1,B_sec^2]`, hence inside `(1,201/200)` | exists_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis, exists_fivePerMille_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis |
+| false RH forces a surviving energy exponent in `(1,B_sec^2)`, hence inside `(1,201/200)` | exists_strict_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis, exists_fivePerMille_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis |
 | the polynomial floor, exact narrow-sector ceiling, sharp bounded RH phase, and false-RH chamber form one theorem | primeArchBernsteinSectorConfinedLoschmidtPhaseMaster |
+| alignment phase and elliptic radius determine a nonreal endpoint atom up to reflected complement, which the strict quarter disk excludes | eq_or_eq_one_sub_conj_of_bernsteinEllipsePhase_eq_of_amplitude_eq |
+| false RH has an attained maximal atom amplitude whose exact mode survives with a positive eventual margin | exists_maximalAmplitude_unit_xiCentralBernsteinPencil_eventually_exponential_of_not_rh |
+| false RH supplies an eventual exponential lower envelope and forces endpoint purity to positive infinity | exists_eventually_exponential_lower_envelope_primeArchEndpointBernsteinPurity_of_not_rh, tendsto_primeArchEndpointBernsteinPurity_atTop_of_not_riemannHypothesis |
+| the endpoint purity has a unique exact exponential exponent in `[1,B_sec^2)`, equal to one exactly under RH | primeArchEndpointBernsteinExactExponentialExponent_unique, riemannHypothesis_iff_primeArchEndpointBernsteinExactExponentialExponent_one, existsUnique_primeArchEndpointBernsteinExactExponentialExponent |
+| under false RH the exact exponent is the square of an attained maximal atom amplitude in `(1,B_sec)` | exists_primeArchEndpointBernstein_exactExponentialThreshold_of_not_rh, exists_primeArchEndpointBernsteinAttainedExactThreshold_of_not_rh |
+| purity and initial energy plus cumulative Dirichlet dissipation have the same unique exact exponent | exactExponentialExponentAtNatInfinity_natCast_add_one_mul_iff, primeArchEndpointBernsteinCumulativeDissipationExactExponent_iff_purity, existsUnique_primeArchEndpointBernsteinPurityDissipationExactExponent |
+| RH is equivalent to one fixed purity ceiling recurring at arbitrarily large degrees | riemannHypothesis_iff_primeArchEndpointBernsteinPurity_cofinallyBounded |
+| scaled Bernstein purity has an exact weighted adjacent Dirichlet-dissipation increment and telescoping sum | scaled_bernsteinCoefficientPurity_succ_eq_add_dirichletDissipation, scaled_bernsteinCoefficientPurity_eq_initial_add_sum_dirichletDissipation |
+| RH is equivalent to one cofinal linear cumulative-dissipation budget; false RH forces the cumulative mean to positive infinity | riemannHypothesis_iff_primeArchEndpointBernsteinCofinalLinearDissipation, tendsto_primeArchEndpointBernsteinMeanDissipation_atTop_of_not_rh |
+| the unique exact exponent, narrow-sector ceiling, cofinal dissipation criterion, and divergent false-RH phase form one theorem | primeArchBernsteinNarrowSectorDissipationMaster |
 | the positive purity endpoint is equivalent directly to the critical prime-polar source abscissa | primeArchBernsteinPurity_sourceEndpoint_iff |
 | subexponential endpoint negative mass and subexponential total variation are equivalent | primeArchBernsteinNegativeMassSubexponential_iff_totalVariation |
 | subexponential endpoint Bernstein negative mass is equivalent to RH | riemannHypothesis_iff_primeArchBernsteinNegativeMassSubexponential |
@@ -401,11 +411,17 @@ scale-resolved free-energy and source-abscissa statement is bundled by
   GaloisForLFunctions.RHTower.XiThermalProjectiveFreeEnergyRadius, and
   GaloisForLFunctions.RHTower.PrimeArchThetaHankelDegreeTail, and
   GaloisForLFunctions.RHTower.FiniteExponentialPencilMeanSquare, and
+  GaloisForLFunctions.RHTower.FiniteExponentialPencilDominantConstant, and
+  GaloisForLFunctions.RHTower.BernsteinEllipseRigidity, and
   GaloisForLFunctions.RHTower.PrimeArchBernsteinPencil, and
   GaloisForLFunctions.RHTower.PrimeArchBernsteinExponentialPhase, and
   GaloisForLFunctions.RHTower.PrimeArchBernsteinLoschmidtPurity, and
   GaloisForLFunctions.RHTower.PrimeArchBernsteinConfinedPhase, and
   GaloisForLFunctions.RHTower.PrimeArchBernsteinSectorConfinedPhase, and
+  GaloisForLFunctions.RHTower.PrimeArchBernsteinPurityDivergence, and
+  GaloisForLFunctions.RHTower.PrimeArchBernsteinDirichletDissipation, and
+  GaloisForLFunctions.RHTower.PrimeArchBernsteinExactExponentialThreshold, and
+  GaloisForLFunctions.RHTower.PrimeArchBernsteinNarrowSectorDissipationMaster, and
   GaloisForLFunctions.RHTower.PrimeArchBernsteinPuritySourceEndpoint, and
   GaloisForLFunctions.RHTower.PrimeArchBernsteinNegativeMassAbscissa, and
   GaloisForLFunctions.RHTower.PrimeArchCofinalSourceTemperatureMaster.

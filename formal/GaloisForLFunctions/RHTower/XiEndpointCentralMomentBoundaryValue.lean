@@ -156,6 +156,14 @@ theorem tsum_normalizedPrimeArchMoment_endpointCurvature :
       (xiEndpointCompletedCurvature : ℂ) :=
   hasSum_normalizedPrimeArchMoment_endpointCurvature.tsum_eq
 
+/-- Exact source-side special value of the signed-quarter moment series. -/
+theorem tsum_normalizedPrimeArchMoment_endpointSpecialValue :
+    (∑' n : ℕ,
+      (normalizedPrimeArchMoment n : ℂ) * (-1 / 4 : ℂ) ^ n) =
+      ((2 + Real.eulerMascheroniConstant - Real.log (4 * Real.pi) : ℝ) : ℂ) := by
+  rw [tsum_normalizedPrimeArchMoment_endpointCurvature,
+    xiEndpointCompletedCurvature_eq_eulerMascheroni_log]
+
 end
 
 end RHTower

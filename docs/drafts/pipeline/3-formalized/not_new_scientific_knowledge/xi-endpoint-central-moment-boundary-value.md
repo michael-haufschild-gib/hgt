@@ -33,7 +33,13 @@ C_{\rm endpoint}
 m_n=\operatorname{normalizedPrimeArchMoment}(n),
 \]
 
-and this series is absolutely convergent.
+and this series is absolutely convergent.  Combining this with the already formalized completed
+endpoint value gives the source-only special value
+
+\[
+\sum_{n\ge0}m_n\left(-\frac14\right)^n
+=2+\gamma-\log(4\pi).
+\]
 
 ## Formal theorem surface
 
@@ -42,7 +48,8 @@ and this series is absolutely convergent.
 - `xiCentralMomentGerm_I_half_eq_endpointCrossTrace`;
 - `xiCentralMomentGerm_I_half_eq_endpointCompletedCurvature`;
 - `hasSum_normalizedPrimeArchMoment_endpointCurvature`;
-- `tsum_normalizedPrimeArchMoment_endpointCurvature`.
+- `tsum_normalizedPrimeArchMoment_endpointCurvature`;
+- `tsum_normalizedPrimeArchMoment_endpointSpecialValue`.
 
 ## Proof contribution
 

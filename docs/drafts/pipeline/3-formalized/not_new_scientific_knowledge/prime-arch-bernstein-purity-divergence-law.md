@@ -107,6 +107,23 @@ dimension-weighted estimate
 The purity divergence law removes this full factor of \(d_j+2\); no inverse-dimension error rate
 is required.
 
+In fact this condition is exact. Lean proves
+
+\[
+ \mathrm{RH}
+ \iff
+ \exists d_j\to\infty\;\exists M_j\;\forall j,
+ \quad
+ \sum_{i=0}^{d_j+1}
+ \left(c_i^{(d_j+1)}-c_i^{(M_j,d_j+1)}\right)^2\le1.
+\]
+
+Under RH, pointwise convergence of the finite thermal moments makes every fixed Bernstein packet
+converge, so one cutoff \(M_j\) can be selected at each chosen degree. Conversely, the constant-one
+bound is a special case of the cofinal bounded-discrepancy discharge theorem. Therefore, for every
+admissible prime--polar rectangle, the remaining absolute-abscissa inequality is equivalent to
+this same concrete finite-thermal constant-one condition.
+
 The converse separation statement is also unconditional. Under failure of RH, every
 Hausdorff-positive comparator family with uniformly bounded zeroth mass has squared Bernstein
 packet discrepancy tending to positive infinity:
@@ -251,6 +268,9 @@ Principal declarations:
 - `bernsteinCoefficientPurity_le_two_mass_sq_add_two_squareDiscrepancy`
 - `riemannHypothesis_of_cofinal_hausdorffBernsteinApproximation_squareDiscrepancy_bounded`
 - `riemannHypothesis_of_cofinal_xiThermalTruncation_bernsteinSquareDiscrepancy_bounded`
+- `tendsto_bernsteinSquareDiscrepancy_xiThermalTruncation_zero_of_riemannHypothesis`
+- `riemannHypothesis_iff_exists_cofinal_xiThermalTruncation_bernsteinSquareDiscrepancy_le_one`
+- `rectangularPrimePolarSource_negativeAbscissa_le_one_iff_exists_cofinal_xiThermalTruncation_bernsteinSquareDiscrepancy_le_one`
 - `tendsto_bernsteinSquareDiscrepancy_from_boundedMass_positiveComparators_atTop_of_not_rh`
 - `primeArchEndpointBernsteinPurity_dichotomy`
 

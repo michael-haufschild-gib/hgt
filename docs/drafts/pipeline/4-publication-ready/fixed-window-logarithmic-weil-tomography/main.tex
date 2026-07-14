@@ -31,8 +31,8 @@
 \newcommand{\Res}{\operatorname{Res}}
 \newcommand{\supp}{\operatorname{supp}}
 
-\title{An Endpoint-Calibrated Narrow-Sector Source--Temperature Phase Theorem\\
-for the Riemann Xi Function}
+\title{A Unique Narrow-Sector Critical Exponent and Dissipation Law\\
+for the Riemann Xi Source}
 \author{Michael Haufschild \and GPT 5.6 Sol \and Fable 5 \and Grok 4.5}
 \date{}
 
@@ -41,8 +41,9 @@ for the Riemann Xi Function}
 \maketitle
 
 \begin{abstract}
-We prove an endpoint-calibrated narrow-sector source--temperature phase theorem for the completed
-Riemann Xi function.
+We prove that a positive source observable of the completed Riemann Xi function has a unique exact
+exponential exponent in a universal narrow sector, together with an exact degree-elevation
+dissipation law.
 The Guinand--Weil formula is first evaluated at a sharp two-edge rectangle without smoothing or
 spectral cutoff.  Its logarithmic samples form an explicit finite prime--Gamma sequence $g_L(n)$;
 removing an asymptotically constant Gamma--polar term gives a literal finite prime--polar sequence
@@ -215,12 +216,37 @@ Moreover,
  \Longleftrightarrow \sup_M\Pi_M<\infty
  \Longleftrightarrow \Pi_M/r^M\to0\quad(r>1).
 \]
-If RH is false, there is an energy base
+The same observable has an exact degree-elevation dissipation law.  With
 \[
- 1<r\le B_{\rm sec}^2=\frac{251001}{250000}<\frac{201}{200}
+ \mathfrak D_M=\frac1{M+1}\sum_{i=0}^{M}(M+1-i)(i+1)
+   (a_{M+1,i}-a_{M+1,i+1})^2,
 \]
-for which $\Pi_M/r^M\not\to0$.  Thus the exact reciprocal-square sector traps the entire
-transition in a strict five-per-mille window and RH is exactly its bounded zero-excess phase.
+one has
+\[
+ (M+2)\Pi_{M+1}=(M+1)\Pi_M+\mathfrak D_M,
+ \qquad
+ (M+1)\Pi_M=\Pi_0+\sum_{m<M}\mathfrak D_m.
+\]
+Consequently RH is equivalent to one fixed linear cumulative-dissipation bound recurring at
+arbitrarily large degrees.  Put
+\(\mathcal C_M=\Pi_0+\sum_{m<M}\mathfrak D_m=(M+1)\Pi_M\).
+Call $E>0$ a common exact exponent when, for both $X=\Pi$ and $X=\mathcal C$,
+\[
+ r>E\Longrightarrow X_M/r^M\to0,
+ \qquad 0<r<E\Longrightarrow X_M/r^M\to+\infty.
+\]
+There is a unique exact exponent $E_*$ and
+\[
+ 1\le E_*<B_{\rm sec}^2=\frac{251001}{250000}<\frac{201}{200},
+ \qquad \mathrm{RH}\Longleftrightarrow E_*=1.
+\]
+If RH is false, the atom amplitude
+$A(\rho)=|u_\rho|+|1-u_\rho|$ attains a global maximum $B$ with
+$1<B<B_{\rm sec}$, and $E_*=B^2$.  Thus the exact reciprocal-square sector traps the entire
+transition in a strict five-per-mille chamber and identifies its source-attained critical
+exponent.  In the false phase, both $\Pi_M$ and the cumulative mean
+$(M+1)^{-1}\sum_{m<M}\mathfrak D_m$ tend to positive infinity; in the critical phase the same
+observable is cofinally linearly dissipative.
 The same source Hankel form
 admits an independent
 sparse compression: for every infinite $D\subset\mathbb N$, it is enough to test monic integer
@@ -323,16 +349,19 @@ the total variation $T_M=s_0+2\eta_M$, not vanishing, decay, or boundedness of $
 The resulting positive purity $\Pi_M=\sum_i a_{M,i}^2$ is unconditionally trapped between the
 polynomial floor $s_0^2/(M+1)$ and a strict exponential ceiling
 $A_*^2(501/500)^{2M}$.  RH is exactly the sharp chamber $\Pi_M\le s_0^2$ at every degree, equivalently
-uniform boundedness; failure of RH forces a surviving energy exponent in
-$(1,(501/500)^2]$, a subset of $(1,201/200)$.  This confines the missing estimate to a
-five-per-mille chamber rather than merely
-renaming it.
+one fixed ceiling recurring cofinally.  The scaled purity $(M+1)\Pi_M$ has an exact positive
+degree-elevation increment, a weighted adjacent Dirichlet energy.  The purity has a unique exact
+exponential exponent $E_*$.  It lies in $[1,(501/500)^2)$, equals one exactly under RH, and in
+the false phase equals the square of an attained maximal divisor-atom amplitude.  Failure of RH
+also forces both the purity and its cumulative mean dissipation to positive infinity.  This
+identifies the source geometry of the five-per-mille chamber rather than merely producing one
+surviving normalization.
 In the thermal chart, every simultaneous cofinal finite-volume/cooling schedule
 has free-energy density exactly $\delta_*$, so the same endpoint is equivalently one
 subexponential partition estimate.  The later named results establish the individual clauses
 needed for this master statement.
 
-\begin{theorem}[Theorem A: endpoint-calibrated narrow-sector source--temperature phase theorem]
+\begin{theorem}[Theorem A: unique narrow-sector exponent and source--temperature phase law]
 \label{thm:main}
 Fix $L>0$ and an admissible cutoff $N$.  Let $g_L$ be the exact finite
 prime--Gamma sample, $S_L$ the finite prime--polar sample, and
@@ -754,6 +783,12 @@ Define
  \Pi_M=\sum_{i=0}^M a_{M,i}^2.
  \tag{1.20w}
 \]
+Put also
+\[
+ \mathfrak D_M=\frac1{M+1}\sum_{i=0}^{M}(M+1-i)(i+1)
+ (a_{M+1,i}-a_{M+1,i+1})^2.
+ \tag{1.20wb}
+\]
 Then $A_*<\infty$, $\kappa_*<1/4$, $1<B_{\rm sec}$, and the complete source obeys the
 unconditional sector-confined estimate
 \[
@@ -779,6 +814,13 @@ one has the exact Loschmidt dephasing law
  \lim_{K\to\infty}\frac1K\sum_{n=0}^{K-1}|\mathcal L_M(n)|^2=\Pi_M.
  \tag{1.20y}
 \]
+Degree elevation gives the exact dissipative balance
+\[
+ (M+2)\Pi_{M+1}=(M+1)\Pi_M+\mathfrak D_M,
+ \qquad
+ (M+1)\Pi_M=\Pi_0+\sum_{m<M}\mathfrak D_m.
+ \tag{1.20ya}
+\]
 The critical phase is equivalently
 \[
  \boxed{\begin{aligned}
@@ -786,20 +828,46 @@ The critical phase is equivalently
  &\Longleftrightarrow \Pi_M\le s_0^2\quad(M\ge0)\\
  &\Longleftrightarrow \sup_M\Pi_M<\infty\\
  &\Longleftrightarrow
+ \exists C\;\forall N\;\exists M\ge N,
+ \quad \sum_{m<M}\mathfrak D_m\le C(M+1)\\
+ &\Longleftrightarrow
  \Pi_M/r^M\longrightarrow0\quad\text{for every }r>1.
  \end{aligned}}
  \tag{1.20z}
 \]
-If RH is false, there are $|w|=1$ and an amplitude base $b>1$ for which
-$b^{-M}P_M(w)\not\to0$.  Equivalently, there is an energy base
+Say that $E>0$ is an exact exponential exponent of $\Pi$ when
 \[
- 1<r\le B_{\rm sec}^2=\frac{251001}{250000}<\frac{201}{200},
- \qquad \Pi_M/r^M\not\longrightarrow0.
+ \begin{aligned}
+ \mathcal C_M&:=\Pi_0+\sum_{m<M}\mathfrak D_m=(M+1)\Pi_M,\\
+ r>E&\Longrightarrow
+ \frac{\Pi_M}{r^M},\frac{\mathcal C_M}{r^M}\longrightarrow0,\\
+ 0<r<E&\Longrightarrow
+ \frac{\Pi_M}{r^M},\frac{\mathcal C_M}{r^M}\longrightarrow+\infty.
+ \end{aligned}
  \tag{1.20za}
+\]
+There is exactly one such exponent $E_*$, and
+\[
+ 1\le E_*<B_{\rm sec}^2=\frac{251001}{250000}<\frac{201}{200},
+ \qquad \mathrm{RH}\Longleftrightarrow E_*=1.
+ \tag{1.20zaa}
+\]
+If RH is false, $A(\rho)=|u_\rho|+|1-u_\rho|$ attains a global maximum $B$ and
+\[
+ 1<B<B_{\rm sec},\qquad E_*=B^2.
+ \tag{1.20zab}
 \]
 Thus cancellations between conjugate zeros, reflected zeros, coincident reciprocal-square
 values, and the infinite divisor tail cannot remove the positive phase; the endpoint curvature
-simultaneously confines that phase to a strict universal window.
+both confines that phase to a strict universal window and identifies its exact source-attained
+threshold.  More sharply,
+\[
+ \neg\mathrm{RH}\Longrightarrow
+ \Pi_M\longrightarrow+\infty,
+ \qquad
+ \frac1{M+1}\sum_{m<M}\mathfrak D_m\longrightarrow+\infty.
+ \tag{1.20zb}
+\]
 The following critical conditions are equivalent:
 \[
  \begin{aligned}
@@ -3715,12 +3783,17 @@ Thus the scalar condition is approximate only in syntax: degree elevation turns 
 into exact zero-rigidity and turns false RH into a persistent positive phase.  There is,
 however, a genuinely weaker asymptotic criterion.
 
-\begin{theorem}[Narrow-sector Bernstein--Loschmidt phase law]
+\begin{theorem}[Unique-exponent Bernstein--Loschmidt dissipation law]
 \label{thm:bernstein-spectral-phase}
 For $M\ge0$ put
 \[
  T_M=\sum_{i=0}^M|a_{M,i}|,\qquad
- \Pi_M=\sum_{i=0}^M a_{M,i}^2.
+ \Pi_M=\sum_{i=0}^M a_{M,i}^2,
+\]
+and
+\[
+ \mathfrak D_M=\frac1{M+1}\sum_{i=0}^{M}(M+1-i)(i+1)
+ (a_{M+1,i}-a_{M+1,i+1})^2.
 \]
 Then
 \[
@@ -3770,24 +3843,56 @@ the phases are distinct and unimodular, and
  \lim_{K\to\infty}\frac1K\sum_{n=0}^{K-1}|\mathcal L_M(n)|^2=\Pi_M.
  \tag{9.22hfn}
 \]
+The degree-elevation energy satisfies
+\[
+ \mathfrak D_M\ge0,\qquad
+ (M+2)\Pi_{M+1}=(M+1)\Pi_M+\mathfrak D_M,
+ \tag{9.22hfna}
+\]
+and hence
+\[
+ (M+1)\Pi_M=\Pi_0+\sum_{m=0}^{M-1}\mathfrak D_m.
+ \tag{9.22hfnb}
+\]
 Finally,
 \[
+ \begin{aligned}
  \mathrm{RH}
- \Longleftrightarrow \forall M\ge0,\ \Pi_M\le s_0^2
- \Longleftrightarrow \sup_M\Pi_M<\infty
- \Longleftrightarrow \forall r>1,\ \Pi_M/r^M\to0.
+ &\Longleftrightarrow \forall M\ge0,\ \Pi_M\le s_0^2
+ \Longleftrightarrow \sup_M\Pi_M<\infty\\
+ &\Longleftrightarrow
+ \exists C\;\forall N\;\exists M\ge N,\quad
+ \sum_{m<M}\mathfrak D_m\le C(M+1)\\
+ &\Longleftrightarrow \forall r>1,\ \Pi_M/r^M\to0.
+ \end{aligned}
  \tag{9.22hfo}
 \]
-If RH is false, some
+If RH is false, then
 \[
- 1<r\le B_{\rm sec}^2=\frac{251001}{250000}<\frac{201}{200}
- \quad\text{satisfies}\quad
- \Pi_M/r^M\not\longrightarrow0.
+ \Pi_M\longrightarrow+\infty,
+ \qquad
+ \frac1{M+1}\sum_{m<M}\mathfrak D_m\longrightarrow+\infty.
+ \tag{9.22hfoa}
+\]
+Put $\mathcal C_M=\Pi_0+\sum_{m<M}\mathfrak D_m=(M+1)\Pi_M$.  There is a unique
+$E_*>0$ such that, for both $X=\Pi$ and $X=\mathcal C$,
+\[
+ \begin{cases}
+ X_M/r^M\to0,&r>E_*,\\
+ X_M/r^M\to+\infty,&0<r<E_*.
+ \end{cases}
  \tag{9.22hfp}
 \]
-Thus the endpoint negative mass has zero exponential rate if and only if RH, while the positive
-Loschmidt purity supplies a sharp bounded phase and an unconditional strict ceiling on every
-possible off-line exponent.
+It satisfies
+\[
+ 1\le E_*<B_{\rm sec}^2=\frac{251001}{250000}<\frac{201}{200},
+ \qquad \mathrm{RH}\Longleftrightarrow E_*=1.
+ \tag{9.22hfpb}
+\]
+If RH is false, the function $A(\rho)=|u_\rho|+|1-u_\rho|$ attains a maximum $B$ with
+$1<B<B_{\rm sec}$ and $E_*=B^2$.  Thus the endpoint negative mass has zero exponential rate if
+and only if RH, while the positive Loschmidt purity has one source-attained critical exponent in
+an unconditional strict five-per-mille chamber.
 \end{theorem}
 
 When these inequalities hold, the finite positive atomic approximants are canonical.  Write
@@ -4343,6 +4448,74 @@ The first two are the $\ell^2$--$\ell^1$ inequalities and the last is Cauchy--Sc
 with conservation of total Bernstein mass.  Equations \textup{(9.26fpg)}--\textup{(9.26fph)}
 prove \textup{(9.22hfm)}.
 
+The same geometry strengthens the earlier maximal-mode argument from nondecay to an eventual
+lower envelope.  Suppose RH is false and put
+\[
+ A(\rho)=|u_\rho|+|1-u_\rho|.
+\]
+Since $u_\rho\to0$ off finite sets, $A(\rho)\to1$ cofinally.  A nonreal atom has
+$A(\rho)>1$, so $A$ attains a global maximum $\mathfrak r>1$ on a finite nonempty packet.
+Choose a maximizer $\rho_*$ and take the alignment phase $w_*$ from
+\textup{(9.26fpb)}.  Then
+\[
+ |1-u_\rho+u_\rho w_*|\le A(\rho)\le\mathfrak r,
+\]
+with equality at $\rho_*$.  Equality at another maximal affine mode forces both the same
+elliptic radius and the same alignment phase.
+
+We use the following elementary ellipse rigidity.  If nonreal $u,v$ have
+\[
+ |u|+|1-u|=|v|+|1-v|
+\]
+and the same alignment phase, then
+\[
+ v=u\quad\text{or}\quad v=1-\overline u.
+ \tag{9.26fpha}
+\]
+Indeed, writing $a=|u|$, $b=|1-u|$, $c=|v|$, and $d=|1-v|$, the alignment relation gives
+$|a+bw|=|c+dw|=1$ for the common unit phase $w$.  Since nonreality gives
+$\Re w\ne1$, comparison of the two squared norms with $a+b=c+d$ yields $ab=cd$.
+Hence the unordered pairs $\{a,b\}$ and $\{c,d\}$ agree.
+Substitution into the alignment relation gives respectively $v=u$ and
+$v=1-\overline u$.  The second alternative in \textup{(9.26fpha)} cannot occur here: both
+endpoint atoms lie in $|u|<1/4$, whereas it would imply
+$1\le|u|+|v|<1/2$.  Thus every maximal affine mode has the same coordinate as $u_{\rho_*}$.
+
+All its multiplicity copies consequently have the same nonzero coefficient $\lambda_{\rho_*}$
+and the same affine mode.  Their aggregate coefficient $C_*$ is a positive integer multiple of
+$\lambda_{\rho_*}$ and is nonzero.  After division by $\mathfrak r^M$, dominated convergence
+kills the complementary summable divisor tail.  Therefore, for some $\delta>0$ and all
+sufficiently large $M$,
+\[
+ \delta\mathfrak r^M\le |P_M(w_*)|\le T_M.
+ \tag{9.26fphb}
+\]
+Combining \textup{(9.26fphb)} with \textup{(9.26fph)} gives
+\[
+ \delta^2\mathfrak r^{2M}\le(M+1)\Pi_M
+ \qquad(M\gg1).
+ \tag{9.26fphc}
+\]
+Since $A(\rho)\le\mathfrak r$ for every atom, the same complete-divisor envelope used in
+\textup{(9.26fpg)} sharpens in the false phase to
+\[
+ T_M\le A_*\mathfrak r^M,
+ \qquad
+ \Pi_M\le A_*^2\mathfrak r^{2M}.
+ \tag{9.26fphca}
+\]
+Consequently, if $s>\mathfrak r^2$, then $\Pi_M/s^M\to0$ geometrically.  If
+$0<s<\mathfrak r^2$, division of \textup{(9.26fphc)} by $(M+1)s^M$ gives
+\[
+ \frac{\Pi_M}{s^M}\ge
+ \frac{\delta^2}{M+1}\left(\frac{\mathfrak r^2}{s}\right)^M
+ \longrightarrow+\infty.
+ \tag{9.26fphcb}
+\]
+Thus $\mathfrak r^2$ is the exact false-phase exponent.  The maximum is attained at an atom and
+every atom satisfies $A(\rho)<B_{\rm sec}$, so
+$1<\mathfrak r<B_{\rm sec}$.  In particular $\Pi_M\to+\infty$ under false RH.
+
 For the Loschmidt identity, each Cayley phase
 $\zeta_i=(1+\mathrm i i)/(1-\mathrm i i)$ has modulus one, and cross multiplication shows that
 $\zeta_i=\zeta_j$ only when $i=j$.  Expanding the square gives
@@ -4354,27 +4527,64 @@ $\zeta_i=\zeta_j$ only when $i=j$.  Expanding the square gives
 The inner mean tends to one for $i=j$ and to zero otherwise.  Since the sum is finite, the limit
 is $\sum_i a_{M,i}^2=\Pi_M$, proving \textup{(9.22hfn)}.
 
+It remains to identify the degree-elevation dissipation.  Put
+\[
+ \alpha_{M,i}=\frac{M+1-i}{M+1},\qquad
+ \beta_{M,i}=\frac{i+1}{M+1}.
+\]
+Equation \textup{(9.26fe)} gives
+$a_{M,i}=\alpha_{M,i}a_{M+1,i}+\beta_{M,i}a_{M+1,i+1}$.  For arbitrary real $x,y$ one has the
+exact two-point identity
+\[
+ \begin{aligned}
+ &(M+1)(\alpha_{M,i}x+\beta_{M,i}y)^2
+ +\frac{(M+1-i)(i+1)}{M+1}(x-y)^2\\
+ &\hspace{25mm}=(M+2)
+   (\alpha_{M,i}x^2+\beta_{M,i}y^2).
+ \end{aligned}
+ \tag{9.26fphd}
+\]
+Summing \textup{(9.26fphd)} with
+$x=a_{M+1,i}$ and $y=a_{M+1,i+1}$ uses the same column-sum identity as
+\textup{(9.26ff)} and gives \textup{(9.22hfna)}.  Induction gives
+\textup{(9.22hfnb)}.
+
+The balance formula rewrites the cumulative mean exactly as
+\[
+ \frac1{M+1}\sum_{m<M}\mathfrak D_m
+ =\Pi_M-\frac{\Pi_0}{M+1}.
+ \tag{9.26fphe}
+\]
+Under RH, $\Pi_M\le s_0^2$, so the cumulative dissipation has the linear bound
+$s_0^2(M+1)$.  Conversely, if one fixed linear bound recurs at arbitrarily large degrees, then
+\textup{(9.26fphe)} makes $\Pi_M$ bounded on a cofinal sequence.  This contradicts
+\textup{(9.26fphc)} under false RH and hence proves RH.  The same identity and
+$\Pi_M\to+\infty$ prove the mean-dissipation divergence in \textup{(9.22hfoa)}.
+
 Under RH the masses $a_{M,i}$ are nonnegative and sum to $s_0$; hence
 $\Pi_M\le T_M^2=s_0^2$.  Conversely, any uniform bound on $\Pi_M$ makes
 $\Pi_M/r^M\to0$ for every $r>1$.  The two inequalities
 $\Pi_M\le T_M^2\le(M+1)\Pi_M$, with a square-root change of exponential base, show that
 $\Pi_M$ has zero exponential rate exactly when $T_M$ does.  The already proved total-variation
 phase law therefore gives RH.  This proves all equivalences in \textup{(9.22hfo)}, including the
-sharp ceiling $s_0^2$.
+sharp ceiling $s_0^2$ and the cofinal dissipation criterion.
 
-Finally, if RH is false, negating the zero-exponential-rate condition produces an energy base
-$r>1$ for which $\Pi_M/r^M$ does not tend to zero.  But \textup{(9.26fpg)} gives
+Under RH, the upper bound $\Pi_M\le s_0^2$ makes every normalization with $s>1$ tend to zero.
+For $0<s<1$, the conserved-mass floor in \textup{(9.22hfm)} gives
 \[
- \Pi_M\le A_*^2B_{\rm sec}^{2M};
+ \frac{\Pi_M}{s^M}\ge
+ \frac{s_0^2}{M+1}\left(\frac1s\right)^M\longrightarrow+\infty,
 \]
-therefore normalization by every $r>B_{\rm sec}^2$ does tend to zero.  The witness can
-consequently be chosen with
-\[
- 1<r\le B_{\rm sec}^2
- =\frac{251001}{250000}<\frac{201}{200}.
-\]
-This proves
-\textup{(9.22hfl)}--\textup{(9.22hfp)}.
+so the exact critical-phase exponent is one.  Finally, an exact exponent is unique: if
+$E<F$ were both exact, normalization at $(E+F)/2$ would have to tend simultaneously to zero and
+positive infinity.  Multiplication by $M+1$ does not change the threshold: above a proposed
+exponent, insert an intermediate base and absorb the linear factor into a strict geometric
+contraction; below it, the larger sequence preserves divergence.  Since
+$\mathcal C_M=(M+1)\Pi_M$, the exponent is therefore common to purity and cumulative
+dissipation.  Combining this observation with
+\textup{(9.26fphca)}--\textup{(9.26fphcb)} proves
+\textup{(9.22hfl)}--\textup{(9.22hfpb)} and the unique-exponent clauses of
+Theorem~\ref{thm:main}.
 \end{proof}
 
 We now prove the endpoint-calibrated quantitative refinement.  For a real polynomial $p$, absolute
@@ -5154,7 +5364,7 @@ statements.  The paper
 therefore does not prove RH.  It reduces the remaining source problem to analytic continuation of
 the actual polar--prime critical-Mellin defect, with the critical growth of one explicit positive
 cumulative prime--polar mass as one equivalent monotone source chart.  In the canonical
-Hausdorff--KMS chart the weakest equivalent obligation obtained here is scalar and genuinely
+Hausdorff--KMS chart one equivalent obligation is scalar and genuinely
 asymptotic: the Bernstein order-unit norm
 $T_M=s_0+2\eta_M$ must satisfy $T_M/r^M\to0$ for every $r>1$.  Unlike cofinal decay of
 $\eta_M$, this condition permits a nonzero, nondecaying, or unbounded defect; Theorem~
@@ -5172,14 +5382,30 @@ and
  \Longleftrightarrow \sup_M\Pi_M<\infty.
  \tag{11.0a}
 \]
-Thus the remaining estimate has a rigorously bounded phase diagram: false RH must create an
-energy exponent in
+Writing $\mathfrak D_M$ for the weighted adjacent Dirichlet energy in
+Theorem~\ref{thm:bernstein-spectral-phase}, degree elevation gives
 \[
- \left(1,\left(\frac{501}{500}\right)^2\right]
- \subset\left(1,\frac{201}{200}\right),
+ (M+1)\Pi_M=\Pi_0+\sum_{m<M}\mathfrak D_m.
+ \tag{11.0b}
 \]
-whereas RH is the bounded zero-excess phase.  This five-per-mille ceiling is unconditional
-estimate progress, but selecting the endpoint value zero still remains equivalent to RH.
+Hence the sharpest cofinal positive obligation obtained here is
+\[
+ \mathrm{RH}\Longleftrightarrow
+ \exists C\;\forall N\;\exists M\ge N,\qquad
+ \sum_{m<M}\mathfrak D_m\le C(M+1).
+ \tag{11.0c}
+\]
+Under false RH, both $\Pi_M$ and the cumulative mean on the left of
+\textup{(11.0c)} tend to positive infinity.  Thus a successful construction need not control
+every degree: it must produce one recurring linear dissipation budget.
+Thus the remaining estimate has a rigorously bounded phase diagram with no exponent ambiguity.
+Purity and cumulative dissipation have one common exact exponent
+$E_*\in[1,(501/500)^2)$; RH is equivalent to $E_*=1$, while false RH forces $E_*=B^2$ for an
+attained maximal atom amplitude
+$1<B<501/500$.  Equivalently, RH is the cofinally linearly dissipative phase.  The unique
+source-attained exponent and exact dissipation balance are unconditional estimate progress, but
+proving one recurring linear budget---or, equivalently, selecting $E_*=1$ from the prime--Gamma
+source alone---still remains equivalent to RH.
 
 The projective--thermal master theorem places the endpoint and thermodynamic estimates in one
 scale-resolved spectrum.  It proves
@@ -5381,7 +5607,7 @@ reflection-positive/self-adjoint saturation theorem, the thickness corollaries, 
 multiplicity-exact meromorphic tomography of the actual Weil observable, together with the exact
 ultraviolet--infrared selection law and the unconditional 616-condition endpoint Hausdorff
 rectangle, the common-deep-quadrant reduction, the cancellation-resistant confined
-Bernstein--Loschmidt phase law, the exact cofinal zero-temperature free-energy law, and the sparse
+Bernstein--Loschmidt dissipation law, the exact cofinal zero-temperature free-energy law, and the sparse
 irreducible Eisenstein source-Hankel criterion.  The elementary
 cumulative-mass/abscissa lemma and least-negative-part order lemma are not claimed as independent
 novelty; their roles are to expose the exact transverse source exponent and to prove that

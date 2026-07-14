@@ -261,6 +261,17 @@ orientation is a distinguished positive-definite object of this groupoid.
 
 ## Gates
 
+The new paper theorem
+`../2-fully-proven/needs-audit/coherence-local-prime-tail-differential-building-saturation.md`
+supplies a non-topological significance test for this building.  For every decaying local amplitude,
+every arbitrarily small Hilbert-coherence neighborhood contains continuum many tail points whose
+finite subsets freely generate the differential building.  Thus the projective tail groupoid is
+not merely a classical `E_0` presentation: it measures continuum differential-field information
+that normal-sector equivalence and arbitrarily high fidelity provably discard.  This strengthens
+the candidate route constraint from “continuous invariants collapse” to “one coherent sector is
+locally saturated by maximally independent HT fields.”  Promotion still awaits the combined
+literature audit.
+
 - [x] exact candidate statements and degeneracies isolated
 - [x] complete paper proof of the subspace-field lattice
 - [x] complete paper proof of dense strata and indiscrete quotient

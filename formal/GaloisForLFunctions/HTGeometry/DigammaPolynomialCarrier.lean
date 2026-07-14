@@ -107,8 +107,8 @@ theorem hypertranscendental_smul_digamma_add_polynomial {M : ℂ} (hM : M ≠ 0)
       | zero => simp only [hσ, Fin.cases_zero, MvPolynomial.eval_X, Fin.cons_zero]
       | succ j =>
         simp only [hσ, Fin.cases_succ, map_add, map_mul, MvPolynomial.eval_C, MvPolynomial.eval_X,
-          Fin.cons_succ, Fin.cons_zero]
-        rw [eval_aeval_X0, hsplit (j : ℕ) z hz]
+          Fin.cons_succ]
+        rw [eval_aeval_X0, Fin.cons_zero, hsplit (j : ℕ) z hz]
     rw [hvec]
     exact hQz z
   exact hP0 hann

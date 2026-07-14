@@ -55,4 +55,17 @@ theorem iteratedDeriv_digamma_charge_collapse {d : ℕ} (w : ℂ) (hw : ∀ p : 
   simp_rw [iteratedDeriv_digamma_add_nat j w hw, mul_add, Finset.sum_add_distrib, ← Finset.sum_mul,
     hcharge, zero_mul, zero_add]
 
+/-- **Nonzero-charge form of the digamma jet tower.**  For any charges `m` and integer shifts `nn`,
+`∑ₖ mₖ ψ⁽ʲ⁾(w + nₖ) = (∑ₖ mₖ)·ψ⁽ʲ⁾(w) + ∑ₖ mₖ ∑_{i<nₖ} (−1)ʲ·j!/(w+i)^{j+1}`: every shifted jet
+collapses onto the total-charge multiple `M·ψ⁽ʲ⁾(w)` of the single transcendental jet plus a rational
+tail.  When the total charge `M = ∑ₖ mₖ ≠ 0`, the surviving `M·ψ⁽ʲ⁾(w)` is the obstruction to
+differential algebraicity; `iteratedDeriv_digamma_charge_collapse` is the `M = 0` specialization. -/
+theorem iteratedDeriv_digamma_charge_general {d : ℕ} (w : ℂ) (hw : ∀ p : ℕ, w ≠ -(p : ℂ))
+    (nn : Fin d → ℕ) (m : Fin d → ℂ) (j : ℕ) :
+    ∑ k, m k * iteratedDeriv j Complex.digamma (w + nn k)
+      = (∑ k, m k) * iteratedDeriv j Complex.digamma w
+        + ∑ k, m k * ∑ i ∈ Finset.range (nn k),
+            (-1) ^ j * (j.factorial : ℂ) / (w + i) ^ (j + 1) := by
+  simp_rw [iteratedDeriv_digamma_add_nat j w hw, mul_add, Finset.sum_add_distrib, ← Finset.sum_mul]
+
 end HTGeometry

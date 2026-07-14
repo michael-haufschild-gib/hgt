@@ -25,6 +25,11 @@ Moreover, under the same certificate, the positive-frequency tail above `R` is e
 RH.  Thus the verified prefix is removed from the open source condition exactly, leaving only
 the one-sided unverified tail.
 
+The remaining tail need not have the anti-Herglotz sign.  It is enough that its imaginary part
+have any finite upper ceiling.  Reflection gives the same ceiling on the negative tail, while the
+verified central band has ceiling zero.  The resulting global finite upper bound is already an
+exact RH criterion.
+
 ## Mechanism
 
 Pair every centered Xi spectral atom `a` with its critical-line conjugate.  If the underlying
@@ -37,6 +42,12 @@ zero has `|Im rho| <= H`, the verified-height hypothesis and Schwarz reflection 
 
 so the exact reflected-pair resolvent formula has nonpositive imaginary part.  Summation over
 the multiplicity-exact Xi divisor transfers the atomwise sign to the continued source trace.
+
+For the bounded-tail refinement, no further atom estimate is needed.  If RH were false, the
+source upper-bound gate makes the imaginary part unbounded above near a reflected off-line pole.
+The verified band and frequency reflection force that spike into the positive unverified tail.
+Consequently false RH produces, above `R`, values larger than every prescribed real ceiling.  This
+is the positive failure law associated with the bounded-tail no-go.
 
 ## Certified specialization
 
@@ -76,7 +87,13 @@ File:
 - `continuedPrimeArchSourceRelativeTrace_im_nonpos_on_verifiedHeightBand`
 - `continuedPrimeArchUpperAntiHerglotz_of_verifiedHeight_and_positiveFrequencyAbove`
 - `continuedPrimeArchPositiveFrequencyAbove_iff_rh_of_verifiedHeight`
+- `ContinuedPrimeArchPositiveFrequencyAboveImBoundedAbove`
+- `continuedPrimeArchUpperImBoundedAbove_of_verifiedHeight_and_positiveFrequencyAboveImBoundedAbove`
+- `riemannHypothesis_of_verifiedHeight_and_positiveFrequencyAboveImBoundedAbove`
+- `continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_iff_rh_of_verifiedHeight`
+- `exists_continuedPrimeArchSource_im_gt_above_of_not_rh_verifiedHeight`
 - `continuedPrimeArchPositiveFrequencyAbove_plattTrudgianArbRadius_iff_rh`
+- `continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_plattTrudgianArbRadius_iff_rh`
 
 The atomwise, summed trace, and continued prime--Gamma source statements retain exact divisor
 multiplicity.  No zero enumeration or RH assumption is used beyond the named finite-height
@@ -87,6 +104,8 @@ certificate.
 - [x] exact atomwise mechanism isolated
 - [x] generic verified-height accretive-band theorem formalized
 - [x] one-sided tail-to-RH capstone formalized
+- [x] tail sign weakened to finite upper boundedness
+- [x] positive false-RH tail blow-up law formalized
 - [x] generated index and umbrella wiring
 - [ ] external numerical certificate imported into Lean
 - [ ] RH

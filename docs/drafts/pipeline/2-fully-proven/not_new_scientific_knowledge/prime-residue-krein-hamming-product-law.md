@@ -290,6 +290,7 @@ not supply that arithmetic section and does not claim RH.
 - [x] parent-mechanism audit: finite signed Cauchy factorization plus Sylvester inertia
 - [x] significance rescored: bridge / not new scientific knowledge
 
+
 ## Log
 
 - 2026-07-12 -- Selected the prime-residue relative Pick-kernel route after retiring routine
@@ -297,3 +298,17 @@ not supply that arithmetic section and does not claim RH.
 - 2026-07-12 -- Proved the exact pairwise factorization, universal inertia bounds, simultaneous
   Cauchy-matrix sharpness, Hamming metric/order recovery, prime-support Herglotz selection, and
   rational-gauge constraint product on paper.
+
+## Lean implementation update — 2026-07-14
+
+`HTGeometry/UniversalPrimeKreinHamming.lean` now contains the source-side exact-signature core on
+actual prime-log poles.  For arbitrary injective positive and negative finite prime packets it
+uses the canonical probes `j + i`, proves combined weighted Cauchy-feature independence, removes
+the rectangular evaluation-surjectivity premise, and derives exact positive and negative inertias
+equal to the two packet sizes.  This directly composes the existing Cauchy and rectangular-Krein
+engines and removes arbitrary node-choice and controllability hypotheses.
+
+The remaining card-level work is the finite-set interface: rewrite the relative Pick defect of
+two chambers `J,L` as those two packets indexed by `L \\ J` and `J \\ L`, then expose the Hamming and
+partial-order corollaries.  The new declarations were added during a no-computation phase and are
+not yet promoted to the checked formalized stage.

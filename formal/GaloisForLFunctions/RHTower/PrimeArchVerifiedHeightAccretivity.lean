@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.VerifiedHeightAmplification
 import GaloisForLFunctions.RHTower.PrimeArchHighFrequencyAccretivity
 import GaloisForLFunctions.RHTower.PrimeArchEndpointFrequencyAccretivity
+import GaloisForLFunctions.RHTower.PrimeArchSourceUpperBoundGate
 
 /-!
 # Verified Xi height transfers to prime--archimedean frequency accretivity
@@ -299,6 +300,93 @@ theorem continuedPrimeArchPositiveFrequencyAbove_iff_rh_of_verifiedHeight
     exact (continuedPrimeArchUpperAntiHerglotz_iff_riemannHypothesis.mpr hRH)
       z hzIm hzHalf hzeta
 
+/-- A finite upper ceiling on the sole positive-frequency tail left by a verified central band.
+Unlike `ContinuedPrimeArchPositiveFrequencyAbove`, this asks for no sign. -/
+def ContinuedPrimeArchPositiveFrequencyAboveImBoundedAbove (R : ℝ) : Prop :=
+  ∃ C : ℝ, ∀ z : ℂ, 0 < z.im → z.im < 1 / 2 → R < z.re →
+    riemannZeta (1 / 2 + z * I) ≠ 0 →
+      (continuedPrimeArchSourceRelativeTrace z).im ≤ C
+
+/-- Verified central accretivity and any finite ceiling on the positive tail give a finite ceiling
+on the full centered upper half-strip.  The negative tail is the reflected positive tail. -/
+theorem continuedPrimeArchUpperImBoundedAbove_of_verifiedHeight_and_positiveFrequencyAboveImBoundedAbove
+    (H R : ℝ) (hverified : RHVerifiedThrough H)
+    (hband : R + 1 / 2 ≤ H)
+    (hhigh : ContinuedPrimeArchPositiveFrequencyAboveImBoundedAbove R) :
+    ContinuedPrimeArchUpperImBoundedAbove := by
+  obtain ⟨C, hC⟩ := hhigh
+  refine ⟨max C 0, ?_⟩
+  intro z hzIm hzHalf hzeta
+  by_cases hlow : |z.re| ≤ R
+  · exact (continuedPrimeArchSourceRelativeTrace_im_nonpos_of_verifiedHeight
+      H R hverified hband z hzIm hzHalf hlow hzeta).trans (le_max_right C 0)
+  by_cases hpos : R < z.re
+  · exact (hC z hzIm hzHalf hpos hzeta).trans (le_max_left C 0)
+  have hneg : z.re < -R := by
+    have hzle : z.re ≤ R := le_of_not_gt hpos
+    by_contra hn
+    have hzneg : -R ≤ z.re := le_of_not_gt hn
+    exact hlow (abs_le.mpr ⟨hzneg, hzle⟩)
+  let w : ℂ := -(starRingEnd ℂ) z
+  have hwIm : w.im = z.im := by simp [w]
+  have hwRe : w.re = -z.re := by simp [w]
+  obtain ⟨hwzeta, htrace⟩ :=
+    continuedPrimeArchSourceRelativeTrace_neg_conj_im z hzIm hzHalf hzeta
+  calc
+    (continuedPrimeArchSourceRelativeTrace z).im =
+        (continuedPrimeArchSourceRelativeTrace w).im := htrace.symm
+    _ ≤ C := hC w (by rw [hwIm]; exact hzIm)
+      (by rw [hwIm]; exact hzHalf) (by rw [hwRe]; linarith)
+      (by simpa only [w] using hwzeta)
+    _ ≤ max C 0 := le_max_left C 0
+
+/-- A verified central band plus finite upper boundedness of the remaining positive-frequency tail
+proves RH. -/
+theorem riemannHypothesis_of_verifiedHeight_and_positiveFrequencyAboveImBoundedAbove
+    (H R : ℝ) (hverified : RHVerifiedThrough H)
+    (hband : R + 1 / 2 ≤ H)
+    (hhigh : ContinuedPrimeArchPositiveFrequencyAboveImBoundedAbove R) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_continuedPrimeArchUpperImBoundedAbove
+    (continuedPrimeArchUpperImBoundedAbove_of_verifiedHeight_and_positiveFrequencyAboveImBoundedAbove
+      H R hverified hband hhigh)
+
+/-- RH supplies the sharp tail ceiling zero. -/
+theorem continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_of_riemannHypothesis
+    (R : ℝ) (hRH : RiemannHypothesis) :
+    ContinuedPrimeArchPositiveFrequencyAboveImBoundedAbove R := by
+  refine ⟨0, ?_⟩
+  intro z hzIm hzHalf _hzRe hzeta
+  exact (continuedPrimeArchUpperAntiHerglotz_iff_riemannHypothesis.mpr hRH)
+    z hzIm hzHalf hzeta
+
+/-- Under a verified-height certificate, mere finite upper boundedness of the remaining positive
+tail is already exactly RH. -/
+theorem continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_iff_rh_of_verifiedHeight
+    (H R : ℝ) (hverified : RHVerifiedThrough H)
+    (hband : R + 1 / 2 ≤ H) :
+    ContinuedPrimeArchPositiveFrequencyAboveImBoundedAbove R ↔ RiemannHypothesis :=
+  ⟨riemannHypothesis_of_verifiedHeight_and_positiveFrequencyAboveImBoundedAbove
+      H R hverified hband,
+    continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_of_riemannHypothesis R⟩
+
+/-- Positive failure law: after a verified central band, false RH forces arbitrarily high positive
+spikes on the unverified source tail.  Thus a hypothetical off-line pole cannot hide behind loss
+of the anti-Herglotz sign while retaining any finite tail ceiling. -/
+theorem exists_continuedPrimeArchSource_im_gt_above_of_not_rh_verifiedHeight
+    (H R : ℝ) (hverified : RHVerifiedThrough H)
+    (hband : R + 1 / 2 ≤ H) (hnot : ¬ RiemannHypothesis) (C : ℝ) :
+    ∃ z : ℂ, 0 < z.im ∧ z.im < 1 / 2 ∧ R < z.re ∧
+      riemannZeta (1 / 2 + z * I) ≠ 0 ∧
+        C < (continuedPrimeArchSourceRelativeTrace z).im := by
+  by_contra h
+  apply hnot
+  apply riemannHypothesis_of_verifiedHeight_and_positiveFrequencyAboveImBoundedAbove
+    H R hverified hband
+  refine ⟨C, ?_⟩
+  intro z hzIm hzHalf hzRe hzeta
+  exact le_of_not_gt fun hgt => h ⟨z, hzIm, hzHalf, hzRe, hzeta, hgt⟩
+
 /-- Exact endpoint of the published Platt--Trudgian prefix plus the certified one-zero Arb
 extension, represented as a rational real number. -/
 def plattTrudgianArbVerifiedHeight : ℝ :=
@@ -325,6 +413,16 @@ theorem continuedPrimeArchPositiveFrequencyAbove_plattTrudgianArbRadius_iff_rh
     ContinuedPrimeArchPositiveFrequencyAbove plattTrudgianArbAccretiveRadius ↔
       RiemannHypothesis := by
   exact continuedPrimeArchPositiveFrequencyAbove_iff_rh_of_verifiedHeight
+    plattTrudgianArbVerifiedHeight plattTrudgianArbAccretiveRadius hcertificate
+    plattTrudgianArbAccretiveRadius_add_half.le
+
+/-- The published verified prefix also reduces RH to any finite upper ceiling on the remaining
+positive-frequency tail. -/
+theorem continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_plattTrudgianArbRadius_iff_rh
+    (hcertificate : RHVerifiedThrough plattTrudgianArbVerifiedHeight) :
+    ContinuedPrimeArchPositiveFrequencyAboveImBoundedAbove
+        plattTrudgianArbAccretiveRadius ↔ RiemannHypothesis := by
+  exact continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_iff_rh_of_verifiedHeight
     plattTrudgianArbVerifiedHeight plattTrudgianArbAccretiveRadius hcertificate
     plattTrudgianArbAccretiveRadius_add_half.le
 

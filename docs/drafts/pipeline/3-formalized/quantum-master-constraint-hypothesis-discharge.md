@@ -1,8 +1,8 @@
 # Quantum master-constraint hypothesis discharge
 
 - **ID:** quantum-master-constraint-hypothesis-discharge
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** PROVED IN LEAN
 - **Source:** quantum-gravity master-constraint programme
 - **Statement:** Replacing any bounded constraint `C` by the master constraint `M = C†C` preserves its physical-state kernel while making the constraint canonically self-adjoint.  More generally, for a finite family, `M_C = ∑ᵢ Cᵢ†Cᵢ` has kernel exactly `⋂ᵢ ker Cᵢ`; therefore existing Ward and constraint-ideal theorems package all joint physicality premises into one automatically self-adjoint constraint.
 
@@ -13,8 +13,8 @@ Strengthen the existing `QuantumConstraintWard` surface by discharging a structu
 ## Gates
 
 - [x] 0 → 1 in-progress: exact operator identity, local corpus consumers identified
-- [ ] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: Lean theorem surface, direct module check, axiom audit
+- [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
+- [x] 2 → 3 formalized: Lean theorem surface, direct module check, axiom audit
 - [ ] 3 → 4 publication-ready: standalone note with Lean certificate and physics interpretation
 
 ## Physics source
@@ -53,6 +53,16 @@ This is the finite-family form of the master-constraint programme and directly m
 4. For every finite constraint family, derive the expectation sum-of-squares law, exact joint-kernel equivalence, Ward value, commutator Ward value, and two-sided-ideal representative independence.
 5. Feed the joint-kernel equivalence into `preserves_jointPhysicalState_of_closes_mod_constraints`, so a first-class family-closing observable preserves the single master-state premise directly.
 
+## Formalization
+
+`formal/GaloisForLFunctions/HTGeometry/FiniteConstraintGroupAverage.lean` proves the single- and
+finite-family expectation identities, exact kernel equivalences, Ward values, commutator Ward
+values, two-sided-ideal representative independence, and the finite first-class-family
+preservation consumer.  The same module composes the master constraint with finite cyclic group
+averaging.
+
 ## Status
 
-[CONJECTURE] The bounded Hilbert-space relation is exact and should use mathlib's adjoint-composition kernel theorem.  It is not promoted until all named consumers compile and pass the axiom audit.
+[PROVED IN LEAN] The directly touched module passes a single-threaded direct Lean check.  The
+exported theorem audit reports only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`
+axioms.  The repository formal lint gate passes.  No full project build was run.

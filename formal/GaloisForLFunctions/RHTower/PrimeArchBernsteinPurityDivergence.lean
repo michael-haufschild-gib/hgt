@@ -10,12 +10,14 @@ namespace RHTower
 
 noncomputable section
 
-/-- Failure of RH produces a Bernstein pencil whose maximal exponential mode survives with an
-eventual positive margin. -/
-theorem exists_unit_xiCentralBernsteinPencil_eventually_exponential_of_not_riemannHypothesis
+/-- Failure of RH produces an attained maximal endpoint amplitude and a Bernstein pencil on which
+that exact maximal exponential mode survives with an eventual positive margin. -/
+theorem exists_maximalAmplitude_unit_xiCentralBernsteinPencil_eventually_exponential_of_not_rh
     (hRH : ¬ RiemannHypothesis) :
     ∃ w : ℂ, ∃ r δ : ℝ,
       ‖w‖ = 1 ∧ 1 < r ∧ 0 < δ ∧
+        (∀ q : XiZeroCopy, xiEndpointBernsteinAtomAmplitudeBase q ≤ r) ∧
+        (∃ q : XiZeroCopy, xiEndpointBernsteinAtomAmplitudeBase q = r) ∧
         ∀ᶠ n : ℕ in atTop,
           δ ≤ ‖xiCentralBernsteinPencil primeArchEndpointHausdorffRadius n w /
             (r : ℂ) ^ n‖ := by
@@ -185,10 +187,29 @@ theorem exists_unit_xiCentralBernsteinPencil_eventually_exponential_of_not_riema
             ring]
       rw [tsum_mul_right]]
     rfl
-  refine ⟨w, r, δ, hw, hr, hδ, ?_⟩
+  have hAmax (q : XiZeroCopy) : A q ≤ r := by
+    by_cases hqD : q ∈ D
+    · exact (hAofD q hqD).le
+    · simpa only [hAnorm] using (hDsub q hqD).le
+  refine ⟨w, r, δ, hw, hr, hδ,
+    (fun q => by simpa only [A] using hAmax q),
+    ⟨qmax, by simpa only [A] using hqmaxA⟩, ?_⟩
   filter_upwards [hevent] with n hn
   rw [← heq]
   exact hn
+
+/-- Failure of RH produces a Bernstein pencil whose maximal exponential mode survives with an
+eventual positive margin. -/
+theorem exists_unit_xiCentralBernsteinPencil_eventually_exponential_of_not_riemannHypothesis
+    (hRH : ¬ RiemannHypothesis) :
+    ∃ w : ℂ, ∃ r δ : ℝ,
+      ‖w‖ = 1 ∧ 1 < r ∧ 0 < δ ∧
+        ∀ᶠ n : ℕ in atTop,
+          δ ≤ ‖xiCentralBernsteinPencil primeArchEndpointHausdorffRadius n w /
+            (r : ℂ) ^ n‖ := by
+  obtain ⟨w, r, δ, hw, hr, hδ, _, _, hevent⟩ :=
+    exists_maximalAmplitude_unit_xiCentralBernsteinPencil_eventually_exponential_of_not_rh hRH
+  exact ⟨w, r, δ, hw, hr, hδ, hevent⟩
 
 /-- Failure of RH forces an eventual exponential lower envelope for the positive endpoint
 Bernstein purity, up to its unavoidable linear dimension factor. -/
@@ -466,9 +487,95 @@ theorem tendsto_bernsteinSquareDiscrepancy_xiThermalTruncation_zero_of_riemannHy
   have hcoeff :=
     tendsto_bernsteinCoefficient_xiThermalTruncation_of_riemannHypothesis
       hRH (N + 1) i
-  have hdiff := tendsto_const_nhds.sub hcoeff
+  have hconst : Tendsto
+      (fun _ : ℕ => bernsteinCoefficient
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+          normalizedPrimeArchMoment) (N + 1) i)
+      atTop
+      (nhds (bernsteinCoefficient
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+          normalizedPrimeArchMoment) (N + 1) i)) := tendsto_const_nhds
+  have hdiff := hconst.sub hcoeff
   simpa only [bernsteinCoefficientSquareDiscrepancyAtDefectDegree,
-    sub_self, zero_pow, OfNat.ofNat_ne_zero] using hdiff.pow 2
+    sub_self, pow_two, zero_mul] using hdiff.pow 2
+
+/-- **Concrete finite-thermal RH law.** RH is equivalent to choosing one explicit finite Xi
+thermal truncation at each Bernstein degree whose squared packet error is at most one. No common
+cutoff, convergence rate, or inverse-dimension decay is required. -/
+theorem riemannHypothesis_iff_exists_xiThermalTruncation_bernsteinSquareDiscrepancy_le_one :
+    RiemannHypothesis ↔
+      ∃ M : ℕ → ℕ, ∀ N : ℕ,
+        bernsteinCoefficientSquareDiscrepancyAtDefectDegree
+          (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+            normalizedPrimeArchMoment)
+          (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+            (xiThermalTruncation (M N))) N ≤ 1 := by
+  constructor
+  · intro hRH
+    have hex (N : ℕ) : ∃ M : ℕ,
+        bernsteinCoefficientSquareDiscrepancyAtDefectDegree
+          (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+            normalizedPrimeArchMoment)
+          (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+            (xiThermalTruncation M)) N ≤ 1 := by
+      have htend :=
+        tendsto_bernsteinSquareDiscrepancy_xiThermalTruncation_zero_of_riemannHypothesis
+          hRH N
+      have hev : ∀ᶠ M : ℕ in atTop,
+          bernsteinCoefficientSquareDiscrepancyAtDefectDegree
+            (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+              normalizedPrimeArchMoment)
+            (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+              (xiThermalTruncation M)) N < 1 :=
+        (tendsto_order.1 htend).2 1 (by norm_num)
+      obtain ⟨M, hM⟩ := hev.exists
+      exact ⟨M, hM.le⟩
+    choose M hM using hex
+    exact ⟨M, hM⟩
+  · rintro ⟨M, hM⟩
+    exact
+      riemannHypothesis_of_cofinal_xiThermalTruncation_bernsteinSquareDiscrepancy_bounded
+        id M 1 tendsto_id hM
+
+/-- RH needs the finite-thermal Hilbert bound only on one cofinal degree schedule. Degrees outside
+the schedule and the behavior of the cutoffs themselves are irrelevant. -/
+theorem riemannHypothesis_iff_exists_cofinal_xiThermalTruncation_bernsteinSquareDiscrepancy_le_one :
+    RiemannHypothesis ↔
+      ∃ d M : ℕ → ℕ, Tendsto d atTop atTop ∧
+        ∀ j : ℕ,
+          bernsteinCoefficientSquareDiscrepancyAtDefectDegree
+            (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+              normalizedPrimeArchMoment)
+            (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+              (xiThermalTruncation (M j))) (d j) ≤ 1 := by
+  constructor
+  · intro hRH
+    obtain ⟨M, hM⟩ :=
+      riemannHypothesis_iff_exists_xiThermalTruncation_bernsteinSquareDiscrepancy_le_one.mp hRH
+    exact ⟨id, M, tendsto_id, hM⟩
+  · rintro ⟨d, M, hd, hM⟩
+    exact
+      riemannHypothesis_of_cofinal_xiThermalTruncation_bernsteinSquareDiscrepancy_bounded
+        d M 1 hd hM
+
+/-- The remaining prime--polar absolute-abscissa inequality is exactly one cofinal constant-one
+Hilbert approximation by the explicit finite Xi thermal systems. -/
+theorem rectangularPrimePolarSource_negativeAbscissa_le_one_iff_exists_cofinal_xiThermalTruncation_bernsteinSquareDiscrepancy_le_one
+    {L : ℝ} (hL : 0 < L) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n → 1 ≤ n ∧ L ≤ Real.log n / 2) :
+    (LSeries.abscissaOfAbsConv
+        (rectangularPrimePolarSourceTailNegativeDirichletCoefficient L N) ≤
+          ((1 : ℝ) : EReal)) ↔
+      ∃ d M : ℕ → ℕ, Tendsto d atTop atTop ∧
+        ∀ j : ℕ,
+          bernsteinCoefficientSquareDiscrepancyAtDefectDegree
+            (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+              normalizedPrimeArchMoment)
+            (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+              (xiThermalTruncation (M j))) (d j) ≤ 1 :=
+  (riemannHypothesis_iff_rectangularPrimePolarSource_negativeAbscissa_le_one
+    hL hN).symm.trans
+      riemannHypothesis_iff_exists_cofinal_xiThermalTruncation_bernsteinSquareDiscrepancy_le_one
 
 /-- Under failure of RH, every bounded-mass Hausdorff-positive comparator family separates from
 the source in Bernstein Hilbert distance. -/

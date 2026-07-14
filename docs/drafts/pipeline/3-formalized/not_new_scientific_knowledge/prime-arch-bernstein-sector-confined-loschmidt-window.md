@@ -63,7 +63,7 @@ is used.
 
 `[OPEN CORE]` Select the endpoint exponent: prove that `Pi_M` is uniformly bounded, equivalently
 that every strict exponential normalization kills it.  The present theorem confines any contrary
-phase to `(1,(501/500)^2]`, strictly inside `(1,201/200)`, but does not make that interval
+phase to `(1,(501/500)^2)`, strictly inside `(1,201/200)`, but does not make that interval
 empty.
 
 ## Formalization target
@@ -79,6 +79,7 @@ Primary declarations:
 - `primeArchEndpointBernsteinPurity_le_sectorConfined`
 - `xiSectorConfinedBernsteinAmplitudeBase_sq_eq`
 - `exists_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis`
+- `exists_strict_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis`
 - `exists_fivePerMille_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis`
 - `primeArchBernsteinSectorConfinedLoschmidtPhaseMaster`
 

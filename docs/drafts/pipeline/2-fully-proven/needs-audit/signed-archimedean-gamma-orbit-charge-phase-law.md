@@ -748,3 +748,49 @@ function to the hypertranscendental scaled-digamma carrier preserves hypertransc
 off-pole jet-annihilator formalism (`digamma_jet_annihilator_eq_zero`, `AnnihilatesDigamma`) rather
 than the naive additive jet identity, which fails at the poles. That annihilator-transfer, the general
 multi-orbit case, and the holomorphic Bohr-frequency hull remain the open Lean targets.
+
+## Lean update — rational carrier closes the single-orbit nonzero-charge HT direction
+
+Three further axiom-clean pieces (`propext, Classical.choice, Quot.sound` only), wired into the
+`HTGeometry` umbrella.
+
+- **Nonzero-charge jet collapse `(§3, eq. 13)`.** `PolygammaShift.lean` now also proves
+  `HTGeometry.iteratedDeriv_digamma_charge_general`: for arbitrary charges `m : Fin d → ℂ` and integer
+  shifts `nn : Fin d → ℕ`, off the poles,
+  `∑ₖ mₖ ψ⁽ʲ⁾(w + nₖ) = (∑ₖ mₖ)·ψ⁽ʲ⁾(w) + ∑ₖ mₖ ∑_{i<nₖ} (−1)ʲ·j!/(w+i)^{j+1}` at every jet order
+  `j`. This is the `hcharge`-free companion of `iteratedDeriv_digamma_charge_collapse`: the surviving
+  transcendental jet is exactly the total-charge multiple `M·ψ⁽ʲ⁾(w)` (`M = ∑ₖ mₖ`) plus a rational
+  tail, i.e. the eq.-(13) obstruction datum when `M ≠ 0`.
+
+- **Polynomial-perturbation carrier.** `DigammaPolynomialCarrier.lean` proves
+  `hypertranscendental_smul_digamma_add_polynomial`: for `M ≠ 0` and any polynomial `p`,
+  `M·ψ(t) + p(t)` is hypertranscendental. A hypothetical algebraic differential relation is transported
+  by the invertible affine jet substitution `Y_j ↦ M·Y_j + p⁽ʲ⁾(point)` into an off-pole digamma jet
+  annihilator, killed by `digamma_jet_annihilator_eq_zero`; invertibility (`M ≠ 0`) makes the transport
+  nonzero.
+
+- **Rational-perturbation carrier (the crux).** `DigammaRationalCarrier.lean` proves
+  `hypertranscendental_smul_digamma_add_ratfunc`: for `M ≠ 0` and any rational function `A/B`
+  (`B ≠ 0`), `M·ψ(t) + A(t)/B(t)` is hypertranscendental. This is the exact closure input the previous
+  §12 note flagged as the remaining open target ("adding a rational function to the hypertranscendental
+  scaled-digamma carrier preserves hypertranscendence"). The proof denominator-clears every jet to the
+  common power `B^{n+1}` (using `(A/B)⁽ʲ⁾ = C_j/B^{j+1} = C_j·B^{n−j}/B^{n+1}` from
+  `exists_poly_iteratedDeriv_ratEval`), transports the annihilator through the homogeneous-degree
+  bookkeeping of `MvPolynomial.homogeneousComponent` (a single homogeneous variable-scaling lemma
+  `isHomogeneous_eval₂_scale` discharges both the annihilation and the nonzeroness), applies the `B`
+  factor so `B·P` annihilates the digamma jets off *every* pole (`polyJetEval_offPole_eq_zero` then
+  gives `B·P = 0 ⇒ P = 0`), and proves `P ≠ 0` by mapping to `RatFunc ℂ`, where the affine substitution
+  `Y_j ↦ M·Y_j + (A/B)⁽ʲ⁾` is an invertible isomorphism (`bind₁ ρ` with explicit inverse). Reusable
+  generic lemmas added: `isHomogeneous_eval₂_scale` / `isHomogeneous_eval₂Hom_scale` /
+  `isHomogeneous_bind₁_scale`, `map_homogeneousComponent`, `sum_homogeneousComponent_of_le`,
+  `eval₂Hom_reshapeJet`.
+
+Together these close the `d = 1`, single-orbit, **nonzero-total-charge** hypertranscendental direction
+at the carrier level: `iteratedDeriv_digamma_charge_general` reduces the orbit carrier
+`∑ₖ mₖ ψ(w+nₖ)` (`M = ∑ₖ mₖ ≠ 0`) to `M·ψ(w) + rational`, and
+`hypertranscendental_smul_digamma_add_ratfunc` proves that carrier is hypertranscendental. Still open in
+Lean: assembling this into `Hypertranscendental (fun w => ∑ₖ mₖ ψ(w+nₖ))` for the exact orbit function
+(the jets of that function are the charge-collapse rationals, so it is a direct instance of the rational
+carrier argument rather than the two-register additive identity); the general multi-orbit product; the
+formal transseries / ADH dichotomy behind the DA half of `(8)`; and the holomorphic Bohr-frequency hull
+behind `(31)`–`(38)`.
