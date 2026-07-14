@@ -144,11 +144,16 @@ The zeroth truncation coordinate converges unconditionally to the zeroth prime--
 moment.  The faithful cold partition
 $Z_k=\sum_\rho x_\rho\exp(k|\Re\rho-\frac12|)$ has exponential type exactly the projective
 radius: for every $\alpha\ge0$, $R_P\le\alpha$ if and only if
-$Z_k=O(e^{k\alpha})$.  Let \(Z_{J,k}\) denote its first \(J\) terms.  In particular, RH is
-equivalent to one bound uniform in both the cold
-parameter and all sufficiently large finite-system truncations.  More sharply, false RH is
-equivalent to \(Z_{J,J}\to+\infty\), while RH is equivalent to one fixed bound recurring
-cofinally often along the diagonal \(J=k\).  RH is also equivalent to arbitrary finite-block
+$Z_k=O(e^{k\alpha})$.  Let \(Z_{J,k}\) denote its first \(J\) terms.  For arbitrary schedules
+$J_m,k_m\to\infty$,
+\[
+ \frac{\log Z_{J_m,k_m}}{k_m}\longrightarrow R_P.
+\]
+Thus RH is equivalent merely to subexponential growth
+$Z_{J_m,k_m}\le e^{\varepsilon k_m}$ eventually for every $\varepsilon>0$; no uniform bound is
+required.  More sharply, false RH is equivalent to \(Z_{J,J}\to+\infty\), while RH is equivalent
+to one fixed bound recurring cofinally often along the diagonal \(J=k\).  RH is also equivalent
+to arbitrary finite-block
 approximation of the normalized prime--Gamma moment sequence by finite positive atomic,
 equivalently finite KMS/Wightman, moment systems.  Equivalently, every complementary Hausdorff
 difference of that source sequence is nonnegative; when this holds, the approximating finite KMS
@@ -160,8 +165,14 @@ endpoint-calibrated differences satisfy the exact divisor law
 \]
 Opposite-phase sector cancellation proves unconditionally the complete $14\times44$ rectangle
 $D^*_{k,r}\ge0$ for $k\le13$ and $r\le43$.  Hence RH, the prime--polar abscissa endpoint, and
-finite KMS closure are each equivalent to positivity only on the complementary cofinal tail.
-This discharges 616 conditions of the exact RH criterion without assuming RH.  With
+finite KMS closure are each equivalent to positivity on one common deep quadrant $k,r\ge M$, for
+some finite $M$.  Every bounded-index arm is dispensable.  This discharges 616 conditions of the
+exact RH criterion without assuming RH and reduces the remaining Hausdorff obligation to a
+genuinely two-parameter cofinal asymptotic.  The same source Hankel form admits an independent
+sparse compression: for every infinite $D\subset\mathbb N$, it is enough to test monic integer
+polynomials whose exact degree lies in $D$ and which are Eisenstein at $2$, hence irreducible in
+positive degree.  Thus neither a bounded collection of degrees nor the complement of this fixed
+coefficient-congruence chamber is logically distinguished by the criterion.  With
 $\mathcal C_6=\sum_\rho|\lambda_\rho|^3$, the same defect also obeys
 $\mathcal E_\perp\le4\delta_*^2\mathcal C_6$ and forces explicit lower bounds for the
 square-sampled dyadic positive-excess abscissae.  Thus the quantum-statistical chart and the
@@ -247,9 +258,11 @@ that both residual low-degree inequalities live on one positive Gibbs moment fib
 decisively, the endpoint-calibrated Hausdorff array is an exact reciprocal-square divisor value.
 The quartet sector bound and the opposite phases of $\lambda_\rho$ and $R_*-\lambda_\rho$ prove
 an unconditional $14\times44$ positivity rectangle.  The master theorem therefore identifies one
-precise cofinal tail---rather than a collection of parallel criteria---as the remaining RH-bearing
-object.  The later named results establish the individual clauses needed for this master
-statement.
+precise common deep quadrant---rather than two infinite coordinate arms or a collection of
+parallel criteria---as the remaining Hausdorff object.  In the thermal chart, every simultaneous
+cofinal finite-volume/cooling schedule has free-energy density exactly $\delta_*$, so the same
+endpoint is equivalently one subexponential partition estimate.  The later named results
+establish the individual clauses needed for this master statement.
 
 \begin{theorem}[Theorem A: endpoint-calibrated source--temperature master theorem]
 \label{thm:main}
@@ -545,6 +558,22 @@ $\alpha\ge0$,
  \exists A\;\; Z_k\le A e^{k\alpha}\quad(k\gg1).
  \tag{1.20i}
 \]
+For every pair of integer schedules $J_m,k_m\to\infty$, the simultaneous thermodynamic and
+zero-temperature limit is exact:
+\[
+ \boxed{\quad
+ \frac{\log Z_{J_m,k_m}}{k_m}\longrightarrow R_P=\delta_*.
+ \quad}
+ \tag{1.20ia}
+\]
+Consequently,
+\[
+ \mathrm{RH}
+ \Longleftrightarrow
+ \forall\varepsilon>0,\quad
+ Z_{J_m,k_m}\le e^{\varepsilon k_m}\quad(m\gg1).
+ \tag{1.20ib}
+\]
 The radius $R_0=218/25$ is quartet-admissible.
 Define the complementary source differences by
 \[
@@ -569,16 +598,16 @@ Its full southwest rectangle is unconditionally nonnegative:
  \boxed{D^*_{k,r}\ge0\qquad(0\le k\le13,\ 0\le r\le43).}
  \tag{1.20m}
 \]
-Thus 616 indexed source inequalities are discharged without RH.  If
+Thus 616 indexed source inequalities are discharged without RH.  Put
 \[
- \mathsf T_*:\quad D^*_{k,r}\ge0
- \quad\text{whenever }k>13\text{ or }r>43,
+ \mathsf Q_*:\quad
+ \exists M\in\mathbb N\ \ \forall k,r\ge M,\qquad D^*_{k,r}\ge0.
  \tag{1.20n}
 \]
-then
+Then
 \[
  \boxed{\begin{gathered}
- \mathsf T_*\Longleftrightarrow\mathrm{RH}
+ \mathsf Q_*\Longleftrightarrow\mathrm{RH}
  \Longleftrightarrow\sigma_{\rm abs}(S_{L,N}^-)\le1\\
  \Longleftrightarrow
  A_{L,N}(X)=O_\varepsilon(X^{1+\varepsilon})\quad(\varepsilon>0)\\
@@ -586,6 +615,13 @@ then
  \text{local finite-KMS/Wightman closure of }(\mu_n)
  \end{gathered}}
  \tag{1.20o}
+\]
+For every infinite set $D\subset\mathbb N$, these conditions are also equivalent to
+\[
+ \sum_{i,j}a_i a_j\mu_{i+j}\ge0
+ \quad\text{for every monic }p(X)=\sum_i a_iX^i\in\mathbb Z[X]
+ \text{ Eisenstein at }2\text{ with }\deg p\in D.
+ \tag{1.20p}
 \]
 The following critical conditions are equivalent:
 \[
@@ -608,13 +644,24 @@ The following critical conditions are equivalent:
  &\Longleftrightarrow
  \exists A\;\forall J_0\;\exists J\ge J_0,\quad Z_{J,J}\le A\\
  &\Longleftrightarrow
+ \frac{\log Z_{J_m,k_m}}{k_m}\longrightarrow0
+ \quad\text{for one (equivalently every) }J_m,k_m\to\infty\\
+ &\Longleftrightarrow
+ Z_{J_m,k_m}\le e^{\varepsilon k_m}
+ \quad(m\gg1,\ \varepsilon>0)\\
+ &\Longleftrightarrow
  \text{local finite positive-atomic closure of the source moments}\\
  &\Longleftrightarrow
  \text{local finite-KMS/Wightman closure of the source moments}\\
  &\Longleftrightarrow D_{k,r}\ge0\quad(k,r\ge0)\\
+ &\Longleftrightarrow
+ \exists M\ \forall k,r\ge M,\quad D^*_{k,r}\ge0\\
  &\Longleftrightarrow \mathcal K(R_0)\\
  &\Longleftrightarrow
  \text{the complete normalized source Hankel form is nonnegative}\\
+ &\Longleftrightarrow
+ \text{the irreducible Eisenstein-at-two source tests are nonnegative on any fixed infinite
+ degree set}\\
  &\Longleftrightarrow
  \text{the normalized moments admit a reflection-positive Gram orbit}\\
  &\Longleftrightarrow
@@ -638,7 +685,8 @@ Theorems~\ref{thm:sharp-guinand-weil}, \ref{thm:prime-gamma-spectrum},
 Theorems~\ref{thm:endpoint-reflection-main} and~\ref{thm:projective-energy-budget}.
 Part~\textup{(vi)} follows from Theorem~\ref{thm:thermal-master} and
 Propositions~\ref{prop:morse-fisher-envelope},
-\ref{prop:endpoint-frequency-master}, and~\ref{prop:universal-kms-palette}.
+\ref{prop:endpoint-frequency-master}, and~\ref{prop:universal-kms-palette}, together with
+Corollary~\ref{cor:sparse-eisenstein-hankel}.
 \end{proof}
 
 At $\alpha=0$, all clauses identify one common endpoint:
@@ -651,7 +699,10 @@ At $\alpha=0$, all clauses identify one common endpoint:
  \Longleftrightarrow E=0
  \Longleftrightarrow H=C
  \Longleftrightarrow M_2=\mathcal Q_W
- \Longleftrightarrow \sup_{k\gg1}Z_k<\infty.
+ \Longleftrightarrow
+ \frac{\log Z_{J_m,k_m}}{k_m}\longrightarrow0
+ \Longleftrightarrow
+ \exists M\ \forall k,r\ge M,\ D^*_{k,r}\ge0.
  \end{aligned}
  \tag{1.22}
 \]
@@ -659,11 +710,11 @@ The scale-resolved budget \textup{(1.11)}, the off-line self-charge law
 \textup{(1.20aa)}--\textup{(1.20ac)}, the four-charge height law \textup{(1.20d)}, and the
 cubic source estimate \textup{(1.20)} are successive quantitative stages of this one theorem.
 In the thermal chart the source misses the positive divisor moment by less than $1/150000$ in
-absolute scale.  The cold diagonal gives an exact positive phase alternative: it is bounded
-cofinally often precisely on the RH fibre and diverges to \(+\infty\) otherwise.  The remaining
-theorem is the endpoint saturation
-$M_2\le\mathcal Q_W$, equivalently the ultraviolet condition $\mathrm{HF}(218/25)$ or one
-recurrent bound along that faithful diagonal.
+absolute scale.  Every cofinal finite-volume/cooling section recovers the exact transverse radius
+as its free-energy density.  The remaining theorem may therefore be stated positively in either
+of two source-coupled forms: subexponential growth of one faithful cofinal thermal section, or
+eventual positivity in one common deep Hausdorff quadrant.  Equivalently it is the endpoint
+saturation $M_2\le\mathcal Q_W$ or the ultraviolet condition $\mathrm{HF}(218/25)$.
 
 There is also a classical superzeta literature in which Dirichlet series are formed directly over
 the Riemann zeros and their meromorphic polar structure is studied~\cite{Voros2003}.  That
@@ -778,16 +829,20 @@ identity gives the master equivalence
  \Longleftrightarrow M_2=\mathcal Q_W\\
  &\Longleftrightarrow\text{KMS selection of }\mathcal Q_W\\
  &\Longleftrightarrow\text{Connes reflection positivity}
- \Longleftrightarrow\sup_{k\gg1}Z_k<\infty
+ \Longleftrightarrow
+ \frac{\log Z_{J_m,k_m}}{k_m}\longrightarrow0\\
+ &\Longleftrightarrow
+ Z_{J_m,k_m}\le e^{\varepsilon k_m}\quad(m\gg1,\ \varepsilon>0)
  \Longleftrightarrow\mathrm{RH}.
  \end{aligned}
 \]
 This is one source--temperature coupling in the master theorem: high-frequency passivity and zero
 transverse thermal energy are the same sharp orientation datum.  The faithful cold partition
 removes the high-height damping of the quadratic energy: any off-line atom forces exponential
-growth at rate $d_\rho$, so RH is exactly one bound uniform in the cold variable and the finite
-thermodynamic exhaustion.  A nontrivial central response interval and a strict thermal neighborhood
-are already unconditional; the uniform cold bound is the remaining estimate.
+growth at a positive rate $d_\rho$, so RH is exactly zero free-energy density, equivalently
+subexponential growth, along any simultaneous cold finite-volume exhaustion.  A nontrivial central
+response interval and a strict thermal neighborhood are already unconditional; the remaining
+estimate is a source-derived subexponential domination, not a uniform partition bound.
 
 The principal contributions claimed here are the exact evaluated sharp prime--Gamma
 specialization and its source-only RH spectrum---fixed positive width, arithmetic
@@ -2990,6 +3045,43 @@ $\langle A^i\Omega,A^j\Omega\rangle=\langle\Omega,A^{i+j}\Omega\rangle$.
 This completes the proof.
 \end{proof}
 
+\begin{corollary}[Sparse irreducible Eisenstein source-Hankel criterion]
+\label{cor:sparse-eisenstein-hankel}
+Let $D\subset\mathbb N$ be infinite.  Then RH is equivalent to
+\[
+ \sum_{i,j}a_i a_j\mu_{i+j}\ge0
+ \quad\text{for every monic }p(X)=\sum_i a_iX^i\in\mathbb Z[X]
+ \text{ Eisenstein at }2\text{ with }\deg p\in D.
+ \tag{8.23}
+\]
+Equivalently, every nonleading coefficient is even and the constant coefficient is not divisible
+by $4$.  Every positive-degree test in this family is irreducible.  Thus the complete
+source-Hankel cone is already forced by one fixed irreducible congruence chamber on any prescribed
+infinite set of exact polynomial degrees.
+\end{corollary}
+
+\begin{proof}
+Under RH, (8.14) proves the stated inequalities.  Conversely, write
+\[
+ \mathcal Q(p)=\sum_{i,j}a_i a_j\mu_{i+j}
+ \qquad\left(p(X)=\sum_i a_iX^i\right)
+\]
+and suppose that $\mathcal Q(p)<0$ for some $p\in\mathbb Z[X]$.  Since an infinite subset of
+$\mathbb N$ is unbounded, choose $d\in D$ with $d>\deg p$.  For every positive integer $N$, both
+\[
+ q_{N,+}=X^d+2+4Np,qquad q_{N,-}=X^d+2-4Np
+\]
+are monic of exact degree $d$.  Every nonleading coefficient is even, while the constant term is
+$2$ modulo $4$; hence both polynomials are Eisenstein at $2$ and irreducible.  The assumed
+inequalities and quadratic polarization give
+\[
+ 0\le \mathcal Q(q_{N,+})+\mathcal Q(q_{N,-})
+   =2\mathcal Q(X^d+2)+2(4N)^2\mathcal Q(p).
+\]
+The right-hand side is negative for sufficiently large $N$, a contradiction.  Hence
+$\mathcal Q(p)\ge0$ for every integer polynomial $p$, and (8.14) gives RH.
+\end{proof}
+
 \begin{remark}[What the contraction proves]
 \label{rem:contraction-boundary}
 The estimate \textup{(8.9)} is not another reformulation of $E=0$: it is an unconditional upper
@@ -3302,6 +3394,21 @@ In fact the single diagonal has the exact phase alternative
  \exists A\;\forall J_0\;\exists J\ge J_0,\quad Z_{J,J}\le A.
  \tag{9.22ha}
 \]
+More generally, for every pair of integer schedules $J_m,k_m\to\infty$,
+\[
+ \frac{\log Z_{J_m,k_m}}{k_m}\longrightarrow R_P=\delta_*.
+ \tag{9.22haa}
+\]
+Hence
+\[
+ \mathrm{RH}
+ \Longleftrightarrow
+ \frac{\log Z_{J_m,k_m}}{k_m}\longrightarrow0
+ \Longleftrightarrow
+ \forall\varepsilon>0,\quad
+ Z_{J_m,k_m}\le e^{\varepsilon k_m}\quad(m\gg1).
+ \tag{9.22hab}
+\]
 
 Call \(m=(m_n)_{n\ge0}\) finite positive atomic if
 \[
@@ -3356,8 +3463,7 @@ holds unconditionally.  Consequently, for every fixed $L>0$ and admissible $N$,
  \begin{aligned}
  \mathrm{RH}
  &\Longleftrightarrow
- D^*_{k,r}\ge0
- \quad\bigl(k>13\text{ or }r>43\bigr)\\
+ \exists M\in\mathbb N\ \forall k,r\ge M,\quad D^*_{k,r}\ge0\\
  &\Longleftrightarrow
  \sigma_{\rm abs}(S_{L,N}^-)\le1\\
  &\Longleftrightarrow
@@ -3397,9 +3503,17 @@ For every fixed $L>0$ and admissible $N$, the following conditions are equivalen
  &\Longleftrightarrow M_N(1)\longrightarrow\mathcal Q_W\\
  &\Longleftrightarrow \exists A\; Z_k\le A\quad(k\gg1)\\
  &\Longleftrightarrow \exists A\;\forall J_0\;\exists J\ge J_0,\ Z_{J,J}\le A\\
+ &\Longleftrightarrow
+ \frac{\log Z_{J_m,k_m}}{k_m}\longrightarrow0
+ \quad(J_m,k_m\to\infty)\\
+ &\Longleftrightarrow
+ Z_{J_m,k_m}\le e^{\varepsilon k_m}
+ \quad(m\gg1,\ \varepsilon>0)\\
  &\Longleftrightarrow(\mu_n)\text{ is locally finite positive atomic}\\
  &\Longleftrightarrow(\mu_n)\text{ is locally finite KMS/Wightman}\\
  &\Longleftrightarrow D_{k,r}\ge0\quad(k,r\ge0)\\
+ &\Longleftrightarrow
+ \exists M\ \forall k,r\ge M,\quad D^*_{k,r}\ge0\\
  &\Longleftrightarrow\mathcal K(218/25)\\
  &\Longleftrightarrow\mathrm{RH}.
  \end{aligned}
@@ -3589,6 +3703,33 @@ If RH holds, every \(d_\rho=0\), so \(Z_{J,J}\le\sum_\rho x_\rho=\mu_0\).  This 
 directions of \textup{(9.22ha)}; in particular a fixed upper bound recurring at arbitrarily
 large diagonal indices is already equivalent to RH.
 
+We prove the stronger cofinal free-energy law.  Let $J_m,k_m\to\infty$ and write
+$R=R_P=\sup_\rho d_\rho$.  Positivity and \textup{(9.22f)} give
+\[
+ Z_{J_m,k_m}\le Z_{k_m}\le\mu_0e^{k_mR},
+\]
+and therefore
+\[
+ \limsup_{m\to\infty}\frac{\log Z_{J_m,k_m}}{k_m}\le R,
+\]
+because $\log\mu_0/k_m\to0$.  Conversely, fix $a<R$.  If $R>0$, the definition of the
+supremum supplies a multiplicity copy $\rho_j$ with $a<d_{\rho_j}\le R$; if $R=0$, any copy
+works because then $a<0\le d_{\rho_j}$.  Cofinality gives $j<J_m$ eventually, and hence
+\[
+ Z_{J_m,k_m}\ge x_{\rho_j}e^{k_md_{\rho_j}}.
+\]
+Since $x_{\rho_j}>0$ and $\log x_{\rho_j}/k_m\to0$,
+\[
+ a<d_{\rho_j}\le
+ \liminf_{m\to\infty}\frac{\log Z_{J_m,k_m}}{k_m}.
+\]
+Letting $a\uparrow R$ proves \textup{(9.22haa)}.  At $R=0$, convergence of the normalized
+logarithm gives, for every $\varepsilon>0$, the eventual inequality
+$\log Z_{J_m,k_m}\le\varepsilon k_m$, hence the subexponential bound in
+\textup{(9.22hab)}.  Conversely, those bounds force the exact limit $R$ to be at most every
+positive $\varepsilon$.  Since $R\ge0$, one obtains $R=0$, which is RH.  This proves the full
+cofinal source--temperature criterion.
+
 We finally prove the local finite-system law.  Under RH, the explicit truncations \(M_N\) in
 \textup{(9.19)} converge coordinatewise to \((\mu_n)\), and each truncation is finite positive
 atomic and hence has the finite KMS/Wightman realization \textup{(9.11)}.  This proves both local
@@ -3686,12 +3827,49 @@ Thus $\Re(z^{k+1}w^r)\ge0$ atom by atom.  Summing the absolutely convergent seri
 616 inequalities in \textup{(9.22hfc)}.
 
 Under RH every $\lambda_\rho$ is real and belongs to $(0,R_*]$, so all calibrated differences
-are nonnegative.  Conversely, nonnegativity of all calibrated differences gives the scaled
-Hausdorff--Bernstein approximants supported on $[0,R_*]$; after rescaling by $R_*$ they yield
-local finite-positive-atomic approximation of $(\mu_n)$, hence RH by
-\textup{(9.22hd)}.  The proved rectangle shows that full calibrated positivity is equivalent to
-positivity only when $k>13$ or $r>43$.  Combining this reduction with the source-abscissa
-criterion and the finite-KMS equivalence proves \textup{(9.22hfd)}.
+are nonnegative, so the cofinal-quadrant condition in \textup{(9.22hfd)} is necessary.  We prove
+the converse without recovering either bounded-index arm.  Suppose that
+$D^*_{k,r}\ge0$ whenever $k,r\ge M_0$, and put
+\[
+ a_M(X)=X^M(R_*-X)^M,qquad
+ t_M(n)=\ell_\mu\!\left(X^na_M(X)^2\right)
+       =D^*_{2M+n,,2M},qquad M\ge M_0.
+ \tag{9.26n}
+\]
+The exact shift identity gives, for every $k,r\ge0$,
+\[
+ \Delta_{R_*}^{,r}t_M(k)=D^*_{2M+k,,2M+r}\ge0.
+ \tag{9.26o}
+\]
+The Hausdorff--Bernstein theorem therefore makes $t_M$ a locally finite positive-atomic moment
+sequence.  Equivalently, for every real polynomial $p$,
+\[
+ 0\le\ell_\mu\!\left(a_M^2p^2\right)
+   =\Re\sum_\rho\lambda_\rho
+      \bigl(a_M(\lambda_\rho)p(\lambda_\rho)\bigr)^2.
+ \tag{9.26p}
+\]
+
+It remains to show that positivity on this principal ideal still detects every transverse atom.
+Assume that some reciprocal-square coordinate $\lambda_0$ is nonreal.  The only zeros of $a_M$
+are the real points $0$ and $R_*$, so $a_M(\lambda_0)\ne0$.  Choose a phase $c$ with
+$\Re(\lambda_0c^2)<0$.  For each $n$, real polynomial interpolation on the finite set of divisor
+coordinates with modulus at least $|\lambda_0|$ gives a polynomial $p_n$ such that
+\[
+ a_M(\lambda_0)p_n(\lambda_0)=c,qquad
+ a_M(\overline{\lambda_0})p_n(\overline{\lambda_0})=\overline c,
+ \tag{9.26q}
+\]
+while all other coordinates in that finite outer set are annihilated.  Multiplication by a
+high power of the normalized real quadratic
+$(X-\lambda_0)(X-\overline{\lambda_0})$ makes the same evaluations tend to zero at every inner
+coordinate.  The resulting evaluations are uniformly bounded on the bounded reciprocal-square
+spectrum.  Since $\sum_\rho|\lambda_\rho|<\infty$, dominated convergence in \textup{(9.26p)}
+then leaves only the $\lambda_0$ and $\overline{\lambda_0}$ fibres, with a strictly negative real
+limit.  This contradicts \textup{(9.26p)}.  Hence every $\lambda_\rho$ is real, and
+\textup{(9.25)} forces $\Re\rho=1/2$ for every zero.  Thus the common cofinal quadrant already
+implies RH.  Combining this principal-ideal detector with the source-abscissa criterion and the
+finite-KMS equivalence proves \textup{(9.22hfd)}.
 
 For completeness, the small constant in \textup{(9.21)} has the following rational certificate.
 The decreasing Euler sequence $H_m-\log m$ at $m=3125=5^5$, together with
@@ -4387,12 +4565,35 @@ infinite condition explicit:
  D^*_{k,r}\ge0\quad(k\le13,\ r\le43),
  \qquad
  \mathrm{RH}\Longleftrightarrow
- \bigl[D^*_{k,r}\ge0\text{ whenever }k>13\text{ or }r>43\bigr].
+ \bigl[\exists M\ \forall k,r\ge M,\ D^*_{k,r}\ge0\bigr].
  \tag{11.3b}
 \]
 Thus 616 exact Hausdorff source inequalities are theorems, and the remaining obligation is a
-single cofinal tail.  This is strictly stronger than an equivalent reformulation: the finite
-southwest block has been removed from the RH premise by an atomwise opposite-phase estimate.
+single common deep quadrant.  The two bounded-index arms are unnecessary: multiplying by the
+principal-ideal factor $X^M(R_*-X)^M$ transfers deep-quadrant positivity to a positive moment
+functional, while any nonreal reciprocal-square atom survives that factor and is separated by a
+phase-corrected polynomial probe.  The finite southwest block is independently removed from the
+RH premise by an atomwise opposite-phase estimate.
+The same endpoint has two further cofinal compressions.  For every $J_m,k_m\to\infty$ and every
+infinite $D\subset\mathbb N$,
+\[
+ \boxed{\begin{aligned}
+ \mathrm{RH}
+ &\Longleftrightarrow
+ \frac{\log Z_{J_m,k_m}}{k_m}\longrightarrow0
+ \Longleftrightarrow
+ Z_{J_m,k_m}\le e^{\varepsilon k_m}\quad(m\gg1,\ \varepsilon>0),\\
+ \mathrm{RH}
+ &\Longleftrightarrow
+ \sum_{i,j}a_i a_j\mu_{i+j}\ge0
+ \quad\text{for every monic }p(X)=\sum_i a_iX^i\in\mathbb Z[X]
+ \text{ Eisenstein at }2\text{ with }\deg p\in D.
+ \end{aligned}}
+ \tag{11.3c}
+\]
+Thus the thermal endpoint requires only subexponential growth, and the reflection-positive source
+endpoint requires only one fixed irreducible Eisenstein chamber on an arbitrarily sparse
+unbounded set of polynomial degrees.
 Independently, Proposition~\ref{prop:morse-fisher-envelope}
 improves the first local source estimate from a constant Fisher multiplier to a decaying
 exponential envelope and the finite moment upper value $U_{\rm quad}$.
@@ -4458,7 +4659,8 @@ abscissa law, the all-order M\"obius--Neumann reconstruction, the exact
 reflection-positive/self-adjoint saturation theorem, the thickness corollaries, and
 multiplicity-exact meromorphic tomography of the actual Weil observable, together with the exact
 ultraviolet--infrared selection law and the unconditional 616-condition endpoint Hausdorff
-rectangle.  The elementary
+rectangle, the common-deep-quadrant reduction, the exact cofinal zero-temperature free-energy
+law, and the sparse irreducible Eisenstein source-Hankel criterion.  The elementary
 cumulative-mass/abscissa lemma and least-negative-part order lemma are not claimed as independent
 novelty; their roles are to expose the exact transverse source exponent and to prove that
 the explicit arithmetic channel $2E_{\rm dyad}$ is the unavoidable positive payment in this Connes/Landau

@@ -115,7 +115,8 @@ theorem finitePrimeLogHermitianGibbsCarrier_sub_bound
       exact mul_le_mul_of_nonneg_left hsum
         (mul_nonneg (Real.exp_pos _).le (inv_nonneg.mpr hz.le))
 
-private theorem tendsto_exp_neg_mul_log_two_atTop :
+/-- The Boltzmann factor of the uniform prime gap vanishes at zero temperature. -/
+theorem tendsto_exp_neg_mul_log_two_atTop :
     Filter.Tendsto (fun β : ℝ => Real.exp (-β * Real.log 2))
       Filter.atTop (nhds 0) := by
   have hpos : Filter.Tendsto (fun β : ℝ => Real.log 2 * β)

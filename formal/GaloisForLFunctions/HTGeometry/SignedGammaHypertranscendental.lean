@@ -36,4 +36,22 @@ theorem hypertranscendental_digamma_add_const (μ : ℂ) :
   rw [hypertranscendental_comp_add_const_iff μ]
   exact hypertranscendental_digamma
 
+/-- **A nonzero scalar multiple of a shifted Gamma factor is hypertranscendental.**  `c·Γ(s+μ)`
+(`c ≠ 0`) — the single-factor carrier with leading coefficient — remains hypertranscendental, by scaling
+invariance (`hypertranscendental_const_mul_iff`). -/
+theorem hypertranscendental_smul_gamma_add_const (c μ : ℂ) (hc : c ≠ 0) :
+    Hypertranscendental (fun s => c * Complex.Gamma (s + μ)) := by
+  rw [hypertranscendental_const_mul_iff hc]
+  exact hypertranscendental_gamma_add_const μ
+
+/-- **A nonzero single-term digamma carrier is hypertranscendental.**  `m·ψ(s+μ)` (`m ≠ 0`) — the
+`d = 1`, single-orbit logarithmic-derivative carrier `G'/G` of a single Gamma factor `Γ(s+μ)^m`, whose
+orbit charge `m` is nonzero — is hypertranscendental.  This is the `d = 1` case of the hypertranscendental
+direction read off the digamma carrier; the multi-term sum `∑_j m_j·ψ(s+n_j)` (a nonzero-charge
+combination) is the genuine Adamczewski–Dreyfus–Hardouin content. -/
+theorem hypertranscendental_smul_digamma_add_const (c μ : ℂ) (hc : c ≠ 0) :
+    Hypertranscendental (fun s => c * Complex.digamma (s + μ)) := by
+  rw [hypertranscendental_const_mul_iff hc]
+  exact hypertranscendental_digamma_add_const μ
+
 end HTGeometry

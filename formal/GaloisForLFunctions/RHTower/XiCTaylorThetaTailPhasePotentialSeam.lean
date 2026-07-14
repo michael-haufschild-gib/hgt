@@ -213,7 +213,6 @@ lemma exp_neg_half_mul_thetaCuspTailPotentialAtom_zero (a : ℝ) :
         Real.exp (-(Real.pi * Real.exp (2 * a))) by ring,
     ← Real.exp_add]
   simp
-  rw [Real.exp_zero]
   ring
 
 lemma exp_neg_half_mul_thetaCuspTailPotentialAtom_one (a : ℝ) :
@@ -234,7 +233,7 @@ lemma exp_neg_half_mul_thetaCuspTailPotentialAtom_one (a : ℝ) :
           Real.exp (-(Real.pi * Real.exp (2 * a))) by ring,
     ← Real.exp_add]
   simp
-  rw [Real.exp_zero]
+  rw [show -a / 2 + a / 2 = 0 by ring, Real.exp_zero]
   ring
 
 /-- After critical normalization, both source endpoint jets collapse to one explicit affine

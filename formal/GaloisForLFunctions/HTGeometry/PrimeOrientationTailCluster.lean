@@ -301,6 +301,65 @@ theorem primeOrientationTailIndependent_iff_tailClusterLinearIndependent
       (fun n j => ε j n) Finset.univ (fun i => c i)).1
     simpa only [orientationLinearForm_univ] using hfinite
 
+/-- Repeat every term of a Boolean-orientation sequence infinitely often, using the canonical
+pairing of natural numbers. -/
+def infinitelyRepeatedOrientation {J : Type*} (θ : ℕ → (J → Bool)) :
+    ℕ → (J → Bool) := fun n => θ (Nat.unpair n).1
+
+/-- Every finite pattern attained by the original sequence occurs infinitely often in its
+canonical repetition. -/
+theorem infinitelyRepeatedOrientation_pattern_fiber_infinite
+    {J : Type*} (θ : ℕ → (J → Bool)) (I : Finset J) (b : I → Bool)
+    (hattain : ∃ n, orientationRestriction I (θ n) = b) :
+    {n | orientationRestriction I (infinitelyRepeatedOrientation θ n) = b}.Infinite := by
+  classical
+  obtain ⟨n, hn⟩ := hattain
+  let f : ℕ → ℕ := fun m => Nat.pair n m
+  have hf : Function.Injective f := by
+    intro a c hac
+    have hright := congrArg (fun k => (Nat.unpair k).2) hac
+    simpa [f, Nat.unpair_pair] using hright
+  apply (Set.infinite_range_of_injective hf).mono
+  intro k hk
+  obtain ⟨m, rfl⟩ := hk
+  simpa [f, infinitelyRepeatedOrientation, Nat.unpair_pair] using hn
+
+/-- **Canonical repeated-sequence cluster law.**  The tail cluster of the canonical infinite
+repetition is exactly the inverse-limit closure of the finite patterns attained by the original
+sequence. -/
+theorem mem_tailCluster_infinitelyRepeatedOrientation_iff
+    {J : Type*} (θ : ℕ → (J → Bool)) (x : J → Bool) :
+    x ∈ primeOrientationTailClusterSet (infinitelyRepeatedOrientation θ) ↔
+      ∀ I : Finset J, ∃ n, orientationRestriction I (θ n) = orientationRestriction I x := by
+  rw [mem_primeOrientationTailClusterSet_iff_all_finite_patterns_recur]
+  constructor
+  · intro h I
+    obtain ⟨n, hn⟩ := (h I).nonempty
+    exact ⟨(Nat.unpair n).1, hn⟩
+  · intro h I
+    exact infinitelyRepeatedOrientation_pattern_fiber_infinite θ I
+      (orientationRestriction I x) (h I)
+
+/-- Set form of the canonical repeated-sequence cluster law. -/
+theorem tailCluster_infinitelyRepeatedOrientation
+    {J : Type*} (θ : ℕ → (J → Bool)) :
+    primeOrientationTailClusterSet (infinitelyRepeatedOrientation θ) =
+      {x | ∀ I : Finset J, ∃ n,
+        orientationRestriction I (θ n) = orientationRestriction I x} := by
+  ext x
+  exact mem_tailCluster_infinitelyRepeatedOrientation_iff θ x
+
+/-- Any constraint characterized by the finite patterns attained by a sequence is realized exactly
+as the tail cluster of its canonical infinite repetition.  For a dense sequence in a closed subset
+of the Boolean cube, the hypothesis is the usual finite-cylinder characterization of closure. -/
+theorem tailCluster_infinitelyRepeatedOrientation_eq
+    {J : Type*} (θ : ℕ → (J → Bool)) (K : Set (J → Bool))
+    (hK : ∀ x, x ∈ K ↔ ∀ I : Finset J, ∃ n,
+      orientationRestriction I (θ n) = orientationRestriction I x) :
+    primeOrientationTailClusterSet (infinitelyRepeatedOrientation θ) = K := by
+  ext x
+  rw [mem_tailCluster_infinitelyRepeatedOrientation_iff, hK]
+
 end
 
 end GaloisForLFunctions.HTGeometry

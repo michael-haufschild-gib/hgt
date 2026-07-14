@@ -4,6 +4,10 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) / `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
+- **Lean status:** The all-order scalar asymptotic `(7)` is formalized as
+  `completedOddLogDerivMomentFarRightAsymptotic`; the finite polynomial-square consequence and the
+  RH capstone with even factorization are also formalized.  The determinant limit `(9)` remains a
+  paper theorem because the sharper countable polynomial consumer no longer requires it.
 - **Statement:** Every fixed leading determinant of the moving completed
   prime--Gamma odd-derivative moment matrix is strictly positive sufficiently far to the right,
   with an explicit Hilbert-moment asymptotic.  At the centre the same determinant is the existing

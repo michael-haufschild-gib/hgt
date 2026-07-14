@@ -169,4 +169,114 @@ theorem hypertranscendental_of_magnitude_dominance {f : ℂ → ℂ}
   obtain ⟨N, ν₀, G, hν₀, hw₀, hgap, hG⟩ := hdom n Q hQ
   exact ⟨N, aeval_coeff_ne_zero_of_dominant n N (taylorPS f) Q hb ν₀ hν₀ hw₀ hgap hG⟩
 
+/-- If `Q` has integer coefficients, every grouped weight `aevalWeight` is an integer: it is a
+`ℤ`-combination (the polynomial coefficients) of products of descending factorials. -/
+theorem aevalWeight_isInt (n N : ℕ) (Q : MvPolynomial (Fin (n + 2)) ℂ) (ν : ℕ →₀ ℕ)
+    (hQ : ∀ m, ∃ z : ℤ, MvPolynomial.coeff m Q = (z : ℂ)) :
+    ∃ w : ℤ, aevalWeight n N Q ν = (w : ℂ) := by
+  classical
+  rw [aevalWeight]
+  refine Finset.sum_induction _ (fun c => ∃ z : ℤ, c = (z : ℂ)) ?_ ⟨0, by simp⟩ ?_
+  · rintro a b ⟨za, ha⟩ ⟨zb, hb⟩
+    exact ⟨za + zb, by rw [ha, hb]; push_cast; ring⟩
+  · intro x _
+    obtain ⟨zc, hzc⟩ := hQ x.1
+    refine ⟨zc * ∏ t, ((x.2 t + flatOrder (fun j => x.1 j.succ) t).descFactorial
+        (flatOrder (fun j => x.1 j.succ) t) : ℤ), ?_⟩
+    rw [hzc, atomDescProd]
+    push_cast
+    ring
+
+/-- A nonzero integer weight has modulus at least one — the load-bearing Mahler integrality payoff:
+an integer-normalized coefficient identity has weights that are either zero (dropped) or `≥ 1`. -/
+theorem aevalWeight_norm_ge_one (n N : ℕ) (Q : MvPolynomial (Fin (n + 2)) ℂ) (ν : ℕ →₀ ℕ)
+    (hQ : ∀ m, ∃ z : ℤ, MvPolynomial.coeff m Q = (z : ℂ))
+    (hne : aevalWeight n N Q ν ≠ 0) :
+    1 ≤ ‖aevalWeight n N Q ν‖ := by
+  obtain ⟨w, hw⟩ := aevalWeight_isInt n N Q ν hQ
+  rw [hw]
+  have hw0 : w ≠ 0 := by rintro rfl; simp [hw] at hne
+  rw [Complex.norm_intCast]
+  exact_mod_cast Int.one_le_abs hw0
+
+/-- **Weight-mass bound.**  The total grouped-weight mass is bounded by the polynomial-coefficient-
+weighted Leibniz mass over all contributing pairs: `∑_ν ‖aevalWeight ν‖ ≤ ∑_x ‖coeff x.1 Q‖ ·
+‖atomDescProd x‖`.  Since the pair count and each descending-factorial factor are polynomially
+bounded in `N`, this gives `log(mass) = O(log N)` — the bound the superlacunary valuation gap must
+beat. -/
+theorem aevalWeight_mass_le (n N : ℕ) (Q : MvPolynomial (Fin (n + 2)) ℂ) :
+    (∑ ν ∈ (sigmaIdx n N Q).image (atomKeyOf n), ‖aevalWeight n N Q ν‖)
+      ≤ ∑ x ∈ sigmaIdx n N Q, ‖MvPolynomial.coeff x.1 Q‖ * ‖atomDescProd n x‖ := by
+  classical
+  have hfib : (∑ ν ∈ (sigmaIdx n N Q).image (atomKeyOf n),
+        ∑ x ∈ (sigmaIdx n N Q).filter (fun x => atomKeyOf n x = ν),
+          ‖MvPolynomial.coeff x.1 Q‖ * ‖atomDescProd n x‖)
+      = ∑ x ∈ sigmaIdx n N Q, ‖MvPolynomial.coeff x.1 Q‖ * ‖atomDescProd n x‖ :=
+    Finset.sum_fiberwise_of_maps_to (fun x hx => Finset.mem_image_of_mem _ hx) _
+  refine le_trans (Finset.sum_le_sum fun ν _ => ?_) hfib.le
+  rw [aevalWeight]
+  refine le_trans (norm_sum_le _ _) (le_of_eq (Finset.sum_congr rfl fun x _ => ?_))
+  rw [norm_mul]
+
+/-- **Integer-normalized magnitude survival criterion (Mahler payoff).**  When the differential
+relation `Q` has integer coefficients, a minimal-valuation atom `ν₀` with nonzero weight and a gap
+`G` merely exceeding the log of the total mass forces `coeff N ≠ 0`.  Integrality removes the
+`‖aevalWeight ν₀‖⁻¹` factor: a nonzero integer weight is `≥ 1`, so the dominance condition is the
+clean `mass < exp G`.  This is the exact Archimedean tropical bend of the log-superlacunary family:
+no phase choice can cancel one atom that beats the whole remaining recurrence by a valuation gap
+exceeding the log of its polynomially-bounded mass. -/
+theorem aeval_coeff_ne_zero_of_int_dominant (n N : ℕ) (F : ℂ⟦X⟧) (Q : MvPolynomial (Fin (n + 2)) ℂ)
+    {b : ℕ → ℝ} (hb : ∀ i, ‖coeff i F‖ = Real.exp (- b i))
+    (hQ : ∀ m, ∃ z : ℤ, MvPolynomial.coeff m Q = (z : ℂ))
+    (ν₀ : ℕ →₀ ℕ) (hν₀ : ν₀ ∈ (sigmaIdx n N Q).image (atomKeyOf n))
+    (hw₀ : aevalWeight n N Q ν₀ ≠ 0) {G : ℝ}
+    (hgap : ∀ ν ∈ ((sigmaIdx n N Q).image (atomKeyOf n)).erase ν₀,
+        ν₀.sum (fun i k => (k : ℝ) * b i) + G ≤ ν.sum (fun i k => (k : ℝ) * b i))
+    (hmass : (∑ ν ∈ (sigmaIdx n N Q).image (atomKeyOf n), ‖aevalWeight n N Q ν‖) < Real.exp G) :
+    (coeff N) (aeval (formalJets n F) Q) ≠ 0 := by
+  refine aeval_coeff_ne_zero_of_dominant n N F Q hb ν₀ hν₀ hw₀ hgap ?_
+  calc (∑ ν ∈ (sigmaIdx n N Q).image (atomKeyOf n), ‖aevalWeight n N Q ν‖)
+      < Real.exp G := hmass
+    _ = 1 * Real.exp G := (one_mul _).symm
+    _ ≤ ‖aevalWeight n N Q ν₀‖ * Real.exp G := by
+        apply mul_le_mul_of_nonneg_right _ (Real.exp_nonneg G)
+        exact aevalWeight_norm_ge_one n N Q ν₀ hQ hw₀
+
+/-- **Log-superlacunary hypertranscendence, reduced to its two imported inputs.**
+A smooth `f` with Taylor magnitudes `‖coeff i (taylorPS f)‖ = exp(-b i)` is hypertranscendental
+once:
+* `hmahler` — the Mahler integer-normalization interface (Mahler 1971): any differential relation
+  satisfied by `f` can be replaced by a nonzero one with integer coefficients;
+* `hintdom` — the integer-dominance realization (the Archimedean tropical bend supplied by the
+  superlacunar profile): for every nonzero integer-coefficient relation, some coefficient level
+  carries a minimal-valuation atom whose weight dominates the total mass by its valuation gap.
+
+Everything between these two interfaces — the atom regrouping, the integrality payoff
+(`aevalWeight_norm_ge_one`), the domination (`aeval_coeff_ne_zero_of_int_dominant`), and the
+reduction of hypertranscendence to jet survival — is discharged unconditionally by this file. -/
+theorem hypertranscendental_of_mahler_and_int_dominance {f : ℂ → ℂ}
+    (hf : ContDiff ℂ (⊤ : ℕ∞) f) {b : ℕ → ℝ}
+    (hb : ∀ i, ‖PowerSeries.coeff i (taylorPS f)‖ = Real.exp (- b i))
+    (hmahler : ∀ (n : ℕ) (Q : MvPolynomial (Fin (n + 2)) ℂ), Q ≠ 0 →
+        aeval (formalJets n (taylorPS f)) Q = 0 →
+        ∃ (n' : ℕ) (Q' : MvPolynomial (Fin (n' + 2)) ℂ), Q' ≠ 0 ∧
+          (∀ m, ∃ z : ℤ, MvPolynomial.coeff m Q' = (z : ℂ)) ∧
+          aeval (formalJets n' (taylorPS f)) Q' = 0)
+    (hintdom : ∀ (n' : ℕ) (Q' : MvPolynomial (Fin (n' + 2)) ℂ), Q' ≠ 0 →
+        (∀ m, ∃ z : ℤ, MvPolynomial.coeff m Q' = (z : ℂ)) →
+        ∃ (N : ℕ) (ν₀ : ℕ →₀ ℕ) (G : ℝ),
+          ν₀ ∈ (sigmaIdx n' N Q').image (atomKeyOf n') ∧
+          aevalWeight n' N Q' ν₀ ≠ 0 ∧
+          (∀ ν ∈ ((sigmaIdx n' N Q').image (atomKeyOf n')).erase ν₀,
+              ν₀.sum (fun i k => (k : ℝ) * b i) + G ≤ ν.sum (fun i k => (k : ℝ) * b i)) ∧
+          (∑ ν ∈ (sigmaIdx n' N Q').image (atomKeyOf n'), ‖aevalWeight n' N Q' ν‖) < Real.exp G) :
+    Hypertranscendental f := by
+  refine hypertranscendental_of_aeval_survives hf (fun n Q hQ => ?_)
+  intro hrel
+  obtain ⟨n', Q', hQ', hint, hrel'⟩ := hmahler n Q hQ hrel
+  obtain ⟨N, ν₀, G, hν₀, hw₀, hgap, hmass⟩ := hintdom n' Q' hQ' hint
+  have hne := aeval_coeff_ne_zero_of_int_dominant n' N (taylorPS f) Q' hb hint ν₀ hν₀ hw₀ hgap hmass
+  rw [hrel', map_zero] at hne
+  exact hne rfl
+
 end GaloisForLFunctions

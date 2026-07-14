@@ -1,11 +1,11 @@
 # Isodivisorial Prime-Walsh Stone saturation of hypertranscendental Euler fibres
 
 - **ID:** `isodivisorial-prime-walsh-stone-saturation-law`
-- **Stage:** 1-in-progress
+- **Stage:** 2-fully-proven / needs independent novelty audit
 - **Type:** THEOREM CANDIDATE / GENERAL HT FIBRE GEOMETRY / RH ROUTE CONSTRAINT
-- **Scientific status:** `[CONJECTURE] [PAPER PROOF COMPLETE] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PROVED ON PAPER] [SIGNIFICANCE PASSES] [NOVELTY HOLD]`
 - **Parents:**
-  `../2-fully-proven/needs-audit/maximal-isodivisorial-ht-free-frame.md`,
+  `maximal-isodivisorial-ht-free-frame.md`,
   `prime-walsh-stone-tail-reconstruction-law.md`
 
 ## Constraint
@@ -21,15 +21,19 @@ S_(j_0) = {all-positive pattern}
 Let `K` be any closed Boolean constraint with
 
 ```text
-S_(j_0) subset K subset H_(j_0).                           (1)
+{all-positive pattern} subset K subset H_(j_0).             (1)
 ```
+
+For the maximal ordinary linear-matroid conclusion, assume in addition that the coordinate sign
+functions are linearly independent on `K`; the anchored skeleton condition
+`S_(j_0) subset K` is a simple explicit sufficient condition.
 
 Let `D` be any signed divisor locally finite on `Re(s)>0`, supported in the critical strip, for
 which the classical Helson-zeta divisor theorem supplies a unimodular Euler-product realizer.  The
 question is whether fixing the exact continued divisor restricts the nonlinear compact tail
 constraint of a maximally hypertranscendental prime-source family.
 
-## Theorem candidate: rectangular Stone saturation
+## Theorem: rectangular Stone saturation and Stone universality
 
 There exists a countable family of unimodular completely multiplicative phases
 
@@ -55,8 +59,9 @@ such that:
    ```
 
    is exactly `K`;
-5. every finite family of the prime-layer sources and every finite shift--jet rectangle is
-   differentially algebraically independent over the finite-prime field;
+5. if the coordinate sign functions are linearly independent on `K`---in particular, if
+   `S_(j_0) subset K`---then every finite family of the prime-layer sources and every finite
+   shift--jet rectangle is differentially algebraically independent over the finite-prime field;
 6. for every finite `I subset J` and finite nonempty shift set `A`, the full Prime-Walsh palette
    satisfies
 
@@ -78,6 +83,12 @@ admissible positive-half-plane divisor D
 is realized inside the Helson Euler-product class.  The first coordinate fixes the complete
 continued divisor; the second fixes the complete nonlinear prime-tail observation algebra and its
 differential-transcendence rank growth.
+
+More intrinsically, every pointed compact metrizable Stone space occurs as the nonlinear tail
+spectrum inside every admissible divisor fibre.  Indeed, a countable clopen family separating
+points from the distinguished point embeds such a space as a closed `K` satisfying `(1)`.  Hence a
+fixed divisor fibre is universal for pointed metrizable Stone spectra, while the Prime-Walsh
+observation algebra reconstructs each embedded spectrum canonically.
 
 ## Proof
 
@@ -134,14 +145,15 @@ converges normally on compact subsets of `Re(s)>0` to a holomorphic nonvanishing
 follows from `(4)` and the uniform first-order bound on the logarithm of each local ratio.  Thus all
 members have precisely divisor `D`.
 
-### 5. Maximal ordinary differential freedom
+### 5. Ordinary differential freedom
 
-The anchored skeleton in `(1)` makes the coordinate sign functions linearly independent on `K`.
-The tail-cluster annihilator law converts this to coefficient independence modulo finite prime
-support.  The established Shapiro--Sparer/Pong Jacobian transfer gives differential algebraic
-independence of every finite shift--jet rectangle.  Pong's hypertranscendence theorem for nonzero
-coefficient phases gives item 2, specifically Theorem 5.3 with the injective logarithmic multiplier:
-each phase has full support and is outside the finitely prime-generated subalgebra.
+The tail-cluster annihilator law identifies the ordinary tail matroid exactly with the linear
+matroid of the coordinate sign functions on `K`.  Hence coordinate-function independence gives
+coefficient independence modulo finite prime support; the anchored skeleton is one explicit
+sufficient condition.  The established Shapiro--Sparer/Pong Jacobian transfer then gives
+differential algebraic independence of every finite shift--jet rectangle.  Pong's
+hypertranscendence theorem gives item 2, specifically Theorem 5.3 with the injective logarithmic
+multiplier: each phase has full support and is outside the finitely prime-generated subalgebra.
 
 ### 6. Complete nonlinear Stone rank
 
@@ -150,6 +162,11 @@ Walsh inversion spans every function on the recurring chamber `projection_I(K)`.
 finite-observable kernel identifies equality on that chamber with equality modulo finite prime
 support.  Hence their tail rank is `card(projection_I(K))`; the same Jacobian transfer gives `(2)`.
 The cofinal locally constant quotient reconstructs `K` by Stone duality.
+
+The source-side realization is exact at the inverse-limit level: the canonical infinite
+repetition of a dense sequence has tail cluster precisely the finite-cylinder closure of that
+sequence.  Adding the all-positive complement of the sparse reservoir does not enlarge the cluster
+because the all-positive point already lies in `K`.
 
 ## Quantitative corollary
 
@@ -197,8 +214,8 @@ exponent-zero Stone deformations even when the complete divisor does not.
 
 1. **Parent-product attack.**  Sparse isodivisorial gauges and Stone reconstruction are separate
    parent results.  The candidate-new content is the exact simultaneous rectangle `(3)`, including
-   arbitrary compact constraint and exact nonlinear differential-rank profile in every divisor
-   fibre.
+   every pointed metrizable Stone spectrum and exact nonlinear differential-rank profile in every
+   divisor fibre.
 2. **Grosswald--Schnitzer/Helson attack.**  Same-zero Euler deformations and arbitrary divisor
    realization are classical.  They do not classify or prescribe the full compact pattern
    constraint and its Walsh rank growth.
@@ -224,12 +241,21 @@ exponent-zero Stone deformations even when the complete divisor does not.
   transfer
 - [x] formalize the sparse-background exact recurring-pattern realization, anchored maximal rank,
   and exact positive anchor
-- [ ] primary literature audit of the combined divisor-fibre Stone rectangle
-- [ ] compare against all project isodivisorial, completed-corona, and constraint-product laws
-- [ ] dual-gate verdict
+- [x] formalize exact whole-tail-cluster realization by canonical infinite repetition
+- [x] primary literature audit of the combined divisor-fibre Stone rectangle
+- [x] compare against all project isodivisorial, completed-corona, and constraint-product laws
+- [x] significance verdict: passes; the theorem classifies the full nonlinear internal geometry of
+  every divisor fibre and forces a new incidence datum for RH carriers
+- [x] project novelty search: no exact divisor-fibre Stone-universality or Prime-Walsh rank law found
+- [ ] independent specialist novelty verdict
 
 ## Status
 
-`[OPEN CORE]` The mathematical proof is complete.  The remaining question is scientific: whether
-the full divisor--Stone rectangle is a genuinely new and significant HT fibre law rather than a
-routine juxtaposition of its parent mechanisms.
+`[NOVELTY HOLD]` The mathematical proof and the source-side internal theorem surface are complete.
+The result strictly strengthens the prior dense-leaf and maximal-free-frame laws: a fixed divisor
+fibre contains every pointed metrizable Stone spectrum, and its finite Prime-Walsh differential
+ranks recover that spectrum.  Primary searches across Helson zeta functions, arithmetic-function
+differential algebra, Walsh analysis, Stone duality, and symbolic dynamics found the parent
+ingredients but not this combined universality law.  Because the proof becomes short after those
+ingredients are assembled, final placement as new scientific knowledge remains reserved for an
+independent specialist novelty audit.

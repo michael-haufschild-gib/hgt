@@ -167,12 +167,19 @@ import GaloisForLFunctions.HTGeometry.BernsteinSzegoReconstruction
 import GaloisForLFunctions.HTGeometry.SzegoLowerBound
 import GaloisForLFunctions.HTGeometry.SzegoLowerBoundGeneral
 import GaloisForLFunctions.HTGeometry.SzegoUpperBound
+import GaloisForLFunctions.HTGeometry.RieszSingularSzegoCollapse
 import GaloisForLFunctions.HTGeometry.SzegoOuterFunction
 import GaloisForLFunctions.HTGeometry.SzegoOuterAnalytic
 import GaloisForLFunctions.HTGeometry.PoissonFatou
 import GaloisForLFunctions.HTGeometry.SzegoOuterBoundary
 import GaloisForLFunctions.HTGeometry.SzegoH2
 import GaloisForLFunctions.HTGeometry.SzegoBoundaryH2
+import GaloisForLFunctions.HTGeometry.SzegoHInfty
+import GaloisForLFunctions.HTGeometry.GutzmerIdentity
+import GaloisForLFunctions.HTGeometry.SzegoRadialMean
+import GaloisForLFunctions.HTGeometry.SzegoBoundaryLimit
+import GaloisForLFunctions.HTGeometry.SzegoTail
+import GaloisForLFunctions.HTGeometry.SzegoUpperBoundAC
 
 /- ## Complete area inventory -/
 import GaloisForLFunctions.HTGeometry.AlgebraicMatroidRank
@@ -208,6 +215,8 @@ import GaloisForLFunctions.HTGeometry.CompositionResidueLaw
 import GaloisForLFunctions.HTGeometry.CongruencePencil
 import GaloisForLFunctions.HTGeometry.ConvexValuationFloor
 import GaloisForLFunctions.HTGeometry.CoprimeProductAnnihilator
+import GaloisForLFunctions.HTGeometry.SignedMomentSeparation
+import GaloisForLFunctions.HTGeometry.DiscreteOrbitReciprocity
 import GaloisForLFunctions.HTGeometry.CoveringDimension
 import GaloisForLFunctions.HTGeometry.CrossPrimeCurvature
 import GaloisForLFunctions.HTGeometry.DegreeHomogeneousDiffPolyGap
@@ -431,6 +440,7 @@ import GaloisForLFunctions.HTGeometry.PermanentCoefficientIdentity
 import GaloisForLFunctions.HTGeometry.FiberPermanentIdentity
 import GaloisForLFunctions.HTGeometry.MagnitudeSurvivalAssembly
 import GaloisForLFunctions.HTGeometry.MagnitudeInhomogeneousSurvival
+import GaloisForLFunctions.HTGeometry.MagnitudeAtomGrading
 import GaloisForLFunctions.HTGeometry.GaussComponentHaarAverage
 import GaloisForLFunctions.HTGeometry.DixmierIdeal
 import GaloisForLFunctions.HTGeometry.DirichletLinePartialSum
@@ -526,6 +536,8 @@ import GaloisForLFunctions.HTGeometry.PrimeLogKMSRealization
 import GaloisForLFunctions.HTGeometry.PrimeLogKMSHermitianCompletion
 import GaloisForLFunctions.HTGeometry.PrimeLogGibbsZeroTemperature
 import GaloisForLFunctions.HTGeometry.PrimeLogGibbsJointLimit
+import GaloisForLFunctions.HTGeometry.PrimeLogGibbsJointCompactOpen
+import GaloisForLFunctions.HTGeometry.PrimeLogGibbsQuantitativeJets
 import GaloisForLFunctions.HTGeometry.HardyRadialConvergence
 import GaloisForLFunctions.HTGeometry.FourierParseval
 import GaloisForLFunctions.HTGeometry.HardyBoundaryValues

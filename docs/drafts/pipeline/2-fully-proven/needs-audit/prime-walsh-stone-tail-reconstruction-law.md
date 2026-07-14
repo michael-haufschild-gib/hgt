@@ -1,11 +1,11 @@
 # Prime-Walsh Stone reconstruction and entropy of the hypertranscendental tail constraint
 
 - **ID:** `prime-walsh-stone-tail-reconstruction-law`
-- **Stage:** 1-in-progress
+- **Stage:** 2-fully-proven / needs independent novelty audit
 - **Type:** THEOREM CANDIDATE / GENERAL HT CARRIER LAW / RH ROUTE CONSTRAINT
-- **Scientific status:** `[CONJECTURE] [FINITE CORE FORMALIZED] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PROVED ON PAPER] [SOURCE CORE FORMALIZED] [NOVELTY HOLD]`
 - **Parent:**
-  `../2-fully-proven/not_new_scientific_knowledge/prime-corona-constraint-opacity-law.md`
+  `../not_new_scientific_knowledge/prime-corona-constraint-opacity-law.md`
 
 ## Constraint
 
@@ -252,11 +252,23 @@ ordinary differential matroid forgets.
 - [x] locally constant quotient reduced to the formal finite-observable kernel after the classical
   finite-coordinate/Stone boundary
 - [x] finite Walsh inversion, tail-annihilator, and exact restriction-rank theorems formalized
+- [x] canonical infinite repetition and exact whole-tail-cluster realization formalized
 - [x] derive box-dimension and subshift-entropy identities from the exact finite rank
-- [ ] primary literature audit across Stone duality, Boolean harmonic analysis, Dirichlet-series
+- [x] primary literature audit across Stone duality, Boolean harmonic analysis, Dirichlet-series
   Hadamard products, and arithmetic-function differential algebra
-- [ ] compare against all project constraint inverse limits and nonlinear Euler-corona results
-- [ ] dual-gate verdict
+- [x] compare against all project constraint inverse limits and nonlinear Euler-corona results
+- [x] significance verdict: passes as the faithful nonlinear completion of the tail matroid
+- [x] project novelty search: no exact Prime-Walsh differential-rank reconstruction law found
+- [ ] independent specialist novelty verdict
+
+## Status
+
+`[NOVELTY HOLD]` The theorem and its source-side formal core are complete.  Stone duality, Walsh
+inversion, and symbolic complexity are classical separately; primary searches found no theorem
+identifying the differential-transcendence ranks of primewise Walsh carriers with the complete
+finite-pattern functor of a hypertranscendental source.  Final placement as new scientific
+knowledge remains reserved for an independent specialist audit because the proof is a tight
+source-specific synthesis of classical ingredients.
 
 ## Status
 

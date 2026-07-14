@@ -68,13 +68,13 @@ theorem tendsto_scaled_completedRationalLeg (j : ℕ) (hj : 0 < j) :
       atTop (nhds 0) := by
   have hinv : Tendsto (fun x : ℝ => ((x : ℂ))⁻¹) atTop (nhds 0) := by
     convert Complex.continuous_ofReal.continuousAt.tendsto.comp
-        (tendsto_inv_atTop_zero : Tendsto (fun x : ℝ => x⁻¹) atTop (nhds 0)) using 1 <;>
+        (tendsto_inv_atTop_zero : Tendsto (fun x : ℝ => x⁻¹) atTop (nhds 0)) using 1;
       simp [Function.comp_def]
   have hshift : Tendsto (fun x : ℝ => ((x : ℂ) - 1)⁻¹) atTop (nhds 0) := by
     have hreal : Tendsto (fun x : ℝ => (x - 1)⁻¹) atTop (nhds 0) :=
       tendsto_inv_atTop_zero.comp
         (tendsto_atTop_add_const_right atTop (-1) tendsto_id)
-    convert Complex.continuous_ofReal.continuousAt.tendsto.comp hreal using 1 <;>
+    convert Complex.continuous_ofReal.continuousAt.tendsto.comp hreal using 1;
       simp [Function.comp_def]
   have hratio : Tendsto (fun x : ℝ => (x : ℂ) / ((x : ℂ) - 1)) atTop (nhds 1) := by
     have h : Tendsto (fun x : ℝ => 1 + ((x : ℂ) - 1)⁻¹) atTop (nhds (1 + 0)) :=
@@ -108,9 +108,9 @@ theorem tendsto_scaled_completedRationalLeg (j : ℕ) (hj : 0 < j) :
       field_simp [hx0]
     have hsecond : (x : ℂ) ^ j * ((((x : ℂ) - 1) ^ (j + 1))⁻¹) =
         ((x : ℂ) / ((x : ℂ) - 1)) ^ j * ((x : ℂ) - 1)⁻¹ := by
+      rw [div_pow]
       rw [pow_succ]
       field_simp [hxsub]
-      ring
     symm
     calc
       (x : ℂ) ^ j * (((-1 : ℂ) ^ j * (j.factorial : ℂ)) *
@@ -139,6 +139,8 @@ theorem tendsto_scaled_completedGammaLeg (j : ℕ) (hj : 0 < j) :
     push_cast
     rw [div_pow]
     ring_nf
+    rw [show (2 : ℂ)⁻¹ = 1 / 2 by norm_num]
+    ring
   · ring
 
 /-- Every logarithmically weighted von Mangoldt leg is exponentially smaller than the retained
@@ -176,7 +178,8 @@ theorem tendsto_scaled_completedEulerLeg (j : ℕ) :
     rw [hpow]
     push_cast
     have hne : (2 : ℝ) ^ x ≠ 0 := ne_of_gt (Real.rpow_pos_of_pos (by norm_num) _)
-    field_simp
+    have hneC : (((2 : ℝ) ^ x : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hne
+    field_simp [hneC]
   have hscaled := hraw.const_mul ((-1 : ℂ) ^ (j + 1))
   simpa [mul_assoc, mul_left_comm, mul_comm] using hscaled
 
@@ -204,12 +207,24 @@ theorem tendsto_scaled_iteratedDeriv_xiLogDeriv_odd (k : ℕ) :
     dsimp [j]
     simp
   rw [hlim] at hsum
-  apply hsum.congr'
-  filter_upwards [eventually_gt_atTop (1 : ℝ)] with x hx
-  have hsplit := iteratedDeriv_xiLogDeriv_split j (s := (x : ℂ)) (by simpa using hx)
-  rw [hsplit]
-  dsimp [j]
-  ring
+  have hsum' : Tendsto
+      (fun x : ℝ => (x : ℂ) ^ j *
+        (iteratedDeriv j
+            (fun w : ℂ => 1 / w + 1 / (w - 1) - (Real.log Real.pi) / 2) (x : ℂ) +
+          (1 / 2 : ℂ) ^ (j + 1) * iteratedDeriv j Complex.digamma ((x : ℂ) / 2) +
+          (-1 : ℂ) ^ (j + 1) * LSeries (vonMangoldtLogCoeff j) (x : ℂ)))
+      atTop (nhds (((2 * k).factorial : ℂ) / 2)) := by
+    convert hsum using 1
+    funext x
+    ring
+  have hxi : Tendsto
+      (fun x : ℝ => (x : ℂ) ^ j * iteratedDeriv j xiLogDeriv (x : ℂ))
+      atTop (nhds (((2 * k).factorial : ℂ) / 2)) := by
+    apply hsum'.congr'
+    filter_upwards [eventually_gt_atTop (1 : ℝ)] with x hx
+    rw [iteratedDeriv_xiLogDeriv_split j (s := (x : ℂ)) (by simpa using hx)]
+    rfl
+  simpa only [j] using hxi
 
 /-- Exact complex asymptotic of each normalized odd completed logarithmic-derivative moment. -/
 theorem tendsto_scaled_completedOddLogDerivMoment (k : ℕ) :
@@ -236,6 +251,9 @@ theorem tendsto_scaled_completedOddLogDerivMoment (k : ℕ) :
   apply hscaled.congr'
   filter_upwards with x
   rw [completedOddLogDerivMoment]
+  rw [show logDeriv xi = xiLogDeriv by
+    funext s
+    rw [logDeriv_apply, xiLogDeriv]]
   dsimp [C, j]
   ring
 
@@ -247,9 +265,27 @@ theorem completedOddLogDerivMomentFarRightAsymptotic :
   have hre := Complex.continuous_re.continuousAt.tendsto.comp hcomplex
   convert hre using 1
   · funext x
-    simp only [Function.comp_apply, mul_re, Complex.ofReal_pow, Complex.ofReal_re,
-      Complex.ofReal_im, zero_mul, sub_zero]
-  · simp
+    simp only [Function.comp_apply]
+    have hrePow : ((x : ℂ) ^ (2 * k + 1)).re = x ^ (2 * k + 1) := by
+      calc
+        ((x : ℂ) ^ (2 * k + 1)).re = (((x ^ (2 * k + 1) : ℝ) : ℂ)).re :=
+          congrArg Complex.re (Complex.ofReal_pow x (2 * k + 1)).symm
+        _ = x ^ (2 * k + 1) := Complex.ofReal_re _
+    have himPow : ((x : ℂ) ^ (2 * k + 1)).im = 0 := by
+      calc
+        ((x : ℂ) ^ (2 * k + 1)).im = (((x ^ (2 * k + 1) : ℝ) : ℂ)).im :=
+          congrArg Complex.im (Complex.ofReal_pow x (2 * k + 1)).symm
+        _ = 0 := Complex.ofReal_im _
+    rw [Complex.mul_re, hrePow, himPow]
+    ring
+
+/-- **Top-down capstone.**  The completed-source far-right input is unconditional; even real
+factorization of every moving polynomial test is the sole remaining hypothesis in this chain. -/
+theorem riemannHypothesis_of_completedPolynomial_evenFactorization
+    (heven : CompletedOddLogDerivPolynomialRightEvenFactorization) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_momentAsymptotic_movingPolynomial_evenFactorization
+    completedOddLogDerivMomentFarRightAsymptotic heven
 
 end
 

@@ -502,4 +502,34 @@ theorem exists_uniform_valuation_gap_tail {b : ℕ → ℝ} (hbpos : ∀ n, 0 < 
     have := hν₁min ν hν
     linarith
 
+/-- **Support-restricted minimal-valuation domination.**  The valuation gap need only hold to the
+*other nonzero-weight* atoms: an atom `i₀` with nonzero weight, minimal valuation among
+nonzero-weight atoms with gap `G`, and total mass below `‖c i₀‖·exp G`, forces the weighted sum
+nonzero.  Zero-weight atoms drop out of both the sum and the mass, so no global-minimum requirement
+is needed — only that the distinguished atom beats every *competing* nonzero atom. -/
+theorem weighted_sum_ne_zero_of_min_valuation_on_support {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    (V : ι → ℝ) (a : ι → ℂ) (ha : ∀ i, ‖a i‖ = Real.exp (- V i)) (c : ι → ℂ) {i₀ : ι}
+    (hi₀ : i₀ ∈ s) (hc : c i₀ ≠ 0) {G : ℝ}
+    (hgap : ∀ i ∈ s, c i ≠ 0 → i ≠ i₀ → V i₀ + G ≤ V i)
+    (hG : (∑ i ∈ s, ‖c i‖) < ‖c i₀‖ * Real.exp G) :
+    ∑ i ∈ s, c i * a i ≠ 0 := by
+  classical
+  set s' := s.filter (fun i => c i ≠ 0) with hs'
+  have hsum : ∑ i ∈ s, c i * a i = ∑ i ∈ s', c i * a i := by
+    rw [hs']
+    refine (Finset.sum_filter_of_ne fun i _ hci => ?_).symm
+    intro h; exact hci (by rw [h, zero_mul])
+  have hmass : ∑ i ∈ s', ‖c i‖ = ∑ i ∈ s, ‖c i‖ := by
+    rw [hs']
+    refine Finset.sum_filter_of_ne fun i _ hci => ?_
+    intro h; rw [h, norm_zero] at hci; exact hci rfl
+  have hi₀' : i₀ ∈ s' := Finset.mem_filter.mpr ⟨hi₀, hc⟩
+  rw [hsum]
+  refine weighted_sum_ne_zero_of_min_valuation_complex s' V a ha c hi₀' hc (G := G) ?_ ?_
+  · intro i hi
+    obtain ⟨hne, hmem⟩ := Finset.mem_erase.mp hi
+    obtain ⟨his, hci⟩ := Finset.mem_filter.mp hmem
+    exact hgap i his hci hne
+  · rw [hmass]; exact hG
+
 end GaloisForLFunctions

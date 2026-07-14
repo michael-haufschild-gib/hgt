@@ -385,3 +385,31 @@ finite `F`, not this cofinal first-Euler Gram coboundary.
 - [ ] prove the remaining compact normal-curvature identity `(13)`
 - [ ] Gram-coboundary Calkin control of the principal and principal--residual Lambert tail
 - [ ] source-pure one-particle upper estimate in `(8f)` (equivalently tensor collinearity `(9)`)
+
+## Phase-polarized constraint reduction
+
+The formal theorem
+`../../3-formalized/not_new_scientific_knowledge/semilocal-projection-phase-polarization.md`
+removes the algebraic mismatch between the symmetric mixed curvature in `(13)` and the
+antisymmetric Sonin seam Gram.  At a self-adjoint base projection `P`, the canonical quarter-turn
+
+```text
+J_P(D)=i((1-P)DP-PD(1-P))
+```
+
+is a self-adjoint projection tangent whose normal corner is `i(1-P)DP`.  Therefore a
+phase-polarized two-parameter idempotent family satisfies the exact identity
+
+```text
+P D_st P=-i(B_t^*B_D-B_D^*B_t).                           (22)
+```
+
+Only compactness of the compressed mixed derivative `P D_st P` is needed to make the oriented
+normal Gram compact; neither the full mixed derivative nor the full family relative to `P` must be
+compact.  For a complex seam packet, apply `(22)` separately to its real and imaginary weighted
+Euler directions and recombine the two skew Grams.
+
+`[OPEN CORE — SHARPENED]` Construct those two phase-polarized directions inside the completed
+finite prime--Gamma semilocal family and prove that their base-compressed mixed derivatives are
+compact on actual Xi zero fibres.  The phase rotation is now unconditional algebra; the remaining
+input is precisely the completed source--divisor value relation and its compact cancellation.

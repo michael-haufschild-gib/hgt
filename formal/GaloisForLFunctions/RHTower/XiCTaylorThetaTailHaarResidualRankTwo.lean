@@ -199,6 +199,153 @@ theorem thetaSquareIndexDyadicHaarResidual_eq_evenCoboundary
   rw [show (a - x) / 2 = -(x - a) / 2 by ring] at hcompletion
   linear_combination (1 / 2 : ℝ) * hcompletion
 
+/-! ## Quarter-completed translation coboundary -/
+
+/-- The unique quarter-completion for which the complete rank-two residual is one weighted
+logarithmic-translation coboundary. -/
+def thetaCuspTailSecondQuarterCompletedProfile (x : ℝ) : ℝ :=
+  thetaCuspTailSecondDensity x - (1 / 4 : ℝ) * Real.exp (-x / 2)
+
+/-- The remote row, density cross, and elementary completion character form one exact critical
+translation coboundary.  In particular none of the three terms is an independent error. -/
+theorem thetaSquareIndexDyadicHaarResidual_eq_quarterCompletedCoboundary
+    (N : ℕ) (x : ℝ) :
+    thetaSquareIndexDyadicHaarResidual N x =
+      Real.exp (((N : ℝ) * Real.log 2) / 2) *
+          thetaCuspTailSecondQuarterCompletedProfile
+            (x - (N : ℝ) * Real.log 2) -
+        thetaCuspTailSecondQuarterCompletedProfile x := by
+  let a : ℝ := (N : ℝ) * Real.log 2
+  have hlog : Real.exp a = (2 : ℝ) ^ N := by
+    dsimp only [a]
+    rw [← Real.rpow_natCast, Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 2)]
+    congr 1
+    ring
+  have hcompletion :
+      Real.exp (a / 2) * Real.exp (-(x - a) / 2) =
+        (2 : ℝ) ^ N * Real.exp (-x / 2) := by
+    rw [← Real.exp_add,
+      show a / 2 + -(x - a) / 2 = -x / 2 + a by ring,
+      Real.exp_add, hlog]
+    ring
+  rw [thetaSquareIndexDyadicHaarResidual_eq_evenCoboundary,
+    thetaSquareIndexDyadicEvenRemainderRow_neg]
+  unfold thetaSquareIndexDyadicEvenRemainderRow
+    thetaCuspTailSecondEvenRemainder
+    thetaCuspTailSecondQuarterCompletedProfile
+  simp only [Nat.cast_zero, zero_mul, add_zero, pow_zero, Nat.cast_one]
+  rw [show x - 2 * (N : ℝ) * Real.log 2 + (N : ℝ) * Real.log 2 =
+      x - a by dsimp only [a]; ring]
+  have hpow : (((2 ^ N : ℕ) : ℝ)) ^ (-(1 / 2 : ℝ)) =
+      (2 : ℝ) ^ (-(N : ℝ) / 2) := by
+    rw [show (((2 ^ N : ℕ) : ℝ)) = (2 : ℝ) ^ N by norm_num,
+      Real.rpow_def_of_pos (by positivity : (0 : ℝ) < (2 : ℝ) ^ N),
+      Real.log_pow,
+      Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 2)]
+    congr 1
+    ring
+  have hscale :
+      (2 : ℝ) ^ N * (((2 ^ N : ℕ) : ℝ)) ^ (-(1 / 2 : ℝ)) =
+        Real.exp (a / 2) := by
+    rw [hpow, ← Real.rpow_natCast,
+      ← Real.rpow_add (by norm_num : (0 : ℝ) < 2)]
+    rw [show (N : ℝ) + -(N : ℝ) / 2 = (N : ℝ) / 2 by ring]
+    dsimp only [a]
+    rw [Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 2)]
+    congr 1
+    ring
+  rw [← mul_assoc ((2 : ℝ) ^ N)
+      ((((2 ^ N : ℕ) : ℝ)) ^ (-(1 / 2 : ℝ))), hscale]
+  dsimp only [a] at hcompletion ⊢
+  linear_combination -(1 / 4 : ℝ) * hcompletion
+
+/-- Rank-two form with all completion pieces absorbed: the reflected Haar prefix is the symmetric
+cross of the universal seam with one quarter-completed translation coboundary. -/
+theorem thetaSquareIndexDyadicHaarLayer_reflected_sum_eq_quarterCompletedCoboundary
+    (N : ℕ) (x y : ℝ) :
+    (∑ k ∈ Finset.range N,
+      ((2 : ℝ) ^ (k + 1) *
+          thetaSquareIndexDyadicOddLayer k
+            (x - thetaSquareIndexDyadicReflectionShift k) *
+          thetaSquareIndexDyadicOddLayer k
+            (y - thetaSquareIndexDyadicReflectionShift k) -
+        (2 : ℝ) ^ k *
+          thetaSquareIndexDyadicParityLayer k (-x) *
+            thetaSquareIndexDyadicParityLayer k (-y))) =
+      (1 / 2 : ℝ) *
+        ((Real.exp (((N : ℝ) * Real.log 2) / 2) *
+              thetaCuspTailSecondQuarterCompletedProfile
+                (x - (N : ℝ) * Real.log 2) -
+            thetaCuspTailSecondQuarterCompletedProfile x) * Real.exp (-y / 2) +
+          Real.exp (-x / 2) *
+            (Real.exp (((N : ℝ) * Real.log 2) / 2) *
+                thetaCuspTailSecondQuarterCompletedProfile
+                  (y - (N : ℝ) * Real.log 2) -
+              thetaCuspTailSecondQuarterCompletedProfile y)) := by
+  rw [thetaSquareIndexDyadicHaarLayer_reflected_sum_eq_rankTwoResidual,
+    thetaSquareIndexDyadicHaarResidual_eq_quarterCompletedCoboundary,
+    thetaSquareIndexDyadicHaarResidual_eq_quarterCompletedCoboundary]
+
+/-- Exact square-difference law for an off-diagonal Hermitian current and a real square
+coefficient.  This is the algebraic gate for orienting the surviving rank-two cross without
+estimating its value and derivative factors separately. -/
+theorem hermitianCrossCurrent_add_square_eq_squareDifference
+    (A A' E E' : ℂ) (c : ℝ) :
+    (((A' + (((2 * c : ℝ) : ℂ) * E')) *
+          (starRingEnd ℂ) (A + (((2 * c : ℝ) : ℂ) * E))).im -
+        (A' * (starRingEnd ℂ) A).im) =
+      2 * c *
+          ((A' * (starRingEnd ℂ) E).im +
+            (E' * (starRingEnd ℂ) A).im) +
+        4 * c ^ 2 * (E' * (starRingEnd ℂ) E).im := by
+  simp only [map_add, map_mul, Complex.conj_ofReal]
+  simp [Complex.mul_im, Complex.mul_re]
+  ring
+
+/-- Opposite logarithmic phase drifts cancel identically in the symmetric off-diagonal
+Hermitian current.  Only the real part of the relative phase survives; in particular no
+`a * |F|^2` drift remains in this channel. -/
+theorem hermitianCrossCurrent_oppositePhaseDrift_cancel
+    (p q F F' : ℂ) (a : ℝ) :
+    ((p * (F' + ((a : ℂ) * I) * F) *
+          (starRingEnd ℂ) (q * F) +
+        q * (F' - ((a : ℂ) * I) * F) *
+          (starRingEnd ℂ) (p * F)).im) =
+      2 * (p * (starRingEnd ℂ) q).re *
+        (F' * (starRingEnd ℂ) F).im := by
+  simp only [map_mul]
+  simp [Complex.mul_im, Complex.mul_re]
+  ring
+
+/-- The relative character of the two opposite logarithmic phases has unit modulus and real part
+`cos (2 a Re z)`.  Thus the surviving off-diagonal phase is purely rotational: the anisotropic
+height does not amplify it. -/
+theorem spectralTranslationPhase_mul_conj_neg_re
+    (a : ℝ) (z : ℂ) :
+    (spectralTranslationPhase a z *
+      (starRingEnd ℂ) (spectralTranslationPhase (-a) z)).re =
+      Real.cos (2 * a * z.re) := by
+  unfold spectralTranslationPhase
+  rw [map_exp, ← Complex.exp_add]
+  rw [Complex.exp_re]
+  simp only [map_mul, map_ofReal, map_neg, map_I]
+  norm_num
+  ring_nf
+
+/-- Exact current of the two opposite untruncated translation channels.  Their individual
+exponential weights and their `a * |F|^2` drifts disappear from the Hermitian cross; the result is
+the original current rotated by the bounded scalar `2 cos (2 a Re z)`. -/
+theorem hermitianCrossCurrent_spectralTranslationPhase
+    (F F' : ℂ) (a : ℝ) (z : ℂ) :
+    ((spectralTranslationPhase a z * (F' + ((a : ℂ) * I) * F) *
+          (starRingEnd ℂ) (spectralTranslationPhase (-a) z * F) +
+        spectralTranslationPhase (-a) z * (F' - ((a : ℂ) * I) * F) *
+          (starRingEnd ℂ) (spectralTranslationPhase a z * F)).im) =
+      2 * Real.cos (2 * a * z.re) *
+        (F' * (starRingEnd ℂ) F).im := by
+  rw [hermitianCrossCurrent_oppositePhaseDrift_cancel,
+    spectralTranslationPhase_mul_conj_neg_re]
+
 end
 
 end RHTower

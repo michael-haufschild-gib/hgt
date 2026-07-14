@@ -3,8 +3,9 @@
 - **ID:** `completed-prime-gamma-polynomial-even-factorization-to-rh`
 - **Stage:** 1-in-progress
 - **Type:** `[BRIDGE]`
-- **Scientific status:** `[PROVED INTERFACE] [PAPER FAR-RIGHT INPUT] [OPEN CORE]`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/CompletedPrimeGammaMovingPolynomialParity.lean`
+- **Scientific status:** `[PROVED INTERFACE] [LEAN FAR-RIGHT INPUT] [OPEN CORE]`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/CompletedPrimeGammaMovingPolynomialParity.lean`;
+  `formal/GaloisForLFunctions/RHTower/CompletedPrimeGammaMomentFarRightAsymptotic.lean`
 
 ## Static moving test
 
@@ -48,10 +49,7 @@ coefficient is (a_r^2), and all higher terms decay by at least two additional po
 a scalar corollary of the paper proof in
 `completed-prime-gamma-hankel-far-right-anchor.md`.
 
-Lean now formalizes the complete finite algebraic passage from the scalar moment limits to this
-anchor.  It uses `natTrailingDegree` to isolate the lowest coefficient of `P^2`, proves every
-higher term vanishes after scaling, and proves the surviving coefficient is a positive square.
-The remaining far-right formalization is therefore only the all-order scalar source asymptotic
+Lean formalizes both the finite algebraic passage and the all-order scalar source asymptotic
 
 \[
   \forall k,\qquad
@@ -59,8 +57,11 @@ The remaining far-right formalization is therefore only the all-order scalar sou
   \longrightarrow \frac{(-1)^k}{2(2k+1)}.
 \]
 
-The project already proves the all-order polygamma--Hurwitz value identity and the completed-source
-jet decomposition; these are the intended inputs for this last analytic step.
+The proof is source-side.  An improper antitone Riemann-sum theorem gives the exact shifted-power
+tail limit; its Hurwitz and polygamma specializations provide the Gamma main term.  The completed
+source decomposition then proves that the polar leg has one additional inverse power and the
+von Mangoldt leg is exponentially small.  The Lean theorem
+`completedOddLogDerivMomentFarRightAsymptotic` discharges the displayed limit unconditionally.
 
 ## Top-down chain
 
@@ -69,7 +70,7 @@ strict leading determinants.  The countable quadratic-form consumer only require
 Consequently a central zero is harmless if its multiplicity is even.
 
 ```text
-all-order completed-moment far-right asymptotic                           [PAPER, OPEN IN LEAN]
+all-order completed-moment far-right asymptotic                           [Lean]
   -> positive far-right anchor for every nonzero integer-polynomial test  [Lean]
   + finite even-multiplicity real factorization on every right segment   [OPEN CORE]
   -> every central integer-polynomial test is nonnegative                 [Lean]
@@ -99,6 +100,23 @@ sign before the positive far-right anchor fixes its chamber.
 - A source proof may work test-by-test; it need not control simultaneous eigenvalue crossings of
   every finite Hankel matrix.
 
+## Literature boundary
+
+The generalized Laguerre inequalities provide necessary-and-sufficient real-zero criteria for
+appropriate real entire functions, but applying the complete family to the centred Xi function is
+already a real-zero selection principle.  They do not control the parity of the real zeros of the
+moving differential polynomials `Q_P`.  See Cardon,
+[*Extended Laguerre inequalities and a criterion for real zeros*](https://arxiv.org/abs/0911.1122),
+and Csordas--Vishnyakova,
+[*The generalized Laguerre inequalities and functions in the Laguerre--Polya class*](https://doi.org/10.2478/s11533-013-0269-x).
+
+The unconditional Turan inequalities for Xi coefficients proved by Csordas--Norfolk--Varga are
+necessary finite coefficient inequalities, not a source theorem excluding sign-changing zeros of
+all `Q_P`; see
+[*The Riemann Hypothesis and the Turan Inequalities*](https://doi.org/10.2307/2000378).
+Thus the literature supplies comparison criteria but does not discharge the remaining
+factorization interface.
+
 ## Gates
 
 - [x] moving polynomial test defined in Lean
@@ -109,5 +127,5 @@ sign before the positive far-right anchor fixes its chamber.
 - [x] chain from the two source inputs to RH
 - [x] paper proof of the scalar far-right anchor
 - [x] Lean reduction of every polynomial far-right anchor to scalar moment asymptotics
-- [ ] Lean proof of the all-order scalar completed-moment asymptotic
+- [x] Lean proof of the all-order scalar completed-moment asymptotic
 - [ ] source proof of even real-root factorization

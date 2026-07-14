@@ -25,6 +25,27 @@ theorem differentiableOn_iteratedDeriv {U : Set ℂ} (hU : IsOpen U) {g : ℂ �
       rw [iteratedDeriv_succ]
       exact ((differentiableOn_iteratedDeriv hU hg j).analyticOnNhd hU).deriv.differentiableOn
 
+/-- Local uniform convergence of holomorphic functions propagates locally uniformly through every
+iterated derivative.  This is the compact-open, all-orders form of the holomorphic jet-return
+principle; pointwise convergence of a chosen jet is an immediate specialization. -/
+theorem iteratedDeriv_tendstoLocallyUniformlyOn_of_locallyUniform
+    {ι : Type*} {φ : Filter ι} {U : Set ℂ}
+    (hU : IsOpen U) {F : ι → ℂ → ℂ} {f : ℂ → ℂ}
+    (hconv : TendstoLocallyUniformlyOn F f φ U)
+    (hF : ∀ᶠ n in φ, DifferentiableOn ℂ (F n) U) :
+    ∀ j : ℕ, TendstoLocallyUniformlyOn
+      (fun n => iteratedDeriv j (F n)) (iteratedDeriv j f) φ U
+  | 0 => by simpa using hconv
+  | j + 1 => by
+      have hdiff_j : ∀ᶠ n in φ,
+          DifferentiableOn ℂ (iteratedDeriv j (F n)) U := by
+        filter_upwards [hF] with n hn
+        exact differentiableOn_iteratedDeriv hU hn j
+      have hderiv :=
+        (iteratedDeriv_tendstoLocallyUniformlyOn_of_locallyUniform
+          hU hconv hF j).deriv hdiff_j hU
+      simpa only [Function.comp_def, ← iteratedDeriv_succ] using hderiv
+
 /-- **Jet return / Cauchy derivative convergence.**  If holomorphic functions `F n` converge to `f`
 locally uniformly on an open set `U`, then at every point `z₀ ∈ U` and every order `j`, the `j`-th
 derivatives converge: `F n⁽ʲ⁾(z₀) → f⁽ʲ⁾(z₀)`.  This is the all-orders derivative convergence used to
@@ -35,18 +56,8 @@ theorem iteratedDeriv_tendsto_of_locallyUniform {ι : Type*} {φ : Filter ι} {U
     (hF : ∀ᶠ n in φ, DifferentiableOn ℂ (F n) U)
     (j : ℕ) {z₀ : ℂ} (hz₀ : z₀ ∈ U) :
     Tendsto (fun n => iteratedDeriv j (F n) z₀) φ (nhds (iteratedDeriv j f z₀)) := by
-  suffices h : TendstoLocallyUniformlyOn
-      (fun n => iteratedDeriv j (F n)) (iteratedDeriv j f) φ U from h.tendsto_at hz₀
-  clear hz₀
-  induction j with
-  | zero => simpa using hconv
-  | succ j ih =>
-      have hdiff_j : ∀ᶠ n in φ, DifferentiableOn ℂ (iteratedDeriv j (F n)) U := by
-        filter_upwards [hF] with n hn
-        exact differentiableOn_iteratedDeriv hU hn j
-      have hderiv := ih.deriv hdiff_j hU
-      simp only [Function.comp_def, ← iteratedDeriv_succ] at hderiv
-      exact hderiv
+  exact (iteratedDeriv_tendstoLocallyUniformlyOn_of_locallyUniform
+    hU hconv hF j).tendsto_at hz₀
 
 /-- Iterated differentiation commutes with an affine shift:
 `(fun w ↦ f (w + c))⁽ʲ⁾(z) = f⁽ʲ⁾(z + c)`. -/
