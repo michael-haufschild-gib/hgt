@@ -1,9 +1,9 @@
 # Prime--archimedean Bernstein Loschmidt purity phase
 
 - **ID:** `prime-arch-bernstein-loschmidt-purity-phase`
-- **Stage:** 1-in-progress
-- **Type:** THEOREM / SOURCE--TEMPERATURE BRIDGE
-- **Scientific status:** `[CONJECTURE] [LEAN IN DEVELOPMENT]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / SOURCE--TEMPERATURE BRIDGE
+- **Scientific status:** `[PROVED HERE]`
 
 ## Target
 
@@ -26,7 +26,7 @@ Prove the exact exponential-phase equivalence
 \[
 \mathrm{RH}
 \Longleftrightarrow
-\forall r>1,\qquad \frac{\Pi_M}{r^{2M}}\longrightarrow0.
+\forall r>1,\qquad \frac{\Pi_M}{r^M}\longrightarrow0.
 \]
 
 The finite-dimensional norm inequalities
@@ -61,15 +61,25 @@ then satisfies the exact dephasing law
 \]
 
 Thus the remaining RH estimate is equivalently zero exponential rate of a positive long-time
-Loschmidt purity.  This is an estimate target, not an assertion that the target has already been
-proved.
+Loschmidt purity.  The exact equivalence and dephasing identity are proved; establishing the
+zero-rate side unconditionally would prove RH.
 
 ## Gates
 
-- [ ] coefficient \(\ell^1\)--\(\ell^2\) inequalities
-- [ ] subexponential purity iff subexponential total variation
-- [ ] real Cayley phases have unit norm and are injective
-- [ ] exact finite Cesaro mean-square identity
-- [ ] RH equivalence
-- [ ] Lean build, axiom audit, and lint
-- [ ] manuscript integration
+- [x] coefficient \(\ell^1\)--\(\ell^2\) inequalities
+- [x] subexponential purity iff subexponential total variation
+- [x] real Cayley phases have unit norm and are injective
+- [x] exact finite Cesaro mean-square identity
+- [x] RH equivalence
+- [x] narrow Lean check and axiom audit
+- [x] manuscript integration
+
+## Formal certificate
+
+- `subexponentialSquareEnergy_iff_l1`
+- `tendsto_bernsteinCoefficientLoschmidtAmplitude_cesaro_norm_sq`
+- `tendsto_primeArchEndpointBernsteinLoschmidtAmplitude_cesaro_norm_sq`
+- `riemannHypothesis_iff_primeArchEndpointBernsteinPurity_subexponential`
+
+The declarations use only the standard foundations `propext`, `Classical.choice`, and
+`Quot.sound`.

@@ -55,7 +55,7 @@ theorem xiUniversalBernsteinAmplitudeBase_sq_lt_nine_fourths :
   calc
     xiUniversalBernsteinAmplitudeBase ^ 2 < (3 / 2 : ℝ) ^ 2 :=
       pow_lt_pow_left₀ xiUniversalBernsteinAmplitudeBase_lt_three_halves
-        one_lt_xiUniversalBernsteinAmplitudeBase.le (by norm_num)
+        (zero_le_one.trans one_lt_xiUniversalBernsteinAmplitudeBase.le) (by norm_num)
     _ = 9 / 4 := by norm_num
 
 /-- Reciprocal-square divisor coordinate normalized by the endpoint Hausdorff radius. -/
@@ -83,13 +83,13 @@ theorem norm_xiEndpointNormalizedReciprocalSquare_le_offLineRadius
         (C / (4 - C)) / primeArchEndpointHausdorffRadius :=
       div_le_div_of_nonneg_right hnorm hR.le
     _ = xiOffLineNormalizedBernsteinRadius := by
-      dsimp only [C, primeArchEndpointHausdorffRadius,
-        xiOffLineNormalizedBernsteinRadius]
+      change (C / (4 - C)) / (C / (1 - C)) = (1 - C) / (4 - C)
       have hC : C ≠ 0 := xiEndpointCompletedCurvature_pos.ne'
       have hC1 : 1 - C ≠ 0 :=
         (sub_pos.mpr xiEndpointCompletedCurvature_lt_one).ne'
       have hC4 : 4 - C ≠ 0 :=
         (by nlinarith [xiEndpointCompletedCurvature_lt_one] : 0 < 4 - C).ne'
+      apply (div_eq_iff (div_ne_zero hC hC1)).2
       field_simp [hC, hC1, hC4]
 
 /-- A critical-line atom has neutral affine amplitude base exactly one. -/
@@ -115,12 +115,17 @@ theorem xiEndpointBernsteinAtomAmplitudeBase_eq_one_of_onLine
   change ‖z / (R : ℂ)‖ + ‖1 - z / (R : ℂ)‖ = 1
   rw [hz]
   have hcast : ((xiThermalNode q : ℂ) / (R : ℂ)) = (x : ℂ) := by
+    apply Complex.ext <;> simp [x]
+  rw [hcast]
+  have hxnorm : ‖(x : ℂ)‖ = x := by
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hx0]
+  have hsubcast : (1 : ℂ) - (x : ℂ) = ((1 - x : ℝ) : ℂ) := by
     push_cast
-    rfl
-  rw [hcast, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
-    Real.norm_eq_abs]
-  norm_num only [Complex.ofReal_one, Complex.ofReal_sub]
-  rw [abs_of_nonneg hx0, abs_of_nonneg (sub_nonneg.mpr hx1)]
+    ring
+  have hsubnorm : ‖(1 : ℂ) - (x : ℂ)‖ = 1 - x := by
+    rw [hsubcast, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (sub_nonneg.mpr hx1)]
+  rw [hxnorm, hsubnorm]
   ring
 
 /-- **Universal atom phase confinement.** Every divisor atom, on or off the critical line, has
@@ -242,6 +247,7 @@ theorem sum_norm_evalRealPolynomial_bernsteinPolynomial
   rw [add_pow]
   apply Finset.sum_congr rfl
   intro i hi
+  rw [bernsteinPolynomial]
   simp only [evalRealPolynomial, Polynomial.eval_map, Polynomial.eval₂_mul,
     Polynomial.eval₂_natCast, Polynomial.eval₂_pow, Polynomial.eval₂_X,
     Polynomial.eval₂_sub, Polynomial.eval₂_one, norm_mul, norm_pow,
@@ -343,7 +349,8 @@ theorem primeArchEndpointBernsteinPurity_le_confinedPhase (n : ℕ) :
     ((sq_le_sq₀
       (Finset.sum_nonneg fun _ _ => abs_nonneg _)
       (mul_nonneg xiReciprocalSquareAbsoluteMass_nonneg
-        (pow_nonneg one_lt_xiUniversalBernsteinAmplitudeBase.le n))).2
+        (pow_nonneg
+          (zero_le_one.trans one_lt_xiUniversalBernsteinAmplitudeBase.le) n))).2
       (primeArchEndpointBernsteinTotalVariation_le_confinedPhase n))
 
 /-- Conserved total coefficient mass supplies a universal polynomial lower bound for purity. -/
@@ -357,7 +364,8 @@ theorem mass_sq_le_card_mul_primeArchEndpointBernsteinPurity (n : ℕ) :
         normalizedPrimeArchMoment) n i)
   rw [sum_bernsteinCoefficient] at h
   simpa only [Finset.card_range, Nat.cast_add, Nat.cast_one,
-    primeArchEndpointBernsteinPurity, bernsteinCoefficientPurity] using h
+    primeArchEndpointBernsteinPurity, bernsteinCoefficientPurity,
+    radiusNormalizedMoment, pow_zero, div_one] using h
 
 /-- Normalization above the square of the universal amplitude base kills the purity
 unconditionally. -/
@@ -366,7 +374,7 @@ theorem tendsto_primeArchEndpointBernsteinPurity_div_pow_of_universalBase_sq_lt
     Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
       atTop (nhds 0) := by
   have hrpos : 0 < r := lt_trans
-    (sq_pos_of_pos one_lt_xiUniversalBernsteinAmplitudeBase) hr
+    (sq_pos_of_pos (zero_lt_one.trans one_lt_xiUniversalBernsteinAmplitudeBase)) hr
   let q : ℝ := xiUniversalBernsteinAmplitudeBase ^ 2 / r
   have hq0 : 0 ≤ q := div_nonneg
     (sq_nonneg xiUniversalBernsteinAmplitudeBase) hrpos.le
@@ -407,7 +415,7 @@ theorem exists_confined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHyp
     exact hRH
       (riemannHypothesis_iff_primeArchEndpointBernsteinPurity_subexponential.mpr hsub)
   simp only [SubexponentialSquareEnergyAtNatInfinity] at hnsub
-  push_neg at hnsub
+  push Not at hnsub
   obtain ⟨r, hr, hnot⟩ := hnsub
   refine ⟨r, hr, ?_, hnot⟩
   by_contra hle

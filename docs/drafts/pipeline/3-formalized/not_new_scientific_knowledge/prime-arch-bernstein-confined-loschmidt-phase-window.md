@@ -1,8 +1,8 @@
 # Prime--archimedean confined Loschmidt phase window
 
 - **ID:** prime-arch-bernstein-confined-loschmidt-phase-window
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** fixed-window-logarithmic-Weil tomography route
 - **Statement:** The endpoint Bernstein Loschmidt purity has an unconditional exponential amplitude ceiling strictly below `3/2`; RH is exactly its bounded zero-excess phase, while failure of RH forces a strict surviving exponent inside the confined interval `(1, 3/2)`.
 
@@ -15,11 +15,11 @@ the RH-bearing endpoint estimate is imposed.
 ## Gates
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
-- [ ] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem names recorded, narrow target check green, axiom audit PASS
+- [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
+- [x] 2 → 3  formalized: Lean theorem names recorded, narrow target check green, axiom audit PASS
 - [ ] 3 → 4  publication-ready: integrated as the single master theorem of the paper
 
-## Proposed master theorem
+## Master theorem [PROVED HERE]
 
 Let
 \[
@@ -76,9 +76,30 @@ selection is precisely boundedness of the positive source-defined purity.
   missing RH observable, not only an equivalence.
 - **Novelty:** to be audited conservatively after the proof.  The ingredients are classical norm
   inequalities plus project-specific source geometry; the integrated confined phase law may still
-  be a bridge rather than new science.
+be a bridge rather than new science.
+
+## Formal certificate
+
+Primary declaration:
+
+- `primeArchBernsteinConfinedLoschmidtPhaseMaster`
+
+Quantitative constituents:
+
+- `xiOffLineNormalizedBernsteinRadius_lt_one_fourth`
+- `xiUniversalBernsteinAmplitudeBase_lt_three_halves`
+- `primeArchEndpointBernsteinTotalVariation_le_confinedPhase`
+- `primeArchEndpointBernsteinPurity_le_confinedPhase`
+- `mass_sq_le_card_mul_primeArchEndpointBernsteinPurity`
+- `riemannHypothesis_iff_primeArchEndpointBernsteinPurity_bounded`
+- `riemannHypothesis_iff_primeArchEndpointBernsteinPurity_le_mass_sq`
+- `exists_confined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis`
+
+All checked declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Log
 
 - 2026-07-14 — created after the Loschmidt-purity criterion exposed the off-line curvature disk as
   a universal strict phase ceiling.
+- 2026-07-14 — full source-envelope proof completed, formalized, single-file checked, and audited
+  for axioms; classified conservatively as a bridge pending any separate novelty review.

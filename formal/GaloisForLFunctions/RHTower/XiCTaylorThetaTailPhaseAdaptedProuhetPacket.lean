@@ -155,7 +155,9 @@ theorem phaseAdaptedTwoEndpointProuhetPolynomial_phaseRoot
       phaseAdaptedTwoEndpointProuhetPolynomial m u q r τ := by
     unfold phaseAdaptedTwoEndpointProuhetPolynomial phaseAdaptedProuhetBase
     dsimp only
-    exact dvd_mul_of_dvd_left (dvd_mul_left _ _) _
+    apply dvd_mul_of_dvd_left
+    apply dvd_mul_of_dvd_right
+    exact ⟨conjugatePhaseRealQuadratic u, by ring⟩
   obtain ⟨Q, hQ⟩ := hdiv
   rw [hQ, Polynomial.map_mul, eval_mul,
     conjugatePhaseRealQuadratic_map_eval_eq_zero, zero_mul]
@@ -173,8 +175,12 @@ theorem phaseAdaptedTwoEndpointProuhetPolynomial_phaseDerivativeRoot
     dsimp only
     exact dvd_mul_of_dvd_left (dvd_mul_left _ _) _
   obtain ⟨R, hR⟩ := hdiv
-  rw [hR, Polynomial.map_mul, derivative_mul, derivative_pow]
-  simp [conjugatePhaseRealQuadratic_map_eval_eq_zero]
+  have hq : ((conjugatePhaseRealQuadratic u).map (algebraMap ℝ ℂ)).eval u = 0 :=
+    conjugatePhaseRealQuadratic_map_eval_eq_zero u
+  rw [hR, Polynomial.map_mul, derivative_mul, Polynomial.map_pow, derivative_pow]
+  simp only [eval_add, eval_mul, eval_C, eval_pow, Nat.cast_ofNat]
+  rw [hq]
+  ring
 
 /-- Every ordinary translate-index moment below the Prouhet depth still vanishes. -/
 theorem phaseAdaptedTwoEndpointProuhetPolynomial_power_moment_eq_zero
@@ -206,9 +212,181 @@ theorem phaseAdaptedTwoEndpointProuhetPolynomial_exponential_index_sum_eq_zero
       phaseAdaptedTwoEndpointProuhetPolynomial_phaseDerivativeRoot m u q r τ
   rw [derivative_eval, Polynomial.sum,
     support_map_of_injective P Complex.ofReal_injective] at hroot
-  have hmul := congrArg (fun w : ℂ => u * w) hroot
-  rw [mul_zero, Finset.mul_sum] at hmul
-  simpa [mul_comm, mul_left_comm, mul_assoc, pow_succ'] using hmul
+  calc
+    ∑ j ∈ P.support, (P.coeff j : ℂ) * (j : ℂ) * u ^ j =
+        u * ∑ j ∈ P.support,
+          ((P.map (algebraMap ℝ ℂ)).coeff j * (j : ℂ) * u ^ (j - 1)) := by
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro j _hj
+      cases j with
+      | zero => simp
+      | succ j =>
+          simp only [Nat.cast_succ, Nat.add_one_sub_one, coeff_map]
+          rw [pow_succ]
+          change (P.coeff (j + 1) : ℂ) * ((j : ℂ) + 1) * (u ^ j * u) =
+            u * (((P.coeff (j + 1) : ℂ) * ((j : ℂ) + 1)) * u ^ j)
+          ring
+    _ = 0 := by rw [hroot, mul_zero]
+
+private theorem spectralTranslationPhase_natStep
+    (a L : ℝ) (j : ℕ) (z : ℂ) :
+    spectralTranslationPhase (a + (j : ℝ) * L) z =
+      spectralTranslationPhase a z * spectralTranslationPhase L z ^ j := by
+  rw [spectralTranslationPhase_add]
+  congr 1
+  unfold spectralTranslationPhase
+  rw [← Complex.exp_nat_mul]
+  congr 1
+  push_cast
+  ring
+
+/-- A double-root packet annihilates the complete one-sided translated value vector at the full
+complex phase `exp(i L z)`, including its anisotropic modulus. -/
+theorem phaseAdaptedProuhet_oneSidedTranslationValue_sum_eq_zero
+    (F : ℂ) (m : ℕ) (q r τ a L : ℝ) (z : ℂ) :
+    let u : ℂ := spectralTranslationPhase L z
+    let P := phaseAdaptedTwoEndpointProuhetPolynomial m u q r τ
+    ∑ j ∈ P.support, (P.coeff j : ℂ) *
+      (spectralTranslationPhase (a + (j : ℝ) * L) z * F) = 0 := by
+  dsimp only
+  let u : ℂ := spectralTranslationPhase L z
+  let P := phaseAdaptedTwoEndpointProuhetPolynomial m u q r τ
+  have hroot : ∑ j ∈ P.support, (P.coeff j : ℂ) * u ^ j = 0 := by
+    simpa only [P] using
+      phaseAdaptedTwoEndpointProuhetPolynomial_exponential_sum_eq_zero m u q r τ
+  change ∑ j ∈ P.support, _ = 0
+  rw [show (∑ j ∈ P.support, (P.coeff j : ℂ) *
+      (spectralTranslationPhase (a + (j : ℝ) * L) z * F)) =
+      (spectralTranslationPhase a z * F) *
+        ∑ j ∈ P.support, (P.coeff j : ℂ) * u ^ j by
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro j _hj
+    rw [spectralTranslationPhase_natStep]
+    change (P.coeff j : ℂ) *
+      (spectralTranslationPhase a z * u ^ j * F) = _
+    ring]
+  rw [hroot, mul_zero]
+
+/-- The same packet annihilates the translated derivative vector.  The simple-root equation kills
+the common derivative and base drift; the double-root equation kills the surviving `j L` drift. -/
+theorem phaseAdaptedProuhet_oneSidedTranslationDerivative_sum_eq_zero
+    (F F' : ℂ) (m : ℕ) (q r τ a L : ℝ) (z : ℂ) :
+    let u : ℂ := spectralTranslationPhase L z
+    let P := phaseAdaptedTwoEndpointProuhetPolynomial m u q r τ
+    ∑ j ∈ P.support, (P.coeff j : ℂ) *
+      (spectralTranslationPhase (a + (j : ℝ) * L) z *
+        (F' + (((a + (j : ℝ) * L : ℝ) : ℂ) * I) * F)) = 0 := by
+  dsimp only
+  let u : ℂ := spectralTranslationPhase L z
+  let P := phaseAdaptedTwoEndpointProuhetPolynomial m u q r τ
+  have hroot : ∑ j ∈ P.support, (P.coeff j : ℂ) * u ^ j = 0 := by
+    simpa only [P] using
+      phaseAdaptedTwoEndpointProuhetPolynomial_exponential_sum_eq_zero m u q r τ
+  have hjet : ∑ j ∈ P.support,
+      (P.coeff j : ℂ) * (j : ℂ) * u ^ j = 0 := by
+    simpa only [P] using
+      phaseAdaptedTwoEndpointProuhetPolynomial_exponential_index_sum_eq_zero m u q r τ
+  change ∑ j ∈ P.support, _ = 0
+  rw [show (∑ j ∈ P.support, (P.coeff j : ℂ) *
+      (spectralTranslationPhase (a + (j : ℝ) * L) z *
+        (F' + (((a + (j : ℝ) * L : ℝ) : ℂ) * I) * F))) =
+      spectralTranslationPhase a z * (F' + ((a : ℂ) * I) * F) *
+          ∑ j ∈ P.support, (P.coeff j : ℂ) * u ^ j +
+        spectralTranslationPhase a z * ((L : ℂ) * I) * F *
+          ∑ j ∈ P.support,
+            (P.coeff j : ℂ) * (j : ℂ) * u ^ j by
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    apply Finset.sum_congr rfl
+    intro j _hj
+    rw [spectralTranslationPhase_natStep]
+    change (P.coeff j : ℂ) *
+      (spectralTranslationPhase a z * u ^ j *
+        (F' + (((a + (j : ℝ) * L : ℝ) : ℂ) * I) * F)) = _
+    push_cast
+    ring]
+  rw [hroot, hjet]
+  ring
+
+/-- Exact cancellation of the signed one-sided off-diagonal Hermitian current against an
+arbitrary fixed seam vector.  No norm comparison is used: the double-root packet first kills the
+translated value and derivative vectors themselves. -/
+theorem phaseAdaptedProuhet_oneSidedTranslationHermitianCross_sum_eq_zero
+    (F F' E E' : ℂ) (m : ℕ) (q r τ a L : ℝ) (z : ℂ) :
+    let u : ℂ := spectralTranslationPhase L z
+    let P := phaseAdaptedTwoEndpointProuhetPolynomial m u q r τ
+    ∑ j ∈ P.support, P.coeff j *
+      ((spectralTranslationPhase (a + (j : ℝ) * L) z *
+            (F' + (((a + (j : ℝ) * L : ℝ) : ℂ) * I) * F) *
+            (starRingEnd ℂ) E +
+          E' * (starRingEnd ℂ)
+            (spectralTranslationPhase (a + (j : ℝ) * L) z * F)).im) = 0 := by
+  dsimp only
+  let u : ℂ := spectralTranslationPhase L z
+  let P := phaseAdaptedTwoEndpointProuhetPolynomial m u q r τ
+  let V : ℕ → ℂ := fun j =>
+    spectralTranslationPhase (a + (j : ℝ) * L) z * F
+  let D : ℕ → ℂ := fun j =>
+    spectralTranslationPhase (a + (j : ℝ) * L) z *
+      (F' + (((a + (j : ℝ) * L : ℝ) : ℂ) * I) * F)
+  have hV : ∑ j ∈ P.support, (P.coeff j : ℂ) * V j = 0 := by
+    simpa only [P, V] using
+      phaseAdaptedProuhet_oneSidedTranslationValue_sum_eq_zero
+        F m q r τ a L z
+  have hD : ∑ j ∈ P.support, (P.coeff j : ℂ) * D j = 0 := by
+    simpa only [P, D] using
+      phaseAdaptedProuhet_oneSidedTranslationDerivative_sum_eq_zero
+        F F' m q r τ a L z
+  change ∑ j ∈ P.support, P.coeff j *
+    (D j * (starRingEnd ℂ) E + E' * (starRingEnd ℂ) (V j)).im = 0
+  rw [show (∑ j ∈ P.support, P.coeff j *
+      (D j * (starRingEnd ℂ) E + E' * (starRingEnd ℂ) (V j)).im) =
+      (∑ j ∈ P.support, (P.coeff j : ℂ) *
+        (D j * (starRingEnd ℂ) E + E' * (starRingEnd ℂ) (V j))).im by
+    rw [Complex.im_sum]
+    apply Finset.sum_congr rfl
+    intro j _hj
+    simp [Complex.mul_im]]
+  rw [show (∑ j ∈ P.support, (P.coeff j : ℂ) *
+      (D j * (starRingEnd ℂ) E + E' * (starRingEnd ℂ) (V j))) =
+      (∑ j ∈ P.support, (P.coeff j : ℂ) * D j) *
+          (starRingEnd ℂ) E +
+        E' * (starRingEnd ℂ)
+          (∑ j ∈ P.support, (P.coeff j : ℂ) * V j) by
+    calc
+      (∑ j ∈ P.support, (P.coeff j : ℂ) *
+          (D j * (starRingEnd ℂ) E + E' * (starRingEnd ℂ) (V j))) =
+          ∑ j ∈ P.support,
+            (((P.coeff j : ℂ) * D j) * (starRingEnd ℂ) E +
+              E' * (starRingEnd ℂ) ((P.coeff j : ℂ) * V j)) := by
+        apply Finset.sum_congr rfl
+        intro j _hj
+        simp only [map_mul, Complex.conj_ofReal]
+        ring
+      _ = _ := by
+        rw [Finset.sum_add_distrib, Finset.sum_mul, map_sum, Finset.mul_sum]]
+  rw [hD, hV, map_zero]
+  simp
+
+/-- Named scalar packet for the one-sided translated off-diagonal current. -/
+def phaseAdaptedProuhetOneSidedTranslationHermitianCrossPacket
+    (F F' E E' : ℂ) (m : ℕ) (q r τ a L : ℝ) (z : ℂ) : ℝ :=
+  let u : ℂ := spectralTranslationPhase L z
+  let P := phaseAdaptedTwoEndpointProuhetPolynomial m u q r τ
+  ∑ j ∈ P.support, P.coeff j *
+    ((spectralTranslationPhase (a + (j : ℝ) * L) z *
+          (F' + (((a + (j : ℝ) * L : ℝ) : ℂ) * I) * F) *
+          (starRingEnd ℂ) E +
+        E' * (starRingEnd ℂ)
+          (spectralTranslationPhase (a + (j : ℝ) * L) z * F)).im)
+
+theorem phaseAdaptedProuhetOneSidedTranslationHermitianCrossPacket_eq_zero
+    (F F' E E' : ℂ) (m : ℕ) (q r τ a L : ℝ) (z : ℂ) :
+    phaseAdaptedProuhetOneSidedTranslationHermitianCrossPacket
+      F F' E E' m q r τ a L z = 0 := by
+  exact phaseAdaptedProuhet_oneSidedTranslationHermitianCross_sum_eq_zero
+    F F' E E' m q r τ a L z
 
 /-- A phase-adapted packet annihilates the entire real cosine coefficient packet on the selected
 arithmetic fibre, including an arbitrary base shift. -/
@@ -227,9 +405,9 @@ theorem phaseAdaptedProuhet_cosine_sum_eq_zero
       phaseAdaptedTwoEndpointProuhetPolynomial_exponential_sum_eq_zero m u q r τ
   have hmul := congrArg Complex.re (congrArg (fun w : ℂ => v * w) hroot)
   dsimp only at hmul
-  rw [mul_zero, map_zero] at hmul
+  simp only [mul_zero, zero_re] at hmul
   rw [Finset.mul_sum] at hmul
-  simp only [map_sum, map_mul, Complex.ofReal_re] at hmul
+  rw [Complex.re_sum] at hmul
   have hterm (j : ℕ) :
       (v * ((P.coeff j : ℂ) * u ^ j)).re =
         P.coeff j * Real.cos (2 * (a + (j : ℝ) * L) * x) := by
@@ -241,9 +419,11 @@ theorem phaseAdaptedProuhet_cosine_sum_eq_zero
       push_cast
       ring
     rw [show v * ((P.coeff j : ℂ) * u ^ j) =
-        (P.coeff j : ℂ) * (v * u ^ j) by ring, hphase,
-      Complex.exp_mul_I]
-    simp
+        (P.coeff j : ℂ) * (v * u ^ j) by ring, hphase]
+    simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+      zero_mul]
+    rw [Complex.exp_ofReal_mul_I_re]
+    ring
   simpa only [hterm] using hmul
 
 /-- Exact phase-selective cancellation of the complete signed off-diagonal Hermitian current.
@@ -283,9 +463,23 @@ theorem phaseAdaptedProuhet_oppositeTranslationCross_sum_eq_zero
           (F' * (starRingEnd ℂ) F).im) by
     apply Finset.sum_congr rfl
     intro j _hj
-    rw [hermitianCrossCurrent_spectralTranslationPhase]
-  rw [← Finset.sum_mul]
-  linear_combination 2 * (F' * (starRingEnd ℂ) F).im * hcos
+    rw [hermitianCrossCurrent_spectralTranslationPhase]]
+  calc
+    ∑ j ∈ P.support, P.coeff j *
+        (2 * Real.cos (2 * (a + (j : ℝ) * L) * z.re) *
+          (F' * (starRingEnd ℂ) F).im) =
+        (2 * (F' * (starRingEnd ℂ) F).im) *
+          ∑ j ∈ P.support,
+            P.coeff j * Real.cos (2 * (a + (j : ℝ) * L) * z.re) := by
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro j _hj
+      ring
+    _ = 0 := by
+      rw [show (∑ j ∈ P.support,
+        P.coeff j * Real.cos (2 * (a + (j : ℝ) * L) * z.re)) = 0 by
+          simpa only [P] using hcos]
+      ring
 
 /-! ## Endpoint conservation at current level -/
 
@@ -297,20 +491,17 @@ theorem weighted_completion_sum_eq_endpoint_difference
     ∑ j ∈ P.support,
         (P.coeff j * q ^ j) * ((2 : ℝ) ^ (N + j) - 1) =
       (2 : ℝ) ^ N * P.eval r - P.eval q := by
+  rw [eval_eq_sum, eval_eq_sum, Polynomial.sum, Polynomial.sum]
   rw [show (∑ j ∈ P.support,
       (P.coeff j * q ^ j) * ((2 : ℝ) ^ (N + j) - 1)) =
-      (2 : ℝ) ^ N *
-          ∑ j ∈ P.support, P.coeff j * (2 * q) ^ j -
-        ∑ j ∈ P.support, P.coeff j * q ^ j by
-    rw [Finset.mul_sum, Finset.sum_sub_distrib]
-    apply congrArg₂ (fun a b : ℝ => a - b)
-    · apply Finset.sum_congr rfl
-      intro j _hj
-      rw [pow_add, mul_pow]
-      ring
-    · rfl]
-  rw [hqr]
-  simp only [eval_eq_sum]
+      ∑ j ∈ P.support,
+        ((2 : ℝ) ^ N * (P.coeff j * (2 * q) ^ j) -
+          P.coeff j * q ^ j) by
+    apply Finset.sum_congr rfl
+    intro j _hj
+    rw [pow_add, mul_pow]
+    ring]
+  rw [Finset.sum_sub_distrib, Finset.mul_sum, hqr]
 
 /-- After splitting `rho = g + E/2`, the right endpoint changes the remote-row completion cross
 by `(2^N tau - 1)/2`, while the explicit Haar square removes half of it.  The net coefficient is
@@ -378,6 +569,7 @@ theorem exists_phaseAdaptedProuhet_orientation_packet
       P.eval r = orientedProuhetSeamEndpoint N U U' E E' ∧
       (X - 1 : ℝ[X]) ^ m ∣ P ∧
       (P.map (algebraMap ℝ ℂ)).eval u = 0 ∧
+      (P.map (algebraMap ℝ ℂ)).derivative.eval u = 0 ∧
       (((((2 : ℝ) ^ N * P.eval r + 3) / 4) *
           (E' * (starRingEnd ℂ) E).im) -
         symmetricHermitianCrossCurrentData U U' E E') = 0 := by
@@ -385,11 +577,12 @@ theorem exists_phaseAdaptedProuhet_orientation_packet
   let P := phaseAdaptedTwoEndpointProuhetPolynomial m u q r τ
   have hBq := phaseAdaptedProuhetBase_eval_ne_zero m u q hflatq huq
   have hBr := phaseAdaptedProuhetBase_eval_ne_zero m u r hflatr hur
-  refine ⟨P, ?_, ?_, ?_, ?_, ?_⟩
+  refine ⟨P, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · exact phaseAdaptedTwoEndpointProuhetPolynomial_eval_left m u hBq
   · exact phaseAdaptedTwoEndpointProuhetPolynomial_eval_right m u hBr hsep
   · exact X_sub_one_pow_dvd_phaseAdaptedTwoEndpointProuhetPolynomial m u q r τ
   · exact phaseAdaptedTwoEndpointProuhetPolynomial_phaseRoot m u q r τ
+  · exact phaseAdaptedTwoEndpointProuhetPolynomial_phaseDerivativeRoot m u q r τ
   · rw [phaseAdaptedTwoEndpointProuhetPolynomial_eval_right m u hBr hsep]
     exact orientedProuhetSeamEndpoint_cancels N U U' E E' hE
 

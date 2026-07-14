@@ -706,3 +706,45 @@ algebraic (order-2 relation `y'' + c²y = 0`; proved as two-term exponential sum
 `differentiallyAlgebraic_finset_expSum`). These are the trigonometric factors that reflection introduces
 for negative-slope Gamma factors (§1, §10 attack 6); they stay inside the DA class, so the negative-slope
 boundary extension keeps its non-Gamma carrier differentially algebraic.
+
+## Lean update — directional phase-jet carrier (31b) and general-scale single-factor HT
+
+Two further pieces are now formalized in Lean (axiom-clean; `propext, Classical.choice, Quot.sound`
+only), both verified by single-file elaboration and wired into the `HTGeometry` umbrella.
+
+- **Directional Vandermonde phase-jet carrier `(31b)`.**
+  `formal/GaloisForLFunctions/HTGeometry/DirectionalVandermondePhaseJet.lean` proves
+  `HTGeometry.phaseJet_exists_ne_zero`: for distinct frequencies `λ : Fin r → ℂ` (injective) and
+  coefficients `c ≠ 0`, the finite phase polynomial `f(t) = ∑_j c_j·exp(λ_j·t)` has, at *every* base
+  point `t₀`, a nonzero jet of order `< r` — the jet vector equals the transposed Vandermonde matrix
+  of the `λ_j` applied to `(c_j·exp(λ_j·t₀))_j`, which is nonzero because distinct frequencies make
+  `V(λ)` invertible (`Matrix.det_vandermonde_ne_zero_iff`) and `exp` never vanishes. Corollaries:
+  `phasePolynomial_ne_zero_fun` (not identically zero) and `expLayer_jet_exists_ne_zero` (the finite
+  growth-layer carrier `∑_{k≤N} c_k·exp(kβ·s)`, `β ≠ 0`). This is the directional finite phase-jet
+  nonvanishing behind the neutral boundary and §10 attacks 3 and 5: a nonzero finite phase polynomial
+  has a uniformly (base-point-independent) nonzero jet of bounded order, so a flat/Stokes correction
+  cannot cancel the whole carrier — it stays projectively scalar.
+
+- **General-scale single Gamma/digamma factor HT `(§1, §3)`.**
+  `formal/GaloisForLFunctions/HTGeometry/ArgumentScalingInvariance.lean` first upgrades the scaling
+  invariance of differential algebraicity to remove the smoothness hypothesis:
+  `differentiallyAlgebraic_comp_const_mul_iff_uncond` and
+  `hypertranscendental_comp_const_mul_iff_uncond` hold for every `c ≠ 0` with *no* `ContDiff`
+  assumption, via the unconditional scaled chain rule `iteratedDeriv_comp_mul_left_uncond`
+  (`f(c·)⁽ⁿ⁾ = cⁿ·f⁽ⁿ⁾(c·)`, built on mathlib's `0`-fallback `deriv_comp_mul_left`) and the
+  argument-scaling jet substitution `jetArgScaleSub`. This removes exactly the obstruction the earlier
+  `SignedGammaHypertranscendental` docstring flagged (scaling invariance "requires global smoothness,
+  which `Γ` lacks at its poles"). Consequently `hypertranscendental_gamma_affine` and
+  `hypertranscendental_digamma_affine` prove that `Γ(c·s + d)` and `ψ(c·s + d)` are hypertranscendental
+  for *every* `c ≠ 0` — the general commensurable-scale single Gamma orbit factor and its
+  logarithmic-derivative carrier, at genuine scale, not only the unit scale of
+  `hypertranscendental_gamma_add_const`.
+
+The single-orbit / nonzero-total-charge HT direction now reduces (via `GammaLogDeriv.digamma_add_nat`
+collapse `∑_j m_j ψ(w+n_j) = (∑ m_j) ψ(w) + rational`, `∑ m_j = M ≠ 0`, and
+`hypertranscendental_digamma_affine`) to a single remaining closure input: that adding a rational
+function to the hypertranscendental scaled-digamma carrier preserves hypertranscendence. In Lean's
+`∀ z` (pole-inclusive, `0`-fallback) `DifferentiallyAlgebraic`, this closure must be routed through the
+off-pole jet-annihilator formalism (`digamma_jet_annihilator_eq_zero`, `AnnihilatesDigamma`) rather
+than the naive additive jet identity, which fails at the poles. That annihilator-transfer, the general
+multi-orbit case, and the holomorphic Bohr-frequency hull remain the open Lean targets.

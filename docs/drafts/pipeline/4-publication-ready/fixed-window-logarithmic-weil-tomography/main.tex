@@ -31,7 +31,7 @@
 \newcommand{\Res}{\operatorname{Res}}
 \newcommand{\supp}{\operatorname{supp}}
 
-\title{An Endpoint-Calibrated Source--Temperature Master Theorem\\
+\title{An Endpoint-Calibrated Narrow-Sector Source--Temperature Phase Theorem\\
 for the Riemann Xi Function}
 \author{Michael Haufschild \and GPT 5.6 Sol \and Fable 5 \and Grok 4.5}
 \date{}
@@ -41,8 +41,8 @@ for the Riemann Xi Function}
 \maketitle
 
 \begin{abstract}
-We prove an endpoint-calibrated source--temperature master theorem for the completed Riemann Xi
-function.
+We prove an endpoint-calibrated narrow-sector source--temperature phase theorem for the completed
+Riemann Xi function.
 The Guinand--Weil formula is first evaluated at a sharp two-edge rectangle without smoothing or
 spectral cutoff.  Its logarithmic samples form an explicit finite prime--Gamma sequence $g_L(n)$;
 removing an asymptotically constant Gamma--polar term gives a literal finite prime--polar sequence
@@ -191,8 +191,37 @@ then
 If RH is false, some unit phase $w$ and some $r>1$ make the complete multiplicity-exact
 reciprocal-square Bernstein pencil fail to decay after division by $r^M$.  A finite maximal-mode
 packet survives by a Ces\`aro mean-square identity, while the summable tail vanishes by dominated
-convergence.  Thus exact positivity, boundedness, and decay of $\eta_M$ are unnecessary: zero
-exponential rate is the sharp source obligation.  The same source Hankel form
+convergence.  This phase is unconditionally confined.  Set
+\[
+ A_*=\sum_\rho|\lambda_\rho|,\qquad
+ \kappa_*=\frac{1-C}{4-C},\qquad
+ B_{\rm sec}=\frac{1003}{1000},\qquad
+ \Pi_M=\sum_{i=0}^M a_{M,i}^2.
+\]
+Then
+\[
+ \frac{s_0^2}{M+1}\le\Pi_M\le T_M^2\le A_*^2B_{\rm sec}^{2M},
+\]
+because every normalized reciprocal-square atom lies in the exact sector
+\[
+ (\Im u_\rho)^2\le\frac1{84}(\Re u_\rho)^2,
+ \qquad |u_\rho|<\frac14\quad\text{off the critical line}.
+\]
+and $\Pi_M$ is the exact long-time mean square of an explicit finite Loschmidt amplitude.
+Moreover,
+\[
+ \mathrm{RH}\Longleftrightarrow
+ \Pi_M\le s_0^2\ (M\ge0)
+ \Longleftrightarrow \sup_M\Pi_M<\infty
+ \Longleftrightarrow \Pi_M/r^M\to0\quad(r>1).
+\]
+If RH is false, there is an energy base
+\[
+ 1<r\le B_{\rm sec}^2=\frac{1006009}{1000000}<\frac{1007}{1000}
+\]
+for which $\Pi_M/r^M\not\to0$.  Thus the exact reciprocal-square sector traps the entire
+transition in a strict seven-per-mille window and RH is exactly its bounded zero-excess phase.
+The same source Hankel form
 admits an independent
 sparse compression: for every infinite $D\subset\mathbb N$, it is enough to test monic integer
 polynomials whose exact degree lies in $D$ and which are Eisenstein at $2$, hence irreducible in
@@ -291,12 +320,19 @@ Its zero phase is rigid under degree elevation, and its positive phase has a per
 finite-degree gap.  More sharply, the exact Bernstein order-unit identity and a
 cancellation-resistant maximal-mode theorem show that RH requires only zero exponential rate of
 the total variation $T_M=s_0+2\eta_M$, not vanishing, decay, or boundedness of $\eta_M$.
+The resulting positive purity $\Pi_M=\sum_i a_{M,i}^2$ is unconditionally trapped between the
+polynomial floor $s_0^2/(M+1)$ and a strict exponential ceiling
+$A_*^2(1003/1000)^{2M}$.  RH is exactly the sharp chamber $\Pi_M\le s_0^2$ at every degree, equivalently
+uniform boundedness; failure of RH forces a surviving energy exponent in
+$(1,(1003/1000)^2]$, a subset of $(1,1007/1000)$.  This confines the missing estimate to a
+seven-per-mille chamber rather than merely
+renaming it.
 In the thermal chart, every simultaneous cofinal finite-volume/cooling schedule
 has free-energy density exactly $\delta_*$, so the same endpoint is equivalently one
 subexponential partition estimate.  The later named results establish the individual clauses
 needed for this master statement.
 
-\begin{theorem}[Theorem A: endpoint-calibrated source--temperature master theorem]
+\begin{theorem}[Theorem A: endpoint-calibrated narrow-sector source--temperature phase theorem]
 \label{thm:main}
 Fix $L>0$ and an admissible cutoff $N$.  Let $g_L$ be the exact finite
 prime--Gamma sample, $S_L$ the finite prime--polar sample, and
@@ -710,10 +746,60 @@ and the source has the sharp exponential phase law
  \forall r>1,\qquad \frac{T_M}{r^M}\longrightarrow0.}
  \tag{1.20v}
 \]
-If RH is false, there are $|w|=1$ and $r>1$ for which
-$r^{-M}P_M(w)\not\to0$.  Hence false RH forces a strictly positive exponential phase of the
-source order-unit norm; cancellations between conjugate zeros, reflected zeros, coincident
-reciprocal-square values, and the infinite divisor tail cannot remove it.
+Define
+\[
+ A_*=\sum_\rho|\lambda_\rho|,\qquad
+ \kappa_*=\frac{1-C}{4-C},\qquad
+ B_{\rm sec}=\frac{1003}{1000},\qquad
+ \Pi_M=\sum_{i=0}^M a_{M,i}^2.
+ \tag{1.20w}
+\]
+Then $A_*<\infty$, $\kappa_*<1/4$, $1<B_{\rm sec}$, and the complete source obeys the
+unconditional sector-confined estimate
+\[
+ (\Im u_\rho)^2\le\frac1{84}(\Re u_\rho)^2,
+ \qquad |u_\rho|<\frac14\quad\text{for every off-line atom},
+ \qquad u_\rho=\frac{\lambda_\rho}{R_*},
+ \tag{1.20wa}
+\]
+and hence
+\[
+ \boxed{
+ \frac{s_0^2}{M+1}\le\Pi_M\le T_M^2
+ \le A_*^2B_{\rm sec}^{2M}\qquad(M\ge0).}
+ \tag{1.20x}
+\]
+For the distinct unit phases
+\[
+ \zeta_i=\frac{1+\mathrm i i}{1-\mathrm i i},\qquad
+ \mathcal L_M(n)=\sum_{i=0}^M a_{M,i}\zeta_i^n,
+\]
+one has the exact Loschmidt dephasing law
+\[
+ \lim_{K\to\infty}\frac1K\sum_{n=0}^{K-1}|\mathcal L_M(n)|^2=\Pi_M.
+ \tag{1.20y}
+\]
+The critical phase is equivalently
+\[
+ \boxed{\begin{aligned}
+ \mathrm{RH}
+ &\Longleftrightarrow \Pi_M\le s_0^2\quad(M\ge0)\\
+ &\Longleftrightarrow \sup_M\Pi_M<\infty\\
+ &\Longleftrightarrow
+ \Pi_M/r^M\longrightarrow0\quad\text{for every }r>1.
+ \end{aligned}}
+ \tag{1.20z}
+\]
+If RH is false, there are $|w|=1$ and an amplitude base $b>1$ for which
+$b^{-M}P_M(w)\not\to0$.  Equivalently, there is an energy base
+\[
+ 1<r\le B_{\rm sec}^2=\frac{1006009}{1000000}<\frac{1007}{1000},
+ \qquad \Pi_M/r^M\not\longrightarrow0.
+ \tag{1.20za}
+\]
+Thus cancellations between conjugate zeros, reflected zeros, coincident reciprocal-square
+values, and the infinite divisor tail cannot remove the positive phase; the endpoint curvature
+simultaneously confines that phase to a strict universal window.
 The following critical conditions are equivalent:
 \[
  \begin{aligned}
@@ -753,6 +839,10 @@ The following critical conditions are equivalent:
  \exists M_j\to\infty,\quad\eta_{M_j}\to0\\
  &\Longleftrightarrow
  \frac{T_M}{r^M}\longrightarrow0\quad\text{for every }r>1\\
+ &\Longleftrightarrow
+ \Pi_M\le s_0^2\quad\text{for every }M\ge0\\
+ &\Longleftrightarrow
+ \sup_M\Pi_M<\infty\\
  &\Longleftrightarrow \mathcal K(R_0)\\
  &\Longleftrightarrow
  \text{the complete normalized source Hankel form is nonnegative}\\
@@ -3625,11 +3715,12 @@ Thus the scalar condition is approximate only in syntax: degree elevation turns 
 into exact zero-rigidity and turns false RH into a persistent positive phase.  There is,
 however, a genuinely weaker asymptotic criterion.
 
-\begin{theorem}[Bernstein spectral-radius phase law]
+\begin{theorem}[Narrow-sector Bernstein--Loschmidt phase law]
 \label{thm:bernstein-spectral-phase}
-For $M\ge1$ put
+For $M\ge0$ put
 \[
- T_M=\sum_{i=0}^M|a_{M,i}|.
+ T_M=\sum_{i=0}^M|a_{M,i}|,\qquad
+ \Pi_M=\sum_{i=0}^M a_{M,i}^2.
 \]
 Then
 \[
@@ -3653,8 +3744,50 @@ that
  P_M(w)/r^M\not\longrightarrow0.
  \tag{9.22hfk}
 \]
-Consequently the endpoint Bernstein negative mass has zero exponential rate if and only if RH;
-no exact sign, boundedness, or decay premise is required.
+Set
+\[
+ A_*=\sum_\rho|\lambda_\rho|,\qquad
+ \kappa_*=\frac{1-C}{4-C},\qquad
+ B_{\rm sec}=\frac{1003}{1000}.
+ \tag{9.22hfl}
+\]
+For every divisor copy, the normalized atom $u_\rho=\lambda_\rho/R_*$ satisfies
+\[
+ (\Im u_\rho)^2\le\frac1{84}(\Re u_\rho)^2,
+\]
+and an off-line atom also satisfies $|u_\rho|\le\kappa_*<1/4$.  Hence
+\[
+ \frac{s_0^2}{M+1}\le\Pi_M\le T_M^2\le A_*^2B_{\rm sec}^{2M}.
+ \tag{9.22hfm}
+\]
+For
+\[
+ \zeta_i=\frac{1+\mathrm i i}{1-\mathrm i i},\qquad
+ \mathcal L_M(n)=\sum_{i=0}^M a_{M,i}\zeta_i^n,
+\]
+the phases are distinct and unimodular, and
+\[
+ \lim_{K\to\infty}\frac1K\sum_{n=0}^{K-1}|\mathcal L_M(n)|^2=\Pi_M.
+ \tag{9.22hfn}
+\]
+Finally,
+\[
+ \mathrm{RH}
+ \Longleftrightarrow \forall M\ge0,\ \Pi_M\le s_0^2
+ \Longleftrightarrow \sup_M\Pi_M<\infty
+ \Longleftrightarrow \forall r>1,\ \Pi_M/r^M\to0.
+ \tag{9.22hfo}
+\]
+If RH is false, some
+\[
+ 1<r\le B_{\rm sec}^2=\frac{1006009}{1000000}<\frac{1007}{1000}
+ \quad\text{satisfies}\quad
+ \Pi_M/r^M\not\longrightarrow0.
+ \tag{9.22hfp}
+\]
+Thus the endpoint negative mass has zero exponential rate if and only if RH, while the positive
+Loschmidt purity supplies a sharp bounded phase and an unconditional strict ceiling on every
+possible off-line exponent.
 \end{theorem}
 
 When these inequalities hold, the finite positive atomic approximants are canonical.  Write
@@ -3704,6 +3837,10 @@ For every fixed $L>0$ and admissible $N$, the following conditions are equivalen
  \exists M_j\to\infty,\quad\eta_{M_j}\to0\\
  &\Longleftrightarrow
  \forall r>1,\quad T_M/r^M\to0\\
+ &\Longleftrightarrow
+ \forall M\ge0,\quad\Pi_M\le s_0^2\\
+ &\Longleftrightarrow
+ \sup_M\Pi_M<\infty\\
  &\Longleftrightarrow\mathcal K(218/25)\\
  &\Longleftrightarrow\mathrm{RH}.
  \end{aligned}
@@ -4124,6 +4261,120 @@ $D$ and its complement now gives
 If $T_M/r^M\to0$, the inequality $|P_M(w)|\le T_M$ would force the opposite conclusion.  Thus
 subexponential total variation excludes every nonreal reciprocal-square coordinate and forces
 every Xi zero onto the critical line.  This proves \textup{(9.22hfi)}--\textup{(9.22hfk)}.
+
+It remains to prove the quantitative confinement and the positive-purity formulation.  Write
+$u_\rho=\lambda_\rho/R_*$.  For an off-line zero the completed endpoint quartet estimate gives
+\[
+ 4\le C(\gamma^2+1).
+\]
+Since $|\lambda_\rho|=((\beta-\tfrac12)^2+\gamma^2)^{-1}$, it follows that
+\[
+ |\lambda_\rho|\le\frac{C}{4-C},
+ \qquad
+ |u_\rho|\le
+ \frac{C/(4-C)}{C/(1-C)}
+ =\kappa_*<\frac14.
+ \tag{9.26fpe}
+\]
+The exact quartet orientation estimate is stronger than the disk constraint.  Writing
+$\rho=\beta+\mathrm i\gamma$, $d=\beta-\tfrac12$, and $v=\gamma^2$, direct division of the
+real and imaginary parts of $\lambda_\rho$ gives
+\[
+ \frac{(\Im\lambda_\rho)^2}{(\Re\lambda_\rho)^2}
+ =\frac{4d^2v}{(v-d^2)^2}\le\frac1{84}.
+ \tag{9.26fpf}
+\]
+Indeed $d^2<1/4$ and the endpoint estimate gives $v>85$, so the last inequality is equivalent
+to $v(v-340d^2)\ge0$.  Division by the positive real number $R_*$ preserves the ratio.
+
+Put
+\[
+ r_\rho=|u_\rho|,\qquad s_\rho=|1-u_\rho|,
+ \qquad x_\rho=\Re u_\rho.
+\]
+Then $r_\rho^2\le(85/84)x_\rho^2$, and the exact rational comparison
+\[
+ \left(\frac{913}{919}\right)^2\frac{85}{84}<1
+\]
+implies $(913/919)r_\rho\le x_\rho$.  For an off-line atom, $r_\rho<1/4$ by
+\textup{(9.26fpe)}, and therefore
+\[
+ \begin{aligned}
+ s_\rho^2
+ &=1-2x_\rho+r_\rho^2\\
+ &\le1-2\frac{913}{919}r_\rho+r_\rho^2
+ <\left(\frac{1003}{1000}-r_\rho\right)^2.
+ \end{aligned}
+ \tag{9.26fpfa}
+\]
+The strict final comparison follows from
+\[
+ 2\left(\frac{1003}{1000}-\frac{913}{919}\right)\frac14
+ <\left(\frac{1003}{1000}\right)^2-1.
+\]
+Both sides in the last square comparison are nonnegative, hence
+$r_\rho+s_\rho<1003/1000=B_{\rm sec}$.  For a critical-line zero, $u_\rho$ is real and belongs
+to $(0,1]$, so $r_\rho+s_\rho=1<B_{\rm sec}$.  Thus the narrow-sector bound holds for every
+divisor copy.  Absolute convergence gives
+$A_*=\sum_\rho|\lambda_\rho|<\infty$.  Applying the triangle inequality to the exact divisor
+formula for one Bernstein coefficient, then summing in $i$, yields
+\[
+ \begin{aligned}
+ T_M
+ &\le\sum_\rho|\lambda_\rho|
+   \sum_{i=0}^M\binom Mi|u_\rho|^i|1-u_\rho|^{M-i}\\
+ &=\sum_\rho|\lambda_\rho|
+   (|u_\rho|+|1-u_\rho|)^M
+ \le A_*B_{\rm sec}^M.
+ \end{aligned}
+ \tag{9.26fpg}
+\]
+This is unconditional and proves the upper part of \textup{(9.22hfm)}.  The remaining norm
+relations are finite-dimensional:
+\[
+ \Pi_M\le T_M^2,
+ \qquad
+ T_M^2\le(M+1)\Pi_M,
+ \qquad
+ s_0^2=\left(\sum_i a_{M,i}\right)^2\le(M+1)\Pi_M.
+ \tag{9.26fph}
+\]
+The first two are the $\ell^2$--$\ell^1$ inequalities and the last is Cauchy--Schwarz together
+with conservation of total Bernstein mass.  Equations \textup{(9.26fpg)}--\textup{(9.26fph)}
+prove \textup{(9.22hfm)}.
+
+For the Loschmidt identity, each Cayley phase
+$\zeta_i=(1+\mathrm i i)/(1-\mathrm i i)$ has modulus one, and cross multiplication shows that
+$\zeta_i=\zeta_j$ only when $i=j$.  Expanding the square gives
+\[
+ \frac1K\sum_{n<K}|\mathcal L_M(n)|^2
+ =\sum_{i,j}a_{M,i}a_{M,j}
+   \frac1K\sum_{n<K}(\zeta_i\overline{\zeta_j})^n.
+\]
+The inner mean tends to one for $i=j$ and to zero otherwise.  Since the sum is finite, the limit
+is $\sum_i a_{M,i}^2=\Pi_M$, proving \textup{(9.22hfn)}.
+
+Under RH the masses $a_{M,i}$ are nonnegative and sum to $s_0$; hence
+$\Pi_M\le T_M^2=s_0^2$.  Conversely, any uniform bound on $\Pi_M$ makes
+$\Pi_M/r^M\to0$ for every $r>1$.  The two inequalities
+$\Pi_M\le T_M^2\le(M+1)\Pi_M$, with a square-root change of exponential base, show that
+$\Pi_M$ has zero exponential rate exactly when $T_M$ does.  The already proved total-variation
+phase law therefore gives RH.  This proves all equivalences in \textup{(9.22hfo)}, including the
+sharp ceiling $s_0^2$.
+
+Finally, if RH is false, negating the zero-exponential-rate condition produces an energy base
+$r>1$ for which $\Pi_M/r^M$ does not tend to zero.  But \textup{(9.26fpg)} gives
+\[
+ \Pi_M\le A_*^2B_{\rm sec}^{2M};
+\]
+therefore normalization by every $r>B_{\rm sec}^2$ does tend to zero.  The witness can
+consequently be chosen with
+\[
+ 1<r\le B_{\rm sec}^2
+ =\frac{1006009}{1000000}<\frac{1007}{1000}.
+\]
+This proves
+\textup{(9.22hfl)}--\textup{(9.22hfp)}.
 \end{proof}
 
 We now prove the endpoint-calibrated quantitative refinement.  For a real polynomial $p$, absolute
@@ -4908,7 +5159,27 @@ asymptotic: the Bernstein order-unit norm
 $T_M=s_0+2\eta_M$ must satisfy $T_M/r^M\to0$ for every $r>1$.  Unlike cofinal decay of
 $\eta_M$, this condition permits a nonzero, nondecaying, or unbounded defect; Theorem~
 \ref{thm:bernstein-spectral-phase} proves that any off-line zero nevertheless forces a positive
-exponential rate which survives all divisor cancellations.
+exponential rate which survives all divisor cancellations.  The new positive observable
+$\Pi_M=\sum_i a_{M,i}^2$ sharpens the endpoint further:
+\[
+ \frac{s_0^2}{M+1}\le\Pi_M\le
+ A_*^2\left(\frac{1003}{1000}\right)^{2M},
+ \tag{11.0}
+\]
+and
+\[
+ \mathrm{RH}\Longleftrightarrow \Pi_M\le s_0^2\ (M\ge0)
+ \Longleftrightarrow \sup_M\Pi_M<\infty.
+ \tag{11.0a}
+\]
+Thus the remaining estimate has a rigorously bounded phase diagram: false RH must create an
+energy exponent in
+\[
+ \left(1,\left(\frac{1003}{1000}\right)^2\right]
+ \subset\left(1,\frac{1007}{1000}\right),
+\]
+whereas RH is the bounded zero-excess phase.  This seven-per-mille ceiling is unconditional
+estimate progress, but selecting the endpoint value zero still remains equivalent to RH.
 
 The projective--thermal master theorem places the endpoint and thermodynamic estimates in one
 scale-resolved spectrum.  It proves
@@ -4992,17 +5263,24 @@ Thus 616 exact Hausdorff source inequalities are theorems, and the remaining obl
 single monotone scalar order parameter.  Indeed, with $s_n=R_*^{-n}\mu_n$ and $\eta_M$ the total
 negative mass of its degree-$M$ Bernstein system,
 \[
- \mathrm{RH}\Longleftrightarrow
+ \begin{aligned}
+ \mathrm{RH}
+ &\Longleftrightarrow
  \exists M_j\to\infty,\ \eta_{M_j}\longrightarrow0
  \Longleftrightarrow
- \forall M\ge1,\ \eta_M=0
+ \forall M\ge1,\ \eta_M=0\\
+ &\Longleftrightarrow
+ \forall r>1,\ T_M/r^M\longrightarrow0
  \Longleftrightarrow
- \forall r>1,\ T_M/r^M\longrightarrow0.
+ \forall M\ge0,\ \Pi_M\le s_0^2
+ \Longleftrightarrow
+ \sup_M\Pi_M<\infty.
+ \end{aligned}
  \tag{11.3bb}
 \]
 Degree elevation gives $0\le\eta_M\le\eta_{M+1}$, so false RH is equivalently the persistent-gap
 phase $0<\eta_{M_0}\le\eta_M$ for all $M\ge M_0$, for some finite $M_0$.  The sharper
-spectral-radius law shows that false RH also forces positive exponential rate of
+confined Loschmidt phase law shows that false RH also forces positive exponential rate of
 $T_M=s_0+2\eta_M$; persistence alone is not the detector.  The quadrant theorem
 remains useful because it removes both bounded-index arms:
 multiplication by $X^M(R_*-X)^M$ transfers deep-quadrant positivity to a positive moment
@@ -5021,6 +5299,10 @@ infinite $D\subset\mathbb N$,
  \mathrm{RH}
  &\Longleftrightarrow
  T_M/r^M\longrightarrow0\quad\text{for every }r>1,\\
+ \mathrm{RH}
+ &\Longleftrightarrow
+ \Pi_M\le s_0^2\quad(M\ge0)
+ \Longleftrightarrow \sup_M\Pi_M<\infty,\\
  \mathrm{RH}
  &\Longleftrightarrow
  \substack{\displaystyle\sum_{i,j}a_i a_j\mu_{i+j}\ge0
@@ -5078,12 +5360,13 @@ analytic multiplicity times the nonvanishing dyadic Mellin factor, while the Wei
 residue uses the nonvanishing rectangular square weight.  Thus the weighted pole divisor, not the
 unweighted pole set, is the intrinsic observable.
 
+\begin{sloppypar}
 Finally, the novelty claim is intentionally narrow.  The general Guinand--Weil--Barner explicit
 formula, Weil positivity, the Connes trace-formula
 architecture, the Euler logarithmic-derivative source transform, Landau's theorem, and the screw
 function are established parent mechanisms.  The inverse-tilted complete-divisor theorem is
-bridge infrastructure.  The contribution claimed here is one endpoint-calibrated
-source--temperature master theorem built from the fixed-window logarithmic compression and the
+bridge infrastructure.  The contribution claimed here is one endpoint-calibrated narrow-sector
+source--temperature phase theorem built from the fixed-window logarithmic compression and the
 exact evaluated sharp
 rectangular prime--Gamma specialization.  Its mutually compatible charts comprise the source-only
 tail-sign RH criterion and exact one-sided exponent spectrum, the Gamma-free finite prime--polar
@@ -5097,13 +5380,14 @@ abscissa law, the all-order M\"obius--Neumann reconstruction, the exact
 reflection-positive/self-adjoint saturation theorem, the thickness corollaries, and
 multiplicity-exact meromorphic tomography of the actual Weil observable, together with the exact
 ultraviolet--infrared selection law and the unconditional 616-condition endpoint Hausdorff
-rectangle, the common-deep-quadrant reduction, the cancellation-resistant Bernstein
-spectral-radius phase law, the exact cofinal zero-temperature free-energy law, and the sparse
+rectangle, the common-deep-quadrant reduction, the cancellation-resistant confined
+Bernstein--Loschmidt phase law, the exact cofinal zero-temperature free-energy law, and the sparse
 irreducible Eisenstein source-Hankel criterion.  The elementary
 cumulative-mass/abscissa lemma and least-negative-part order lemma are not claimed as independent
 novelty; their roles are to expose the exact transverse source exponent and to prove that
 the explicit arithmetic channel $2E_{\rm dyad}$ is the unavoidable positive payment in this Connes/Landau
 architecture.
+\end{sloppypar}
 
 \section*{Author contributions and accountability}
 

@@ -349,6 +349,18 @@ scale-resolved free-energy and source-abscissa statement is bundled by
 | a summable infinite pencil with a finite maximal-radius packet retains a nondecaying normalized mode despite all finite-mode collisions and the infinite tail | not_tendsto_tsum_normalizedExponentialPencil_zero_of_dominantFinset |
 | false RH forces a unit-circle direction and a radius greater than one for which the complete normalized Xi Bernstein pencil does not decay | exists_unit_xiCentralBernsteinPencil_not_subexponential_of_not_riemannHypothesis |
 | RH is equivalent to subexponential growth of the endpoint Bernstein total variation | riemannHypothesis_iff_primeArchEndpointBernsteinTotalVariation_subexponential |
+| coefficient purity and total variation have the same zero-exponential phase | subexponentialSquareEnergy_iff_l1 |
+| the long-time Cesaro mean square of the explicit Cayley-phase Loschmidt amplitude is exactly the coefficient purity | tendsto_primeArchEndpointBernsteinLoschmidtAmplitude_cesaro_norm_sq |
+| every off-line normalized reciprocal-square atom lies in the explicit disk of radius `(1-C)/(4-C) < 1/4` | norm_xiEndpointNormalizedReciprocalSquare_le_offLineRadius, xiOffLineNormalizedBernsteinRadius_lt_one_fourth |
+| every endpoint-normalized reciprocal-square atom lies in the exact orientation sector `(Im u)^2 <= (Re u)^2/84` | xiEndpointNormalizedReciprocalSquare_orientation_sq_le |
+| the exact orientation sector and strict off-line quarter disk force affine Bernstein amplitude below `B_sec = 1003/1000` | norm_add_norm_one_sub_lt_sectorConfinedBase, xiEndpointBernsteinAtomAmplitudeBase_lt_sectorConfined |
+| endpoint Bernstein total variation is unconditionally at most `A_* B_sec^M` | primeArchEndpointBernsteinTotalVariation_le_sectorConfined |
+| endpoint purity has the unconditional polynomial floor and narrow-sector exponential ceiling | mass_sq_le_card_mul_primeArchEndpointBernsteinPurity, primeArchEndpointBernsteinPurity_le_sectorConfined |
+| RH is equivalent to uniform boundedness of the positive endpoint purity and to its sharp mass-squared ceiling | riemannHypothesis_iff_primeArchEndpointBernsteinPurity_bounded, riemannHypothesis_iff_primeArchEndpointBernsteinPurity_le_mass_sq |
+| `B_sec^2 = 1006009/1000000 < 1007/1000` exactly | xiSectorConfinedBernsteinAmplitudeBase_sq_eq, xiSectorConfinedBernsteinAmplitudeBase_sq_lt_oneThousandSeven_over_oneThousand |
+| false RH forces a surviving energy exponent in `(1,B_sec^2]`, hence inside `(1,1007/1000)` | exists_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis, exists_sevenPerMille_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis |
+| the polynomial floor, exact narrow-sector ceiling, sharp bounded RH phase, and false-RH chamber form one theorem | primeArchBernsteinSectorConfinedLoschmidtPhaseMaster |
+| the positive purity endpoint is equivalent directly to the critical prime-polar source abscissa | primeArchBernsteinPurity_sourceEndpoint_iff |
 | subexponential endpoint negative mass and subexponential total variation are equivalent | primeArchBernsteinNegativeMassSubexponential_iff_totalVariation |
 | subexponential endpoint Bernstein negative mass is equivalent to RH | riemannHypothesis_iff_primeArchBernsteinNegativeMassSubexponential |
 | the subexponential Bernstein source obligation is equivalent to the critical prime--polar abscissa endpoint | primeArchBernsteinNegativeMassSubexponential_iff_rectangularPrimePolarSource_negativeAbscissa_le_one |
@@ -391,6 +403,10 @@ scale-resolved free-energy and source-abscissa statement is bundled by
   GaloisForLFunctions.RHTower.FiniteExponentialPencilMeanSquare, and
   GaloisForLFunctions.RHTower.PrimeArchBernsteinPencil, and
   GaloisForLFunctions.RHTower.PrimeArchBernsteinExponentialPhase, and
+  GaloisForLFunctions.RHTower.PrimeArchBernsteinLoschmidtPurity, and
+  GaloisForLFunctions.RHTower.PrimeArchBernsteinConfinedPhase, and
+  GaloisForLFunctions.RHTower.PrimeArchBernsteinSectorConfinedPhase, and
+  GaloisForLFunctions.RHTower.PrimeArchBernsteinPuritySourceEndpoint, and
   GaloisForLFunctions.RHTower.PrimeArchBernsteinNegativeMassAbscissa, and
   GaloisForLFunctions.RHTower.PrimeArchCofinalSourceTemperatureMaster.
 - Allowed foundational dependencies in the checked capstones:

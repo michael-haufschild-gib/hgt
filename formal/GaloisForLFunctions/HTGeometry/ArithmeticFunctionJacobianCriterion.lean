@@ -41,7 +41,7 @@ theorem jacobian_aeval_eq_sum_pderiv
     (D : R → R) (hadd : ∀ a b, D (a + b) = D a + D b)
     (hleib : ∀ a b, D (a * b) = a * D b + b * D a)
     (hconst : ∀ c : K, D (algebraMap K R c) = 0)
-    (g : Fin N → R) (P : MvPolynomial (Fin N) K) :
+    (g : ι → R) (P : MvPolynomial ι K) :
     D (MvPolynomial.aeval g P) =
       ∑ j, MvPolynomial.aeval g (MvPolynomial.pderiv j P) * D (g j) := by
   induction P using MvPolynomial.induction_on with
@@ -74,6 +74,7 @@ theorem jacobian_aeval_eq_sum_pderiv
         · rw [MvPolynomial.pderiv_mul, map_add, MvPolynomial.pderiv_X,
             Pi.single_eq_of_ne (Ne.symm h), mul_zero, _root_.map_zero, add_zero,
             map_mul, MvPolynomial.aeval_X, if_neg h, add_zero]
+          ring
 
 /-- If a matrix over `K` is a unit and every `K`-combination `∑ⱼ Mᵢⱼ • wⱼ` vanishes, then `w = 0`. -/
 theorem vec_zero_of_isUnit_smul
@@ -126,7 +127,7 @@ theorem algebraicIndependent_of_jacobian [CharZero K] [Nontrivial R]
     intro i
     have hchain := jacobian_aeval_eq_sum_pderiv (D i) (hadd i) (hleib i) (hconst i) g P
     have hD0 : D i 0 = 0 := by
-      have h := hadd i 0 0; simp only [add_zero] at h; exact self_eq_add_right.mp h
+      have h := hadd i 0 0; simp only [add_zero] at h; linear_combination -h
     rw [hPeval, hD0] at hchain
     calc ∑ j, M i j • MvPolynomial.aeval g (MvPolynomial.pderiv j P)
         = ∑ j, MvPolynomial.aeval g (MvPolynomial.pderiv j P) * D i (g j) := by
@@ -164,7 +165,7 @@ instance : Nontrivial (ArithmeticFunction ℂ) :=
   ⟨1, 0, by
     intro h
     have := congrArg (fun f : ArithmeticFunction ℂ => f 1) h
-    simp [ArithmeticFunction.one_apply] at this⟩
+    simp at this⟩
 
 /-- The prime derivation `(∂_q b)(n) = v_q(nq) b(nq)` on the Dirichlet-convolution algebra. -/
 def primeDeriv (q : ℕ) (b : ArithmeticFunction ℂ) : ArithmeticFunction ℂ where
@@ -187,13 +188,20 @@ theorem mul_prime_ne_one {q : ℕ} (hq : q.Prime) (n : ℕ) : n * q ≠ 1 := by
     have := hq.two_le
     omega
 
+theorem primeDeriv_one (q : ℕ) (hq : q.Prime) : primeDeriv q 1 = 0 := by
+  ext n
+  rw [primeDeriv_apply, ArithmeticFunction.one_apply, if_neg (mul_prime_ne_one hq n),
+    ArithmeticFunction.zero_apply, mul_zero]
+
+theorem primeDeriv_smul (q : ℕ) (r : ℂ) (b : ArithmeticFunction ℂ) :
+    primeDeriv q (r • b) = r • primeDeriv q b := by
+  ext n
+  simp only [primeDeriv_apply, ArithmeticFunction.smul_map, smul_eq_mul]
+  ring
+
 theorem primeDeriv_algebraMap (q : ℕ) (hq : q.Prime) (c : ℂ) :
     primeDeriv q (algebraMap ℂ (ArithmeticFunction ℂ) c) = 0 := by
-  ext n
-  rw [primeDeriv_apply, ArithmeticFunction.zero_apply, Algebra.algebraMap_eq_smul_one,
-    ArithmeticFunction.smul_apply, ArithmeticFunction.one_apply,
-    if_neg (mul_prime_ne_one hq n)]
-  simp
+  rw [Algebra.algebraMap_eq_smul_one, primeDeriv_smul, primeDeriv_one q hq, smul_zero]
 
 /-- The single-coordinate weight identity underlying Leibniz: for `n ≥ 1`,
 `∑_{ad=nq} (v_q d) F(a,d) = ∑_{ef=n} (v_q(fq)) F(e, fq)`, obtained by discarding the terms with
@@ -217,35 +225,87 @@ theorem sum_factorization_snd_reindex (q : ℕ) (hq : q.Prime) {n : ℕ} (hn : n
     simp
   rw [hfilter]
   refine (Finset.sum_bij' (fun y _ => (y.1, y.2 * q)) (fun x _ => (x.1, x.2 / q)) ?_ ?_ ?_ ?_ ?_).symm
-  · -- image lands in filtered set
+  · -- `hi`: the forward map sends `n.divisorsAntidiagonal` into the filtered set
+    intro y hy
+    rw [Nat.mem_divisorsAntidiagonal] at hy
+    obtain ⟨hprod, _⟩ := hy
+    simp only [Finset.mem_filter, Nat.mem_divisorsAntidiagonal]
+    refine ⟨⟨?_, hnq⟩, dvd_mul_left q y.2⟩
+    show y.1 * (y.2 * q) = n * q
+    rw [← hprod]; ring
+  · -- `hj`: the backward map sends the filtered set into `n.divisorsAntidiagonal`
     intro x hx
     rw [Finset.mem_filter, Nat.mem_divisorsAntidiagonal] at hx
     obtain ⟨⟨hprod, _⟩, hdvd⟩ := hx
     rw [Nat.mem_divisorsAntidiagonal]
     refine ⟨?_, hn⟩
-    obtain ⟨k, hk⟩ := hdvd
-    have hx2 : x.2 / q = k := by rw [hk]; exact Nat.mul_div_cancel_left k hq.pos
-    rw [hx2]
-    have : x.1 * (k * q) = n * q := by rw [← hk]; exact hprod
-    have hq0 : q ≠ 0 := by omega
-    exact Nat.eq_of_mul_eq_mul_right hq.pos (by rw [← this]; ring)
-  · -- forward map lands in filtered set
-    intro y hy
-    rw [Nat.mem_divisorsAntidiagonal] at hy
-    obtain ⟨hprod, _⟩ := hy
-    rw [Finset.mem_filter, Nat.mem_divisorsAntidiagonal]
-    refine ⟨⟨?_, hnq⟩, ⟨y.2, rfl⟩⟩
-    rw [← hprod]; ring
+    show x.1 * (x.2 / q) = n
+    have hcancel : x.2 / q * q = x.2 := Nat.div_mul_cancel hdvd
+    apply Nat.eq_of_mul_eq_mul_right hq.pos
+    calc x.1 * (x.2 / q) * q = x.1 * (x.2 / q * q) := by ring
+      _ = x.1 * x.2 := by rw [hcancel]
+      _ = n * q := hprod
   · -- left inverse
-    intro y hy
-    rw [Nat.mem_divisorsAntidiagonal] at hy
+    intro y _
     have : y.2 * q / q = y.2 := Nat.mul_div_cancel y.2 hq.pos
     simp [this]
   · -- right inverse
     intro x hx
+    rw [Finset.mem_filter] at hx
+    have : x.2 / q * q = x.2 := Nat.div_mul_cancel hx.2
+    simp [this]
+  · -- integrand agreement
+    intro y _
+    rfl
+
+/-- The first-coordinate companion of `sum_factorization_snd_reindex`: for `n ≥ 1`,
+`∑_{ad=nq} (v_q a) F(a,d) = ∑_{ef=n} (v_q(eq)) F(eq, f)`, obtained by discarding the terms with
+`q ∤ a` and reindexing `(e,f) ↦ (eq, f)`. -/
+theorem sum_factorization_fst_reindex (q : ℕ) (hq : q.Prime) {n : ℕ} (hn : n ≠ 0)
+    (F : ℕ → ℕ → ℂ) :
+    ∑ x ∈ (n * q).divisorsAntidiagonal, ((x.1.factorization q : ℂ)) * F x.1 x.2 =
+      ∑ y ∈ n.divisorsAntidiagonal, (((y.1 * q).factorization q : ℂ)) * F (y.1 * q) y.2 := by
+  classical
+  have hnq : n * q ≠ 0 := Nat.mul_ne_zero hn hq.ne_zero
+  have hfilter : ∑ x ∈ (n * q).divisorsAntidiagonal, ((x.1.factorization q : ℂ)) * F x.1 x.2 =
+      ∑ x ∈ (n * q).divisorsAntidiagonal.filter (fun x => q ∣ x.1),
+        ((x.1.factorization q : ℂ)) * F x.1 x.2 := by
+    rw [Finset.sum_filter_of_ne]
+    intro x _ hxne
+    by_contra hnd
+    apply hxne
+    rw [Nat.factorization_eq_zero_of_not_dvd hnd]
+    simp
+  rw [hfilter]
+  refine (Finset.sum_bij' (fun y _ => (y.1 * q, y.2)) (fun x _ => (x.1 / q, x.2)) ?_ ?_ ?_ ?_ ?_).symm
+  · -- `hi`: the forward map sends `n.divisorsAntidiagonal` into the filtered set
+    intro y hy
+    rw [Nat.mem_divisorsAntidiagonal] at hy
+    obtain ⟨hprod, _⟩ := hy
+    simp only [Finset.mem_filter, Nat.mem_divisorsAntidiagonal]
+    refine ⟨⟨?_, hnq⟩, dvd_mul_left q y.1⟩
+    show y.1 * q * y.2 = n * q
+    rw [← hprod]; ring
+  · -- `hj`: the backward map sends the filtered set into `n.divisorsAntidiagonal`
+    intro x hx
     rw [Finset.mem_filter, Nat.mem_divisorsAntidiagonal] at hx
-    obtain ⟨_, hdvd⟩ := hx
-    have : x.2 / q * q = x.2 := Nat.div_mul_cancel hdvd
+    obtain ⟨⟨hprod, _⟩, hdvd⟩ := hx
+    rw [Nat.mem_divisorsAntidiagonal]
+    refine ⟨?_, hn⟩
+    show x.1 / q * x.2 = n
+    have hcancel : x.1 / q * q = x.1 := Nat.div_mul_cancel hdvd
+    apply Nat.eq_of_mul_eq_mul_right hq.pos
+    calc x.1 / q * x.2 * q = x.1 / q * q * x.2 := by ring
+      _ = x.1 * x.2 := by rw [hcancel]
+      _ = n * q := hprod
+  · -- left inverse
+    intro y _
+    have : y.1 * q / q = y.1 := Nat.mul_div_cancel y.1 hq.pos
+    simp [this]
+  · -- right inverse
+    intro x hx
+    rw [Finset.mem_filter] at hx
+    have : x.1 / q * q = x.1 := Nat.div_mul_cancel hx.2
     simp [this]
   · -- integrand agreement
     intro y _
@@ -260,8 +320,8 @@ theorem primeDeriv_mul (q : ℕ) (hq : q.Prime) (b c : ArithmeticFunction ℂ) :
   · simp
   have hn0 : n ≠ 0 := by omega
   have hnq0 : n * q ≠ 0 := Nat.mul_ne_zero hn0 hq.ne_zero
-  rw [primeDeriv_apply, ArithmeticFunction.add_apply, ArithmeticFunction.mul_apply,
-    ArithmeticFunction.mul_apply, ArithmeticFunction.mul_apply]
+  rw [primeDeriv_apply, ArithmeticFunction.add_apply, mul_comm c (primeDeriv q b),
+    ArithmeticFunction.mul_apply, ArithmeticFunction.mul_apply, ArithmeticFunction.mul_apply]
   -- expand the constant factorization weight over the antidiagonal and split
   rw [Finset.mul_sum]
   have hsplit : ∀ x ∈ (n * q).divisorsAntidiagonal,
@@ -289,13 +349,8 @@ theorem primeDeriv_mul (q : ℕ) (hq : q.Prime) (b c : ArithmeticFunction ℂ) :
     rw [primeDeriv_apply]; ring
   have hhalf1 : ∑ x ∈ (n * q).divisorsAntidiagonal,
       ((x.1.factorization q : ℂ)) * (b x.1 * c x.2)
-      = ∑ y ∈ n.divisorsAntidiagonal, c y.1 * (primeDeriv q b y.2) := by
-    -- swap the antidiagonal to reduce to the second-coordinate identity
-    rw [← Nat.map_swap_divisorsAntidiagonal, Finset.sum_map]
-    simp only [Function.Embedding.coeFn_mk, Prod.swap]
-    rw [sum_factorization_snd_reindex q hq hn0 (fun a d => b d * c a)]
-    rw [← Nat.map_swap_divisorsAntidiagonal, Finset.sum_map]
-    simp only [Function.Embedding.coeFn_mk, Prod.swap]
+      = ∑ y ∈ n.divisorsAntidiagonal, primeDeriv q b y.1 * c y.2 := by
+    rw [sum_factorization_fst_reindex q hq hn0 (fun a d => b a * c d)]
     apply Finset.sum_congr rfl
     intro y _
     rw [primeDeriv_apply]; ring
@@ -306,7 +361,7 @@ theorem primeDeriv_mul (q : ℕ) (hq : q.Prime) (b c : ArithmeticFunction ℂ) :
 theorem primeDeriv_prime_supported (q : ℕ) (hq : q.Prime) (b : ArithmeticFunction ℂ)
     (hb : ∀ m, b m ≠ 0 → m.Prime) : primeDeriv q b = b q • 1 := by
   ext n
-  rw [primeDeriv_apply, ArithmeticFunction.smul_apply, ArithmeticFunction.one_apply]
+  rw [primeDeriv_apply, ArithmeticFunction.smul_map, ArithmeticFunction.one_apply]
   by_cases hn : n = 1
   · subst hn
     have hqf : (1 * q).factorization q = 1 := by
@@ -343,9 +398,9 @@ theorem algebraicIndependent_of_evaluation_packet
     (fun i c => primeDeriv_algebraMap (q i) (hq i) c)
     (Matrix.of (fun i j => g j (q i))) hM ?_
   intro i j
+  show primeDeriv (q i) (g j) = algebraMap ℂ (ArithmeticFunction ℂ) (g j (q i))
   rw [primeDeriv_prime_supported (q i) (hq i) (g j) (fun m => hg j m),
     Algebra.algebraMap_eq_smul_one]
-  rfl
 
 /-! ## Realizing prime coefficient columns as arithmetic functions -/
 
@@ -357,7 +412,7 @@ def arithmeticOfPrimeColumn (a : Nat.Primes → ℂ) : ArithmeticFunction ℂ wh
 theorem arithmeticOfPrimeColumn_apply_prime (a : Nat.Primes → ℂ) (p : Nat.Primes) :
     arithmeticOfPrimeColumn a (p : ℕ) = a p := by
   show (if h : (p : ℕ).Prime then a ⟨(p : ℕ), h⟩ else 0) = a p
-  rw [dif_pos p.2]
+  exact dif_pos p.2
 
 theorem arithmeticOfPrimeColumn_support (a : Nat.Primes → ℂ) {m : ℕ}
     (hm : arithmeticOfPrimeColumn a m ≠ 0) : m.Prime := by

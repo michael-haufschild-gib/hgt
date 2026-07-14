@@ -1941,7 +1941,7 @@ exhaust the finite coefficient freedom.  For an arbitrary complex phase `u`, put
 
 ```text
 Q_u(X)=X^2-2 Re(u)X+|u|^2=(X-u)(X-conj(u)),
-B_(m,u)(X)=B_m(X)Q_u(X).
+B_(m,u)(X)=B_m(X)Q_u(X)^2.
 ```
 
 Multiplying `B_(m,u)` by one affine factor again permits arbitrary prescribed values at the two
@@ -1951,34 +1951,57 @@ polynomial `A_(m,u;q,r,tau)` satisfies simultaneously
 ```text
 A(q)=1,  A(r)=tau,
 (X-1)^m divides A(X),
-A(u)=A(conj(u))=0.                                      (36)
+A(u)=A'(u)=A(conj(u))=A'(conj(u))=0.                    (36)
 ```
 
-For the logarithmic fibre phase
+The double phase root is needed by the actual rank-two residual.  That residual has one translated
+density channel crossed with the fixed completion channel, rather than two translated copies of
+the same vector.  For the full complex logarithmic phase
 
 ```text
-u=exp(2 i L Re(z)),
+u=exp(iLz),
 ```
 
-the last identity gives, for every base shift `a`,
+the two root equations give, for every base shift `a` and every value--derivative vector `(F,F')`,
 
 ```text
-sum_j a_j cos(2(a+jL)Re(z))=0.                          (37)
+sum_j a_j u^j=0,                 sum_j j a_j u^j=0,
+sum_j a_j p_(a+jL)F=0,
+sum_j a_j p_(a+jL)(F'+i(a+jL)F)=0.                     (37)
 ```
 
-Combining `(37)` with the exact cancellation of the opposite logarithmic derivative drifts gives
-an exact current identity: the complete coefficient-weighted sum of the two opposite untruncated
-translation-channel Hermitian crosses is zero.  This is formalized by
-`phaseAdaptedProuhet_oppositeTranslationCross_sum_eq_zero` in
+Thus the complete coefficient-weighted one-sided untruncated translated value and derivative
+vectors vanish before polarization.  These identities are formalized by
+`phaseAdaptedProuhet_oneSidedTranslationValue_sum_eq_zero` and
+`phaseAdaptedProuhet_oneSidedTranslationDerivative_sum_eq_zero` in
 `XiCTaylorThetaTailPhaseAdaptedProuhetPacket.lean`.  The same packet retains every ordinary
 translation-moment cancellation below depth `m`, so inserting the phase roots does not recreate a
-finite Taylor edge.
+finite Taylor edge.  The earlier opposite-phase cosine cancellation remains as a weaker corollary.
 
-`[OPEN CORE]` Equation `(37)` annihilates the rotational off-diagonal channel before norms are
-taken.  It does not, by itself, remove the endpoint invariant `(12d.9q)`, which depends only on the
-two completion endpoint values.  The live composition problem is to keep the right endpoint
-normalization free until current level and determine whether it can cancel the invariant together
-with `(37)` without returning a copy of `Q(U_d)` or amplifying the diagonal packet currents.
+The endpoint bookkeeping also has a conservation correction.  If `c_j=a_jq^j` and `r=2q`, then
+
+```text
+sum_j c_j(2^(N+j)-1)=2^N A(r)-A(q)=2^N tau-1.          (38)
+```
+
+After `rho=g+E/2`, the remote-row completion cross changes by `(2^N tau-1)/2`, while the explicit
+Haar square subtracts `(2^N tau-1)/4`.  Hence the net endpoint square is
+`(2^N tau-1)Q(E)/4`, not an independently assignable square.  If the fixed-endpoint invariant
+`Q(E)-Cross(U,E)` deforms only by this net square, its scalar cancellation endpoint is
+
+```text
+tau_N=(4 Cross(U,E)/Q(E)-3)/2^N.                        (39)
+```
+
+Equations `(38)`--`(39)`, including existence of a real packet satisfying the endpoints, Prouhet
+jet, double phase root, and scalar cancellation equation, are formalized in the same module.
+
+`[OPEN CORE]` The remaining issue is now exact rather than estimative: prove the fixed-half-line
+Fubini identity with arbitrary `tau` and determine its returned canonical-density vector.  The
+finite algebra proves how the completion square changes, but does not yet prove that the entire
+boundary current is the old invariant plus that square.  A returned copy of `Q(U_d)` would make
+the endpoint cancellation tautological.  This composition must be settled before `(39)` can be
+used as an orientation theorem.
 
 ## Finite cosine--sine translation edge: discharged
 
