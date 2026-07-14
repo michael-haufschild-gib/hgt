@@ -206,3 +206,30 @@ correction used by the retired scalarization.
 - [ ] construct the genuine semilocal relative trace
 - [ ] prove the completed source comparison
 - [ ] prove RH
+
+## Source functional already fixed by the semilocal finite part
+
+The companion theorem
+`connes-semilocal-finite-part-orbital-source-class.md` removes one ambiguity from `(11)`.  Connes's
+semilocal trace formula already constructs the canonical cutoff finite part and identifies it with
+the exact sum of local Weil distributions; its prime-power response is `log(p^m)`.  Therefore the
+remaining theorem is not construction of an unspecified relative trace.  It is the exact
+Connes-to-Sonin descent identity placing that fixed cyclic class on the bounded conductor/Euler
+graph in `(5)`, together with the one-sided completed positivity comparison.  Since the fixed
+Hilbert--Schmidt projection correction has uniformly bounded response, the descended class must
+retain a nonzero conductor-boundary or internal trace-defect component.
+
+## Completed connection target
+
+The finite-prime partner of the bounded Burnol conductor graph is now explicit.  By
+`semilocal-dual-pair-euler-connection-source-law.md`, the exact semilocal place map has connection
+
+```text
+theta_S^(-1)D_S theta_S-D_infinity
+  =M_(-sum_(p in S_f)L_p'/L_p).                           (B1)
+```
+
+Hence the completed graph to be controlled is the canonical sum of `(B1)` with the reflected
+archimedean conductor leakage already treated here.  The unresolved step is cutoff/resolvent
+cyclic descent and a one-sided completed floor; no finite-prime coefficient or carrier
+identification remains open.

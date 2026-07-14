@@ -4,7 +4,7 @@
 - **Stage:** 1-in-progress
 - **Type:** THEOREM (paper)
 - **Source:** [BRIDGE] quantum master constraints, supersymmetric factorization, and compact-operator spectral energy
-- **Statement:** The bounded master constraint `C†C` is definitionally the singular-value energy operator; its greedy spectral values are the squared singular values of `C`, and its trace equals the Hilbert–Schmidt constraint energy.
+- **Statement:** The bounded master constraint `C†C` is definitionally the singular-value energy operator; its greedy spectral values are the squared singular values of `C`, and its trace equals the Hilbert–Schmidt constraint energy.  The supersymmetric partner `CC†` is intertwined by `C` and has the same Hilbert–Schmidt trace.
 
 ## Goal
 
@@ -31,6 +31,18 @@ Hilbert–Schmidt `C`, the energy sum rule is
 
 `Re Tr(M_C) = ‖C‖_HS² = sum_n s_n(C)²`.
 
+The partner-sector value relations are
+
+`C(C†C) = (CC†)C`
+
+and, for Hilbert--Schmidt `C`,
+
+`Tr(C†C) = Tr(CC†)`.
+
+The first is the algebraic supersymmetric intertwiner; the second is trace cyclicity on a
+Hilbert--Schmidt pair.  Together they isolate the finite-energy content that survives in
+resolvent-regularized Witten-index constructions.
+
 Physics sources: Han–Ma, *Master Constraint Operator in Loop Quantum Gravity*
 (arXiv:gr-qc/0510014), which establishes positivity and symmetry of the master operator; and
 Markovich–Biamonte–Kouri, *Supersymmetric Quantum Mechanics For Atomic Electronic Systems*
@@ -46,6 +58,8 @@ isospectral transfer.
   equivalence.
 - Reuse `re_opTrace_adjoint_comp_self` and `hsNormSq_eq_tsum_svVal` to obtain the master trace sum
   rule.
+- Add the exact partner intertwiner and partner trace equality; these are the reusable finite
+  algebra needed before any non-Fredholm Witten-index or spectral-shift completion can be attempted.
 
 ## Direct-application audit
 
@@ -62,3 +76,4 @@ experiment, or axiom audit is run during this phase.
 
 - 2026-07-14 — exact master/energy-operator collision and downstream hypothesis discharge identified before Lean edits.
 - 2026-07-14 — source-level Lean bridge added in `HTGeometry/QuantumMasterConstraintSpectrum.lean` and imported by the HTGeometry umbrella: definitional equality with `energyOp`, compact greedy-mode hypothesis discharge, constraint-kernel completeness, squared-singular-value identity, and trace/HS/spectral sum rule.  No computation or build run.
+- 2026-07-15 — supersymmetric partner intertwining and Hilbert--Schmidt partner trace equality added source-only.  Non-Fredholm Witten-index literature was audited, but its spectral-shift conclusion was not promoted because the corpus still lacks a source-built partner pair and spectral-shift formalism.  No computation or build run.

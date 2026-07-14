@@ -3,7 +3,7 @@
 - **ID:** digamma-gamma-factorial-pole-cluster-law
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) · CANDIDATE NEW SCIENTIFIC KNOWLEDGE
-- **Status:** `[PROVED HERE] [NOVELTY UNVERIFIED]`
+- **Status:** `[PROVED HERE] [FORMALIZATION IN PROGRESS] [NOVELTY UNVERIFIED]`
 - **Statement:** Near every pole \(-n\) of the inner Gamma function, the poles of
   \(\psi(\Gamma z)\) are reciprocal-integer samples of an analytic inverse-Gamma curve;
   the interpolated residue is exactly \(-x^2\) times the derivative of its position germ, and
@@ -223,11 +223,28 @@ The module builds directly.  Each theorem has only the standard Mathlib axioms
 
 `formal/GaloisForLFunctions/HTGeometry/ReciprocalGammaPoleBranch.lean` now formalizes the analytic existence,
 normalization, first derivative, and finite rising-factorial conjugacy of the inverse-Gamma pole
-branches.  The displayed second- and third-order Taylor coefficients remain paper-level.
+branches.  `formal/GaloisForLFunctions/HTGeometry/ReciprocalGammaPoleBranchTaylor.lean`,
+`formal/GaloisForLFunctions/HTGeometry/InverseGammaPolygammaPrincipalPartJet.lean`, and
+`formal/GaloisForLFunctions/HTGeometry/InverseGammaPoleCluster.lean` additionally formalize:
+
+1. the exact quadratic position expansion with analytic cubic remainder;
+2. the analytic residue interpolation and its exact cubic expansion with analytic quartic
+   remainder;
+3. the eventually genuine reciprocal-integer pole cluster with nonzero residue;
+4. the first position and residue scaling limits and the balanced limit recovering
+   `Complex.digamma (n + 1)`; and
+5. the all-order coefficient transport as the exact iterated-derivative identity
+   `ReciprocalGammaPoleBranch.residueInterpolation_all_order_coeff`.
+
+Direct elaboration and the dedicated `InverseGammaPoleCluster` target pass.  The axiom audit of
+the cluster, limit, recovery, and all-order transport theorems is restricted to `propext`,
+`Classical.choice`, and `Quot.sound`.  The remaining promotion gap is the algebraic-transcendence
+corollary, which requires a local meromorphic/Puiseux algebraicity criterion not currently present
+in the project or Mathlib.
 
 ## Gates
 
 - [x] 0 → 1: exact values and relation isolated
 - [x] 1 → 2: complete complex-analytic proof, no computational dependency
-- [ ] 2 → 3: formal core and branch existence complete; higher Taylor coefficients remain
+- [ ] 2 → 3: analytic and discrete cluster laws complete; algebraic-transcendence corollary remains
 - [ ] 3 → 4: expert novelty audit and standalone exposition

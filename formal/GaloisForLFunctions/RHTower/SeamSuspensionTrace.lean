@@ -139,6 +139,29 @@ theorem matrixTwoSidedInverse_commutes
     _ = (Res * d) * (A * Res) := by simp only [mul_assoc]
     _ = Res * d := by rw [hAR, Matrix.mul_one]
 
+/-- For self-adjoint matrices, one inverse equation supplies the other by adjunction.  This is the
+finite resolvent form of `HTGeometry.rightGreen_eq_of_leftGreen_of_selfAdjoint`. -/
+theorem matrixLeftInverse_of_rightInverse_of_selfAdjoint
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (A Res : Matrix n n ℂ)
+    (hA : IsSelfAdjoint A) (hRes : IsSelfAdjoint Res)
+    (hRA : Res * A = 1) :
+    A * Res = 1 := by
+  have hstar := congrArg star hRA
+  simpa only [star_mul, star_one, hA.star_eq, hRes.star_eq] using hstar
+
+/-- A self-adjoint inverse inherits commutation from the inverted self-adjoint matrix from a
+single inverse equation. -/
+theorem matrixSelfAdjointInverse_commutes
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (A Res d : Matrix n n ℂ)
+    (hA : IsSelfAdjoint A) (hRes : IsSelfAdjoint Res)
+    (hRA : Res * A = 1)
+    (hAd : A * d = d * A) :
+    d * Res = Res * d := by
+  exact matrixTwoSidedInverse_commutes A Res d hRA
+    (matrixLeftInverse_of_rightInverse_of_selfAdjoint A Res hA hRes hRA) hAd
+
 /-- **Resolvent form of finite graded Hodge compression.**  The explicit resolvent-commutation
 premise is removed: two-sided inverse equations and commutation of the inverted generator with
 the differential imply it automatically. -/
@@ -152,6 +175,22 @@ theorem gradedMatrixTrace_hodgeCompression_of_twoSidedInverse
     gradedMatrixTrace Γ Res = gradedMatrixTrace Γ (P * Res) := by
   exact gradedMatrixTrace_hodgeCompression Γ P Res d h hodd hHodge
     (matrixTwoSidedInverse_commutes A Res d hRA hAR hAd)
+
+/-- **Self-adjoint one-inverse resolvent compression.**  When the inverted generator and its
+resolvent are self-adjoint, `Res A = 1` implies `A Res = 1` by adjunction.  The finite graded Hodge
+compression theorem therefore needs only one inverse equation. -/
+theorem gradedMatrixTrace_hodgeCompression_of_selfAdjointInverse
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (Γ P A Res d h : Matrix n n ℂ)
+    (hodd : Γ * d = -(d * Γ))
+    (hHodge : 1 - P = d * h + h * d)
+    (hA : IsSelfAdjoint A) (hRes : IsSelfAdjoint Res)
+    (hRA : Res * A = 1)
+    (hAd : A * d = d * A) :
+    gradedMatrixTrace Γ Res = gradedMatrixTrace Γ (P * Res) := by
+  exact gradedMatrixTrace_hodgeCompression_of_twoSidedInverse
+    Γ P A Res d h hodd hHodge hRA
+    (matrixLeftInverse_of_rightInverse_of_selfAdjoint A Res hA hRes hRA) hAd
 
 /-! ### §10 The Herglotz kernel positivity (the equivalent spectral form of the bridge) -/
 

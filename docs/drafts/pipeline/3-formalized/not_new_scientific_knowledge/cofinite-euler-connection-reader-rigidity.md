@@ -109,7 +109,9 @@ operator value relation compatible with the primal--dual semilocal pairing.
 
 ## Exact open problem
 
-Construct the completed two-parameter prime--Gamma Hardy block `H_{p,q}(s,t)` and the polarized
+Start from the explicit finite Euler chart and the arithmetic connection contraction proved in
+`semilocal-dual-pair-euler-connection-source-law.md`.  Construct only its completed two-parameter
+prime--Gamma cutoff/resolvent Hardy block `H_{p,q}(s,t)` and the polarized
 semilocal connection/normal-curvature reader `B`. Prove, on an actual Xi divisor fibre and modulo
 the already controlled compact residual terms,
 
@@ -121,9 +123,45 @@ The right side is compact by the formal theorem as soon as norm differentiabilit
 of the finite family are supplied. No prime-cutoff rate, global limiting measure, Xi zero-location
 assumption, or positivity hypothesis is part of `(9)`.
 
+## Shorter scalar-Hessian alternative
+
+The actual Euler-point scalar tangent now has the exact FE--Schwarz factorization
+
+```text
+T_p(conj(rho))-T_p(1-rho)
+ =C_p(rho)(1-p^(-conj(rho))p^(-(1-rho)))
+   /[(1-p^(-conj(rho)))^2(1-p^(-(1-rho)))^2].            (10)
+```
+
+Every factor multiplying `C_p(rho)` is invertible in the open strip, and every one prime seam is
+faithful.  Therefore an independently constructed completed-source reader which returns
+
+```text
+T_p(conj(rho))=T_p(1-rho)                                (11)
+```
+
+for one fixed prime already closes the orientation problem.  It need not prove `(9)`, propagate
+over the cofinite tangent span, or isolate an empty-chart coefficient.  Conversely, the current
+cofinite compactness theorem does not produce `(11)`: it acts on FE-paired tangent germs and
+operator compactness, while `(11)` is a scalar graded-reality value on an Xi fibre.  The two are
+alternative source interfaces and must not be conflated.
+
+Moreover, the literal source identity
+
+```text
+Phi_p'(s)=-log(p) T_p(s)                                 (12)
+```
+
+turns `(11)` into equality of the genuine spectral connection curvatures at the same two fibre
+points.  This makes the short alternative directly addressable by a scalar normal-curvature
+reader; it is not necessary to manufacture an Euler-parameter Hessian operator.  The existing
+reader theorem still does not force that scalar equality, but the open producer is now a value
+relation in the reader's native spectral variable.
+
 ## Scope and falsifiers
 
-- The theorem does not define the semilocal connection reader or prove `(9)`.
+- The theorem does not define the cutoff/resolvent semilocal connection reader or prove `(9)`; the
+  pre-compression scalar connection is now explicit.
 - It does not claim that the metric tangent itself is compact; Lean proves the one-prime positive
   Euler metric corner is noncompact.
 - It does not turn finite quasi-innerness into normal-curvature compactness without the exact
@@ -157,6 +195,8 @@ are standard functional analysis. No novelty claim is made.
 - [x] polarized bilinear vanishing propagates from all cofinite tangent pairs
 - [x] polarized operator compactness propagates from all cofinite tangent pairs
 - [x] Lean module imported by the `RHTower` umbrella
+- [x] isolate the any-one-prime actual-Hessian value alternative to the bilinear reader
+- [x] rewrite that alternative as one genuine spectral-connection curvature equality
 - [ ] define the actual completed two-parameter semilocal Hardy block in Lean
 - [ ] prove the exact zero-fibre value relation `(9)`
 - [ ] extract compact canonical Sonin Gram coboundaries and close RH

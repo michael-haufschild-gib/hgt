@@ -143,8 +143,9 @@ the completed, charge-weighted antisymmetric curvature only.
 
 ## Exact open problem
 
-Construct a concrete source-defined two-prime chart or connection on the analytically continued
-prime--Gamma fibre and prove the operator value relation
+Use the explicit source-defined Euler chart and its arithmetic connection contraction from
+`semilocal-dual-pair-euler-connection-source-law.md`, extend it by the archimedean conductor on the
+analytically continued prime--Gamma fibre, and prove the operator value relation
 
 ```text
 completed Omega_pq
@@ -153,10 +154,11 @@ completed Omega_pq
     modulo compact operators.                             (11)
 ```
 
-The coefficients must come from the actual zero-fibre source formula. Freely prescribing tangent
-normals, or assuming the desired seam-charge equality, is circular. The hard step is the exact
-prime--Gamma/reflection identification in `(11)` and the cancellation making its completed skew
-combination compact.
+The finite prime connection coefficients are now fixed as `-L_p'/L_p`; they are not an open input.
+The coefficients in `(11)` must still come from the actual zero-fibre reflection formula. Freely
+prescribing tangent normals, or assuming the desired seam-charge equality, is circular. The hard
+step is the cutoff/resolvent prime--Gamma/reflection identification and the cancellation making its
+completed skew combination compact.
 
 ## Scope and falsifiers
 

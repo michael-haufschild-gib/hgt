@@ -1,5 +1,4 @@
 import GaloisForLFunctions.HTGeometry.LSeriesPowerTwist
-import GaloisForLFunctions.RHTower.EulerTruncationRigidity
 import Mathlib.NumberTheory.EulerProduct.DirichletLSeries
 import Mathlib.NumberTheory.LSeries.PrimesInAP
 
@@ -100,8 +99,14 @@ theorem canonicalEulerLogZeta_eq_primeLog {s : ℂ} (hs : 1 < s.re) :
   rw [tsum_eq_tsum_primes_of_support_subset_prime_powers hsum]
   · apply tsum_congr
     intro p
-    have hseries := neg_log_euler_base_hasSum p.prop.two_le
-      (show 0 < s.re by linarith)
+    have hnorm : ‖(p : ℂ) ^ (-s)‖ < 1 := by
+      rw [Complex.norm_natCast_cpow_of_pos (by exact_mod_cast p.prop.pos), Complex.neg_re]
+      have hp1 : (1 : ℝ) < p := by exact_mod_cast p.prop.one_lt
+      calc
+        (p : ℝ) ^ (-s.re) < (p : ℝ) ^ (0 : ℝ) :=
+          Real.rpow_lt_rpow_of_exponent_lt hp1 (by linarith)
+        _ = 1 := Real.rpow_zero _
+    have hseries := Complex.hasSum_taylorSeries_neg_log hnorm
     rw [← hseries.tsum_eq, hseries.summable.tsum_eq_zero_add]
     simp only [Nat.cast_zero, div_zero, zero_add]
     apply tsum_congr
@@ -110,8 +115,9 @@ theorem canonicalEulerLogZeta_eq_primeLog {s : ℂ} (hs : 1 < s.re) :
       eulerLogDirichletCoeff_prime_pow_succ p k p.prop]
     rw [Nat.cast_pow, ← Complex.natCast_cpow_natCast_mul]
     rw [← Complex.cpow_nat_mul]
-    rw [show (k + 1 : ℂ) * (-s) = -((k + 1 : ℂ) * s) by ring,
+    rw [show ((k + 1 : ℕ) : ℂ) * (-s) = -(((k + 1 : ℕ) : ℂ) * s) by ring,
       Complex.cpow_neg]
+    push_cast
     ring
   · intro n hn
     by_contra hpp

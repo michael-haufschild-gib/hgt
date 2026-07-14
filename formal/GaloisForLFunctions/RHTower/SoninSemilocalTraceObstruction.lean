@@ -125,6 +125,26 @@ theorem norm_soninSemilocalGeometricTraceResponse_le
         Real.sqrt (1024 * hsNormSq (centralSoninProjectionCorrection a)) := by
           rfl
 
+/-- The semilocal response bound with the projection-correction energy eliminated in favor of
+the two positive time--frequency overlap channels.  This is the direct semilocal consumer of the
+two-projection Hilbert--Schmidt energy split. -/
+theorem norm_soninSemilocalGeometricTraceResponse_le_timeBand_add_exterior
+    (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ) :
+    ‖soninSemilocalGeometricTraceResponse a pk‖ ≤
+      Real.sqrt
+          (hsNormSq
+              ((centralFourierForbidden a).starProjection *
+                (centralPhysicalForbidden a).starProjection) +
+            hsNormSq (centralSoninExteriorOverlap a)) *
+        Real.sqrt
+          (1024 *
+            (hsNormSq
+                ((centralFourierForbidden a).starProjection *
+                  (centralPhysicalForbidden a).starProjection) +
+              hsNormSq (centralSoninExteriorOverlap a))) := by
+  rw [← hsNormSq_centralSoninProjectionCorrection_eq_timeBand_add_exterior a ha]
+  exact norm_soninSemilocalGeometricTraceResponse_le a ha pk
+
 /-- **The projection-correction scalarization cannot be the semilocal source trace.**  Its
 uniformly bounded response cannot equal `log(p^m)` for all prime powers. -/
 theorem not_soninSemilocalFluxNormalization :

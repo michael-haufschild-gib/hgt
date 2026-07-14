@@ -103,6 +103,24 @@ theorem re_opTrace_quantumMasterConstraint_eq_hsNormSq
     ContinuousLinearMap.hsNormSq C
   exact ContinuousLinearMap.re_opTrace_adjoint_comp_self hC
 
+/-- **Supersymmetric partner trace equality.**  A Hilbert--Schmidt constraint has equal total
+spectral energy in the partner Hamiltonians `C†C` and `CC†`. -/
+theorem opTrace_quantumMasterConstraint_eq_partner
+    {C : H →L[ℂ] H} (hC : ContinuousLinearMap.IsHilbertSchmidt C) :
+    ContinuousLinearMap.opTrace (quantumMasterConstraint C) =
+      ContinuousLinearMap.opTrace (quantumMasterConstraint C.adjoint) := by
+  change ContinuousLinearMap.opTrace (C.adjoint ∘L C) =
+    ContinuousLinearMap.opTrace (C.adjoint.adjoint ∘L C.adjoint)
+  rw [ContinuousLinearMap.adjoint_adjoint]
+  exact ContinuousLinearMap.opTrace_comp_comm hC.adjoint hC
+
+/-- Real-valued form of the supersymmetric partner trace equality. -/
+theorem re_opTrace_quantumMasterConstraint_eq_partner
+    {C : H →L[ℂ] H} (hC : ContinuousLinearMap.IsHilbertSchmidt C) :
+    RCLike.re (ContinuousLinearMap.opTrace (quantumMasterConstraint C)) =
+      RCLike.re (ContinuousLinearMap.opTrace (quantumMasterConstraint C.adjoint)) := by
+  rw [opTrace_quantumMasterConstraint_eq_partner hC]
+
 /-- The Hilbert--Schmidt energy is the sum of the greedy master spectral values. -/
 theorem hsNormSq_eq_tsum_svVal_quantumMasterConstraint
     {C : H →L[ℂ] H} (hHS : ContinuousLinearMap.IsHilbertSchmidt C) :

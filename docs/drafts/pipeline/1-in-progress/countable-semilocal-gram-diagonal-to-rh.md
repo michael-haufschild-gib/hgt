@@ -817,3 +817,56 @@ completed prime--Gamma flux from the distinguished Sonin principal/residual grap
 rank-two source passivity are stronger sufficient producers, but the smallest currently formalized
 resource is countable rank-one boundedness. No divisor-density, target/source, pole-admissibility,
 determinant-limit, or finite-section transfer theorem remains outside Lean.
+
+## Connes finite-part correction to the open core
+
+`../2-fully-proven/not_new_scientific_knowledge/connes-semilocal-finite-part-orbital-source-class.md`
+shows that the logarithmic source functional itself is not open.  The proved semilocal cutoff
+formula defines the canonical finite part `FP_S=sum_v W_v`, and its quantized-differential class
+has the exact prime-power orbital response `log(p^m)`.  The current distinguished-Sonin problem is
+therefore the comparison/descent theorem
+
+```text
+canonical Connes finite-part cyclic class
+  -> exact Sonin principal--relative graph
+  -> internal trace-defect + conductor/Euler leakage cross
+```
+
+with equality of finite parts and a uniform completed lower floor.  This replaces every occurrence
+of "construct a genuine semilocal relative trace" by the sharper requirement "transport the
+existing canonical finite-part class to the exact Sonin carrier and preserve its value".  The
+fixed Hilbert--Schmidt projection-correction scalarization cannot be that transport because its
+response is uniformly bounded.
+
+The literature supplies more than a filtered finite-place carrier.  Theorem 4.6 of
+Connes--Consani--Moscovici identifies the finite semilocal and classical Sonin spaces at every
+fixed aperture, while the explicit multiplier connection is the finite von Mangoldt source.  The
+remaining graph construction is therefore only the cutoff/resolvent cyclic descent of that
+connection into the principal--relative decomposition, not carrier existence or comparison.
+
+## Exact semilocal connection correction
+
+The finite-place carrier comparison and its degree-one source are both explicit.  Theorem 4.6 of
+Connes--Consani--Moscovici gives an aperture-by-aperture isomorphism `theta_S` from the classical to
+the semilocal Sonin space, and
+`../2-fully-proven/not_new_scientific_knowledge/semilocal-dual-pair-euler-connection-source-law.md`
+proves on the common logarithmic-position core that
+
+```text
+theta_S^(-1)D_S theta_S-D_infinity
+  =M_(-sum_(p in S_f)L_p'/L_p).                           (CS1)
+```
+
+The right side is exactly the finite von Mangoldt source, coefficient by coefficient.  Thus this
+route no longer needs to construct a semilocal carrier or guess a relative source functional.  Its
+source-side open theorem is the cutoff/resolvent cyclic descent of `(CS1)`, including the Burnol
+conductor, followed by a cutoff-uniform completed lower floor.  The existing bounded
+projection-correction trace is excluded from this role by its proved uniform response bound.
+
+The finite connection also cannot be assigned a positive Cauchy sign before completion.
+`../2-fully-proven/not_new_scientific_knowledge/finite-euler-connection-cauchy-phase-chambers.md`
+proves that its FE completion is an exact Poisson radial difference, while its literal one-sided
+contribution to the completed divided difference is exactly half that value.  Both have both phase
+signs for every finite nonempty aperture.  Therefore the desired cyclic descent must preserve the
+complex phase and produce a completed remainder that compensates the finite negative chamber; a
+positive metric compression of the individual local factors is not enough.

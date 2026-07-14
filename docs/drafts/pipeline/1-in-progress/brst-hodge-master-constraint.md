@@ -4,7 +4,7 @@
 - **Stage:** 1-in-progress
 - **Type:** THEOREM (paper)
 - **Source:** [BRIDGE] BRST cohomology, supersymmetric quantum mechanics, and Hodge theory
-- **Statement:** For a bounded operator `Q`, the positive operator `H_Q = Q†Q + QQ†` has kernel `ker Q ∩ ker Q†`; when `Q² = 0`, it commutes with both `Q` and `Q†`.
+- **Statement:** For a bounded operator `Q`, the positive operator `H_Q = Q†Q + QQ†` has kernel `ker Q ∩ ker Q†`; when `Q² = 0`, it commutes with both `Q` and `Q†`.  For self-adjoint `G` and `P`, one Green equation `H_Q G = 1-P` supplies the other by adjunction.
 
 ## Goal
 
@@ -35,13 +35,20 @@ The exact bounded-Hilbert-space identities needed here are
 
 and, under `Q² = 0`, `H_Q Q = Q H_Q` and `H_Q Q† = Q† H_Q`.
 
-For a harmonic projection `P` and Green operator `G`, the two-sided Green equations
+For a harmonic projection `P` and Green operator `G`, the Green equations
 
 `H_Q G = G H_Q = 1-P`
 
 together with `PQ=QP=0` force `GQ=QG`.  Hence the canonical homotopy `h=Q†G` satisfies
 
 `1-P = Qh + hQ`.
+
+The self-adjoint value relation
+
+`H†=H, G†=G, P†=P, HG=1-P  ⟹  GH=1-P`
+
+is immediate by taking adjoints.  Since `H_Q` is already self-adjoint, a self-adjoint Green
+operator and harmonic projection reduce the Hodge interface from two Green equations to one.
 
 Primary physics sources include Yang–Lee, *BRST Cohomology and Its Application to QED*
 (arXiv:hep-th/9502082), Malik, *BRST cohomology and Hodge decomposition theorem in Abelian
@@ -57,6 +64,8 @@ relations recorded in arXiv:1607.08714.
 - Give the existing two-sided constraint-ideal theorem the same consolidated premise.
 - Add the nilpotent commutation law as genuinely new algebra on top of the generic finite-family
   master constraint.
+- Apply the same adjoint discharge to `RHTower/SeamSuspensionTrace.lean`: a self-adjoint finite
+  resolvent needs one inverse equation, rather than two, before graded Hodge compression applies.
 
 ## Direct-application audit
 
@@ -73,10 +82,11 @@ prime--theta differential, its closed-range/cohomology theorem, and the positive
 comparison.  No wrapper theorem is added across this gap.
 
 `RHTower/SeamSuspensionTrace.lean` names `1-P=dG+Gd` as the algebraic input to its trace-compression
-step.  The Green-operator theorem now derives that relation from the BRST master constraint, so it
-removes a separate chain-homotopy premise once a source-specific harmonic projection and two-sided
-Green operator have been constructed.  It does not construct those objects or establish the
-renormalized cyclicity needed by the seam route.
+step.  The Green-operator theorem derives that relation from the BRST master constraint, and the
+self-adjoint upgrade removes the second Green equation.  The finite matrix consumer now likewise
+derives `A Res = 1` from `Res A = 1` when `A` and `Res` are self-adjoint, and feeds the result directly
+into graded Hodge compression.  This still does not construct the source-specific projection or
+Green operator, or establish the renormalized cyclicity needed by the infinite seam route.
 
 ## Verification boundary
 
@@ -89,3 +99,4 @@ axiom audit is run.  The card remains in progress until targeted validation is a
 - 2026-07-14 — physics relation and direct consumer surface identified; card opened before Lean edits.
 - 2026-07-14 — source-level Lean surface added in `HTGeometry/BRSTHodgeConstraint.lean` and imported by the HTGeometry umbrella; direct corpus scan found no pre-existing joint `Q`/`Q†` consumer; no computation or build run.
 - 2026-07-14 — source-level Green-operator commutation and Hodge chain-homotopy theorems added; these reduce the seam-compression Hodge relation to construction of `P` and `G`, but do not solve that source-specific construction.  No computation or build run.
+- 2026-07-15 — self-adjoint adjunction removes one of the two Green equations in generic HTGeometry and one of the two finite resolvent inverse equations in RHTower seam compression.  Direct consumers were added source-only; no computation or build run.

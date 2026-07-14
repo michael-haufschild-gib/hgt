@@ -62,6 +62,16 @@ The proof must therefore do one of the following:
 Universal positivity on every continued Cauchy packet is not accepted as progress: the corpus
 already proves that universal condition equivalent to RH.
 
+### Finite-place sign boundary
+
+`../2-fully-proven/not_new_scientific_knowledge/finite-euler-connection-cauchy-phase-chambers.md`
+proves that the FE-paired finite Euler connection cannot itself supply the independent sign in
+`(5)`.  Its rank-one diagonal is an exact radial difference of disk Poisson kernels, and every
+finite nonempty prime packet has simultaneous positive and negative phase chambers.  The positive
+replacement is precise: a source-selected packet theorem must retain the completed remainder and
+prove its phase-locked compensation of that finite-prime negative chamber.  This does not affect
+the already-closed reconstruction `(4)`--`(6)`; it narrows the independent source-sign producer.
+
 ## Best current feeder
 
 The prime--polar moving-tent series in

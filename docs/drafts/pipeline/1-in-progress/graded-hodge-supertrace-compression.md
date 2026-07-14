@@ -46,8 +46,9 @@ arXiv:hep-th/0004145), and Witten-Laplacian supersymmetry (arXiv:1607.08714).
 - Strengthen `RHTower/SeamSuspensionTrace.lean` with a real grading-aware trace.
 - Consume the Hodge relation produced by `HTGeometry/BRSTHodgeConstraint.lean` once the seam's
   source-specific harmonic projection and Green operator exist.
-- Discharge separate resolvent/differential commutation from two-sided inverse equations and
-  commutation of the inverted generator with the differential.
+- Discharge separate resolvent/differential commutation from one inverse equation when the
+  generator and resolvent are self-adjoint, plus commutation of the inverted generator with the
+  differential.
 - Remove the sign ambiguity between the legacy ordinary commutator theorem and the Hodge
   anticommutator used in the file's prose.
 
@@ -73,3 +74,4 @@ experiment, or axiom audit is run during this phase.
   Hodge relation to the live seam-compression consumer; graded repair isolated before Lean edits.
 - 2026-07-14 — source-level `gradedMatrixTrace`, odd-anticommutator cancellation, and finite Hodge-compression declarations added beside the preserved legacy ordinary-trace lemmas.  No computation or build run.
 - 2026-07-14 — source-level two-sided-inverse commutation discharge and resolvent-form graded compression added; no computation or build run.
+- 2026-07-15 — self-adjoint adjunction reduced the finite resolvent consumer from two inverse equations to one; source-level direct consumer added with no computation or build.

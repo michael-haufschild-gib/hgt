@@ -45,9 +45,11 @@ Expanding `(Q-1+P+R)^2+(Q-1+P+R)` and applying precisely those seven relations l
    alternating product is the prolate/time-frequency limiting operator.
 3. Supplies an exact replacement rule for later relative-Gram and semilocal-trace manipulations
    involving `centralSoninProjectionCorrection`.
-4. Does not by itself sharpen the existing factor `80` in the dilation-corner residual estimate:
-   that estimate also contains dilation and resolvent factors.  No unsupported improvement is
-   claimed.
+4. The anticommutator identity alone does not control the dilation factors.  The later
+   two-projection Pythagorean law reduced the Hilbert--Schmidt energy constant from `80` to `16`;
+   the zero-mode-subtracted partition in
+   `sonin-zero-mode-subtracted-supersymmetric-partition.md` additionally proves the actual
+   correction is a contraction and gives the operator-norm residual bound `≤ 4`.
 
 ## Lean surface
 

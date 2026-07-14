@@ -16,6 +16,9 @@ infrastructure.
 The purity/free-energy relation is the order-two specialization of the thermal Rényi relation;
 see J. C. Baez, *Rényi Entropy and Free Energy*, Entropy 13 (2011), 1434--1452, and A. Iwaki and
 C. Hotta, *Purity of thermal mixed quantum states*, Phys. Rev. B 106 (2022), 094409.
+The rank-one convolution and Gibbs-marginal laws are the coefficient form of the canonical
+thermofield-double purification of a Gibbs state; see Y. Takahashi and H. Umezawa, *Thermo field
+dynamics*, Collective Phenomena 2 (1975), 55--80, and T. Barthel, arXiv:1708.09349.
 
 All statements apply to arbitrary nonempty finite Hamiltonian spectra.  No arithmetic or zeta
 hypothesis occurs in this module.
@@ -98,18 +101,13 @@ theorem sum_sq_finiteKMSWightmanWeight_eq_one
     {α : Type*} [Fintype α] [Nonempty α]
     (β : ℝ) (energy : α → ℝ) :
     ∑ a, ∑ b, finiteKMSWightmanWeight β energy a b ^ 2 = 1 := by
-  simp_rw [finiteKMSWightmanWeight_sq]
   calc
-    (∑ a, ∑ b,
-        finiteGibbsStateWeight β energy a *
-          finiteGibbsStateWeight β energy b) =
-        (∑ a, finiteGibbsStateWeight β energy a) *
-          ∑ b, finiteGibbsStateWeight β energy b := by
-      rw [Finset.sum_mul]
+    (∑ a, ∑ b, finiteKMSWightmanWeight β energy a b ^ 2) =
+        ∑ a, finiteGibbsStateWeight β energy a := by
       apply Finset.sum_congr rfl
       intro a ha
-      rw [Finset.mul_sum]
-    _ = 1 := by rw [sum_finiteGibbsStateWeight_eq_one]; norm_num
+      exact sum_sq_finiteKMSWightmanWeight_eq_stateWeight β energy a
+    _ = 1 := sum_finiteGibbsStateWeight_eq_one β energy
 
 /-- The diagonal Frobenius mass of the KMS half-density is exactly Gibbs purity. -/
 theorem sum_sq_diag_finiteKMSWightmanWeight_eq_purity

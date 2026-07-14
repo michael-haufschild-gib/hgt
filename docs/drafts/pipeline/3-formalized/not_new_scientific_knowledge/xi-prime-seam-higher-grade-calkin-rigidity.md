@@ -116,3 +116,19 @@ xiPrimeEulerFEHigherGradeCompact_iff_riemannHypothesis
 - [x] fixed-prime Xi-divisor capstone equivalent to RH
 - [x] no `sorry`, `admit`, axiom, or RH hypothesis in the pointwise theorem
 - [ ] construct the cross-grade, completed-product, or cross-place cancellation demanded by `(8)`
+
+## Coefficient-one connection-tail sibling
+
+The semilocal logarithmic-position connection does not use the derivative-at-one coefficient
+`m log(p)` in `(1)`.  Its reflected higher-grade coefficient is instead
+
+```text
+log(p)[p^(-m sigma)-p^(-m(1-sigma))],  m>=2.              (9)
+```
+
+`../../2-fully-proven/not_new_scientific_knowledge/semilocal-dual-pair-euler-connection-source-law.md`
+proves on paper that the same Calkin-rigidity argument applies: the coefficients are absolutely
+summable, the scales are strictly increasing, and the grade-two coefficient is nonzero exactly
+when `sigma!=1/2`.  Hence the coefficient-one connection tail is also an orientation-faithful
+Calkin carrier.  This sibling is not yet wrapped by a dedicated Lean declaration; it follows from
+the already formalized general injectivity theorem.

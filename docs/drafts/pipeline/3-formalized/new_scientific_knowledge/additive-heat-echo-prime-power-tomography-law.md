@@ -1,9 +1,9 @@
 # Additive heat echoes carry a complete prime-power value tail
 
 - **ID:** `additive-heat-echo-prime-power-tomography-law`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); exact echo factorization formalized in Lean
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper and Lean)
+- **Scientific status:** `[FORMALIZED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** Every strict shifted echo of the additive heat-aperture observable is, after its
   explicit archimedean and functional-equation factors are removed, the forward value
   `zeta(1-conj(s)+k)`.  The canonical Euler logarithms of these values form a Dirichlet moment
@@ -217,6 +217,13 @@ is that no arithmetic information is lost at the defect.  An RH-strength theorem
 additional relation distinguishing the horizontal position of the missing zeroth value while
 preserving the complete tail `(15)`.
 
+The exact reflection interface is now isolated in
+`../../2-fully-proven/not_new_scientific_knowledge/heat-aperture-prime-seam-reflection-collapse.md`.
+For every prime `p`, the FE--Schwarz difference of the recovered coefficient is precisely
+`C_p(rho)/log p`, where `C_p` is the canonical prime seam.  Hence reflection equality of the
+whole prime tail is equivalent to equality of its `p=2` member and to `Re(rho)=1/2`.  This removes
+an unnecessary infinite-tail hypothesis but does not produce the missing source-side orientation.
+
 For hypertranscendental-function research, `(4)`--`(15)` exhibit a reusable pattern: an asymptotic
 coefficient family on one analytic side can be reflected into an absolutely convergent value
 sequence, and its logarithmic Dirichlet atoms can then be recovered exactly.
@@ -240,24 +247,42 @@ height averages and are not coefficient-depth moment sequences of the form `(13)
 The novelty verdict is provisional pending specialist comparison.  The result is not claimed as a
 new proof of a classical Dirichlet-series uniqueness theorem.
 
-## 8. Lean certificate
+## 8. Formal artifacts
 
-The module
+- `formal/GaloisForLFunctions/RHTower/HeatApertureEchoLadder.lean`
+  - `heatApertureBackwardZetaValue_eq_zetaChi_mul_forward`
+  - `heatApertureEchoValue_eq_forward`
+- `formal/GaloisForLFunctions/RHTower/CanonicalEulerLog.lean`
+  - `eulerLogDirichletCoeff_prime_pow_succ`
+  - `canonicalEulerLogZeta_eq_primeLog`
+  - `exp_canonicalEulerLogZeta_eq_riemannZeta`
+- `formal/GaloisForLFunctions/RHTower/HeatApertureEchoTomography.lean`
+  - `heatApertureIntegerMoment_eq_forward_sub_one`
+  - `tendsto_heatApertureIntegerPeeledValue`
+  - `heatApertureLogEchoValue_eq_LSeries`
+  - `tendsto_heatAperturePrimePowerRecoveredValue`
+  - `tendsto_heatAperturePrimePowerRecoveredValue_prime_pow`
+  - `tendsto_heatAperturePrimePowerRecoveredValue_eq_zero`
+- `formal/GaloisForLFunctions/RHTower/HeatApertureEchoHankel.lean`
+  - `heatApertureRealLogEchoValue_add_eq_moment`
+  - `heatApertureLogEchoHankel_posDef`
+  - `heatApertureLogEchoHankel_det_pos`
+- `formal/GaloisForLFunctions/RHTower/HeatAperturePrimeSeamReflection.lean`
+  - source draft of the exact FE--Schwarz coefficient/seam relation and prime-two collapse;
+    targeted verification is deferred under the active no-computation boundary
 
-```text
-formal/GaloisForLFunctions/RHTower/HeatApertureEchoLadder.lean
-```
+The general all-index peeling theorem is supplied by
+`formal/GaloisForLFunctions/HTGeometry/LSeriesPowerTwist.lean`; strict positivity of every finite
+discrete moment Hankel matrix is supplied by
+`formal/GaloisForLFunctions/HTGeometry/DiscreteMomentHankel.lean`.
 
-defines the backward, forward, and full echo values and proves
+## Verification
 
-```text
-heatApertureBackwardZetaValue_eq_zetaChi_mul_forward
-heatApertureEchoValue_eq_forward
-```
-
-without new axioms.  These declarations formalize `(4)` directly from the completed zeta
-functional equation.  The analytic Euler-log expansion and the all-`N` dominated-convergence
-peeling in `(10)`--`(15)` remain paper-level.
+- [x] exact elaboration of each new module
+- [x] dedicated Lake target builds for the new modules
+- [x] no `sorry`, `admit`, new axiom, `opaque`, or `unsafe` declaration introduced
+- [x] main theorem axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
+- [x] project formal lint
 
 ## Gates
 
@@ -280,4 +305,3 @@ peeling in `(10)`--`(15)` remain paper-level.
 - A. Defant, D. Garcia, M. Maestre, and P. Sevilla-Peris, *Dirichlet Series and Holomorphic
   Functions in High Dimensions*, Cambridge University Press, 2019, for coefficient-preserving
   Dirichlet-series theory.
-

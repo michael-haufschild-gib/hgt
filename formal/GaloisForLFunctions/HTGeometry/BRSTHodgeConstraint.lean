@@ -170,6 +170,28 @@ theorem brstHodgeHamiltonian_mul_green_eq_chainHomotopy
       rw [← mul_assoc]
       exact add_comm _ _
 
+/-- For self-adjoint operators, a left Green equation is automatically the corresponding right
+Green equation.  This is the operator-adjoint value relation behind the usual self-adjoint Hodge
+Green operator: only one of `H G = 1 - P` and `G H = 1 - P` needs to be supplied. -/
+theorem rightGreen_eq_of_leftGreen_of_selfAdjoint
+    (H G P : E →L[𝕜] E)
+    (hH : IsSelfAdjoint H) (hG : IsSelfAdjoint G) (hP : IsSelfAdjoint P)
+    (hHG : H * G = 1 - P) :
+    G * H = 1 - P := by
+  have hstar := congrArg star hHG
+  simpa only [star_mul, star_sub, star_one, hH.star_eq, hG.star_eq, hP.star_eq]
+    using hstar
+
+/-- The two Green equations are equivalent once the Hamiltonian, Green operator, and harmonic
+projection are self-adjoint. -/
+theorem leftGreen_eq_iff_rightGreen_of_selfAdjoint
+    (H G P : E →L[𝕜] E)
+    (hH : IsSelfAdjoint H) (hG : IsSelfAdjoint G) (hP : IsSelfAdjoint P) :
+    H * G = 1 - P ↔ G * H = 1 - P := by
+  constructor
+  · exact rightGreen_eq_of_leftGreen_of_selfAdjoint H G P hH hG hP
+  · exact rightGreen_eq_of_leftGreen_of_selfAdjoint G H P hG hH hP
+
 /-- A two-sided Green inverse on the complement of a harmonic projection automatically commutes
 with a nilpotent BRST charge, provided the harmonic sector is annihilated on both sides.  This
 removes a separate Green/charge commutation premise from the Hodge relation. -/
@@ -194,6 +216,22 @@ theorem brstGreen_commutes_charge
     _ = G * Q * (1 - P) := by rw [hHG]
     _ = G * Q := by rw [← mul_assoc, hrightQ]
 
+/-- A self-adjoint Green operator and self-adjoint harmonic projection reduce the two-sided Green
+premise to one equation.  The missing right equation is its adjoint, so BRST/Green commutation
+follows without asking the source to prove it separately. -/
+theorem brstGreen_commutes_charge_of_selfAdjoint
+    (Q G P : E →L[𝕜] E)
+    (hQ : Q * Q = 0)
+    (hG : IsSelfAdjoint G) (hP : IsSelfAdjoint P)
+    (hHG : brstHodgeHamiltonian Q * G = 1 - P)
+    (hPQ : P * Q = 0) (hQP : Q * P = 0) :
+    Q * G = G * Q := by
+  have hGH : G * brstHodgeHamiltonian Q = 1 - P :=
+    rightGreen_eq_of_leftGreen_of_selfAdjoint
+      (brstHodgeHamiltonian Q) G P
+      (brstHodgeHamiltonian_isSelfAdjoint Q) hG hP hHG
+  exact brstGreen_commutes_charge Q G P hQ hHG hGH hPQ hQP
+
 /-- **Hodge relation from the master constraint.**  Under the two Green equations and harmonic
 annihilation laws, the complement of the harmonic projection is the chain anticommutator
 `Qh + hQ` with the canonical homotopy `h = Q†G`.  This is the operator identity needed by
@@ -208,6 +246,22 @@ theorem one_sub_eq_brstChainHomotopy_of_green
   rw [← hHG]
   exact brstHodgeHamiltonian_mul_green_eq_chainHomotopy Q G
     (brstGreen_commutes_charge Q G P hQ hHG hGH hPQ hQP)
+
+/-- **One-equation self-adjoint Hodge relation.**  For a self-adjoint Green operator and harmonic
+projection, the single Green equation `H_Q G = 1 - P` supplies its right-handed mate by adjunction.
+Thus the BRST chain homotopy needs one fewer source hypothesis than the general two-sided theorem. -/
+theorem one_sub_eq_brstChainHomotopy_of_selfAdjoint_green
+    (Q G P : E →L[𝕜] E)
+    (hQ : Q * Q = 0)
+    (hG : IsSelfAdjoint G) (hP : IsSelfAdjoint P)
+    (hHG : brstHodgeHamiltonian Q * G = 1 - P)
+    (hPQ : P * Q = 0) (hQP : Q * P = 0) :
+    1 - P = Q * (Q.adjoint * G) + (Q.adjoint * G) * Q := by
+  have hGH : G * brstHodgeHamiltonian Q = 1 - P :=
+    rightGreen_eq_of_leftGreen_of_selfAdjoint
+      (brstHodgeHamiltonian Q) G P
+      (brstHodgeHamiltonian_isSelfAdjoint Q) hG hP hHG
+  exact one_sub_eq_brstChainHomotopy_of_green Q G P hQ hHG hGH hPQ hQP
 
 /-- The self-adjoint Hodge--Dirac supercharge `D_Q = Q + Q†`. -/
 noncomputable def brstHodgeDiracOperator (Q : E →L[𝕜] E) : E →L[𝕜] E :=

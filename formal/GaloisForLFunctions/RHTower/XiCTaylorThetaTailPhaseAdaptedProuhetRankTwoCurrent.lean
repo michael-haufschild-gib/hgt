@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.XiCTaylorThetaTailHaarResidualRankTwo
+import GaloisForLFunctions.RHTower.XiCTaylorThetaTailSquareIndexPolarization
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailPhaseAdaptedProuhetPacket
 
 /-!
@@ -15,6 +15,40 @@ open Complex Real Polynomial MeasureTheory Set
 namespace RHTower
 
 noncomputable section
+
+/-- Pointwise algebra behind the rank-two Fubini theorem.  It is stated separately so the measure
+proof never expands complex real and imaginary parts. -/
+private theorem rankTwoSource_mul_symmetricHermitianPair_eq
+    (a₁ a₂ e₁ e₂ : ℝ) (v₁ v₂ d₁ d₂ : ℂ) :
+    ((1 / 2 : ℝ) * (a₁ * e₂ + e₁ * a₂)) *
+        ((d₁ * (starRingEnd ℂ) v₂).im +
+          (d₂ * (starRingEnd ℂ) v₁).im) / 2 =
+      (((1 / 2 : ℂ) *
+          (((a₁ : ℂ) * d₁) * (starRingEnd ℂ) ((e₂ : ℂ) * v₂) +
+            ((e₁ : ℂ) * d₁) * (starRingEnd ℂ) ((a₂ : ℂ) * v₂))).im +
+        ((1 / 2 : ℂ) *
+          (((a₂ : ℂ) * d₂) * (starRingEnd ℂ) ((e₁ : ℂ) * v₁) +
+            ((e₂ : ℂ) * d₂) * (starRingEnd ℂ) ((a₁ : ℂ) * v₁))).im) / 2 := by
+  have h₁ : (1 / 2 : ℂ) *
+        (((a₁ : ℂ) * d₁) * (starRingEnd ℂ) ((e₂ : ℂ) * v₂) +
+          ((e₁ : ℂ) * d₁) * (starRingEnd ℂ) ((a₂ : ℂ) * v₂)) =
+      ((((1 / 2 : ℝ) * (a₁ * e₂ + e₁ * a₂) : ℝ) : ℂ) *
+        (d₁ * (starRingEnd ℂ) v₂)) := by
+    simp only [map_mul, Complex.conj_ofReal]
+    push_cast
+    ring
+  have h₂ : (1 / 2 : ℂ) *
+        (((a₂ : ℂ) * d₂) * (starRingEnd ℂ) ((e₁ : ℂ) * v₁) +
+          ((e₂ : ℂ) * d₂) * (starRingEnd ℂ) ((a₁ : ℂ) * v₁)) =
+      ((((1 / 2 : ℝ) * (a₁ * e₂ + e₁ * a₂) : ℝ) : ℂ) *
+        (d₂ * (starRingEnd ℂ) v₁)) := by
+    simp only [map_mul, Complex.conj_ofReal]
+    push_cast
+    ring
+  rw [h₁, h₂]
+  simp only [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+    zero_mul, add_zero]
+  ring
 
 /-- Fubini factorization for a symmetric rank-two real source coupled to the symmetric finite-core
 pair current. -/
@@ -84,7 +118,11 @@ theorem integral_rankTwoSource_mul_xiCTaylorThetaTailCorePairCurrent_eq
       funext p
       ring]
     rw [MeasureTheory.integral_const_mul]
-    rw [integral_add hK hK.swap, hswap]
+    rw [show (∫ a : ℝ × ℝ, K a + K a.swap ∂mu.prod mu) =
+        (∫ a : ℝ × ℝ, K a ∂mu.prod mu) +
+          ∫ a : ℝ × ℝ, K a.swap ∂mu.prod mu by
+      exact integral_add hK hK.swap,
+      hswap]
     ring
   have hpoint : (fun p : ℝ × ℝ =>
       ((1 / 2 : ℝ) * (A p.1 * E p.2 + E p.1 * A p.2)) *
@@ -92,13 +130,14 @@ theorem integral_rankTwoSource_mul_xiCTaylorThetaTailCorePairCurrent_eq
       fun p : ℝ × ℝ => (K p + K p.swap) / 2 := by
     funext p
     rcases p with ⟨x, y⟩
-    unfold xiCTaylorThetaTailCorePairCurrent K J aV aD eV eD
-    simp only [Prod.fst, Prod.snd, Prod.swap_prod_mk, map_mul,
-      Complex.conj_ofReal, Complex.mul_im, Complex.mul_re,
-      Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero,
-      zero_sub, mul_zero]
-    push_cast
-    ring
+    simp only [xiCTaylorThetaTailCorePairCurrent, K, J, aV, aD, eV, eD,
+      Prod.fst, Prod.snd, Prod.swap_prod_mk]
+    convert rankTwoSource_mul_symmetricHermitianPair_eq
+        (A x) (A y) (E x) (E y)
+        (thetaCuspTailSecondCoreAtom d z x)
+        (thetaCuspTailSecondCoreAtom d z y)
+        (thetaCuspTailSecondCoreAtomDerivative d z x)
+        (thetaCuspTailSecondCoreAtomDerivative d z y) using 1 <;> ring
   rw [hpoint, hsymm]
   have hADVEint :
       (∫ p : ℝ × ℝ, aD p.1 * (starRingEnd ℂ) (eV p.2) ∂mu.prod mu) =

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.FinitePassiveResponse
+import GaloisForLFunctions.HTGeometry.FiniteKMSFluctuationDissipation
 import GaloisForLFunctions.HTGeometry.PrimeLogHerglotz
 import GaloisForLFunctions.HTGeometry.UniversalPrimeOrientationLimit
 import Mathlib.Analysis.Complex.LocallyUniformLimit
@@ -92,6 +92,88 @@ theorem finiteKMSWightmanTransitionIntensity_primeLogKMSFiniteAmplitude
             Real.mul_self_sqrt (div_nonneg hweight hw.le)]
           exact mul_div_cancel₀ _ hw.ne'
 
+/-- Positive coefficient multiplying the squared amplitude in the energy-weighted finite KMS
+fluctuation--dissipation transform on a vacuum-to-prime transition. -/
+def primeLogKMSFiniteDissipativeNormalizer (P : Finset Nat.Primes)
+    (β : ℝ) (p : P) : ℝ :=
+  primeLogSupport p.1 *
+    (2 * Real.sinh (β * primeLogSupport p.1 / 2) *
+      _root_.HTGeometry.finiteKMSWightmanWeight β
+        (primeLogKMSFiniteEnergy P) (some p) none)
+
+/-- At positive inverse temperature, every vacuum-to-prime dissipative normalizer is strictly
+positive. -/
+theorem primeLogKMSFiniteDissipativeNormalizer_pos
+    (P : Finset Nat.Primes) (β : ℝ) (hβ : 0 < β) (p : P) :
+    0 < primeLogKMSFiniteDissipativeNormalizer P β p := by
+  rw [primeLogKMSFiniteDissipativeNormalizer]
+  exact mul_pos (primeLogSupport_pos p.1)
+    (mul_pos
+      (mul_pos (by norm_num)
+        (Real.sinh_pos_iff.mpr
+          (div_pos (mul_pos hβ (primeLogSupport_pos p.1)) (by norm_num))))
+      (_root_.HTGeometry.finiteKMSWightmanWeight_pos _ _ _ _))
+
+/-- Directed jump amplitude normalized against the positive KMS dissipative oscillator strength.
+Its energy-weighted FDT intensity is the prescribed dyadic prime weight. -/
+def primeLogKMSFiniteDissipativeAmplitude (P : Finset Nat.Primes)
+    (u : Nat.Primes → ℝ) (β : ℝ) : Option P → Option P → ℂ
+  | some p, none =>
+      (Real.sqrt (primeDyadicWeight u p.1 /
+        primeLogKMSFiniteDissipativeNormalizer P β p) : ℂ)
+  | _, _ => 0
+
+/-- **Finite prime-log fluctuation--dissipation realization.**  At positive inverse temperature,
+the energy-weighted FDT intensity of the normalized finite multiplicative Hamiltonian jump is
+exactly the prescribed prime-log carrier intensity. -/
+theorem finiteKMSDissipativeTransitionIntensity_primeLogKMSFiniteAmplitude
+    (P : Finset Nat.Primes) (u : Nat.Primes → ℝ) (β : ℝ) (hβ : 0 < β)
+    (a b : Option P) :
+    _root_.HTGeometry.finiteKMSDissipativeTransitionIntensity β
+        (primeLogKMSFiniteEnergy P)
+        (primeLogKMSFiniteDissipativeAmplitude P u β) a b =
+      primeLogKMSFiniteIntensity P u a b := by
+  cases a with
+  | none =>
+      cases b <;> simp [primeLogKMSFiniteDissipativeAmplitude,
+        primeLogKMSFiniteIntensity,
+        _root_.HTGeometry.finiteKMSDissipativeTransitionIntensity,
+        _root_.HTGeometry.finiteKMSWightmanTransitionIntensity,
+        _root_.HTGeometry.wightmanTransitionIntensity]
+  | some p =>
+      cases b with
+      | some q =>
+          simp [primeLogKMSFiniteDissipativeAmplitude, primeLogKMSFiniteIntensity,
+            _root_.HTGeometry.finiteKMSDissipativeTransitionIntensity,
+            _root_.HTGeometry.finiteKMSWightmanTransitionIntensity,
+            _root_.HTGeometry.wightmanTransitionIntensity]
+      | none =>
+          let d := primeLogKMSFiniteDissipativeNormalizer P β p
+          have hd : 0 < d := primeLogKMSFiniteDissipativeNormalizer_pos P β hβ p
+          have hweight : 0 ≤ primeDyadicWeight u p.1 :=
+            (primeDyadicWeight_pos u p.1).le
+          simp only [_root_.HTGeometry.finiteKMSDissipativeTransitionIntensity,
+            _root_.HTGeometry.finiteKMSWightmanTransitionIntensity,
+            _root_.HTGeometry.wightmanTransitionIntensity,
+            primeLogKMSFiniteDissipativeAmplitude, primeLogKMSFiniteIntensity]
+          simp only [primeLogKMSFiniteEnergy_gap]
+          change primeLogSupport p.1 *
+              (2 * Real.sinh (β * primeLogSupport p.1 / 2) *
+                (_root_.HTGeometry.finiteKMSWightmanWeight β
+                    (primeLogKMSFiniteEnergy P) (some p) none *
+                  Complex.normSq
+                    (↑(Real.sqrt (primeDyadicWeight u p.1 / d))))) =
+            primeDyadicWeight u p.1
+          calc
+            _ = d * Complex.normSq
+                (↑(Real.sqrt (primeDyadicWeight u p.1 / d))) := by
+              simp only [d, primeLogKMSFiniteDissipativeNormalizer]
+              ring
+            _ = d * (primeDyadicWeight u p.1 / d) := by
+              rw [Complex.normSq_ofReal,
+                Real.mul_self_sqrt (div_nonneg hweight hd.le)]
+            _ = primeDyadicWeight u p.1 := mul_div_cancel₀ _ hd.ne'
+
 /-- Finite truncation of the positive prime-log Herglotz carrier. -/
 def finitePrimeLogHerglotz (P : Finset Nat.Primes)
     (u : Nat.Primes → ℝ) (z : ℂ) : ℂ :=
@@ -161,6 +243,23 @@ theorem neg_finiteKMSWightmanResponse_primeLogKMSFiniteAmplitude
       primeLogKMSFiniteIntensity P u by
     funext a b
     exact finiteKMSWightmanTransitionIntensity_primeLogKMSFiniteAmplitude P u β a b]
+  exact neg_finiteTransitionPassiveResponse_primeLogKMSFiniteIntensity P u z
+
+/-- The positive finite KMS dissipative response is exactly the same finite prime-log Herglotz
+carrier.  This is the direct fluctuation--dissipation consumer of the generic identity. -/
+theorem neg_finiteKMSDissipativeResponse_primeLogKMSFiniteAmplitude
+    (P : Finset Nat.Primes) (u : Nat.Primes → ℝ) (β : ℝ) (hβ : 0 < β) (z : ℂ) :
+    -_root_.HTGeometry.finiteTransitionPassiveResponse
+        (_root_.HTGeometry.finiteKMSDissipativeTransitionIntensity β
+          (primeLogKMSFiniteEnergy P)
+          (primeLogKMSFiniteDissipativeAmplitude P u β))
+        (primeLogKMSFiniteEnergy P) z = finitePrimeLogHerglotz P u z := by
+  rw [show _root_.HTGeometry.finiteKMSDissipativeTransitionIntensity β
+      (primeLogKMSFiniteEnergy P) (primeLogKMSFiniteDissipativeAmplitude P u β) =
+      primeLogKMSFiniteIntensity P u by
+    funext a b
+    exact finiteKMSDissipativeTransitionIntensity_primeLogKMSFiniteAmplitude
+      P u β hβ a b]
   exact neg_finiteTransitionPassiveResponse_primeLogKMSFiniteIntensity P u z
 
 /-- The explicitly normalized finite KMS response is holomorphic on the upper half-plane. -/

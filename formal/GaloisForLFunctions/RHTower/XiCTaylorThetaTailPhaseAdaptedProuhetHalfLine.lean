@@ -2504,8 +2504,8 @@ theorem spectralTranslationPhase_logTwo_ne_dyadicProuhetDecayCharacter
   have hnorm := congrArg norm h
   rw [norm_spectralTranslationPhase_eq_exp_neg_mul_im_halfLine] at hnorm
   simp only [Complex.norm_real, Real.norm_eq_abs,
-    abs_of_pos dyadicProuhetDecayCharacter_pos,
-    dyadicProuhetDecayCharacter_eq_exp_neg_log_two_half] at hnorm
+    dyadicProuhetDecayCharacter_eq_exp_neg_log_two_half,
+    abs_of_pos (Real.exp_pos _)] at hnorm
   have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
   have hlt : -Real.log 2 / 2 < -Real.log 2 * z.im := by
     nlinarith

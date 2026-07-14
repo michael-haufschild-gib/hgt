@@ -553,7 +553,11 @@ the phase budget and proves that the completed constraint preserves that carrier
    phase can turn first-order cancellation into a nonconstant affine local coordinate. The
    directional Vandermonde proves finite termination for every finite signed product.
 6. **Negative slopes are excluded.** Reflection converts them to positive-slope Gamma ratios plus
-   trigonometric factors. That finite-phase extension is plausible but is not silently claimed.
+   trigonometric factors. That finite-phase extension is not silently claimed.  The exact
+   imaginary-slope boundary case relevant to Euler factors is isolated in
+   `../not_new_scientific_knowledge/finite-euler-imaginary-gamma-reflection-weld.md`: the pair of
+   slopes `+i log(p)/(2pi)` and `-i log(p)/(2pi)` reconstructs `1-p^(-s)` exactly and exposes the
+   prime character as the trigonometric carrier.
 7. **Arbitrary positive scales have a proved carrier extension.** The separate arbitrary-scale
    theorem
    `./incommensurable-gamma-orbit-free-quasianalyticity.md` replaces a common shift by the product

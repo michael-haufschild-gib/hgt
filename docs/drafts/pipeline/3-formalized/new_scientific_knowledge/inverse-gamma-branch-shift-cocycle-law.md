@@ -1,8 +1,8 @@
 # Inverse-Gamma branch shift cocycle law
 
 - **ID:** inverse-gamma-branch-shift-cocycle-law
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper + Lean analytic branch/value law)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper + complete Lean analytic branch/value and coefficient law)
 - **Status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED]`
 - **Statement:** The local inverse branches of reciprocal Gamma at its negative-integer zeros are
   joined by an exact birational shift cocycle; their residue interpolants transform by its Möbius
@@ -240,7 +240,7 @@ then yields the exact finite Möbius transport
 =\frac{x\rho}{x(z)_k+\rho(z)_k'}.
 \]
 
-`formal/GaloisForLFunctions/HTGeometry/ReciprocalGammaPoleBranch.lean` closes the analytic branch gap.  It
+`formal/GaloisForLFunctions/HTGeometry/ReciprocalGammaPoleBranch.lean` closes the analytic branch gap. It
 proves that reciprocal Gamma has derivative ((-1)^n n!) at (-n), constructs a normalized
 analytic inverse germ `ReciprocalGammaPoleBranch n` with
 
@@ -256,7 +256,24 @@ and proves both `ReciprocalGammaPoleBranch.one_step_cocycle` and
 `ReciprocalGammaPoleBranch.finite_cocycle`.  The latter is exactly the finite rising-factorial
 branch relation in Theorem 3, for arbitrary choices of the normalized local inverse germs.  Thus
 analytic existence, normalization, local uniqueness, and the complete finite branch conjugacy are
-Lean certified; only the displayed higher Taylor-coefficient extraction remains paper-level.
+Lean certified.
+
+`formal/GaloisForLFunctions/HTGeometry/ReciprocalGammaPoleBranchTaylor.lean` completes the Taylor
+coefficient layer. It proves
+
+```text
+iteratedDeriv_two_reciprocalGammaEntire_neg_nat
+ReciprocalGammaPoleBranch.iteratedDeriv_two_zero
+ReciprocalGammaPoleBranch.deriv_zero_eq_neg_linearCoeff
+ReciprocalGammaPoleBranch.quadratic_taylorCoeff
+reciprocalGammaBranchLinearCoeff_succ
+reciprocalGammaBranchQuadraticCoeff_succ
+ReciprocalGammaPoleBranch.taylor_two_with_cubic_remainder
+```
+
+The last theorem packages the displayed expansion with an analytic cubic remainder, while the two
+coefficient recurrences are exactly the factorial and digamma laws stated above. Thus every theorem
+and coefficient corollary in this card is Lean certified.
 
 The direct module build passes.  The axiom audit reports only `propext`, `Classical.choice`, and
 `Quot.sound`.
@@ -300,4 +317,6 @@ Primary parents:
 - [x] finite ascending-factorial log-slope and reciprocal-residue laws formalized
 - [x] finite rising-factorial Möbius residue law formalized at noncritical endpoints
 - [x] reciprocal-Gamma inverse branches and finite branch conjugacy formalized
+- [x] quadratic Taylor coefficient and factorial/digamma recurrences formalized
+- [x] analytic cubic-remainder expansion formalized
 - [ ] specialist novelty audit

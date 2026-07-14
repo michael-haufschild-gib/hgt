@@ -1946,3 +1946,15 @@ target: converge to `T_0` while preserving the contraction bound. See
 - [ ] prove the relative-trace density bound `(12z27)`
 - [ ] prove absence of negative spectral birth `(5a)`
 - [ ] invoke the cofinal floor criterion to prove RH
+
+## Canonical finite-part source class
+
+The paper theorem
+`../2-fully-proven/not_new_scientific_knowledge/connes-semilocal-finite-part-orbital-source-class.md`
+removes the normalization ambiguity in the degree-one branch.  Connes's semilocal cutoff formula
+already supplies the canonical finite-part prime--Gamma source and its exact `log(p^m)` response;
+the quantized-differential class is additive modulo conjugation coboundaries.  The live theorem is
+now the exact descent of this fixed class to the Sonin three-grade principal--relative graph,
+followed by preservation of its finite part and the completed lower-floor comparison.  A new
+relative scalar with merely matching formal coefficients is insufficient, and the bounded
+projection-correction pairing is formally excluded as the full image.

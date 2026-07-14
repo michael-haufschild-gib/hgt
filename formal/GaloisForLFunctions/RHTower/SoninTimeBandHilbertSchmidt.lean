@@ -13,6 +13,7 @@ any Hilbert--Schmidt hypothesis.
 -/
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtOperator
 import GaloisForLFunctions.HTGeometry.TwoProjectionSupersymmetry
+import GaloisForLFunctions.HTGeometry.TwoProjectionHilbertSchmidtEnergy
 import GaloisForLFunctions.RHTower.SoninPrimePowerRegularization
 import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
 
@@ -319,17 +320,170 @@ theorem centralSoninProjectionCorrection_isHilbertSchmidt
     ContinuousLinearMap.IsHilbertSchmidt (centralSoninProjectionCorrection a) :=
   (centralSoninProjectionCorrection_mem_timeBandIdeal a ha).isHilbertSchmidt
 
+/-- The outside-time/outside-band overlap after subtracting the actual common-kernel projector.
+Together with the ordinary time-band overlap, this is the second positive channel in the exact
+Hilbert--Schmidt energy of the Sonin correction. -/
+def centralSoninExteriorOverlap (a : ℝ) : SoninL2 →L[Complex] SoninL2 :=
+  HTGeometry.twoProjectionExteriorOverlap
+    (centralPhysicalForbidden a).starProjection
+    (centralFourierForbidden a).starProjection
+    (centralSoninProjection a)
+
+/-- The zero-mode-subtracted exterior time-band overlap is Hilbert--Schmidt. -/
+theorem centralSoninExteriorOverlap_isHilbertSchmidt
+    (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.IsHilbertSchmidt (centralSoninExteriorOverlap a) := by
+  let A := centralPhysicalForbidden a
+  let B := centralFourierForbidden a
+  let P : SoninL2 →L[ℂ] SoninL2 := A.starProjection
+  let R : SoninL2 →L[ℂ] SoninL2 := B.starProjection
+  let Q : SoninL2 →L[ℂ] SoninL2 := centralSoninProjection a
+  have hC : ContinuousLinearMap.IsHilbertSchmidt (Q - (1 - P - R)) := by
+    simpa only [P, R, Q, A, B, centralSoninProjectionCorrection,
+      indicatorCutoff_eq_physicalForbidden_starProjection,
+      fourierCutoff_eq_fourierForbidden_starProjection] using
+      centralSoninProjectionCorrection_isHilbertSchmidt a ha
+  have hRP : ContinuousLinearMap.IsHilbertSchmidt (R * P) := by
+    simpa only [P, R, A, B, centralPhysicalForbidden, centralFourierForbidden,
+      indicatorCutoff_eq_physicalForbidden_starProjection,
+      fourierCutoff_eq_fourierForbidden_starProjection] using
+      isHilbertSchmidt_fourierCutoff_indicatorCutoff_central a a ha
+  simpa only [centralSoninExteriorOverlap, P, R, Q, A, B] using
+    HTGeometry.twoProjectionExteriorOverlap_isHilbertSchmidt P R Q hC hRP
+
+/-- **Sonin time-band correction energy split.**  The exact projection-correction energy is the
+sum of the ordinary time-band overlap energy and the common-kernel-subtracted exterior overlap
+energy.  Both terms are nonnegative Hilbert--Schmidt values; no trace of the correction itself is
+taken. -/
+theorem hsNormSq_centralSoninProjectionCorrection_eq_timeBand_add_exterior
+    (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.hsNormSq (centralSoninProjectionCorrection a) =
+      ContinuousLinearMap.hsNormSq
+          ((centralFourierForbidden a).starProjection *
+            (centralPhysicalForbidden a).starProjection) +
+        ContinuousLinearMap.hsNormSq (centralSoninExteriorOverlap a) := by
+  let A := centralPhysicalForbidden a
+  let B := centralFourierForbidden a
+  let P : SoninL2 →L[ℂ] SoninL2 := A.starProjection
+  let R : SoninL2 →L[ℂ] SoninL2 := B.starProjection
+  let Q : SoninL2 →L[ℂ] SoninL2 := centralSoninProjection a
+  have hR : IsIdempotentElem R := B.isIdempotentElem_starProjection
+  have hPadj : ContinuousLinearMap.adjoint P = P :=
+    (isSelfAdjoint_starProjection A).star_eq
+  have hRadj : ContinuousLinearMap.adjoint R = R :=
+    (isSelfAdjoint_starProjection B).star_eq
+  have hRQ : R * Q = 0 := by
+    apply ContinuousLinearMap.ext
+    intro x
+    change B.starProjection ((Aᵮ ⊓ Bᵮ).starProjection x) = 0
+    apply B.starProjection_apply_eq_zero_iff.mpr
+    exact ((Aᵮ ⊓ Bᵮ).starProjection_apply_mem x).2
+  have hC : ContinuousLinearMap.IsHilbertSchmidt (Q - (1 - P - R)) := by
+    simpa only [P, R, Q, A, B, centralSoninProjectionCorrection,
+      indicatorCutoff_eq_physicalForbidden_starProjection,
+      fourierCutoff_eq_fourierForbidden_starProjection] using
+      centralSoninProjectionCorrection_isHilbertSchmidt a ha
+  have hRP : ContinuousLinearMap.IsHilbertSchmidt (R * P) := by
+    simpa only [P, R, A, B, centralPhysicalForbidden, centralFourierForbidden,
+      indicatorCutoff_eq_physicalForbidden_starProjection,
+      fourierCutoff_eq_fourierForbidden_starProjection] using
+      isHilbertSchmidt_fourierCutoff_indicatorCutoff_central a a ha
+  have hsplit :=
+    HTGeometry.hsNormSq_twoProjection_correctedComplement_eq_overlap_add_exterior
+      P R Q hR hPadj hRadj hRQ hC hRP
+  simpa only [P, R, Q, A, B, centralSoninProjectionCorrection,
+    centralSoninExteriorOverlap,
+    indicatorCutoff_eq_physicalForbidden_starProjection,
+    fourierCutoff_eq_fourierForbidden_starProjection] using hsplit
+
 /-- The exact principal-subtracted ambient Sonin dilation residual is Hilbert--Schmidt. -/
 theorem centralSoninDilationCornerResidual_isHilbertSchmidt
     (a p : ℝ) (ha : 0 < a) (hp : 1 < p) :
     ContinuousLinearMap.IsHilbertSchmidt (centralSoninDilationCornerResidual a p hp) :=
   (centralSoninDilationCornerResidual_mem_timeBandIdeal a p ha hp).isHilbertSchmidt
 
+/-- **Sonin active-space conservation law.**  The physical/Fourier projection mismatch and the
+exact projection correction exhaust the squared norm outside the actual Sonin carrier.  Thus the
+Hilbert--Schmidt correction is not an independent error term: it is the zero-mode-subtracted
+supersymmetric partner of the two forbidden-sector projections. -/
+theorem norm_centralSoninProjectionDifference_sq_add_correction_sq
+    (a : ℝ) (psi : SoninL2) :
+    ‖((centralPhysicalForbidden a).starProjection -
+        (centralFourierForbidden a).starProjection) psi‖ ^ 2 +
+      ‖centralSoninProjectionCorrection a psi‖ ^ 2 =
+        ‖((1 : SoninL2 →L[ℂ] SoninL2) - centralSoninProjection a) psi‖ ^ 2 := by
+  let A := centralPhysicalForbidden a
+  let B := centralFourierForbidden a
+  let P : SoninL2 →L[ℂ] SoninL2 := A.starProjection
+  let R : SoninL2 →L[ℂ] SoninL2 := B.starProjection
+  let Q : SoninL2 →L[ℂ] SoninL2 := centralSoninProjection a
+  have hP : IsIdempotentElem P := A.isIdempotentElem_starProjection
+  have hR : IsIdempotentElem R := B.isIdempotentElem_starProjection
+  have hQ : IsIdempotentElem Q := by
+    dsimp only [Q, centralSoninProjection, centralSoninCarrier]
+    exact (Aᵮ ⊓ Bᵮ).isIdempotentElem_starProjection
+  have hPadj : ContinuousLinearMap.adjoint P = P :=
+    (isSelfAdjoint_starProjection A).star_eq
+  have hRadj : ContinuousLinearMap.adjoint R = R :=
+    (isSelfAdjoint_starProjection B).star_eq
+  have hQadj : ContinuousLinearMap.adjoint Q = Q := by
+    dsimp only [Q, centralSoninProjection, centralSoninCarrier]
+    exact (isSelfAdjoint_starProjection (Aᵮ ⊓ Bᵮ)).star_eq
+  have hPQ : P * Q = 0 := by
+    apply ContinuousLinearMap.ext
+    intro x
+    change A.starProjection ((Aᵮ ⊓ Bᵮ).starProjection x) = 0
+    apply A.starProjection_apply_eq_zero_iff.mpr
+    exact ((Aᵮ ⊓ Bᵮ).starProjection_apply_mem x).1
+  have hRQ : R * Q = 0 := by
+    apply ContinuousLinearMap.ext
+    intro x
+    change B.starProjection ((Aᵮ ⊓ Bᵮ).starProjection x) = 0
+    apply B.starProjection_apply_eq_zero_iff.mpr
+    exact ((Aᵮ ⊓ Bᵮ).starProjection_apply_mem x).2
+  have hQP : Q * P = 0 := by
+    calc
+      Q * P = ContinuousLinearMap.adjoint (P * Q) := by
+        rw [adjoint_mul_soninL2, hQadj, hPadj]
+      _ = 0 := by rw [hPQ]; simp
+  have hQR : Q * R = 0 := by
+    calc
+      Q * R = ContinuousLinearMap.adjoint (R * Q) := by
+        rw [adjoint_mul_soninL2, hQadj, hRadj]
+      _ = 0 := by rw [hRQ]; simp
+  have henergy := HTGeometry.norm_twoProjection_difference_sq_add_corrected_complement_sq
+    P R Q hP hR hQ hPadj hRadj hQadj hPQ hQP hRQ hQR psi
+  simpa only [P, R, Q, A, B, centralSoninProjectionCorrection,
+    indicatorCutoff_eq_physicalForbidden_starProjection,
+    fourierCutoff_eq_fourierForbidden_starProjection] using henergy
+
 theorem norm_one_sub_centralSoninProjection_le_one (a : ℝ) :
     ‖(1 : SoninL2 →L[ℂ] SoninL2) - centralSoninProjection a‖ ≤ 1 := by
   rw [centralSoninProjection]
   rw [← (centralSoninCarrier a).starProjection_orthogonal']
   exact Submodule.starProjection_norm_le _
+
+/-- The exact Sonin projection correction is itself a contraction.  This follows from the active
+energy partition, rather than from a triangle estimate on its three projection terms. -/
+theorem norm_centralSoninProjectionCorrection_le_one (a : ℝ) :
+    ‖centralSoninProjectionCorrection a‖ ≤ 1 := by
+  apply (centralSoninProjectionCorrection a).opNorm_le_bound zero_le_one
+  intro psi
+  have henergy := norm_centralSoninProjectionDifference_sq_add_correction_sq a psi
+  have hcorr : ‖centralSoninProjectionCorrection a psi‖ ≤
+      ‖((1 : SoninL2 →L[ℂ] SoninL2) - centralSoninProjection a) psi‖ := by
+    apply (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).mp
+    nlinarith [sq_nonneg
+      ‖((centralPhysicalForbidden a).starProjection -
+        (centralFourierForbidden a).starProjection) psi‖]
+  calc
+    ‖centralSoninProjectionCorrection a psi‖ ≤
+        ‖((1 : SoninL2 →L[ℂ] SoninL2) - centralSoninProjection a) psi‖ := hcorr
+    _ ≤ ‖(1 : SoninL2 →L[ℂ] SoninL2) - centralSoninProjection a‖ * ‖psi‖ :=
+      ((1 : SoninL2 →L[ℂ] SoninL2) - centralSoninProjection a).le_opNorm psi
+    _ ≤ 1 * ‖psi‖ := mul_le_mul_of_nonneg_right
+      (norm_one_sub_centralSoninProjection_le_one a) (norm_nonneg psi)
+    _ = ‖psi‖ := one_mul _
 
 /-- **Sharp two-projection bound.**  The formal physical/Fourier complement is a contraction.
 This is the Sonin specialization of the anticommutative Pythagorean identity and removes the
@@ -346,6 +500,61 @@ theorem norm_centralSoninFormalComplement_le_one (a : ℝ) :
     (centralFourierForbidden a).isIdempotentElem_starProjection
     (isSelfAdjoint_starProjection (centralPhysicalForbidden a)).star_eq
     (isSelfAdjoint_starProjection (centralFourierForbidden a)).star_eq
+
+/-- The active-space correction law propagates to a scale-independent operator-norm estimate for
+the principal-subtracted dilation corner.  Both cutoff factors and the exact correction are
+contractions; only the symmetric dilation sum contributes the factor `2` in each of the two
+linearized residual terms. -/
+theorem norm_centralSoninDilationCornerResidual_le_four
+    (a p : ℝ) (hp : 1 < p) :
+    ‖centralSoninDilationCornerResidual a p hp‖ ≤ 4 := by
+  let Q := centralSoninProjection a
+  let Q₀ := centralSoninFormalComplement a
+  let D := dilationSum p hp
+  let C := centralSoninProjectionCorrection a
+  have hEq : centralSoninDilationCornerResidual a p hp =
+      (1 - Q) * D * C - C * D * Q₀ := by
+    have hCeq : C = Q - Q₀ := by
+      rfl
+    have hgeneral : crossBoundary Q D - crossBoundary Q₀ D =
+        (1 - Q) * D * (Q - Q₀) - (Q - Q₀) * D * Q₀ := by
+      simp only [crossBoundary]
+      noncomm_ring
+    rw [hCeq]
+    simpa [centralSoninDilationCornerResidual,
+      centralSoninPrincipalDilationCorner, Q, Q₀, D] using hgeneral
+  have hQ : ‖(1 : SoninL2 →L[ℂ] SoninL2) - Q‖ ≤ 1 := by
+    simpa [Q] using norm_one_sub_centralSoninProjection_le_one a
+  have hQ₀ : ‖Q₀‖ ≤ 1 := by
+    simpa [Q₀] using norm_centralSoninFormalComplement_le_one a
+  have hC : ‖C‖ ≤ 1 := by
+    simpa [C] using norm_centralSoninProjectionCorrection_le_one a
+  have hD : ‖D‖ ≤ 2 := by
+    dsimp [D]
+    apply (dilationSum p hp).opNorm_le_bound (by norm_num)
+    intro f
+    rw [dilationSum_apply]
+    calc
+      ‖dilation p (zero_lt_one.trans hp) f +
+          dilation p⁻¹ (inv_pos.mpr (zero_lt_one.trans hp)) f‖
+          ≤ ‖dilation p (zero_lt_one.trans hp) f‖ +
+            ‖dilation p⁻¹ (inv_pos.mpr (zero_lt_one.trans hp)) f‖ := norm_add_le _ _
+      _ = 2 * ‖f‖ := by
+        rw [(dilation p (zero_lt_one.trans hp)).norm_map,
+          (dilation p⁻¹ (inv_pos.mpr (zero_lt_one.trans hp))).norm_map]
+        ring
+  rw [hEq]
+  calc
+    ‖(1 - Q) * D * C - C * D * Q₀‖ ≤
+        ‖(1 - Q) * D * C‖ + ‖C * D * Q₀‖ := norm_sub_le _ _
+    _ ≤ (‖1 - Q‖ * ‖D‖) * ‖C‖ + (‖C‖ * ‖D‖) * ‖Q₀‖ := by
+      exact add_le_add
+        ((norm_mul_le ((1 - Q) * D) C).trans
+          (mul_le_mul_of_nonneg_right (norm_mul_le (1 - Q) D) (norm_nonneg C)))
+        ((norm_mul_le (C * D) Q₀).trans
+          (mul_le_mul_of_nonneg_right (norm_mul_le C D) (norm_nonneg Q₀)))
+    _ ≤ (1 * 2) * 1 + (1 * 2) * 1 := by gcongr
+    _ = 4 := by norm_num
 
 /-- **Uniform scale-independent residual bound.** The Hilbert--Schmidt energy of the exact
 principal-subtracted Sonin dilation residual is controlled solely by the fixed projection
@@ -427,6 +636,18 @@ theorem centralSoninDilationCornerResidual_hsNormSq_le
         hsNormSq_sub_le hA hB
       _ ≤ 2 * (4 * hsNormSq C) + 2 * (4 * hsNormSq C) := by gcongr
       _ = 16 * hsNormSq C := by ring
+
+/-- The residual estimate with the opaque correction energy eliminated.  The right-hand side is
+now the sum of the concrete time-band overlap and its zero-mode-subtracted exterior partner. -/
+theorem centralSoninDilationCornerResidual_hsNormSq_le_timeBand_add_exterior
+    (a p : ℝ) (ha : 0 < a) (hp : 1 < p) :
+    ContinuousLinearMap.hsNormSq (centralSoninDilationCornerResidual a p hp) ≤
+      16 * (ContinuousLinearMap.hsNormSq
+          ((centralFourierForbidden a).starProjection *
+            (centralPhysicalForbidden a).starProjection) +
+        ContinuousLinearMap.hsNormSq (centralSoninExteriorOverlap a)) := by
+  rw [← hsNormSq_centralSoninProjectionCorrection_eq_timeBand_add_exterior a ha]
+  exact centralSoninDilationCornerResidual_hsNormSq_le a p ha hp
 
 /-- Every actual prime-power residual block is Hilbert--Schmidt. -/
 theorem centralSoninPrimePowerResidual_isHilbertSchmidt

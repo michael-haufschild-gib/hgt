@@ -215,3 +215,20 @@ native-seam route is retired.
 - [ ] 2 -> 3: the structural naturality theorem is formalized; the analytic `L^2` noncompactness proof
       remains paper-only.
 - [ ] 3 -> 4: requires the trace-ideal prolate defect or a publication-level route-closure note.
+
+## The flat place transition has a nonflat logarithmic-position connection
+
+Cutoff-flatness of the canonically transported projection does not make the place map source-flat.
+The companion theorem `semilocal-dual-pair-euler-connection-source-law.md` uses the explicit
+Mellin multiplier of `theta_S` to prove
+
+```text
+theta_S^(-1)D_S theta_S-D_infinity
+  =M_(-sum_(p in S_f)L_p'/L_p).                           (D1)
+```
+
+Thus the same `theta_S` that is flat for transported algebraic cutoffs has an exact degree-one
+connection defect for logarithmic position, with the finite von Mangoldt coefficients.  This
+positively selects the source-bearing successor to the cutoff-flat transition: compress or
+resolvent-dress `(D1)` together with the Burnol conductor.  It does not revive the raw support
+corner or the finite Fitting shortcut retired above.

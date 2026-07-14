@@ -76,6 +76,13 @@ The remaining positive theorem is therefore the scalar source inequality
 equivalently left-half-strip accretivity of the completed prime--Gamma flux. Any prime, theta,
 Sonin, or determinant mechanism that supplies this scalar sign closes RH immediately.
 
+The finite Euler connection is now audited exactly in
+`../../2-fully-proven/not_new_scientific_knowledge/finite-euler-connection-cauchy-phase-chambers.md`.
+Its one-prime diagonal is a difference of two positive disk Poisson kernels and has an explicit
+positive/negative phase threshold; every finite nonempty prime packet visits both chambers.
+Consequently a semilocal proof of this gate cannot stop at positivity of individual Euler or
+all-pass factors.  It must prove phase-locked domination by the completed prime--Gamma remainder.
+
 ## Lean certificate
 
 Module:

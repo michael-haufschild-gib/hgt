@@ -287,3 +287,35 @@ scientific theorem.
 - [ ] zero-fibre annihilation of the tangential connection in `(21)`
 - [ ] finite two-prime compact curvature extraction
 - [ ] prime-seam coherence and RH
+
+## Exact arithmetic contraction of the tangential connection
+
+`semilocal-dual-pair-euler-connection-source-law.md` now identifies the canonical arithmetic
+contraction of the parameter connection left unnamed in `(20)--(21)`.  In raw Mellin coordinates
+the actual place map is multiplication by
+
+```text
+g_S(t)=product_(p in S_f)(1-p^(-1/2-i t)),
+```
+
+and on the common logarithmic-position core
+
+```text
+theta_S^(-1)D_S theta_S-D_infinity
+  =M_(-sum_(p in S_f)L_p'/L_p).                           (23)
+```
+
+If `A_p=g_a^(-1)partial_(a_p)g_a`, the exact relation is
+
+```text
+-sum_(p in S_f)log(p) A_p|_(a=1)
+  =-sum_(p in S_f)L_p'/L_p.                               (24)
+```
+
+The Fourier coefficients are exactly `log(p)p^(-m/2)`.  Thus the source-bearing contraction of
+the tangential connection is the finite von Mangoldt source.  This does not identify or annihilate
+every independent parameter direction.  The remaining zero-fibre problem in `(21)` is to show
+that cutoff/resolvent cyclic descent preserves `(24)` and that the completed prime--Gamma
+combination has the required compact cancellation or lower floor.  Differentiating the flat
+primal--dual pairing cannot simply delete `(24)`, because it cancels against the dual connection
+before the orthogonal normal split.

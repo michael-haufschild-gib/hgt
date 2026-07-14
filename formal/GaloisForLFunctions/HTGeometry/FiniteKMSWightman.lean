@@ -13,6 +13,8 @@ This file records the exact finite-temperature value relations that matter to th
 * the partition function and every Wightman weight are positive;
 * the Wightman pair weight is symmetric and its square is the product of the endpoint Gibbs
   probabilities;
+* contraction over one thermal index makes the half-density kernel an exact rank-one projector,
+  and its squared row marginals recover the Gibbs state;
 * a Hermitian observable therefore has a nonnegative symmetric transition intensity;
 * ordinary and shifted Hankel positivity require no separately supplied weight hypothesis, and all
   odd Liouvillian moments vanish.
@@ -111,6 +113,67 @@ theorem finiteKMSWightmanWeight_sq {α : Type*} [Fintype α]
             Real.exp_add _ _
   rw [div_pow, hexp]
   ring
+
+/-- **Thermofield gluing law.**  Multiplying two canonical half-density amplitudes through an
+intermediate energy state inserts exactly the Gibbs probability of that state.  This is the
+coefficientwise rank-one factorization behind the canonical thermofield-double purification. -/
+theorem finiteKMSWightmanWeight_mul_eq_self_mul_stateWeight
+    {α : Type*} [Fintype α] [Nonempty α]
+    (β : ℝ) (energy : α → ℝ) (a b c : α) :
+    finiteKMSWightmanWeight β energy a b *
+        finiteKMSWightmanWeight β energy b c =
+      finiteKMSWightmanWeight β energy a c *
+        finiteGibbsStateWeight β energy b := by
+  simp only [finiteKMSWightmanWeight, finiteGibbsStateWeight]
+  have hZ : finiteGibbsPartition β energy ≠ 0 :=
+    (finiteGibbsPartition_pos β energy).ne'
+  field_simp [hZ]
+  rw [← Real.exp_add, ← Real.exp_add]
+  congr 1
+  ring
+
+/-- **Thermofield projector law.**  Contracting the canonical Wightman half-density kernel over
+its middle energy index reproduces the kernel exactly. -/
+theorem sum_mul_finiteKMSWightmanWeight_eq_self
+    {α : Type*} [Fintype α] [Nonempty α]
+    (β : ℝ) (energy : α → ℝ) (a c : α) :
+    ∑ b, finiteKMSWightmanWeight β energy a b *
+        finiteKMSWightmanWeight β energy b c =
+      finiteKMSWightmanWeight β energy a c := by
+  calc
+    (∑ b, finiteKMSWightmanWeight β energy a b *
+        finiteKMSWightmanWeight β energy b c) =
+        ∑ b, finiteKMSWightmanWeight β energy a c *
+          finiteGibbsStateWeight β energy b := by
+      apply Finset.sum_congr rfl
+      intro b hb
+      exact finiteKMSWightmanWeight_mul_eq_self_mul_stateWeight
+        β energy a b c
+    _ = finiteKMSWightmanWeight β energy a c *
+        ∑ b, finiteGibbsStateWeight β energy b := by
+      rw [Finset.mul_sum]
+    _ = finiteKMSWightmanWeight β energy a c := by
+      rw [sum_finiteGibbsStateWeight_eq_one, mul_one]
+
+/-- **Gibbs marginal of the thermofield projector.**  The squared mass of one row of the
+half-density kernel is exactly the Gibbs probability of that energy state. -/
+theorem sum_sq_finiteKMSWightmanWeight_eq_stateWeight
+    {α : Type*} [Fintype α] [Nonempty α]
+    (β : ℝ) (energy : α → ℝ) (a : α) :
+    ∑ b, finiteKMSWightmanWeight β energy a b ^ 2 =
+      finiteGibbsStateWeight β energy a := by
+  calc
+    (∑ b, finiteKMSWightmanWeight β energy a b ^ 2) =
+        ∑ b, finiteGibbsStateWeight β energy a *
+          finiteGibbsStateWeight β energy b := by
+      apply Finset.sum_congr rfl
+      intro b hb
+      exact finiteKMSWightmanWeight_sq β energy a b
+    _ = finiteGibbsStateWeight β energy a *
+        ∑ b, finiteGibbsStateWeight β energy b := by
+      rw [Finset.mul_sum]
+    _ = finiteGibbsStateWeight β energy a := by
+      rw [sum_finiteGibbsStateWeight_eq_one, mul_one]
 
 /-- Canonical finite-temperature Wightman transition intensity. -/
 def finiteKMSWightmanTransitionIntensity {α : Type*} [Fintype α]

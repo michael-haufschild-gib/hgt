@@ -200,10 +200,29 @@ and parent-theory audit.
   `not_summable_primeLogHerglotzTransportMassOrder_of_pos`
 - [x] formalize the full rational-packet finite-independence theorem as
   `summable_primeLogCauchyPacketTransportEnergy_iff` in `PrimeLogCauchySeamRank.lean`
+- [x] formalize the quotient family, infinite algebraic dimension, and finite-rank correction
+  exclusion in `PrimeLogCauchyRenormalizationRank.lean`
+- [x] 2 → 3 Lean gate: narrow module check and principal axiom audit pass
 - [ ] audit weighted Cauchy-transform and renormalized-resolvent literature more broadly
 - [ ] construct the infinite marked prime--Gamma seam carrier
 - [ ] transport its complete inertia into the screw spaces
 - [ ] RH
+
+## Lean quotient-rank certificate
+
+`formal/GaloisForLFunctions/HTGeometry/PrimeLogCauchyRenormalizationRank.lean` constructs the literal
+quotient of prime-indexed complex sequences by the ordinary `ell^2` submodule and proves:
+
+- `primeLogTransportedCauchyClass_linearIndependent`, finite independence of every distinct
+  upper-half-plane packet in the quotient;
+- `primeLogCauchyQuotient_has_independent_family` and
+  `primeLogCauchyQuotient_not_moduleFinite`, explicit independent families of every finite size and
+  infinite algebraic dimension; and
+- `primeLogCauchy_repair_has_unbounded_finite_rank` and
+  `primeLogCauchy_no_finiteDimensional_repair`, the exact positive renormalization obligation.
+
+The leaf source check passes. The principal declarations use only `propext`, `Classical.choice`,
+and `Quot.sound`.
 
 ## Log
 

@@ -58,7 +58,9 @@ functional-equation/divisor data.
 - [x] exact raw-carrier and complete-palette field-quotient deduction formalized unconditionally
 - [x] 1 -> 2 fully-proven: complete paper proof of the shifted equivalence and exact
   complete-palette field corollary
-- [ ] 2 -> 3 formalized: unconditional theorem surface, narrow build, axiom audit, lint
+- [ ] 2 -> 3 formalized: carrier and all finite unshifted derivative rectangles are formalized;
+  finite shifts, the `C(s)` coefficient augmentation, converse field packaging, and analytic
+  positivity remain
 - [ ] 3 -> 4 publication-ready: replace the compact-open completion section only after novelty and
   significance survive the full parent-theory audit
 
@@ -140,11 +142,12 @@ By Bochner uniqueness it is positive definite exactly when every sign is positiv
 
 ## Remaining formal boundary
 
-The paper proof is complete.  Movement to stage 3 still requires an internal implementation of the
-classical exponential-polynomial fibre rigidity and the classical Shapiro--Sparer/Pong
-formal-to-analytic Jacobian transfer.  These are parent theorems, not open mathematical steps in
-the paper result; until they are connected, the complete analytic theorem itself is not claimed as
-formalized.
+The prime exponential--polynomial fibre rigidity, dynamic finite-prime Shapiro--Sparer Jacobian
+criterion, faithful convergent Dirichlet realization, and all finite unshifted derivative
+rectangles are formalized and axiom-audited.  The exact card still requires the finite shift
+palettes, adjoining the independent variable to obtain the stated `C(s)`-augmented analytic
+coefficient field, the converse raw-field and differential-transcendence-degree packaging, and the
+analytic Bochner positive-definiteness equivalence.
 
 ## Literature boundary
 
@@ -169,6 +172,15 @@ The file `PrimeDirichletTailPattern.lean` proves:
 - `primeOrientationAtomicMassPositive_iff_allPositive`;
 - `primeOrientationTailPairDependent_iff`.
 - `primeOrientationTailPairDependent_allPositive_iff`.
+
+The files `FinitePrimeCoefficientField.lean` and `PrimeDirichletAnalyticTransfer.lean` additionally
+prove:
+
+- `algebraicIndependent_fractionPrimeColumns_over_finitePrimeCoefficientField`;
+- `signedPrimeRotatedJets_algebraicIndependent_over_finitePrimeCoefficientField`;
+- `signedPrimeUpperEndGerm_jets_algebraicIndependent`;
+- `signedPrimeUpperEndGerm_iteratedDeriv`;
+- `rightHalfPlaneLSeriesToUpperEndGerm_injective`.
 
 ## Log
 

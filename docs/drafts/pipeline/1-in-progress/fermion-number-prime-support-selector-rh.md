@@ -89,6 +89,48 @@ Hence the finite scalar determinant has exactly the desired Euler value but is s
 to connected prime--prime coupling.  The fermionic selector solves the mixed-word arithmetic and
 simultaneously proves that no scalar finite-level supertrace can supply the RH orientation.
 
+## Non-Fredholm Witten-index audit
+
+Physics sharpens the location of any surviving completion defect.  For a bounded
+Hilbert--Schmidt supercharge `C`, the partner Hamiltonians
+
+```text
+H_1 = C†C,
+H_2 = CC†
+```
+
+satisfy the exact intertwiner `C H_1 = H_2 C` and the trace equality
+
+```text
+Tr(H_1) = Tr(H_2).
+```
+
+These relations are now source-formalized as
+`quantumMasterConstraint_partner_intertwining` and
+`opTrace_quantumMasterConstraint_eq_partner`.  They prove a stronger finite/trace-class no-go:
+an ordinary partner trace cannot carry the desired anomaly.
+
+The mathematical-physics literature identifies the only viable successor.  For a non-Fredholm
+supercharge `D`, the resolvent-regularized Witten index is obtained from
+
+```text
+lim_(lambda -> 0-) (-lambda)
+  Tr((D†D-lambda)^(-1) - (DD†-lambda)^(-1)),
+```
+
+and, under the required trace-class and boundary-value hypotheses, equals a spectral-shift value
+at zero.  See Carey--Gesztesy--Levitina--Sukochev, arXiv:1505.04895, and the explicit non-Fredholm
+model of Carey et al., arXiv:1509.01356.  Gapless quantum walks show that this index can retain
+half-integer boundary values in the non-Fredholm regime (Matsuzawa et al., arXiv:2111.04108).
+
+`[CONJECTURE / ROUTE, NOT PROMOTED]` The cofinal marked-prime completion defect should therefore be
+sought as a zero-energy spectral shift of a source-built supersymmetric partner pair, not as a
+limit of ordinary finite supertraces.  To become a theorem this route must construct `D` from the
+coupled Sonin/prime--Gamma incidence, prove the partner relative resolvent difference trace class,
+and identify its spectral shift without inserting the Xi divisor.  The present corpus has neither
+that source operator nor a spectral-shift formalism, so the literature formula is recorded as a
+precise research target rather than wrapped as Lean progress.
+
 This closure is now formal rather than heuristic.  The mixed-word predicate is preserved under
 arbitrary left and right concatenation (`IsMixedPrimeWord.sandwich`), and
 `primeWordSupportSelector_sandwich_eq_zero` annihilates every such contextualized word.  The

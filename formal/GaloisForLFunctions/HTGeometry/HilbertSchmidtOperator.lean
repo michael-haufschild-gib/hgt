@@ -470,6 +470,56 @@ theorem hsInner_smul_right (c : 𝕜) (S T : E →L[𝕜] F) :
   exact tsum_congr fun i => by rw [smul_apply, inner_smul_right]
 
 omit [CompleteSpace F] in
+/-- Negation preserves the squared Hilbert--Schmidt norm. -/
+theorem hsNormSq_neg_eq_self (T : E →L[𝕜] F) :
+    hsNormSq (-T) = hsNormSq T := by
+  unfold hsNormSq
+  exact tsum_congr fun i => by simp
+
+/-- **Hilbert--Schmidt Pythagoras.**  Hilbert--Schmidt-orthogonal operators have additive
+squared norm.  This is the operator-space form of the familiar orthogonal energy partition and
+is independent of the Hilbert basis used to define the pairing. -/
+theorem hsNormSq_add_eq_of_hsInner_eq_zero {S T : E →L[𝕜] F}
+    (hS : IsHilbertSchmidt S) (hT : IsHilbertSchmidt T)
+    (horth : hsInner S T = 0) :
+    hsNormSq (S + T) = hsNormSq S + hsNormSq T := by
+  have hST := hS.add hT
+  have horth' : hsInner T S = 0 := by
+    calc
+      hsInner T S = conj (hsInner S T) := hsInner_conj_symm T S
+      _ = 0 := by rw [horth, map_zero]
+  have hpair : hsInner (S + T) (S + T) = hsInner S S + hsInner T T := by
+    calc
+      hsInner (S + T) (S + T) =
+          hsInner S (S + T) + hsInner T (S + T) :=
+        hsInner_add_left hS hT hST
+      _ = (hsInner S S + hsInner S T) +
+          (hsInner T S + hsInner T T) := by
+        rw [hsInner_add_right hS hS hT, hsInner_add_right hT hS hT]
+      _ = hsInner S S + hsInner T T := by rw [horth, horth']; abel
+  calc
+    hsNormSq (S + T) = RCLike.re (hsInner (S + T) (S + T)) :=
+      (hsInner_self_re hST).symm
+    _ = RCLike.re (hsInner S S) + RCLike.re (hsInner T T) := by
+      rw [hpair, map_add]
+    _ = hsNormSq S + hsNormSq T := by rw [hsInner_self_re hS, hsInner_self_re hT]
+
+/-- Hilbert--Schmidt-orthogonal operators also satisfy the exact difference Pythagorean law.
+This is the form naturally consumed by commutators, whose two off-diagonal corners occur with
+opposite signs. -/
+theorem hsNormSq_sub_eq_add_of_hsInner_eq_zero {S T : E →L[𝕜] F}
+    (hS : IsHilbertSchmidt S) (hT : IsHilbertSchmidt T)
+    (horth : hsInner S T = 0) :
+    hsNormSq (S - T) = hsNormSq S + hsNormSq T := by
+  have horthNeg : hsInner S (-T) = 0 := by
+    calc
+      hsInner S (-T) = hsInner S ((-1 : 𝕜) • T) := by rw [neg_one_smul]
+      _ = (-1 : 𝕜) * hsInner S T := hsInner_smul_right (-1) S T
+      _ = 0 := by rw [horth, mul_zero]
+  have h := hsNormSq_add_eq_of_hsInner_eq_zero hS hT.neg horthNeg
+  simpa only [sub_eq_add_neg, hsNormSq_neg_eq_self] using h
+
+omit [CompleteSpace F] in
 /-- **Positive-definiteness of the Hilbert–Schmidt norm.**  `‖T‖²_HS = 0 ↔ T = 0`: each term
 `‖T eᵢ‖²` of the vanishing nonnegative sum vanishes, so `T` kills a Hilbert basis and hence its
 dense span.  Together with `hsInner_self_re`, the sesquilinearity, and the conjugate symmetry, this

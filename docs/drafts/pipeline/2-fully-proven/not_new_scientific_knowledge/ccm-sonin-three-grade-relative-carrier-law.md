@@ -292,3 +292,48 @@ relative carrier or contraction is constructed.
 - [ ] construct the cofinal contractions `C_a`
 - [ ] prove index-preserving transport to `G_a`
 - [ ] invoke aperture Morse-charge conservation to prove RH
+
+## Connes finite-part normalization of the degree-one class
+
+The companion theorem
+`connes-semilocal-finite-part-orbital-source-class.md` sharpens the remaining degree-one task.
+Connes's proved semilocal cutoff formula already defines a canonical finite-part functional
+
+```text
+FP_S(f)=lim_(Lambda->infinity)
+  (Tr(vartheta_a(f)R_Lambda)-2f(1)log Lambda)
+       =sum_(v in S)W_v(f),
+```
+
+whose `p^m` response is exactly `log(p^m)` after the Euler-logarithm coefficient is factored out.
+The quantized-differential product identity makes this source class additive and independent of the
+Gauss factorization modulo conjugation coboundaries.  Thus the open task is not to invent or
+normalize an abstract relative trace.  It is to descend this already fixed cyclic finite-part class
+to the closed Sonin three-grade extension, identify its image with the internal trace-defect plus
+Burnol-conductor/Euler leakage cross, and prove the completed contraction.  The formal bounded-
+response obstruction proves that this descent cannot land entirely in the fixed Hilbert--Schmidt
+projection-correction pairing.
+
+Connes--Consani define the finite semilocal Sonin carrier as the kernel of the lower Hardy block of
+the finite completed quasi-inner multiplier.  Connes--Consani--Moscovici subsequently prove the
+stronger aperture-by-aperture Hilbertian isomorphism with the classical Sonin space and its common
+de Branges realization.  Thus no carrier-identification problem remains.  The open grade problem
+is to transport the cyclic finite part and its index through the explicit place connection and the
+Sonin cutoff/resolvent.
+
+## Exact degree-one source representative
+
+`semilocal-dual-pair-euler-connection-source-law.md` closes the finite-place degree-one
+representative before cutoff.  The Connes--Consani--Moscovici place isomorphism satisfies
+
+```text
+theta_S^(-1)D_S theta_S-D_infinity
+  =M_(-sum_(p in S_f)L_p'/L_p),                           (C1)
+```
+
+and the multiplier on the right has the exact von Mangoldt coefficients.  Together with the
+Connes finite-part theorem, the principal degree-one grade is therefore fixed simultaneously as a
+cutoff finite part, a quantized-differential orbital class, and a semilocal Euler connection.  The
+remaining three-grade theorem must transport this explicit connection through the Sonin
+cutoff/resolvent and combine it with the Burnol conductor and positive trace-class residual.  It no
+longer asks for an abstract semilocal carrier or an arbitrary relative trace.

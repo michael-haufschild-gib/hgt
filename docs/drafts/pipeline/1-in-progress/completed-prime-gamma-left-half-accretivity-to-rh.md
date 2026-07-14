@@ -196,6 +196,12 @@ non-RHTower modules sharpen the open source theorem without discharging it:
   reflected anomaly is real exactly on the critical line. This identifies the correct Gamma
   channel, but a source theorem must still force the combined prime--Gamma relative trace to have
   the required sign or reality.
+- `../2-fully-proven/not_new_scientific_knowledge/finite-euler-connection-cauchy-phase-chambers.md`
+  identifies the finite-place orientation exactly: the literal one-sided prime contribution is
+  one half of an FE-paired radial difference of disk Poisson kernels, with a closed phase threshold,
+  and every finite nonempty packet visits both signs.  Hence the missing completion theorem is a
+  phase-locked Gamma/cofinal compensation inequality, not positivity of the finite Euler
+  connection.
 - `FinitePrimeBoundaryTransfer.lean` proves the cofinal implication from sub-log-square reflected
   prime energy to horizontal pinning. It remains a second compatible endpoint: a source-side
   construction producing that energy bound would feed the same critical-line conclusion without

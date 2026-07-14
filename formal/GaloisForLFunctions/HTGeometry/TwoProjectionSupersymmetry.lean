@@ -45,6 +45,38 @@ theorem twoProjection_difference_anticommutes_complement
   have hQQ : Q * Q = Q := hQ
   noncomm_ring [hPP, hQQ]
 
+/-- **Zero-mode-subtracted two-projection partition.**  Suppose `Z` is an idempotent annihilated
+on both sides by the two idempotents `P,Q`.  Replacing the formal complement `1-P-Q` by its
+`Z`-corrected version `Z-(1-P-Q)` removes exactly the `Z` zero-mode energy:
+
+`(P-Q)^2 + (Z-(1-P-Q))^2 = 1-Z`.
+
+This is the algebraic form needed when `Z` projects onto the common kernel of two quantum
+constraints. -/
+theorem twoProjection_difference_sq_add_corrected_complement_sq
+    {P Q Z : R} (hP : IsIdempotentElem P) (hQ : IsIdempotentElem Q)
+    (hZ : IsIdempotentElem Z)
+    (hPZ : P * Z = 0) (hZP : Z * P = 0)
+    (hQZ : Q * Z = 0) (hZQ : Z * Q = 0) :
+    (P - Q) * (P - Q) +
+        (Z - (1 - P - Q)) * (Z - (1 - P - Q)) = 1 - Z := by
+  have hPP : P * P = P := hP
+  have hQQ : Q * Q = Q := hQ
+  have hZZ : Z * Z = Z := hZ
+  noncomm_ring [hPP, hQQ, hZZ, hPZ, hZP, hQZ, hZQ]
+
+/-- The zero-mode-corrected complement remains the supersymmetric partner of the projection
+difference: removing a joint zero-mode does not change the anticommutation law. -/
+theorem twoProjection_difference_anticommutes_corrected_complement
+    {P Q Z : R} (hP : IsIdempotentElem P) (hQ : IsIdempotentElem Q)
+    (hPZ : P * Z = 0) (hZP : Z * P = 0)
+    (hQZ : Q * Z = 0) (hZQ : Z * Q = 0) :
+    (P - Q) * (Z - (1 - P - Q)) +
+        (Z - (1 - P - Q)) * (P - Q) = 0 := by
+  have hPP : P * P = P := hP
+  have hQQ : Q * Q = Q := hQ
+  noncomm_ring [hPP, hQQ, hPZ, hZP, hQZ, hZQ]
+
 end Algebra
 
 section HilbertSpace
@@ -100,6 +132,61 @@ theorem norm_twoProjection_difference_sq_add_complement_sq
       simp only [ContinuousLinearMap.add_apply, inner_add_right, map_add]
     _ = RCLike.re (inner k psi psi) := by rw [hmaster]; simp
     _ = ‖psi‖ ^ 2 := inner_self_eq_norm_sq psi
+
+/-- **Active-space energy conservation.**  If `Z` is the orthogonal projection onto a joint
+zero-mode sector for the orthogonal projections `P,Q`, then the projection mismatch and the
+zero-mode-corrected complement exhaust exactly the norm outside `Z`:
+
+`||(P-Q) psi||^2 + ||(Z-(1-P-Q)) psi||^2 = ||(1-Z) psi||^2`.
+
+The identity is the statewise value form of the zero-mode-subtracted supersymmetric partition. -/
+theorem norm_twoProjection_difference_sq_add_corrected_complement_sq
+    (P Q Z : E →L[k] E)
+    (hP : IsIdempotentElem P) (hQ : IsIdempotentElem Q)
+    (hZ : IsIdempotentElem Z)
+    (hPadj : ContinuousLinearMap.adjoint P = P)
+    (hQadj : ContinuousLinearMap.adjoint Q = Q)
+    (hZadj : ContinuousLinearMap.adjoint Z = Z)
+    (hPZ : P * Z = 0) (hZP : Z * P = 0)
+    (hQZ : Q * Z = 0) (hZQ : Z * Q = 0) (psi : E) :
+    ‖(P - Q) psi‖ ^ 2 + ‖(Z - (1 - P - Q)) psi‖ ^ 2 =
+      ‖(1 - Z) psi‖ ^ 2 := by
+  have hAadj : ContinuousLinearMap.adjoint (P - Q) = P - Q := by
+    rw [adjoint_sub_twoProjection, hPadj, hQadj]
+  have hBadj : ContinuousLinearMap.adjoint (1 - P - Q) = 1 - P - Q := by
+    rw [adjoint_sub_twoProjection, adjoint_sub_twoProjection,
+      ContinuousLinearMap.adjoint_one, hPadj, hQadj]
+  have hCadj : ContinuousLinearMap.adjoint (Z - (1 - P - Q)) =
+      Z - (1 - P - Q) := by
+    rw [adjoint_sub_twoProjection, hZadj, hBadj]
+  have hpartition :
+      quantumMasterConstraint (P - Q) +
+          quantumMasterConstraint (Z - (1 - P - Q)) = 1 - Z := by
+    simpa only [quantumMasterConstraint, ContinuousLinearMap.mul_def, hAadj, hCadj] using
+      (twoProjection_difference_sq_add_corrected_complement_sq
+        hP hQ hZ hPZ hZP hQZ hZQ)
+  have hIZadj : ContinuousLinearMap.adjoint (1 - Z) = 1 - Z := by
+    rw [adjoint_sub_twoProjection, ContinuousLinearMap.adjoint_one, hZadj]
+  have hZZ : Z * Z = Z := hZ
+  have hIZsq : (1 - Z) * (1 - Z) = 1 - Z := by
+    noncomm_ring [hZZ]
+  have hIZmaster : quantumMasterConstraint (1 - Z) = 1 - Z := by
+    simp only [quantumMasterConstraint, ContinuousLinearMap.mul_def, hIZadj, hIZsq]
+  calc
+    ‖(P - Q) psi‖ ^ 2 + ‖(Z - (1 - P - Q)) psi‖ ^ 2 =
+        RCLike.re (inner k psi (quantumMasterConstraint (P - Q) psi)) +
+          RCLike.re (inner k psi
+            (quantumMasterConstraint (Z - (1 - P - Q)) psi)) := by
+      rw [re_inner_quantumMasterConstraint_eq_normSq,
+        re_inner_quantumMasterConstraint_eq_normSq]
+    _ = RCLike.re (inner k psi
+        ((quantumMasterConstraint (P - Q) +
+          quantumMasterConstraint (Z - (1 - P - Q))) psi)) := by
+      simp only [ContinuousLinearMap.add_apply, inner_add_right, map_add]
+    _ = RCLike.re (inner k psi ((1 - Z) psi)) := by rw [hpartition]
+    _ = RCLike.re (inner k psi (quantumMasterConstraint (1 - Z) psi)) := by
+      rw [hIZmaster]
+    _ = ‖(1 - Z) psi‖ ^ 2 := re_inner_quantumMasterConstraint_eq_normSq (1 - Z) psi
 
 /-- The formal complement `1-P-Q` of two self-adjoint idempotents is a contraction.  This sharp
 bound replaces the triangle estimate `1 + ‖P‖ + ‖Q‖`. -/

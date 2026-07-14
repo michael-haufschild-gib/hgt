@@ -40,6 +40,23 @@ theorem quantumMasterConstraint_isSelfAdjoint (C : E →L[𝕜] E) :
   simpa [quantumMasterConstraint, ContinuousLinearMap.mul_def,
     ContinuousLinearMap.star_eq_adjoint] using (IsSelfAdjoint.star_mul_self C)
 
+/-- **Supersymmetric partner intertwining.**  The constraint maps its master Hamiltonian
+`C†C` into the partner Hamiltonian `CC†`.  This is the exact bounded-operator relation behind
+boson/fermion pairing and resolvent-regularized Witten-index constructions. -/
+theorem quantumMasterConstraint_partner_intertwining (C : E →L[𝕜] E) :
+    C * quantumMasterConstraint C = quantumMasterConstraint C.adjoint * C := by
+  change C ∘L (C.adjoint ∘L C) =
+    (C.adjoint.adjoint ∘L C.adjoint) ∘L C
+  rw [ContinuousLinearMap.adjoint_adjoint]
+  exact (ContinuousLinearMap.comp_assoc C C.adjoint C).symm
+
+/-- Adjoint form of the supersymmetric partner intertwining relation. -/
+theorem quantumMasterConstraint_partner_intertwining_adjoint (C : E →L[𝕜] E) :
+    quantumMasterConstraint C * C.adjoint =
+      C.adjoint * quantumMasterConstraint C.adjoint := by
+  simpa only [ContinuousLinearMap.adjoint_adjoint] using
+    (quantumMasterConstraint_partner_intertwining C.adjoint).symm
+
 /-- The master-constraint expectation is exactly the squared constraint residual. -/
 theorem re_inner_quantumMasterConstraint_eq_normSq
     (C : E →L[𝕜] E) (ψ : E) :

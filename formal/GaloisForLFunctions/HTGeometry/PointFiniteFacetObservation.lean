@@ -227,15 +227,21 @@ theorem pointFiniteFacetPacket_apply_some_self_of_visible
     (hvisible : d.support ⊆ F.1) :
     pointFiniteFacetPacket (R := R) facets hfacets d (some (F, d)) = 1 := by
   classical
-  have hfinite := visibleFacetSubtypes_finite_of_pointFinite facets hfacets hd
-  have hmem : F ∈ hfinite.toFinset := hfinite.mem_toFinset.mpr hvisible
   simp only [pointFiniteFacetPacket, dif_neg hd]
-  change (∑ G ∈ hfinite.toFinset,
-    (Finsupp.single (some (G, d)) (1 : R)) (some (F, d))) = 1
+  change (Finsupp.lapply (R := R) (some (F, d))) _ = 1
+  rw [map_sum]
+  have hself :
+      (Finsupp.lapply (R := R) (some (F, d)))
+        (Finsupp.single (some (F, d)) (1 : R)) = 1 := by simp
+  conv_rhs => rw [← hself]
   apply Finset.sum_eq_single F
   · intro G hG hGF
-    simp [Finsupp.single_apply, hGF]
-  · simpa using hmem
+    simp [hGF]
+  · intro hnot
+    have hmem : F ∈
+        (visibleFacetSubtypes_finite_of_pointFinite facets hfacets hd).toFinset :=
+      ((visibleFacetSubtypes_finite_of_pointFinite facets hfacets hd).mem_toFinset).mpr hvisible
+    exact (hnot hmem).elim
 
 /-- A nonconstant monomial contributes zero on a facet where it is not visible. -/
 theorem pointFiniteFacetPacket_apply_some_self_of_not_visible
@@ -245,19 +251,18 @@ theorem pointFiniteFacetPacket_apply_some_self_of_not_visible
     (hvisible : ¬d.support ⊆ F.1) :
     pointFiniteFacetPacket (R := R) facets hfacets d (some (F, d)) = 0 := by
   classical
-  have hfinite := visibleFacetSubtypes_finite_of_pointFinite facets hfacets hd
-  have hmem : F ∉ hfinite.toFinset := by
-    simpa [visibleFacetSubtypes] using hvisible
   simp only [pointFiniteFacetPacket, dif_neg hd]
-  change (∑ G ∈ hfinite.toFinset,
-    (Finsupp.single (some (G, d)) (1 : R)) (some (F, d))) = 0
+  change (Finsupp.lapply (R := R) (some (F, d))) _ = 0
+  rw [map_sum]
   apply Finset.sum_eq_zero
   intro G hG
+  have hGvisible : d.support ⊆ G.1 := by
+    simpa [visibleFacetSubtypes] using hG
   have hGF : G ≠ F := by
     intro h
     subst G
-    exact hmem hG
-  simp [Finsupp.single_apply, hGF]
+    exact hvisible hGvisible
+  simp [hGF]
 
 /-- A monomial packet vanishes on coordinates carrying a different exponent. -/
 theorem pointFiniteFacetPacket_apply_some_of_exponent_ne
@@ -270,15 +275,14 @@ theorem pointFiniteFacetPacket_apply_some_of_exponent_ne
   · subst e
     simp [pointFiniteFacetPacket]
   · simp only [pointFiniteFacetPacket, dif_neg he]
-    let hfinite := visibleFacetSubtypes_finite_of_pointFinite facets hfacets he
-    change (∑ G ∈ hfinite.toFinset,
-      (Finsupp.single (some (G, e)) (1 : R)) (some (F, d))) = 0
+    change (Finsupp.lapply (R := R) (some (F, d))) _ = 0
+    rw [map_sum]
     apply Finset.sum_eq_zero
     intro G hG
     have hindex : some (G, e) ≠ some (F, d) := by
       intro h
-      exact hed (congrArg (fun q => q.get.2) h)
-    simp [Finsupp.single_apply, hindex]
+      exact hed (congrArg Prod.snd (Option.some.inj h))
+    simp [hindex]
 
 /-- The distinguished coordinate of the coherent row is exactly the polynomial's constant
 coefficient. -/
@@ -292,13 +296,17 @@ theorem pointFiniteFacetRow_apply_none
   change (P.sum fun d c => c • pointFiniteFacetPacket (R := R) facets hfacets d) none =
     coeff 0 P
   rw [Finsupp.sum_apply]
+  change (∑ d ∈ P.support,
+    (coeff d P • pointFiniteFacetPacket (R := R) facets hfacets d) none) = coeff 0 P
   by_cases hzero : (0 : α →₀ ℕ) ∈ P.support
   · rw [Finset.sum_eq_single 0]
     · simp [pointFiniteFacetPacket_zero_apply_none]
     · intro d hdP hd0
       simp [pointFiniteFacetPacket_apply_none_of_ne_zero facets hfacets hd0]
     · simp [hzero]
-  · have hcoeff : coeff 0 P = 0 := Finsupp.not_mem_support_iff.mp hzero
+  · have hcoeff : coeff 0 P = 0 := by
+      by_contra hc
+      exact hzero (Finsupp.mem_support_iff.mpr hc)
     rw [hcoeff]
     apply Finset.sum_eq_zero
     intro d hdP
@@ -321,13 +329,18 @@ theorem pointFiniteFacetRow_apply_some_of_visible
   change (P.sum fun e c => c • pointFiniteFacetPacket (R := R) facets hfacets e)
       (some (F, d)) = coeff d P
   rw [Finsupp.sum_apply]
+  change (∑ e ∈ P.support,
+    (coeff e P • pointFiniteFacetPacket (R := R) facets hfacets e) (some (F, d))) =
+      coeff d P
   by_cases hsupport : d ∈ P.support
   · rw [Finset.sum_eq_single d]
     · simp [pointFiniteFacetPacket_apply_some_self_of_visible facets hfacets F hd hvisible]
     · intro e heP hed
       simp [pointFiniteFacetPacket_apply_some_of_exponent_ne facets hfacets F hed]
     · simp [hsupport]
-  · have hcoeff : coeff d P = 0 := Finsupp.not_mem_support_iff.mp hsupport
+  · have hcoeff : coeff d P = 0 := by
+      by_contra hc
+      exact hsupport (Finsupp.mem_support_iff.mpr hc)
     rw [hcoeff]
     apply Finset.sum_eq_zero
     intro e heP
@@ -349,12 +362,116 @@ theorem pointFiniteFacetRow_apply_some_of_not_visible
   change (P.sum fun e c => c • pointFiniteFacetPacket (R := R) facets hfacets e)
       (some (F, d)) = 0
   rw [Finsupp.sum_apply]
+  change (∑ e ∈ P.support,
+    (coeff e P • pointFiniteFacetPacket (R := R) facets hfacets e) (some (F, d))) = 0
   apply Finset.sum_eq_zero
   intro e heP
   by_cases hed : e = d
   · subst e
     simp [pointFiniteFacetPacket_apply_some_self_of_not_visible facets hfacets F hd hvisible]
   · simp [pointFiniteFacetPacket_apply_some_of_exponent_ne facets hfacets F hed]
+
+/-- The coherent row has no facet-local copy of the constant exponent. -/
+theorem pointFiniteFacetRow_apply_some_zero
+    {R α : Type*} [CommRing R]
+    (facets : Set (Finset α)) (hfacets : PointFiniteFacetFamily facets)
+    (P : MvPolynomial α R) (F : {F // F ∈ facets}) :
+    pointFiniteFacetRow facets hfacets P (some (F, 0)) = 0 := by
+  classical
+  rw [pointFiniteFacetRow]
+  change (P.sum fun e c => c • pointFiniteFacetPacket (R := R) facets hfacets e)
+      (some (F, 0)) = 0
+  rw [Finsupp.sum_apply]
+  change (∑ e ∈ P.support,
+    (coeff e P • pointFiniteFacetPacket (R := R) facets hfacets e) (some (F, 0))) = 0
+  apply Finset.sum_eq_zero
+  intro e heP
+  by_cases he0 : e = 0
+  · subst e
+    simp [pointFiniteFacetPacket]
+  · simp [pointFiniteFacetPacket_apply_some_of_exponent_ne facets hfacets F he0]
+
+/-- **Exact coherent-packet kernel.**  For a nonempty point-finite facet family, the only
+polynomials erased by the finite-support complete-facet row are precisely the Stanley--Reisner
+nonface polynomials. -/
+theorem pointFiniteFacetRow_eq_zero_iff
+    {R α : Type*} [CommRing R] [DecidableEq α]
+    (facets : Set (Finset α)) (hne : facets.Nonempty)
+    (hfacets : PointFiniteFacetFamily facets) (P : MvPolynomial α R) :
+    pointFiniteFacetRow facets hfacets P = 0 ↔
+      P ∈ setStanleyReisnerIdeal R facets := by
+  constructor
+  · intro hrow
+    rw [mem_setStanleyReisnerIdeal_iff]
+    intro d hdP hface
+    have hcoeff : coeff d P ≠ 0 := Finsupp.mem_support_iff.mp hdP
+    by_cases hd : d = 0
+    · subst d
+      have hnone := congrArg (fun q => q none) hrow
+      change pointFiniteFacetRow facets hfacets P none = 0 at hnone
+      rw [pointFiniteFacetRow_apply_none] at hnone
+      exact hcoeff hnone
+    · obtain ⟨F, hF, hvisible⟩ := hface
+      have hsome := congrArg
+        (fun q => q (some (⟨F, hF⟩, d) : PointFiniteFacetIndex facets)) hrow
+      change pointFiniteFacetRow facets hfacets P (some (⟨F, hF⟩, d)) = 0 at hsome
+      rw [pointFiniteFacetRow_apply_some_of_visible facets hfacets P ⟨F, hF⟩ hd hvisible]
+        at hsome
+      exact hcoeff hsome
+  · intro hP
+    apply Finsupp.ext
+    intro q
+    cases q with
+    | none =>
+        rw [pointFiniteFacetRow_apply_none]
+        by_contra hcoeff
+        have hzeroSupport : (0 : α →₀ ℕ) ∈ P.support :=
+          Finsupp.mem_support_iff.mpr hcoeff
+        have hnonface := (mem_setStanleyReisnerIdeal_iff facets P).mp hP 0 hzeroSupport
+        obtain ⟨F, hF⟩ := hne
+        exact hnonface ⟨F, hF, by simp⟩
+    | some q =>
+        obtain ⟨F, d⟩ := q
+        by_cases hd : d = 0
+        · subst d
+          exact pointFiniteFacetRow_apply_some_zero facets hfacets P F
+        · by_cases hvisible : d.support ⊆ F.1
+          · rw [pointFiniteFacetRow_apply_some_of_visible facets hfacets P F hd hvisible]
+            by_contra hcoeff
+            have hdSupport : d ∈ P.support := Finsupp.mem_support_iff.mpr hcoeff
+            have hnonface := (mem_setStanleyReisnerIdeal_iff facets P).mp hP d hdSupport
+            exact hnonface ⟨F.1, F.2, hvisible⟩
+          · exact pointFiniteFacetRow_apply_some_of_not_visible
+              facets hfacets P F hd hvisible
+
+/-- The coherent restricted facet row represents exactly the linear matroid of the infinite
+Stanley--Reisner quotient. -/
+theorem linearIndependent_pointFiniteFacetRow_iff
+    {R α ι : Type*} [CommRing R] [DecidableEq α] [Fintype ι] [DecidableEq ι]
+    (facets : Set (Finset α)) (hne : facets.Nonempty)
+    (hfacets : PointFiniteFacetFamily facets) (P : ι → MvPolynomial α R) :
+    LinearIndependent R (pointFiniteFacetRow facets hfacets ∘ P) ↔
+      LinearIndependent R
+        (fun i => Ideal.Quotient.mk (setStanleyReisnerIdeal R facets) (P i)) := by
+  classical
+  rw [Fintype.linearIndependent_iff, Fintype.linearIndependent_iff]
+  constructor
+  · intro hrow A hquot i
+    apply hrow A
+    let S : MvPolynomial α R := ∑ j, A j • P j
+    have hmem : S ∈ setStanleyReisnerIdeal R facets := by
+      apply Ideal.Quotient.eq_zero_iff_mem.mp
+      simpa [S, map_sum, map_smul] using hquot
+    have hzero := (pointFiniteFacetRow_eq_zero_iff facets hne hfacets S).mpr hmem
+    simpa [S, map_sum, map_smul, Function.comp_apply] using hzero
+  · intro hquot A hrow i
+    apply hquot A
+    let S : MvPolynomial α R := ∑ j, A j • P j
+    have hzero : pointFiniteFacetRow facets hfacets S = 0 := by
+      simpa [S, map_sum, map_smul, Function.comp_apply] using hrow
+    have hmem := (pointFiniteFacetRow_eq_zero_iff facets hne hfacets S).mp hzero
+    simpa [S, map_sum, map_smul] using
+      (Ideal.Quotient.eq_zero_iff_mem.mpr hmem)
 
 end
 

@@ -343,3 +343,14 @@ the actual Sonin/CCM carrier.
 - [ ] prove the completed positive-commutator inequality `(16)`
 - [ ] preserve the CCM aperture index
 - [ ] prove RH
+
+## Canonical cutoff-trace representative
+
+The companion theorem
+`connes-semilocal-finite-part-orbital-source-class.md` identifies the external normalization of
+`(17a)`.  Connes's semilocal cutoff trace has a canonical finite part equal to the completed sum of
+local Weil terms, while its quantized differential is additive modulo conjugation coboundaries.
+Equation `(9)` is therefore the concrete position-commutator representative of an already fixed
+cyclic source class.  The remaining theorem is an exact comparison map from that cutoff class to
+the compressed pair `(17a)`, not a choice of a new trace.  Finite-part preservation supplies a
+sharp falsifier for any proposed Sonin relative functional.

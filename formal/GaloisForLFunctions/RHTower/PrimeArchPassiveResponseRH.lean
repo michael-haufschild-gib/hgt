@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.FinitePassiveResponse
+import GaloisForLFunctions.HTGeometry.FiniteKMSFluctuationDissipation
 import GaloisForLFunctions.RHTower.XiWeilOneCauchyGate
 
 /-!
@@ -90,6 +90,34 @@ theorem continuedPrimeArchUpperAntiHerglotz_of_finiteKMSWightmanResponse_tendsto
       HTGeometry.finiteKMSWightmanTransitionPassiveResponse_im_nonpos
         (β N) (energy N) (amplitude N) hzpos)
 
+/-- Pointwise convergence of energy-weighted KMS fluctuation--dissipation responses transfers the
+same anti-Herglotz sign to the continued prime--archimedean source.  The FDT sign law discharges the
+nonnegative-intensity hypothesis from `β N ≥ 0`. -/
+theorem continuedPrimeArchUpperAntiHerglotz_of_finiteKMSDissipativeResponse_tendsto
+    (d : ℕ → ℕ) (β : ℕ → ℝ)
+    (energy : ∀ N, Fin (d N + 1) → ℝ)
+    (amplitude : ∀ N, Fin (d N + 1) → Fin (d N + 1) → ℂ)
+    (hβ : ∀ N, 0 ≤ β N)
+    (hconv : ∀ z : ℂ, 0 < z.im → z.im < 1 / 2 →
+      riemannZeta (1 / 2 + z * Complex.I) ≠ 0 →
+        Tendsto (fun N ↦ HTGeometry.finiteTransitionPassiveResponse
+          (HTGeometry.finiteKMSDissipativeTransitionIntensity
+            (β N) (energy N) (amplitude N)) (energy N) z)
+          atTop (nhds (continuedPrimeArchSourceRelativeTrace z))) :
+    ContinuedPrimeArchUpperAntiHerglotz := by
+  intro z hzpos hzhalf hzeta
+  have hlim := hconv z hzpos hzhalf hzeta
+  have himlim : Tendsto
+      (fun N ↦ (HTGeometry.finiteTransitionPassiveResponse
+        (HTGeometry.finiteKMSDissipativeTransitionIntensity
+          (β N) (energy N) (amplitude N)) (energy N) z).im)
+      atTop (nhds (continuedPrimeArchSourceRelativeTrace z).im) :=
+    (Complex.continuous_im.tendsto _).comp hlim
+  exact isClosed_Iic.mem_of_tendsto himlim
+    (Filter.Eventually.of_forall fun N ↦
+      HTGeometry.finiteKMSDissipativeTransitionPassiveResponse_im_nonpos
+        (β N) (energy N) (amplitude N) (hβ N) hzpos)
+
 /-- The pointwise thermodynamic KMS limit also supplies the source one-Cauchy gate. -/
 theorem continuedPrimeArchUpperCauchyDiagonalNonnegative_of_finiteKMSWightmanResponse_tendsto
     (d : ℕ → ℕ) (β : ℕ → ℝ)
@@ -123,6 +151,25 @@ theorem riemannHypothesis_of_finiteKMSWightmanResponse_tendsto
   riemannHypothesis_of_continuedPrimeArchUpperAntiHerglotz
     (continuedPrimeArchUpperAntiHerglotz_of_finiteKMSWightmanResponse_tendsto
       d β energy amplitude hconv)
+
+/-- **Fluctuation--dissipation RH capstone.**  If source-defined finite KMS dissipative responses
+converge pointwise to the continued prime--archimedean relative trace, their structural passivity
+proves RH.  The convergence statement remains the source-facing obligation. -/
+theorem riemannHypothesis_of_finiteKMSDissipativeResponse_tendsto
+    (d : ℕ → ℕ) (β : ℕ → ℝ)
+    (energy : ∀ N, Fin (d N + 1) → ℝ)
+    (amplitude : ∀ N, Fin (d N + 1) → Fin (d N + 1) → ℂ)
+    (hβ : ∀ N, 0 ≤ β N)
+    (hconv : ∀ z : ℂ, 0 < z.im → z.im < 1 / 2 →
+      riemannZeta (1 / 2 + z * Complex.I) ≠ 0 →
+        Tendsto (fun N ↦ HTGeometry.finiteTransitionPassiveResponse
+          (HTGeometry.finiteKMSDissipativeTransitionIntensity
+            (β N) (energy N) (amplitude N)) (energy N) z)
+          atTop (nhds (continuedPrimeArchSourceRelativeTrace z))) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_continuedPrimeArchUpperAntiHerglotz
+    (continuedPrimeArchUpperAntiHerglotz_of_finiteKMSDissipativeResponse_tendsto
+      d β energy amplitude hβ hconv)
 
 end
 

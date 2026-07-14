@@ -295,7 +295,13 @@ must exhibit; they do not reject any RH-equivalent criterion by name.
    Thus the boundary theorem applies to incommensurable products under its neutral/recurrent
    hypotheses; only its multivariate phase bookkeeping remains outside this one-phase card.
 7. **Negative slopes require a trigonometric phase extension.** Reflection introduces explicit
-   exponential coordinates not contained in the present `E(u)`.
+   exponential coordinates not contained in the present `E(u)`.  The exact positive model is now
+   visible in
+   `../not_new_scientific_knowledge/finite-euler-imaginary-gamma-reflection-weld.md`: every local
+   Euler factor is a reciprocal Gamma pair with slopes `+i log(p)/(2pi)` and
+   `-i log(p)/(2pi)`.  The cofinal imaginary-slope family carries the complementary prime-character
+   module predicted by `(21)`; it lies outside, rather than contradicting, the positive-real-slope
+   theorem proved here.
 8. **Depth is not degree.** Individual elements realize jets of every degree; boundary depth two
    asserts a finite degree for each fixed finite coefficient tuple.
 

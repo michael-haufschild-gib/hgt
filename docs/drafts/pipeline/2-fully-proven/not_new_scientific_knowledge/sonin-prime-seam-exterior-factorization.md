@@ -426,3 +426,24 @@ and shows that a phase-rotated projection family with the literal weighted and u
 normal corners transfers compactness of `P D_st P` to compactness of `G(v)`.  Hence two completed
 families, for `Re a(rho)` and `Im a(rho)`, feed directly into the existing finite Euler Calkin
 faithfulness theorem.  No unformalized algebraic recombination remains in the reduction.
+
+## The connection source is now explicit
+
+The paper-proven theorem
+`semilocal-dual-pair-euler-connection-source-law.md` computes the logarithmic-position connection
+of the semilocal place map:
+
+```text
+theta_S^(-1)D_S theta_S-D_infinity
+  =M_(Phi_S),
+Phi_S(t)=-sum_(p in S_f)L_p'/L_p(1/2+i t).                (23)
+```
+
+Its prime-power coefficients are exactly the finite von Mangoldt weights and its reflected real
+part is the phase derivative of the place map.  More precisely it is the contraction
+`-sum_p log(p) A_p` of the independent Euler-parameter connections `A_p`.  Therefore the
+source-realization of this distinguished tangent combination is closed before compression, but
+the full two-parameter curvature reader is not.  What remains in this card is to prove that the
+exact Sonin cutoff/resolvent descent of the contracted connection has the required Xi-zero-fibre
+compact antisymmetric normal curvature.  The pure Hilbert--Schmidt projection-correction pairing
+cannot substitute for `(23)`; its uniformly bounded response is the wrong grade.

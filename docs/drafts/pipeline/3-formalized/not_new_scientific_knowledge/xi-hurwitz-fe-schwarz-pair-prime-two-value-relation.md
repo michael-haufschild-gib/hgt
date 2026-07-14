@@ -64,6 +64,28 @@ The closure and exact source-energy interfaces in this chain are already formali
 open mathematical input is the source-core sign; asserting any of the equivalent right-end
 conditions directly would be an RH recoding.
 
+The heat coordinate in this statement is now exact on paper: for each prime `p`,
+
+```text
+log(p)[c_p(1-rho)-c_p(conj rho)]=C_p(rho).
+```
+
+Thus equality of the entire reflected heat prime tail is equivalent to equality of its scale-two
+member.  See
+`../../2-fully-proven/not_new_scientific_knowledge/heat-aperture-prime-seam-reflection-collapse.md`.
+The same card proves the sharper actual-connection identity
+
+```text
+Phi_p(conj rho)-Phi_p(1-rho)
+ =C_p(rho)/[(1-p^(-conj rho))(1-p^(-(1-rho)))],
+```
+
+whose denominator is invertible on the open strip.  Hence the common-charge condition can be
+targeted as equality of two genuine semilocal Euler connection values rather than as an extra
+normalization of a cofinal limit.
+The Lean source for this additional interface is drafted and umbrella-wired, but remains outside
+this card's verified declaration list until a targeted check is permitted.
+
 ## Literature boundary
 
 Lagarias--Li develop the relevant parent geometry: three-variable Lerch analytic continuation and

@@ -87,6 +87,33 @@ primeEulerUnitFETangent(p,s)
 Thus the two tangent charts differ by a completely explicit higher-prime-power tail and by no
 degree-one shell.
 
+There is now a sharper companion when the desired output is only the scalar FE--Schwarz
+orientation value.  For the literal actual-point tangent
+
+```text
+T_p(s)=primeEulerUnitTangent(p,s),
+q=p^(-conj(rho)), r=p^(-(1-rho)),
+```
+
+the exact factorization
+
+```text
+T_p(conj(rho))-T_p(1-rho)
+ =C_p(rho)(1-q r)/[(1-q)^2(1-r)^2]                       (10a)
+```
+
+has only invertible extra factors throughout the open strip.  Consequently, for every one prime
+`p`,
+
+```text
+T_p(conj(rho))=T_p(1-rho) iff C_p(rho)=0 iff Re(rho)=1/2. (10b)
+```
+
+Thus a scalar source reader already living at `a_p=1` need not return to the empty chart or remove
+the higher grades.  Equations `(8)`--`(10)` remain necessary for the distinct operator-Calkin route,
+where the actual and empty sections must be compared in quotient norm rather than merely tested
+for a scalar zero.
+
 ## Proof
 
 The scalar derivative of `a q/(1-aq)` at zero is `q`; subtraction and multiplication by `log p`
@@ -160,6 +187,26 @@ horizontalDisplacement_sq_mul_log_two_pow_four_le_degreeOneEulerFEFirstCoefficie
 - [x] no Xi zero-location or RH input
 - [x] exact actual-versus-empty tangent comparison
 - [x] chart mismatch isolated to the Lambert grades `m>=2`
+- [x] actual-point scalar FE--Schwarz tangent difference factored through the same prime seam
+- [x] any single prime actual-tangent equality shown faithful in the open strip
 - [ ] bounded transfer from the compact-carrier source topology to the Sonin Calkin quotient
 - [ ] exterior-Calkin control of the higher-grade principal tangent tail
 - [ ] cofinal exterior-Calkin rate `(11)`
+
+## Connection-value companion
+
+`../../2-fully-proven/not_new_scientific_knowledge/semilocal-dual-pair-euler-connection-source-law.md`
+separates the Euler **value** required by the semilocal logarithmic-position connection from the
+Euler-parameter tangent studied here.  For the same scalar family `(1)`,
+
+```text
+F_(p,z)(1)=Phi_p(z)-Phi_p(1-z)
+          =F_(p,z)'(0)
+           +sum_(m>=2)log(p)[p^(-m z)-p^(-m(1-z))].       (12)
+```
+
+Thus the direct source-connection route has a coefficient-one higher-grade tail, whereas `(9)` is
+the derivative-at-one tail with coefficient `m`.  The simpler tail is still Calkin-faithful off the
+critical line by the general summable-Euler injectivity theorem.  Equation `(12)` therefore
+clarifies the interface without making the higher grades disposable: completed prime--Gamma
+cutoff/resolvent cancellation remains necessary.
