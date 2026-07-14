@@ -127,7 +127,7 @@ products are classical.
 - [x] complete paper proof
 - [x] source-level formal proof without project hypotheses
 - [x] narrow module build
-- [ ] axiom audit
+- [x] axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`
 - [ ] classify cone-preserving algebra automorphisms of the tail reduced product
 - [ ] derive or kill a non-routine compatibility law with the operator-tail differential matroid
 - [ ] derive or kill a non-routine compatibility law with Euler plethysm

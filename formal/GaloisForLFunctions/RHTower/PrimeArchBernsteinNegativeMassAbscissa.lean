@@ -188,6 +188,157 @@ theorem primeArchBernsteinNegativeMassCofinallyBounded_iff_rectangularPrimePolar
   riemannHypothesis_iff_primeArchBernsteinNegativeMassCofinallyBounded.symm.trans
     (riemannHypothesis_iff_rectangularPrimePolarSource_negativeAbscissa_le_one hL hN)
 
+open HTGeometry
+
+/-- Aggregate discrepancy between two degree-`N+1` Bernstein value packets. -/
+def bernsteinCoefficientL1DiscrepancyAtDefectDegree
+    (m a : ℕ → ℝ) (N : ℕ) : ℝ :=
+  ∑ i ∈ Finset.range (N + 2),
+    |bernsteinCoefficient m (N + 1) i -
+      bernsteinCoefficient a (N + 1) i|
+
+/-- A positive Bernstein comparator bounds the target's entire negative mass by their aggregate
+coefficient discrepancy. -/
+lemma hausdorffBernsteinNegativeMass_le_l1Discrepancy
+    (m a : ℕ → ℝ) (N : ℕ)
+    (ha : HausdorffBernsteinNonnegative a) :
+    hausdorffBernsteinNegativeMass m N ≤
+      bernsteinCoefficientL1DiscrepancyAtDefectDegree m a N := by
+  rw [hausdorffBernsteinNegativeMass]
+  rw [Fin.sum_univ_eq_sum_range
+    (fun i : ℕ =>
+      (momentFunctional m (bernsteinPolynomial ℝ (N + 1) i))⁻) (N + 2)]
+  apply Finset.sum_le_sum
+  intro i hi
+  have hy : 0 ≤ bernsteinCoefficient a (N + 1) i := ha (N + 1) i
+  have h := negPart_le_negPart_add_of_abs_sub_le
+    (bernsteinCoefficient m (N + 1) i)
+    (bernsteinCoefficient a (N + 1) i)
+    |bernsteinCoefficient m (N + 1) i - bernsteinCoefficient a (N + 1) i|
+    le_rfl
+  rw [negPart_eq_zero.mpr hy, zero_add] at h
+  simpa only [bernsteinCoefficient,
+    bernsteinCoefficientL1DiscrepancyAtDefectDegree] using h
+
+/-- **Positive-comparator discharge theorem.** Positive finite-system comparators need not
+reproduce the source moments. A fixed aggregate Bernstein error bound along one cofinal degree
+schedule already proves RH. -/
+theorem riemannHypothesis_of_cofinal_hausdorffBernsteinApproximation_l1Discrepancy_bounded
+    (d : ℕ → ℕ) (a : ℕ → ℕ → ℝ) (C : ℝ)
+    (hd : Tendsto d atTop atTop)
+    (ha : ∀ j, HausdorffBernsteinNonnegative (a j))
+    (herr : ∀ j,
+      bernsteinCoefficientL1DiscrepancyAtDefectDegree
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+          normalizedPrimeArchMoment) (a j) (d j) ≤ C) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_iff_primeArchBernsteinNegativeMassCofinallyBounded.mpr
+  refine ⟨d, C, hd, fun j => ?_⟩
+  exact (hausdorffBernsteinNegativeMass_le_l1Discrepancy _ _ _ (ha j)).trans
+    (herr j)
+
+/-- Every normalized finite Xi thermal truncation is a positive endpoint Hausdorff comparator. -/
+lemma hausdorffBernsteinNonnegative_radiusNormalized_xiThermalTruncation (M : ℕ) :
+    HausdorffBernsteinNonnegative
+      (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+        (xiThermalTruncation M)) := by
+  apply hausdorffBernsteinNonnegative_of_momentDifferencesNonnegative
+  exact hausdorffMomentDifferencesNonnegative_radiusNormalizedMoment
+    primeArchEndpointHausdorffRadius_pos
+    (scaledHausdorffMomentDifferencesNonnegative_xiThermalTruncation M)
+
+/-- **Finite thermal discharge theorem.** A uniformly bounded aggregate discrepancy from any
+family of explicit finite Xi thermal systems at cofinally large Bernstein degrees proves RH. The
+thermal cutoff may vary arbitrarily with the degree. -/
+theorem riemannHypothesis_of_cofinal_xiThermalTruncation_bernsteinL1Discrepancy_bounded
+    (d M : ℕ → ℕ) (C : ℝ)
+    (hd : Tendsto d atTop atTop)
+    (herr : ∀ j,
+      bernsteinCoefficientL1DiscrepancyAtDefectDegree
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+          normalizedPrimeArchMoment)
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+          (xiThermalTruncation (M j))) (d j) ≤ C) :
+    RiemannHypothesis := by
+  exact
+    riemannHypothesis_of_cofinal_hausdorffBernsteinApproximation_l1Discrepancy_bounded
+      d (fun j => radiusNormalizedMoment primeArchEndpointHausdorffRadius
+        (xiThermalTruncation (M j))) C hd
+      (fun j =>
+        hausdorffBernsteinNonnegative_radiusNormalized_xiThermalTruncation (M j))
+      herr
+
+/-- Squared Hilbert discrepancy of two degree-`N+1` Bernstein value packets. -/
+def bernsteinCoefficientSquareDiscrepancyAtDefectDegree
+    (m a : ℕ → ℝ) (N : ℕ) : ℝ :=
+  ∑ i ∈ Finset.range (N + 2),
+    (bernsteinCoefficient m (N + 1) i -
+      bernsteinCoefficient a (N + 1) i) ^ 2
+
+/-- Cauchy--Schwarz converts the dimension-normalized quadratic discrepancy into the aggregate
+`l1` discrepancy needed by the finite-ceiling law. -/
+lemma bernsteinCoefficientL1Discrepancy_le_of_card_mul_squareDiscrepancy_le_sq
+    {m a : ℕ → ℝ} {N : ℕ} {C : ℝ} (hC : 0 ≤ C)
+    (henergy : (N + 2 : ℝ) *
+      bernsteinCoefficientSquareDiscrepancyAtDefectDegree m a N ≤ C ^ 2) :
+    bernsteinCoefficientL1DiscrepancyAtDefectDegree m a N ≤ C := by
+  let s := Finset.range (N + 2)
+  let f : ℕ → ℝ := fun i =>
+    |bernsteinCoefficient m (N + 1) i - bernsteinCoefficient a (N + 1) i|
+  have hcs := sq_sum_le_card_mul_sum_sq (s := s) (f := f)
+  have hcard : ((s.card : ℕ) : ℝ) = (N + 2 : ℝ) := by simp [s]
+  have hsq : (∑ i ∈ s, f i) ^ 2 ≤ C ^ 2 := by
+    calc
+      (∑ i ∈ s, f i) ^ 2 ≤ (s.card : ℝ) * ∑ i ∈ s, f i ^ 2 := hcs
+      _ = (N + 2 : ℝ) *
+          bernsteinCoefficientSquareDiscrepancyAtDefectDegree m a N := by
+        rw [hcard]
+        congr 1
+        apply Finset.sum_congr rfl
+        intro i hi
+        simp only [f, sq_abs]
+      _ ≤ C ^ 2 := henergy
+  have hsum : 0 ≤ ∑ i ∈ s, f i := Finset.sum_nonneg fun _ _ => abs_nonneg _
+  change (∑ i ∈ s, f i) ≤ C
+  nlinarith
+
+/-- **Quadratic operator-state discharge theorem.** It is enough to control one squared Hilbert
+packet error at the natural inverse-dimension scale along cofinally many degrees. -/
+theorem riemannHypothesis_of_cofinal_hausdorffBernsteinApproximation_squareDiscrepancy
+    (d : ℕ → ℕ) (a : ℕ → ℕ → ℝ) (C : ℝ)
+    (hC : 0 ≤ C) (hd : Tendsto d atTop atTop)
+    (ha : ∀ j, HausdorffBernsteinNonnegative (a j))
+    (henergy : ∀ j, (d j + 2 : ℝ) *
+      bernsteinCoefficientSquareDiscrepancyAtDefectDegree
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+          normalizedPrimeArchMoment) (a j) (d j) ≤ C ^ 2) :
+    RiemannHypothesis := by
+  apply
+    riemannHypothesis_of_cofinal_hausdorffBernsteinApproximation_l1Discrepancy_bounded
+      d a C hd ha
+  intro j
+  exact bernsteinCoefficientL1Discrepancy_le_of_card_mul_squareDiscrepancy_le_sq
+    hC (henergy j)
+
+/-- Concrete quadratic thermal consumer for the explicit finite Xi truncations. -/
+theorem riemannHypothesis_of_cofinal_xiThermalTruncation_bernsteinSquareDiscrepancy
+    (d M : ℕ → ℕ) (C : ℝ)
+    (hC : 0 ≤ C) (hd : Tendsto d atTop atTop)
+    (henergy : ∀ j, (d j + 2 : ℝ) *
+      bernsteinCoefficientSquareDiscrepancyAtDefectDegree
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+          normalizedPrimeArchMoment)
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+          (xiThermalTruncation (M j))) (d j) ≤ C ^ 2) :
+    RiemannHypothesis := by
+  exact
+    riemannHypothesis_of_cofinal_hausdorffBernsteinApproximation_squareDiscrepancy
+      d (fun j => radiusNormalizedMoment primeArchEndpointHausdorffRadius
+        (xiThermalTruncation (M j))) C hC hd
+      (fun j =>
+        hausdorffBernsteinNonnegative_radiusNormalized_xiThermalTruncation (M j))
+      henergy
+
 end
 
 

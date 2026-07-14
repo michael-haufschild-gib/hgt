@@ -121,7 +121,7 @@ eventually nonnegative exactly when that set is finite, which is exactly equalit
 - [x] complete paper proof
 - [x] source-level formal proof without project hypotheses
 - [x] narrow module build
-- [ ] axiom audit
+- [x] axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`
 - [ ] connect to the analytic operator-tail capstone after the external classical bridge lands
 - [ ] complete parent-theory and literature audit
 - [ ] determine whether the combined two-stage prime pointing is scientifically non-routine

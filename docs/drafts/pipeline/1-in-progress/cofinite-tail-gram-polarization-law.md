@@ -42,6 +42,17 @@ x* Gamma_F x = sum_(i notin F) w_i |sum_r x_r c_r(i)|^2.   (3)
 The right side is positive for every `x!=0` and every finite deletion exactly when the support of
 every nonzero coefficient combination is infinite.
 
+More generally, if the weights are merely nonnegative, the radical is
+
+```text
+rad Gamma_(F,w)
+  = {x : sum_r x_r c_r(i)=0 for every i notin F with w_i>0}. (3a)
+```
+
+Therefore two summable nonnegative weights with the same positive support induce exactly the same
+radical.  The positive-weight chamber is an isoradical metric chamber: weights choose lengths and
+angles, while their support alone chooses constraints.
+
 For unit-phase prime coefficients and `w_p=p^(-sigma)`, `sigma>1`, every diagonal of `(2)` is
 
 ```text
@@ -77,6 +88,11 @@ The finite family is simultaneously:
 
 This is the sought polarization of the differential building: subspace rank becomes cofinite Gram
 rank, while the all-positive prime source is the common norm-square rather than a chosen vertex.
+
+For a Gibbs/KMS family of weights `w_p(beta)>0`, changing inverse temperature inside the
+summability region changes only the metric.  The tail matroid and every cofinite radical remain
+fixed.  A constraint transition can occur only at support loss, a non-summable boundary requiring
+renormalization, or after adjoining a transverse polarization.
 
 ## RH application boundary
 
@@ -115,6 +131,10 @@ prove that such positivity survives analytic continuation.
 - `TailCoefficientIndependent.linearIndependent_on_compl`;
 - `TailCoefficientIndependent.exists_cofinite_posDef_evaluationGram`;
 - `tailCoefficientIndependent_iff_cofinite_posDef_evaluationGram`;
+- `cofiniteWeightedGramEnergy_eq_zero_iff_on_positiveSupport`;
+- `cofiniteWeightedGramEnergy_zero_iff_same_positiveSupport`;
+- `cofiniteWeightedGramEnergy_eq_zero_iff`;
+- `cofiniteWeightedGramEnergy_zero_iff_change_weight`;
 - `tailCoefficientIndependent_iff_cofiniteWeightedGramStrict`;
 - `tailCoefficientIndependent_iff_cofiniteWeightedGramStrict_of_phase`;
 - `cofiniteWeightedHadamardEntry_phase_diagonal`;
@@ -126,7 +146,7 @@ prove that such positivity survives analytic continuation.
 - [x] complete paper proof of finite and summable weighted forms
 - [x] source-level formal proof of the finite law without hypotheses
 - [x] narrow module build
-- [ ] axiom audit
+- [x] axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`
 - [x] formalize the infinite summable weighted equivalence `(2)`--`(3)`
 - [ ] connect to the analytic operator-tail capstone
 - [ ] construct and attack a reflection-compatible matrix continuation

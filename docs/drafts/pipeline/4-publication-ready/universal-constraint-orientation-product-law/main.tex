@@ -34,7 +34,8 @@
 \newcommand{\Frac}{\operatorname{Frac}}
 \newcommand{\trdeg}{\operatorname{trdeg}}
 
-\title{Operator-Tail Differential Matroids for Prime Dirichlet Families}
+\title{Operator-Tail Differential Matroids and Isoradical Gram Geometry\\
+for Prime Dirichlet Families}
 \author{Michael Haufschild \and GPT 5.6 Sol \and Fable 5 \and Grok 4.5}
 \date{}
 
@@ -59,13 +60,18 @@ many primes span \(\C^m\).  This gives a projective-tail classification of the g
 differential fields.  The analytic transfer is made explicit, including the required
 polynomial-weighted uniqueness lemma for Dirichlet series.
 
-We also record three boundary results that prevent overinterpretation of the construction:
-the exact nonnegative residue cone for atomic Herglotz functions, the collapse of any
-compact-open completion containing one Cauchy coordinate by Runge approximation, and the
-precise linear scope of localized Stanley--Reisner differential rows.  Finally, we prove that
-positivity is a transverse fibre condition rather than a tail invariant, quantify its finite
-negative-mass defect by unit-disk value bounds, and isolate the even/odd splitting forced by an
-affine reflection law.
+The tail quotient carries more structure than a vector matroid.  Over the reals it has a
+canonical eventual order, and coefficientwise multiplication makes it a reduced-product
+algebra whose positive Boolean unit is unique.  Every nonnegative summable coefficient metric
+has a Gram radical determined solely by the support of its weights.  Consequently all
+full-support Gibbs/KMS reweightings lie in one isoradical chamber: they change lengths and
+angles, but not differential constraints.  For unit-phase families the associated
+cross-Hadamard Gram matrices have a common all-positive diagonal.  We also prove a
+Toeplitz--Hankel rank boundary: a shift-invariant Gram orbit that is simultaneously Hankel is
+two-periodic and has no strictly positive block of size at least three.  Thus a rich
+reflection-positive carrier requires a radial/self-adjoint polarization transverse to its
+phase polarization.  Atomic Herglotz, Runge-completion, reflection-folding, and localized
+Stanley--Reisner results delimit the scope of this geometry.
 \end{abstract}
 
 \noindent\textbf{Keywords.}
@@ -125,13 +131,21 @@ the exact statements that survive scrutiny: a residue cone, a Runge collapse, an
 matroid.  No nonlinear universality claim is made.
 
 There is nevertheless one non-product synthesis.  Differential algebra is insensitive to finite
-prime changes and therefore lives on the tail quotient, whereas Herglotz and reflection
-positivity are coordinatewise cone conditions and do not descend to that quotient.  Theorem
-\ref{thm:tail-cone-fibre} determines their exact fibres.  The finite negative mass is then an
-order defect controlling a whole unit disk of value relations, while Theorem
-\ref{thm:reflection-folding} shows that affine reflection separates even positive data from an
-odd transverse sector.  Thus a positivity-based carrier is necessarily polarized: a tail-matroid
-base alone cannot encode its pointing.
+prime changes and therefore lives on the tail quotient.  Exact coordinatewise positivity does
+not descend, but existence of a positive representative does: it defines a pointed eventual
+cone.  Coefficientwise multiplication makes the all-positive class its unique positive Boolean
+unit.  Theorem~\ref{thm:gram-radical} then gives the metric law behind this order: inside any
+fixed support stratum, all nonnegative summable Gram metrics have the same radical.  The
+differential matroid is therefore a constraint object, while positive weights choose a metric on
+that fixed constraint geometry.
+
+This distinction has a reflection-theoretic consequence.  A unitary phase orbit gives a
+Toeplitz shift law, whereas reflected moments give a Hankel sum law.  Their scalar intersection
+is two-periodic and has rank at most two (Theorem~\ref{thm:toeplitz-hankel}).  A rich positive
+carrier is consequently bipolar: it must retain a phase/Hadamard tail and a transverse
+radial/self-adjoint moment polarization.  Affine reflection then separates even positive data
+from an odd orientation defect.  These are positive structural requirements, not impossibility
+claims.
 
 \section{The tail quotient and its operators}
 
@@ -551,7 +565,10 @@ representative to \(-1\) stays in the fibre and leaves the positive cone.
 Thus differential tail data and positive pointing are transverse pieces of information.  The
 operator-tail matroid is constant along each finite-support fibre, while Theorem
 \ref{thm:residue-cone} changes truth value inside every repairable fibre.  In particular, no
-predicate of the projective tail class alone can recover Herglotz or Fourier positivity.
+predicate of the projective tail class alone can recover exact Herglotz or Fourier positivity of
+a chosen representative.  The class does retain the weaker, intrinsic statement that its fibre
+meets the positive cone; this becomes the eventual order of
+Proposition~\ref{prop:eventual-order}.
 
 There is also an exact finite-volume coordinate for the failure of pointing.  For a real packet
 \(b=(b_0,\ldots,b_n)\), set
@@ -609,6 +626,199 @@ Thus a completed algebra containing one Cauchy coordinate cannot distinguish res
 all: it is already the full holomorphic algebra.  Tail classification belongs to the raw
 differential field, not to this completion.
 \end{remark}
+
+\section{Eventual order and isoradical Gram geometry}
+\label{sec:gram}
+
+The fibre law has an intrinsic quotient formulation.  Let \(I\) be an arbitrary set and put
+
+\[
+  \mathcal H_I=\R^I/\R^{(I)}.
+\]
+
+For representatives \(a,b:I\to\R\), define
+
+\begin{equation}\label{eq:eventual-order}
+  [a]\leq_{\mathrm{ev}}[b]
+  \quad\Longleftrightarrow\quad
+  \{i\in I:b(i)-a(i)<0\}\text{ is finite}.
+\end{equation}
+
+\begin{proposition}[Eventual order and positive Boolean unit]
+\label{prop:eventual-order}
+The relation \eqref{eq:eventual-order} is a partial order on \(\mathcal H_I\).  Its positive
+cone has the equivalent descriptions
+\[
+  0\leq_{\mathrm{ev}}[a]
+  \quad\Longleftrightarrow\quad
+  \{i:a(i)<0\}\text{ is finite}
+  \quad\Longleftrightarrow\quad
+  [a]\text{ has a coordinatewise nonnegative representative}.
+\]
+Coefficientwise multiplication descends to \(\mathcal H_I\), making it a commutative
+reduced-product algebra with unit \([\mathbf 1]\).  If
+\(\varepsilon:I\to\{\pm1\}\), then
+\[
+  [\varepsilon]^2=[\mathbf1],
+  \qquad
+  0\leq_{\mathrm{ev}}[\varepsilon]
+  \quad\Longleftrightarrow\quad
+  [\varepsilon]=[\mathbf1].
+\]
+On the bounded part, \([\mathbf1]\) is an order unit.
+\end{proposition}
+
+\begin{proof}
+Changing a representative at finitely many coordinates changes its negative support by at most
+a finite set, so \eqref{eq:eventual-order} is well defined.  Transitivity follows because
+\((c-a)=(c-b)+(b-a)\), and a negative sum has at least one negative summand.  If both
+\([a]\leq_{\mathrm{ev}}[b]\) and \([b]\leq_{\mathrm{ev}}[a]\), then
+\(a-b\) can be nonzero only in the union of the two finite negative supports; hence
+\([a]=[b]\).  Replacing the finitely many negative entries of \(a\) by zero proves the
+positive-representative characterization.
+
+Finitely supported functions form an ideal for coefficientwise multiplication, so the product
+descends.  A sign squares to one coordinatewise.  Its class is positive exactly when it has only
+finitely many negative entries, which is exactly equality with \([\mathbf1]\).  Finally,
+\(|a(i)|\leq M\) gives
+\(-M[\mathbf1]\leq_{\mathrm{ev}}[a]\leq_{\mathrm{ev}}M[\mathbf1]\).
+\end{proof}
+
+The order identifies a coarse positive class; atomic Herglotz or Fourier positivity still
+chooses an exact representative inside its finite-support fibre.  A second intrinsic structure
+is obtained by allowing all positive coefficient metrics.
+
+Let \(J\) be finite, let \(c_j:I\to\C\), and write
+\[
+  \ell_q(i)=\sum_{j\in J}q_jc_j(i),
+  \qquad q\in\C^J.
+\]
+For a finite \(F\subset I\) and a nonnegative weight \(w:I\to\R_+\), assume the series below
+converges and set
+\begin{equation}\label{eq:cofinite-energy}
+  Q_{F,w}(q)=\sum_{i\notin F}w_i|\ell_q(i)|^2.
+\end{equation}
+
+\begin{theorem}[Support-stratified Gram radical]
+\label{thm:gram-radical}
+For every \(q\in\C^J\),
+\begin{equation}\label{eq:gram-radical}
+  Q_{F,w}(q)=0
+  \quad\Longleftrightarrow\quad
+  \ell_q(i)=0
+  \quad\text{for every }i\notin F\text{ with }w_i>0.
+\end{equation}
+Consequently two nonnegative summable weights with the same positive support induce exactly the
+same radical after every finite deletion.
+
+If \(w_i>0\) for every \(i\), then the following are equivalent:
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em]
+  \item the classes \([c_j]\) are linearly independent in
+  \(\C^I/\C^{(I)}\);
+  \item for every finite \(F\subset I\), \(Q_{F,w}\) is strictly positive away from zero.
+\end{enumerate}
+The equivalence is independent of the chosen full-support weight, provided the relevant series
+converge.
+\end{theorem}
+
+\begin{proof}
+Every summand in \eqref{eq:cofinite-energy} is nonnegative.  A convergent sum of nonnegative
+terms is zero if and only if each term is zero.  At a positive-weight coordinate this is
+equivalent to \(\ell_q(i)=0\), proving \eqref{eq:gram-radical} and the support-invariance
+statement.
+
+Tail independence says that for every nonzero \(q\), the support of \(\ell_q\) is infinite.
+After deleting a finite \(F\), at least one nonzero value remains, and its strictly positive
+weighted square makes \(Q_{F,w}(q)>0\).  Conversely, if a nonzero combination has finite support,
+delete precisely that support; its energy is zero.
+\end{proof}
+
+Finite frame theory studies closely related erasure-robust Gram conditions
+\cite{AlexeevCahillMixon2012}.  The point here is the infinite cofinite form and its exact
+identification with the differential tail matroid: positive weights do not add constraints;
+they metrize a constraint geometry already fixed by the coefficient tails.
+
+\begin{corollary}[Full-support temperature rigidity]
+\label{cor:temperature-rigidity}
+Let \((w_\beta)_{\beta\in B}\) be a family of nonnegative summable weights satisfying
+\(w_\beta(i)>0\) for every \(i\) and every \(\beta\).  Then all forms
+\(Q_{F,w_\beta}\) have the same radical for each finite \(F\).  Thus a Gibbs/KMS deformation
+that changes only full-support weights is isoradical throughout its summability region.
+\end{corollary}
+
+This gives a precise metric--constraint separation.  Temperature may change every nonzero
+eigenvalue and every angle without changing a single null relation.  A constraint transition
+must instead occur through support loss, passage to a non-summable boundary with an explicitly
+specified renormalization, or the addition of a transverse source/reflection coordinate.
+
+For unit-phase families the Gram metric has a canonical diagonal.  If
+\(|c_j(i)|=1\) and \(w\) is summable, define
+\begin{equation}\label{eq:cross-hadamard}
+  \Gamma_{F,w}(r,s)
+  =\sum_{i\notin F}w_i\overline{c_r(i)}c_s(i).
+\end{equation}
+Then
+\begin{equation}\label{eq:common-diagonal}
+  \Gamma_{F,w}(r,r)=\sum_{i\notin F}w_i
+\end{equation}
+for every \(r\).  The off-diagonal entries are cross-Hadamard carriers, while the diagonal is
+the common coefficientwise norm.  For prime coefficients and \(w_p=p^{-\sigma}\),
+\(\sigma>1\), it is the cofinite prime-zeta value.  The all-positive source is therefore not
+an arbitrarily chosen vertex: it is simultaneously the positive unit of the reduced-product
+algebra and the common diagonal of every unit-phase Gram family.
+
+\section{The phase--radial Toeplitz--Hankel boundary}
+\label{sec:phase-radial}
+
+The metric law also clarifies why unitary phase geometry cannot itself supply a rich reflected
+moment tower.  Let \(E\) be a real Hilbert space, let \(v_0,v_1,\ldots\in E\), and suppose that
+their Gram kernel is invariant under simultaneous translation,
+\begin{equation}\label{eq:gram-shift}
+  \langle v_{i+1},v_{j+1}\rangle=\langle v_i,v_j\rangle.
+\end{equation}
+Every isometric or unitary orbit has this property.  Suppose at the same time that the kernel is
+Hankel:
+\begin{equation}\label{eq:gram-hankel}
+  \langle v_i,v_j\rangle=m_{i+j}
+\end{equation}
+for a real sequence \(m\).
+
+\begin{theorem}[Toeplitz--Hankel rank boundary]
+\label{thm:toeplitz-hankel}
+Under \eqref{eq:gram-shift} and \eqref{eq:gram-hankel},
+\[
+  m_{n+2}=m_n\qquad(n\geq0).
+\]
+Consequently every Hankel block
+\[
+  H_d=(m_{i+j})_{0\leq i,j<d}
+\]
+with \(d\geq3\) has determinant zero and is not strictly positive definite.
+\end{theorem}
+
+\begin{proof}
+Set \(i=0\) and \(j=n\) in \eqref{eq:gram-shift}.  The Hankel law gives
+\(m_{n+2}=m_n\).  In every block of size at least three, row two is therefore equal to row
+zero.  Hence the determinant vanishes.  A strictly positive-definite matrix has positive
+determinant, so strict positivity is impossible.
+\end{proof}
+
+The abstract intersection is elementary; the structural consequence is not optional.  A
+unit-phase/Hadamard carrier supplies a Toeplitz polarization, while a reflection-positive
+moment problem supplies a Hankel polarization.  If all leading Hankel blocks are to be strict,
+the radial moment orbit cannot be the same scalar unitary phase orbit.  The carrier must be
+bipolar:
+\[
+  \text{phase--unitary--Toeplitz data}
+  \quad\times\quad
+  \text{radial--self-adjoint--Hankel data}.
+\]
+Reflection positivity is known to turn a reflected unitary theory into a contractive Hermitian
+semigroup after passage to the physical Hilbert space
+\cite{NeebOlafsson2013,AdamoNeebSchober2021}.  Theorem~\ref{thm:toeplitz-hankel} is the scalar
+rank shadow of that phase-to-radial change.  Together with
+Corollary~\ref{cor:temperature-rigidity}, it shows that positive reweighting inside a fixed
+support chamber cannot substitute for the missing radial polarization.
 
 \section{Finite differential rows and Stanley--Reisner localization}
 \label{sec:rows}
@@ -810,6 +1020,33 @@ particular, the Euler product couples all prime powers:
 whereas Theorems~\ref{thm:operator-tail} and
 \ref{thm:finite-range-collapse} classify series supported only at the first prime layer.
 
+They nevertheless determine the geometry contributed by that first layer.  For a unit-phase
+family (c_r(p)), the cross-Hadamard matrix
+\[
+  \Gamma_\sigma(r,s)
+  =\sum_p p^{-\sigma}\overline{c_r(p)}c_s(p),
+  \qquad \sigma>1,
+\]
+has common diagonal
+\[
+  P_+(\sigma)=\sum_pp^{-\sigma}.
+\]
+The all-positive prime source is therefore the positive Hadamard unit and the common norm of
+every phase orientation.  Euler plethysm connects it to the Euler product through
+\[
+  \log\zeta(s)=\sum_{k\geq1}\frac1k P_+(ks),
+  \qquad \Re s>1.
+\]
+This is a canonical source marking, not a zero-location statement.
+
+Corollary~\ref{cor:temperature-rigidity} adds a sharp restriction.  Throughout
+\(\sigma>1\), all weights (p^{-\sigma}) are strictly positive and summable.  Horizontal
+displacement changes the Gram metric but never its radical or its cofinite tail matroid.  Any
+RH-sensitive constraint transition must therefore be carried by the boundary passage at
+\(\Re s=1\), its renormalized continuation, or data transverse to this metric chamber.  Merely
+varying a positive temperature parameter inside the absolute-convergence half-plane cannot alter
+the HT constraint geometry.
+
 There is, however, an exact reflection consequence.  The completed function satisfies
 \(\xi(1-s)=\xi(s)\), so its logarithmic derivative
 \(T=\xi'/\xi\) satisfies \(T(1-s)=-T(s)\) away from its poles.  Theorem
@@ -819,16 +1056,28 @@ can be studied on one side of the critical line, but their reflection symmetry a
 choice of transverse orientation.  A route using them must supply that missing odd or
 anti-Hermitian defect from independent arithmetic or analytic structure.
 
-They do impose a positive structural constraint on any route that uses finite-range prime
-masks.  Such a route must contain information beyond the projective tail differential matroid:
-for example, nonlinear prime-power coupling, the functional equation and continuation, or a
-positivity structure that is not invariant under finite prime changes.  By Theorem
-\ref{thm:tail-cone-fibre}, this extra pointing necessarily lives in the finite-support fibre rather
-than in the projective tail base.  Moreover, a
-compact-open completion containing one Cauchy coordinate cannot retain the required arithmetic
-tail information by Theorem~\ref{thm:runge-collapse}.  Therefore a viable zeta carrier must keep
-its arithmetic tail before completion, retain a transverse positivity/orientation coordinate, and
-couple both to genuinely global analytic data.
+Theorem~\ref{thm:toeplitz-hankel} makes the second restriction precise.  The vertical prime
+clocks form phase/Toeplitz data.  An all-order strict reflected moment tower is Hankel data.  They
+cannot be the same scalar Gram orbit: their intersection has rank at most two.  Consequently an
+RH-capable HT carrier must have at least four coupled layers:
+\begin{enumerate}[label=(\arabic*),leftmargin=2.2em]
+  \item the ordered operator-tail class, which records differential constraints;
+  \item exact atomic/Hadamard pointing, which marks the all-positive Euler source;
+  \item a radial self-adjoint Hankel polarization, capable of carrying continued divisor
+  moments;
+  \item an odd or anti-Hermitian reflection defect coupling the first three layers to the
+  functional equation.
+\end{enumerate}
+The first two layers are available in the absolute-convergence region.  The theorem proves that
+the third cannot be produced by a full-support positive reweighting of the first.  The fourth is
+not supplied by reflection symmetry alone.
+
+A compact-open completion containing one Cauchy coordinate cannot retain the arithmetic tail,
+by Theorem~\ref{thm:runge-collapse}.  Thus the positive target is a source-marked incidence
+object: it must preserve the raw prime tail before completion and couple its common Hadamard unit
+to a genuinely radial continued moment system and a reflection-odd defect.  This identifies the
+kind of relation a successful route must prove, without asserting that such a relation has been
+constructed here.
 
 This is a restriction on the architecture of a possible proof, not evidence for a proof itself.
 
@@ -845,17 +1094,30 @@ to ordinary projective-tail linear algebra.  The reduction is exact, yields a fi
 classification, and cleanly separates the new multi-source geometry from the classical
 arithmetic-function Jacobian theorem used in its analytic realization.
 
-The auxiliary results delimit the construction.  Herglotz pointing is a full nonnegative residue
-cone, not a preferred sign vertex.  It lies in finite-support fibres transverse to the tail
-matroid, and its finite negative mass gives an exact unit-disk value defect.  Affine reflection
-folds the even Hankel sector but forces a separate odd orientation sector.  A compact-open algebra containing one Cauchy coordinate
-completes to all of \(\cO(\mathbb H)\).  Stanley--Reisner sewing controls finite linear
-differential rows, not nonlinear incidence relations.  These boundaries make the remaining
-claim both stronger and narrower: the central object is the projective operator-tail differential
-matroid of prime Dirichlet families, while positivity and reflection supply explicitly transverse
-data rather than a decorative product factor.
+The positive geometry is now intrinsic rather than decorative.  The real tail quotient has a
+pointed eventual cone and a coefficientwise algebra whose positive Boolean unit is the
+all-positive tail.  Every nonnegative summable Gram metric has radical determined only by its
+positive support; full-support temperature changes are therefore isoradical.  For unit phases,
+the positive unit is also the common cross-Hadamard diagonal.  These statements turn the tail
+matroid into a metric-independent constraint geometry.
+
+The Toeplitz--Hankel boundary supplies the second polarization law: a shift-invariant phase orbit
+cannot realize a strict Hankel tower beyond dimension two.  Rich reflection-positive data must
+therefore introduce a transverse radial/self-adjoint coordinate.  Affine reflection then folds
+the even Hankel sector but forces a separate odd orientation defect.  Atomic Herglotz pointing,
+Runge completion, and Stanley--Reisner localization delimit the remaining operations: exact
+pointing still occurs inside a tail fibre, a compact-open algebra containing one Cauchy coordinate
+completes to all of \(\cO(\mathbb H)\), and finite sewing controls linear differential rows rather
+than nonlinear output relations.  The resulting object is a source-marked, bipolar HT carrier:
+operator-tail constraints, an isoradical positive metric chamber, and a transverse reflected
+radial polarization.
 
 \begin{thebibliography}{99}
+
+\bibitem{AlexeevCahillMixon2012}
+B.~Alexeev, J.~Cahill, and D.~G. Mixon,
+Full spark frames,
+\emph{J. Fourier Anal. Appl.} \textbf{18} (2012), no.~6, 1167--1194.
 
 \bibitem{AdamoNeebSchober2021}
 M.~S. Adamo, K.-H. Neeb, and J. Schober,
@@ -888,6 +1150,11 @@ Pure and Applied Mathematics, vol.~54, Academic Press, New York, 1973.
 K.-H. Neeb and G. \'Olafsson,
 KMS conditions, standard real subspaces and reflection positivity on the circle group,
 \emph{Pacific J. Math.} \textbf{299} (2019), no.~1, 117--169.
+
+\bibitem{NeebOlafsson2013}
+K.-H. Neeb and G. \'Olafsson,
+Reflection positive one-parameter groups and dilations,
+arXiv:1312.6161, 2013.
 
 \bibitem{Ostrowski1920}
 A.~Ostrowski,
