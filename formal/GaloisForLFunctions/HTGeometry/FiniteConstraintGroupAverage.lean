@@ -43,14 +43,14 @@ theorem quantumMasterConstraint_isSelfAdjoint (C : E →L[𝕜] E) :
 /-- The master-constraint expectation is exactly the squared constraint residual. -/
 theorem re_inner_quantumMasterConstraint_eq_normSq
     (C : E →L[𝕜] E) (ψ : E) :
-    re (inner 𝕜 ψ (quantumMasterConstraint C ψ)) = ‖C ψ‖ ^ 2 := by
+    RCLike.re (inner 𝕜 ψ (quantumMasterConstraint C ψ)) = ‖C ψ‖ ^ 2 := by
   simpa [quantumMasterConstraint] using
     (C.apply_norm_sq_eq_inner_adjoint_right ψ).symm
 
 /-- Master-constraint expectations are nonnegative without an extra positivity premise. -/
 theorem re_inner_quantumMasterConstraint_nonneg
     (C : E →L[𝕜] E) (ψ : E) :
-    0 ≤ re (inner 𝕜 ψ (quantumMasterConstraint C ψ)) := by
+    0 ≤ RCLike.re (inner 𝕜 ψ (quantumMasterConstraint C ψ)) := by
   rw [re_inner_quantumMasterConstraint_eq_normSq]
   positivity
 
@@ -64,13 +64,13 @@ theorem physicalState_quantumMasterConstraint_iff
     rw [GaloisForLFunctions.PhysicalState] at hmaster ⊢
     change quantumMasterConstraint C ψ = 0 at hmaster
     change C ψ = 0
-    apply inner_self_eq_zero.mp
+    apply (inner_self_eq_zero (𝕜 := 𝕜)).mp
     calc
       inner 𝕜 (C ψ) (C ψ) = inner 𝕜 ψ (C.adjoint (C ψ)) :=
         (C.adjoint_inner_right ψ (C ψ)).symm
       _ = inner 𝕜 ψ (quantumMasterConstraint C ψ) := by
         rfl
-      _ = 0 := by rw [hmaster, inner_zero]
+      _ = 0 := by simp [hmaster]
   · intro hC
     rw [GaloisForLFunctions.PhysicalState] at hC ⊢
     change C ψ = 0 at hC
@@ -113,6 +113,118 @@ theorem physicalMatrixElement_congr_mod_quantumMasterConstraintIdeal
     ((physicalState_quantumMasterConstraint_iff C φ).mpr hφ)
     ((physicalState_quantumMasterConstraint_iff C ψ).mpr hψ)
 
+/-! ### Finite families of constraints -/
+
+variable {ι : Type*} [Fintype ι]
+
+/-- The finite-family master constraint is the sum of the individual positive squares. -/
+noncomputable def finiteQuantumMasterConstraint
+    (C : ι → E →L[𝕜] E) : E →L[𝕜] E :=
+  ∑ i, quantumMasterConstraint (C i)
+
+/-- A finite-family master constraint is canonically self-adjoint. -/
+theorem finiteQuantumMasterConstraint_isSelfAdjoint
+    (C : ι → E →L[𝕜] E) :
+    IsSelfAdjoint (finiteQuantumMasterConstraint C) := by
+  classical
+  exact isSelfAdjoint_sum Finset.univ fun i _ =>
+    quantumMasterConstraint_isSelfAdjoint (C i)
+
+/-- The finite master expectation is the sum of all squared constraint residuals. -/
+theorem re_inner_finiteQuantumMasterConstraint_eq_sum_normSq
+    (C : ι → E →L[𝕜] E) (ψ : E) :
+    RCLike.re (inner 𝕜 ψ (finiteQuantumMasterConstraint C ψ)) =
+      ∑ i, ‖C i ψ‖ ^ 2 := by
+  classical
+  simp only [finiteQuantumMasterConstraint, ContinuousLinearMap.sum_apply,
+    inner_sum, map_sum]
+  exact Finset.sum_congr rfl fun i _ =>
+    re_inner_quantumMasterConstraint_eq_normSq (C i) ψ
+
+/-- One finite master constraint has exactly the intersection of all individual constraint
+kernels as its physical space. -/
+theorem physicalState_finiteQuantumMasterConstraint_iff
+    (C : ι → E →L[𝕜] E) (ψ : E) :
+    GaloisForLFunctions.PhysicalState (finiteQuantumMasterConstraint C).toLinearMap ψ ↔
+      ∀ i, GaloisForLFunctions.PhysicalState (C i).toLinearMap ψ := by
+  classical
+  constructor
+  · intro hmaster i
+    rw [GaloisForLFunctions.PhysicalState] at hmaster ⊢
+    change finiteQuantumMasterConstraint C ψ = 0 at hmaster
+    change C i ψ = 0
+    have hsum : ∑ j, ‖C j ψ‖ ^ 2 = 0 := by
+      rw [← re_inner_finiteQuantumMasterConstraint_eq_sum_normSq C ψ, hmaster]
+      simp
+    have hi : ‖C i ψ‖ ^ 2 = 0 :=
+      (Finset.sum_eq_zero_iff_of_nonneg
+        (fun j _ => sq_nonneg ‖C j ψ‖)).mp hsum i (Finset.mem_univ i)
+    exact norm_eq_zero.mp (by simpa using hi)
+  · intro hfamily
+    have hzero : ∀ i, C i ψ = 0 := by
+      intro i
+      simpa only [GaloisForLFunctions.PhysicalState] using hfamily i
+    rw [GaloisForLFunctions.PhysicalState]
+    change finiteQuantumMasterConstraint C ψ = 0
+    simp [finiteQuantumMasterConstraint, quantumMasterConstraint, hzero]
+
+/-- The finite master-constraint kernel is preserved by every observable whose commutators close
+in the existing finite first-class family interface.  The consumer only needs one master-state
+premise rather than a separately supplied physical-state proof for every constraint. -/
+theorem finiteQuantumMasterConstraint_preserves_physicalState_of_closes_mod_constraints
+    (C : ι → E →L[𝕜] E) (A : E →L[𝕜] E)
+    (B : ι → ι → Module.End 𝕜 E)
+    (hclose : ∀ i, (C i).toLinearMap * A.toLinearMap =
+      A.toLinearMap * (C i).toLinearMap + ∑ j, B i j * (C j).toLinearMap)
+    {ψ : E}
+    (hψ : GaloisForLFunctions.PhysicalState
+      (finiteQuantumMasterConstraint C).toLinearMap ψ) :
+    GaloisForLFunctions.PhysicalState
+      (finiteQuantumMasterConstraint C).toLinearMap (A ψ) := by
+  apply (physicalState_finiteQuantumMasterConstraint_iff C (A ψ)).mpr
+  exact GaloisForLFunctions.preserves_jointPhysicalState_of_closes_mod_constraints
+    (fun i => (C i).toLinearMap) A.toLinearMap B hclose
+    ((physicalState_finiteQuantumMasterConstraint_iff C ψ).mp hψ)
+
+/-- Joint physicality for a finite constraint family is enough for one master-constraint Ward
+value; no self-adjointness premise is required for any member of the family. -/
+theorem finiteQuantumMasterConstraint_WardValue_eq_zero
+    (C : ι → E →L[𝕜] E) (A : E →L[𝕜] E) {ψ : E}
+    (hψ : ∀ i, GaloisForLFunctions.PhysicalState (C i).toLinearMap ψ) :
+    inner 𝕜 ψ (finiteQuantumMasterConstraint C (A ψ)) = 0 := by
+  exact constraintWardValue_eq_zero (finiteQuantumMasterConstraint C) A
+    (finiteQuantumMasterConstraint_isSelfAdjoint C)
+    ((physicalState_finiteQuantumMasterConstraint_iff C ψ).mpr hψ)
+
+/-- The commutator Ward value likewise packages a finite joint constraint family into one
+automatically self-adjoint master constraint. -/
+theorem finiteQuantumMasterConstraint_commutatorWardValue_eq_zero
+    (C : ι → E →L[𝕜] E) (A : E →L[𝕜] E) {ψ : E}
+    (hψ : ∀ i, GaloisForLFunctions.PhysicalState (C i).toLinearMap ψ) :
+    inner 𝕜 ψ
+      (((finiteQuantumMasterConstraint C * A - A * finiteQuantumMasterConstraint C) :
+        E →L[𝕜] E) ψ) = 0 := by
+  exact constraintCommutatorWardValue_eq_zero (finiteQuantumMasterConstraint C) A
+    (finiteQuantumMasterConstraint_isSelfAdjoint C)
+    ((physicalState_finiteQuantumMasterConstraint_iff C ψ).mpr hψ)
+
+/-- Operators equal modulo the ideal generated by the finite master constraint have identical
+matrix elements between jointly physical states, without self-adjointness assumptions on the
+individual constraints. -/
+theorem physicalMatrixElement_congr_mod_finiteQuantumMasterConstraintIdeal
+    (C : ι → E →L[𝕜] E) (A B L R : E →L[𝕜] E)
+    (hmod : B = A +
+      (finiteQuantumMasterConstraint C * L + R * finiteQuantumMasterConstraint C))
+    {φ ψ : E}
+    (hφ : ∀ i, GaloisForLFunctions.PhysicalState (C i).toLinearMap φ)
+    (hψ : ∀ i, GaloisForLFunctions.PhysicalState (C i).toLinearMap ψ) :
+    inner 𝕜 φ (B ψ) = inner 𝕜 φ (A ψ) := by
+  exact physicalMatrixElement_congr_mod_constraintTwoSidedIdeal
+    (finiteQuantumMasterConstraint C) A B L R
+    (finiteQuantumMasterConstraint_isSelfAdjoint C) hmod
+    ((physicalState_finiteQuantumMasterConstraint_iff C φ).mpr hφ)
+    ((physicalState_finiteQuantumMasterConstraint_iff C ψ).mpr hψ)
+
 end MasterConstraint
 
 section AlgebraicAverage
@@ -152,7 +264,7 @@ theorem finiteCyclicGaugeAverage_physical
   rw [GaloisForLFunctions.PhysicalState] at hsum ⊢
   change (U - 1) (finiteCyclicGaugeSum U N ψ) = 0 at hsum
   change (U - 1) (finiteCyclicGaugeAverage U N ψ) = 0
-  simpa [finiteCyclicGaugeAverage, hsum]
+  simp [finiteCyclicGaugeAverage, hsum]
 
 /-- The unnormalized orbit sum acts by the scalar `N` on every fixed vector. -/
 theorem finiteCyclicGaugeSum_apply_of_fixed
@@ -171,7 +283,9 @@ theorem finiteCyclicGaugeSum_apply_of_fixed
       apply Finset.sum_congr rfl
       intro k hk
       rw [hpow k]
-    _ = (N : 𝕜) • ψ := by simp
+    _ = (N : 𝕜) • ψ := by
+      simpa only [Finset.sum_const, Finset.card_range] using
+        (Nat.cast_smul_eq_nsmul 𝕜 N ψ).symm
 
 /-- A nonempty normalized orbit average fixes every invariant vector. -/
 theorem finiteCyclicGaugeAverage_apply_of_fixed

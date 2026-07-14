@@ -9,7 +9,7 @@
 Let
 \[
  u_\rho=\lambda_\rho/R_*,\qquad
- B_{\rm sec}=\frac{1003}{1000},\qquad
+ B_{\rm sec}=\frac{501}{500},\qquad
  \Pi_M=\sum_{i=0}^M a_{M,i}^2.
 \]
 The endpoint quartet estimate gives, for every Xi-divisor copy,
@@ -24,10 +24,11 @@ Consequently the completed Bernstein source obeys
 \[
  \Pi_M\le A_*^2 B_{\rm sec}^{2M}.
 \]
-If RH is false, its cancellation-resistant purity exponent therefore lies in the strict
+If RH is false, its cancellation-resistant purity exponent therefore lies in the exact
 window
 \[
- 1<r<\frac{101}{100}.
+ 1<r\le\left(\frac{501}{500}\right)^2
+ =\frac{251001}{250000}<\frac{201}{200}.
 \]
 
 ## Proof
@@ -38,22 +39,22 @@ Put `r=|u|`, `s=|1-u|`, and `x=Re u`.  The orientation inequality gives
 \]
 and the rational comparison
 \[
- \left(\frac{913}{919}\right)^2\frac{85}{84}<1
+ \left(\frac{497}{500}\right)^2\frac{85}{84}<1
 \]
-therefore yields `(913/919)r <= x`.  Since `r<1/4`, direct comparison of
+therefore yields `(497/500)r <= x`.  Since `r<1/4`, direct comparison of
 \[
  s^2=1-2x+r^2
 \]
-with `(1003/1000-r)^2` proves `r+s<1003/1000`.  The exact divisor-envelope identity and the
+with `(501/500-r)^2` proves `r+s<501/500`.  The exact divisor-envelope identity and the
 Bernstein binomial sum then give
 \[
- T_M\le A_*\left(\frac{1003}{1000}\right)^M,
+ T_M\le A_*\left(\frac{501}{500}\right)^M,
  \qquad
- \Pi_M\le A_*^2\left(\frac{1003}{1000}\right)^{2M}.
+ \Pi_M\le A_*^2\left(\frac{501}{500}\right)^{2M}.
 \]
 The already proved cancellation-resistant purity law says that false RH supplies some surviving
-exponent `r>1`; the new upper estimate forces that exponent below
-`(1003/1000)^2<101/100`.
+exponent `r>1`; the new upper estimate forces that exponent to be at most
+`(501/500)^2 = 251001/250000 < 201/200`.
 
 No RH assumption, verified-height certificate, divisor truncation, or numerical zero enumeration
 is used.
@@ -62,7 +63,8 @@ is used.
 
 `[OPEN CORE]` Select the endpoint exponent: prove that `Pi_M` is uniformly bounded, equivalently
 that every strict exponential normalization kills it.  The present theorem confines any contrary
-phase to the interval `(1,101/100)` but does not make that interval empty.
+phase to `(1,(501/500)^2]`, strictly inside `(1,201/200)`, but does not make that interval
+empty.
 
 ## Formalization target
 
@@ -75,7 +77,9 @@ Primary declarations:
 - `xiEndpointBernsteinAtomAmplitudeBase_lt_sectorConfined`
 - `primeArchEndpointBernsteinTotalVariation_le_sectorConfined`
 - `primeArchEndpointBernsteinPurity_le_sectorConfined`
-- `exists_onePercent_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis`
+- `xiSectorConfinedBernsteinAmplitudeBase_sq_eq`
+- `exists_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis`
+- `exists_fivePerMille_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis`
 - `primeArchBernsteinSectorConfinedLoschmidtPhaseMaster`
 
 ## Gates
@@ -84,4 +88,4 @@ Primary declarations:
 - [x] Paper proof complete
 - [x] Lean theorem complete without placeholders
 - [x] Targeted module check and axiom audit pass
-- [ ] Integrate into the master theorem and manuscript
+- [x] Integrate into the master theorem and manuscript

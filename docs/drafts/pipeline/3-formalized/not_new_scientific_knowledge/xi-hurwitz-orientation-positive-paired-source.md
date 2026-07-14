@@ -78,15 +78,25 @@ Hence their complete paired kernel is the real lift
 ```
 
 It uses only positive-frequency source values `T(z)` and `T(w)`.  Lean also identifies the
-diagonal of this reduced kernel with the exact Weil Hilbert value of one separated paired Cauchy
-generator.
+complete finite reduced matrix energy with the exact Weil Hilbert quadratic value of every
+pairwise conjugate-separated positive paired packet.  Positive separated packets are dense in the
+paired algebraic core, with their reduced source energies converging to the Hilbert value.
+
+Therefore Lean proves the value-level criterion
+
+```text
+XiPositivePairedReducedSourcePassivity R <-> RH
+```
+
+at every quartet-admissible radius, including `218/25`.
 
 ## Remaining open core
 
-The open input is now the matrix sign on the positive-frequency paired span, not a two-sided
+The open input is now the matrix sign on the positive-frequency reduced kernel, not a two-sided
 exterior source condition.  Scalar diagonal positivity does not suffice: mixed correlations
-between distinct positive poles remain.  A proof must establish positive semidefiniteness of the
-real reduced kernel matrices without importing Xi zero locations or an RH-equivalent measure.
+between distinct positive poles remain.  A proof must establish
+`XiPositivePairedReducedSourcePassivity (218/25)` directly from the displayed prime--Gamma values,
+without importing Xi zero locations or an RH-equivalent measure.
 
 ## Lean certificate
 
@@ -105,6 +115,10 @@ Principal declarations:
 - `RHTower.ccmPositivePairedCauchyKernel_eq_reduced`
 - `RHTower.positivePairedContinuedCauchyCorePassivity_iff_riemannHypothesis`
 - `RHTower.xiWeilHilbertQuadratic_positivePairedCauchy_eq_reducedKernel`
+- `RHTower.xiWeilHilbertQuadratic_positivePairedPacket_eq_reducedEnergy`
+- `RHTower.exists_pairwiseConjSeparatedPositivePairedSourceEnergy_tendsto`
+- `RHTower.positivePairedReducedSourcePassivity_iff_riemannHypothesis`
+- `RHTower.positivePairedReducedSourcePassivity_twoHundredEighteen_twentyFifths_iff_rh`
 
 The module is imported by `formal/GaloisForLFunctions/RHTower.lean`.
 

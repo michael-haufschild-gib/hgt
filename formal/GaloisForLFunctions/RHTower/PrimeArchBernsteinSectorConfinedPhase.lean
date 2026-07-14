@@ -12,11 +12,11 @@ orientation bound.  After endpoint normalization every reciprocal-square atom sa
 For an off-line atom one also has `‖u‖ < 1 / 4`.  These two source-derived inequalities imply the
 strict elliptic bound
 
-`‖u‖ + ‖1 - u‖ < 1003 / 1000`.
+`‖u‖ + ‖1 - u‖ < 501 / 500`.
 
 The complete Bernstein total variation and Loschmidt purity therefore have exponential bases
-`1003 / 1000` and `(1003 / 1000)^2 = 1006009 / 1000000 < 1007 / 1000`, respectively.  Thus
-failure of RH can occupy only a strict seven-per-mille purity window above the critical exponent
+`501 / 500` and `(501 / 500)^2 = 251001 / 250000 < 201 / 200`, respectively.  Thus
+failure of RH can occupy only a strict five-per-mille purity window above the critical exponent
 one.
 -/
 
@@ -30,14 +30,18 @@ noncomputable section
 
 /-- Rational amplitude ceiling supplied jointly by the endpoint quarter disk and the exact
 one-eighty-fourth orientation sector. -/
-def xiSectorConfinedBernsteinAmplitudeBase : ℝ := 1003 / 1000
+def xiSectorConfinedBernsteinAmplitudeBase : ℝ := 501 / 500
 
 theorem one_lt_xiSectorConfinedBernsteinAmplitudeBase :
     1 < xiSectorConfinedBernsteinAmplitudeBase := by
   norm_num [xiSectorConfinedBernsteinAmplitudeBase]
 
 theorem xiSectorConfinedBernsteinAmplitudeBase_sq_eq :
-    xiSectorConfinedBernsteinAmplitudeBase ^ 2 = 1006009 / 1000000 := by
+    xiSectorConfinedBernsteinAmplitudeBase ^ 2 = 251001 / 250000 := by
+  norm_num [xiSectorConfinedBernsteinAmplitudeBase]
+
+theorem xiSectorConfinedBernsteinAmplitudeBase_sq_lt_twoHundredOne_over_twoHundred :
+    xiSectorConfinedBernsteinAmplitudeBase ^ 2 < 201 / 200 := by
   norm_num [xiSectorConfinedBernsteinAmplitudeBase]
 
 theorem xiSectorConfinedBernsteinAmplitudeBase_sq_lt_oneThousandSeven_over_oneThousand :
@@ -49,7 +53,7 @@ theorem xiSectorConfinedBernsteinAmplitudeBase_sq_lt_oneHundredOne_over_oneHundr
   norm_num [xiSectorConfinedBernsteinAmplitudeBase]
 
 /-- Pure geometry: the `1/84` sector inside the strict quarter disk lies in the Bernstein ellipse
-with major-axis sum `1003/1000`. -/
+with major-axis sum `501/500`. -/
 theorem norm_add_norm_one_sub_lt_sectorConfinedBase
     {u : ℂ} (hr : ‖u‖ < 1 / 4)
     (hx : 0 ≤ u.re)
@@ -69,13 +73,13 @@ theorem norm_add_norm_one_sub_lt_sectorConfinedBase
     rw [hrSq]
     dsimp only [x] at hy ⊢
     nlinarith
-  have hcxSq : ((913 / 919 : ℝ) * r) ^ 2 ≤ x ^ 2 := by
-    have hconst : (913 / 919 : ℝ) ^ 2 * (85 / 84 : ℝ) < 1 := by
+  have hcxSq : ((497 / 500 : ℝ) * r) ^ 2 ≤ x ^ 2 := by
+    have hconst : (497 / 500 : ℝ) ^ 2 * (85 / 84 : ℝ) < 1 := by
       norm_num
     nlinarith [sq_nonneg x]
-  have hcx0 : 0 ≤ (913 / 919 : ℝ) * r := by positivity
-  have hcx : (913 / 919 : ℝ) * r ≤ x := by
-    nlinarith [sq_nonneg (x + (913 / 919 : ℝ) * r)]
+  have hcx0 : 0 ≤ (497 / 500 : ℝ) * r := by positivity
+  have hcx : (497 / 500 : ℝ) * r ≤ x := by
+    nlinarith [sq_nonneg (x + (497 / 500 : ℝ) * r)]
   have hsSq : s ^ 2 = 1 - 2 * x + r ^ 2 := by
     dsimp only [s, x, r]
     rw [Complex.sq_norm, Complex.normSq_apply, Complex.sq_norm,
@@ -87,13 +91,13 @@ theorem norm_add_norm_one_sub_lt_sectorConfinedBase
     norm_num [xiSectorConfinedBernsteinAmplitudeBase] at hr ⊢
     linarith
   have hlinear :
-      2 * (xiSectorConfinedBernsteinAmplitudeBase - 913 / 919) * r <
+      2 * (xiSectorConfinedBernsteinAmplitudeBase - 497 / 500) * r <
         xiSectorConfinedBernsteinAmplitudeBase ^ 2 - 1 := by
     have hcoeff :
-        0 < xiSectorConfinedBernsteinAmplitudeBase - 913 / 919 := by
+        0 < xiSectorConfinedBernsteinAmplitudeBase - 497 / 500 := by
       norm_num [xiSectorConfinedBernsteinAmplitudeBase]
     have hconst :
-        2 * (xiSectorConfinedBernsteinAmplitudeBase - 913 / 919) * (1 / 4 : ℝ) <
+        2 * (xiSectorConfinedBernsteinAmplitudeBase - 497 / 500) * (1 / 4 : ℝ) <
           xiSectorConfinedBernsteinAmplitudeBase ^ 2 - 1 := by
       norm_num [xiSectorConfinedBernsteinAmplitudeBase]
     nlinarith
@@ -122,7 +126,7 @@ theorem xiEndpointNormalizedReciprocalSquare_orientation_sq_le
   nlinarith
 
 /-- **Narrow-sector atom law.** Every endpoint-normalized Xi atom has Bernstein amplitude strictly
-below `1003/1000`; line atoms have amplitude exactly one and off-line atoms use both the disk and
+below `501/500`; line atoms have amplitude exactly one and off-line atoms use both the disk and
 orientation constraints. -/
 theorem xiEndpointBernsteinAtomAmplitudeBase_lt_sectorConfined
     (q : XiZeroCopy) :
@@ -209,7 +213,7 @@ theorem primeArchEndpointBernsteinTotalVariation_le_of_atomAmplitudeBase
       rw [xiReciprocalSquareAbsoluteMass, tsum_mul_right]
 
 /-- **Sector-confined total variation.** The complete endpoint Bernstein vector has amplitude
-base `1003/1000`. -/
+base `501/500`. -/
 theorem primeArchEndpointBernsteinTotalVariation_le_sectorConfined (n : ℕ) :
     primeArchEndpointBernsteinTotalVariation n ≤
       xiReciprocalSquareAbsoluteMass *
@@ -288,7 +292,21 @@ theorem exists_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riem
       (tendsto_primeArchEndpointBernsteinPurity_div_pow_of_sectorBase_sq_lt hgt)
   exact ⟨r, hr, hrbase, hnot⟩
 
-/-- A convenient decimal corollary of the exact false-RH chamber. -/
+/-- A convenient five-per-mille corollary of the exact false-RH chamber. -/
+theorem exists_fivePerMille_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis
+    (hRH : ¬ RiemannHypothesis) :
+    ∃ r : ℝ,
+      1 < r ∧ r < 201 / 200 ∧
+        ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
+          atTop (nhds 0) := by
+  obtain ⟨r, hr, hrbase, hnot⟩ :=
+    exists_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis hRH
+  exact ⟨r, hr,
+    hrbase.trans_lt
+      xiSectorConfinedBernsteinAmplitudeBase_sq_lt_twoHundredOne_over_twoHundred,
+    hnot⟩
+
+/-- A weaker seven-per-mille corollary retained for downstream compatibility. -/
 theorem exists_sevenPerMille_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis
     (hRH : ¬ RiemannHypothesis) :
     ∃ r : ℝ,
@@ -303,11 +321,11 @@ theorem exists_sevenPerMille_primeArchEndpointBernsteinPurity_phase_of_not_riema
     hnot⟩
 
 /-- **Narrow-sector Loschmidt master theorem.** The endpoint purity is trapped between its
-conserved polynomial floor and the exact `(1003/1000)^(2M)` energy ceiling.  RH is the bounded
-phase; false RH is forced into the remaining seven-per-mille exponential chamber. -/
+conserved polynomial floor and the exact `(501/500)^(2M)` energy ceiling.  RH is the bounded
+phase; false RH is forced into the remaining five-per-mille exponential chamber. -/
 theorem primeArchBernsteinSectorConfinedLoschmidtPhaseMaster :
-    xiSectorConfinedBernsteinAmplitudeBase ^ 2 = 1006009 / 1000000 ∧
-    xiSectorConfinedBernsteinAmplitudeBase ^ 2 < 1007 / 1000 ∧
+    xiSectorConfinedBernsteinAmplitudeBase ^ 2 = 251001 / 250000 ∧
+    xiSectorConfinedBernsteinAmplitudeBase ^ 2 < 201 / 200 ∧
     (∀ n : ℕ,
       normalizedPrimeArchMoment 0 ^ 2 ≤
           (n + 1 : ℝ) * primeArchEndpointBernsteinPurity n ∧
@@ -325,7 +343,7 @@ theorem primeArchBernsteinSectorConfinedLoschmidtPhaseMaster :
             atTop (nhds 0)) := by
   exact ⟨
     xiSectorConfinedBernsteinAmplitudeBase_sq_eq,
-    xiSectorConfinedBernsteinAmplitudeBase_sq_lt_oneThousandSeven_over_oneThousand,
+    xiSectorConfinedBernsteinAmplitudeBase_sq_lt_twoHundredOne_over_twoHundred,
     fun n => ⟨mass_sq_le_card_mul_primeArchEndpointBernsteinPurity n,
       primeArchEndpointBernsteinPurity_le_sectorConfined n⟩,
     riemannHypothesis_iff_primeArchEndpointBernsteinPurity_le_mass_sq,

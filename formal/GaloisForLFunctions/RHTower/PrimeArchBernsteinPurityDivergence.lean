@@ -310,6 +310,197 @@ theorem primeArchEndpointBernsteinPurityCofinallyBounded_iff_rectangularPrimePol
   riemannHypothesis_iff_primeArchEndpointBernsteinPurity_cofinallyBounded.symm.trans
     (riemannHypothesis_iff_rectangularPrimePolarSource_negativeAbscissa_le_one hL hN)
 
+
+lemma bernsteinCoefficientPurity_le_mass_sq_of_hausdorffBernsteinNonnegative
+    {a : ℕ → ℝ} (ha : HausdorffBernsteinNonnegative a) (n : ℕ) :
+    bernsteinCoefficientPurity a n ≤ a 0 ^ 2 := by
+  have hL1 : bernsteinCoefficientL1 a n = a 0 := by
+    rw [bernsteinCoefficientL1]
+    calc
+      (∑ i ∈ Finset.range (n + 1), |bernsteinCoefficient a n i|) =
+          ∑ i ∈ Finset.range (n + 1), bernsteinCoefficient a n i := by
+        apply Finset.sum_congr rfl
+        intro i hi
+        rw [abs_of_nonneg]
+        exact ha n i
+      _ = a 0 := sum_bernsteinCoefficient a n
+  exact (bernsteinCoefficientPurity_le_l1_sq a n).trans_eq (by rw [hL1])
+
+lemma bernsteinCoefficientPurity_le_two_mass_sq_add_two_squareDiscrepancy
+    (m a : ℕ → ℝ) (N : ℕ) (ha : HausdorffBernsteinNonnegative a) :
+    bernsteinCoefficientPurity m (N + 1) ≤
+      2 * a 0 ^ 2 + 2 * bernsteinCoefficientSquareDiscrepancyAtDefectDegree m a N := by
+  have hpoint (i : ℕ) :
+      bernsteinCoefficient m (N + 1) i ^ 2 ≤
+        2 * bernsteinCoefficient a (N + 1) i ^ 2 +
+          2 * (bernsteinCoefficient m (N + 1) i -
+            bernsteinCoefficient a (N + 1) i) ^ 2 := by
+    nlinarith [sq_nonneg (bernsteinCoefficient m (N + 1) i -
+      2 * bernsteinCoefficient a (N + 1) i)]
+  rw [bernsteinCoefficientPurity,
+    bernsteinCoefficientSquareDiscrepancyAtDefectDegree]
+  calc
+    (∑ i ∈ Finset.range (N + 1 + 1),
+        bernsteinCoefficient m (N + 1) i ^ 2) ≤
+      ∑ i ∈ Finset.range (N + 2),
+        (2 * bernsteinCoefficient a (N + 1) i ^ 2 +
+          2 * (bernsteinCoefficient m (N + 1) i -
+            bernsteinCoefficient a (N + 1) i) ^ 2) := by
+        rw [show N + 1 + 1 = N + 2 by omega]
+        exact Finset.sum_le_sum fun i _ => hpoint i
+    _ = 2 * bernsteinCoefficientPurity a (N + 1) +
+        2 * ∑ i ∈ Finset.range (N + 2),
+          (bernsteinCoefficient m (N + 1) i -
+            bernsteinCoefficient a (N + 1) i) ^ 2 := by
+      rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
+      simp only [bernsteinCoefficientPurity]
+    _ ≤ 2 * a 0 ^ 2 +
+        2 * ∑ i ∈ Finset.range (N + 2),
+          (bernsteinCoefficient m (N + 1) i -
+            bernsteinCoefficient a (N + 1) i) ^ 2 := by
+      gcongr
+      exact bernsteinCoefficientPurity_le_mass_sq_of_hausdorffBernsteinNonnegative ha (N + 1)
+
+theorem riemannHypothesis_of_cofinal_hausdorffBernsteinApproximation_squareDiscrepancy_bounded
+    (d : ℕ → ℕ) (a : ℕ → ℕ → ℝ) (A E : ℝ)
+    (hd : Tendsto d atTop atTop)
+    (ha : ∀ j, HausdorffBernsteinNonnegative (a j))
+    (hmass : ∀ j, (a j 0) ^ 2 ≤ A)
+    (herr : ∀ j,
+      bernsteinCoefficientSquareDiscrepancyAtDefectDegree
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+          normalizedPrimeArchMoment) (a j) (d j) ≤ E) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_iff_primeArchEndpointBernsteinPurity_cofinallyBounded.mpr
+  refine ⟨2 * A + 2 * E, fun N => ?_⟩
+  obtain ⟨j, hj⟩ := eventually_atTop.1 ((tendsto_atTop.1 hd) N)
+  refine ⟨d j + 1, (hj j le_rfl).trans (Nat.le_succ _), ?_⟩
+  have hsource :=
+    bernsteinCoefficientPurity_le_two_mass_sq_add_two_squareDiscrepancy
+      (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+        normalizedPrimeArchMoment) (a j) (d j) (ha j)
+  change primeArchEndpointBernsteinPurity (d j + 1) ≤ _ at hsource
+  exact hsource.trans (by linarith [hmass j, herr j])
+
+lemma xiThermalTruncation_zero_nonneg (M : ℕ) :
+    0 ≤ xiThermalTruncation M 0 := by
+  rw [xiThermalTruncation]
+  exact Finset.sum_nonneg fun j hj =>
+    mul_nonneg (xiThermalNode_pos _).le (pow_nonneg (xiThermalNode_pos _).le 0)
+
+lemma xiThermalTruncation_zero_le_positiveMoment (M : ℕ) :
+    xiThermalTruncation M 0 ≤ xiThermalPositiveMoment 0 := by
+  have hsumm := (hasSum_xiThermalEnumeration_positiveMoment 0).summable
+  have hle := hsumm.sum_le_tsum (Finset.range M)
+    (fun j hj => pow_nonneg (xiThermalNode_pos _).le 1)
+  rw [← (hasSum_xiThermalEnumeration_positiveMoment 0).tsum_eq]
+  simpa only [xiThermalTruncation, pow_zero, mul_one, pow_one, zero_add] using hle
+
+/-- Uniformly bounded Hilbert packet error against the explicit finite Xi thermal systems, at
+cofinally large degrees, proves RH. No inverse-dimension error rate is required. -/
+theorem riemannHypothesis_of_cofinal_xiThermalTruncation_bernsteinSquareDiscrepancy_bounded
+    (d M : ℕ → ℕ) (E : ℝ)
+    (hd : Tendsto d atTop atTop)
+    (herr : ∀ j,
+      bernsteinCoefficientSquareDiscrepancyAtDefectDegree
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+          normalizedPrimeArchMoment)
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+          (xiThermalTruncation (M j))) (d j) ≤ E) :
+    RiemannHypothesis := by
+  apply
+    riemannHypothesis_of_cofinal_hausdorffBernsteinApproximation_squareDiscrepancy_bounded
+      d
+      (fun j => radiusNormalizedMoment primeArchEndpointHausdorffRadius
+        (xiThermalTruncation (M j)))
+      (xiThermalPositiveMoment 0 ^ 2) E hd
+  · intro j
+    exact hausdorffBernsteinNonnegative_radiusNormalized_xiThermalTruncation (M j)
+  · intro j
+    simp only [radiusNormalizedMoment, pow_zero, div_one]
+    exact (sq_le_sq₀ (xiThermalTruncation_zero_nonneg (M j))
+      (tsum_nonneg fun q => pow_nonneg (xiThermalNode_pos q).le 1)).2
+      (xiThermalTruncation_zero_le_positiveMoment (M j))
+  · exact herr
+
+/-- Under RH, every fixed Bernstein coefficient of the explicit finite Xi thermal system
+converges to the corresponding source coefficient. -/
+theorem tendsto_bernsteinCoefficient_xiThermalTruncation_of_riemannHypothesis
+    (hRH : RiemannHypothesis) (n i : ℕ) :
+    Tendsto
+      (fun M => bernsteinCoefficient
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+          (xiThermalTruncation M)) n i)
+      atTop
+      (nhds (bernsteinCoefficient
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+          normalizedPrimeArchMoment) n i)) := by
+  let p := bernsteinPolynomial ℝ n i
+  have hmoment (k : ℕ) : Tendsto
+      (fun M => radiusNormalizedMoment primeArchEndpointHausdorffRadius
+        (xiThermalTruncation M) k)
+      atTop
+      (nhds (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+        normalizedPrimeArchMoment k)) := by
+    have hk := (tendsto_pi_nhds.mp (tendsto_xiThermalTruncation_of_rh hRH)) k
+    simpa only [radiusNormalizedMoment] using
+      hk.div_const (primeArchEndpointHausdorffRadius ^ k)
+  simp only [bernsteinCoefficient, HTGeometry.momentFunctional_eq_support_sum]
+  exact tendsto_finsetSum p.support (fun k hk =>
+    tendsto_const_nhds.mul (hmoment k))
+
+/-- Under RH, the squared Bernstein packet discrepancy of every fixed degree tends to zero as
+the explicit thermal cutoff grows. -/
+theorem tendsto_bernsteinSquareDiscrepancy_xiThermalTruncation_zero_of_riemannHypothesis
+    (hRH : RiemannHypothesis) (N : ℕ) :
+    Tendsto
+      (fun M => bernsteinCoefficientSquareDiscrepancyAtDefectDegree
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+          normalizedPrimeArchMoment)
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+          (xiThermalTruncation M)) N)
+      atTop (nhds 0) := by
+  rw [show (0 : ℝ) = ∑ _i ∈ Finset.range (N + 2), 0 by simp]
+  apply tendsto_finsetSum
+  intro i hi
+  have hcoeff :=
+    tendsto_bernsteinCoefficient_xiThermalTruncation_of_riemannHypothesis
+      hRH (N + 1) i
+  have hdiff := tendsto_const_nhds.sub hcoeff
+  simpa only [bernsteinCoefficientSquareDiscrepancyAtDefectDegree,
+    sub_self, zero_pow, OfNat.ofNat_ne_zero] using hdiff.pow 2
+
+/-- Under failure of RH, every bounded-mass Hausdorff-positive comparator family separates from
+the source in Bernstein Hilbert distance. -/
+theorem tendsto_bernsteinSquareDiscrepancy_from_boundedMass_positiveComparators_atTop_of_not_rh
+    (hRH : ¬ RiemannHypothesis) (a : ℕ → ℕ → ℝ) (A : ℝ)
+    (ha : ∀ N, HausdorffBernsteinNonnegative (a N))
+    (hmass : ∀ N, (a N 0) ^ 2 ≤ A) :
+    Tendsto
+      (fun N => bernsteinCoefficientSquareDiscrepancyAtDefectDegree
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+          normalizedPrimeArchMoment) (a N) N)
+      atTop atTop := by
+  have hp := tendsto_primeArchEndpointBernsteinPurity_atTop_of_not_riemannHypothesis hRH
+  have hpshift : Tendsto (fun N => primeArchEndpointBernsteinPurity (N + 1))
+      atTop atTop := (tendsto_add_atTop_iff_nat 1).mpr hp
+  have hbase : Tendsto (fun N => primeArchEndpointBernsteinPurity (N + 1) / 4)
+      atTop atTop := hpshift.atTop_div_const (by norm_num)
+  have hlarge := hpshift.eventually_ge_atTop (4 * A)
+  have hbound : ∀ᶠ N : ℕ in atTop,
+      primeArchEndpointBernsteinPurity (N + 1) / 4 ≤
+        bernsteinCoefficientSquareDiscrepancyAtDefectDegree
+          (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+            normalizedPrimeArchMoment) (a N) N := by
+    filter_upwards [hlarge] with N hN
+    have hsource :=
+      bernsteinCoefficientPurity_le_two_mass_sq_add_two_squareDiscrepancy
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+          normalizedPrimeArchMoment) (a N) N (ha N)
+    change primeArchEndpointBernsteinPurity (N + 1) ≤ _ at hsource
+    linarith [hmass N]
+  exact tendsto_atTop_mono' atTop hbound hbase
+
 /-- RH is exactly the nondivergent phase of the positive endpoint purity. -/
 theorem riemannHypothesis_iff_not_tendsto_primeArchEndpointBernsteinPurity_atTop :
     RiemannHypothesis ↔

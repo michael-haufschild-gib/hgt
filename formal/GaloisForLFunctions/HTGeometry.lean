@@ -445,6 +445,7 @@ import GaloisForLFunctions.HTGeometry.MvPolynomialGradient
 import GaloisForLFunctions.HTGeometry.MvPolynomialInfiniteEval
 import GaloisForLFunctions.HTGeometry.NamedTranscendental
 import GaloisForLFunctions.HTGeometry.OperatorAbsoluteValue
+import GaloisForLFunctions.HTGeometry.OperatorTailDirichletMatroid
 import GaloisForLFunctions.HTGeometry.OrbitBalance
 import GaloisForLFunctions.HTGeometry.OrbitBalanceAdditive
 import GaloisForLFunctions.HTGeometry.OrbitBalanceAugmentation

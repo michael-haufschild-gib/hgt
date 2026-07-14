@@ -65,6 +65,63 @@ Then
 Thus uniform control, convergence, monotonicity, and a bound at every degree are unnecessary. One
 bounded cofinal sampling of the positive scalar is sufficient.
 
+## Positive-comparator discharge `[PROVED HERE]`
+
+Let \(a^{(j)}\) be any cofinal family of Hausdorff-positive comparator moment sequences, and let
+\(d_j\to\infty\). If their zeroth masses are uniformly bounded,
+
+\[
+  (a^{(j)}_0)^2\le A,
+\]
+
+and the Bernstein coefficient packets have a uniformly bounded squared Hilbert discrepancy,
+
+\[
+ \sum_{i=0}^{d_j+1}
+ \left(c^{(d_j+1)}_i-a^{(j,d_j+1)}_i\right)^2\le E,
+\]
+
+then RH follows. The exact estimate is
+
+\[
+ \Pi_{d_j+1}\le 2A+2E.
+\]
+
+For the explicit finite Xi thermal truncations, Hausdorff positivity and uniform zeroth-mass
+boundedness are unconditional. Hence it is enough to prove only
+
+\[
+ \sup_j
+ \sum_{i=0}^{d_j+1}
+ \left(c^{(d_j+1)}_i-c^{(M_j,d_j+1)}_i\right)^2<\infty
+\]
+
+along one cofinal degree schedule. The previous quadratic thermal consumer required the stronger
+dimension-weighted estimate
+
+\[
+ (d_j+2)
+ \sum_i\left(c_i-c_i^{(M_j)}\right)^2\le C^2.
+\]
+
+The purity divergence law removes this full factor of \(d_j+2\); no inverse-dimension error rate
+is required.
+
+The converse separation statement is also unconditional. Under failure of RH, every
+Hausdorff-positive comparator family with uniformly bounded zeroth mass has squared Bernstein
+packet discrepancy tending to positive infinity:
+
+\[
+ \neg\mathrm{RH}
+ \Longrightarrow
+ \sum_{i=0}^{N+1}
+ \left(c_i^{(N+1)}-a_i^{(N,N+1)}\right)^2
+ \longrightarrow+\infty.
+\]
+
+Thus bounded Hilbert error is not merely sufficient. It is the exact positive separation datum
+that distinguishes the RH phase from every bounded-mass positive operator-state approximation.
+
 ## Proof
 
 Write
@@ -180,6 +237,8 @@ Formal files:
 - `formal/GaloisForLFunctions/RHTower/FiniteExponentialPencilDominantConstant.lean`
 - `formal/GaloisForLFunctions/RHTower/PrimeArchBernsteinPurityDivergence.lean`
 
+All three modules are wired into `formal/GaloisForLFunctions/RHTower.lean`.
+
 Principal declarations:
 
 - `eq_or_eq_one_sub_conj_of_bernsteinEllipsePhase_eq_of_amplitude_eq`
@@ -189,6 +248,10 @@ Principal declarations:
 - `tendsto_primeArchEndpointBernsteinPurity_atTop_of_not_riemannHypothesis`
 - `riemannHypothesis_iff_primeArchEndpointBernsteinPurity_cofinallyBounded`
 - `primeArchEndpointBernsteinPurityCofinallyBounded_iff_rectangularPrimePolarSource_negativeAbscissa_le_one`
+- `bernsteinCoefficientPurity_le_two_mass_sq_add_two_squareDiscrepancy`
+- `riemannHypothesis_of_cofinal_hausdorffBernsteinApproximation_squareDiscrepancy_bounded`
+- `riemannHypothesis_of_cofinal_xiThermalTruncation_bernsteinSquareDiscrepancy_bounded`
+- `tendsto_bernsteinSquareDiscrepancy_from_boundedMass_positiveComparators_atTop_of_not_rh`
 - `primeArchEndpointBernsteinPurity_dichotomy`
 
 Verification:
@@ -203,12 +266,13 @@ Verification:
 
 ## Exact open core
 
-Construct, from the prime--Gamma source or a source-faithful operator/thermal realization, a fixed
-constant \(C\) and arbitrarily large degrees \(n\) satisfying
+Construct, from the prime--Gamma source or a source-faithful operator/thermal realization, either
+a fixed constant \(C\) and arbitrarily large degrees \(n\) satisfying
 
 \[
  \Pi_n\le C.
 \]
 
-That positive cofinal recurrence now closes the prime--polar absolute-abscissa target and RH
-directly.
+or a cofinal family of positive finite thermal comparators whose unweighted squared Bernstein
+packet discrepancies remain uniformly bounded. Either positive condition closes the prime--polar
+absolute-abscissa target and RH directly.
