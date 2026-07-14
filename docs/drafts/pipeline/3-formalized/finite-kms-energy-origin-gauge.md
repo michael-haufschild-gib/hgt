@@ -1,7 +1,7 @@
 # Finite KMS energy-origin gauge
 
 - **ID:** `finite-kms-energy-origin-gauge`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM, `[BRIDGE]`
 - **Scope:** general `HTGeometry`; no zeta-specific hypothesis
 - **Lean parents:** `FiniteKMSWightman.lean`, `FinitePassiveResponse.lean`,
@@ -22,10 +22,16 @@ This is the exact energy-origin gauge of finite equilibrium quantum mechanics.  
 KMS-based hypertranscendental carrier normalize one energy level to zero without introducing or
 later discharging an invariance hypothesis.
 
+## Lean certificate
+
+`formal/GaloisForLFunctions/HTGeometry/FiniteKMSPurityNormalization.lean` proves the partition
+rescaling and transports energy-origin invariance through normalized Gibbs values, Wightman
+half-densities, transition intensities, purity, all Liouvillian moments, and passive responses.
+
 ## Gates
 
-- [ ] prove the partition rescaling law
-- [ ] prove Gibbs, Wightman, intensity, and purity invariance
-- [ ] apply the invariance directly to thermal moments and passive response
-- [ ] run target build, axiom audit, and lint
+- [x] prove the partition rescaling law
+- [x] prove Gibbs, Wightman, intensity, and purity invariance
+- [x] apply the invariance directly to thermal moments and passive response
+- [x] direct module check, axiom audit, lint, and diff integrity; no full build requested
 - [ ] RH

@@ -7,8 +7,9 @@ import GaloisForLFunctions.RHTower.XiCTaylorThetaTailHaarResidualRankTwo
 The two endpoint constraints in the theta-tail Prouhet packet control the critical decaying and
 growing characters, while divisibility by `(X - 1)^m` annihilates every finite translation
 polynomial below depth `m`.  Neither condition controls a prescribed off-diagonal logarithmic
-phase.  This module inserts the real quadratic with roots `u` and `conj u` before performing the
-same endpoint interpolation.
+phase.  This module inserts the square of the real quadratic with roots `u` and `conj u` before
+performing the same endpoint interpolation.  The doubled roots annihilate both the translated
+value packet and its logarithmic derivative packet.
 
 The resulting real signed packet simultaneously has:
 
@@ -77,18 +78,18 @@ theorem conjugatePhaseRealQuadratic_map_eval_eq_zero (u : ℂ) :
           u * (starRingEnd ℂ) u := by ring
     _ = 0 := by rw [hnorm]; ring
 
-/-- Thue--Morse flatness with one prescribed conjugate phase pair inserted. -/
+/-- Thue--Morse flatness with one prescribed conjugate phase pair inserted to multiplicity two. -/
 def phaseAdaptedProuhetBase (m : ℕ) (u : ℂ) : ℝ[X] :=
-  thueMorseRealPolynomial m * conjugatePhaseRealQuadratic u
+  thueMorseRealPolynomial m * conjugatePhaseRealQuadratic u ^ 2
 
 theorem phaseAdaptedProuhetBase_eval_ne_zero
     (m : ℕ) (u : ℂ) (q : ℝ)
     (hflat : (thueMorseRealPolynomial m).eval q ≠ 0)
     (hphase : u ≠ (q : ℂ)) :
     (phaseAdaptedProuhetBase m u).eval q ≠ 0 := by
-  rw [phaseAdaptedProuhetBase, eval_mul]
+  rw [phaseAdaptedProuhetBase, eval_mul, eval_pow]
   exact mul_ne_zero hflat
-    (ne_of_gt (conjugatePhaseRealQuadratic_eval_pos u q hphase))
+    (pow_ne_zero 2 (ne_of_gt (conjugatePhaseRealQuadratic_eval_pos u q hphase)))
 
 /-- Affine interpolation of the phase-adapted base at two real endpoint characters. -/
 def phaseAdaptedTwoEndpointProuhetPolynomial
@@ -159,6 +160,22 @@ theorem phaseAdaptedTwoEndpointProuhetPolynomial_phaseRoot
   rw [hQ, Polynomial.map_mul, eval_mul,
     conjugatePhaseRealQuadratic_map_eval_eq_zero, zero_mul]
 
+/-- The selected complex phase is a double root.  This is the extra relation needed for a
+one-sided translated rank-two channel: unlike the opposite-phase cross, its logarithmic drift
+does not cancel before summation. -/
+theorem phaseAdaptedTwoEndpointProuhetPolynomial_phaseDerivativeRoot
+    (m : ℕ) (u : ℂ) (q r tau : ℝ) :
+    ((phaseAdaptedTwoEndpointProuhetPolynomial m u q r tau).map
+      (algebraMap ℝ ℂ)).derivative.eval u = 0 := by
+  have hdiv : conjugatePhaseRealQuadratic u ^ 2 ∣
+      phaseAdaptedTwoEndpointProuhetPolynomial m u q r tau := by
+    unfold phaseAdaptedTwoEndpointProuhetPolynomial phaseAdaptedProuhetBase
+    dsimp only
+    exact dvd_mul_of_dvd_left (dvd_mul_left _ _) _
+  obtain ⟨R, hR⟩ := hdiv
+  rw [hR, Polynomial.map_mul, derivative_mul, derivative_pow]
+  simp [conjugatePhaseRealQuadratic_map_eval_eq_zero]
+
 /-- Every ordinary translate-index moment below the Prouhet depth still vanishes. -/
 theorem phaseAdaptedTwoEndpointProuhetPolynomial_power_moment_eq_zero
     (m : ℕ) (u : ℂ) (q r τ : ℝ) {k : ℕ} (hk : k < m) :
@@ -176,6 +193,22 @@ theorem phaseAdaptedTwoEndpointProuhetPolynomial_exponential_sum_eq_zero
         ((phaseAdaptedTwoEndpointProuhetPolynomial m u q r τ).coeff i : ℂ) * u ^ i = 0 := by
   have hroot := phaseAdaptedTwoEndpointProuhetPolynomial_phaseRoot m u q r τ
   simpa [eval_map, eval₂_eq_sum] using hroot
+
+/-- The double phase root annihilates the logarithmically weighted exponential packet as well. -/
+theorem phaseAdaptedTwoEndpointProuhetPolynomial_exponential_index_sum_eq_zero
+    (m : ℕ) (u : ℂ) (q r τ : ℝ) :
+    ∑ j ∈ (phaseAdaptedTwoEndpointProuhetPolynomial m u q r τ).support,
+        ((phaseAdaptedTwoEndpointProuhetPolynomial m u q r τ).coeff j : ℂ) *
+          (j : ℂ) * u ^ j = 0 := by
+  let P := phaseAdaptedTwoEndpointProuhetPolynomial m u q r τ
+  have hroot : ((P.map (algebraMap ℝ ℂ)).derivative.eval u) = 0 := by
+    simpa only [P] using
+      phaseAdaptedTwoEndpointProuhetPolynomial_phaseDerivativeRoot m u q r τ
+  rw [derivative_eval, Polynomial.sum,
+    support_map_of_injective P Complex.ofReal_injective] at hroot
+  have hmul := congrArg (fun w : ℂ => u * w) hroot
+  rw [mul_zero, Finset.mul_sum] at hmul
+  simpa [mul_comm, mul_left_comm, mul_assoc, pow_succ'] using hmul
 
 /-- A phase-adapted packet annihilates the entire real cosine coefficient packet on the selected
 arithmetic fibre, including an arbitrary base shift. -/
@@ -254,6 +287,40 @@ theorem phaseAdaptedProuhet_oppositeTranslationCross_sum_eq_zero
   rw [← Finset.sum_mul]
   linear_combination 2 * (F' * (starRingEnd ℂ) F).im * hcos
 
+/-! ## Endpoint conservation at current level -/
+
+/-- The critical coefficient weights read the two completion characters exactly.  This is the
+finite algebra behind the endpoint contribution: the growing-square coefficient is an endpoint
+difference, not an independent error term. -/
+theorem weighted_completion_sum_eq_endpoint_difference
+    (P : ℝ[X]) (q r : ℝ) (hqr : 2 * q = r) (N : ℕ) :
+    ∑ j ∈ P.support,
+        (P.coeff j * q ^ j) * ((2 : ℝ) ^ (N + j) - 1) =
+      (2 : ℝ) ^ N * P.eval r - P.eval q := by
+  rw [show (∑ j ∈ P.support,
+      (P.coeff j * q ^ j) * ((2 : ℝ) ^ (N + j) - 1)) =
+      (2 : ℝ) ^ N *
+          ∑ j ∈ P.support, P.coeff j * (2 * q) ^ j -
+        ∑ j ∈ P.support, P.coeff j * q ^ j by
+    rw [Finset.mul_sum, Finset.sum_sub_distrib]
+    apply congrArg₂ (fun a b : ℝ => a - b)
+    · apply Finset.sum_congr rfl
+      intro j _hj
+      rw [pow_add, mul_pow]
+      ring
+    · rfl]
+  rw [hqr]
+  simp only [eval_eq_sum]
+
+/-- After splitting `rho = g + E/2`, the right endpoint changes the remote-row completion cross
+by `(2^N tau - 1)/2`, while the explicit Haar square removes half of it.  The net coefficient is
+therefore `(2^N tau - 1)/4`. -/
+theorem prouhetEndpoint_completion_conservation (N : ℕ) (tau : ℝ) :
+    ((2 : ℝ) ^ N * tau / 2 - 1 / 2) -
+        ((2 : ℝ) ^ N * tau - 1) / 4 =
+      ((2 : ℝ) ^ N * tau - 1) / 4 := by
+  ring
+
 /-- The symmetric value--derivative current between two transform vectors. -/
 def symmetricHermitianCrossCurrentData
     (U U' E E' : ℂ) : ℝ :=
@@ -264,17 +331,30 @@ value--derivative fibre.  The factor `2^N` is the growing completion character a
 -/
 def orientedProuhetSeamEndpoint
     (N : ℕ) (U U' E E' : ℂ) : ℝ :=
-  (2 *
+  (4 *
       (symmetricHermitianCrossCurrentData U U' E E' /
-        (E' * (starRingEnd ℂ) E).im) - 1) /
+        (E' * (starRingEnd ℂ) E).im) - 3) /
     (2 : ℝ) ^ N
 
-/-- The orientation-sensitive endpoint is exact: the completion-square coefficient becomes the
-ratio which cancels the entire symmetric seam cross, without estimating either factor. -/
+/-- The general endpoint seam is the original invariant plus the net completion square forced by
+endpoint conservation. -/
+theorem generalProuhetSeamCurrent_eq_invariant_add_endpointSquare
+    (N : ℕ) (tau : ℝ) (U U' E E' : ℂ) :
+    ((((2 : ℝ) ^ N * tau + 3) / 4) *
+          (E' * (starRingEnd ℂ) E).im -
+        symmetricHermitianCrossCurrentData U U' E E') =
+      ((E' * (starRingEnd ℂ) E).im -
+          symmetricHermitianCrossCurrentData U U' E E') +
+        (((2 : ℝ) ^ N * tau - 1) / 4) *
+          (E' * (starRingEnd ℂ) E).im := by
+  ring
+
+/-- The orientation-sensitive endpoint is exact after retaining both appearances of the
+completion character: the translated remote row and the explicit Haar square. -/
 theorem orientedProuhetSeamEndpoint_cancels
     (N : ℕ) (U U' E E' : ℂ)
     (hE : (E' * (starRingEnd ℂ) E).im ≠ 0) :
-    (((((2 : ℝ) ^ N * orientedProuhetSeamEndpoint N U U' E E' + 1) / 2) *
+    (((((2 : ℝ) ^ N * orientedProuhetSeamEndpoint N U U' E E' + 3) / 4) *
           (E' * (starRingEnd ℂ) E).im) -
         symmetricHermitianCrossCurrentData U U' E E') = 0 := by
   unfold orientedProuhetSeamEndpoint
@@ -298,7 +378,7 @@ theorem exists_phaseAdaptedProuhet_orientation_packet
       P.eval r = orientedProuhetSeamEndpoint N U U' E E' ∧
       (X - 1 : ℝ[X]) ^ m ∣ P ∧
       (P.map (algebraMap ℝ ℂ)).eval u = 0 ∧
-      (((((2 : ℝ) ^ N * P.eval r + 1) / 2) *
+      (((((2 : ℝ) ^ N * P.eval r + 3) / 4) *
           (E' * (starRingEnd ℂ) E).im) -
         symmetricHermitianCrossCurrentData U U' E E') = 0 := by
   let τ := orientedProuhetSeamEndpoint N U U' E E'

@@ -24,7 +24,7 @@ cancel the whole carrier: it stays projectively scalar.
 -/
 
 open Complex
-open scoped BigOperators
+open scoped BigOperators Matrix
 
 namespace GaloisForLFunctions
 
@@ -38,7 +38,9 @@ noncomputable def phasePolynomial {r : ℕ} (lam c : Fin r → ℂ) : ℂ → �
 theorem iteratedDeriv_phasePolynomial {r : ℕ} (lam c : Fin r → ℂ) (k : ℕ) (t : ℂ) :
     iteratedDeriv k (phasePolynomial lam c) t
       = ∑ j : Fin r, c j * lam j ^ k * Complex.exp (lam j * t) := by
-  rw [phasePolynomial]
+  have hdef : phasePolynomial lam c
+      = fun t => ∑ j : Fin r, c j * Complex.exp (lam j * t) := rfl
+  rw [hdef]
   exact iteratedDeriv_finset_expSum Finset.univ c lam k t
 
 /-- **Directional Vandermonde phase-jet nonvanishing.**  If the frequencies `λ_j` are pairwise
@@ -50,7 +52,7 @@ theorem phaseJet_exists_ne_zero {r : ℕ} {lam c : Fin r → ℂ}
     (hlam : Function.Injective lam) (hc : c ≠ 0) (t₀ : ℂ) :
     ∃ k : Fin r, iteratedDeriv (k : ℕ) (phasePolynomial lam c) t₀ ≠ 0 := by
   by_contra h
-  push_neg at h
+  simp only [not_exists, not_not] at h
   apply hc
   have hvan : (fun j : Fin r => c j * Complex.exp (lam j * t₀)) = 0 := by
     apply Matrix.eq_zero_of_mulVec_eq_zero (M := (Matrix.vandermonde lam)ᵀ)
@@ -88,7 +90,7 @@ theorem phasePolynomial_ne_zero_fun {r : ℕ} {lam c : Fin r → ℂ}
   obtain ⟨k, hk⟩ := phaseJet_exists_ne_zero hlam hc 0
   apply hk
   rw [h0]
-  simp [iteratedDeriv_const_zero_apply]
+  exact iteratedDeriv_const_zero
 
 /-- **Finite exponential-layer nonvanishing.**  For `β ≠ 0`, the finite exponential carrier
 `∑_{k ≤ N} c_k·exp(kβ·s)` with not-all-zero coefficients has, at every base point, a nonzero jet of
@@ -100,10 +102,8 @@ theorem expLayer_jet_exists_ne_zero {N : ℕ} {β : ℂ} (hβ : β ≠ 0)
       iteratedDeriv (k : ℕ) (phasePolynomial (fun k => (k : ℂ) * β) c) t₀ ≠ 0 := by
   refine phaseJet_exists_ne_zero ?_ hc t₀
   intro a b hab
-  have : ((a : ℕ) : ℂ) = ((b : ℕ) : ℂ) := by
-    have hβ' := mul_right_cancel₀ hβ (by simpa [mul_comm] using hab)
-    exact hβ'
-  exact Fin.ext (Nat.cast_injective this)
+  have hab' : ((a : ℕ) : ℂ) * β = ((b : ℕ) : ℂ) * β := hab
+  exact Fin.ext (Nat.cast_injective (mul_right_cancel₀ hβ hab'))
 
 end HTGeometry
 
