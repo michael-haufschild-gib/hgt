@@ -62,4 +62,5 @@ import GaloisForLFunctions.Hurwitz.ContinuedLadderDeformationBridge
 import GaloisForLFunctions.Hurwitz.ContinuedUpperEnd
 import GaloisForLFunctions.Hurwitz.MulticolumnPowerOrbit
 import GaloisForLFunctions.Hurwitz.PolygammaHurwitzValue
+import GaloisForLFunctions.Hurwitz.ShiftedPowerTailAsymptotic
 import GaloisForLFunctions.Hurwitz.PowerOrbitAdditiveSaturation

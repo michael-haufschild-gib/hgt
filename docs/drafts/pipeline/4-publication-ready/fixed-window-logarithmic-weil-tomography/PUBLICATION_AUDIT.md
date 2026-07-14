@@ -2,12 +2,12 @@
 
 ## Verdict
 
-Publication readiness score: **97/100**.
+This audit records the pre-master-theorem verification history.  Its former numerical readiness
+score is superseded by `POST_REVISION_REFEREE_REPORT.md`, which evaluates the unified
+endpoint-calibrated source--temperature theorem and the unconditional 616-condition rectangle.
+The manuscript is not a proof of the Riemann hypothesis.
 
-The score applies to the theorem note as a new unconditional divisor-side result, not as a proof
-of the Riemann hypothesis.
-
-## Score
+## Pre-master verification record (not a current score)
 
 - Correctness and proof closure: 25/25
   - Every substantive manuscript claim has a direct unconditional Lean declaration.
@@ -15,6 +15,25 @@ of the Riemann hypothesis.
     \(C=2+\gamma-\log(4\pi)\), the strict estimate
     \(E\le C^2/(1-C)<C\), the Hermitian chamber \(C\le H<3C/2\), and the
     absolutely convergent all-order reflection reconstruction.
+  - The exact quartet source budget also gives the absolute cubic thermal-gap estimate
+    \(\mathcal E_\perp\le4(C/(4-C))^3<1/150000\), in addition to the relative
+    one-eighty-fourth estimate.  The atomwise charge law, global summation, rational certificate,
+    and source-gap corollary are separately formalized.
+  - The cubic estimate now self-localizes to the actual off-line endpoint charge
+    \(C_\perp\): \(0\le C_\perp\le C\),
+    \(\mathcal E_\perp\le4(C_\perp/(4-C_\perp))^3\), and \(C_\perp=0\) is exactly the RH
+    fibre.  Each fourfold orbit is paid entirely inside this sector.
+  - The finite-physics chart is sharpened to an exact diagonal phase alternative: false RH forces
+    every cofinal cooling section, and in particular \(Z_{J,J}\), to diverge to \(+\infty\);
+    RH is equivalent to one fixed bound recurring cofinally often.  Local finite-block closure
+    by finite positive atomic and finite KMS/Wightman systems is proved equivalent to the same
+    endpoint.
+  - The response carrier is now minimal and exact: a countable one-state zero-Hamiltonian KMS
+    palette realizes precisely the full dissipative ray at every upper-half-plane point.  At any
+    quartet-admissible radius, Gaussian-rational membership of the continued arithmetic source
+    in these cluster sets is equivalent to the remaining positive-frequency condition and to RH.
+    The manuscript explicitly separates this universal physical chamber from the still-open
+    arithmetic source-membership estimate.
   - Endpoint saturation is identified simultaneously with RH, complete source Hankel
     nonnegativity, a reflection-positive Gram orbit, and a bounded self-adjoint vacuum-moment
     realization.
@@ -80,8 +99,11 @@ of the Riemann hypothesis.
     novelty score.
 - Significance: 21/22
   - The endpoint theorem is estimate progress rather than another bare criterion: the complete
-    reflection defect is bounded quadratically by one explicit completed source value, and the
-    remaining RH-bearing assertion is the sharp saturation of this proven strict chamber.
+    reflection defect is bounded quadratically by one explicit completed source value, while the
+    thermal orientation defect is cubically bounded by the same exact source and is below
+    \(1/150000\) absolutely.  Its sharper self-localized budget vanishes precisely at RH, while
+    the cofinal cold diagonal has a rigorous bounded/divergent phase alternative.  The remaining
+    RH-bearing assertion is the sharp saturation of this proven strict chamber.
   - The headline coefficient is now source-defined rather than divisor-defined: every sample is
     a finite von Mangoldt autocorrelation plus an absolutely convergent Gamma integral.  Its tail
     sign is an exact RH criterion, and its negative Dirichlet abscissa reads the full transverse

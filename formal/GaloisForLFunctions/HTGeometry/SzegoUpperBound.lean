@@ -92,4 +92,26 @@ theorem hasSzegoFirstLimitConclusion_of_approx (mu : Measure Circle) [IsFiniteMe
     (le_antisymm (ciInf_normSq_le_of_approx mu happrox)
       (szegoGeometricMean_le_ciInf_normSq_gramSchmidt mu))
 
+/-- **Lebesgue-decomposition split of a weighted circle integral.**  For a finite circle measure
+`mu`, the integral of an `mu`-integrable function splits into the absolutely continuous part
+(integrated against the Radon–Nikodym density w.r.t. `circleLebesgue`) plus the singular part.
+Every proof of the Szegő upper bound `∫|q*|² dμ → GM` must control both terms with the *same* test
+polynomial `q*`; this identity isolates the two contributions. -/
+theorem integral_split_lebesgue (mu : Measure Circle) [IsFiniteMeasure mu]
+    (f : Circle → ℝ) (hf : Integrable f mu) :
+    (∫ z : Circle, f z ∂mu)
+      = (∫ z : Circle, (mu.rnDeriv circleLebesgue z).toReal * f z ∂circleLebesgue)
+        + ∫ z : Circle, f z ∂(mu.singularPart circleLebesgue) := by
+  have hdecomp := mu.rnDeriv_add_singularPart circleLebesgue
+  have hac : Integrable f (circleLebesgue.withDensity (mu.rnDeriv circleLebesgue)) :=
+    hf.mono_measure (Measure.withDensity_rnDeriv_le mu circleLebesgue)
+  have hsing : Integrable f (mu.singularPart circleLebesgue) :=
+    hf.mono_measure (Measure.singularPart_le mu circleLebesgue)
+  conv_lhs => rw [← hdecomp]
+  rw [integral_add_measure hac hsing,
+    integral_withDensity_eq_integral_toReal_smul₀
+      (Measure.measurable_rnDeriv mu circleLebesgue).aemeasurable
+      (Measure.rnDeriv_lt_top mu circleLebesgue)]
+  simp only [smul_eq_mul]
+
 end GaloisForLFunctions.HTGeometry

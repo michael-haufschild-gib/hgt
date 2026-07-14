@@ -86,6 +86,32 @@ theorem essentialNorm_zero : essentialNorm (0 : E →L[ℂ] E) = 0 :=
   le_antisymm (by simpa using essentialNorm_le (0 : E →L[ℂ] E) 0 isCompactOperator_zero)
     (essentialNorm_nonneg 0)
 
+/-- The essential norm satisfies the triangle inequality.  Near-optimal compact
+approximants for the two summands add to a compact approximant for their sum. -/
+theorem essentialNorm_add_le (S T : E →L[ℂ] E) :
+    essentialNorm (S + T) ≤ essentialNorm S + essentialNorm T := by
+  apply le_of_forall_pos_le_add
+  intro ε hε
+  have hhalf : 0 < ε / 2 := half_pos hε
+  obtain ⟨rS, ⟨KS, hKS, rfl⟩, hrSlt⟩ :=
+    (csInf_lt_iff (essentialNorm_set_bddBelow S)
+      (essentialNorm_set_nonempty S)).mp
+        (lt_add_of_pos_right (essentialNorm S) hhalf)
+  obtain ⟨rT, ⟨KT, hKT, rfl⟩, hrTlt⟩ :=
+    (csInf_lt_iff (essentialNorm_set_bddBelow T)
+      (essentialNorm_set_nonempty T)).mp
+        (lt_add_of_pos_right (essentialNorm T) hhalf)
+  calc
+    essentialNorm (S + T) ≤ ‖(S + T) - (KS + KT)‖ :=
+      essentialNorm_le _ _ (hKS.add hKT)
+    _ = ‖(S - KS) + (T - KT)‖ := by
+      congr 1
+      abel
+    _ ≤ ‖S - KS‖ + ‖T - KT‖ := norm_add_le _ _
+    _ ≤ (essentialNorm S + ε / 2) +
+        (essentialNorm T + ε / 2) := add_le_add hrSlt.le hrTlt.le
+    _ = essentialNorm S + essentialNorm T + ε := by ring
+
 theorem essentialNorm_smul_le (c : ℂ) (T : E →L[ℂ] E) :
     essentialNorm (c • T) ≤ ‖c‖ * essentialNorm T := by
   rcases eq_or_ne c 0 with rfl | hc

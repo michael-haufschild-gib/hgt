@@ -91,7 +91,7 @@ theorem UniversalFacetSource.stanleyReisnerLaurentDifferentialMatroid
       upperEndMeroField := fun q =>
     fullSource (finiteFacetOrbitUniversalIndex e facets q.1)
   have hsourceRat : DifferentialIndependent (RatFunc ℂ) source := by
-    have hcomp := u.differentialIndependent.comp
+    have hcomp := (UniversalFacetSource.differentialIndependent u).comp
       (fun q : FiniteFinsuppRowIndex (stanleyReisnerLaurentRows d facets N) =>
         finiteFacetOrbitUniversalIndex e facets q.1)
       ((finiteFacetOrbitUniversalIndex_injective e facets).comp Subtype.val_injective)
@@ -110,7 +110,7 @@ theorem UniversalFacetSource.stanleyReisnerLaurentDifferentialMatroid
 theorem UniversalFacetSource.primeLogHerglotz_im_nonneg
     (u : UniversalFacetSource) {z : ℂ} (hz : 0 < z.im) :
     0 ≤ (primeLogHerglotz (fun q => u.1 q) z).im :=
-  primeLogHerglotz_im_nonneg (fun q => u.1 q) ‖u.1‖
+  GaloisForLFunctions.HTGeometry.primeLogHerglotz_im_nonneg (fun q => u.1 q) ‖u.1‖
     (fun q => (le_abs_self (u.1 q)).trans
       (u.1.norm_coe_le_norm q)) z hz
 
@@ -122,7 +122,7 @@ def UniversalFacetSource.orientationWeight
 
 theorem UniversalFacetSource.norm_orientationWeight
     (u : UniversalFacetSource) (ε : Nat.Primes → Bool) (p : Nat.Primes) :
-    ‖(u.orientationWeight ε p : ℂ)‖ =
+    ‖(UniversalFacetSource.orientationWeight u ε p : ℂ)‖ =
       ‖(primeDyadicWeight (fun q => u.1 q) p : ℂ)‖ := by
   simp only [UniversalFacetSource.orientationWeight]
   split_ifs <;> simp
@@ -130,30 +130,35 @@ theorem UniversalFacetSource.norm_orientationWeight
 /-- Every source-orientation residue sequence in the canonical phase is absolutely summable. -/
 theorem UniversalFacetSource.summable_norm_orientationWeight
     (u : UniversalFacetSource) (ε : Nat.Primes → Bool) :
-    Summable fun p => ‖(u.orientationWeight ε p : ℂ)‖ := by
+    Summable fun p =>
+      ‖(UniversalFacetSource.orientationWeight u ε p : ℂ)‖ := by
   have h := summable_norm_primeDyadicWeight (fun q => u.1 q)
     ‖u.1‖
     (fun q => (le_abs_self (u.1 q)).trans
       (u.1.norm_coe_le_norm q))
-  exact h.congr fun p => (u.norm_orientationWeight ε p).symm
+  exact h.congr fun p =>
+    (UniversalFacetSource.norm_orientationWeight u ε p).symm
 
 /-- The completed rational Cauchy ring attached to one phase source and one orientation. -/
 def UniversalFacetSource.completedOrientationRing
     (u : UniversalFacetSource) (ε : Nat.Primes → Bool) :
     Subring C(PrimeOrientationDomain, ℂ) :=
-  summablePrimeCauchyCompletedRing (u.orientationWeight ε)
-    (u.summable_norm_orientationWeight ε)
+  summablePrimeCauchyCompletedRing
+    (UniversalFacetSource.orientationWeight u ε)
+    (UniversalFacetSource.summable_norm_orientationWeight u ε)
 
 /-- **Source--orientation completion invariance.** The compact-open completed rational Cauchy
 ring is independent simultaneously of the Baire-generic source and of every finite or infinite
 orientation sequence. -/
 theorem UniversalFacetSource.completedOrientationRing_eq
     (u v : UniversalFacetSource) (ε δ : Nat.Primes → Bool) :
-    u.completedOrientationRing ε = v.completedOrientationRing δ :=
+    UniversalFacetSource.completedOrientationRing u ε =
+      UniversalFacetSource.completedOrientationRing v δ :=
   summablePrimeCauchyCompletedRing_eq
-    (u.orientationWeight ε) (v.orientationWeight δ)
-    (u.summable_norm_orientationWeight ε)
-    (v.summable_norm_orientationWeight δ)
+    (UniversalFacetSource.orientationWeight u ε)
+    (UniversalFacetSource.orientationWeight v δ)
+    (UniversalFacetSource.summable_norm_orientationWeight u ε)
+    (UniversalFacetSource.summable_norm_orientationWeight v δ)
 
 end
 

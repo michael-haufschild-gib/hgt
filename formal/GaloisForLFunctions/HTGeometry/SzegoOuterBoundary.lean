@@ -172,4 +172,42 @@ theorem tendsto_normSq_szegoOuter_ae {w : ℝ → ℝ}
   filter_upwards [self_mem_nhdsWithin, h0r] with r hr hr0
   exact (normSq_szegoOuter_eq_poissonConv hlog hper hr0 (Set.mem_Iio.1 hr) φ).symm
 
+/-- **Poisson-mean lower bound** (symmetric interval).  If `g ≥ L` pointwise, the normalized Poisson
+average of `g` over `[-π,π]` is `≥ L`.  Poisson is a probability kernel. -/
+theorem poissonMean_symm_ge {g : ℝ → ℝ} {L : ℝ}
+    (hgI : IntervalIntegrable g volume (-π) π) (hgL : ∀ θ, L ≤ g θ)
+    {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
+    L ≤ (2 * π)⁻¹ * ∫ t in (-π)..π, poissonKer r t * g t := by
+  have habs : |r| < 1 := by rw [abs_of_nonneg hr0]; exact hr1
+  have hcont : Continuous (poissonKer r) := poissonKer_continuous habs
+  have hnn : ∀ t, 0 ≤ poissonKer r t := fun t => poissonKer_nonneg hr0 hr1 t
+  have hπ : (0:ℝ) < π := Real.pi_pos
+  have hle : (∫ t in (-π)..π, poissonKer r t * L) ≤ ∫ t in (-π)..π, poissonKer r t * g t := by
+    apply intervalIntegral.integral_mono_on (by linarith)
+      ((hcont.mul continuous_const).intervalIntegrable _ _)
+      (hgI.continuousOn_mul hcont.continuousOn)
+    intro t _
+    exact mul_le_mul_of_nonneg_left (hgL t) (hnn t)
+  rw [intervalIntegral.integral_mul_const, poissonKer_integral_symm hr0 hr1] at hle
+  have h2π : (0:ℝ) < 2 * π := by linarith
+  rw [inv_mul_eq_div, le_div_iff₀ h2π]
+  linarith [hle]
+
+/-- **Disk `H²` bound for the reciprocal outer function.**  For a weight bounded below by `c > 0`,
+`‖1/D(r e^{iφ})‖² ≤ 1/c` on the whole disk.  This uniform bound is what forces the reciprocal Taylor
+coefficients into `ℓ²`, i.e. `1/D ∈ H²`. -/
+theorem normSq_inv_szegoOuter_le {w : ℝ → ℝ} {c : ℝ} (hc : 0 < c)
+    (hlog : IntervalIntegrable (fun θ => Real.log (w θ)) volume 0 (2 * π))
+    (hper : Function.Periodic (fun θ => Real.log (w θ)) (2 * π))
+    (hlogφ : ∀ φ, IntervalIntegrable (fun t => Real.log (w (φ + t))) volume (-π) π)
+    (hwc : ∀ θ, c ≤ w θ) {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (φ : ℝ) :
+    ‖(szegoOuter w (circleMap 0 r φ))⁻¹‖ ^ 2 ≤ c⁻¹ := by
+  rw [norm_inv, inv_pow, normSq_szegoOuter_eq_poissonConv hlog hper hr0 hr1 φ, ← Real.exp_neg,
+    show c⁻¹ = Real.exp (-Real.log c) by rw [Real.exp_neg, Real.exp_log hc]]
+  apply Real.exp_le_exp.mpr
+  have hI : Real.log c
+      ≤ (2 * π)⁻¹ * ∫ t in (-π)..π, poissonKer r t * Real.log (w (φ + t)) :=
+    poissonMean_symm_ge (hlogφ φ) (fun t => Real.log_le_log hc (hwc (φ + t))) hr0 hr1
+  linarith
+
 end GaloisForLFunctions.HTGeometry

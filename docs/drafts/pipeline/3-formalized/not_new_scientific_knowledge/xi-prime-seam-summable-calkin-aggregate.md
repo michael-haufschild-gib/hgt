@@ -1,8 +1,8 @@
 # One damped all-prime Calkin Gram detects Xi orientation
 
 - **ID:** `xi-prime-seam-summable-calkin-aggregate`
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE, `[TOP-DOWN]`, `[VALUE RELATION]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM, `[TOP-DOWN]`, `[VALUE RELATION]`
 - **Parents:** `sonin-prime-seam-exterior-factorization.md`;
   `summable-euler-calkin-injectivity.md`
 - **Statement:** A canonical absolutely summable damping packages every prime-pair Xi seam
@@ -31,8 +31,8 @@ compactness of one damped all-prime Gram on every Xi fibre
 ## Gates
 
 - [x] 0 → 1 in-progress: well-posed, source-pure, finite injectivity and summability attack fixed
-- [ ] 1 → 2 fully-proven: complete proof that rectangular partial sums recover every coefficient
-- [ ] 2 → 3 formalized: Lean theorem, narrow build green, axiom audit clean, umbrellas wired
+- [x] 1 → 2 fully-proven: rectangular partial sums recover every coefficient
+- [x] 2 → 3 formalized: Lean theorem, narrow build green, axiom audit clean, umbrellas wired
 - [ ] 3 → 4 publication-ready: not sought; this is a proof-chain interface
 
 ## Approach
@@ -40,20 +40,24 @@ compactness of one damped all-prime Gram on every Xi fibre
 Enumerate the primes by `Nat.nth Nat.Prime`.  For a strip point `rho`, let
 
 ```text
-a_i(rho) = orbitwiseNatPrimeSeamCharge (nth Prime i) rho,
-d_i(rho) = 2^(-(i+1)) / (1 + |a_i(rho)|),
-A_ij(rho) = d_i(rho)d_j(rho)(a_i(rho)-a_j(rho)).
+s_i(rho) = orbitwiseNatPrimeSeamCharge (nth Prime i) rho,
+Delta_ij(rho) = s_i(rho) - s_j(rho),
+G_ij = the literal even Sonin Gram entry,
+w_ij = 2^(-(i+j)),
+A_ij(rho) = [w_ij / (1 + |Delta_ij(rho)| * ||G_ij||)] Delta_ij(rho).
 ```
 
-Every `d_i` is positive, and
+The scalar damping is strictly positive, so `A_ij = 0` exactly when the seam difference vanishes.
+Moreover,
 
 ```text
-|A_ij| <= 2 * 2^(-(i+1)) * 2^(-(j+1)),
+||A_ij G_ij|| <= w_ij,
 ```
 
-so the double operator series converges absolutely in norm.  Prove an infinite extension of the
-existing finite prime quadratic Calkin injectivity: if an absolutely summable matrix coefficient
-family gives a compact norm-summed Gram operator, every coefficient is zero.  The proof takes
+and the double geometric majorant is summable.  Thus the operator series converges absolutely in
+norm without any uniform norm bound on the Gram entries.  The infinite extension of the existing
+finite prime quadratic Calkin injectivity says that if this norm-summed Gram operator is compact,
+every coefficient is zero.  The proof takes
 rectangular finite sections, applies the existing quantitative finite matrix-entry lower bound
 against the compact full sum, and lets the rectangle exhaust `Nat × Nat`.
 
@@ -70,7 +74,20 @@ already formalized coherence-collapse theorem kills the common charge and pins `
 - Compactness of the aggregate remains the source-side target.  The contribution is that it is one
   concrete norm-convergent target, not an uncountable or pairwise family of interfaces.
 
+## Formalization
+
+- `formal/GaloisForLFunctions/RHTower/XiPrimeSeamSummableCalkinAggregate.lean`
+- `coefficients_eq_zero_of_summableEvenDilationGramAggregate_isCompact` proves the infinite
+  Calkin Gram injectivity theorem.
+- `summable_norm_primeSeamAggregateTerm` proves unconditional operator-norm summability.
+- `orbitwisePrimeSeamChargesCoherent_of_summableCalkinAggregateCompact` extracts the value
+  relation from compactness.
+- `riemannHypothesis_of_xiPrimeSeamSummableCalkinAggregateCompact` is the forward capstone.
+- The module is imported by the `RHTower` umbrella and hence by `MainTheorems` and the package root.
+
 ## Log
 
 - 2026-07-13 — created in progress after the repaired summable one-prime injectivity exposed the
   missing two-prime infinite-matrix extension.
+- 2026-07-13 — formalized the norm-tail passage, canonical damping, coherence extraction, RH
+  implication, converse, and positive noncompactness contradiction; wired the area umbrella.

@@ -258,6 +258,15 @@ normal Gram coboundary compact.  Burnol's zero-indexed Sonine evaluators and the
 realization supply the two literature ends of this interface, but their identification with the
 semilocal connection is not proved in the literature or the corpus.
 
+The formal theorem
+`../../3-formalized/not_new_scientific_knowledge/cofinite-euler-connection-reader-rigidity.md`
+now discharges the infinite-dimensional propagation in this paragraph.  Compactness on every
+cofinite prime-tangent pair propagates automatically to any continuous real-bilinear connection
+reader on the full analytic FE-odd Schwarz source fibre, and mixed derivatives of compact
+two-parameter families are compact.  Thus the remaining statement is the finite operator value
+relation identifying the prime-pair normal curvature in `(13)` with the mixed derivative of the
+completed quasi-inner Hardy block, modulo the already controlled compact residual terms.
+
 ## Literature boundary
 
 Equation `(3)` is the standard bilinearity identity `A wedge B=A tensor B-B tensor A`; `(4)` is the
@@ -369,6 +378,8 @@ finite `F`, not this cofinal first-Euler Gram coboundary.
 - [x] operator-norm differentiability of its orthogonal projection at the empty parameter
 - [x] exact metric-tangent identification with the actual positive Euler Sonin corner
 - [x] finite bounded operator transfer of the scalar seam coefficients
+- [x] cofinite Euler-tangent-pair compactness propagates to the complete analytic source fibre
+- [x] finite compact semilocal families have compact iterated mixed derivatives
 - [ ] alternatively, finite completed-source Calkin extraction `(12)` for every prime pair
 - [ ] prove Xi-zero-fibre annihilation of the semilocal tangential connection
 - [ ] prove the remaining compact normal-curvature identity `(13)`

@@ -162,6 +162,31 @@ theorem neg_logDeriv_zeta_residue :
   field_simp
   ring
 
+/-- **The Laurent constant term of `-ζ'/ζ` at its pole `s = 1` is `-γ`** (Euler–Mascheroni).  With the
+simple pole `1/(s-1)` (residue `+1`) subtracted, the remainder tends to `-γ`:
+`(-ζ'/ζ)(s) - 1/(s-1) → -γ`.  Off the pole this remainder equals `-logDeriv G(s)` (`G = zetaResidueUnit`,
+from `logDeriv_zeta_eq`), whose limit is `-logDeriv G(1) = -γ` (`logDeriv_zetaResidueUnit_one`).  Together
+with `neg_logDeriv_zeta_residue` this is the full principal + constant Laurent data of `-ζ'/ζ` at `1`. -/
+theorem neg_logDeriv_zeta_laurent_constant :
+    Tendsto (fun s => -deriv riemannZeta s / riemannZeta s - 1 / (s - 1)) (𝓝[≠] 1)
+      (𝓝 (-(Real.eulerMascheroniConstant : ℂ))) := by
+  have hG1ne : zetaResidueUnit 1 ≠ 0 := by rw [zetaResidueUnit_one]; norm_num
+  have hlogGcont : ContinuousAt (logDeriv zetaResidueUnit) 1 :=
+    (zetaResidueUnit_analyticAt.deriv.continuousAt).div zetaResidueUnit_analyticAt.continuousAt hG1ne
+  have hEq : (fun s => -deriv riemannZeta s / riemannZeta s - 1 / (s - 1)) =ᶠ[𝓝[≠] (1 : ℂ)]
+      fun s => -logDeriv zetaResidueUnit s := by
+    filter_upwards [self_mem_nhdsWithin, nhdsWithin_le_nhds zetaResidueUnit_ne_zero_eventually]
+      with s hs hGs
+    have hs1 : s ≠ 1 := hs
+    have hlog : -deriv riemannZeta s / riemannZeta s = -logDeriv zetaResidueUnit s + (s - 1)⁻¹ := by
+      rw [neg_div, ← logDeriv_apply, logDeriv_zeta_eq hs1 hGs]; ring
+    rw [hlog]; ring
+  have hlim : Tendsto (fun s => -logDeriv zetaResidueUnit s) (𝓝[≠] (1 : ℂ))
+      (𝓝 (-logDeriv zetaResidueUnit 1)) :=
+    hlogGcont.neg.tendsto.mono_left nhdsWithin_le_nhds
+  rw [logDeriv_zetaResidueUnit_one] at hlim
+  exact (tendsto_congr' hEq).mpr hlim
+
 /-- **The residue of `-ζ'/ζ` at a zeta zero `ρ ≠ 1` is `-m(ρ)`**, where `m(ρ) ≥ 1` is the analytic
 multiplicity of the zero: `(s-ρ)·(-ζ'/ζ)(s) → -m`.  Obtained by factoring `ζ = (z-ρ)^m·g` near `ρ`
 (`g` analytic, `g(ρ) ≠ 0`, from the removable/order structure of the analytic `ζ` on the connected set

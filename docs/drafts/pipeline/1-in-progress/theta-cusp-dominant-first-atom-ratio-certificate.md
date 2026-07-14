@@ -113,6 +113,138 @@ The enclosure `(4)` then gives
 
 The formal two-ratio gate therefore yields every linear-polynomial source Hankel inequality.
 
+## Ward/Gibbs reduction `[PROVED IN LEAN]`
+
+The first source atom is the Schwinger--Dyson/Ward image of the positive Liouville Gibbs atom
+
+\[
+b(x)=e^{x/2}e^{2x}e^{-\pi e^{2x}},\qquad
+\Phi_1(x)=-2\pi\left(b'(x)+\tfrac12b(x)\right).
+\]
+
+For `B_k = integral_0^infinity x^k b(x) dx`, define
+
+\[
+U_0=2e^{-\pi}-B_0,\qquad
+U_{j+1}=4(j+1)B_{2j+1}-B_{2j+2}.
+\]
+
+`PrimeArchThetaLiouvilleWard.lean` proves `a_j=2 pi U_j`, `U_j>=0`, and transports the all-order
+enclosure `(4)` to
+
+\[
+2\pi U_j\le m_j\le\frac{3005}{2997}(2\pi U_j).
+\]
+
+It also proves directly that the two conditions
+
+\[
+14\left(\frac{3005}{2997}U_2\right)^2\le9U_1U_3,
+\qquad
+16\left(\frac{3005}{2997}U_0\right)
+  \left(\frac{3005}{2997}U_2\right)\le45U_1^2
+\]
+
+imply every linear-polynomial prime--Gamma source Hankel inequality.  Thus the remaining finite
+certificate can be proved in the positive truncated-Gamma Gibbs variables, with the zeroth-order
+boundary charge isolated explicitly.
+
+## Supersymmetric Morse/Born reduction `[PROVED IN LEAN]`
+
+The Gibbs atom is itself the Born density of an exact supersymmetric Morse zero mode.  With
+
+\[
+t_n(x)=\pi(n e^x)^2,\qquad
+\psi_{A,n}(x)=n e^{Ax}e^{-t_n(x)/2},\qquad
+W_{A,n}(x)=t_n(x)-A,
+\]
+
+Lean proves
+
+\[
+(\partial_x+W_{A,n})\psi_{A,n}=0,
+\qquad
+(-\partial_x^2+W_{A,n}^2-2t_n)\psi_{A,n}=0,
+\]
+
+and the partner-potential shape invariance
+
+\[
+V_+(A,n)=V_-(A-2,n)+4(A-1).
+\]
+
+At `A=5/4`, `b_n=psi_(5/4,n)^2` and the source atom is the positive Born observable
+
+\[
+\Phi_n(x)=4\pi\bigl(W_{5/4,n}(x)-1/4\bigr)\psi_{5/4,n}(x)^2.
+\]
+
+Therefore the Ward variables are exactly the Born-observable moments `M_j(1)`, not merely
+comparable to them.  The all-order enclosure and the final Hankel consumer have both been
+transported to `M_j(1)`.  On `n>=1`, `x>=0`, Lean also proves the pointwise partner floor
+
+\[
+\pi^2-\pi/2+25/16\le V_+(5/4,n)(x).
+\]
+
+This exposes mixed position--momentum Gram matrices, the exact supercharge, and half-line
+Witten-Laplacian coercivity as usable physics inputs.  The floor is not yet promoted to a spectral
+gap, and ordinary position-moment positivity alone remains too weak for `(5)`.
+
+## Anomalous Darboux/Doob reduction `[PROVED IN LEAN]`
+
+For every polynomial `P`, `PrimeArchThetaMorseAnomalousDarboux.lean` proves the exact
+ground-state transform and half-line boundary defect
+
+\[
+H_-(P\psi)=(-P''+2WP')\psi,
+\qquad
+(P\psi)'(0)+W(0)(P\psi)(0)=P'(0)\psi(0).
+\]
+
+For positive atom number, the dressed state belongs to the same Robin domain exactly when
+`P'(0)=0`.  Applied to the normalized odd monomial whose derivative is `x^(2j)`, this isolates
+`j=0` as the unique contact-anomalous Born moment and gives every atom moment the exact value
+representation
+
+\[
+a_{j,n}=4\pi\int_0^\infty D_{j,n}(x)\,dx,
+\]
+
+where `D_{j,n}` is the formalized Morse Hamiltonian Ward density.  The corresponding Born moment
+is `2 integral D_(j,n)`.  The two open inequalities `(5)`--`(6)` and their existing linear Hankel
+consumer have been rewritten directly in these Hamiltonian Ward values.  This removes the
+self-adjoint half-line momentum ambiguity and leaves a precise quantum-mechanical target: prove
+the two displayed inequalities from mixed position--Hamiltonian positivity or coercivity.
+
+## Born/Witten pure-state reduction `[PROVED IN LEAN]`
+
+The positive Born observable can be absorbed completely into a new source-defined amplitude
+
+\[
+\chi_n(x)=2\sqrt{t_n(x)-3/2}\,\psi_n(x).
+\]
+
+Lean proves the exact static value identities
+
+\[
+\Phi_n(x)=\pi\chi_n(x)^2,
+\qquad
+(\partial_x+B_n)\chi_n=0,
+\qquad
+B_n'=2t_n+\frac{3t_n}{(t_n-3/2)^2},
+\]
+
+where `B_n=W_(5/4),n-t_n/(t_n-3/2)`.  Thus the formerly observable-weighted Born moments are
+literal position moments of one supersymmetric ground state.  The full theta source is a sum of
+these pure-state squares, the negative-log-density curvature has the pointwise floor
+`4 pi n^2`, and polynomial test states have an exact Robin-domain classification.
+
+The two open inequalities `(5)`--`(6)` and the linear Hankel conclusion are now stated directly in
+the pure-state moments of `chi_1`.  This removes both the positive insertion and the half-line
+momentum-domain ambiguity.  The curvature floor alone is not asserted to be a Brascamp--Lieb
+spectral-gap theorem and does not by itself discharge either inequality.
+
 ## Numerical pre-certification
 
 High-precision quadrature gives
@@ -171,6 +303,22 @@ enclosure `(4)`, and the transfer from `(5)`--`(6)` to every linear-polynomial p
 source Hankel test.  The higher-atom tail is therefore closed.  Only the two explicit first-atom
 incomplete-Gamma inequalities remain open for this block.
 
+`PrimeArchThetaMorseGroundState.lean` strengthens the same open core by replacing the first-atom
+variables with moments of one positive observable in an explicit zero-energy Morse state.  This
+does not discharge `(5)`--`(6)` by itself; it provides new exact operator relations with which to
+attack them without changing their value content.
+
+`PrimeArchThetaMorseAnomalousDarboux.lean` applies those relations to the whole moment family.  It
+classifies the Robin-domain anomaly, identifies every existing first-atom/Born moment with an
+integrated Hamiltonian Ward density, and connects the resulting two Hamiltonian inequalities to
+the already-formalized linear Hankel conclusion.  The values required by `(5)`--`(6)` remain open.
+
+`PrimeArchThetaBornWittenGroundState.lean` and `PrimeArchThetaBornWittenBootstrap.lean` absorb the
+Born observable into an exact source amplitude, identify all existing moments with its ordinary
+position moments, prove the source-defined logarithmic curvature and polynomial Robin anomaly, and
+connect the resulting pure-state inequalities to the same Hankel conclusion.  The two numerical
+value inequalities remain the open core.
+
 Principal declarations:
 
 - `thetaCuspAtomRawEvenMoment`
@@ -184,6 +332,36 @@ Principal declarations:
 - `thetaCuspHigherAtomRawEvenMoment_le_first`
 - `thetaCuspRawEvenMoment_le_first_atom_factor`
 - `forall_primeArchSourceTraceHankel_linear_nonneg_of_first_atom`
+- `thetaCuspSourceTerm_eq_liouvilleWard`
+- `thetaCuspAtomRawEvenMoment_succ_eq_liouvilleGibbs`
+- `thetaCuspRawEvenMoment_between_firstAtomWardMoment`
+- `forall_primeArchSourceTraceHankel_linear_nonneg_of_liouvilleWard`
+- `thetaCuspMorseZeroMode_schrodinger_zero`
+- `thetaCuspMorse_shapeInvariant`
+- `thetaCuspMorsePotentialPlus_floor`
+- `thetaCuspSourceTerm_eq_morseBornObservable`
+- `thetaCuspAtomRawEvenMoment_eq_morseBornMoment`
+- `thetaCuspRawEvenMoment_between_morseBornMoment`
+- `forall_primeArchSourceTraceHankel_linear_nonneg_of_morseBorn`
+- `thetaCuspMorse_robinDefect_eq_zero_iff`
+- `thetaCuspMorseHamiltonianMinus_dressedPolynomial`
+- `pow_mul_thetaCuspSourceTerm_eq_morseHamiltonianWard`
+- `thetaCuspAtomRawEvenMoment_eq_morseHamiltonianWard`
+- `thetaCuspRawEvenMoment_eq_tsum_morseHamiltonianWard`
+- `thetaCuspMorseBornMoment_eq_morseHamiltonianWard`
+- `forall_primeArchSourceTraceHankel_linear_nonneg_of_morseHamiltonianWard`
+- `thetaCuspSourceTerm_eq_pi_mul_bornWittenAmplitude_sq`
+- `thetaCuspFullSource_eq_pi_mul_tsum_bornWittenAmplitude_sq`
+- `thetaCuspBornWitten_supercharge_zero`
+- `thetaCuspBornWittenCurvature_floor`
+- `thetaCuspBornWittenLogCurvature_floor`
+- `thetaCuspMorseBornMoment_eq_integral_bornWittenAmplitude_sq`
+- `thetaCuspRawEvenMoment_eq_tsum_integral_bornWittenAmplitude_sq`
+- `iteratedDeriv_XiC_zero_eq_tsum_bornWittenAmplitude_sq`
+- `thetaCuspBornWittenRawMoment_eq_thetaCuspRawEvenMoment`
+- `normalizedPrimeArchMoment_one_eq_bornWittenQuadraticSource`
+- `thetaCuspBornWitten_robinDefect_eq_zero_iff`
+- `forall_primeArchSourceTraceHankel_linear_nonneg_of_bornWittenAmplitude`
 
 ## Gates
 
@@ -199,3 +377,28 @@ Principal declarations:
 - [ ] prove inequalities `(5)` and `(6)`
 - [ ] formalize the remaining incomplete-Gamma certificate in Lean
 - [ ] extend the dominant-atom mechanism beyond the first Hankel block
+
+## Quadratic Stein--Robertson reduction `[PROVED IN LEAN]`
+
+For the `k=1,n=1` radial pure state `eta=x*chi_1`, let `J_r=integral x^r eta^2` and use the quadratic quantum vector field
+
+```text
+P(x)=x-x^2/2,
+S_P=P(B_1-1/x)-P'/2=(x-x^2/2)B_1+x-3/2.
+```
+
+`PrimeArchThetaQuadraticSteinRobertson.lean` proves the exact half-line Stein covariance and Robertson inequality
+
+```text
+C = integral (x^2-x^3/2) eta^2,
+E = integral S_P^2 eta^2,
+(J_0*C)^2 <= (J_0^2*J_4-J_0*J_2^2)*E.
+```
+
+It also proves unconditionally that `E` is finite and strictly positive, using an explicit polynomial--Gaussian energy majorant, and that the single scalar certificate
+
+```text
+(14*(3005/2997)^2-9)*J_2^2*E <= 9*J_0*C^2
+```
+
+implies the open upper first-atom inequality `(5)`.  The resulting theorem feeds directly into the existing linear prime--Gamma source Hankel consumer.  Ordinary dilation `P=x` was numerically falsified at the required constant; the quadratic field clears the buffered variance threshold by about `0.749%`.  The scalar energy estimate is now the open upper-ratio core; the relaxed condition `(6)` remains independent.

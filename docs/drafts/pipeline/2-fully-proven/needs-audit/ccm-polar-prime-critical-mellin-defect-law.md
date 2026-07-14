@@ -377,3 +377,16 @@ continuous across `0` with value `1 + logDeriv G(1)`.  This is the SAME polar–
 window cards' `s = 3/2` (via `logDeriv_zeta_eq`), now at the CCM carrier's critical-line edge: the
 Euler-region continuation reaches `Re s = 0` regularly, so the open across-boundary Stieltjes layer only
 has to bridge from a finite boundary value, not a singularity.
+
+BOUNDARY VALUE PINNED TO `1 + γ` — FORMALIZED (axiom-clean).  The carrier's finite boundary value at
+`s = 0` (`z = ½`) is now identified with a named arithmetic constant.
+`RHTower/ZetaLogDerivResidue.lean`:
+- `deriv_zetaResidueUnit_one : deriv zetaResidueUnit 1 = γ` (`γ = Real.eulerMascheroniConstant`).  Since
+  `G(1) = 1`, `slope G 1 s = ((s-1)ζ(s) - 1)/(s-1) = ζ(s) - 1/(s-1) → γ` (mathlib
+  `tendsto_riemannZeta_sub_one_div`).  So `G'(1) = γ`, i.e. `G(s) = 1 + γ(s-1) + O((s-1)²)` — `G'(1)` is
+  exactly the Laurent constant term of `ζ` at its pole.
+- `logDeriv_zetaResidueUnit_one : logDeriv zetaResidueUnit 1 = γ` (`= G'(1)/G(1) = γ`).
+`RHTower/PolarPrimeChannelContinuation.lean`:
+- `criticalMellinDefectChannelComplex_tendsto_at_zero` — the carrier's boundary limit is exactly `1 + γ`.
+So the completed logarithmic source's value at the critical-line boundary is the named constant `1 + γ`;
+the open across-boundary Stieltjes layer now bridges from this explicit finite value.

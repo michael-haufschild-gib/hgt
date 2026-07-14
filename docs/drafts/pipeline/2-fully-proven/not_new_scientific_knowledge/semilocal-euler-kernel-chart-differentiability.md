@@ -230,6 +230,16 @@ on every actual Xi-zero fibre, the global summation-map/zeta-cycle relation anni
 tangential connection term in the polarized second derivative of `(20)`.                 (21)
 ```
 
+The formal continuation
+`../../3-formalized/not_new_scientific_knowledge/cofinite-euler-connection-reader-rigidity.md`
+removes the infinite-dimensional part of `(21)`.  A continuous real-bilinear operator reader that
+is compact on every cofinite paired Euler-tangent pair is compact on the complete analytic FE-odd
+Schwarz source fibre.  Moreover, mixed derivatives of a norm-analytic compact operator family are
+compact.  Hence `(21)` no longer requires a global connection estimate: it is enough to prove the
+finite exact value relation identifying each prime-pair connection coefficient with the mixed
+derivative of the completed finite quasi-inner Hardy block.  The zero-fibre normal-curvature
+identity remains open.
+
 If `(21)` is proved modulo compact operators, the normal remainder is the finite two-prime Gram
 coboundary already recognized by Lean.  This gives the genuinely top-down chain
 
@@ -272,6 +282,8 @@ scientific theorem.
 - [x] exact metric-tangent identification with the formalized positive Euler Sonin corner
 - [x] finite bounded transfer of the scalar Xi seam coefficients to the Sonin section
 - [x] isolated-local-kernel singularity separated from completed semilocal regularity
+- [x] reduce continuous polarized connection compactness to cofinite prime-tangent pairs
+- [x] prove mixed derivatives of norm-analytic compact operator families are compact
 - [ ] zero-fibre annihilation of the tangential connection in `(21)`
 - [ ] finite two-prime compact curvature extraction
 - [ ] prime-seam coherence and RH

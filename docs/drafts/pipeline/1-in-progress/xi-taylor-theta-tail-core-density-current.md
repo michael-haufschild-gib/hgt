@@ -1641,3 +1641,279 @@ open core is now precise: regroup the absolutely convergent atom-pair current by
 prove that the sum of the even packets in the last term of `(16)` is `o(n)|P_{2d+3}(z_n)|^2` after
 the source-selected fibre/depth choice.  No positivity of an individual atom or scalar Xi
 multiplier can supply this bound.
+
+The product-fibre module also proves the general absolutely summable regrouping theorem
+`tsum_eq_tsum_thetaPositiveFactorPairs`: every ordered positive-index packet is the iterated sum
+of its finite `mn=k` fibres.  The remaining formal integration step is therefore not a reindexing
+problem; it is to expose absolute summability of the already-integrated atom-pair current as a
+named theorem and instantiate this regrouping.
+
+## Integrated product-fibre current
+
+**[PROVED, LIVE REDUCTION]** The product-fibre decomposition now applies to the integrated raw
+current, not only to the pointwise density packet.  For the positive-index atom `n`, let
+
+```text
+V_n(d,z)=integral_(0,infinity) rho_(n+1)(x) H_d(z,x) dx,
+D_n(d,z)=integral_(0,infinity) rho_(n+1)(x) partial_z H_d(z,x) dx.
+```
+
+Each is an explicit finite packet of raw atom moments.  Gaussian domination proves that both
+sequences are absolutely summable in `n`.  Fubini then gives the exact ordered-pair identity
+
+```text
+integral rho_(m+1)(x)rho_(n+1)(y) K_d(z;x,y) dxdy
+ =1/2[Im(D_m conjugate(V_n))+Im(D_n conjugate(V_m))].       (17)
+```
+
+The right side is absolutely summable over ordered pairs.  Therefore it may be regrouped by
+`k=(m+1)(n+1)` without a conditional rearrangement.  If `C_k(d,z)` denotes the finite sum over
+that product fibre, then
+
+```text
+Q(U_d(z))=1/4 sum_(k>=1) C_k(d,z),                          (18)
+```
+
+and the outer series is absolutely convergent.  Divisor reflection makes the two halves of `(17)`
+identical after summation over a fibre, so in fact
+
+```text
+C_k(d,z)=sum_((m+1)(n+1)=k) Im(D_m(d,z) conjugate(V_n(d,z))). (19)
+```
+
+Thus the remaining arithmetic object is one unsymmetrized Dirichlet-convolution coefficient; no
+pair-current averaging remains.  Equations `(17)`--`(19)`, the moment summability, and the exact
+current regrouping are formalized in `XiCTaylorThetaTailProductFiberCurrent.lean`.
+
+This completes the integration/reindexing gate following `(16)`.  It does not assign a sign to
+`C_k`: the live theorem is now to exploit the full canonical relations among the convolution
+coefficients, or equivalently to prove the summed even finite-translation edge is upper-sublinear
+on the admissible anisotropic schedules.
+
+## Prime-power divisor-phase orientation
+
+**[PROVED, BRIDGE]** The analytic phase carried by one prime-power divisor fibre has an intrinsic
+orientation before conjugate pairing.  For a polynomial `P` with every root on the unit circle,
+`P != 0`, and `deg P>0`, the root expansion gives, for `|w|<1`,
+
+```text
+Re(w P'(w)/P(w)) < deg(P)/2.                               (20)
+```
+
+Indeed each unit root `zeta` contributes
+`Re(w/(w-zeta))<1/2`.  Therefore the degree-centered exponential phase
+
+```text
+B_(P,L)(z)=exp(-i deg(P)Lz/2) P(exp(iLz))
+```
+
+has strict negative upper oriented current whenever `L>0` and `Im z>0`:
+
+```text
+Im(B'_(P,L)(z) conjugate(B_(P,L)(z))) < 0.                 (21)
+```
+
+For the `N`-term geometric polynomial `G_N(X)=sum_(j<N)X^j`, all roots are nontrivial
+`N`th roots of unity.  With `L=log p`, `(21)` is exactly the centered divisor phase of the prime
+power `p^(N-1)`.  This gives an arithmetic sign before the value--derivative packet is conjugate
+polarized; it uses neither Xi divisor data nor a limiting measure.
+
+The same packet has an exact signed Fejer polarization.  In polynomial form,
+
+```text
+G_(2a+1)=G_(a+1)^2-X G_a^2,
+G_(2a+2)=G_(a+1)G_(a+2)-X G_a G_(a+1).                    (22)
+```
+
+Thus even prime-power exponents are differences of consecutive analytic squares and odd exponents
+are differences of adjacent Gram cross-products.  Equations `(20)`--`(22)`, the explicit analytic
+derivative, and strict current sign are formalized in
+`HTGeometry/UnitCircleRootRadialOrientation.lean`.
+
+This is not yet the core-current theorem.  If the logarithmic translates are first extended from
+the positive half-line to a common full line and then conjugate-polarized, divisor reflection
+removes the displacement derivative that carries `(21)` and leaves a common-centre term with no
+fixed sign.  Hence `(21)` must be applied inside the finite cosine--sine translation identity,
+before integrated conjugate polarization.  The remaining exact obstruction is the nested swept
+window `0<u<log m` created by translating the positive-half-line endpoint.  It is part of the
+canonical packet, not an independently small positive error.
+
+## Exact arithmetic phase seam
+
+**[PROVED, LIVE REDUCTION]** Let
+
+```text
+F(z)=integral_(0,infinity) rho_1(u)exp(iuz)du,
+W_a(z)=integral_0^a rho_1(u)exp(iuz)du.
+```
+
+For every positive integer `n`, translation of the `n`th density atom across the fixed positive
+endpoint is exactly
+
+```text
+A_n(z)=n^(-1/2)exp(-i log(n) z)[F(z)-W_(log n)(z)],
+A_n'(z)=n^(-1/2)exp(-i log(n) z)
+  [F'(z)-W'_(log n)(z)-i log(n)(F(z)-W_(log n)(z))].       (23)
+```
+
+Consequently its oriented current is
+
+```text
+Q(A_n)=|n^(-1/2)exp(-i log(n)z)|^2[
+  Q(F)+Q(W_(log n))
+  -Im(F' conjugate(W_(log n)))
+  -Im(W'_(log n) conjugate(F))
+  -log(n)|F-W_(log n)|^2].                                (24)
+```
+
+Thus the arithmetic phase contributes the favorable negative square predicted by the radial
+orientation theorem.  Every failure of atomwise negativity is confined exactly to the self-current
+and two mixed currents of the nested swept window.  Equations `(23)`--`(24)`, including the needed
+half-line integrability and interval splitting, are formalized in
+`XiCTaylorThetaTailArithmeticPhaseSeam.lean`.
+
+Equation `(24)` is not an invitation to estimate `F` and `W_a` separately.  On the target strip the
+formal full-tail Dirichlet packet is not the convergent object; its divergence is cancelled by the
+nested windows.  The next gate is therefore a packet-level Abel polarization of the family
+`F-W_(log n)`, retaining the negative drift and the window cross terms in one finite identity.
+
+## Nested-seam Abel polarization
+
+**[PROVED, LIVE REDUCTION]** The swept windows in `(23)` are nested, so they admit an exact finite
+layer-cake decomposition rather than a termwise estimate.  Put `L>0`,
+
+```text
+p_j(z)=exp(-jL/2)exp(-ijLz),
+P_N(z)=sum_(j<N)p_j(z),
+I_r(z)=integral_(rL..(r+1)L) rho_1(u)exp(iuz)du,
+T_N(z)=integral_(NL..infinity) rho_1(u)exp(iuz)du.
+```
+
+Finite Abel summation gives
+
+```text
+sum_(j<N) p_j T_j
+ =sum_(r<N) P_(r+1) I_r + P_N T_N,                       (25)
+
+sum_(j<N) [p_j T'_j+p'_j T_j]
+ =sum_(r<N) [P_(r+1)I'_r+P'_(r+1)I_r]
+   +P_NT'_N+P'_NT_N.                                     (26)
+```
+
+Thus every moving boundary interval is absorbed into a disjoint logarithmic block with its whole
+geometric prefix, and the value--derivative pairing is retained.  There is no remaining collection
+of independently estimated seams.  Equations `(25)`--`(26)` are formalized as
+`criticalLogPhase_tail_packet_eq_prefix_blocks` and
+`criticalLogPhase_tail_packetDerivative_eq_prefix_blocks` in
+`XiCTaylorThetaTailArithmeticPhaseSeam.lean`.
+
+The prefix itself is the reverse critical evaluation
+
+```text
+P_N(z)=G_N(exp(iL(-z+i/2))).                              (27)
+```
+
+For `Im z<1/2`, write `r=exp(-L(1/2-Im z))<1`.  The unit-root expansion now gives the complementary
+radial inequality
+
+```text
+Re(w G_N'(w)/G_N(w)) >= -(N-1)r/(1-r),
+Q(P_N)(z) <= L(N-1)r/(1-r)|P_N(z)|^2.                    (28)
+```
+
+This is the finite orientation-sensitive estimate needed for a sublinear Haar depth: on each fixed
+left-strip fibre its constant is fixed and its growth is only linear in the prefix length.  The
+rootwise lower bound, the general polynomial theorem, the exact identification `(27)`, and `(28)`
+are formalized in `HTGeometry/UnitCircleRootRadialOrientation.lean` and
+`XiCTaylorThetaTailArithmeticPhaseSeam.lean`.
+
+The unresolved term is now narrower and genuinely Hermitian: when the current of the block sum in
+`(25)` is expanded, `(28)` controls every diagonal block current, while distinct blocks produce
+cross currents.  A valid finish must prove that the signed Haar combination of those off-diagonal
+block currents is upper-sublinear relative to the final Taylor value.  Bounding block norms
+separately is still invalid near a cancellation of the total value.
+
+## Universal arity-Haar polarization
+
+**[PROVED, NO-GO FOR MULTI-PRIME ESCAPE]** The dyadic Haar decomposition is the `L=log 2`
+specialization of a continuous logarithmic-scale identity.  For any `L != 0`, put `q=exp L` and
+
+```text
+D_k^L(x)=exp(-kL/2)rho(x+kL),
+S_k^L=D_k^L-D_(k+1)^L,
+A_k^L=q D_(k+1)^L-D_k^L.
+```
+
+Then
+
+```text
+D_k^L(x)D_k^L(y)
+ =q/(q-1) S_k^L(x)S_k^L(y)
+  -1/(q-1) A_k^L(x)A_k^L(y)
+  +q D_(k+1)^L(x)D_(k+1)^L(y).                          (29)
+```
+
+For `L=log p`, `(29)` is the signed `p`-ary valuation polarization of the full square-index
+translate packet.  Theta reflection gives, at every depth,
+
+```text
+A_k^L(-x)
+ =exp(L/2)S_k^L(x-(2k+1)L)
+  -(q-1)/2 exp(-x/2).                                    (30)
+```
+
+The amplitude square `exp L=q` is exactly the ratio of the two square coefficients in `(29)`.
+Consequently those square channels cancel for every arity, not only for `p=2`.  The translated
+exact-valuation row is a discrete coboundary, and the complete reflected prefix is
+
+```text
+sum_(k<N) q^k[ q/(q-1) S_k^L(x-(2k+1)L)S_k^L(y-(2k+1)L)
+                    -1/(q-1) A_k^L(-x)A_k^L(-y)]
+ =1/2 q^N[D_N^L(x-2NL)e^(-y/2)+e^(-x/2)D_N^L(y-2NL)]
+  -1/2[rho(x)e^(-y/2)+e^(-x/2)rho(y)]
+  -(q^N-1)/4 e^(-(x+y)/2).                               (31)
+```
+
+Equations `(29)`--`(31)` are formalized in
+`XiCTaylorThetaTailArityHaarPolarization.lean`.  They show that changing or combining primes cannot
+supply an independent terminal orientation: after exact reflection and telescoping, every arity
+lands on the same remote-row/density/exponential three-term source already present in `(12d.8h)`.
+The obstruction is universal under logarithmic scale, not a defect of dyadic parity.
+
+## Finite cosine--sine translation edge: discharged
+
+**[PROVED, LEAN]** The finite-section obstruction created by logarithmic translation is closed in
+`../3-formalized/xi-taylor-finite-translation-logarithmic-haar-edge.md`.
+
+The two diagonal finite edges satisfy the exact reflection identities
+
+```text
+E_d^-(x,a;z)=E_d^+(x,a;-z),
+partial_z E_d^-(x,a;z)=-partial_z E_d^+(x,a;-z).
+```
+
+At the single source-selected depth
+
+```text
+k_n=(2 ord_sigma(xi)+1) clog_2(n+1),
+a_n=2 k_n log 2,
+```
+
+both complete density-integrated finite translation current defects (the two packet--edge mixed
+currents plus the edge self-current) and the cofinal Haar row are eventually smaller in absolute
+value than
+
+```text
+epsilon (n+1) |P_(2D(stage_sigma(n))+3)(z_n)|^2.
+```
+
+The Lean capstone is
+`eventually_logarithmicHaarTopRow_and_twoPhaseFullDefectCurrents_lt_scaled_normSq` in
+`XiCTaylorThetaTailFiniteTranslationDefectCurrent.lean`.  The proof keeps the packet and edge
+value--derivative pairs intact and reflects only these bounded finite objects; it does not reflect
+the one-sided mesh or change the Taylor denominator.  It uses the canonical density exponential
+moments and the local analytic order of Xi, but no Xi divisor data, real-rootedness,
+anti-Herglotz positivity, limiting measure, or continued-Cauchy sign.
+
+The remaining open term in this card is the untruncated raw theta-tail/seam mixed current.  The
+full core-current theorem remains RH-equivalent.

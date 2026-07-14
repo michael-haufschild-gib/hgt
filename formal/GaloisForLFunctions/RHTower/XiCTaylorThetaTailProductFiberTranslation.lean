@@ -15,7 +15,7 @@ fibre leaves a pure cosine packet and only the explicit truncation top edge.  Th
 remaining finite edge without estimating the sine channel or invoking any Xi divisor data.
 -/
 
-open Finset Polynomial Complex
+open Finset Polynomial Complex Set
 
 namespace RHTower
 
@@ -46,19 +46,65 @@ private theorem polynomial_sum_eq_zero_of_swap_neg
         rw [Finset.sum_neg_distrib]
   have hself : (∑ q ∈ s, F q) = -(∑ q ∈ s, F q) :=
     hswap.trans hnegSum
-  linear_combination (1 / 2 : ℂ) * hself
+  apply Polynomial.ext
+  intro n
+  have hcoeff := congrArg (fun P : Polynomial ℂ => P.coeff n) hself
+  simp only [coeff_neg] at hcoeff
+  simp only [coeff_zero]
+  linear_combination (1 / 2 : ℂ) * hcoeff
 
 /-- Zero-based positive factor pairs: `q` represents `(q.1 + 1, q.2 + 1)`. -/
 def thetaPositiveFactorPairs (k : ℕ) : Finset (ℕ × ℕ) :=
   ((Finset.range k).product (Finset.range k)).filter
     (fun q => (q.1 + 1) * (q.2 + 1) = k)
 
+/-- Product map whose fibres are the positive factor-pair packets. -/
+def thetaPositivePairProduct (q : ℕ × ℕ) : ℕ :=
+  (q.1 + 1) * (q.2 + 1)
+
+/-- The set-theoretic fibre of the positive pair-product map is exactly the finite factor packet. -/
+theorem thetaPositivePairProduct_fiber (k : ℕ) :
+    thetaPositivePairProduct ⁻¹' {k} =
+      (thetaPositiveFactorPairs k : Set (ℕ × ℕ)) := by
+  ext q
+  constructor
+  · intro hprod
+    change thetaPositivePairProduct q = k at hprod
+    simp only [thetaPositivePairProduct] at hprod
+    have hq1le : q.1 + 1 ≤ k := by
+      rw [← hprod]
+      exact Nat.le_mul_of_pos_right _ (Nat.succ_pos q.2)
+    have hq2le : q.2 + 1 ≤ k := by
+      rw [← hprod]
+      exact Nat.le_mul_of_pos_left _ (Nat.succ_pos q.1)
+    change q ∈ thetaPositiveFactorPairs k
+    simp [thetaPositiveFactorPairs, hprod, show q.1 < k by omega,
+      show q.2 < k by omega]
+  · intro hq
+    change q ∈ thetaPositiveFactorPairs k at hq
+    change thetaPositivePairProduct q = k
+    exact (Finset.mem_filter.mp hq).2
+
+/-- Every absolutely summable ordered positive-index packet regroups exactly by product fibres. -/
+theorem tsum_eq_tsum_thetaPositiveFactorPairs
+    {E : Type*} [NormedAddCommGroup E] [CompleteSpace E]
+    (F : (ℕ × ℕ) → E) (hF : Summable F) :
+    (∑' q : ℕ × ℕ, F q) =
+      ∑' k : ℕ, ∑ q ∈ thetaPositiveFactorPairs k, F q := by
+  have hf := hF.hasSum.tsum_fiberwise thetaPositivePairProduct
+  rw [← hf.tsum_eq]
+  apply tsum_congr
+  intro k
+  rw [thetaPositivePairProduct_fiber]
+  exact Finset.tsum_subtype' (thetaPositiveFactorPairs k) F
+
 /-- A fixed positive-product fibre is closed under divisor reflection. -/
 theorem thetaPositiveFactorPairs_swap_mem
     {k : ℕ} {q : ℕ × ℕ} (hq : q ∈ thetaPositiveFactorPairs k) :
     q.swap ∈ thetaPositiveFactorPairs k := by
   rcases q with ⟨a, b⟩
-  simpa [thetaPositiveFactorPairs, mul_comm] using hq
+  simp [thetaPositiveFactorPairs] at hq ⊢
+  exact ⟨⟨hq.1.2, hq.1.1⟩, by simpa [mul_comm] using hq.2⟩
 
 /-- Centered logarithmic displacement of a positive factor pair. -/
 def thetaFactorPairLogDisplacement (q : ℕ × ℕ) : ℝ :=
@@ -70,7 +116,7 @@ theorem thetaFactorPairLogDisplacement_swap (q : ℕ × ℕ) :
       -thetaFactorPairLogDisplacement q := by
   rcases q with ⟨a, b⟩
   unfold thetaFactorPairLogDisplacement
-  simp only [Prod.swap_prod_mk, Prod.fst, Prod.snd]
+  simp only [Prod.swap_prod_mk]
   ring
 
 /-- On a product fibre, the two logarithmic shifts are the common centre `log k / 2` plus and
@@ -82,9 +128,9 @@ theorem thetaFactorPair_log_decomposition
       Real.log (q.2 + 1 : ℕ) =
         Real.log k / 2 - thetaFactorPairLogDisplacement q := by
   have hprod : (q.1 + 1) * (q.2 + 1) = k := by
-    simpa [thetaPositiveFactorPairs] using hq
-  have ha : (((q.1 + 1 : ℕ) : ℝ)) ≠ 0 := by positivity
-  have hb : (((q.2 + 1 : ℕ) : ℝ)) ≠ 0 := by positivity
+    exact (Finset.mem_filter.mp hq).2
+  have ha : (q.1 : ℝ) + 1 ≠ 0 := by positivity
+  have hb : (q.2 : ℝ) + 1 ≠ 0 := by positivity
   have hlog : Real.log k =
       Real.log (q.1 + 1 : ℕ) + Real.log (q.2 + 1 : ℕ) := by
     rw [← hprod]
@@ -107,7 +153,7 @@ theorem thetaCuspTailSecondDensityAtom_mul_eq_productFiberCenteredTranslate
           (y + Real.log k / 2 - thetaFactorPairLogDisplacement q) := by
   have hdecomp := thetaFactorPair_log_decomposition hq
   have hprod : (q.1 + 1) * (q.2 + 1) = k := by
-    simpa [thetaPositiveFactorPairs] using hq
+    exact (Finset.mem_filter.mp hq).2
   rw [thetaCuspTailSecondDensityAtom_eq_rpow_mul_translate (Nat.succ_pos q.1),
     thetaCuspTailSecondDensityAtom_eq_rpow_mul_translate (Nat.succ_pos q.2),
     hdecomp.1, hdecomp.2]
@@ -116,9 +162,24 @@ theorem thetaCuspTailSecondDensityAtom_mul_eq_productFiberCenteredTranslate
           ((q.2 + 1 : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) =
         (k : ℝ) ^ (-(1 / 2 : ℝ)) := by
     rw [← Real.mul_rpow (by positivity) (by positivity)]
-    norm_cast
-  rw [hweight]
-  ring
+    congr 1
+    exact_mod_cast hprod
+  calc
+    ((q.1.succ : ℝ) ^ (-(1 / 2 : ℝ)) *
+          thetaCuspTailSecondDensityAtom 1
+            (x + (Real.log k / 2 + thetaFactorPairLogDisplacement q))) *
+        ((q.2.succ : ℝ) ^ (-(1 / 2 : ℝ)) *
+          thetaCuspTailSecondDensityAtom 1
+            (y + (Real.log k / 2 - thetaFactorPairLogDisplacement q))) =
+      (((q.1 + 1 : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) *
+          ((q.2 + 1 : ℕ) : ℝ) ^ (-(1 / 2 : ℝ))) *
+        (thetaCuspTailSecondDensityAtom 1
+            (x + Real.log k / 2 + thetaFactorPairLogDisplacement q) *
+          thetaCuspTailSecondDensityAtom 1
+            (y + Real.log k / 2 - thetaFactorPairLogDisplacement q)) := by
+              simp only [Nat.succ_eq_add_one]
+              ring
+    _ = _ := by rw [hweight]; ring
 
 /-- Finite product-fibre form of the complete square-index atom packet. -/
 theorem sum_densityAtomPair_productFiber_eq_centeredTranslates
@@ -135,7 +196,8 @@ theorem sum_densityAtomPair_productFiber_eq_centeredTranslates
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro q hq
-  exact thetaCuspTailSecondDensityAtom_mul_eq_productFiberCenteredTranslate hq x y
+  simpa only [mul_assoc] using
+    thetaCuspTailSecondDensityAtom_mul_eq_productFiberCenteredTranslate hq x y
 
 /-- The finite sine section retains exact odd parity at every truncation depth. -/
 theorem finiteSinePolynomial_neg (d : ℕ) (x : ℝ) :
@@ -150,7 +212,13 @@ theorem finiteSinePolynomial_neg (d : ℕ) (x : ℝ) :
           (2 * j + 1).factorial) * Polynomial.X ^ (2 * j + 1)) := by
             apply Finset.sum_congr rfl
             intro j _hj
-            rw [ofReal_neg, neg_pow, (odd_two_mul_add_one j).neg_one_pow]
+            have hpow : ((-x : ℝ) : ℂ) ^ (2 * j + 1) =
+                -(x : ℂ) ^ (2 * j + 1) := by
+              push_cast
+              rw [neg_pow, (odd_two_mul_add_one j).neg_one_pow]
+              ring
+            rw [hpow]
+            simp only [mul_neg, neg_div, map_neg]
             ring
     _ = -(∑ j ∈ Finset.range d,
         Polynomial.C (((-1 : ℂ) ^ j * (x : ℂ) ^ (2 * j + 1)) /

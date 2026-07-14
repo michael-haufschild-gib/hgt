@@ -282,6 +282,57 @@ The stronger intrinsic theorem is bundled by
 | RH iff every critical-Mellin pole lies on \(\Re u=-1/2\) | riemannHypothesis_iff_criticalMellin_poles_on_line |
 | RH iff the defect is analytic throughout \(\Re u>-1/2\) | riemannHypothesis_iff_regularizedCriticalMellinDefect_analytic_rightNegHalf |
 
+## Exact quartet source--temperature ultraviolet--infrared spectrum
+
+The quantitative endpoint, thermal, response, and cold-limit clauses are bundled by
+`primeArchExactQuartetConnesBornWittenKMSMaster`; the certified-radius specialization is bundled
+by `primeArchExactQuartetConnesBornWittenKMSMaster_twoHundredEighteen_twentyFifths`.
+
+| Manuscript claim | Unconditional Lean declaration |
+|---|---|
+| the endpoint curvature satisfies \(C<93/2000\) | xiEndpointCompletedCurvature_lt_ninetyThree_over_twoThousand |
+| the off-line endpoint charge is nonnegative and bounded by \(C\) | xiEndpointOffLineCharge_nonneg, xiEndpointOffLineCharge_le_curvature |
+| every off-line quartet is paid inside the off-line sector: \(4c_\rho\le C_\perp\) and \(4\le C_\perp(\gamma^2+1)\) | four_mul_xiEndpointCrossCharge_le_offLineCharge, four_le_offLineCharge_mul_one_add_im_sq |
+| every off-line quartet satisfies \(4\le C(\gamma^2+1)\) and \(\gamma^2>7907/93\) | four_le_endpointCurvature_mul_one_add_im_sq_of_offLine, xiZeroCopy_offLine_sevenThousandNineHundredSeven_over_ninetyThree_lt_im_sq |
+| every exact quartet-admissible central band is zero-free and the continued response is anti-Herglotz there | XiC_ne_zero_of_upperHalf_exactOffLineQuartetBand, continuedPrimeArchSourceRelativeTrace_im_nonpos_exactOffLineQuartetBand |
+| the relative transverse factor is \(\kappa_4(C)<1/84\) | xiThermalQuartetRelativeOrientationFactor_lt_one_eightyFourth |
+| the exact source gap is the nonnegative transverse orientation energy | xiThermalSecondMoment_sub_source_eq_orientationEnergy, xiThermalOrientationEnergy_nonneg |
+| every transverse atom is cubically controlled by its exact endpoint cross charge | xiThermalOrientationTerm_le_exactEndpointCrossCharge_cube |
+| the endpoint cross charges sum exactly to the completed curvature | tsum_xiEndpointCrossCharge_eq_curvature |
+| the absolute thermal defect satisfies \(\mathcal E_\perp\le4(C/(4-C))^3\) | xiThermalOrientationEnergy_le_exactCubicEndpointBudget |
+| the defect self-localizes as \(\mathcal E_\perp\le4(C_\perp/(4-C_\perp))^3\le4(C/(4-C))^3\) | xiThermalOrientationEnergy_le_offLineChargeCubicBudget, xiThermalOffLineChargeCubicBudget_le_exactCubicEndpointBudget |
+| \(C_\perp=0\), the self-cubic budget zero, the thermal energy zero, and RH have the same zero locus | xiThermal_offLineCharge_budget_energy_zero_tfae |
+| the exact cubic budget is strictly below the rational majorant \((86/85)^3C^3/16\) | xiThermalExactCubicEndpointBudget_lt_cubicEndpointBudget |
+| the thermal/source gap is nonnegative and below \(1/150000\) | xiThermalSecondMoment_source_absoluteGap |
+| the zeroth finite KMS coordinate converges unconditionally to the zeroth source moment | tendsto_xiThermalTruncation_zero_source |
+| the transverse energy is bounded by the projective displacement and cubic reciprocal mass | xiThermalSourceGap_le_intrinsicTransverseCubicBudget |
+| false RH forces the stated square-sampled prime-energy abscissa lower bounds | one_add_sqrt_normalized_xiThermalSourceGap_le_squarePrimeWindowPositiveExcess_abscissa, one_add_two_mul_sqrt_normalized_xiThermalSourceGap_le_squarePrimeWindowPositiveExcessSquare_abscissa |
+| the faithful cold partition has exponential type equal to the horizontal divisor radius | xiZeroHalfPlaneBound_iff_exists_eventually_thermalProjectiveColdPartition_le |
+| one bound uniform in the cold parameter and all sufficiently large finite systems is equivalent to RH | riemannHypothesis_iff_exists_eventually_cold_eventually_thermodynamic_bound |
+| false RH is equivalent to divergence of every cofinal finite-system cooling section, in particular \(Z_{J,J}\to+\infty\) | thermalProjectiveCofinalSection_tendsto_atTop_iff_not_riemannHypothesis |
+| RH is equivalent to one fixed diagonal upper bound recurring cofinally often | riemannHypothesis_iff_exists_frequently_bounded_thermalProjectiveDiagonal |
+| RH is equivalent to local finite-block approximation of the source by finite positive atomic or finite KMS/Wightman moment systems | primeArchFinitePositiveAtomicLocalMomentClosure_iff_riemannHypothesis, primeArchFiniteKMSWightmanLocalMomentClosure_iff_riemannHypothesis |
+| high-frequency passivity above any quartet-admissible radius is equivalent to RH | continuedPrimeArchPositiveFrequencyAbove_iff_rh_of_exactOffLineQuartetBand |
+| the universal one-state zero-Hamiltonian KMS palette has imaginary response cluster set exactly \(( -\infty,0]\) at every upper-half-plane point | closure_range_universalOneStateKMSPassiveResponse_im |
+| countable Gaussian-rational source membership in that palette is exactly the positive-frequency response condition above the same radius | primeArchGaussianRatFiniteKMSPassiveClosureAbove_iff_positiveFrequency |
+| at every quartet-admissible radius, that countable passive membership condition is equivalent to RH | primeArchGaussianRatFiniteKMSPassiveClosureAbove_iff_riemannHypothesis |
+
+## Endpoint-calibrated Hausdorff source--temperature master law
+
+The headline synthesis is bundled by `primeArchEndpointHausdorffSourceTemperatureMaster`.
+
+| Manuscript claim | Unconditional Lean declaration |
+|---|---|
+| every endpoint-calibrated Hausdorff difference is the real reciprocal-square Xi-divisor polynomial value | scaledHausdorffMomentDifference_eq_re_xiCentralSum |
+| every individual divisor atom is nonnegative for `k <= 13`, `r <= 43` | re_xiCentral_scaledBasis_rectangle_nonneg |
+| the complete `14 x 44` southwest rectangle is nonnegative | scaledPrimeArchEndpointHausdorffDifference_rectangle_nonnegative |
+| the discharged rectangle contains exactly 616 indexed conditions | primeArchEndpointHausdorffRectangle_cardinality |
+| complete calibrated Hausdorff positivity is equivalent to positivity on the complementary tail | scaledPrimeArchHausdorffMomentDifferencesNonnegative_iff_rectangleTailNonnegative |
+| the complementary tail is equivalent to RH | primeArchEndpointHausdorffTailNonnegative_iff_riemannHypothesis |
+| the complementary tail is equivalent to the critical prime--polar abscissa endpoint | rectangularPrimePolarSource_negativeAbscissa_le_one_iff_rectangleHausdorffTailNonnegative |
+| the complementary tail is equivalent to the critical cumulative prime--polar growth law | primeArchEndpointHausdorffTailNonnegative_iff_cumulativeNegativeMassCriticalGrowth |
+| the complementary tail is equivalent to local finite KMS/Wightman moment closure | primeArchEndpointHausdorffTailNonnegative_iff_finiteKMSLocalMomentClosure |
+
 ## Axiom and lint gate
 
 - Exact build targets: GaloisForLFunctions.RHTower.CCMUnconditionalFoundation,
@@ -296,7 +347,15 @@ The stronger intrinsic theorem is bundled by
   GaloisForLFunctions.RHTower.CCMSharpPrimeWindowMinimalPositiveCorrection, and
   GaloisForLFunctions.RHTower.CCMInverseTiltedDyadicPrimeTomography, and
   GaloisForLFunctions.RHTower.CCMInverseTiltedCriticalMellinFactorization, and
-  GaloisForLFunctions.RHTower.CCMCriticalMellinDivisorTomography.
+  GaloisForLFunctions.RHTower.CCMCriticalMellinDivisorTomography, and
+  GaloisForLFunctions.RHTower.XiThermalQuartetCubicChargeBound, and
+  GaloisForLFunctions.RHTower.XiThermalOffLineChargeSelfCubicBound, and
+  GaloisForLFunctions.RHTower.XiThermalProjectiveCofinalSection, and
+  GaloisForLFunctions.RHTower.PrimeArchFiniteKMSLocalMomentClosure, and
+  GaloisForLFunctions.HTGeometry.FiniteKMSPassivePalette, and
+  GaloisForLFunctions.RHTower.PrimeArchCountablePassiveResponseEquivalence, and
+  GaloisForLFunctions.RHTower.PrimeArchExactOffLineQuartetKMSMaster, and
+  GaloisForLFunctions.RHTower.PrimeArchEndpointHausdorffTemperatureMaster.
 - Allowed foundational dependencies in the checked capstones:
   [propext, Classical.choice, Quot.sound].
 - Repository lint must report no active sorry, admit, axiom, opaque, or unsafe declaration.

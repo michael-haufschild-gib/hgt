@@ -768,3 +768,74 @@ theorem finiteNegativePhaseTranslationTopEdge_coeff_eq_zero_of_lt
 end
 
 end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+/-- Reflection interchanges the two diagonal phase edges exactly.  Thus the expanding finite
+translation defect contains no independent truncation edge: it is the contracting edge at the
+reflected spectral point. -/
+theorem finiteNegativePhaseTranslationTopEdge_eq_positive_comp_neg_X
+    (d : ℕ) (x a : ℝ) :
+    finiteNegativePhaseTranslationTopEdge d x a =
+      (finitePositivePhaseTranslationTopEdge d x a).comp (-X) := by
+  unfold finiteNegativePhaseTranslationTopEdge finitePositivePhaseTranslationTopEdge
+  rw [add_comp, mul_comp, C_comp,
+    finiteCosineTranslationTopEdge_comp_neg_X,
+    finiteSineTranslationTopEdge_comp_neg_X]
+  ring
+
+/-- Value-level reflection of the two finite phase edges. -/
+theorem finiteNegativePhaseTranslationTopEdge_eval_eq_positive_eval_neg
+    (d : ℕ) (x a : ℝ) (z : ℂ) :
+    (finiteNegativePhaseTranslationTopEdge d x a).eval z =
+      (finitePositivePhaseTranslationTopEdge d x a).eval (-z) := by
+  rw [finiteNegativePhaseTranslationTopEdge_eq_positive_comp_neg_X, eval_comp]
+  simp
+
+/-- Derivative-level reflection of the two finite phase edges. -/
+theorem finiteNegativePhaseTranslationTopEdge_derivative_eval_eq_neg_positive_derivative_eval_neg
+    (d : ℕ) (x a : ℝ) (z : ℂ) :
+    (finiteNegativePhaseTranslationTopEdge d x a).derivative.eval z =
+      -((finitePositivePhaseTranslationTopEdge d x a).derivative.eval (-z)) := by
+  rw [finiteNegativePhaseTranslationTopEdge_eq_positive_comp_neg_X, derivative_comp]
+  simp
+
+end
+
+end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+/-- Reflection interchanges the complete positive and negative finite phase sections. -/
+theorem finiteNegativePhasePolynomial_eq_positive_comp_neg_X
+    (d : ℕ) (x : ℝ) :
+    finiteNegativePhasePolynomial d x =
+      (finitePositivePhasePolynomial d x).comp (-X) := by
+  unfold finiteNegativePhasePolynomial finitePositivePhasePolynomial
+  rw [add_comp, mul_comp, C_comp, finiteCosinePolynomial_comp_neg_X,
+    finiteSinePolynomial_comp_neg_X]
+  ring
+
+/-- Value reflection for the complete finite phase sections. -/
+theorem finiteNegativePhasePolynomial_eval_eq_positive_eval_neg
+    (d : ℕ) (x : ℝ) (z : ℂ) :
+    (finiteNegativePhasePolynomial d x).eval z =
+      (finitePositivePhasePolynomial d x).eval (-z) := by
+  rw [finiteNegativePhasePolynomial_eq_positive_comp_neg_X, eval_comp]
+  simp
+
+/-- Derivative reflection for the complete finite phase sections. -/
+theorem finiteNegativePhasePolynomial_derivative_eval_eq_neg_positive_derivative_eval_neg
+    (d : ℕ) (x : ℝ) (z : ℂ) :
+    (finiteNegativePhasePolynomial d x).derivative.eval z =
+      -((finitePositivePhasePolynomial d x).derivative.eval (-z)) := by
+  rw [finiteNegativePhasePolynomial_eq_positive_comp_neg_X, derivative_comp]
+  simp
+
+end
+
+end RHTower

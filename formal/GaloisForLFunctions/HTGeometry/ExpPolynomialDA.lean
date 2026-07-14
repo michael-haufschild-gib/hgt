@@ -139,4 +139,37 @@ theorem differentiallyAlgebraic_exp_poly_mul_poly (P Q : Polynomial ℂ) :
     simp only [Fin.val_one, Fin.val_zero, iteratedDeriv_one, iteratedDeriv_zero, hgderiv.deriv]
     ring
 
+/-- **First-order polynomial ODE ⟹ differentially algebraic.**  If `G` satisfies `Q(s)·G'(s) = P(s)·G(s)`
+for polynomials `P, Q` with `Q ≠ 0` (i.e. its logarithmic derivative `G'/G = P/Q` is rational), then `G`
+is differentially algebraic, via the order-1 differential polynomial `Q(X₀)·X₂ − P(X₀)·X₁` in
+`MvPolynomial (Fin 3) ℂ`.  This is the bridge that closes the differential-algebraic direction of the
+signed-archimedean orbit-charge dichotomy: once the charge collapse (`digamma_charge_collapse`) makes
+`G'/G` rational, this lemma delivers `DifferentiallyAlgebraic G`. -/
+theorem differentiallyAlgebraic_of_firstOrder_poly_ode {G : ℂ → ℂ} (P Q : Polynomial ℂ) (hQ : Q ≠ 0)
+    (hode : ∀ s, Q.eval s * deriv G s = P.eval s * G s) :
+    DifferentiallyAlgebraic G := by
+  have key : ∀ g : Fin 3 → ℂ, MvPolynomial.eval g
+      ((Polynomial.aeval (MvPolynomial.X 0) Q) * MvPolynomial.X 2
+        - (Polynomial.aeval (MvPolynomial.X 0) P) * MvPolynomial.X 1)
+      = Q.eval (g 0) * g 2 - P.eval (g 0) * g 1 := by
+    intro g
+    simp only [map_sub, map_mul, MvPolynomial.eval_X, evalX0f3]
+  refine ⟨1, (Polynomial.aeval (MvPolynomial.X 0) Q) * MvPolynomial.X 2
+    - (Polynomial.aeval (MvPolynomial.X 0) P) * MvPolynomial.X 1, ?_, ?_⟩
+  · obtain ⟨x₀, hx₀⟩ : ∃ x₀ : ℂ, Q.eval x₀ ≠ 0 := by
+      by_contra hc
+      simp only [not_exists, not_not] at hc
+      exact hQ (Polynomial.funext (fun x => by rw [hc x, Polynomial.eval_zero]))
+    intro h
+    apply hx₀
+    have hev := congrArg (MvPolynomial.eval (fun i : Fin 3 => if i = 0 then x₀ else
+      if i = 2 then 1 else 0)) h
+    rw [key, map_zero] at hev
+    simpa using hev
+  · intro z
+    rw [key, show (2 : Fin 3) = Fin.succ 1 from rfl, show (1 : Fin 3) = Fin.succ 0 from rfl,
+      Fin.cons_succ, Fin.cons_succ, Fin.cons_zero]
+    simp only [Fin.val_one, Fin.val_zero, iteratedDeriv_one, iteratedDeriv_zero]
+    linear_combination hode z
+
 end GaloisForLFunctions

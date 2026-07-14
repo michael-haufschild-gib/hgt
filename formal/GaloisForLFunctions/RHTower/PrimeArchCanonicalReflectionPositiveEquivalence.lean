@@ -123,7 +123,7 @@ theorem exists_primeArchComplexReflectionPositiveGram_of_riemannHypothesis
   exact ⟨primeArchReflectionVector hRH,
     inner_primeArchReflectionVector_eq_normalizedMoment hRH⟩
 
-theorem riemannHypothesis_of_primeArchComplexReflectionPositiveGram
+theorem riemannHypothesis_of_canonicalPrimeArchComplexReflectionPositiveGram
     (v : ℕ → lp (fun _ : XiZeroCopy => ℂ) 2)
     (hgram : ∀ i j, inner ℂ (v i) (v j) =
       (normalizedPrimeArchMoment (i + j) : ℂ)) :
@@ -143,7 +143,7 @@ theorem riemannHypothesis_iff_exists_primeArchComplexReflectionPositiveGram :
   constructor
   · exact exists_primeArchComplexReflectionPositiveGram_of_riemannHypothesis
   · rintro ⟨v, hgram⟩
-    exact riemannHypothesis_of_primeArchComplexReflectionPositiveGram v hgram
+    exact riemannHypothesis_of_canonicalPrimeArchComplexReflectionPositiveGram v hgram
 
 /-- Powers of the reciprocal-square operator act coordinatewise by powers of the reciprocal-square
 spectral coordinate. -/

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.FinitePassiveResponse
 import GaloisForLFunctions.HTGeometry.PrimeLogHerglotz
-import GaloisForLFunctions.HTGeometry.UniversalFiniteConstraintCarrier
+import GaloisForLFunctions.HTGeometry.UniversalPrimeOrientationLimit
+import Mathlib.Analysis.Complex.LocallyUniformLimit
 
 /-!
 # Prime-log carriers as finite KMS response values
@@ -96,6 +97,26 @@ def finitePrimeLogHerglotz (P : Finset Nat.Primes)
     (u : Nat.Primes → ℝ) (z : ℂ) : ℂ :=
   ∑ p ∈ P, (primeDyadicWeight u p : ℂ) * ((primeLogSupport p : ℂ) - z)⁻¹
 
+/-- Every finite prime-log carrier is holomorphic on the upper half-plane. -/
+theorem differentiableOn_finitePrimeLogHerglotz_upperHalfPlane
+    (P : Finset Nat.Primes) (u : Nat.Primes → ℝ) :
+    DifferentiableOn ℂ (finitePrimeLogHerglotz P u) upperHalfPlane := by
+  intro z hz
+  apply DifferentiableAt.differentiableWithinAt
+  change DifferentiableAt ℂ
+    (fun z => ∑ p ∈ P, (primeDyadicWeight u p : ℂ) *
+      ((primeLogSupport p : ℂ) - z)⁻¹) z
+  apply DifferentiableAt.fun_sum
+  intro p hp
+  apply (differentiableAt_const (c := (primeDyadicWeight u p : ℂ))).mul
+  apply ((differentiableAt_const (c := (primeLogSupport p : ℂ))).sub
+    differentiableAt_id).inv
+  intro hzero
+  have heq : (primeLogSupport p : ℂ) = z := sub_eq_zero.mp hzero
+  have him : z.im = 0 := by rw [← heq]; simp
+  change 0 < z.im at hz
+  linarith
+
 /-- Exact response identity before inserting the canonical KMS amplitude. -/
 theorem neg_finiteTransitionPassiveResponse_primeLogKMSFiniteIntensity
     (P : Finset Nat.Primes) (u : Nat.Primes → ℝ) (z : ℂ) :
@@ -141,6 +162,22 @@ theorem neg_finiteKMSWightmanResponse_primeLogKMSFiniteAmplitude
     funext a b
     exact finiteKMSWightmanTransitionIntensity_primeLogKMSFiniteAmplitude P u β a b]
   exact neg_finiteTransitionPassiveResponse_primeLogKMSFiniteIntensity P u z
+
+/-- The explicitly normalized finite KMS response is holomorphic on the upper half-plane. -/
+theorem differentiableOn_neg_finiteKMSWightmanResponse_upperHalfPlane
+    (P : Finset Nat.Primes) (u : Nat.Primes → ℝ) (β : ℝ) :
+    DifferentiableOn ℂ
+      (fun z => -_root_.HTGeometry.finiteTransitionPassiveResponse
+        (_root_.HTGeometry.finiteKMSWightmanTransitionIntensity β
+          (primeLogKMSFiniteEnergy P) (primeLogKMSFiniteAmplitude P u β))
+        (primeLogKMSFiniteEnergy P) z) upperHalfPlane := by
+  rw [show (fun z => -_root_.HTGeometry.finiteTransitionPassiveResponse
+      (_root_.HTGeometry.finiteKMSWightmanTransitionIntensity β
+        (primeLogKMSFiniteEnergy P) (primeLogKMSFiniteAmplitude P u β))
+      (primeLogKMSFiniteEnergy P) z) = finitePrimeLogHerglotz P u by
+    funext z
+    exact neg_finiteKMSWightmanResponse_primeLogKMSFiniteAmplitude P u β z]
+  exact differentiableOn_finitePrimeLogHerglotz_upperHalfPlane P u
 
 /-- Finite prime subsystems converge pointwise to the full prime-log Herglotz carrier along the
 directed set of finite prime sets. -/
@@ -193,9 +230,43 @@ theorem finiteKMSWightmanResponse_tendstoLocallyUniformlyOn_primeLogHerglotz
           (primeLogKMSFiniteEnergy P) z)
       (primeLogHerglotz u) Filter.atTop upperHalfPlane := by
   apply
-    (finitePrimeLogHerglotz_tendstoLocallyUniformlyOn_primeLogHerglotz u C hu).congr'
-  exact Filter.Eventually.of_forall fun P z _ =>
-    neg_finiteKMSWightmanResponse_primeLogKMSFiniteAmplitude P u β z
+    (finitePrimeLogHerglotz_tendstoLocallyUniformlyOn_primeLogHerglotz u C hu).congr
+  intro P z _
+  exact (neg_finiteKMSWightmanResponse_primeLogKMSFiniteAmplitude P u β z).symm
+
+/-- Linear-response susceptibilities of the finite KMS systems converge locally uniformly to the
+derivative of the full prime-log carrier.  This is the first jet-level interface needed by the
+existing upper-end differential and Cauchy-jet consumers. -/
+theorem finiteKMSWightmanResponse_deriv_tendstoLocallyUniformlyOn_primeLogHerglotz
+    (u : Nat.Primes → ℝ) (C : ℝ) (hu : ∀ p, u p ≤ C) (β : ℝ) :
+    TendstoLocallyUniformlyOn
+      (deriv ∘ fun P : Finset Nat.Primes => fun z =>
+        -_root_.HTGeometry.finiteTransitionPassiveResponse
+          (_root_.HTGeometry.finiteKMSWightmanTransitionIntensity β
+            (primeLogKMSFiniteEnergy P) (primeLogKMSFiniteAmplitude P u β))
+          (primeLogKMSFiniteEnergy P) z)
+      (deriv (primeLogHerglotz u)) Filter.atTop upperHalfPlane := by
+  apply
+    (finiteKMSWightmanResponse_tendstoLocallyUniformlyOn_primeLogHerglotz u C hu β).deriv
+  · exact Filter.Eventually.of_forall fun P =>
+      differentiableOn_neg_finiteKMSWightmanResponse_upperHalfPlane P u β
+  · exact isOpen_upperHalfPlane
+
+/-- At every upper-half-plane point, the finite KMS response susceptibilities converge to the
+prime-log carrier susceptibility. -/
+theorem finiteKMSWightmanResponse_deriv_tendsto_primeLogHerglotz
+    (u : Nat.Primes → ℝ) (C : ℝ) (hu : ∀ p, u p ≤ C)
+    (β : ℝ) (z : ℂ) (hz : 0 < z.im) :
+    Filter.Tendsto
+      (fun P : Finset Nat.Primes =>
+        deriv (fun w => -_root_.HTGeometry.finiteTransitionPassiveResponse
+          (_root_.HTGeometry.finiteKMSWightmanTransitionIntensity β
+            (primeLogKMSFiniteEnergy P) (primeLogKMSFiniteAmplitude P u β))
+          (primeLogKMSFiniteEnergy P) w) z)
+      Filter.atTop (nhds (deriv (primeLogHerglotz u) z)) := by
+  simpa only [Function.comp_apply] using
+    (finiteKMSWightmanResponse_deriv_tendstoLocallyUniformlyOn_primeLogHerglotz
+      u C hu β).tendsto_at hz
 
 /-- The particular universal carrier used to realize all finite HT constraint complexes inherits
 the finite KMS/Wightman thermodynamic realization directly. -/
@@ -214,6 +285,88 @@ theorem universalFacetOrbitGauge_finiteKMSWightmanResponse_tendsto
     (fun q => universalFacetOrbitGauge q) ‖universalFacetOrbitGauge‖
     (fun q => (le_abs_self (universalFacetOrbitGauge q)).trans
       (universalFacetOrbitGauge.norm_coe_le_norm q)) β z hz
+
+/-- The universal HT carrier is the locally uniform thermodynamic limit of the canonical finite
+KMS response net on the whole upper half-plane. -/
+theorem universalFacetOrbitGauge_finiteKMSWightmanResponse_tendstoLocallyUniformlyOn
+    (β : ℝ) :
+    TendstoLocallyUniformlyOn
+      (fun P : Finset Nat.Primes => fun z =>
+        -_root_.HTGeometry.finiteTransitionPassiveResponse
+          (_root_.HTGeometry.finiteKMSWightmanTransitionIntensity β
+            (primeLogKMSFiniteEnergy P)
+            (primeLogKMSFiniteAmplitude P (fun q => universalFacetOrbitGauge q) β))
+          (primeLogKMSFiniteEnergy P) z)
+      (primeLogHerglotz (fun q => universalFacetOrbitGauge q))
+      Filter.atTop upperHalfPlane := by
+  exact finiteKMSWightmanResponse_tendstoLocallyUniformlyOn_primeLogHerglotz
+    (fun q => universalFacetOrbitGauge q) ‖universalFacetOrbitGauge‖
+    (fun q => (le_abs_self (universalFacetOrbitGauge q)).trans
+      (universalFacetOrbitGauge.norm_coe_le_norm q)) β
+
+/-- The first response jets of the finite KMS models converge locally uniformly to the first jet
+of the fixed universal HT carrier. -/
+theorem universalFacetOrbitGauge_finiteKMSWightmanResponse_deriv_tendstoLocallyUniformlyOn
+    (β : ℝ) :
+    TendstoLocallyUniformlyOn
+      (deriv ∘ fun P : Finset Nat.Primes => fun z =>
+        -_root_.HTGeometry.finiteTransitionPassiveResponse
+          (_root_.HTGeometry.finiteKMSWightmanTransitionIntensity β
+            (primeLogKMSFiniteEnergy P)
+            (primeLogKMSFiniteAmplitude P (fun q => universalFacetOrbitGauge q) β))
+          (primeLogKMSFiniteEnergy P) z)
+      (deriv (primeLogHerglotz (fun q => universalFacetOrbitGauge q)))
+      Filter.atTop upperHalfPlane := by
+  exact finiteKMSWightmanResponse_deriv_tendstoLocallyUniformlyOn_primeLogHerglotz
+    (fun q => universalFacetOrbitGauge q) ‖universalFacetOrbitGauge‖
+    (fun q => (le_abs_self (universalFacetOrbitGauge q)).trans
+      (universalFacetOrbitGauge.norm_coe_le_norm q)) β
+
+/-- **KMS selection of the canonical prime orientation.**  An infinite Boolean prime orientation
+is the pointwise thermodynamic limit of the canonical finite multiplicative KMS responses exactly
+when every residue has the positive orientation.  Thus the existing analytic orientation selector
+is also an exact quantum-statistical response selector. -/
+theorem universalPrimeOrientationLimit_is_canonicalKMSLimit_iff
+    (ε : Nat.Primes → Bool) (β : ℝ) :
+    (∀ z : ℂ, 0 < z.im →
+      Filter.Tendsto
+        (fun P : Finset Nat.Primes =>
+          -_root_.HTGeometry.finiteTransitionPassiveResponse
+            (_root_.HTGeometry.finiteKMSWightmanTransitionIntensity β
+              (primeLogKMSFiniteEnergy P)
+              (primeLogKMSFiniteAmplitude P (fun q => universalFacetOrbitGauge q) β))
+            (primeLogKMSFiniteEnergy P) z)
+        Filter.atTop (nhds (universalPrimeOrientationLimit ε z))) ↔
+      ε = fun _ => false := by
+  constructor
+  · intro hlimit
+    rw [← universalPrimeOrientationLimit_nonneg_iff_allPositive]
+    intro z hz
+    have heq : universalPrimeOrientationLimit ε z =
+        primeLogHerglotz (fun q => universalFacetOrbitGauge q) z :=
+      tendsto_nhds_unique (hlimit z hz)
+        (universalFacetOrbitGauge_finiteKMSWightmanResponse_tendsto β z hz)
+    rw [heq]
+    exact universalFacetOrbitGauge_primeLogHerglotz_im_nonneg hz
+  · rintro rfl z hz
+    simpa only [universalPrimeOrientationLimit_empty] using
+      universalFacetOrbitGauge_finiteKMSWightmanResponse_tendsto β z hz
+
+/-- The KMS selector applies directly to the prime coordinate of the existing canonical
+constraint-orientation limit. -/
+theorem canonicalConstraintOrientationLimit_primeCarrier_is_canonicalKMSLimit_iff
+    (X : CanonicalConstraintOrientationLimit ℕ Nat.Primes) (β : ℝ) :
+    (∀ z : ℂ, 0 < z.im →
+      Filter.Tendsto
+        (fun P : Finset Nat.Primes =>
+          -_root_.HTGeometry.finiteTransitionPassiveResponse
+            (_root_.HTGeometry.finiteKMSWightmanTransitionIntensity β
+              (primeLogKMSFiniteEnergy P)
+              (primeLogKMSFiniteAmplitude P (fun q => universalFacetOrbitGauge q) β))
+            (primeLogKMSFiniteEnergy P) z)
+        Filter.atTop (nhds (universalPrimeOrientationLimit X.2 z))) ↔
+      X.2 = fun _ => false :=
+  universalPrimeOrientationLimit_is_canonicalKMSLimit_iff X.2 β
 
 end
 

@@ -89,6 +89,13 @@ not merely their signs.
   to pointwise limits of growing finite thermal systems, to the prime--archimedean source
   hypothesis, and to the existing RH consumer.  Its canonical KMS specialization now leaves only
   exact source-moment equality or thermodynamic convergence.
+- `RHTower.PrimeArchThermalKrylovEquivalence` constructs the multiplicity-exact reciprocal-square
+  Xi thermal truncations, proves their KMS realizability and convergence to their complete
+  positive thermodynamic moment tower unconditionally, and reduces identification of that tower
+  with the prime--Gamma source to the single second-moment inequality
+  `xiThermalSecondMoment <= normalizedPrimeArchMoment 1`.  The opposite inequality is proved
+  unconditionally, and equality is equivalent to RH.  Its scalar gap is exactly a strictly
+  positively weighted version of the existing global reflection-defect energy.
 - `RHTower.PrimeArchKrylovResidualRH` adds the previously missing strict complex producer, records
   exact determinant values for both the source and Xi central moment matrices, and rewrites both
   towers in the normalized Lanczos coefficients with exponent `2(N-j)`.

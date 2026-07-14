@@ -72,8 +72,16 @@ theorem primeArchConnesReflectionMain :
         (xiEndpointCompletedCurvature /
           (1 - xiEndpointCompletedCurvature)) *
             xiEndpointCompletedCurvature ∧
+      xiEndpointReflectionDefectEnergy <
+        (xiEndpointCompletedCurvature /
+          (1 - xiEndpointCompletedCurvature)) *
+            xiEndpointCompletedCurvature ∧
       xiEndpointReflectionDefectEnergy < xiEndpointCompletedCurvature ∧
       xiEndpointCompletedCurvature ≤ xiRawReciprocalHermitianMass ∧
+      xiRawReciprocalHermitianMass <
+        ((2 - xiEndpointCompletedCurvature) /
+          (2 * (1 - xiEndpointCompletedCurvature))) *
+            xiEndpointCompletedCurvature ∧
       xiRawReciprocalHermitianMass <
         (3 / 2) * xiEndpointCompletedCurvature ∧
       (∀ q : XiZeroCopy,
@@ -92,8 +100,10 @@ theorem primeArchConnesReflectionMain :
       xiEndpointCompletedCurvature_pos,
       xiEndpointCompletedCurvature_lt_one_half,
       xiEndpointDefectEnergy_le_unconditional_source_factor,
+      xiEndpointDefectEnergy_lt_unconditional_source_factor,
       xiEndpointReflectionDefectEnergy_lt_endpointCurvature,
       xiEndpointCompletedCurvature_le_rawMass,
+      xiRawMass_lt_unconditional_source_only_factor,
       xiRawReciprocalHermitianMass_lt_three_halves_mul_endpointCurvature,
       hasSum_xiRawReciprocalCoordinate_lineConj_neumann,
       hasSum_completedEndpointLogDeriv_holomorphicTraces⟩

@@ -31,8 +31,8 @@
 \newcommand{\Res}{\operatorname{Res}}
 \newcommand{\supp}{\operatorname{supp}}
 
-\title{Fixed-Window Prime--Polar Spectra and a Contractive\\
-Endpoint Reflection Law for the Riemann Xi Function}
+\title{An Endpoint-Calibrated Source--Temperature Master Theorem\\
+for the Riemann Xi Function}
 \author{Michael Haufschild \and GPT 5.6 Sol \and Fable 5 \and Grok 4.5}
 \date{}
 
@@ -41,52 +41,156 @@ Endpoint Reflection Law for the Riemann Xi Function}
 \maketitle
 
 \begin{abstract}
-We prove two complementary source theorems for the completed Riemann Xi function.  First, the
-Guinand--Weil formula is evaluated at a sharp two-edge rectangle without smoothing or spectral
-cutoff.  Its logarithmic samples form an explicit finite prime--Gamma sequence $g_L(n)$.  After
-removing an asymptotically constant Gamma--polar term, one obtains a literal finite prime--polar
-sequence $S_L(n)$.  If $S_{L,N}^-$ is its retained negative part and
-$A_{L,N}(X)=\sum_{n\le X}S_{L,N}^-(n)$, then, for every $\alpha\ge0$,
+We prove an endpoint-calibrated source--temperature master theorem for the completed Riemann Xi
+function.
+The Guinand--Weil formula is first evaluated at a sharp two-edge rectangle without smoothing or
+spectral cutoff.  Its logarithmic samples form an explicit finite prime--Gamma sequence $g_L(n)$;
+removing an asymptotically constant Gamma--polar term gives a literal finite prime--polar sequence
+$S_L(n)$.  Let $R_P$ be the supremum of the normalized reciprocal reflection displacement, let
+$R_B$ be the corresponding reflected Born-temperature radius, and put
 \[
- \Re\rho\le\tfrac12+\alpha\quad(\Xi(\rho)=0)
+ C=2+\gamma_{\!E}-\log(4\pi),\qquad
+ \mathcal B_C(\alpha)=
+ \frac{4\alpha^2C}{C^{-1}-3/4-\alpha^2}.
+\]
+Here $\gamma_{\!E}$ is Euler's constant.
+For every fixed $L>0$, admissible tail cutoff, and $0\le\alpha\le\frac12$, the source abscissa
+bound, the two radii, and the Xi half-plane bound are one datum:
+\[
+ \sigma_{\rm abs}(g_{L,N}^-)\le1+\alpha
+ \Longleftrightarrow R_P\le\alpha
+ \Longleftrightarrow R_B\le\alpha
  \Longleftrightarrow
- \sigma_{\rm abs}(S_{L,N}^-)\le1+\alpha
- \Longleftrightarrow
- A_{L,N}(X)=O_\varepsilon(X^{1+\alpha+\varepsilon}).
+ \Re\rho\le\tfrac12+\alpha\quad(\Xi(\rho)=0).
 \]
-The exponent is sharp at $1+\delta_*$, where $\delta_*$ is the supremal horizontal displacement
-of a Xi zero.  Under false RH the exact prime--Gamma samples have two-sided excursions exceeding
-every power $n^\alpha$ with $\alpha<\delta_*$.  The Gamma--polar correction equals an explicit
-constant plus $O_L(n^{-1/2})$.  A perfect-square restriction already suffices for the remaining
-sharp dyadic source estimate.
-
-Second, write $r_\rho=\rho^{-1}$, $\rho^\dagger=1-\overline\rho$, and define
+The same exponent governs $S_{L,N}^-$ and its cumulative negative mass.  If
+$E=\sum_\rho|\rho^{-1}-(1-\overline\rho)^{-1}|^2$, then
 \[
- H=\sum_\rho |r_\rho|^2,\qquad
- E=\sum_\rho |r_\rho-r_{\rho^\dagger}|^2,\qquad
- C=\Re\!\left(-\frac{(\Xi_C'/\Xi_C)(i/2)}{i/2}\right).
+ E\le\mathcal B_C(\alpha),\qquad
+ E\le\mathcal B_C(R_P),
 \]
-We obtain the exact identity $E=2(H-C)$ and the completed value
+and $\mathcal B_C$ is strictly increasing on $[0,\frac12]$, while the open-strip gain gives
 \[
- C=2+\gamma-\log(4\pi),\qquad 0<C<\tfrac12.
-\]
-The resulting unconditional endpoint estimate is
-\[
- E\le\frac{C^2}{1-C}<C,\qquad C\le H<\frac32C.
-\]
-Thus every reciprocal Xi coordinate lies uniformly inside the unit disk, and functional-equation
-reflection has the absolutely convergent reconstruction
-\[
- r_{\rho^\dagger}=-\sum_{m\ge1}\overline{r_\rho}^{\,m},
+ E<\mathcal B_C(\tfrac12)=\frac{C^2}{1-C}<C,
  \qquad
- -\frac{(\Xi_C'/\Xi_C)(i/2)}{i/2}
-   =-\sum_{m\ge0}\sum_\rho r_\rho^{m+2}.
+ H<\frac{2-C}{2(1-C)}\,C.
 \]
-Finally, RH is equivalent to each sharp endpoint condition $E=0$, $H=C$, positivity of the
-complete source Hankel form, existence of a reflection-positive Gram orbit, and existence of a
-bounded self-adjoint vacuum realization of the normalized prime--Gamma moments.  The strict
-contraction is progress on the missing endpoint estimate, but it does not establish its zero
-value; the paper therefore does not prove RH.
+The latter multiplier is about $1.0242$.
+
+The critical fibre has a canonical source--temperature realization.  For
+$\lambda_\rho=-4/(2\rho-1)^2$ put $x_\rho=\Re\lambda_\rho$ and
+$M_2=\sum_\rho x_\rho^2$.  The theta source is a countable sum of exact half-line Witten
+ground-state densities $\chi_n^2$.  If
+\[
+ W_j=\sum_{n\ge1}2\pi\int_0^\infty x^{2j}\chi_n(x)^2\,dx,
+ \qquad
+ \mathcal Q_W=\frac12\left(\frac{W_1}{W_0}\right)^2
+              -\frac16\frac{W_2}{W_0},
+\]
+then the first normalized prime--Gamma moment is exactly $\mu_1=\mathcal Q_W>0$.  Writing
+\[
+ \kappa_4(C)=\frac{16C(4-C)}{(16-5C)^2},
+ \qquad
+ \mathcal E_\perp=\sum_\rho(\Im\lambda_\rho)^2,
+\]
+we prove
+\[
+ M_2-\mathcal E_\perp=\mathcal Q_W,
+ \qquad \mathcal E_\perp\le\kappa_4(C)M_2,
+ \qquad \kappa_4(C)<\frac1{84},
+\]
+and the sharper absolute cubic source estimate
+\[
+ \mathcal E_\perp
+ \le4\left(\frac{C}{4-C}\right)^3
+ <\left(\frac{86}{85}\right)^3\frac{C^3}{16}
+ <\frac1{150000}.
+\]
+If \(c_\rho=\Re(r_\rho\overline{r_{\rho^\dagger}})\) and
+\[
+ C_\perp=\sum_{\Re\rho\ne1/2}c_\rho,
+\]
+then the same estimate self-localizes:
+\[
+ 0\le C_\perp\le C,\qquad
+ \mathcal E_\perp\le
+ 4\left(\frac{C_\perp}{4-C_\perp}\right)^3
+ \le4\left(\frac{C}{4-C}\right)^3,
+\]
+and \(C_\perp=0\), \(\mathcal E_\perp=0\), and RH are equivalent.
+Consequently the strict two-sided estimate is
+\[
+ \frac{83}{84}M_2<\mathcal Q_W\le M_2
+ <\frac{84}{83}\mathcal Q_W.
+\]
+At the source-estimate level, the first-atom Morse quotient admits the strict decaying envelope
+\[
+ \frac{\pi e^{2x}}{\pi e^{2x}-3/2}
+ \le1+\frac{3/2}{\pi-3/2}e^{-2x}
+ \le1+\frac{3/2}{\pi-3/2}(1-2x+2x^2),
+\]
+which converts the first radial virial obstruction into an explicit finite combination of radial
+moments through order four and Gibbs moments through order eight.  The Ward identity
+$\chi_1^2=-b_1-2b_1'$ then eliminates every radial moment: both remaining low-degree source
+certificates are exactly rational inequalities in the single positive Gibbs sequence
+$L_0,\ldots,L_8$ and $e^{-\pi}$.  Under $t=e^{2x}$ these moments share the fixed positive
+incomplete-Gamma coordinate
+\[
+ L_m=\frac1{2^{m+1}}
+ \int_1^\infty(\log t)^m t^{1/4}e^{-\pi t}\,dt.
+\]
+Every finite truncation is an explicit KMS-weighted Wightman system and converges to $M_2$.
+The zeroth truncation coordinate converges unconditionally to the zeroth prime--Gamma source
+moment.  The faithful cold partition
+$Z_k=\sum_\rho x_\rho\exp(k|\Re\rho-\frac12|)$ has exponential type exactly the projective
+radius: for every $\alpha\ge0$, $R_P\le\alpha$ if and only if
+$Z_k=O(e^{k\alpha})$.  Let \(Z_{J,k}\) denote its first \(J\) terms.  In particular, RH is
+equivalent to one bound uniform in both the cold
+parameter and all sufficiently large finite-system truncations.  More sharply, false RH is
+equivalent to \(Z_{J,J}\to+\infty\), while RH is equivalent to one fixed bound recurring
+cofinally often along the diagonal \(J=k\).  RH is also equivalent to arbitrary finite-block
+approximation of the normalized prime--Gamma moment sequence by finite positive atomic,
+equivalently finite KMS/Wightman, moment systems.  Equivalently, every complementary Hausdorff
+difference of that source sequence is nonnegative; when this holds, the approximating finite KMS
+systems are given canonically by Bernstein atomic measures.  With $R_*=C/(1-C)$, the
+endpoint-calibrated differences satisfy the exact divisor law
+\[
+ D^*_{k,r}=\Re\sum_\rho
+ \lambda_\rho^{k+1}(R_*-\lambda_\rho)^r.
+\]
+Opposite-phase sector cancellation proves unconditionally the complete $14\times44$ rectangle
+$D^*_{k,r}\ge0$ for $k\le13$ and $r\le43$.  Hence RH, the prime--polar abscissa endpoint, and
+finite KMS closure are each equivalent to positivity only on the complementary cofinal tail.
+This discharges 616 conditions of the exact RH criterion without assuming RH.  With
+$\mathcal C_6=\sum_\rho|\lambda_\rho|^3$, the same defect also obeys
+$\mathcal E_\perp\le4\delta_*^2\mathcal C_6$ and forces explicit lower bounds for the
+square-sampled dyadic positive-excess abscissae.  Thus the quantum-statistical chart and the
+prime-energy chart measure the same transverse orientation.
+The endpoint response is governed by the fourfold functional-equation--Schwarz orbit of an
+off-line zero.  Every such zero $\rho=\beta+i\gamma$ satisfies
+\[
+ 4\le C(\gamma^2+1),\qquad \gamma^2>\frac{7907}{93}.
+\]
+Consequently, if
+\[
+ 0\le R,\qquad C\bigl((R+\tfrac12)^2+1\bigr)<4,
+\]
+then the continued completed prime--Gamma response is anti-Herglotz throughout the central
+frequency band $|\Re z|\le R$.  The rational certificate $C<93/2000$ makes
+$R=218/25$ admissible.  The response sign only
+at positive frequencies $\Re z>R$, vanishing of $\mathcal E_\perp$, equality
+$M_2=\mathcal Q_W$, convergence of the finite KMS systems to $\mathcal Q_W$, the Connes
+reflection-positive realization, and RH are equivalent.  Thus the quartet budget, source
+abscissa, projective radius, thermal gap, and ultraviolet response are successive clauses of one
+master theorem rather than separate headline results.
+Full response convergence is unnecessary.  A universal countable family of one-state,
+zero-Hamiltonian KMS systems with rational observable amplitudes has imaginary response cluster
+set exactly $(-\infty,0]$ at every upper-half-plane point.  Hence it is enough to require the
+continued arithmetic response to belong to this passive chamber only at Gaussian-rational points
+above height $218/25$.  That countable membership condition is equivalent to RH; the palette
+therefore isolates the remaining arithmetic burden as source membership in the passive chamber,
+not construction of the chamber itself.
+The paper makes strict unconditional progress toward the endpoint but does not prove RH.
 \end{abstract}
 
 \noindent\textbf{2020 Mathematics Subject Classification.}
@@ -94,7 +198,8 @@ value; the paper therefore does not prove RH.
 
 \noindent\textbf{Keywords.}
 Riemann hypothesis, Weil quadratic form, screw function, Dirichlet series, Landau theorem,
-Connes trace formula, reflection positivity, Hankel moments, pole tomography.
+Connes trace formula, reflection positivity, KMS moments, cold partition, Hankel moments,
+pole tomography.
 
 \section{Introduction}
 
@@ -130,7 +235,23 @@ identity here from a finite Galerkin dictionary.  More importantly, it turns the
 Weil criterion into a source-only one: for every fixed $L>0$, nonnegativity of the resulting
 finite-prime--Gamma samples on any admissible logarithmic tail is equivalent to RH.
 
-\begin{theorem}[Theorem A: source spectrum and endpoint reflection chamber]
+Theorem~\ref{thm:main} is the sole headline theorem.  Its source tomography, projective endpoint
+budget, four-orbit response discharge, and Born--Witten--KMS gap are not presented as competing
+routes.  They form one ordered implication structure: the explicit source identifies the divisor,
+the endpoint value budgets every transverse orbit, the fourfold symmetry discharges a central
+frequency band, and the thermal identity expresses the undischarged ultraviolet tail as one
+nonnegative orientation energy.  Complete Hausdorff differences give the canonical finite-KMS
+closure of that same source sequence, while the Morse--Fisher envelope turns the first local
+Hankel obstruction into a literal finite moment inequality.  An exact Ward reduction then shows
+that both residual low-degree inequalities live on one positive Gibbs moment fiber.  More
+decisively, the endpoint-calibrated Hausdorff array is an exact reciprocal-square divisor value.
+The quartet sector bound and the opposite phases of $\lambda_\rho$ and $R_*-\lambda_\rho$ prove
+an unconditional $14\times44$ positivity rectangle.  The master theorem therefore identifies one
+precise cofinal tail---rather than a collection of parallel criteria---as the remaining RH-bearing
+object.  The later named results establish the individual clauses needed for this master
+statement.
+
+\begin{theorem}[Theorem A: endpoint-calibrated source--temperature master theorem]
 \label{thm:main}
 Fix $L>0$ and an admissible cutoff $N$.  Let $g_L$ be the exact finite
 prime--Gamma sample, $S_L$ the finite prime--polar sample, and
@@ -173,44 +294,325 @@ $n^{-\alpha}g_L(n)$ are cofinally unbounded in both signs.
  g_L(n)-S_L(n)=G_L+O_L(n^{-1/2}).
  \tag{1.4}
 \]
-\item For the multiplicity-counted Xi divisor put
+\item For $\rho=\beta+i\gamma$ in the multiplicity-counted Xi divisor put
 \[
- r_\rho=\rho^{-1},\quad \rho^\dagger=1-\overline\rho,\quad
- H=\sum_\rho|r_\rho|^2,\quad
- E=\sum_\rho|r_\rho-r_{\rho^\dagger}|^2,
+ \rho^\dagger=1-\overline\rho,\qquad r_\rho=\rho^{-1},\qquad
+ d_P(\rho)=\frac{|r_\rho-r_{\rho^\dagger}|}
+ {2|r_\rho||r_{\rho^\dagger}|},
+ \qquad d_B(\rho)=\frac{|2\Re\rho-2\Re\rho^\dagger|}{4}.
  \tag{1.5}
 \]
-and
+Let $R_P=\sup_\rho d_P(\rho)$ and $R_B=\sup_\rho d_B(\rho)$.  Then
 \[
- C=\Re\!\left(-\frac{(\Xi_C'/\Xi_C)(i/2)}{i/2}\right).
+ d_P(\rho)=d_B(\rho)=|\beta-\tfrac12|,
+ \qquad R_P=R_B=\delta_*.
  \tag{1.6}
 \]
-Then
+For every $0\le\alpha\le\frac12$,
 \[
- C=2+\gamma-\log(4\pi),\quad 0<C<\tfrac12,\quad
- E=2(H-C),
+ \begin{aligned}
+ \sigma_{\rm abs}(g_{L,N}^-)\le1+\alpha
+ &\Longleftrightarrow R_P\le\alpha
+ \Longleftrightarrow R_B\le\alpha\\
+ &\Longleftrightarrow
+ \Re\rho\le\tfrac12+\alpha
+ \quad\text{for every xi zero }\rho.
+ \end{aligned}
  \tag{1.7}
 \]
-and, unconditionally,
+If
 \[
- E\le\frac{C^2}{1-C}<C,\qquad
- C\le H<\frac32C.
+ H=\sum_\rho|r_\rho|^2,\qquad
+ E=\sum_\rho|r_\rho-r_{\rho^\dagger}|^2,
+ \qquad C=\Re\!\left(-\frac{(\Xi_C'/\Xi_C)(i/2)}{i/2}\right),
  \tag{1.8}
 \]
-Moreover
+then
+\[
+ C=2+\gamma_{\!E}-\log(4\pi),\qquad 0<C<\tfrac12,
+ \qquad E=2(H-C).
+ \tag{1.9}
+\]
+The function
+\[
+ \mathcal B_C(\alpha)=
+ \frac{4\alpha^2C}{C^{-1}-3/4-\alpha^2}
+ \tag{1.10}
+\]
+is strictly increasing on $[0,\frac12]$ and satisfies
+\[
+ E\le\mathcal B_C(\alpha)\quad\text{whenever }R_P\le\alpha,
+ \qquad E\le\mathcal B_C(R_P).
+ \tag{1.11}
+\]
+In particular,
+\[
+ E<\mathcal B_C(\tfrac12)=\frac{C^2}{1-C}<C,
+ \qquad C\le H<\frac{2-C}{2(1-C)}C<\frac32C.
+ \tag{1.12}
+\]
+Moreover,
 \[
  r_{\rho^\dagger}=-\sum_{m\ge1}\overline{r_\rho}^{\,m},\qquad
  -\frac{(\Xi_C'/\Xi_C)(i/2)}{i/2}
    =-\sum_{m\ge0}\sum_\rho r_\rho^{m+2},
- \tag{1.9}
+ \tag{1.13}
 \]
 with pointwise and absolute double-series convergence, respectively.
-\item The following endpoint conditions are equivalent:
+\item Put
+\[
+ \lambda_\rho=-\frac4{(2\rho-1)^2},\qquad
+ x_\rho=\Re\lambda_\rho,\qquad
+ \mu_n=\Re\sum_\rho\lambda_\rho^{n+1}.
+ \tag{1.14}
+\]
+Then $x_\rho>0$ unconditionally.  For any multiplicity-exact enumeration $(\rho_j)$, the finite
+moment sequence
+\[
+ M_N(n)=\sum_{j<N}x_{\rho_j}^{n+1}
+ \tag{1.15}
+\]
+is realized by finite KMS-weighted Wightman data, and
+\[
+ M_N(1)\longrightarrow M_2:=\sum_\rho x_\rho^2.
+ \tag{1.16}
+\]
+The exact quadratic source-gap identity is
+\[
+ M_2-\mu_1
+ =\sum_\rho(\Im\lambda_\rho)^2
+ =\frac14\sum_\rho|\lambda_\rho-\overline{\lambda_\rho}|^2
+ \ge0.
+ \tag{1.17}
+\]
+Define the theta Born--Witten moments and source functional, with the explicit amplitudes
+$\chi_n$ given in \textup{(9.12)}, by
+\[
+ W_j=\sum_{n\ge1}2\pi\int_0^\infty x^{2j}\chi_n(x)^2\,dx,
+ \qquad
+ \mathcal Q_W=\frac12\left(\frac{W_1}{W_0}\right)^2
+              -\frac16\frac{W_2}{W_0}.
+ \tag{1.18}
+\]
+Then $\mu_1=\mathcal Q_W>0$.  Moreover,
+for the first theta atom, with
+\[
+ t(x)=\pi e^{2x},\qquad q(x)=t(x)-\frac32,
+ \qquad A_F=\frac{3/2}{\pi-3/2},
+\]
+one has the source-specific Fisher envelope
+\[
+ \frac{t(x)}{q(x)}
+ \le 1+A_Fe^{-2x}
+ \le 1+A_F(1-2x+2x^2)\qquad(x\ge0),
+ \tag{1.18a}
+\]
+and the first-radial quadratic virial energy is bounded by the finite moment value
+$U_{\rm quad}$ in Proposition~\ref{prop:morse-fisher-envelope}.  In fact, with
+$b=b_1$, $L_m=\int_0^\infty x^m b(x)\,dx$, and $\chi_1$ the first Born--Witten amplitude,
+the exact Ward identity
+\[
+ \chi_1(x)^2=-b(x)-2b'(x)
+ \tag{1.18b}
+\]
+gives
+\[
+ \int_0^\infty x^{m+2}\chi_1(x)^2\,dx
+ =2(m+2)L_{m+1}-L_{m+2}.                       \tag{1.18c}
+\]
+Consequently both live low-degree source certificates are finite rational inequalities in the
+single positive sequence $L_0,\ldots,L_8$ and the boundary value $e^{-\pi}$.
+Moreover,
+\[
+ C<\frac{93}{2000}<\frac2{43},\qquad
+ \kappa_4(C):=\frac{16C(4-C)}{(16-5C)^2}<\frac1{84},
+ \tag{1.19}
+\]
+and, with $\mathcal E_\perp=M_2-\mathcal Q_W$,
+\[
+ \begin{aligned}
+ \mathcal E_\perp&\le\kappa_4(C)M_2<\frac1{84}M_2,\qquad
+ \frac{83}{84}M_2<\mathcal Q_W\le M_2
+ <\frac{84}{83}\mathcal Q_W,\\
+ \mathcal E_\perp
+ &\le4\left(\frac{C}{4-C}\right)^3
+ <\left(\frac{86}{85}\right)^3\frac{C^3}{16}
+ <\frac1{150000}.
+ \end{aligned}
+ \tag{1.20}
+\]
+With \(c_\rho\) as in \textup{(8.4)}, put
+\[
+ C_\perp=\sum_{\Re\rho\ne1/2}c_\rho,\qquad
+ \mathcal B_\perp=
+ 4\left(\frac{C_\perp}{4-C_\perp}\right)^3.
+ \tag{1.20aa}
+\]
+Then
+\[
+ 0\le C_\perp\le C,\qquad
+ \mathcal E_\perp\le\mathcal B_\perp
+ \le4\left(\frac{C}{4-C}\right)^3,
+ \tag{1.20ab}
+\]
+and every off-line zero satisfies the stronger self-budget height law
+\[
+ 4\le C_\perp(\gamma^2+1).
+ \tag{1.20ac}
+\]
+Put
+\[
+ \mathcal A(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2),\qquad
+ \mathfrak R_\Gamma(z)=
+ -i\left(-\frac{\zeta'}{\zeta}(s)-\frac{\mathcal A'}{\mathcal A}(s)\right),
+ \qquad s=\frac12+iz.
+\]
+Away from its natural poles, $\mathfrak R_\Gamma=\Xi_C'/\Xi_C$.  Call $R$ quartet-admissible
+when
+\[
+ 0\le R,\qquad C\bigl((R+\tfrac12)^2+1\bigr)<4,
+ \tag{1.20a}
+\]
+and let $\mathrm{HF}(R)$ denote the condition
+\[
+ \Im\mathfrak R_\Gamma(z)\le0
+ \quad\left(0<\Im z<\frac12,\ \Re z>R,\ \zeta(\tfrac12+iz)\ne0\right).
+ \tag{1.20b}
+\]
+For every quartet-admissible $R$ one has, unconditionally,
+\[
+ \Im\mathfrak R_\Gamma(z)\le0
+ \quad\left(0<\Im z<\frac12,\ |\Re z|\le R\right).
+ \tag{1.20c}
+\]
+Choose a surjection $N\mapsto r_N$ from $\mathbb N$ onto $\mathbb Q$, and let
+\(\mathcal R_N(z)=r_N^2/z\) be the passive response of the one-state system with zero
+Hamiltonian, inverse temperature zero, and observable amplitude $r_N$.  For
+\(s_q\in\mathbb Q+i\mathbb Q\) put \(z_q=(s_q-\frac12)(-i)\), and let
+\(\mathcal K(R)\) be the countable source-membership condition
+\[
+ \Im\mathfrak R_\Gamma(z_q)\in
+ \overline{\{\Im\mathcal R_N(z_q):N\ge0\}}
+ \tag{1.20ca}
+\]
+whenever \(0<\Re s_q<\frac12\), \(\Im s_q>R\), and \(\zeta(s_q)\ne0\).
+Every off-line zero $\rho=\beta+i\gamma$ spends four equal nonnegative endpoint charges and obeys
+\[
+ 4\le C(\gamma^2+1),\qquad \gamma^2>\frac{7907}{93}.
+ \tag{1.20d}
+\]
+The zeroth finite KMS coordinate already converges unconditionally to the zeroth source moment.
+Put
+\[
+ \begin{aligned}
+ \mathcal C_6&=\sum_\rho|\lambda_\rho|^3>0,\\
+ \sigma_\square&=\sigma_{\rm abs}\bigl(m\mapsto E_{\rm dyad}(m^2)\bigr),
+ &\sigma_{\square,2}&=\sigma_{\rm abs}\bigl(m\mapsto E_{\rm dyad}(m^2)^2\bigr).
+ \end{aligned}
+ \tag{1.20e}
+\]
+Then the same transverse datum couples the thermal and arithmetic charts quantitatively:
+\[
+ \mathcal E_\perp\le4\delta_*^2\mathcal C_6.
+ \tag{1.20f}
+\]
+If RH is false, then
+\[
+ 1+\sqrt{\mathcal E_\perp/\mathcal C_6}\le\sigma_\square,
+ \qquad
+ 1+2\sqrt{\mathcal E_\perp/\mathcal C_6}\le\sigma_{\square,2}.
+ \tag{1.20g}
+\]
+The same positive divisor state has a faithful projective moment tower and cold partition
+\[
+ \begin{aligned}
+ d_\rho&=|\Re\rho-\tfrac12|,&
+ P_m&=\sum_\rho x_\rho d_\rho^m,&
+ Z_k&=\sum_\rho x_\rho e^{k d_\rho},\\
+ P_{J,m}&=\sum_{j<J}x_{\rho_j}d_{\rho_j}^m,&
+ Z_{J,k}&=\sum_{j<J}x_{\rho_j}e^{k d_{\rho_j}}.
+ \end{aligned}
+ \tag{1.20h}
+\]
+Here $P_0=Z_0=\mu_0$, every finite tower $P_{J,\bullet}$ is realized by finite
+KMS-weighted Wightman data, and $P_{J,m}\to P_m$ and $Z_{J,k}\to Z_k$.  For every
+$\alpha\ge0$,
+\[
+ R_P\le\alpha
+ \Longleftrightarrow
+ P_m\le\mu_0\alpha^m\quad(m\ge0)
+ \Longleftrightarrow
+ \exists A\;\; Z_k\le A e^{k\alpha}\quad(k\gg1).
+ \tag{1.20i}
+\]
+The radius $R_0=218/25$ is quartet-admissible.
+Define the complementary source differences by
+\[
+ D_{k,0}=\mu_k,\qquad D_{k,r+1}=D_{k,r}-D_{k+1,r}.
+ \tag{1.20j}
+\]
+The endpoint-calibrated array
+\[
+ R_*=\frac{C}{1-C},\qquad
+ D^*_{k,r}=\sum_{j=0}^r(-1)^j\binom rj
+ R_*^{\,r-j}\mu_{k+j}
+ \tag{1.20k}
+\]
+has the exact source--divisor value law
+\[
+ D^*_{k,r}=\Re\sum_\rho
+ \lambda_\rho^{\,k+1}(R_*-\lambda_\rho)^r.
+ \tag{1.20l}
+\]
+Its full southwest rectangle is unconditionally nonnegative:
+\[
+ \boxed{D^*_{k,r}\ge0\qquad(0\le k\le13,\ 0\le r\le43).}
+ \tag{1.20m}
+\]
+Thus 616 indexed source inequalities are discharged without RH.  If
+\[
+ \mathsf T_*:\quad D^*_{k,r}\ge0
+ \quad\text{whenever }k>13\text{ or }r>43,
+ \tag{1.20n}
+\]
+then
+\[
+ \boxed{\begin{gathered}
+ \mathsf T_*\Longleftrightarrow\mathrm{RH}
+ \Longleftrightarrow\sigma_{\rm abs}(S_{L,N}^-)\le1\\
+ \Longleftrightarrow
+ A_{L,N}(X)=O_\varepsilon(X^{1+\varepsilon})\quad(\varepsilon>0)\\
+ \Longleftrightarrow
+ \text{local finite-KMS/Wightman closure of }(\mu_n)
+ \end{gathered}}
+ \tag{1.20o}
+\]
+The following critical conditions are equivalent:
 \[
  \begin{aligned}
  \mathrm{RH}
- &\Longleftrightarrow E=0
+ &\Longleftrightarrow \mathrm{HF}(R_0)
+ \Longleftrightarrow \sigma_{\rm abs}(g_{L,N}^-)\le1
+ \Longleftrightarrow R_P=R_B=0
+ \Longleftrightarrow E=0
  \Longleftrightarrow H=C\\
+ &\Longleftrightarrow C_\perp=0\\
+ &\Longleftrightarrow
+ \sum_\rho|\lambda_\rho-\overline{\lambda_\rho}|^2=0
+ \Longleftrightarrow M_2=\mathcal Q_W
+ \Longleftrightarrow M_2\le\mathcal Q_W\\
+ &\Longleftrightarrow M_N(1)\longrightarrow\mathcal Q_W\\
+ &\Longleftrightarrow \exists A\;\; Z_k\le A\quad(k\gg1)\\
+ &\Longleftrightarrow
+ \exists A\;\forall k\gg1\;\exists J_0(k)\;\forall J\ge J_0(k),\quad Z_{J,k}\le A\\
+ &\Longleftrightarrow
+ \exists A\;\forall J_0\;\exists J\ge J_0,\quad Z_{J,J}\le A\\
+ &\Longleftrightarrow
+ \text{local finite positive-atomic closure of the source moments}\\
+ &\Longleftrightarrow
+ \text{local finite-KMS/Wightman closure of the source moments}\\
+ &\Longleftrightarrow D_{k,r}\ge0\quad(k,r\ge0)\\
+ &\Longleftrightarrow \mathcal K(R_0)\\
  &\Longleftrightarrow
  \text{the complete normalized source Hankel form is nonnegative}\\
  &\Longleftrightarrow
@@ -218,7 +620,12 @@ with pointwise and absolute double-series convergence, respectively.
  &\Longleftrightarrow
  \text{they are vacuum moments of a bounded self-adjoint observable}.
  \end{aligned}
- \tag{1.10}
+ \tag{1.21}
+\]
+Under false RH the diagonal alternative is exact:
+\[
+ Z_{J,J}\longrightarrow+\infty.
+ \tag{1.21a}
 \]
 \end{enumerate}
 \end{theorem}
@@ -227,23 +634,36 @@ with pointwise and absolute double-series convergence, respectively.
 Parts~\textup{(i)}--\textup{(iv)} are proved in
 Theorems~\ref{thm:sharp-guinand-weil}, \ref{thm:prime-gamma-spectrum},
 \ref{thm:prime-polar-cumulative-spectrum}, and
-\ref{thm:source-strengthenings}.  Parts~\textup{(v)}--\textup{(vi)} are
-Theorem~\ref{thm:endpoint-reflection-main}.  The detailed arguments are given in the cited
-sections.
+\ref{thm:source-strengthenings}.  Part~\textup{(v)} is proved in
+Theorems~\ref{thm:endpoint-reflection-main} and~\ref{thm:projective-energy-budget}.
+Part~\textup{(vi)} follows from Theorem~\ref{thm:thermal-master} and
+Propositions~\ref{prop:morse-fisher-envelope},
+\ref{prop:endpoint-frequency-master}, and~\ref{prop:universal-kms-palette}.
 \end{proof}
 
-At $\alpha=0$, parts~\textup{(ii)}, \textup{(iii)}, and \textup{(vi)} identify one common
-endpoint:
+At $\alpha=0$, all clauses identify one common endpoint:
 \[
+ \begin{aligned}
  \mathrm{RH}
- \Longleftrightarrow g_L(n)\ge0\ (n\ge N)
- \Longleftrightarrow \sigma_{\rm abs}(S_{L,N}^-)\le1
+ &\Longleftrightarrow g_L(n)\ge0\ (n\ge N)
+ \Longleftrightarrow \sigma_{\rm abs}(S_{L,N}^-)\le1\\
+ &\Longleftrightarrow \mathrm{HF}(218/25)
  \Longleftrightarrow E=0
- \Longleftrightarrow H=C.
- \tag{1.11}
+ \Longleftrightarrow H=C
+ \Longleftrightarrow M_2=\mathcal Q_W
+ \Longleftrightarrow \sup_{k\gg1}Z_k<\infty.
+ \end{aligned}
+ \tag{1.22}
 \]
-The new estimate \textup{(1.8)} advances the last inequality from the trivial orientation
-$C\le H$ to an explicit narrow chamber, but does not prove the sharp equality.
+The scale-resolved budget \textup{(1.11)}, the off-line self-charge law
+\textup{(1.20aa)}--\textup{(1.20ac)}, the four-charge height law \textup{(1.20d)}, and the
+cubic source estimate \textup{(1.20)} are successive quantitative stages of this one theorem.
+In the thermal chart the source misses the positive divisor moment by less than $1/150000$ in
+absolute scale.  The cold diagonal gives an exact positive phase alternative: it is bounded
+cofinally often precisely on the RH fibre and diverges to \(+\infty\) otherwise.  The remaining
+theorem is the endpoint saturation
+$M_2\le\mathcal Q_W$, equivalently the ultraviolet condition $\mathrm{HF}(218/25)$ or one
+recurrent bound along that faithful diagonal.
 
 There is also a classical superzeta literature in which Dirichlet series are formed directly over
 the Riemann zeros and their meromorphic polar structure is studied~\cite{Voros2003}.  That
@@ -320,33 +740,74 @@ positive-channel conservation, and the screw-coordinate identity.  The lower-los
 the closed ray beginning at the rightmost transverse divisor coordinate, so it yields every
 horizontal zero-free region, not only RH.
 
-The endpoint reflection theorem supplies a second, quantitatively different advance.  The
-functional equation pairs $\rho$ with $\rho^\dagger=1-\overline\rho$.  At the completed boundary
-$i/2$, this pairing gives an exact squared reflection defect $E=2(H-C)$.  The source value
-$C=2+\gamma-\log(4\pi)$ is small enough to make the source-to-defect multiplier
-$C/(1-C)$ strictly contractive.  This yields the unconditional quadratic bound
-$E\le C^2/(1-C)$ and forces all reciprocal coordinates into one uniform disk.  The reflected
-coordinate is consequently a convergent M\"obius--Neumann series in the original coordinate, and
-the completed endpoint is the absolutely convergent sum of all holomorphic reciprocal-power
-traces.  This does not collapse the defect to zero; it replaces a bare RH-equivalent equality by
-an explicit strict chamber and an all-order source carrier on which a further positivity estimate
-can act.
+The projective--thermal theorem joins the endpoint estimate to this same transverse spectrum.
+The projective reciprocal displacement and reflected Born-temperature mismatch both equal
+$|\Re\rho-\frac12|$; hence their common radius is exactly $\delta_*$.  That radius controls the
+completed reflection defect through the strictly increasing budget $\mathcal B_C$.  At the full
+critical-strip radius the pointwise open-strip gain strengthens the unconditional contraction to
+$E<C^2/(1-C)$, while the intrinsic value $\mathcal B_C(\delta_*)$ is sharper whenever a narrower
+zero-free region is known.
+The endpoint contraction forces every reciprocal coordinate into one uniform disk and yields the
+M\"obius--Neumann reconstruction.  Squaring the centered reciprocal coordinate produces an
+unconditional positive thermal node.  Its finite KMS-weighted moment systems converge to a
+canonical positive tower, whose second moment exceeds the actual prime--Gamma source moment by
+exactly one quarter of the reciprocal-square reflection energy.  The same source moment is the
+quadratic functional $\mathcal Q_W$ of exact theta Born--Witten ground-state position moments.
+Because the transverse coordinate vanishes on the critical line, the four-charge height law
+applies exactly to every atom that contributes to the thermal defect.  It bounds that defect by
+the relative factor $\kappa_4(C)<1/84$ and, more sharply, by the absolute cubic source budget
+$4(C/(4-C))^3<1/150000$.  Thus the source spectrum,
+endpoint chamber, pure Witten source, and thermal moment gap are not parallel criteria but charts
+of one master invariant.  The theorem places the positive thermal moment in the strict interval
+$[\mathcal Q_W,(84/83)\mathcal Q_W)$; the remaining endpoint is
+$M_+(1)\le\mathcal Q_W$.
+
+The response chart is the ultraviolet consequence of the same endpoint budget.  An off-line
+zero has four distinct functional-equation--Schwarz copies with equal nonnegative charge; hence
+the endpoint source pays four units per transverse orbit.  This gives
+$4\le C(\gamma^2+1)$ and forces each line-reflected conjugate pair of relative-resolvent atoms to
+have nonpositive imaginary part whenever $C((R+\frac12)^2+1)<4$.  Thus the completed
+prime--Gamma response is already anti-Herglotz on the entire central band $|\Re z|\le R$; the
+involution $z\mapsto-\overline z$ identifies the two remaining frequency tails.  The sharper
+rational certificate $C<93/2000$ permits $R=218/25$.  Consequently RH is equivalent to a
+one-sided ultraviolet statement only above that radius.  Combining this with the thermal
+identity gives the master equivalence
+\[
+ \begin{aligned}
+ \mathrm{HF}(R)&\Longleftrightarrow\mathcal E_\perp=0
+ \Longleftrightarrow M_2=\mathcal Q_W\\
+ &\Longleftrightarrow\text{KMS selection of }\mathcal Q_W\\
+ &\Longleftrightarrow\text{Connes reflection positivity}
+ \Longleftrightarrow\sup_{k\gg1}Z_k<\infty
+ \Longleftrightarrow\mathrm{RH}.
+ \end{aligned}
+\]
+This is one source--temperature coupling in the master theorem: high-frequency passivity and zero
+transverse thermal energy are the same sharp orientation datum.  The faithful cold partition
+removes the high-height damping of the quadratic energy: any off-line atom forces exponential
+growth at rate $d_\rho$, so RH is exactly one bound uniform in the cold variable and the finite
+thermodynamic exhaustion.  A nontrivial central response interval and a strict thermal neighborhood
+are already unconditional; the uniform cold bound is the remaining estimate.
 
 The principal contributions claimed here are the exact evaluated sharp prime--Gamma
 specialization and its source-only RH spectrum---fixed positive width, arithmetic
 logarithmic sampling, tail nonnegativity, cofinal divergence, the exact one-sided spectrum,
 universal negative-channel abscissae, finite maximum conservation, summable-family aggregate
 conservation, the least sharp-source positive correction, and observable multiplicity-exact pole
-tomography---together with the contractive endpoint reflection law and its all-order holomorphic
-trace reconstruction.  The inverse-tilted source
+tomography---together with the projective endpoint budget, its all-order holomorphic trace
+reconstruction, the quadratic KMS/source-gap identity, and the quartet-admissible central-band
+response theorem.  The inverse-tilted source
 tomography is classified separately as bridge infrastructure: it is a sharpened application of
 the Euler logarithmic derivative, bounded-variation quadrature, and meromorphic divisor calculus.
 Landau's theorem, Weil positivity, shifted-zeta continuation, and screw functions are likewise
 parent mechanisms.  The paper does not prove RH.  It proves that the explicit sharp
 prime--Gamma tail, the completed source divisor, and the intrinsic critical-Mellin divisor carry
-precisely the same horizontal spectrum, and that the endpoint reflection defect already lies in
-the strict chamber \textup{(1.8)}.  A successful prime-side or semilocal construction must force
-the remaining saturation in any one of the equivalent coordinates in \textup{(1.10)}.
+precisely the same horizontal spectrum, that the endpoint reflection defect lies below the
+intrinsic budget \textup{(1.11)}, and that the thermodynamic source mismatch is the nonnegative
+energy \textup{(1.17)} satisfying the strict estimate \textup{(1.20)}.  A successful prime-side
+or semilocal construction must force the remaining saturation in any one of the equivalent
+coordinates in \textup{(1.21)}, equivalently the uniform finite-system cold bound in
+\textup{(9.22h)}.
 
 \section{The centered xi divisor and the rectangular window}
 
@@ -2363,13 +2824,13 @@ With the notation above:
 \begin{enumerate}[label=\textup{(\roman*)}]
 \item
 \[
- C=2+\gamma-\log(4\pi),\qquad 0<C<\frac12.
+ C=2+\gamma_{\!E}-\log(4\pi),\qquad 0<C<\frac12.
  \tag{8.8}
 \]
 \item
 \[
- E\le\frac{C^2}{1-C}<C,\qquad
- C\le H<\frac32C<\frac34.
+ E<\frac{C^2}{1-C}<C,\qquad
+ C\le H<\frac{2-C}{2(1-C)}C<\frac32C<\frac34.
  \tag{8.9}
 \]
 In particular $|r_\rho|<9/10$ for every $\rho$.
@@ -2427,7 +2888,7 @@ prime--Gamma source germ.  The following are equivalent:
 The Laurent expansion of the completed zeta factor at $s=0$ gives
 \[
  \XiR(0)=\frac12,\qquad
- \XiR'(0)=-\frac14\bigl(2+\gamma-\log(4\pi)\bigr).
+ \XiR'(0)=-\frac14\bigl(2+\gamma_{\!E}-\log(4\pi)\bigr).
  \tag{8.17}
 \]
 Differentiating \textup{(8.1)} at $z=i/2$ proves the value in \textup{(8.8)}.  Positivity follows
@@ -2444,16 +2905,31 @@ We next prove the quantitative estimate.  From \textup{(8.4)} and $0<\beta<1$,
  \tag{8.18}
 \]
 Thus $1\le C(\gamma^2+1)$ and
-$\gamma^2\ge(1-C)/C$.  Equations \textup{(8.4)}--\textup{(8.5)} also give
+$\gamma^2\ge(1-C)/C$.  The open-strip inequalities also make the comparison strict:
 \[
- d_\rho\le\frac1{\gamma^2}c_\rho
- \le\frac{C}{1-C}c_\rho.
+ (1-C)(1-2\beta)^2
+ <1-C\le C\gamma^2
+ <C\bigl(\gamma^2+\beta(1-\beta)\bigr).
  \tag{8.19}
 \]
-Summation and \textup{(8.6)} yield
-$E\le C^2/(1-C)$.  Since $0<C<1/2$, the multiplier $C/(1-C)$ is strictly less than one, hence
-$E<C$.  The identity $H=C+E/2$ now proves
-$C\le H<3C/2<3/4$.  Since $|r_\rho|^2\le H<3/4<81/100$, the stated uniform disk bound follows.
+Indeed, the first and last inequalities use $0<\beta<1$.  Division by the positive denominator
+in \textup{(8.4)}--\textup{(8.5)} gives
+\[
+ d_\rho<\frac{C}{1-C}c_\rho.
+ \tag{8.20}
+\]
+The Xi divisor is nonempty, and both sides of \textup{(8.20)} are summable.  Therefore summation
+preserves a strict gain at at least one divisor point and gives
+\[
+ E<\frac{C^2}{1-C}.
+\]
+Since $0<C<1/2$, the multiplier $C/(1-C)$ is strictly less than one, hence $E<C$.  The identity
+$H=C+E/2$ gives the sharper source-only mass estimate
+\[
+ H<C+\frac{C^2}{2(1-C)}
+   =\frac{2-C}{2(1-C)}C<\frac32C<\frac34.
+\]
+Since $|r_\rho|^2\le H<3/4<81/100$, the stated uniform disk bound follows.
 
 Algebraically,
 \[
@@ -2467,7 +2943,7 @@ multiplication by $r_\rho$,
  r_\rho\overline{r_{\rho^\dagger}}
  =-\frac{r_\rho^2}{1-r_\rho}
  =-\sum_{m\ge0}r_\rho^{m+2}.
- \tag{8.20}
+ \tag{8.21}
 \]
 Moreover
 \[
@@ -2499,7 +2975,7 @@ Under RH, $\lambda_\rho>0$.  On
 $\ell^2(\mathcal D_\Xi)$ define
 \[
  v_n(\rho)=\sqrt{\lambda_\rho}\,\lambda_\rho^n.
- \tag{8.21}
+ \tag{8.22}
 \]
 Absolute moment summability gives $v_n\in\ell^2$, and direct summation gives
 $\langle v_i,v_j\rangle=\mu_{i+j}$.  Thus \textup{(a)} implies \textup{(e)}.
@@ -2527,6 +3003,1098 @@ of the positivity statements in part~\textup{(iv)}.  No iteration of the strict 
 saturation.
 \end{remark}
 
+\section{The projective--thermal master spectrum}
+\label{sec:projective-thermal}
+
+The source abscissa and endpoint contraction admit a common transverse coordinate.  For
+$\rho=\beta+i\gamma$, retain the notation $\rho^\dagger=1-\overline\rho$ and $r_\rho=\rho^{-1}$,
+The amplitudes $n^{-\rho}$ have Born weights $n^{-2\Re\rho}$, while the multiplicative
+Hamiltonian with energy $\log n$ has Gibbs weights $n^{-\beta_B}$.  Their projective equality
+therefore fixes $\beta_B(\rho)=2\Re\rho$.  Define
+\[
+ d_P(\rho)=\frac{|r_\rho-r_{\rho^\dagger}|}
+ {2|r_\rho||r_{\rho^\dagger}|},
+ \qquad
+ d_B(\rho)=\frac{|2\Re\rho-2\Re\rho^\dagger|}{4}.
+ \tag{9.1}
+\]
+The second coordinate is the normalized mismatch of this reflected Born inverse temperature.  It
+is used only as an exact scalar chart; no statistical mechanical assumption is imposed on the Xi
+divisor.
+
+\begin{theorem}[Scale-resolved projective source and energy law]
+\label{thm:projective-energy-budget}
+Let
+\[
+ R_P=\sup_\rho d_P(\rho),\qquad R_B=\sup_\rho d_B(\rho),
+ \tag{9.2}
+\]
+where multiplicities do not affect the suprema.  Then
+\[
+ d_P(\rho)=d_B(\rho)=|\Re\rho-\tfrac12|,
+ \qquad R_P=R_B=\delta_*.
+ \tag{9.3}
+\]
+For every fixed $L>0$, admissible $N$, and $0\le\alpha\le\frac12$,
+\[
+ \begin{aligned}
+ \sigma_{\rm abs}(g_{L,N}^-)\le1+\alpha
+ &\Longleftrightarrow R_P\le\alpha
+ \Longleftrightarrow R_B\le\alpha\\
+ &\Longleftrightarrow
+ \Re\rho\le\tfrac12+\alpha
+ \quad\text{for every xi zero }\rho.
+ \end{aligned}
+ \tag{9.4}
+\]
+Moreover, with $C$ and $E$ from \textup{(8.3)},
+\[
+ E\le\mathcal B_C(\alpha)\quad\text{whenever }R_P\le\alpha,
+ \qquad
+ E\le\mathcal B_C(R_P),
+ \tag{9.5}
+\]
+where
+\[
+ \mathcal B_C(\alpha)=
+ \frac{4\alpha^2C}{C^{-1}-3/4-\alpha^2}.
+ \tag{9.6}
+\]
+The function $\mathcal B_C$ is strictly increasing on $[0,\frac12]$,
+$\mathcal B_C(0)=0$, and
+\[
+ \mathcal B_C(\tfrac12)=\frac{C^2}{1-C}.
+ \tag{9.7}
+\]
+\end{theorem}
+
+\begin{proof}
+Direct substitution gives
+\[
+ |r_\rho-r_{\rho^\dagger}|^2
+ =\frac{(1-2\beta)^2}
+ { (\beta^2+\gamma^2)((1-\beta)^2+\gamma^2)}.
+\]
+Since
+$|r_\rho|^2=(\beta^2+\gamma^2)^{-1}$ and
+$|r_{\rho^\dagger}|^2=((1-\beta)^2+\gamma^2)^{-1}$, taking the nonnegative square root yields
+$d_P(\rho)=|\beta-\frac12|$.  The identity for $d_B$ is immediate.  Functional-equation
+reflection supplies both horizontal sides of the divisor, so their suprema equal $\delta_*$.
+
+If RH is false, Theorem~\ref{thm:prime-gamma-spectrum} gives
+$\sigma_{\rm abs}(g_{L,N}^-)=1+\delta_*$.  Under RH the negative sequence vanishes and its
+abscissa is $-\infty$.  This proves the first three equivalences in \textup{(9.4)}; the last is
+the definition of the horizontal support radius together with functional-equation reflection.
+
+For the energy estimate, write $c_\rho$ and $d_\rho$ as in
+Lemma~\ref{lem:endpoint-polarization}.  The endpoint source-height inequality
+\textup{(8.18)} gives
+\[
+ \gamma^2\ge C^{-1}-1.
+ \tag{9.8}
+\]
+If $|\beta-\frac12|\le\alpha$, then
+\[
+ (1-2\beta)^2\le4\alpha^2,
+ \qquad
+ \gamma^2+\beta(1-\beta)
+ \ge C^{-1}-\frac34-\alpha^2.
+ \tag{9.9}
+\]
+The final lower bound is positive because $0<C<\frac12$ and
+$0\le\alpha\le\frac12$.  Dividing the formulas \textup{(8.4)} and \textup{(8.5)} therefore gives
+\[
+ d_\rho\le
+ \frac{4\alpha^2}{C^{-1}-3/4-\alpha^2}\,c_\rho.
+ \tag{9.10}
+\]
+Summation, using $E=\sum_\rho d_\rho$ and $C=\sum_\rho c_\rho$, proves the first estimate in
+\textup{(9.5)}.  Substitution of the exact supremum proves the intrinsic estimate.  The endpoint
+values in \textup{(9.7)} are algebraic simplifications.  If $0\le a<b\le\frac12$, cross
+multiplication by the positive denominators in \textup{(9.6)} reduces
+$\mathcal B_C(a)<\mathcal B_C(b)$ to $a^2<b^2$, proving strict monotonicity.
+\end{proof}
+
+We next give the finite-system and pure-state chart.  A finite KMS-weighted Wightman moment
+sequence means the following explicit algebraic construction.  Given positive nodes
+$x_0,\ldots,x_{N-1}$, take energies $e_0=0$, $e_{j+1}=\sqrt{x_j}$, inverse temperature zero,
+partition function $N+1$, and the only nonzero directed amplitudes
+\[
+ A_{j+1,0}=\sqrt{(N+1)x_j}.
+ \tag{9.11}
+\]
+Its $2n$-th gap moment is $\sum_{j<N}x_j^{n+1}$.  No thermodynamic limit is hidden in this
+terminology.
+
+The source side is equally explicit.  For $n\ge1$ and $x\ge0$, put
+\[
+ t_n(x)=\pi(ne^x)^2,\quad q_n(x)=t_n(x)-\frac32,\quad
+ \psi_n(x)=ne^{5x/4}e^{-t_n(x)/2},\quad
+ \chi_n(x)=2\sqrt{q_n(x)}\,\psi_n(x),
+ \tag{9.12}
+\]
+and
+\[
+ B_n(x)=t_n(x)-\frac54-\frac{t_n(x)}{q_n(x)}.
+ \tag{9.13}
+\]
+Since $t_n(x)\ge\pi>3$, one has $q_n(x)>0$.  The terminology ``Witten state'' refers to the
+factorization $\chi_n'+B_n\chi_n=0$, in the standard supersymmetric-quantum-mechanical sense
+of~\cite{Witten1982}; all identities used below are proved directly.
+
+\begin{theorem}[Born--Witten--KMS quantitative chart]
+\label{thm:thermal-master}
+Let
+\[
+ \Theta(x)=e^{x/2}\sum_{n\ge1}
+ 2\pi\bigl(2\pi(ne^x)^4-3(ne^x)^2\bigr)e^{-\pi(ne^x)^2}.
+ \tag{9.14}
+\]
+Then, for $x\ge0$ and $n\ge1$,
+\[
+ \Theta(x)=\pi\sum_{n\ge1}\chi_n(x)^2,\qquad
+ \chi_n'(x)+B_n(x)\chi_n(x)=0,\qquad
+ B_n'(x)=2t_n(x)+\frac{3t_n(x)}{q_n(x)^2}\ge2\pi n^2.
+ \tag{9.15}
+\]
+Define
+\[
+ W_j=\sum_{n\ge1}2\pi\int_0^\infty x^{2j}\chi_n(x)^2\,dx,\qquad
+ \mathcal Q_W=\frac12\left(\frac{W_1}{W_0}\right)^2
+              -\frac16\frac{W_2}{W_0}.
+ \tag{9.16}
+\]
+Then $W_j$ is the $2j$-th raw theta-source moment and
+\[
+ \mu_1=\mathcal Q_W>0.
+ \tag{9.17}
+\]
+
+For each multiplicity-counted Xi zero define
+\[
+ z_\rho=(\rho-\tfrac12)(-i),\qquad
+ \lambda_\rho=z_\rho^{-2}=-\frac4{(2\rho-1)^2},
+ \qquad x_\rho=\Re\lambda_\rho.
+ \tag{9.18}
+\]
+Then $x_\rho>0$.  For any multiplicity-exact enumeration $(\rho_j)$, put
+\[
+ M_N(n)=\sum_{j<N}x_{\rho_j}^{n+1},\qquad
+ M_+(n)=\sum_\rho x_\rho^{n+1},\qquad M_2=M_+(1).
+ \tag{9.19}
+\]
+Every $M_N$ is a finite KMS-weighted Wightman moment sequence and $M_N(n)\to M_+(n)$ for every
+$n\ge0$.
+
+Let
+\[
+ \mathcal E_\perp=\sum_\rho(\Im\lambda_\rho)^2,\qquad
+ C_\perp=\sum_{\Re\rho\ne1/2}c_\rho,\qquad
+ \mathcal B_\perp=
+ 4\left(\frac{C_\perp}{4-C_\perp}\right)^3,\qquad
+ \kappa_4(C)=\frac{16C(4-C)}{(16-5C)^2}.
+ \tag{9.20}
+\]
+The exact source-gap identity and the quantitative transverse estimate are
+\[
+ M_2-\mathcal E_\perp=\mathcal Q_W,\qquad
+ \mathcal E_\perp\le\kappa_4(C)M_2,\qquad
+ C<\frac{93}{2000},\qquad \kappa_4(C)<\frac1{84}.
+ \tag{9.21}
+\]
+The same quartet law gives the sharper source-dependent cubic estimate
+\[
+ \mathcal E_\perp
+ \le\mathcal B_\perp
+ \le4\left(\frac{C}{4-C}\right)^3
+ <\left(\frac{86}{85}\right)^3\frac{C^3}{16}
+ <\frac1{150000}.
+ \tag{9.21a}
+\]
+Here
+\[
+ 0\le C_\perp\le C,\qquad
+ C_\perp=0\Longleftrightarrow\mathcal E_\perp=0
+ \Longleftrightarrow\mathrm{RH},
+ \tag{9.21b}
+\]
+and every off-line zero satisfies
+\[
+ 4c_\rho\le C_\perp,\qquad
+ 4\le C_\perp(\gamma^2+1).
+ \tag{9.21c}
+\]
+Consequently
+\[
+ 0<\frac{83}{84}M_2<\mathcal Q_W\le M_2
+ \le\frac{\mathcal Q_W}{1-\kappa_4(C)}
+ <\frac{84}{83}\mathcal Q_W.
+ \tag{9.22}
+\]
+Moreover,
+\[
+ M_N(0)\longrightarrow M_+(0)=\mu_0,
+ \tag{9.22a}
+\]
+unconditionally.  Put
+\[
+ \begin{aligned}
+ \mathcal C_6&=\sum_\rho|\lambda_\rho|^3>0,\\
+ \sigma_\square&=\sigma_{\rm abs}\bigl(m\mapsto E_{\rm dyad}(m^2)\bigr),
+ &\sigma_{\square,2}&=\sigma_{\rm abs}\bigl(m\mapsto E_{\rm dyad}(m^2)^2\bigr).
+ \end{aligned}
+ \tag{9.22b}
+\]
+Then
+\[
+ \mathcal E_\perp\le4\delta_*^2\mathcal C_6.
+ \tag{9.22c}
+\]
+If RH is false, then, in the extended real line,
+\[
+ 1+\sqrt{\mathcal E_\perp/\mathcal C_6}\le\sigma_\square,
+ \qquad
+ 1+2\sqrt{\mathcal E_\perp/\mathcal C_6}\le\sigma_{\square,2}.
+ \tag{9.22d}
+\]
+Put $d_\rho=|\Re\rho-\frac12|$ and define the faithful projective thermal observables
+\[
+ \begin{aligned}
+ P_m&=\sum_\rho x_\rho d_\rho^m,&
+ P_{J,m}&=\sum_{j<J}x_{\rho_j}d_{\rho_j}^m,\\
+ Z_k&=\sum_\rho x_\rho e^{k d_\rho},&
+ Z_{J,k}&=\sum_{j<J}x_{\rho_j}e^{k d_{\rho_j}}.
+ \end{aligned}
+ \tag{9.22e}
+\]
+Every displayed series converges for fixed $m$ or $k$, and
+\[
+ P_0=Z_0=\mu_0,\qquad
+ P_{J,m}\longrightarrow P_m,\qquad
+ Z_{J,k}\longrightarrow Z_k.
+ \tag{9.22f}
+\]
+Every finite moment tower $m\mapsto P_{J,m}$ is a finite KMS-weighted Wightman moment
+sequence.  For every $\alpha\ge0$ one has the exact support/free-energy law
+\[
+ R_P\le\alpha
+ \Longleftrightarrow
+ \bigl(P_m\le\mu_0\alpha^m\text{ for every }m\ge0\bigr)
+ \Longleftrightarrow
+ \bigl(\exists A\; Z_k\le A e^{k\alpha}\text{ for all }k\gg1\bigr).
+ \tag{9.22g}
+\]
+At the critical endpoint this has the finite thermodynamic form
+\[
+ \mathrm{RH}
+ \Longleftrightarrow \exists A\; Z_k\le A\quad(k\gg1)
+ \Longleftrightarrow
+ \exists A\;\forall k\gg1\;\exists J_0(k)\;\forall J\ge J_0(k),\quad Z_{J,k}\le A.
+ \tag{9.22h}
+\]
+In fact the single diagonal has the exact phase alternative
+\[
+ \neg\mathrm{RH}
+ \Longleftrightarrow Z_{J,J}\longrightarrow+\infty,
+ \qquad
+ \mathrm{RH}
+ \Longleftrightarrow
+ \exists A\;\forall J_0\;\exists J\ge J_0,\quad Z_{J,J}\le A.
+ \tag{9.22ha}
+\]
+
+Call \(m=(m_n)_{n\ge0}\) finite positive atomic if
+\[
+ m_n=\sum_{i<d}a_i t_i^n
+ \quad\text{for some }d<\infty,\quad a_i,t_i\ge0.
+ \tag{9.22hb}
+\]
+Call a target \(u=(u_n)\) locally finite-atomic, respectively locally finite-KMS, if for every
+\(D\) and \(\varepsilon>0\) there is such a finite positive atomic, respectively a finite
+KMS/Wightman, moment sequence \(m\) with
+\[
+ |m_n-u_n|<\varepsilon\qquad(0\le n<D).
+ \tag{9.22hc}
+\]
+For the normalized prime--Gamma source moments \((\mu_n)\),
+\[
+ \mathrm{RH}
+ \Longleftrightarrow(\mu_n)\text{ is locally finite positive atomic}
+ \Longleftrightarrow(\mu_n)\text{ is locally finite KMS/Wightman}.
+ \tag{9.22hd}
+\]
+Define
+\[
+ D_{k,0}=\mu_k,\qquad D_{k,r+1}=D_{k,r}-D_{k+1,r}.
+ \tag{9.22he}
+\]
+Then the source sequence satisfies the exact Hausdorff law
+\[
+ \mathrm{RH}\Longleftrightarrow D_{k,r}\ge0\quad(k,r\ge0).
+ \tag{9.22hf}
+\]
+There is a stronger quantitative endpoint-calibrated form.  Put
+\[
+ R_*=\frac{C}{1-C},\qquad
+ D^*_{k,r}=\sum_{j=0}^r(-1)^j\binom rj
+ R_*^{\,r-j}\mu_{k+j}.
+ \tag{9.22hfa}
+\]
+Then every calibrated difference is an exact reciprocal-square divisor value,
+\[
+ D^*_{k,r}=\Re\sum_\rho
+ \lambda_\rho^{\,k+1}(R_*-\lambda_\rho)^r,
+ \tag{9.22hfb}
+\]
+and the complete rectangle
+\[
+ D^*_{k,r}\ge0\qquad(0\le k\le13,\ 0\le r\le43)
+ \tag{9.22hfc}
+\]
+holds unconditionally.  Consequently, for every fixed $L>0$ and admissible $N$,
+\[
+ \begin{aligned}
+ \mathrm{RH}
+ &\Longleftrightarrow
+ D^*_{k,r}\ge0
+ \quad\bigl(k>13\text{ or }r>43\bigr)\\
+ &\Longleftrightarrow
+ \sigma_{\rm abs}(S_{L,N}^-)\le1\\
+ &\Longleftrightarrow
+ A_{L,N}(X)=O_\varepsilon(X^{1+\varepsilon})\quad(\varepsilon>0)\\
+ &\Longleftrightarrow
+ (\mu_n)\text{ is locally finite KMS/Wightman}.
+ \end{aligned}
+ \tag{9.22hfd}
+\]
+When these inequalities hold, the finite positive atomic approximants are canonical.  Let
+$\ell_\mu(\sum_ja_jX^j)=\sum_ja_j\mu_j$ and
+\[
+ B_{M,i}(X)=\binom MiX^i(1-X)^{M-i},\qquad
+ \mu_n^{[M]}=
+ \sum_{i=0}^{M}\ell_\mu(B_{M,i})\left(\frac{i}{M}\right)^n
+ \quad(M\ge1).
+ \tag{9.22hg}
+\]
+Then every mass $\ell_\mu(B_{M,i})$ is nonnegative and
+\[
+ \mu_n^{[M]}\longrightarrow\mu_n\qquad(M\to\infty)
+ \tag{9.22hh}
+\]
+for every fixed $n$.
+For every fixed $L>0$ and admissible $N$, the following conditions are equivalent:
+\[
+ \begin{aligned}
+ \sigma_{\rm abs}(g_{L,N}^-)\le1
+ &\Longleftrightarrow R_P=0
+ \Longleftrightarrow R_B=0
+ \Longleftrightarrow E=0
+ \Longleftrightarrow H=C\\
+ &\Longleftrightarrow C_\perp=0
+ \Longleftrightarrow\mathcal E_\perp=0
+ \Longleftrightarrow M_2=\mathcal Q_W
+ \Longleftrightarrow M_2\le\mathcal Q_W\\
+ &\Longleftrightarrow M_N(1)\longrightarrow\mathcal Q_W\\
+ &\Longleftrightarrow \exists A\; Z_k\le A\quad(k\gg1)\\
+ &\Longleftrightarrow \exists A\;\forall J_0\;\exists J\ge J_0,\ Z_{J,J}\le A\\
+ &\Longleftrightarrow(\mu_n)\text{ is locally finite positive atomic}\\
+ &\Longleftrightarrow(\mu_n)\text{ is locally finite KMS/Wightman}\\
+ &\Longleftrightarrow D_{k,r}\ge0\quad(k,r\ge0)\\
+ &\Longleftrightarrow\mathcal K(218/25)\\
+ &\Longleftrightarrow\mathrm{RH}.
+ \end{aligned}
+ \tag{9.23}
+\]
+\end{theorem}
+
+\begin{proof}
+Direct squaring in \textup{(9.12)} gives, term by term,
+\[
+ \pi\chi_n(x)^2
+ =e^{x/2}2\pi\bigl(2\pi(ne^x)^4-3(ne^x)^2\bigr)e^{-\pi(ne^x)^2}.
+\]
+This proves the first identity in \textup{(9.15)}.  Logarithmic differentiation gives the
+zero-mode equation, and differentiation of \textup{(9.13)}, using $t_n'=2t_n$ and
+$q_n'=2t_n$, gives the displayed curvature identity.  Its lower bound follows from
+$t_n(x)\ge\pi n^2$.
+
+The classical theta representation, after the substitution $u=e^{2x}$, is
+\[
+ \Xi_C(t)=2\int_0^\infty\Theta(x)\cos(tx)\,dx.
+ \tag{9.24}
+\]
+The Gaussian decay is superexponential in $x$, so termwise summation, integration, and
+differentiation are justified.  Equations \textup{(9.15)} and \textup{(9.24)} give
+\[
+ \Xi_C^{(2j)}(0)=(-1)^jW_j.
+\]
+Expanding $-\Xi_C'(z)/(z\Xi_C(z))$ at zero yields
+\[
+ [z^2]\left(-\frac{\Xi_C'(z)}{z\Xi_C(z)}\right)
+ =\frac12\left(\frac{W_1}{W_0}\right)^2-\frac16\frac{W_2}{W_0}.
+\]
+Comparison with the moment germ \textup{(8.7b)} proves \textup{(9.17)}.
+
+Write $\rho=\beta+i\gamma$ and $\delta=\beta-\frac12$.  Inequality \textup{(9.8)} and
+$C<\frac12$ imply $\gamma^2>1$, whereas the open critical strip gives
+$\delta^2<\frac14$.  Hence
+\[
+ x_\rho=\frac{\gamma^2-\delta^2}{(\gamma^2+\delta^2)^2}>0,\qquad
+ \Im\lambda_\rho=\frac{2\delta\gamma}{(\gamma^2+\delta^2)^2}.
+ \tag{9.25}
+\]
+The reciprocal-square divisor is absolutely summable and
+$|x_\rho|^{n+1}\le|\lambda_\rho|^{n+1}$, proving convergence in \textup{(9.19)}.  Construction
+\textup{(9.11)} realizes each finite moment sequence.
+
+Put $u=\delta^2$ and $v=\gamma^2$.  If $u=0$, then the transverse term in
+\textup{(9.25)} vanishes.  If $u>0$, the zero is off the critical line, so the four-charge law
+\textup{(1.20d)} gives
+\[
+ v\ge a_4:=\frac{4-C}{C},
+ \qquad 0<u<\frac14.
+\]
+Formula \textup{(9.25)} therefore gives
+\[
+ \frac{(\Im\lambda_\rho)^2}{x_\rho^2}
+ =\frac{4uv}{(v-u)^2}
+ \le\frac{a_4}{(a_4-1/4)^2}
+ =\frac{16C(4-C)}{(16-5C)^2}=\kappa_4(C).
+ \tag{9.26}
+\]
+Indeed, the middle rational function is increasing in $u$ and decreasing in $v$ on the stated
+rectangle; the on-line case satisfies the same bound with zero left-hand side.  Summing
+\textup{(9.26)} proves the relative transverse estimate.  On the other hand,
+\[
+ \mu_1=\sum_\rho\Re(\lambda_\rho^2)
+ =\sum_\rho\bigl(x_\rho^2-(\Im\lambda_\rho)^2\bigr),
+\]
+so \textup{(9.17)} proves the exact source-gap identity.
+
+We retain only the endpoint charge carried by the off-line sector.  Positivity and
+\(\sum_\rho c_\rho=C\) give
+\[
+ 0\le C_\perp\le C<4.
+\]
+For an off-line copy, with $u=\delta^2$ and $v=\gamma^2$, formula \textup{(9.25)} and
+$4u\le1$ give
+\[
+ e_\rho:=(\Im\lambda_\rho)^2
+ =\frac{4uv}{(u+v)^4}\le\frac1{v^3}.
+ \tag{9.26a}
+\]
+Its functional-equation--Schwarz orbit consists of four distinct off-line copies, all having
+the same cross charge.  The full orbit is therefore retained in \(C_\perp\), and the endpoint
+formula gives
+\[
+ \frac1{v+1}\le c_\rho,\qquad
+ 4c_\rho\le C_\perp,\qquad
+ 4\le C_\perp(v+1).
+ \tag{9.26b}
+\]
+The last inequality is equivalent to
+\[
+ \frac1v\le\frac4{4-C_\perp}\frac1{v+1}.
+\]
+Consequently
+\[
+ e_\rho\le
+ \left(\frac4{4-C_\perp}\right)^3c_\rho^3
+ \le
+ \left(\frac4{4-C_\perp}\right)^3
+ \left(\frac {C_\perp}4\right)^2c_\rho.
+ \tag{9.26c}
+\]
+For an on-line copy $e_\rho=0$.  Summing \textup{(9.26c)} over the off-line sector and using
+its defining charge sum yields the self-localized estimate
+\[
+ \mathcal E_\perp\le
+ \left(\frac4{4-C_\perp}\right)^3\frac{C_\perp^3}{16}
+ =4\left(\frac{C_\perp}{4-C_\perp}\right)^3.
+\]
+The map \(t\mapsto4(t/(4-t))^3\) is increasing on \([0,4)\); hence
+\(C_\perp\le C\) recovers the completed-curvature budget.  Because every off-line cross charge
+is strictly positive, \(C_\perp=0\) holds exactly when there is no off-line zero, proving
+\textup{(9.21b)} and \textup{(9.21c)}.  Finally $C<2/43$ implies
+$4/(4-C)<86/85$, and $C<93/2000$ gives the final rational inequality in
+\textup{(9.21a)} by direct arithmetic.
+
+The same moment-germ comparison at degree zero gives
+$M_+(0)=\sum_\rho x_\rho=\mu_0$; the absolutely convergent truncations therefore prove
+\textup{(9.22a)}.  The divisor is nonempty and no centered spectral point vanishes, so
+$\mathcal C_6=\sum_\rho|\lambda_\rho|^3$ is finite and strictly positive.  Since
+$|\delta|\le\delta_*$, formula \textup{(9.25)} gives atomwise
+\[
+ (\Im\lambda_\rho)^2
+ =\frac{4\delta^2\gamma^2}{(\gamma^2+\delta^2)^4}
+ \le4\delta_*^2\frac{\gamma^2+\delta^2}{(\gamma^2+\delta^2)^4}
+ =4\delta_*^2|\lambda_\rho|^3.
+\]
+Summation proves \textup{(9.22c)}.
+
+Assume RH is false.  For every positive transverse zero displacement $\delta$, convergence of
+the square-sampled positive excess at an exponent below $1+2\delta$ would, by the sharp
+square-sample transfer, place that same zero in a strictly narrower half-plane, a contradiction.
+The Hilbert-square version has threshold $1+4\delta$.  Taking the supremum over the right-half
+divisor gives
+\[
+ 1+2\delta_*\le\sigma_\square,
+ \qquad 1+4\delta_*\le\sigma_{\square,2}.
+\]
+Because \textup{(9.22c)} and $\mathcal C_6>0$ imply
+$\sqrt{\mathcal E_\perp/\mathcal C_6}\le2\delta_*$, these two inequalities prove
+\textup{(9.22d)}.
+
+We prove the faithful projective laws.  The open critical strip gives
+$0\le d_\rho<\frac12$, while $x_\rho>0$ and
+$\sum_\rho x_\rho=\mu_0<\infty$.  Hence
+\[
+ x_\rho d_\rho^m\le x_\rho,
+ \qquad
+ x_\rho e^{k d_\rho}\le e^{k/2}x_\rho,
+\]
+so all series in \textup{(9.22e)} converge and their positive finite truncations converge to
+the full sums.  At $m=k=0$ they both reduce to $\sum_\rho x_\rho=\mu_0$, proving
+\textup{(9.22f)}.  To realize $P_{J,\bullet}$, take a vacuum of energy zero, one state of
+energy $\sqrt{d_{\rho_j}}$ for each $j<J$, and choose the directed Wightman amplitude so that
+its transition intensity is $x_{\rho_j}$.  The $2m$-th Liouvillian gap moment is then exactly
+$P_{J,m}$.
+
+If $R_P\le\alpha$, then $d_\rho\le\alpha$ for every atom.  Positivity gives
+\[
+ P_m\le\alpha^m\sum_\rho x_\rho=\mu_0\alpha^m,
+ \qquad
+ Z_k\le e^{k\alpha}\sum_\rho x_\rho=\mu_0e^{k\alpha}.
+ \tag{9.22i}
+\]
+Conversely, if some atom has $d_\rho>\alpha$, then
+$x_\rho d_\rho^m\le P_m$ and $x_\rho e^{kd_\rho}\le Z_k$.  When $\alpha>0$, the ratios
+$(d_\rho/\alpha)^m$ and $e^{k(d_\rho-\alpha)}$ tend to infinity; when $\alpha=0$, either
+bound already fails at every positive moment or sufficiently cold value.  Thus neither envelope
+in \textup{(9.22g)} can hold.  This proves the support/free-energy law.
+
+At $\alpha=0$, the condition $R_P=0$ is RH by \textup{(9.4)}, so the first equivalence in
+\textup{(9.22h)} follows from \textup{(9.22g)}.  If the full cold partition is eventually
+bounded by $A$, positivity gives $Z_{J,k}\le Z_k\le A$ for every $J$.  Conversely, suppose the
+last condition in \textup{(9.22h)} holds.  For each sufficiently large fixed $k$, the convergence
+$Z_{J,k}\to Z_k$ passes the same closed upper bound $A$ to the limit.  Thus $Z_k\le A$
+eventually, proving the finite thermodynamic equivalence.
+
+The diagonal statement is sharper.  If RH is false, choose one off-line multiplicity copy
+\(\rho_j\), so \(x_{\rho_j}>0\) and \(d_{\rho_j}>0\).  For every \(J>j\),
+\[
+ Z_{J,J}\ge x_{\rho_j}e^{Jd_{\rho_j}}\longrightarrow+\infty.
+\]
+If RH holds, every \(d_\rho=0\), so \(Z_{J,J}\le\sum_\rho x_\rho=\mu_0\).  This proves both
+directions of \textup{(9.22ha)}; in particular a fixed upper bound recurring at arbitrarily
+large diagonal indices is already equivalent to RH.
+
+We finally prove the local finite-system law.  Under RH, the explicit truncations \(M_N\) in
+\textup{(9.19)} converge coordinatewise to \((\mu_n)\), and each truncation is finite positive
+atomic and hence has the finite KMS/Wightman realization \textup{(9.11)}.  This proves both local
+closure properties.  Conversely, fix a real polynomial \(p(X)=\sum_{r<D}a_rX^r\).  The associated
+Hankel quadratic
+\[
+ \sum_{r,s<D}a_ra_s m_{r+s}
+\]
+is nonnegative for every finite positive atomic or finite KMS/Wightman moment sequence.  It
+depends continuously on the finite block \(m_0,\ldots,m_{2D-2}\); local approximation therefore
+makes the same quadratic nonnegative at \((\mu_n)\).  Since \(p\) was arbitrary, the complete
+normalized source Hankel form is nonnegative.  The endpoint equivalence
+\textup{(8.14)} then gives RH, proving \textup{(9.22hd)}.
+
+We prove the complete-monotonicity refinement.  Under RH, the thermal representation gives
+\(
+ \mu_k=\sum_\rho x_\rho^{k+1}
+\)
+with $0<x_\rho<1$.  Induction in $r$, justified by absolute convergence, yields
+\[
+ D_{k,r}=\sum_\rho x_\rho^{k+1}(1-x_\rho)^r\ge0.
+ \tag{9.26d}
+\]
+Conversely, assume all $D_{k,r}$ are nonnegative.  For the Bernstein basis in
+\textup{(9.22hg)},
+\[
+ \ell_\mu(B_{M,i})=\binom MiD_{i,M-i}\ge0.
+ \tag{9.26e}
+\]
+Thus every $\mu^{[M]}$ is a finite positive atomic moment sequence supported in $[0,1]$.
+Writing $S(n,j)$ for the Stirling numbers of the second kind and
+$(M)_j=M(M-1)\cdots(M-j+1)$, the identities
+$i^n=\sum_{j=0}^nS(n,j)(i)_j$ and
+$\sum_i(i)_j\ell_\mu(B_{M,i})=(M)_j\mu_j$ give
+\[
+ \mu_n^{[M]}
+ =\sum_{j=0}^nS(n,j)\frac{(M)_j}{M^n}\mu_j.
+ \tag{9.26f}
+\]
+For $j<n$ the coefficient tends to zero, while the $j=n$ coefficient tends to one.
+Hence \textup{(9.22hh)} holds coordinatewise.  The local finite-atomic implication already
+proved then gives RH.  This proves \textup{(9.22hf)} and supplies the canonical approximants,
+which are the constructive Hausdorff--Bernstein realization of the moment criterion
+\cite{Hausdorff1921}.
+
+We now prove the endpoint-calibrated quantitative refinement.  For a real polynomial $p$, absolute
+convergence of the reciprocal-square divisor moments and coefficientwise comparison with the
+source moment germ give
+\[
+ \ell_\mu(p)=\Re\sum_\rho\lambda_\rho p(\lambda_\rho).
+ \tag{9.26g}
+\]
+Taking $p(X)=X^k(R_*-X)^r$ proves \textup{(9.22hfb)}.  The completed endpoint and
+four-orbit estimates give, for every divisor copy,
+\[
+ 0<\Re\lambda_\rho\le R_*,\qquad
+ (\Im\lambda_\rho)^2\le\frac1{84}(\Re\lambda_\rho)^2.
+ \tag{9.26h}
+\]
+If the copy is off the critical line, the strict quartet bound further gives
+\[
+ \Re\lambda_\rho<\frac{R_*}{4}.
+ \tag{9.26i}
+\]
+Put $z=\lambda_\rho$ and $w=R_*-z$.  On the critical line both are nonnegative real numbers.
+Off the line, $z$ and $w$ lie in the open right half-plane, have opposite imaginary parts, and
+\textup{(9.26h)}--\textup{(9.26i)} imply the rational sector bounds
+\[
+ \frac{913}{100}|\Im z|\le\Re z,
+ \qquad
+ \frac{2739}{100}|\Im w|\le\Re w.
+ \tag{9.26j}
+\]
+Indeed, the first inequality follows by squaring from
+$913^2<84\cdot100^2$; the second uses
+$\Re w>3R_*/4$ and $\Re z<R_*/4$.  Since
+$|\arctan u|\le|u|$,
+\[
+ |\arg z|\le\frac{100}{913},\qquad
+ |\arg w|\le\frac{100}{2739}.
+ \tag{9.26k}
+\]
+The two arguments have opposite signs.  Therefore, for $p=k+1$,
+\[
+ |p\arg z+r\arg w|
+ \le\max\{p|\arg z|,r|\arg w|\}.
+ \tag{9.26l}
+\]
+When $k\le13$ and $r\le43$, the right side is at most
+\[
+ \max\left\{\frac{1400}{913},\frac{4300}{2739}\right\}<\frac\pi2.
+ \tag{9.26m}
+\]
+Thus $\Re(z^{k+1}w^r)\ge0$ atom by atom.  Summing the absolutely convergent series proves the
+616 inequalities in \textup{(9.22hfc)}.
+
+Under RH every $\lambda_\rho$ is real and belongs to $(0,R_*]$, so all calibrated differences
+are nonnegative.  Conversely, nonnegativity of all calibrated differences gives the scaled
+Hausdorff--Bernstein approximants supported on $[0,R_*]$; after rescaling by $R_*$ they yield
+local finite-positive-atomic approximation of $(\mu_n)$, hence RH by
+\textup{(9.22hd)}.  The proved rectangle shows that full calibrated positivity is equivalent to
+positivity only when $k>13$ or $r>43$.  Combining this reduction with the source-abscissa
+criterion and the finite-KMS equivalence proves \textup{(9.22hfd)}.
+
+For completeness, the small constant in \textup{(9.21)} has the following rational certificate.
+The decreasing Euler sequence $H_m-\log m$ at $m=3125=5^5$, together with
+\[
+ \log5>1.6094379123,\qquad
+ H_{3125}-5(1.6094379123)<\frac{2887}{5000},
+\]
+gives $\gamma_{\!E}<2887/5000$.  Also
+\[
+ v_0=\frac{5^{26}}{2^6 3^{32}}<4\pi,\qquad
+ \log v_0=26\log5-6\log2-32\log3>2.5309093934,
+\]
+using $\pi>3.14159265358979323846$, $\log2<0.6931471808$,
+$\log3<1.0986122888$, and the displayed lower bound for $\log5$.  Thus
+\[
+ \log(4\pi)>\frac{25309}{10000},\qquad
+ C<2+\frac{2887}{5000}-\frac{25309}{10000}
+ =\frac{93}{2000}<\frac2{43}.
+ \tag{9.27}
+\]
+All logarithmic decimal bounds above are rational inequalities obtained from
+$-\log(1-x)=\sum_{k=1}^m x^k/k+R_m$, with
+$0<R_m<x^{m+1}/((m+1)(1-x))$; hence no floating-point assumption is used.  Finally,
+$\kappa_4'(c)=64(16-3c)/(16-5c)^3>0$ on $(0,93/2000)$, and
+\[
+ \kappa_4(C)<\kappa_4(93/2000)
+ =\frac{11765616}{994456225}<\frac1{84}.
+\]
+This proves \textup{(9.21)} and \textup{(9.22)}.
+
+The nonnegative gap $\mathcal E_\perp$ vanishes exactly when every
+$\Im\lambda_\rho$ vanishes.  By \textup{(9.25)} and the absence of real Xi zeros in the open
+critical strip, this is equivalent to $\delta=0$ for every zero, hence to RH.  The exact gap
+identity makes equality, the reverse inequality, and the thermodynamic source limit equivalent.
+The remaining source, projective, Born, and endpoint equivalences follow from
+Theorems~\ref{thm:projective-energy-budget}, \ref{thm:prime-gamma-spectrum}, and
+\ref{thm:endpoint-reflection-main}.
+\end{proof}
+
+\begin{proposition}[Single-Gibbs Morse--Fisher certificate reduction]
+\label{prop:morse-fisher-envelope}
+For the first theta atom put
+\[
+ t=\pi e^{2x},\qquad q=t-\frac32,\qquad
+ A_F=\frac{3/2}{\pi-3/2},\qquad
+ b(x)=e^{5x/2}e^{-\pi e^{2x}},
+ \tag{9.27a}
+\]
+and let
+\[
+ P(x)=x-\frac{x^2}{2},\qquad \eta(x)=x\chi_1(x),\qquad
+ R_m=\int_0^\infty x^m\eta(x)^2\,dx,\qquad
+ L_m=\int_0^\infty x^m b(x)\,dx.
+ \tag{9.27b}
+\]
+The exact first-radial quadratic virial energy
+\[
+ \mathcal V_1=
+ \int_0^\infty
+ \left\{\frac12P(x)^2\left(B_1'(x)+\frac1{x^2}\right)
+       +\frac14(1-x)^2\right\}\eta(x)^2\,dx
+ \tag{9.27c}
+\]
+satisfies
+\[
+ \mathcal V_1\le U_{\rm quad},
+ \tag{9.27d}
+\]
+where the upper value is the finite moment expression
+\[
+\begin{aligned}
+ U_{\rm quad}={}&
+ \frac34R_0+R_1-\frac78R_2-\frac12R_3+\frac5{16}R_4+8L_3\\
+ &+(1+6A_F)L_4-(8+18A_F)L_5
+ +\left(\frac{11}{4}+\frac{51}{2}A_F\right)L_6
+ -15A_FL_7+3A_FL_8.
+\end{aligned}
+ \tag{9.27e}
+\]
+More precisely, for every $x\ge0$,
+\[
+ \frac{t}{q}\le1+A_Fe^{-2x}\le1+A_F(1-2x+2x^2),
+ \tag{9.27f}
+\]
+and the first upper bound is strict against the old endpoint constant $1+A_F$ for every
+$x>0$.
+
+Let
+\[
+ \mathcal C_P=R_2-\frac12R_3,
+ \qquad c_0=\frac{3005}{2997}.
+\]
+If the finite scalar certificate
+\[
+ (14c_0^2-9)R_2^2U_{\rm quad}\le9R_0\mathcal C_P^2
+ \tag{9.27g}
+\]
+holds, then
+\[
+ 14(c_0R_2)^2\le9R_0R_4.
+ \tag{9.27h}
+\]
+Thus the first of the two source inequalities needed for the nonconstant linear Hankel block has
+been reduced to the explicit moments $R_0,\ldots,R_4,L_3,\ldots,L_8$.
+
+More strongly, the exact Ward identity
+\[
+ \chi_1(x)^2=-b(x)-2b'(x)                       \tag{9.27k}
+\]
+implies, for every $m\ge0$,
+\[
+ R_m=2(m+2)L_{m+1}-L_{m+2}.                    \tag{9.27l}
+\]
+Hence $U_{\rm quad}=U_G$, where
+\[
+\begin{aligned}
+ U_G={}&3L_1+\frac{21}{4}L_2+
+ \left(-\frac{25}{8}+6A_F\right)L_4
+ -\left(\frac{15}{4}+18A_F\right)L_5\\
+ &+\left(\frac{39}{16}+\frac{51}{2}A_F\right)L_6
+ -15A_FL_7+3A_FL_8.
+\end{aligned}                                  \tag{9.27m}
+\]
+The scalar certificate \textup{(9.27g)} is therefore equivalent to
+\[
+ (14c_0^2-9)(8L_3-L_4)^2U_G
+ \le9(4L_1-L_2)
+ \left(8L_3-6L_4+\frac12L_5\right)^2.          \tag{9.27n}
+\]
+The independent relaxed fourth-moment certificate is exactly
+\[
+ 16c_0^2(2e^{-\pi}-L_0)(8L_3-L_4)
+ \le45(4L_1-L_2)^2.                            \tag{9.27o}
+\]
+Together, \textup{(9.27n)} and \textup{(9.27o)} imply nonnegativity of every real
+linear-polynomial prime--archimedean trace-Hankel test.  Thus the two apparent source channels
+are one finite certificate on the moment fiber of the fixed positive Gibbs density $b$.
+Equivalently, the complete scalar input is carried by one fixed incomplete-Gamma density:
+\[
+ L_m=\frac1{2^{m+1}}
+ \int_1^\infty(\log t)^m t^{1/4}e^{-\pi t}\,dt
+ \qquad(m\ge0).                                \tag{9.27p}
+\]
+\end{proposition}
+
+\begin{proof}
+Since $e^{2x}\ge1$,
+\[
+ q=\pi e^{2x}-\frac32
+ \ge\left(\pi-\frac32\right)e^{2x}.
+\]
+The identity $t/q=1+3/(2q)$ gives the first inequality in \textup{(9.27f)}.  For $u\ge0$,
+the positive exponential series gives $1+u+u^2/2\le e^u$.  Taking reciprocals and using
+\[
+ \left(1-u+\frac{u^2}{2}\right)
+ \left(1+u+\frac{u^2}{2}\right)-1=\frac{u^4}{4}
+\]
+proves $e^{-u}\le1-u+u^2/2$.  Taking $u=2x$ proves the second inequality.  Since
+$e^{-2x}<1$ for $x>0$, the exponential envelope is strictly below $1+A_F$ there.
+
+Set $F(x)=x^2P(x)^2=x^4-x^5+x^6/4$.  The ground-state and hypervirial identities for
+$\eta=x\chi_1$ give the exact decomposition
+\[
+\begin{aligned}
+ \mathcal V_1={}&
+ \frac34R_0+R_1-\frac78R_2-\frac12R_3+\frac5{16}R_4\\
+ &+8L_3-5L_4-2L_5+\frac54L_6
+ +6\int_0^\infty F(x)\frac{t(x)}{q(x)}b(x)\,dx.
+\end{aligned}
+ \tag{9.27i}
+\]
+All integrations by parts have zero endpoint current: $F(0)=0$, and the factor
+$e^{-\pi e^{2x}}$ dominates every polynomial at infinity.  Substitute the quadratic envelope
+in \textup{(9.27f)} into the last integral.  Expanding
+\[
+ 6F(x)\{1+A_F(1-2x+2x^2)\}
+\]
+and adding the Gibbs polynomial in \textup{(9.27i)} gives respectively the coefficients
+\[
+ 8,\quad 1+6A_F,\quad -(8+18A_F),\quad
+ \frac{11}{4}+\frac{51}{2}A_F,\quad -15A_F,\quad 3A_F
+\]
+of $L_3,\ldots,L_8$.  This proves \textup{(9.27d)}--\textup{(9.27e)}.
+
+Finally the two-observable Robertson determinant for $1,x^2$, together with the exact Stein
+identity for $P$, is
+\[
+ R_0\mathcal C_P^2\le(R_0R_4-R_2^2)\mathcal V_1.
+ \tag{9.27j}
+\]
+The energy is strictly positive.  From \textup{(9.27d)} and \textup{(9.27g)},
+\[
+ (14c_0^2-9)R_2^2\mathcal V_1
+ \le9R_0\mathcal C_P^2
+ \le9(R_0R_4-R_2^2)\mathcal V_1.
+\]
+Cancellation of $\mathcal V_1$, followed by addition of $9R_2^2$, proves
+\textup{(9.27h)}.
+
+To prove the stronger reduction, differentiate
+$b(x)=e^{5x/2}e^{-\pi e^{2x}}$.  The first-atom source identity gives
+$\chi_1^2=-b-2b'$, which is \textup{(9.27k)}.  Since
+$x^{m+2}b(x)$ vanishes at both endpoints, integration by parts yields
+\[
+ R_m=-L_{m+2}-2\int_0^\infty x^{m+2}b'(x)\,dx
+     =2(m+2)L_{m+1}-L_{m+2}.
+\]
+Substitution for $R_0,\ldots,R_4$ in \textup{(9.27e)} and collection of coefficients gives
+\textup{(9.27m)}; in particular the $L_3$ coefficient cancels exactly.  The same substitution
+gives
+\[
+ R_0=4L_1-L_2,\qquad R_2=8L_3-L_4,\qquad
+ \mathcal C_P=8L_3-6L_4+\frac12L_5,
+\]
+and hence \textup{(9.27n)}.  Finally the three nonradial first-atom moments are
+\[
+ 2e^{-\pi}-L_0,\qquad 4L_1-L_2,\qquad 8L_3-L_4,
+\]
+so the relaxed fourth-moment condition is precisely \textup{(9.27o)}.  The established
+first-atom domination theorem transports these two inequalities to the full linear
+trace-Hankel block.  Finally, $t=e^{2x}$ gives $dx=dt/(2t)$,
+$x^m=2^{-m}(\log t)^m$, and $e^{5x/2}=t^{5/4}$; substitution proves
+\textup{(9.27p)}.  Absolute integrability follows from
+$(\log t)^m t^{1/4}e^{-\pi t}\le t^{m+1}e^{-t}$ for $t\ge1$.
+\end{proof}
+
+\begin{proposition}[Universal one-state KMS passive palette]
+\label{prop:universal-kms-palette}
+Let $N\mapsto r_N$ be any surjection from $\mathbb N$ onto $\mathbb Q$.  The one-state
+zero-Hamiltonian KMS/Wightman system at inverse temperature zero with real observable amplitude
+$r_N$ has passive response
+\[
+ \mathcal R_N(z)=\frac{r_N^2}{z},\qquad
+ \Im\mathcal R_N(z)=-\frac{r_N^2\Im z}{|z|^2}.
+ \tag{9.27aa}
+\]
+At every $z$ in the open upper half-plane,
+\[
+ \overline{\{\Im\mathcal R_N(z):N\ge0\}}=(-\infty,0].
+ \tag{9.27ab}
+\]
+Consequently, for every real $R$,
+\[
+ \mathcal K(R)\Longleftrightarrow\mathrm{HF}(R).
+ \tag{9.27ac}
+\]
+\end{proposition}
+
+\begin{proof}
+The Gibbs partition and Wightman weight of the zero-Hamiltonian one-state system are both one,
+so its unique transition has intensity $r_N^2$ and frequency zero.  This proves
+\textup{(9.27aa)}.  Rational squares are dense in $[0,\infty)$, and multiplication by
+$-\Im z/|z|^2<0$ maps that closed ray onto $(-\infty,0]$, proving \textup{(9.27ab)}.
+
+For $s_q\in\mathbb Q+i\mathbb Q$ and $z_q=(s_q-\frac12)(-i)$, the centered source identity is
+\[
+ \mathfrak R_\Gamma(z_q)=-i\,\mathcal F_\Gamma(s_q),
+ \qquad
+ \Im\mathfrak R_\Gamma(z_q)=-\Re\mathcal F_\Gamma(s_q),
+ \tag{9.27ae}
+\]
+where $\mathcal F_\Gamma=-\zeta'/\zeta-\mathcal A'/\mathcal A$.
+By \textup{(9.27ab)}, membership in \textup{(1.20ca)} is therefore exactly nonnegativity of
+$\Re\mathcal F_\Gamma(s_q)$.  Gaussian-rational density and continuity away from the natural
+poles extend this countable sign to the complete positive-frequency region; the reverse
+implication is immediate by restriction.  This proves \textup{(9.27ac)}.
+\end{proof}
+
+\begin{proposition}[Exact quartet discharge and ultraviolet--infrared selection]
+\label{prop:endpoint-frequency-master}
+Let $R$ satisfy \textup{(1.20a)}.  Then the central response sign \textup{(1.20c)} holds.
+Moreover,
+\[
+ \begin{aligned}
+ \mathrm{HF}(R)
+ &\Longleftrightarrow \mathcal E_\perp=0
+ \Longleftrightarrow M_2=\mathcal Q_W\\
+ &\Longleftrightarrow M_N(1)\longrightarrow\mathcal Q_W\\
+ &\Longleftrightarrow
+ \text{the normalized source moments admit a reflection-positive Gram orbit}\\
+ &\Longleftrightarrow
+ \text{they are vacuum moments of a bounded self-adjoint observable}\\
+ &\Longleftrightarrow \exists A\; Z_k\le A\quad(k\gg1)\\
+ &\Longleftrightarrow
+ \exists A\;\forall k\gg1\;\exists J_0(k)\;\forall J\ge J_0(k),\quad Z_{J,k}\le A\\
+ &\Longleftrightarrow
+ \exists A\;\forall J_0\;\exists J\ge J_0,\quad Z_{J,J}\le A\\
+ &\Longleftrightarrow(\mu_n)\text{ is locally finite positive atomic}\\
+ &\Longleftrightarrow(\mu_n)\text{ is locally finite KMS/Wightman}\\
+ &\Longleftrightarrow\mathcal K(R)\\
+ &\Longleftrightarrow\mathrm{RH}.
+ \end{aligned}
+ \tag{9.27a}
+\]
+In particular, $R_0=218/25$ is admissible, so the only response sign left in
+\textup{(9.27a)} is the positive-frequency tail $\Re z>218/25$.
+\end{proposition}
+
+\begin{proof}
+Write $a_\rho=(\rho-\frac12)(-i)$ and
+\[
+ T_a(z)=a^{-1}-(a-z)^{-1}.
+\]
+Line reflection $\rho\mapsto1-\overline\rho$ sends $a_\rho$ to
+$\overline{a_\rho}$.  For $z=x+iy$, direct reduction to a common denominator gives
+\[
+ \Im\bigl(T_a(z)+T_{\overline a}(z)\bigr)
+ =-2y\,
+ \frac{(x-\Re a)^2+y^2-(\Im a)^2}
+ {\bigl((x-\Re a)^2+(y-\Im a)^2\bigr)
+  \bigl((x-\Re a)^2+(y+\Im a)^2\bigr)}.
+ \tag{9.27b}
+\]
+Here $\Re a_\rho=\Im\rho$ and
+$|\Im a_\rho|=|\Re\rho-\frac12|<\frac12$.  Suppose first that
+$\rho=\beta+i\gamma$ is off the critical line.  Its four divisor points
+\[
+ \rho,\qquad 1-\overline\rho,\qquad \overline\rho,
+ \qquad 1-\rho
+ \tag{9.27c}
+\]
+are distinct: equality across the line would give $\beta=1/2$, while equality across the real
+axis would give $\gamma=0$.  Formula \textup{(8.4)} is invariant under both reflections, so the
+four points have the same positive endpoint charge $c_\rho$.  Since the full charge sum is $C$,
+and \textup{(8.18)} gives $c_\rho\ge(1+\gamma^2)^{-1}$,
+\[
+ \frac4{1+\gamma^2}\le4c_\rho\le C,
+ \qquad 4\le C(1+\gamma^2).
+ \tag{9.27d}
+\]
+Together with $C<93/2000$, this yields
+\[
+ \gamma^2>\frac{8000}{93}-1=\frac{7907}{93}.
+ \tag{9.27e}
+\]
+Now \textup{(1.20a)} and \textup{(9.27d)} imply
+\[
+ (R+\tfrac12)^2<\gamma^2=(\Re a_\rho)^2.
+ \tag{9.27f}
+\]
+Consequently, if $|x|\le R$, then
+$|x-\Re a_\rho|>\frac12>|\Im a_\rho|$.  If $\rho$ lies on the critical line, then
+$\Im a_\rho=0$, and the numerator in \textup{(9.27b)} is positive directly.  Thus, for $y>0$,
+the numerator after $-2y$ in \textup{(9.27b)} is positive for every line-reflected pair, while
+both denominator factors are positive.
+
+The same quartet inequality proves that the central upper band is zero-free.  Indeed, a zero
+$\Xi_C(z)=0$ with $y>0$ corresponds to the off-line zero
+$\rho=\frac12+iz=(\frac12-y)+ix$.  If $|x|\le R$, then
+\[
+ 4\le C(x^2+1)\le C(R^2+1)
+   <C\bigl((R+\tfrac12)^2+1\bigr)<4,
+\]
+a contradiction.  The relative-resolvent expansion is therefore absolutely convergent on the
+band, and pairwise summation of \textup{(9.27b)} proves \textup{(1.20c)}.
+
+The involution $z\mapsto-\overline z$ preserves the upper strip and satisfies
+\[
+ \Im\mathfrak R_\Gamma(-\overline z)=\Im\mathfrak R_\Gamma(z).
+ \tag{9.27g}
+\]
+Thus $\mathrm{HF}(R)$, the unconditional central-band sign, and \textup{(9.27g)} give the
+anti-Herglotz sign throughout $0<\Im z<1/2$.  If an off-line Xi zero existed, reflect it into
+$0<\Re s<1/2$ and approach its logarithmic-derivative pole from the positive real direction.
+The residue is its positive analytic multiplicity, so $\Im\mathfrak R_\Gamma$ becomes positive,
+a contradiction.  Hence $\mathrm{HF}(R)$ implies RH.  Conversely, on RH every $a_\rho$ is real,
+and each relative-resolvent atom has nonpositive imaginary part in the upper half-plane; hence RH
+implies $\mathrm{HF}(R)$.
+
+The equivalence with $\mathcal E_\perp=0$, the Born--Witten source saturation, and the finite KMS
+limit is Theorem~\ref{thm:thermal-master}.  The reflection-positive and self-adjoint equivalences
+are the exact moment-realization statements in Theorem~\ref{thm:endpoint-reflection-main}.
+The countable passive-response equivalence is
+Proposition~\ref{prop:universal-kms-palette}.
+Finally,
+\[
+ C\bigl((R_0+\tfrac12)^2+1\bigr)
+ <\frac{93}{2000}\cdot\frac{215021}{2500}
+ =\frac{19996953}{5000000}<4,
+\]
+and $R_0>0$, proving the rational assertion.
+\end{proof}
+
+\begin{remark}[The positive endpoint obligation]
+\label{rem:thermal-boundary}
+The unconditional theorem proves that the exact pure-state source captures more than $83/84$ of
+the positive thermal second moment.  More strongly, the entire absolute mismatch is cubically
+suppressed by the endpoint charge:
+\[
+ 0\le M_2-\mathcal Q_W=\mathcal E_\perp
+ \le4\left(\frac{C}{4-C}\right)^3<\frac1{150000}.
+\]
+The
+remaining endpoint is
+\[
+ \boxed{M_2\le\mathcal Q_W.}
+ \tag{9.28}
+\]
+Together with $\mathcal Q_W\le M_2$, this forces the transverse energy to vanish and proves RH.
+Thus a successful completion must strengthen the source-retention factor from
+$1-\kappa_4(C)$ to $1$, while preserving the exact source--divisor incidence.
+\end{remark}
+
 \section{Implications for the Connes route}
 
 Theorem~\ref{thm:inverse-tilted-source-tomography} closes the complete source--divisor incidence
@@ -2546,22 +4114,65 @@ constructed here, its scalar channel must agree with \textup{(7.14)}--\textup{(7
 the multiplicity normalization \textup{(7.11)}.  No claim is made that every possible
 Connes-type architecture factors through this scalar coordinate.
 
-The endpoint theorem gives a second, operator-facing obligation.  The normalized completed
-prime--Gamma moments already have a canonical analytic source germ
-$\mathcal M$ in Proposition~\ref{prop:prime-arch-moment-germ}.  A Connes-type construction proves
-RH if it supplies either a reflection-positive Gram orbit for all of these moments or a bounded
-self-adjoint observable with these exact vacuum moments.  The exact moment identification is
-essential: self-adjointness of a finite or unrelated operator does not identify its moments with
-\textup{(8.7b)}.  The unconditional estimate
+The projective--thermal theorem turns the endpoint construction into the same master spectrum,
+rather than a second independent route.  The normalized completed prime--Gamma moments already
+have the analytic source germ $\mathcal M$ from
+Proposition~\ref{prop:prime-arch-moment-germ}.  Independently of RH, the centered
+reciprocal-square divisor supplies positive nodes $x_\rho$ and finite KMS-weighted systems whose
+second moments converge to $M_2=M_+(1)$.  The theta source simultaneously realizes the same
+continued value as the exact pure-state functional $\mathcal Q_W$.  Their mismatch is
 \[
- E\le\frac{C^2}{1-C}<C
+ M_2-\mathcal Q_W=\mathcal E_\perp=\frac14\mathcal E_2,
+ \qquad
+ \mathcal E_\perp\le\kappa_4(C)M_2<\frac1{84}M_2.
 \]
-shows that the complete reflection mismatch is already quadratically controlled by one
-prime--archimedean source value.  The remaining operator estimate is the saturation $H\le C$,
-which combines with the unconditional $C\le H$ to give equality.  Equivalently, one must prove
-the complete source Hankel inequalities \textup{(8.14)}.  The Neumann expansion
-\textup{(8.12)} makes the required carrier cofinal and all-order: a finite moment prefix cannot
-force saturation.
+Consequently a Connes-type construction carrying this exact source--thermal incidence proves RH
+as soon as it proves the single endpoint saturation $M_2\le\mathcal Q_W$.  This is equivalent to the
+endpoint saturation $H\le C$, to the complete source Hankel inequalities \textup{(8.14)}, and to
+a reflection-positive Gram or self-adjoint vacuum realization with the exact source moments.
+The exact identification is essential: finite KMS positivity, self-adjointness of an unrelated
+operator, or convergence to $M_+$ alone does not identify the limit with the Witten source.
+Here the pure-state identity and the one-eighty-fourth estimate do provide quantitative progress:
+$\mathcal Q_W$ captures more than $83/84$ of $M_2$.  The Neumann expansion \textup{(8.12)} and
+the multiplicity-exact KMS enumeration make the required carrier cofinal; the theorem compresses
+its decisive endpoint to one quadratic coordinate.
+
+This coordinate is arithmetically exposed, not merely operator-theoretic.  With
+$\mathcal C_6=\sum_\rho|\lambda_\rho|^3$, the exact dyadic positive excess satisfies, under
+false RH,
+\[
+ 1+\sqrt{(M_2-\mathcal Q_W)/\mathcal C_6}\le\sigma_\square,
+ \qquad
+ 1+2\sqrt{(M_2-\mathcal Q_W)/\mathcal C_6}\le\sigma_{\square,2}.
+ \tag{10.0}
+\]
+Thus a nonzero thermodynamic source gap spends a quantitatively visible amount of prime-energy
+abscissa.  Conversely, a square-prime energy bound at transverse width $\alpha$ forces
+$M_2-\mathcal Q_W\le4\alpha^2\mathcal C_6$.  This is the source-specific incidence that generic
+finite KMS positivity lacks.
+
+Proposition~\ref{prop:endpoint-frequency-master} identifies the operator-facing version of the
+same coordinate.  The central completed prime--Gamma response does not remain an open condition:
+the four-charge orbit law makes its anti-Herglotz sign unconditional on
+$|\Re z|\le218/25$, and reflection removes the
+negative-frequency tail.  Hence the remaining response theorem is precisely
+\[
+ \Im\mathfrak R_\Gamma(z)\le0
+ \qquad\left(0<\Im z<\frac12,\ \Re z>\frac{218}{25}\right),
+ \tag{10.0a}
+\]
+away from the natural zeta poles.  This one-sided high-frequency condition is equivalent to
+$M_2\le\mathcal Q_W$ and to the complete reflection-positive moment condition.  A successful
+construction need not establish a locally uniform thermodynamic limit: by
+Proposition~\ref{prop:universal-kms-palette}, it is enough that the countable Gaussian-rational
+source values belong to the cluster sets of the universal one-state palette.  Those cluster sets
+are already exactly $(-\infty,0]$.  Thus the physical carrier is minimal and explicit; the
+remaining arithmetic content is precisely that the continued source enters its passive chamber.
+A successful Connes implementation may therefore attack either ultraviolet passivity
+\textup{(10.0a)} or
+infrared thermal saturation, but it must identify the exact continued prime--Gamma response or
+the exact Born--Witten source value.  The master theorem proves that these are not independent
+routes: they are two boundary readings of the same transverse orientation defect.
 
 The sharp-window observable itself already has the exact prime--Gamma realization
 \textup{(6.6)}; the missing operator theorem is therefore a positivity or critical-energy
@@ -2574,7 +4185,7 @@ a weaker and more arithmetic endpoint.  It is enough, and again necessary, to pr
  \qquad\text{or}\qquad
  \sum_{n\le X}S_{L,N}^-(n)=O_\varepsilon(X^{1+\varepsilon})
  \quad(\varepsilon>0).
- \tag{9.1}
+ \tag{10.1}
 \]
 This is the strongest cumulative scalar conclusion of the paper: the final carrier contains only a finite
 von Mangoldt autocorrelation and its explicit polar background.  No Gamma term, analytic
@@ -2639,17 +4250,17 @@ for every $\delta>0$, that
 \[
   q_L(n)\ge-C_\delta n^\delta
   \qquad(n\ge N,\ n\notin E).
-  \tag{9.2}
+  \tag{10.2}
 \]
 The exact remaining payment is not a density condition but the actual negative-energy law
 \[
  \sum_{\substack{n\ge N\\n\in E}}
  \frac{q_L(n)^-}{n^{1+\varepsilon}}<\infty
  \qquad(\varepsilon>0).
- \tag{9.3}
+ \tag{10.3}
 \]
-Corollary~\ref{cor:exceptional-carrier} says that (9.2)--(9.3) are jointly equivalent to RH.  A convenient
-source-side sufficient condition for (9.3) is the matching amplitude--thickness cost: a global
+Corollary~\ref{cor:exceptional-carrier} says that (10.2)--(10.3) are jointly equivalent to RH.  A convenient
+source-side sufficient condition for (10.3) is the matching amplitude--thickness cost: a global
 estimate $|q_L(n)|=O(n^\beta)$ and
 $\sum_{n\in E}n^{\beta-1-\varepsilon}<\infty$ for every $\varepsilon>0$.  The sharp divisor-side
 choice is $\beta=\delta_*$; the fully unconditional source obligation may use
@@ -2658,7 +4269,7 @@ stronger sufficient special cases.  Alternatively, the same source construction 
 directly that the cutoff-free canonical continuation $\cM_L$ is holomorphic on $\Re s>1$.
 
 This is a cofinal, noncompact carrier condition.  Finite-prime positivity or a finite
-self-adjoint spectrum does not imply the critical source energy or (9.2): the construction must transport the completed
+self-adjoint spectrum does not imply the critical source energy or (10.2): the construction must transport the completed
 Euler--Gamma incidence into the complete actual sequence.  The compatible finite-factorization
 viewpoint is therefore useful only when its cofinal section controls the global remainder in
 (5.3).  Once that happens, Theorem~\ref{thm:tomography} gives a rigid alternative:
@@ -2673,7 +4284,7 @@ mechanisms is not an undirected loss of compactness.  Along the rectangular sect
 coherent escape whose scalar trace values identify the actual completed sequence.  After that
 identification, it can prove a zero-free region by supplying a positive split satisfying the two
 shifted-energy laws, or more generally one positive energy majorant; at the RH endpoint, the
-indicator coordinate is exactly (9.2)--(9.3).  A distinct
+indicator coordinate is exactly (10.2)--(10.3).  A distinct
 sufficient finish is to prove directly that the canonical Mellin channel is holomorphic on the
 whole target half-plane.  The same obligation applies to recent
 finite-prime spectral triples.  Their normalized determinants must carry the completed divisor
@@ -2698,33 +4309,106 @@ $\sigma_{\rm abs}(S_{L,N}^-)\le1$, the equivalent cumulative estimate
 $A_{L,N}(X)=O_\varepsilon(X^{1+\varepsilon})$, or an operator theorem forcing any of these
 statements.  The paper
 therefore does not prove RH.  It reduces the remaining source problem to analytic continuation of
-the actual polar--prime critical-Mellin defect and, independently, to the critical growth of one
-explicit positive cumulative prime--polar mass.
+the actual polar--prime critical-Mellin defect, with the critical growth of one explicit positive
+cumulative prime--polar mass as its equivalent monotone source chart.
 
-The endpoint reflection theorem makes quantitative progress on a separate exact estimate.  It
-proves
+The projective--thermal master theorem places the endpoint and thermodynamic estimates in one
+scale-resolved spectrum.  It proves
 \[
+ \begin{aligned}
  0\le H-C=\frac E2
- \le\frac{C^2}{2(1-C)}
- <\frac C2,
- \qquad C=2+\gamma-\log(4\pi).
- \tag{10.1}
+ &<\frac{C^2}{2(1-C)}<\frac C2,
+ &H&<\frac{2-C}{2(1-C)}C<\frac32C,\\
+ 0\le M_2-\mathcal Q_W=\mathcal E_\perp
+ &\le\kappa_4(C)M_2<\frac1{84}M_2,
+ &C&=2+\gamma_{\!E}-\log(4\pi)<\frac{93}{2000}<\frac2{43}.
+ \end{aligned}
+ \tag{11.1}
 \]
-The sharp remaining inequality is $H\le C$.  Combining it with the unconditional reverse
-inequality yields
+In particular,
+\[
+ \frac{83}{84}M_2<\mathcal Q_W\le M_2
+ \le\frac{\mathcal Q_W}{1-\kappa_4(C)}
+ <\frac{84}{83}\mathcal Q_W.
+ \tag{11.2}
+\]
+The absolute gap satisfies the stronger cubic source law
+\[
+ 0\le M_2-\mathcal Q_W=\mathcal E_\perp
+ \le4\left(\frac{C}{4-C}\right)^3
+ <\left(\frac{86}{85}\right)^3\frac{C^3}{16}
+ <\frac1{150000}.
+ \tag{11.2a}
+\]
+The response side is simultaneously discharged on a nontrivial exact quartet band:
+\[
+ \Im\mathfrak R_\Gamma(z)\le0
+ \quad\left(0<\Im z<\frac12,\ |\Re z|\le\frac{218}{25}\right).
+ \tag{11.2b}
+\]
+The physics and arithmetic charts are coupled by
+\[
+ \mathcal E_\perp\le4\delta_*^2\mathcal C_6,
+ \qquad
+ 1+\sqrt{\mathcal E_\perp/\mathcal C_6}\le\sigma_\square,
+ \qquad
+ 1+2\sqrt{\mathcal E_\perp/\mathcal C_6}\le\sigma_{\square,2}
+ \tag{11.2c}
+\]
+in the off-critical case.  Hence the thermal source mismatch quantitatively forces explicit
+prime-window energy recession.
+Thus the unresolved response estimate begins only at positive frequency $218/25$; the negative
+tail is its reflected copy.  This is a genuine source-value estimate, not merely another
+equivalent formulation of RH.
+More generally, the projective radius supplies the sharper intrinsic estimate
+$E\le\mathcal B_C(R_P)$.  The sharp remaining inequality may be written either as $H\le C$ or as
+$M_2\le\mathcal Q_W$.  Combining either with its unconditional reverse inequality yields
 \[
  \boxed{\begin{gathered}
  \mathrm{RH}\Longleftrightarrow H\le C\Longleftrightarrow E=0,\\
+ \mathrm{RH}\Longleftrightarrow M_2\le\mathcal Q_W
+ \Longleftrightarrow\mathcal E_\perp=0,\\
+ \mathrm{RH}\Longleftrightarrow\mathrm{HF}(218/25),\\
  \mathrm{RH}\Longleftrightarrow
  \sum_{i,j}a_i a_j\mu_{i+j}\ge0
  \quad\text{for every finitely supported }(a_i)\subset\mathbb Z.
  \end{gathered}}
- \tag{10.2}
+ \tag{11.3}
 \]
+The last line is equivalently the complete monotonicity law
+\[
+ \mathrm{RH}\Longleftrightarrow D_{k,r}\ge0\quad(k,r\ge0),
+ \tag{11.3a}
+\]
+and in that case the Bernstein formula \textup{(9.22hg)} supplies canonical finite positive
+atomic, hence finite KMS, approximants.  The calibrated array makes the proven part of this
+infinite condition explicit:
+\[
+ D^*_{k,r}\ge0\quad(k\le13,\ r\le43),
+ \qquad
+ \mathrm{RH}\Longleftrightarrow
+ \bigl[D^*_{k,r}\ge0\text{ whenever }k>13\text{ or }r>43\bigr].
+ \tag{11.3b}
+\]
+Thus 616 exact Hausdorff source inequalities are theorems, and the remaining obligation is a
+single cofinal tail.  This is strictly stronger than an equivalent reformulation: the finite
+southwest block has been removed from the RH premise by an atomwise opposite-phase estimate.
+Independently, Proposition~\ref{prop:morse-fisher-envelope}
+improves the first local source estimate from a constant Fisher multiplier to a decaying
+exponential envelope and the finite moment upper value $U_{\rm quad}$.
 Thus the work does not merely rename the missing estimate: it proves the strict source-controlled
-neighborhood \textup{(10.1)}, identifies its equality case, and reconstructs the reflected
-endpoint from the absolutely convergent all-order traces \textup{(8.12)}.  What remains is a
-source-side saturation or positivity mechanism; the contraction by itself cannot supply it.
+endpoint neighborhood, the central-frequency passivity interval, and the radius-dependent
+refinement, identifies the equality case, and
+reconstructs the reflected endpoint from the absolutely convergent all-order traces
+\textup{(8.12)}.  The Born--Witten--KMS law is an estimate on the missing moment gap: it bounds
+the entire transverse energy both relatively and by the absolute cubic charge
+$4(C/(4-C))^3<1/150000$.  What remains is the final improvement from this strictly positive
+source-dependent budget to zero.  Finite KMS
+positivity alone cannot supply that saturation because it sees only the positive real nodes.
+Indeed, Proposition~\ref{prop:universal-kms-palette} makes the boundary exact and positive:
+one-state finite KMS systems already realize the entire dissipative ray at every upper-half-plane
+point.  The missing theorem must therefore couple the arithmetic source to that ray; enlarging
+the passive finite-system palette supplies no additional sign information.
 
 The paper also gives a universal energy geometry for every fixed rectangular Weil window.
 Corollary~\ref{cor:explicit-source-endpoints} gives a
@@ -2759,17 +4443,22 @@ Finally, the novelty claim is intentionally narrow.  The general Guinand--Weil--
 formula, Weil positivity, the Connes trace-formula
 architecture, the Euler logarithmic-derivative source transform, Landau's theorem, and the screw
 function are established parent mechanisms.  The inverse-tilted complete-divisor theorem is
-bridge infrastructure.  The contribution claimed here is the fixed-window logarithmic
-compression, the exact evaluated sharp rectangular prime--Gamma specialization, its source-only tail-sign RH
-criterion and exact one-sided exponent
-spectrum, the Gamma-free finite prime--polar abscissa criterion, its exact cumulative
-negative-mass power spectrum, universal negative-channel abscissa, exact
-finite positive-channel non-dilution, summable-family aggregate conservation, quantitative
-source--divisor--energy equivalence, optimal sharp-source correction, thickness corollaries, and
-multiplicity-exact meromorphic tomography of the actual Weil observable.  The second contribution
-is the explicit completed endpoint value, the quadratic reflection-defect estimate
-\textup{(8.9)}, the all-order M\"obius--Neumann reconstruction, and the exact
-reflection-positive/self-adjoint saturation theorem.  The elementary
+bridge infrastructure.  The contribution claimed here is one endpoint-calibrated
+source--temperature master theorem built from the fixed-window logarithmic compression and the
+exact evaluated sharp
+rectangular prime--Gamma specialization.  Its mutually compatible charts comprise the source-only
+tail-sign RH criterion and exact one-sided exponent spectrum, the Gamma-free finite prime--polar
+abscissa criterion and cumulative negative-mass spectrum, universal negative-channel abscissa,
+finite positive-channel non-dilution and summable-family aggregate conservation, the quantitative
+source--divisor--energy law and optimal sharp-source correction, the projective and reflected
+Born-temperature radii, the intrinsic completed endpoint budget, the reciprocal-square
+KMS/source-gap identity, the exact theta Born--Witten pure-state source, the strict
+cubic endpoint-charge transverse-energy theorem, the normalized thermal-gap/prime-square-energy
+abscissa law, the all-order M\"obius--Neumann reconstruction, the exact
+reflection-positive/self-adjoint saturation theorem, the thickness corollaries, and
+multiplicity-exact meromorphic tomography of the actual Weil observable, together with the exact
+ultraviolet--infrared selection law and the unconditional 616-condition endpoint Hausdorff
+rectangle.  The elementary
 cumulative-mass/abscissa lemma and least-negative-part order lemma are not claimed as independent
 novelty; their roles are to expose the exact transverse source exponent and to prove that
 the explicit arithmetic channel $2E_{\rm dyad}$ is the unavoidable positive payment in this Connes/Landau
@@ -2830,6 +4519,11 @@ A.~P. Guinand,
 \emph{Fourier reciprocities and the Riemann zeta-function},
 Proc. London Math. Soc. (2) \textbf{51} (1949), 401--414.
 
+\bibitem{Hausdorff1921}
+F.~Hausdorff,
+\emph{Summationsmethoden und Momentfolgen. I},
+Math. Z. \textbf{9} (1921), 74--109.
+
 \bibitem{Maurizi2010}
 B.~Maurizi,
 \emph{Extending Landau's theorem on Dirichlet series with non-negative coefficients},
@@ -2866,6 +4560,11 @@ erratum \textbf{54} (2004), 1139.
 A.~Weil,
 \emph{Sur les ``formules explicites'' de la th\'eorie des nombres premiers},
 Commun. S\'em. Math. Univ. Lund, volume dedicated to Marcel Riesz (1952), 252--265.
+
+\bibitem{Witten1982}
+E.~Witten,
+\emph{Supersymmetry and Morse theory},
+J. Differential Geom. \textbf{17} (1982), 661--692.
 
 \bibitem{Yoshida1992}
 H.~Yoshida,

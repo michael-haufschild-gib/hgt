@@ -194,26 +194,52 @@ Every degree now has a canonical positive source endpoint on paper.  The remaini
 
 ```text
 completed prime--Gamma far-right determinant anchor                         [PAPER]
-  + source theorem controlling zero winding of Delta_n to s=1/2 for every n [OPEN CORE]
-  -> Delta_n(1/2)>0 for every n                                               [Lean]
+  + exact reflection, holomorphy off Xi, and Schwarz reality                 [Lean]
+  + source exclusion of noncentral odd-order real zeros                      [OPEN CORE]
+  + nonvanishing at s=1/2                                                     [OPEN CORE]
+  -> Delta_n(1/2)>0 for every n                                               [SIGN TRANSFER]
   -> RH.                                                                      [Lean]
 ```
 
-The winding theorem must be proved from the completed source decomposition.  Merely assuming
-nonvanishing or endpoint positivity would be an RH-strength reformulation.  Before promoting this
-as a live RH route, the determinant zero set must be tested structurally: the fixed detour and its
-orientation must be source-selected, and the proposed winding control must survive simple
-critical-line divisor models.
+The reflection theorem is formalized in
+`CompletedPrimeGammaMovingHankelReflection.lean`; it supplies the matching far-left anchor and
+reduces independent continuation control to the right half-line.  The full complex coefficient
+surface and the explicit holomorphic logarithmic-derivative determinant are formalized in
+`CompletedPrimeGammaMovingComplexHankel.lean`.
+
+Complete zero exclusion is stronger than necessary.  Once the explicit determinant is used, the
+sharp continuation target is exclusion of odd-order real determinant zeros on the right half-line,
+together with nonvanishing at the center.  Even-order zeros touch the boundary of the positive
+chamber without reversing its orientation.  The source-side odd-order exclusion remains open; it
+must come from the completed prime--Gamma decomposition rather than from an RH-equivalent sign or
+zero-location assumption.
+
+There is now a sharper scalar consumer.  For every nonzero polynomial `P`, the moving quadratic
+test `Q_P(s)=sum_k [X^k]P^2 c_k(s)` has a positive far-right anchor: if `r` is the lowest nonzero
+degree of `P`, then `(s^(4r+1)) Q_P(s)` tends to `a_r^2/(2(4r+1))`.  Transporting finite even-root
+factorizations of these countably many scalar tests forces central nonnegativity and hence RH.
+Because nonnegativity is the consumer, a central even zero is allowed and no central-nonvanishing
+theorem is needed.  This route is tracked in
+`completed-prime-gamma-polynomial-even-factorization-to-rh.md` and formalized at the interface in
+`CompletedPrimeGammaMovingPolynomialParity.lean`.
 
 ## Lean tasks
 
 - [x] define the moving completed-source moment germ and determinant in Lean
 - [x] prove the centre identity with `primeArchSourceMomentHankelMatrix`
+- [x] prove exact base reflection of the moving germ, matrices, and determinants
+- [x] retain the full complex coefficient determinant and prove its exact reflection
+- [x] define the explicit odd-logarithmic-derivative determinant and prove holomorphy off Xi zeros
 - [ ] prove the all-order positive-real polygamma asymptotic
 - [ ] prove polar derivatives are one power smaller
 - [ ] reuse von Mangoldt first-coefficient decay for the Euler derivative channel
 - [ ] prove the determinant limit `(1)` and eventual positivity
-- [ ] test whether a fixed source-selected zero-winding detour can exist without restating RH
+- [x] formalize the finite polynomial passage from `(7)` to every scalar far-right anchor
+- [x] prove the affine chain-rule center bridge for the explicit determinant in Lean
+- [x] prove that finite analytic order at the reflection center is even
+- [ ] exclude noncentral odd-order real determinant zeros by a source-side theorem
+- [ ] prove central nonvanishing
+- [x] formalize finite even-factor sign transfer, including a possible central zero
 
 ## Gates
 
@@ -221,5 +247,6 @@ critical-line divisor models.
 - [x] exact centre consumer identified
 - [x] non-circular far-right mechanism isolated
 - [x] complete paper proof of `(1)`
-- [ ] unconditional Lean proof of the anchor and centre identity
+- [x] unconditional Lean proof of the centre identity
+- [ ] unconditional Lean proof of the scalar moment asymptotic `(7)`
 - [ ] non-circular winding producer

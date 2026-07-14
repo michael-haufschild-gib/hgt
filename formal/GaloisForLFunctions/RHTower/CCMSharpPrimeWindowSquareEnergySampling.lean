@@ -512,6 +512,132 @@ private theorem riemannHypothesis_of_successorSquarePrimeWindowPositiveExcessEne
     simpa only [squareExcess] using hmajor n
   · exact hmajorSummable
 
+/-- **Fixed-abscissa square-to-full energy transfer.**  Summability of the positive excess at
+perfect-square apertures with weight `m^(-1-2*alpha)` implies summability of the full positive
+excess with weight `n^(-1-alpha)`.  The factor two is the exact change of exponent forced by the
+cardinality `2*m+1` of a square block. -/
+theorem dyadicWeightedPrimeWindowPositiveExcess_LSeriesSummable_of_squareEnergy
+    {alpha : ℝ} (halpha : 0 < alpha)
+    (hSquare : Summable
+      (realDirichletWeightedTerm
+        (fun m => dyadicWeightedPrimeWindowPositiveExcess (m ^ 2))
+        (1 + 2 * alpha))) :
+    LSeriesSummable
+      (fun n => ((dyadicWeightedPrimeWindowPositiveExcess n : ℝ) : ℂ))
+      (((1 + alpha : ℝ) : ℂ)) := by
+  let squareExcess : ℕ → ℝ := fun m =>
+    dyadicWeightedPrimeWindowPositiveExcess (m ^ 2)
+  have hsquareNonneg : ∀ m, 0 ≤ squareExcess m := fun m =>
+    dyadicWeightedPrimeWindowPositiveExcess_nonneg (m ^ 2)
+  have hSquareAt : Summable
+      (successorSquareWeightedTerm squareExcess
+        (2 * (1 + alpha) - 1)) := by
+    have hshift : Summable
+        (successorSquareWeightedTerm squareExcess (1 + 2 * alpha)) :=
+      summable_successorSquareWeightedTerm_of_weightedTerm
+        hsquareNonneg (by linarith) (by
+          simpa only [squareExcess] using hSquare)
+    rw [show 2 * (1 + alpha) - 1 = 1 + 2 * alpha by ring]
+    exact hshift
+  have hBlock : Summable (squareBlockLift squareExcess (1 + alpha)) :=
+    summable_squareBlockLift_of_successorSquareWeightedTerm
+      hsquareNonneg (by linarith) hSquareAt
+  have hLiftReal : Summable
+      (realDirichletWeightedTerm
+        (upperSquareLiftCoefficient squareExcess) (1 + alpha)) := by
+    simpa only [realDirichletWeightedTerm_upperSquareLiftCoefficient]
+      using hBlock
+  have hliftNonneg : ∀ n, 0 ≤ upperSquareLiftCoefficient squareExcess n := by
+    intro n
+    rw [upperSquareLiftCoefficient]
+    split_ifs
+    · exact le_rfl
+    · exact hsquareNonneg _
+  have hLift : LSeriesSummable
+      (fun n => (((upperSquareLiftCoefficient squareExcess n : ℝ) : ℂ)))
+      (((1 + alpha : ℝ) : ℂ)) :=
+    LSeriesSummable_of_realDirichletWeightedTerm_summable
+      hliftNonneg hLiftReal
+  let delta : ℝ := alpha / 2
+  have hdelta : 0 < delta := by
+    dsimp only [delta]
+    linarith
+  obtain ⟨D, hD, hmajor⟩ :=
+    exists_dyadicWeightedPrimeWindowPositiveExcess_upperSquare_powerMajorant
+      hdelta
+  have hpower : LSeriesSummable
+      (fun n => ((powerCorrectionCoefficient delta n : ℝ) : ℂ))
+      (((1 + alpha : ℝ) : ℂ)) := by
+    apply powerCorrectionCoefficient_LSeriesSummable
+    simp only [Complex.ofReal_re]
+    dsimp only [delta]
+    linarith
+  have hadd := hLift.add (hpower.smul (D : ℂ))
+  have hmajorSummable : LSeriesSummable
+      (fun n => (((upperSquareLiftCoefficient squareExcess n +
+        D * powerCorrectionCoefficient delta n : ℝ) : ℂ)))
+      (((1 + alpha : ℝ) : ℂ)) := by
+    change Summable (LSeries.term _ (((1 + alpha : ℝ) : ℂ)))
+    change Summable (LSeries.term _ (((1 + alpha : ℝ) : ℂ))) at hadd
+    apply hadd.congr
+    intro n
+    rcases n.eq_zero_or_pos with rfl | hn
+    · simp only [LSeries.term_zero]
+    · have hn0 : n ≠ 0 := Nat.ne_of_gt hn
+      rw [LSeries.term_of_ne_zero hn0, LSeries.term_of_ne_zero hn0]
+      simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul,
+        ofReal_add, ofReal_mul]
+  apply LSeriesSummable_of_nonneg_of_le
+    dyadicWeightedPrimeWindowPositiveExcess_nonneg
+    (fun n => add_nonneg (hliftNonneg n)
+      (mul_nonneg hD (powerCorrectionCoefficient_nonneg delta n)))
+  · intro n
+    simpa only [squareExcess] using hmajor n
+  · exact hmajorSummable
+
+/-- L-series form of the fixed-abscissa square-to-full transfer. -/
+theorem dyadicWeightedPrimeWindowPositiveExcess_LSeriesSummable_of_squareLSeriesEnergy
+    {alpha : ℝ} (halpha : 0 < alpha)
+    (hSquare : LSeriesSummable
+      (fun m => ((dyadicWeightedPrimeWindowPositiveExcess (m ^ 2) : ℝ) : ℂ))
+      (((1 + 2 * alpha : ℝ) : ℂ))) :
+    LSeriesSummable
+      (fun n => ((dyadicWeightedPrimeWindowPositiveExcess n : ℝ) : ℂ))
+      (((1 + alpha : ℝ) : ℂ)) := by
+  apply dyadicWeightedPrimeWindowPositiveExcess_LSeriesSummable_of_squareEnergy
+    halpha
+  exact realDirichletWeightedTerm_summable_of_LSeriesSummable
+    (fun m => dyadicWeightedPrimeWindowPositiveExcess_nonneg (m ^ 2)) hSquare
+
+/-- Hilbert-space form of the fixed-abscissa square-to-full transfer.  Weighted `L²` energy at
+the square apertures, with the same exact exponent doubling, already gives absolute convergence
+of the full positive-excess Dirichlet series. -/
+theorem dyadicWeightedPrimeWindowPositiveExcess_LSeriesSummable_of_squareSquareEnergy
+    {alpha : ℝ} (halpha : 0 < alpha)
+    (hSquare : Summable
+      (realDirichletWeightedTerm
+        (fun m => (dyadicWeightedPrimeWindowPositiveExcess (m ^ 2)) ^ 2)
+        (1 + 2 * alpha))) :
+    LSeriesSummable
+      (fun n => ((dyadicWeightedPrimeWindowPositiveExcess n : ℝ) : ℂ))
+      (((1 + alpha : ℝ) : ℂ)) := by
+  let squareExcess : ℕ → ℝ := fun m =>
+    dyadicWeightedPrimeWindowPositiveExcess (m ^ 2)
+  have hsquareNonneg : ∀ m, 0 ≤ squareExcess m := fun m =>
+    dyadicWeightedPrimeWindowPositiveExcess_nonneg (m ^ 2)
+  have hcomplex : LSeriesSummable
+      (fun m => ((squareExcess m : ℝ) : ℂ))
+      (((1 + 2 * alpha : ℝ) : ℂ)) :=
+    LSeriesSummable_of_squareWeightedTerm_summable hsquareNonneg
+      (by linarith) (by simpa only [squareExcess] using hSquare)
+  have hlinear : Summable
+      (realDirichletWeightedTerm squareExcess (1 + 2 * alpha)) :=
+    realDirichletWeightedTerm_summable_of_LSeriesSummable
+      hsquareNonneg hcomplex
+  apply dyadicWeightedPrimeWindowPositiveExcess_LSeriesSummable_of_squareEnergy
+    halpha
+  simpa only [squareExcess] using hlinear
+
 /-- Natural square-sample form of the critical energy criterion. It is enough that, for every
 positive `epsilon`, the series
 `sum_m E(m^2) / m^(1+epsilon)` converges, where `E` is the positive excess above the exact

@@ -168,6 +168,18 @@ theorem xiProjectiveReflectionRadius_nonneg :
   rw [xiProjectiveReflectionRadius_eq_transverseSup]
   exact xiRightTransverseSup_nonneg
 
+theorem xiProjectiveReflectionRadius_le_half :
+    xiProjectiveReflectionRadius ≤ 1 / 2 := by
+  rw [xiProjectiveReflectionRadius_eq_transverseSup]
+  by_cases hne : Nonempty XiRightZeroCopy
+  · exact xiRightTransverseSup_le_half hne
+  · letI : IsEmpty XiRightZeroCopy := ⟨fun q => hne ⟨q⟩⟩
+    rw [xiRightTransverseSup, xiRightTransverseSet]
+    have hrange : Set.range (fun q : XiRightZeroCopy =>
+        (xiRightCenteredZero q).re) = ∅ := Set.range_eq_empty_iff.mpr inferInstance
+    rw [hrange, Real.sSup_empty]
+    norm_num
+
 theorem xiZeroHalfPlaneBound_iff_projectiveReflectionRadius_le
     {alpha : ℝ} (halpha : 0 ≤ alpha) :
     XiZeroHalfPlaneBound alpha ↔ xiProjectiveReflectionRadius ≤ alpha := by
@@ -307,6 +319,14 @@ theorem xiEndpointDefectEnergy_le_of_projectiveReflectionRadius
   exact xiEndpointDefectEnergy_le_of_halfPlaneBound halpha halphaHalf
     ((xiZeroHalfPlaneBound_iff_projectiveReflectionRadius_le halpha).2 hradius)
 
+/-- **Intrinsic completed-energy law.**  The endpoint reflection energy is controlled directly by
+the projective source--temperature radius, with no externally chosen half-plane parameter. -/
+theorem xiEndpointDefectEnergy_le_intrinsicProjectiveBudget :
+    xiEndpointReflectionDefectEnergy ≤
+      xiProjectiveEndpointBudget xiProjectiveReflectionRadius := by
+  exact xiEndpointDefectEnergy_le_of_projectiveReflectionRadius
+    xiProjectiveReflectionRadius_nonneg xiProjectiveReflectionRadius_le_half le_rfl
+
 theorem primeGamma_abscissa_le_iff_projectiveReflectionRadius_le
     {L alpha : ℝ} (hL : 0 < L) (halpha : 0 ≤ alpha) {N : ℕ}
     (hN : ∀ n : ℕ, N ≤ n → 1 ≤ n ∧ L ≤ Real.log n / 2) :
@@ -355,10 +375,13 @@ theorem xiProjectiveSourceTemperatureMasterSpectrum
     (projectiveBound ↔ thermalBound) ∧
     (projectiveBound ↔ divisorBound) ∧
     (sourceBound →
-      xiEndpointReflectionDefectEnergy ≤ xiProjectiveEndpointBudget alpha) := by
+      xiEndpointReflectionDefectEnergy ≤ xiProjectiveEndpointBudget alpha) ∧
+    xiEndpointReflectionDefectEnergy ≤
+      xiProjectiveEndpointBudget xiProjectiveReflectionRadius := by
   dsimp only
   refine ⟨primeGamma_abscissa_le_iff_projectiveReflectionRadius_le
-      hL halpha hN, ?_, ?_, ?_⟩
+      hL halpha hN, ?_, ?_, ?_,
+    xiEndpointDefectEnergy_le_intrinsicProjectiveBudget⟩
   · rw [xiBornReflectionRadius_eq_projectiveReflectionRadius]
   · exact (xiZeroHalfPlaneBound_iff_projectiveReflectionRadius_le halpha).symm
   · intro hsource
@@ -379,12 +402,20 @@ theorem xiProjectiveEndpointBudget_half :
     ne_of_gt xiEndpointCompletedCurvature_pos
   have hC1 : 1 - xiEndpointCompletedCurvature ≠ 0 := by
     nlinarith [xiEndpointCompletedCurvature_lt_one_half]
+  have hden :
+      1 / xiEndpointCompletedCurvature - 3 / 4 - (1 / 2 : ℝ) ^ 2 =
+        (1 - xiEndpointCompletedCurvature) / xiEndpointCompletedCurvature := by
+    field_simp [hC]
+    ring
+  rw [hden]
   field_simp [hC, hC1]
-  ring
+  norm_num
 
 theorem xiProjectiveEndpointBudget_strictMonoOn :
     StrictMonoOn xiProjectiveEndpointBudget (Set.Icc 0 (1 / 2)) := by
   intro a ha b hb hab
+  rcases ha with ⟨ha0, haHalf⟩
+  rcases hb with ⟨hb0, hbHalf⟩
   have hCpos := xiEndpointCompletedCurvature_pos
   have hCinv : 2 < 1 / xiEndpointCompletedCurvature := by
     rw [lt_div_iff₀ hCpos]

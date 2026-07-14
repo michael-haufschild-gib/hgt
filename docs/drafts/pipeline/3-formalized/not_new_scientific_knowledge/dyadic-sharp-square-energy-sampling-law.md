@@ -113,6 +113,47 @@ forall epsilon>0,
 This weighted square-energy condition implies the critical square energy and hence RH. It is the
 form most directly comparable with discrete Selberg-integral or mean-square estimates.
 
+## Quantitative zero-by-zero spectrum
+
+The square reduction is now fixed-abscissa, not only an all-epsilon RH capstone.  For every
+`alpha>0`, Lean proves
+
+```text
+sum_m E(m^2)/m^(1+2*alpha) < infinity
+  -> every Xi zero rho satisfies Re(rho) <= 1/2+alpha.
+```
+
+The same conclusion follows from the Hilbert-facing premise
+
+```text
+sum_m E(m^2)^2/m^(1+4*alpha) < infinity.
+```
+
+Equivalently, one specified Xi zero at transverse displacement
+`delta=Re(rho)-1/2>0` forces the linear series to diverge whenever `0<tau<2*delta`, and forces the
+squared series to diverge whenever `0<tau<4*delta`.  This is a direct zero-by-zero source witness
+and does not first pass through the proposition `not RiemannHypothesis`.
+
+At the abscissa level the result is
+
+```text
+2*Re(rho)   <= abscissa(m |-> E(m^2)),
+4*Re(rho)-1 <= abscissa(m |-> E(m^2)^2)
+```
+
+for every right-half Xi zero.  Both constants are intrinsic: square sampling sends a mode
+`n^delta` to `m^(2*delta)`, and squaring that value sends it to `m^(4*delta)`.
+
+Taking the supremum over the actual positive-transverse divisor gives the global laws
+
+```text
+1 + 2*xiRightTransverseSup <= abscissa(m |-> E(m^2)),
+1 + 4*xiRightTransverseSup <= abscissa(m |-> E(m^2)^2).
+```
+
+These statements take `Nonempty XiRightZeroCopy` as an explicit divisor input.  Their proofs do
+not first infer a witness from `not RiemannHypothesis`.
+
 ## Completed-error connection
 
 The existing exact identity identifies `E(n)` with the positive backward `log 2` variation of the
@@ -133,10 +174,29 @@ with public declarations
 
 ```text
 dyadicWeightedPrimeWindowPositiveExcess_le_upperSquare_add_log
+dyadicWeightedPrimeWindowPositiveExcess_LSeriesSummable_of_squareEnergy
+dyadicWeightedPrimeWindowPositiveExcess_LSeriesSummable_of_squareLSeriesEnergy
+dyadicWeightedPrimeWindowPositiveExcess_LSeriesSummable_of_squareSquareEnergy
 riemannHypothesis_of_squarePrimeWindowPositiveExcessEnergy
 riemannHypothesis_of_squarePrimeWindowPositiveExcessSquareEnergy
 riemannHypothesis_of_squarePrimeWindowCumulativePositiveExcessGrowth
 riemannHypothesis_of_squareCompletedErrorBackwardPositiveVariationEnergy
+```
+
+The quantitative divisor consumers are in
+`GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquareEnergySpectrum`:
+
+```text
+xi_zero_re_le_half_add_of_squarePrimeWindowPositiveExcessEnergy
+xi_zero_re_le_half_add_of_squarePrimeWindowPositiveExcessSquareEnergy
+not_squarePrimeWindowPositiveExcessEnergy_of_xi_zero_transverse
+not_squarePrimeWindowPositiveExcessSquareEnergy_of_xi_zero_transverse
+two_mul_xi_zero_re_le_squarePrimeWindowPositiveExcess_abscissa
+four_mul_xi_zero_re_sub_one_le_squarePrimeWindowPositiveExcessSquare_abscissa
+one_add_two_mul_xiRightTransverseSup_le_squarePrimeWindowPositiveExcess_abscissa
+one_add_four_mul_xiRightTransverseSup_le_squarePrimeWindowPositiveExcessSquare_abscissa
+riemannHypothesis_of_squarePrimeWindowPositiveExcess_abscissa_le_one
+riemannHypothesis_of_squarePrimeWindowPositiveExcessSquare_abscissa_le_one
 ```
 
 The focused module build succeeds. `#print axioms` for both public declarations reports only
@@ -182,6 +242,10 @@ shown by a literature audit to constitute a new theorem of independent interest.
 - [x] square-sampled weighted `L2` energy-to-RH capstone formalized
 - [x] nearly linear cumulative square-excess growth implies RH
 - [x] completed critical-Mellin positive variation reduced to square samples
+- [x] fixed-abscissa exponent-doubling transfer formalized
+- [x] sharp weighted Cauchy--Schwarz exponent transfer formalized for every source consumer
+- [x] zero-by-zero forced divergence at the linear and squared transverse exponents formalized
+- [x] global exponent-doubled and exponent-quadrupled divisor-supremum laws formalized
 - [x] focused module build
 - [x] axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`
 - [ ] unconditional proof of the square-sampled positive-excess energy
