@@ -207,14 +207,24 @@ translations, but the Sonin Fourier constraint becomes the involutive translatio
 scattering operator `J_log`, not the ordinary Fourier transform. The corrected theorem is in
 `../../3-formalized/not_new_scientific_knowledge/sonin-log-coordinate-mellin-scattering-carrier.md`.
 
-The required position transport is consequently the nonlocal commutator `[M_t,J_log]`, equivalently
-`[log|x|,B_a]` before logarithmic transport. This is the Burnol conductor/Mellin-scattering channel;
-compactness of the Sonin projection correction does not control it.
+The required position transport is consequently the nonlocal logarithmic Sonin anomaly,
+equivalently `[log|x|,B_a]` before logarithmic transport.  The paper theorem
+`sonin-burnol-conductor-cutoff-bounded-graph-law.md` sharpens its correct logarithmic-coordinate
+form.  With `H_infinity=M_t+J_log M_t J_log`, it proves
 
-The algebraic projection transport is therefore closed. The remaining analytic theorem is to
-construct a common Mellin-scattering form graph on which the conductor commutator, Euler leakage
-cross, and internal trace-defect cocycle have the genuine semilocal relative trace, and to derive a
-uniform finite lower floor for the completed prime--Gamma flux.
+```text
+[M_t,J_log P_tau J_log]
+  =J_log[H_infinity,P_tau]J_log,
+```
+
+and uses the BMO Gamma multiplier of Burnol's conductor to extend this form boundedly through the
+exact prolate resolvent.  Compactness of the Sonin projection correction alone still does not
+control it, but the common graph itself is no longer open.
+
+The algebraic and analytic projection transports are therefore closed on paper.  The remaining
+theorem is to construct the genuine semilocal relative trace of the bounded conductor leakage,
+Euler leakage cross, and internal trace-defect cocycle, and to derive a uniform finite lower floor
+for the completed prime--Gamma flux.
 
 ## Completed source form
 
@@ -324,6 +334,9 @@ the actual Sonin/CCM carrier.
 - [x] renormalized trace-defect/leakage decomposition proved
 - [x] sharp Sonin position leakage identified as a signed Sobolev edge trace plus first-moment correction
 - [x] arithmetic-complement faithfulness retained
+- [x] close the exact logarithmic-position/Sonin commutator graph on paper through the Burnol
+  conductor cutoff law
+- [ ] formalize the bounded conductor-cutoff graph in Lean
 - [ ] determine the internal trace-defect cocycle on the genuine semilocal cutoff
 - [ ] prove the resulting degree-one pair has the genuine semilocal relative trace
 - [ ] complete the prime--Gamma leakage form to a positive square or contraction

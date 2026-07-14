@@ -83,3 +83,28 @@ zero-rate side unconditionally would prove RH.
 
 The declarations use only the standard foundations `propext`, `Classical.choice`, and
 `Quot.sound`.
+
+## Exact static kernel behind the purity
+
+The paper theorem
+[`prime-arch-bernstein-legendre-double-source-kernel.md`](../../2-fully-proven/not_new_scientific_knowledge/prime-arch-bernstein-legendre-double-source-kernel.md)
+adds a non-dynamical realization of the same `Pi_M`.  For any moment functional `L_m`,
+
+\[
+ \sum_{M\ge0}\Pi_Mt^M
+ =(L_m\otimes L_m)
+ \frac1{\sqrt{1-2t(1-x-y+2xy)+t^2(1-x-y)^2}}.
+\]
+
+This packages all finite Loschmidt purities into one algebraic constraint and exhibits the exact
+simultaneous complement reflection `(x,y) -> (1-x,1-y)`.  The source-side continuation target and
+its Pringsheim-to-RH splice are recorded in
+[`prime-arch-bernstein-reflected-kernel-collar.md`](../../1-in-progress/prime-arch-bernstein-reflected-kernel-collar.md)
+and
+[`prime-arch-bernstein-pringsheim-collar-transfer.md`](../../2-fully-proven/not_new_scientific_knowledge/prime-arch-bernstein-pringsheim-collar-transfer.md).
+
+The one-source companion
+[`prime-arch-bernstein-mobius-pullback-gutzmer-law.md`](../../2-fully-proven/not_new_scientific_knowledge/prime-arch-bernstein-mobius-pullback-gutzmer-law.md)
+packages all degree pencils as a Möbius pullback of `normalizedPrimeArchMomentGerm` and obtains the
+complete Abel susceptibility by a second Gutzmer average.  It is the static source formula behind
+the finite Loschmidt dephasing in this card.

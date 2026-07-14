@@ -30,6 +30,17 @@ have any finite upper ceiling.  Reflection gives the same ceiling on the negativ
 verified central band has ceiling zero.  The resulting global finite upper bound is already an
 exact RH criterion.
 
+The endpoint source height gap removes even the external-certificate premise at the smaller exact
+threshold.  It proves that there is no Xi zero through ordinate `9/2`, hence supplies
+`RHVerifiedThrough (9/2)` unconditionally.  Taking `R=4` yields the source-pure criterion
+
+```text
+the positive-frequency tail above 4 has some finite upper ceiling
+iff RH.
+```
+
+Equivalently, false RH makes that tail exceed every prescribed real ceiling.
+
 ## Mechanism
 
 Pair every centered Xi spectral atom `a` with its critical-line conjugate.  If the underlying
@@ -92,6 +103,9 @@ File:
 - `riemannHypothesis_of_verifiedHeight_and_positiveFrequencyAboveImBoundedAbove`
 - `continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_iff_rh_of_verifiedHeight`
 - `exists_continuedPrimeArchSource_im_gt_above_of_not_rh_verifiedHeight`
+- `rhVerifiedThrough_nine_halves`
+- `continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_four_iff_rh`
+- `exists_continuedPrimeArchSource_im_gt_above_four_of_not_rh`
 - `continuedPrimeArchPositiveFrequencyAbove_plattTrudgianArbRadius_iff_rh`
 - `continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_plattTrudgianArbRadius_iff_rh`
 
@@ -106,6 +120,7 @@ certificate.
 - [x] one-sided tail-to-RH capstone formalized
 - [x] tail sign weakened to finite upper boundedness
 - [x] positive false-RH tail blow-up law formalized
+- [x] external certificate removed at the unconditional source threshold four
 - [x] generated index and umbrella wiring
 - [ ] external numerical certificate imported into Lean
 - [ ] RH

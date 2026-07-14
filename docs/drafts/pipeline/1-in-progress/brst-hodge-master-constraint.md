@@ -35,6 +35,14 @@ The exact bounded-Hilbert-space identities needed here are
 
 and, under `Q² = 0`, `H_Q Q = Q H_Q` and `H_Q Q† = Q† H_Q`.
 
+For a harmonic projection `P` and Green operator `G`, the two-sided Green equations
+
+`H_Q G = G H_Q = 1-P`
+
+together with `PQ=QP=0` force `GQ=QG`.  Hence the canonical homotopy `h=Q†G` satisfies
+
+`1-P = Qh + hQ`.
+
 Primary physics sources include Yang–Lee, *BRST Cohomology and Its Application to QED*
 (arXiv:hep-th/9502082), Malik, *BRST cohomology and Hodge decomposition theorem in Abelian
 gauge theory* (arXiv:hep-th/9808040), and the explicit Witten/Hodge-Laplacian supersymmetry
@@ -64,6 +72,12 @@ available.  It does not discharge that card's open cores: the corpus still lacks
 prime--theta differential, its closed-range/cohomology theorem, and the positive determinant
 comparison.  No wrapper theorem is added across this gap.
 
+`RHTower/SeamSuspensionTrace.lean` names `1-P=dG+Gd` as the algebraic input to its trace-compression
+step.  The Green-operator theorem now derives that relation from the BRST master constraint, so it
+removes a separate chain-homotopy premise once a source-specific harmonic projection and two-sided
+Green operator have been constructed.  It does not construct those objects or establish the
+renormalized cyclicity needed by the seam route.
+
 ## Verification boundary
 
 The user prohibited computations and requested efficient builds.  During this phase the proposed
@@ -74,3 +88,4 @@ axiom audit is run.  The card remains in progress until targeted validation is a
 
 - 2026-07-14 — physics relation and direct consumer surface identified; card opened before Lean edits.
 - 2026-07-14 — source-level Lean surface added in `HTGeometry/BRSTHodgeConstraint.lean` and imported by the HTGeometry umbrella; direct corpus scan found no pre-existing joint `Q`/`Q†` consumer; no computation or build run.
+- 2026-07-14 — source-level Green-operator commutation and Hodge chain-homotopy theorems added; these reduce the seam-compression Hodge relation to construction of `P` and `G`, but do not solve that source-specific construction.  No computation or build run.

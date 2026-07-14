@@ -119,3 +119,26 @@ theorems use only Lean's standard `propext`, `Classical.choice`, and `Quot.sound
 - [x] targeted build and axiom audit pass
 - [x] `RHTower` umbrella build passes
 - [x] formal lint pass
+
+## Paper-level dyadic refinement square
+
+The paper theorem
+`../../2-fully-proven/not_new_scientific_knowledge/xi-rational-hurwitz-dyadic-refinement-square-law.md`
+normalizes the modulus-`n` reflection seam by
+
+```text
+H_n(rho) = n*||rationalHurwitzFiberReflectionSeam n rho||^2
+             /(4*log(n)^2).
+```
+
+For every `n>1` it proves
+
+```text
+H_n(rho) = sinh((re(rho)-1/2)*log(n))^2,
+H_(n^2)(rho) - 4*H_n(rho) = 4*H_n(rho)^2.
+```
+
+Thus the nonlinear part of the exact finite-fibre refinement `n -> n^2` is a positive square whose
+zero locus is the critical line.  At `n=2`, a source proof of the linear refinement
+`H_4=4*H_2` on every Xi fibre would force the already formalized common first-prime charge to
+vanish and hence imply RH.  This composition is proved on paper but not yet formalized.

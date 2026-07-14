@@ -140,6 +140,189 @@ theorem riemannHypothesis_iff_primeArchEndpointBernsteinAbelSusceptibilityFinite
       exists_nonfinite_primeArchEndpointBernsteinAbelSusceptibility_of_not_rh hRH
     exact ht (h t ht0.le ht1)
 
+/-- The exact open Abel radius of the endpoint purity susceptibility. -/
+def PrimeArchEndpointBernsteinAbelCriticalRadius (R : ℝ) : Prop :=
+  0 < R ∧
+    (∀ t : ℝ, 0 ≤ t → t < R →
+      PrimeArchEndpointBernsteinAbelSusceptibilityFinite t) ∧
+    (∀ t : ℝ, R < t →
+      ¬ PrimeArchEndpointBernsteinAbelSusceptibilityFinite t)
+
+private lemma not_summable_of_tendsto_atTop
+    {f : ℕ → ℝ} (hf : Tendsto f atTop atTop) : ¬ Summable f := by
+  intro hsum
+  have hone : ∀ᶠ n : ℕ in atTop, (1 : ℝ) ≤ f n :=
+    (hf.eventually_gt_atTop 1).mono fun _ h => h.le
+  have hcontra : (1 : ℝ) ≤ 0 := ge_of_tendsto hsum.tendsto_atTop_zero hone
+  linarith
+
+/-- Under RH the exact Abel radius is one. -/
+theorem primeArchEndpointBernsteinAbelCriticalRadius_one_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    PrimeArchEndpointBernsteinAbelCriticalRadius 1 := by
+  refine ⟨by norm_num, ?_, ?_⟩
+  · intro t ht0 ht1
+    exact primeArchEndpointBernsteinAbelSusceptibilityFinite_of_riemannHypothesis
+      hRH ht0 ht1
+  · intro t ht
+    have ht0 : 0 ≤ t := (zero_lt_one.trans ht).le
+    have hbound : ∀ n : ℕ,
+        normalizedPrimeArchMoment 0 ^ 2 * t ^ n / (n + 1 : ℝ) ≤
+          primeArchEndpointBernsteinPurity n * t ^ n := by
+      intro n
+      apply (div_le_iff₀ (by positivity : (0 : ℝ) < n + 1)).2
+      calc
+        normalizedPrimeArchMoment 0 ^ 2 * t ^ n ≤
+            ((n + 1 : ℝ) * primeArchEndpointBernsteinPurity n) * t ^ n :=
+          mul_le_mul_of_nonneg_right
+            (mass_sq_le_card_mul_primeArchEndpointBernsteinPurity n)
+            (pow_nonneg ht0 n)
+        _ = (primeArchEndpointBernsteinPurity n * t ^ n) * (n + 1 : ℝ) := by ring
+    have hdiv : Tendsto
+        (fun n : ℕ => primeArchEndpointBernsteinPurity n * t ^ n) atTop atTop :=
+      tendsto_atTop_mono' atTop (Eventually.of_forall hbound)
+        (tendsto_const_mul_pow_div_nat_add_one_atTop ht
+          (sq_pos_of_pos normalizedPrimeArchMoment_zero_pos))
+    exact not_summable_of_tendsto_atTop hdiv
+
+/-- Under failure of RH the Abel radius is the reciprocal square of a genuinely attained maximal
+endpoint atom amplitude. -/
+theorem exists_attained_primeArchEndpointBernsteinAbelCriticalRadius_of_not_rh
+    (hRH : ¬ RiemannHypothesis) :
+    ∃ B : ℝ,
+      PrimeArchEndpointBernsteinAttainedExactThreshold B ∧
+      PrimeArchEndpointBernsteinAbelCriticalRadius (1 / B ^ 2) := by
+  obtain ⟨B, η, hB, hBsector, hη, hattained, hmax, hupper,
+      hlower, habove, hbelow⟩ :=
+    exists_primeArchEndpointBernstein_exactExponentialThreshold_of_not_rh hRH
+  have hBpos : 0 < B := lt_trans zero_lt_one hB
+  have hBsqpos : 0 < B ^ 2 := sq_pos_of_pos hBpos
+  have hthreshold : PrimeArchEndpointBernsteinAttainedExactThreshold B :=
+    ⟨hB, hBsector, hattained, hmax,
+      ⟨hBsqpos, habove, hbelow⟩⟩
+  refine ⟨B, hthreshold, one_div_pos.mpr hBsqpos, ?_, ?_⟩
+  · intro t ht0 htR
+    let q : ℝ := B ^ 2 * t
+    have hq0 : 0 ≤ q := by
+      dsimp only [q]
+      exact mul_nonneg hBsqpos.le ht0
+    have hq1 : q < 1 := by
+      dsimp only [q]
+      have := (lt_div_iff₀ hBsqpos).mp htR
+      nlinarith
+    have hgeo : Summable (fun n : ℕ => q ^ n) :=
+      summable_geometric_of_lt_one hq0 hq1
+    refine Summable.of_nonneg_of_le
+      (fun n => mul_nonneg (bernsteinCoefficientPurity_nonneg _ n) (pow_nonneg ht0 n))
+      (fun n => ?_) (hgeo.mul_left (xiReciprocalSquareAbsoluteMass ^ 2))
+    calc
+      primeArchEndpointBernsteinPurity n * t ^ n ≤
+          (xiReciprocalSquareAbsoluteMass * B ^ n) ^ 2 * t ^ n :=
+        mul_le_mul_of_nonneg_right (hupper n) (pow_nonneg ht0 n)
+      _ = xiReciprocalSquareAbsoluteMass ^ 2 * q ^ n := by
+        dsimp only [q]
+        simp only [mul_pow]
+        ring
+  · intro t hRt
+    have htpos : 0 < t := lt_trans (one_div_pos.mpr hBsqpos) hRt
+    have hinvB : 1 / t < B ^ 2 := by
+      apply (div_lt_iff₀ htpos).2
+      have := (div_lt_iff₀ hBsqpos).mp hRt
+      nlinarith
+    have hdiv0 := hbelow (1 / t) (one_div_pos.mpr htpos) hinvB
+    have hdiv : Tendsto
+        (fun n : ℕ => primeArchEndpointBernsteinPurity n * t ^ n) atTop atTop := by
+      convert hdiv0 using 1
+      funext n
+      rw [one_div, inv_pow, div_inv_eq_mul]
+    exact not_summable_of_tendsto_atTop hdiv
+
+/-- The open Abel critical radius is unique. -/
+theorem primeArchEndpointBernsteinAbelCriticalRadius_unique
+    {R S : ℝ}
+    (hR : PrimeArchEndpointBernsteinAbelCriticalRadius R)
+    (hS : PrimeArchEndpointBernsteinAbelCriticalRadius S) : R = S := by
+  by_contra hne
+  rcases lt_or_gt_of_ne hne with hRS | hSR
+  · let t : ℝ := (R + S) / 2
+    have ht0 : 0 ≤ t := by
+      dsimp only [t]
+      linarith [hR.1, hS.1]
+    have hRt : R < t := by
+      dsimp only [t]
+      linarith
+    have htS : t < S := by
+      dsimp only [t]
+      linarith
+    exact (hR.2.2 t hRt) (hS.2.1 t ht0 htS)
+  · let t : ℝ := (S + R) / 2
+    have ht0 : 0 ≤ t := by
+      dsimp only [t]
+      linarith [hR.1, hS.1]
+    have hSt : S < t := by
+      dsimp only [t]
+      linarith
+    have htR : t < R := by
+      dsimp only [t]
+      linarith
+    exact (hS.2.2 t hSt) (hR.2.1 t ht0 htR)
+
+/-- The unique Abel radius lies in the explicit narrow collar and equals one exactly under RH. -/
+theorem existsUnique_primeArchEndpointBernsteinAbelCriticalRadius :
+    ∃! R : ℝ,
+      250000 / 251001 < R ∧ R ≤ 1 ∧
+      PrimeArchEndpointBernsteinAbelCriticalRadius R ∧
+      (RiemannHypothesis ↔ R = 1) := by
+  by_cases hRH : RiemannHypothesis
+  · have hR :=
+      primeArchEndpointBernsteinAbelCriticalRadius_one_of_riemannHypothesis hRH
+    refine ⟨1, ⟨by norm_num, le_rfl, hR, ⟨fun _ => rfl, fun _ => hRH⟩⟩, ?_⟩
+    intro S hS
+    exact primeArchEndpointBernsteinAbelCriticalRadius_unique hS.2.2.1 hR
+  · obtain ⟨B, hB, hR⟩ :=
+      exists_attained_primeArchEndpointBernsteinAbelCriticalRadius_of_not_rh hRH
+    have hBpos : 0 < B := lt_trans zero_lt_one hB.1
+    have hBsqpos : 0 < B ^ 2 := sq_pos_of_pos hBpos
+    have hBsector' : B < (501 / 500 : ℝ) := by
+      simpa only [xiSectorConfinedBernsteinAmplitudeBase] using hB.2.1
+    have hBsqsector : B ^ 2 < (501 / 500 : ℝ) ^ 2 := by
+      nlinarith [mul_pos (sub_pos.mpr hBsector')
+        (add_pos hBpos (by norm_num : (0 : ℝ) < 501 / 500))]
+    have hRlower : (250000 / 251001 : ℝ) < 1 / B ^ 2 := by
+      apply (lt_div_iff₀ hBsqpos).2
+      norm_num at hBsqsector ⊢
+      linarith
+    have hRlt : 1 / B ^ 2 < (1 : ℝ) :=
+      (div_lt_one hBsqpos).2 (by nlinarith [hB.1])
+    refine ⟨1 / B ^ 2, ⟨hRlower, hRlt.le, hR, ?_⟩, ?_⟩
+    · constructor
+      · exact fun h => (hRH h).elim
+      · intro hEq
+        linarith
+    · intro S hS
+      exact primeArchEndpointBernsteinAbelCriticalRadius_unique hS.2.2.1 hR
+
+/-- The exact susceptibility radius and the exact purity/dissipation exponent are reciprocal. -/
+theorem primeArchEndpointBernsteinAbelRadius_mul_exactExponent_eq_one
+    {R E : ℝ}
+    (hR : PrimeArchEndpointBernsteinAbelCriticalRadius R)
+    (hE : PrimeArchEndpointBernsteinExactExponentialExponent E) :
+    R * E = 1 := by
+  by_cases hRH : RiemannHypothesis
+  · have hR1 :=
+      primeArchEndpointBernsteinAbelCriticalRadius_one_of_riemannHypothesis hRH
+    have hE1 := primeArchEndpointBernsteinExactExponentialExponent_one_of_rh hRH
+    rw [primeArchEndpointBernsteinAbelCriticalRadius_unique hR hR1,
+      primeArchEndpointBernsteinExactExponentialExponent_unique hE hE1]
+    norm_num
+  · obtain ⟨B, hB, hRB⟩ :=
+      exists_attained_primeArchEndpointBernsteinAbelCriticalRadius_of_not_rh hRH
+    have hEB : PrimeArchEndpointBernsteinExactExponentialExponent (B ^ 2) := hB.2.2.2.2
+    rw [primeArchEndpointBernsteinAbelCriticalRadius_unique hR hRB,
+      primeArchEndpointBernsteinExactExponentialExponent_unique hE hEB]
+    have hBne : B ≠ 0 := (lt_trans zero_lt_one hB.1).ne'
+    field_simp [hBne]
+
 /-- The unconditional scaled-Hausdorff rectangle makes every endpoint Bernstein coefficient of
 degree at most thirteen nonnegative. -/
 theorem primeArchEndpointBernsteinCoefficient_nonnegative_of_degree_le_thirteen
@@ -167,8 +350,9 @@ theorem primeArchEndpointHausdorffBernsteinNegativeMass_eq_zero_of_degree_le_twe
 
 /-- **Finite-to-cofinal Abel selection master theorem.**  The actual completed Xi source is
 unconditionally positive through thirteen Bernstein degrees and has finite positive Abel
-susceptibility throughout the explicit narrow-sector chamber.  RH is exactly the assertion that
-this finite source-selected chamber extends to every point of the open unit interval. -/
+susceptibility throughout the explicit narrow-sector chamber.  It has a unique exact Abel radius
+strictly beyond that chamber and at most one; RH is exactly the assertion that this radius reaches
+the endpoint, equivalently that susceptibility is finite on the whole open unit interval. -/
 theorem primeArchEndpointBernsteinAbelSelectionMaster :
     (∀ n i : ℕ, n ≤ 13 →
       0 ≤ bernsteinCoefficient
@@ -178,6 +362,10 @@ theorem primeArchEndpointBernsteinAbelSelectionMaster :
         (radiusNormalizedMoment primeArchEndpointHausdorffRadius normalizedPrimeArchMoment) N = 0) ∧
     (∀ t : ℝ, 0 ≤ t → t < 250000 / 251001 →
       PrimeArchEndpointBernsteinAbelSusceptibilityFinite t) ∧
+    (∃! R : ℝ,
+      250000 / 251001 < R ∧ R ≤ 1 ∧
+      PrimeArchEndpointBernsteinAbelCriticalRadius R ∧
+      (RiemannHypothesis ↔ R = 1)) ∧
     (RiemannHypothesis ↔
       ∀ t : ℝ, 0 ≤ t → t < 1 →
         PrimeArchEndpointBernsteinAbelSusceptibilityFinite t) := by
@@ -188,6 +376,7 @@ theorem primeArchEndpointBernsteinAbelSelectionMaster :
       primeArchEndpointHausdorffBernsteinNegativeMass_eq_zero_of_degree_le_twelve N hN,
     fun t ht0 ht1 =>
       primeArchEndpointBernsteinAbelSusceptibilityFinite_below_narrowSectorRadius ht0 ht1,
+    existsUnique_primeArchEndpointBernsteinAbelCriticalRadius,
     riemannHypothesis_iff_primeArchEndpointBernsteinAbelSusceptibilityFinite⟩
 
 end

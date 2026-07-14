@@ -387,6 +387,31 @@ theorem exists_continuedPrimeArchSource_im_gt_above_of_not_rh_verifiedHeight
   intro z hzIm hzHalf hzRe hzeta
   exact le_of_not_gt fun hgt => h ⟨z, hzIm, hzHalf, hzRe, hzeta, hgt⟩
 
+/-- The source-pure endpoint height gap supplies an unconditional verified-height certificate
+through `9 / 2`: in fact there is no Xi zero in that closed ordinate band. -/
+theorem rhVerifiedThrough_nine_halves : RHVerifiedThrough (9 / 2) := by
+  intro rho hzero _hrePos _hreOne himPos himLe
+  exact False.elim ((xi_ne_zero_of_abs_im_le_nine_halves
+    (by rw [abs_of_pos himPos]; exact himLe)) hzero)
+
+/-- Unconditional bounded-tail criterion: after the source-pure central band `|Re z| ≤ 4`, any
+finite upper ceiling on the positive-frequency remainder is exactly RH. -/
+theorem continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_four_iff_rh :
+    ContinuedPrimeArchPositiveFrequencyAboveImBoundedAbove 4 ↔
+      RiemannHypothesis := by
+  exact continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_iff_rh_of_verifiedHeight
+    (9 / 2) 4 rhVerifiedThrough_nine_halves (by norm_num)
+
+/-- Positive unconditional failure law at the source-pure threshold four.  If RH is false, the
+positive-frequency tail above four exceeds every prescribed finite ceiling. -/
+theorem exists_continuedPrimeArchSource_im_gt_above_four_of_not_rh
+    (hnot : ¬ RiemannHypothesis) (C : ℝ) :
+    ∃ z : ℂ, 0 < z.im ∧ z.im < 1 / 2 ∧ 4 < z.re ∧
+      riemannZeta (1 / 2 + z * I) ≠ 0 ∧
+        C < (continuedPrimeArchSourceRelativeTrace z).im := by
+  exact exists_continuedPrimeArchSource_im_gt_above_of_not_rh_verifiedHeight
+    (9 / 2) 4 rhVerifiedThrough_nine_halves (by norm_num) hnot C
+
 /-- Exact endpoint of the published Platt--Trudgian prefix plus the certified one-zero Arb
 extension, represented as a rational real number. -/
 def plattTrudgianArbVerifiedHeight : ℝ :=

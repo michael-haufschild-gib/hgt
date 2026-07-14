@@ -8,6 +8,8 @@ import GaloisForLFunctions.HTGeometry.UniversalOrientedHerglotz
 Finite sign flips are made at the actual prime-log poles of the fixed universal Herglotz source.
 They are rational gauges of the same embedded differential field.  Their relative Pick defects are
 rectangular factored Krein forms whose exact inertia recovers the directed Hamming geometry.
+The same Hamming distance is recovered independently as the normalized sum-of-squares master
+energy of binary dephasing charges on the two chambers.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
@@ -290,9 +292,16 @@ theorem universalPrimeKreinProbe_combined_linearIndependent {kp kn : ℕ}
       (mul_pos (by norm_num) (universalPrimeWeight_pos _))).ne'
   have hscaled := linearIndependent_smul_nonzero
     (fun s => raw (e s)) scale hreindexed hscale
-  convert hscaled using 1 with s
-  cases s <;>
-    simp [universalPrimeKreinFeature, scale, raw, allPrime, e]
+  have heq :
+      Sum.elim
+          (universalPrimeKreinFeature positivePrime (primeKreinProbeNode (kp + kn)))
+          (universalPrimeKreinFeature negativePrime (primeKreinProbeNode (kp + kn))) =
+        fun s => scale s • (fun t => raw (e t)) s := by
+    funext s
+    cases s <;>
+      simp [universalPrimeKreinFeature, scale, raw, allPrime, e]
+  rw [heq]
+  exact hscaled
 
 /-- **Exact negative-channel count.**  The signed prime-response Gram has negative inertia exactly
 `kn`: every negative-definite subspace has dimension at most `kn`, and one of dimension `kn`
@@ -345,6 +354,190 @@ theorem universalPrimeKreinProbe_exact_pos_inertia {kp kn : ℕ}
   have hsurjective := rectangular_eval_surjective_of_linearIndependent w u hlinear
   simpa only [universalPrimeKreinProbeForm, w, u] using
     rectangular_exact_pos_inertia w u hsurjective
+
+/-! ## Chamber dephasing master and exact finite-set interface -/
+
+/-- The canonical enumeration of a finite prime packet. -/
+def finsetPrimeEnumeration (S : Finset Nat.Primes) : Fin S.card → Nat.Primes :=
+  fun i => (S.equivFin.symm i : Nat.Primes)
+
+theorem finsetPrimeEnumeration_mem (S : Finset Nat.Primes) (i : Fin S.card) :
+    finsetPrimeEnumeration S i ∈ S := by
+  exact (S.equivFin.symm i).property
+
+theorem finsetPrimeEnumeration_injective (S : Finset Nat.Primes) :
+    Function.Injective (finsetPrimeEnumeration S) := by
+  intro i j hij
+  apply S.equivFin.symm.injective
+  apply Subtype.ext
+  simpa [finsetPrimeEnumeration] using hij
+
+/-- The positive packet `L \ J` and negative packet `J \ L` are jointly injective. -/
+theorem primeChamberDifferenceEnumeration_injective
+    (J L : Finset Nat.Primes) :
+    Function.Injective
+      (Sum.elim (finsetPrimeEnumeration (L \ J))
+        (finsetPrimeEnumeration (J \ L))) := by
+  intro a b hab
+  cases a with
+  | inl i =>
+      cases b with
+      | inl j =>
+          exact congrArg Sum.inl (finsetPrimeEnumeration_injective (L \ J) hab)
+      | inr j =>
+          have hi := Finset.mem_sdiff.mp (finsetPrimeEnumeration_mem (L \ J) i)
+          have hj := Finset.mem_sdiff.mp (finsetPrimeEnumeration_mem (J \ L) j)
+          have hab' : finsetPrimeEnumeration (L \ J) i =
+              finsetPrimeEnumeration (J \ L) j := by
+            simpa using hab
+          exact (hi.2 (hab'.symm ▸ hj.1)).elim
+  | inr i =>
+      cases b with
+      | inl j =>
+          have hi := Finset.mem_sdiff.mp (finsetPrimeEnumeration_mem (J \ L) i)
+          have hj := Finset.mem_sdiff.mp (finsetPrimeEnumeration_mem (L \ J) j)
+          have hab' : finsetPrimeEnumeration (J \ L) i =
+              finsetPrimeEnumeration (L \ J) j := by
+            simpa using hab
+          exact (hj.2 (hab' ▸ hi.1)).elim
+      | inr j =>
+          exact congrArg Sum.inr (finsetPrimeEnumeration_injective (J \ L) hab)
+
+/-- The relative prime-response form for the ordered chamber pair `(J,L)`: channels in `L \ J`
+are positive and channels in `J \ L` are negative. -/
+def universalPrimeChamberRelativeKreinProbeForm
+    (J L : Finset Nat.Primes) :
+    Matrix (Fin ((L \ J).card + (J \ L).card))
+      (Fin ((L \ J).card + (J \ L).card)) ℂ :=
+  universalPrimeKreinProbeForm
+    (finsetPrimeEnumeration (L \ J)) (finsetPrimeEnumeration (J \ L))
+
+/-- The relative chamber form has negative inertia exactly `#(J \ L)`. -/
+theorem universalPrimeChamberRelativeKreinProbe_exact_neg_inertia
+    (J L : Finset Nat.Primes) :
+    (∀ W : Submodule ℂ (Fin ((L \ J).card + (J \ L).card) → ℂ),
+        (∀ y ∈ W, y ≠ 0 →
+          (star y ⬝ᵥ
+            (universalPrimeChamberRelativeKreinProbeForm J L).mulVec y).re < 0) →
+        Module.finrank ℂ W ≤ (J \ L).card) ∧
+      (∃ W : Submodule ℂ (Fin ((L \ J).card + (J \ L).card) → ℂ),
+        Module.finrank ℂ W = (J \ L).card ∧
+        ∀ y ∈ W, y ≠ 0 →
+          (star y ⬝ᵥ
+            (universalPrimeChamberRelativeKreinProbeForm J L).mulVec y).re < 0) := by
+  simpa only [universalPrimeChamberRelativeKreinProbeForm] using
+    universalPrimeKreinProbe_exact_neg_inertia
+      (finsetPrimeEnumeration (L \ J)) (finsetPrimeEnumeration (J \ L))
+      (primeChamberDifferenceEnumeration_injective J L)
+
+/-- The relative chamber form has positive inertia exactly `#(L \ J)`. -/
+theorem universalPrimeChamberRelativeKreinProbe_exact_pos_inertia
+    (J L : Finset Nat.Primes) :
+    (∀ W : Submodule ℂ (Fin ((L \ J).card + (J \ L).card) → ℂ),
+        (∀ y ∈ W, y ≠ 0 →
+          0 < (star y ⬝ᵥ
+            (universalPrimeChamberRelativeKreinProbeForm J L).mulVec y).re) →
+        Module.finrank ℂ W ≤ (L \ J).card) ∧
+      (∃ W : Submodule ℂ (Fin ((L \ J).card + (J \ L).card) → ℂ),
+        Module.finrank ℂ W = (L \ J).card ∧
+        ∀ y ∈ W, y ≠ 0 →
+          0 < (star y ⬝ᵥ
+            (universalPrimeChamberRelativeKreinProbeForm J L).mulVec y).re) := by
+  simpa only [universalPrimeChamberRelativeKreinProbeForm] using
+    universalPrimeKreinProbe_exact_pos_inertia
+      (finsetPrimeEnumeration (L \ J)) (finsetPrimeEnumeration (J \ L))
+      (primeChamberDifferenceEnumeration_injective J L)
+
+/-- The undirected chamber support, with the order chosen to match positive then negative Krein
+channels. -/
+def primeChamberSymmetricDifference
+    (J L : Finset Nat.Primes) : Finset Nat.Primes :=
+  (L \ J) ∪ (J \ L)
+
+/-- The Hamming distance between two finite prime-residue chambers. -/
+def primeChamberHammingDistance (J L : Finset Nat.Primes) : ℕ :=
+  (L \ J).card + (J \ L).card
+
+theorem primeChamberSymmetricDifference_card (J L : Finset Nat.Primes) :
+    (primeChamberSymmetricDifference J L).card = primeChamberHammingDistance J L := by
+  have hdis : Disjoint (L \ J) (J \ L) := by
+    rw [Finset.disjoint_left]
+    intro p hpLJ hpJL
+    exact (Finset.mem_sdiff.mp hpLJ).2 (Finset.mem_sdiff.mp hpJL).1
+  rw [primeChamberSymmetricDifference, Finset.card_union_of_disjoint hdis,
+    primeChamberHammingDistance]
+
+theorem primeChamberHammingDistance_eq_zero_iff (J L : Finset Nat.Primes) :
+    primeChamberHammingDistance J L = 0 ↔ J = L := by
+  constructor
+  · intro h
+    have hparts : (L \ J).card = 0 ∧ (J \ L).card = 0 := by
+      exact Nat.add_eq_zero_iff.mp h
+    have hLJ : L ⊆ J :=
+      Finset.sdiff_eq_empty_iff_subset.mp (Finset.card_eq_zero.mp hparts.1)
+    have hJL : J ⊆ L :=
+      Finset.sdiff_eq_empty_iff_subset.mp (Finset.card_eq_zero.mp hparts.2)
+    exact Finset.Subset.antisymm hJL hLJ
+  · rintro rfl
+    simp [primeChamberHammingDistance]
+
+/-- The binary `Z`-charge of a prime in a residue chamber. -/
+def primeChamberDephasingCharge (J : Finset Nat.Primes) (p : Nat.Primes) : ℝ :=
+  if p ∈ J then -1 else 1
+
+/-- Every changed prime contributes the same squared charge gap `4`. -/
+theorem primeChamberDephasingCharge_gap_sq
+    (J L : Finset Nat.Primes) {p : Nat.Primes}
+    (hp : p ∈ primeChamberSymmetricDifference J L) :
+    (primeChamberDephasingCharge J p - primeChamberDephasingCharge L p) ^ 2 = 4 := by
+  rw [primeChamberSymmetricDifference, Finset.mem_union] at hp
+  rcases hp with hp | hp
+  · have hpLJ := Finset.mem_sdiff.mp hp
+    norm_num [primeChamberDephasingCharge, hpLJ.1, hpLJ.2]
+  · have hpJL := Finset.mem_sdiff.mp hp
+    norm_num [primeChamberDephasingCharge, hpJL.1, hpJL.2]
+
+/-- The normalized independent-dephasing master energy of the coherence `|J><L|`.  The factor
+`1/4` is the Pauli-`Z` normalization for which one changed binary charge has unit rate. -/
+def primeChamberDephasingMasterEnergy (J L : Finset Nat.Primes) : ℝ :=
+  (1 / 4 : ℝ) * ∑ p ∈ primeChamberSymmetricDifference J L,
+    (primeChamberDephasingCharge J p - primeChamberDephasingCharge L p) ^ 2
+
+/-- **Dephasing--Hamming identity.**  The static positive master energy is exactly the chamber
+Hamming distance, hence also the sum of the exact positive and negative Krein channel counts. -/
+theorem primeChamberDephasingMasterEnergy_eq_hamming
+    (J L : Finset Nat.Primes) :
+    primeChamberDephasingMasterEnergy J L = (primeChamberHammingDistance J L : ℝ) := by
+  rw [primeChamberDephasingMasterEnergy]
+  calc
+    (1 / 4 : ℝ) * ∑ p ∈ primeChamberSymmetricDifference J L,
+        (primeChamberDephasingCharge J p - primeChamberDephasingCharge L p) ^ 2 =
+        (1 / 4 : ℝ) * ∑ _p ∈ primeChamberSymmetricDifference J L, (4 : ℝ) := by
+          congr 1
+          exact Finset.sum_congr rfl fun p hp =>
+            primeChamberDephasingCharge_gap_sq J L hp
+    _ = ((primeChamberSymmetricDifference J L).card : ℝ) := by
+      simp only [Finset.sum_const, nsmul_eq_mul]
+      ring
+    _ = (primeChamberHammingDistance J L : ℝ) := by
+      rw [primeChamberSymmetricDifference_card]
+
+/-- The independent-dephasing master has zero energy exactly on diagonal chamber coherences. -/
+theorem primeChamberDephasingMasterEnergy_eq_zero_iff
+    (J L : Finset Nat.Primes) :
+    primeChamberDephasingMasterEnergy J L = 0 ↔ J = L := by
+  rw [primeChamberDephasingMasterEnergy_eq_hamming]
+  simpa using primeChamberHammingDistance_eq_zero_iff J L
+
+/-- **Constraint discharge at the positive chamber.**  For a finite residue orientation, the
+global Herglotz positivity condition is equivalent to vanishing of one positive dephasing master
+energy against the all-positive chamber. -/
+theorem universalPrimeOrientedHerglotz_nonneg_iff_dephasingMasterEnergy_eq_zero
+    (J : Finset Nat.Primes) :
+    (∀ z : ℂ, 0 < z.im → 0 ≤ (universalPrimeOrientedHerglotz J z).im) ↔
+      primeChamberDephasingMasterEnergy J ∅ = 0 := by
+  rw [universalPrimeOrientedHerglotz_nonneg_iff_empty,
+    primeChamberDephasingMasterEnergy_eq_zero_iff]
 
 end
 

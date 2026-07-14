@@ -65,8 +65,10 @@ absent because kernel and direct-sum decompositions are linear.
 
 - `SeamSuspensionTrace.logDeriv_completed_split` supplies the flat prime--Gamma trace whose poles
   have the Xi multiplicities.
-- `SeamSuspensionTrace.flat_eq_cohomology_trace` supplies the algebraic compression pattern once a
-  source Hodge/Green homotopy is constructed.
+- `SeamSuspensionTrace.gradedMatrixTrace_hodgeCompression` supplies the grading-correct algebraic
+  compression once a source Hodge/Green homotopy and the finite parity operator are constructed.
+  The legacy `flat_eq_cohomology_trace` only consumes a separately supplied ordinary commutator
+  and is not the valid consumer of `dH+Hd=1-P`.
 - `IntegralOrbitTateExtension.integralUnitExtension_tate_separates_fixed_free` proves that the
   integral residue lattice already distinguishes a fixed orbit from a free swap orbit.
 - `CompletedSEMContourBoundary.completedSEMContourIndexZ_eq_xiOrder` supplies the source-defined

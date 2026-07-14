@@ -308,7 +308,18 @@ the rectangular evaluation-surjectivity premise, and derives exact positive and 
 equal to the two packet sizes.  This directly composes the existing Cauchy and rectangular-Krein
 engines and removes arbitrary node-choice and controllability hypotheses.
 
-The remaining card-level work is the finite-set interface: rewrite the relative Pick defect of
-two chambers `J,L` as those two packets indexed by `L \\ J` and `J \\ L`, then expose the Hamming and
-partial-order corollaries.  The new declarations were added during a no-computation phase and are
-not yet promoted to the checked formalized stage.
+The finite-set interface is now present at source level.  The canonical enumerations of `L \\ J`
+and `J \\ L` are proved jointly injective and instantiate the generic rectangular theorem, giving
+exact positive and negative chamber inertias with no packet-level hypothesis.  The same source
+also defines the binary prime-chamber dephasing charges and proves that their normalized
+sum-of-squares master energy is exactly
+
+```text
+#(L \\ J) + #(J \\ L),
+```
+
+with zero energy exactly when `J=L`.  This is the independent-dephasing/Hamming value relation from
+multiqubit quantum information, applied directly to the universal hypertranscendental
+prime-residue cube.  The declarations were added and manually reviewed during a no-computation
+phase; targeted Lean verification remains required before promotion to the checked formalized
+stage.

@@ -132,3 +132,25 @@ certificate: the cofinal-decay discharge itself is elementary and is classified 
 - [x] global orientation-energy and RH interfaces formalized
 - [ ] stage-2 tensor-square Sonin lower bound formalized
 - [ ] source-pure uniform bound for the canonical pair differences
+
+## Sparse one-ended refinement
+
+The paper theorem
+`../../2-fully-proven/not_new_scientific_knowledge/xi-prime-seam-one-ended-cofinal-edge-collapse.md`
+strictly weakens the coherence hypothesis needed at this endpoint.  On any fixed preconnected
+one-ended graph whose vertices are the primes, it is enough that the canonical seam charge differ
+across only finitely many edges.  The charge then has finite range, the formal finite-valued
+one-ended reconstruction applies to that range, and the cofinal decay formalized here kills the
+eventual common value.  Thus the complete-graph condition can be replaced on paper by
+
+```text
+finite edge variation on one cofinal one-ended prime skeleton
+  -> eventual seam coherence
+  -> eventual seam vanishing
+  -> RH.
+```
+
+In operator form, it is enough to prove compactness of the canonical two-prime coboundary corner on
+all but finitely many edges of that skeleton.  On the increasing-prime ray these are only adjacent
+prime pairs.  Formalizing the arbitrary-label finite-range reduction is the remaining graph-level
+step; the cofinal-decay and RH endpoint are already supplied by this card.

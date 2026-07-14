@@ -48,3 +48,25 @@ Equivalently, it must keep the cumulative Bernstein Dirichlet dissipation cofina
 - `primeArchEndpointBernsteinCumulativeDissipationExactExponent_iff_purity`
 - `existsUnique_primeArchEndpointBernsteinPurityDissipationExactExponent`
 - `primeArchBernsteinNarrowSectorDissipationMaster`
+
+## Reflected branch-point interpretation
+
+The paper value relation
+[`prime-arch-bernstein-legendre-double-source-kernel.md`](../../2-fully-proven/not_new_scientific_knowledge/prime-arch-bernstein-legendre-double-source-kernel.md)
+shows that for a normalized endpoint coordinate `u`, the conjugate-paired Legendre kernel has
+radicand
+
+\[
+ (1-B_+(u)^2t)(1-B_-(u)^2t),
+ \qquad B_\pm(u)=|u|\pm|1-u|.
+\]
+
+Therefore the attained exact threshold `B^2` in this card and the exact Abel radius `B^(-2)` are
+the exponential and analytic sides of the same reflected algebraic branch point.  The associated
+source-only collar task is
+[`prime-arch-bernstein-reflected-kernel-collar.md`](../../1-in-progress/prime-arch-bernstein-reflected-kernel-collar.md).
+
+Equivalently, the Möbius-pullback law in
+[`prime-arch-bernstein-mobius-pullback-gutzmer-law.md`](../../2-fully-proven/not_new_scientific_knowledge/prime-arch-bernstein-mobius-pullback-gutzmer-law.md)
+shows that `B^(-1)` is the first radius at which a pulled-back prime--Gamma pole reaches the Gutzmer
+torus; squaring the torus radius produces the Abel branch point `B^(-2)`.

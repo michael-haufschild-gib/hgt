@@ -340,3 +340,24 @@ certificate.
 - 2026-07-13 -- The canonical Xi seam potentials were formalized at all positive scales. Their
   cofinal decay proves that prime coherence forces the common value to vanish, removing the extra
   archimedean-normalization input from the prospective RH chain.
+
+## Sparse one-ended operator target
+
+The complete-pair uniform Calkin theorem above is not the weakest sufficient realization target.
+The paper theorem
+`xi-prime-seam-one-ended-cofinal-edge-collapse.md` shows that, for the canonical Xi seam charges,
+it is enough to prove exact compactness of the singleton two-prime coboundary corner on all but
+finitely many edges of one fixed one-ended cofinal prime graph.  The singleton essential-norm lower
+bound then forces equality across those edges; one-ended reconstruction gives eventual constancy;
+and the already formalized cofinal seam decay forces the constant to vanish.
+
+For the increasing-prime ray the remaining source theorem concerns only adjacent prime pairs:
+
+```text
+for every Xi divisor point rho, eventually in n,
+  (a_(p_n)(rho)-a_(p_(n+1))(rho)) (L_(p_n) tensor L_(p_(n+1))) is compact.
+```
+
+This trades the complete-pair route's global uniform norm bound and reciprocal-prime amplification
+for exact modulo-compact cancellation along a sparse cofinal skeleton.  It does not assume the
+coefficient vanishes; that cancellation must still be derived from a prime--Gamma value relation.

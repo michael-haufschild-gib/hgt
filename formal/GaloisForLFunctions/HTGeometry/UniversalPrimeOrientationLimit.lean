@@ -262,6 +262,16 @@ theorem universalPrimeOrientationLimit_coe_finset
         discreteHerglotz, universalPrimeWeight]
       ring
 
+/-- The finite part of the complete orientation carrier is Herglotz exactly when its independent
+dephasing master energy against the all-positive chamber vanishes. -/
+theorem universalPrimeOrientationLimit_coe_finset_nonneg_iff_dephasingMasterEnergy_eq_zero
+    (J : Finset Nat.Primes) :
+    (∀ z : ℂ, 0 < z.im →
+        0 ≤ (universalPrimeOrientationLimit (fun p => decide (p ∈ J)) z).im) ↔
+      primeChamberDephasingMasterEnergy J ∅ = 0 := by
+  simpa only [universalPrimeOrientationLimit_coe_finset] using
+    universalPrimeOrientedHerglotz_nonneg_iff_dephasingMasterEnergy_eq_zero J
+
 /-- The analytic pointing on the canonical constraint--orientation limit depends only on its
 orientation coordinate and selects exactly the all-positive global thread. -/
 theorem canonicalConstraintOrientationLimit_primeCarrier_nonneg_iff_allPositive

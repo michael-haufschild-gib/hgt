@@ -279,6 +279,14 @@ The second theorem is not in the current corpus. Existing quiet-crossing rigidit
 degree-one Gamma boundary, and sparse-Euler divisor rigidity requires a comparison Euler product
 not supplied by finite-exception factorization.
 
+The direct Perron-contour attempt to prove the second theorem is retired in
+`../5-failed/finite-offline-euler-contour-pole-order-contradiction.md`.  At a zero of multiplicity
+`m`, multiplying by a polynomial vanishing at that zero makes `1/(zeta P)` have order `m+1`; the
+crossed residue contains derivatives through order `m` and retains the same pole order.  The
+corrected calculation positively recovers the finite exponential-polynomial contour-jump packet,
+but supplies no contradiction.  Therefore the remaining discreteness theorem must annihilate that
+packet using additional exact Euler arithmetic, not pole-order comparison.
+
 ## 4B. Wide corpus and Lean audit `[COMPLETED 2026-07-11]`
 
 The project already contains most of the functional-analytic shell required by a proof.

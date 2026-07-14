@@ -125,3 +125,19 @@ File:
 - [x] RHTower umbrella and generated index wiring
 - [ ] source-side proof of the fixed `2`--`3` diagonal-energy equality
 - [ ] RH
+
+## Arbitrary normalized two-scale extension
+
+The paper theorem
+`../../2-fully-proven/not_new_scientific_knowledge/xi-rational-hurwitz-dyadic-refinement-square-law.md`
+shows that the special raw prime-`2`--prime-`3` comparison has a scale-normalized extension.  For
+any integers `1<m<n`, define
+
+```text
+H_n(rho) = n*||C_n(rho)||^2/(4*log(n)^2).
+```
+
+Then `H_m(rho)<=H_n(rho)`, with equality exactly at `re(rho)=1/2`.  Hence any two distinct finite
+rational-Hurwitz moduli can supply a two-value RH gate after normalization.  The square refinement
+`n -> n^2` further identifies the strict gap as `4*H_n(rho)^2`.  These extensions are paper-proven
+and await Lean formalization.

@@ -84,6 +84,20 @@ theorem crossBoundary_mul_crossBoundary (e a b : E) (he : IsIdempotentElem e) :
   rw [crossBoundary, crossBoundary, h, show e * (1 - e) = 0 by rw [mul_sub, mul_one, hee, sub_self]]
   noncomm_ring
 
+/-- **Same-direction upper crossings are square-zero.**  The product of two upper boundary
+cochains vanishes because `(1-e)e=0`.  Together with
+`crossBoundary_mul_crossBoundary`, this gives the two nilpotent off-diagonal sectors used by
+Lueders measurement disturbance. -/
+theorem upperBoundary_mul_upperBoundary (e a b : E) (he : IsIdempotentElem e) :
+    upperBoundary e a * upperBoundary e b = 0 := by
+  have hee : e * e = e := he
+  have h : (e * a * (1 - e)) * (e * b * (1 - e)) =
+      e * a * ((1 - e) * e) * b * (1 - e) := by
+    noncomm_ring
+  rw [upperBoundary, upperBoundary, h,
+    show (1 - e) * e = 0 by rw [sub_mul, one_mul, hee, sub_self]]
+  noncomm_ring
+
 /-! ### §1b The cross-boundary cochain is intrinsically non-commutative and traceless -/
 
 /-- **The cross-boundary cochain vanishes identically in a commutative ring.**  If the operator ring

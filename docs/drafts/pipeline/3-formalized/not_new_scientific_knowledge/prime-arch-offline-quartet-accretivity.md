@@ -170,3 +170,20 @@ primeArchOffLineQuartetConnesBornWittenKMSMaster
 The three modules and the `RHTower` umbrella compile.  Formal lint passes.  `#print axioms` on the
 orbit bound, height theorem, countable RH criterion, and KMS master theorem reports only
 `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Exterior diagonal consequence
+
+The paper theorem
+`../../2-fully-proven/not_new_scientific_knowledge/xi-positive-paired-diagonal-sector-collapse.md`
+uses the formalized inequality
+
+```text
+R+1/2 < |im(rho)|
+```
+
+for every off-line Xi zero at an exact quartet-admissible radius `R` to localize every possible
+failure of RH inside the positive-frequency exterior source domain after FE--Schwarz reflection.
+There the diagonal of the positive-paired reduced Cauchy kernel is the reciprocal-square sector
+observable.  Its nonnegativity alone excludes the localized pole.  Hence the quartet band is not
+only a central anti-Herglotz prefix: it also proves that exterior one-point diagonal passivity is a
+complete RH criterion.  The composition is currently paper-level.

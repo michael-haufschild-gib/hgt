@@ -113,4 +113,11 @@ The quantum-dephasing residual supplies a second directly consumable formulation
 
 The forward direction uses `[X,e] = [X-D_e(X),e]`, because `D_e(X)` commutes with the idempotent cutoff.  The reverse direction uses `X-D_e(X) = [[X,e],e]`.  This yields both a generic Sonin/Calkin consumer and a central-cutoff specialization whose sole operator premise is compact Lüders disturbance.  Unlike the earlier abstract pinching laws, this relation is applied immediately to the existing Sonin theorem surface.
 
+It also applies contrapositive-style to the pre-existing one-prime Fredholm obstruction.  Since
+`archimedeanPrimeEuler_projectionCommutator_not_isCompactOperator` proves that the positive
+one-prime Euler Gram fails to commute compactly with the physical boundary projection, the new
+theorem `archimedeanPrimeEuler_ludersDisturbance_not_isCompactOperator` shows that the part erased
+by the corresponding nonselective measurement is itself noncompact.  This adds no hypothesis and
+turns the existing operator obstruction into a quantum-measurement statement.
+
 The declarations were added during the user-mandated no-computation phase and are source-reviewed only.  No Lean process, build, lint, numerical experiment, or axiom audit was run; the previously validated part of this card remains distinct from these unvalidated additions.

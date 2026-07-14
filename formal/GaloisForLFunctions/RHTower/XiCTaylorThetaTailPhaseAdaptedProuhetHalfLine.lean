@@ -1308,8 +1308,14 @@ theorem abs_thetaCuspTailSecondDensity_le_exp_neg_one
   have h := abs_thetaCuspTailDerivative_le_nat_exp_neg 2 1 hx
   norm_num at h
   unfold thetaCuspTailSecondDensity thetaCuspTailSecondDensityExpOneConstant
-  rw [abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 4)]
-  gcongr
+  calc
+    |4 * thetaCuspTailDerivative 2 x| =
+        4 * |thetaCuspTailDerivative 2 x| := by
+      rw [abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 4)]
+    _ ≤ 4 * (thetaCuspTailDerivativeNatExpConstant 2 1 * Real.exp (-x)) :=
+      mul_le_mul_of_nonneg_left h (by norm_num)
+    _ = (4 * thetaCuspTailDerivativeNatExpConstant 2 1) * Real.exp (-x) := by
+      ring
 
 /-- Opposite-phase transform of the elementary completion character. -/
 def thetaHalfExponentialOppositePhaseValue (z : ℂ) : ℂ :=
@@ -1351,6 +1357,7 @@ private theorem integrableOn_thetaHalfExponential_mul_negPhase
       (Real.exp_pos _).le)]
     simp only [pow_zero, one_mul]
     dsimp only [c]
+    apply le_of_eq
     rw [← Real.exp_add]
     congr 1
     ring
@@ -1371,13 +1378,17 @@ private theorem integrableOn_thetaHalfExponential_mul_negPhaseDerivative
   · exact ((by fun_prop : Continuous (fun x : ℝ => (Real.exp (-x / 2) : ℂ))) |>.mul
       (by unfold spectralTranslationPhase; fun_prop)).aestronglyMeasurable.restrict
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+    have hx0 : 0 ≤ x := (mem_Ioi.mp hx).le
     rw [norm_mul, norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
       norm_I, mul_one, abs_of_pos (Real.exp_pos _),
       norm_spectralTranslationPhase_neg_eq_exp_mul_im]
-    simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hx.le, pow_one]
-    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg hx.le (Real.exp_pos _).le)]
+    simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hx0, pow_one]
+    rw [abs_of_nonneg (mul_nonneg hx0 (Real.exp_pos _).le)]
     dsimp only [c]
-    rw [← Real.exp_add]
+    apply le_of_eq
+    rw [show Real.exp (-x / 2) * (x * Real.exp (x * z.im)) =
+        x * (Real.exp (-x / 2) * Real.exp (x * z.im)) by ring,
+      ← Real.exp_add]
     congr 2
     ring
 
@@ -1464,7 +1475,7 @@ theorem integrableOn_thetaCuspTailSecondDensity_shift_mul_negPhaseDerivative
       norm_I, mul_one, norm_spectralTranslationPhase_neg_eq_exp_mul_im]
     simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hx0, pow_one]
     dsimp only [C, c]
-    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg
+    rw [abs_of_nonneg (mul_nonneg
       thetaCuspTailSecondDensityExpOneConstant_nonneg
         (mul_nonneg hx0 (Real.exp_pos _).le))]
     calc
@@ -1520,7 +1531,8 @@ theorem exp_half_mul_thetaCuspTailSecondDensity_shift_tendsto_zero (x : ℝ) :
         thetaCuspTailSecondDensityExpOneConstant *
           (Real.exp (a / 2) * Real.exp (-(x + a))) by ring,
         ← Real.exp_add]
-      congr 1
+      rw [show a / 2 + -(x + a) = -x + -a / 2 by ring,
+        Real.exp_add]
       ring
 
 theorem thetaCuspTailSecondDensityReturnedValue_scaled_tendsto_zero
@@ -1580,7 +1592,9 @@ theorem thetaCuspTailSecondDensityReturnedValue_scaled_tendsto_zero
               (Real.exp (a / 2) * Real.exp (-(x + a)) *
                 Real.exp (x * z.im)) by ring,
           ← Real.exp_add, ← Real.exp_add]
-        congr 1
+        rw [show a / 2 + -(x + a) + x * z.im =
+          -a / 2 + -((1 : ℝ) - z.im) * x by ring,
+          Real.exp_add]
         ring
       _ ≤ thetaCuspTailSecondDensityExpOneConstant *
           Real.exp (-((1 : ℝ) - z.im) * x) := by
@@ -1594,14 +1608,15 @@ theorem thetaCuspTailSecondDensityReturnedValue_scaled_tendsto_zero
     have hcplx : Tendsto (fun a : ℝ =>
         ((Real.exp (a / 2) * thetaCuspTailSecondDensity (x + a) : ℝ) : ℂ))
         atTop (nhds 0) := by
-      simpa using Complex.continuous_ofReal.continuousAt.tendsto.comp hreal
+      simpa only [Function.comp_apply] using
+        Complex.continuous_ofReal.continuousAt.tendsto.comp hreal
     simpa only [F, zero_mul] using hcplx.mul_const (spectralTranslationPhase (-x) z)
   have hDCT := tendsto_integral_filter_of_dominated_convergence
     bound hFmeas hbound hboundInt hlim
   convert hDCT using 1
   · funext a
     unfold F thetaCuspTailSecondDensityReturnedValue
-    rw [MeasureTheory.integral_const_mul]
+    rw [← MeasureTheory.integral_const_mul]
     apply MeasureTheory.integral_congr_ae
     filter_upwards with x
     push_cast
@@ -1663,8 +1678,9 @@ theorem thetaCuspTailSecondDensityReturnedDerivative_scaled_tendsto_zero
               (Real.exp (a / 2) * Real.exp (-(x + a)) *
                 Real.exp (x * z.im)) by ring,
           ← Real.exp_add, ← Real.exp_add]
-        ring_nf
-        congr 1
+        rw [show a / 2 + -(x + a) + x * z.im =
+          -a / 2 + -((1 : ℝ) - z.im) * x by ring,
+          Real.exp_add]
         ring
       _ ≤ thetaCuspTailSecondDensityExpOneConstant *
           (x * Real.exp (-((1 : ℝ) - z.im) * x)) := by
@@ -1678,7 +1694,8 @@ theorem thetaCuspTailSecondDensityReturnedDerivative_scaled_tendsto_zero
     have hcplx : Tendsto (fun a : ℝ =>
         ((Real.exp (a / 2) * thetaCuspTailSecondDensity (x + a) : ℝ) : ℂ))
         atTop (nhds 0) := by
-      simpa using Complex.continuous_ofReal.continuousAt.tendsto.comp hreal
+      simpa only [Function.comp_apply] using
+        Complex.continuous_ofReal.continuousAt.tendsto.comp hreal
     simpa only [F, zero_mul] using
       hcplx.mul_const (((x : ℂ) * I) * spectralTranslationPhase (-x) z)
   have hDCT := tendsto_integral_filter_of_dominated_convergence
@@ -1686,7 +1703,7 @@ theorem thetaCuspTailSecondDensityReturnedDerivative_scaled_tendsto_zero
   convert hDCT using 1
   · funext a
     unfold F thetaCuspTailSecondDensityReturnedDerivative
-    rw [MeasureTheory.integral_const_mul]
+    rw [← MeasureTheory.integral_const_mul]
     apply MeasureTheory.integral_congr_ae
     filter_upwards with x
     push_cast
@@ -1710,11 +1727,14 @@ theorem thetaCuspTailSecondEvenRemainderReturnedValue_eq_density_sub_completion
           ((Real.exp (-x / 2) : ℂ) * spectralTranslationPhase (-x) z)) by
     funext x
     unfold thetaCuspTailSecondEvenRemainder
-    rw [← Real.exp_add]
+    have hexp : Real.exp (-(x + a) / 2) =
+        Real.exp (-a / 2) * Real.exp (-x / 2) := by
+      rw [← Real.exp_add]
+      congr 1
+      ring
+    rw [hexp]
     push_cast
-    congr 1
-    · ring
-    · ring]
+    ring]
   rw [MeasureTheory.integral_sub
       (integrableOn_thetaCuspTailSecondDensity_shift_mul_negPhase ha hz)
       ((integrableOn_thetaHalfExponential_mul_negPhase hz).const_mul
@@ -1741,11 +1761,14 @@ theorem thetaCuspTailSecondEvenRemainderReturnedDerivative_eq_density_sub_comple
             ((x : ℂ) * I * spectralTranslationPhase (-x) z))) by
     funext x
     unfold thetaCuspTailSecondEvenRemainder
-    rw [← Real.exp_add]
+    have hexp : Real.exp (-(x + a) / 2) =
+        Real.exp (-a / 2) * Real.exp (-x / 2) := by
+      rw [← Real.exp_add]
+      congr 1
+      ring
+    rw [hexp]
     push_cast
-    congr 1
-    · ring
-    · ring]
+    ring]
   rw [MeasureTheory.integral_sub
       (integrableOn_thetaCuspTailSecondDensity_shift_mul_negPhaseDerivative ha hz)
       ((integrableOn_thetaHalfExponential_mul_negPhaseDerivative hz).const_mul
@@ -1766,18 +1789,22 @@ theorem thetaCuspTailSecondEvenRemainderReturnedValue_scaled_tendsto_completion
             (1 / 2 : ℂ) * thetaHalfExponentialOppositePhaseValue z := by
     filter_upwards [eventually_ge_atTop (0 : ℝ)] with a ha
     rw [thetaCuspTailSecondEvenRemainderReturnedValue_eq_density_sub_completion ha hz]
-    push_cast
-    rw [show Real.exp (a / 2) * ((1 / 2 : ℝ) * Real.exp (-a / 2)) =
-      (1 / 2 : ℝ) by
-      rw [show Real.exp (a / 2) * ((1 / 2 : ℝ) * Real.exp (-a / 2)) =
-        (1 / 2 : ℝ) * (Real.exp (a / 2) * Real.exp (-a / 2)) by ring,
-        ← Real.exp_add]
-      simp]
-    ring
-  apply Tendsto.congr' hsplit.symm
-  simpa using (thetaCuspTailSecondDensityReturnedValue_scaled_tendsto_zero hz).sub
+    have hcoef : (Real.exp (a / 2) : ℂ) *
+        (((1 / 2 : ℝ) * Real.exp (-a / 2) : ℝ) : ℂ) = 1 / 2 := by
+      push_cast
+      rw [show Complex.exp ((a : ℂ) / 2) *
+            ((1 / 2 : ℂ) * Complex.exp (-(a : ℂ) / 2)) =
+          (1 / 2 : ℂ) *
+            (Complex.exp ((a : ℂ) / 2) * Complex.exp (-(a : ℂ) / 2)) by ring,
+        ← Complex.exp_add]
+      rw [show (a : ℂ) / 2 + -(a : ℂ) / 2 = 0 by ring,
+        Complex.exp_zero]
+      norm_num
+    rw [mul_sub, ← mul_assoc, hcoef]
+  have hbase := (thetaCuspTailSecondDensityReturnedValue_scaled_tendsto_zero hz).sub
     (tendsto_const_nhds : Tendsto (fun _ : ℝ =>
       (1 / 2 : ℂ) * thetaHalfExponentialOppositePhaseValue z) atTop _)
+  simpa using hbase.congr' (hsplit.mono fun _ h => h.symm)
 
 theorem thetaCuspTailSecondEvenRemainderReturnedDerivative_scaled_tendsto_completion
     {z : ℂ} (hz : z.im < 1 / 2) :
@@ -1794,18 +1821,772 @@ theorem thetaCuspTailSecondEvenRemainderReturnedDerivative_scaled_tendsto_comple
             (1 / 2 : ℂ) * thetaHalfExponentialOppositePhaseDerivative z := by
     filter_upwards [eventually_ge_atTop (0 : ℝ)] with a ha
     rw [thetaCuspTailSecondEvenRemainderReturnedDerivative_eq_density_sub_completion ha hz]
-    push_cast
-    rw [show Real.exp (a / 2) * ((1 / 2 : ℝ) * Real.exp (-a / 2)) =
-      (1 / 2 : ℝ) by
-      rw [show Real.exp (a / 2) * ((1 / 2 : ℝ) * Real.exp (-a / 2)) =
-        (1 / 2 : ℝ) * (Real.exp (a / 2) * Real.exp (-a / 2)) by ring,
-        ← Real.exp_add]
-      simp]
-    ring
-  apply Tendsto.congr' hsplit.symm
-  simpa using (thetaCuspTailSecondDensityReturnedDerivative_scaled_tendsto_zero hz).sub
+    have hcoef : (Real.exp (a / 2) : ℂ) *
+        (((1 / 2 : ℝ) * Real.exp (-a / 2) : ℝ) : ℂ) = 1 / 2 := by
+      push_cast
+      rw [show Complex.exp ((a : ℂ) / 2) *
+            ((1 / 2 : ℂ) * Complex.exp (-(a : ℂ) / 2)) =
+          (1 / 2 : ℂ) *
+            (Complex.exp ((a : ℂ) / 2) * Complex.exp (-(a : ℂ) / 2)) by ring,
+        ← Complex.exp_add]
+      rw [show (a : ℂ) / 2 + -(a : ℂ) / 2 = 0 by ring,
+        Complex.exp_zero]
+      norm_num
+    rw [mul_sub, ← mul_assoc, hcoef]
+  have hbase := (thetaCuspTailSecondDensityReturnedDerivative_scaled_tendsto_zero hz).sub
     (tendsto_const_nhds : Tendsto (fun _ : ℝ =>
       (1 / 2 : ℂ) * thetaHalfExponentialOppositePhaseDerivative z) atTop _)
+  simpa using hbase.congr' (hsplit.mono fun _ h => h.symm)
+
+/-! ## Critical dyadic sampling of the returned boundary -/
+
+theorem dyadicEvenRemoteAmplitude_eq_exp (K : ℕ) :
+    dyadicEvenRemoteAmplitude K =
+      Real.exp ((K : ℝ) * Real.log 2 / 2) := by
+  rw [dyadicEvenRemoteAmplitude_eq_rpow,
+    Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 2)]
+  congr 1
+  ring
+
+theorem dyadicProuhetDecayCharacter_pow_mul_exp_natDepth
+    (N j : ℕ) :
+    dyadicProuhetDecayCharacter ^ j *
+        Real.exp ((((N + j : ℕ) : ℝ) * Real.log 2) / 2) =
+      dyadicEvenRemoteAmplitude N := by
+  rw [← dyadicEvenRemoteAmplitude_eq_exp (N + j),
+    dyadicProuhetDecayCharacter_pow_mul_remoteAmplitude]
+
+/-- At each fixed translate index, critical dyadic amplification exposes precisely the
+opposite-phase completion boundary. -/
+theorem thetaCuspTailSecondEvenRemainderReturnedValue_critical_natDepth_tendsto
+    {z : ℂ} (hz : z.im < 1 / 2) (j : ℕ) :
+    Tendsto (fun N : ℕ =>
+      (dyadicEvenRemoteAmplitude N : ℂ) *
+        thetaCuspTailSecondEvenRemainderReturnedValue
+          (((N + j : ℕ) : ℝ) * Real.log 2) z)
+      atTop (nhds (((dyadicProuhetDecayCharacter ^ j : ℝ) : ℂ) *
+        (-(1 / 2 : ℂ) * thetaHalfExponentialOppositePhaseValue z))) := by
+  have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  have hdepth : Tendsto
+      (fun N : ℕ => (((N + j : ℕ) : ℝ) * Real.log 2))
+      atTop atTop := by
+    have hcast : Tendsto (fun N : ℕ => ((N + j : ℕ) : ℝ)) atTop atTop :=
+      tendsto_natCast_atTop_atTop.comp (tendsto_add_atTop_nat j)
+    simpa only [mul_comm] using hcast.const_mul_atTop hlog
+  have hsample :=
+    (thetaCuspTailSecondEvenRemainderReturnedValue_scaled_tendsto_completion hz).comp hdepth
+  have hweighted :=
+    (tendsto_const_nhds : Tendsto (fun _ : ℕ =>
+      ((dyadicProuhetDecayCharacter ^ j : ℝ) : ℂ)) atTop _).mul hsample
+  convert hweighted using 1
+  funext N
+  dsimp only [Function.comp_apply]
+  rw [← mul_assoc, ← Complex.ofReal_mul,
+    dyadicProuhetDecayCharacter_pow_mul_exp_natDepth]
+
+theorem thetaCuspTailSecondEvenRemainderReturnedDerivative_critical_natDepth_tendsto
+    {z : ℂ} (hz : z.im < 1 / 2) (j : ℕ) :
+    Tendsto (fun N : ℕ =>
+      (dyadicEvenRemoteAmplitude N : ℂ) *
+        thetaCuspTailSecondEvenRemainderReturnedDerivative
+          (((N + j : ℕ) : ℝ) * Real.log 2) z)
+      atTop (nhds (((dyadicProuhetDecayCharacter ^ j : ℝ) : ℂ) *
+        (-(1 / 2 : ℂ) * thetaHalfExponentialOppositePhaseDerivative z))) := by
+  have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  have hdepth : Tendsto
+      (fun N : ℕ => (((N + j : ℕ) : ℝ) * Real.log 2))
+      atTop atTop := by
+    have hcast : Tendsto (fun N : ℕ => ((N + j : ℕ) : ℝ)) atTop atTop :=
+      tendsto_natCast_atTop_atTop.comp (tendsto_add_atTop_nat j)
+    simpa only [mul_comm] using hcast.const_mul_atTop hlog
+  have hsample :=
+    (thetaCuspTailSecondEvenRemainderReturnedDerivative_scaled_tendsto_completion hz).comp hdepth
+  have hweighted :=
+    (tendsto_const_nhds : Tendsto (fun _ : ℕ =>
+      ((dyadicProuhetDecayCharacter ^ j : ℝ) : ℂ)) atTop _).mul hsample
+  convert hweighted using 1
+  funext N
+  dsimp only [Function.comp_apply]
+  rw [← mul_assoc, ← Complex.ofReal_mul,
+    dyadicProuhetDecayCharacter_pow_mul_exp_natDepth]
+
+theorem realPolynomialComplexCoefficientPairing_geometric
+    (P : ℝ[X]) (q : ℝ) (b : ℂ) :
+    realPolynomialComplexCoefficientPairing P
+        (fun j => (((q ^ j : ℝ) : ℂ) * b)) =
+      ((P.eval q : ℝ) : ℂ) * b := by
+  unfold realPolynomialComplexCoefficientPairing
+  rw [Polynomial.eval_eq_sum]
+  unfold Polynomial.sum
+  push_cast
+  rw [Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro j _hj
+  push_cast
+  ring
+
+/-- A fixed real polynomial converts geometric pointwise limits into evaluation at the
+geometric character. -/
+theorem realPolynomialComplexCoefficientPairing_tendsto_geometric
+    (P : ℝ[X]) (q : ℝ) (b : ℂ) (B : ℕ → ℕ → ℂ)
+    (hB : ∀ j : ℕ, Tendsto (fun N : ℕ => B N j) atTop
+      (nhds (((q ^ j : ℝ) : ℂ) * b))) :
+    Tendsto (fun N : ℕ =>
+      realPolynomialComplexCoefficientPairing P (B N)) atTop
+      (nhds (((P.eval q : ℝ) : ℂ) * b)) := by
+  have hsum := tendsto_finsetSum P.support fun j _hj =>
+    (hB j).const_mul (P.coeff j : ℂ)
+  change Tendsto (fun N : ℕ =>
+      realPolynomialComplexCoefficientPairing P (B N)) atTop
+    (nhds (realPolynomialComplexCoefficientPairing P
+      (fun j => (((q ^ j : ℝ) : ℂ) * b)))) at hsum
+  rwa [realPolynomialComplexCoefficientPairing_geometric] at hsum
+
+theorem realPolynomialComplexCoefficientPairing_criticalReturnedValue_tendsto
+    (P : ℝ[X]) {z : ℂ} (hz : z.im < 1 / 2) :
+    Tendsto (fun N : ℕ =>
+      realPolynomialComplexCoefficientPairing P (fun j =>
+        (dyadicEvenRemoteAmplitude N : ℂ) *
+          thetaCuspTailSecondEvenRemainderReturnedValue
+            (((N + j : ℕ) : ℝ) * Real.log 2) z)) atTop
+      (nhds (((P.eval dyadicProuhetDecayCharacter : ℝ) : ℂ) *
+        (-(1 / 2 : ℂ) * thetaHalfExponentialOppositePhaseValue z))) := by
+  exact realPolynomialComplexCoefficientPairing_tendsto_geometric
+    P dyadicProuhetDecayCharacter
+      (-(1 / 2 : ℂ) * thetaHalfExponentialOppositePhaseValue z) _
+      (thetaCuspTailSecondEvenRemainderReturnedValue_critical_natDepth_tendsto hz)
+
+theorem realPolynomialComplexCoefficientPairing_criticalReturnedDerivative_tendsto
+    (P : ℝ[X]) {z : ℂ} (hz : z.im < 1 / 2) :
+    Tendsto (fun N : ℕ =>
+      realPolynomialComplexCoefficientPairing P (fun j =>
+        (dyadicEvenRemoteAmplitude N : ℂ) *
+          thetaCuspTailSecondEvenRemainderReturnedDerivative
+            (((N + j : ℕ) : ℝ) * Real.log 2) z)) atTop
+      (nhds (((P.eval dyadicProuhetDecayCharacter : ℝ) : ℂ) *
+        (-(1 / 2 : ℂ) * thetaHalfExponentialOppositePhaseDerivative z))) := by
+  exact realPolynomialComplexCoefficientPairing_tendsto_geometric
+    P dyadicProuhetDecayCharacter
+      (-(1 / 2 : ℂ) * thetaHalfExponentialOppositePhaseDerivative z) _
+      (thetaCuspTailSecondEvenRemainderReturnedDerivative_critical_natDepth_tendsto hz)
+
+/-! ## Endpoint-slope cancellation at critical scale -/
+
+def phaseAdaptedCriticalReturnedValuePairing
+    (P : ℝ[X]) (N : ℕ) (z : ℂ) : ℂ :=
+  realPolynomialComplexCoefficientPairing P fun j =>
+    (dyadicEvenRemoteAmplitude N : ℂ) *
+      thetaCuspTailSecondEvenRemainderReturnedValue
+        (((N + j : ℕ) : ℝ) * Real.log 2) z
+
+def phaseAdaptedCriticalReturnedDerivativePairing
+    (P : ℝ[X]) (N : ℕ) (z : ℂ) : ℂ :=
+  realPolynomialComplexCoefficientPairing P fun j =>
+    (dyadicEvenRemoteAmplitude N : ℂ) *
+      thetaCuspTailSecondEvenRemainderReturnedDerivative
+        (((N + j : ℕ) : ℝ) * Real.log 2) z
+
+theorem phaseAdaptedTwoEndpointProuhetEndpointSlope_eval_left
+    (m : ℕ) (u : ℂ) (q r : ℝ) :
+    (phaseAdaptedTwoEndpointProuhetEndpointSlope m u q r).eval q = 0 := by
+  unfold phaseAdaptedTwoEndpointProuhetEndpointSlope
+  simp only [eval_mul, eval_add, eval_C, eval_X]
+  ring
+
+theorem phaseAdaptedCriticalReturnedValueZeroEndpoint_tendsto
+    (m : ℕ) (u : ℂ) (r : ℝ) {z : ℂ} (hz : z.im < 1 / 2)
+    (hBq : (phaseAdaptedProuhetBase m u).eval
+      dyadicProuhetDecayCharacter ≠ 0) :
+    Tendsto (fun N : ℕ =>
+      phaseAdaptedCriticalReturnedValuePairing
+        (phaseAdaptedTwoEndpointProuhetPolynomial m u
+          dyadicProuhetDecayCharacter r 0) N z) atTop
+      (nhds (-(1 / 2 : ℂ) * thetaHalfExponentialOppositePhaseValue z)) := by
+  have h := realPolynomialComplexCoefficientPairing_criticalReturnedValue_tendsto
+    (phaseAdaptedTwoEndpointProuhetPolynomial m u
+      dyadicProuhetDecayCharacter r 0) hz
+  rw [phaseAdaptedTwoEndpointProuhetPolynomial_eval_left m u hBq] at h
+  simpa only [phaseAdaptedCriticalReturnedValuePairing, Complex.ofReal_one,
+    one_mul] using h
+
+theorem phaseAdaptedCriticalReturnedDerivativeZeroEndpoint_tendsto
+    (m : ℕ) (u : ℂ) (r : ℝ) {z : ℂ} (hz : z.im < 1 / 2)
+    (hBq : (phaseAdaptedProuhetBase m u).eval
+      dyadicProuhetDecayCharacter ≠ 0) :
+    Tendsto (fun N : ℕ =>
+      phaseAdaptedCriticalReturnedDerivativePairing
+        (phaseAdaptedTwoEndpointProuhetPolynomial m u
+          dyadicProuhetDecayCharacter r 0) N z) atTop
+      (nhds (-(1 / 2 : ℂ) *
+        thetaHalfExponentialOppositePhaseDerivative z)) := by
+  have h := realPolynomialComplexCoefficientPairing_criticalReturnedDerivative_tendsto
+    (phaseAdaptedTwoEndpointProuhetPolynomial m u
+      dyadicProuhetDecayCharacter r 0) hz
+  rw [phaseAdaptedTwoEndpointProuhetPolynomial_eval_left m u hBq] at h
+  simpa only [phaseAdaptedCriticalReturnedDerivativePairing, Complex.ofReal_one,
+    one_mul] using h
+
+/-- The critical completion boundary of every individual translate is annihilated by the
+endpoint-slope packet because that packet has zero mass at the decay character. -/
+theorem phaseAdaptedCriticalReturnedValueEndpointSlope_tendsto_zero
+    (m : ℕ) (u : ℂ) (r : ℝ) {z : ℂ} (hz : z.im < 1 / 2) :
+    Tendsto (fun N : ℕ =>
+      phaseAdaptedCriticalReturnedValuePairing
+        (phaseAdaptedTwoEndpointProuhetEndpointSlope m u
+          dyadicProuhetDecayCharacter r) N z) atTop
+      (nhds 0) := by
+  have h := realPolynomialComplexCoefficientPairing_criticalReturnedValue_tendsto
+    (phaseAdaptedTwoEndpointProuhetEndpointSlope m u
+      dyadicProuhetDecayCharacter r) hz
+  rw [phaseAdaptedTwoEndpointProuhetEndpointSlope_eval_left] at h
+  simpa only [phaseAdaptedCriticalReturnedValuePairing, Complex.ofReal_zero,
+    zero_mul] using h
+
+theorem phaseAdaptedCriticalReturnedDerivativeEndpointSlope_tendsto_zero
+    (m : ℕ) (u : ℂ) (r : ℝ) {z : ℂ} (hz : z.im < 1 / 2) :
+    Tendsto (fun N : ℕ =>
+      phaseAdaptedCriticalReturnedDerivativePairing
+        (phaseAdaptedTwoEndpointProuhetEndpointSlope m u
+          dyadicProuhetDecayCharacter r) N z) atTop
+      (nhds 0) := by
+  have h := realPolynomialComplexCoefficientPairing_criticalReturnedDerivative_tendsto
+    (phaseAdaptedTwoEndpointProuhetEndpointSlope m u
+      dyadicProuhetDecayCharacter r) hz
+  rw [phaseAdaptedTwoEndpointProuhetEndpointSlope_eval_left] at h
+  simpa only [phaseAdaptedCriticalReturnedDerivativePairing, Complex.ofReal_zero,
+    zero_mul] using h
+
+theorem symmetricHermitianCrossCurrentData_tendsto
+    {U U' : ℕ → ℂ} {u u' E E' : ℂ}
+    (hU : Tendsto U atTop (nhds u)) (hU' : Tendsto U' atTop (nhds u')) :
+    Tendsto (fun N : ℕ =>
+      symmetricHermitianCrossCurrentData (U N) (U' N) E E') atTop
+      (nhds (symmetricHermitianCrossCurrentData u u' E E')) := by
+  have hcontinuous : Continuous (fun p : ℂ × ℂ =>
+      symmetricHermitianCrossCurrentData p.1 p.2 E E') := by
+    unfold symmetricHermitianCrossCurrentData
+    fun_prop
+  have hpair : Tendsto (fun N : ℕ => (U N, U' N)) atTop
+      (nhds (u, u')) := by
+    simpa only [nhds_prod_eq] using hU.prodMk hU'
+  exact hcontinuous.continuousAt.tendsto.comp hpair
+
+theorem phaseAdaptedCriticalReturnedEndpointSlopeCurrent_tendsto_zero
+    (m : ℕ) (u : ℂ) (r : ℝ) {z E E' : ℂ}
+    (hz : z.im < 1 / 2) :
+    Tendsto (fun N : ℕ =>
+      symmetricHermitianCrossCurrentData
+        (-phaseAdaptedCriticalReturnedValuePairing
+          (phaseAdaptedTwoEndpointProuhetEndpointSlope m u
+            dyadicProuhetDecayCharacter r) N z)
+        (phaseAdaptedCriticalReturnedDerivativePairing
+          (phaseAdaptedTwoEndpointProuhetEndpointSlope m u
+            dyadicProuhetDecayCharacter r) N z)
+        E E') atTop (nhds 0) := by
+  have hV := (phaseAdaptedCriticalReturnedValueEndpointSlope_tendsto_zero
+    m u r hz).neg
+  have hD := phaseAdaptedCriticalReturnedDerivativeEndpointSlope_tendsto_zero
+    m u r hz
+  simpa [symmetricHermitianCrossCurrentData] using
+    symmetricHermitianCrossCurrentData_tendsto (E := E) (E' := E') hV hD
+
+/-! ## Self-consistent arithmetic endpoint for the full returned current -/
+
+theorem symmetricHermitianCrossCurrentData_real_smul_left
+    (tau : ℝ) (U U' E E' : ℂ) :
+    symmetricHermitianCrossCurrentData
+        ((tau : ℂ) * U) ((tau : ℂ) * U') E E' =
+      tau * symmetricHermitianCrossCurrentData U U' E E' := by
+  unfold symmetricHermitianCrossCurrentData
+  simp only [map_mul, Complex.conj_ofReal]
+  rw [show ((tau : ℂ) * U') * (starRingEnd ℂ) E +
+        E' * ((tau : ℂ) * (starRingEnd ℂ) U) =
+      (tau : ℂ) *
+        (U' * (starRingEnd ℂ) E + E' * (starRingEnd ℂ) U) by ring]
+  simp [Complex.mul_im]
+
+theorem symmetricHermitianCrossCurrentData_add_real_smul_left
+    (tau : ℝ) (A A' B B' E E' : ℂ) :
+    symmetricHermitianCrossCurrentData
+        (A + (tau : ℂ) * B) (A' + (tau : ℂ) * B') E E' =
+      symmetricHermitianCrossCurrentData A A' E E' +
+        tau * symmetricHermitianCrossCurrentData B B' E E' := by
+  rw [symmetricHermitianCrossCurrentData_add_left,
+    symmetricHermitianCrossCurrentData_real_smul_left]
+
+theorem symmetricHermitianCrossCurrentData_real_smul_self
+    (c : ℝ) (E E' : ℂ) :
+    symmetricHermitianCrossCurrentData
+        ((c : ℂ) * E) ((c : ℂ) * E') E E' =
+      2 * c * (E' * (starRingEnd ℂ) E).im := by
+  simpa [symmetricHermitianCrossCurrentData] using
+    symmetricHermitianCrossCurrentData_neg_add_real_smul
+      (0 : ℂ) 0 E E' c
+
+/-- The full source current is affine in the right-endpoint parameter.  This identity retains
+the returned value and derivative packets instead of estimating them separately. -/
+theorem phaseAdaptedReturnedSourceCurrent_affine
+    (N : ℕ) (tau : ℝ) (V₀ D₀ Vₛ Dₛ R R' E E' : ℂ) :
+    let c : ℝ := ((2 : ℝ) ^ N * tau + 1) / 4
+    symmetricHermitianCrossCurrentData
+        (-(V₀ + (tau : ℂ) * Vₛ) - R + (c : ℂ) * E)
+        ((D₀ + (tau : ℂ) * Dₛ) - R' + (c : ℂ) * E') E E' =
+      symmetricHermitianCrossCurrentData
+          (-V₀ - R + (1 / 4 : ℂ) * E)
+          (D₀ - R' + (1 / 4 : ℂ) * E') E E' +
+        tau * (symmetricHermitianCrossCurrentData (-Vₛ) Dₛ E E' +
+          ((2 : ℝ) ^ N / 2) * (E' * (starRingEnd ℂ) E).im) := by
+  dsimp only
+  let a : ℝ := (2 : ℝ) ^ N / 4
+  have hcoefficient :
+      (((((2 : ℝ) ^ N * tau + 1) / 4 : ℝ) : ℂ)) =
+        (1 / 4 : ℂ) + (tau : ℂ) * (a : ℂ) := by
+    dsimp only [a]
+    push_cast
+    ring
+  have hvalue :
+      -(V₀ + (tau : ℂ) * Vₛ) - R +
+          (((((2 : ℝ) ^ N * tau + 1) / 4 : ℝ) : ℂ) * E) =
+        (-V₀ - R + (1 / 4 : ℂ) * E) +
+          (tau : ℂ) * (-Vₛ + (a : ℂ) * E) := by
+    rw [hcoefficient]
+    ring
+  have hderivative :
+      (D₀ + (tau : ℂ) * Dₛ) - R' +
+          (((((2 : ℝ) ^ N * tau + 1) / 4 : ℝ) : ℂ) * E') =
+        (D₀ - R' + (1 / 4 : ℂ) * E') +
+          (tau : ℂ) * (Dₛ + (a : ℂ) * E') := by
+    rw [hcoefficient]
+    ring
+  have hslope :
+      symmetricHermitianCrossCurrentData
+          (-Vₛ + (a : ℂ) * E) (Dₛ + (a : ℂ) * E') E E' =
+        symmetricHermitianCrossCurrentData (-Vₛ) Dₛ E E' +
+          2 * a * (E' * (starRingEnd ℂ) E).im := by
+    rw [symmetricHermitianCrossCurrentData_add_left,
+      symmetricHermitianCrossCurrentData_real_smul_self]
+  rw [hvalue, hderivative,
+    symmetricHermitianCrossCurrentData_add_real_smul_left,
+    hslope]
+  dsimp only [a]
+  ring
+
+/-- Normalized endpoint denominator.  Multiplication by `2^N` recovers the actual affine
+current slope. -/
+def dyadicAffineCurrentDenominator (N : ℕ) (Jₛ Q : ℝ) : ℝ :=
+  Jₛ * (1 / 2 : ℝ) ^ N + Q / 2
+
+/-- Endpoint chosen from the full affine current, including its returned theta boundary. -/
+def dyadicAffineCancellationEndpoint (N : ℕ) (J₀ Jₛ Q : ℝ) : ℝ :=
+  (-J₀ * (1 / 2 : ℝ) ^ N) / dyadicAffineCurrentDenominator N Jₛ Q
+
+theorem dyadicAffineCurrentSlope_eq_pow_mul_denominator
+    (N : ℕ) (Jₛ Q : ℝ) :
+    Jₛ + ((2 : ℝ) ^ N / 2) * Q =
+      (2 : ℝ) ^ N * dyadicAffineCurrentDenominator N Jₛ Q := by
+  have hpow : (2 : ℝ) ^ N * (1 / 2 : ℝ) ^ N = 1 := by
+    rw [← mul_pow]
+    norm_num
+  have hpow' : (1 / 2 : ℝ) ^ N * (2 : ℝ) ^ N = 1 := by
+    rw [mul_comm]
+    exact hpow
+  unfold dyadicAffineCurrentDenominator
+  calc
+    Jₛ + (2 : ℝ) ^ N / 2 * Q =
+        Jₛ * 1 + (2 : ℝ) ^ N * (Q / 2) := by ring
+    _ = Jₛ * ((1 / 2 : ℝ) ^ N * (2 : ℝ) ^ N) +
+          (2 : ℝ) ^ N * (Q / 2) := by rw [hpow']
+    _ = (2 : ℝ) ^ N *
+        (Jₛ * (1 / 2 : ℝ) ^ N + Q / 2) := by ring
+
+/-- Whenever the normalized denominator is nonzero, the selected endpoint makes the entire
+affine current exactly zero at that finite depth. -/
+theorem dyadicAffineCancellationEndpoint_cancels
+    (N : ℕ) (J₀ Jₛ Q : ℝ)
+    (hden : dyadicAffineCurrentDenominator N Jₛ Q ≠ 0) :
+    J₀ + dyadicAffineCancellationEndpoint N J₀ Jₛ Q *
+      (Jₛ + ((2 : ℝ) ^ N / 2) * Q) = 0 := by
+  rw [dyadicAffineCurrentSlope_eq_pow_mul_denominator]
+  unfold dyadicAffineCancellationEndpoint
+  have hpow : (1 / 2 : ℝ) ^ N * (2 : ℝ) ^ N = 1 := by
+    rw [← mul_pow]
+    norm_num
+  field_simp [hden]
+  rw [hpow]
+  ring
+
+theorem dyadicAffineCurrentDenominator_tendsto
+    (Jₛ : ℕ → ℝ) (Q : ℝ)
+    (hJₛ : Tendsto Jₛ atTop (nhds 0)) :
+    Tendsto (fun N : ℕ => dyadicAffineCurrentDenominator N (Jₛ N) Q)
+      atTop (nhds (Q / 2)) := by
+  have hgeo : Tendsto (fun N : ℕ => (1 / 2 : ℝ) ^ N) atTop (nhds 0) :=
+    tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num) (by norm_num)
+  have h := (hJₛ.mul hgeo).add
+    (tendsto_const_nhds : Tendsto (fun _ : ℕ => Q / 2) atTop _)
+  simpa only [dyadicAffineCurrentDenominator, zero_mul, zero_add] using h
+
+theorem dyadicAffineCurrentDenominator_eventually_ne_zero
+    (Jₛ : ℕ → ℝ) (Q : ℝ)
+    (hJₛ : Tendsto Jₛ atTop (nhds 0)) (hQ : Q ≠ 0) :
+    ∀ᶠ N : ℕ in atTop, dyadicAffineCurrentDenominator N (Jₛ N) Q ≠ 0 := by
+  have hlimit : Q / 2 ≠ 0 := div_ne_zero hQ (by norm_num)
+  exact (dyadicAffineCurrentDenominator_tendsto Jₛ Q hJₛ).eventually
+    (eventually_ne_nhds hlimit)
+
+theorem dyadicAffineCancellationEndpoint_tendsto_zero
+    (J₀ Jₛ : ℕ → ℝ) (j₀ Q : ℝ)
+    (hJ₀ : Tendsto J₀ atTop (nhds j₀))
+    (hJₛ : Tendsto Jₛ atTop (nhds 0)) (hQ : Q ≠ 0) :
+    Tendsto (fun N : ℕ =>
+      dyadicAffineCancellationEndpoint N (J₀ N) (Jₛ N) Q)
+      atTop (nhds 0) := by
+  have hgeo : Tendsto (fun N : ℕ => (1 / 2 : ℝ) ^ N) atTop (nhds 0) :=
+    tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num) (by norm_num)
+  have hnum : Tendsto (fun N : ℕ =>
+      -J₀ N * (1 / 2 : ℝ) ^ N) atTop (nhds 0) := by
+    simpa only [neg_mul, mul_zero, neg_zero] using hJ₀.neg.mul hgeo
+  have hden := dyadicAffineCurrentDenominator_tendsto Jₛ Q hJₛ
+  have hlimit : Q / 2 ≠ 0 := div_ne_zero hQ (by norm_num)
+  simpa only [dyadicAffineCancellationEndpoint, Pi.div_apply, zero_div] using
+    hnum.div hden hlimit
+
+def phaseAdaptedReturnedSourceBaseCurrent
+    (V₀ D₀ R R' E E' : ℂ) : ℝ :=
+  symmetricHermitianCrossCurrentData
+    (-V₀ - R + (1 / 4 : ℂ) * E)
+    (D₀ - R' + (1 / 4 : ℂ) * E') E E'
+
+def phaseAdaptedReturnedSourceSlopeCurrent
+    (Vₛ Dₛ E E' : ℂ) : ℝ :=
+  symmetricHermitianCrossCurrentData (-Vₛ) Dₛ E E'
+
+def phaseAdaptedReturnedSourceCancellationEndpoint
+    (N : ℕ) (V₀ D₀ Vₛ Dₛ R R' E E' : ℂ) : ℝ :=
+  dyadicAffineCancellationEndpoint N
+    (phaseAdaptedReturnedSourceBaseCurrent V₀ D₀ R R' E E')
+    (phaseAdaptedReturnedSourceSlopeCurrent Vₛ Dₛ E E')
+    ((E' * (starRingEnd ℂ) E).im)
+
+/-- Exact current cancellation for the full returned packet at the self-consistent endpoint. -/
+theorem phaseAdaptedReturnedSourceCancellationEndpoint_cancels
+    (N : ℕ) (V₀ D₀ Vₛ Dₛ R R' E E' : ℂ)
+    (hden : dyadicAffineCurrentDenominator N
+      (phaseAdaptedReturnedSourceSlopeCurrent Vₛ Dₛ E E')
+      ((E' * (starRingEnd ℂ) E).im) ≠ 0) :
+    let tau := phaseAdaptedReturnedSourceCancellationEndpoint
+      N V₀ D₀ Vₛ Dₛ R R' E E'
+    let c : ℝ := ((2 : ℝ) ^ N * tau + 1) / 4
+    symmetricHermitianCrossCurrentData
+        (-(V₀ + (tau : ℂ) * Vₛ) - R + (c : ℂ) * E)
+        ((D₀ + (tau : ℂ) * Dₛ) - R' + (c : ℂ) * E') E E' = 0 := by
+  dsimp only
+  rw [phaseAdaptedReturnedSourceCurrent_affine]
+  exact dyadicAffineCancellationEndpoint_cancels N
+    (phaseAdaptedReturnedSourceBaseCurrent V₀ D₀ R R' E E')
+    (phaseAdaptedReturnedSourceSlopeCurrent Vₛ Dₛ E E')
+    ((E' * (starRingEnd ℂ) E).im) hden
+
+/-! ## Canonical phase-adapted packet at the self-consistent endpoint -/
+
+theorem phaseAdaptedCriticalReturnedValuePairing_endpoint_affine
+    (m N : ℕ) (u : ℂ) (q r tau : ℝ) (z : ℂ) :
+    phaseAdaptedCriticalReturnedValuePairing
+        (phaseAdaptedTwoEndpointProuhetPolynomial m u q r tau) N z =
+      phaseAdaptedCriticalReturnedValuePairing
+          (phaseAdaptedTwoEndpointProuhetPolynomial m u q r 0) N z +
+        (tau : ℂ) * phaseAdaptedCriticalReturnedValuePairing
+          (phaseAdaptedTwoEndpointProuhetEndpointSlope m u q r) N z := by
+  unfold phaseAdaptedCriticalReturnedValuePairing
+  rw [phaseAdaptedTwoEndpointProuhetPolynomial_eq_zero_add_smul_slope,
+    realPolynomialComplexCoefficientPairing_add,
+    realPolynomialComplexCoefficientPairing_smul]
+
+theorem phaseAdaptedCriticalReturnedDerivativePairing_endpoint_affine
+    (m N : ℕ) (u : ℂ) (q r tau : ℝ) (z : ℂ) :
+    phaseAdaptedCriticalReturnedDerivativePairing
+        (phaseAdaptedTwoEndpointProuhetPolynomial m u q r tau) N z =
+      phaseAdaptedCriticalReturnedDerivativePairing
+          (phaseAdaptedTwoEndpointProuhetPolynomial m u q r 0) N z +
+        (tau : ℂ) * phaseAdaptedCriticalReturnedDerivativePairing
+          (phaseAdaptedTwoEndpointProuhetEndpointSlope m u q r) N z := by
+  unfold phaseAdaptedCriticalReturnedDerivativePairing
+  rw [phaseAdaptedTwoEndpointProuhetPolynomial_eq_zero_add_smul_slope,
+    realPolynomialComplexCoefficientPairing_add,
+    realPolynomialComplexCoefficientPairing_smul]
+
+theorem phaseAdaptedReturnedSourceCancellationEndpoint_tendsto_zero
+    {V₀ D₀ Vₛ Dₛ : ℕ → ℂ} {v₀ d₀ : ℂ}
+    (R R' E E' : ℂ)
+    (hV₀ : Tendsto V₀ atTop (nhds v₀))
+    (hD₀ : Tendsto D₀ atTop (nhds d₀))
+    (hVₛ : Tendsto Vₛ atTop (nhds 0))
+    (hDₛ : Tendsto Dₛ atTop (nhds 0))
+    (hQ : (E' * (starRingEnd ℂ) E).im ≠ 0) :
+    Tendsto (fun N : ℕ =>
+      phaseAdaptedReturnedSourceCancellationEndpoint N
+        (V₀ N) (D₀ N) (Vₛ N) (Dₛ N) R R' E E') atTop
+      (nhds 0) := by
+  have hU₀ : Tendsto (fun N : ℕ =>
+      -V₀ N - R + (1 / 4 : ℂ) * E) atTop
+      (nhds (-v₀ - R + (1 / 4 : ℂ) * E)) := by
+    exact (hV₀.neg.sub tendsto_const_nhds).add tendsto_const_nhds
+  have hU₀' : Tendsto (fun N : ℕ =>
+      D₀ N - R' + (1 / 4 : ℂ) * E') atTop
+      (nhds (d₀ - R' + (1 / 4 : ℂ) * E')) := by
+    exact (hD₀.sub tendsto_const_nhds).add tendsto_const_nhds
+  have hJ₀ : Tendsto (fun N : ℕ =>
+      phaseAdaptedReturnedSourceBaseCurrent (V₀ N) (D₀ N) R R' E E')
+      atTop (nhds (phaseAdaptedReturnedSourceBaseCurrent v₀ d₀ R R' E E')) := by
+    simpa only [phaseAdaptedReturnedSourceBaseCurrent] using
+      symmetricHermitianCrossCurrentData_tendsto (E := E) (E' := E') hU₀ hU₀'
+  have hJₛ : Tendsto (fun N : ℕ =>
+      phaseAdaptedReturnedSourceSlopeCurrent (Vₛ N) (Dₛ N) E E')
+      atTop (nhds 0) := by
+    have h := symmetricHermitianCrossCurrentData_tendsto
+      (E := E) (E' := E') hVₛ.neg hDₛ
+    simpa [phaseAdaptedReturnedSourceSlopeCurrent,
+      symmetricHermitianCrossCurrentData] using h
+  exact dyadicAffineCancellationEndpoint_tendsto_zero
+    (fun N => phaseAdaptedReturnedSourceBaseCurrent
+      (V₀ N) (D₀ N) R R' E E')
+    (fun N => phaseAdaptedReturnedSourceSlopeCurrent
+      (Vₛ N) (Dₛ N) E E')
+    (phaseAdaptedReturnedSourceBaseCurrent v₀ d₀ R R' E E')
+    ((E' * (starRingEnd ℂ) E).im) hJ₀ hJₛ hQ
+
+def phaseAdaptedCriticalSelfConsistentEndpoint
+    (m N : ℕ) (u : ℂ) (r : ℝ) (z R R' E E' : ℂ) : ℝ :=
+  let P₀ := phaseAdaptedTwoEndpointProuhetPolynomial m u
+    dyadicProuhetDecayCharacter r 0
+  let S := phaseAdaptedTwoEndpointProuhetEndpointSlope m u
+    dyadicProuhetDecayCharacter r
+  phaseAdaptedReturnedSourceCancellationEndpoint N
+    (phaseAdaptedCriticalReturnedValuePairing P₀ N z)
+    (phaseAdaptedCriticalReturnedDerivativePairing P₀ N z)
+    (phaseAdaptedCriticalReturnedValuePairing S N z)
+    (phaseAdaptedCriticalReturnedDerivativePairing S N z)
+    R R' E E'
+
+def phaseAdaptedCriticalSelfConsistentDenominator
+    (m N : ℕ) (u : ℂ) (r : ℝ) (z E E' : ℂ) : ℝ :=
+  let S := phaseAdaptedTwoEndpointProuhetEndpointSlope m u
+    dyadicProuhetDecayCharacter r
+  dyadicAffineCurrentDenominator N
+    (phaseAdaptedReturnedSourceSlopeCurrent
+      (phaseAdaptedCriticalReturnedValuePairing S N z)
+      (phaseAdaptedCriticalReturnedDerivativePairing S N z) E E')
+    ((E' * (starRingEnd ℂ) E).im)
+
+theorem phaseAdaptedCriticalSelfConsistentEndpoint_tendsto_zero
+    (m : ℕ) (u : ℂ) (r : ℝ) {z : ℂ} (hz : z.im < 1 / 2)
+    (R R' E E' : ℂ)
+    (hBq : (phaseAdaptedProuhetBase m u).eval
+      dyadicProuhetDecayCharacter ≠ 0)
+    (hQ : (E' * (starRingEnd ℂ) E).im ≠ 0) :
+    Tendsto (fun N : ℕ =>
+      phaseAdaptedCriticalSelfConsistentEndpoint m N u r z R R' E E')
+      atTop (nhds 0) := by
+  let P₀ := phaseAdaptedTwoEndpointProuhetPolynomial m u
+    dyadicProuhetDecayCharacter r 0
+  let S := phaseAdaptedTwoEndpointProuhetEndpointSlope m u
+    dyadicProuhetDecayCharacter r
+  have hV₀ := phaseAdaptedCriticalReturnedValueZeroEndpoint_tendsto
+    m u r hz hBq
+  have hD₀ := phaseAdaptedCriticalReturnedDerivativeZeroEndpoint_tendsto
+    m u r hz hBq
+  have hVₛ := phaseAdaptedCriticalReturnedValueEndpointSlope_tendsto_zero
+    m u r hz
+  have hDₛ := phaseAdaptedCriticalReturnedDerivativeEndpointSlope_tendsto_zero
+    m u r hz
+  simpa only [phaseAdaptedCriticalSelfConsistentEndpoint, P₀, S] using
+    phaseAdaptedReturnedSourceCancellationEndpoint_tendsto_zero
+      R R' E E' hV₀ hD₀ hVₛ hDₛ hQ
+
+theorem phaseAdaptedCriticalSelfConsistentDenominator_eventually_ne_zero
+    (m : ℕ) (u : ℂ) (r : ℝ) {z : ℂ} (hz : z.im < 1 / 2)
+    (E E' : ℂ) (hQ : (E' * (starRingEnd ℂ) E).im ≠ 0) :
+    ∀ᶠ N : ℕ in atTop,
+      phaseAdaptedCriticalSelfConsistentDenominator m N u r z E E' ≠ 0 := by
+  let S := phaseAdaptedTwoEndpointProuhetEndpointSlope m u
+    dyadicProuhetDecayCharacter r
+  have hJₛ := phaseAdaptedCriticalReturnedEndpointSlopeCurrent_tendsto_zero
+    m u r hz (E := E) (E' := E')
+  simpa only [phaseAdaptedCriticalSelfConsistentDenominator, S] using
+    dyadicAffineCurrentDenominator_eventually_ne_zero
+      (fun N => phaseAdaptedReturnedSourceSlopeCurrent
+        (phaseAdaptedCriticalReturnedValuePairing S N z)
+        (phaseAdaptedCriticalReturnedDerivativePairing S N z) E E')
+      ((E' * (starRingEnd ℂ) E).im) hJₛ hQ
+
+def phaseAdaptedCriticalReturnedSourceCurrent
+    (m N : ℕ) (u : ℂ) (r tau : ℝ) (z R R' E E' : ℂ) : ℝ :=
+  let P := phaseAdaptedTwoEndpointProuhetPolynomial m u
+    dyadicProuhetDecayCharacter r tau
+  let c : ℝ := ((2 : ℝ) ^ N * tau + 1) / 4
+  symmetricHermitianCrossCurrentData
+    (-phaseAdaptedCriticalReturnedValuePairing P N z - R + (c : ℂ) * E)
+    (phaseAdaptedCriticalReturnedDerivativePairing P N z - R' + (c : ℂ) * E')
+    E E'
+
+/-- At every cofinal depth where the normalized denominator is nonzero, the canonical finite
+packet's full returned current vanishes identically. -/
+theorem phaseAdaptedCriticalSelfConsistentEndpoint_cancels
+    (m N : ℕ) (u : ℂ) (r : ℝ) (z R R' E E' : ℂ)
+    (hden : phaseAdaptedCriticalSelfConsistentDenominator
+      m N u r z E E' ≠ 0) :
+    phaseAdaptedCriticalReturnedSourceCurrent m N u r
+      (phaseAdaptedCriticalSelfConsistentEndpoint m N u r z R R' E E')
+      z R R' E E' = 0 := by
+  let P₀ := phaseAdaptedTwoEndpointProuhetPolynomial m u
+    dyadicProuhetDecayCharacter r 0
+  let S := phaseAdaptedTwoEndpointProuhetEndpointSlope m u
+    dyadicProuhetDecayCharacter r
+  let V₀ := phaseAdaptedCriticalReturnedValuePairing P₀ N z
+  let D₀ := phaseAdaptedCriticalReturnedDerivativePairing P₀ N z
+  let Vₛ := phaseAdaptedCriticalReturnedValuePairing S N z
+  let Dₛ := phaseAdaptedCriticalReturnedDerivativePairing S N z
+  let tau := phaseAdaptedCriticalSelfConsistentEndpoint m N u r z R R' E E'
+  change symmetricHermitianCrossCurrentData
+      (-phaseAdaptedCriticalReturnedValuePairing
+          (phaseAdaptedTwoEndpointProuhetPolynomial m u
+            dyadicProuhetDecayCharacter r tau) N z - R +
+        (((((2 : ℝ) ^ N * tau + 1) / 4 : ℝ) : ℂ) * E))
+      (phaseAdaptedCriticalReturnedDerivativePairing
+          (phaseAdaptedTwoEndpointProuhetPolynomial m u
+            dyadicProuhetDecayCharacter r tau) N z - R' +
+        (((((2 : ℝ) ^ N * tau + 1) / 4 : ℝ) : ℂ) * E')) E E' = 0
+  rw [phaseAdaptedCriticalReturnedValuePairing_endpoint_affine,
+    phaseAdaptedCriticalReturnedDerivativePairing_endpoint_affine]
+  change symmetricHermitianCrossCurrentData
+      (-(V₀ + (tau : ℂ) * Vₛ) - R +
+        (((((2 : ℝ) ^ N * tau + 1) / 4 : ℝ) : ℂ) * E))
+      ((D₀ + (tau : ℂ) * Dₛ) - R' +
+        (((((2 : ℝ) ^ N * tau + 1) / 4 : ℝ) : ℂ) * E')) E E' = 0
+  apply phaseAdaptedReturnedSourceCancellationEndpoint_cancels
+  simpa only [phaseAdaptedCriticalSelfConsistentDenominator, S,
+    phaseAdaptedReturnedSourceCancellationEndpoint,
+    phaseAdaptedCriticalSelfConsistentEndpoint, P₀, V₀, D₀, Vₛ, Dₛ, tau]
+    using hden
+
+/-! ## Canonical nondegeneracy in the theta strip -/
+
+theorem dyadicProuhetDecayCharacter_pos :
+    0 < dyadicProuhetDecayCharacter := by
+  unfold dyadicProuhetDecayCharacter
+  exact Real.rpow_pos_of_pos (by norm_num) _
+
+theorem dyadicProuhetDecayCharacter_lt_one :
+    dyadicProuhetDecayCharacter < 1 := by
+  unfold dyadicProuhetDecayCharacter
+  exact Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) (by norm_num)
+
+theorem dyadicProuhetDecayCharacter_eq_exp_neg_log_two_half :
+    dyadicProuhetDecayCharacter = Real.exp (-Real.log 2 / 2) := by
+  unfold dyadicProuhetDecayCharacter
+  rw [Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 2)]
+  congr 1
+  ring
+
+theorem norm_spectralTranslationPhase_eq_exp_neg_mul_im_halfLine
+    (t : ℝ) (z : ℂ) :
+    ‖spectralTranslationPhase t z‖ = Real.exp (-t * z.im) := by
+  unfold spectralTranslationPhase
+  rw [Complex.norm_exp]
+  congr 1
+  simp [Complex.mul_re]
+
+theorem spectralTranslationPhase_logTwo_ne_dyadicProuhetDecayCharacter
+    {z : ℂ} (hz : z.im < 1 / 2) :
+    spectralTranslationPhase (Real.log 2) z ≠
+      (dyadicProuhetDecayCharacter : ℂ) := by
+  intro h
+  have hnorm := congrArg norm h
+  rw [norm_spectralTranslationPhase_eq_exp_neg_mul_im_halfLine] at hnorm
+  simp only [Complex.norm_real, Real.norm_eq_abs,
+    abs_of_pos dyadicProuhetDecayCharacter_pos,
+    dyadicProuhetDecayCharacter_eq_exp_neg_log_two_half] at hnorm
+  have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  have hlt : -Real.log 2 / 2 < -Real.log 2 * z.im := by
+    nlinarith
+  exact (Real.exp_lt_exp.mpr hlt).ne hnorm.symm
+
+theorem phaseAdaptedProuhetBase_eval_dyadicDecay_ne_zero
+    (m : ℕ) {z : ℂ} (hz : z.im < 1 / 2) :
+    (phaseAdaptedProuhetBase m
+      (spectralTranslationPhase (Real.log 2) z)).eval
+        dyadicProuhetDecayCharacter ≠ 0 := by
+  exact phaseAdaptedProuhetBase_eval_ne_zero m
+    (spectralTranslationPhase (Real.log 2) z)
+    dyadicProuhetDecayCharacter
+    (ne_of_gt (eval_thueMorseRealPolynomial_pos m
+      dyadicProuhetDecayCharacter_pos dyadicProuhetDecayCharacter_lt_one))
+    (spectralTranslationPhase_logTwo_ne_dyadicProuhetDecayCharacter hz)
+
+/-- Algebraic value of the positive-phase half-exponential transform. -/
+def thetaHalfExponentialPhaseValue (z : ℂ) : ℂ :=
+  ((1 / 2 : ℂ) - I * z)⁻¹
+
+/-- Algebraic spectral derivative of the positive-phase half-exponential transform. -/
+def thetaHalfExponentialPhaseDerivative (z : ℂ) : ℂ :=
+  I * (((1 / 2 : ℂ) - I * z)⁻¹) ^ 2
+
+theorem thetaHalfExponentialPhaseValue_ne_zero
+    {z : ℂ} (hz : -(1 / 2 : ℝ) < z.im) :
+    thetaHalfExponentialPhaseValue z ≠ 0 := by
+  unfold thetaHalfExponentialPhaseValue
+  apply inv_ne_zero
+  intro h
+  have hre := congrArg Complex.re h
+  simp [Complex.mul_re] at hre
+  linarith
+
+/-- The completion seam has strictly positive oriented current throughout the open Fourier strip.
+This is an explicit rational identity, not an anti-Herglotz hypothesis. -/
+theorem thetaHalfExponentialPhaseCurrent_pos
+    {z : ℂ} (hz : -(1 / 2 : ℝ) < z.im) :
+    0 < (thetaHalfExponentialPhaseDerivative z *
+      (starRingEnd ℂ) (thetaHalfExponentialPhaseValue z)).im := by
+  let w : ℂ := (1 / 2 : ℂ) - I * z
+  let E : ℂ := w⁻¹
+  have hwre : 0 < w.re := by
+    dsimp only [w]
+    simp [Complex.mul_re]
+    linarith
+  have hw : w ≠ 0 := by
+    intro h
+    have := congrArg Complex.re h
+    simp at this
+    linarith
+  have hE : E ≠ 0 := inv_ne_zero hw
+  have hEre : 0 < E.re := by
+    dsimp only [E]
+    rw [Complex.inv_re]
+    exact div_pos hwre (Complex.normSq_pos.mpr hw)
+  have hnormE : 0 < Complex.normSq E := Complex.normSq_pos.mpr hE
+  have hproduct :
+      (I * E ^ 2 * (starRingEnd ℂ) E).im =
+        Complex.normSq E * E.re := by
+    rw [show I * E ^ 2 * (starRingEnd ℂ) E =
+        (((Complex.normSq E : ℝ) : ℂ) * (I * E)) by
+      rw [pow_two]
+      calc
+        I * (E * E) * (starRingEnd ℂ) E =
+            I * E * (E * (starRingEnd ℂ) E) := by ring
+        _ = I * E * ((Complex.normSq E : ℝ) : ℂ) := by
+          rw [Complex.mul_conj]
+        _ = ((Complex.normSq E : ℝ) : ℂ) * (I * E) := by ring]
+    simp [Complex.mul_im]
+  change 0 < (I * (w⁻¹) ^ 2 * (starRingEnd ℂ) w⁻¹).im
+  change 0 < (I * E ^ 2 * (starRingEnd ℂ) E).im
+  rw [hproduct]
+  exact mul_pos hnormE hEre
+
+theorem thetaHalfExponentialPhaseCurrent_ne_zero
+    {z : ℂ} (hz : -(1 / 2 : ℝ) < z.im) :
+    (thetaHalfExponentialPhaseDerivative z *
+      (starRingEnd ℂ) (thetaHalfExponentialPhaseValue z)).im ≠ 0 :=
+  ne_of_gt (thetaHalfExponentialPhaseCurrent_pos hz)
 
 end
 

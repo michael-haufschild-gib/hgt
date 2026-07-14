@@ -129,3 +129,25 @@ The module
 - [x] 1 -> 2 fully-proven: termwise RH sign and local off-axis pole contradiction proved
 - [x] 2 -> 3 formalized: exact target and continued-source equivalences compile in Lean
 - [ ] 3 -> 4 publication-ready: only after an independent source-sector provider is found
+
+## Positive-paired diagonal value relation
+
+The paper theorem
+`../../2-fully-proven/not_new_scientific_knowledge/xi-positive-paired-diagonal-sector-collapse.md`
+identifies the reciprocal-square sector observable with the diagonal of the one-sided
+Schwarz-paired Cauchy source kernel:
+
+```text
+ccmPositivePairedReducedKernel(z,z)
+  =(2*re(z)/im(z))*im(continuedPrimeArchReciprocalSquareTrace(z)).
+```
+
+The exact off-line quartet height law then removes the need to assume the sector sign on the whole
+upper strip.  At any quartet-admissible radius `R`, it suffices to prove the diagonal inequality on
+positive exterior regular points `R<re(z)`, `0<im(z)<1/2`.  A hypothetical off-line zero can be
+reflected into that exterior region, and the existing local-pole argument can be chosen close
+enough to retain the strict exterior bound.  The resulting negative sector sample is exactly a
+negative paired diagonal.
+
+This is proved on paper but not yet formalized.  It reduces the open provider to a countable scalar
+prime--Gamma value family after restricting to Gaussian-rational exterior points by continuity.

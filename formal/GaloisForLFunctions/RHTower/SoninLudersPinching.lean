@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.CCMSoninResolventCommutator
+import GaloisForLFunctions.HTGeometry.FiniteConstraintGroupAverage
 
 /-!
 # Lüders pinching removes cutoff-commutation hypotheses
@@ -99,6 +100,57 @@ theorem sub_ludersPinching_eq_reverseDoubleCommutator
   simp only [ccmCommutator]
   abel
 
+/-- The cutoff commutator is the signed difference of the two off-diagonal measurement
+corners.  Together with `sub_ludersPinching_eq_crossBoundary_add_upperBoundary`, this is the
+sum/difference polarization behind the exact disturbance-energy law below. -/
+theorem ccmCommutator_eq_crossBoundary_sub_upperBoundary (e X : R) :
+    ccmCommutator X e = crossBoundary e X - upperBoundary e X := by
+  simp only [ccmCommutator, crossBoundary, upperBoundary]
+  noncomm_ring
+
+/-- **Lueders/commutator square law.**  For every idempotent cutoff, the square of the
+off-diagonal part deleted by the nonselective measurement is the negative square of the cutoff
+commutator.  No adjoint or positivity premise is needed for this algebraic core. -/
+theorem ludersDisturbance_sq_eq_neg_ccmCommutator_sq
+    {e : R} (he : IsIdempotentElem e) (X : R) :
+    (X - ludersPinching e X) * (X - ludersPinching e X) =
+      -(ccmCommutator X e * ccmCommutator X e) := by
+  simp only [sub_ludersPinching_eq_crossBoundary_add_upperBoundary,
+    ccmCommutator_eq_crossBoundary_sub_upperBoundary]
+  noncomm_ring [crossBoundary_mul_crossBoundary e X X he,
+    upperBoundary_mul_upperBoundary e X X he]
+
+/-- For self-adjoint input and cutoff, the exact positive square of Lueders disturbance equals
+the exact positive square of the cutoff commutator.  This is the operator-level form of the
+quantum-measurement disturbance identity, stronger than equality of Hilbert--Schmidt traces. -/
+theorem star_mul_self_ludersDisturbance_eq_cutoffCommutator
+    [StarRing R] {e X : R} (he : IsIdempotentElem e)
+    (heStar : star e = e) (hXStar : star X = X) :
+    star (X - ludersPinching e X) * (X - ludersPinching e X) =
+      star (ccmCommutator X e) * ccmCommutator X e := by
+  have hdistStar : star (X - ludersPinching e X) = X - ludersPinching e X := by
+    simp only [ludersPinching, star_sub, star_add, star_mul, star_one,
+      heStar, hXStar]
+  have hcommStar : star (ccmCommutator X e) = -ccmCommutator X e := by
+    simp only [ccmCommutator, star_sub, star_mul, heStar, hXStar]
+    abel
+  rw [hdistStar, hcommStar, neg_mul,
+    ludersDisturbance_sq_eq_neg_ccmCommutator_sq he X]
+
+/-- **Two-projection transition impurity.**  For self-adjoint idempotents `e,X`, the positive
+square of the transition corner `(1-e)Xe` is exactly the failure of the compressed projection
+`eXe` to remain idempotent.  This is the algebraic core of the prolate plunge-spectrum value. -/
+theorem star_mul_self_crossBoundary_eq_compression_sub_sq
+    [StarRing R] {e X : R} (he : IsIdempotentElem e) (hX : IsIdempotentElem X)
+    (heStar : star e = e) (hXStar : star X = X) :
+    star (crossBoundary e X) * crossBoundary e X =
+      compression e X - compression e X * compression e X := by
+  have hee : e * e = e := he
+  have hXX : X * X = X := hX
+  simp only [crossBoundary, compression, star_mul, star_sub, star_one,
+    heStar, hXStar]
+  noncomm_ring [hee, hXX]
+
 /-- An idempotent cutoff acts on the left of its pinching by selecting the cutoff block. -/
 theorem mul_ludersPinching_eq_cutoffBlock
     {e : R} (he : IsIdempotentElem e) (X : R) :
@@ -195,6 +247,106 @@ theorem isCompactOperator_upperBoundary_of_compact_cutoffCommutator
     (hcomm.clm_comp e).neg
 
 variable [CompleteSpace H]
+
+/-- **Exact measurement-disturbance master constraint.**  For a self-adjoint observable and
+self-adjoint idempotent cutoff, the Lueders disturbance and cutoff commutator determine literally
+the same positive master operator.  Hence either residual can replace the other in the existing
+master-constraint, Ward-value, trace, and singular-value APIs without a comparison constant. -/
+theorem quantumMasterConstraint_ludersDisturbance_eq_cutoffCommutator
+    (e X : H →L[ℂ] H) (he : IsIdempotentElem e)
+    (heAdj : ContinuousLinearMap.adjoint e = e)
+    (hXAdj : ContinuousLinearMap.adjoint X = X) :
+    HTGeometry.quantumMasterConstraint (X - ludersPinching e X) =
+      HTGeometry.quantumMasterConstraint (ccmCommutator X e) := by
+  have heStar : star e = e := by
+    simpa only [ContinuousLinearMap.star_eq_adjoint] using heAdj
+  have hXStar : star X = X := by
+    simpa only [ContinuousLinearMap.star_eq_adjoint] using hXAdj
+  simpa only [HTGeometry.quantumMasterConstraint, ContinuousLinearMap.mul_def,
+    ContinuousLinearMap.star_eq_adjoint] using
+    (star_mul_self_ludersDisturbance_eq_cutoffCommutator he heStar hXStar)
+
+/-- The continuous-operator master constraint of a transition corner is exactly the quadratic
+idempotence defect of the corresponding two-projection compression. -/
+theorem quantumMasterConstraint_crossBoundary_eq_compression_sub_sq
+    (e X : H →L[ℂ] H) (he : IsIdempotentElem e) (hX : IsIdempotentElem X)
+    (heAdj : ContinuousLinearMap.adjoint e = e)
+    (hXAdj : ContinuousLinearMap.adjoint X = X) :
+    HTGeometry.quantumMasterConstraint (crossBoundary e X) =
+      compression e X - compression e X * compression e X := by
+  have heStar : star e = e := by
+    simpa only [ContinuousLinearMap.star_eq_adjoint] using heAdj
+  have hXStar : star X = X := by
+    simpa only [ContinuousLinearMap.star_eq_adjoint] using hXAdj
+  simpa only [HTGeometry.quantumMasterConstraint, ContinuousLinearMap.mul_def,
+    ContinuousLinearMap.star_eq_adjoint] using
+    (star_mul_self_crossBoundary_eq_compression_sub_sq
+      he hX heStar hXStar)
+
+/-- The directly observable value form of the master-constraint identity: every state has the
+same squared Lueders disturbance as squared cutoff-commutator residual. -/
+theorem norm_ludersDisturbance_apply_sq_eq_norm_cutoffCommutator_apply_sq
+    (e X : H →L[ℂ] H) (he : IsIdempotentElem e)
+    (heAdj : ContinuousLinearMap.adjoint e = e)
+    (hXAdj : ContinuousLinearMap.adjoint X = X) (ψ : H) :
+    ‖(X - ludersPinching e X) ψ‖ ^ 2 = ‖ccmCommutator X e ψ‖ ^ 2 := by
+  calc
+    ‖(X - ludersPinching e X) ψ‖ ^ 2 =
+        Complex.re (inner ℂ ψ
+          (HTGeometry.quantumMasterConstraint (X - ludersPinching e X) ψ)) :=
+      (HTGeometry.re_inner_quantumMasterConstraint_eq_normSq
+        (X - ludersPinching e X) ψ).symm
+    _ = Complex.re (inner ℂ ψ
+          (HTGeometry.quantumMasterConstraint (ccmCommutator X e) ψ)) := by
+      rw [quantumMasterConstraint_ludersDisturbance_eq_cutoffCommutator
+        e X he heAdj hXAdj]
+    _ = ‖ccmCommutator X e ψ‖ ^ 2 :=
+      HTGeometry.re_inner_quantumMasterConstraint_eq_normSq
+        (ccmCommutator X e) ψ
+
+/-- **Two-projection transition-energy law.**  Measuring one orthogonal projection with another
+produces exactly the master energy of their commutator.  Applied to the physical and Fourier
+cutoffs, this is the time-frequency/prolate transition-spectrum identity in the native Sonin
+projection language. -/
+theorem quantumMasterConstraint_starProjection_ludersDisturbance_eq_cutoffCommutator
+    (A B : Submodule ℂ H) [A.HasOrthogonalProjection] [B.HasOrthogonalProjection] :
+    HTGeometry.quantumMasterConstraint
+        (B.starProjection - ludersPinching A.starProjection B.starProjection) =
+      HTGeometry.quantumMasterConstraint
+        (ccmCommutator B.starProjection A.starProjection) := by
+  exact quantumMasterConstraint_ludersDisturbance_eq_cutoffCommutator
+    A.starProjection B.starProjection A.isIdempotentElem_starProjection
+    (isSelfAdjoint_starProjection A).star_eq
+    (isSelfAdjoint_starProjection B).star_eq
+
+/-- **Sonin prolate transition-energy identity.**  The non-idempotence of the alternating
+time-frequency block `P_B P_A P_B` is exactly the master constraint of the transition corner
+from the `B` sector through `A`. -/
+theorem soninAlternatingBlock_sub_sq_eq_quantumMasterConstraint_transition
+    (A B : Submodule ℂ H) [A.HasOrthogonalProjection] [B.HasOrthogonalProjection] :
+    soninAlternatingBlock A B -
+        soninAlternatingBlock A B * soninAlternatingBlock A B =
+      HTGeometry.quantumMasterConstraint
+        (crossBoundary B.starProjection A.starProjection) := by
+  simpa only [soninAlternatingBlock, compression] using
+    (quantumMasterConstraint_crossBoundary_eq_compression_sub_sq
+      B.starProjection A.starProjection
+      B.isIdempotentElem_starProjection A.isIdempotentElem_starProjection
+      (isSelfAdjoint_starProjection B).star_eq
+      (isSelfAdjoint_starProjection A).star_eq).symm
+
+/-- Statewise prolate value law: the expectation of `T-T^2` is the squared norm of the
+time-frequency transition corner. -/
+theorem re_inner_soninAlternatingBlock_sub_sq_eq_norm_transition
+    (A B : Submodule ℂ H) [A.HasOrthogonalProjection] [B.HasOrthogonalProjection]
+    (ψ : H) :
+    Complex.re (inner ℂ ψ
+      ((soninAlternatingBlock A B -
+        soninAlternatingBlock A B * soninAlternatingBlock A B) ψ)) =
+      ‖crossBoundary B.starProjection A.starProjection ψ‖ ^ 2 := by
+  rw [soninAlternatingBlock_sub_sq_eq_quantumMasterConstraint_transition]
+  exact HTGeometry.re_inner_quantumMasterConstraint_eq_normSq
+    (crossBoundary B.starProjection A.starProjection) ψ
 
 /-- **Pinched Sonin commutator law.**  Replacing an arbitrary observable by its nonselective
 Lüders pinching at the physical cutoff removes the commutation premise from the exact
@@ -447,6 +599,69 @@ theorem isCompactOperator_centralSoninCommutator_sub_ludersDressed_of_compactDis
   exact isCompactOperator_soninCommutator_sub_ludersDressed_of_compactDisturbance
     (centralPhysicalForbidden a) (centralFourierForbidden a)
     (norm_centralSoninAlternatingBlock_lt_one a ha) X hdist
+
+/-- The archimedean one-prime Euler observable inherits the exact measurement-disturbance master
+constraint with no prime-size or aperture premise.  This directly places its physical-boundary
+dephasing residual on the existing positive master-constraint theorem surface. -/
+theorem quantumMasterConstraint_archimedeanPrimeEuler_ludersDisturbance_eq_commutator
+    (a p : ℝ) :
+    HTGeometry.quantumMasterConstraint
+        (archimedeanPrimeEulerGram p -
+          ludersPinching (archimedeanBoundaryCarrierProjection a)
+            (archimedeanPrimeEulerGram p)) =
+      HTGeometry.quantumMasterConstraint
+        (ccmCommutator (archimedeanPrimeEulerGram p)
+          (archimedeanBoundaryCarrierProjection a)) := by
+  exact quantumMasterConstraint_ludersDisturbance_eq_cutoffCommutator
+    (archimedeanBoundaryCarrierProjection a) (archimedeanPrimeEulerGram p)
+    (isIdempotentElem_archimedeanBoundaryCarrierProjection a)
+    (adjoint_archimedeanBoundaryCarrierProjection a)
+    (adjoint_archimedeanPrimeEulerGram p)
+
+/-- Every archimedean test state assigns the same positive value to one-prime boundary
+dephasing and to the corresponding projection commutator. -/
+theorem norm_archimedeanPrimeEuler_ludersDisturbance_apply_sq_eq_commutator
+    (a p : ℝ) (ψ : ArchimedeanWeightedL2) :
+    ‖(archimedeanPrimeEulerGram p -
+        ludersPinching (archimedeanBoundaryCarrierProjection a)
+          (archimedeanPrimeEulerGram p)) ψ‖ ^ 2 =
+      ‖ccmCommutator (archimedeanPrimeEulerGram p)
+          (archimedeanBoundaryCarrierProjection a) ψ‖ ^ 2 := by
+  exact norm_ludersDisturbance_apply_sq_eq_norm_cutoffCommutator_apply_sq
+    (archimedeanBoundaryCarrierProjection a) (archimedeanPrimeEulerGram p)
+    (isIdempotentElem_archimedeanBoundaryCarrierProjection a)
+    (adjoint_archimedeanBoundaryCarrierProjection a)
+    (adjoint_archimedeanPrimeEulerGram p) ψ
+
+/-- **One-prime dephasing obstruction.**  The positive archimedean Euler Gram loses a genuinely
+noncompact part under the physical boundary measurement.  This is the measurement-disturbance
+form of the existing one-prime noncompact-commutator theorem, obtained with no additional
+hypothesis. -/
+theorem archimedeanPrimeEuler_ludersDisturbance_not_isCompactOperator
+    (a p : ℝ) (ha : 0 < a) (hp : 1 < p) :
+    ¬ IsCompactOperator
+      (archimedeanPrimeEulerGram p -
+        ludersPinching (archimedeanBoundaryCarrierProjection a)
+          (archimedeanPrimeEulerGram p) :
+        ArchimedeanWeightedL2 →L[ℂ] ArchimedeanWeightedL2) := by
+  intro hdist
+  apply archimedeanPrimeEuler_projectionCommutator_not_isCompactOperator a p ha hp
+  have hcomm : IsCompactOperator
+      (ccmCommutator (archimedeanPrimeEulerGram p)
+        (archimedeanBoundaryCarrierProjection a) :
+        ArchimedeanWeightedL2 →L[ℂ] ArchimedeanWeightedL2) :=
+    (isCompactOperator_ludersDisturbance_iff_cutoffCommutator
+      (archimedeanBoundaryCarrierProjection a) (archimedeanPrimeEulerGram p)
+      (isIdempotentElem_archimedeanBoundaryCarrierProjection a)).mp hdist
+  have heq :
+      archimedeanBoundaryCarrierProjection a * archimedeanPrimeEulerGram p -
+          archimedeanPrimeEulerGram p * archimedeanBoundaryCarrierProjection a =
+        -(ccmCommutator (archimedeanPrimeEulerGram p)
+          (archimedeanBoundaryCarrierProjection a)) := by
+    simp only [ccmCommutator]
+    abel
+  rw [heq]
+  exact hcomm.neg
 
 end
 

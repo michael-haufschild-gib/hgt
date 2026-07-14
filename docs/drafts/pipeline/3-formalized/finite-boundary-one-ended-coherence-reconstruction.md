@@ -86,3 +86,25 @@ differential fields; the latter remains an analytic independence problem in the 
 prime coefficient-tail levels.  It supplies the formal core of the broader coherence-end HT law
 while keeping the unresolved topological clopen-algebra presentation and analytic embedded-field
 identification outside its claim.
+
+## Arbitrary-label finite-variation consequence
+
+The paper refinement
+`../2-fully-proven/not_new_scientific_knowledge/xi-prime-seam-one-ended-cofinal-edge-collapse.md`
+removes the finite-codomain restriction for the eventually-constant consequence.  If `G` is
+preconnected and an arbitrary-valued label changes across only finitely many edges, then its range
+is finite: fix a root and observe that every value different from the root value is attained at an
+endpoint of one of the finitely many changing edges.  Restricting the codomain to this finite range
+reduces the statement to the theorem already formalized here.
+
+For canonical Xi seam charges this gives the paper chain
+
+```text
+finite seam variation on a one-ended prime graph
+  -> eventual constant charge
+  -> cofinal decay forces charge zero
+  -> RH.
+```
+
+The general finite-range reduction and its Xi specialization remain to be formalized; no new
+analytic hypothesis is needed for the graph step.

@@ -112,3 +112,27 @@ xiHurwitzAnchorPrimeTwoSeamsVanish_of_cauchyCore_nonnegative
 - [x] no forbidden declarations
 - [x] formal lint
 - [x] generated index refresh
+
+## Dyadic finite-value replacement for zero charge
+
+The paper theorem
+`../../2-fully-proven/not_new_scientific_knowledge/xi-rational-hurwitz-dyadic-refinement-square-law.md`
+replaces the direct assertion `C_2(rho)=0` by a relation between two finite absolutely convergent
+Hurwitz packets.  For the normalized reflection energies `H_2,H_4`,
+
+```text
+H_4(rho) - 4*H_2(rho) = 4*H_2(rho)^2.
+```
+
+Consequently `H_4=4*H_2` is equivalent pointwise to vanishing of the common first-prime seam.
+Globally,
+
+```text
+linear modulus-2-to-4 finite-Hurwitz refinement
+  -> all common first-prime charges vanish
+  -> xiHurwitzOrientationEnergy=0
+  -> RH.
+```
+
+The positive square identity is unconditional; proving the linear refinement from a source Ward,
+finite-coefficient, or graded-trace constraint remains open.

@@ -788,9 +788,30 @@ Three further axiom-clean pieces (`propext, Classical.choice, Quot.sound` only),
 Together these close the `d = 1`, single-orbit, **nonzero-total-charge** hypertranscendental direction
 at the carrier level: `iteratedDeriv_digamma_charge_general` reduces the orbit carrier
 `∑ₖ mₖ ψ(w+nₖ)` (`M = ∑ₖ mₖ ≠ 0`) to `M·ψ(w) + rational`, and
-`hypertranscendental_smul_digamma_add_ratfunc` proves that carrier is hypertranscendental. Still open in
-Lean: assembling this into `Hypertranscendental (fun w => ∑ₖ mₖ ψ(w+nₖ))` for the exact orbit function
-(the jets of that function are the charge-collapse rationals, so it is a direct instance of the rational
-carrier argument rather than the two-register additive identity); the general multi-orbit product; the
-formal transseries / ADH dichotomy behind the DA half of `(8)`; and the holomorphic Bohr-frequency hull
-behind `(31)`–`(38)`.
+`hypertranscendental_smul_digamma_add_ratfunc` proves that carrier is hypertranscendental. The exact
+orbit-function assembly `Hypertranscendental (fun w => ∑ₖ mₖ ψ(w+nₖ))` is now closed — see the next
+section (`hypertranscendental_digamma_orbit_charge`).
+
+## Lean update — orbit-function assembly closes the single-orbit nonzero-charge HT direction
+
+`DigammaOrbitCarrier.lean` proves the exact orbit-function statement, axiom-clean
+(`propext, Classical.choice, Quot.sound` only), wired into the `HTGeometry` umbrella:
+
+- **`hypertranscendental_digamma_orbit_charge`.** For integer shifts `nn : Fin d → ℕ` and charges
+  `m : Fin d → ℂ` with total charge `M = ∑ₖ mₖ ≠ 0`, the orbit carrier `Ψ(w) = ∑ₖ mₖ ψ(w + nₖ)` is
+  hypertranscendental — the `d`-term, single-`H`-orbit, nonzero-total-charge HT statement of `§3`
+  (`Ψ = G'/G` for one common-scale Gamma orbit product with charges `mₖ`).
+
+This is the assembly the previous §12 note flagged as still open ("assembling this into
+`Hypertranscendental (fun w => ∑ₖ mₖ ψ(w+nₖ))` for the exact orbit function"). It is a direct
+instance of the general off-pole criterion `hypertranscendental_digamma_plus_offpole_rational`
+(`DigammaRationalCarrier.lean`): the jet split is supplied by
+`HTGeometry.iteratedDeriv_digamma_charge_general` (linearity + integer-shift law), giving
+`Ψ⁽ʲ⁾(z) = M·ψ⁽ʲ⁾(z) + ∑ₖ mₖ ∑_{i<nₖ} (−1)ʲ·j!/(z+i)^{j+1}` off the poles, and the rational tail is
+exhibited as the single fraction `C_j/B^{j+1}` over the common denominator `B = ∏_{i<N}(X+i)` with
+`N = maxₖ nₖ` and `C_j` the erase-product numerator (partial-fraction identity closed by
+`Finset.mul_prod_erase` + `field_simp`). No new axioms; no `sorry`.
+
+Still open in Lean: the general multi-orbit product (several `b_c` classes at distinct common scales);
+the formal transseries / ADH dichotomy behind the DA half of `(8)`; and the holomorphic Bohr-frequency
+hull behind `(31)`–`(38)`.

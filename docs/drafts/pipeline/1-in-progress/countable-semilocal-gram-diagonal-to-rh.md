@@ -164,14 +164,19 @@ The project already contains the following unconditional pieces.
 8. `SoninLogCoordinateScattering.lean` now proves the exact coordinate compatibility: the original
    Sonin Fourier transform becomes an involutive translation-reversing scattering operator `J_log`
    after logarithmic transport. The ordinary Fourier two-edge commutator is not the Euler carrier.
-9. `ccm-sonin-three-grade-relative-carrier-law.md` synthesizes the forced carrier: principal Calkin
+9. `sonin-burnol-conductor-cutoff-bounded-graph-law.md` uses the reflection identity
+   `H_infinity=M_t+J_log M_t J_log` and the BMO Hankel commutator theorem to replace the raw
+   scattering-domain problem by a bounded conductor--half-line commutator.  Its exact
+   two-projection formula dresses that bounded form through the full Sonin projection.  The common
+   logarithmic-position graph is therefore closed on paper, though not yet formalized in Lean.
+10. `ccm-sonin-three-grade-relative-carrier-law.md` synthesizes the forced carrier: principal Calkin
    shell, degree-one Hilbert--Schmidt relative cross with the exact logarithmic response, positive
    trace-class residual energy, and the archimedean/Gamma channel. The closed carrier and its
    positive contraction are not yet constructed.
-10. The formal tree already contains the principal Calkin faithfulness, relative ideal tower,
+11. The formal tree already contains the principal Calkin faithfulness, relative ideal tower,
    positive residual energy, exact unsquared coefficient exposure, finite Hankel expansion, and RH
-   endpoint. It does not yet contain the closed commutator `[M_t,J_log]`, the genuine semilocal
-   relative trace on that pair, or the completed lower-floor estimate.
+   endpoint. It does not yet contain the Lean formalization of the bounded conductor-cutoff graph,
+   the genuine semilocal relative trace on that channel, or the completed lower-floor estimate.
 
 ## Corrected finite-degree Gram target
 
@@ -657,15 +662,22 @@ the required identity is `[log|x|,U_p]=-log(p)U_p`.
 
 After the exact even logarithmic unitary sends dilations to translations, the original Sonin
 Fourier transform becomes an involutive translation-reversing scattering operator `J_log`, not the
-ordinary Fourier transform used in the edge formula. Therefore the current source-side open theorem
-is
-
-The current source-side open theorem is therefore concrete:
+ordinary Fourier transform used in the edge formula.  The paper theorem
+`../2-fully-proven/not_new_scientific_knowledge/sonin-burnol-conductor-cutoff-bounded-graph-law.md`
+then proves
 
 ```text
-closed Mellin-scattering commutator [M_t,J_log]
+[M_t,J_log P_tau J_log]
+  =J_log[H_infinity,P_tau]J_log,
+H_infinity=M_t+J_log M_t J_log,
+```
+
+and uses Burnol's BMO Gamma multiplier to extend the exact prolate-resolvent-dressed Sonin
+commutator boundedly.  The current source-side open theorem is therefore narrower:
+
+```text
+bounded exact-Sonin conductor leakage
   + Euler translation leakage
-  + Gamma/Burnol conductor
   -> a source-defined relative trace with a uniform finite lower floor.
 ```
 

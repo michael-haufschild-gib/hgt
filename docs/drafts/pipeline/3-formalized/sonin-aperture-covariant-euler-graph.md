@@ -63,15 +63,20 @@ It strengthens the live top-down chain to
 The Euler support-domain part of the first arrow is now unconditional.  Three harder interfaces
 remain separate:
 
-1. extend the Mellin-scattering commutator and its prolate-resolvent dressing to a compatible
-   rigged form core;
+1. `[DISCHARGED ON PAPER; LEAN OPEN]` extend the Mellin-scattering commutator and its
+   prolate-resolvent dressing to a compatible rigged form core;
 2. construct any additional common graph needed by the genuine semilocal prolate grading, which
    is not the same as the dilation support tower proved here;
 3. prove the value relation that makes the actual Xi zero evaluator annihilate the dressed
    connection.
 
-The theorem removes only the repeated prime-by-prime Sonin support-domain assumption.  It does not
-claim any of these three interfaces and does not imply RH by itself.
+The theorem removes only the repeated prime-by-prime Sonin support-domain assumption.  A later
+paper theorem,
+`../2-fully-proven/not_new_scientific_knowledge/sonin-burnol-conductor-cutoff-bounded-graph-law.md`,
+discharges interface 1 at paper level: reflection through Burnol's conductor converts the
+logarithmic-position anomaly to a bounded BMO Hankel commutator, and the exact two-projection
+resolvent dresses it through the Sonin projection.  This has not yet been formalized in Lean.
+Interfaces 2 and 3, and the source-compatible relative trace/positivity theorem, remain open.
 
 ## Gates
 

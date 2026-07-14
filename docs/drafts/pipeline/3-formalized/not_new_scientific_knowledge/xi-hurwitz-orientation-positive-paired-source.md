@@ -129,3 +129,29 @@ The module is imported by `formal/GaloisForLFunctions/RHTower.lean`.
 - [x] focused module check
 - [x] RHTower umbrella import
 - [ ] positive semidefiniteness of every finite reduced positive-frequency kernel matrix
+
+## Paper-level diagonal collapse
+
+The paper theorem
+`../../2-fully-proven/not_new_scientific_knowledge/xi-positive-paired-diagonal-sector-collapse.md`
+shows that finite reduced-matrix passivity is not the smallest sufficient source hypothesis.  On
+the diagonal one has the exact value relation
+
+```text
+ccmPositivePairedReducedKernel(z,z)
+  =(2*re(z)/im(z))*im(-continuedPrimeArchSourceRelativeTrace(z)/z).
+```
+
+For every exact quartet-admissible radius `R`, nonnegativity of this scalar only on regular points
+with `R<re(z)` and `0<im(z)<1/2` already implies RH.  Every hypothetical off-line zero is forced
+beyond `R+1/2`; its horizontal logarithmic-derivative pole creates a negative diagonal sample.
+Under RH the existing Hilbert quadratic theorem supplies the diagonal sign and the full matrix
+sign.  Thus, for this actual source kernel,
+
+```text
+finite reduced matrices PSD <-> exterior diagonal nonnegative <-> RH
+```
+
+at paper level.  The reverse implication from diagonal to matrix positivity is Xi-specific and
+passes through the local-pole RH theorem; it is not a generic diagonal-to-PSD principle.  The Lean
+formalization of this reduction remains open.

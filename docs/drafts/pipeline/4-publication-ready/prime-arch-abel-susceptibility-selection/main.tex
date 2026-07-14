@@ -1,0 +1,630 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=30mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,
+  citecolor=blue!45!black,urlcolor=blue!55!black]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\RH}{\mathrm{RH}}
+\newcommand{\Rea}{\operatorname{Re}}
+\newcommand{\Ima}{\operatorname{Im}}
+\newcommand{\rad}{\operatorname{rad}}
+
+\title{The Exact Abel Radius of the Riemann Xi Source:\
+Finite Hausdorff Positivity, Dissipation, and a Narrow-Collar Selection Law}
+\author{Michael Haufschild \and GPT 5.6 Sol \and Fable 5 \and Grok 4.5}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We attach a positive Abel susceptibility to the completed prime--archimedean moment source of the
+Riemann Xi function.  Its coefficients are the squared Euclidean norms of the canonical
+Hausdorff--Bernstein packets.  The susceptibility has a unique exact open convergence radius
+$R_A$, and the same source has a unique exact exponential exponent $E_*$ for both packet purity
+and cumulative degree-elevation dissipation.  We prove the reciprocal law
+\[
+  R_AE_*=1,
+\]
+the unconditional bounds
+\[
+  \frac{250000}{251001}<R_A\le1,
+  \qquad
+  1\le E_*<\frac{251001}{250000},
+\]
+and the endpoint selection theorem
+\[
+  \RH\quad\Longleftrightarrow\quad R_A=1
+  \quad\Longleftrightarrow\quad E_*=1.
+\]
+If RH fails, $E_*=B^2$ and $R_A=B^{-2}$ for an amplitude $B$ attained by an actual
+off-critical Xi divisor atom, with $1<B<501/500$.
+
+The bounds are accompanied by source-side estimate progress.  An atomwise opposite-phase
+argument proves a complete $14\times44$ rectangle of calibrated Hausdorff inequalities.  Hence
+all Bernstein coefficients through degree $13$ are nonnegative and the canonical negative mass
+vanishes through defect degree $12$.  Independently, the Abel susceptibility converges
+unconditionally on $0\le t<250000/251001$.  Thus the remaining RH-bearing estimate is the
+extension of an already-convergent positive source susceptibility across the explicit collar
+$250000/251001\le t<1$.  No positivity, self-adjointness, or finite spectral hypothesis is used
+to assert that extension, and the paper does not claim a proof of RH.
+\end{abstract}
+
+\section{Introduction}
+
+Connes' trace-formula programme seeks a spectral and noncommutative-geometric realization in
+which the explicit formula is intrinsic and the missing positivity becomes structural
+\cite{Connes1999}.  The later scaling-Hamiltonian and archimedean positivity constructions of
+Connes and Consani sharpen the role of cofinal spectral and test-space limits
+\cite{ConnesConsani2019,ConnesConsani2021}.  The central analytic difficulty remains unchanged:
+finite positivity or finite spectral agreement does not by itself control the complete Xi
+divisor.  A successful construction must transport an all-order arithmetic source and select its
+critical phase in the cofinal limit.
+
+This paper isolates one positive carrier with an exact phase boundary.  The input is the
+completed prime--archimedean moment sequence, identified with the multiplicity-exact
+reciprocal-square Xi divisor moments.  At every degree $n$, the sequence has a canonical real
+Bernstein packet $(a_{n,i})_{0\le i\le n}$.  We use the positive packet purity
+\[
+  \Pi_n=\sum_{i=0}^n a_{n,i}^2
+\]
+and its Abel susceptibility
+\[
+  \chi(t)=\sum_{n\ge0}\Pi_nt^n,qquad t\ge0.
+\]
+The quantity $\chi$ is cancellation-resistant: the source may have signed Bernstein masses, but
+each coefficient of $\chi$ is nonnegative.  It also retains the full divisor geometry.  An
+off-critical zero produces an attained affine Bernstein mode of amplitude $B>1$, and that mode
+fixes the exact convergence radius $B^{-2}$.
+
+The headline result is not merely another equivalence with RH.  It contains two unconditional
+estimates on the missing source quantity.  First, the completed Xi geometry confines every atom
+to an ellipse of affine amplitude less than $501/500$, proving
+\[
+  \chi(t)<\infty\qquad
+  \left(0\le t<\frac{250000}{251001}\right).
+\]
+Second, a calibrated opposite-phase estimate proves $616$ exact Hausdorff inequalities and hence
+finite Bernstein positivity through degree $13$.  The unresolved part is localized to a collar
+of exact width $1001/251001$ at the Abel boundary.
+
+The proof uses four ingredients.  The completed source--divisor identity supplies the moments.
+Hausdorff degree elevation supplies a positive Dirichlet dissipation.  A narrow sector for the
+reciprocal-square divisor supplies the upper exponential envelope.  Finally, a dominant-mode
+argument shows that any off-critical atom survives the complete divisor sum and supplies a
+matching lower envelope.  These ingredients produce one master theorem joining finite source
+positivity, exact exponential growth, exact Abel convergence, and cofinal dissipation.
+
+\section{The completed reciprocal-square source}
+
+Let
+\[
+  \xi(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s)
+\]
+and let $\mathcal Z$ be its nontrivial zero multiset, with analytic multiplicity.  For each divisor
+copy $\rho\in\mathcal Z$, put
+\[
+  a_\rho=(\rho-\tfrac12)(-i),
+  \qquad
+  \lambda_\rho=a_\rho^{-2}=-\frac4{(2\rho-1)^2}.
+  \tag{2.1}
+\]
+On the critical line, $\rho=\tfrac12+i\gamma$ gives
+$a_\rho=\gamma$ and $\lambda_\rho=\gamma^{-2}>0$.
+The classical zero-counting estimate implies
+\[
+  \sum_{\rho\in\mathcal Z}|\lambda_\rho|<\infty.
+  \tag{2.2}
+\]
+Hence every reciprocal moment below is absolutely convergent.
+
+Let
+\[
+  C=2+\gamma_E-\log(4\pi),
+  \qquad R_*=\frac{C}{1-C},
+  \qquad A_*=\sum_{\rho\in\mathcal Z}|\lambda_\rho|.
+  \tag{2.3}
+\]
+The completed prime--archimedean moment sequence is
+\[
+  \mu_n=\Rea\sum_{\rho\in\mathcal Z}\lambda_\rho^{,n+1},
+  \qquad
+  s_n=R_*^{-n}\mu_n.
+  \tag{2.4}
+\]
+The normalization leaves the zeroth mass unchanged: $s_0=\mu_0>0$.
+
+\begin{proposition}[Completed source identity]
+\label{prop:source-identity}
+The sequence $(\mu_n)$ is the Taylor-moment sequence of the normalized completed
+prime--Gamma source germ.  For every real polynomial $p$,
+\[
+  \ell_\mu(p):=\sum_{n\ge0}[X^n]p\,\mu_n
+  =\Rea\sum_{\rho\in\mathcal Z}\lambda_\rho p(\lambda_\rho).
+  \tag{2.5}
+\]
+In particular, for $k,r\ge0$,
+\[
+  D_{k,r}:=\ell_\mu\!\left(X^k(R_*-X)^r\right)
+  =\Rea\sum_{\rho\in\mathcal Z}
+     \lambda_\rho^{,k+1}(R_*-\lambda_\rho)^r.
+  \tag{2.6}
+\]
+\end{proposition}
+
+\begin{proof}
+The centered canonical product of $\xi$ has logarithmic derivative
+\[
+  \frac{\xi'}{\xi}\!\left(\frac12+iz\right)
+  =-i\sum_{\rho\in\mathcal Z}
+    \left(a_\rho^{-1}-(a_\rho-z)^{-1}\right),
+\]
+with locally uniform convergence away from the divisor.  Expanding at $z=0$ identifies the even
+Taylor coefficients with the absolutely convergent sums
+$\sum_\rho a_\rho^{-2n-2}=\sum_\rho\lambda_\rho^{n+1}$.
+The completed logarithmic derivative is also the sum of the Euler logarithmic derivative and
+the archimedean Gamma logarithmic derivative.  Normalizing its even Taylor coefficients gives
+the prime--Gamma source germ and proves (2.4).  Linearity proves (2.5), and
+$p(X)=X^k(R_*-X)^r$ gives (2.6).
+\end{proof}
+
+The endpoint geometry used below is summarized next.  It is a completed-divisor estimate, not an
+assumption about the location of the zeros.
+
+\begin{proposition}[Endpoint sector and affine-amplitude confinement]
+\label{prop:sector}
+For $u_\rho=\lambda_\rho/R_*$, every divisor copy satisfies
+\[
+  \Rea u_\rho>0,
+  \qquad
+  (\Ima u_\rho)^2\le\frac1{84}(\Rea u_\rho)^2.
+  \tag{2.7}
+\]
+If $\rho$ is off the critical line, then $|u_\rho|<1/4$.  Define
+\[
+  \beta_\rho=|u_\rho|+|1-u_\rho|.
+  \tag{2.8}
+\]
+Then
+\[
+  \beta_\rho=1\quad\text{on the critical line},
+  \qquad
+  1<\beta_\rho<\frac{501}{500}\quad\text{off it}.
+  \tag{2.9}
+\]
+Moreover $\beta_\rho\to1$ along the divisor multiset.
+\end{proposition}
+
+\begin{proof}
+The completed endpoint curvature identity gives $0<\Rea\lambda_\rho\le R_*$ and the quadratic
+orientation estimate
+$(\Ima\lambda_\rho)^2\le(\Rea\lambda_\rho)^2/84$.
+The strict off-line quartet estimate gives $|\lambda_\rho|<R_*/4$.
+After division by $R_*$ these are (2.7) and the stated disk bound.
+
+If $u\in[0,1]$, then $|u|+|1-u|=1$.  Strictness in the triangle inequality gives
+$|u|+|1-u|>1$ for nonreal $u$.  Combining $|u|<1/4$, $\Rea u\ge0$, and (2.7) confines $u$ to a
+compact rational sector on which direct squaring gives
+\[
+  |u|+|1-u|<\frac{501}{500}.
+\]
+Finally (2.2) implies $\lambda_\rho\to0$ cofinally, hence $u_\rho\to0$ and
+$\beta_\rho\to1$.
+\end{proof}
+
+\section{Bernstein packets, purity, and dissipation}
+
+Let
+\[
+  B_{n,i}(X)=\binom niX^i(1-X)^{n-i},
+  \qquad 0\le i\le n,
+\]
+and define the endpoint Bernstein packet
+\[
+  a_{n,i}=\ell_s(B_{n,i}),
+  \qquad
+  \ell_s(X^m)=s_m.
+  \tag{3.1}
+\]
+Its total variation, purity, and negative mass are
+\[
+  T_n=\sum_{i=0}^n|a_{n,i}|,
+  \qquad
+  \Pi_n=\sum_{i=0}^na_{n,i}^2,
+  \qquad
+  \eta_n=\sum_{i=0}^n(a_{n,i})^-.
+  \tag{3.2}
+\]
+Here $x^-:=\max\{-x,0\}$.  Since $\sum_iB_{n,i}=1$,
+\[
+  \sum_{i=0}^na_{n,i}=s_0,
+  \qquad
+  T_n=s_0+2\eta_n.
+  \tag{3.3}
+\]
+Cauchy--Schwarz and the elementary $\ell^2$--$\ell^1$ comparison give
+\[
+  \frac{s_0^2}{n+1}\le\Pi_n\le T_n^2\le(n+1)\Pi_n.
+  \tag{3.4}
+\]
+
+The source packet has the exact divisor transform
+\[
+  P_n(w):=\sum_{i=0}^na_{n,i}w^i
+  =\sum_{\rho\in\mathcal Z}\lambda_\rho
+       (1-u_\rho+u_\rho w)^n.
+  \tag{3.5}
+\]
+The sum has real coefficients because the divisor multiset is invariant under conjugation; it is
+the absolutely convergent divisor representation from Proposition~\ref{prop:source-identity}.
+For $|w|=1$,
+\[
+  |1-u_\rho+u_\rho w|\le |1-u_\rho|+|u_\rho|=\beta_\rho.
+  \tag{3.6}
+\]
+Consequently Proposition~\ref{prop:sector} gives
+\[
+  \Pi_n\le T_n^2
+  \le A_*^2\left(\frac{501}{500}\right)^{2n}.
+  \tag{3.7}
+\]
+
+Degree elevation is exact.  Put
+\[
+  \mathfrak D_n=
+  \sum_{i=0}^{n}
+  \frac{(n+1-i)(i+1)}{n+1}
+  \bigl(a_{n+1,i}-a_{n+1,i+1}\bigr)^2.
+  \tag{3.8}
+\]
+Then $\mathfrak D_n\ge0$.
+
+\begin{proposition}[Exact dissipation balance]
+\label{prop:dissipation}
+For every $n\ge0$,
+\[
+  (n+2)\Pi_{n+1}=(n+1)\Pi_n+\mathfrak D_n,
+  \tag{3.9}
+\]
+and hence
+\[
+  (n+1)\Pi_n=\Pi_0+\sum_{m<n}\mathfrak D_m.
+  \tag{3.10}
+\]
+\end{proposition}
+
+\begin{proof}
+Bernstein degree elevation gives
+\[
+  a_{n,i}=\frac{n+1-i}{n+1}a_{n+1,i}
+          +\frac{i+1}{n+1}a_{n+1,i+1}.
+\]
+For $\alpha+\beta=1$,
+\[
+  (\alpha x+\beta y)^2+\alpha\beta(x-y)^2
+  =\alpha x^2+\beta y^2.
+\]
+Apply this identity with
+$\alpha=(n+1-i)/(n+1)$ and $\beta=(i+1)/(n+1)$, multiply by $n+1$, and sum over $i$.
+The column weights sum to $n+2$, giving (3.9).  Telescoping gives (3.10).
+\end{proof}
+
+\section{The exact Abel radius}
+
+\begin{definition}
+The positive endpoint susceptibility is
+\[
+  \chi(t)=\sum_{n=0}^\infty\Pi_nt^n,
+  \qquad t\ge0.
+  \tag{4.1}
+\]
+An \emph{exact Abel radius} is a number $R_A>0$ such that $\chi(t)<\infty$ for
+$0\le t<R_A$ and $\chi(t)=\infty$ for $t>R_A$.
+\end{definition}
+
+\begin{definition}
+A number $E>0$ is an \emph{exact purity exponent} if
+\[
+  \frac{\Pi_n}{r^n}\longrightarrow0\quad(E<r),
+  \qquad
+  \frac{\Pi_n}{r^n}\longrightarrow+\infty\quad(0<r<E).
+  \tag{4.2}
+\]
+The analogous definition for the cumulative dissipation uses the left side of (3.10).
+\end{definition}
+
+\begin{lemma}[Source-attained lower envelope]
+\label{lem:lower-envelope}
+If RH is false, there are $B,\delta>0$ with
+\[
+  1<B<\frac{501}{500}
+\]
+such that $B=\beta_{\rho_0}$ for an actual divisor copy $\rho_0$, every
+$\beta_\rho\le B$, and eventually
+\[
+  \delta B^{2n}\le(n+1)\Pi_n.
+  \tag{4.3}
+\]
+For every $n$ one also has
+\[
+  \Pi_n\le A_*^2B^{2n}.
+  \tag{4.4}
+\]
+\end{lemma}
+
+\begin{proof}
+An off-critical copy has $\beta_\rho>1$ by Proposition~\ref{prop:sector}, while
+$\beta_\rho\to1$.  Therefore the supremum $B>1$ is attained on a finite nonempty packet, and
+$B<501/500$.  Inequality (4.4) is (3.6) followed by absolute summation and
+$\Pi_n\le T_n^2$.
+
+Choose a maximal copy $\rho_0$ and the unique unit phase $w$ at which
+$|1-u_{\rho_0}+u_{\rho_0}w|=B$.  Equality rigidity for the Bernstein ellipse says that any other
+copy attaining modulus $B$ at this same phase has either $u_\rho=u_{\rho_0}$ or the reflected
+coordinate $u_\rho=1-\overline{u_{\rho_0}}$.  The latter alternative is impossible because every
+maximal copy is off the line and satisfies $|u_\rho|<1/4$.  Hence all terms attaining modulus $B$
+have the same affine base and the same reciprocal-square coefficient.  Their grouped coefficient
+is a positive integer multiple of the nonzero number $\lambda_{\rho_0}$, and therefore is
+nonzero.  Every remaining affine base has modulus strictly below $B$.  After division by $B^n$,
+the complementary divisor sum tends to zero by dominated convergence, using
+$\sum_\rho|\lambda_\rho|<\infty$.  Thus, for some $c>0$,
+\[
+  cB^n\le |P_n(w)|
+\]
+eventually.  Cauchy--Schwarz gives
+$|P_n(w)|^2\le(n+1)\Pi_n$, proving (4.3) with $\delta=c^2$.
+\end{proof}
+
+\begin{theorem}[Finite-to-cofinal Abel selection master theorem]
+\label{thm:master}
+The completed Xi source has the following unconditional properties.
+
+\begin{enumerate}
+\item The calibrated source differences satisfy
+\[
+  D_{k,r}\ge0
+  \qquad(0\le k\le13,\ 0\le r\le43).
+  \tag{4.5}
+\]
+Consequently $a_{n,i}\ge0$ for every $n\le13$ and every $i$, and the canonical Bernstein
+negative mass vanishes through defect degree $12$.
+
+\item There is a unique exact Abel radius $R_A$ and a unique exact purity exponent $E_*$.  The
+same $E_*$ is the exact exponent of the cumulative dissipation in (3.10), and
+\[
+  R_AE_*=1.
+  \tag{4.6}
+\]
+
+\item The exact parameters lie in the narrow chambers
+\[
+  \frac{250000}{251001}<R_A\le1,
+  \qquad
+  1\le E_*<\frac{251001}{250000}.
+  \tag{4.7}
+\]
+In particular,
+\[
+  \chi(t)<\infty
+  \qquad\left(0\le t<\frac{250000}{251001}\right).
+  \tag{4.8}
+\]
+
+\item The critical phase is selected exactly by
+\[
+  \RH
+  \Longleftrightarrow R_A=1
+  \Longleftrightarrow E_*=1
+  \Longleftrightarrow
+  \chi(t)<\infty\quad(0\le t<1).
+  \tag{4.9}
+\]
+If RH is false, then $E_*=B^2$ and $R_A=B^{-2}$ for the source-attained amplitude in
+Lemma~\ref{lem:lower-envelope}.
+
+\item The same phase is equivalently the cofinally linearly dissipative phase:
+\[
+  \RH\Longleftrightarrow
+  \exists K>0\ \forall N\ \exists n\ge N,
+  \qquad
+  \Pi_0+\sum_{m<n}\mathfrak D_m\le K(n+1).
+  \tag{4.10}
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+We first prove (4.5).  Put $z=\lambda_\rho$ and $w=R_*-z$.  On the critical line both are
+nonnegative real.  Off the line they lie in the open right half-plane and have opposite imaginary
+parts.  Proposition~\ref{prop:sector} gives the rational angle bounds
+\[
+  |\arg z|\le\frac{100}{913},
+  \qquad
+  |\arg w|\le\frac{100}{2739}.
+  \tag{4.11}
+\]
+Because the two arguments have opposite signs,
+\[
+  |(k+1)\arg z+r\arg w|
+  \le\max\{(k+1)|\arg z|,r|\arg w|\}.
+\]
+For $k\le13$ and $r\le43$, the right side is at most
+\[
+  \max\left\{\frac{1400}{913},\frac{4300}{2739}\right\}<\frac\pi2.
+\]
+Thus $\Rea(z^{k+1}w^r)\ge0$ atom by atom.  Absolute summation in (2.6) proves all
+$14\cdot44=616$ inequalities.
+
+For $n\le13$ and $0\le i\le n$, the Bernstein coefficient is a positive binomial multiple of
+the calibrated difference with indices $(i,n-i)$.  Hence it is nonnegative.  Defect degree $N$
+uses the degree-$N+1$ packet, so its negative mass is zero for $N\le12$.
+
+Next, (3.7) and geometric comparison prove (4.8), since
+\[
+  \left(\frac{501}{500}\right)^2t<1
+  \quad\text{when}\quad
+  t<\frac{250000}{251001}.
+  \tag{4.12}
+\]
+Under RH every $u_\rho$ is real and lies in $[0,1]$.  Thus every Bernstein mass is nonnegative,
+$T_n=s_0$, and
+\[
+  \frac{s_0^2}{n+1}\le\Pi_n\le s_0^2.
+  \tag{4.13}
+\]
+It follows that the exact exponent is $E_*=1$ and that $\chi(t)$ converges for every $t<1$.
+The lower bound in (4.13) excludes any exact Abel radius larger than one, so $R_A=1$.
+
+Suppose now that RH is false and take $B,\delta$ from Lemma~\ref{lem:lower-envelope}.  The upper
+and lower envelopes (4.3)--(4.4) show directly that $E_*=B^2$: normalization above $B^2$ is
+dominated by a strict geometric contraction, while normalization below $B^2$ diverges even after
+division by $n+1$.  They also identify the Abel radius.  If $0\le t<B^{-2}$, then
+\[
+  \Pi_nt^n\le A_*^2(B^2t)^n
+\]
+is summable.  If $t>B^{-2}$, choose $r=t^{-1}<B^2$ in the lower exact-exponent law; then
+$\Pi_nt^n\to+\infty$, so the terms of the Abel series do not tend to zero.  Hence
+$R_A=B^{-2}$.
+
+The midpoint argument proves uniqueness of both exact parameters.  Two distinct exact exponents
+would impose zero and infinite limits at an intermediate normalization; two distinct Abel radii
+would make $\chi$ finite and infinite at an intermediate parameter.  The case analysis above
+gives $R_AE_*=1$ and the strict bounds (4.7).
+
+Finally multiplication by $n+1$ does not change an exact exponential exponent.  Equation (3.10)
+therefore gives the same $E_*$ for cumulative dissipation.  Under RH, (4.13) and (3.10) give a
+linear bound at every degree.  If RH is false, Lemma~\ref{lem:lower-envelope} forces
+$\Pi_n\to+\infty$; hence no fixed linear bound can recur cofinally in (3.10).  This proves
+(4.10) and completes the theorem.
+\end{proof}
+
+\section{The positive Connes carrier obligation}
+
+Theorem~\ref{thm:master} turns the remaining estimate into a positive carrier specification.
+The completed arithmetic source already produces a positive susceptibility on a nearly critical
+interval, and the divisor itself fixes its exact boundary.  A successful Connes-type realization
+must therefore carry the same packet purity or an exactly identified equivalent observable and
+establish the unit-boundary extension
+\[
+  \chi(t)<\infty\qquad(0\le t<1).
+  \tag{5.1}
+\]
+Equivalently, it must produce the cofinal source-coupled budget (4.10).  This is weaker than a
+uniform bound at every degree and stronger than finite positivity, finite self-adjointness, or
+finite spectral agreement.
+
+\begin{corollary}[Narrow-collar selection principle]
+\label{cor:collar}
+To prove RH through the endpoint Bernstein carrier it is sufficient and necessary to extend the
+unconditional convergence in (4.8) across
+\[
+  \frac{250000}{251001}\le t<1.
+  \tag{5.2}
+\]
+Any proof of this extension must use source--divisor incidence capable of excluding an attained
+off-critical amplitude $1<B<501/500$.
+\end{corollary}
+
+\begin{proof}
+The first statement is (4.8)--(4.9).  If RH fails, Theorem~\ref{thm:master} gives an actual
+divisor amplitude $B$ and an interior divergence point above $R_A=B^{-2}$.  Thus an argument that
+does not distinguish the source-attained transverse amplitude cannot establish (5.1).
+\end{proof}
+
+This formulation also separates what has and has not been estimated.  The finite rectangle proves
+an exact source-positive southwest block.  The sector theorem proves an open interval of
+susceptibility convergence.  The dissipation identity proves that only one recurring linear
+budget is needed.  None of these facts implies the collar extension: that extension is precisely
+the remaining RH-bearing theorem.
+
+The carrier is cofinal in two senses.  It uses every Bernstein degree, and its source moments use
+the full multiplicity-exact divisor.  This is the structural feature needed by a semilocal trace
+construction: the finite stages may be positive, but their normalization must converge in a way
+that controls the actual all-order source susceptibility.  In this form the required object is
+not merely ``not finite''.  It must be a cofinal, divisor-preserving, source-coupled section whose
+positive energy obeys (4.10), or equivalently whose Abel transform obeys (5.1).
+
+\section{Limitations and next theorem}
+
+The paper does not prove the collar extension (5.1) and therefore does not prove RH.  The exact
+radius theorem is stronger than a qualitative reformulation because it proves a strict
+unconditional lower bound for the radius, a finite block of exact source positivity, and a common
+exponent for purity and dissipation.  Nevertheless, selecting the endpoint value $R_A=1$ remains
+equivalent to RH.
+
+The next theorem must estimate the actual completed prime--Gamma source, not only the enclosing
+sector.  Any one of the following source statements would complete the route:
+\begin{enumerate}
+\item $\chi(t)<\infty$ for every $t<1$;
+\item a cofinal linear bound for the cumulative dissipation in (4.10);
+\item a cofinal bounded packet-purity subsequence;
+\item a uniformly bounded aggregate discrepancy from positive finite thermal moment systems.
+\end{enumerate}
+By Theorem~\ref{thm:master}, these are not independent targets; they are charts of the same
+source-selection theorem.  The positive research obligation is therefore precise: construct a
+completed prime--Gamma estimate that crosses the explicit Abel collar while preserving the Xi
+divisor incidence.
+
+\section*{Author contributions and accountability}
+
+Michael Haufschild directed the research and assumes responsibility for the submitted claims.
+GPT 5.6 Sol, Fable 5, and Grok 4.5 contributed to proof search, adversarial checking, and
+manuscript development.  The human author retains responsibility for correctness, novelty,
+exposition, and publication compliance.
+
+\begin{thebibliography}{99}
+
+\bibitem{Bombieri2000}
+E.~Bombieri,
+\emph{Remarks on Weil's quadratic functional in the theory of prime numbers, I},
+Rend. Lincei Mat. Appl. \textbf{11} (2000), 183--233.
+
+\bibitem{Connes1999}
+A.~Connes,
+\emph{Trace formula in noncommutative geometry and the zeros of the Riemann zeta function},
+Selecta Math. (N.S.) \textbf{5} (1999), 29--106.
+
+\bibitem{ConnesConsani2019}
+A.~Connes and C.~Consani,
+\emph{The scaling Hamiltonian},
+arXiv:1910.14368, 2019.
+
+\bibitem{ConnesConsani2021}
+A.~Connes and C.~Consani,
+\emph{Weil positivity and trace formula, the archimedean place},
+arXiv:2006.13771, 2020.
+
+\bibitem{Hausdorff1921}
+F.~Hausdorff,
+\emph{Summationsmethoden und Momentfolgen. I},
+Math. Z. \textbf{9} (1921), 74--109.
+
+\bibitem{Titchmarsh1986}
+E.~C.~Titchmarsh,
+\emph{The Theory of the Riemann Zeta-Function}, 2nd ed., revised by D.~R.~Heath-Brown,
+Oxford University Press, 1986.
+
+\bibitem{Weil1952}
+A.~Weil,
+\emph{Sur les ``formules explicites'' de la th\'eorie des nombres premiers},
+Commun. S\'em. Math. Univ. Lund, volume dedicated to Marcel Riesz (1952), 252--265.
+
+\end{thebibliography}
+
+\end{document}

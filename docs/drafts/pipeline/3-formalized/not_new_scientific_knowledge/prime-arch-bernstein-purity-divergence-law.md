@@ -296,3 +296,20 @@ a fixed constant \(C\) and arbitrarily large degrees \(n\) satisfying
 or a cofinal family of positive finite thermal comparators whose unweighted squared Bernstein
 packet discrepancies remain uniformly bounded. Either positive condition closes the prime--polar
 absolute-abscissa target and RH directly.
+
+## Algebraic generating-kernel interpretation
+
+The paper theorem
+[`prime-arch-bernstein-legendre-double-source-kernel.md`](../../2-fully-proven/not_new_scientific_knowledge/prime-arch-bernstein-legendre-double-source-kernel.md)
+rewrites the generating germ of the positive purity sequence as one double moment of a universal
+Legendre square-root kernel.  Its conjugate-pair factorization places the maximal amplitude branch
+point at `t=B^(-2)`.  Hence the dominant-mode noncancellation proved in this card is exactly what
+promotes that atom-level reflected pinch to the critical radius of the complete susceptibility.
+The top-down continuation splice is
+[`prime-arch-bernstein-pringsheim-collar-transfer.md`](../../2-fully-proven/not_new_scientific_knowledge/prime-arch-bernstein-pringsheim-collar-transfer.md).
+
+The one-source form of the same geometry is
+[`prime-arch-bernstein-mobius-pullback-gutzmer-law.md`](../../2-fully-proven/not_new_scientific_knowledge/prime-arch-bernstein-mobius-pullback-gutzmer-law.md):
+the complete susceptibility is a double Gutzmer norm of a Möbius pullback of the continued
+prime--Gamma moment germ, and the dominant amplitude is the first pulled-back pole to reach that
+torus.

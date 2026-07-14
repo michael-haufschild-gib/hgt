@@ -152,6 +152,63 @@ theorem brstHodgeHamiltonian_mul_adjoint_eq_adjoint_mul
     ContinuousLinearMap.mul_def, ContinuousLinearMap.adjoint_adjoint, add_comm] using
     (brstHodgeHamiltonian_mul_eq_mul_brstCharge (Q := Q.adjoint) hQa)
 
+/-! ## Green operator and Hodge chain homotopy -/
+
+/-- If a Green operator commutes with the BRST charge, multiplying the Hodge Hamiltonian by it
+is already the standard chain-homotopy anticommutator with `Q†G`. -/
+theorem brstHodgeHamiltonian_mul_green_eq_chainHomotopy
+    (Q G : E →L[𝕜] E) (hQG : Q * G = G * Q) :
+    brstHodgeHamiltonian Q * G =
+      Q * (Q.adjoint * G) + (Q.adjoint * G) * Q := by
+  rw [brstHodgeHamiltonian_eq_adjoint_mul_add_mul_adjoint, add_mul]
+  calc
+    (Q.adjoint * Q) * G + (Q * Q.adjoint) * G =
+        Q.adjoint * (Q * G) + Q * (Q.adjoint * G) := by
+      simp only [mul_assoc]
+    _ = Q.adjoint * (G * Q) + Q * (Q.adjoint * G) := by rw [hQG]
+    _ = Q * (Q.adjoint * G) + (Q.adjoint * G) * Q := by
+      rw [← mul_assoc]
+      exact add_comm _ _
+
+/-- A two-sided Green inverse on the complement of a harmonic projection automatically commutes
+with a nilpotent BRST charge, provided the harmonic sector is annihilated on both sides.  This
+removes a separate Green/charge commutation premise from the Hodge relation. -/
+theorem brstGreen_commutes_charge
+    (Q G P : E →L[𝕜] E)
+    (hQ : Q * Q = 0)
+    (hHG : brstHodgeHamiltonian Q * G = 1 - P)
+    (hGH : G * brstHodgeHamiltonian Q = 1 - P)
+    (hPQ : P * Q = 0) (hQP : Q * P = 0) :
+    Q * G = G * Q := by
+  have hHQ := brstHodgeHamiltonian_mul_eq_mul_brstCharge Q hQ
+  have hleftQ : (1 - P) * Q = Q := by rw [sub_mul, one_mul, hPQ, sub_zero]
+  have hrightQ : Q * (1 - P) = Q := by rw [mul_sub, mul_one, hQP, sub_zero]
+  calc
+    Q * G = ((1 - P) * Q) * G := by rw [hleftQ]
+    _ = (G * brstHodgeHamiltonian Q) * Q * G := by rw [hGH]
+    _ = G * (brstHodgeHamiltonian Q * Q) * G := by
+      simp only [mul_assoc]
+    _ = G * (Q * brstHodgeHamiltonian Q) * G := by rw [hHQ]
+    _ = G * Q * (brstHodgeHamiltonian Q * G) := by
+      simp only [mul_assoc]
+    _ = G * Q * (1 - P) := by rw [hHG]
+    _ = G * Q := by rw [← mul_assoc, hrightQ]
+
+/-- **Hodge relation from the master constraint.**  Under the two Green equations and harmonic
+annihilation laws, the complement of the harmonic projection is the chain anticommutator
+`Qh + hQ` with the canonical homotopy `h = Q†G`.  This is the operator identity needed by
+cohomological trace compression; constructing the source-specific `P` and `G` remains separate. -/
+theorem one_sub_eq_brstChainHomotopy_of_green
+    (Q G P : E →L[𝕜] E)
+    (hQ : Q * Q = 0)
+    (hHG : brstHodgeHamiltonian Q * G = 1 - P)
+    (hGH : G * brstHodgeHamiltonian Q = 1 - P)
+    (hPQ : P * Q = 0) (hQP : Q * P = 0) :
+    1 - P = Q * (Q.adjoint * G) + (Q.adjoint * G) * Q := by
+  rw [← hHG]
+  exact brstHodgeHamiltonian_mul_green_eq_chainHomotopy Q G
+    (brstGreen_commutes_charge Q G P hQ hHG hGH hPQ hQP)
+
 /-- The self-adjoint Hodge--Dirac supercharge `D_Q = Q + Q†`. -/
 noncomputable def brstHodgeDiracOperator (Q : E →L[𝕜] E) : E →L[𝕜] E :=
   Q + Q.adjoint
