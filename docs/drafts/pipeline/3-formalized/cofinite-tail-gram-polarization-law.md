@@ -1,7 +1,7 @@
 # Cofinite tail-Gram polarization law
 
 - **ID:** `cofinite-tail-gram-polarization-law`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** GENERAL HT CONSTRAINT LAW / POSITIVE GEOMETRY
 - **Scientific status:** `[NOVELTY UNVERIFIED]`
 
@@ -124,6 +124,22 @@ prove that such positivity survives analytic continuation.
 5. **Novelty gate.**  Audit deletion-robust frames, full-spark frames, phase retrieval, matrix-valued
    Dirichlet series, Hadamard products, and reflection-positive kernels.
 
+## Parent-theory audit
+
+- Alexeev--Cahill--Mixon, *Full Spark Frames* (JFAA 2012), confirms that finite erasure-robust
+  evaluation packets and full-spark Gram conditions are established frame theory.
+- Adamo--Neeb--Schober, *Reflection positivity and Hankel operators -- the multiplicity free
+  case* (arXiv:2105.08522), confirms that reflection-positive Hankel realizations belong to an
+  established operator-theoretic parent theory.
+- Searches for weighted Gram radicals, matroid basis polynomials, KMS weight deformations, and
+  coefficientwise Dirichlet/Hadamard products did not locate the exact combined statement:
+  operator-tail differential independence equals every cofinite full-support Gram aperture,
+  all full-support summable metrics are isoradical, and every unit-phase family has the same
+  all-positive prime-zeta diagonal.
+
+The first two ingredients are therefore `[BRIDGE]`.  The three-way synthesis remains
+`[NOVELTY UNVERIFIED]`; absence from this search is not a novelty proof.
+
 ## Formal surface
 
 `formal/GaloisForLFunctions/HTGeometry/CofiniteTailGramPolarization.lean` proves:
@@ -150,4 +166,4 @@ prove that such positivity survives analytic continuation.
 - [x] formalize the infinite summable weighted equivalence `(2)`--`(3)`
 - [ ] connect to the analytic operator-tail capstone
 - [ ] construct and attack a reflection-compatible matrix continuation
-- [ ] complete primary-literature and parent-theory audit
+- [x] focused primary-literature and parent-theory audit; independent specialist search remains

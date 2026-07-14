@@ -1,7 +1,7 @@
 # Tail eventual order and two-stage prime pointing
 
 - **ID:** `tail-eventual-order-two-stage-pointing`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized / not new in isolation
 - **Type:** GENERAL HT CONSTRAINT LAW
 - **Scientific status:** `[NOVELTY UNVERIFIED]`; the quotient-order core is `[BRIDGE]`
 

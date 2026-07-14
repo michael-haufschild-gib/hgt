@@ -1934,6 +1934,52 @@ copy of `Q(U_d)` to the left cancels the same copy supplied by the swept window.
 estimate must orient the finite difference in `(35)` before this endpoint invariant is separated,
 or introduce an additional arithmetic value relation that also cancels the invariant.
 
+## Phase-adapted Prouhet annihilation
+
+**[PROVED, LEAN; LIVE ALGEBRAIC REDUCTION]** The two endpoint values and the Prouhet jet do not
+exhaust the finite coefficient freedom.  For an arbitrary complex phase `u`, put
+
+```text
+Q_u(X)=X^2-2 Re(u)X+|u|^2=(X-u)(X-conj(u)),
+B_(m,u)(X)=B_m(X)Q_u(X).
+```
+
+Multiplying `B_(m,u)` by one affine factor again permits arbitrary prescribed values at the two
+real completion characters `q` and `r`, provided neither endpoint equals `u`.  The resulting real
+polynomial `A_(m,u;q,r,tau)` satisfies simultaneously
+
+```text
+A(q)=1,  A(r)=tau,
+(X-1)^m divides A(X),
+A(u)=A(conj(u))=0.                                      (36)
+```
+
+For the logarithmic fibre phase
+
+```text
+u=exp(2 i L Re(z)),
+```
+
+the last identity gives, for every base shift `a`,
+
+```text
+sum_j a_j cos(2(a+jL)Re(z))=0.                          (37)
+```
+
+Combining `(37)` with the exact cancellation of the opposite logarithmic derivative drifts gives
+an exact current identity: the complete coefficient-weighted sum of the two opposite untruncated
+translation-channel Hermitian crosses is zero.  This is formalized by
+`phaseAdaptedProuhet_oppositeTranslationCross_sum_eq_zero` in
+`XiCTaylorThetaTailPhaseAdaptedProuhetPacket.lean`.  The same packet retains every ordinary
+translation-moment cancellation below depth `m`, so inserting the phase roots does not recreate a
+finite Taylor edge.
+
+`[OPEN CORE]` Equation `(37)` annihilates the rotational off-diagonal channel before norms are
+taken.  It does not, by itself, remove the endpoint invariant `(12d.9q)`, which depends only on the
+two completion endpoint values.  The live composition problem is to keep the right endpoint
+normalization free until current level and determine whether it can cancel the invariant together
+with `(37)` without returning a copy of `Q(U_d)` or amplifying the diagonal packet currents.
+
 ## Finite cosine--sine translation edge: discharged
 
 **[PROVED, LEAN]** The finite-section obstruction created by logarithmic translation is closed in

@@ -7,12 +7,15 @@
 - **Lean files:**
   - `formal/GaloisForLFunctions/RHTower/XiEndpointOffLineQuartetHeightGap.lean`
   - `formal/GaloisForLFunctions/RHTower/PrimeArchOffLineQuartetAccretivity.lean`
+  - `formal/GaloisForLFunctions/RHTower/PrimeArchExactOffLineQuartetAccretivity.lean`
   - `formal/GaloisForLFunctions/RHTower/PrimeArchOffLineQuartetKMSMaster.lean`
 - **Statement:** The four distinct FE--Schwarz copies of every off-critical Xi zero contribute
   four equal nonnegative endpoint charges.  Consequently
   `4 <= c * (1 + (Im rho)^2)`, and every radius satisfying
   `c * ((R + 1/2)^2 + 1) < 4` is an unconditional accretive band for the continued
-  prime--Gamma source.  The explicit bound `c < 2/43` certifies `R = 87/10`.
+  prime--Gamma source.  The explicit bounds certify `R = 218/25`.  Positively, every such
+  radius satisfies `R+1/2 < |Im rho|` for every off-line zero `rho`: the quartet mechanism
+  creates a strict half-unit buffer but cannot make a self-excluding contradiction loop by itself.
 
 ## Result
 
@@ -50,11 +53,29 @@ estimate.  The exact orbit law handles all remaining atoms whenever
 c\bigl((R+1/2)^2+1\bigr)<4.
 \]
 
-In particular, `c < 2/43` certifies this strict inequality at `R=87/10`, so the full continued
-source trace has nonpositive imaginary part on `|Re z| <= 87/10`.  Reflection removes negative
+The sharper certified bound `c < 93/2000` proves this strict inequality at `R=218/25`, so the full
+continued source trace has nonpositive imaginary part on `|Re z| <= 218/25`.  Reflection removes negative
 frequencies.  Thus RH is equivalent to completed
-prime--Gamma accretivity only at positive heights above `87/10`; Gaussian-rational density reduces
+prime--Gamma accretivity only at positive heights above `218/25`; Gaussian-rational density reduces
 that remaining obligation to countably many source values.
+
+The same two strict inequalities expose the precise boundary of a contradiction proof.  If `rho`
+is off line and `R` is any exact quartet-admissible radius, then
+
+\[
+c((R+1/2)^2+1)<4\le c(1+(\operatorname{Im}\rho)^2),
+\]
+
+and `c>0`, hence
+
+\[
+R+1/2<|\operatorname{Im}\rho|.
+\]
+
+This is the positive self-exclusion law: the source budget always leaves a half-unit separation
+between the discharged band and every off-line orbit.  A closed contradiction chain therefore
+needs a second mechanism that propagates accretivity across that buffer; iterating the same
+endpoint quartet estimate cannot reach the zero that generated it.
 
 ## Proof
 
@@ -111,13 +132,13 @@ Absolute summability permits pairing
 and summing the atoms.  The same height comparison excludes off-line poles in the upper half of
 the band; on-line poles lie on its boundary.  This proves the full source sign on the band.
 
-Taking `R=87/10`, applying the source reflection `z -> -conj z`, translating back by
+Taking `R=218/25`, applying the source reflection `z -> -conj z`, translating back by
 `s=1/2+iz`, and using continuity plus density of `Q+iQ` proves the stated countable criterion.
 
 ## Open core
 
 Prove the remaining positive-height completed prime--Gamma values are accretive.  The theorem
-removes the entire interval from height zero through `87/10`, all negative heights, and all
+removes the entire interval from height zero through `218/25`, all negative heights, and all
 irrational test points, but does not prove the surviving source sign.
 
 ## Gates
@@ -135,10 +156,13 @@ Principal declarations:
 four_mul_xiEndpointCrossCharge_le_curvature_of_offLine
 four_le_curvature_mul_one_add_im_sq_of_offLine
 xiZeroCopy_offLine_eightyFive_lt_im_sq
+xiOffLineQuartetAccretiveBand_add_half_lt_abs_im_of_offLine
+not_xiOffLineQuartetAccretiveBand_at_abs_im_of_offLine
 XiEndpointOffLineQuartetAccretiveBand
 xiRelativeResolventTerm_lineConj_pair_im_nonpos_offLineOrbit
 continuedPrimeArchPositiveFrequencyAbove_iff_riemannHypothesis_of_offLineQuartetBand
 continuedPrimeArchSourceRelativeTrace_im_nonpos_eightySeven_tenths
+continuedPrimeArchSourceRelativeTrace_im_nonpos_twoHundredEighteen_twentyFifths
 completedPrimeGammaGaussianRatPositiveAboveEightySevenTenths_iff_riemannHypothesis
 primeArchOffLineQuartetConnesBornWittenKMSMaster
 ```

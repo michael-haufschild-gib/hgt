@@ -1,8 +1,8 @@
 # Xi radial Jensen mass and central-curvature saturation
 
 - **ID:** `xi-radial-jensen-mass-central-curvature`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
 - **Scientific status:** `[PROVED HERE] [CLASSICAL COMBINATION] [NOT AN RH PROOF]`
 - **Source:** top-down whole-corpus RH sweep
 - **Statement:** The integrated central circle-average excess of `log |XiC|` is exactly the
@@ -128,7 +128,40 @@ The proof deliberately splices declarations from different parts of the corpus:
 - `xiReciprocalOperator_isSelfAdjoint_iff_rh` in
   `XiHedenmalmReciprocalOperator.lean`: terminal operator criterion.
 
-No Lean theorem currently performs the radial integration in `(7)`--`(8)` or packages `(3)`--`(4)`.
+The full radial integration and scalar saturation criterion are formalized in
+`GaloisForLFunctions/RHTower/XiRadialJensenMassCentralCurvature.lean`.
+
+## Lean formalization
+
+The wired formal chain is:
+
+- `integral_Ioi_log_div_cube`: the exact scalar kernel integral `(7)`;
+- `xiCenteredRadialJensenExcess_div_cube_eq_supportProfile`: Jensen's circle average
+  rewritten as the finite multiplicity-weighted divisor profile at every positive radius;
+- `tsum_xiRadialJensenKernel_eq_ofReal_supportProfile`: exact regrouping from divisor support
+  to the multiplicity-copy Xi zero index;
+- `xiCenteredRadialJensenMassENNReal_eq_divisorMass`: Tonelli transfer from the source circle
+  average to the nonnegative divisor mass;
+- `xiCenteredRadialJensenMass_eq_hermitianMass`: identity `(8)`;
+- `xiCenteredRadialJensenMass_eq_centralCurvature_iff_rh` and
+  `xiCenteredRadialJensenMass_le_centralCurvature_iff_rh`: the exact equivalences `(4)`.
+
+The module is imported by `GaloisForLFunctions/RHTower.lean`.
+
+## Literature boundary
+
+Voros's superzeta framework makes holomorphic symmetric sums of centered Riemann zeros explicit;
+in particular, its standard centered variable is `rho = 1/2 + i tau`, with `tau` real for every
+zero exactly under RH.  Arias de Reyna likewise stresses that the secondary-zeta parameters are
+generally complex unless RH is assumed.  These source-side continuations therefore control powers
+such as `sum tau^(-2)`, matching the central prime--Gamma curvature, but do not supply the
+nonholomorphic Hermitian sum `sum |tau|^(-2)`.  Replacing the former by the latter is exactly the
+orientation assertion isolated by this card, not a consequence of superzeta continuation.
+
+- André Voros, [Zeta functions over zeros of Zeta functions and an exponential-asymptotic view
+  of the Riemann Hypothesis](https://arxiv.org/abs/1403.4558), especially Sections 2--3.
+- Juan Arias de Reyna, [Computation of the secondary zeta
+  function](https://arxiv.org/abs/2006.04869), Section 1.
 
 ## Non-circularity gate
 
@@ -162,6 +195,5 @@ reality, growth, and positive-definiteness data.
 
 - [x] 0 -> 1 in-progress: well-posed, exact source-value statement, non-circularity gate stated
 - [x] 1 -> 2 fully-proven: complete paper proof of `(1)`--`(4)`
-- [ ] 2 -> 3 formalized: radial integral identity and scalar saturation criterion in Lean
+- [x] 2 -> 3 formalized: radial integral identity and scalar saturation criterion in Lean
 - [ ] 3 -> 4 publication-ready: only if a non-circular source proof of the inequality is found
-

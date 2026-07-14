@@ -1,7 +1,7 @@
 # Tail Hadamard positive-unit law
 
 - **ID:** `tail-hadamard-positive-unit-law`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized / not new in isolation
 - **Type:** GENERAL HT CONSTRAINT LAW / OPERATOR-TAIL ALGEBRA
 - **Scientific status:** `[NOVELTY UNVERIFIED]`; reduced-product algebra is `[SEARCH]`
 

@@ -54,6 +54,39 @@ theorem four_le_endpointCurvature_mul_one_add_im_sq_of_offLine
   rw [div_le_iff₀ hden] at hbudget
   simpa [mul_comm] using hbudget
 
+/-- **Positive self-exclusion law for the quartet band.**  Every exact accretive-band radius
+stays more than one half-unit below the absolute ordinate of every off-line Xi zero.  Thus the
+endpoint quartet budget supplies a genuine central prefix, but cannot exclude the same quartet
+that pays for the prefix without an additional propagation mechanism. -/
+theorem xiOffLineQuartetAccretiveBand_add_half_lt_abs_im_of_offLine
+    (R : ℝ) (hband : XiOffLineQuartetAccretiveBand R)
+    (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
+    R + 1 / 2 < |(q.1 : ℂ).im| := by
+  have hfour :=
+    four_le_endpointCurvature_mul_one_add_im_sq_of_offLine q hoff
+  have hCpos : 0 < xiEndpointCompletedCurvature :=
+    xiEndpointCompletedCurvature_pos
+  have hmul :
+      xiEndpointCompletedCurvature * ((R + 1 / 2) ^ 2 + 1) <
+        xiEndpointCompletedCurvature * ((q.1 : ℂ).im ^ 2 + 1) :=
+    hband.2.trans_le hfour
+  have hsq : (R + 1 / 2) ^ 2 < (q.1 : ℂ).im ^ 2 := by
+    have hinner := lt_of_mul_lt_mul_left hmul hCpos.le
+    linarith
+  have hnonneg : 0 ≤ R + 1 / 2 := by linarith [hband.1]
+  nlinarith [sq_abs (q.1 : ℂ).im, abs_nonneg (q.1 : ℂ).im]
+
+/-- In particular, the exact quartet band cannot be closed by choosing the absolute ordinate of
+the assumed off-line zero as its own radius. -/
+theorem not_xiOffLineQuartetAccretiveBand_at_abs_im_of_offLine
+    (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
+    ¬ XiOffLineQuartetAccretiveBand |(q.1 : ℂ).im| := by
+  intro hband
+  have hbuffer :=
+    xiOffLineQuartetAccretiveBand_add_half_lt_abs_im_of_offLine
+      |(q.1 : ℂ).im| hband q hoff
+  nlinarith [abs_nonneg (q.1 : ℂ).im]
+
 /-- **Sharpened rational off-line height gap.**  The exact quartet budget together with the
 available rational endpoint-curvature certificate forces every off-critical Xi zero above the
 squared ordinate `7907 / 93`. -/

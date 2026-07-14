@@ -1,7 +1,7 @@
 # Phase--radial Toeplitz--Hankel polarization law
 
 - **ID:** `phase-radial-toeplitz-hankel-polarization-law`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** GENERAL HT CARRIER CONSTRAINT / REFLECTION GEOMETRY
 - **Scientific status:** `[BRIDGE]` abstractly; combined HT/RH application `[NOVELTY UNVERIFIED]`
 
@@ -93,6 +93,19 @@ it identifies why the prime phase orbit cannot substitute for it.
    core is the source-built incidence law coupling the actual prime tail and archimedean
    completion to the canonical reciprocal-square Hankel moments.
 
+## Parent-theory audit
+
+Neeb--Olafsson's reflection-positive one-parameter-group theory (arXiv:1312.6161) develops the
+duality between unitary groups and contractive Hermitian semigroups, while
+Adamo--Neeb--Schober (arXiv:2105.08522) treats reflection-positive representations through
+positive Hankel operators.  These sources make the abstract phase-to-radial passage classical.
+The two-periodic scalar intersection is elementary linear algebra and is not claimed as new.
+
+The only candidate novelty is its forced placement inside the operator-tail/Hadamard geometry:
+full-support metric changes preserve the tail radical, so the radial Hankel carrier must be a
+genuinely transverse source coordinate rather than another temperature on the phase carrier.
+That synthesis remains `[NOVELTY UNVERIFIED]`.
+
 ## Formal surface
 
 `formal/GaloisForLFunctions/HTGeometry/ToeplitzHankelPolarization.lean` proves:
@@ -112,5 +125,5 @@ The support-invariance input is formalized in
 - [x] unconditional source-level formal proof
 - [x] narrow build and axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`
 - [ ] incorporate the bipolar carrier theorem into the operator-tail paper
-- [ ] complete primary-literature audit
+- [x] focused primary-literature audit; independent specialist search remains
 - [ ] formulate and attack the prime-tail/archimedean radial incidence open core
