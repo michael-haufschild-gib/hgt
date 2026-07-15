@@ -249,77 +249,80 @@ derivative: this preserves differential transcendence degree and makes the entir
 additive. The complete proof is recorded in
 `split-source-boundary-universality`.
 
-### `[CONJECTURE]` Character-radical decomposition
+### `[NO-GO, REPLACED BY A STRONGER THEOREM]` Character-radical HT decomposition
 
-For a commutative algebraic differential group `G`, let
-
-```text
-X_D(G) = differential characters G -> G_a,
-R_D(G) = intersection_(chi in X_D(G)) ker(chi).           (13)
-```
-
-There is a functorial two-layer source boundary:
+The proposed character-invisible hypertranscendental radical does not survive passage to an
+algebraic `D`-group logarithmic derivative.  For every finite-dimensional commutative algebraic
+`D`-group `(G,s)`,
 
 ```text
-linear character corona  +  character-invisible radical core R_D(G).  (14)
+ell_s : G -> Lie(G)
 ```
 
-Every differential-algebraic dependence of a `G`-valued source primitive is detected either by a
-simultaneous coboundary in the character corona or by a relation entirely inside an
-`R_D(G)`-torsor. In particular, failure of character-boundary completeness is not unstructured;
-it is concentrated in one canonical radical.
+preserves the differential transcendence degree of every finite family of points, and converts
+every base translation into an additive Lie-algebra source increment.  The arbitrary-family
+additive theorem therefore gives the complete source-boundary rank formula.  Meanwhile
 
-For split vector groups and tori the radical should be trivial, recovering the exact linear
-boundary theorem. For abelian and semiabelian differential groups the radical is expected to be
-the Manin-kernel-type core.
+```text
+G^sharp = ker(ell_s)
+```
 
-**Falsifier:** a source dependence whose image under every differential character is trivial but
-which does not factor through the differential-character radical.
+is itself cut out by the first-order differential equation `ell_s(Y)=0`; its fibres have zero
+differential transcendence degree over their image.  Thus `G^sharp` may retain finite-rank
+embedding, isogeny, or model-theoretic structure, but it cannot store hidden HT capacity.
+
+`[POSITIVE THEOREM]` The complete nonlinear differential polymatroid of every commutative
+algebraic `D`-group source family is represented by the same simultaneous linear boundary module.
+The proof and exact rank statement are in `commutative-d-group-source-boundary-universality`.
+
+This identifies the actual nonlinear horizon: failure of a faithful finite-dimensional
+commutative logarithmic linearization, not a radical inside such a linearization.
 
 ### `[CONJECTURE]` Hypertranscendence is non-torsion capacity
 
-For every finite-source observable admitting a faithful commutative differential-group
-presentation, hypertranscendence is equivalent to non-torsion of its source class under the full
-differential-character ring, after quotienting by the radical core. Joint differential
-transcendence degree is the localized character-boundary rank plus the differential dimension of
-the radical component.
+For every finite-source observable admitting a faithful finite-dimensional commutative algebraic
+`D`-group presentation, hypertranscendence is equivalent to non-torsion of at least one
+logarithmic source class.  Joint differential transcendence degree is exactly the localized
+Lie-algebra boundary rank; there is no additional radical term.
 
 Thus “infinite algebraic clock capacity” is not infinite elapsed time and not merely infinitely
 many jets. It is the impossibility of killing the observable's source class by any finite
 differential character. The thin boundary is the finite-character test surface on which that
 infinite non-torsion capacity is visible.
 
-**Falsifier:** a faithful finite-source observable which is hypertranscendental although its
-character class is torsion and its radical component is differentially algebraic, or the converse.
+This statement is now proved for commutative algebraic `D`-group presentations.  The remaining
+conjectural extension concerns noncommutative or genuinely pro-algebraic source envelopes.
 
 ### `[CONJECTURE]` Five obstruction faces are two-layer realizations
 
-Continuation failure and monodromy are realizations of the linear character corona. Spectral
-incompleteness, positivity failure, and noncanonical self-adjoint boundary conditions are
-realizations of the character-invisible radical core after it is equipped with a self-dual
-polarization. The five failures are not equal predicates, but their obstruction classes are images
-of one two-layer boundary object under different realization functors.
+Continuation failure and monodromy are conjectured to realize adjoint holonomy of a curved source
+boundary.  Spectral incompleteness, positivity failure, and noncanonical self-adjoint boundary
+conditions are conjectured to be failures of polarized exactness for realizations of the same
+twisted object.  The five failures are not equal predicates, but their obstruction classes should
+be images of one differential-Tannakian source envelope under different realization functors.
 
 **Falsifier:** two rigorously source-matched realization chains whose obstruction classes cannot be
-joined by any common character/radical boundary object even up to derived equivalence.
+joined by any common twisted source envelope even up to derived/Tannakian equivalence.
 
 ### `[CONJECTURE]` Representation-independence of the obstruction spectrum
 
-Different valid source presentations of the same hypertranscendental observable produce derived
-Morita-equivalent two-layer boundary objects. Their character ranks, radical differential
-dimensions, and polarized degeneracy spectra are invariant. This is the proposed topology: not a
-topology on finite jets, but a descent theory on presentations of the source boundary object.
+Different faithful source presentations of the same hypertranscendental observable produce
+equivalent minimal differential-Tannakian source envelopes.  Their localized boundary ranks,
+adjoint holonomy classes, and polarized degeneracy spectra are invariant.  This is the proposed
+topology: not a topology on finite jets, but a descent theory on presentations of the source
+boundary object.
 
-**Falsifier:** two faithful source presentations of one observable with inequivalent localized
-character ranks or inequivalent radical degeneracy spectra.
+**Falsifier:** two faithful minimal source presentations of one observable with inequivalent
+localized ranks, adjoint holonomy, or polarized degeneracy spectra.
 
 ### `[CONJECTURE]` Zeta as a self-dual boundary determinant
 
 The Riemann zeta function is not conjectured to be the clock or even the underlying boundary
 object. Its completed form is conjectured to be a determinant section of a polarized realization
-of the radical source boundary attached to the prime/archimedean constraint system. A critical
-zero is a parameter where the comparison from the source boundary to its dual loses rank. The
-functional equation supplies the duality involution; the critical line is its fixed locus.
+of the minimal twisted source envelope attached to the prime/archimedean constraint system. A
+critical zero is a parameter where the comparison from the source boundary to its dual loses
+rank. The functional equation supplies the duality involution; the critical line is its fixed
+locus.
 
 The critical zeros are therefore conjectured to be the common self-dual degeneracy spectrum seen
 through spectral incompleteness, continuation, positivity, monodromy, and boundary-condition

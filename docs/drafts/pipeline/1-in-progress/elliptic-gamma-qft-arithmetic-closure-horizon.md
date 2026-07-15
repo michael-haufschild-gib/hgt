@@ -44,6 +44,33 @@ Thus the binary classification `(1)` is only the first layer.  The independent p
 exact orbit-resolved differential matroid that reconstructs the equivalence relation modulo the
 rank-three period subgroup.
 
+## Hausdorff--Kolchin correspondence `[CONJECTURE: HEADLINE FORM]`
+
+Let `H_3=Z+Z tau+Z sigma` and give `C/H_3` the quotient topology.  For upper-half-plane `tau,sigma`,
+the complete classification `(1)` is equivalent to
+
+```text
+Gamma(-;tau,sigma) is DA  iff C/H_3 is Hausdorff,             (2a)
+Gamma(-;tau,sigma) is HT  iff C/H_3 is non-Hausdorff.         (2b)
+```
+
+Indeed, rational dependence of `1,tau,sigma` makes `H_3` a discrete lattice contained in a finite
+rescaling of `Z+Z tau`, hence closed.  Rational independence makes it a rank-three integer subgroup
+of the two-real-dimensional plane; it is nondiscrete and not closed, so the ordinary quotient is
+non-Hausdorff.  Conversely, the quotient by an additive subgroup is Hausdorff exactly when the
+subgroup is closed.
+
+Felder--Henriques--Rossi--Zhu already replace the non-Hausdorff quotient by the triptic stack and
+construct the gamma gerbe on it.  That topology is therefore parent theory.  The candidate new
+content is the **Hausdorff--Kolchin correspondence**: the topological separation defect of the
+large-gauge quotient is equivalent to the impossibility of every finite algebraic differential law
+for its canonical QFT section, with the full defect matroid retaining the orbit-resolved data.
+
+The quotient is a chemical-potential/large-gauge moduli object, not physical spacetime.  Calling
+`(2)` a black-hole event horizon or a thermodynamic transition would be false.  The permitted
+physical statement is that an exactly defined protected QFT trace detects Hausdorff failure in its
+background moduli stack through hypertranscendence.
+
 ## Dependent phase `[PAPER PROOF] [KNOWN FACTORIZATION INPUT]`
 
 Suppose `p^m=q^n=P` for positive integers `m,n`.  Partition the two product indices by residues
@@ -182,6 +209,8 @@ horizontal zero location.  No such bridge is presently proved.
 - [ ] Kato equal-period algebraic differential equation formalized unconditionally in Lean.
 - [ ] Independent-period paired theorem formalized unconditionally in Lean.
 - [ ] Full iff theorem assembled in Lean with axiom audit.
+- [ ] Closed/discrete versus rank-three nonclosed subgroup dichotomy formalized in Lean.
+- [ ] Hausdorff--Kolchin equivalence `(2)` assembled in Lean.
 - [ ] Finite free-chiral matter classification `(4)--(5)` formalized on the actual product.
 - [ ] Independent expert audit in elliptic difference Galois theory and gamma gerbes.
 - [ ] Broader mixed-constraint/triptic reciprocity theorem passes the Fields-Medal significance gate.

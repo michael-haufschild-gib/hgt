@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.HypertranscendentalClockBoundary
 import Mathlib.LinearAlgebra.Finsupp.Supported
+import Mathlib.LinearAlgebra.Isomorphisms
 import Mathlib.RingTheory.Kaehler.JacobiZariski
 import Mathlib.RingTheory.Smooth.Field
 

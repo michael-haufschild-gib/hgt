@@ -187,19 +187,25 @@ not canonically quotient.
 localizing the differential-character action, the resulting ordinary vector-space configuration
 is complete: it recovers every mixed differential-algebraic independent set and every rank.
 
-## Next conjecture
+## Proved successor and new horizon
 
-`[CONJECTURE]` The same theorem holds for commutative algebraic differential groups after replacing
-the coordinatewise logarithmic derivative by the algebraic `D`-group logarithmic derivative
+`[PROVED HERE]` The same theorem holds for every finite-dimensional commutative algebraic
+`D`-group after replacing the coordinatewise logarithmic derivative by the algebraic `D`-group
+logarithmic derivative
 
 ```text
 ell_D : G(L) -> Lie(G)(L).
 ```
 
-The source boundary then lives in a simultaneous Lie-algebra coboundary quotient. The kernel of
-`ell_D`, a sharp/Manin-kernel-type group, is the canonical character-invisible radical core. This
-would extend the proved split boundary corona to the proposed second layer needed for spectral and
-positivity realizations.
+The source boundary then lives in a simultaneous Lie-algebra coboundary quotient.  Contrary to the
+initial conjecture, the kernel of `ell_D` is not a hidden HT radical: it is defined by a first-order
+differential equation and has zero differential transcendence degree over the base.  The complete
+theorem and resulting linearization-horizon dichotomy are recorded in
+`commutative-d-group-source-boundary-universality`.
+
+`[CONJECTURE]` The first genuinely nonlinear boundary begins with noncommutative adjoint twisting
+or a pro-algebraic source envelope.  Its invariant should be a localized twisted source-cohomology
+object together with the Tannakian tensor relations of its adjoint local system.
 
 ## Gates
 
