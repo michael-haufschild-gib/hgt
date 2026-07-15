@@ -329,11 +329,13 @@ theorem differentialAlgebraicOver_rat_of_formalRelation
     have hmap := congrArg (algebraMap (PowerSeries ℂ) FormalLaurent) hrowPS
     rw [map_zero] at hmap
     rw [map_aeval_powerSeries_formalLaurent] at hmap
+    rw [MvPolynomial.map_map, MvPolynomial.aeval_def,
+      MvPolynomial.eval₂_map] at hmap
     change MvPolynomial.eval₂ formalPointRowEmbedding
-      (fun i => algebraMap (PowerSeries ℂ) FormalLaurent
+      (fun i : Fin (n + 1) => algebraMap (PowerSeries ℂ) FormalLaurent
         ((⇑(d⁄dX ℂ))^[(i : ℕ)] F)) R = 0 at hmap
     change MvPolynomial.eval₂ formalPointRowEmbedding
-      (fun j => differentialJet (j : ℕ)
+      (fun j : Fin (n + 1) => differentialJet (j : ℕ)
         (algebraMap (PowerSeries ℂ) FormalLaurent F)) R = 0
     rw [show (fun j : Fin (n + 1) => differentialJet (j : ℕ)
         (algebraMap (PowerSeries ℂ) FormalLaurent F)) =
@@ -366,6 +368,47 @@ theorem map_aeval_complex_powerSeries_formalLaurent {σ : Type*}
   rw [MvPolynomial.map_aeval, MvPolynomial.aeval_def]
   congr 1
 
+/-- Rational differential algebraicity in the formal Laurent carrier yields an integer
+relation over `ℂ`, without asking typeclass inference to choose between its two rational algebra
+structures. -/
+theorem exists_integerJetRelation_formalLaurent {x : FormalLaurent}
+    (hx : DifferentialAlgebraicOver ℚ x) :
+    ∃ (n : ℕ) (Q : MvPolynomial (Fin (n + 1)) ℂ), Q ≠ 0 ∧
+      (∀ m, ∃ z : ℤ, MvPolynomial.coeff m Q = (z : ℂ)) ∧
+      MvPolynomial.aeval
+        (fun j : Fin (n + 1) => differentialJet (j : ℕ) x) Q = 0 := by
+  obtain ⟨n, P, hP0, hPann⟩ :=
+    exists_rational_jet_relation_of_differentialAlgebraicOver hx
+  let Qz := clearRationalJetCoefficients P
+  let Q : MvPolynomial (Fin (n + 1)) ℂ := MvPolynomial.map (Int.castRingHom ℂ) Qz
+  have hQz0 : Qz ≠ 0 := clearRationalJetCoefficients_ne_zero P hP0
+  have hQ0 : Q ≠ 0 := by
+    intro h
+    apply hQz0
+    apply MvPolynomial.map_injective (Int.castRingHom ℂ) Int.cast_injective
+    change MvPolynomial.map (Int.castRingHom ℂ) Qz = 0 at h
+    simpa using h
+  have hQcoeff : ∀ m, ∃ z : ℤ, MvPolynomial.coeff m Q = (z : ℂ) := by
+    intro m
+    exact ⟨MvPolynomial.coeff m Qz, MvPolynomial.coeff_map _ _ _⟩
+  have hrat : MvPolynomial.aeval
+      (fun j : Fin (n + 1) => differentialJet (j : ℕ) x)
+      (MvPolynomial.map (Int.castRingHom ℚ) Qz) = 0 := by
+    rw [map_clearRationalJetCoefficients P, map_mul, MvPolynomial.aeval_C,
+      hPann, mul_zero]
+  refine ⟨n, Q, hQ0, hQcoeff, ?_⟩
+  change MvPolynomial.aeval
+    (fun j : Fin (n + 1) => differentialJet (j : ℕ) x)
+    (MvPolynomial.map (Int.castRingHom ℂ) Qz) = 0
+  rw [MvPolynomial.aeval_def, MvPolynomial.eval₂_map]
+  rw [MvPolynomial.aeval_def, MvPolynomial.eval₂_map] at hrat
+  have hcast : (algebraMap ℂ FormalLaurent).comp (Int.castRingHom ℂ) =
+      (algebraMap ℚ FormalLaurent).comp (Int.castRingHom ℚ) := by
+    ext z
+    simp
+  rw [hcast]
+  exact hrat
+
 set_option maxHeartbeats 3000000 in
 theorem exists_integer_jet_relation_of_formalRelation
     {F : PowerSeries ℂ} {n : ℕ} {P : MvPolynomial (Fin (n + 2)) ℂ}
@@ -377,12 +420,11 @@ theorem exists_integer_jet_relation_of_formalRelation
   letI : Differential ℚ := rationalZeroDifferential
   letI : DifferentialAlgebra ℚ FormalLaurent :=
     formalLaurentDifferentialAlgebraRat
-  letI : IsScalarTower ℚ ℂ FormalLaurent := formalLaurentRatComplexTower
   have hda : DifferentialAlgebraicOver ℚ
       (algebraMap (PowerSeries ℂ) FormalLaurent F) :=
     differentialAlgebraicOver_rat_of_formalRelation hP hann
   obtain ⟨n', Q, hQ, hint, hrel⟩ :=
-    exists_integer_jet_relation_of_differentialAlgebraicOver (C := ℂ) hda
+    exists_integerJetRelation_formalLaurent hda
   refine ⟨n', Q, hQ, hint, ?_⟩
   apply HahnSeries.ofPowerSeries_injective
   change algebraMap (PowerSeries ℂ) FormalLaurent

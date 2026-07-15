@@ -355,13 +355,12 @@ location.  No such instantiation currently exists.
 
 ## Lean route
 
-1. Define a finite family of derivations and its common-constant linear combinations.
-2. Prove the homogeneous noncommutative word formula `(3)`; derive the multinomial formula only as
-   a commuting corollary.
+1. [DONE] Define a finite family of derivations and its common-constant linear combinations.
+2. [DONE] Prove the homogeneous noncommutative word formula `(3)` without reordering words.
 3. Formalize the finite Kähler wedge and the equivalence `(5)`.
 4. Package `W_n` as a homogeneous vector-valued polynomial and prove projective closedness.
-5. Formalize the uncountable-field avoidance theorem, or first specialize the genericity theorem
-   to complex projective space using Baire category.
+5. [DONE for the complex affine/Baire form] Formalize the collapse-versus-dense-residual theorem
+   for countable families of finite complex algebraic loci.
 6. Reuse the axiom-clean `SourceLogarithmicBoundary` theorem for each direction and formalize only
    the new variation-in-direction and linear/projective compatibility.
 7. Instantiate the actual regular derivation space and multiplier cocycle of elliptic gamma.
@@ -373,6 +372,21 @@ The axiom-clean projective foundation is formalized in
 need not commute, the `n`-th jet is homogeneous of degree `n`, and algebraic independence of the
 complete jet tower is invariant under every nonzero rescaling of the direction.  Projective
 closedness of the finite-law strata and the uncountable-field dichotomy remain to be formalized.
+
+`formal/GaloisForLFunctions/HTGeometry/DirectionalJetWordPolynomial.lean` now proves the exact
+ordered-word expansion `directionalJet_eq_sum_words`, packages the `n`-th jet as the universal
+law-coordinate polynomial `directionalJetWordPolynomial`, proves its specialization identity, and
+proves it homogeneous of degree `n`.  No commutativity hypothesis is used.  The recurrence was
+numerically pre-certified through order three on noncommuting matrices; the module then passed its
+exact targeted build and direct source check.  No full build was run.
+
+`formal/GaloisForLFunctions/HTGeometry/CountableAlgebraicLocusDichotomy.lean` proves the complex
+Baire half of the final dichotomy independently of the still-missing Kähler encoding: a proper
+finite common zero locus is closed nowhere dense, and for any countable family of such loci either
+one finite level is the whole law-coordinate space or simultaneous avoidance is dense residual.
+The module passed its exact targeted build and direct source check.  The outstanding bridge is now
+precise: represent each finite directional dependence locus by the finite homogeneous polynomial
+family coming from the Kähler wedge/minors, then transport the affine result projectively.
 
 ## Gates
 

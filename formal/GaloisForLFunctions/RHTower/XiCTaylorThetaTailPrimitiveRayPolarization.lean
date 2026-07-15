@@ -185,6 +185,87 @@ theorem hasDerivAt_thetaCuspPrimitiveRayAngularFlux
   unfold thetaCuspPrimitiveRayGrowingCoefficient thetaCuspPrimitiveRayMoment
   ring
 
+@[simp] theorem thetaCuspPrimitiveRayAngularFlux_zero :
+    thetaCuspPrimitiveRayAngularFlux 0 = 0 := by
+  norm_num [thetaCuspPrimitiveRayAngularFlux, thetaCuspPrimitiveRayMoment]
+
+@[simp] theorem thetaCuspPrimitiveRayAngularFlux_one :
+    thetaCuspPrimitiveRayAngularFlux 1 = 0 := by
+  norm_num [thetaCuspPrimitiveRayAngularFlux, thetaCuspPrimitiveRayMoment]
+
+/-- Finite-interval angular cancellation.  On every compact subinterval of `(0,1)`, the complete
+growing character with its primitive polar weight integrates to the two endpoint fluxes. -/
+theorem integral_thetaCuspPrimitiveRayGrowingCoefficient_mul_rpow
+    {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) (hb : b < 1) :
+    (∫ u : ℝ in a..b,
+      thetaCuspPrimitiveRayGrowingCoefficient u *
+        (thetaCuspPrimitiveRayMoment u) ^ (-(3 / 4 : ℝ))) =
+      thetaCuspPrimitiveRayAngularFlux b -
+        thetaCuspPrimitiveRayAngularFlux a := by
+  have hsub : Set.uIcc a b ⊆ Set.Ioo 0 1 := by
+    rw [Set.uIcc_of_le hab]
+    intro u hu
+    exact ⟨lt_of_lt_of_le ha hu.1, lt_of_le_of_lt hu.2 hb⟩
+  apply intervalIntegral.integral_eq_sub_of_hasDerivAt
+  · intro u hu
+    exact hasDerivAt_thetaCuspPrimitiveRayAngularFlux (hsub hu)
+  · apply ContinuousOn.intervalIntegrable
+    intro u hu
+    have hui := hsub hu
+    have hwu : thetaCuspPrimitiveRayMoment u ≠ 0 :=
+      (mul_pos hui.1 (sub_pos.mpr hui.2)).ne'
+    apply ContinuousAt.continuousWithinAt
+    apply ContinuousAt.mul
+    · unfold thetaCuspPrimitiveRayGrowingCoefficient thetaCuspPrimitiveRayMoment
+      fun_prop
+    · exact (show ContinuousAt thetaCuspPrimitiveRayMoment u by
+        unfold thetaCuspPrimitiveRayMoment
+        fun_prop).rpow_const (Or.inl hwu)
+
+/-- **Seam-preserving angular bridge.**  Against an arbitrary differentiable translated core
+kernel, the growing primitive-ray completion character is exactly the difference of the two
+swept endpoint fluxes and one unsplit angular-translation term.  The three terms are an identity;
+none is assigned a sign or estimated separately. -/
+theorem integral_thetaCuspPrimitiveRayGrowingCoefficient_mul_kernel
+    {K K' : ℝ → ℝ} {a b : ℝ}
+    (ha : 0 < a) (hab : a ≤ b) (hb : b < 1)
+    (hK : ∀ u ∈ Set.uIcc a b, HasDerivAt K (K' u) u)
+    (hKint : IntervalIntegrable K' MeasureTheory.volume a b) :
+    (∫ u : ℝ in a..b,
+      thetaCuspPrimitiveRayGrowingCoefficient u *
+          (thetaCuspPrimitiveRayMoment u) ^ (-(3 / 4 : ℝ)) * K u) =
+      thetaCuspPrimitiveRayAngularFlux b * K b -
+        thetaCuspPrimitiveRayAngularFlux a * K a -
+        ∫ u : ℝ in a..b, thetaCuspPrimitiveRayAngularFlux u * K' u := by
+  have hsub : Set.uIcc a b ⊆ Set.Ioo 0 1 := by
+    rw [Set.uIcc_of_le hab]
+    intro u hu
+    exact ⟨lt_of_lt_of_le ha hu.1, lt_of_le_of_lt hu.2 hb⟩
+  have hflux : ∀ u ∈ Set.uIcc a b,
+      HasDerivAt thetaCuspPrimitiveRayAngularFlux
+        (thetaCuspPrimitiveRayGrowingCoefficient u *
+          (thetaCuspPrimitiveRayMoment u) ^ (-(3 / 4 : ℝ))) u :=
+    fun u hu => hasDerivAt_thetaCuspPrimitiveRayAngularFlux (hsub hu)
+  have hgrowing : IntervalIntegrable
+      (fun u : ℝ => thetaCuspPrimitiveRayGrowingCoefficient u *
+        (thetaCuspPrimitiveRayMoment u) ^ (-(3 / 4 : ℝ)))
+      MeasureTheory.volume a b := by
+    apply ContinuousOn.intervalIntegrable
+    intro u hu
+    have hui := hsub hu
+    have hwu : thetaCuspPrimitiveRayMoment u ≠ 0 :=
+      (mul_pos hui.1 (sub_pos.mpr hui.2)).ne'
+    apply ContinuousAt.continuousWithinAt
+    apply ContinuousAt.mul
+    · unfold thetaCuspPrimitiveRayGrowingCoefficient thetaCuspPrimitiveRayMoment
+      fun_prop
+    · exact (show ContinuousAt thetaCuspPrimitiveRayMoment u by
+        unfold thetaCuspPrimitiveRayMoment
+        fun_prop).rpow_const (Or.inl hwu)
+  simpa only [mul_comm] using
+    (intervalIntegral.integral_mul_deriv_eq_deriv_mul
+      hK hflux hKint hgrowing)
+
 /-- The `m`-th derivative of the elementary theta-reflection defect. -/
 def thetaCuspReflectionModeIterate (m : ℕ) (x : ℝ) : ℝ :=
   (((1 / 2 : ℝ) ^ m) * Real.exp (x / 2) -

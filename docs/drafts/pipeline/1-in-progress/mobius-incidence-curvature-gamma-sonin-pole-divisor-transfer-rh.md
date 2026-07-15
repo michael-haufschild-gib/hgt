@@ -437,6 +437,55 @@ the ambient metric completion.
 differential rank.  Orientation can live in a fixed current transverse to all continuous metric
 coordinates.
 
+### 8. Bounded Fisher-to-current readout no-go
+
+Let
+
+```text
+B_sigma(u)=Z_sq(sigma+u epsilon)/Z_sq(sigma),
+S_sigma(u)=<chi_sigma,T_(sigma,u)psi_sigma>,
+m_sigma=J_sq(sigma).
+```
+
+The exact Fisher matrix-coefficient identity is
+
+```text
+S_sigma(u)
+ =2epsilon B_sigma(u)
+   [m_sigma-J_sq(sigma+u epsilon)].                      (12)
+```
+
+Therefore
+
+```text
+epsilon J_sq(sigma+u epsilon)
+ =epsilon m_sigma-S_sigma(u)/(2B_sigma(u)),              (13)
+
+epsilon B_sigma(u)J_sq(sigma+u epsilon)
+ =-partial_u B_sigma(u).                                 (14)
+```
+
+The Fisher tangent controls the numerator in `(14)`, but extracting the fixed current requires
+division by the squarefree overlap.  Under continuation, zeros of `B_sigma` are exactly the strict
+right-half Xi divisor by `(7n)`--`(7o)`.  Thus no bounded linear readout of the Fisher tangent can
+produce the anti-causal current; hiding `B_sigma^(-1)` inside a named codifferential would be
+theatre.
+
+**Positive successor:** formulate the Ward theorem on the closed multiplication graph
+
+```text
+Graph(B_sigma)
+ ={(f,B_sigma f)},                                      (15)
+```
+
+and prove the completed Gamma/Sonin affine-flux numerator in `(14)` lies in its source-selected
+range with graph quotient curvature at most four.  This is a concrete divisibility/range theorem,
+not an arbitrary contraction.
+
+**HT consequence:** a multiplicative HT torsor can have a Hilbert-controlled tangent numerator
+while its fixed logarithmic current lives only in a singular quotient graph.  Exceptional divisors
+are failures of graph divisibility, not large tangent vectors.
+
 ## Novelty and anti-theatre gate
 
 Project theorems are source inputs even when independently found by other agents.  Novelty is
@@ -483,6 +532,7 @@ is a precise research target, not an RH proof.
 - [x] prove the packet/Euler-connection weld preserves the critical four-unit energy
 - [ ] construct the charged anti-causal fixed-current codifferential
 - [ ] prove the completed affine-flux curvature equals the squarefree Hardy block curvature
+- [ ] prove the Fisher numerator is divisible by the completed squarefree overlap on the charged graph
 - [ ] prove its source-framed nonexpansive relative estimate via `(7p)`
 - [ ] prove cofinal graph convergence to `ell_E`
 - [ ] independent specialist literature audit

@@ -4,6 +4,11 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+/-- A fixed enumeration of the prime subtype. Existence follows from countability and infinitude;
+no mathematical statement below depends on which enumeration is selected. -/
+noncomputable def chosenPrimeEnumerationEquiv : ℕ ≃ Nat.Primes :=
+  Classical.choice (inferInstance : Nonempty (ℕ ≃ Nat.Primes))
+
 /-- Repeat every term of a countable profile on an infinite prime fibre. -/
 def infinitelyRepeatedPrimeProfile {V : Type*}
     (e : ℕ ≃ Nat.Primes) (y : ℕ → V) (p : Nat.Primes) : V :=

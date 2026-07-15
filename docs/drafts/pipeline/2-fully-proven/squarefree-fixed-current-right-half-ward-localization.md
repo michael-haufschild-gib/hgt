@@ -110,6 +110,47 @@ four-unit source curvature
 
 which would prove the desired bound.
 
+## Exact Fisher numerator and quotient graph
+
+The singularity of the remaining graph theorem is explicit.  Let
+
+```text
+B_sigma(u)=Z_sq(sigma+u epsilon)/Z_sq(sigma)
+```
+
+and let `S_sigma(u)` be the Laplace matrix coefficient of the completed squarefree Fisher tangent.
+Differentiation of `B_sigma` gives
+
+```text
+S_sigma(u)
+ =2[partial_u B_sigma(u)+epsilon J_sq(sigma)B_sigma(u)]
+ =2epsilon B_sigma(u)
+   [J_sq(sigma)-J_sq(sigma+u epsilon)].                  (11)
+```
+
+Hence
+
+```text
+epsilon J_sq(sigma+u epsilon)
+ =epsilon J_sq(sigma)-S_sigma(u)/(2B_sigma(u)),          (12)
+```
+
+and, without division,
+
+```text
+epsilon B_sigma(u)J_sq(sigma+u epsilon)
+ =-partial_u B_sigma(u).                                 (13)
+```
+
+Equation `(13)` is the Fisher-controlled numerator.  Equation `(12)` is the logarithmic fixed
+current.  On continuation, every zero of `B_sigma` produces the divisor pole of that quotient.
+Thus the anti-causal Ward estimate is exactly a graph-divisibility theorem for multiplication by
+the completed squarefree overlap; it is not a bounded linear image of the Fisher tangent.
+
+This gives an anti-theatre test for `(9)`: a proof must construct the source-selected quotient on
+the Gamma/Sonin graph and control its Hardy curvature.  Merely naming a current readout while
+using `(12)` implicitly has assumed the exceptional divisor problem.
+
 ## No-go and positive HT consequences
 
 ### 1. Even-shift remainder no-go
@@ -144,6 +185,17 @@ standard symmetric rational-gauge countermodel.
 **HT consequence:** equality of anti-causal currents can be rigidly source-specific even when the
 ambient functional-equation class admits arbitrary divisor insertions.
 
+### 4. Bounded Hellinger-lift no-go
+
+The numerator `(13)` is controlled by the Fisher geometry, but the current `(12)` divides by an
+overlap which may vanish after continuation.
+
+**Positive theorem:** the exact multiplication graph and its numerator are source-defined before
+the divisor is read.
+
+**HT consequence:** fixed-current extraction is a graph quotient of a multiplicative torsor;
+divisor orientation is encoded by range failure, not by the norm of the tangent numerator.
+
 ## Novelty and anti-theatre gate
 
 The identity `Z_sq=zeta/zeta(2s)`, logarithmic differentiation, and right-half zero-freeness of
@@ -160,7 +212,9 @@ The card does not prove `(9)`--`(10)` and therefore does not prove RH.
 - [x] doubled-zeta correction proved strict-right holomorphic
 - [x] Xi and squarefree anti-causal principal parts identified
 - [x] rational-gauge falsifier passed
+- [x] exact Fisher numerator/fixed-current quotient identity proved
 - [ ] prove completed affine-flux/Hardy block-curvature identity
+- [ ] prove source-selected graph divisibility and quotient control
 - [ ] prove causal Ward energy is nonnegative on the graph core
 - [ ] prove four-unit anti-causal bound
 - [ ] RH

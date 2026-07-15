@@ -105,6 +105,26 @@ theorem valuationTailHilbertFunction_infinitelyRepeatedDenseConstraint
   unfold valuationTailHilbertFunction constraintHomogeneousHilbertFunction
   rw [homogeneousTailRelationSubmodule_infinitelyRepeatedDenseConstraint e K m]
 
+/-- **Existential universal constraint realization.** Every nonempty constraint set admits an
+actual prime profile, with no enumeration supplied as a hypothesis, whose complete homogeneous
+tail kernels and valuation Hilbert numbers are exactly those of the constraint. -/
+theorem exists_cofinitelyRecurring_primeProfile_realizing_constraint
+    {σ : Type*} [Fintype σ] (K : Set (σ → ℂ)) [Nonempty K] :
+    ∃ x : Nat.Primes → (σ → ℂ),
+      CofinitelyRecurring x ∧
+      ∀ m,
+        homogeneousTailRelationSubmodule x m =
+            homogeneousConstraintVanishingSubmodule K m ∧
+          valuationTailHilbertFunction x m =
+            constraintHomogeneousHilbertFunction K m := by
+  let e : ℕ ≃ Nat.Primes :=
+    Classical.choice (inferInstance : Nonempty (ℕ ≃ Nat.Primes))
+  let x := infinitelyRepeatedPrimeProfile e (denseConstraintProfile K)
+  refine ⟨x, infinitelyRepeatedPrimeProfile_cofinitelyRecurring e
+    (denseConstraintProfile K), fun m => ?_⟩
+  exact ⟨homogeneousTailRelationSubmodule_infinitelyRepeatedDenseConstraint e K m,
+    valuationTailHilbertFunction_infinitelyRepeatedDenseConstraint e K m⟩
+
 /-- The recurrent Hilbert function of the universal prime realization is the homogeneous
 coordinate Hilbert function of the prescribed constraint. -/
 theorem recurrentHomogeneousHilbertFunction_infinitelyRepeatedDenseConstraint
