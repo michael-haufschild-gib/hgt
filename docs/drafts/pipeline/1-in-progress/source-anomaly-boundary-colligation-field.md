@@ -136,6 +136,18 @@ p_N alpha_(N+1)(a)-alpha_N(a)
 
 Under `(5)`, the right side factors through the new boundary layer by `(9)`.
 
+For an analytic Ind-flat realization `A` and algebraic Pro-flat realizations `B,C`, the
+Lean-formalized opposite-variance seam law is
+
+```text
+p(A_1 B_1-C_1 A_1)i
+ =(A_0 B_0-C_0 A_0)+kappa_A(B_1 i-i B_0).                 (19a)
+```
+
+Thus the inter-realization comparison defect changes only by the composition of its outgoing and
+incoming boundary channels. This is the finite conservation law required of any claimed common
+source object.
+
 ## 5. Capacity--thinness conjecture
 
 **[CONJECTURE — MAXIMAL SECTION / THIN VARIATION]** A regular source-minimal constrained HT germ
@@ -246,6 +258,7 @@ after forgetting the source algebra and finite-observable freedom.
 - [x] anomaly constraint-algebra cocycle Lean-formalized
 - [x] anomaly/curvature Bianchi law Lean-formalized
 - [x] Gamma unit boundary self-symbol Lean-formalized
+- [x] opposite-variance boundary-current conservation Lean-formalized
 - [x] universal-translation/source-specific-field distinction stated
 - [ ] boundary-block multiplication law Lean-formalized
 - [ ] one source-canonical completed anomaly-colligation constructed

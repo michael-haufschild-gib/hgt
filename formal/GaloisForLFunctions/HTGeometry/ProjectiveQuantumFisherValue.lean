@@ -100,7 +100,8 @@ theorem projectiveQuantumTangentValue_div_le_shifted
     projectiveQuantumTangentValue mass overlap speedSq / mass ≤
       scalarShiftedQuantumTangentValue mass overlap speedSq c := by
   exact (div_le_iff₀ hmass).2
-    (projectiveQuantumTangentValue_le_mass_mul_shifted mass overlap speedSq c)
+    (by simpa [mul_comm] using
+      projectiveQuantumTangentValue_le_mass_mul_shifted mass overlap speedSq c)
 
 /-- The canonical scalar connection `overlap/mass` attains the projective minimum exactly. -/
 theorem scalarShiftedQuantumTangentValue_canonical
@@ -141,7 +142,7 @@ def projectiveGramTangentEnergy (v w : E) : ℝ :=
 
 /-- Every projective Gram tangent energy is nonnegative by Cauchy--Schwarz. -/
 theorem projectiveGramTangentEnergy_nonneg (v w : E) :
-    0 ≤ projectiveGramTangentEnergy v w := by
+    0 ≤ projectiveGramTangentEnergy (𝕜 := 𝕜) v w := by
   have hinner : ‖inner 𝕜 v w‖ ≤ ‖v‖ * ‖w‖ :=
     norm_inner_le_norm v w
   have hinner0 : 0 ≤ ‖inner 𝕜 v w‖ := norm_nonneg _
@@ -151,7 +152,7 @@ theorem projectiveGramTangentEnergy_nonneg (v w : E) :
 
 /-- Vector projective energy is the scalar projective value of its three Gram coordinates. -/
 theorem projectiveGramTangentEnergy_eq_value (v w : E) :
-    projectiveGramTangentEnergy v w =
+    projectiveGramTangentEnergy (𝕜 := 𝕜) v w =
       projectiveQuantumTangentValue (‖v‖ ^ 2) (‖inner 𝕜 v w‖) (‖w‖ ^ 2) := by
   rfl
 
@@ -159,7 +160,7 @@ theorem projectiveGramTangentEnergy_eq_value (v w : E) :
 by Rayleigh-gap estimates.  This is the normalization-free value specialized to unit mass. -/
 theorem projectiveGramTangentEnergy_eq_unit_projectiveDefect
     {v w : E} (hv : ‖v‖ = 1) (hw : ‖w‖ = 1) :
-    projectiveGramTangentEnergy v w = 1 - ‖inner 𝕜 v w‖ ^ 2 := by
+    projectiveGramTangentEnergy (𝕜 := 𝕜) v w = 1 - ‖inner 𝕜 v w‖ ^ 2 := by
   simp [projectiveGramTangentEnergy, hv, hw]
 
 variable {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℂ F]
@@ -170,7 +171,7 @@ from pure-state quantum Fisher geometry to first-step Krylov nontermination. -/
 theorem projectiveGramTangentEnergy_eq_firstKrylovDeterminant
     (m : ℕ → ℝ) (v : ℕ → F)
     (hgram : ∀ i j, inner ℂ (v i) (v j) = (m (i + j) : ℂ)) :
-    projectiveGramTangentEnergy (v 0) (v 1) =
+    projectiveGramTangentEnergy (𝕜 := ℂ) (v 0) (v 1) =
       m 0 * m 2 - m 1 ^ 2 := by
   have h00 := hgram 0 0
   have h11 := hgram 1 1

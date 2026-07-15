@@ -17,6 +17,10 @@
   - `../2-fully-proven/not_new_scientific_knowledge/xi-global-meixner-shape-landau-rh.md`
   - `../2-fully-proven/not_new_scientific_knowledge/xi-reciprocal-translation-prime-seam-norm-law.md`
   - `../2-fully-proven/not_new_scientific_knowledge/xi-gamma-shape-completely-monotone-rh.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/gamma-meixner-abel-mertens-corona-probe.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/rational-hurwitz-lorentz-boost-colligation.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/local-euler-valuation-lorentz-log-colligation.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/gamma-factorial-fock-polarization-boundary-charge.md`
 - **Statement:** Realize the global Xi prime-seam series as the cofinal reflected
   star-Kadison trace of the source-derived Gamma--Meixner clock-curvature field.  If this trace is
   a locally bounded holomorphic family for every positive Gamma shape, then Landau's theorem
@@ -186,6 +190,18 @@ pieces specify the finite clocks and the thin boundary field.  They do **not** b
 prove the local trace bound in item 4; that is the proposed integration theorem for the actual
 source-curvature field.
 
+The Gamma--Meixner shape is also fixed by the HT source topology.  The proved Abel-corona theorem
+shows that
+
+```text
+L_theta(b)=theta sum_p (log p)/p w_theta(p)b_p            (14c)
+```
+
+is uniformly bounded on the logarithmic Marcinkiewicz source field, tends to zero on its complete
+finite-gauge layer `M_0`, and tends to one on the actual unit Euler field.  Hence `theta down to 0`
+approaches the exact Mertens corona class `[one]` left by the weighted Euler joint-graph no-go.
+The parameter is an observation of a singular source boundary, not a propagation law for Xi.
+
 There is an important refinement.  The factorial transfer in `(14)` is universal Taylor
 translation kinematics: by itself it does not distinguish Gamma from an arbitrary analytic germ.
 The source-specific object must therefore be the complete anomaly--boundary colligation
@@ -198,23 +214,36 @@ not bare curvature.  Here `beta_N` is the outgoing factorial transfer, `delta_N`
 self-symbol, and `alpha_N=T_N q_N-q_N S` the source descent anomaly.  The finite reconstruction
 theorem for `(14a)` is Lean-formalized in the ongoing HTGeometry work.
 
-`[CONJECTURE — REFLECTED ANOMALY PASSIVITY]` The FE and Schwarz rational-Hurwitz responses form
-the two reflected anomaly blocks of the completed prime--Gamma colligation.  Reflection swaps the
-blocks, and their anti-invariant transfer at scale `p` is the exact source value
+The finite reflected block is no longer conjectural.  After the common phase and critical
+normalization are removed, the FE and Schwarz rational-Hurwitz responses form the exact Lorentz
+colligation
 
 ```text
-(log p)(p^(-conj rho)-p^(-(1-rho)))=C_p(rho).             (14b)
+B_a(p)=[cosh(a log p) sinh(a log p);
+        sinh(a log p) cosh(a log p)],
+a=Re(rho)-1/2.                                            (14b)
 ```
 
-The completed colligation is reflection-passive in the source Mackey metric, with its
+It is `J`-conservative for `J=diag(1,-1)`, reflection sends it to its inverse, and its
+anti-invariant transfer is the exact source value
+
+```text
+(log p)(p^(-conj rho)-p^(-(1-rho)))=C_p(rho).             (14d)
+```
+
+`[CONJECTURE — REFLECTED ANOMALY PASSIVITY]` The completed colligation upgrades this canonical
+Krein-conservative block to reflection-passivity in the source Mackey metric, with its
 anti-invariant star-Kadison defect dominated uniformly by the factorial Gamma boundary after the
 canonical factor `2log(p)/sqrt(p)`.  Cofinal residue evaluation preserves this quadratic value.
 
-The pointwise equality `(14b)` is already formalized through finite rational-Hurwitz fibres; its
-interpretation as an anomaly block, reflection-passivity, and metric preservation are conjectural.
-This formulation is stronger than naming an abstract positive metric: it fixes the two source
-coordinates, the reflection, the boundary transfer, and the normalization before any divisor
-norm is introduced.
+The pointwise equality `(14d)` is already formalized through finite rational-Hurwitz fibres, and
+the Lorentz colligation is proved on paper.  Its interpretation as the completed descent-anomaly
+block, reflection-passivity, and metric preservation remain conjectural.  This formulation is
+stronger than naming an abstract positive metric: it fixes the two source coordinates, the
+reflection, the boundary transfer, the indefinite conservation law, and the normalization before
+any divisor norm is introduced.  A block and its reflected inverse can be contractions in one
+positive metric only when `a=0`; hence the proposed metric upgrade is exactly the confinement
+mechanism.
 
 ## Smallest non-circular theorem
 
@@ -307,6 +336,22 @@ proof-bearing statement.
    may be multiplied at prime `p` by `p^b`.  Finite rank and levelwise nuclearity survive while
    the Gamma-shape abscissa moves by `2b`.  Thinness at each clock is therefore not the required
    cofinal estimate.
+10. **Fixed-shape continuity is gauge-blind.**  At every positive shape, the Gamma--Meixner field
+    lies in the vanishing-tail Euler layer whose joint graph with the regular strip germ is dense.
+    A selector continuous only at fixed positive shape cannot see the actual Mertens corona class.
+11. **Finite refinement is Lorentz-flat.**  The modulus law `n -> n^2` does not create a source
+    obstruction: in rapidity coordinates the reflected Hurwitz block is a homomorphism into
+    `SO^+(1,1)`.  The positive square refinement remainder is Euclidean growth of a perfectly
+    coherent indefinite colligation.
+12. **Local valuation completion remains off-line analytic.**  Adding every prime-power layer
+    does not force the Lorentz rapidity to vanish.  The normalized transfer has spectral radius
+    `p^(-1/2+|a|)<1` throughout the open strip, so its complete Euler logarithm exists locally at
+    every off-line point.
+13. **A canonical positive Gamma metric is not yet passivity.**  The opposite-variance jet
+    generators are adjoints in the source-selected factorial Fock metric, but finite Taylor
+    translation is expansive in that metric and the reflected Euler fibre has not yet been
+    embedded into it.  Naming the Fock form without the all-prime incidence does not orient the
+    Lorentz block.
 
 ## Positive residues of the attacks
 
@@ -405,6 +450,45 @@ Each no-go above leaves a usable positive theorem or a stricter construction tar
    for one finite `k`, then the exact abscissa law `(20)` forces `2a_Xi<=beta`.  The desired uniform factorial
    bound is the sharp case `beta=0` and gives RH.  Thus any imperfect source estimate still yields
    a nontrivial horizontal zero-free strip rather than a binary failure.
+10. **Canonical singular radial path `[PROVED ON PAPER]`.**  The fixed-shape no-go leaves the
+    explicit Abel family `(14c)`, which detects `[one]` only in the singular limit.  Therefore the
+    source theorem should be formulated as boundary compatibility of the complete family, or as
+    complete monotonicity for every positive shape, rather than as continuity of a single damped
+    Euler observable.
+11. **Canonical finite anomaly colligation `[PROVED ON PAPER]`.**  The refinement no-go leaves the
+    explicit Lorentz block `(14b)`, whose off-diagonal energy is the rational-Hurwitz seam and whose
+    rapidity is the horizontal displacement.  Thus the finite source operator is constructed; the
+    exact open core is the positive-metric upgrade supplied by the completed Gamma--Mertens
+    boundary.
+12. **Canonical valuation-completed logarithmic colligation `[PROVED ON PAPER]`.**  The local
+    completion no-go leaves the exact source object
+
+    ```text
+    C_p(rho)=sum_(m>=1) p^(-m/2)exp(i*m*t*log p)B_a(p)^m/m
+            =-Log(I-p^(-1/2)exp(i*t*log p)B_a(p)).       (22b)
+    ```
+
+    Its anti-reflection entry vanishes exactly when `a=0`, and its Gamma--Meixner prime energy
+    converges exactly for `theta>2|a|`.  This supplies an alternative RH consumer directly on the
+    completed valuation module.  The theorem also proves that only the cofinal all-prime metric or
+    singular Mertens-corona boundary can orient it; no local completion theorem can do so.
+13. **Canonical factorial Fock polarization `[PROVED ON PAPER]`.**  If `D_N` is the raw-jet
+    derivative clock and `A_N` the Leibniz coordinate-multiplication clock, then the metric
+
+    ```text
+    <x,y>_(F,N)=sum_(j<N)x_j conjugate(y_j)/j!            (22c)
+    ```
+
+    is the unique diagonal positive metric, up to scale, with `D_N^*=A_N`.  It also gives the
+    positive boundary identity
+
+    ```text
+    I-[D_N,A_N]=N P_top>=0.                              (22d)
+    ```
+
+    Hence the Gamma side already supplies a non-divisor positive metric and boundary charge.  The
+    remaining statement is now the polarized Euler--Gamma incidence which carries the completed
+    anti-reflection logarithm into this top-boundary current and preserves its metric cofinally.
 
 ## Completely monotone positive successor `[PROVED ON PAPER]`
 

@@ -492,7 +492,12 @@ theorem zeroPrimeCoefficientNaturalShiftPalette_differentialAdjoin :
     have hjet : primeCoefficientShiftedRotatedJet (fun _ => 0) (a : ℂ) k = 0 := by
       ext n
       simp [primeCoefficientShiftedRotatedJet, arithmeticOfPrimeColumn]
-    rw [hjet, map_zero, map_zero]
+    rw [hjet]
+    rw [_root_.map_zero
+      (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField),
+      _root_.map_zero
+        (algebraMap arithmeticFunctionFractionField
+          arithmeticFunctionRationalCoordinateField)]
     exact IntermediateField.zero_mem _
   · exact bot_le
 

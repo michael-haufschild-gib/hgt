@@ -96,6 +96,23 @@ positive valuation degrees and finite nonempty shift sets `A_m` with pairwise di
    Cofinal application to finite coordinate projections recovers the full compact Stone tail
    constraint.
 
+5. **Slope and entropy law.**  Put
+
+   ```text
+   D_c(N,A) = card(A) sum_(1<=m<=N) H_c(m).
+   ```
+
+   Since `R_c` is finite and reduced, `H_c(m)=card(R_c)` for all sufficiently large `m`.  Hence
+
+   ```text
+   lim_(N->infinity) D_c(N,A)/N = card(A) card(R_c).
+   ```
+
+   For a countable finite-alphabet tail constraint with prefix recurring sets `R_n`, the
+   exponential growth of these valuation-rank slopes is exactly the upper/lower prefix entropy;
+   under shift invariance it is the topological entropy.  The previous Prime-Walsh entropy law is
+   therefore the stabilized large-window shadow of the valuation--Veronese correspondence.
+
 The theorem gives a new refinement of ordinary differential transcendence degree:
 
 ```text
@@ -103,7 +120,9 @@ m |-> H_c(m)
 ```
 
 is the **valuation-resolved differential Hilbert function** of the HT source.  Ordinary tail rank
-is only its degree-one value.
+is only its degree-one value.  The least degree at which `H_c(m)=card(R_c)` is the **HT
+interpolation depth**: the first valuation sector that sees every finite nonlinear observable of
+the recurrent constraint.
 
 ## Euler and Adams form
 
@@ -213,15 +232,31 @@ The layer-kernel core is proved unconditionally in
 The module passes its direct check and targeted cached build.  Its principal theorems use only
 `propext`, `Classical.choice`, and `Quot.sound`.
 
+The valuation-resolved differential-basis core is proved unconditionally in
+`HTGeometry/PrimeValuationVeroneseDifferentialBasis.lean`:
+
+1. `rotatedLogArithmetic_primePowerColumn` proves the exact valuation weight of logarithmic
+   differentiation on a `p^(e+1)` column.
+2. `primePowerCoefficientShiftedRotatedJet_tailIndependent_iff` proves that the invertible
+   `(e+1)^k` jet weight preserves and reflects the layer tail matroid.
+3. `primePowerCoefficientShiftedJets_algebraicIndependent` proves joint algebraic independence
+   of arbitrary finite, nonuniform coefficient--shift--jet rectangles across all layers in a
+   finite valuation window.
+4. `primePowerCoefficientShiftPalettes_differentialIndependent` proves differential independence
+   of the complete finite-shift pivot palette across that window.  In particular, the pivot
+   family has no hidden nonlinear or cross-valuation differential relations.
+
+The module passes its direct check and targeted cached build.  Its principal theorems use only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
 ## Open core
 
-1. Prove the rank-deficient, multi-layer analytic differential-basis theorem with a basis chosen
-   independently in each homogeneous degree.
-2. Compute the complete analytic relation ideal after finite-prime corrections and prove that it
+1. Compute the complete analytic relation ideal after finite-prime corrections and prove that it
    is independent of the chosen layer bases.
-3. Formalize the multi-layer differential basis theorem, complete relation ideal, polarization
-   bridge, and reconstruction theorem on top of the completed homogeneous kernel.
-4. Audit the exact result against differential algebra of arithmetic functions, generalized Euler
+2. Formalize the prime-power finite-residual correction, the combined complete relation ideal,
+   polarization bridge, and reconstruction theorem on top of the completed homogeneous kernel
+   and differential basis.
+3. Audit the exact result against differential algebra of arithmetic functions, generalized Euler
    products, big-Witt/symmetric-function theory, and algebraic independence in the Selberg class.
 
 ## Gates

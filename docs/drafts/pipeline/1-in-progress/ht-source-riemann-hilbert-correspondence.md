@@ -8,10 +8,10 @@
   - `constraint-curvature-integration-stack.md`
   - `constraint-linearization-gerbe.md`
   - `hypertranscendental-source-mobility-profile.md`
-- **Statement:** The algebraic clock-capacity tower of a constrained HT source and its analytic
-  curvature-integration stack should be two realizations of one source constraint object. Their
-  comparison torsor is the proposed rigorous interval between finite algebraic observables and the
-  global source boundary.
+- **Statement:** The algebraic prolongation tower of a constrained HT source and its analytic
+  anomaly-colligation stack should be two opposite-variance realizations of one source constraint
+  object. Their comparison torsor is the proposed rigorous interval between finite algebraic
+  observables and the global source boundary.
 
 ## What parameterized difference Galois theory already explains
 
@@ -169,6 +169,37 @@ Use the rank-one shift module `sigma(y)=z y`. Construct:
 Gamma should prove the correspondence in the integrable abelian phase. Its hypertranscendence is
 parent input, not the new theorem.
 
+A point value alone does not rigidify the analytic fiber: solutions differ by nonzero period-one
+multipliers. The uncalibrated analytic integration object is therefore a periodic-gauge torsor, not
+a point. The project already Lean-formalizes both the generic same-constraint ratio theorem and the
+positive source-selection mechanism: for the additive digamma cocycle, a common logarithmic
+asymptotic kills the entire periodic ambiguity and selects the explicit source uniquely on the
+right half-plane. The comparison theorem must identify the algebraic periodic automorphism torsor
+with this analytic torsor and carry asymptotic calibration to a single comparison point.
+
+The finite comparison now has a concrete exact shape. Analytic Taylor translation `E_N` is
+Ind-flat with outgoing factorial boundary transfer. Algebraic coordinate-multiplication
+prolongation `Z_N(z)` is Pro-flat with incoming Leibniz boundary transfer. Both halves are
+Lean-formalized. Their paper-proved finite Weyl seam is
+
+```text
+E_N Z_N(z)-Z_N(z+1)E_N=-N v_N tensor top_N.               (6)
+```
+
+The incoming/outgoing channel product cancels the old level's defect and pushes `(6)` entirely to
+the newest boundary. The first comparison theorem should identify this migrating boundary current
+with the extension class of the parameterized difference module's analytic realization. This is
+strictly more concrete than comparing a bare Galois group to a chosen curvature stack.
+
+The general old-block conservation law is now Lean-formalized:
+
+```text
+p R_(N+1)i=R_N+kappa_an,N gamma_alg,N.                    (7)
+```
+
+Hence every proposed comparison torsor has a mandatory finite skeleton: its algebraic and analytic
+realizations must induce the same boundary current satisfying `(7)`.
+
 ### Böttcher
 
 Use the minimal difference-algebraic groupoid of a nonexceptional Böttcher coordinate. Local
@@ -209,6 +240,12 @@ or analytic fiber functor. No such torsor has yet been constructed.
 - [x] parameterized difference Galois theory identified as parent of `(1)`
 - [x] bare Galois group rejected as the full analytic boundary object
 - [x] algebraic and analytic realization functors separated
+- [x] Gamma algebraic incoming and analytic outgoing finite boundary channels Lean-formalized
+- [x] Gamma finite Weyl seam and charge-migration law paper-proved
+- [x] general opposite-variance seam conservation Lean-formalized
+- [x] Gamma/digamma analytic periodic torsor and asymptotic source selection identified from
+  existing Lean-formalized theorems
+- [ ] Gamma finite Weyl seam formalized in Lean
 - [ ] Gamma algebraic solution torsor constructed in the project language
 - [ ] Gamma analytic integration torsor constructed
 - [ ] Gamma comparison equivalence proved

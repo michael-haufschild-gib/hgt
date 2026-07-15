@@ -101,6 +101,11 @@ symbol. Equation `(11)` is Lean-formalized.
 - `gammaClockBoundaryProjector_apply_last`;
 - `gammaClockBoundaryProjector_apply_castSucc`;
 - `gammaClockBoundaryCompression_eq_projector`.
+- `gammaClockCoordinateMultiplication`;
+- `gammaClockCoordinateMultiplication_truncate`;
+- `gammaClockCoordinateIncoming`;
+- `gammaClockCoordinateIncoming_apply_castSucc`;
+- `gammaClockCoordinateIncoming_apply_last`.
 
 The module's existing object cache was reused. The touched source passed one direct Lean check; no
 build was run for this extension.
@@ -134,6 +139,7 @@ source-topological theorem remains open.
 - [x] rank-one theorem proved at every positive resolution
 - [x] exact compatibility with forward zero-extension proved
 - [x] exact unit boundary self-symbol proved
+- [x] variance-dual algebraic incoming boundary channel proved
 - [x] factorial vector matched formally to the coefficients used by the infinite conormal
 - [ ] global analytic integration map constructed
 - [ ] unique normalized Gamma primitive proved

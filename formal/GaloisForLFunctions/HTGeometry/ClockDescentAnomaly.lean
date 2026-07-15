@@ -443,6 +443,64 @@ theorem clockShadow_eq_of_curvature_eq_of_boundaryCompression_eq
     _ = right₁ :=
       (clockShadow_eq_boundaryColligation shadow₀ right₁ extend truncate hsplit hright).symm
 
+/-- Failure of an algebraic realization to commute with forward clock extension.  For an
+otherwise Pro-compatible realization this is an incoming channel into the new boundary. -/
+def clockIncomingDefect
+    (operator₀ : O₀ →ₗ[K] O₀) (operator₁ : O₁ →ₗ[K] O₁)
+    (extend : O₀ →ₗ[K] O₁) : O₀ →ₗ[K] O₁ :=
+  operator₁.comp extend - extend.comp operator₀
+
+/-- Comparison seam between an analytic action, an algebraic action, and the algebraic action
+after the source parameter has been shifted. -/
+def clockComparisonSeam
+    (analytic algebraic shiftedAlgebraic : O₀ →ₗ[K] O₀) : O₀ →ₗ[K] O₀ :=
+  analytic.comp algebraic - shiftedAlgebraic.comp analytic
+
+/-- **Opposite-variance seam conservation.**  Let the analytic realization be forward Ind-flat,
+while the algebraic realization and its shifted copy are backward Pro-flat.  Then the old-clock
+block of the higher comparison seam is exactly
+
+`old seam + outgoing analytic curvature ∘ incoming algebraic defect`.
+
+Thus a comparison defect can leave the retained bulk only through a paired incoming/outgoing
+boundary channel. -/
+theorem truncate_comp_clockComparisonSeam_comp_extend
+    (analytic₀ algebraic₀ shiftedAlgebraic₀ : O₀ →ₗ[K] O₀)
+    (analytic₁ algebraic₁ shiftedAlgebraic₁ : O₁ →ₗ[K] O₁)
+    (extend : O₀ →ₗ[K] O₁) (truncate : O₁ →ₗ[K] O₀)
+    (hsplit : truncate.comp extend = LinearMap.id)
+    (hanalytic : analytic₁.comp extend = extend.comp analytic₀)
+    (halgebraic : truncate.comp algebraic₁ = algebraic₀.comp truncate)
+    (hshifted : truncate.comp shiftedAlgebraic₁ =
+      shiftedAlgebraic₀.comp truncate) :
+    truncate.comp
+        ((clockComparisonSeam analytic₁ algebraic₁ shiftedAlgebraic₁).comp extend) =
+      clockComparisonSeam analytic₀ algebraic₀ shiftedAlgebraic₀ +
+        (clockShadowCurvature analytic₀ analytic₁ truncate).comp
+          (clockIncomingDefect algebraic₀ algebraic₁ extend) := by
+  ext v
+  have hsplit_v := LinearMap.congr_fun hsplit v
+  have hanalytic_v := LinearMap.congr_fun hanalytic v
+  have hsplit_algebraic_v := LinearMap.congr_fun hsplit (algebraic₀ v)
+  have hanalytic_algebraic_v := LinearMap.congr_fun hanalytic (algebraic₀ v)
+  have hsplit_analytic_algebraic_v := LinearMap.congr_fun hsplit
+    (analytic₀ (algebraic₀ v))
+  have halgebraic_v := LinearMap.congr_fun halgebraic (extend v)
+  have hsplit_analytic_v := LinearMap.congr_fun hsplit (analytic₀ v)
+  have hshifted_analytic_v := LinearMap.congr_fun hshifted (extend (analytic₀ v))
+  simp only [LinearMap.comp_apply, LinearMap.id_apply] at hsplit_v
+  simp only [LinearMap.comp_apply] at hanalytic_v
+  simp only [LinearMap.comp_apply, LinearMap.id_apply] at hsplit_algebraic_v
+  simp only [LinearMap.comp_apply] at hanalytic_algebraic_v
+  simp only [LinearMap.comp_apply, LinearMap.id_apply] at hsplit_analytic_algebraic_v
+  simp only [LinearMap.comp_apply] at halgebraic_v
+  simp only [LinearMap.comp_apply, LinearMap.id_apply] at hsplit_analytic_v
+  simp only [LinearMap.comp_apply] at hshifted_analytic_v
+  simp [clockComparisonSeam, clockShadowCurvature, clockIncomingDefect,
+    LinearMap.comp_apply, map_sub, hsplit_v, hanalytic_v, hsplit_algebraic_v,
+    hanalytic_algebraic_v, hsplit_analytic_algebraic_v, halgebraic_v,
+    hsplit_analytic_v, hshifted_analytic_v]
+
 /-- The intrinsic boundary-transfer map on the quotient by all previously assembled clock
 directions.  A split complement is useful for coordinates but is not part of this definition. -/
 def clockBoundaryTransferQuotient

@@ -195,21 +195,41 @@ boundary essential image.
 integration stacks; or an integrable field satisfying all five conditions has no source
 realization.
 
-## Conjecture IV: Gamma is the positive integrable vacuum
+## Gamma point-normalization no-go and calibrated positive vacuum
 
 Gamma's unit translation has nonzero rank-one finite-clock curvature, but the factorial tail sums
 to the actual analytic translation operator in its source topology.
 
-**[CONJECTURE — GAMMA INTEGRABILITY]** After affine normalization, the Gamma integration stack is
-nonempty and contractible. Its rank-one curvature and infinite Taylor conormal are respectively
-the field strength and boundary covector of its unique global analytic primitive.
+Point normalization does not make the Gamma integration object contractible. Two nonzero solutions
+of one multiplicative shift constraint differ by a nonzero period-one multiplier, and the
+multiplier may equal one at the normalization point. The solution-torsor statement is already
+Lean-formalized generically in `CarrierDichotomy.lean`.
+
+**Positive exact replacement.** Before analytic calibration, the Gamma solution space is a torsor
+under the nonzero period-one gauge group. A source asymptotic or positivity condition is a reduction
+of that torsor. For the additive digamma cocycle, the project already Lean-formalizes the complete
+model:
+
+```text
+same unit-shift cocycle + same logarithmic asymptotic
+  => identical source on the right half-plane.             (11a)
+```
+
+The explicit digamma source supplies existence, so the asymptotically calibrated integration fiber
+is a singleton even though the uncalibrated fiber has the full periodic ambiguity.
+
+**[CONJECTURE — GAMMA COLLIGATION INTEGRABILITY]** The opposite-variance Gamma Weyl seam identifies
+the parameterized-Galois periodic torsor with this analytic integration torsor, and asymptotic
+source selection defines a single comparison point. Its outgoing factorial channel, incoming
+Leibniz channel, and periodic gauge are respectively the finite field, algebraic prolongation, and
+automorphism group of that comparison object.
 
 This corrects the earlier guess that Gamma should carry a nonzero ordinary `lim^1` obstruction.
 Gamma is the solvable vacuum model showing that a thin nonzero field need not obstruct global
 integration.
 
-**Falsifier.** The source topology admits two inequivalent normalized global primitives, or the
-rank-one curvature fails to reconstruct analytic unit translation.
+**Falsifier.** Two asymptotically calibrated digamma/Gamma realizations survive as distinct points,
+or the algebraic periodic automorphism torsor cannot map to the analytic periodic gauge torsor.
 
 ## Conjecture V: nonlinear and singular phases
 
