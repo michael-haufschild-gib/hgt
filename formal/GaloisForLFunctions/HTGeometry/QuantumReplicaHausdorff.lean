@@ -76,25 +76,25 @@ theorem hsNormSq_real_smul_sub_eq
   have hD : ContinuousLinearMap.IsHilbertSchmidt (U + V) := hU.add hV
   have hUU : ContinuousLinearMap.hsInner U U =
       ((r ^ 2 : ℝ) : ℂ) * ContinuousLinearMap.hsInner S S := by
-    simp only [U, ContinuousLinearMap.hsInner_smul_left,
-      ContinuousLinearMap.hsInner_smul_right, map_real, Complex.real_smul]
+    simp [U, ContinuousLinearMap.hsInner_smul_left,
+      ContinuousLinearMap.hsInner_smul_right]
     push_cast
     ring
   have hUV : ContinuousLinearMap.hsInner U V =
       -(r : ℂ) * ContinuousLinearMap.hsInner S T := by
-    simp only [U, V, neg_eq_neg_one_smul,
+    simp [U, V,
       ContinuousLinearMap.hsInner_smul_left,
-      ContinuousLinearMap.hsInner_smul_right, map_real, Complex.real_smul]
+      ContinuousLinearMap.hsInner_smul_right]
     ring
   have hVU : ContinuousLinearMap.hsInner V U =
       -(r : ℂ) * ContinuousLinearMap.hsInner T S := by
-    simp only [U, V, neg_eq_neg_one_smul,
+    simp [U, V,
       ContinuousLinearMap.hsInner_smul_left,
-      ContinuousLinearMap.hsInner_smul_right, map_real, Complex.real_smul]
+      ContinuousLinearMap.hsInner_smul_right]
     ring
   have hVV : ContinuousLinearMap.hsInner V V =
       ContinuousLinearMap.hsInner T T := by
-    simp only [V, neg_eq_neg_one_smul,
+    simp [V,
       ContinuousLinearMap.hsInner_smul_left,
       ContinuousLinearMap.hsInner_smul_right]
     ring
@@ -112,7 +112,7 @@ theorem hsNormSq_real_smul_sub_eq
   have hcrossRe : (ContinuousLinearMap.hsInner T S).re =
       (ContinuousLinearMap.hsInner S T).re := by
     rw [ContinuousLinearMap.hsInner_conj_symm T S]
-    exact map_star _ _
+    simp
   change ContinuousLinearMap.hsNormSq (U + V) = _
   calc
     ContinuousLinearMap.hsNormSq (U + V) =
@@ -325,7 +325,6 @@ theorem quantumMasterEffectSecondDifference_even_eq_hsNormSq
   have hB := quantumMasterEffectPowerColumn_isHilbertSchmidt hC (n + 1)
   rw [quantumMasterEffectSecondDifference,
     quantumMasterEffectMoment_even_eq_hsNormSq hC,
-    show 2 * n + 1 = 2 * n + 1 by rfl,
     quantumMasterEffectMoment_odd_eq_hsNormSq hC,
     show 2 * n + 2 = 2 * (n + 1) by omega,
     quantumMasterEffectMoment_even_eq_hsNormSq hC,

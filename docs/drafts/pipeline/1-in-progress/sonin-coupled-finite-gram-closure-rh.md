@@ -147,6 +147,25 @@ coordinate must retain the corresponding `k`-th-root source-energy floor.  This 
 all-order compatibility test for the open coupling problem, not a construction of the schedule
 or a proof of local residual nonvanishing.
 
+`[BRIDGE, SOURCE-FORMALIZED, UNVERIFIED]` The density-spectrum support constraint now strengthens
+replica monotonicity to the second complementary Hausdorff inequality
+
+```text
+0 <= P_k(a) - 2 P_(k+1)(a) + P_(k+2)(a),
+
+0 <= Re S_0(a)^2 Re S_k(a)
+       - 2 Re S_0(a) Re S_(k+1)(a)
+       + Re S_(k+2)(a).
+```
+
+The unnormalized expression is exactly a Hilbert--Schmidt square, with separate even/odd power
+factorizations in `HTGeometry/QuantumReplicaHausdorff.lean`.  This cuts the actual coupled source
+moment locus more sharply than positivity and one-step contraction.  It still does not discharge
+the named open core: the projective route leaves the unscaled source mass free, so promotion to a
+target Hausdorff constraint needs an additional finite source-mass limit or upper bound.  The card
+`quantum-replica-hausdorff-convexity.md` records the exact conditional diagnostic and the adjacent
+mixed-state-QFI no-go.  No build or Lean process was run for these source additions.
+
 ## Goal
 
 Replace the block-diagonal Sonin moment curve, which deletes mixed prime words, by the canonical

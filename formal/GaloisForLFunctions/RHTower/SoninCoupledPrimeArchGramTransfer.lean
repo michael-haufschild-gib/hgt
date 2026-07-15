@@ -1261,6 +1261,11 @@ theorem soninAllPrimeCoupledRenyiReplicaMoment_eq_quantumMasterEffectReplicaMome
     soninAllPrimeCoupledRenyiReplicaMoment a k =
       HTGeometry.quantumMasterEffectReplicaMoment
         (soninAllPrimeColumnCoordinateOperator a.1 a.2) k := by
+  rw [soninAllPrimeCoupledRenyiReplicaMoment,
+    HTGeometry.quantumMasterEffectReplicaMoment,
+    HTGeometry.quantumMasterEffectMoment,
+    HTGeometry.quantumMasterEffectMass,
+    soninAllPrimeCoupledTraceMoment_zero_eq_column_hsNormSq]
   rfl
 
 /-- **Coupled quantum Hausdorff constraint.**  The normalized coupled replica sequence is convex:

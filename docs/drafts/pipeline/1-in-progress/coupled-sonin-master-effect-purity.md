@@ -84,6 +84,21 @@ It does **not** prove the required positive target comparison, construct a suita
 schedule, or prove a prime-power residual nonzero.  It constrains such a schedule once proposed;
 no RH implication is claimed.
 
+## Replica Hausdorff strengthening
+
+The later card `quantum-replica-hausdorff-convexity.md` strengthens the decreasing replica
+sequence to second complementary finite-difference positivity:
+
+```text
+0 <= P_k(a) - 2 P_(k+1)(a) + P_(k+2)(a).
+```
+
+The new result is again a direct master-effect theorem, not a zeta-specific wrapper.  Its exact
+even/odd Hilbert--Schmidt-square factorizations are now in
+`HTGeometry/QuantumReplicaHausdorff.lean`, with direct coupled Sonin consumers in
+`SoninCoupledPrimeArchGramTransfer.lean`.  The route audit there records why source-mass control is
+still required before the relation can constrain the canonically rescaled target moments.
+
 ## Physics provenance
 
 - A. K. Ekert, C. M. Alves, D. K. L. Oi, M. Horodecki, P. Horodecki, and L. C. Kwek,
