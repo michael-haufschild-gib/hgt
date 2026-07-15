@@ -1,5 +1,6 @@
-import GaloisForLFunctions.RHTower.SoninCoupledPrimeArchGramTransfer
+import GaloisForLFunctions.RHTower.SoninCoupledBernsteinCollarComparison
 import GaloisForLFunctions.RHTower.PrimeArchEndpointCalibratedHausdorffRH
+import GaloisForLFunctions.HTGeometry.QuantumReplicaHausdorff
 
 /-!
 # Complete quantum Hausdorff laws for the coupled Sonin source
@@ -53,17 +54,31 @@ theorem re_soninAllPrimeCoupledTraceMoment_scaledHausdorffDifferencesNonnegative
       (soninAllPrimeColumnKernel_isHSRect a.1 a.2))
     (norm_soninAllPrimeColumnCoordinateOperator_sq_le_effectRadius a.1 a.2) k r
 
-/-- The RHTower ordinary Hausdorff recursion on normalized coupled replica values is the general
-quantum density-replica recursion. -/
-theorem hausdorffMomentDifference_soninAllPrimeCoupledRenyiReplicaMoment_eq_quantum
+/-- The normalized coupled source used by the collar comparison is exactly the density-operator
+replica sequence of the actual all-prime Sonin column. -/
+theorem soninCoupledNormalizedReplicaMoment_eq_quantumMasterEffectReplicaMoment
+    (a : SoninPositiveAperture) (k : ℕ) :
+    soninCoupledNormalizedReplicaMoment a k =
+      quantumMasterEffectReplicaMoment
+        (soninAllPrimeColumnCoordinateOperator a.1 a.2) k := by
+  rw [soninCoupledNormalizedReplicaMoment,
+    quantumMasterEffectReplicaMoment,
+    quantumMasterEffectMoment,
+    quantumMasterEffectMass,
+    soninAllPrimeCoupledTraceMoment_zero_eq_column_hsNormSq]
+  rfl
+
+/-- The RHTower ordinary Hausdorff recursion on the collar's normalized coupled source is the
+general quantum density-replica recursion. -/
+theorem hausdorffMomentDifference_soninCoupledNormalizedReplicaMoment_eq_quantum
     (a : SoninPositiveAperture) (k r : ℕ) :
-    hausdorffMomentDifference (soninAllPrimeCoupledRenyiReplicaMoment a) k r =
+    hausdorffMomentDifference (soninCoupledNormalizedReplicaMoment a) k r =
       quantumMasterEffectReplicaDifference
         (soninAllPrimeColumnCoordinateOperator a.1 a.2) k r := by
   induction r generalizing k with
   | zero =>
       rw [hausdorffMomentDifference, quantumMasterEffectReplicaDifference,
-        soninAllPrimeCoupledRenyiReplicaMoment_eq_quantumMasterEffectReplicaMoment]
+        soninCoupledNormalizedReplicaMoment_eq_quantumMasterEffectReplicaMoment]
   | succ r ih =>
       rw [hausdorffMomentDifference, quantumMasterEffectReplicaDifference,
         ih k, ih (k + 1)]
@@ -73,9 +88,9 @@ Hausdorff moment sequence, with no additional source hypothesis. -/
 theorem soninAllPrimeCoupledRenyiReplicaMoment_hausdorffMomentDifferencesNonnegative
     (a : SoninPositiveAperture) :
     HausdorffMomentDifferencesNonnegative
-      (soninAllPrimeCoupledRenyiReplicaMoment a) := by
+      (soninCoupledNormalizedReplicaMoment a) := by
   intro k r
-  rw [hausdorffMomentDifference_soninAllPrimeCoupledRenyiReplicaMoment_eq_quantum]
+  rw [hausdorffMomentDifference_soninCoupledNormalizedReplicaMoment_eq_quantum]
   exact quantumMasterEffectReplicaDifference_nonneg
     (HilbertSchmidt.isHilbertSchmidt_toOperatorRect
       (soninAllPrimeColumnKernel_isHSRect a.1 a.2)) k r
@@ -84,7 +99,7 @@ theorem soninAllPrimeCoupledRenyiReplicaMoment_hausdorffMomentDifferencesNonnega
 required by the coupled-source collar route. -/
 theorem soninAllPrimeCoupledRenyiReplicaMoment_hausdorffBernsteinNonnegative
     (a : SoninPositiveAperture) :
-    HausdorffBernsteinNonnegative (soninAllPrimeCoupledRenyiReplicaMoment a) :=
+    HausdorffBernsteinNonnegative (soninCoupledNormalizedReplicaMoment a) :=
   hausdorffBernsteinNonnegative_of_momentDifferencesNonnegative
     (soninAllPrimeCoupledRenyiReplicaMoment_hausdorffMomentDifferencesNonnegative a)
 

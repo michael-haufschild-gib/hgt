@@ -13,20 +13,11 @@ namespace RHTower
 
 noncomputable section
 
-/-- The source-boundary normalization used by the collar file is the canonical coupled density
-replica normalization. -/
-theorem soninCoupledNormalizedReplicaMoment_eq_renyi
-    (a : SoninPositiveAperture) :
-    soninCoupledNormalizedReplicaMoment a =
-      soninAllPrimeCoupledRenyiReplicaMoment a := by
-  rfl
-
 /-- The collar source's Bernstein positivity premise is discharged by the complete quantum
 Hausdorff hierarchy. -/
 theorem soninCoupledNormalizedReplicaMoment_hausdorffBernsteinNonnegative
     (a : SoninPositiveAperture) :
     HausdorffBernsteinNonnegative (soninCoupledNormalizedReplicaMoment a) := by
-  rw [soninCoupledNormalizedReplicaMoment_eq_renyi]
   exact soninAllPrimeCoupledRenyiReplicaMoment_hausdorffBernsteinNonnegative a
 
 /-- Hypothesis-free forward comparison between endpoint Bernstein purity and the concrete

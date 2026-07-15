@@ -796,6 +796,36 @@ private theorem opTrace_smul_eq
   exact tsum_congr fun i => by
     rw [ContinuousLinearMap.smul_apply, inner_smul_right]
 
+private theorem opTrace_smul_sub_eq_of_summable_diag
+    (c : ℂ) (S T : E →L[ℂ] E)
+    (hS : Summable (fun i => inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
+      (S (ContinuousLinearMap.hsBasis ℂ E i))))
+    (hT : Summable (fun i => inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
+      (T (ContinuousLinearMap.hsBasis ℂ E i)))) :
+    ContinuousLinearMap.opTrace (c • S - T) =
+      c * ContinuousLinearMap.opTrace S - ContinuousLinearMap.opTrace T := by
+  unfold ContinuousLinearMap.opTrace
+  calc
+    ∑' i, inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
+        ((c • S - T) (ContinuousLinearMap.hsBasis ℂ E i)) =
+        ∑' i, (c * inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
+            (S (ContinuousLinearMap.hsBasis ℂ E i)) -
+          inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
+            (T (ContinuousLinearMap.hsBasis ℂ E i))) := by
+      exact tsum_congr fun i => by
+        rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.smul_apply,
+          inner_sub_right, inner_smul_right]
+    _ = (∑' i, c * inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
+          (S (ContinuousLinearMap.hsBasis ℂ E i))) -
+        ∑' i, inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
+          (T (ContinuousLinearMap.hsBasis ℂ E i)) :=
+      (hS.mul_left c).tsum_sub hT
+    _ = c * (∑' i, inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
+          (S (ContinuousLinearMap.hsBasis ℂ E i))) -
+        ∑' i, inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
+          (T (ContinuousLinearMap.hsBasis ℂ E i)) := by
+      rw [tsum_mul_left]
+
 theorem summable_inner_diag_quantumMasterEffectWeighted
     {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C)
     (R : ℝ) (k r : ℕ) :
@@ -831,12 +861,25 @@ theorem quantumMasterEffect_weightedOperator_succ
   have hBpow : B ^ (r + 1) = B * B ^ r := pow_succ' B r
   have hTpow : T ^ (k + 1) * T = T ^ (k + 2) := by
     rw [← pow_succ]
-  rw [hBpow, ← mul_assoc]
-  rw [show B = (R : ℂ) • (1 : E →L[ℂ] E) - T by
-    rfl]
-  rw [mul_sub, sub_mul]
-  simp only [mul_smul_comm, mul_one, smul_mul_assoc]
-  rw [hTpow]
+  calc
+    T ^ (k + 1) * B ^ (r + 1) =
+        T ^ (k + 1) * (B * B ^ r) := by rw [hBpow]
+    _ = T ^ (k + 1) *
+        (((R : ℂ) • (1 : E →L[ℂ] E) - T) * B ^ r) := by rfl
+    _ = T ^ (k + 1) *
+        (((R : ℂ) • (1 : E →L[ℂ] E)) * B ^ r - T * B ^ r) := by
+      rw [sub_mul]
+    _ = T ^ (k + 1) * ((R : ℂ) • B ^ r - T * B ^ r) := by
+      rw [smul_mul_assoc, one_mul]
+    _ = T ^ (k + 1) * ((R : ℂ) • B ^ r) -
+        T ^ (k + 1) * (T * B ^ r) := by
+      rw [mul_sub]
+    _ = (R : ℂ) • (T ^ (k + 1) * B ^ r) -
+        (T ^ (k + 1) * T) * B ^ r := by
+      rw [mul_smul_comm, mul_assoc]
+    _ = (R : ℂ) • (T ^ (k + 1) * B ^ r) -
+        T ^ (k + 2) * B ^ r := by
+      rw [hTpow]
 
 /-- Multiplication by the complement `R I - T` is exactly one scaled Hausdorff difference. -/
 theorem quantumMasterEffectWeightedMoment_succ
@@ -856,20 +899,12 @@ theorem quantumMasterEffectWeightedMoment_succ
       (A' (ContinuousLinearMap.hsBasis ℂ E i))) := by
     simpa only [A', show k + 1 + 1 = k + 2 by omega] using
       summable_inner_diag_quantumMasterEffectWeighted hC R (k + 1) r
-  have htrace :
-      ContinuousLinearMap.opTrace
-          (quantumChannelEffect C ^ (k + 1) *
-            quantumMasterEffectComplement R C ^ (r + 1)) =
-        (R : ℂ) * ContinuousLinearMap.opTrace A -
-          ContinuousLinearMap.opTrace A' := by
-    rw [quantumMasterEffect_weightedOperator_succ]
-    rw [opTrace_sub_eq_sub_of_summable_diag ((R : ℂ) • A) A'
-      (hA.mul_left (R : ℂ)) hA']
-    rw [opTrace_smul_eq (R : ℂ) A]
-  have hre := congrArg Complex.re htrace
-  simpa only [quantumMasterEffectWeightedMoment, A, A', Complex.sub_re,
-    Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero,
-    show k + 1 + 1 = k + 2 by omega] using hre
+  rw [quantumMasterEffectWeightedMoment,
+    quantumMasterEffect_weightedOperator_succ]
+  rw [opTrace_smul_sub_eq_of_summable_diag (R : ℂ) A A' hA hA']
+  simp only [Complex.sub_re, Complex.mul_re, Complex.ofReal_re,
+    Complex.ofReal_im, zero_mul, sub_zero]
+  rfl
 
 /-- Recursive `R`-scaled complementary difference of the master-effect trace moments. -/
 def quantumMasterEffectScaledDifference

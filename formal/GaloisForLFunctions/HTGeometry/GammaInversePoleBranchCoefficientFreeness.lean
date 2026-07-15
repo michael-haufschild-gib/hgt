@@ -41,12 +41,15 @@ theorem gammaPoleUnitPositiveCoefficientGerm_eq_actualTaylorCoefficient (j : ℕ
       (fun N : ℕ =>
         (((j + 1).factorial : ℂ)⁻¹) *
           iteratedDeriv (j + 1) (gammaPoleRegularUnit (N - 1)) 0 : NatGerm) := by
-  simp [gammaPoleUnitPositiveCoefficientGerm,
+  rw [gammaPoleUnitPositiveCoefficientGerm,
     actualGammaPoleRegularCoefficientGerm]
+  rw [← Filter.Germ.coe_neg, Filter.Germ.coe_eq]
+  exact Filter.Eventually.of_forall fun _N => by simp
 
 theorem algebraicIndependent_gammaPoleUnitPositiveCoefficientGerm :
     AlgebraicIndependent ℂ gammaPoleUnitPositiveCoefficientGerm := by
-  exact algebraicIndependent_actualGammaPoleRegularCoefficientGerm.neg
+  exact AlgebraicIndependent.neg
+    algebraicIndependent_actualGammaPoleRegularCoefficientGerm
 
 /-- The coefficient-germ Taylor series of the actual analytic unit family `U_n`. -/
 def gammaPoleUnitFormalGerm : NatGerm⟦X⟧ :=
@@ -61,8 +64,8 @@ def gammaPoleReciprocalUnitCoefficientGerm (j : ℕ) : NatGerm :=
 
 theorem algebraicIndependent_gammaPoleReciprocalUnitCoefficientGerm :
     AlgebraicIndependent ℂ gammaPoleReciprocalUnitCoefficientGerm := by
-  exact algebraicIndependent_gammaPoleUnitPositiveCoefficientGerm.
-    unitInverseCoefficientOfCoefficients
+  exact AlgebraicIndependent.unitInverseCoefficientOfCoefficients
+    algebraicIndependent_gammaPoleUnitPositiveCoefficientGerm
 
 /-- The direct normalized Gamma coordinate `A_n(X)=X/U_n(X)`. -/
 def gammaPoleDirectCoordinateFormalGerm : NatGerm⟦X⟧ :=
@@ -78,7 +81,9 @@ theorem gammaPoleDirectCoordinateFormalGerm_eq :
   · obtain (_ | n) := n
     · simp [gammaPoleDirectCoordinateFormalGerm,
         gammaPoleReciprocalUnitFormalGerm]
-    · rw [PowerSeries.coeff_succ_X_mul,
+    · rw [gammaPoleDirectCoordinateFormalGerm,
+        PowerSeries.coeff_succ_X_mul,
+        show n + 1 + 1 = n + 2 by omega,
         tangentPowerSeriesOfCoefficients_coeff_add_two]
       rfl
 
@@ -103,8 +108,8 @@ family of all normalized inverse branches at the negative-integer Gamma poles is
 algebraically independent over `ℂ`. -/
 theorem algebraicIndependent_gammaInversePoleBranchCoefficientGerm :
     AlgebraicIndependent ℂ gammaInversePoleBranchCoefficientGerm := by
-  exact algebraicIndependent_gammaPoleReciprocalUnitCoefficientGerm.
-    tangentInverseCoefficientOfCoefficients
+  exact AlgebraicIndependent.tangentInverseCoefficientOfCoefficients
+    algebraicIndependent_gammaPoleReciprocalUnitCoefficientGerm
 
 theorem gammaPoleDirectCoordinate_subst_inverseBranch :
     gammaPoleDirectCoordinateFormalGerm.subst gammaInversePoleBranchFormalGerm =
@@ -131,8 +136,17 @@ theorem gammaInversePoleBranch_eq_X_mul_subst_unit :
     have h := congrArg
       (fun F : NatGerm⟦X⟧ => F.subst gammaInversePoleBranchFormalGerm)
       (unitInverse_mul_unitPowerSeries gammaPoleUnitPositiveCoefficientGerm)
-    simpa [gammaPoleReciprocalUnitFormalGerm, gammaPoleUnitFormalGerm,
-      PowerSeries.subst_mul hB] using h
+    have h' :
+        gammaPoleReciprocalUnitFormalGerm.subst gammaInversePoleBranchFormalGerm *
+          gammaPoleUnitFormalGerm.subst gammaInversePoleBranchFormalGerm =
+            (1 : NatGerm⟦X⟧).subst gammaInversePoleBranchFormalGerm := by
+      simpa [gammaPoleReciprocalUnitFormalGerm, gammaPoleUnitFormalGerm,
+        PowerSeries.subst_mul hB] using h
+    have hone :
+        (1 : NatGerm⟦X⟧).subst gammaInversePoleBranchFormalGerm = 1 := by
+      rw [← PowerSeries.coe_substAlgHom hB]
+      exact map_one _
+    exact h'.trans hone
   have hdirect :
       gammaInversePoleBranchFormalGerm *
         gammaPoleReciprocalUnitFormalGerm.subst gammaInversePoleBranchFormalGerm =

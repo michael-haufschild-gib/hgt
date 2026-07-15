@@ -14,7 +14,7 @@ noncomputable section
 
 open scoped BigOperators
 
-namespace GaloisForLFunctions.RHTower
+namespace RHTower
 
 /-- The positive normalization appearing in the archimedean Jacobi Fourier transform. -/
 def semilocalArchimedeanJacobiNormalization (n : ℕ) : ℝ :=
@@ -56,7 +56,7 @@ theorem tanh_even_pow_pos {k : ℕ} (hk : 0 < k) {t : ℝ} (ht : t ≠ 0) :
       simpa using Real.sinh_strictMono.injective.ne ht
     exact div_ne_zero hsinh (Real.cosh_pos t).ne'
   rw [pow_mul]
-  exact pow_pos (sq_pos_of_ne_zero htanh) hk
+  exact pow_pos (sq_pos_of_ne_zero htanh) k
 
 /-- Every nonzero frequency has the rigid sign `(-1)^k` at positive even degree `2k`. -/
 theorem semilocalArchimedeanEvenJacobiKernel_signed_pos
@@ -76,7 +76,17 @@ theorem semilocalArchimedeanEvenJacobiKernel_signed_pos
     _ = (-1 : ℝ) ^ k *
         (((-1 : ℝ) ^ k * semilocalArchimedeanJacobiNormalization (2 * k) *
           semilocalArchimedeanCharacteristic t * Real.tanh t ^ (2 * k))) := by
-      rw [← mul_assoc, hsign, one_mul]
+      symm
+      calc
+        (-1 : ℝ) ^ k *
+            (((-1 : ℝ) ^ k * semilocalArchimedeanJacobiNormalization (2 * k) *
+              semilocalArchimedeanCharacteristic t * Real.tanh t ^ (2 * k))) =
+            ((-1 : ℝ) ^ k * (-1 : ℝ) ^ k) *
+              (semilocalArchimedeanJacobiNormalization (2 * k) *
+                semilocalArchimedeanCharacteristic t * Real.tanh t ^ (2 * k)) := by ring
+        _ = semilocalArchimedeanJacobiNormalization (2 * k) *
+              semilocalArchimedeanCharacteristic t * Real.tanh t ^ (2 * k) := by
+          rw [hsign, one_mul]
 
 /-- A nonempty positive packet of nonzero frequencies retains the same strict alternating sign. -/
 theorem semilocalArchimedeanEvenJacobiKernel_weightedPacket_signed_pos
@@ -89,9 +99,31 @@ theorem semilocalArchimedeanEvenJacobiKernel_weightedPacket_signed_pos
   rw [Finset.mul_sum]
   apply Finset.sum_pos hs
   intro i hi
-  rw [Finset.mul_sum]
   have hkernel := semilocalArchimedeanEvenJacobiKernel_signed_pos hk (hfrequency i hi)
-  nlinarith [hweight i hi]
+  convert mul_pos (hweight i hi) hkernel using 1 <;> ring
+
+/-- Summable positive packets retain the strict all-even sign.  This is the limit theorem used
+after the absolutely convergent semilocal Poisson expansion. -/
+theorem semilocalArchimedeanEvenJacobiKernel_weightedSeries_signed_pos
+    {ι : Type*} [Nonempty ι] {k : ℕ} (hk : 0 < k)
+    (weight frequency : ι → ℝ)
+    (hweight : ∀ i, 0 < weight i) (hfrequency : ∀ i, frequency i ≠ 0)
+    (hsummable : Summable fun i =>
+      weight i * semilocalArchimedeanEvenJacobiKernel k (frequency i)) :
+    0 < (-1 : ℝ) ^ k * ∑' i,
+      weight i * semilocalArchimedeanEvenJacobiKernel k (frequency i) := by
+  let i₀ : ι := Classical.choice inferInstance
+  have hterm (i : ι) :
+      0 < (-1 : ℝ) ^ k *
+        (weight i * semilocalArchimedeanEvenJacobiKernel k (frequency i)) := by
+    have hkernel := semilocalArchimedeanEvenJacobiKernel_signed_pos hk (hfrequency i)
+    convert mul_pos (hweight i) hkernel using 1 <;> ring
+  have hscaled : Summable fun i => (-1 : ℝ) ^ k *
+      (weight i * semilocalArchimedeanEvenJacobiKernel k (frequency i)) :=
+    hsummable.mul_left _
+  have hle := hscaled.le_tsum i₀ (fun i _ => (hterm i).le)
+  rw [tsum_mul_left] at hle
+  exact (hterm i₀).trans_le hle
 
 /-- A finite integer packet on distinct primes has nonzero prime-log frequency unless it is the
 zero packet. -/
@@ -104,7 +136,7 @@ theorem finitePrimeLogFrequency_ne_zero
       (fun i : Fin n => (⟨p i, hprime i⟩ : Nat.Primes)) := by
     intro i j hij
     exact hp (congrArg Subtype.val hij)
-  have hLI := primeLog_linearIndependent.comp
+  have hLI := GaloisForLFunctions.RHTower.primeLog_linearIndependent.comp
     (fun i : Fin n => (⟨p i, hprime i⟩ : Nat.Primes)) hindex
   have hall : ∀ i, m i = 0 := (Fintype.linearIndependent_iff.mp hLI) m (by
     simpa [zsmul_eq_mul] using hzero)
@@ -127,4 +159,4 @@ theorem finitePrimePoissonPacket_evenJacobi_signed_pos
     (fun j ↦ ∑ i, (packet j i : ℝ) * Real.log (p i)) hweight
     (fun j hj ↦ finitePrimeLogFrequency_ne_zero p hp hprime (packet j) (hpacket j hj))
 
-end GaloisForLFunctions.RHTower
+end RHTower

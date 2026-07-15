@@ -58,9 +58,11 @@ theorem aeval_lowerJetAndGammaInverseBranchCoefficientFamily_ne_zero
     {κ : Type*} {P : MvPolynomial (Sum κ ℕ) ℂ} (hP : P ≠ 0) :
     MvPolynomial.aeval
       (lowerJetAndGammaInverseBranchCoefficientFamily κ) P ≠ 0 := by
-  exact (algebraicIndependent_iff_injective_aeval.mp
+  intro hzero
+  apply hP
+  apply (algebraicIndependent_iff_injective_aeval.mp
     (algebraicIndependent_lowerJetAndGammaInverseBranchCoefficientFamily κ))
-      (by simpa using hP)
+  simpa using hzero
 
 end
 

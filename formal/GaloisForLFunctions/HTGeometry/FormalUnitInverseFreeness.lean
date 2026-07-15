@@ -87,7 +87,9 @@ theorem map_universalUnitInversePowerSeries :
     have hmap := congrArg
       (PowerSeries.map universalUnitInverseCoefficientMap.toRingHom)
       universalUnit_mul_inverse
-    simpa [R, map_universalUnitPowerSeries_inverse] using hmap
+    simp only [map_mul, map_one] at hmap
+    rw [map_universalUnitPowerSeries_inverse] at hmap
+    exact hmap
   calc
     R = 1 * R := by rw [one_mul]
     _ = (universalUnitPowerSeries * universalUnitInversePowerSeries) * R := by
@@ -173,14 +175,38 @@ theorem unitPowerSeries_mul_unitInverse
     unitPowerSeriesOfCoefficients a * unitInversePowerSeriesOfCoefficients a = 1 := by
   have hmap := congrArg (PowerSeries.map (MvPolynomial.aeval a).toRingHom)
     universalUnit_mul_inverse
-  simpa [map_universalUnitPowerSeries, unitInversePowerSeriesOfCoefficients] using hmap
+  have hmap' :
+      PowerSeries.map (MvPolynomial.aeval a).toRingHom universalUnitPowerSeries *
+        PowerSeries.map (MvPolynomial.aeval a).toRingHom
+          universalUnitInversePowerSeries = 1 := by
+    simpa only [map_mul, map_one] using hmap
+  calc
+    unitPowerSeriesOfCoefficients a * unitInversePowerSeriesOfCoefficients a =
+        PowerSeries.map (MvPolynomial.aeval a).toRingHom universalUnitPowerSeries *
+          PowerSeries.map (MvPolynomial.aeval a).toRingHom
+            universalUnitInversePowerSeries := by
+      rw [map_universalUnitPowerSeries]
+      rfl
+    _ = 1 := hmap'
 
 theorem unitInverse_mul_unitPowerSeries
     {A : Type*} [CommRing A] [Algebra ℂ A] (a : ℕ → A) :
     unitInversePowerSeriesOfCoefficients a * unitPowerSeriesOfCoefficients a = 1 := by
   have hmap := congrArg (PowerSeries.map (MvPolynomial.aeval a).toRingHom)
     universalUnit_inverse_mul
-  simpa [map_universalUnitPowerSeries, unitInversePowerSeriesOfCoefficients] using hmap
+  have hmap' :
+      PowerSeries.map (MvPolynomial.aeval a).toRingHom
+          universalUnitInversePowerSeries *
+        PowerSeries.map (MvPolynomial.aeval a).toRingHom universalUnitPowerSeries = 1 := by
+    simpa only [map_mul, map_one] using hmap
+  calc
+    unitInversePowerSeriesOfCoefficients a * unitPowerSeriesOfCoefficients a =
+        PowerSeries.map (MvPolynomial.aeval a).toRingHom
+            universalUnitInversePowerSeries *
+          PowerSeries.map (MvPolynomial.aeval a).toRingHom universalUnitPowerSeries := by
+      rw [map_universalUnitPowerSeries]
+      rfl
+    _ = 1 := hmap'
 
 /-- Positive-degree coefficients of the inverse specialized unit. -/
 def unitInverseCoefficientOfCoefficients
@@ -224,6 +250,7 @@ theorem negCoordinateMap_injective (ι R : Type*) [CommRing R] :
     Function.Injective (negCoordinateMap ι R) := by
   apply Function.LeftInverse.injective
   intro P
+  change negCoordinateMap ι R (negCoordinateMap ι R P) = P
   exact AlgHom.congr_fun (negCoordinateMap_involutive ι R) P
 
 theorem algebraicIndependent_neg_X (ι R : Type*) [CommRing R] :

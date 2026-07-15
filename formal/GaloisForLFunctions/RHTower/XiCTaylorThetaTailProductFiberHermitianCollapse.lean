@@ -237,13 +237,12 @@ theorem sum_thetaProductFiberHermitianPhaseCoefficient_re
 /-- The first nontrivial positive product fibre consists of the two reflected ordered pairs. -/
 theorem thetaPositiveFactorPairs_two :
     thetaPositiveFactorPairs 2 = {(0, 1), (1, 0)} := by
-  ext q
-  rcases q with ⟨a, b⟩
-  change ((a ≤ 1 ∧ b ≤ 1) ∧ (a + 1) * (b + 1) = 2) ↔
-    (a = 0 ∧ b = 1) ∨ (a = 1 ∧ b = 0)
+  norm_num [thetaPositiveFactorPairs, Finset.ext_iff]
+  intro a b
   constructor
   · rintro ⟨⟨ha, hb⟩, hab⟩
-    interval_cases a <;> interval_cases b <;> norm_num at hab ⊢
+    interval_cases a <;> interval_cases b <;> norm_num at hab
+    all_goals norm_num
   · rintro (h | h)
     · rcases h with ⟨rfl, rfl⟩
       norm_num
@@ -266,6 +265,8 @@ theorem sum_thetaProductFiberHermitianPhaseCoefficient_re_two
     thetaProductFiberHermitianPhaseCoefficient_re]
   norm_num only [Prod.fst, Prod.snd, Nat.cast_ofNat, Real.one_rpow,
     Real.log_one, zero_add, add_zero, sub_zero, zero_sub, Real.cos_neg]
+  rw [show -Real.log 2 * z.re = -(Real.log 2 * z.re) by ring,
+    Real.cos_neg]
   ring
 
 /-- Exact upper-half-plane point at which Hermitian fixed-product polarization reverses the
@@ -476,6 +477,94 @@ theorem xiCTaylorThetaTailCoreProductFiberMomentCurrent_eq_commonTail_add_jointD
       (thetaCuspTailSecondDensityAtomCoreValueMomentPacket d z q.2)
       (thetaProductFiberCommonTailModelDerivative z F F' q.1)
       (thetaProductFiberCommonTailModelValue z F q.2))
+
+/-! ## Corrected coherent-base bridge and the unavoidable polarization defect -/
+
+/-- Coherent analytic divisor-phase current weighted by the common-tail norm square.  Unlike the
+Hermitian anti-diagonal base, this is the quantity to which prime-factor polarization applies. -/
+def xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent
+    (k : ℕ) (z F : ℂ) : ℝ :=
+  Complex.normSq F *
+    (thetaProductFiberCenteredPhaseDerivative k z *
+      (starRingEnd ℂ) (thetaProductFiberCenteredPhase k z)).im
+
+/-- The coherent base retains the exact prime-factor signed polarization, with the common-tail
+norm square absorbed into each complementary packet coefficient. -/
+theorem xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent_eq_primeFactors
+    {k : ℕ} (hk : k ≠ 0) (z F : ℂ) :
+    xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent k z F =
+      ∑ p ∈ k.primeFactors,
+        (Complex.normSq F *
+          Complex.normSq
+            (∏ q ∈ k.primeFactors.erase p,
+              GaloisForLFunctions.HTGeometry.primePowerCenteredDivisorPhase
+                q (k.factorization q) z)) *
+          (GaloisForLFunctions.HTGeometry.primePowerCenteredDivisorPhaseDerivative
+              p (k.factorization p) z *
+            (starRingEnd ℂ)
+              (GaloisForLFunctions.HTGeometry.primePowerCenteredDivisorPhase
+                p (k.factorization p) z)).im := by
+  unfold xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent
+  rw [thetaProductFiberCenteredPhase_current_eq_sum_primeFactors hk,
+    Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro p _hp
+  ring
+
+/-- Every nontrivial coherent product-fibre base has favorable nonpositive upper orientation. -/
+theorem xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent_nonpos
+    {k : ℕ} (hk : 1 < k) {z : ℂ} (hz : 0 < z.im) (F : ℂ) :
+    xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent k z F ≤ 0 := by
+  unfold xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent
+  exact mul_nonpos_of_nonneg_of_nonpos (Complex.normSq_nonneg F)
+    (thetaProductFiberCenteredPhase_current_lt_zero hk hz).le
+
+/-- Algebraic defect between the Hermitian anti-diagonal common-tail base and the coherent
+prime-oriented phase base.  It is present before endpoint restriction and finite translation. -/
+def xiCTaylorThetaTailCoreProductFiberPolarizationDefectCurrent
+    (k : ℕ) (z F F' : ℂ) : ℝ :=
+  xiCTaylorThetaTailCoreProductFiberCommonTailBaseCurrent k z F F' -
+    xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent k z F
+
+/-- The corrected joint seam is the sum of the algebraic Hermitian-polarization defect and the
+unsplit canonical model defect.  No absolute values or separate piece estimates occur here. -/
+def xiCTaylorThetaTailCoreProductFiberCorrectedJointSeamCurrent
+    (d k : ℕ) (z F F' : ℂ) : ℝ :=
+  xiCTaylorThetaTailCoreProductFiberPolarizationDefectCurrent k z F F' +
+    xiCTaylorThetaTailCoreProductFiberJointDefectCurrent d k z F F'
+
+/-- **Corrected exact fixed-product bridge.**  The actual canonical coefficient is a favorable
+coherent prime-factor base plus one joint seam, but that seam necessarily contains the additional
+Hermitian-polarization defect besides endpoint and finite-translation defects. -/
+theorem xiCTaylorThetaTailCoreProductFiberMomentCurrent_eq_coherentBase_add_correctedJointSeam
+    (d k : ℕ) (z F F' : ℂ) :
+    xiCTaylorThetaTailCoreProductFiberMomentCurrent d z k =
+      xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent k z F +
+        xiCTaylorThetaTailCoreProductFiberCorrectedJointSeamCurrent d k z F F' := by
+  rw [xiCTaylorThetaTailCoreProductFiberMomentCurrent_eq_commonTail_add_jointDefect]
+  unfold xiCTaylorThetaTailCoreProductFiberCorrectedJointSeamCurrent
+    xiCTaylorThetaTailCoreProductFiberPolarizationDefectCurrent
+  ring
+
+/-- The extra polarization defect is strictly positive at the exact sign-reversal point, even for
+the common unit tail.  Hence it cannot be omitted from the corrected seam or represented solely
+by swept windows and finite translation edges, both of which vanish in this model. -/
+theorem xiCTaylorThetaTailCoreProductFiberPolarizationDefectCurrent_two_pos :
+    0 < xiCTaylorThetaTailCoreProductFiberPolarizationDefectCurrent 2
+      thetaProductFiberHermitianSignReversalPoint 1 0 := by
+  have hsign := thetaProductFiberHermitianPolarization_sign_reversal
+  have hhermitian : 0 <
+      xiCTaylorThetaTailCoreProductFiberCommonTailBaseCurrent 2
+        thetaProductFiberHermitianSignReversalPoint 1 0 := by
+    rw [xiCTaylorThetaTailCoreProductFiberCommonTailBaseCurrent_eq]
+    exact hsign.2
+  have hcoherent :
+      xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent 2
+        thetaProductFiberHermitianSignReversalPoint 1 < 0 := by
+    simpa only [xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent,
+      Complex.normSq_one, one_mul] using hsign.1
+  unfold xiCTaylorThetaTailCoreProductFiberPolarizationDefectCurrent
+  linarith
 
 end
 
