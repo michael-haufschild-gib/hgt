@@ -5,6 +5,7 @@
 - **Type:** `[CONJECTURE] [LEADING HT-TO-RH COMPARISON THEOREM]`
 - **Scientific status:** `[CONJECTURE] [CONDITIONAL RH PROOF COMPLETE]
   [FINITE INCIDENCE PROVED ON PAPER] [GAMMA CALIBRATION LEAN-FORMALIZED]
+  [ORBIT-COBOUNDARY CONSUMER LEAN-FORMALIZED] [SOURCE PRODUCER OPEN]
   [ZERO-ORBIT COMPARISON OPEN] [NOVELTY UNVERIFIED]`
 - **HT parents:**
   - `gamma-opposite-variance-weyl-seam.md`
@@ -19,6 +20,7 @@
   - `../2-fully-proven/not_new_scientific_knowledge/prime-laplace-gamma-clock-descent-anomaly.md`
   - `../2-fully-proven/not_new_scientific_knowledge/mertens-corona-shift-conormal.md`
   - `../2-fully-proven/not_new_scientific_knowledge/mertens-logarithmic-corona-differential-tower.md`
+  - `../3-formalized/not_new_scientific_knowledge/gamma-mertens-orbit-coboundary-rh.md`
   - `../2-fully-proven/new_scientific_knowledge/weighted-euler-tangent-global-graph-decoupling.md`
 - **Statement:** Construct a source-defined comparison from the completed Euler anti-reflection
   anomaly on each Xi zero orbit to Gamma's asymptotically calibrated opposite-variance fibre,
@@ -84,6 +86,36 @@ On the Gamma side, Lean proves that two right-half-plane sections with the same 
 unit-shift cocycle and the same logarithmic asymptotic normalization coincide.  Thus the
 asymptotically calibrated Gamma analytic fibre has no residual period-one gauge.
 
+## Sharper Lean-formalized terminal consumer
+
+The completed logarithmic derivative has a proved source translation by two.  Let `delta_2` be
+the finite principal-part coboundary `T_2-I`.  Lean now proves that for every Xi zero `rho`,
+
+```text
+sqrt(2)[PP(-rho)-PP(conjugate(rho)-1)] in im(delta_2)    (8a)
+  ==> Re(rho)=1/2.                                      (8b)
+```
+
+The same implication holds after every nonzero constant-coefficient differential operator.
+Finite coboundaries have zero residue in each orbit of `C/2Z`; the two support points differ by
+`1-2Re(rho)`, which lies in `(-1,1)`, so belonging to the same `2Z`-orbit forces equality.
+Requiring `(8a)` at every Xi zero is Lean-formalized to be exactly equivalent to RH.
+
+This is a strictly narrower terminal consumer than equality of all finite observations in item 5
+below.  The new leading producer conjecture is therefore:
+
+```text
+[CONJECTURE -- COMPLETED SOURCE COBOUNDARY DESCENT]
+```
+
+Construct a pre-divisor relative cochain from the actual filtered von Mangoldt `+2` source and the
+calibrated archimedean Gamma recurrence whose on-shell boundary proves `(8a)`.  The primitive must
+be one safe-half-plane source construction, regular at the Xi divisor; it may not be fitted after
+seeing `rho`.  It must retain its calibrated primitive/framing: the unframed shift-cohomology class
+is invariant under symmetric rational-quartet insertion and is therefore divisor-blind.  A stronger
+proof of the original comparison functor would still suffice, but is no longer the smallest open
+theorem.
+
 ## Master comparison conjecture
 
 `[CONJECTURE -- CALIBRATED ZERO-ORBIT COMPARISON]` There is a source-defined projective comparison
@@ -139,6 +171,12 @@ locations in `(8)`.  This is the topology-and-current content of `Comp_N`; choos
 stronger topology is not accepted.
 
 ## Conditional proof of RH
+
+There are now two terminal deductions.  The shorter one assumes completed source coboundary
+descent.  For a Xi zero `rho`, the source theorem gives `(8a)`; the Lean orbit-residue theorem gives
+`Re(rho)=1/2`.  Applying this to every zero proves RH.
+
+The original, stronger deduction assumes the master comparison conjecture as follows.
 
 Assume the master conjecture and let `rho` be any Xi zero.
 
@@ -214,11 +252,32 @@ facts on the completed Euler--Gamma source.
     boundary-condition ambiguity.  **Positive successor:** the conormal dual pair supplies an
     interval of compatible topologies, and the Gamma asymptotic is required to select a framed
     section of that interval.
+11. **Literal-support overreach.** Requiring the two Mertens germs to be equal asks the producer for
+    more than the completed shift constraint naturally supplies.  **Positive successor:** finite
+    shift-two coboundary descent is enough, because orbit residue and strip width force equality.
+    For general HT sources this separates local exactness from affine orbit conservation.
+12. **Finite-differential repair no-go.** No nonzero polynomial in the derivation can cancel the
+    orbit obstruction of two separated simple poles.  **Positive successor:** the critical-line
+    selector persists at every finite clock.  For general HT sources, differential grade and
+    translation-orbit grade are independent boundary invariants.
+13. **Safe-source exposure no-go.** The proved `+2` Xi identity fixes a positive filtered prime
+    source but does not itself manufacture an on-shell finite primitive.  **Positive successor:**
+    it canonically fixes the translation lattice and coefficient orientation.  The remaining
+    problem is a concrete regular source-cohomology descent, not a choice of coordinates.
+14. **Dihedral-symmetry no-go.** The reflected Mertens doublet is a valid free-pair integer sector
+    in the proved Gamma signed-reflection charge decomposition.  FE and Schwarz symmetry pair that
+    sector but do not annihilate it.  **Positive successor:** its integer coefficient is a canonical
+    bulk coordinate which the Euler--Gamma weld, not reflection alone, must kill.  This separates
+    free-orbit bulk charge from fixed-locus binary anomaly for general HT sources.
+15. **Unframed-cohomology no-go.** A symmetric rational quartet changes the completed `+2`
+    logarithmic source by `delta_2(logDeriv Q)`, an exact shift coboundary, while inserting an
+    off-critical orbit.  **Positive successor:** the exact safe-anchor primitive changes by a
+    nonzero rational charge and detects the insertion.  The required comparison is therefore a
+    framed relative cohomology theory; ordinary shift cohomology is provably too coarse.
 
 ## Smallest falsifiable next theorem
 
-The safe finite comparison square and its finite source-operator boundary symbol are now
-constructed:
+The safe finite comparison square and its finite source-operator boundary symbol are constructed:
 
 ```text
 Euler reflected tangent --J_N--> raw Gamma N-jet clock
@@ -228,14 +287,26 @@ Euler reflected tangent --J_N--> Gamma anomaly colligation.               (11)
 ```
 
 It commutes up to the explicit omitted-Taylor-tail anomaly, and its adjacent-resolution defect is
-the Gamma factorial Bianchi current.  The coefficient conormal now extends through the complete
+the Gamma factorial Bianchi current.  The coefficient conormal extends through the complete
 finite algebra generated by the logarithmic clock and positive Euler translations.  Every
-positive translation is corona-zero even after arbitrarily many finite log derivatives, while the
-surviving graded jet maps to the exact differentiated Gamma polar tower.  Therefore the smallest
-genuinely open theorem is sharper: construct a reflected singular completion of that graded
-module and prove that on a Xi zero orbit its FE and Schwarz transgressions enter the same Gamma
-unit cocycle with the same asymptotic while preserving affine support.  Failure kills the master
-conjecture without weakening RH or moving to another equivalent target.
+positive translation is corona-zero after arbitrarily many finite log derivatives, while the
+surviving graded jet maps to the exact differentiated Gamma polar tower.
+
+The Lean orbit theorem now isolates a smaller open statement.  Construct in the reflected singular
+completion a pre-divisor cochain `E_s` from the filtered von Mangoldt `+2` source and calibrated
+Gamma recurrence such that its regular on-shell boundary satisfies
+
+```text
+Xi(rho)=0 ==>
+PP(-rho)-PP(conjugate(rho)-1)=(T_2-I)E_rho.             (12)
+```
+
+No full equality of prime vectors, all clocks, or calibrated analytic sections is needed after
+`(12)`.  Orbit residue proves RH immediately.  Failure of a globally finite-support analytic
+primitive does not by itself kill the route: its nontrivial positive residue is that the correct
+HT object must be an orbit-graded relative boundary sheaf whose on-shell trace is finite.  Failure
+even in that source-selected singular completion kills this route without moving to another
+RH-equivalent target.
 
 ## Novelty and significance gate
 
@@ -260,6 +331,11 @@ postulated or read from the Xi divisor.
 - [x] coefficient polar transgression identified with the Gamma factorial current on paper
 - [x] coefficient conormal extended through the finite logarithmic differential-translation algebra
 - [x] all finite differential repairs of positive-shift corona blindness ruled out positively
+- [x] completed-source shift fixed canonically to `q=2`
+- [x] finite shift-two orbit-coboundary RH consumer formalized in Lean
+- [x] differential-clock stability of the orbit selector formalized in Lean
+- [ ] pre-divisor completed source coboundary descent proved
+- [ ] on-shell source primitive regularity proved without formal division by Xi
 - [ ] coefficient conormal extended to the intrinsic Euler--Gamma source-operator module
 - [ ] polar transgression lifted to the full framed source comparison
 - [ ] zero-orbit common-cocycle theorem proved

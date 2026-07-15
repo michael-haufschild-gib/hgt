@@ -33,6 +33,12 @@ It proves:
    `Dlog Q_(1/4,1)(0)=-608/425`;
 9. `Dlog xi_(1/4,1)(0)=Dlog xi(0)-608/425`;
 10. consequently the exact logarithmic sources of `xi_(1/4,1)` and `xi` differ at `s=0`.
+11. away from zeros at `s` and `s+2`, the shift-two logarithmic source obeys
+
+    ```text
+    delta_2 Dlog(Q_(a,b) xi)
+      =delta_2 Dlog(Q_(a,b))+delta_2 Dlog(xi).            (1)
+    ```
 
 The capstone `RHTower.exists_xi_symmetric_entire_offcritical_countermodel` specializes to
 `a=1/4`, `b=1`, proves `0<Re(rho)<1`, and packages all seven facts into one unconditional
@@ -51,6 +57,17 @@ exact correction rather than pass to a rational/DA quotient.  This does not prov
 zeta source has an RH-positive divisor, but it formalizes the gauge-breaking datum any such proof
 must use.
 
+There is now a sharper cohomological boundary.  Equation `(1)` proves that the correction becomes
+an exact coboundary after applying the completed shift-two defect.  Hence the unframed class of
+that defect modulo shift coboundaries is blind to the same off-critical quartet which the framed
+safe-anchor primitive detects by `-608/425`.  A live Euler--Gamma comparison must retain a
+calibrated primitive torsor, boundary condition, or equivalent source framing; ordinary shift
+cohomology is too coarse.
+
+This supplies a general HT lesson from the failed RH use: rational gauges can preserve an
+unframed constraint class while changing the exceptional divisor.  For constrained HT functions,
+the source framing is mathematical data, not a presentation choice.
+
 The theorem does not refute divisor-sensitive routes.  It also does not formalize the broader
 paper theorem that rational gauges preserve differential-translation matroids.  That claim stays
 at stage 2 until its differential-field equalities themselves are represented in Lean.
@@ -64,8 +81,7 @@ hypertranscendence arguments from silently assuming divisor recovery.
 ## Verification
 
 - `lake build GaloisForLFunctions.RHTower.XiRationalQuartetGauge` passed.
-- Scratch `#print axioms` for the capstone, real-anchor theorem, and all four exact-source marking
-  theorems reports only
+- Scratch `#print axioms` for the new shift-defect covariance theorems reports only
   `[propext, Classical.choice, Quot.sound]`.
 - The project formal lint passes with no active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
   declaration.
@@ -75,6 +91,8 @@ hypertranscendence arguments from silently assuming divisor recovery.
 - [x] 0 -> 1: explicit polynomial gauge and exact countermodel statement
 - [x] 1 -> 2: complete unconditional paper proof
 - [x] 2 -> 3: complete stated claim formalized in Lean; narrow build, axiom audit, and lint pass
+- [x] shift-two coboundary covariance formalized
+- [x] unframed-cohomology blindness paired with a framed-source positive residue
 - [ ] 3 -> 4: not a standalone publication target
 
 ## Log
@@ -83,3 +101,5 @@ hypertranscendence arguments from silently assuming divisor recovery.
   zero, real-axis gauge positivity, real-segment nonvanishing, and the existential capstone.
 - 2026-07-11 -- Formalized the nonzero exact logarithmic-source charge `-608/425`, its additive
   contribution to the gauged xi source, and source inequality at `s=0`.
+- 2026-07-15 -- Formalized shift-two logarithmic-defect covariance under quartet multiplication;
+  the ordinary coboundary class is gauge-blind while the calibrated primitive remains marked.

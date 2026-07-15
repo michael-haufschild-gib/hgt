@@ -205,4 +205,48 @@ theorem quartetGaugedXi_concrete_logDeriv_ne :
       _ = 0 := sub_self _
   norm_num at hc
 
+/-! ## Shift-cohomology blindness and the need for a source framing -/
+
+/-- The additive shift-two defect of a logarithmic source. -/
+noncomputable def shiftTwoLogDerivDefect (F : ℂ → ℂ) (s : ℂ) : ℂ :=
+  logDeriv F (s + 2) - logDeriv F s
+
+/-- A product changes its shift-two logarithmic source by the sum of the two factor defects.  Thus
+multiplication by a nonvanishing gauge changes the source defect by an exact shift coboundary. -/
+theorem shiftTwoLogDerivDefect_mul
+    (f g : ℂ → ℂ) (s : ℂ)
+    (hfs : f s ≠ 0) (hfs2 : f (s + 2) ≠ 0)
+    (hgs : g s ≠ 0) (hgs2 : g (s + 2) ≠ 0)
+    (hfd : DifferentiableAt ℂ f s) (hfd2 : DifferentiableAt ℂ f (s + 2))
+    (hgd : DifferentiableAt ℂ g s) (hgd2 : DifferentiableAt ℂ g (s + 2)) :
+    shiftTwoLogDerivDefect (fun z => f z * g z) s =
+      shiftTwoLogDerivDefect f s + shiftTwoLogDerivDefect g s := by
+  rw [shiftTwoLogDerivDefect, shiftTwoLogDerivDefect, shiftTwoLogDerivDefect,
+    logDeriv_mul (s + 2) hfs2 hgs2 hfd2 hgd2,
+    logDeriv_mul s hfs hgs hfd hgd]
+  ring
+
+/-- **Unframed shift-cohomology is rational-quartet blind.** Away from zeros of the two factors at
+the two sampled points, the shift-two logarithmic source of the quartet-gauged Xi differs from the
+Xi source by the exact shift-two defect of the rational gauge. -/
+theorem quartetGaugedXi_shiftTwoLogDerivDefect
+    (a b : ℝ) (s : ℂ)
+    (hQs : centeredQuartetGauge a b s ≠ 0)
+    (hQs2 : centeredQuartetGauge a b (s + 2) ≠ 0)
+    (hxis : xi s ≠ 0) (hxis2 : xi (s + 2) ≠ 0) :
+    shiftTwoLogDerivDefect (quartetGaugedXi a b) s =
+      shiftTwoLogDerivDefect (centeredQuartetGauge a b) s +
+        shiftTwoLogDerivDefect xi s := by
+  apply shiftTwoLogDerivDefect_mul
+  · exact hQs
+  · exact hQs2
+  · exact hxis
+  · exact hxis2
+  · unfold centeredQuartetGauge
+    fun_prop
+  · unfold centeredQuartetGauge
+    fun_prop
+  · exact xi_differentiable s
+  · exact xi_differentiable (s + 2)
+
 end RHTower

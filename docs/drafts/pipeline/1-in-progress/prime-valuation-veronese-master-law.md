@@ -222,7 +222,7 @@ that `log zeta` is differentially algebraically independent from every finite gh
    computes the complete relation ideal in this form.  A specialist literature verdict remains
    required before promotion as new scientific knowledge.
 
-## Positive RH consequence
+## Positive RH research target `[CONJECTURAL; EXCLUDED FROM THE PAPER THEOREM SURFACE]`
 
 For the zeta Euler source, every finite valuation window is a direct sum of differentially free
 Veronese layers, while the Euler logarithm is the canonical completion over all positive degrees.
@@ -258,6 +258,21 @@ The layer-kernel core is proved unconditionally in
 The module passes its direct check and targeted cached build.  Its principal theorems use only
 `propext`, `Classical.choice`, and `Quot.sound`.
 
+The full Hilbert layer is proved unconditionally in
+`HTGeometry/PrimeValuationVeroneseHilbert.lean`:
+
+1. `valuationTailHilbertFunction_eq_recurrent` identifies the complete valuation-tail Hilbert
+   function with the recurrent homogeneous evaluation ranks in every degree.
+2. `exists_homogeneous_eval_eq_of_card_sub_one_le` constructs sharp homogeneous finite-point
+   interpolation in degree `card(R)-1`.
+3. `recurrentHomogeneousHilbertFunction_mono` and
+   `recurrentHomogeneousHilbertFunction_eq_ncard_of_card_sub_one_le` prove monotonicity and exact
+   stabilization.
+4. `recurrentHilbertPivot_linearIndependent` and `recurrentHilbertPivot_spans` construct the
+   complete `Fin H(m)` basis and exact coordinates of every homogeneous observable.
+5. `recurringValueSet_eq_iff_homogeneousVanishingSubmodules_eq` proves injective homogeneous
+   tomography for normalized finite-range sources.
+
 The valuation-resolved differential-basis core is proved unconditionally in
 `HTGeometry/PrimeValuationVeroneseDifferentialBasis.lean`:
 
@@ -292,26 +307,25 @@ The geometric capstone is proved unconditionally in
 
 1. `finiteRange_observable_tailIndependent_iff` identifies tail independence of arbitrary
    finite-range observables with linear independence of their restrictions to the recurrent set.
-2. `RecurrentHomogeneousValuationPresentation.toTailPivotPresentation` converts homogeneous
-   coordinate bases and expansions on the recurrent geometry into the prime-valuation pivot data.
-3. `RecurrentHomogeneousValuationPresentation.complete_relationIdeal` proves the
-   nonlinearity--valuation completeness statement: the homogeneous coordinate reductions are all
-   differential relations, with no additional nonlinear or cross-degree relations.
-4. `RecurrentHomogeneousValuationPresentation.differentialBasis` gives the exact global
-   differential basis statement.
+2. `fullRecurrentHilbertValuationPresentation` constructs the complete basis and all degree
+   monomials rather than assuming a presented spanning family.
+3. `fullRecurrentHilbert_pivotPalette_card` proves the exact finite-window Hilbert-rank sum.
+4. `fullRecurrentHilbert_complete_relationIdeal` proves the complete relation ideal for the full
+   monomial layer, with no additional nonlinear or cross-degree relations.
+5. `fullRecurrentHilbert_differentialBasis_and_rank` gives the exact differential basis, generated
+   field, and rank statement in one capstone.
 
-All four modules pass direct checks and targeted cached builds.  Their principal theorems use
+All five modules pass direct checks and the exact cached capstone build. Their principal theorems use
 only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Open core
 
-1. Formalize basis existence from the full degree-`m` monomial spanning family, polarization, and
-   equality of the reduced valuation relation spectrum with the full homogeneous ideal.
-2. Transfer the complete formal-carrier relation theorem to actual analytic Dirichlet germs and
+1. Transfer the complete formal-carrier relation theorem to actual analytic Dirichlet germs and
    prove basis independence of the resulting analytic presentation.
-3. Formalize Hilbert-function stabilization, interpolation depth, the slope law, and the cofinal
-   Stone reconstruction/entropy consequence.
-4. Audit the exact result against differential algebra of arithmetic functions, generalized Euler
+2. Formalize polarization and Euler-ghost realization of the full homogeneous monomial layer.
+3. Formalize the Hilbert-slope law and the cofinal Stone reconstruction/entropy consequence.
+4. Prove or retire the infinite-completion reflection target before drawing any RH consequence.
+5. Audit the exact result against differential algebra of arithmetic functions, generalized Euler
    products, big-Witt/symmetric-function theory, and algebraic independence in the Selberg class.
 
 ## Gates

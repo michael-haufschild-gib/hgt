@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.PrimeValuationVeroneseKernel
+import GaloisForLFunctions.HTGeometry.PrimeValuationVeroneseHilbert
 import GaloisForLFunctions.HTGeometry.PrimeValuationVeroneseRelationIdeal
 
 /-!
@@ -44,6 +44,70 @@ structure RecurrentHomogeneousValuationPresentation
   dependentRecurringExpansion : ∀ r q (v : recurringValueSet x),
     eval v.1 (dependent r q).1 =
       ∑ j, coefficient r q j * eval v.1 (pivot r j).1
+
+/-- Universe-lifted full Hilbert index, so the pivot alphabet inhabits the same universe as the
+ambient finite variable type. -/
+abbrev fullRecurrentHilbertIndex
+    {P : Type*} {σ : Type u} (x : P → σ → ℂ) (m : ℕ) : Type u :=
+  ULift.{u} (recurrentHilbertIndex x m)
+
+/-- The complete recurrent evaluation basis reindexed in the ambient universe. -/
+noncomputable def fullRecurrentEvaluationBasis
+    {P : Type*} {σ : Type u} [Fintype σ] (x : P → σ → ℂ) (m : ℕ) :
+    Module.Basis (fullRecurrentHilbertIndex x m) ℂ
+      (LinearMap.range (homogeneousRecurringEvaluation x m)) :=
+  (recurrentEvaluationBasis x m).reindex Equiv.ulift.symm
+
+/-- A homogeneous polynomial lift of one universe-lifted full Hilbert basis vector. -/
+noncomputable def fullRecurrentHilbertPivot
+    {P : Type*} {σ : Type u} [Fintype σ] (x : P → σ → ℂ) (m : ℕ)
+    (j : fullRecurrentHilbertIndex x m) : homogeneousSubmodule σ ℂ m :=
+  Classical.choose (fullRecurrentEvaluationBasis x m j).2
+
+theorem homogeneousRecurringEvaluation_fullRecurrentHilbertPivot
+    {P : Type*} {σ : Type u} [Fintype σ] (x : P → σ → ℂ) (m : ℕ)
+    (j : fullRecurrentHilbertIndex x m) :
+    homogeneousRecurringEvaluation x m (fullRecurrentHilbertPivot x m j) =
+      (fullRecurrentEvaluationBasis x m j).1 :=
+  Classical.choose_spec (fullRecurrentEvaluationBasis x m j).2
+
+theorem fullRecurrentHilbertPivot_linearIndependent
+    {P : Type*} {σ : Type u} [Fintype σ] (x : P → σ → ℂ) (m : ℕ) :
+    LinearIndependent ℂ (fun j : fullRecurrentHilbertIndex x m =>
+      fun v : recurringValueSet x => eval v.1 (fullRecurrentHilbertPivot x m j).1) := by
+  have hLI := (fullRecurrentEvaluationBasis x m).linearIndependent.map'
+    (LinearMap.range (homogeneousRecurringEvaluation x m)).subtype
+    (LinearMap.ker_eq_bot.mpr Subtype.val_injective)
+  change LinearIndependent ℂ (fun j : fullRecurrentHilbertIndex x m =>
+    homogeneousRecurringEvaluation x m (fullRecurrentHilbertPivot x m j))
+  simpa only [homogeneousRecurringEvaluation_fullRecurrentHilbertPivot] using hLI
+
+noncomputable def fullRecurrentHilbertCoefficient
+    {P : Type*} {σ : Type u} [Fintype σ] (x : P → σ → ℂ) (m : ℕ)
+    (Q : homogeneousSubmodule σ ℂ m) (j : fullRecurrentHilbertIndex x m) : ℂ :=
+  (fullRecurrentEvaluationBasis x m).repr
+    ⟨homogeneousRecurringEvaluation x m Q, ⟨Q, rfl⟩⟩ j
+
+theorem fullRecurrentHilbertPivot_spans
+    {P : Type*} {σ : Type u} [Fintype σ] (x : P → σ → ℂ) (m : ℕ)
+    (Q : homogeneousSubmodule σ ℂ m) :
+    ∀ v : recurringValueSet x,
+      eval v.1 Q.1 = ∑ j, fullRecurrentHilbertCoefficient x m Q j *
+        eval v.1 (fullRecurrentHilbertPivot x m j).1 := by
+  let y : LinearMap.range (homogeneousRecurringEvaluation x m) :=
+    ⟨homogeneousRecurringEvaluation x m Q, ⟨Q, rfl⟩⟩
+  have hsum := (fullRecurrentEvaluationBasis x m).sum_repr y
+  have hsum' := congrArg
+    (LinearMap.range (homogeneousRecurringEvaluation x m)).subtype hsum
+  simp only [map_sum, map_smul] at hsum'
+  intro v
+  have hv := congrFun hsum' v
+  change (homogeneousRecurringEvaluation x m Q) v =
+    ∑ j, fullRecurrentHilbertCoefficient x m Q j *
+      (homogeneousRecurringEvaluation x m (fullRecurrentHilbertPivot x m j)) v
+  simp_rw [homogeneousRecurringEvaluation_fullRecurrentHilbertPivot]
+  simpa only [y, fullRecurrentHilbertCoefficient, Finset.sum_apply,
+    Pi.smul_apply, smul_eq_mul] using hv.symm
 
 /-- The prime coefficient column obtained by evaluating a homogeneous observable on the source
 sequence. -/
@@ -147,6 +211,38 @@ theorem RecurrentHomogeneousValuationPresentation.finrank_tailQuotient_eq_card
   rw [finrank_homogeneousTailQuotient_eq_recurringRange x hrange (r + 1)]
   exact P.finrank_recurringRange_eq_card r
 
+/-- The full Hilbert presentation in a finite valuation window.  Its pivot alphabet in degree
+`r+1` is exactly `Fin H(r+1)`, and its dependent alphabet contains every degree-`r+1` monomial. -/
+noncomputable def fullRecurrentHilbertValuationPresentation
+    {d : ℕ} {σ : Type u} [Fintype σ] (x : Nat.Primes → σ → ℂ) :
+    RecurrentHomogeneousValuationPresentation d σ
+      (fun r => fullRecurrentHilbertIndex x (r + 1))
+      (fun r => homogeneousMonomialIndex σ (r + 1)) x where
+  pivot r j := fullRecurrentHilbertPivot x (r + 1) j
+  dependent r q := homogeneousMonomial (r + 1) q
+  coefficient r q j := fullRecurrentHilbertCoefficient x (r + 1)
+    (homogeneousMonomial (r + 1) q) j
+  pivotRecurringIndependent r :=
+    fullRecurrentHilbertPivot_linearIndependent x (r + 1)
+  pivotRecurringSpans r Q :=
+    ⟨fullRecurrentHilbertCoefficient x (r + 1) Q,
+      fullRecurrentHilbertPivot_spans x (r + 1) Q⟩
+  dependentRecurringExpansion r q :=
+    fullRecurrentHilbertPivot_spans x (r + 1) (homogeneousMonomial (r + 1) q)
+
+/-- In the full presentation, the complete degree-`r+1` tail quotient has dimension exactly the
+Hilbert number used to index its pivots. -/
+theorem fullRecurrentHilbert_finrank_tailQuotient
+    {d : ℕ} {σ : Type u} [Fintype σ]
+    (x : Nat.Primes → σ → ℂ) (hrange : (Set.range x).Finite) (r : Fin d) :
+    Module.finrank ℂ
+        (homogeneousSubmodule σ ℂ (r + 1) ⧸
+          homogeneousTailRelationSubmodule x (r + 1)) =
+      recurrentHomogeneousHilbertFunction x (r + 1) := by
+  simpa [fullRecurrentHilbertIndex, recurrentHilbertIndex] using
+    (fullRecurrentHilbertValuationPresentation (d := d) x).finrank_tailQuotient_eq_card
+      hrange r
+
 /-- Evaluation of the chosen recurrent homogeneous basis is independent modulo finite prime
 support. -/
 theorem RecurrentHomogeneousValuationPresentation.pivotColumn_tailIndependent
@@ -246,6 +342,72 @@ theorem RecurrentHomogeneousValuationPresentation.differentialBasis
           (Set.range (T.pivotPalette α)) := by
   dsimp only
   exact (P.toTailPivotPresentation hrange).differentialBasis α hdistinct
+
+/-- The number of full-Hilbert pivot carriers in a finite valuation--shift window is the weighted
+sum of the exact recurrent Hilbert numbers. -/
+theorem fullRecurrentHilbert_pivotPalette_card
+    {d : ℕ} {σ : Type u} [Fintype σ]
+    {A : Fin d → Type u} [∀ r, Fintype (A r)]
+    (x : Nat.Primes → σ → ℂ) :
+    Fintype.card (Σ r : Fin d, fullRecurrentHilbertIndex x (r + 1) × A r) =
+      ∑ r : Fin d,
+        recurrentHomogeneousHilbertFunction x (r + 1) * Fintype.card (A r) := by
+  rw [Fintype.card_sigma]
+  apply Finset.sum_congr rfl
+  intro r hr
+  simp [recurrentHilbertIndex]
+
+/-- **Full Hilbert complete relation theorem.**  In every finite valuation window, use all
+degree-`m` monomials and a chosen `Fin H(m)` recurrent basis.  The prolonged affine Hilbert
+coordinate reductions generate the entire differential relation ideal; there are no additional
+nonlinear or cross-valuation relations. -/
+theorem fullRecurrentHilbert_complete_relationIdeal
+    {d : ℕ} {σ : Type u} [Fintype σ]
+    {A : Fin d → Type u}
+    [∀ r, Fintype (A r)] [∀ r, DecidableEq (A r)] [∀ r, Nonempty (A r)]
+    (x : Nat.Primes → σ → ℂ)
+    [Nonempty (Σ r : Fin d, fullRecurrentHilbertIndex x (r + 1) × A r)]
+    (hrange : (Set.range x).Finite)
+    (α : ∀ r, A r → ℂ)
+    (hdistinct : ∀ r, Function.Injective (fun a ↦ (α r a).re)) :
+    let P := fullRecurrentHilbertValuationPresentation (d := d) x
+    let T := P.toTailPivotPresentation hrange
+    GaloisForLFunctions.differentialRelationIdeal
+        (C := finitePrimeRationalCoefficientField)
+        (Sum.elim (T.pivotPalette α) (T.dependentPalette α)) =
+      differentialPivotRelationIdeal T.paletteMatrix (T.baseCorrection α) := by
+  dsimp only
+  exact (fullRecurrentHilbertValuationPresentation (d := d) x).complete_relationIdeal
+    hrange α hdistinct
+
+/-- The full-Hilbert pivot carriers are a differential transcendence basis of the field generated
+by every monomial carrier in the finite window, and their exact cardinality is the Hilbert-rank
+sum. -/
+theorem fullRecurrentHilbert_differentialBasis_and_rank
+    {d : ℕ} {σ : Type u} [Fintype σ]
+    {A : Fin d → Type u}
+    [∀ r, Fintype (A r)] [∀ r, DecidableEq (A r)] [∀ r, Nonempty (A r)]
+    (x : Nat.Primes → σ → ℂ)
+    [Nonempty (Σ r : Fin d, fullRecurrentHilbertIndex x (r + 1) × A r)]
+    (hrange : (Set.range x).Finite)
+    (α : ∀ r, A r → ℂ)
+    (hdistinct : ∀ r, Function.Injective (fun a ↦ (α r a).re)) :
+    let P := fullRecurrentHilbertValuationPresentation (d := d) x
+    let T := P.toTailPivotPresentation hrange
+    GaloisForLFunctions.DifferentialIndependent finitePrimeRationalCoefficientField
+        (T.pivotPalette α) ∧
+      GaloisForLFunctions.differentialAdjoin finitePrimeRationalCoefficientField
+          (Set.range (Sum.elim (T.pivotPalette α) (T.dependentPalette α))) =
+        GaloisForLFunctions.differentialAdjoin finitePrimeRationalCoefficientField
+          (Set.range (T.pivotPalette α)) ∧
+      Fintype.card (Σ r : Fin d, fullRecurrentHilbertIndex x (r + 1) × A r) =
+        ∑ r : Fin d,
+          recurrentHomogeneousHilbertFunction x (r + 1) * Fintype.card (A r) := by
+  dsimp only
+  obtain ⟨hind, hadjoin⟩ :=
+    (fullRecurrentHilbertValuationPresentation (d := d) x).differentialBasis
+      hrange α hdistinct
+  exact ⟨hind, hadjoin, fullRecurrentHilbert_pivotPalette_card x⟩
 
 end
 

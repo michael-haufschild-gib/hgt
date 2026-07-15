@@ -403,6 +403,44 @@ theorem tendsto_translateDifferenceQuotient
   have hadd := herr.add hconst
   simpa only [translateDifferenceQuotientError, d, sub_add_cancel, zero_add] using hadd
 
+/-- **Closed source modules absorb the infinitesimal translation constraint.**  If all sufficiently
+small translation increments of a Schwartz source lie in one fixed closed real-linear module,
+then the translated derivative lies in that same module.  Thus accumulating finite translation
+constraints on a hypertranscendental source must escape every fixed closed finite-dimensional
+carrier unless that carrier already contains the infinitesimal source direction. -/
+theorem translatedDeriv_mem_of_eventually_increment_mem
+    (f : 𝓢(ℝ, ℂ)) (a : ℝ)
+    (W : Submodule ℝ 𝓢(ℝ, ℂ)) (hW : IsClosed (W : Set 𝓢(ℝ, ℂ)))
+    (hmem : ∀ᶠ h : ℝ in 𝓝[≠] 0,
+      translateCLM ℂ (a + h) f - translateCLM ℂ a f ∈ W) :
+    translateCLM ℂ a (derivCLM ℂ ℂ f) ∈ W := by
+  have hquot : ∀ᶠ h : ℝ in 𝓝[≠] 0,
+      translateDifferenceQuotient a h f ∈ W := by
+    filter_upwards [hmem] with h hh
+    simpa [translateDifferenceQuotient] using W.smul_mem (h⁻¹ : ℝ) hh
+  exact hW.mem_of_tendsto (tendsto_translateDifferenceQuotient f a) hquot
+
+/-- Sequence form of `translatedDeriv_mem_of_eventually_increment_mem`.  It is enough that one
+nonzero sequence of translation steps tends to zero and that the corresponding increments all
+eventually lie in the same closed source module. -/
+theorem translatedDeriv_mem_of_accumulating_increment_mem
+    (f : 𝓢(ℝ, ℂ)) (a : ℝ) (h : ℕ → ℝ)
+    (W : Submodule ℝ 𝓢(ℝ, ℂ)) (hW : IsClosed (W : Set 𝓢(ℝ, ℂ)))
+    (hzero : Tendsto h atTop (𝓝 0))
+    (hne : ∀ᶠ n : ℕ in atTop, h n ≠ 0)
+    (hmem : ∀ᶠ n : ℕ in atTop,
+      translateCLM ℂ (a + h n) f - translateCLM ℂ a f ∈ W) :
+    translateCLM ℂ a (derivCLM ℂ ℂ f) ∈ W := by
+  have hpunct : Tendsto h atTop (𝓝[≠] 0) := by
+    rw [nhdsWithin]
+    exact tendsto_inf.2 ⟨hzero, tendsto_principal.2 hne⟩
+  have hquot : ∀ᶠ n : ℕ in atTop,
+      translateDifferenceQuotient a (h n) f ∈ W := by
+    filter_upwards [hmem] with n hn
+    simpa [translateDifferenceQuotient] using W.smul_mem ((h n)⁻¹ : ℝ) hn
+  exact hW.mem_of_tendsto
+    ((tendsto_translateDifferenceQuotient f a).comp hpunct) hquot
+
 /-- Strong continuity of the translation orbit in the translation parameter. -/
 theorem tendsto_translateCLM_add_zero (f : 𝓢(ℝ, ℂ)) (a : ℝ) :
     Tendsto (fun h : ℝ => translateCLM ℂ (a + h) f)

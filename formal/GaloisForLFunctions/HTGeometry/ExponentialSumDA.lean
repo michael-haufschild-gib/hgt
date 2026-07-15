@@ -53,7 +53,8 @@ theorem iteratedDeriv_finset_expSum {ι : Type*} [DecidableEq ι]
         hterm, ih, Finset.sum_insert hmt]
 
 open MvPolynomial in
-theorem differentiallyAlgebraic_finset_expSum (s : Finset ℕ) (a c : ℕ → ℂ) :
+theorem differentiallyAlgebraic_finset_expSum_general
+    {ι : Type*} [DecidableEq ι] (s : Finset ι) (a c : ι → ℂ) :
     DifferentiallyAlgebraic (fun x => ∑ i ∈ s, a i * Complex.exp (c i * x)) := by
   set N := s.card with hN
   set p : Polynomial ℂ := ∏ i ∈ s, (Polynomial.X - Polynomial.C (c i)) with hp
@@ -102,6 +103,12 @@ theorem differentiallyAlgebraic_finset_expSum (s : Finset ℕ) (a c : ℕ → �
       rw [Polynomial.eval_eq_sum_range' (by omega : p.natDegree < N + 1)]
       rw [Finset.sum_range fun j => p.coeff j * c i ^ j]
     rw [heval, hroot, mul_zero]
+
+/-- Every finite complex exponential sum is differentially algebraic, with no restriction on the
+index type.  This is the reusable finite-spectrum form of the theorem. -/
+theorem differentiallyAlgebraic_finset_expSum (s : Finset ℕ) (a c : ℕ → ℂ) :
+    DifferentiallyAlgebraic (fun x => ∑ i ∈ s, a i * Complex.exp (c i * x)) :=
+  differentiallyAlgebraic_finset_expSum_general s a c
 
 /-- **Every finite truncation of a Hurwitz-type Dirichlet series is differentially algebraic.**  For a
 finite index set `s`, the partial sum `∑_{n∈s} exp(−x·log(n+a)) = ∑_{n∈s} (n+a)^{−x}` is differentially

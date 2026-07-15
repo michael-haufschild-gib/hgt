@@ -1,4 +1,6 @@
 import GaloisForLFunctions.HTGeometry.GammaPeriodicConstraintCorona
+import GaloisForLFunctions.HTGeometry.DifferenceDifferential
+import GaloisForLFunctions.HTGeometry.ToricLogTail
 
 /-!
 # Boundary tomography for rank-one difference coefficients
@@ -16,6 +18,8 @@ The rank-one output is universal; the orientation of that line is source-specifi
 namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
+
+open scoped Differential
 
 /-- Finite raw-jet prolongation of multiplication by a scalar coefficient whose differential jet
 at the observation point is `c`.  This is the binomial Leibniz matrix. -/
@@ -194,6 +198,86 @@ theorem rankOneCoefficientJet_eq_of_pairedBoundaryCurrent_eq (c d : ℕ → ℂ)
     Nat.cast_one, div_one] at hvalue
   apply mul_left_cancel₀ _ hvalue
   exact_mod_cast Nat.choose_ne_zero (Nat.le_of_lt k.isLt)
+
+/-- **The whole boundary tower is faithful on the positive source jet.**  Equality of every
+oriented paired current reconstructs every positive derivative of the coefficient, although the
+unoriented rank of every current is universally at most one. -/
+theorem rankOneCoefficientPositiveJet_eq_of_pairedBoundaryCurrent_tower_eq
+    (c d : ℕ → ℂ)
+    (h : ∀ n : ℕ, rankOneCoefficientPairedBoundaryCurrent c n =
+      rankOneCoefficientPairedBoundaryCurrent d n)
+    (r : ℕ) :
+    c (r + 1) = d (r + 1) := by
+  simpa using rankOneCoefficientJet_eq_of_pairedBoundaryCurrent_eq
+    c d r (h r) (⟨0, Nat.succ_pos r⟩ : Fin (r + 1))
+
+/-- **Complete colligation tomography.**  The bulk coefficient value together with the entire
+oriented boundary-current tower reconstructs the full scalar source germ.  Boundary rank alone is
+blind, while the bulk-plus-oriented-tower object is faithful. -/
+theorem rankOneCoefficient_eq_of_colligationTower_eq
+    (c d : ℕ → ℂ) (hbulk : c 0 = d 0)
+    (hboundary : ∀ n : ℕ, rankOneCoefficientPairedBoundaryCurrent c n =
+      rankOneCoefficientPairedBoundaryCurrent d n) :
+    c = d := by
+  funext r
+  cases r with
+  | zero => exact hbulk
+  | succ r =>
+      exact rankOneCoefficientPositiveJet_eq_of_pairedBoundaryCurrent_tower_eq
+        c d hboundary r
+
+/-! ### Gauge quotient and differential transgression -/
+
+/-- Difference automorphisms commuting with the derivation also commute with logarithmic current. -/
+theorem rankOneGaugeLogCurrent_aut
+    {ι C K : Type*} [Field C] [Field K] [Algebra C K] [Differential K]
+    (S : CommutingDifferenceDifferentialField ι C K) (i : ι) (x : K) :
+    GaloisForLFunctions.toricLogCurrent (S.aut i x) =
+      S.aut i (GaloisForLFunctions.toricLogCurrent x) := by
+  simp [GaloisForLFunctions.toricLogCurrent, S.aut_deriv]
+
+/-- Gauge action on the coefficient of a rank-one difference equation: if `σ(f)=a f` and the
+solution chart is multiplied by `g`, then the new coefficient is `a σ(g)/g`. -/
+def rankOneGaugeCoefficient
+    {ι C K : Type*} [Field C] [Field K] [Algebra C K] [Differential K]
+    (S : CommutingDifferenceDifferentialField ι C K) (i : ι) (a g : K) : K :=
+  a * S.aut i g / g
+
+/-- Logarithmic current converts division of nonzero field elements into subtraction. -/
+theorem rankOneGaugeLogCurrent_div
+    {K : Type*} [Field K] [Differential K]
+    (x y : K) (hx : x ≠ 0) (hy : y ≠ 0) :
+    GaloisForLFunctions.toricLogCurrent (x / y) =
+      GaloisForLFunctions.toricLogCurrent x -
+        GaloisForLFunctions.toricLogCurrent y := by
+  simp only [GaloisForLFunctions.toricLogCurrent]
+  have hdiv := (Differential.deriv : Derivation ℤ K K).leibniz_div x y
+  rw [hdiv]
+  simp only [smul_eq_mul]
+  field_simp [hx, hy]
+
+/-- **Gauge transgression law.**  Multiplicative gauge change becomes an additive difference
+coboundary after logarithmic current:
+
+`dlog(a σ(g)/g) = dlog(a) + (σ-1)dlog(g)`.
+
+Thus the raw oriented seam is chart-dependent, while its logarithmic-current class modulo
+difference defects is gauge invariant. -/
+theorem rankOneGaugeLogCurrent
+    {ι C K : Type*} [Field C] [Field K] [Algebra C K] [Differential K]
+    (S : CommutingDifferenceDifferentialField ι C K) (i : ι)
+    (a g : K) (ha : a ≠ 0) (hg : g ≠ 0) :
+    GaloisForLFunctions.toricLogCurrent (rankOneGaugeCoefficient S i a g) =
+      GaloisForLFunctions.toricLogCurrent a +
+        S.defect i (GaloisForLFunctions.toricLogCurrent g) := by
+  rw [rankOneGaugeCoefficient,
+    rankOneGaugeLogCurrent_div _ _
+      (mul_ne_zero ha ((map_ne_zero (S.aut i)).2 hg)) hg,
+    GaloisForLFunctions.toricLogCurrent_mul _ _ ha
+      ((map_ne_zero (S.aut i)).2 hg),
+    rankOneGaugeLogCurrent_aut]
+  simp [CommutingDifferenceDifferentialField.defect]
+  abel
 
 end
 

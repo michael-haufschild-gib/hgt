@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HTGeometry.HypertranscendentalClockBoundary
 import Mathlib.LinearAlgebra.Finsupp.Supported
+import Mathlib.RingTheory.Kaehler.JacobiZariski
+import Mathlib.RingTheory.Smooth.Field
 
 /-!
 # The filtered Kähler clock and its principal symbol
@@ -19,69 +21,76 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+open scoped TensorProduct
+
 /-- The first `N` clock covectors, represented by finitely supported coefficient packets. -/
-def kaehlerClockFiltration (K : Type*) [Field K] (N : ℕ) :
+def kaehlerClockFiltration (K : Type*) [Ring K] (N : ℕ) :
     Submodule K (ℕ →₀ K) :=
   Finsupp.supported K K (Set.Iio N)
 
-theorem kaehlerClockFiltration_mono (K : Type*) [Field K] {M N : ℕ} (hMN : M ≤ N) :
+theorem kaehlerClockFiltration_mono (K : Type*) [Ring K] {M N : ℕ} (hMN : M ≤ N) :
     kaehlerClockFiltration K M ≤ kaehlerClockFiltration K N :=
   Finsupp.supported_mono (Set.Iio_subset_Iio hMN)
 
 /-- The coefficient part of the Lie derivative on a free clock packet. -/
 def kaehlerClockCoefficientDeriv
-    {K : Type*} [Field K] (δ : K →+ K) : (ℕ →₀ K) →+ (ℕ →₀ K) :=
+    {K : Type*} [Ring K] (δ : K →+ K) : (ℕ →₀ K) →+ (ℕ →₀ K) :=
   Finsupp.mapRange.addMonoidHom δ
+
+/-- The forward clock embedding, bundled as an additive map. -/
+def kaehlerClockForward
+    {K : Type*} [Ring K] : (ℕ →₀ K) →+ (ℕ →₀ K) :=
+  Finsupp.embDomain.addMonoidHom tateClockSucc
 
 /-- The filtered Lie derivative `a_n d(j_n) ↦ δ(a_n)d(j_n) + a_n d(j_(n+1))`. -/
 def kaehlerClockLie
-    {K : Type*} [Field K] (δ : K →+ K) : (ℕ →₀ K) →+ (ℕ →₀ K) where
-  toFun a := kaehlerClockCoefficientDeriv δ a + tateClockIndForward a
-  map_zero' := by simp [kaehlerClockCoefficientDeriv]
-  map_add' a b := by
-    simp only [map_add]
-    abel
+    {K : Type*} [Ring K] (δ : K →+ K) : (ℕ →₀ K) →+ (ℕ →₀ K) where
+  toFun a := kaehlerClockCoefficientDeriv δ a + kaehlerClockForward a
+  map_zero' := by simp
+  map_add' a b := by simp only [map_add, add_add_add_comm]
 
 @[simp] theorem kaehlerClockLie_apply_zero
-    {K : Type*} [Field K] (δ : K →+ K) (a : ℕ →₀ K) :
+    {K : Type*} [Ring K] (δ : K →+ K) (a : ℕ →₀ K) :
     kaehlerClockLie δ a 0 = δ (a 0) := by
-  simp [kaehlerClockLie, kaehlerClockCoefficientDeriv]
+  change δ (a 0) + tateClockIndForward a 0 = δ (a 0)
+  simp
 
 @[simp] theorem kaehlerClockLie_apply_succ
-    {K : Type*} [Field K] (δ : K →+ K) (a : ℕ →₀ K) (n : ℕ) :
+    {K : Type*} [Ring K] (δ : K →+ K) (a : ℕ →₀ K) (n : ℕ) :
     kaehlerClockLie δ a (n + 1) = δ (a (n + 1)) + a n := by
-  simp [kaehlerClockLie, kaehlerClockCoefficientDeriv]
+  change δ (a (n + 1)) + tateClockIndForward a (n + 1) = δ (a (n + 1)) + a n
+  simp
 
 /-- The Lie derivative raises the clock filtration by at most one. -/
 theorem kaehlerClockLie_mem_succ
-    {K : Type*} [Field K] (δ : K →+ K) {N : ℕ} {a : ℕ →₀ K}
+    {K : Type*} [Ring K] (δ : K →+ K) {N : ℕ} {a : ℕ →₀ K}
     (ha : a ∈ kaehlerClockFiltration K N) :
     kaehlerClockLie δ a ∈ kaehlerClockFiltration K (N + 1) := by
   rw [kaehlerClockFiltration, Finsupp.mem_supported'] at ha ⊢
   intro i hi
   cases i with
   | zero =>
-      have hN : N ≤ 0 := by simpa using hi
-      have ha0 : a 0 = 0 := ha 0 (by omega)
-      simp [ha0]
+      simp at hi
   | succ i =>
-      have hNi : N ≤ i := by omega
-      have hai : a i = 0 := ha i (by omega)
-      have hais : a (i + 1) = 0 := ha (i + 1) (by omega)
+      simp only [Set.mem_Iio, not_lt, Nat.succ_le_succ_iff] at hi
+      have hai : a i = 0 := ha i (by simpa [Set.mem_Iio, not_lt] using hi)
+      have hais : a (i + 1) = 0 := ha (i + 1) (by
+        simp only [Set.mem_Iio, not_lt]
+        omega)
       simp [hai, hais]
 
 /-- The `N`-th coefficient on the first `N+1` clock layers. -/
-def kaehlerClockTopCoordinate (K : Type*) [Field K] (N : ℕ) :
+def kaehlerClockTopCoordinate (K : Type*) [Ring K] (N : ℕ) :
     kaehlerClockFiltration K (N + 1) →ₗ[K] K :=
   (Finsupp.lapply N).comp (kaehlerClockFiltration K (N + 1)).subtype
 
 /-- The earlier filtration, regarded inside the next finite clock cut. -/
-def kaehlerClockPreviousFiltration (K : Type*) [Field K] (N : ℕ) :
+def kaehlerClockPreviousFiltration (K : Type*) [Ring K] (N : ℕ) :
     Submodule K (kaehlerClockFiltration K (N + 1)) :=
   (kaehlerClockFiltration K N).comap (kaehlerClockFiltration K (N + 1)).subtype
 
 theorem kaehlerClockPreviousFiltration_eq_ker_topCoordinate
-    (K : Type*) [Field K] (N : ℕ) :
+    (K : Type*) [Ring K] (N : ℕ) :
     kaehlerClockPreviousFiltration K N = LinearMap.ker (kaehlerClockTopCoordinate K N) := by
   ext a
   rw [LinearMap.mem_ker]
@@ -93,57 +102,59 @@ theorem kaehlerClockPreviousFiltration_eq_ker_topCoordinate
     rw [kaehlerClockPreviousFiltration]
     apply (Finsupp.mem_supported' K a.1).mpr
     intro i hi
+    simp only [Set.mem_Iio, not_lt] at hi
     have hai : a.1 i = 0 := by
-      have hle : N ≤ i := by simpa using hi
       by_cases hEq : i = N
       · subst i
         exact ha
-      · have hNlt : N < i := lt_of_le_of_ne hle (Ne.symm hEq)
-        exact (Finsupp.mem_supported' K a.1).mp a.2 i (by omega)
+      · apply (Finsupp.mem_supported' K a.1).mp a.2 i
+        simp only [Set.mem_Iio, not_lt]
+        omega
     exact hai
 
-/-- The `N`-th associated-graded clock line. -/
-abbrev KaehlerClockGradedLine (K : Type*) [Field K] (N : ℕ) :=
-  kaehlerClockFiltration K (N + 1) ⧸ kaehlerClockPreviousFiltration K N
+/-- The `N`-th homogeneous Kähler clock line `K e_N`. -/
+def kaehlerClockGradedLine (K : Type*) [Ring K] (N : ℕ) :
+    Submodule K (ℕ →₀ K) :=
+  LinearMap.range (Finsupp.lsingle N : K →ₗ[K] ℕ →₀ K)
 
-/-- Coordinate on the `N`-th associated-graded line. -/
-def kaehlerClockGradedCoordinate (K : Type*) [Field K] (N : ℕ) :
-    KaehlerClockGradedLine K N →ₗ[K] K :=
-  (kaehlerClockPreviousFiltration K N).liftQ
-    (kaehlerClockTopCoordinate K N)
-    (by rw [kaehlerClockPreviousFiltration_eq_ker_topCoordinate])
+/-- The `N`-th line lies in the first `N+1` clock covectors. -/
+theorem kaehlerClockGradedLine_le_filtration
+    (K : Type*) [Ring K] (N : ℕ) :
+    kaehlerClockGradedLine K N ≤ kaehlerClockFiltration K (N + 1) := by
+  rintro a ⟨c, rfl⟩
+  exact Finsupp.single_mem_supported K c (by simp)
 
-theorem kaehlerClockGradedCoordinate_bijective
-    (K : Type*) [Field K] (N : ℕ) :
-    Function.Bijective (kaehlerClockGradedCoordinate K N) := by
-  constructor
-  · intro a b hab
-    apply Submodule.Quotient.eq
-    refine (kaehlerClockPreviousFiltration_eq_ker_topCoordinate K N).trans_le ?_
-    rw [LinearMap.mem_ker]
-    exact sub_eq_zero.mpr hab
-  · intro c
-    let e : kaehlerClockFiltration K (N + 1) :=
-      ⟨Finsupp.single N c, Finsupp.single_mem_supported K c (by simp)⟩
-    refine ⟨Submodule.Quotient.mk e, ?_⟩
-    simp [kaehlerClockGradedCoordinate, kaehlerClockTopCoordinate, e]
+/-- Coordinate on the `N`-th homogeneous clock line. -/
+def kaehlerClockGradedCoordinate (K : Type*) [Ring K] (N : ℕ) :
+    kaehlerClockGradedLine K N →ₗ[K] K :=
+  (Finsupp.lapply N).comp (kaehlerClockGradedLine K N).subtype
 
-/-- Every associated-graded Kähler clock layer is canonically one-dimensional. -/
+/-- Every homogeneous Kähler clock layer is canonically one-dimensional. -/
 noncomputable def kaehlerClockGradedCoordinateEquiv
-    (K : Type*) [Field K] (N : ℕ) :
-    KaehlerClockGradedLine K N ≃ₗ[K] K :=
-  LinearEquiv.ofBijective (kaehlerClockGradedCoordinate K N)
-    (kaehlerClockGradedCoordinate_bijective K N)
+    (K : Type*) [Ring K] (N : ℕ) :
+    kaehlerClockGradedLine K N ≃ₗ[K] K :=
+  LinearEquiv.ofBijective (kaehlerClockGradedCoordinate K N) <| by
+    constructor
+    · rintro ⟨a, ha⟩ ⟨b, hb⟩ hab
+      rcases ha with ⟨c, rfl⟩
+      rcases hb with ⟨d, rfl⟩
+      have hcd : c = d := by
+        simpa [kaehlerClockGradedCoordinate] using hab
+      subst d
+      rfl
+    · intro c
+      refine ⟨⟨Finsupp.single N c, ⟨c, rfl⟩⟩, ?_⟩
+      simp [kaehlerClockGradedCoordinate]
 
 /-- The degree-one principal symbol of the filtered Kähler Lie derivative. -/
 noncomputable def kaehlerClockPrincipalSymbol
-    (K : Type*) [Field K] (N : ℕ) :
-    KaehlerClockGradedLine K N →ₗ[K] KaehlerClockGradedLine K (N + 1) :=
+    (K : Type*) [Ring K] (N : ℕ) :
+    kaehlerClockGradedLine K N →ₗ[K] kaehlerClockGradedLine K (N + 1) :=
   (kaehlerClockGradedCoordinateEquiv K (N + 1)).symm.toLinearMap.comp
     (kaehlerClockGradedCoordinateEquiv K N).toLinearMap
 
 theorem kaehlerClockPrincipalSymbol_coordinate
-    (K : Type*) [Field K] (N : ℕ) (a : KaehlerClockGradedLine K N) :
+    (K : Type*) [Ring K] (N : ℕ) (a : kaehlerClockGradedLine K N) :
     kaehlerClockGradedCoordinateEquiv K (N + 1)
         (kaehlerClockPrincipalSymbol K N a) =
       kaehlerClockGradedCoordinateEquiv K N a := by
@@ -151,15 +162,20 @@ theorem kaehlerClockPrincipalSymbol_coordinate
 
 /-- The principal symbol is a canonical linear isomorphism between adjacent clock lines. -/
 noncomputable def kaehlerClockPrincipalSymbolEquiv
-    (K : Type*) [Field K] (N : ℕ) :
-    KaehlerClockGradedLine K N ≃ₗ[K] KaehlerClockGradedLine K (N + 1) :=
+    (K : Type*) [Ring K] (N : ℕ) :
+    kaehlerClockGradedLine K N ≃ₗ[K] kaehlerClockGradedLine K (N + 1) :=
   (kaehlerClockGradedCoordinateEquiv K N).trans
     (kaehlerClockGradedCoordinateEquiv K (N + 1)).symm
+
+@[simp] theorem kaehlerClockPrincipalSymbolEquiv_apply
+    (K : Type*) [Ring K] (N : ℕ) (a : kaehlerClockGradedLine K N) :
+    kaehlerClockPrincipalSymbolEquiv K N a = kaehlerClockPrincipalSymbol K N a :=
+  rfl
 
 /-- The top coefficient of the Lie derivative is the preceding top coefficient; the coefficient
 derivative is a lower-order term. -/
 theorem kaehlerClockLie_topCoordinate
-    {K : Type*} [Field K] (δ : K →+ K) (N : ℕ)
+    {K : Type*} [Ring K] (δ : K →+ K) (N : ℕ)
     (a : kaehlerClockFiltration K (N + 1)) :
     kaehlerClockLie δ a.1 (N + 1) = a.1 N := by
   rw [kaehlerClockLie_apply_succ]
@@ -167,19 +183,602 @@ theorem kaehlerClockLie_topCoordinate
     (Finsupp.mem_supported' K a.1).mp a.2 (N + 1) (by simp)
   simp [hzero]
 
-/-- The coordinate-defined principal symbol is exactly the map induced by the filtered Lie
-derivative on representatives. -/
-theorem kaehlerClockPrincipalSymbol_mk_eq_lie
-    {K : Type*} [Field K] (δ : K →+ K) (N : ℕ)
-    (a : kaehlerClockFiltration K (N + 1)) :
-    kaehlerClockPrincipalSymbol K N (Submodule.Quotient.mk a) =
-      Submodule.Quotient.mk
-        (⟨kaehlerClockLie δ a.1, kaehlerClockLie_mem_succ δ a.2⟩ :
-          kaehlerClockFiltration K (N + 2)) := by
+/-- Projection of a clock packet to its `N`-th homogeneous line. -/
+def kaehlerClockGradedProjection (K : Type*) [Ring K] (N : ℕ) :
+    (ℕ →₀ K) →ₗ[K] kaehlerClockGradedLine K N where
+  toFun a := ⟨Finsupp.single N (a N), ⟨a N, rfl⟩⟩
+  map_add' a b := by ext i; by_cases hi : i = N <;> simp [hi]
+  map_smul' c a := by ext i; by_cases hi : i = N <;> simp [hi]
+
+/-- The coordinate-defined principal symbol is exactly the next-layer projection of the
+filtered Lie derivative. -/
+theorem kaehlerClockPrincipalSymbol_eq_lie_projection
+    {K : Type*} [Ring K] (δ : K →+ K) (N : ℕ)
+    (a : kaehlerClockGradedLine K N) :
+    kaehlerClockPrincipalSymbol K N a =
+      kaehlerClockGradedProjection K (N + 1) (kaehlerClockLie δ a.1) := by
   apply (kaehlerClockGradedCoordinateEquiv K (N + 1)).injective
   rw [kaehlerClockPrincipalSymbol_coordinate]
-  change a.1 N = kaehlerClockLie δ a.1 (N + 1)
-  exact (kaehlerClockLie_topCoordinate δ N a).symm
+  have hzero : a.1 (N + 1) = 0 := by
+    rcases a.2 with ⟨c, hc⟩
+    rw [← hc]
+    simp
+  simp [kaehlerClockGradedCoordinateEquiv, kaehlerClockGradedCoordinate,
+    kaehlerClockGradedProjection, kaehlerClockLie_apply_succ, hzero]
+
+/-! ### The universal Kähler Lie derivative -/
+
+/-- Presentation-level formula `a db ↦ δ(a) db + a d(δ b)`. -/
+noncomputable def kaehlerLiePresentation
+    {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    (δ : Derivation R S S) : (S →₀ S) →+ Ω[S⁄R] :=
+  Finsupp.liftAddHom fun b ↦
+    { toFun := fun a ↦
+        δ a • KaehlerDifferential.D R S b +
+          a • KaehlerDifferential.D R S (δ b)
+      map_zero' := by simp
+      map_add' := by
+        intro x y
+        simp [add_smul]
+        module }
+
+@[simp] theorem kaehlerLiePresentation_single
+    {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    (δ : Derivation R S S) (b a : S) :
+    kaehlerLiePresentation δ (Finsupp.single b a) =
+      δ a • KaehlerDifferential.D R S b +
+        a • KaehlerDifferential.D R S (δ b) := by
+  simp [kaehlerLiePresentation]
+
+/-- The presentation operator obeys the connection Leibniz rule with respect to coefficients. -/
+theorem kaehlerLiePresentation_smul
+    {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    (δ : Derivation R S S) (c : S) (f : S →₀ S) :
+    kaehlerLiePresentation δ (c • f) =
+      δ c • Finsupp.linearCombination S (KaehlerDifferential.D R S) f +
+        c • kaehlerLiePresentation δ f := by
+  induction f using Finsupp.induction_linear with
+  | zero => simp
+  | add f g hf hg =>
+      rw [smul_add, map_add, map_add, hf, hg, map_add, smul_add]
+      module
+  | single b a =>
+      simp [Derivation.leibniz, smul_add, add_smul, smul_smul]
+      module
+
+/-- The presentation formula kills every Kähler relation, so it descends to universal
+differentials. -/
+theorem kaehlerLiePresentation_eq_zero_of_mem_kerTotal
+    {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    (δ : Derivation R S S) {f : S →₀ S}
+    (hf : f ∈ KaehlerDifferential.kerTotal R S) :
+    kaehlerLiePresentation δ f = 0 := by
+  rw [KaehlerDifferential.kerTotal] at hf
+  suffices h :
+      Finsupp.linearCombination S (KaehlerDifferential.D R S) f = 0 ∧
+        kaehlerLiePresentation δ f = 0 by
+    exact h.2
+  induction hf using Submodule.span_induction with
+  | mem g hg =>
+      rcases hg with (hg | hg) | hg
+      · obtain ⟨⟨a, b⟩, rfl⟩ := hg
+        constructor <;> simp [kaehlerLiePresentation_single]
+      · obtain ⟨⟨a, b⟩, rfl⟩ := hg
+        constructor
+        · simp [Derivation.leibniz]
+        · simp [kaehlerLiePresentation_single, Derivation.leibniz,
+            smul_add]
+          module
+      · obtain ⟨r, rfl⟩ := hg
+        constructor <;> simp [kaehlerLiePresentation_single]
+  | zero => simp
+  | add f g _ _ hf hg =>
+      constructor
+      · rw [map_add, hf.1, hg.1, add_zero]
+      · rw [map_add, hf.2, hg.2, add_zero]
+  | smul c f _ hf =>
+      constructor
+      · rw [map_smul, hf.1, smul_zero]
+      · rw [kaehlerLiePresentation_smul, hf.1, hf.2, smul_zero,
+          zero_add]
+        simp
+
+/-- The presentation formula descended to the quotient presentation of universal differentials. -/
+noncomputable def kaehlerLieQuotient
+    {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    (δ : Derivation R S S) :
+    ((S →₀ S) ⨸ KaehlerDifferential.kerTotal R S) →+ Ω[S⁄R] :=
+  QuotientAddGroup.lift (KaehlerDifferential.kerTotal R S).toAddSubgroup
+    (kaehlerLiePresentation δ) fun f hf ↦ by
+      exact kaehlerLiePresentation_eq_zero_of_mem_kerTotal δ hf
+
+/-- The universal Kähler Lie derivative attached to an `R`-derivation of `S`. -/
+noncomputable def kaehlerLieDifferential
+    {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    (δ : Derivation R S S) : Ω[S⁄R] →+ Ω[S⁄R] where
+  toFun w := kaehlerLieQuotient δ
+    ((KaehlerDifferential.quotKerTotalEquiv R S).symm w)
+  map_zero' := by simp
+  map_add' a b := by simp
+
+@[simp] theorem kaehlerLieDifferential_D
+    {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    (δ : Derivation R S S) (b : S) :
+    kaehlerLieDifferential δ (KaehlerDifferential.D R S b) =
+      KaehlerDifferential.D R S (δ b) := by
+  have h := Derivation.congr_fun
+    (KaehlerDifferential.quotKerTotalEquiv_symm_comp_D R S) b
+  change (KaehlerDifferential.quotKerTotalEquiv R S).symm
+      (KaehlerDifferential.D R S b) =
+    (KaehlerDifferential.kerTotal R S).mkQ (Finsupp.single b 1) at h
+  rw [kaehlerLieDifferential, h]
+  simp [kaehlerLieQuotient, kaehlerLiePresentation]
+
+/-- Exact Kähler Lie formula on every elementary one-form. -/
+theorem kaehlerLieDifferential_smul_D
+    {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    (δ : Derivation R S S) (a b : S) :
+    kaehlerLieDifferential δ
+        (a • KaehlerDifferential.D R S b) =
+      δ a • KaehlerDifferential.D R S b +
+        a • KaehlerDifferential.D R S (δ b) := by
+  have h := Derivation.congr_fun
+    (KaehlerDifferential.quotKerTotalEquiv_symm_comp_D R S) b
+  change (KaehlerDifferential.quotKerTotalEquiv R S).symm
+      (KaehlerDifferential.D R S b) =
+    (KaehlerDifferential.kerTotal R S).mkQ (Finsupp.single b 1) at h
+  rw [kaehlerLieDifferential, map_smul, h]
+  change kaehlerLieQuotient δ
+      ((KaehlerDifferential.kerTotal R S).mkQ
+        (a • Finsupp.single b 1)) = _
+  simp [kaehlerLieQuotient, kaehlerLiePresentation]
+
+/-! ### Identification with the intrinsic Kähler covectors -/
+
+/-- The universal differentials of algebraically independent generators span the Kähler module
+of their rational function field.  Together with the existing coordinate-derivation argument,
+this upgrades jet-covector independence to an actual basis theorem. -/
+theorem kaehlerD_adjoin_coordinates_span_eq_top
+    {I K L : Type*} [DecidableEq I] [Field K] [Field L] [Algebra K L]
+    {x : I → L} :
+    let P := IntermediateField.adjoin K (Set.range x)
+    Submodule.span P (Set.range fun i : I ↦
+      KaehlerDifferential.D K P
+        (⟨x i, IntermediateField.subset_adjoin K (Set.range x) ⟨i, rfl⟩⟩ : P)) = ⊤ := by
+  classical
+  dsimp only
+  let P := IntermediateField.adjoin K (Set.range x)
+  let S : Submodule P Ω[P⁄K] :=
+    Submodule.span P (Set.range fun i : I ↦
+      KaehlerDifferential.D K P
+        (⟨x i, IntermediateField.subset_adjoin K (Set.range x) ⟨i, rfl⟩⟩ : P))
+  apply top_unique
+  rw [← KaehlerDifferential.span_range_derivation, Submodule.span_le]
+  rintro _ ⟨z, rfl⟩
+  apply IntermediateField.adjoin_induction K
+    (s := Set.range x)
+    (p := fun y hy ↦ KaehlerDifferential.D K P (⟨y, hy⟩ : P) ∈ S)
+  · rintro y ⟨i, rfl⟩
+    exact Submodule.subset_span (Set.mem_range_self i)
+  · intro c
+    have hc :
+        (⟨algebraMap K L c, IntermediateField.algebraMap_mem P c⟩ : P) =
+          algebraMap K P c := Subtype.ext (by simp)
+    rw [hc]
+    simp
+  · intro a b ha hb hda hdb
+    have hab :
+        (⟨a + b, P.add_mem ha hb⟩ : P) = (⟨a, ha⟩ : P) + ⟨b, hb⟩ :=
+      Subtype.ext rfl
+    rw [hab, map_add]
+    exact S.add_mem hda hdb
+  · intro a ha hda
+    have hainv :
+        (⟨a⁻¹, P.inv_mem ha⟩ : P) = (⟨a, ha⟩ : P)⁻¹ := Subtype.ext rfl
+    rw [hainv, Derivation.leibniz_inv]
+    exact S.smul_mem _ hda
+  · intro a b ha hb hda hdb
+    have hab :
+        (⟨a * b, P.mul_mem ha hb⟩ : P) = (⟨a, ha⟩ : P) * ⟨b, hb⟩ :=
+      Subtype.ext rfl
+    rw [hab, Derivation.leibniz]
+    exact S.add_mem (S.smul_mem _ hdb) (S.smul_mem _ hda)
+
+/-- The universal differentials of algebraically independent rational coordinates form a basis. -/
+noncomputable def kaehlerD_adjoin_coordinates_basis
+    {I K L : Type*} [DecidableEq I] [Field K] [Field L] [Algebra K L]
+    {x : I → L} (hx : AlgebraicIndependent K x) :
+    let P := IntermediateField.adjoin K (Set.range x)
+    Module.Basis I P Ω[P⁄K] := by
+  let P := IntermediateField.adjoin K (Set.range x)
+  let dx : I → Ω[P⁄K] := fun i ↦
+    KaehlerDifferential.D K P
+      (⟨x i, IntermediateField.subset_adjoin K (Set.range x) ⟨i, rfl⟩⟩ : P)
+  exact Module.Basis.mk
+    (kaehlerD_adjoin_coordinates_linearIndependent hx)
+    (by
+      rw [kaehlerD_adjoin_coordinates_span_eq_top (x := x)])
+
+@[simp] theorem kaehlerD_adjoin_coordinates_basis_apply
+    {I K L : Type*} [DecidableEq I] [Field K] [Field L] [Algebra K L]
+    {x : I → L} (hx : AlgebraicIndependent K x) (i : I) :
+    (kaehlerD_adjoin_coordinates_basis hx) i =
+      KaehlerDifferential.D K (IntermediateField.adjoin K (Set.range x))
+        (⟨x i, IntermediateField.subset_adjoin K (Set.range x) ⟨i, rfl⟩⟩ :
+          IntermediateField.adjoin K (Set.range x)) := by
+  simp only [kaehlerD_adjoin_coordinates_basis, Module.Basis.mk_apply]
+
+/-- For a purely transcendental field interval, the base-change summand in the
+Jacobi--Zariski sequence embeds in the absolute Kähler module. -/
+theorem kaehlerMapBaseChange_injective_adjoin_of_algebraicIndependent
+    {C F E I : Type*} [Field C] [Field F] [Field E]
+    [Algebra C F] [Algebra C E] [Algebra F E] [IsScalarTower C F E]
+    {x : I → E} (hx : AlgebraicIndependent F x) :
+    Function.Injective
+      (KaehlerDifferential.mapBaseChange C F
+        (IntermediateField.adjoin F (Set.range x))) := by
+  let P := IntermediateField.adjoin F (Set.range x)
+  letI : Algebra.FormallySmooth F P :=
+    Algebra.FormallySmooth.adjoin_of_algebraicIndependent hx
+  rw [injective_iff_map_eq_zero]
+  intro y hy
+  obtain ⟨z, rfl⟩ := (Algebra.H1Cotangent.exact_δ_mapBaseChange C F P y).mp hy
+  rw [Subsingleton.elim z 0, map_zero]
+
+/-- Lift a relative Kähler form to the absolute module by sending each rational coordinate
+covector `d_F x_i` to its absolute covector `d_C x_i`. -/
+noncomputable def kaehlerD_adjoin_absoluteLift
+    {C F E I : Type*} [DecidableEq I] [Field C] [Field F] [Field E]
+    [Algebra C F] [Algebra C E] [Algebra F E] [IsScalarTower C F E]
+    {x : I → E} (hx : AlgebraicIndependent F x) :
+    let P := IntermediateField.adjoin F (Set.range x)
+    Ω[P⁄F] →ₗ[P] Ω[P⁄C] := by
+  let P := IntermediateField.adjoin F (Set.range x)
+  let dx : I → P := fun i ↦
+    ⟨x i, IntermediateField.subset_adjoin F (Set.range x) ⟨i, rfl⟩⟩
+  exact (kaehlerD_adjoin_coordinates_basis hx).constr P
+    (fun i ↦ KaehlerDifferential.D C P (dx i))
+
+/-- Reduction from absolute to relative differentials is a left inverse of the coordinate lift. -/
+theorem kaehlerMap_comp_adjoin_absoluteLift
+    {C F E I : Type*} [DecidableEq I] [Field C] [Field F] [Field E]
+    [Algebra C F] [Algebra C E] [Algebra F E] [IsScalarTower C F E]
+    {x : I → E} (hx : AlgebraicIndependent F x)
+    (w : let P := IntermediateField.adjoin F (Set.range x); Ω[P⁄F]) :
+    let P := IntermediateField.adjoin F (Set.range x)
+    KaehlerDifferential.map C F P P (kaehlerD_adjoin_absoluteLift hx w) = w := by
+  let P := IntermediateField.adjoin F (Set.range x)
+  let b : Module.Basis I P Ω[P⁄F] := kaehlerD_adjoin_coordinates_basis hx
+  have hcomp :
+      (KaehlerDifferential.map C F P P).comp
+          (kaehlerD_adjoin_absoluteLift hx) = LinearMap.id := by
+    apply b.ext
+    intro i
+    change KaehlerDifferential.map C F P P
+        ((kaehlerD_adjoin_coordinates_basis hx).constr P
+          (fun j ↦ KaehlerDifferential.D C P
+            (⟨x j, IntermediateField.subset_adjoin F (Set.range x) ⟨j, rfl⟩⟩ : P))
+          ((kaehlerD_adjoin_coordinates_basis hx) i)) =
+      (kaehlerD_adjoin_coordinates_basis hx) i
+    rw [Module.Basis.constr_basis, KaehlerDifferential.map_D]
+    rw [kaehlerD_adjoin_coordinates_basis_apply]
+    congr 1
+  exact LinearMap.congr_fun hcomp w
+
+/-- The base-change map lands in the kernel of reduction to relative differentials. -/
+theorem kaehlerMap_comp_mapBaseChange_eq_zero
+    {C F E I : Type*} [Field C] [Field F] [Field E]
+    [Algebra C F] [Algebra C E] [Algebra F E] [IsScalarTower C F E]
+    {x : I → E}
+    (u : let P := IntermediateField.adjoin F (Set.range x); P ⊗[F] Ω[F⁄C]) :
+    let P := IntermediateField.adjoin F (Set.range x)
+    KaehlerDifferential.map C F P P
+        (KaehlerDifferential.mapBaseChange C F P u) = 0 := by
+  let P := IntermediateField.adjoin F (Set.range x)
+  exact (KaehlerDifferential.exact_mapBaseChange_map C F P
+    (KaehlerDifferential.mapBaseChange C F P u)).mpr ⟨u, rfl⟩
+
+/-- The canonical sum of the base differential summand and the relative coordinate summand. -/
+noncomputable def kaehlerD_adjoin_absoluteDecompositionMap
+    {C F E I : Type*} [DecidableEq I] [Field C] [Field F] [Field E]
+    [Algebra C F] [Algebra C E] [Algebra F E] [IsScalarTower C F E]
+    {x : I → E} (hx : AlgebraicIndependent F x) :
+    let P := IntermediateField.adjoin F (Set.range x)
+    (P ⊗[F] Ω[F⁄C]) × Ω[P⁄F] →ₗ[P] Ω[P⁄C] := by
+  let P := IntermediateField.adjoin F (Set.range x)
+  exact LinearMap.coprod
+    (KaehlerDifferential.mapBaseChange C F P)
+    (kaehlerD_adjoin_absoluteLift hx)
+
+theorem kaehlerD_adjoin_absoluteDecompositionMap_bijective
+    {C F E I : Type*} [DecidableEq I] [Field C] [Field F] [Field E]
+    [Algebra C F] [Algebra C E] [Algebra F E] [IsScalarTower C F E]
+    {x : I → E} (hx : AlgebraicIndependent F x) :
+    Function.Bijective
+      (kaehlerD_adjoin_absoluteDecompositionMap (C := C) hx) := by
+  let P := IntermediateField.adjoin F (Set.range x)
+  constructor
+  · rw [injective_iff_map_eq_zero]
+    rintro ⟨u, v⟩ huv
+    have hv : v = 0 := by
+      have hmap := congrArg (KaehlerDifferential.map C F P P) huv
+      change KaehlerDifferential.map C F P P
+          (KaehlerDifferential.mapBaseChange C F P u +
+            kaehlerD_adjoin_absoluteLift hx v) =
+        KaehlerDifferential.map C F P P 0 at hmap
+      rw [map_add,
+        kaehlerMap_comp_mapBaseChange_eq_zero (C := C) (x := x),
+        kaehlerMap_comp_adjoin_absoluteLift (C := C) hx, map_zero,
+        zero_add] at hmap
+      exact hmap
+    subst v
+    have hu : u = 0 :=
+      kaehlerMapBaseChange_injective_adjoin_of_algebraicIndependent hx <| by
+        simpa [kaehlerD_adjoin_absoluteDecompositionMap] using huv
+    exact Prod.ext hu rfl
+  · intro w
+    let v := KaehlerDifferential.map C F P P w
+    have hres : KaehlerDifferential.map C F P P
+        (w - kaehlerD_adjoin_absoluteLift hx v) = 0 := by
+      rw [map_sub, kaehlerMap_comp_adjoin_absoluteLift (C := C) hx]
+      exact sub_self _
+    obtain ⟨u, hu⟩ :=
+      (KaehlerDifferential.exact_mapBaseChange_map C F P
+        (w - kaehlerD_adjoin_absoluteLift hx v)).mp hres
+    refine ⟨⟨u, v⟩, ?_⟩
+    change KaehlerDifferential.mapBaseChange C F P u +
+        kaehlerD_adjoin_absoluteLift hx v = w
+    rw [hu]
+    abel
+
+/-- Absolute Kähler differentials split canonically into the embedded base-change module and
+the free relative coordinate module. -/
+noncomputable def kaehlerD_adjoin_absoluteDecomposition
+    {C F E I : Type*} [DecidableEq I] [Field C] [Field F] [Field E]
+    [Algebra C F] [Algebra C E] [Algebra F E] [IsScalarTower C F E]
+    {x : I → E} (hx : AlgebraicIndependent F x) :=
+  LinearEquiv.ofBijective
+    (kaehlerD_adjoin_absoluteDecompositionMap (C := C) hx)
+    (kaehlerD_adjoin_absoluteDecompositionMap_bijective (C := C) hx)
+
+/-- Hypertranscendence identifies the intrinsic relative Kähler module with the free countable
+clock packet module. -/
+noncomputable def hypertranscendentalKaehlerClockEquiv
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    {x : E} (hx : HypertranscendentalOver F x) :
+    Ω[jetObservableFieldInfinity F x⁄F] ≃ₗ[jetObservableFieldInfinity F x]
+      (ℕ →₀ jetObservableFieldInfinity F x) :=
+  (kaehlerD_adjoin_coordinates_basis
+    (algebraicIndependent_differentialJet_of_hypertranscendentalOver hx)).repr
+
+@[simp] theorem hypertranscendentalKaehlerClockEquiv_apply_jet
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    {x : E} (hx : HypertranscendentalOver F x) (n : ℕ) :
+    hypertranscendentalKaehlerClockEquiv hx
+        (KaehlerDifferential.D F (jetObservableFieldInfinity F x)
+          (⟨differentialJet n x,
+            IntermediateField.subset_adjoin F
+              (Set.range fun q : ℕ ↦ differentialJet q x) ⟨n, rfl⟩⟩ :
+            jetObservableFieldInfinity F x)) =
+      Finsupp.single n 1 := by
+  simpa [hypertranscendentalKaehlerClockEquiv,
+    kaehlerD_adjoin_coordinates_basis] using
+      (Module.Basis.repr_self
+        (kaehlerD_adjoin_coordinates_basis
+          (algebraicIndependent_differentialJet_of_hypertranscendentalOver hx)) n)
+
+/-- The full jet-observable field is the differential field generated by the pointed source. -/
+theorem jetObservableFieldInfinity_eq_differentialAdjoin_singleton
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (x : E) :
+    jetObservableFieldInfinity F x = differentialAdjoin F {x} := by
+  rw [jetObservableFieldInfinity, differentialAdjoin]
+  congr 1
+  ext y
+  simp [differentialJetSet]
+
+/-- The full jet-observable field is closed under the ambient derivation. -/
+theorem derivationClosed_jetObservableFieldInfinity
+    {F E : Type*} [Field F] [Field E] [Differential F] [Differential E]
+    [Algebra F E] [DifferentialAlgebra F E] (x : E) :
+    DerivationClosed (jetObservableFieldInfinity F x) := by
+  rw [jetObservableFieldInfinity_eq_differentialAdjoin_singleton]
+  exact derivationClosed_differentialAdjoin F {x}
+
+/-- The ambient derivation restricted to the full rational jet field, as the coefficient
+derivative used by the Kähler Lie operator. -/
+noncomputable def jetObservableFieldInfinityCoefficientDeriv
+    {F E : Type*} [Field F] [Field E] [Differential F] [Differential E]
+    [Algebra F E] [DifferentialAlgebra F E] (x : E) :
+    jetObservableFieldInfinity F x →+ jetObservableFieldInfinity F x := by
+  let P := jetObservableFieldInfinity F x
+  letI : Differential P :=
+    derivationClosedDifferential P (derivationClosed_jetObservableFieldInfinity x)
+  exact Differential.deriv.toLinearMap.toAddMonoidHom
+
+@[simp] theorem jetObservableFieldInfinityCoefficientDeriv_apply
+    {F E : Type*} [Field F] [Field E] [Differential F] [Differential E]
+    [Algebra F E] [DifferentialAlgebra F E] (x : E)
+    (a : jetObservableFieldInfinity F x) :
+    (jetObservableFieldInfinityCoefficientDeriv x a : E) = Differential.deriv a.1 :=
+  rfl
+
+/-- The intrinsic finite Kähler clock filtration, transported from basis coefficients. -/
+noncomputable def hypertranscendentalKaehlerFiltration
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    {x : E} (hx : HypertranscendentalOver F x) (N : ℕ) :
+    Submodule (jetObservableFieldInfinity F x)
+      Ω[jetObservableFieldInfinity F x⁄F] :=
+  (kaehlerClockFiltration (jetObservableFieldInfinity F x) N).comap
+    (hypertranscendentalKaehlerClockEquiv hx).toLinearMap
+
+/-- The intrinsic rank-one Kähler clock line, transported from the `N`-th basis coordinate. -/
+noncomputable def hypertranscendentalKaehlerGradedLine
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    {x : E} (hx : HypertranscendentalOver F x) (N : ℕ) :
+    Submodule (jetObservableFieldInfinity F x)
+      Ω[jetObservableFieldInfinity F x⁄F] :=
+  (kaehlerClockGradedLine (jetObservableFieldInfinity F x) N).comap
+    (hypertranscendentalKaehlerClockEquiv hx).toLinearMap
+
+/-- The intrinsic `N`-th Kähler clock line lies in the first `N+1` jet covectors. -/
+theorem hypertranscendentalKaehlerGradedLine_le_filtration
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    {x : E} (hx : HypertranscendentalOver F x) (N : ℕ) :
+    hypertranscendentalKaehlerGradedLine hx N ≤
+      hypertranscendentalKaehlerFiltration hx (N + 1) :=
+  Submodule.comap_mono (kaehlerClockGradedLine_le_filtration _ N)
+
+/-- The intrinsic Lie derivative on the relative Kähler jet basis. -/
+noncomputable def hypertranscendentalKaehlerLie
+    {F E : Type*} [Field F] [Field E] [Differential F] [Differential E]
+    [Algebra F E] [DifferentialAlgebra F E]
+    {x : E} (hx : HypertranscendentalOver F x) :
+    Ω[jetObservableFieldInfinity F x⁄F] →+ Ω[jetObservableFieldInfinity F x⁄F] where
+  toFun ω := (hypertranscendentalKaehlerClockEquiv hx).symm
+    (kaehlerClockLie (jetObservableFieldInfinityCoefficientDeriv x)
+      (hypertranscendentalKaehlerClockEquiv hx ω))
+  map_zero' := by simp
+  map_add' a b := by simp
+
+@[simp] theorem hypertranscendentalKaehlerClockEquiv_apply_lie
+    {F E : Type*} [Field F] [Field E] [Differential F] [Differential E]
+    [Algebra F E] [DifferentialAlgebra F E]
+    {x : E} (hx : HypertranscendentalOver F x)
+    (ω : Ω[jetObservableFieldInfinity F x⁄F]) :
+    hypertranscendentalKaehlerClockEquiv hx
+        (hypertranscendentalKaehlerLie hx ω) =
+      kaehlerClockLie (jetObservableFieldInfinityCoefficientDeriv x)
+        (hypertranscendentalKaehlerClockEquiv hx ω) := by
+  simp [hypertranscendentalKaehlerLie]
+
+/-- The intrinsic Kähler Lie operator raises the finite clock filtration by at most one. -/
+theorem hypertranscendentalKaehlerLie_mem_succ
+    {F E : Type*} [Field F] [Field E] [Differential F] [Differential E]
+    [Algebra F E] [DifferentialAlgebra F E]
+    {x : E} (hx : HypertranscendentalOver F x) {N : ℕ}
+    {ω : Ω[jetObservableFieldInfinity F x⁄F]}
+    (hω : ω ∈ hypertranscendentalKaehlerFiltration hx N) :
+    hypertranscendentalKaehlerLie hx ω ∈
+      hypertranscendentalKaehlerFiltration hx (N + 1) := by
+  change hypertranscendentalKaehlerClockEquiv hx ω ∈
+    kaehlerClockFiltration (jetObservableFieldInfinity F x) N at hω
+  change hypertranscendentalKaehlerClockEquiv hx
+      (hypertranscendentalKaehlerLie hx ω) ∈
+    kaehlerClockFiltration (jetObservableFieldInfinity F x) (N + 1)
+  simpa [hypertranscendentalKaehlerLie] using
+    (kaehlerClockLie_mem_succ
+      (jetObservableFieldInfinityCoefficientDeriv x) hω)
+
+/-- Basis coordinates restrict to an equivalence from each intrinsic Kähler clock line to its
+free rank-one coefficient line. -/
+noncomputable def hypertranscendentalKaehlerGradedEquiv
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    {x : E} (hx : HypertranscendentalOver F x) (N : ℕ) :
+    hypertranscendentalKaehlerGradedLine hx N ≃ₗ[jetObservableFieldInfinity F x]
+      kaehlerClockGradedLine (jetObservableFieldInfinity F x) N :=
+  (hypertranscendentalKaehlerClockEquiv hx).ofSubmodule'
+    (kaehlerClockGradedLine (jetObservableFieldInfinity F x) N)
+
+/-- Every intrinsic homogeneous Kähler jet line is canonically one-dimensional. -/
+noncomputable def hypertranscendentalKaehlerGradedCoordinateEquiv
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    {x : E} (hx : HypertranscendentalOver F x) (N : ℕ) :
+    hypertranscendentalKaehlerGradedLine hx N ≃ₗ[jetObservableFieldInfinity F x]
+      jetObservableFieldInfinity F x :=
+  (hypertranscendentalKaehlerGradedEquiv hx N).trans
+    (kaehlerClockGradedCoordinateEquiv (jetObservableFieldInfinity F x) N)
+
+/-- The intrinsic degree-one principal symbol on adjacent Kähler clock lines. -/
+noncomputable def hypertranscendentalKaehlerPrincipalSymbolEquiv
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    {x : E} (hx : HypertranscendentalOver F x) (N : ℕ) :
+    hypertranscendentalKaehlerGradedLine hx N ≃ₗ[jetObservableFieldInfinity F x]
+      hypertranscendentalKaehlerGradedLine hx (N + 1) :=
+  (hypertranscendentalKaehlerGradedEquiv hx N).trans <|
+    (kaehlerClockPrincipalSymbolEquiv (jetObservableFieldInfinity F x) N).trans <|
+      (hypertranscendentalKaehlerGradedEquiv hx (N + 1)).symm
+
+@[simp] theorem hypertranscendentalKaehlerGradedEquiv_apply_principalSymbol
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    {x : E} (hx : HypertranscendentalOver F x) (N : ℕ)
+    (a : hypertranscendentalKaehlerGradedLine hx N) :
+    hypertranscendentalKaehlerGradedEquiv hx (N + 1)
+        (hypertranscendentalKaehlerPrincipalSymbolEquiv hx N a) =
+      kaehlerClockPrincipalSymbolEquiv (jetObservableFieldInfinity F x) N
+        (hypertranscendentalKaehlerGradedEquiv hx N a) := by
+  simp [hypertranscendentalKaehlerPrincipalSymbolEquiv]
+
+/-- The intrinsic principal symbol is the identity on the scalar coordinate of adjacent lines. -/
+theorem hypertranscendentalKaehlerPrincipalSymbol_coordinate
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    {x : E} (hx : HypertranscendentalOver F x) (N : ℕ)
+    (a : hypertranscendentalKaehlerGradedLine hx N) :
+    hypertranscendentalKaehlerGradedCoordinateEquiv hx (N + 1)
+        (hypertranscendentalKaehlerPrincipalSymbolEquiv hx N a) =
+      hypertranscendentalKaehlerGradedCoordinateEquiv hx N a := by
+  simp [hypertranscendentalKaehlerPrincipalSymbolEquiv,
+    hypertranscendentalKaehlerGradedCoordinateEquiv,
+    kaehlerClockPrincipalSymbolEquiv]
+
+/-- Projection of an intrinsic Kähler form to its `N`-th homogeneous clock line. -/
+noncomputable def hypertranscendentalKaehlerGradedProjection
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    {x : E} (hx : HypertranscendentalOver F x) (N : ℕ) :
+    Ω[jetObservableFieldInfinity F x⁄F] →ₗ[jetObservableFieldInfinity F x]
+      hypertranscendentalKaehlerGradedLine hx N where
+  toFun ω := ⟨(hypertranscendentalKaehlerClockEquiv hx).symm
+      (kaehlerClockGradedProjection (jetObservableFieldInfinity F x) N
+        (hypertranscendentalKaehlerClockEquiv hx ω)), by
+    change hypertranscendentalKaehlerClockEquiv hx
+        ((hypertranscendentalKaehlerClockEquiv hx).symm
+          (kaehlerClockGradedProjection (jetObservableFieldInfinity F x) N
+            (hypertranscendentalKaehlerClockEquiv hx ω))) ∈
+        kaehlerClockGradedLine (jetObservableFieldInfinity F x) N
+    rw [LinearEquiv.apply_symm_apply]
+    exact (kaehlerClockGradedProjection (jetObservableFieldInfinity F x) N
+      (hypertranscendentalKaehlerClockEquiv hx ω)).2⟩
+  map_add' a b := by
+    apply Subtype.ext
+    simp
+  map_smul' c a := by
+    apply Subtype.ext
+    simp
+
+@[simp] theorem hypertranscendentalKaehlerGradedEquiv_apply_projection
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    {x : E} (hx : HypertranscendentalOver F x) (N : ℕ)
+    (ω : Ω[jetObservableFieldInfinity F x⁄F]) :
+    hypertranscendentalKaehlerGradedEquiv hx N
+        (hypertranscendentalKaehlerGradedProjection hx N ω) =
+      kaehlerClockGradedProjection (jetObservableFieldInfinity F x) N
+        (hypertranscendentalKaehlerClockEquiv hx ω) := by
+  apply Subtype.ext
+  let p := kaehlerClockGradedProjection (jetObservableFieldInfinity F x) N
+    (hypertranscendentalKaehlerClockEquiv hx ω)
+  change hypertranscendentalKaehlerClockEquiv hx
+      ((hypertranscendentalKaehlerClockEquiv hx).symm (p : ℕ →₀ jetObservableFieldInfinity F x)) =
+    (p : ℕ →₀ jetObservableFieldInfinity F x)
+  exact (hypertranscendentalKaehlerClockEquiv hx).apply_symm_apply _
+
+/-- The intrinsic principal symbol is exactly the next homogeneous projection of the intrinsic
+Kähler Lie derivative. -/
+theorem hypertranscendentalKaehlerPrincipalSymbol_eq_lie_projection
+    {F E : Type*} [Field F] [Field E] [Differential F] [Differential E]
+    [Algebra F E] [DifferentialAlgebra F E]
+    {x : E} (hx : HypertranscendentalOver F x) (N : ℕ)
+    (a : hypertranscendentalKaehlerGradedLine hx N) :
+    hypertranscendentalKaehlerPrincipalSymbolEquiv hx N a =
+      hypertranscendentalKaehlerGradedProjection hx (N + 1)
+        (hypertranscendentalKaehlerLie hx a.1) := by
+  apply (hypertranscendentalKaehlerGradedEquiv hx (N + 1)).injective
+  rw [hypertranscendentalKaehlerGradedEquiv_apply_principalSymbol,
+    hypertranscendentalKaehlerGradedEquiv_apply_projection,
+    hypertranscendentalKaehlerClockEquiv_apply_lie,
+    kaehlerClockPrincipalSymbolEquiv_apply]
+  exact kaehlerClockPrincipalSymbol_eq_lie_projection
+    (jetObservableFieldInfinityCoefficientDeriv x) N
+      (hypertranscendentalKaehlerGradedEquiv hx N a)
 
 end
 

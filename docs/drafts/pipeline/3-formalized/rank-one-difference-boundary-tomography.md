@@ -41,6 +41,18 @@ L_N^c(e_k)=binom(N+1,k)c_(N+1-k).
 The binomial factor is nonzero over `C`. Therefore equality of either `L_N^c` or `C_N^c` for two
 coefficient jets forces equality of all positive derivatives `c_1,...,c_(N+1)`.
 
+Passing over every resolution, Lean proves
+
+```text
+(forall N, C_N^c=C_N^d)  implies  (forall r>=1, c_r=d_r).
+```
+
+Adding equality of the bulk value gives the complete reconstruction theorem
+
+```text
+c_0=d_0 and (forall N, C_N^c=C_N^d)  implies  c=d.
+```
+
 ## No-go and positive residue
 
 The boundary output rank is universally at most one, so rank cannot carry source identity. The
@@ -65,12 +77,27 @@ the full coefficient germ. Gauge quotienting this tomography is the next researc
 - `rankOneCoefficientPairedBoundaryCurrent`;
 - `rankOneCoefficientPairedBoundaryCurrent_apply`;
 - `rankOneCoefficientPairedBoundaryCurrent_eq_outerProduct`;
-- `rankOneCoefficientJet_eq_of_pairedBoundaryCurrent_eq`.
+- `rankOneCoefficientJet_eq_of_pairedBoundaryCurrent_eq`;
+- `rankOneCoefficientPositiveJet_eq_of_pairedBoundaryCurrent_tower_eq`;
+- `rankOneCoefficient_eq_of_colligationTower_eq`;
+- `rankOneGaugeLogCurrent_aut`;
+- `rankOneGaugeCoefficient`;
+- `rankOneGaugeLogCurrent_div`;
+- `rankOneGaugeLogCurrent`.
 
-The new module had no cached object. Verification used exactly one targeted module build, which
-rebuilt only its stale Gamma dependency and the new module, followed by one direct source check.
-No full or concurrent Lean build was run. The audited theorems use only `propext`,
-`Classical.choice`, and `Quot.sound`.
+The last theorem is the exact abstract gauge law
+
+```text
+dlog(a sigma(g)/g)=dlog(a)+(sigma-1)dlog(g).
+```
+
+It proves that the raw seam is chart-dependent while its logarithmic-current class modulo
+difference defects is invariant. Since logarithmic differentiation forgets multiplicative
+holonomy, the complete conjectural invariant retains both the multiplicative source class and this
+additive transgression.
+
+The module has a cached object, so the new tower theorems were verified by one direct source check
+without a build. Their axiom audit uses only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
@@ -80,5 +107,8 @@ No full or concurrent Lean build was run. The audited theorems use only `propext
 - [x] exact paired-current outer product formalized
 - [x] incoming-covector tomography formalized
 - [x] paired-current tomography formalized
-- [ ] gauge transformation law formalized
+- [x] positive coefficient germ reconstructed from the entire current tower
+- [x] full coefficient germ reconstructed from bulk-plus-boundary colligation tower
+- [x] logarithmic-current gauge transformation law formalized
+- [ ] full finite oriented-seam gauge transformation law formalized
 - [ ] gauge-invariant seam quotient constructed

@@ -110,6 +110,11 @@ sequences, `(6)` is not a finite-support covector. Relative to the analytic test
 it is continuous. The Gamma/digamma shift source therefore constructs the topology enlargement
 and the nonzero corona class demanded by the abstract theory.
 
+There is also a domain obstruction before topology. The factorial conormal series is not defined on
+all raw clocks: on the Lean-formalized sequence `a_n=(n+1)!`, every conormal summand equals one and
+the series is not summable. Thus the analytic source object is a rigged clock with a proper
+summability domain; it is not merely `C^N` equipped with a finer topology.
+
 The affine solution space of `(1)` supplies the calibration torsor. The periodic homogeneous
 space supplies its tangent. Asymptotic normalization selects the actual digamma section. This is
 the first concrete realization of all three pieces from one HT source.
@@ -221,29 +226,40 @@ This is a general HT prototype. It is not an RH argument.
 7. `gammaPeriodicMode_shiftedTaylorConormal_hasSum` and
    `gammaPeriodicFourier_shiftedTaylorConormal_hasSum`, all differentiated source-conormal
    consequences `(8a)`;
-8. `gammaClockCurvature_apply` and `gammaClockCurvature_eq_outerProduct`, the exact factorial-tail
+8. `gammaPeriodicConormal_not_summable_on_all_rawClocks`, the proper-domain no-go;
+9. `gammaCoronaClockDomain` and `gammaCoronaClockDomain_tail`, the maximal cyclic conormal domain
+   and its derivative-tail stability;
+10. `gammaPeriodicModeTail_mem_coronaClockDomain` and
+   `gammaPeriodicFourierTail_mem_coronaClockDomain`, containment of the entire finite Fourier
+   source tangent;
+11. `gammaCoronaConormal`, `gammaCoronaConormal_tail`, and
+   `gammaCoronaConormal_fourierTail`, the actual cyclic conormal functionals, tail covariance, and
+   annihilation of the finite Fourier source tangent;
+12. `gammaCoronaConormal_boundaryCoefficient` and
+   `gammaCoronaConormal_ext_of_boundaryCoefficients`, exact finite restriction and joint
+   reconstruction of the infinite conormal from all oriented boundary symbols;
+13. `gammaClockCurvature_apply` and `gammaClockCurvature_eq_outerProduct`, the exact factorial-tail
    boundary formula;
-9. `range_gammaClockCurvature` and `finrank_range_gammaClockCurvature`, the exact boundary line and
+14. `range_gammaClockCurvature` and `finrank_range_gammaClockCurvature`, the exact boundary line and
    rank-one theorem at every positive resolution;
-10. `gammaClockTranslation_extendZero`, exact compatibility with forward Ind-clock assembly;
-11. `gammaShiftCofactorFormal_mul_inverse` and
+15. `gammaClockTranslation_extendZero`, exact compatibility with forward Ind-clock assembly;
+16. `gammaShiftCofactorFormal_mul_inverse` and
    `gammaShiftCofactorFormal_inverse_mul`, formal invertibility in `(10)`;
-12. `gammaShiftCofactorSymbol_periodicFrequency`, the global nonunit lattice `(12)`;
-13. `gammaShiftCofactorSymbol_neg`, the self-dual reflection law `(13)`.
+17. `gammaShiftCofactorSymbol_periodicFrequency`, the global nonunit lattice `(12)`;
+18. `gammaShiftCofactorSymbol_neg`, the self-dual reflection law `(13)`.
 
 The general formal consequences `(14)`--`(15)` are supplied by
 `GaloisForLFunctions.HTGeometry.ClockDescentAnomaly` as described above.
 
 The module reuses the cached `HurwitzExp.iteratedDeriv_expLin` and
-`RHTower.existsUnique_weightedFiniteMoments`. Since its `.olean` was missing, verification used
-exactly one targeted build followed by one direct source check:
+`RHTower.existsUnique_weightedFiniteMoments`. Its cached object exists, so touched-source
+verification requires only:
 
 ```text
-lake build +GaloisForLFunctions.HTGeometry.GammaPeriodicConstraintCorona
 lake env lean GaloisForLFunctions/HTGeometry/GammaPeriodicConstraintCorona.lean
 ```
 
-No full build or concurrent Lean invocation was run by this task.
+No build or concurrent Lean invocation is required.
 
 ## Gates
 
@@ -253,6 +269,12 @@ No full build or concurrent Lean invocation was run by this task.
 - [x] infinite-support Taylor conormal proved on paper
 - [x] every differentiated source-conormal consequence proved and Lean-formalized
 - [x] finite-dimensional thinness rejected; cyclic source-operator thinness identified
+- [x] raw-clock universal domain rejected; proper summability domain forced
+- [x] maximal cyclic Gamma conormal domain and tail stability formalized
+- [x] finite periodic Fourier tangent contained in that domain
+- [x] cyclic conormal functionals and Fourier-tangent annihilation formalized
+- [x] finite boundary coefficients identified with the cyclic conormal formalized
+- [x] boundary-family joint tomography of the infinite conormal formalized
 - [x] source topology making the conormal continuous identified
 - [x] core theorem formalized in Lean
 - [x] finite unit-translation shadows and exact rank-one curvature formalized in Lean

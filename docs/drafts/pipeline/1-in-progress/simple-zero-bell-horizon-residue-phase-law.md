@@ -2,8 +2,8 @@
 
 - **ID:** `simple-zero-bell-horizon-residue-phase-law`
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE / ALGEBRAIC CORE UNDER FORMALISATION
-- **Scientific status:** `[CONJECTURE: ANALYTIC CLASSIFICATION] [LEAN TARGET: UNCONDITIONAL] [NOVELTY UNVERIFIED]`
+- **Type:** THEOREM / NOVELTY AUDIT IN PROGRESS
+- **Scientific status:** `[LEAN-PROVEN: UNIVERSAL AND RECIPROCAL-GAMMA ANALYTIC CLASSIFICATION] [NOVELTY UNVERIFIED]`
 - **Methods:** symbolic proof and Lean verification only; no numerical computation
 - **Statement:** For a logarithmic derivative with a free simple-zero boundary, the differential polynomials having at most simple poles are exactly the affine span of the complete Bell covariant jets.
 
@@ -27,9 +27,9 @@ C + span_C {Z_1,Z_2,...}.
 The theorem is a static boundary constraint, not a flow.  It is intended to distinguish a
 constant-residue logarithmic phase from the factorial residue-scale phase of Gamma.
 
-No paper claim on this card may be promoted until the full stated theorem, including every
-analytic bridge used by a natural example, has an unconditional Lean proof with no new axioms,
-`sorry`, `admit`, or hidden analytic hypotheses.
+The universal theorem and the reciprocal-Gamma analytic realization now have unconditional Lean
+proofs.  No paper claim may be promoted until the parent-theory and significance gates are also
+cleared.
 
 ## Candidate theorem
 
@@ -92,8 +92,11 @@ or empirical physical identification is asserted.
 ## Natural examples under attack
 
 - `G=1/Gamma`, so `g=-digamma`.  Reciprocal Gamma is entire with simple zeros on the nonpositive
-  integers; the missing theorem is unconditional freeness of the normalized zero-boundary jets in
-  the exact base required by the classification.
+  integers.  After factorial normalization, its actual zero-boundary derivative ratios are
+  algebraically independent in the eventual branch-germ ring.  The analytic tower theorem is now
+  proved without assumptions: every nonzero covariant polynomial realizes pole order equal to
+  minus its total degree on branches arbitrarily far out, and the raw at-most-simple horizon is
+  exactly the complete-Bell image of the affine covariant sector.
 - Solutions of linear differential equations provide Bell coordinates but are normally
   differential-algebraic, hence are control examples rather than hypertranscendental examples.
 - Completed `L`-functions would make the same coordinate system at simple zeros, but zero
@@ -120,24 +123,39 @@ The required unconditional formal chain is:
 6. for every natural example claimed, the complete analytic pole-profile and boundary-freeness
    bridge in Lean.
 
-Items 1--5 are the universal algebraic theorem.  Item 6 is load-bearing scientific content; the
-card cannot reach stage 3 by formalising only 1--5 while leaving the example on paper.
+Items 1--6 are complete for reciprocal Gamma.  The relevant modules are:
+
+- `SimpleZeroBellHorizon.lean`: exact degree law, homogeneous chart faithfulness, and polynomial
+  Bell automorphism;
+- `GammaSimpleZeroBellHorizon.lean`: actual reciprocal-Gamma derivative-ratio identification and
+  algebraic independence;
+- `GammaSimpleZeroBellHorizonAnalytic.lean`: normalized leading limits, exact meromorphic orders,
+  cofinal detection, and complete covariant/raw tower classifications.
+
+The two capstones are
+`gammaSimpleZeroCovariantTowerAtMostSimple_iff` and
+`gammaSimpleZeroRawTowerAtMostSimple_iff_exists_bellAffine`.  Their axiom audit contains only
+`propext`, `Classical.choice`, and `Quot.sound`.  The formal lint gate passes.
 
 ## Gates
 
 - [x] 0 -> 1 in-progress: well-posed finite theorem, attack idea, counterexamples identified
-- [ ] exact algebraic classification survives proof and countermodel search
-- [ ] Bell substitution proved polynomially invertible in Lean
-- [ ] reciprocal-Gamma example proved end to end in Lean
+- [x] exact algebraic classification survives proof and countermodel search
+- [x] Bell substitution proved polynomially invertible in Lean
+- [x] reciprocal-Gamma example proved end to end in Lean
 - [ ] at least one further natural hypertranscendental phase is proved, not merely postulated
 - [ ] primary parent-theory and priority audit completed
 - [ ] residue-rank invariant shown to classify more than renamed coordinate changes
-- [ ] RH nonconsequence re-audited after every promotion
+- [x] RH nonconsequence re-audited after the reciprocal-Gamma theorem
 - [ ] dual novelty-significance gate cleared
 - [ ] Fields-Medal gate cleared
 
-## Log
+## Current scientific boundary
 
-- 2026-07-15 — Created after separating the complete Bell-horizon conjecture from the already
-  classical first Riccati cancellation.  The top-degree profile identity `(1)` is the first Lean
-  target; no novelty claim is made.
+The reciprocal-Gamma theorem is formal mathematical content, but the Fields-Medal gate is not
+cleared.  Bell identities, simple-pole order filtrations, projective dehomogenization, and
+triangular polynomial changes are individually classical.  The exact all-orders tower
+classification and its cofinal Gamma realization still require a primary-source priority audit and
+a comparison with the strongest local differential-polynomial/value-distribution results.  A
+second natural hypertranscendental residue phase is also required before proposing a general phase
+theory rather than a single-source theorem.

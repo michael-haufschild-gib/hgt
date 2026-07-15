@@ -40,11 +40,23 @@ The same factorial coefficients occur in the differentiated Gamma shift conormal
 `D^i(exp(D)-1)`. Thus `(1)` is the exact finite boundary-symbol transgression from the cyclic
 source conormal into the newest algebraic clock direction. It is independent of `z`.
 
+More precisely, if `lambda_k=1/(k+1)!`, Lean proves
+
+```text
+lambda_(N-i-1)=v_N(i).                                    (4)
+```
+
+It also proves joint faithfulness: any sequence `c_k` satisfying `(4)` at every oriented finite
+boundary equals `lambda_k`. The full inverse family of finite currents therefore reconstructs the
+infinite Gamma conormal even though every single finite clock is blind to it.
+
 ## No-go and positive statement
 
 The equality “one new jet generator equals rank one” is only dimension counting and is rejected as
 an index theorem. The positive nontrivial content is the exact pairing `(1)`: the source-selected
 incoming and outgoing variance defects pair to the same factorial conormal symbol at every level.
+The stronger positive statement is the tomography theorem `(4)`: the complete oriented boundary
+family is a faithful encoding of the infinite cyclic conormal.
 
 This remains a finite skeleton. Proving that it is the transgression of the minimal parameterized-
 Galois conormal module, rather than only the explicit Gamma jet matrices, is open.
@@ -57,7 +69,9 @@ Galois conormal module, rather than only the explicit Gamma jet matrices, is ope
 - `gammaClockPairedBoundaryCurrent_apply`;
 - `gammaClockPairedBoundaryCurrent_eq_outerProduct`;
 - `range_gammaClockPairedBoundaryCurrent`;
-- `finrank_range_gammaClockPairedBoundaryCurrent`.
+- `finrank_range_gammaClockPairedBoundaryCurrent`;
+- `gammaCoronaConormal_boundaryCoefficient`;
+- `gammaCoronaConormal_ext_of_boundaryCoefficients`.
 
 The touched file passed direct Lean checking. The declarations use only `propext`,
 `Classical.choice`, and `Quot.sound`. Its cached object existed, so no module or full build was run.
@@ -67,6 +81,7 @@ The touched file passed direct Lean checking. The declarations use only `propext
 - [x] exact paired-current formula Lean-formalized
 - [x] exact rank-one range Lean-formalized
 - [x] current coefficient identified with differentiated shift-conormal boundary symbol
+- [x] oriented finite boundary family jointly reconstructs the infinite conormal
 - [ ] finite Weyl seam proved equal to the negative paired current in Lean
 - [ ] minimal source-Galois conormal module constructed
 - [ ] source-Galois transgression identified with this finite current

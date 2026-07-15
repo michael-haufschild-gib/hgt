@@ -183,6 +183,139 @@ theorem gammaPeriodicFourier_shiftedTaylorConormal_hasSum
         simpa [Finset.sum_insert hm] using hmSum.add ih
   simpa using hsum Finset.univ
 
+/-- Coefficient of the basic Gamma/digamma unit-shift conormal on the `(n+1)`-st derivative. -/
+def gammaPeriodicConormalCoefficient (n : ℕ) : ℂ :=
+  1 / ((n + 1).factorial : ℂ)
+
+/-- A raw clock growing exactly fast enough to cancel the factorial conormal decay. -/
+def gammaFactorialRawClock (n : ℕ) : ℂ :=
+  ((n + 1).factorial : ℂ)
+
+@[simp] theorem gammaPeriodicConormalCoefficient_mul_factorialRawClock (n : ℕ) :
+    gammaPeriodicConormalCoefficient n * gammaFactorialRawClock n = 1 := by
+  simp only [gammaPeriodicConormalCoefficient, gammaFactorialRawClock, one_div]
+  apply inv_mul_cancel₀
+  exact_mod_cast Nat.factorial_ne_zero (n + 1)
+
+/-- **Raw-clock domain no-go.**  The genuine factorial-tail source conormal does not define a
+summable pairing on every raw sequence: on the factorial-growth clock every term is one.  Hence an
+analytic HT conormal necessarily comes with a proper source-selected summability domain, not only a
+finer topology on all of `ℂ^ℕ`. -/
+theorem gammaPeriodicConormal_not_summable_on_all_rawClocks :
+    ¬ Summable (fun n : ℕ ↦
+      gammaPeriodicConormalCoefficient n * gammaFactorialRawClock n) := by
+  intro h
+  have hone : Summable (fun _ : ℕ ↦ (1 : ℂ)) := by simpa using h
+  exact one_ne_zero ((summable_const_iff (β := ℕ) (1 : ℂ)).mp hone)
+
+/-- The maximal raw positive-derivative-tail subspace on which every differentiated Gamma shift
+conormal is summable.  The parameter `k` indexes the source-operator translates
+`D^k (exp D - 1)` of the basic conormal. -/
+def gammaCoronaClockDomain : Submodule ℂ (ℕ → ℂ) where
+  carrier := {b | ∀ k : ℕ, Summable (fun n : ℕ ↦
+    gammaPeriodicConormalCoefficient n * b (n + k))}
+  zero_mem' := by
+    intro k
+    simp
+  add_mem' := by
+    intro a b ha hb k
+    have h := (ha k).add (hb k)
+    simpa [mul_add] using h
+  smul_mem' := by
+    intro s a ha k
+    have h := (ha k).mul_left s
+    simpa [mul_assoc, mul_left_comm, mul_comm] using h
+
+/-- Tail shift on positive raw derivative clocks. -/
+def gammaCoronaClockTail (b : ℕ → ℂ) : ℕ → ℂ :=
+  fun n ↦ b (n + 1)
+
+/-- The maximal Gamma conormal domain is stable under the derivative-tail shift.  This is the
+domain form of closure under all differentiated source constraints. -/
+theorem gammaCoronaClockDomain_tail
+    {b : ℕ → ℂ} (hb : b ∈ gammaCoronaClockDomain) :
+    gammaCoronaClockTail b ∈ gammaCoronaClockDomain := by
+  intro k
+  have h := hb (k + 1)
+  apply h.congr
+  intro n
+  simp only [gammaCoronaClockTail]
+  congr 2
+
+/-- Positive derivative-tail clock of one period-one Fourier mode. -/
+def gammaPeriodicModeTail (m : ℕ) : ℕ → ℂ :=
+  fun n ↦ gammaPeriodicFrequency m ^ (n + 1)
+
+/-- Every periodic Fourier mode lies in the maximal Gamma conormal domain. -/
+theorem gammaPeriodicModeTail_mem_coronaClockDomain (m : ℕ) :
+    gammaPeriodicModeTail m ∈ gammaCoronaClockDomain := by
+  intro k
+  have h := (gammaPeriodicMode_shiftedTaylorConormal_hasSum m k).summable
+  apply h.congr
+  intro n
+  simp [gammaPeriodicConormalCoefficient, gammaPeriodicModeTail, div_eq_mul_inv]
+  ring
+
+/-- Positive derivative-tail clock of a finite period-one Fourier packet. -/
+def gammaPeriodicFourierTail {r : ℕ} (a : Fin r → ℂ) : ℕ → ℂ :=
+  fun n ↦ ∑ m : Fin r, a m * gammaPeriodicFrequency m ^ (n + 1)
+
+/-- **Concrete Gamma rigging.**  Every finite periodic Fourier packet lies in the maximal domain on
+which the entire cyclic family of differentiated shift conormals is summable. -/
+theorem gammaPeriodicFourierTail_mem_coronaClockDomain
+    {r : ℕ} (a : Fin r → ℂ) :
+    gammaPeriodicFourierTail a ∈ gammaCoronaClockDomain := by
+  intro k
+  have h := (gammaPeriodicFourier_shiftedTaylorConormal_hasSum a k).summable
+  apply h.congr
+  intro n
+  simp only [gammaPeriodicConormalCoefficient, gammaPeriodicFourierTail, one_div]
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro m hm
+  ring
+
+/-- The `k`-th differentiated Gamma conormal as an actual linear functional on its maximal cyclic
+summability domain. -/
+def gammaCoronaConormal (k : ℕ) : gammaCoronaClockDomain →ₗ[ℂ] ℂ where
+  toFun b := ∑' n : ℕ, gammaPeriodicConormalCoefficient n * b.1 (n + k)
+  map_add' a b := by
+    have h := (a.2 k).tsum_add (b.2 k)
+    simpa [mul_add] using h
+  map_smul' s a := by
+    have h := (a.2 k).tsum_mul_left s
+    simpa [mul_assoc, mul_left_comm, mul_comm] using h
+
+/-- **Cyclic conormal covariance.**  Tail shift advances the differentiated source conormal by one:
+`λ_k(Tb)=λ_(k+1)(b)`. -/
+theorem gammaCoronaConormal_tail (k : ℕ) (b : gammaCoronaClockDomain) :
+    gammaCoronaConormal k
+        ⟨gammaCoronaClockTail b.1, gammaCoronaClockDomain_tail b.2⟩ =
+      gammaCoronaConormal (k + 1) b := by
+  apply tsum_congr
+  intro n
+  simp only [gammaCoronaClockTail]
+  congr 2
+
+/-- Every finite periodic Fourier packet is annihilated by every functional in the cyclic Gamma
+corona-conormal family. -/
+theorem gammaCoronaConormal_fourierTail {r : ℕ}
+    (a : Fin r → ℂ) (k : ℕ) :
+    gammaCoronaConormal k
+        ⟨gammaPeriodicFourierTail a,
+          gammaPeriodicFourierTail_mem_coronaClockDomain a⟩ = 0 := by
+  change (∑' n : ℕ, gammaPeriodicConormalCoefficient n *
+    gammaPeriodicFourierTail a (n + k)) = 0
+  have hzero := (gammaPeriodicFourier_shiftedTaylorConormal_hasSum a k).tsum_eq
+  rw [← hzero]
+  apply tsum_congr
+  intro n
+  simp only [gammaPeriodicConormalCoefficient, gammaPeriodicFourierTail, one_div]
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro m hm
+  ring
+
 /-! ### Rank-one curvature of finite unit-translation shadows -/
 
 /-- Taylor coefficient carrying the `j`-th raw derivative into the `i`-th derivative after unit
@@ -237,6 +370,31 @@ theorem gammaClockCurvature_apply (n : ℕ)
 /-- The factorial-tail boundary vector exposed at resolution `n`. -/
 def gammaClockBoundaryVector (n : ℕ) : Fin n → ℂ :=
   fun i => 1 / ((n - i).factorial : ℂ)
+
+/-- **Finite transgression of the cyclic Gamma conormal.**  At resolution `N`, the coefficient
+of the infinite source conormal that reaches the `i`-th retained clock coordinate is exactly the
+factorial boundary symbol exposed by finite translation curvature.  Thus the finite boundary
+current is not an independently chosen rank-one line: it is the visible truncation of the cyclic
+source conormal. -/
+theorem gammaCoronaConormal_boundaryCoefficient (N : ℕ) (i : Fin N) :
+    gammaPeriodicConormalCoefficient (N - (i : ℕ) - 1) =
+      gammaClockBoundaryVector N i := by
+  simp only [gammaPeriodicConormalCoefficient, gammaClockBoundaryVector]
+  congr 3
+  omega
+
+/-- **Boundary tomography is jointly faithful.**  Although every individual finite clock forgets
+the infinite Gamma constraint, the oriented family of all finite boundary symbols uniquely
+reconstructs its full factorial-tail conormal.  This is the positive inverse-limit residue of the
+finite-observation no-go. -/
+theorem gammaCoronaConormal_ext_of_boundaryCoefficients
+    (c : ℕ → ℂ)
+    (h : ∀ (N : ℕ) (i : Fin N),
+      c (N - (i : ℕ) - 1) = gammaClockBoundaryVector N i) :
+    c = gammaPeriodicConormalCoefficient := by
+  funext k
+  have hk := h (k + 1) (⟨0, Nat.succ_pos k⟩ : Fin (k + 1))
+  simpa [gammaPeriodicConormalCoefficient, gammaClockBoundaryVector] using hk
 
 /-- The Gamma curvature is the outer product of highest-jet evaluation with the factorial-tail
 boundary vector. -/

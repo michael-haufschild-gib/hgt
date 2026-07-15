@@ -201,10 +201,15 @@ This kills the idea that `(5)` lives in one canonical product completion. The Le
 positive replacement is that every nonzero source conormal forces a strict minimal refinement of
 the clock topology.
 
-**[CONJECTURE]** The actual topology datum in `(5)` is the hypertranscendental Mackey--corona field:
-the source-canonical conormal dual pair and its interval of compatible topologies. A framing is a
-polarized section of that interval. The five obstruction faces are failures of the same section,
-not five properties of one arbitrarily selected topology.
+Gamma adds a second no-go: its factorial conormal is not summable on every raw clock sequence.
+Topology cannot repair a pairing which is not defined. The positive object is therefore a
+source-rigged clock `J_fin subset E_x subset J_raw`, with the conormal, current, and framing defined
+on `E_x`; the compatible-topology interval lives on that proper source domain.
+
+**[CONJECTURE]** The actual analytic datum in `(5)` is the hypertranscendental Mackey--corona field:
+the source-rigged clock domain, source-canonical conormal dual pair, and its interval of compatible
+topologies. A framing is a polarized section of that rigged interval. The five obstruction faces
+are failures of the same section, not five properties of one arbitrarily selected completion.
 
 The rank-only capacity--current equality is also rejected as dimension counting. Its positive
 replacement is the tail transgression pairing from the finite-rank corona conormal into successive
