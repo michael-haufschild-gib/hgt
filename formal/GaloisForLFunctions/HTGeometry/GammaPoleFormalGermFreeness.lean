@@ -138,7 +138,8 @@ theorem gammaPoleLogDerivativeGerm_eq_factorial_mul (j : ℕ) :
         algebraMap ℂ NatGerm (-1) := by
     rw [← map_mul]
     congr 1
-    simp [gammaPoleLogSlope, hfac]
+    rw [gammaPoleLogSlope]
+    field_simp [hfac]
   rw [gammaPoleLogDerivativeGerm, gammaPoleLogCoefficientGerm]
   rw [show algebraMap ℂ NatGerm
       (((j + 1).factorial : ℂ) * gammaPoleLogConstant j) =

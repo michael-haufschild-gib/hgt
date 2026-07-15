@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED]`
 - **Source:** differential deck descent + Lie--Cartan finite-rank classification + projective defect budgets
-- **Statement:** Every nonconstant tail of a degree-expanding nonautonomous rational protocol on scalar free differential fields contains a nonconstant first-order tensor observable.  After a finite transient prefix the protocol is a tower of coverings of parabolic orbifolds, and its complete tail is the finite-holonomy Maurer--Cartan current field.  Moreover a tensor witness can always be chosen with universal weight `12`.
+- **Statement:** Every nonconstant tail of a degree-expanding nonautonomous rational protocol on scalar free differential fields contains a nonconstant first-order tensor observable.  After a finite transient prefix the protocol is a tower of coverings of parabolic orbifolds, and its complete tail is the finite-holonomy Maurer--Cartan current field.  The parabolic signature changes at most once and then freezes to a fixed-signature isogeny tower.  A protocol-specific tensor charge lies in `{1,2,3,4,6}`; weight `12` is the least charge chosen uniformly before the protocol is known.
 
 ## The theorem
 
@@ -30,10 +30,13 @@ Then the following are equivalent.
    ```
 
 4. After a finite transient prefix, the maps are coverings of parabolic orbifolds and the full
-   tail is their finite-holonomy Maurer--Cartan current field.
+   tail is their finite-holonomy Maurer--Cartan current field.  Their Euclidean signature changes
+   at most once; after that possible change every map is induced by an isogeny within one fixed
+   signature.
 
-In `3`, one may always take `k=12` for a nonconstant witness, although the primitive current
-generating the full tail can have smaller weight.
+In `3`, a protocol-specific charge may be chosen in `{1,2,3,4,6}`, so in particular `k<=6`.
+If one charge must be fixed uniformly without knowing the protocol, one may take `k=12`; both
+orders `4` and `6` occur, so no smaller positive universal multiple works.
 
 The implications `4 => 3 => 2 => 1` are already contained in the first-order tail theorem.  The
 new assertion is the converse `1 => 3`: no genuinely higher-jet persistent phase exists.
@@ -243,8 +246,11 @@ chi_j>=0.                                                 (23)
 
 ## 6. The stable skeleton forces a tensor
 
-Equation (12), the definition of cone points, and (17) now show that every late `R_j` is an exact
-covering between the marked orbifolds of (18): cone weights obey
+Equation (17) uses every point of `B_j` above `B_(j+1)`.  Hence no preimage of a target cone can
+become a new bad source singularity, and no ramified preimage of an ordinary target point can
+become an apparent source singularity: either event would add a point to `B_j` outside the already
+exhausted cusp fibres.  Equation (12) and the definition of cone points therefore show that every
+late `R_j` is an exact covering between the marked orbifolds of (18): cone weights obey
 
 ```text
 m_target=e_x m_source,                                   (24)
@@ -262,17 +268,22 @@ makes `R_j`, after phasewise projective coordinates, a monomial.  The logarithmi
 
 ### One exceptional worldline
 
-If `b=1`, the cusp consumes one unit of (18), so the cone deficits sum to at most one.  A
-Fuchsian projective connection on the sphere cannot have only one singular point.  With one other
-marked point, Riemann--Hurwitz forces a two-point monomial cover.  With two cone points, both must
-have weight two and the signature is `(2,2,infinity)`; the maps are dihedral/Chebyshev orbifold
-covers.  The rational quadratic differential with simple poles at the two order-two points and a
-double pole at the cusp is transported up to scalar.
+If `b=1`, the cusp consumes one unit of (18), so the cone deficits sum to at most one.  A rational
+Fuchsian projective connection on the sphere cannot have only one singular point.  If it has
+exactly two, move them to `0` and `infinity`.  Fuchsianity at both ends forces its coefficient to
+be exactly `c dz^2/z^2`: a `1/z` term becomes a third-order pole at infinity, while a polynomial
+term becomes a pole of order at least four.  Thus the two exponent differences are equal.  In
+particular a cusp and one finite cone cannot be the complete singular set.  With two cone points,
+the defect bound forces both weights to be two, giving `(2,2,infinity)`; the maps are
+dihedral/Chebyshev orbifold covers.  The rational quadratic differential with simple poles at the
+two order-two points and a double pole at the cusp is transported up to scalar.
 
 ### No exceptional worldline
 
-If `b=0`, there are only cone points.  Equation (23) leaves the spherical and Euclidean signatures.
-Exact covering gives
+If `b=0`, there are only cone points.  The preceding two-singularity calculation excludes a
+one-cone signature and forces the weights of a two-cone signature to agree; this removes the bad
+spherical orbifolds before uniformization is invoked.  Equation (23) leaves the good spherical
+and Euclidean signatures.  Exact covering gives
 
 ```text
 chi_j=degree(R_j) chi_(j+1).                              (25)
@@ -330,6 +341,44 @@ where `Q_i` is its primitive finite-holonomy Maurer--Cartan current.  Exact phas
 pulls (29) backward through the finite transient prefix.  Thus higher derivatives create no
 additional persistent field, completing all four equivalences.
 
+## 9. The parabolic topology freezes after one possible enhancement
+
+Write a late parabolic orbifold as `C/Gamma_j`, let `Lambda_j` be the translation subgroup, and
+let `H_j=Gamma_j/Lambda_j` be its finite rotational holonomy of order `h_j`.  An orbifold covering
+lifts to an affine map `A_j` with
+
+```text
+A_j Gamma_j A_j^(-1) subset Gamma_(j+1).                  (30)
+```
+
+Affine conjugation preserves linear parts, hence
+
+```text
+h_j divides h_(j+1).                                     (31)
+```
+
+Finite-index inclusion preserves the rank of the translation subgroup, so compact versus
+cuspidal type cannot change.  Within the cuspidal signatures the only strict holonomy inclusion
+is `1|2`; within the compact signatures the only strict inclusions are `2|4`, `2|6`, and `3|6`.
+Every target is terminal in the same divisibility poset.  Therefore there can be at most one
+strict holonomy enlargement.  Rotational order together with compact/cuspidal type determines the
+parabolic signature, proving signature freezing.
+
+The crystallographic index diagram also gives the exact factorization
+
+```text
+degree(R_j)
+  =(h_(j+1)/h_j)
+   [Lambda_(j+1):A_j Lambda_j A_j^(-1)].                  (32)
+```
+
+After holonomy freezes, every subsequent degree is the lattice index in (32), hence the degree of
+the induced isogeny on `G_m` or on the covering elliptic curve.  If `h_infinity` is the stable
+order, then every earlier late-phase order divides `h_infinity`; consequently
+`(dz)^(h_infinity)` descends throughout the parabolic tower.  This is the sharp
+protocol-specific charge asserted above.  The separate card
+`parabolic-tail-single-holonomy-enhancement-law` records this strengthening and its parent gate.
+
 ## Infinite rational divisibility corollary
 
 Let `Q` be a rational projective connection on `P1`.  If there are rational maps `P_n` of
@@ -355,9 +404,12 @@ Genus zero supplies only `2D-2` ramification units, whereas hyperbolic curvature
 `D/42` more than the parabolic budget.  A fixed source can pay that excess only finitely often.
 
 What remains at infinite depth is therefore a zero-Euler holographic surface: an affine universal
-cover modulo finite holonomy.  The at-most-two non-orbifold singularities are not particles moving
-in a flow; they are persistent puncture worldlines of the inverse constraint topology.  The
-universal weight `12` is the finite holonomy ceiling of this surface, not a fitted parameter.
+cover modulo finite holonomy.  Its discrete topology can undergo at most one strict symmetry
+enhancement; all later degree is translation-lattice index.  The at-most-two non-orbifold
+singularities are not particles moving in a flow; they are persistent puncture worldlines of the
+inverse constraint topology.  The protocol-specific charge is at most `6`, while the universal
+weight `12` is the least precommitted common multiple of all possible finite holonomies, not a
+fitted parameter.
 
 ## Novelty and significance gate
 
@@ -389,8 +441,10 @@ algebraic correspondences.  Lean verification of the budget core is not evidence
 
 Every tail of any future source-pure rational protocol on a completed zeta or
 `L`-function field must now be a parabolic-orbifold current; a genuinely projective or hyperbolic
-tail cannot encode RH at infinite depth.  This turns a proposed RH construction into a sharp test:
-one must exhibit the weight-`12` current and then show that its primitive current is RH-sensitive.
+tail cannot encode RH at infinite depth.  Its cone topology can change at most once, so RH data
+cannot be hidden in indefinitely changing orbifold signatures.  This turns a proposed RH
+construction into a sharp test: one must exhibit the protocol-specific current of charge at most
+`6` (or the uniform weight-`12` witness) and then show that its primitive current is RH-sensitive.
 No such zeta protocol or sensitivity theorem is supplied here, so there is no direct RH implication.
 
 ## Lean status
@@ -402,8 +456,9 @@ The formal core is split across:
 - `NonautonomousProjectiveTailCollapse.lean`: affine/projective local laws, genus-zero marked-fibre
   budget, three trapped-fibre cutoff, antitone exceptional-skeleton stabilization, singleton and
   total-ramification laws, normalized hyperbolic-excess budget, and the algebraic `1/42` cutoff.
-- `ParabolicOrbifoldTwelveCharge.lean`: the six parabolic sphere signatures and the universal
-  divisibility of every finite cone holonomy order by `12`.
+- `ParabolicOrbifoldTwelveCharge.lean`: the six parabolic sphere signatures, universal
+  divisibility by `12`, rotational-order divisibility chains, impossibility of two strict
+  enhancements, eventual signature freezing, and the sharp protocol-specific charge at most `6`.
 
 The differential fixed-field descent, Lie--Cartan classification, local analytic cone criterion,
 and global orbifold uniformization remain paper-level rather than being introduced as axioms.

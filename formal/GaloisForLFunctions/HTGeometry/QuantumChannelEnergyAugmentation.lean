@@ -13,7 +13,7 @@ necessary and sufficient.
 -/
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtTrace
 
-open scoped ComplexConjugate InnerProductSpace
+open scoped BigOperators ComplexConjugate InnerProductSpace
 
 namespace HTGeometry
 
@@ -25,6 +25,35 @@ variable {E F G : Type*}
 variable [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
 variable [NormedAddCommGroup F] [InnerProductSpace ℂ F] [CompleteSpace F]
 variable [NormedAddCommGroup G] [InnerProductSpace ℂ G] [CompleteSpace G]
+
+omit [CompleteSpace E] [CompleteSpace F] in
+/-- **Orthogonal-instrument Bessel bound.**  If the outcome channels `A k` have
+operator-norm bounds `b k` with square-summable squared bounds, then the total outcome energy
+is controlled by the same scalar budget.  This is the countable-outcome form of the
+Kraus/measurement identity used after outcome labels have been made orthogonal. -/
+theorem orthogonalInstrumentEnergy_le
+    {κ : Type*} (A : κ → E →L[ℂ] F) (b : κ → ℝ)
+    (hb : ∀ k, 0 ≤ b k)
+    (hA : ∀ k, ‖A k‖ ≤ b k)
+    (hsum : Summable (fun k => b k ^ 2)) (x : E) :
+    ∑' k, ‖A k x‖ ^ 2 ≤ (∑' k, b k ^ 2) * ‖x‖ ^ 2 := by
+  have hpoint (k : κ) : ‖A k x‖ ^ 2 ≤ b k ^ 2 * ‖x‖ ^ 2 := by
+    have hnorm : ‖A k x‖ ≤ b k * ‖x‖ :=
+      (A k).le_opNorm x |>.trans
+        (mul_le_mul_of_nonneg_right (hA k) (norm_nonneg x))
+    have hsquare : ‖A k x‖ ^ 2 ≤ (b k * ‖x‖) ^ 2 :=
+      (sq_le_sq₀ (norm_nonneg (A k x))
+        (mul_nonneg (hb k) (norm_nonneg x))).2 hnorm
+    calc
+      ‖A k x‖ ^ 2 ≤ (b k * ‖x‖) ^ 2 := hsquare
+      _ = b k ^ 2 * ‖x‖ ^ 2 := by ring
+  have hleft : Summable (fun k => ‖A k x‖ ^ 2) :=
+    Summable.of_nonneg_of_le (fun _ => sq_nonneg _) hpoint
+      (hsum.mul_right (‖x‖ ^ 2))
+  calc
+    ∑' k, ‖A k x‖ ^ 2 ≤ ∑' k, b k ^ 2 * ‖x‖ ^ 2 :=
+      hleft.tsum_le_tsum hpoint (hsum.mul_right (‖x‖ ^ 2))
+    _ = (∑' k, b k ^ 2) * ‖x‖ ^ 2 := tsum_mul_right
 
 /-- The positive source effect of a Hilbert-space channel. -/
 def quantumChannelEffect (C : E →L[ℂ] F) : E →L[ℂ] E :=
@@ -85,11 +114,17 @@ theorem opTrace_augmentedQuantumChannelEffect
   let b := hsBasis ℂ E
   have hCdiag := summable_inner_diag_comp hC.adjoint hC b
   have hBdiag := summable_inner_diag_comp hB.adjoint hB b
+  have hCdiag' : Summable (fun i =>
+      inner ℂ (b i) (quantumChannelEffect C (b i))) := by
+    simpa only [quantumChannelEffect] using hCdiag
+  have hBdiag' : Summable (fun i =>
+      inner ℂ (b i) (quantumChannelEffect B (b i))) := by
+    simpa only [quantumChannelEffect] using hBdiag
   change (∑' i, inner ℂ (b i)
       ((quantumChannelEffect C + quantumChannelEffect B) (b i))) =
     (∑' i, inner ℂ (b i) (quantumChannelEffect C (b i))) +
       ∑' i, inner ℂ (b i) (quantumChannelEffect B (b i))
-  rw [← hCdiag.tsum_add hBdiag]
+  rw [← hCdiag'.tsum_add hBdiag']
   exact tsum_congr fun i => by rw [ContinuousLinearMap.add_apply, inner_add_right]
 
 /-- Exact zeroth value relation for positive-channel augmentation. -/
@@ -97,9 +132,11 @@ theorem re_opTrace_augmentedQuantumChannelEffect
     {C : E →L[ℂ] F} {B : E →L[ℂ] G}
     (hC : IsHilbertSchmidt C) (hB : IsHilbertSchmidt B) :
     (opTrace (augmentedQuantumChannelEffect C B)).re = hsNormSq C + hsNormSq B := by
-  rw [opTrace_augmentedQuantumChannelEffect hC hB, map_add,
-    quantumChannelEffect, re_opTrace_adjoint_comp_self hC,
-    re_opTrace_adjoint_comp_self hB]
+  rw [opTrace_augmentedQuantumChannelEffect hC hB, Complex.add_re]
+  change RCLike.re
+      (opTrace (ContinuousLinearMap.adjoint C ∘L C)) +
+    RCLike.re (opTrace (ContinuousLinearMap.adjoint B ∘L B)) = _
+  rw [re_opTrace_adjoint_comp_self hC, re_opTrace_adjoint_comp_self hB]
 
 /-- The mixed effect pairing is itself a squared Hilbert--Schmidt norm.  In particular, the
 interference contribution created by adding a channel is nonnegative, not an uncontrolled
@@ -119,7 +156,9 @@ theorem hsInner_quantumChannelEffect_eq_cross_hsNormSq
     simpa only [T] using adjoint_quantumChannelEffect C
   have hXadj : ContinuousLinearMap.adjoint X =
       B ∘L ContinuousLinearMap.adjoint C := by
-    rw [X, ContinuousLinearMap.adjoint_comp,
+    change ContinuousLinearMap.adjoint
+      (C ∘L ContinuousLinearMap.adjoint B) = _
+    rw [ContinuousLinearMap.adjoint_comp,
       ContinuousLinearMap.adjoint_adjoint]
   change hsInner T S = (hsNormSq X : ℂ)
   calc
@@ -159,6 +198,8 @@ theorem hsNormSq_augmentedQuantumChannelEffect
   have hT : IsHilbertSchmidt T := quantumChannelEffect_isHilbertSchmidt hC
   have hS : IsHilbertSchmidt S := quantumChannelEffect_isHilbertSchmidt hB
   have hTS : IsHilbertSchmidt (T + S) := hT.add hS
+  have hTself : (hsInner T T).re = hsNormSq T := hsInner_self_re hT
+  have hSself : (hsInner S S).re = hsNormSq S := hsInner_self_re hS
   have hcross : hsInner T S = (hsNormSq X : ℂ) := by
     simpa only [T, S, X] using
       hsInner_quantumChannelEffect_eq_cross_hsNormSq hC hB
@@ -183,8 +224,9 @@ theorem hsNormSq_augmentedQuantumChannelEffect
       (hsInner_self_re hTS).symm
     _ = hsNormSq T + 2 * hsNormSq X + hsNormSq S := by
       rw [hpair]
-      simp only [map_add, hcross, hcross', Complex.ofReal_re,
-        hsInner_self_re hT, hsInner_self_re hS]
+      rw [hcross, hcross']
+      simp only [Complex.add_re, Complex.ofReal_re]
+      rw [hTself, hSself]
       ring
 
 /-- Exact real second-trace relation for the augmented positive effect. -/

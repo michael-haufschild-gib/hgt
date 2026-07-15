@@ -185,9 +185,45 @@ aperture schedule.  The general and coupled declarations are in
 `HTGeometry/QuantumReplicaHausdorff.lean` and
 `RHTower/SoninCoupledPrimeArchGramTransfer.lean`.
 
-The tempting stronger shortcut through a subunital Kraus instrument is unavailable: the concrete
-stacked Sonin column has only an aperture-dependent Hilbert--Schmidt bound proportional to `a^2`,
-not an aperture-independent effect ceiling.  No such completeness hypothesis is inserted.
+`[BRIDGE, SOURCE-FORMALIZED, UNVERIFIED]` The concrete source now supplies an
+aperture-independent effect ceiling without inserting a subunitality or Kraus-completeness
+hypothesis.  Every local exact prime-power residual obeys
+
+```text
+||R_(a,alpha)|| <= 4,
+```
+
+independently of aperture and prime-power scale.  Orthogonal outcome stacking and the already
+formalized square-summability of the Euler weights give, with
+
+```text
+W = sum_alpha |w_alpha|^2,
+R_S = 16 W,
+```
+
+the exact source estimates
+
+```text
+||C_a x||^2
+  = sum_alpha ||w_alpha R_(a,alpha) x||^2
+  <= R_S ||x||^2,
+
+||C_a† C_a|| <= R_S,
+
+Re S_(k+1)(a) <= R_S Re S_k(a),
+
+Re S_k(a) / Re S_0(a) <= R_S^k,
+
+0 <= R_S Re S_k(a) / Re S_0(a)
+       - Re S_(k+1)(a) / Re S_0(a).
+```
+
+Thus the projective source moments have a fixed compact-support radius, uniformly over all
+positive apertures.  This discharges the previously named finite-source-radius/mass-limit
+hypothesis and makes the first scaled Hausdorff constraint closed under any projective aperture
+limit.  It does **not** construct a nonzero aperture schedule, prove projective moment-ratio
+convergence, compare `R_S` with the target prime--Gamma radius, or prove RH.  Those remain the
+load-bearing analytic tasks.
 
 ## Goal
 

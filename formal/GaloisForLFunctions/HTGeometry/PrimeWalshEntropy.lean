@@ -20,7 +20,7 @@ when the upper and lower rates agree, are exactly unchanged by passing to differ
 namespace GaloisForLFunctions.HTGeometry
 
 open Filter
-open scoped Topology
+open scoped ENNReal Topology
 
 noncomputable section
 
@@ -110,7 +110,9 @@ theorem upperNormalizedLogGrowth_mul_const
     intro n
     rw [normalizedLogCard_mul hA (hC n), add_comm]
   have hzero : Tendsto (fun n => normalizedLogCard A n) atTop (𝓝 0) := by
-    exact tendsto_const_div_atTop_nhds_zero_nat _
+    simpa only [normalizedLogCard, div_eq_mul_inv, mul_zero] using
+      ENNReal.Tendsto.const_mul ENNReal.tendsto_inv_nat_nhds_zero
+        (Or.inr (ENNReal.ofReal_ne_top : ENNReal.ofReal (Real.log (A : ℝ)) ≠ ∞))
   rw [upperNormalizedLogGrowth, upperNormalizedLogGrowth]
   calc
     limsup (fun n => normalizedLogCard (A * C n) n) atTop =
@@ -118,7 +120,7 @@ theorem upperNormalizedLogGrowth_mul_const
       limsup_congr (Eventually.of_forall hpoint)
     _ = limsup (fun n => normalizedLogCard (C n) n) atTop := by
       simpa only [Pi.add_apply] using
-        (limsup_add_of_right_tendsto_zero hzero
+        (ENNReal.limsup_add_of_right_tendsto_zero hzero
           (fun n => normalizedLogCard (C n) n))
 
 /-- A fixed positive multiplicative factor does not change lower normalized logarithmic growth. -/
@@ -130,7 +132,9 @@ theorem lowerNormalizedLogGrowth_mul_const
     intro n
     rw [normalizedLogCard_mul hA (hC n), add_comm]
   have hzero : Tendsto (fun n => normalizedLogCard A n) atTop (𝓝 0) := by
-    exact tendsto_const_div_atTop_nhds_zero_nat _
+    simpa only [normalizedLogCard, div_eq_mul_inv, mul_zero] using
+      ENNReal.Tendsto.const_mul ENNReal.tendsto_inv_nat_nhds_zero
+        (Or.inr (ENNReal.ofReal_ne_top : ENNReal.ofReal (Real.log (A : ℝ)) ≠ ∞))
   rw [lowerNormalizedLogGrowth, lowerNormalizedLogGrowth]
   calc
     liminf (fun n => normalizedLogCard (A * C n) n) atTop =
@@ -138,7 +142,7 @@ theorem lowerNormalizedLogGrowth_mul_const
       liminf_congr (Eventually.of_forall hpoint)
     _ = liminf (fun n => normalizedLogCard (C n) n) atTop := by
       simpa only [Pi.add_apply] using
-        (liminf_add_of_right_tendsto_zero hzero
+        (ENNReal.liminf_add_of_right_tendsto_zero hzero
           (fun n => normalizedLogCard (C n) n))
 
 /-- Real-valued normalized logarithm, used for the convergent entropy-rate statement. -/
@@ -183,7 +187,8 @@ theorem realNormalizedLogRank_tendsto_of_subadditive
   refine ⟨h, hlim, ?_⟩
   have hadd := hlim.add hconst
   simpa only [add_zero] using hadd.congr' (Eventually.of_forall fun n => by
-    rw [realNormalizedLogCard_mul hA (hC n)])
+    rw [realNormalizedLogCard_mul hA (hC n)]
+    exact add_comm _ _)
 
 /-- Upper prefix box dimension, expressed through the exact prefix-cylinder cover numbers. -/
 noncomputable def primeTailUpperPrefixBoxDimension
@@ -216,8 +221,13 @@ theorem primeWalshUpperRankBoxGrowth_eq_tailDimension
     (e : ℕ ≃ Nat.Primes) (ε : ℕ → Nat.Primes → Bool)
     (A : Type*) [Finite A] [Nonempty A] :
     primeWalshUpperRankBoxGrowth e ε A = primeTailUpperPrefixBoxDimension e ε := by
-  rw [primeWalshUpperRankBoxGrowth, primeTailUpperPrefixBoxDimension,
-    primeWalshPrefixDifferentialRank,
+  change
+    upperNormalizedLogGrowth
+          (fun n => Nat.card A * primePrefixPatternComplexity e ε n) /
+        ENNReal.ofReal (Real.log 2) =
+      upperNormalizedLogGrowth (primePrefixPatternComplexity e ε) /
+        ENNReal.ofReal (Real.log 2)
+  rw [
     upperNormalizedLogGrowth_mul_const (Nat.card A) Nat.card_pos
       (primePrefixPatternComplexity e ε) (primePrefixPatternComplexity_pos e ε)]
 
@@ -227,8 +237,13 @@ theorem primeWalshLowerRankBoxGrowth_eq_tailDimension
     (e : ℕ ≃ Nat.Primes) (ε : ℕ → Nat.Primes → Bool)
     (A : Type*) [Finite A] [Nonempty A] :
     primeWalshLowerRankBoxGrowth e ε A = primeTailLowerPrefixBoxDimension e ε := by
-  rw [primeWalshLowerRankBoxGrowth, primeTailLowerPrefixBoxDimension,
-    primeWalshPrefixDifferentialRank,
+  change
+    lowerNormalizedLogGrowth
+          (fun n => Nat.card A * primePrefixPatternComplexity e ε n) /
+        ENNReal.ofReal (Real.log 2) =
+      lowerNormalizedLogGrowth (primePrefixPatternComplexity e ε) /
+        ENNReal.ofReal (Real.log 2)
+  rw [
     lowerNormalizedLogGrowth_mul_const (Nat.card A) Nat.card_pos
       (primePrefixPatternComplexity e ε) (primePrefixPatternComplexity_pos e ε)]
 
@@ -244,7 +259,11 @@ theorem primeWalshRankEntropy_eq_tailEntropy
     (A : Type*) [Finite A] [Nonempty A] :
     upperNormalizedLogGrowth (primeWalshPrefixDifferentialRank e ε A) =
       primeTailPrefixEntropy e ε := by
-  rw [primeTailPrefixEntropy, primeWalshPrefixDifferentialRank,
+  change
+    upperNormalizedLogGrowth
+        (fun n => Nat.card A * primePrefixPatternComplexity e ε n) =
+      upperNormalizedLogGrowth (primePrefixPatternComplexity e ε)
+  rw [
     upperNormalizedLogGrowth_mul_const (Nat.card A) Nat.card_pos
       (primePrefixPatternComplexity e ε) (primePrefixPatternComplexity_pos e ε)]
 

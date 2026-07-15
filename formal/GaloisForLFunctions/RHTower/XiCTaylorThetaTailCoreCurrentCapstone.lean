@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailCoreCurrentEquivalence
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailFiniteArithmeticCofinalSelection
+import GaloisForLFunctions.RHTower.XiCTaylorThetaTailPhaseAdaptedRawCoreBridge
 
 /-!
 # Terminal composition for the finite theta-tail core current
@@ -82,10 +83,11 @@ def XiCTaylorThetaTailCoreCurrentJointSublinearUpper
 
 /-! ## Concrete finite-arithmetic data
 
-The literal raw-current identity has the outer factor `1 / 4`.  The reflected-prefix integral is
-itself `1 / 2` of the returned finite-arithmetic current, so its coefficient in the raw current is
-`1 / 8`.  The weighted top row remains under the outer `1 / 4`; since its coefficient packet is
-complex-valued but formed from real integrated rows, the raw bridge uses its real part.
+The corrected raw-current audit has three displayed contributions.  The reflected-prefix integral
+is `1 / 2` of the returned finite-arithmetic current and the raw correlation has outer factor
+`1 / 4`, giving coefficient `1 / 8`.  Both the weighted top row and the surviving finite-translation
+current retain coefficient `1 / 4`.  We keep the latter two together as one remainder: estimating
+them separately is neither required nor mathematically safe.
 -/
 
 /-- Returned reflected-prefix current at the minimal Prouhet order for the local core depth. -/
@@ -100,20 +102,148 @@ def canonicalThetaTailCoreFiniteArithmeticTopRowCurrent
   (canonicalThetaTailFiniteArithmeticWeightedTopRowCurrent
     d (xiCTaylorThetaTailCoreProuhetOrder d) N M z).re
 
-/-- Exact concrete bridge contract.  Its constants are forced by the two already-formalized
-normalizations: `1 / 4` from the raw correlation integral and `1 / 2` from the integrated
-reflected-prefix identification. -/
-def XiCTaylorThetaTailCoreCurrentFiniteArithmeticBridge : Prop :=
-  XiCTaylorThetaTailCoreCurrentTwoTermBridge
-    (1 / 8 : ℝ) (1 / 4 : ℝ)
-    xiCTaylorThetaTailCoreProuhetOrder
-    canonicalThetaTailCoreFiniteArithmeticPrefixCurrent
-    canonicalThetaTailCoreFiniteArithmeticTopRowCurrent
+/-- The exact finite-translation current left by reflection transport and replacement of the
+finite core kernel by the untruncated phase kernel. -/
+def canonicalThetaTailCoreFiniteArithmeticSurvivingTranslationCurrent
+    (d N M : ℕ) (z : ℂ) : ℝ :=
+  phaseAdaptedRawCoreSurvivingFiniteTranslationCurrent
+    d (xiCTaylorThetaTailCoreProuhetOrder d) N z
+    (canonicalThetaTailFiniteArithmeticProuhetEndpoint
+      (xiCTaylorThetaTailCoreProuhetOrder d) N M z)
+
+/-- The remainder which must be bounded without destroying the exact cancellation between its
+cofinal top-row and finite-translation pieces. -/
+def canonicalThetaTailCoreFiniteArithmeticRemainderCurrent
+    (d N M : ℕ) (z : ℂ) : ℝ :=
+  canonicalThetaTailCoreFiniteArithmeticTopRowCurrent d N M z +
+    canonicalThetaTailCoreFiniteArithmeticSurvivingTranslationCurrent d N M z
+
+/-- The complex weighted top-row pairing has no hidden imaginary part; its real part is exactly
+the literal coefficient-weighted integrated top-row current. -/
+theorem canonicalThetaTailCoreFiniteArithmeticTopRowCurrent_eq_raw
+    (d N M : ℕ) (z : ℂ) :
+    canonicalThetaTailCoreFiniteArithmeticTopRowCurrent d N M z =
+      phaseAdaptedRawCoreWeightedTopRowIntegratedCurrent
+        (canonicalPhaseAdaptedWeightedHaarPolynomial
+          (xiCTaylorThetaTailCoreProuhetOrder d) z
+          (canonicalThetaTailFiniteArithmeticProuhetEndpoint
+            (xiCTaylorThetaTailCoreProuhetOrder d) N M z))
+        dyadicProuhetDecayCharacter N d z := by
+  unfold canonicalThetaTailCoreFiniteArithmeticTopRowCurrent
+    canonicalThetaTailFiniteArithmeticWeightedTopRowCurrent
+  rw [phaseAdaptedProuhetWeightedTopRowCurrent_eq_ofReal]
+  rfl
+
+/-- **Exact concrete raw bridge.**  At the finite-arithmetic endpoint the raw core current is the
+`1 / 8` returned prefix plus `1 / 4` times the combined top-row/finite-translation remainder.
+The order hypothesis belongs to the phase-cancellation mechanism; the corrected algebraic bridge
+itself is valid without using it. -/
+theorem xiCTaylorThetaTailCoreCurrentFiniteArithmeticTwoTermBridge :
+    XiCTaylorThetaTailCoreCurrentTwoTermBridge
+      (1 / 8 : ℝ) (1 / 4 : ℝ)
+      xiCTaylorThetaTailCoreProuhetOrder
+      canonicalThetaTailCoreFiniteArithmeticPrefixCurrent
+      canonicalThetaTailCoreFiniteArithmeticRemainderCurrent := by
+  intro d N M z hz0 hzHalf _horder
+  let tau := canonicalThetaTailFiniteArithmeticProuhetEndpoint
+    (xiCTaylorThetaTailCoreProuhetOrder d) N M z
+  have h :=
+    xiCTaylorThetaTailCore_current_eq_returnedSource_add_topRows_add_survivor
+      d (xiCTaylorThetaTailCoreProuhetOrder d) N hz0 hzHalf tau
+  dsimp only at h
+  unfold canonicalThetaTailCoreFiniteArithmeticRemainderCurrent
+  rw [canonicalThetaTailCoreFiniteArithmeticTopRowCurrent_eq_raw]
+  unfold canonicalThetaTailCoreFiniteArithmeticPrefixCurrent
+    canonicalThetaTailCoreFiniteArithmeticSurvivingTranslationCurrent
+    canonicalThetaTailFiniteArithmeticUntruncatedCurrent
+  dsimp only [tau] at h
+  linarith
+
+/-- The combined remainder is exactly the raw current minus the returned prefix.  Thus the top-row
+decay cannot by itself make this remainder small: the finite-translation survivor carries whatever
+raw current is not already present in the prefix. -/
+theorem canonicalThetaTailCoreFiniteArithmeticRemainderCurrent_eq_raw_sub_prefix
+    (d N M : ℕ) {z : ℂ} (hz0 : 0 < z.im) (hzHalf : z.im < 1 / 2) :
+    canonicalThetaTailCoreFiniteArithmeticRemainderCurrent d N M z =
+      4 * orientedPolynomialCurrent (xiCTaylorThetaTailCorePolynomial d) z -
+        (1 / 2 : ℝ) *
+          canonicalThetaTailCoreFiniteArithmeticPrefixCurrent d N M z := by
+  have h := xiCTaylorThetaTailCoreCurrentFiniteArithmeticTwoTermBridge
+    d N M z hz0 hzHalf
+      (two_mul_succ_lt_xiCTaylorThetaTailCoreProuhetOrder d)
+  linarith
+
+/-- Wherever the affine endpoint denominator is nonzero, the combined remainder loses all Haar
+depth dependence: it is the raw current minus one half of the finite density-transform defect. -/
+theorem canonicalThetaTailCoreFiniteArithmeticRemainderCurrent_eq_raw_sub_densityDefect
+    (d N M : ℕ) {z : ℂ} (hz0 : 0 < z.im) (hzHalf : z.im < 1 / 2)
+    (hden : phaseAdaptedCriticalSelfConsistentDenominator
+      (xiCTaylorThetaTailCoreProuhetOrder d) N
+      (spectralTranslationPhase (Real.log 2) z)
+      dyadicProuhetGrowthCharacter z
+      (thetaHalfExponentialPhaseValue z)
+      (thetaHalfExponentialPhaseDerivative z) ≠ 0) :
+    canonicalThetaTailCoreFiniteArithmeticRemainderCurrent d N M z =
+      4 * orientedPolynomialCurrent (xiCTaylorThetaTailCorePolynomial d) z -
+        (1 / 2 : ℝ) *
+          canonicalThetaTailFiniteArithmeticDensityDefectCurrent M z := by
+  rw [canonicalThetaTailCoreFiniteArithmeticRemainderCurrent_eq_raw_sub_prefix
+    d N M hz0 hzHalf]
+  unfold canonicalThetaTailCoreFiniteArithmeticPrefixCurrent
+  rw [canonicalThetaTailFiniteArithmeticUntruncatedCurrent_eq_densityDefect
+    (xiCTaylorThetaTailCoreProuhetOrder d) N M hden]
+
+/-- Two admissible Haar depths give the same combined remainder.  Cofinal selection in `N` can
+shrink the displayed top row only by transferring exactly the opposite amount into the surviving
+finite-translation current. -/
+theorem canonicalThetaTailCoreFiniteArithmeticRemainderCurrent_eq_of_denominators_ne_zero
+    (d M N₁ N₂ : ℕ) {z : ℂ} (hz0 : 0 < z.im) (hzHalf : z.im < 1 / 2)
+    (hden₁ : phaseAdaptedCriticalSelfConsistentDenominator
+      (xiCTaylorThetaTailCoreProuhetOrder d) N₁
+      (spectralTranslationPhase (Real.log 2) z)
+      dyadicProuhetGrowthCharacter z
+      (thetaHalfExponentialPhaseValue z)
+      (thetaHalfExponentialPhaseDerivative z) ≠ 0)
+    (hden₂ : phaseAdaptedCriticalSelfConsistentDenominator
+      (xiCTaylorThetaTailCoreProuhetOrder d) N₂
+      (spectralTranslationPhase (Real.log 2) z)
+      dyadicProuhetGrowthCharacter z
+      (thetaHalfExponentialPhaseValue z)
+      (thetaHalfExponentialPhaseDerivative z) ≠ 0) :
+    canonicalThetaTailCoreFiniteArithmeticRemainderCurrent d N₁ M z =
+      canonicalThetaTailCoreFiniteArithmeticRemainderCurrent d N₂ M z := by
+  rw [canonicalThetaTailCoreFiniteArithmeticRemainderCurrent_eq_raw_sub_densityDefect
+      d N₁ M hz0 hzHalf hden₁,
+    canonicalThetaTailCoreFiniteArithmeticRemainderCurrent_eq_raw_sub_densityDefect
+      d N₂ M hz0 hzHalf hden₂]
+
+/-- As the finite square-index cutoff exhausts the canonical density, the depth-independent
+remainder expression converges to four times the raw core current, not to zero. -/
+theorem tendsto_canonicalThetaTailCore_raw_sub_half_densityDefect
+    (d : ℕ) {z : ℂ} (hz : 0 ≤ z.im) :
+    Tendsto (fun M : ℕ =>
+      4 * orientedPolynomialCurrent (xiCTaylorThetaTailCorePolynomial d) z -
+        (1 / 2 : ℝ) *
+          canonicalThetaTailFiniteArithmeticDensityDefectCurrent M z)
+      atTop
+      (nhds (4 * orientedPolynomialCurrent
+        (xiCTaylorThetaTailCorePolynomial d) z)) := by
+  have hdefect :=
+    (tendsto_canonicalThetaTailFiniteArithmeticDensityDefectCurrent hz).const_mul
+      (1 / 2 : ℝ)
+  simpa using
+    (tendsto_const_nhds.sub hdefect : Tendsto (fun M : ℕ =>
+      4 * orientedPolynomialCurrent (xiCTaylorThetaTailCorePolynomial d) z -
+        (1 / 2 : ℝ) *
+          canonicalThetaTailFiniteArithmeticDensityDefectCurrent M z)
+      atTop (nhds
+        (4 * orientedPolynomialCurrent (xiCTaylorThetaTailCorePolynomial d) z -
+          (1 / 2 : ℝ) * 0)))
 
 /-- The finite-arithmetic cofinal selector supplies the concrete joint estimate.  Notice that the
 top-row degree is the local core depth `D(stage n)`, while the Prouhet order is the associated odd
 degree `2 * (D(stage n) + 1) + 1`; these two parameters must not be interchanged. -/
-theorem xiCTaylorThetaTailCoreCurrentFiniteArithmeticJointSublinearUpper
+theorem xiCTaylorThetaTailCoreCurrentFiniteArithmeticPrefixTopJointSublinearUpper
     {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D) :
     XiCTaylorThetaTailCoreCurrentJointSublinearUpper
       (1 / 8 : ℝ) (1 / 4 : ℝ) D
@@ -154,19 +284,49 @@ theorem xiCTaylorThetaTailCoreCurrentFiniteArithmeticJointSublinearUpper
         canonicalThetaTailCoreFiniteArithmeticPrefixCurrent d N M z ≤
           |canonicalThetaTailCoreFiniteArithmeticPrefixCurrent d N M z| :=
       le_abs_self _
-    dsimp only [B] at hB
-    dsimp only [B] at hprefixAbs
-    nlinarith
+    calc
+      (1 / 8 : ℝ) *
+          canonicalThetaTailCoreFiniteArithmeticPrefixCurrent d N M z ≤
+        (1 / 8 : ℝ) *
+          |canonicalThetaTailCoreFiniteArithmeticPrefixCurrent d N M z| :=
+        mul_le_mul_of_nonneg_left hprefixLe (by norm_num)
+      _ < (1 / 8 : ℝ) * B :=
+        mul_lt_mul_of_pos_left hprefixAbs (by norm_num)
+      _ < (1 / 2 : ℝ) * B := by nlinarith [hB]
+      _ = ((epsilon / 2) * ((n + 1 : ℕ) : ℝ)) *
+          Complex.normSq
+            ((xiCTaylorPolynomial
+              (xiCTaylorOddDegreeSchedule D
+                (xiCTaylorAnisotropicScheduleStage sigma n))).eval
+                  (xiCTaylorAnisotropicCenteredPoint sigma n)) := by
+        dsimp only [B, z]
+        ring
   · have htopRe :
         |canonicalThetaTailCoreFiniteArithmeticTopRowCurrent d N M z| ≤
           ‖canonicalThetaTailFiniteArithmeticWeightedTopRowCurrent
             d (xiCTaylorThetaTailCoreProuhetOrder d) N M z‖ := by
       exact Complex.abs_re_le_norm _
-    dsimp only [B] at hB
-    dsimp only [B] at htopNorm
-    rw [abs_mul]
-    norm_num
-    nlinarith
+    have htopAbs :
+        |canonicalThetaTailCoreFiniteArithmeticTopRowCurrent d N M z| < B :=
+      htopRe.trans_lt (by simpa only [B, d, z] using htopNorm)
+    calc
+      |(1 / 4 : ℝ) *
+          canonicalThetaTailCoreFiniteArithmeticTopRowCurrent d N M z| =
+        (1 / 4 : ℝ) *
+          |canonicalThetaTailCoreFiniteArithmeticTopRowCurrent d N M z| := by
+        rw [abs_mul]
+        norm_num
+      _ < (1 / 4 : ℝ) * B :=
+        mul_lt_mul_of_pos_left htopAbs (by norm_num)
+      _ < (1 / 2 : ℝ) * B := by nlinarith [hB]
+      _ = ((epsilon / 2) * ((n + 1 : ℕ) : ℝ)) *
+          Complex.normSq
+            ((xiCTaylorPolynomial
+              (xiCTaylorOddDegreeSchedule D
+                (xiCTaylorAnisotropicScheduleStage sigma n))).eval
+                  (xiCTaylorAnisotropicCenteredPoint sigma n)) := by
+        dsimp only [B, z]
+        ring
 
 /-- The exact two-term bridge and a same-parameter joint estimate imply the raw theta-tail core
 current condition.  This is the terminal epsilon-budget composition; it contains no sign input
@@ -254,18 +414,18 @@ theorem riemannHypothesis_of_xiCTaylorThetaTailCoreCurrent_twoTermBridge
 /-!
 ## Concrete instantiation contract
 
-The raw-current bridge should instantiate `m` with `xiCTaylorThetaTailCoreProuhetOrder`.  Its
-prefix function is the finite-arithmetic weighted reflected-prefix current, after applying every
-normalization found in the exact raw-to-reflected identity.  Its top-row function is the real part
-of `phaseAdaptedProuhetWeightedTopRowCurrent` formed with the same polynomial
+The exact raw-current bridge is now instantiated at `xiCTaylorThetaTailCoreProuhetOrder`.  Its
+first function is the returned finite-arithmetic reflected-prefix current with scale `1 / 8`.
+Its second function, with scale `1 / 4`, is the sum of the real weighted top row and the surviving
+finite-translation current formed with the same polynomial
 
 `canonicalPhaseAdaptedWeightedHaarPolynomial m z
   (canonicalThetaTailFiniteArithmeticProuhetEndpoint m N M z)`.
 
-The two real scales in this interface are where the bridge records the exact outer factors; the
-joint selector must estimate the scaled terms rather than silently discard those constants.  It
-must choose the same `N` and `M` for both terms.  Eventual strict positivity of the scheduled Taylor
-denominator is supplied upstream by
+The completed cofinal selector already controls the prefix and top row at the same `N,M`; it does
+not control the surviving finite-translation current.  The remaining joint estimate must retain
+the top row and survivor together, unless a separate estimate is proved compatible with the same
+`N,M`.  Eventual strict positivity of the scheduled Taylor denominator is supplied upstream by
 `eventually_remainder_lt_scaled_xiCTaylor_normSq_of_tendsto_localOrder`; it is not an additional
 sign hypothesis here.
 -/
@@ -299,6 +459,34 @@ theorem riemannHypothesis_of_xiCTaylorThetaTailCoreCurrent_canonicalProuhetBridg
     RiemannHypothesis :=
   riemannHypothesis_of_xiCTaylorThetaTailCoreCurrent_twoTermBridge hD
     two_mul_succ_lt_xiCTaylorThetaTailCoreProuhetOrder hbridge hjoint
+
+/-- Concrete terminal core-current theorem.  After the exact bridge and the completed prefix/top
+selector, the sole remaining input is the joint upper estimate for the combined top-row and
+finite-translation remainder at the same finite arithmetic parameters. -/
+theorem xiCTaylorThetaTailCoreCurrentSublinearUpper_of_finiteArithmeticRemainderJoint
+    {D : ℕ → ℕ}
+    (hjoint : XiCTaylorThetaTailCoreCurrentJointSublinearUpper
+      (1 / 8 : ℝ) (1 / 4 : ℝ) D
+      canonicalThetaTailCoreFiniteArithmeticPrefixCurrent
+      canonicalThetaTailCoreFiniteArithmeticRemainderCurrent) :
+    XiCTaylorThetaTailCoreCurrentSublinearUpper D :=
+  xiCTaylorThetaTailCoreCurrentSublinearUpper_of_twoTermBridge
+    two_mul_succ_lt_xiCTaylorThetaTailCoreProuhetOrder
+    xiCTaylorThetaTailCoreCurrentFiniteArithmeticTwoTermBridge hjoint
+
+/-- Concrete terminal RH endpoint.  This theorem does not hide the remaining obstruction: its
+single source-facing hypothesis is precisely the joint bound for the exact combined remainder. -/
+theorem riemannHypothesis_of_xiCTaylorThetaTailCoreCurrent_finiteArithmeticRemainderJoint
+    {D : ℕ → ℕ}
+    (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
+    (hjoint : XiCTaylorThetaTailCoreCurrentJointSublinearUpper
+      (1 / 8 : ℝ) (1 / 4 : ℝ) D
+      canonicalThetaTailCoreFiniteArithmeticPrefixCurrent
+      canonicalThetaTailCoreFiniteArithmeticRemainderCurrent) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_xiCTaylorThetaTailCoreCurrentSublinearUpper hD
+    (xiCTaylorThetaTailCoreCurrentSublinearUpper_of_finiteArithmeticRemainderJoint
+      hjoint)
 
 end
 

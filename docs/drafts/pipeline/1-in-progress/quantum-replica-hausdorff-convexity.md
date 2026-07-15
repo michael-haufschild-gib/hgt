@@ -72,6 +72,8 @@ zeta-independent API:
 - squared real-part Hilbert--Schmidt Cauchy--Schwarz;
 - homogeneous log-convexity of raw and density-normalized replica moments.
 - preservation of adjacent log-convexity under coordinatewise limits.
+- a countable orthogonal-instrument Bessel bound from square-summable local operator ceilings;
+- a master-effect replica-step bound `M_(k+1) <= ||C||^2 M_k`, and its fixed-radius form.
 
 The file is imported by the `HTGeometry` umbrella.  Every future hypertranscendental constraint
 channel of the form `C` can use the theorem without importing any zeta or Sonin declaration.
@@ -124,19 +126,48 @@ When `Re S_0(a)>0`, the last inequality also has the genuinely projective form
 
 No zeroth-mass ceiling occurs in this form.
 
+The concrete Sonin outcome channels also give a second, genuinely aperture-independent family.
+Put
+
+```text
+W = sum_(p,k) |w_(p,k)|^2,
+R_S = 16 W.
+```
+
+The newly exposed source factorization proves
+
+```text
+||C_a x||^2
+  = sum_(p,k) ||w_(p,k) R_(a,p,k) x||^2
+  <= R_S ||x||^2,
+
+||C_a† C_a|| <= R_S,
+
+Re S_(k+1)(a) <= R_S Re S_k(a),
+
+Re S_k(a) / Re S_0(a) <= R_S^k,
+
+0 <= R_S Re S_k(a) / Re S_0(a)
+       - Re S_(k+1)(a) / Re S_0(a).
+```
+
+Here every local exact residual satisfies `||R_(a,p,k)|| <= 4`, uniformly in aperture and
+prime-power scale, and the logarithmic Euler coefficients are already square-summable.  No
+subunitality or Kraus-completeness hypothesis is assumed.
+
 ## Direct route audit
 
-This strengthens the coupled source corpus but does **not** discharge the current per-test
-source-norm comparison.  The canonical/projective coupled route permits an external positive
-rescaling, while the new constraint contains the unscaled source mass `Re S_0(a)`.  Unless that
-mass is also controlled, the second-difference inequality cannot be promoted to an unconditional
-target Hausdorff inequality: a diverging source mass makes the leading positive term dominate.
+The density-normalized second difference still contains the unscaled source mass, so that exact
+formula alone does not pass to the projective target.  The uniform instrument estimate removes
+that particular obstruction by replacing the varying mass with the fixed radius `R_S`.  Any
+coordinatewise limit of positive-mass projective Sonin moment ratios must obey the displayed
+`R_S` envelope and first scaled difference, without assuming convergence or boundedness of
+`Re S_0(a)`.  This directly discharges the former *finite source-radius* hypothesis.
 
-The useful conditional diagnostic is exact.  If a normalized moment-ratio schedule converges and
-its source masses converge to a finite radius `R`, then its target ratio sequence must satisfy the
-`R`-scaled second Hausdorff difference.  This provides a route-killing compatibility test for any
-future proposed aperture schedule and identifies source-mass control as the missing hypothesis
-needed to feed the new physics relation into the existing scaled-Hausdorff RH surface.
+The remaining route problem is now sharper: construct the nonzero aperture schedule and prove
+its projective moment-ratio convergence, then compare the resulting fixed-`R_S` source constraint
+with the prime--Gamma scaled-Hausdorff target surface.  The uniform bound does not construct the
+schedule and does not prove that target comparison.
 
 No RH implication is claimed from the new inequality alone.
 
@@ -147,21 +178,20 @@ than the conditional finite-radius test supplied by the Hausdorff difference.  I
 construct a schedule or prove the full target Hankel form positive: adjacent `2 x 2` minors do not
 control arbitrary polynomial tests.
 
-## Subunital-channel audit
+## Quantum-instrument audit
 
-`[ROUTE RETIRED AT CURRENT SOURCE LEVEL]` A trace-nonincreasing Kraus/POVM realization would give
-an aperture-independent effect ceiling and promote the complete Hausdorff hierarchy directly.
-The actual coupled Sonin column does not currently carry such a theorem.  Its available global
-estimate is the aperture-dependent Shannon-area bound
+`[ROUTE REVIVED BY SOURCE FACTORIZATION]` The earlier shortcut through an *assumed* subunital
+Kraus/POVM realization remains invalid.  However, subunitality is unnecessary.  The exact Sonin
+correction factorization already gives the uniform local bound `||R_(a,p,k)|| <= 4`; Parseval over
+the orthogonal outcome labels and square-summability of the Euler weights then prove the Bessel
+bound with radius `R_S = 16 W`.  The older aperture-dependent Hilbert--Schmidt area estimate is
+still true but is no longer the relevant operator-norm control.
 
-```text
-||C_a||_HS^2 <= 128 a^2 sum_(p,k) |w_(p,k)|^2.
-```
-
-Consequently the quantum-channel vocabulary alone cannot supply a uniform source radius.  Any
-future revival of this route must prove a new cancellation or frame bound for the concrete stacked
-prime-power residuals; treating the present column as a subunital instrument would add an
-unsupported hypothesis.
+This is the same energy bookkeeping as a countable quantum instrument, derived from the concrete
+source rather than postulated as a completeness relation.  It supplies the fixed compact-support
+radius required for projective source moments.  Formalizing all higher scaled Hausdorff
+differences from `0 <= C_a†C_a <= R_S I` remains a useful next corpus extension; the first scaled
+difference and the all-order geometric envelope are already source-formalized.
 
 ## Adjacent quantum-Fisher audit
 
@@ -190,6 +220,12 @@ would discard the classical spectral variance rather than bound it.
   [arXiv:2103.06897](https://arxiv.org/abs/2103.06897).  The paper organizes quantum moment
   constraints through positive Hankel matrices, the parent mechanism for adjacent replica
   log-convexity.
+- G. Chiribella, G. M. D'Ariano, and P. Perinotti, *Realization schemes for quantum instruments
+  in finite dimensions*, Journal of Mathematical Physics 50 (2009), 042101,
+  [arXiv:0810.3211](https://arxiv.org/abs/0810.3211).  Its instrument/POVM dilation framework is
+  the physics provenance for retaining orthogonal outcome labels and summing their channel
+  energies; the Sonin theorem derives the needed Bessel ceiling directly rather than assuming
+  instrument completeness.
 - G. Toth and F. Frowis, *Uncertainty relations with the variance and the quantum Fisher
   information based on convex decompositions of density matrices*, Physical Review Research 4
   (2022), 013075,

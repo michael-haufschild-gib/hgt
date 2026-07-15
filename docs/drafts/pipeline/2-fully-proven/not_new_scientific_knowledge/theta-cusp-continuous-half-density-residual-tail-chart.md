@@ -249,7 +249,57 @@ Hence the unique zero occurs before `log 2`.
 The consequence is structural: every arithmetic translate `log n` with `n>=2` lies on the
 positive side of the regular-curvature seam.
 
-## 7. Top-down consequence
+## 7. Both live window peaks precede the first arithmetic shift
+
+The curvature floor also localizes the two window peaks.  Let
+
+```text
+s_0=(log f)'(0).
+```
+
+Since `V''>=19` and `V'(0)=-s_0`,
+
+```text
+V'(x)>=19*x-s_0.                                       (23)
+```
+
+For every integer `k>=1`, source integration by parts gives
+
+```text
+integral x^k*V'(x)*f(x) dx=k*M_(k-1).
+```
+
+Using `(23)` therefore yields the all-order recurrence
+
+```text
+19*M_(k+1)<=s_0*M_k+k*M_(k-1).                        (24)
+```
+
+For `tau_m^2=M_(2*m+2)/M_(2*m)`, Cauchy--Schwarz gives
+
+```text
+M_(2*m+1)<=tau_m*M_(2*m).
+```
+
+Equation `(24)` at `k=2*m+1` consequently implies
+
+```text
+19*tau_m^2<=s_0*tau_m+(2*m+1).                        (25)
+```
+
+The elementary bounds `pi>3` give `0<s_0<1/2`.  If either `tau_1` or `tau_2` were at least `2/3`,
+the left-minus-right side of `(25)` would already be strictly positive at `2/3` and would be
+strictly increasing afterwards.  Hence
+
+```text
+tau_1<=tau_2<2/3<log 2.                                (26)
+```
+
+Thus the seam and both live window peaks all lie in the first residual cell `(0,log 2)`.  The
+remaining unknown is their internal order and the signed balance inside that one cell; no remote
+arithmetic translate can change the peak geometry.
+
+## 8. Top-down consequence
 
 The live low-degree chain can now be attacked through a continuous family of exact tail values:
 
@@ -274,4 +324,3 @@ Residual-life transforms, exponential tilting, and moment layer-cake identities 
 The contribution here is a source-specific splice of those tools with the exact theta atom and its
 critical half-density reflection.  Scientific novelty has not been established and is not needed
 for its role in the RH chain.
-

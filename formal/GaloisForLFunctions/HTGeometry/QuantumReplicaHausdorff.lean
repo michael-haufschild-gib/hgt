@@ -1,5 +1,4 @@
 import GaloisForLFunctions.HTGeometry.QuantumChannelEnergyAugmentation
-import GaloisForLFunctions.HTGeometry.QuantumMasterEffectPurity
 
 /-!
 # Hausdorff convexity of quantum replica moments
@@ -60,6 +59,43 @@ private theorem hsInner_self_eq_ofReal
         (T (ContinuousLinearMap.hsBasis ℂ K i))
     rw [hzero, tsum_zero]
 
+@[simp] private theorem opTrace_zero
+    {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K] :
+    ContinuousLinearMap.opTrace (0 : K →L[ℂ] K) = 0 := by
+  simp [ContinuousLinearMap.opTrace]
+
+@[simp] private theorem hsNormSq_zero
+    {K L : Type*}
+    [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K]
+    [NormedAddCommGroup L] [InnerProductSpace ℂ L] [CompleteSpace L] :
+    ContinuousLinearMap.hsNormSq (0 : K →L[ℂ] L) = 0 := by
+  simp [ContinuousLinearMap.hsNormSq]
+
+/-- Left composition multiplies Hilbert--Schmidt energy by at most the squared operator norm.
+This general ideal estimate was previously available only inside a Sonin implementation module. -/
+theorem hsNormSq_comp_left_le_opNorm
+    {K L M : Type*}
+    [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K]
+    [NormedAddCommGroup L] [InnerProductSpace ℂ L] [CompleteSpace L]
+    [NormedAddCommGroup M] [InnerProductSpace ℂ M] [CompleteSpace M]
+    {T : K →L[ℂ] L} (hT : ContinuousLinearMap.IsHilbertSchmidt T)
+    (A : L →L[ℂ] M) :
+    ContinuousLinearMap.hsNormSq (A ∘L T) ≤
+      ‖A‖ ^ 2 * ContinuousLinearMap.hsNormSq T := by
+  let b := ContinuousLinearMap.hsBasis ℂ K
+  have hAT := hT.comp_left A
+  rw [ContinuousLinearMap.hsNormSq_eq hAT b,
+    ContinuousLinearMap.hsNormSq_eq hT b, ← tsum_mul_left]
+  exact (hAT.summable b).tsum_le_tsum (fun i => by
+    calc
+      ‖(A ∘L T) (b i)‖ ^ 2 = ‖A (T (b i))‖ ^ 2 := by
+        rw [ContinuousLinearMap.comp_apply]
+      _ ≤ (‖A‖ * ‖T (b i)‖) ^ 2 := by
+        gcongr
+        exact A.le_opNorm _
+      _ = ‖A‖ ^ 2 * ‖T (b i)‖ ^ 2 := by ring)
+    ((hT.summable b).mul_left (‖A‖ ^ 2))
+
 /-- Exact Hilbert--Schmidt quadratic expansion along a real scalar.  This is the operator-space
 identity `||rS-T||² = r²||S||² - 2r Re⟨S,T⟩ + ||T||²`. -/
 theorem hsNormSq_real_smul_sub_eq
@@ -77,28 +113,35 @@ theorem hsNormSq_real_smul_sub_eq
   have hD : ContinuousLinearMap.IsHilbertSchmidt (U + V) := hU.add hV
   have hUU : ContinuousLinearMap.hsInner U U =
       ((r ^ 2 : ℝ) : ℂ) * ContinuousLinearMap.hsInner S S := by
-    simp [U, ContinuousLinearMap.hsInner_smul_left,
+    dsimp only [U]
+    rw [ContinuousLinearMap.hsInner_smul_left,
       ContinuousLinearMap.hsInner_smul_right]
+    simp
     push_cast
     ring
   have hUV : ContinuousLinearMap.hsInner U V =
       -(r : ℂ) * ContinuousLinearMap.hsInner S T := by
-    simp [U, V,
-      ContinuousLinearMap.hsInner_smul_left,
+    dsimp only [U, V]
+    change ContinuousLinearMap.hsInner ((r : ℂ) • S) ((-1 : ℂ) • T) = _
+    rw [ContinuousLinearMap.hsInner_smul_left,
       ContinuousLinearMap.hsInner_smul_right]
+    simp
     ring
   have hVU : ContinuousLinearMap.hsInner V U =
       -(r : ℂ) * ContinuousLinearMap.hsInner T S := by
-    simp [U, V,
-      ContinuousLinearMap.hsInner_smul_left,
+    dsimp only [U, V]
+    change ContinuousLinearMap.hsInner ((-1 : ℂ) • T) ((r : ℂ) • S) = _
+    rw [ContinuousLinearMap.hsInner_smul_left,
       ContinuousLinearMap.hsInner_smul_right]
+    simp
     ring
   have hVV : ContinuousLinearMap.hsInner V V =
       ContinuousLinearMap.hsInner T T := by
-    simp [V,
-      ContinuousLinearMap.hsInner_smul_left,
+    dsimp only [V]
+    change ContinuousLinearMap.hsInner ((-1 : ℂ) • T) ((-1 : ℂ) • T) = _
+    rw [ContinuousLinearMap.hsInner_smul_left,
       ContinuousLinearMap.hsInner_smul_right]
-    ring
+    simp
   have hpair : ContinuousLinearMap.hsInner (U + V) (U + V) =
       (ContinuousLinearMap.hsInner U U + ContinuousLinearMap.hsInner U V) +
         (ContinuousLinearMap.hsInner V U + ContinuousLinearMap.hsInner V V) := by
@@ -114,7 +157,8 @@ theorem hsNormSq_real_smul_sub_eq
       (ContinuousLinearMap.hsInner S T).re := by
     rw [ContinuousLinearMap.hsInner_conj_symm T S]
     simp
-  change ContinuousLinearMap.hsNormSq (U + V) = _
+  rw [show (((r : ℂ) • S) - T) = U + V by
+    simp only [U, V, sub_eq_add_neg]]
   calc
     ContinuousLinearMap.hsNormSq (U + V) =
         (ContinuousLinearMap.hsInner (U + V) (U + V)).re :=
@@ -123,8 +167,8 @@ theorem hsNormSq_real_smul_sub_eq
           2 * r * (ContinuousLinearMap.hsInner S T).re +
             ContinuousLinearMap.hsNormSq T := by
       rw [hpair, hUU, hUV, hVU, hVV]
-      simp only [map_add, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
-        neg_re, zero_mul, sub_zero, ContinuousLinearMap.hsInner_self_re hS,
+      simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+        Complex.neg_re, zero_mul, sub_zero, ContinuousLinearMap.hsInner_self_re hS,
         ContinuousLinearMap.hsInner_self_re hT, hcrossRe]
       ring
 
@@ -261,6 +305,55 @@ theorem quantumMasterEffectMoment_nonneg
     rw [quantumMasterEffectMoment_odd_eq_hsNormSq hC]
     exact ContinuousLinearMap.hsNormSq_nonneg _
 
+/-- **Replica-step effect contraction.**  Successive trace moments of `C†C` are controlled by
+the squared operator norm of the channel.  This is the moment form of the Born/Kraus energy
+ceiling and is independent of the Hilbert--Schmidt mass used for density normalization. -/
+theorem quantumMasterEffectMoment_succ_le_sq_opNorm_mul
+    {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C) (k : ℕ) :
+    quantumMasterEffectMoment C (k + 1) ≤
+      ‖C‖ ^ 2 * quantumMasterEffectMoment C k := by
+  obtain ⟨n, h | h⟩ := Nat.even_or_odd' k
+  · subst k
+    rw [quantumMasterEffectMoment_odd_eq_hsNormSq hC,
+      quantumMasterEffectMoment_even_eq_hsNormSq hC]
+    let V := quantumMasterEffectPowerColumn C n
+    have hV : ContinuousLinearMap.IsHilbertSchmidt V :=
+      quantumMasterEffectPowerColumn_isHilbertSchmidt hC n
+    have hcomp := hsNormSq_comp_left_le_opNorm hV
+      (ContinuousLinearMap.adjoint C)
+    have hadjointNorm : ‖ContinuousLinearMap.adjoint C‖ = ‖C‖ := by
+      exact (ContinuousLinearMap.adjoint :
+        (E →L[ℂ] F) ≃ₗᵢ⋆[ℂ] (F →L[ℂ] E)).norm_map C
+    have hfactor : ContinuousLinearMap.adjoint C ∘L V =
+        quantumChannelEffect C ^ (n + 1) := by
+      apply ContinuousLinearMap.ext
+      intro x
+      simp only [V, quantumMasterEffectPowerColumn, quantumChannelEffect,
+        ContinuousLinearMap.comp_apply, pow_succ', ContinuousLinearMap.mul_apply]
+    rw [← hfactor]
+    simpa only [hadjointNorm] using hcomp
+  · subst k
+    rw [show 2 * n + 1 + 1 = 2 * (n + 1) by omega,
+      quantumMasterEffectMoment_even_eq_hsNormSq hC,
+      quantumMasterEffectMoment_odd_eq_hsNormSq hC]
+    let T := quantumChannelEffect C ^ (n + 1)
+    have hT : ContinuousLinearMap.IsHilbertSchmidt T :=
+      quantumChannelEffect_pow_isHilbertSchmidt hC (by omega)
+    have hcomp := hsNormSq_comp_left_le_opNorm hT C
+    have hfactor : C ∘L T = quantumMasterEffectPowerColumn C (n + 1) := by
+      rfl
+    rw [← hfactor]
+    exact hcomp
+
+/-- A channel bound `||C||² ≤ R` gives an aperture- or scale-independent replica-step bound
+`M_(k+1) ≤ R M_k`. -/
+theorem quantumMasterEffectMoment_succ_le_effectRadius_mul
+    {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C)
+    {R : ℝ} (hR : ‖C‖ ^ 2 ≤ R) (k : ℕ) :
+    quantumMasterEffectMoment C (k + 1) ≤ R * quantumMasterEffectMoment C k := by
+  exact (quantumMasterEffectMoment_succ_le_sq_opNorm_mul hC k).trans
+    (mul_le_mul_of_nonneg_right hR (quantumMasterEffectMoment_nonneg hC k))
+
 theorem re_hsInner_quantumMasterEffectPowerColumn_succ
     (C : E →L[ℂ] F) (n : ℕ) :
     (ContinuousLinearMap.hsInner
@@ -331,6 +424,7 @@ theorem quantumMasterEffectSecondDifference_even_eq_hsNormSq
     quantumMasterEffectMoment_even_eq_hsNormSq hC,
     hsNormSq_real_smul_sub_eq hA hB,
     re_hsInner_quantumMasterEffectPowerColumn_succ]
+  rw [quantumMasterEffectMoment_odd_eq_hsNormSq hC n]
   ring
 
 /-- At odd degree the complementary second difference is one positive-effect power square. -/
@@ -351,6 +445,7 @@ theorem quantumMasterEffectSecondDifference_odd_eq_hsNormSq
     quantumMasterEffectMoment_odd_eq_hsNormSq hC,
     hsNormSq_real_smul_sub_eq hA hB,
     re_hsInner_quantumChannelEffect_powers_succ]
+  rw [quantumMasterEffectMoment_even_eq_hsNormSq hC (n + 1)]
   ring
 
 /-- Every unnormalized second complementary difference is nonnegative. -/
@@ -393,7 +488,6 @@ theorem quantumMasterEffectReplicaMoment_secondDifference_nonneg
         quantumMasterEffectSecondDifference]
       simp only [pow_succ]
       field_simp
-      ring
     rw [heq]
     exact div_nonneg hdiff (pow_nonneg hmassPos.le _)
 
@@ -501,7 +595,8 @@ theorem quantumMasterEffectReplicaMoment_logConvex
 topological step needed when a projectively normalized source moment sequence converges to a
 target sequence. -/
 theorem logConvex_of_tendsto
-    {ι : Type*} {l : Filter ι} {m : ι → ℕ → ℝ} {target : ℕ → ℝ}
+    {ι : Type*} {l : Filter ι} [l.NeBot]
+    {m : ι → ℕ → ℝ} {target : ℕ → ℝ}
     (k : ℕ)
     (hlim : ∀ j, Tendsto (fun i => m i j) l (nhds (target j)))
     (hlog : ∀ i, m i (k + 1) ^ 2 ≤ m i k * m i (k + 2)) :

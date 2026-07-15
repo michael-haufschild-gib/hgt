@@ -97,10 +97,17 @@ sum_(j>=0) R_(2*j+1)(a)/(4^j*(2*j+1)!)
   =exp(a/2)*exp(-q(a)).                                (7a)
 ```
 
-It also proves `0<c<log 2` and the exact window collapse
+It also proves
 
 ```text
-K_m(c)=M_(2*m)*U_(2*m+2)(c)-M_(2*m+2)*U_(2*m)(c),     (7b)
+0<c<log 2,
+tau_1<=tau_2<2/3<log 2,                                (7b)
+```
+
+and the exact window collapse
+
+```text
+K_m(c)=M_(2*m)*U_(2*m+2)(c)-M_(2*m+2)*U_(2*m)(c),     (7c)
 ```
 
 where every `U_k(c)` is a finite binomial combination of the residual moments in `(7a)`.
@@ -169,10 +176,11 @@ sign: the integrand is nonpositive before `tau_m` and nonnegative after it.  The
 of `c` and `tau_m` controls how the decreasing and increasing branches of `R_reg` populate those
 two signed pieces.
 
-`[CONJECTURE]` Prove symbolic location bounds for `tau_1,tau_2` relative to `c`, then dominate only
-the intervening interval by the continuous residual budgets `(7a)`.  Since `c<log 2`, every
-nontrivial arithmetic translate already lies on the positive-curvature side.  This uses the seam
-and the value relation simultaneously; a global curvature norm would discard both.
+`[CONJECTURE]` Determine only the remaining internal order of `c,tau_1,tau_2`, then dominate the
+resulting subintervals by the continuous residual budgets `(7a)`.  All three points are already
+proved to lie in `(0,log 2)`, while every nontrivial arithmetic translate lies on the
+positive-curvature side.  This uses the seam and the value relation simultaneously; a global
+curvature norm would discard both.
 
 ### C. Antisymmetric tilted law
 

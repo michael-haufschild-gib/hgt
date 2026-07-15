@@ -1108,6 +1108,103 @@ theorem norm_soninAllPrimeCoupledCoordinateEnergy_le_traceMoment_zero_re
       ring
     _ ≤ ContinuousLinearMap.hsNormSq C := hopSq
 
+/-- **Aperture-independent coupled-effect radius.**  Unlike the trace-mass ceiling above, this
+bound is fixed by the square-summed Euler weights and the common local residual norm ceiling. -/
+theorem norm_soninAllPrimeCoupledCoordinateEnergy_le_effectRadius
+    (a : SoninPositiveAperture) :
+    ‖soninAllPrimeCoupledCoordinateEnergy a‖ ≤
+      soninAllPrimeColumnEffectRadius := by
+  let C := soninAllPrimeColumnCoordinateOperator a.1 a.2
+  have hadjointNorm : ‖ContinuousLinearMap.adjoint C‖ = ‖C‖ := by
+    exact (ContinuousLinearMap.adjoint :
+      (lp (fun _ : SoninHilbertIndex => ℂ) 2 →L[ℂ] SoninAllPrimeL2) ≃ₗᵢ⋆[ℂ]
+        (SoninAllPrimeL2 →L[ℂ]
+          lp (fun _ : SoninHilbertIndex => ℂ) 2)).norm_map C
+  calc
+    ‖soninAllPrimeCoupledCoordinateEnergy a‖ =
+        ‖ContinuousLinearMap.adjoint C ∘L C‖ := by rfl
+    _ ≤ ‖ContinuousLinearMap.adjoint C‖ * ‖C‖ :=
+      (ContinuousLinearMap.adjoint C).opNorm_comp_le C
+    _ = ‖C‖ ^ 2 := by rw [hadjointNorm]; ring
+    _ ≤ soninAllPrimeColumnEffectRadius :=
+      norm_soninAllPrimeColumnCoordinateOperator_sq_le_effectRadius a.1 a.2
+
+/-- **Uniform replica-step contraction.**  Every aperture uses the same source-effect radius;
+the source trace mass no longer appears in this estimate. -/
+theorem re_soninAllPrimeCoupledTraceMoment_succ_le_effectRadius_mul
+    (a : SoninPositiveAperture) (k : ℕ) :
+    (soninAllPrimeCoupledTraceMoment a (k + 1)).re ≤
+      soninAllPrimeColumnEffectRadius *
+        (soninAllPrimeCoupledTraceMoment a k).re := by
+  let C := soninAllPrimeColumnCoordinateOperator a.1 a.2
+  have hC : ContinuousLinearMap.IsHilbertSchmidt C :=
+    HilbertSchmidt.isHilbertSchmidt_toOperatorRect
+      (soninAllPrimeColumnKernel_isHSRect a.1 a.2)
+  have hstep := HTGeometry.quantumMasterEffectMoment_succ_le_effectRadius_mul
+    hC (norm_soninAllPrimeColumnCoordinateOperator_sq_le_effectRadius a.1 a.2) k
+  simpa only [HTGeometry.quantumMasterEffectMoment,
+    HTGeometry.quantumChannelEffect,
+    soninAllPrimeCoupledTraceMoment,
+    soninAllPrimeCoupledCoordinateEnergy, C] using hstep
+
+/-- The complete projective source moment sequence has a fixed compact-support envelope:
+`Re Tr(T^(k+1)) ≤ R^k Re Tr(T)`, with `R` independent of aperture. -/
+theorem re_soninAllPrimeCoupledTraceMoment_le_effectRadius_pow_mul_zero
+    (a : SoninPositiveAperture) (k : ℕ) :
+    (soninAllPrimeCoupledTraceMoment a k).re ≤
+      soninAllPrimeColumnEffectRadius ^ k *
+        (soninAllPrimeCoupledTraceMoment a 0).re := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+      calc
+        (soninAllPrimeCoupledTraceMoment a (k + 1)).re ≤
+            soninAllPrimeColumnEffectRadius *
+              (soninAllPrimeCoupledTraceMoment a k).re :=
+          re_soninAllPrimeCoupledTraceMoment_succ_le_effectRadius_mul a k
+        _ ≤ soninAllPrimeColumnEffectRadius *
+              (soninAllPrimeColumnEffectRadius ^ k *
+                (soninAllPrimeCoupledTraceMoment a 0).re) :=
+          mul_le_mul_of_nonneg_left ih soninAllPrimeColumnEffectRadius_nonneg
+        _ = soninAllPrimeColumnEffectRadius ^ (k + 1) *
+              (soninAllPrimeCoupledTraceMoment a 0).re := by
+          rw [pow_succ]
+          ring
+
+/-- After dividing only by the zeroth source value, all projective coordinates are uniformly
+bounded by powers of the aperture-independent effect radius. -/
+theorem re_soninAllPrimeCoupledTraceMoment_div_zero_le_effectRadius_pow
+    (a : SoninPositiveAperture)
+    (hzero : 0 < (soninAllPrimeCoupledTraceMoment a 0).re) (k : ℕ) :
+    (soninAllPrimeCoupledTraceMoment a k).re /
+        (soninAllPrimeCoupledTraceMoment a 0).re ≤
+      soninAllPrimeColumnEffectRadius ^ k := by
+  rw [div_le_iff₀ hzero]
+  exact re_soninAllPrimeCoupledTraceMoment_le_effectRadius_pow_mul_zero a k
+
+/-- First scaled Hausdorff difference for the projective source moments.  It is the concrete
+compact-support constraint exported by the uniform quantum-instrument radius. -/
+theorem re_soninAllPrimeCoupledTraceMoment_div_zero_firstScaledDifference_nonneg
+    (a : SoninPositiveAperture)
+    (hzero : 0 < (soninAllPrimeCoupledTraceMoment a 0).re) (k : ℕ) :
+    0 ≤ soninAllPrimeColumnEffectRadius *
+          ((soninAllPrimeCoupledTraceMoment a k).re /
+            (soninAllPrimeCoupledTraceMoment a 0).re) -
+        (soninAllPrimeCoupledTraceMoment a (k + 1)).re /
+          (soninAllPrimeCoupledTraceMoment a 0).re := by
+  rw [sub_nonneg]
+  have hstep := re_soninAllPrimeCoupledTraceMoment_succ_le_effectRadius_mul a k
+  calc
+    (soninAllPrimeCoupledTraceMoment a (k + 1)).re /
+        (soninAllPrimeCoupledTraceMoment a 0).re ≤
+      (soninAllPrimeColumnEffectRadius *
+          (soninAllPrimeCoupledTraceMoment a k).re) /
+        (soninAllPrimeCoupledTraceMoment a 0).re :=
+      div_le_div_of_nonneg_right hstep hzero.le
+    _ = soninAllPrimeColumnEffectRadius *
+        ((soninAllPrimeCoupledTraceMoment a k).re /
+          (soninAllPrimeCoupledTraceMoment a 0).re) := by ring
+
 /-- **Replica-step contraction.**  Each successive coupled trace moment is at most the previous
 one times the total source mass.  After division by powers of that mass this is monotonicity of
 the density-operator Rényi replica moments. -/

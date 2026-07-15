@@ -94,3 +94,7 @@ The signs are fixed by the displayed Euler product and must be verified formally
 - 2026-07-15 — opened after the all-order parity-tail ladder closed coordinatewise detection.  The
   remaining obstruction is product cancellation inside the reciprocal differential ideal.
 
+- 2026-07-15 — the sequence-algebra and Bell-triangular parts are now formalized in
+  `gamma-factorial-harmonic-sequence-freeness.md`.  The open core is narrowed to the exact
+  analytic/formal-series identification with the scaled Gamma pole germs, followed by
+  composition-depth descent.

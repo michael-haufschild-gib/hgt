@@ -7,6 +7,7 @@ same Sonin source space.  Its Gram operator is positive and retains cross-prime 
 -/
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtRectangular
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtTrace
+import GaloisForLFunctions.HTGeometry.QuantumChannelEnergyAugmentation
 import GaloisForLFunctions.RHTower.SoninAllPrimeResidualKernel
 
 noncomputable section
@@ -82,6 +83,157 @@ theorem soninAllPrimeColumnOperator_apply (a : ℝ) (ha : 0 < a) (x : SoninL2)
     _ = inner ℂ (ContinuousLinearMap.adjoint A (b i)) x :=
       b.tsum_inner_mul_inner _ _
     _ = inner ℂ (b i) (A x) := ContinuousLinearMap.adjoint_inner_left A x (b i)
+
+/-! ### Aperture-independent quantum-instrument radius -/
+
+/-- The square-summed logarithmic Euler weight.  It is finite before any aperture is chosen. -/
+def soninAllPrimeColumnWeightSqMass : ℝ :=
+  ∑' pk : Nat.Primes × ℕ, ‖soninLogPrimePowerCoefficient pk‖ ^ 2
+
+theorem soninAllPrimeColumnWeightSqMass_nonneg :
+    0 ≤ soninAllPrimeColumnWeightSqMass := by
+  exact tsum_nonneg fun _ => sq_nonneg _
+
+/-- The common-source effect radius obtained by combining the local residual ceiling `4` with
+orthogonal prime-power outcome stacking. -/
+def soninAllPrimeColumnEffectRadius : ℝ :=
+  16 * soninAllPrimeColumnWeightSqMass
+
+theorem soninAllPrimeColumnEffectRadius_nonneg :
+    0 ≤ soninAllPrimeColumnEffectRadius := by
+  exact mul_nonneg (by norm_num) soninAllPrimeColumnWeightSqMass_nonneg
+
+/-- Every unweighted prime-power outcome channel has the same operator-norm ceiling, independent
+of aperture and prime-power scale. -/
+theorem norm_centralSoninPrimePowerResidual_le_four
+    (a : ℝ) (pk : Nat.Primes × ℕ) :
+    ‖centralSoninPrimePowerResidual a pk‖ ≤ 4 := by
+  simpa only [centralSoninPrimePowerResidual] using
+    norm_centralSoninDilationCornerResidual_le_four a
+      (soninPrimePowerScale pk) (one_lt_soninPrimePowerScale pk)
+
+/-- Weighting a local outcome channel multiplies its common ceiling by the Euler coefficient. -/
+theorem norm_centralSoninWeightedPrimePowerResidual_le_four_mul
+    (a : ℝ) (pk : Nat.Primes × ℕ) :
+    ‖centralSoninWeightedPrimePowerResidual a pk‖ ≤
+      4 * ‖soninLogPrimePowerCoefficient pk‖ := by
+  calc
+    ‖centralSoninWeightedPrimePowerResidual a pk‖ =
+        ‖soninLogPrimePowerCoefficient pk‖ *
+          ‖centralSoninPrimePowerResidual a pk‖ := by
+      rw [centralSoninWeightedPrimePowerResidual, norm_smul]
+    _ ≤ ‖soninLogPrimePowerCoefficient pk‖ * 4 :=
+      mul_le_mul_of_nonneg_left
+        (norm_centralSoninPrimePowerResidual_le_four a pk)
+        (norm_nonneg _)
+    _ = 4 * ‖soninLogPrimePowerCoefficient pk‖ := by ring
+
+private theorem summable_four_mul_norm_soninLogPrimePowerCoefficient_sq :
+    Summable (fun pk : Nat.Primes × ℕ =>
+      (4 * ‖soninLogPrimePowerCoefficient pk‖) ^ 2) := by
+  exact (summable_norm_soninLogPrimePowerCoefficient_sq.mul_left 16).congr
+    (fun _ => by ring)
+
+/-- Parseval over the output basis turns the norm of the stacked channel into the sum of the
+energies of its prime-power outcome channels. -/
+theorem norm_sq_soninAllPrimeColumnOperator_apply_eq_tsum
+    (a : ℝ) (ha : 0 < a) (x : SoninL2) :
+    ‖soninAllPrimeColumnOperator a ha x‖ ^ 2 =
+      ∑' pk : Nat.Primes × ℕ,
+        ‖centralSoninWeightedPrimePowerResidual a pk x‖ ^ 2 := by
+  rw [HilbertSchmidt.lp_norm_sq_eq]
+  have hout := HilbertSchmidt.summable_coe_sq
+    (soninAllPrimeColumnOperator a ha x)
+  rw [hout.tsum_prod]
+  apply tsum_congr
+  intro pk
+  simp_rw [soninAllPrimeColumnOperator_apply]
+  exact tsum_sq_norm_inner_hilbertBasis
+    (ContinuousLinearMap.hsBasis ℂ SoninL2)
+    (centralSoninWeightedPrimePowerResidual a pk x)
+
+/-- **Uniform stacked-channel energy bound.**  The full coupled all-prime column has an
+aperture-independent Bessel budget. -/
+theorem norm_sq_soninAllPrimeColumnOperator_apply_le_effectRadius
+    (a : ℝ) (ha : 0 < a) (x : SoninL2) :
+    ‖soninAllPrimeColumnOperator a ha x‖ ^ 2 ≤
+      soninAllPrimeColumnEffectRadius * ‖x‖ ^ 2 := by
+  rw [norm_sq_soninAllPrimeColumnOperator_apply_eq_tsum]
+  have henergy := HTGeometry.orthogonalInstrumentEnergy_le
+    (A := fun pk : Nat.Primes × ℕ =>
+      centralSoninWeightedPrimePowerResidual a pk)
+    (b := fun pk => 4 * ‖soninLogPrimePowerCoefficient pk‖)
+    (fun _ => mul_nonneg (by norm_num) (norm_nonneg _))
+    (norm_centralSoninWeightedPrimePowerResidual_le_four_mul a)
+    summable_four_mul_norm_soninLogPrimePowerCoefficient_sq x
+  have hbudget :
+      (∑' pk : Nat.Primes × ℕ,
+          (4 * ‖soninLogPrimePowerCoefficient pk‖) ^ 2) =
+        soninAllPrimeColumnEffectRadius := by
+    rw [soninAllPrimeColumnEffectRadius, soninAllPrimeColumnWeightSqMass,
+      ← tsum_mul_left]
+    apply tsum_congr
+    intro pk
+    ring
+  rwa [hbudget] at henergy
+
+/-- Operator-norm form of the uniform stacked-channel energy bound. -/
+theorem norm_soninAllPrimeColumnOperator_le_sqrt_effectRadius
+    (a : ℝ) (ha : 0 < a) :
+    ‖soninAllPrimeColumnOperator a ha‖ ≤
+      Real.sqrt soninAllPrimeColumnEffectRadius := by
+  apply (soninAllPrimeColumnOperator a ha).opNorm_le_bound
+    (Real.sqrt_nonneg _)
+  intro x
+  apply (sq_le_sq₀ (norm_nonneg _)
+    (mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg x))).mp
+  calc
+    ‖soninAllPrimeColumnOperator a ha x‖ ^ 2 ≤
+        soninAllPrimeColumnEffectRadius * ‖x‖ ^ 2 :=
+      norm_sq_soninAllPrimeColumnOperator_apply_le_effectRadius a ha x
+    _ = (Real.sqrt soninAllPrimeColumnEffectRadius * ‖x‖) ^ 2 := by
+      rw [mul_pow, Real.sq_sqrt soninAllPrimeColumnEffectRadius_nonneg]
+
+/-- The Hilbert-coordinate presentation has the same aperture-independent norm ceiling as the
+actual Sonin-space column. -/
+theorem norm_soninAllPrimeColumnCoordinateOperator_le_sqrt_effectRadius
+    (a : ℝ) (ha : 0 < a) :
+    ‖soninAllPrimeColumnCoordinateOperator a ha‖ ≤
+      Real.sqrt soninAllPrimeColumnEffectRadius := by
+  let U := (ContinuousLinearMap.hsBasis ℂ SoninL2).repr
+  apply (soninAllPrimeColumnCoordinateOperator a ha).opNorm_le_bound
+    (Real.sqrt_nonneg _)
+  intro f
+  let x : SoninL2 := U.symm f
+  have happly : soninAllPrimeColumnOperator a ha x =
+      soninAllPrimeColumnCoordinateOperator a ha f := by
+    simp [soninAllPrimeColumnOperator, U, x]
+  have hxnorm : ‖x‖ = ‖f‖ := by
+    simpa only [x] using U.symm.norm_map f
+  calc
+    ‖soninAllPrimeColumnCoordinateOperator a ha f‖ =
+        ‖soninAllPrimeColumnOperator a ha x‖ := by rw [happly]
+    _ ≤ ‖soninAllPrimeColumnOperator a ha‖ * ‖x‖ :=
+      (soninAllPrimeColumnOperator a ha).le_opNorm x
+    _ ≤ Real.sqrt soninAllPrimeColumnEffectRadius * ‖x‖ :=
+      mul_le_mul_of_nonneg_right
+        (norm_soninAllPrimeColumnOperator_le_sqrt_effectRadius a ha)
+        (norm_nonneg x)
+    _ = Real.sqrt soninAllPrimeColumnEffectRadius * ‖f‖ := by rw [hxnorm]
+
+/-- Squared coordinate-column norm bound, in the form consumed by replica-moment estimates. -/
+theorem norm_soninAllPrimeColumnCoordinateOperator_sq_le_effectRadius
+    (a : ℝ) (ha : 0 < a) :
+    ‖soninAllPrimeColumnCoordinateOperator a ha‖ ^ 2 ≤
+      soninAllPrimeColumnEffectRadius := by
+  calc
+    ‖soninAllPrimeColumnCoordinateOperator a ha‖ ^ 2 ≤
+        (Real.sqrt soninAllPrimeColumnEffectRadius) ^ 2 :=
+      (sq_le_sq₀ (norm_nonneg _)
+        (Real.sqrt_nonneg _)).2
+          (norm_soninAllPrimeColumnCoordinateOperator_le_sqrt_effectRadius a ha)
+    _ = soninAllPrimeColumnEffectRadius :=
+      Real.sq_sqrt soninAllPrimeColumnEffectRadius_nonneg
 
 /-- A nonzero prime-power residual gives a nonzero row channel in the stacked all-prime
 instrument.  Orthogonal outcome stacking therefore cannot cancel local Sonin information. -/

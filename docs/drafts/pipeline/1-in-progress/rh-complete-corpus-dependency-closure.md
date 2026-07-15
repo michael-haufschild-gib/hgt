@@ -1104,7 +1104,8 @@ the complementary coefficient family.
   width is `1/(2*pi*exp(2*a)-1)`.
 - [SEAM DISCHARGE] The unique regular-curvature seam satisfies `0<c<log 2`; hence every nontrivial
   arithmetic translate lies on its positive side.  At the seam, both crossing windows use only total
-  moments and residual moments governed by the continuous chart.
+  moments and residual moments governed by the continuous chart.  The curvature floor further gives
+  `tau_1<=tau_2<2/3<log 2`, so the seam and both live peaks lie in the first residual cell.
 - [OPEN] Convert these residual budgets into the paired order-one lower/order-two upper window
   balances.  See
   `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-continuous-half-density-residual-tail-chart.md`

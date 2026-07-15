@@ -27,8 +27,19 @@ The module proves without placeholders:
 - `projectiveTail_eventually_nonhyperbolic_with_twoPointSkeleton`.
 
 `ParabolicOrbifoldTwelveCharge.lean` additionally formalizes the six parabolic sphere signatures,
-their finite cone orders, and the universal divisibility of every phasewise holonomy order by
-`12`.
+their finite cone orders, and:
+
+- `ParabolicSphereSignature.holonomyOrder` and `isCompact`;
+- `ParabolicSphereSignature.eq_of_holonomyOrder_eq_isCompact_eq`;
+- `parabolicHolonomyOrder_no_two_strict_enlargements`;
+- `dvd_holonomyOrder_of_le`;
+- `parabolicHolonomyOrder_eventually_constant`;
+- `parabolicSphereTower_has_protocol_charge`;
+- `parabolicSphereSignature_eventually_constant`.
+
+Thus the formal surface now distinguishes the sharp protocol-specific charge `<=6` from the
+precommitted universal charge `12`, and proves the finite-poset core of the single-enhancement and
+signature-freezing laws.
 
 Together these certify the exact local affine/projective ramification arithmetic, the
 Riemann--Hurwitz obstruction to three trapped fibres, stabilization of the exceptional skeleton,
@@ -59,12 +70,15 @@ is a reusable exclusion theorem rather than an RH proof step.
 
 Serialized direct compilation of `NonautonomousProjectiveTailCollapse.lean` and
 `ParabolicOrbifoldTwelveCharge.lean` succeeds.  Only the missing/stale exact-module object for the
-new twelve-charge leaf was built; no umbrella, theorem-area, full, or concurrent build was run.
+new twelve-charge leaf was built earlier.  The holonomy-freezing extension was checked by direct
+leaf compilation because its object already existed; no umbrella, theorem-area, full, or
+self-concurrent build was run.
 
 ## Gates
 
 - [x] exact local transport identities
 - [x] non-Galois fibre-cardinality argument
 - [x] eventual two-point/non-hyperbolic global budget theorem
+- [x] single holonomy enhancement and eventual signature-freezing finite-poset core
 - [ ] formal geometric descent from rational projective connections to the budget hypotheses
-- [ ] formal spherical/parabolic orbifold-cover classification
+- [ ] formal affine crystallographic lift and covering-degree index factorization
