@@ -45,7 +45,7 @@ theorem adjoint_comp_self_eq_zero_iff
       calc
         ‖C ψ‖ ^ 2 =
             RCLike.re (inner 𝕜 ψ ((C.adjoint ∘L C) ψ)) := by
-          simpa using (C.apply_norm_sq_eq_inner_adjoint_right ψ).symm
+          exact C.apply_norm_sq_eq_inner_adjoint_right ψ
         _ = 0 := by rw [heffect]; simp
     exact norm_eq_zero.mp (sq_eq_zero_iff.mp hnormSq)
   · rintro rfl
@@ -79,10 +79,11 @@ theorem quantumMasterConstraint_unitarySubOne_eq_two_sub_self_sub_adjoint
   have hsub : ContinuousLinearMap.adjoint (U - 1) = U.adjoint - 1 := by
     let adj : (E →L[𝕜] E) ≃ₗᵢ⋆[𝕜] (E →L[𝕜] E) :=
       ContinuousLinearMap.adjoint
-    simpa only [ContinuousLinearMap.adjoint_one] using
+    simpa [adj, ContinuousLinearMap.adjoint_one] using
       adj.map_sub U (1 : E →L[𝕜] E)
   rw [quantumMasterConstraint, hsub]
   change (U.adjoint - 1) * (U - 1) = 2 - U - U.adjoint
+  rw [show (2 : E →L[𝕜] E) = 1 + 1 by norm_num]
   noncomm_ring [hadjoint_mul]
 
 /-- **Supersymmetric partner intertwining.**  The constraint maps its master Hamiltonian
@@ -531,6 +532,7 @@ theorem quantumMasterConstraint_involutiveScattering_eq_two_mul_complement
     (isSelfAdjoint_of_adjoint_mul_self_of_sq_eq_one U hadjoint_mul hsq).star_eq
   rw [quantumMasterConstraint_unitarySubOne_eq_two_sub_self_sub_adjoint
     U hadjoint_mul, hUAdj]
+  rw [show (2 : E →L[𝕜] E) = 1 + 1 by norm_num]
   noncomm_ring
 
 /-- The `Z₂` group average of an involutive isometry is self-adjoint, hence (together with the
@@ -574,12 +576,16 @@ theorem norm_finiteInvolutiveGaugeAverage_sq_add_complement_sq
         (P.adjoint_inner_right ψ (ψ - P ψ)).symm
       _ = inner 𝕜 ψ (P (ψ - P ψ)) := by rw [hPAdj]
       _ = inner 𝕜 ψ (P ψ - P (P ψ)) := by rw [map_sub]
-      _ = 0 := by rw [hfix, sub_self, inner_zero]
+      _ = 0 := by rw [hfix, sub_self, inner_zero_right]
   have hsum : P ψ + (1 - P) ψ = ψ := by simp
   have hpyth :=
     norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero (P ψ) ((1 - P) ψ) horth
-  rw [hsum] at hpyth
-  simpa only [P] using hpyth.symm
+  change ‖P ψ‖ ^ 2 + ‖(1 - P) ψ‖ ^ 2 = ‖ψ‖ ^ 2
+  simp only [pow_two]
+  calc
+    ‖P ψ‖ * ‖P ψ‖ + ‖(1 - P) ψ‖ * ‖(1 - P) ψ‖ =
+        ‖P ψ + (1 - P) ψ‖ * ‖P ψ + (1 - P) ψ‖ := hpyth.symm
+    _ = ‖ψ‖ * ‖ψ‖ := by rw [hsum]
 
 end OrthogonalAverage
 

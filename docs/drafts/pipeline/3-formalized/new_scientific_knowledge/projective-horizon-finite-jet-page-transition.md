@@ -1,9 +1,9 @@
 # Finite-jet Page transition for two incompatible projective horizons
 
 - **ID:** `projective-horizon-finite-jet-page-transition`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / ALGEBRAIC COMPLEMENTARITY LAW
-- **Scientific status:** `[PROVED ON PAPER] [FORMAL CORE COMPLETE] [NOVELTY PROVISIONAL]`
+- **Scientific status:** `[FORMALISED IN LEAN 4] [NOVELTY PROVISIONAL]`
 - **Parents:** `projective-horizon-one-sided-depth-transition`,
   `projective-horizon-all-depth-cusped-building`
 - **Lane:** source-pure hypertranscendental geometry; physical-information interpretation
@@ -174,21 +174,29 @@ reciprocal-jet Jacobian `(5)`.
 
 ## Lean verification
 
-The module
+The modules
 
 ```text
 formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonPageTransition.lean
+formal/GaloisForLFunctions/HTGeometry/JacobianAlgebraicIndependence.lean
+formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonFiniteJetRank.lean
 ```
 
-formalizes:
+formalize the complete theorem surface:
 
 1. the shifted Pascal recurrence as multiplication by an upper-unitriangular matrix;
 2. `det(choose(n+i,k))=1` for every shift and size;
 3. the reciprocal linearization determinant `(-1)^r` and its nonvanishing;
-4. the maximal-rank formula and exact hidden/relation balance;
-5. simultaneous vanishing of both counts at `N=m+n-1`.
+4. a characteristic-zero square-minor Jacobian criterion for algebraic independence;
+5. universal reciprocal differential-jet polynomials and their exact Jacobian values;
+6. algebraic independence of a maximal mixed raw/reciprocal observable subpacket;
+7. matching ambient and displayed-coordinate rank upper bounds;
+8. exact algebraic-matroid transcendence rank
+   `min(N+1,(N+1-m)+(N+1-n))` for the full observation field;
+9. the all-order binomial Leibniz rule and identification of the universal reciprocal
+   polynomials with the actual jets of `x⁻¹`;
+10. the hidden/relation balance and simultaneous vanishing at `N=m+n-1`.
 
-A targeted leaf build succeeds. The axiom audit reports only `propext`, `Classical.choice`, and
-`Quot.sound`; there are no project axioms or placeholders. The paper-level use of the
-characteristic-zero Jacobian criterion remains stated in this card rather than encoded as a new
-general algebraic-geometry library in Lean.
+The exact rank is stated in the algebraic matroid of the displayed family, which is the
+transcendence rank of its generated observation field. Targeted module elaboration succeeds;
+there are no project axioms or placeholders.

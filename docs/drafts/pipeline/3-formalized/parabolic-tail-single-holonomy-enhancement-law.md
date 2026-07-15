@@ -1,9 +1,9 @@
 # A scalar parabolic HT tail has at most one holonomy enhancement
 
 - **ID:** `parabolic-tail-single-holonomy-enhancement-law`
-- **Stage:** 2-fully-proven / needs novelty audit
-- **Type:** THEOREM (paper) + Lean-formalized finite-poset core
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED]`
+- **Stage:** 3-formalized / needs novelty audit
+- **Type:** THEOREM (paper) + LEAN-FORMALIZED CRYSTALLOGRAPHIC TOWER LAW
+- **Scientific status:** `[PROVED HERE] [FORMALIZED IN LEAN 4] [NOVELTY UNVERIFIED]`
 - **Depends on:** `nonautonomous-rational-complete-tail-orbifold-classification`
 - **Statement:** After the finite non-parabolic prefix of a nonconstant scalar rational HT tail,
   the Euclidean orbifold signature can change at most once.  Every covering degree factors into a
@@ -171,12 +171,37 @@ an RH implication.
 - eventual holonomy and signature freezing;
 - existence of the sharp protocol-specific charge `<=6`, dividing the uniform charge `12`.
 
-The affine universal-cover lift and crystallographic index formula remain paper-level geometric
-inputs rather than Lean axioms.
+`formal/GaloisForLFunctions/HTGeometry/ParabolicCrystallographicIndex.lean` closes the remaining
+affine group diagram.  A lifted covering is presented by its conjugated source deck subgroup `K`
+inside the target deck group and the normal target translation subgroup `N`; the conjugated source
+translation group is then `K ∩ N`.  The module proves:
+
+- `crystallographic_sourceHolonomy_dvd_targetHolonomy`;
+- the exact cross-index identity
+  `crystallographic_degree_mul_sourceHolonomy_eq_targetHolonomy_mul_latticeIndex`;
+- the literal quotient-times-lattice factorization in
+  `crystallographic_degree_factorization`;
+- the tower-level exclusion of two separated strict enhancements; and
+- `parabolicCrystallographicTower_singleEnhancement_indexFactorization`, which assembles phasewise
+  factorization, eventual signature/charge freezing, and equality of covering degree with lattice
+  index after the freeze.
+
+The affine-lift geometry is explicit input data rather than an axiom: the capstone is universally
+quantified over every such deck inclusion.  All group-index consequences and all parabolic tower
+conclusions are proved in Lean.  The principal declarations use only `propext`,
+`Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
 - [x] exact group inclusion and index-factorization proof
 - [x] finite signature-poset core formalized in Lean
 - [ ] broad orbifold-covering literature audit
-- [ ] formal affine crystallographic group and index diagram
+- [x] formal affine crystallographic group and index diagram
+
+## Status
+
+`[FORMALIZED IN LEAN 4] [NOVELTY UNVERIFIED]` The complete theorem surface now consists of the
+classical affine deck-inclusion datum plus an axiom-free Lean derivation of holonomy divisibility,
+the crystallographic degree formula, the single-enhancement law, stable protocol charge, eventual
+signature freezing, and pure lattice degree after the freeze.  Only the independent literature
+and novelty audit remains open.

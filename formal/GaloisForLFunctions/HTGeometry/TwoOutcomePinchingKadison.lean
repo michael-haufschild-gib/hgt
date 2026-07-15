@@ -53,7 +53,76 @@ theorem twoOutcomePinchingKadisonDefect_eq_transitionProducts
   have hee : e * e = e := he
   simp only [twoOutcomePinchingKadisonDefect, twoOutcomePinching,
     twoOutcomeLowerTransition, twoOutcomeUpperTransition]
-  noncomm_ring [hee]
+  let f : R := 1 - e
+  let A : R := e * X * e
+  let B : R := f * X * f
+  let C : R := e * X * f
+  let D : R := f * X * e
+  have hff : f * f = f := by
+    dsimp only [f]
+    noncomm_ring [hee]
+  have hef : e * f = 0 := by
+    dsimp only [f]
+    noncomm_ring [hee]
+  have hfe : f * e = 0 := by
+    dsimp only [f]
+    noncomm_ring [hee]
+  have hsum : e + f = 1 := by
+    dsimp only [f]
+    noncomm_ring
+  have hAA : A * A = e * X * e * X * e := by
+    dsimp only [A]
+    calc
+      (e * X * e) * (e * X * e) = e * X * (e * e) * X * e := by
+        noncomm_ring
+      _ = e * X * e * X * e := by rw [hee]
+  have hBB : B * B = f * X * f * X * f := by
+    dsimp only [B]
+    calc
+      (f * X * f) * (f * X * f) = f * X * (f * f) * X * f := by
+        noncomm_ring
+      _ = f * X * f * X * f := by rw [hff]
+  have hCD : C * D = e * X * f * X * e := by
+    dsimp only [C, D]
+    calc
+      (e * X * f) * (f * X * e) = e * X * (f * f) * X * e := by
+        noncomm_ring
+      _ = e * X * f * X * e := by rw [hff]
+  have hDC : D * C = f * X * e * X * f := by
+    dsimp only [D, C]
+    calc
+      (f * X * e) * (e * X * f) = f * X * (e * e) * X * f := by
+        noncomm_ring
+      _ = f * X * e * X * f := by rw [hee]
+  have hExx : e * (X * X) * e = A * A + C * D := by
+    rw [hAA, hCD]
+    calc
+      e * (X * X) * e = e * X * 1 * X * e := by noncomm_ring
+      _ = e * X * (e + f) * X * e := by rw [hsum]
+      _ = e * X * e * X * e + e * X * f * X * e := by noncomm_ring
+  have hFxx : f * (X * X) * f = B * B + D * C := by
+    rw [hBB, hDC]
+    calc
+      f * (X * X) * f = f * X * 1 * X * f := by noncomm_ring
+      _ = f * X * (e + f) * X * f := by rw [hsum]
+      _ = f * X * f * X * f + f * X * e * X * f := by noncomm_ring
+  have hAB : A * B = 0 := by
+    calc
+      A * B = e * X * (e * f) * X * f := by
+        dsimp only [A, B]
+        noncomm_ring
+      _ = 0 := by rw [hef]; simp
+  have hBA : B * A = 0 := by
+    calc
+      B * A = f * X * (f * e) * X * e := by
+        dsimp only [B, A]
+        noncomm_ring
+      _ = 0 := by rw [hfe]; simp
+  change e * (X * X) * e + f * (X * X) * f -
+      (A + B) * (A + B) = C * D + D * C
+  rw [hExx, hFxx]
+  simp only [mul_add, add_mul, hAB, hBA, add_zero, zero_add]
+  abel
 
 variable [StarRing R]
 

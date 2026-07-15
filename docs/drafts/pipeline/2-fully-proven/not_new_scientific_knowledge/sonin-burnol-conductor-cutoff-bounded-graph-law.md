@@ -114,6 +114,13 @@ Thus the algebraic reflection and dressing no longer remain a Lean interface.  T
 realization of `M` and `H_infinity` as unbounded multipliers, the common-core passage, and the BMO
 bounded extension are still paper-only.
 
+`formal/GaloisForLFunctions/RHTower/SoninBurnolConductorConcrete.lean` now closes the concrete
+cutoff weld on the existing even Sonin carrier.  It proves that the cosine Fourier transform `J`
+satisfies `J*J=1`, identifies the actual Fourier cutoff with `J P_a J`, and specializes both
+equalities in `(2)` to `evenIndicatorCutoff a` and `evenFourierCutoff a`.  Hence the abstract ring
+identity now feeds the actual physical/Fourier cutoff pair; only the unbounded analytic realization
+and its bounded-extension theorem remain outside Lean.
+
 ## Boundedness proof
 
 In the Mellin spectral representation, Burnol proves that `H_infinity` is multiplication by the
@@ -198,6 +205,7 @@ correction used by the retired scalarization.
 
 - [x] exact conductor/scattering reflection identity `(2)`
 - [x] algebraic reflection identity and exact resolvent dressing formalized in Lean
+- [x] concrete even-Sonin Fourier cutoff identified as the reflected physical cutoff in Lean
 - [x] BMO spectral multiplier criterion for the real-place conductor
 - [x] bounded half-line conductor commutator, uniform under aperture translation
 - [x] exact prolate-resolvent dressing `(5)`

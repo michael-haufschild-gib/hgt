@@ -91,15 +91,16 @@ algebraic-independence results for harmonic-sum sequences over rational sequence
 parent-theory comparison for the factorial adjunction and weighted Bell specialization still needs
 independent literature review.
 
-The Lean theorem treats the displayed exact Gamma coefficient formulas as definitions.  The
-analytic/formal-power-series identity identifying them with the coefficients of
+The analytic/formal-power-series identity identifying the displayed formulas with the
+coefficients of
 
 \[
   \Gamma\!\left(-n+\frac{(-1)^{n+1}}{n!}X\right)+\frac1X
 \]
 
-is not yet formalized.  That source-identification and the resulting composition-depth descent
-remain in `gamma-pole-germ-harmonic-versal-deformation.md`.
+is now formalized in `gamma-pole-analytic-coefficient-freeness.md`.  The remaining open core is the
+primary-source novelty audit and the composition-depth descent in
+`gamma-pole-germ-harmonic-versal-deformation.md`.
 
 ## Gates
 

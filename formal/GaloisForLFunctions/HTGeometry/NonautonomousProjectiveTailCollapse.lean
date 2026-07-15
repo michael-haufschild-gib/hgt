@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.ParabolicOrbifoldTwelveCharge
+import GaloisForLFunctions.HTGeometry.HurwitzOrbifoldGap
 
 /-!
 # Local rank collapse for nonautonomous projective tails
@@ -14,8 +14,10 @@ carry the same multiplicative cone-angle arithmetic as a tensor.
 
 The last theorems are the static Riemann--Hurwitz mechanism.  Three target fibres wholly trapped
 in one fixed exceptional source set force the covering degree to be bounded.  More generally, a
-positive orbifold excess consumes degree times that excess, while the fixed exceptional locus
-supplies only a finite budget.  No dynamical flow or numerical experiment is involved.
+positive orbifold excess consumes degree times that excess, while exceptional punctures and
+source genus supply the only topological budget.  The genus-corrected law isolates why
+correspondence surfaces can retain hyperbolic projective curvature while a fixed source sphere
+cannot.  No dynamical flow or numerical experiment is involved.
 -/
 
 open scoped BigOperators
@@ -47,6 +49,50 @@ theorem affineConnection_projectivization_transport
       p₁ ^ 2 * (2 * dμ - μ ^ 2) + 2 * p₃ / p₁ - 3 * (p₂ / p₁) ^ 2 := by
   field_simp [hp₁]
   ring
+
+/-- A finite family of marked fibres on a genus-`genus` source curve satisfies a cardinality
+budget with exactly `2 * genus` more capacity than a source sphere.  The hypotheses are the
+fibrewise degree identity and the Riemann--Hurwitz bound restricted to the marked values. -/
+theorem markedFiber_cardinality_budget_with_genus
+    {β : Type*} (marked : Finset β) (ramification fiberCard : β → ℕ)
+    (degree genus : ℕ)
+    (hcard : 2 ≤ marked.card)
+    (hfiber : ∀ y ∈ marked, ramification y + fiberCard y = degree)
+    (hHurwitz : (∑ y ∈ marked, ramification y) + 2 ≤ 2 * degree + 2 * genus) :
+    (marked.card - 2) * degree + 2 ≤
+      (∑ y ∈ marked, fiberCard y) + 2 * genus := by
+  have hsum :
+      (∑ y ∈ marked, ramification y) + (∑ y ∈ marked, fiberCard y) =
+        marked.card * degree := by
+    calc
+      (∑ y ∈ marked, ramification y) + (∑ y ∈ marked, fiberCard y) =
+          ∑ y ∈ marked, (ramification y + fiberCard y) := by
+            rw [Finset.sum_add_distrib]
+      _ = ∑ _y ∈ marked, degree := by
+            apply Finset.sum_congr rfl
+            intro y hy
+            exact hfiber y hy
+      _ = marked.card * degree := by simp
+  have hsplit :
+      (marked.card - 2) * degree + 2 * degree = marked.card * degree := by
+    rw [← Nat.add_mul, Nat.sub_add_cancel hcard]
+  omega
+
+/-- Three trapped terminal fibres consume either exceptional points or source handles.  This is
+the genus-corrected boundary between functional quotient maps and two-sided correspondences. -/
+theorem threeTrappedFibers_degree_add_two_le_exceptionalCard_add_twoGenus
+    {β : Type*} (marked : Finset β) (ramification fiberCard : β → ℕ)
+    (degree genus exceptionalCard : ℕ)
+    (hthree : marked.card = 3)
+    (hfiber : ∀ y ∈ marked, ramification y + fiberCard y = degree)
+    (hHurwitz : (∑ y ∈ marked, ramification y) + 2 ≤ 2 * degree + 2 * genus)
+    (htrapped : ∑ y ∈ marked, fiberCard y ≤ exceptionalCard) :
+    degree + 2 ≤ exceptionalCard + 2 * genus := by
+  have hbudget := markedFiber_cardinality_budget_with_genus
+    marked ramification fiberCard degree genus (by omega) hfiber hHurwitz
+  have hbudget' : degree + 2 ≤ (∑ y ∈ marked, fiberCard y) + 2 * genus := by
+    simpa [hthree] using hbudget
+  omega
 
 /-- A finite family of marked fibres on a genus-zero cover satisfies an exact cardinality budget.
 `ramification y + fiberCard y = degree` is the fibrewise identity, while the second hypothesis is
@@ -137,6 +183,118 @@ theorem stableExceptionalFibers_are_totallyRamified
   intro y hy
   rw [← stableExceptionalFibers_are_singletons marked fiberCard hpositive hbudget y hy]
   exact hfiber y hy
+
+/-- Genus-corrected degree-times-excess law.  A terminal hyperbolic orbifold of normalized excess
+`excess / scale` requires source topological capacity `exceptionalBudget + 2 * genus`; in
+particular, unbounded-degree projective correspondences must grow genus or punctures extensively. -/
+theorem projectiveOrbifold_excess_topological_capacity
+    {β : Type*} (marked : Finset β)
+    (localDefect ramification exceptionalCorrection : β → ℤ)
+    (degree scale excess exceptionalBudget genus : ℤ)
+    (hdegree : 0 ≤ degree) (hscale : 0 ≤ scale)
+    (hlocal : degree * (∑ y ∈ marked, localDefect y) ≤
+      scale * ((∑ y ∈ marked, ramification y) +
+        ∑ y ∈ marked, exceptionalCorrection y))
+    (hHurwitz : (∑ y ∈ marked, ramification y) + 2 ≤
+      2 * degree + 2 * genus)
+    (hexceptional : ∑ y ∈ marked, exceptionalCorrection y ≤ exceptionalBudget)
+    (hhyperbolic : 2 * scale + excess ≤ ∑ y ∈ marked, localDefect y) :
+    degree * excess + 2 * scale ≤ scale * (exceptionalBudget + 2 * genus) := by
+  nlinarith [mul_nonneg hdegree (sub_nonneg.mpr hhyperbolic)]
+
+/-- In unit normalization, the genus-plus-puncture capacity is at least degree times curvature
+excess.  This is the topological extensivity law in its presentation-independent form. -/
+theorem projectiveCurvature_requires_extensive_topology
+    (degree excess genus exceptionalBudget : ℤ)
+    (hcapacity : degree * excess + 2 ≤ exceptionalBudget + 2 * genus) :
+    degree * excess ≤ 2 * genus + exceptionalBudget - 2 := by
+  linarith
+
+/-- Exact positive counterpart to projective tail collapse for a torsion-free cover of the modular
+orbifold `(2, 3, ∞)`.  The order-two and order-three fibres contribute all their forced
+ramification, the cusp widths contribute `cuspRamification`, and Riemann--Hurwitz then says that
+the covering degree is exactly six times the Euler capacity `2 * genus + cuspCard - 2`.
+
+Unlike a fixed-source no-go, this identity exhibits a phase that can retain projective curvature:
+the required topology grows at a sharp, quantized density. -/
+theorem modularTriangle_projectiveCapacity_exact
+    (degree genus orderTwoCard orderThreeCard cuspCard cuspRamification : ℤ)
+    (horderTwo : 2 * orderTwoCard = degree)
+    (horderThree : 3 * orderThreeCard = degree)
+    (hcusp : cuspRamification + cuspCard = degree)
+    (hHurwitz : 2 * genus - 2 =
+      -2 * degree + orderTwoCard + 2 * orderThreeCard + cuspRamification) :
+    degree = 6 * (2 * genus + cuspCard - 2) := by
+  linarith
+
+/-- A torsion-free modular cover saturates the genus-plus-puncture capacity inequality: no Euler
+capacity is wasted and none is missing.  This is the scaled `excess = 1`, `scale = 6` form of the
+orbifold excess law. -/
+theorem modularTriangle_projectiveCapacity_saturates
+    (degree genus cuspCard : ℤ)
+    (hexact : degree = 6 * (2 * genus + cuspCard - 2)) :
+    degree + 12 = 6 * (cuspCard + 2 * genus) := by
+  linarith
+
+/-- On the saturated modular phase, correspondence degree and Euler storage carry exactly the
+same strict order.  Thus unbounded relational degree is supported positively, but only by
+unbounded topological capacity. -/
+theorem modularProjectiveStorage_order_iff
+    (degree₁ degree₂ capacity₁ capacity₂ : ℤ)
+    (h₁ : degree₁ + 12 = 6 * capacity₁)
+    (h₂ : degree₂ + 12 = 6 * capacity₂) :
+    degree₁ < degree₂ ↔ capacity₁ < capacity₂ := by
+  constructor <;> intro h <;> linarith
+
+/-- The universal `1/42` orbifold gap has an exact genus-only threshold.  If a compact relational
+surface supports degree `degree` and positive hyperbolic excess, then its genus must pay at least
+the Hurwitz amount `degree + 84 ≤ 84 * genus`. -/
+theorem hurwitzGap_degree_add_eightyFour_le_genus
+    (degree scale excess genus : ℕ)
+    (hscale : 0 < scale)
+    (hgap : scale ≤ 42 * excess)
+    (hcapacity : degree * excess + 2 * scale ≤ 2 * scale * genus) :
+    degree + 84 ≤ 84 * genus := by
+  have h₁ : degree * scale ≤ degree * (42 * excess) :=
+    Nat.mul_le_mul_left degree hgap
+  have h₂ : (degree + 84) * scale ≤ (84 * genus) * scale := by
+    calc
+      (degree + 84) * scale = degree * scale + 84 * scale := by ring
+      _ ≤ degree * (42 * excess) + 84 * scale :=
+        Nat.add_le_add_right h₁ _
+      _ = 42 * (degree * excess + 2 * scale) := by ring
+      _ ≤ 42 * (2 * scale * genus) := Nat.mul_le_mul_left 42 hcapacity
+      _ = (84 * genus) * scale := by ring
+  exact Nat.le_of_mul_le_mul_right h₂ hscale
+
+/-- Exact positive phase at the universal threshold.  For a torsion-free cover of the compact
+triangle orbifold `(2, 3, 7)`, the forced order-two, order-three, and order-seven ramification
+turns Riemann--Hurwitz into `degree = 42 * (2 * genus - 2)`. -/
+theorem hurwitzTriangle_projectiveCapacity_exact
+    (degree genus orderTwoCard orderThreeCard orderSevenCard : ℤ)
+    (horderTwo : 2 * orderTwoCard = degree)
+    (horderThree : 3 * orderThreeCard = degree)
+    (horderSeven : 7 * orderSevenCard = degree)
+    (hHurwitz : 2 * genus - 2 =
+      -2 * degree + orderTwoCard + 2 * orderThreeCard + 6 * orderSevenCard) :
+    degree = 42 * (2 * genus - 2) := by
+  linarith
+
+/-- A torsion-free `(2,3,7)` cover saturates the universal projective capacity threshold. -/
+theorem hurwitzTriangle_projectiveCapacity_saturates
+    (degree genus : ℤ)
+    (hexact : degree = 42 * (2 * genus - 2)) :
+    degree + 84 = 84 * genus := by
+  linarith
+
+/-- At the sharp Hurwitz phase, increasing correspondence degree is equivalent to increasing
+genus.  There is no hidden non-topological capacity. -/
+theorem hurwitzProjectiveStorage_order_iff
+    (degree₁ degree₂ genus₁ genus₂ : ℤ)
+    (h₁ : degree₁ + 84 = 84 * genus₁)
+    (h₂ : degree₂ + 84 = 84 * genus₂) :
+    degree₁ < degree₂ ↔ genus₁ < genus₂ := by
+  constructor <;> intro h <;> linarith
 
 /-- Abstract degree-times-excess law.  The marked local defects dominate a normalized hyperbolic
 excess, while all ramification and exceptional corrections fit in the genus-zero and fixed-source

@@ -1,9 +1,9 @@
 # Projective horizon capacity law in every rank
 
 - **ID:** `projective-horizon-page-capacity-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / HIGHER-RANK FINITE-JET COMPLEMENTARITY
-- **Scientific status:** `[PROVED ON PAPER] [FORMAL DETERMINANT CORE COMPLETE] [NOVELTY PROVISIONAL]`
+- **Scientific status:** `[FORMALISED IN LEAN 4] [NOVELTY PROVISIONAL]`
 - **Parent:** `projective-horizon-finite-jet-page-transition`
 - **Lane:** source-pure projective hypertranscendence; physical-information interpretation
 
@@ -128,20 +128,31 @@ exact finite-resolution rank theorem `(1)--(2)`.
 
 ## Lean status
 
-`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonPageTransition.lean` proves
+The modules
 
 ```text
-exponentialPascalMatrix_det:
-  det(choose(n+i,k) q^(n+i-k)) = q^(rn)
-
-projectiveLongitudinalLinearizationMinor_det:
-  det L_(n,r) = (-1)^r 2^(rn)
+formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonPageTransition.lean
+formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonCapacity.lean
+formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonCapacityRank.lean
 ```
 
-and proves nonvanishing of the longitudinal block. The unweighted determinant theorem in the same
-module supplies every transverse block. Block-diagonal multiplication and the factor `d` in
-`(1)--(2)` are retained as the elementary paper layer. A targeted leaf build and scratch axiom
-audit pass; no full build was run.
+formalize the complete higher-rank theorem surface:
+
+1. the weighted and unweighted Pascal determinant laws;
+2. the normal-form transition `(q,v)=(p⁻¹,p⁻¹u)` as universal jet polynomials;
+3. the longitudinal reciprocal block and every transverse weighted-Pascal block;
+4. nonvanishing of the full block-diagonal `dr`-square Jacobian minor;
+5. algebraic independence of a maximal `d`-channel observable subpacket;
+6. the ambient and displayed-coordinate upper bounds;
+7. exact algebraic-matroid transcendence rank
+   `d min(N+1,(N+1-m)+(N+1-n))`;
+8. exact `d`-scaled hidden and compatibility-relation counts and the unchanged Page resolution;
+9. specialization from universal polynomials to the actual differential jets of a
+   differential-generic projective source.
+
+The exact rank is stated in the algebraic matroid of the displayed family, equivalently the
+transcendence rank of its generated observation field. Targeted module elaboration succeeds;
+there are no project axioms or placeholders.
 
 ## Novelty audit
 

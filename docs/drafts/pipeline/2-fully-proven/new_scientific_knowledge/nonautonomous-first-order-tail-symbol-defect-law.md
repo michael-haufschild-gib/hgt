@@ -242,16 +242,30 @@ must become zero-free after a finite phase budget.  This is a falsifiable struct
 but no zeta protocol or RH-sensitive tensor is presently supplied.  There is no direct RH
 consequence.
 
-## Lean plan
+## Lean status
 
-Formalize the exact tensor evaluation transport, composition law, ramification multiplicity
-inequality, and abstract exponential defect-budget collapse.  The differential-Luroth tail
-isomorphism and Laurent-symbol extraction remain paper-level until rational-function valuation
-infrastructure is available.
+`formal/GaloisForLFunctions/HTGeometry/NonautonomousFirstOrderTailSymbol.lean` formalizes the
+tensor evaluation and two-step composition laws, the local fibre multiplicity inequality, the
+binary-logarithmic defect cutoff, eventual defect vanishing, and the finite exceptional-angle
+budget.
+
+`formal/GaloisForLFunctions/HTGeometry/NonautonomousFirstOrderTailSymbolLaw.lean` completes the
+global finite-transient layer.  It proves that every phase-compatible tensor chain supplies an
+explicit preimage through every finite protocol prefix and hence belongs to the actual
+`nonautonomousTail`; a transcendental chain makes that tail nontrivial.  It also proves the exact
+shifted-order identity `(10)`, sums the local ramification inequalities over the full terminal zero
+divisor to obtain `(7)`, and derives zero-freeness once prefix degree exceeds the fixed source
+budget.
+
+The remaining stage-3 obligation is the converse half of Theorem A: construct the first-order
+rational differential-function field, extract its nonzero Laurent symbol at vertical infinity,
+and connect that extraction to the existing nonautonomous tail interface.  This is not hidden by
+the abstract tensor-chain theorem, so the card remains at stage 2.
 
 ## Gates
 
 - [x] 0 -> 1: exact first-order converse and divisor attack isolated
 - [x] 1 -> 2: complete symbolic proof and finite-transient correction
-- [ ] 2 -> 3: targeted Lean core and axiom audit
+- [x] exact tensor transport, prefix-tail membership, global divisor budget, and axiom audit
+- [ ] 2 -> 3: Laurent-symbol extraction and the first-order tail-to-tensor converse in Lean
 - [ ] 3 -> 4: independent novelty audit and standalone manuscript

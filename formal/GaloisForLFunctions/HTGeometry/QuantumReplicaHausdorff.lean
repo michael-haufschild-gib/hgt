@@ -122,23 +122,21 @@ theorem hsNormSq_real_smul_sub_eq
   have hUV : ContinuousLinearMap.hsInner U V =
       -(r : ℂ) * ContinuousLinearMap.hsInner S T := by
     dsimp only [U, V]
-    change ContinuousLinearMap.hsInner ((r : ℂ) • S) ((-1 : ℂ) • T) = _
+    rw [show (-T : E →L[ℂ] F) = (-1 : ℂ) • T by simp]
     rw [ContinuousLinearMap.hsInner_smul_left,
       ContinuousLinearMap.hsInner_smul_right]
     simp
-    ring
   have hVU : ContinuousLinearMap.hsInner V U =
       -(r : ℂ) * ContinuousLinearMap.hsInner T S := by
     dsimp only [U, V]
-    change ContinuousLinearMap.hsInner ((-1 : ℂ) • T) ((r : ℂ) • S) = _
+    rw [show (-T : E →L[ℂ] F) = (-1 : ℂ) • T by simp]
     rw [ContinuousLinearMap.hsInner_smul_left,
       ContinuousLinearMap.hsInner_smul_right]
     simp
-    ring
   have hVV : ContinuousLinearMap.hsInner V V =
       ContinuousLinearMap.hsInner T T := by
     dsimp only [V]
-    change ContinuousLinearMap.hsInner ((-1 : ℂ) • T) ((-1 : ℂ) • T) = _
+    rw [show (-T : E →L[ℂ] F) = (-1 : ℂ) • T by simp]
     rw [ContinuousLinearMap.hsInner_smul_left,
       ContinuousLinearMap.hsInner_smul_right]
     simp
@@ -157,6 +155,12 @@ theorem hsNormSq_real_smul_sub_eq
       (ContinuousLinearMap.hsInner S T).re := by
     rw [ContinuousLinearMap.hsInner_conj_symm T S]
     simp
+  have hSself : (ContinuousLinearMap.hsInner S S).re =
+      ContinuousLinearMap.hsNormSq S :=
+    ContinuousLinearMap.hsInner_self_re hS
+  have hTself : (ContinuousLinearMap.hsInner T T).re =
+      ContinuousLinearMap.hsNormSq T :=
+    ContinuousLinearMap.hsInner_self_re hT
   rw [show (((r : ℂ) • S) - T) = U + V by
     simp only [U, V, sub_eq_add_neg]]
   calc
@@ -168,8 +172,8 @@ theorem hsNormSq_real_smul_sub_eq
             ContinuousLinearMap.hsNormSq T := by
       rw [hpair, hUU, hUV, hVU, hVV]
       simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
-        Complex.neg_re, zero_mul, sub_zero, ContinuousLinearMap.hsInner_self_re hS,
-        ContinuousLinearMap.hsInner_self_re hT, hcrossRe]
+        Complex.neg_re, Complex.neg_im, neg_zero, zero_mul, sub_zero, hcrossRe]
+      rw [hSself, hTself]
       ring
 
 /-- The `n`-th power column of the positive master effect `C† C`. -/
@@ -425,7 +429,6 @@ theorem quantumMasterEffectSecondDifference_even_eq_hsNormSq
     hsNormSq_real_smul_sub_eq hA hB,
     re_hsInner_quantumMasterEffectPowerColumn_succ]
   rw [quantumMasterEffectMoment_odd_eq_hsNormSq hC n]
-  ring
 
 /-- At odd degree the complementary second difference is one positive-effect power square. -/
 theorem quantumMasterEffectSecondDifference_odd_eq_hsNormSq
@@ -445,8 +448,8 @@ theorem quantumMasterEffectSecondDifference_odd_eq_hsNormSq
     quantumMasterEffectMoment_odd_eq_hsNormSq hC,
     hsNormSq_real_smul_sub_eq hA hB,
     re_hsInner_quantumChannelEffect_powers_succ]
-  rw [quantumMasterEffectMoment_even_eq_hsNormSq hC (n + 1)]
-  ring
+  rw [show 2 * n + 2 = 2 * (n + 1) by omega,
+    quantumMasterEffectMoment_even_eq_hsNormSq hC (n + 1)]
 
 /-- Every unnormalized second complementary difference is nonnegative. -/
 theorem quantumMasterEffectSecondDifference_nonneg

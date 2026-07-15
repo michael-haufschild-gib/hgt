@@ -131,7 +131,6 @@ theorem physicalMatrixElement_congr_mod_brstHodgeHamiltonianIdeal
 /-- An off-diagonal corner of an idempotent is automatically nilpotent.  This is the static
 projection value relation that turns a normal corner into a BRST charge without a separate
 nilpotence hypothesis. -/
-omit [CompleteSpace E] in
 theorem offDiagonalProjectionCorner_sq_eq_zero
     (P A : E →L[𝕜] E) (hP2 : P * P = P) :
     ((1 - P) * A * P) * ((1 - P) * A * P) = 0 := by
@@ -157,7 +156,11 @@ theorem brstHodgeHamiltonian_mul_eq_mul_brstCharge
     brstHodgeHamiltonian Q * Q = Q * brstHodgeHamiltonian Q := by
   rw [brstHodgeHamiltonian_eq_adjoint_mul_add_mul_adjoint]
   simp only [add_mul, mul_add]
-  simp [mul_assoc, hQ]
+  have hleftzero : (Q.adjoint * Q) * Q = 0 := by
+    rw [mul_assoc, hQ, mul_zero]
+  have hrightzero : Q * (Q * Q.adjoint) = 0 := by
+    rw [← mul_assoc, hQ, zero_mul]
+  rw [hleftzero, hrightzero, zero_add, add_zero, mul_assoc]
 
 /-- Under the same nilpotence relation, the Hodge Hamiltonian commutes with `Q†`. -/
 theorem brstHodgeHamiltonian_mul_adjoint_eq_adjoint_mul
@@ -231,7 +234,7 @@ theorem brstGreen_commutes_charge
     _ = G * Q * (brstHodgeHamiltonian Q * G) := by
       simp only [mul_assoc]
     _ = G * Q * (1 - P) := by rw [hHG]
-    _ = G * Q := by rw [← mul_assoc, hrightQ]
+    _ = G * Q := by rw [mul_assoc, hrightQ]
 
 /-- A self-adjoint Green operator and self-adjoint harmonic projection reduce the two-sided Green
 premise to one equation.  The missing right equation is its adjoint, so BRST/Green commutation

@@ -20,7 +20,8 @@ theorem summable_sourceMarkedGibbsWeight
     (hbase : ∀ p, 0 ≤ base p) (hsum : Summable base)
     (hupper : ∀ p, energy p ≤ radius) :
     Summable (sourceMarkedGibbsWeight base energy k) := by
-  apply Summable.of_nonneg_of_le
+  refine Summable.of_nonneg_of_le
+    (f := fun p => base p * Real.exp ((k : ℝ) * radius)) ?_ ?_ ?_
   · intro p
     exact mul_nonneg (hbase p) (Real.exp_pos _).le
   · intro p
@@ -37,12 +38,16 @@ theorem sourceMarkedGibbsPartition_le_mass_mul_exp
     sourceMarkedGibbsPartition base energy k ≤
       (∑' p, base p) * Real.exp ((k : ℝ) * radius) := by
   unfold sourceMarkedGibbsPartition
-  apply (summable_sourceMarkedGibbsWeight base energy radius k hbase hsum hupper).tsum_le_tsum
-  · intro p
-    apply mul_le_mul_of_nonneg_left _ (hbase p)
-    apply Real.exp_le_exp.mpr
-    exact mul_le_mul_of_nonneg_left (hupper p) (Nat.cast_nonneg k)
-  · exact hsum.mul_right _
+  calc
+    (∑' p, sourceMarkedGibbsWeight base energy k p) ≤
+        ∑' p, base p * Real.exp ((k : ℝ) * radius) :=
+      (summable_sourceMarkedGibbsWeight base energy radius k hbase hsum hupper).tsum_le_tsum
+        (fun p => by
+          apply mul_le_mul_of_nonneg_left _ (hbase p)
+          apply Real.exp_le_exp.mpr
+          exact mul_le_mul_of_nonneg_left (hupper p) (Nat.cast_nonneg k))
+        (hsum.mul_right _)
+    _ = (∑' p, base p) * Real.exp ((k : ℝ) * radius) := tsum_mul_right
 
 theorem sourceMarkedGibbsPartition_pos
     {P : Type*} [Nonempty P] (base energy : P → ℝ) (radius : ℝ) (k : ℕ)
@@ -291,9 +296,12 @@ theorem sourceMarkedGibbs_primeOrientation_radical_freeEnergy_split
         (fun k : ℕ =>
           Real.log (sourceMarkedGibbsPartition base energy k) / (k : ℝ))
         atTop (nhds radius) := by
-  apply sourceMarkedGibbs_phase_radical_freeEnergy_split
-  intro j p
-  cases orientation j p <;> simp [primeDirichletSign]
+  exact sourceMarkedGibbs_phase_radical_freeEnergy_split
+    (fun j p => primeDirichletSign (orientation j p)) base energy radius
+    (by
+      intro j p
+      cases h : orientation j p <;> norm_num [primeDirichletSign, h])
+    hbase hsum hupper happroach
 
 end
 

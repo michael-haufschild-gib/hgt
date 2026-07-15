@@ -47,6 +47,8 @@ theorem norm_starProjection_sub_sq_eq_norm_sq_sub_re_inner
   have hpythagoras := S.norm_sq_eq_add_norm_sq_starProjection psi
   rw [S.starProjection_orthogonal_val psi] at hpythagoras
   rw [re_inner_starProjection_eq_norm_sq S psi]
+  rw [show S.starProjection psi - psi = -(psi - S.starProjection psi) by abel,
+    norm_neg]
   nlinarith [hpythagoras]
 
 /-- **Born survival law.**  For a unit pure state, projective-measurement survival is exactly one

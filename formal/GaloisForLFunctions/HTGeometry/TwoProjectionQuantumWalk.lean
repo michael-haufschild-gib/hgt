@@ -50,7 +50,7 @@ variable {R : Type*} [Ring R]
 /-- The denominator-free cosine/Chebyshev recurrence.  On a unitary phase `U`, evaluating at
 `U + U⁻¹` gives the symmetric phase power `Uⁿ + U⁻ⁿ`. -/
 def unitaryCosineRecurrence (X : R) : ℕ → R
-  | 0 => 2
+  | 0 => 1 + 1
   | 1 => X
   | n + 2 =>
       X * unitaryCosineRecurrence X (n + 1) -
@@ -86,8 +86,12 @@ theorem unitaryCosineRecurrence_add_inversePair
         (pow_succ' V (n + 1)).symm
       calc
         (U + V) * (U ^ (n + 1) + V ^ (n + 1)) - (U ^ n + V ^ n) =
-            U * U ^ (n + 1) + V * V ^ (n + 1) := by
-              noncomm_ring [hUVpow, hVUpow]
+            U * U ^ (n + 1) + U * V ^ (n + 1) +
+              V * U ^ (n + 1) + V * V ^ (n + 1) - U ^ n - V ^ n := by
+              noncomm_ring
+        _ = U * U ^ (n + 1) + V * V ^ (n + 1) := by
+              rw [hUVpow, hVUpow]
+              noncomm_ring
         _ = U ^ (n + 2) + V ^ (n + 2) := by rw [hUpow, hVpow]
 
 /-- **Inverse-pair sine law.**  Every antisymmetric inverse-pair power factors through the first
@@ -111,8 +115,12 @@ theorem unitarySineRecurrence_mul_sub_inversePair
         (pow_succ' V (n + 1)).symm
       calc
         (U + V) * (U ^ (n + 1) - V ^ (n + 1)) - (U ^ n - V ^ n) =
-            U * U ^ (n + 1) - V * V ^ (n + 1) := by
-              noncomm_ring [hUVpow, hVUpow]
+            U * U ^ (n + 1) - U * V ^ (n + 1) +
+              V * U ^ (n + 1) - V * V ^ (n + 1) - U ^ n + V ^ n := by
+              noncomm_ring
+        _ = U * U ^ (n + 1) - V * V ^ (n + 1) := by
+              rw [hUVpow, hVUpow]
+              noncomm_ring
         _ = U ^ (n + 2) - V ^ (n + 2) := by rw [hUpow, hVpow]
 
 end CosineRecurrence
@@ -149,7 +157,8 @@ theorem adjoint_twoProjectionQuantumWalk
     adjoint (twoProjectionQuantumWalk P Q) =
       projectionReflection Q * projectionReflection P := by
   rw [twoProjectionQuantumWalk]
-  change adjoint (projectionReflection P ∘L projectionReflection Q) = _
+  change adjoint (projectionReflection P ∘L projectionReflection Q) =
+    projectionReflection Q ∘L projectionReflection P
   rw [adjoint_comp, adjoint_projectionReflection P hPadj,
     adjoint_projectionReflection Q hQadj]
 
@@ -199,7 +208,7 @@ theorem secondProjection_compress_twoProjectionQuantumWalk_add_one_eq_two_mul_co
     (P Q : E →L[k] E) (hQ : IsIdempotentElem Q) :
     Q * (twoProjectionQuantumWalk P Q + 1) * Q =
       2 * (Q * P * Q) := by
-  rw [twoProjectionQuantumWalk, projectionReflection]
+  simp only [twoProjectionQuantumWalk, projectionReflection]
   have hQQ : Q * Q = Q := hQ
   noncomm_ring [hQQ]
 
@@ -210,8 +219,8 @@ theorem twoProjectionQuantumWalk_sub_adjoint_eq_four_mul_commutator
     (hPadj : adjoint P = P) (hQadj : adjoint Q = Q) :
     twoProjectionQuantumWalk P Q - adjoint (twoProjectionQuantumWalk P Q) =
       4 * (P * Q - Q * P) := by
-  rw [adjoint_twoProjectionQuantumWalk P Q hPadj hQadj,
-    twoProjectionQuantumWalk, projectionReflection]
+  rw [adjoint_twoProjectionQuantumWalk P Q hPadj hQadj]
+  simp only [twoProjectionQuantumWalk, projectionReflection]
   noncomm_ring
 
 /-- **Quantum-walk master-constraint law.**  The scattering-defect energy of the automatically
@@ -227,17 +236,19 @@ theorem quantumMasterConstraint_twoProjectionQuantumWalk_sub_one_eq_four_mul_dif
   have hunitary := twoProjectionQuantumWalk_adjoint_mul_self
     P Q hP hQ hPadj hQadj
   have hdiffAdj : adjoint (P - Q) = P - Q := by
-    change star (P - Q) = P - Q
-    rw [star_sub, hPadj, hQadj]
+    let adj : (E →L[k] E) ≃ₗᵢ⋆[k] (E →L[k] E) :=
+      ContinuousLinearMap.adjoint
+    simpa [adj, hPadj, hQadj] using adj.map_sub P Q
   have hmasterDiff : quantumMasterConstraint (P - Q) = (P - Q) * (P - Q) := by
     simp only [quantumMasterConstraint, ContinuousLinearMap.mul_def, hdiffAdj]
   rw [quantumMasterConstraint_unitarySubOne_eq_two_sub_self_sub_adjoint
       (twoProjectionQuantumWalk P Q) hunitary,
     adjoint_twoProjectionQuantumWalk P Q hPadj hQadj,
-    hmasterDiff, twoProjectionQuantumWalk,
-    projectionReflection]
+    hmasterDiff]
+  simp only [twoProjectionQuantumWalk, projectionReflection]
   have hPP : P * P = P := hP
   have hQQ : Q * Q = Q := hQ
+  rw [show (2 : E →L[k] E) = 1 + 1 by norm_num]
   noncomm_ring [hPP, hQQ]
 
 /-- **Qubitization signal law.**  The Hermitian phase signal of the reflection walk is exactly the
@@ -256,7 +267,9 @@ theorem twoProjectionQuantumWalk_add_adjoint_eq_two_sub_four_mul_difference
       P Q hP hQ hPadj hQadj
   rw [quantumMasterConstraint_unitarySubOne_eq_two_sub_self_sub_adjoint
       (twoProjectionQuantumWalk P Q) hunitary] at hdefect
-  noncomm_ring [hdefect]
+  rw [← hdefect]
+  rw [show (2 : E →L[k] E) = 1 + 1 by norm_num]
+  abel
 
 /-- **All-order symmetric phase collapse.**  Every symmetric power of the two-reflection walk is
 a fixed recurrence polynomial in the projection-mismatch energy.  Consequently symmetric

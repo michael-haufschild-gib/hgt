@@ -211,11 +211,84 @@ theorem canonicalThetaTailCoreFiniteArithmeticRemainderCurrent_eq_of_denominator
       (thetaHalfExponentialPhaseValue z)
       (thetaHalfExponentialPhaseDerivative z) ≠ 0) :
     canonicalThetaTailCoreFiniteArithmeticRemainderCurrent d N₁ M z =
-      canonicalThetaTailCoreFiniteArithmeticRemainderCurrent d N₂ M z := by
+    canonicalThetaTailCoreFiniteArithmeticRemainderCurrent d N₂ M z := by
   rw [canonicalThetaTailCoreFiniteArithmeticRemainderCurrent_eq_raw_sub_densityDefect
       d N₁ M hz0 hzHalf hden₁,
     canonicalThetaTailCoreFiniteArithmeticRemainderCurrent_eq_raw_sub_densityDefect
       d N₂ M hz0 hzHalf hden₂]
+
+/-- **Exact Haar-refinement current conservation.**  Between two admissible depths, every change
+in the displayed top row is transferred with the opposite sign into the finite-translation
+survivor.  Thus cofinal refinement does not dissipate the unresolved current; it only moves that
+current between the two summands of the depth-independent remainder. -/
+theorem canonicalThetaTailCoreFiniteArithmeticSurvivor_sub_eq_neg_topRow_sub
+    (d M N₁ N₂ : ℕ) {z : ℂ} (hz0 : 0 < z.im) (hzHalf : z.im < 1 / 2)
+    (hden₁ : phaseAdaptedCriticalSelfConsistentDenominator
+      (xiCTaylorThetaTailCoreProuhetOrder d) N₁
+      (spectralTranslationPhase (Real.log 2) z)
+      dyadicProuhetGrowthCharacter z
+      (thetaHalfExponentialPhaseValue z)
+      (thetaHalfExponentialPhaseDerivative z) ≠ 0)
+    (hden₂ : phaseAdaptedCriticalSelfConsistentDenominator
+      (xiCTaylorThetaTailCoreProuhetOrder d) N₂
+      (spectralTranslationPhase (Real.log 2) z)
+      dyadicProuhetGrowthCharacter z
+      (thetaHalfExponentialPhaseValue z)
+      (thetaHalfExponentialPhaseDerivative z) ≠ 0) :
+    canonicalThetaTailCoreFiniteArithmeticSurvivingTranslationCurrent d N₂ M z -
+        canonicalThetaTailCoreFiniteArithmeticSurvivingTranslationCurrent d N₁ M z =
+      -(canonicalThetaTailCoreFiniteArithmeticTopRowCurrent d N₂ M z -
+        canonicalThetaTailCoreFiniteArithmeticTopRowCurrent d N₁ M z) := by
+  have hrem :=
+    canonicalThetaTailCoreFiniteArithmeticRemainderCurrent_eq_of_denominators_ne_zero
+      d M N₁ N₂ hz0 hzHalf hden₁ hden₂
+  unfold canonicalThetaTailCoreFiniteArithmeticRemainderCurrent at hrem
+  linarith
+
+/-- **Cofinal survivor law.**  For a fixed finite arithmetic cutoff, the top row vanishes but its
+current does not disappear: the survivor converges to the conserved raw-current residue
+
+`4 J_d(z) - (1/2) densityDefect_M(z)`.
+
+This is the positive content of the failed two-term bridge and rules out interpreting top-row
+decay as decay of the complete finite-translation remainder. -/
+theorem tendsto_canonicalThetaTailCoreFiniteArithmeticSurvivingTranslationCurrent
+    (d M : ℕ) {z : ℂ} (hz0 : 0 < z.im) (hzHalf : z.im < 1 / 2) :
+    Tendsto (fun N : ℕ =>
+      canonicalThetaTailCoreFiniteArithmeticSurvivingTranslationCurrent d N M z)
+      atTop
+      (nhds (4 * orientedPolynomialCurrent
+          (xiCTaylorThetaTailCorePolynomial d) z -
+        (1 / 2 : ℝ) *
+          canonicalThetaTailFiniteArithmeticDensityDefectCurrent M z)) := by
+  let L : ℝ :=
+    4 * orientedPolynomialCurrent (xiCTaylorThetaTailCorePolynomial d) z -
+      (1 / 2 : ℝ) * canonicalThetaTailFiniteArithmeticDensityDefectCurrent M z
+  have hzLower : -(1 / 2 : ℝ) < z.im := by linarith
+  have hden := canonicalThetaTailFiniteArithmeticDenominator_eventually_ne_zero
+    (xiCTaylorThetaTailCoreProuhetOrder d) hzLower hzHalf
+  have htopComplex :=
+    tendsto_canonicalThetaTailFiniteArithmeticWeightedTopRowCurrent
+      d (xiCTaylorThetaTailCoreProuhetOrder d) M hzLower hzHalf
+  have htop : Tendsto (fun N : ℕ =>
+      canonicalThetaTailCoreFiniteArithmeticTopRowCurrent d N M z)
+      atTop (nhds 0) := by
+    have hre := Complex.continuous_re.continuousAt.tendsto.comp htopComplex
+    simpa only [canonicalThetaTailCoreFiniteArithmeticTopRowCurrent,
+      Complex.zero_re] using hre
+  have hlimit : Tendsto (fun N : ℕ =>
+      L - canonicalThetaTailCoreFiniteArithmeticTopRowCurrent d N M z)
+      atTop (nhds L) := by
+    simpa using (tendsto_const_nhds.sub htop)
+  apply hlimit.congr'
+  filter_upwards [hden] with N hN
+  rw [show canonicalThetaTailCoreFiniteArithmeticSurvivingTranslationCurrent d N M z =
+      canonicalThetaTailCoreFiniteArithmeticRemainderCurrent d N M z -
+        canonicalThetaTailCoreFiniteArithmeticTopRowCurrent d N M z by
+      unfold canonicalThetaTailCoreFiniteArithmeticRemainderCurrent
+      ring,
+    canonicalThetaTailCoreFiniteArithmeticRemainderCurrent_eq_raw_sub_densityDefect
+      d N M hz0 hzHalf hN]
 
 /-- As the finite square-index cutoff exhausts the canonical density, the depth-independent
 remainder expression converges to four times the raw core current, not to zero. -/

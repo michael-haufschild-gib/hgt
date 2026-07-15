@@ -53,13 +53,21 @@ theorem twoProjection_complement_isIdempotentElem_iff_anticommutator_eq_zero
     IsIdempotentElem (1 - P - Q) ↔ P * Q + Q * P = 0 := by
   have hPP : P * P = P := hP
   have hQQ : Q * Q = Q := hQ
+  have hexpand :
+      (1 - P - Q) * (1 - P - Q) =
+        (1 - P - Q) + (P * Q + Q * P) := by
+    noncomm_ring [hPP, hQQ]
   constructor
   · intro hB
     have hBB : (1 - P - Q) * (1 - P - Q) = 1 - P - Q := hB
-    noncomm_ring [hPP, hQQ, hBB]
+    rw [hexpand] at hBB
+    calc
+      P * Q + Q * P =
+          ((1 - P - Q) + (P * Q + Q * P)) - (1 - P - Q) := by abel
+      _ = 0 := by rw [hBB]; simp
   · intro hanti
     show (1 - P - Q) * (1 - P - Q) = 1 - P - Q
-    noncomm_ring [hPP, hQQ, hanti]
+    rw [hexpand, hanti, add_zero]
 
 /-- **Zero-mode-subtracted two-projection partition.**  Suppose `Z` is an idempotent annihilated
 on both sides by the two idempotents `P,Q`.  Replacing the formal complement `1-P-Q` by its
@@ -113,9 +121,22 @@ theorem twoProjection_anticommutator_eq_zero_iff_mul_eq_zero
   constructor
   · intro hanti
     have hcompress := congrArg (fun T : E →L[k] E => P * T * P) hanti
+    have hexpand :
+        P * (P * Q + Q * P) * P = P * Q * P + P * Q * P := by
+      calc
+        P * (P * Q + Q * P) * P =
+            (P * P) * Q * P + P * Q * (P * P) := by noncomm_ring
+        _ = P * Q * P + P * Q * P := by rw [hPP]
     have htwice : P * Q * P + P * Q * P = 0 := by
-      simpa [mul_add, add_mul, ← mul_assoc, hPP] using hcompress
-    have hPQP : P * Q * P = 0 := add_self_eq_zero.mp htwice
+      calc
+        P * Q * P + P * Q * P = P * (P * Q + Q * P) * P := hexpand.symm
+        _ = P * 0 * P := hcompress
+        _ = 0 := by simp
+    have hPQP : P * Q * P = 0 := by
+      have hscalar : (2 : k) ≠ 0 := by norm_num
+      have hsmul : (2 : k) • (P * Q * P) = 0 := by
+        simpa [two_smul k] using htwice
+      exact (smul_eq_zero.mp hsmul).resolve_left hscalar
     let T : E →L[k] E := Q * P
     have hTadj : ContinuousLinearMap.adjoint T = P * Q := by
       change ContinuousLinearMap.adjoint (Q ∘L P) = P ∘L Q
@@ -212,7 +233,7 @@ theorem norm_twoProjection_difference_sq_add_complement_sq
         re_inner_quantumMasterConstraint_eq_normSq]
     _ = RCLike.re (inner k psi
         ((quantumMasterConstraint (P - Q) +
-          quantumMasterConstraint (1 - P - Q)) psi)) := by
+          quantumMasterConstraint (1 - P - Q) : E →L[k] E) psi)) := by
       simp only [ContinuousLinearMap.add_apply, inner_add_right, map_add]
     _ = RCLike.re (inner k psi psi) := by rw [hmaster]; simp
     _ = ‖psi‖ ^ 2 := inner_self_eq_norm_sq psi
@@ -255,7 +276,9 @@ theorem norm_twoProjection_difference_sq_add_corrected_complement_sq
   have hIZsq : (1 - Z) * (1 - Z) = 1 - Z := by
     noncomm_ring [hZZ]
   have hIZmaster : quantumMasterConstraint (1 - Z) = 1 - Z := by
-    simp only [quantumMasterConstraint, ContinuousLinearMap.mul_def, hIZadj, hIZsq]
+    rw [quantumMasterConstraint, hIZadj]
+    change (1 - Z) * (1 - Z) = 1 - Z
+    exact hIZsq
   calc
     ‖(P - Q) psi‖ ^ 2 + ‖(Z - (1 - P - Q)) psi‖ ^ 2 =
         RCLike.re (inner k psi (quantumMasterConstraint (P - Q) psi)) +
@@ -265,7 +288,7 @@ theorem norm_twoProjection_difference_sq_add_corrected_complement_sq
         re_inner_quantumMasterConstraint_eq_normSq]
     _ = RCLike.re (inner k psi
         ((quantumMasterConstraint (P - Q) +
-          quantumMasterConstraint (Z - (1 - P - Q))) psi)) := by
+          quantumMasterConstraint (Z - (1 - P - Q)) : E →L[k] E) psi)) := by
       simp only [ContinuousLinearMap.add_apply, inner_add_right, map_add]
     _ = RCLike.re (inner k psi ((1 - Z) psi)) := by rw [hpartition]
     _ = RCLike.re (inner k psi (quantumMasterConstraint (1 - Z) psi)) := by

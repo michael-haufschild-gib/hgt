@@ -21,21 +21,21 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 3468 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
 | 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
 | 2671 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean` |
+| 2635 | `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailPhaseAdaptedProuhetHalfLine.lean` |
 | 2627 | `formal/GaloisForLFunctions/RHTower/DpolyBallFloor.lean` |
-| 2593 | `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailPhaseAdaptedProuhetHalfLine.lean` |
 | 2546 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean` |
 | 2478 | `formal/GaloisForLFunctions/RHTower/SeamCongruence.lean` |
 | 2369 | `formal/GaloisForLFunctions/U0/U0SliceViableA.lean` |
 | 2229 | `formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean` |
+| 2196 | `formal/GaloisForLFunctions/RHTower/SoninCoupledPrimeArchGramTransfer.lean` |
 | 2173 | `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSquareIndexPolarization.lean` |
 | 2004 | `formal/GaloisForLFunctions/RHTower/SoninEulerCalkinPartialIsometry.lean` |
 | 1899 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean` |
+| 1885 | `formal/GaloisForLFunctions/RHTower/SoninTimeBandHilbertSchmidt.lean` |
+| 1750 | `formal/GaloisForLFunctions/HTGeometry/BottcherParameterVelocityIdentification.lean` |
 | 1711 | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean` |
 | 1656 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean` |
 | 1604 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean` |
-| 1537 | `formal/GaloisForLFunctions/RHTower/XiGuinandWeilRectangularGammaCancellation.lean` |
-| 1511 | `formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean` |
-| 1502 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean` |
 
 ## Gap Markers
 

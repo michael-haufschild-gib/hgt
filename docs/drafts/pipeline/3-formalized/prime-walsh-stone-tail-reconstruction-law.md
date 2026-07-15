@@ -1,9 +1,9 @@
 # Prime-Walsh Stone reconstruction and entropy of the hypertranscendental tail constraint
 
 - **ID:** `prime-walsh-stone-tail-reconstruction-law`
-- **Stage:** 2-fully-proven / needs independent novelty audit
-- **Type:** THEOREM CANDIDATE / GENERAL HT CARRIER LAW / RH ROUTE CONSTRAINT
-- **Scientific status:** `[PROVED ON PAPER] [SOURCE CORE FORMALIZED] [NOVELTY HOLD]`
+- **Stage:** 3-formalized / needs independent novelty audit
+- **Type:** THEOREM / GENERAL HT CARRIER LAW / RH ROUTE CONSTRAINT
+- **Scientific status:** `[PROVED ON PAPER] [FORMALIZED IN LEAN 4] [NOVELTY HOLD]`
 - **Parent:**
   `../not_new_scientific_knowledge/prime-corona-constraint-opacity-law.md`
 
@@ -201,6 +201,30 @@ onto all complex functions on `R_I`; its rank is therefore `card(R_I)`.  Equatio
 its kernel with tail-zero prime coefficients.  The established shifted prime-Dirichlet tail
 theorem then gives `(5)`.
 
+## Lean formalization
+
+The exact card surface is formalized in four modules:
+
+- `HTGeometry.PrimeWalshStoneReconstruction` proves finite-stage factorization of locally constant
+  functions, surjectivity of restriction, the quotient algebra equivalence
+  `primeTailLocallyConstantQuotientEquiv`, the eventual-zero kernel equivalence, and
+  `locallyConstant_idempotent_iff_clopen`.
+- `HTGeometry.PrimeWalshDifferentialRank` constructs the bounded Prime-Walsh carriers, proves the
+  finite-support Walsh-to-delta correction at every differential order, identifies the Walsh and
+  delta differential adjoins in `primeWalshShiftPalette_differentialAdjoin_eq_delta`, and gives the
+  exact basis and cardinality in `primeWalshShiftPalette_differentialBasis` and
+  `primeWalshDifferentialBasis_card`.
+- `HTGeometry.PrimeWalshEntropy` proves the prefix differential-basis cardinal, invariance of upper
+  and lower normalized logarithmic growth under the fixed nonempty shift factor, the exact upper
+  and lower box-rank identities, and `primeWalshRankEntropy_eq_tailEntropy`.
+- `HTGeometry.PrimeWalshShiftEntropy` proves prefix-complexity submultiplicativity from literal tail
+  shift invariance, logarithmic subadditivity, and the convergence theorem
+  `primeWalshRankEntropy_tendsto_of_shiftInvariant`.
+
+The formal theorem surface is unconditional apart from the explicit finite/nonempty palette and
+shift-invariance hypotheses appearing in the corresponding paper statements.  Its principal
+declarations use only Lean's standard `propext`, `Classical.choice`, and `Quot.sound` foundations.
+
 ## Attacks
 
 1. **Stone-duality attack.**  Stone reconstruction from a locally constant algebra is classical.
@@ -253,7 +277,11 @@ ordinary differential matroid forgets.
   finite-coordinate/Stone boundary
 - [x] finite Walsh inversion, tail-annihilator, and exact restriction-rank theorems formalized
 - [x] canonical infinite repetition and exact whole-tail-cluster realization formalized
-- [x] derive box-dimension and subshift-entropy identities from the exact finite rank
+- [x] locally constant quotient, eventual-zero kernel, and clopen-idempotent correspondence
+  formalized
+- [x] exact all-order differential adjoin equality, basis, and cardinality formalized
+- [x] upper and lower box-dimension rank-growth identities formalized
+- [x] shift-invariant prefix submultiplicativity, Fekete limit, and entropy identity formalized
 - [x] primary literature audit across Stone duality, Boolean harmonic analysis, Dirichlet-series
   Hadamard products, and arithmetic-function differential algebra
 - [x] compare against all project constraint inverse limits and nonlinear Euler-corona results
@@ -263,14 +291,10 @@ ordinary differential matroid forgets.
 
 ## Status
 
-`[NOVELTY HOLD]` The theorem and its source-side formal core are complete.  Stone duality, Walsh
-inversion, and symbolic complexity are classical separately; primary searches found no theorem
-identifying the differential-transcendence ranks of primewise Walsh carriers with the complete
-finite-pattern functor of a hypertranscendental source.  Final placement as new scientific
-knowledge remains reserved for an independent specialist audit because the proof is a tight
+`[FORMALIZED IN LEAN 4] [NOVELTY HOLD]` The quotient reconstruction, all-order differential-rank
+law, box-growth identities, and shift-invariant entropy limit are complete in Lean.  Stone duality,
+Walsh inversion, and symbolic complexity are classical separately; primary searches found no
+theorem identifying the differential-transcendence ranks of primewise Walsh carriers with the
+complete finite-pattern functor of a hypertranscendental source.  Final placement as new scientific
+knowledge remains reserved for an independent specialist audit because the result is a tight
 source-specific synthesis of classical ingredients.
-
-## Status
-
-`[OPEN CORE]` Verify that the Prime-Walsh quotient and cofinal rank profile are absent from the
-Dirichlet-series and HT literature, then close the algebraic reconstruction and analytic transfer.

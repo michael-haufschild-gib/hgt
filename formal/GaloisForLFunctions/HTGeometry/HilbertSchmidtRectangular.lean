@@ -178,7 +178,7 @@ theorem toOperatorRect_eq_zero_iff {K : κ × ι → ℂ}
     intro f
     apply lp.ext
     funext r
-    rw [toOperatorRect_apply]
+    change (∑' j, K (r, j) * f j) = (0 : ℂ)
     simp [hKzero]
 
 /-- Nondegeneracy is also reflected exactly across the rectangular kernel--operator bridge. -/

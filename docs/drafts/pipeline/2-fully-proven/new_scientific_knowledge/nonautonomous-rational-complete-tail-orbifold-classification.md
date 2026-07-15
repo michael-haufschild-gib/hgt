@@ -55,8 +55,17 @@ Put `L_i=C<y_i>` and `K_(i,n)=C<P_(i,n)(y_i)>`.  The extension
 L_i/K_(i,n)
 ```
 
-is finite separable of degree `degree(P_(i,n))`.  For a finite faithfully flat extension, the
-base is the equalizer of its two maps to the tensor square.  Therefore
+is finite separable of degree `degree(P_(i,n))`.  Indeed, put `u=P_(i,n)(y_i)`.  The element `y_i`
+is separable algebraic of that degree over `C(u)`, and
+
+```text
+delta y_i=(delta u)/P_(i,n)'(y_i).
+```
+
+Repeated differentiation expresses every higher jet of `y_i` inside `K_(i,n)(y_i)`.  Thus
+`L_i=K_(i,n)(y_i)` even as an ordinary field extension, with the asserted degree.  For a finite
+faithfully flat extension, the base is the equalizer of its two maps to the tensor square.
+Therefore
 
 ```text
 h in K_(i,n)
@@ -76,9 +85,13 @@ union with all jet prolongations, then
 T_i=L_i^(Gamma_i).                                        (3)
 ```
 
-There is no nonconstant order-zero element in `T_i`: a compatible rational coordinate would have
-degree divisible by every prefix degree.  Hence a nonconstant tail makes the differential-Zariski
-closure `G_i` of `Gamma_i` a proper **transitive** rational differential groupoid on `P1_i`.
+There is no nonconstant order-zero element in `T_i`.  If `h(y_i)` lies in a prefix field, the
+equalizer says that it is constant on the generic fibres of `P_(i,n)`, hence
+`h in C(P_(i,n))`; its rational degree is therefore divisible by every prefix degree.  Hence a
+nonconstant tail makes the differential-Zariski closure `G_i` of `Gamma_i` a proper
+**transitive** rational differential groupoid on `P1_i`.  Properness follows from the equation
+defined by a nonconstant tail element.  An order-zero equation for `G_i` would itself give the
+forbidden order-zero tail invariant, so the groupoid is transitive in the Lie--Cartan sense.
 
 ## 2. Finite-order persistence has rank at most three
 
@@ -101,8 +114,25 @@ nu=2 mu' - mu^2,                                          (7)
 whose pullback law is (6).  It is therefore enough to prove that every compatible rational
 projective-connection tower has a transported tensor.
 
-Because every prefix deck relation lies in `G_i`, descent (2) applies to the geometric structure
-itself.  Thus there are rational projective connections `Q_j` at every later phase such that
+Because every prefix deck relation lies in `G_i`, the geometric structure descends through every
+prefix.  This can be checked without assuming a Galois deck group.  For a prefix `P` and a point
+away from its critical locus, define on any local inverse branch
+
+```text
+q_target(P(x))=(q_i(x)-S_2(P)(x))/P'(x)^2.                (8a)
+```
+
+If `g` is a local branch of the algebraic relation `P(g(x))=P(x)`, projective invariance gives
+
+```text
+q_i(x)=q_i(g(x))g'(x)^2+S_2(g)(x),
+```
+
+while the Schwarzian chain rule for `P composed g=P` gives the identical formula with `q_i`
+replaced by `S_2(P)`.  Subtracting and using `P'(x)=P'(g(x))g'(x)` proves that (8a) is independent
+of the chosen branch.  It is therefore a single-valued meromorphic function on a nonempty open
+subset of the target sphere and extends rationally across the finite omitted set.  Thus there are
+rational projective connections `Q_j` at every later phase such that
 
 ```text
 Q_i=P_(i,n)^*Q_(i+n).                                     (8)
@@ -393,7 +423,65 @@ minimal: its Riccati reduction has an algebraic solution and it contains a ratio
 subgroupoid.  Equivalently, an irreducible/minimal projective structure is **rationally
 indivisible at unbounded depth**.
 
+Indeed, evaluate each `Q_n` on the free third jet by
+
+```text
+I_(Q_n)(y)=q_n(y)(delta y)^2+S_2(y).
+```
+
+The Schwarzian chain rule and `Q=P_n^*Q_n` make these a compatible nonconstant tail element.
+The classification therefore produces a rational tensor preserved by every sufficiently deep
+deck relation.  Its order-one invariance groupoid is a positive-order proper subgroupoid of the
+Kummer projective groupoid of `Q`.  Proposition 3.6 of the projective-groupoid minimality theorem
+then implies that the associated Riccati equation has an algebraic solution.  This proves the
+corollary rather than merely rephrasing the tail theorem.
+
 This is the projective-geometric core of the HT theorem, stated without project vocabulary.
+
+## Positive relational phase beyond the fixed-source obstruction
+
+The projective no-go has a sharp positive complement.  If the one-sided maps `P1 -> P1` are
+replaced by two-sided algebraic spans
+
+```text
+X_n => P1,
+```
+
+then a minimal projective constraint can persist, provided the topology of `X_n` grows.  For a
+degree-`D` span with genus `g`, puncture/exceptional budget `s`, and normalized hyperbolic excess
+`epsilon`, Riemann--Hurwitz gives the extensive capacity law
+
+```text
+D epsilon <= 2g+s-2.                                      (33)
+```
+
+For compact integral orbifolds, `epsilon>=1/42`, so
+
+```text
+D <= 42(2g-2).                                             (34)
+```
+
+This universal threshold is sharp.  A torsion-free `(2,3,7)` correspondence surface satisfies
+
+```text
+D = 42(2g-2).                                              (35)
+```
+
+Its hypergeometric Schwarzian connection has non-elementary projective monodromy and hence a
+minimal Kummer groupoid; arithmetic triangle-group commensurators supply unbounded two-sided
+relations preserving it.  The cuspidal modular phase gives a second saturation: a torsion-free
+modular correspondence surface of degree `D`, genus `g`, and `s` cusps satisfies
+
+```text
+D = 6(2g+s-2).                                             (36)
+```
+
+Both legs preserve the strongly minimal Schwarzian equation of `j`, so the projective Kummer
+groupoid remains irreducible and does not acquire a tensor or affine reduction.  Thus growing
+relational topology is a positive storage mechanism for projective information, while fixed
+source topology forces collapse.  The separate card
+`projective-constraint-topological-capacity-phase-law` proves this functional--relational phase
+separation and audits its classical modular parents.
 
 ## Physical/topological meaning
 
@@ -416,11 +504,15 @@ fitted parameter.
 ### Established parents
 
 - Lie--Cartan classification of transitive one-dimensional pseudogroups;
-- Casale's rational `G1/G2/G3` classification and autonomous rational-map D-envelopes;
+- Casale's rational `G1/G2/G3` classification and autonomous rational-map D-envelopes
+  ([Publ. Math. 50 (2006)](https://ddd.uab.cat/pub/pubmat/02141493v50n1/02141493v50n1p191.pdf));
 - local Schwarzian/exponent pullback and Riemann--Hurwitz;
 - spherical and Euclidean orbifold classification;
 - Garofali's autonomous parallel-tensor classification;
-- the 2026 algebraic-integrability/minimality criterion for rational projective groupoids.
+- the Riccati/minimality equivalence for Kummer projective groupoids
+  ([Arenas Tirado--Blazquez-Sanz--Casale](https://arxiv.org/abs/2309.07829));
+- the 2026 algebraic-integrability/minimality criterion for finite-dimensional rational
+  pseudogroups ([arXiv:2602.19885](https://arxiv.org/abs/2602.19885)).
 
 ### Candidate residue
 
@@ -430,6 +522,13 @@ divisibility to Riccati reduction, or the universal weight-`12` tail witness.  C
 uses an autonomous repelling fixed point; that argument does not apply here.  The 2026 minimality
 criterion characterizes irreducible projective groupoids but does not test them against an
 unbounded nested rational quotient tower.
+
+Casale's 2006 closing remarks explicitly separate algebraic correspondences from the autonomous
+map theorem: the nonsingular projective case is linked there to modular correspondences, while
+the singular correspondence case is stated as unresolved.  The nested quotient relations here
+are singular finite equivalence relations, but the present theorem is narrower in another
+direction: every phase curve is `P1` and the relations come from a composable tower of maps.  This
+is evidence for a real parent boundary, not a claim that the 2006 open problem is solved in full.
 
 The result changes the classification of all scalar rational HT tails and excludes every
 minimal projective groupoid from infinite rational persistence.  It is therefore significant if

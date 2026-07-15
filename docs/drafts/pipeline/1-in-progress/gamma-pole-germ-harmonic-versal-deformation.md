@@ -98,3 +98,10 @@ The signs are fixed by the displayed Euler product and must be verified formally
   `gamma-factorial-harmonic-sequence-freeness.md`.  The open core is narrowed to the exact
   analytic/formal-series identification with the scaled Gamma pole germs, followed by
   composition-depth descent.
+
+- 2026-07-15 — the actual analytic Gamma pole units and every regular Laurent-coefficient sequence
+  are now identified and proved algebraically independent in
+  `gamma-pole-analytic-coefficient-freeness.md`.  The source-identification core is closed.  The
+  remaining theorem is injectivity on the full reciprocal differential ideal and its
+  composition-depth descent; if that descent fails, the countably infinite transcendence degree of
+  the genuine coefficient field remains the positive theorem.

@@ -12,6 +12,7 @@ import Mathlib.NumberTheory.SumPrimeReciprocals
 
 noncomputable section
 
+open MeasureTheory
 open scoped BigOperators
 
 namespace RHTower
@@ -41,7 +42,7 @@ theorem dilationCLM_pow_eq
     (r : ℝ) (hr : 0 < r) (n : ℕ) :
     dilationCLM r hr ^ n = dilationCLM (r ^ n) (pow_pos hr n) := by
   induction n with
-  | zero => simpa using dilationCLM_one
+  | zero => simpa using dilationCLM_one.symm
   | succ n ih =>
       calc
         dilationCLM r hr ^ (n + 1) =
@@ -50,7 +51,7 @@ theorem dilationCLM_pow_eq
         _ = dilationCLM (r ^ n * r) (mul_pos (pow_pos hr n) hr) :=
           dilationCLM_mul_dilationCLM (r ^ n) r (pow_pos hr n) hr
         _ = dilationCLM (r ^ (n + 1)) (pow_pos hr (n + 1)) := by
-          rw [pow_succ]
+          congr 1
 
 /-- The squared coefficient of the prime-power mode `(p,k+2)`. -/
 def soninPrimePowerTailEnergy (pk : Nat.Primes × ℕ) : ℝ :=
@@ -156,7 +157,7 @@ theorem one_lt_soninPrimePowerScale (pk : Nat.Primes × ℕ) :
 /-- Every retained prime-power scale is at least the prime square `2² = 4`. -/
 theorem four_le_soninPrimePowerScale (pk : Nat.Primes × ℕ) :
     4 ≤ soninPrimePowerScale pk := by
-  have hnat : 4 ≤ pk.1 ^ (pk.2 + 2) := by
+  have hnat : 4 ≤ (pk.1 : ℕ) ^ (pk.2 + 2) := by
     calc
       4 = 2 ^ 2 := by norm_num
       _ ≤ 2 ^ (pk.2 + 2) :=
@@ -177,7 +178,8 @@ one operator generator. -/
 theorem unitaryCosineRecurrence_soninPrimeDilationSignal
     (p : Nat.Primes) (n : ℕ) (hn : 0 < n) :
     HTGeometry.unitaryCosineRecurrence (soninPrimeDilationSignal p) n =
-      dilationSum ((p : ℝ) ^ n) (one_lt_pow₀ (by exact_mod_cast p.prop.one_lt) hn) := by
+      dilationSum ((p : ℝ) ^ n)
+        (one_lt_pow₀ (by exact_mod_cast p.prop.one_lt) (Nat.ne_of_gt hn)) := by
   have hp : 1 < (p : ℝ) := by exact_mod_cast p.prop.one_lt
   have hp0 : 0 < (p : ℝ) := zero_lt_one.trans hp
   let U : SoninL2 →L[ℂ] SoninL2 := dilationCLM (p : ℝ) hp0
@@ -197,7 +199,6 @@ theorem unitaryCosineRecurrence_soninPrimeDilationSignal
     exact dilation_inv_dilation (p : ℝ) hp0 f
   have hsignal : soninPrimeDilationSignal p = U + V := by
     rw [soninPrimeDilationSignal, dilationSum, adjoint_dilationCLM]
-    rfl
   calc
     HTGeometry.unitaryCosineRecurrence (soninPrimeDilationSignal p) n =
         HTGeometry.unitaryCosineRecurrence (U + V) n := by rw [hsignal]
@@ -207,7 +208,7 @@ theorem unitaryCosineRecurrence_soninPrimeDilationSignal
         dilationCLM (((p : ℝ)⁻¹) ^ n) (pow_pos (inv_pos.mpr hp0) n) := by
       simp only [U, V, dilationCLM_pow_eq]
     _ = dilationSum ((p : ℝ) ^ n)
-        (one_lt_pow₀ (by exact_mod_cast p.prop.one_lt) hn) := by
+        (one_lt_pow₀ (by exact_mod_cast p.prop.one_lt) (Nat.ne_of_gt hn)) := by
       simp only [dilationSum, adjoint_dilationCLM, inv_pow]
 
 /-- Every retained prime-power dilation observable is therefore a polynomial recurrence value of

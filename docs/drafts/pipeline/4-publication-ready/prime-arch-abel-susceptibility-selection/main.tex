@@ -72,10 +72,15 @@ Connes' trace-formula programme seeks a spectral and noncommutative-geometric re
 which the explicit formula is intrinsic and the missing positivity becomes structural
 \cite{Connes1999}.  The later scaling-Hamiltonian and archimedean positivity constructions of
 Connes and Consani sharpen the role of cofinal spectral and test-space limits
-\cite{ConnesConsani2019,ConnesConsani2021}.  The central analytic difficulty remains unchanged:
-finite positivity or finite spectral agreement does not by itself control the complete Xi
-divisor.  A successful construction must transport an all-order arithmetic source and select its
-critical phase in the cofinal limit.
+\cite{ConnesConsani2019,ConnesConsani2021}.  More recently, Connes, Consani, and Moscovici
+constructed self-adjoint rank-one perturbations of a scaling spectral triple from finite Euler
+products; their low spectra agree numerically with the low Riemann zeros.  Rigorous spectral
+convergence remains open, and suitably normalized regularized determinants are proposed as an
+analytic route to convergence toward $\Xi$ \cite{ConnesConsaniMoscovici2025}.  The central
+difficulty therefore remains unchanged: finite
+positivity, self-adjointness, or finite spectral agreement does not by itself control the complete
+Xi divisor.  A successful construction must transport an all-order arithmetic source and select
+its critical phase in the cofinal limit.
 
 This paper isolates one positive carrier with an exact phase boundary.  The input is the
 completed prime--archimedean moment sequence, identified with the multiplicity-exact
@@ -86,7 +91,7 @@ Bernstein packet $(a_{n,i})_{0\le i\le n}$.  We use the positive packet purity
 \]
 and its Abel susceptibility
 \[
-  \chi(t)=\sum_{n\ge0}\Pi_nt^n,qquad t\ge0.
+  \chi(t)=\sum_{n\ge0}\Pi_nt^n,\qquad t\ge0.
 \]
 The quantity $\chi$ is cancellation-resistant: the source may have signed Bernstein masses, but
 each coefficient of $\chi$ is nonnegative.  It also retains the full divisor geometry.  An
@@ -529,6 +534,76 @@ Equivalently, it must produce the cofinal source-coupled budget (4.10).  This is
 uniform bound at every degree and stronger than finite positivity, finite self-adjointness, or
 finite spectral agreement.
 
+There is a complementary separation between the radical of a semilocal Gram form and the
+transverse scale carried by its positive source weights.  For a divisor copy $\rho\in\mathcal Z$,
+write
+\[
+  d_\rho=\left|\Rea\rho-\frac12\right|,
+  \qquad w_\rho=\Rea\lambda_\rho>0,
+  \qquad
+  \delta_* = \sup_{\rho\in\mathcal Z}d_\rho.
+\]
+The positivity of $w_\rho$ follows from Proposition~\ref{prop:sector}, and
+$\sum_\rho w_\rho<\infty$ follows from (2.2).
+
+\begin{corollary}[Gibbs radical--free-energy splitting]
+\label{cor:gibbs-splitting}
+Let $J$ be finite and let $c_j:\mathcal Z\to\C$, $j\in J$, satisfy
+$|c_j(\rho)|=1$.  For a finite submultiset $F\subset\mathcal Z$, $a=(a_j)_{j\in J}$,
+and $k\in\N$, define
+\[
+  \mathcal G_{k,F}(a)
+  =\sum_{\rho\notin F}w_\rho e^{k d_\rho}
+       \left|\sum_{j\in J}a_jc_j(\rho)\right|^2,
+  \qquad
+  Z_k=\sum_{\rho\in\mathcal Z}w_\rho e^{k d_\rho}.
+\]
+Both series converge absolutely because $d_\rho<1/2$, the family $J$ is finite, and
+$\sum_\rho w_\rho<\infty$.
+Then for every $k,\ell\in\N$ and every finite $F$,
+\[
+  \rad\mathcal G_{k,F}=\rad\mathcal G_{\ell,F},
+  \qquad
+  \lim_{k\to\infty}\frac{\log Z_k}{k}=\delta_*.
+\]
+Consequently,
+\[
+  \RH
+  \quad\Longleftrightarrow\quad
+  \delta_*=0
+  \quad\Longleftrightarrow\quad
+  \lim_{k\to\infty}\frac{\log Z_k}{k}=0.
+\]
+Thus positive Gibbs reweighting moves the free-energy coordinate while leaving every cofinite
+Gram radical fixed.
+\end{corollary}
+
+\begin{proof}
+For fixed $k$, every weight $w_\rho e^{kd_\rho}$ is strictly positive.  The nonnegative series
+$\mathcal G_{k,F}(a)$ therefore vanishes precisely when
+$\sum_j a_jc_j(\rho)=0$ for every $\rho\notin F$.  This condition is independent of $k$, proving
+the radical identity.
+
+Since $d_\rho\le\delta_*$,
+\[
+  Z_k\le e^{k\delta_*}\sum_\rho w_\rho.
+\]
+Conversely, if $b<\delta_*$, some divisor copy satisfies $b<d_\rho$, and hence
+$Z_k\ge w_\rho e^{kd_\rho}$.  Taking logarithms, dividing by $k$, and then letting $k$ tend to
+infinity gives
+\[
+  b\le\liminf_{k\to\infty}\frac{\log Z_k}{k}
+  \le\limsup_{k\to\infty}\frac{\log Z_k}{k}\le\delta_*.
+\]
+Letting $b\uparrow\delta_*$ proves the free-energy limit.  Finally, $\delta_*=0$ holds exactly
+when every nontrivial zero has real part $1/2$.
+\end{proof}
+
+Corollary~\ref{cor:gibbs-splitting} is a structural separation, not an additional estimate of
+$R_A$ or $\delta_*$.  It explains why positivity of a semilocal Gram metric, or invariance of its
+radical under positive reweighting, cannot replace the source-scale estimate (5.1): the RH-bearing
+coordinate is the free-energy rate, while the radical is temperature-independent.
+
 \begin{corollary}[Narrow-collar selection principle]
 \label{cor:collar}
 To prove RH through the endpoint Bernstein carrier it is sufficient and necessary to extend the
@@ -609,6 +684,11 @@ arXiv:1910.14368, 2019.
 A.~Connes and C.~Consani,
 \emph{Weil positivity and trace formula, the archimedean place},
 arXiv:2006.13771, 2020.
+
+\bibitem{ConnesConsaniMoscovici2025}
+A.~Connes, C.~Consani, and H.~Moscovici,
+\emph{Zeta spectral triples},
+arXiv:2511.22755, 2025.
 
 \bibitem{Hausdorff1921}
 F.~Hausdorff,

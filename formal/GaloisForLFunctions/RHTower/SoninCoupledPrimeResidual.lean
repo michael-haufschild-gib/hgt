@@ -8,7 +8,9 @@ same Sonin source space.  Its Gram operator is positive and retains cross-prime 
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtRectangular
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtTrace
 import GaloisForLFunctions.HTGeometry.QuantumChannelEnergyAugmentation
+import GaloisForLFunctions.HTGeometry.TwoProjectionQuantumWalk
 import GaloisForLFunctions.RHTower.SoninAllPrimeResidualKernel
+import GaloisForLFunctions.RHTower.SoninPrimePowerRegularization
 
 noncomputable section
 
@@ -250,7 +252,6 @@ theorem soninAllPrimeColumnKernel_ne_zero_of_weightedPrimePowerResidual_ne_zero
   apply b.repr.injective
   ext i
   rw [b.repr_apply_apply]
-  simp only [map_zero, Pi.zero_apply]
   have hentry := congrFun hkernel ((pk, i), j)
   simpa [soninAllPrimeColumnKernel, b] using hentry
 

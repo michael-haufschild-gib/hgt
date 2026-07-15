@@ -8,11 +8,13 @@ zeta-specific structure.
 -/
 import Mathlib.MeasureTheory.Function.Holder
 import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
+import Mathlib.MeasureTheory.Function.L2Space
+import Mathlib.Analysis.InnerProductSpace.Dual
 
 noncomputable section
 
 open MeasureTheory
-open scoped ENNReal InnerProductSpace
+open scoped ENNReal
 
 namespace HTGeometry
 
@@ -43,7 +45,7 @@ theorem complexMulBilinear_lpPairing_eq_toDual_star {X : Type*} [MeasurableSpace
   apply integral_congr_ae
   filter_upwards [Lp.coeFn_star u] with x hx
   rw [hx]
-  simp [complexMulBilinear, RCLike.inner_apply]
+  simp [complexMulBilinear, RCLike.inner_apply, mul_comm]
 
 /-- Exact norm of the complex bilinear `L²` pairing functional. -/
 theorem norm_complexMulBilinear_lpPairing {X : Type*} [MeasurableSpace X]
