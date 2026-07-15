@@ -571,3 +571,67 @@ is a precise research target, not an RH proof.
 - [ ] prove cofinal graph convergence to `ell_E`
 - [ ] independent specialist literature audit
 - [ ] RH
+
+### 10. Scalar KMS entropy-production response no-go
+
+For every finite squarefree source, the incidence energy has an exact Hermitian finite-KMS
+realization.  With `E_d=epsilon log d`, `beta=sigma/epsilon`, Gibbs weights `p_d`, and
+
+```text
+|A_de|^2=4epsilon p_d p_e/[sigma|p_e-p_d|],
+d!=e,
+```
+
+the entropy-production intensity is exactly
+
+```text
+I_de=4p_d p_e|E_d-E_e|.                                 (17)
+```
+
+Its total mass is the incidence curvature and tends to four.  Nevertheless its critical passive
+response is the universal exponential-gap transform
+
+```text
+R_infinity(z)
+ =2 integral_R |x|e^(-|x|)/(z-x)dx.                    (18)
+```
+
+Moreover
+
+```text
+R_infinity(i eta)/(i eta)
+ =-4 integral_0^infinity xe^(-x)/(x^2+eta^2)dx,         (19)
+```
+
+which diverges logarithmically as `eta->0+`.  The continued prime--archimedean trace is analytic
+at the centered origin.  Hence `(18)` cannot be its thermodynamic approximant and does not
+activate the formal entropy-production-to-RH capstone.
+
+**Positive successor:** retain the oriented packet edge or current as an operator-valued mark
+through Gamma/Sonin completion and scalarize only after imposing the closed multiplication graph
+`Graph(B_sigma)`.  Scalar incidence entropy production taken before that quotient forgets the
+arithmetic continuation.
+
+**HT consequence:** exact positivity and exact Ward mass can survive while the completed analytic
+germ is destroyed.  A source constraint is carried by the framing of its integration graph, not
+by its scalar curvature measure.
+
+### 11. Bounded packet-flux scalarization no-go
+
+On the natural packet difference `v_a=B_(h+a)-B_h`,
+
+```text
+|Phi_omega(v_a)|^2=c_omega^2a^2,
+||v_a||_2^2=c_omega^2a+O(1).                            (20)
+```
+
+Thus affine flux is unbounded even on the closed span of packet edges.  An operator-valued marked
+response cannot inherit passivity through a bounded positive vector state equal to `Phi_omega`.
+
+**Positive successor:** equations `(7m)` and `(20)` identify the correct object as a source-
+conditioned closed graph form.  The remaining RH theorem is therefore not an ambient contraction:
+it is the range/divisibility estimate for the Fisher numerator in `Graph(B_sigma)`, followed by
+the boundary-unitary identity `(7p)`.
+
+**HT consequence:** critical source conditioning can turn an unbounded affine observable into a
+finite calibrated state coordinate without making that observable bounded on the carrier.

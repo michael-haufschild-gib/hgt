@@ -219,6 +219,41 @@ proves that the completion stratum proposed by `(4)` is mathematically inhabited
 minimal mechanism--direct sum versus product--that any analytic HT realization must enrich rather
 than merely rename.
 
+### Theorem G: normalization forces a persistent self-dual modular defect
+
+Let the unique product boundary `(10)` be made normal in a positive diagonal clock completion
+
+```text
+H_w={a : sum_n w_n |a_n|^2 < infinity},       w_n>0.
+```
+
+Then `1_boundary in H_w` exactly when `sum_n w_n<infinity`.  For every such weight and every cutoff
+`N`, some `n>=N` satisfies `w_(n+1)!=w_n`; moreover no bounded positive change of metric can make
+the reweighted clock stationary.  For a two-sided reflection-symmetric weight, the modular ratio
+
+```text
+Delta_w(n)=w_(n+1)/w_n
+```
+
+obeys
+
+```text
+Delta_w(-n-1)=Delta_w(n)^(-1).                                (11)
+```
+
+Thus the positive completion does not erase the completion obstruction.  It converts the missing
+algebraic boundary into a normal state carrying a persistent anti-self-dual modular anomaly.
+Moreover, the modular ratio determines every nowhere-zero two-sided weight up to scale and every
+positive total-mass-one weight uniquely.  It is therefore a complete invariant of the normalized
+positive diagonal completion, not merely an obstruction witness.  The five exact kernels are
+Lean-verified in
+`formal/GaloisForLFunctions/HTGeometry/AlgebraicIndependentLinearForms.lean`; the proof and external
+novelty gate are in
+`../2-fully-proven/new_scientific_knowledge/hypertranscendental-clock-normalization-symmetry-anomaly.md`.
+
+Theorem G changes the hierarchy of the conjecture.  The primary object is the modular-corona class
+of the infinite boundary.  The stack `(4)` is the derived stack of its admissible trivializations.
+
 ### Rank boundary
 
 The source tail is not finitely differentially generated or the completed cotangent module is not
@@ -237,7 +272,7 @@ Every finite stage splits algebraically, but no family of splittings is uniforml
 compatible under inverse limit.  Derived completion
 
 ```text
-R lim_m Spl(P_m)                                                       (11)
+R lim_m Spl(P_m)                                                       (12)
 ```
 
 retains the higher inverse-limit and descent classes discarded by an ordinary limit.  This is the
@@ -255,19 +290,19 @@ Suppose the realization has a reflection involution `iota` and a compatible adjo
 self-dual substack is the homotopy fixed object
 
 ```text
-SHT(rho)^sd = SHT(rho)^(h iota).                                      (12)
+SHT(rho)^sd = SHT(rho)^(h iota).                                      (13)
 ```
 
 Define its degeneracy spectrum by
 
 ```text
-Sigma_sd(rho) = support of the derived failure of a tame positive section of (12).      (13)
+Sigma_sd(rho) = support of the derived failure of a tame positive section of (13).      (14)
 ```
 
 At a regular parameter, the affine splitting torsor has a tame positive self-dual section and the
-fiber of `(13)` is empty.  At a degeneracy, a local rank drops, a descent class appears, a tame
+fiber of `(14)` is empty.  At a degeneracy, a local rank drops, a descent class appears, a tame
 right inverse blows up, or the positive fixed locus becomes empty.  These are four presentations
-of one derived fiber of `(12)`.
+of one derived fiber of `(13)`.
 
 **[CONJECTURE; NOT AN RH RESULT.]** For a source-first completed-zeta realization, the critical
 zeros are the common self-dual degeneracy spectrum only if
@@ -276,10 +311,10 @@ zeros are the common self-dual degeneracy spectrum only if
 {rho}=a construction independent of the zeros,
 reflection=the functional-equation involution,
 Sigma_sd(rho)=the zero divisor with multiplicity,
-and every obstruction chain factors conservatively through (12).      (14)
+and every obstruction chain factors conservatively through (13).      (15)
 ```
 
-Equation `(14)` is a research program and a falsifiable representation theorem, not a claim that RH
+Equation `(15)` is a research program and a falsifiable representation theorem, not a claim that RH
 or even the identification has been proved.
 
 ## 6. Connection with the founding conjecture
@@ -295,8 +330,8 @@ now has a precise candidate meaning:
 ```text
 infinite capacity = the pro-system of free finite jet packets,
 finite rigidity   = affine and asymptotically incompressible local splitting spaces,
-thin boundary     = the derived locus where compatible tame positive self-dual splitting fails.
-                                                                            (15)
+thin boundary     = the modular-corona class whose admissible trivialization stack degenerates.
+                                                                            (16)
 ```
 
 The clock is a filtration of observables.  The boundary is the failure of compatible observation,
@@ -340,12 +375,14 @@ all require specialist review before any priority claim.
   moduli problem.
 - `[PASS]` It predicts a source-defined multiplicity-bearing degeneracy support.
 - `[PASS]` It has decisive finite-stage and surjective-tower no-go theorems with Lean kernels.
+- `[PASS]` Its modular-corona refinement is a complete invariant of normalized positive diagonal
+  completions and is provably nontrivial under bounded positive gauges.
 - `[FAIL until proved]` Existence of `(4)` in a usable category, completeness of `(7)`,
   conservativity of the splitting-tower presentation, and any zeta realization remain open.
 - `[FAIL if redressed]` Calling an arbitrary cotangent complex, Fredholm determinant, or sheaf of
   boundary conditions `SHT` does not instantiate the conjecture.
 - `[MEDAL-SCALE VERDICT]` A proof of splitting-stack completeness plus a nontrivial arithmetic
-  realization satisfying `(14)` would create the requested new field.  The definition and local
+  realization satisfying `(15)` would create the requested new field.  The definition and local
   acyclicity theorem alone do not.
 
 ## 9. Attack and falsifiers

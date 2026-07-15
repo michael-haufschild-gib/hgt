@@ -238,3 +238,37 @@ Gamma/Sonin--Hardy graph commutation in `(13)`--`(14)` is not proved.
 - [ ] prove the anti-causal derivative is `ell_E` on that core
 - [ ] independent specialist literature audit
 - [ ] RH
+
+## Affine flux is unbounded even on the packet-edge Hilbert span
+
+Let `X_omega` be the linear span of packet differences in the affine packet Hilbert quotient.  For
+
+```text
+v_a=B_(h+a)-B_h,
+a>0,
+```
+
+the exact flux theorem and cofinal packet metric give
+
+```text
+|Phi_omega(v_a)|^2=c_omega^2 a^2,
+||v_a||_2^2=D_omega(a)=c_omega^2 a+O(1).                 (15)
+```
+
+Therefore
+
+```text
+|Phi_omega(v_a)|/||v_a||_2 -> infinity                  (16)
+```
+
+at rate `sqrt(a)`.  The affine flux has no bounded extension even to the closed Hilbert span of
+its natural packet-edge domain.  This is stronger than ambient `L2` unboundedness.
+
+**Positive statement:** after source conditioning and critical multiplication by `epsilon`, the
+same unbounded graph functional is asymptotically isometric on the distinguished escaping Mobius
+edge state, as proved in `(9)`--`(11)`.
+
+**Ward consequence:** an operator-valued KMS or Sonin packet response cannot be turned into a
+positive scalar response by a bounded state whose value is affine flux.  The proof-relevant
+scalarization must remain a closed graph quotient and use the source probability before the
+critical limit; it cannot be a bounded row on packet space.

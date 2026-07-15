@@ -408,9 +408,13 @@ module.  The module passed its exact targeted build and direct source check; no 
 Baire half of the final dichotomy: a proper
 finite common zero locus is closed nowhere dense, and for any countable family of such loci either
 one finite level is the whole law-coordinate space or simultaneous avoidance is dense residual.
-The module passed its exact targeted build and direct source check.  The remaining geometric work
-is the projective transport, Zariski-density statement over an arbitrary uncountable algebraically
-closed base, and complex null-set/full-measure strengthening.
+`formal/GaloisForLFunctions/HTGeometry/ComplexDirectionalFiniteLawDichotomy.lean` now composes this
+with the directional polynomial presentation.  It proves the exact complex affine alternative:
+either one finite directional jet order is dependent for every law coordinate, or directions with
+algebraically independent complete jet towers form a dense residual set.  The module passed its
+exact targeted build and direct source check.  The remaining geometric work is the projective
+transport, Zariski-density statement over an arbitrary uncountable algebraically closed base, and
+complex null-set/full-measure strengthening.
 
 ## Gates
 

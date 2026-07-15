@@ -16,7 +16,7 @@ polynomial differential-operator row rank to differential transcendence rank.
 
 namespace GaloisForLFunctions.HTGeometry
 
-open Matrix MvPolynomial
+open Filter Matrix MvPolynomial
 
 noncomputable section
 
@@ -193,6 +193,128 @@ theorem existsUnique_productCompletion_unitBoundary
   intro v hv
   funext i
   exact hv (i + 1) i (Nat.lt_succ_self i)
+
+/-!
+## The clock normalization--symmetry anomaly
+
+Making the constant product-boundary normal in a positive diagonal completion means choosing a
+strictly positive summable clock weight.  Such a weight cannot become shift-stationary after any
+finite cutoff: otherwise its positive tail would be constant although summability forces it to
+tend to zero.  More strongly, no bounded positive change of metric removes this persistent defect.
+
+For a two-sided clock, reflection symmetry turns the multiplicative one-step defect into its
+inverse.  Thus positivity, completion, and self-duality do not erase the clock defect; they force
+it to be a persistent anti-self-dual modular observable.
+-/
+
+/-- **Persistent clock-defect theorem.**  A strictly positive summable clock weight cannot become
+shift-stationary after any finite cutoff.  Its normalization defect recurs arbitrarily far along
+the clock. -/
+theorem summable_positive_has_persistentClockDefect
+    (w : ℕ → ℝ) (hpos : ∀ n, 0 < w n) (hsum : Summable w) :
+    ∀ N, ∃ n, N ≤ n ∧ w (n + 1) ≠ w n := by
+  intro N
+  by_contra hdefect
+  simp only [not_exists, not_and, not_not] at hdefect
+  have hconst : ∀ n, N ≤ n → w n = w N := by
+    intro n hn
+    induction n, hn using Nat.le_induction with
+    | base => rfl
+    | succ n hn ih => exact (hdefect n hn).trans ih
+  have heq : (fun _ : ℕ => w N) =ᶠ[atTop] w := by
+    filter_upwards [eventually_ge_atTop N] with n hn
+    exact (hconst n hn).symm
+  have hlimN : Tendsto w atTop (nhds (w N)) :=
+    tendsto_const_nhds.congr' heq
+  have hwNzero : w N = 0 :=
+    tendsto_nhds_unique hlimN hsum.tendsto_atTop_zero
+  exact (hpos N).ne' hwNzero
+
+/-- **Bounded-gauge nontriviality.**  A positive bounded gauge cannot remove the persistent defect
+of a summable positive clock.  Equivalently, the normalization anomaly is nontrivial modulo
+bounded positive changes of metric. -/
+theorem no_boundedPositiveGauge_stationarizes_summableClock
+    (w g : ℕ → ℝ) (hw : ∀ n, 0 < w n) (hg : ∀ n, 0 < g n)
+    (hsum : Summable w) (C : ℝ) (hgC : ∀ n, g n ≤ C) :
+    ¬ ∀ n, g (n + 1) * w (n + 1) = g n * w n := by
+  let v : ℕ → ℝ := fun n => g n * w n
+  have hvpos : ∀ n, 0 < v n := fun n => mul_pos (hg n) (hw n)
+  have hvsum : Summable v := by
+    apply Summable.of_nonneg_of_le
+    · exact fun n => (hvpos n).le
+    · intro n
+      exact mul_le_mul_of_nonneg_right (hgC n) (hw n).le
+    · exact hsum.mul_left C
+  intro hstationary
+  obtain ⟨n, _hn, hdefect⟩ :=
+    summable_positive_has_persistentClockDefect v hvpos hvsum 0
+  exact hdefect (hstationary n)
+
+/-- Multiplicative modular ratio of a two-sided clock weight. -/
+def clockModularRatio (w : ℤ → ℝ) (n : ℤ) : ℝ :=
+  w (n + 1) / w n
+
+/-- **Self-dual modular law.**  Reflection symmetry of a two-sided weight makes its modular clock
+defect anti-self-dual: reflection reverses and inverts the one-step ratio. -/
+theorem clockModularRatio_reflection
+    (w : ℤ → ℝ) (hsym : ∀ n, w (-n) = w n) (n : ℤ) :
+    clockModularRatio w (-n - 1) = (clockModularRatio w n)⁻¹ := by
+  have hidx : -n - 1 + 1 = -n := by ring
+  have hden : w (-n - 1) = w (n + 1) := by
+    have hneg : -n - 1 = -(n + 1) := by ring
+    rw [hneg, hsym (n + 1)]
+  rw [clockModularRatio, clockModularRatio, hidx, hsym n, hden]
+  field_simp
+
+/-- **Modular reconstruction.**  The modular ratio of a nowhere-zero two-sided clock weight is a
+complete invariant up to one overall scalar. -/
+theorem clockModularRatio_eq_implies_proportional
+    (w v : ℤ → ℝ) (hw : ∀ n, w n ≠ 0) (hv : ∀ n, v n ≠ 0)
+    (hratio : ∀ n, clockModularRatio w n = clockModularRatio v n) :
+    ∃ c : ℝ, c ≠ 0 ∧ ∀ n, v n = c * w n := by
+  let q : ℤ → ℝ := fun n => v n / w n
+  have hqstep : ∀ n, q (n + 1) = q n := by
+    intro n
+    apply (div_eq_div_iff (hw (n + 1)) (hw n)).2
+    have hcross : w (n + 1) * v n = v (n + 1) * w n :=
+      (div_eq_div_iff (hw n) (hv n)).1 (hratio n)
+    calc
+      v (n + 1) * w n = w (n + 1) * v n := hcross.symm
+      _ = v n * w (n + 1) := mul_comm _ _
+  have hqconst : ∀ n, q n = q 0 := by
+    intro n
+    induction n using Int.induction_on with
+    | zero => rfl
+    | succ n ih => exact (hqstep n).trans ih
+    | pred n ih =>
+        have hs := hqstep (-n - 1)
+        have hidx : -n - 1 + 1 = -(n : ℤ) := by ring
+        rw [hidx] at hs
+        exact hs.symm.trans ih
+  refine ⟨q 0, div_ne_zero (hv 0) (hw 0), ?_⟩
+  intro n
+  exact (div_eq_iff (hw n)).1 (hqconst n)
+
+/-- **Normalized modular completeness.**  On positive two-sided clock weights normalized to total
+mass one, the modular ratio is injective.  Hence the self-dual modular cocycle determines the
+entire positive diagonal boundary completion, not just its local distortion. -/
+theorem clockModularRatio_injective_on_normalizedPositiveWeights
+    (w v : ℤ → ℝ) (hw : ∀ n, 0 < w n) (hv : ∀ n, 0 < v n)
+    (hratio : ∀ n, clockModularRatio w n = clockModularRatio v n)
+    (hnormw : ∑' n, w n = 1) (hnormv : ∑' n, v n = 1) :
+    w = v := by
+  obtain ⟨c, _hc, hcv⟩ :=
+    clockModularRatio_eq_implies_proportional w v
+      (fun n => (hw n).ne') (fun n => (hv n).ne') hratio
+  have hmass : (∑' n, v n) = c * ∑' n, w n := by
+    calc
+      (∑' n, v n) = ∑' n, c * w n := tsum_congr hcv
+      _ = c * ∑' n, w n := tsum_mul_left
+  have hcone : c = 1 := by
+    rw [hnormv, hnormw, mul_one] at hmass
+    exact hmass.symm
+  funext n
+  rw [hcv n, hcone, one_mul]
 
 /-- Linearly independent matrix rows evaluated on an algebraically independent family remain
 algebraically independent. -/
