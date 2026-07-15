@@ -1,9 +1,9 @@
 # Gamma hypertranscendence has a dihedral bulk--mirror anomaly decomposition
 
 - **ID:** `gamma-dihedral-orbifold-bulk-mirror-anomaly`
-- **Stage:** 2-fully-proven / needs novelty audit
-- **Type:** THEOREM (paper) + Lean-formalized cohomological core
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED]`
+- **Stage:** 3-formalized / needs novelty audit
+- **Type:** THEOREM + LEAN-FORMALIZED COHOMOLOGY
+- **Scientific status:** `[PROVED HERE] [LEAN-FORMALIZED] [NOVELTY UNVERIFIED]`
 - **Depends on:** `gamma-reflection-charge-conjugation-doubling`
 - **Statement:** Reflection turns the Gamma orbit-charge lattice into a signed module for the
   infinite-dihedral constraint group. Ordinary reflection-symmetric HT sectors are free integer
@@ -236,9 +236,29 @@ The result is an exact architecture and falsification constraint, not an RH proo
 - two cocycles are cohomologous iff their fixed-label parities agree;
 - a fixed-label unit is nontrivial, while its double is a boundary;
 - every equal-charge free mirror pair is a boundary.
+- the additive subgroup of actual cocycles and the range subgroup of actual coboundaries;
+- the fixed-locus parity homomorphism and its surjectivity;
+- equality of the boundary subgroup with the kernel of fixed-locus parity;
+- the quotient equivalence
 
-The abstract quotient `(5)` and the analytic cylinder's two fixed labels are expressed paper-side;
-the Lean equivalence criterion is stronger computationally than merely exhibiting the quotient.
+  ```text
+  H^1(C_2,Z_c[X] tensor sgn) ~= (X^rho ->_0 Z/2);
+  ```
+
+- specialization of that equivalence to `(Z/2)^2` whenever the fixed locus has two labels;
+- the standard unit real shift-circle reflection `b |-> -b`;
+- an explicit equivalence between its fixed locus and `Fin 2`, with representatives `0` and
+  `1/2`;
+- the resulting concrete additive equivalence between the standard reflected Gamma shift-circle
+  cohomology and `ZMod 2 × ZMod 2`.
+
+The existing cached module was verified directly:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/ReflectionTateAnomaly.lean
+```
+
+No full build or broad lint was run.
 
 ## Gates
 
@@ -250,5 +270,5 @@ the Lean equivalence criterion is stronger computationally than merely exhibitin
 - [x] no-go paired with integer and torsion positive phases
 - [x] RH impact audited without upcasting
 - [ ] independent group-cohomology and Gamma-product audit
-- [ ] formal quotient isomorphism to `(Z/2)^2`
+- [x] formal quotient isomorphism to `(Z/2)^2`
 - [ ] medal-level significance gate

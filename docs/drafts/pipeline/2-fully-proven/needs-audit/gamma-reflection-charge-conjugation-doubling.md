@@ -231,9 +231,23 @@ archimedean toy model, but it is not an RH proof step.
 - `orientedCharge_normalForm`;
 - `orientedCharge_eq_iff_difference_reflectionNeutralPair`.
 
+The coefficient quotient is now also packaged literally:
+
+- `orientedChargeHom` is the additive oriented-charge map;
+- `reflectionNeutralPairHom` and `reflectionNeutralPairs` encode the actual gauge subgroup;
+- `reflectionNeutralPairs_eq_orientedChargeKer` proves exactness;
+- `orientedChargeHom_surjective` realizes every charge in the positive sector;
+- `OrientedChargeQuotient` and `orientedChargeQuotientEquiv` identify the quotient by reflected
+  neutral-pair creation with the single surviving finitely supported charge lattice.
+
 The module passed its exact leaf build, direct source elaboration, and axiom audit. The analytic
 Euler-reflection reduction is paper-level and uses the separately formalized DA sine and Gamma
 reflection ingredients; it is not hidden behind a Lean axiom.
+
+This pass reused the cached `.olean` and verified the touched source directly with
+`lake env lean GaloisForLFunctions/HTGeometry/ReflectedOrbitCharge.lean`. The remaining Stage-3 gap
+is the analytic identification of DA meromorphic Gamma gauges with this now-formal quotient
+subgroup, including the arbitrary commensurable-slope reduction.
 
 ## Gates
 

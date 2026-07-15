@@ -76,6 +76,68 @@ theorem exists_nat_eval_ne_zero {D : ℕ} (W : MvPolynomial (Fin D) ℂ) (hW : W
   by_contra hne
   exact hcon ⟨k, hne⟩
 
+/-- A nonzero multivariate polynomial has a nonzero evaluation at an injective natural tuple.
+The coordinate grids occupy distinct residue classes modulo `D + 1`, so every tuple in their
+product is automatically injective. -/
+theorem exists_injective_nat_eval_ne_zero {D : ℕ} (W : MvPolynomial (Fin D) ℂ)
+    (hW : W ≠ 0) :
+    ∃ k : Fin D → ℕ, Function.Injective k ∧
+      eval (fun i => (k i : ℂ)) W ≠ 0 := by
+  by_contra hcon
+  push Not at hcon
+  apply hW
+  let S : Fin D → Set ℂ := fun i =>
+    Set.range (fun n : ℕ => ((((D + 1) * n + i : ℕ) : ℂ)))
+  apply MvPolynomial.funext_set (p := W) (q := 0) S
+  · intro i
+    apply Set.infinite_range_of_injective
+    intro a b hab
+    change ((((D + 1) * a + (i : ℕ) : ℕ) : ℂ)) =
+      ((((D + 1) * b + (i : ℕ) : ℕ) : ℂ)) at hab
+    have habNat : (D + 1) * a + (i : ℕ) = (D + 1) * b + (i : ℕ) := by
+      exact_mod_cast hab
+    have hmul : (D + 1) * a = (D + 1) * b := Nat.add_right_cancel habNat
+    exact Nat.eq_of_mul_eq_mul_left (by omega) hmul
+  · intro x hx
+    choose a ha using fun i => hx i (Set.mem_univ i)
+    let k : Fin D → ℕ := fun i => (D + 1) * a i + i
+    have hk : Function.Injective k := by
+      intro i j hij
+      apply Fin.ext
+      have hmod := congrArg (fun n : ℕ => n % (D + 1)) hij
+      simpa [k, Nat.add_mod, Nat.mul_mod,
+        Nat.mod_eq_of_lt (lt_of_lt_of_le i.isLt (Nat.le_succ D)),
+        Nat.mod_eq_of_lt (lt_of_lt_of_le j.isLt (Nat.le_succ D))] using hmod
+    have hxk : x = fun i => (k i : ℂ) := by
+      funext i
+      exact (ha i).symm
+    rw [map_zero, hxk]
+    exact hcon k hk
+
+/-- A nonzero polynomial is eventually nonzero on a balanced diagonal whose fixed natural offsets
+are pairwise distinct.  This injective form feeds the fiber--permanent identity directly. -/
+theorem exists_injective_balanced_diagonal_ne_zero {D : ℕ}
+    (W : MvPolynomial (Fin D) ℂ) (hW : W ≠ 0) :
+    ∃ (δ : Fin D → ℕ), Function.Injective δ ∧ ∃ Q₀ : ℕ,
+      ∀ q ≥ Q₀, eval (fun i => ((q + δ i : ℕ) : ℂ)) W ≠ 0 := by
+  obtain ⟨k, hkinj, hk⟩ := exists_injective_nat_eval_ne_zero W hW
+  have hp0 : diagPoly W k ≠ 0 := by
+    intro h0
+    apply hk
+    have h := diagPoly_eval W k 0
+    rw [h0, Polynomial.eval_zero] at h
+    simpa using h.symm
+  obtain ⟨N, hN⟩ := poly_eventually_ne_zero_nat (diagPoly W k) hp0
+  refine ⟨k, hkinj, N, fun q hq hev => ?_⟩
+  have hd := diagPoly_eval W k (q : ℂ)
+  have hcast : (fun i => (q : ℂ) + (k i : ℂ)) =
+      (fun i => ((q + k i : ℕ) : ℂ)) := by
+    funext i
+    push_cast
+    ring
+  rw [hcast, hev] at hd
+  exact hN q hq hd
+
 /-- **Balanced diagonal nonvanishing (Step 1 keystone).**  For a nonzero multivariate polynomial
 `W` over `ℂ` there is a fixed natural offset `δ` and threshold `Q₀` such that for every `q ≥ Q₀` the
 *balanced* tuple `(q+δ₀, …, q+δ_{D-1})` — all coordinates within `Finset.univ.sup δ` of each other —

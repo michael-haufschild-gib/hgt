@@ -94,6 +94,74 @@ theorem orbitwiseData_sameCharge_iff_boundary
   rw [← sub_eq_zero, ← orbitwiseCharge_sub]
   exact orbitwiseCharge_eq_zero_iff_exists_boundary (D - F)
 
+/-- Total orbit charge as an additive homomorphism. -/
+def additiveOrbitSumHom {ι A : Type*} [AddCommGroup A] : (ι →₀ A) →+ A where
+  toFun := additiveOrbitSum
+  map_zero' := additiveOrbitSum_zero
+  map_add' := additiveOrbitSum_add
+
+@[simp]
+theorem additiveOrbitSumHom_apply {ι A : Type*} [AddCommGroup A] (D : ι →₀ A) :
+    additiveOrbitSumHom D = additiveOrbitSum D := rfl
+
+/-- Componentwise charge as a surjective additive homomorphism. -/
+def orbitwiseChargeHom {ι A : Type*} [AddCommGroup A] :
+    (ι →₀ (ℤ →₀ A)) →+ (ι →₀ A) :=
+  Finsupp.mapRange.addMonoidHom additiveOrbitSumHom
+
+@[simp]
+theorem orbitwiseChargeHom_apply {ι A : Type*} [AddCommGroup A]
+    (D : ι →₀ (ℤ →₀ A)) : orbitwiseChargeHom D = orbitwiseCharge D := rfl
+
+/-- Componentwise cellular boundary as an additive endomorphism. -/
+def orbitwiseBoundaryHom {ι A : Type*} [AddCommGroup A] :
+    (ι →₀ (ℤ →₀ A)) →+ (ι →₀ (ℤ →₀ A)) :=
+  Finsupp.mapRange.addMonoidHom intOrbitCellularBoundary
+
+@[simp]
+theorem orbitwiseBoundaryHom_apply {ι A : Type*} [AddCommGroup A]
+    (E : ι →₀ (ℤ →₀ A)) : orbitwiseBoundaryHom E = orbitwiseBoundary E := rfl
+
+/-- The subgroup of finite local shift boundaries. -/
+def orbitwiseBoundaries {ι A : Type*} [AddCommGroup A] :
+    AddSubgroup (ι →₀ (ℤ →₀ A)) :=
+  (orbitwiseBoundaryHom (ι := ι) (A := A)).range
+
+/-- Exactness packaged as equality between boundaries and the charge kernel. -/
+theorem orbitwiseBoundaries_eq_chargeKer {ι A : Type*} [AddCommGroup A] :
+    orbitwiseBoundaries (ι := ι) (A := A) =
+      (orbitwiseChargeHom (ι := ι) (A := A)).ker := by
+  ext D
+  constructor
+  · rintro ⟨E, rfl⟩
+    rw [AddMonoidHom.mem_ker]
+    exact orbitwiseCharge_boundary E
+  · intro hD
+    rw [AddMonoidHom.mem_ker] at hD
+    obtain ⟨E, hE⟩ := (orbitwiseCharge_eq_zero_iff_exists_boundary D).mp hD
+    exact ⟨E, hE.symm⟩
+
+/-- Every finitely supported charge vector has a canonical origin-supported representative. -/
+theorem orbitwiseChargeHom_surjective {ι A : Type*} [AddCommGroup A] :
+    Function.Surjective (orbitwiseChargeHom (ι := ι) (A := A)) := by
+  intro q
+  refine ⟨q.mapRange (Finsupp.single (0 : ℤ)) (by simp), ?_⟩
+  ext i
+  simp [orbitwiseChargeHom, additiveOrbitSumHom]
+
+/-- Multi-orbit defect data modulo finite local gauges. -/
+abbrev OrbitChargeQuotient (ι A : Type*) [AddCommGroup A] :=
+  (ι →₀ (ℤ →₀ A)) ⧸ orbitwiseBoundaries (ι := ι) (A := A)
+
+/-- The literal quotient by local gauges is the direct sum of component charges. -/
+noncomputable def orbitChargeQuotientEquiv {ι A : Type*} [AddCommGroup A] :
+    OrbitChargeQuotient ι A ≃+ (ι →₀ A) :=
+  (QuotientAddGroup.quotientAddEquivOfEq
+      (orbitwiseBoundaries_eq_chargeKer (ι := ι) (A := A))).trans
+    (QuotientAddGroup.quotientKerEquivOfSurjective
+      (orbitwiseChargeHom (ι := ι) (A := A))
+      (orbitwiseChargeHom_surjective (ι := ι) (A := A)))
+
 end
 
 end GaloisForLFunctions

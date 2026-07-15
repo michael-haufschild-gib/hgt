@@ -209,7 +209,11 @@ horizontal zero location.  No such bridge is presently proved.
 - [ ] Kato equal-period algebraic differential equation formalized unconditionally in Lean.
 - [ ] Independent-period paired theorem formalized unconditionally in Lean.
 - [ ] Full iff theorem assembled in Lean with axiom audit.
-- [ ] Closed/discrete versus rank-three nonclosed subgroup dichotomy formalized in Lean.
+- [x] Independent rank-three subgroup nonclosedness and non-Hausdorff quotient formalized
+  unconditionally in Lean (`RankThreePeriodNonHausdorff`).
+- [x] Closedness/Hausdorffness formalized unconditionally when the period group is contained in a
+  genuine rank-two real lattice (`RankThreePeriodNonHausdorff`); the arithmetic specialization from
+  commensurable nomes to this containment remains to be assembled.
 - [ ] Hausdorff--Kolchin equivalence `(2)` assembled in Lean.
 - [ ] Finite free-chiral matter classification `(4)--(5)` formalized on the actual product.
 - [ ] Independent expert audit in elliptic difference Galois theory and gamma gerbes.

@@ -1,9 +1,9 @@
 # The hypertranscendental jet tower has a canonical Kähler--Tate clock linearization
 
 - **ID:** `hypertranscendental-kaehler-tate-clock-linearization`
-- **Stage:** 2-fully-proven / needs independent audit
+- **Stage:** 3-formalized
 - **Type:** GENERAL HT THEOREM / SOURCE-POINTED IND--PRO GEOMETRY
-- **Scientific status:** `[PROVED ON PAPER] [KAEHLER INDEPENDENCE LEAN-FORMALIZED] [AFFINE-CALIBRATION NO-GO LEAN-FORMALIZED] [PRINCIPAL SYMBOL LEAN-OPEN] [NOVELTY PROVISIONAL]`
+- **Scientific status:** `[PROVED ON PAPER] [LEAN-FORMALIZED] [NOVELTY PROVISIONAL]`
 - **Parent:** `../3-formalized/hypertranscendental-clock-observable-boundary.md`
 - **Statement:** The one-way rational jet tower of a pointed hypertranscendental element has a
   canonical filtered Kähler module whose clock principal symbol is the unilateral shift through
@@ -261,20 +261,30 @@ analytic constructions.
 - the exact rank-one range/kernel descriptions;
 - shift/coshift adjointness under the restricted evaluation pairing.
 
-The remaining formal layer is the decomposition with its base-differential summand and the
-filtered principal symbol in `(3)`--`(7)`. The full countable jet Kähler family is already proved
-linearly independent in Lean. What remains is to define the Lie derivative over the constant
-field and prove the quotient-level symbol identity. No wrapper theorem will be counted as
-formalization of that layer.
+`HypertranscendentalKaehlerClockSymbol.lean` formalizes the remaining Kähler-clock layer:
 
-Verification of the existing touched module used only
+- the absolute decomposition `(3)` into the base-differential image and the free countable jet
+  covectors, including injectivity of the base-change map;
+- the universal Kähler connection induced by a derivation preserving the base and its
+  specialization to the full hypertranscendental jet field;
+- the exact formula `(4)` and preservation `(5)` of the intrinsic absolute filtration;
+- identification of each preceding cut with the kernel of its top-coordinate map and
+  surjectivity of that coordinate, which gives the canonical one-dimensional successive layer;
+- canonical coordinate equivalences for the homogeneous clock lines and the principal-symbol
+  isomorphism `(6)`--`(7)`;
+- equality of the intrinsic Kähler Lie operator with the transported free-clock operator and
+  equality of the principal symbol with the next homogeneous Lie projection;
+- invariance of the base-differential summand and compatibility of absolute-to-relative
+  reduction with the Kähler connection.
+
+The new module was compiled once because its `.olean` was absent, then verified directly:
 
 ```text
-lake env lean GaloisForLFunctions/HTGeometry/HypertranscendentalClockBoundary.lean
+lake build +GaloisForLFunctions.HTGeometry.HypertranscendentalKaehlerClockSymbol
+lake env lean GaloisForLFunctions/HTGeometry/HypertranscendentalKaehlerClockSymbol.lean
 ```
 
-with cached dependencies. No build, full build, broad lint, numerical experiment, or concurrent
-Lean process was run.
+No full build or broad lint was run.
 
 ## Gates
 
@@ -287,7 +297,7 @@ Lean process was run.
 - [x] infinite Kähler jet-covector independence formalized in Lean
 - [x] affine-origin blindness and constant-unit covariance formalized in Lean
 - [x] primary Tate-theory collision audit completed
-- [ ] base-summand Kähler decomposition and principal symbol formalized in Lean
+- [x] base-summand Kähler decomposition and principal symbol formalized in Lean
 - [ ] independent differential-algebra and Tate-category specialist audit
 - [ ] actual source-selected affine torsor, calibration, and self-dual lattice constructed
 - [ ] three analytic obstruction representations proved to preserve one source class

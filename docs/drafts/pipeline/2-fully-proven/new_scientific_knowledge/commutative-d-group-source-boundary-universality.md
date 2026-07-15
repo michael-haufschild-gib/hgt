@@ -218,7 +218,8 @@ not a proof of absence; specialist and bibliographic review remain required.
   literature.
 - `[OPEN]` A concrete analytic example whose minimal source envelope has nontrivial adjoint
   holonomy.
-- `[OPEN]` Formalization of the abstract logarithmic-linearization transfer; algebraic `D`-groups
+- `[PARTIAL FORMALIZATION]` The exact singleton logarithmic-linearization and simultaneous
+  coboundary criterion are formalized in `SourceLogarithmicBoundary`; algebraic `D`-groups
   themselves are absent from current Mathlib.
 - `[FAIL if oversold]` The proof is short once classical `D`-group logarithmic geometry and the
   project additive theorem are imported.  It is significant progress, not a Fields-Medal result.

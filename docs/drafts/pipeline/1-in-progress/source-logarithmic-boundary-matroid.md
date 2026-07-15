@@ -3,7 +3,7 @@
 - **ID:** `source-logarithmic-boundary-matroid`
 - **Stage:** 1-in-progress
 - **Type:** THEOREM (paper) / formalization open
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Scientific status:** `[PROVED HERE] [EXACT SINGLETON FORMALIZED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** For multiplicative observables governed by an arbitrary, possibly noncommuting
   family of compatible differential-field automorphisms, the complete differential-algebraic
   matroid is represented by their logarithmic source increments modulo simultaneous
@@ -158,6 +158,53 @@ Theorem A.
 Applying Theorem A to every subset identifies the independent subsets on both sides of (6).
 Differential transcendence degree and vector-space dimension are the corresponding matroid rank
 functions, proving Theorem B.
+
+## Capacity-support topology `[PROVED COROLLARY, NOT A SEPARATE NOVELTY CLAIM]`
+
+Put `R=C[D]`.  For a finite observable set `S`, let
+
+```text
+M_S = R-span{[omega_a] : a in S} subset Q_Sigma(K).       (11)
+```
+
+This is a finitely generated module over the PID `R`.  Hence it has canonical invariant factors
+
+```text
+M_S ~= R^r + R/(p_1) + ... + R/(p_t),
+p_1 | p_2 | ... | p_t.                                  (12)
+```
+
+Theorem B identifies the free rank exactly:
+
+```text
+r = dtrdeg_K K<x_a : a in S>_D.                          (13)
+```
+
+Consequently the generic point of `Spec R` belongs to `Supp(M_S)` exactly when the observable
+family has positive differential transcendence degree.  For one observable, hypertranscendence
+is equivalent to
+
+```text
+Supp(R[omega]) = Spec C[D],                              (14)
+```
+
+while differential algebraicity is equivalent to support on the proper finite divisor cut out by
+its monic annihilator.  The torsion invariant factors in (12) record every finite-order collapse;
+the generic fibre records the differential-algebraic matroid.
+
+This is an actual topology behind the clock-capacity phrase: HT is generic support of a coherent
+module carried by the simultaneous source boundary.  Module support and Smith normal form are
+classical; the candidate-new content remains the source-boundary identification of `M_S`, not the
+commutative-algebra repackaging.
+
+## Lean status
+
+The exact one-observable instance of Theorem A is formalized in
+`GaloisForLFunctions.HTGeometry.SourceLogarithmicBoundary` as
+`automorphismFamily_differentialAlgebraic_iff_exists_logIncrement_jet_telescoping`.  Both
+dependence-to-coboundary and coboundary-to-dependence are proved, together with the exact
+hypertranscendence equivalence under `x -> D(x)/x`.  The complete family matroid rank formula
+remains paper-level.
 
 ## Order-zero positive residue
 

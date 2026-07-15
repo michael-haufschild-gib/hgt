@@ -1,9 +1,9 @@
 # Euler--triptic continuation anomaly and source-framed curvature isotropy
 
 - **ID:** `euler-triptic-continuation-anomaly-rh`
-- **Stage:** 1-in-progress
-- **Type:** `[CONJECTURE] [HT-TO-RH SOURCE PRODUCER]` with proved bridge and no-go theorems
-- **Scientific status:** `[OPEN CORE] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
+- **Stage:** 5-failed/retired as an RH producer; proved bridge content retained
+- **Type:** RETIRED CONJECTURE with proved bridge and no-go theorems
+- **Scientific status:** `[ANTI-THEATRE FAIL] [PARENT BRIDGE] [NOT AN RH PROOF]`
 - **HT source:**
   - `../2-fully-proven/new_scientific_knowledge/triptic-orbit-residue-reciprocity.md`
   - `../2-fully-proven/new_scientific_knowledge/archimedean-relative-prime-cocycle-curvature.md`
@@ -48,9 +48,30 @@ source-framed current at that failure of commutation.
    **Killed below:** after normalization it is identical for every finite prime set.  The positive
    theorem is the exact universal affine null-wall law.
 4. `[CONJECTURE -- SOURCE-FRAMED CONTINUATION ISOTROPY]` Remove the universal primary curvature and
-   retain the secondary continuation current, with its safe-half-plane framing.  This is the sole
-   survivor.  It is accepted only if its finite-part construction is canonical before zeros and its
-   isotropy follows from a finite-prime identity rather than from Weil positivity as an assumption.
+   retain the secondary continuation current, with its safe-half-plane framing.  **Retired as
+   presently stated:** no finite-prime identity was found, and the asserted isotropy is the RH
+   conclusion after the universal curvature calculation.  The only positive survivor is the
+   ambiguity-classification problem for source-framed continuation currents.
+
+## Medalist re-audit: why the conjectural RH step is retired
+
+The universal lift, aperiodic Euler diagonal, and hermitian curvature are correct, but all lie in
+named parent theories or are direct specializations.  The proposed current `(15)` was never
+constructed independently of meromorphic continuation, and `(16)` says exactly that the two
+supports have equal curvature.  Equation `(11)` then turns it immediately into
+`2 Re(rho)-1=0`.  Without a finite-prime identity that forces `(16)`, this is an RH criterion in
+gerbe language, not a source theorem.
+
+The stronger saturation attempt also fails for the structural reason proved in
+`../2-fully-proven/not_new_scientific_knowledge/da-gauge-ht-divisor-blindness.md`: the localized HT
+boundary matroid is invariant under rational divisor gauges, whereas the desired continuation
+current must change under them.  A divisor-sensitive current cannot factor through that quotient.
+
+The nontrivial positive residue is exact.  The global Euler object belongs on an aperiodic product
+of prime tori; its primary normalized curvature is universal; and any arithmetic continuation
+invariant must be a pointed extension over, not a realization of, the gauge-invariant HT boundary
+class.  The remaining ambiguity-torsor classification is mathematically meaningful, but it is no
+longer advertised as the current RH producer.
 
 ## Universal reflected double lift `[PROVED HERE] [BRIDGE]`
 
@@ -220,7 +241,7 @@ primary hermitian curvature    -- metric but universal on the Euler diagonal;
 secondary continuation current -- potentially arithmetic and divisor-sensitive.   (14)
 ```
 
-## Surviving conjecture: source-framed continuation isotropy
+## Retired conjecture: source-framed continuation isotropy
 
 Let `Y_X` be the finite product in `(4)` over `p<=X`, equipped with the pulled-back hermitian
 gamma-gerbe metric.  Let `Y_zeta` be the meromorphic continuation of the right-half-plane limit in
@@ -246,7 +267,7 @@ Here `PL` denotes the Poincare--Lelong current of the metrized meromorphic secti
 is schematic until the finite-part topology and counterterm are proved unique; declaring them by
 analytic continuation alone is not enough.
 
-`[CONJECTURE -- FRAMED ISOTROPY]` The FE and Schwarz boundary traces of `Omega_(a,b)` at every Xi
+`[RETIRED CONJECTURE -- FRAMED ISOTROPY]` The FE and Schwarz boundary traces of `Omega_(a,b)` at every Xi
 zero have equal fibre curvature at the two Mertens support germs:
 
 ```text
@@ -326,8 +347,8 @@ The conjecture is rejected unless all of the following are met.
 - Poincare--Lelong and Weil's explicit formula are the parent current and RH-positivity mechanisms.
 
 No source-canonical current satisfying `(15)` and no finite-prime proof of `(16)` has been located.
-This remains `[NOVELTY UNVERIFIED]` and purely conjectural.  It must not be promoted until a complete
-proof and a broader primary-source audit both succeed.
+The route is retired rather than left as a vague open producer: its concrete content is parent
+bridge material, while its decisive line is currently only an RH-equivalent isotropy assertion.
 
 ## Smallest generative next move
 
@@ -351,6 +372,8 @@ survived and the next step is to compare `(17)` with the Mertens shift-two bound
 - [x] 0 -> 1: hermitian gamma-gerbe parent located and exact Euler pullback curvature derived
 - [x] 0 -> 1: raw curvature killed as arithmetic selector; universal normalized law proved
 - [x] 0 -> 1: every no-go assigned a nontrivial positive successor and a general-HT interpretation
+- [x] anti-theatre re-audit: present isotropy formulation retired as an RH restatement
+- [ ] positive successor: ambiguity torsor of source-compatible finite parts classified
 - [ ] 1 -> 2: canonical finite-part current constructed with uniqueness proof
 - [ ] 1 -> 2: rational-quartet framing test passed
 - [ ] 1 -> 2: finite-prime face-transgression identity proved
@@ -379,3 +402,6 @@ survived and the next step is to compare `(17)` with the Mertens shift-two bound
   orbit-residue reciprocity to the all-prime diagonal.  Derived the universal lift, zeta-ratio mixed
   source, diagonal aperiodicity, hermitian curvature null wall, and raw-curvature blindness.  The
   source-framed secondary continuation current is the sole surviving conjectural mechanism.
+- 2026-07-15 -- medalist re-audit retired that mechanism as an RH producer: no finite-prime
+  isotropy identity was found, the primary metric is universal, and the localized HT class is
+  rational-gauge blind.  Retained the exact bridge theorems and the ambiguity-torsor problem.

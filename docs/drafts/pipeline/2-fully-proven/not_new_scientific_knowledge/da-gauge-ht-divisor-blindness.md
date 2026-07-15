@@ -205,6 +205,44 @@ Equivalently:
 
 This is a theorem about the information content of HT laws, not a probabilistic heuristic.
 
+## Operator-algebra correction for finite residue packets `[PROVED HERE] [BRIDGE]`
+
+There is a second, independent reason not to identify a finite off-line residue packet with
+torsion in the HT source-boundary module.  For a Laplace pair
+
+`F(s)=integral_0^infinity exp(-s t)f(t)dt`,
+
+the two basic actions are transmuted as
+
+`partial_s F = Laplace(-t f)`,
+
+`sF = Laplace(partial_t f)`
+
+up to the standard endpoint distribution.  A finite packet
+
+`ell(t)=sum_j p_j(t)exp(-lambda_j t)`
+
+is killed by the constant-coefficient time operator
+
+`prod_j(partial_t+lambda_j)^(deg(p_j)+1)`.
+
+It is therefore torsion for the spectral-coordinate algebra `C[s]`, not for the
+differential-algebra character algebra `C[partial_s]`.  Under the latter action, a polynomial acts
+as multiplication by a polynomial in `t`; no nonzero such polynomial annihilates a nonzero
+exponential polynomial on an interval.  After transform, the same packet is a rational principal
+part and is already zero in the quotient modulo a DA base.
+
+Thus finite spectral torsion and differential non-torsion are transverse notions.  Localizing the
+HT boundary module cannot convert one into the other.  Any proposed RH saturation theorem must
+first state which operator algebra acts; using the same symbol `D` for both actions creates a false
+bridge.
+
+This correction is consistent with the already formalized stronger warning in
+`HTGeometry/FiniteGibbsDifferentialBoundary.lean`: even the rational function `1/s` has no nonzero
+constant-coefficient annihilator under spectral differentiation, because successive derivatives
+raise its pole order.  The present paragraph records the transform-level reason, not a new
+independence theorem.
+
 ## Consequences for the named RH routes
 
 The theorem reverses an overbroad research hope.  A law merely asserting HT, nonholonomicity, full

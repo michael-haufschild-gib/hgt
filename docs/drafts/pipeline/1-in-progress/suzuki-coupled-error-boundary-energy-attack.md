@@ -205,6 +205,17 @@ exact Euler coefficients, not only FE symmetry and boundary unimodularity.
 are the input and boundary counterterm of one contractive renewal operator.  Its defect vector is
 `ell_E`, and the renewal input has squared norm `4`.
 
+### Candidate D: squarefree-Mobius Fisher tangent--Sonin lift
+
+The generic conservative-colligation formulation has been retired: it restated the already-known
+four-unit contraction target and did not address the canonical Xi graph's domain defect.  The
+positive replacement is `mobius-fisher-tangent-sonin-boundary-lift-rh.md`.  Its source input is no
+longer arbitrary: the normalized squarefree-Mobius state has a proved critical Fisher tangent of
+limiting squared norm `4`, and its positive/signed contact coefficients are explicit.  The live
+theorem is the direct basis-level lift of that tangent through the complementary floor/tail
+incidence, Gamma completion, and Sonin cutoff to `ell_E`.  The basis identity and graph-core limit,
+not the word “conservative,” carry the RH content.
+
 ## 4. Mandatory attacks
 
 1. **Distributional seam.** At `omega=0`, the Mellin kernel contains the identity mass at `x=1`.

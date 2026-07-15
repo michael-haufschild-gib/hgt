@@ -20,7 +20,7 @@ makes the obstruction stronger.
 -/
 
 open Filter Polynomial Topology
-open scoped BigOperators
+open scoped BigOperators Matrix
 
 namespace HTGeometry
 
@@ -112,10 +112,11 @@ theorem det_momentHankelMatrix_finiteSpectralMoment_succ_eq_zero
   apply Matrix.det_eq_zero_of_mulVec_eq_zero_of_mem_nonZeroDivisors
     (momentHankelMatrix_mulVec_nodePolynomial_eq_zero mass node)
     (i := Fin.last d)
+  change p.coeff d ∈ nonZeroDivisors ℝ
   have hp1 : p.coeff d = 1 := by
     rw [← hpdeg]
     exact hpmon.coeff_natDegree
-  simpa [p, hp1]
+  simp [hp1]
 
 /-- The determinant obstruction in representation form. -/
 theorem det_momentHankelMatrix_succ_eq_zero_of_spectralWidthAtMost

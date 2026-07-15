@@ -402,21 +402,24 @@ The unconditional formal surface currently consists of:
 
 The graph/end/coefficient-tail core is recorded separately at stage 3 in
 `../../3-formalized/finite-boundary-one-ended-coherence-reconstruction.md`.  This broader paper card
-cannot yet move as a whole because two statements remain outside the unconditional formal surface:
+cannot yet move as a whole because one statement remains outside the unconditional formal surface:
 
 1. the topological Boolean-algebra presentation
    `B_G / Fin(I) ~= Clop(Omega(G), Z/2Z)`; the formal development proves the exact finite-boundary
    kernel and its conventional one-end criterion, but not this clopen-space isomorphism;
-2. the analytic identification `(11)` of the coefficient-tail line with equality of the actual
-   embedded differential fields of complete prime-Dirichlet palettes.  The current formal theorem
-   gives exact projective coefficient-tail dependence.  Promoting this to field equality requires
-   an unconditional joint differential-independence theorem for every pair outside the signed
-   finite-prime gauge relation.  The generic upper-end freeness results do not by themselves prove
-   that theorem for every Boolean orientation.
+The former analytic gap `(11)` is now discharged in
+`PrimeDirichletDifferentialField.lean` and connected to this card in
+`PrimeCoherenceTailReconstruction.lean`.  The declarations
+`signedPrimeNaturalShiftField_eq_iff_booleanProjectiveFiniteEquivalent` and
+`finiteBoundaryOneEnded_iff_signedPrimeNaturalShiftField_faithful` give the exact embedded-field
+identity, while
+`exists_coherenceTailEquivalent_unequal_signedPrimeFields_of_not_oneEnded` gives the claimed
+two-source differential-independence witness when one-endedness fails.  The touched module was
+verified directly with its existing cache:
 
-Consequently `(12)` and `(16)` are formally established with “same projective coefficient-tail
-line” in place of “same embedded differential field.”  They must not be advertised as formal field
-identities until the second item is discharged.
+```text
+lake env lean GaloisForLFunctions/HTGeometry/PrimeCoherenceTailReconstruction.lean
+```
 
 ## Gates
 

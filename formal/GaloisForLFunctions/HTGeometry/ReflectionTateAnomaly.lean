@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ReflectedOrbitCharge
+import Mathlib.Topology.Instances.AddCircle.Real
 
 /-!
 # Reflection-gauged orbit charge and its Tate anomaly
@@ -7,10 +8,12 @@ The Gamma charge-conjugation involution is `C(q) = -r(q)`.  A degree-one cocycle
 group `C₂` therefore satisfies `q + C(q) = 0`, equivalently `r(q) = q`, and a coboundary has the
 form `q = g - C(g) = g + r(g)`.
 
-This file computes that cohomology without constructing an abstract quotient.  A finite cocycle is
-a coboundary exactly when its coefficient at every fixed label is even.  Hence the complete
-degree-one anomaly is one `Z/2` parity for every fixed orbit label.  Free reflection two-cycles are
-cohomologically trivial, while a fixed-label unit is nontrivial and its double is a boundary.
+This file computes the cohomology both constructively and as an actual quotient.  A finite cocycle
+is a coboundary exactly when its coefficient at every fixed label is even.  Hence the complete
+degree-one anomaly is one `Z/2` parity for every fixed orbit label.  The quotient of cocycles by
+coboundaries is additively equivalent to the finitely supported `Z/2`-valued functions on the fixed
+locus.  Free reflection two-cycles are cohomologically trivial, while a fixed-label unit is
+nontrivial and its double is a boundary.
 
 For the reflected Gamma shift cylinder there are two fixed orbit labels, so the paper theorem
 obtains two independent binary mirror anomalies.  The Lean result below is the coefficient-generic
@@ -171,6 +174,212 @@ theorem freeMirrorPair_is_boundary {ι : Type*} [LinearOrder ι]
     Finsupp.single i m + Finsupp.single (r i) m =
       reflectionTateBoundary r (Finsupp.single i m) := by
   simp [reflectionTateBoundary]
+
+/-- The fixed locus of an orbit-label reflection. -/
+def ReflectionFixedPoint {ι : Type*} (r : ι ≃ ι) := {i : ι // r i = i}
+
+/-- The additive group of signed-reflection one-cocycles. -/
+def reflectionTateCocycles {ι : Type*} (r : ι ≃ ι) : AddSubgroup (ι →₀ ℤ) where
+  carrier := {q | ReflectionTateCocycle r q}
+  zero_mem' := by simp [ReflectionTateCocycle, reflectedCharge]
+  add_mem' := by
+    intro p q hp hq
+    change ReflectionTateCocycle r p at hp
+    change ReflectionTateCocycle r q at hq
+    change ReflectionTateCocycle r (p + q)
+    unfold ReflectionTateCocycle at *
+    rw [reflectedCharge_add, hp, hq]
+  neg_mem' := by
+    intro q hq
+    change ReflectionTateCocycle r q at hq
+    change ReflectionTateCocycle r (-q)
+    unfold ReflectionTateCocycle at *
+    have hz : reflectedCharge r (0 : ι →₀ ℤ) = 0 := by
+      ext i
+      simp [reflectedCharge]
+    have hsub := reflectedCharge_sub r 0 q
+    simpa [hz, hq] using hsub
+
+/-- Boundaries as an additive map into the cocycle group. -/
+def reflectionTateBoundaryHom {ι : Type*} (r : ι ≃ ι)
+    (hr : Function.Involutive r) :
+    (ι →₀ ℤ) →+ reflectionTateCocycles r where
+  toFun g := ⟨reflectionTateBoundary r g, reflectionTateBoundary_cocycle r hr g⟩
+  map_zero' := by
+    apply Subtype.ext
+    simp [reflectionTateBoundary, reflectedCharge]
+  map_add' p q := by
+    apply Subtype.ext
+    simp [reflectionTateBoundary, reflectedCharge_add]
+    abel
+
+/-- The subgroup of signed-reflection coboundaries. -/
+def reflectionTateBoundaries {ι : Type*} (r : ι ≃ ι)
+    (hr : Function.Involutive r) : AddSubgroup (reflectionTateCocycles r) :=
+  (reflectionTateBoundaryHom r hr).range
+
+/-- Restriction of a cocycle to the fixed locus, reduced modulo two. -/
+def reflectionTateFixedParity {ι : Type*} (r : ι ≃ ι) :
+    reflectionTateCocycles r →+ (ReflectionFixedPoint r →₀ ZMod 2) :=
+  (Finsupp.comapDomain.addMonoidHom (f := Subtype.val) Subtype.val_injective).comp
+    ((Finsupp.mapRange.addMonoidHom (Int.castAddHom (ZMod 2))).comp
+      (reflectionTateCocycles r).subtype)
+
+@[simp]
+theorem reflectionTateFixedParity_apply {ι : Type*} (r : ι ≃ ι)
+    (q : reflectionTateCocycles r) (i : ReflectionFixedPoint r) :
+    reflectionTateFixedParity r q i = (q.1 i.1 : ZMod 2) := by
+  rfl
+
+/-- Every finitely supported parity pattern on the fixed locus is realized by a cocycle. -/
+theorem reflectionTateFixedParity_surjective {ι : Type*} (r : ι ≃ ι) :
+    Function.Surjective (reflectionTateFixedParity r) := by
+  intro a
+  obtain ⟨b, hb⟩ := Finsupp.mapRange_surjective
+    (α := ReflectionFixedPoint r) ((↑) : ℤ → ZMod 2) (by simp)
+      ZMod.intCast_surjective a
+  let q : ι →₀ ℤ := Finsupp.mapDomain Subtype.val b
+  have hq : ReflectionTateCocycle r q := by
+    rw [ReflectionTateCocycle, reflectedCharge, Finsupp.equivMapDomain_eq_mapDomain,
+      ← Finsupp.mapDomain_comp]
+    congr 1
+    funext i
+    exact i.property
+  refine ⟨⟨q, hq⟩, ?_⟩
+  ext i
+  have hbi := DFunLike.congr_fun hb i
+  rw [reflectionTateFixedParity_apply]
+  change ((Finsupp.mapDomain Subtype.val b i.1 : ℤ) : ZMod 2) = a i
+  rw [Finsupp.mapDomain_apply Subtype.val_injective]
+  exact hbi
+
+/-- The actual boundary subgroup is exactly the kernel of fixed-point parity. -/
+theorem reflectionTateBoundaries_eq_fixedParity_ker
+    {ι : Type*} (r : ι ≃ ι) (hr : Function.Involutive r) :
+    reflectionTateBoundaries r hr = (reflectionTateFixedParity r).ker := by
+  letI : LinearOrder ι := (exists_wellFoundedLT ι).choose
+  ext q
+  constructor
+  · rintro ⟨g, rfl⟩
+    rw [AddMonoidHom.mem_ker]
+    ext i
+    rw [reflectionTateFixedParity_apply]
+    change ((reflectionTateBoundary r g i.1 : ℤ) : ZMod 2) = 0
+    rw [reflectionTateBoundary_apply_fixed r g i.property]
+    have htwo : ((2 : ℤ) : ZMod 2) = 0 := by decide
+    rw [Int.cast_mul, htwo, zero_mul]
+  · intro hq
+    rw [AddMonoidHom.mem_ker] at hq
+    have heven : ∀ i, r i = i → Even (q.1 i) := by
+      intro i hi
+      have hzero := DFunLike.congr_fun hq (⟨i, hi⟩ : ReflectionFixedPoint r)
+      have hcast : ((q.1 i : ℤ) : ZMod 2) = 0 := by
+        simpa [reflectionTateFixedParity_apply] using hzero
+      exact even_iff_two_dvd.mpr
+        ((ZMod.intCast_zmod_eq_zero_iff_dvd (q.1 i) 2).mp hcast)
+    obtain ⟨g, hg⟩ :=
+      (reflectionTateCocycle_is_boundary_iff_fixed_even r hr q.1 q.2).mpr heven
+    exact ⟨g, Subtype.ext hg.symm⟩
+
+/-- First signed-reflection cohomology: cocycles modulo actual coboundaries. -/
+abbrev ReflectionTateCohomology {ι : Type*} (r : ι ≃ ι)
+    (hr : Function.Involutive r) :=
+  (reflectionTateCocycles r) ⧸ reflectionTateBoundaries r hr
+
+/-- Signed-reflection cohomology is the finitely supported mod-two homology of the fixed locus. -/
+noncomputable def reflectionTateCohomologyEquivFixedParity
+    {ι : Type*} (r : ι ≃ ι) (hr : Function.Involutive r) :
+    ReflectionTateCohomology r hr ≃+ (ReflectionFixedPoint r →₀ ZMod 2) :=
+  (QuotientAddGroup.quotientAddEquivOfEq
+      (reflectionTateBoundaries_eq_fixedParity_ker r hr)).trans
+    (QuotientAddGroup.quotientKerEquivOfSurjective
+      (reflectionTateFixedParity r) (reflectionTateFixedParity_surjective r))
+
+/-- If the reflection has exactly two fixed labels, its anomaly group is `(Z/2)^2`. -/
+noncomputable def reflectionTateCohomologyEquivZModTwoSquared
+    {ι : Type*} (r : ι ≃ ι) (hr : Function.Involutive r)
+    (hfixed : ReflectionFixedPoint r ≃ Fin 2) :
+    ReflectionTateCohomology r hr ≃+ (ZMod 2 × ZMod 2) :=
+  (reflectionTateCohomologyEquivFixedParity r hr).trans <|
+    (Finsupp.domCongr hfixed).trans <|
+      Finsupp.addEquivFunOnFinite.trans (RingEquiv.piFinTwo fun _ => ZMod 2).toAddEquiv
+
+/-- Reflection of the unit real shift circle. -/
+def unitAddCircleReflection : AddCircle (1 : ℝ) ≃ AddCircle (1 : ℝ) where
+  toFun x := -x
+  invFun x := -x
+  left_inv x := neg_neg x
+  right_inv x := neg_neg x
+
+/-- The two standard points of order dividing two on the unit shift circle. -/
+def unitAddCircleTwoTorsion (i : Fin 2) : AddCircle (1 : ℝ) :=
+  (((i : ℕ) : ℝ) / 2 : ℝ)
+
+theorem unitAddCircleTwoTorsion_fixed (i : Fin 2) :
+    unitAddCircleReflection (unitAddCircleTwoTorsion i) = unitAddCircleTwoTorsion i := by
+  fin_cases i
+  · simp [unitAddCircleReflection, unitAddCircleTwoTorsion]
+  · simp only [unitAddCircleReflection, unitAddCircleTwoTorsion, Equiv.coe_fn_mk]
+    norm_num only [Nat.cast_one]
+    change -(((1 : ℝ) / 2 : ℝ) : AddCircle (1 : ℝ)) =
+      (((1 : ℝ) / 2 : ℝ) : AddCircle (1 : ℝ))
+    rw [← AddCircle.coe_neg]
+    have h : -((1 : ℝ) / 2) = (1 : ℝ) / 2 - 1 := by ring
+    rw [h, AddCircle.coe_sub, AddCircle.coe_period, sub_zero]
+
+/-- The unit shift-circle reflection has exactly the integer and half-integer fixed labels. -/
+noncomputable def unitAddCircleReflectionFixedEquivFinTwo :
+    ReflectionFixedPoint unitAddCircleReflection ≃ Fin 2 := by
+  let f : Fin 2 → ReflectionFixedPoint unitAddCircleReflection :=
+    fun i => ⟨unitAddCircleTwoTorsion i, unitAddCircleTwoTorsion_fixed i⟩
+  have hinj : Function.Injective f := by
+    have hhalf : (((1 : ℝ) / 2 : ℝ) : AddCircle (1 : ℝ)) ≠ 0 := by
+      change ¬ ((((1 : ℝ) / 2 : ℝ) : AddCircle (1 : ℝ)) = 0)
+      rw [AddCircle.coe_eq_zero_iff (p := (1 : ℝ))]
+      rintro ⟨n, hn⟩
+      simp only [zsmul_eq_mul, mul_one] at hn
+      have hn' : (2 : ℝ) * (n : ℝ) = 1 := by rw [hn]; ring
+      have hn'' : (2 : ℤ) * n = 1 := by exact_mod_cast hn'
+      omega
+    intro i j hij
+    fin_cases i <;> fin_cases j
+    · rfl
+    · have hval := congrArg Subtype.val hij
+      have h01 : (0 : AddCircle (1 : ℝ)) =
+          (((1 : ℝ) / 2 : ℝ) : AddCircle (1 : ℝ)) := by
+        simpa only [f, unitAddCircleTwoTorsion, Nat.cast_zero, Nat.cast_one, zero_div,
+          QuotientAddGroup.mk_zero] using hval
+      exfalso
+      exact hhalf h01.symm
+    · have hval := congrArg Subtype.val hij
+      have h10 : (((1 : ℝ) / 2 : ℝ) : AddCircle (1 : ℝ)) = 0 := by
+        simpa only [f, unitAddCircleTwoTorsion, Nat.cast_zero, Nat.cast_one, zero_div,
+          QuotientAddGroup.mk_zero] using hval
+      exfalso
+      exact hhalf h10
+    · rfl
+  have hsurj : Function.Surjective f := by
+    intro x
+    have htwo : 2 • x.1 = 0 := by
+      have hfix := x.2
+      change -x.1 = x.1 at hfix
+      rw [two_nsmul]
+      exact neg_eq_iff_add_eq_zero.mp hfix
+    obtain ⟨m, hm, hx⟩ :=
+      (AddCircle.nsmul_eq_zero_iff (p := (1 : ℝ)) (n := 2) (by omega)).mp htwo
+    interval_cases m
+    · refine ⟨0, Subtype.ext ?_⟩
+      simpa [f, unitAddCircleTwoTorsion] using hx
+    · refine ⟨1, Subtype.ext ?_⟩
+      simpa [f, unitAddCircleTwoTorsion] using hx
+  exact (Equiv.ofBijective f ⟨hinj, hsurj⟩).symm
+
+/-- The standard reflected Gamma shift circle has anomaly group exactly `(Z/2)^2`. -/
+noncomputable def unitAddCircleReflectionTateCohomologyEquivZModTwoSquared :
+    ReflectionTateCohomology unitAddCircleReflection (fun x => neg_neg x) ≃+
+      (ZMod 2 × ZMod 2) :=
+  reflectionTateCohomologyEquivZModTwoSquared unitAddCircleReflection
+    (fun x => neg_neg x) unitAddCircleReflectionFixedEquivFinTwo
 
 end
 

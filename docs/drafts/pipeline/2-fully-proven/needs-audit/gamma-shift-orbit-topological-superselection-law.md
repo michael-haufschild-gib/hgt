@@ -245,6 +245,22 @@ multi-orbit normal form and completeness theorem. `ReflectedOrbitCharge.lean` is
 orientation-reversal successor: it quotients positive/negative data by reflected neutral-pair
 creation and proves exact reflection-symmetry doubling.
 
+The direct-sum coefficient quotient is now literal rather than only an equality criterion.
+`OrbitChargeSuperselection.lean` additionally defines:
+
+- `orbitwiseChargeHom`, the component-charge additive homomorphism;
+- `orbitwiseBoundaryHom` and its range subgroup `orbitwiseBoundaries`;
+- `orbitwiseBoundaries_eq_chargeKer`, the exactness identity;
+- `orbitwiseChargeHom_surjective`, with the canonical origin-supported representative;
+- `OrbitChargeQuotient` and the additive equivalence
+  `orbitChargeQuotientEquiv : OrbitChargeQuotient ι A ≃+ (ι →₀ A)`.
+
+The cached module was checked directly with
+`lake env lean GaloisForLFunctions/HTGeometry/OrbitChargeSuperselection.lean`. No build was needed.
+The remaining Stage-3 gap is specifically the analytic identification of the DA subgroup inside
+the group of meromorphic Gamma products with this coefficient boundary subgroup; it is not the
+abstract quotient algebra.
+
 ## Gates
 
 - [x] complete finite-orbit exact sequence proved

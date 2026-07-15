@@ -216,8 +216,8 @@ object together with the Tannakian tensor relations of its adjoint local system.
 - [x] parent-theory and anti-theatre audit
 - [ ] independent specialist novelty audit
 - [ ] concrete noncommuting analytic application
-- [ ] Lean exact dependence/coboundary equivalence
-- [ ] Lean matroid representation
+- [x] Lean exact dependence/coboundary equivalence for one multiplicative observable
+- [ ] Lean mixed-family matroid representation
 
 ## References checked
 

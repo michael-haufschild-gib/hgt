@@ -128,12 +128,6 @@ theorem kaehlerClockPreviousFiltration_eq_ker_topCoordinate
         omega
     exact hai
 
-/-- The literal `N`-th associated-graded quotient of consecutive free clock cuts.  The previous
-filtration is its denominator by `kaehlerClockPreviousFiltration_eq_ker_topCoordinate`. -/
-def kaehlerClockLayer (K : Type*) [Ring K] (N : ℕ) : Type _ :=
-  (↥(kaehlerClockFiltration K (N + 1))) ⧸
-    LinearMap.ker (kaehlerClockTopCoordinate K N)
-
 theorem kaehlerClockTopCoordinate_surjective
     (K : Type*) [Ring K] (N : ℕ) :
     Function.Surjective (kaehlerClockTopCoordinate K N) := by
@@ -145,30 +139,6 @@ theorem kaehlerClockTopCoordinate_surjective
     have hne : N ≠ i := by omega
     simp [hne]
   · simp [kaehlerClockTopCoordinate]
-
-/-- Every literal associated-graded clock quotient is canonically one-dimensional. -/
-noncomputable def kaehlerClockLayerCoordinateEquiv
-    (K : Type*) [Ring K] (N : ℕ) :
-    kaehlerClockLayer K N ≃ₗ[K] K :=
-  (kaehlerClockTopCoordinate K N).quotKerEquivOfSurjective
-    (kaehlerClockTopCoordinate_surjective K N)
-
-/-- The quotient-level principal symbol: use the canonical scalar coordinate on one layer and
-the inverse coordinate on the next. -/
-noncomputable def kaehlerClockLayerPrincipalSymbolEquiv
-    (K : Type*) [Ring K] (N : ℕ) :
-    kaehlerClockLayer K N ≃ₗ[K] kaehlerClockLayer K (N + 1) :=
-  (kaehlerClockLayerCoordinateEquiv K N).trans
-    (kaehlerClockLayerCoordinateEquiv K (N + 1)).symm
-
-/-- Equation `(7)` on the literal quotients: the principal symbol is the identity on the
-canonical scalar coordinate. -/
-theorem kaehlerClockLayerPrincipalSymbol_coordinate
-    (K : Type*) [Ring K] (N : ℕ) (a : kaehlerClockLayer K N) :
-    kaehlerClockLayerCoordinateEquiv K (N + 1)
-        (kaehlerClockLayerPrincipalSymbolEquiv K N a) =
-      kaehlerClockLayerCoordinateEquiv K N a := by
-  simp [kaehlerClockLayerPrincipalSymbolEquiv]
 
 /-- The `N`-th homogeneous Kähler clock line `K e_N`. -/
 def kaehlerClockGradedLine (K : Type*) [Ring K] (N : ℕ) :
