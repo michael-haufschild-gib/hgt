@@ -1,0 +1,138 @@
+import GaloisForLFunctions.HTGeometry.DifferentialIndependence
+
+/-!
+# The stable core of a differential endomorphism
+
+For an injective self-map `φ` of a field, the intersection of all forward image fields is not
+merely forward invariant: `φ` restricts to an automorphism of that intersection.  If `φ` commutes
+with a derivation, the intersection is derivation-closed as well.
+
+This is the unconditional formal core of the scalar projective-core theorem.  The further
+classification of a nonconstant core as `C⟨u⟩` with a `PGL₂(C)` action uses the classical
+Ritt--Kolchin differential Lüroth theorem and differential-order rigidity, neither of which is
+currently present in the Lean dependency tree; they are not postulated here.
+-/
+
+open scoped Differential
+
+namespace GaloisForLFunctions.HTGeometry
+
+open GaloisForLFunctions
+
+noncomputable section
+
+/-- The stable range core of `φ`: the field elements lying in the range of every iterate. -/
+def stableRangeCore {K F : Type*} [Field K] [Field F] [Algebra K F]
+    (φ : F →ₐ[K] F) : IntermediateField K F :=
+  ⨅ n : ℕ, IntermediateField.map (φ ^ n) ⊤
+
+/-- Membership in the stable core is the existence of a preimage at every finite depth. -/
+theorem mem_stableRangeCore_iff
+    {K F : Type*} [Field K] [Field F] [Algebra K F]
+    (φ : F →ₐ[K] F) (x : F) :
+    x ∈ stableRangeCore φ ↔ ∀ n : ℕ, ∃ y : F, (φ ^ n) y = x := by
+  rw [show stableRangeCore φ = ⨅ n : ℕ, IntermediateField.map (φ ^ n) ⊤ from rfl]
+  rw [← SetLike.mem_coe, IntermediateField.coe_iInf, Set.mem_iInter]
+  constructor
+  · intro h n
+    have hn := h n
+    change x ∈ IntermediateField.map (φ ^ n) ⊤ at hn
+    rw [IntermediateField.mem_map] at hn
+    obtain ⟨y, _, hy⟩ := hn
+    exact ⟨y, hy⟩
+  · intro h n
+    change x ∈ IntermediateField.map (φ ^ n) ⊤
+    rw [IntermediateField.mem_map]
+    obtain ⟨y, hy⟩ := h n
+    exact ⟨y, trivial, hy⟩
+
+/-- Applying the endomorphism to a stable-core element stays in the stable core. -/
+theorem stableRangeCore_map_mem
+    {K F : Type*} [Field K] [Field F] [Algebra K F]
+    (φ : F →ₐ[K] F) {x : F} (hx : x ∈ stableRangeCore φ) :
+    φ x ∈ stableRangeCore φ := by
+  rw [mem_stableRangeCore_iff] at hx ⊢
+  intro n
+  cases n with
+  | zero => exact ⟨φ x, by simp⟩
+  | succ n =>
+      obtain ⟨y, hy⟩ := hx n
+      exact ⟨y, by
+        simpa [AlgHom.coe_pow, Function.iterate_succ_apply'] using
+          congrArg (fun z ↦ φ z) hy⟩
+
+/-- Every stable-core element has a preimage which is itself in the stable core. -/
+theorem stableRangeCore_exists_preimage
+    {K F : Type*} [Field K] [Field F] [Algebra K F]
+    (φ : F →ₐ[K] F) {x : F} (hx : x ∈ stableRangeCore φ) :
+    ∃ y : F, y ∈ stableRangeCore φ ∧ φ y = x := by
+  rw [mem_stableRangeCore_iff] at hx
+  obtain ⟨y, hy⟩ := hx 1
+  have hφy : φ y = x := by simpa using hy
+  refine ⟨y, ?_, hφy⟩
+  rw [mem_stableRangeCore_iff]
+  intro n
+  obtain ⟨z, hz⟩ := hx (n + 1)
+  refine ⟨z, ?_⟩
+  apply φ.injective
+  have hz' := hz.trans hφy.symm
+  simpa [AlgHom.coe_pow, Function.iterate_succ_apply'] using hz'
+
+/-- The endomorphism restricted to its stable core. -/
+def stableRangeCoreAlgHom
+    {K F : Type*} [Field K] [Field F] [Algebra K F]
+    (φ : F →ₐ[K] F) : stableRangeCore φ →ₐ[K] stableRangeCore φ :=
+  (φ.comp (stableRangeCore φ).val).codRestrict (stableRangeCore φ).toSubalgebra
+    (fun x ↦ stableRangeCore_map_mem φ x.2)
+
+/-- Restriction to the stable core is bijective. -/
+theorem stableRangeCoreAlgHom_bijective
+    {K F : Type*} [Field K] [Field F] [Algebra K F]
+    (φ : F →ₐ[K] F) : Function.Bijective (stableRangeCoreAlgHom φ) := by
+  constructor
+  · intro x y h
+    apply Subtype.ext
+    apply φ.injective
+    exact congrArg (fun z : stableRangeCore φ ↦ (z : F)) h
+  · intro x
+    obtain ⟨y, hycore, hφ⟩ := stableRangeCore_exists_preimage φ x.2
+    refine ⟨⟨y, hycore⟩, ?_⟩
+    apply Subtype.ext
+    change φ y = x
+    exact hφ
+
+/-- **Stable-core automorphism theorem.**  Every injective field endomorphism becomes an
+automorphism on the intersection of all its forward image fields. -/
+def stableRangeCoreAlgEquiv
+    {K F : Type*} [Field K] [Field F] [Algebra K F]
+    (φ : F →ₐ[K] F) : stableRangeCore φ ≃ₐ[K] stableRangeCore φ :=
+  AlgEquiv.ofBijective (stableRangeCoreAlgHom φ) (stableRangeCoreAlgHom_bijective φ)
+
+/-- If `φ` commutes with the derivation, so does every iterate. -/
+theorem algHom_pow_deriv
+    {K F : Type*} [Field K] [Field F] [Algebra K F] [Differential F]
+    (φ : F →ₐ[K] F) (hφ : ∀ x : F, φ x′ = (φ x)′)
+    (n : ℕ) (x : F) : (φ ^ n) x′ = ((φ ^ n) x)′ := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      simp only [AlgHom.coe_pow, Function.iterate_succ_apply']
+      have ih' : (⇑φ)^[n] x′ = ((⇑φ)^[n] x)′ := by
+        simpa only [AlgHom.coe_pow] using ih
+      rw [ih', hφ]
+
+/-- A stable core of a differential endomorphism is closed under the ambient derivation. -/
+theorem derivationClosed_stableRangeCore
+    {K F : Type*} [Field K] [Field F] [Algebra K F] [Differential F]
+    (φ : F →ₐ[K] F) (hφ : ∀ x : F, φ x′ = (φ x)′) :
+    DerivationClosed (stableRangeCore φ) := by
+  intro x hx
+  rw [mem_stableRangeCore_iff] at hx ⊢
+  intro n
+  obtain ⟨y, hy⟩ := hx n
+  refine ⟨y′, ?_⟩
+  rw [algHom_pow_deriv φ hφ n y, hy]
+
+end
+
+end GaloisForLFunctions.HTGeometry

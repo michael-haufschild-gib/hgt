@@ -61,7 +61,11 @@ Define the transseries scale levels:
 
 **What they do NOT defeat:** the z^{-z^k} transmonomial itself — at that level, 1/Γ(z^k) IS visible as a nonzero transmonomial. So the rung-k theorem is exact: defeat up to level k+1, visible at level k+2.
 
-**The universal defeat (open):** a single HT/DA pair invisible at ALL finite levels (including every z^{-z^k}) would require 1/Γ(Γ(z)) or similar — which requires the transcendental-composition-HT theorem (see card: transcendental-composition-ht). That is open.
+**The universal defeat (observability proof open):** the hypertranscendence hinge is now closed:
+`Γ∘Γ`, and therefore its reciprocal on regular germs, is HT by the formalized factorial-microscope
+theorem.  This does **not** yet prove invisibility at all finite levels.  One must define the common
+domain and observation category and prove the reciprocal flat at every admitted gauge; `Γ∘Γ` is not
+plane-meromorphic, so a slogan based on iterated Stirling is insufficient.
 
 ## Novelty assessment
 
@@ -75,8 +79,12 @@ Define the transseries scale levels:
 
 ## Open extensions
 
-1. **Universal defeat (the prize):** does there exist a single HT/DA pair invisible at ALL transseries levels? Requires transcendental-composition-HT (see that card).
-2. **Other witness families:** Replace 1/Γ(z^k) with 1/Γ(exp(exp(...exp(z)...))) (k iterated exponentials) — these defeat even higher transseries levels. But HT of such compositions requires the open transcendental-composition theorem.
+1. **Universal defeat (the prize):** does there exist a single HT/DA pair invisible at every finite
+   level of one precisely defined transseries observation category?  The proposed `1/Γ(Γ(z))`
+   witness is now known to be HT; its domain-sensitive flatness at all those levels is the open part.
+2. **Other witness families:** `1/Γ(exp_L(z))` is HT by the classical composition theorem because
+   `exp_L` is DA.  These witnesses extend any prescribed finite ladder but do not supply one witness
+   that defeats the whole ladder simultaneously.
 3. **Tighter witnesses:** Is the z^{-z^k} transmonomial boundary TIGHT? I.e., does every HT function have a nonzero transmonomial at some level? This would say "HT objects are visible in the full Écalle transseries" — a clean structural theorem.
 
 ## Gates
@@ -143,7 +151,10 @@ For every L ≥ 0 and any finite logarithmic-resolution gauge list {eps_l} with 
 
 **Grade:** BRIDGE (Ritt/Kolchin + Haiku gauge fix + new ladder packaging). No deep new mathematics; value is structural precision.
 
-**The open cap:** a single HT/DA pair invisible at ALL finite levels simultaneously (defeating L = ∞) requires composing with an HT inner (Γ∘Γ type) — the HT-inner composition problem, which is OPEN.
+**The open cap:** the factorial-microscope theorem now proves the proposed HT-inner composition
+`Γ∘Γ` is HT.  The remaining cap is analytic, not differential-algebraic: prove on a specified common
+domain that `1/Γ(Γ(z))` is invisible at every finite level of a precise observation category.  No
+such universal asymptotic statement is claimed here.
 
 
 ## 2026-06-24 Wheeler id=1861 — recession theorem + Theorem D gives ψ∘exp_L HT family

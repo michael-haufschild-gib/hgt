@@ -50,6 +50,7 @@ Proved here:
 import Mathlib.Analysis.InnerProductSpace.l2Space
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Topology.Algebra.InfiniteSum.ENNReal
+import Mathlib.Topology.Bases
 
 open scoped BigOperators ComplexConjugate InnerProductSpace
 
@@ -84,6 +85,28 @@ theorem summable_norm_inner_sq (b : HilbertBasis ι 𝕜 E) (x : E) :
   refine hs.congr (fun i => ?_)
   have hcs : (inner 𝕜 x (b i)) = conj (inner 𝕜 (b i) x) := by rw [← inner_conj_symm]
   rw [hcs, RCLike.conj_mul]; push_cast; ring
+
+/-- An orthonormal family in a separable Hilbert space has a countable index type.  This is the
+topological input needed to commute a basis sum with an integral: radius-`1/2` balls about distinct
+orthonormal vectors are nonempty, open, and disjoint. -/
+theorem _root_.Orthonormal.countable_index [SeparableSpace E] {v : ι → E}
+    (hv : Orthonormal 𝕜 v) : Countable ι := by
+  let s : ι → Set E := fun i => Metric.ball (v i) (1 / 2)
+  apply Pairwise.countable_of_isOpen_disjoint (s := s)
+  · rintro i j hij
+    apply Metric.ball_disjoint_ball
+    have hsq : ‖v i - v j‖ ^ 2 = 2 := by
+      rw [@norm_sub_sq 𝕜, hv.norm_eq_one i, hv.norm_eq_one j,
+        hv.inner_eq_zero hij]
+      simp
+    have hdist : 1 ≤ dist (v i) (v j) := by
+      rw [dist_eq_norm]
+      nlinarith [norm_nonneg (v i - v j)]
+    convert hdist using 1 <;> norm_num [s]
+  · intro i
+    exact Metric.isOpen_ball
+  · intro i
+    exact ⟨v i, Metric.mem_ball_self (by norm_num)⟩
 
 end HilbertBasis
 

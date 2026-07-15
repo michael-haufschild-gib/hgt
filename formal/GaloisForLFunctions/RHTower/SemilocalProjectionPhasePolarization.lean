@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.SemilocalProjectionConstraintOrientation
+import GaloisForLFunctions.HTGeometry.BRSTHodgeConstraint
 
 /-!
 # Phase-polarized projection curvature
@@ -12,6 +13,11 @@ is self-adjoint whenever `P` and `D` are self-adjoint, is automatically tangent 
 idempotent constraint, and rotates its normal corner by exactly `i`.  Substituting this rotated
 direction into the existing symmetric mixed-curvature theorem recovers the antisymmetric normal
 Gram, hence the connection curvature, exactly.
+
+The same quarter-turn is the second Hermitian supercharge of the nilpotent normal corner
+`Q = (1-P)DP`.  For a self-adjoint tangent `D`, the first supercharge `Q+Q†` is exactly `D`, so
+the quarter-turn has the same square as `D` and anticommutes with it.  This adds an exact energy
+law to the orientation construction without introducing a flow.
 
 The compactness endpoint only asks that the base-compressed mixed derivative `P D_st P` be
 compact.  It does not require the full mixed derivative, or the whole projection family relative
@@ -169,6 +175,116 @@ theorem projectionPhaseRotation_tangent
   rw [smul_mul_assoc, mul_smul_comm]
   simp only [sub_mul, mul_sub, hXP, hYP, hPX, hPY, zero_sub, sub_zero]
   module
+
+/-! ## Supersymmetric energy of the phase rotation -/
+
+omit [CompleteSpace H] in
+/-- A projection normal corner is automatically a nilpotent BRST charge. -/
+theorem projectionNormalCorner_sq_eq_zero
+    (P D : H →L[ℂ] H) (hP2 : P * P = P) :
+    projectionNormalCorner P D * projectionNormalCorner P D = 0 := by
+  simpa only [projectionNormalCorner] using
+    HTGeometry.offDiagonalProjectionCorner_sq_eq_zero P D hP2
+
+/-- For self-adjoint projection data, the canonical phase rotation is exactly the second
+Hermitian supercharge of the normal corner. -/
+theorem projectionPhaseRotation_eq_brstHodgeCoDiracOperator
+    (P D : H →L[ℂ] H)
+    (hPadj : adjoint P = P) (hDadj : adjoint D = D) :
+    projectionPhaseRotation P D =
+      HTGeometry.brstHodgeCoDiracOperator (projectionNormalCorner P D) := by
+  unfold projectionPhaseRotation HTGeometry.brstHodgeCoDiracOperator
+  rw [adjoint_projectionNormalCorner P D hPadj hDadj]
+  simp only [projectionNormalCorner, mul_assoc]
+
+/-- The square of the phase-polarized tangent is the BRST--Hodge Hamiltonian of its normal
+corner.  Idempotence supplies nilpotence; no separate BRST premise is required. -/
+theorem projectionPhaseRotation_sq_eq_brstHodgeHamiltonian
+    (P D : H →L[ℂ] H)
+    (hP2 : P * P = P)
+    (hPadj : adjoint P = P) (hDadj : adjoint D = D) :
+    projectionPhaseRotation P D * projectionPhaseRotation P D =
+      HTGeometry.brstHodgeHamiltonian (projectionNormalCorner P D) := by
+  rw [projectionPhaseRotation_eq_brstHodgeCoDiracOperator P D hPadj hDadj]
+  exact HTGeometry.brstHodgeCoDiracOperator_sq_eq_hamiltonian
+    (projectionNormalCorner P D) (projectionNormalCorner_sq_eq_zero P D hP2)
+
+/-- A self-adjoint tangent is the first Hermitian supercharge of its normal corner. -/
+theorem brstHodgeDiracOperator_projectionNormalCorner_eq_tangent
+    (P D : H →L[ℂ] H)
+    (hP2 : P * P = P)
+    (hPadj : adjoint P = P) (hDadj : adjoint D = D)
+    (hDtan : D * P + P * D = D) :
+    HTGeometry.brstHodgeDiracOperator (projectionNormalCorner P D) = D := by
+  have hdiag : P * D * P = 0 :=
+    idempotentTangent_compressed_eq_zero P D hP2 hDtan
+  rw [HTGeometry.brstHodgeDiracOperator,
+    adjoint_projectionNormalCorner P D hPadj hDadj]
+  unfold projectionNormalCorner
+  calc
+    (1 - P) * D * P + P * (D * (1 - P)) =
+        (D * P - P * D * P) + (P * D - P * D * P) := by
+      noncomm_ring
+    _ = D * P + P * D := by rw [hdiag]; simp
+    _ = D := hDtan
+
+/-- **Exact phase-energy preservation.**  For a self-adjoint tangent to the idempotent locus,
+the canonical quarter-turn has exactly the same square. -/
+theorem projectionPhaseRotation_sq_eq_tangent_sq
+    (P D : H →L[ℂ] H)
+    (hP2 : P * P = P)
+    (hPadj : adjoint P = P) (hDadj : adjoint D = D)
+    (hDtan : D * P + P * D = D) :
+    projectionPhaseRotation P D * projectionPhaseRotation P D = D * D := by
+  let Q : H →L[ℂ] H := projectionNormalCorner P D
+  have hQ : Q * Q = 0 := projectionNormalCorner_sq_eq_zero P D hP2
+  calc
+    projectionPhaseRotation P D * projectionPhaseRotation P D =
+        HTGeometry.brstHodgeHamiltonian Q := by
+      exact projectionPhaseRotation_sq_eq_brstHodgeHamiltonian P D hP2 hPadj hDadj
+    _ = HTGeometry.brstHodgeDiracOperator Q *
+        HTGeometry.brstHodgeDiracOperator Q :=
+      (HTGeometry.brstHodgeDiracOperator_sq_eq_hamiltonian Q hQ).symm
+    _ = D * D := by
+      rw [brstHodgeDiracOperator_projectionNormalCorner_eq_tangent
+        P D hP2 hPadj hDadj hDtan]
+
+/-- Statewise form of exact phase-energy preservation. -/
+theorem norm_projectionPhaseRotation_apply_sq_eq_norm_tangent_apply_sq
+    (P D : H →L[ℂ] H)
+    (hP2 : P * P = P)
+    (hPadj : adjoint P = P) (hDadj : adjoint D = D)
+    (hDtan : D * P + P * D = D) (psi : H) :
+    ‖projectionPhaseRotation P D psi‖ ^ 2 = ‖D psi‖ ^ 2 := by
+  let Q : H →L[ℂ] H := projectionNormalCorner P D
+  have hQ : Q * Q = 0 := projectionNormalCorner_sq_eq_zero P D hP2
+  have hphase :
+      projectionPhaseRotation P D = HTGeometry.brstHodgeCoDiracOperator Q :=
+    projectionPhaseRotation_eq_brstHodgeCoDiracOperator P D hPadj hDadj
+  have hDirac : HTGeometry.brstHodgeDiracOperator Q = D :=
+    brstHodgeDiracOperator_projectionNormalCorner_eq_tangent
+      P D hP2 hPadj hDadj hDtan
+  simpa only [← hphase, hDirac] using
+    HTGeometry.norm_brstHodgeCoDiracOperator_apply_sq_eq_norm_diracOperator_apply_sq
+      Q hQ psi
+
+/-- The tangent and its canonical phase rotation anticommute.  Together with their equal-square
+law this is the full bounded `N = 2` supercharge algebra on the projection tangent. -/
+theorem projectionTangent_anticommutes_phaseRotation
+    (P D : H →L[ℂ] H)
+    (hP2 : P * P = P)
+    (hPadj : adjoint P = P) (hDadj : adjoint D = D)
+    (hDtan : D * P + P * D = D) :
+    D * projectionPhaseRotation P D + projectionPhaseRotation P D * D = 0 := by
+  let Q : H →L[ℂ] H := projectionNormalCorner P D
+  have hQ : Q * Q = 0 := projectionNormalCorner_sq_eq_zero P D hP2
+  have hDirac : HTGeometry.brstHodgeDiracOperator Q = D :=
+    brstHodgeDiracOperator_projectionNormalCorner_eq_tangent
+      P D hP2 hPadj hDadj hDtan
+  have hCoDirac : HTGeometry.brstHodgeCoDiracOperator Q = projectionPhaseRotation P D :=
+    (projectionPhaseRotation_eq_brstHodgeCoDiracOperator P D hPadj hDadj).symm
+  rw [← hDirac, ← hCoDirac]
+  exact HTGeometry.brstHodgeDiracOperator_anticommutes_coDiracOperator Q hQ
 
 /-- The base-compressed mixed derivative in a phase-rotated projection family is exactly minus
 `i` times the antisymmetric normal Gram of the unrotated directions. -/

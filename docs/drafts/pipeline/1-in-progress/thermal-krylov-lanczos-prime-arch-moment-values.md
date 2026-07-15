@@ -75,6 +75,18 @@ The strict version replaces the current opaque finite linear-independence premis
 condition that every Lanczos coefficient is nonzero.  Formula `(4)` records the determinant values,
 not merely their signs.
 
+The finite-size statement is now formalized rather than left as prose.  If the state space has
+cardinality `d`, the transition space has dimension `d²`, so
+
+```text
+det(nu_(i+j))_(0<=i,j<N) = 0 whenever d² < N.            (7)
+```
+
+Applying `(7)` back to the existing source consumer proves that no one fixed finite thermal or
+finite KMS/Wightman system can satisfy `(6)` in every degree.  The exact finite-model capstones are
+therefore logically valid but have an impossible premise; the growing finite-section limit is the
+only live thermal interface in this corpus.
+
 ## Formalized corpus applications
 
 - `HTGeometry.ThermalKrylovMoments` proves the odd-moment cancellation, the exact squared-gap
@@ -84,11 +96,16 @@ not merely their signs.
   `w_ab² = p_a p_b`, and consequently removes the free weight-positivity and symmetry assumptions.
 - `HTGeometry.ThermalKrylovDeterminant` constructs the finite Krylov vectors, proves their exact
   Gram values, proves the determinant/residual product, proves residual nontermination equivalent
-  to finite linear independence, and proves the corrected normalized Lanczos exponent law `(5)`.
+  to finite linear independence, proves the corrected normalized Lanczos exponent law `(5)`, and
+  proves the finite-rank determinant termination law `(7)`.
 - `RHTower.PrimeArchThermalKrylovRH` applies the result to the general trace-Hankel sequence cone,
   to pointwise limits of growing finite thermal systems, to the prime--archimedean source
   hypothesis, and to the existing RH consumer.  Its canonical KMS specialization now leaves only
-  exact source-moment equality or thermodynamic convergence.
+  thermodynamic convergence as a live route: `not_primeArchExactFiniteThermalEvenGapMoments` and
+  `not_primeArchExactFiniteKMSWightmanMoments` formally rule out equality with one fixed finite
+  system in every degree.  The packaged witness forms are also closed by
+  `not_finiteThermalKrylovMomentSequence_normalizedPrimeArchMoment` and
+  `not_finiteKMSWightmanMomentSequence_normalizedPrimeArchMoment`.
 - `RHTower.PrimeArchThermalKrylovEquivalence` constructs the multiplicity-exact reciprocal-square
   Xi thermal truncations, proves their KMS realizability and convergence to their complete
   positive thermodynamic moment tower unconditionally, and reduces identification of that tower
@@ -121,5 +138,13 @@ not merely their signs.
 - [x] exact Krylov residual determinant factorization formalized in Lean
 - [x] source-Hankel and RH consumers connected in Lean
 - [x] canonical KMS/Wightman positivity and symmetry hypotheses discharged in Lean
+- [x] fixed finite-system exact realization ruled out by source-level Lean declarations
 - [ ] source-defined thermal spectral comparison constructed
 - [ ] RH
+
+## Current verification status
+
+The finite-rank termination theorem and its two RHTower no-go consumers were added source-first on
+2026-07-15.  They have not been checked by Lean: no Lean command, build, linter, numerical script,
+or other computation was run under the active research constraint.  A later authorized check
+should target only `ThermalKrylovDeterminant.lean` and `PrimeArchThermalKrylovRH.lean`.

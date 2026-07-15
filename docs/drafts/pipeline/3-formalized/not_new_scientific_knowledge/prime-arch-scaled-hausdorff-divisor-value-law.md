@@ -117,3 +117,20 @@ The named module builds successfully. `#print axioms` for the principal value id
 - [x] 2 -> 3 formalized: named Lean build and axiom audit pass
 - [ ] 3 -> 4 publication-ready: not required for the active RH proof
 - [ ] RH: prove the remaining global positivity outside the finite rectangle
+
+## 2026-07-15 disk-Schur consumer
+
+The paper theorem
+`../../2-fully-proven/not_new_scientific_knowledge/xi-radial-jensen-schur-capacity-rigidity.md`
+uses `xiCentralPolynomialMoment_eq_sourceMomentFunctional` as its zero-data elimination step.  It
+takes the supremum of these exact values over real polynomials contractive on the fixed unit disk.
+The source radius and one-eighty-fourth orientation sector then give the stronger exact law
+
+```text
+diskSchurCapacity = primeArchCentralCurvature.
+```
+
+The proof is a direct Schwarz--Pick estimate and works for complex coefficients.  Its deficit from
+the centered radial Jensen mass is exactly half the global reflection energy.  Thus the polynomial
+value relation feeds a closed analytic norm; the remaining orientation is carried by the
+adjoint/absolute-value/polar channel rather than by a stronger holomorphic extremizer.

@@ -6,8 +6,9 @@
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** normalized Mellin dilation covariance; Burnol's continuous Sonine evaluators and
   zero-evaluator completeness theorem; the Duffin--Weinberger--Burnol co-Poisson formula.
-- **Statement:** Normalized dilation transports Sonine evaluation jets exactly between apertures.
-  On the dual zeta-zero system it acts by the expected prime character modulo an explicit
+- **Statement:** Normalized dilation transports the **projection** of Sonine evaluation jets
+  exactly between apertures.  On the dual zeta-zero system it acts by the expected prime character
+  modulo an explicit
   co-Poisson divided-difference source supported in one finite logarithmic interval.  The canonical
   prime seam is exactly the functional-equation--Schwarz reflection split of that quotient
   character.
@@ -42,12 +43,14 @@ Then:
 2. The evaluation jets obey the exact cross-aperture adjoint law
 
    ```text
-   D_r^* Z^(a/r)_(w,k)
+   P_a D_r^* Z^(a/r)_(w,k)
     =conj(r^(w-1/2))
       sum_(j=0)^k binom(k,j)(log r)^(k-j)Z^a_(w,j),     (2)
    ```
 
-   up to the standard removal of conjugations in Burnol's analytic bilinear convention.
+   up to the standard removal of conjugations in Burnol's analytic bilinear convention.  The
+   projection `P_a` is essential: `D_r` maps `K_a` into the larger space `K_(a/r)`, so Riesz
+   duality identifies only the component of `D_r^*Z^(a/r)` lying in `K_a`.
 
 3. Put `lambda_p(s)=p^(s-1/2)`.  For a nontrivial zeta zero `rho`, in simple-zero notation let
 
@@ -101,7 +104,15 @@ For `(1)`, substitute `u=rt` in the right Mellin integral.  Normalization by `sq
 factor `r^(s-1/2)`; the Gamma factor is unchanged.  The support gap of `D_r f` is `a/r`, and Fourier
 covariance gives the same admissible common aperture, proving the carrier inclusion.
 
-Differentiate `(1)` `k` times at `w` and apply the binomial rule.  Riesz duality gives `(2)`.
+Differentiate `(1)` `k` times at `w` and apply the binomial rule.  Riesz duality against every
+vector of `K_a` gives `(2)` after orthogonal projection.  It does not give equality of the full
+ambient vectors.  The omitted component
+
+```text
+(1-P_a)D_r^*Z^(a/r)_(w,k)
+```
+
+is the cross-aperture evaluator defect and need not vanish.
 
 For `(3)`, subtract the value `lambda_p(rho)` before multiplying the dual zero function.  The
 factor `s-rho` cancels.  The elementary identity
@@ -130,9 +141,10 @@ This proves `(7)`.
 
 The quotient in `(6)` is an analytic zero-evaluation quotient, not a Calkin quotient.  Off-line
 zeros legitimately define nonunitary characters there.  A compactly supported seed vector does
-not by itself define a compact operator, and `(2)` is cross-aperture rather than a fixed-aperture
-compressed-multiplier eigenvector law.  Consequently this theorem does not supply positivity,
-unitarity, compact prime-pair curvature, or RH.
+not by itself define a compact operator, and `(2)` is a projected cross-aperture law rather than a
+fixed-aperture compressed-multiplier eigenvector law.  The orthogonal evaluator defect is exactly
+where nonunitary character growth can reside.  Consequently this theorem does not supply
+positivity, unitarity, compact prime-pair curvature, or RH.
 
 The operator problem isolated from it is
 `../../1-in-progress/burnol-copoisson-prime-seam-calkin-lift.md`.
@@ -148,7 +160,7 @@ The operator problem isolated from it is
 ## Gates
 
 - [x] normalized Mellin covariance
-- [x] cross-aperture evaluation-jet transport
+- [x] projected cross-aperture evaluation-jet transport with the orthogonal defect retained
 - [x] explicit finite-log-support divided difference
 - [x] co-Poisson zero-radical quotient action
 - [x] exact prime-seam reflection split

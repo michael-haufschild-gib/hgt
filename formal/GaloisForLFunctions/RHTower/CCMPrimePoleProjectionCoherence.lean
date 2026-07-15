@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.CCMPrimePoleFiniteCoherence
+import GaloisForLFunctions.HTGeometry.ProjectionMeasurementSurvival
 import Mathlib.Analysis.InnerProductSpace.Projection.Basic
 
 /-!
@@ -68,6 +69,24 @@ theorem exists_fin_ccmPrimePole_projection_common_coherence
     simpa only [v, u, norm_sub_rev] using hcoh i
   simpa only [norm_sub_rev] using hsq.trans hcoh'
 
+/-- The same common vector has a quantitative projective-measurement interpretation: at every
+local scale, the Born probability of surviving the pole-subspace measurement is at least one
+minus the existing projection-defect budget. -/
+theorem exists_fin_ccmPrimePole_projection_common_born_survival
+    {d : ℕ} {Lref : ℝ} (href : 0 < Lref)
+    (L : Fin d → ℝ) (hL : ∀ i, 0 < L i)
+    {δ : ℝ} (hδ : 0 < δ) :
+    ∃ v : CCMPrimePoleHilbert, ‖v‖ = 1 ∧
+      v ∈ ccmPrimePoleClosedSubspace Lref href ∧ ∀ i,
+      1 - 2 * (2 * Real.pi * (δ / L i)) ^ 2 ≤
+        Complex.re (inner ℂ v
+          ((ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection v)) := by
+  obtain ⟨v, hv, hvref, hdefect⟩ :=
+    exists_fin_ccmPrimePole_projection_common_coherence href L hL hδ
+  refine ⟨v, hv, hvref, fun i => ?_⟩
+  exact HTGeometry.one_sub_le_bornSurvivalProbability_of_projectionDefectSq_le
+    (S := ccmPrimePoleClosedSubspace (L i) (hL i)) v hv (hdefect i)
+
 /-- Cofinal operator coherence: the common approximate fixed unit vector may
 be chosen with reference pole index beyond any prescribed bound. -/
 theorem exists_fin_ccmPrimePole_projection_cofinal_common_coherence
@@ -99,6 +118,27 @@ theorem exists_fin_ccmPrimePole_projection_cofinal_common_coherence
     simpa only [v, u, norm_sub_rev] using hcoh i
   simpa only [v, norm_sub_rev] using hsq.trans hcoh'
 
+/-- Cofinal Born survival: the high-index pole witness may be chosen beyond every prescribed
+bound while retaining the same lossless survival-probability estimate at all finite scales. -/
+theorem exists_fin_ccmPrimePole_projection_cofinal_common_born_survival
+    {d : ℕ} {Lref : ℝ} (href : 0 < Lref)
+    (L : Fin d → ℝ) (hL : ∀ i, 0 < L i)
+    {δ : ℝ} (hδ : 0 < δ) (B : ℕ) :
+    ∃ n : ℕ, B < n ∧
+      ‖ccmNormalizedPrimePoleVector Lref href n‖ = 1 ∧
+      ccmNormalizedPrimePoleVector Lref href n ∈
+        ccmPrimePoleClosedSubspace Lref href ∧ ∀ i,
+      1 - 2 * (2 * Real.pi * (δ / L i)) ^ 2 ≤
+        Complex.re (inner ℂ (ccmNormalizedPrimePoleVector Lref href n)
+          ((ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection
+            (ccmNormalizedPrimePoleVector Lref href n))) := by
+  obtain ⟨n, hn, hv, hvref, hdefect⟩ :=
+    exists_fin_ccmPrimePole_projection_cofinal_common_coherence href L hL hδ B
+  refine ⟨n, hn, hv, hvref, fun i => ?_⟩
+  exact HTGeometry.one_sub_le_bornSurvivalProbability_of_projectionDefectSq_le
+    (S := ccmPrimePoleClosedSubspace (L i) (hL i))
+    (ccmNormalizedPrimePoleVector Lref href n) hv (hdefect i)
+
 /-- Prime specialization: every finite family of CCM prime-local pole
 projections has a common unit vector with arbitrarily small explicitly bounded
 projection defects. -/
@@ -113,6 +153,23 @@ theorem exists_fin_prime_ccmPrimePole_projection_common_coherence
           (Real.log_pos (by exact_mod_cast (hp i).one_lt))).starProjection v - v‖ ^ 2 ≤
         2 * (2 * Real.pi * (δ / Real.log (p i))) ^ 2 := by
   exact exists_fin_ccmPrimePole_projection_common_coherence
+    (Real.log_pos (by exact_mod_cast hpref.one_lt))
+    (fun i => Real.log (p i))
+    (fun i => Real.log_pos (by exact_mod_cast (hp i).one_lt)) hδ
+
+/-- Prime specialization of the common Born-survival estimate. -/
+theorem exists_fin_prime_ccmPrimePole_projection_common_born_survival
+    {d pref : ℕ} (hpref : pref.Prime)
+    (p : Fin d → ℕ) (hp : ∀ i, (p i).Prime)
+    {δ : ℝ} (hδ : 0 < δ) :
+    ∃ v : CCMPrimePoleHilbert, ‖v‖ = 1 ∧
+      v ∈ ccmPrimePoleClosedSubspace (Real.log pref)
+        (Real.log_pos (by exact_mod_cast hpref.one_lt)) ∧ ∀ i,
+      1 - 2 * (2 * Real.pi * (δ / Real.log (p i))) ^ 2 ≤
+        Complex.re (inner ℂ v
+          ((ccmPrimePoleClosedSubspace (Real.log (p i))
+            (Real.log_pos (by exact_mod_cast (hp i).one_lt))).starProjection v)) := by
+  exact exists_fin_ccmPrimePole_projection_common_born_survival
     (Real.log_pos (by exact_mod_cast hpref.one_lt))
     (fun i => Real.log (p i))
     (fun i => Real.log_pos (by exact_mod_cast (hp i).one_lt)) hδ

@@ -174,6 +174,29 @@ theorem momentHankelMatrix_map_eq_thermalKrylovGram {α : Type*} [Fintype α]
       (thermalKrylovVector intensity energy (j : ℕ))
   exact (inner_thermalKrylovVector intensity energy hintensity _ _).symm
 
+/-- **Finite thermal Krylov rank bound.**  A transition space on `α × α` has complex dimension
+`card α ^ 2`.  Therefore every larger squared-gap Krylov packet is linearly dependent and its
+moment Gram determinant vanishes.  This is the exact finite-size termination law behind the
+finite Krylov/Lanczos chain. -/
+theorem det_thermalEvenGapMoment_eq_zero_of_card_sq_lt
+    {α : Type*} [Fintype α]
+    (intensity : α → α → ℝ) (energy : α → ℝ)
+    (hintensity : ∀ a b, 0 ≤ intensity a b) (n : ℕ)
+    (hn : Fintype.card α * Fintype.card α < n) :
+    (momentHankelMatrix (thermalEvenGapMoment intensity energy) n).det = 0 := by
+  apply Complex.ofReal_injective
+  change (algebraMap ℝ ℂ)
+    (momentHankelMatrix (thermalEvenGapMoment intensity energy) n).det = 0
+  rw [RingHom.map_det, momentHankelMatrix_map_eq_thermalKrylovGram
+    intensity energy hintensity]
+  by_contra hdet
+  have hli : LinearIndependent ℂ
+      (fun i : Fin n => thermalKrylovVector intensity energy (i : ℕ)) :=
+    (Matrix.det_gram_ne_zero_iff_linearIndependent).mp hdet
+  have hcard : n ≤ Fintype.card α * Fintype.card α := by
+    simpa [Fintype.card_prod] using hli.fintype_card_le_finrank
+  exact (not_le_of_gt hn) hcard
+
 /-- Complex-cast form of the exact finite Krylov residual determinant product. -/
 theorem det_thermalEvenGapMoment_eq_prod_krylovResidualNormSq_complex
     {α : Type*} [Fintype α]

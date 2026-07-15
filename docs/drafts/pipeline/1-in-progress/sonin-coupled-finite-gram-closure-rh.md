@@ -357,6 +357,30 @@ re-expression of the orientation conclusion.
 - 2026-07-13 — replaced exact per-test value closure by the one-sided variational upper comparison;
   the exact Lean module build passed.
 
+### Shifted-sector restriction of the open comparison
+
+`[PROVED ON PAPER]` The card
+`prime-arch-shifted-sector-circle-valuation-cone.md` removes an explicit family of tests from the
+one-sided comparison.  Write every nonzero integer polynomial canonically as `P=X^v q`, with
+`q(0)=b_0!=0`.  The endpoint radius and one-eighty-fourth reciprocal-square sector prove directly
+that
+
+```text
+v <= 5 and
+224*sum_(n>=1)b_n^2 <= (1960-13*(2v+1)^2)*b_0^2
+  -> Q(P)>=0.
+```
+
+Let `R_sector` be the complementary integer-polynomial family.  It is enough to prove the
+variational upper comparison only for `P in R_sector`: nonnegativity of the Sonin value excludes a
+negative `Q(P)` there, while the displayed source theorem handles every omitted test.  Thus the
+live target is strictly smaller than `SoninCoupledPrimeArchPerTestVariationalUpperBound` and retains
+the same non-sign source interface.
+
+`[OPEN CORE]` Prove the aperture Rayleigh upper bound only on `R_sector`.  High-valuation tests and
+low-valuation polynomials whose post-valuation coefficient tail dominates their leading
+coefficient remain.  No comparison theorem is required inside the discharged sector cones.
+
 ### Quotient-free Rayleigh form
 
 `[PROVED IN LEAN]` The variational comparison is equivalent to the cross-multiplied inequality

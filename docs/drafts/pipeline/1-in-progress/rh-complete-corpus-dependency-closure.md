@@ -413,12 +413,18 @@ identifications are no longer missing interfaces.
 | Integral Arakelov × relative Hurwitz algebraicity | an integral Arakelov coordinate generates an algebraic field `Q(w(rho))`; a mixed source polynomial or finite module may make `q(rho)` algebraic over that field without separately presenting an absolute polynomial for `q` | construct integral Arakelov coordinates and a source-defined nonzero relation `P_rho(q(rho))=0` over `Q(w(rho))`, uniformly before divisor selection | algebraicity descends through `Q(w(rho))/Q`, after which the Arakelov--Hurwitz Gelfond--Schneider collision forces the hypothetical zero real and excludes it, hence RH | **Relative value-relation chain formalized**; strengthens the pointwise transcendence law to the full Arakelov coordinate field and exposes a mixed algebraic-curve provider, but both source inputs remain unsupported and arithmetically implausible |
 | Arakelov × finite Hurwitz differential atlas | for nonintegral exponents, two continued-Hurwitz functions are differentially dependent exactly when their monodromy characters agree; more generally, adjoining one exponent to a finite monodromy-separated anchor family destroys differential independence exactly when its character repeats an anchor character | construct a finite nonintegral Hurwitz anchor family with pairwise distinct algebraic characters and prove every hypothetical right-half Xi-indexed Hurwitz function lies in its differential-matroid closure; independently make the corresponding Arakelov coordinates algebraic | finite capture transfers algebraicity from an anchor character to `q(rho)`; the Arakelov--Hurwitz Gelfond--Schneider collision then forces `rho` real and excludes the zero, hence RH | **Function-value producer chain formalized**; the anchor may vary or be nonreal, so dependence alone has no RH orientation, but unconditional Xi Hurwitz freeness makes finite capture highly restrictive and no source relation currently supplies it |
 | Hurwitz FE--Schwarz rank-two circuit | for every open-strip `rho`, without assuming Xi zerohood, `H_(1-rho)` and `H_(conj rho)` are differentially dependent exactly when `Re rho=1/2`; the pair circuit is also exactly `C_2(rho)=0`, and globally exactly zero scalar orientation energy; the exact heat-tail value relation is `log(p)[c_p(1-rho)-c_p(conj rho)]=C_p(rho)`, so the entire reflected prime tail collapses to its `p=2` member; the actual Euler-point tangent difference is likewise `C_p(rho)` times an invertible rational factor, and that tangent is `-1/log(p)` times the genuine spectral connection curvature and an imaginary-slope trigamma-reflection curvature; equality at any one prime therefore suffices in any of these coordinates; separately, the three-node anchor locus at an actual Xi zero is `{rho,1-rho}`, so the fixed half-anchor is always independent | prove nonnegativity of the Weil form on the algebraic regular-Cauchy prime--Gamma source span, or independently produce graded reality of one finite spectral-connection/trigamma curvature from a completed source reader; closure and pair/charge/energy identification are already discharged | either source-core positivity or the one-prime curvature value equality kills one faithful prime seam; this gives zero orientation energy, fixes the reflected heat-tail coefficients, makes every FE--Schwarz pair dependent, and yields RH | **Positive route collapse: differential circuit, any one actual Euler tangent or spectral/Gamma curvature, first-prime seam, reflected heat prime tail, and scalar orientation energy are one defect; the new native-curvature interface removes coefficient extraction, but does not itself produce the source equality** |
+| Outer-Euler Xi modulus × first-prime seam | at the same reflected fibre and any fixed shift `h>=1`, both Xi values lie in `Re s>1`; Sondow--Dumitrescu makes their logarithmic modulus defect have sign `Re rho-1/2`, while the demodulated first-prime seam has the opposite sign | prove from a divisor-free completed source constraint that the full prime--Gamma modulus defect and the least-prime inverse defect have nonnegative product | unconditional antialignment and the assumed alignment force both defects to vanish; the common first-prime charge then vanishes, the scalar orientation energy is zero, and RH follows | **Paper-proven cross-scale value interface**; exact equality is weakened to one semidefinite coupling at two absolute-Euler nodes, but functional-equation reflection preserves the product and does not supply the missing alignment |
 | Height-adaptive scalar DISC census | the unconditional Jensen/growth theorem gives one fixed envelope `N_Xi(r) <= C(1+r)log(2+r)`; the total right-half upper-box order below integer height `n` is bounded by the global disc mass in `B(2,n+2)` | for each integer `n >= 1`, prove one scalar boundary relation `discCensusH k_n n = 0` with `2^k_n` above that envelope | the box mass is divisible by `2^k_n` and strictly smaller than it, hence zero; integer-height exhaustion gives RH | **Weakest countable finite-depth chain formalized**; no local order divisibility, Kummer root, global branch, or inter-height compatibility is required; regional roots remain an overpowered sufficient provider, while the open core is one completed-source finite-ring census value per height |
 | Height-adaptive cancelled-source socle--Weyl contradiction | the cancelled source pair `(A,C)` defines a finite zero algebra and multiplication by `C`; its image has one socle dimension per distinct right-half zero and is bounded by the unconditional Jensen envelope | construct, before enumerating zeros, one internal dyadic Weyl pair on that undoubled image at a depth above the envelope; finite-prime operators on the full real-Xi sampling quotient are formally excluded, so the producer must be integral boundary-completed or genuinely all-prime/nonlocal | if RH is false the socle dimension is positive, while the determinant relation forces divisibility by a larger power of two and hence dimension zero; bounded exhaustion then gives RH | **Nontrivial contradiction chain with both ends closed and one source-realization core**; the direct finite-prime shortcut is dead, but its positive replacement is exact: source the nonzero boundary holonomy and annihilate the top-jet Weyl anomaly without importing the socle dimension |
 | Four-unit pole-to-divisor trace-slope contradiction | the finite-prime completion has the unique upper anti-causal Euler-pole profile `2 exp(-t/2)` of squared `L²` energy `4`; a nonempty right-half Xi divisor has a positive Cauchy-Gram residue profile whose energy is strictly greater than `4` per integer divisor unit | construct a pointed, source-defined, nonexpansive all-prime-plus-Gamma continuation from the pole profile to the Xi divisor profile; weak graph-core compactness can transfer a uniform four-unit estimate but cannot create it | false RH gives Xi residue energy `> 4`, while source nonexpansiveness gives energy `<= 4`, a contradiction and hence RH | **Strongest analytic contradiction chain in the paper-proven layer**; both numerical endpoints and the compactness transfer are proved, but the one source transport theorem remains open; canonical real-spectrum stages, theta-cusp screens, and signed-Moebius tails have been tested and merely restate the same horizontal control |
+| Burnol co-Poisson quotient Berezin diagonal | normalized dilation and inverse dilation give the exact defect imbalance `||epsilon^-||²-||epsilon^+||²=(r^(2 Re rho-1)-r^(1-2 Re rho))||Z^a_rho||²`; Burnol identifies the closed zero-evaluator span with the orthogonal complement of an explicitly generated co-Poisson source subspace; projecting ordinary evaluation kernels to this complement constructs a canonical faithful Berezin diagonal with exact Fourier-reflection oddness | weakest: prove the scalar Berezin value is nonpositive on every right-half co-Poisson annihilator character; stronger: prove `B_+B_-^*=0`, kill the parity block of the finite holonomy, or construct a contractive Douglas factorization between the forward and inverse quotient channels | the scalar value on a zero fibre is exactly `2 sinh(2 log(r)(Re rho-1/2))`; its sign excludes right-half off-line zeros and FE--Schwarz gives RH; any strong quotient order automatically saturates to flatness by Fourier reflection | **Source-pure short chain proved on paper with the abstract diagonal-functional gap now discharged**; the weakest open input is one scalar co-Poisson source sign, while full quotient decorrelation is a stronger optional provider; neither a Calkin lift nor prime-charge coherence is needed |
+| Radial-Jensen Schur exact norm gap | the source height and orientation laws put every reciprocal-square atom in the disk `|u|<2/41` and the sector `Im(u)^2<=Re(u)^2/84`; Schwarz--Pick then proves that the fixed prime--Gamma evaluation functional has exact disk-Schur and `L¹/H¹_0` norm `primeArchCentralCurvature`, attained by the constant `1`; the finite Caratheodory--Fejer norms converge geometrically to that curvature | prove a source theorem controlling the trace norm of the reciprocal-square operator, or positively couple its analytic algebra to its adjoint, absolute value, or polar phase; no further holomorphic value relation inside the same disk algebra can enlarge its norm | `2*(trace norm-analytic functional norm)` is exactly `xiGlobalReflectionDefectEnergy`; any reverse norm inequality kills that energy and yields RH | **Exact constraint--orientation decomposition proved on paper**; the former open quotient-norm target is discharged and retired, while the remaining trace/analytic gap is identified exactly rather than hidden in an extremal problem |
+| Explicit prime--arch circle state × reflected orientation | the full normalized moment sequence is the Fourier sequence of one source-defined real-analytic probability density `w_Xi/M`, with the uniform bounds `734/819 <= w_Xi/M <= 904/819`; its Caratheodory transform gives an explicit Schur function of norm at most `85/1553`, and multiplication plus circle conjugation gives a canonical unitary/reflection carrier; every polynomial with `85*sum_(n>=1)a_n^2 <= 734*a_0^2` already has nonnegative reflected value | prove radial Poisson disintegration of this one explicit density, equivalently `||S_P||_(L²(mu_Xi)) <= ||C_P||_(L²(mu_Xi))` only for the remaining degree-at-least-two tail-dominant integer-polynomial cone; ordinary density coercivity and strict Schur contractivity cannot supply the unrestricted sign | the reflected orbit Gram is exactly the normalized prime--Gamma Hankel matrix, so the restricted weighted cosine--sine inequality plus the unconditional coefficient cone gives the complete integer Hankel cone and RH | **Carrier, ordinary positivity, and a nontrivial all-degree coefficient region discharged on paper; one transverse tail cone remains**; the family `1-epsilon*cos(2*N*t)` proves that no uniform neighborhood of Haar lies in the reflection-positive cone, so a successful predecessor must use exact source Fourier relations rather than a norm-only estimate |
+| Shifted sector circles × residual Sonin comparison | for every `0<=s<=11`, the reciprocal-square sector and radius give a strictly positive analytic circle density with Fourier moments `m_(s+n)/m_s`; after `P=X^v q`, this unconditionally proves `Q(P)>=0` for `v<=5` whenever `224*sum_(n>=1)b_n^2 <= (1960-13*(2v+1)^2)b_0^2` | prove the one-sided coupled-Sonin aperture comparison only for the complementary integer-polynomial family; no Sonin value relation is needed on the discharged valuation cones | nonnegative Sonin values exclude a negative residual target, the shifted circles handle the omitted tests, and the complete integer prime--Gamma Hankel cone gives RH | **New cross-route hypothesis reduction proved on paper**; it joins the explicit circle carrier to the formal Sonin variational consumer without identifying either moment family, while high valuation and tail-dominant low-valuation tests remain open |
 | All-prime Sonin value loci and cofinal section | the residual energy `T_a=K_a^*K_a` is positive trace class and its Gram tower collapses exactly to `S_r(a)=Tr(T_a^(r+1))` | weakest: put each fixed prime--Gamma integer-polynomial value in the closure of the corresponding scalar Sonin Gram range; stronger source condition: put every finite prime--Gamma moment block in the corresponding positive Sonin moment-curve closure | finite-block closure is now proved equivalent to one positive aperture sequence converging in every moment coordinate, and either source-value condition transfers positivity to the countable prime--Gamma trace-Hankel cone and RH | **Independent live value-relation chain**; coherence is discharged by diagonal closure selection, but the analytic source-to-source finite-block closure remains open |
 | Theta low-degree discharge × prime--Gamma Hankel tail | the two explicit theta-cusp moment-ratio inequalities force every constant and linear real-polynomial prime--Gamma Hankel test to be nonnegative; one strict ratio makes the first nonconstant leading determinant positive | prove the two theta ratios and either the degree-at-least-two integer-polynomial cone or only the scalar leading-determinant tail from size three | the degree dichotomy reconstructs the complete countable source cone; more sharply, the strict low block plus one determinant per size reconstructs the leading-determinant criterion, and either chain implies RH | **Top-down interface reduction formalized**; the polynomial tail starts at degree two and the scalar tail starts at matrix size three, while the active theta atom card owns the separate low-degree producer |
 | Hurwitz monodromy/Cauchy source | the Xi-indexed Hurwitz family is differentially free; its character phase is the exact transverse coordinate; the canonical orientation vector is reconstructed by separated continued-Cauchy packets with exact prime--Gamma energies | prove nonnegativity for the explicit separated source packets, or on their algebraic span, without importing a zero-location sign | eventual nonnegativity of one reconstructed source sequence is equivalent to RH; the same phase is the sharp rectangular growth exponent | **Live source-sign chain**; closure, multiplicity, and source-domain interfaces are discharged |
+| Euler-safe critical-logderivative Cauchy loss | on every `Re(w)>a>1/2`, horizontal Xi monotonicity makes the shifted Carathéodory kernel `K_a` positive, the normalized Hardy kernel `C_a=2a/(w+conjugate(v))` is a positive Laplace Gram, and the exact identity is `K_0=K_a-K_a circle C_a` | prove the explicit finite Cauchy--Laplace observability inequality for the absolute-Euler density `h_a(t)=Re L(a+it)`, equivalently contract the diagonal map `e_w -> e_w tensor c_w`; a two-node positive-real counterexample proves this is not automatic | `K_a circle C_a<=K_a` gives positivity of the RH-complete critical kernel on an Euler uniqueness half-plane and hence RH | **Complex-node absolute-Euler refinement of the existing half-unit diagonal-Fock bridge**; all input values lie on `Re(s)=1/2+a>1`, the test family is countable for rational `a`, and no divisor, continued anti-Herglotz sign, theta current, or limiting measure enters the premise |
 | Resurgence/Stokes alignment | explicit-formula trans-series language can be source-defined | identify Borel singularities without first taking `log xi`; prove source Stokes positivity/alignment | alignment is RH | **Target-fed in current form**; using the Xi logarithmic divisor builds the answer into the source |
 | Böttcher/Brolin, chromatic sphere, QECC, hyperreal prime | each has a native source object or analogy | no source-defined functor to the completed zeta zero set or quadratic energy is presently typed | absent | **Fringe feeders, not proof chains yet**; retained for new functor construction, not ranked by proximity |
 
@@ -453,12 +459,33 @@ perturbation or of the determinant-line no-crossing law, not the search boundary
 - [PROVED] The common first-prime Hurwitz-anchor/all-prime seam charge is reflection-odd, and
   vanishing of every Xi-indexed common seam is exactly `E_Xi=0`; it introduces no gap beyond the
   regular-Cauchy source-core sign.
+- [PROVED ON PAPER] At every open-strip fibre and every fixed `h>=1`, the logarithmic modulus
+  defect between `xi(h+conj(rho))` and `xi(h+1-rho)` is strictly antialigned with the demodulated
+  first-prime seam.  Both Xi values lie in absolute Euler convergence.  Therefore any independent
+  nonnegative cross-scale alignment forces the common charge to vanish and proves RH; reflection
+  alone preserves the product and supplies no such alignment.  See
+  `xi-outer-euler-modulus-first-prime-seam-antialignment.md`.
 - [PROVED] The canonical seam charge tends to zero along cofinal primes, so all-prime coherence
   forces the common charge to vanish and then forces RH.  Uniform boundedness of its finite
   reciprocal-prime pair energies is now formally equivalent to RH, and false RH produces one
   actual Xi fibre with arbitrarily large finite pair energy.  This removes the extra normalization
   hypothesis from the paper-proven two-particle Sonin route; only its canonical source-side
   uniform Calkin bound and the actual tensor estimate remain open.
+- [PROVED ON PAPER] Burnol's cross-aperture evaluator law is a projected identity, not a
+  full-vector identity.  Retaining the two orthogonal defects for normalized dilation and inverse
+  dilation yields an exact signed energy difference whose sign is `Re(rho)-1/2`.  A same-point
+  source contraction on right-half Xi evaluators therefore implies RH directly.  Burnol's
+  co-Poisson orthogonal-complement theorem removes the divisor from this premise: it is enough to
+  prove vanishing of one parity-mixing block of the explicit finite dilation holonomy compressed
+  to the source-defined co-Poisson quotient.  Fourier oddness shows that either semidefinite order
+  already forces this exact flatness, and Douglas factorization turns the order into a contractive
+  channel-intertwining value relation.  This bypasses the co-Poisson/time-band lift, prime-pair
+  coherence, and cofinal charge decay.  No proof of the parity block relation is currently known.
+- [PROVED ON PAPER] The closed co-Poisson quotient is point-evaluable, so projecting Burnol's
+  ordinary evaluation kernels constructs a canonical faithful Berezin diagonal without choosing
+  or biorthogonalizing zeros.  Its value on a zero fibre is the exact bilateral aperture character
+  and is odd under Fourier reflection.  This removes the off-diagonal parity-block relation from
+  the weakest chain: only the scalar Berezin sign on the co-Poisson annihilator spectrum remains.
 - [PROVED] The height-free seam coefficient is the exact empty-parameter first derivative of a
   finite FE-paired Euler flux, pointwise and in the compact-carrier Banach algebra.  Its total
   reciprocal-prime energy equals the Xi seam reflection distance.  The Sonin route now lacks an
@@ -515,3 +542,167 @@ in three representatives: semilocal cutoff finite part, orbital cyclic class, an
 The remaining dependency is strictly the Sonin cutoff/resolvent cyclic descent preserving this
 value, plus the completed one-sided floor.  Carrier existence, place comparison, and finite prime
 source identification are no longer open nodes.
+
+## 2026-07-15 radial-Jensen Schur exact norm-gap insertion
+
+- [PROVED ON PAPER] The source-derived radius `2/41` and orientation sector `1/84` satisfy a
+  general Schwarz--Pick small-sector criterion.  The fixed prime--Gamma moment functional has exact
+  complex disk-Schur norm
+  `S_Xi=primeArchCentralCurvature`, attained by the constant function `1` unconditionally.
+- [PROVED ON PAPER] The reflected boundary symbol therefore has exact `L^1/H^1_0` quotient norm
+  `primeArchCentralCurvature`; the former open quotient-norm saturation target is discharged, not
+  promoted to an RH producer.
+- [PROVED ON PAPER] The exact norm deficit is
+  `xiCenteredRadialJensenMass-S_Xi=xiGlobalReflectionDefectEnergy/2`.  In operator language, the
+  full orientation datum is precisely the excess of trace norm over the norm visible to the
+  analytic functional calculus.
+- [PROVED ON PAPER] Caratheodory--Fejer truncations converge geometrically to central curvature,
+  with error at most
+  `xiCenteredRadialJensenMass*(2/41)^(N+1)/(1-2/41)`; their trace-norm dual certificates cannot
+  converge to radial Jensen mass unless RH already holds.
+- [OPEN] Produce a source theorem controlling the reciprocal-square trace norm, or coupling the
+  analytic source algebra to the adjoint/absolute-value/polar channel.  Additional holomorphic
+  identities in the same disk algebra cannot change its already exact norm.
+
+## 2026-07-15 explicit circle-state reflection insertion
+
+- [PROVED ON PAPER] The complete normalized prime--Gamma moment sequence is the Fourier sequence
+  of one explicit source-defined real-analytic probability density `w_Xi/M` on the unit circle.
+- [PROVED ON PAPER] The exact source estimates give
+  `734/819 <= w_Xi/M <= 904/819`; its Caratheodory transform has positive real part and its Schur
+  transform has closed-disk norm at most `85/1553`.
+- [PROVED ON PAPER] On `L^2(T,mu_Xi)`, multiplication by the circle coordinate and circle
+  conjugation construct an unconditional unitary/reflection carrier.  Its ordinary Gram is
+  Toeplitz-positive, while its reflected Gram is exactly the normalized prime--Gamma Hankel form.
+- [PROVED ON PAPER] Every real polynomial with
+  `85*sum_(n>=1)a_n^2 <= 734*a_0^2` has nonnegative reflected value unconditionally.  Therefore the
+  countable RH criterion may be restricted to the complementary tail-dominant integer-polynomial
+  cone, in addition to the existing degree-at-least-two reduction.
+- [PROVED ON PAPER] RH is equivalent to the weighted cosine--sine domination for every integer
+  polynomial; the existing theta interface reduces the open family to degree at least two.  It is
+  also equivalent to membership of `w_Xi/M` in the closed convex hull of the Poisson kernels
+  `{P_r:0<=r<=2/41}`.
+- [PROVED ON PAPER] Positive analytic density, equivalence to Haar, and an arbitrarily large
+  ordinary Gram gap do not imply reflected positivity: `1-epsilon*cos(2*N*t)` has a negative
+  reflected value on `z^N` for every `epsilon>0`.
+- [OPEN] Prove the radial Poisson disintegration or the weighted cosine--sine inequality on the
+  remaining degree-at-least-two tail-dominant coefficient cone from exact prime--Gamma source
+  relations.  Do not reintroduce Xi divisor orientation, a positive real moment measure, or an
+  RH-equivalent sign hypothesis.
+
+## 2026-07-15 Euler-safe critical-logderivative Cauchy-loss insertion
+
+- [PROVED ON PAPER] For every `a>1/2`, the completed logarithmic derivative `L(w)` has positive
+  real part on `Re(w)>a` by horizontal Xi monotonicity inside absolute Euler convergence.  Hence
+  `K_a(w,v)=(L(w)+conjugate(L(v)))/(w+conjugate(v)-2a)` is an unconditional positive
+  Carathéodory kernel.
+- [PROVED ON PAPER] The positive Laplace kernel `C_a(w,v)=2a/(w+conjugate(v))` gives the exact
+  subtraction `K_0=K_a-K_a circle C_a`.  The critical kernel is positive exactly when the
+  diagonal RKHS tensor map `e_w -> e_w tensor c_w` is contractive, and that condition is equivalent
+  to RH by Nevanlinna--Pick extension from the Euler uniqueness half-plane.
+- [PROVED ON PAPER] The domination is the explicit finite observability inequality `(19)` in
+  `critical-logderivative-euler-safe-cauchy-loss-law.md`, with positive boundary density
+  `h_a(t)=Re L(a+it)` given by an absolutely convergent von-Mangoldt plus Gamma formula.  For
+  rational `a`, rational nodes and coefficients form a countable complete test family.
+- [PROVED ON PAPER] A two-node determinant for the positive-real atom `1/(w-a)` is strictly
+  negative, so neither Euler positivity nor `C_a(w,w)<1` implies the required matrix contraction.
+- [OPEN] Prove the Cauchy--Laplace observability inequality from exact value relations of the one
+  canonical density `h_a`; do not import continued-strip anti-Herglotzness, Xi zero locations,
+  real-rootedness, an RH-equivalent measure, or the active theta-current/subpower route.
+
+## 2026-07-15 outer-Euler modulus/first-prime antialignment insertion
+
+- [PROVED ON PAPER] For `rho=beta+i gamma` in the open strip and any fixed `h>=1`, the points
+  `h+conj(rho)` and `h+1-rho` share one horizontal line in `Re s>1`.  Their Xi logarithmic-modulus
+  defect has sign `beta-1/2` by strict horizontal monotonicity.
+- [PROVED ON PAPER] Demodulating the common first-prime seam gives the real scalar
+  `2^(-beta)-2^(beta-1)`, whose sign is the opposite of `beta-1/2`.  Hence the product of the
+  full completed defect and the least-prime defect is always nonpositive and vanishes exactly on
+  the critical line.
+- [PROVED ON PAPER] At `h=1`, the Xi values use the same two absolute-convergence exponents as the
+  formal rational-Hurwitz two-fibre response.  The resulting full-source/least-atom relation is
+  therefore a genuine same-node value splice, not continuation of an Euler series to a zero.
+- [OPEN] Prove a nonnegative cross-scale alignment from a completed source determinant, Gram,
+  reflection-positivity, or order constraint defined before divisor insertion.  Antialignment then
+  forces equality, common-charge vanishing, zero orientation energy, and RH.  Functional-equation
+  reflection changes both factors' signs and leaves their product unchanged, so reflection alone
+  cannot close the interface.
+
+## 2026-07-15 shifted sector-circle and residual-Sonin insertion
+
+- [PROVED ON PAPER] For every `0<=s<=11`, the shifted density
+  `m_s+2*sum_(n>=1)m_(s+n)cos(nt)` is strictly positive and real analytic.  Its relative deviation
+  from its central mass is at most
+  `224/(13*(168-(s+1)^2))`, which is strictly less than one on this range.
+- [PROVED ON PAPER] If `P=X^v q` with `v<=5`, then the relevant moment shift is `2v`, and
+  `224*sum_(n>=1)b_n^2 <= (1960-13*(2v+1)^2)b_0^2` forces `Q(P)>=0` unconditionally.
+- [PROVED ON PAPER] The one-sided coupled-Sonin variational comparison only needs to hold outside
+  these valuation cones.  On the residual family its nonnegative aperture value excludes a
+  negative prime--Gamma value; the automatic cones fill the omitted tests, and the existing
+  integer Hankel capstone gives RH.
+- [OPEN] Prove the quotient-free coupled-Sonin Rayleigh upper bound on the residual family only.
+  The unresolved tests have either valuation at least six or a post-valuation coefficient tail
+  larger than the explicit sector threshold.
+
+The unshifted circle construction is the positive descendant of the Schur norm-gap law: the
+ordinary carrier no longer needs to be built.  Its shifted descendants now remove explicit
+valuation cones as well.  The remaining source theorem must select the radial orientation only on
+the complementary coefficient family.
+
+## 2026-07-15 critical Möbius beta-wavelet insertion
+
+- [PROVED ON PAPER] The sequential Báez--Duarte coefficient
+  `c_k=sum_(j=0)^k(-1)^j binom(k,j)/zeta(2j+2)` is exactly the value of the critical
+  logarithmic Möbius boundary vector
+  `m_0(t)=sum_(n<=exp(t))mu(n)/n` against one explicit zero-mean beta wavelet
+  `K_k(t)=exp(-t)(1-exp(-2t))^(k-1)(1-(2k+1)exp(-2t))`.
+- [PROVED ON PAPER] The wavelet has one sign seam at `t=log(2k+1)/2`, and
+  `||exp(-alpha t)K_k||_2^2` is an explicit three-term beta-function value asymptotic to
+  `Gamma(alpha+1)(alpha^2+alpha+1)/(2(2k)^(alpha+1))`.
+- [PROVED ON PAPER] Plancherel cancels the boundary factor `1/(it)` against the wavelet derivative
+  and gives the exact safe-line value
+  `c_k=(4pi)^(-1) integral_R B((1-it)/2,k+1)/zeta(1+it)dt`.  Moving the beta contour by
+  `i alpha` is exactly the reciprocal-zeta continuation from `Re s=1` to `Re s=1-alpha`; the
+  kernel has no zeros that can cancel a crossed nontrivial zeta pole.
+- [PROVED ON PAPER + EXISTING FORMAL INTERFACE] At the fixed safe exponent `sigma=2`, the same
+  coefficient is the coherent signed-source projection value
+  `|c_k|=Z_*||Pi_*Y_k||`.  Elementary squarefree counting gives
+  `||Y_k||~C k^(-1/4)`, so RH is equivalent to the normalized orientation law
+  `||Pi_*Y_k||/||Y_k||=O_epsilon(k^(-1/2+epsilon))`.  The coisometry and projection already exist
+  in `RHTower/InfiniteMobiusSignedChannel.lean`; the open input is only the arithmetic angle decay.
+- [PROVED ON PAPER] Therefore `exp(alpha t)m_0 in L2` implies
+  `c_k=O(k^(-(1+alpha)/2))`.  The unconditional `alpha=0` boundary theorem gives the classical
+  exponent `1/2`; the missing half-unit of exponential transport is exactly the missing
+  quarter-power needed for the RH-critical exponent `3/4`.
+- [PROVED FROM LITERATURE + PAPER VALUE RELATION] Báez--Duarte's theorem converts the terminal
+  condition `c_k=O_epsilon(k^(-3/4+epsilon))` into RH.  Hence the full weighted-domain tower may be
+  replaced as a proof target by one signed beta-wavelet cancellation coefficient at each
+  logarithmic scale.
+- [OPEN] Prove these beta-wavelet values have critical decay directly from the Möbius/Euler source,
+  without the full weighted `L2` tower, an RH-equivalent Mertens estimate, the explicit zero
+  formula, or the active theta-current/rectangular-Weil subpower route.  See
+  `../2-fully-proven/not_new_scientific_knowledge/baez-duarte-critical-mobius-beta-wavelet-law.md`.
+
+## 2026-07-15 positive-paired real-boundary Loewner weld
+
+- [PROVED ON PAPER + EXISTING FORMAL INTERFACES] On a zero-free real central source interval,
+  write `T=continuedPrimeArchSourceRelativeTrace` and let `G_src` be the seam-log Markov germ.
+  The formal normalized-trace identity and the seam-log weld give
+  `G_src(x^2)=-T(x)/x`.  For distinct positive real nodes, the one-sided paired source kernel is
+  exactly
+  `K+(x,y)=4*x*y*(G_src(x^2)-G_src(y^2))/(x^2-y^2)`.
+- [PROVED ON PAPER] After inserting the necessary confluent diagonal
+  `Khat+(x,x)=2*(-T'(x)+T(x)/x)=4*x^2*G_src'(x^2)`, every finite boundary source matrix is the
+  positive diagonal congruence `D*L_G*D`, `D=diag(2*x_i)`, of the seam-log Loewner matrix.  It has
+  the same positivity, inertia, rank, and nullity.
+- [PROVED ON PAPER] All-order positivity on any one central interval, even only on its rational
+  nodes, is equivalent by Loewner--Pick continuation and the exact Xi weld to RH.  Thus the
+  real-pole positive-paired source core **is** the seam-log Markov--Loewner core; no separate
+  moment-identification or Cauchy-closure bridge remains on this boundary slice.
+- [GUARDRAIL] The present Lean expression `ccmPositivePairedReducedKernel x x` at real `x` is not
+  the confluent value: totalized division evaluates its `0/0` term as zero.  A formalization must
+  define the derivative diagonal rather than rewriting the existing raw value.
+- [OPEN] Prove the finite confluent boundary matrices positive from the explicit continued
+  prime--Gamma formula without Xi divisor orientation, anti-Herglotzness, real-rootedness, an
+  RH-equivalent positive measure, or the active theta-current/subpower route.  See
+  `../2-fully-proven/not_new_scientific_knowledge/xi-positive-paired-real-loewner-seam-log-weld.md`.

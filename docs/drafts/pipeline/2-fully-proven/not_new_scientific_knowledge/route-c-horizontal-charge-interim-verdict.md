@@ -259,6 +259,16 @@ leakage `D_E(I)` and prove
 The finite-layer theorem proves that `(9)` excludes every right-hand layer in `I`.  The missing
 step is not the threshold calculation; it is the non-conclusion-fed source construction and bound.
 
+The companion Burnol quotient theorem
+`burnol-copoisson-quotient-bilateral-order-rh-law.md` now supplies an explicit candidate for the
+linear ordinate reader.  Its finite-scale evaluator diagonal is
+`2sinh(2 log(r)(Re(rho)-1/2))`, and its infinitesimal scale value is
+`4(Re(rho)-1/2)`.  Burnol's co-Poisson orthogonal-complement theorem removes zero enumeration from
+the ambient quotient, but a source-defined diagonal expectation is still missing; the full
+quotient operator is stronger because it retains cross-fiber terms.  Moreover this linear reader
+does not yet identify the positive Cauchy layer energy in `(9)`.  Thus it sharpens the construction
+candidate without discharging the source bound.
+
 A stronger global formulation, avoiding ordinate localization, is to prove for the source-built
 Toeplitz curvature
 

@@ -6,6 +6,7 @@
 - **Scientific status:** source-derived and source-formalized; novelty not claimed
 - **Lean targets:**
   `formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtOperator.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninLudersPinching.lean`,
   `formal/GaloisForLFunctions/RHTower/SoninProlateCommutatorEnergy.lean`
 
 ## Claim
@@ -49,8 +50,13 @@ is the existing `soninAlternatingBlock`.
 6. The same energy is twice the sum of the greedy spectral values of `T-T²`, connecting the
    cutoff calculus to the existing compact master-constraint spectrum API.
 7. This connects the measurement-disturbance API in `SoninLudersPinching.lean` to the trace and
-   Hilbert--Schmidt APIs already used by the Sonin obstruction modules.
-8. The result does not prove RH and does not settle the live source-norm comparison.  Its value is
+   Hilbert--Schmidt APIs already used by the Sonin obstruction modules.  In particular,
+   `hsNormSq_ludersDisturbance_eq_cutoffCommutator` sums the existing statewise master-constraint
+   identity and needs no added Hilbert--Schmidt hypothesis because its summands agree pointwise.
+8. The central Lüders disturbance is now exactly twice both the transition energy and the prolate
+   impurity trace.  The finite-aperture budget can therefore be stated using retained prolate
+   energy plus measurement-decoherence energy, with the commutator removed from the interface.
+9. The result does not prove RH and does not settle the live source-norm comparison.  Its value is
    a lossless bridge between three existing quantitative theorem surfaces.
 
 ## Physics provenance
@@ -74,6 +80,9 @@ Primary sources:
 - P. Pfeiffer and W. Spitzer, *Logarithmically Enhanced Area-Laws for Fermions in Vanishing
   Magnetic Fields in Dimension Two*, Integral Equations and Operator Theory 96 (2024), article
   16, https://doi.org/10.1007/s00020-024-02778-3, especially Section 3.
+- Y. Liu and J. B. DeBrota, *Relating measurement disturbance, information and orthogonality*,
+  Physical Review A 104 (2021), 052216, https://doi.org/10.1103/PhysRevA.104.052216.  Section II
+  models Lüders disturbance by squared Hilbert--Schmidt distance and derives its commutator form.
 
 ## Formal surface
 
@@ -84,11 +93,15 @@ Primary sources:
 - `hsNormSq_commutator_eq_two_mul_crossBoundary_of_selfAdjoint`
 - `hsNormSq_commutator_eq_two_mul_crossBoundary_of_selfAdjoint_hilbertSchmidt`
 - `hsNormSq_starProjection_commutator_eq_two_mul_transition`
+- `hsNormSq_ludersDisturbance_eq_cutoffCommutator`
 - `re_opTrace_soninAlternatingBlock_impurity_eq_transition_hsNormSq`
 - `hsNormSq_starProjection_commutator_eq_two_mul_tsum_svVal_prolateImpurity`
 - `hsNormSq_centralCutoffCommutator_eq_two_mul_transition`
+- `hsNormSq_centralLudersDisturbance_eq_two_mul_transition`
 - `re_opTrace_centralProlateImpurity_eq_transition_hsNormSq`
 - `hsNormSq_centralCutoffCommutator_eq_two_mul_re_opTrace_prolateImpurity`
+- `hsNormSq_centralLudersDisturbance_eq_two_mul_re_opTrace_prolateImpurity`
+- `two_mul_hsNormSq_centralProlateBlock_add_ludersDisturbance_eq_eight_mul_sq`
 
 ## Verification boundary
 

@@ -96,6 +96,22 @@ XiC_ne_zero_of_abs_re_le_four
 The module is imported explicitly by `GaloisForLFunctions.RHTower` and consumed by
 `PrimeArchHighFrequencyAccretivity`.
 
+## Schur-capacity consumer
+
+The paper theorem
+`../../2-fully-proven/not_new_scientific_knowledge/xi-radial-jensen-schur-capacity-rigidity.md`
+uses the height gap in a second, static way.  It gives the uniform reciprocal-square radius
+
+```text
+|xiZeroCopyReciprocalSquare q| < 2/41.
+```
+
+Combined with the formal one-eighty-fourth orientation sector, this satisfies a general small-
+sector Schwarz--Pick criterion.  Consequently the fixed prime--Gamma weighted evaluation
+functional has exact disk-Schur norm `primeArchCentralCurvature`, attained by the constant `1`.
+The theorem turns the former quotient-norm search into an exact source value relation and isolates
+the complementary trace-norm excess as reflection energy.
+
 ## Gates
 
 - [x] 0 → 1 in-progress: exact endpoint composition isolated

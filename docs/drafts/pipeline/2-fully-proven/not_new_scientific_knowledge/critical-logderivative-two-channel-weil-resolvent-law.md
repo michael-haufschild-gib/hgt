@@ -393,6 +393,40 @@ positive cone's radical. This is exactly the growing-support/near-radical altern
 Thus `(16)` does not contradict the remote-quartet invisibility theorem. It supplies the positive
 cofinal family that theorem requires.
 
+## Euler-safe Cauchy-loss descendant
+
+The fixed half-unit real-ray diagonal-Fock form of this loss is already proved in
+`ccm-safe-kernel-diagonal-fock-lift-rh-law.md`.  The descendant card
+`critical-logderivative-euler-safe-cauchy-loss-law.md` refines that existing bridge to complex nodes,
+arbitrary `a>1/2`, and an explicit boundary-density observability inequality.  Define on
+`Re(w)>a`
+
+```text
+K_a(w,v)=(L(w)+conjugate(L(v)))/(w+conjugate(v)-2a),
+C_a(w,v)=2a/(w+conjugate(v)).                              (36)
+```
+
+Sondow--Dumitrescu monotonicity in the zero-free Euler half-plane and the half-plane
+Carathéodory theorem make `K_a` positive unconditionally; `C_a` is the positive Laplace Gram
+kernel `integral_0^infinity 2a exp(-w x)exp(-conjugate(v)x) dx`.  The exact identity
+
+```text
+K_L=K_a-K_a circle C_a                                    (37)
+```
+
+therefore proves
+
+```text
+RH <-> K_a circle C_a<=K_a.                               (38)
+```
+
+The domination is an explicit finite Cauchy--Laplace observability inequality with the positive
+boundary density `Re L(a+it)`, whose prime--Gamma formula is absolutely convergent on
+`Re(s)=1/2+a>1`.  A two-node counterexample for `F(w)=1/(w-a)` proves that `(38)` is not a generic
+consequence of positive-realness or of the pointwise bound `C_a(w,w)<1`.  Thus the open source gate
+is now one concrete multi-node contraction in absolute Euler convergence, rather than an
+unspecified positive factorization of `K_L`.
+
 ## Scientific status
 
 The proof is a direct composition of the paired Hadamard logarithmic derivative, standard Weil
@@ -405,6 +439,7 @@ route infrastructure but does not clear the novelty gate as independent scientif
 - Weil's explicit formula and positivity criterion.
 - `xi-shift-loewner-prime-generator-law.md`.
 - `hedenmalm-pair-weil-polarization-law.md`.
+- `critical-logderivative-euler-safe-cauchy-loss-law.md`.
 - `signed-archimedean-gamma-orbit-charge-phase-law.md` and
   `quasianalytic-exponential-log-phase-jet-law.md`.
 
@@ -427,5 +462,8 @@ the completeness theorem, so no Lean file is added.
 - [x] exponential Weil-form convergence proved
 - [x] index-faithful finite-aperture transport proved
 - [x] compact-detector compatibility proved
-- [ ] construct the source-defined positive Gram factorization of `K_L`
+- [x] decompose `K_L` as an unconditional Euler-safe positive kernel minus its positive
+      Hardy--Cauchy tensor loss
+- [ ] prove the resulting finite Cauchy--Laplace contraction from exact prime--Gamma source
+      relations
 - [ ] deduce RH

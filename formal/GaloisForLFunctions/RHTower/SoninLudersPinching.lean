@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.CCMSoninResolventCommutator
 import GaloisForLFunctions.HTGeometry.FiniteConstraintGroupAverage
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtOperator
 
 /-!
 # Lüders pinching removes cutoff-commutation hypotheses
@@ -303,6 +304,42 @@ theorem norm_ludersDisturbance_apply_sq_eq_norm_cutoffCommutator_apply_sq
     _ = ‖ccmCommutator X e ψ‖ ^ 2 :=
       HTGeometry.re_inner_quantumMasterConstraint_eq_normSq
         (ccmCommutator X e) ψ
+
+/-- Lüders disturbance is Hilbert--Schmidt exactly when the corresponding cutoff commutator is.
+This converts a measurement-decoherence finiteness premise into the commutator premise already
+used throughout the Sonin operator ideal. -/
+theorem isHilbertSchmidt_ludersDisturbance_iff_cutoffCommutator
+    (e X : H →L[ℂ] H) (he : IsIdempotentElem e)
+    (heAdj : ContinuousLinearMap.adjoint e = e)
+    (hXAdj : ContinuousLinearMap.adjoint X = X) :
+    ContinuousLinearMap.IsHilbertSchmidt (X - ludersPinching e X) ↔
+      ContinuousLinearMap.IsHilbertSchmidt (ccmCommutator X e) := by
+  unfold ContinuousLinearMap.IsHilbertSchmidt
+  constructor
+  · intro hdist
+    refine hdist.congr fun i => ?_
+    exact norm_ludersDisturbance_apply_sq_eq_norm_cutoffCommutator_apply_sq
+      e X he heAdj hXAdj (ContinuousLinearMap.hsBasis ℂ H i)
+  · intro hcomm
+    refine hcomm.congr fun i => ?_
+    exact (norm_ludersDisturbance_apply_sq_eq_norm_cutoffCommutator_apply_sq
+      e X he heAdj hXAdj (ContinuousLinearMap.hsBasis ℂ H i)).symm
+
+/-- **Total Lüders-disturbance energy.**  The statewise master-constraint identity sums over the
+canonical Hilbert basis to identify the complete Hilbert--Schmidt energy deleted by a
+nonselective projective measurement with the cutoff-commutator energy.  No separate
+Hilbert--Schmidt premise is required: the summands agree pointwise, so either side is finite
+exactly when the other is. -/
+theorem hsNormSq_ludersDisturbance_eq_cutoffCommutator
+    (e X : H →L[ℂ] H) (he : IsIdempotentElem e)
+    (heAdj : ContinuousLinearMap.adjoint e = e)
+    (hXAdj : ContinuousLinearMap.adjoint X = X) :
+    ContinuousLinearMap.hsNormSq (X - ludersPinching e X) =
+      ContinuousLinearMap.hsNormSq (ccmCommutator X e) := by
+  unfold ContinuousLinearMap.hsNormSq
+  exact tsum_congr fun i =>
+    norm_ludersDisturbance_apply_sq_eq_norm_cutoffCommutator_apply_sq
+      e X he heAdj hXAdj (ContinuousLinearMap.hsBasis ℂ H i)
 
 /-- **Two-projection transition-energy law.**  Measuring one orthogonal projection with another
 produces exactly the master energy of their commutator.  Applied to the physical and Fourier

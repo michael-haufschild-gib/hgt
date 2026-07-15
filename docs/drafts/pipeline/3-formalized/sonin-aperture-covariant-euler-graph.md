@@ -78,6 +78,39 @@ logarithmic-position anomaly to a bounded BMO Hankel commutator, and the exact t
 resolvent dresses it through the Sonin projection.  This has not yet been formalized in Lean.
 Interfaces 2 and 3, and the source-compatible relative trace/positivity theorem, remain open.
 
+The bilateral covariance also has a separate paper-level value consequence.  If `Z^a_w` denotes
+Burnol's continuous Mellin evaluation vector, the two projected transport laws leave orthogonal
+defects `epsilon^+` and `epsilon^-`.  Unitarity and Pythagoras give
+
+```text
+||epsilon^-||^2-||epsilon^+||^2
+ =(r^(2 Re(w)-1)-r^(1-2 Re(w)))||Z^a_w||^2.
+```
+
+Thus a same-point contraction `||epsilon^-||<=||epsilon^+||` on the right-half Xi divisor would
+exclude every off-critical zero and prove RH.  This shorter source-norm interface is proved in
+`../2-fully-proven/not_new_scientific_knowledge/burnol-bilateral-aperture-defect-energy-law.md`.
+It uses the formal covariance theorem here but awaits a formal definition of the continuous
+evaluation vectors; it is not part of this card's Lean claim.
+
+The companion
+`../2-fully-proven/not_new_scientific_knowledge/burnol-copoisson-quotient-bilateral-order-rh-law.md`
+removes the divisor from the hypothesis: Burnol identifies the zero-evaluator closure with the
+orthogonal complement of an explicitly generated co-Poisson source space.  Nonpositivity of the
+finite conjugated-projection difference on that source quotient implies RH.  Because the quotient
+is Fourier invariant and the difference is Fourier odd, any such order is equivalent to exact
+flatness and to vanishing of one parity-mixing block.  That block relation, not the dilation
+covariance, is the remaining theorem.
+
+The later paper theorem
+`../2-fully-proven/not_new_scientific_knowledge/burnol-copoisson-berezin-diagonal-reflection-law.md`
+weakens this once more.  Projecting the continuous evaluation kernel of the extended Sonin space
+to the closed co-Poisson complement gives its canonical Berezin diagonal.  At a zeta-zero
+annihilator character this projected kernel is the original evaluator, so the diagonal reads the
+same exact signed aperture value; Fourier reflection makes it odd.  The diagonal-functional gap
+is therefore closed without a zero basis.  The weakest remaining input is its scalar source sign,
+not flatness of the full quotient compression.
+
 ## Gates
 
 - [x] 0 → 1: exact Sonin carrier and dilation action identified

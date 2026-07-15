@@ -71,6 +71,42 @@ theorem exists_fin_ccmPrimePole_projection_common_weaklyNull_sequence
   have hsqrt := Real.continuous_sqrt.continuousAt.tendsto.comp hsq
   simpa [Function.comp_def, Real.sqrt_sq (norm_nonneg _)] using hsqrt
 
+/-- The common weakly-null boundary sequence survives every local pole-subspace measurement with
+probability tending to one.  This is the Born-probability form of the simultaneous projection
+defect convergence above. -/
+theorem exists_fin_ccmPrimePole_projection_common_weaklyNull_born_survival_sequence
+    {d : ℕ} {Lref : ℝ} (href : 0 < Lref)
+    (L : Fin d → ℝ) (hL : ∀ i, 0 < L i) :
+    ∃ φ : ℕ → ℕ,
+      (∀ m, m < φ m) ∧
+      (∀ m, ‖ccmNormalizedPrimePoleVector Lref href (φ m : ℤ)‖ = 1) ∧
+      (∀ ℓ : CCMPrimePoleHilbert →L[ℂ] ℂ,
+        Tendsto (fun m => ℓ (ccmNormalizedPrimePoleVector Lref href (φ m : ℤ)))
+          atTop (𝓝 0)) ∧
+      ∀ i, Tendsto (fun m =>
+        Complex.re (inner ℂ
+          (ccmNormalizedPrimePoleVector Lref href (φ m : ℤ))
+          ((ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection
+            (ccmNormalizedPrimePoleVector Lref href (φ m : ℤ)))))
+        atTop (𝓝 1) := by
+  obtain ⟨φ, hφ, hnorm, hweak, hproj⟩ :=
+    exists_fin_ccmPrimePole_projection_common_weaklyNull_sequence href L hL
+  refine ⟨φ, hφ, hnorm, hweak, fun i => ?_⟩
+  let f : ℕ → CCMPrimePoleHilbert := fun m =>
+    ccmNormalizedPrimePoleVector Lref href (φ m : ℤ)
+  have hsq : Tendsto (fun m =>
+      ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection (f m) - f m‖ ^ 2)
+      atTop (𝓝 0) := by
+    simpa using (hproj i).pow 2
+  have hsub : Tendsto (fun m =>
+      (1 : ℝ) -
+        ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection (f m) - f m‖ ^ 2)
+      atTop (𝓝 1) := by
+    simpa using tendsto_const_nhds.sub hsq
+  refine hsub.congr' (Eventually.of_forall fun m => ?_)
+  exact (HTGeometry.bornSurvivalProbability_eq_one_sub_projectionDefectSq
+    (ccmPrimePoleClosedSubspace (L i) (hL i)) (f m) (hnorm m)).symm
+
 def ccmPrimePoleProjectionAverage
     {d : ℕ} (L : Fin d → ℝ) (hL : ∀ i, 0 < L i) :
     CCMPrimePoleHilbert →L[ℂ] CCMPrimePoleHilbert :=

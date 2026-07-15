@@ -12,10 +12,12 @@ the exact Sonin projection correction and the principal-subtracted dilation resi
 any Hilbert--Schmidt hypothesis.
 -/
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtOperator
+import GaloisForLFunctions.HTGeometry.L2PairingEnergy
 import GaloisForLFunctions.HTGeometry.TwoProjectionSupersymmetry
 import GaloisForLFunctions.HTGeometry.TwoProjectionHilbertSchmidtEnergy
 import GaloisForLFunctions.RHTower.SoninPrimePowerRegularization
 import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
+import Mathlib.MeasureTheory.Measure.SeparableMeasure
 
 noncomputable section
 
@@ -99,6 +101,58 @@ theorem isHilbertSchmidt_kernelOperator
       ((Lp.memLp K).continuousLinearMap_comp
         (ContinuousLinearMap.apply ℂ ℂ (b i)))
 
+/-- **Exact Hilbert--Schmidt kernel energy.**  On a separable Hilbert input, Parseval and monotone
+integration upgrade the kernel theorem from finiteness to the exact value
+`\|kernelOperator K\|_HS² = \|K\|_L²²`.  This is the abstract localization-area identity used by
+the finite Fourier rectangles below. -/
+theorem hsNormSq_kernelOperator_eq_norm_sq [SeparableSpace E]
+    (K : Lp (E →L[ℂ] ℂ) 2 μ) :
+    ContinuousLinearMap.hsNormSq (kernelOperator (E := E) μ K) = ‖K‖ ^ 2 := by
+  let b := ContinuousLinearMap.hsBasis ℂ E
+  letI : Countable (exists_hilbertBasis ℂ E).choose :=
+    b.orthonormal.countable_index
+  have hT := isHilbertSchmidt_kernelOperator (E := E) μ K
+  have hint (i) : Integrable (fun x => ‖K x (b i)‖ ^ 2) μ :=
+    (memLp_two_iff_integrable_sq_norm
+      ((Lp.memLp K).continuousLinearMap_comp
+        (ContinuousLinearMap.apply ℂ ℂ (b i))).1).mp
+      ((Lp.memLp K).continuousLinearMap_comp
+        (ContinuousLinearMap.apply ℂ ℂ (b i)))
+  have hsum : Summable (fun i => ∫ x, ‖K x (b i)‖ ^ 2 ∂μ) := by
+    refine (hT.summable b).congr (fun i => ?_)
+    exact norm_kernelOperator_apply_sq (E := E) μ K (b i)
+  have hsumNorm : Summable (fun i => ∫ x, ‖‖K x (b i)‖ ^ 2‖ ∂μ) := by
+    refine hsum.congr (fun i => ?_)
+    apply integral_congr_ae
+    filter_upwards with x
+    exact (Real.norm_of_nonneg (sq_nonneg ‖K x (b i)‖)).symm
+  rw [ContinuousLinearMap.hsNormSq_eq hT b]
+  calc
+    ∑' i, ‖kernelOperator (E := E) μ K (b i)‖ ^ 2 =
+        ∑' i, ∫ x, ‖K x (b i)‖ ^ 2 ∂μ := by
+      apply tsum_congr
+      intro i
+      exact norm_kernelOperator_apply_sq (E := E) μ K (b i)
+    _ = ∫ x, ∑' i, ‖K x (b i)‖ ^ 2 ∂μ :=
+      integral_tsum_of_summable_integral_norm hint hsumNorm
+    _ = ∫ x, ‖K x‖ ^ 2 ∂μ := by
+      apply integral_congr_ae
+      filter_upwards with x
+      let y : E := (InnerProductSpace.toDual ℂ E).symm (K x)
+      calc
+        ∑' i, ‖K x (b i)‖ ^ 2 = ∑' i, ‖inner ℂ y (b i)‖ ^ 2 := by
+          apply tsum_congr
+          intro i
+          rw [InnerProductSpace.toDual_symm_apply]
+        _ = ∑' i, ‖inner ℂ (b i) y‖ ^ 2 := by
+          apply tsum_congr
+          intro i
+          rw [norm_inner_symm]
+        _ = ‖y‖ ^ 2 := b.tsum_norm_inner_sq y
+        _ = ‖K x‖ ^ 2 := by
+          rw [(InnerProductSpace.toDual ℂ E).symm.norm_map]
+    _ = ‖K‖ ^ 2 := (HTGeometry.norm_l2_sq_eq_integral_norm_sq μ K).symm
+
 end Kernel
 
 end RHTower
@@ -148,6 +202,16 @@ theorem hsNormSq_comp_left_le {T : E →L[ℂ] F} (hT : IsHilbertSchmidt T)
       _ ≤ (‖A‖ * ‖T (b i)‖) ^ 2 := by gcongr; exact A.le_opNorm _
       _ = ‖A‖ ^ 2 * ‖T (b i)‖ ^ 2 := by ring)
     ((hT.summable b).mul_left (‖A‖ ^ 2))
+
+/-- Left composition by a norm-preserving map preserves Hilbert--Schmidt energy exactly. -/
+theorem hsNormSq_comp_left_eq_of_norm_map {T : E →L[ℂ] F} (hT : IsHilbertSchmidt T)
+    (A : F →L[ℂ] G) (hA : ∀ x, ‖A x‖ = ‖x‖) :
+    hsNormSq (A ∘L T) = hsNormSq T := by
+  let b := hsBasis ℂ E
+  rw [hsNormSq_eq (hT.comp_left A) b, hsNormSq_eq hT b]
+  apply tsum_congr
+  intro i
+  rw [comp_apply, hA]
 
 /-- Right composition satisfies the corresponding squared Hilbert--Schmidt norm bound. -/
 theorem hsNormSq_comp_right_le {T : E →L[ℂ] F} (hT : IsHilbertSchmidt T)
@@ -211,11 +275,151 @@ theorem hsNormSq_sub_le {S T : E →L[ℂ] F}
   have h := hsNormSq_add_le hS hT.neg
   rwa [hsNormSq_neg_eq hT] at h
 
+/-- A strictly contracting Hilbert--Schmidt operator has vanishing traces of its powers from
+degree two onward.  The proof uses only the Hilbert--Schmidt ideal bound and the trace bound for a
+product of two Hilbert--Schmidt operators. -/
+theorem tendsto_opTrace_pow_add_two_zero_of_isHilbertSchmidt_norm_lt_one
+    {T : E →L[ℂ] E} (hT : IsHilbertSchmidt T) (hcontract : ‖T‖ < 1) :
+    Filter.Tendsto (fun n : ℕ => opTrace (T ^ (n + 2))) Filter.atTop (nhds 0) := by
+  have hpow : Filter.Tendsto (fun n : ℕ => T ^ n) Filter.atTop (nhds 0) :=
+    tendsto_pow_atTop_nhds_zero_of_norm_lt_one hcontract
+  have hnormpow : Filter.Tendsto (fun n : ℕ => ‖T ^ n‖) Filter.atTop (nhds 0) := by
+    simpa using hpow.norm
+  have hmajor :
+      Filter.Tendsto (fun n : ℕ => ‖T ^ n‖ ^ 2 * hsNormSq T) Filter.atTop (nhds 0) := by
+    simpa using (hnormpow.pow 2).mul_const (hsNormSq T)
+  have hsq :
+      Filter.Tendsto (fun n : ℕ => hsNormSq (T ^ n * T)) Filter.atTop (nhds 0) := by
+    apply squeeze_zero'
+    · exact Filter.Eventually.of_forall fun n => hsNormSq_nonneg (T ^ n * T)
+    · exact Filter.Eventually.of_forall fun n => by
+        simpa only [ContinuousLinearMap.mul_def] using hsNormSq_comp_left_le hT (T ^ n)
+    · exact hmajor
+  have hhsNorm :
+      Filter.Tendsto (fun n : ℕ => hsNorm (T ^ n * T)) Filter.atTop (nhds 0) := by
+    have hsqrt := Real.continuous_sqrt.continuousAt.tendsto.comp hsq
+    simpa only [Function.comp_apply, hsNorm, Real.sqrt_zero] using hsqrt
+  apply squeeze_zero_norm'
+  · exact Filter.Eventually.of_forall fun n => by
+      have hPow : IsHilbertSchmidt (T ^ n * T) := by
+        simpa only [ContinuousLinearMap.mul_def] using hT.comp_left (T ^ n)
+      have hEq : T ^ (n + 2) = (T ^ n * T) ∘L T := by
+        change T ^ (n + 2) = (T ^ n * T) * T
+        have hn1 : T ^ n * T = T ^ (n + 1) := by rw [← pow_succ]
+        have hn2 : T ^ (n + 1) * T = T ^ (n + 2) := by
+          simpa only [Nat.add_assoc] using (pow_succ T (n + 1)).symm
+        noncomm_ring [hn1, hn2]
+      rw [hEq]
+      exact norm_opTrace_comp_le hPow hT
+  · exact hhsNorm.mul_const (hsNorm T)
+
 end Bounds
 
 end ContinuousLinearMap
 
 namespace RHTower
+
+/-! ### Exact finite-rectangle localization energy -/
+
+/-- The Riesz vector for the full-input Fourier functional.  It is the positive-phase plane wave
+on the source interval and zero outside; conjugation in the complex inner product produces the
+negative Fourier phase. -/
+private theorem fullFourierRieszVector_memLp (x c d : ℝ) :
+    MemLp ((Set.Icc c d).indicator fun y : ℝ =>
+      Complex.exp ((2 * Real.pi * x * y : ℝ) * Complex.I)) 2
+      (volume : Measure ℝ) := by
+  apply (memLp_indicator_iff_restrict measurableSet_Icc).2
+  refine MemLp.of_bound (p := (2 : ENNReal)) ?_ 1 ?_
+  · exact (by fun_prop : Continuous fun y : ℝ =>
+      Complex.exp ((2 * Real.pi * x * y : ℝ) * Complex.I)).aestronglyMeasurable
+  · filter_upwards with y
+    rw [Complex.norm_exp_ofReal_mul_I]
+
+private def fullFourierRieszVector (x c d : ℝ) : RealL2 :=
+  (fullFourierRieszVector_memLp x c d).toLp
+    ((Set.Icc c d).indicator fun y : ℝ =>
+      Complex.exp ((2 * Real.pi * x * y : ℝ) * Complex.I))
+
+private theorem fullFourierRieszVector_coeFn (x c d : ℝ) :
+    (fullFourierRieszVector x c d : ℝ → ℂ) =ᵐ[volume]
+      (Set.Icc c d).indicator fun y : ℝ =>
+        Complex.exp ((2 * Real.pi * x * y : ℝ) * Complex.I) :=
+  MemLp.coeFn_toLp (fullFourierRieszVector_memLp x c d)
+
+/-- A finite Fourier functional is exactly the Riesz functional of its zero-extended plane-wave
+section. -/
+theorem fullFourierFunctionalContinuous_eq_toDual
+    (a b c d : ℝ) (x : Set.Icc a b) :
+    fullFourierFunctionalContinuous a b c d x =
+      InnerProductSpace.toDual ℂ RealL2 (fullFourierRieszVector (x : ℝ) c d) := by
+  apply ContinuousLinearMap.ext
+  intro f
+  rw [fullFourierFunctionalContinuous_apply,
+    InnerProductSpace.toDual_apply_apply, L2.inner_def,
+    ← integral_indicator measurableSet_Icc]
+  apply integral_congr_ae
+  filter_upwards [fullFourierRieszVector_coeFn (x : ℝ) c d] with y hy
+  rw [hy]
+  by_cases hymem : y ∈ Set.Icc c d
+  · simp only [Set.indicator_of_mem hymem]
+    rw [RCLike.inner_apply, ← Complex.exp_conj]
+    simp
+    ring
+  · simp [hymem, RCLike.inner_apply]
+
+/-- The Riesz vector has squared norm equal to the source-interval length. -/
+theorem norm_fullFourierRieszVector_sq (x c d : ℝ) (hcd : c ≤ d) :
+    ‖fullFourierRieszVector x c d‖ ^ 2 = d - c := by
+  rw [HTGeometry.norm_l2_sq_eq_integral_norm_sq]
+  calc
+    ∫ y, ‖fullFourierRieszVector x c d y‖ ^ 2 ∂volume =
+        ∫ y in Set.Icc c d, (1 : ℝ) ∂volume := by
+      rw [← integral_indicator measurableSet_Icc]
+      apply integral_congr_ae
+      filter_upwards [fullFourierRieszVector_coeFn x c d] with y hy
+      rw [hy]
+      by_cases hymem : y ∈ Set.Icc c d
+      · simp [hymem, Complex.norm_exp_ofReal_mul_I]
+      · simp [hymem]
+    _ = d - c := by
+      simp [setIntegral_const, measureReal_def, Real.volume_Icc,
+        ENNReal.toReal_ofReal (sub_nonneg.mpr hcd)]
+
+/-- Every Fourier functional in the output interval has the same squared norm: the length of the
+source interval. -/
+theorem norm_fullFourierFunctionalContinuous_sq
+    (a b c d : ℝ) (x : Set.Icc a b) (hcd : c ≤ d) :
+    ‖fullFourierFunctionalContinuous a b c d x‖ ^ 2 = d - c := by
+  rw [fullFourierFunctionalContinuous_eq_toDual,
+    (InnerProductSpace.toDual ℂ RealL2).norm_map,
+    norm_fullFourierRieszVector_sq _ _ _ hcd]
+
+/-- **Time--frequency area law for the functional field.**  Its `L²` energy is the product of
+the output-interval and source-interval lengths. -/
+theorem norm_fullFourierFunctionalField_sq
+    (a b c d : ℝ) (hab : a ≤ b) (hcd : c ≤ d) :
+    ‖fullFourierFunctionalField a b c d hab‖ ^ 2 = (b - a) * (d - c) := by
+  rw [HTGeometry.norm_l2_sq_eq_integral_norm_sq]
+  calc
+    ∫ x, ‖fullFourierFunctionalField a b c d hab x‖ ^ 2
+        ∂((volume : Measure ℝ).restrict (Set.Icc a b)) =
+        ∫ _ : ℝ, (d - c)
+          ∂((volume : Measure ℝ).restrict (Set.Icc a b)) := by
+      apply integral_congr_ae
+      filter_upwards [
+        BoundedContinuousFunction.coeFn_toLp (𝕜 := ℂ) (p := (2 : ENNReal))
+          (μ := (volume : Measure ℝ).restrict (Set.Icc a b))
+          (fullFourierFunctionalBCF a b c d hab),
+        ae_restrict_mem measurableSet_Icc
+      ] with x hfield hx
+      rw [fullFourierFunctionalField, hfield]
+      change ‖fullFourierFunctionalContinuous a b c d (Set.projIcc a b hab x)‖ ^ 2 = _
+      rw [Set.projIcc_of_mem hab hx,
+        norm_fullFourierFunctionalContinuous_sq a b c d ⟨x, hx⟩ hcd]
+    _ = (b - a) * (d - c) := by
+      simp [integral_const, measureReal_def, Real.volume_Icc,
+        ENNReal.toReal_ofReal (sub_nonneg.mpr hab)]
+      ring
 
 /-- The full-input finite time-band operator into the restricted output `L²` space is
 Hilbert--Schmidt. -/
@@ -226,6 +430,18 @@ theorem isHilbertSchmidt_fullToRestrictedTimeBandFourier
   isHilbertSchmidt_kernelOperator ((volume : Measure ℝ).restrict (Set.Icc a b))
     (fullFourierFunctionalField a b c d hab)
 
+/-- **Shannon time--band area law.**  With the unitary Fourier convention
+`exp (-2πixy)`, the squared Hilbert--Schmidt norm of a finite rectangle is exactly its
+time--frequency area. -/
+theorem hsNormSq_fullToRestrictedTimeBandFourier_eq_rectangleArea
+    (a b c d : ℝ) (hab : a ≤ b) (hcd : c ≤ d) :
+    ContinuousLinearMap.hsNormSq
+        (fullToRestrictedTimeBandFourier a b c d hab) =
+      (b - a) * (d - c) := by
+  rw [fullToRestrictedTimeBandFourier,
+    hsNormSq_kernelOperator_eq_norm_sq,
+    norm_fullFourierFunctionalField_sq a b c d hab hcd]
+
 /-- Extension by zero preserves the Hilbert--Schmidt finite time-band operator. -/
 theorem isHilbertSchmidt_fullTimeBandFourier
     (a b c d : ℝ) (hab : a ≤ b) :
@@ -234,12 +450,42 @@ theorem isHilbertSchmidt_fullTimeBandFourier
     (lpExtendByZeroCLM (F := ℂ) (𝕜 := ℂ) (volume : Measure ℝ) 2
       (Set.Icc a b) measurableSet_Icc)
 
+/-- Extension by zero preserves the exact rectangle energy. -/
+theorem hsNormSq_fullTimeBandFourier_eq_rectangleArea
+    (a b c d : ℝ) (hab : a ≤ b) (hcd : c ≤ d) :
+    ContinuousLinearMap.hsNormSq (fullTimeBandFourier a b c d hab) =
+      (b - a) * (d - c) := by
+  let T := fullToRestrictedTimeBandFourier a b c d hab
+  let A := lpExtendByZeroCLM (F := ℂ) (𝕜 := ℂ) (volume : Measure ℝ) 2
+    (Set.Icc a b) measurableSet_Icc
+  have hT : ContinuousLinearMap.IsHilbertSchmidt T := by
+    simpa [T] using isHilbertSchmidt_fullToRestrictedTimeBandFourier a b c d hab
+  calc
+    ContinuousLinearMap.hsNormSq (fullTimeBandFourier a b c d hab) =
+        ContinuousLinearMap.hsNormSq (A ∘L T) := by rfl
+    _ = ContinuousLinearMap.hsNormSq T := by
+      apply ContinuousLinearMap.hsNormSq_comp_left_eq_of_norm_map hT A
+      intro f
+      exact norm_lpExtendByZero (F := ℂ) (volume : Measure ℝ) 2
+        (Set.Icc a b) measurableSet_Icc f
+    _ = (b - a) * (d - c) := by
+      simpa [T] using
+        hsNormSq_fullToRestrictedTimeBandFourier_eq_rectangleArea a b c d hab hcd
+
 /-- The concrete cutoff--Fourier--cutoff operator on `L²(ℝ)` is Hilbert--Schmidt. -/
 theorem isHilbertSchmidt_cutoffFourierCutoff
     (a b c d : ℝ) (hab : a ≤ b) :
     ContinuousLinearMap.IsHilbertSchmidt (cutoffFourierCutoff a b c d) := by
   rw [← fullTimeBandFourier_eq_cutoffFourierCutoff a b c d hab]
   exact isHilbertSchmidt_fullTimeBandFourier a b c d hab
+
+/-- Exact time--frequency area of the concrete cutoff--Fourier--cutoff operator. -/
+theorem hsNormSq_cutoffFourierCutoff_eq_rectangleArea
+    (a b c d : ℝ) (hab : a ≤ b) (hcd : c ≤ d) :
+    ContinuousLinearMap.hsNormSq (cutoffFourierCutoff a b c d) =
+      (b - a) * (d - c) := by
+  rw [← fullTimeBandFourier_eq_cutoffFourierCutoff a b c d hab]
+  exact hsNormSq_fullTimeBandFourier_eq_rectangleArea a b c d hab hcd
 
 /-- The Fourier-then-physical central cutoff block is Hilbert--Schmidt. -/
 theorem isHilbertSchmidt_fourierCutoff_indicatorCutoff_central
@@ -261,6 +507,37 @@ theorem isHilbertSchmidt_fourierCutoff_indicatorCutoff_central
     rfl
   rw [hEq]
   exact hK.comp_left U
+
+/-- The central Fourier-after-physical overlap has exact energy equal to the area of its
+time--frequency rectangle. -/
+theorem hsNormSq_fourierCutoff_indicatorCutoff_central
+    (s t : ℝ) (hs : 0 < s) (ht : 0 < t) :
+    ContinuousLinearMap.hsNormSq
+        (fourierCutoff (centralInterval s) (measurableSet_centralInterval s) *
+          indicatorCutoff (centralInterval t) (measurableSet_centralInterval t)) =
+      4 * s * t := by
+  let U : SoninL2 →L[Complex] SoninL2 :=
+    fourierUnitary.symm.toLinearIsometry.toContinuousLinearMap
+  let K : SoninL2 →L[Complex] SoninL2 := cutoffFourierCutoff (-s) s (-t) t
+  have hK : ContinuousLinearMap.IsHilbertSchmidt K := by
+    simpa [K] using isHilbertSchmidt_cutoffFourierCutoff (-s) s (-t) t (by linarith)
+  have hEq :
+      fourierCutoff (centralInterval s) (measurableSet_centralInterval s) *
+          indicatorCutoff (centralInterval t) (measurableSet_centralInterval t) =
+        U * K := by
+    apply ContinuousLinearMap.ext
+    intro f
+    rfl
+  rw [hEq]
+  calc
+    ContinuousLinearMap.hsNormSq (U * K) = ContinuousLinearMap.hsNormSq K := by
+      simpa only [ContinuousLinearMap.mul_def] using
+        ContinuousLinearMap.hsNormSq_comp_left_eq_of_norm_map hK U
+          (fun f => fourierUnitary.symm.norm_map f)
+    _ = (s - (-s)) * (t - (-t)) := by
+      simpa [K] using hsNormSq_cutoffFourierCutoff_eq_rectangleArea
+        (-s) s (-t) t (by linarith) (by linarith)
+    _ = 4 * s * t := by ring
 
 /-- The physical-then-Fourier central cutoff block is Hilbert--Schmidt. -/
 theorem isHilbertSchmidt_indicatorCutoff_fourierCutoff_central
@@ -320,6 +597,25 @@ theorem centralSoninProjectionCorrection_isHilbertSchmidt
     ContinuousLinearMap.IsHilbertSchmidt (centralSoninProjectionCorrection a) :=
   (centralSoninProjectionCorrection_mem_timeBandIdeal a ha).isHilbertSchmidt
 
+/-- The ordinary central Sonin time--band overlap has the exact Shannon area `4 a²`. -/
+theorem hsNormSq_centralTimeBandOverlap_eq_four_mul_sq
+    (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.hsNormSq
+        ((centralFourierForbidden a).starProjection *
+          (centralPhysicalForbidden a).starProjection) =
+      4 * a ^ 2 := by
+  calc
+    ContinuousLinearMap.hsNormSq
+        ((centralFourierForbidden a).starProjection *
+          (centralPhysicalForbidden a).starProjection) =
+        ContinuousLinearMap.hsNormSq
+          (fourierCutoff (centralInterval a) (measurableSet_centralInterval a) *
+            indicatorCutoff (centralInterval a) (measurableSet_centralInterval a)) := by
+      rw [fourierCutoff_eq_fourierForbidden_starProjection,
+        indicatorCutoff_eq_physicalForbidden_starProjection]
+    _ = 4 * a * a := hsNormSq_fourierCutoff_indicatorCutoff_central a a ha ha
+    _ = 4 * a ^ 2 := by ring
+
 /-- The outside-time/outside-band overlap after subtracting the actual common-kernel projector.
 Together with the ordinary time-band overlap, this is the second positive channel in the exact
 Hilbert--Schmidt energy of the Sonin correction. -/
@@ -328,6 +624,28 @@ def centralSoninExteriorOverlap (a : ℝ) : SoninL2 →L[Complex] SoninL2 :=
     (centralPhysicalForbidden a).starProjection
     (centralFourierForbidden a).starProjection
     (centralSoninProjection a)
+
+/-- The common-kernel-subtracted positive compression in the exterior Fourier sector.  Its
+interior supersymmetric partner is the existing prolate block
+`soninAlternatingBlock (centralPhysicalForbidden a) (centralFourierForbidden a)`. -/
+def centralSoninExteriorCompression (a : ℝ) : SoninL2 →L[Complex] SoninL2 :=
+  HTGeometry.twoProjectionExteriorCompression
+    (centralFourierForbidden a).starProjection
+    (centralPhysicalForbidden a).starProjection
+    (centralSoninProjection a)
+
+/-- The exterior compression is the alternating block of the complementary forbidden sectors
+with its full eigenvalue-one carrier projected away. -/
+theorem centralSoninExteriorCompression_eq_complementaryAlternatingBlock_sub_carrier
+    (a : ℝ) :
+    centralSoninExteriorCompression a =
+      soninAlternatingBlock (centralPhysicalForbidden a).orthogonal
+          (centralFourierForbidden a).orthogonal -
+        centralSoninProjection a := by
+  rw [centralSoninExteriorCompression, HTGeometry.twoProjectionExteriorCompression,
+    soninAlternatingBlock,
+    (centralPhysicalForbidden a).starProjection_orthogonal',
+    (centralFourierForbidden a).starProjection_orthogonal']
 
 /-- The zero-mode-subtracted exterior time-band overlap is Hilbert--Schmidt. -/
 theorem centralSoninExteriorOverlap_isHilbertSchmidt
@@ -350,6 +668,161 @@ theorem centralSoninExteriorOverlap_isHilbertSchmidt
       isHilbertSchmidt_fourierCutoff_indicatorCutoff_central a a ha
   simpa only [centralSoninExteriorOverlap, P, R, Q, A, B] using
     HTGeometry.twoProjectionExteriorOverlap_isHilbertSchmidt P R Q hC hRP
+
+/-- The exterior positive compression is Hilbert--Schmidt with no new analytic hypothesis. -/
+theorem centralSoninExteriorCompression_isHilbertSchmidt
+    (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.IsHilbertSchmidt (centralSoninExteriorCompression a) := by
+  let A := centralPhysicalForbidden a
+  let B := centralFourierForbidden a
+  let P : SoninL2 →L[ℂ] SoninL2 := B.starProjection
+  let R : SoninL2 →L[ℂ] SoninL2 := A.starProjection
+  let Q : SoninL2 →L[ℂ] SoninL2 := centralSoninProjection a
+  have hP : IsIdempotentElem P := B.isIdempotentElem_starProjection
+  have hPadj : ContinuousLinearMap.adjoint P = P :=
+    (isSelfAdjoint_starProjection B).star_eq
+  have hRadj : ContinuousLinearMap.adjoint R = R :=
+    (isSelfAdjoint_starProjection A).star_eq
+  have hSwap : Q - (1 - P - R) = Q - (1 - R - P) := by
+    noncomm_ring
+  have hC : ContinuousLinearMap.IsHilbertSchmidt (Q - (1 - P - R)) := by
+    rw [hSwap]
+    simpa only [P, R, Q, A, B, centralSoninProjectionCorrection,
+      indicatorCutoff_eq_physicalForbidden_starProjection,
+      fourierCutoff_eq_fourierForbidden_starProjection] using
+      centralSoninProjectionCorrection_isHilbertSchmidt a ha
+  have hRP : ContinuousLinearMap.IsHilbertSchmidt (R * P) := by
+    simpa only [P, R, A, B, centralPhysicalForbidden, centralFourierForbidden,
+      indicatorCutoff_eq_physicalForbidden_starProjection,
+      fourierCutoff_eq_fourierForbidden_starProjection] using
+      isHilbertSchmidt_indicatorCutoff_fourierCutoff_central a a ha
+  have hD := HTGeometry.twoProjectionExteriorOverlap_isHilbertSchmidt P R Q hC hRP
+  simpa only [centralSoninExteriorCompression, P, R, Q, A, B] using
+    HTGeometry.twoProjectionExteriorCompression_isHilbertSchmidt
+      P R Q hP hPadj hRadj hRP hD
+
+/-- The zero-mode-subtracted exterior compression is a strict contraction.  Compactness comes
+from its Hilbert--Schmidt realization.  Positivity and contractivity come from compressing the
+complementary alternating block away from its common carrier, and every eigenvalue-one vector of
+that block lies in the carrier that was subtracted. -/
+theorem norm_centralSoninExteriorCompression_lt_one
+    (a : ℝ) (ha : 0 < a) :
+    ‖centralSoninExteriorCompression a‖ < 1 := by
+  let A : Submodule ℂ SoninL2 := centralPhysicalForbidden a
+  let B : Submodule ℂ SoninL2 := centralFourierForbidden a
+  let W : Submodule ℂ SoninL2 := A.orthogonal ⊓ B.orthogonal
+  let T : SoninL2 →L[ℂ] SoninL2 := soninAlternatingBlock A.orthogonal B.orthogonal
+  let Z : SoninL2 →L[ℂ] SoninL2 := W.starProjection
+  let Q : SoninL2 →L[ℂ] SoninL2 := W.orthogonal.starProjection
+  let E : SoninL2 →L[ℂ] SoninL2 := centralSoninExteriorCompression a
+  have hEeq : E = T - Z := by
+    simpa only [E, T, Z, W, A, B, centralSoninProjection, centralSoninCarrier] using
+      centralSoninExteriorCompression_eq_complementaryAlternatingBlock_sub_carrier a
+  have hZZ : Z * Z = Z := by
+    exact W.isIdempotentElem_starProjection
+  have hZadj : ContinuousLinearMap.adjoint Z = Z :=
+    (isSelfAdjoint_starProjection W).star_eq
+  have hTadj : ContinuousLinearMap.adjoint T = T := by
+    dsimp only [T, soninAlternatingBlock]
+    change ContinuousLinearMap.adjoint
+        ((B.orthogonal.starProjection ∘L A.orthogonal.starProjection) ∘L
+          B.orthogonal.starProjection) = _
+    rw [ContinuousLinearMap.adjoint_comp, ContinuousLinearMap.adjoint_comp,
+      (isSelfAdjoint_starProjection B.orthogonal).star_eq,
+      (isSelfAdjoint_starProjection A.orthogonal).star_eq]
+    simp only [mul_assoc]
+  have hTZ : T * Z = Z := by
+    apply ContinuousLinearMap.ext
+    intro x
+    have hxW := W.starProjection_apply_mem x
+    change B.orthogonal.starProjection
+        (A.orthogonal.starProjection (B.orthogonal.starProjection (W.starProjection x))) =
+      W.starProjection x
+    rw [B.orthogonal.starProjection_eq_self_iff.mpr hxW.2,
+      A.orthogonal.starProjection_eq_self_iff.mpr hxW.1,
+      B.orthogonal.starProjection_eq_self_iff.mpr hxW.2]
+  have hZT : Z * T = Z := by
+    calc
+      Z * T = ContinuousLinearMap.adjoint (T * Z) := by
+        change Z ∘L T = ContinuousLinearMap.adjoint (T ∘L Z)
+        rw [ContinuousLinearMap.adjoint_comp, hZadj, hTadj]
+      _ = ContinuousLinearMap.adjoint Z := by rw [hTZ]
+      _ = Z := hZadj
+  have hQeq : Q = 1 - Z := by
+    simpa only [Q, Z] using W.starProjection_orthogonal'
+  have hEcompression : E = Q * T * Q := by
+    rw [hEeq, hQeq]
+    noncomm_ring [hZZ, hTZ, hZT]
+  have hle : ‖E‖ ≤ 1 := by
+    rw [hEcompression]
+    calc
+      ‖Q * T * Q‖ ≤ ‖Q * T‖ * ‖Q‖ := norm_mul_le _ _
+      _ ≤ (‖Q‖ * ‖T‖) * ‖Q‖ := by
+        gcongr
+        exact norm_mul_le Q T
+      _ ≤ (1 * 1) * 1 := by
+        gcongr
+        · exact Submodule.starProjection_norm_le W.orthogonal
+        · exact norm_soninAlternatingBlock_le_one A.orthogonal B.orthogonal
+        · exact Submodule.starProjection_norm_le W.orthogonal
+      _ = 1 := by norm_num
+  have hsymm : (E : SoninL2 →ₗ[ℂ] SoninL2).IsSymmetric := by
+    rw [hEcompression]
+    intro x y
+    change inner ℂ (Q (T (Q x))) y = inner ℂ x (Q (T (Q y)))
+    dsimp only [Q]
+    rw [W.orthogonal.inner_starProjection_left_eq_right,
+      ← W.orthogonal.inner_starProjection_left_eq_right]
+    exact soninAlternatingBlock_isSymmetric A.orthogonal B.orthogonal _ _
+  have hnonneg : ∀ x, 0 ≤ Complex.re (inner ℂ x (E x)) := by
+    intro x
+    rw [hEcompression]
+    change 0 ≤ Complex.re (inner ℂ x (Q (T (Q x))))
+    dsimp only [Q]
+    rw [← W.orthogonal.inner_starProjection_left_eq_right]
+    exact soninAlternatingBlock_re_inner_nonneg A.orthogonal B.orthogonal _
+  have hZE : Z * E = 0 := by
+    rw [hEeq]
+    noncomm_ring [hZZ, hZT]
+  have hno : ¬ Module.End.HasEigenvalue (E : SoninL2 →ₗ[ℂ] SoninL2) 1 := by
+    intro heig
+    obtain ⟨x, hx, hxne⟩ := heig.exists_hasEigenvector
+    simp only [Module.End.mem_genEigenspace_one, one_smul] at hx
+    have hZx : Z x = 0 := by
+      calc
+        Z x = Z (E x) := congrArg Z hx.symm
+        _ = (Z * E) x := rfl
+        _ = 0 := by rw [hZE]; rfl
+    have hTx : T x = x := by
+      have hx' := hx
+      rw [hEeq] at hx'
+      change T x - Z x = x at hx'
+      simpa only [hZx, sub_zero] using hx'
+    have hxW : x ∈ W := by
+      simpa only [W, T] using
+        mem_inf_of_soninAlternatingBlock_apply_eq_self A.orthogonal B.orthogonal hTx
+    have hZfix : Z x = x := by
+      exact W.starProjection_eq_self_iff.mpr hxW
+    exact hxne (hZfix.symm.trans hZx)
+  change ‖E‖ < 1
+  exact norm_lt_one_of_compact_of_symmetric_of_nonnegative_of_not_eigenvalue_one
+    E hle (centralSoninExteriorCompression_isHilbertSchmidt a ha).isCompactOperator
+    hsymm hnonneg hno
+
+/-- The central alternating/prolate block is Hilbert--Schmidt. -/
+theorem centralSoninAlternatingBlock_isHilbertSchmidt
+    (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.IsHilbertSchmidt
+      (soninAlternatingBlock (centralPhysicalForbidden a) (centralFourierForbidden a)) := by
+  have hFX : ContinuousLinearMap.IsHilbertSchmidt
+      ((centralFourierForbidden a).starProjection *
+        (centralPhysicalForbidden a).starProjection) := by
+    simpa only [centralPhysicalForbidden, centralFourierForbidden,
+      indicatorCutoff_eq_physicalForbidden_starProjection,
+      fourierCutoff_eq_fourierForbidden_starProjection] using
+      isHilbertSchmidt_fourierCutoff_indicatorCutoff_central a a ha
+  simpa only [soninAlternatingBlock, mul_assoc] using
+    hFX.comp_right (centralFourierForbidden a).starProjection
 
 /-- **Sonin time-band correction energy split.**  The exact projection-correction energy is the
 sum of the ordinary time-band overlap energy and the common-kernel-subtracted exterior overlap
@@ -395,6 +868,455 @@ theorem hsNormSq_centralSoninProjectionCorrection_eq_timeBand_add_exterior
     centralSoninExteriorOverlap,
     indicatorCutoff_eq_physicalForbidden_starProjection,
     fourierCutoff_eq_fourierForbidden_starProjection] using hsplit
+
+/-- **Sonin supersymmetric partition.**  The correction energy is the sum of the existing
+prolate-block energy, the exterior compressed energy, and twice the physical-to-Fourier
+transition energy.  The last value is the free-fermion number variance already present in the
+prolate commutator surface. -/
+theorem hsNormSq_centralSoninProjectionCorrection_eq_compressions_add_two_mul_transition
+    (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.hsNormSq (centralSoninProjectionCorrection a) =
+      ContinuousLinearMap.hsNormSq
+          (soninAlternatingBlock (centralPhysicalForbidden a)
+            (centralFourierForbidden a)) +
+        ContinuousLinearMap.hsNormSq (centralSoninExteriorCompression a) +
+          2 * ContinuousLinearMap.hsNormSq
+            (crossBoundary (centralFourierForbidden a).starProjection
+              (centralPhysicalForbidden a).starProjection) := by
+  let A := centralPhysicalForbidden a
+  let B := centralFourierForbidden a
+  let P : SoninL2 →L[ℂ] SoninL2 := B.starProjection
+  let R : SoninL2 →L[ℂ] SoninL2 := A.starProjection
+  let Q : SoninL2 →L[ℂ] SoninL2 := centralSoninProjection a
+  have hP : IsIdempotentElem P := B.isIdempotentElem_starProjection
+  have hR : IsIdempotentElem R := A.isIdempotentElem_starProjection
+  have hPadj : ContinuousLinearMap.adjoint P = P :=
+    (isSelfAdjoint_starProjection B).star_eq
+  have hRadj : ContinuousLinearMap.adjoint R = R :=
+    (isSelfAdjoint_starProjection A).star_eq
+  have hQadj : ContinuousLinearMap.adjoint Q = Q := by
+    dsimp only [Q, centralSoninProjection, centralSoninCarrier]
+    exact (isSelfAdjoint_starProjection (Aᵮ ⊓ Bᵮ)).star_eq
+  have hPQ : P * Q = 0 := by
+    apply ContinuousLinearMap.ext
+    intro x
+    change B.starProjection ((Aᵮ ⊓ Bᵮ).starProjection x) = 0
+    apply B.starProjection_apply_eq_zero_iff.mpr
+    exact ((Aᵮ ⊓ Bᵮ).starProjection_apply_mem x).2
+  have hZP : Q * P = 0 := by
+    calc
+      Q * P = ContinuousLinearMap.adjoint (P * Q) := by
+        change Q ∘L P = ContinuousLinearMap.adjoint (P ∘L Q)
+        rw [ContinuousLinearMap.adjoint_comp, hQadj, hPadj]
+      _ = 0 := by rw [hPQ]; simp
+  have hRZ : R * Q = 0 := by
+    apply ContinuousLinearMap.ext
+    intro x
+    change A.starProjection ((Aᵮ ⊓ Bᵮ).starProjection x) = 0
+    apply A.starProjection_apply_eq_zero_iff.mpr
+    exact ((Aᵮ ⊓ Bᵮ).starProjection_apply_mem x).1
+  have hSwap : Q - (1 - P - R) = Q - (1 - R - P) := by
+    noncomm_ring
+  have hC : ContinuousLinearMap.IsHilbertSchmidt (Q - (1 - P - R)) := by
+    rw [hSwap]
+    simpa only [P, R, Q, A, B, centralSoninProjectionCorrection,
+      indicatorCutoff_eq_physicalForbidden_starProjection,
+      fourierCutoff_eq_fourierForbidden_starProjection] using
+      centralSoninProjectionCorrection_isHilbertSchmidt a ha
+  have hRP : ContinuousLinearMap.IsHilbertSchmidt (R * P) := by
+    simpa only [P, R, A, B, centralPhysicalForbidden, centralFourierForbidden,
+      indicatorCutoff_eq_physicalForbidden_starProjection,
+      fourierCutoff_eq_fourierForbidden_starProjection] using
+      isHilbertSchmidt_indicatorCutoff_fourierCutoff_central a a ha
+  have hpartition :=
+    HTGeometry.hsNormSq_twoProjection_correctedComplement_eq_compressions_add_two_mul_transition
+      P R Q hP hR hPadj hRadj hQadj hZP hRZ hC hRP
+  rw [hSwap] at hpartition
+  simpa only [P, R, Q, A, B, centralSoninProjectionCorrection,
+    centralSoninExteriorCompression, soninAlternatingBlock, crossBoundary,
+    HTGeometry.twoProjectionInteriorCompression,
+    HTGeometry.twoProjectionExteriorCompression,
+    HTGeometry.twoProjectionTransition,
+    indicatorCutoff_eq_physicalForbidden_starProjection,
+    fourierCutoff_eq_fourierForbidden_starProjection] using hpartition
+
+/-- The ordinary time-band overlap splits exactly into the squared prolate block and the
+free-fermion transition energy. -/
+theorem hsNormSq_centralTimeBandOverlap_eq_prolateBlock_add_transition
+    (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.hsNormSq
+        ((centralFourierForbidden a).starProjection *
+          (centralPhysicalForbidden a).starProjection) =
+      ContinuousLinearMap.hsNormSq
+          (soninAlternatingBlock (centralPhysicalForbidden a)
+            (centralFourierForbidden a)) +
+        ContinuousLinearMap.hsNormSq
+          (crossBoundary (centralFourierForbidden a).starProjection
+            (centralPhysicalForbidden a).starProjection) := by
+  let A := centralPhysicalForbidden a
+  let B := centralFourierForbidden a
+  let P : SoninL2 →L[ℂ] SoninL2 := B.starProjection
+  let R : SoninL2 →L[ℂ] SoninL2 := A.starProjection
+  have hP : IsIdempotentElem P := B.isIdempotentElem_starProjection
+  have hPadj : ContinuousLinearMap.adjoint P = P :=
+    (isSelfAdjoint_starProjection B).star_eq
+  have hRadj : ContinuousLinearMap.adjoint R = R :=
+    (isSelfAdjoint_starProjection A).star_eq
+  have hRP : ContinuousLinearMap.IsHilbertSchmidt (R * P) := by
+    simpa only [P, R, A, B, centralPhysicalForbidden, centralFourierForbidden,
+      indicatorCutoff_eq_physicalForbidden_starProjection,
+      fourierCutoff_eq_fourierForbidden_starProjection] using
+      isHilbertSchmidt_indicatorCutoff_fourierCutoff_central a a ha
+  have hAdj : ContinuousLinearMap.adjoint (R * P) = P * R := by
+    change ContinuousLinearMap.adjoint (R ∘L P) = P ∘L R
+    rw [ContinuousLinearMap.adjoint_comp, hPadj, hRadj]
+  have hNorm : hsNormSq (P * R) = hsNormSq (R * P) := by
+    rw [← hAdj]
+    exact hRP.hsNormSq_adjoint
+  have hsplit :=
+    HTGeometry.hsNormSq_twoProjection_overlap_eq_interiorCompression_add_transition
+      P R hP hPadj hRadj hRP
+  calc
+    hsNormSq
+        ((centralFourierForbidden a).starProjection *
+          (centralPhysicalForbidden a).starProjection) =
+        hsNormSq (R * P) := by
+      simpa only [P, R, A, B] using hNorm
+    _ = hsNormSq (HTGeometry.twoProjectionInteriorCompression P R) +
+          hsNormSq (HTGeometry.twoProjectionTransition P R) := hsplit
+    _ = hsNormSq
+          (soninAlternatingBlock (centralPhysicalForbidden a)
+            (centralFourierForbidden a)) +
+        hsNormSq
+          (crossBoundary (centralFourierForbidden a).starProjection
+            (centralPhysicalForbidden a).starProjection) := by
+      simp only [P, R, A, B, soninAlternatingBlock, crossBoundary,
+        HTGeometry.twoProjectionInteriorCompression, HTGeometry.twoProjectionTransition]
+
+/-- The former single exterior-overlap unknown is itself a positive two-channel value: the
+exterior compressed Hamiltonian plus the same transition/number-variance energy as the prolate
+sector. -/
+theorem hsNormSq_centralSoninExteriorOverlap_eq_exteriorCompression_add_transition
+    (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.hsNormSq (centralSoninExteriorOverlap a) =
+      ContinuousLinearMap.hsNormSq (centralSoninExteriorCompression a) +
+        ContinuousLinearMap.hsNormSq
+          (crossBoundary (centralFourierForbidden a).starProjection
+            (centralPhysicalForbidden a).starProjection) := by
+  have hCorrection :=
+    hsNormSq_centralSoninProjectionCorrection_eq_timeBand_add_exterior a ha
+  have hPartition :=
+    hsNormSq_centralSoninProjectionCorrection_eq_compressions_add_two_mul_transition a ha
+  have hTime := hsNormSq_centralTimeBandOverlap_eq_prolateBlock_add_transition a ha
+  linarith
+
+/-- **Concrete finite Witten-index descent.**  Equality of the interior and exterior overlap
+energies is now exactly equality of the squared prolate block and the squared exterior
+compression; the transition energy cancels with no spectral argument. -/
+theorem hsNormSq_centralTimeBandOverlap_add_exteriorCompression_eq_exteriorOverlap_add_prolateBlock
+    (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.hsNormSq
+          ((centralFourierForbidden a).starProjection *
+            (centralPhysicalForbidden a).starProjection) +
+        ContinuousLinearMap.hsNormSq (centralSoninExteriorCompression a) =
+      ContinuousLinearMap.hsNormSq (centralSoninExteriorOverlap a) +
+        ContinuousLinearMap.hsNormSq
+          (soninAlternatingBlock (centralPhysicalForbidden a)
+            (centralFourierForbidden a)) := by
+  rw [hsNormSq_centralTimeBandOverlap_eq_prolateBlock_add_transition a ha,
+    hsNormSq_centralSoninExteriorOverlap_eq_exteriorCompression_add_transition a ha]
+  ring
+
+/-- **All-power Sonin Witten cancellation.**  Every consecutive power difference of the prolate
+and exterior compressed Hamiltonians has the same trace.  Both sides are traces of products of
+Hilbert--Schmidt transition operators, never traces of the correction itself. -/
+theorem opTrace_centralProlatePowerDifference_eq_exteriorCompressionPowerDifference
+    (a : ℝ) (ha : 0 < a) (n : ℕ) :
+    ContinuousLinearMap.opTrace
+        (soninAlternatingBlock (centralPhysicalForbidden a)
+              (centralFourierForbidden a) ^ (n + 1) -
+          soninAlternatingBlock (centralPhysicalForbidden a)
+              (centralFourierForbidden a) ^ (n + 2)) =
+      ContinuousLinearMap.opTrace
+        (centralSoninExteriorCompression a ^ (n + 1) -
+          centralSoninExteriorCompression a ^ (n + 2)) := by
+  let A := centralPhysicalForbidden a
+  let B := centralFourierForbidden a
+  let P : SoninL2 →L[ℂ] SoninL2 := B.starProjection
+  let R : SoninL2 →L[ℂ] SoninL2 := A.starProjection
+  let Q : SoninL2 →L[ℂ] SoninL2 := centralSoninProjection a
+  have hP : IsIdempotentElem P := B.isIdempotentElem_starProjection
+  have hR : IsIdempotentElem R := A.isIdempotentElem_starProjection
+  have hQ : IsIdempotentElem Q := by
+    dsimp only [Q, centralSoninProjection, centralSoninCarrier]
+    exact (Aᵮ ⊓ Bᵮ).isIdempotentElem_starProjection
+  have hPadj : ContinuousLinearMap.adjoint P = P :=
+    (isSelfAdjoint_starProjection B).star_eq
+  have hRadj : ContinuousLinearMap.adjoint R = R :=
+    (isSelfAdjoint_starProjection A).star_eq
+  have hQadj : ContinuousLinearMap.adjoint Q = Q := by
+    dsimp only [Q, centralSoninProjection, centralSoninCarrier]
+    exact (isSelfAdjoint_starProjection (Aᵮ ⊓ Bᵮ)).star_eq
+  have hPZ : P * Q = 0 := by
+    apply ContinuousLinearMap.ext
+    intro x
+    change B.starProjection ((Aᵮ ⊓ Bᵮ).starProjection x) = 0
+    apply B.starProjection_apply_eq_zero_iff.mpr
+    exact ((Aᵮ ⊓ Bᵮ).starProjection_apply_mem x).2
+  have hZP : Q * P = 0 := by
+    calc
+      Q * P = ContinuousLinearMap.adjoint (P * Q) := by
+        change Q ∘L P = ContinuousLinearMap.adjoint (P ∘L Q)
+        rw [ContinuousLinearMap.adjoint_comp, hQadj, hPadj]
+      _ = 0 := by rw [hPZ]; simp
+  have hRZ : R * Q = 0 := by
+    apply ContinuousLinearMap.ext
+    intro x
+    change A.starProjection ((Aᵮ ⊓ Bᵮ).starProjection x) = 0
+    apply A.starProjection_apply_eq_zero_iff.mpr
+    exact ((Aᵮ ⊓ Bᵮ).starProjection_apply_mem x).1
+  have hZR : Q * R = 0 := by
+    calc
+      Q * R = ContinuousLinearMap.adjoint (R * Q) := by
+        change Q ∘L R = ContinuousLinearMap.adjoint (R ∘L Q)
+        rw [ContinuousLinearMap.adjoint_comp, hQadj, hRadj]
+      _ = 0 := by rw [hRZ]; simp
+  have hRP : ContinuousLinearMap.IsHilbertSchmidt (R * P) := by
+    simpa only [P, R, A, B, centralPhysicalForbidden, centralFourierForbidden,
+      indicatorCutoff_eq_physicalForbidden_starProjection,
+      fourierCutoff_eq_fourierForbidden_starProjection] using
+      isHilbertSchmidt_indicatorCutoff_fourierCutoff_central a a ha
+  have htrace :=
+    HTGeometry.opTrace_twoProjectionInteriorCompression_powerDifference_eq_exteriorCompression_powerDifference
+      P R Q hP hR hQ hPadj hRadj hPZ hZP hRZ hZR hRP n
+  simpa only [P, R, Q, A, B, soninAlternatingBlock,
+    centralSoninExteriorCompression, HTGeometry.twoProjectionInteriorCompression,
+    HTGeometry.twoProjectionExteriorCompression] using htrace
+
+/-- The first power difference gives equality of the prolate and exterior impurity traces. -/
+theorem opTrace_centralProlateImpurity_eq_exteriorCompressionImpurity
+    (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.opTrace
+        (soninAlternatingBlock (centralPhysicalForbidden a)
+              (centralFourierForbidden a) -
+          soninAlternatingBlock (centralPhysicalForbidden a)
+              (centralFourierForbidden a) *
+            soninAlternatingBlock (centralPhysicalForbidden a)
+              (centralFourierForbidden a)) =
+      ContinuousLinearMap.opTrace
+        (centralSoninExteriorCompression a -
+          centralSoninExteriorCompression a * centralSoninExteriorCompression a) := by
+  simpa only [zero_add, pow_one, pow_two] using
+    opTrace_centralProlatePowerDifference_eq_exteriorCompressionPowerDifference a ha 0
+
+/-- The difference of the prolate and exterior individual power traces is constant from degree
+two onward.  This is the finite telescoping invariant whose terminal limit would identify the two
+compressed Hilbert--Schmidt energies. -/
+theorem opTrace_centralProlate_sq_sub_exteriorCompression_sq_eq_power_sub_power
+    (a : ℝ) (ha : 0 < a) (n : ℕ) :
+    ContinuousLinearMap.opTrace
+          (soninAlternatingBlock (centralPhysicalForbidden a)
+            (centralFourierForbidden a) ^ 2) -
+        ContinuousLinearMap.opTrace (centralSoninExteriorCompression a ^ 2) =
+      ContinuousLinearMap.opTrace
+          (soninAlternatingBlock (centralPhysicalForbidden a)
+            (centralFourierForbidden a) ^ (n + 2)) -
+        ContinuousLinearMap.opTrace (centralSoninExteriorCompression a ^ (n + 2)) := by
+  let A : SoninL2 →L[ℂ] SoninL2 :=
+    soninAlternatingBlock (centralPhysicalForbidden a) (centralFourierForbidden a)
+  let E : SoninL2 →L[ℂ] SoninL2 := centralSoninExteriorCompression a
+  have hA : IsHilbertSchmidt A := by
+    simpa only [A] using centralSoninAlternatingBlock_isHilbertSchmidt a ha
+  have hE : IsHilbertSchmidt E := by
+    simpa only [E] using centralSoninExteriorCompression_isHilbertSchmidt a ha
+  change opTrace (A ^ 2) - opTrace (E ^ 2) =
+    opTrace (A ^ (n + 2)) - opTrace (E ^ (n + 2))
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      have hPowerDifference :=
+        opTrace_centralProlatePowerDifference_eq_exteriorCompressionPowerDifference
+          a ha (n + 1)
+      change opTrace (A ^ (n + 2) - A ^ (n + 3)) =
+          opTrace (E ^ (n + 2) - E ^ (n + 3)) at hPowerDifference
+      have hAlinear :=
+        HTGeometry.opTrace_pow_add_two_sub_pow_add_three_of_isHilbertSchmidt A hA n
+      have hElinear :=
+        HTGeometry.opTrace_pow_add_two_sub_pow_add_three_of_isHilbertSchmidt E hE n
+      rw [hAlinear, hElinear] at hPowerDifference
+      have hstep :
+          opTrace (A ^ (n + 2)) - opTrace (E ^ (n + 2)) =
+            opTrace (A ^ (n + 3)) - opTrace (E ^ (n + 3)) := by
+        linear_combination hPowerDifference
+      calc
+        opTrace (A ^ 2) - opTrace (E ^ 2) =
+            opTrace (A ^ (n + 2)) - opTrace (E ^ (n + 2)) := ih
+        _ = opTrace (A ^ (n + 3)) - opTrace (E ^ (n + 3)) := hstep
+        _ = opTrace (A ^ (Nat.succ n + 2)) -
+            opTrace (E ^ (Nat.succ n + 2)) := by
+          simp only [Nat.succ_eq_add_one, Nat.add_assoc]
+
+/-- The existing compact strict-contraction theorem for the central prolate block discharges its
+terminal power-trace limit. -/
+theorem tendsto_opTrace_centralSoninAlternatingBlock_pow_add_two_zero
+    (a : ℝ) (ha : 0 < a) :
+    Filter.Tendsto
+      (fun n : ℕ => ContinuousLinearMap.opTrace
+        (soninAlternatingBlock (centralPhysicalForbidden a)
+          (centralFourierForbidden a) ^ (n + 2)))
+      Filter.atTop (nhds 0) :=
+  ContinuousLinearMap.tendsto_opTrace_pow_add_two_zero_of_isHilbertSchmidt_norm_lt_one
+    (centralSoninAlternatingBlock_isHilbertSchmidt a ha)
+    (norm_centralSoninAlternatingBlock_lt_one a ha)
+
+/-- **Exterior strictness is the sole remaining supersymmetric hypothesis.**  If the new
+zero-mode-subtracted exterior compression is a strict contraction, the finite trace invariant and
+the two terminal power-trace limits identify its Hilbert--Schmidt energy with the prolate-block
+energy. -/
+theorem hsNormSq_centralSoninExteriorCompression_eq_prolateBlock_of_norm_lt_one
+    (a : ℝ) (ha : 0 < a)
+    (hExterior : ‖centralSoninExteriorCompression a‖ < 1) :
+    ContinuousLinearMap.hsNormSq (centralSoninExteriorCompression a) =
+      ContinuousLinearMap.hsNormSq
+        (soninAlternatingBlock (centralPhysicalForbidden a)
+          (centralFourierForbidden a)) := by
+  let A : SoninL2 →L[ℂ] SoninL2 :=
+    soninAlternatingBlock (centralPhysicalForbidden a) (centralFourierForbidden a)
+  let E : SoninL2 →L[ℂ] SoninL2 := centralSoninExteriorCompression a
+  let P : SoninL2 →L[ℂ] SoninL2 := (centralFourierForbidden a).starProjection
+  let R : SoninL2 →L[ℂ] SoninL2 := (centralPhysicalForbidden a).starProjection
+  let Q : SoninL2 →L[ℂ] SoninL2 := centralSoninProjection a
+  have hA : IsHilbertSchmidt A := by
+    simpa only [A] using centralSoninAlternatingBlock_isHilbertSchmidt a ha
+  have hE : IsHilbertSchmidt E := by
+    simpa only [E] using centralSoninExteriorCompression_isHilbertSchmidt a ha
+  have hAtend : Filter.Tendsto (fun n : ℕ => opTrace (A ^ (n + 2)))
+      Filter.atTop (nhds 0) := by
+    simpa only [A] using tendsto_opTrace_centralSoninAlternatingBlock_pow_add_two_zero a ha
+  have hEtend : Filter.Tendsto (fun n : ℕ => opTrace (E ^ (n + 2)))
+      Filter.atTop (nhds 0) :=
+    ContinuousLinearMap.tendsto_opTrace_pow_add_two_zero_of_isHilbertSchmidt_norm_lt_one
+      hE (by simpa only [E] using hExterior)
+  have hdiff : Filter.Tendsto
+      (fun n : ℕ => opTrace (A ^ (n + 2)) - opTrace (E ^ (n + 2)))
+      Filter.atTop (nhds 0) := by
+    simpa using hAtend.sub hEtend
+  have hInvariant (n : ℕ) :
+      opTrace (A ^ 2) - opTrace (E ^ 2) =
+        opTrace (A ^ (n + 2)) - opTrace (E ^ (n + 2)) := by
+    simpa only [A, E] using
+      opTrace_centralProlate_sq_sub_exteriorCompression_sq_eq_power_sub_power a ha n
+  have hconst : Filter.Tendsto
+      (fun _ : ℕ => opTrace (A ^ 2) - opTrace (E ^ 2))
+      Filter.atTop (nhds 0) :=
+    hdiff.congr' (Filter.Eventually.of_forall fun n => (hInvariant n).symm)
+  have htraceZero : opTrace (A ^ 2) - opTrace (E ^ 2) = 0 :=
+    tendsto_nhds_unique tendsto_const_nhds hconst
+  have htraceEq : opTrace (A ^ 2) = opTrace (E ^ 2) := sub_eq_zero.mp htraceZero
+  have hPadj : ContinuousLinearMap.adjoint P = P :=
+    (isSelfAdjoint_starProjection (centralFourierForbidden a)).star_eq
+  have hRadj : ContinuousLinearMap.adjoint R = R :=
+    (isSelfAdjoint_starProjection (centralPhysicalForbidden a)).star_eq
+  have hQadj : ContinuousLinearMap.adjoint Q = Q := by
+    dsimp only [Q, centralSoninProjection, centralSoninCarrier]
+    exact (isSelfAdjoint_starProjection
+      ((centralPhysicalForbidden a)ᵮ ⊓ (centralFourierForbidden a)ᵮ)).star_eq
+  have hAadj : ContinuousLinearMap.adjoint A = A := by
+    simpa only [A, P, R, soninAlternatingBlock,
+      HTGeometry.twoProjectionInteriorCompression] using
+      HTGeometry.adjoint_twoProjectionInteriorCompression P R hPadj hRadj
+  have hEadj : ContinuousLinearMap.adjoint E = E := by
+    simpa only [E, P, R, Q, centralSoninExteriorCompression] using
+      HTGeometry.adjoint_twoProjectionExteriorCompression P R Q hPadj hRadj hQadj
+  have hAenergy := ContinuousLinearMap.re_opTrace_adjoint_comp_self hA
+  have hEenergy := ContinuousLinearMap.re_opTrace_adjoint_comp_self hE
+  rw [hAadj] at hAenergy
+  rw [hEadj] at hEenergy
+  have hAtrace : Complex.re (opTrace (A ^ 2)) = hsNormSq A := by
+    simpa only [pow_two, ContinuousLinearMap.mul_def] using hAenergy
+  have hEtrace : Complex.re (opTrace (E ^ 2)) = hsNormSq E := by
+    simpa only [pow_two, ContinuousLinearMap.mul_def] using hEenergy
+  change hsNormSq E = hsNormSq A
+  calc
+    hsNormSq E = Complex.re (opTrace (E ^ 2)) := hEtrace.symm
+    _ = Complex.re (opTrace (A ^ 2)) := congrArg Complex.re htraceEq.symm
+    _ = hsNormSq A := hAtrace
+
+/-- Exterior strictness identifies the original two overlap energies, not only their compressed
+Hamiltonian factors.  The common transition/number-variance channel cancels exactly. -/
+theorem hsNormSq_centralSoninExteriorOverlap_eq_timeBand_of_exteriorCompression_norm_lt_one
+    (a : ℝ) (ha : 0 < a)
+    (hExterior : ‖centralSoninExteriorCompression a‖ < 1) :
+    ContinuousLinearMap.hsNormSq (centralSoninExteriorOverlap a) =
+      ContinuousLinearMap.hsNormSq
+        ((centralFourierForbidden a).starProjection *
+          (centralPhysicalForbidden a).starProjection) := by
+  rw [hsNormSq_centralSoninExteriorOverlap_eq_exteriorCompression_add_transition a ha,
+    hsNormSq_centralTimeBandOverlap_eq_prolateBlock_add_transition a ha,
+    hsNormSq_centralSoninExteriorCompression_eq_prolateBlock_of_norm_lt_one
+      a ha hExterior]
+
+/-- Under the sole remaining exterior-strictness condition, the full Sonin correction energy is
+exactly twice the ordinary finite time-band energy. -/
+theorem hsNormSq_centralSoninProjectionCorrection_eq_two_mul_timeBand_of_exteriorCompression_norm_lt_one
+    (a : ℝ) (ha : 0 < a)
+    (hExterior : ‖centralSoninExteriorCompression a‖ < 1) :
+    ContinuousLinearMap.hsNormSq (centralSoninProjectionCorrection a) =
+      2 * ContinuousLinearMap.hsNormSq
+        ((centralFourierForbidden a).starProjection *
+          (centralPhysicalForbidden a).starProjection) := by
+  rw [hsNormSq_centralSoninProjectionCorrection_eq_timeBand_add_exterior a ha,
+    hsNormSq_centralSoninExteriorOverlap_eq_timeBand_of_exteriorCompression_norm_lt_one
+      a ha hExterior]
+  ring
+
+/-- **Exact Sonin supersymmetric factor equality.**  The zero-mode-subtracted exterior and
+interior compressed Hamiltonians have the same Hilbert--Schmidt energy.  Exterior strictness is
+now discharged by the complementary-block carrier subtraction. -/
+theorem hsNormSq_centralSoninExteriorCompression_eq_prolateBlock
+    (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.hsNormSq (centralSoninExteriorCompression a) =
+      ContinuousLinearMap.hsNormSq
+        (soninAlternatingBlock (centralPhysicalForbidden a)
+          (centralFourierForbidden a)) :=
+  hsNormSq_centralSoninExteriorCompression_eq_prolateBlock_of_norm_lt_one
+    a ha (norm_centralSoninExteriorCompression_lt_one a ha)
+
+/-- The two original Sonin overlap channels have exactly the same Hilbert--Schmidt energy. -/
+theorem hsNormSq_centralSoninExteriorOverlap_eq_timeBand
+    (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.hsNormSq (centralSoninExteriorOverlap a) =
+      ContinuousLinearMap.hsNormSq
+        ((centralFourierForbidden a).starProjection *
+          (centralPhysicalForbidden a).starProjection) :=
+  hsNormSq_centralSoninExteriorOverlap_eq_timeBand_of_exteriorCompression_norm_lt_one
+    a ha (norm_centralSoninExteriorCompression_lt_one a ha)
+
+/-- The complete zero-mode-corrected Sonin projection energy is exactly twice the ordinary
+finite time-band energy. -/
+theorem hsNormSq_centralSoninProjectionCorrection_eq_two_mul_timeBand
+    (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.hsNormSq (centralSoninProjectionCorrection a) =
+      2 * ContinuousLinearMap.hsNormSq
+        ((centralFourierForbidden a).starProjection *
+          (centralPhysicalForbidden a).starProjection) :=
+  hsNormSq_centralSoninProjectionCorrection_eq_two_mul_timeBand_of_exteriorCompression_norm_lt_one
+    a ha (norm_centralSoninExteriorCompression_lt_one a ha)
+
+/-- The zero-mode-subtracted exterior overlap carries the same exact area `4 a²`. -/
+theorem hsNormSq_centralSoninExteriorOverlap_eq_four_mul_sq
+    (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.hsNormSq (centralSoninExteriorOverlap a) = 4 * a ^ 2 := by
+  rw [hsNormSq_centralSoninExteriorOverlap_eq_timeBand a ha,
+    hsNormSq_centralTimeBandOverlap_eq_four_mul_sq a ha]
+
+/-- The complete Sonin projection correction has exact Hilbert--Schmidt energy `8 a²`. -/
+theorem hsNormSq_centralSoninProjectionCorrection_eq_eight_mul_sq
+    (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.hsNormSq (centralSoninProjectionCorrection a) = 8 * a ^ 2 := by
+  rw [hsNormSq_centralSoninProjectionCorrection_eq_two_mul_timeBand a ha,
+    hsNormSq_centralTimeBandOverlap_eq_four_mul_sq a ha]
+  ring
 
 /-- The exact principal-subtracted ambient Sonin dilation residual is Hilbert--Schmidt. -/
 theorem centralSoninDilationCornerResidual_isHilbertSchmidt
@@ -649,6 +1571,60 @@ theorem centralSoninDilationCornerResidual_hsNormSq_le_timeBand_add_exterior
   rw [← hsNormSq_centralSoninProjectionCorrection_eq_timeBand_add_exterior a ha]
   exact centralSoninDilationCornerResidual_hsNormSq_le a p ha hp
 
+/-- Under exterior strictness, the residual bound has only the ordinary time-band energy on its
+right-hand side; the supersymmetric exterior partner contributes the same value. -/
+theorem centralSoninDilationCornerResidual_hsNormSq_le_timeBand_of_exteriorCompression_norm_lt_one
+    (a p : ℝ) (ha : 0 < a) (hp : 1 < p)
+    (hExterior : ‖centralSoninExteriorCompression a‖ < 1) :
+    ContinuousLinearMap.hsNormSq (centralSoninDilationCornerResidual a p hp) ≤
+      32 * ContinuousLinearMap.hsNormSq
+        ((centralFourierForbidden a).starProjection *
+          (centralPhysicalForbidden a).starProjection) := by
+  have hbound :=
+    centralSoninDilationCornerResidual_hsNormSq_le_timeBand_add_exterior a p ha hp
+  rw [hsNormSq_centralSoninExteriorOverlap_eq_timeBand_of_exteriorCompression_norm_lt_one
+    a ha hExterior] at hbound
+  nlinarith
+
+/-- The unconditional residual estimate after the exterior strictness hypothesis has been
+discharged. -/
+theorem centralSoninDilationCornerResidual_hsNormSq_le_timeBand
+    (a p : ℝ) (ha : 0 < a) (hp : 1 < p) :
+    ContinuousLinearMap.hsNormSq (centralSoninDilationCornerResidual a p hp) ≤
+      32 * ContinuousLinearMap.hsNormSq
+        ((centralFourierForbidden a).starProjection *
+          (centralPhysicalForbidden a).starProjection) :=
+  centralSoninDilationCornerResidual_hsNormSq_le_timeBand_of_exteriorCompression_norm_lt_one
+    a p ha hp (norm_centralSoninExteriorCompression_lt_one a ha)
+
+/-- The Shannon area law removes the last operator-valued quantity from the dilation-residual
+bound. -/
+theorem centralSoninDilationCornerResidual_hsNormSq_le_128_mul_sq
+    (a p : ℝ) (ha : 0 < a) (hp : 1 < p) :
+    ContinuousLinearMap.hsNormSq (centralSoninDilationCornerResidual a p hp) ≤
+      128 * a ^ 2 := by
+  have h := centralSoninDilationCornerResidual_hsNormSq_le_timeBand a p ha hp
+  rw [hsNormSq_centralTimeBandOverlap_eq_four_mul_sq a ha] at h
+  nlinarith
+
+/-- The residual estimate expressed entirely through the two positive compressed Hamiltonians
+and the already-existing prolate transition value.  This is the direct quantitative consumer of
+the finite Witten-index partition. -/
+theorem centralSoninDilationCornerResidual_hsNormSq_le_compressions_add_two_mul_transition
+    (a p : ℝ) (ha : 0 < a) (hp : 1 < p) :
+    ContinuousLinearMap.hsNormSq (centralSoninDilationCornerResidual a p hp) ≤
+      16 *
+        (ContinuousLinearMap.hsNormSq
+            (soninAlternatingBlock (centralPhysicalForbidden a)
+              (centralFourierForbidden a)) +
+          ContinuousLinearMap.hsNormSq (centralSoninExteriorCompression a) +
+            2 * ContinuousLinearMap.hsNormSq
+              (crossBoundary (centralFourierForbidden a).starProjection
+                (centralPhysicalForbidden a).starProjection)) := by
+  rw [← hsNormSq_centralSoninProjectionCorrection_eq_compressions_add_two_mul_transition
+    a ha]
+  exact centralSoninDilationCornerResidual_hsNormSq_le a p ha hp
+
 /-- Every actual prime-power residual block is Hilbert--Schmidt. -/
 theorem centralSoninPrimePowerResidual_isHilbertSchmidt
     (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ) :
@@ -676,6 +1652,32 @@ theorem centralSoninWeightedPrimePowerResidual_hsNormSq_le
     simp only [centralSoninPrimePowerResidual]
     nlinarith [sq_nonneg ‖soninLogPrimePowerCoefficient pk‖]
 
+/-- The weighted prime-power residual bound with the projection-correction and exterior energies
+both eliminated in favor of the ordinary finite time-band overlap. -/
+theorem centralSoninWeightedPrimePowerResidual_hsNormSq_le_timeBand
+    (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ) :
+    ContinuousLinearMap.hsNormSq (centralSoninWeightedPrimePowerResidual a pk) ≤
+      (32 * ContinuousLinearMap.hsNormSq
+          ((centralFourierForbidden a).starProjection *
+            (centralPhysicalForbidden a).starProjection)) *
+        ‖soninLogPrimePowerCoefficient pk‖ ^ 2 := by
+  open ContinuousLinearMap in
+    have hR := centralSoninPrimePowerResidual_isHilbertSchmidt a ha pk
+    rw [centralSoninWeightedPrimePowerResidual, hsNormSq_smul_eq hR]
+    have hbound := centralSoninDilationCornerResidual_hsNormSq_le_timeBand a
+      (soninPrimePowerScale pk) ha (one_lt_soninPrimePowerScale pk)
+    simp only [centralSoninPrimePowerResidual]
+    nlinarith [sq_nonneg ‖soninLogPrimePowerCoefficient pk‖]
+
+/-- Fully scalar weighted prime-power residual estimate obtained from the exact time--band area. -/
+theorem centralSoninWeightedPrimePowerResidual_hsNormSq_le_128_mul_sq
+    (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ) :
+    ContinuousLinearMap.hsNormSq (centralSoninWeightedPrimePowerResidual a pk) ≤
+      (128 * a ^ 2) * ‖soninLogPrimePowerCoefficient pk‖ ^ 2 := by
+  have h := centralSoninWeightedPrimePowerResidual_hsNormSq_le_timeBand a ha pk
+  rw [hsNormSq_centralTimeBandOverlap_eq_four_mul_sq a ha] at h
+  nlinarith [sq_nonneg ‖soninLogPrimePowerCoefficient pk‖]
+
 /-- **All-prime Hilbert--Schmidt energy summability.** The actual logarithmically weighted,
 principal-subtracted Sonin residuals have summable Hilbert--Schmidt energies over every prime
 power `p^(k+2)`.  This is the quantitative convergence input for the all-prime block assembly. -/
@@ -689,6 +1691,18 @@ theorem summable_centralSoninWeightedPrimePowerResidual_hsNormSq
       (centralSoninWeightedPrimePowerResidual_hsNormSq_le a ha)
     exact summable_norm_soninLogPrimePowerCoefficient_sq.mul_left
       (16 * hsNormSq (centralSoninProjectionCorrection a))
+
+/-- The all-prime residual energy has a scalar aperture majorant.  This is the global consumer of
+the local Shannon area law. -/
+theorem tsum_centralSoninWeightedPrimePowerResidual_hsNormSq_le_area
+    (a : ℝ) (ha : 0 < a) :
+    ∑' pk : Nat.Primes × ℕ,
+        ContinuousLinearMap.hsNormSq (centralSoninWeightedPrimePowerResidual a pk) ≤
+      (128 * a ^ 2) *
+        ∑' pk : Nat.Primes × ℕ, ‖soninLogPrimePowerCoefficient pk‖ ^ 2 := by
+  exact (summable_centralSoninWeightedPrimePowerResidual_hsNormSq a ha).tsum_le_tsum
+    (centralSoninWeightedPrimePowerResidual_hsNormSq_le_128_mul_sq a ha)
+    (summable_norm_soninLogPrimePowerCoefficient_sq.mul_left (128 * a ^ 2))
 
 /-- Every finite regularized prime-power section is Hilbert--Schmidt, with no operator-ideal
 hypothesis left to supply. -/

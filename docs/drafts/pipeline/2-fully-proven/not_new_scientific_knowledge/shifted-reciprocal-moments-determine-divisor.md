@@ -125,3 +125,15 @@ source data.
 `tail-e-zero-support-nonselector.md` applies the same compact moment-determinacy principle to the protector Hankel tail. The shifted reciprocal tower determines the divisor; likewise, a full Hankel tail supported on the shifted reciprocal zero support determines its signed representing measure.
 
 So the tail is zero-faithful in its own coordinate. It can record source finite-part anatomy, but it does not by itself provide the source theorem forcing the Stieltjes or boundary-index sign.
+
+## 2026-07-15 disk-Schur contrast
+
+`xi-radial-jensen-schur-capacity-rigidity.md` uses the same shifted reciprocal moments but changes
+the approximation geometry.  Mergelyan approximation on the divisor-dependent countable compact
+support can align arbitrary atom phases and is therefore zero-faithful.  Requiring one polynomial
+to be contractive on the fixed unit disk prevents that free phase interpolation.  The stronger
+source radius and sector bounds make the constant `1` the unconditional Schwarz--Pick extremizer:
+the Schur norm is exactly the zeroth source moment.  Its deficit from the radial Jensen mass is
+exactly half the global reflection energy.  Thus disk-Schur approximation compresses the complete
+moment tower to the holomorphic source curvature; the complementary adjoint/polar channel carries
+the orientation information.

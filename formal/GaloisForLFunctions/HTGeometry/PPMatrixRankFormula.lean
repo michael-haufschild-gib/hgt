@@ -39,12 +39,14 @@ noncomputable def ppDim (faces : A → Finset V) : ℕ :=
   sInf {d | ∃ (a : V → Fin d → ℂ), LinearIndependent ℚ a ∧
     ∃ (U : A → Fin d → ℂ), PPAdmissible faces (fun B v => ∑ i, U B i * a v i)}
 
+omit [DecidableEq V] in
 /-- Applying a `ℚ`-scaled sum of `ℂ^r`-vectors coordinatewise turns `ℚ`-smul into cast-mul. -/
 theorem smul_apply_sum {r : ℕ} (a : V → Fin r → ℂ) (q : V → ℚ) (i : Fin r) :
     (∑ v, (q v) • a v) i = ∑ v, (q v : ℂ) * a v i := by
   rw [Finset.sum_apply]
   exact Finset.sum_congr rfl fun v _ => by rw [Pi.smul_apply, Rat.smul_def]
 
+omit [DecidableEq V] [Fintype A] [DecidableEq A] in
 /-- **The rational-kernel bit reads off `ℚ`-independence of the coordinate map.**  For a factored
 matrix `M = U·a` with `ℂ`-independent `U`-columns, `epsQ M = 0` iff `a` is `ℚ`-linearly independent. -/
 theorem epsQ_eq_zero_iff {r : ℕ} (a : V → Fin r → ℂ) (U : A → Fin r → ℂ)
@@ -74,6 +76,7 @@ theorem epsQ_eq_zero_iff {r : ℕ} (a : V → Fin r → ℂ) (U : A → Fin r �
     funext v
     exact h q hsum v
 
+omit [DecidableEq V] [Fintype A] [DecidableEq A] in
 /-- A matrix whose rank equals its number of columns has `ℂ`-independent columns. -/
 theorem cols_linIndep_of_rank_eq {d : ℕ} (Um : Matrix A (Fin d) ℂ) (h : Um.rank = d) :
     LinearIndependent ℂ (fun i : Fin d => (fun B => Um B i : A → ℂ)) := by
@@ -81,6 +84,7 @@ theorem cols_linIndep_of_rank_eq {d : ℕ} (Um : Matrix A (Fin d) ℂ) (h : Um.r
   have hcol : (fun i : Fin d => (fun B => Um B i : A → ℂ)) = Um.col := rfl
   rw [Set.finrank, hcol, ← Matrix.rank_eq_finrank_span_cols, h, Fintype.card_fin]
 
+omit [DecidableEq V] [Fintype A] [DecidableEq A] in
 /-- **Pencil → matrix.**  A `ℚ`-independent translation config in `ℂ^d` has facet-evaluation cost
 `rank + epsQ ≤ d`: the rank is bounded by the column count, and at full rank `d` the coordinate
 independence forces `epsQ = 0`. -/
@@ -102,6 +106,7 @@ theorem config_to_cost {d : ℕ} (a : V → Fin d → ℂ) (U : A → Fin d → 
   · have heps1 : epsQ (fun B v => ∑ i, U B i * a v i) ≤ 1 := by rw [epsQ]; split_ifs <;> omega
     omega
 
+omit [DecidableEq V] [DecidableEq A] in
 /-- **Matrix → pencil.**  Every admissible facet-evaluation matrix `M` is realized by a
 `ℚ`-independent translation config of dimension `rank M + epsQ M`: factor `M = U·a`; when
 `epsQ M = 0` the columns of `a` are already `ℚ`-independent, and when `epsQ M = 1` one extra
@@ -136,6 +141,7 @@ theorem M_to_config (faces : A → Finset V) (M : A → V → ℂ) (hM : PPAdmis
     have hepsval : epsQ M = 0 ∨ epsQ M = 1 := by unfold epsQ; split_ifs <;> simp
     omega
 
+omit [DecidableEq V] [DecidableEq A] in
 /-- **Periodic-pencil dimension equals matrix rank plus the rational-kernel bit.**
 `ppDim Δ = min over admissible M of (rank M + epsQ M)`. -/
 theorem ppDim_eq_matrixCost (faces : A → Finset V) : ppDim faces = matrixCost faces := by

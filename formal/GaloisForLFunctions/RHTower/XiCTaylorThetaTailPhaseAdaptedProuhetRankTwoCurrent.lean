@@ -50,40 +50,38 @@ private theorem rankTwoSource_mul_symmetricHermitianPair_eq
     zero_mul, add_zero]
   ring
 
-/-- Fubini factorization for a symmetric rank-two real source coupled to the symmetric finite-core
-pair current. -/
-theorem integral_rankTwoSource_mul_xiCTaylorThetaTailCorePairCurrent_eq
-    (A E : ℝ → ℝ) (d : ℕ) (z : ℂ)
-    (hAV : IntegrableOn (fun x : ℝ => (A x : ℂ) *
-      thetaCuspTailSecondCoreAtom d z x) (Ioi 0))
-    (hAD : IntegrableOn (fun x : ℝ => (A x : ℂ) *
-      thetaCuspTailSecondCoreAtomDerivative d z x) (Ioi 0))
-    (hEV : IntegrableOn (fun x : ℝ => (E x : ℂ) *
-      thetaCuspTailSecondCoreAtom d z x) (Ioi 0))
-    (hED : IntegrableOn (fun x : ℝ => (E x : ℂ) *
-      thetaCuspTailSecondCoreAtomDerivative d z x) (Ioi 0)) :
+/-- Symmetric value--derivative pair current of an arbitrary one-variable complex kernel. -/
+def symmetricHermitianPairCurrentKernel
+    (V D : ℝ → ℂ) (p : ℝ × ℝ) : ℝ :=
+  ((D p.1 * (starRingEnd ℂ) (V p.2)).im +
+    (D p.2 * (starRingEnd ℂ) (V p.1)).im) / 2
+
+/-- Fubini factorization for a symmetric rank-two real source coupled to an arbitrary symmetric
+Hermitian value--derivative pair current. -/
+theorem integral_rankTwoSource_mul_symmetricHermitianPairCurrent_eq
+    (A E : ℝ → ℝ) (V D : ℝ → ℂ)
+    (hAV : IntegrableOn (fun x : ℝ => (A x : ℂ) * V x) (Ioi 0))
+    (hAD : IntegrableOn (fun x : ℝ => (A x : ℂ) * D x) (Ioi 0))
+    (hEV : IntegrableOn (fun x : ℝ => (E x : ℂ) * V x) (Ioi 0))
+    (hED : IntegrableOn (fun x : ℝ => (E x : ℂ) * D x) (Ioi 0)) :
     (∫ p : ℝ × ℝ,
       ((1 / 2 : ℝ) * (A p.1 * E p.2 + E p.1 * A p.2)) *
-        xiCTaylorThetaTailCorePairCurrent d z p
+        symmetricHermitianPairCurrentKernel V D p
         ∂((volume.restrict (Ioi 0)).prod (volume.restrict (Ioi 0)))) =
       (1 / 2 : ℝ) * symmetricHermitianCrossCurrentData
         (∫ x : ℝ in Ioi 0,
-          (A x : ℂ) * thetaCuspTailSecondCoreAtom d z x)
+          (A x : ℂ) * V x)
         (∫ x : ℝ in Ioi 0,
-          (A x : ℂ) * thetaCuspTailSecondCoreAtomDerivative d z x)
+          (A x : ℂ) * D x)
         (∫ x : ℝ in Ioi 0,
-          (E x : ℂ) * thetaCuspTailSecondCoreAtom d z x)
+          (E x : ℂ) * V x)
         (∫ x : ℝ in Ioi 0,
-          (E x : ℂ) * thetaCuspTailSecondCoreAtomDerivative d z x) := by
+          (E x : ℂ) * D x) := by
   let mu : Measure ℝ := volume.restrict (Ioi 0)
-  let aV : ℝ → ℂ := fun x => (A x : ℂ) *
-    thetaCuspTailSecondCoreAtom d z x
-  let aD : ℝ → ℂ := fun x => (A x : ℂ) *
-    thetaCuspTailSecondCoreAtomDerivative d z x
-  let eV : ℝ → ℂ := fun x => (E x : ℂ) *
-    thetaCuspTailSecondCoreAtom d z x
-  let eD : ℝ → ℂ := fun x => (E x : ℂ) *
-    thetaCuspTailSecondCoreAtomDerivative d z x
+  let aV : ℝ → ℂ := fun x => (A x : ℂ) * V x
+  let aD : ℝ → ℂ := fun x => (A x : ℂ) * D x
+  let eV : ℝ → ℂ := fun x => (E x : ℂ) * V x
+  let eD : ℝ → ℂ := fun x => (E x : ℂ) * D x
   let J : ℝ × ℝ → ℂ := fun p =>
     (1 / 2 : ℂ) *
       (aD p.1 * (starRingEnd ℂ) (eV p.2) +
@@ -126,18 +124,15 @@ theorem integral_rankTwoSource_mul_xiCTaylorThetaTailCorePairCurrent_eq
     ring
   have hpoint : (fun p : ℝ × ℝ =>
       ((1 / 2 : ℝ) * (A p.1 * E p.2 + E p.1 * A p.2)) *
-        xiCTaylorThetaTailCorePairCurrent d z p) =
+        symmetricHermitianPairCurrentKernel V D p) =
       fun p : ℝ × ℝ => (K p + K p.swap) / 2 := by
     funext p
     rcases p with ⟨x, y⟩
-    simp only [xiCTaylorThetaTailCorePairCurrent, K, J, aV, aD, eV, eD,
-      Prod.fst, Prod.snd, Prod.swap_prod_mk]
+    simp only [symmetricHermitianPairCurrentKernel, K, J, aV, aD, eV, eD,
+      Prod.swap_prod_mk]
     convert rankTwoSource_mul_symmetricHermitianPair_eq
         (A x) (A y) (E x) (E y)
-        (thetaCuspTailSecondCoreAtom d z x)
-        (thetaCuspTailSecondCoreAtom d z y)
-        (thetaCuspTailSecondCoreAtomDerivative d z x)
-        (thetaCuspTailSecondCoreAtomDerivative d z y) using 1 <;> ring
+        (V x) (V y) (D x) (D y) using 1 <;> ring
   rw [hpoint, hsymm]
   have hADVEint :
       (∫ p : ℝ × ℝ, aD p.1 * (starRingEnd ℂ) (eV p.2) ∂mu.prod mu) =
@@ -176,6 +171,38 @@ theorem integral_rankTwoSource_mul_xiCTaylorThetaTailCorePairCurrent_eq
   dsimp only [aV, aD, eV, eD, mu]
   unfold symmetricHermitianCrossCurrentData
   simp [Complex.mul_im]
+
+/-- Finite-core specialization of the source-generic rank-two Fubini identity. -/
+theorem integral_rankTwoSource_mul_xiCTaylorThetaTailCorePairCurrent_eq
+    (A E : ℝ → ℝ) (d : ℕ) (z : ℂ)
+    (hAV : IntegrableOn (fun x : ℝ => (A x : ℂ) *
+      thetaCuspTailSecondCoreAtom d z x) (Ioi 0))
+    (hAD : IntegrableOn (fun x : ℝ => (A x : ℂ) *
+      thetaCuspTailSecondCoreAtomDerivative d z x) (Ioi 0))
+    (hEV : IntegrableOn (fun x : ℝ => (E x : ℂ) *
+      thetaCuspTailSecondCoreAtom d z x) (Ioi 0))
+    (hED : IntegrableOn (fun x : ℝ => (E x : ℂ) *
+      thetaCuspTailSecondCoreAtomDerivative d z x) (Ioi 0)) :
+    (∫ p : ℝ × ℝ,
+      ((1 / 2 : ℝ) * (A p.1 * E p.2 + E p.1 * A p.2)) *
+        xiCTaylorThetaTailCorePairCurrent d z p
+        ∂((volume.restrict (Ioi 0)).prod (volume.restrict (Ioi 0)))) =
+      (1 / 2 : ℝ) * symmetricHermitianCrossCurrentData
+        (∫ x : ℝ in Ioi 0,
+          (A x : ℂ) * thetaCuspTailSecondCoreAtom d z x)
+        (∫ x : ℝ in Ioi 0,
+          (A x : ℂ) * thetaCuspTailSecondCoreAtomDerivative d z x)
+        (∫ x : ℝ in Ioi 0,
+          (E x : ℂ) * thetaCuspTailSecondCoreAtom d z x)
+        (∫ x : ℝ in Ioi 0,
+          (E x : ℂ) * thetaCuspTailSecondCoreAtomDerivative d z x) := by
+  simpa only [symmetricHermitianPairCurrentKernel,
+    xiCTaylorThetaTailCorePairCurrent] using
+    integral_rankTwoSource_mul_symmetricHermitianPairCurrent_eq
+      A E
+      (thetaCuspTailSecondCoreAtom d z)
+      (thetaCuspTailSecondCoreAtomDerivative d z)
+      hAV hAD hEV hED
 
 end
 

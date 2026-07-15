@@ -60,6 +60,22 @@ xiThermalTruncation(N,0) tends to normalizedPrimeArchMoment 0.
 Thus neither finite-system positivity nor convergence of the first source coordinate remains in
 the RH obligation.  The whole thermodynamic residue is the next single value.
 
+## Schur-capacity consumer
+
+The paper theorem
+`../../2-fully-proven/not_new_scientific_knowledge/xi-radial-jensen-schur-capacity-rigidity.md`
+uses the atomwise `1/84` law together with the strong reciprocal-square radius to prove
+
+```text
+(84/85)*sum_q |u_q| <= sum_q Re(u_q).
+```
+
+This is more than a quantitative confinement in the disk-Schur problem: it makes the constant
+function `1` the unconditional Schwarz--Pick extremizer.  Hence the analytic source norm is exactly
+the central curvature, and its deficit from radial Jensen mass is exactly half the reflection
+energy.  The orientation law therefore closes one Hardy-space norm interface while leaving the
+positive trace/adjoint coupling as the only possible RH-bearing continuation of that interface.
+
 ## Open core
 
 The factor `1/84` is quantitative and does not force the nonnegative orientation energy to

@@ -79,6 +79,31 @@ The recent reciprocal-square realization uses a real positive spectral coordinat
 exactly as `(4)` predicts.  The present law does not construct that radial orbit unconditionally;
 it identifies why the prime phase orbit cannot substitute for it.
 
+## Exact Xi circle-state consumer
+
+The paper theorem
+`../2-fully-proven/not_new_scientific_knowledge/prime-arch-explicit-circle-state-reflection-law.md`
+constructs an unconditional analytic probability measure `mu_Xi` on the circle and takes
+
+```text
+U f(zeta)=zeta*f(zeta),
+Theta f(zeta)=f(conj(zeta)),
+Omega=1.
+```
+
+Its ordinary orbit Gram is the positive Toeplitz kernel of `mu_Xi`, whereas
+
+```text
+<Theta U^i Omega,U^j Omega>
+  = normalizedPrimeArchMoment(i+j)/primeArchCentralCurvature
+```
+
+is exactly the RH-bearing Hankel kernel.  This is not the forbidden collapse of one Gram law into
+both Toeplitz and Hankel form: the reflection is inserted in one slot and changes the
+polarization.  It supplies a concrete model of the bipolar architecture proved here.  The carrier
+and reflection are unconditional; positivity of the reflected form remains the transverse
+orientation problem.
+
 ## Attacks
 
 1. **Classical intersection attack.**  Toeplitz/Hankel structure and reflection-positive

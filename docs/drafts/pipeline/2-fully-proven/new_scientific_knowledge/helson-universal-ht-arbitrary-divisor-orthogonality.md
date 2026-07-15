@@ -3,7 +3,7 @@
 - **ID:** `helson-universal-ht-arbitrary-divisor-orthogonality`
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM / RH ROUTE CONSTRAINT
-- **Scientific status:** `[PROVED ON PAPER] [NEW GEOMETRY] [NOVEL × SIGNIFICANT]`
+- **Scientific status:** `[PROVED ON PAPER] [LEAN-CERTIFIED CONSEQUENCES] [NEW GEOMETRY] [NOVEL × SIGNIFICANT]`
 
 ## Constraint
 
@@ -145,6 +145,38 @@ boundary-everywhere geometry.  The algebraic contribution is proved in
 topology and continuous-factorization obstruction are proved in
 `formal/GaloisForLFunctions/HTGeometry/DenseNullContinuationSeam.lean`.
 
+## Lean certification
+
+The project contribution is formalized without adding the classical analytic inputs as axioms.
+Those inputs occur only as the explicit hypotheses identified above.  The algebraic module proves
+
+```text
+differentialIndependentAdjoinAlgEquiv
+differentialIndependentAdjoinAlgEquiv_jet
+differentialIndependentAdjoinAlgEquiv_deriv
+differentialIndependentAdjoinAlgEquiv_unique
+```
+
+so equally labelled differentially independent palettes generate canonically isomorphic fields,
+the equivalence sends every labelled jet to its counterpart, commutes with the derivation, and is
+the unique derivation-preserving equivalence with the prescribed order-zero labels.
+
+The seam module proves
+
+```text
+dense_finiteModification
+dense_compl_of_measure_zero_of_open_pos
+frontier_eq_univ_of_dense_and_dense_compl
+every_open_neighborhood_meets_both_sides
+nowhereContinuous_seamIndicator
+no_continuous_factorization_seamIndicator
+not_isClosed_or_not_continuous_of_surjective_to_noncompact
+```
+
+which is the complete topological deduction from the finite-modification density, Haar-nullity
+with full support, and divisor-surjectivity inputs.  Direct module elaboration and dedicated target
+builds pass.  The final declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`.
+
 ## Attacks
 
 1. **Known-input attack.**  Pong already proves maximal differential--difference independence;
@@ -186,6 +218,9 @@ topology and continuous-factorization obstruction are proved in
 - [x] no-continuous-factorization theorem proved
 - [x] significance gate: exact continuous-carrier impossibility class identified
 - [x] novelty gate: targeted searches found no prior statement of the joint law
+- [ ] 2 -> 3: the labelled-field universality and every abstract dense-null seam consequence are
+  formalized axiom-clean; the concrete Pong, Andersson, and Saksman--Webb/Seip Helson inputs and
+  their joint instantiation remain to be formalized
 
 ## Primary literature
 

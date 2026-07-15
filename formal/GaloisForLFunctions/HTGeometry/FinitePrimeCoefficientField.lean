@@ -376,3 +376,152 @@ theorem algebraicIndependent_fractionPrimeColumns_over_finitePrimeCoefficientFie
 end
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open ArithmeticFunction
+
+noncomputable section
+
+/-- The intrinsic finite-prime field contains the scalar complex constants. -/
+def complexToFinitePrimeCoefficientField : ℂ →+* finitePrimeCoefficientField :=
+  (algebraMap ℂ arithmeticFunctionFractionField).codRestrict
+    finitePrimeCoefficientField (by
+      intro c
+      rw [mem_finitePrimeCoefficientField_iff,
+        finitePrimeActivity_algebraMap_complex]
+      exact Set.finite_empty)
+
+noncomputable instance finitePrimeCoefficientFieldAlgebraComplex :
+    Algebra ℂ finitePrimeCoefficientField :=
+  complexToFinitePrimeCoefficientField.toAlgebra
+
+instance finitePrimeCoefficientFieldIsScalarTower :
+    IsScalarTower ℂ finitePrimeCoefficientField arithmeticFunctionFractionField :=
+  .of_algebraMap_eq fun _c => rfl
+
+/-- **Exact tail-matroid theorem.** A finite family of prime-supported arithmetic columns is
+algebraically independent over the intrinsic finite-prime coefficient field exactly when its
+coefficient vectors are linearly independent modulo finite prime support.
+
+The reverse implication is the dynamic finite-prime Jacobian theorem above. For the converse, a
+finite-support coefficient relation is itself an element of the coefficient field; adjoining it as
+the constant term of a nonzero linear multivariable polynomial contradicts algebraic
+independence. -/
+theorem algebraicIndependent_fractionPrimeColumns_over_finitePrimeCoefficientField_iff
+    {I : Type*} [Fintype I] [DecidableEq I]
+    (a : I → Nat.Primes → ℂ) :
+    AlgebraicIndependent finitePrimeCoefficientField
+        (fun i => algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+          (arithmeticOfPrimeColumn (a i))) ↔
+      TailCoefficientIndependent a := by
+  let x : I → arithmeticFunctionFractionField := fun i =>
+    algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+      (arithmeticOfPrimeColumn (a i))
+  constructor
+  · intro hAI c hfinite
+    by_contra hc
+    have hc' : c ≠ 0 := hc
+    let b : Nat.Primes → ℂ := fun p => ∑ i, c i * a i p
+    let r : arithmeticFunctionFractionField :=
+      ∑ i, algebraMap ℂ arithmeticFunctionFractionField (c i) * x i
+    have hrmem : r ∈ finitePrimeCoefficientField := by
+      rw [mem_finitePrimeCoefficientField_iff]
+      apply hfinite.subset
+      intro p hp
+      change primeFractionDerivation p r ≠ 0 at hp
+      have hdr : primeFractionDerivation p r =
+          algebraMap ℂ arithmeticFunctionFractionField (b p) := by
+        rw [show r = ∑ i, algebraMap ℂ arithmeticFunctionFractionField (c i) * x i
+          from rfl, map_sum]
+        calc
+          ∑ i, primeFractionDerivation p
+              (algebraMap ℂ arithmeticFunctionFractionField (c i) * x i) =
+              ∑ i, algebraMap ℂ arithmeticFunctionFractionField (c i * a i p) := by
+            apply Finset.sum_congr rfl
+            intro i hi
+            rw [Derivation.leibniz, (primeFractionDerivation p).map_algebraMap,
+              primeFractionDerivation_arithmeticOfPrimeColumn]
+            simp only [smul_eq_mul, mul_zero, add_zero, map_mul]
+          _ = algebraMap ℂ arithmeticFunctionFractionField (∑ i, c i * a i p) := by
+            rw [map_sum]
+          _ = algebraMap ℂ arithmeticFunctionFractionField (b p) := rfl
+      rw [hdr] at hp
+      intro hzero
+      apply hp
+      rw [show b p = ∑ i, c i * a i p from rfl, hzero]
+      exact _root_.map_zero _
+    let k : finitePrimeCoefficientField := ⟨r, hrmem⟩
+    let P : MvPolynomial I finitePrimeCoefficientField :=
+      MvPolynomial.C (-k) +
+        ∑ i, MvPolynomial.C (algebraMap ℂ finitePrimeCoefficientField (c i)) *
+          MvPolynomial.X i
+    have hsum :
+        ∑ i, algebraMap ℂ arithmeticFunctionFractionField (c i) * x i = r := by
+      rfl
+    have hPeval : MvPolynomial.aeval x P = 0 := by
+      simp only [P, map_add, map_neg, MvPolynomial.aeval_C, map_sum, map_mul,
+        MvPolynomial.aeval_X]
+      change -(k : arithmeticFunctionFractionField) +
+        ∑ i, algebraMap ℂ arithmeticFunctionFractionField (c i) * x i = 0
+      change -r + ∑ i, algebraMap ℂ arithmeticFunctionFractionField (c i) * x i = 0
+      rw [hsum]
+      exact neg_add_cancel r
+    have hc_exists : ∃ i, c i ≠ 0 := by
+      simpa only [Pi.zero_apply] using (Function.ne_iff.mp hc')
+    obtain ⟨i, hi⟩ := hc_exists
+    have hPne : P ≠ 0 := by
+      intro hzero
+      have hmon : (0 : I →₀ ℕ) ≠ Finsupp.single i 1 := by
+        exact Ne.symm (Finsupp.single_ne_zero.mpr one_ne_zero)
+      have hcoeff := congrArg (fun Q : MvPolynomial I finitePrimeCoefficientField =>
+        Q.coeff (Finsupp.single i 1)) hzero
+      simp [P, MvPolynomial.coeff_add, MvPolynomial.coeff_C,
+        MvPolynomial.coeff_sum, MvPolynomial.coeff_C_mul,
+        MvPolynomial.coeff_X', Finsupp.single_eq_single_iff, hmon] at hcoeff
+      exact hi hcoeff
+    exact hPne (hAI.eq_zero_of_aeval_eq_zero P hPeval)
+  · exact algebraicIndependent_fractionPrimeColumns_over_finitePrimeCoefficientField a
+
+end
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open ArithmeticFunction
+
+noncomputable section
+
+/-- The active prime set of a prime-supported arithmetic column is exactly its nonzero coefficient
+support. -/
+theorem finitePrimeActivity_arithmeticOfPrimeColumn (a : Nat.Primes → ℂ) :
+    finitePrimeActivity
+        (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+          (arithmeticOfPrimeColumn a)) =
+      {p | a p ≠ 0} := by
+  ext p
+  simp only [finitePrimeActivity, Set.mem_setOf_eq,
+    primeFractionDerivation_arithmeticOfPrimeColumn]
+  constructor
+  · intro hmap ha
+    apply hmap
+    rw [ha, _root_.map_zero]
+  · intro ha hmap
+    apply ha
+    apply FaithfulSMul.algebraMap_injective ℂ arithmeticFunctionFractionField
+    simpa using hmap
+
+/-- A prime-supported arithmetic column is a finite-prime coefficient exactly when its coefficient
+support is finite. -/
+theorem arithmeticOfPrimeColumn_mem_finitePrimeCoefficientField_iff
+    (a : Nat.Primes → ℂ) :
+    algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+        (arithmeticOfPrimeColumn a) ∈ finitePrimeCoefficientField ↔
+      {p | a p ≠ 0}.Finite := by
+  rw [mem_finitePrimeCoefficientField_iff,
+    finitePrimeActivity_arithmeticOfPrimeColumn]
+
+end
+
+end GaloisForLFunctions.HTGeometry

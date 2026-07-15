@@ -197,3 +197,35 @@ reality, growth, and positive-definiteness data.
 - [x] 1 -> 2 fully-proven: complete paper proof of `(1)`--`(4)`
 - [x] 2 -> 3 formalized: radial integral identity and scalar saturation criterion in Lean
 - [ ] 3 -> 4 publication-ready: only if a non-circular source proof of the inequality is found
+
+## 2026-07-15 Schur exact norm-gap predecessor
+
+The paper theorem
+`../../2-fully-proven/not_new_scientific_knowledge/xi-radial-jensen-schur-capacity-rigidity.md`
+inserts a source-defined Hardy-space junction before the mass comparison.  If `u_q` denotes the
+reciprocal-square Xi coordinate and `L_Xi(P)` the normalized prime--Gamma polynomial moment
+functional, then
+
+```text
+S_Xi = sup { |L_Xi(P)| : P in R[X], sup_(|z|<=1) |P(z)| <= 1 }
+```
+
+satisfies the stronger unconditional identity
+
+```text
+S_Xi = primeArchCentralCurvature.
+```
+
+The source height gap gives `|u_q|<2/41`, and the one-eighty-fourth orientation law gives a narrow
+positive sector.  A direct Schwarz--Pick estimate then makes the constant `1` extremal; no normal-
+family passage is needed.  The reflected source boundary symbol consequently has exact
+`L^1/H^1_0` quotient norm `primeArchCentralCurvature`, while
+
+```text
+xiCenteredRadialJensenMass-S_Xi
+  = xiGlobalReflectionDefectEnergy/2.
+```
+
+Thus the Hardy-space norm computation is closed.  The remaining RH-sized input is positively
+anti-holomorphic: control the reciprocal-square trace norm or couple the analytic functional to
+the adjoint, absolute value, or polar phase.

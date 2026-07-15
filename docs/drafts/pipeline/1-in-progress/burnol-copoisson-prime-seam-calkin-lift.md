@@ -40,10 +40,10 @@ M(D_r f)(s)=r^(s-1/2) M(f)(s).                         (1)
 
 The formal corpus already proves the geometric half of this statement: `D_r` sends the Sonin
 carrier at aperture `a` into the carrier at aperture `a/r`.  Riesz duality and differentiation of
-`(1)` therefore give the unconditional cross-aperture evaluator transport
+`(1)` therefore give the unconditional **projected** cross-aperture evaluator transport
 
 ```text
-D_r^* Z^(a/r)_(w,k)
+P_a D_r^* Z^(a/r)_(w,k)
  =conj(r^(w-1/2))
    sum_(j=0)^k binom(k,j)(log r)^(k-j) Z^a_(w,j),       (2)
 ```
@@ -51,19 +51,35 @@ D_r^* Z^(a/r)_(w,k)
 with the conjugations adjusted if Burnol's analytic bilinear convention is used.  For `k=0`,
 
 ```text
-D_r^* Z^(a/r)_w=conj(r^(w-1/2)) Z^a_w.                 (3)
+P_a D_r^* Z^(a/r)_w=conj(r^(w-1/2)) Z^a_w.             (3)
 ```
 
-This is a constraint relation between two apertures.  It is not an eigenvector statement for the
-fixed-aperture compression `P_a D_r P_a`: replacing `Z^(a/r)_w` by `Z^a_w` introduces the
-cross-aperture evaluator defect
+The projection is essential: the Riesz calculation tests only vectors in `K_a`, so it determines
+only the `K_a` component of the ambient adjoint vector.  This is a constraint relation between two
+apertures, not an eigenvector statement for the fixed-aperture compression `P_a D_r P_a`.  The
+uncontrolled part is the cross-aperture evaluator defect
 
 ```text
-epsilon_(a,r,w)=(1-P_a)Z^(a/r)_w.                      (4)
+epsilon^+_(a,r,w)=(1-P_a)D_r^*Z^(a/r)_w.               (4)
 ```
 
 Ignoring `(4)` is the false proof that would make every compressed dilation simultaneously
 diagonal on the zeta-zero evaluators.
+
+There is nevertheless an exact positive replacement.  The inverse dilation also sends `K_a`
+into `K_(a/r)` for `r>1`, so its projected evaluator law defines the opposite defect
+
+```text
+epsilon^-_(a,r,w)=(1-P_a)D_r Z^(a/r)_w.
+```
+
+The forward/inverse Pythagorean comparison gives the bilateral defect-energy identity proved in
+`../2-fully-proven/not_new_scientific_knowledge/burnol-bilateral-aperture-defect-energy-law.md`.
+It detects `Re(w)-1/2` exactly, but does not by itself place either defect in the time-band ideal.
+Burnol's orthogonal-complement theorem further replaces the family of zero-evaluator inequalities
+by one source-defined compression order on the co-Poisson quotient; see
+`../2-fully-proven/not_new_scientific_knowledge/burnol-copoisson-quotient-bilateral-order-rh-law.md`.
+That shorter route bypasses the Calkin lift if its quotient order can be proved.
 
 ## 2. The prime seam is a reflected quotient eigenvalue split
 
@@ -175,8 +191,10 @@ co-Poisson/time-band lift
   statement.  It does not imply that an operator made from that vector is compact.
 - Compact multiplicative support of `(9)` does not by itself place an associated operator in the
   formal time-band ideal, whose generators are physical--Fourier cutoff products.
-- Burnol's evaluator transport is cross-aperture.  The fixed-aperture compression contains the
-  defect `(4)`, and the relevant prime-pair cancellation is a relation among these defects.
+- Burnol's evaluator transport is projected and cross-aperture.  The fixed-aperture compression
+  contains the defect `(4)`, and the relevant prime-pair cancellation is a relation among these
+  defects.  The exact bilateral defect-energy law detects their norm imbalance but supplies no
+  source-side reason for its RH-favorable sign.
 - The analytic zero quotient admits nonunitary characters off the critical line.  Promoting its
   dilation action to a faithful positive or Calkin `*`-representation without proving `(11)` would
   restate the old Hilbertization gap.
@@ -222,7 +240,8 @@ prime limit, zero enumeration, or limiting measure is needed at this stage.
 ## 8. Gates
 
 - [x] exact normalized-dilation Mellin scalar `(1)`
-- [x] exact cross-aperture evaluator transport `(2)`--`(3)`
+- [x] exact **projected** cross-aperture evaluator transport `(2)`--`(3)`
+- [x] correct orthogonal evaluator defect `(4)` retained
 - [x] exact prime-seam spectral split `(5)`
 - [x] exact compact-support divided-difference source `(7)`--`(9)`
 - [x] zero-radical/co-Poisson quotient interpretation `(10)`

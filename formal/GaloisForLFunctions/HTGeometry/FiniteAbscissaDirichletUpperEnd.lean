@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.DirichletLSeriesUpperEnd
+import GaloisForLFunctions.HTGeometry.DirichletLSeriesDifferentialTransfer
 
 /-!
 # Finite-abscissa Dirichlet series at the complex upper end
@@ -55,7 +55,7 @@ def finiteAbscissaArithmeticSubalgebra : Subalgebra ℂ (ArithmeticFunction ℂ)
     · intro n hn
       by_cases h1 : n = 1 <;>
         simp [Algebra.algebraMap_eq_smul_one, ArithmeticFunction.smul_map,
-          ArithmeticFunction.one_apply, h1]
+          h1]
     · simpa using hy
 
 /-- A finite-abscissa element has absolute-convergence abscissa bounded by one of its witnesses. -/
@@ -64,6 +64,92 @@ theorem finiteAbscissaArithmetic_abscissa_le
     ∃ H : ℝ, LSeries.abscissaOfAbsConv (fun n => f.1 n) ≤ H := by
   obtain ⟨H, hH⟩ := f.2
   exact ⟨H, LSeries.abscissaOfAbsConv_le_of_forall_lt_LSeriesSummable hH⟩
+
+/-! ## Stability under Dirichlet shifts and logarithmic weights -/
+
+/-- Coefficient shifting translates every individual L-series term. -/
+theorem dirichletShift_LSeries_term (a s : ℂ) (f : ArithmeticFunction ℂ) (n : ℕ) :
+    LSeries.term (fun m => dirichletShift a f m) s n =
+      LSeries.term (fun m => f m) (s + a) n := by
+  rw [LSeries.term_def₀ (by simp) s,
+    LSeries.term_def₀ (by simp) (s + a)]
+  rw [dirichletShift_apply, cpowWeight]
+  by_cases hn : n = 0
+  · subst n
+    simp
+  · have hn' : (n : ℂ) ≠ 0 := by exact_mod_cast hn
+    rw [neg_add, Complex.cpow_add _ _ hn']
+    ring
+
+/-- Absolute convergence of a shifted coefficient stream is exactly convergence of the original
+stream at the translated Dirichlet variable. -/
+theorem dirichletShift_LSeriesSummable_iff (a s : ℂ) (f : ArithmeticFunction ℂ) :
+    LSeriesSummable (fun n => dirichletShift a f n) s ↔
+      LSeriesSummable (fun n => f n) (s + a) := by
+  unfold LSeriesSummable
+  exact summable_congr (dirichletShift_LSeries_term a s f)
+
+/-- The L-series of a shifted coefficient stream is the translated original L-series. -/
+theorem LSeries_dirichletShift (a s : ℂ) (f : ArithmeticFunction ℂ) :
+    LSeries (fun n => dirichletShift a f n) s =
+      LSeries (fun n => f n) (s + a) := by
+  unfold LSeries
+  exact tsum_congr (dirichletShift_LSeries_term a s f)
+
+/-- Arbitrary complex Dirichlet shifts preserve finite abscissa. -/
+def finiteAbscissaDirichletShift (a : ℂ) (f : finiteAbscissaArithmeticSubalgebra) :
+    finiteAbscissaArithmeticSubalgebra := by
+  refine ⟨dirichletShift a f.1, ?_⟩
+  obtain ⟨H, hH⟩ := f.2
+  refine ⟨H - a.re, fun y hy =>
+    (dirichletShift_LSeriesSummable_iff a (y : ℂ) f.1).mpr ?_⟩
+  apply (LSeriesSummable_iff_of_re_eq_re (s := ((y + a.re : ℝ) : ℂ))
+    (s' := (y : ℂ) + a) (by simp)).mp
+  exact hH (y + a.re) (by linarith)
+
+@[simp]
+theorem finiteAbscissaDirichletShift_apply
+    (a : ℂ) (f : finiteAbscissaArithmeticSubalgebra) (n : ℕ) :
+    (finiteAbscissaDirichletShift a f).1 n = cpowWeight a n * f.1 n :=
+  rfl
+
+/-- The logarithmic coefficient derivation preserves finite abscissa. -/
+def finiteAbscissaLogWeight (f : finiteAbscissaArithmeticSubalgebra) :
+    finiteAbscissaArithmeticSubalgebra := by
+  refine ⟨logWeight f.1, ?_⟩
+  obtain ⟨H, hH⟩ := finiteAbscissaArithmetic_abscissa_le f
+  refine ⟨H, fun y hy => ?_⟩
+  have hs := LSeriesSummable_logMul_of_lt_re
+    (f := fun n => f.1 n) (s := (y : ℂ))
+    (lt_of_le_of_lt hH (EReal.coe_lt_coe_iff.mpr hy))
+  rw [lSeries_logMul_eq_logWeight] at hs
+  exact hs
+
+/-- The rotated coefficient derivation corresponding to differentiation in the upper-end
+coordinate. -/
+def finiteAbscissaRotatedDeriv (f : finiteAbscissaArithmeticSubalgebra) :
+    finiteAbscissaArithmeticSubalgebra :=
+  Complex.I • finiteAbscissaLogWeight f
+
+@[simp]
+theorem finiteAbscissaRotatedDeriv_apply
+    (f : finiteAbscissaArithmeticSubalgebra) (n : ℕ) :
+    (finiteAbscissaRotatedDeriv f).1 n =
+      Complex.I * (Real.log n : ℂ) * f.1 n := by
+  simp [finiteAbscissaRotatedDeriv, finiteAbscissaLogWeight,
+    ArithmeticFunction.smul_map, logWeight_apply]
+  ring
+
+/-- Exact coefficient formula for every iterate of the finite-abscissa rotated derivation. -/
+theorem finiteAbscissaRotatedDeriv_iterate_apply
+    (f : finiteAbscissaArithmeticSubalgebra) (k n : ℕ) :
+    ((finiteAbscissaRotatedDeriv^[k]) f).1 n =
+      (Complex.I * (Real.log n : ℂ)) ^ k * f.1 n := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+      rw [Function.iterate_succ_apply', finiteAbscissaRotatedDeriv_apply, ih, pow_succ]
+      ring
 
 /-- Rotation produces an analytic representative above a sufficiently high horizontal line. -/
 theorem finiteAbscissa_rotatedLSeries_eventuallyAnalytic
@@ -132,8 +218,10 @@ noncomputable def finiteAbscissaLSeriesToUpperEndGerm :
     have hz' : max H K + 1 < z.im := by simpa [upperTail] using hz
     have hmax : max H K < z.im := (lt_add_one (max H K)).trans hz'
     apply LSeries_add
-    · exact hH z.im (lt_of_le_of_lt (le_max_left H K) hmax)
-    · exact hK z.im (lt_of_le_of_lt (le_max_right H K) hmax)
+    · exact (LSeriesSummable_iff_of_re_eq_re (by simp [Complex.mul_re])).mpr
+        (hH z.im (lt_of_le_of_lt (le_max_left H K) hmax))
+    · exact (LSeriesSummable_iff_of_re_eq_re (by simp [Complex.mul_re])).mpr
+        (hK z.im (lt_of_le_of_lt (le_max_right H K) hmax))
   map_mul' := by
     intro f g
     obtain ⟨H, hH⟩ := f.2
@@ -156,8 +244,10 @@ noncomputable def finiteAbscissaLSeriesToUpperEndGerm :
     have hz' : max H K + 1 < z.im := by simpa [upperTail] using hz
     have hmax : max H K < z.im := (lt_add_one (max H K)).trans hz'
     apply ArithmeticFunction.LSeries_mul'
-    · exact hH z.im (lt_of_le_of_lt (le_max_left H K) hmax)
-    · exact hK z.im (lt_of_le_of_lt (le_max_right H K) hmax)
+    · exact (LSeriesSummable_iff_of_re_eq_re (by simp [Complex.mul_re])).mpr
+        (hH z.im (lt_of_le_of_lt (le_max_left H K) hmax))
+    · exact (LSeriesSummable_iff_of_re_eq_re (by simp [Complex.mul_re])).mpr
+        (hK z.im (lt_of_le_of_lt (le_max_right H K) hmax))
   commutes' := by
     intro c
     change Germ.coeRingHom upperEndFilter
@@ -179,6 +269,128 @@ noncomputable def finiteAbscissaLSeriesToUpperEndGerm :
       simp
     rw [hfun]
     rfl
+
+/-- Equality of upper-end L-series germs determines every Dirichlet coefficient. -/
+theorem finiteAbscissaLSeriesToUpperEndGerm_injective :
+    Function.Injective finiteAbscissaLSeriesToUpperEndGerm := by
+  intro f g hfg
+  change (↑(fun z : ℂ => LSeries (fun n => f.1 n) (-Complex.I * z)) :
+      Germ upperEndFilter ℂ) =
+    (↑(fun z : ℂ => LSeries (fun n => g.1 n) (-Complex.I * z)) :
+      Germ upperEndFilter ℂ) at hfg
+  rw [Germ.coe_eq] at hfg
+  change ∀ᶠ z in upperEndFilter,
+    LSeries (fun n => f.1 n) (-Complex.I * z) =
+      LSeries (fun n => g.1 n) (-Complex.I * z) at hfg
+  rw [upperEndFilter_basis.eventually_iff] at hfg
+  obtain ⟨H0, htrivial, hL⟩ := hfg
+  have hevent : (fun x : ℝ => LSeries (fun n => f.1 n) (x : ℂ)) =ᶠ[atTop]
+      (fun x : ℝ => LSeries (fun n => g.1 n) (x : ℂ)) := by
+    filter_upwards [eventually_gt_atTop H0] with x hx
+    have hz := hL (show Complex.I * (x : ℂ) ∈ upperTail H0 by
+      simpa [upperTail, Complex.mul_im] using hx)
+    have hrot : -Complex.I * (Complex.I * (x : ℂ)) = (x : ℂ) := by
+      calc
+        -Complex.I * (Complex.I * (x : ℂ)) =
+            (-Complex.I * Complex.I) * (x : ℂ) := (mul_assoc _ _ _).symm
+        _ = (x : ℂ) := by rw [neg_mul, Complex.I_mul_I]; ring
+    simpa only [hrot] using hz
+  obtain ⟨Hf, hHf⟩ := finiteAbscissaArithmetic_abscissa_le f
+  obtain ⟨Hg, hHg⟩ := finiteAbscissaArithmetic_abscissa_le g
+  apply Subtype.ext
+  apply ArithmeticFunction.ext
+  intro n
+  by_cases hn : n = 0
+  · subst n
+    simp only [ArithmeticFunction.map_zero]
+  · exact LSeries.eq_of_LSeries_eventually_eq
+      (hHf.trans_lt (EReal.coe_lt_top Hf))
+      (hHg.trans_lt (EReal.coe_lt_top Hg)) hevent hn
+
+/-- Dirichlet-variable translation becomes upper-end translation by `I a` after the rotation
+`s = -I z`. -/
+theorem finiteAbscissaLSeriesToUpperEndGerm_dirichletShift
+    (a : ℂ) (f : finiteAbscissaArithmeticSubalgebra) :
+    finiteAbscissaLSeriesToUpperEndGerm (finiteAbscissaDirichletShift a f) =
+      upperEndTranslateGerm (Complex.I * a)
+        (finiteAbscissaLSeriesToUpperEndGerm f) := by
+  change (↑(fun z : ℂ =>
+      LSeries (fun n => dirichletShift a f.1 n) (-Complex.I * z)) :
+        Germ upperEndFilter ℂ) =
+    upperEndTranslateGerm (Complex.I * a)
+      (↑(fun z : ℂ => LSeries (fun n => f.1 n) (-Complex.I * z)) :
+        Germ upperEndFilter ℂ)
+  rw [upperEndTranslateGerm_coe, Germ.coe_eq]
+  exact Filter.Eventually.of_forall fun z => by
+    change LSeries (fun n => dirichletShift a f.1 n) (-Complex.I * z) =
+      LSeries (fun n => f.1 n) (-Complex.I * (z + Complex.I * a))
+    rw [LSeries_dirichletShift]
+    congr 1
+    have hI : -Complex.I * Complex.I = (1 : ℂ) := by
+      rw [neg_mul, Complex.I_mul_I]
+      norm_num
+    calc
+      -Complex.I * z + a =
+          -Complex.I * z + (-Complex.I * Complex.I) * a := by simp [hI]
+      _ = -Complex.I * (z + Complex.I * a) := by ring
+
+/-- Differentiating a finite-abscissa upper-end L-series germ is exactly the germ of its rotated
+logarithmic coefficient derivative. -/
+theorem upperEndGermDeriv_finiteAbscissaLSeries
+    (f : finiteAbscissaArithmeticSubalgebra) :
+    upperEndGermDeriv (finiteAbscissaLSeriesToUpperEndGerm f) =
+      finiteAbscissaLSeriesToUpperEndGerm (finiteAbscissaRotatedDeriv f) := by
+  change upperEndGermDeriv
+      (↑(fun z : ℂ => LSeries (fun n => f.1 n) (-Complex.I * z)) :
+        Germ upperEndFilter ℂ) =
+    (↑(fun z : ℂ =>
+      LSeries (fun n => (finiteAbscissaRotatedDeriv f).1 n) (-Complex.I * z)) :
+      Germ upperEndFilter ℂ)
+  rw [upperEndGermDeriv_coe, Germ.coe_eq]
+  change ∀ᶠ z in upperEndFilter,
+    deriv (fun w : ℂ => LSeries (fun n => f.1 n) (-Complex.I * w)) z =
+      LSeries (fun n => (finiteAbscissaRotatedDeriv f).1 n) (-Complex.I * z)
+  rw [upperEndFilter_basis.eventually_iff]
+  obtain ⟨H, hH⟩ := finiteAbscissaArithmetic_abscissa_le f
+  refine ⟨H + 1, trivial, fun z hz => ?_⟩
+  have hlt : LSeries.abscissaOfAbsConv (fun n => f.1 n) <
+      (((-Complex.I * z).re : ℝ) : EReal) := by
+    have hre : (-Complex.I * z).re = z.im := by simp [Complex.mul_re]
+    rw [hre]
+    exact lt_of_le_of_lt hH (EReal.coe_lt_coe_iff.mpr
+      ((lt_add_one H).trans (by simpa [upperTail] using hz)))
+  have houter := LSeries_hasDerivAt
+    (s := -Complex.I * z) (f := fun n => f.1 n)
+    (by simpa only using hlt)
+  have hinner : HasDerivAt (fun w : ℂ => -Complex.I * w) (-Complex.I) z := by
+    simpa only [mul_one] using (hasDerivAt_id z).const_mul (-Complex.I)
+  have hcomp := houter.comp z hinner
+  have hderiv :
+      deriv (fun w : ℂ => LSeries (fun n => f.1 n) (-Complex.I * w)) z =
+        (-LSeries (LSeries.logMul (fun n => f.1 n)) (-Complex.I * z)) *
+          (-Complex.I) := by
+    simpa only [Function.comp_apply] using hcomp.deriv
+  rw [hderiv]
+  have hcoeff : (fun n => (finiteAbscissaRotatedDeriv f).1 n) =
+      Complex.I • (fun n => logWeight f.1 n) := by
+    funext n
+    simp only [finiteAbscissaRotatedDeriv_apply, Pi.smul_apply, smul_eq_mul,
+      logWeight_apply]
+    ring
+  rw [hcoeff, LSeries_smul, ← lSeries_logMul_eq_logWeight]
+  ring
+
+/-- The L-series realization intertwines every finite iterate of the rotated coefficient
+derivation with the corresponding analytic derivative iterate. -/
+theorem finiteAbscissaLSeriesToUpperEndGerm_iteratedDeriv
+    (f : finiteAbscissaArithmeticSubalgebra) (k : ℕ) :
+    finiteAbscissaLSeriesToUpperEndGerm ((finiteAbscissaRotatedDeriv^[k]) f) =
+      (upperEndGermDeriv^[k]) (finiteAbscissaLSeriesToUpperEndGerm f) := by
+  induction k with
+  | zero => rfl
+  | succ k ih =>
+      rw [Function.iterate_succ_apply', Function.iterate_succ_apply',
+        ← upperEndGermDeriv_finiteAbscissaLSeries, ih]
 
 end
 

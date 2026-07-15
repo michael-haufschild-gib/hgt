@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.FiniteResponseLiouvillian
 import GaloisForLFunctions.HTGeometry.FiniteKMSWightman
+import GaloisForLFunctions.HTGeometry.ThermalKrylovDeterminant
 import GaloisForLFunctions.RHTower.PrimeArchMomentMeasureRH
 import GaloisForLFunctions.RHTower.PrimeArchReflectionPositiveHankelRH
 import GaloisForLFunctions.RHTower.TraceHankelSequenceCone
@@ -121,6 +122,42 @@ theorem riemannHypothesis_of_primeArchThermalEvenGapMoments
     (primeArchSourceTraceHankelIntNonnegative_of_thermalEvenGapMoments
       intensity energy hintensity hmom)
 
+/-- **No fixed finite thermal system can realize the complete source moment tower.**  Its Krylov
+Gram determinant vanishes above the finite transition-space dimension.  Exact equality with every
+source moment would imply the existing strict source determinant hierarchy, a contradiction.
+
+Thus the physically live thermal route is necessarily a growing-system/thermodynamic limit, not
+one fixed finite KMS model. -/
+theorem not_primeArchExactFiniteThermalEvenGapMoments
+    {α : Type*} [Fintype α]
+    (intensity : α → α → ℝ) (energy : α → ℝ)
+    (hintensity : ∀ a b, 0 ≤ intensity a b) :
+    ¬ (∀ n, normalizedPrimeArchMoment n =
+      HTGeometry.thermalEvenGapMoment intensity energy n) := by
+  intro hmom
+  let N := Fintype.card α * Fintype.card α + 1
+  have hN : Fintype.card α * Fintype.card α < N := by
+    dsimp only [N]
+    exact Nat.lt_succ_self _
+  have hzero :
+      (HTGeometry.momentHankelMatrix
+        (HTGeometry.thermalEvenGapMoment intensity energy) N).det = 0 :=
+    HTGeometry.det_thermalEvenGapMoment_eq_zero_of_card_sq_lt
+      intensity energy hintensity N hN
+  have hRH : RiemannHypothesis :=
+    riemannHypothesis_of_primeArchThermalEvenGapMoments
+      intensity energy hintensity hmom
+  have hstrict : PrimeArchSourceMomentHankelDeterminantsPositive :=
+    primeArchSourceMomentHankelDeterminantsPositive_iff_riemannHypothesis.mpr hRH
+  have hmatrix : primeArchSourceMomentHankelMatrix N =
+      HTGeometry.momentHankelMatrix
+        (HTGeometry.thermalEvenGapMoment intensity energy) N := by
+    ext i j
+    exact hmom ((i : ℕ) + (j : ℕ))
+  have hpos := hstrict N
+  rw [hmatrix, hzero] at hpos
+  exact (lt_irrefl 0) hpos
+
 /-- Canonical KMS/Wightman weights remove the separate transition-intensity positivity hypothesis
 from the exact source-moment bridge. -/
 theorem primeArchSourceTraceHankelIntNonnegative_of_finiteKMSWightmanMoments
@@ -146,6 +183,33 @@ theorem riemannHypothesis_of_primeArchFiniteKMSWightmanMoments
   riemannHypothesis_of_primeArchSourceTraceHankelIntNonnegative
     (primeArchSourceTraceHankelIntNonnegative_of_finiteKMSWightmanMoments
       β energy amplitude hmom)
+
+/-- Canonical finite KMS/Wightman data inherit the same finite-rank obstruction: no fixed finite
+Hamiltonian and amplitude can match the complete source moment tower in every degree. -/
+theorem not_primeArchExactFiniteKMSWightmanMoments
+    {α : Type*} [Fintype α] [Nonempty α]
+    (β : ℝ) (energy : α → ℝ) (amplitude : α → α → ℂ) :
+    ¬ (∀ n, normalizedPrimeArchMoment n =
+      HTGeometry.thermalEvenGapMoment
+        (HTGeometry.finiteKMSWightmanTransitionIntensity β energy amplitude) energy n) :=
+  not_primeArchExactFiniteThermalEvenGapMoments
+    (HTGeometry.finiteKMSWightmanTransitionIntensity β energy amplitude) energy
+    (HTGeometry.finiteKMSWightmanTransitionIntensity_nonneg β energy amplitude)
+
+/-- The normalized source sequence is not one packaged fixed finite thermal Krylov sequence. -/
+theorem not_finiteThermalKrylovMomentSequence_normalizedPrimeArchMoment :
+    ¬ FiniteThermalKrylovMomentSequence normalizedPrimeArchMoment := by
+  rintro ⟨d, intensity, energy, hintensity, hmoment⟩
+  exact not_primeArchExactFiniteThermalEvenGapMoments intensity energy hintensity
+    (fun n => congrFun hmoment n)
+
+/-- The normalized source sequence is likewise not one packaged fixed finite KMS/Wightman
+sequence.  Only a limit of growing such sequences can remain a live producer. -/
+theorem not_finiteKMSWightmanMomentSequence_normalizedPrimeArchMoment :
+    ¬ FiniteKMSWightmanMomentSequence normalizedPrimeArchMoment := by
+  rintro ⟨d, β, energy, amplitude, hmoment⟩
+  exact not_primeArchExactFiniteKMSWightmanMoments β energy amplitude
+    (fun n => congrFun hmoment n)
 
 /-- The response-theory squared Liouvillian automatically supplies the self-adjoint observable and
 its vacuum moments to the existing complex-observable source consumer. -/

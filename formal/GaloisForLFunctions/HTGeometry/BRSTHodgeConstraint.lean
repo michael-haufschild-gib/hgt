@@ -10,7 +10,9 @@ For a bounded operator `Q`, the BRST/Hodge Hamiltonian is the anticommutator
 Its expectation is the sum of the squared `Q`- and `Q†`-residuals, so its kernel is exactly
 `ker Q ∩ ker Q†`.  Thus one positive, automatically self-adjoint constraint packages the closed
 and coclosed conditions.  When `Q² = 0`, the same Hamiltonian commutes with both supercharges and
-is the square of the self-adjoint Hodge--Dirac operator `Q + Q†`.
+is the square of both self-adjoint supercharges `Q + Q†` and `i(Q - Q†)`; the two supercharges
+anticommute.  An off-diagonal corner `(1-P)AP` of an idempotent is automatically nilpotent, so
+projection geometry supplies the BRST premise algebraically.
 
 The final declarations feed this single constraint directly into the existing Ward-value and
 two-sided constraint-ideal surfaces.  Nothing here introduces a time flow.
@@ -125,6 +127,21 @@ theorem physicalMatrixElement_congr_mod_brstHodgeHamiltonianIdeal
     ((physicalState_brstHodgeHamiltonian_iff Q ψ).mpr hψ)
 
 /-! ## Nilpotent supercharge algebra -/
+
+/-- An off-diagonal corner of an idempotent is automatically nilpotent.  This is the static
+projection value relation that turns a normal corner into a BRST charge without a separate
+nilpotence hypothesis. -/
+omit [CompleteSpace E] in
+theorem offDiagonalProjectionCorner_sq_eq_zero
+    (P A : E →L[𝕜] E) (hP2 : P * P = P) :
+    ((1 - P) * A * P) * ((1 - P) * A * P) = 0 := by
+  have hPcomp : P * (1 - P) = 0 := by
+    rw [mul_sub, mul_one, hP2, sub_self]
+  calc
+    ((1 - P) * A * P) * ((1 - P) * A * P) =
+        (1 - P) * A * (P * (1 - P)) * A * P := by
+      simp only [mul_assoc]
+    _ = 0 := by rw [hPcomp]; simp
 
 /-- Nilpotence passes from `Q` to its adjoint. -/
 theorem adjoint_mul_self_eq_zero_of_self_mul_self_eq_zero
@@ -289,5 +306,110 @@ theorem brstHodgeDiracOperator_sq_eq_hamiltonian
     _ = Q.adjoint * Q + Q * Q.adjoint := add_comm _ _
 
 end
+
+section Complex
+
+variable {E : Type*} [NormedAddCommGroup E]
+  [InnerProductSpace ℂ E] [CompleteSpace E]
+
+/-- The second Hermitian `N = 2` supercharge `J_Q = i(Q - Q†)`. -/
+noncomputable def brstHodgeCoDiracOperator (Q : E →L[ℂ] E) : E →L[ℂ] E :=
+  Complex.I • (Q - Q.adjoint)
+
+/-- The second supercharge is self-adjoint without a nilpotence premise. -/
+theorem brstHodgeCoDiracOperator_isSelfAdjoint (Q : E →L[ℂ] E) :
+    IsSelfAdjoint (brstHodgeCoDiracOperator Q) := by
+  unfold brstHodgeCoDiracOperator
+  change star (Complex.I • (Q - Q.adjoint)) = _
+  rw [star_smul, star_sub]
+  rw [show star (Complex.I : ℂ) = -Complex.I by exact Complex.conj_I]
+  change -Complex.I • (Q.adjoint - Q.adjoint.adjoint) = _
+  rw [ContinuousLinearMap.adjoint_adjoint]
+  module
+
+/-- For a nilpotent complex supercharge, `i(Q-Q†)` has the same square as `Q+Q†`: the
+BRST--Hodge Hamiltonian. -/
+theorem brstHodgeCoDiracOperator_sq_eq_hamiltonian
+    (Q : E →L[ℂ] E) (hQ : Q * Q = 0) :
+    brstHodgeCoDiracOperator Q * brstHodgeCoDiracOperator Q =
+      brstHodgeHamiltonian Q := by
+  have hQa : Q.adjoint * Q.adjoint = 0 :=
+    adjoint_mul_self_eq_zero_of_self_mul_self_eq_zero Q hQ
+  have hskew :
+      (Q - Q.adjoint) * (Q - Q.adjoint) = -brstHodgeHamiltonian Q := by
+    rw [brstHodgeHamiltonian_eq_adjoint_mul_add_mul_adjoint]
+    noncomm_ring [hQ, hQa]
+  unfold brstHodgeCoDiracOperator
+  calc
+    (Complex.I • (Q - Q.adjoint)) * (Complex.I • (Q - Q.adjoint)) =
+        Complex.I • (Complex.I •
+          ((Q - Q.adjoint) * (Q - Q.adjoint))) := by
+      rw [smul_mul_assoc, mul_smul_comm]
+    _ = -((Q - Q.adjoint) * (Q - Q.adjoint)) := by
+      rw [smul_smul, Complex.I_mul_I, neg_smul, one_smul]
+    _ = brstHodgeHamiltonian Q := by rw [hskew, neg_neg]
+
+/-- The two Hermitian supercharges have identical statewise norm energy. -/
+theorem norm_brstHodgeCoDiracOperator_apply_sq_eq_norm_diracOperator_apply_sq
+    (Q : E →L[ℂ] E) (hQ : Q * Q = 0) (psi : E) :
+    ‖brstHodgeCoDiracOperator Q psi‖ ^ 2 =
+      ‖brstHodgeDiracOperator Q psi‖ ^ 2 := by
+  have hCoAdj :
+      ContinuousLinearMap.adjoint (brstHodgeCoDiracOperator Q) =
+        brstHodgeCoDiracOperator Q := by
+    simpa only [ContinuousLinearMap.star_eq_adjoint] using
+      (brstHodgeCoDiracOperator_isSelfAdjoint Q).star_eq
+  have hDiracAdj :
+      ContinuousLinearMap.adjoint (brstHodgeDiracOperator Q) =
+        brstHodgeDiracOperator Q := by
+    simpa only [ContinuousLinearMap.star_eq_adjoint] using
+      (brstHodgeDiracOperator_isSelfAdjoint Q).star_eq
+  have hmasterCo :
+      quantumMasterConstraint (brstHodgeCoDiracOperator Q) =
+        brstHodgeCoDiracOperator Q * brstHodgeCoDiracOperator Q := by
+    rw [quantumMasterConstraint]
+    change ContinuousLinearMap.adjoint (brstHodgeCoDiracOperator Q) *
+      brstHodgeCoDiracOperator Q = _
+    rw [hCoAdj]
+  have hmasterDirac :
+      quantumMasterConstraint (brstHodgeDiracOperator Q) =
+        brstHodgeDiracOperator Q * brstHodgeDiracOperator Q := by
+    rw [quantumMasterConstraint]
+    change ContinuousLinearMap.adjoint (brstHodgeDiracOperator Q) *
+      brstHodgeDiracOperator Q = _
+    rw [hDiracAdj]
+  have hmasterEq :
+      quantumMasterConstraint (brstHodgeCoDiracOperator Q) =
+        quantumMasterConstraint (brstHodgeDiracOperator Q) := by
+    rw [hmasterCo, hmasterDirac,
+      brstHodgeCoDiracOperator_sq_eq_hamiltonian Q hQ,
+      brstHodgeDiracOperator_sq_eq_hamiltonian Q hQ]
+  calc
+    ‖brstHodgeCoDiracOperator Q psi‖ ^ 2 =
+        RCLike.re (inner ℂ psi
+          (quantumMasterConstraint (brstHodgeCoDiracOperator Q) psi)) :=
+      (re_inner_quantumMasterConstraint_eq_normSq
+        (brstHodgeCoDiracOperator Q) psi).symm
+    _ = RCLike.re (inner ℂ psi
+        (quantumMasterConstraint (brstHodgeDiracOperator Q) psi)) := by
+      rw [hmasterEq]
+    _ = ‖brstHodgeDiracOperator Q psi‖ ^ 2 :=
+      re_inner_quantumMasterConstraint_eq_normSq (brstHodgeDiracOperator Q) psi
+
+/-- The two Hermitian `N = 2` supercharges anticommute. -/
+theorem brstHodgeDiracOperator_anticommutes_coDiracOperator
+    (Q : E →L[ℂ] E) (hQ : Q * Q = 0) :
+    brstHodgeDiracOperator Q * brstHodgeCoDiracOperator Q +
+        brstHodgeCoDiracOperator Q * brstHodgeDiracOperator Q = 0 := by
+  have hQa : Q.adjoint * Q.adjoint = 0 :=
+    adjoint_mul_self_eq_zero_of_self_mul_self_eq_zero Q hQ
+  have hanti :
+      (Q + Q.adjoint) * (Q - Q.adjoint) +
+          (Q - Q.adjoint) * (Q + Q.adjoint) = 0 := by
+    noncomm_ring [hQ, hQa]
+  unfold brstHodgeDiracOperator brstHodgeCoDiracOperator
+  rw [mul_smul_comm, smul_mul_assoc, ← smul_add, hanti, smul_zero]
+
+end Complex
 
 end HTGeometry

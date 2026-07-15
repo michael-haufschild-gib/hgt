@@ -40,6 +40,22 @@ theorem quantumMasterConstraint_isSelfAdjoint (C : E →L[𝕜] E) :
   simpa [quantumMasterConstraint, ContinuousLinearMap.mul_def,
     ContinuousLinearMap.star_eq_adjoint] using (IsSelfAdjoint.star_mul_self C)
 
+/-- **Bounded optical theorem.**  If `U` is unitary, the positive master constraint of its
+scattering defect `U-1` is already its Hermitian discontinuity:
+`(U-1)†(U-1) = 2-U-U†`.  This is the operator form of the S-matrix optical theorem, stated
+without introducing an evolution parameter or an asymptotic limit. -/
+theorem quantumMasterConstraint_unitarySubOne_eq_two_sub_self_sub_adjoint
+    (U : E →L[𝕜] E) (hadjoint_mul : U.adjoint * U = 1) :
+    quantumMasterConstraint (U - 1) = 2 - U - U.adjoint := by
+  have hsub : ContinuousLinearMap.adjoint (U - 1) = U.adjoint - 1 := by
+    let adj : (E →L[𝕜] E) ≃ₗᵢ⋆[𝕜] (E →L[𝕜] E) :=
+      ContinuousLinearMap.adjoint
+    simpa only [ContinuousLinearMap.adjoint_one] using
+      adj.map_sub U (1 : E →L[𝕜] E)
+  rw [quantumMasterConstraint, hsub]
+  change (U.adjoint - 1) * (U - 1) = 2 - U - U.adjoint
+  noncomm_ring [hadjoint_mul]
+
 /-- **Supersymmetric partner intertwining.**  The constraint maps its master Hamiltonian
 `C†C` into the partner Hamiltonian `CC†`.  This is the exact bounded-operator relation behind
 boson/fermion pairing and resolvent-regularized Witten-index constructions. -/
@@ -429,6 +445,103 @@ theorem finiteCyclicObservableTwirl_preserves_physicalState
   simp
 
 end AlgebraicAverage
+
+section OrthogonalAverage
+
+variable {𝕜 E : Type*} [RCLike 𝕜]
+  [NormedAddCommGroup E] [InnerProductSpace 𝕜 E] [CompleteSpace E]
+
+/-- Averaging powers of a self-adjoint gauge step gives a self-adjoint orbit sum. -/
+theorem finiteCyclicGaugeSum_isSelfAdjoint
+    (U : E →L[𝕜] E) (N : ℕ) (hU : IsSelfAdjoint U) :
+    IsSelfAdjoint (finiteCyclicGaugeSum U N) := by
+  rw [finiteCyclicGaugeSum]
+  exact isSelfAdjoint_sum (Finset.range N) fun k _ => hU.pow k
+
+/-- A normalized finite cyclic average of a self-adjoint gauge step is self-adjoint. -/
+theorem finiteCyclicGaugeAverage_isSelfAdjoint
+    (U : E →L[𝕜] E) (N : ℕ) (hU : IsSelfAdjoint U) :
+    IsSelfAdjoint (finiteCyclicGaugeAverage U N) := by
+  have hscalar : IsSelfAdjoint (((N : 𝕜)⁻¹) : 𝕜) := by
+    rw [isSelfAdjoint_iff]
+    simp
+  exact hscalar.smul (finiteCyclicGaugeSum_isSelfAdjoint U N hU)
+
+/-- A norm-preserving involution is automatically self-adjoint.  Algebraically, the adjoint is
+a left inverse while the involution itself is a right inverse, so they coincide. -/
+theorem isSelfAdjoint_of_adjoint_mul_self_of_sq_eq_one
+    (U : E →L[𝕜] E) (hadjoint_mul : U.adjoint * U = 1)
+    (hsq : U ^ 2 = 1) : IsSelfAdjoint U := by
+  rw [isSelfAdjoint_iff]
+  change U.adjoint = U
+  calc
+    U.adjoint = U.adjoint * 1 := by simp
+    _ = U.adjoint * (U * U) := by rw [← pow_two, hsq]
+    _ = (U.adjoint * U) * U := by rw [← mul_assoc]
+    _ = U := by rw [hadjoint_mul, one_mul]
+
+/-- For involutive unitary scattering, the optical theorem becomes linear: the quadratic master
+constraint is exactly twice the complementary scattering sector.  Thus no genuinely new
+quadratic hypothesis is introduced by replacing `U-1` with its master constraint. -/
+theorem quantumMasterConstraint_involutiveScattering_eq_two_mul_complement
+    (U : E →L[𝕜] E) (hadjoint_mul : U.adjoint * U = 1)
+    (hsq : U ^ 2 = 1) :
+    quantumMasterConstraint (U - 1) = 2 * (1 - U) := by
+  have hUAdj : U.adjoint = U :=
+    (isSelfAdjoint_of_adjoint_mul_self_of_sq_eq_one U hadjoint_mul hsq).star_eq
+  rw [quantumMasterConstraint_unitarySubOne_eq_two_sub_self_sub_adjoint
+    U hadjoint_mul, hUAdj]
+  noncomm_ring
+
+/-- The `Z₂` group average of an involutive isometry is self-adjoint, hence (together with the
+existing idempotence theorem) an orthogonal projection onto the invariant sector. -/
+theorem finiteInvolutiveGaugeAverage_isSelfAdjoint
+    (U : E →L[𝕜] E) (hadjoint_mul : U.adjoint * U = 1)
+    (hsq : U ^ 2 = 1) :
+    IsSelfAdjoint (finiteCyclicGaugeAverage U 2) :=
+  finiteCyclicGaugeAverage_isSelfAdjoint U 2
+    (isSelfAdjoint_of_adjoint_mul_self_of_sq_eq_one U hadjoint_mul hsq)
+
+/-- The `Z₂` group average is idempotent with no separately supplied projection premise. -/
+theorem finiteInvolutiveGaugeAverage_isIdempotentElem
+    (U : E →L[𝕜] E) (hsq : U ^ 2 = 1) :
+    IsIdempotentElem (finiteCyclicGaugeAverage U 2) := by
+  change finiteCyclicGaugeAverage U 2 * finiteCyclicGaugeAverage U 2 =
+    finiteCyclicGaugeAverage U 2
+  exact finiteCyclicGaugeAverage_idempotent U 2 two_ne_zero hsq
+
+/-- **Invariant/gauge-variant energy partition.**  The `Z₂` average of an involutive
+isometry splits every kinematic vector orthogonally into its invariant part and its rejected
+constraint residual.  Both orthogonality and idempotence are consequences of the two supplied
+operator relations, so downstream users do not need a separate projection hypothesis. -/
+theorem norm_finiteInvolutiveGaugeAverage_sq_add_complement_sq
+    (U : E →L[𝕜] E) (hadjoint_mul : U.adjoint * U = 1)
+    (hsq : U ^ 2 = 1) (ψ : E) :
+    ‖finiteCyclicGaugeAverage U 2 ψ‖ ^ 2 +
+        ‖(1 - finiteCyclicGaugeAverage U 2) ψ‖ ^ 2 = ‖ψ‖ ^ 2 := by
+  let P : E →L[𝕜] E := finiteCyclicGaugeAverage U 2
+  have hPAdj : P.adjoint = P := by
+    simpa only [P, ContinuousLinearMap.star_eq_adjoint] using
+      (finiteInvolutiveGaugeAverage_isSelfAdjoint U hadjoint_mul hsq).star_eq
+  have hPP : P * P = P :=
+    finiteInvolutiveGaugeAverage_isIdempotentElem U hsq
+  have horth : inner 𝕜 (P ψ) ((1 - P) ψ) = 0 := by
+    have hfix : P (P ψ) = P ψ := by
+      rw [← ContinuousLinearMap.mul_apply, hPP]
+    calc
+      inner 𝕜 (P ψ) ((1 - P) ψ) = inner 𝕜 (P ψ) (ψ - P ψ) := by simp
+      _ = inner 𝕜 ψ (P.adjoint (ψ - P ψ)) :=
+        (P.adjoint_inner_right ψ (ψ - P ψ)).symm
+      _ = inner 𝕜 ψ (P (ψ - P ψ)) := by rw [hPAdj]
+      _ = inner 𝕜 ψ (P ψ - P (P ψ)) := by rw [map_sub]
+      _ = 0 := by rw [hfix, sub_self, inner_zero]
+  have hsum : P ψ + (1 - P) ψ = ψ := by simp
+  have hpyth :=
+    norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero (P ψ) ((1 - P) ψ) horth
+  rw [hsum] at hpyth
+  simpa only [P] using hpyth.symm
+
+end OrthogonalAverage
 
 section WardConsumers
 

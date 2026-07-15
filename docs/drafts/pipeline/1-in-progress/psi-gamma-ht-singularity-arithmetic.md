@@ -7,6 +7,13 @@
 - **Statement:** Every finite ADE complexity for \(\psi(\Gamma z)\) is separated by a nonzero
   determinant of Laurent-coefficient values sampled at finitely many inverse-Gamma poles.
 
+> **Route split.**  This determinant claim remains open, but it is no longer the only candidate
+> route to the composite's hypertranscendence.  The sibling card
+> `digamma-gamma-factorial-blowup-hypertranscendence.md` uses the exact factorial affine microscope
+> at the Gamma poles to force the locally hypertranscendental limit \(\psi(-1/x)\).  If that paper
+> proof clears its continuation, literature, and Lean gates, it proves the full HT theorem without
+> resolving the determinant triangularity conjecture here.
+
 ## Exact value array
 
 Put
@@ -103,6 +110,21 @@ The accumulating poles \(z_{n,m}\to-n\) prove that \(f\) is transcendental over
 A linear ODE over \(\mathbb C(z)\) has only finitely many finite singular points.  The infinite
 family \(\{z_{n,m}\}\) therefore proves that \(f\) is not D-finite.  All linear determinant
 bounds are settled.
+
+### First nonlinear differential-order layer
+
+The vanishing-residue cluster theorem in
+`../3-formalized/not_new_scientific_knowledge/vanishing-residue-cluster-first-order-obstruction.md`
+proves
+
+\[
+ \neg\operatorname{DA}_{\leq1}(\psi\!\circ\!\Gamma).
+\]
+
+At order one, pole weight and residue degree jointly recover the differential monomial, so the
+leading Laurent grade has no tied monomials after the least residue degree is selected.  The first
+genuine nonlinear tie is therefore the order-two pair \(f f''\) and \((f')^2\), which has equal pole
+weight and equal residue degree.  This is the first unresolved determinant block.
 
 ### Nonlinear layers
 

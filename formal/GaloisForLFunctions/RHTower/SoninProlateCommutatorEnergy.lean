@@ -45,6 +45,51 @@ theorem centralProlateTransition_isHilbertSchmidt
   simpa only [P, R, A, B, crossBoundary, mul_assoc] using
     hPRhs.comp_left (1 - R)
 
+/-- **Central Shannon-number value.**  The operator trace of the actual central prolate
+compression is the exact time--frequency area `4 a²`.  This is the trace-coordinate form of the
+existing overlap Hilbert--Schmidt law and avoids passing through a singular-value expansion. -/
+theorem re_opTrace_centralProlateBlock_eq_four_mul_sq
+    (a : ℝ) (ha : 0 < a) :
+    Complex.re
+        (opTrace
+          (soninAlternatingBlock (centralPhysicalForbidden a)
+            (centralFourierForbidden a))) =
+      4 * a ^ 2 := by
+  let A := centralPhysicalForbidden a
+  let B := centralFourierForbidden a
+  let P : SoninL2 →L[ℂ] SoninL2 := B.starProjection
+  let R : SoninL2 →L[ℂ] SoninL2 := A.starProjection
+  have hR : IsIdempotentElem R := A.isIdempotentElem_starProjection
+  have hPadj : ContinuousLinearMap.adjoint P = P :=
+    (isSelfAdjoint_starProjection B).star_eq
+  have hRadj : ContinuousLinearMap.adjoint R = R :=
+    (isSelfAdjoint_starProjection A).star_eq
+  have hRP : IsHilbertSchmidt (R * P) := by
+    simpa only [P, R, A, B, centralPhysicalForbidden, centralFourierForbidden,
+      indicatorCutoff_eq_physicalForbidden_starProjection,
+      fourierCutoff_eq_fourierForbidden_starProjection] using
+      isHilbertSchmidt_indicatorCutoff_fourierCutoff_central a a ha
+  have hAdj : ContinuousLinearMap.adjoint (R * P) = P * R := by
+    change ContinuousLinearMap.adjoint (R ∘L P) = P ∘L R
+    rw [ContinuousLinearMap.adjoint_comp, hPadj, hRadj]
+  have hNorm : hsNormSq (R * P) = hsNormSq (P * R) := by
+    rw [← hAdj]
+    exact hRP.hsNormSq_adjoint.symm
+  calc
+    Complex.re
+        (opTrace
+          (soninAlternatingBlock (centralPhysicalForbidden a)
+            (centralFourierForbidden a))) =
+        hsNormSq (R * P) := by
+      simpa only [P, R, A, B, soninAlternatingBlock,
+        HTGeometry.twoProjectionInteriorCompression] using
+        HTGeometry.re_opTrace_twoProjectionInteriorCompression_eq_hsNormSq_overlap
+          P R hR hPadj hRadj hRP
+    _ = hsNormSq (P * R) := hNorm
+    _ = 4 * a ^ 2 := by
+      simpa only [P, R, A, B] using
+        hsNormSq_centralTimeBandOverlap_eq_four_mul_sq a ha
+
 /-- **Quantum transition-rate identity.**  For a self-adjoint observable `X` and an orthogonal
 cutoff `e`, the commutator has exactly twice the Hilbert--Schmidt energy of its lower transition
 corner.  The factor two is exact: the lower and upper corners are adjoints with equal energy,
@@ -137,6 +182,27 @@ theorem hsNormSq_centralCutoffCommutator_eq_two_mul_transition
     (centralPhysicalForbidden a) (centralFourierForbidden a)
     (centralProlateTransition_isHilbertSchmidt a ha)
 
+/-- **Central measurement-decoherence value.**  The total Hilbert--Schmidt energy removed by
+measuring the physical Sonin projection with the Fourier cutoff is exactly twice the one-way
+transition energy.  Thus the Lüders disturbance, cutoff commutator, and free-fermion leakage
+channels are interchangeable without a comparison constant. -/
+theorem hsNormSq_centralLudersDisturbance_eq_two_mul_transition
+    (a : ℝ) (ha : 0 < a) :
+    hsNormSq
+        ((centralPhysicalForbidden a).starProjection -
+          ludersPinching (centralFourierForbidden a).starProjection
+            (centralPhysicalForbidden a).starProjection) =
+      2 * hsNormSq
+        (crossBoundary (centralFourierForbidden a).starProjection
+          (centralPhysicalForbidden a).starProjection) := by
+  rw [hsNormSq_ludersDisturbance_eq_cutoffCommutator
+    (centralFourierForbidden a).starProjection
+    (centralPhysicalForbidden a).starProjection
+    (centralFourierForbidden a).isIdempotentElem_starProjection
+    (isSelfAdjoint_starProjection (centralFourierForbidden a)).star_eq
+    (isSelfAdjoint_starProjection (centralPhysicalForbidden a)).star_eq]
+  exact hsNormSq_centralCutoffCommutator_eq_two_mul_transition a ha
+
 /-- The trace of any Hilbert--Schmidt Sonin transition impurity is exactly the transition-corner
 energy.  This turns the existing operator-valued `T-T²` law into the scalar value used by
 free-fermion number fluctuations. -/
@@ -185,6 +251,60 @@ theorem re_opTrace_centralProlateImpurity_eq_transition_hsNormSq
     (centralPhysicalForbidden a) (centralFourierForbidden a)
     (centralProlateTransition_isHilbertSchmidt a ha)
 
+/-- The exterior compressed Hamiltonian has the same impurity trace, hence the same
+free-fermion transition variance, as the prolate block.  This is the scalar Witten supertrace
+cancellation in the concrete Sonin model. -/
+theorem re_opTrace_centralExteriorCompressionImpurity_eq_transition_hsNormSq
+    (a : ℝ) (ha : 0 < a) :
+    Complex.re
+        (opTrace
+          (centralSoninExteriorCompression a -
+            centralSoninExteriorCompression a * centralSoninExteriorCompression a)) =
+      hsNormSq
+        (crossBoundary (centralFourierForbidden a).starProjection
+          (centralPhysicalForbidden a).starProjection) := by
+  calc
+    Complex.re
+        (opTrace
+          (centralSoninExteriorCompression a -
+            centralSoninExteriorCompression a * centralSoninExteriorCompression a)) =
+        Complex.re
+          (opTrace
+            (soninAlternatingBlock (centralPhysicalForbidden a)
+                  (centralFourierForbidden a) -
+              soninAlternatingBlock (centralPhysicalForbidden a)
+                  (centralFourierForbidden a) *
+                soninAlternatingBlock (centralPhysicalForbidden a)
+                  (centralFourierForbidden a))) := by
+      exact congrArg Complex.re
+        (opTrace_centralProlateImpurity_eq_exteriorCompressionImpurity a ha).symm
+    _ = hsNormSq
+        (crossBoundary (centralFourierForbidden a).starProjection
+          (centralPhysicalForbidden a).starProjection) :=
+      re_opTrace_centralProlateImpurity_eq_transition_hsNormSq a ha
+
+/-- **Witten/free-fermion scalar partition of the Sonin correction.**  The transition channel in
+the zero-mode-subtracted supersymmetric partition is exactly the trace of the prolate impurity.
+Thus the correction energy is two positive Hamiltonian energies plus twice the local
+free-fermion number variance. -/
+theorem hsNormSq_centralSoninProjectionCorrection_eq_compressions_add_two_mul_re_opTrace_prolateImpurity
+    (a : ℝ) (ha : 0 < a) :
+    hsNormSq (centralSoninProjectionCorrection a) =
+      hsNormSq
+          (soninAlternatingBlock (centralPhysicalForbidden a)
+            (centralFourierForbidden a)) +
+        hsNormSq (centralSoninExteriorCompression a) +
+          2 * Complex.re
+            (opTrace
+              (soninAlternatingBlock (centralPhysicalForbidden a)
+                  (centralFourierForbidden a) -
+                soninAlternatingBlock (centralPhysicalForbidden a)
+                    (centralFourierForbidden a) *
+                  soninAlternatingBlock (centralPhysicalForbidden a)
+                    (centralFourierForbidden a))) := by
+  rw [hsNormSq_centralSoninProjectionCorrection_eq_compressions_add_two_mul_transition a ha,
+    re_opTrace_centralProlateImpurity_eq_transition_hsNormSq a ha]
+
 /-- **Sonin number-variance identity.**  The Hilbert--Schmidt energy of the central
 physical/Fourier incompatibility is exactly twice the trace of the prolate plunge-spectrum
 impurity.  Thus a commutator-energy estimate, a transition estimate, or a `T-T²` trace estimate
@@ -202,5 +322,92 @@ theorem hsNormSq_centralCutoffCommutator_eq_two_mul_re_opTrace_prolateImpurity
                 (centralFourierForbidden a))) := by
   rw [hsNormSq_centralCutoffCommutator_eq_two_mul_transition a ha,
     re_opTrace_centralProlateImpurity_eq_transition_hsNormSq a ha]
+
+/-- **Lüders/free-fermion value identity.**  Central projective-measurement decoherence is twice
+the prolate impurity trace `tr(T-T²)`, i.e. twice the local free-fermion number variance.  This
+exposes the trace observable directly, without asking a consumer to pass through a commutator. -/
+theorem hsNormSq_centralLudersDisturbance_eq_two_mul_re_opTrace_prolateImpurity
+    (a : ℝ) (ha : 0 < a) :
+    hsNormSq
+        ((centralPhysicalForbidden a).starProjection -
+          ludersPinching (centralFourierForbidden a).starProjection
+            (centralPhysicalForbidden a).starProjection) =
+      2 * Complex.re
+        (opTrace
+          (soninAlternatingBlock (centralPhysicalForbidden a) (centralFourierForbidden a) -
+            soninAlternatingBlock (centralPhysicalForbidden a) (centralFourierForbidden a) *
+              soninAlternatingBlock (centralPhysicalForbidden a)
+                (centralFourierForbidden a))) := by
+  rw [hsNormSq_centralLudersDisturbance_eq_two_mul_transition a ha,
+    re_opTrace_centralProlateImpurity_eq_transition_hsNormSq a ha]
+
+/-- **Finite-aperture fermionic occupation budget.**  The prolate compressed energy plus its
+number-variance transition channel is exactly the Shannon time--frequency area `4 a²`. -/
+theorem hsNormSq_centralProlateBlock_add_transition_eq_four_mul_sq
+    (a : ℝ) (ha : 0 < a) :
+    hsNormSq
+          (soninAlternatingBlock (centralPhysicalForbidden a)
+            (centralFourierForbidden a)) +
+        hsNormSq
+          (crossBoundary (centralFourierForbidden a).starProjection
+            (centralPhysicalForbidden a).starProjection) =
+      4 * a ^ 2 := by
+  have h := hsNormSq_centralTimeBandOverlap_eq_prolateBlock_add_transition a ha
+  rw [hsNormSq_centralTimeBandOverlap_eq_four_mul_sq a ha] at h
+  exact h.symm
+
+/-- The same occupation budget written as prolate energy plus the free-fermion number variance
+`tr(T-T²)`. -/
+theorem hsNormSq_centralProlateBlock_add_re_opTrace_impurity_eq_four_mul_sq
+    (a : ℝ) (ha : 0 < a) :
+    hsNormSq
+          (soninAlternatingBlock (centralPhysicalForbidden a)
+            (centralFourierForbidden a)) +
+        Complex.re
+          (opTrace
+            (soninAlternatingBlock (centralPhysicalForbidden a)
+                  (centralFourierForbidden a) -
+              soninAlternatingBlock (centralPhysicalForbidden a)
+                  (centralFourierForbidden a) *
+                soninAlternatingBlock (centralPhysicalForbidden a)
+                  (centralFourierForbidden a))) =
+      4 * a ^ 2 := by
+  rw [re_opTrace_centralProlateImpurity_eq_transition_hsNormSq a ha]
+  exact hsNormSq_centralProlateBlock_add_transition_eq_four_mul_sq a ha
+
+/-- Doubled occupation budget: twice the prolate energy plus the cutoff-commutator energy is the
+complete corrected aperture energy `8 a²`. -/
+theorem two_mul_hsNormSq_centralProlateBlock_add_commutator_eq_eight_mul_sq
+    (a : ℝ) (ha : 0 < a) :
+    2 * hsNormSq
+          (soninAlternatingBlock (centralPhysicalForbidden a)
+            (centralFourierForbidden a)) +
+        hsNormSq
+          (ccmCommutator (centralPhysicalForbidden a).starProjection
+            (centralFourierForbidden a).starProjection) =
+      8 * a ^ 2 := by
+  have hbudget := hsNormSq_centralProlateBlock_add_transition_eq_four_mul_sq a ha
+  have hcomm := hsNormSq_centralCutoffCommutator_eq_two_mul_transition a ha
+  nlinarith
+
+/-- The corrected finite-aperture budget can be read entirely as retained prolate energy plus
+measurement-decoherence energy; the cutoff commutator is no longer a required interface. -/
+theorem two_mul_hsNormSq_centralProlateBlock_add_ludersDisturbance_eq_eight_mul_sq
+    (a : ℝ) (ha : 0 < a) :
+    2 * hsNormSq
+          (soninAlternatingBlock (centralPhysicalForbidden a)
+            (centralFourierForbidden a)) +
+        hsNormSq
+          ((centralPhysicalForbidden a).starProjection -
+            ludersPinching (centralFourierForbidden a).starProjection
+              (centralPhysicalForbidden a).starProjection) =
+      8 * a ^ 2 := by
+  rw [hsNormSq_ludersDisturbance_eq_cutoffCommutator
+    (centralFourierForbidden a).starProjection
+    (centralPhysicalForbidden a).starProjection
+    (centralFourierForbidden a).isIdempotentElem_starProjection
+    (isSelfAdjoint_starProjection (centralFourierForbidden a)).star_eq
+    (isSelfAdjoint_starProjection (centralPhysicalForbidden a)).star_eq]
+  exact two_mul_hsNormSq_centralProlateBlock_add_commutator_eq_eight_mul_sq a ha
 
 end RHTower

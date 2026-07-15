@@ -236,3 +236,14 @@ the coefficient asymptotic as a corollary.  The source pole law
 residue exactly `-R` times its multiplicity and that this residue and pole position determine the
 square-root coefficient.  The remaining source target is only single-valued meromorphic
 continuation of the paired Gutzmer value; holomorphic continuation is stronger than necessary.
+
+## 2026-07-15 radial-Jensen Schur-capacity consumer
+
+`xi-radial-jensen-schur-capacity-rigidity.md` uses the same ordinary moment germ `M` as a reflected
+unit-circle boundary symbol.  The source radius and narrow-sector laws, combined with Schwarz--
+Pick, determine its `L^1/H^1_0` quotient norm exactly as `primeArchCentralCurvature`, attained by
+the constant `1`.  Thus `(3)` and `(10)` here supply an explicit continued prime--Gamma formula for
+a norm that is now closed rather than open.  Its deficit from radial Jensen mass is exactly half
+the global reflection energy.  The double Gutzmer `L^2` identity remains useful source geometry,
+but any RH-bearing transfer must couple it to an adjoint, absolute-value, trace-norm, or polar
+channel rather than seek another holomorphic extremizer.

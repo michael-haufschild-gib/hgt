@@ -145,6 +145,81 @@ theorem norm_soninSemilocalGeometricTraceResponse_le_timeBand_add_exterior
   rw [← hsNormSq_centralSoninProjectionCorrection_eq_timeBand_add_exterior a ha]
   exact norm_soninSemilocalGeometricTraceResponse_le a ha pk
 
+/-- Exterior strictness collapses the two-channel semilocal bound to twice the ordinary finite
+time-band energy.  This is the direct obstruction-surface consumer of the supersymmetric factor
+equality. -/
+theorem norm_soninSemilocalGeometricTraceResponse_le_timeBand_of_exteriorCompression_norm_lt_one
+    (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ)
+    (hExterior : ‖centralSoninExteriorCompression a‖ < 1) :
+    ‖soninSemilocalGeometricTraceResponse a pk‖ ≤
+      Real.sqrt
+          (2 * hsNormSq
+            ((centralFourierForbidden a).starProjection *
+              (centralPhysicalForbidden a).starProjection)) *
+        Real.sqrt
+          (1024 *
+            (2 * hsNormSq
+              ((centralFourierForbidden a).starProjection *
+                (centralPhysicalForbidden a).starProjection))) := by
+  have hbound := norm_soninSemilocalGeometricTraceResponse_le_timeBand_add_exterior a ha pk
+  rw [hsNormSq_centralSoninExteriorOverlap_eq_timeBand_of_exteriorCompression_norm_lt_one
+    a ha hExterior] at hbound
+  simpa only [two_mul] using hbound
+
+/-- The semilocal obstruction bound after the complementary-block strictness argument removes its
+last exterior hypothesis. -/
+theorem norm_soninSemilocalGeometricTraceResponse_le_timeBand
+    (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ) :
+    ‖soninSemilocalGeometricTraceResponse a pk‖ ≤
+      Real.sqrt
+          (2 * hsNormSq
+            ((centralFourierForbidden a).starProjection *
+              (centralPhysicalForbidden a).starProjection)) *
+        Real.sqrt
+          (1024 *
+            (2 * hsNormSq
+              ((centralFourierForbidden a).starProjection *
+                (centralPhysicalForbidden a).starProjection))) :=
+  norm_soninSemilocalGeometricTraceResponse_le_timeBand_of_exteriorCompression_norm_lt_one
+    a ha pk (norm_centralSoninExteriorCompression_lt_one a ha)
+
+/-- The signal-processing area law makes the semilocal response bound completely scalar: no
+operator energy remains on the right-hand side. -/
+theorem norm_soninSemilocalGeometricTraceResponse_le_area
+    (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ) :
+    ‖soninSemilocalGeometricTraceResponse a pk‖ ≤
+      Real.sqrt (8 * a ^ 2) * Real.sqrt (8192 * a ^ 2) := by
+  have h := norm_soninSemilocalGeometricTraceResponse_le a ha pk
+  rw [hsNormSq_centralSoninProjectionCorrection_eq_eight_mul_sq a ha] at h
+  convert h using 1 <;> ring
+
+/-- The same semilocal obstruction bound in the compressed-Hamiltonian coordinates supplied by
+the finite Witten-index partition.  The only mixed-sector contribution is the already-identified
+prolate transition/number-variance energy. -/
+theorem norm_soninSemilocalGeometricTraceResponse_le_compressions_add_two_mul_transition
+    (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ) :
+    ‖soninSemilocalGeometricTraceResponse a pk‖ ≤
+      Real.sqrt
+          (hsNormSq
+              (soninAlternatingBlock (centralPhysicalForbidden a)
+                (centralFourierForbidden a)) +
+            hsNormSq (centralSoninExteriorCompression a) +
+              2 * hsNormSq
+                (crossBoundary (centralFourierForbidden a).starProjection
+                  (centralPhysicalForbidden a).starProjection)) *
+        Real.sqrt
+          (1024 *
+            (hsNormSq
+                (soninAlternatingBlock (centralPhysicalForbidden a)
+                  (centralFourierForbidden a)) +
+              hsNormSq (centralSoninExteriorCompression a) +
+                2 * hsNormSq
+                  (crossBoundary (centralFourierForbidden a).starProjection
+                    (centralPhysicalForbidden a).starProjection))) := by
+  rw [← hsNormSq_centralSoninProjectionCorrection_eq_compressions_add_two_mul_transition
+    a ha]
+  exact norm_soninSemilocalGeometricTraceResponse_le a ha pk
+
 /-- **The projection-correction scalarization cannot be the semilocal source trace.**  Its
 uniformly bounded response cannot equal `log(p^m)` for all prime powers. -/
 theorem not_soninSemilocalFluxNormalization :

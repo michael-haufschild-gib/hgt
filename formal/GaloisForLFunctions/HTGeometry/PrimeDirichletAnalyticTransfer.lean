@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.DirichletLSeriesDifferentialTransfer
 import GaloisForLFunctions.HTGeometry.FiniteAbscissaDirichletUpperEnd
 import GaloisForLFunctions.HTGeometry.FinitePrimeCoefficientField
+import GaloisForLFunctions.HTGeometry.FinitePrimeRationalCoefficientField
 import GaloisForLFunctions.HTGeometry.PrimeExpLogFiberRigidity
 
 /-!
@@ -317,6 +318,403 @@ theorem signedPrimeUpperEndGerm_iteratedDeriv
   | succ k ih =>
       rw [show k + 1 = Nat.succ k from rfl, signedPrimeRotatedJet_succ,
         ← upperEndGermDeriv_rightHalfPlaneLSeries, Function.iterate_succ_apply', ← ih]
+
+/-! ## Arbitrary finite shift palettes -/
+
+/-- On a prime, the coefficient shift defined by complex powers is the exponential prime-shift
+factor used by the operator-tail rigidity theorem. -/
+theorem cpowWeight_prime_eq_primeShiftFactor (a : ℂ) (p : Nat.Primes) :
+    cpowWeight a (p : ℕ) = primeShiftFactor a p := by
+  rw [cpowWeight, Complex.cpow_def_of_ne_zero]
+  · rw [primeShiftFactor, ← Complex.natCast_log]
+    congr 1
+    simp [primeLogClock]
+    ring
+  · exact_mod_cast p.2.ne_zero
+
+/-- A signed prime carrier in the translation-stable finite-abscissa algebra. -/
+def signedPrimeFiniteAbscissa (ε : Nat.Primes → Bool) :
+    finiteAbscissaArithmeticSubalgebra := by
+  refine ⟨signedPrimeArithmeticFunction ε, 1, ?_⟩
+  exact (signedPrimeRightHalfPlane ε).2
+
+@[simp]
+theorem signedPrimeFiniteAbscissa_coe (ε : Nat.Primes → Bool) :
+    (signedPrimeFiniteAbscissa ε).1 = signedPrimeArithmeticFunction ε :=
+  rfl
+
+/-- The shifted order-`k` analytic derivative carrier, built inside the finite-abscissa algebra. -/
+def signedPrimeShiftedRotatedJet
+    (ε : Nat.Primes → Bool) (a : ℂ) (k : ℕ) :
+    finiteAbscissaArithmeticSubalgebra :=
+  finiteAbscissaDirichletShift a
+    ((finiteAbscissaRotatedDeriv^[k]) (signedPrimeFiniteAbscissa ε))
+
+/-- Exact natural-number coefficient formula for a shifted rotated jet. -/
+theorem signedPrimeShiftedRotatedJet_apply
+    (ε : Nat.Primes → Bool) (a : ℂ) (k n : ℕ) :
+    (signedPrimeShiftedRotatedJet ε a k).1 n =
+      cpowWeight a n * (Complex.I * (Real.log n : ℂ)) ^ k *
+        signedPrimeArithmeticFunction ε n := by
+  rw [signedPrimeShiftedRotatedJet, finiteAbscissaDirichletShift_apply,
+    finiteAbscissaRotatedDeriv_iterate_apply]
+  change cpowWeight a n *
+      ((Complex.I * (Real.log n : ℂ)) ^ k * signedPrimeArithmeticFunction ε n) = _
+  ring
+
+/-- A shifted rotated jet is exactly the prime-supported column used by shift--jet tail
+rigidity. -/
+theorem signedPrimeShiftedRotatedJet_eq_arithmeticOfPrimeColumn
+    (ε : Nat.Primes → Bool) (a : ℂ) (k : ℕ) :
+    (signedPrimeShiftedRotatedJet ε a k).1 =
+      arithmeticOfPrimeColumn
+        (fun p => primeDirichletSign (ε p) * primeShiftFactor a p *
+          rotatedPrimeLogClock p ^ k) := by
+  ext n
+  by_cases hn : n.Prime
+  · rw [signedPrimeShiftedRotatedJet_apply,
+      show signedPrimeArithmeticFunction ε n = primeDirichletSign (ε ⟨n, hn⟩) by
+        exact arithmeticOfPrimeColumn_apply_prime
+          (fun p => primeDirichletSign (ε p)) ⟨n, hn⟩,
+      show arithmeticOfPrimeColumn
+          (fun p => primeDirichletSign (ε p) * primeShiftFactor a p *
+            rotatedPrimeLogClock p ^ k) n =
+          primeDirichletSign (ε ⟨n, hn⟩) * primeShiftFactor a ⟨n, hn⟩ *
+            rotatedPrimeLogClock ⟨n, hn⟩ ^ k by
+        exact arithmeticOfPrimeColumn_apply_prime
+          (fun p => primeDirichletSign (ε p) * primeShiftFactor a p *
+            rotatedPrimeLogClock p ^ k) ⟨n, hn⟩]
+    rw [show cpowWeight a n = primeShiftFactor a ⟨n, hn⟩ from
+      cpowWeight_prime_eq_primeShiftFactor a ⟨n, hn⟩]
+    simp only [rotatedPrimeLogClock, primeLogClock]
+    ring
+  · rw [signedPrimeShiftedRotatedJet_apply]
+    simp [signedPrimeArithmeticFunction, arithmeticOfPrimeColumn, hn]
+
+/-- Tail independence is invariant under multiplying each column by its own nonzero scalar. -/
+theorem tailCoefficientIndependent_scale_columns
+    {I P : Type*} [Fintype I]
+    (c : I → P → ℂ) (u : I → ℂ) (hu : ∀ i, u i ≠ 0)
+    (h : TailCoefficientIndependent c) :
+    TailCoefficientIndependent (fun i p => u i * c i p) := by
+  classical
+  intro q hsupp
+  let q' : I → ℂ := fun i => q i * u i
+  have hq' : q' = 0 := h q' (by
+    simpa only [q', mul_assoc] using hsupp)
+  funext i
+  have hi := congrFun hq' i
+  simp only [q', Pi.zero_apply] at hi
+  exact (mul_eq_zero.mp hi).resolve_right (hu i)
+
+/-- A finite Boolean orientation family has finite coefficient-pattern range. -/
+theorem primeOrientationCoefficientPattern_range_finite
+    {J : Type*} [Fintype J] (ε : J → Nat.Primes → Bool) :
+    (Set.range (coefficientPattern
+      (fun j p => primeDirichletSign (ε j p)))).Finite := by
+  classical
+  let decode : (J → Bool) → (J → ℂ) :=
+    fun b j => primeDirichletSign (b j)
+  refine Set.Finite.subset (Set.finite_range decode) ?_
+  rintro b ⟨p, rfl⟩
+  exact ⟨fun j => ε j p, rfl⟩
+
+/-- Every finite shift--derivative rectangle of a tail-independent Boolean orientation family has
+full coefficient-tail rank.  The factor-clock rigidity is the existing prime exponential-
+polynomial theorem; only the harmless powers of `I` from the analytic rotation are rescaled. -/
+theorem signedPrimeShiftedRotatedJet_tailIndependent
+    {J A : Type*} [Fintype J] [Fintype A] [Nonempty A]
+    (ε : J → Nat.Primes → Bool) (alpha : A → ℂ)
+    (hdistinct : Function.Injective (fun a => (alpha a).re))
+    (htail : PrimeOrientationTailIndependent ε) (m : ℕ) :
+    TailCoefficientIndependent
+      (fun jak : J × (A × Fin (m + 1)) => fun p =>
+        primeDirichletSign (ε jak.1 p) * primeShiftFactor (alpha jak.2.1) p *
+          rotatedPrimeLogClock p ^ (jak.2.2 : ℕ)) := by
+  classical
+  let c : J → Nat.Primes → ℂ := fun j p => primeDirichletSign (ε j p)
+  let raw := coefficientShiftJet c
+    (fun a p => primeShiftFactor (alpha a) p) primeLogClock m
+  have hraw : TailCoefficientIndependent raw :=
+    (primeCompleteShiftJetTailIndependent_iff c alpha hdistinct
+      (primeOrientationCoefficientPattern_range_finite ε)).mpr htail m
+  let u : J × (A × Fin (m + 1)) → ℂ :=
+    fun jak => Complex.I ^ (jak.2.2 : ℕ)
+  have hu : ∀ jak, u jak ≠ 0 := fun jak => pow_ne_zero _ Complex.I_ne_zero
+  have hscaled := tailCoefficientIndependent_scale_columns raw u hu hraw
+  convert hscaled using 1
+  funext jak p
+  simp only [raw, c, u, coefficientShiftJet, rotatedPrimeLogClock]
+  rw [mul_pow]
+  ring
+
+/-- Every finite shifted derivative rectangle is algebraically independent in the
+translation-stable finite-abscissa arithmetic algebra. -/
+theorem signedPrimeShiftedRotatedJets_algebraicIndependent
+    {J A : Type*} [Fintype J] [DecidableEq J]
+    [Fintype A] [DecidableEq A] [Nonempty A]
+    (ε : J → Nat.Primes → Bool) (alpha : A → ℂ)
+    (hdistinct : Function.Injective (fun a => (alpha a).re))
+    (htail : PrimeOrientationTailIndependent ε) (m : ℕ) :
+    AlgebraicIndependent ℂ
+      (fun jak : J × (A × Fin (m + 1)) =>
+        signedPrimeShiftedRotatedJet (ε jak.1) (alpha jak.2.1) jak.2.2) := by
+  let coeff : J × (A × Fin (m + 1)) → Nat.Primes → ℂ :=
+    fun jak p => primeDirichletSign (ε jak.1 p) *
+      primeShiftFactor (alpha jak.2.1) p * rotatedPrimeLogClock p ^ (jak.2.2 : ℕ)
+  have hcoeff : TailCoefficientIndependent coeff :=
+    signedPrimeShiftedRotatedJet_tailIndependent ε alpha hdistinct htail m
+  have hraw := algebraicIndependent_arithmeticColumns_of_tailIndependent coeff hcoeff
+  let incl : finiteAbscissaArithmeticSubalgebra →ₐ[ℂ] ArithmeticFunction ℂ :=
+    finiteAbscissaArithmeticSubalgebra.val
+  have hincl : Function.Injective incl := by
+    intro x y hxy
+    exact Subtype.ext hxy
+  apply (AlgHom.algebraicIndependent_iff incl hincl).mp
+  convert hraw using 1
+  funext jak
+  exact signedPrimeShiftedRotatedJet_eq_arithmeticOfPrimeColumn
+    (ε jak.1) (alpha jak.2.1) jak.2.2
+
+/-- The shifted derivative rectangle remains algebraically independent over the intrinsic
+finite-prime coefficient field in the arithmetic fraction field. -/
+theorem signedPrimeShiftedRotatedJets_algebraicIndependent_over_finitePrimeCoefficientField
+    {J A : Type*} [Fintype J] [DecidableEq J]
+    [Fintype A] [DecidableEq A] [Nonempty A]
+    (ε : J → Nat.Primes → Bool) (alpha : A → ℂ)
+    (hdistinct : Function.Injective (fun a => (alpha a).re))
+    (htail : PrimeOrientationTailIndependent ε) (m : ℕ) :
+    AlgebraicIndependent finitePrimeCoefficientField
+      (fun jak : J × (A × Fin (m + 1)) =>
+        algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+          (signedPrimeShiftedRotatedJet
+            (ε jak.1) (alpha jak.2.1) jak.2.2).1) := by
+  let coeff : J × (A × Fin (m + 1)) → Nat.Primes → ℂ :=
+    fun jak p => primeDirichletSign (ε jak.1 p) *
+      primeShiftFactor (alpha jak.2.1) p * rotatedPrimeLogClock p ^ (jak.2.2 : ℕ)
+  have hcoeff : TailCoefficientIndependent coeff :=
+    signedPrimeShiftedRotatedJet_tailIndependent ε alpha hdistinct htail m
+  have hraw :=
+    algebraicIndependent_fractionPrimeColumns_over_finitePrimeCoefficientField coeff hcoeff
+  convert hraw using 1
+  funext jak
+  congr 1
+  exact signedPrimeShiftedRotatedJet_eq_arithmeticOfPrimeColumn
+    (ε jak.1) (alpha jak.2.1) jak.2.2
+
+/-- After adjoining the independent Dirichlet coordinate, the full shifted derivative rectangle
+is algebraically independent over the card's `E_fin(s)` coefficient field. -/
+theorem signedPrimeShiftedRotatedJets_algebraicIndependent_over_finitePrimeRationalCoefficientField
+    {J A : Type*} [Fintype J] [DecidableEq J]
+    [Fintype A] [DecidableEq A] [Nonempty A]
+    (ε : J → Nat.Primes → Bool) (alpha : A → ℂ)
+    (hdistinct : Function.Injective (fun a => (alpha a).re))
+    (htail : PrimeOrientationTailIndependent ε) (m : ℕ) :
+    AlgebraicIndependent finitePrimeRationalCoefficientField
+      (fun jak : J × (A × Fin (m + 1)) =>
+        algebraMap arithmeticFunctionFractionField
+          arithmeticFunctionRationalCoordinateField
+          (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+            (signedPrimeShiftedRotatedJet
+              (ε jak.1) (alpha jak.2.1) jak.2.2).1)) :=
+  algebraicIndependent_constants_over_finitePrimeRationalCoefficientField _
+    (signedPrimeShiftedRotatedJets_algebraicIndependent_over_finitePrimeCoefficientField
+      ε alpha hdistinct htail m)
+
+/-- Consequently every finite shifted derivative rectangle is algebraically independent as a
+family of actual analytic upper-end germs. -/
+theorem signedPrimeShiftedUpperEndGerm_jets_algebraicIndependent
+    {J A : Type*} [Fintype J] [DecidableEq J]
+    [Fintype A] [DecidableEq A] [Nonempty A]
+    (ε : J → Nat.Primes → Bool) (alpha : A → ℂ)
+    (hdistinct : Function.Injective (fun a => (alpha a).re))
+    (htail : PrimeOrientationTailIndependent ε) (m : ℕ) :
+    AlgebraicIndependent ℂ
+      (fun jak : J × (A × Fin (m + 1)) =>
+        finiteAbscissaLSeriesToUpperEndGerm
+          (signedPrimeShiftedRotatedJet
+            (ε jak.1) (alpha jak.2.1) jak.2.2)) :=
+  (signedPrimeShiftedRotatedJets_algebraicIndependent ε alpha hdistinct htail m).map'
+    finiteAbscissaLSeriesToUpperEndGerm_injective
+
+/-- Each shifted jet germ is exactly the translate of the corresponding iterated analytic
+derivative of the unshifted signed prime carrier. -/
+theorem signedPrimeShiftedRotatedJet_upperEndGerm
+    (ε : Nat.Primes → Bool) (a : ℂ) (k : ℕ) :
+    finiteAbscissaLSeriesToUpperEndGerm (signedPrimeShiftedRotatedJet ε a k) =
+      upperEndTranslateGerm (Complex.I * a)
+        ((upperEndGermDeriv^[k])
+          (finiteAbscissaLSeriesToUpperEndGerm (signedPrimeFiniteAbscissa ε))) := by
+  rw [signedPrimeShiftedRotatedJet,
+    finiteAbscissaLSeriesToUpperEndGerm_dirichletShift,
+    finiteAbscissaLSeriesToUpperEndGerm_iteratedDeriv]
+
+end
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open ArithmeticFunction
+
+noncomputable section
+
+/-- Multiplying each column by its own nonzero scalar preserves and reflects tail
+independence. -/
+theorem tailCoefficientIndependent_scale_columns_iff
+    {I P : Type*} [Fintype I]
+    (c : I → P → ℂ) (u : I → ℂ) (hu : ∀ i, u i ≠ 0) :
+    TailCoefficientIndependent (fun i p => u i * c i p) ↔
+      TailCoefficientIndependent c := by
+  constructor
+  · intro hscaled
+    have hinv := tailCoefficientIndependent_scale_columns
+      (fun i p => u i * c i p) (fun i => (u i)⁻¹)
+      (fun i => inv_ne_zero (hu i)) hscaled
+    convert hinv using 1
+    funext i p
+    simp [hu i]
+  · exact tailCoefficientIndependent_scale_columns c u hu
+
+/-- The full finite shift--derivative coefficient rectangle has tail rank exactly when the
+underlying Boolean orientations have tail rank. This is the exact converse to the earlier
+one-way analytic construction. -/
+theorem signedPrimeShiftedRotatedJet_tailIndependent_iff
+    {J A : Type*} [Fintype J] [Fintype A] [Nonempty A]
+    (ε : J → Nat.Primes → Bool) (alpha : A → ℂ)
+    (hdistinct : Function.Injective (fun a => (alpha a).re)) (m : ℕ) :
+    TailCoefficientIndependent
+        (fun jak : J × (A × Fin (m + 1)) => fun p =>
+          primeDirichletSign (ε jak.1 p) * primeShiftFactor (alpha jak.2.1) p *
+            rotatedPrimeLogClock p ^ (jak.2.2 : ℕ)) ↔
+      PrimeOrientationTailIndependent ε := by
+  classical
+  let c : J → Nat.Primes → ℂ := fun j p => primeDirichletSign (ε j p)
+  let raw := coefficientShiftJet c
+    (fun a p => primeShiftFactor (alpha a) p) primeLogClock m
+  let u : J × (A × Fin (m + 1)) → ℂ :=
+    fun jak => Complex.I ^ (jak.2.2 : ℕ)
+  have hu : ∀ jak, u jak ≠ 0 := fun jak => pow_ne_zero _ Complex.I_ne_zero
+  have hscale :
+      TailCoefficientIndependent (fun jak p => u jak * raw jak p) ↔
+        TailCoefficientIndependent raw :=
+    tailCoefficientIndependent_scale_columns_iff raw u hu
+  have hraw : TailCoefficientIndependent raw ↔ TailCoefficientIndependent c := by
+    constructor
+    · intro hm
+      exact tailCoefficientIndependent_of_coefficientShiftJet c
+        (fun a p => primeShiftFactor (alpha a) p) primeLogClock m
+        (primeShiftFactor_hasNowhereZeroFactor alpha) hm
+    · intro hc
+      exact ((primeCompleteShiftJetTailIndependent_iff c alpha hdistinct
+        (primeOrientationCoefficientPattern_range_finite ε)).mpr hc) m
+  change TailCoefficientIndependent
+      (fun jak : J × (A × Fin (m + 1)) => fun p =>
+        primeDirichletSign (ε jak.1 p) * primeShiftFactor (alpha jak.2.1) p *
+          rotatedPrimeLogClock p ^ (jak.2.2 : ℕ)) ↔
+    TailCoefficientIndependent c
+  rw [← hraw, ← hscale]
+  have hfun :
+      (fun jak : J × (A × Fin (m + 1)) => fun p =>
+        primeDirichletSign (ε jak.1 p) * primeShiftFactor (alpha jak.2.1) p *
+          rotatedPrimeLogClock p ^ (jak.2.2 : ℕ)) =
+      (fun jak p => u jak * raw jak p) := by
+    funext jak p
+    simp only [raw, c, u, coefficientShiftJet, rotatedPrimeLogClock]
+    rw [mul_pow]
+    ring
+  rw [hfun]
+
+/-- **Exact shifted tail matroid over the finite-prime field.** Every finite rectangle of
+translated analytic jets is algebraically independent over the intrinsic finite-prime field if
+and only if the original Boolean orientation family is independent modulo finite prime support. -/
+theorem signedPrimeShiftedRotatedJets_algebraicIndependent_over_finitePrimeCoefficientField_iff
+    {J A : Type*} [Fintype J] [DecidableEq J]
+    [Fintype A] [DecidableEq A] [Nonempty A]
+    (ε : J → Nat.Primes → Bool) (alpha : A → ℂ)
+    (hdistinct : Function.Injective (fun a => (alpha a).re)) (m : ℕ) :
+    AlgebraicIndependent finitePrimeCoefficientField
+        (fun jak : J × (A × Fin (m + 1)) =>
+          algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+            (signedPrimeShiftedRotatedJet
+              (ε jak.1) (alpha jak.2.1) jak.2.2).1) ↔
+      PrimeOrientationTailIndependent ε := by
+  let coeff : J × (A × Fin (m + 1)) → Nat.Primes → ℂ :=
+    fun jak p => primeDirichletSign (ε jak.1 p) *
+      primeShiftFactor (alpha jak.2.1) p * rotatedPrimeLogClock p ^ (jak.2.2 : ℕ)
+  rw [← signedPrimeShiftedRotatedJet_tailIndependent_iff ε alpha hdistinct m]
+  have h :=
+    algebraicIndependent_fractionPrimeColumns_over_finitePrimeCoefficientField_iff coeff
+  have hfamily :
+      (fun jak : J × (A × Fin (m + 1)) =>
+        algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+          (signedPrimeShiftedRotatedJet
+            (ε jak.1) (alpha jak.2.1) jak.2.2).1) =
+      (fun jak => algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+        (arithmeticOfPrimeColumn (coeff jak))) := by
+    funext jak
+    congr 1
+    exact signedPrimeShiftedRotatedJet_eq_arithmeticOfPrimeColumn
+      (ε jak.1) (alpha jak.2.1) jak.2.2
+  rw [hfamily]
+  exact h
+
+/-- The unshifted carrier family is the degree-zero face of the exact tail matroid. -/
+theorem signedPrimeArithmeticFunctions_algebraicIndependent_over_finitePrimeCoefficientField_iff
+    {J : Type*} [Fintype J] [DecidableEq J]
+    (ε : J → Nat.Primes → Bool) :
+    AlgebraicIndependent finitePrimeCoefficientField
+        (fun j => algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+          (signedPrimeArithmeticFunction (ε j))) ↔
+      PrimeOrientationTailIndependent ε := by
+  simpa only [signedPrimeArithmeticFunction] using
+    (algebraicIndependent_fractionPrimeColumns_over_finitePrimeCoefficientField_iff
+      (fun j p => primeDirichletSign (ε j p)))
+
+end
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open ArithmeticFunction
+
+noncomputable section
+
+/-- **Exact shifted tail matroid over `E_fin(s)`.** Adjoining the independent rational coordinate
+does not change the finite shifted-jet independence criterion. -/
+theorem signedPrimeShiftedRotatedJets_algebraicIndependent_over_finitePrimeRationalCoefficientField_iff
+    {J A : Type*} [Fintype J] [DecidableEq J]
+    [Fintype A] [DecidableEq A] [Nonempty A]
+    (ε : J → Nat.Primes → Bool) (alpha : A → ℂ)
+    (hdistinct : Function.Injective (fun a => (alpha a).re)) (m : ℕ) :
+    AlgebraicIndependent finitePrimeRationalCoefficientField
+        (fun jak : J × (A × Fin (m + 1)) =>
+          algebraMap arithmeticFunctionFractionField
+            arithmeticFunctionRationalCoordinateField
+            (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+              (signedPrimeShiftedRotatedJet
+                (ε jak.1) (alpha jak.2.1) jak.2.2).1)) ↔
+      PrimeOrientationTailIndependent ε := by
+  rw [algebraicIndependent_constants_over_finitePrimeRationalCoefficientField_iff]
+  exact
+    signedPrimeShiftedRotatedJets_algebraicIndependent_over_finitePrimeCoefficientField_iff
+      ε alpha hdistinct m
+
+/-- The unshifted carrier tail matroid is likewise unchanged by adjoining the rational
+coordinate. -/
+theorem signedPrimeArithmeticFunctions_algebraicIndependent_over_finitePrimeRationalCoefficientField_iff
+    {J : Type*} [Fintype J] [DecidableEq J]
+    (ε : J → Nat.Primes → Bool) :
+    AlgebraicIndependent finitePrimeRationalCoefficientField
+        (fun j => algebraMap arithmeticFunctionFractionField
+          arithmeticFunctionRationalCoordinateField
+          (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+            (signedPrimeArithmeticFunction (ε j)))) ↔
+      PrimeOrientationTailIndependent ε := by
+  rw [algebraicIndependent_constants_over_finitePrimeRationalCoefficientField_iff]
+  exact
+    signedPrimeArithmeticFunctions_algebraicIndependent_over_finitePrimeCoefficientField_iff ε
 
 end
 

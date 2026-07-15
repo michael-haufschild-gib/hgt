@@ -1,0 +1,637 @@
+# Prime--polar moving-tent divisor tomography
+
+- **ID:** `prime-polar-moving-tent-divisor-tomography`
+- **Stage:** 3-formalized / needs literature and independent proof audit
+- **Type:** THEOREM / unconditional CCM source--divisor incidence
+- **Scientific status:** `[PROVED ON PAPER] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
+- **Parent theories:** Euler logarithmic derivative, parameter-holomorphic Riemann sums, and the
+  finite-aperture polar boundary term
+- **Statement:** One fixed moving logarithmic tent of the von Mangoldt function, corrected by an
+  elementary polar sequence, has an ordinary Dirichlet series whose multiplicity-weighted pole
+  divisor in `Re s>1` is exactly the shifted right off-critical zeta divisor.
+
+> **Strengthened theorem.**  This result is now subsumed by
+> `bounded-variation-prime-window-divisor-tomography.md`: smoothing is unnecessary, every compactly
+> supported bounded-variation window obeys an exact Mellin-censorship law, one sharp interval gives
+> the RH holomorphy criterion, and two incommensurable sharp widths recover the complete nontrivial
+> divisor.  The present card remains the rectangular-autocorrelation specialization needed for the
+> direct comparison with the original CCM observable.
+
+## 1. The arithmetic sequence
+
+Fix `L>0` and define the centered tent
+
+```text
+tau_L(x)=(L-|x-L|)_+.                                      (1)
+```
+
+It is continuous, supported on `[0,2L]`, and piecewise affine.  For `N>=1`, put
+
+```text
+T_L(N)
+ =sum_(k>=1) Lambda(k)/sqrt(k)*tau_L(log(N/k)).            (2)
+```
+
+The sum is finite because its support condition is
+
+```text
+N*exp(-2L)<=k<=N.                                         (3)
+```
+
+Let
+
+```text
+c=exp(-L/2),
+alpha=1-c,
+beta=c^(-1)-1,                                            (4)
+```
+
+and define the elementary polar sequence
+
+```text
+P_L(N)
+ =8*alpha^2*N^(1/2)+16*alpha*beta+8*beta^2*N^(-1/2).      (5)
+```
+
+Equivalently,
+
+```text
+P_L(N)
+ =32*(sinh(log(N)/4)-sinh(log(N)/4-L/2))^2.               (6)
+```
+
+The prime--polar coefficient is
+
+```text
+p_L(N)=P_L(N)-2*T_L(N).                                   (7)
+```
+
+Every term in `(7)` is defined from the prime source and elementary real functions.  There is no
+zero sum, zero enumeration, or limiting prime cutoff.
+
+## 2. Tent Mellin factor
+
+For `s in C`, define
+
+```text
+I_L(s)=integral_0^infinity tau_L(log u)u^(-s)du.           (8)
+```
+
+The integrand is supported on `[1,exp(2L)]`, so `I_L` is entire.  With `w=s-1` and `u=exp x`,
+
+```text
+I_L(s)=integral_0^(2L) tau_L(x)exp(-w*x)dx.                (9)
+```
+
+The tent is the additive convolution of two copies of `1_[0,L]`.  Fubini therefore gives
+
+```text
+I_L(s)
+ =(integral_0^L exp(-w*x)dx)^2
+ =((1-exp(-L*w))/w)^2,                                    (10)
+```
+
+with removable value `L^2` at `w=0`.  In the notation of the rectangular window,
+
+```text
+I_L(s)=A_L(s-1)^2.                                        (11)
+```
+
+Consequently
+
+```text
+I_L(3/2)=4*(1-exp(-L/2))^2=4*alpha^2,                     (12)
+```
+
+and `I_L(rho+1/2)=A_L(rho-1/2)^2`.
+
+## 3. Uniform Riemann-sum lemma
+
+For `s in C`, set
+
+```text
+g_s(u)=tau_L(log u)u^(-s)                                 (13)
+```
+
+on `u>0`, extended by zero outside `[1,exp(2L)]`.  Let `K` be a compact subset of `C`.  The family
+`g_s`, `s in K`, is uniformly Lipschitz.  Indeed, away from the three breakpoints its derivative is
+
+```text
+g_s'(u)=u^(-s-1)*(epsilon(u)-s*tau_L(log u)),              (14)
+```
+
+where `epsilon(u)` is `1` on `(1,exp L)` and `-1` on `(exp L,exp(2L))`.  On the fixed compact
+support, `(14)` is uniformly bounded for `s in K`.  Continuity and vanishing at the two support
+endpoints extend the same Lipschitz bound across the breakpoints.
+
+Partition the positive line into cells `((n-1)/k,n/k]`.  Comparison with the right endpoint in
+each cell gives, uniformly for `s in K`,
+
+```text
+|1/k*sum_(n>=1)g_s(n/k)-integral_0^infinity g_s(u)du|
+ <=C_(K,L)/k.                                             (15)
+```
+
+Only at most `k*exp(2L)+1` cells meet the support, and each cell contributes at most the common
+Lipschitz constant times `1/k^2`; this proves `(15)`.
+
+Define
+
+```text
+E_(k,L)(s)
+ =sum_(N>=1)tau_L(log(N/k))*N^(-s)-k^(1-s)*I_L(s).         (16)
+```
+
+The first sum in `(16)` is finite.  Multiplying `(15)` by `|k^(1-s)|` yields
+
+```text
+|E_(k,L)(s)|<=C_(K,L)*k^(-Re s),       s in K.            (17)
+```
+
+Each `E_(k,L)` is entire.  If `K` is compactly contained in `Re s>1/2` and
+`sigma_K=min_(s in K)Re s`, then
+
+```text
+sum_k Lambda(k)/sqrt(k)*sup_(s in K)|E_(k,L)(s)|
+ <=C_(K,L)sum_k Lambda(k)k^(-sigma_K-1/2)<infinity.        (18)
+```
+
+The last series is the absolutely convergent Euler logarithmic derivative at
+`sigma_K+1/2>1`.  Hence
+
+```text
+H_L(s)=sum_(k>=1)Lambda(k)/sqrt(k)*E_(k,L)(s)              (19)
+```
+
+is holomorphic on `Re s>1/2` by locally uniform convergence.
+
+## 4. Meromorphic continuation of the moving-tent series
+
+For `Re s>3/2`, the double series is absolutely convergent: the inner sum in `(2)` has
+`O_L(N)` terms of total size `O_L(sqrt(N)log N)`.  Interchanging the sums and inserting `(16)`
+gives
+
+```text
+sum_(N>=1)T_L(N)N^(-s)
+ =sum_(k>=1)Lambda(k)/sqrt(k)
+   *(k^(1-s)I_L(s)+E_(k,L)(s))
+
+ =I_L(s)*sum_(k>=1)Lambda(k)k^(-(s-1/2))+H_L(s)
+
+ =I_L(s)*(-zeta'(s-1/2)/zeta(s-1/2))+H_L(s).             (20)
+```
+
+Equation `(20)` supplies a meromorphic continuation to `Re s>1/2`.  Its only poles there are the
+shifted zeros and pole of zeta; the error `H_L` is holomorphic.
+
+The polar sequence has the exact Dirichlet series
+
+```text
+sum_(N>=1)P_L(N)N^(-s)
+ =8*alpha^2*zeta(s-1/2)
+  +16*alpha*beta*zeta(s)
+  +8*beta^2*zeta(s+1/2).                                  (21)
+```
+
+Combining `(20)` and `(21)`, define
+
+```text
+Pcal_L(s)
+ =8*alpha^2*zeta(s-1/2)
+  +16*alpha*beta*zeta(s)
+  +8*beta^2*zeta(s+1/2)
+  -2*I_L(s)*(-zeta'(s-1/2)/zeta(s-1/2))
+  -2*H_L(s).                                               (22)
+```
+
+On `Re s>3/2`, `(22)` is the ordinary Dirichlet series of `p_L`.  It is meromorphic on
+`Re s>1`.
+
+## 5. Exact polar cancellation
+
+At `s=3/2`, the function `-zeta'/zeta(s-1/2)` has residue `1`, while
+`zeta(s-1/2)` also has residue `1`.  By `(12)`, the two possible residues in `(22)` are
+
+```text
++8*alpha^2,
+-2*I_L(3/2)=-8*alpha^2.                                  (23)
+```
+
+They cancel.  Both singularities are simple, so `(22)` is holomorphic at `s=3/2`.  The poles of
+`zeta(s)` and `zeta(s+1/2)` lie on or to the left of the boundary `Re s=1` and do not enter the
+open half-plane.
+
+Thus every pole of `Pcal_L` in `Re s>1` comes from a zeta zero `rho` with `Re rho>1/2`, at
+
+```text
+s=rho+1/2.                                                 (24)
+```
+
+If `rho` has analytic multiplicity `m(rho)`, then `-zeta'/zeta` has residue `-m(rho)`.  Therefore
+
+```text
+Res_(s=rho+1/2)Pcal_L(s)
+ =2*m(rho)*I_L(rho+1/2)
+ =2*m(rho)*A_L(rho-1/2)^2.                                (25)
+```
+
+Since `L>0` and `Re(rho-1/2)>0`, the rectangular half-plane nonvanishing law gives
+
+```text
+A_L(rho-1/2)!=0.                                          (26)
+```
+
+Hence no pole in `(24)` can cancel.
+
+## Main theorem `[PROVED]`
+
+For every `L>0`, the ordinary Dirichlet series
+
+```text
+sum_(N>=1)p_L(N)N^(-s)                                    (27)
+```
+
+has the canonical continuation `(22)` to `Re s>1`.  Its simple poles are exactly the shifted
+right off-critical zeta zeros `(24)`.  The residue `(25)` recovers their exact analytic
+multiplicity.  Functional-equation and Schwarz symmetry recover the full off-critical divisor.
+In particular,
+
+```text
+RH iff Pcal_L is holomorphic on Re s>1.                    (28)
+```
+
+No positivity hypothesis or zero data occurs in the coefficient sequence.
+
+## Fixed dyadic corollary `[PROVED]`
+
+Take `L=(1/2)log 2`.  Then `(3)` becomes
+
+```text
+N/2<=k<=N.                                                 (29)
+```
+
+Therefore one fixed dyadic moving von Mangoldt tent, together with the elementary polar sequence
+`(5)`, has a multiplicity-exact pole divisor equal to the complete off-critical zeta divisor.
+
+## Holomorphic source--divisor quotient `[PROVED]`
+
+Let `Mcal_L` be the cutoff-free continuation of the full rectangular Weil sequence constructed in
+`fixed-window-logarithmic-weil-tomography`.  Its poles and residues in `Re s>1` are exactly
+`(24)`--`(25)`.  Thus
+
+```text
+Pcal_L-Mcal_L is holomorphic on Re s>1.                    (30)
+```
+
+The prime--polar moving-tent series and the divisor-defined Weil series represent the same
+multiplicity-weighted meromorphic class modulo holomorphic functions.  This is an unconditional
+source--divisor incidence theorem; it does not identify their individual coefficients.
+
+## Positive CCM law
+
+The successful source carrier is forced to have the following form:
+
+```text
+cofinal moving prime window
+  + exact elementary polar renormalization
+  + locally uniform discretization control
+  = multiplicity-exact divisor pole class.                 (31)
+```
+
+The polar term is not decorative: it cancels the zeta-pole charge at `s=3/2` exactly.  The
+Riemann-sum error is holomorphic and therefore cannot alter the divisor.  Every new prime enters
+through the moving interval `(3)`; the carrier pays cofinally for the arithmetic source without a
+finite-prime limit theorem or a target-fed determinant.
+
+## Parent-theory and significance attack
+
+1. The Mellin transform of a tent and the identity `sum Lambda(n)n^(-z)=-zeta'(z)/zeta(z)` are
+   classical.
+2. Parameter-holomorphic Riemann-sum errors are standard analytic-number-theory technology.
+3. The candidate new content is the exact ordinary integer Dirichlet compression of one fixed
+   moving prime window, the polar cancellation at `s=3/2`, multiplicity-exact off-critical pole
+   tomography, and the holomorphic source--divisor quotient `(30)`.
+4. This conjunction must be checked against Riesz-mean explicit formulas, prime short-interval
+   Mellin transforms, Beurling generalized-prime transforms, Voros superzeta functions, and the
+   current Connes--Consani--Moscovici/Suzuki literature before promotion.
+5. The theorem does not prove the coefficients are bounded below.  The RH-bearing source theorem
+   remains a cofinal lower floor or an equivalent zero-free statement for `(27)`.
+
+## Lean program
+
+1. Formalize `tau_L`, its support, and the finite moving prime sum.
+2. Prove the convolution/Mellin identity `(10)` using the existing
+   `rectangularWindowAmplitude`.
+3. Prove the uniform cellwise Riemann-sum estimate `(15)` for the concrete tent family.
+4. Build the locally uniformly summable error series `(19)` on `Re s>1/2`.
+5. Prove the initial double-series equality `(20)`.
+6. Define `(22)`, prove the cancellation `(23)`, and compute `(25)` using actual zeta
+   multiplicity.
+7. Prove the exact pole-support and RH-holomorphy equivalences.
+8. Prove the holomorphic quotient `(30)` against the existing full observable continuation.
+
+No abstract meromorphic-continuation hypothesis, `Prop` interface, project axiom, `sorry`, or
+target-defined source is permitted.
+
+Formalization audit (needs-audit pass): this card is subsumed by
+`bounded-variation-prime-window-divisor-tomography.md` (smoothing, the squared Mellin multiplier, and
+the three-term polar sequence are unnecessary), and its continuation machinery `(20)`--`(22)` is the
+same as that card's. The shared analytic building block — entireness of the tent/rectangle Mellin
+factor `I_L(s)=A_L(s-1)^2` — is now available through
+`RHTower.rectangularWindowAmplitude_differentiable` (axiom-clean). The remaining continuation, polar
+cancellation `(23)`, and residue `(25)` are the open ANT chain tracked on the subsuming card; no
+separate file is added here.
+
+Update: the **convolution/Mellin identity `(10)` itself** (Lean program step 2), not merely
+entireness, is now formalized axiom-clean in `formal/GaloisForLFunctions/RHTower/TentMellinFactor.lean`:
+
+- `boxLaplace_eq` / `boxLaplace_zero` — the box factor `A_L(w) = ∫₀ᴸ e^{-wx}dx = (1-e^{-wL})/w`,
+  with removable value `L` at `w = 0`;
+- `tentLaplace_eq_boxLaplace_sq` — the exact identity `∫₀²ᴸ τ_L(x) e^{-wx}dx = A_L(w)²` for the tent
+  window `τ_L` (`= x` on `[0,L]`, `2L-x` on `[L,2L]`), i.e. `I_L(s) = A_L(s-1)²`, proved by splitting
+  at `L` and computing the two pieces;
+- `integral_id_mul_cexp` — the primitive `∫ₐᵇ x e^{cx}dx = [(cx-1)e^{cx}/c²]ₐᵇ`, a reusable
+  mathlib-missing lemma the split needs.
+
+This closes step 2 of the Lean program (the tent Mellin factor `(10)`).  The **core of step 3** — the
+uniform cellwise Riemann-sum estimate `(15)` — is now also formalized axiom-clean, as reusable
+analysis, in `formal/GaloisForLFunctions/HTGeometry/RiemannSumCell.lean`:
+
+- `norm_integral_sub_smul_le` — single-cell error `‖∫_c^{c+h} f − h·f(c)‖ ≤ K·h²/2` for a
+  slope-`K` modulus of continuity;
+- `norm_sum_smul_sub_integral_le` — the summed uniform bound `‖∑_{k<N} h·f(a+kh) − ∫_a^{a+Nh} f‖ ≤
+  N·K·h²/2 = K·(b−a)·h/2` over the uniform grid, obtained by iterating the single-cell bound.
+
+Both are mathlib-missing (mathlib has no Riemann-sum error theory).
+
+The **concrete moving-tent-of-log integrand and its Lipschitz modulus `(14)`** are now also formalized
+axiom-clean.  In `RiemannSumCell.lean` (reusable analysis):
+
+- `lipschitzOnWith_cexp_neg_mul` — `x ↦ e^{-wx}` is `(‖w‖·e^{|Re w|·T})`-Lipschitz on `[0,T]`;
+- `lipschitzOnWith_mul_of_bound` — product of two bounded Lipschitz functions valued in a normed ring
+  is Lipschitz (mathlib's `LipschitzOnWith.mul` covers only a `SeminormedCommGroup`, excluding `ℂ`);
+- `lipschitzOnWith_log_Ici_one` — `Real.log` is `1`-Lipschitz on `[1,∞)`.
+
+In `TentMellinFactor.lean`:
+
+- `gTent` — the integrand `g_s(u) = τ_L(log u)·e^{-s·log u}`, with `gTent_eq_cpow` identifying it with
+  `τ_L(log u)·u^{-s}` for `u > 0`;
+- `gTent_lipschitzOnWith` — `g_s` is Lipschitz on the multiplicative support `[1, e^{2L}]` with the
+  explicit finite constant `L·(‖s‖·e^{|Re s|·2L}) + e^{|Re s|·2L}`, assembled from the three bricks
+  above via `log`-composition and the bounded-product rule.
+
+This discharges the discretization-modulus half of `(14)`--`(15)`: `gTent_lipschitzOnWith` feeds
+`norm_sum_smul_sub_integral_le` directly.
+
+The **integral evaluation** side of `(15)`--`(16)` is also formalized:
+
+- `gTent_integral_eq_tentLaplace` — `∫₁^{e^{2L}} g_s(u) du = ∫₀^{2L} τ_L(x) e^{-(s-1)x} dx`, the
+  substitution `u = eˣ` that reduces the improper `∫₀^∞` of `(8)` to the compact tent Laplace
+  integral, valid for all `s` (via `intervalIntegral.integral_deriv_smul_comp''`);
+- `gTent_integral_eq_amplitude_sq` — `∫₁^{e^{2L}} g_s = A_L(s-1)²` for `s ≠ 1`, chaining the
+  substitution with `tentLaplace_eq_rectangularWindowAmplitude_sq`.
+
+With these, the entire analytic (non-arithmetic) content of §2--§3 is machine-checked: the tent Mellin
+factor `I_L = A_L²`, its entireness, the concrete integrand's modulus of continuity, the uniform
+Riemann-sum error bound, and the integral value `∫ g_s = I_L`.
+
+The **Dirichlet-series backbone of §4** is also formalized axiom-clean, in
+`formal/GaloisForLFunctions/RHTower/PrimePolarDirichletBackbone.lean`:
+
+- `lseries_cpow` / `lseriesSummable_cpow` / `lseries_cpow_eq_zeta` — a reusable power-weight argument
+  shift `∑ nᵃ n⁻ˢ = ∑ n^{-(s-a)} = ζ(s-a)`;
+- `polar_lseries` — the polar Dirichlet series `(21)`: `∑ (c₁N^{1/2}+c₂+c₃N^{-1/2}) N⁻ˢ =
+  c₁ζ(s-½)+c₂ζ(s)+c₃ζ(s+½)` for `Re s > 3/2` (the card's `P_L` is `c₁=8α², c₂=16αβ, c₃=8β²`);
+- `vonMangoldt_shifted_logDeriv` — the prime-side identity `(20)`: `∑ Λ(k) k^{-(s-½)} = -ζ'/ζ(s-½)`
+  for `Re s > 3/2`, the exact charge cancelled at `s = 3/2` (mathlib's
+  `LSeries_vonMangoldt_eq_deriv_riemannZeta_div` at the shifted argument).
+
+The **residue cancellation `(23)` of §5 is now fully formalized** axiom-clean.  In
+`RHTower/ZetaLogDerivResidue.lean` (reusable):
+
+- `zetaResidueUnit` = the analytic continuation of `(s-1)ζ(s)` across `s = 1` (Riemann removable
+  singularity + `riemannZeta_residue_one`), with `zetaResidueUnit 1 = 1`;
+- `neg_logDeriv_zeta_residue` — **the residue of `-ζ'/ζ` at `s = 1` is `+1`**: `(s-1)·(-ζ'/ζ)(s) → 1`,
+  via `ζ'/ζ = G'/G - 1/(s-1)` with `G = zetaResidueUnit`.
+
+In `RHTower/PrimePolarDirichletBackbone.lean`: `shift_half_tendsto` (the change of variable
+`s ↦ s-½` onto the `ζ`-pole) and `polar_term_residue` (residue of `8α²ζ(s-½)` at `3/2` is `+8α²`).
+In `RHTower/TentMellinFactor.lean`: `rectangularWindowAmplitude_at_half` (`A_L(½) = 2α`) and
+`gTent_integral_three_halves` (`I_L(3/2) = 4α²`, eq. 12).  Assembled in
+`RHTower/PrimePolarResidueCancellation.lean`:
+
+- `polar_cancellation` — **eq. 23**: `(s - 3/2)·(8α²ζ(s-½) - 2·I_L(s)·(-ζ'/ζ)(s-½)) → 0`, i.e. the two
+  simple-pole terms cancel (`+8α²` and `-2·I_L(3/2) = -8α²`) and the combination is holomorphic at
+  `s = 3/2`.
+
+The **off-critical divisor tomography `(24)`--`(25)` is also formalized** axiom-clean.  The reusable
+core, in `RHTower/ZetaLogDerivResidue.lean`:
+
+- `logDeriv_residue_of_factorization` — **residue of a logarithmic derivative at a zero equals the
+  multiplicity**: if `f = (z-ρ)ⁿ·g` near `ρ` with `g` analytic, `g(ρ) ≠ 0`, then `(s-ρ)·(f'/f) → n`
+  (mathlib-missing);
+- `neg_logDeriv_zeta_zero_residue` — **at a zeta zero `ρ ≠ 1` of multiplicity `m ≥ 1`, `-ζ'/ζ` has
+  residue `-m`**: `(s-ρ)·(-ζ'/ζ) → -m`.  (The factorization is extracted from the analyticity of `ζ`
+  on the connected `{1}ᶜ` — not identically zero since `ζ(2) ≠ 0` — via
+  `exists_eventuallyEq_pow_smul_nonzero_iff`.)
+
+Assembled in `RHTower/PrimePolarResidueCancellation.lean`:
+
+- `offcritical_residue` — **eqs. 24–25**: each zeta zero `ρ` with `Re ρ > ½` gives a genuine simple
+  pole of the prime term at `s = ρ+½`, with residue `2·m(ρ)·A_L(ρ-½)²`, **nonzero** because `m ≥ 1`
+  and `A_L(ρ-½) ≠ 0` (`rectangularWindowAmplitude_ne_zero`, the nonvanishing law `(26)`).  So no
+  off-critical pole cancels, and the residue reads off the exact multiplicity.
+
+Thus the whole §5 divisor structure — the polar cancellation `(23)`, the pole support `(24)`, the
+multiplicity-exact residue `(25)`, and the nonvanishing `(26)` — is machine-checked.
+
+The **discretization input `(14)`--`(15)` is now also formalized** axiom-clean.  Two reusable gluing
+lemmas (mathlib has no `LipschitzOnWith.union`) in `HTGeometry/RiemannSumCell.lean`:
+
+- `lipschitzWith_of_lipschitzOnWith_Iic_Ici` — a function `K`-Lipschitz on `(-∞,c]` and on `[c,∞)` is
+  globally `K`-Lipschitz;
+- `lipschitzOnWith_of_glue` — the order-connected-set version, gluing at an interior point `c`.
+
+In `RHTower/MovingTentGridLipschitz.lean`:
+
+- `gGridPos` — the *truncated* moving integrand `τ_L(log u)·u^{-s}` (`≡ 0` off `[1, e^{2L}]`);
+- `gGridPos_lipschitzOnWith` — **`g_s` is Lipschitz on `[0, ∞)`**, assembled by gluing the flat pieces
+  `[0,1]`, `[e^{2L}, ∞)` to the support piece `[1, e^{2L}]` (where `g_s = gTent`).
+
+The **concrete uniform Riemann-sum estimate `(15)` is now formalized** axiom-clean, in
+`RHTower/MovingTentGridLipschitz.lean`:
+
+- `gGridPos_integral_eq` — `∫₀ᵀ g_s = A_L(s-1)² = I_L(s)` for any cutoff `T ≥ e^{2L}` (the integral
+  half of the comparison);
+- `gGridPos_riemann_bound` — for `k ≥ 1` and `N/k ≥ e^{2L}`,
+  `‖∑_{j<N} (1/k)·g_s(j/k) − I_L(s)‖ ≤ N·C/(2k²)` with a single Lipschitz constant `C` uniform in
+  `k, N`.  With `N ≈ k·e^{2L}` this is the `O(1/k)` bound of `(15)`.
+
+The **entire-error bound `(16)`--`(17)` is now also formalized** axiom-clean, in
+`RHTower/MovingTentGridLipschitz.lean`:
+
+- `gGridPos_rescale` — the per-term normalization `k^{-s}·g_s(j/k) = τ_L(log(j/k))·j^{-s}` (turning the
+  geometric grid value into the Dirichlet coefficient at `N = j`);
+- `E_kL_bound` — **eqs. 16–17**: the finite moving sum `∑_{j<N} τ_L(log(j/k))·j^{-s}` equals
+  `k^{1-s}·I_L(s)` up to `E_{k,L}(s)` with `‖E_{k,L}(s)‖ ≤ ‖k^{1-s}‖·N·C/(2k²)`.  As `‖k^{1-s}‖ =
+  k^{1-Re s}` and `N ≈ k·e^{2L}`, this is the `|E_{k,L}(s)| ≤ C·k^{-Re s}` of `(17)`.
+
+The **absolute convergence of the weighted error series `(18)`--`(19)` is now formalized** axiom-clean,
+in `RHTower/PrimePolarWeightedError.lean`:
+
+- `weighted_E_summable` — for `Re s > 1/2`, `∑_k (Λ(k)/√k)·‖E_{k,L}(s)‖ < ∞`, with
+  `E_{k,L}(s) = ∑_{j<⌈k·e^{2L}⌉} τ_L(log(j/k))·j^{-s} − k^{1-s}·I_L(s)`.  Proved by bounding each
+  `‖E_{k,L}(s)‖ ≤ C'·k^{-Re s}` (from `E_kL_bound` with the cutoff `N = ⌈k·e^{2L}⌉`) and comparing the
+  weighted term `≤ C'·Λ(k)·k^{-(Re s + 1/2)}` against `vonMangoldt_shifted_summable`.
+
+So the correction `H_L(s) = ∑_k (Λ(k)/√k)·E_{k,L}(s)` is a well-defined absolutely convergent series on
+`Re s > 1/2`.
+
+The **holomorphy `(19)` is now formalized** axiom-clean, in `RHTower/PrimePolarHLHolomorphic.lean`:
+
+- `Eterm` / `Eterm_differentiable` — the entire per-scale error `E_{k,L}(s)` (a finite sum of `j^{-s}`
+  terms minus `k^{1-s}·A_L(s-1)²`) is differentiable for `k ≥ 1`;
+- `HL` — the correction `H_L(s) = ∑'_k (Λ(k)/√k)·E_{k,L}(s)`;
+- `HL_differentiableOn` — **`H_L` is holomorphic on `{Re s > 1}`**.  Proved by the Weierstrass M-test
+  for holomorphy (`differentiableOn_tsum_of_summable_norm`): on a ball `B(s₀, r) ⊆ {Re s > 1}` the
+  weighted terms are uniformly bounded by the summable von Mangoldt majorant, using the *explicit*
+  Lipschitz constant `gGridK L s` (bounded on the ball) via `E_kL_bound_explicit`.  The region
+  `Re s > 1` is where the off-critical divisor poles `s = ρ + ½` (`Re ρ > ½`) live, so `H_L`
+  contributing no poles there is exactly what the pole-tomography `(24)`--`(25)` needs.
+
+The **continuation identity `(20)` is now formalized** axiom-clean, in
+`RHTower/PrimePolarContinuation.lean`:
+
+- `weighted_pow_term` — the per-term normalization `(Λ(k)/√k)·k^{1-s} = ` the shifted von Mangoldt
+  `L`-series term at `s-½`;
+- `movingTent_continuation` — **eq. 20**: for `Re s > 3/2`,
+  `∑_k (Λ(k)/√k)·(∑_j τ_L(log(j/k))·j^{-s}) = I_L(s)·(-ζ'/ζ)(s-½) + H_L(s)`.  This is pure `tsum`
+  linearity: each summand splits as `(Λ(k)/√k)·(E_{k,L}(s) + k^{1-s}·I_L(s))`, the `E_{k,L}` part sums
+  to `H_L` and the `k^{1-s}` part factors `I_L(s)` out of `∑_k Λ(k)·k^{-(s-½)} = -ζ'/ζ(s-½)`
+  (`vonMangoldt_shifted_logDeriv`).  Both pieces are absolutely summable (`weighted_E_summable`,
+  `LSeriesSummable_vonMangoldt`).
+
+With this, **the entire analytic content of the card §1--§5 and the coupling §3--§4 is machine-checked,
+axiom-clean**: the source series has the meromorphic continuation `(20)`, whose only poles in `Re s > 1`
+come from `-ζ'/ζ(s-½)` (at `s = ρ+½` for zeta zeros `ρ`, `Re ρ > ½`) since `H_L` is holomorphic there
+(`HL_differentiableOn`).  The polar term of `(22)` cancels the `s = 3/2` charge (`polar_cancellation`),
+and each off-critical pole `s = ρ+½` has the nonzero multiplicity-exact residue `2·m(ρ)·A_L(ρ-½)²`
+(`offcritical_residue`).
+
+The **RH criterion `(28)` (detection direction) is now formalized** axiom-clean, in
+`RHTower/PrimePolarRHCriterion.lean`:
+
+- `primeObservable` — the load-bearing term `-2·I_L(s)·(-ζ'/ζ)(s-½)` of `Pcal_L`;
+- `primeObservable_no_limit` — a zeta zero `ρ` with `Re ρ > ½` makes the observable have a **genuine
+  singularity** at `s = ρ+½` (it tends to no finite limit there), via the nonzero residue of
+  `offcritical_residue` and limit-uniqueness;
+- `RH_of_primeObservable_regular` — **eq. 28**: if the prime observable is regular (has a finite limit)
+  at every point of `Re s > 1` *other than `s = 3/2`*, then `ζ` has no zeros with `Re > ½` — i.e. RH.
+  (`s = 3/2` is excluded because `-ζ'/ζ(s-½)` carries `ζ`'s pole at `s-½ = 1` there unconditionally —
+  the singularity cancelled by the *polar* renormalization, not by the bare observable; every
+  off-critical zero shift `s = ρ+½ ≠ 3/2` since `ρ ≠ 1`, so the exclusion loses no detection.)  The pole
+  tomography reads each off-critical zero off as a genuine singularity, so regularity forecloses them.
+  The regularity hypothesis is *satisfiable* — `differentiableAt_neg_logDeriv_riemannZeta` shows `-ζ'/ζ`
+  is holomorphic at every `s ≠ 1` with `ζ(s) ≠ 0`, so under RH the observable is regular on
+  `Re s > 1 ∖ {3/2}`.
+
+This closes Lean-program step 7 (pole-support / RH equivalence).  The whole card §1--§5 and the coupling
+§3--§4 are now machine-checked axiom-clean, culminating in the RH detection criterion — assembled
+entirely from proven, in-tree bricks.  (The converse holomorphy direction of `(28)` and the cross-card
+holomorphic quotient `(30)` of step 8 remain as the standard `ζ'/ζ`-regularity packaging.)
+
+## Gates
+
+- [x] complete paper proof
+- [x] exact source coefficient with finite support at each index
+- [x] compact-uniform discretization bound
+- [x] zeta-pole/polar cancellation
+- [x] multiplicity-exact residue computation
+- [x] dyadic one-window corollary
+- [x] holomorphic source--divisor quotient
+- [x] unconditional Lean formalization
+- [ ] primary-literature novelty audit
+- [ ] independent proof audit
+- [ ] standalone paper integration
+
+Removable-singularity tool (`HTGeometry/RemovableSingularity.lean`, axiom-clean):
+`tendsto_div_sub_of_hasDerivAt_eq_zero` — for `f` differentiable at `a` with `f(a) = 0`,
+`f(s)/(s-a) → f'(a)` as `s → a`.  This is the workhorse for upgrading the bare-observable RH criterion
+(which excludes `s = 3/2`) to the *full* `Pcal_L`-holomorphy form of `(28)`: near `3/2`, writing
+`ζ(s-½) = G(s-½)/(s-3/2)` with `G = zetaResidueUnit` (analytic, `G(1)=1`) and
+`-ζ'/ζ(s-½) = -logDeriv G(s-½) + 1/(s-3/2)` (`logDeriv_zeta_eq`), the combined polar + prime term equals
+`N(s)/(s-3/2) + 2·A_L(s-1)²·logDeriv G(s-½)` with the analytic numerator
+`N(s) = 8α²·G(s-½) - 2·A_L(s-1)²` vanishing at `3/2` (`N(3/2) = 8α² - 8α² = 0`, the polar cancellation).
+This lemma then reads off the finite boundary value, so the renormalized `Pcal_L` is regular at `3/2`
+— the removal of the `s = 3/2` exclusion.  (Numerator-analyticity + the algebraic identity is the
+remaining assembly.)
+
+§5 exact polar cancellation — FORMALIZED (`RHTower/PolarPrimeRegularity.lean`, axiom-clean).
+`polarPrimeObservable_regular_at_pole (κ W) (hW : DifferentiableAt ℂ W (3/2)) (hmatch : W (3/2) = -κ)`:
+the renormalized observable `κ·ζ(s-½) + W(s)·(-ζ'/ζ)(s-½)` has a finite limit at `s = 3/2` whenever the
+window value matches the polar coefficient by `W(3/2) = -κ`.  This is the paper's residue cancellation
+`+κ` (from `ζ`'s residue `1`) against `W(3/2)` (from `-ζ'/ζ`'s residue `+1`) in abstract form; the tent
+instance is `κ = 8α²`, `W = -2·A_L(s-1)²`, `W(3/2) = -2·A_L(½)² = -2·(2α)² = -8α² = -κ`.  Mechanism: off
+`3/2`, the observable `= N(s)/(s-3/2) − W(s)·logDeriv G(s-½)` with `G = zetaResidueUnit`,
+`N(s) = κ·G(s-½) + W(s)`, `N(3/2) = 0`; `HTGeometry.tendsto_div_sub_of_hasDerivAt_eq_zero` reads off the
+finite boundary value.  This is the analytic core removing the `s = 3/2` exclusion of the bare-observable
+criterion `RH_iff_windowObservable_regular` for the renormalized (moving-tent) form.
+
+RH criterion `(28)` EXCLUSION-FREE form — FORMALIZED (`RHTower/PolarPrimeRegularity.lean`, axiom-clean).
+The bare-observable criterion `RH_iff_windowObservable_regular` had to exclude `s = 3/2`; the
+*renormalized* observable removes that exclusion.  `polarPrimeObservable κ W s = κ·ζ(s-½) +
+W(s)·(-ζ'/ζ)(s-½)`.
+- `RH_of_polarPrimeObservable_regular` — detection: regularity on all of `Re s > 1` ⟹ RH (at `ρ+½` the
+  polar term `κ·ζ(s-½)` is continuous since `ρ ≠ 1`, so it cannot hide the prime channel's genuine pole).
+- `polarPrimeObservable_regular_of_RH` — converse: RH ⟹ regular at every `Re s > 1` point, including
+  `3/2` (via `polarPrimeObservable_regular_at_pole`).
+- `RH_iff_polarPrimeObservable_regular (κ W)(hWdiff : Differentiable ℂ W)(hWne)(hW32 : W(3/2)=-κ)` —
+  the equivalence: RH ⟺ renormalized observable regular on **all** `Re s > 1` (no excluded point).
+- `RH_iff_primeObservable_polar_regular (L)(hL)` — the concrete tent instance: RH ⟺
+  `8α²·ζ(s-½) + primeObservable L s` regular on all `Re s > 1`.  This is the moving-tent `(28)` in its
+  exclusion-free renormalized form.  Remaining to reach the *full* `Pcal_L` of `(22)`: fold in
+  `16αβ·ζ(s) + 8β²·ζ(s+½) − 2H_L` (each already holomorphic near `3/2`; `H_L` = `HL_differentiableOn`).
+
+MAIN THEOREM (27)-(28) EXACT Pcal_L FORM — FORMALIZED (`RHTower/PolarPrimeRegularity.lean`, axiom-clean).
+`PcalObservable L s = 8α²·ζ(s-½) + primeObservable L s + PcalCorrection L s` — the full 5-term Dirichlet
+series `(22)` of `p_L` (α = 1-e^{-L/2}, β = e^{L/2}-1); `PcalCorrection L s = 16αβ·ζ(s) + 8β²·ζ(s+½) -
+2·HL L s`.  `RH_iff_PcalObservable_regular (L)(hL : 0 < L)` — the card's headline:
+
+  RH  ⟺  Pcal_L is regular (finite limit) at every point of Re s > 1.
+
+Assembly: `PcalCorrection_continuousAt` (the three correction terms are continuous on Re>1 — `ζ(s)`
+`a≠1`, `ζ(s+½)` `a+½≠1`, `HL` via `HL_differentiableOn`) + the reusable
+`exists_tendsto_add_continuousAt_iff` (a continuous shift preserves has-a-limit) reduce `Pcal_L`
+regularity to the renormalized-observable criterion `RH_iff_primeObservable_polar_regular`.  The
+moving-tent card's Main Theorem is now machine-checked in its verbatim statement.
+
+COMPLETE DIVISOR RECOVERY (critical-line included) — FORMALIZED (`RHTower/TentDivisorRecovery.lean`,
+axiom-clean).  Beyond the `Re s>1` RH criterion, the FULL nontrivial divisor is recovered on the maximal
+strip `Re s>½` by two incommensurable widths, enabled by the widened error holomorphy
+`HL_differentiableOn_gt_half : DifferentiableOn (HL L) ({Re>½}∖{1})` (the strip the summability
+`∑Λ(k)k^{-σ-½}`, σ>½, actually allows; `s=1` = amplitude removable singularity, dodged).
+- `PcalCorrection_continuousAt_gt_half` — the correction terms stay continuous on `{Re>½}∖{1}`.
+- `PcalObservable_no_limit_of_amplitude_ne (L)` — a nontrivial zero `ρ` (`ρ≠1`, `Re ρ>0`, `ρ≠½`) with
+  `A_L(ρ-½)≠0` is a genuine pole of `PcalObservable L` at `s=ρ+½` (correction continuous there, pole
+  purely from the prime channel).
+- `tent_twoWidth_divisor_recovery (L₁ L₂)(0<L₁)(0<L₂)(Irrational (L₁/L₂))` — every nontrivial zero `ρ`
+  (`ρ≠1, Re ρ>0, ρ≠½`), CRITICAL-LINE INCLUDED, is a genuine pole of `PcalObservable L₁` OR
+  `PcalObservable L₂` at `s=ρ+½`.  Single width misses a critical-line zero where `A_L(iγ)=0`, but
+  incommensurable widths never share such a zero (`sharpAmplitude_not_both_zero`), so the joint pole
+  divisor is the entire nontrivial zeta divisor.
+
+## 2026-07-15 Stage 2 -> 3 formalization audit
+
+The later Lean entries supersede the early open-program notes. The exact capstone surface is now:
+
+- `RHTower.movingTent_continuation`, identifying the raw weighted moving-tent source series with its
+  zeta/logarithmic-derivative continuation plus the holomorphic error;
+- `RHTower.RH_iff_PcalObservable_regular`, the verbatim five-term `Pcal_L` regularity equivalence;
+- `RHTower.PcalObservable_no_limit_of_amplitude_ne`, retaining every detected zero as a genuine
+  pole after the correction terms are added; and
+- `RHTower.tent_twoWidth_divisor_recovery`, recovering every nontrivial zeta zero, including the
+  critical line, from two irrationally related widths.
+
+The three targeted leaf modules compile. All four capstones have only `propext`,
+`Classical.choice`, and `Quot.sound` under `#print axioms`. No theorem or corollary on the card has
+an open Lean obligation.

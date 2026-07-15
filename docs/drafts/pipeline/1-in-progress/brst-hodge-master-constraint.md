@@ -4,7 +4,10 @@
 - **Stage:** 1-in-progress
 - **Type:** THEOREM (paper)
 - **Source:** [BRIDGE] BRST cohomology, supersymmetric quantum mechanics, and Hodge theory
-- **Statement:** For a bounded operator `Q`, the positive operator `H_Q = Q†Q + QQ†` has kernel `ker Q ∩ ker Q†`; when `Q² = 0`, it commutes with both `Q` and `Q†`.  For self-adjoint `G` and `P`, one Green equation `H_Q G = 1-P` supplies the other by adjunction.
+- **Statement:** For a bounded operator `Q`, the positive operator `H_Q = Q†Q + QQ†` has kernel
+  `ker Q ∩ ker Q†`; when `Q² = 0`, it commutes with both `Q` and `Q†` and is the square of the two
+  Hermitian supercharges `Q+Q†` and `i(Q-Q†)`, which anticommute.  For self-adjoint `G` and `P`, one
+  Green equation `H_Q G = 1-P` supplies the other by adjunction.
 
 ## Goal
 
@@ -35,6 +38,21 @@ The exact bounded-Hilbert-space identities needed here are
 
 and, under `Q² = 0`, `H_Q Q = Q H_Q` and `H_Q Q† = Q† H_Q`.
 
+Over a complex Hilbert space, the equivalent two-Hermitian-charge presentation is
+
+`D_Q = Q + Q†`, `J_Q = i(Q - Q†)`,
+
+`D_Q² = J_Q² = H_Q`, `D_Q J_Q + J_Q D_Q = 0`.
+
+This is the bounded-operator `N=2` supersymmetry algebra.  Fendley--Schoutens--de Boer use the
+nilpotent charges and `H={Q⁺,Q⁻}` in lattice quantum systems
+(<https://arxiv.org/abs/hep-th/0210161>).  Andrianov--Sokolov analyze the complex/real
+supercharge presentations of `N=2` supersymmetric quantum mechanics
+(<https://arxiv.org/abs/hep-th/0301062>).  An explicit current physics presentation records the
+equivalent real-charge algebra `{Q_i,Q_j}=2Hδ_ij` and complex nilpotent charge
+`H={Q_c,Q_c†}`, `Q_c²=0`
+(<https://link.springer.com/article/10.1007/s00601-025-01994-w>).
+
 For a harmonic projection `P` and Green operator `G`, the Green equations
 
 `H_Q G = G H_Q = 1-P`
@@ -64,6 +82,11 @@ relations recorded in arXiv:1607.08714.
 - Give the existing two-sided constraint-ideal theorem the same consolidated premise.
 - Add the nilpotent commutation law as genuinely new algebra on top of the generic finite-family
   master constraint.
+- Add the second Hermitian supercharge and the exact equal-square/anticommutation laws.
+- Discharge nilpotence automatically for every off-diagonal idempotent corner `(1-P)AP`.
+- Apply that discharge to `RHTower.projectionNormalCorner`: the existing phase rotation becomes
+  `i(Q-Q†)`, and every self-adjoint projection tangent becomes `Q+Q†`, so the two concrete RHTower
+  operators have equal squares and anticommute.
 - Apply the same adjoint discharge to `RHTower/SeamSuspensionTrace.lean`: a self-adjoint finite
   resolvent needs one inverse equation, rather than two, before graded Hodge compression applies.
 
@@ -72,6 +95,20 @@ relations recorded in arXiv:1607.08714.
 No existing RH-equivalent declaration currently asks for both `Q ψ = 0` and `Q† ψ = 0`.
 Accordingly, this strengthens the reusable HTGeometry constraint API and its Ward/ideal consumers,
 but does not discharge the compressed-Euler essential-commutation premise in RHTower.
+
+The semilocal projection geometry does contain a direct consumer.  Its normal corner
+`Q=(1-P)DP` formerly had no BRST connection in the corpus.  Idempotence now proves `Q²=0`
+without a source hypothesis.  For self-adjoint projection data the existing
+`projectionPhaseRotation P D` is exactly `i(Q-Q†)`; if `D` is tangent, then `D=Q+Q†`.  The new
+RHTower theorem surface therefore proves
+
+`projectionPhaseRotation(P,D)² = D²`
+
+and anticommutation of the two tangents.  This is an exact energy-preserving strengthening of the
+phase-polarized mixed-curvature route; its statewise surface also proves
+`||projectionPhaseRotation(P,D) psi||²=||D psi||²`.  It does not construct the required semilocal
+projection family or prove compactness of its mixed derivative, so it is not promoted to an RH
+result.
 
 The nearest live downstream route is
 `prime-arch-koszul-spectral-quotient-cancellation-rh.md`.  If that card constructs its proposed
@@ -100,3 +137,4 @@ axiom audit is run.  The card remains in progress until targeted validation is a
 - 2026-07-14 — source-level Lean surface added in `HTGeometry/BRSTHodgeConstraint.lean` and imported by the HTGeometry umbrella; direct corpus scan found no pre-existing joint `Q`/`Q†` consumer; no computation or build run.
 - 2026-07-14 — source-level Green-operator commutation and Hodge chain-homotopy theorems added; these reduce the seam-compression Hodge relation to construction of `P` and `G`, but do not solve that source-specific construction.  No computation or build run.
 - 2026-07-15 — self-adjoint adjunction removes one of the two Green equations in generic HTGeometry and one of the two finite resolvent inverse equations in RHTower seam compression.  Direct consumers were added source-only; no computation or build run.
+- 2026-07-15 — the physics `N=2` real-supercharge presentation was added source-only.  Off-diagonal projection corners now discharge BRST nilpotence automatically; the RHTower phase rotation and self-adjoint projection tangent are identified as the two Hermitian supercharges, with equal-square and anticommutation laws.  No Lean process, build, lint, or numerical work was run.

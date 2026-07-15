@@ -317,6 +317,29 @@ theorem tendsto_finiteGibbsPurity_neg_energy_exposedFaceCard
       energy radius k
   · field_simp
 
+/-- **Thermofield coherence--face law.**  At zero temperature, the total off-diagonal squared
+mass of the canonical thermofield projector converges to one minus the reciprocal cardinality
+of the exposed maximum-energy face.  Thus the same face degeneracy that fixes the limiting
+Renyi-two purity fixes the surviving thermofield transition mass. -/
+theorem tendsto_offDiagonal_sq_finiteKMSWightmanWeight_neg_energy_exposedFaceCard
+    {P : Type*} [Fintype P] [Nonempty P]
+    (energy : P → ℝ) (radius : ℝ)
+    (hupper : ∀ p, energy p ≤ radius)
+    (hexposed : ∃ p, energy p = radius) :
+    Tendsto
+      (fun k : ℕ =>
+        ∑ a, ∑ b ∈ Finset.univ.erase a,
+          finiteKMSWightmanWeight (k : ℝ) (fun p => -energy p) a b ^ 2)
+      atTop
+      (nhds (1 - (finiteSourceExposedFaceCard energy radius : ℝ)⁻¹)) := by
+  have hpurity := tendsto_finiteGibbsPurity_neg_energy_exposedFaceCard
+    energy radius hupper hexposed
+  have hoff := tendsto_const_nhds.sub hpurity
+  convert hoff using 1
+  funext k
+  exact (sum_offDiagonal_sq_finiteKMSWightmanWeight_eq_one_sub_purity
+    (k : ℝ) (fun p => -energy p)).symm
+
 /-- Energy-origin gauge invariance of the exposed-face cardinal. -/
 theorem finiteSourceExposedFaceCard_add_const
     {P : Type*} [Fintype P]

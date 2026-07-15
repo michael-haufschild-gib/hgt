@@ -315,6 +315,41 @@ on a genuinely new window.  Equivalently, prove that the source-defined global f
 has no ordinate fiber with norm greater than `2`.  This is a stricter target than continuity at
 `omega=0` and a different realization of the positive-real thin slice of `J_Xi`; it remains open.
 
+### Burnol co-Poisson quotient candidate for the missing diagonal
+
+The paper theorem
+`../2-fully-proven/not_new_scientific_knowledge/burnol-copoisson-quotient-bilateral-order-rh-law.md`
+supplies a second source coordinate for the same diagonalization problem.  Let `E_b` project onto
+the orthogonal complement of Burnol's closed co-Poisson source subspace and let
+
+```text
+H_(a,r)=U_r Pi_a U_r^*-U_r^*Pi_aU_r.
+```
+
+On a zero-evaluator fiber its normalized diagonal is exactly
+
+```text
+r^(2 Re(rho)-1)-r^(1-2 Re(rho)).
+```
+
+With `r=exp(t)`, the first scale derivative at `t=0` is `4(Re(rho)-1/2)`.  This makes the
+infinitesimal Burnol phase-polarization a concrete candidate for the missing linear horizontal
+charge reader.  The full quotient compression is overpowered because it also controls
+off-diagonal correlations.  The paper theorem
+`../2-fully-proven/not_new_scientific_knowledge/burnol-copoisson-berezin-diagonal-reflection-law.md`
+now closes the diagonal-map interface: if `k_w^b` is the ordinary evaluation kernel, then
+`E_b k_w^b` is the quotient reproducing kernel and
+
+```text
+<E_b k_w^b,H_(a,r)E_b k_w^b>
+```
+
+is a canonical source-defined Berezin diagonal.  It retains the exact zero-fibre value and is odd
+under Fourier reflection, with no zero biorthogonal system.  What remains is the sign of this
+scalar reader on the co-Poisson annihilator spectrum and an additional value relation identifying
+or dominating the positive Cauchy layer operator `T_A`; no absolute `<=2` bound follows from the
+linear reader alone.
+
 ## Global repair: Cauchy energy removes ordinate-phase cancellation
 
 `[PROVED BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` The first-order anti-causal profile can be treated

@@ -2040,3 +2040,121 @@ anti-Herglotz positivity, limiting measure, or continued-Cauchy sign.
 
 The remaining open term in this card is the untruncated raw theta-tail/seam mixed current.  The
 full core-current theorem remains RH-equivalent.
+
+## Self-consistent weighted Haar current: exact integrated theorem
+
+**[PROVED, LEAN]** The fixed-half-line Fubini calculation for the phase-adapted weighted
+polarization is now exact.  This closes the formal bookkeeping left open after `(36)`--`(39)`.
+It does not yet close the RH-equivalent raw core-current condition, for the reason stated at the
+end of this section.
+
+Put
+
+```text
+p_x(z)=exp(ixz),
+E(x)=exp(-x/2),
+R(z)=integral_(0,infinity) rho(x)p_x(z) dx,
+R'(z)=integral_(0,infinity) rho(x) ix p_x(z) dx.
+```
+
+The two seam moments are
+
+```text
+integral_(0,infinity) E(x)p_x(z) dx=(1/2-iz)^(-1),
+integral_(0,infinity) E(x)ixp_x(z) dx=i(1/2-iz)^(-2).    (40)
+```
+
+For the second identity, set `c=-1/2+iz`, whose real part is negative in the canonical strip.
+The finite primitive
+
+```text
+integral_0^b x exp(cx) dx=[(cx-1)exp(cx)/c^2]_0^b
+```
+
+passes to `b=infinity` because both `exp(cb)` and `b exp(cb)` tend to zero.  Hence the moment is
+`1/c^2`; multiplication by `i` gives `(40)`.  This also proves all four seam integrability
+statements used below.
+
+Let
+
+```text
+P=A_(m,u;q,r,tau),  u=p_(log 2)(z),
+A_(P,N)(x)=sum_j P_j q^j R_(N+j)(x),
+```
+
+where `R_k` is the exact one-variable Haar residual.  The endpoint equations `P(q)=1` and
+`P(r)=tau` give the pointwise source identity
+
+```text
+A_(P,N)(x)
+ =a_N sum_j P_j g(x-(N+j)log 2)-rho(x)+c_(N,tau)E(x),
+c_(N,tau)=(2^N tau+1)/4.                                (41)
+```
+
+The double phase root of `P` cancels the full-line translate vector and its translation drift.
+Writing `V_(P,N)` and `D_(P,N)` for the coefficient-weighted returned value and derivative tails,
+respectively, integration of `(41)` gives exactly
+
+```text
+Ahat_(P,N)(z) =-V_(P,N)(z)-R(z)+c_(N,tau)Ehat(z),
+Ahat'_(P,N)(z)= D_(P,N)(z)-R'(z)+c_(N,tau)Ehat'(z).      (42)
+```
+
+All exchanges in `(42)` are finite sums; integrability follows from the full-line exponential
+bound for the even theta remainder and `(40)`.
+
+The complete coefficient-weighted reflected Haar prefix is the symmetric rank-two tensor
+
+```text
+S_(P,N)(x,y)=1/2[A_(P,N)(x)E(y)+E(x)A_(P,N)(y)].         (43)
+```
+
+For arbitrary real sources `A,E` and any integrable value--derivative kernel `(V,D)`, Fubini and
+one complex-algebra identity give
+
+```text
+integral S(x,y) K_(V,D)(x,y) dxdy
+ =1/2 Cross((Ahat,Ahat'),(Ehat,Ehat')).                  (44)
+```
+
+Keeping both cross terms together and inserting `(42)` into `(44)` identifies the literal
+integrated signed Haar-prefix current with one half of
+`phaseAdaptedCriticalReturnedSourceCurrent`.
+
+The latter current is affine in `tau`.  Its normalized slope tends to the nonzero seam current
+
+```text
+Im(Ehat'(z) conjugate(Ehat(z)))>0.
+```
+
+Therefore, at every point `0<Im z<1/2`, some finite depth has nonzero affine denominator.  Choosing
+at that depth the exact self-consistent endpoint `tau=tau_(m,N,z)` gives
+
+```text
+integral S_(P,N)(x,y) K_z(x,y) dxdy=0.                  (45)
+```
+
+Consequently, on every admissible anisotropic schedule and for every positive `epsilon`, the depth
+may be selected separately at each mesh point so that the left side of `(45)` is strictly smaller
+than
+
+```text
+epsilon (n+1) |P_(2D(stage(n))+3)(z_n)|^2.              (46)
+```
+
+The Lean implementation is
+`XiCTaylorThetaTailPhaseAdaptedProuhetIntegratedHaarCurrent.lean`.  Its capstones are
+`canonicalPhaseAdaptedWeightedReflectedHaarIntegratedCurrent_eq`,
+`exists_canonicalPhaseAdaptedWeightedReflectedHaarIntegratedCurrent_eq_zero`, and
+`eventually_exists_canonicalPhaseAdaptedWeightedReflectedHaarIntegratedCurrent_lt_scaled_normSq`.
+Their axiom audit contains only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**[OPEN CORE]** Equation `(45)` is a self-consistent coefficient-selection theorem, not yet an
+independent orientation of the raw theta-tail/seam current.  The endpoint `tau_(m,N,z)` is defined
+from `R(z),R'(z)` through the affine current-cancellation equation.  Thus `(45)` cannot be substituted
+into the RH-equivalent core-current gate unless the same endpoint is first shown to arise from an
+independent arithmetic relation, or unless the remaining weighted Haar layers are controlled by a
+bound that does not reuse the current being cancelled.  The precise remaining theorem is therefore:
+construct a source-arithmetic endpoint independent of `(R,R')` whose returned current differs from
+`(45)` by an upper-sublinear quantity, or prove that the self-consistent endpoint equals such an
+arithmetic endpoint by an exact canonical-density value relation.
