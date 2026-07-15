@@ -1,7 +1,7 @@
 # Persistent first-order HT tails have a tensor symbol and finite transient defect
 
 - **ID:** nonautonomous-first-order-tail-symbol-defect-law
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** source-pure nonautonomous rational coarse-graining
@@ -278,10 +278,16 @@ field as `K(P)`, and proves exact degree multiplicativity from the intermediate-
 through prefixes of degree at least `2^n` has constant zero phase.  Because the proof uses field
 degrees rather than unreduced numerator and denominator degrees, all cancellation is included.
 
-The remaining stage-3 obligation is the differential-algebraic transitivity step proving that the
-reconstructed nonzero-weight tensor observable is hypertranscendental.  The order-zero exclusion,
-rational carrier-to-symbol connection, weight-zero escape, and all of Theorem B are now
-formalized; the card remains at stage 2 until that final implication is machine-checked.
+`formal/GaloisForLFunctions/HTGeometry/DifferentialAlgebraicTransitivity.lean` closes the final
+hypertranscendence implication.  It proves
+`differentialAdjoin_trdeg_lt_aleph0_of_differentialAlgebraic`, derives the transitivity theorem
+`differentialAlgebraicOver_trans`, and proves
+`hypertranscendentalOver_rationalTensorJetObservable`: for nonzero polynomials `p,r`, every
+nonzero integer weight `k`, and every hypertranscendental `y`, the rational tensor observable
+`(p(y)/r(y)) (delta y)^k` is hypertranscendental.  The positive and negative weight cases are
+proved separately by explicit nonzero differential-polynomial relations over the observable's
+differential field.  Together with the modules above, this machine-checks every theorem and
+corollary claim on the card.
 
 ## Gates
 
@@ -291,6 +297,6 @@ formalized; the card remains at stage 2 until that final implication is machine-
 - [x] Laurent-weight invariance, leading-symbol transport, and the weight-zero escape in Lean
 - [x] arbitrary rational first-order carrier and phase-chain tensor-symbol extraction in Lean
 - [x] degree-growth exclusion of nonconstant order-zero rational tails in Lean
-- [ ] hypertranscendence of the reconstructed nonzero-weight tensor observable in Lean
-- [ ] 2 -> 3: every theorem and corollary claim above machine-checked
+- [x] hypertranscendence of the reconstructed nonzero-weight tensor observable in Lean
+- [x] 2 -> 3: every theorem and corollary claim above machine-checked
 - [ ] 3 -> 4: independent novelty audit and standalone manuscript

@@ -1,17 +1,33 @@
 # Multiple-zero holographic horizons are bosonic number-state varieties
 
 - **ID:** `multiple-zero-bosonic-number-state-horizon`
-- **Stage:** 1-in-progress
-- **Type:** THEOREM PROGRAM / QUANTUM SPECTRAL GEOMETRY
-- **Scientific status:** `[CONJECTURE: FULL PHASE] [LOCAL CORE TO FORMALIZE] [NOVELTY UNVERIFIED]`
+- **Stage:** 5-failed
+- **Type:** RETIRED CLASSICAL ASSEMBLY / SUPPORTING LEAN INFRASTRUCTURE
+- **Scientific status:** `[RETIRED: ANTI-THEATRE GATE FAILED]`
 - **Parent:** `hypertranscendental-holographic-horizon-qft-selection-law`
 - **Methods:** symbolic proof, primary-source audit, and unconditional Lean formalization; no numerical computation
-- **Statement:** At a zero of multiplicity `m`, the highest-pole residues of normalized derivative
+- **Retired statement:** At a zero of multiplicity `m`, the highest-pole residues of normalized derivative
   correlators are the falling factorials `(m)_k`.  These are exactly the normally ordered
   `k`-particle moments of the bosonic number state `|m>`.  Consequently a spectral determinant with
   unbounded eigenvalue degeneracies has a boundary principal-symbol variety equal to the bosonic
   number-state moment curve.  For oscillator degeneracy polynomials, the energy-marked boundary
   ideal recovers the bulk spatial dimension.
+
+## Retirement verdict
+
+This lane fails the external novelty and significance gate.  Its mathematical pieces are standard:
+
+1. the limit below is local Leibniz calculus at a zero of multiplicity `m`;
+2. falling factorials are the standard normally ordered bosonic number-state moments;
+3. zero multiplicity equals spectral degeneracy for a characteristic determinant;
+4. Barnes multiple gamma functions and oscillator determinants are classical;
+5. reconstruction of dimension from polynomial degeneracy growth is standard spectral geometry.
+
+The complete relation ideal is an elementary presentation of the same falling-factorial curve.  It
+does not create a new physical invariant and does not become new knowledge under Fock or holographic
+terminology.  The unconditional Lean theorem in
+`GaloisForLFunctions.HTGeometry.MultipleZeroBosonicHorizon` is retained only as reusable local
+infrastructure.  No claim from this card may be promoted as a discovery.
 
 ## Local theorem target
 

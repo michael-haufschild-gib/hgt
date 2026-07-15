@@ -3,15 +3,42 @@
 - **ID:** `hypertranscendental-holographic-horizon-qft-selection-law`
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE / PAPER PROGRAM
-- **Scientific status:** `[CONJECTURE: GENERAL PHASE THEORY] [LEAN-PROVEN GAMMA PHASE] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[LEAN-PROVEN CLASSICAL BRIDGE] [ORIGINAL GAMMA/Fock NOVELTY CLAIM RETIRED] [ELLIPTIC-QFT REPLACEMENT OPEN]`
 - **Parent:** `simple-zero-bell-horizon-residue-phase-law`
 - **Methods:** symbolic proof, primary-source audit, and unconditional Lean formalization; no numerical computation
 - **Statement:** The pole-order boundary of a hypertranscendental section defines a holographic
   filtration on its differential-observable algebra.  In logarithmic coordinates the complete
   Bell transform is the connected-to-full correlator transform.  For the reciprocal-Gamma zero
   tower, every pole cutoff is exactly the matching bosonic polynomial/Fock cutoff.
-- **Working paper title:** *The Hypertranscendental Holographic Horizon: Quantum Spectral
-  Determinants and an Exact Bosonic Boundary Filtration*
+- **Working paper title:** *The Hypertranscendental Holographic Horizon: Arithmetic Closure in a
+  Four-Dimensional Quantum Field Theory*
+
+## Anti-theatre reset
+
+The reciprocal-Gamma/Fock phase is not candidate new scientific knowledge.  Bell transforms,
+pole filtrations, the Lerch oscillator determinant, falling-factorial number-state moments, Barnes
+determinants, and dimension from spectral degeneracy all have established parent theories.  The
+Lean theorems below are unconditional and useful, but they are supporting infrastructure only.
+
+The replacement discovery target is the elliptic-gamma function that is the free chiral-multiplet
+superconformal index.  The live mathematical claim is an exact arithmetic closure dichotomy:
+
+```text
+multiplicatively dependent nomes  <=>  finite algebraic-differential closure,
+multiplicatively independent nomes <=> hypertranscendence,
+```
+
+together with the stronger rank-three defect matroid in the independent phase.  The dependent
+direction should follow from the exact finite factorization
+
+```text
+Gamma(x;p,q) = product_(a<m,b<n) Gamma(x*p^a*q^b;P,P),  P=p^m=q^n,
+```
+
+while the independent direction is the live `elliptic-gamma-rank-three-da-spectrum` theorem.  This
+is a structural jump in differential closure across commensurability of the background large-gauge
+periods.  It is not yet called a physical phase transition: the function remains analytic in its
+parameters, and only its differential-algebraic type jumps.
 
 ## Mathematical core
 
