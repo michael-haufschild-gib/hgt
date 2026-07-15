@@ -51,6 +51,15 @@ value with vacuum mass `mass`, mixed value `overlap`, and tangent energy `speedS
 def projectiveQuantumTangentValue (mass overlap speedSq : ℝ) : ℝ :=
   mass * speedSq - overlap ^ 2
 
+/-- A two-channel Robertson/Cauchy--Schwarz bound is exactly nonnegativity of the projective
+tangent value. -/
+theorem projectiveQuantumTangentValue_nonneg
+    {mass overlap speedSq : ℝ}
+    (h : overlap ^ 2 ≤ mass * speedSq) :
+    0 ≤ projectiveQuantumTangentValue mass overlap speedSq := by
+  unfold projectiveQuantumTangentValue
+  linarith
+
 /-- Squared tangent value after subtracting the scalar-phase direction `c`. -/
 def scalarShiftedQuantumTangentValue
     (mass overlap speedSq c : ℝ) : ℝ :=
@@ -106,6 +115,13 @@ theorem scalarShiftedQuantumTangentValue_canonical
 def pureStateQuantumFisherValue (mass overlap speedSq : ℝ) : ℝ :=
   4 * projectiveQuantumTangentValue mass overlap speedSq / mass ^ 2
 
+/-- Nonnegative projective tangent value gives nonnegative pure-state quantum Fisher value. -/
+theorem pureStateQuantumFisherValue_nonneg
+    {mass overlap speedSq : ℝ}
+    (h : 0 ≤ projectiveQuantumTangentValue mass overlap speedSq) :
+    0 ≤ pureStateQuantumFisherValue mass overlap speedSq := by
+  exact div_nonneg (mul_nonneg (by norm_num) h) (sq_nonneg _)
+
 /-- Quantum Fisher value is scalar-phase gauge invariant. -/
 theorem pureStateQuantumFisherValue_scalarShift_invariant
     (mass overlap speedSq c : ℝ) :
@@ -138,6 +154,38 @@ theorem projectiveGramTangentEnergy_eq_value (v w : E) :
     projectiveGramTangentEnergy v w =
       projectiveQuantumTangentValue (‖v‖ ^ 2) (‖inner 𝕜 v w‖) (‖w‖ ^ 2) := by
   rfl
+
+/-- For unit vectors, projective Gram energy is exactly the squared projective-angle defect used
+by Rayleigh-gap estimates.  This is the normalization-free value specialized to unit mass. -/
+theorem projectiveGramTangentEnergy_eq_unit_projectiveDefect
+    {v w : E} (hv : ‖v‖ = 1) (hw : ‖w‖ = 1) :
+    projectiveGramTangentEnergy v w = 1 - ‖inner 𝕜 v w‖ ^ 2 := by
+  simp [projectiveGramTangentEnergy, hv, hw]
+
+variable {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℂ F]
+
+/-- In any complex moment/Krylov realization, the projective energy of the first two columns is
+the first nontrivial `2 x 2` Hankel determinant `m₀ m₂ - m₁²`.  This is the direct value bridge
+from pure-state quantum Fisher geometry to first-step Krylov nontermination. -/
+theorem projectiveGramTangentEnergy_eq_firstKrylovDeterminant
+    (m : ℕ → ℝ) (v : ℕ → F)
+    (hgram : ∀ i j, inner ℂ (v i) (v j) = (m (i + j) : ℂ)) :
+    projectiveGramTangentEnergy (v 0) (v 1) =
+      m 0 * m 2 - m 1 ^ 2 := by
+  have h00 := hgram 0 0
+  have h11 := hgram 1 1
+  have h01 : inner ℂ (v 0) (v 1) = (m 1 : ℂ) := by
+    simpa using hgram 0 1
+  rw [inner_self_eq_norm_sq_to_K] at h00 h11
+  have hv0 : ‖v 0‖ ^ 2 = m 0 := by
+    apply Complex.ofReal_injective
+    simpa only [Complex.ofReal_pow, zero_add] using h00
+  have hv1 : ‖v 1‖ ^ 2 = m 2 := by
+    apply Complex.ofReal_injective
+    norm_num at h11 ⊢
+    exact h11
+  unfold projectiveGramTangentEnergy
+  rw [hv0, hv1, h01, Complex.norm_real, Real.norm_eq_abs, sq_abs]
 
 end
 

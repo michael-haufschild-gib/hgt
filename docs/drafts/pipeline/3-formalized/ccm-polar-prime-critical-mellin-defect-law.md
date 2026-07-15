@@ -390,3 +390,50 @@ BOUNDARY VALUE PINNED TO `1 + γ` — FORMALIZED (axiom-clean).  The carrier's f
 - `criticalMellinDefectChannelComplex_tendsto_at_zero` — the carrier's boundary limit is exactly `1 + γ`.
 So the completed logarithmic source's value at the critical-line boundary is the named constant `1 + γ`;
 the open across-boundary Stieltjes layer now bridges from this explicit finite value.
+
+## Lean audit — 2026-07-15
+
+**Lean status:** `[FORMALIZED]`.
+
+The previously missing distributional sign and autocorrelation Stieltjes layers are formalized in
+`formal/GaloisForLFunctions/RHTower/CCMPolarPrimeSourceSign.lean` and
+`formal/GaloisForLFunctions/RHTower/CCMPolarPrimeStieltjesAutocorrelation.lean`.
+
+The source-sign module proves:
+
+- `hasDerivAt_ccmPolarPotential` and `hasDerivAt_ccmPolarPotential_derivative`, giving
+  `r₀''(t) = -2 cosh(t/2)`;
+- `neg_ccmPolarPotential_secondDerivative_eq_polarKernel`, fixing the source contribution as
+  `-r₀'' = 2 cosh((x-y)/2)`;
+- `polarMultiplier_eq_cosineTransform` and
+  `polarFourierTransform_eq_polarMultiplier`, deriving the exact compact-aperture Fourier
+  multiplier in the convention `exp(i ξ t)`, including the vanishing odd component.
+
+The Stieltjes/autocorrelation module proves:
+
+- `criticalMellinPrimeMass_eq_commonAtomStep`, the exact finite cumulative atomic law;
+- `criticalMellinStieltjesPairing_cexp_re`, the all-frequency polar--prime Fourier--Stieltjes
+  identity;
+- `correctedCCMSymbol_eq_archimedean_add_stieltjes`, equation `(18a)` for the actual digamma
+  multiplier and corrected symbol `W_a`;
+- `criticalMellinStieltjesPairing_one`, `polarPrimeStieltjesSymbol_zero`, and
+  `correctedCCMSymbol_zero_sub_archimedean`, giving the endpoint identity `(21)`;
+- `criticalMellinStieltjesCumulative_eq_criticalErrorForm`, the exact critical-error formula
+  `(20)`;
+- `polarPrimeAutocorrelationQuadratic_eq_integral_sub_sum`, the continuous-minus-atomic
+  autocorrelation carrier `(18)`;
+- `criticalMellinPrimeMass_stieltjesIntegrationByParts` and
+  `criticalMellinStieltjesPairing_integrationByParts`, a finite-atom proof of Stieltjes
+  integration by parts;
+- `apertureAutocorrelation_two_mul_eq_zero` and
+  `polarPrimeAutocorrelationQuadratic_integrationByParts_of_support`, deriving the endpoint
+  vanishing from aperture support and proving `(19)` for smooth autocorrelations.
+
+The previously formalized rank-two, Abel, zero-frequency, real/complex Laplace, strict Gram,
+holomorphy, boundary-regularity, and `1 + γ` theorems remain the analytic continuation layer.
+Continuation beyond the stated meromorphic source domain, full `PW_a` sign control, RH, and an
+external author audit are open obligations, not proven claims on this card.
+
+Validation was target-specific: both new leaf modules compile, the project formal lint passes, and
+an axiom audit of twelve headline endpoints reports only `propext`, `Classical.choice`, and
+`Quot.sound`. No full build was run.

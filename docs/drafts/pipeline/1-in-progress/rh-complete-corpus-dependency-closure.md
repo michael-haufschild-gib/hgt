@@ -706,3 +706,30 @@ the complementary coefficient family.
   prime--Gamma formula without Xi divisor orientation, anti-Herglotzness, real-rootedness, an
   RH-equivalent positive measure, or the active theta-current/subpower route.  See
   `../2-fully-proven/not_new_scientific_knowledge/xi-positive-paired-real-loewner-seam-log-weld.md`.
+
+## 2026-07-15 Euler-safe de-Poissonized Weil stationarity
+
+- [PROVED ON PAPER] For every safe offset `a>1/2`, the Cauchy-loss deficit admits an exact
+  tail-Laplace rewrite.  If `f(y)=sum_j c_j exp(-w_j y)` and
+  `r_a=(2pi)^(-1) Fourier(h_a)`, then the deficit is the quadratic pairing of `f` with
+  `exp(a|u|)r_a(u)`.
+- [PROVED ON PAPER] The boundary densities form the Poisson orbit
+  `r_b(u)=exp(-(b-a)|u|)r_a(u)`.  Hence the inverse factor in the loss cancels the safe offset:
+  all safe-line observability forms are diagonal-congruent presentations of one stationary
+  critical form `W_Xi`.
+- [PROVED ON PAPER] At each prime-power frequency `u=+-log n`, the cancellation sends the safe
+  coefficient `-Lambda(n)n^(-1/2-a)/2` exactly to the critical coefficient
+  `-Lambda(n)n^(-1/2)/2`.  Together with the completion terms, the two-channel resolvent identity
+  identifies `W_Xi` with the completed Weil distribution on the finite exponential test span.
+- [POSITIVE CONSEQUENCE] Moving farther into absolute Euler convergence cannot create a
+  perturbative proof: smoothing of the source and amplification by the Cauchy loss cancel exactly.
+  The offset is therefore removed as a research parameter; a successful proof must factor the
+  stationary critical orientation form itself.
+- [GUARDRAIL] Since `h_a` has logarithmic growth, its Fourier transform is a tempered
+  distribution.  The exponentially weighted product is defined here only through the convergent
+  finite-exponential quadratic pairing; extension to a larger completed source space needs a
+  separate continuity theorem.
+- [OPEN] Prove the stationary completed form nonnegative by a source-specific orientation theorem,
+  without importing divisor orientation, anti-Herglotzness, an RH-equivalent limiting measure, or
+  the active theta-current/subpower route.  See
+  `../2-fully-proven/not_new_scientific_knowledge/critical-logderivative-euler-safe-depoissonized-weil-stationarity.md`.

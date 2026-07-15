@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.MomentFunctionalPositivity
+import GaloisForLFunctions.HTGeometry.ProjectiveQuantumFisherValue
 
 /-!
 # Vacuum Feshbach reduction for moment quadratic forms
@@ -45,6 +46,15 @@ def momentVacuumFeshbachRemainder (s : ℕ → ℝ) (q : Polynomial ℝ) : ℝ :
 /-- Quotient-free two-channel determinant between the constant vacuum and one observable. -/
 def momentVacuumRobertsonDeterminant (s : ℕ → ℝ) (q : Polynomial ℝ) : ℝ :=
   s 0 * momentFunctional s (q ^ 2) - momentFunctional s q ^ 2
+
+/-- The vacuum Robertson determinant is literally the projective quantum tangent value of the
+vacuum mass, mixed moment, and observable speed. -/
+theorem momentVacuumRobertsonDeterminant_eq_projectiveQuantumTangentValue
+    (s : ℕ → ℝ) (q : Polynomial ℝ) :
+    momentVacuumRobertsonDeterminant s q =
+      projectiveQuantumTangentValue (s 0)
+        (momentFunctional s q) (momentFunctional s (q ^ 2)) := by
+  rfl
 
 /-- Subtract the moment-functional mean of `q`.  This is the canonical representative orthogonal
 to the constant channel whenever `s 0` is nonzero. -/
@@ -125,6 +135,19 @@ theorem momentVacuumRobertsonDeterminant_eq_mul_feshbach
     momentVacuumRobertsonDeterminant s q =
       s 0 * momentVacuumFeshbachRemainder s q := by
   unfold momentVacuumRobertsonDeterminant momentVacuumFeshbachRemainder
+  field_simp [h0]
+  ring
+
+/-- The normalized pure-state quantum Fisher value of a moment observable is exactly four times
+its vacuum Feshbach remainder divided by the vacuum mass. -/
+theorem pureStateQuantumFisherValue_moment_eq
+    (s : ℕ → ℝ) (h0 : s 0 ≠ 0) (q : Polynomial ℝ) :
+    pureStateQuantumFisherValue (s 0)
+        (momentFunctional s q) (momentFunctional s (q ^ 2)) =
+      4 * momentVacuumFeshbachRemainder s q / s 0 := by
+  rw [pureStateQuantumFisherValue,
+    ← momentVacuumRobertsonDeterminant_eq_projectiveQuantumTangentValue,
+    momentVacuumRobertsonDeterminant_eq_mul_feshbach s h0]
   field_simp [h0]
   ring
 
