@@ -752,6 +752,49 @@ theorem hypertranscendental_kaehlerD_jet_linearIndependent
   exact kaehlerD_adjoin_coordinates_linearIndependent
     (algebraicIndependent_differentialJet_of_hypertranscendentalOver hx)
 
+/-- **Affine-origin no-go.**  Relative Kähler clock covectors forget every base-valued
+translation, at every jet order.  Thus the Kähler--Tate linearization records infinitesimal clock
+capacity but cannot by itself recover the source's affine origin. -/
+theorem kaehlerD_differentialJet_addBase_eq
+    {F E : Type*} [Field F] [Field E]
+    [Algebra F E] [Differential F] [Differential E] [DifferentialAlgebra F E]
+    (n : ℕ) (x : E) (c : F) :
+    KaehlerDifferential.D F E
+        (differentialJet n (x + algebraMap F E c)) =
+      KaehlerDifferential.D F E (differentialJet n x) := by
+  rw [differentialJet_add_algebraMap]
+  simp
+
+/-- A derivation-constant base scalar acts diagonally on every jet order. -/
+theorem differentialJet_algebraMap_mul_of_deriv_eq_zero
+    {F E : Type*} [Field F] [Field E]
+    [Algebra F E] [Differential F] [Differential E] [DifferentialAlgebra F E]
+    (n : ℕ) (a : F) (ha : a′ = 0) (x : E) :
+    differentialJet n (algebraMap F E a * x) =
+      algebraMap F E a * differentialJet n x := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      rw [differentialJet_succ, differentialJet_succ, ih,
+        Derivation.leibniz, deriv_algebraMap, ha]
+      simp
+
+/-- **Affine-calibration law.**  Relative Kähler clock covectors remember a common constant unit
+but forget the affine origin.  The full jet cotangent flag therefore determines only an affine
+calibration class, so a source normalization must be supplied as torsor data beyond the vector
+Tate clock. -/
+theorem kaehlerD_differentialJet_affineConstant_eq
+    {F E : Type*} [Field F] [Field E]
+    [Algebra F E] [Differential F] [Differential E] [DifferentialAlgebra F E]
+    (n : ℕ) (x : E) (a b : F) (ha : a′ = 0) :
+    KaehlerDifferential.D F E
+        (differentialJet n (algebraMap F E a * x + algebraMap F E b)) =
+      algebraMap F E a •
+        KaehlerDifferential.D F E (differentialJet n x) := by
+  rw [differentialJet_add_algebraMap,
+    differentialJet_algebraMap_mul_of_deriv_eq_zero n a ha x]
+  simp
+
 /-! ### The self-dual algebraic Tate-clock skeleton -/
 
 /-- Successor as the forward clock embedding. -/
@@ -856,6 +899,45 @@ theorem tateClockPairing_indForward
       tateClockPairing a (tateClockProBackward p) := by
   rw [tateClockPairing, tateClockIndForward, Finsupp.sum_embDomain]
   rfl
+
+/-- Every finite set of formal clock observables can be varied independently inside `W`.  This
+is the linear tangent form of having no finite observable constraint. -/
+def TateClockFiniteObservableSurjective
+    {K : Type*} [Semiring K] (W : Submodule K (ℕ → K)) : Prop :=
+  ∀ s : Finset ℕ,
+    Function.Surjective (fun w : W ↦ fun i : s ↦ w.1 i.1)
+
+/-- **Finite-observable conormal no-go.**  If admissible source variations realize arbitrary
+values on every finite set of clock coordinates, then no nonzero finitely supported clock
+covector annihilates them.  Consequently a nontrivial constraint conormal must live beyond the
+ordinary finite-support Kähler cotangent, in a source-selected enlarged dual or corona. -/
+theorem tateClock_finiteObservable_conormal_eq_zero
+    {K : Type*} [Field K]
+    (W : Submodule K (ℕ → K)) (hW : TateClockFiniteObservableSurjective W)
+    (a : ℕ →₀ K) (ha : ∀ w : W, tateClockPairing a w.1 = 0) :
+    a = 0 := by
+  classical
+  ext i
+  by_cases hi : a i = 0
+  · exact hi
+  · have hisupp : i ∈ a.support := Finsupp.mem_support_iff.mpr hi
+    let target : a.support → K := fun j ↦ if j.1 = i then 1 else 0
+    obtain ⟨w, hw⟩ := hW a.support target
+    have hw' : ∀ n ∈ a.support, w.1 n = if n = i then 1 else 0 := by
+      intro n hn
+      exact congrFun hw ⟨n, hn⟩
+    have hz := ha w
+    have heval : tateClockPairing a w.1 = a i := by
+      rw [tateClockPairing]
+      calc
+        a.sum (fun n c ↦ c * w.1 n) =
+            a.sum (fun n c ↦ c * if n = i then 1 else 0) := by
+              apply Finsupp.sum_congr
+              intro n hn
+              rw [hw' n hn]
+        _ = a i := by simp [hisupp]
+    rw [heval] at hz
+    exact hz
 
 end
 

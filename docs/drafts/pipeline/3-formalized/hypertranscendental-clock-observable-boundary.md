@@ -147,6 +147,46 @@ as a novelty claim. Its role is to fix the only viable self-dual variance for th
 the nonlinear HT tower is an Ind-object, its boundary dual is Pro, and any common source geometry
 must be a source-selected Tate extension rather than a compact inverse limit of fields.
 
+## Intrinsic Kähler capacity and affine-calibration no-go `[FORMALIZED]`
+
+Let `P_infinity=F(delta^n x : n>=0)`. Hypertranscendence makes the universal relative Kähler
+covectors
+
+```text
+d_F x, d_F(delta x), d_F(delta^2 x), ...                  (10)
+```
+
+linearly independent over `P_infinity`. This is the intrinsic nonlinear direct-sum half of the
+Tate clock: every clock depth contributes a new cotangent direction without choosing an analytic
+completion.
+
+The same formalization proves an exact limitation. For every `c in F`, every `n`, and every
+derivation-constant `a in F`,
+
+```text
+d_F(delta^n(x+c))=d_F(delta^n x),
+d_F(delta^n(a x+b))=a d_F(delta^n x).                     (11)
+```
+
+Therefore the Kähler--Tate tangent clock forgets affine origin and carries constant unit only up
+to a common homothety. The positive replacement is not another vector-space decoration but an
+affine Tate torsor with a source-selected origin, unit, and self-dual lattice.
+
+## Finite-observable conormal no-go `[FORMALIZED]`
+
+Let `W subset k^N` be a linear space of admissible formal clock variations. Assume restriction
+`W -> k^S` is surjective for every finite `S subset N`. Under the canonical pairing with
+finite-support covectors,
+
+```text
+W^perp intersect k^(N) = {0}.                              (12)
+```
+
+Thus a constraint which leaves every finite observable packet free has no nonzero ordinary
+Kähler conormal. A nonzero source conormal must belong to an enlarged source dual and survives
+only through its class modulo finite-support Kähler covectors. This exact quotient is the
+finite-observable conormal corona.
+
 ## Classical-parent and collision audit
 
 The following are parents and are not claimed as new:
@@ -231,6 +271,12 @@ Formalized theorem surface:
    `hypertranscendental_no_backwardClock_algHom` formalize `(8)`;
 9. `tateClockIndForward`, `tateClockProBackward`, the two exact range/kernel theorems, and
    `tateClockPairing_indForward` formalize the shift/coshift skeleton `(9)`.
+10. `kaehlerD_adjoin_coordinates_linearIndependent` and
+    `hypertranscendental_kaehlerD_jet_linearIndependent` formalize `(10)`;
+11. `kaehlerD_differentialJet_addBase_eq` and
+    `kaehlerD_differentialJet_affineConstant_eq` formalize `(11)`.
+12. `TateClockFiniteObservableSurjective` and
+    `tateClock_finiteObservable_conormal_eq_zero` formalize `(12)`.
 
 The existing `HypertranscendentalHorizonFunctionField` and `FractionRingDerivation` modules supply
 the generic-point and quotient-rule infrastructure. The proof is axiom-clean up to Lean's standard
@@ -257,6 +303,9 @@ No `lake build` was needed, no full build or broad lint was run, and the touched
 - [x] source-independent rank-one seam theorem formalized
 - [x] one-step observable-core equality formalized
 - [x] iterated erosion law formalized
+- [x] infinite Kähler jet-covector independence formalized
+- [x] affine-calibration no-go formalized
+- [x] finite-observable conormal no-go formalized
 - [ ] independent specialist novelty verdict
 
 ## Log

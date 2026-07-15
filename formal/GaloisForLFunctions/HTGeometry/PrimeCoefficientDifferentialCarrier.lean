@@ -21,6 +21,24 @@ def primeCoefficientShiftedRotatedJet
   arithmeticOfPrimeColumn fun p =>
     c p * primeShiftFactor a p * rotatedPrimeLogClock p ^ k
 
+/-- Prime-supported shifted jets commute with finite complex linear combinations of their source
+columns. -/
+theorem primeCoefficientShiftedRotatedJet_linearCombination
+    {B : Type*} [Fintype B]
+    (c : B → Nat.Primes → ℂ) (z : B → ℂ) (a : ℂ) (k : ℕ) :
+    primeCoefficientShiftedRotatedJet (fun p => ∑ b, z b * c b p) a k =
+      ∑ b, algebraMap ℂ (ArithmeticFunction ℂ) (z b) *
+        primeCoefficientShiftedRotatedJet (c b) a k := by
+  classical
+  ext n
+  by_cases hn : n.Prime
+  · let p : Nat.Primes := ⟨n, hn⟩
+    simp only [primeCoefficientShiftedRotatedJet,
+      arithmeticOfPrimeColumn_apply_prime _ p, map_sum,
+      ArithmeticFunction.sum_apply, ArithmeticFunction.mul_apply]
+    simp [ArithmeticFunction.algebraMap_apply, Finset.mul_sum]
+  · simp [primeCoefficientShiftedRotatedJet, arithmeticOfPrimeColumn, hn]
+
 @[simp]
 theorem rotatedLogFractionDerivation_primeCoefficientShiftedRotatedJet
     (c : Nat.Primes → ℂ) (a : ℂ) (k : ℕ) :
@@ -62,6 +80,29 @@ theorem differentialJet_primeCoefficientShiftCarrier
         arithmeticFunctionRationalCoordinateField_deriv_algebraMap,
         arithmeticFunctionFractionField_deriv_apply,
         rotatedLogFractionDerivation_primeCoefficientShiftedRotatedJet]
+
+/-- The same finite complex linear-combination law holds at every shifted differential jet in the
+rational-coordinate ambient field. -/
+theorem differentialJet_primeCoefficientShiftCarrier_linearCombination
+    {B : Type*} [Fintype B]
+    (c : B → Nat.Primes → ℂ) (z : B → ℂ) (a : ℂ) (k : ℕ) :
+    GaloisForLFunctions.differentialJet k
+        (primeCoefficientShiftCarrier (fun p => ∑ b, z b * c b p) a) =
+      ∑ b, algebraMap ℂ arithmeticFunctionRationalCoordinateField (z b) *
+        GaloisForLFunctions.differentialJet k
+          (primeCoefficientShiftCarrier (c b) a) := by
+  classical
+  simp_rw [differentialJet_primeCoefficientShiftCarrier]
+  rw [primeCoefficientShiftedRotatedJet_linearCombination]
+  rw [map_sum]
+  apply Finset.sum_congr rfl
+  intro b hb
+  rw [map_mul, map_mul]
+  congr 1
+  rw [IsScalarTower.algebraMap_apply ℂ (ArithmeticFunction ℂ)
+    arithmeticFunctionFractionField]
+  rw [IsScalarTower.algebraMap_apply ℂ arithmeticFunctionFractionField
+    arithmeticFunctionRationalCoordinateField]
 
 /-- The canonical complete natural-shift palette of one prime coefficient column. -/
 def primeCoefficientNaturalShiftPalette

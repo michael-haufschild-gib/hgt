@@ -27,13 +27,21 @@ theorem gaussChannelResidue_pos {m : ℕ} (hm : 1 ≤ m) (p : Nat.Primes) :
   have hp : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.property.one_lt
   have hm0 : m ≠ 0 := by omega
   have hpow : (1 : ℝ) < (p : ℝ) ^ m := one_lt_pow₀ hp hm0
+  have hmR : (0 : ℝ) < (m : ℝ) := by exact_mod_cast (show 0 < m by omega)
   rw [gaussChannelResidue]
-  positivity
+  exact div_pos
+    (mul_pos (mul_pos (by positivity) (pow_pos (sub_pos.mpr hp) _))
+      (pow_pos (sub_pos.mpr hpow) _))
+    (mul_pos (mul_pos (pow_pos (lt_trans zero_lt_one hp) _) (pow_pos hmR _))
+      (Real.log_pos hp))
 
 /-- The residue formula is independent of the Gauss-component label. -/
+def gaussComponentResidue {m : ℕ} (_k : Fin m) (p : Nat.Primes) : ℝ :=
+  gaussChannelResidue m p
+
 theorem gaussChannelResidue_independent_of_component
     {m : ℕ} (p : Nat.Primes) (k l : Fin m) :
-    gaussChannelResidue m p = gaussChannelResidue m p := by
+    gaussComponentResidue k p = gaussComponentResidue l p := by
   rfl
 
 /-- Total residue of a finite labeled channel system. -/
@@ -56,8 +64,9 @@ def gaussPairedCriticalDepth (N : ℕ) : ℕ :=
 /-- The channel-resolved critical depth tends to infinity with the prime aperture. -/
 theorem tendsto_gaussPairedCriticalDepth :
     Tendsto gaussPairedCriticalDepth atTop atTop := by
-  apply tendsto_atTop_mono' atTop Nat.tendsto_primeCounting
-  exact fun N => by simp [gaussPairedCriticalDepth]
+  exact tendsto_atTop_mono' atTop
+    (Eventually.of_forall fun N => by rw [gaussPairedCriticalDepth]; omega)
+    Nat.tendsto_primeCounting
 
 /-- No fixed real Schatten exponent dominates all channel-resolved critical depths. -/
 theorem exists_gaussPairedCriticalDepth_gt (q : ℝ) :

@@ -3,7 +3,7 @@
 - **ID:** `self-dual-decorated-clock-boundary`
 - **Stage:** 1-in-progress
 - **Type:** GENERAL HT CONJECTURE / CROSS-REPRESENTATION OBSTRUCTION THEORY
-- **Scientific status:** `[CONJECTURE] [THREE BARE-CLOCK NO-GOS PROVED] [NO BACKWARD CLOCK FORMALIZED] [COMPACT PROFINITE CARRIER KILLED] [TATE SOURCE REALIZATION OPEN]`
+- **Scientific status:** `[CONJECTURE] [FOUR BARE-CLOCK NO-GOS PROVED] [KAEHLER-TATE TANGENT FORMALIZED] [GAMMA SELF-DUAL UNIT DEFECT FORMALIZED] [FINITE DESCENT-ANOMALY RANGE LAW FORMALIZED] [GENERAL SOURCE REALIZATION OPEN]`
 - **Originating conjecture:** Different RH proof chains may be different representations of one
   obstruction interval: spectral incompleteness, continuation failure, positivity failure,
   monodromy, and noncanonical boundary conditions. Critical zeros would be the common self-dual
@@ -200,6 +200,125 @@ This is strictly stronger than the earlier generic boundary-relation candidate. 
 starts with an operator and boundary space. The Tate program must construct both from the
 one-way HT observable tower and the source constraint.
 
+## Affine-calibration firewall `[PROVED; LEAN-FORMALIZED]`
+
+Kähler linearization is necessary but cannot be the final source object. For every base element
+`c` and every jet order `n`, relative Kähler differentiation gives
+
+```text
+d_F(delta^n(x+c))=d_F(delta^n x).                         (2h)
+```
+
+If `a` is a derivation-constant nonzero base scalar, then
+
+```text
+d_F(delta^n(a x+b))=a d_F(delta^n x).                     (2i)
+```
+
+Hence the complete Kähler flag, the rank-one symbols, and the resulting uncalibrated Tate object
+are blind to affine origin and determine constant scale only up to isomorphism. This kills the
+proposal that a vector Tate lattice alone is the source constraint. It also identifies the exact
+missing positive object: an **affine self-dual Tate clock** `A_x` modeled on the canonical tangent
+clock `T_x`, with a source-selected affine section, unit, and Lagrangian lattice.
+
+The distinction is structural. `T_x` records possible infinitesimal clock observables;
+the calibrated section of `A_x` records which observable is the actual source. A degeneracy
+spectrum can therefore belong only to a source section relative to a self-dual lattice pair, not
+to hypertranscendence or its Kähler tangent space alone.
+
+## Finite-observable conormal theorem and forced rigging `[PROVED; LEAN-FORMALIZED]`
+
+Write `I_x` for the finite-support Kähler clock covectors and `P_x` for formal product clock
+directions. Let `W_x subset P_x` be a proposed tangent space of admissible source variations. If
+every finite coordinate restriction `W_x -> K^S` is surjective, then
+
+```text
+W_x^perp intersect I_x = {0}.                              (2j)
+```
+
+The proof tests a finitely supported covector against coordinate vectors realized by `W_x` on its
+support. Thus a source constraint which remains free through every finite observable window has
+no nonzero finite Kähler conormal.
+
+This kills the ordinary product-topology Tate pair as the complete source carrier. Its continuous
+covectors are precisely finite-support covectors, so `(2j)` would erase the constraint entirely.
+The positive replacement is a source-selected rigging
+
+```text
+I_x subset Phi_x subset H_x subset Phi_x' subset P_x,      (2k)
+```
+
+whose stronger test-space topology enlarges the dual. A nonzero source conormal `nu_x` must then
+define a nonzero class
+
+```text
+[nu_x] in Phi_x'/I_x.                                      (2l)
+```
+
+The quotient in `(2l)` is the precise **finite-observable conormal corona**. It is where an
+infinite constraint survives after every finite algebraic clock observable has been removed.
+
+## First concrete source realization: the Gamma shift corona `[PROVED; LEAN-FORMALIZED]`
+
+The digamma equation
+
+```text
+psi(z+1)-psi(z)=1/z                                      (2m)
+```
+
+is an affine constraint on an actual hypertranscendental source. Its homogeneous tangent consists
+of period-one functions. The modes
+
+```text
+e_m(z)=exp(2 pi i m z)
+```
+
+are period-one and their first `k` jets form a Vandermonde matrix. Consequently period-one entire
+functions realize every prescribed finite jet packet. Nevertheless the same tangent is annihilated
+by the infinite Taylor conormal
+
+```text
+nu(h)=sum_(n>=1) h^(n)(0)/n! = h(1)-h(0)=0.               (2n)
+```
+
+The coefficients of `nu` have infinite support. Thus `(2m)` supplies the first actual
+source-selected topology and nonzero class in `(2l)`: no finite jet sees the constraint, while the
+analytic compact-open rigging makes translation evaluation continuous. The affine solution space
+supplies the torsor, and asymptotic normalization selects the digamma section.
+
+This realizes the constraint corona but not yet the self-dual interval. Pairing the shift conormal
+with its Gamma-reflected counterpart is the next source-specific obligation.
+
+## Formal-unit/global-nonunit mechanism `[GAMMA PROVED; GENERAL CASE CONJECTURAL]`
+
+The Gamma shift gives a stronger invariant than the conormal class alone:
+
+```text
+exp(D)-1=D U(D),
+U_hat(D)=1+D/2!+D^2/3!+...,
+U(lambda)=(exp(lambda)-1)/lambda.                          (2o)
+```
+
+`U_hat` is a unit in the formal clock algebra and hence in every finite nilpotent truncation. The
+global source realization is not a unit because `U(2 pi i m)=0` for every nonzero integer `m`.
+Moreover
+
+```text
+U(-lambda)=exp(-lambda)U(lambda),                          (2p)
+```
+
+so its nonunit divisor is self-dual up to a nowhere-zero factor.
+
+This identifies the common object more sharply: the obstruction is the failure of a formal clock
+unit to remain invertible in the source-selected rigging. Spectrum is its kernel/cokernel;
+continuation failure is the pole set of its localized inverse; positivity is orientation of its
+phase on the self-dual real form; monodromy is winding of its determinant; noncanonical boundary
+conditions are inequivalent closed extensions of the same partial inverse.
+
+Mean-periodicity, convolution spectra, and analytic Fredholm theory are parent theories. The
+candidate-new HT statement is the necessity chain from finite algebraic freedom and zero finite
+conormal to a source-topological unit defect.
+
 Primary parent anchors:
 
 - Braunling--Groechenig--Wolfson, `Tate Objects in Exact Categories`,
@@ -209,57 +328,103 @@ Primary parent anchors:
 - Braunling--Groechenig--Heleodoro--Wolfson, `On the normally ordered tensor product and duality
   for Tate objects`, https://arxiv.org/abs/1709.07962.
 
-## Refined conjecture
+## Clock-descent anomaly `[FINITE THEOREM LEAN-FORMALIZED; PRO-CONE CONJECTURAL]`
 
-**[CONJECTURE]** A constrained HT function carries, at every finite clock cutoff, an **oriented
-self-dual boundary complex**
+There is a necessary comparison layer missing from the unit-defect picture. Let `S` be the source
+constraint, `q_n` a finite clock observation, and `T_n` a proposed finite shadow. Put
 
 ```text
-K_N : Q_N  --Theta_N-->  Q_N^dual,                         (3)
-Q_N = P_(N+1)/P_N,
+alpha_n=T_n q_n-q_n S.                                    (2q)
+```
+
+If homogeneous source variations `W subset ker(S)` realize every value of `q_n`, then
+
+```text
+range(alpha_n|W)=range(T_n).                               (2r)
+```
+
+Thus exact intertwining forces `T_n=0`. More strongly, every value of every nonzero finite shadow
+is entirely generated by its failure to descend on genuine source solutions. This is the
+operator-valued strengthening of the finite-conormal no-go.
+
+The formal unit `U_hat` and global nonunit `U_Phi` describe failure of inversion. The coherent
+family `(alpha_n)` describes failure of representation. The candidate common object is therefore
+the source-topological comparison cone of this family, decorated by the unit defect, rather than
+the global symbol or its divisor alone. Under invertible finite source and observation charts,
+the anomaly is conjugated:
+
+```text
+alpha_n'=e_(O,n) alpha_n e_V^(-1).                         (2s)
+```
+
+This faithful-chart covariance is Lean-formalized. Invariance under completion and inequivalent
+analytic source realizations remains open. Compatible truncations of `q_n` and `T_n` force
+compatible truncations of `alpha_n`; this algebraic pro-coherence is also Lean-formalized.
+
+Finite-observable freedom makes the source tangent dense in the raw product clock topology. Every
+Hausdorff continuous linear observation annihilating that tangent is therefore zero. Hence `C_x`
+cannot be a nonzero Hausdorff quotient in the product clock topology: the source rigging in `(3)`
+must perform the separation. This proves that topology is intrinsic constraint data rather than a
+post hoc analytic convenience.
+
+## Refined conjecture
+
+**[CONJECTURE]** A constrained HT function canonically determines an **affine self-dual rigged
+Tate interval**
+
+```text
+(A_x; I_x subset Phi_x subset H_x subset Phi_x' subset P_x;
+ Lambda_x, [nu_x], (alpha_(x,n))_n, C_x,
+ U_hat_x -> U_(x,Phi)),                                   (3)
 ```
 
 where:
 
-1. `Q_N` is the linearized one-layer clock boundary;
-2. `Theta_N` is induced by the external source constraint, not chosen from the zero set;
-3. an anti-linear involution `kappa_N` implements reflection/self-duality;
-4. a Hermitian orientation records signs and negative index invisible to the differential field;
-5. a distinguished determinant/Fitting section is fixed by the source constraint.
+1. `I_x subset P_x` is the canonical Kähler--Tate clock pair;
+2. `A_x` is the affine calibration torsor erased by relative Kähler linearization;
+3. `Phi_x subset H_x subset Phi_x'` is a source-defined, reflection-compatible rigging;
+4. `Lambda_x` is the self-dual conormal relation of the source constraint;
+5. `[nu_x] in Phi_x'/I_x` is its nonzero finite-observable corona class;
+6. `U_hat_x -> U_(x,Phi)` compares the formal clock unit with its source realization;
+7. `(alpha_(x,n))_n` is the coherent source-to-clock descent anomaly;
+8. `C_x` is its source-topological comparison cone;
+9. a determinant section is fixed by the source constraint before any degeneracy set is examined.
 
-The common obstruction is the cohomology or degeneracy module of `(3)`, not the field interval by
-itself. Two analytic constructions represent the same obstruction only if they are connected by an
-oriented self-dual quasi-isomorphism carrying the distinguished source section. Equality of scalar
-determinants, zero sets, dimensions, or indices is insufficient.
+The common obstruction is `C_x` together with the unit-defect decoration of
+`U_hat_x -> U_(x,Phi)`, equivalently the failure of `Lambda_x` to remain transverse to the
+reflected polarization of `(3)`. Two analytic constructions represent the same obstruction only
+if they carry the same coherent anomaly cone, formal/source comparison, calibrated corona class,
+and determinant section. Equality of scalar determinants, zero sets, dimensions, or indices is
+insufficient.
 
 ## Proposed representation dictionary `[CONJECTURAL UNTIL MAPS ARE BUILT]`
 
-| Analytic presentation | Boundary-complex presentation |
+| Analytic presentation | Affine rigged Tate presentation |
 |---|---|
-| spectral incompleteness | nonzero kernel or cokernel of `Theta_N` |
-| continuation failure | nontrivial Cech/descent cohomology of the same complex |
-| positivity failure | nonzero negative index of the induced Hermitian form on cohomology |
-| monodromy | holonomy of the boundary local system underlying `K_N` |
-| noncanonical boundary condition | torsor of Lagrangian splittings of the self-dual complex |
+| spectral incompleteness | nontransversality of `Lambda_x` after closure in `H_x` |
+| continuation failure | failure of `[nu_x]` or `Lambda_x` to extend in the dual-corona bundle |
+| positivity failure | failure of the Hermitian real form on `H_x` to orient the lattice pair |
+| monodromy | holonomy of the projective corona line or determinant torsor |
+| noncanonical boundary condition | multiple closed realizations of one relation between `Phi_x` and `Phi_x'` |
 
 This table is a list of proof obligations, not evidence that the identifications already exist.
 
 ## Zeta specialization `[CONJECTURE, NOT AN RH RESULT]`
 
-There should exist a source-defined pro-system `K_zeta` built from the prime and archimedean
-constraints, without importing a zero table, such that:
+There should exist a source-defined reflection-equivariant instance `(3)` built from the prime
+and archimedean constraints, without importing a zero table, such that:
 
-1. its oriented determinant section is the completed zeta function up to a canonically nowhere-zero
-   factor;
-2. the involution induced by `s |-> 1-conj(s)` fixes the self-dual seam `Re(s)=1/2`;
-3. the spectral, continuation, positivity, monodromy, and source-selected boundary-condition chains
-   are oriented self-dual realizations of `K_zeta`;
-4. the critical zeros are precisely the self-dual degeneracy spectrum of that source-defined
-   object.
+1. the functional equation supplies self-duality of the rigging;
+2. the arithmetic source supplies affine calibration and orientation;
+3. analytic continuation supplies the source test-space topology and dual corona;
+4. the spectral, positivity, monodromy, and boundary-condition chains preserve the same
+   self-dual comparison cone and projective corona-conormal line;
+5. the critical zeros are precisely the self-dual nontransversality spectrum of that source-defined
+   line relative to its reflected polarization.
 
-The research task is the cross-representation construction in item 3. Merely defining a complex
-whose determinant is `xi`, or specializing an operator to the known zeros, is circular and fails the
-conjecture.
+The research task is the cross-representation construction in item 4. Merely choosing a rigging
+whose determinant is `xi`, or specializing an operator to the known zeros, is circular and fails
+the conjecture. This is not an RH result.
 
 ## Live-corpus attacks
 
@@ -363,6 +528,22 @@ Construct actual oriented boundary-complex maps for three incompatible rows:
 The conjecture survives only if these maps land in one source-defined object and preserve the same
 distinguished section. Sharing only the abstract shape `(3)` is not enough.
 
+The clock-descent anomaly gives this gate an exact first audit:
+
+1. **Sonin/co-Poisson/Calkin:** the proposed time-band lift is an ideal-membership statement for a
+   source comparison anomaly. The Lean quotient-shadow theorem shows what it would imply once
+   quotient-observation surjectivity and the induced principal shadow are supplied.
+2. **Hedenmalm nonclosability:** ordinary `L²` kills the dense source radical quotient, exhibiting
+   a topological comparison defect. It is not yet a clock-anomaly factorization because dense
+   range is not the finite-surjectivity hypothesis and no cone map has been built.
+3. **Böttcher Prüfer monodromy:** the existing character has no common source constraint or
+   observation map. A source-natural transgression is the missing comparison morphism; without it,
+   monodromy is only an external decoration.
+
+This is a positive no-go: the three obstructions cannot yet be asserted to be the same class, but
+their failures are now localized respectively to quotient-kernel membership, source topology, and
+existence of the comparison morphism.
+
 ## Novelty boundary
 
 Associated gradeds of filtered differential algebras, Galois connections, perfect complexes,
@@ -387,11 +568,12 @@ Primary anchors:
 - Lilleberg, `Generalized Schur--Nevanlinna functions and their realizations`,
   https://doi.org/10.1007/s00020-020-02600-w.
 
-The positive residue is now exact: construct a canonical functor from the algebraic HT clock
-boundary symbol `(2)` and the actual non-flow source constraint to a boundary relation/colligation,
-including its Hermitian orientation and distinguished determinant section. Then prove that three
-existing analytic chains factor through that **same source realization**. Parent boundary theory
-starts after such a realization is supplied; it does not construct it from hypertranscendence.
+The positive residue is now exact: construct from one actual non-flow HT source constraint the
+test-space topology `Phi_x`, its infinite-support corona conormal `[nu_x]`, affine calibration,
+Hermitian completion, and self-dual conormal relation. Then prove that three existing analytic
+chains preserve that **same calibrated corona class**. Parent rigged-Hilbert, Tate, and boundary
+theories start after such a source realization is supplied; none constructs it from
+hypertranscendence.
 
 ## Gates
 
@@ -407,14 +589,28 @@ starts after such a realization is supplied; it does not construct it from hyper
 - [x] compact/profinite inverse-limit carrier killed by exact compactness
 - [x] profinite-kernel, Calkin, and nonclosable-graph manifestations isolated
 - [x] algebraic Tate-clock shift/coshift exact skeleton formalized
-- [ ] nonlinear HT boundary functor to an elementary Tate object constructed
-- [ ] actual source constraint shown to select a self-dual lattice and affine origin
-- [ ] constraint-induced boundary complex constructed
+- [x] intrinsic infinite Kähler boundary covectors formalized
+- [x] affine-origin blindness and constant-unit covariance formalized
+- [x] finite-observable conormal no-go formalized
+- [x] nonzero constraint localized to an enlarged-dual corona
+- [ ] filtered Kähler principal symbol formalized
+- [ ] nonlinear HT tangent functor to an elementary Tate object completed
+- [x] one actual source test space and nonzero corona conormal constructed from the Gamma shift
+- [x] Gamma formal-unit/global-nonunit comparison and self-dual symbol formalized
+- [x] finite clock-descent anomaly range law formalized
+- [x] faithful finite-chart covariance of the anomaly formalized
+- [x] algebraic truncation coherence of the anomaly formalized
+- [x] quotient-shadow collapse formalized
+- [x] three representative obstruction chains assigned exact factorization gaps
+- [x] product-density and Hausdorff product-observation no-go formalized
+- [ ] coherent source-topological anomaly cone constructed
+- [ ] Gamma reflection paired with the shift conormal in a self-dual rigging
+- [ ] actual source constraint shown to select an affine Tate torsor, calibration, and self-dual conormal relation
 - [ ] Böttcher factorization built
 - [ ] semilocal boundary-condition factorization built
 - [ ] positivity factorization built
 - [ ] one common distinguished source section proved
-- [ ] primary-literature audit across derived, Fredholm, differential, and observability theories
+- [x] primary-literature audit across derived, Fredholm, differential, Tate, rigging, and observability theories
 - [ ] independent specialist novelty verdict
 
 ## Log

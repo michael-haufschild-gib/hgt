@@ -107,52 +107,6 @@ theorem two_mul_sq_mul_thetaCuspTailSecondCoreAtomDerivative_add_eq_twoPhase
     finiteTwoPhaseTranslationPacket_sum_eval]
   ring
 
-/-! ## Current cost of the completion monomial -/
-
-/-- **Symmetric Hermitian completion identity.**  Multiplying both value packets by `2*z^2`
-and differentiating that multiplier leaves exactly one radial real-correlation term.  This is the
-pairwise form of the familiar current cost of multiplying a polynomial by `X^2`; importantly, the
-two off-diagonal value packets remain conjugate-paired rather than being bounded separately. -/
-theorem symmetricHermitianCurrent_two_mul_sq_completion
-    (z D₁ V₁ D₂ V₂ : ℂ) :
-    (((2 * (z ^ 2 * D₁ + 2 * z * V₁)) *
-          (starRingEnd ℂ) (2 * z ^ 2 * V₂)).im +
-        ((2 * (z ^ 2 * D₂ + 2 * z * V₂)) *
-          (starRingEnd ℂ) (2 * z ^ 2 * V₁)).im) / 2 =
-      4 * Complex.normSq z ^ 2 *
-          (((D₁ * (starRingEnd ℂ) V₂).im +
-            (D₂ * (starRingEnd ℂ) V₁).im) / 2) -
-        8 * Complex.normSq z * z.im *
-          (V₁ * (starRingEnd ℂ) V₂).re := by
-  simp only [map_mul, map_ofNat]
-  rw [Complex.normSq_apply]
-  apply congrArg Complex.im at
-    (show
-      ((2 * (z ^ 2 * D₁ + 2 * z * V₁)) *
-            (starRingEnd ℂ) (2 * z ^ 2 * V₂) +
-          (2 * (z ^ 2 * D₂ + 2 * z * V₂)) *
-            (starRingEnd ℂ) (2 * z ^ 2 * V₁)) / 2 =
-        4 * (z * (starRingEnd ℂ) z) ^ 2 *
-            ((D₁ * (starRingEnd ℂ) V₂ +
-              D₂ * (starRingEnd ℂ) V₁) / 2) -
-          8 * (z * (starRingEnd ℂ) z) * (z.im : ℂ) *
-            ((V₁ * (starRingEnd ℂ) V₂).re : ℂ) by
-      rw [map_add, map_mul, map_mul, map_ofNat, map_pow, map_ofNat]
-      have hzreal : z * (starRingEnd ℂ) z = (Complex.normSq z : ℂ) := by
-        rw [Complex.normSq_apply]
-        apply Complex.ext <;> simp
-      have hpair :
-          V₂ * (starRingEnd ℂ) V₁ =
-            (starRingEnd ℂ) (V₁ * (starRingEnd ℂ) V₂) := by
-        rw [map_mul, map_map]
-      rw [hzreal, hpair]
-      push_cast
-      ring)
-  simp only [map_div₀, map_ofNat, Complex.add_im, Complex.div_re,
-    Complex.div_im, Complex.ofReal_re, Complex.ofReal_im, Complex.mul_im,
-    Complex.normSq_apply]
-  ring
-
 end
 
 end RHTower

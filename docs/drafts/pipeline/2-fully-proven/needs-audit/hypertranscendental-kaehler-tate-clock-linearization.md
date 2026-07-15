@@ -3,7 +3,7 @@
 - **ID:** `hypertranscendental-kaehler-tate-clock-linearization`
 - **Stage:** 2-fully-proven / needs independent audit
 - **Type:** GENERAL HT THEOREM / SOURCE-POINTED IND--PRO GEOMETRY
-- **Scientific status:** `[PROVED ON PAPER] [ALGEBRAIC TATE SKELETON LEAN-FORMALIZED] [NONLINEAR KAEHLER FUNCTOR NOT YET FORMALIZED] [NOVELTY PROVISIONAL]`
+- **Scientific status:** `[PROVED ON PAPER] [KAEHLER INDEPENDENCE LEAN-FORMALIZED] [AFFINE-CALIBRATION NO-GO LEAN-FORMALIZED] [PRINCIPAL SYMBOL LEAN-OPEN] [NOVELTY PROVISIONAL]`
 - **Parent:** `../3-formalized/hypertranscendental-clock-observable-boundary.md`
 - **Statement:** The one-way rational jet tower of a pointed hypertranscendental element has a
   canonical filtered Kähler module whose clock principal symbol is the unilateral shift through
@@ -168,6 +168,32 @@ infinite algebraic clock capacity concentrated on a thin constraint boundary
 literal: the capacity is the countable family of independent lines `L_N`, while the clock index
 at each cut is the single dual pair `coker(S_x)=L_0` and `ker(B_x)=L_0^dual`.
 
+## Affine-calibration theorem `[PROVED AND LEAN-FORMALIZED]`
+
+The vector Tate clock is not yet the constrained source object. Relative Kähler differentials
+erase base-valued translations exactly. For every `c in F` and every `n`,
+
+```text
+d_F(delta^n(x+c))=d_F(delta^n x).                         (16)
+```
+
+If `a in F` is derivation-constant, then for every `b in F`,
+
+```text
+d_F(delta^n(a x+b))=a d_F(delta^n x).                     (17)
+```
+
+Thus the complete Kähler flag and its Tate completion retain tangent capacity but not affine
+calibration. Translation changes the clock reading without changing a single cotangent clock
+observable; constant rescaling changes every graded line by one common unit and hence gives an
+isomorphic uncalibrated Tate clock. Neither a vector Tate object nor its projectivization can
+recover the source normalization.
+
+This is a fourth structural no-go, paired with a positive replacement. The source object must be
+an **affine self-dual Tate clock**: a torsor `A_x` modeled on `T_x`, together with a calibrated
+source section and a self-dual Lagrangian lattice. Its linear tangent object is the canonical
+`T_x`; its affine section carries precisely the origin and unit erased by `(16)`--`(17)`.
+
 ## What is parent theory and what may be new
 
 The following are parent ingredients:
@@ -204,10 +230,10 @@ Primary parent anchors:
 
 ## Unified-obstruction consequence `[CONJECTURE]`
 
-The theorem constructs the universal self-dual boundary object but not the source-specific
-orientation. A constrained HT source must next define a Lagrangian Tate extension or lattice
-`Lambda_x` and a distinguished determinant section. Only then can the proposed dictionary be
-tested:
+The theorem constructs the universal self-dual tangent boundary but not the source-specific
+calibration. A constrained HT source must next define an affine self-dual Tate torsor `A_x`, a
+calibrated Lagrangian lattice `Lambda_x`, and a distinguished determinant section. Only then can
+the proposed dictionary be tested:
 
 | Representation | Required image of the same Tate datum |
 |---|---|
@@ -226,16 +252,20 @@ analytic constructions.
 `HypertranscendentalClockBoundary.lean` now formalizes:
 
 - algebraic independence and fresh transcendence of every jet layer;
+- linear independence of all universal jet Kähler covectors over the full rational jet field;
 - exact finite clock erosion;
 - nonexistence of a total algebra homomorphism from a transcendental clock step back to its base;
+- exact affine translation blindness and constant-scaling covariance of every relative Kähler
+  jet covector;
 - the universal Ind forward shift and Pro backward shift;
 - the exact rank-one range/kernel descriptions;
 - shift/coshift adjointness under the restricted evaluation pairing.
 
-The missing formal layer is `(3)`--`(7)`: transport the countable multivariate-polynomial Kähler
-basis through localization and the HT evaluation equivalence, define the Lie derivative over the
-constant field, and prove its filtered principal-symbol identity. No wrapper theorem will be
-counted as formalization of that layer.
+The remaining formal layer is the decomposition with its base-differential summand and the
+filtered principal symbol in `(3)`--`(7)`. The full countable jet Kähler family is already proved
+linearly independent in Lean. What remains is to define the Lie derivative over the constant
+field and prove the quotient-level symbol identity. No wrapper theorem will be counted as
+formalization of that layer.
 
 Verification of the existing touched module used only
 
@@ -254,9 +284,10 @@ Lean process was run.
 - [x] filtered Lie derivative and rank-one principal shift proved on paper
 - [x] self-dual Tate completion and exact clock index proved on paper
 - [x] universal algebraic shift/coshift skeleton formalized in Lean
+- [x] infinite Kähler jet-covector independence formalized in Lean
+- [x] affine-origin blindness and constant-unit covariance formalized in Lean
 - [x] primary Tate-theory collision audit completed
-- [ ] nonlinear Kähler filtration and principal symbol formalized in Lean
+- [ ] base-summand Kähler decomposition and principal symbol formalized in Lean
 - [ ] independent differential-algebra and Tate-category specialist audit
-- [ ] actual source-selected self-dual lattice constructed
+- [ ] actual source-selected affine torsor, calibration, and self-dual lattice constructed
 - [ ] three analytic obstruction representations proved to preserve one source class
-

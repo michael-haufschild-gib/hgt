@@ -26,6 +26,9 @@ local instance gammaPoleRationalNatGermAlgebra :
     Algebra GammaPoleRationalBase NatGerm :=
   ratNatEval.toAlgebra
 
+local instance gammaPoleRelativeComplexNatGermAlgebra : Algebra ℂ NatGerm :=
+  complexNatGerm.toAlgebra
+
 /-- Coordinatewise affine substitution over an arbitrary commutative base ring. -/
 def affineCoordinateMapOver
     {R : Type*} [CommRing R] (m : ℕ) (α β : Fin m → R) :
@@ -57,6 +60,8 @@ theorem affineCoordinateMapOver_injective
       simp [hα j]
   apply Function.LeftInverse.injective
   intro P
+  change affineCoordinateMapOverInv m α β
+      (affineCoordinateMapOver m α β P) = P
   exact RingHom.congr_fun hcomp P
 
 /-- Send coordinate `j` to its affine harmonic form times the reciprocal-factorial variable to
@@ -119,20 +124,24 @@ theorem gammaPoleLogDerivativeRationalEval_eq_comp (m : ℕ) :
   apply MvPolynomial.ringHom_ext
   · intro c
     simp [gammaPoleLogDerivativeRationalEval,
-      reciprocalSignedFactorialEval, rationalWeightedAffineEmbedding]
+      reciprocalSignedFactorialEval, rationalWeightedAffineEmbedding,
+      harmonicJetEval]
   · intro j
+    have hbase (c : ℂ) :
+        algebraMap ℂ NatGerm c = ratNatEval (RatFunc.C c) := rfl
     simp [gammaPoleLogDerivativeRationalEval,
       reciprocalSignedFactorialEval, rationalWeightedAffineEmbedding,
       harmonicJetEval, gammaPoleLogDerivativeGerm,
       gammaPoleLogDerivativeRationalSlope,
-      gammaPoleLogDerivativeRationalConstant, complexNatGerm]
+      gammaPoleLogDerivativeRationalConstant, hbase]
     ring
 
 theorem gammaPoleLogDerivativeRationalEval_injective (m : ℕ) :
     Function.Injective (gammaPoleLogDerivativeRationalEval m) := by
   rw [gammaPoleLogDerivativeRationalEval_eq_comp]
   exact (reciprocalSignedFactorialEval_injective m).comp
-    (rationalWeightedAffineEmbedding_injective m fun _j => by norm_num)
+    (rationalWeightedAffineEmbedding_injective m fun _j => by
+      simp [gammaPoleLogDerivativeRationalSlope])
 
 /-- Every finite prefix of the exact Gamma pole logarithmic jets is algebraically independent over
 the full rational pole-position field `ℂ(n)`. -/
