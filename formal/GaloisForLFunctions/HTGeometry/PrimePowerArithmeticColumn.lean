@@ -51,6 +51,7 @@ theorem chosenPrimePowerBase_eq (e : ℕ) (p : Nat.Primes)
 theorem arithmeticOfPrimePowerColumn_apply (e : ℕ) (a : Nat.Primes → ℂ)
     (p : Nat.Primes) :
     arithmeticOfPrimePowerColumn e a ((p : ℕ) ^ (e + 1)) = a p := by
+  classical
   let h : ∃ q : Nat.Primes, (p : ℕ) ^ (e + 1) = (q : ℕ) ^ (e + 1) := ⟨p, rfl⟩
   change (if h' : ∃ q : Nat.Primes,
       (p : ℕ) ^ (e + 1) = (q : ℕ) ^ (e + 1) then
@@ -63,6 +64,7 @@ theorem arithmeticOfPrimePowerColumn_apply (e : ℕ) (a : Nat.Primes → ℂ)
 theorem arithmeticOfPrimePowerColumn_support (e : ℕ) (a : Nat.Primes → ℂ) {n : ℕ}
     (hn : arithmeticOfPrimePowerColumn e a n ≠ 0) :
     ∃ p : Nat.Primes, n = (p : ℕ) ^ (e + 1) := by
+  classical
   change (if h : ∃ p : Nat.Primes, n = (p : ℕ) ^ (e + 1) then
       a (chosenPrimePowerBase (e + 1) n h) else 0) ≠ 0 at hn
   by_cases hpow : ∃ p : Nat.Primes, n = (p : ℕ) ^ (e + 1)

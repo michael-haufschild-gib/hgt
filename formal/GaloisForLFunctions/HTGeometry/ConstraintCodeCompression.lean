@@ -1,11 +1,16 @@
 import GaloisForLFunctions.HTGeometry.FiniteClockOrthogonalObservability
 
 /-!
-# Constraint ideals compressed to a physical code subspace
+# Outer constraint relations compressed to a physical code subspace
 
 If a projection-like operator `P` is annihilated on both sides by a constraint `C`, then every
-operator in the two-sided constraint ideal has zero `P`-compression.  Consequently observables
-which differ by a constraint-ideal term have identical compressed representatives.
+operator of the outer form `C * L + R * C` has zero `P`-compression.  Consequently observables
+which differ by such an outer constraint term have identical compressed representatives.
+
+In a noncommutative operator algebra this outer relation is not the full two-sided ideal generated
+by `C`: a general sandwich `L * C * R` can survive compression.  Its exact complement-sector
+factorization is proved in `ConstraintIdealExcursion`.  The historical declaration names below
+retain `TwoSidedIdeal` for compatibility, but their statements concern only `C * L + R * C`.
 
 For a finite-period isometric clock, the cyclic gauge average supplies `P`.  The left and right
 annihilation laws follow from the two geometric-series telescopes, so matrix-element representative
@@ -24,8 +29,8 @@ section Algebra
 variable {𝕜 E : Type*} [RCLike 𝕜]
   [NormedAddCommGroup E] [NormedSpace 𝕜 E]
 
-/-- Every two-sided constraint-ideal term vanishes after compression by an operator annihilating
-the constraint on both sides. -/
+/-- Every outer left/right constraint term vanishes after compression by an operator annihilating
+the constraint on both sides.  This does not cover a general sandwich `L * C * R`. -/
 theorem constraintTwoSidedIdeal_compression_eq_zero
     (P C L R : E →L[𝕜] E) (hPC : P * C = 0) (hCP : C * P = 0) :
     P * (C * L + R * C) * P = 0 := by
@@ -34,8 +39,8 @@ theorem constraintTwoSidedIdeal_compression_eq_zero
         (P * C) * L * P + P * R * (C * P) := by noncomm_ring
     _ = 0 := by rw [hPC, hCP]; simp
 
-/-- Operators equal modulo the two-sided constraint ideal have exactly the same compressed
-operator, not merely the same value on one chosen pair of physical vectors. -/
+/-- Operators differing by an outer constraint term have exactly the same compressed operator,
+not merely the same value on one chosen pair of physical vectors. -/
 theorem compression_congr_mod_constraintTwoSidedIdeal
     (P C A B L R : E →L[𝕜] E)
     (hPC : P * C = 0) (hCP : C * P = 0)
@@ -64,8 +69,8 @@ theorem finiteCyclicGaugeAverage_mul_constraint_eq_zero
     ((∑ k ∈ Finset.range N, U ^ k) * (U - 1)) = 0
   rw [geom_sum_mul, hperiod, sub_self, smul_zero]
 
-/-- Constraint-ideal equivalence becomes literal operator equality after finite-clock averaging.
-No self-adjointness premise on `U - 1` is needed. -/
+/-- Equivalence modulo outer clock-constraint terms becomes literal operator equality after
+finite-clock averaging.  No self-adjointness premise on `U - 1` is needed. -/
 theorem finiteCyclicGaugeAverage_compression_congr_mod_constraintTwoSidedIdeal
     (U A B L R : E →L[𝕜] E) (N : ℕ) (hperiod : U ^ N = 1)
     (hmod : B = A + ((U - 1) * L + R * (U - 1))) :
@@ -84,7 +89,7 @@ variable {𝕜 E : Type*} [RCLike 𝕜]
   [NormedAddCommGroup E] [InnerProductSpace 𝕜 E] [CompleteSpace E]
 
 /-- **Finite-clock physical code representative independence.**  Averaging the bra and ket by a
-finite-period isometric clock makes every two-sided constraint-ideal representative invisible.
+finite-period isometric clock makes every outer left/right constraint representative invisible.
 Unlike the earlier generic Ward theorem, this result does not assume `IsSelfAdjoint (U - 1)`. -/
 theorem finiteClock_matrixElement_congr_mod_constraintTwoSidedIdeal
     (U A B L R : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0)

@@ -9,7 +9,7 @@ Schatten depth.  A positive logarithmic residue excludes the ordinary endpoint c
 weak endpoint bound places the operator in every strictly larger Schatten class.
 -/
 
-namespace GaloisForLFunctions.RHTower
+namespace RHTower
 
 open ContinuousLinearMap Filter Finset
 open scoped Topology
@@ -44,7 +44,7 @@ theorem MemWeakSchattenClass.memSchattenClass_of_lt
   have hr : 1 < q / p := (one_lt_div hp).2 hpq
   have hseries : Summable (fun n : ℕ => C ^ (q / p) / |(n : ℝ) + 1| ^ (q / p)) := by
     have hbase := (Real.summable_one_div_nat_add_rpow 1 (q / p)).2 hr
-    exact hbase.mul_left (C ^ (q / p))
+    simpa [div_eq_mul_inv] using hbase.mul_left (C ^ (q / p))
   apply hseries.of_nonneg_of_le
   · intro n
     exact Real.rpow_nonneg (approxNumber_nonneg T n) q
@@ -52,12 +52,15 @@ theorem MemWeakSchattenClass.memSchattenClass_of_lt
     have hn : 0 < (n : ℝ) + 1 := by positivity
     have hpow :
         approxNumber T n ^ q = (approxNumber T n ^ p) ^ (q / p) := by
-      rw [← Real.rpow_mul (approxNumber_nonneg T n), div_mul_cancel₀ q hp.ne']
+      rw [← Real.rpow_mul (approxNumber_nonneg T n)]
+      congr 1
+      field_simp
     rw [hpow]
     calc
       (approxNumber T n ^ p) ^ (q / p)
           ≤ (C / ((n : ℝ) + 1)) ^ (q / p) :=
-        Real.rpow_le_rpow (Real.rpow_nonneg _ _) (hbound n) (le_of_lt hr.trans' zero_lt_one)
+        Real.rpow_le_rpow (Real.rpow_nonneg (approxNumber_nonneg T n) p) (hbound n)
+          (le_of_lt (zero_lt_one.trans hr))
       _ = C ^ (q / p) / |(n : ℝ) + 1| ^ (q / p) := by
         rw [abs_of_pos hn, Real.div_rpow hC hn.le]
 
@@ -70,7 +73,8 @@ theorem HasSchattenLogResidue.not_memSchattenClass
       (nhds (∑' n : ℕ, approxNumber T n ^ p)) := by
     simpa [schattenPowerPartialSum] using hsum.hasSum.tendsto_sum_nat
   have hlog : Tendsto (fun N : ℕ => Real.log (N + 1)) atTop atTop := by
-    exact Real.tendsto_log_atTop.comp
+    apply Real.tendsto_log_atTop.comp
+    simpa [Function.comp_def, Nat.cast_add, Nat.cast_one] using
       (tendsto_natCast_atTop_atTop.comp (tendsto_add_atTop_nat 1))
   have hzero : Tendsto
       (fun N : ℕ => schattenPowerPartialSum p T N / Real.log (N + 1))
@@ -97,4 +101,4 @@ end
 
 end
 
-end GaloisForLFunctions.RHTower
+end RHTower

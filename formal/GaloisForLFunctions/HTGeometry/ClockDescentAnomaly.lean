@@ -162,6 +162,181 @@ theorem clockDescentAnomaly_inChart
 
 end ChartCovariance
 
+/-! ### Curvature across observable resolutions -/
+
+section ShadowCurvature
+
+variable {O₀ O₁ : Type*}
+  [AddCommGroup O₀] [Module K O₀]
+  [AddCommGroup O₁] [Module K O₁]
+
+/-- Failure of proposed clock shadows to commute with truncation of observations.  The clock index
+is an observable resolution, not a time parameter. -/
+def clockShadowCurvature
+    (shadow₀ : O₀ →ₗ[K] O₀) (shadow₁ : O₁ →ₗ[K] O₁)
+    (truncate : O₁ →ₗ[K] O₀) : O₁ →ₗ[K] O₀ :=
+  truncate.comp shadow₁ - shadow₀.comp truncate
+
+/-- Failure of source-to-shadow anomalies to commute with truncation. -/
+def clockAnomalyCoherenceDefect
+    (source : V →ₗ[K] V)
+    (observe₀ : V →ₗ[K] O₀) (observe₁ : V →ₗ[K] O₁)
+    (shadow₀ : O₀ →ₗ[K] O₀) (shadow₁ : O₁ →ₗ[K] O₁)
+    (truncate : O₁ →ₗ[K] O₀) : V →ₗ[K] O₀ :=
+  truncate.comp (clockDescentAnomaly source observe₁ shadow₁) -
+    clockDescentAnomaly source observe₀ shadow₀
+
+/-- **Clock-descent Bianchi identity.**  When observations themselves truncate compatibly, the
+incoherence of source-to-shadow anomalies is exactly the shadow curvature observed one level
+higher:
+
+`p α₁ - α₀ = (p T₁ - T₀ p) q₁`.
+
+Thus failure of anomaly coherence is not an independent error term. -/
+theorem clockAnomalyCoherenceDefect_eq_shadowCurvature_comp
+    (source : V →ₗ[K] V)
+    (observe₀ : V →ₗ[K] O₀) (observe₁ : V →ₗ[K] O₁)
+    (shadow₀ : O₀ →ₗ[K] O₀) (shadow₁ : O₁ →ₗ[K] O₁)
+    (truncate : O₁ →ₗ[K] O₀)
+    (hobserve : truncate.comp observe₁ = observe₀) :
+    clockAnomalyCoherenceDefect source observe₀ observe₁ shadow₀ shadow₁ truncate =
+      (clockShadowCurvature shadow₀ shadow₁ truncate).comp observe₁ := by
+  ext v
+  have ho_v := LinearMap.congr_fun hobserve v
+  have ho_sv := LinearMap.congr_fun hobserve (source v)
+  simp only [LinearMap.comp_apply] at ho_v ho_sv
+  simp [clockAnomalyCoherenceDefect, clockShadowCurvature, clockDescentAnomaly,
+    LinearMap.comp_apply, map_sub, ho_v, ho_sv]
+
+/-- **Exact curvature-range law.**  If source variations realize all higher-resolution
+observations, the whole shadow-curvature range is exactly the range of anomaly incoherence on
+those variations. -/
+theorem range_clockAnomalyCoherenceDefect_domRestrict_eq_range_shadowCurvature
+    (source : V →ₗ[K] V)
+    (observe₀ : V →ₗ[K] O₀) (observe₁ : V →ₗ[K] O₁)
+    (shadow₀ : O₀ →ₗ[K] O₀) (shadow₁ : O₁ →ₗ[K] O₁)
+    (truncate : O₁ →ₗ[K] O₀)
+    (hobserve : truncate.comp observe₁ = observe₀)
+    (W : Submodule K V) (hsurj : Function.Surjective (observe₁.domRestrict W)) :
+    LinearMap.range
+        ((clockAnomalyCoherenceDefect source observe₀ observe₁ shadow₀ shadow₁ truncate).domRestrict W) =
+      LinearMap.range (clockShadowCurvature shadow₀ shadow₁ truncate) := by
+  rw [clockAnomalyCoherenceDefect_eq_shadowCurvature_comp
+    source observe₀ observe₁ shadow₀ shadow₁ truncate hobserve]
+  apply le_antisymm
+  · rintro y ⟨w, rfl⟩
+    exact ⟨observe₁ w.1, rfl⟩
+  · rintro y ⟨x, rfl⟩
+    obtain ⟨w, hw⟩ := hsurj x
+    change observe₁ w.1 = x at hw
+    refine ⟨w, ?_⟩
+    change clockShadowCurvature shadow₀ shadow₁ truncate (observe₁ w.1) =
+      clockShadowCurvature shadow₀ shadow₁ truncate x
+    rw [hw]
+
+/-- **Gauge additivity of clock curvature.**  Changing a finite shadow by a correction changes
+its curvature by the curvature of that correction.  This is the exact coboundary law behind any
+calibrated gauge quotient; the nontrivial research content must enter through which corrections
+the source calibration permits. -/
+theorem clockShadowCurvature_add
+    (shadow₀ gauge₀ : O₀ →ₗ[K] O₀) (shadow₁ gauge₁ : O₁ →ₗ[K] O₁)
+    (truncate : O₁ →ₗ[K] O₀) :
+    clockShadowCurvature (shadow₀ + gauge₀) (shadow₁ + gauge₁) truncate =
+      clockShadowCurvature shadow₀ shadow₁ truncate +
+        clockShadowCurvature gauge₀ gauge₁ truncate := by
+  ext v
+  simp [clockShadowCurvature, LinearMap.comp_apply, map_add, add_sub_add_comm]
+
+/-- **Constraint-algebra Leibniz law.**  Clock curvature is a derivation under composition of
+finite shadows:
+
+`κ(T ∘ U) = κ(T) ∘ U₁ + T₀ ∘ κ(U)`.
+
+Thus the boundary datum belongs to the whole algebra of source operations, not merely to one
+chosen operator. -/
+theorem clockShadowCurvature_comp_shadow
+    (left₀ right₀ : O₀ →ₗ[K] O₀) (left₁ right₁ : O₁ →ₗ[K] O₁)
+    (truncate : O₁ →ₗ[K] O₀) :
+    clockShadowCurvature (left₀.comp right₀) (left₁.comp right₁) truncate =
+      (clockShadowCurvature left₀ left₁ truncate).comp right₁ +
+        left₀.comp (clockShadowCurvature right₀ right₁ truncate) := by
+  ext v
+  simp [clockShadowCurvature, LinearMap.comp_apply, map_sub]
+
+/-- Vanishing clock curvature is exactly compatibility of the two shadows with truncation. -/
+theorem clockShadowCurvature_eq_zero_iff
+    (shadow₀ : O₀ →ₗ[K] O₀) (shadow₁ : O₁ →ₗ[K] O₁)
+    (truncate : O₁ →ₗ[K] O₀) :
+    clockShadowCurvature shadow₀ shadow₁ truncate = 0 ↔
+      truncate.comp shadow₁ = shadow₀.comp truncate := by
+  simp only [clockShadowCurvature, sub_eq_zero]
+
+section CurvatureCocycle
+
+variable {O₂ : Type*} [AddCommGroup O₂] [Module K O₂]
+
+/-- **Three-resolution curvature cocycle.**  Curvature across a composite truncation is the sum of
+the transported curvatures across its two stages.  This is the exact cocycle law needed before a
+calibrated curvature class can be defined on the whole clock tower. -/
+theorem clockShadowCurvature_comp
+    (shadow₀ : O₀ →ₗ[K] O₀) (shadow₁ : O₁ →ₗ[K] O₁)
+    (shadow₂ : O₂ →ₗ[K] O₂)
+    (truncate₀₁ : O₁ →ₗ[K] O₀) (truncate₁₂ : O₂ →ₗ[K] O₁) :
+    clockShadowCurvature shadow₀ shadow₂ (truncate₀₁.comp truncate₁₂) =
+      truncate₀₁.comp (clockShadowCurvature shadow₁ shadow₂ truncate₁₂) +
+        (clockShadowCurvature shadow₀ shadow₁ truncate₀₁).comp truncate₁₂ := by
+  ext v
+  simp [clockShadowCurvature, LinearMap.comp_apply, map_sub]
+
+end CurvatureCocycle
+
+end ShadowCurvature
+
+/-! ### Linear integration fiber of a prescribed curvature -/
+
+section IntegrationFiber
+
+variable {P C : Type*}
+  [AddCommGroup P] [Module K P]
+  [AddCommGroup C] [Module K C]
+
+/-- The linear model of global primitives realizing one prescribed clock curvature.  In the
+nonlinear theory this fiber is replaced by a derived integration stack. -/
+def clockIntegrationFiber (integrate : P →ₗ[K] C) (curvature : C) :=
+  {primitive : P // integrate primitive = curvature}
+
+/-- A prescribed curvature has a global primitive exactly when it belongs to the range of the
+integration map.  This is the linear skeleton of continuation versus integration failure. -/
+theorem nonempty_clockIntegrationFiber_iff_mem_range
+    (integrate : P →ₗ[K] C) (curvature : C) :
+    Nonempty (clockIntegrationFiber integrate curvature) ↔
+      curvature ∈ LinearMap.range integrate := by
+  constructor
+  · rintro ⟨primitive, hprimitive⟩
+    exact ⟨primitive, hprimitive⟩
+  · rintro ⟨primitive, hprimitive⟩
+    exact ⟨⟨primitive, hprimitive⟩⟩
+
+/-- Once one primitive exists, every other primitive differs from it by a unique element of the
+kernel.  Thus continuation failure and boundary-condition ambiguity are respectively emptiness
+and the kernel torsor of one integration fiber. -/
+def clockIntegrationFiberEquivKernel
+    (integrate : P →ₗ[K] C) (curvature : C)
+    (base : clockIntegrationFiber integrate curvature) :
+    clockIntegrationFiber integrate curvature ≃ LinearMap.ker integrate where
+  toFun primitive := ⟨primitive.1 - base.1, by
+    rw [LinearMap.mem_ker, map_sub, primitive.2, base.2, sub_self]⟩
+  invFun gauge := ⟨base.1 + gauge.1, by
+    rw [map_add, base.2, LinearMap.mem_ker.mp gauge.2, add_zero]⟩
+  left_inv primitive := by
+    apply Subtype.ext
+    simp
+  right_inv gauge := by
+    apply Subtype.ext
+    simp
+
+end IntegrationFiber
+
 /-! ### Coherence along the finite clock tower -/
 
 section TruncationCoherence

@@ -58,6 +58,20 @@ palette differentially algebraically independent.
 6. Transfer the power-supported arithmetic functions to absolutely convergent Dirichlet series
    and take finite character for the countable dilation tower.
 
+## Verified core
+
+The arithmetic valuation-layer theorem is complete and formalized in
+`prime-power-valuation-layer-block-separation.md`.  It proves, for arbitrary finite nonuniform
+layer alphabets `A_r`, that layerwise tail independence gives algebraic independence of the full
+`sum_r card(A_r)` family over the intrinsic finite-prime coefficient field.  It also proves the
+exact distinguished determinant coefficient, the power-supported prime-derivation law, globally
+prime-disjoint cofinite packet selection, and the dynamic common-kernel transfer.
+
+What remains on this card is strictly the analytic and rank-deficient strengthening: instantiate
+the source columns by shifted logarithmic jets of finite-range prime Dirichlet series, transfer the
+arithmetic carriers to the analytic functions `P_b(r s+a)`, and identify the complete relation
+ideal when the source tail rank is smaller than the displayed alphabet.
+
 ## Failure tests
 
 - The row-prime packets must be globally disjoint; otherwise unique factorization does not isolate
@@ -74,3 +88,6 @@ palette differentially algebraically independent.
 - 2026-07-15 -- created from the referee's proposed prime-power completion.  The determinant
   mechanism passed a first mathematical audit, including the `r=1` boundary, but remains a
   conjecture until the complete proof and formal verification pass.
+- 2026-07-15 -- the nonuniform arithmetic core was formalized as
+  `prime-power-valuation-layer-block-separation`; the analytic dilation transfer and complete
+  rank-deficient relation classification remain open here.

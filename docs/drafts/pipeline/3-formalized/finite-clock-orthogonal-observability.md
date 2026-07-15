@@ -22,7 +22,7 @@ a scalar equality which later clock and constraint consumers can test directly.
 
 ## Physics source
 
-- J. Helsen, J. J. Wallman, S. Wehner, *Representations of the multi-qubit Clifford group*, arXiv:1801.06121, records the standard finite-group twirl as the Hilbert--Schmidt orthogonal projection onto the commutant.
+- A. K. Hashagen, S. T. Flammia, D. Gross, and J. J. Wallman, *Real Randomized Benchmarking*, arXiv:1801.06121, records the standard finite-group twirl as the Hilbert--Schmidt orthogonal projection onto the commutant.
 - A. R. H. Smith, M. P. E. Lock, and P. A. Höhn, *Equivalence of approaches to relational quantum dynamics in relativistic settings*, arXiv:1912.00033, treats physical observables as relational and conditional on a clock within a constrained theory.
 - A.-C. de la Hamette, T. D. Galley, P. A. Höhn, L. Loveridge, and M. P. Müller, *Perspective-neutral approach to quantum frame covariance for general symmetry groups*, arXiv:2110.13824, emphasizes that a reference frame resolves only properties invariant under its isotropy group.
 

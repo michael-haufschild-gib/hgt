@@ -22,7 +22,7 @@ observable layer, but is not interpreted as advancing a state in time.
 
 ## Physics source
 
-- J. Helsen, J. J. Wallman, S. Wehner, *Representations of the multi-qubit Clifford group*, arXiv:1801.06121, gives finite-group twirling as the Hilbert--Schmidt orthogonal projection onto the group commutant.
+- A. K. Hashagen, S. T. Flammia, D. Gross, and J. J. Wallman, *Real Randomized Benchmarking*, arXiv:1801.06121, gives finite-group twirling as the Hilbert--Schmidt orthogonal projection onto the group commutant.
 - A.-C. de la Hamette, T. D. Galley, P. A. Höhn, L. Loveridge, and M. P. Müller, *Perspective-neutral approach to quantum frame covariance for general symmetry groups*, arXiv:2110.13824, shows that a quantum reference frame with an isotropy group resolves only isotropy-invariant properties.
 - M. Krumm, P. A. Höhn, and M. P. Müller, *Quantum reference frame transformations as symmetries and the paradox of the third particle*, arXiv:2011.01951, describes the observables measurable under finite Abelian quantum symmetries.
 

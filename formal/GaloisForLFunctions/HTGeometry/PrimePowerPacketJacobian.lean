@@ -65,8 +65,8 @@ theorem algebraicIndependent_arithmeticPrimePowerColumns_of_packet
 def fractionPrimePowerPacketJacobian
     {I : Type*} (e : I → ℕ) (a : I → Nat.Primes → ℂ)
     (q : I → Nat.Primes) : Matrix I I arithmeticFunctionFractionField :=
-  (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField).mapMatrix
-    (primePowerPacketJacobian e a q)
+  fun i j => algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+    (primePowerPacketJacobian e a q i j)
 
 theorem fractionPrimePowerPacketJacobian_apply
     {I : Type*} (e : I → ℕ) (a : I → Nat.Primes → ℂ)
@@ -75,7 +75,7 @@ theorem fractionPrimePowerPacketJacobian_apply
       primeFractionDerivation (q i)
         (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
           (arithmeticOfPrimePowerColumn (e j) (a j))) := by
-  rw [fractionPrimePowerPacketJacobian, RingHom.mapMatrix_apply]
+  rw [fractionPrimePowerPacketJacobian]
   rw [primePowerPacketJacobian_apply]
   rw [primeFractionDerivation_algebraMap]
 
@@ -90,10 +90,15 @@ theorem fractionPrimePowerPacketJacobian_det_ne_zero
   have hsource : (primePowerPacketJacobian e a q).det ≠ 0 :=
     primePowerPointMassMatrix_det_ne_zero q hq e
       (primePowerPacketCoefficientMatrix e a q) hdet
-  rw [fractionPrimePowerPacketJacobian, ← RingHom.map_det]
-  exact map_ne_zero_of_injective
-    (FaithfulSMul.algebraMap_injective (ArithmeticFunction ℂ)
-      arithmeticFunctionFractionField) hsource
+  change ((algebraMap (ArithmeticFunction ℂ)
+    arithmeticFunctionFractionField).mapMatrix
+      (primePowerPacketJacobian e a q)).det ≠ 0
+  rw [← RingHom.map_det]
+  intro hzero
+  apply hsource
+  apply FaithfulSMul.algebraMap_injective (ArithmeticFunction ℂ)
+    arithmeticFunctionFractionField
+  simpa using hzero
 
 /-- **Finite prime-power packet criterion over the packet common kernel.**  This is the local
 theorem consumed by the dynamic finite-prime coefficient argument: coefficients killed by every
