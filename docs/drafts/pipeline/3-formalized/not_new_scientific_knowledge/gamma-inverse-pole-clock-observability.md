@@ -62,7 +62,7 @@ was run.
    Gamma jet groupoid.
 2. It does not prove that the clock algebra is disjoint from the differential field of the lower
    Gamma iterates.
-3. It does not by itself prove joint differential independence of the positive Gamma-iterate
-   tower.
+3. The actual positive Gamma-iterate values and first derivatives are already jointly algebraically
+   independent by `algebraicIndependent_gammaIterateInfiniteFirstJetFamily`; this bridge does not
+   extend that theorem to second and higher joint jets.
 4. It has no direct RH localization or positivity consequence.
-

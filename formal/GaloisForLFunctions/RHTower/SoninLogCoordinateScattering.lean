@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.EvenL2LogUnitary
 import GaloisForLFunctions.RHTower.ConstrainedProlateOperator
 import GaloisForLFunctions.RHTower.SoninEulerCalkinPartialIsometry
 import GaloisForLFunctions.HTGeometry.TwoProjectionSupersymmetry
+import GaloisForLFunctions.HTGeometry.TwoOutcomePinchingKadison
 
 /-!
 # The true Sonin Fourier constraint in logarithmic coordinates
@@ -176,6 +177,83 @@ theorem soninStationaryClockEffect_matrixElement_eq_half_of_fixed
     _ = (2 : ℂ)⁻¹ * inner ℂ φ ψ := by
       rw [hresolve, ContinuousLinearMap.smul_apply, inner_smul_right]
       simp
+
+/-- The multiplicativity defect of the Sonin clock-observer projection.  It vanishes exactly
+when the observed self-adjoint quantity has no transition energy between the invariant and
+anti-invariant logarithmic-scattering sectors. -/
+def soninLogFourierObservableTwirlKadisonDefect
+    (X : SoninL2 →L[ℂ] SoninL2) : SoninL2 →L[ℂ] SoninL2 :=
+  HTGeometry.finiteInvolutiveObservableTwirlKadisonDefect
+    soninLogFourierScattering X
+
+/-- The Sonin clock-observability defect vanishes exactly for observables commuting with
+logarithmic Fourier scattering.  This is the direct Sonin instance of the general static clock
+criterion in `HTGeometry`. -/
+theorem soninLogFourierObservableTwirlKadisonDefect_eq_zero_iff_commutes
+    (X : SoninL2 →L[ℂ] SoninL2) (hXAdj : X.adjoint = X) :
+    soninLogFourierObservableTwirlKadisonDefect X = 0 ↔
+      soninLogFourierScattering * X = X * soninLogFourierScattering := by
+  simpa only [soninLogFourierObservableTwirlKadisonDefect] using
+    HTGeometry.finiteInvolutiveObservableTwirlKadisonDefect_eq_zero_iff_commutes
+      soninLogFourierScattering X soninLogFourierScattering_adjoint_mul_self
+      soninLogFourierScattering_sq_eq_one hXAdj
+
+/-- **Sonin clock-observability energy.**  The clock-twirl defect is exactly the sum of the
+squared transitions across the physical/nonphysical logarithmic-scattering split.  In
+particular, its positivity needs no additional operator hypothesis. -/
+theorem re_inner_soninLogFourierObservableTwirlKadisonDefect_eq_transitionNormSq_add
+    (X : SoninL2 →L[ℂ] SoninL2) (hXAdj : X.adjoint = X) (psi : SoninL2) :
+    Complex.re
+        (inner ℂ psi (soninLogFourierObservableTwirlKadisonDefect X psi)) =
+      ‖HTGeometry.twoOutcomeLowerTransition
+          soninLogFourierInvariantAverage X psi‖ ^ 2 +
+        ‖HTGeometry.twoOutcomeUpperTransition
+          soninLogFourierInvariantAverage X psi‖ ^ 2 := by
+  simpa only [soninLogFourierObservableTwirlKadisonDefect,
+    soninLogFourierInvariantAverage] using
+      HTGeometry.re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_transitionNormSq_add
+        soninLogFourierScattering X soninLogFourierScattering_adjoint_mul_self
+        soninLogFourierScattering_sq_eq_one hXAdj psi
+
+/-- **Physical Sonin clock commutator law.**  On the static logarithmic-scattering constraint
+surface, the full clock-observability defect is exactly one quarter of the squared commutator
+between the observed quantity and scattering.  No time evolution or positivity premise remains. -/
+theorem re_inner_soninLogFourierObservableTwirlKadisonDefect_eq_quarter_commutatorNormSq
+    (X : SoninL2 →L[ℂ] SoninL2) (hXAdj : X.adjoint = X) {psi : SoninL2}
+    (hpsi : GaloisForLFunctions.PhysicalState
+      (soninLogFourierScattering - 1).toLinearMap psi) :
+    Complex.re
+        (inner ℂ psi (soninLogFourierObservableTwirlKadisonDefect X psi)) =
+      (4 : ℝ)⁻¹ *
+        ‖((X * soninLogFourierScattering - soninLogFourierScattering * X) :
+          SoninL2 →L[ℂ] SoninL2) psi‖ ^ 2 := by
+  rw [GaloisForLFunctions.PhysicalState] at hpsi
+  have hfixed : soninLogFourierScattering psi = psi := by
+    apply sub_eq_zero.mp
+    simpa using hpsi
+  exact
+    HTGeometry.re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_quarter_commutatorNormSq_of_fixed
+      soninLogFourierScattering X soninLogFourierScattering_adjoint_mul_self
+      soninLogFourierScattering_sq_eq_one hXAdj hfixed
+
+/-- A physical Sonin state carries zero clock-observability energy exactly when the
+scattering--observable commutator annihilates that state. -/
+theorem re_inner_soninLogFourierObservableTwirlKadisonDefect_eq_zero_iff_commutator
+    (X : SoninL2 →L[ℂ] SoninL2) (hXAdj : X.adjoint = X) {psi : SoninL2}
+    (hpsi : GaloisForLFunctions.PhysicalState
+      (soninLogFourierScattering - 1).toLinearMap psi) :
+    Complex.re
+        (inner ℂ psi (soninLogFourierObservableTwirlKadisonDefect X psi)) = 0 ↔
+      ((X * soninLogFourierScattering - soninLogFourierScattering * X) :
+        SoninL2 →L[ℂ] SoninL2) psi = 0 := by
+  rw [GaloisForLFunctions.PhysicalState] at hpsi
+  have hfixed : soninLogFourierScattering psi = psi := by
+    apply sub_eq_zero.mp
+    simpa using hpsi
+  exact
+    HTGeometry.re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_zero_iff_commutator_of_fixed
+      soninLogFourierScattering X soninLogFourierScattering_adjoint_mul_self
+      soninLogFourierScattering_sq_eq_one hXAdj hfixed
 
 /-- **Invariant/anti-invariant scattering energy partition.**  Every logarithmic Sonin state
 splits exactly into its group-averaged physical part and its orthogonal complement. -/

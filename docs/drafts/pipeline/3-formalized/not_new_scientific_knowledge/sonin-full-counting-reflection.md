@@ -1,16 +1,17 @@
 # Sonin full-counting reflection
 
 - **ID:** `sonin-full-counting-reflection`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / exact physics value relation / corpus strengthening
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper and Lean) / exact static-observability value relation / corpus strengthening
 - **Scientific status:** BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Source:**
   `formal/GaloisForLFunctions/HTGeometry/TwoProjectionHilbertSchmidtEnergy.lean`,
   `formal/GaloisForLFunctions/RHTower/SoninTimeBandHilbertSchmidt.lean`, and
   `docs/drafts/pipeline/1-in-progress/sonin-free-fermion-number-variance.md`
 - **Statement:** The central Sonin prolate compression and its zero-mode-subtracted exterior
-  supersymmetric partner have the same trace, every positive power trace, fluctuation spectral
-  measure, and free-fermion full-counting determinant.
+  supersymmetric partner have the same trace and every positive power trace.  Hence their two
+  coordinate-free full-counting germs agree in Lean; equality of the fluctuation spectral measure
+  and the entire free-fermion Fredholm determinant are paper corollaries.
 
 ## Goal
 
@@ -24,8 +25,9 @@ projection.  No zeta zero, RH hypothesis, fitted spectrum, or auxiliary physics 
 - [x] 0 -> 1 in-progress: the operators, trace ideals, and attack are source-selected by the live
   Sonin projection pair
 - [x] 1 -> 2 fully-proven: complete paper proof below; no open mathematical dependency
-- [ ] 2 -> 3 formalized: requires a coordinate-free trace-class positive-domination lemma and an
-  operator-side Fredholm determinant bridge; no Lean process or build has been run
+- [x] 2 -> 3 formalized: explicit Hilbert--Schmidt energy factorizations prove both trace-class
+  statements, all positive power traces agree, and both degree-one-corrected and regularized
+  coordinate-free Fredholm germs agree
 - [ ] 3 -> 4 publication-ready: not a standalone novelty claim; include only as a structural
   bridge in a Sonin operator paper
 
@@ -74,6 +76,10 @@ sum_j lambda_j(E)
 
 Therefore `E` is trace class.  This is the missing degree-one trace fact; it follows from the
 already-proved strict contraction and impurity factorization, not from a new spectral hypothesis.
+
+The Lean proof uses a stronger direct route: if `D` is the adjoint exterior overlap, then
+`D†D=E`, and the overlap is Hilbert--Schmidt.  Thus `E` is trace class without invoking spectral
+positive domination or compact spectral decomposition.
 
 Because `A` and `E` are self-adjoint Hilbert--Schmidt operators,
 
@@ -156,6 +162,22 @@ All Renyi entropies of order `q>1` are finite and equal because their one-mode k
 conditional only on the additional logarithmic summability `sum t log(1/t)<infinity`; trace class
 alone does not imply that endpoint.
 
+## Lean formalization
+
+The module
+`formal/GaloisForLFunctions/RHTower/SoninFullCountingReflection.lean` proves:
+
+1. self-adjointness of both compressions;
+2. the correctly oriented positive-energy factorizations of the interior and exterior overlaps;
+3. trace-class membership of both compressions;
+4. equality of the degree-one trace and of every power trace from degree two onward;
+5. equality of the coordinate-free Hilbert--Carleman and degree-one-corrected Fredholm germs.
+
+The exact target
+`lake build +GaloisForLFunctions.RHTower.SoninFullCountingReflection` and the direct leaf
+elaboration both pass.  The formal statement deliberately stops at germs and imports no
+unformalized analytic Fredholm product.
+
 ## Direct corpus application
 
 1. Exposes the previously absent exterior trace value `Tr(E)=4a^2`.
@@ -190,3 +212,6 @@ Primary provenance:
 - 2026-07-15 -- extracted from the mquantum Peschel/SRMT catalogue as a source-specific Sonin
   transfer; paper proof completed; no mquantum execution, modification, build, test, or numerical
   computation was performed.
+- 2026-07-15 -- formalized the complete trace-moment and coordinate-free germ reflection; corrected
+  the exterior overlap orientation; direct leaf elaboration and the single exact cached target
+  build passed.

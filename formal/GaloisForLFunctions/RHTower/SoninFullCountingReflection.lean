@@ -91,8 +91,11 @@ theorem adjoint_centralPhysicalFourierOverlap_mul_self_eq_alternatingBlock (a : 
     change ContinuousLinearMap.adjoint (R ∘L P) = P ∘L R
     rw [ContinuousLinearMap.adjoint_comp, hPadj, hRadj]
   change ContinuousLinearMap.adjoint (R * P) * (R * P) = P * R * P
-  rw [hAdj]
-  noncomm_ring [hRR]
+  calc
+    ContinuousLinearMap.adjoint (R * P) * (R * P) =
+        (P * R) * (R * P) := by rw [hAdj]
+    _ = P * (R * R) * P := by simp only [mul_assoc]
+    _ = P * R * P := by rw [hRR]
 
 /-- The zero-mode-subtracted exterior compression is likewise a positive Hilbert--Schmidt
 energy.  The removed common mode is exactly what makes the exterior overlap square to `E` rather
@@ -145,20 +148,26 @@ theorem centralSoninExteriorOverlap_mul_adjoint_eq_exteriorCompression (a : ℝ)
   have hAdj :
       ContinuousLinearMap.adjoint
           (HTGeometry.twoProjectionExteriorOverlap R P Z) =
-        (1 - P) * (1 - R) - Z := by
+        (1 - R) * (1 - P) - Z := by
     rw [HTGeometry.twoProjectionExteriorOverlap,
       adjoint_sub_soninFullCounting]
     change ContinuousLinearMap.adjoint (((1 - P) ∘L (1 - R))) -
         ContinuousLinearMap.adjoint Z = _
-    rw [ContinuousLinearMap.adjoint_comp, adjoint_one_sub hRadj,
-      adjoint_one_sub hPadj, hZadj]
+    rw [ContinuousLinearMap.adjoint_comp,
+      ContinuousLinearMap.adjoint.map_sub, ContinuousLinearMap.adjoint_one, hRadj,
+      ContinuousLinearMap.adjoint.map_sub, ContinuousLinearMap.adjoint_one, hPadj,
+      hZadj] <;>
+      ext x <;> rfl
   change HTGeometry.twoProjectionExteriorOverlap R P Z *
       ContinuousLinearMap.adjoint
         (HTGeometry.twoProjectionExteriorOverlap R P Z) =
         HTGeometry.twoProjectionExteriorCompression P R Z
   rw [hAdj, HTGeometry.twoProjectionExteriorOverlap,
     HTGeometry.twoProjectionExteriorCompression]
-  noncomm_ring [hPP, hRR, hZZ, hPZ, hZP, hRZ, hZR]
+  noncomm_ring <;>
+    simp only [← mul_assoc, hPP, hRR, hZZ, hPZ, hZP, hRZ, hZR,
+      zero_mul, mul_zero, add_zero, zero_add] <;>
+    module
 
 /-- Both Sonin full-counting Hamiltonians are trace class by their explicit positive
 Hilbert--Schmidt factorizations. -/
@@ -202,15 +211,22 @@ theorem opTrace_centralSoninAlternatingBlock_eq_exteriorCompression
   have hD : IsHilbertSchmidt D := by
     simpa only [D] using
       (centralSoninExteriorOverlap_isHilbertSchmidt a ha).adjoint
+  have hFourierAdj : ContinuousLinearMap.adjoint
+      (centralFourierForbidden a).starProjection =
+        (centralFourierForbidden a).starProjection :=
+    (isSelfAdjoint_starProjection (centralFourierForbidden a)).star_eq
+  have hPhysicalAdj : ContinuousLinearMap.adjoint
+      (centralPhysicalForbidden a).starProjection =
+        (centralPhysicalForbidden a).starProjection :=
+    (isSelfAdjoint_starProjection (centralPhysicalForbidden a)).star_eq
   have hSadj : ContinuousLinearMap.adjoint S =
       (centralFourierForbidden a).starProjection *
         (centralPhysicalForbidden a).starProjection := by
     change ContinuousLinearMap.adjoint
         ((centralPhysicalForbidden a).starProjection ∘L
           (centralFourierForbidden a).starProjection) = _
-    rw [ContinuousLinearMap.adjoint_comp,
-      (isSelfAdjoint_starProjection (centralFourierForbidden a)).star_eq,
-      (isSelfAdjoint_starProjection (centralPhysicalForbidden a)).star_eq]
+    rw [ContinuousLinearMap.adjoint_comp, hFourierAdj, hPhysicalAdj] <;>
+      ext x <;> rfl
   have hSnorm : hsNormSq S = 4 * a ^ 2 := by
     calc
       hsNormSq S = hsNormSq (ContinuousLinearMap.adjoint S) :=
@@ -220,14 +236,30 @@ theorem opTrace_centralSoninAlternatingBlock_eq_exteriorCompression
             (centralPhysicalForbidden a).starProjection) := by rw [hSadj]
       _ = 4 * a ^ 2 := hsNormSq_centralTimeBandOverlap_eq_four_mul_sq a ha
   have hDnorm : hsNormSq D = 4 * a ^ 2 := by
-    rw [D, (centralSoninExteriorOverlap_isHilbertSchmidt a ha).hsNormSq_adjoint]
-    exact hsNormSq_centralSoninExteriorOverlap_eq_four_mul_sq a ha
+    calc
+      hsNormSq D = hsNormSq (centralSoninExteriorOverlap a) := by
+        simpa only [D] using
+          (centralSoninExteriorOverlap_isHilbertSchmidt a ha).hsNormSq_adjoint
+      _ = 4 * a ^ 2 := hsNormSq_centralSoninExteriorOverlap_eq_four_mul_sq a ha
+  have hSenergy :
+      ContinuousLinearMap.adjoint S ∘L S =
+        soninAlternatingBlock (centralPhysicalForbidden a)
+          (centralFourierForbidden a) := by
+    simpa only [S, ContinuousLinearMap.mul_def] using
+      adjoint_centralPhysicalFourierOverlap_mul_self_eq_alternatingBlock a
+  have hDenergy :
+      ContinuousLinearMap.adjoint D ∘L D =
+        centralSoninExteriorCompression a := by
+    dsimp only [D]
+    rw [ContinuousLinearMap.adjoint_adjoint]
+    simpa only [ContinuousLinearMap.mul_def] using
+      centralSoninExteriorOverlap_mul_adjoint_eq_exteriorCompression a
   calc
     opTrace
         (soninAlternatingBlock (centralPhysicalForbidden a)
           (centralFourierForbidden a)) =
         opTrace (ContinuousLinearMap.adjoint S ∘L S) := by
-          rw [adjoint_centralPhysicalFourierOverlap_mul_self_eq_alternatingBlock]
+          rw [hSenergy]
     _ = hsInner S S := opTrace_adjoint_comp_self S
     _ = (hsNormSq S : ℂ) := HTGeometry.hsInner_self_eq_ofReal_hsNormSq hS
     _ = (hsNormSq D : ℂ) := by rw [hSnorm, hDnorm]
@@ -235,8 +267,7 @@ theorem opTrace_centralSoninAlternatingBlock_eq_exteriorCompression
     _ = opTrace (ContinuousLinearMap.adjoint D ∘L D) :=
       (opTrace_adjoint_comp_self D).symm
     _ = opTrace (centralSoninExteriorCompression a) := by
-      rw [D, ContinuousLinearMap.adjoint_adjoint,
-        centralSoninExteriorOverlap_mul_adjoint_eq_exteriorCompression]
+      rw [hDenergy]
 
 /-- The degree-two trace coordinates of the interior and exterior Sonin Hamiltonians agree
 exactly, including their imaginary parts. -/

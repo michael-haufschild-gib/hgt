@@ -123,6 +123,14 @@ A proof must combine:
 If this specialization theorem holds, induction on composition depth proves differential
 algebraic independence of all positive Gamma iterates.
 
+The existing theorem
+`algebraicIndependent_gammaIterateInfiniteFirstJetFamily` already closes the actual first
+resolution: the point, value, and first derivative of every positive Gamma iterate form one
+countably infinite algebraically independent family of meromorphic functions.  Therefore the
+specialization gap begins at joint differential order two, not at values or first jets.  The
+clock/rest direct-sum route must explain why this first-resolution faithfulness persists at every
+finite higher resolution.
+
 ## Falsifiers and attacks
 
 1. **Formal-variable attack.**  A proof that only cites the polynomial ring in
@@ -137,6 +145,8 @@ algebraic independence of all positive Gamma iterates.
 6. **Novelty attack.**  Tensor injectivity and triangular observability are classical.  Candidate
    novelty can only lie in the source-specific actual Gamma specialization and its iterate-tower
    consequence.
+7. **First-resolution attack.**  Any proposed theorem that recovers only values and first
+   derivatives is already subsumed by the formal countable first-jet independence theorem.
 
 ## Gates
 
@@ -148,4 +158,3 @@ algebraic independence of all positive Gamma iterates.
   cached targets
 - [ ] 3 -> 4 publication-ready: specialist priority audit in differential algebra, inverse special
   functions, observability, and iteration theory
-

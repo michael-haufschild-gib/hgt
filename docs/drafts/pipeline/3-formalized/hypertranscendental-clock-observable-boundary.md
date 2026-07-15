@@ -1,9 +1,9 @@
 # Hypertranscendence has an exact clock-observable boundary
 
 - **ID:** `hypertranscendental-clock-observable-boundary`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** GENERAL HT THEOREM / STATIC OBSERVABILITY GEOMETRY
-- **Scientific status:** `[PAPER PROOF COMPLETE MODULO ONE CLASSICAL RATIONAL-DERIVATION LEMMA] [LEAN OPEN] [NOVELTY PROVISIONAL]`
+- **Scientific status:** `[PAPER PROOF COMPLETE] [LEAN FORMALIZED] [NOVELTY PROVISIONAL]`
 - **Originating conjecture:** **Hypertranscendence is infinite algebraic clock capacity concentrated
   on a thin constraint boundary.**
 - **Statement:** For a hypertranscendental element, the largest part of a finite jet-observable
@@ -30,7 +30,7 @@ For `0 <= r <= N`, define the `r`-tick internal observable core
 C_r(P_N)={a in P_N : delta^q a in P_N for every 0 <= q <= r}. (2)
 ```
 
-## The clock-boundary theorem `[PROVED MODULO CLASSICAL LEMMA]`
+## The clock-boundary theorem `[PROVED AND LEAN FORMALIZED]`
 
 For every `N` and `0 <= r <= N`,
 
@@ -131,9 +131,35 @@ The following are parents and are not claimed as new:
 - the kernel of `d/dt` on `F(t)` in characteristic zero is `F`.
 
 The candidate-new claim is the exact observable-field equality `(3)`, its boundary-localization
-identity `(7)`, and their interpretation as a source-independent HT clock-capacity law. Exact and
-adjacent primary-source searches must still test whether this package occurs in differential
-kernel, prolongation, differential-dimension, or differential-rational invariant theory.
+identity `(7)`, and their interpretation as a source-independent HT clock-capacity law.
+
+### Targeted primary-literature audit (2026-07-15)
+
+Exact-statement and adjacent-concept searches were run across differential-kernel, prolongation,
+differential-dimension, and differential-rational invariant terminology. The closest primary
+collision located was the classical finite differential-kernel datum: a derivation is defined from
+the order-`r-1` field into the order-`r` field, with the top jet supplied by prolongation. The modern
+generalized-differentials construction recovers universal prolongations of differential kernels,
+while parameterized prolongation theory gives the usual coefficient-sensitive tangent formula.
+These sources explain the ambient map `P_N -> P_(N+1)` and the rank-one top coordinate, but the
+search located no statement identifying
+
+```text
+{a in P_N : delta^q a in P_N for every q <= r} = P_(N-r)
+```
+
+as the maximal internal rational-observable core, nor the all-finite-`r` erosion law. The result is
+therefore **provisionally novel at theorem-package level**, not at ingredient level. Absence from a
+targeted search is not a priority claim; an independent differential-algebra specialist verdict is
+still required. Its present significance is foundational and clarifying, not yet Fields-Medal
+scale.
+
+Primary audit anchors:
+
+- `Generalized differentials and prolongation spaces`, *Journal of Algebra* 586 (2021),
+  https://doi.org/10.1016/j.jalgebra.2021.06.026;
+- `On parameterized differential Galois extensions`, *Journal of Pure and Applied Algebra* 220
+  (2016), https://doi.org/10.1016/j.jpaa.2015.10.003.
 
 ## Strong no-go and positive successor
 
@@ -146,7 +172,7 @@ and to coefficient systems carried by their rank-one seams. The bare cutoff pose
 and is topologically contractible. Any nontrivial unified obstruction topology must therefore be
 a decorated boundary theory, not the homotopy type of the raw jet-order set.
 
-## Formalization target
+## Lean formalization
 
 Primary Lean module:
 
@@ -154,20 +180,34 @@ Primary Lean module:
 formal/GaloisForLFunctions/HTGeometry/HypertranscendentalClockBoundary.lean
 ```
 
-Planned theorem surface:
+Formalized theorem surface:
 
-1. finite prefix fields `P_N` and their monotonicity;
-2. `delta(P_N) subset P_(N+1)`;
-3. `j_N` transcendental over `P_N` and strict unit-capacity growth;
-4. the universal rational boundary-localization identity `(7)`;
-5. the one-step maximal internal-core theorem `(4)`;
-6. the finite iterated erosion theorem `(3)`.
+1. `jetObservableField` and `jetObservableField_mono` define the finite rational observable tower;
+2. `jetObservableField_deriv_mem_succ` proves `delta(P_N) subset P_(N+1)`;
+3. `hypertranscendental_jet_transcendental_observableField` proves every new jet is fresh;
+4. `ratFuncCoordinateDerivation_apply` and
+   `ratFuncCoordinateDerivation_eq_zero_iff` formalize rational boundary localization and the
+   characteristic-zero kernel theorem;
+5. `simpleTranscendental_clock_internal_iff` proves the source-independent rank-one seam theorem;
+6. `hypertranscendental_clock_internal_iff` proves the one-tick maximal internal core;
+7. `hypertranscendental_clock_erosion_iff` proves exact finite erosion in the subtraction-free form
 
-The existing `HypertranscendentalHorizonFunctionField`, `FractionRingDerivation`,
-`KaehlerKernel`, and `DisjointRationalFunctionFields` modules supply the generic-point,
-quotient-rule, differential, and exact-meet infrastructure. Verification must use cached exact
-module dependencies, one serialized targeted build only if the leaf `.olean` is missing, and a
-direct source check of the touched Lean file.
+   ```text
+   (forall q <= r, delta^q z in P_(N+r)) iff z in P_N.
+   ```
+
+The existing `HypertranscendentalHorizonFunctionField` and `FractionRingDerivation` modules supply
+the generic-point and quotient-rule infrastructure. The proof is axiom-clean up to Lean's standard
+`propext`, `Classical.choice`, and `Quot.sound` axioms.
+
+Verification used only cached dependencies and the direct touched-file check
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/HypertranscendentalClockBoundary.lean
+```
+
+No `lake build` was needed, no full build or broad lint was run, and the touched module contains no
+`sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration.
 
 ## Gates
 
@@ -176,10 +216,11 @@ direct source check of the touched Lean file.
 - [x] classical differential-kernel and dimension-polynomial collision identified
 - [x] strong positive theorem retained after the collision
 - [x] paper reduction to the rational coordinate-derivation kernel completed
-- [ ] exact primary-literature novelty audit completed
-- [ ] rational coordinate-derivation kernel formalized over a characteristic-zero field
-- [ ] one-step observable-core equality formalized
-- [ ] iterated erosion law formalized
+- [x] targeted exact-statement and adjacent primary-literature audit completed
+- [x] rational coordinate-derivation kernel formalized over a characteristic-zero field
+- [x] source-independent rank-one seam theorem formalized
+- [x] one-step observable-core equality formalized
+- [x] iterated erosion law formalized
 - [ ] independent specialist novelty verdict
 
 ## Log
@@ -188,3 +229,8 @@ direct source check of the touched Lean file.
   capacity concentrated on a thin constraint boundary.
 - 2026-07-15 -- Rejected the free-matroid sphere and bare differential-kernel formulations as
   classical; isolated the exact maximal clock-stable observable core and iterated erosion law.
+- 2026-07-15 -- Discharged the rational cancellation gap, proved the general rank-one seam theorem,
+  and formalized both the one-step and all-finite-tick erosion laws in Lean.
+- 2026-07-15 -- Targeted primary-source audit found the differential-kernel/prolongation parents but
+  no exact maximal-core or finite-erosion statement; retained only provisional package-level novelty
+  and explicitly rejected a Fields-Medal-scale significance claim at this stage.

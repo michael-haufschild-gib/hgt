@@ -412,6 +412,115 @@ def finiteCyclicObservableTwirl
     (U A : E →L[𝕜] E) (N : ℕ) : E →L[𝕜] E :=
   ((N : 𝕜)⁻¹) • finiteCyclicObservableTwirlNumerator U A N
 
+/-- Observable-twirl numerators are additive in the observed quantity. -/
+theorem finiteCyclicObservableTwirlNumerator_add
+    (U A B : E →L[𝕜] E) : ∀ N : ℕ,
+    finiteCyclicObservableTwirlNumerator U (A + B) N =
+      finiteCyclicObservableTwirlNumerator U A N +
+        finiteCyclicObservableTwirlNumerator U B N
+  | 0 => by simp [finiteCyclicObservableTwirlNumerator]
+  | n + 1 => by
+      simp only [finiteCyclicObservableTwirlNumerator]
+      rw [finiteCyclicObservableTwirlNumerator_add U A B n]
+      noncomm_ring
+
+/-- Observable-twirl numerators preserve subtraction. -/
+theorem finiteCyclicObservableTwirlNumerator_sub
+    (U A B : E →L[𝕜] E) : ∀ N : ℕ,
+    finiteCyclicObservableTwirlNumerator U (A - B) N =
+      finiteCyclicObservableTwirlNumerator U A N -
+        finiteCyclicObservableTwirlNumerator U B N
+  | 0 => by simp [finiteCyclicObservableTwirlNumerator]
+  | n + 1 => by
+      simp only [finiteCyclicObservableTwirlNumerator]
+      rw [finiteCyclicObservableTwirlNumerator_sub U A B n]
+      noncomm_ring
+
+/-- Normalized observable twirling is additive. -/
+theorem finiteCyclicObservableTwirl_add
+    (U A B : E →L[𝕜] E) (N : ℕ) :
+    finiteCyclicObservableTwirl U (A + B) N =
+      finiteCyclicObservableTwirl U A N + finiteCyclicObservableTwirl U B N := by
+  simp only [finiteCyclicObservableTwirl,
+    finiteCyclicObservableTwirlNumerator_add, smul_add]
+
+/-- Normalized observable twirling preserves subtraction. -/
+theorem finiteCyclicObservableTwirl_sub
+    (U A B : E →L[𝕜] E) (N : ℕ) :
+    finiteCyclicObservableTwirl U (A - B) N =
+      finiteCyclicObservableTwirl U A N - finiteCyclicObservableTwirl U B N := by
+  simp only [finiteCyclicObservableTwirl,
+    finiteCyclicObservableTwirlNumerator_sub, smul_sub]
+
+/-- Commutation with one gauge step implies commutation with every natural power. -/
+theorem pow_mul_eq_mul_pow_of_commutes
+    (U B : E →L[𝕜] E) (hcomm : U * B = B * U) : ∀ n : ℕ,
+    U ^ n * B = B * U ^ n
+  | 0 => by simp
+  | n + 1 => by
+      calc
+        U ^ (n + 1) * B = U ^ n * (U * B) := by rw [pow_succ, mul_assoc]
+        _ = U ^ n * (B * U) := by rw [hcomm]
+        _ = (U ^ n * B) * U := by rw [mul_assoc]
+        _ = (B * U ^ n) * U := by rw [pow_mul_eq_mul_pow_of_commutes U B hcomm n]
+        _ = B * U ^ (n + 1) := by rw [pow_succ, mul_assoc]
+
+/-- Twirling is a right module map over observables in the clock commutant. -/
+theorem finiteCyclicObservableTwirlNumerator_mul_right_of_commutes
+    (U A B : E →L[𝕜] E) (hcomm : U * B = B * U) : ∀ N : ℕ,
+    finiteCyclicObservableTwirlNumerator U (A * B) N =
+      finiteCyclicObservableTwirlNumerator U A N * B
+  | 0 => by simp [finiteCyclicObservableTwirlNumerator]
+  | n + 1 => by
+      simp only [finiteCyclicObservableTwirlNumerator]
+      rw [finiteCyclicObservableTwirlNumerator_mul_right_of_commutes U A B hcomm n]
+      have htail : A * B * U ^ (n + 1) = A * U ^ (n + 1) * B := by
+        calc
+          A * B * U ^ (n + 1) = A * (B * U ^ (n + 1)) := by rw [mul_assoc]
+          _ = A * (U ^ (n + 1) * B) := by
+            rw [pow_mul_eq_mul_pow_of_commutes U B hcomm (n + 1)]
+          _ = A * U ^ (n + 1) * B := by rw [mul_assoc]
+      rw [htail]
+      noncomm_ring
+
+/-- Twirling is a left module map over observables in the clock commutant. -/
+theorem finiteCyclicObservableTwirlNumerator_mul_left_of_commutes
+    (U A B : E →L[𝕜] E) (hcomm : U * B = B * U) : ∀ N : ℕ,
+    finiteCyclicObservableTwirlNumerator U (B * A) N =
+      B * finiteCyclicObservableTwirlNumerator U A N
+  | 0 => by simp [finiteCyclicObservableTwirlNumerator]
+  | n + 1 => by
+      simp only [finiteCyclicObservableTwirlNumerator]
+      rw [finiteCyclicObservableTwirlNumerator_mul_left_of_commutes U A B hcomm n]
+      have hstep :
+          U * (B * finiteCyclicObservableTwirlNumerator U A n) =
+            B * (U * finiteCyclicObservableTwirlNumerator U A n) := by
+        calc
+          U * (B * finiteCyclicObservableTwirlNumerator U A n) =
+              (U * B) * finiteCyclicObservableTwirlNumerator U A n := by rw [mul_assoc]
+          _ = (B * U) * finiteCyclicObservableTwirlNumerator U A n := by rw [hcomm]
+          _ = B * (U * finiteCyclicObservableTwirlNumerator U A n) := by rw [mul_assoc]
+      rw [hstep]
+      noncomm_ring
+
+/-- Normalized twirling is a right module map over the clock commutant. -/
+theorem finiteCyclicObservableTwirl_mul_right_of_commutes
+    (U A B : E →L[𝕜] E) (N : ℕ) (hcomm : U * B = B * U) :
+    finiteCyclicObservableTwirl U (A * B) N =
+      finiteCyclicObservableTwirl U A N * B := by
+  rw [finiteCyclicObservableTwirl, finiteCyclicObservableTwirl,
+    finiteCyclicObservableTwirlNumerator_mul_right_of_commutes U A B hcomm N,
+    smul_mul_assoc]
+
+/-- Normalized twirling is a left module map over the clock commutant. -/
+theorem finiteCyclicObservableTwirl_mul_left_of_commutes
+    (U A B : E →L[𝕜] E) (N : ℕ) (hcomm : U * B = B * U) :
+    finiteCyclicObservableTwirl U (B * A) N =
+      B * finiteCyclicObservableTwirl U A N := by
+  rw [finiteCyclicObservableTwirl, finiteCyclicObservableTwirl,
+    finiteCyclicObservableTwirlNumerator_mul_left_of_commutes U A B hcomm N,
+    mul_smul_comm]
+
 /-- **Observable-twirl boundary law.**  The failure of the finite conjugation numerator to
 commute with `U` is exactly its two endpoint terms. -/
 theorem finiteCyclicObservableTwirlNumerator_commutator_telescope
@@ -494,6 +603,51 @@ theorem finiteCyclicObservableTwirl_idempotent
     (finiteCyclicObservableTwirl U A N) N hN hperiod
     (finiteCyclicObservableTwirl_commutes U A N hperiod)
 
+/-- Multiplicativity defect of an arbitrary finite cyclic clock-observer twirl. -/
+def finiteCyclicObservableTwirlKadisonDefect
+    (U X : E →L[𝕜] E) (N : ℕ) : E →L[𝕜] E :=
+  finiteCyclicObservableTwirl U (X * X) N -
+    finiteCyclicObservableTwirl U X N * finiteCyclicObservableTwirl U X N
+
+/-- **Finite-clock conditional variance identity.**  For every nonempty finite-period clock,
+the twirl's multiplicativity defect is the twirl of the square of the erased observable
+component.  This is the finite cyclic conditional-expectation variance law; no state or time
+parameter is involved. -/
+theorem finiteCyclicObservableTwirlKadisonDefect_eq_twirl_disturbance_sq
+    (U X : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0) (hperiod : U ^ N = 1) :
+    finiteCyclicObservableTwirlKadisonDefect U X N =
+      finiteCyclicObservableTwirl U
+        ((X - finiteCyclicObservableTwirl U X N) *
+          (X - finiteCyclicObservableTwirl U X N)) N := by
+  let M : E →L[𝕜] E := finiteCyclicObservableTwirl U X N
+  have hMcomm : U * M = M * U := by
+    exact finiteCyclicObservableTwirl_commutes U X N hperiod
+  have hM2comm : U * (M * M) = (M * M) * U := by
+    calc
+      U * (M * M) = (U * M) * M := (mul_assoc U M M).symm
+      _ = (M * U) * M := by rw [hMcomm]
+      _ = M * (U * M) := mul_assoc M U M
+      _ = M * (M * U) := by rw [hMcomm]
+      _ = (M * M) * U := (mul_assoc M M U).symm
+  have hright : finiteCyclicObservableTwirl U (X * M) N = M * M := by
+    rw [finiteCyclicObservableTwirl_mul_right_of_commutes U X M N hMcomm]
+  have hleft : finiteCyclicObservableTwirl U (M * X) N = M * M := by
+    rw [finiteCyclicObservableTwirl_mul_left_of_commutes U X M N hMcomm]
+  have hM2 : finiteCyclicObservableTwirl U (M * M) N = M * M :=
+    finiteCyclicObservableTwirl_eq_self_of_commutes U (M * M) N hN hperiod hM2comm
+  have hexpand :
+      (X - M) * (X - M) = X * X - X * M - M * X + M * M := by
+    noncomm_ring
+  rw [finiteCyclicObservableTwirlKadisonDefect]
+  change finiteCyclicObservableTwirl U (X * X) N - M * M =
+    finiteCyclicObservableTwirl U ((X - M) * (X - M)) N
+  rw [hexpand,
+    finiteCyclicObservableTwirl_add U (X * X - X * M - M * X) (M * M) N,
+    finiteCyclicObservableTwirl_sub U (X * X - X * M) (M * X) N,
+    finiteCyclicObservableTwirl_sub U (X * X) (X * M) N,
+    hright, hleft, hM2]
+  noncomm_ring
+
 /-- A twirled observable commutes with the static constraint `U - 1`. -/
 theorem finiteCyclicObservableTwirl_commutes_constraint
     (U A : E →L[𝕜] E) (N : ℕ) (hperiod : U ^ N = 1) :
@@ -571,6 +725,23 @@ theorem inner_finiteCyclicObservableTwirl_of_fixed
   rw [finiteCyclicObservableTwirl, ContinuousLinearMap.smul_apply, inner_smul_right,
     inner_finiteCyclicObservableTwirlNumerator_of_fixed U A hφ hψ N]
   simp [Nat.cast_ne_zero.mpr hN]
+
+/-- **Stationary finite-clock variance value.**  Between invariant left and right states, the
+Kadison defect of an arbitrary finite cyclic clock has exactly the matrix element of the squared
+observable component erased by the clock.  All apparent clock motion has disappeared; only the
+conditional observational variance remains. -/
+theorem inner_finiteCyclicObservableTwirlKadisonDefect_of_fixed
+    (U X : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0) (hperiod : U ^ N = 1) {φ ψ : E}
+    (hφ : U.adjoint φ = φ) (hψ : U ψ = ψ) :
+    inner 𝕜 φ (finiteCyclicObservableTwirlKadisonDefect U X N ψ) =
+      inner 𝕜 φ
+        (((X - finiteCyclicObservableTwirl U X N) *
+          (X - finiteCyclicObservableTwirl U X N)) ψ) := by
+  rw [finiteCyclicObservableTwirlKadisonDefect_eq_twirl_disturbance_sq
+    U X N hN hperiod]
+  exact inner_finiteCyclicObservableTwirl_of_fixed U
+    ((X - finiteCyclicObservableTwirl U X N) *
+      (X - finiteCyclicObservableTwirl U X N)) N hN hφ hψ
 
 /-- Constraint form of physical matrix-element preservation.  It is the exact finite bridge
 between Dirac/group-averaged observables and conditional relational observables. -/

@@ -368,7 +368,14 @@ theorem fullFourierFunctionalContinuous_eq_toDual
   by_cases hymem : y ∈ Set.Icc c d
   · simp only [Set.indicator_of_mem hymem]
     rw [RCLike.inner_apply, ← Complex.exp_conj]
-    simp [mul_comm]
+    have htwo : (starRingEnd ℂ) (2 : ℂ) = 2 :=
+      map_ofNat (starRingEnd ℂ) 2
+    have hstar :
+        (starRingEnd ℂ) (((2 * Real.pi * (x : ℝ) * y : ℝ) : ℂ) * Complex.I) =
+          (((-(2 * Real.pi * (x : ℝ) * y) : ℝ) : ℂ) * Complex.I) := by
+      simp [htwo, mul_comm]
+    rw [hstar]
+    ring
   · simp [hymem, RCLike.inner_apply]
 
 /-- The Riesz vector has squared norm equal to the source-interval length. -/

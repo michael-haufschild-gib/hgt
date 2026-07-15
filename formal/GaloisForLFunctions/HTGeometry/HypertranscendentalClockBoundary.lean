@@ -351,3 +351,262 @@ theorem simpleTranscendental_clock_internal_iff
 end
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+open scoped Differential
+
+/-- The field of rational observables visible below jet order `N`. -/
+def jetObservableField
+    (F : Type*) {E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (x : E) (N : ℕ) : IntermediateField F E :=
+  IntermediateField.adjoin F ((fun n : ℕ => differentialJet n x) '' Set.Iio N)
+
+/-- Adding one unit of observational resolution adjoins exactly the next jet coordinate. -/
+theorem jetObservableField_succ
+    (F : Type*) {E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (x : E) (N : ℕ) :
+    jetObservableField F x (N + 1) =
+      (IntermediateField.adjoin (jetObservableField F x N) {differentialJet N x}).restrictScalars F := by
+  have hIio : Set.Iio (N + 1) = insert N (Set.Iio N) := by
+    ext m
+    change m < N + 1 ↔ m = N ∨ m < N
+    omega
+  have himage :
+      (fun n : ℕ => differentialJet n x) '' insert N (Set.Iio N) =
+        insert (differentialJet N x)
+          ((fun n : ℕ => differentialJet n x) '' Set.Iio N) :=
+    Set.image_insert_eq
+  rw [jetObservableField, jetObservableField, hIio, himage,
+    ← Set.union_singleton, IntermediateField.adjoin_adjoin_left]
+
+/-- Hypertranscendence makes the next jet transcendental over every finite observable prefix. -/
+theorem hypertranscendental_jet_transcendental_observableField
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    {x : E} (hx : HypertranscendentalOver F x) (N : ℕ) :
+    Transcendental (jetObservableField F x N) (differentialJet N x) := by
+  have hj : AlgebraicIndependent F (fun n : ℕ => differentialJet n x) :=
+    algebraicIndependent_differentialJet_of_hypertranscendentalOver hx
+  apply (IntermediateField.transcendental_adjoin_iff).2
+  exact hj.transcendental_adjoin (by simp)
+
+/-- Differentiating an observable visible below order `N` introduces no jet beyond order `N`. -/
+theorem jetObservableField_deriv_mem_succ
+    {F E : Type*} [Field F] [Field E] [Differential F] [Differential E]
+    [Algebra F E] [DifferentialAlgebra F E]
+    (x : E) (N : ℕ) {z : E} (hz : z ∈ jetObservableField F x N) :
+    z′ ∈ jetObservableField F x (N + 1) := by
+  have hmono : jetObservableField F x N ≤ jetObservableField F x (N + 1) := by
+    apply IntermediateField.adjoin.mono F
+    exact Set.image_mono (Set.Iio_subset_Iio (Nat.le_succ N))
+  apply IntermediateField.adjoin_induction F
+    (s := (fun n : ℕ => differentialJet n x) '' Set.Iio N)
+    (p := fun y _ => y′ ∈ jetObservableField F x (N + 1))
+  · rintro y ⟨n, hn, rfl⟩
+    change n < N at hn
+    rw [← differentialJet_succ]
+    apply IntermediateField.subset_adjoin F _
+    exact ⟨n + 1, Nat.add_lt_add_right hn 1, rfl⟩
+  · intro c
+    rw [deriv_algebraMap]
+    exact IntermediateField.algebraMap_mem _ _
+  · intro a b ha hb hda hdb
+    rw [map_add]
+    exact IntermediateField.add_mem _ hda hdb
+  · intro a ha hda
+    rw [Derivation.leibniz_inv]
+    have hainv : a⁻¹ ∈ jetObservableField F x (N + 1) :=
+      IntermediateField.inv_mem _ (hmono ha)
+    have hasq : a⁻¹ ^ (2 : ℕ) ∈ jetObservableField F x (N + 1) :=
+      (jetObservableField F x (N + 1)).toSubfield.pow_mem hainv 2
+    exact IntermediateField.mul_mem _ (IntermediateField.neg_mem _ hasq) hda
+  · intro a b ha hb hda hdb
+    rw [Derivation.leibniz]
+    exact IntermediateField.add_mem _
+      (IntermediateField.mul_mem _ (hmono ha) hdb)
+      (IntermediateField.mul_mem _ (hmono hb) hda)
+  exact hz
+
+/-- At every cutoff, the derivative of the boundary coordinate is fresh over the entire current
+observable field. -/
+theorem hypertranscendental_boundaryDeriv_transcendental_stepField
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    {x : E} (hx : HypertranscendentalOver F x) (N : ℕ) :
+    Transcendental
+      (IntermediateField.adjoin (jetObservableField F x N) {differentialJet N x})
+      (differentialJet N x)′ := by
+  have h := hypertranscendental_jet_transcendental_observableField hx (N + 1)
+  rw [jetObservableField_succ] at h
+  rw [← differentialJet_succ]
+  exact h
+
+/-- **Hypertranscendental one-tick erosion.**  Among rational observables visible through jet order
+`N`, the ones whose derivative is still visible at that resolution are exactly the observables
+visible through order `N - 1` (with the indexing convention that `P_(N+1)` contains jets
+`0,...,N`). -/
+theorem hypertranscendental_clock_internal_iff
+    {F E : Type*} [Field F] [Field E] [CharZero E]
+    [Differential F] [Differential E] [Algebra F E] [DifferentialAlgebra F E]
+    {x : E} (hx : HypertranscendentalOver F x) (N : ℕ) {z : E}
+    (hz : z ∈ jetObservableField F x (N + 1)) :
+    z′ ∈ jetObservableField F x (N + 1) ↔ z ∈ jetObservableField F x N := by
+  let P : IntermediateField F E := jetObservableField F x N
+  let Q : IntermediateField P E :=
+    IntermediateField.adjoin P {differentialJet N x}
+  have hstep : jetObservableField F x (N + 1) = Q.restrictScalars F :=
+    jetObservableField_succ F x N
+  have hzQ : z ∈ Q := by
+    have hzR : z ∈ Q.restrictScalars F := by
+      rw [← hstep]
+      exact hz
+    exact hzR
+  have ht : Transcendental P (differentialJet N x) :=
+    hypertranscendental_jet_transcendental_observableField hx N
+  have hP : ∀ a : P, (a.1)′ ∈ Q := by
+    intro a
+    have ha := jetObservableField_deriv_mem_succ x N a.2
+    rw [hstep] at ha
+    exact ha
+  have htop : Transcendental Q (differentialJet N x)′ :=
+    hypertranscendental_boundaryDeriv_transcendental_stepField hx N
+  have hcore := simpleTranscendental_clock_internal_iff
+    P (differentialJet N x) z ht hP htop hzQ
+  constructor
+  · intro hzder
+    apply hcore.mp
+    have hzderR : z′ ∈ Q.restrictScalars F := by
+      rw [← hstep]
+      exact hzder
+    exact hzderR
+  · intro hzP
+    have hzderQ := hcore.mpr hzP
+    have hzderR : z′ ∈ Q.restrictScalars F := hzderQ
+    rw [← hstep] at hzderR
+    exact hzderR
+
+/-- Increasing observational resolution only enlarges the observable field. -/
+theorem jetObservableField_mono
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (x : E) {M N : ℕ} (hMN : M ≤ N) :
+    jetObservableField F x M ≤ jetObservableField F x N := by
+  apply IntermediateField.adjoin.mono F
+  exact Set.image_mono (Set.Iio_subset_Iio hMN)
+
+/-- `r` clock ticks applied to an order-`N` observable are visible at order `N+r`. -/
+theorem differentialJet_mem_jetObservableField_add
+    {F E : Type*} [Field F] [Field E] [Differential F] [Differential E]
+    [Algebra F E] [DifferentialAlgebra F E]
+    (x : E) {N : ℕ} {z : E} (hz : z ∈ jetObservableField F x N) (r : ℕ) :
+    differentialJet r z ∈ jetObservableField F x (N + r) := by
+  induction r with
+  | zero => simpa using hz
+  | succ r ih =>
+      rw [differentialJet_succ]
+      simpa only [Nat.add_assoc] using jetObservableField_deriv_mem_succ x (N + r) ih
+
+/-- **Exact finite clock erosion.**  At resolution `N+r`, surviving every clock test through tick
+`r` is equivalent to having started in the order-`N` observable field.  Thus every tick removes
+exactly one outer rational jet layer, independently of the bulk size. -/
+theorem hypertranscendental_clock_erosion_iff
+    {F E : Type*} [Field F] [Field E] [CharZero E]
+    [Differential F] [Differential E] [Algebra F E] [DifferentialAlgebra F E]
+    {x : E} (hx : HypertranscendentalOver F x) (N r : ℕ) {z : E} :
+    (∀ q : ℕ, q ≤ r →
+      differentialJet q z ∈ jetObservableField F x (N + r)) ↔
+      z ∈ jetObservableField F x N := by
+  induction r with
+  | zero =>
+      constructor
+      · intro h
+        simpa using h 0 (Nat.le_refl 0)
+      · intro hz q hq
+        have hq0 : q = 0 := Nat.eq_zero_of_le_zero hq
+        subst q
+        simpa using hz
+  | succ r ih =>
+      constructor
+      · intro h
+        apply ih.mp
+        intro q hqr
+        let y := differentialJet q z
+        have hy : y ∈ jetObservableField F x ((N + r) + 1) := by
+          simpa only [y, Nat.add_assoc] using h q (Nat.le_trans hqr (Nat.le_succ r))
+        have hy' : y′ ∈ jetObservableField F x ((N + r) + 1) := by
+          have hnext := h (q + 1) (Nat.add_le_add_right hqr 1)
+          simpa only [y, ← differentialJet_succ, Nat.add_assoc] using hnext
+        exact (hypertranscendental_clock_internal_iff hx (N + r) hy).mp hy'
+      · intro hz q hqr
+        have hq := differentialJet_mem_jetObservableField_add x hz q
+        exact jetObservableField_mono x (Nat.add_le_add_left hqr N) hq
+
+/-! ### The linearized one-layer clock boundary -/
+
+/-- The additive copy of an inner observable field `C` inside a finite observable field `B`.
+Quotienting by this subgroup linearizes the interval `C ≤ B` without pretending that a quotient of
+fields exists. -/
+def clockBoundarySubgroup
+    {F E : Type*} [Field F] [Field E] [Algebra F E]
+    (C B : IntermediateField F E) : AddSubgroup B :=
+  C.toSubfield.toAddSubgroup.comap B.toSubfield.subtype.toAddMonoidHom
+
+/-- The derivative of an observable, reduced modulo the current observable field. -/
+def clockBoundaryRawSymbol
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (B : IntermediateField F E) :
+    B →+ E ⧸ B.toSubfield.toAddSubgroup :=
+  (QuotientAddGroup.mk' B.toSubfield.toAddSubgroup).comp
+    ((Differential.deriv : Derivation ℤ E E).toLinearMap.toAddMonoidHom.comp
+      B.toSubfield.subtype.toAddMonoidHom)
+
+/-- The one-layer clock symbol descends modulo any inner field whose derivatives remain visible in
+the outer field. -/
+def clockBoundarySymbol
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (C B : IntermediateField F E)
+    (hder : ∀ z : E, z ∈ C → z′ ∈ B) :
+    (B ⧸ clockBoundarySubgroup C B) →+
+      (E ⧸ B.toSubfield.toAddSubgroup) :=
+  QuotientAddGroup.lift (clockBoundarySubgroup C B)
+    (clockBoundaryRawSymbol B) (by
+      intro z hz
+      rw [AddMonoidHom.mem_ker]
+      change (↑z.1′ : E ⧸ B.toSubfield.toAddSubgroup) = 0
+      rw [QuotientAddGroup.eq_zero_iff]
+      exact hder z.1 hz)
+
+@[simp] theorem clockBoundarySymbol_mk
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (C B : IntermediateField F E)
+    (hder : ∀ z : E, z ∈ C → z′ ∈ B) (z : B) :
+    clockBoundarySymbol C B hder (QuotientAddGroup.mk z) =
+      QuotientAddGroup.mk z.1′ := rfl
+
+/-- Exact identification of the one-tick internal core is equivalent to injectivity of the
+linearized boundary symbol.  This is the exact sequence underlying the proposed decorated boundary
+theory; it has no degeneracy until an external constraint is added. -/
+theorem clockBoundarySymbol_injective
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (C B : IntermediateField F E) (hCB : C ≤ B)
+    (hcore : ∀ z : E, z ∈ B → (z′ ∈ B ↔ z ∈ C)) :
+    Function.Injective
+      (clockBoundarySymbol C B (fun z hz => (hcore z (hCB hz)).2 hz)) := by
+  intro q₁ q₂ heq
+  have hqmap :
+      clockBoundarySymbol C B (fun z hz => (hcore z (hCB hz)).2 hz) (q₁ - q₂) = 0 := by
+    rw [map_sub, heq, sub_self]
+  have hzero_of_map_zero :
+      ∀ q,
+        clockBoundarySymbol C B (fun z hz => (hcore z (hCB hz)).2 hz) q = 0 → q = 0 := by
+    intro q
+    refine QuotientAddGroup.induction_on q ?_
+    intro z hz
+    rw [clockBoundarySymbol_mk, QuotientAddGroup.eq_zero_iff] at hz
+    rw [QuotientAddGroup.eq_zero_iff]
+    exact (hcore z.1 z.2).mp hz
+  exact sub_eq_zero.mp (hzero_of_map_zero (q₁ - q₂) hqmap)
+
+end
+
+end GaloisForLFunctions.HTGeometry

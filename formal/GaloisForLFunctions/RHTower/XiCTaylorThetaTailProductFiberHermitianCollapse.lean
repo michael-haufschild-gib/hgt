@@ -234,6 +234,54 @@ theorem sum_thetaProductFiberHermitianPhaseCoefficient_re
   intro q _hq
   exact thetaProductFiberHermitianPhaseCoefficient_re q z
 
+/-- The Hermitian fibre trace is not a new arithmetic packet: it is the positive critical
+amplitude times the complete centered-divisor packet on the real spectral slice `2 * z.re`.
+Unlike the upper-half-plane phase current, this is a signed real value and may oscillate. -/
+theorem sum_thetaProductFiberHermitianPhaseCoefficient_re_eq_centeredPhase_real
+    (k : ℕ) (z : ℂ) :
+    (∑ q ∈ thetaPositiveFactorPairs k,
+        (thetaProductFiberHermitianPhaseCoefficient q z).re) =
+      (k : ℝ) ^ (-(1 / 2 : ℝ)) *
+        Real.exp (Real.log k * z.im) *
+          (thetaProductFiberCenteredPhase k (((2 * z.re : ℝ) : ℂ))).re := by
+  rw [sum_thetaProductFiberHermitianPhaseCoefficient_re]
+  unfold thetaProductFiberCenteredPhase
+  rw [Complex.re_sum, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro q hq
+  have hdecomp := thetaFactorPair_log_decomposition hq
+  have hprod : (q.1 + 1) * (q.2 + 1) = k :=
+    (Finset.mem_filter.mp hq).2
+  have hweight :
+      ((q.1 + 1 : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) *
+          ((q.2 + 1 : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) =
+        (k : ℝ) ^ (-(1 / 2 : ℝ)) := by
+    rw [← Real.mul_rpow (by positivity) (by positivity)]
+    congr 1
+    exact_mod_cast hprod
+  rw [hweight, hdecomp.1, hdecomp.2]
+  simp only [Complex.exp_re, Complex.mul_re, Complex.mul_im,
+    Complex.I_re, Complex.I_im, Complex.ofReal_re, Complex.ofReal_im,
+    zero_mul, zero_add, mul_zero, one_mul]
+  ring_nf
+  rw [Real.cos_neg]
+  simp
+
+/-- Prime-power value factorization of the Hermitian trace.  It is an exact arithmetic signed
+polarization, but its coefficients are real Euler-packet values rather than favorable norm
+squares. -/
+theorem sum_thetaProductFiberHermitianPhaseCoefficient_re_eq_factorized_real
+    {k : ℕ} (hk : k ≠ 0) (z : ℂ) :
+    (∑ q ∈ thetaPositiveFactorPairs k,
+        (thetaProductFiberHermitianPhaseCoefficient q z).re) =
+      (k : ℝ) ^ (-(1 / 2 : ℝ)) *
+        Real.exp (Real.log k * z.im) *
+          (GaloisForLFunctions.HTGeometry.factorizedCenteredDivisorPhase
+            k (((2 * z.re : ℝ) : ℂ))).re := by
+  rw [sum_thetaProductFiberHermitianPhaseCoefficient_re_eq_centeredPhase_real]
+  rw [thetaProductFiberCenteredPhase_eq_centeredDivisorPhase hk]
+  rw [GaloisForLFunctions.HTGeometry.centeredDivisorPhase_eq_factorized hk]
+
 /-- The first nontrivial positive product fibre consists of the two reflected ordered pairs. -/
 theorem thetaPositiveFactorPairs_two :
     thetaPositiveFactorPairs 2 = {(0, 1), (1, 0)} := by
@@ -331,6 +379,21 @@ theorem thetaProductFiberCommonTailHermitianCurrent_eq
       change Real.log (q.2 + 1 : ℕ) =
         2 * (Real.log k / 2) - Real.log (q.1 + 1 : ℕ)
       linarith
+
+/-- Full multiplicative form of the collapsed Hermitian base.  The critical amplitude is
+positive; every sign change is therefore carried jointly by the real prime-power divisor packet
+and the common-tail current with its centered logarithmic drift. -/
+theorem thetaProductFiberCommonTailHermitianCurrent_eq_factorized_real
+    {k : ℕ} (hk : k ≠ 0) (z F F' : ℂ) :
+    thetaProductFiberCommonTailHermitianCurrent k z F F' =
+      ((k : ℝ) ^ (-(1 / 2 : ℝ)) *
+        Real.exp (Real.log k * z.im) *
+          (GaloisForLFunctions.HTGeometry.factorizedCenteredDivisorPhase
+            k (((2 * z.re : ℝ) : ℂ))).re) *
+        ((F' * (starRingEnd ℂ) F).im -
+          (Real.log k / 2) * Complex.normSq F) := by
+  rw [thetaProductFiberCommonTailHermitianCurrent_eq,
+    sum_thetaProductFiberHermitianPhaseCoefficient_re_eq_factorized_real hk]
 
 /-- If the real Hermitian fibre trace is negative, even the seam-free common unit tail has
 strictly positive current.  Thus negativity of the coherent analytic divisor phase cannot be

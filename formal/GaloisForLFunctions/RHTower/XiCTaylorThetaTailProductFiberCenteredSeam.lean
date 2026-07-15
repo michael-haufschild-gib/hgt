@@ -21,6 +21,185 @@ namespace RHTower
 
 noncomputable section
 
+/-! ## Exact boundary current of the canonical common tail -/
+
+/-- Mass of the first canonical density atom beyond a nonnegative common centre. -/
+def thetaCuspTailSecondDensityAtomOneTailMass (c : ℝ) : ℝ :=
+  ∫ u : ℝ in Ioi c, thetaCuspTailSecondDensityAtom 1 u
+
+/-- First moment of the same tail. -/
+def thetaCuspTailSecondDensityAtomOneTailFirstMoment (c : ℝ) : ℝ :=
+  ∫ u : ℝ in Ioi c, u * thetaCuspTailSecondDensityAtom 1 u
+
+/-- First moment measured from the common centre. -/
+def thetaCuspTailSecondDensityAtomOneCenteredTailFirstMoment (c : ℝ) : ℝ :=
+  ∫ u : ℝ in Ioi c, (u - c) * thetaCuspTailSecondDensityAtom 1 u
+
+lemma integrableOn_thetaCuspTailSecondDensityAtomOne_tailMass
+    {c : ℝ} (hc : 0 ≤ c) :
+    IntegrableOn (thetaCuspTailSecondDensityAtom 1) (Ioi c) := by
+  have h := (integrableOn_thetaCuspTailSecondDensityAtom_mul_complexPower 0 0).re
+  have hcsub : Ioi c ⊆ Ioi 0 := Ioi_subset_Ioi hc
+  have h' := h.mono_measure (Measure.restrict_mono hcsub le_rfl)
+  simpa only [pow_zero, mul_one, Complex.ofReal_re] using h'
+
+lemma integrableOn_thetaCuspTailSecondDensityAtomOne_tailFirstMoment
+    {c : ℝ} (hc : 0 ≤ c) :
+    IntegrableOn
+      (fun u : ℝ => u * thetaCuspTailSecondDensityAtom 1 u) (Ioi c) := by
+  have huC := (integrableOn_thetaCuspTailSecondDensityAtom_mul_complexPower 0 1).re
+  have huC' := huC.mono_measure
+    (Measure.restrict_mono (Ioi_subset_Ioi hc) le_rfl)
+  change Integrable
+    (fun u : ℝ => u * thetaCuspTailSecondDensityAtom 1 u)
+      (volume.restrict (Ioi c))
+  apply huC'.congr
+  filter_upwards with u
+  simp only [pow_one]
+  rw [← Complex.ofReal_mul]
+  change thetaCuspTailSecondDensityAtom 1 u * u =
+    u * thetaCuspTailSecondDensityAtom 1 u
+  ring
+
+lemma integrableOn_thetaCuspTailSecondDensityAtomOne_centeredTailFirstMoment
+    {c : ℝ} (hc : 0 ≤ c) :
+    IntegrableOn
+      (fun u : ℝ => (u - c) * thetaCuspTailSecondDensityAtom 1 u) (Ioi c) := by
+  have h0 := integrableOn_thetaCuspTailSecondDensityAtomOne_tailMass hc
+  have hu := integrableOn_thetaCuspTailSecondDensityAtomOne_tailFirstMoment hc
+  convert hu.sub (h0.const_mul c) using 1
+  funext u
+  simp only [Pi.sub_apply]
+  ring
+
+/-- Every nonnegative common centre leaves strictly positive first-atom tail mass. -/
+theorem thetaCuspTailSecondDensityAtomOneTailMass_pos
+    {c : ℝ} (hc : 0 ≤ c) :
+    0 < thetaCuspTailSecondDensityAtomOneTailMass c := by
+  let f : ℝ → ℝ := thetaCuspTailSecondDensityAtom 1
+  have hf : Integrable f (volume.restrict (Ioi c)) :=
+    integrableOn_thetaCuspTailSecondDensityAtomOne_tailMass hc
+  have hf0 : 0 ≤ᵐ[volume.restrict (Ioi c)] f := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with u hu
+    exact (thetaCuspTailSecondDensityAtom_pos Nat.zero_lt_one
+      (le_trans hc hu.le)).le
+  rw [thetaCuspTailSecondDensityAtomOneTailMass,
+    integral_pos_iff_support_of_nonneg_ae hf0 hf]
+  have hsub : Ioi c ⊆ Function.support f := by
+    intro u hu
+    exact (thetaCuspTailSecondDensityAtom_pos Nat.zero_lt_one
+      (le_trans hc hu.le)).ne'
+  have hmono : (volume.restrict (Ioi c)) (Ioi c) ≤
+      (volume.restrict (Ioi c)) (Function.support f) := measure_mono hsub
+  have hpos : 0 < (volume.restrict (Ioi c)) (Ioi c) := by
+    simp
+  exact lt_of_lt_of_le hpos hmono
+
+/-- The first moment measured from a nonnegative common centre is strictly positive. -/
+theorem thetaCuspTailSecondDensityAtomOneCenteredTailFirstMoment_pos
+    {c : ℝ} (hc : 0 ≤ c) :
+    0 < thetaCuspTailSecondDensityAtomOneCenteredTailFirstMoment c := by
+  let f : ℝ → ℝ := fun u =>
+    (u - c) * thetaCuspTailSecondDensityAtom 1 u
+  have hf : Integrable f (volume.restrict (Ioi c)) :=
+    integrableOn_thetaCuspTailSecondDensityAtomOne_centeredTailFirstMoment hc
+  have hf0 : 0 ≤ᵐ[volume.restrict (Ioi c)] f := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with u hu
+    exact mul_nonneg (sub_nonneg.mpr hu.le)
+      (thetaCuspTailSecondDensityAtom_pos Nat.zero_lt_one
+        (le_trans hc hu.le)).le
+  rw [thetaCuspTailSecondDensityAtomOneCenteredTailFirstMoment,
+    integral_pos_iff_support_of_nonneg_ae hf0 hf]
+  have hsub : Ioi c ⊆ Function.support f := by
+    intro u hu
+    exact mul_ne_zero (sub_ne_zero.mpr hu.ne')
+      (thetaCuspTailSecondDensityAtom_pos Nat.zero_lt_one
+        (le_trans hc hu.le)).ne'
+  have hmono : (volume.restrict (Ioi c)) (Ioi c) ≤
+      (volume.restrict (Ioi c)) (Function.support f) := measure_mono hsub
+  have hpos : 0 < (volume.restrict (Ioi c)) (Ioi c) := by
+    simp
+  exact lt_of_lt_of_le hpos hmono
+
+lemma thetaCuspTailSecondDensityAtomOneCenteredTailFirstMoment_eq
+    {c : ℝ} (hc : 0 ≤ c) :
+    thetaCuspTailSecondDensityAtomOneCenteredTailFirstMoment c =
+      thetaCuspTailSecondDensityAtomOneTailFirstMoment c -
+        c * thetaCuspTailSecondDensityAtomOneTailMass c := by
+  have hu := integrableOn_thetaCuspTailSecondDensityAtomOne_tailFirstMoment hc
+  have h0 := integrableOn_thetaCuspTailSecondDensityAtomOne_tailMass hc
+  unfold thetaCuspTailSecondDensityAtomOneCenteredTailFirstMoment
+    thetaCuspTailSecondDensityAtomOneTailFirstMoment
+    thetaCuspTailSecondDensityAtomOneTailMass
+  rw [show (fun u : ℝ =>
+      (u - c) * thetaCuspTailSecondDensityAtom 1 u) =
+      (fun u : ℝ =>
+        u * thetaCuspTailSecondDensityAtom 1 u -
+          c * thetaCuspTailSecondDensityAtom 1 u) by
+    funext u
+    ring]
+  rw [integral_sub hu (h0.const_mul c), integral_const_mul]
+
+lemma thetaCuspTailSecondDensityAtomOnePhaseTail_zero (c : ℝ) :
+    thetaCuspTailSecondDensityAtomOnePhaseTail c 0 =
+      (thetaCuspTailSecondDensityAtomOneTailMass c : ℂ) := by
+  unfold thetaCuspTailSecondDensityAtomOnePhaseTail
+    thetaCuspTailSecondDensityAtomOneTailMass spectralTranslationPhase
+  simp only [mul_zero, Complex.exp_zero, mul_one]
+  exact integral_ofReal
+    (X := ℝ) (μ := volume.restrict (Ioi c)) (𝕜 := ℂ)
+
+lemma thetaCuspTailSecondDensityAtomOnePhaseTailDerivative_zero (c : ℝ) :
+    thetaCuspTailSecondDensityAtomOnePhaseTailDerivative c 0 =
+      I * (thetaCuspTailSecondDensityAtomOneTailFirstMoment c : ℂ) := by
+  unfold thetaCuspTailSecondDensityAtomOnePhaseTailDerivative
+    thetaCuspTailSecondDensityAtomOneTailFirstMoment spectralTranslationPhase
+  simp only [mul_zero, Complex.exp_zero, mul_one]
+  rw [show (fun u : ℝ =>
+      (thetaCuspTailSecondDensityAtom 1 u : ℂ) * ((u : ℂ) * I)) =
+      fun u : ℝ => I * ((u * thetaCuspTailSecondDensityAtom 1 u : ℝ) : ℂ) by
+    funext u
+    push_cast
+    ring]
+  rw [integral_const_mul]
+  congr 1
+  exact integral_ofReal
+    (X := ℝ) (μ := volume.restrict (Ioi c)) (𝕜 := ℂ)
+
+/-- At the real spectral origin the exact canonical common-tail bracket is the product of its
+tail mass and its first moment measured from the common centre. -/
+theorem thetaCuspTailSecondDensityAtomOneCenteredTail_boundaryCurrent_eq
+    {c : ℝ} (hc : 0 ≤ c) :
+    (thetaCuspTailSecondDensityAtomOnePhaseTailDerivative c 0 *
+        (starRingEnd ℂ)
+          (thetaCuspTailSecondDensityAtomOnePhaseTail c 0)).im -
+      c * Complex.normSq
+        (thetaCuspTailSecondDensityAtomOnePhaseTail c 0) =
+      thetaCuspTailSecondDensityAtomOneTailMass c *
+        thetaCuspTailSecondDensityAtomOneCenteredTailFirstMoment c := by
+  rw [thetaCuspTailSecondDensityAtomOnePhaseTail_zero,
+    thetaCuspTailSecondDensityAtomOnePhaseTailDerivative_zero,
+    thetaCuspTailSecondDensityAtomOneCenteredTailFirstMoment_eq hc]
+  simp only [Complex.conj_ofReal, Complex.mul_im, Complex.I_re, Complex.I_im,
+    Complex.ofReal_re, Complex.ofReal_im, zero_mul, one_mul, add_zero,
+    Complex.normSq_apply]
+  ring
+
+/-- Consequently the canonical common-tail bracket has strictly positive boundary orientation;
+the Hermitian/coherent sign mismatch is present for the exact density, not only for an abstract
+unit-tail model. -/
+theorem thetaCuspTailSecondDensityAtomOneCenteredTail_boundaryCurrent_pos
+    {c : ℝ} (hc : 0 ≤ c) :
+    0 <
+      (thetaCuspTailSecondDensityAtomOnePhaseTailDerivative c 0 *
+          (starRingEnd ℂ)
+            (thetaCuspTailSecondDensityAtomOnePhaseTail c 0)).im -
+        c * Complex.normSq
+          (thetaCuspTailSecondDensityAtomOnePhaseTail c 0) := by
+  rw [thetaCuspTailSecondDensityAtomOneCenteredTail_boundaryCurrent_eq hc]
+  exact mul_pos (thetaCuspTailSecondDensityAtomOneTailMass_pos hc)
+    (thetaCuspTailSecondDensityAtomOneCenteredTailFirstMoment_pos hc)
+
 /-- A tail based at `a` is a tail based at `c` minus the oriented block from `c` to `a`.
 The orientation convention makes this valid in both orders. -/
 theorem thetaCuspTailSecondDensityAtomOnePhaseTail_eq_center_sub_block
