@@ -294,3 +294,167 @@ theorem signedDigammaBooleanCompletion_nonneg_iff_allPositive (ε : ℕ → Bool
 end
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open Complex Filter Topology
+open scoped Topology BigOperators
+
+noncomputable section
+
+/-- Every bounded signed Gauss palette converges locally normally, uniformly on compact subsets of
+the entire parameter plane. Poles affect finitely many summands on a bounded compact and therefore
+do not affect normal convergence of the tail. -/
+theorem summableLocallyUniformlyOn_signedDigammaCompletionTerm
+    (ε : ℕ → ℝ) (hε : ∀ n, |ε n| ≤ 1) :
+    SummableLocallyUniformlyOn
+      (fun n z => signedDigammaCompletionTerm ε z n) Set.univ := by
+  apply SummableLocallyUniformlyOn.of_locally_bounded_eventually isOpen_univ
+  intro K hKsub hK
+  obtain ⟨R, hR⟩ := hK.isBounded.exists_norm_le
+  let R0 : ℝ := max R 0
+  let C : ℝ := 4 * (R0 + 1)
+  refine ⟨fun n : ℕ => C / ((n : ℝ) + 1) ^ 2, ?_, ?_⟩
+  · have hbase : Summable (fun n : ℕ => (1 : ℝ) / ((n : ℝ) + 1) ^ 2) := by
+      have h := (Real.summable_one_div_nat_add_rpow 1 2).mpr (by norm_num)
+      apply h.congr
+      intro n
+      rw [abs_of_nonneg (by positivity : (0 : ℝ) ≤ (n : ℝ) + 1)]
+      simp only [Real.rpow_two]
+    have hmul := hbase.mul_left C
+    apply hmul.congr
+    intro n
+    rw [mul_one_div]
+  · have hR0nonneg : 0 ≤ R0 := le_max_right _ _
+    have hfinite : {n : ℕ | n < Nat.ceil (2 * R0 + 2)}.Finite :=
+      Set.finite_lt_nat _
+    filter_upwards [hfinite.eventually_cofinite_notMem] with n hn
+    intro z hz
+    have hzNorm : ‖z‖ ≤ R0 := (hR z hz).trans (le_max_left _ _)
+    have hnNat : Nat.ceil (2 * R0 + 2) ≤ n := Nat.le_of_not_gt hn
+    have hnLower : 2 * R0 + 2 ≤ (n : ℝ) := by
+      calc
+        2 * R0 + 2 ≤ (Nat.ceil (2 * R0 + 2) : ℝ) := Nat.le_ceil _
+        _ ≤ n := by exact_mod_cast hnNat
+    have hn1pos : 0 < (n : ℝ) + 1 := by positivity
+    have hnum : ‖z - (1 / 2 : ℂ)‖ ≤ R0 + 1 := by
+      calc
+        ‖z - (1 / 2 : ℂ)‖ ≤ ‖z‖ + ‖(1 / 2 : ℂ)‖ := norm_sub_le _ _
+        _ ≤ R0 + 1 := by norm_num; linarith
+    have hden2 : ((n : ℝ) + 1) / 2 ≤
+        ‖z + (1 / 2 : ℂ) + (n : ℂ)‖ := by
+      calc
+        ((n : ℝ) + 1) / 2 ≤ ((n : ℝ) + 1 / 2) - R0 := by linarith
+        _ ≤ ‖((((n : ℝ) + 1 / 2 : ℝ) : ℂ))‖ - ‖z‖ := by
+          rw [Complex.norm_real, Real.norm_eq_abs,
+            abs_of_nonneg (by positivity : 0 ≤ (n : ℝ) + 1 / 2)]
+          linarith
+        _ ≤ ‖z + (1 / 2 : ℂ) + (n : ℂ)‖ := by
+          have h := norm_sub_norm_le (((n : ℝ) + 1 / 2 : ℝ) : ℂ) (-z)
+          rw [norm_neg, show (((n : ℝ) + 1 / 2 : ℝ) : ℂ) - (-z) =
+            z + (1 / 2 : ℂ) + (n : ℂ) by push_cast; ring] at h
+          exact h
+    have hden2pos : 0 < ‖z + (1 / 2 : ℂ) + (n : ℂ)‖ :=
+      (by positivity : 0 < ((n : ℝ) + 1) / 2) |>.trans_le hden2
+    have hn1ne : ((n : ℂ) + 1) ≠ 0 := by
+      exact_mod_cast (ne_of_gt hn1pos)
+    have hden2ne : z + (1 / 2 : ℂ) + (n : ℂ) ≠ 0 :=
+      norm_pos_iff.mp hden2pos
+    have hterm : RHTower.gaussDigammaSeriesTerm (z + (1 / 2 : ℂ)) n =
+        (z - (1 / 2 : ℂ)) /
+          (((n : ℂ) + 1) * (z + (1 / 2 : ℂ) + (n : ℂ))) := by
+      unfold RHTower.gaussDigammaSeriesTerm
+      rw [div_sub_div _ _ hn1ne hden2ne]
+      ring
+    rw [signedDigammaCompletionTerm, hterm, norm_mul, norm_div, norm_mul]
+    have hεnorm : ‖(ε n : ℂ)‖ ≤ 1 := by
+      rw [Complex.norm_real, Real.norm_eq_abs]
+      exact hε n
+    have hn1norm : ‖(n : ℂ) + 1‖ = (n : ℝ) + 1 := by
+      rw [show (n : ℂ) + 1 = (((n : ℝ) + 1 : ℝ) : ℂ) by push_cast; ring,
+        Complex.norm_real, Real.norm_eq_abs, abs_of_pos hn1pos]
+    rw [hn1norm]
+    have hquot :
+        ‖z - (1 / 2 : ℂ)‖ /
+            (((n : ℝ) + 1) * ‖z + (1 / 2 : ℂ) + (n : ℂ)‖) ≤
+          2 * (R0 + 1) / ((n : ℝ) + 1) ^ 2 := by
+      calc
+        ‖z - (1 / 2 : ℂ)‖ /
+            (((n : ℝ) + 1) * ‖z + (1 / 2 : ℂ) + (n : ℂ)‖)
+            ≤ (R0 + 1) / (((n : ℝ) + 1) ^ 2 / 2) := by
+              apply div_le_div₀ (by linarith) hnum (by positivity)
+              nlinarith
+        _ = 2 * (R0 + 1) / ((n : ℝ) + 1) ^ 2 := by
+              field_simp
+    have hquotnonneg : 0 ≤
+        ‖z - (1 / 2 : ℂ)‖ /
+          (((n : ℝ) + 1) * ‖z + (1 / 2 : ℂ) + (n : ℂ)‖) :=
+      div_nonneg (norm_nonneg _) (mul_nonneg hn1pos.le (norm_nonneg _))
+    have hmul := mul_le_mul hεnorm hquot hquotnonneg (by norm_num)
+    dsimp only [C]
+    calc
+      ‖(ε n : ℂ)‖ *
+          (‖z - (1 / 2 : ℂ)‖ /
+            (((n : ℝ) + 1) * ‖z + (1 / 2 : ℂ) + (n : ℂ)‖)) ≤
+        1 * (2 * (R0 + 1) / ((n : ℝ) + 1) ^ 2) := hmul
+      _ ≤ 4 * (R0 + 1) / ((n : ℝ) + 1) ^ 2 := by
+        rw [one_mul]
+        have hdenpos : 0 < ((n : ℝ) + 1) ^ 2 := sq_pos_of_pos hn1pos
+        apply (div_le_div_iff_of_pos_right hdenpos).2
+        nlinarith
+
+/-- The canonical signed completion is the locally normal sum of its finite chambers. -/
+theorem hasSumLocallyUniformlyOn_signedDigammaCompletionTerm
+    (ε : ℕ → ℝ) (hε : ∀ n, |ε n| ≤ 1) :
+    HasSumLocallyUniformlyOn
+      (fun n z => signedDigammaCompletionTerm ε z n)
+      (signedDigammaCompletion ε) Set.univ := by
+  simpa only [signedDigammaCompletion] using
+    (summableLocallyUniformlyOn_signedDigammaCompletionTerm ε hε).hasSumLocallyUniformlyOn
+
+/-- Every bounded signed completion is holomorphic on the upper half-plane. -/
+theorem differentiableOn_signedDigammaCompletion_upperHalf
+    (ε : ℕ → ℝ) (hε : ∀ n, |ε n| ≤ 1) :
+    DifferentiableOn ℂ (signedDigammaCompletion ε) {z : ℂ | 0 < z.im} := by
+  apply SummableLocallyUniformlyOn.differentiableOn
+    (isOpen_lt continuous_const Complex.continuous_im)
+    ((summableLocallyUniformlyOn_signedDigammaCompletionTerm ε hε).mono
+      (Set.subset_univ _))
+  intro n z hz
+  unfold signedDigammaCompletionTerm RHTower.gaussDigammaSeriesTerm
+  have hfirst : ((n : ℂ) + 1) ≠ 0 := by
+    exact_mod_cast (by positivity : (n : ℝ) + 1 ≠ 0)
+  have hden : z + (1 / 2 : ℂ) + (n : ℂ) ≠ 0 := by
+    intro hzero
+    have him := congrArg Complex.im hzero
+    norm_num at him
+    change 0 < z.im at hz
+    linarith
+  change DifferentiableAt ℂ (fun w : ℂ => (ε n : ℂ) *
+    (1 / ((n : ℂ) + 1) - 1 / (w + (1 / 2 : ℂ) + (n : ℂ)))) z
+  fun_prop
+
+end
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+/-- The all-positive Boolean orientation is the closed-form shifted-digamma Herglotz source at every
+point off the half-integer pole lattice. -/
+theorem signedDigammaBooleanCompletion_allPositive_eq_explicitDigammaHerglotzSource
+    {z : ℂ} (hz : ∀ n : ℕ, z + (1 / 2 : ℂ) ≠ -(n : ℂ)) :
+    signedDigammaBooleanCompletion (fun _ => false) z =
+      explicitDigammaHerglotzSource z := by
+  rw [signedDigammaBooleanCompletion]
+  have hweight : signedDigammaBooleanWeight (fun _ => false) = fun _ => 1 := by
+    funext n
+    simp [signedDigammaBooleanWeight]
+  rw [hweight]
+  exact signedDigammaCompletion_one_eq_explicitDigammaHerglotzSource hz
+
+end
+
+end GaloisForLFunctions.HTGeometry

@@ -70,6 +70,22 @@ Re Tr(C_a† C_a) > 0 <-> C_a != 0.
 Thus no independent sign estimate remains at degree zero.  Its input is the concrete positive
 statement that the source-built all-prime column is nonzero.
 
+`[SOURCE-FORMALIZED, UNVERIFIED]` The Kraus/Stinespring direct-sum reading localizes this remaining
+nondegeneracy input exactly:
+
+```text
+C_a != 0
+  <-> exists one prime-power channel alpha with R_{a,alpha} != 0.
+```
+
+The logarithmic Euler coefficient of every retained channel is nonzero, so weighted and
+unweighted residual nondegeneracy are equivalent.  A constructor now turns one concrete residual
+witness directly into `SoninCoupledNondegenerateAperture`.  The infinite all-prime column can no
+longer hide or cancel a nonzero local channel; the open nondegeneracy problem is one-channel
+operator nonvanishing.  The general master-effect identity `C†C = 0 <-> C = 0` also makes the same
+local witness equivalent to nonvanishing of the coupled positive energy and to strict positivity
+of its zeroth trace moment.
+
 The finite approximants are whole Gram matrices of the Hilbert--Schmidt coordinate vectors of
 `C_a (C_a† C_a)^n`.  Thus one aperture schedule at cutoff `N` couples all `N^2` matrix entries and
 all coefficient tests simultaneously.  This is strictly more coherent than a separately chosen
@@ -135,7 +151,8 @@ subpower estimate.
 ## Named open core
 
 `[OPEN CORE]` For every cutoff `N`, construct a positive aperture sequence `a_{N,j}>0` whose
-coupled all-prime source columns `C_{a_{N,j}}` are nonzero and for which
+coupled all-prime source columns `C_{a_{N,j}}` are nonzero—equivalently, at every selected
+aperture exhibit one prime-power residual `R_{a_{N,j},alpha} != 0`—and for which
 
 ```text
 Tr((C_a† C_a)^(k+1)) / Tr(C_a† C_a)
@@ -152,6 +169,63 @@ first nontrivial projective coordinate is the old degree-one moment plus the alr
 nonnegative mixed second invariant, the sum of all off-diagonal prime-power cross-overlap
 energies.  Exact unscaled convergence and explicit projective-scale convergence remain valid
 stronger routes but are no longer the preferred open core.
+
+### Prime-power identity-response route
+
+`[SOURCE-FORMALIZED, UNVERIFIED]` Let
+
+```text
+L_a(D) = (1-Q_a) D Q_a - (1-Q_a^0) D Q_a^0,
+Q_a^0 = 1-P_a-F_a.
+```
+
+Every dilation residual is exactly `L_a(D_p)`.  At the identity observable the actual projection
+has zero boundary response, while the formal complement has the exact defect
+
+```text
+L_a(1) = P_a F_a + F_a P_a != 0.
+```
+
+The nonvanishing is source-pure: for self-adjoint idempotents the anticommutator vanishes exactly
+when the transition channel `F_a P_a` vanishes, but the existing Shannon area law gives
+`||F_a P_a||_HS^2 = 4 a^2 > 0`.  Hence `Q_a^0` is not idempotent at any positive aperture.
+The generic `HTGeometry` sharpness law now records this without Sonin-specific algebra:
+
+```text
+IsIdempotentElem(1-P-Q) <-> QP = 0.
+```
+
+The response also has the single-correction factorization
+
+```text
+L_a(D) = (1-Q_a) D (Q_a-Q_a^0) - (Q_a-Q_a^0) D Q_a^0,
+```
+
+which replaces the two duplicated expansions previously used by the residual norm and
+Hilbert--Schmidt estimates.
+
+This does not by itself prove a prime-power residual nonzero.  The sharply named missing lemma is
+an operator-tomography statement: the prime-power symmetric dilation observables must determine
+the identity value of the continuous linear response `L_a`.  Any such theorem immediately forces
+one local residual witness and discharges source nondegeneracy through the criterion above.
+Slepian--Pollak time--frequency concentration supplies the physical cutoff geometry
+([DOI 10.1002/j.1538-7305.1961.tb03976.x](https://doi.org/10.1002/j.1538-7305.1961.tb03976.x));
+Kraus/Stinespring supplies the channel/effect reading.
+
+`[ROUTE RETIRED]` Operator-norm tomography cannot supply the missing lemma.  The formal response
+map is norm-continuous, but every finite prime-power dilation sum is a trigonometric polynomial
+with only nonzero prime-log frequencies.  Its invariant Bohr mean is zero, whereas the identity
+has Bohr mean one.  Since the Bohr mean is bounded in the uniform norm, the identity is not in the
+operator-norm/uniform closed span of those observables.  This is the same zero-frequency
+separation already proved for bounded prime screens in
+`prime-screen-bounded-observable-almost-periodicity.md`; norm continuity therefore does not turn
+the nonzero identity response into a prime-power witness.
+
+`[CONJECTURE]` A surviving tomography theorem would have to use a weaker strong- or weak-operator
+topology on controlled spectral packets, prove that the prime-power symmetric dilation
+observables determine the identity there, and prove the required packetwise continuity of
+`L_a`.  The current corpus contains no such Sonin operator-topology interface.  No completeness
+claim is promoted without those three proofs.
 
 ## Non-redressing audit
 
@@ -178,9 +252,10 @@ stronger routes but are no longer the preferred open core.
 4. Pull this closed nonnegative half-space through finite-block closure.
 5. Allow one positive global scale per finite block; homogeneity preserves every source quadratic
    sign while eliminating absolute energy normalization.
-6. Prove the concrete source column is nonzero, equivalently that its zeroth trace energy is
-   strictly positive, and normalize every source moment by that energy; the canonical
-   target/source zeroth-moment quotient reconstructs the projective scale.
+6. Prove one concrete prime-power residual channel is nonzero at every selected aperture.  The
+   exact direct-sum criterion then proves the source column and its zeroth trace energy are
+   nonzero; normalize every source moment by that energy, and use the canonical target/source
+   zeroth-moment quotient to reconstruct the projective scale.
 7. Identify the target quadratic form with the existing prime--Gamma trace-Hankel value and use
    the countable criterion for RH.
 
@@ -195,7 +270,11 @@ surface: it is exactly the analytic construction of the positive-aperture schedu
 is `SoninCoupledPrimeArchMomentRatioCoupling`.  Theorems
 `soninAllPrimeCoupledTraceMoment_zero_eq_column_hsNormSq` and
 `soninAllPrimeCoupledTraceMoment_zero_re_pos_iff_column_ne_zero` identify its degree-zero premise
-with ordinary nonvanishing of the explicit source column.
+with ordinary nonvanishing of the explicit source column.  The source-only declarations
+`soninAllPrimeColumnCoordinateOperator_ne_zero_iff_exists_primePowerResidual_ne_zero` and
+`soninAllPrimeCoupledTraceMoment_zero_re_pos_iff_exists_primePowerResidual_ne_zero`, together with
+`soninCoupledNondegenerateApertureOfPrimePowerResidual`, reduce that premise further to one local
+residual witness; they remain uncompiled under the current no-build constraint.
 
 ## Log
 

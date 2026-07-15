@@ -160,6 +160,33 @@ theorem toOperatorRect_single [DecidableEq ι] {K : κ × ι → ℂ} (hK : IsHS
     tsum_eq_single j (fun j' hj' => by rw [lp.single_apply_ne _ _ _ hj', mul_zero])]
   rw [lp.single_apply_self, mul_one]
 
+/-- A rectangular Hilbert--Schmidt kernel vanishes exactly when its stacked operator vanishes.
+In quantum-instrument language, adjoining outcome channels in an orthogonal direct sum cannot
+hide a nonzero transition amplitude. -/
+theorem toOperatorRect_eq_zero_iff {K : κ × ι → ℂ}
+    (hK : IsHSRect K) :
+    toOperatorRect hK = 0 ↔ K = 0 := by
+  classical
+  constructor
+  · intro hT
+    funext p
+    change K p = 0
+    rw [← toOperatorRect_single hK p.1 p.2, hT]
+    rfl
+  · intro hKzero
+    apply ContinuousLinearMap.ext
+    intro f
+    apply lp.ext
+    funext r
+    rw [toOperatorRect_apply]
+    simp [hKzero]
+
+/-- Nondegeneracy is also reflected exactly across the rectangular kernel--operator bridge. -/
+theorem toOperatorRect_ne_zero_iff {K : κ × ι → ℂ}
+    (hK : IsHSRect K) :
+    toOperatorRect hK ≠ 0 ↔ K ≠ 0 :=
+  not_congr (toOperatorRect_eq_zero_iff hK)
+
 theorem norm_toOperatorRect_single_sq [DecidableEq ι] {K : κ × ι → ℂ}
     (hK : IsHSRect K) (j : ι) :
     ‖toOperatorRect hK (lp.single 2 j (1 : ℂ))‖ ^ 2 =

@@ -344,7 +344,7 @@ strict Schur bound `(12)` cannot by themselves prove RH.
 
 The same circle construction applies after deleting finitely many source moments, but its central
 mass must then be recovered from the atomwise sector rather than from `(1)`.  The descendant card
-`prime-arch-shifted-sector-circle-valuation-cone.md` proves that for every `0 <= s <= 11`,
+`prime-arch-shifted-sector-circle-valuation-cone.md` proves that for every `0 <= s <= 12`,
 
 ```text
 w_(Xi,s)(e^(it))=m_s+2 sum_(n>=1)m_(s+n)cos(nt)
@@ -362,6 +362,16 @@ This reaches nonconstant polynomials whose constant coefficient is zero, which t
 `(17c)` cannot see.  It also restricts the coupled-Sonin one-sided comparison to the complementary
 residual family: comparison on that family plus these unconditional cones still gives the full
 integer Hankel cone and RH.
+
+The endpoint `s=12` is not obtained from the quadratic cosine bound.  The exact thirteenth-power
+sector polynomial gives `Re(u^13)>|u|^13/8`, hence the additional valuation-six cone
+
+```text
+32*sum_(n>=1)b_n^2 <= 7*b_0^2 -> Q(X^6 q)>=0.
+```
+
+Its atomwise inequality, summed mass lower bound, and geometric tail envelope are formalized in
+`PrimeArchShiftThirteenCircleCone.lean`.
 
 ## Attacks and verdicts
 
@@ -425,7 +435,8 @@ concrete `L^2` reflection carrier.
 - [x] 1 -> 2: exact strict Schur source and uniform bound proved
 - [x] 1 -> 2: unitary/reflection polarization and weighted cosine--sine identity proved
 - [x] 1 -> 2: all-degree central-coefficient positivity cone proved
-- [x] shifted descendant: twelve positive tail densities and six valuation cones proved on paper
+- [x] shifted descendant: thirteen positive tail densities and seven valuation cones proved on
+  paper; the new thirteenth-mass and tail estimates are formalized
 - [x] 1 -> 2: radial Poisson-mixture equivalence proved from existing moment capstone
 - [x] 1 -> 2: perturbative coercivity shortcut falsified by an exact positive-density family
 - [ ] 2 -> 3: formalize the Fourier density, source carrier, and reflection identities

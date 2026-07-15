@@ -30,6 +30,35 @@ section MasterConstraint
 variable {𝕜 E : Type*} [RCLike 𝕜]
   [NormedAddCommGroup E] [InnerProductSpace 𝕜 E] [CompleteSpace E]
 
+/-- The positive effect `C†C` of an arbitrary rectangular Hilbert-space channel vanishes
+exactly when the channel vanishes.  This is the nondegeneracy law used by Kraus effects,
+including channels whose input and output spaces differ. -/
+theorem adjoint_comp_self_eq_zero_iff
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace 𝕜 F] [CompleteSpace F]
+    (C : E →L[𝕜] F) :
+    C.adjoint ∘L C = 0 ↔ C = 0 := by
+  constructor
+  · intro heffect
+    apply ContinuousLinearMap.ext
+    intro ψ
+    have hnormSq : ‖C ψ‖ ^ 2 = 0 := by
+      calc
+        ‖C ψ‖ ^ 2 =
+            RCLike.re (inner 𝕜 ψ ((C.adjoint ∘L C) ψ)) := by
+          simpa using (C.apply_norm_sq_eq_inner_adjoint_right ψ).symm
+        _ = 0 := by rw [heffect]; simp
+    exact norm_eq_zero.mp (sq_eq_zero_iff.mp hnormSq)
+  · rintro rfl
+    simp
+
+/-- Equivalently, passing from any rectangular channel to its positive input effect preserves
+nondegeneracy exactly. -/
+theorem adjoint_comp_self_ne_zero_iff
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace 𝕜 F] [CompleteSpace F]
+    (C : E →L[𝕜] F) :
+    C.adjoint ∘L C ≠ 0 ↔ C ≠ 0 :=
+  not_congr (adjoint_comp_self_eq_zero_iff C)
+
 /-- The bounded quantum master constraint associated with `C`: `C† C`. -/
 noncomputable def quantumMasterConstraint (C : E →L[𝕜] E) : E →L[𝕜] E :=
   C.adjoint ∘L C
@@ -109,6 +138,17 @@ theorem physicalState_quantumMasterConstraint_iff
     change C ψ = 0 at hC
     change quantumMasterConstraint C ψ = 0
     simp [quantumMasterConstraint, hC]
+
+/-- The positive effect `C†C` vanishes exactly when the underlying constraint channel vanishes.
+This is the operator-level nondegeneracy law behind Kraus effects and master constraints. -/
+theorem quantumMasterConstraint_eq_zero_iff (C : E →L[𝕜] E) :
+    quantumMasterConstraint C = 0 ↔ C = 0 := by
+  simpa [quantumMasterConstraint] using adjoint_comp_self_eq_zero_iff C
+
+/-- Equivalently, forming the positive master effect introduces no new nondegeneracy premise. -/
+theorem quantumMasterConstraint_ne_zero_iff (C : E →L[𝕜] E) :
+    quantumMasterConstraint C ≠ 0 ↔ C ≠ 0 :=
+  not_congr (quantumMasterConstraint_eq_zero_iff C)
 
 /-- The master constraint removes self-adjointness of the original constraint from the Ward
 value: physicality for an arbitrary bounded `C` is enough. -/

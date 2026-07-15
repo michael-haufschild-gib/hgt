@@ -1,7 +1,7 @@
 # Bounded-variation prime-window divisor tomography
 
 - **ID:** `bounded-variation-prime-window-divisor-tomography`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / unconditional CCM prime-source tomography / `[BRIDGE]`
 - **Scientific status:** `[PROVED ON PAPER] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent theories:** bounded-variation quadrature, the Euler logarithmic derivative, and
@@ -331,7 +331,7 @@ No abstract meromorphic-continuation hypothesis, `Prop` interface, project axiom
 - [x] dyadic inequality converted exactly to normalized and unnormalized Chebyshev-error increments
 - [x] dyadic quadrature error is `O_s(k^(-Re s))` and its weighted series converges for `Re s>1/2`
 - [x] sharp Mellin half-plane noncensorship and irrational-width common-zero law formalized
-- [ ] unconditional Lean formalization
+- [x] unconditional Lean formalization
 - [x] parent-theory novelty gate failed; scientific-novelty promotion retired
 - [ ] primary-literature placement audit for citation and historical attribution
 - [ ] independent proof audit
@@ -403,3 +403,41 @@ linear ⟹ simple poles, residue `∝ A_L(ρ-½)`; incommensurable widths never 
 observable — the residual `H_W` (bounded-variation Riemann-sum quadrature error, absent from mathlib) is
 only needed to identify this closed form with the raw Dirichlet series of `p_W`; the divisor read itself
 is complete.
+
+## Authoritative Lean surface
+
+The unconditional Lean formalization is axiom-clean and uses the concrete complex window
+`RHTower.CompactBVPrimeWindow`; no abstract continuation hypothesis or target-defined source is
+present.
+
+- `HTGeometry/BoundedVariationRiemannSum.lean` proves the complex cellwise and global
+  bounded-variation right-endpoint quadrature inequalities and the BV product estimate.
+- `RHTower/BVPrimeWindowQuadrature.lean` defines the compactly supported BV window, its entire
+  Mellin integral, finite grid kernel, and the pointwise and compact-uniform `k^{-Re s}` error bounds.
+- `RHTower/BVPrimeWindowHolomorphy.lean` proves entireness of the Mellin transform and every finite
+  error term, local normal convergence, and holomorphy of `errorSeries` on `Re s > 1/2`.
+- `RHTower/BVPrimeWindowDirichlet.lean` proves the exact support band
+  `n / upper <= k <= n / lower`, the literal finite-sum formula for `weightedPrimeWindow`, absolute
+  double-series convergence, justified sum reversal, and
+  `LSeries_weightedPrimeWindow_eq_zetaLogDeriv` on `Re s > 3/2`.
+- `RHTower/BVPrimeWindowContinuation.lean` defines `polarCoefficient` and the concrete pole-filled
+  `continuedSource`, proves removal of the shifted zeta pole at `3/2`, meromorphy on
+  `Re s > 1/2`, and `LSeries_polarCoefficient_eq_continuedSource` on the initial half-plane.
+- `RHTower/BVPrimeWindowDivisorTomography.lean` proves the exact multiplicity residue limit
+  `tendsto_continuedSource_residue_of_zeta_zero`, the Mellin-censorship equivalence
+  `meromorphicOrderAt_continuedSource_eq_neg_one_iff_mellin_ne_zero`, holomorphy of the
+  kernel-normalized difference on every common Mellin-nonvanishing open set, and
+  `riemannHypothesis_iff_continuedSource_analyticOn_rightOne` for every right-half-plane
+  Mellin-noncensoring BV window.
+
+The sharp-window consequences are supplied by the existing concrete modules:
+`CCMSharpPrimeWindowDirichlet.lean`, `CCMSharpPrimeWindowContinuation.lean`,
+`CCMSharpPrimeWindowDivisorTomography.lean`, `CCMSharpPrimeWindowNoncensorship.lean`,
+`SharpWindowCommensurability.lean`, and `TentDivisorRecovery.lean`. In particular,
+`riemannHypothesis_iff_dyadicSharpPrimeContinuedSource_analyticOn_rightOne` is the one-window RH
+criterion, while `sharpAmplitude_not_both_zero` and `sharpObservable_twoWidth_divisor_recovery`
+provide the irrational two-width full-divisor specialization.
+
+Verification: direct leaf compilation, targeted builds of the new modules, `#print axioms` on the
+quadrature, Dirichlet, continuation, residue, censorship, quotient, and RH capstones, and
+`scripts/formal_tools.py lint` all pass. No full build was run.

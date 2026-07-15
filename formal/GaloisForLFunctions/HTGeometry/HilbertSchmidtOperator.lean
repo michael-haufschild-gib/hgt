@@ -89,7 +89,8 @@ theorem summable_norm_inner_sq (b : HilbertBasis ι 𝕜 E) (x : E) :
 /-- An orthonormal family in a separable Hilbert space has a countable index type.  This is the
 topological input needed to commute a basis sum with an integral: radius-`1/2` balls about distinct
 orthonormal vectors are nonempty, open, and disjoint. -/
-theorem _root_.Orthonormal.countable_index [SeparableSpace E] {v : ι → E}
+theorem _root_.Orthonormal.countable_index {v : ι → E}
+    [hsep : TopologicalSpace.SeparableSpace E]
     (hv : Orthonormal 𝕜 v) : Countable ι := by
   let s : ι → Set E := fun i => Metric.ball (v i) (1 / 2)
   apply Pairwise.countable_of_isOpen_disjoint (s := s)
@@ -98,7 +99,7 @@ theorem _root_.Orthonormal.countable_index [SeparableSpace E] {v : ι → E}
     have hsq : ‖v i - v j‖ ^ 2 = 2 := by
       rw [@norm_sub_sq 𝕜, hv.norm_eq_one i, hv.norm_eq_one j,
         hv.inner_eq_zero hij]
-      simp
+      norm_num
     have hdist : 1 ≤ dist (v i) (v j) := by
       rw [dist_eq_norm]
       nlinarith [norm_nonneg (v i - v j)]

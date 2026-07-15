@@ -497,9 +497,14 @@ locations for the same resource; none is silently counted as bounded scalar Kolc
 The proof is Hadamard factorization plus closure of the positive-kernel cone and the existing
 Euler-resolvent criterion. It is a route bridge, not new scientific knowledge.
 
-The Lean tree does not formalize order-one Hadamard products, the CCM regularized determinant, or
-the complete Euler Pick kernel. A finite-matrix closure wrapper would omit every analytic input.
-No Lean file is added.
+The Lean tree now formalizes the unconditional multiplicity-exact order-one Hadamard product for
+centered Xi in `XiHadamardFactorization.lean` and `XiHadamardGrowth.lean`, including
+`XiC_eq_constant_mul_canonicalProduct`; `XiRelativeResolventTrace.lean` identifies its
+logarithmic derivative with the exact divisor resolvent away from zeros.  Thus the Xi
+Hadamard/log-derivative input is discharged.  The tree still does not formalize the CCM
+regularized determinant, the general real-rooted spectral-factor Pick kernel, or the cofinal
+dephased convergence `(8)`.  A finite-matrix closure wrapper would omit those remaining analytic
+inputs, so no Lean file is added here.
 
 ## Gates
 

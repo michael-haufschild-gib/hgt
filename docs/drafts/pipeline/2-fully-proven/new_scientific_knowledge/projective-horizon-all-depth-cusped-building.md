@@ -124,10 +124,9 @@ global topology in one exact structure.
 
 ## Lean boundary
 
-The scalar and projective-plane current mechanisms enforcing cross-cusp constant meet are
-formalized in
-`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonOneSidedCurrentAlgebra.lean`. The local
-toolchain has no Solomon--Tits/order-complex homotopy surface, so `(4)--(6)` are not added as
+The all-projective-dimension current mechanism enforcing cross-cusp constant meet is formalized in
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonArbitraryRankCurrentAlgebra.lean`. The
+local toolchain has no Solomon--Tits/order-complex homotopy surface, so `(4)--(6)` are not added as
 assumptions.
 
 ## RH impact audit
@@ -144,4 +143,3 @@ positivity map or zero-location mechanism is known.
 - [x] deformation retraction and Solomon--Tits homology deduced
 - [ ] formal order-complex topology
 - [ ] independent specialist audit
-

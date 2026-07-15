@@ -83,6 +83,79 @@ theorem soninAllPrimeColumnOperator_apply (a : ℝ) (ha : 0 < a) (x : SoninL2)
       b.tsum_inner_mul_inner _ _
     _ = inner ℂ (b i) (A x) := ContinuousLinearMap.adjoint_inner_left A x (b i)
 
+/-- A nonzero prime-power residual gives a nonzero row channel in the stacked all-prime
+instrument.  Orthogonal outcome stacking therefore cannot cancel local Sonin information. -/
+theorem soninAllPrimeColumnKernel_ne_zero_of_weightedPrimePowerResidual_ne_zero
+    (a : ℝ) (pk : Nat.Primes × ℕ)
+    (hpk : centralSoninWeightedPrimePowerResidual a pk ≠ 0) :
+    soninAllPrimeColumnKernel a ≠ 0 := by
+  intro hkernel
+  apply hpk
+  let b := ContinuousLinearMap.hsBasis ℂ SoninL2
+  refine ContinuousLinearMap.ext_on
+    (Submodule.dense_iff_topologicalClosure_eq_top.mpr b.dense_span) ?_
+  rintro x ⟨j, rfl⟩
+  apply b.repr.injective
+  ext i
+  rw [b.repr_apply_apply]
+  simp only [map_zero, Pi.zero_apply]
+  have hentry := congrFun hkernel ((pk, i), j)
+  simpa [soninAllPrimeColumnKernel, b] using hentry
+
+/-- A single nonzero residual channel is sufficient for nondegeneracy of the coordinate column
+used by every coupled Gram and source-normalization theorem downstream. -/
+theorem soninAllPrimeColumnCoordinateOperator_ne_zero_of_weightedPrimePowerResidual_ne_zero
+    (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ)
+    (hpk : centralSoninWeightedPrimePowerResidual a pk ≠ 0) :
+    soninAllPrimeColumnCoordinateOperator a ha ≠ 0 := by
+  exact (HilbertSchmidt.toOperatorRect_ne_zero_iff
+    (soninAllPrimeColumnKernel_isHSRect a ha)).2
+      (soninAllPrimeColumnKernel_ne_zero_of_weightedPrimePowerResidual_ne_zero a pk hpk)
+
+/-- The nonzero logarithmic Euler coefficient introduces no new nondegeneracy premise. -/
+theorem soninAllPrimeColumnCoordinateOperator_ne_zero_of_primePowerResidual_ne_zero
+    (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ)
+    (hpk : centralSoninPrimePowerResidual a pk ≠ 0) :
+    soninAllPrimeColumnCoordinateOperator a ha ≠ 0 := by
+  apply soninAllPrimeColumnCoordinateOperator_ne_zero_of_weightedPrimePowerResidual_ne_zero
+    a ha pk
+  simpa [centralSoninWeightedPrimePowerResidual,
+    soninLogPrimePowerCoefficient_ne_zero] using hpk
+
+/-- **Local-channel criterion for coupled-source nondegeneracy.**  The global all-prime source
+column is nonzero exactly when at least one unweighted prime-power residual is nonzero.  This
+replaces an opaque infinite-column hypothesis by one concrete channel witness. -/
+theorem soninAllPrimeColumnCoordinateOperator_ne_zero_iff_exists_primePowerResidual_ne_zero
+    (a : ℝ) (ha : 0 < a) :
+    soninAllPrimeColumnCoordinateOperator a ha ≠ 0 ↔
+      ∃ pk : Nat.Primes × ℕ, centralSoninPrimePowerResidual a pk ≠ 0 := by
+  constructor
+  · intro hcolumn
+    by_contra hnone
+    push_neg at hnone
+    apply hcolumn
+    exact (HilbertSchmidt.toOperatorRect_eq_zero_iff
+      (soninAllPrimeColumnKernel_isHSRect a ha)).2 (by
+        funext z
+        simp [soninAllPrimeColumnKernel, centralSoninWeightedPrimePowerResidual,
+          hnone z.1.1])
+  · rintro ⟨pk, hpk⟩
+    exact soninAllPrimeColumnCoordinateOperator_ne_zero_of_primePowerResidual_ne_zero
+      a ha pk hpk
+
+/-- The global coupled source is nonzero exactly when its correction response detects one
+Chebyshev mode of one prime dilation signal.  This replaces the two-parameter scale family by one
+polynomial orbit per prime without changing the nondegeneracy obligation. -/
+theorem soninAllPrimeColumnCoordinateOperator_ne_zero_iff_exists_cosineResponse_ne_zero
+    (a : ℝ) (ha : 0 < a) :
+    soninAllPrimeColumnCoordinateOperator a ha ≠ 0 ↔
+      ∃ pk : Nat.Primes × ℕ,
+        centralSoninCornerCorrectionResponse a
+          (HTGeometry.unitaryCosineRecurrence
+            (soninPrimeDilationSignal pk.1) (pk.2 + 2)) ≠ 0 := by
+  simpa only [centralSoninPrimePowerResidual_eq_cosineResponse] using
+    soninAllPrimeColumnCoordinateOperator_ne_zero_iff_exists_primePowerResidual_ne_zero a ha
+
 /-- The coupled positive energy on the single Sonin space. -/
 def soninAllPrimeMixedEnergyOperator (a : ℝ) (ha : 0 < a) :
     SoninL2 →L[ℂ] SoninL2 :=

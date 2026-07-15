@@ -194,7 +194,21 @@ there is a single exceptional lattice point `(1,1)`, rather than a broad shallow
 - generation of every root, shear, and diagonal plane current mode;
 - representation-level propagation of annihilation from each minimal generator set to all modes.
 
-The rational fixed-field layer remains paper-level and is not postulated in Lean.
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonArbitraryRankCurrentAlgebra.lean` removes
+the dimensional boundary. With matrix indices `Fin 2 disjoint_union ι`, it formalizes the complete
+algebra
+
+```text
+sl_2 semidirect Hom(K^2,K^ι)
+```
+
+for arbitrary finite transverse index type `ι`. Lean proves every root, diagonal, and transverse
+shear bracket, generation of every polynomial mode from the two constant radicals plus one linear
+root, and arbitrary-representation annihilation propagation. Thus the current-algebra engine of
+the all-projective-dimension theorem is fully formalized; only the rational fixed-field layer
+remains paper-level.
+
+No rational fixed-field assertion is postulated in Lean.
 
 ## RH impact audit
 
@@ -213,6 +227,7 @@ parent theorem but supplies no zero-location conclusion.
 - [x] scalar three-generator current theorem proved and formalized
 - [x] higher-rank ideal-generation mechanism proved
 - [x] projective-plane one-linear-mode theorem formalized
+- [x] arbitrary-projective-dimension current generation and annihilation formalized
 - [x] unequal-depth join and meet classified
 - [ ] general infinite fixed-field layer formalized
 - [ ] independent literature and specialist audit

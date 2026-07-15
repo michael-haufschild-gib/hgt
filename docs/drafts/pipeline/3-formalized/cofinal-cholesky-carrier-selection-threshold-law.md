@@ -1,7 +1,7 @@
 # Finite Cholesky frames retain maximal HT; the complete divergent tower selects the carrier
 
 - **ID:** `cofinal-cholesky-carrier-selection-threshold-law`
-- **Stage:** 2-fully-proven on paper / needs audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM / COFINAL FRAME-SELECTION GEOMETRY
 - **Lane:** general hypertranscendence; indeterminate moment carriers; OPUC frame geometry
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED]`
@@ -371,12 +371,18 @@ saturation and OPUC repair are classical separately; and the theorem is generic 
 explicit source-canonical construction. A field-level score would require a new intrinsic source
 law that forces or orients the complete tower for a distinguished HT function, not only a sharp
 description of the modulus that remains without such a law. Priority is also unverified, and the
-theorem has not received an independent specialist proof audit or unconditional Lean
-formalization.
+theorem has not received an independent specialist proof or priority audit; the exact classical
+Riesz-brothers, Szegő, and Nevanlinna source interfaces remain cited inputs.
 
 ## Lean status
 
-Formalization is in progress; no Stage 3 claim is made. The unconditional modules
+Formalization is complete relative to the exact classical source interfaces stated on this card.
+In particular, `CofinalCholeskyResidualPhase.lean` now performs the formerly optional global
+weak-topology gluing: on the complete Nevanlinna carrier range it intersects the transported
+singular-continuous dense `G_delta` phase with the intrinsic maximal full-translation dense
+`G_delta` phase, proves the intersection dense `G_delta` and residual, and derives atomlessness,
+real-Lebesgue singularity, and maximal translation freeness for every point under the stated
+real-analytic lower-row hypothesis. The supporting unconditional modules
 `GaloisForLFunctions.HTGeometry.CofinalCholeskyFiniteFrame`,
 `GaloisForLFunctions.HTGeometry.CayleyMomentFrame`, and
 `GaloisForLFunctions.HTGeometry.CauchyJetFrame` now prove:
@@ -1092,7 +1098,7 @@ theorem on the entire carrier range.
 - [ ] full primary-source priority audit
 - [ ] exact primary-source match for every literature theorem interface
 - [x] axiom-free Lean formalization of every original deduction in the relative paper capstone
-- [ ] optional single-declaration weak-topology gluing of the global carrier-range residual phase
+- [x] single-declaration weak-topology gluing of the global carrier-range residual phase
 
 ## Log
 

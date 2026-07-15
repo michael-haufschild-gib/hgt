@@ -227,6 +227,14 @@ with the continued prime--Gamma Cauchy diagonal at the same source point. (19)
 An identity of the form `(19)` with a source-controlled sign would transfer an existing
 prime--Gamma producer directly to `(13)`.  No such comparison is currently proved.
 
+There is now, however, a direct comparison with a different explicit prime producer.  The theorem
+`bv-prime-window-laurent-orientation-polarization.md` proves that the normalized value in `(12)` is
+the forward-minus-inverse squared Laurent-residue norm of reciprocal dilations of a compact BV
+prime window.  Rational interval windows form a countable source-pure separating family, and
+reciprocal-window reflection swaps the two residue channels.  This discharges the value-reader
+problem for the BV moving-prime source, while leaving both the continued prime--Gamma comparison
+in `(19)` and the RH-bearing source contraction open.
+
 ## Literature calibration
 
 Burnol's Theorem 2.1 and Proposition 2.2 supply continuous completed-Mellin evaluations for the
@@ -249,6 +257,7 @@ the specialized value `(12)` or the top-down reduction `(13)`.
 - [x] abstract diagonal-functional gap `(K2)` discharged
 - [x] quotient correction factored through the co-Poisson annihilator ideal
 - [ ] compare the ambient aperture-orientation term to the continued prime--Gamma source diagonal
+- [x] compare the ambient aperture-orientation term to explicit BV moving-prime Laurent residues
 - [ ] prove the required scalar sign on the co-Poisson annihilator spectrum
 - [ ] formalize Burnol's extended Sonin/co-Poisson RKHS interfaces in Lean
 - [ ] compose a source sign proof to RH

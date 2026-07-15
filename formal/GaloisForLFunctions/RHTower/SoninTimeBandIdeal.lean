@@ -323,6 +323,101 @@ def centralSoninFormalComplement (a : ℝ) : SoninL2 →L[Complex] SoninL2 :=
   1 - indicatorCutoff (centralInterval a) (measurableSet_centralInterval a) -
     fourierCutoff (centralInterval a) (measurableSet_centralInterval a)
 
+/-- Linear-response defect between the actual Sonin projection and its formal-complement
+principal model, evaluated at an arbitrary bounded observable. -/
+def centralSoninCornerCorrectionResponse
+    (a : ℝ) (D : SoninL2 →L[Complex] SoninL2) : SoninL2 →L[Complex] SoninL2 :=
+  crossBoundary (centralSoninProjection a) D -
+    crossBoundary (centralSoninFormalComplement a) D
+
+/-- The response factors linearly through the exact projection correction.  This is the
+two-channel perturbation identity used by every norm and Hilbert--Schmidt estimate downstream. -/
+theorem centralSoninCornerCorrectionResponse_eq_correction_factorization
+    (a : ℝ) (D : SoninL2 →L[Complex] SoninL2) :
+    centralSoninCornerCorrectionResponse a D =
+      (1 - centralSoninProjection a) * D * centralSoninProjectionCorrection a -
+        centralSoninProjectionCorrection a * D * centralSoninFormalComplement a := by
+  have hcorrection : centralSoninProjectionCorrection a =
+      centralSoninProjection a - centralSoninFormalComplement a := by
+    rfl
+  rw [centralSoninCornerCorrectionResponse, hcorrection]
+  simp only [crossBoundary]
+  noncomm_ring
+
+/-- The correction response is a bounded linear map of the inserted observable.  This is the
+continuity interface needed by operator tomography; it does not assume a time evolution. -/
+noncomputable def centralSoninCornerCorrectionResponseCLM (a : ℝ) :
+    (SoninL2 →L[Complex] SoninL2) →L[Complex]
+      (SoninL2 →L[Complex] SoninL2) :=
+  let Q := centralSoninProjection a
+  let Q₀ := centralSoninFormalComplement a
+  LinearMap.mkContinuous
+    { toFun := centralSoninCornerCorrectionResponse a
+      map_add' := by
+        intro D E
+        simp only [centralSoninCornerCorrectionResponse, crossBoundary]
+        noncomm_ring
+      map_smul' := by
+        intro c D
+        simp only [RingHom.id_apply, centralSoninCornerCorrectionResponse, crossBoundary,
+          mul_smul_comm, smul_mul_assoc, smul_sub] }
+    (‖1 - Q‖ * ‖Q‖ + ‖1 - Q₀‖ * ‖Q₀‖)
+    (fun D => by
+      have hQbound :
+          ‖crossBoundary Q D‖ ≤ (‖1 - Q‖ * ‖Q‖) * ‖D‖ := by
+        calc
+          ‖crossBoundary Q D‖ = ‖(1 - Q) * D * Q‖ := rfl
+          _ ≤ ‖(1 - Q) * D‖ * ‖Q‖ := norm_mul_le _ _
+          _ ≤ (‖1 - Q‖ * ‖D‖) * ‖Q‖ :=
+            mul_le_mul_of_nonneg_right (norm_mul_le _ _) (norm_nonneg Q)
+          _ = (‖1 - Q‖ * ‖Q‖) * ‖D‖ := by ring
+      have hQ₀bound :
+          ‖crossBoundary Q₀ D‖ ≤ (‖1 - Q₀‖ * ‖Q₀‖) * ‖D‖ := by
+        calc
+          ‖crossBoundary Q₀ D‖ = ‖(1 - Q₀) * D * Q₀‖ := rfl
+          _ ≤ ‖(1 - Q₀) * D‖ * ‖Q₀‖ := norm_mul_le _ _
+          _ ≤ (‖1 - Q₀‖ * ‖D‖) * ‖Q₀‖ :=
+            mul_le_mul_of_nonneg_right (norm_mul_le _ _) (norm_nonneg Q₀)
+          _ = (‖1 - Q₀‖ * ‖Q₀‖) * ‖D‖ := by ring
+      calc
+        ‖centralSoninCornerCorrectionResponse a D‖ ≤
+            ‖crossBoundary Q D‖ + ‖crossBoundary Q₀ D‖ := norm_sub_le _ _
+        _ ≤ (‖1 - Q‖ * ‖Q‖) * ‖D‖ +
+            (‖1 - Q₀‖ * ‖Q₀‖) * ‖D‖ := add_le_add hQbound hQ₀bound
+        _ = (‖1 - Q‖ * ‖Q‖ + ‖1 - Q₀‖ * ‖Q₀‖) * ‖D‖ := by ring)
+
+@[simp]
+theorem centralSoninCornerCorrectionResponseCLM_apply
+    (a : ℝ) (D : SoninL2 →L[Complex] SoninL2) :
+    centralSoninCornerCorrectionResponseCLM a D =
+      centralSoninCornerCorrectionResponse a D := rfl
+
+/-- **Identity-response anticommutator law.**  The actual projection has no boundary response to
+the identity, whereas the non-idempotent formal complement retains exactly the Jordan overlap of
+the physical and Fourier sharp effects. -/
+theorem centralSoninCornerCorrectionResponse_one_eq_anticommutator (a : ℝ) :
+    centralSoninCornerCorrectionResponse a 1 =
+      (centralPhysicalForbidden a).starProjection *
+          (centralFourierForbidden a).starProjection +
+        (centralFourierForbidden a).starProjection *
+          (centralPhysicalForbidden a).starProjection := by
+  let P : SoninL2 →L[Complex] SoninL2 :=
+    (centralPhysicalForbidden a).starProjection
+  let R : SoninL2 →L[Complex] SoninL2 :=
+    (centralFourierForbidden a).starProjection
+  have hPP : P * P = P := (centralPhysicalForbidden a).isIdempotentElem_starProjection
+  have hRR : R * R = R := (centralFourierForbidden a).isIdempotentElem_starProjection
+  have hQ : IsIdempotentElem (centralSoninProjection a) :=
+    (centralSoninCarrier a).isIdempotentElem_starProjection
+  have hformal : centralSoninFormalComplement a = 1 - P - R := by
+    simp [centralSoninFormalComplement, P, R,
+      indicatorCutoff_eq_physicalForbidden_starProjection,
+      fourierCutoff_eq_fourierForbidden_starProjection]
+  change centralSoninCornerCorrectionResponse a 1 = P * R + R * P
+  rw [centralSoninCornerCorrectionResponse, crossBoundary_one hQ, hformal]
+  simp only [zero_sub, crossBoundary, one_mul, mul_one]
+  noncomm_ring [hPP, hRR]
+
 /-- The principal lower Sonin dilation corner obtained from the formal complement cutoff. -/
 def centralSoninPrincipalDilationCorner
     (a p : ℝ) (hp : 1 < p) : SoninL2 →L[Complex] SoninL2 :=
@@ -333,6 +428,26 @@ def centralSoninDilationCornerResidual
     (a p : ℝ) (hp : 1 < p) : SoninL2 →L[Complex] SoninL2 :=
   crossBoundary (centralSoninProjection a) (dilationSum p hp) -
     centralSoninPrincipalDilationCorner a p hp
+
+/-- Every prime-scale residual is the correction response evaluated at its symmetric dilation
+observable. -/
+theorem centralSoninDilationCornerResidual_eq_correctionResponse
+    (a p : ℝ) (hp : 1 < p) :
+    centralSoninDilationCornerResidual a p hp =
+      centralSoninCornerCorrectionResponse a (dilationSum p hp) := by
+  rfl
+
+/-- The prime-scale residual therefore factors through the single exact projection correction
+on both sides of the symmetric dilation observable. -/
+theorem centralSoninDilationCornerResidual_eq_correction_factorization
+    (a p : ℝ) (hp : 1 < p) :
+    centralSoninDilationCornerResidual a p hp =
+      (1 - centralSoninProjection a) * dilationSum p hp *
+          centralSoninProjectionCorrection a -
+        centralSoninProjectionCorrection a * dilationSum p hp *
+          centralSoninFormalComplement a := by
+  rw [centralSoninDilationCornerResidual_eq_correctionResponse,
+    centralSoninCornerCorrectionResponse_eq_correction_factorization]
 
 /-- The actual one-scale Sonin corner residual retains a finite time-band factorization
 certificate. This is stronger data than compactness and is the exact algebraic input for its

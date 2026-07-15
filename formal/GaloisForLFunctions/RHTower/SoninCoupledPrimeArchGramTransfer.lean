@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SoninCoupledPrimeResidual
 import GaloisForLFunctions.RHTower.SoninPrimeArchFiniteMomentTransfer
+import GaloisForLFunctions.HTGeometry.FiniteConstraintGroupAverage
 import Mathlib.Analysis.InnerProductSpace.GramMatrix
 
 open Filter Topology Polynomial
@@ -157,6 +158,18 @@ theorem soninAllPrimeCoupledCoordinateEnergy_isSelfAdjoint
   rw [soninAllPrimeCoupledCoordinateEnergy,
     ContinuousLinearMap.adjoint_comp,
     ContinuousLinearMap.adjoint_adjoint]
+
+/-- **One-channel criterion for the coupled positive effect.**  The quantum master effect
+`C_a† C_a` is nonzero exactly when one concrete prime-power Sonin residual is nonzero. -/
+theorem soninAllPrimeCoupledCoordinateEnergy_ne_zero_iff_exists_primePowerResidual_ne_zero
+    (a : SoninPositiveAperture) :
+    soninAllPrimeCoupledCoordinateEnergy a ≠ 0 ↔
+      ∃ pk : Nat.Primes × ℕ, centralSoninPrimePowerResidual a.1 pk ≠ 0 := by
+  change (ContinuousLinearMap.adjoint
+      (soninAllPrimeColumnCoordinateOperator a.1 a.2) ∘L
+        soninAllPrimeColumnCoordinateOperator a.1 a.2) ≠ 0 ↔ _
+  rw [HTGeometry.adjoint_comp_self_ne_zero_iff,
+    soninAllPrimeColumnCoordinateOperator_ne_zero_iff_exists_primePowerResidual_ne_zero]
 
 /-- The output energy is unchanged when the common Sonin source is replaced by its canonical
 Hilbert-basis coordinates. -/
@@ -342,6 +355,15 @@ theorem soninAllPrimeCoupledTraceMoment_zero_re_pos_iff_column_ne_zero
       apply hne
       simpa only [C] using (ContinuousLinearMap.hsNormSq_eq_zero_iff hC).mp hzero
     exact lt_of_le_of_ne (ContinuousLinearMap.hsNormSq_nonneg C) (Ne.symm hne')
+
+/-- Degree-zero source positivity is a purely local channel condition: one prime-power residual
+witness is necessary and sufficient. -/
+theorem soninAllPrimeCoupledTraceMoment_zero_re_pos_iff_exists_primePowerResidual_ne_zero
+    (a : SoninPositiveAperture) :
+    0 < (soninAllPrimeCoupledTraceMoment a 0).re ↔
+      ∃ pk : Nat.Primes × ℕ, centralSoninPrimePowerResidual a.1 pk ≠ 0 := by
+  rw [soninAllPrimeCoupledTraceMoment_zero_re_pos_iff_column_ne_zero,
+    soninAllPrimeColumnCoordinateOperator_ne_zero_iff_exists_primePowerResidual_ne_zero]
 
 /-- The zeroth coupled trace moment is already the zeroth block-diagonal Sonin moment.  Thus
 the coupled route adds no new scalar normalization at degree zero; its genuinely new arithmetic
@@ -928,6 +950,16 @@ canonically by the zeroth coupled moment. -/
 def SoninCoupledNondegenerateAperture :=
   {a : SoninPositiveAperture //
     soninAllPrimeColumnCoordinateOperator a.1 a.2 ≠ 0}
+
+/-- Build the nondegenerate aperture required by the coupled source-normalization chain from one
+concrete prime-power residual witness.  No global all-prime cancellation hypothesis remains. -/
+def soninCoupledNondegenerateApertureOfPrimePowerResidual
+    (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ)
+    (hpk : centralSoninPrimePowerResidual a pk ≠ 0) :
+    SoninCoupledNondegenerateAperture :=
+  ⟨⟨a, ha⟩,
+    soninAllPrimeColumnCoordinateOperator_ne_zero_of_primePowerResidual_ne_zero
+      a ha pk hpk⟩
 
 /-- The scalar coupled Gram value of one real polynomial at one positive aperture. -/
 def soninAllPrimeCoupledPolynomialGramValue

@@ -45,6 +45,22 @@ theorem twoProjection_difference_anticommutes_complement
   have hQQ : Q * Q = Q := hQ
   noncomm_ring [hPP, hQQ]
 
+/-- The formal complement of two idempotents is itself idempotent exactly when their Jordan
+overlap vanishes.  This is the ring-level sharpness criterion for the complement of two quantum
+effects. -/
+theorem twoProjection_complement_isIdempotentElem_iff_anticommutator_eq_zero
+    {P Q : R} (hP : IsIdempotentElem P) (hQ : IsIdempotentElem Q) :
+    IsIdempotentElem (1 - P - Q) ↔ P * Q + Q * P = 0 := by
+  have hPP : P * P = P := hP
+  have hQQ : Q * Q = Q := hQ
+  constructor
+  · intro hB
+    have hBB : (1 - P - Q) * (1 - P - Q) = 1 - P - Q := hB
+    noncomm_ring [hPP, hQQ, hBB]
+  · intro hanti
+    show (1 - P - Q) * (1 - P - Q) = 1 - P - Q
+    noncomm_ring [hPP, hQQ, hanti]
+
 /-- **Zero-mode-subtracted two-projection partition.**  Suppose `Z` is an idempotent annihilated
 on both sides by the two idempotents `P,Q`.  Replacing the formal complement `1-P-Q` by its
 `Z`-corrected version `Z-(1-P-Q)` removes exactly the `Z` zero-mode energy:
@@ -83,6 +99,74 @@ section HilbertSpace
 
 variable {k E : Type*} [RCLike k]
   [NormedAddCommGroup E] [InnerProductSpace k E] [CompleteSpace E]
+
+/-- Two self-adjoint idempotents have zero anticommutator exactly when their ranges are
+orthogonal.  Equivalently, a pair of sharp quantum effects has no Jordan overlap exactly when
+one ordered transition channel vanishes. -/
+theorem twoProjection_anticommutator_eq_zero_iff_mul_eq_zero
+    (P Q : E →L[k] E) (hP : IsIdempotentElem P) (hQ : IsIdempotentElem Q)
+    (hPadj : ContinuousLinearMap.adjoint P = P)
+    (hQadj : ContinuousLinearMap.adjoint Q = Q) :
+    P * Q + Q * P = 0 ↔ Q * P = 0 := by
+  have hPP : P * P = P := hP
+  have hQQ : Q * Q = Q := hQ
+  constructor
+  · intro hanti
+    have hcompress := congrArg (fun T : E →L[k] E => P * T * P) hanti
+    have htwice : P * Q * P + P * Q * P = 0 := by
+      simpa [mul_add, add_mul, ← mul_assoc, hPP] using hcompress
+    have hPQP : P * Q * P = 0 := add_self_eq_zero.mp htwice
+    let T : E →L[k] E := Q * P
+    have hTadj : ContinuousLinearMap.adjoint T = P * Q := by
+      change ContinuousLinearMap.adjoint (Q ∘L P) = P ∘L Q
+      rw [ContinuousLinearMap.adjoint_comp, hPadj, hQadj]
+    have hmaster : quantumMasterConstraint T = 0 := by
+      rw [quantumMasterConstraint, hTadj]
+      change (P * Q) * (Q * P) = 0
+      calc
+        (P * Q) * (Q * P) = P * (Q * Q) * P := by
+          simp only [mul_assoc]
+        _ = P * Q * P := by rw [hQQ]
+        _ = 0 := hPQP
+    exact (quantumMasterConstraint_eq_zero_iff T).mp hmaster
+  · intro hQP
+    have hPQ : P * Q = 0 := by
+      have h := congrArg ContinuousLinearMap.adjoint hQP
+      change ContinuousLinearMap.adjoint (Q ∘L P) =
+        ContinuousLinearMap.adjoint 0 at h
+      simpa [ContinuousLinearMap.adjoint_comp, hPadj, hQadj] using h
+    simp [hPQ, hQP]
+
+/-- Nonzero Jordan overlap and nonzero transition amplitude are therefore equivalent for sharp
+quantum effects. -/
+theorem twoProjection_anticommutator_ne_zero_iff_mul_ne_zero
+    (P Q : E →L[k] E) (hP : IsIdempotentElem P) (hQ : IsIdempotentElem Q)
+    (hPadj : ContinuousLinearMap.adjoint P = P)
+    (hQadj : ContinuousLinearMap.adjoint Q = Q) :
+    P * Q + Q * P ≠ 0 ↔ Q * P ≠ 0 :=
+  not_congr
+    (twoProjection_anticommutator_eq_zero_iff_mul_eq_zero P Q hP hQ hPadj hQadj)
+
+/-- For sharp effects on a Hilbert space, the formal complement is sharp exactly when there is
+no transition amplitude between the two effects. -/
+theorem twoProjection_complement_isIdempotentElem_iff_mul_eq_zero
+    (P Q : E →L[k] E) (hP : IsIdempotentElem P) (hQ : IsIdempotentElem Q)
+    (hPadj : ContinuousLinearMap.adjoint P = P)
+    (hQadj : ContinuousLinearMap.adjoint Q = Q) :
+    IsIdempotentElem (1 - P - Q) ↔ Q * P = 0 := by
+  rw [twoProjection_complement_isIdempotentElem_iff_anticommutator_eq_zero hP hQ,
+    twoProjection_anticommutator_eq_zero_iff_mul_eq_zero P Q hP hQ hPadj hQadj]
+
+/-- Equivalently, any nonzero sharp-effect transition forces the formal complement to remain an
+unsharp contraction rather than a projection. -/
+theorem twoProjection_complement_not_isIdempotentElem_iff_mul_ne_zero
+    (P Q : E →L[k] E) (hP : IsIdempotentElem P) (hQ : IsIdempotentElem Q)
+    (hPadj : ContinuousLinearMap.adjoint P = P)
+    (hQadj : ContinuousLinearMap.adjoint Q = Q) :
+    (¬ IsIdempotentElem (1 - P - Q)) ↔ Q * P ≠ 0 :=
+  not_congr
+    (twoProjection_complement_isIdempotentElem_iff_mul_eq_zero
+      P Q hP hQ hPadj hQadj)
 
 private theorem adjoint_sub_twoProjection
     (S T : E →L[k] E) :

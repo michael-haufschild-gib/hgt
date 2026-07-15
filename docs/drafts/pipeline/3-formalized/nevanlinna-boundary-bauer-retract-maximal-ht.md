@@ -1,7 +1,7 @@
 # The Nevanlinna boundary is a canonical Bauer retract carrying maximal translation HT
 
 - **ID:** `nevanlinna-boundary-bauer-retract-maximal-ht`
-- **Stage:** 2-fully-proven on paper / needs audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM / UNIVERSAL CONSTRAINT-FIBER GEOMETRY LAW
 - **Lane:** general hypertranscendence; indeterminate Hamburger moments; convex carrier geometry
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED]`
@@ -418,29 +418,24 @@ itself establish field-level novelty or significance.
 
 ## Lean status
 
-No Stage 3 claim is made. Exact formalization requires the indeterminate Hamburger solution
-fiber, real Nevanlinna matrices, projective support fibers, weak probability topologies,
-barycentric kernels, the normalization covariance, Banach-space jet controllability, and
-parametric transversality. Those layers are not jointly available in the current Lean tree.
+Formalized relative only to the classical Nevanlinna family and parent transversality inputs stated
+on the card. The exact support-label left inverse, moment-preserving boundary barycenter, closed
+Bauer embedding, whole-fiber retraction, projective-coordinate covariance, genuine Mathlib Markov
+kernel, weak-Feller operator, idempotence, stationarity, invariant-set ergodicity, closed-face
+lattice, and infinite-face residual maximal-translation law are in:
 
-Formalization audit (needs-audit pass): no bounded self-contained kernel closes a gate. The
-substantive content — the moment-preserving barycenter `(7)`, the Bauer-simplex identification `(10)`,
-the weak-Feller Markov projector `(17)`--`(22)`, and the residual HT on infinite faces — all rest on
-the absent Hamburger-moment/Nevanlinna/Choquet-simplex/transversality stack shared with the parent
-cards. Two coordinate-free layers of that stack are now formalized in-tree, axiom-clean:
+- `NevanlinnaBoundaryKernel.lean`, `NevanlinnaConstraintProjector.lean`,
+  `NevanlinnaBauerRetract.lean`, `NevanlinnaAffineGeometry.lean`;
+- `NevanlinnaBoundaryFaceLattice.lean`, `NevanlinnaStationaryBauer.lean`,
+  `NevanlinnaKernelErgodicity.lean`;
+- `BoundaryCarrierTranslationFreeness.lean`, `InfiniteSupportProbabilityLaws.lean`, and
+  `NevanlinnaBoundaryFaceMaximalTranslation.lean`.
 
-- The **topological retract dimension bound** — the load-bearing consequence of the Bauer retraction —
-  is `HasCoverDimLE.of_retract` in `formal/GaloisForLFunctions/HTGeometry/CoveringDimension.lean`: a retract
-  `Y` of `X` (continuous `i : Y → X`, `r : X → Y`, `r ∘ i = id`) has covering dimension at most that
-  of `X`.  This is exactly the abstract fact that passing to the Nevanlinna Bauer retract cannot raise
-  dimension; the idempotence `R_s^2 = R_s` from the left inverse `π_* ∘ Β = id` is its
-  retraction-from-section shadow.
-- The **moment-functional / Hankel-positivity substrate** underlying the moment-preserving barycenter
-  and the representing-measure simplex is `formal/GaloisForLFunctions/HTGeometry/MomentFunctionalPositivity.lean`
-  (`momentFunctional`, `momentFunctional_pow_two_nonneg`, `momentFunctional_pow_two_eq_zero`).
-
-What remains absent is the analytic simplex identification itself (Nevanlinna matrix / Choquet
-extremal boundary / weak-Feller kernel), which no clean interface abstracts.
+The maximal phase is stated intrinsically on probability carriers. Its density is proved through
+the stronger simultaneous full-rank packet-witness phase. Its residuality consumes exactly the
+parent card's countable `G_delta` detector, recorded as `MaximalTranslationInputs.phase_isGδ`, rather
+than introducing a new analytic axiom. The principal endpoints have only `propext`,
+`Classical.choice`, and `Quot.sound`; targeted builds and the formal lint gate pass.
 
 ## Gates
 
@@ -459,7 +454,7 @@ extremal boundary / weak-Feller kernel), which no clean interface abstracts.
 - [x] preliminary exact literature search
 - [ ] independent specialist proof audit
 - [ ] full primary-source priority audit
-- [ ] unconditional Lean formalization of the entire exact theorem
+- [x] Lean formalization relative to the exact classical and parent inputs stated above
 
 ## Log
 

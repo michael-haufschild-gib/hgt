@@ -4,7 +4,9 @@
   `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/prime-arch-shifted-sector-circle-valuation-cone.md`
 - **Destination:** reusable theorem in `formal/GaloisForLFunctions/HTGeometry`, Xi specialization
   and residual Sonin consumer in `formal/GaloisForLFunctions/RHTower`
-- **Status:** paper proof complete; no Lean work or build performed in this pass
+- **Status:** exact thirteenth-power Xi core formalized in
+  `PrimeArchShiftThirteenCircleCone.lean`; reusable circle-density packaging and residual Sonin
+  consumer remain
 
 ## Reusable HTGeometry layer
 
@@ -53,12 +55,21 @@ to obtain the rational specialization for `0<=s<=11` with
 delta_s=224/(13*(168-(s+1)^2)).
 ```
 
-Then prove the valuation corollary for `P=X^v q`, `v<=5`, and define the residual integer test
-family complementary to
+The endpoint `s=12` is separately supplied by the formal exact bound
+`Re(u^13)>|u|^13/8`.  It gives `delta_12=32/39` and the additional valuation-six cone
+
+```text
+32*E_tail(q) <= 7*q(0)^2.
+```
+
+Then prove the remaining circle-density packaging for the valuation corollary for `P=X^v q`,
+`v<=6`, and define the residual integer test family complementary to the six old cones
 
 ```text
 224*E_tail(q) <= (1960-13*(2v+1)^2)*q(0)^2.
 ```
+
+and the new valuation-six cone above.
 
 Finally specialize the proof of
 `riemannHypothesis_of_soninCoupledPrimeArchPerTestVariationalUpperBound` so the variational premise
@@ -66,7 +77,7 @@ is required only on that residual family.
 
 ## Verification requested
 
-- build only the new HTGeometry module and the new RHTower specialization;
+- build only the new HTGeometry module and the remaining RHTower specialization;
 - inspect axioms from a scratch file;
 - run the formal lint gate after the targeted modules pass;
 - wire the new modules into the explicit circle-state and coupled-Sonin imports;

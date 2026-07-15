@@ -232,9 +232,13 @@ Krein--Langer/generalized Nevanlinna index theorem. Restriction to a real unique
 Euler-region evaluation are routine consequences. This is a route bridge, not new scientific
 knowledge.
 
-The finite rational packet algebra could be formalized abstractly, but the unconditional Xi
-statement requires its Hadamard divisor, logarithmic derivative, and analytic negative-index
-minimality, none of which exists in the Lean tree. No wrapper is added.
+The unconditional Xi Hadamard divisor and logarithmic derivative now exist in the Lean tree:
+`XiC_eq_constant_mul_canonicalProduct` is multiplicity-exact, and
+`logDeriv_XiC_eq_relativeResolventTrace` identifies the pole-free logarithmic derivative with the
+summed divisor resolvent.  These two former prerequisites are discharged.  What remains absent is
+the analytic Krein--Langer negative-index minimality theorem, including preservation of the exact
+index under restriction to the real Euler uniqueness interval.  The finite rational packet
+algebra alone would not prove that step, so no wrapper is added.
 
 ## Gates
 

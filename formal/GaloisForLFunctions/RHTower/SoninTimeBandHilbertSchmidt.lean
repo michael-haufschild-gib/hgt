@@ -616,6 +616,73 @@ theorem hsNormSq_centralTimeBandOverlap_eq_four_mul_sq
     _ = 4 * a * a := hsNormSq_fourierCutoff_indicatorCutoff_central a a ha ha
     _ = 4 * a ^ 2 := by ring
 
+/-- The physical/Fourier Jordan overlap is genuinely nonzero at every positive aperture.  For
+sharp effects, vanishing of the anticommutator would force the time--band transition channel to
+vanish, contradicting its exact positive Shannon area. -/
+theorem centralSoninCutoffAnticommutator_ne_zero
+    (a : ℝ) (ha : 0 < a) :
+    (centralPhysicalForbidden a).starProjection *
+          (centralFourierForbidden a).starProjection +
+        (centralFourierForbidden a).starProjection *
+          (centralPhysicalForbidden a).starProjection ≠ 0 := by
+  let P : SoninL2 →L[ℂ] SoninL2 :=
+    (centralPhysicalForbidden a).starProjection
+  let Q : SoninL2 →L[ℂ] SoninL2 :=
+    (centralFourierForbidden a).starProjection
+  change P * Q + Q * P ≠ 0
+  apply (HTGeometry.twoProjection_anticommutator_ne_zero_iff_mul_ne_zero
+    P Q
+    (centralPhysicalForbidden a).isIdempotentElem_starProjection
+    (centralFourierForbidden a).isIdempotentElem_starProjection
+    (isSelfAdjoint_starProjection (centralPhysicalForbidden a)).star_eq
+    (isSelfAdjoint_starProjection (centralFourierForbidden a)).star_eq).2
+  intro hQP
+  have hHS : ContinuousLinearMap.IsHilbertSchmidt (Q * P) := by
+    simpa [P, Q, centralPhysicalForbidden, centralFourierForbidden,
+      indicatorCutoff_eq_physicalForbidden_starProjection,
+      fourierCutoff_eq_fourierForbidden_starProjection] using
+        isHilbertSchmidt_fourierCutoff_indicatorCutoff_central a a ha
+  have hzero : ContinuousLinearMap.hsNormSq (Q * P) = 0 :=
+    (ContinuousLinearMap.hsNormSq_eq_zero_iff hHS).2 hQP
+  have harea := hsNormSq_centralTimeBandOverlap_eq_four_mul_sq a ha
+  change ContinuousLinearMap.hsNormSq (Q * P) = 4 * a ^ 2 at harea
+  nlinarith [sq_pos_of_pos ha]
+
+/-- The correction response to the identity observable is nonzero at every positive aperture. -/
+theorem centralSoninCornerCorrectionResponse_one_ne_zero
+    (a : ℝ) (ha : 0 < a) :
+    centralSoninCornerCorrectionResponse a 1 ≠ 0 := by
+  rw [centralSoninCornerCorrectionResponse_one_eq_anticommutator]
+  exact centralSoninCutoffAnticommutator_ne_zero a ha
+
+/-- Consequently the formal physical/Fourier complement is never an idempotent at positive
+aperture.  Its nonzero identity response is the precise defect subtracted by the residual route. -/
+theorem centralSoninFormalComplement_not_isIdempotentElem
+    (a : ℝ) (ha : 0 < a) :
+    ¬ IsIdempotentElem (centralSoninFormalComplement a) := by
+  let P : SoninL2 →L[ℂ] SoninL2 :=
+    (centralPhysicalForbidden a).starProjection
+  let Q : SoninL2 →L[ℂ] SoninL2 :=
+    (centralFourierForbidden a).starProjection
+  have htransition : Q * P ≠ 0 :=
+    (HTGeometry.twoProjection_anticommutator_ne_zero_iff_mul_ne_zero
+      P Q
+      (centralPhysicalForbidden a).isIdempotentElem_starProjection
+      (centralFourierForbidden a).isIdempotentElem_starProjection
+      (isSelfAdjoint_starProjection (centralPhysicalForbidden a)).star_eq
+      (isSelfAdjoint_starProjection (centralFourierForbidden a)).star_eq).1
+        (by simpa [P, Q] using centralSoninCutoffAnticommutator_ne_zero a ha)
+  have hnot :=
+    (HTGeometry.twoProjection_complement_not_isIdempotentElem_iff_mul_ne_zero
+      P Q
+      (centralPhysicalForbidden a).isIdempotentElem_starProjection
+      (centralFourierForbidden a).isIdempotentElem_starProjection
+      (isSelfAdjoint_starProjection (centralPhysicalForbidden a)).star_eq
+      (isSelfAdjoint_starProjection (centralFourierForbidden a)).star_eq).2 htransition
+  simpa [centralSoninFormalComplement, P, Q,
+    indicatorCutoff_eq_physicalForbidden_starProjection,
+    fourierCutoff_eq_fourierForbidden_starProjection] using hnot
+
 /-- The outside-time/outside-band overlap after subtracting the actual common-kernel projector.
 Together with the ordinary time-band overlap, this is the second positive channel in the exact
 Hilbert--Schmidt energy of the Sonin correction. -/
@@ -1436,15 +1503,8 @@ theorem norm_centralSoninDilationCornerResidual_le_four
   let C := centralSoninProjectionCorrection a
   have hEq : centralSoninDilationCornerResidual a p hp =
       (1 - Q) * D * C - C * D * Q₀ := by
-    have hCeq : C = Q - Q₀ := by
-      rfl
-    have hgeneral : crossBoundary Q D - crossBoundary Q₀ D =
-        (1 - Q) * D * (Q - Q₀) - (Q - Q₀) * D * Q₀ := by
-      simp only [crossBoundary]
-      noncomm_ring
-    rw [hCeq]
-    simpa [centralSoninDilationCornerResidual,
-      centralSoninPrincipalDilationCorner, Q, Q₀, D] using hgeneral
+    simpa [Q, Q₀, D, C] using
+      centralSoninDilationCornerResidual_eq_correction_factorization a p hp
   have hQ : ‖(1 : SoninL2 →L[ℂ] SoninL2) - Q‖ ≤ 1 := by
     simpa [Q] using norm_one_sub_centralSoninProjection_le_one a
   have hQ₀ : ‖Q₀‖ ≤ 1 := by
@@ -1499,17 +1559,10 @@ theorem centralSoninDilationCornerResidual_hsNormSq_le
     have hB : IsHilbertSchmidt B := by
       exact hC.comp_right (D * Q₀)
     have hEq : centralSoninDilationCornerResidual a p hp = A - B := by
-      have hCeq : C = Q - Q₀ := by
-        rfl
-      have hgeneral : crossBoundary Q D - crossBoundary Q₀ D =
-          (1 - Q) * D * (Q - Q₀) - (Q - Q₀) * D * Q₀ := by
-        simp only [crossBoundary]
-        noncomm_ring
       change centralSoninDilationCornerResidual a p hp =
         (1 - Q) * D * C - C * D * Q₀
-      rw [hCeq]
-      simpa [centralSoninDilationCornerResidual,
-        centralSoninPrincipalDilationCorner, Q, Q₀, D] using hgeneral
+      simpa [Q, Q₀, D, C] using
+        centralSoninDilationCornerResidual_eq_correction_factorization a p hp
     have hQ : ‖(1 : SoninL2 →L[ℂ] SoninL2) - Q‖ ≤ 1 := by
       simpa [Q] using norm_one_sub_centralSoninProjection_le_one a
     have hQ₀ : ‖Q₀‖ ≤ 1 := by

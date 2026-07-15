@@ -1,8 +1,8 @@
 # The first two Böttcher parameter velocities are algebraically independent
 
 - **ID:** bottcher-first-two-parameter-velocities
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper and Lean 4)
 - **Date:** 2026-07-10
 - **Status banner:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` The proof is complete. A targeted
   primary-literature audit found the parent Mahler hypertranscendence theorem, but not the
@@ -245,38 +245,51 @@ This does not prove RH and does not supply a zero-localization theorem. It advan
 branch by producing a concrete algebraically independent deformation tower at its first nontrivial
 two levels.
 
-## Lean certificate and exact remaining value
+## Lean certificate
 
-The formal tree now contains the full algebraic-independence mechanism for the Taylor-series values
-`A` and `B`. In particular,
+The formal-series Mahler mechanism remains in
 
 ```text
 formal/GaloisForLFunctions/U0/SecondVelocityJet.lean
-  dyadicSubst_secondJet
-  mahlerSigma_secondJet
-
 formal/GaloisForLFunctions/U0/VelocityPairIndependence.lean
-  eulerDeriv_velocity_eq
-  secondJet_transcendental_over_velocity
-  velocity_pair_algebraicIndependent
 ```
 
-constructs both formal jets, proves the triangular Mahler constraint and recovery formula, and
-proves that no nonzero two-variable polynomial over `C(t)` vanishes at their images in the graded
-Mahler carrier. The targeted Lean build passes. The axiom report for both final declarations is
-exactly `propext`, `Classical.choice`, and `Quot.sound`.
+with the triangular constraint, derivative-recovery identity, and pair-independence theorem
+`velocity_pair_algebraicIndependent`.  The analytic identification and transfer to the actual
+normalized Böttcher family are formalized in
 
-The positive additional value needed for stage 3 is now sharply smaller: identify these formal
-series with the first two parameter derivatives of the jointly holomorphic normalized Böttcher
-family. Once that analytic Taylor-identification map is present, the carrier theorem transfers the
-already formalized independence statement to the actual germs `V_1,V_2`.
+```text
+formal/GaloisForLFunctions/HTGeometry/BottcherParameterVelocityIdentification.lean
+```
+
+The module constructs the reciprocal orbit and normally convergent logarithmic Böttcher series,
+justifies the first two parameter derivatives term by term, and proves the exact Taylor identities
+
+```text
+taylorPS_bottcherFirstNormalizedVelocity
+taylorPS_bottcherSecondNormalizedVelocity
+normalizedVelocity_eq_mul_actualVelocity
+```
+
+for the normalized and actual parameter velocities.  Explicit invertible triangular and base-field
+scaling substitutions then transfer `velocity_pair_algebraicIndependent` to the card's germ pair.
+The final declaration is
+
+```text
+bottcher_actual_velocity_pair_algebraicIndependent
+```
+
+and states that no nonzero polynomial over `C(t)` vanishes at the reciprocal representatives of
+`V_1,V_2`.  Direct elaboration and the dedicated module build pass.  Axiom reports for the two
+Taylor identities, the normalized-to-actual bridge, and the final independence theorem contain
+exactly `propext`, `Classical.choice`, and `Quot.sound`.  The project formal lint passes.
 
 ## Gates
 
 - [x] 0 -> 1 in-progress: exact object, fixed constraint, attack mechanism, and literature boundary
 - [x] 1 -> 2 fully-proven: complete paper proof above; no open mathematical dependency
-- [ ] 2 -> 3 formalized: the formal-series independence theorem is complete; add the analytic
-  parameter-jet identification for the actual normalized Böttcher family
+- [x] 2 -> 3 formalized: analytic parameter-jet identification and transfer to the actual
+  normalized Böttcher family are complete
 - [ ] 3 -> 4 publication-ready: independent novelty review and standalone exposition
 
 ## Open core
@@ -302,3 +315,6 @@ mixed parameter/spatial jets. The all-orders statement is not claimed here.
 - 2026-07-11 — audited current Lean truth: the complete formal-series pair theorem and recovery
   mechanism are now formalized; only the analytic identification with the actual parameter jets
   remains before stage 3.
+- 2026-07-14 — formalized the reciprocal Böttcher product, parameter differentiability and Taylor
+  identification, normalized-to-actual velocity bridge, and polynomial-change transfer; promoted
+  the whole card to stage 3 after the dedicated build, axiom audit, and formal lint passed.

@@ -326,3 +326,93 @@ theorem tendsto_signedDigammaCompletion_partialSums (ε : ℕ → ℝ) (z : ℂ)
 end
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open Complex Filter
+open scoped Topology
+
+noncomputable section
+
+/-- The finite Gauss sum identity holds at every parameter off the digamma pole lattice. -/
+theorem sum_gaussDigammaSeriesTerm_eq_digamma_shift_of_offPoles
+    (s : ℂ) (hs : ∀ m : ℕ, s ≠ -(m : ℂ)) (N : ℕ) :
+    (∑ n ∈ Finset.range N, RHTower.gaussDigammaSeriesTerm s n) =
+      Complex.digamma s + (Real.eulerMascheroniConstant : ℂ) -
+        (Complex.digamma (s + N) - Complex.digamma ((N : ℂ) + 1)) := by
+  rw [RHTower.digamma_apply_add_nat s hs N, RHTower.digamma_natCast_add_one N]
+  simp_rw [RHTower.gaussDigammaSeriesTerm]
+  rw [Finset.sum_sub_distrib]
+  have hone :
+      (∑ n ∈ Finset.range N, (1 : ℂ) / ((n : ℂ) + 1)) =
+        ((harmonic N : ℝ) : ℂ) := by
+    symm
+    exact RHTower.harmonic_cast_eq N
+  rw [hone]
+  ring
+
+/-- Gauss's reciprocal-difference series represents digamma everywhere off its pole lattice, not
+only on the initial right half-plane. -/
+theorem tsum_gaussDigammaSeriesTerm_eq_digamma_add_euler_of_offPoles
+    (s : ℂ) (hs : ∀ m : ℕ, s ≠ -(m : ℂ)) :
+    (∑' n : ℕ, RHTower.gaussDigammaSeriesTerm s n) =
+      Complex.digamma s + (Real.eulerMascheroniConstant : ℂ) := by
+  obtain ⟨N : ℕ, hN⟩ := exists_nat_gt (-s.re)
+  have hsN : 0 < (s + (N : ℂ)).re := by
+    simp only [Complex.add_re, Complex.natCast_re]
+    linarith
+  have hNN : 0 < (((N : ℂ) + 1)).re := by
+    simp only [Complex.add_re, Complex.natCast_re, Complex.one_re]
+    positivity
+  have hsum : Summable (RHTower.gaussDigammaSeriesTerm s) :=
+    (summable_norm_gaussDigammaSeriesTerm_all s).of_norm
+  have hshift : Summable (RHTower.gaussDigammaSeriesTerm (s + (N : ℂ))) :=
+    RHTower.summable_gaussDigammaSeriesTerm hsN
+  have hnat : Summable (RHTower.gaussDigammaSeriesTerm ((N : ℂ) + 1)) :=
+    RHTower.summable_gaussDigammaSeriesTerm hNN
+  have hterm : ∀ n : ℕ,
+      RHTower.gaussDigammaSeriesTerm s (n + N) =
+        RHTower.gaussDigammaSeriesTerm (s + (N : ℂ)) n -
+          RHTower.gaussDigammaSeriesTerm ((N : ℂ) + 1) n := by
+    intro n
+    simp only [RHTower.gaussDigammaSeriesTerm]
+    push_cast
+    ring
+  have hshiftEq :
+      (∑' n : ℕ, RHTower.gaussDigammaSeriesTerm (s + (N : ℂ)) n) =
+        Complex.digamma (s + N) + (Real.eulerMascheroniConstant : ℂ) := by
+    have h := RHTower.digamma_eq_neg_euler_add_tsum_gauss hsN
+    linear_combination -h
+  have hnatEq :
+      (∑' n : ℕ, RHTower.gaussDigammaSeriesTerm ((N : ℂ) + 1) n) =
+        Complex.digamma ((N : ℂ) + 1) +
+          (Real.eulerMascheroniConstant : ℂ) := by
+    have h := RHTower.digamma_eq_neg_euler_add_tsum_gauss hNN
+    linear_combination -h
+  calc
+    (∑' n : ℕ, RHTower.gaussDigammaSeriesTerm s n) =
+        (∑ n ∈ Finset.range N, RHTower.gaussDigammaSeriesTerm s n) +
+          ∑' n : ℕ, RHTower.gaussDigammaSeriesTerm s (n + N) :=
+      (hsum.sum_add_tsum_nat_add N).symm
+    _ = (∑ n ∈ Finset.range N, RHTower.gaussDigammaSeriesTerm s n) +
+        ((∑' n : ℕ, RHTower.gaussDigammaSeriesTerm (s + (N : ℂ)) n) -
+          ∑' n : ℕ, RHTower.gaussDigammaSeriesTerm ((N : ℂ) + 1) n) := by
+      congr 1
+      rw [tsum_congr hterm, hshift.tsum_sub hnat]
+    _ = Complex.digamma s + (Real.eulerMascheroniConstant : ℂ) := by
+      rw [sum_gaussDigammaSeriesTerm_eq_digamma_shift_of_offPoles s hs N,
+        hshiftEq, hnatEq]
+      ring
+
+/-- The all-positive signed Gauss completion is exactly the explicit shifted-digamma source. -/
+theorem signedDigammaCompletion_one_eq_explicitDigammaHerglotzSource
+    {z : ℂ} (hz : ∀ n : ℕ, z + (1 / 2 : ℂ) ≠ -(n : ℂ)) :
+    signedDigammaCompletion (fun _ => 1) z = explicitDigammaHerglotzSource z := by
+  rw [signedDigammaCompletion, explicitDigammaHerglotzSource]
+  simp only [signedDigammaCompletionTerm, Complex.ofReal_one, one_mul]
+  exact tsum_gaussDigammaSeriesTerm_eq_digamma_add_euler_of_offPoles
+    (z + (1 / 2 : ℂ)) hz
+
+end
+
+end GaloisForLFunctions.HTGeometry

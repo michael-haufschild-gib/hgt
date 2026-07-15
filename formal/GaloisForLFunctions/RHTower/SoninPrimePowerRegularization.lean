@@ -7,6 +7,7 @@ it defines a genuine countable Hilbert--Schmidt diagonal carrier for det_2 regul
 -/
 import GaloisForLFunctions.RHTower.SoninTimeBandIdeal
 import GaloisForLFunctions.HTGeometry.FredholmDeterminantInfinite
+import GaloisForLFunctions.HTGeometry.TwoProjectionQuantumWalk
 import Mathlib.NumberTheory.SumPrimeReciprocals
 
 noncomputable section
@@ -14,6 +15,42 @@ noncomputable section
 open scoped BigOperators
 
 namespace RHTower
+
+/-- The normalized dilation representation sends the multiplicative identity to the identity
+operator. -/
+theorem dilationCLM_one :
+    dilationCLM 1 zero_lt_one = (1 : SoninL2 →L[ℂ] SoninL2) := by
+  apply ContinuousLinearMap.ext
+  intro f
+  apply Lp.ext
+  filter_upwards [dilation_ae 1 zero_lt_one f] with x hx
+  simpa using hx
+
+/-- Multiplicative scales compose exactly in the normalized unitary dilation representation. -/
+theorem dilationCLM_mul_dilationCLM
+    (r s : ℝ) (hr : 0 < r) (hs : 0 < s) :
+    dilationCLM r hr * dilationCLM s hs =
+      dilationCLM (r * s) (mul_pos hr hs) := by
+  apply ContinuousLinearMap.ext
+  intro f
+  exact dilation_comp_apply r s hr hs f
+
+/-- Operator powers are exactly multiplicative scale powers.  This is the rapidity-addition law
+for the quantum dilation representation, stated without introducing a generator or a flow. -/
+theorem dilationCLM_pow_eq
+    (r : ℝ) (hr : 0 < r) (n : ℕ) :
+    dilationCLM r hr ^ n = dilationCLM (r ^ n) (pow_pos hr n) := by
+  induction n with
+  | zero => simpa using dilationCLM_one
+  | succ n ih =>
+      calc
+        dilationCLM r hr ^ (n + 1) =
+            dilationCLM r hr ^ n * dilationCLM r hr := pow_succ _ n
+        _ = dilationCLM (r ^ n) (pow_pos hr n) * dilationCLM r hr := by rw [ih]
+        _ = dilationCLM (r ^ n * r) (mul_pos (pow_pos hr n) hr) :=
+          dilationCLM_mul_dilationCLM (r ^ n) r (pow_pos hr n) hr
+        _ = dilationCLM (r ^ (n + 1)) (pow_pos hr (n + 1)) := by
+          rw [pow_succ]
 
 /-- The squared coefficient of the prime-power mode `(p,k+2)`. -/
 def soninPrimePowerTailEnergy (pk : Nat.Primes × ℕ) : ℝ :=
@@ -116,6 +153,60 @@ theorem one_lt_soninPrimePowerScale (pk : Nat.Primes × ℕ) :
   apply one_lt_pow₀ (by exact_mod_cast pk.1.prop.one_lt)
   omega
 
+/-- The single Hermitian dilation signal attached to a prime.  All retained powers of that prime
+will be recurrence polynomials in this one observable. -/
+def soninPrimeDilationSignal (p : Nat.Primes) : SoninL2 →L[ℂ] SoninL2 :=
+  dilationSum (p : ℝ) (by exact_mod_cast p.prop.one_lt)
+
+/-- **Rapidity/Chebyshev dilation law.**  The symmetric observable at scale `pⁿ` is the
+denominator-free cosine recurrence of the one-prime signal.  Thus a whole prime-power tower has
+one operator generator. -/
+theorem unitaryCosineRecurrence_soninPrimeDilationSignal
+    (p : Nat.Primes) (n : ℕ) (hn : 0 < n) :
+    HTGeometry.unitaryCosineRecurrence (soninPrimeDilationSignal p) n =
+      dilationSum ((p : ℝ) ^ n) (one_lt_pow₀ (by exact_mod_cast p.prop.one_lt) hn) := by
+  have hp : 1 < (p : ℝ) := by exact_mod_cast p.prop.one_lt
+  have hp0 : 0 < (p : ℝ) := zero_lt_one.trans hp
+  let U : SoninL2 →L[ℂ] SoninL2 := dilationCLM (p : ℝ) hp0
+  let V : SoninL2 →L[ℂ] SoninL2 :=
+    dilationCLM ((p : ℝ)⁻¹) (inv_pos.mpr hp0)
+  have hUV : U * V = 1 := by
+    apply ContinuousLinearMap.ext
+    intro f
+    change dilation (p : ℝ) hp0
+      (dilation ((p : ℝ)⁻¹) (inv_pos.mpr hp0) f) = f
+    exact dilation_dilation_inv (p : ℝ) hp0 f
+  have hVU : V * U = 1 := by
+    apply ContinuousLinearMap.ext
+    intro f
+    change dilation ((p : ℝ)⁻¹) (inv_pos.mpr hp0)
+      (dilation (p : ℝ) hp0 f) = f
+    exact dilation_inv_dilation (p : ℝ) hp0 f
+  have hsignal : soninPrimeDilationSignal p = U + V := by
+    rw [soninPrimeDilationSignal, dilationSum, adjoint_dilationCLM]
+    rfl
+  calc
+    HTGeometry.unitaryCosineRecurrence (soninPrimeDilationSignal p) n =
+        HTGeometry.unitaryCosineRecurrence (U + V) n := by rw [hsignal]
+    _ = U ^ n + V ^ n :=
+      HTGeometry.unitaryCosineRecurrence_add_inversePair U V hUV hVU n
+    _ = dilationCLM ((p : ℝ) ^ n) (pow_pos hp0 n) +
+        dilationCLM (((p : ℝ)⁻¹) ^ n) (pow_pos (inv_pos.mpr hp0) n) := by
+      rw [U, V, dilationCLM_pow_eq, dilationCLM_pow_eq]
+    _ = dilationSum ((p : ℝ) ^ n)
+        (one_lt_pow₀ (by exact_mod_cast p.prop.one_lt) hn) := by
+      simp only [dilationSum, adjoint_dilationCLM, inv_pow]
+
+/-- Every retained prime-power dilation observable is therefore a polynomial recurrence value of
+the single signal belonging to its underlying prime. -/
+theorem unitaryCosineRecurrence_soninPrimeDilationSignal_eq_primePower
+    (pk : Nat.Primes × ℕ) :
+    HTGeometry.unitaryCosineRecurrence
+        (soninPrimeDilationSignal pk.1) (pk.2 + 2) =
+      dilationSum (soninPrimePowerScale pk) (one_lt_soninPrimePowerScale pk) := by
+  simpa [soninPrimePowerScale] using
+    unitaryCosineRecurrence_soninPrimeDilationSignal pk.1 (pk.2 + 2) (by omega)
+
 /-- The logarithmic Euler coefficient `p^(-(k+2)/2)/(k+2)`, expressed as the square root of the
 square-energy carrier divided by the prime-power exponent. -/
 def soninLogPrimePowerCoefficient (pk : Nat.Primes × ℕ) : ℂ :=
@@ -195,6 +286,19 @@ def centralSoninPrimePowerResidual
     (a : ℝ) (pk : Nat.Primes × ℕ) : SoninL2 →L[Complex] SoninL2 :=
   centralSoninDilationCornerResidual a (soninPrimePowerScale pk)
     (one_lt_soninPrimePowerScale pk)
+
+/-- **Prime-power response reduction.**  Each concrete residual is the correction response of a
+Chebyshev value of one prime signal.  This is the exact quantum-signal-processing form of the
+local nondegeneracy problem. -/
+theorem centralSoninPrimePowerResidual_eq_cosineResponse
+    (a : ℝ) (pk : Nat.Primes × ℕ) :
+    centralSoninPrimePowerResidual a pk =
+      centralSoninCornerCorrectionResponse a
+        (HTGeometry.unitaryCosineRecurrence
+          (soninPrimeDilationSignal pk.1) (pk.2 + 2)) := by
+  rw [centralSoninPrimePowerResidual,
+    centralSoninDilationCornerResidual_eq_correctionResponse,
+    unitaryCosineRecurrence_soninPrimeDilationSignal_eq_primePower]
 
 /-- The logarithmically weighted actual Sonin residual block. -/
 def centralSoninWeightedPrimePowerResidual

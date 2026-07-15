@@ -7,10 +7,11 @@
   `prime-arch-scaled-hausdorff-divisor-value-law`,
   `sonin-coupled-finite-gram-closure-rh`
 - **Statement:** The unconditional narrow sector and endpoint radius of every Xi reciprocal-square
-  atom produce positive analytic circle states for the first twelve shifted prime--Gamma moment
-  tails.  For polynomial Hankel tests this gives explicit nonnegative coefficient cones at every
-  valuation `v <= 5`.  Consequently the coupled-Sonin one-sided comparison need only be proved on
-  the complementary residual family in order to imply RH.
+  atom produce positive analytic circle states for the first thirteen shifted prime--Gamma moment
+  tails.  The thirteenth state uses the exact degree-thirteen real-part polynomial, extending past
+  the quadratic-cosine cutoff.  For polynomial Hankel tests this gives explicit nonnegative
+  coefficient cones at every valuation `v <= 6`.  Consequently the coupled-Sonin one-sided
+  comparison need only be proved on the complementary residual family in order to imply RH.
 
 ## Setup
 
@@ -73,7 +74,58 @@ m_s = sum_q Re(u_q^(s+1)) >= c_s J_s > 0.                  (5)
 The strict inequality uses the unconditional nonemptiness of the Xi divisor.  Thus the initial
 mass of each of these twelve shifted tails is positive without RH.
 
-## 2. Twelve explicit positive circle states
+### 1a. Exact thirteenth-power extension
+
+The quadratic lower bound for cosine becomes useless at `k=13`, but the sector itself does not.
+Write `u=x+iy`, `X=x^2`, and `Y=y^2`, so `x>0` and `0<=Y<=X/84`.  Exact expansion gives
+
+```text
+Re(u^13)/x
+ = X^6-78X^5Y+715X^4Y^2-1716X^3Y^3
+     +1287X^2Y^4-286XY^5+13Y^6.                            (5a)
+```
+
+The paired terms satisfy
+
+```text
+715X^4Y^2-1716X^3Y^3 >= 694X^4Y^2,
+1287X^2Y^4-286XY^5 >= 0,
+```
+
+and on `0<=Y<=X/84`,
+
+```text
+X^2-78XY+694Y^2 >= X^2/6.
+```
+
+For the last inequality, multiplying by six reduces it to nonnegativity of
+`5X^2-468XY+4164Y^2`, and the exact identity
+
+```text
+5X^2-468XY+4164Y^2
+ = (X-84Y)*((2929/588)X-(347/7)Y)+(11/588)X^2
+```
+
+has nonnegative factors on the stated sector.
+
+Hence `Re(u^13)>=x^13/6`.  Also `|u|<=(85/84)x` and the exact rational inequality
+`(85/84)^13<4/3` yield
+
+```text
+Re(u^13) > |u|^13/8.                                      (5b)
+```
+
+Consequently
+
+```text
+m_12 >= J_12/8 > 0.                                       (5c)
+```
+
+The atomwise estimate, its Xi specialization, `(5c)`, the endpoint disk bound, and the later
+geometric moment envelope are formalized in
+`PrimeArchShiftThirteenCircleCone.lean`.
+
+## 2. Thirteen explicit positive circle states
 
 For every `n >= 1`, the radius bound in `(1)` gives
 
@@ -116,6 +168,18 @@ is an unconditional probability measure equivalent to Haar measure, with
 integral_T zeta^n d mu_(Xi,s)(zeta) = m_(s+n)/m_s.          (10)
 ```
 
+For `s=12`, `(5c)` replaces `(5)`.  The same endpoint-radius calculation gives
+
+```text
+2 sum_(n>=1)|m_(12+n)| <= 4/39 J_12 <= 32/39 m_12.         (10a)
+```
+
+Thus `(8)--(10)` also hold at `s=12` with
+
+```text
+delta_12=32/39<1.                                         (10b)
+```
+
 This does not assert that the shifted sequence is a positive real power-moment sequence.  It
 constructs an ordinary unit-circle state whose reflected Gram kernel is that shifted Hankel tail.
 The distinction is exactly the orientation gap.
@@ -148,6 +212,12 @@ Therefore the shifted Hankel value is nonnegative whenever
 ```text
 224 E_tail(q)
  <= (1960-13*(s+1)^2)b_0^2.                               (13)
+```
+
+For the new shift `s=12`, the sharper bound `(10b)` gives the additional cone
+
+```text
+32 E_tail(q) <= 7 b_0^2.                                  (13a)
 ```
 
 This is a genuine unconditional part of each shifted RH-equivalent cone, not a positivity
@@ -189,12 +259,20 @@ For each fixed `v`, the formal theorem
 `sequenceTraceHankelNonnegative_shiftedPrimeArchMomentTail_iff_riemannHypothesis v` says that
 positivity of the *entire* tail beginning at `m_(2v)` is equivalent to RH.  The result above
 therefore discharges an explicit interior cone in the first six of those exact RH-equivalent
-tails while making no claim about the complementary tests.
+tails.  At `v=6`, `(13a)` additionally gives
+
+```text
+32 E_tail(q) <= 7 b_0^2 -> Q(X^6 q) >= 0.                 (17a)
+```
+
+In particular, the uniform cone `v<=6` and `32 E_tail(q)<=7b_0^2` is unconditional.  The result
+now reaches the first seven shifted RH-equivalent tails while making no claim about complementary
+tests.
 
 ## 5. Residual coupled-Sonin chain
 
-Let `A_sector` consist of zero together with the integer polynomials satisfying `(16)`, using their
-canonical valuation factorization with `v <= 5`, and put
+Let `A_sector` consist of zero together with the integer polynomials satisfying `(16)` for
+`v<=5`, or `(17a)` for `v=6`, using their canonical valuation factorization, and put
 
 ```text
 R_sector = Z[X] minus A_sector.                              (18)
@@ -223,8 +301,8 @@ The resulting top-down chain is
 
 ```text
 reciprocal-square endpoint radius + one-eighty-fourth sector law
-  -> twelve positive shifted circle states
-  -> six unconditional polynomial-valuation coefficient cones
+  -> thirteen positive shifted circle states
+  -> seven unconditional polynomial-valuation coefficient cones
   + restricted coupled-Sonin variational comparison only on R_sector
   -> complete integer prime--Gamma Hankel positivity
   -> RH.                                                     (20)
@@ -259,7 +337,7 @@ complex moment problem and positive-definite extensions, see Cichon--Stochel--Sz
 The targeted literature search did not locate a theorem that turns a fixed narrow sector of
 complex atoms into all-order Hankel positivity; that implication would in any case be false for
 the phase-winding reason above.  The
-project-specific bridge is the application of the formal Xi endpoint constants to the twelve
+project-specific bridge is the application of the formal Xi endpoint constants to the thirteen
 shifted densities, the valuation indexing `(15)`, and the resulting restriction of the Sonin
 source comparison.
 
@@ -268,6 +346,12 @@ source comparison.
 The formal proof should reuse:
 
 ```text
+re_pow_thirteen_gt_one_eighth_norm_pow_of_sector
+re_xiZeroCopyReciprocalSquare_pow_thirteen_gt_one_eighth_norm_pow
+norm_xiZeroCopyReciprocalSquare_lt_two_over_fortyOne
+one_eighth_xiShiftThirteenAbsoluteMass_le_normalizedPrimeArchMoment_twelve
+xiShiftThirteenAbsoluteTail_le
+abs_normalizedPrimeArchMoment_twelve_add_le
 summable_xiZeroCopyReciprocalSquare_pow
 xiCentralReciprocalMoment_im_eq_zero
 normalizedPrimeArchMoment_eq_re_xiCentralReciprocalMoment
@@ -294,6 +378,8 @@ belong in `RHTower`.
 - [x] 1 -> 2: explicit shifted coefficient cones and correct `2v` valuation indexing proved
 - [x] 1 -> 2: restricted coupled-Sonin comparison proved sufficient for RH
 - [x] literature calibration: classical carrier theory separated from the Xi-specific constants
-- [ ] 2 -> 3: formalize reusable sector-density theorem, Xi specialization, and residual consumer
+- [x] 2 -> 3: exact thirteenth-power sector bound, Xi specialization, mass lower bound, endpoint
+  disk, and geometric tail envelope formalized
+- [ ] 2 -> 3: formalize the circle-density packaging, coefficient cone, and residual consumer
 - [ ] proof input: establish the restricted Sonin comparison `(19)`, or a different source-value
   theorem covering `R_sector`, without Xi zero orientation or an RH-equivalent representing measure

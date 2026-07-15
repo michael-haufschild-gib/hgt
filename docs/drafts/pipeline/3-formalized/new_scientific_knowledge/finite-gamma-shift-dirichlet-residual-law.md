@@ -1,8 +1,8 @@
 # Finite Gamma-jet annihilators expose the Dirichlet value flag
 
 - **ID:** `finite-gamma-shift-dirichlet-residual-law`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / PARTIAL LEAN CERTIFICATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper) / LEAN CERTIFICATE
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED]`
 - **Statement:** Every finite family of distinct Euler-Gamma translates, with arbitrary prescribed
   finite jet multiplicities, has a canonical monic consecutive-shift annihilator. Applied to any
@@ -404,19 +404,34 @@ Primary adjacent sources:
 
 ## Lean status
 
-`formal/GaloisForLFunctions/HTGeometry/GammaShiftCasoratian.lean` proves, without new axioms:
+Formalized without new axioms in:
 
-- `det_ascPochhammerEvalMatrix`;
-- `Complex.Gamma_add_nat_eq_ascPochhammer_mul`;
-- `det_gammaShiftValueMatrix`;
-- `det_gammaShiftValueMatrix_ne_zero`;
-- `existsUnique_gammaShiftAnnihilatorValues`;
-- `dirichletFlagVandermonde_ne_zero`.
+- `formal/GaloisForLFunctions/HTGeometry/GammaShiftConfluentAnnihilator.lean` -- the
+  ascending-factorial expansion `(3)` and its sharp coefficient identities;
+- `formal/GaloisForLFunctions/HTGeometry/GammaShiftConfluentCasoratian.lean` -- the exact
+  arbitrary-multiplicity determinant `(5)` and nonvanishing;
+- `formal/GaloisForLFunctions/HTGeometry/GammaShiftJetAnnihilator.lean` -- the canonical monic
+  operator `(4)` and complete jet annihilation `(6)`;
+- `formal/GaloisForLFunctions/HTGeometry/GammaShiftDirichletResidual.lean` -- the polynomial
+  coefficient transform `(14)`--`(18)`, exact L-series transform `(15)`, first-coefficient limit
+  `(13)`, and eventual nonvanishing;
+- `formal/GaloisForLFunctions/RHTower/GammaShiftZetaReadout.lean` -- `(J1)`, `(J2)`, and `(21)`;
+- `formal/GaloisForLFunctions/HTGeometry/GammaShiftAugmentedDeterminant.lean` -- the augmented
+  determinant `(20)`;
+- `formal/GaloisForLFunctions/HTGeometry/GammaShiftDirichletResidualExamples.lean` -- the exact
+  one- and two-shift formulas `(22)`--`(24)`;
+- `formal/GaloisForLFunctions/HTGeometry/GammaShiftSimultaneousFactorization.lean` -- the exact
+  simultaneous block factorization `(D2)`;
+- `formal/GaloisForLFunctions/HTGeometry/DirichletFlagVandermonde.lean` -- the strict positivity
+  statement `(D3)`;
+- `formal/GaloisForLFunctions/RHTower/GammaShiftZetaJetFlag.lean` -- the factorial support gap,
+  exact initial-packet top coefficient, normalized determinant law `(D4)`, eventual residual
+  nonvanishing, the augmented-determinant nonvanishing corollary, and eventual invertibility of
+  the full mixed matrix `(D1)`.
 
-These theorems formalize the multiplicity-one specialization of `(5)`, its nonvanishing, the
-unique pointwise monic relation, and the noncollision of the reciprocal/logarithmic Dirichlet
-signatures in `(D3)`. The confluent jet determinant, coefficient-polynomial construction in `(3)`,
-and Dirichlet asymptotic `(13)` remain paper-proved.
+The reusable finite-convolution and analytic infrastructure is in
+`ArithmeticFunctionDeterminantCoefficient.lean`, `ArithmeticFunctionLSeriesDeterminant.lean`,
+and `PolynomialCoefficientLSeries.lean`.
 
 ## Gates
 
@@ -429,7 +444,7 @@ and Dirichlet asymptotic `(13)` remain paper-proved.
 - [x] determinant core formalized in Lean
 - [x] classical determinant parent identified
 - [ ] exact residual package cleared against full texts of adjacent Gamma--Dirichlet papers
-- [ ] coefficient transform and first-coefficient asymptotic formalized in Lean
+- [x] coefficient transform and first-coefficient asymptotic formalized in Lean
 
 ## Log
 

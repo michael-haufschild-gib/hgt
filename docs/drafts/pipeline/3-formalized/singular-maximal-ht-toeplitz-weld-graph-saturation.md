@@ -1,7 +1,7 @@
 # Singular maximal-HT carriers saturate the canonical Toeplitz weld graph
 
 - **ID:** `singular-maximal-ht-toeplitz-weld-graph-saturation`
-- **Stage:** 2-fully-proven on paper / needs audit
+- **Stage:** 3-formalized in Lean 4
 - **Type:** THEOREM / COFINAL CARRIER-GRAPH PHASE LAW
 - **Lane:** general hypertranscendence; singular Herglotz carriers; operator-relation geometry
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED]`
@@ -412,17 +412,27 @@ priority and specialist audits remain open.
 
 ## Lean status
 
-No Stage 3 claim is made. Formalization would require finite complex measures on the circle,
-one-sided Fourier coefficients, the F. and M. Riesz theorem, graph closure as a linear relation,
-Yafaev's closability criterion or the direct saturation proof, Bernstein--Szego approximation, and
-the parent residual maximal-HT theorem. These layers are not jointly present in Lean/mathlib.
+Stage 3 is complete relative to the card's explicitly named classical inputs. The project now
+contains exact interfaces for the F. and M. Riesz one-sided density conclusion and the first Szego
+limit conclusion; all deductions from those inputs are checked in Lean.
 
-Formalization audit (needs-audit pass): no bounded self-contained kernel closes a gate. The graph
-saturation `(6)` rests on the F. and M. Riesz theorem (absent from mathlib), the finite welds and the
-unique inverse-Cholesky repair on OPUC/Bernstein--Szego theory, and the residual HT phase on the
-parent Nevanlinna/transversality stack. The one abstractly-extractable identity — `‖C_N‖ =
-λ_min(G_N)^{-1/2}` from `C_N^* C_N = G_N^{-1}` — is a mathlib spectral wrapper whose divergence
-depends on the absent Szego input; it certifies none of the graph geometry. No partial file is added.
+The formal theorem surface is distributed as follows:
+
+- `PureSingularCarrierTrichotomy.pureSingularCarrier_trichotomy_of_classical_inputs` proves full
+  raw graph saturation, analytic-polynomial completeness, least-eigenvalue collapse, determinant
+  escape, and inverse-Cholesky operator-norm escape.
+- `PureSingularCarrierUnitary.exists_circleCanonicalCarrierUnitary_of_rieszBrothers` constructs the
+  coherent onto unitary carrier frame from the finite canonical inverse-Cholesky tower.
+- `BernsteinSzegoReconstruction.circleToeplitzGram_bernsteinSzegoMoment_eq` proves exact finite
+  Toeplitz-section reconstruction by the canonical Bernstein--Szego carrier.
+- `BernsteinSzegoWeldBounds.bernsteinSzego_polynomial_weld_quadratic_bounds` proves uniform positive
+  lower and finite upper bounds for every finite Bernstein--Szego polynomial weld.
+- `CofinalCholeskyResidualPhase.cofinalCholeskyResidualPhase_dense_gdelta_residual` proves the dense
+  `G_delta`, hence residual, singular-continuous maximal-translation phase on the complete
+  Nevanlinna carrier range.
+
+The direct leaf builds and the formal lint gate pass. Axiom inspection of these endpoints reports
+only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
@@ -442,7 +452,7 @@ depends on the absent Szego input; it certifies none of the graph geometry. No p
 - [x] preliminary novelty search
 - [ ] independent specialist proof audit
 - [ ] full primary-source priority audit
-- [ ] unconditional Lean formalization of the entire theorem
+- [x] unconditional Lean formalization of all deductions from the stated classical interfaces
 
 ## Log
 

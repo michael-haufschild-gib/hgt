@@ -1,7 +1,7 @@
 # Explicit digamma Herglotz universal palette
 
 - **ID:** `explicit-digamma-herglotz-universal-palette`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM / EXPLICIT REALIZATION
 - **Scientific status:** `[NOVELTY UNVERIFIED]`
 - **Target paper:**
@@ -149,3 +149,23 @@ signed Gauss completion is Herglotz <-> every orientation coordinate is positive
   Math. 144 (2008), 565--581, especially Theorem 4.2 and Corollary 4.4.
 - Hardouin--Singer, *Differential Galois Theory of Linear Difference Equations*, Math. Ann. 342
   (2008), 333--377, for the parameterized difference-Galois framework.
+
+## Authoritative Lean audit
+
+The source-specific theorem surface is axiom-clean.
+
+- `ExplicitDigammaHerglotzPalette.lean` proves strict upper-half-plane positivity, injectivity and
+  integer incongruence of the explicit palette, exact finite-orientation Herglotz classification,
+  pointwise absolute convergence, the off-pole Gauss-series identity on the full plane, and exact
+  identification of the all-positive completion with the shifted-digamma source.
+- `ExplicitDigammaOrientationLimit.lean` proves global compact-local normal convergence of every
+  bounded signed completion, upper-half-plane holomorphy, deleted-pole regularity and atom splitting,
+  and the exact infinite Boolean Herglotz equivalence.
+- The finite rational-gauge differential-field and Stanley--Reisner consequences are formalized in
+  `UniversalConstraintOrientation.lean` and `UniversalOrientedConstraintProduct.lean`. The
+  Hardouin joint Gamma-shift independence result remains the explicitly cited classical parent
+  boundary; no project axiom is introduced for it.
+
+Targeted builds of both explicit digamma modules, `#print axioms` on the finite, infinite,
+normal-convergence, source-identification, and Herglotz capstones, and the repository formal lint
+pass. No full build was run.
