@@ -449,7 +449,7 @@ def RecurrentHomogeneousValuationPresentation.toRecurringPivotPresentation
   pivot := P.pivotColumn
   dependent := P.dependentColumn
   coefficient := P.coefficient
-  pivotShiftJetTailIndependent r A _ alpha hdistinct m :=
+  pivotShiftJetTailIndependent r _ _ alpha hdistinct m :=
     primePowerCoefficientShiftedRotatedJet_tailIndependent_of_recurringPatternsSpan
       r (P.pivotColumn r) alpha hdistinct (P.pivotColumn_recurringPatternsSpan r) m
   residualFinite := P.residualFinite_of_cofinitelyRecurring hrec

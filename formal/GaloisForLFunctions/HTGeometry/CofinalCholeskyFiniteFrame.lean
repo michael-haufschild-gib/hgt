@@ -605,3 +605,501 @@ theorem gramSchmidtInverseFrame_eq_iff_gram_eq
 end
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open Complex Matrix
+open scoped ComplexOrder
+
+noncomputable section
+
+/-- Canonical innovation amplitude of the unit response packet in one inverse-Cholesky row. -/
+def inverseCholeskyUnitAmplitude {N : ℕ}
+    (C : Matrix (Fin N) (Fin N) ℂ) (i : Fin N) : ℂ :=
+  ∑ j, C i j
+
+/-- Squared energy of the unit response packet in inverse-Cholesky coordinates. -/
+def inverseCholeskyUnitCapacity {N : ℕ}
+    (C : Matrix (Fin N) (Fin N) ℂ) : ℝ :=
+  ∑ i, ‖inverseCholeskyUnitAmplitude C i‖ ^ 2
+
+/-- **Clock-capacity increment law.**  For a lower-triangular inverse frame, adjoining one clock
+constraint adds exactly the squared norm of the new row's unit-packet amplitude. -/
+theorem inverseCholeskyUnitCapacity_succ
+    {N : ℕ} (C : Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ)
+    (htri : C.BlockTriangular (fun i : Fin (N + 1) => OrderDual.toDual i)) :
+    inverseCholeskyUnitCapacity C =
+      inverseCholeskyUnitCapacity (leadingPrincipalSubmatrix C) +
+        ‖inverseCholeskyUnitAmplitude C (Fin.last N)‖ ^ 2 := by
+  unfold inverseCholeskyUnitCapacity
+  rw [Fin.sum_univ_castSucc]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro i hi
+  congr 1
+  unfold inverseCholeskyUnitAmplitude leadingPrincipalSubmatrix
+  rw [Fin.sum_univ_castSucc]
+  have hzero : C i.castSucc (Fin.last N) = 0 := by
+    apply htri
+    simp
+  simp [hzero]
+
+/-- The canonical positive inverse-Cholesky tower obeys the exact clock-capacity increment law. -/
+theorem gramSchmidtInverseFrame_unitCapacity_succ
+    {N : ℕ} (G : Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ) (hG : G.PosDef) :
+    inverseCholeskyUnitCapacity (gramSchmidtInverseFrame G hG) =
+      inverseCholeskyUnitCapacity
+        (gramSchmidtInverseFrame (leadingPrincipalSubmatrix G)
+          (hG.submatrix (Fin.castSucc_injective N))) +
+      ‖inverseCholeskyUnitAmplitude (gramSchmidtInverseFrame G hG) (Fin.last N)‖ ^ 2 := by
+  rw [← gramSchmidtInverseFrame_leadingPrincipal G hG]
+  exact inverseCholeskyUnitCapacity_succ _
+    (gramSchmidtInverseFrame_lowerTriangular G hG)
+
+/-- New clock capacity is monotone under leading-principal extension. -/
+theorem inverseCholeskyUnitCapacity_le_succ
+    {N : ℕ} (C : Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ)
+    (htri : C.BlockTriangular (fun i : Fin (N + 1) => OrderDual.toDual i)) :
+    inverseCholeskyUnitCapacity (leadingPrincipalSubmatrix C) ≤
+      inverseCholeskyUnitCapacity C := by
+  rw [inverseCholeskyUnitCapacity_succ C htri]
+  exact le_add_of_nonneg_right (sq_nonneg _)
+
+/-- The new unit-packet amplitude at level `N` of a coherent inverse-Cholesky tower. -/
+def coherentClockInnovation
+    (C : ∀ N : ℕ, Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ) (N : ℕ) : ℂ :=
+  inverseCholeskyUnitAmplitude (C N) (Fin.last N)
+
+/-- **Clock-capacity decomposition.**  In every coherent lower-triangular frame tower, the finite
+unit-boundary capacity is exactly the cumulative squared innovation amplitude. -/
+theorem coherentClockUnitCapacity_eq_sum_innovations
+    (C : ∀ N : ℕ, Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ)
+    (htri : ∀ N, (C N).BlockTriangular
+      (fun i : Fin (N + 1) => OrderDual.toDual i))
+    (hcoh : ∀ N, leadingPrincipalSubmatrix (C (N + 1)) = C N) :
+    ∀ N, inverseCholeskyUnitCapacity (C N) =
+      ∑ n ∈ Finset.range (N + 1), ‖coherentClockInnovation C n‖ ^ 2 := by
+  intro N
+  induction N with
+  | zero =>
+      simp [inverseCholeskyUnitCapacity, inverseCholeskyUnitAmplitude,
+        coherentClockInnovation]
+  | succ N ih =>
+      rw [inverseCholeskyUnitCapacity_succ (C (N + 1)) (htri (N + 1))]
+      rw [hcoh N, ih, Finset.sum_range_succ]
+      simp [Finset.sum_range_succ, coherentClockInnovation, add_assoc]
+
+end
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open Complex Matrix
+
+noncomputable section
+
+section UnitBoundaryCapacity
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+
+/-- The finite inverse-frame vector obtained from one row of `C` and the original clock modes. -/
+def inverseCholeskyFrameVector {N : ℕ}
+    (C : Matrix (Fin N) (Fin N) ℂ) (u : Fin N → E) (i : Fin N) : E :=
+  ∑ j, C i j • u j
+
+/-- Unit response against the original clock packet becomes the conjugate canonical innovation
+amplitude against its inverse-Cholesky frame. -/
+theorem inner_inverseCholeskyFrameVector_unitResponse
+    {N : ℕ} (C : Matrix (Fin N) (Fin N) ℂ) (u : Fin N → E) (y : E)
+    (hy : ∀ j, inner ℂ (u j) y = 1) (i : Fin N) :
+    inner ℂ (inverseCholeskyFrameVector C u i) y =
+      star (inverseCholeskyUnitAmplitude C i) := by
+  simp [inverseCholeskyFrameVector, inverseCholeskyUnitAmplitude, hy]
+
+/-- **Normal-boundary capacity bound.**  If the inverse-Cholesky clock modes are orthonormal, every
+normal vector realizing the finite unit response packet bounds the canonical clock capacity by its
+squared norm.  Hence one global normal boundary uniformly bounds the entire coherent capacity
+tower. -/
+theorem inverseCholeskyUnitCapacity_le_norm_sq_of_orthonormal_unitResponse
+    {N : ℕ} (C : Matrix (Fin N) (Fin N) ℂ) (u : Fin N → E) (y : E)
+    (horth : Orthonormal ℂ (inverseCholeskyFrameVector C u))
+    (hy : ∀ j, inner ℂ (u j) y = 1) :
+    inverseCholeskyUnitCapacity C ≤ ‖y‖ ^ 2 := by
+  have hbound := horth.sum_inner_products_le y (s := Finset.univ)
+  simpa [inverseCholeskyUnitCapacity,
+    inner_inverseCholeskyFrameVector_unitResponse C u y hy] using hbound
+
+end UnitBoundaryCapacity
+
+section CapacityRealization
+
+open scoped ComplexOrder
+
+/-- Canonical diagonal inverse frame realizing a prescribed positive innovation packet. -/
+def prescribedPositiveInnovationFrame {N : ℕ} (eta : Fin N → ℝ) :
+    Matrix (Fin N) (Fin N) ℂ := Matrix.diagonal fun i => (eta i : ℂ)
+
+/-- Positive diagonal Gram matrix paired with the prescribed innovation frame. -/
+def prescribedPositiveInnovationGram {N : ℕ} (eta : Fin N → ℝ) :
+    Matrix (Fin N) (Fin N) ℂ :=
+  Matrix.diagonal fun i => (((eta i)⁻¹ ^ 2 : ℝ) : ℂ)
+
+/-- Every strictly positive innovation packet defines a positive-definite Gram clock. -/
+theorem prescribedPositiveInnovationGram_posDef {N : ℕ} (eta : Fin N → ℝ)
+    (heta : ∀ i, 0 < eta i) :
+    (prescribedPositiveInnovationGram eta).PosDef := by
+  rw [prescribedPositiveInnovationGram, Matrix.posDef_diagonal_iff]
+  intro i
+  rw [Complex.zero_lt_real]
+  exact sq_pos_of_pos (inv_pos.mpr (heta i))
+
+/-- The prescribed positive diagonal frame is the canonical inverse-Cholesky frame of its Gram
+clock. -/
+theorem prescribedPositiveInnovationFrame_isCanonical {N : ℕ} (eta : Fin N → ℝ)
+    (heta : ∀ i, 0 < eta i) :
+    IsCanonicalInverseCholeskyFrame
+      (prescribedPositiveInnovationFrame eta)
+      (prescribedPositiveInnovationGram eta) := by
+  refine ⟨?_, ?_, ?_⟩
+  · unfold IsInverseCholeskyFrame prescribedPositiveInnovationFrame
+      prescribedPositiveInnovationGram
+    rw [Matrix.diagonal_conjTranspose, Matrix.diagonal_mul_diagonal,
+      Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
+    congr 1
+    funext i
+    have hne : (eta i : ℂ) ≠ 0 := by exact_mod_cast (heta i).ne'
+    rw [Pi.star_apply, RCLike.star_def, Complex.conj_ofReal]
+    change (eta i : ℂ) * (((eta i)⁻¹ ^ 2 : ℝ) : ℂ) * (eta i : ℂ) = 1
+    norm_cast
+    field_simp [(heta i).ne']
+  · intro i j hij
+    have hne : i ≠ j := by
+      intro h
+      subst j
+      exact (lt_irrefl _ hij)
+    simp [prescribedPositiveInnovationFrame, Matrix.diagonal, hne]
+  · intro i
+    simp [prescribedPositiveInnovationFrame, heta i]
+
+/-- The normalized Gram--Schmidt construction recovers the prescribed innovation frame exactly. -/
+theorem gramSchmidtInverseFrame_prescribedPositiveInnovation {N : ℕ}
+    (eta : Fin N → ℝ) (heta : ∀ i, 0 < eta i) :
+    gramSchmidtInverseFrame (prescribedPositiveInnovationGram eta)
+        (prescribedPositiveInnovationGram_posDef eta heta) =
+      prescribedPositiveInnovationFrame eta := by
+  apply canonicalInverseCholeskyFrame_unique (prescribedPositiveInnovationGram eta)
+  · exact gramSchmidtInverseFrame_isCanonical _ _
+  · exact prescribedPositiveInnovationFrame_isCanonical eta heta
+
+/-- The unit-packet innovation of the prescribed frame is exactly the requested value. -/
+theorem prescribedPositiveInnovationFrame_amplitude {N : ℕ} (eta : Fin N → ℝ)
+    (i : Fin N) :
+    inverseCholeskyUnitAmplitude (prescribedPositiveInnovationFrame eta) i = eta i := by
+  classical
+  unfold inverseCholeskyUnitAmplitude prescribedPositiveInnovationFrame
+  rw [Finset.sum_eq_single i]
+  · simp
+  · intro b hb hbi
+    simp [Matrix.diagonal, Ne.symm hbi]
+  · simp
+
+/-- The capacity of a prescribed positive innovation packet is its exact squared `ℓ²` mass. -/
+theorem prescribedPositiveInnovationFrame_capacity {N : ℕ} (eta : Fin N → ℝ)
+    (heta : ∀ i, 0 < eta i) :
+    inverseCholeskyUnitCapacity (prescribedPositiveInnovationFrame eta) =
+      ∑ i, eta i ^ 2 := by
+  unfold inverseCholeskyUnitCapacity
+  apply Finset.sum_congr rfl
+  intro i hi
+  rw [prescribedPositiveInnovationFrame_amplitude]
+  simpa [Real.norm_eq_abs, abs_of_pos (heta i)]
+
+/-- Coherent diagonal clock tower with an arbitrary prescribed positive innovation sequence. -/
+def prescribedPositiveInnovationTower (eta : ℕ → ℝ) (N : ℕ) :
+    Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ :=
+  prescribedPositiveInnovationFrame fun i => eta i
+
+/-- Every level of the prescribed tower is lower triangular. -/
+theorem prescribedPositiveInnovationTower_lowerTriangular
+    (eta : ℕ → ℝ) (heta : ∀ n, 0 < eta n) (N : ℕ) :
+    (prescribedPositiveInnovationTower eta N).BlockTriangular
+      (fun i : Fin (N + 1) => OrderDual.toDual i) :=
+  (prescribedPositiveInnovationFrame_isCanonical
+    (fun i : Fin (N + 1) => eta i) (fun i => heta i)).2.1
+
+/-- The prescribed positive innovation tower is coherent under leading-principal restriction. -/
+theorem prescribedPositiveInnovationTower_coherent (eta : ℕ → ℝ) (N : ℕ) :
+    leadingPrincipalSubmatrix (prescribedPositiveInnovationTower eta (N + 1)) =
+      prescribedPositiveInnovationTower eta N := by
+  ext i j
+  simp [leadingPrincipalSubmatrix, prescribedPositiveInnovationTower,
+    prescribedPositiveInnovationFrame, Matrix.diagonal]
+
+/-- **Positive clock realization theorem.**  Every strictly positive sequence occurs exactly as
+the canonical unit-boundary innovation sequence of a coherent positive Gram clock. -/
+theorem prescribedPositiveInnovationTower_innovation
+    (eta : ℕ → ℝ) (N : ℕ) :
+    coherentClockInnovation (prescribedPositiveInnovationTower eta) N = eta N := by
+  exact prescribedPositiveInnovationFrame_amplitude
+    (fun i : Fin (N + 1) => eta i) (Fin.last N)
+
+end CapacityRealization
+
+section RealizationInvariantCapacity
+
+open Asymptotics
+
+variable {𝕜 E F T : Type*} [NontriviallyNormedField 𝕜]
+  [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+  [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+
+/-- **Bounded-realization capacity comparison.**  Suppose two normed realizations have response
+maps intertwined by a continuous linear equivalence.  Then their minimum-norm representers of
+every response packet differ by at most the two operator norms of that equivalence. -/
+theorem minimumResponseNorm_boundedComparison
+    (e : E ≃L[𝕜] F) (A : E → T) (B : F → T)
+    (hresp : ∀ x, B (e x) = A x)
+    (mE : T → E) (mF : T → F)
+    (hEresp : ∀ t, A (mE t) = t)
+    (hFresp : ∀ t, B (mF t) = t)
+    (hEmin : ∀ t x, A x = t → ‖mE t‖ ≤ ‖x‖)
+    (hFmin : ∀ t x, B x = t → ‖mF t‖ ≤ ‖x‖)
+    (t : T) :
+    ‖mF t‖ ≤ ‖(e : E →L[𝕜] F)‖ * ‖mE t‖ ∧
+      ‖mE t‖ ≤ ‖(e.symm : F →L[𝕜] E)‖ * ‖mF t‖ := by
+  constructor
+  · exact (hFmin t (e (mE t)) ((hresp (mE t)).trans (hEresp t))).trans
+      ((e : E →L[𝕜] F).le_opNorm (mE t))
+  · have hinv : A (e.symm (mF t)) = t := by
+      rw [← hresp (e.symm (mF t)), e.apply_symm_apply, hFresp]
+    exact (hEmin t (e.symm (mF t)) hinv).trans
+      ((e.symm : F →L[𝕜] E).le_opNorm (mF t))
+
+/-- Uniform finiteness of an entire minimum-response capacity profile is invariant under bounded
+realization equivalence. -/
+theorem minimumResponseNorm_uniformlyBounded_iff
+    (e : E ≃L[𝕜] F) (A : E → T) (B : F → T)
+    (hresp : ∀ x, B (e x) = A x)
+    (mE : T → E) (mF : T → F)
+    (hEresp : ∀ t, A (mE t) = t)
+    (hFresp : ∀ t, B (mF t) = t)
+    (hEmin : ∀ t x, A x = t → ‖mE t‖ ≤ ‖x‖)
+    (hFmin : ∀ t x, B x = t → ‖mF t‖ ≤ ‖x‖) :
+    (∃ C : ℝ, ∀ t, ‖mE t‖ ≤ C) ↔
+      ∃ C : ℝ, ∀ t, ‖mF t‖ ≤ C := by
+  constructor
+  · rintro ⟨C, hC⟩
+    refine ⟨‖(e : E →L[𝕜] F)‖ * C, fun t => ?_⟩
+    exact (minimumResponseNorm_boundedComparison e A B hresp mE mF hEresp hFresp
+      hEmin hFmin t).1.trans
+      (mul_le_mul_of_nonneg_left (hC t) (norm_nonneg (e : E →L[𝕜] F)))
+  · rintro ⟨C, hC⟩
+    refine ⟨‖(e.symm : F →L[𝕜] E)‖ * C, fun t => ?_⟩
+    exact (minimumResponseNorm_boundedComparison e A B hresp mE mF hEresp hFresp
+      hEmin hFmin t).2.trans
+      (mul_le_mul_of_nonneg_left (hC t) (norm_nonneg (e.symm : F →L[𝕜] E)))
+
+/-- **Clock-capacity growth invariance.**  The whole asymptotic growth class of the minimum-response
+profile, not only its bounded/unbounded phase, is invariant under bounded realization equivalence. -/
+theorem minimumResponseNorm_isTheta
+    (e : E ≃L[𝕜] F) (A : E → T) (B : F → T)
+    (hresp : ∀ x, B (e x) = A x)
+    (mE : T → E) (mF : T → F)
+    (hEresp : ∀ t, A (mE t) = t)
+    (hFresp : ∀ t, B (mF t) = t)
+    (hEmin : ∀ t x, A x = t → ‖mE t‖ ≤ ‖x‖)
+    (hFmin : ∀ t x, B x = t → ‖mF t‖ ≤ ‖x‖)
+    (l : Filter T) :
+    (fun t => ‖mE t‖) =Θ[l] (fun t => ‖mF t‖) := by
+  constructor
+  · apply IsBigO.of_bound ‖(e.symm : F →L[𝕜] E)‖
+    exact Filter.Eventually.of_forall fun t => by
+      simpa only [norm_norm] using
+        (minimumResponseNorm_boundedComparison e A B hresp mE mF hEresp hFresp
+          hEmin hFmin t).2
+  · apply IsBigO.of_bound ‖(e : E →L[𝕜] F)‖
+    exact Filter.Eventually.of_forall fun t => by
+      simpa only [norm_norm] using
+        (minimumResponseNorm_boundedComparison e A B hresp mE mF hEresp hFresp
+          hEmin hFmin t).1
+
+/-- Squared minimum-response energies, hence scalar clock capacities, have the same asymptotic
+growth class under bounded realization equivalence. -/
+theorem minimumResponseEnergy_isTheta
+    (e : E ≃L[𝕜] F) (A : E → T) (B : F → T)
+    (hresp : ∀ x, B (e x) = A x)
+    (mE : T → E) (mF : T → F)
+    (hEresp : ∀ t, A (mE t) = t)
+    (hFresp : ∀ t, B (mF t) = t)
+    (hEmin : ∀ t x, A x = t → ‖mE t‖ ≤ ‖x‖)
+    (hFmin : ∀ t x, B x = t → ‖mF t‖ ≤ ‖x‖)
+    (l : Filter T) :
+    (fun t => ‖mE t‖ ^ 2) =Θ[l] (fun t => ‖mF t‖ ^ 2) := by
+  exact (minimumResponseNorm_isTheta e A B hresp mE mF hEresp hFresp
+    hEmin hFmin l).pow 2
+
+end RealizationInvariantCapacity
+
+end
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open Complex Matrix
+open scoped ComplexOrder
+
+noncomputable section
+
+/-- One inverse-Cholesky innovation row for an `r`-packet of target clock responses. -/
+def inverseCholeskyPacketAmplitude {N r : ℕ}
+    (C : Matrix (Fin N) (Fin N) ℂ) (target : Fin N → Fin r → ℂ)
+    (i : Fin N) (a : Fin r) : ℂ :=
+  ∑ j, C i j * target j a
+
+/-- Positive matrix capacity of a finite packet of target clock responses. -/
+def inverseCholeskyPacketCapacity {N r : ℕ}
+    (C : Matrix (Fin N) (Fin N) ℂ) (target : Fin N → Fin r → ℂ) :
+    Matrix (Fin r) (Fin r) ℂ := fun a b =>
+  ∑ i, star (inverseCholeskyPacketAmplitude C target i a) *
+    inverseCholeskyPacketAmplitude C target i b
+
+/-- Rank-one positive capacity increment contributed by one innovation row. -/
+def packetInnovationOuter {r : ℕ} (eta : Fin r → ℂ) :
+    Matrix (Fin r) (Fin r) ℂ := fun a b => star (eta a) * eta b
+
+/-- Every packet innovation outer product is positive semidefinite. -/
+theorem packetInnovationOuter_posSemidef {r : ℕ} (eta : Fin r → ℂ) :
+    (packetInnovationOuter eta).PosSemidef := by
+  let B : Matrix (Fin 1) (Fin r) ℂ := fun _ a => eta a
+  have hpos : (Bᴴ * (1 : Matrix (Fin 1) (Fin 1) ℂ) * B).PosSemidef :=
+    Matrix.PosSemidef.one.conjTranspose_mul_mul_same B
+  have heq : Bᴴ * B = packetInnovationOuter eta := by
+    ext a b
+    simp [packetInnovationOuter, B, Matrix.mul_apply]
+  simpa [heq] using hpos
+
+/-- **Matrix clock-capacity increment law.**  Adjoining one clock constraint adds exactly the
+rank-one positive outer product of its packet innovation. -/
+theorem inverseCholeskyPacketCapacity_succ
+    {N r : ℕ} (C : Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ)
+    (target : Fin (N + 1) → Fin r → ℂ)
+    (htri : C.BlockTriangular (fun i : Fin (N + 1) => OrderDual.toDual i)) :
+    inverseCholeskyPacketCapacity C target =
+      inverseCholeskyPacketCapacity (leadingPrincipalSubmatrix C)
+        (fun j => target j.castSucc) +
+      packetInnovationOuter
+        (inverseCholeskyPacketAmplitude C target (Fin.last N)) := by
+  ext a b
+  unfold inverseCholeskyPacketCapacity packetInnovationOuter
+  rw [Fin.sum_univ_castSucc, Matrix.add_apply]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro i hi
+  have hamp : ∀ q : Fin r,
+      inverseCholeskyPacketAmplitude C target i.castSucc q =
+        inverseCholeskyPacketAmplitude (leadingPrincipalSubmatrix C)
+          (fun j => target j.castSucc) i q := by
+    intro q
+    unfold inverseCholeskyPacketAmplitude leadingPrincipalSubmatrix
+    rw [Fin.sum_univ_castSucc]
+    have hzero : C i.castSucc (Fin.last N) = 0 := by
+      apply htri
+      simp
+    simp [hzero]
+  rw [hamp a, hamp b]
+
+/-- Packet innovation at level `N` of a coherent inverse-Cholesky tower. -/
+def coherentClockPacketInnovation {r : ℕ}
+    (C : ∀ N : ℕ, Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ)
+    (target : ℕ → Fin r → ℂ) (N : ℕ) : Fin r → ℂ :=
+  inverseCholeskyPacketAmplitude (C N) (fun j => target (j : ℕ)) (Fin.last N)
+
+/-- **Matrix clock-capacity decomposition.**  A coherent `r`-packet capacity is the cumulative
+sum of the rank-one positive outer products of its canonical innovations. -/
+theorem coherentClockPacketCapacity_eq_sum_innovations {r : ℕ}
+    (C : ∀ N : ℕ, Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ)
+    (target : ℕ → Fin r → ℂ)
+    (htri : ∀ N, (C N).BlockTriangular
+      (fun i : Fin (N + 1) => OrderDual.toDual i))
+    (hcoh : ∀ N, leadingPrincipalSubmatrix (C (N + 1)) = C N) :
+    ∀ N, inverseCholeskyPacketCapacity (C N) (fun j => target (j : ℕ)) =
+      ∑ n ∈ Finset.range (N + 1),
+        packetInnovationOuter (coherentClockPacketInnovation C target n) := by
+  intro N
+  induction N with
+  | zero =>
+      ext a b
+      simp [inverseCholeskyPacketCapacity, inverseCholeskyPacketAmplitude,
+        packetInnovationOuter, coherentClockPacketInnovation]
+  | succ N ih =>
+      rw [inverseCholeskyPacketCapacity_succ (C (N + 1))
+        (fun j => target (j : ℕ)) (htri (N + 1))]
+      rw [hcoh N]
+      have htarget : (fun j : Fin (N + 1) => target (j.castSucc : ℕ)) =
+          (fun j : Fin (N + 1) => target (j : ℕ)) := by rfl
+      rw [htarget, ih, Finset.sum_range_succ]
+      simp [Finset.sum_range_succ, coherentClockPacketInnovation, add_assoc]
+
+/-- Change of coordinates in a finite packet of clock responses. -/
+def clockPacketCoordinateChange {N r s : ℕ}
+    (target : Fin N → Fin r → ℂ) (R : Matrix (Fin r) (Fin s) ℂ) :
+    Fin N → Fin s → ℂ := fun j a => ∑ b, target j b * R b a
+
+/-- Innovation rows transform covariantly under a change of packet coordinates. -/
+theorem inverseCholeskyPacketAmplitude_coordinateChange {N r s : ℕ}
+    (C : Matrix (Fin N) (Fin N) ℂ) (target : Fin N → Fin r → ℂ)
+    (R : Matrix (Fin r) (Fin s) ℂ) (i : Fin N) (a : Fin s) :
+    inverseCholeskyPacketAmplitude C (clockPacketCoordinateChange target R) i a =
+      ∑ b, inverseCholeskyPacketAmplitude C target i b * R b a := by
+  simp only [inverseCholeskyPacketAmplitude, clockPacketCoordinateChange]
+  simp_rw [Finset.mul_sum, Finset.sum_mul]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro b hb
+  apply Finset.sum_congr rfl
+  intro j hj
+  ring
+
+/-- Matrix of innovation rows for a finite response packet. -/
+def inverseCholeskyPacketAmplitudeMatrix {N r : ℕ}
+    (C : Matrix (Fin N) (Fin N) ℂ) (target : Fin N → Fin r → ℂ) :
+    Matrix (Fin N) (Fin r) ℂ := fun i a =>
+  inverseCholeskyPacketAmplitude C target i a
+
+/-- The innovation matrix transforms by right multiplication in packet coordinates. -/
+theorem inverseCholeskyPacketAmplitudeMatrix_coordinateChange {N r s : ℕ}
+    (C : Matrix (Fin N) (Fin N) ℂ) (target : Fin N → Fin r → ℂ)
+    (R : Matrix (Fin r) (Fin s) ℂ) :
+    inverseCholeskyPacketAmplitudeMatrix C (clockPacketCoordinateChange target R) =
+      inverseCholeskyPacketAmplitudeMatrix C target * R := by
+  ext i a
+  exact inverseCholeskyPacketAmplitude_coordinateChange C target R i a
+
+/-- Packet capacity is the Hermitian Gram form of its innovation matrix. -/
+theorem inverseCholeskyPacketCapacity_eq_conjTranspose_mul {N r : ℕ}
+    (C : Matrix (Fin N) (Fin N) ℂ) (target : Fin N → Fin r → ℂ) :
+    inverseCholeskyPacketCapacity C target =
+      (inverseCholeskyPacketAmplitudeMatrix C target)ᴴ *
+        inverseCholeskyPacketAmplitudeMatrix C target := by
+  ext a b
+  rfl
+
+/-- **Capacity-form covariance.**  Matrix clock capacity is not a coordinatewise scalar invariant:
+it is a covariant Hermitian form on the response packet.  Every packet-coordinate change acts by
+the exact congruence law `K ↦ Rᴴ K R`. -/
+theorem inverseCholeskyPacketCapacity_coordinateChange {N r s : ℕ}
+    (C : Matrix (Fin N) (Fin N) ℂ) (target : Fin N → Fin r → ℂ)
+    (R : Matrix (Fin r) (Fin s) ℂ) :
+    inverseCholeskyPacketCapacity C (clockPacketCoordinateChange target R) =
+      Rᴴ * inverseCholeskyPacketCapacity C target * R := by
+  rw [inverseCholeskyPacketCapacity_eq_conjTranspose_mul,
+    inverseCholeskyPacketAmplitudeMatrix_coordinateChange,
+    inverseCholeskyPacketCapacity_eq_conjTranspose_mul,
+    Matrix.conjTranspose_mul]
+  simp only [Matrix.mul_assoc]
+
+end
+
+end GaloisForLFunctions.HTGeometry

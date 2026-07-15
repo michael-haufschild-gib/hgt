@@ -7,12 +7,13 @@
 - **Parent theorems:**
   `../2-fully-proven/new_scientific_knowledge/hypertranscendental-clock-incompressibility.md`,
   `../2-fully-proven/new_scientific_knowledge/differential-variational-building-balance-law.md`
-- **Statement:** The universal obstruction of a hypertranscendental realization is the derived
-  stack of filtration-tame, global, positive, and self-dual splittings of its completed
-  differential cotangent comparison.  The familiar obstruction modes are distinct cohomological
-  shadows of this one stack.
+- **Statement:** The universal positive linearized object of a hypertranscendental realization is
+  its capacity field: the building-valued clock-capacity path descended over the source realization
+  groupoid modulo bounded congruence.  The derived stack of filtration-tame, global, positive, and
+  self-dual splittings is the stack of admissible trivializations of that field.  The familiar
+  obstruction modes are conjecturally conservative representations of this one object.
 
-## 1. Why the object must be a splitting stack
+## 1. Why the obstruction object has a splitting stack
 
 Let `K/C` be a finite-rank free HT field and let `rho` be a realization of its finite jet
 observables in an ambient algebraic, analytic, spectral, or boundary object `A`.  Linearization
@@ -251,8 +252,90 @@ Lean-verified in
 novelty gate are in
 `../2-fully-proven/new_scientific_knowledge/hypertranscendental-clock-normalization-symmetry-anomaly.md`.
 
-Theorem G changes the hierarchy of the conjecture.  The primary object is the modular-corona class
-of the infinite boundary.  The stack `(4)` is the derived stack of its admissible trivializations.
+Theorem G supplies the diagonal boundary chart.  The modular-corona class is not the universal
+object; it is one coordinate representation of the capacity field.  The stack `(4)` is the derived
+stack of admissible trivializations of that field.
+
+### Theorem H: exact symmetry condenses the boundary into one spectral line
+
+The diagonal modular anomaly has a rigid non-diagonal escape.  Let a total two-sided clock orbit
+`u_(n+1)=Uu_n` live in a positive Hilbert completion with `U` unitary.  If a normal vector `b`
+realizes the complete boundary packet
+
+```text
+<u_n,b>=1             for every n in Z,
+```
+
+then `Ub=b`; `b` is the unique vector with that response; and every fixed vector of `U` is a scalar
+multiple of `b`.  Hence the fixed spectral sector is exactly the canonical boundary line.  The
+forward clock orbit cannot be Bessel, since its first `N` responses against `b` already have squared
+sum `N`.
+
+This is the strong positive successor to the diagonal no-go.  A normal positive boundary can keep
+exact clock symmetry, but only by condensing into a simple zero-frequency spectral atom and giving
+up stable Bessel observability.  The general object is therefore a pointed measured clock
+compactification: its free sector carries the modular cocycle and its fixed boundary sector carries
+the spectral atom.  The new Lean kernels and the external novelty gate are in
+`../2-fully-proven/new_scientific_knowledge/hypertranscendental-clock-modular-spectral-alternative.md`.
+
+### Theorem I: arbitrary positive clocks have a canonical capacity-innovation path
+
+Let `G_N` be the strictly positive Gram matrix of the first `N+1` realized clock modes and `C_N`
+its coherent canonical inverse-Cholesky frame.  For the unit boundary packet define
+
+```text
+eta_N=(C_N 1)_N,
+kappa_N=||C_N 1||^2.
+```
+
+Then
+
+```text
+kappa_(N+1)=kappa_N+|eta_(N+1)|^2,
+kappa_N=sum_(n<=N)|eta_n|^2.
+```
+
+The minimum squared norm of a vector realizing the first `N+1` unit responses is exactly
+`kappa_N`.  In the Hilbert completion, the complete boundary is normal exactly when
+`eta in ell^2`, equivalently `sup_N kappa_N<infinity`; its squared norm is that supremum.  A Bessel
+clock forces `kappa_N>=(N+1)/B`, so stable observability places the boundary in the rigged dual
+rather than the Hilbert space.
+
+For an `r`-packet of boundary observables, `eta_N in C^r` and the capacity is a positive matrix path
+
+```text
+K_(N+1)=K_N+eta_(N+1)^*eta_(N+1).
+```
+
+Every increment is positive semidefinite of rank at most one.  This matrix curvature law is
+Lean-verified; it is the finite-rank building-valued object anticipated by the conjecture.  The
+paper proof, formal kernels, and external novelty gate are in
+`../2-fully-proven/new_scientific_knowledge/hypertranscendental-clock-capacity-innovation-theorem.md`.
+
+Theorems G and H are now normal-form consequences of Theorem I.  In diagonal coordinates the
+innovation distribution is recorded by the persistent modular ratio.  Under exact unitary shift
+symmetry, square-summability condenses into the unique fixed spectral line.
+
+### Theorem J: capacity freedom forces a covariant capacity field
+
+Hypertranscendence and positivity alone impose no scalar capacity-growth law.  Every nondecreasing
+positive scalar path occurs as the unit-boundary capacity of a coherent positive Gram clock.
+Conversely, bounded response-intertwining equivalences make minimum-response norms and their
+squared capacities `Theta`-equivalent.  For finite response packets, coordinate change by `R`
+obeys the exact congruence law
+
+```text
+K_N(tR)=R^*K_N(t)R.
+```
+
+Therefore a scalar innovation sequence is not the intrinsic object.  The intrinsic object is the
+bounded-congruence class of the positive matrix path descended over the realization/coordinate
+groupoid: the **hypertranscendental capacity field**.  The modular-corona and spectral-atom
+descriptions are boundary charts of this field; the splitting stack is its derived positive
+self-dual trivialization object.
+
+The complete paper proof, external novelty gate, and Lean kernels are in
+`../2-fully-proven/new_scientific_knowledge/hypertranscendental-capacity-field-realization-covariance.md`.
 
 ### Rank boundary
 
@@ -377,6 +460,8 @@ all require specialist review before any priority claim.
 - `[PASS]` It has decisive finite-stage and surjective-tower no-go theorems with Lean kernels.
 - `[PASS]` Its modular-corona refinement is a complete invariant of normalized positive diagonal
   completions and is provably nontrivial under bounded positive gauges.
+- `[PASS]` The exactly symmetric non-diagonal escape is classified: one canonical boundary
+  eigenline and unavoidable Bessel failure.
 - `[FAIL until proved]` Existence of `(4)` in a usable category, completeness of `(7)`,
   conservativity of the splitting-tower presentation, and any zeta realization remain open.
 - `[FAIL if redressed]` Calling an arbitrary cotangent complex, Fredholm determinant, or sheaf of

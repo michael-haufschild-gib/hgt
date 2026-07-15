@@ -635,3 +635,140 @@ the boundary-unitary identity `(7p)`.
 
 **HT consequence:** critical source conditioning can turn an unbounded affine observable into a
 finite calibrated state coordinate without making that observable bounded on the carrier.
+
+### 12. Exact HT modular-curvature realization
+
+The finite squarefree source is an exact determinant-line boundary-colligation skeleton, not
+merely an RH-specific probability model.  For a finite prime aperture `S`, its signed determinant
+line is
+
+```text
+phi_S=tensor_(p in S)(e_0-p^(-sigma/2)e_1),
+||phi_S||^2=Z_S=product_(p in S)(1+p^(-sigma)).           (21)
+```
+
+Its fixed current and curvature are
+
+```text
+J_S=-partial_sigma log Z_S=E_S log d,
+-partial_sigma J_S=Var_S(log d).                         (22)
+```
+
+Adding one prime tensors the source line by its two-state boundary self-symbol and decomposes the
+horizontal tangent into two orthogonal terms.  Thus connection and curvature add exactly, with
+one-dimensional transverse width at every aperture.  In the all-prime critical limit,
+
+```text
+4epsilon^2[-partial_sigma J_S]->4.                       (23)
+```
+
+This realizes the thin-boundary tensor skeleton and identifies the four units as the calibrated
+tangent norm coming from the real Hessian curvature of the squarefree current line.  The
+alternating principal-symbol curvature of the general HT law theorem is a different typed
+invariant and is not used to infer this metric identity.
+
+Adding a prime is not itself the intrinsic HT derivative clock.  The genuine HT bridge uses the
+hypertranscendental zeta amplitude: its logarithmic current `A=-zeta'/zeta` is
+hypertranscendental, and RHTower already realizes its Euler-region values as the full von Mangoldt
+prime-power Laplace channel.  The existing Gamma-jet descent anomaly, however, treats only a
+weighted time-one prime slice; lifting it to the complete prime-power current remains necessary.
+The squarefree current differs from `A` by the safe holomorphic term `2A(2s)` on the strict right
+half-plane.  Thus the full source object must combine the new prime-power HT descent anomaly with
+the positive squarefree determinant metric before Gamma/Sonin completion.
+
+Prime-by-prime, the modular current
+
+```text
+j(s)_p=(log p)p^(-s)/(1+p^(-s))                          (24)
+```
+
+is a holomorphic `ell^2(Primes)`-valued field throughout `Re s>1/2`.  The scalar current
+`J_sq=A(s)-2A(2s)` is its codiagonal only on `Re s>1`, and that codiagonal is unbounded on `ell^2`.
+Therefore every possible strict right-half divisor pole is a conormal-corona singularity of the
+infinite scalarization, not a singularity of any local prime coordinate.
+
+**Proof-relevant reformulation:** the desired Ward theorem is the Gauss--Codazzi identity for the
+Gamma/Sonin conservative completion of the determinant line `(21)`.  Its ambient curvature is
+`(23)`; its anti-causal second fundamental form must be `ell_E`; the remaining causal curvature is
+nonnegative.  This gives the exact target
+
+```text
+4=causal connection energy+||ell_E||^2.                  (25)
+```
+
+**No-go:** Hilbert holomorphy of `(24)` alone is divisor-blind because the codiagonal is unbounded.
+A vector-valued prime/Fock completion without the source conormal cannot prove RH.
+
+**General HT consequence:** a constrained HT source can be regular in every finite and Hilbert-
+valued modular coordinate while its global fixed current is meromorphic solely because integration
+uses an unbounded corona functional.  Divisor formation is an infinite integration anomaly.
+
+### 13. Pointed Fisher connection and the native anti-causal Ward commutator
+
+The source line itself fixes the finite-rank observable that must cross the Gamma/Sonin seam.  For
+the normalized squarefree state `psi_sigma` and completed tangent `chi_sigma`, put
+
+```text
+X_sigma=2^(-1/2)(|chi_sigma><psi_sigma|
+                   +|psi_sigma><chi_sigma|)
+       =2sqrt(2)epsilon partial_sigma
+          |psi_sigma><psi_sigma|.                       (26)
+```
+
+This is the pointed Fisher connection, not an arbitrary norm-four vector or operator.  It obeys
+
+```text
+||X_sigma||_HS^2=||chi_sigma||^2->4.                    (27)
+```
+
+Let `P_(sigma,u)` cut the source at `epsilon log d<=u`.  The critical exponential law computes the
+complete truncated state--tangent Gram matrix and gives
+
+```text
+a(u)=1-e^(-u),
+c(u)=2u e^(-u),
+b(u)=4[1-(1+u^2)e^(-u)].                                (28)
+```
+
+The exact rank-two cutoff Ward identity then yields
+
+```text
+E_W(u)
+ :=lim_(sigma->1+)||[P_(sigma,u),X_sigma]||_HS^2
+ =4[(2+u^2)e^(-u)-2(1+2u^2)e^(-2u)],                   (29)
+
+E_W(u)<=8(1-e^(-u)),
+lim_(u->0+)E_W(u)/(2u)=4.                                (30)
+```
+
+This removes the finite-window mismatch of the bare incidence projection.  The derivative
+connection `(26)` has the required linear boundary profile without reparameterizing the clock.
+The factor eight in `(30)` is the energy of the two adjoint commutator orientations; the existing
+anti-causal RH criterion divides by `2u` and therefore recovers the sharp four-unit threshold.
+
+The proof-bearing target is consequently
+
+```text
+completed prime--Gamma/Sonin image of
+  [P_(sigma,u),X_sigma]
+    ->[P_u,D_Xi] on a source graph core,                 (31)
+
+limsup completed HS energy<=E_W(u).                      (32)
+```
+
+Equations `(30)`--`(32)` imply
+
+```text
+limsup_(u->0+) 1/(2u)||[P_u,D_Xi]||_(HS,ext)^2<=4,
+```
+
+and hence RH by the existing Cauchy-energy theorem.
+
+**No-go:** a Lueders disturbance is intrinsically two-sided.  Asking it to converge to the
+one-sided strip `P_uD_Xi` while assigning only `4u` of source energy loses the exact factor two.
+The native target is the cutoff commutator in `(31)`.
+
+**General HT consequence:** every normalized constrained HT source line has a canonical rank-two
+Fisher connection, and the boundary Ward curvature of that connection is determined entirely by
+the truncated `2 x 2` state--tangent Gram matrix.  Infinite HT complexity enters through the
+completed graph incidence, not through the finite boundary-energy algebra.

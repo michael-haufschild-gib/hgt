@@ -154,6 +154,58 @@ archimedean boundary term must be present before the positive square is formed.
    `(5)`--`(8)` alone is equivalent to relabelling `A_(N,u)`.  The direct completed-source identity
    `(10)` and the independently normalized contact bound `(6)` carry all non-circular content.
 
+## Native commutator formulation
+
+The source observable and the target ideal are now fixed more tightly than `(5)`--`(10)`.  Let
+`psi_sigma` and `chi_sigma` be the normalized squarefree-Möbius state and completed Fisher tangent.
+The source contact observable is
+
+```text
+X_sigma=2^(-1/2)(|chi_sigma><psi_sigma|
+                   +|psi_sigma><chi_sigma|)
+       =2sqrt(2)(sigma-1) partial_sigma
+          |psi_sigma><psi_sigma|.                       (11)
+```
+
+Thus `X_sigma` is the normalized derivative of the pointed source projection, and
+`||X_sigma||_HS^2->4`.  It is not an operator to be selected during the Sonin construction.
+
+For the scaled divisor cutoff `P_(sigma,u)`, the exact theorem in
+`../2-fully-proven/mobius-fisher-contact-commutator-ward-budget.md` gives
+
+```text
+lim_(sigma->1+) ||[P_(sigma,u),X_sigma]||_HS^2
+ =E_W(u)
+ =4[(2+u^2)e^(-u)-2(1+2u^2)e^(-2u)],                  (12)
+
+E_W(u)<=8(1-e^(-u)),
+lim_(u->0+)E_W(u)/(2u)=4.                               (13)
+```
+
+The factor eight is forced by the two adjoint cutoff orientations.  This matches the already
+proved RH consumer
+
+```text
+limsup_(u->0+) 1/(2u)||[P_u,D_Xi]||_(HS,ext)^2<=4
+  -> RH.                                                  (14)
+```
+
+Accordingly the proof-bearing source identity is not a two-sided Lüders disturbance converging to
+the one-sided strip `Q_uD_Xi`.  It is a completed source commutator
+
+```text
+completed image of [P_(sigma,u),X_sigma]
+  -> [P_u,D_Xi]                                          (15)
+```
+
+on one source-defined graph core, with no increase of Hilbert--Schmidt energy.  Lüders pinching
+remains useful because its disturbance has exactly the commutator energy, but `(15)` preserves its
+native two-sided geometry and the exact factor two.
+
+This also fixes the finite observable in the smallest brick.  The finite prime-power/Gamma/Sonin
+construction must act on `(11)` and intertwine its source cutoff with the physical boundary
+cutoff.  Producing an arbitrary `X_(N,u)` of the right norm is no longer admissible.
+
 ## Lean boundary
 
 The following algebraic and finite-Hilbert pieces are already formalized:
@@ -174,12 +226,14 @@ finite algebra, are the proof-bearing theorem.
 - [x] 0 -> 1: source-pure construction target and exact RH consumer isolated
 - [x] incoming four-unit contact energy formalized
 - [x] finite Lueders/Kadison disturbance identities formalized; total contraction proved on paper
+- [x] source contact observable fixed as the pointed Fisher-connection derivative
+- [x] exact local commutator profile and native eight-to-four normalization proved on paper
 - [x] boundary-strip weak-limit transfer theorem available on paper
-- [ ] construct the finite completed contact observable `X_(N,u)`
-- [ ] prove the direct source identity `(10)`
-- [ ] prove graph-core convergence `(9)`
-- [ ] prove the calibration bound `(6)` with `o(u)` uniform in the prime cutoff
-- [ ] deduce the four-unit relative-trace density and RH
+- [ ] construct the finite prime-power/Gamma/Sonin image of `(11)`
+- [ ] prove the direct source commutator identity `(15)`
+- [ ] prove graph-core convergence to `[P_u,D_Xi]`
+- [ ] prove nonexpansiveness in the completed Hilbert--Schmidt metric
+- [ ] deduce `(14)` and RH
 - [ ] parent-theory and scientific-novelty audit
 
 ## Log

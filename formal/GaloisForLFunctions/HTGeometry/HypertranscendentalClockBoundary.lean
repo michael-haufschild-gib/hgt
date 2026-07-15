@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.FractionRingDerivation
 import GaloisForLFunctions.HTGeometry.HypertranscendentalHorizonFunctionField
 import GaloisForLFunctions.HTGeometry.KaehlerKernel
+import Mathlib.Analysis.InnerProductSpace.LinearMap
 import Mathlib.FieldTheory.RatFunc.AsPolynomial
 import Mathlib.RingTheory.Derivation.MapCoeffs
 
@@ -940,5 +941,88 @@ theorem tateClock_finiteObservable_conormal_eq_zero
     exact hz
 
 end
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+section SpectralBoundary
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+
+/-- **Unitary clock spectral condensation.**  Let a two-sided unitary clock orbit be total in a
+positive Hilbert completion.  If one normal boundary vector has the same unit response against
+every clock translate, then that boundary vector is fixed by the clock.  Thus an exactly symmetric
+non-diagonal completion can normalize the infinite unit boundary only by creating a zero-frequency
+spectral vector. -/
+theorem unitaryClockBoundary_fixed_of_total_constantResponse
+    (U : E ≃ₗᵢ[ℂ] E) (u : ℤ → E) (y : E)
+    (hshift : ∀ n, u (n + 1) = U (u n))
+    (htotal : ∀ z : E, (∀ n, inner ℂ (u n) z = 0) → z = 0)
+    (hresponse : ∀ n, inner ℂ (u n) y = 1) :
+    U y = y := by
+  have hback : U.symm y = y := by
+    apply sub_eq_zero.mp
+    apply htotal (U.symm y - y)
+    intro n
+    rw [inner_sub_right]
+    rw [← U.inner_map_eq_flip]
+    rw [← hshift n]
+    rw [hresponse (n + 1), hresponse n, sub_self]
+  simpa using (congrArg U hback).symm
+
+end SpectralBoundary
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+section SpectralBoundaryRigidity
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+
+/-- **Boundary uniqueness from total observation.**  A total clock orbit has at most one normal
+boundary vector with a prescribed unit response packet. -/
+theorem clockBoundary_unique_of_total_response
+    (u : ℤ → E) (htotal : ∀ z : E, (∀ n, inner ℂ (u n) z = 0) → z = 0)
+    (y z : E) (hy : ∀ n, inner ℂ (u n) y = 1)
+    (hz : ∀ n, inner ℂ (u n) z = 1) :
+    y = z := by
+  apply sub_eq_zero.mp
+  apply htotal (y - z)
+  intro n
+  rw [inner_sub_right, hy n, hz n, sub_self]
+
+/-- **One-dimensional boundary condensation.**  For a total unitary clock orbit carrying a normal
+unit-response boundary, every invariant spectral vector lies on the boundary line.  Hence the
+zero-frequency sector selected by exact clock symmetry is canonical and one-dimensional. -/
+theorem unitaryClock_fixedVector_eq_smul_boundary
+    (U : E ≃ₗᵢ[ℂ] E) (u : ℤ → E) (y z : E)
+    (hshift : ∀ n, u (n + 1) = U (u n))
+    (htotal : ∀ x : E, (∀ n, inner ℂ (u n) x = 0) → x = 0)
+    (hy : ∀ n, inner ℂ (u n) y = 1) (hz : U z = z) :
+    ∃ c : ℂ, z = c • y := by
+  have hzback : U.symm z = z := by
+    simpa using (congrArg U.symm hz).symm
+  have hstep : ∀ n, inner ℂ (u (n + 1)) z = inner ℂ (u n) z := by
+    intro n
+    rw [hshift n, U.inner_map_eq_flip, hzback]
+  have hconst : ∀ n, inner ℂ (u n) z = inner ℂ (u 0) z := by
+    intro n
+    induction n using Int.induction_on with
+    | zero => rfl
+    | succ n ih => exact (hstep n).trans ih
+    | pred n ih =>
+        have hs := hstep (-n - 1)
+        have hidx : -n - 1 + 1 = -(n : ℤ) := by ring
+        rw [hidx] at hs
+        exact hs.symm.trans ih
+  refine ⟨inner ℂ (u 0) z, ?_⟩
+  apply sub_eq_zero.mp
+  apply htotal (z - inner ℂ (u 0) z • y)
+  intro n
+  rw [inner_sub_right, inner_smul_right, hconst n, hy n, mul_one, sub_self]
+
+end SpectralBoundaryRigidity
 
 end GaloisForLFunctions.HTGeometry

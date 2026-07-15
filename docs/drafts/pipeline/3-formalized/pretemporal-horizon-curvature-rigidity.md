@@ -1,9 +1,9 @@
 # Before There Was Time: holographic horizon curvature and integrability rigidity
 
 - **ID:** `pretemporal-horizon-curvature-rigidity`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM / FILTERED LIE CONSTRAINTS / HYPERTRANSCENDENCE GEOMETRY
-- **Scientific status:** `[PROVED HERE] [LEAN SOURCE-CHECKED] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[LEAN-FORMALIZED] [AXIOM-AUDITED] [NOVELTY UNVERIFIED]`
 - **Statement:** The apparent countable characteristic arrangement of a rank-one filtered
   hypertranscendental observable collapses under commutator closure. Its obstruction is an
   intrinsic alternating consecutive-symbol curvature.
@@ -138,9 +138,10 @@ model.
   `characteristicSet_eq_first_ker_of_commutatorClosure`, the two exact branches;
 - `characteristicSet_integrable_rankOne_dichotomy`, the complete theorem.
 
-The complete module passes direct Lean source checking without `sorry`, `admit`, an axiom, or an
-opaque declaration. Targeted integration build and terminal axiom audit remain queued behind the
-shared Lean process.
+The complete module passes direct Lean source checking, targeted integration build, formal lint,
+and terminal axiom audit. The audited theorem surface depends only on `propext`,
+`Classical.choice`, and `Quot.sound`; it contains no project axiom, `sorry`, `admit`, opaque
+declaration, or unsafe declaration.
 
 ## 6. Anti-theatre and significance gate
 
@@ -176,4 +177,4 @@ observable sector, a nonclosed/anomalous law system, or additional non-symbolic 
 - [x] all-layer kernel collapse
 - [x] exact characteristic-spectrum dichotomy
 - [x] symbol-curvature intrinsicness from symbol uniqueness
-- [ ] targeted build, formal lint, and terminal axiom audit
+- [x] targeted build, formal lint, and terminal axiom audit

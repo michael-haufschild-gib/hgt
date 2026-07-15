@@ -359,11 +359,15 @@ location.  No such instantiation currently exists.
 2. [DONE] Prove the homogeneous noncommutative word formula `(3)` without reordering words.
 3. [DONE] Formalize the finite Kähler wedge and the equivalence `(5)`.
 4. [DONE] Package `W_n` as a homogeneous vector-valued polynomial and extract finite homogeneous
-   scalar equations for its projective zero locus.
-5. [DONE for the complex affine/Baire form] Formalize the collapse-versus-dense-residual theorem
-   for countable families of finite complex algebraic loci.
-6. Reuse the axiom-clean `SourceLogarithmicBoundary` theorem for each direction and formalize only
-   the new variation-in-direction and linear/projective compatibility.
+   scalar equations for its projective zero locus; descend the finite-law filtration and complete
+   HT complement to the actual projectivization of law space.
+5. [DONE for arbitrary uncountable-base Zariski density, the complex affine/Baire form, and the
+   sharp projective two-law form] Formalize the collapse-versus-generic alternative for countable
+   finite-law loci, including the finite-stratum/countable-exceptional alternative on a
+   two-dimensional law space.
+6. [DONE] Formalize the multiplier-cocycle variation in the law direction, its linear Atiyah-class
+   map, the exact first-order interpretation of its kernel, and the resulting inclusion in the
+   order-one finite-law locus.
 7. Instantiate the actual regular derivation space and multiplier cocycle of elliptic gamma.
 
 No hypothesis may restate algebraic dependence of the directional jets or the desired dichotomy.
@@ -412,9 +416,52 @@ one finite level is the whole law-coordinate space or simultaneous avoidance is 
 with the directional polynomial presentation.  It proves the exact complex affine alternative:
 either one finite directional jet order is dependent for every law coordinate, or directions with
 algebraically independent complete jet towers form a dense residual set.  The module passed its
-exact targeted build and direct source check.  The remaining geometric work is the projective
-transport, Zariski-density statement over an arbitrary uncountable algebraically closed base, and
-complex null-set/full-measure strengthening.
+exact targeted build and direct source check.  The remaining geometric work is the complex
+projective-chart null-set/full-measure strengthening.
+
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveDirectionalFiniteLaw.lean` performs the actual
+projective transport.  It proves finite and complete jet independence invariant under every
+nonzero law-coordinate rescaling, defines the projective finite-law and complete-HT loci by
+descent to `Projectivization`, proves the finite-law loci are nested, and identifies their
+countable union exactly with the complement of the projective complete-HT locus.  This is a
+genuine quotient construction, not an affine locus renamed as projective.  The scaling law was
+numerically pre-certified through order five; the module then passed its exact targeted build and
+direct source check.  No full build was run.
+
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveLineDirectionalCountability.lean` proves the sharp
+two-law statement `(8)` over an arbitrary base field.  A proper projective finite-law stratum
+supplies a nonzero homogeneous binary coordinate equation; dehomogenization in `[t:1]` is proved
+nonzero, so the affine part has finitely many polynomial roots and only the point at infinity can
+remain.  Hence every proper stratum is finite, and the complete exceptional union is countable
+unless one finite order is universal.  The binary dehomogenization plan was numerically
+pre-certified on a cubic example; the module then passed its exact targeted build and direct
+source check.  No full build was run.
+
+`formal/GaloisForLFunctions/HTGeometry/UncountableDirectionalZariskiDichotomy.lean` proves the
+general uncountable-base Zariski alternative, without needing algebraic closedness.  Its reusable
+engine shows that countably many nonzero polynomials in finitely many variables over an
+uncountable field admit one simultaneous nonvanishing point, by induction on the variable count
+and avoidance of countably many finite univariate root sets.  Applying one genuine coordinate
+equation from each proper finite-law stratum proves that the projective complete-HT locus meets
+every principal polynomial open unless one finite order is universal.  A finite proxy of the
+avoidance construction was numerically pre-certified; the module then passed its exact targeted
+build and direct source check.  No full build was run.
+
+`formal/GaloisForLFunctions/HTGeometry/DirectionalMultiplierAtiyahClass.lean` completes the new
+content of Section 4.  It constructs the `k`-linear space of equivariant derivations, the additive
+one-cocycle space and coboundary quotient `H^1`, and the linear multiplier Atiyah-class map.  The
+logarithmic cocycle law is derived from the multiplicative cocycle identity.  Under the stated
+fixed-field hypothesis its class vanishes exactly when the multiplier primitive satisfies a
+first-order linear differential equation over `K`.  Thus neither cocycle triviality nor the
+first-order law is assumed.  The module passed its exact targeted build and direct source check;
+no full build was run.
+
+`formal/GaloisForLFunctions/HTGeometry/DirectionalMultiplierFiniteLaw.lean` completes `(14)`.
+It exhibits the nonzero polynomial `Y-qX` forced by a first-order scalar law and proves that every
+direction in the multiplier Atiyah kernel makes the pair `(X,DX)` algebraically dependent.  This
+is the affine theorem underlying the projective inclusion `P(ker At_a) subset Sigma_1(X)`; neither
+pair dependence nor membership in the finite-law locus is assumed.  The module passed its exact
+targeted build and direct source check; no full build was run.
 
 ## Gates
 
@@ -428,7 +475,7 @@ complex null-set/full-measure strengthening.
 - [x] preliminary exact and adjacent literature search completed
 - [ ] independent differential-algebra and algebraic-geometry novelty audit
 - [x] stronger fixed-direction logarithmic boundary theorem already unconditional in Lean
-- [ ] unconditional Lean formalization of its variation over the projective law space
+- [x] unconditional Lean formalization of its variation over the projective law space
 - [ ] unconditional Lean formalization of the full directional dichotomy
 - [ ] nontrivial elliptic-gamma law-space instantiation
 - [ ] physical observable-algebra and selection-law instantiation
