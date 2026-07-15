@@ -142,14 +142,16 @@ theorem xiReciprocalSquareUpperSectorNonnegative_of_continuedPrimeArch
     ← logDeriv_XiC_eq_relativeResolventTrace hXi] at h
   exact h
 
-/-- **Positive local pole law.**  Every nonreal zero of `XiC` in the centered upper strip emits a
-nearby regular point at which the reciprocal-square sector value is strictly negative. -/
-theorem exists_xiReciprocalSquareUpperSector_neg_of_zero
+/-- **Quantitative positive local pole law.**  Every neighborhood of a nonreal zero of `XiC` in
+the centered upper strip contains a regular point at which the reciprocal-square sector value is
+strictly negative. -/
+theorem exists_xiReciprocalSquareUpperSector_neg_near_of_zero
     {alpha : ℂ}
     (haim : 0 < alpha.im) (haimhalf : alpha.im < 1 / 2)
-    (hare : alpha.re ≠ 0) (haXi : XiC alpha = 0) :
+    (hare : alpha.re ≠ 0) (haXi : XiC alpha = 0)
+    (r : ℝ) (hr : 0 < r) :
     ∃ z : ℂ, 0 < z.im ∧ z.im < 1 / 2 ∧ XiC z ≠ 0 ∧
-      z.re * (-logDeriv XiC z / z).im < 0 := by
+      dist z alpha < r ∧ z.re * (-logDeriv XiC z / z).im < 0 := by
   let sigma : ℂ := 1 / 2 + alpha * I
   have hsigmaZero : xi sigma = 0 := by
     simpa [XiC, sigma] using haXi
@@ -268,13 +270,16 @@ theorem exists_xiReciprocalSquareUpperSector_neg_of_zero
   obtain ⟨R, hR, h, _hhan, hh0, hfactor⟩ := xi_peel_ball sigma
   have hevBall : ∀ᶠ n in atTop, s n ∈ ball sigma R :=
     hsTend (isOpen_ball.mem_nhds (mem_ball_self hR))
+  have hevNear : ∀ᶠ n in atTop, z n ∈ ball alpha r :=
+    hzTend (isOpen_ball.mem_nhds (mem_ball_self hr))
   rcases hkappa_sign with hpos | hneg
   · have hlimitPos : 0 < alpha.re * (-((m : ℂ) / alpha)).im :=
       mul_pos hpos.1 hlimitFactor
     have hevPos : ∀ᶠ n in atTop,
         0 < t n * ((z n).re * (-logDeriv XiC (z n) / z n).im) :=
       hsectorScaled.eventually (eventually_gt_nhds hlimitPos)
-    obtain ⟨n, hnBall, hnPos⟩ := (hevBall.and hevPos).exists
+    obtain ⟨n, hnBall, hnNear, hnPos⟩ :=
+      (hevBall.and (hevNear.and hevPos)).exists
     have htneg : t n < 0 := mul_neg_of_neg_of_pos hpos.2 (hepsilonPos n)
     have hsne : s n ≠ sigma := by
       intro heq
@@ -289,19 +294,21 @@ theorem exists_xiReciprocalSquareUpperSector_neg_of_zero
     have hcoord : 1 / 2 + z n * I = s n := by
       simp [z, s, sigma]
       ring
-    refine ⟨z n, ?_, ?_, ?_, ?_⟩
+    refine ⟨z n, ?_, ?_, ?_, ?_, ?_⟩
     · simp [z]
       exact haim
     · simpa only [z, Complex.add_im, Complex.ofReal_im, add_zero] using haimhalf
     · rw [XiC, hcoord]
       exact hxis
+    · simpa only [mem_ball] using hnNear
     · nlinarith
   · have hlimitNeg : alpha.re * (-((m : ℂ) / alpha)).im < 0 :=
       mul_neg_of_neg_of_pos hneg.1 hlimitFactor
     have hevNeg : ∀ᶠ n in atTop,
         t n * ((z n).re * (-logDeriv XiC (z n) / z n).im) < 0 :=
       hsectorScaled.eventually (eventually_lt_nhds hlimitNeg)
-    obtain ⟨n, hnBall, hnNeg⟩ := (hevBall.and hevNeg).exists
+    obtain ⟨n, hnBall, hnNear, hnNeg⟩ :=
+      (hevBall.and (hevNear.and hevNeg)).exists
     have htpos : 0 < t n := mul_pos hneg.2 (hepsilonPos n)
     have hsne : s n ≠ sigma := by
       intro heq
@@ -316,13 +323,27 @@ theorem exists_xiReciprocalSquareUpperSector_neg_of_zero
     have hcoord : 1 / 2 + z n * I = s n := by
       simp [z, s, sigma]
       ring
-    refine ⟨z n, ?_, ?_, ?_, ?_⟩
+    refine ⟨z n, ?_, ?_, ?_, ?_, ?_⟩
     · simp [z]
       exact haim
     · simpa only [z, Complex.add_im, Complex.ofReal_im, add_zero] using haimhalf
     · rw [XiC, hcoord]
       exact hxis
+    · simpa only [mem_ball] using hnNear
     · nlinarith
+
+/-- **Positive local pole law.**  Every nonreal zero of `XiC` in the centered upper strip emits a
+nearby regular point at which the reciprocal-square sector value is strictly negative. -/
+theorem exists_xiReciprocalSquareUpperSector_neg_of_zero
+    {alpha : ℂ}
+    (haim : 0 < alpha.im) (haimhalf : alpha.im < 1 / 2)
+    (hare : alpha.re ≠ 0) (haXi : XiC alpha = 0) :
+    ∃ z : ℂ, 0 < z.im ∧ z.im < 1 / 2 ∧ XiC z ≠ 0 ∧
+      z.re * (-logDeriv XiC z / z).im < 0 := by
+  obtain ⟨z, hzim, hzimhalf, hzXi, _hnear, hneg⟩ :=
+    exists_xiReciprocalSquareUpperSector_neg_near_of_zero
+      haim haimhalf hare haXi 1 zero_lt_one
+  exact ⟨z, hzim, hzimhalf, hzXi, hneg⟩
 
 /-- The target reciprocal-square sector sign excludes all off-line Xi zeros. -/
 theorem riemannHypothesis_of_xiReciprocalSquareUpperSectorNonnegative

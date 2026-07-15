@@ -5,7 +5,8 @@
 - **Type:** THEOREM (paper) / TOP-DOWN VALUE RELATION / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Formal parents:** `XiGlobalReflectionDefectEnergy.lean`,
   `XiPrimeSeamReflectionEnergy.lean`, `XiWeilLineConjHilbert.lean`,
-  `XiCTaylorThetaTailSquareIndexPolarization.lean`
+  `XiCTaylorThetaTailSquareIndexPolarization.lean`,
+  `CCMRectangularTwoEdge.lean`, `CCMSharpPrimeWindowDivisorTomography.lean`
 - **Paper parents:** `prime-seam-damping-aperture-law.md`,
   `xi-global-meixner-shape-landau-rh.md`
 - **Statement:** `[PROVED HERE]` The complete prime-seam coefficient at a prime `p` is exactly a
@@ -257,7 +258,83 @@ or sup_(L>=0)N(L)<infinity                               (28)
 forces `a_Xi=0` and therefore RH.  These are strictly weaker than one-time norm equality and give
 a cofinal-growth implementation of the same chain.
 
-## 6. Top-down source target
+## 6. The orbit increment is the sharp prime-window residue
+
+The required source-to-divisor value identification is already present in the sharp-window
+tomography.  Put
+
+```text
+B_L(z)=rectangularWindowAmplitude(L,i*z)
+      =sharpPrimeWindowMellin(L,1+i*z).                  (29)
+```
+
+At every centered divisor coordinate `alpha_q`, the removable-value convention at zero is
+irrelevant because `alpha_q!=0`, and direct algebra gives
+
+```text
+B_L(alpha_q)=(1-exp(-i*L*alpha_q))/(i*alpha_q),
+v_0(q)-v_L(q)=i*B_L(alpha_q).                            (30)
+```
+
+Let `b_L` be the `ell^2` evaluation vector of `B_L`.  It is square-summable because
+`|Im(alpha_q)|<1/2` and
+
+```text
+|B_L(alpha_q)|<=(1+exp(|L|/2))/|alpha_q|.               (31)
+```
+
+Consequently the one-vector norm defect is the exact anchored sharp-window residue current
+
+```text
+N(L)-N(0)
+ =||v_0-i*b_L||^2-||v_0||^2
+ =||b_L||^2+2*Im <v_0,b_L>.                              (32)
+```
+
+Now write the underlying Xi point as `rho_q`.  Since
+
+```text
+1+i*alpha_q=rho_q+1/2,                                  (33)
+```
+
+the formal dyadic tomography theorem gives, at every right-half shifted pole and with analytic
+multiplicity `m_q`,
+
+```text
+meromorphicTrailingCoeffAt(dyadicSharpPrimeContinuedSource,rho_q+1/2)
+  =2*m_q*B_(log 2)(alpha_q).                             (34)
+```
+
+Thus the phase-orbit displacement is not merely analogous to a prime-source residue.  It is the
+normalized residue value itself:
+
+```text
+v_(log 2)(q)
+ =v_0(q)-i*meromorphicTrailingCoeffAt(...)/(2*m_q).      (35)
+```
+
+Functional-equation reflection supplies the left-half partner of every right-half pole.  A
+critical-line copy contributes zero to the anchored current `(32)` pointwise, because its
+`y_q` is zero.  Therefore the formal right-half residue formula `(34)`, reflection, and this
+critical-line cancellation determine the complete norm *defect*, even though `(34)` alone is not
+a construction of the full vector `b_L`.
+
+Equations `(32)`--`(35)` discharge the algebraic source-to-divisor value identification in the
+one-prime route.  What they do not supply is bounded quadratic transport of the reflected residue
+family into the complete Xi `ell^2` norm.  The remaining positive theorem can therefore be stated
+without an unspecified coordinate intertwiner:
+
+```text
+||b_(log 2)||^2+2*Im <v_0,b_(log 2)> <=0.               (36)
+```
+
+By `(8)` and `(32)`, the left side is already unconditionally nonnegative on the divisor side.
+Hence `(36)` forces equality and RH.  Equivalently, `(36)` may be stated directly for the
+right-pole residues after adjoining their functional-equation reflections; the critical-line
+terms then disappear from the anchored current.  This is a fixed sharp-window residue
+contraction, not the active anisotropic rectangular-mesh/subpower problem.
+
+## 7. Top-down source target
 
 The shortest new chains are
 
@@ -265,7 +342,7 @@ The shortest new chains are
 source contractivity on the single vector v_0 at L=log 2
   -> N(log 2)<=N(0)
   -> A_2=0
-  -> RH,                                                  (29)
+  -> RH,                                                  (37)
 ```
 
 or
@@ -273,11 +350,11 @@ or
 ```text
 source subexponential bound for the orbit U_L v_0
   -> a_Xi=0
-  -> RH.                                                  (30)
+  -> RH.                                                  (38)
 ```
 
 Here `v_0` is the centered Cauchy evaluation at the fixed point zero, and `U_L` is the ordinary
-Mellin spectral-translation phase already present in the formal corpus.  A source proof of `(29)`
+Mellin spectral-translation phase already present in the formal corpus.  A source proof of `(36)`
 does not need a conservative metric on every theta eigenfunction, completeness, simplicity of Xi
 zeros, or positivity on a full Cauchy packet span.  It needs a norm comparison for one canonical
 source vector and one canonical prime translation.
@@ -285,15 +362,16 @@ source vector and one canonical prime translation.
 The missing theorem is not supplied here:
 
 ```text
-realize the reciprocal Cauchy vector and its log(2)-translate in one
-source-defined Hilbert metric, and prove that this single translation is contractive. (31)
+prove the anchored dyadic sharp-window residue inequality `(36)`, equivalently
+realize its normalized residue map as a contraction into the Xi divisor norm. (39)
 ```
 
-Merely observing that Mellin translation is unitary before the Xi divisor evaluation does not
-prove `(31)`: the required statement is that the source-to-divisor value map preserves or
-contracts the two relevant norms.  That is the exact remaining value relation.
+The dyadic residue formula proves the coordinate values in `(35)`, so an additional algebraic
+source-to-divisor intertwiner is no longer missing.  Merely observing that Mellin translation is
+unitary before the Xi divisor evaluation still does not prove `(39)`: the missing statement is
+boundedness of the normalized residue map for the anchored quadratic combination `(36)`.
 
-## 7. Literature boundary
+## 8. Literature boundary
 
 Multiplication by `exp(-iLz)` as the spectral form of logarithmic translation is standard
 Mellin--Plancherel theory.  Hedenmalm's 2026 Xi eigenvalue construction places the missing
@@ -308,10 +386,12 @@ independent scientific novelty.
 - [x] prove evenness, convexity, and the exact norm-growth formula
 - [x] prove the frozen Weil/source value along the whole orbit
 - [x] identify the prime seam coefficient with the sampled norm defect
+- [x] identify the orbit increment with the normalized dyadic sharp-window source residue
+- [x] replace the unspecified value intertwiner by one anchored residue-contraction inequality
 - [x] identify the exact exponential type with maximal horizontal displacement
 - [x] reduce RH to one-vector one-prime contractivity or subexponential orbit growth
-- [ ] formalize `(3)`--`(23)` in Lean using targeted checks only
-- [ ] prove the source norm comparison `(31)`
+- [ ] formalize `(3)`--`(35)` in Lean using targeted checks only
+- [ ] prove the anchored source residue inequality `(36)`
 - [ ] RH
 
 No numerical experiment, Lean build, lint run, or scratch computation was used in this proof.

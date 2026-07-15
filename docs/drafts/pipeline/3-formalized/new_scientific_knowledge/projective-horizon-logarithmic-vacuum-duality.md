@@ -1,10 +1,10 @@
 # Projective-horizon logarithmic vacuum duality
 
 - **ID:** `projective-horizon-logarithmic-vacuum-duality`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / STATIC LANDAU--GINZBURG DUALITY
-- **Scientific status:** `[PROVED ON PAPER] [NOVELTY PROVISIONAL] [SIGNIFICANCE OPEN]`
-- **Formal status:** Hessian/reindexing and top-pairing core formalized
+- **Scientific status:** `[PROVED ON PAPER] [FORMALIZED] [NOVELTY PROVISIONAL] [SIGNIFICANCE OPEN]`
+- **Formal status:** fully formalized in Lean 4
 - **Parents:** `projective-horizon-finite-jet-page-transition`,
   `projective-horizon-rectangular-schur-caustic`
 - **Lane:** source-pure hypertranscendental geometry; no carrier or flow
@@ -165,8 +165,19 @@ of the caustic or of its vanishing cycles, not merely the potential.
 
 ## Formal verification
 
+`ProjectiveHorizonLogPotential.lean` defines the finite normalized logarithmic coefficient and both
+vacuum potentials, proves the exact differential and reversed-reciprocal gradient `(4)` and `(9)`,
+identifies the critical scheme with the compatibility equations, and proves the arbitrary-tail
+on-shell sign duality `(8)`.  It also connects the finite definition to Mathlib's formal
+power-series logarithm.
+
 `ProjectiveHorizonLandauGinzburgDuality.lean` formalizes the symmetric Hessian `(5)`, its exact row
 reversal to `(6)`, and the top-pairing cancellation `(12)`.
 `ProjectiveHorizonExactLagrangian.lean` formalizes antisymmetry of `(L)` and exact isotropy of the
-reciprocal tangent graph.  The logarithmic-gradient identity `(9)` is presently paper-level.  Both
-targeted leaf builds pass; no full build was run.
+reciprocal tangent graph, while `ProjectiveHorizonPolarizationTower.lean` proves that the tangent
+graph has half the ambient dimension.  Thus the full logarithmic-vacuum, Hessian, duality, and
+Lagrangian theorem surface is formalized.
+
+The three new modules elaborate directly and their dedicated Lake targets pass.  Axiom audits of
+the principal gradient, duality, isotropy, and half-dimension theorems use only `propext`,
+`Classical.choice`, and `Quot.sound`.  The formal lint gate passes.  No full build was run.

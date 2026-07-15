@@ -190,14 +190,16 @@ claim is made.
 
 ## Formalization target
 
-1. Prove the algebraic identity `(1)` from `ccmPositivePairedReducedKernel` and
-   `continuedPrimeArchReciprocalSquareTrace`.
-2. Strengthen `exists_xiReciprocalSquareUpperSector_neg_of_zero` by retaining an arbitrary strict
-   exterior lower bound below `Re alpha`.
-3. Combine that refinement with
+1. **Done in Lean:** prove the algebraic identity `(1)` from
+   `ccmPositivePairedReducedKernel` and `continuedPrimeArchReciprocalSquareTrace`; the same module
+   identifies the reciprocal-square trace with `normalizedPrimeArchMomentGerm` away from zero.
+2. **Done in Lean:** strengthen the local pole theorem to retain an arbitrary neighborhood of the
+   zero and hence any strict exterior lower bound below `Re alpha`.
+3. **Done in Lean:** combine that refinement with
    `xiOffLineQuartetAccretiveBand_add_half_lt_abs_im_of_offLine` and the Xi symmetries.
-4. Package `(3)` at a general exact quartet radius and at `218/25`.
-5. Add the implication from diagonal passivity to the existing finite-matrix passivity through RH.
+4. **Done in Lean:** package `(3)` at a general exact quartet radius and at `218/25`.
+5. **Done in Lean:** identify diagonal passivity with the existing finite-matrix passivity through
+   the two Xi-specific RH capstones.
 
 ## Gates
 
@@ -205,9 +207,9 @@ claim is made.
 - [x] exterior local-pole contradiction proved on paper
 - [x] full matrix condition reduced to scalar diagonal values
 - [x] scalar family reduced to a countable dense source family
-- [ ] formalize the diagonal identity in Lean
-- [ ] formalize the exterior-preserving local pole refinement
-- [ ] formalize the diagonal criterion and matrix-collapse capstones
+- [x] formalize the diagonal identity and its moment-germ form in Lean
+- [x] formalize the exterior-preserving local pole refinement
+- [x] formalize the diagonal criterion and matrix-collapse capstones
 - [ ] prove the prime--Gamma scalar inequality `(9)`
 - [ ] prove RH
 

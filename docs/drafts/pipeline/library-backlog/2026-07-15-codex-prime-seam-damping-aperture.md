@@ -7,7 +7,9 @@
   `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/archimedean-meixner-root-seam-scale.md`,
   `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/meixner-root-prime-laplace-value-frame.md`,
   and
-  `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/xi-global-meixner-shape-landau-rh.md`
+  `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/xi-global-meixner-shape-landau-rh.md`,
+  and
+  `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/xi-reciprocal-translation-prime-seam-norm-law.md`
 - **Priority:** top-down RH bridge; exact source-interface filter
 
 ## Requested theorem surface
@@ -96,6 +98,79 @@ and prove coefficient finiteness and safe convergence for real shape `theta>1`. 
 Landau conclusion requires either a small general-Dirichlet-series lemma for increasing frequencies
 or a dedicated theorem for `lambda_p=log(cosh(2log p))/2`.  Keep the analytic-continuation premise
 explicit: the current corpus does not yet produce it.
+
+## Reciprocal-translation successor surface
+
+Before building a new carrier, formalize the exact relation to the existing reciprocal Xi vector.
+For real `L`, define the bounded diagonal translation
+
+```text
+xiReciprocalTranslation L q
+  =spectralTranslationPhase (-L) (xiSpectralPoint q)
+    *xiReciprocalCoordinate q
+```
+
+and its squared norm `xiReciprocalTranslationMass L`.  Reuse the line-conjugation equivalence and
+the existing reciprocal-square summability to prove:
+
+```text
+xiReciprocalTranslationMass (-L)=xiReciprocalTranslationMass L
+
+xiReciprocalTranslationMass L-xiReciprocalHermitianMass
+ =sum_q (cosh (2*L*(xiSpectralPoint q).im)-1)
+    /|xiSpectralPoint q|^2
+
+xiWeilHilbertQuadratic (xiReciprocalTranslationLp L)
+ =primeArchCentralCurvature.
+```
+
+Then expose the prime seam collision
+
+```text
+globalPrimeSeamCoefficient p
+ =2*(log p)^2/p
+    *(xiReciprocalTranslationMass (log p)-xiReciprocalHermitianMass)
+```
+
+Reuse the already formalized sharp-window multiplier rather than defining a parallel interval
+amplitude.  The successor module should prove the coordinate identity
+
+```text
+sharpPrimeWindowMellin L (1+I*xiSpectralPoint q)
+ =rectangularWindowAmplitude L (I*xiSpectralPoint q)
+
+xiReciprocalCoordinate q-xiReciprocalTranslation L q
+ =I*sharpPrimeWindowMellin L (1+I*xiSpectralPoint q)
+```
+
+and connect its `L=log 2` value to
+`meromorphicTrailingCoeffAt_dyadicSharpPrimeContinuedSource` by dividing the existing trailing
+coefficient theorem by `2*xiRightMultiplicity q`.  The paper theorem shows that the remaining RH
+input is the anchored quadratic residue inequality
+
+```text
+||b||^2+2*Im <xiReciprocalLp,b> <=0,
+```
+
+where `b` is the divisor evaluation of that normalized sharp-window residue.  Do not introduce an
+abstract source-to-divisor intertwiner predicate: the coordinate map is already exact in the
+tomography theorem on the right-pole spectrum.  Use functional-equation reflection for the left
+poles and prove explicitly that critical-line copies contribute zero to the anchored current.
+Only bounded quadratic transport of that reflected residue family is open.
+
+and the consumers
+
+```text
+xiReciprocalTranslationMass (log 2)<=xiReciprocalHermitianMass
+  -> RiemannHypothesis
+
+(log (xiReciprocalTranslationMass L)=o(L))
+  -> RiemannHypothesis.
+```
+
+The exact logarithmic little-oh statement may be deferred if it requires disproportionate
+infrastructure; the one-prime contractivity theorem and coefficient equality are the priority.
+They connect existing objects rather than introducing another RH wrapper.
 
 ## Wiring
 

@@ -1,10 +1,10 @@
 # The reciprocal jet tower is reversal-self-Legendre
 
 - **ID:** `projective-horizon-reversal-self-legendre-tower`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / EXACT LAGRANGIAN POLARIZATION TOWER
-- **Scientific status:** `[PROVED ON PAPER] [NOVELTY PROVISIONAL] [SIGNIFICANCE CANDIDATE]`
-- **Formal status:** coefficient-residue, isotropy, Hessian, finite-degree, and Q-system cores formalized
+- **Scientific status:** `[PROVED ON PAPER] [FORMALIZED] [NOVELTY PROVISIONAL] [SIGNIFICANCE CANDIDATE]`
+- **Formal status:** fully formalized in Lean 4
 - **Parents:** `projective-horizon-logarithmic-vacuum-duality`,
   `projective-horizon-finite-jet-page-transition`, `hypertranscendental-horizon-q-system`
 - **Lane:** source-pure hypertranscendental geometry; no carrier, time, or evolution
@@ -184,13 +184,21 @@ relations.
 
 ## Formal verification
 
+`ProjectiveHorizonLogPotential.lean` proves the full reversed-reciprocal logarithmic gradient `(3)`,
+the inverse logarithm law `(11)`, the reversed self-Legendre identity `(4)`, and the exact partial
+cotangent/critical-horizon correspondence `(5)--(6)`.
 `ProjectiveHorizonExactLagrangian.lean` certifies that coefficient residue is exactly the reversed
 cotangent dot product, the positive-degree vanishing `(10)`, that the residue symplectic form is
 exactly the reversed canonical cotangent sum, and isotropy `(9)`.
-`ProjectiveHorizonLandauGinzburgDuality.lean` certifies the Hessian and its row reversal.
-`ProjectiveHorizonPageTransition.lean`,
-`ProjectiveHorizonCriticalMultiplicity.lean`, `ProjectiveHorizonSchurCaustic.lean`, and
-`ProjectiveHorizonCausticQSystem.lean` certify the stated finite algebraic cores.  The formal
-logarithmic derivative `(8)` and the single bundled tower object remain paper-level.
+`ProjectiveHorizonPolarizationTower.lean` adds the half-dimension theorem and the single compatible
+hypertranscendental tower object, with exact raw/reciprocal inversion, every finite amplitude,
+noncausticity, boundary values, the all-rank Q-system, and caustic zero propagation.
 
-Only targeted leaf builds are used.
+`ProjectiveHorizonLandauGinzburgDuality.lean`, `ProjectiveHorizonPageTransition.lean`,
+`ProjectiveHorizonCriticalMultiplicity.lean`, and `ProjectiveHorizonSchurCaustic.lean` certify the
+Hessian, row reversal, finite degree, and Schur-caustic parts.  The all-rank and source-generic
+claims are certified by `ProjectiveHorizonAllRankQSystem.lean`.
+
+The three new modules elaborate directly and their dedicated Lake targets pass.  Axiom audits of
+the Legendre, isotropy, tower inversion, noncausticity, and Q-system theorems use only `propext`,
+`Classical.choice`, and `Quot.sound`.  The formal lint gate passes.  No full build was run.

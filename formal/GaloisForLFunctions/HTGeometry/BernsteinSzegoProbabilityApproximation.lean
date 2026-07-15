@@ -2,6 +2,11 @@ import GaloisForLFunctions.HTGeometry.BernsteinSzegoReconstruction
 import GaloisForLFunctions.HTGeometry.BernsteinSzegoWeldBounds
 import GaloisForLFunctions.HTGeometry.RieszSingularSzegoCollapse
 import Mathlib.MeasureTheory.Measure.ProbabilityMeasure
+import Mathlib.MeasureTheory.Measure.Portmanteau
+import Mathlib.MeasureTheory.Measure.Regular
+import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
+import Mathlib.Analysis.SpecialFunctions.Pow.Continuity
+import Mathlib.Analysis.SpecificLimits.Basic
 
 /-!
 # Bernstein--Szegő probability approximations
@@ -116,7 +121,7 @@ theorem bernsteinSzegoMeasure_univ {N : ℕ} (c : ℤ → ℂ)
     rw [circleMeasureMomentZ_bernsteinSzegoMeasure]
     exact ((bernsteinSzegoMoment_prefix c hG (0 : Fin (N + 2))).1).trans hc0
   rw [circleMeasureMomentZ] at hmoment
-  simp only [neg_zero, zpow_zero, integral_const, smul_eq_mul, mul_one] at hmoment
+  simp only [neg_zero, zpow_zero, integral_const] at hmoment
   apply (ENNReal.toReal_eq_one_iff _).mp
   simpa [measureReal_def, Complex.real_smul] using congrArg Complex.re hmoment
 
@@ -170,7 +175,7 @@ theorem bernsteinSzegoProbabilityApproximation_moment_eventuallyEq
   | negSucc n =>
       filter_upwards [eventually_ge_atTop (n + 1)] with N hN
       let k : Fin (N + 2) := ⟨n + 1, by omega⟩
-      simpa only [Int.ofNat_eq_coe, Int.reduceNegSucc] using
+      simpa only [Int.ofNat_eq_natCast, Int.reduceNegSucc] using
         (bernsteinSzegoProbabilityApproximation_moment_prefix mu hmu N k).2
 
 /-- The actual Bernstein--Szegő probability measure reproduces the full finite Toeplitz section
@@ -209,7 +214,8 @@ theorem circle_measure_eq_of_forall_moment_eq
   have hmap : mu' = nu' := by
     apply addCircle_measure_eq_of_fourier_integral_eq
     intro n
-    rw [mu', nu', integral_map e.symm.continuous.aemeasurable
+    dsimp only [mu', nu']
+    rw [integral_map e.symm.continuous.aemeasurable
       (fourier n).continuous.aestronglyMeasurable,
       integral_map e.symm.continuous.aemeasurable
         (fourier n).continuous.aestronglyMeasurable]
@@ -219,6 +225,7 @@ theorem circle_measure_eq_of_forall_moment_eq
         rw [← AddCircle.homeomorphCircle_apply one_ne_zero]
         exact e.apply_symm_apply z
       rw [he]
+      exact Circle.coe_zpow z n
     simpa only [circleMeasureMomentZ, neg_neg, hfourier] using h (-n)
   exact e.symm.measurableEmbedding.map_injective hmap
 
@@ -232,8 +239,12 @@ theorem continuous_circleMeasureMomentZ (q : ℤ) :
       circleMeasureMomentZ (mu : Measure Circle) q) := by
   have hpow : Continuous (fun z : Circle => (z : ℂ) ^ (-q)) :=
     (continuousOn_zpow₀ (-q)).comp_continuous continuous_subtype_val fun z => by simp
-  let fre : C(Circle, ℝ) := ⟨fun z => ((z : ℂ) ^ (-q)).re, hpow.re⟩
-  let fim : C(Circle, ℝ) := ⟨fun z => ((z : ℂ) ^ (-q)).im, hpow.im⟩
+  let fre : C(Circle, ℝ) :=
+    ⟨fun z => ((z : ℂ) ^ (-q)).re, by
+      simpa only [Function.comp_apply] using Complex.continuous_re.comp hpow⟩
+  let fim : C(Circle, ℝ) :=
+    ⟨fun z => ((z : ℂ) ^ (-q)).im, by
+      simpa only [Function.comp_apply] using Complex.continuous_im.comp hpow⟩
   have hre := ProbabilityMeasure.continuous_integral_boundedContinuousFunction
     (BoundedContinuousFunction.mkOfCompact fre)
   have him := ProbabilityMeasure.continuous_integral_boundedContinuousFunction
@@ -286,6 +297,202 @@ theorem bernsteinSzegoProbabilityApproximation_tendsto
   intro q
   exact tendsto_const_nhds.congr'
     (bernsteinSzegoProbabilityApproximation_moment_eventuallyEq mu hmu q).symm
+
+/-- The literal density of the canonical probability approximation. -/
+noncomputable def bernsteinSzegoApproximationDensity
+    (mu : ProbabilityMeasure Circle) (hmu : (mu : Measure Circle).support.Infinite)
+    (N : ℕ) (z : Circle) : ℝ :=
+  bernsteinSzegoDensity (circleMeasureMomentZ (mu : Measure Circle))
+    (circleMeasureGramTower_posDef_of_infiniteSupport
+      (mu : Measure Circle) hmu (N + 1)) z
+
+theorem bernsteinSzegoApproximationDensity_continuous
+    (mu : ProbabilityMeasure Circle) (hmu : (mu : Measure Circle).support.Infinite) (N : ℕ) :
+    Continuous (bernsteinSzegoApproximationDensity mu hmu N) :=
+  bernsteinSzegoDensity_continuous _ _
+
+theorem bernsteinSzegoApproximationDensity_pos
+    (mu : ProbabilityMeasure Circle) (hmu : (mu : Measure Circle).support.Infinite)
+    (N : ℕ) (z : Circle) :
+    0 < bernsteinSzegoApproximationDensity mu hmu N z :=
+  bernsteinSzegoDensity_pos _ _ z
+
+/-- The approximation measure is literally Haar measure weighted by its positive analytic
+density. -/
+theorem bernsteinSzegoProbabilityApproximation_toMeasure_eq
+    (mu : ProbabilityMeasure Circle) (hmu : (mu : Measure Circle).support.Infinite) (N : ℕ) :
+    (bernsteinSzegoProbabilityApproximation mu hmu N : Measure Circle) =
+      circleLebesgue.withDensity
+        (fun z => ENNReal.ofReal (bernsteinSzegoApproximationDensity mu hmu N z)) := rfl
+
+/-- Every truncation density belongs to every finite or infinite `L^p` space on the compact
+circle. -/
+theorem bernsteinSzegoApproximationDensity_memLp
+    (mu : ProbabilityMeasure Circle) (hmu : (mu : Measure Circle).support.Infinite)
+    (N : ℕ) (p : ℝ≥0∞) :
+    MemLp (bernsteinSzegoApproximationDensity mu hmu N) p circleLebesgue :=
+  (bernsteinSzegoApproximationDensity_continuous mu hmu N).memLp_of_hasCompactSupport
+    (HasCompactSupport.of_compactSpace _)
+
+/-- On any measurable aperture, approximation mass is the `L¹` seminorm of its positive density
+over the restricted Haar measure. -/
+theorem bernsteinSzegoProbabilityApproximation_apply_eq_eLpNorm_one
+    (mu : ProbabilityMeasure Circle) (hmu : (mu : Measure Circle).support.Infinite)
+    (N : ℕ) {U : Set Circle} (hU : MeasurableSet U) :
+    (bernsteinSzegoProbabilityApproximation mu hmu N : Measure Circle) U =
+      eLpNorm (bernsteinSzegoApproximationDensity mu hmu N) 1
+        (circleLebesgue.restrict U) := by
+  rw [bernsteinSzegoProbabilityApproximation_toMeasure_eq,
+    withDensity_apply _ hU, eLpNorm_one_eq_lintegral_enorm]
+  apply lintegral_congr
+  intro z
+  rw [← ofReal_norm, Real.norm_eq_abs,
+    abs_of_pos (bernsteinSzegoApproximationDensity_pos mu hmu N z)]
+
+/-- Hölder turns every superlinear density bound into uniform control of small apertures. -/
+theorem bernsteinSzegoProbabilityApproximation_apply_le_eLpNorm_mul
+    (mu : ProbabilityMeasure Circle) (hmu : (mu : Measure Circle).support.Infinite)
+    (N : ℕ) {U : Set Circle} (hU : MeasurableSet U) {p : ℝ≥0∞} (hp : 1 < p) :
+    (bernsteinSzegoProbabilityApproximation mu hmu N : Measure Circle) U ≤
+      eLpNorm (bernsteinSzegoApproximationDensity mu hmu N) p circleLebesgue *
+        circleLebesgue U ^ (1 - 1 / p.toReal) := by
+  rw [bernsteinSzegoProbabilityApproximation_apply_eq_eLpNorm_one mu hmu N hU]
+  have hmeas : AEStronglyMeasurable
+      (bernsteinSzegoApproximationDensity mu hmu N) (circleLebesgue.restrict U) :=
+    (bernsteinSzegoApproximationDensity_continuous mu hmu N).aestronglyMeasurable
+  have hcompare := eLpNorm_le_eLpNorm_mul_rpow_measure_univ
+    (μ := circleLebesgue.restrict U) (f := bernsteinSzegoApproximationDensity mu hmu N)
+    (p := (1 : ℝ≥0∞)) (q := p) hp.le hmeas
+  rw [Measure.restrict_apply MeasurableSet.univ, univ_inter] at hcompare
+  simpa only [ENNReal.toReal_one, one_div, inv_one] using
+    hcompare.trans (mul_le_mul_left
+      (eLpNorm_mono_measure _ Measure.restrict_le_self) _)
+
+/-- A full-mass open aperture is a continuity set for the singular limit, so every canonical
+approximation eventually puts asymptotically all of its mass there. -/
+theorem bernsteinSzegoProbabilityApproximation_measure_open_tendsto_one
+    (mu : ProbabilityMeasure Circle) (hmu : (mu : Measure Circle).support.Infinite)
+    {U : Set Circle} (hUopen : IsOpen U) (hmuU : (mu : Measure Circle) U = 1) :
+    Tendsto (fun N =>
+      (bernsteinSzegoProbabilityApproximation mu hmu N : Measure Circle) U)
+      atTop (𝓝 1) := by
+  have hmuCompl : (mu : Measure Circle) Uᶜ = 0 := by
+    rw [measure_compl hUopen.measurableSet (measure_ne_top _ _), measure_univ, hmuU, tsub_self]
+  have hfront : frontier U ⊆ Uᶜ := by
+    intro z hz
+    exact fun hzU => Set.disjoint_left.1
+      (disjoint_frontier_iff_isOpen.mpr hUopen) hz hzU
+  have hfrontNull : (mu : Measure Circle) (frontier U) = 0 :=
+    measure_mono_null hfront hmuCompl
+  simpa only [hmuU] using
+    ProbabilityMeasure.tendsto_measure_of_null_frontier_of_tendsto'
+      (bernsteinSzegoProbabilityApproximation_tendsto mu hmu) hfrontNull
+
+/-- Pure singularity supplies arbitrarily small Haar apertures carrying asymptotically all of every
+canonical Bernstein--Szegő approximation. -/
+theorem exists_bernsteinSzegoProbabilityApproximation_concentration_aperture
+    (mu : ProbabilityMeasure Circle) (hmu : (mu : Measure Circle).support.Infinite)
+    (hsing : (mu : Measure Circle) ⟂ₘ circleLebesgue)
+    {ε : ℝ≥0∞} (hε : 0 < ε) :
+    ∃ U : Set Circle, IsOpen U ∧ circleLebesgue U < ε ∧
+      Tendsto (fun N =>
+        (bernsteinSzegoProbabilityApproximation mu hmu N : Measure Circle) U)
+        atTop (𝓝 1) := by
+  let E : Set Circle := hsing.nullSetᶜ
+  have hhaarE : circleLebesgue E = 0 := hsing.measure_compl_nullSet
+  obtain ⟨U, hEU, hUopen, hhaarU⟩ :=
+    Set.exists_isOpen_lt_of_lt (μ := circleLebesgue) E ε (by rw [hhaarE]; exact hε)
+  have hmuE : (mu : Measure Circle) E = 1 := by
+    change (mu : Measure Circle) hsing.nullSetᶜ = 1
+    rw [measure_compl hsing.measurableSet_nullSet (measure_ne_top _ _), measure_univ,
+      hsing.measure_nullSet, tsub_zero]
+  have hmuU : (mu : Measure Circle) U = 1 := by
+    apply le_antisymm
+    · calc
+        (mu : Measure Circle) U ≤ (mu : Measure Circle) Set.univ := measure_mono (subset_univ U)
+        _ = 1 := measure_univ
+    simpa only [hmuE] using measure_mono (μ := (mu : Measure Circle)) hEU
+  exact ⟨U, hUopen, hhaarU,
+    bernsteinSzegoProbabilityApproximation_measure_open_tendsto_one mu hmu hUopen hmuU⟩
+
+/-- The ordinary real `L^p` seminorm of the `N`-th canonical density. -/
+noncomputable def bernsteinSzegoApproximationLpNorm
+    (mu : ProbabilityMeasure Circle) (hmu : (mu : Measure Circle).support.Infinite)
+    (p : ℝ≥0∞) (N : ℕ) : ℝ :=
+  (eLpNorm (bernsteinSzegoApproximationDensity mu hmu N) p circleLebesgue).toReal
+
+/-- Every finite superlinear density norm diverges along a singular Bernstein--Szegő
+approximation.  This is proved directly from weak concentration and Hölder, without compactness or
+reflexivity extraction. -/
+theorem bernsteinSzegoApproximationLpNorm_tendsto_atTop_of_mutuallySingular
+    (mu : ProbabilityMeasure Circle) (hmu : (mu : Measure Circle).support.Infinite)
+    (hsing : (mu : Measure Circle) ⟂ₘ circleLebesgue)
+    {p : ℝ≥0∞} (hp : 1 < p) (hpTop : p ≠ ∞) :
+    Tendsto (bernsteinSzegoApproximationLpNorm mu hmu p) atTop atTop := by
+  have hpReal : 1 < p.toReal := by
+    simpa only [ENNReal.toReal_one] using ENNReal.toReal_strict_mono hpTop hp
+  let a : ℝ := 1 - 1 / p.toReal
+  have ha : 0 < a := by
+    dsimp only [a]
+    have hpRealPos : 0 < p.toReal := zero_lt_one.trans hpReal
+    rw [sub_pos, div_lt_one hpRealPos]
+    exact hpReal
+  rw [tendsto_atTop]
+  intro b
+  by_cases hb : b ≤ 0
+  · filter_upwards [] with N
+    exact hb.trans ENNReal.toReal_nonneg
+  let c : ℝ≥0∞ := ENNReal.ofReal b
+  have hcTop : c ≠ ∞ := ENNReal.ofReal_ne_top
+  have hsmallAtZero : Tendsto (fun x : ℝ≥0∞ => c * x ^ a) (𝓝 0) (𝓝 0) :=
+    ENNReal.tendsto_const_mul_rpow_nhds_zero_of_pos hcTop ha
+  let εseq : ℕ → ℝ≥0∞ := fun n =>
+    ((1 / ((n : NNReal) + 1) : NNReal) : ℝ≥0∞)
+  have hεseq : Tendsto εseq atTop (𝓝 0) := by
+    have hnn : Tendsto (fun n : ℕ => 1 / ((n : NNReal) + 1)) atTop (𝓝 0) :=
+      tendsto_one_div_add_atTop_nhds_zero_nat
+    simpa only [εseq, ENNReal.coe_zero] using
+      (ENNReal.continuous_coe.tendsto (0 : NNReal)).comp hnn
+  have hsmall : Tendsto (fun n => c * (εseq n) ^ a) atTop (𝓝 0) :=
+    hsmallAtZero.comp hεseq
+  have hsmallEventually : ∀ᶠ n in atTop, c * (εseq n) ^ a < 1 :=
+    hsmall.eventually (Iio_mem_nhds zero_lt_one)
+  obtain ⟨n, hn⟩ := Filter.Eventually.exists hsmallEventually
+  have hεpos : 0 < εseq n := by
+    dsimp only [εseq]
+    exact ENNReal.coe_pos.mpr (div_pos zero_lt_one (by positivity))
+  obtain ⟨U, hUopen, hhaarU, hmassTendsto⟩ :=
+    exists_bernsteinSzegoProbabilityApproximation_concentration_aperture
+      mu hmu hsing hεpos
+  have hmassEventually : ∀ᶠ N in atTop,
+      c * (εseq n) ^ a <
+        (bernsteinSzegoProbabilityApproximation mu hmu N : Measure Circle) U :=
+    hmassTendsto.eventually (Ioi_mem_nhds hn)
+  filter_upwards [hmassEventually] with N hmass
+  by_contra hbnorm
+  have hnormRealLt : bernsteinSzegoApproximationLpNorm mu hmu p N < b :=
+    lt_of_not_ge hbnorm
+  have hnormTop : eLpNorm (bernsteinSzegoApproximationDensity mu hmu N) p
+      circleLebesgue ≠ ∞ :=
+    (bernsteinSzegoApproximationDensity_memLp mu hmu N p).2.ne
+  have hnormEq :
+      eLpNorm (bernsteinSzegoApproximationDensity mu hmu N) p circleLebesgue =
+        ENNReal.ofReal (bernsteinSzegoApproximationLpNorm mu hmu p N) := by
+    exact (ENNReal.ofReal_toReal hnormTop).symm
+  have hnormLe :
+      eLpNorm (bernsteinSzegoApproximationDensity mu hmu N) p circleLebesgue ≤ c := by
+    rw [hnormEq]
+    exact ENNReal.ofReal_le_ofReal hnormRealLt.le
+  have hhaarPow : circleLebesgue U ^ a ≤ (εseq n) ^ a :=
+    ENNReal.rpow_le_rpow hhaarU.le ha.le
+  have hholder := bernsteinSzegoProbabilityApproximation_apply_le_eLpNorm_mul
+    mu hmu N hUopen.measurableSet hp
+  have hproduct :
+      eLpNorm (bernsteinSzegoApproximationDensity mu hmu N) p circleLebesgue *
+          circleLebesgue U ^ a ≤ c * (εseq n) ^ a := by
+    exact (mul_le_mul_left hnormLe _).trans
+      (by simpa only [mul_comm] using mul_le_mul_right hhaarPow c)
+  exact (not_lt_of_ge (hholder.trans (by simpa only [a] using hproduct))) hmass
 
 end
 

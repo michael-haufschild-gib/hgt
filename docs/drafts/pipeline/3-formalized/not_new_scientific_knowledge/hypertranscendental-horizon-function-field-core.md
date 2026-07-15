@@ -3,7 +3,7 @@
 - **ID:** `hypertranscendental-horizon-function-field-core`
 - **Stage:** 3-formalized
 - **Type:** THEOREM (LEAN) / GENERIC-POINT TRANSFER CERTIFICATE
-- **Scientific status:** `[FORMALIZED CORE] [NOVELTY PROVISIONAL] [SIGNIFICANT PARENT]`
+- **Scientific status:** `[FORMALIZED BRIDGE] [NOT NEW BY ITSELF] [SIGNIFICANT PARENT]`
 - **Paper parent:** `hypertranscendental-maximal-finite-horizon-galois-law`
 
 ## Formalized declarations
@@ -39,6 +39,10 @@ Equation `(2)` is the formal reason no specialization collapse occurs when unive
 horizon coordinates are evaluated in an actual HT source.  Scaling by the nonzero constants `i!`
 to the divided-jet coordinates used in the paper is elementary in characteristic zero and is not
 wrapped in a second Lean coordinate API.
+
+This generic-point equivalence is standard algebraic-independence infrastructure.  Its value is to
+certify the exact boundary between the universal horizon theorem and an actual HT source; it is not
+claimed as new scientific knowledge.
 
 ## Verification
 

@@ -1,6 +1,9 @@
 import GaloisForLFunctions.RHTower.SoninCoupledPrimeResidual
 import GaloisForLFunctions.RHTower.SoninPrimeArchFiniteMomentTransfer
 import GaloisForLFunctions.HTGeometry.FiniteConstraintGroupAverage
+import GaloisForLFunctions.HTGeometry.QuantumChannelEnergyAugmentation
+import GaloisForLFunctions.HTGeometry.QuantumMasterEffectPurity
+import GaloisForLFunctions.HTGeometry.QuantumReplicaHausdorff
 import Mathlib.Analysis.InnerProductSpace.GramMatrix
 
 open Filter Topology Polynomial
@@ -158,6 +161,228 @@ theorem soninAllPrimeCoupledCoordinateEnergy_isSelfAdjoint
   rw [soninAllPrimeCoupledCoordinateEnergy,
     ContinuousLinearMap.adjoint_comp,
     ContinuousLinearMap.adjoint_adjoint]
+
+/-! ### Exact response of the coupled source to an added quantum channel -/
+
+section ChannelAugmentation
+
+variable {G : Type*}
+variable [NormedAddCommGroup G] [InnerProductSpace ℂ G] [CompleteSpace G]
+
+/-- Add a labelled Hilbert-space response channel to the coupled all-prime source.  This is an
+actual change of the positive source effect, not a harmless replacement of the output
+coordinates. -/
+def soninAllPrimeCoupledChannelAugmentedEnergy
+    (a : SoninPositiveAperture)
+    (B : lp (fun _ : SoninHilbertIndex => ℂ) 2 →L[ℂ] G) :
+    lp (fun _ : SoninHilbertIndex => ℂ) 2 →L[ℂ]
+      lp (fun _ : SoninHilbertIndex => ℂ) 2 :=
+  HTGeometry.augmentedQuantumChannelEffect
+    (soninAllPrimeColumnCoordinateOperator a.1 a.2) B
+
+theorem soninAllPrimeCoupledChannelAugmentedEnergy_isSelfAdjoint
+    (a : SoninPositiveAperture)
+    (B : lp (fun _ : SoninHilbertIndex => ℂ) 2 →L[ℂ] G) :
+    ContinuousLinearMap.adjoint
+        (soninAllPrimeCoupledChannelAugmentedEnergy a B) =
+      soninAllPrimeCoupledChannelAugmentedEnergy a B := by
+  exact HTGeometry.adjoint_augmentedQuantumChannelEffect _ _
+
+theorem soninAllPrimeCoupledChannelAugmentedEnergy_isHilbertSchmidt
+    (a : SoninPositiveAperture)
+    {B : lp (fun _ : SoninHilbertIndex => ℂ) 2 →L[ℂ] G}
+    (hB : ContinuousLinearMap.IsHilbertSchmidt B) :
+    ContinuousLinearMap.IsHilbertSchmidt
+      (soninAllPrimeCoupledChannelAugmentedEnergy a B) := by
+  exact HTGeometry.augmentedQuantumChannelEffect_isHilbertSchmidt
+    (HilbertSchmidt.isHilbertSchmidt_toOperatorRect
+      (soninAllPrimeColumnKernel_isHSRect a.1 a.2)) hB
+
+/-- The degree-zero coupled value gains exactly the Hilbert--Schmidt energy of the added
+channel. -/
+theorem re_opTrace_soninAllPrimeCoupledChannelAugmentedEnergy
+    (a : SoninPositiveAperture)
+    {B : lp (fun _ : SoninHilbertIndex => ℂ) 2 →L[ℂ] G}
+    (hB : ContinuousLinearMap.IsHilbertSchmidt B) :
+    (ContinuousLinearMap.opTrace
+      (soninAllPrimeCoupledChannelAugmentedEnergy a B)).re =
+        ContinuousLinearMap.hsNormSq
+            (soninAllPrimeColumnCoordinateOperator a.1 a.2) +
+          ContinuousLinearMap.hsNormSq B := by
+  exact HTGeometry.re_opTrace_augmentedQuantumChannelEffect
+    (HilbertSchmidt.isHilbertSchmidt_toOperatorRect
+      (soninAllPrimeColumnKernel_isHSRect a.1 a.2)) hB
+
+/-- The degree-one coupled value gains a nonnegative interference energy and the positive
+self-energy of the added channel.  Thus channel augmentation changes the moment data already
+at the first genuinely mixed degree. -/
+theorem re_opTrace_soninAllPrimeCoupledChannelAugmentedEnergy_sq
+    (a : SoninPositiveAperture)
+    {B : lp (fun _ : SoninHilbertIndex => ℂ) 2 →L[ℂ] G}
+    (hB : ContinuousLinearMap.IsHilbertSchmidt B) :
+    (ContinuousLinearMap.opTrace
+      (soninAllPrimeCoupledChannelAugmentedEnergy a B ∘L
+        soninAllPrimeCoupledChannelAugmentedEnergy a B)).re =
+      ContinuousLinearMap.hsNormSq (soninAllPrimeCoupledCoordinateEnergy a) +
+        2 * ContinuousLinearMap.hsNormSq
+          (soninAllPrimeColumnCoordinateOperator a.1 a.2 ∘L
+            ContinuousLinearMap.adjoint B) +
+        ContinuousLinearMap.hsNormSq
+          (HTGeometry.quantumChannelEffect B) := by
+  simpa only [soninAllPrimeCoupledChannelAugmentedEnergy,
+    soninAllPrimeCoupledCoordinateEnergy,
+    HTGeometry.quantumChannelEffect] using
+      HTGeometry.re_opTrace_augmentedQuantumChannelEffect_sq
+        (HilbertSchmidt.isHilbertSchmidt_toOperatorRect
+          (soninAllPrimeColumnKernel_isHSRect a.1 a.2)) hB
+
+/-- Any concrete nonzero response channel supplies a positive augmented denominator. -/
+theorem re_opTrace_soninAllPrimeCoupledChannelAugmentedEnergy_pos_of_ne
+    (a : SoninPositiveAperture)
+    {B : lp (fun _ : SoninHilbertIndex => ℂ) 2 →L[ℂ] G}
+    (hB : ContinuousLinearMap.IsHilbertSchmidt B) (hBne : B ≠ 0) :
+    0 < (ContinuousLinearMap.opTrace
+      (soninAllPrimeCoupledChannelAugmentedEnergy a B)).re := by
+  exact HTGeometry.re_opTrace_augmentedQuantumChannelEffect_pos_of_right_ne
+    (HilbertSchmidt.isHilbertSchmidt_toOperatorRect
+      (soninAllPrimeColumnKernel_isHSRect a.1 a.2)) hB hBne
+
+/-- **Projective-augmentation obstruction.**  Assume the original coupled column is nonzero so
+that its old normalized second value exists.  The augmented and old normalized second values
+agree exactly when one new scalar balance equation holds.  Consequently, adding a guaranteed
+nonzero row does not discharge the old source problem while preserving its moment comparison;
+it replaces that problem by this explicit interference balance. -/
+theorem soninAllPrimeCoupledChannelAugmented_normalizedSecond_eq_iff
+    (a : SoninPositiveAperture)
+    {B : lp (fun _ : SoninHilbertIndex => ℂ) 2 →L[ℂ] G}
+    (hB : ContinuousLinearMap.IsHilbertSchmidt B)
+    (hCne : soninAllPrimeColumnCoordinateOperator a.1 a.2 ≠ 0) :
+    (ContinuousLinearMap.opTrace
+        (soninAllPrimeCoupledChannelAugmentedEnergy a B ∘L
+          soninAllPrimeCoupledChannelAugmentedEnergy a B)).re /
+        (ContinuousLinearMap.opTrace
+          (soninAllPrimeCoupledChannelAugmentedEnergy a B)).re =
+      ContinuousLinearMap.hsNormSq (soninAllPrimeCoupledCoordinateEnergy a) /
+        ContinuousLinearMap.hsNormSq
+          (soninAllPrimeColumnCoordinateOperator a.1 a.2) ↔
+      ContinuousLinearMap.hsNormSq
+          (soninAllPrimeColumnCoordinateOperator a.1 a.2) *
+        (2 * ContinuousLinearMap.hsNormSq
+            (soninAllPrimeColumnCoordinateOperator a.1 a.2 ∘L
+              ContinuousLinearMap.adjoint B) +
+          ContinuousLinearMap.hsNormSq
+            (HTGeometry.quantumChannelEffect B)) =
+      ContinuousLinearMap.hsNormSq B *
+        ContinuousLinearMap.hsNormSq (soninAllPrimeCoupledCoordinateEnergy a) := by
+  let C := soninAllPrimeColumnCoordinateOperator a.1 a.2
+  have hC : ContinuousLinearMap.IsHilbertSchmidt C :=
+    HilbertSchmidt.isHilbertSchmidt_toOperatorRect
+      (soninAllPrimeColumnKernel_isHSRect a.1 a.2)
+  have hCenergy : ContinuousLinearMap.hsNormSq C ≠ 0 := by
+    intro hzero
+    exact hCne ((ContinuousLinearMap.hsNormSq_eq_zero_iff hC).mp hzero)
+  have hCpos : 0 < ContinuousLinearMap.hsNormSq C :=
+    lt_of_le_of_ne (ContinuousLinearMap.hsNormSq_nonneg C) (Ne.symm hCenergy)
+  have hsum : ContinuousLinearMap.hsNormSq C +
+      ContinuousLinearMap.hsNormSq B ≠ 0 := by
+    exact ne_of_gt (add_pos_of_pos_of_nonneg hCpos
+      (ContinuousLinearMap.hsNormSq_nonneg B))
+  rw [re_opTrace_soninAllPrimeCoupledChannelAugmentedEnergy a hB,
+    re_opTrace_soninAllPrimeCoupledChannelAugmentedEnergy_sq a hB]
+  exact HTGeometry.augmentedNormalizedSecondValue_eq_iff
+    (ContinuousLinearMap.hsNormSq C)
+    (ContinuousLinearMap.hsNormSq B)
+    (ContinuousLinearMap.hsNormSq (soninAllPrimeCoupledCoordinateEnergy a))
+    (2 * ContinuousLinearMap.hsNormSq
+        (C ∘L ContinuousLinearMap.adjoint B) +
+      ContinuousLinearMap.hsNormSq (HTGeometry.quantumChannelEffect B))
+    hCenergy hsum
+
+end ChannelAugmentation
+
+/-! ### The quadratic prime anchor as a concrete added channel -/
+
+/-- Synthesis from the canonical Sonin Hilbert coordinates. -/
+def soninHilbertCoordinateSynthesis :
+    lp (fun _ : SoninHilbertIndex => ℂ) 2 →L[ℂ] SoninL2 :=
+  (ContinuousLinearMap.hsBasis ℂ SoninL2).repr.toContinuousLinearEquiv.symm.toContinuousLinearMap
+
+private theorem comp_soninHilbertCoordinateSynthesis_ne_zero
+    {T : SoninL2 →L[ℂ] SoninL2} (hT : T ≠ 0) :
+    T ∘L soninHilbertCoordinateSynthesis ≠ 0 := by
+  intro hzero
+  apply hT
+  apply ContinuousLinearMap.ext
+  intro x
+  let U := (ContinuousLinearMap.hsBasis ℂ SoninL2).repr
+  have hsynth : soninHilbertCoordinateSynthesis (U x) = x := by
+    change U.symm (U x) = x
+    exact U.symm_apply_apply x
+  calc
+    T x = T (soninHilbertCoordinateSynthesis (U x)) := by rw [hsynth]
+    _ = (T ∘L soninHilbertCoordinateSynthesis) (U x) := rfl
+    _ = 0 := by rw [hzero]; rfl
+    _ = (0 : SoninL2 →L[ℂ] SoninL2) x := rfl
+
+/-- Coordinate form of the quadratic dilation-signal response channel. -/
+def soninPrimeQuadraticSignalCoordinateChannel
+    (a : ℝ) (p : Nat.Primes) :
+    lp (fun _ : SoninHilbertIndex => ℂ) 2 →L[ℂ] SoninL2 :=
+  centralSoninCornerCorrectionResponse a
+      (soninPrimeDilationSignal p * soninPrimeDilationSignal p) ∘L
+    soninHilbertCoordinateSynthesis
+
+/-- Coordinate form of the matching prime-square residual channel. -/
+def soninPrimeSquareResidualCoordinateChannel
+    (a : ℝ) (p : Nat.Primes) :
+    lp (fun _ : SoninHilbertIndex => ℂ) 2 →L[ℂ] SoninL2 :=
+  centralSoninPrimePowerResidual a (p, 0) ∘L soninHilbertCoordinateSynthesis
+
+theorem soninPrimeQuadraticSignalCoordinateChannel_isHilbertSchmidt
+    (a : ℝ) (ha : 0 < a) (p : Nat.Primes) :
+    ContinuousLinearMap.IsHilbertSchmidt
+      (soninPrimeQuadraticSignalCoordinateChannel a p) := by
+  exact (centralSoninCornerCorrectionResponse_isHilbertSchmidt a ha _).comp_right
+    soninHilbertCoordinateSynthesis
+
+theorem soninPrimeSquareResidualCoordinateChannel_isHilbertSchmidt
+    (a : ℝ) (ha : 0 < a) (p : Nat.Primes) :
+    ContinuousLinearMap.IsHilbertSchmidt
+      (soninPrimeSquareResidualCoordinateChannel a p) := by
+  exact (centralSoninPrimePowerResidual_isHilbertSchmidt a ha (p, 0)).comp_right
+    soninHilbertCoordinateSynthesis
+
+/-- The quadratic QSP relation supplies at least one concrete nonzero coordinate channel. -/
+theorem soninPrimeQuadraticSignalCoordinateChannel_ne_zero_or_primeSquareResidual_ne_zero
+    (a : ℝ) (ha : 0 < a) (p : Nat.Primes) :
+    soninPrimeQuadraticSignalCoordinateChannel a p ≠ 0 ∨
+      soninPrimeSquareResidualCoordinateChannel a p ≠ 0 := by
+  rcases centralSoninCornerCorrectionResponse_signalSq_ne_zero_or_primeSquareResidual_ne_zero
+      a ha p with hA | hR
+  · exact Or.inl (comp_soninHilbertCoordinateSynthesis_ne_zero hA)
+  · exact Or.inr (comp_soninHilbertCoordinateSynthesis_ne_zero hR)
+
+/-- A physics-derived quadratic prime anchor always yields a Hilbert--Schmidt response channel
+whose addition makes the coupled denominator strictly positive.  This is an unconditional
+constructor for an *augmented* source; the projective-balance theorem above records why it does
+not by itself prove positivity or moment convergence for the unaugmented arithmetic source. -/
+theorem exists_soninPrimeQuadraticAnchorCoordinateChannel_with_augmentedEnergy_pos
+    (a : SoninPositiveAperture) (p : Nat.Primes) :
+    ∃ B : lp (fun _ : SoninHilbertIndex => ℂ) 2 →L[ℂ] SoninL2,
+      ContinuousLinearMap.IsHilbertSchmidt B ∧
+        0 < (ContinuousLinearMap.opTrace
+          (soninAllPrimeCoupledChannelAugmentedEnergy a B)).re := by
+  rcases
+      soninPrimeQuadraticSignalCoordinateChannel_ne_zero_or_primeSquareResidual_ne_zero
+        a.1 a.2 p with hA | hR
+  · refine ⟨soninPrimeQuadraticSignalCoordinateChannel a.1 p,
+      soninPrimeQuadraticSignalCoordinateChannel_isHilbertSchmidt a.1 a.2 p, ?_⟩
+    exact re_opTrace_soninAllPrimeCoupledChannelAugmentedEnergy_pos_of_ne a
+      (soninPrimeQuadraticSignalCoordinateChannel_isHilbertSchmidt a.1 a.2 p) hA
+  · refine ⟨soninPrimeSquareResidualCoordinateChannel a.1 p,
+      soninPrimeSquareResidualCoordinateChannel_isHilbertSchmidt a.1 a.2 p, ?_⟩
+    exact re_opTrace_soninAllPrimeCoupledChannelAugmentedEnergy_pos_of_ne a
+      (soninPrimeSquareResidualCoordinateChannel_isHilbertSchmidt a.1 a.2 p) hR
 
 /-- **One-channel criterion for the coupled positive effect.**  The quantum master effect
 `C_a† C_a` is nonzero exactly when one concrete prime-power Sonin residual is nonzero. -/
@@ -364,6 +589,19 @@ theorem soninAllPrimeCoupledTraceMoment_zero_re_pos_iff_exists_primePowerResidua
       ∃ pk : Nat.Primes × ℕ, centralSoninPrimePowerResidual a.1 pk ≠ 0 := by
   rw [soninAllPrimeCoupledTraceMoment_zero_re_pos_iff_column_ne_zero,
     soninAllPrimeColumnCoordinateOperator_ne_zero_iff_exists_primePowerResidual_ne_zero]
+
+/-- Degree-zero source positivity is equivalently detection of one Chebyshev mode of one prime
+dilation signal.  This is the direct quantum-signal-processing form of the normalization
+hypothesis used by the coupled Gram route. -/
+theorem soninAllPrimeCoupledTraceMoment_zero_re_pos_iff_exists_cosineResponse_ne_zero
+    (a : SoninPositiveAperture) :
+    0 < (soninAllPrimeCoupledTraceMoment a 0).re ↔
+      ∃ pk : Nat.Primes × ℕ,
+        centralSoninCornerCorrectionResponse a.1
+          (HTGeometry.unitaryCosineRecurrence
+            (soninPrimeDilationSignal pk.1) (pk.2 + 2)) ≠ 0 := by
+  rw [soninAllPrimeCoupledTraceMoment_zero_re_pos_iff_column_ne_zero,
+    soninAllPrimeColumnCoordinateOperator_ne_zero_iff_exists_cosineResponse_ne_zero]
 
 /-- The zeroth coupled trace moment is already the zeroth block-diagonal Sonin moment.  Thus
 the coupled route adds no new scalar normalization at degree zero; its genuinely new arithmetic
@@ -738,6 +976,56 @@ theorem soninAllPrimeCoupledTraceMoment_odd_eq_hsNormSq_energyPower
       ContinuousLinearMap.opTrace_adjoint_comp_self S
     _ = _ := hsInner_self_eq_ofReal hS
 
+/-! ### Quantum purity constraint on the first two coupled moments -/
+
+/-- The order-two purity of the coupled all-prime master effect.  This is the density-operator
+purity of the normalized positive effect `C_a† C_a`; the zero source is assigned purity zero. -/
+def soninAllPrimeCoupledMasterEffectPurity (a : SoninPositiveAperture) : ℝ :=
+  HTGeometry.quantumMasterEffectPurity
+    (soninAllPrimeColumnCoordinateOperator a.1 a.2)
+
+/-- The coupled master-effect purity is exactly the normalized ratio of the first two source
+moments.  Thus it is a directly observable scalar of the existing moment sequence, not a new
+auxiliary channel. -/
+theorem soninAllPrimeCoupledMasterEffectPurity_eq_traceMomentRatio
+    (a : SoninPositiveAperture) :
+    soninAllPrimeCoupledMasterEffectPurity a =
+      (soninAllPrimeCoupledTraceMoment a 1).re /
+        (soninAllPrimeCoupledTraceMoment a 0).re ^ 2 := by
+  rw [soninAllPrimeCoupledMasterEffectPurity,
+    HTGeometry.quantumMasterEffectPurity,
+    soninAllPrimeCoupledTraceMoment_odd_eq_hsNormSq_energyPower a 0,
+    soninAllPrimeCoupledTraceMoment_zero_eq_column_hsNormSq]
+  simp only [zero_add, pow_one, Complex.ofReal_re,
+    soninAllPrimeCoupledCoordinateEnergy]
+
+/-- The first coupled moment cannot exceed the square of the zeroth coupled moment.  This is the
+unnormalized quantum-state purity bound `Tr(T²) ≤ Tr(T)²` for `T = C_a† C_a`. -/
+theorem re_soninAllPrimeCoupledTraceMoment_one_le_sq_zero
+    (a : SoninPositiveAperture) :
+    (soninAllPrimeCoupledTraceMoment a 1).re ≤
+      (soninAllPrimeCoupledTraceMoment a 0).re ^ 2 := by
+  let C := soninAllPrimeColumnCoordinateOperator a.1 a.2
+  have hC : ContinuousLinearMap.IsHilbertSchmidt C :=
+    HilbertSchmidt.isHilbertSchmidt_toOperatorRect
+      (soninAllPrimeColumnKernel_isHSRect a.1 a.2)
+  have hpurity := HTGeometry.hsNormSq_adjoint_comp_self_le_sq C hC
+  rw [soninAllPrimeCoupledTraceMoment_odd_eq_hsNormSq_energyPower a 0,
+    soninAllPrimeCoupledTraceMoment_zero_eq_column_hsNormSq]
+  simp only [zero_add, pow_one, Complex.ofReal_re]
+  simpa only [soninAllPrimeCoupledCoordinateEnergy, C] using hpurity
+
+/-- The normalized first-moment ratio is a physical purity: it always belongs to `[0,1]`, without
+assuming source nondegeneracy.  The zero channel contributes ratio zero by field convention. -/
+theorem soninAllPrimeCoupledTraceMoment_purityRatio_mem_Icc
+    (a : SoninPositiveAperture) :
+    (soninAllPrimeCoupledTraceMoment a 1).re /
+        (soninAllPrimeCoupledTraceMoment a 0).re ^ 2 ∈ Set.Icc (0 : ℝ) 1 := by
+  rw [← soninAllPrimeCoupledMasterEffectPurity_eq_traceMomentRatio]
+  exact HTGeometry.quantumMasterEffectPurity_mem_Icc _
+    (HilbertSchmidt.isHilbertSchmidt_toOperatorRect
+      (soninAllPrimeColumnKernel_isHSRect a.1 a.2))
+
 /-- Every coupled trace moment is real before any comparison with the prime--Gamma target. -/
 theorem soninAllPrimeCoupledTraceMoment_im_eq_zero
     (a : SoninPositiveAperture) (k : ℕ) :
@@ -765,6 +1053,276 @@ theorem soninAllPrimeCoupledTraceMoment_re_nonneg
     rw [soninAllPrimeCoupledTraceMoment_odd_eq_hsNormSq_energyPower,
       Complex.ofReal_re]
     exact ContinuousLinearMap.hsNormSq_nonneg _
+
+/-- The first projective moment coordinate is bounded by the unnormalized source mass.  Hence any
+coupled projective approximation with a positive limiting first coordinate must keep the source
+mass quantitatively away from zero. -/
+theorem re_soninAllPrimeCoupledTraceMoment_one_div_zero_le_zero
+    (a : SoninPositiveAperture) :
+    (soninAllPrimeCoupledTraceMoment a 1).re /
+        (soninAllPrimeCoupledTraceMoment a 0).re ≤
+      (soninAllPrimeCoupledTraceMoment a 0).re := by
+  by_cases hzero : (soninAllPrimeCoupledTraceMoment a 0).re = 0
+  · rw [hzero]
+    simp
+  · have hmassPos : 0 < (soninAllPrimeCoupledTraceMoment a 0).re :=
+      lt_of_le_of_ne (soninAllPrimeCoupledTraceMoment_re_nonneg a 0) (Ne.symm hzero)
+    rw [div_le_iff₀ hmassPos]
+    simpa only [pow_two] using
+      re_soninAllPrimeCoupledTraceMoment_one_le_sq_zero a
+
+/-- The operator norm of the positive coupled effect is at most its total trace mass.  This is
+the density-matrix eigenvalue ceiling before normalization. -/
+theorem norm_soninAllPrimeCoupledCoordinateEnergy_le_traceMoment_zero_re
+    (a : SoninPositiveAperture) :
+    ‖soninAllPrimeCoupledCoordinateEnergy a‖ ≤
+      (soninAllPrimeCoupledTraceMoment a 0).re := by
+  let C := soninAllPrimeColumnCoordinateOperator a.1 a.2
+  have hC : ContinuousLinearMap.IsHilbertSchmidt C :=
+    HilbertSchmidt.isHilbertSchmidt_toOperatorRect
+      (soninAllPrimeColumnKernel_isHSRect a.1 a.2)
+  have hop := ContinuousLinearMap.opNorm_le_hsNorm hC
+  have hopSq : ‖C‖ ^ 2 ≤ ContinuousLinearMap.hsNormSq C := by
+    have hsquare : ‖C‖ ^ 2 ≤ ContinuousLinearMap.hsNorm C ^ 2 := by
+      nlinarith [norm_nonneg C, ContinuousLinearMap.hsNorm_nonneg C]
+    calc
+      ‖C‖ ^ 2 ≤ ContinuousLinearMap.hsNorm C ^ 2 := hsquare
+      _ = ContinuousLinearMap.hsNormSq C := by
+        rw [ContinuousLinearMap.hsNorm,
+          Real.sq_sqrt (ContinuousLinearMap.hsNormSq_nonneg C)]
+  have hadjointNorm : ‖ContinuousLinearMap.adjoint C‖ = ‖C‖ := by
+    exact (ContinuousLinearMap.adjoint :
+      (lp (fun _ : SoninHilbertIndex => ℂ) 2 →L[ℂ] SoninAllPrimeL2) ≃ₗᵢ⋆[ℂ]
+        (SoninAllPrimeL2 →L[ℂ]
+          lp (fun _ : SoninHilbertIndex => ℂ) 2)).norm_map C
+  rw [soninAllPrimeCoupledTraceMoment_zero_eq_column_hsNormSq,
+    Complex.ofReal_re]
+  calc
+    ‖soninAllPrimeCoupledCoordinateEnergy a‖ =
+        ‖ContinuousLinearMap.adjoint C ∘L C‖ := by
+      rfl
+    _ ≤ ‖ContinuousLinearMap.adjoint C‖ * ‖C‖ :=
+      (ContinuousLinearMap.adjoint C).opNorm_comp_le C
+    _ = ‖C‖ ^ 2 := by
+      rw [hadjointNorm]
+      ring
+    _ ≤ ContinuousLinearMap.hsNormSq C := hopSq
+
+/-- **Replica-step contraction.**  Each successive coupled trace moment is at most the previous
+one times the total source mass.  After division by powers of that mass this is monotonicity of
+the density-operator Rényi replica moments. -/
+theorem re_soninAllPrimeCoupledTraceMoment_succ_le_mass_mul
+    (a : SoninPositiveAperture) (k : ℕ) :
+    (soninAllPrimeCoupledTraceMoment a (k + 1)).re ≤
+      (soninAllPrimeCoupledTraceMoment a 0).re *
+        (soninAllPrimeCoupledTraceMoment a k).re := by
+  let C := soninAllPrimeColumnCoordinateOperator a.1 a.2
+  have hC : ContinuousLinearMap.IsHilbertSchmidt C :=
+    HilbertSchmidt.isHilbertSchmidt_toOperatorRect
+      (soninAllPrimeColumnKernel_isHSRect a.1 a.2)
+  have hop := ContinuousLinearMap.opNorm_le_hsNorm hC
+  have hCnormSq : ‖C‖ ^ 2 ≤
+      (soninAllPrimeCoupledTraceMoment a 0).re := by
+    rw [soninAllPrimeCoupledTraceMoment_zero_eq_column_hsNormSq,
+      Complex.ofReal_re]
+    have hsquare : ‖C‖ ^ 2 ≤ ContinuousLinearMap.hsNorm C ^ 2 := by
+      nlinarith [norm_nonneg C, ContinuousLinearMap.hsNorm_nonneg C]
+    calc
+      ‖C‖ ^ 2 ≤ ContinuousLinearMap.hsNorm C ^ 2 := hsquare
+      _ = ContinuousLinearMap.hsNormSq C := by
+        rw [ContinuousLinearMap.hsNorm,
+          Real.sq_sqrt (ContinuousLinearMap.hsNormSq_nonneg C)]
+  obtain ⟨n, h | h⟩ := Nat.even_or_odd' k
+  · subst k
+    rw [soninAllPrimeCoupledTraceMoment_odd_eq_hsNormSq_energyPower a n,
+      soninAllPrimeCoupledTraceMoment_even_eq_hsNormSq_powerColumn a n,
+      Complex.ofReal_re, Complex.ofReal_re]
+    let V := soninAllPrimeCoupledPowerColumn a n
+    have hV : ContinuousLinearMap.IsHilbertSchmidt V :=
+      soninAllPrimeCoupledPowerColumn_isHilbertSchmidt a n
+    have hcomp := ContinuousLinearMap.hsNormSq_comp_left_le hV
+      (ContinuousLinearMap.adjoint C)
+    have hadjointNorm : ‖ContinuousLinearMap.adjoint C‖ = ‖C‖ := by
+      exact (ContinuousLinearMap.adjoint :
+        (lp (fun _ : SoninHilbertIndex => ℂ) 2 →L[ℂ] SoninAllPrimeL2) ≃ₗᵢ⋆[ℂ]
+          (SoninAllPrimeL2 →L[ℂ]
+            lp (fun _ : SoninHilbertIndex => ℂ) 2)).norm_map C
+    have hfactor : ContinuousLinearMap.adjoint C ∘L V =
+        soninAllPrimeCoupledCoordinateEnergy a ^ (n + 1) := by
+      apply ContinuousLinearMap.ext
+      intro x
+      simp only [V, soninAllPrimeCoupledPowerColumn,
+        soninAllPrimeCoupledCoordinateEnergy,
+        ContinuousLinearMap.comp_apply, pow_succ',
+        ContinuousLinearMap.mul_apply]
+    rw [← hfactor]
+    calc
+      ContinuousLinearMap.hsNormSq (ContinuousLinearMap.adjoint C ∘L V) ≤
+          ‖ContinuousLinearMap.adjoint C‖ ^ 2 *
+            ContinuousLinearMap.hsNormSq V := hcomp
+      _ = ‖C‖ ^ 2 * ContinuousLinearMap.hsNormSq V := by
+        rw [hadjointNorm]
+      _ ≤ (soninAllPrimeCoupledTraceMoment a 0).re *
+            ContinuousLinearMap.hsNormSq V :=
+        mul_le_mul_of_nonneg_right hCnormSq
+          (ContinuousLinearMap.hsNormSq_nonneg V)
+  · subst k
+    rw [show 2 * n + 1 + 1 = 2 * (n + 1) by omega,
+      soninAllPrimeCoupledTraceMoment_even_eq_hsNormSq_powerColumn a (n + 1),
+      soninAllPrimeCoupledTraceMoment_odd_eq_hsNormSq_energyPower a n,
+      Complex.ofReal_re, Complex.ofReal_re]
+    let T := soninAllPrimeCoupledCoordinateEnergy a ^ (n + 1)
+    have hT : ContinuousLinearMap.IsHilbertSchmidt T :=
+      soninAllPrimeCoupledCoordinateEnergy_pow_isHilbertSchmidt a (by omega)
+    have hcomp := ContinuousLinearMap.hsNormSq_comp_left_le hT C
+    have hfactor : C ∘L T = soninAllPrimeCoupledPowerColumn a (n + 1) := by
+      rfl
+    rw [← hfactor]
+    exact hcomp.trans (mul_le_mul_of_nonneg_right hCnormSq
+      (ContinuousLinearMap.hsNormSq_nonneg T))
+
+/-- **All-order Rényi envelope.**  Every coupled trace moment is at most the matching power of
+the degree-zero source mass. -/
+theorem re_soninAllPrimeCoupledTraceMoment_le_mass_pow
+    (a : SoninPositiveAperture) (k : ℕ) :
+    (soninAllPrimeCoupledTraceMoment a k).re ≤
+      (soninAllPrimeCoupledTraceMoment a 0).re ^ (k + 1) := by
+  induction k with
+  | zero =>
+      simp
+  | succ k ih =>
+      calc
+        (soninAllPrimeCoupledTraceMoment a (k + 1)).re ≤
+            (soninAllPrimeCoupledTraceMoment a 0).re *
+              (soninAllPrimeCoupledTraceMoment a k).re :=
+          re_soninAllPrimeCoupledTraceMoment_succ_le_mass_mul a k
+        _ ≤ (soninAllPrimeCoupledTraceMoment a 0).re *
+              (soninAllPrimeCoupledTraceMoment a 0).re ^ (k + 1) :=
+          mul_le_mul_of_nonneg_left ih
+            (soninAllPrimeCoupledTraceMoment_re_nonneg a 0)
+        _ = (soninAllPrimeCoupledTraceMoment a 0).re ^ (k + 1 + 1) := by
+          rw [pow_succ]
+          ring
+
+/-- The normalized `(k+1)`-replica value of the coupled positive master effect. -/
+def soninAllPrimeCoupledRenyiReplicaMoment
+    (a : SoninPositiveAperture) (k : ℕ) : ℝ :=
+  (soninAllPrimeCoupledTraceMoment a k).re /
+    (soninAllPrimeCoupledTraceMoment a 0).re ^ (k + 1)
+
+/-- Every normalized coupled Rényi replica value lies in the physical interval `[0,1]`. -/
+theorem soninAllPrimeCoupledRenyiReplicaMoment_mem_Icc
+    (a : SoninPositiveAperture) (k : ℕ) :
+    soninAllPrimeCoupledRenyiReplicaMoment a k ∈ Set.Icc (0 : ℝ) 1 := by
+  constructor
+  · exact div_nonneg (soninAllPrimeCoupledTraceMoment_re_nonneg a k)
+      (pow_nonneg (soninAllPrimeCoupledTraceMoment_re_nonneg a 0) _)
+  · by_cases hzero : (soninAllPrimeCoupledTraceMoment a 0).re = 0
+    · simp [soninAllPrimeCoupledRenyiReplicaMoment, hzero]
+    · have hmassPos : 0 < (soninAllPrimeCoupledTraceMoment a 0).re :=
+        lt_of_le_of_ne (soninAllPrimeCoupledTraceMoment_re_nonneg a 0) (Ne.symm hzero)
+      rw [soninAllPrimeCoupledRenyiReplicaMoment,
+        div_le_iff₀ (pow_pos hmassPos _)]
+      simpa only [one_mul] using
+        re_soninAllPrimeCoupledTraceMoment_le_mass_pow a k
+
+/-- Normalized Rényi replica moments decrease with replica order. -/
+theorem soninAllPrimeCoupledRenyiReplicaMoment_succ_le
+    (a : SoninPositiveAperture) (k : ℕ) :
+    soninAllPrimeCoupledRenyiReplicaMoment a (k + 1) ≤
+      soninAllPrimeCoupledRenyiReplicaMoment a k := by
+  by_cases hzero : (soninAllPrimeCoupledTraceMoment a 0).re = 0
+  · simp [soninAllPrimeCoupledRenyiReplicaMoment, hzero]
+  · have hmassPos : 0 < (soninAllPrimeCoupledTraceMoment a 0).re :=
+      lt_of_le_of_ne (soninAllPrimeCoupledTraceMoment_re_nonneg a 0) (Ne.symm hzero)
+    simp only [soninAllPrimeCoupledRenyiReplicaMoment]
+    rw [div_le_div_iff₀ (pow_pos hmassPos _) (pow_pos hmassPos _)]
+    have hstep := re_soninAllPrimeCoupledTraceMoment_succ_le_mass_mul a k
+    have hmul := mul_le_mul_of_nonneg_right hstep
+      (pow_nonneg hmassPos.le (k + 1))
+    calc
+      (soninAllPrimeCoupledTraceMoment a (k + 1)).re *
+          (soninAllPrimeCoupledTraceMoment a 0).re ^ (k + 1) ≤
+        ((soninAllPrimeCoupledTraceMoment a 0).re *
+            (soninAllPrimeCoupledTraceMoment a k).re) *
+          (soninAllPrimeCoupledTraceMoment a 0).re ^ (k + 1) := hmul
+      _ = (soninAllPrimeCoupledTraceMoment a k).re *
+          (soninAllPrimeCoupledTraceMoment a 0).re ^ (k + 1 + 1) := by
+        rw [pow_succ]
+        ring
+
+/-! ### Quantum Hausdorff convexity of the coupled replica sequence -/
+
+/-- The coupled Sonin replica value is literally the general density-operator replica moment of
+the common-source master effect.  This is the direct bridge from the general quantum constraint
+surface to the arithmetic source sequence. -/
+theorem soninAllPrimeCoupledRenyiReplicaMoment_eq_quantumMasterEffectReplicaMoment
+    (a : SoninPositiveAperture) (k : ℕ) :
+    soninAllPrimeCoupledRenyiReplicaMoment a k =
+      HTGeometry.quantumMasterEffectReplicaMoment
+        (soninAllPrimeColumnCoordinateOperator a.1 a.2) k := by
+  rfl
+
+/-- **Coupled quantum Hausdorff constraint.**  The normalized coupled replica sequence is convex:
+its second complementary finite difference is nonnegative at every order.  This is stronger than
+the one-step monotonicity above and cuts the simultaneous moment-cluster locus available to the
+finite coupled Gram route. -/
+theorem soninAllPrimeCoupledRenyiReplicaMoment_secondDifference_nonneg
+    (a : SoninPositiveAperture) (k : ℕ) :
+    0 ≤ soninAllPrimeCoupledRenyiReplicaMoment a k -
+      2 * soninAllPrimeCoupledRenyiReplicaMoment a (k + 1) +
+        soninAllPrimeCoupledRenyiReplicaMoment a (k + 2) := by
+  rw [soninAllPrimeCoupledRenyiReplicaMoment_eq_quantumMasterEffectReplicaMoment,
+    soninAllPrimeCoupledRenyiReplicaMoment_eq_quantumMasterEffectReplicaMoment,
+    soninAllPrimeCoupledRenyiReplicaMoment_eq_quantumMasterEffectReplicaMoment]
+  exact HTGeometry.quantumMasterEffectReplicaMoment_secondDifference_nonneg
+    (HilbertSchmidt.isHilbertSchmidt_toOperatorRect
+      (soninAllPrimeColumnKernel_isHSRect a.1 a.2)) k
+
+/-- Unnormalized form of the same Hausdorff constraint.  It avoids division and therefore remains
+usable before source nondegeneracy has been discharged. -/
+theorem re_soninAllPrimeCoupledTraceMoment_secondDifference_nonneg
+    (a : SoninPositiveAperture) (k : ℕ) :
+    0 ≤ (soninAllPrimeCoupledTraceMoment a 0).re ^ 2 *
+        (soninAllPrimeCoupledTraceMoment a k).re -
+      2 * (soninAllPrimeCoupledTraceMoment a 0).re *
+        (soninAllPrimeCoupledTraceMoment a (k + 1)).re +
+      (soninAllPrimeCoupledTraceMoment a (k + 2)).re := by
+  let C := soninAllPrimeColumnCoordinateOperator a.1 a.2
+  have hC : ContinuousLinearMap.IsHilbertSchmidt C :=
+    HilbertSchmidt.isHilbertSchmidt_toOperatorRect
+      (soninAllPrimeColumnKernel_isHSRect a.1 a.2)
+  have hdiff := HTGeometry.quantumMasterEffectSecondDifference_nonneg hC k
+  simpa only [HTGeometry.quantumMasterEffectSecondDifference,
+    HTGeometry.quantumMasterEffectMass,
+    HTGeometry.quantumMasterEffectMoment,
+    HTGeometry.quantumChannelEffect,
+    soninAllPrimeCoupledTraceMoment,
+    soninAllPrimeCoupledCoordinateEnergy,
+    soninAllPrimeCoupledTraceMoment_zero_eq_column_hsNormSq,
+    Complex.ofReal_re, C] using hdiff
+
+/-- Every projectively normalized coupled coordinate is bounded by the corresponding power of
+the unnormalized source mass.  Therefore any positive target coordinate forces an explicit mass
+floor on every approximating aperture. -/
+theorem re_soninAllPrimeCoupledTraceMoment_div_zero_le_mass_pow
+    (a : SoninPositiveAperture) (k : ℕ) :
+    (soninAllPrimeCoupledTraceMoment a k).re /
+        (soninAllPrimeCoupledTraceMoment a 0).re ≤
+      (soninAllPrimeCoupledTraceMoment a 0).re ^ k := by
+  by_cases hzero : (soninAllPrimeCoupledTraceMoment a 0).re = 0
+  · have hupper := re_soninAllPrimeCoupledTraceMoment_le_mass_pow a k
+    rw [hzero] at hupper
+    simp only [zero_pow (Nat.succ_ne_zero k)] at hupper
+    have hmoment : (soninAllPrimeCoupledTraceMoment a k).re = 0 :=
+      le_antisymm hupper (soninAllPrimeCoupledTraceMoment_re_nonneg a k)
+    rw [hzero, hmoment]
+    simp
+  · have hmassPos : 0 < (soninAllPrimeCoupledTraceMoment a 0).re :=
+      lt_of_le_of_ne (soninAllPrimeCoupledTraceMoment_re_nonneg a 0) (Ne.symm hzero)
+    rw [div_le_iff₀ hmassPos]
+    simpa only [pow_succ] using
+      re_soninAllPrimeCoupledTraceMoment_le_mass_pow a k
 
 theorem soninAllPrimeCoupledGramBlock_eq_traceMoment
     (N : ℕ) (a : SoninPositiveAperture) (i j : Fin N) :

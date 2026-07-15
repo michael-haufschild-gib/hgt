@@ -12,6 +12,7 @@ In `ProjectiveHorizonCausticReflection.lean`:
 
 - `rectangularSchurToeplitz_reflection_eq_conjugate`
 - `rectangularSchurToeplitz_det_reflection`
+- `rectangularSchurToeplitz_det_eq_zero_of_reflectionFixed`
 
 ## Certified content
 
@@ -31,6 +32,10 @@ det T_(m,n)((-1)^k h_k)=(-1)^(mn) det T_(m,n)(h).          (2)
 
 This is precisely the finite algebraic step required after an analytic functional equation turns
 the reciprocal series at `1-s` into the series at `s` with `t` replaced by `-t`.
+
+Lean further proves that a coefficient sequence fixed by this reflection has zero rectangular
+determinant whenever `m*n` is odd.  This is the formal symmetry-protected caustic at a reflection
+fixed point.
 
 ## Verification
 

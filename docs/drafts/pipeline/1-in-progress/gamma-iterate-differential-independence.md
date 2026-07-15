@@ -31,6 +31,14 @@ makes the depth-zero coordinate differentially algebraic over the constant field
   `-C exp(a x)/x` obeys a common third-order differential equation.  The exact Gamma germ crosses
   that entire envelope at the subordinate pure-factorial scale with a nonzero `ζ(2)` residue in
   Lean.
+- The exact pole-jet decomposition is now proved in Lean for every finite polygamma order, so the
+  remaining gap is residue-map injectivity rather than missing higher-derivative analytic formulae.
+- The bounded layer is now evaluated in Lean at every order: odd polygamma orders have the
+  nonzero residue `2m!ζ(m+1)`, while positive even orders cancel exactly and pass to a finer
+  finite-tail normalization.
+- The finer normalization is now evaluated in Lean at every positive even order: multiplication
+  by `(n+1)^m` exposes the universal nonzero residue `-(m-1)!`.  Thus every individual positive
+  polygamma coordinate is detected by the parity-tail ladder.
 - The factorial pole microscope lowers every positive depth simultaneously:
 
   \[
@@ -127,12 +135,53 @@ is `-24ζ(2)`.  Thus the correct pole-germ structure is at least bifiltered: unb
 degree is followed by bounded zeta data.  This both falsifies the naïve one-filtration argument and
 supplies the first nonzero subordinate residue.
 
+## Exact all-order source law `[PROVEN IN LEAN]`
+
+For every `m,n∈ℕ`, `GammaFactorialAllOrderPoleJet.lean` proves the exact identity
+
+\[
+ \psi^{(m)}(-n+z)=\psi^{(m)}(1+z)
+ +\frac{(-1)^{m+1}m!}{z^{m+1}}
+ +m!\sum_{j=1}^n(j-z)^{-(m+1)}.
+\]
+
+After `z=s_nx`, this separates the reciprocal principal jet from a correction of exact factorial
+order `m+1`.  The local and generalized-harmonic limits reinforce in odd polygamma order and cancel
+in even order.  Hence the parity-dependent harmonic-zeta-tail ladder is now a theorem schema in
+Lean, not an extrapolation from the first three jets.
+
+`GammaFactorialAllOrderZetaLayer.lean` evaluates that bounded correction uniformly:
+
+\[
+ \frac{s_n^{m+1}\psi^{(m)}(-n+s_nx)-(-1)^{m+1}m!/x^{m+1}}
+      {s_n^{m+1}}
+ \longrightarrow
+ \bigl(1+(-1)^{m+1}\bigr)m!\zeta(m+1).
+\]
+
+Thus every odd `m` is detected by the nonzero residue `2m!ζ(m+1)`.  Every positive even `m`
+cancels at this layer.  `GammaFactorialAllOrderFiniteTail.lean` proves the next coefficient:
+
+\[
+ (n+1)^m
+ \frac{s_n^{m+1}\psi^{(m)}(-n+s_nx)+m!/x^{m+1}}{s_n^{m+1}}
+ \longrightarrow -(m-1)!.
+\]
+
+The limit is nonzero, rational, and independent of `x`.  Hence every individual positive
+polygamma coordinate is now detected: odd orders by even-zeta residues and even orders by the
+finite Euler-product tail.  The active core is no longer coordinate-level analytic detection but
+simultaneous algebraic cancellation among finitely many jet coordinates.
+
 ## Open core: all-order intrinsic pole-germ residue
 
 The projective curvature, the translation-invariant Schwarzian, and the first common equation of
 the full exponential-reciprocal envelope are now crossed.  These do not yet imply injectivity on
 the complete reciprocal differential ideal.  The residue map must retain the full lexicographic
 signature: factorial order, harmonic degree, and the bounded generalized-harmonic/zeta layer.
+The analytic input at arbitrary finite jet order is complete, including a nonzero residue for every
+positive polygamma coordinate.  The open problem is the algebra of simultaneous cancellations
+among products of these exact layers.
 
 The proof-grade missing theorem is:
 
@@ -190,3 +239,11 @@ injectivity theorem is complete and an independent priority audit finds no antec
   differential-algebraic envelope `-C exp(a x)/x`.  Formalized the first subordinate escape; its
   denominator-free third-jet discriminant has pure-factorial residue `-4π²/x¹⁰`.  The open core is
   now a multi-filtration theorem incorporating generalized-harmonic/zeta coefficients.
+- 2026-07-15 — replaced the order-by-order pole-jet calculations with one exact Lean theorem for
+  every polygamma order.  The remaining all-order core is algebraic injectivity of the resulting
+  parity-sensitive harmonic-zeta-tail signature.
+- 2026-07-15 — evaluated the bounded all-order layer in Lean.  Odd polygamma orders carry nonzero
+  even-zeta residues; positive even orders cancel and expose the finer finite Euler-product tail.
+- 2026-07-15 — resolved the finite-tail scale in Lean.  At every positive even order `m`, the
+  normalized correction tends the universal nonzero coefficient `-(m-1)!`.  Coordinate-level
+  detection is complete; the remaining core is injectivity on differential-polynomial products.

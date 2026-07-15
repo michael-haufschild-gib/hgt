@@ -72,4 +72,22 @@ theorem rectangularSchurToeplitz_det_reflection
     _ = (-1 : K) ^ (m * n) * (rectangularSchurToeplitz h n m).det := by
       rw [hdiag, one_mul]
 
+/-- A reflection-fixed coefficient sequence has a protected zero in every odd-area rectangular
+caustic. Analytically, this applies at the fixed point of `f(s)=f(1-s)`, where the normalized
+reciprocal series is even. -/
+theorem rectangularSchurToeplitz_det_eq_zero_of_reflectionFixed
+    {K : Type*} [Field K] [CharZero K]
+    (h : ℕ → K) (n m : ℕ)
+    (hfix : ∀ k, (-1 : K) ^ k * h k = h k)
+    (hodd : Odd (m * n)) :
+    (rectangularSchurToeplitz h n m).det = 0 := by
+  have hreflect := rectangularSchurToeplitz_det_reflection h n m
+  have hseq : (fun k => (-1 : K) ^ k * h k) = h := by
+    funext k
+    exact hfix k
+  rw [hseq, hodd.neg_one_pow] at hreflect
+  have htwo : (2 : K) * (rectangularSchurToeplitz h n m).det = 0 := by
+    linear_combination hreflect
+  exact (mul_eq_zero.mp htwo).resolve_left (by norm_num)
+
 end GaloisForLFunctions.HTGeometry

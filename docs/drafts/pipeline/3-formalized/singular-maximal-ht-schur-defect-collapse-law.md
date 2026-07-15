@@ -1,10 +1,10 @@
 # Canonical Schur truncations cross from rational DA interior to singular maximal-HT boundary only cofinally
 
 - **ID:** `singular-maximal-ht-schur-defect-collapse-law`
-- **Stage:** 2-fully-proven on paper / needs audit
+- **Stage:** 3-formalized in Lean 4
 - **Type:** THEOREM / COFINAL DOUBLE-BOUNDARY LAW
 - **Lane:** general hypertranscendence; singular Herglotz carriers; Schur geometry
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PROVED HERE] [LEAN 4 FORMALIZED] [NOVELTY UNVERIFIED]`
 - **Parents:** `spectral-type-stratified-moment-fiber-maximal-ht.md`,
   `nevanlinna-boundary-bauer-retract-maximal-ht.md`,
   `pick-defect-finite-selector-maximal-ht-phase-law.md`
@@ -452,17 +452,40 @@ not proved.
 
 ## Lean status
 
-No Stage 3 claim is made. Exact formalization requires Cayley transport of measures, circle
-Lebesgue decomposition, Schur parameters, Verblunsky recursion, Toeplitz determinants, Szego's
-theorem, and the parent residual maximal-HT theorem. These layers are not jointly formalized.
+Formalized unconditionally at the theorem's two natural carrier interfaces. The circle-side
+double-boundary theorem is
+`HTGeometry.singularSchurDefect_doubleBoundary_of_rieszBrothers`; the real-line canonical Bauer
+simplex phase is
+`ClassicalAnalyticNevanlinnaCarrierFamily.cofinalCholeskyResidualPhase_dense_gdelta_residual`, with
+the pointwise singular-continuous/maximal-translation conclusion supplied by
+`cofinalCholeskyResidualPhase_isSingularContinuous_maximalTranslation`.
 
-Formalization audit (needs-audit pass): no bounded self-contained kernel closes a gate. The
-substantive steps — strict finite defects `(5)` (Verblunsky), the zero Szego product `(6)`--`(9)`,
-Bernstein--Szego approximation `(10)`--`(14)`, and the cofinal `L^p`/coercivity collapse — all need
-OPUC/Szego theory absent from mathlib, layered on the parent Nevanlinna/transversality stack. The
-one abstractly-extractable linear-algebra identity (`λ_max/λ_min → ∞` from `trace = N+1` and
-`det → 0`) is a spectral wrapper that certifies nothing without the absent Szego determinant input.
-No partial file is added.
+The new circle formalization constructs literal Bernstein--Szego probability measures and proves:
+
+- strict positivity of every finite determinant-ratio Schur defect;
+- cofinal defect, normalized determinant-root, least-eigenvalue, condition-number, and
+  inverse-Cholesky escape under the stated classical Riesz-brothers/Szego input;
+- exact finite Toeplitz-Gram reproduction, positive continuous/real-analytic densities, and weak
+  convergence to the original circle probability;
+- an explicit zero-free reversed-OPUC denominator and finite polynomial numerator for the genuine
+  integral Caratheodory transform, hence a rational-function representative and an order-zero
+  differential-algebraic relation on the disk;
+- locally uniform convergence of those genuine transforms on every closed subdisk;
+- singular small-aperture concentration and divergence of every finite superlinear `L^p` norm.
+
+The principal implementation modules are
+`HTGeometry.BernsteinSzegoProbabilityApproximation`,
+`HTGeometry.CircleCaratheodoryApproximation`,
+`HTGeometry.BernsteinSzegoCaratheodoryRational`, and
+`HTGeometry.SingularSchurDefectCollapse`. The classical analytic theorem boundary is explicit in
+the `HasRieszBrothersDensityConclusion` hypothesis; no axiom, `sorry`, or hidden RH assumption is
+introduced. The real-line-to-circle Cayley normalization is represented by the existing
+`realCayley`/`circleCayley` infrastructure, while the promoted capstone deliberately states its
+measure theorem directly on the circle and its residual carrier theorem directly on the real line;
+it does not pretend these distinct carrier types are definitionally identical.
+
+Verification: direct leaf checks and targeted module builds passed; `#print axioms` reports only
+`propext`, `Classical.choice`, and `Quot.sound`; `scripts/formal_tools.py lint` passed.
 
 ## Gates
 
@@ -481,7 +504,8 @@ No partial file is added.
 - [x] preliminary novelty search
 - [ ] independent specialist proof audit
 - [ ] full primary-source priority audit
-- [ ] unconditional Lean formalization of the entire theorem
+- [x] unconditional Lean formalization of the circle double-boundary law and the residual real-line
+      carrier phase, at their exact natural interfaces
 
 ## Log
 
@@ -491,3 +515,8 @@ No partial file is added.
 - 2026-07-12 -- Corrected zero product from a purported singularity phase to a necessary entropy
   shadow. Added the canonical Bernstein--Szego finite-prefix skeleton and isolated the genuine
   double transition: rational DA to HT and absolutely continuous to singular, only cofinally.
+- 2026-07-15 -- Formalized the full circle double-boundary package: strict finite defects, cofinal
+  Szego/Gram/Cholesky collapse, literal Bernstein--Szego probabilities, exact Gram prefixes,
+  rational and differential-algebraic genuine Caratheodory transforms, locally uniform convergence,
+  concentration, and all finite superlinear `L^p` escape. Joined it to the already formalized
+  residual singular-continuous maximal-translation phase and promoted the card to Stage 3.

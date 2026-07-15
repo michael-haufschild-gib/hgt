@@ -597,6 +597,14 @@ theorem centralSoninProjectionCorrection_isHilbertSchmidt
     ContinuousLinearMap.IsHilbertSchmidt (centralSoninProjectionCorrection a) :=
   (centralSoninProjectionCorrection_mem_timeBandIdeal a ha).isHilbertSchmidt
 
+/-- The correction response to every bounded observable is Hilbert--Schmidt.  This is the generic
+operator-ideal consumer of the single projection correction. -/
+theorem centralSoninCornerCorrectionResponse_isHilbertSchmidt
+    (a : ℝ) (ha : 0 < a) (D : SoninL2 →L[Complex] SoninL2) :
+    ContinuousLinearMap.IsHilbertSchmidt
+      (centralSoninCornerCorrectionResponse a D) :=
+  (centralSoninCornerCorrectionResponse_mem_timeBandIdeal a ha D).isHilbertSchmidt
+
 /-- The ordinary central Sonin time--band overlap has the exact Shannon area `4 a²`. -/
 theorem hsNormSq_centralTimeBandOverlap_eq_four_mul_sq
     (a : ℝ) (ha : 0 < a) :
@@ -654,6 +662,52 @@ theorem centralSoninCornerCorrectionResponse_one_ne_zero
     centralSoninCornerCorrectionResponse a 1 ≠ 0 := by
   rw [centralSoninCornerCorrectionResponse_one_eq_anticommutator]
   exact centralSoninCutoffAnticommutator_ne_zero a ha
+
+/-- **Quadratic QSP response separation.**  The square of one prime signal differs from its
+retained prime-square Chebyshev mode by exactly two identity channels.  Applying the Sonin
+correction response therefore recovers twice the already nonzero anticommutator defect. -/
+theorem centralSoninCornerCorrectionResponse_signalSq_sub_primeSquareResidual
+    (a : ℝ) (p : Nat.Primes) :
+    centralSoninCornerCorrectionResponse a
+          (soninPrimeDilationSignal p * soninPrimeDilationSignal p) -
+        centralSoninPrimePowerResidual a (p, 0) =
+      2 * centralSoninCornerCorrectionResponse a 1 := by
+  rw [centralSoninPrimePowerResidual_eq_cosineResponse]
+  simp only [HTGeometry.unitaryCosineRecurrence]
+  simp only [centralSoninCornerCorrectionResponse, crossBoundary]
+  noncomm_ring
+
+/-- At positive aperture the quadratic prime-signal response cannot equal the retained
+prime-square residual.  This is an unconditional two-channel separation, not a claim that the
+arithmetic residual alone is nonzero. -/
+theorem centralSoninCornerCorrectionResponse_signalSq_ne_primeSquareResidual
+    (a : ℝ) (ha : 0 < a) (p : Nat.Primes) :
+    centralSoninCornerCorrectionResponse a
+        (soninPrimeDilationSignal p * soninPrimeDilationSignal p) ≠
+      centralSoninPrimePowerResidual a (p, 0) := by
+  intro heq
+  have hzero :
+      2 * centralSoninCornerCorrectionResponse a 1 = 0 := by
+    rw [← centralSoninCornerCorrectionResponse_signalSq_sub_primeSquareResidual a p,
+      heq, sub_self]
+  have hsmul :
+      (2 : ℂ) • centralSoninCornerCorrectionResponse a 1 = 0 := by
+    simpa [two_smul ℂ, two_mul] using hzero
+  exact centralSoninCornerCorrectionResponse_one_ne_zero a ha
+    ((smul_eq_zero.mp hsmul).resolve_left (by norm_num))
+
+/-- Consequently at least one of the quadratic signal response and the retained prime-square
+residual is nonzero for every prime and every positive aperture.  An augmented two-channel source
+can therefore be normalized without a separate nondegeneracy hypothesis. -/
+theorem centralSoninCornerCorrectionResponse_signalSq_ne_zero_or_primeSquareResidual_ne_zero
+    (a : ℝ) (ha : 0 < a) (p : Nat.Primes) :
+    centralSoninCornerCorrectionResponse a
+          (soninPrimeDilationSignal p * soninPrimeDilationSignal p) ≠ 0 ∨
+      centralSoninPrimePowerResidual a (p, 0) ≠ 0 := by
+  by_contra hzero
+  push_neg at hzero
+  exact centralSoninCornerCorrectionResponse_signalSq_ne_primeSquareResidual a ha p
+    (hzero.1.trans hzero.2.symm)
 
 /-- Consequently the formal physical/Fourier complement is never an idempotent at positive
 aperture.  Its nonzero identity response is the precise defect subtracted by the residual route. -/
@@ -1683,6 +1737,43 @@ theorem centralSoninPrimePowerResidual_isHilbertSchmidt
     (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ) :
     ContinuousLinearMap.IsHilbertSchmidt (centralSoninPrimePowerResidual a pk) :=
   (centralSoninPrimePowerResidual_mem_timeBandIdeal a ha pk).isHilbertSchmidt
+
+/-- Hilbert--Schmidt energy of the unconditional quadratic/prime-square two-channel anchor. -/
+def soninPrimeQuadraticAnchorEnergy (a : ℝ) (p : Nat.Primes) : ℝ :=
+  ContinuousLinearMap.hsNormSq
+      (centralSoninCornerCorrectionResponse a
+        (soninPrimeDilationSignal p * soninPrimeDilationSignal p)) +
+    ContinuousLinearMap.hsNormSq (centralSoninPrimePowerResidual a (p, 0))
+
+/-- The two-channel anchor energy is strictly positive at every positive aperture.  This is an
+unconditional scalar denominator available to augmented coupled-source constructions. -/
+theorem soninPrimeQuadraticAnchorEnergy_pos
+    (a : ℝ) (ha : 0 < a) (p : Nat.Primes) :
+    0 < soninPrimeQuadraticAnchorEnergy a p := by
+  let A := centralSoninCornerCorrectionResponse a
+    (soninPrimeDilationSignal p * soninPrimeDilationSignal p)
+  let R := centralSoninPrimePowerResidual a (p, 0)
+  change 0 < ContinuousLinearMap.hsNormSq A + ContinuousLinearMap.hsNormSq R
+  have hAhs : ContinuousLinearMap.IsHilbertSchmidt A := by
+    exact centralSoninCornerCorrectionResponse_isHilbertSchmidt a ha _
+  have hRhs : ContinuousLinearMap.IsHilbertSchmidt R := by
+    exact centralSoninPrimePowerResidual_isHilbertSchmidt a ha (p, 0)
+  rcases centralSoninCornerCorrectionResponse_signalSq_ne_zero_or_primeSquareResidual_ne_zero
+      a ha p with hA | hR
+  · have hA' : A ≠ 0 := by simpa only [A] using hA
+    have hAenergy : ContinuousLinearMap.hsNormSq A ≠ 0 := by
+      intro hzero
+      exact hA' ((ContinuousLinearMap.hsNormSq_eq_zero_iff hAhs).mp hzero)
+    exact add_pos_of_pos_of_nonneg
+      (lt_of_le_of_ne (ContinuousLinearMap.hsNormSq_nonneg A) (Ne.symm hAenergy))
+      (ContinuousLinearMap.hsNormSq_nonneg R)
+  · have hR' : R ≠ 0 := by simpa only [R] using hR
+    have hRenergy : ContinuousLinearMap.hsNormSq R ≠ 0 := by
+      intro hzero
+      exact hR' ((ContinuousLinearMap.hsNormSq_eq_zero_iff hRhs).mp hzero)
+    exact add_pos_of_nonneg_of_pos
+      (ContinuousLinearMap.hsNormSq_nonneg A)
+      (lt_of_le_of_ne (ContinuousLinearMap.hsNormSq_nonneg R) (Ne.symm hRenergy))
 
 /-- Every logarithmically weighted actual prime-power residual block is Hilbert--Schmidt. -/
 theorem centralSoninWeightedPrimePowerResidual_isHilbertSchmidt

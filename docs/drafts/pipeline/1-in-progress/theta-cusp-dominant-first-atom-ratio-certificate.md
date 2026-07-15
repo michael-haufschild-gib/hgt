@@ -402,3 +402,67 @@ It also proves unconditionally that `E` is finite and strictly positive, using a
 ```
 
 implies the open upper first-atom inequality `(5)`.  The resulting theorem feeds directly into the existing linear prime--Gamma source Hankel consumer.  Ordinary dilation `P=x` was numerically falsified at the required constant; the quadratic field clears the buffered variance threshold by about `0.749%`.  The scalar energy estimate is now the open upper-ratio core; the relaxed condition `(6)` remains independent.
+
+## Likelihood-ordered transfer sharpening `[PROVED ON PAPER]`
+
+The later exact likelihood-ratio order between the first atom and the complete higher tail shows
+that the coordinatewise enclosure in `(5)`--`(6)` pays one factor too many. If
+
+```text
+c=3005/2997,
+```
+
+then it is enough to prove
+
+```text
+14*c*a_2^2<=9*a_1*a_3,
+16*c*a_0*a_2<=45*a_1^2.                                  (19)
+```
+
+Indeed the cross-moment law
+
+```text
+r_(k+n)*a_k<=a_(k+n)*r_k
+```
+
+makes `r_j/a_j` nonincreasing. It bounds `m_2` by `a_2*m_1/a_1`; combining this once with
+`m_j<=c*a_j` proves both full-source inequalities. The paper proof is
+`../2-fully-proven/not_new_scientific_knowledge/theta-cusp-likelihood-ordered-tail-single-loss-transfer.md`.
+
+The existing Lean consumers still encode the older `c^2` sufficient conditions. A successor
+formalization should replace them by `(19)` and lower the quadratic Stein/Rayleigh coefficient
+from `14*c^2-9` to `14*c-9`. The analytic first-atom and degree-two-tail problems remain open.
+
+## Reflected half-density budget transfer `[PROVED ON PAPER]`
+
+The exact Ward--Laplace shift of the Liouville--Gibbs atom closes both source transforms at the
+reflected half-density points.  For the first atom and its higher tail this gives
+
+```text
+sum_(j>=0) a_j/(4^j*(2*j)!)=(4*pi-1)*exp(-pi),
+H:=sum_(j>=0) r_j/(4^j*(2*j)!)=1/2-(4*pi-1)*exp(-pi).
+```
+
+Combining this value relation with the formal monotonicity of `r_j/a_j`, and retaining the Gaussian
+cusp damping in the atom comparison, proves
+
+```text
+W=a_0+a_1/8,
+H<(8/2997)*a_0<(8/2997)*W.
+```
+
+It is enough to prove
+
+```text
+14*(W+H)*a_2^2 <= 9*W*a_1*a_3,
+16*(a_0+H)*a_2 <= 45*a_1^2.                              (20)
+```
+
+These conditions are strictly weaker than `(19)` because `H/W<8/2997` and
+`H<(8/2997)*a_0`.
+The paper proof, including the all-order Ward--Laplace Taylor constraints, is
+`../2-fully-proven/not_new_scientific_knowledge/theta-cusp-half-density-ward-laplace-budget-transfer.md`.
+The branch-activation proof is
+`../2-fully-proven/not_new_scientific_knowledge/theta-cusp-half-density-damped-tail-domination.md`.
+The truth of the two weakened inequalities in `(20)` has not been assessed numerically under the
+active no-computation restriction.

@@ -392,6 +392,19 @@ theorem centralSoninCornerCorrectionResponseCLM_apply
     centralSoninCornerCorrectionResponseCLM a D =
       centralSoninCornerCorrectionResponse a D := rfl
 
+/-- Every bounded-observable correction response lies in the concrete two-sided time-band ideal.
+This generic interface also covers nonlinear signal observables such as `D * D`; no separate
+prime-scale factorization is required. -/
+theorem centralSoninCornerCorrectionResponse_mem_timeBandIdeal
+    (a : ℝ) (ha : 0 < a) (D : SoninL2 →L[Complex] SoninL2) :
+    IsSoninTimeBandIdeal (centralSoninCornerCorrectionResponse a D) := by
+  have hcorrection := centralSoninProjectionCorrection_mem_timeBandIdeal a ha
+  have hresponse := crossBoundary_sub_mem_timeBandIdeal
+    (Q := centralSoninProjection a) (Q₀ := centralSoninFormalComplement a)
+    (D := D) hcorrection
+  simpa [centralSoninCornerCorrectionResponse,
+    centralSoninProjectionCorrection] using hresponse
+
 /-- **Identity-response anticommutator law.**  The actual projection has no boundary response to
 the identity, whereas the non-idempotent formal complement retains exactly the Jordan overlap of
 the physical and Fourier sharp effects. -/

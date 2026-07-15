@@ -2149,12 +2149,59 @@ The Lean implementation is
 `eventually_exists_canonicalPhaseAdaptedWeightedReflectedHaarIntegratedCurrent_lt_scaled_normSq`.
 Their axiom audit contains only `propext`, `Classical.choice`, and `Quot.sound`.
 
-**[OPEN CORE]** Equation `(45)` is a self-consistent coefficient-selection theorem, not yet an
-independent orientation of the raw theta-tail/seam current.  The endpoint `tau_(m,N,z)` is defined
-from `R(z),R'(z)` through the affine current-cancellation equation.  Thus `(45)` cannot be substituted
-into the RH-equivalent core-current gate unless the same endpoint is first shown to arise from an
-independent arithmetic relation, or unless the remaining weighted Haar layers are controlled by a
-bound that does not reuse the current being cancelled.  The precise remaining theorem is therefore:
-construct a source-arithmetic endpoint independent of `(R,R')` whose returned current differs from
-`(45)` by an upper-sublinear quantity, or prove that the self-consistent endpoint equals such an
-arithmetic endpoint by an exact canonical-density value relation.
+## Finite source-arithmetic endpoint: untruncated current discharged
+
+**[PROVED, LEAN]** The endpoint can be made independent of the full transform pair `(R,R')`.
+Let
+
+```text
+rho_<M(x)=sum_(1<=k<=M) rho_k(x),
+R_M(z)=integral_(0,infinity) rho_<M(x) exp(ixz) dx,
+R_M'(z)=integral_(0,infinity) rho_<M(x) ix exp(ixz) dx.   (47)
+```
+
+Define `tau_M` by the same finite affine endpoint formula as in `(45)`, but with `(R_M,R_M')`
+in place of `(R,R')`.  This is a genuinely finite arithmetic coefficient: it uses only the first
+`M` exact square-index density atoms and the elementary seam values.  The Haar endpoint slope and
+its denominator do not involve `(R,R')`.  Therefore substitution into the *actual* canonical
+current cancels the denominator exactly and gives
+
+```text
+J_actual(tau_M)=J_0(R,R')-J_0(R_M,R_M').                (48)
+```
+
+No division estimate and no current-dependent sign choice remains.  Positivity of the density
+atoms gives
+
+```text
+0<=rho_<M(x)<=rho(x),
+rho_<M(x)->rho(x).
+```
+
+On `Im z>=0`, the phase has norm at most one.  Dominated convergence with dominators `rho(x)` and
+`x rho(x)` proves
+
+```text
+R_M(z)->R(z),  R_M'(z)->R'(z),  J_actual(tau_M)->0.      (49)
+```
+
+At each anisotropic mesh point, first choose a finite Haar depth with nonzero elementary affine
+denominator and then choose `M` in `(49)`.  The existing local-order lower bound makes the squared
+final Taylor value strictly positive eventually.  Hence, for every `epsilon>0`,
+
+```text
+integral S_(P_(tau_M),N)(x,y) K_(z_n)(x,y) dxdy
+ <epsilon (n+1)|P_(2D(stage(n))+3)(z_n)|^2.             (50)
+```
+
+The Lean implementation is
+`XiCTaylorThetaTailFiniteArithmeticEndpoint.lean`.  Its capstones are
+`phaseAdaptedReturnedSourceCurrent_at_approximantEndpoint_eq`,
+`tendsto_canonicalThetaTailFiniteArithmeticUntruncatedCurrent`,
+`phaseAdaptedWeightedReflectedHaarIntegratedCurrentAtEndpoint_eq`, and
+`eventually_exists_canonicalThetaTailFiniteArithmeticHaarCurrent_lt_scaled_normSq`.
+
+Equation `(50)` closes the independent upper-sublinear cancellation theorem for the complete
+untruncated signed theta-tail/seam Haar current.  Promotion to the RH-equivalent raw core-current
+predicate still requires the explicit final composition with the already discharged finite
+translation defects and cofinal top row; no further untruncated orientation input is missing.

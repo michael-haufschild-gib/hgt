@@ -153,6 +153,19 @@ theorem one_lt_soninPrimePowerScale (pk : Nat.Primes × ℕ) :
   apply one_lt_pow₀ (by exact_mod_cast pk.1.prop.one_lt)
   omega
 
+/-- Every retained prime-power scale is at least the prime square `2² = 4`. -/
+theorem four_le_soninPrimePowerScale (pk : Nat.Primes × ℕ) :
+    4 ≤ soninPrimePowerScale pk := by
+  have hnat : 4 ≤ pk.1 ^ (pk.2 + 2) := by
+    calc
+      4 = 2 ^ 2 := by norm_num
+      _ ≤ 2 ^ (pk.2 + 2) :=
+        Nat.pow_le_pow_right (by norm_num : 0 < 2) (by omega)
+      _ ≤ pk.1 ^ (pk.2 + 2) :=
+        Nat.pow_le_pow_left pk.1.prop.two_le (pk.2 + 2)
+  rw [soninPrimePowerScale]
+  exact_mod_cast hnat
+
 /-- The single Hermitian dilation signal attached to a prime.  All retained powers of that prime
 will be recurrence polynomials in this one observable. -/
 def soninPrimeDilationSignal (p : Nat.Primes) : SoninL2 →L[ℂ] SoninL2 :=
@@ -192,7 +205,7 @@ theorem unitaryCosineRecurrence_soninPrimeDilationSignal
       HTGeometry.unitaryCosineRecurrence_add_inversePair U V hUV hVU n
     _ = dilationCLM ((p : ℝ) ^ n) (pow_pos hp0 n) +
         dilationCLM (((p : ℝ)⁻¹) ^ n) (pow_pos (inv_pos.mpr hp0) n) := by
-      rw [U, V, dilationCLM_pow_eq, dilationCLM_pow_eq]
+      simp only [U, V, dilationCLM_pow_eq]
     _ = dilationSum ((p : ℝ) ^ n)
         (one_lt_pow₀ (by exact_mod_cast p.prop.one_lt) hn) := by
       simp only [dilationSum, adjoint_dilationCLM, inv_pow]

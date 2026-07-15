@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.CCMSoninResolventCommutator
 import GaloisForLFunctions.HTGeometry.FiniteConstraintGroupAverage
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtOperator
+import GaloisForLFunctions.HTGeometry.TwoOutcomePinchingKadison
 
 /-!
 # Lüders pinching removes cutoff-commutation hypotheses
@@ -31,6 +32,11 @@ variable {R : Type*} [Ring R]
 /-- The nonselective two-outcome Lüders pinching associated with an idempotent cutoff. -/
 def ludersPinching (e X : R) : R :=
   e * X * e + (1 - e) * X * (1 - e)
+
+/-- The established RHTower Lueders channel is the general HTGeometry two-outcome pinching. -/
+theorem ludersPinching_eq_twoOutcomePinching (e X : R) :
+    ludersPinching e X = HTGeometry.twoOutcomePinching e X := by
+  rfl
 
 /-- The parity involution associated with a two-sector cutoff. -/
 def cutoffParity (e : R) : R :=
@@ -120,6 +126,19 @@ theorem ludersDisturbance_sq_eq_neg_ccmCommutator_sq
     ccmCommutator_eq_crossBoundary_sub_upperBoundary]
   noncomm_ring [crossBoundary_mul_crossBoundary e X X he,
     upperBoundary_mul_upperBoundary e X X he]
+
+/-- **Lueders--Kadison transition law.**  The failure of projective pinching to preserve the
+square of an observable is exactly the sum of the two oriented cutoff transition products.  This
+connects the RHTower boundary calculus directly to the general HTGeometry Kadison-defect API. -/
+theorem ludersPinchingKadisonDefect_eq_boundaryProducts
+    {e : R} (he : IsIdempotentElem e) (X : R) :
+    ludersPinching e (X * X) - ludersPinching e X * ludersPinching e X =
+      upperBoundary e X * crossBoundary e X +
+        crossBoundary e X * upperBoundary e X := by
+  simpa only [ludersPinching_eq_twoOutcomePinching, crossBoundary, upperBoundary,
+    HTGeometry.twoOutcomeLowerTransition, HTGeometry.twoOutcomeUpperTransition,
+    HTGeometry.twoOutcomePinchingKadisonDefect] using
+      (HTGeometry.twoOutcomePinchingKadisonDefect_eq_transitionProducts he X)
 
 /-- For self-adjoint input and cutoff, the exact positive square of Lueders disturbance equals
 the exact positive square of the cutoff commutator.  This is the operator-level form of the
@@ -248,6 +267,65 @@ theorem isCompactOperator_upperBoundary_of_compact_cutoffCommutator
     (hcomm.clm_comp e).neg
 
 variable [CompleteSpace H]
+
+/-- For self-adjoint inputs, the Lueders--Kadison defect is the sum of the positive master
+constraints of the lower and upper cutoff transitions. -/
+theorem ludersPinchingKadisonDefect_eq_boundaryMasterConstraints
+    (e X : H →L[ℂ] H) (he : IsIdempotentElem e)
+    (heAdj : ContinuousLinearMap.adjoint e = e)
+    (hXAdj : ContinuousLinearMap.adjoint X = X) :
+    ludersPinching e (X * X) - ludersPinching e X * ludersPinching e X =
+      HTGeometry.quantumMasterConstraint (crossBoundary e X) +
+        HTGeometry.quantumMasterConstraint (upperBoundary e X) := by
+  simpa only [ludersPinching_eq_twoOutcomePinching, crossBoundary, upperBoundary,
+    HTGeometry.twoOutcomeLowerTransition, HTGeometry.twoOutcomeUpperTransition,
+    HTGeometry.twoOutcomePinchingKadisonDefect] using
+      (HTGeometry.twoOutcomePinchingKadisonDefect_eq_quantumMasterConstraint_sum
+        e X he heAdj hXAdj)
+
+/-- The symmetric physical dilation signal is self-adjoint. -/
+theorem adjoint_dilationSum_eq_self (p : ℝ) (hp : 1 < p) :
+    ContinuousLinearMap.adjoint (dilationSum p hp) = dilationSum p hp := by
+  simpa only [dilationSum, ContinuousLinearMap.star_eq_adjoint] using
+    (IsSelfAdjoint.add_star_self
+      (dilationCLM p (zero_lt_one.trans hp))).star_eq
+
+/-- **Concrete Sonin Kadison-defect consumer.**  Pinching the actual symmetric dilation signal by
+the central Sonin projection has a multiplicativity defect equal to the two positive transition
+master constraints.  This supplies a source-native positive observable for every retained scale;
+it does not assert nonvanishing of the principal-subtracted residual. -/
+theorem centralSoninDilation_ludersPinchingKadisonDefect_eq_boundaryMasterConstraints
+    (a p : ℝ) (hp : 1 < p) :
+    let Q := centralSoninProjection a
+    let D := dilationSum p hp
+    ludersPinching Q (D * D) - ludersPinching Q D * ludersPinching Q D =
+      HTGeometry.quantumMasterConstraint (crossBoundary Q D) +
+        HTGeometry.quantumMasterConstraint (upperBoundary Q D) := by
+  dsimp
+  exact ludersPinchingKadisonDefect_eq_boundaryMasterConstraints
+    (centralSoninProjection a) (dilationSum p hp)
+    (centralSoninCarrier a).isIdempotentElem_starProjection
+    (isSelfAdjoint_starProjection (centralSoninCarrier a)).star_eq
+    (adjoint_dilationSum_eq_self p hp)
+
+/-- State-value form of the concrete Sonin Kadison defect.  Every vector sees exactly the sum of
+the two squared physical transition amplitudes of the symmetric dilation signal. -/
+theorem re_inner_centralSoninDilation_ludersPinchingKadisonDefect_eq_transitionNormSq_add
+    (a p : ℝ) (hp : 1 < p) (psi : SoninL2) :
+    let Q := centralSoninProjection a
+    let D := dilationSum p hp
+    Complex.re (inner ℂ psi
+      ((ludersPinching Q (D * D) - ludersPinching Q D * ludersPinching Q D) psi)) =
+        ‖crossBoundary Q D psi‖ ^ 2 + ‖upperBoundary Q D psi‖ ^ 2 := by
+  dsimp
+  simpa only [ludersPinching_eq_twoOutcomePinching, crossBoundary, upperBoundary,
+    HTGeometry.twoOutcomeLowerTransition, HTGeometry.twoOutcomeUpperTransition,
+    HTGeometry.twoOutcomePinchingKadisonDefect] using
+      (HTGeometry.re_inner_twoOutcomePinchingKadisonDefect_eq_transitionNormSq_add
+        (centralSoninProjection a) (dilationSum p hp)
+        (centralSoninCarrier a).isIdempotentElem_starProjection
+        (isSelfAdjoint_starProjection (centralSoninCarrier a)).star_eq
+        (adjoint_dilationSum_eq_self p hp) psi)
 
 /-- **Exact measurement-disturbance master constraint.**  For a self-adjoint observable and
 self-adjoint idempotent cutoff, the Lueders disturbance and cutoff commutator determine literally

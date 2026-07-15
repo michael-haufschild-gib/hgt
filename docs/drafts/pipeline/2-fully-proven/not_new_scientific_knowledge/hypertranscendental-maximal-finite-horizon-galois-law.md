@@ -3,7 +3,7 @@
 - **ID:** `hypertranscendental-maximal-finite-horizon-galois-law`
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM / DIFFERENTIAL-FUNCTION-FIELD GALOIS LAW
-- **Scientific status:** `[PROVED HERE] [NOVELTY PROVISIONAL] [SIGNIFICANT] [FORMAL CORE COMPLETE]`
+- **Scientific status:** `[PROVED HERE] [BRIDGE] [FORMAL CORE COMPLETE] [NOT NEW BY ITSELF]`
 - **Parents:** `projective-horizon-full-symmetric-monodromy`,
   `projective-horizon-finite-jet-page-transition`, `ProjectiveJetHorizon.lean`
 - **Lane:** source-pure hypertranscendental geometry; actual-source realization
@@ -157,14 +157,14 @@ hypertranscendental source
 Here "worldline" is only a geometric image of the derivation parameter.  The theorem establishes
 no time evolution, quantum dynamics, entropy law, black-hole model, or holographic duality.
 
-## Novelty and significance audit
+## Parent-theory and novelty audit
 
 Algebraic independence of finite jets is the defining field-theoretic consequence of
 hypertranscendence, and transport of an extension through a generic-point isomorphism is classical.
-The new content inherited from the parent theorem is the exact all-rank horizon extension and its
-full symmetric normal closure.  The present theorem is the first source-level synthesis: it proves
-that this maximal Galois ambiguity is not merely generic ambient geometry but occurs unchanged in
-the differential function field of every HT source.
+After erasing the project vocabulary, this card is a routine base-change consequence of the parent
+all-rank horizon theorem.  It is therefore a useful source-level bridge, not independent new
+scientific knowledge.  The possible novelty lives in the parent theorem's exact all-rank horizon
+extension and full symmetric normal closure, not in their transport to an HT generic point.
 
 A targeted search found literature on differential transcendence and differential Galois theory,
 jet/prolongation spaces, and generic monodromy of sparse systems, but no raw/reciprocal horizon
@@ -172,13 +172,8 @@ subfield, binomial extension law, or full-symmetric reconstruction theorem for h
 functions.  Relevant adjacent boundaries include Huang--Ng on perturbations of HT functions
 ([arXiv:2007.10037](https://arxiv.org/abs/2007.10037)), Moosa--Scanlon on jet and prolongation
 spaces ([arXiv:0806.4196](https://arxiv.org/abs/0806.4196)), and Esterov on generic monodromy of
-sparse systems ([arXiv:1801.08260](https://arxiv.org/abs/1801.08260)).  Novelty remains provisional
-pending expert review.
-
-The theorem is significant inside the proposed field because it supplies an exact, all-depth,
-actual-source classification law with sharp degree, Galois group, intermediate-field obstruction,
-and radical threshold.  It does not by itself meet the user-set Fields-Medal completion bar: its
-external consequences and independent expert novelty validation remain open.
+sparse systems ([arXiv:1801.08260](https://arxiv.org/abs/1801.08260)).  That search supports the
+parent theorem's audit but cannot promote this direct transfer corollary.
 
 The child theorem `projective-horizon-one-step-postcritical-rigidity` uses the maximal-subgroup
 statement here to prove an all-or-nothing response law: the first reciprocal coefficient beyond

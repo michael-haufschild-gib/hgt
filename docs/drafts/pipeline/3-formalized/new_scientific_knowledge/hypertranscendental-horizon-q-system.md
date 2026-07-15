@@ -1,10 +1,10 @@
 # The hypertranscendental horizon caustics form a nonvanishing Q-system
 
 - **ID:** `hypertranscendental-horizon-q-system`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / INFINITE STATIC CONSTRAINT LATTICE
-- **Scientific status:** `[PROVED ON PAPER] [NOVEL SYNTHESIS] [SIGNIFICANCE CANDIDATE]`
-- **Formal status:** first two ranks and zero propagation formalized
+- **Scientific status:** `[PROVED ON PAPER] [FORMALIZED] [NOVEL SYNTHESIS] [SIGNIFICANCE CANDIDATE]`
+- **Formal status:** fully formalized in Lean 4
 - **Parents:** `projective-horizon-rectangular-schur-caustic`,
   `projective-horizon-logarithmic-vacuum-duality`, `hypertranscendental-function-jet-freeness`
 - **Lane:** source-pure hypertranscendental geometry; static integrable topology
@@ -147,9 +147,20 @@ marking that imposes a sign, reality, or vanishing-cycle orientation compatible 
 
 ## Formal verification
 
-`ProjectiveHorizonCausticQSystem.lean` proves the all-rank Desnanot--Jacobi engine for an arbitrary
-two-border matrix with invertible central block, proves `(3)` at ranks one and two directly from
-the actual rectangular Toeplitz determinants, including the first `3 x 3` instance, and proves the
-general domain-theoretic propagation `(4)--(5)` from a Q-system relation.  Reindexing the general
-two-border identity as the rectangular Jacobi--Trudi identity and the algebraic-independence
-argument remain paper-level.  A targeted leaf build passes; no full build was run.
+`ProjectiveHorizonAllRankQSystem.lean` reindexes the general two-border Desnanot--Jacobi identity as
+the exact rectangular determinant relation `(3)` in every rank, including both boundary laws.  It
+builds the missing finite transcendence infrastructure, proves the triangular birational changes
+from the normalized raw jet through reciprocal coefficients to the square coefficients `(8)`, and
+deduces algebraic independence and nonvanishing of every rectangular amplitude from
+hypertranscendence.  The same module identifies the normalized mass determinant by the exact scale
+`(-1)^m y_0^(2m)` and proves the all-rank caustic propagation law `(4)--(5)`.
+
+`ProjectiveHorizonPolarizationTower.lean` packages the compatible infinite source section and
+exports its noncausticity, boundary, Q-system, and zero-propagation theorems.
+`ProjectiveHorizonCausticQSystem.lean` supplies the underlying general determinant identity and
+domain-theoretic propagation engine.
+
+Both new modules elaborate directly and their dedicated Lake targets pass.  Axiom audits of the
+mass determinant, nonvanishing, all-rank Q-system, zero propagation, and bundled tower laws use
+only `propext`, `Classical.choice`, and `Quot.sound`.  The formal lint gate passes.  No full build
+was run.

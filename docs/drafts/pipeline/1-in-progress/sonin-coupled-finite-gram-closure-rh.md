@@ -131,6 +131,22 @@ indices are Hilbert--Schmidt norm squares of coupled power columns, and odd indi
 Hilbert--Schmidt norm squares of powers of `C_a† C_a`.  Hence no isolated moment sign can carry the
 RH content: it lies in the simultaneous finite Hankel relations.
 
+`[BRIDGE, SOURCE-FORMALIZED, UNVERIFIED]` Quantum-state purity now supplies the additional source
+constraint
+
+```text
+Re S_k(a) ≤ Re S_0(a)^(k+1),
+Re S_k(a) / Re S_0(a) ≤ Re S_0(a)^k,
+P_(k+1)(a) ≤ P_k(a),
+P_k(a) = Re S_k(a) / Re S_0(a)^(k+1).
+```
+
+Thus no positive projective coordinate can stay positive while the unnormalized coupled source
+mass vanishes.  Any candidate aperture schedule approaching a positive prime--Gamma `k`-th
+coordinate must retain the corresponding `k`-th-root source-energy floor.  This is a necessary
+all-order compatibility test for the open coupling problem, not a construction of the schedule
+or a proof of local residual nonvanishing.
+
 ## Goal
 
 Replace the block-diagonal Sonin moment curve, which deletes mixed prime words, by the canonical
@@ -212,6 +228,134 @@ Slepian--Pollak time--frequency concentration supplies the physical cutoff geome
 ([DOI 10.1002/j.1538-7305.1961.tb03976.x](https://doi.org/10.1002/j.1538-7305.1961.tb03976.x));
 Kraus/Stinespring supplies the channel/effect reading.
 
+### Prime-power Chebyshev/QSP reduction
+
+`[BRIDGE, SOURCE-FORMALIZED, UNVERIFIED]` The generic inverse-pair recurrence already developed
+in `HTGeometry` applies exactly to the unitary dilation representation.  For a prime `p`, set
+
+```text
+U_p = dilationCLM(p),
+D_p = U_p + U_p^{-1},
+C_0(X)=2, C_1(X)=X, C_{n+2}(X)=X C_{n+1}(X)-C_n(X).
+```
+
+Multiplicative scale composition and the adjoint/inverse law give the exact value identity
+
+```text
+C_n(D_p) = U_p^n + U_p^{-n} = dilationSum(p^n).
+```
+
+Thus the retained arithmetic family is not an unrelated observable for every pair `(p,k)`:
+it is one polynomial orbit per prime.  In particular the current residual and source-positivity
+obligations become
+
+```text
+R_{a,(p,k)} = L_a(C_{k+2}(D_p)),
+
+C_a != 0
+  <-> Re Tr(C_a† C_a) > 0
+  <-> exists p,k, L_a(C_{k+2}(D_p)) != 0.
+```
+
+This directly rewrites the degree-zero normalization hypothesis used by the coupled Gram route;
+it also applies the general `HTGeometry` quantum-walk polynomial API to the arithmetic
+`RHTower` corpus.  The relation is standard quantum signal processing, not a novelty claim:
+see Low--Chuang's polynomial processing of a unitary signal
+([arXiv:1606.02685](https://arxiv.org/abs/1606.02685)), qubitization
+([arXiv:1610.06546](https://arxiv.org/abs/1610.06546)), and the general singular-value
+transformation framework
+([arXiv:1806.01838](https://arxiv.org/abs/1806.01838)).
+
+The reduction does **not** discharge nondegeneracy.  Although `L_a` is linear, it is not a
+homomorphism for multiplication by `D_p`; therefore the Chebyshev recurrence does not descend to
+a closed recurrence for `L_a(C_n(D_p))`, and a nonzero first response cannot presently be inferred
+from a higher one or conversely.  The live research target is now sharper: prove that, for at
+least one prime generator `D_p`, the correction response fails to annihilate its retained
+Chebyshev orbit.  A polynomial-cyclicity or a direct transition-matrix-coefficient argument can
+attack that target without reconstructing the identity in operator norm.
+
+`[BRIDGE, SOURCE-FORMALIZED, UNVERIFIED]` The first nonlinear QSP product nevertheless gives an
+unconditional alternative channel.  Since
+
+```text
+D_p² = C_2(D_p) + 2,
+```
+
+linearity and the nonzero identity response imply
+
+```text
+L_a(D_p²) - R_{a,(p,0)} = 2 L_a(1) != 0,
+
+L_a(D_p²) != 0  or  R_{a,(p,0)} != 0
+```
+
+for every positive aperture and every prime.  Thus a source augmented by the quadratic signal
+response is unconditionally nondegenerate and needs no aperture hypothesis.  Lean also packages
+the strictly positive scalar denominator
+
+```text
+||L_a(D_p²)||_HS² + ||R_{a,(p,0)}||_HS² > 0.
+```
+
+The generic correction-response factorization now proves that the first term is Hilbert--Schmidt
+for every bounded inserted observable, so this denominator needs no new ideal assumption.  It
+does not yet discharge the current coupled-column premise: `L_a(D_p²)` is not one of its arithmetic
+residual rows, and adding it changes every coupled moment.  This opens a precise alternative
+route: build the two-channel augmented column, compute how its extra row changes the finite
+Hankel values, and test whether the row can be eliminated projectively or by a Schur-complement
+comparison.  Unless that comparison preserves the prime--Gamma closure target, the result remains
+a useful nondegeneracy theorem rather than an RH advance.
+
+`[BRIDGE, SOURCE-FORMALIZED, UNVERIFIED]` The channel-augmentation calculation is now exact,
+both in general `HTGeometry` and for the coupled Sonin column.  For Hilbert--Schmidt channels
+`C : E -> F` and `B : E -> G` with common source, set
+
+```text
+T = C†C,
+S = B†B.
+```
+
+Lean source now states the value relations
+
+```text
+Re Tr(T+S) = ||C||_HS² + ||B||_HS²,
+
+Re Tr((T+S)²)
+  = ||T||_HS² + 2 ||C B†||_HS² + ||S||_HS².
+```
+
+The mixed contribution is therefore a nonnegative Hilbert--Schmidt energy, not an unspecified
+complex interference term.  The first identity makes any nonzero added channel an unconditional
+positive denominator.  Transport through the canonical Sonin Hilbert coordinates and the
+quadratic QSP disjunction now construct such a channel explicitly: at least one of the transported
+channels `L_a(D_p²)` and `R_{a,(p,0)}` is nonzero, and either one makes the augmented coupled trace
+positive.
+
+This still does not discharge the original source hypothesis.  Write
+
+```text
+e = ||C||_HS²,
+b = ||B||_HS²,
+q = ||C†C||_HS²,
+d = 2 ||C B†||_HS² + ||B†B||_HS².
+```
+
+For `e != 0`, Lean proves the exact projective criterion
+
+```text
+(q+d)/(e+b) = q/e  <->  e*d = b*q.
+```
+
+Hence projectivization does not eliminate the anchor row: preservation of the old normalized
+second moment is equivalent to a new scalar interference-balance equation.  A compression back
+to the original output rows removes `B` and simultaneously restores the old requirement
+`C != 0`.  The automatic projective/Schur-complement elimination route is therefore retired.
+The only live augmented route would have to compare the genuinely changed augmented moments to a
+correspondingly augmented prime--Gamma target, or prove the displayed balance from source
+geometry.  The channel/effect interpretation is the standard operator-sum framework introduced
+by Kraus, not a novelty claim
+([DOI 10.1016/0003-4916(71)90108-4](https://doi.org/10.1016/0003-4916(71)90108-4)).
+
 `[ROUTE RETIRED]` Operator-norm tomography cannot supply the missing lemma.  The formal response
 map is norm-continuous, but every finite prime-power dilation sum is a trigonometric polynomial
 with only nonzero prime-log frequencies.  Its invariant Bohr mean is zero, whereas the identity
@@ -221,11 +365,26 @@ separation already proved for bounded prime screens in
 `prime-screen-bounded-observable-almost-periodicity.md`; norm continuity therefore does not turn
 the nonzero identity response into a prime-power witness.
 
-`[CONJECTURE]` A surviving tomography theorem would have to use a weaker strong- or weak-operator
-topology on controlled spectral packets, prove that the prime-power symmetric dilation
-observables determine the identity there, and prove the required packetwise continuity of
-`L_a`.  The current corpus contains no such Sonin operator-topology interface.  No completeness
-claim is promoted without those three proofs.
+`[ROUTE RETIRED, SOURCE-FORMALIZED, UNVERIFIED]` Weak- and strong-operator identity tomography
+fail as well.  Every retained scale satisfies `p^(k+2) ≥ 4`.  Choose any nonzero logarithmic
+wavepacket supported in `[-log λ, log λ]` with `1 < λ` and `λ² < 4`.  Translation by either
+`+log(p^(k+2))` or `-log(p^(k+2))` moves its support completely off itself, so one fixed vector
+state gives
+
+```text
+⟨f, C_{k+2}(D_p) f⟩ = 0     for every retained (p,k),
+⟨f, 1 f⟩ = ||f||² > 0.
+```
+
+The same functional annihilates every finite linear combination, and Lean now states that no
+sequence of those scalar matrix coefficients can converge to the identity coefficient.  Weak
+operator convergence would require that convergence by definition; strong operator convergence
+would imply it by inner-product continuity.  Therefore the identity lies in neither closure of
+the linear span.  This does not concern the multiplicative algebra generated by the modes:
+products can manufacture a constant Chebyshev term, but the linear response values on those
+products are not part of the residual data.  The nondegeneracy attack must act directly on
+`L_a(C_n(D_p))`, not reconstruct `L_a(1)` from their linear span in any of the norm, strong, or
+weak operator topologies.
 
 ## Non-redressing audit
 

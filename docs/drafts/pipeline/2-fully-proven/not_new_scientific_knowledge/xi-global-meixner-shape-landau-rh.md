@@ -189,6 +189,35 @@ The expression must preserve the exact coefficients `(3)` or an independently pr
 Writing down an unrelated holomorphic interpolation of the integer values, or subtracting the
 Landau singularity by hand, does not discharge `(18)`.
 
+## Reciprocal-translation realization of every coefficient
+
+The successor theorem
+`xi-reciprocal-translation-prime-seam-norm-law.md` identifies the coefficients in `(3)` with one
+canonical norm orbit.  Put
+
+```text
+v_0(q)=xiSpectralPoint(q)^(-1),
+v_L(q)=exp(-i L xiSpectralPoint(q))v_0(q),
+N(L)=||v_L||^2.
+```
+
+Functional-equation reflection makes `N` even and proves `N(L)>=N(0)`.  The exact coefficient
+identity is
+
+```text
+A_p=2(log p)^2/p * (N(log p)-N(0)).                       (19a)
+```
+
+Consequently the global trace is the prime sampling transform
+
+```text
+G_Xi(z)=sum_p 2(log p)^2/p * w_z(p) * (N(log p)-N(0)).   (19b)
+```
+
+This gives two alternative predecessors to the Landau continuation target: prove contractivity
+of the single reciprocal vector at one prime translation, or prove subexponential growth of its
+complete translation orbit.  Either input already forces RH, without first continuing `G_Xi`.
+
 ## Relation to the existing scalar orientation vector
 
 `XiHurwitzOrientationEnergy.lean` already compresses RH to the vanishing of one nonnegative scalar
@@ -200,6 +229,7 @@ The two scalarizations have complementary jobs:
 
 ```text
 orientation energy:  zero value <-> RH;
+translation orbit:   one-prime norm preservation <-> RH;
 shape trace:          holomorphic crossing of a positive Landau boundary <-> RH. (19)
 ```
 
@@ -232,4 +262,3 @@ not new scientific knowledge.
 - [ ] identify `(8)` with a completed source expression holomorphic on `Re z>0`
 - [ ] formalize the global coefficients, safe domain, and Landau consumer in Lean
 - [ ] RH
-

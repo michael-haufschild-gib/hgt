@@ -1,9 +1,9 @@
 # Completed prime--Gamma polynomial even-factorization route to RH
 
 - **ID:** `completed-prime-gamma-polynomial-even-factorization-to-rh`
-- **Stage:** 1-in-progress
-- **Type:** `[BRIDGE]`
-- **Scientific status:** `[PROVED INTERFACE] [LEAN FAR-RIGHT INPUT] [OPEN CORE]`
+- **Stage:** 5-failed
+- **Type:** `FALSIFIED`
+- **Scientific status:** `[PROVED INTERFACE] [LEAN FAR-RIGHT INPUT] [FALSE PARITY PREMISE]`
 - **Lean:** `formal/GaloisForLFunctions/RHTower/CompletedPrimeGammaMovingPolynomialParity.lean`;
   `formal/GaloisForLFunctions/RHTower/CompletedPrimeGammaMomentFarRightAsymptotic.lean`
 
@@ -72,13 +72,13 @@ Consequently a central zero is harmless if its multiplicity is even.
 ```text
 all-order completed-moment far-right asymptotic                           [Lean]
   -> positive far-right anchor for every nonzero integer-polynomial test  [Lean]
-  + finite even-multiplicity real factorization on every right segment   [OPEN CORE]
+  + finite even-multiplicity real factorization on every right segment   [FALSE]
   -> every central integer-polynomial test is nonnegative                 [Lean]
   -> complete countable prime--Gamma source cone                          [Lean]
   -> RH.                                                                  [Lean]
 ```
 
-The open condition is the concrete source statement
+The rejected condition is the concrete source statement
 
 \[
 \forall P\in\mathbb Z[X]\setminus\{0\},\ \forall R>1/2,
@@ -91,6 +91,23 @@ The open condition is the concrete source statement
 where (Z_{P,R}\subset[1/2,R)) is finite and (u_{P,R}) is continuous and nowhere zero.
 This is a divisor-parity constraint, not a positivity assumption: the cofactor may have either
 sign before the positive far-right anchor fixes its chamber.
+
+## Falsification and positive successor
+
+Take `P=X`.  Then `Q_P(x)=c_2(x)`, the second normalized odd completed
+logarithmic-derivative moment.  The paper theorem
+`completed-prime-gamma-second-moment-four-crossing-law` proves
+
+\[
+  c_2(1/2)>0,\qquad c_2(10)<0,\qquad c_2(x)>0
+  \quad\text{for all sufficiently large }x.
+\]
+
+Thus `c_2` has an odd-multiplicity real zero in `(1/2,10)` and another in `(10,infty)`.
+The reflection law supplies two further crossings on the left.  In particular the proposed
+right-even factorization already fails for `P=X`; the failure is not confined to a high-degree
+determinant or a central zero.  The positive replacement is the four-crossing theorem recorded in
+`docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/completed-prime-gamma-second-moment-four-crossing-law.md`.
 
 ## Why this is sharper than the determinant continuation route
 
@@ -114,8 +131,8 @@ The unconditional Turan inequalities for Xi coefficients proved by Csordas--Norf
 necessary finite coefficient inequalities, not a source theorem excluding sign-changing zeros of
 all `Q_P`; see
 [*The Riemann Hypothesis and the Turan Inequalities*](https://doi.org/10.2307/2000378).
-Thus the literature supplies comparison criteria but does not discharge the remaining
-factorization interface.
+Thus the literature supplies comparison criteria but does not repair the false factorization
+premise.
 
 ## Gates
 
@@ -128,4 +145,4 @@ factorization interface.
 - [x] paper proof of the scalar far-right anchor
 - [x] Lean reduction of every polynomial far-right anchor to scalar moment asymptotics
 - [x] Lean proof of the all-order scalar completed-moment asymptotic
-- [ ] source proof of even real-root factorization
+- [x] source parity premise falsified by the `P=X` two-right-crossing theorem

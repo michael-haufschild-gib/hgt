@@ -424,7 +424,7 @@ identifications are no longer missing interfaces.
 | Shifted sector circles × residual Sonin comparison | for every `0<=s<=12`, the reciprocal-square sector and radius give a strictly positive analytic circle density with Fourier moments `m_(s+n)/m_s`; after `P=X^v q`, this unconditionally proves the prior cones for `v<=5` and the new valuation-six cone `32*sum_(n>=1)b_n^2<=7b_0^2` | prove the one-sided coupled-Sonin aperture comparison only for the complementary integer-polynomial family; no Sonin value relation is needed on the discharged valuation cones | nonnegative Sonin values exclude a negative residual target, the shifted circles handle the omitted tests, and the complete integer prime--Gamma Hankel cone gives RH | **New cross-route hypothesis reduction proved on paper; thirteenth-mass core formalized**; exact degree-thirteen sector algebra passes the previous cosine cutoff, while valuation at least seven and tail-dominant lower-valuation tests remain open |
 | OPUC dyadic logarithmic-phase terminal | every zero of a stable paraorthogonal terminal with unimodular endpoint lies on the unit circle, while `|exp(i log(2)z)|=exp(-log(2)Im(z))`; the interior-root exclusion and the complete RH consumer are formalized | construct from the divisor-free completed theta--prime--Gamma source a stable polynomial family `p_z`, a unimodular endpoint, and the exact evaluation `T_z(exp(i log(2)z))=A(z)XiC(z)` | a hypothetical off-line Xi zero becomes a strict open-disk paraorthogonal root, but root location forces unit modulus and hence `Im(z)=0`, proving RH | **Nontrivial contradiction chain with both ends closed and one exact source-value core**; the phase-adapted Prouhet symbol cannot itself be the OPUC terminal because it has the interior phase root for every strip point.  Its positive successor is a distinct stable source terminal whose evaluation, rather than its coefficients, is selected by Xi. |
 | All-prime Sonin value loci and cofinal section | the residual energy `T_a=K_a^*K_a` is positive trace class and its Gram tower collapses exactly to `S_r(a)=Tr(T_a^(r+1))` | weakest: put each fixed prime--Gamma integer-polynomial value in the closure of the corresponding scalar Sonin Gram range; stronger source condition: put every finite prime--Gamma moment block in the corresponding positive Sonin moment-curve closure | finite-block closure is now proved equivalent to one positive aperture sequence converging in every moment coordinate, and either source-value condition transfers positivity to the countable prime--Gamma trace-Hankel cone and RH | **Independent live value-relation chain**; coherence is discharged by diagonal closure selection, but the analytic source-to-source finite-block closure remains open |
-| Theta low-degree discharge × prime--Gamma Hankel tail | the two explicit theta-cusp moment-ratio inequalities force every constant and linear real-polynomial prime--Gamma Hankel test to be nonnegative; one strict ratio makes the first nonconstant leading determinant positive | prove the two theta ratios and either the degree-at-least-two integer-polynomial cone or only the scalar leading-determinant tail from size three | the degree dichotomy reconstructs the complete countable source cone; more sharply, the strict low block plus one determinant per size reconstructs the leading-determinant criterion, and either chain implies RH | **Top-down interface reduction formalized**; the polynomial tail starts at degree two and the scalar tail starts at matrix size three, while the active theta atom card owns the separate low-degree producer |
+| Theta low-degree discharge × prime--Gamma Hankel tail | the two explicit theta-cusp moment-ratio inequalities force every constant and linear real-polynomial prime--Gamma Hankel test to be nonnegative; one strict ratio makes the first nonconstant leading determinant positive; the exact first/higher-atom likelihood order now proves that each first-atom transfer loses only one factor `c=3005/2997`, not `c^2` | prove the sharpened first-atom inequalities `14*c*a_2^2<=9*a_1*a_3` and `16*c*a_0*a_2<=45*a_1^2`, and either the degree-at-least-two integer-polynomial cone or only the scalar leading-determinant tail from size three | the likelihood-ordered transfer gives the complete low block; the degree dichotomy reconstructs the complete countable source cone, or the strict low block plus one determinant per size reconstructs the leading-determinant criterion; either chain implies RH | **Top-down interface strictly weakened on paper**; the polynomial tail starts at degree two and the scalar tail at matrix size three, while the two old `c^2` low-degree premises are superseded by single-loss `c` premises and await a small Lean adapter |
 | Hurwitz monodromy/Cauchy source | the Xi-indexed Hurwitz family is differentially free; its character phase is the exact transverse coordinate; the canonical orientation vector is reconstructed by separated continued-Cauchy packets with exact prime--Gamma energies | prove nonnegativity for the explicit separated source packets, or on their algebraic span, without importing a zero-location sign | eventual nonnegativity of one reconstructed source sequence is equivalent to RH; the same phase is the sharp rectangular growth exponent | **Live source-sign chain**; closure, multiplicity, and source-domain interfaces are discharged |
 | Euler-safe critical-logderivative Cauchy loss | on every `Re(w)>a>1/2`, horizontal Xi monotonicity makes the shifted Carathéodory kernel `K_a` positive, the normalized Hardy kernel `C_a=2a/(w+conjugate(v))` is a positive Laplace Gram, and the exact identity is `K_0=K_a-K_a circle C_a` | prove the explicit finite Cauchy--Laplace observability inequality for the absolute-Euler density `h_a(t)=Re L(a+it)`, equivalently contract the diagonal map `e_w -> e_w tensor c_w`; a two-node positive-real counterexample proves this is not automatic | `K_a circle C_a<=K_a` gives positivity of the RH-complete critical kernel on an Euler uniqueness half-plane and hence RH | **Complex-node absolute-Euler refinement of the existing half-unit diagonal-Fock bridge**; all input values lie on `Re(s)=1/2+a>1`, the test family is countable for rational `a`, and no divisor, continued anti-Herglotz sign, theta current, or limiting measure enters the premise |
 | Resurgence/Stokes alignment | explicit-formula trans-series language can be source-defined | identify Borel singularities without first taking `log xi`; prove source Stokes positivity/alignment | alignment is RH | **Target-fed in current form**; using the Xi logarithmic divisor builds the answer into the source |
@@ -1018,3 +1018,59 @@ the complementary coefficient family.
   resolvent expression holomorphic in Gamma shape on `Re z>0`.  This replaces separate
   continuation hypotheses on every zero fibre by one scalar value relation.  See
   `../2-fully-proven/not_new_scientific_knowledge/xi-global-meixner-shape-landau-rh.md`.
+
+## 2026-07-15 reciprocal-translation prime-seam norm law
+
+- [PROVED ON PAPER] For the centered reciprocal Cauchy vector
+  `v_0(q)=xiSpectralPoint(q)^(-1)`, spectral translation gives
+  `v_L(q)=exp(-i*L*xiSpectralPoint(q))*v_0(q)` and the entire norm curve
+  `N(L)=sum_q exp(2L*Im(xiSpectralPoint(q)))/|xiSpectralPoint(q)|^2`.
+  Functional-equation reflection makes `N` even and gives
+  `N(L)-N(0)=sum_q (cosh(2L*Im(alpha_q))-1)/|alpha_q|^2>=0`.
+- [EXACT SOURCE VALUE RELATION] The Weil quadratic value of every `v_L` is independent of `L` and
+  equals `primeArchCentralCurvature`.  Hence
+  `N(L)-primeArchCentralCurvature` is one half of the negative-sector distance
+  `||v_L-Jv_L||^2`, and it splits into the translation-growth defect plus one half of the already
+  formalized global reflection-defect energy.
+- [EXACT PRIME COLLISION] For every rational prime,
+  `A_p=2(log p)^2/p*(N(log p)-N(0))`.  Thus the Landau coefficient is not a separate divisor
+  statistic: it is the prime sample of one reciprocal-Cauchy norm orbit.
+- [STRICTLY SMALLER TOP-DOWN INPUT] Contractivity `N(log 2)<=N(0)` at the single prime `2`, or the
+  cofinal estimate `log N(L)=o(L)`, forces every centered spectral point real and proves RH.  This
+  requires neither a conservative metric on every theta eigenfunction nor zero simplicity.
+- [OPEN SOURCE INTERFACE] Prove the anchored normalized dyadic-residue contraction described
+  below, or derive subexponential orbit growth directly from the theta/Mellin source.  Mellin
+  unitarity before divisor evaluation does not by itself supply this norm transfer.  See
+  `../2-fully-proven/not_new_scientific_knowledge/xi-reciprocal-translation-prime-seam-norm-law.md`.
+- [VALUE-RELATION DISCHARGE] The algebraic part of that source-to-divisor map is already the
+  formalized dyadic sharp-window tomography.  If
+  `B_L(z)=sharpPrimeWindowMellin(L,1+i*z)`, then
+  `v_0-v_L=i*B_L(alpha)` on every divisor copy, and the trailing coefficient of the dyadic
+  continued source at `rho+1/2`, divided by twice the analytic multiplicity, is exactly
+  `B_(log 2)(alpha)`.  Hence the unspecified intertwiner is replaced by the concrete fixed-source
+  inequality `||b||^2+2 Im<v_0,b><=0` for the normalized residue vector.  Functional-equation
+  reflection supplies every left pole, while critical-line copies contribute zero to this anchored
+  current.  The coordinate identity is closed; bounded quadratic transport of the reflected
+  right-residue family is the only remaining input in this splice.  This is distinct from the
+  active anisotropic rectangular-mesh/subpower route.
+
+## 2026-07-15 theta reflected-budget likelihood splice
+
+- [PROVED ON PAPER] The formal Gibbs Ward equation gives the exact Laplace shift
+  `2*pi*n^2*B_n(z+2)=b_n(0)+(z+5/2)B_n(z)` and the source transform
+  `A_n(z)=2*pi*(b_n(0)+(z-1/2)B_n(z))`.  At the two half-density points these collapse to explicit
+  endpoint values.
+- [PROVED ON PAPER] Reflection and `XiC(I/2)=1/2` give the exact first/higher exponential budgets
+  `sum a_j/(4^j*(2j)!)=(4*pi-1)exp(-pi)` and
+  `H=sum r_j/(4^j*(2j)!)=1/2-(4*pi-1)exp(-pi)`.
+- [STRICTLY WEAKER THEOREM SURFACE] Retaining the Gaussian cusp damping proves
+  `H<q*a_0<q*(a_0+a_1/8)` for `q=8/2997`.  Hence the completed theta low block follows from
+  `14*(a_0+a_1/8+H)*a_2^2<=9*(a_0+a_1/8)*a_1*a_3` and
+  `16*(a_0+H)*a_2<=45*a_1^2`; both left multipliers are strictly below the old single-loss
+  multipliers without any evaluated theta value.
+- [OPEN] Prove those two finite first-atom inequalities from the exact Ward--Laplace Taylor
+  constraints, then close the independent degree-at-least-two polynomial cone or the leading
+  determinant tail from size three.  See
+  `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-half-density-ward-laplace-budget-transfer.md`
+  and
+  `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-half-density-damped-tail-domination.md`.

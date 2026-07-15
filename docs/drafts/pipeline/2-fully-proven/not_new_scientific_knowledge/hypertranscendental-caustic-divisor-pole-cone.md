@@ -40,6 +40,13 @@ tau_(m,n)(1-s)=(-1)^(mn) tau_(m,n)(s).                     (4)
 ```
 
 The divisors are therefore reflection invariant even though the functions carry a parity grading.
+At the reflection fixed point `c=1/2`, the normalized reciprocal series is even.  Consequently
+
+```text
+tau_(m,n)(c)=0                 whenever mn is odd.         (4a)
+```
+
+Every odd-by-odd critical horizon is therefore a symmetry-protected caustic at the center.
 
 ## Proof of the pole cone
 
@@ -107,6 +114,11 @@ so `h_k(1-s)=(-1)^k h_k(s)`.  In the determinant, every permutation has the same
 conjugate to the original matrix with an overall scalar `(-1)^n`; this stronger matrix identity is
 the Lean certificate.
 
+At `s=c=1/2`, equation `(11)` fixes the coefficient sequence itself.  If `mn` is odd, `(4)` becomes
+`tau_(m,n)(c)=-tau_(m,n)(c)`, and characteristic zero proves `(4a)`.  This is the rectangular
+`2`-core obstruction in elementary form; its full even-area factorization is the classical
+`2`-quotient specialization of Schur functions and is not promoted as new knowledge here.
+
 ## Tropical Q-system boundary
 
 The adjacent Desnanot--Jacobi identity tropicalizes at every discrete valuation `nu` to
@@ -145,6 +157,7 @@ has no positive RH consequence.
 ## Lean verification
 
 `ProjectiveHorizonCausticReflection.lean` proves the diagonal-conjugation identity and the exact
-determinant sign `(-1)^(mn)` over every commutative ring.  The analytic local factorization and
-hook-content specialization remain paper-level.  A targeted leaf check passes; no full build was
-run.
+determinant sign `(-1)^(mn)` over every commutative ring.  It also proves the odd-area protected
+vanishing for every reflection-fixed coefficient sequence over a characteristic-zero field.  The
+analytic local factorization and hook-content specialization remain paper-level.  A targeted leaf
+check passes; no full build was run.
