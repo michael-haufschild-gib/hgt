@@ -1,5 +1,5 @@
-import GaloisForLFunctions.HTGeometry.FiniteClockQuantumFisher
-import GaloisForLFunctions.RHTower.SoninLogCoordinateScattering
+import GaloisForLFunctions.HTGeometry.FiniteInvolutiveClockQuantumFisherDephasing
+import GaloisForLFunctions.RHTower.SoninLogClockDephasing
 
 /-!
 # Quantum Fisher value of the logarithmic Sonin clock
@@ -62,6 +62,27 @@ theorem soninLogClock_erasedPureStateQuantumFisherValue_eq_commutatorNormSq
   rw [re_inner_soninLogFourierObservableTwirlKadisonDefect_eq_quarter_commutatorNormSq
     X hX.star_eq hψ]
   ring
+
+/-- **Sonin QFI/dephasing identity.**  On a normalized physical state, the QFI hidden by the
+logarithmic clock is one quarter of the squared double-scattering-commutator value.  This applies
+the relational-clock dephasing relation directly to the existing Sonin QFI corpus. -/
+theorem soninLogClock_erasedPureStateQuantumFisherValue_eq_quarter_doubleCommutatorNormSq
+    (X : SoninL2 →L[ℂ] SoninL2) (hX : IsSelfAdjoint X)
+    {ψ : SoninL2} (hψnorm : ‖ψ‖ = 1)
+    (hψ : GaloisForLFunctions.PhysicalState
+      (soninLogFourierScattering - 1).toLinearMap ψ) :
+    HTGeometry.pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+        (‖inner ℂ ψ ((1 - soninLogFourierInvariantAverage) (X ψ))‖)
+        (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ 2) =
+      (4 : ℝ)⁻¹ * ‖soninLogFourierDoubleCommutator X ψ‖ ^ 2 := by
+  rw [GaloisForLFunctions.PhysicalState] at hψ
+  have hfixed : soninLogFourierScattering ψ = ψ := by
+    apply sub_eq_zero.mp
+    simpa using hψ
+  simpa only [soninLogFourierInvariantAverage, soninLogFourierDoubleCommutator] using
+    HTGeometry.finiteInvolutiveClock_erasedPureStateQuantumFisherValue_eq_quarter_doubleCommutatorNormSq
+      soninLogFourierScattering X soninLogFourierScattering_adjoint_mul_self
+      soninLogFourierScattering_sq_eq_one hX hψnorm hfixed
 
 end
 

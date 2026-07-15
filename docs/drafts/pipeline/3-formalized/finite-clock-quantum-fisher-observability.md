@@ -74,7 +74,10 @@ variance, and the Sonin scattering commutator.
 `formal/GaloisForLFunctions/RHTower/SoninLogClockQuantumFisher.lean` proves:
 
 - `soninLogClock_erasedPureStateQuantumFisherValue_eq_four_mul_observabilityVariance`;
-- `soninLogClock_erasedPureStateQuantumFisherValue_eq_commutatorNormSq`.
+- `soninLogClock_erasedPureStateQuantumFisherValue_eq_commutatorNormSq`;
+- `soninLogClock_erasedPureStateQuantumFisherValue_eq_quarter_doubleCommutatorNormSq`, applying
+  the relational-clock dephasing bridge recorded in
+  `relational-clock-dephasing-observability.md`.
 
 `ProjectiveQuantumFisherValue.lean` was repaired at four previously latent source failures: a
 commuted real product in a division inequality and three missing explicit scalar-field arguments.

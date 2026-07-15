@@ -146,6 +146,43 @@ theorem gammaPeriodicFourier_taylorConormal_hasSum
         simpa [Finset.sum_insert hm] using hmSum.add ih
   simpa using hsum Finset.univ
 
+/-- Every differentiated consequence `D^k (exp D - 1)` of the period-one source constraint also
+annihilates one Fourier mode.  Thus the Gamma corona conormal is not one-dimensional over the
+constants; its thinness is cyclicity over the source operator algebra. -/
+theorem gammaPeriodicMode_shiftedTaylorConormal_hasSum (m k : ℕ) :
+    HasSum (fun n : ℕ ↦
+      gammaPeriodicFrequency m ^ (n + k + 1) / (n + 1).factorial) 0 := by
+  have h := (gammaPeriodicMode_taylorConormal_hasSum m).mul_left
+    (gammaPeriodicFrequency m ^ k)
+  convert h using 1
+  · funext n
+    rw [show n + k + 1 = k + (n + 1) by omega, pow_add]
+    ring
+  · simp
+
+/-- **Cyclic source-conormal law.**  Every finite period-one Fourier packet is annihilated by
+every shifted factorial-tail conormal `D^k (exp D - 1)`.  These infinitely many constant-field
+relations are all source-operator translates of the single unit-shift relation. -/
+theorem gammaPeriodicFourier_shiftedTaylorConormal_hasSum
+    {r : ℕ} (a : Fin r → ℂ) (k : ℕ) :
+    HasSum (fun n : ℕ ↦
+      ∑ m : Fin r,
+        a m * (gammaPeriodicFrequency m ^ (n + k + 1) / (n + 1).factorial)) 0 := by
+  classical
+  have hsum : ∀ s : Finset (Fin r),
+      HasSum (fun n : ℕ ↦
+        ∑ m ∈ s,
+          a m *
+            (gammaPeriodicFrequency m ^ (n + k + 1) / (n + 1).factorial)) 0 := by
+    intro s
+    induction s using Finset.induction_on with
+    | empty => simp
+    | @insert m s hm ih =>
+        have hmSum :=
+          (gammaPeriodicMode_shiftedTaylorConormal_hasSum m k).mul_left (a m)
+        simpa [Finset.sum_insert hm] using hmSum.add ih
+  simpa using hsum Finset.univ
+
 /-! ### Rank-one curvature of finite unit-translation shadows -/
 
 /-- Taylor coefficient carrying the `j`-th raw derivative into the `i`-th derivative after unit
@@ -347,6 +384,59 @@ theorem gammaClockCoordinateIncoming_apply_last (n : ℕ) (z : ℂ)
     show (Fin.last n).succ = Fin.last (n + 1) by rfl,
     Fin.snoc_last, Fin.snoc_castSucc]
   simp
+
+/-- Pair the incoming algebraic prolongation defect with the outgoing analytic Taylor curvature.
+This is the finite transgression current from the Gamma source conormal into the newest independent
+clock direction. -/
+def gammaClockPairedBoundaryCurrent (n : ℕ) (z : ℂ) :
+    (Fin (n + 1) → ℂ) →ₗ[ℂ] (Fin (n + 1) → ℂ) :=
+  (gammaClockCurvature (n + 1)).comp (gammaClockCoordinateIncoming n z)
+
+/-- **Exact Gamma capacity--current pairing.**  The paired opposite-variance current reads the old
+highest jet and returns the factorial-tail boundary symbol with Leibniz weight `n+1`.  In
+particular it is independent of the base coordinate `z`; the affine source coefficient changes
+the two realizations but not their transverse boundary pairing. -/
+theorem gammaClockPairedBoundaryCurrent_apply (n : ℕ) (z : ℂ)
+    (a : Fin (n + 1) → ℂ) (i : Fin (n + 1)) :
+    gammaClockPairedBoundaryCurrent n z a i =
+      (n + 1 : ℂ) * a (Fin.last n) / ((n + 1 - i).factorial : ℂ) := by
+  rw [gammaClockPairedBoundaryCurrent, LinearMap.comp_apply,
+    gammaClockCurvature_apply, gammaClockCoordinateIncoming_apply_last]
+
+/-- The paired current is the outer product of highest-jet evaluation and the differentiated
+shift-conormal boundary vector. -/
+theorem gammaClockPairedBoundaryCurrent_eq_outerProduct (n : ℕ) (z : ℂ)
+    (a : Fin (n + 1) → ℂ) :
+    gammaClockPairedBoundaryCurrent n z a =
+      ((n + 1 : ℂ) * a (Fin.last n)) • gammaClockBoundaryVector (n + 1) := by
+  funext i
+  rw [gammaClockPairedBoundaryCurrent_apply]
+  simp [gammaClockBoundaryVector, div_eq_mul_inv]
+
+/-- The source-paired Gamma transgression has exactly the same rank-one range as the outgoing
+factorial-tail conormal boundary symbol. -/
+theorem range_gammaClockPairedBoundaryCurrent (n : ℕ) (z : ℂ) :
+    LinearMap.range (gammaClockPairedBoundaryCurrent n z) =
+      ℂ ∙ gammaClockBoundaryVector (n + 1) := by
+  apply le_antisymm
+  · rintro y ⟨a, rfl⟩
+    rw [gammaClockPairedBoundaryCurrent_eq_outerProduct]
+    exact Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self _)
+  · rw [Submodule.span_le]
+    intro y hy
+    simp only [Set.mem_singleton_iff] at hy
+    subst y
+    refine ⟨Pi.single (Fin.last n) ((n + 1 : ℂ)⁻¹), ?_⟩
+    rw [gammaClockPairedBoundaryCurrent_eq_outerProduct]
+    simp only [Pi.single_eq_same]
+    have hn : (n + 1 : ℂ) ≠ 0 := by exact_mod_cast Nat.succ_ne_zero n
+    rw [mul_inv_cancel₀ hn, one_smul]
+
+/-- Every positive Gamma clock layer carries one nonzero paired boundary-current direction. -/
+theorem finrank_range_gammaClockPairedBoundaryCurrent (n : ℕ) (z : ℂ) :
+    Module.finrank ℂ (LinearMap.range (gammaClockPairedBoundaryCurrent n z)) = 1 := by
+  rw [range_gammaClockPairedBoundaryCurrent]
+  exact finrank_span_singleton (gammaClockBoundaryVector_ne_zero n)
 
 /-- The new-boundary projector in the split Gamma jet clock. -/
 def gammaClockBoundaryProjector (n : ℕ) :

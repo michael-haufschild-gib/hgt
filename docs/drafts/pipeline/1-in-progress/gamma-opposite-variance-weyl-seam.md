@@ -125,6 +125,16 @@ Equations `(7)`, `(10)`, and `(16)` give
 beta_N gamma_N=+N v_N tensor ell_N=-R_N.                  (21)
 ```
 
+The positive half of `(21)` is now Lean-formalized directly. The paired map
+`gammaClockPairedBoundaryCurrent` has pointwise formula
+
+```text
+(beta_N gamma_N a)_i=N a_(N-1)/(N-i)!,                    (21a)
+```
+
+range exactly the factorial boundary line, and finrank one at every positive level. The remaining
+Lean target is its equality with the negative finite Weyl seam `-R_N`.
+
 The general conservation identity behind `(20)` is Lean-formalized as
 `truncate_comp_clockComparisonSeam_comp_extend`; only the explicit Gamma substitution `(21)`
 remains to be packaged in Lean.
@@ -269,6 +279,7 @@ produce both variance halves and their comparison current independently of the d
 - [x] universal-Weyl HT criterion killed with source-specific positive replacement
 - [x] exact finite Weyl boundary formula proved on paper
 - [x] boundary-charge migration identity proved on paper
+- [x] exact paired incoming/outgoing current and rank-one range Lean-formalized
 - [x] general opposite-variance seam conservation formalized in Lean
 - [ ] finite Weyl boundary formula formalized in Lean
 - [ ] migration identity formalized in Lean

@@ -1,14 +1,14 @@
-# Prime-valuation Veronese master law
+# Nonlinearity--valuation tomography law
 
 - **ID:** `prime-valuation-veronese-master-law`
 - **Stage:** 1-in-progress
 - **Type:** `[CONJECTURE] [MASTER THEOREM] [GENERAL HT LAW] [NOVELTY UNVERIFIED]`
 - **Source:** finite-range prime-tail differential geometry, complete pivot relation ideals,
   prime-power valuation block separation, and Prime-Walsh Stone reconstruction
-- **Statement:** For every finite-range prime coefficient system, degree-`m` polynomial functions
-  on its recurrent pattern geometry are realized faithfully as the complete differential-linear
-  relation geometry of the `p^m` valuation layer; the layer ranks are exactly the Hilbert function,
-  and the full homogeneous ideal is recovered from the differential relation ideals of all layers.
+- **Statement:** Every finite recurrent prime-pattern constraint is recovered losslessly from its
+  valuation-resolved differential relation system: polynomial nonlinearity of degree `m` becomes
+  linear differential dependence in the `p^m` sector, the sector ranks are the Hilbert function,
+  and there are no phantom nonlinear or cross-valuation relations.
 
 ## Goal
 
@@ -20,8 +20,19 @@ constraint, while the complete differential relation ideal must contain no relat
 prolonged linearizations of that homogeneous ideal.
 
 The theorem is about finite-range prime-supported hypertranscendental systems in general.  Its
-application to the Riemann zeta function is downstream: Euler plethysm completes the valuation
-layers, and the functional equation must act on that completion rather than on a finite layer.
+central law is a **nonlinearity--valuation duality**:
+
+```text
+polynomial degree on the source constraint
+    = prime-power valuation degree on the carrier.
+```
+
+This is not a decomposition added to an existing construction.  It says that the valuation axis
+is a lossless linearizing coordinate for nonlinear recurrent geometry.  Differential algebra sees
+the entire finite constraint, one homogeneous degree at a time, and invents no additional
+relations.  Its application to the Riemann zeta function is downstream: Euler plethysm completes
+the valuation sectors, and the functional equation must act on that completion rather than on a
+finite sector.
 
 ## Setup
 
@@ -64,7 +75,7 @@ whose real parts are pairwise distinct.
 
 ## Master theorem
 
-**[CONJECTURE] Prime-valuation Veronese correspondence.**  For every finite nonempty set `M` of
+**[CONJECTURE] Prime-valuation Veronese tomography.**  For every finite nonempty set `M` of
 positive valuation degrees and finite nonempty shift sets `A_m` with pairwise distinct real parts:
 
 1. **Layer kernel.**  The tail-coefficient map
@@ -96,6 +107,19 @@ positive valuation degrees and finite nonempty shift sets `A_m` with pairwise di
    Cofinal application to finite coordinate projections recovers the full compact Stone tail
    constraint.
 
+   Equivalently, define the reduced valuation relation spectrum by discarding finite-prime base
+   corrections and retaining the homogeneous coefficient relations in every sector.  Then
+
+   ```text
+   Spectrum(c)_m = (I_c)_m,
+   Spectrum(c) = Spectrum(d) iff I_c = I_d.
+   ```
+
+   Thus two embedded finite-range sources have the same recurrent constraint geometry exactly
+   when they have the same labelled reduced valuation relation spectrum.  This does not assert
+   equality of their embedded differential fields: the assignment of recurring patterns to
+   individual primes may differ even when the constraint set is identical.
+
 5. **Slope and entropy law.**  Put
 
    ```text
@@ -113,16 +137,18 @@ positive valuation degrees and finite nonempty shift sets `A_m` with pairwise di
    under shift invariance it is the topological entropy.  The previous Prime-Walsh entropy law is
    therefore the stabilized large-window shadow of the valuation--Veronese correspondence.
 
-The theorem gives a new refinement of ordinary differential transcendence degree:
+The theorem gives a new refinement of ordinary differential transcendence degree and, more
+strongly, a complete nonlinear constraint invariant:
 
 ```text
 m |-> H_c(m)
 ```
 
 is the **valuation-resolved differential Hilbert function** of the HT source.  Ordinary tail rank
-is only its degree-one value.  The least degree at which `H_c(m)=card(R_c)` is the **HT
-interpolation depth**: the first valuation sector that sees every finite nonlinear observable of
-the recurrent constraint.
+is only its degree-one value.  The complete relation spectrum, rather than the rank function alone,
+is the **valuation tomography** of the source constraint.  The least degree at which
+`H_c(m)=card(R_c)` is the **HT interpolation depth**: the first valuation sector that separates
+every finite nonlinear observable of the recurrent constraint.
 
 ## Euler and Adams form
 
@@ -249,14 +275,43 @@ The valuation-resolved differential-basis core is proved unconditionally in
 The module passes its direct check and targeted cached build.  Its principal theorems use only
 `propext`, `Classical.choice`, and `Quot.sound`.
 
+Finite-prime residuals and complete relations are proved unconditionally in
+`HTGeometry/PrimeValuationVeroneseRelationIdeal.lean`:
+
+1. `PrimeValuationTailPivotPresentation` permits independent pivot and dependent alphabets in
+   every valuation degree; no uniform layer rank is assumed.
+2. `exists_primeValuationTailPivotBaseCorrection` proves that every finite prime-tail residual at
+   `p^(e+1)` contributes only a base-field correction at every derivative order.
+3. `PrimeValuationTailPivotPresentation.complete_relationIdeal` proves that the prolonged affine
+   coordinate reductions generate the complete relation ideal across all layers.
+4. `PrimeValuationTailPivotPresentation.differentialBasis` identifies the global pivot palette as
+   an exact differential transcendence basis of the full palette field.
+
+The geometric capstone is proved unconditionally in
+`HTGeometry/PrimeValuationVeroneseMaster.lean`:
+
+1. `finiteRange_observable_tailIndependent_iff` identifies tail independence of arbitrary
+   finite-range observables with linear independence of their restrictions to the recurrent set.
+2. `RecurrentHomogeneousValuationPresentation.toTailPivotPresentation` converts homogeneous
+   coordinate bases and expansions on the recurrent geometry into the prime-valuation pivot data.
+3. `RecurrentHomogeneousValuationPresentation.complete_relationIdeal` proves the
+   nonlinearity--valuation completeness statement: the homogeneous coordinate reductions are all
+   differential relations, with no additional nonlinear or cross-degree relations.
+4. `RecurrentHomogeneousValuationPresentation.differentialBasis` gives the exact global
+   differential basis statement.
+
+All four modules pass direct checks and targeted cached builds.  Their principal theorems use
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
 ## Open core
 
-1. Compute the complete analytic relation ideal after finite-prime corrections and prove that it
-   is independent of the chosen layer bases.
-2. Formalize the prime-power finite-residual correction, the combined complete relation ideal,
-   polarization bridge, and reconstruction theorem on top of the completed homogeneous kernel
-   and differential basis.
-3. Audit the exact result against differential algebra of arithmetic functions, generalized Euler
+1. Formalize basis existence from the full degree-`m` monomial spanning family, polarization, and
+   equality of the reduced valuation relation spectrum with the full homogeneous ideal.
+2. Transfer the complete formal-carrier relation theorem to actual analytic Dirichlet germs and
+   prove basis independence of the resulting analytic presentation.
+3. Formalize Hilbert-function stabilization, interpolation depth, the slope law, and the cofinal
+   Stone reconstruction/entropy consequence.
+4. Audit the exact result against differential algebra of arithmetic functions, generalized Euler
    products, big-Witt/symmetric-function theory, and algebraic independence in the Selberg class.
 
 ## Gates

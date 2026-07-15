@@ -8,6 +8,7 @@
   - `source-anomaly-boundary-colligation-field.md`
   - `ht-source-riemann-hilbert-correspondence.md`
   - `gamma-opposite-variance-weyl-seam.md`
+  - `hypertranscendental-mackey-corona-field.md`
 - **Statement:** The common object is a parameterized source-Galois torsor equipped with its
   opposite-variance boundary colligation and a source-selected analytic framing. The obstruction
   chains are failures of existence, uniqueness, holonomy, transversality, or positive real form of
@@ -126,8 +127,9 @@ field only if they induce equivalent reductions preserving `(2)` and `(3)`.
 ## 6. Capacity--framing complementarity
 
 **[CONJECTURE — INFINITE CAPACITY / THIN FRAMING]** A regular constrained HT source has maximal
-differential dimension on its unframed Galois torsor, while the cotangent complex of the framing
-reduction and the width of the boundary current are uniformly finite:
+differential dimension on its unframed Galois torsor, while the source conormal is finitely
+generated over the intrinsic source operator algebra and the cotangent amplitude and boundary-
+symbol width of the framing reduction are uniformly finite:
 
 ```text
 algebraic clock capacity grows without bound,
@@ -135,8 +137,10 @@ source framing and transverse current remain perfect and thin.              (8)
 ```
 
 This is a representation-theoretic version of infinite algebraic clock capacity concentrated on a
-thin constraint boundary. Hypertranscendence concerns observables of the clock; thinness concerns
-the source framing transverse to them.
+thin constraint boundary. Thinness cannot mean finite dimension over the constants: differentiated
+consequences of one nonlocal relation are already infinite-dimensional. It means finite generator
+rank over the source algebra and uniformly finite transverse boundary width. Hypertranscendence
+concerns observables of the clock; thinness concerns the source framing transverse to them.
 
 **Falsifier.** A source-minimal finite-rank constrained HT module whose every intrinsic framing has
 unbounded cotangent amplitude or boundary width.
@@ -187,6 +191,25 @@ No zero-indexed operator, completed-zeta divisor, or desired spectrum may define
   algebraic and analytic realizations, the capacity--framing theorem `(8)`, and a proof of the
   five-face theorem for genuinely different realization categories.
 
+## 11. Topology correction and positive replacement
+
+The finite observable tower cannot itself carry a nonzero separated source constraint. Finite
+freedom makes the homogeneous source tangent dense in the raw product topology, so every Hausdorff
+product-continuous conormal vanishing on that tangent is zero.
+
+This kills the idea that `(5)` lives in one canonical product completion. The Lean-formalized
+positive replacement is that every nonzero source conormal forces a strict minimal refinement of
+the clock topology.
+
+**[CONJECTURE]** The actual topology datum in `(5)` is the hypertranscendental Mackey--corona field:
+the source-canonical conormal dual pair and its interval of compatible topologies. A framing is a
+polarized section of that interval. The five obstruction faces are failures of the same section,
+not five properties of one arbitrarily selected topology.
+
+The rank-only capacity--current equality is also rejected as dimension counting. Its positive
+replacement is the tail transgression pairing from the finite-rank corona conormal into successive
+new algebraic clock cotangent directions, together with opposite-variance seam conservation.
+
 ## Gates
 
 - [x] bare unframed torsor rejected as the new object
@@ -195,6 +218,8 @@ No zero-indexed operator, completed-zeta divisor, or desired spectrum may define
 - [x] finite anomaly colligation reconstruction Lean-formalized
 - [x] opposite-variance boundary-current conservation Lean-formalized
 - [x] Gamma incoming and outgoing boundary channels Lean-formalized
+- [x] product topology rejected and strict source-conormal refinement Lean-formalized
+- [x] rank-only capacity--current equality rejected with transgression-pairing replacement
 - [ ] Gamma framed parameterized-Galois/analytic comparison proved
 - [ ] one non-affine rank-one framed source treated
 - [ ] one nonlinear/nonabelian framed source treated

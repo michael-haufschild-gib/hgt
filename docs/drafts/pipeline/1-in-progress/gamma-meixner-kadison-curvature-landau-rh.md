@@ -7,6 +7,7 @@
   [TARGET CLOCK FACTORIZATION PROVED ON PAPER] [FINITE CLOCK ALGEBRA FORMALIZED]
   [SOURCE TRACE OPEN] [NOVELTY UNVERIFIED]`
 - **HT parents:**
+  - `calibrated-gamma-mertens-zero-orbit-comparison-rh.md`
   - `../3-formalized/finite-clock-star-kadison-observability.md`
   - `../3-formalized/gamma-periodic-constraint-corona.md`
   - `calibrated-clock-curvature-class.md`
@@ -21,6 +22,10 @@
   - `../2-fully-proven/not_new_scientific_knowledge/rational-hurwitz-lorentz-boost-colligation.md`
   - `../2-fully-proven/not_new_scientific_knowledge/local-euler-valuation-lorentz-log-colligation.md`
   - `../2-fully-proven/not_new_scientific_knowledge/gamma-factorial-fock-polarization-boundary-charge.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/prime-laplace-gamma-jet-incidence-phase-transition.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/time-one-gamma-jet-fock-rh-criterion.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/prime-laplace-gamma-clock-descent-anomaly.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/mertens-corona-shift-conormal.md`
 - **Statement:** Realize the global Xi prime-seam series as the cofinal reflected
   star-Kadison trace of the source-derived Gamma--Meixner clock-curvature field.  If this trace is
   a locally bounded holomorphic family for every positive Gamma shape, then Landau's theorem
@@ -247,6 +252,27 @@ mechanism.
 
 ## Smallest non-circular theorem
 
+There is now a second, strictly time-one formulation of the smallest theorem.  Define
+
+```text
+V_rho(z)=M_1(z+rho)-M_1(z+1-conjugate(rho)),              (14e)
+```
+
+where `M_1` is the actual time-one Gamma--Meixner weighted prime-zeta derivative.  For any fixed
+`x_0>1`, the proved factorial-jet criterion is
+
+```text
+sup_N sum_(j<N)|V_rho^(j)(x_0)|^2/j!<infinity
+  iff Re(rho)=1/2.                                       (14f)
+```
+
+Off the line, one of the two terms in `(14e)` has an uncancelled simple pole at
+`-rho` or `conjugate(rho)-1`; finite factorial jet energy would make its Taylor germ entire.
+Therefore it is enough to realize the finite jets in the source anomaly colligation and prove the
+uniform bound in `(14f)` on every Xi-zero fibre.  This alternative uses the actual time-one Gamma
+measure and all HT observation clocks, replacing the all-root deconvolution by one cofinal clock
+estimate.
+
 The coordinate part of the fixed-prime source/divisor incidence is already proved.  Put
 
 ```text
@@ -352,6 +378,25 @@ proof-bearing statement.
     translation is expansive in that metric and the reflected Euler fibre has not yet been
     embedded into it.  Naming the Fock form without the all-prime incidence does not orient the
     Lorentz block.
+14. **The raw Gamma colligation is necessarily expansive at its boundary.**  Its boundary
+    self-symbol is the identity and its outgoing factorial transfer is nonzero.  Hence a pure new
+    boundary input gains exactly the squared transfer norm.  The required reflected contraction
+    cannot be the untransformed Taylor colligation.
+15. **The factorial Fock direct limit rejects the all-prime incidence.**  Prime--Laplace
+    derivative evaluation enters every finite Gamma clock, but the infinite coherent jet of a
+    prime has squared norm `w_theta(p)p^(-2x_0)exp((log p)^2)`.  Hence no fixed positive shape makes
+    the natural cofinal map bounded into the standard factorial Fock space.
+16. **Finite clock bounds do not imply a cofinal clock bound.**  Every time-one seam transform has
+    finite energy at every fixed jet resolution, including off-line fibres.  Only a bound uniform
+    in the resolution can rule out its finite left-half-plane pole.
+17. **An unpinned boundary comparison transports the obstruction for free.**  The two time-one
+    Mertens pole germs are abstractly isomorphic after recentering, for every strip point.  Their
+    support coincidence is selective only if the completed source comparison preserves the
+    Gamma-normalized global Laplace origin.
+18. **The raw product clock cannot carry the source constraint.**  Finite HT freedom makes the
+    homogeneous source tangent dense in the product topology, so any Hausdorff
+    product-continuous conormal vanishing on it is zero.  A proof in that topology necessarily
+    erases the very Mertens boundary it needs.
 
 ## Positive residues of the attacks
 
@@ -489,6 +534,47 @@ Each no-go above leaves a usable positive theorem or a stricter construction tar
     Hence the Gamma side already supplies a non-divisor positive metric and boundary charge.  The
     remaining statement is now the polarized Euler--Gamma incidence which carries the completed
     anti-reflection logarithm into this top-boundary current and preserves its metric cofinally.
+14. **Exact Gamma boundary Green law `[PROVED ON PAPER]`.**  In the factorial orthogonal split,
+    the full translation colligation is `[E_N,beta_N;0,I]`, so
+
+    ```text
+    ||E_(N+1)(0,b)||_F^2-||(0,b)||_F^2=||beta_N b||_F^2. (22e)
+    ```
+
+    The failed raw-passivity claim therefore leaves the precise positive loss which a
+    source-canonical characteristic/scattering transform or star-Kadison compression must encode.
+    This removes ambiguity about the sign and normalization of the Gamma boundary channel while
+    keeping construction of that transform in the open core.
+15. **Faithful finite prime--Gamma incidence `[PROVED ON PAPER]`.**  For every positive shape and
+    base point `x_0>1/2`, the first `N` derivative values of the weighted prime--Laplace transform
+    define a Hilbert--Schmidt map into the `N`-jet factorial clock.  The intersection of the
+    kernels over all `N` is zero by holomorphy and Dirichlet-series uniqueness.  Thus the HT clocks
+    already observe the entire prime source faithfully at finite resolution.  Failure of the
+    factorial Fock colimit leaves the precise positive replacement required by `(16)`: a locally
+    trace-bounded projective or relative-graph completion, not a bounded infinite jet operator.
+16. **Time-one factorial-jet RH criterion `[PROVED ON PAPER]`.**  The actual time-one weighted
+    seam transform `(14e)` is identically zero on the critical line and has one uncancelled simple
+    pole off it.  Its finite raw-jet energies increase to a finite limit exactly on the line, as in
+    `(14f)`.  This supplies a source-facing alternative to the all-shape theorem: construct the
+    on-shell Euler anomaly in the existing Gamma clocks and prove one uniform all-resolution
+    factorial bound.
+17. **Reflected Mertens support law `[PROVED ON PAPER]`.**  The rightmost singular part of `(14e)`
+    is
+
+    ```text
+    sqrt(2)[1/(z+rho)-1/(z+1-conjugate(rho))],            (22f)
+    ```
+
+    the anti-reflection doublet of the actual unit-field Mertens corona.  Its two supports are
+    `-rho` and `conjugate(rho)-1`, and coincide exactly on the critical line.  The resulting source
+    conjecture is now precise: the full anomaly colligation must identify these boundary germs in
+    one affine-pinned Gamma/Laplace chart.  An abstract comparison up to translation is explicitly
+    excluded and leaves no RH content.
+18. **Forced source-topology refinement `[PROVED IN LEAN]`.**  Every nonzero Hausdorff-valued
+    source conormal annihilating a finite-observably free HT tangent forces a strict minimal
+    refinement of the product clock topology.  The RH route must therefore construct the intrinsic
+    zeta Mertens corona conormal and a framed section of its Mackey interval.  This is a positive
+    topology theorem, not a request to guess another Hilbert completion.
 
 ## Completely monotone positive successor `[PROVED ON PAPER]`
 

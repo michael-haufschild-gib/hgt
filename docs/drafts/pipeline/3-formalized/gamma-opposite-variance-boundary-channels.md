@@ -66,12 +66,17 @@ boundary channels without inserting an adjoint or external carrier.
 The candidate-new result is their source-topological comparison: prove that the paired channels
 form the finite boundary current of the Gamma parameterized-Galois/analytic comparison torsor.
 
+Their explicit finite pairing is now formalized in `gamma-capacity-current-transgression.md`: it is
+the factorial-tail outer product with rank one at every positive clock layer. Identification with
+the minimal source-Galois conormal remains open.
+
 ## Gates
 
 - [x] coordinate-multiplication jet action formalized
 - [x] exact truncation compatibility formalized
 - [x] exact incoming boundary support formalized
 - [x] exact incoming boundary coefficient formalized
+- [x] exact paired-channel current and rank-one range formalized
 - [ ] exponentiated Weyl boundary current formalized
 - [ ] paired-channel migration law formalized
 - [ ] source comparison torsor constructed

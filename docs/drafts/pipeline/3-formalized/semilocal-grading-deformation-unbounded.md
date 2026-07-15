@@ -1,7 +1,7 @@
 # Unbounded semilocal grading deformation
 
 - **ID:** semilocal-grading-deformation-unbounded
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Scientific status:** CANDIDATE NEW SCIENTIFIC KNOWLEDGE, provisional pending independent review
 - **Parent source:** Connes--Consani--Moscovici, *Zeta zeros and prolate wave operators*,
@@ -165,6 +165,34 @@ a bounded invertible `C^1` element is again `C^1`, with
 
 Since `A_p^(-1)=G_p`, this would make `[N_infinity,G_p]` bounded, contradicting (1). Therefore no
 bounded `Khat_p` satisfying (0) exists.
+
+## Lean formalization
+
+Formalized in:
+
+- `formal/GaloisForLFunctions/RHTower/SoninSemilocalGradingDeformation.lean`
+- `formal/GaloisForLFunctions/RHTower/SoninSemilocalGradingBounds.lean`
+- `formal/GaloisForLFunctions/RHTower/SoninSemilocalGradingNoGo.lean`
+
+The theorem surface is:
+
+- `abs_semilocalOnePrimeEvenJacobiCoefficient_eq_magnitudeSeries`: exact positive series (3);
+- `exists_semilocalOnePrimeMatchedDilation`: matched prime dilation (4);
+- `tanh_nat_mul_log_prime_pow_lower_of_matched` and
+  `semilocalOnePrimeRawMagnitude_lower_of_matched`: estimates (5)--(6);
+- `semilocalArchimedeanJacobiNormalization_pow_four_bounds`: Wallis estimate (7);
+- `abs_semilocalOnePrimeEvenJacobiCoefficient_sharp_order`: literal two-sided
+  `k^(-3/4)` coefficient order (8)--(9);
+- `abs_semilocalOnePrimeGroundCommutatorRow_sharp_order` and
+  `semilocalOnePrimeGroundCommutatorRow_unbounded`: (1) and unboundedness;
+- `summable_semilocalOnePrimeGroundRowSmoothedSquare_iff`: exact threshold (2);
+- `semilocalOnePrimeGroundRowOperator_isTraceClass`: the bounded row is represented by a
+  rank-one trace-class operator;
+- `no_semilocalOnePrime_boundedPerturbationRealization`: the inverse-metric commutator identity
+  rules out every bounded perturbation satisfying the stated metric self-adjointness and Jacobi-row
+  identities.
+
+The main declarations use only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Attack and limits
 

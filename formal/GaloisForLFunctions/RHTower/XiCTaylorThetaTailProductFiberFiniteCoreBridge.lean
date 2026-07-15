@@ -107,6 +107,28 @@ theorem two_mul_sq_mul_thetaCuspTailSecondCoreAtomDerivative_add_eq_twoPhase
     finiteTwoPhaseTranslationPacket_sum_eval]
   ring
 
+/-! ## Current cost of the completion monomial -/
+
+/-- **Symmetric Hermitian completion identity.**  Multiplying both value packets by `2*z^2`
+and differentiating that multiplier leaves exactly one radial real-correlation term.  The two
+off-diagonal value packets remain conjugate-paired rather than being bounded separately. -/
+theorem symmetricHermitianCurrent_two_mul_sq_completion
+    (z D₁ V₁ D₂ V₂ : ℂ) :
+    (((2 * (z ^ 2 * D₁ + 2 * z * V₁)) *
+          (starRingEnd ℂ) (2 * z ^ 2 * V₂)).im +
+        ((2 * (z ^ 2 * D₂ + 2 * z * V₂)) *
+          (starRingEnd ℂ) (2 * z ^ 2 * V₁)).im) / 2 =
+      4 * Complex.normSq z ^ 2 *
+          (((D₁ * (starRingEnd ℂ) V₂).im +
+            (D₂ * (starRingEnd ℂ) V₁).im) / 2) -
+        8 * Complex.normSq z * z.im *
+          (V₁ * (starRingEnd ℂ) V₂).re := by
+  rw [Complex.normSq_apply]
+  simp only [map_mul, map_pow, map_ofNat, pow_two, Complex.add_im,
+    Complex.mul_im, Complex.mul_re, Complex.conj_re, Complex.conj_im]
+  norm_num
+  ring
+
 end
 
 end RHTower

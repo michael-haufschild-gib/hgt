@@ -80,6 +80,22 @@ sum_(n>=1) beta_m^n/n! = exp(beta_m)-1 = 0,                (8)
 
 so the conormal is source-derived from translation by one and not chosen from a degeneracy set.
 
+Differentiating the source constraint gives, for every `k>=0`,
+
+```text
+sum_(n>=0) h^((n+k+1))(0)/(n+1)! = 0.                    (8a)
+```
+
+Therefore the conormal space is not one-dimensional over the constants. The positive thinness
+statement is that all equations `(8a)` are source-operator translates
+
+```text
+D^k(exp(D)-1),                                            (8b)
+```
+
+of one generator. The Gamma corona conormal is cyclic at this algebraic skeleton and its exposed
+clock-boundary symbol remains rank one. This corrects any finite-dimensional reading of “thin.”
+
 ## Source rigging
 
 Let `Phi` be a locally convex space of entire functions containing the Fourier polynomials, with
@@ -202,15 +218,18 @@ This is a general HT prototype. It is not an RH argument.
 5. `gammaPeriodicMode_taylorConormal_hasSum`, the infinite factorial-tail identity `(8)`;
 6. `gammaPeriodicFourier_taylorConormal_hasSum`, the common conormal for every finite Fourier
    packet;
-7. `gammaClockCurvature_apply` and `gammaClockCurvature_eq_outerProduct`, the exact factorial-tail
+7. `gammaPeriodicMode_shiftedTaylorConormal_hasSum` and
+   `gammaPeriodicFourier_shiftedTaylorConormal_hasSum`, all differentiated source-conormal
+   consequences `(8a)`;
+8. `gammaClockCurvature_apply` and `gammaClockCurvature_eq_outerProduct`, the exact factorial-tail
    boundary formula;
-8. `range_gammaClockCurvature` and `finrank_range_gammaClockCurvature`, the exact boundary line and
+9. `range_gammaClockCurvature` and `finrank_range_gammaClockCurvature`, the exact boundary line and
    rank-one theorem at every positive resolution;
-9. `gammaClockTranslation_extendZero`, exact compatibility with forward Ind-clock assembly;
-10. `gammaShiftCofactorFormal_mul_inverse` and
+10. `gammaClockTranslation_extendZero`, exact compatibility with forward Ind-clock assembly;
+11. `gammaShiftCofactorFormal_mul_inverse` and
    `gammaShiftCofactorFormal_inverse_mul`, formal invertibility in `(10)`;
-11. `gammaShiftCofactorSymbol_periodicFrequency`, the global nonunit lattice `(12)`;
-12. `gammaShiftCofactorSymbol_neg`, the self-dual reflection law `(13)`.
+12. `gammaShiftCofactorSymbol_periodicFrequency`, the global nonunit lattice `(12)`;
+13. `gammaShiftCofactorSymbol_neg`, the self-dual reflection law `(13)`.
 
 The general formal consequences `(14)`--`(15)` are supplied by
 `GaloisForLFunctions.HTGeometry.ClockDescentAnomaly` as described above.
@@ -232,6 +251,8 @@ No full build or concurrent Lean invocation was run by this task.
 - [x] affine periodic homogeneous tangent identified
 - [x] arbitrary finite-jet controllability proved on paper
 - [x] infinite-support Taylor conormal proved on paper
+- [x] every differentiated source-conormal consequence proved and Lean-formalized
+- [x] finite-dimensional thinness rejected; cyclic source-operator thinness identified
 - [x] source topology making the conormal continuous identified
 - [x] core theorem formalized in Lean
 - [x] finite unit-translation shadows and exact rank-one curvature formalized in Lean

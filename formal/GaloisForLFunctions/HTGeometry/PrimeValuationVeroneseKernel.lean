@@ -63,6 +63,38 @@ theorem finiteRange_observable_support_finite_iff
     have hbadp : x p ∈ bad := hp
     exact Set.mem_iUnion₂.mpr ⟨x p, ⟨hx, hbadp⟩, rfl⟩
 
+/-- **Recurrent evaluation criterion.**  For a finite-range sequence, a finite family of
+observables is independent modulo finite coordinate support exactly when its restrictions to the
+recurrent value set are linearly independent. -/
+theorem finiteRange_observable_tailIndependent_iff
+    {P V J : Type*} [Fintype J]
+    (x : P → V) (hrange : (Set.range x).Finite) (f : J → V → ℂ) :
+    TailCoefficientIndependent (fun j p ↦ f j (x p)) ↔
+      LinearIndependent ℂ (fun j ↦ fun v : recurringValueSet x ↦ f j v.1) := by
+  classical
+  constructor
+  · intro htail
+    rw [Fintype.linearIndependent_iff]
+    intro q hsum
+    have hq : q = 0 := htail q (by
+      apply (finiteRange_observable_support_finite_iff x hrange
+        (fun w ↦ ∑ j, q j * f j w)).2
+      intro v hv
+      have hvfun := congrFun hsum ⟨v, hv⟩
+      simpa [Finset.sum_apply, Pi.smul_apply, smul_eq_mul] using hvfun)
+    intro j
+    exact congrFun hq j
+  · intro hlinear q hsupp
+    rw [Fintype.linearIndependent_iff] at hlinear
+    have hq : ∀ j, q j = 0 := hlinear q (by
+      funext v
+      have hvanish :=
+        (finiteRange_observable_support_finite_iff x hrange
+          (fun w ↦ ∑ j, q j * f j w)).mp hsupp v.1 v.2
+      simpa [Finset.sum_apply, Pi.smul_apply, smul_eq_mul] using hvanish)
+    funext j
+    exact hq j
+
 /-- Polynomial specialization of the finite-range observable kernel. -/
 theorem finiteRange_mvPolynomial_eval_support_finite_iff
     {P σ : Type*} (x : P → σ → ℂ) (hrange : (Set.range x).Finite)

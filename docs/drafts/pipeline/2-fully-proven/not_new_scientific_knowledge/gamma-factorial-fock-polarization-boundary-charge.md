@@ -116,6 +116,25 @@ reflection-passivity required by the Euler--Lorentz RH block.  Any argument whic
 missing RH metric without constructing the prime--archimedean incidence has only renamed the
 open step.
 
+The full boundary colligation makes the obstruction exact.  Relative to the split clock, Gamma
+translation has the form
+
+```text
+E_(N+1)=[E_N  beta_N;
+         0    I],                                        (13)
+```
+
+where `beta_N` is the nonzero factorial outgoing channel and the boundary self-symbol is the
+identity.  For a pure boundary input `b`, orthogonality of the factorial split gives the Green law
+
+```text
+||E_(N+1)(0,b)||_F^2-||(0,b)||_F^2=||beta_N b||_F^2>0.   (14)
+```
+
+Thus no positive metric which retains this orthogonal source split can make the raw colligation a
+contraction.  Its failure of passivity is not an uncontrolled sign: it is exactly the positive
+factorial boundary energy.
+
 ## Nontrivial positive successor
 
 The no-go leaves a sharper source target.  Gamma supplies, before any Xi divisor is introduced:
@@ -125,6 +144,7 @@ The no-go leaves a sharper source target.  Gamma supplies, before any Xi divisor
 3. the positive moving-boundary charge `(10)`;
 4. the finite Weyl comparison current obtained by exponentiating the analytic half and retaining
    the algebraic half.
+5. the exact boundary-excess identity `(14)`.
 
 The missing theorem is consequently an incidence theorem, not the invention of a metric:
 
@@ -133,7 +153,7 @@ The missing theorem is consequently an incidence theorem, not the invention of a
 ```
 
 There are source-defined maps from the completed Euler valuation module into the factorial Fock
-clock such that:
+finite clocks such that:
 
 - the anti-reflection entry of the local Euler--Lorentz logarithm maps to the top-boundary current;
 - finite observation intertwines reflection and the opposite-variance comparison seam;
@@ -145,6 +165,18 @@ If the induced reflected Lorentz block and its inverse are contractions in this 
 metric, positive-metric rigidity forces every rapidity to vanish and proves RH.  The conjecture is
 strictly source-facing: its input metric and boundary charge are already explicit, while its open
 content is the all-prime cofinal incidence.
+
+The accompanying prime--Laplace incidence theorem proves that these maps exist
+Hilbert--Schmidtly at every finite clock and are jointly faithful.  It also proves that they do
+**not** assemble to a bounded map into the standard factorial Fock colimit: a prime column has
+squared norm `w_theta(p)p^(-2x_0)exp((log p)^2)`.  Thus “cofinal” above means a projective
+Mackey/relative-graph trace topology, not a single factorial Fock Hilbert space.
+
+Because of `(14)`, the word `contractions` in the last paragraph cannot refer to the raw Gamma
+translation.  The incidence must first form the source-canonical characteristic/scattering
+transform, Cayley transform of a positive-real boundary impedance, or an equivalent star-Kadison
+compression whose loss is `(14)`.  Constructing that transform from the paired incoming/outgoing
+source channels is part of the conjecture, not harmless system-theory notation.
 
 ## Parent-theory boundary
 
@@ -159,5 +191,6 @@ core.  No new-science claim is made for `(5)`--`(10)`.
 - [x] derive the unique diagonal factorial polarization
 - [x] compute the positive rank-one top-boundary charge
 - [x] falsify automatic passivity of finite Gamma translation
+- [x] identify its exact positive pure-boundary excess
 - [x] replace that no-go by an explicit polarized incidence conjecture
 - [ ] formalize only if the Euler--Gamma incidence begins to use this metric

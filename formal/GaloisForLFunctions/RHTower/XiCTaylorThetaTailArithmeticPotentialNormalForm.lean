@@ -320,7 +320,6 @@ theorem criticalNormalized_densityPhaseTailDerivative_eq_endpoint_sub_sq_potenti
               (thetaCuspTailDerivativePolynomial 0) 1 u : ℝ) : ℂ) *
                 (((u - a : ℝ) : ℂ) * I * spectralTranslationPhase u z))) by ring,
     hendpoint]
-  ring
 
 /-- The critically normalized phase transform of the `n`-th arithmetic atom has an explicit
 affine endpoint jet and one `z^2`-weighted potential tail. -/

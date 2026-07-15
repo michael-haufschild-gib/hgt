@@ -712,6 +712,48 @@ theorem continuousLinearMap_eq_zero_of_tateClockFiniteObservableSurjective
   ext x
   exact congrFun heq x
 
+/-- The coarsest refinement of the raw product clock topology which makes a chosen source
+conormal continuous.  The infimum is in Lean's reverse-inclusion order on topologies: it retains
+all product-clock observations and adds exactly the opens forced by `L`. -/
+@[reducible] def sourceConormalRefinedTopology
+    {Q : Type*} [AddCommGroup Q] [Module K Q] [TopologicalSpace Q]
+    (base : TopologicalSpace (ℕ → K)) (L : (ℕ → K) →ₗ[K] Q) :
+    TopologicalSpace (ℕ → K) :=
+  base ⊓
+    TopologicalSpace.induced L (inferInstance : TopologicalSpace Q)
+
+/-- **A nonzero source conormal forces a genuinely finer clock topology.**  If a conormal
+annihilates a finite-observably free source tangent, then it is invisible to the product clock.
+Consequently the minimal topology which makes that conormal continuous is strictly finer than the
+product topology.
+
+This is the positive topology forced by the product-observation no-go: the source constraint does
+not merely inhabit a completion chosen afterwards; it contributes new open sets. -/
+theorem sourceConormalRefinedTopology_lt_product
+    {Q : Type*} [AddCommGroup Q] [Module K Q] [TopologicalSpace Q] [T2Space Q]
+    (W : Submodule K (ℕ → K)) (hW : TateClockFiniteObservableSurjective W)
+    (L : (ℕ → K) →ₗ[K] Q) (hL : L ≠ 0) (hzero : ∀ w : W, L w.1 = 0) :
+    sourceConormalRefinedTopology (K := K)
+        (inferInstance : TopologicalSpace (ℕ → K)) L <
+      (inferInstance : TopologicalSpace (ℕ → K)) := by
+  rw [sourceConormalRefinedTopology, inf_lt_left]
+  intro hcontinuous
+  apply hL
+  exact continuousLinearMap_eq_zero_of_tateClockFiniteObservableSurjective
+    W hW L (continuous_iff_le_induced.mpr hcontinuous) hzero
+
+omit [TopologicalSpace K] in
+/-- The source-conormal refinement is minimal: every topology which refines the product clock and
+makes `L` continuous is itself finer than `sourceConormalRefinedTopology L`. -/
+theorem le_sourceConormalRefinedTopology
+    {Q : Type*} [AddCommGroup Q] [Module K Q] [TopologicalSpace Q]
+    (L : (ℕ → K) →ₗ[K] Q)
+    (base t : TopologicalSpace (ℕ → K))
+    (hproduct : t ≤ base)
+    (hL : t ≤ TopologicalSpace.induced L (inferInstance : TopologicalSpace Q)) :
+    t ≤ sourceConormalRefinedTopology (K := K) base L :=
+  le_inf hproduct hL
+
 end DenseBoundary
 
 end

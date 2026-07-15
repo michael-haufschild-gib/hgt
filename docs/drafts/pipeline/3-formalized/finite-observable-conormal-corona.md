@@ -1,7 +1,7 @@
 # Finite-observable freedom forces every nonzero source conormal into a dual corona
 
 - **ID:** `finite-observable-conormal-corona`
-- **Stage:** 2-fully-proven / needs independent audit
+- **Stage:** 3-formalized
 - **Type:** GENERAL HT THEOREM / TOPOLOGICAL NECESSITY
 - **Scientific status:** `[CORE THEOREM PROVED AND LEAN-FORMALIZED] [RIGGED-TATE CONSEQUENCE PROVED CONDITIONAL ON SOURCE TANGENT MODEL] [SOURCE REALIZATION CONJECTURAL] [NOVELTY PROVISIONAL]`
 - **Parent:** `hypertranscendental-kaehler-tate-clock-linearization.md`

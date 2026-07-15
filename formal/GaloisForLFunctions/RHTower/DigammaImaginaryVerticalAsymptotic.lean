@@ -38,7 +38,7 @@ theorem integral_verticalCauchyKernel {σ t a b : ℝ} (ht : 0 < t) :
   apply intervalIntegral.integral_eq_sub_of_hasDerivAt
   · intro x hx
     have hlin : HasDerivAt (fun y : ℝ => (σ + y) / t) (1 / t) x := by
-      convert ((hasDerivAt_const x σ).add (hasDerivAt_id x)).div_const t using 1 <;> ring
+      simpa using ((hasDerivAt_const x σ).add (hasDerivAt_id x)).div_const t
     convert hlin.arctan using 1
     unfold verticalCauchyKernel
     field_simp [ht.ne']
@@ -207,7 +207,7 @@ theorem digamma_vertical_sub_log_I_tendsto_zero (σ : ℝ) (hσ : 0 ≤ σ) :
     simpa using hcast.mul_const Complex.I
   have hsum := hreC.add himC
   simpa only [add_zero] using hsum.congr' (Filter.Eventually.of_forall fun t => by
-    apply Complex.ext <;> simp <;> ring)
+    apply Complex.ext <;> simp)
 
 end
 

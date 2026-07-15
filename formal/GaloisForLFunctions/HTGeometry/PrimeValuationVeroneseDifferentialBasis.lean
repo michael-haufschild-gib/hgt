@@ -21,6 +21,9 @@ noncomputable section
 
 universe u
 
+set_option maxHeartbeats 300000
+set_option synthInstance.maxHeartbeats 60000
+
 local instance complexFinitePrimeRationalAmbientScalarTowerPrimePower :
     IsScalarTower ℂ finitePrimeRationalCoefficientField
       arithmeticFunctionRationalCoordinateField :=
@@ -38,7 +41,7 @@ local instance complexFinitePrimeRationalAmbientScalarTowerPrimePower :
 
 /-- The order-`k` shifted rotated jet in prime-power layer `e`.  The parameter `a` is the
 effective exponent shift: analytically this column is
-`sum_p c(p) p^-((e+1)s-a)` up to the sign convention of `primeShiftFactor`. -/
+`sum_p c(p) p^-((e+1)s+a)`. -/
 def primePowerCoefficientShiftedRotatedJet
     (e : ℕ) (c : Nat.Primes → ℂ) (a : ℂ) (k : ℕ) : ArithmeticFunction ℂ :=
   arithmeticOfPrimePowerColumn e fun p ↦
@@ -182,6 +185,26 @@ theorem primePowerCoefficientShiftedRotatedJet_linearCombination
     ring
   · simp [primePowerCoefficientShiftedRotatedJet,
       arithmeticOfPrimePowerColumn, hpow, ArithmeticFunction.smul_map]
+
+/-- The finite linear-combination law survives in the rational-coordinate ambient field at every
+differential jet. -/
+theorem differentialJet_primePowerCoefficientShiftCarrier_linearCombination
+    {B : Type*} [Fintype B]
+    (e : ℕ) (c : B → Nat.Primes → ℂ) (z : B → ℂ) (a : ℂ) (k : ℕ) :
+    GaloisForLFunctions.differentialJet k
+        (primePowerCoefficientShiftCarrier e (fun p ↦ ∑ b, z b * c b p) a) =
+      ∑ b, algebraMap ℂ arithmeticFunctionRationalCoordinateField (z b) *
+        GaloisForLFunctions.differentialJet k
+          (primePowerCoefficientShiftCarrier e (c b) a) := by
+  classical
+  simp_rw [differentialJet_primePowerCoefficientShiftCarrier]
+  rw [primePowerCoefficientShiftedRotatedJet_linearCombination]
+  rw [map_sum]
+  rw [map_sum]
+  apply Finset.sum_congr rfl
+  intro b hb
+  rw [map_mul, map_mul]
+  congr 1
 
 /-- At every jet order, a finite prime-tail residual in one valuation layer contributes only a
 base-field correction. -/

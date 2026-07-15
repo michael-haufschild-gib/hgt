@@ -63,6 +63,9 @@ not yet establish invariance under completion or inequivalent source topologies.
 - `quotientShadow_eq_zero_of_anomaly_mem_kernel`.
 - `denseRange_subtype_of_tateClockFiniteObservableSurjective`;
 - `continuousLinearMap_eq_zero_of_tateClockFiniteObservableSurjective`.
+- `sourceConormalRefinedTopology`;
+- `sourceConormalRefinedTopology_lt_product`;
+- `le_sourceConormalRefinedTopology`.
 
 The last declaration proves the quotient form: if the anomaly of a source solution lies in a
 declared quotient kernel and source solutions cover all quotient observations, the induced
@@ -72,6 +75,10 @@ The two topology declarations prove that a finite-observably free source tangent
 raw product clock and that every Hausdorff continuous linear observation annihilating it is zero.
 Thus a nonzero constraint boundary requires a source-selected topology finer than the product
 clock topology.
+
+The three source-conormal declarations give the positive construction forced by that no-go: the
+coarsest topology generated jointly by the product clock and a selected conormal is strictly finer
+whenever the conormal is nonzero, and every other topology carrying both data refines it.
 
 The new module had no cached object, so it received exactly one targeted module build followed by
 one direct source check. After adding chart covariance, only the direct source check was rerun.
