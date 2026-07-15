@@ -173,37 +173,71 @@ polygamma coordinate is now detected: odd orders by even-zeta residues and even 
 finite Euler-product tail.  The active core is no longer coordinate-level analytic detection but
 simultaneous algebraic cancellation among finitely many jet coordinates.
 
-## Open core: all-order intrinsic pole-germ residue
+## Direct outer-composition no-go and inverse-branch replacement
 
-The projective curvature, the translation-invariant Schwarzian, and the first common equation of
-the full exponential-reciprocal envelope are now crossed.  These do not yet imply injectivity on
-the complete reciprocal differential ideal.  The residue map must retain the full lexicographic
-signature: factorial order, harmonic degree, and the bounded generalized-harmonic/zeta layer.
-The analytic input at arbitrary finite jet order is complete, including a nonzero residue for every
-positive polygamma coordinate.  The open problem is the algebra of simultaneous cancellations
-among products of these exact layers.
+The lexicographic residue attack detects each individual polygamma coordinate, but it asks for a
+new cancellation theorem at every differential order.  Worse, it cannot be implemented by taking
+an ordinary Laurent series of an outer Gamma composition: after the pole microscope the inner
+Gamma tends to infinity as `-1/X`, so the outer Gamma has no Laurent germ at `X=0`.  This retires
+direct coefficientwise outer-Gamma substitution as the all-order mechanism.
 
-The proof-grade missing theorem is:
+The strong positive replacement is the complete family of normalized inverse branches.  Write
 
-> For every nonzero derivative-weight-homogeneous differential polynomial that vanishes on
-> `-1/x`, the first nonzero coefficient of its exact Gamma pole-germ expansion is nonzero after
-> lexicographic filtration by factorial order, harmonic degree, and bounded generalized-harmonic
-> data.
+\[
+  \Gamma(-n+s_nX)=-\frac{U_n(X)}X,\qquad
+  A_n(X)=\frac{X}{U_n(X)},\qquad B_n=A_n^{\langle-1\rangle}.
+\]
 
-Together with the already formalized nonvanishing of the factorial initial form, this would make
-depth descent injective and close induction on composition depth.
+Then
+
+\[
+  \Gamma(-n+s_nB_n(T))=-\frac1T,
+  \qquad B_n(T)=T\,U_n(B_n(T)).
+\]
+
+The full nonlinear coefficient family of `B_n`, as germs in the pole index, is algebraically
+independent over `ℂ`: the already-free coefficients of `U_n` pass through multiplicative inversion
+and then compositional inversion, and both universal coefficient transformations are involutions.
+This replaces an infinite hierarchy of residue crossings by one invertible coordinate object.
+
+For composition descent, put `w=-1/T` and `z=-n+s_nB_n(T)`.  The derivative transforms exactly as
+
+\[
+  D_z=\frac1{s_n B_n'(T)}D_T.
+\]
+
+At finite jet order, the generic time-change map is birational.  If `D_z=aD_w`, introduce the
+independent `D_w`-jets of `a`.  Then
+
+\[
+  D_z^r w=(aD_w)^r w,
+  \qquad D_z^rF_j(w)=(aD_w)^rF_j(w).
+\]
+
+The first family is triangular in the jets of `a`, with leading coefficients powers of `a`; after
+those are recovered, the second family is triangular in the lower-tower jets, again with leading
+coefficients powers of `a`.  Localizing at `a` gives a rational inverse.  Thus a generic inverse
+branch restores exactly the one differential coordinate lost when `Gamma(z)` becomes the new base
+variable `w`.
+
+The remaining proof-grade bridge is no longer an unknown residue injectivity statement.  It is the
+finite-jet specialization theorem saying that the algebraically independent coefficient germs of
+`B_n` realize this generic time-change birational map disjointly from an arbitrary finite lower
+Gamma-jet frame.  The pole/lower-frame scalar-extension part is formalized; the recursive
+time-change triangularity and its integration with the existing derivative-weight initial-form
+descent remain.
 
 ## Attacks and falsifiers
 
-1. Characterize the differential ideal of the exponential-reciprocal envelope and its successive
-   subordinate kernels.  The first common third-order discriminant is crossed by `ζ(2)`; determine
-   whether the next kernel is crossed by a triangular sequence of higher zeta values.
-2. Derive the Gamma pole-germ residues symbolically from the exact product formula.  No numerical
-   experiment is evidence for this card.
-3. Prove that the residue map is injective on the associated graded kernel.  A nonzero homogeneous
-   differential polynomial annihilating every exact residue layer retires this route.
-4. Check parent theory on differential ideals of reciprocal/projective jets and singular
-   perturbations.  A published general theorem implying the statement retires novelty, not truth.
+1. Formalize generic time-change jet birationality at arbitrary finite depth and jet order by an
+   explicit rational inverse after localizing at the first time-change coordinate.
+2. Specialize the generic time-change variables to the normalized inverse-Gamma branch and use
+   pole/lower-frame disjointness to retain injectivity.
+3. Compose this with the existing derivative-weight/factorial initial-form descent.  A kernel in
+   this composite map retires the inverse-branch route and must yield an explicit positive
+   differential invariant.
+4. Audit iteration theory, differential algebra, and inverse-special-function literature.  A
+   published theorem implying the statement retires novelty, not truth.
 5. Do not replace this core with separate hypertranscendence, finite algebraic independence, or a
    conditional wrapper: none proves joint differential independence.
 
@@ -247,3 +281,9 @@ injectivity theorem is complete and an independent priority audit finds no antec
 - 2026-07-15 — resolved the finite-tail scale in Lean.  At every positive even order `m`, the
   normalized correction tends the universal nonzero coefficient `-(m-1)!`.  Coordinate-level
   detection is complete; the remaining core is injectivity on differential-polynomial products.
+- 2026-07-15 — retired direct Laurent substitution through the outer Gamma: after the pole
+  microscope its input tends to infinity and no outer Laurent germ exists.  Replaced the
+  order-by-order residue core by normalized inverse-pole branches.  Their complete nonlinear
+  coefficient family is paper-proved free via multiplicative and compositional coefficient
+  involutions.  The active all-order core is the birational generic time-change jet map and its
+  specialization disjointly from the lower Gamma-jet frame.

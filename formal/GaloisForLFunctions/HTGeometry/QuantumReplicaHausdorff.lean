@@ -13,20 +13,25 @@ If `C` is a Hilbert--Schmidt constraint channel and `T = C† C`, the normalized
 
 are the replica moments of the density operator obtained by normalizing `T`.  The spectrum of a
 density operator is contained in `[0, 1]`, so these values form a Hausdorff moment sequence.  This
-file formalizes the first genuinely new complementary constraint beyond monotonicity: every
-second complementary finite difference is nonnegative,
+file formalizes the complete complementary hierarchy: every finite-difference order is
+nonnegative,
 
-`0 ≤ Pₖ - 2 Pₖ₊₁ + Pₖ₊₂`.
+`0 ≤ ∑_{j=0}^r (-1)^j choose(r,j) Pₖ₊ⱼ`.
 
-The proof stays below spectral calculus.  Before normalization, the difference is exactly the
-squared Hilbert--Schmidt norm of a difference of consecutive power columns (for even `k`) or
-consecutive positive-effect powers (for odd `k`).  It is therefore reusable for rectangular
-constraint channels on arbitrary complex Hilbert spaces.
+More generally, any effect-radius bound `‖C‖² ≤ R` gives the exact operator value relation
 
-Physics provenance: higher density-matrix moments are multi-copy quantum observables, and
-positivity constraints on moment sequences are used as quantum-state and entanglement witnesses;
-see A. Elben et al., *Nature Reviews Physics* 5 (2023), 9--24, arXiv:2203.11374, and
-A. Neven et al., *npj Quantum Information* 7 (2021), 152, arXiv:2103.07443.
+`D_{k,r} = Re Tr(T^(k+1) (R I - T)^r) ≥ 0`.
+
+The proof constructs the positive complement square root `D = (R I - T)^(1/2)` and expresses
+each weighted monomial trace as a squared Hilbert--Schmidt norm.  It therefore avoids spectral
+decomposition and remains reusable for rectangular constraint channels on arbitrary complex
+Hilbert spaces.
+
+Physics provenance: Gagatsos--Karanikas--Kordas--Cerf derive exactly this all-order Hausdorff law
+for density-operator replica moments in the quantum-optical replica method (Supplemental
+Material, equations (32)--(37)), arXiv:1408.5062.  Higher density-matrix moments are multi-copy
+quantum observables and their moment-matrix positivity gives quantum-state and entanglement
+constraints; see Yu--Imai--Gühne, arXiv:2103.06897, and Elben et al., arXiv:2203.11374.
 -/
 
 open Filter Topology
@@ -497,7 +502,7 @@ theorem quantumMasterEffectReplicaMoment_secondDifference_nonneg
     rw [heq]
     exact div_nonneg hdiff (pow_nonneg hmassPos.le _)
 
-+def quantumMasterEffectComplement (R : ℝ) (C : E →L[ℂ] F) : E →L[ℂ] E :=
+def quantumMasterEffectComplement (R : ℝ) (C : E →L[ℂ] F) : E →L[ℂ] E :=
   (R : ℂ) • (1 : E →L[ℂ] E) - quantumChannelEffect C
 
 theorem adjoint_quantumMasterEffectComplement (R : ℝ) (C : E →L[ℂ] F) :
@@ -782,10 +787,8 @@ private theorem opTrace_sub_eq_sub_of_summable_diag
         rw [ContinuousLinearMap.sub_apply, inner_sub_right]
     _ = _ := hS.tsum_sub hT
 
-private theorem opTrace_smul_eq_of_summable_diag
-    (c : ℂ) (S : E →L[ℂ] E)
-    (hS : Summable (fun i => inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
-      (S (ContinuousLinearMap.hsBasis ℂ E i)))) :
+private theorem opTrace_smul_eq
+    (c : ℂ) (S : E →L[ℂ] E) :
     ContinuousLinearMap.opTrace (c • S) =
       c * ContinuousLinearMap.opTrace S := by
   unfold ContinuousLinearMap.opTrace
@@ -809,7 +812,7 @@ theorem summable_inner_diag_quantumMasterEffectWeighted
   have hfactor : ContinuousLinearMap.adjoint C ∘L A =
       T ^ (k + 1) * B ^ r := by
     change T * (T ^ k * B ^ r) = T ^ (k + 1) * B ^ r
-    rw [← pow_succ']
+    rw [← mul_assoc, ← pow_succ']
   exact hsum.congr fun i => by rw [hfactor]
 
 theorem quantumMasterEffect_weightedOperator_succ
@@ -825,15 +828,17 @@ theorem quantumMasterEffect_weightedOperator_succ
   let B := quantumMasterEffectComplement R C
   change T ^ (k + 1) * B ^ (r + 1) =
     (R : ℂ) • (T ^ (k + 1) * B ^ r) - T ^ (k + 2) * B ^ r
-  rw [pow_succ']
+  have hBpow : B ^ (r + 1) = B * B ^ r := pow_succ' B r
+  have hTpow : T ^ (k + 1) * T = T ^ (k + 2) := by
+    rw [← pow_succ]
+  rw [hBpow, ← mul_assoc]
   rw [show B = (R : ℂ) • (1 : E →L[ℂ] E) - T by
     rfl]
   rw [mul_sub, sub_mul]
   simp only [mul_smul_comm, mul_one, smul_mul_assoc]
-  rw [← pow_succ]
+  rw [hTpow]
 
 /-- Multiplication by the complement `R I - T` is exactly one scaled Hausdorff difference. -/
-/-
 theorem quantumMasterEffectWeightedMoment_succ
     {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C)
     (R : ℝ) (k r : ℕ) :
@@ -844,16 +849,27 @@ theorem quantumMasterEffectWeightedMoment_succ
     quantumMasterEffectComplement R C ^ r
   let A' := quantumChannelEffect C ^ (k + 2) *
     quantumMasterEffectComplement R C ^ r
-  have hA := summable_inner_diag_quantumMasterEffectWeighted hC R k r
-  have hA' := summable_inner_diag_quantumMasterEffectWeighted hC R (k + 1) r
-  rw [quantumMasterEffectWeightedMoment,
-    quantumMasterEffect_weightedOperator_succ]
-  rw [opTrace_sub_eq_sub_of_summable_diag ((R : ℂ) • A) A'
-    (hA.smul (R : ℂ)) hA']
-  rw [opTrace_smul_eq_of_summable_diag (R : ℂ) A hA]
-  simp only [Complex.sub_re, Complex.mul_re, Complex.ofReal_re,
-    Complex.ofReal_im, zero_mul, sub_zero]
-  rfl
+  have hA : Summable (fun i => inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
+      (A (ContinuousLinearMap.hsBasis ℂ E i))) :=
+    summable_inner_diag_quantumMasterEffectWeighted hC R k r
+  have hA' : Summable (fun i => inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
+      (A' (ContinuousLinearMap.hsBasis ℂ E i))) := by
+    simpa only [A', show k + 1 + 1 = k + 2 by omega] using
+      summable_inner_diag_quantumMasterEffectWeighted hC R (k + 1) r
+  have htrace :
+      ContinuousLinearMap.opTrace
+          (quantumChannelEffect C ^ (k + 1) *
+            quantumMasterEffectComplement R C ^ (r + 1)) =
+        (R : ℂ) * ContinuousLinearMap.opTrace A -
+          ContinuousLinearMap.opTrace A' := by
+    rw [quantumMasterEffect_weightedOperator_succ]
+    rw [opTrace_sub_eq_sub_of_summable_diag ((R : ℂ) • A) A'
+      (hA.mul_left (R : ℂ)) hA']
+    rw [opTrace_smul_eq (R : ℂ) A]
+  have hre := congrArg Complex.re htrace
+  simpa only [quantumMasterEffectWeightedMoment, A, A', Complex.sub_re,
+    Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero,
+    show k + 1 + 1 = k + 2 by omega] using hre
 
 /-- Recursive `R`-scaled complementary difference of the master-effect trace moments. -/
 def quantumMasterEffectScaledDifference
@@ -908,8 +924,7 @@ def quantumMasterEffectReplicaDifference
       quantumMasterEffectReplicaDifference C (k + 1) r
 
 theorem quantumMasterEffectReplicaDifference_eq_scaledDifference_div
-    {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C)
-    (hmass : quantumMasterEffectMass C ≠ 0) (k r : ℕ) :
+    {C : E →L[ℂ] F} (hmass : quantumMasterEffectMass C ≠ 0) (k r : ℕ) :
     quantumMasterEffectReplicaDifference C k r =
       quantumMasterEffectScaledDifference (quantumMasterEffectMass C) C k r /
         quantumMasterEffectMass C ^ (k + r + 1) := by
@@ -944,7 +959,7 @@ theorem quantumMasterEffectReplicaDifference_nonneg
       | succ r ih =>
           rw [quantumMasterEffectReplicaDifference, ih j, ih (j + 1), sub_self]
     rw [hzero k]
-  · rw [quantumMasterEffectReplicaDifference_eq_scaledDifference_div hC hmass]
+  · rw [quantumMasterEffectReplicaDifference_eq_scaledDifference_div hmass]
     exact div_nonneg
       (quantumMasterEffectScaledDifference_nonneg hC
         (sq_opNorm_le_quantumMasterEffectMass hC) k r)

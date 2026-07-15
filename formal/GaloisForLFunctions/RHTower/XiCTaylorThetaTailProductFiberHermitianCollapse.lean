@@ -185,29 +185,37 @@ theorem thetaProductFiberHermitianPhaseCoefficient_re
   let e₂ : ℂ := ((-v : ℝ) : ℂ) * I * z
   have hre : (e₁ + (starRingEnd ℂ) e₂).re = (u + v) * z.im := by
     dsimp only [e₁, e₂]
-    simp only [Complex.add_re, Complex.conj_re, Complex.mul_re,
-      Complex.ofReal_re, Complex.ofReal_im, Complex.neg_re, Complex.neg_im,
-      Complex.I_re, Complex.I_im, zero_mul, one_mul, mul_zero, zero_add]
+    simp only [Complex.add_re, Complex.conj_re, Complex.mul_re, Complex.mul_im,
+      Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im,
+      zero_mul, mul_zero]
     ring
   have him : (e₁ + (starRingEnd ℂ) e₂).im = (v - u) * z.re := by
     dsimp only [e₁, e₂]
     simp only [Complex.add_im, Complex.conj_im, Complex.mul_re, Complex.mul_im,
-      Complex.ofReal_re, Complex.ofReal_im, Complex.neg_re, Complex.neg_im,
-      Complex.I_re, Complex.I_im, zero_mul, one_mul, mul_zero, zero_add]
+      Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im,
+      zero_mul, mul_zero]
     ring
   have hproduct :
       (((a : ℝ) : ℂ) * Complex.exp e₁) *
           (starRingEnd ℂ) (((b : ℝ) : ℂ) * Complex.exp e₂) =
         (((a * b : ℝ) : ℂ)) *
           Complex.exp (e₁ + (starRingEnd ℂ) e₂) := by
-    rw [map_mul, Complex.conj_ofReal, ← Complex.exp_conj, ← Complex.exp_add]
-    push_cast
-    ring
+    rw [map_mul, Complex.conj_ofReal, ← Complex.exp_conj]
+    calc
+      (((a : ℝ) : ℂ) * Complex.exp e₁) *
+          (((b : ℝ) : ℂ) * Complex.exp ((starRingEnd ℂ) e₂)) =
+        ((((a : ℝ) : ℂ) * ((b : ℝ) : ℂ))) *
+          (Complex.exp e₁ * Complex.exp ((starRingEnd ℂ) e₂)) := by ring
+      _ = (((a * b : ℝ) : ℂ)) *
+          Complex.exp (e₁ + (starRingEnd ℂ) e₂) := by
+        rw [← Complex.exp_add]
+        norm_cast
   change ((((a : ℝ) : ℂ) * Complex.exp e₁) *
       (starRingEnd ℂ) (((b : ℝ) : ℂ) * Complex.exp e₂)).re = _
   rw [hproduct, Complex.mul_re, Complex.exp_re, hre, him]
-  simp only [Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero]
-  rfl
+  simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
+  dsimp only [a, b, u, v]
+  ring
 
 /-- The full Hermitian fibre trace is an explicit signed cosine packet with positive critical
 amplitudes. -/
@@ -225,6 +233,70 @@ theorem sum_thetaProductFiberHermitianPhaseCoefficient_re
   apply Finset.sum_congr rfl
   intro q _hq
   exact thetaProductFiberHermitianPhaseCoefficient_re q z
+
+/-- The first nontrivial positive product fibre consists of the two reflected ordered pairs. -/
+theorem thetaPositiveFactorPairs_two :
+    thetaPositiveFactorPairs 2 = {(0, 1), (1, 0)} := by
+  ext q
+  rcases q with ⟨a, b⟩
+  change ((a ≤ 1 ∧ b ≤ 1) ∧ (a + 1) * (b + 1) = 2) ↔
+    (a = 0 ∧ b = 1) ∨ (a = 1 ∧ b = 0)
+  constructor
+  · rintro ⟨⟨ha, hb⟩, hab⟩
+    interval_cases a <;> interval_cases b <;> norm_num at hab ⊢
+  · rintro (h | h)
+    · rcases h with ⟨rfl, rfl⟩
+      norm_num
+    · rcases h with ⟨rfl, rfl⟩
+      norm_num
+
+/-- Closed trace formula on the first nontrivial product fibre.  The trace is a boundary cosine,
+so its sign oscillates with the real coordinate even though the coherent analytic fibre current
+is strictly negative throughout the upper half-plane. -/
+theorem sum_thetaProductFiberHermitianPhaseCoefficient_re_two
+    (z : ℂ) :
+    ( ∑ q ∈ thetaPositiveFactorPairs 2,
+        (thetaProductFiberHermitianPhaseCoefficient q z).re) =
+      2 * ((2 : ℝ) ^ (-(1 / 2 : ℝ))) *
+        Real.exp (Real.log 2 * z.im) *
+          Real.cos (Real.log 2 * z.re) := by
+  rw [thetaPositiveFactorPairs_two,
+    Finset.sum_insert (by norm_num), Finset.sum_singleton,
+    thetaProductFiberHermitianPhaseCoefficient_re,
+    thetaProductFiberHermitianPhaseCoefficient_re]
+  norm_num only [Prod.fst, Prod.snd, Nat.cast_ofNat, Real.one_rpow,
+    Real.log_one, zero_add, add_zero, sub_zero, zero_sub, Real.cos_neg]
+  ring
+
+/-- Exact upper-half-plane point at which Hermitian fixed-product polarization reverses the
+favorable coherent-fibre sign. -/
+def thetaProductFiberHermitianSignReversalPoint : ℂ :=
+  ⟨Real.pi / Real.log 2, 1 / 4⟩
+
+@[simp] theorem thetaProductFiberHermitianSignReversalPoint_re :
+    thetaProductFiberHermitianSignReversalPoint.re = Real.pi / Real.log 2 := rfl
+
+@[simp] theorem thetaProductFiberHermitianSignReversalPoint_im :
+    thetaProductFiberHermitianSignReversalPoint.im = 1 / 4 := rfl
+
+/-- The Hermitian trace on the first nontrivial fibre is strictly negative at the exact reversal
+point.  No endpoint window or finite-section top edge is involved. -/
+theorem sum_thetaProductFiberHermitianPhaseCoefficient_re_two_lt_zero :
+    ( ∑ q ∈ thetaPositiveFactorPairs 2,
+        (thetaProductFiberHermitianPhaseCoefficient q
+          thetaProductFiberHermitianSignReversalPoint).re) < 0 := by
+  rw [sum_thetaProductFiberHermitianPhaseCoefficient_re_two]
+  have hlog : 0 < Real.log (2 : ℝ) := Real.log_pos (by norm_num)
+  have hphase :
+      Real.log (2 : ℝ) * (Real.pi / Real.log (2 : ℝ)) = Real.pi := by
+    field_simp
+  rw [thetaProductFiberHermitianSignReversalPoint_re,
+    thetaProductFiberHermitianSignReversalPoint_im, hphase, Real.cos_pi]
+  have hamp : 0 <
+      ((2 : ℝ) ^ (-(1 / 2 : ℝ))) *
+        Real.exp (Real.log 2 * (1 / 4 : ℝ)) :=
+    mul_pos (Real.rpow_pos_of_pos (by norm_num) _) (Real.exp_pos _)
+  nlinarith
 
 /-- The seam-free common-tail model of one fixed-product Hermitian convolution fibre. -/
 def thetaProductFiberCommonTailHermitianCurrent
@@ -272,6 +344,27 @@ theorem thetaProductFiberCommonTailHermitianCurrent_one_pos_of_trace_neg
   have hlog : 0 < Real.log k := Real.log_pos (by exact_mod_cast hk)
   simp only [map_one, mul_one, Complex.zero_im, zero_sub]
   exact mul_pos_of_neg_of_neg htrace (by linarith)
+
+/-- **Exact polarization sign reversal.**  At one explicit point in the canonical upper strip,
+the coherent divisor-phase current on the fibre `k = 2` is strictly negative while the seam-free
+Hermitian current of the common unit tail is strictly positive.  Consequently the coherent
+prime-factor sign cannot furnish a nonpositive base for the fixed-product Hermitian convolution
+with an error consisting only of endpoint windows and finite translation edges: a separate
+polarization defect is already present when both of those seams vanish. -/
+theorem thetaProductFiberHermitianPolarization_sign_reversal :
+    (thetaProductFiberCenteredPhaseDerivative 2
+          thetaProductFiberHermitianSignReversalPoint *
+        (starRingEnd ℂ) (thetaProductFiberCenteredPhase 2
+          thetaProductFiberHermitianSignReversalPoint)).im < 0 ∧
+      0 < thetaProductFiberCommonTailHermitianCurrent 2
+        thetaProductFiberHermitianSignReversalPoint 1 0 := by
+  constructor
+  · exact thetaProductFiberCenteredPhase_current_lt_zero
+      (k := 2) (by norm_num)
+      (z := thetaProductFiberHermitianSignReversalPoint) (by norm_num)
+  · exact thetaProductFiberCommonTailHermitianCurrent_one_pos_of_trace_neg
+      (k := 2) (by norm_num)
+        sum_thetaProductFiberHermitianPhaseCoefficient_re_two_lt_zero
 
 /-! ## Exact model-plus-joint-defect decomposition of the canonical moment fibre -/
 
