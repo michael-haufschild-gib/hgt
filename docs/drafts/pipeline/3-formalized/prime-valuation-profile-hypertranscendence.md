@@ -89,6 +89,19 @@ presentations.  This resolves the simultaneous-family question left open by inde
 results: distinct presentations may generate the same field, but only through ordinary linear
 change of profile coordinates.
 
+The classification also preserves intersections in basis-decomposition form.  Let `a` be a common
+profile basis, let `b` and `c` be complementary profile blocks, and assume the combined family
+`a ⊕ b ⊕ c` is linearly independent.  Then
+
+```text
+C<a,b> ∩ C<a,c> = C<a>.
+```
+
+There are therefore no hidden common differential observables beyond the common profile
+subspace.  The proof uses the classical linear-disjointness of rational-function fields only as
+infrastructure; the prime-valuation rank law is what identifies the actual embedded fields to
+which that meet theorem applies.
+
 ## Stronger arbitrary-tail certificate
 
 The proof establishes a theorem beyond the prime-radial class.  Let `g_1,...,g_d` be arbitrary
@@ -145,8 +158,8 @@ logarithmic-jet orbit under suitable hypotheses, proves zeta hypertranscendence,
 the Shapiro--Sparer Jacobian criterion underlies the known arithmetic-function independence tests.
 Those are not novelty claims here.  The present theorem surface instead classifies simultaneous
 finite families with common all-prime support: it gives an exact rank law, the entire differential
-relation ideal, a relative hypertranscendence dichotomy, and an order/equality classification of
-their embedded differential fields by valuation-profile subspaces.  The inspected
+relation ideal, a relative hypertranscendence dichotomy, and an order/equality/meet classification
+of their embedded differential fields by valuation-profile subspaces.  The inspected
 Shapiro--Sparer, Pong, Komatsu--Laohakosol--Ruengsinsub, and Rearick sources do not state this
 profile-subspace differential-field classification.
 
@@ -163,9 +176,12 @@ corollary of the arithmetic-function Jacobian literature.
   classification, arbitrary-tail finite-minor certificate, and the field-membership/order law.
 - The strongest non-theatrical statement is the closure law: a source is relatively
   hypertranscendental over the generated field exactly outside the profile span, while
-  differential-field containment is equivalent to profile-span containment.  Removing project
-  vocabulary leaves a genuine classification theorem, not merely the classical Jacobian
-  criterion.
+  differential-field containment is equivalent to profile-span containment and complementary
+  profile blocks have exactly the predicted common field.  Removing project vocabulary leaves a
+  genuine classification theorem, not merely the classical Jacobian criterion.
+- Linear disjointness and the generic rational-field meet theorem are parent infrastructure, not
+  novelty.  The candidate contribution is their exact realization by the prime-radial profile
+  closure law.
 
 ## Downstream zeta and RH boundary
 
@@ -204,6 +220,7 @@ non-radial prime dependence, or an infinite completion effect.
 | relative hypertranscendence iff outside the profile span | `primeValuationProfile_relative_hypertranscendentalOver_iff_not_mem_span` |
 | field containment iff profile-span containment | `primeValuationProfile_differentialAdjoin_le_iff_span_le` |
 | field equality iff profile-subspace equality | `primeValuationProfile_differentialAdjoin_eq_iff_span_eq` |
+| common-profile field intersection law | `primeValuationProfile_threeBlock_differentialAdjoin_inf` |
 
 The declarations are in:
 
@@ -216,9 +233,10 @@ The declarations are in:
 
 The theorem modules pass direct leaf checks.  Exact cached module builds were run only when the
 corresponding `.olean` was missing; no full build was run.  The main rank, relation-ideal,
-differential-adjoin, relative-independence, field-membership, field-order, field-equality, and
-arbitrary-tail declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`.  No
-`sorry`, `admit`, custom `axiom`, `opaque`, or `unsafe` declaration occurs in the theorem modules.
+differential-adjoin, relative-independence, field-membership, field-order, field-equality,
+field-intersection, and arbitrary-tail declarations depend only on `propext`, `Classical.choice`,
+and `Quot.sound`.  No `sorry`, `admit`, custom `axiom`, `opaque`, or `unsafe` declaration occurs in
+the theorem modules.
 
 ## Gates
 
@@ -231,6 +249,7 @@ arbitrary-tail declarations depend only on `propext`, `Classical.choice`, and `Q
 - [x] relative hypertranscendence iff outside the profile span proved
 - [x] differential-field containment iff profile-span containment proved
 - [x] generated-field equality iff profile-subspace equality proved
+- [x] common-profile field intersection law proved
 - [x] direct checks and exact cached module builds passed
 - [x] standard-axiom audit passed
 - [ ] specialist priority audit completed

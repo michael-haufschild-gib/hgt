@@ -53,7 +53,9 @@ theorem sparsePrefixOrientation_pattern_fiber_infinite
   apply (Set.Infinite.image e.injective.injOn hA).mono
   intro p hp
   obtain ⟨q, hqA, rfl⟩ := hp
-  simpa only [Set.mem_setOf_eq, sparsePrefixOrientation_apply_embedding] using hqA
+  change (fun i => prefixFunctionOrientation (x i) q) = b at hqA
+  change (fun i => sparsePrefixOrientation e (x i) (e q)) = b
+  simpa only [sparsePrefixOrientation_apply_embedding] using hqA
 
 /-- Sparse transport preserves the recurring-pattern tail rank of every finite
 injective sequence family. -/
@@ -131,9 +133,13 @@ theorem weightedOrientationDistanceSq_lt_of_mismatch_subset
     simp only [f, g]
     by_cases hab : a p = b p
     · rw [if_pos hab]
-      exact Set.indicator_nonneg fun _ _ => by positivity
+      by_cases hp : p ∈ S
+      · rw [Set.indicator_of_mem hp]
+        positivity
+      · simp [hp]
     · rw [if_neg hab]
-      simp only [g, Set.indicator_of_mem (hsupport p hab)]
+      simp only [Set.indicator_of_mem (hsupport p hab)]
+      exact le_rfl
   have hfsum : Summable f := Summable.of_nonneg_of_le hfnonneg hle hsum
   exact lt_of_le_of_lt (hfsum.tsum_le_tsum hle hsum) hbudget
 

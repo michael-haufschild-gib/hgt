@@ -47,7 +47,8 @@ theorem exists_logSuperlacunary_intDominance_of_positiveJetDegree {b : ℕ → �
   obtain ⟨anchor, ha, hanchor⟩ :=
     Finset.exists_mem_eq_sup Q.support hsupport (fun m => jetMonomialDegree n m)
   have hanchorD : jetMonomialDegree n anchor = D := by
-    rw [D, magnitudeMaxJetDegree, jetMonomialDegree]
+    change jetMonomialDegree n anchor = magnitudeMaxJetDegree n Q
+    rw [magnitudeMaxJetDegree, jetMonomialDegree]
     exact hanchor.symm
   have hanchorPos : 0 < jetMonomialDegree n anchor := hanchorD ▸ hD
   obtain ⟨δ, _hδinj, Qbal, hbalanced⟩ :=
@@ -78,7 +79,7 @@ theorem exists_logSuperlacunary_intDominance_of_positiveJetDegree {b : ℕ → �
   let S₀ := Qbal + Qwit + Nstrict + Nsi + Mmass + Cgeom + 1
   let q := 2 * S₀
   let T := q / 2
-  let s : Fin D → ℕ := fun i => q + δ i
+  let s : Fin (jetMonomialDegree n anchor) → ℕ := fun i => q + δ i
   let N := (∑ i, s i) + anchor 0 - J
   have hT : T = S₀ := by simp [T, q]
   have hqQbal : Qbal ≤ q := by dsimp [q, S₀]; omega
@@ -92,25 +93,29 @@ theorem exists_logSuperlacunary_intDominance_of_positiveJetDegree {b : ℕ → �
   obtain ⟨hνw, hww, _hgroup⟩ :
       key s ∈ (sigmaIdx n N Q).image (atomKeyOf n) ∧
         aevalWeight n N Q (key s) ≠ 0 ∧
-        balancedJetGroup n N D Q s = topShiftJetGroup n Q anchor := by
-    simpa [s, N, D, J] using hbalanced q hqQbal
+        balancedJetGroup n N (jetMonomialDegree n anchor) Q s =
+          topShiftJetGroup n Q anchor := by
+    simpa only [s, N, J] using hbalanced q hqQbal
   obtain ⟨hVw, hVwSucc⟩ := hwitnessVal q hqQwit
-  change (key s).sum (fun i k => (k : ℝ) * b i) ≤ (D : ℝ) * b (q + B) at hVw
-  change (D : ℝ) * b (q + B) ≤ b (q + B + 1) at hVwSucc
+  change (key s).sum (fun i k => (k : ℝ) * b i) ≤
+    (jetMonomialDegree n anchor : ℝ) * b (q + B) at hVw
+  change (jetMonomialDegree n anchor : ℝ) * b (q + B) ≤ b (q + B + 1) at hVwSucc
   obtain ⟨ν₀, hν₀, hw₀, hmin, hminw⟩ := exists_min_nonzero_aevalWeight Q b hνw hww
   have hVupper : ν₀.sum (fun i k => (k : ℝ) * b i) ≤ b (q + B + 1) :=
     hminw.trans (hVw.trans hVwSucc)
   have hsLower : D * q ≤ ∑ i, s i := by
     calc
-      D * q = ∑ _i : Fin D, q := by simp
-      _ ≤ ∑ i : Fin D, s i := by
+      D * q = ∑ _i : Fin (jetMonomialDegree n anchor), q := by simp [hanchorD]
+      _ ≤ ∑ i : Fin (jetMonomialDegree n anchor), s i := by
         apply Finset.sum_le_sum
         intro i _
         simp [s]
   have hJsum : J ≤ (∑ i, s i) + anchor 0 := by
     have hqsum : q ≤ ∑ i, s i := by
       have hD1 : 1 ≤ D := hD
-      omega
+      have hqD : q ≤ D * q := by
+        simpa [one_mul] using Nat.mul_le_mul_right q hD1
+      exact hqD.trans hsLower
     omega
   have hNadd : N + J = (∑ i, s i) + anchor 0 := by
     dsimp [N]
@@ -122,7 +127,7 @@ theorem exists_logSuperlacunary_intDominance_of_positiveJetDegree {b : ℕ → �
       omega
     have hqD : q ≤ D * q := by
       have hD1 : 1 ≤ D := hD
-      exact Nat.mul_le_mul_right q hD1
+      simpa [one_mul] using Nat.mul_le_mul_right q hD1
     omega
   have hν₀support := appearing_atom_support_nonempty_of_maxX_lt_level Q hν₀ hNZ
   have hNstrictK : Nstrict ≤ q + B + 1 := hTNstrict.trans (by omega)
@@ -146,9 +151,10 @@ theorem exists_logSuperlacunary_intDominance_of_positiveJetDegree {b : ℕ → �
       dsimp [Cgeom]
       ring
     have hDexpand : (D - 1) * q + q = D * q := by
-      have hDeq : D - 1 + 1 = D := by omega
-      rw [← hDeq]
-      ring
+      have hD1 : 1 ≤ D := hD
+      calc
+        (D - 1) * q + q = ((D - 1) + 1) * q := by ring
+        _ = D * q := by rw [Nat.sub_add_cancel hD1]
     have htooLarge : Z + (q + B + 1) * (D - 1) + J < D * q := by
       rw [hgeomExpand, ← hDexpand]
       exact Nat.add_lt_add_left hqgeom _
@@ -161,9 +167,10 @@ theorem exists_logSuperlacunary_intDominance_of_positiveJetDegree {b : ℕ → �
       dsimp [Cgeom]
       ring
     have hDexpand : (D - 1) * q + q = D * q := by
-      have hDeq : D - 1 + 1 = D := by omega
-      rw [← hDeq]
-      ring
+      have hD1 : 1 ≤ D := hD
+      calc
+        (D - 1) * q + q = ((D - 1) + 1) * q := by ring
+        _ = D * q := by rw [Nat.sub_add_cancel hD1]
     have hle : T + (D - 1) * (q + B + 1) + Z + J ≤ D * q := by
       rw [hgeomExpand, ← hDexpand]
       exact Nat.add_le_add_left hTgeom _
@@ -205,25 +212,36 @@ theorem exists_logSuperlacunary_intDominance_of_positiveJetDegree {b : ℕ → �
     linarith
   have hsUpper : (∑ i, s i) ≤ D * (q + B) := by
     calc
-      ∑ i : Fin D, s i ≤ ∑ _i : Fin D, (q + B) := by
+      ∑ i : Fin (jetMonomialDegree n anchor), s i ≤
+          ∑ _i : Fin (jetMonomialDegree n anchor), (q + B) := by
         apply Finset.sum_le_sum
         intro i _
         dsimp [s]
         exact Nat.add_le_add_left (offset_le_magnitudeOffsetMax δ i) q
-      _ = D * (q + B) := by simp
+      _ = D * (q + B) := by simp [hanchorD]
   have hNupper : N + 1 ≤ D * (q + B) + anchor 0 + 1 := by
     dsimp [N]
     omega
-  have hqT : q = 2 * T := by rw [hT]; simp [q]
+  have hqT : q = 2 * T := by simp [q, T]
   have hlevelL : N + 1 ≤ L * (q + 1) := by
-    have hbase : q + B ≤ (B + 1) * (q + 1) := by nlinarith
+    have hbase : q + B ≤ (B + 1) * (q + 1) := by
+      calc
+        q + B ≤ q + B + (B * q + 1) := Nat.le_add_right _ _
+        _ = (B + 1) * (q + 1) := by ring
     have hjet : D * (q + B) ≤ D * (B + 1) * (q + 1) := by
       calc
         D * (q + B) ≤ D * ((B + 1) * (q + 1)) := Nat.mul_le_mul_left D hbase
         _ = D * (B + 1) * (q + 1) := by ring
-    have hconst : anchor 0 + 1 ≤ (anchor 0 + 1) * (q + 1) := by nlinarith
-    dsimp [L]
-    nlinarith
+    have hconst : anchor 0 + 1 ≤ (anchor 0 + 1) * (q + 1) := by
+      calc
+        anchor 0 + 1 ≤ (anchor 0 + 1) + (anchor 0 + 1) * q := Nat.le_add_right _ _
+        _ = (anchor 0 + 1) * (q + 1) := by ring
+    calc
+      N + 1 ≤ D * (q + B) + anchor 0 + 1 := hNupper
+      _ = D * (q + B) + (anchor 0 + 1) := by ring
+      _ ≤ D * (B + 1) * (q + 1) + (anchor 0 + 1) * (q + 1) :=
+        Nat.add_le_add hjet hconst
+      _ = L * (q + 1) := by dsimp [L]; ring
   have hlevel : N + 1 ≤ Cmass * (T + 1) := by
     have hqt : q + 1 ≤ 2 * (T + 1) := by rw [hqT]; omega
     calc

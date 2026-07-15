@@ -209,12 +209,13 @@ are the input and boundary counterterm of one contractive renewal operator.  Its
 
 The generic conservative-colligation formulation has been retired: it restated the already-known
 four-unit contraction target and did not address the canonical Xi graph's domain defect.  The
-positive replacement is `mobius-fisher-tangent-sonin-boundary-lift-rh.md`.  Its source input is no
-longer arbitrary: the normalized squarefree-Mobius state has a proved critical Fisher tangent of
-limiting squared norm `4`, and its positive/signed contact coefficients are explicit.  The live
-theorem is the direct basis-level lift of that tangent through the complementary floor/tail
-incidence, Gamma completion, and Sonin cutoff to `ell_E`.  The basis identity and graph-core limit,
-not the word “conservative,” carry the RH content.
+positive replacement is
+`mobius-incidence-curvature-gamma-sonin-pole-divisor-transfer-rh.md`.  Its source input is no
+longer arbitrary: the normalized squarefree-Mobius line and the divisor-threshold clock have an
+explicit commutator kernel whose critical relative energy is proved to be exactly `4`; the same
+law has a separately proved four-unit Fisher calibration.  The live theorem is the direct
+basis-level Gamma/Sonin completion of that curvature to `ell_E`.  The basis identity and
+graph-core limit, not the word “conservative,” carry the RH content.
 
 ## 4. Mandatory attacks
 

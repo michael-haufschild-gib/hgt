@@ -35,7 +35,8 @@ hypothetical proof but do not construct one.
 **Nontrivial positive successor.**  The squarefree-Mobius source has a canonical Fisher tangent
 whose squared norm tends to `4`; its positive and signed critical responses are exact matrix
 coefficients.  The live conjecture is now
-`../1-in-progress/mobius-fisher-tangent-sonin-boundary-lift-rh.md`: lift that specific tangent,
+`../1-in-progress/mobius-incidence-curvature-gamma-sonin-pole-divisor-transfer-rh.md`: lift the
+specific four-unit incidence curvature,
 through the already-proved floor/Mobius incidence and Gamma/Sonin rigging, to the Xi seam.
 
 **General HT statement.**  The failure separates three structures which a constrained HT source

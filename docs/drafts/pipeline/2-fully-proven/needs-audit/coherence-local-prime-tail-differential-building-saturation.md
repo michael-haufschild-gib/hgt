@@ -371,6 +371,38 @@ The paper proof is complete.  Before promotion to stage 3, formalize uncondition
 5. the prime specialization through the existing finite-range operator-tail interface;
 6. the continuum-cardinality and differential-transcendence-degree capstone.
 
+## Lean status
+
+The explicit combinatorial and sparse-budget engine is now formalized unconditionally.
+
+- `formal/GaloisForLFunctions/HTGeometry/PrefixFunctionTailIndependentFamily.lean` defines
+  `PrefixFunctionCoordinate`, `prefixFunctionOrientation`, and proves
+  `prefixFunctionOrientation_pattern_fiber_infinite` and
+  `prefixFunctionOrientation_tailIndependent`.  Thus every Boolean pattern on every finite
+  injective subfamily occurs infinitely often, giving the exact family `(9)` modulo finite support.
+- `formal/GaloisForLFunctions/HTGeometry/CoherenceLocalTailSaturation.lean` transports that family
+  along an arbitrary sparse coordinate embedding.  It proves
+  `sparsePrefixOrientation_tailIndependent`,
+  `basedSparsePrefixOrientation_tailIndependent`, the base and pairwise weighted-distance bounds
+  `basedSparsePrefixOrientation_distance_base_lt` and
+  `basedSparsePrefixOrientation_pair_distance_lt`, and the prime analytic transfer
+  `basedSparsePrefix_signedPrimeShiftPalette_differentialIndependent` through the existing exact
+  tail/differential matroid theorem.
+- `formal/GaloisForLFunctions/HTGeometry/SparseCoherenceSelection.lean` proves the missing
+  geometric sparse-choice step.  `exists_sparsePrefixEmbedding_of_cofinally_small` constructs an
+  injective prefix-coordinate range with summable square budget below any prescribed positive
+  bound, while `exists_coherenceLocalTailIndependentFamily_of_cofinally_small` assembles the exact
+  finite-rank local-saturation conclusion around an arbitrary base orientation, including all
+  base and pairwise distance bounds.
+- Both new modules were checked by their exact targeted module builds when their `.olean` files
+  were absent, followed by direct source checks.  No full build was run.
+
+Items 1--4 and the finite-family analytic part of item 5 are complete under the paper proof's exact
+zero-accumulation formulation: arbitrarily small weights remain outside every finite set.  The
+remaining Stage-3 work is the prime-power specialization of that cofinal-smallness hypothesis and
+the continuum-cardinality and differential-transcendence-degree capstone in item 6.  The card
+therefore remains in Stage 2.
+
 ## Gates
 
 - [x] sharp coherence-faithfulness dichotomy proved

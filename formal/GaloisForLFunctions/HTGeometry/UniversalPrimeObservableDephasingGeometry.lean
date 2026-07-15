@@ -101,8 +101,9 @@ theorem universalPrimeChamber_energyEnrichedObservable_eq_iff
   letI := upperEndMeroFieldDifferential
   constructor
   · exact fun h => (primeChamberDephasingMasterEnergy_eq_zero_iff J L).mp h.2
-  · rintro rfl
-    exact ⟨rfl, (primeChamberDephasingMasterEnergy_eq_zero_iff L L).mpr rfl⟩
+  · intro hJL
+    subst L
+    exact ⟨rfl, (primeChamberDephasingMasterEnergy_eq_zero_iff J J).mpr rfl⟩
 
 /-- Against the all-positive chamber, the same dephasing energy that faithfully enriches the
 observable field also discharges the global Herglotz condition. -/

@@ -44,6 +44,28 @@ theorem map_stableRangeCore_le_of_intertwine
   refine ⟨ι z, ?_⟩
   rw [algHom_pow_intertwine ι ψ φ hcomm n z, hz]
 
+/-- **Commuting-symmetry invariance of the persistent core.**  Every algebraic symmetry commuting
+with the constraint endomorphism preserves its stable range core exactly.  In particular, a
+clock-scaling symmetry of an algebraic source constraint acts on the persistent observable
+field, rather than merely on the ambient free clock. -/
+theorem map_stableRangeCore_eq_of_commuting_algEquiv
+    (φ : F →ₐ[K] F) (ρ : F ≃ₐ[K] F)
+    (hcomm : ∀ x, φ (ρ x) = ρ (φ x)) :
+    IntermediateField.map ρ.toAlgHom (stableRangeCore φ) = stableRangeCore φ := by
+  apply le_antisymm
+  · exact map_stableRangeCore_le_of_intertwine ρ.toAlgHom φ φ hcomm
+  · intro x hx
+    rw [IntermediateField.mem_map]
+    refine ⟨ρ.symm x, ?_, ρ.apply_symm_apply x⟩
+    have hcomm_symm : ∀ y, φ (ρ.symm y) = ρ.symm (φ y) := by
+      intro y
+      apply ρ.injective
+      simpa using (hcomm (ρ.symm y)).symm
+    have hle := map_stableRangeCore_le_of_intertwine ρ.symm.toAlgHom φ φ hcomm_symm
+    apply hle
+    rw [IntermediateField.mem_map]
+    exact ⟨x, hx, rfl⟩
+
 end
 
 end GaloisForLFunctions.HTGeometry
