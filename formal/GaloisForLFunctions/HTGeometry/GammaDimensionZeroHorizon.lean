@@ -236,11 +236,14 @@ theorem summable_gammaExteriorContraction_rpow
     have hpow := (tendsto_rpow_neg_atTop hs).comp hbase
     apply hpow.congr'
     exact Eventually.of_forall fun n => by
-      simp only [Function.comp_apply, Real.norm_eq_abs, f]
-      rw [abs_of_pos (hfpos (n + 1)), abs_of_pos (hfpos n), hcsucc,
+      simp only [Function.comp_apply, Real.norm_eq_abs]
+      rw [abs_of_pos (hfpos (n + 1)), abs_of_pos (hfpos n)]
+      dsimp only [f]
+      rw [hcsucc,
         Real.div_rpow (gammaExteriorContraction_pos n).le (by positivity) s]
       have hn : (0 : ℝ) < n + 1 := by positivity
       have hfn : (gammaExteriorContraction n : ℝ) ^ s ≠ 0 := (hfpos n).ne'
+      rw [Nat.cast_add, Nat.cast_one]
       rw [Real.rpow_neg hn.le]
       field_simp
   have hsum : Summable f := summable_of_ratio_test_tendsto_lt_one

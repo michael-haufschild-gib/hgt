@@ -58,7 +58,9 @@ theorem ZariskiDetectingFamily.sum
   have hQb : Qb ≠ 0 := by
     intro hzero
     have hcoeffzero := congrArg (MvPolynomial.coeff e) hzero
-    rw [MvPolynomial.coeff_zero, Qb, MvPolynomial.coeff_map] at hcoeffzero
+    rw [MvPolynomial.coeff_zero] at hcoeffzero
+    dsimp only [Qb] at hcoeffzero
+    rw [MvPolynomial.coeff_map] at hcoeffzero
     exact hb hcoeffzero
   obtain ⟨a, ha⟩ := hx Qb hQb
   refine ⟨(a, b), ?_⟩
@@ -95,7 +97,7 @@ theorem gammaInversePoleBranchCoefficient_fin_twoBlock_detects
     gammaInversePoleBranchCoefficient_fin_cofinallyZariskiDense m b hb
   have hleft := hcofinal.zariskiDetectingFamily_tail N₁
   have hright := hcofinal.zariskiDetectingFamily_tail N₂
-  obtain ⟨⟨n₁, hn₁⟩, ⟨n₂, hn₂⟩, hdetect⟩ := hleft.sum hright P hP
+  obtain ⟨⟨⟨n₁, hn₁⟩, ⟨n₂, hn₂⟩⟩, hdetect⟩ := hleft.sum hright P hP
   exact ⟨n₁, n₂, hn₁, hn₂, hdetect⟩
 
 end

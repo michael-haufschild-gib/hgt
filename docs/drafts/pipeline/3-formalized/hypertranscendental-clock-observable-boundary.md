@@ -116,6 +116,37 @@ The result therefore upgrades the negative definition of hypertranscendence into
 finite-resolution law: an HT element has unit algebraic clock flux through every jet cutoff and
 no bulk leakage.
 
+## No backward clock and the exact Tate skeleton `[FORMALIZED BRIDGE]`
+
+The same transcendence gives a categorical asymmetry which is stronger than the properness of
+`P_N < P_(N+1)`. For every `N`, there is no `P_N`-algebra homomorphism
+
+```text
+P_N(j_N) -> P_N.                                           (8)
+```
+
+Such a map would be injective and would identify `j_N` with its image in `P_N`, contradicting
+transcendence. Hence the HT field tower has only forward clock maps. Residues, places, conditional
+expectations, analytic boundary values, and Hilbert projections are genuinely additional
+realization data; none is a hidden field retraction.
+
+Linearizing one rank-one boundary at every depth gives the universal algebraic Tate-clock
+skeleton. Over a field `k`, let `I=k^(ℕ)` be the finitely supported sequences and `P=k^ℕ` the
+product sequences. Forward shift `S:I->I`, backward shift `B:P->P`, and restricted evaluation
+pairing satisfy
+
+```text
+<S a,p>=<a,B p>,
+0 -> I ->S I ->eval_0 k -> 0,
+0 -> k ->boundary_0 P ->B P -> 0.                          (9)
+```
+
+Thus the forward cokernel and backward kernel are the same one-dimensional boundary seen from
+dual sides. Formula `(9)` is standard Tate-space/shift algebra and is recorded as `[BRIDGE]`, not
+as a novelty claim. Its role is to fix the only viable self-dual variance for the next theory:
+the nonlinear HT tower is an Ind-object, its boundary dual is Pro, and any common source geometry
+must be a source-selected Tate extension rather than a compact inverse limit of fields.
+
 ## Classical-parent and collision audit
 
 The following are parents and are not claimed as new:
@@ -195,6 +226,11 @@ Formalized theorem surface:
    ```text
    (forall q <= r, delta^q z in P_(N+r)) iff z in P_N.
    ```
+8. `noAlgHomToBase_of_transcendental`,
+   `noAlgHom_adjoin_to_base_of_transcendental`, and
+   `hypertranscendental_no_backwardClock_algHom` formalize `(8)`;
+9. `tateClockIndForward`, `tateClockProBackward`, the two exact range/kernel theorems, and
+   `tateClockPairing_indForward` formalize the shift/coshift skeleton `(9)`.
 
 The existing `HypertranscendentalHorizonFunctionField` and `FractionRingDerivation` modules supply
 the generic-point and quotient-rule infrastructure. The proof is axiom-clean up to Lean's standard

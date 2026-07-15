@@ -3,7 +3,7 @@
 - **ID:** `gamma-thin-universal-clock-horizon`
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE THEOREM
-- **Scientific status:** `[PROVED ON PAPER] [TWO-BLOCK ALGEBRAIC CORE PROVED IN LEAN] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[UNCONDITIONAL ANALYTIC TOPOLOGY, IRREVERSIBLE CLOCK, AND ALL-FINITE-DEPTH B-JET UNIVERSALITY PROVED IN LEAN] [MOVING-BASE D-JET BRIDGE OPEN] [NOVELTY PLAUSIBLE, NOT PRIORITY-CERTIFIED]`
 - **Statement:** There is a nonstationary inverse-Gamma horizon homeomorphic to Baire space and of
   Hausdorff dimension zero, while every finite depth and every finite normalized inverse-jet
   resolution remains Zariski universal.
@@ -137,6 +137,39 @@ The significance gate is not cleared by topology alone.  It is cleared only if t
 clock decoration is shown to be intrinsic to the moving-base Gamma jet groupoid, or if the horizon
 closes the differential-independence proof for the positive Gamma iterates.
 
+## Unconditional Lean theorem package
+
+The actual Euler-Gamma construction is now formalized without analytic, IFS, representative, or
+dimension hypotheses.
+
+1. `GammaCommonInverseCollar.lean` constructs one common target disk and unconditional analytic
+   inverse branches of the actual normalized Gamma pole microscopes.
+2. `GammaExteriorInverseBranches.lean` constructs the actual exterior sheets, proves
+   `Gamma o I_n = id`, pairwise pole-disk separation, exterior preservation, and factorial
+   contraction.
+3. `GammaBaireInverseCoding.lean` proves convergence for every literal Baire word, injectivity,
+   continuity of the code and decoder, the homeomorphism onto the coded horizon, and exact Gamma
+   tail reading.
+4. `GammaDimensionZeroHorizon.lean` proves the reciprocal-compression diameter bound, summable
+   countable cylinder covers for every positive exponent, vanishing Hausdorff measures, and
+   `dimH gammaConstrainedHorizon = 0`.
+5. `GammaIrreversibleClockHorizon.lean` proves forward invariance and the exact clock law
+
+   `tau(omega)(k) = omega(k+1)+1`,
+
+   together with strict age layers, an empty infinite-age core, and absence of periodic Gamma
+   histories on the horizon.
+6. `GammaUniversalClockHorizon.lean` removes the prior representative hypothesis by selecting
+   representatives of the inverse-branch coefficient germs internally.  At every finite clock
+   depth and finite jet resolution, every nonzero mixed polynomial is detected by a legal pole
+   word, and every such word extends to an actual point of the analytic horizon.
+
+The integrated terminal declaration
+`gamma_dimensionZero_algebraicallyUniversal_irreversibleClockHorizon` is unconditional.  The
+algebraic decoration currently uses the tangent-to-identity normalized branch jets `B_n`.  It does
+not yet identify them with the intrinsic moving-base clocks `D_n`; that distinction remains the
+load-bearing significance gate.
+
 ## Physical interpretation
 
 `H` is a precise zero-area/infinite-information horizon.  Its Euclidean geometry is invisible to
@@ -164,12 +197,15 @@ functional ignores them.  No zero localization or positivity statement follows.
 3. `[LOGARITHMIC SOURCE DONE]` `GammaPoleRelativeLogFreeness.lean` proves that the complete exact
    Gamma pole logarithmic-jet family is algebraically independent over the full rational
    pole-position field `C(n)`.  The exact target build and direct file elaboration pass.
-4. Transport this relative freeness through the Bell, unit-inverse, compositional-inverse, and
+4. `[OPEN]` Transport this relative freeness through the Bell, unit-inverse, compositional-inverse, and
    intrinsic Möbius coefficient automorphisms to obtain `B_n <-> D_n` over `C(n)`.
-5. Package the analytic construction as a reusable contracting inverse-branch system only after
-   the exact common-collar constants are represented without a broad build.
-6. Formalize the dimension-zero diagonal threshold lemma independently of Gamma, then instantiate
-   it with the factorial contraction bound.
+5. `[DONE FOR ACTUAL GAMMA]` The common collar, exterior sheets, Baire coding, and exact clock are
+   formalized directly rather than behind a reusable conditional IFS interface.
+6. `[DONE]` The dimension-zero cylinder argument is formalized and instantiated with the actual
+   factorial contraction and reciprocal-compression bound.
+7. `[DONE FOR B_n]` Arbitrary finite-depth Zariski detection is formalized with an unconditional
+   internally selected coefficient representative and legal-word extension into the analytic
+   horizon.
 
 The exact target build and direct file elaboration pass.  Its imported dependency closure was
 already cached; no full or concurrent build was run.

@@ -343,7 +343,7 @@ theorem integral_semilocalGammaCharacteristicKernel (t : ℝ) :
         ring
       · congr 2
         push_cast
-        ring]
+        ring_nf]
     exact integral_fourier_semilocalGammaAutocorrelation (2 * t)
   change (∫ s : ℝ, G s) = _
   calc
@@ -364,7 +364,7 @@ theorem integral_semilocalGammaCharacteristicKernel_closedForm (t : ℝ) :
     semilocalGammaAutocorrelation_eq_scale_mul_sqrt_pi,
     semilocalGammaAutocorrelationScale_eq_characteristic]
   push_cast
-  ring
+  ring_nf
 
 theorem semilocalGammaNormalization_constant :
     (2 * Real.pi) ^ (-(3 : ℝ) / 2) *
