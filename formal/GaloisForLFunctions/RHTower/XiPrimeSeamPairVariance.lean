@@ -116,6 +116,42 @@ theorem primePairWeightedMean_norm_sq_le
   rw [primePairDifferenceEnergy_eq_weightedVariance] at h
   nlinarith
 
+/-! ## Plucker-plane form of the pair obstruction -/
+
+/-- The weighted Gram determinant of the constant prime section and a prime-indexed packet.
+This is the squared Plucker area of their span. -/
+def primePairPluckerGramDet (a : Nat.Primes → ℂ)
+    (s : Finset Nat.Primes) : ℝ :=
+  primeReciprocalMass s * primePairWeightedNormSq a s -
+    ‖primePairWeightedMean a s‖ ^ 2
+
+/-- **Prime-pair Plucker identity.**  The reciprocal-prime pair energy is twice the weighted
+Gram determinant of the constant section and the packet `a`.  Thus the two-particle obstruction
+is exactly a rank-two area, rather than a sum of unrelated scalar defects. -/
+theorem primePairDifferenceEnergy_eq_two_mul_pluckerGramDet
+    (a : Nat.Primes → ℂ) (s : Finset Nat.Primes) :
+    primePairDifferenceEnergy a s = 2 * primePairPluckerGramDet a s := by
+  rw [primePairDifferenceEnergy_eq_weightedVariance]
+  simp only [primePairPluckerGramDet]
+  ring
+
+/-- The weighted Plucker Gram determinant is nonnegative. -/
+theorem primePairPluckerGramDet_nonneg
+    (a : Nat.Primes → ℂ) (s : Finset Nat.Primes) :
+    0 ≤ primePairPluckerGramDet a s := by
+  have h := primePairDifferenceEnergy_nonneg a s
+  rw [primePairDifferenceEnergy_eq_two_mul_pluckerGramDet] at h
+  nlinarith
+
+/-- The canonical Xi seam pair obstruction is exactly twice its finite weighted Plucker area. -/
+theorem orbitwisePrimeSeamPairEnergy_eq_two_mul_pluckerGramDet
+    (rho : ℂ) (s : Finset Nat.Primes) :
+    primePairDifferenceEnergy
+        (fun p : Nat.Primes => orbitwiseNatPrimeSeamCharge (p : ℕ) rho) s =
+      2 * primePairPluckerGramDet
+        (fun p : Nat.Primes => orbitwiseNatPrimeSeamCharge (p : ℕ) rho) s :=
+  primePairDifferenceEnergy_eq_two_mul_pluckerGramDet _ _
+
 /-- The canonical FE--Schwarz seam pair energy has the same exact one-particle variance
 factorization on every finite prime set. -/
 theorem orbitwisePrimeSeamPairEnergy_eq_weightedVariance

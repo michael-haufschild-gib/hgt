@@ -108,6 +108,56 @@ def orderedInverseGapEnergy {N : ℕ}
     (x : Fin N → ℝ) (v : Fin N → ℂ) : ℝ :=
   ∑ i, ∑ j, ‖v j - v i‖ ^ 2 / (x i - x j) ^ 2
 
+/-- Positivity of the real-node inverse-gap energy is unconditional.  In particular, this sign
+does not detect whether a node packet came from the Xi divisor, a prime-side construction, or an
+unrelated real spectrum. -/
+theorem orderedInverseGapEnergy_nonneg {N : ℕ}
+    (x : Fin N → ℝ) (v : Fin N → ℂ) :
+    0 ≤ orderedInverseGapEnergy x v := by
+  unfold orderedInverseGapEnergy
+  apply Finset.sum_nonneg
+  intro i _
+  apply Finset.sum_nonneg
+  intro j _
+  exact div_nonneg (sq_nonneg _) (sq_nonneg _)
+
+/-- For distinct real nodes, the inverse-gap graph is complete: its only zero-energy value
+packets are constants. -/
+theorem orderedInverseGapEnergy_eq_zero_iff_of_injective {N : ℕ}
+    (x : Fin N → ℝ) (v : Fin N → ℂ) (hx : Function.Injective x) :
+    orderedInverseGapEnergy x v = 0 ↔ ∀ i j, v i = v j := by
+  constructor
+  · intro hzero i j
+    by_cases hij : i = j
+    · simpa [hij]
+    · have hterm_nonneg (k l : Fin N) :
+          0 ≤ ‖v l - v k‖ ^ 2 / (x k - x l) ^ 2 :=
+        div_nonneg (sq_nonneg _) (sq_nonneg _)
+      unfold orderedInverseGapEnergy at hzero
+      have hrowzero :
+          (∑ l, ‖v l - v i‖ ^ 2 / (x i - x l) ^ 2) = 0 :=
+        (Finset.sum_eq_zero_iff_of_nonneg
+          (fun k _ => Finset.sum_nonneg (fun l _ => hterm_nonneg k l))).mp
+            hzero i (Finset.mem_univ i)
+      have htermzero :
+          ‖v j - v i‖ ^ 2 / (x i - x j) ^ 2 = 0 :=
+        (Finset.sum_eq_zero_iff_of_nonneg
+          (fun l _ => hterm_nonneg i l)).mp hrowzero j (Finset.mem_univ j)
+      have hxij : x i ≠ x j := fun h => hij (hx h)
+      have hnum : ‖v j - v i‖ ^ 2 = 0 :=
+        (div_eq_zero_iff.mp htermzero).resolve_right (pow_ne_zero 2 (sub_ne_zero.mpr hxij))
+      have hvji : v j = v i := by
+        apply sub_eq_zero.mp
+        exact norm_eq_zero.mp (sq_eq_zero_iff.mp hnum)
+      exact hvji.symm
+  · intro hconst
+    unfold orderedInverseGapEnergy
+    apply Finset.sum_eq_zero
+    intro i _
+    apply Finset.sum_eq_zero
+    intro j _
+    simp [hconst i j]
+
 theorem regularizedInverseGapCommutatorEnergy_zero {N : ℕ}
     (x : Fin N → ℝ) (v : Fin N → ℂ) :
     regularizedInverseGapCommutatorEnergy 0 x v = orderedInverseGapEnergy x v := by

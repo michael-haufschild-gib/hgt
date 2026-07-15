@@ -3,7 +3,7 @@
 - **ID:** `gamma-faa-di-bruno-horizon`
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE THEOREM
-- **Scientific status:** `[ALGEBRAIC CORE PROVED ON PAPER] [ANALYTIC TREE OPEN] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[ALGEBRAIC CORE PROVED ON PAPER] [COMMON INVERSE COLLAR PROVED ON PAPER] [JET-GROUPOID BRIDGE OPEN] [NOVELTY UNVERIFIED]`
 - **Statement:** The normalized inverse branches at the negative poles of Gamma form a cofinally
   Zariski-dense sequence in every finite jet group of formal diffeomorphisms tangent to the
   identity.  At every finite depth, independent pole labels give a cofinally dense family of
@@ -77,39 +77,84 @@ are polynomial because `G_m` is unipotent.  The automorphism preserves Zariski d
 ## Physical/topological content
 
 The pole index is not a time parameter carrying one state along a flow.  Every sufficiently late
-tail already fills every finite algebraic resolution of the formal-reparametrization group.  A
-depth-`d` inverse history is therefore a complete flag of `d` independently generic local clocks.
-The natural boundary object is a pro-unipotent Faà di Bruno horizon over the end space of the
-countably branching pole tree.
+tail already fills every finite algebraic resolution of the formal-reparametrization group.  The
+algebraic prefix flag records independently generic *normalized* local clocks.  It is a boundary
+fiber of the actual analytic construction, not yet the exact composition law of nested Gamma
+branches.
 
 The Stone--Čech remainder of the pole labels is useful language for the eventual sequence ring,
 but that identification is classical and is not the candidate novelty.  The source-specific claim
 is the cofinal density of the actual Gamma inverse branches in every jet group and every finite
 flag depth.
 
-## Analytic tree bridge `[CONJECTURE]`
+## Common inverse collar and the exact clock groupoid `[PROVED ON PAPER]`
 
-Let
+Put
+
+\[
+ H_n(X)=\Gamma(-n+s_nX)^{-1},\qquad A_n(X)=-H_n(X).
+\]
+
+The factorial microscope already proves `A_n -> id` locally uniformly on the whole plane.  Fix
+`0<rho<R<1/3`.  For all sufficiently large `n`,
+
+\[
+ \sup_{|X|=R}|A_n(X)-X|<R-\rho.
+\]
+
+For every `|T|<rho`, Rouche's theorem applied to `A_n(X)-T` and `X-T` gives exactly one zero in
+`|X|<R`, counted with multiplicity.  It is therefore simple.  These zeros form one holomorphic
+inverse `B_n` on the common disk, with `A_n(B_n(T))=T`; moreover `B_n -> id` with all derivatives
+locally uniformly on that disk.
+
+For `|y|>rho^{-1}`, define
 
 \[
   I_n(y)=-n+s_nB_n(-1/y),
 \]
 
-where the convergent local inverse is defined.  A pole word should determine nested points
+so that `Gamma(I_n(y))=y`.  Increasing the pole threshold once more makes all image disks
+`D(-n,|s_n|R)` pairwise disjoint and contained in the same exterior collar.  Cauchy estimates for
+`B_n'` give a uniform contraction there.  Hence arbitrary finite inverse words exist, are
+noncritical, and are distinguished by their pole labels.
+
+There is an essential correction to the naive Faà di Bruno composition claim.  If `T=-1/y`, the
+reciprocal coordinate of the inverse image is
+
+\[
+  -\frac1{I_n(y)}=C_n(T),\qquad
+  C_n(T)=\frac1{n-s_nB_n(T)}.
+\]
+
+Thus an actual inverse word is represented by
+
+\[
+ C_{n_1}\circ\cdots\circ C_{n_d},
+\]
+
+not by `B_{n_1} o ... o B_{n_d}`.  The Möbius shells move the base point at every level.  The
+correct finite-resolution object is consequently the groupoid of jets of local biholomorphisms
+between varying reciprocal base points.  The pro-unipotent `B_n` family is the normalized clock
+fiber inside this groupoid.
+
+## Open jet-groupoid bridge `[CONJECTURE]`
+
+A pole word determines nested points
 
 \[
   I_{n_1}\circ\cdots\circ I_{n_d}(-n_{d+1})
 \]
 
-at which `Gamma^(d+1)` has a pole.  The open proof obligation is a uniform triangular domain:
-after choosing a prefix, every sufficiently large next label must remain inside the preceding
-inverse collar, with nonvanishing derivative and disjoint branch sheets.  This would identify the
-algebraic flag theorem with an actual embedded Baire tree in the singularity sets of the positive
-Gamma iterates.
+at which `Gamma^(d+1)` has a simple pole; this follows from the common collar and repeated
+noncritical pullback.  What remains open is the algebraic identification of the actual moving-base
+jet-groupoid flags with the Zariski-dense normalized `B_n` flags.  Since substitution into a power
+series with nonzero constant term depends on infinitely many outer coefficients, ordinary formal
+composition at zero is not a proof.  A valid bridge must use moving-base finite jets or an
+iterated cofinal limit in the next pole labels.
 
-Failure of that uniform collar does not destroy the algebraic horizon theorem.  The strongest
-positive residue would remain the cofinally dense Faà di Bruno boundary of the single Gamma pole
-family.
+The strong positive replacement for the failed direct composition is the thin universal-clock
+horizon isolated in `gamma-thin-universal-clock-horizon.md`: actual inverse words give the Baire
+topology, while every finite block of their normalized `B_n` decorations remains Zariski dense.
 
 ## Relation to differential independence
 
@@ -168,8 +213,8 @@ initial negative search result, not yet an independent specialist priority certi
 
 - [x] 0 → 1 in-progress: source-pure group object, exact algebraic theorem, proof, falsifier, and
   physical interpretation isolated
-- [ ] 1 → 2 fully-proven: uniform nested inverse-collar theorem and simple-pole tree proved on
-  paper, or the card split with the algebraic horizon promoted alone
+- [ ] 1 → 2 fully-proven: moving-base jet-groupoid density proved on paper, or the card split with
+  the algebraic horizon and common-collar theorem promoted separately
 - [ ] 2 → 3 formalized: cofinal density, finite product density, and prefix-flag automorphism
   formalized in Lean with serialized targeted verification; the one-block and finite-truncation
   portion is complete
@@ -189,3 +234,7 @@ initial negative search result, not yet an independent specialist priority certi
 4. **RH upcast attack.**  Infinite archimedean boundary rank is not a zero-free-region or sign
    theorem.  Any RH use needs an additional coupling to the scale-one functional equation and the
    continued divisor.
+5. **Wrong composition attack.**  The actual reciprocal transition is
+   `C_n(T)=1/(n-s_n B_n(T))`; prefix products of the tangent-to-identity `B_n` are not nested Gamma
+   inverse words.  Any analytic claim that omits the moving Möbius shells is false.  The positive
+   replacement is a holomorphic jet groupoid with the free `B_n` family as its normalized fiber.

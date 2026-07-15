@@ -12,6 +12,7 @@ the exact Sonin projection correction and the principal-subtracted dilation resi
 any Hilbert--Schmidt hypothesis.
 -/
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtOperator
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtCompact
 import GaloisForLFunctions.HTGeometry.L2PairingEnergy
 import GaloisForLFunctions.HTGeometry.TwoProjectionSupersymmetry
 import GaloisForLFunctions.HTGeometry.TwoProjectionHilbertSchmidtEnergy
@@ -27,6 +28,8 @@ open scoped ENNReal
 namespace RHTower
 
 set_option maxHeartbeats 300000
+
+local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 section Kernel
 
@@ -105,7 +108,7 @@ theorem isHilbertSchmidt_kernelOperator
 integration upgrade the kernel theorem from finiteness to the exact value
 `\|kernelOperator K\|_HS² = \|K\|_L²²`.  This is the abstract localization-area identity used by
 the finite Fourier rectangles below. -/
-theorem hsNormSq_kernelOperator_eq_norm_sq [SeparableSpace E]
+theorem hsNormSq_kernelOperator_eq_norm_sq [TopologicalSpace.SeparableSpace E]
     (K : Lp (E →L[ℂ] ℂ) 2 μ) :
     ContinuousLinearMap.hsNormSq (kernelOperator (E := E) μ K) = ‖K‖ ^ 2 := by
   let b := ContinuousLinearMap.hsBasis ℂ E
@@ -299,25 +302,27 @@ theorem tendsto_opTrace_pow_add_two_zero_of_isHilbertSchmidt_norm_lt_one
       Filter.Tendsto (fun n : ℕ => hsNorm (T ^ n * T)) Filter.atTop (nhds 0) := by
     have hsqrt := Real.continuous_sqrt.continuousAt.tendsto.comp hsq
     simpa only [Function.comp_apply, hsNorm, Real.sqrt_zero] using hsqrt
-  apply squeeze_zero_norm'
+  refine squeeze_zero_norm'
+    (a := fun n : ℕ => hsNorm (T ^ n * T) * hsNorm T) ?_ ?_
   · exact Filter.Eventually.of_forall fun n => by
       have hPow : IsHilbertSchmidt (T ^ n * T) := by
         simpa only [ContinuousLinearMap.mul_def] using hT.comp_left (T ^ n)
       have hEq : T ^ (n + 2) = (T ^ n * T) ∘L T := by
         change T ^ (n + 2) = (T ^ n * T) * T
-        have hn1 : T ^ n * T = T ^ (n + 1) := by rw [← pow_succ]
-        have hn2 : T ^ (n + 1) * T = T ^ (n + 2) := by
-          simpa only [Nat.add_assoc] using (pow_succ T (n + 1)).symm
-        noncomm_ring [hn1, hn2]
+        simp only [pow_succ, Nat.add_assoc]
       rw [hEq]
       exact norm_opTrace_comp_le hPow hT
-  · exact hhsNorm.mul_const (hsNorm T)
+  · simpa only [zero_mul] using hhsNorm.mul_const (hsNorm T)
 
 end Bounds
 
 end ContinuousLinearMap
 
 namespace RHTower
+
+open ContinuousLinearMap
+
+local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 /-! ### Exact finite-rectangle localization energy -/
 
@@ -363,7 +368,6 @@ theorem fullFourierFunctionalContinuous_eq_toDual
   by_cases hymem : y ∈ Set.Icc c d
   · simp only [Set.indicator_of_mem hymem]
     rw [RCLike.inner_apply, ← Complex.exp_conj]
-    simp
     ring
   · simp [hymem, RCLike.inner_apply]
 
@@ -379,7 +383,9 @@ theorem norm_fullFourierRieszVector_sq (x c d : ℝ) (hcd : c ≤ d) :
       filter_upwards [fullFourierRieszVector_coeFn x c d] with y hy
       rw [hy]
       by_cases hymem : y ∈ Set.Icc c d
-      · simp [hymem, Complex.norm_exp_ofReal_mul_I]
+      · simp only [Set.indicator_of_mem hymem, norm_pow]
+        rw [Complex.norm_exp]
+        simp
       · simp [hymem]
     _ = d - c := by
       simp [setIntegral_const, measureReal_def, Real.volume_Icc,
@@ -419,7 +425,6 @@ theorem norm_fullFourierFunctionalField_sq
     _ = (b - a) * (d - c) := by
       simp [integral_const, measureReal_def, Real.volume_Icc,
         ENNReal.toReal_ofReal (sub_nonneg.mpr hab)]
-      ring
 
 /-- The full-input finite time-band operator into the restricted output `L²` space is
 Hilbert--Schmidt. -/
@@ -619,6 +624,7 @@ theorem hsNormSq_centralTimeBandOverlap_eq_four_mul_sq
         ContinuousLinearMap.hsNormSq
           (fourierCutoff (centralInterval a) (measurableSet_centralInterval a) *
             indicatorCutoff (centralInterval a) (measurableSet_centralInterval a)) := by
+      simp only [centralFourierForbidden, centralPhysicalForbidden, centralInterval]
       rw [fourierCutoff_eq_fourierForbidden_starProjection,
         indicatorCutoff_eq_physicalForbidden_starProjection]
     _ = 4 * a * a := hsNormSq_fourierCutoff_indicatorCutoff_central a a ha ha
@@ -844,14 +850,12 @@ theorem norm_centralSoninExteriorCompression_lt_one
   have hZadj : ContinuousLinearMap.adjoint Z = Z :=
     (isSelfAdjoint_starProjection W).star_eq
   have hTadj : ContinuousLinearMap.adjoint T = T := by
-    dsimp only [T, soninAlternatingBlock]
-    change ContinuousLinearMap.adjoint
-        ((B.orthogonal.starProjection ∘L A.orthogonal.starProjection) ∘L
-          B.orthogonal.starProjection) = _
-    rw [ContinuousLinearMap.adjoint_comp, ContinuousLinearMap.adjoint_comp,
-      (isSelfAdjoint_starProjection B.orthogonal).star_eq,
-      (isSelfAdjoint_starProjection A.orthogonal).star_eq]
-    simp only [mul_assoc]
+    simpa only [T, soninAlternatingBlock,
+      HTGeometry.twoProjectionInteriorCompression] using
+      HTGeometry.adjoint_twoProjectionInteriorCompression
+        B.orthogonal.starProjection A.orthogonal.starProjection
+        (isSelfAdjoint_starProjection B.orthogonal).star_eq
+        (isSelfAdjoint_starProjection A.orthogonal).star_eq
   have hTZ : T * Z = Z := by
     apply ContinuousLinearMap.ext
     intro x
@@ -887,14 +891,18 @@ theorem norm_centralSoninExteriorCompression_lt_one
         · exact norm_soninAlternatingBlock_le_one A.orthogonal B.orthogonal
         · exact Submodule.starProjection_norm_le W.orthogonal
       _ = 1 := by norm_num
-  have hsymm : (E : SoninL2 →ₗ[ℂ] SoninL2).IsSymmetric := by
+  have hQadj : ContinuousLinearMap.adjoint Q = Q :=
+    (isSelfAdjoint_starProjection W.orthogonal).star_eq
+  have hEadj : ContinuousLinearMap.adjoint E = E := by
     rw [hEcompression]
-    intro x y
-    change inner ℂ (Q (T (Q x))) y = inner ℂ x (Q (T (Q y)))
-    dsimp only [Q]
-    rw [W.orthogonal.inner_starProjection_left_eq_right,
-      ← W.orthogonal.inner_starProjection_left_eq_right]
-    exact soninAlternatingBlock_isSymmetric A.orthogonal B.orthogonal _ _
+    change ContinuousLinearMap.adjoint ((Q ∘L T) ∘L Q) = (Q ∘L T) ∘L Q
+    rw [ContinuousLinearMap.adjoint_comp, ContinuousLinearMap.adjoint_comp,
+      hQadj, hTadj]
+    apply ContinuousLinearMap.ext
+    intro x
+    rfl
+  have hsymm : (E : SoninL2 →ₗ[ℂ] SoninL2).IsSymmetric :=
+    ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp hEadj
   have hnonneg : ∀ x, 0 ≤ Complex.re (inner ℂ x (E x)) := by
     intro x
     rw [hEcompression]
@@ -969,9 +977,9 @@ theorem hsNormSq_centralSoninProjectionCorrection_eq_timeBand_add_exterior
   have hRQ : R * Q = 0 := by
     apply ContinuousLinearMap.ext
     intro x
-    change B.starProjection ((Aᵮ ⊓ Bᵮ).starProjection x) = 0
+    change B.starProjection ((A.orthogonal ⊓ B.orthogonal).starProjection x) = 0
     apply B.starProjection_apply_eq_zero_iff.mpr
-    exact ((Aᵮ ⊓ Bᵮ).starProjection_apply_mem x).2
+    exact ((A.orthogonal ⊓ B.orthogonal).starProjection_apply_mem x).2
   have hC : ContinuousLinearMap.IsHilbertSchmidt (Q - (1 - P - R)) := by
     simpa only [P, R, Q, A, B, centralSoninProjectionCorrection,
       indicatorCutoff_eq_physicalForbidden_starProjection,
@@ -1017,13 +1025,13 @@ theorem hsNormSq_centralSoninProjectionCorrection_eq_compressions_add_two_mul_tr
     (isSelfAdjoint_starProjection A).star_eq
   have hQadj : ContinuousLinearMap.adjoint Q = Q := by
     dsimp only [Q, centralSoninProjection, centralSoninCarrier]
-    exact (isSelfAdjoint_starProjection (Aᵮ ⊓ Bᵮ)).star_eq
+    exact (isSelfAdjoint_starProjection (A.orthogonal ⊓ B.orthogonal)).star_eq
   have hPQ : P * Q = 0 := by
     apply ContinuousLinearMap.ext
     intro x
-    change B.starProjection ((Aᵮ ⊓ Bᵮ).starProjection x) = 0
+    change B.starProjection ((A.orthogonal ⊓ B.orthogonal).starProjection x) = 0
     apply B.starProjection_apply_eq_zero_iff.mpr
-    exact ((Aᵮ ⊓ Bᵮ).starProjection_apply_mem x).2
+    exact ((A.orthogonal ⊓ B.orthogonal).starProjection_apply_mem x).2
   have hZP : Q * P = 0 := by
     calc
       Q * P = ContinuousLinearMap.adjoint (P * Q) := by
@@ -1033,9 +1041,9 @@ theorem hsNormSq_centralSoninProjectionCorrection_eq_compressions_add_two_mul_tr
   have hRZ : R * Q = 0 := by
     apply ContinuousLinearMap.ext
     intro x
-    change A.starProjection ((Aᵮ ⊓ Bᵮ).starProjection x) = 0
+    change A.starProjection ((A.orthogonal ⊓ B.orthogonal).starProjection x) = 0
     apply A.starProjection_apply_eq_zero_iff.mpr
-    exact ((Aᵮ ⊓ Bᵮ).starProjection_apply_mem x).1
+    exact ((A.orthogonal ⊓ B.orthogonal).starProjection_apply_mem x).1
   have hSwap : Q - (1 - P - R) = Q - (1 - R - P) := by
     noncomm_ring
   have hC : ContinuousLinearMap.IsHilbertSchmidt (Q - (1 - P - R)) := by
@@ -1170,20 +1178,20 @@ theorem opTrace_centralProlatePowerDifference_eq_exteriorCompressionPowerDiffere
   have hR : IsIdempotentElem R := A.isIdempotentElem_starProjection
   have hQ : IsIdempotentElem Q := by
     dsimp only [Q, centralSoninProjection, centralSoninCarrier]
-    exact (Aᵮ ⊓ Bᵮ).isIdempotentElem_starProjection
+    exact (A.orthogonal ⊓ B.orthogonal).isIdempotentElem_starProjection
   have hPadj : ContinuousLinearMap.adjoint P = P :=
     (isSelfAdjoint_starProjection B).star_eq
   have hRadj : ContinuousLinearMap.adjoint R = R :=
     (isSelfAdjoint_starProjection A).star_eq
   have hQadj : ContinuousLinearMap.adjoint Q = Q := by
     dsimp only [Q, centralSoninProjection, centralSoninCarrier]
-    exact (isSelfAdjoint_starProjection (Aᵮ ⊓ Bᵮ)).star_eq
+    exact (isSelfAdjoint_starProjection (A.orthogonal ⊓ B.orthogonal)).star_eq
   have hPZ : P * Q = 0 := by
     apply ContinuousLinearMap.ext
     intro x
-    change B.starProjection ((Aᵮ ⊓ Bᵮ).starProjection x) = 0
+    change B.starProjection ((A.orthogonal ⊓ B.orthogonal).starProjection x) = 0
     apply B.starProjection_apply_eq_zero_iff.mpr
-    exact ((Aᵮ ⊓ Bᵮ).starProjection_apply_mem x).2
+    exact ((A.orthogonal ⊓ B.orthogonal).starProjection_apply_mem x).2
   have hZP : Q * P = 0 := by
     calc
       Q * P = ContinuousLinearMap.adjoint (P * Q) := by
@@ -1193,9 +1201,9 @@ theorem opTrace_centralProlatePowerDifference_eq_exteriorCompressionPowerDiffere
   have hRZ : R * Q = 0 := by
     apply ContinuousLinearMap.ext
     intro x
-    change A.starProjection ((Aᵮ ⊓ Bᵮ).starProjection x) = 0
+    change A.starProjection ((A.orthogonal ⊓ B.orthogonal).starProjection x) = 0
     apply A.starProjection_apply_eq_zero_iff.mpr
-    exact ((Aᵮ ⊓ Bᵮ).starProjection_apply_mem x).1
+    exact ((A.orthogonal ⊓ B.orthogonal).starProjection_apply_mem x).1
   have hZR : Q * R = 0 := by
     calc
       Q * R = ContinuousLinearMap.adjoint (R * Q) := by
@@ -1341,7 +1349,8 @@ theorem hsNormSq_centralSoninExteriorCompression_eq_prolateBlock_of_norm_lt_one
   have hQadj : ContinuousLinearMap.adjoint Q = Q := by
     dsimp only [Q, centralSoninProjection, centralSoninCarrier]
     exact (isSelfAdjoint_starProjection
-      ((centralPhysicalForbidden a)ᵮ ⊓ (centralFourierForbidden a)ᵮ)).star_eq
+      ((centralPhysicalForbidden a).orthogonal ⊓
+        (centralFourierForbidden a).orthogonal)).star_eq
   have hAadj : ContinuousLinearMap.adjoint A = A := by
     simpa only [A, P, R, soninAlternatingBlock,
       HTGeometry.twoProjectionInteriorCompression] using
@@ -1847,9 +1856,17 @@ theorem tsum_centralSoninWeightedPrimePowerResidual_hsNormSq_le_area
         ContinuousLinearMap.hsNormSq (centralSoninWeightedPrimePowerResidual a pk) ≤
       (128 * a ^ 2) *
         ∑' pk : Nat.Primes × ℕ, ‖soninLogPrimePowerCoefficient pk‖ ^ 2 := by
-  exact (summable_centralSoninWeightedPrimePowerResidual_hsNormSq a ha).tsum_le_tsum
-    (centralSoninWeightedPrimePowerResidual_hsNormSq_le_128_mul_sq a ha)
-    (summable_norm_soninLogPrimePowerCoefficient_sq.mul_left (128 * a ^ 2))
+  calc
+    ∑' pk : Nat.Primes × ℕ,
+          ContinuousLinearMap.hsNormSq (centralSoninWeightedPrimePowerResidual a pk) ≤
+        ∑' pk : Nat.Primes × ℕ,
+          (128 * a ^ 2) * ‖soninLogPrimePowerCoefficient pk‖ ^ 2 :=
+      (summable_centralSoninWeightedPrimePowerResidual_hsNormSq a ha).tsum_le_tsum
+        (centralSoninWeightedPrimePowerResidual_hsNormSq_le_128_mul_sq a ha)
+        (summable_norm_soninLogPrimePowerCoefficient_sq.mul_left (128 * a ^ 2))
+    _ = (128 * a ^ 2) *
+          ∑' pk : Nat.Primes × ℕ, ‖soninLogPrimePowerCoefficient pk‖ ^ 2 :=
+      tsum_mul_left
 
 /-- Every finite regularized prime-power section is Hilbert--Schmidt, with no operator-ideal
 hypothesis left to supply. -/

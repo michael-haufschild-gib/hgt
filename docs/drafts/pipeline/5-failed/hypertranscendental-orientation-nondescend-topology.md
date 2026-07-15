@@ -1,9 +1,9 @@
 # Hypertranscendental orientation does not descend through field--completion topology
 
 - **ID:** `hypertranscendental-orientation-nondescend-topology`
-- **Stage:** 1-in-progress
-- **Type:** FOUNDATIONAL THEOREM / TOPOLOGICAL NO-GO WITH POSITIVE REPLACEMENT
-- **Scientific status:** `[CONJECTURE] [CORE INPUTS FORMALIZED] [KREIN INDEX INPUT IN PROGRESS] [NOVELTY UNVERIFIED]`
+- **Stage:** 5-failed
+- **Type:** RETIRED REDISCOVERY / TOPOLOGICAL NO-GO
+- **Scientific status:** `[RETIRED] [SUBSUMED BY LIVE CORPUS] [POSITIVE SUCCESSOR IDENTIFIED]`
 - **Statement:** On one explicit universal prime-log hypertranscendental family, the topology generated
   jointly by the embedded differential field, all finite localized differential-constraint matroids,
   and the compact-open completed Cauchy ring is non-`T0`: it identifies representatives of every finite
@@ -11,6 +11,21 @@
   the Herglotz locus is exactly the index-zero stratum.
 
 ## Why this is the foundational obstruction
+
+## Retirement verdict
+
+The proposed first theorem is already present, in stronger form, across
+`PrimeDirichletTailGroupoid.lean`, `UniversalPrimeKreinHamming.lean`, the compact-open orientation
+completion modules, and their pipeline cards.  The same-field quotient is indiscrete, the exact
+finite Krein--Hamming geometry is formalized, and the positive point of the full orientation cube
+is already classified.  Reassembling those statements would not create new knowledge.
+
+The positive successor is not another quotient topology.  The directed finite-chamber differences
+are local representatives of an infinite-rank Hilbert cocycle on the tail groupoid; its squared
+norm is the Hamming/Krein energy.  Coupling a third projective-horizon direction raises the existing
+parabolic current algebra to the full `A₂` current root system.  The live successor asks whether
+that rank jump integrates to a source constraint group with fixed-point rigidity strong enough to
+annihilate the unbounded RH obstruction cocycle.
 
 The current RH chains repeatedly construct a faithful value, divisor, monodromy, Gram, spectral, or
 source coordinate and then fail to select its orientation.  Treating the failures as unrelated analytic
@@ -168,3 +183,6 @@ cross-chain descent theorem.  Until both are proved, the global object remains `
 - 2026-07-15 -- live-corpus obstruction inventory replaced the vague `one obstruction` slogan by a
   forgetful-map hypothesis; existing universal orientation and completion theorems identified the base as
   provably non-faithful; first topology theorem and kill tests stated.
+- 2026-07-15 -- kill test 4 fired: the non-`T0` quotient, completion blindness, and exact
+  Krein--Hamming refinement were already formalized.  Card retired; the groupoid Hilbert cocycle
+  and `A₂` rank-jump successor were separated as the stronger positive program.

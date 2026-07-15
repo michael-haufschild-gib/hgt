@@ -64,7 +64,7 @@ theorem adjoint_centralSoninExteriorCompression (a : ℝ) :
     (isSelfAdjoint_starProjection A).star_eq
   have hQadj : ContinuousLinearMap.adjoint Q = Q := by
     dsimp only [Q, centralSoninProjection, centralSoninCarrier]
-    exact (isSelfAdjoint_starProjection (Aᵮ ⊓ Bᵮ)).star_eq
+    exact (isSelfAdjoint_starProjection (A.orthogonal ⊓ B.orthogonal)).star_eq
   simpa only [A, B, P, R, Q, centralSoninExteriorCompression] using
     HTGeometry.adjoint_twoProjectionExteriorCompression P R Q hPadj hRadj hQadj
 
@@ -110,20 +110,20 @@ theorem centralSoninExteriorOverlap_mul_adjoint_eq_exteriorCompression (a : ℝ)
   have hRR : R * R = R := A.isIdempotentElem_starProjection
   have hZZ : Z * Z = Z := by
     dsimp only [Z, centralSoninProjection, centralSoninCarrier]
-    exact (Aᵮ ⊓ Bᵮ).isIdempotentElem_starProjection
+    exact (A.orthogonal ⊓ B.orthogonal).isIdempotentElem_starProjection
   have hPadj : ContinuousLinearMap.adjoint P = P :=
     (isSelfAdjoint_starProjection B).star_eq
   have hRadj : ContinuousLinearMap.adjoint R = R :=
     (isSelfAdjoint_starProjection A).star_eq
   have hZadj : ContinuousLinearMap.adjoint Z = Z := by
     dsimp only [Z, centralSoninProjection, centralSoninCarrier]
-    exact (isSelfAdjoint_starProjection (Aᵮ ⊓ Bᵮ)).star_eq
+    exact (isSelfAdjoint_starProjection (A.orthogonal ⊓ B.orthogonal)).star_eq
   have hPZ : P * Z = 0 := by
     apply ContinuousLinearMap.ext
     intro x
-    change B.starProjection ((Aᵮ ⊓ Bᵮ).starProjection x) = 0
+    change B.starProjection ((A.orthogonal ⊓ B.orthogonal).starProjection x) = 0
     apply B.starProjection_apply_eq_zero_iff.mpr
-    exact ((Aᵮ ⊓ Bᵮ).starProjection_apply_mem x).2
+    exact ((A.orthogonal ⊓ B.orthogonal).starProjection_apply_mem x).2
   have hZP : Z * P = 0 := by
     calc
       Z * P = ContinuousLinearMap.adjoint (P * Z) := by
@@ -133,9 +133,9 @@ theorem centralSoninExteriorOverlap_mul_adjoint_eq_exteriorCompression (a : ℝ)
   have hRZ : R * Z = 0 := by
     apply ContinuousLinearMap.ext
     intro x
-    change A.starProjection ((Aᵮ ⊓ Bᵮ).starProjection x) = 0
+    change A.starProjection ((A.orthogonal ⊓ B.orthogonal).starProjection x) = 0
     apply A.starProjection_apply_eq_zero_iff.mpr
-    exact ((Aᵮ ⊓ Bᵮ).starProjection_apply_mem x).1
+    exact ((A.orthogonal ⊓ B.orthogonal).starProjection_apply_mem x).1
   have hZR : Z * R = 0 := by
     calc
       Z * R = ContinuousLinearMap.adjoint (R * Z) := by

@@ -546,6 +546,66 @@ theorem xiCTaylorThetaTailCoreProductFiberMomentCurrent_eq_coherentBase_add_corr
     xiCTaylorThetaTailCoreProductFiberPolarizationDefectCurrent
   ring
 
+/-- The coherent prime-oriented base is nonpositive on every product fibre.  The fibres `0` and
+`1` carry no centered phase current; every nontrivial fibre has the strict prime-factor sign. -/
+theorem xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent_nonpos_all
+    (k : ℕ) {z : ℂ} (hz : 0 < z.im) (F : ℂ) :
+    xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent k z F ≤ 0 := by
+  by_cases hk : 1 < k
+  · exact xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent_nonpos hk hz F
+  · have hk01 : k = 0 ∨ k = 1 := by omega
+    rcases hk01 with rfl | rfl
+    · simp [xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent,
+        thetaProductFiberCenteredPhase, thetaProductFiberCenteredPhaseDerivative,
+        thetaPositiveFactorPairs, thetaFactorPairLogDisplacement]
+    · have hpairs : thetaPositiveFactorPairs 1 = {(0, 0)} := by
+        ext q
+        rcases q with ⟨a, b⟩
+        simp [thetaPositiveFactorPairs]
+      have hderivative : thetaProductFiberCenteredPhaseDerivative 1 z = 0 := by
+        rw [thetaProductFiberCenteredPhaseDerivative, hpairs]
+        simp [thetaFactorPairLogDisplacement]
+      simp [xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent, hderivative]
+
+/-- **The corrected seam dominates the RH-bearing fibre current.**  Once the coherent
+prime-factor base has been extracted, its favorable sign makes the remaining joint seam an upper
+majorant of the actual canonical coefficient, not a smaller error term. -/
+theorem xiCTaylorThetaTailCoreProductFiberMomentCurrent_le_correctedJointSeam
+    (d k : ℕ) {z : ℂ} (hz : 0 < z.im) (F F' : ℂ) :
+    xiCTaylorThetaTailCoreProductFiberMomentCurrent d z k ≤
+      xiCTaylorThetaTailCoreProductFiberCorrectedJointSeamCurrent d k z F F' := by
+  rw [xiCTaylorThetaTailCoreProductFiberMomentCurrent_eq_coherentBase_add_correctedJointSeam]
+  linarith [xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent_nonpos_all k hz F]
+
+/-- On every nontrivial fibre and for every nonzero common tail, the domination is strict.  Thus
+the polarization defect cannot be absorbed into a negligible endpoint/top-edge remainder even at
+the level of an upper estimate. -/
+theorem xiCTaylorThetaTailCoreProductFiberMomentCurrent_lt_correctedJointSeam
+    (d : ℕ) {k : ℕ} (hk : 1 < k) {z : ℂ} (hz : 0 < z.im)
+    {F : ℂ} (hF : F ≠ 0) (F' : ℂ) :
+    xiCTaylorThetaTailCoreProductFiberMomentCurrent d z k <
+      xiCTaylorThetaTailCoreProductFiberCorrectedJointSeamCurrent d k z F F' := by
+  have hbase :
+      xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent k z F < 0 := by
+    unfold xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent
+    exact mul_neg_of_pos_of_neg (Complex.normSq_pos.mpr hF)
+      (thetaProductFiberCenteredPhase_current_lt_zero hk hz)
+  rw [xiCTaylorThetaTailCoreProductFiberMomentCurrent_eq_coherentBase_add_correctedJointSeam]
+  linarith
+
+/-- Finite product-fibre summation preserves the domination for arbitrary fibre-dependent common
+tails.  This is the exact finite form relevant before any cofinal summability passage. -/
+theorem sum_xiCTaylorThetaTailCoreProductFiberMomentCurrent_le_correctedJointSeam
+    (d K : ℕ) {z : ℂ} (hz : 0 < z.im) (F F' : ℕ → ℂ) :
+    (∑ k ∈ Finset.range K,
+        xiCTaylorThetaTailCoreProductFiberMomentCurrent d z k) ≤
+      ∑ k ∈ Finset.range K,
+        xiCTaylorThetaTailCoreProductFiberCorrectedJointSeamCurrent
+          d k z (F k) (F' k) := by
+  exact Finset.sum_le_sum fun k _hk =>
+    xiCTaylorThetaTailCoreProductFiberMomentCurrent_le_correctedJointSeam
+      d k hz (F k) (F' k)
+
 /-- The extra polarization defect is strictly positive at the exact sign-reversal point, even for
 the common unit tail.  Hence it cannot be omitted from the corrected seam or represented solely
 by swept windows and finite translation edges, both of which vanish in this model. -/

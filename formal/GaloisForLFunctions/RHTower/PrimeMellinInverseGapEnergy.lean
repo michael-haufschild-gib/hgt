@@ -40,4 +40,29 @@ theorem cauchyBoundaryValueCommutator_eq_prime_sub_shiftedPolar_add_mellinDefect
   simp [HTGeometry.cauchyBoundaryNode]
   exact hε
 
+/-- **Source-resolved inverse-gap energy.**  The Lorentzian regularization of the finite
+inverse-square gap Hessian is the squared entry energy of one signed prime--polar--Mellin
+incidence packet.  The norm is deliberately kept outside the signed sum: its cross terms are
+part of the exact source relation and cannot be replaced by three unrelated positive energies. -/
+theorem regularizedInverseGapCommutatorEnergy_eq_primePolarMellinIncidence
+    {N : ℕ} (ε : ℝ) (hε : 0 < ε) (x : Fin N → ℝ) (v : Fin N → ℂ) :
+    HTGeometry.regularizedInverseGapCommutatorEnergy ε x v =
+      ∑ i, ∑ j,
+        ‖HTGeometry.gramValueCommutator
+              (vonMangoldtPrimeRightHalfPlaneGram
+                (HTGeometry.cauchyBoundaryNode ε x)) v i j -
+            HTGeometry.gramValueCommutator
+              (shiftedPolarRightHalfPlaneGram
+                (HTGeometry.cauchyBoundaryNode ε x)) v i j +
+            HTGeometry.gramValueCommutator
+              (criticalMellinDefectRightHalfPlaneGram
+                (HTGeometry.cauchyBoundaryNode ε x)) v i j‖ ^ 2 := by
+  have hsource :=
+    cauchyBoundaryValueCommutator_eq_prime_sub_shiftedPolar_add_mellinDefect
+      ε hε x v
+  rw [cauchyRightHalfPlaneGram_eq_universal] at hsource
+  unfold HTGeometry.regularizedInverseGapCommutatorEnergy
+  rw [hsource]
+  simp only [Matrix.sub_apply, Matrix.add_apply]
+
 end RHTower
