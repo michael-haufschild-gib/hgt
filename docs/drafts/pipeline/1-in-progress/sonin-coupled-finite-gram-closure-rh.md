@@ -185,7 +185,7 @@ aperture schedule.  The general and coupled declarations are in
 `HTGeometry/QuantumReplicaHausdorff.lean` and
 `RHTower/SoninCoupledPrimeArchGramTransfer.lean`.
 
-`[BRIDGE, SOURCE-FORMALIZED, UNVERIFIED]` The concrete source now supplies an
+`[BRIDGE, PROVED IN LEAN]` The concrete source now supplies an
 aperture-independent effect ceiling without inserting a subunitality or Kraus-completeness
 hypothesis.  Every local exact prime-power residual obeys
 
@@ -222,8 +222,19 @@ Thus the projective source moments have a fixed compact-support radius, uniforml
 positive apertures.  This discharges the previously named finite-source-radius/mass-limit
 hypothesis and makes the first scaled Hausdorff constraint closed under any projective aperture
 limit.  It does **not** construct a nonzero aperture schedule, prove projective moment-ratio
-convergence, compare `R_S` with the target prime--Gamma radius, or prove RH.  Those remain the
-load-bearing analytic tasks.
+convergence, prove all higher scaled Hausdorff differences, or prove RH.  Those remain the
+load-bearing analytic tasks.  A separate endpoint-radius comparison is not required:
+`soninAllPrimeColumnEffectRadius_pos` proves `0 < R_S`, and the existing
+`riemannHypothesis_of_scaledPrimeArchHausdorffMomentDifferencesNonnegative` theorem turns complete
+scaled positivity at any positive radius into RH.
+
+The local ceiling is now located at the lowest dependency level in
+`RHTower/SoninTimeBandIdeal.lean`; the all-prime Parseval/Bessel radius is in
+`RHTower/SoninCoupledPrimeResidual.lean`; and the moment recursion, power envelope, projective
+ratio bound, and first scaled difference are in
+`RHTower/SoninCoupledPrimeArchGramTransfer.lean`.  The first two files pass direct checks, and the
+five transfer proofs pass an isolated theorem-level Lean check against their compiled imports.
+No full build or concurrent Lean process was run.
 
 ## Goal
 
@@ -511,7 +522,9 @@ with ordinary nonvanishing of the explicit source column.  The source-only decla
 `soninAllPrimeColumnCoordinateOperator_ne_zero_iff_exists_primePowerResidual_ne_zero` and
 `soninAllPrimeCoupledTraceMoment_zero_re_pos_iff_exists_primePowerResidual_ne_zero`, together with
 `soninCoupledNondegenerateApertureOfPrimePowerResidual`, reduce that premise further to one local
-residual witness; they remain uncompiled under the current no-build constraint.
+residual witness.  The coupled-column declarations now pass the direct file check; the heavier
+Arch/Gram consumers retain their earlier compiled status, with the new radius-transfer block
+checked separately at theorem level to avoid a disproportionate whole-file elaboration.
 
 ## Log
 

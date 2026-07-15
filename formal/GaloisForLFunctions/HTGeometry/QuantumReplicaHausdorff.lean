@@ -117,7 +117,6 @@ theorem hsNormSq_real_smul_sub_eq
     rw [ContinuousLinearMap.hsInner_smul_left,
       ContinuousLinearMap.hsInner_smul_right]
     simp
-    push_cast
     ring
   have hUV : ContinuousLinearMap.hsInner U V =
       -(r : ℂ) * ContinuousLinearMap.hsInner S T := by

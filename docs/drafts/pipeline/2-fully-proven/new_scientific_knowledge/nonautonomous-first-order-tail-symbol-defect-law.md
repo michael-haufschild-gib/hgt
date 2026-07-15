@@ -257,15 +257,23 @@ shifted-order identity `(10)`, sums the local ramification inequalities over the
 divisor to obtain `(7)`, and derives zero-freeness once prefix degree exceeds the fixed source
 budget.
 
-The remaining stage-3 obligation is the converse half of Theorem A: construct the first-order
-rational differential-function field, extract its nonzero Laurent symbol at vertical infinity,
-and connect that extraction to the existing nonautonomous tail interface.  This is not hidden by
-the abstract tensor-chain theorem, so the card remains at stage 2.
+`formal/GaloisForLFunctions/HTGeometry/VerticalLaurentSymbol.lean` formalizes the missing algebraic
+symbol extraction itself.  For an injective phase-coordinate base change followed by the vertical
+rescaling `v |-> a v`, it proves invariance of the integer Laurent weight and the exact leading law
+`q_0 = sigma(q_1) a^k`, including negative `k`.  It also proves the weight-zero escape: subtracting
+the infinity value of a genuinely vertical fraction produces strictly negative Laurent weight.
+
+The remaining stage-3 obligation is to package arbitrary order-at-most-one elements of the free
+differential rational field as these polynomial fractions, and connect that concrete carrier to
+the existing nonautonomous tail interface.  The algebraic Laurent step and all of Theorem B are no
+longer open, but the carrier-to-symbol converse is not hidden by an abstract hypothesis, so the
+card remains at stage 2.
 
 ## Gates
 
 - [x] 0 -> 1: exact first-order converse and divisor attack isolated
 - [x] 1 -> 2: complete symbolic proof and finite-transient correction
 - [x] exact tensor transport, prefix-tail membership, global divisor budget, and axiom audit
-- [ ] 2 -> 3: Laurent-symbol extraction and the first-order tail-to-tensor converse in Lean
+- [x] Laurent-weight invariance, leading-symbol transport, and the weight-zero escape in Lean
+- [ ] 2 -> 3: concrete first-order differential-rational carrier and tail-to-tensor connection
 - [ ] 3 -> 4: independent novelty audit and standalone manuscript

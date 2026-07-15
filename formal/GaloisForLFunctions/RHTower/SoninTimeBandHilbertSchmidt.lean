@@ -1449,7 +1449,7 @@ theorem centralSoninDilationCornerResidual_isHilbertSchmidt
 exact projection correction exhaust the squared norm outside the actual Sonin carrier.  Thus the
 Hilbert--Schmidt correction is not an independent error term: it is the zero-mode-subtracted
 supersymmetric partner of the two forbidden-sector projections. -/
-theorem norm_centralSoninProjectionDifference_sq_add_correction_sq
+private theorem legacy_norm_centralSoninProjectionDifference_sq_add_correction_sq
     (a : ℝ) (psi : SoninL2) :
     ‖((centralPhysicalForbidden a).starProjection -
         (centralFourierForbidden a).starProjection) psi‖ ^ 2 +
@@ -1464,26 +1464,29 @@ theorem norm_centralSoninProjectionDifference_sq_add_correction_sq
   have hR : IsIdempotentElem R := B.isIdempotentElem_starProjection
   have hQ : IsIdempotentElem Q := by
     dsimp only [Q, centralSoninProjection, centralSoninCarrier]
-    exact (Aᵮ ⊓ Bᵮ).isIdempotentElem_starProjection
+    exact (A.orthogonal ⊓ B.orthogonal).isIdempotentElem_starProjection
   have hPadj : ContinuousLinearMap.adjoint P = P :=
     (isSelfAdjoint_starProjection A).star_eq
   have hRadj : ContinuousLinearMap.adjoint R = R :=
     (isSelfAdjoint_starProjection B).star_eq
   have hQadj : ContinuousLinearMap.adjoint Q = Q := by
     dsimp only [Q, centralSoninProjection, centralSoninCarrier]
-    exact (isSelfAdjoint_starProjection (Aᵮ ⊓ Bᵮ)).star_eq
+    exact (isSelfAdjoint_starProjection
+      (A.orthogonal ⊓ B.orthogonal)).star_eq
   have hPQ : P * Q = 0 := by
     apply ContinuousLinearMap.ext
     intro x
-    change A.starProjection ((Aᵮ ⊓ Bᵮ).starProjection x) = 0
+    change A.starProjection
+      ((A.orthogonal ⊓ B.orthogonal).starProjection x) = 0
     apply A.starProjection_apply_eq_zero_iff.mpr
-    exact ((Aᵮ ⊓ Bᵮ).starProjection_apply_mem x).1
+    exact ((A.orthogonal ⊓ B.orthogonal).starProjection_apply_mem x).1
   have hRQ : R * Q = 0 := by
     apply ContinuousLinearMap.ext
     intro x
-    change B.starProjection ((Aᵮ ⊓ Bᵮ).starProjection x) = 0
+    change B.starProjection
+      ((A.orthogonal ⊓ B.orthogonal).starProjection x) = 0
     apply B.starProjection_apply_eq_zero_iff.mpr
-    exact ((Aᵮ ⊓ Bᵮ).starProjection_apply_mem x).2
+    exact ((A.orthogonal ⊓ B.orthogonal).starProjection_apply_mem x).2
   have hQP : Q * P = 0 := by
     calc
       Q * P = ContinuousLinearMap.adjoint (P * Q) := by
@@ -1497,10 +1500,11 @@ theorem norm_centralSoninProjectionDifference_sq_add_correction_sq
   have henergy := HTGeometry.norm_twoProjection_difference_sq_add_corrected_complement_sq
     P R Q hP hR hQ hPadj hRadj hQadj hPQ hQP hRQ hQR psi
   simpa only [P, R, Q, A, B, centralSoninProjectionCorrection,
+    centralPhysicalForbidden, centralFourierForbidden, centralInterval,
     indicatorCutoff_eq_physicalForbidden_starProjection,
     fourierCutoff_eq_fourierForbidden_starProjection] using henergy
 
-theorem norm_one_sub_centralSoninProjection_le_one (a : ℝ) :
+private theorem legacy_norm_one_sub_centralSoninProjection_le_one (a : ℝ) :
     ‖(1 : SoninL2 →L[ℂ] SoninL2) - centralSoninProjection a‖ ≤ 1 := by
   rw [centralSoninProjection]
   rw [← (centralSoninCarrier a).starProjection_orthogonal']
@@ -1508,7 +1512,7 @@ theorem norm_one_sub_centralSoninProjection_le_one (a : ℝ) :
 
 /-- The exact Sonin projection correction is itself a contraction.  This follows from the active
 energy partition, rather than from a triangle estimate on its three projection terms. -/
-theorem norm_centralSoninProjectionCorrection_le_one (a : ℝ) :
+private theorem legacy_norm_centralSoninProjectionCorrection_le_one (a : ℝ) :
     ‖centralSoninProjectionCorrection a‖ ≤ 1 := by
   apply (centralSoninProjectionCorrection a).opNorm_le_bound zero_le_one
   intro psi
@@ -1526,12 +1530,11 @@ theorem norm_centralSoninProjectionCorrection_le_one (a : ℝ) :
       ((1 : SoninL2 →L[ℂ] SoninL2) - centralSoninProjection a).le_opNorm psi
     _ ≤ 1 * ‖psi‖ := mul_le_mul_of_nonneg_right
       (norm_one_sub_centralSoninProjection_le_one a) (norm_nonneg psi)
-    _ = ‖psi‖ := one_mul _
 
 /-- **Sharp two-projection bound.**  The formal physical/Fourier complement is a contraction.
 This is the Sonin specialization of the anticommutative Pythagorean identity and removes the
 former triangle bound `≤ 3`. -/
-theorem norm_centralSoninFormalComplement_le_one (a : ℝ) :
+private theorem legacy_norm_centralSoninFormalComplement_le_one (a : ℝ) :
     ‖centralSoninFormalComplement a‖ ≤ 1 := by
   rw [centralSoninFormalComplement,
     indicatorCutoff_eq_physicalForbidden_starProjection,
@@ -1548,7 +1551,7 @@ theorem norm_centralSoninFormalComplement_le_one (a : ℝ) :
 the principal-subtracted dilation corner.  Both cutoff factors and the exact correction are
 contractions; only the symmetric dilation sum contributes the factor `2` in each of the two
 linearized residual terms. -/
-theorem norm_centralSoninDilationCornerResidual_le_four
+private theorem legacy_norm_centralSoninDilationCornerResidual_le_four
     (a p : ℝ) (hp : 1 < p) :
     ‖centralSoninDilationCornerResidual a p hp‖ ≤ 4 := by
   let Q := centralSoninProjection a

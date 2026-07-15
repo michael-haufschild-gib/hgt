@@ -96,6 +96,16 @@ theorem soninAllPrimeColumnWeightSqMass_nonneg :
     0 ≤ soninAllPrimeColumnWeightSqMass := by
   exact tsum_nonneg fun _ => sq_nonneg _
 
+/-- The fixed Euler weight mass is strictly positive: one nonzero prime-power coefficient already
+forces strict positivity of the square-summed instrument mass. -/
+theorem soninAllPrimeColumnWeightSqMass_pos :
+    0 < soninAllPrimeColumnWeightSqMass := by
+  let pk : Nat.Primes × ℕ := (⟨2, Nat.prime_two⟩, 0)
+  apply summable_norm_soninLogPrimePowerCoefficient_sq.tsum_pos
+  · exact fun _ => sq_nonneg _
+  · exact sq_pos_of_pos
+      (norm_pos_iff.mpr (soninLogPrimePowerCoefficient_ne_zero pk))
+
 /-- The common-source effect radius obtained by combining the local residual ceiling `4` with
 orthogonal prime-power outcome stacking. -/
 def soninAllPrimeColumnEffectRadius : ℝ :=
@@ -104,6 +114,12 @@ def soninAllPrimeColumnEffectRadius : ℝ :=
 theorem soninAllPrimeColumnEffectRadius_nonneg :
     0 ≤ soninAllPrimeColumnEffectRadius := by
   exact mul_nonneg (by norm_num) soninAllPrimeColumnWeightSqMass_nonneg
+
+/-- The source-effect radius is a genuine positive radius, so it can be used directly in the
+scaled Hausdorff-to-RH implication without comparison to a separately calibrated endpoint. -/
+theorem soninAllPrimeColumnEffectRadius_pos :
+    0 < soninAllPrimeColumnEffectRadius := by
+  exact mul_pos (by norm_num) soninAllPrimeColumnWeightSqMass_pos
 
 /-- Every unweighted prime-power outcome channel has the same operator-norm ceiling, independent
 of aperture and prime-power scale. -/

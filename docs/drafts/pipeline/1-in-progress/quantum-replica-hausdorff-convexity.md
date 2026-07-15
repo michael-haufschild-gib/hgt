@@ -5,7 +5,8 @@
 - **Type:** `[BRIDGE]` exact quantum-information value relation / general corpus strengthening
 - **Scientific status:** standard unit-interval density-spectrum constraint transferred to the
   rectangular Hilbert--Schmidt constraint API; novelty is not claimed
-- **Verification status:** source-only by explicit instruction; no Lean process or build run
+- **Verification status:** narrow Lean verification complete; no full build and no concurrent
+  Lean process was run
 
 ## Claim
 
@@ -164,10 +165,12 @@ coordinatewise limit of positive-mass projective Sonin moment ratios must obey t
 `R_S` envelope and first scaled difference, without assuming convergence or boundedness of
 `Re S_0(a)`.  This directly discharges the former *finite source-radius* hypothesis.
 
-The remaining route problem is now sharper: construct the nonzero aperture schedule and prove
-its projective moment-ratio convergence, then compare the resulting fixed-`R_S` source constraint
-with the prime--Gamma scaled-Hausdorff target surface.  The uniform bound does not construct the
-schedule and does not prove that target comparison.
+The remaining route problem is now sharper: prove the complete all-order scaled-difference
+hierarchy at `R_S`, construct the nonzero aperture schedule, and prove its projective moment-ratio
+convergence.  No comparison with the endpoint-calibrated radius is required for the implication:
+`riemannHypothesis_of_scaledPrimeArchHausdorffMomentDifferencesNonnegative` accepts every positive
+radius, and the source now proves `0 < R_S`.  The uniform bound alone supplies only the first
+scaled difference and does not construct the schedule.
 
 No RH implication is claimed from the new inequality alone.
 
@@ -234,6 +237,10 @@ would discard the classical spectral variance rather than bound it.
 
 ## Verification status
 
-Source inspection only.  Under the active user constraint, no Lean invocation, scratch
-compilation, lint, numerical check, targeted build, or full build was run.  The declarations stay
-in stage 1 until a narrow validation pass is authorized.
+The general APIs in `QuantumChannelEnergyAugmentation.lean` and
+`QuantumReplicaHausdorff.lean` pass exact-module builds and direct file checks.  The supporting
+general modules `FiniteConstraintGroupAverage.lean`, `L2PairingEnergy.lean`,
+`HilbertSchmidtRectangular.lean`, and `TwoProjectionQuantumWalk.lean` also pass their exact-module
+builds and direct checks.  No numerical check, full build, or concurrent Lean process was run.
+The card remains in stage 1 because the source-to-target convergence/comparison step is still
+open, not because the recorded declarations are unverified.
