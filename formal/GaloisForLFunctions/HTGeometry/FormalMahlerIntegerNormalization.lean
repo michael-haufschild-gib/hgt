@@ -32,6 +32,9 @@ local instance formalLaurentRatComplexTower :
     simp [Algebra.smul_def]
     ring⟩
 
+local instance : CharZero FormalLaurent :=
+  charZero_of_injective_algebraMap (algebraMap ℂ FormalLaurent).injective
+
 @[reducible] def rationalZeroDifferential : Differential ℚ := ⟨0⟩
 
 @[reducible] def formalLaurentDifferential : Differential FormalLaurent := by
@@ -303,14 +306,13 @@ theorem map_aeval_powerSeries_formalLaurent {σ : Type*}
   congr 1
 
 set_option maxHeartbeats 3000000 in
-theorem differentialAlgebraicOver_rat_of_formalRelation
+theorem differentialAlgebraicOver_coefficientAdjoin_of_formalRelation
     {F : PowerSeries ℂ} {n : ℕ} {P : MvPolynomial (Fin (n + 2)) ℂ}
     (hP : P ≠ 0) (hann : MvPolynomial.aeval (formalJets n F) P = 0) :
-    DifferentialAlgebraicOver ℚ
+    DifferentialAlgebraicOver
+      (differentialAdjoin ℚ
+        (formalPointCoefficientGenerators (formalPointRow n P)))
       (algebraMap (PowerSeries ℂ) FormalLaurent F) := by
-  letI : Differential ℚ := rationalZeroDifferential
-  letI : DifferentialAlgebra ℚ FormalLaurent :=
-    formalLaurentDifferentialAlgebraRat
   let R := formalPointRow n P
   let S := formalPointCoefficientGenerators R
   let B := differentialAdjoin ℚ S
@@ -334,12 +336,13 @@ theorem differentialAlgebraicOver_rat_of_formalRelation
     change MvPolynomial.eval₂ formalPointRowEmbedding
       (fun i : Fin (n + 1) => algebraMap (PowerSeries ℂ) FormalLaurent
         ((⇑(d⁄dX ℂ))^[(i : ℕ)] F)) R = 0 at hmap
+    rw [MvPolynomial.aeval_def, MvPolynomial.eval₂_map]
     change MvPolynomial.eval₂ formalPointRowEmbedding
       (fun j : Fin (n + 1) => differentialJet (j : ℕ)
         (algebraMap (PowerSeries ℂ) FormalLaurent F)) R = 0
     rw [show (fun j : Fin (n + 1) => differentialJet (j : ℕ)
         (algebraMap (PowerSeries ℂ) FormalLaurent F)) =
-      (fun j => algebraMap (PowerSeries ℂ) FormalLaurent
+      (fun j : Fin (n + 1) => algebraMap (PowerSeries ℂ) FormalLaurent
         ((⇑(d⁄dX ℂ))^[(j : ℕ)] F)) by
         funext j
         exact differentialJet_formalLaurent_algebraMap (j : ℕ) F]
@@ -353,12 +356,39 @@ theorem differentialAlgebraicOver_rat_of_formalRelation
   have hyB : DifferentialAlgebraicOver B
       (algebraMap (PowerSeries ℂ) FormalLaurent F) :=
     differentialAlgebraicOver_of_finiteJetRelation hQB0 hQBann
+  exact hyB
+
+/- Descent from a differential adjunction whose complete generator jet set is finite.  Keeping
+`S` abstract prevents the elaborator from normalizing a large concrete coefficient-field term
+inside the general finite-transcendence theorem. -/
+set_option maxHeartbeats 1000000 in
+theorem differentialAlgebraicOver_rat_of_differentialAdjoin_finiteJetSet
+    (S : Set FormalLaurent) (hSfinite : (differentialJetSet S).Finite)
+    {y : FormalLaurent} (hy : DifferentialAlgebraicOver (differentialAdjoin ℚ S) y) :
+    DifferentialAlgebraicOver ℚ y := by
+  letI : Differential ℚ := rationalZeroDifferential
+  letI : DifferentialAlgebra ℚ FormalLaurent :=
+    formalLaurentDifferentialAlgebraRat
+  exact differentialAlgebraicOver_of_intermediate_trdeg_lt_aleph0
+    (k := ℚ) (K := FormalLaurent) (differentialAdjoin ℚ S)
+    (derivationClosed_differentialAdjoin ℚ S)
+    (differentialAdjoin_trdeg_lt_aleph0_of_finite_jetSet S hSfinite) hy
+
+set_option maxHeartbeats 1000000 in
+theorem differentialAlgebraicOver_rat_of_formalRelation
+    {F : PowerSeries ℂ} {n : ℕ} {P : MvPolynomial (Fin (n + 2)) ℂ}
+    (hP : P ≠ 0) (hann : MvPolynomial.aeval (formalJets n F) P = 0) :
+    DifferentialAlgebraicOver ℚ
+      (algebraMap (PowerSeries ℂ) FormalLaurent F) := by
+  let R := formalPointRow n P
+  let S := formalPointCoefficientGenerators R
+  let B := differentialAdjoin ℚ S
+  have hyB : DifferentialAlgebraicOver B
+      (algebraMap (PowerSeries ℂ) FormalLaurent F) :=
+    differentialAlgebraicOver_coefficientAdjoin_of_formalRelation hP hann
   have hSfinite : (differentialJetSet S).Finite :=
     formalPointCoefficientGenerators_finite_jetSet R
-  have hBfinite : Algebra.trdeg ℚ B < Cardinal.aleph0 :=
-    differentialAdjoin_trdeg_lt_aleph0_of_finite_jetSet S hSfinite
-  exact differentialAlgebraicOver_of_intermediate_trdeg_lt_aleph0 B
-    (derivationClosed_differentialAdjoin ℚ S) hBfinite hyB
+  exact differentialAlgebraicOver_rat_of_differentialAdjoin_finiteJetSet S hSfinite hyB
 
 theorem map_aeval_complex_powerSeries_formalLaurent {σ : Type*}
     (g : σ → PowerSeries ℂ) (P : MvPolynomial σ ℂ) :
@@ -426,13 +456,19 @@ theorem exists_integer_jet_relation_of_formalRelation
   obtain ⟨n', Q, hQ, hint, hrel⟩ :=
     exists_integerJetRelation_formalLaurent hda
   refine ⟨n', Q, hQ, hint, ?_⟩
-  apply HahnSeries.ofPowerSeries_injective
+  apply (HahnSeries.ofPowerSeries_injective (Γ := ℤ) (R := ℂ))
   change algebraMap (PowerSeries ℂ) FormalLaurent
       (MvPolynomial.aeval
         (fun j : Fin (n' + 1) => (⇑(d⁄dX ℂ))^[(j : ℕ)] F) Q) =
     algebraMap (PowerSeries ℂ) FormalLaurent 0
   rw [map_zero, map_aeval_complex_powerSeries_formalLaurent]
-  simpa [differentialJet_formalLaurent_algebraMap] using hrel
+  rw [show (fun j : Fin (n' + 1) => differentialJet (j : ℕ)
+      (algebraMap (PowerSeries ℂ) FormalLaurent F)) =
+    (fun j : Fin (n' + 1) => algebraMap (PowerSeries ℂ) FormalLaurent
+      ((⇑(d⁄dX ℂ))^[(j : ℕ)] F)) by
+      funext j
+      exact differentialJet_formalLaurent_algebraMap (j : ℕ) F] at hrel
+  exact hrel
 
 theorem integerCoefficients_rename_finSucc {n : ℕ}
     {Q : MvPolynomial (Fin (n + 1)) ℂ}

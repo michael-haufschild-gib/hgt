@@ -357,8 +357,9 @@ location.  No such instantiation currently exists.
 
 1. [DONE] Define a finite family of derivations and its common-constant linear combinations.
 2. [DONE] Prove the homogeneous noncommutative word formula `(3)` without reordering words.
-3. Formalize the finite Kähler wedge and the equivalence `(5)`.
-4. Package `W_n` as a homogeneous vector-valued polynomial and prove projective closedness.
+3. [DONE] Formalize the finite Kähler wedge and the equivalence `(5)`.
+4. [DONE] Package `W_n` as a homogeneous vector-valued polynomial and extract finite homogeneous
+   scalar equations for its projective zero locus.
 5. [DONE for the complex affine/Baire form] Formalize the collapse-versus-dense-residual theorem
    for countable families of finite complex algebraic loci.
 6. Reuse the axiom-clean `SourceLogarithmicBoundary` theorem for each direction and formalize only
@@ -380,13 +381,36 @@ proves it homogeneous of degree `n`.  No commutativity hypothesis is used.  The 
 numerically pre-certified through order three on noncommuting matrices; the module then passed its
 exact targeted build and direct source check.  No full build was run.
 
+`formal/GaloisForLFunctions/HTGeometry/KaehlerAlgebraicIndependence.lean` proves, in an arbitrary
+ambient characteristic-zero field extension, that a family is algebraically independent exactly
+when its universal Kähler differentials are linearly independent.  The forward direction extends
+the family to a transcendence basis and uses the formally étale algebraic remainder; the reverse
+direction uses the existing nonzero minimal-gradient Kähler circuit.  Thus the theorem does not
+assume the desired independence criterion in another form.
+
+`formal/GaloisForLFunctions/HTGeometry/DirectionalKaehlerWedge.lean` supplies the missing exterior
+algebra infrastructure and completes `(5)`: a finite family's top exterior product is zero exactly
+when the family is linearly dependent, the directional wedge is zero exactly when its initial jet
+segment is algebraically dependent, these zero loci are nested, and their countable union is
+exactly dependence of the complete directional jet.  The deficient-span direction is proved by
+the vanishing of an exterior power above the span's finrank.  The module passed its exact targeted
+build and direct source check; no full build was run.
+
+`formal/GaloisForLFunctions/HTGeometry/DirectionalKaehlerPolynomialLocus.lean` now supplies that
+encoding.  It expands the wedge over dependent packets of ordered derivation words, proves every
+packet monomial has exact triangular degree `n(n+1)/2`, and takes coordinates only in the finite
+span of the resulting exterior coefficient vectors.  It therefore produces finitely many
+homogeneous scalar polynomials whose common zero locus is exactly finite directional jet
+dependence.  No finite-dimensionality assumption is placed on the ambient Kähler or exterior
+module.  The module passed its exact targeted build and direct source check; no full build was run.
+
 `formal/GaloisForLFunctions/HTGeometry/CountableAlgebraicLocusDichotomy.lean` proves the complex
-Baire half of the final dichotomy independently of the still-missing Kähler encoding: a proper
+Baire half of the final dichotomy: a proper
 finite common zero locus is closed nowhere dense, and for any countable family of such loci either
 one finite level is the whole law-coordinate space or simultaneous avoidance is dense residual.
-The module passed its exact targeted build and direct source check.  The outstanding bridge is now
-precise: represent each finite directional dependence locus by the finite homogeneous polynomial
-family coming from the Kähler wedge/minors, then transport the affine result projectively.
+The module passed its exact targeted build and direct source check.  The remaining geometric work
+is the projective transport, Zariski-density statement over an arbitrary uncountable algebraically
+closed base, and complex null-set/full-measure strengthening.
 
 ## Gates
 

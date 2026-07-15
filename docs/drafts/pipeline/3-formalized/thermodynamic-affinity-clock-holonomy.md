@@ -5,7 +5,8 @@
 - **Type:** THEOREM (Lean), `[BRIDGE]`
 - **Physics sources:** stochastic thermodynamics, chemical reaction-network cycle affinities,
   molecular motors and Brownian clocks
-- **Lean module:** `GaloisForLFunctions.HTGeometry.ThermodynamicAffinityHolonomy`
+- **Lean modules:** `GaloisForLFunctions.HTGeometry.ThermodynamicAffinityHolonomy`,
+  `GaloisForLFunctions.RHTower.PrimeArchEntropyProductionResponseRH`
 - **Statement:** Positive forward/reverse observable values have nonnegative current-affinity
   product; their rate ratio is a reversible clock calibration, nonunit loop holonomy forces a
   strictly positive entropy-production edge on that loop, and finite KMS entropy production equals inverse
@@ -92,6 +93,8 @@ current and affinity factors are separately oriented.
 - `clockCalibrationExact_iff_flat` now supplies the full graph detailed-balance cycle criterion.
 - `FiniteKMSFluctuationDissipation` gains an exact entropy-production interpretation and a
   nonnegative value at arbitrary inverse temperature.
+- The `RHTower` passive-response limit and RH capstone lose the hypothesis `β ≥ 0` when the
+  response is formulated with entropy-production intensity.
 - A nontrivial clock holonomy now has a positive local witness rather than only the negative
   conclusion that no global scalar clock exists.
 
@@ -115,7 +118,8 @@ The bridge is standard parent mathematics, not claimed as new scientific knowled
 
 ## Lean certificate
 
-The module exports the elementary affinity and entropy-production laws, the rate-ratio calibration
+The modules export the elementary affinity and entropy-production laws, the rate-ratio calibration
 and automatic reversibility theorem, the connected graph exactness/flatness criterion, the
-positive holonomy witness, and the finite KMS specialization. No new axiom, `sorry`, `admit`,
-`opaque`, or `unsafe` declaration is introduced.
+positive holonomy witness, the finite KMS specialization, and the arbitrary-temperature
+prime--archimedean passive-response consumers. No new axiom, `sorry`, `admit`, `opaque`, or
+`unsafe` declaration is introduced.

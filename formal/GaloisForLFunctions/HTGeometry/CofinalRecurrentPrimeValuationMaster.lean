@@ -229,7 +229,13 @@ structure PrimeValuationRecurringPivotPresentation
   pivot : ∀ r, J r → Nat.Primes → ℂ
   dependent : ∀ r, R r → Nat.Primes → ℂ
   coefficient : ∀ r, R r → J r → ℂ
-  pivotRecurringPatternsSpan : ∀ r, RecurringCoefficientPatternsSpan (pivot r)
+  pivotShiftJetTailIndependent : ∀ r (A : Type u) [Fintype A]
+    (alpha : A → ℂ), Function.Injective (fun a ↦ (alpha a).re) → ∀ m,
+      TailCoefficientIndependent
+        (fun jak : J r × (A × Fin (m + 1)) ↦ fun p ↦
+          pivot r jak.1 p * primeShiftFactor (alpha jak.2.1) p *
+            ((((r.1 + 1 : ℕ) : ℂ) * rotatedPrimeLogClock p) ^
+              (jak.2.2 : ℕ)))
   residualFinite : ∀ r q,
     {p | dependent r q p - ∑ j, coefficient r q j * pivot r j p ≠ 0}.Finite
 
@@ -360,8 +366,39 @@ theorem PrimeValuationRecurringPivotPresentation.pivotPalette_differentialIndepe
     (hdistinct : ∀ r, Function.Injective (fun a ↦ (α r a).re)) :
     GaloisForLFunctions.DifferentialIndependent finitePrimeRationalCoefficientField
       (P.pivotPalette α) := by
-  exact primePowerCoefficientShiftPalettes_differentialIndependent_of_recurringPatternsSpan
-    J A P.pivot α hdistinct P.pivotRecurringPatternsSpan
+  unfold PrimeValuationRecurringPivotPresentation.pivotPalette
+  unfold GaloisForLFunctions.DifferentialIndependent
+  simp_rw [differentialJet_primePowerCoefficientShiftCarrier]
+  let y : (Σ r, J r × A r) → ℕ → arithmeticFunctionRationalCoordinateField :=
+    fun rb k ↦
+      algebraMap arithmeticFunctionFractionField arithmeticFunctionRationalCoordinateField
+        (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+          (primePowerCoefficientShiftedRotatedJet
+            rb.1 (P.pivot rb.1 rb.2.1) (α rb.1 rb.2.2) k))
+  apply algebraicIndependent_prod_nat_of_fin y
+  intro m
+  let B : Fin d → Type u := fun r ↦ J r × (A r × Fin (m + 1))
+  letI (r : Fin d) : Fintype (B r) := inferInstance
+  letI (r : Fin d) : DecidableEq (B r) := inferInstance
+  let a : ∀ r, B r → Nat.Primes → ℂ := fun r x p ↦
+    P.pivot r x.1 p * primeShiftFactor (α r x.2.1) p *
+      ((((r.1 + 1 : ℕ) : ℂ) * rotatedPrimeLogClock p) ^ (x.2.2 : ℕ))
+  have hatail : ∀ r, TailCoefficientIndependent (a r) := by
+    intro r
+    exact P.pivotShiftJetTailIndependent r (A r) (α r) (hdistinct r) m
+  have hraw := algebraicIndependent_primePowerSigmaTower_over_finitePrimeCoefficientField
+    d B a hatail
+  apply algebraicIndependent_constants_over_finitePrimeRationalCoefficientField at hraw
+  let f : ((Σ r, J r × A r) × Fin (m + 1)) →
+      (Σ r, J r × (A r × Fin (m + 1))) := fun rbk ↦
+    ⟨rbk.1.1, (rbk.1.2.1, (rbk.1.2.2, rbk.2))⟩
+  have hf : Function.Injective f := by
+    rintro ⟨⟨r, j, b⟩, k⟩ ⟨⟨r', j', b'⟩, k'⟩ h
+    cases h
+    rfl
+  have hsub := hraw.comp f hf
+  simpa only [Function.comp_apply, B, a, f, y, primePowerSigmaExponent,
+    primePowerSigmaCoefficient, primePowerCoefficientShiftedRotatedJet] using hsub
 
 theorem PrimeValuationRecurringPivotPresentation.complete_relationIdeal
     {d : ℕ} {J R A : Fin d → Type u}
@@ -412,7 +449,9 @@ def RecurrentHomogeneousValuationPresentation.toRecurringPivotPresentation
   pivot := P.pivotColumn
   dependent := P.dependentColumn
   coefficient := P.coefficient
-  pivotRecurringPatternsSpan := P.pivotColumn_recurringPatternsSpan
+  pivotShiftJetTailIndependent r A _ alpha hdistinct m :=
+    primePowerCoefficientShiftedRotatedJet_tailIndependent_of_recurringPatternsSpan
+      r (P.pivotColumn r) alpha hdistinct (P.pivotColumn_recurringPatternsSpan r) m
   residualFinite := P.residualFinite_of_cofinitelyRecurring hrec
 
 /-- The valuation-tail Hilbert number of a cofinally recurrent source is its recurrent

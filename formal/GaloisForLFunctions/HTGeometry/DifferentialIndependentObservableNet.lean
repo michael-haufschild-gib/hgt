@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DifferentialIndependence
+import Mathlib.Analysis.Subadditive
 import Mathlib.Tactic
 
 /-!
@@ -126,6 +127,176 @@ def differentialIndependentObservableNetOrderEmbedding
   map_rel_iff' := by
     intro M N
     exact differentialIndependent_familyObservableField_le_iff hx M N
+
+/-!
+## Asymptotic clock translation length
+
+Differential order on a group of reversible substitutions is a nonnegative subadditive cost:
+composition can expose at most the sum of the two input jet orders.  The following abstract kernel
+isolates the consequence needed by the differential-birational clock theory.  Fekete's lemma gives
+an actual asymptotic speed, and bounded coordinate changes disappear after normalization.  Thus
+the speed is invariant under differential-birational conjugacy once the concrete differential-order
+cost has been supplied.
+-/
+
+/-- A nonnegative subadditive cost on a group of reversible clock changes. -/
+structure SubadditiveClockGauge (G : Type*) [Group G] where
+  cost : G → ℝ
+  cost_nonneg : ∀ g, 0 ≤ cost g
+  cost_one : cost 1 = 0
+  cost_mul_le : ∀ g h, cost (g * h) ≤ cost g + cost h
+
+namespace SubadditiveClockGauge
+
+open Filter Topology
+
+variable {G : Type*} [Group G] (W : SubadditiveClockGauge G)
+
+/-- Cost of the `n`-fold reversible clock change. -/
+def orbitCost (g : G) (n : ℕ) : ℝ := W.cost (g ^ n)
+
+/-- Iterated clock cost is a subadditive sequence. -/
+theorem orbitCost_subadditive (g : G) : Subadditive (W.orbitCost g) := by
+  intro m n
+  rw [orbitCost, orbitCost, orbitCost, pow_add]
+  exact W.cost_mul_le _ _
+
+theorem normalizedOrbitCost_bddBelow (g : G) :
+    BddBelow (Set.range fun n ↦ W.orbitCost g n / n) := by
+  refine ⟨0, ?_⟩
+  rintro y ⟨n, rfl⟩
+  exact div_nonneg (W.cost_nonneg _) (Nat.cast_nonneg n)
+
+/-- The asymptotic clock translation length. -/
+noncomputable def translationLength (g : G) : ℝ :=
+  (W.orbitCost_subadditive g).lim
+
+/-- Fekete's lemma: normalized clock cost has an actual limit, not merely a limsup. -/
+theorem tendsto_normalizedOrbitCost (g : G) :
+    Tendsto (fun n ↦ W.orbitCost g n / n) atTop
+      (nhds (W.translationLength g)) := by
+  exact (W.orbitCost_subadditive g).tendsto_lim
+    (W.normalizedOrbitCost_bddBelow g)
+
+/-- Conjugation is a change of reversible clock coordinates. -/
+def conjugate (h g : G) : G := h * g * h⁻¹
+
+@[simp] theorem conjugate_pow (h g : G) (n : ℕ) :
+    (conjugate h g) ^ n = h * g ^ n * h⁻¹ := by
+  induction n with
+  | zero => simp [conjugate]
+  | succ n ih =>
+      rw [pow_succ, ih, pow_succ]
+      simp [conjugate, mul_assoc]
+
+/-- A coordinate change alters every finite iterate cost by at most a fixed additive amount. -/
+theorem orbitCost_conjugate_le (h g : G) (n : ℕ) :
+    W.orbitCost (conjugate h g) n ≤
+      W.orbitCost g n + (W.cost h + W.cost h⁻¹) := by
+  rw [orbitCost, conjugate_pow]
+  calc
+    W.cost (h * g ^ n * h⁻¹) ≤ W.cost (h * g ^ n) + W.cost h⁻¹ :=
+      W.cost_mul_le _ _
+    _ ≤ (W.cost h + W.cost (g ^ n)) + W.cost h⁻¹ := by
+      linarith [W.cost_mul_le h (g ^ n)]
+    _ = W.orbitCost g n + (W.cost h + W.cost h⁻¹) := by
+      rw [orbitCost]
+      ring
+
+theorem orbitCost_le_conjugate (h g : G) (n : ℕ) :
+    W.orbitCost g n ≤
+      W.orbitCost (conjugate h g) n + (W.cost h + W.cost h⁻¹) := by
+  have hconj : conjugate h⁻¹ (conjugate h g) = g := by
+    simp [conjugate, mul_assoc]
+  have hle := W.orbitCost_conjugate_le h⁻¹ (conjugate h g) n
+  rw [hconj] at hle
+  simpa [add_comm] using hle
+
+/-- **Coordinate-invariant clock speed.**  Every fixed reversible change of differential
+coordinates contributes only a bounded finite-order overhead, so it does not alter asymptotic
+translation length. -/
+theorem translationLength_conjugate (h g : G) :
+    W.translationLength (conjugate h g) = W.translationLength g := by
+  let B : ℝ := W.cost h + W.cost h⁻¹
+  have hB : Tendsto (fun n : ℕ ↦ B / n) atTop (nhds 0) :=
+    tendsto_const_div_atTop_nhds_zero_nat B
+  have hg := W.tendsto_normalizedOrbitCost g
+  have hlower : Tendsto
+      (fun n : ℕ ↦ W.orbitCost g n / n - B / n) atTop
+      (nhds (W.translationLength g)) := by
+    simpa using hg.sub hB
+  have hupper : Tendsto
+      (fun n : ℕ ↦ W.orbitCost g n / n + B / n) atTop
+      (nhds (W.translationLength g)) := by
+    simpa using hg.add hB
+  have hsandwich : Tendsto
+      (fun n : ℕ ↦ W.orbitCost (conjugate h g) n / n) atTop
+      (nhds (W.translationLength g)) := by
+    apply tendsto_of_tendsto_of_tendsto_of_le_of_le' hlower hupper
+    · exact Eventually.of_forall fun n ↦ by
+        apply (sub_le_iff_le_add).2
+        rw [← add_div]
+        exact div_le_div_of_nonneg_right (W.orbitCost_le_conjugate h g n)
+          (Nat.cast_nonneg n)
+    · exact Eventually.of_forall fun n ↦ by
+        rw [← add_div]
+        exact div_le_div_of_nonneg_right (W.orbitCost_conjugate_le h g n)
+          (Nat.cast_nonneg n)
+  exact tendsto_nhds_unique
+    (W.tendsto_normalizedOrbitCost (conjugate h g)) hsandwich
+
+/-!
+## Incompressibility under bounded clock comparison
+
+The Frechet matrix of a finite-rank differential embedding has a rational pseudodifferential
+right inverse.  The concrete consequence is a pair of uniform finite-order inequalities between
+the intrinsic and ambient clock gauges.  The following abstract kernel isolates the asymptotic
+content: any fixed encoding and decoding overhead disappears after normalization.
+-/
+
+/-- Two clock gauges differ by fixed coordinate-encoding and coordinate-decoding overheads. -/
+structure BoundedComparison (W₁ W₂ : SubadditiveClockGauge G) where
+  forwardOverhead : ℝ
+  backwardOverhead : ℝ
+  cost_le_forward : ∀ g, W₁.cost g ≤ W₂.cost g + forwardOverhead
+  cost_le_backward : ∀ g, W₂.cost g ≤ W₁.cost g + backwardOverhead
+
+/-- **Clock incompressibility kernel.**  Fixed two-sided finite-order overhead cannot change
+asymptotic clock speed.  A differential embedding supplies such overheads from its Frechet matrix
+and a pseudodifferential right inverse. -/
+theorem BoundedComparison.translationLength_eq
+    {W₁ W₂ : SubadditiveClockGauge G}
+    (C : BoundedComparison W₁ W₂) (g : G) :
+    W₁.translationLength g = W₂.translationLength g := by
+  have hfzero : Tendsto (fun n : ℕ ↦ C.forwardOverhead / n) atTop (nhds 0) :=
+    tendsto_const_div_atTop_nhds_zero_nat C.forwardOverhead
+  have hbzero : Tendsto (fun n : ℕ ↦ C.backwardOverhead / n) atTop (nhds 0) :=
+    tendsto_const_div_atTop_nhds_zero_nat C.backwardOverhead
+  have htwo := W₂.tendsto_normalizedOrbitCost g
+  have hlower : Tendsto
+      (fun n : ℕ ↦ W₂.orbitCost g n / n - C.backwardOverhead / n) atTop
+      (nhds (W₂.translationLength g)) := by
+    simpa using htwo.sub hbzero
+  have hupper : Tendsto
+      (fun n : ℕ ↦ W₂.orbitCost g n / n + C.forwardOverhead / n) atTop
+      (nhds (W₂.translationLength g)) := by
+    simpa using htwo.add hfzero
+  have hsandwich : Tendsto
+      (fun n : ℕ ↦ W₁.orbitCost g n / n) atTop
+      (nhds (W₂.translationLength g)) := by
+    apply tendsto_of_tendsto_of_tendsto_of_le_of_le' hlower hupper
+    · exact Eventually.of_forall fun n ↦ by
+        apply (sub_le_iff_le_add).2
+        rw [← add_div]
+        exact div_le_div_of_nonneg_right (C.cost_le_backward (g ^ n))
+          (Nat.cast_nonneg n)
+    · exact Eventually.of_forall fun n ↦ by
+        rw [← add_div]
+        exact div_le_div_of_nonneg_right (C.cost_le_forward (g ^ n))
+          (Nat.cast_nonneg n)
+  exact tendsto_nhds_unique (W₁.tendsto_normalizedOrbitCost g) hsandwich
+
+end SubadditiveClockGauge
 
 /-!
 ## A reversible rank-two clock shear

@@ -12,6 +12,7 @@
   - `../2-fully-proven/mobius-fixed-current-von-mangoldt-critical-transport-weld.md`
   - `../2-fully-proven/complementary-packet-affine-flux-fisher-ward-isometry.md`
   - `../2-fully-proven/squarefree-fixed-current-right-half-ward-localization.md`
+  - `../2-fully-proven/high-exponent-shell-zero-free-common-divisor-law.md`
   - `../2-fully-proven/mobius-critical-fisher-tangent-hilbert-lift.md`
   - `../2-fully-proven/mobius-causal-fisher-connection-flatness.md`
   - `../2-fully-proven/gamma-damped-mobius-clock-critical-amplification.md`
@@ -486,6 +487,37 @@ not an arbitrary contraction.
 while its fixed logarithmic current lives only in a singular quotient graph.  Exceptional divisors
 are failures of graph divisibility, not large tangent vectors.
 
+### 9. Infinite-shell codiagonal no-go
+
+For `m>=12`, the high-exponent shell theorem constructs pairwise disjoint positive arithmetic
+sectors
+
+```text
+S_m(s)=zeta(s)[1/zeta((m+1)s)-1/zeta(ms)]
+```
+
+whose bracketed multiplier is zero-free on `Re s>1/2`.  Every completed shell therefore has the
+same strict anti-causal divisor `ell_E`, and every normalized shell incidence curvature has
+critical energy four.  Their arithmetic Hilbert--Schmidt blocks are mutually orthogonal.
+
+The apparent amplification is false.  A bounded row operator sending all shell curvatures to the
+same `ell_E` would force `ell_E=0` by Bessel dilution, but the identical argument would already
+force the known incoming vector `2e^(-t/2)` to vanish.  The codiagonal that erases infinitely many
+clock labels is necessarily unbounded even before all-prime continuation.
+
+**Positive successor:** the same theorem gives a prime-two-dominated cofinal family
+
+```text
+H_m(s)=2^(-ms)(1-2^(-s))(1+o(1))
+```
+
+with no auxiliary right-half divisor.  It can test uniform estimates on the one closed
+multiplication graph, but it cannot replace that graph by an orthogonal direct-sum trick.
+
+**HT consequence:** taking a fixed logarithmic current erases arbitrarily separated clock origins.
+Across infinitely many clock characters that quotient is intrinsically nonlinear or unbounded;
+the constraint must retain its multiplication graph until after the pole channel is resolved.
+
 ## Novelty and anti-theatre gate
 
 Project theorems are source inputs even when independently found by other agents.  Novelty is
@@ -525,6 +557,8 @@ is a precise research target, not an RH proof.
 - [x] Fisher score-to-pole Laguerre contact fixed canonically
 - [x] completed squarefree current proved to have anti-causal profile `ell_E`
 - [x] boundary-unitary Ward curvature decomposition written explicitly
+- [x] infinitely many disjoint positive four-unit shells with the same Xi divisor constructed
+- [x] bounded all-shell codiagonal shortcut rejected already at the incoming pole
 - [x] semilocal Euler connection source
 - [x] orbit-diagonal, causal-derivative, and local-profile shortcuts rejected positively
 - [x] write the unframed `Comp_(omega,D)` entry by entry

@@ -236,6 +236,11 @@ explicit Poisson radial negative chamber by the completed remainder.
 
 ## Existing formal interfaces
 
+- `HTGeometry/PoissonRadialChamber.lean` now formalizes the disk Euler-response identity, exact
+  radial factorization, threshold bounds, all three sign chambers, and the phases `0` and `pi`.
+- `RHTower/PrimeEulerCauchyPhaseChamber.lean` now formalizes the one-prime source specialization,
+  including the invariant radius product, the literal one-sided value law, the paired factor two,
+  all three prime chambers, and the strict positive-remainder obligation at the negative witness.
 - `HTGeometry/FiniteBlaschkeGroupDelay.lean` identifies a disk Poisson kernel with one all-pass
   logarithmic phase derivative and proves its strict positivity.
 - `HTGeometry/PoissonFatou.lean` supplies the real angular Poisson kernel and denominator
@@ -264,6 +269,6 @@ explicit Poisson radial negative chamber by the completed remainder.
 - [x] simultaneous positive and negative chambers for every finite nonempty packet
 - [x] exact completed-remainder compensation identity
 - [ ] formalize finite-torus open-set hitting from the existing character nonresonance
-- [ ] formalize the Poisson chamber theorem
+- [x] formalize the generic and one-prime Poisson chamber theorem
 - [ ] prove the completed phase-locked compensation law
 - [ ] conclude RH

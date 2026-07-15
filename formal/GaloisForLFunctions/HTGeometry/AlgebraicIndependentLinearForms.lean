@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.DifferentialIndependence
 import Mathlib.Algebra.Module.LinearMap.Polynomial
 import Mathlib.Algebra.MvPolynomial.Monad
+import Mathlib.Data.Finsupp.Basic
 import Mathlib.LinearAlgebra.Matrix.Rank
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 
@@ -73,6 +74,125 @@ theorem exists_matrix_rightInverse_of_linearIndependent_rows
   have hsurj : Function.Surjective M.mulVec := by
     exact LinearMap.range_eq_top.mp htop
   exact Matrix.mulVec_surjective_iff_exists_right_inverse.mp hsurj
+
+/-- **Affine splitting law.**  Once a matrix right inverse exists, every other right inverse is
+uniquely obtained by adding a matrix killed by left multiplication.  Thus the finite-dimensional
+splitting space is a nonempty affine torsor over the kernel of `H ↦ M * H`; any obstruction to a
+compatible family of splittings must be global rather than pointwise linear algebra. -/
+theorem matrix_rightInverse_iff_kernelPerturbation
+    {R m n : Type*} [CommRing R] [Fintype m] [Fintype n]
+    [DecidableEq m] [DecidableEq n]
+    (M : Matrix m n R) (N N' : Matrix n m R) (hMN : M * N = 1) :
+    M * N' = 1 ↔ ∃ H : Matrix n m R, M * H = 0 ∧ N' = N + H := by
+  constructor
+  · intro hMN'
+    refine ⟨N' - N, ?_, ?_⟩
+    · rw [Matrix.mul_sub, hMN', hMN, sub_self]
+    · abel
+  · rintro ⟨H, hMH, rfl⟩
+    rw [Matrix.mul_add, hMN, hMH, add_zero]
+
+/-- **Surjective splitting-tower law.**  A tower of nonempty finite-stage splitting spaces with
+surjective restriction maps has a compatible global splitting.  Hence any genuine completion
+obstruction must fail the Mittag--Leffler lifting property at some scale. -/
+theorem exists_compatible_of_surjective_tower
+    {S : ℕ → Type*} [Nonempty (S 0)]
+    (restrict : ∀ n, S (n + 1) → S n)
+    (hsurj : ∀ n, Function.Surjective (restrict n)) :
+    ∃ q : ∀ n, S n, ∀ n, restrict n (q (n + 1)) = q n := by
+  classical
+  let lift : ∀ n, S n → S (n + 1) := fun n s ↦ Classical.choose (hsurj n s)
+  have hlift : ∀ n s, restrict n (lift n s) = s :=
+    fun n s ↦ Classical.choose_spec (hsurj n s)
+  let q : ∀ n, S n := fun n ↦
+    @Nat.rec (fun n ↦ S n) (Classical.choice inferInstance)
+      (fun n s ↦ lift n s) n
+  refine ⟨q, ?_⟩
+  intro n
+  change restrict n (lift n (q n)) = q n
+  exact hlift n (q n)
+
+/-!
+## A genuine completion-boundary model
+
+Finite-dimensional affine splitting towers are Mittag--Leffler, so a completion obstruction needs
+an infinite-dimensional or topological boundary.  The algebraic direct sum gives the sharp model.
+At scale `n`, require the first `n` coordinates of a finitely supported reconstruction to be one.
+Every finite stage is nonempty, but compatibility would force one finitely supported function to be
+one at every coordinate.  The product completion contains exactly that missing boundary point.
+-/
+
+/-- Finitely supported reconstructions satisfying the first `n` unit clock constraints. -/
+def finitePrefixOneSplitting (R : Type*) [Semiring R] (n : ℕ) :=
+  {v : ℕ →₀ R // ∀ i, i < n → v i = 1}
+
+/-- Every finite packet of unit clock constraints has an algebraic finite-support solution. -/
+instance finitePrefixOneSplitting_nonempty
+    (R : Type*) [Semiring R] (n : ℕ) :
+    Nonempty (finitePrefixOneSplitting R n) := by
+  let v : ℕ →₀ R := Finsupp.onFinset (Finset.range n)
+    (fun i ↦ if i < n then 1 else 0) (by
+      intro i hi
+      simp only [Finset.mem_range]
+      by_contra hnot
+      simp [hnot] at hi)
+  refine ⟨⟨v, ?_⟩⟩
+  intro i hi
+  simp [v, hi, Finsupp.onFinset_apply]
+
+/-- Forgetting the last unit constraint preserves the underlying finite-support reconstruction. -/
+def finitePrefixOneSplitting_restrict
+    (R : Type*) [Semiring R] (n : ℕ) :
+    finitePrefixOneSplitting R (n + 1) → finitePrefixOneSplitting R n :=
+  fun v ↦ ⟨v.1, fun i hi ↦ v.2 i (lt_trans hi (Nat.lt_succ_self n))⟩
+
+/-- **Algebraic completion obstruction.**  Every finite splitting space is nonempty, but the tower
+has no compatible point in the algebraic direct sum: compatibility would produce a finitely
+supported function equal to one at every natural-number coordinate. -/
+theorem finitePrefixOneSplitting_no_compatible
+    (R : Type*) [Semiring R] [Nontrivial R] :
+    ¬ ∃ q : ∀ n, finitePrefixOneSplitting R n,
+      ∀ n, finitePrefixOneSplitting_restrict R n (q (n + 1)) = q n := by
+  rintro ⟨q, hq⟩
+  have hval : ∀ n, (q n).1 = (q 0).1 := by
+    intro n
+    induction n with
+    | zero => rfl
+    | succ n ih =>
+        have hstep := congrArg Subtype.val (hq n)
+        exact hstep.trans ih
+  have hall : ∀ i, (q 0).1 i = 1 := by
+    intro i
+    have hi := (q (i + 1)).2 i (Nat.lt_succ_self i)
+    rw [hval (i + 1)] at hi
+    exact hi
+  by_cases hs : (q 0).1.support.Nonempty
+  · let i := (q 0).1.support.max' hs + 1
+    have hi : i ∉ (q 0).1.support := by
+      intro himem
+      have hle := (q 0).1.support.le_max' i himem
+      omega
+    have hzero : (q 0).1 i = 0 := by
+      by_contra hne
+      exact hi ((Finsupp.mem_support_iff).2 hne)
+    exact one_ne_zero ((hall i).symm.trans hzero)
+  · have hempty : (q 0).1.support = ∅ := Finset.not_nonempty_iff_eq_empty.mp hs
+    have hzero : (q 0).1 0 = 0 := by
+      by_contra hne
+      have hmem := (Finsupp.mem_support_iff).2 hne
+      rw [hempty] at hmem
+      simp at hmem
+    exact one_ne_zero ((hall 0).symm.trans hzero)
+
+/-- **Positive thin-boundary statement.**  The product completion contains exactly one
+reconstruction satisfying every finite unit clock constraint: the constant-one boundary point. -/
+theorem existsUnique_productCompletion_unitBoundary
+    (R : Type*) [Semiring R] :
+    ∃! v : ℕ → R, ∀ n i, i < n → v i = 1 := by
+  refine ⟨fun _ ↦ 1, by simp, ?_⟩
+  intro v hv
+  funext i
+  exact hv (i + 1) i (Nat.lt_succ_self i)
 
 /-- Linearly independent matrix rows evaluated on an algebraically independent family remain
 algebraically independent. -/

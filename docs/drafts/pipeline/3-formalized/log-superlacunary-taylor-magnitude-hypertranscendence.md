@@ -1,7 +1,7 @@
 # Log-Superlacunary Taylor Magnitudes Force Hypertranscendence
 
 - **ID:** `log-superlacunary-taylor-magnitude-hypertranscendence`
-- **Stage:** 2-fully-proven / needs scientific-novelty audit
+- **Stage:** 3-formalized / needs scientific-novelty audit
 - **Type:** THEOREM (paper) / GENERAL HT LAW / COEFFICIENT CONSTRAINT
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [SIGNIFICANT]`
 - **Statement:** If an entire power series has eventually nonzero coefficients and the negative logarithms of their moduli have successive ratios tending to infinity, then the function is hypertranscendental over `C(z)`, for every possible choice of coefficient phases.
@@ -106,9 +106,10 @@ nonzero integer weight).  This is the exact contradiction driving the theorem: w
 `b_n` are superlacunary, the valuation minimizer strictly dominates, so `sum_ne_zero_of_dominant`
 refutes the coefficient identity `(4)`, forcing HT.  The same inequality is the shared engine of the
 sibling Taylor-magnitude cards (stretched-exponential, rough-subleading, polynomial, rapid-convex);
-the analytic content of each card enters only to verify its strict-dominance hypothesis.  Not yet
-formalized: Mahler's integer-normalization `(1)`, the generic-coefficient expansion `(2)`–`(3)`, and
-the per-card valuation-gap estimates that supply the dominance hypothesis.
+the analytic content of each card enters only to verify its strict-dominance hypothesis. The complete
+chain for this card, including Mahler normalization, generic-coefficient regrouping, valuation-gap
+dominance, the eventual finite-prefix reduction, and the explicit arbitrary-phase family, is now
+formalized axiom-clean in the modules listed under **Lean status**.
 
 ## Main theorem `[PROVED HERE] [NOVELTY UNVERIFIED]`
 
@@ -267,20 +268,26 @@ It does not exclude the complete de Bruijn--Newman, Hilbert--Polya, Connes, de B
 
 ## Lean status
 
-Partially formalized (axiom-clean); not yet stage 3. The integer-dominance interface is now discharged.  The capstone `GaloisForLFunctions.hypertranscendental_of_mahler_logSuperlacunary` in `HTGeometry/MagnitudeIntegerDominance.lean` reduces the all-positive magnitude theorem to one remaining interface:
+Fully formalized axiom-clean in Lean 4.
 
-- `hmahler` — Mahler's integer-normalization (Mahler 1971). This is an external result absent from mathlib and from this tree; it is carried as an explicit hypothesis, not fabricated.
+- `HTGeometry/FormalMahlerIntegerNormalization.lean` proves
+  `formal_mahler_integer_normalization`, deriving a nonzero integer-coefficient formal jet relation
+  from an arbitrary complex-coefficient relation by finite coefficient adjunction, differential-
+  algebraic descent, and denominator clearing.
+- `HTGeometry/MagnitudeIntegerDominance.lean` contains the grouped integer-weight dominance theorem
+  and `hypertranscendental_of_mahler_logSuperlacunary`.
+- `HTGeometry/LogSuperlacunaryMagnitudeHypertranscendence.lean` proves
+  `hypertranscendental_of_eventually_logSuperlacunary`. Polynomial translation closes the arbitrary
+  finite Taylor-prefix gap, so the theorem has exactly the eventual hypotheses stated here.
+- `HTGeometry/LogSuperlacunaryDoubleExponentialFamily.lean` constructs
+  `doubleExponentialPhaseFunction`, proves that its defining power series has infinite radius,
+  identifies all Taylor coefficients, proves full support, and proves
+  `hypertranscendental_doubleExponentialPhaseFunction` for every real phase sequence. It also proves
+  that every zero-phase Taylor coefficient lies in `expMinusOneCoefficientField = ℚ(exp(-1))`.
 
-Everything after normalization is discharged unconditionally: the inhomogeneous atom regrouping (`sigmaIdx`, `atomKeyOf`, `aevalWeight`; `coeff_aeval_regrouped_weight`), the integrality payoff `aevalWeight_norm_ge_one`, support-restricted minimal-valuation domination (`weighted_sum_ne_zero_of_min_valuation_on_support`, `aeval_coeff_ne_zero_of_int_dominant_on_support`), and the complete log-superlacunary realization `exists_logSuperlacunary_intDominance`.  The latter handles both positive and zero maximal jet degree.
-
-Toward discharging `hintdom` itself:
-- Step 3 is complete. `HTGeometry/MagnitudeTailPairGap.lean` proves tail gaps from one-sided support for both equal-count and smaller-count competitors; `HTGeometry/MagnitudePolynomialExponentialDomination.lean` proves that this gap beats every fixed polynomial mass; and `HTGeometry/MagnitudeSupportDominance.lean` converts the result to coefficient nonvanishing.
-- Step 2 is complete. Conserved count/index-mass gradings are in `HTGeometry/MagnitudeAtomGrading.lean`; `HTGeometry/MagnitudeNonzeroWeightMinimum.lean` selects the minimizer only among nonzero weights; and `HTGeometry/MagnitudeAtomBounds.lean` proves maximal degree, maximum-index localization, and one-sided tail support from the balanced witness bound.
-- Step 1 is complete.  `HTGeometry/MagnitudeTopShiftSymbol.lean` constructs the fixed-shift permanent symbol and proves it nonzero; `HTGeometry/BalancedDiagonalNonvanishing.lean` supplies injective balanced diagonals; `HTGeometry/MagnitudeBalancedWeight.lean` identifies their evaluations exactly with grouped `aevalWeight`; and `HTGeometry/MagnitudeBalancedSymbolNonvanishing.lean` transports nonvanishing between the static and balanced symbols.  The assembled theorem `exists_eventually_balanced_nonzero_aevalWeight` in `HTGeometry/MagnitudeBalancedAtomExistence.lean` gives, for every sufficiently large probe, an appearing balanced grouped atom with nonzero weight and the required fixed-shift identity.
-- The Mahler-free degree-homogeneous survival theorem `coeff_degHomDiffPoly_magnitude_ne_zero` (`HTGeometry/MagnitudePolynomialSurvival.lean`) assembles Steps 1–3 for a homogeneous relation with a nonzero leading symbol.
-- `HTGeometry/MagnitudePositiveDegreeDominance.lean` assembles Steps 1–3 for arbitrary inhomogeneous positive-jet-degree relations, including the explicit grouped mass bound. `HTGeometry/MagnitudeIntegerDominance.lean` adds the zero-jet-degree case and packages the unconditional `hintdom` theorem.
-
-Remaining: Mahler normalization—derive the integer differential relation internally from differential algebraicity over `C(z)` and connect that algebraic relation to the formal-power-series jet evaluator—and the finite-prefix reduction from eventual positivity/nonvanishing to the all-positive tail theorem. The card cannot enter stage 3 until both obligations are discharged.
+The load-bearing declarations depend only on Lean's standard logical axioms `propext`,
+`Classical.choice`, and `Quot.sound`; the formal lint gate reports no `sorry`, `admit`, `axiom`,
+`opaque`, or `unsafe` declaration.
 
 ## Gates
 
@@ -289,7 +296,7 @@ Remaining: Mahler normalization—derive the integer differential relation inter
 - [x] Explicit full-support finite-basis family proved HT.
 - [x] Significance gate: supplies a new coefficient-magnitude HT mechanism and a proved arbitrary-complex stratum of the super-Gaussian problem.
 - [ ] Parent-theory and literature novelty gates.
-- [ ] Whole theorem formalized unconditionally in Lean.
+- [x] Whole theorem and explicit corollary formalized unconditionally in Lean.
 
 ## Log
 
