@@ -72,9 +72,10 @@ theorem soninLogFourierScattering_adjoint_mul_self :
 /-- Operator form of the existing involution relation. -/
 theorem soninLogFourierScattering_sq_eq_one :
     soninLogFourierScattering ^ 2 = 1 := by
-  ext g
-  simpa [pow_two, ContinuousLinearMap.mul_apply] using
-    soninLogFourierScattering_involutive g
+  apply ContinuousLinearMap.ext
+  intro g
+  change soninLogFourierScattering (soninLogFourierScattering g) = g
+  exact soninLogFourierScattering_involutive g
 
 /-- The involutive unitary logarithmic scattering is self-adjoint. -/
 theorem soninLogFourierScattering_isSelfAdjoint :
@@ -120,6 +121,62 @@ theorem physicalState_soninLogFourierScattering_iff_invariantAverage_fixed
   exact HTGeometry.physicalState_iff_finiteCyclicGaugeAverage_fixed
     soninLogFourierScattering 2 two_ne_zero soninLogFourierScattering_sq_eq_one g
 
+/-- The `Z₂` observer-algebra projection of a Sonin observable under logarithmic Fourier
+scattering.  This is a static observable average, not a temporal evolution. -/
+def soninLogFourierObservableTwirl
+    (A : SoninL2 →L[ℂ] SoninL2) : SoninL2 →L[ℂ] SoninL2 :=
+  HTGeometry.finiteCyclicObservableTwirl soninLogFourierScattering A 2
+
+/-- The Sonin observable twirl is an exact projection onto the scattering commutant. -/
+theorem soninLogFourierObservableTwirl_idempotent
+    (A : SoninL2 →L[ℂ] SoninL2) :
+    soninLogFourierObservableTwirl (soninLogFourierObservableTwirl A) =
+      soninLogFourierObservableTwirl A := by
+  exact HTGeometry.finiteCyclicObservableTwirl_idempotent
+    soninLogFourierScattering A 2 two_ne_zero soninLogFourierScattering_sq_eq_one
+
+/-- On scattering-invariant states, the observer-algebra projection preserves every Sonin
+matrix element.  Thus the observable relation survives even though the global state obeys the
+static constraint `S - 1`. -/
+theorem inner_soninLogFourierObservableTwirl_eq_of_fixed
+    (A : SoninL2 →L[ℂ] SoninL2) {φ ψ : SoninL2}
+    (hφ : soninLogFourierScattering φ = φ)
+    (hψ : soninLogFourierScattering ψ = ψ) :
+    inner ℂ φ (soninLogFourierObservableTwirl A ψ) = inner ℂ φ (A ψ) := by
+  have hφadj : soninLogFourierScattering.adjoint φ = φ := by
+    have hadj := soninLogFourierScattering_isSelfAdjoint.star_eq
+    change soninLogFourierScattering.adjoint = soninLogFourierScattering at hadj
+    rw [hadj, hφ]
+  exact HTGeometry.inner_finiteCyclicObservableTwirl_of_fixed
+    soninLogFourierScattering A 2 two_ne_zero hφadj hψ
+
+/-- The complete conditional Sonin value is likewise unchanged by observable twirling.  This is
+the direct RHTower form of the periodic-clock Page--Wootters/Dirac equivalence. -/
+theorem soninLogFourierConditionalValue_twirl_eq_of_fixed
+    (A B : SoninL2 →L[ℂ] SoninL2) {φ ψ : SoninL2}
+    (hφ : soninLogFourierScattering φ = φ)
+    (hψ : soninLogFourierScattering ψ = ψ) :
+    inner ℂ φ (soninLogFourierObservableTwirl A ψ) /
+        inner ℂ φ (soninLogFourierObservableTwirl B ψ) =
+      inner ℂ φ (A ψ) / inner ℂ φ (B ψ) := by
+  rw [inner_soninLogFourierObservableTwirl_eq_of_fixed A hφ hψ,
+    inner_soninLogFourierObservableTwirl_eq_of_fixed B hφ hψ]
+
+/-- A complementary two-reading Sonin clock has uniform raw weight on every invariant state.
+Consequently its nontrivial clock information can only occur in conditional observable values. -/
+theorem soninStationaryClockEffect_matrixElement_eq_half_of_fixed
+    (e : SoninL2 →L[ℂ] SoninL2) {φ ψ : SoninL2}
+    (hφ : soninLogFourierScattering φ = φ)
+    (hψ : soninLogFourierScattering ψ = ψ)
+    (hresolve : soninLogFourierObservableTwirl e = ((2 : ℂ)⁻¹) • 1) :
+    inner ℂ φ (e ψ) = (2 : ℂ)⁻¹ * inner ℂ φ ψ := by
+  calc
+    inner ℂ φ (e ψ) = inner ℂ φ (soninLogFourierObservableTwirl e ψ) :=
+      (inner_soninLogFourierObservableTwirl_eq_of_fixed e hφ hψ).symm
+    _ = (2 : ℂ)⁻¹ * inner ℂ φ ψ := by
+      rw [hresolve, ContinuousLinearMap.smul_apply, inner_smul_right]
+      simp
+
 /-- **Invariant/anti-invariant scattering energy partition.**  Every logarithmic Sonin state
 splits exactly into its group-averaged physical part and its orthogonal complement. -/
 theorem norm_soninLogFourierInvariantAverage_sq_add_complement_sq (g : SoninL2) :
@@ -153,7 +210,7 @@ theorem soninLogFourierInvariantAverage_apply (g : SoninL2) :
     soninLogFourierInvariantAverage g =
       ((2 : ℂ)⁻¹) • (g + soninLogFourierScattering g) := by
   simp [soninLogFourierInvariantAverage, HTGeometry.finiteCyclicGaugeAverage,
-    HTGeometry.finiteCyclicGaugeSum]
+    HTGeometry.finiteCyclicGaugeSum, add_comm]
 
 /-- On a scattering-invariant state, group averaging a translated state produces the exact
 forward/backward logarithmic-translation pair.  This is the static cosine-channel relation used

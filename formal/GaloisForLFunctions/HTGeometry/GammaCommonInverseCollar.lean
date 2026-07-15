@@ -22,6 +22,7 @@ the Euler Gamma function and contain no assumed analytic input.
 namespace GaloisForLFunctions
 
 open Complex Filter Function Metric Set Topology
+open scoped NNReal
 
 noncomputable section
 
@@ -36,8 +37,13 @@ theorem gammaPoleMicroscope_zero (n : ℕ) : gammaPoleMicroscope n 0 = 0 := by
 
 theorem differentiable_gammaPoleMicroscope (n : ℕ) :
     Differentiable ℂ (gammaPoleMicroscope n) := by
-  unfold gammaPoleMicroscope
-  fun_prop
+  intro x
+  have hrec : DifferentiableAt ℂ reciprocalGammaEntire
+      (-(n : ℂ) + reciprocalGammaFactorialScale n * x) :=
+    (contDiff_reciprocalGammaEntire.differentiable (by simp)) _
+  exact (hrec.comp x <|
+    (differentiableAt_const (c := -(n : ℂ))).add
+      (differentiableAt_id.const_mul (reciprocalGammaFactorialScale n))).neg
 
 /-- The pole microscopes converge to the identity on every compact set. -/
 theorem tendsto_gammaPoleMicroscope_locallyUniformly :
@@ -47,7 +53,11 @@ theorem tendsto_gammaPoleMicroscope_locallyUniformly :
     tendstoLocallyUniformly_const_sequence (fun _x : ℂ => (-1 : ℂ))
   have h := hconst.mul₀ tendsto_reciprocalGammaFactorialBlowUp_locallyUniformly
     continuous_const continuous_neg
-  simpa [gammaPoleMicroscope, id_eq] using h
+  convert h using 1
+  · funext n x
+    simp [gammaPoleMicroscope]
+  · funext x
+    simp
 
 /-- The derivatives of the pole microscopes converge locally uniformly to `1`. -/
 theorem tendsto_deriv_gammaPoleMicroscope_locallyUniformly :
@@ -60,6 +70,7 @@ theorem tendsto_deriv_gammaPoleMicroscope_locallyUniformly :
     (Filter.Eventually.of_forall fun n =>
       (differentiable_gammaPoleMicroscope n).differentiableOn)
     isOpen_univ
+  rw [← tendstoLocallyUniformlyOn_univ]
   simpa [Function.comp_def] using hder
 
 private def gammaPoleIdentity : ℂ ≃L[ℂ] ℂ :=
@@ -67,7 +78,8 @@ private def gammaPoleIdentity : ℂ ≃L[ℂ] ℂ :=
 
 private def GammaPoleCollarGood (n : ℕ) : Prop :=
   ApproximatesLinearOn (gammaPoleMicroscope n)
-      (gammaPoleIdentity : ℂ →L[ℂ] ℂ) (Metric.ball 0 1) (1 / 2 : ℝ≥0) ∧
+      (gammaPoleIdentity : ℂ →L[ℂ] ℂ)
+      (Metric.ball (0 : ℂ) (1 : ℝ)) (1 / 2 : ℝ≥0) ∧
     ∀ x ∈ Metric.ball (0 : ℂ) 1,
       dist (deriv (gammaPoleMicroscope n) x) 1 < 1 / 2
 
@@ -87,12 +99,13 @@ private theorem eventually_gammaPoleCollarGood :
   have hderiv : ∀ x ∈ Metric.ball (0 : ℂ) 1,
       dist (deriv (gammaPoleMicroscope n) x) 1 < 1 / 2 := by
     intro x hx
-    exact (dist_comm _ _ ▸ hn x (Metric.ball_subset_closedBall hx))
+    simpa [dist_comm] using hn x (Metric.ball_subset_closedBall hx)
   refine ⟨?_, hderiv⟩
   apply LipschitzOnWith.approximatesLinearOn
   have hlip : LipschitzOnWith (1 / 2 : ℝ≥0)
-      (fun x : ℂ => gammaPoleMicroscope n x - x) (Metric.ball 0 1) := by
-    apply convex_ball.lipschitzOnWith_of_nnnorm_deriv_le
+      (fun x : ℂ => gammaPoleMicroscope n x - x)
+      (Metric.ball (0 : ℂ) (1 : ℝ)) := by
+    apply (convex_ball (0 : ℂ) (1 : ℝ)).lipschitzOnWith_of_nnnorm_deriv_le
     · intro x hx
       exact (differentiable_gammaPoleMicroscope n x).sub differentiableAt_id
     · intro x hx
@@ -110,11 +123,12 @@ private theorem gammaPoleApproximation_small :
       (1 / 2 : ℝ≥0) <
         ‖((gammaPoleIdentity).symm : ℂ →L[ℂ] ℂ)‖₊⁻¹ := by
   right
-  norm_num [gammaPoleIdentity]
+  simpa [gammaPoleIdentity] using (show (1 / 2 : ℝ≥0) < 1 by norm_num)
 
 private noncomputable def gammaPolePartialHomeomorph
     (n : ℕ) (h : GammaPoleCollarGood n) : OpenPartialHomeomorph ℂ ℂ :=
-  h.1.toOpenPartialHomeomorph (gammaPoleMicroscope n) (Metric.ball 0 1)
+  h.1.toOpenPartialHomeomorph (gammaPoleMicroscope n)
+    (Metric.ball (0 : ℂ) (1 : ℝ))
     gammaPoleApproximation_small isOpen_ball
 
 private theorem gammaPole_closedBall_target
@@ -125,8 +139,9 @@ private theorem gammaPole_closedBall_target
     (show (0 : ℝ) ≤ 1 / 2 by norm_num)
     (show Metric.closedBall (0 : ℂ) (1 / 2) ⊆ Metric.ball 0 1 by
       exact Metric.closedBall_subset_ball (by norm_num))
-  simpa [gammaPolePartialHomeomorph, gammaPoleIdentity,
-    gammaPoleMicroscope_zero] using ht
+  convert ht using 1
+  norm_num [gammaPolePartialHomeomorph, gammaPoleIdentity,
+    gammaPoleMicroscope_zero]
 
 /-- Unconditional common-collar data for all sufficiently late negative Gamma poles. -/
 structure GammaCommonInverseCollar where
@@ -148,8 +163,9 @@ structure GammaCommonInverseCollar where
     AnalyticOnNhd ℂ (branch n) (Metric.ball (0 : ℂ) (1 / 4))
 
 private theorem exists_gammaCommonInverseCollar : Nonempty GammaCommonInverseCollar := by
-  rw [eventually_atTop] at eventually_gammaPoleCollarGood
-  obtain ⟨N₀, hN₀⟩ := eventually_gammaPoleCollarGood
+  have hev := eventually_gammaPoleCollarGood
+  rw [eventually_atTop] at hev
+  obtain ⟨N₀, hN₀⟩ := hev
   let N := max N₀ 5
   have hgood : ∀ n, N ≤ n → GammaPoleCollarGood n := by
     intro n hn
@@ -173,13 +189,13 @@ private theorem exists_gammaCommonInverseCollar : Nonempty GammaCommonInverseCol
     rw [show B n = (gammaPolePartialHomeomorph n (hgood n hn)).symm by simp [B, hn]]
     have htarget := gammaPole_closedBall_target n (hgood n hn) ht
     simpa [gammaPolePartialHomeomorph] using
-      (gammaPolePartialHomeomorph n (hgood n hn)).apply_symm_apply htarget
+      (gammaPolePartialHomeomorph n (hgood n hn)).right_inv htarget
   · intro n hn x hx
     rw [show B n = (gammaPolePartialHomeomorph n (hgood n hn)).symm by simp [B, hn]]
     have hsource : x ∈ (gammaPolePartialHomeomorph n (hgood n hn)).source := by
       simpa [gammaPolePartialHomeomorph] using hx
     simpa [gammaPolePartialHomeomorph] using
-      (gammaPolePartialHomeomorph n (hgood n hn)).symm_apply_apply hsource
+      (gammaPolePartialHomeomorph n (hgood n hn)).left_inv hsource
   · intro n hn
     rw [show B n = (gammaPolePartialHomeomorph n (hgood n hn)).symm by simp [B, hn]]
     refine LipschitzOnWith.of_dist_le_mul ?_
@@ -189,8 +205,15 @@ private theorem exists_gammaCommonInverseCollar : Nonempty GammaCommonInverseCol
     have hyt : y ∈ P.target := gammaPole_closedBall_target n (hgood n hn) hy
     have hanti := (hgood n hn).1.antilipschitz gammaPoleApproximation_small
     have hdist := hanti.le_mul_dist
-      ⟨P.symm x, P.symm.map_target hxt⟩ ⟨P.symm y, P.symm.map_target hyt⟩
-    simpa [P, gammaPolePartialHomeomorph] using hdist
+      ⟨P.symm x, P.symm.map_source hxt⟩ ⟨P.symm y, P.symm.map_source hyt⟩
+    change dist (P.symm x) (P.symm y) ≤ _ at hdist
+    have hxinv : gammaPoleMicroscope n (P.symm x) = x := by
+      simpa [P, gammaPolePartialHomeomorph] using P.right_inv hxt
+    have hyinv : gammaPoleMicroscope n (P.symm y) = y := by
+      simpa [P, gammaPolePartialHomeomorph] using P.right_inv hyt
+    simp [gammaPoleIdentity, hxinv, hyinv] at hdist
+    norm_num at hdist
+    simpa [P] using hdist
   · intro n hn t ht
     rw [show B n = (gammaPolePartialHomeomorph n (hgood n hn)).symm by simp [B, hn]]
     let P := gammaPolePartialHomeomorph n (hgood n hn)
@@ -210,9 +233,9 @@ private theorem exists_gammaCommonInverseCollar : Nonempty GammaCommonInverseCol
       simpa [P, gammaPolePartialHomeomorph] using
         (differentiable_gammaPoleMicroscope n).analyticAt (P.symm t)
     have hfder : fderiv ℂ P (P.symm t) = i := by
-      ext z
-      simp [P, gammaPolePartialHomeomorph, i, fderiv_eq_deriv_mul,
-        mul_comm]
+      apply ContinuousLinearMap.ext
+      intro z
+      simp [P, gammaPolePartialHomeomorph, i]
     exact P.analyticAt_symm htarget han hfder
 
 /-- The selected common inverse collar, constructed unconditionally from Gamma. -/

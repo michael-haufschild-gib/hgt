@@ -456,6 +456,44 @@ theorem finiteCyclicObservableTwirl_commutes
   rw [mul_smul_comm, smul_mul_assoc,
     finiteCyclicObservableTwirlNumerator_commutes U A N hperiod]
 
+/-- If the seed observable already commutes with the gauge step, its unnormalized twirl is just
+`N` copies of the same observable followed by the common endpoint power `U^N`. -/
+theorem finiteCyclicObservableTwirlNumerator_eq_smul_mul_pow_of_commutes
+    (U A : E →L[𝕜] E) (hcomm : U * A = A * U) : ∀ N : ℕ,
+    finiteCyclicObservableTwirlNumerator U A N =
+      (N : 𝕜) • (A * U ^ N)
+  | 0 => by simp [finiteCyclicObservableTwirlNumerator]
+  | n + 1 => by
+      rw [finiteCyclicObservableTwirlNumerator,
+        finiteCyclicObservableTwirlNumerator_eq_smul_mul_pow_of_commutes U A hcomm n,
+        mul_smul_comm]
+      have hstep : U * (A * U ^ n) = A * U ^ (n + 1) := by
+        rw [← mul_assoc, hcomm, mul_assoc, ← pow_succ' U n]
+      rw [hstep]
+      simp [Nat.cast_succ, add_smul]
+
+/-- Finite cyclic twirling fixes every observable already in the gauge commutant.  Thus the
+twirl is a genuine conditional expectation onto invariant observables, not merely a map whose
+outputs happen to commute with the constraint. -/
+theorem finiteCyclicObservableTwirl_eq_self_of_commutes
+    (U A : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0) (hperiod : U ^ N = 1)
+    (hcomm : U * A = A * U) :
+    finiteCyclicObservableTwirl U A N = A := by
+  rw [finiteCyclicObservableTwirl,
+    finiteCyclicObservableTwirlNumerator_eq_smul_mul_pow_of_commutes U A hcomm N,
+    hperiod]
+  simp [Nat.cast_ne_zero.mpr hN]
+
+/-- Applying finite cyclic twirling twice is the same as applying it once.  This is the exact
+finite analogue of modular zero-mode projection in observer algebras. -/
+theorem finiteCyclicObservableTwirl_idempotent
+    (U A : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0) (hperiod : U ^ N = 1) :
+    finiteCyclicObservableTwirl U (finiteCyclicObservableTwirl U A N) N =
+      finiteCyclicObservableTwirl U A N := by
+  exact finiteCyclicObservableTwirl_eq_self_of_commutes U
+    (finiteCyclicObservableTwirl U A N) N hN hperiod
+    (finiteCyclicObservableTwirl_commutes U A N hperiod)
+
 /-- A twirled observable commutes with the static constraint `U - 1`. -/
 theorem finiteCyclicObservableTwirl_commutes_constraint
     (U A : E →L[𝕜] E) (N : ℕ) (hperiod : U ^ N = 1) :
@@ -486,6 +524,103 @@ theorem finiteCyclicObservableTwirl_preserves_physicalState
   simp
 
 end AlgebraicAverage
+
+section RelationalClockObservables
+
+variable {𝕜 E : Type*} [RCLike 𝕜]
+  [NormedAddCommGroup E] [InnerProductSpace 𝕜 E] [CompleteSpace E]
+
+/-- Between a left-invariant and a right-invariant state, the unnormalized observable twirl has
+exactly `N` times the matrix element of its seed.  This is the finite stationary-observable
+identity behind Page--Wootters conditioning and periodic relational clocks. -/
+theorem inner_finiteCyclicObservableTwirlNumerator_of_fixed
+    (U A : E →L[𝕜] E) {φ ψ : E}
+    (hφ : U.adjoint φ = φ) (hψ : U ψ = ψ) : ∀ N : ℕ,
+    inner 𝕜 φ (finiteCyclicObservableTwirlNumerator U A N ψ) =
+      (N : 𝕜) * inner 𝕜 φ (A ψ)
+  | 0 => by simp [finiteCyclicObservableTwirlNumerator]
+  | n + 1 => by
+      have hpow : (U ^ (n + 1)) ψ = ψ := by
+        induction n + 1 with
+        | zero => simp
+        | succ k ih =>
+            rw [pow_succ, ContinuousLinearMap.mul_apply, hψ, ih]
+      simp only [finiteCyclicObservableTwirlNumerator,
+        ContinuousLinearMap.add_apply, ContinuousLinearMap.mul_apply, inner_add_right]
+      calc
+        inner 𝕜 φ (U (finiteCyclicObservableTwirlNumerator U A n ψ)) +
+            inner 𝕜 φ (A ((U ^ (n + 1)) ψ)) =
+          inner 𝕜 (U.adjoint φ)
+              (finiteCyclicObservableTwirlNumerator U A n ψ) +
+            inner 𝕜 φ (A ψ) := by
+              rw [ContinuousLinearMap.adjoint_inner_left, hpow]
+        _ = (n : 𝕜) * inner 𝕜 φ (A ψ) + inner 𝕜 φ (A ψ) := by
+          rw [hφ, inner_finiteCyclicObservableTwirlNumerator_of_fixed U A hφ hψ n]
+        _ = (n + 1 : ℕ) * inner 𝕜 φ (A ψ) := by
+          push_cast
+          ring
+
+/-- Observable twirling changes the kinematic representative but preserves every matrix element
+between invariant states.  No period assumption is needed: only a nonempty normalized orbit and
+the stationary left/right constraints enter the value. -/
+theorem inner_finiteCyclicObservableTwirl_of_fixed
+    (U A : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0) {φ ψ : E}
+    (hφ : U.adjoint φ = φ) (hψ : U ψ = ψ) :
+    inner 𝕜 φ (finiteCyclicObservableTwirl U A N ψ) =
+      inner 𝕜 φ (A ψ) := by
+  rw [finiteCyclicObservableTwirl, ContinuousLinearMap.smul_apply, inner_smul_right,
+    inner_finiteCyclicObservableTwirlNumerator_of_fixed U A hφ hψ N]
+  simp [Nat.cast_ne_zero.mpr hN]
+
+/-- Constraint form of physical matrix-element preservation.  It is the exact finite bridge
+between Dirac/group-averaged observables and conditional relational observables. -/
+theorem physicalMatrixElement_finiteCyclicObservableTwirl_eq
+    (U A : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0) {φ ψ : E}
+    (hφ : GaloisForLFunctions.PhysicalState (U.adjoint - 1).toLinearMap φ)
+    (hψ : GaloisForLFunctions.PhysicalState (U - 1).toLinearMap ψ) :
+    inner 𝕜 φ (finiteCyclicObservableTwirl U A N ψ) =
+      inner 𝕜 φ (A ψ) := by
+  rw [GaloisForLFunctions.PhysicalState] at hφ hψ
+  have hφfix : U.adjoint φ = φ := by
+    apply sub_eq_zero.mp
+    simpa using hφ
+  have hψfix : U ψ = ψ := by
+    apply sub_eq_zero.mp
+    simpa using hψ
+  exact inner_finiteCyclicObservableTwirl_of_fixed U A N hN hφfix hψfix
+
+/-- Both numerator and denominator of a relational conditional value are invariant under
+observable twirling.  The ratio therefore contains the observable clock structure even when the
+global state is stationary. -/
+theorem physicalConditionalValue_finiteCyclicObservableTwirl_eq
+    (U A B : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0) {φ ψ : E}
+    (hφ : GaloisForLFunctions.PhysicalState (U.adjoint - 1).toLinearMap φ)
+    (hψ : GaloisForLFunctions.PhysicalState (U - 1).toLinearMap ψ) :
+    inner 𝕜 φ (finiteCyclicObservableTwirl U A N ψ) /
+        inner 𝕜 φ (finiteCyclicObservableTwirl U B N ψ) =
+      inner 𝕜 φ (A ψ) / inner 𝕜 φ (B ψ) := by
+  rw [physicalMatrixElement_finiteCyclicObservableTwirl_eq U A N hN hφ hψ,
+    physicalMatrixElement_finiteCyclicObservableTwirl_eq U B N hN hφ hψ]
+
+/-- **Uniform stationary clock marginal.**  If one clock effect resolves the identity under a
+finite cyclic twirl, every constrained left/right matrix element assigns it exactly `1/N` of the
+unconditioned weight.  Hence a stationary clock has no informative raw time marginal; its time
+information lives in conditional correlations. -/
+theorem stationaryClockEffect_matrixElement_eq_uniform
+    (U e : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0) {φ ψ : E}
+    (hφ : GaloisForLFunctions.PhysicalState (U.adjoint - 1).toLinearMap φ)
+    (hψ : GaloisForLFunctions.PhysicalState (U - 1).toLinearMap ψ)
+    (hresolve : finiteCyclicObservableTwirl U e N = ((N : 𝕜)⁻¹) • 1) :
+    inner 𝕜 φ (e ψ) = (N : 𝕜)⁻¹ * inner 𝕜 φ ψ := by
+  calc
+    inner 𝕜 φ (e ψ) =
+        inner 𝕜 φ (finiteCyclicObservableTwirl U e N ψ) :=
+      (physicalMatrixElement_finiteCyclicObservableTwirl_eq U e N hN hφ hψ).symm
+    _ = (N : 𝕜)⁻¹ * inner 𝕜 φ ψ := by
+      rw [hresolve, ContinuousLinearMap.smul_apply, inner_smul_right]
+      simp
+
+end RelationalClockObservables
 
 section OrthogonalAverage
 
