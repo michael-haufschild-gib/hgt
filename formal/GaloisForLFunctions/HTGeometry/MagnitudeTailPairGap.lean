@@ -113,4 +113,61 @@ theorem valuation_gap_above_min_of_count_eq_tailSupport {b : ℕ → ℝ}
   rw [abs_of_nonneg (sub_nonneg.mpr hmin)] at hgap
   linarith
 
+/-- If the competitor has strictly smaller total count than a tail-supported atom, the two atoms
+must differ at a tail index.  Agreement throughout the tail would leave the competitor with the
+same high count plus a nonnegative low count. -/
+theorem exists_diff_ge_of_count_lt_tailSupport {ν ν₀ : ℕ →₀ ℕ} {T : ℕ}
+    (hcount : ν.sum (fun _ k => k) < ν₀.sum (fun _ k => k))
+    (hν₀tail : ∀ n, ν₀ n ≠ 0 → T ≤ n) :
+    ∃ n, T ≤ n ∧ ν n ≠ ν₀ n := by
+  classical
+  by_contra hcon
+  simp only [not_exists, not_and, not_not] at hcon
+  have hν₀low : ∀ n, n < T → ν₀ n = 0 := fun n hn => by
+    by_contra hne
+    exact absurd (hν₀tail n hne) (not_le.mpr hn)
+  let U := ν.support ∪ ν₀.support
+  have hνsum : ν.sum (fun _ k => k) = ∑ n ∈ U, ν n := by
+    rw [Finsupp.sum]
+    exact Finset.sum_subset Finset.subset_union_left
+      (fun n _ hn => Finsupp.notMem_support_iff.mp hn)
+  have hν₀sum : ν₀.sum (fun _ k => k) = ∑ n ∈ U, ν₀ n := by
+    rw [Finsupp.sum]
+    exact Finset.sum_subset Finset.subset_union_right
+      (fun n _ hn => Finsupp.notMem_support_iff.mp hn)
+  have hhigh :
+      ∑ n ∈ U.filter (fun n => ¬ n < T), ν n =
+        ∑ n ∈ U.filter (fun n => ¬ n < T), ν₀ n :=
+    Finset.sum_congr rfl fun n hn => by
+      rw [Finset.mem_filter] at hn
+      exact hcon n (not_lt.mp hn.2)
+  have hlow₀ : ∑ n ∈ U.filter (fun n => n < T), ν₀ n = 0 :=
+    Finset.sum_eq_zero fun n hn => by
+      rw [Finset.mem_filter] at hn
+      exact hν₀low n hn.2
+  have esplit := Finset.sum_filter_add_sum_filter_not U (fun n => n < T) ν
+  have esplit₀ := Finset.sum_filter_add_sum_filter_not U (fun n => n < T) ν₀
+  rw [hνsum, hν₀sum, ← esplit, ← esplit₀, hlow₀, hhigh] at hcount
+  omega
+
+/-- Directed valuation gap above a tail-supported minimizer when the competitor has smaller total
+count. -/
+theorem valuation_gap_above_min_of_count_lt_tailSupport {b : ℕ → ℝ}
+    (hb : ∀ n, 0 ≤ b n) {D T : ℕ}
+    (hsi : ∀ k, T ≤ k → ((D : ℝ) + 1) * (∑ n ∈ Finset.range k, b n) ≤ b k)
+    {ν ν₀ : ℕ →₀ ℕ} (hν : ∀ n, ν n ≤ D) (hν₀ : ∀ n, ν₀ n ≤ D)
+    (hcount : ν.sum (fun _ k => k) < ν₀.sum (fun _ k => k))
+    (hν₀tail : ∀ n, ν₀ n ≠ 0 → T ≤ n)
+    (hmin : ν₀.sum (fun n k => (k : ℝ) * b n) ≤
+      ν.sum (fun n k => (k : ℝ) * b n)) :
+    ∃ K : ℕ, T ≤ K ∧
+      ν₀.sum (fun n k => (k : ℝ) * b n) + b K / ((D : ℝ) + 1) ≤
+        ν.sum (fun n k => (k : ℝ) * b n) := by
+  obtain ⟨k, hkT, hk⟩ := exists_diff_ge_of_count_lt_tailSupport hcount hν₀tail
+  obtain ⟨K, hKT, hgap⟩ :=
+    finsupp_pair_valuation_gap_of_diff_ge hb hsi hν hν₀ ⟨k, hkT, hk⟩
+  refine ⟨K, hKT, ?_⟩
+  rw [abs_of_nonneg (sub_nonneg.mpr hmin)] at hgap
+  linarith
+
 end GaloisForLFunctions

@@ -158,13 +158,93 @@ integral_0^infinity 2(1-y)e^(-(1+u)y)dy=2u/(1+u)^2.              (20)
 
 `QED`
 
+## Doubled Mobius-parity clock realization `[PROVED HERE]`
+
+The Fisher tangent is exactly a finite-clock observability commutator, not merely a derivative of
+probability weights.  Let `D` be a finite squarefree cutoff.  Use the finite partition function to
+define normalized `psi_(sigma,D)`, its mean `m_(sigma,D)`, and
+
+```text
+A_(sigma,D)=L_D-m_(sigma,D).                              (21)
+```
+
+On the doubled space `H_D direct_sum H_D`, define
+
+```text
+S_D(f,g)=(J_D g,J_D f),
+
+Psi_(sigma,D)=2^(-1/2)(psi_(sigma,D),J_D psi_(sigma,D)),
+
+X_(sigma,D)
+ =epsilon diag(A_(sigma,D),-A_(sigma,D)).                 (22)
+```
+
+Then `S_D` is a self-adjoint unitary involution, `X_(sigma,D)` is self-adjoint, and
+
+```text
+||Psi_(sigma,D)||=1,
+S_D Psi_(sigma,D)=Psi_(sigma,D),
+S_D X_(sigma,D)Psi_(sigma,D)=-X_(sigma,D)Psi_(sigma,D).  (23)
+```
+
+If `P_D=(1+S_D)/2` is the clock average, `(23)` gives
+
+```text
+(1-P_D)X_(sigma,D)Psi_(sigma,D)
+ =X_(sigma,D)Psi_(sigma,D).                              (24)
+```
+
+Consequently the finite-clock pure-state Fisher identity is
+
+```text
+QFI_D
+ =4||X_(sigma,D)Psi_(sigma,D)||^2
+ =||[X_(sigma,D),S_D]Psi_(sigma,D)||^2
+ =4epsilon^2 Var_(sigma,D)(log d)
+ =||chi_(sigma,D)||^2.                                   (25)
+```
+
+### Proof
+
+The relations `J_D^2=1` and `J_D L_D=L_D J_D` give the involution, self-adjointness, and `(23)` by
+direct multiplication.  Since the vector in `(24)` is orthogonal to the invariant sector, its
+projective overlap vanishes.  Also
+
+```text
+[X_(sigma,D),S_D]Psi_(sigma,D)=2X_(sigma,D)Psi_(sigma,D). (26)
+```
+
+Taking norms proves `(25)`.  This is the concrete arithmetic instance of the already
+Lean-formalized finite-clock quantum-Fisher observability theorem. `QED`
+
+At fixed `sigma>1`, finite squarefree cutoffs exhaust the first two logarithmic moments.  Therefore
+the cofinal limit of `(25)` is `(6)`, and its subsequent critical limit is `4`.
+
+The sector sign in `X` is load-bearing.  In block form,
+
+```text
+[diag(A,-A), [[0,J],[J,0]]]
+ =[[0,AJ+JA],[-AJ-JA,0]].                                (27)
+```
+
+Thus a clock **commutator** on the doubled source becomes an **anticommutator** of logarithmic
+position with reflection.  Under a genuine source intertwiner `J_D -> J_log`, the off-diagonal
+term in `(27)` has exactly the algebraic shape
+
+```text
+M_t J_log+J_log M_t=H_infinity J_log,                    (28)
+```
+
+the Burnol real-place Gamma conductor channel.  Equation `(28)` is an exact structural match; the
+intertwiner and its boundary topology remain open.
+
 ## The singular-boundary no-go and positive HT statement
 
 Equations `(7)` and `(17)` do not prove RH.  The signed coefficient in `(15)` is of order
 `epsilon^2`; the critical contact law uses the renormalized boundary functional
 
 ```text
-epsilon^(-2)<psi_sigma,J T_(sigma,u)psi_sigma>.                  (21)
+epsilon^(-2)<psi_sigma,J T_(sigma,u)psi_sigma>.                  (29)
 ```
 
 Multiplication by `epsilon^(-2)` is not a uniformly bounded Hilbert operation.  Therefore the
@@ -175,7 +255,7 @@ that `T` is contractive.
 
 ```text
 tangential component: chi_sigma, bounded in the Fisher Hilbert metric;
-normal component:     epsilon^(-2)J-boundary response, singular in H_sq.   (22)
+normal component:     epsilon^(-2)J-boundary response, singular in H_sq.   (30)
 ```
 
 A successful completed source object must be a rigged boundary pair whose tangent Hilbert norm and
@@ -218,6 +298,8 @@ route, not because Fisher language by itself is new.
 - [x] critical four-unit limit proved
 - [x] positive and signed matrix coefficients identified
 - [x] completed contact-score coefficient limit proved
+- [x] doubled Mobius-parity clock and exact QFI/commutator realization proved
+- [x] source clock commutator matched algebraically to the Burnol conductor anticommutator
 - [x] singular normal-boundary obstruction isolated positively
 - [ ] independent literature novelty audit
 - [ ] source-rigged tangent-to-Xi lift constructed

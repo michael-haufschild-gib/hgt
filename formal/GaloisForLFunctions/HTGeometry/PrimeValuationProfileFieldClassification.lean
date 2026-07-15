@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.PrimeValuationProfileRankLaw
 import GaloisForLFunctions.HTGeometry.DifferentialAdjoinPairClassification
+import GaloisForLFunctions.HTGeometry.DifferentialIndependentObservableFactorization
 import Mathlib.Logic.Equiv.Fin.Basic
 
 namespace GaloisForLFunctions
