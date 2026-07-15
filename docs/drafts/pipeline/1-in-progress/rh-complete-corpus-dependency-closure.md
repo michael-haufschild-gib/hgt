@@ -1074,3 +1074,38 @@ the complementary coefficient family.
   `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-half-density-ward-laplace-budget-transfer.md`
   and
   `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-half-density-damped-tail-domination.md`.
+
+## 2026-07-15 theta antisymmetric-reflection Turan splice
+
+- [PROVED ON PAPER] The reflected half-density difference gives the exact odd first-atom budget
+  `sum M_(2*j+1)/(4^j*(2*j+1)!)=exp(-pi)`, complementary to the existing even budget.
+- [EXACT HYPOTHESIS COMPRESSION] The upper low-degree gate has no essential tail or zeroth-moment
+  input: it follows from
+  `8*a_2<=45*a_1^2+2*a_1*a_2+a_2^2/24`.
+- [COMMON SOURCE CONSTRAINT] The two low-degree gates are exactly a lower bound on the first Turan
+  defect and an upper bound on the second.  The half-line slope-curvature identity splits both into
+  a favorable explicit boundary determinant plus one regular functional of
+  `E_reg=d/dx((V'(x)-V'(0))/x)`; the first-atom potential satisfies `V''>=19`.  This regular
+  curvature changes sign exactly once, and each remainder is its pairing with a positive strictly
+  unimodal crossing window having an exact moment-ratio peak.
+- [OPEN] Prove the paired one-seam window inequalities for orders one and two.  This closes the
+  theta degree-one block, after which the independent degree-at-least-two cone or leading
+  determinant tail from size three remains.  See
+  `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-antisymmetric-half-density-turan-curvature-transfer.md`
+  and `theta-cusp-one-seam-turan-window-balance.md`.
+
+## 2026-07-15 continuous residual half-density chart
+
+- [PROVED ON PAPER] The first theta atom has elementary tilted survival transforms at every cutoff:
+  `T_+(a)=2*pi*exp(3*a)*exp(-pi*exp(2*a))` and
+  `T_-(a)=(2*pi*exp(2*a)-1)*exp(-pi*exp(2*a))`.
+- [VALUE-RELATION STRENGTHENING] Every residual tail therefore has exact even and odd exponential
+  moment budgets.  The ordinary survival function lies in an explicit corridor whose exact relative
+  width is `1/(2*pi*exp(2*a)-1)`.
+- [SEAM DISCHARGE] The unique regular-curvature seam satisfies `0<c<log 2`; hence every nontrivial
+  arithmetic translate lies on its positive side.  At the seam, both crossing windows use only total
+  moments and residual moments governed by the continuous chart.
+- [OPEN] Convert these residual budgets into the paired order-one lower/order-two upper window
+  balances.  See
+  `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-continuous-half-density-residual-tail-chart.md`
+  and `theta-cusp-one-seam-turan-window-balance.md`.

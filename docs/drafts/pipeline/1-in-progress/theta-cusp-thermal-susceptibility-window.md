@@ -686,3 +686,33 @@ The unconditional branch activation is
 `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-half-density-damped-tail-domination.md`.
 The remaining work is proving these two explicit first-atom inequalities and the independent
 higher-degree Hankel tail.
+
+## Turan-defect coordinate for the reflected first-atom gates `[PROVED ON PAPER]`
+
+The two remaining first-atom susceptibility conditions have one common source coordinate.  With
+`M_(2*j)=a_j/2` and
+
+```text
+D_m=M_(2*m)^2-(2*m-1)/(2*m+1)*M_(2*m-2)*M_(2*m+2),
+delta=(a_0+a_1/8+H)/(a_0+a_1/8),
+```
+
+they are equivalent to
+
+```text
+D_1 >= (1/45+16*H/(45*a_0))*M_0*M_4,
+D_2 <= (1-14*delta/15)*M_4^2.
+```
+
+A half-line Csordas--Varga identity expresses every `D_m` through
+`E=(V'/x)'` for the explicit first-atom potential.  Its boundary pole is a closed nonnegative
+odd-moment determinant, and the antisymmetric half-density reflection gives the exact exponential
+budget of all those odd moments.  The regular curvature changes sign exactly once, while its two
+order-specific crossing windows are positive and strictly unimodal.  The residue is therefore two
+opposite inequalities for one signed seam paired against two explicit windows.  See
+`../2-fully-proven/not_new_scientific_knowledge/theta-cusp-antisymmetric-half-density-turan-curvature-transfer.md`.
+This replaces the vague request for separate Ward/score estimates by one one-dimensional
+source comparison, tracked in `theta-cusp-one-seam-turan-window-balance.md`; the independent
+higher-degree Hankel tail remains open.  The continuous cutoff constraints feeding that comparison
+are proved in
+`../2-fully-proven/not_new_scientific_knowledge/theta-cusp-continuous-half-density-residual-tail-chart.md`.

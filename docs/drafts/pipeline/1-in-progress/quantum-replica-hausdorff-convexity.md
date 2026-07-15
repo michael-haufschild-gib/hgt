@@ -47,6 +47,17 @@ D_(2n+1) = ||m T^(n+1) - T^(n+2)||_HS^2.
 
 Thus the difference is a static constraint square, not a propagated flow.
 
+The same positive-effect moments also obey the homogeneous adjacent Hankel relation
+
+```text
+M_(k+1)^2 <= M_k M_(k+2),
+P_(k+1)^2 <= P_k P_(k+2).
+```
+
+This is Hilbert--Schmidt Cauchy--Schwarz between consecutive power columns.  Unlike the
+Hausdorff difference, both sides have the same channel-rescaling degree, so the relation survives
+projective normalization without any bound on `m`.
+
 ## General HTGeometry value
 
 `formal/GaloisForLFunctions/HTGeometry/QuantumReplicaHausdorff.lean` adds a rectangular,
@@ -58,6 +69,9 @@ zeta-independent API:
 - even/odd trace-moment representations as Hilbert--Schmidt norm squares;
 - exact even/odd representations of the complementary second difference;
 - nonnegativity of both the unnormalized and normalized differences.
+- squared real-part Hilbert--Schmidt Cauchy--Schwarz;
+- homogeneous log-convexity of raw and density-normalized replica moments.
+- preservation of adjacent log-convexity under coordinatewise limits.
 
 The file is imported by the `HTGeometry` umbrella.  Every future hypertranscendental constraint
 channel of the form `C` can use the theorem without importing any zeta or Sonin declaration.
@@ -91,12 +105,24 @@ moment and exposes
 
 0 <= Re S_0(a)^2 Re S_k(a)
        - 2 Re S_0(a) Re S_(k+1)(a)
-       + Re S_(k+2)(a).
+       + Re S_(k+2)(a),
+
+Re S_(k+1)(a)^2 <= Re S_k(a) Re S_(k+2)(a).
 ```
 
 The quotient-free form remains available without assuming the coupled source is nonzero.  It is
 strictly stronger than isolated moment nonnegativity and one-step replica monotonicity, and it
 cuts the simultaneous source moment locus by a closed quadratic family.
+
+When `Re S_0(a)>0`, the last inequality also has the genuinely projective form
+
+```text
+(Re S_(k+1)(a) / Re S_0(a))^2
+  <= (Re S_k(a) / Re S_0(a))
+       (Re S_(k+2)(a) / Re S_0(a)).
+```
+
+No zeroth-mass ceiling occurs in this form.
 
 ## Direct route audit
 
@@ -113,6 +139,29 @@ future proposed aperture schedule and identifies source-mass control as the miss
 needed to feed the new physics relation into the existing scaled-Hausdorff RH surface.
 
 No RH implication is claimed from the new inequality alone.
+
+The homogeneous log-convexity relation removes that particular mass obstruction.  Any
+coordinatewise limit of positive-mass coupled moment ratios must itself be log-convex.  It is
+therefore an unconditional compatibility test for proposed projective aperture schedules, rather
+than the conditional finite-radius test supplied by the Hausdorff difference.  It still does not
+construct a schedule or prove the full target Hankel form positive: adjacent `2 x 2` minors do not
+control arbitrary polynomial tests.
+
+## Subunital-channel audit
+
+`[ROUTE RETIRED AT CURRENT SOURCE LEVEL]` A trace-nonincreasing Kraus/POVM realization would give
+an aperture-independent effect ceiling and promote the complete Hausdorff hierarchy directly.
+The actual coupled Sonin column does not currently carry such a theorem.  Its available global
+estimate is the aperture-dependent Shannon-area bound
+
+```text
+||C_a||_HS^2 <= 128 a^2 sum_(p,k) |w_(p,k)|^2.
+```
+
+Consequently the quantum-channel vocabulary alone cannot supply a uniform source radius.  Any
+future revival of this route must prove a new cancellation or frame bound for the concrete stacked
+prime-power residuals; treating the present column as a subunital instrument would add an
+unsupported hypothesis.
 
 ## Adjacent quantum-Fisher audit
 
@@ -134,7 +183,13 @@ would discard the classical spectral variance rather than bound it.
   B. Vermersch, R. Kueng, and B. Kraus, *Symmetry-resolved entanglement detection using partial
   transpose moments*, npj Quantum Information 7 (2021), 152,
   [arXiv:2103.07443](https://arxiv.org/abs/2103.07443).  The paper uses ordered moment inequalities
-  and the Stieltjes moment problem to test operator positivity.
+  and the Stieltjes moment problem to test operator positivity; its lowest moment condition is the
+  homogeneous inequality `p_1 p_3 >= p_2^2`.
+- X.-D. Yu, S. Imai, and O. Guehne, *Optimal Entanglement Certification from Moments of the
+  Partial Transpose*, Physical Review Letters 127 (2021), 060504,
+  [arXiv:2103.06897](https://arxiv.org/abs/2103.06897).  The paper organizes quantum moment
+  constraints through positive Hankel matrices, the parent mechanism for adjacent replica
+  log-convexity.
 - G. Toth and F. Frowis, *Uncertainty relations with the variance and the quantum Fisher
   information based on convex decompositions of density matrices*, Physical Review Research 4
   (2022), 013075,
@@ -146,4 +201,3 @@ would discard the classical spectral variance rather than bound it.
 Source inspection only.  Under the active user constraint, no Lean invocation, scratch
 compilation, lint, numerical check, targeted build, or full build was run.  The declarations stay
 in stage 1 until a narrow validation pass is authorized.
-

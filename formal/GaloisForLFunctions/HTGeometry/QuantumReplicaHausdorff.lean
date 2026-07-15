@@ -26,6 +26,7 @@ see A. Elben et al., *Nature Reviews Physics* 5 (2023), 9--24, arXiv:2203.11374,
 A. Neven et al., *npj Quantum Information* 7 (2021), 152, arXiv:2103.07443.
 -/
 
+open Filter Topology
 open scoped BigOperators InnerProductSpace
 
 namespace HTGeometry
@@ -395,6 +396,120 @@ theorem quantumMasterEffectReplicaMoment_secondDifference_nonneg
       ring
     rw [heq]
     exact div_nonneg hdiff (pow_nonneg hmassPos.le _)
+
+/-! ### Homogeneous replica log-convexity -/
+
+/-- Real-part Cauchy--Schwarz in squared Hilbert--Schmidt form.  The proof uses the
+nonnegativity of `||rS-T||²` at the minimizing real scalar, so no square-root manipulation is
+needed. -/
+theorem re_hsInner_sq_le_hsNormSq_mul
+    {S T : E →L[ℂ] F}
+    (hS : ContinuousLinearMap.IsHilbertSchmidt S)
+    (hT : ContinuousLinearMap.IsHilbertSchmidt T) :
+    (ContinuousLinearMap.hsInner S T).re ^ 2 ≤
+      ContinuousLinearMap.hsNormSq S * ContinuousLinearMap.hsNormSq T := by
+  by_cases hSzero : ContinuousLinearMap.hsNormSq S = 0
+  · have hzero : S = 0 :=
+      (ContinuousLinearMap.hsNormSq_eq_zero_iff hS).mp hSzero
+    subst S
+    simp [ContinuousLinearMap.hsInner, ContinuousLinearMap.hsNormSq]
+  · have hSpos : 0 < ContinuousLinearMap.hsNormSq S :=
+      lt_of_le_of_ne (ContinuousLinearMap.hsNormSq_nonneg S) (Ne.symm hSzero)
+    let a := ContinuousLinearMap.hsNormSq S
+    let b := (ContinuousLinearMap.hsInner S T).re
+    let c := ContinuousLinearMap.hsNormSq T
+    let r := b / a
+    have hnonneg : 0 ≤
+        ContinuousLinearMap.hsNormSq (((r : ℝ) : ℂ) • S - T) :=
+      ContinuousLinearMap.hsNormSq_nonneg _
+    rw [hsNormSq_real_smul_sub_eq hS hT] at hnonneg
+    change 0 ≤ r ^ 2 * a - 2 * r * b + c at hnonneg
+    change 0 < a at hSpos
+    have hscaled : 0 ≤ a * (r ^ 2 * a - 2 * r * b + c) :=
+      mul_nonneg hSpos.le hnonneg
+    have hid :
+        a * (r ^ 2 * a - 2 * r * b + c) = a * c - b ^ 2 := by
+      dsimp only [r]
+      field_simp [ne_of_gt hSpos]
+      ring
+    rw [hid] at hscaled
+    change b ^ 2 ≤ a * c
+    nlinarith
+
+/-- **Quantum replica log-convexity.**  Consecutive trace powers of every positive
+Hilbert--Schmidt master effect satisfy the homogeneous Hankel inequality
+`M_(k+1)^2 ≤ M_k M_(k+2)`.  Unlike a Hausdorff finite difference, this relation is invariant
+under rescaling the underlying channel. -/
+theorem quantumMasterEffectMoment_logConvex
+    {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C) (k : ℕ) :
+    quantumMasterEffectMoment C (k + 1) ^ 2 ≤
+      quantumMasterEffectMoment C k * quantumMasterEffectMoment C (k + 2) := by
+  obtain ⟨n, h | h⟩ := Nat.even_or_odd' k
+  · subst k
+    have hA := quantumMasterEffectPowerColumn_isHilbertSchmidt hC n
+    have hB := quantumMasterEffectPowerColumn_isHilbertSchmidt hC (n + 1)
+    have hcs := re_hsInner_sq_le_hsNormSq_mul hA hB
+    rw [re_hsInner_quantumMasterEffectPowerColumn_succ,
+      ← quantumMasterEffectMoment_even_eq_hsNormSq hC n,
+      ← quantumMasterEffectMoment_even_eq_hsNormSq hC (n + 1)] at hcs
+    simpa only [show 2 * (n + 1) = 2 * n + 2 by omega] using hcs
+  · subst k
+    have hA := quantumChannelEffect_pow_isHilbertSchmidt hC
+      (n := n + 1) (by omega)
+    have hB := quantumChannelEffect_pow_isHilbertSchmidt hC
+      (n := n + 2) (by omega)
+    have hcs := re_hsInner_sq_le_hsNormSq_mul hA hB
+    rw [re_hsInner_quantumChannelEffect_powers_succ,
+      ← quantumMasterEffectMoment_odd_eq_hsNormSq hC n,
+      ← quantumMasterEffectMoment_odd_eq_hsNormSq hC (n + 1)] at hcs
+    simpa only [show 2 * (n + 1) + 1 = 2 * n + 1 + 2 by omega,
+      show 2 * n + 2 = 2 * n + 1 + 1 by omega] using hcs
+
+/-- Normalizing the master effect preserves adjacent replica log-convexity. -/
+theorem quantumMasterEffectReplicaMoment_logConvex
+    {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C) (k : ℕ) :
+    quantumMasterEffectReplicaMoment C (k + 1) ^ 2 ≤
+      quantumMasterEffectReplicaMoment C k *
+        quantumMasterEffectReplicaMoment C (k + 2) := by
+  by_cases hmass : quantumMasterEffectMass C = 0
+  · have hCzero : C = 0 :=
+      (ContinuousLinearMap.hsNormSq_eq_zero_iff hC).mp hmass
+    subst C
+    simp [quantumMasterEffectReplicaMoment, quantumMasterEffectMoment,
+      quantumMasterEffectMass, quantumChannelEffect]
+  · have hlog := quantumMasterEffectMoment_logConvex hC k
+    rw [quantumMasterEffectReplicaMoment,
+      quantumMasterEffectReplicaMoment,
+      quantumMasterEffectReplicaMoment]
+    calc
+      (quantumMasterEffectMoment C (k + 1) /
+          quantumMasterEffectMass C ^ (k + 1 + 1)) ^ 2 =
+          quantumMasterEffectMoment C (k + 1) ^ 2 /
+            (quantumMasterEffectMass C ^ (k + 1 + 1)) ^ 2 := by ring
+      _ ≤ (quantumMasterEffectMoment C k *
+            quantumMasterEffectMoment C (k + 2)) /
+          (quantumMasterEffectMass C ^ (k + 1 + 1)) ^ 2 :=
+        div_le_div_of_nonneg_right hlog (sq_nonneg _)
+      _ = (quantumMasterEffectMoment C k /
+            quantumMasterEffectMass C ^ (k + 1)) *
+          (quantumMasterEffectMoment C (k + 2) /
+            quantumMasterEffectMass C ^ (k + 2 + 1)) := by
+        field_simp [hmass]
+        ring
+
+/-- Adjacent log-convexity is closed under coordinatewise limits.  This packages the exact
+topological step needed when a projectively normalized source moment sequence converges to a
+target sequence. -/
+theorem logConvex_of_tendsto
+    {ι : Type*} {l : Filter ι} {m : ι → ℕ → ℝ} {target : ℕ → ℝ}
+    (k : ℕ)
+    (hlim : ∀ j, Tendsto (fun i => m i j) l (nhds (target j)))
+    (hlog : ∀ i, m i (k + 1) ^ 2 ≤ m i k * m i (k + 2)) :
+    target (k + 1) ^ 2 ≤ target k * target (k + 2) := by
+  exact le_of_tendsto_of_tendsto
+    ((hlim (k + 1)).pow 2)
+    ((hlim k).mul (hlim (k + 2)))
+    (Filter.Eventually.of_forall hlog)
 
 end
 

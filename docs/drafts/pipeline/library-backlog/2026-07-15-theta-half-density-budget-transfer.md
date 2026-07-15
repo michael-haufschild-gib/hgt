@@ -50,3 +50,27 @@
 
 7. Wire the new module through `RHTower.lean` and update the formalized card only after narrow
    verification is authorized and passes.
+
+## Antisymmetric reflection / Turan-curvature successor
+
+8. Formalize the difference of the half-density anchors as the odd-moment budget
+   `sum M_(2*j+1)/(4^j*(2*j+1)!)=exp(-pi*n^2)`.
+9. Add a general HTGeometry half-line slope-curvature identity for
+   `D_m=M_(2*m)^2-(2*m-1)/(2*m+1)*M_(2*m-2)*M_(2*m+2)` under explicit integrability and boundary
+   hypotheses.
+10. Specialize it to the first theta atom, split
+    `E=s_0/x^2+E_reg`, prove the one-sign-change law for `E_reg`, and expose the boundary determinant,
+    positive unimodal crossing windows, and two regular-curvature consumers.
+    The paper theorem is
+    `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-antisymmetric-half-density-turan-curvature-transfer.md`.
+
+## Continuous residual-tail successor
+
+11. Define the two cutoff transforms of the first atom and formalize their elementary antiderivatives:
+    `T_+(a)=2*pi*exp(3*a)*exp(-pi*exp(2*a))` and
+    `T_-(a)=(2*pi*exp(2*a)-1)*exp(-pi*exp(2*a))`.
+12. Derive the all-cutoff even/odd residual moment budgets, the ordinary survival corridor, and the
+    binomial reconstruction of upper incomplete moments.
+13. Formalize the source-specific seam localization `c<log 2` only after the generic slope-curvature
+    and one-seam interfaces exist.  The paper source is
+    `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-continuous-half-density-residual-tail-chart.md`.

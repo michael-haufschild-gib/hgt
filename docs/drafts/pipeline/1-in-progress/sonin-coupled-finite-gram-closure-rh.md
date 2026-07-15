@@ -166,6 +166,29 @@ target Hausdorff constraint needs an additional finite source-mass limit or uppe
 `quantum-replica-hausdorff-convexity.md` records the exact conditional diagnostic and the adjacent
 mixed-state-QFI no-go.  No build or Lean process was run for these source additions.
 
+`[BRIDGE, SOURCE-FORMALIZED, UNVERIFIED]` The adjacent quantum-moment Hankel inequality supplies a
+second strengthening which is homogeneous under source rescaling:
+
+```text
+Re S_(k+1)(a)^2 <= Re S_k(a) Re S_(k+2)(a),
+
+(Re S_(k+1)(a) / Re S_0(a))^2
+  <= (Re S_k(a) / Re S_0(a))
+       (Re S_(k+2)(a) / Re S_0(a)).
+```
+
+The second line assumes only `Re S_0(a)>0`; it needs no upper bound or limit for the source mass.
+It therefore survives the scale-eliminated moment-ratio interface and gives a necessary adjacent
+Hankel condition on every target cluster of a proposed aperture schedule.  This closes the mass
+loophole for the `2 x 2` diagnostic, but it does not prove full Hankel positivity or construct the
+aperture schedule.  The general and coupled declarations are in
+`HTGeometry/QuantumReplicaHausdorff.lean` and
+`RHTower/SoninCoupledPrimeArchGramTransfer.lean`.
+
+The tempting stronger shortcut through a subunital Kraus instrument is unavailable: the concrete
+stacked Sonin column has only an aperture-dependent Hilbert--Schmidt bound proportional to `a^2`,
+not an aperture-independent effect ceiling.  No such completeness hypothesis is inserted.
+
 ## Goal
 
 Replace the block-diagonal Sonin moment curve, which deletes mixed prime words, by the canonical

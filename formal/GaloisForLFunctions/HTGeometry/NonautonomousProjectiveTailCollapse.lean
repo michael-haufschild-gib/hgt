@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.NonautonomousFirstOrderTailSymbol
+import GaloisForLFunctions.HTGeometry.ParabolicOrbifoldTwelveCharge
 
 /-!
 # Local rank collapse for nonautonomous projective tails
@@ -35,6 +35,17 @@ of the local ramification index.  Here `c` is the target double-pole coefficient
 theorem projectiveConnection_exponentDiscriminant_transport
     {K : Type*} [CommRing K] (e c : K) :
     1 - (e ^ 2 * c + (1 - e ^ 2)) = e ^ 2 * (1 - c) := by
+  ring
+
+/-- Projectivizing an affine connection commutes with rational pullback.  If the affine
+coefficient transforms as `p₁ * μ + p₂ / p₁`, then `2 μ' - μ²` transforms by the projective
+Schwarzian law.  This reduces the affine rank to the same projective defect analysis. -/
+theorem affineConnection_projectivization_transport
+    {K : Type*} [Field K] (μ dμ p₁ p₂ p₃ : K) (hp₁ : p₁ ≠ 0) :
+    2 * (p₁ ^ 2 * dμ + p₂ * μ + p₃ / p₁ - (p₂ / p₁) ^ 2) -
+        (p₁ * μ + p₂ / p₁) ^ 2 =
+      p₁ ^ 2 * (2 * dμ - μ ^ 2) + 2 * p₃ / p₁ - 3 * (p₂ / p₁) ^ 2 := by
+  field_simp [hp₁]
   ring
 
 /-- A finite family of marked fibres on a genus-zero cover satisfies an exact cardinality budget.
@@ -165,5 +176,55 @@ theorem hurwitzGap_degree_le_exceptionalBudget
       _ ≤ 42 * (scale * exceptionalBudget) := h₃
       _ = (42 * exceptionalBudget) * scale := by ring
   exact Nat.le_of_mul_le_mul_right h₄ hscale
+
+/-- Exponentially growing prefix degree eventually excludes every projective-orbifold phase whose
+positive Euler defect is bounded by the Hurwitz `1/42` inequality. -/
+theorem projectiveHyperbolicTail_eventually_absent
+    (prefixDegree : ℕ → ℕ) (exceptionalBudget : ℕ) (hyperbolic : ℕ → Prop)
+    (hdegree : ∀ n, 2 ^ n ≤ prefixDegree n)
+    (hhyperbolicDegree : ∀ n, hyperbolic n →
+      prefixDegree n ≤ 42 * exceptionalBudget) :
+    ∀ᶠ n in Filter.atTop, ¬ hyperbolic n := by
+  obtain ⟨N, hN⟩ := pow_unbounded_of_one_lt (42 * exceptionalBudget) Nat.one_lt_two
+  filter_upwards [Filter.eventually_ge_atTop N] with n hn
+  intro hnHyperbolic
+  have hlarge : 42 * exceptionalBudget < prefixDegree n :=
+    hN.trans_le <| (Nat.pow_le_pow_right (by omega) hn).trans (hdegree n)
+  exact (Nat.not_lt_of_ge (hhyperbolicDegree n hnHyperbolic)) hlarge
+
+/-- Three genuinely non-orbifold terminal fibres would have to fit inside the fixed source
+exceptional set.  Exponential prefix degree therefore leaves at most two such fibres eventually. -/
+theorem nonOrbifoldFiberCard_eventually_le_two
+    (prefixDegree badFiberCard : ℕ → ℕ) (sourceExceptionalCard : ℕ)
+    (hdegree : ∀ n, 2 ^ n ≤ prefixDegree n)
+    (hthreeBudget : ∀ n, 3 ≤ badFiberCard n →
+      prefixDegree n + 2 ≤ sourceExceptionalCard) :
+    ∀ᶠ n in Filter.atTop, badFiberCard n ≤ 2 := by
+  obtain ⟨N, hN⟩ := pow_unbounded_of_one_lt sourceExceptionalCard Nat.one_lt_two
+  filter_upwards [Filter.eventually_ge_atTop N] with n hn
+  by_contra hbad
+  have hthree : 3 ≤ badFiberCard n := by omega
+  have hlarge : sourceExceptionalCard < prefixDegree n :=
+    hN.trans_le <| (Nat.pow_le_pow_right (by omega) hn).trans (hdegree n)
+  have hsmall := hthreeBudget n hthree
+  omega
+
+/-- The formal global budget surface: sufficiently deep projective phases are simultaneously
+non-hyperbolic and supported on at most two genuinely non-orbifold fibres. -/
+theorem projectiveTail_eventually_nonhyperbolic_with_twoPointSkeleton
+    (prefixDegree badFiberCard : ℕ → ℕ) (sourceExceptionalCard exceptionalBudget : ℕ)
+    (hyperbolic : ℕ → Prop)
+    (hdegree : ∀ n, 2 ^ n ≤ prefixDegree n)
+    (hthreeBudget : ∀ n, 3 ≤ badFiberCard n →
+      prefixDegree n + 2 ≤ sourceExceptionalCard)
+    (hhyperbolicDegree : ∀ n, hyperbolic n →
+      prefixDegree n ≤ 42 * exceptionalBudget) :
+    ∀ᶠ n in Filter.atTop, badFiberCard n ≤ 2 ∧ ¬ hyperbolic n := by
+  filter_upwards [
+    nonOrbifoldFiberCard_eventually_le_two prefixDegree badFiberCard sourceExceptionalCard
+      hdegree hthreeBudget,
+    projectiveHyperbolicTail_eventually_absent prefixDegree exceptionalBudget hyperbolic
+      hdegree hhyperbolicDegree] with n hbad hhyperbolic
+  exact ⟨hbad, hhyperbolic⟩
 
 end GaloisForLFunctions.HTGeometry

@@ -351,3 +351,15 @@ budget transfer `(15)`--`(21)`.
 - [ ] formalize the likelihood-budget transfers in Lean
 - [ ] prove finite first-atom inequalities `(18)` and `(20)`
 - [ ] prove the independent degree-at-least-two or leading-determinant tail
+
+## Antisymmetric successor
+
+The difference of the two half-density anchors, not only their sum, is useful.  It supplies the
+exact odd-moment budget and exposes the two open gates as the first two Turan defects of one
+half-line source.  The successor
+`theta-cusp-antisymmetric-half-density-turan-curvature-transfer.md` proves the boundary-pole split,
+the source floor `V''>=19`, the one-sign-change law for the regular slope curvature, and the positive
+unimodal crossing-window representation.  Its remaining problem is the paired order-one/order-two
+window inequality; the independent higher-degree Hankel tail remains unchanged.  The further
+successor `theta-cusp-continuous-half-density-residual-tail-chart.md` promotes the two endpoint
+anchors to exact even/odd residual budgets at every real cutoff.

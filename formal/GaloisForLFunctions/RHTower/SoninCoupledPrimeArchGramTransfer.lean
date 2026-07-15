@@ -1307,6 +1307,68 @@ theorem re_soninAllPrimeCoupledTraceMoment_secondDifference_nonneg
     soninAllPrimeCoupledTraceMoment_zero_eq_column_hsNormSq,
     Complex.ofReal_re, C] using hdiff
 
+/-- **Coupled replica log-convexity.**  The source trace moments obey the homogeneous adjacent
+Hankel inequality.  In contrast with the Hausdorff difference above, no zeroth-mass factor occurs,
+so this constraint survives arbitrary projective rescaling of the source column. -/
+theorem re_soninAllPrimeCoupledTraceMoment_logConvex
+    (a : SoninPositiveAperture) (k : ℕ) :
+    (soninAllPrimeCoupledTraceMoment a (k + 1)).re ^ 2 ≤
+      (soninAllPrimeCoupledTraceMoment a k).re *
+        (soninAllPrimeCoupledTraceMoment a (k + 2)).re := by
+  let C := soninAllPrimeColumnCoordinateOperator a.1 a.2
+  have hC : ContinuousLinearMap.IsHilbertSchmidt C :=
+    HilbertSchmidt.isHilbertSchmidt_toOperatorRect
+      (soninAllPrimeColumnKernel_isHSRect a.1 a.2)
+  have hlog := HTGeometry.quantumMasterEffectMoment_logConvex hC k
+  simpa only [HTGeometry.quantumMasterEffectMoment,
+    HTGeometry.quantumChannelEffect,
+    soninAllPrimeCoupledTraceMoment,
+    soninAllPrimeCoupledCoordinateEnergy, C] using hlog
+
+/-- The density-normalized coupled replica values inherit the same log-convexity constraint. -/
+theorem soninAllPrimeCoupledRenyiReplicaMoment_logConvex
+    (a : SoninPositiveAperture) (k : ℕ) :
+    soninAllPrimeCoupledRenyiReplicaMoment a (k + 1) ^ 2 ≤
+      soninAllPrimeCoupledRenyiReplicaMoment a k *
+        soninAllPrimeCoupledRenyiReplicaMoment a (k + 2) := by
+  rw [soninAllPrimeCoupledRenyiReplicaMoment_eq_quantumMasterEffectReplicaMoment,
+    soninAllPrimeCoupledRenyiReplicaMoment_eq_quantumMasterEffectReplicaMoment,
+    soninAllPrimeCoupledRenyiReplicaMoment_eq_quantumMasterEffectReplicaMoment]
+  exact HTGeometry.quantumMasterEffectReplicaMoment_logConvex
+    (HilbertSchmidt.isHilbertSchmidt_toOperatorRect
+      (soninAllPrimeColumnKernel_isHSRect a.1 a.2)) k
+
+/-- **Projective log-convexity.**  Dividing every source moment by the same positive zeroth
+moment preserves the adjacent Hankel inequality.  This is the form directly consumed by the
+scale-eliminated Sonin moment-ratio route and requires no upper control of the source mass. -/
+theorem re_soninAllPrimeCoupledTraceMoment_div_zero_logConvex
+    (a : SoninPositiveAperture)
+    (hzero : 0 < (soninAllPrimeCoupledTraceMoment a 0).re) (k : ℕ) :
+    ((soninAllPrimeCoupledTraceMoment a (k + 1)).re /
+        (soninAllPrimeCoupledTraceMoment a 0).re) ^ 2 ≤
+      ((soninAllPrimeCoupledTraceMoment a k).re /
+        (soninAllPrimeCoupledTraceMoment a 0).re) *
+      ((soninAllPrimeCoupledTraceMoment a (k + 2)).re /
+        (soninAllPrimeCoupledTraceMoment a 0).re) := by
+  have hlog := re_soninAllPrimeCoupledTraceMoment_logConvex a k
+  have hsq : 0 < (soninAllPrimeCoupledTraceMoment a 0).re ^ 2 :=
+    sq_pos_of_pos hzero
+  have hleft :
+      ((soninAllPrimeCoupledTraceMoment a (k + 1)).re /
+          (soninAllPrimeCoupledTraceMoment a 0).re) ^ 2 =
+        (soninAllPrimeCoupledTraceMoment a (k + 1)).re ^ 2 /
+          (soninAllPrimeCoupledTraceMoment a 0).re ^ 2 := by ring
+  have hright :
+      ((soninAllPrimeCoupledTraceMoment a k).re /
+          (soninAllPrimeCoupledTraceMoment a 0).re) *
+        ((soninAllPrimeCoupledTraceMoment a (k + 2)).re /
+          (soninAllPrimeCoupledTraceMoment a 0).re) =
+        ((soninAllPrimeCoupledTraceMoment a k).re *
+          (soninAllPrimeCoupledTraceMoment a (k + 2)).re) /
+            (soninAllPrimeCoupledTraceMoment a 0).re ^ 2 := by ring
+  rw [hleft, hright, div_le_div_iff₀ hsq]
+  exact hlog
+
 /-- Every projectively normalized coupled coordinate is bounded by the corresponding power of
 the unnormalized source mass.  Therefore any positive target coordinate forces an explicit mass
 floor on every approximating aperture. -/
