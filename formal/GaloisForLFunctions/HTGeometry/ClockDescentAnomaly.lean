@@ -34,6 +34,25 @@ def clockDescentAnomaly
       shadow (observe v) - observe (source v) :=
   rfl
 
+/-- **Constraint-algebra cocycle law.**  The source-specific descent anomaly is a derivation under
+composition of source operations and their proposed clock shadows:
+
+`α(S T, A B) = A α(T, B) + α(S, A) T`.
+
+Together with the curvature Leibniz law, this is the exact semidirect-product law underlying the
+affine boundary-colligation field. -/
+theorem clockDescentAnomaly_comp_constraint
+    (leftSource rightSource : V →ₗ[K] V)
+    (observe : V →ₗ[K] O)
+    (leftShadow rightShadow : O →ₗ[K] O) :
+    clockDescentAnomaly (leftSource.comp rightSource) observe
+        (leftShadow.comp rightShadow) =
+      leftShadow.comp
+          (clockDescentAnomaly rightSource observe rightShadow) +
+        (clockDescentAnomaly leftSource observe leftShadow).comp rightSource := by
+  ext v
+  simp [clockDescentAnomaly, LinearMap.comp_apply, map_sub]
+
 /-- On a space of genuine homogeneous source variations, the descent anomaly is exactly the
 proposed finite shadow of the observed variation. -/
 theorem clockDescentAnomaly_on_sourceKernel
@@ -308,6 +327,121 @@ theorem clockShadowCurvature_comp_extend_eq_zero
   have hsplit_v := LinearMap.congr_fun hsplit v
   simp only [LinearMap.comp_apply, LinearMap.id_apply] at hsplit_v
   simp [LinearMap.comp_apply, hsplit_v]
+
+/-- Projection onto the boundary directions newly exposed at the higher clock.  It is canonical
+relative to a chosen splitting `p i = 1`, and is the linear coordinate form of the quotient by
+the previously assembled clock. -/
+def clockBoundaryProjector
+    (extend : O₀ →ₗ[K] O₁) (truncate : O₁ →ₗ[K] O₀) : O₁ →ₗ[K] O₁ :=
+  LinearMap.id - extend.comp truncate
+
+/-- The corner of an operator which acts entirely within the newly exposed boundary layer. -/
+def clockBoundaryCompression
+    (operator : O₁ →ₗ[K] O₁)
+    (extend : O₀ →ₗ[K] O₁) (truncate : O₁ →ₗ[K] O₀) : O₁ →ₗ[K] O₁ :=
+  (clockBoundaryProjector extend truncate).comp
+    (operator.comp (clockBoundaryProjector extend truncate))
+
+/-- The boundary projector kills all directions extended from the lower clock. -/
+theorem clockBoundaryProjector_comp_extend_eq_zero
+    (extend : O₀ →ₗ[K] O₁) (truncate : O₁ →ₗ[K] O₀)
+    (hsplit : truncate.comp extend = LinearMap.id) :
+    (clockBoundaryProjector extend truncate).comp extend = 0 := by
+  ext v
+  have hsplit_v := LinearMap.congr_fun hsplit v
+  simp only [LinearMap.comp_apply, LinearMap.id_apply] at hsplit_v
+  simp [clockBoundaryProjector, LinearMap.comp_apply, hsplit_v]
+
+/-- Truncation is blind to every direction selected by the boundary projector. -/
+theorem truncate_comp_clockBoundaryProjector_eq_zero
+    (extend : O₀ →ₗ[K] O₁) (truncate : O₁ →ₗ[K] O₀)
+    (hsplit : truncate.comp extend = LinearMap.id) :
+    truncate.comp (clockBoundaryProjector extend truncate) = 0 := by
+  ext v
+  have hsplit_v := LinearMap.congr_fun hsplit (truncate v)
+  simp only [LinearMap.comp_apply, LinearMap.id_apply] at hsplit_v
+  simp [clockBoundaryProjector, LinearMap.comp_apply, hsplit_v]
+
+/-- **Boundary-colligation reconstruction.**  A forward-compatible higher clock action is
+reconstructed exactly from three pieces: the lower action, its outgoing boundary transfer
+`κ = p T₁ - T₀ p`, and the action compressed wholly inside the new boundary layer:
+
+`T₁ = i T₀ p + i κ + (1 - i p) T₁ (1 - i p)`.
+
+Consequently curvature alone is not the unified field: it forgets the boundary self-symbol. -/
+theorem clockShadow_eq_boundaryColligation
+    (shadow₀ : O₀ →ₗ[K] O₀) (shadow₁ : O₁ →ₗ[K] O₁)
+    (extend : O₀ →ₗ[K] O₁) (truncate : O₁ →ₗ[K] O₀)
+    (hsplit : truncate.comp extend = LinearMap.id)
+    (hforward : shadow₁.comp extend = extend.comp shadow₀) :
+    shadow₁ =
+      extend.comp (shadow₀.comp truncate) +
+        extend.comp (clockShadowCurvature shadow₀ shadow₁ truncate) +
+          clockBoundaryCompression shadow₁ extend truncate := by
+  ext v
+  have hforward_v := LinearMap.congr_fun hforward (truncate v)
+  have hsplit_v := LinearMap.congr_fun hsplit (shadow₀ (truncate v))
+  simp only [LinearMap.comp_apply] at hforward_v
+  simp only [LinearMap.comp_apply, LinearMap.id_apply] at hsplit_v
+  simp [clockShadowCurvature, clockBoundaryCompression, clockBoundaryProjector,
+    LinearMap.comp_apply, map_sub, hforward_v, hsplit_v]
+
+/-- Equal curvature does not see a perturbation confined entirely to the boundary corner.  This
+is the exact no-go for a curvature-only reconstruction theory. -/
+theorem clockShadowCurvature_add_boundaryCompression
+    (shadow₀ : O₀ →ₗ[K] O₀) (shadow₁ gauge : O₁ →ₗ[K] O₁)
+    (extend : O₀ →ₗ[K] O₁) (truncate : O₁ →ₗ[K] O₀)
+    (hsplit : truncate.comp extend = LinearMap.id) :
+    clockShadowCurvature shadow₀
+        (shadow₁ + clockBoundaryCompression gauge extend truncate) truncate =
+      clockShadowCurvature shadow₀ shadow₁ truncate := by
+  ext v
+  have hzero := LinearMap.congr_fun
+    (truncate_comp_clockBoundaryProjector_eq_zero extend truncate hsplit)
+    (gauge (clockBoundaryProjector extend truncate v))
+  simp only [LinearMap.comp_apply, LinearMap.zero_apply] at hzero
+  have hcompression :
+      truncate (clockBoundaryCompression gauge extend truncate v) = 0 := by
+    simpa only [clockBoundaryCompression, LinearMap.comp_apply] using hzero
+  simp [clockShadowCurvature, LinearMap.comp_apply, hcompression]
+
+/-- The boundary perturbations invisible to curvature also preserve the action already assembled
+from the lower clock. -/
+theorem add_clockBoundaryCompression_comp_extend
+    (shadow₁ gauge : O₁ →ₗ[K] O₁)
+    (extend : O₀ →ₗ[K] O₁) (truncate : O₁ →ₗ[K] O₀)
+    (hsplit : truncate.comp extend = LinearMap.id) :
+    (shadow₁ + clockBoundaryCompression gauge extend truncate).comp extend =
+      shadow₁.comp extend := by
+  ext v
+  have hsplit_v := LinearMap.congr_fun hsplit v
+  simp only [LinearMap.comp_apply, LinearMap.id_apply] at hsplit_v
+  simp [clockBoundaryCompression, clockBoundaryProjector, LinearMap.comp_apply, hsplit_v]
+
+/-- **Colligation uniqueness.**  Once the boundary self-symbol is supplied, the lower action and
+boundary transfer determine a forward-compatible higher action uniquely. -/
+theorem clockShadow_eq_of_curvature_eq_of_boundaryCompression_eq
+    (shadow₀ : O₀ →ₗ[K] O₀) (left₁ right₁ : O₁ →ₗ[K] O₁)
+    (extend : O₀ →ₗ[K] O₁) (truncate : O₁ →ₗ[K] O₀)
+    (hsplit : truncate.comp extend = LinearMap.id)
+    (hleft : left₁.comp extend = extend.comp shadow₀)
+    (hright : right₁.comp extend = extend.comp shadow₀)
+    (hcurvature : clockShadowCurvature shadow₀ left₁ truncate =
+      clockShadowCurvature shadow₀ right₁ truncate)
+    (hboundary : clockBoundaryCompression left₁ extend truncate =
+      clockBoundaryCompression right₁ extend truncate) :
+    left₁ = right₁ := by
+  calc
+    left₁ = extend.comp (shadow₀.comp truncate) +
+        extend.comp (clockShadowCurvature shadow₀ left₁ truncate) +
+          clockBoundaryCompression left₁ extend truncate :=
+      clockShadow_eq_boundaryColligation shadow₀ left₁ extend truncate hsplit hleft
+    _ = extend.comp (shadow₀.comp truncate) +
+        extend.comp (clockShadowCurvature shadow₀ right₁ truncate) +
+          clockBoundaryCompression right₁ extend truncate := by
+      rw [hcurvature, hboundary]
+    _ = right₁ :=
+      (clockShadow_eq_boundaryColligation shadow₀ right₁ extend truncate hsplit hright).symm
 
 /-- The intrinsic boundary-transfer map on the quotient by all previously assembled clock
 directions.  A split complement is useful for coordinates but is not part of this definition. -/

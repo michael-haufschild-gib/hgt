@@ -1,9 +1,9 @@
 # The simple-pole jet lattice has an exact holographic selection law
 
 - **ID:** `simple-pole-jet-lattice-holographic-selection-law`
-- **Stage:** 1-in-progress
+- **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) / FORMALIZED ALGEBRAIC CORE / HT BOUNDARY-GEOMETRY CANDIDATE
-- **Scientific status:** `[PROVED HERE: UNIVERSAL CONSTANT-COEFFICIENT LAW] [FORMALIZED: HOMOGENEOUS TRACE] [CONJECTURE: GLOBAL GAMMA DESCENT] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PROVED HERE: UNIVERSAL LAW AND GLOBAL GAMMA CLASSIFICATION] [FORMALIZED: HOMOGENEOUS TRACE AND RELATIVE SCALE BOUNDARY] [NOVELTY UNVERIFIED]`
 - **Methods:** symbolic proof and Lean verification only; no numerical computation
 
 ## Constraint
@@ -123,14 +123,9 @@ The simple-pole horizon therefore admits only vacuum and one-particle observable
 bulk polynomial.  No Hilbert space, quantum dynamics, entropy, black hole, or empirical physical
 identification is asserted.
 
-## Gamma globalization `[CONJECTURE]`
+## Theorem C: the Gamma simple-pole horizon is affine `[PROVED HERE]`
 
-For the factorially rescaled Gamma pole family, the existing Lean theorem
-`algebraicIndependent_actualGammaPoleRegularCoefficientGerm` proves that the complete positive
-regular Laurent-coefficient family is algebraically independent.  This supplies the free boundary
-tail required by Theorem A after the explicit nonzero factorial coordinate scaling.
-
-The global target is
+The exact global classification is
 
 ```text
 C[z][Gamma, Gamma', Gamma'', ...]
@@ -138,18 +133,96 @@ C[z][Gamma, Gamma', Gamma'', ...]
     = C[z] + C[z] Gamma.                                                     (9)
 ```
 
-The remaining descent is coefficient-sensitive.  At the pole `z=-n`, the local coordinate is
-`t=z+n`; a local cancellation such as `t f' + f` uses the pole index `n` and need not descend to a
-single coefficient in `C[z]`.  A proof of `(9)` must combine:
+### Relative scale--boundary lemma
 
-1. the simple-pole jet-lattice trace `(4)`;
-2. algebraic independence of the actual Gamma regular boundary coefficients over the rational
-   pole-index field `C(n)`; and
-3. descent from `C(n)[t]` along the diagonal embedding `z -> t-n` back to `C[z]`.
+Put
 
-The repository currently has relative `C(n)` freeness for the logarithmic Gamma boundary jets and
-absolute freeness for the regular coefficients.  The relative regular-coefficient transfer and
-the diagonal descent are the named open core.  They are not assumed.
+```text
+s_n=(-1)^(n+1)/n!,   z=-n+s_n x,
+Gamma(-n+s_n x)=-U_n(x)/x,   U_n(0)=1.                                    (10)
+```
+
+Over the rational pole-position field `C(n)`, every finite family
+
+```text
+s_n, U_n'(0), U_n''(0), ...                                                 (11)
+```
+
+is algebraically independent.
+
+Indeed, `reciprocalSignedFactorialEval_injective` identifies `s_n` as transcendental over every
+finite generalized-harmonic coordinate ring over `C(n)`.  The new Lean theorem
+`algebraicIndependent_gammaPoleScaleAndHarmonicFamily` packages this as joint relative freeness of
+the scale and harmonic boundary.  The exact logarithmic coordinates have triangular form
+
+```text
+ell_(n,j)=s_n^(j+1)(alpha_j H_n^(j+1)+beta_j),   alpha_j != 0.              (12)
+```
+
+After localizing at the already invertible `s_n`, `(12)` is a birational change of coordinates.
+The complete Bell transform from the `ell_(n,j)` to the positive derivatives of `U_n` is triangular
+with nonzero diagonal.  Both changes fix `s_n`, so they carry the joint relative freeness to `(11)`.
+
+### Diagonal descent proof
+
+Write a differential polynomial uniquely as
+
+```text
+P(z,Y)=sum_alpha p_alpha(z) Y^alpha,
+d(alpha)=sum_j alpha_j,
+w(alpha)=sum_j j alpha_j.                                                   (13)
+```
+
+At the `n`th pole, use `T=x^(-1)`.  From `(2)` and `(10)`,
+
+```text
+Gamma^(j)(-n+s_n/T)=-s_n^(-j) J_j(T),
+p_alpha(-n+s_n/T)
+  =sum_b p_alpha^(b)(-n)/b! s_n^b T^(-b).                                 (14)
+```
+
+Suppose a nonlinear monomial occurs.  Choose one `alpha` of some fixed total degree `D>=2` whose
+derivative weight `w(alpha)` is maximal among the nonzero degree-`D` coefficients.  In the
+coefficient of pole grade `T^D`, isolate the Laurent-boundary monomial
+
+```text
+s_n^(-w(alpha)) product_(j>=1) U_n^(j)(0)^alpha_j.                          (15)
+```
+
+The factor `U_n(0)=1` is omitted.  A source monomial `beta`, a coefficient Taylor order `b`, and
+chosen boundary indices `k<=j` can contribute to `(15)` only if
+
+```text
+scale exponent = d(beta)-D-w(alpha).                                       (16)
+```
+
+Joint freeness of the factorial scale separates `(16)`, so `d(beta)=D`.  Equality of pole grade
+then gives `b=w(beta)-w(alpha)`.  Maximality forces `w(beta)=w(alpha)` and `b=0`; since every chosen
+boundary index is at most its source derivative index and their sums agree, every choice is on the
+lower edge, hence `beta=alpha`.  The coefficient of `(15)` is therefore exactly the nonzero
+rational pole-position function
+
+```text
+(-1)^D p_alpha(-n).                                                         (17)
+```
+
+This contradicts the assumption that every pole grade at least two vanishes.  Thus every
+nonlinear sector is absent.
+
+For the remaining linear sector, choose the largest `r>=1` with coefficient `p_r(z)Y_r`.  Pole
+grade `r+1` has the unique leading boundary term
+
+```text
+(-1)^(r+1) r! s_n^(-r) p_r(-n),                                            (18)
+```
+
+so relative scale--boundary freeness again forces `p_r=0`, a contradiction.  Only the constant
+sector and `p_0(z)Gamma(z)` remain.  Conversely, every `A(z)+B(z)Gamma(z)` has at most simple poles.
+This proves `(9)`.
+
+The proof uses the whole infinite pole lattice.  At one pole, `x Gamma'+Gamma` is regular; the
+factorial scale and moving rational pole position prevent that local cancellation from descending
+to one polynomial coefficient in `z` across all poles.
 
 ## Sharp boundary attacks
 
@@ -191,6 +264,13 @@ topological/valuative types of these boundary embeddings.
 There is no direct RH consequence.  The logarithmic derivative of a completed `L`-function has a
 simple-pole divisor, but no algebraically free regular boundary family at its zeros is known.
 
+For the completed zeta function, Theorem C does give one exact archimedean restriction: a
+polynomial differential surgery built from the Gamma factor alone cannot preserve its simple-pole
+lattice unless it is affine in Gamma.  This rules out nonlinear polynomial Gamma-only
+regularizations as hidden RH source producers.  It does not constrain the cancellation between
+Gamma poles and zeta's trivial zeros, because zeta is not a coefficient in `C[z]` and the required
+joint boundary freeness is not known.
+
 If an RH source carrier were proved pole-holographically free, `(7)` would exclude every nonlinear
 differential-polynomial surgery that preserves its simple-pole sector.  An RH-bearing transform
 would then have to be affine, differential-rational, or use coefficient data that breaks the pole
@@ -205,30 +285,61 @@ filtration.  This is a useful route constraint, not a zero-location theorem.
 3. the identity boundary trace `(4)`; and
 4. survival of that trace under specialization to any algebraically independent boundary family.
 
-The touched module passes direct `lake env lean` verification.  No umbrella or full-project build
-was run because this workspace is concurrently shared and the task explicitly requires the
+`formal/GaloisForLFunctions/HTGeometry/GammaPoleScaleHarmonicRelativeFreeness.lean` formalizes:
+
+1. the joint factorial-scale plus harmonic-boundary evaluation over `C(n)`;
+2. its factorization through the existing reciprocal-factorial evaluation; and
+3. finite joint algebraic independence of the scale and harmonic boundary over `C(n)`.
+
+The Bell/birational transfer to the actual `U_n` derivatives and the maximal-weight diagonal
+descent are proved above on paper but are not yet fully encoded in Lean.  The formalized results are
+therefore the two load-bearing algebraic cores, not a falsely advertised formalization of the
+analytic intersection `(9)`.
+
+Both touched leaf modules pass direct `lake env lean` verification.  No umbrella or full-project
+build was run because this workspace is concurrently shared and the task explicitly requires the
 smallest possible build.
+
+## Parent-theory and priority audit
+
+Classical algebraic-differential-equation theory already organizes differential monomials by
+degree and weight and derives pole-order bounds; see A. Eremenko,
+[Meromorphic solutions of algebraic differential equations](https://www.math.purdue.edu/~eremenko/dvi/mer_ade.pdf).
+Gamma hypertranscendence over broad meromorphic coefficient fields is also classical; see S. Bank,
+[Some results on the Gamma function and other hypertranscendental functions](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/8A86705994E60591A3AE8F0E89E88222/S0308210500019855a.pdf/some_results_on_the_gamma_function_and_other_hypertranscendental_functions.pdf).
+Arc-space differential geometry and differential Rees algebras are broad parents for filtered jet
+constructions, but the audited sources do not state the lower-edge reconstruction `(4)` or the
+Gamma simple-pole intersection `(9)`.
+
+This negative search is not a priority proof.  Theorem A should be regarded as a clean
+associated-graded sharpening of classical pole-degree calculus.  Theorem C is the candidate new
+content because it combines the all-order lower edge with the factorial-scale/pole-position
+bigrading to classify an actual hypertranscendental differential-polynomial algebra.
 
 ## Dual gate
 
-- **Novelty:** unverified.  The natural parent theories are pole-order filtrations for meromorphic
-  connections and `D`-modules, Rees algebras, arc spaces, and differential-algebraic singularity
-  theory.  The exact nonlinear boundary-trace identity and Gamma descent must be checked against
-  them before promotion.
-- **Significance:** Theorem A is a reusable all-order structural law and bypasses the known
-  higher-order leading-symbol degeneracy.  Its significance becomes substantial only if the
-  Gamma descent `(9)` or a broad pole-holographically-free class is proved.
-- **Fields-Medal gate:** not cleared.  The universal trace is a real theorem, but the current result
-  does not establish a new major theory or solve a central open problem.
+- **Novelty:** plausible but unverified for Theorem C.  The primary-source search found the parent
+  degree/weight calculus and classical Gamma hypertranscendence, but not the exact intersection
+  classification `(9)`.  Specialist priority review is mandatory before promotion.
+- **Significance:** Theorem C gives a new exact rigidity classification inside the differential
+  polynomial algebra of the founding hypertranscendental function.  It is more than an analogy or
+  repackaging, but it does not yet establish a broad theory or solve a recognized central problem.
+- **Fields-Medal gate:** not cleared.  The result is a serious candidate theorem and a definition
+  of a broader geometric class, not evidence for the level of field creation or problem resolution
+  required by the user-specified bar.
 
 ## Gates
 
 - [x] topology/physics language converted to an exact pole-order filtration
 - [x] all-order universal trace theorem proved on paper
 - [x] homogeneous trace and free-boundary specialization formalized in Lean
+- [x] relative scale--harmonic boundary freeness over `C(n)` formalized in Lean
 - [x] leading-symbol tie and local-coordinate counterattacks survived
+- [x] global Gamma polynomial differential simple-pole classification proved on paper
+- [x] primary parent-theory audit completed; priority remains unverified
 - [x] exact RH non-consequence recorded
-- [ ] primary-literature parent and novelty audit completed
-- [ ] global Gamma coefficient descent proved or falsified
+- [x] primary-literature parent audit completed
+- [x] global Gamma coefficient descent proved on paper
+- [ ] specialist priority audit establishes novelty of Theorem C
 - [ ] broad natural class of pole-holographically-free HT functions established
 - [ ] dual novelty-significance gate cleared

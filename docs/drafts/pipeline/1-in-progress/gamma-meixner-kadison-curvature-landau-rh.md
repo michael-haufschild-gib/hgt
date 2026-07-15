@@ -155,6 +155,11 @@ of finite-rank reflected star-Kadison curvature traces with these properties.
 
    is holomorphic on `Re(z)>0`.
 
+   **Positive real-shape alternative.**  It is enough instead to construct a finite completely
+   monotone limit `T(theta)` for every real `theta>0`, agreeing with `(12)` for `theta>1`.  This
+   version is preferred if the Gamma--Meixner integration stack produces positive radial
+   semigroups but not a complex operator family.
+
 Equations `(12)`--`(13)` and the identity theorem continue `(2)` to `Re(z)>0`; `(3)` then proves
 RH.
 
@@ -236,11 +241,143 @@ proof-bearing statement.
    self-dual curvature field can retain paired off-fixed degeneracies.  The positive
    star-Kadison orientation and the normal-family theorem are both load-bearing.
 
+## Positive residues of the attacks
+
+Each no-go above leaves a usable positive theorem or a stricter construction target.
+
+1. **Capacity/orientation separation `[PROVED]`.**  Hypertranscendence and prime-power packet
+   independence certify maximal finite source visibility even though they do not choose a
+   positive metric.  A successful proof may therefore use HT to establish faithfulness and use
+   star-Kadison only for orientation; neither role has to be falsely attributed to the other.
+2. **Canonical target clock `[PROVED ON PAPER]`.**  The redressing attack does not merely reject
+   arbitrary clocks.  Equations `(5)`--`(9)` identify the exact two-cycle reflection clock,
+   normalization, and erased vector whose source realization is required.  Its energy vanishes
+   at any one prime if and only if RH.
+3. **Root-domain phase diagram `[PROVED ON PAPER]`.**  Failure of automatic time-one
+   deconvolution leaves the exact theorem
+
+   ```text
+   seam(rho) lies in H_theta
+     iff Re(rho)=1/2 or theta>|2Re(rho)-1|.             (18)
+   ```
+
+   The common prime-Laplace frame is dense in every `H_theta`, so the unbounded inverse has a
+   concrete finite Gram test rather than an undefined domain problem.
+4. **Finite Gamma curvature energy `[PROVED IN LEAN SCRATCH]`.**  Put
+
+   ```text
+   E_N=sum_(i=0)^(N-1)|1/(N-i)!|^2.
+   ```
+
+   The file `/tmp/GammaClockCurvaturePositive.lean` proves
+
+   ```text
+   E_(N+1)=1/((N+1)!)^2+E_N,
+   sum_(n>=0)1/((n+1)!)^2<infinity,
+   E_N -> sum_(n>=0)1/((n+1)!)^2.                       (19)
+   ```
+
+   The proofs use only the standard Lean axioms.  Thus the Gamma rank-one curvature is not only
+   thin at each resolution: its canonical factorial boundary has a finite cofinal Euclidean
+   energy.  Any failure of `(16)` must therefore enter through the prime coupling, the changing
+   shape metric, or the source/divisor incidence—not through divergence of the bare Gamma
+   conormal.
+5. **Exact Landau localization `[PROVED ON PAPER]`.**  Put
+
+   ```text
+   a_Xi=sup_q |Im(xiSpectralPoint(q))|.
+   ```
+
+   Then the abscissa of convergence of `G_Xi` is exactly
+
+   ```text
+   alpha_G=2 a_Xi.                                       (20)
+   ```
+
+   For `theta>2a_Xi`, the exact seam formula is uniformly bounded by a constant times
+   `(log p)^2 p^(-1-theta+2a_Xi)` and the multiplicity weights have finite sum, proving
+   convergence.  For `theta<2a_Xi`, one divisor fibre has horizontal charge greater than
+   `theta`, and the root-domain threshold forces divergence.  Landau makes `2a_Xi` a real
+   singularity whenever it is positive.  Thus failure of locally uniform cofinal holomorphy is
+   not unstructured: the normal-family problem is localized at the exact maximal horizontal
+   displacement.
+6. **One-prime metric detector `[PROVED ON PAPER]`.**  Although a divisor-defined metric is
+   circular as a source, its required comparison value is minimal:
+
+   ```text
+   sourceTrace_2=A_2=0  iff RH.                          (21)
+   ```
+
+   Hence a source construction need not recover a complete spectral metric; it may prove one
+   orbit-sensitive dyadic trace identity and one zero-loss theorem.
+7. **Reflected curvature coefficient `[PROVED ON PAPER]`.**  Self-duality makes the reciprocal
+   norm orbit `N(L)` even and convex, with
+
+   ```text
+   N'(0)=0,
+   N''(0)=4 sum_q Im(alpha_q)^2/|alpha_q|^2,
+   N''(0)=0 iff RH.                                      (22)
+   ```
+
+   Reflection therefore supplies a canonical second-order horizontal curvature even though it
+   does not supply its vanishing.  This is the scalar tangent which the source clock curvature
+   must match.
+
+## Completely monotone positive successor `[PROVED ON PAPER]`
+
+The nonnegative shape trace has more unconditional structure than holomorphy on a right
+half-plane.  On its exact convergence interval `theta>2a_Xi`, termwise differentiation gives
+
+```text
+(-1)^n d^n/dtheta^n G_Xi(theta)
+ =sum_p A_p lambda_p^n exp(-theta lambda_p)>=0.          (23)
+```
+
+Hence `G_Xi` is completely monotone there.  For every finite real family `theta_i>a_Xi`,
+
+```text
+[G_Xi(theta_i+theta_j)]_(i,j)
+ =sum_p A_p
+    [exp(-theta_i lambda_p)exp(-theta_j lambda_p)]_(i,j)
+ >=0.                                                    (24)
+```
+
+Thus the maximal safe Gamma-shape carrier is already a reflection-positive radial Hankel
+semigroup.  It is the transverse radial object required by the formalized
+phase--radial Toeplitz--Hankel polarization law; the prime phases alone could not supply it.
+
+`[PROVED]` The following are equivalent:
+
+```text
+RH;
+G_Xi extends from theta>1 to a finite completely monotone function on theta>0;
+the safe radial Hankel kernel in (24) extends to all positive theta_i.       (25)
+```
+
+Under RH the extension is zero.  Conversely, Bernstein's theorem represents a completely
+monotone extension as the Laplace transform of a unique positive measure.  On `theta>1` it agrees
+with the discrete measure
+
+```text
+nu_Xi=sum_p A_p delta_(lambda_p).
+```
+
+Uniqueness of Laplace transforms identifies the two measures.  Finiteness of the extension at
+every `theta>0` then forces the Laplace abscissa of `nu_Xi` to be nonpositive.  Equation `(20)`
+gives `a_Xi=0`, hence RH.
+
+This is the nontrivial positive replacement for the failed claim that finite-stage entire
+functions automatically have a holomorphic cofinal limit.  The source proof may now target a
+reflection-positive Gamma-shape integration theorem rather than complex normality.  It must still
+construct the cofinal trace from pre-divisor data; postulating the extension is RH-equivalent.
+
 ## Lean boundary
 
 The reusable finite algebra is already formalized:
 
 - rank-one Gamma clock curvature and its boundary vector;
+- factorial recurrence, summability, and convergence of its Euclidean boundary energy in
+  `/tmp/GammaClockCurvaturePositive.lean`;
 - star-Kadison erased-energy, resolution, polarization-in-scratch, and zero-set laws;
 - prime-seam reflection energy and its exact horizontal charge;
 - the local Euler tangent identifying the prime seam;
@@ -266,11 +403,13 @@ Vocabulary or an abstract existence theorem does not clear the novelty gate.
 - [x] finite star-Kadison energy and Gamma rank-one curvature formalized
 - [x] prime-seam local Euler tangent and source visibility formalized
 - [x] derive the exact target-side two-cycle clock factorization `(5)`--`(9)` on paper
+- [x] prove Gamma factorial-curvature energy recurrence and convergence in Lean scratch
 - [ ] construct the fixed-prime source observable in `(15)`
 - [ ] prove the source/divisor trace identity `(15)`
 - [ ] construct the cofinal shape family `(10)`
 - [ ] prove orbit-insertion covariance
 - [ ] prove the local normal-family bound `(16)`
+- [ ] alternatively construct the completely monotone positive-shape extension `(25)`
 - [ ] continue `G_Xi` to `Re(z)>0`
 - [ ] deduce RH by Landau
 - [ ] independent parent-theory novelty and significance audit

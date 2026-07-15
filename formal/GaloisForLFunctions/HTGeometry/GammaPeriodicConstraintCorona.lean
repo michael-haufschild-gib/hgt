@@ -269,6 +269,41 @@ theorem gammaClockTranslation_extendZero (n : ℕ) :
     rw [Fin.sum_univ_castSucc]
     simp
 
+/-- The new-boundary projector in the split Gamma jet clock. -/
+def gammaClockBoundaryProjector (n : ℕ) :
+    (Fin (n + 1) → ℂ) →ₗ[ℂ] (Fin (n + 1) → ℂ) :=
+  LinearMap.id - (gammaClockExtendZero n).comp (gammaClockTruncate n)
+
+@[simp] theorem gammaClockBoundaryProjector_apply_last (n : ℕ)
+    (a : Fin (n + 1) → ℂ) :
+    gammaClockBoundaryProjector n a (Fin.last n) = a (Fin.last n) := by
+  simp [gammaClockBoundaryProjector, gammaClockExtendZero, gammaClockTruncate,
+    LinearMap.comp_apply]
+
+@[simp] theorem gammaClockBoundaryProjector_apply_castSucc (n : ℕ)
+    (a : Fin (n + 1) → ℂ) (i : Fin n) :
+    gammaClockBoundaryProjector n a i.castSucc = 0 := by
+  simp [gammaClockBoundaryProjector, gammaClockExtendZero, gammaClockTruncate,
+    LinearMap.comp_apply]
+
+/-- **Canonical Gamma boundary symbol.**  Translation compressed to the newly exposed highest-jet
+line is exactly the identity on that line.  Gamma therefore supplies the missing colligation datum
+canonically: factorial-tail curvature is its outgoing transfer, while its boundary self-symbol is
+the unit. -/
+theorem gammaClockBoundaryCompression_eq_projector (n : ℕ) :
+    (gammaClockBoundaryProjector n).comp
+        ((gammaClockTranslation (n + 1)).comp (gammaClockBoundaryProjector n)) =
+      gammaClockBoundaryProjector n := by
+  apply LinearMap.ext
+  intro a
+  funext i
+  refine Fin.lastCases ?_ (fun k => ?_) i
+  · simp only [LinearMap.comp_apply, gammaClockBoundaryProjector_apply_last]
+    dsimp [gammaClockTranslation]
+    rw [Fin.sum_univ_castSucc]
+    simp [gammaClockTranslationCoefficient, Nat.not_le_of_lt]
+  · simp only [LinearMap.comp_apply, gammaClockBoundaryProjector_apply_castSucc]
+
 /-! ### Formal-unit/global-nonunit specialization -/
 
 /-- Positive-degree coefficients of the formal shift cofactor
