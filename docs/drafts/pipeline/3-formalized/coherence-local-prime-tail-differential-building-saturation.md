@@ -1,9 +1,9 @@
 # Coherence-local prime-tail differential-building saturation
 
 - **ID:** `coherence-local-prime-tail-differential-building-saturation`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / GENERAL HT CONSTRAINT GEOMETRY
-- **Scientific status:** `[PROVED ON PAPER] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PROVED ON PAPER] [LEAN-FORMALIZED] [NOVELTY UNVERIFIED]`
 - **Parents:** `prime-dirichlet-tail-differential-matroid`,
   `prime-tail-differential-building-polarization-law`, and the classical coherent-shift
   square-summability criterion
@@ -360,20 +360,21 @@ Euler--archimedean polarization that separates them.  The missing zero-to-sector
 the prime-clock route cannot be derived from sector geometry alone, because sector geometry is
 locally saturated by unrelated differential fields.
 
-## Formalization target
+## Formalization target `[COMPLETED]`
 
-The paper proof is complete.  Before promotion to stage 3, formalize unconditionally:
+The Lean development formalizes unconditionally:
 
-1. the finite-rank form of Theorem A for arbitrary `m` and `eta`;
+1. the finite-rank form of Theorem A for arbitrary finite families and positive radius;
 2. the explicit prefix-function independent family `(9)`;
 3. preservation of tail independence under a common sign multiplier;
-4. the weighted-distance bounds from `(8)`;
+4. the weighted-distance bounds from `(8)` and the positive-floor branch of the dichotomy;
 5. the prime specialization through the existing finite-range operator-tail interface;
-6. the continuum-cardinality and differential-transcendence-degree capstone.
+6. the continuum-cardinality and differential-transcendence-degree capstone;
+7. the half-density identities `(16)`--`(17)` and the order-pointed conclusion of Theorem C.
 
 ## Lean status
 
-The explicit combinatorial and sparse-budget engine is now formalized unconditionally.
+The complete theorem surface is formalized unconditionally.
 
 - `formal/GaloisForLFunctions/HTGeometry/PrefixFunctionTailIndependentFamily.lean` defines
   `PrefixFunctionCoordinate`, `prefixFunctionOrientation`, and proves
@@ -387,21 +388,31 @@ The explicit combinatorial and sparse-budget engine is now formalized unconditio
   `basedSparsePrefixOrientation_distance_base_lt` and
   `basedSparsePrefixOrientation_pair_distance_lt`, and the prime analytic transfer
   `basedSparsePrefix_signedPrimeShiftPalette_differentialIndependent` through the existing exact
-  tail/differential matroid theorem.
+  tail/differential matroid theorem.  It also proves the positive-floor branch as
+  `weightedOrientationDistanceSummable_iff_mismatch_finite_of_floor`.
 - `formal/GaloisForLFunctions/HTGeometry/SparseCoherenceSelection.lean` proves the missing
   geometric sparse-choice step.  `exists_sparsePrefixEmbedding_of_cofinally_small` constructs an
   injective prefix-coordinate range with summable square budget below any prescribed positive
   bound, while `exists_coherenceLocalTailIndependentFamily_of_cofinally_small` assembles the exact
   finite-rank local-saturation conclusion around an arbitrary base orientation, including all
   base and pairwise distance bounds.
-- Both new modules were checked by their exact targeted module builds when their `.olean` files
-  were absent, followed by direct source checks.  No full build was run.
+- `formal/GaloisForLFunctions/HTGeometry/PrimeSparseCoherenceSaturation.lean` verifies that the
+  prime weights `p^(-sigma)` are cofinally small and packages the local finite-family prime
+  differential-independence theorem.
+- `formal/GaloisForLFunctions/HTGeometry/ContinuumPrimeCoherenceSaturation.lean` constructs the
+  whole continuum family, proves differential independence of every finite natural-shift palette,
+  identifies the Boolean-sequence index cardinal with the continuum, and proves the exact
+  differential-adjoin transcendence degree in
+  `continuumSparsePrimeUnshifted_differentialAdjoin_trdeg`.  The assembled capstone is
+  `exists_continuumPrimeCoherenceLocalDifferentialSaturation`.
+- `formal/GaloisForLFunctions/HTGeometry/InfiniteCoherenceHalfDensity.lean` proves the squared
+  distance, overlap, unit-norm, and probability-normalized half-density identities.
+- `formal/GaloisForLFunctions/HTGeometry/PrimeCoherenceOrderPointing.lean` proves global uniqueness
+  of the all-positive orientation under vertical positive definiteness and combines it with local
+  continuum saturation in `exists_orderPointedContinuumPrimeCoherenceSaturation`.
 
-Items 1--4 and the finite-family analytic part of item 5 are complete under the paper proof's exact
-zero-accumulation formulation: arbitrarily small weights remain outside every finite set.  The
-remaining Stage-3 work is the prime-power specialization of that cofinal-smallness hypothesis and
-the continuum-cardinality and differential-transcendence-degree capstone in item 6.  The card
-therefore remains in Stage 2.
+Each new module was checked by its exact targeted module build when its `.olean` was absent,
+followed by a direct source check.  No full build was run.
 
 ## Gates
 
@@ -413,5 +424,5 @@ therefore remains in Stage 2.
 - [x] unique positive pointing combined with local coherence saturation
 - [x] RH consequence restricted to a route architecture constraint
 - [ ] complete primary-literature audit of the combined theorem
-- [ ] unconditional formalization of every original deduction
+- [x] unconditional formalization of every original deduction
 - [ ] integrate into the pure-mathematical paper only after the novelty verdict

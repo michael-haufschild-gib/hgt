@@ -1,0 +1,374 @@
+import GaloisForLFunctions.RHTower.XiCTaylorThetaTailConvexCore
+import GaloisForLFunctions.RHTower.XiCTaylorThetaTailDensityAtoms
+
+/-!
+# Primitive-ray radial normal form for pairs of theta-density atoms
+
+Ordered positive square indices have the unique arithmetic coordinates
+
+`(m,n) = (a*g,b*g)`, with `g = gcd(m,n)` and `a,b` coprime.
+
+This file records the local analytic identity behind that regrouping.  For fixed `a,b,x,y`, put
+
+`A = a exp(x)`, `B = b exp(y)`, `exp(2r) = A^2+B^2`, and
+`u = A^2/(A^2+B^2)`.
+
+Then the product of the two exact density atoms with common scale `g` is one radial Gaussian atom
+at `r`.  All dependence on the primitive direction is carried by one degree-eight polynomial
+which is invariant under `u -> 1-u`.  Thus the full common-`g` ray can be summed before any
+orientation estimate, while exchanging the two primitive indices is an exact angular reflection.
+
+No sign, convergence, gcd partition, or limiting statement is asserted here.
+-/
+
+open Complex Real Polynomial
+
+namespace RHTower
+
+noncomputable section
+
+/-- The second-density polynomial after the squared radial variable has been split with weight
+`u`.  Evaluation at `X = gR` agrees with the canonical second-density polynomial at `gA` whenever
+`u R^2 = A^2`. -/
+def thetaCuspDensityRadialScaledPolynomial (u : ℝ) : ℝ[X] :=
+  C (1 / 4) - C (6 * Real.pi * u) * X ^ 2 +
+    C (4 * Real.pi ^ 2 * u ^ 2) * X ^ 4
+
+/-- Angular polynomial carried by one primitive square-index direction. -/
+def thetaCuspDensityPrimitiveRayPolynomial (u : ℝ) : ℝ[X] :=
+  thetaCuspDensityRadialScaledPolynomial u *
+    thetaCuspDensityRadialScaledPolynomial (1 - u)
+
+/-- Exchanging the two primitive indices is exactly the angular reflection `u -> 1-u`. -/
+theorem thetaCuspDensityPrimitiveRayPolynomial_one_sub (u : ℝ) :
+    thetaCuspDensityPrimitiveRayPolynomial (1 - u) =
+      thetaCuspDensityPrimitiveRayPolynomial u := by
+  unfold thetaCuspDensityPrimitiveRayPolynomial
+  ring_nf
+
+/-- The single symmetric angular coordinate carried by a primitive ray. -/
+def thetaCuspPrimitiveRayMoment (u : ℝ) : ℝ :=
+  u * (1 - u)
+
+/-- Zeroth radial derivative coefficient of the primitive-ray density packet. -/
+def thetaCuspPrimitiveRayCoefficientZero (u : ℝ) : ℝ :=
+  -(25 / 4 : ℝ) * thetaCuspPrimitiveRayMoment u +
+    (585 / 16 : ℝ) * thetaCuspPrimitiveRayMoment u ^ 2
+
+/-- First radial derivative coefficient of the primitive-ray density packet. -/
+def thetaCuspPrimitiveRayCoefficientOne (u : ℝ) : ℝ :=
+  (75 / 4 : ℝ) * thetaCuspPrimitiveRayMoment u -
+    (203 / 2 : ℝ) * thetaCuspPrimitiveRayMoment u ^ 2
+
+/-- Second radial derivative coefficient of the primitive-ray density packet. -/
+def thetaCuspPrimitiveRayCoefficientTwo (u : ℝ) : ℝ :=
+  (1 / 4 : ℝ) - 14 * thetaCuspPrimitiveRayMoment u +
+    (127 / 2 : ℝ) * thetaCuspPrimitiveRayMoment u ^ 2
+
+/-- Third radial derivative coefficient of the primitive-ray density packet. -/
+def thetaCuspPrimitiveRayCoefficientThree (u : ℝ) : ℝ :=
+  3 * thetaCuspPrimitiveRayMoment u -
+    14 * thetaCuspPrimitiveRayMoment u ^ 2
+
+/-- Fourth radial derivative coefficient of the primitive-ray density packet. -/
+def thetaCuspPrimitiveRayCoefficientFour (u : ℝ) : ℝ :=
+  thetaCuspPrimitiveRayMoment u ^ 2
+
+/-- **Exact five-mode radial decomposition.**  The complete product polynomial is a linear
+combination of the first five logarithmic derivatives of the one-dimensional theta tail.  The
+coefficients retain the angular variable jointly through `u(1-u)`; no density factor has been
+estimated separately. -/
+theorem thetaCuspDensityPrimitiveRayPolynomial_eq_derivative_packet (u : ℝ) :
+    thetaCuspDensityPrimitiveRayPolynomial u =
+      C (thetaCuspPrimitiveRayCoefficientZero u) *
+          thetaCuspTailDerivativePolynomial 0 +
+        C (thetaCuspPrimitiveRayCoefficientOne u) *
+          thetaCuspTailDerivativePolynomial 1 +
+        C (thetaCuspPrimitiveRayCoefficientTwo u) *
+          thetaCuspTailDerivativePolynomial 2 +
+        C (thetaCuspPrimitiveRayCoefficientThree u) *
+          thetaCuspTailDerivativePolynomial 3 +
+        C (thetaCuspPrimitiveRayCoefficientFour u) *
+          thetaCuspTailDerivativePolynomial 4 := by
+  apply Polynomial.funext
+  intro X
+  simp [thetaCuspDensityPrimitiveRayPolynomial,
+    thetaCuspDensityRadialScaledPolynomial,
+    thetaCuspPrimitiveRayCoefficientZero,
+    thetaCuspPrimitiveRayCoefficientOne,
+    thetaCuspPrimitiveRayCoefficientTwo,
+    thetaCuspPrimitiveRayCoefficientThree,
+    thetaCuspPrimitiveRayCoefficientFour,
+    thetaCuspPrimitiveRayMoment,
+    thetaCuspTailDerivativePolynomial, thetaCuspLogDerivativeStep]
+  ring
+
+/-- Coefficient of the growing half-exponential after radial theta reflection. -/
+def thetaCuspPrimitiveRayGrowingCoefficient (u : ℝ) : ℝ :=
+  (1 / 32 : ℝ) - (39 / 4 : ℝ) * thetaCuspPrimitiveRayMoment u +
+    (105 / 2 : ℝ) * thetaCuspPrimitiveRayMoment u ^ 2
+
+/-- **Primitive-ray completion-character collapse.**  Reflection of the five radial derivative
+modes produces two elementary characters.  Their complete joint coefficient simplifies so that
+the decaying character has the universal coefficient `-1/32`, independent of the primitive
+direction.  All angular dependence is confined to the growing character. -/
+theorem thetaCuspPrimitiveRayCompletionCharacter_eq (u x : ℝ) :
+    (thetaCuspPrimitiveRayCoefficientZero u +
+          (1 / 4 : ℝ) * thetaCuspPrimitiveRayCoefficientTwo u +
+          (1 / 16 : ℝ) * thetaCuspPrimitiveRayCoefficientFour u) *
+        thetaCuspReflectionMode x -
+      (thetaCuspPrimitiveRayCoefficientOne u +
+          (1 / 4 : ℝ) * thetaCuspPrimitiveRayCoefficientThree u) *
+        thetaCuspReflectionModeDeriv x =
+      thetaCuspPrimitiveRayGrowingCoefficient u * Real.exp (x / 2) -
+        (1 / 32 : ℝ) * Real.exp (-x / 2) := by
+  simp [thetaCuspPrimitiveRayCoefficientZero,
+    thetaCuspPrimitiveRayCoefficientOne,
+    thetaCuspPrimitiveRayCoefficientTwo,
+    thetaCuspPrimitiveRayCoefficientThree,
+    thetaCuspPrimitiveRayCoefficientFour,
+    thetaCuspPrimitiveRayGrowingCoefficient,
+    thetaCuspPrimitiveRayMoment,
+    thetaCuspReflectionMode, thetaCuspReflectionModeDeriv]
+  ring
+
+/-- The `m`-th derivative of the elementary theta-reflection defect. -/
+def thetaCuspReflectionModeIterate (m : ℕ) (x : ℝ) : ℝ :=
+  (((1 / 2 : ℝ) ^ m) * Real.exp (x / 2) -
+      ((-1 / 2 : ℝ) ^ m) * Real.exp (-x / 2)) / 2
+
+theorem hasDerivAt_thetaCuspReflectionModeIterate (m : ℕ) (x : ℝ) :
+    HasDerivAt (thetaCuspReflectionModeIterate m)
+      (thetaCuspReflectionModeIterate (m + 1) x) x := by
+  unfold thetaCuspReflectionModeIterate
+  have hpos := ((Real.hasDerivAt_exp (x / 2)).comp x
+    ((hasDerivAt_id x).div_const 2)).const_mul ((1 / 2 : ℝ) ^ m)
+  have hneg := ((Real.hasDerivAt_exp (-x / 2)).comp x
+    (((hasDerivAt_id x).neg).div_const 2)).const_mul ((-1 / 2 : ℝ) ^ m)
+  convert (hpos.sub hneg).div_const 2 using 1
+  all_goals rw [pow_succ]
+  all_goals ring
+
+/-- Reflection of every derivative of the positive theta tail.  The parity sign and the complete
+elementary defect are kept in one formula, so higher radial packets can be reflected without
+re-deriving separate completion terms. -/
+theorem thetaCuspTailDerivative_neg_all (m : ℕ) (x : ℝ) :
+    thetaCuspTailDerivative m (-x) =
+      (-1 : ℝ) ^ m *
+        (thetaCuspTailDerivative m x + thetaCuspReflectionModeIterate m x) := by
+  induction m generalizing x with
+  | zero =>
+      simpa [thetaCuspReflectionModeIterate, thetaCuspReflectionMode] using
+        thetaCuspTailDerivative_zero_neg x
+  | succ m ih =>
+      have hfun : (fun y : ℝ => thetaCuspTailDerivative m (-y)) =
+          fun y => (-1 : ℝ) ^ m *
+            (thetaCuspTailDerivative m y + thetaCuspReflectionModeIterate m y) := by
+        funext y
+        exact ih y
+      have hl := (hasDerivAt_thetaCuspTailDerivative m (-x)).comp x
+        (hasDerivAt_neg x)
+      have hr := ((hasDerivAt_thetaCuspTailDerivative m x).add
+        (hasDerivAt_thetaCuspReflectionModeIterate m x)).const_mul ((-1 : ℝ) ^ m)
+      have hl' : HasDerivAt (fun y : ℝ => thetaCuspTailDerivative m (-y))
+          (-thetaCuspTailDerivative (m + 1) (-x)) x := by
+        simpa [Function.comp_def] using hl
+      have hr' : HasDerivAt
+          (fun y : ℝ => (-1 : ℝ) ^ m *
+            (thetaCuspTailDerivative m y + thetaCuspReflectionModeIterate m y))
+          ((-1 : ℝ) ^ m *
+            (thetaCuspTailDerivative (m + 1) x +
+              thetaCuspReflectionModeIterate (m + 1) x)) x := by
+        simpa using hr
+      rw [hfun] at hl'
+      have hderiv := hl'.unique hr'
+      have hsign : (-1 : ℝ) ^ (m + 1) = -((-1 : ℝ) ^ m) := by
+        rw [pow_succ]
+        ring
+      rw [hsign]
+      linarith
+
+/-- One angularly scaled radial polynomial evaluates to the original canonical density
+polynomial. -/
+theorem eval_thetaCuspDensityRadialScaledPolynomial
+    (u R A : ℝ) (g : ℕ) (hscale : u * R ^ 2 = A ^ 2) :
+    eval ((g : ℝ) * R) (thetaCuspDensityRadialScaledPolynomial u) =
+      eval ((g : ℝ) * A) (thetaCuspTailDerivativePolynomial 2) := by
+  have hscaleG : u * (((g : ℝ) * R) ^ 2) = ((g : ℝ) * A) ^ 2 := by
+    calc
+      u * (((g : ℝ) * R) ^ 2) = (g : ℝ) ^ 2 * (u * R ^ 2) := by ring
+      _ = (g : ℝ) ^ 2 * A ^ 2 := by rw [hscale]
+      _ = ((g : ℝ) * A) ^ 2 := by ring
+  have hscaleG4 : u ^ 2 * (((g : ℝ) * R) ^ 4) =
+      ((g : ℝ) * A) ^ 4 := by
+    calc
+      u ^ 2 * (((g : ℝ) * R) ^ 4) =
+          (u * (((g : ℝ) * R) ^ 2)) ^ 2 := by ring
+      _ = (((g : ℝ) * A) ^ 2) ^ 2 := by rw [hscaleG]
+      _ = ((g : ℝ) * A) ^ 4 := by ring
+  rw [thetaCuspTailDerivativePolynomial_two]
+  simp only [thetaCuspDensityRadialScaledPolynomial, eval_add, eval_sub, eval_mul,
+    eval_C, eval_pow, eval_X]
+  rw [show 6 * Real.pi * u * ((g : ℝ) * R) ^ 2 =
+      6 * Real.pi * (u * ((g : ℝ) * R) ^ 2) by ring,
+    hscaleG,
+    show 4 * Real.pi ^ 2 * u ^ 2 * ((g : ℝ) * R) ^ 4 =
+      4 * Real.pi ^ 2 * (u ^ 2 * ((g : ℝ) * R) ^ 4) by ring,
+    hscaleG4]
+
+/-- The complete angular polynomial is the product of the two original density polynomials. -/
+theorem eval_thetaCuspDensityPrimitiveRayPolynomial
+    (u R A B : ℝ) (g : ℕ)
+    (hA : u * R ^ 2 = A ^ 2)
+    (hB : (1 - u) * R ^ 2 = B ^ 2) :
+    eval ((g : ℝ) * R) (thetaCuspDensityPrimitiveRayPolynomial u) =
+      eval ((g : ℝ) * A) (thetaCuspTailDerivativePolynomial 2) *
+        eval ((g : ℝ) * B) (thetaCuspTailDerivativePolynomial 2) := by
+  unfold thetaCuspDensityPrimitiveRayPolynomial
+  rw [eval_mul,
+    eval_thetaCuspDensityRadialScaledPolynomial u R A g hA,
+    eval_thetaCuspDensityRadialScaledPolynomial (1 - u) R B g hB]
+
+/-- Radial logarithmic coordinate of one primitive direction. -/
+def thetaCuspPrimitiveRayRadialLog (a b : ℕ) (x y : ℝ) : ℝ :=
+  (1 / 2 : ℝ) * Real.log
+    ((((a : ℝ) * Real.exp x) ^ 2) + (((b : ℝ) * Real.exp y) ^ 2))
+
+/-- Squared angular coordinate of the first primitive direction. -/
+def thetaCuspPrimitiveRayAngularWeight (a b : ℕ) (x y : ℝ) : ℝ :=
+  (((a : ℝ) * Real.exp x) ^ 2) /
+    ((((a : ℝ) * Real.exp x) ^ 2) + (((b : ℝ) * Real.exp y) ^ 2))
+
+/-- **Primitive-ray radial normal form.**  A pair of exact density atoms with a common arithmetic
+scale is one radial theta atom.  The formula keeps the entire degree-eight angular polynomial and
+does not split either density factor into absolute-value estimates. -/
+theorem thetaCuspTailSecondDensityAtom_primitiveRay_eq_radial
+    {a b : ℕ} (ha : 0 < a) (hb : 0 < b) (g : ℕ) (x y : ℝ) :
+    thetaCuspTailSecondDensityAtom (a * g) x *
+        thetaCuspTailSecondDensityAtom (b * g) y =
+      16 * Real.exp
+          ((x + y - thetaCuspPrimitiveRayRadialLog a b x y) / 2) *
+        thetaCuspPolynomialAtom
+          (thetaCuspDensityPrimitiveRayPolynomial
+            (thetaCuspPrimitiveRayAngularWeight a b x y))
+          g (thetaCuspPrimitiveRayRadialLog a b x y) := by
+  let A : ℝ := (a : ℝ) * Real.exp x
+  let B : ℝ := (b : ℝ) * Real.exp y
+  let S : ℝ := A ^ 2 + B ^ 2
+  let r : ℝ := (1 / 2 : ℝ) * Real.log S
+  let u : ℝ := A ^ 2 / S
+  have hApos : 0 < A := mul_pos (by exact_mod_cast ha) (Real.exp_pos x)
+  have hBpos : 0 < B := mul_pos (by exact_mod_cast hb) (Real.exp_pos y)
+  have hSpos : 0 < S := by
+    dsimp only [S]
+    positivity
+  have hexpSq : Real.exp r ^ 2 = S := by
+    rw [pow_two, ← Real.exp_add]
+    rw [show r + r = Real.log S by dsimp only [r]; ring,
+      Real.exp_log hSpos]
+  have huA : u * Real.exp r ^ 2 = A ^ 2 := by
+    rw [hexpSq]
+    dsimp only [u]
+    field_simp [hSpos.ne']
+  have huB : (1 - u) * Real.exp r ^ 2 = B ^ 2 := by
+    rw [hexpSq]
+    dsimp only [u, S]
+    field_simp [hSpos.ne']
+    ring
+  have hindexA : ((((a * g : ℕ) : ℝ)) * Real.exp x) = (g : ℝ) * A := by
+    dsimp only [A]
+    push_cast
+    ring
+  have hindexB : ((((b * g : ℕ) : ℝ)) * Real.exp y) = (g : ℝ) * B := by
+    dsimp only [B]
+    push_cast
+    ring
+  have hpoly :
+      eval ((g : ℝ) * Real.exp r)
+          (thetaCuspDensityPrimitiveRayPolynomial u) =
+        eval ((((a * g : ℕ) : ℝ)) * Real.exp x)
+            (thetaCuspTailDerivativePolynomial 2) *
+          eval ((((b * g : ℕ) : ℝ)) * Real.exp y)
+            (thetaCuspTailDerivativePolynomial 2) := by
+    rw [hindexA, hindexB]
+    exact eval_thetaCuspDensityPrimitiveRayPolynomial
+      u (Real.exp r) A B g huA huB
+  have hgaussArg : ((g : ℝ) * Real.exp r) ^ 2 =
+      ((((a * g : ℕ) : ℝ)) * Real.exp x) ^ 2 +
+        ((((b * g : ℕ) : ℝ)) * Real.exp y) ^ 2 := by
+    rw [hindexA, hindexB]
+    calc
+      ((g : ℝ) * Real.exp r) ^ 2 = (g : ℝ) ^ 2 * S := by
+        rw [show ((g : ℝ) * Real.exp r) ^ 2 =
+          (g : ℝ) ^ 2 * Real.exp r ^ 2 by ring, hexpSq]
+      _ = ((g : ℝ) * A) ^ 2 + ((g : ℝ) * B) ^ 2 := by
+        dsimp only [S]
+        ring
+  have hgauss :
+      Real.exp (-Real.pi * ((g : ℝ) * Real.exp r) ^ 2) =
+        Real.exp (-Real.pi *
+            ((((a * g : ℕ) : ℝ)) * Real.exp x) ^ 2) *
+          Real.exp (-Real.pi *
+            ((((b * g : ℕ) : ℝ)) * Real.exp y) ^ 2) := by
+    rw [← Real.exp_add, hgaussArg]
+    congr 1
+    ring
+  have hweight :
+      Real.exp ((x + y - r) / 2) * Real.exp (r / 2) =
+        Real.exp (x / 2) * Real.exp (y / 2) := by
+    rw [← Real.exp_add, ← Real.exp_add]
+    congr 1
+    ring
+  have hr : thetaCuspPrimitiveRayRadialLog a b x y = r := by
+    dsimp only [thetaCuspPrimitiveRayRadialLog, r, S, A, B]
+  have hu : thetaCuspPrimitiveRayAngularWeight a b x y = u := by
+    dsimp only [thetaCuspPrimitiveRayAngularWeight, u, S, A, B]
+  rw [hr, hu]
+  unfold thetaCuspTailSecondDensityAtom thetaCuspPolynomialAtom
+  rw [hpoly, hgauss]
+  calc
+    4 *
+          (Real.exp (x / 2) *
+              eval (((a * g : ℕ) : ℝ) * Real.exp x)
+                (thetaCuspTailDerivativePolynomial 2) *
+            Real.exp (-Real.pi *
+              (((a * g : ℕ) : ℝ) * Real.exp x) ^ 2)) *
+        (4 *
+          (Real.exp (y / 2) *
+              eval (((b * g : ℕ) : ℝ) * Real.exp y)
+                (thetaCuspTailDerivativePolynomial 2) *
+            Real.exp (-Real.pi *
+              (((b * g : ℕ) : ℝ) * Real.exp y) ^ 2))) =
+      16 * (Real.exp (x / 2) * Real.exp (y / 2)) *
+        (eval (((a * g : ℕ) : ℝ) * Real.exp x)
+            (thetaCuspTailDerivativePolynomial 2) *
+          eval (((b * g : ℕ) : ℝ) * Real.exp y)
+            (thetaCuspTailDerivativePolynomial 2)) *
+        (Real.exp (-Real.pi *
+            (((a * g : ℕ) : ℝ) * Real.exp x) ^ 2) *
+          Real.exp (-Real.pi *
+            (((b * g : ℕ) : ℝ) * Real.exp y) ^ 2)) := by ring
+    _ = 16 *
+        (Real.exp ((x + y - r) / 2) * Real.exp (r / 2)) *
+        (eval (((a * g : ℕ) : ℝ) * Real.exp x)
+            (thetaCuspTailDerivativePolynomial 2) *
+          eval (((b * g : ℕ) : ℝ) * Real.exp y)
+            (thetaCuspTailDerivativePolynomial 2)) *
+        (Real.exp (-Real.pi *
+            (((a * g : ℕ) : ℝ) * Real.exp x) ^ 2) *
+          Real.exp (-Real.pi *
+            (((b * g : ℕ) : ℝ) * Real.exp y) ^ 2)) := by rw [hweight]
+    _ = 16 * Real.exp ((x + y - r) / 2) *
+        (Real.exp (r / 2) *
+          (eval (((a * g : ℕ) : ℝ) * Real.exp x)
+              (thetaCuspTailDerivativePolynomial 2) *
+            eval (((b * g : ℕ) : ℝ) * Real.exp y)
+              (thetaCuspTailDerivativePolynomial 2)) *
+          (Real.exp (-Real.pi *
+              (((a * g : ℕ) : ℝ) * Real.exp x) ^ 2) *
+            Real.exp (-Real.pi *
+              (((b * g : ℕ) : ℝ) * Real.exp y) ^ 2))) := by ring
+
+end
+
+end RHTower

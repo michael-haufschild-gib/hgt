@@ -30,7 +30,7 @@ Declarations:
 
 Targeted verification:
 
-`lake build GaloisForLFunctions.HTGeometry.StableCoreFunctoriality`
+`lake env lean GaloisForLFunctions/HTGeometry/StableCoreFunctoriality.lean`
 
 The iterate lemma uses only `propext` and `Quot.sound`; the stable-core theorem additionally uses
 `Classical.choice`.

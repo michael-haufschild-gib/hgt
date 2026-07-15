@@ -199,12 +199,14 @@ commutative-algebra repackaging.
 
 ## Lean status
 
-The exact one-observable instance of Theorem A is formalized in
+The exact one-observable instance of Theorem A and the complete finite-resolution algebraic
+matroid of its logarithmic jet tower are formalized in
 `GaloisForLFunctions.HTGeometry.SourceLogarithmicBoundary` as
-`automorphismFamily_differentialAlgebraic_iff_exists_logIncrement_jet_telescoping`.  Both
+`automorphismFamily_differentialAlgebraic_iff_exists_logIncrement_jet_telescoping` and
+`automorphismFamily_logarithmicJet_algebraicIndependent_iff`.  Both
 dependence-to-coboundary and coboundary-to-dependence are proved, together with the exact
-hypertranscendence equivalence under `x -> D(x)/x`.  The complete family matroid rank formula
-remains paper-level.
+hypertranscendence equivalence under `x -> D(x)/x`.  Arbitrary selected derivative packets are
+covered.  The multi-observable family matroid rank formula remains paper-level.
 
 ## Order-zero positive residue
 

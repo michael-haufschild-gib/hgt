@@ -211,6 +211,47 @@ theorem basedSparsePrefix_signedPrimeShiftPalette_differentialIndependent
     (fun i => basedSparsePrefixOrientation base e (x i)) alpha hdistinct).2
   exact basedSparsePrefixOrientation_tailIndependent base e x hx
 
+/-- Summability of the squared weighted Boolean mismatch distance. -/
+def WeightedOrientationDistanceSummable {P : Type*}
+    (r : P → ℝ) (a b : P → Bool) : Prop :=
+  Summable fun p => if a p = b p then 0 else 4 * r p ^ 2
+
+/-- **Positive-floor branch of the coherence dichotomy.**  If every coordinate
+weight is bounded below in absolute value by one positive constant, weighted
+square distance is summable exactly when the two orientations differ at only
+finitely many coordinates. -/
+theorem weightedOrientationDistanceSummable_iff_mismatch_finite_of_floor
+    {P : Type*} (r : P → ℝ) (a b : P → Bool) (c : ℝ)
+    (hc : 0 < c) (hfloor : ∀ p, c ≤ |r p|) :
+    WeightedOrientationDistanceSummable r a b ↔ {p | a p ≠ b p}.Finite := by
+  let f : P → ℝ := fun p => if a p = b p then 0 else 4 * r p ^ 2
+  constructor
+  · intro hsum
+    have heps : 0 < 4 * c ^ 2 := by positivity
+    have hev : ∀ᶠ p in Filter.cofinite, f p ∈ Metric.ball 0 (4 * c ^ 2) :=
+      hsum.tendsto_cofinite_zero.eventually (Metric.ball_mem_nhds 0 heps)
+    have hbad : {p | ¬f p ∈ Metric.ball 0 (4 * c ^ 2)}.Finite :=
+      Filter.eventually_cofinite.mp hev
+    apply hbad.subset
+    intro p hp
+    simp only [Set.mem_setOf_eq] at hp ⊢
+    have hsq : c ^ 2 ≤ r p ^ 2 := by
+      have := (sq_le_sq₀ hc.le (abs_nonneg (r p))).2 (hfloor p)
+      simpa [sq_abs] using this
+    simp only [f, if_neg hp, Metric.mem_ball, dist_zero_right, Real.norm_eq_abs]
+    have hnonneg : 0 ≤ 4 * r p ^ 2 := by positivity
+    rw [abs_of_nonneg hnonneg]
+    nlinarith
+  · intro hfinite
+    apply summable_of_hasFiniteSupport
+    apply hfinite.subset
+    intro p hp
+    change f p ≠ 0 at hp
+    simp only [Set.mem_setOf_eq]
+    intro hab
+    apply hp
+    simp [f, hab]
+
 end
 
 end GaloisForLFunctions.HTGeometry

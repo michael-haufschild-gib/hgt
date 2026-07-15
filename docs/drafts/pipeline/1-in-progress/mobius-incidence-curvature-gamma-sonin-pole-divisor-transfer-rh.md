@@ -6,6 +6,10 @@
 - **Scientific status:** `[OPEN CORE] [CONDITIONAL RH PROOF] [LITERATURE NOVELTY OPEN]`
 - **Proved source inputs:**
   - `../2-fully-proven/mobius-incidence-clock-gini-fisher-four-unit-law.md`
+  - `../2-fully-proven/gamma-sonin-asymptotic-passivity-incidence-curvature.md`
+  - `../2-fully-proven/complementary-packet-euler-connection-weld.md`
+  - `../2-fully-proven/complementary-packet-critical-gini-isometry.md`
+  - `../2-fully-proven/mobius-fixed-current-von-mangoldt-critical-transport-weld.md`
   - `../2-fully-proven/mobius-critical-fisher-tangent-hilbert-lift.md`
   - `../2-fully-proven/mobius-causal-fisher-connection-flatness.md`
   - `../2-fully-proven/gamma-damped-mobius-clock-critical-amplification.md`
@@ -90,6 +94,131 @@ commutator with that cutoff is bounded.  Thus no common-domain or abstract-inter
 left.  The open operation is the source-framed relative readout after `(3)`, `(5)`, and `(6)` have
 been sewn.
 
+The unframed analytic part is now proved.  If `mathcalG_omega` is the critical-line multiplier by
+`G_omega` and `Q_tau^Sonin` is the exact Sonin projection, then entrywise
+
+```text
+kappa^(Gamma,Sonin)_(omega,tau)(d,e)
+ =Q_tau^Sonin mathcalG_omega(kappa_(sigma,.)(d,e)),       (7a)
+```
+
+and the Gamma multiplier norm tends to one.  Consequently
+
+```text
+limsup_(omega->0,D->all)
+ 2omega sum_(d,e in D)
+ ||kappa^(Gamma,Sonin)_(omega,tau)(d,e)||_2^2<=4.         (7b)
+```
+
+Thus Gamma/Sonin analytic passivity is closed.  The remaining energy question is whether welding
+the floor/tail packet and calibrated Euler connection is trace-neutral or Lueders-orthogonal.
+
+The affine/source weld is also now explicit.  For the continuous packet path `B_h`, the proved
+distributional connection equation is
+
+```text
+(partial_h-(1+omega))B_h
+ =q_delta
+  -sum_(m>=1)e^(-delta h)m^(-1-delta)delta_(h+log m).    (7c)
+```
+
+Signed Mobius synthesis of `(7c)` is exactly
+
+```text
+q_delta/zeta(1+2omega)
+ -sum_(n>=1)c_omega(n)n^(-1-omega-delta)delta_(log n).   (7d)
+```
+
+Suzuki's Gamma zero moment kills the first term and sends the second to the completed causal
+source.  Hence the incidence-before-Gamma basis/source identity is proved; only its placement in
+the relative square and the anti-causal graph limit remain open.
+
+That placement now has a proved source-framed energy kernel.  At the boundary `delta=0`, let `B_h`
+be the affine packet path and set
+
+```text
+K^B_sigma(d,e)
+ =2psi_sigma(d)psi_sigma(e)(B_(log e)-B_(log d)).         (7e)
+```
+
+Its relative energy satisfies
+
+```text
+epsilon sum_(d,e)||K^B_sigma(d,e)||_2^2->4.              (7f)
+```
+
+Moreover, entrywise Gamma completion and Sonin projection give
+
+```text
+limsup epsilon sum_(d,e)
+ ||Q_tau^Sonin mathcalG_omega K^B_sigma(d,e)||_2^2<=4.   (7g)
+```
+
+The proof is cofinal rather than pointwise: the packet distance has local slope `zeta(2)>1`, but
+at separation `a` it is `a/(1+omega)^2+O(1)`, and the critical divisor separations are of order
+`1/epsilon`.  Thus the complete packet framing preserves the four-unit budget on the actual
+escaping source state.
+
+## Canonical normal current and critical source transport
+
+The anti-causal readout is no longer an unspecified scalar functional.  Put
+
+```text
+A(s)=-zeta'(s)/zeta(s),
+nu_sigma(n)=Lambda(n)n^(-sigma)/A(sigma),
+tau_sigma(u)=zeta(2sigma)/
+  [zeta(sigma)zeta(sigma+u epsilon)].                    (7h)
+```
+
+The proved fixed-current transport theorem gives the exact identity
+
+```text
+partial_u log tau_sigma(u)
+ =epsilon A(sigma+u epsilon)
+ =epsilon A(sigma) E_(nu_sigma)
+    exp(-u epsilon log n).                               (7i)
+```
+
+Thus the normal readout selected by the HT torsor structure is the logarithmic current of the
+actual signed Mobius multiplier, and that current is exactly the positive von Mangoldt law.  It is
+also the normal derivative of the packet connection because
+
+```text
+partial_alpha c_alpha(n)|_(alpha=0)=2Lambda(n).          (7j)
+```
+
+The normal shift `alpha` and thermal escape `epsilon` must be kept independent.  At fixed
+`Re s>1`, differentiation of
+
+```text
+sum_n c_alpha(n)n^(-s)=zeta(s-alpha)/zeta(s+alpha)
+```
+
+gives `2A(s)`, whereas the diagonal specialization `s=1+2alpha` tends to `3`.  Hence the old
+one-parameter diagonal does not recover the normal current.
+
+After the ordered normal derivative, the squarefree clock `epsilon log d` and the Euler-current
+clock `epsilon log n` converge in `W_1` to the same `Exp(1)` law.  Their monotone quantile coupling
+has vanishing critical packet cost:
+
+```text
+epsilon E||B_(log d)-B_(log n)||_2^2->0.                 (7k)
+```
+
+The induced two-edge fields are asymptotically equal in the scaled packet norm, and the Euler
+current therefore inherits the same four-unit Gamma/Sonin upper budget:
+
+```text
+limsup epsilon E
+ ||Q_tau^Sonin mathcalG_omega
+   2(B_(log n')-B_(log n))||_2^2<=4.                    (7l)
+```
+
+Equations `(7i)`--`(7l)` close the metric-to-source transport.  The remaining operation is sharply
+defined: construct the charged anti-causal codifferential of this completed Euler-current edge
+field, prove it nonexpansive, and prove that its graph limit is the contour-jump part of
+`-2Xi'/Xi`.
+
 ## Completed incidence-curvature conjecture `[CONJECTURE]`
 
 For finite squarefree `D`, `delta>0`, and `omega>0`, there are source-defined finite relative
@@ -124,13 +253,17 @@ Sonin cutoff/resolvent, and the fixed semilocal Euler connection.  They satisfy 
     <=lim_(sigma->1+)E_sigma=4.                          (9)
    ```
 
-   The inequality must follow from the exact Sonin/Lueders or Schur energy partition on the
-   completed source graph.  Merely rescaling the readout to norm one is rejected.
+   The full source-framed packet/Gamma/Sonin inequality is already proved in `(7e)`--`(7g)`, and
+   `(7h)`--`(7l)` transfer it to the actual Euler fixed current.  What remains in this clause is
+   only that the charged anti-causal codifferential is a contraction of that relative kernel.
+   Merely rescaling the readout to norm one is rejected.
 
 4. **Direct pole-to-divisor identity.**  Before expanding a zero sum, the finite readout is the
-   difference between the incoming Euler-pole boundary channel and the completed all-prime
-   continuation of the same source connection.  No equality defined only after naming
-   `ell_E` is accepted.
+   charged codifferential of the logarithmic current `(7i)`, equivalently the difference between
+   the incoming Euler-pole boundary channel and the completed all-prime continuation of the same
+   source connection.  The prime-power current and its Gamma completion are already fixed by
+   `(7j)` and the source identity `(7d)`; the remaining identity is the anti-causal graph
+   codifferential.  No equality defined only after naming `ell_E` is accepted.
 
 5. **Cofinal graph convergence.**  On one source-defined graph core, in the order
 
@@ -224,6 +357,33 @@ completed source identity.
 **HT consequence:** an integration of a constraint curvature has content only after symbol,
 affine origin, boundary self-symbol, and source anomaly are retained.
 
+### 6. One-clock diagonal no-go
+
+The normal packet shift and the thermal squarefree clock cannot be tied before differentiation:
+the diagonal shifted-Euler total tends to `3`, while the correctly ordered normalized normal
+current tends to `1`.
+
+**Positive successor:** take the fixed-current derivative first, then use the canonical `W_1`
+coupling `(7k)` to transport the thermal four-unit geometry to that current.
+
+**HT consequence:** a constrained HT object can have distinct normal and tangential clocks whose
+singular diagonal loses the invariant current even though both parameters approach the same
+boundary point.
+
+### 7. Continuous metric selector no-go
+
+The formalized prime-coherence saturation theorem places a continuum-rank differentially
+independent orientation family inside every positive weighted prime-metric neighborhood.  Thus no
+continuous readout of the incidence metric alone can select the Xi source orientation.
+
+**Positive successor:** the logarithmic current `(7i)` is source-sensitive and necessarily
+singular at the vanishing critical overlap; its natural domain is the charged graph rather than
+the ambient metric completion.
+
+**HT consequence:** infinitesimal metric neighborhoods of a prime HT source can have continuum
+differential rank.  Orientation can live in a fixed current transverse to all continuous metric
+coordinates.
+
 ## Novelty and anti-theatre gate
 
 Project theorems are source inputs even when independently found by other agents.  Novelty is
@@ -244,11 +404,28 @@ is a precise research target, not an RH proof.
 - [x] Fisher--Gini calibration
 - [x] complementary floor/tail packets
 - [x] Gamma/Sonin scattering and bounded conductor cutoff graph
+- [x] entrywise Gamma multiplier written on the curvature kernel
+- [x] Gamma multiplier norm proved asymptotic to one
+- [x] unframed Gamma/Sonin four-unit passivity proved
+- [x] continuous complementary packet connection differentiated exactly
+- [x] signed packet connection welded to the shifted-Euler source
+- [x] Gamma main-density annihilation and completed causal source identity proved
+- [x] packet two-point metric computed exactly
+- [x] local `zeta(2)` expansion and pointwise-contraction no-go proved
+- [x] cofinal packet Gini isometry proved
+- [x] full source-framed Gamma/Sonin four-unit energy proved
+- [x] logarithmic Mobius fixed current identified with the von Mangoldt source
+- [x] normal-shift/thermal-clock diagonal shortcut rejected
+- [x] squarefree and Euler clocks coupled with vanishing critical packet cost
+- [x] four-unit Gamma/Sonin budget transferred to the Euler fixed current
 - [x] semilocal Euler connection source
 - [x] orbit-diagonal, causal-derivative, and local-profile shortcuts rejected positively
-- [ ] write `Comp_(omega,delta,D)` entry by entry
-- [ ] prove the direct completed pole-to-divisor identity
-- [ ] prove the source-framed nonexpansive relative estimate
+- [x] write the unframed `Comp_(omega,D)` entry by entry
+- [x] write the affine packet/Euler connection weld entry by entry
+- [x] prove the packet/Euler-connection weld preserves the critical four-unit energy
+- [ ] construct the charged anti-causal fixed-current codifferential
+- [ ] prove its source-framed nonexpansive relative estimate
+- [ ] prove its direct completed pole-to-divisor identity
 - [ ] prove cofinal graph convergence to `ell_E`
 - [ ] independent specialist literature audit
 - [ ] RH

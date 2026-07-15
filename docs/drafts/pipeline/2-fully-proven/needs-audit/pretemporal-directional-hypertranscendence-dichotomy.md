@@ -4,7 +4,8 @@
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** THEOREM (paper) / FOUNDATIONAL DIFFERENTIAL ALGEBRA
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [LEAN OPEN]`
-- **Statement:** For a finite-dimensional constant space of commuting derivations, the directions
+- **Statement:** For a finite-dimensional constant space of derivations, with no commutativity
+  assumption, the directions
   in which a fixed element is differentially algebraic form an increasing countable union of
   projective algebraic sets.  Either one finite jet order is dependent in every direction, or the
   hypertranscendental directions are Zariski dense; over the complex numbers they are also
@@ -26,7 +27,7 @@ field extension containing `k`, and let
 Delta=(delta_1,...,delta_m),   m>=1,
 ```
 
-be pairwise commuting derivations of `L` which preserve `K` and kill `k`.  In an analytic or QFT
+be derivations of `L` which preserve `K` and kill `k`; they need not commute.  In an analytic or QFT
 application these are required to be regular derivations of the observable algebra and to commute
 with the global constraint action.  This regularity class must be defined independently of the
 element studied.
@@ -46,7 +47,10 @@ one-dimensional laws is the projective space
 Law(Delta)=P(V)=P^(m-1)(k).
 ```
 
-No point of `Law(Delta)` is distinguished.
+No point of `Law(Delta)` is distinguished.  If `V` is closed under commutators, then it carries its
+intrinsic Lie bracket.  The projective space remembers possible one-dimensional laws, while the Lie
+algebra remembers how different laws fail to commute.  The theorem below requires only the vector
+space; the bracket supplies additional structure rather than an extra hypothesis.
 
 Fix `x in L`.  For `n>=0`, define the order-`n` finite-law locus
 
@@ -87,13 +91,17 @@ Let `d:L -> Omega_(L/K)` be the universal Kahler derivation.  In the exterior po
 W_n(c)=d x wedge d(D_c x) wedge ... wedge d(D_c^n x).
 ```
 
-Since the `delta_i` commute and kill the parameters `c_i`, the multinomial identity gives
+Because the `delta_i` kill the parameters `c_i`, expansion over operator words gives
 
 ```text
 D_c^j x=
-  sum_(|alpha|=j) multinomial(j;alpha)c^alpha delta^alpha x.       (3)
+  sum_(i_1,...,i_j) c_(i_1)...c_(i_j)
+    delta_(i_1)...delta_(i_j)x.                                    (3)
 ```
 
+No reordering of the operator word is used.  Thus `(3)` remains valid for noncommuting
+derivations.  In the commuting case it contracts to the usual multinomial formula.
+Because the scalar coefficients commute, every word coefficient is homogeneous of degree `j`.
 Consequently `W_n(c)` is a vector-valued homogeneous polynomial in `c` of total degree
 
 ```text
@@ -281,7 +289,8 @@ problem, not a proof of the directional theorem.
 The following ingredients are known and are not novelty claims:
 
 - Kahler differentials detect algebraic independence in characteristic zero;
-- commuting derivations admit constant linear combinations and multinomial jet expansions;
+- derivations admit constant linear combinations and homogeneous word expansions; commuting
+  families are only the special case in which words contract to multinomial multi-indices;
 - Atiyah classes and logarithmic cocycles obstruct compatible connections;
 - parameterized difference and differential Galois theories use logarithmic derivatives and
   differential cohomology;
@@ -304,6 +313,11 @@ verdict, not a priority claim.
 
 The closest external parent boundaries currently identified are:
 
+- Kolchin, *Differential Algebra and Algebraic Groups*, Chapter II, Section 11, as quoted in
+  León Sánchez, *Contributions to the model theory of partial differential fields*, Fact 1.6.5:
+  for a tuple algebraic for a commuting family `Delta`, one may change the constant basis to
+  `Delta' union {D}` so that only finitely many iterates in `D` are needed relative to the remaining
+  derivations `Delta'`;
 - McGrail, *The model theory of differential fields with finitely many commuting derivations*
   (JSL 65, 2000): model completion, ranks, and full partial-differential jets;
 - Pierce, *Fields with several commuting derivations* (JSL 74, 2009; arXiv:0708.2769): geometric
@@ -316,10 +330,15 @@ The closest external parent boundaries currently identified are:
   single derivations and model-theoretic transfer, rather than a projective pencil of fixed
   derivations acting on one element.
 
-None of the inspected statements gives `(Sigma_n)`, the countable projective DA discriminant, or
-the collapse/generic-HT dichotomy.  This remains an absence-of-hit report, not a priority proof.  A
-specialist audit must still test Kolchin's books and papers for an implicit generic-restriction
-lemma and inspect the differential-specialization literature theorem by theorem.
+Kolchin's theorem is the most dangerous parent found so far, but it has different quantifiers and a
+different base: it starts from algebraicity for the full commuting family, chooses one favourable
+basis, and proves finite order in one derivation **relative to all the others**.  The present theorem
+fixes one element and one base field, varies every ordinary direction projectively, and classifies
+ordinary algebraicity after discarding the complementary derivations.  No implication between the
+two statements has been found.  None of the inspected statements gives `(Sigma_n)`, the countable
+projective DA discriminant, or the collapse/generic-HT dichotomy.  This remains an absence-of-hit
+report, not a priority proof.  A specialist audit must still inspect Kolchin's proofs for an implicit
+ordinary-restriction lemma and check differential-specialization literature theorem by theorem.
 
 The theorem is broad and changes the formulation of hypertranscendence, but it is not by itself a
 Fields-level discovery.  That threshold requires a nontrivial exact discriminant for an important
@@ -336,8 +355,9 @@ location.  No such instantiation currently exists.
 
 ## Lean route
 
-1. Define a finite commuting family of derivations and its common-constant linear combinations.
-2. Prove the multinomial directional-jet formula `(3)`.
+1. Define a finite family of derivations and its common-constant linear combinations.
+2. Prove the homogeneous noncommutative word formula `(3)`; derive the multinomial formula only as
+   a commuting corollary.
 3. Formalize the finite Kähler wedge and the equivalence `(5)`.
 4. Package `W_n` as a homogeneous vector-valued polynomial and prove projective closedness.
 5. Formalize the uncountable-field avoidance theorem, or first specialize the genericity theorem

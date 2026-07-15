@@ -53,6 +53,9 @@ single-observable full jet.
 - `automorphismFamily_differentialAlgebraic_iff_exists_logIncrement_jet_telescoping`
 - `automorphismFamily_hypertranscendental_of_no_logIncrement_jet_telescoping`
 - `automorphismFamily_no_telescoping_tau_add_self`
+- `not_algebraicIndependent_of_finsupp_linearCombination_eq`
+- `differentialAlgebraicOver_of_finsupp_jet_linear_eq`
+- `automorphismFamily_logarithmicJet_algebraicIndependent_iff`
 
 ## Formal proof architecture
 
@@ -80,10 +83,24 @@ single-observable full jet.
 
 No commutation relation among the source automorphisms occurs anywhere in the proof.
 
+The same module now proves the exact finite-resolution matroid of the full logarithmic jet tower.
+For an arbitrary index type `kappa` and selected derivative orders `order : kappa -> N`, algebraic
+independence of
+
+```text
+(D^(order j)(D(x)/x))_(j in kappa)
+```
+
+is equivalent to the absence of a nonzero finitely supported simultaneous coboundary among the
+matching derivatives of `D(b_i)/b_i`.  Repeated orders are allowed and are automatically detected
+as dependence.  This is the complete algebraic matroid at every finite resolution for one
+multiplicative primitive; the multi-observable differential-matroid rank formula remains
+paper-level.
+
 ## Verification
 
-The missing module cache was produced by exactly one targeted build.  The touched module then
-passed direct checking.  The two principal theorems have only the standard Mathlib logical
+The missing module cache was produced by exactly one targeted build in the original formalization
+run.  The extended touched module passed direct checking from that cache.  The principal theorems have only the standard Mathlib logical
 axioms `propext`, `Classical.choice`, and `Quot.sound`.  The repository formal lint passed with no
 `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration introduced.
 
