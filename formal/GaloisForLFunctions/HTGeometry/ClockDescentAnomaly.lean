@@ -271,6 +271,74 @@ theorem clockShadowCurvature_eq_zero_iff
       truncate.comp shadow₁ = shadow₀.comp truncate := by
   simp only [clockShadowCurvature, sub_eq_zero]
 
+/-- **Boundary-transfer factorization.**  Suppose observable truncation is split by forward clock
+extension and the shadows commute with that forward extension.  Then all backward-observation
+curvature factors through the complementary boundary projection:
+
+`κ = p T₁ (1 - i p)`.
+
+Thus curvature vanishes on the assembled lower clock and is carried entirely by the newly exposed
+boundary layer. -/
+theorem clockShadowCurvature_eq_boundaryTransfer
+    (shadow₀ : O₀ →ₗ[K] O₀) (shadow₁ : O₁ →ₗ[K] O₁)
+    (extend : O₀ →ₗ[K] O₁) (truncate : O₁ →ₗ[K] O₀)
+    (hsplit : truncate.comp extend = LinearMap.id)
+    (hforward : shadow₁.comp extend = extend.comp shadow₀) :
+    clockShadowCurvature shadow₀ shadow₁ truncate =
+      truncate.comp
+        (shadow₁.comp (LinearMap.id - extend.comp truncate)) := by
+  ext v
+  have hforward_v := LinearMap.congr_fun hforward (truncate v)
+  have hsplit_v := LinearMap.congr_fun hsplit (shadow₀ (truncate v))
+  simp only [LinearMap.comp_apply, LinearMap.id_apply] at hforward_v hsplit_v
+  change truncate (shadow₁ v) - shadow₀ (truncate v) =
+    truncate (shadow₁ (v - extend (truncate v)))
+  rw [map_sub, map_sub, hforward_v, hsplit_v]
+
+/-- Forward-compatible shadows have zero curvature on every direction already assembled from the
+lower clock. -/
+theorem clockShadowCurvature_comp_extend_eq_zero
+    (shadow₀ : O₀ →ₗ[K] O₀) (shadow₁ : O₁ →ₗ[K] O₁)
+    (extend : O₀ →ₗ[K] O₁) (truncate : O₁ →ₗ[K] O₀)
+    (hsplit : truncate.comp extend = LinearMap.id)
+    (hforward : shadow₁.comp extend = extend.comp shadow₀) :
+    (clockShadowCurvature shadow₀ shadow₁ truncate).comp extend = 0 := by
+  rw [clockShadowCurvature_eq_boundaryTransfer shadow₀ shadow₁ extend truncate hsplit hforward]
+  ext v
+  have hsplit_v := LinearMap.congr_fun hsplit v
+  simp only [LinearMap.comp_apply, LinearMap.id_apply] at hsplit_v
+  simp [LinearMap.comp_apply, hsplit_v]
+
+/-- The intrinsic boundary-transfer map on the quotient by all previously assembled clock
+directions.  A split complement is useful for coordinates but is not part of this definition. -/
+def clockBoundaryTransferQuotient
+    (shadow₀ : O₀ →ₗ[K] O₀) (shadow₁ : O₁ →ₗ[K] O₁)
+    (extend : O₀ →ₗ[K] O₁) (truncate : O₁ →ₗ[K] O₀)
+    (hsplit : truncate.comp extend = LinearMap.id)
+    (hforward : shadow₁.comp extend = extend.comp shadow₀) :
+    (O₁ ⧸ LinearMap.range extend) →ₗ[K] O₀ :=
+  (LinearMap.range extend).liftQ
+    (clockShadowCurvature shadow₀ shadow₁ truncate) (by
+      rintro y ⟨x, rfl⟩
+      rw [LinearMap.mem_ker]
+      have hzero := LinearMap.congr_fun
+        (clockShadowCurvature_comp_extend_eq_zero
+          shadow₀ shadow₁ extend truncate hsplit hforward) x
+      simpa only [LinearMap.comp_apply, LinearMap.zero_apply] using hzero)
+
+/-- Pulling the intrinsic quotient transfer back to the higher clock recovers the whole
+curvature. -/
+theorem clockBoundaryTransferQuotient_comp_mkQ
+    (shadow₀ : O₀ →ₗ[K] O₀) (shadow₁ : O₁ →ₗ[K] O₁)
+    (extend : O₀ →ₗ[K] O₁) (truncate : O₁ →ₗ[K] O₀)
+    (hsplit : truncate.comp extend = LinearMap.id)
+    (hforward : shadow₁.comp extend = extend.comp shadow₀) :
+    (clockBoundaryTransferQuotient
+        shadow₀ shadow₁ extend truncate hsplit hforward).comp
+        (LinearMap.range extend).mkQ =
+      clockShadowCurvature shadow₀ shadow₁ truncate := by
+  exact Submodule.liftQ_mkQ _ _ _
+
 section CurvatureCocycle
 
 variable {O₂ : Type*} [AddCommGroup O₂] [Module K O₂]

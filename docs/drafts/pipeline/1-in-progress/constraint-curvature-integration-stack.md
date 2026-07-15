@@ -57,8 +57,10 @@ Equations `(3)`--`(5)` are Lean-formalized. They are respectively the clock Bian
 constraint-algebra Leibniz law, and gauge additivity.
 
 **[CONJECTURE — CANONICAL SOURCE CURVATURE]** Source symbol, affine normalization, and source
-relations canonically select `(2)` up to a contractible calibrated choice. The resulting nonlinear
-higher-curvature field `bold_kappa_x` is invariant under analytic source-presentation equivalence.
+relations canonically select `(2)` up to a contractible calibrated choice. When the shadows are
+forward-compatible, the intrinsic finite field is the Lean-formalized quotient transfer
+`O_(N+1)/range(i_N) -> O_N`, not a split boundary vector. The resulting nonlinear higher-curvature
+field `bold_kappa_x` is invariant under analytic source-presentation equivalence.
 
 The curvature field can be nonzero and still globally integrable. Nonzero curvature and
 nonintegrability are distinct.
@@ -257,7 +259,8 @@ chains as invariants of the same source integration stack.
 - [x] Bianchi, gauge-additivity, and constraint-algebra Leibniz laws Lean-formalized
 - [x] linear fiber nonemptiness/range criterion Lean-formalized
 - [x] nonempty linear fiber identified with the kernel torsor in Lean
-- [ ] canonical calibrated curvature constructed for Gamma
+- [x] canonical finite Taylor shadows and rank-one Gamma curvature constructed
+- [ ] source-presentation invariance of the Gamma calibration proved
 - [ ] Gamma rank-one field proved to integrate uniquely
 - [x] raw Böttcher higher curvature rejected as coordinate-invariant data
 - [ ] Böttcher curvature--holonomy transfer class constructed

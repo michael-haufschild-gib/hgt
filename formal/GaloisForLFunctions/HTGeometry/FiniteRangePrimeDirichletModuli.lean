@@ -95,7 +95,7 @@ theorem primeCoefficientTailPairDependent_iff_projectivelyEquivalent
   · rintro ⟨a, b, hab, hsupp⟩
     have ha : a ≠ 0 := by
       intro ha
-      have hb : b ≠ 0 := hab.resolve_left ha
+      have hb : b ≠ 0 := hab.resolve_left (by simpa using ha)
       apply hd
       have hbd : {p | b * d p ≠ 0}.Finite := by
         simpa [ha] using hsupp
@@ -112,11 +112,13 @@ theorem primeCoefficientTailPairDependent_iff_projectivelyEquivalent
     simp only [Set.mem_setOf_eq] at hp ⊢
     intro hzero
     apply hp
+    apply mul_left_cancel₀ ha
     calc
-      a * c p + b * d p = a * (c p - (-(b / a)) * d p) := by
+      a * (c p - (-(b / a)) * d p) = a * c p + b * d p := by
         field_simp [ha]
         ring
-      _ = 0 := by rw [hzero, mul_zero]
+      _ = 0 := hzero
+      _ = a * 0 := by ring
   · rintro ⟨z, hz, hsupp⟩
     refine ⟨1, -z, Or.inl one_ne_zero, ?_⟩
     simpa [sub_eq_add_neg] using hsupp
@@ -332,13 +334,19 @@ theorem primeCoefficientShiftedRotatedJet_sub_smul_eq_arithmeticOfPrimeColumn
         (c p - z * d p) * primeShiftFactor a p * rotatedPrimeLogClock p ^ k) := by
   rw [← Algebra.smul_def]
   ext n
+  change primeCoefficientShiftedRotatedJet c a k n -
+      z * primeCoefficientShiftedRotatedJet d a k n =
+    arithmeticOfPrimeColumn (fun p =>
+      (c p - z * d p) * primeShiftFactor a p * rotatedPrimeLogClock p ^ k) n
   by_cases hn : n.Prime
-  · rw [primeCoefficientShiftedRotatedJet,
-      primeCoefficientShiftedRotatedJet,
-      arithmeticOfPrimeColumn_apply_prime _ ⟨n, hn⟩,
-      arithmeticOfPrimeColumn_apply_prime _ ⟨n, hn⟩,
-      arithmeticOfPrimeColumn_apply_prime _ ⟨n, hn⟩]
-    simp only [ArithmeticFunction.smul_map, smul_eq_mul]
+  · let p : Nat.Primes := ⟨n, hn⟩
+    rw [show primeCoefficientShiftedRotatedJet c a k n =
+        c p * primeShiftFactor a p * rotatedPrimeLogClock p ^ k by
+      exact arithmeticOfPrimeColumn_apply_prime _ p]
+    rw [show primeCoefficientShiftedRotatedJet d a k n =
+        d p * primeShiftFactor a p * rotatedPrimeLogClock p ^ k by
+      exact arithmeticOfPrimeColumn_apply_prime _ p]
+    rw [arithmeticOfPrimeColumn_apply_prime _ p]
     ring
   · simp [primeCoefficientShiftedRotatedJet, arithmeticOfPrimeColumn, hn]
 
@@ -370,10 +378,10 @@ theorem primeCoefficientShiftCarrier_projectiveResidual_jet_mem_base
   refine ⟨b, ?_⟩
   rw [differentialJet_primeCoefficientShiftCarrier,
     differentialJet_primeCoefficientShiftCarrier,
-    ← IsScalarTower.algebraMap_apply ℂ arithmeticFunctionFractionField
+    IsScalarTower.algebraMap_apply ℂ arithmeticFunctionFractionField
       arithmeticFunctionRationalCoordinateField,
     ← map_mul, ← map_sub,
-    ← IsScalarTower.algebraMap_apply ℂ (ArithmeticFunction ℂ)
+    IsScalarTower.algebraMap_apply ℂ (ArithmeticFunction ℂ)
       arithmeticFunctionFractionField,
     ← map_mul, ← map_sub,
     primeCoefficientShiftedRotatedJet_sub_smul_eq_arithmeticOfPrimeColumn]
@@ -450,11 +458,13 @@ theorem primeCoefficientNaturalShiftPalette_differentialAdjoin_eq_of_projectivel
     simp only [Set.mem_setOf_eq] at hp ⊢
     intro hzero
     apply hp
+    apply mul_left_cancel₀ (neg_ne_zero.mpr hz)
     calc
-      c p - z * d p = -z * (d p - z⁻¹ * c p) := by
+      -z * (d p - z⁻¹ * c p) = c p - z * d p := by
         field_simp [hz]
         ring
-      _ = 0 := by rw [hzero, mul_zero]
+      _ = 0 := hzero
+      _ = -z * 0 := by ring
 
 theorem primeCoefficientTailProjectivelyEquivalent_of_tailZero
     {c d : Nat.Primes → ℂ}
@@ -479,7 +489,11 @@ theorem zeroPrimeCoefficientNaturalShiftPalette_differentialAdjoin :
     rintro y ⟨x, ⟨a, rfl⟩, k, rfl⟩
     simp only [primeCoefficientNaturalShiftPalette]
     rw [differentialJet_primeCoefficientShiftCarrier]
-    simp [primeCoefficientShiftedRotatedJet, arithmeticOfPrimeColumn]
+    have hjet : primeCoefficientShiftedRotatedJet (fun _ => 0) (a : ℂ) k = 0 := by
+      ext n
+      simp [primeCoefficientShiftedRotatedJet, arithmeticOfPrimeColumn]
+    rw [hjet, map_zero, map_zero]
+    exact IntermediateField.zero_mem _
   · exact bot_le
 
 theorem primeCoefficientNaturalShiftPalette_differentialAdjoin_eq_bot_of_tailZero

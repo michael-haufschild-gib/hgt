@@ -3,7 +3,7 @@
 - **ID:** `gamma-periodic-constraint-corona`
 - **Stage:** 3-formalized
 - **Type:** CONCRETE HT SOURCE REALIZATION / ANALYTIC CORONA MODEL
-- **Scientific status:** `[CORE THEOREM LEAN-FORMALIZED] [FORMAL-GLOBAL UNIT DEFECT LEAN-FORMALIZED] [SELF-DUAL SYMBOL PROVED] [LAGRANGIAN EXTENSION OPEN] [NOVELTY PROVISIONAL]`
+- **Scientific status:** `[CORE THEOREM LEAN-FORMALIZED] [RANK-ONE CLOCK CURVATURE LEAN-FORMALIZED] [FORMAL-GLOBAL UNIT DEFECT LEAN-FORMALIZED] [SELF-DUAL SYMBOL PROVED] [LAGRANGIAN EXTENSION OPEN] [NOVELTY PROVISIONAL]`
 - **Parents:**
   - `../2-fully-proven/needs-audit/finite-observable-conormal-corona.md`
   - `../2-fully-proven/needs-audit/hypertranscendental-kaehler-tate-clock-linearization.md`
@@ -202,10 +202,15 @@ This is a general HT prototype. It is not an RH argument.
 5. `gammaPeriodicMode_taylorConormal_hasSum`, the infinite factorial-tail identity `(8)`;
 6. `gammaPeriodicFourier_taylorConormal_hasSum`, the common conormal for every finite Fourier
    packet;
-7. `gammaShiftCofactorFormal_mul_inverse` and
+7. `gammaClockCurvature_apply` and `gammaClockCurvature_eq_outerProduct`, the exact factorial-tail
+   boundary formula;
+8. `range_gammaClockCurvature` and `finrank_range_gammaClockCurvature`, the exact boundary line and
+   rank-one theorem at every positive resolution;
+9. `gammaClockTranslation_extendZero`, exact compatibility with forward Ind-clock assembly;
+10. `gammaShiftCofactorFormal_mul_inverse` and
    `gammaShiftCofactorFormal_inverse_mul`, formal invertibility in `(10)`;
-8. `gammaShiftCofactorSymbol_periodicFrequency`, the global nonunit lattice `(12)`;
-9. `gammaShiftCofactorSymbol_neg`, the self-dual reflection law `(13)`.
+11. `gammaShiftCofactorSymbol_periodicFrequency`, the global nonunit lattice `(12)`;
+12. `gammaShiftCofactorSymbol_neg`, the self-dual reflection law `(13)`.
 
 The general formal consequences `(14)`--`(15)` are supplied by
 `GaloisForLFunctions.HTGeometry.ClockDescentAnomaly` as described above.
@@ -229,6 +234,8 @@ No full build or concurrent Lean invocation was run by this task.
 - [x] infinite-support Taylor conormal proved on paper
 - [x] source topology making the conormal continuous identified
 - [x] core theorem formalized in Lean
+- [x] finite unit-translation shadows and exact rank-one curvature formalized in Lean
+- [x] forward Ind-clock compatibility of the same shadows formalized in Lean
 - [x] general clock-descent and product-topology no-gos formalized in Lean
 - [ ] explicit Gamma function-space anomaly specialization packaged in Lean
 - [ ] Gamma reflection paired with the shift conormal

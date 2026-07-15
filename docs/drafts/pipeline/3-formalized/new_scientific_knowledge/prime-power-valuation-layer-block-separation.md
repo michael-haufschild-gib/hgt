@@ -5,8 +5,9 @@
 - **Type:** THEOREM (Lean) / `[NOVELTY UNVERIFIED]`
 - **Parent:** `prime-power-dilation-tail-differential-matroid.md`
 - **Statement:** Finite prime-power layers with layerwise tail-independent source alphabets form one
-  algebraically independent family over the intrinsic finite-prime coefficient field; for
-  nonuniform alphabets `A_r`, the family has cardinality `sum_r card(A_r)`.
+  algebraically independent family over the intrinsic finite-prime coefficient field and realize
+  as jointly algebraically independent dilated analytic Dirichlet germs; for nonuniform alphabets
+  `A_r`, the family has cardinality `sum_r card(A_r)`.
 
 ## Theorem
 
@@ -41,6 +42,13 @@ rank is therefore
 sum_{r : Fin d} card(A_r).
 ```
 
+If each source column is the coefficient stream of a finite-abscissa prime Dirichlet series, its
+layer-`r` carrier is exactly the integral argument dilation of that series.  Consequently the same
+dependent-sum family is algebraically independent as actual analytic germs at the complex upper
+end.  In particular, nonuniform finite families of Boolean prime orientations, pairwise
+real-part-separated shifts, and arbitrary finite derivative cutoffs contribute every displayed
+jet coordinate independently.
+
 ## Structural law
 
 For globally distinct packet primes `q_i` and layer exponents `e_i`, the coefficient at
@@ -53,6 +61,25 @@ of the arithmetic Jacobian determinant is exactly the determinant of the scalar 
 by setting every entry between unequal exponent layers to zero.  Thus the valuation grading
 canonically separates the finite dilation layers: the distinguished coefficient is block
 diagonal even when the full Jacobian is not.
+
+## Analytic prime-power law
+
+For a prime-supported arithmetic function `f` and `m = r+1`, let `mPart(m,f)` place `f(p)` at
+`p^m` and vanish off `m`th powers.  Then, identically as Dirichlet series,
+
+```text
+L(mPart(m,f), s) = L(f, m s),
+```
+
+with exact equivalence of absolute convergence.  After the upper-end rotation this is literal
+precomposition by `z -> m z`.  The complete derivative chain law is
+
+```text
+D^k (G(m z)) = m^k (D^k G)(m z)
+```
+
+for every finite `k`.  Thus the layer grading is simultaneously a valuation grading on
+coefficients and a homogeneous derivative grading on analytic germs.
 
 ## Proof
 
@@ -70,6 +97,12 @@ diagonal even when the full Jacobian is not.
 7. For a polynomial over the finite-prime coefficient field, choose the packet outside the finite
    activity set of its coefficients and lift the relation to the packet's common kernel.  The
    packet theorem then contradicts a nonzero relation.
+8. Identify the prime-power carrier with the general `m`th-power arithmetic dilation and apply the
+   exact L-series reindexing theorem.  Finite abscissa is preserved, and faithful upper-end
+   realization transports the arithmetic independence to analytic germs.
+9. The logarithmic coefficient derivation commutes with layer dilation with weight `m`; iteration
+   gives the exact all-order factor `m^k`.  The existing shifted-jet tail theorem then instantiates
+   every nonuniform orientation--shift--derivative layer.
 
 ## Formal certificate
 
@@ -79,27 +112,34 @@ diagonal even when the full Jacobian is not.
 - `algebraicIndependent_fractionPrimePowerColumns_over_finitePrimeCoefficientField`
 - `cofinitePrimePowerPacket_of_layerwise_tailIndependent`
 - `algebraicIndependent_primePowerSigmaTower_over_finitePrimeCoefficientField`
+- `mPart_arithmeticOfPrimeColumn`
+- `LSeries_arithmeticOfPrimePowerColumn`
+- `finiteAbscissaRotatedDeriv_iterate_primePowerDilation`
+- `upperEndGermDeriv_iterate_primePowerScale_LSeries`
+- `algebraicIndependent_primePowerDilatedUpperEndGerms`
+- `signedPrimeShiftedJet_primePowerDilatedUpperEndGerms_algebraicIndependent`
 
-The capstone module is
-`GaloisForLFunctions.HTGeometry.PrimePowerTailPacket`.  Its targeted build and direct file check
-pass.  The displayed capstone theorems use only `propext`, `Classical.choice`, and `Quot.sound`.
+The arithmetic capstone is `GaloisForLFunctions.HTGeometry.PrimePowerTailPacket`; the analytic
+capstone is `GaloisForLFunctions.HTGeometry.PrimePowerAnalyticDilation`.  Their targeted builds and
+direct file checks pass.  The displayed capstone theorems use only `propext`, `Classical.choice`,
+and `Quot.sound`.
 
 ## Positive RH-facing consequence
 
-Whenever a finite derivative--translation palette of prime Dirichlet sources is represented by
-tail-independent coefficient columns on finitely many dilation layers, every layer must contribute
-its full block of algebraic coordinates.  Therefore any mechanism that reconstructs `log zeta`
-from the prime source while producing a new finite algebraic constraint must introduce an
-operation that genuinely couples valuation layers; it cannot arise from finite layerwise
-Dirichlet-convolution algebra alone.
+Every finite derivative--translation palette of tail-independent prime Dirichlet sources on
+finitely many dilation layers contributes its full block of analytic coordinates.  Therefore any
+mechanism that reconstructs `log zeta` from the prime source while producing a new finite
+algebraic constraint must contain an operation that genuinely couples infinitely many valuation
+layers or leaves the derivative--translation category, such as global continuation or reflection.
+Finite dilations, finite translations, and finite derivative jets cannot supply that coupling.
 
 This is a constraint on the architecture of a possible route, not a zero-location theorem and not
 an RH proof.
 
 ## Remaining boundary
 
-The theorem is arithmetic-algebraic.  Promotion of the broader dilation card requires the exact
-analytic transfer to `P_b((r+1)s+a)`, verification of tail independence for the desired shifted
-jet palettes, and the complete relation ideal in the rank-deficient case.  Countable reconstruction
-is only a finite-character corollary after that transfer; countable summation is not an operation of
-the finite derivative--translation field.
+The tail-independent analytic theorem is complete.  The broader dilation card still asks for the
+rank-deficient classification: when a displayed source alphabet has tail rank below its
+cardinality, identify the complete relation ideal and prove the exact rank formula rather than
+only the full-rank case.  Countable summation itself remains outside the finite
+derivative--translation field; no countable analytic-sum claim is made here.

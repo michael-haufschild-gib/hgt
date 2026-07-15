@@ -30,14 +30,32 @@ theorem primeCoefficientShiftedRotatedJet_linearCombination
       ∑ b, algebraMap ℂ (ArithmeticFunction ℂ) (z b) *
         primeCoefficientShiftedRotatedJet (c b) a k := by
   classical
+  simp_rw [← Algebra.smul_def]
   ext n
+  let ev : ArithmeticFunction ℂ →+ ℂ :=
+    { toFun := fun f => f n
+      map_zero' := rfl
+      map_add' := fun _ _ => rfl }
+  rw [show (∑ b, z b • primeCoefficientShiftedRotatedJet (c b) a k) n =
+      ∑ b, (z b • primeCoefficientShiftedRotatedJet (c b) a k) n by
+    exact map_sum ev _ Finset.univ]
   by_cases hn : n.Prime
   · let p : Nat.Primes := ⟨n, hn⟩
-    simp only [primeCoefficientShiftedRotatedJet,
-      arithmeticOfPrimeColumn_apply_prime _ p, map_sum,
-      ArithmeticFunction.sum_apply, ArithmeticFunction.mul_apply]
-    simp [ArithmeticFunction.algebraMap_apply, Finset.mul_sum]
-  · simp [primeCoefficientShiftedRotatedJet, arithmeticOfPrimeColumn, hn]
+    rw [show primeCoefficientShiftedRotatedJet
+        (fun p => ∑ b, z b * c b p) a k n =
+          (∑ b, z b * c b p) * primeShiftFactor a p *
+            rotatedPrimeLogClock p ^ k by
+      exact arithmeticOfPrimeColumn_apply_prime _ p]
+    simp only [ArithmeticFunction.smul_map, smul_eq_mul]
+    rw [Finset.sum_mul, Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro b hb
+    rw [show primeCoefficientShiftedRotatedJet (c b) a k n =
+        c b p * primeShiftFactor a p * rotatedPrimeLogClock p ^ k by
+      exact arithmeticOfPrimeColumn_apply_prime _ p]
+    ring
+  · simp [primeCoefficientShiftedRotatedJet, arithmeticOfPrimeColumn, hn,
+      ArithmeticFunction.smul_map]
 
 @[simp]
 theorem rotatedLogFractionDerivation_primeCoefficientShiftedRotatedJet
@@ -52,9 +70,13 @@ theorem rotatedLogFractionDerivation_primeCoefficientShiftedRotatedJet
   ext n
   simp only [ArithmeticFunction.smul_map, smul_eq_mul, logWeight_apply]
   by_cases hn : n.Prime
-  · rw [primeCoefficientShiftedRotatedJet,
-      arithmeticOfPrimeColumn_apply_prime _ ⟨n, hn⟩,
-      arithmeticOfPrimeColumn_apply_prime _ ⟨n, hn⟩]
+  · let p : Nat.Primes := ⟨n, hn⟩
+    rw [show primeCoefficientShiftedRotatedJet c a k n =
+        c p * primeShiftFactor a p * rotatedPrimeLogClock p ^ k by
+      exact arithmeticOfPrimeColumn_apply_prime _ p]
+    rw [show primeCoefficientShiftedRotatedJet c a (k + 1) n =
+        c p * primeShiftFactor a p * rotatedPrimeLogClock p ^ (k + 1) by
+      exact arithmeticOfPrimeColumn_apply_prime _ p]
     simp only [rotatedPrimeLogClock, primeLogClock, pow_succ]
     ring
   · simp [primeCoefficientShiftedRotatedJet, arithmeticOfPrimeColumn, hn]
@@ -95,14 +117,11 @@ theorem differentialJet_primeCoefficientShiftCarrier_linearCombination
   simp_rw [differentialJet_primeCoefficientShiftCarrier]
   rw [primeCoefficientShiftedRotatedJet_linearCombination]
   rw [map_sum]
+  rw [map_sum]
   apply Finset.sum_congr rfl
   intro b hb
   rw [map_mul, map_mul]
   congr 1
-  rw [IsScalarTower.algebraMap_apply ℂ (ArithmeticFunction ℂ)
-    arithmeticFunctionFractionField]
-  rw [IsScalarTower.algebraMap_apply ℂ arithmeticFunctionFractionField
-    arithmeticFunctionRationalCoordinateField]
 
 /-- The canonical complete natural-shift palette of one prime coefficient column. -/
 def primeCoefficientNaturalShiftPalette

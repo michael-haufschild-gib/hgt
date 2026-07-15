@@ -3,7 +3,7 @@
 - **ID:** `calibrated-clock-curvature-class`
 - **Stage:** 1-in-progress
 - **Type:** GENERAL HT CONJECTURE / CURVED OBSERVABLE-RESOLUTION FIELD
-- **Scientific status:** `[CONJECTURE] [BIANCHI LAW LEAN-FORMALIZED] [GAMMA RANK-ONE LAW PROVED ON PAPER] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[CONJECTURE] [BIANCHI LAW LEAN-FORMALIZED] [GAMMA RANK-ONE LAW LEAN-FORMALIZED] [NOVELTY UNVERIFIED]`
 - **Parents:**
   - `../3-formalized/clock-shadow-curvature-bianchi.md`
   - `clock-descent-anomaly.md`
@@ -73,7 +73,7 @@ When higher source observations are surjective, the range of the left side is ex
 `range(kappa_N)`. Thus curvature is not a formal bookkeeping defect: every one of its values is
 seen on an actual source variation.
 
-## Gamma rank-one curvature `[PROVED ON PAPER]`
+## Gamma rank-one curvature `[LEAN-FORMALIZED]`
 
 Let `O_N=K^N` record derivatives `a_0,...,a_(N-1)` and let the truncated unit translation shadow be
 
@@ -112,8 +112,10 @@ failure of finite shadow compatibility
 ## Thin-curvature conjecture
 
 **[CONJECTURE]** A regular corona-pure constrained HT source has a nonzero calibrated curvature
-class whose rank or operator-ideal profile is asymptotically thin relative to `dim(O_N)`. The
-profile is source-invariant and measures boundary thickness:
+field whose intrinsic quotient-transfer profile is asymptotically thin relative to `dim(O_N)`.
+Rank one alone is not invariant evidence: when one forward-compatible clock slot is added per
+level, the Lean-formalized boundary factorization forces rank at most one. The source-invariant
+content must be the transfer sequence and its integration profile:
 
 - uniformly finite rank: finite-codimensional conormal boundary;
 - nuclear or compact curvature: analytic/Calkin boundary;
@@ -165,7 +167,7 @@ defining it from `xi` or its zeros is circular. This is not an RH result.
 - [x] Bianchi and cocycle identities Lean-formalized
 - [x] exact curvature-range law Lean-formalized
 - [x] Gamma rank-one formula proved on paper
-- [ ] Gamma rank-one formula formalized in Lean
+- [x] Gamma rank-one formula formalized in Lean
 - [ ] calibrated gauge group defined
 - [ ] nontriviality of `[kappa_Gamma]_cal` proved
 - [ ] thinness notion selected by a parent-theory collision audit

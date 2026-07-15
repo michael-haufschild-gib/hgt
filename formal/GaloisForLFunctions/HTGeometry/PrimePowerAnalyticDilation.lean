@@ -159,8 +159,8 @@ theorem finiteAbscissaRotatedDeriv_iterate_primePowerDilation
         Real.log_pow]
     rw [hlog]
     push_cast
-    rw [show Complex.I * (((e + 1 : ℕ) : ℂ) * Complex.log (q : ℂ)) =
-      (((e + 1 : ℕ) : ℂ) * (Complex.I * Complex.log (q : ℂ))) by ring,
+    rw [show Complex.I * (((e : ℂ) + 1) * Complex.log (q : ℂ)) =
+      (((e : ℂ) + 1) * (Complex.I * Complex.log (q : ℂ))) by ring,
       mul_pow]
     ring
   · rw [RHTower.mPart_apply_of_forall_pow_ne (e + 1) f.1

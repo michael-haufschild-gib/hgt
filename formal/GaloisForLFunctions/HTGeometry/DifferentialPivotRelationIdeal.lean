@@ -62,7 +62,8 @@ theorem differentialPivotElimination_X_inr
 theorem differentialPivotInclusion_X
     {F B R : Type*} [Field F] (b : B) (n : ℕ) :
     differentialPivotInclusion (R := R)
-        (MvPolynomial.X (b, n)) = MvPolynomial.X (Sum.inl b, n) := by
+        (MvPolynomial.X (b, n)) =
+      (MvPolynomial.X (Sum.inl b, n) : DifferentialPolynomial (B ⊕ R) F) := by
   simp [differentialPivotInclusion]
 
 /-- Elimination is a left inverse to pivot inclusion. -/
@@ -77,7 +78,8 @@ theorem differentialPivotElimination_inclusion
   | add P Q hP hQ => simp [hP, hQ]
   | mul_X P q hP =>
       rcases q with ⟨b, n⟩
-      simp [hP]
+      simp only [map_mul, hP, differentialPivotInclusion_X,
+        differentialPivotElimination_X_inl]
 
 /-- The displayed affine relation for one dependent jet. -/
 def differentialPivotRelation
@@ -125,12 +127,14 @@ theorem sub_inclusion_elimination_mem_differentialPivotRelationIdeal
       rcases q with ⟨i, n⟩
       cases i with
       | inl b =>
-          have hmul := Ideal.mul_mem_right I (MvPolynomial.X (Sum.inl b, n)) hP
+          have hmul := Ideal.mul_mem_right
+            (MvPolynomial.X (Sum.inl b, n)) I hP
           convert hmul using 1 <;> simp <;> ring
       | inr r =>
           have hgen : differentialPivotRelation A h r n ∈ I :=
             Ideal.subset_span (Set.mem_range_self (r, n))
-          have hmul₁ := Ideal.mul_mem_right I (MvPolynomial.X (Sum.inr r, n)) hP
+          have hmul₁ := Ideal.mul_mem_right
+            (MvPolynomial.X (Sum.inr r, n)) I hP
           have hmul₂ := Ideal.mul_mem_left I
             (differentialPivotInclusion (differentialPivotElimination A h P)) hgen
           have hsum := I.add_mem hmul₁ hmul₂
@@ -147,7 +151,7 @@ theorem differentialPivotRelationIdeal_eq_ker
   apply le_antisymm
   · apply Ideal.span_le.mpr
     rintro _ ⟨⟨r, n⟩, rfl⟩
-    rw [RingHom.mem_ker]
+    change differentialPivotElimination A h (differentialPivotRelation A h r n) = 0
     exact differentialPivotElimination_relation A h r n
   · intro P hP
     have helim : differentialPivotElimination A h P = 0 := RingHom.mem_ker.mp hP
@@ -201,6 +205,7 @@ theorem differentialAdjoin_sumElim_eq_left_of_affineJets
     | inl b =>
         exact differentialJet_mem_differentialAdjoin F (Set.mem_range_self b) n
     | inr r =>
+        change differentialJet n (y r) ∈ differentialAdjoin F (Set.range x)
         rw [hrel r n]
         apply IntermediateField.add_mem
         · exact IntermediateField.algebraMap_mem _ (h r n)
@@ -237,6 +242,7 @@ theorem differentialRelationIdeal_sumElim_eq_pivot
     unfold DifferentialIndependent at hx
     exact hx.eq_zero_of_aeval_eq_zero _ hzero
   · intro hzero
+    change differentialPivotElimination A h P = 0 at hzero
     rw [hzero]
     exact map_zero _
 
