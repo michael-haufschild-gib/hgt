@@ -132,6 +132,59 @@ theorem thetaCuspPrimitiveRayCompletionCharacter_eq (u x : ℝ) :
     thetaCuspReflectionMode, thetaCuspReflectionModeDeriv]
   ring
 
+/-- Angular flux whose divergence is the growing primitive-ray completion character. -/
+def thetaCuspPrimitiveRayAngularFlux (u : ℝ) : ℝ :=
+  (2 * u - 1) * (thetaCuspPrimitiveRayMoment u) ^ (1 / 4 : ℝ) *
+    (-(1 / 8 : ℝ) + (15 / 2 : ℝ) * thetaCuspPrimitiveRayMoment u)
+
+/-- **Exact angular conservation law.**  After the primitive polar Jacobian is included, the
+angle-dependent growing completion character is a pure angular derivative.  This identity is
+the cancellation-compatible form: integrating it by parts keeps the swept endpoint windows and
+the translated finite-core derivative together. -/
+theorem hasDerivAt_thetaCuspPrimitiveRayAngularFlux
+    {u : ℝ} (hu : u ∈ Set.Ioo 0 1) :
+    HasDerivAt thetaCuspPrimitiveRayAngularFlux
+      (thetaCuspPrimitiveRayGrowingCoefficient u *
+        (thetaCuspPrimitiveRayMoment u) ^ (-(3 / 4 : ℝ))) u := by
+  have hw : 0 < thetaCuspPrimitiveRayMoment u :=
+    mul_pos hu.1 (sub_pos.mpr hu.2)
+  have hwd : HasDerivAt thetaCuspPrimitiveRayMoment (1 - 2 * u) u := by
+    unfold thetaCuspPrimitiveRayMoment
+    convert (hasDerivAt_id u).mul
+      ((hasDerivAt_const u 1).sub (hasDerivAt_id u)) using 1
+    simp
+    ring
+  have ht : HasDerivAt (fun y : ℝ => 2 * y - 1) 2 u := by
+    simpa using ((hasDerivAt_id u).const_mul 2).sub_const 1
+  have hpow := hwd.rpow_const (p := (1 / 4 : ℝ)) (Or.inl hw.ne')
+  have hpoly : HasDerivAt
+      (fun y : ℝ => -(1 / 8 : ℝ) +
+        (15 / 2 : ℝ) * thetaCuspPrimitiveRayMoment y)
+      ((15 / 2 : ℝ) * (1 - 2 * u)) u := by
+    simpa [add_comm] using
+      (hwd.const_mul (15 / 2 : ℝ)).const_add (-(1 / 8 : ℝ))
+  have hfull := (ht.mul hpow).mul hpoly
+  have hexp : (1 / 4 : ℝ) - 1 = -(3 / 4 : ℝ) := by ring
+  have hrpow : (thetaCuspPrimitiveRayMoment u) ^ (1 / 4 : ℝ) =
+      thetaCuspPrimitiveRayMoment u *
+        (thetaCuspPrimitiveRayMoment u) ^ (-(3 / 4 : ℝ)) := by
+    calc
+      (thetaCuspPrimitiveRayMoment u) ^ (1 / 4 : ℝ) =
+          (thetaCuspPrimitiveRayMoment u) ^ (1 + (-(3 / 4 : ℝ))) := by
+            congr 1
+            ring
+      _ = (thetaCuspPrimitiveRayMoment u) ^ (1 : ℝ) *
+          (thetaCuspPrimitiveRayMoment u) ^ (-(3 / 4 : ℝ)) :=
+        Real.rpow_add hw 1 (-(3 / 4 : ℝ))
+      _ = thetaCuspPrimitiveRayMoment u *
+          (thetaCuspPrimitiveRayMoment u) ^ (-(3 / 4 : ℝ)) := by
+        rw [Real.rpow_one]
+  convert hfull using 1
+  simp only [Pi.mul_apply]
+  rw [hexp, hrpow]
+  unfold thetaCuspPrimitiveRayGrowingCoefficient thetaCuspPrimitiveRayMoment
+  ring
+
 /-- The `m`-th derivative of the elementary theta-reflection defect. -/
 def thetaCuspReflectionModeIterate (m : ℕ) (x : ℝ) : ℝ :=
   (((1 / 2 : ℝ) ^ m) * Real.exp (x / 2) -
@@ -187,6 +240,124 @@ theorem thetaCuspTailDerivative_neg_all (m : ℕ) (x : ℝ) :
         ring
       rw [hsign]
       linarith
+
+/-- Full common-scale theta packet carried by one primitive direction. -/
+def thetaCuspPrimitiveRayRadialPacket (u x : ℝ) : ℝ :=
+  thetaCuspPrimitiveRayCoefficientZero u * thetaCuspTailDerivative 0 x +
+    thetaCuspPrimitiveRayCoefficientOne u * thetaCuspTailDerivative 1 x +
+    thetaCuspPrimitiveRayCoefficientTwo u * thetaCuspTailDerivative 2 x +
+    thetaCuspPrimitiveRayCoefficientThree u * thetaCuspTailDerivative 3 x +
+    thetaCuspPrimitiveRayCoefficientFour u * thetaCuspTailDerivative 4 x
+
+/-- Parity-twisted theta packet produced by radial reflection. -/
+def thetaCuspPrimitiveRayParityPacket (u x : ℝ) : ℝ :=
+  thetaCuspPrimitiveRayCoefficientZero u * thetaCuspTailDerivative 0 x -
+    thetaCuspPrimitiveRayCoefficientOne u * thetaCuspTailDerivative 1 x +
+    thetaCuspPrimitiveRayCoefficientTwo u * thetaCuspTailDerivative 2 x -
+    thetaCuspPrimitiveRayCoefficientThree u * thetaCuspTailDerivative 3 x +
+    thetaCuspPrimitiveRayCoefficientFour u * thetaCuspTailDerivative 4 x
+
+/-- **Radial packet reflection.**  The complete common-scale packet reflects to its parity twist,
+one angle-dependent growing character, and the universal decaying character `-exp(-x/2)/32`. -/
+theorem thetaCuspPrimitiveRayRadialPacket_neg (u x : ℝ) :
+    thetaCuspPrimitiveRayRadialPacket u (-x) =
+      thetaCuspPrimitiveRayParityPacket u x +
+        thetaCuspPrimitiveRayGrowingCoefficient u * Real.exp (x / 2) -
+        (1 / 32 : ℝ) * Real.exp (-x / 2) := by
+  rw [thetaCuspPrimitiveRayRadialPacket,
+    thetaCuspTailDerivative_neg_all 0 x,
+    thetaCuspTailDerivative_neg_all 1 x,
+    thetaCuspTailDerivative_neg_all 2 x,
+    thetaCuspTailDerivative_neg_all 3 x,
+    thetaCuspTailDerivative_neg_all 4 x]
+  simp [thetaCuspPrimitiveRayParityPacket,
+    thetaCuspReflectionModeIterate,
+    thetaCuspPrimitiveRayCoefficientZero,
+    thetaCuspPrimitiveRayCoefficientOne,
+    thetaCuspPrimitiveRayCoefficientTwo,
+    thetaCuspPrimitiveRayCoefficientThree,
+    thetaCuspPrimitiveRayCoefficientFour,
+    thetaCuspPrimitiveRayGrowingCoefficient,
+    thetaCuspPrimitiveRayMoment]
+  ring
+
+/-- Atomwise form of the five-mode decomposition. -/
+theorem thetaCuspPrimitiveRayPolynomialAtom_eq_derivative_packet
+    (u x : ℝ) (n : ℕ) :
+    thetaCuspPolynomialAtom (thetaCuspDensityPrimitiveRayPolynomial u) n x =
+      thetaCuspPrimitiveRayCoefficientZero u *
+          thetaCuspPolynomialAtom (thetaCuspTailDerivativePolynomial 0) n x +
+        thetaCuspPrimitiveRayCoefficientOne u *
+          thetaCuspPolynomialAtom (thetaCuspTailDerivativePolynomial 1) n x +
+        thetaCuspPrimitiveRayCoefficientTwo u *
+          thetaCuspPolynomialAtom (thetaCuspTailDerivativePolynomial 2) n x +
+        thetaCuspPrimitiveRayCoefficientThree u *
+          thetaCuspPolynomialAtom (thetaCuspTailDerivativePolynomial 3) n x +
+        thetaCuspPrimitiveRayCoefficientFour u *
+          thetaCuspPolynomialAtom (thetaCuspTailDerivativePolynomial 4) n x := by
+  unfold thetaCuspPolynomialAtom
+  rw [thetaCuspDensityPrimitiveRayPolynomial_eq_derivative_packet]
+  simp only [eval_add, eval_mul, eval_C]
+  ring
+
+/-- The common-scale primitive ray is summable before any orientation estimate. -/
+theorem summable_thetaCuspPrimitiveRayPolynomialAtom (u x : ℝ) :
+    Summable (fun n : ℕ =>
+      thetaCuspPolynomialAtom (thetaCuspDensityPrimitiveRayPolynomial u) (n + 1) x) := by
+  have h0 := (summable_thetaCuspTailDerivative 0 x).mul_left
+    (thetaCuspPrimitiveRayCoefficientZero u)
+  have h1 := (summable_thetaCuspTailDerivative 1 x).mul_left
+    (thetaCuspPrimitiveRayCoefficientOne u)
+  have h2 := (summable_thetaCuspTailDerivative 2 x).mul_left
+    (thetaCuspPrimitiveRayCoefficientTwo u)
+  have h3 := (summable_thetaCuspTailDerivative 3 x).mul_left
+    (thetaCuspPrimitiveRayCoefficientThree u)
+  have h4 := (summable_thetaCuspTailDerivative 4 x).mul_left
+    (thetaCuspPrimitiveRayCoefficientFour u)
+  exact ((((h0.add h1).add h2).add h3).add h4).congr
+    (fun n => (thetaCuspPrimitiveRayPolynomialAtom_eq_derivative_packet
+      u x (n + 1)).symm)
+
+/-- **Complete primitive-ray summation identity.**  Summing the common arithmetic scale converts
+the two-density radial polynomial exactly into the five-mode theta packet. -/
+theorem tsum_thetaCuspPrimitiveRayPolynomialAtom_eq (u x : ℝ) :
+    (∑' n : ℕ,
+      thetaCuspPolynomialAtom (thetaCuspDensityPrimitiveRayPolynomial u) (n + 1) x) =
+      thetaCuspPrimitiveRayRadialPacket u x := by
+  have h0 := (summable_thetaCuspTailDerivative 0 x).hasSum.mul_left
+    (thetaCuspPrimitiveRayCoefficientZero u)
+  have h1 := (summable_thetaCuspTailDerivative 1 x).hasSum.mul_left
+    (thetaCuspPrimitiveRayCoefficientOne u)
+  have h2 := (summable_thetaCuspTailDerivative 2 x).hasSum.mul_left
+    (thetaCuspPrimitiveRayCoefficientTwo u)
+  have h3 := (summable_thetaCuspTailDerivative 3 x).hasSum.mul_left
+    (thetaCuspPrimitiveRayCoefficientThree u)
+  have h4 := (summable_thetaCuspTailDerivative 4 x).hasSum.mul_left
+    (thetaCuspPrimitiveRayCoefficientFour u)
+  have hsum : HasSum
+      (fun n : ℕ =>
+        thetaCuspPrimitiveRayCoefficientZero u *
+            thetaCuspPolynomialAtom (thetaCuspTailDerivativePolynomial 0) (n + 1) x +
+          thetaCuspPrimitiveRayCoefficientOne u *
+            thetaCuspPolynomialAtom (thetaCuspTailDerivativePolynomial 1) (n + 1) x +
+          thetaCuspPrimitiveRayCoefficientTwo u *
+            thetaCuspPolynomialAtom (thetaCuspTailDerivativePolynomial 2) (n + 1) x +
+          thetaCuspPrimitiveRayCoefficientThree u *
+            thetaCuspPolynomialAtom (thetaCuspTailDerivativePolynomial 3) (n + 1) x +
+          thetaCuspPrimitiveRayCoefficientFour u *
+            thetaCuspPolynomialAtom (thetaCuspTailDerivativePolynomial 4) (n + 1) x)
+      (thetaCuspPrimitiveRayRadialPacket u x) := by
+    simpa [thetaCuspPrimitiveRayRadialPacket, thetaCuspTailDerivative] using
+      ((((h0.add h1).add h2).add h3).add h4)
+  have hsum' : HasSum
+      (fun n : ℕ =>
+        thetaCuspPolynomialAtom (thetaCuspDensityPrimitiveRayPolynomial u) (n + 1) x)
+      (thetaCuspPrimitiveRayRadialPacket u x) := by
+    apply HasSum.congr_fun hsum
+    intro n
+    exact thetaCuspPrimitiveRayPolynomialAtom_eq_derivative_packet
+      u x (n + 1)
+  exact hsum'.tsum_eq
 
 /-- One angularly scaled radial polynomial evaluates to the original canonical density
 polynomial. -/

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DifferentialIndependence
+import Mathlib.Tactic
 
 /-!
 # Faithful observable nets of differentially independent clocks
@@ -125,6 +126,234 @@ def differentialIndependentObservableNetOrderEmbedding
   map_rel_iff' := by
     intro M N
     exact differentialIndependent_familyObservableField_le_iff hx M N
+
+/-!
+## A reversible rank-two clock shear
+
+The scalar observable filtration does not exhibit reconstruction drift under a reversible
+differential substitution.  The following rank-two shear is the first elementary counterpoint:
+the substitution and its inverse are local, but the first coordinate of the `n`-fold inverse has
+exact jet order `n`.  Differential independence turns this leading-order calculation into an exact
+finite-observable field theorem.
+-/
+
+/-- Differentiating a multi-clock observable raises every coordinate resolution by at most one. -/
+theorem differentialFamilyObservableField_deriv_mem_succ
+    {F E ι : Type*} [Field F] [Field E] [Differential F] [Differential E]
+    [Algebra F E] [DifferentialAlgebra F E]
+    (x : ι → E) (N : ι → ℕ) {z : E}
+    (hz : z ∈ differentialFamilyObservableField F x N) :
+    z′ ∈ differentialFamilyObservableField F x (fun i => N i + 1) := by
+  have hmono : differentialFamilyObservableField F x N ≤
+      differentialFamilyObservableField F x (fun i => N i + 1) :=
+    differentialFamilyObservableField_mono x (fun _ => Nat.le_succ _)
+  apply IntermediateField.adjoin_induction F
+    (s := (fun p : ι × ℕ => differentialJet p.2 (x p.1)) ''
+      differentialFamilyVisibleJetIndices N)
+    (p := fun y _ => y′ ∈ differentialFamilyObservableField F x (fun i => N i + 1))
+  · rintro y ⟨p, hp, rfl⟩
+    change p.2 < N p.1 at hp
+    rw [← differentialJet_succ]
+    apply IntermediateField.subset_adjoin F
+    exact ⟨(p.1, p.2 + 1), Nat.add_lt_add_right hp 1, rfl⟩
+  · intro c
+    rw [deriv_algebraMap]
+    exact IntermediateField.algebraMap_mem _ _
+  · intro a b ha hb hda hdb
+    rw [map_add]
+    exact IntermediateField.add_mem _ hda hdb
+  · intro a ha hda
+    rw [Derivation.leibniz_inv]
+    have hainv : a⁻¹ ∈ differentialFamilyObservableField F x (fun i => N i + 1) :=
+      IntermediateField.inv_mem _ (hmono ha)
+    have hasq : a⁻¹ ^ (2 : ℕ) ∈ differentialFamilyObservableField F x (fun i => N i + 1) :=
+      (differentialFamilyObservableField F x (fun i => N i + 1)).toSubfield.pow_mem hainv 2
+    exact IntermediateField.mul_mem _ (IntermediateField.neg_mem _ hasq) hda
+  · intro a b ha hb hda hdb
+    rw [Derivation.leibniz]
+    exact IntermediateField.add_mem _
+      (IntermediateField.mul_mem _ (hmono ha) hdb)
+      (IntermediateField.mul_mem _ (hmono hb) hda)
+  exact hz
+
+/-- The forward rank-two clock shear `(x,y) ↦ (y,x+Dy)`. -/
+def clockShearForward {E : Type*} [Field E] [Differential E] (p : E × E) : E × E :=
+  (p.2, p.1 + p.2′)
+
+/-- The backward rank-two clock shear `(x,y) ↦ (-Dx+y,x)`. -/
+def clockShearBackward {E : Type*} [Field E] [Differential E] (p : E × E) : E × E :=
+  (-p.1′ + p.2, p.1)
+
+/-- The forward clock shear followed by the backward shear is the identity. -/
+@[simp] theorem clockShearForward_backward
+    {E : Type*} [Field E] [Differential E] (p : E × E) :
+    clockShearForward (clockShearBackward p) = p := by
+  rcases p with ⟨x, y⟩
+  simp [clockShearForward, clockShearBackward]
+
+/-- The backward clock shear followed by the forward shear is the identity. -/
+@[simp] theorem clockShearBackward_forward
+    {E : Type*} [Field E] [Differential E] (p : E × E) :
+    clockShearBackward (clockShearForward p) = p := by
+  rcases p with ⟨x, y⟩
+  simp [clockShearForward, clockShearBackward]
+
+/-- The first coordinate after `n` backward clock-shear steps. -/
+def clockShearBackwardFirst {E : Type*} [Field E] [Differential E]
+    (x y : E) (n : ℕ) : E :=
+  ((clockShearBackward^[n]) (x, y)).1
+
+/-- The zeroth backward first coordinate is the original first coordinate. -/
+@[simp] theorem clockShearBackwardFirst_zero
+    {E : Type*} [Field E] [Differential E] (x y : E) :
+    clockShearBackwardFirst x y 0 = x := by
+  simp [clockShearBackwardFirst]
+
+/-- One backward step has first coordinate `-Dx+y`. -/
+@[simp] theorem clockShearBackwardFirst_one
+    {E : Type*} [Field E] [Differential E] (x y : E) :
+    clockShearBackwardFirst x y 1 = -x′ + y := by
+  simp [clockShearBackwardFirst, clockShearBackward]
+
+/-- The backward first coordinates obey a second-order differential recurrence. -/
+theorem clockShearBackwardFirst_add_two
+    {E : Type*} [Field E] [Differential E] (x y : E) (n : ℕ) :
+    clockShearBackwardFirst x y (n + 2) =
+      -(clockShearBackwardFirst x y (n + 1))′ + clockShearBackwardFirst x y n := by
+  simp only [clockShearBackwardFirst, Function.iterate_succ_apply', clockShearBackward]
+
+/-- The common finite-jet field of a rank-two clock at resolution `n`. -/
+def clockShearObservableField
+    (F : Type*) {E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (v : Fin 2 → E) (n : ℕ) : IntermediateField F E :=
+  differentialFamilyObservableField F v (fun _ => n)
+
+/-- Increasing the common resolution enlarges the clock-shear observable field. -/
+theorem clockShearObservableField_mono
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (v : Fin 2 → E) {m n : ℕ} (hmn : m ≤ n) :
+    clockShearObservableField F v m ≤ clockShearObservableField F v n :=
+  differentialFamilyObservableField_mono v (fun _ => hmn)
+
+/-- The `n`-th backward first coordinate has leading term `(-1)^n D^n x`; everything
+else is visible strictly below order `n`. -/
+theorem clockShearBackwardFirst_sub_leading_mem
+    {F E : Type*} [Field F] [Field E] [CharZero E]
+    [Differential F] [Differential E] [Algebra F E] [DifferentialAlgebra F E]
+    (v : Fin 2 → E) (hv : DifferentialIndependent F v) (n : ℕ) :
+    clockShearBackwardFirst (v 0) (v 1) n -
+        (-1 : E) ^ n * differentialJet n (v 0) ∈
+      clockShearObservableField F v n := by
+  induction n using Nat.twoStepInduction with
+  | zero =>
+      simp [clockShearObservableField]
+  | one =>
+      have hy : differentialJet 0 (v 1) ∈ clockShearObservableField F v 1 :=
+        (differentialJet_mem_differentialFamilyObservableField_iff hv
+          (fun _ : Fin 2 => 1) 1 0).2 (by simp)
+      simpa [clockShearObservableField] using hy
+  | more n ihn ihn1 =>
+      let r : E := clockShearBackwardFirst (v 0) (v 1) (n + 1) -
+        (-1 : E) ^ (n + 1) * differentialJet (n + 1) (v 0)
+      have hr : r ∈ clockShearObservableField F v (n + 1) := ihn1
+      have hr' : r′ ∈ clockShearObservableField F v (n + 2) := by
+        simpa [clockShearObservableField, r] using
+          differentialFamilyObservableField_deriv_mem_succ v (fun _ : Fin 2 => n + 1) hr
+      have hxn : differentialJet n (v 0) ∈ clockShearObservableField F v (n + 1) :=
+        (differentialJet_mem_differentialFamilyObservableField_iff hv
+          (fun _ : Fin 2 => n + 1) 0 n).2 (by omega)
+      have hbn : clockShearBackwardFirst (v 0) (v 1) n ∈
+          clockShearObservableField F v (n + 1) := by
+        have ihn' : clockShearBackwardFirst (v 0) (v 1) n -
+              (-1 : E) ^ n * differentialJet n (v 0) ∈
+            clockShearObservableField F v (n + 1) :=
+          clockShearObservableField_mono v (by omega) ihn
+        have hsign : (-1 : E) ^ n ∈ clockShearObservableField F v (n + 1) :=
+          (clockShearObservableField F v (n + 1)).toSubfield.pow_mem
+            (IntermediateField.neg_mem _ (IntermediateField.one_mem _)) n
+        have hlead : (-1 : E) ^ n * differentialJet n (v 0) ∈
+            clockShearObservableField F v (n + 1) :=
+          IntermediateField.mul_mem _ hsign hxn
+        have hadd := IntermediateField.add_mem _ ihn' hlead
+        simpa only [sub_add_cancel] using hadd
+      have hbn' : clockShearBackwardFirst (v 0) (v 1) n ∈
+          clockShearObservableField F v (n + 2) :=
+        clockShearObservableField_mono v (by omega) hbn
+      have hsum : -r′ + clockShearBackwardFirst (v 0) (v 1) n ∈
+          clockShearObservableField F v (n + 2) :=
+        IntermediateField.add_mem _ (IntermediateField.neg_mem _ hr') hbn'
+      convert hsum using 1
+      rw [clockShearBackwardFirst_add_two]
+      have hsignDeriv : ((-1 : E) ^ (n + 1))′ = 0 := by
+        simp [Derivation.leibniz_pow]
+      simp only [r, map_sub, Derivation.leibniz, hsignDeriv, differentialJet_succ]
+      simp only [pow_succ]
+      ring
+
+/-- The `n`-th backward first coordinate is visible at resolution `n+1`. -/
+theorem clockShearBackwardFirst_mem_succ
+    {F E : Type*} [Field F] [Field E] [CharZero E]
+    [Differential F] [Differential E] [Algebra F E] [DifferentialAlgebra F E]
+    (v : Fin 2 → E) (hv : DifferentialIndependent F v) (n : ℕ) :
+    clockShearBackwardFirst (v 0) (v 1) n ∈
+      clockShearObservableField F v (n + 1) := by
+  have hr := clockShearBackwardFirst_sub_leading_mem v hv n
+  have hr' : clockShearBackwardFirst (v 0) (v 1) n -
+        (-1 : E) ^ n * differentialJet n (v 0) ∈
+      clockShearObservableField F v (n + 1) :=
+    clockShearObservableField_mono v (Nat.le_succ n) hr
+  have hxn : differentialJet n (v 0) ∈ clockShearObservableField F v (n + 1) :=
+    (differentialJet_mem_differentialFamilyObservableField_iff hv
+      (fun _ : Fin 2 => n + 1) 0 n).2 (by omega)
+  have hsign : (-1 : E) ^ n ∈ clockShearObservableField F v (n + 1) :=
+    (clockShearObservableField F v (n + 1)).toSubfield.pow_mem
+      (IntermediateField.neg_mem _ (IntermediateField.one_mem _)) n
+  have hlead := IntermediateField.mul_mem _ hsign hxn
+  have hadd := IntermediateField.add_mem _ hr' hlead
+  simpa only [sub_add_cancel] using hadd
+
+/-- The `n`-th backward first coordinate is not visible strictly below its leading jet order. -/
+theorem clockShearBackwardFirst_not_mem_self
+    {F E : Type*} [Field F] [Field E] [CharZero E]
+    [Differential F] [Differential E] [Algebra F E] [DifferentialAlgebra F E]
+    (v : Fin 2 → E) (hv : DifferentialIndependent F v) (n : ℕ) :
+    clockShearBackwardFirst (v 0) (v 1) n ∉ clockShearObservableField F v n := by
+  intro hb
+  have hr := clockShearBackwardFirst_sub_leading_mem v hv n
+  have hlead : (-1 : E) ^ n * differentialJet n (v 0) ∈
+      clockShearObservableField F v n := by
+    have hsub := IntermediateField.sub_mem _ hb hr
+    simpa only [sub_sub_cancel] using hsub
+  have hsign : (-1 : E) ^ n ∈ clockShearObservableField F v n :=
+    (clockShearObservableField F v n).toSubfield.pow_mem
+      (IntermediateField.neg_mem _ (IntermediateField.one_mem _)) n
+  have hsignInv : ((-1 : E) ^ n)⁻¹ ∈ clockShearObservableField F v n :=
+    IntermediateField.inv_mem _ hsign
+  have hxn' := IntermediateField.mul_mem _ hsignInv hlead
+  have hsignne : (-1 : E) ^ n ≠ 0 := pow_ne_zero _ (neg_ne_zero.mpr one_ne_zero)
+  have hxn : differentialJet n (v 0) ∈ clockShearObservableField F v n := by
+    convert hxn' using 1
+    field_simp
+  have := (differentialJet_mem_differentialFamilyObservableField_iff hv
+    (fun _ : Fin 2 => n) 0 n).1 hxn
+  exact (Nat.lt_irrefl n this)
+
+/-- **Exact clock-shear reconstruction law.** The first coordinate after `n` backward steps is
+visible at common resolution `m` exactly when `m` exceeds `n`. -/
+theorem clockShearBackwardFirst_mem_iff
+    {F E : Type*} [Field F] [Field E] [CharZero E]
+    [Differential F] [Differential E] [Algebra F E] [DifferentialAlgebra F E]
+    (v : Fin 2 → E) (hv : DifferentialIndependent F v) (n m : ℕ) :
+    clockShearBackwardFirst (v 0) (v 1) n ∈ clockShearObservableField F v m ↔ n < m := by
+  constructor
+  · intro hmem
+    by_contra hnot
+    have hmn : m ≤ n := Nat.le_of_not_gt hnot
+    exact clockShearBackwardFirst_not_mem_self v hv n
+      (clockShearObservableField_mono v hmn hmem)
+  · intro hnm
+    exact clockShearObservableField_mono v (Nat.succ_le_iff.mpr hnm)
+      (clockShearBackwardFirst_mem_succ v hv n)
 
 end
 

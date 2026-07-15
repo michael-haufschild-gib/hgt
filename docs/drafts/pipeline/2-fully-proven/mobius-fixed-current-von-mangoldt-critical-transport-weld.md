@@ -165,6 +165,28 @@ Let `pi_sigma` be the monotone quantile coupling of the two laws.  It is determi
 epsilon E_(pi_sigma)|H_P-H_E|->0.                        (15)
 ```
 
+The same argument at second order gives more.  The residue expansions imply
+
+```text
+E[X_P^2]->2,
+E[X_E^2]=epsilon^2 A''(sigma)/A(sigma)->2.               (15a)
+```
+
+Hence both laws converge to `Exp(1)` in `W_2`.  For the same monotone coupling,
+
+```text
+epsilon^2 E_(pi_sigma)|H_P-H_E|^2->0.                    (15b)
+```
+
+In particular their centered thermal scores are coupled in `L2`:
+
+```text
+epsilon[(H_P-E H_P)-(H_E-E H_E)]->0                     (15c)
+```
+
+in the joint `L2` space.  The fixed-current transport therefore identifies the full critical
+Fisher tangent, not only the ground clock distribution and its Gini energy.
+
 ## Prime-current four-unit law `[PROVED HERE]`
 
 If `H_E'` is an independent copy of `H_E`, then `W_1` convergence and `(13)` imply uniform
@@ -297,6 +319,7 @@ codifferential estimate.
 - [x] diagonal one-clock shortcut falsified exactly
 - [x] ordered two-clock law proved
 - [x] squarefree and Euler critical clocks proved `W_1`-equivalent
+- [x] squarefree and Euler critical Fisher scores proved `W_2`-equivalent
 - [x] canonical monotone coupling constructed
 - [x] prime-current four-unit Gini law proved
 - [x] complementary packet transport cost proved vanishing

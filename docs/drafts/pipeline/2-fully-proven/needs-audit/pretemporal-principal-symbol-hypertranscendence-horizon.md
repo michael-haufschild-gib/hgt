@@ -183,17 +183,22 @@ compute a previously inaccessible law spectrum.
 
 ## 7. Elliptic-gamma target `[OPEN CORE]`
 
-For additive multiple elliptic gamma, the constraint shears reconstruct the affine translation and
-dilation algebra.  The source filtration is
+The normalized additive multiple elliptic gamma has an implicit base period `1`; scaling only its
+displayed variable and nome parameters is not a symmetry.  Adjoin the missing period `omega_0` and
+homogenize by replacing every parameter and the variable with its ratio to `omega_0`.  The resulting
+actual multiple-elliptic-gamma product has an unconditional simultaneous-scale identity in Lean.
+
+On this homogeneous carrier, the constraint shears reconstruct the affine translation and dilation
+algebra.  The source filtration is
 
 ```text
 u_n=partial_z^n Gamma_e.
 ```
 
-The remaining obligations are to put all variables in one meromorphic differential field, prove
-simultaneous-scale invariance, and prove algebraic independence of this complete translation orbit
-there.  If those obligations close, `(3)` computes the whole regular affine law spectrum rather
-than merely restating one-variable hypertranscendence.
+The remaining obligations are to put all variables in one meromorphic differential field,
+differentiate the proved value-level scale identity to the Euler Ward identity, and prove algebraic
+independence of this complete translation orbit there.  If those obligations close, `(3)` computes
+the whole regular affine law spectrum rather than merely restating one-variable hypertranscendence.
 
 ## 8. RH impact
 
@@ -214,12 +219,23 @@ with the critical-line constraint.  No such source is presently established.
 
 Every proof must be unconditional in Lean before publication.
 
+The full abstract principal-symbol theorem remains Lean-open.  Its constant-coefficient
+noncommutative affine specialization is already unconditional in
+`formal/GaloisForLFunctions/HTGeometry/AffineHypertranscendenceHorizon.lean`, including the finite
+triangular matrices, determinant argument, passage from finite packets to the infinite jet tower,
+and the exact `a != 0` equivalence.  The terminal
+`affineLaw_jet_algebraicIndependent_baseChange_iff` is stated over a proper tower
+`k subset K subset L`, so it transfers hypertranscendence over the actual coefficient field `K`
+rather than only over constants.  Period-dependent translation symbols still require the general
+principal-symbol proof because they are not constants in `k`.
+
 ## 10. Gates
 
 - [x] external object identified as a filtered constraint-compatible law algebra
 - [x] principal-symbol law stated independently of a chosen time ray
 - [x] exact characteristic-horizon theorem proved on paper
 - [x] affine Ward algebra recovered as a special case
+- [x] unconditional Lean proof of the complete affine specialization
 - [x] source assumption and physical anti-theatre boundary explicit
 - [ ] independent external novelty audit
 - [ ] unconditional Lean proof of the principal-symbol horizon theorem

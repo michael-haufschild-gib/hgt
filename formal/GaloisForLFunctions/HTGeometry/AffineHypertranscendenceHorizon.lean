@@ -299,6 +299,121 @@ theorem affineLaw_jet_algebraicIndependent_iff
   · intro ha
     exact affineLaw_jet_algebraicIndependent T E w a b x hET hEx ha hT
 
+section CoefficientField
+
+variable {K : Type*} [Field K] [Algebra k K] [Algebra K L]
+  [IsScalarTower k K L]
+
+/-- The affine jet conversion matrix after extending coefficients from the derivation-constant
+field `k` to an arbitrary intermediate coefficient field `K`. -/
+def affineJetMatrixBaseChange (a q : k) (N : ℕ) : Matrix (Fin N) (Fin N) K :=
+  (affineJetMatrix a q N).map (algebraMap k K)
+
+/-- A nonzero translation coefficient remains the exact nonsingularity condition after extending
+the coefficient field. -/
+theorem affineJetMatrixBaseChange_det_ne_zero {a q : k} (ha : a ≠ 0) (N : ℕ) :
+    (affineJetMatrixBaseChange (K := K) a q N).det ≠ 0 := by
+  have hmap := (algebraMap k K).map_det (affineJetMatrix a q N)
+  change algebraMap k K (affineJetMatrix a q N).det =
+    (affineJetMatrixBaseChange (K := K) a q N).det at hmap
+  rw [← hmap]
+  exact (map_ne_zero_iff (algebraMap k K)
+    (FaithfulSMul.algebraMap_injective k K)).mpr
+      (affineJetMatrix_det_ne_zero ha N)
+
+/-- The finite affine-law jet packet is the base-changed matrix image of the translation packet
+over every intermediate coefficient field. -/
+theorem affineJetPacket_eq_matrixLinearForms_baseChange
+    (T E : Derivation k L L) (w a b : k) (x : L)
+    (hET : ∀ y : L, E (T y) - T (E y) = w • T y)
+    (hEx : E x = 0) (N : ℕ) (i : Fin N) :
+    ((affineLawDerivation T E a b : L → L)^[(i : ℕ)] x) =
+      matrixLinearForms (affineJetMatrixBaseChange (K := K) a (b * w) N)
+        (fun j : Fin N => ((T : L → L)^[(j : ℕ)] x)) i := by
+  rw [affineJetPacket_eq_matrixLinearForms T E w a b x hET hEx N i]
+  simp [matrixLinearForms, affineJetMatrixBaseChange,
+    IsScalarTower.algebraMap_apply k K L]
+
+/-- Finite affine-law jets inherit algebraic independence over the actual coefficient field `K`,
+even though the derivations need only be linear over the smaller constant field `k`. -/
+theorem affineJetPacket_algebraicIndependent_baseChange
+    (T E : Derivation k L L) (w a b : k) (x : L)
+    (hET : ∀ y : L, E (T y) - T (E y) = w • T y)
+    (hEx : E x = 0) (ha : a ≠ 0) (N : ℕ)
+    (hT : AlgebraicIndependent K
+      (fun j : Fin N => ((T : L → L)^[(j : ℕ)] x))) :
+    AlgebraicIndependent K
+      (fun i : Fin N => ((affineLawDerivation T E a b : L → L)^[(i : ℕ)] x)) := by
+  have hrows : LinearIndependent K
+      (affineJetMatrixBaseChange (K := K) a (b * w) N).row :=
+    Matrix.linearIndependent_rows_of_det_ne_zero
+      (affineJetMatrixBaseChange_det_ne_zero (K := K) ha N)
+  have hforms := algebraicIndependent_matrixLinearForms_of_linearIndependent_rows
+    (affineJetMatrixBaseChange (K := K) a (b * w) N) hrows
+    (fun j : Fin N => ((T : L → L)^[(j : ℕ)] x)) hT
+  have hpacket :
+      (fun i : Fin N =>
+        ((affineLawDerivation T E a b : L → L)^[(i : ℕ)] x)) =
+        matrixLinearForms (affineJetMatrixBaseChange (K := K) a (b * w) N)
+          (fun j : Fin N => ((T : L → L)^[(j : ℕ)] x)) := by
+    funext i
+    exact affineJetPacket_eq_matrixLinearForms_baseChange
+      T E w a b x hET hEx N i
+  rw [hpacket]
+  exact hforms
+
+/-- Translation hypertranscendence over an arbitrary intermediate coefficient field transfers to
+every affine law having nonzero translation symbol. -/
+theorem affineLaw_jet_algebraicIndependent_baseChange
+    (T E : Derivation k L L) (w a b : k) (x : L)
+    (hET : ∀ y : L, E (T y) - T (E y) = w • T y)
+    (hEx : E x = 0) (ha : a ≠ 0)
+    (hT : AlgebraicIndependent K
+      (fun n : ℕ => ((T : L → L)^[n] x))) :
+    AlgebraicIndependent K
+      (fun n : ℕ => ((affineLawDerivation T E a b : L → L)^[n] x)) := by
+  apply algebraicIndependent_of_finite_type
+  intro s hs
+  letI : Fintype s := hs.fintype
+  let N : ℕ := s.toFinset.sup id + 1
+  let e : s → Fin N := fun i =>
+    ⟨i.1, Nat.lt_succ_of_le (Finset.le_sup (f := id)
+      (show i.1 ∈ s.toFinset by simpa using i.2))⟩
+  have he : Function.Injective e := by
+    intro i j hij
+    apply Subtype.ext
+    exact Fin.ext_iff.mp hij
+  have hTfin : AlgebraicIndependent K
+      (fun j : Fin N => ((T : L → L)^[(j : ℕ)] x)) := by
+    exact hT.comp (fun j : Fin N => (j : ℕ)) Fin.val_injective
+  have hDfin := affineJetPacket_algebraicIndependent_baseChange
+    T E w a b x hET hEx ha N hTfin
+  have hsub := hDfin.comp e he
+  simpa [Function.comp_def, e] using hsub
+
+/-- Exact coefficient-field affine horizon: under translation hypertranscendence over `K`, the
+complete mixed jet tower is algebraically independent over `K` exactly off pure dilation. -/
+theorem affineLaw_jet_algebraicIndependent_baseChange_iff
+    (T E : Derivation k L L) (w a b : k) (x : L)
+    (hET : ∀ y : L, E (T y) - T (E y) = w • T y)
+    (hEx : E x = 0)
+    (hT : AlgebraicIndependent K
+      (fun n : ℕ => ((T : L → L)^[n] x))) :
+    AlgebraicIndependent K
+        (fun n : ℕ => ((affineLawDerivation T E a b : L → L)^[n] x)) ↔
+      a ≠ 0 := by
+  constructor
+  · intro h ha
+    subst a
+    have hz : ((affineLawDerivation T E 0 b : L → L)^[1] x) = 0 := by
+      simp [affineLawDerivation_apply, hEx]
+    exact h.ne_zero 1 hz
+  · intro ha
+    exact affineLaw_jet_algebraicIndependent_baseChange
+      T E w a b x hET hEx ha hT
+
+end CoefficientField
+
 end
 
 end GaloisForLFunctions.HTGeometry

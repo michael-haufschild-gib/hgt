@@ -10,6 +10,8 @@
   - `../2-fully-proven/complementary-packet-euler-connection-weld.md`
   - `../2-fully-proven/complementary-packet-critical-gini-isometry.md`
   - `../2-fully-proven/mobius-fixed-current-von-mangoldt-critical-transport-weld.md`
+  - `../2-fully-proven/complementary-packet-affine-flux-fisher-ward-isometry.md`
+  - `../2-fully-proven/squarefree-fixed-current-right-half-ward-localization.md`
   - `../2-fully-proven/mobius-critical-fisher-tangent-hilbert-lift.md`
   - `../2-fully-proven/mobius-causal-fisher-connection-flatness.md`
   - `../2-fully-proven/gamma-damped-mobius-clock-critical-amplification.md`
@@ -219,6 +221,55 @@ defined: construct the charged anti-causal codifferential of this completed Eule
 field, prove it nonexpansive, and prove that its graph limit is the contour-jump part of
 `-2Xi'/Xi`.
 
+The incidence-to-Fisher part of that codifferential is now explicit.  On the affine packet
+cocycle, the flux of a packet difference is
+
+```text
+Phi_omega(B_k-B_h)=-(k-h)/(1+omega).                    (7m)
+```
+
+Conditional edge flux therefore sends
+
+```text
+2(B_(H')-B_H)
+```
+
+exactly to the centered Fisher coefficient `-2epsilon(H-EH)`.  The input packet energy and output
+Fisher energy both tend to four, so this Ward map is an asymptotic isometry on the distinguished
+source state.  Its critical Laguerre contact sends the score `2(1-y)` isometrically to the pole
+ground state `2e^(-y/2)`.
+
+There is also no longer a divisor ambiguity.  If
+
+```text
+J_sq(s)=-d/ds log[zeta(s)/zeta(2s)]
+        =A(s)-2A(2s),
+Q_sq(s)=Q_arch(s)+2J_sq(s),                              (7n)
+```
+
+then
+
+```text
+-2Xi'(s)/Xi(s)-Q_sq(s)=4A(2s).                          (7o)
+```
+
+The right side is holomorphic for `Re s>1/2`.  Hence `Q_sq` and `-2Xi'/Xi` have exactly the same
+strict anti-causal principal-part profile `ell_E`.  The RH-bearing seam has therefore narrowed to
+one graph equality: the completed affine-flux Ward curvature must equal the Hardy block curvature
+of `Q_sq`.
+
+For a normalized differentiable boundary-unitary source column `(A_alpha,C_alpha)` with
+`C_0=0`, twice differentiated unitarity gives
+
+```text
+||C'_0||^2
+ =-Re <A''_0,A_0>-||A'_0||^2.                           (7p)
+```
+
+The second term is nonnegative.  If the first curvature in `(7p)` is the four-unit source
+curvature fixed by `(7m)`, then `(7n)`--`(7o)` identify `C'_0=ell_E` and prove RH.  This is the
+anti-causal Ward estimate being attacked; it is no longer deferred to an unspecified readout.
+
 ## Completed incidence-curvature conjecture `[CONJECTURE]`
 
 For finite squarefree `D`, `delta>0`, and `omega>0`, there are source-defined finite relative
@@ -262,8 +313,10 @@ Sonin cutoff/resolvent, and the fixed semilocal Euler connection.  They satisfy 
    charged codifferential of the logarithmic current `(7i)`, equivalently the difference between
    the incoming Euler-pole boundary channel and the completed all-prime continuation of the same
    source connection.  The prime-power current and its Gamma completion are already fixed by
-   `(7j)` and the source identity `(7d)`; the remaining identity is the anti-causal graph
-   codifferential.  No equality defined only after naming `ell_E` is accepted.
+   `(7j)` and the source identity `(7d)`.  Equation `(7o)` proves that the completed squarefree
+   current has exactly the Xi strict anti-causal principal parts.  The remaining identity is the
+   equality between the completed affine-flux curvature and that squarefree Hardy block.  No
+   equality defined only after naming `ell_E` is accepted.
 
 5. **Cofinal graph convergence.**  On one source-defined graph core, in the order
 
@@ -418,14 +471,19 @@ is a precise research target, not an RH proof.
 - [x] normal-shift/thermal-clock diagonal shortcut rejected
 - [x] squarefree and Euler clocks coupled with vanishing critical packet cost
 - [x] four-unit Gamma/Sonin budget transferred to the Euler fixed current
+- [x] affine packet flux proved to recover the Fisher score exactly
+- [x] source packet-to-Fisher Ward map proved asymptotically isometric
+- [x] Fisher score-to-pole Laguerre contact fixed canonically
+- [x] completed squarefree current proved to have anti-causal profile `ell_E`
+- [x] boundary-unitary Ward curvature decomposition written explicitly
 - [x] semilocal Euler connection source
 - [x] orbit-diagonal, causal-derivative, and local-profile shortcuts rejected positively
 - [x] write the unframed `Comp_(omega,D)` entry by entry
 - [x] write the affine packet/Euler connection weld entry by entry
 - [x] prove the packet/Euler-connection weld preserves the critical four-unit energy
 - [ ] construct the charged anti-causal fixed-current codifferential
-- [ ] prove its source-framed nonexpansive relative estimate
-- [ ] prove its direct completed pole-to-divisor identity
+- [ ] prove the completed affine-flux curvature equals the squarefree Hardy block curvature
+- [ ] prove its source-framed nonexpansive relative estimate via `(7p)`
 - [ ] prove cofinal graph convergence to `ell_E`
 - [ ] independent specialist literature audit
 - [ ] RH

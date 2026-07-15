@@ -3,7 +3,7 @@
 - **ID:** `pretemporal-directional-hypertranscendence-dichotomy`
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** THEOREM (paper) / FOUNDATIONAL DIFFERENTIAL ALGEBRA
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [LEAN OPEN]`
+- **Scientific status:** `[PROVED HERE] [PROJECTIVE FOUNDATION LEAN] [NOVELTY UNVERIFIED]`
 - **Statement:** For a finite-dimensional constant space of derivations, with no commutativity
   assumption, the directions
   in which a fixed element is differentially algebraic form an increasing countable union of
@@ -367,6 +367,12 @@ location.  No such instantiation currently exists.
 7. Instantiate the actual regular derivation space and multiplier cocycle of elliptic gamma.
 
 No hypothesis may restate algebraic dependence of the directional jets or the desired dichotomy.
+
+The axiom-clean projective foundation is formalized in
+`formal/GaloisForLFunctions/HTGeometry/DirectionalDerivationLawSpace.lean`: directional derivations
+need not commute, the `n`-th jet is homogeneous of degree `n`, and algebraic independence of the
+complete jet tower is invariant under every nonzero rescaling of the direction.  Projective
+closedness of the finite-law strata and the uncountable-field dichotomy remain to be formalized.
 
 ## Gates
 
