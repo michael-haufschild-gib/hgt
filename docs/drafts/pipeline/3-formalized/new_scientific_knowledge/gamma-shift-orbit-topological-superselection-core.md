@@ -5,7 +5,8 @@
 - **Type:** FORMALIZATION
 - **Scientific status:** `[FORMALIZATION]` of a `[NOVELTY UNVERIFIED]` paper theorem
 - **Paper theorem:** `gamma-shift-orbit-topological-superselection-law`
-- **Lean module:** `GaloisForLFunctions.HTGeometry.OrbitChargeExactSequence`
+- **Lean modules:** `GaloisForLFunctions.HTGeometry.OrbitChargeExactSequence`,
+  `GaloisForLFunctions.HTGeometry.OrbitChargeSuperselection`
 
 ## Formalized surface
 
@@ -30,6 +31,15 @@ An explicit finite path contraction proves that every orbit datum equals its tot
 site plus a finite boundary.  Consequently the total charge is a complete invariant of finite
 shift-gauge equivalence, not merely a necessary obstruction.
 
+The multi-orbit module proves the direct-sum version:
+
+- `orbitwiseCharge_eq_zero_iff_exists_boundary`;
+- `orbitwiseData_charge_normalForm`;
+- `orbitwiseData_sameCharge_iff_boundary`.
+
+Thus the complete quotient over disjoint components is the finitely supported charge vector, not
+only a collection of separately necessary obstructions.
+
 ## Deliberate paper boundary
 
 The Lean theorem is coefficient-generic cellular algebra.  The paper theorem applies it to signed
@@ -52,13 +62,16 @@ RH architecture check rather than an RH proof step.
 
 ## Verification
 
-The previously missing exact-module object was built once with
-`+GaloisForLFunctions.HTGeometry.OrbitChargeExactSequence`.  The touched source then passed direct
-leaf compilation.  No umbrella, theorem-area, full, or self-concurrent build was run.
+The previously missing exact-module objects were built with the exact leaf targets
+`+GaloisForLFunctions.HTGeometry.OrbitChargeExactSequence` and
+`+GaloisForLFunctions.HTGeometry.OrbitChargeSuperselection`. The touched sources then passed direct
+leaf compilation and standard-axiom audits. No umbrella, theorem-area, full, or self-concurrent
+build was run.
 
 ## Gates
 
 - [x] explicit path contraction
 - [x] exactness and canonical charge normal form
 - [x] complete same-charge/gauge-equivalence law
+- [x] direct-sum multi-orbit normal form and completeness
 - [ ] formal analytic Gamma quotient group

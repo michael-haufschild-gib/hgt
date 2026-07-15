@@ -5,6 +5,7 @@
 - **Type:** THEOREM (paper) + Lean-formalized topological core
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED]`
 - **Depends on:** `signed-archimedean-gamma-orbit-charge-phase-law`
+- **Arbitrary-orientation successor:** `gamma-reflection-charge-conjugation-doubling`
 - **Statement:** At a fixed positive common scale, signed finite Gamma products modulo
   differentially algebraic rational-exponential gauges form the free abelian group on translation
   orbits.  The orbit-charge vector is a complete invariant.  Every nonzero sector consists of
@@ -238,6 +239,11 @@ additive commutative coefficient group `A`:
 The signed-Gamma analytic hypertranscendence theorem remains in its existing formal/paper modules;
 the quotient group `(6)` is paper-level because the local Lean tree does not package analytic
 Gamma products as a quotient group of meromorphic functions.
+
+`formal/GaloisForLFunctions/HTGeometry/OrbitChargeSuperselection.lean` proves the direct-sum
+multi-orbit normal form and completeness theorem. `ReflectedOrbitCharge.lean` is the
+orientation-reversal successor: it quotients positive/negative data by reflected neutral-pair
+creation and proves exact reflection-symmetry doubling.
 
 ## Gates
 

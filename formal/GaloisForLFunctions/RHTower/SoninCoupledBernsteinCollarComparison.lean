@@ -85,30 +85,44 @@ theorem bernsteinCoefficientPurity_le_two_discrepancy_add_two_mass_sq
     (m a : ℕ → ℝ) (n : ℕ) (ha : HausdorffBernsteinNonnegative a) :
     bernsteinCoefficientPurity m n ≤
       2 * bernsteinCoefficientSquareDiscrepancy m a n + 2 * a 0 ^ 2 := by
-  exact (bernsteinCoefficientPurity_le_two_discrepancy_add_two_purity m a n).trans
-    (add_le_add_left
-      (mul_le_mul_of_nonneg_left
-        (bernsteinCoefficientPurity_le_mass_sq_of_hausdorffBernsteinNonnegative ha n)
-        (by norm_num)) _)
+  calc
+    bernsteinCoefficientPurity m n ≤
+        2 * bernsteinCoefficientSquareDiscrepancy m a n +
+          2 * bernsteinCoefficientPurity a n :=
+      bernsteinCoefficientPurity_le_two_discrepancy_add_two_purity m a n
+    _ ≤ 2 * bernsteinCoefficientSquareDiscrepancy m a n + 2 * a 0 ^ 2 := by
+      gcongr
+      exact bernsteinCoefficientPurity_le_mass_sq_of_hausdorffBernsteinNonnegative ha n
 
 /-- The same mass ceiling gives the reverse comparison. -/
 theorem bernsteinCoefficientSquareDiscrepancy_le_two_purity_add_two_mass_sq
     (m a : ℕ → ℝ) (n : ℕ) (ha : HausdorffBernsteinNonnegative a) :
     bernsteinCoefficientSquareDiscrepancy m a n ≤
       2 * bernsteinCoefficientPurity m n + 2 * a 0 ^ 2 := by
-  exact (bernsteinCoefficientSquareDiscrepancy_le_two_purities m a n).trans
-    (add_le_add_left
-      (mul_le_mul_of_nonneg_left
-        (bernsteinCoefficientPurity_le_mass_sq_of_hausdorffBernsteinNonnegative ha n)
-        (by norm_num)) _)
+  calc
+    bernsteinCoefficientSquareDiscrepancy m a n ≤
+        2 * bernsteinCoefficientPurity m n +
+          2 * bernsteinCoefficientPurity a n :=
+      bernsteinCoefficientSquareDiscrepancy_le_two_purities m a n
+    _ ≤ 2 * bernsteinCoefficientPurity m n + 2 * a 0 ^ 2 := by
+      gcongr
+      exact bernsteinCoefficientPurity_le_mass_sq_of_hausdorffBernsteinNonnegative ha n
+
+/-- The normalized replica moments of the actual coupled all-prime Sonin master effect.  This
+definition is kept at the source-comparison boundary so it depends only on the exported coupled
+trace moments. -/
+def soninCoupledNormalizedReplicaMoment
+    (a : SoninPositiveAperture) (k : ℕ) : ℝ :=
+  (soninAllPrimeCoupledTraceMoment a k).re /
+    (soninAllPrimeCoupledTraceMoment a 0).re ^ (k + 1)
 
 /-- The normalized replica source has mass one at every nondegenerate coupled aperture. -/
-theorem soninAllPrimeCoupledRenyiReplicaMoment_zero_eq_one
+theorem soninCoupledNormalizedReplicaMoment_zero_eq_one
     (a : SoninCoupledNondegenerateAperture) :
-    soninAllPrimeCoupledRenyiReplicaMoment a.1 0 = 1 := by
+    soninCoupledNormalizedReplicaMoment a.1 0 = 1 := by
   have hmass : 0 < (soninAllPrimeCoupledTraceMoment a.1 0).re :=
     (soninAllPrimeCoupledTraceMoment_zero_re_pos_iff_column_ne_zero a.1).2 a.2
-  simp [soninAllPrimeCoupledRenyiReplicaMoment, hmass.ne']
+  simp [soninCoupledNormalizedReplicaMoment, hmass.ne']
 
 /-- The concrete degree-`n` Bernstein mismatch between the endpoint source and the actual
 normalized coupled-Sonin spectral source. -/
@@ -116,7 +130,7 @@ def soninCoupledEndpointBernsteinMismatch
     (a : SoninCoupledNondegenerateAperture) (n : ℕ) : ℝ :=
   bernsteinCoefficientSquareDiscrepancy
     (radiusNormalizedMoment primeArchEndpointHausdorffRadius normalizedPrimeArchMoment)
-    (soninAllPrimeCoupledRenyiReplicaMoment a.1) n
+    (soninCoupledNormalizedReplicaMoment a.1) n
 
 theorem soninCoupledEndpointBernsteinMismatch_nonneg
     (a : SoninCoupledNondegenerateAperture) (n : ℕ) :
@@ -128,13 +142,13 @@ sequence turns the endpoint purity into at most twice the concrete mismatch plus
 theorem primeArchEndpointBernsteinPurity_le_two_add_two_soninCoupledMismatch
     (a : SoninCoupledNondegenerateAperture)
     (ha : HausdorffBernsteinNonnegative
-      (soninAllPrimeCoupledRenyiReplicaMoment a.1)) (n : ℕ) :
+      (soninCoupledNormalizedReplicaMoment a.1)) (n : ℕ) :
     primeArchEndpointBernsteinPurity n ≤
       2 + 2 * soninCoupledEndpointBernsteinMismatch a n := by
   have h := bernsteinCoefficientPurity_le_two_discrepancy_add_two_mass_sq
     (radiusNormalizedMoment primeArchEndpointHausdorffRadius normalizedPrimeArchMoment)
-    (soninAllPrimeCoupledRenyiReplicaMoment a.1) n ha
-  rw [soninAllPrimeCoupledRenyiReplicaMoment_zero_eq_one a] at h
+    (soninCoupledNormalizedReplicaMoment a.1) n ha
+  rw [soninCoupledNormalizedReplicaMoment_zero_eq_one a] at h
   change primeArchEndpointBernsteinPurity n ≤ _ at h
   simpa only [soninCoupledEndpointBernsteinMismatch, one_pow, mul_one, add_comm] using h
 
@@ -143,13 +157,13 @@ twice the endpoint purity plus two. -/
 theorem soninCoupledEndpointBernsteinMismatch_le_two_add_two_primeArchEndpointPurity
     (a : SoninCoupledNondegenerateAperture)
     (ha : HausdorffBernsteinNonnegative
-      (soninAllPrimeCoupledRenyiReplicaMoment a.1)) (n : ℕ) :
+      (soninCoupledNormalizedReplicaMoment a.1)) (n : ℕ) :
     soninCoupledEndpointBernsteinMismatch a n ≤
       2 + 2 * primeArchEndpointBernsteinPurity n := by
   have h := bernsteinCoefficientSquareDiscrepancy_le_two_purity_add_two_mass_sq
     (radiusNormalizedMoment primeArchEndpointHausdorffRadius normalizedPrimeArchMoment)
-    (soninAllPrimeCoupledRenyiReplicaMoment a.1) n ha
-  rw [soninAllPrimeCoupledRenyiReplicaMoment_zero_eq_one a] at h
+    (soninCoupledNormalizedReplicaMoment a.1) n ha
+  rw [soninCoupledNormalizedReplicaMoment_zero_eq_one a] at h
   change soninCoupledEndpointBernsteinMismatch a n ≤ _ at h
   simpa only [one_pow, mul_one, add_comm] using h
 
@@ -188,7 +202,7 @@ estimate for the concrete coupled-Sonin Bernstein mismatch. -/
 theorem primeArchEndpoint_unitCollarEnvelope_iff_soninCoupledMismatch
     (a : SoninCoupledNondegenerateAperture)
     (ha : HausdorffBernsteinNonnegative
-      (soninAllPrimeCoupledRenyiReplicaMoment a.1)) :
+      (soninCoupledNormalizedReplicaMoment a.1)) :
     UnitCollarExponentialEnvelope primeArchEndpointBernsteinPurity ↔
       UnitCollarExponentialEnvelope (soninCoupledEndpointBernsteinMismatch a) :=
   unitCollarExponentialEnvelope_iff_of_twoSidedComparison

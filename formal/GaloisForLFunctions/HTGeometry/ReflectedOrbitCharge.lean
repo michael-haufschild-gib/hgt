@@ -35,29 +35,48 @@ def reflectionAntiInvariantPair {ι A : Type*} [AddCommGroup A]
     [DecidableEq ι] (r : ι ≃ ι) (i : ι) (a : A) : ι →₀ A :=
   Finsupp.single i a - Finsupp.single (r i) a
 
+/-- An involutive equivalence agrees pointwise with its inverse. -/
+theorem involutiveEquiv_symm_apply {ι : Type*} (r : ι ≃ ι)
+    (hr : Function.Involutive r) (i : ι) :
+    r.symm i = r i := by
+  apply r.injective
+  simp [hr i]
+
+@[simp]
+theorem reflectedCharge_single {ι A : Type*} [AddCommGroup A]
+    [DecidableEq ι] (r : ι ≃ ι) (i : ι) (a : A) :
+    reflectedCharge r (Finsupp.single i a) = Finsupp.single (r i) a := by
+  exact Finsupp.equivMapDomain_single r i a
+
+theorem reflectedCharge_sub {ι A : Type*} [AddCommGroup A]
+    (r : ι ≃ ι) (p q : ι →₀ A) :
+    reflectedCharge r (p - q) = reflectedCharge r p - reflectedCharge r q := by
+  ext i
+  simp [reflectedCharge, Finsupp.equivMapDomain_apply]
+
 /-- Reindexing twice by an involutive orbit reflection returns the original charge. -/
 theorem reflectedCharge_involutive {ι A : Type*} [AddCommGroup A]
     (r : ι ≃ ι) (hr : Function.Involutive r) (q : ι →₀ A) :
     reflectedCharge r (reflectedCharge r q) = q := by
-  rw [reflectedCharge, reflectedCharge, ← Finsupp.equivMapDomain_trans]
-  have hrefl : r.trans r = Equiv.refl ι := Equiv.ext hr
-  rw [hrefl]
-  rfl
+  ext i
+  simp [reflectedCharge, Finsupp.equivMapDomain_apply,
+    involutiveEquiv_symm_apply r hr, hr i]
 
 /-- Charge conjugation is itself an involution. -/
 theorem chargeConjugate_involutive {ι A : Type*} [AddCommGroup A]
     (r : ι ≃ ι) (hr : Function.Involutive r) (q : ι →₀ A) :
     chargeConjugate r (chargeConjugate r q) = q := by
-  simp [chargeConjugate, reflectedCharge, ← Finsupp.equivMapDomain_trans,
-    Equiv.ext hr]
+  ext i
+  simp [chargeConjugate, reflectedCharge, Finsupp.equivMapDomain_apply,
+    involutiveEquiv_symm_apply r hr, hr i]
 
 /-- A reflected pair is fixed by charge conjugation. -/
 theorem reflectionAntiInvariantPair_conjugate {ι A : Type*} [AddCommGroup A]
     [DecidableEq ι] (r : ι ≃ ι) (hr : Function.Involutive r) (i : ι) (a : A) :
     chargeConjugate r (reflectionAntiInvariantPair r i a) =
       reflectionAntiInvariantPair r i a := by
-  simp [chargeConjugate, reflectedCharge, reflectionAntiInvariantPair,
-    Finsupp.equivMapDomain_single, hr i]
+  rw [chargeConjugate, reflectionAntiInvariantPair, reflectedCharge_sub,
+    reflectedCharge_single, reflectedCharge_single, hr i]
   abel
 
 /-- A conjugation-symmetric integral charge vanishes at every fixed orbit label. -/
@@ -109,7 +128,7 @@ theorem chargeConjugate_support_card_two_le
     rcases hj with rfl | rfl
     · exact Finsupp.mem_support_iff.mpr hi
     · exact Finsupp.mem_support_iff.mpr hpairne
-  have hcard : ({i, r i} : Finset ι).card = 2 := by simp [hri]
+  have hcard : ({i, r i} : Finset ι).card = 2 := by simp [Ne.symm hri]
   rw [← hcard]
   exact Finset.card_le_card hsub
 
@@ -155,7 +174,13 @@ theorem orientedCharge_eq_iff_difference_reflectionNeutralPair
       ext i
       have hi := DFunLike.congr_fun h i
       simp [orientedCharge, reflectedCharge, Finsupp.equivMapDomain_apply] at hi ⊢
-      abel
+      calc
+        pPlus i - qPlus i =
+            (pPlus i - pMinus (r.symm i)) + (pMinus (r.symm i) - qPlus i) := by
+              abel
+        _ = (qPlus i - qMinus (r.symm i)) +
+            (pMinus (r.symm i) - qPlus i) := by rw [hi]
+        _ = pMinus (r.symm i) - qMinus (r.symm i) := by abel
     · simp [reflectionNeutralPair]
   · rintro ⟨g, h⟩
     have hp := congrArg Prod.fst h
@@ -163,10 +188,18 @@ theorem orientedCharge_eq_iff_difference_reflectionNeutralPair
     simp [reflectionNeutralPair] at hp hm
     ext i
     simp [orientedCharge, reflectedCharge, Finsupp.equivMapDomain_apply] at hp hm ⊢
-    have hpg := DFunLike.congr_fun hp i
-    have hmg := DFunLike.congr_fun hm (r.symm i)
-    simp only [r.apply_symm_apply] at hmg
-    abel
+    have hpg : pPlus i - qPlus i = g (r.symm i) := by
+      simpa [reflectedCharge, Finsupp.equivMapDomain_apply] using DFunLike.congr_fun hp i
+    have hmg : pMinus (r.symm i) - qMinus (r.symm i) = g (r.symm i) := by
+      exact DFunLike.congr_fun hm (r.symm i)
+    have heq : pPlus i - qPlus i =
+        pMinus (r.symm i) - qMinus (r.symm i) := hpg.trans hmg.symm
+    calc
+      pPlus i - pMinus (r.symm i) =
+          (pPlus i - qPlus i) + (qPlus i - pMinus (r.symm i)) := by abel
+      _ = (pMinus (r.symm i) - qMinus (r.symm i)) +
+          (qPlus i - pMinus (r.symm i)) := by rw [heq]
+      _ = qPlus i - qMinus (r.symm i) := by abel
 
 end
 

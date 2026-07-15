@@ -1,4 +1,8 @@
 import GaloisForLFunctions.HTGeometry.QuantumChannelEnergyAugmentation
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtCompact
+import Mathlib.Analysis.InnerProductSpace.StarOrder
+import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Basic
+import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Commute
 
 /-!
 # Hausdorff convexity of quantum replica moments
@@ -492,6 +496,459 @@ theorem quantumMasterEffectReplicaMoment_secondDifference_nonneg
       field_simp
     rw [heq]
     exact div_nonneg hdiff (pow_nonneg hmassPos.le _)
+
++def quantumMasterEffectComplement (R : ℝ) (C : E →L[ℂ] F) : E →L[ℂ] E :=
+  (R : ℂ) • (1 : E →L[ℂ] E) - quantumChannelEffect C
+
+theorem adjoint_quantumMasterEffectComplement (R : ℝ) (C : E →L[ℂ] F) :
+    ContinuousLinearMap.adjoint (quantumMasterEffectComplement R C) =
+      quantumMasterEffectComplement R C := by
+  let adj : (E →L[ℂ] E) ≃ₗᵢ⋆[ℂ] (E →L[ℂ] E) :=
+    ContinuousLinearMap.adjoint
+  change adj ((R : ℂ) • (1 : E →L[ℂ] E) - quantumChannelEffect C) = _
+  rw [map_sub adj, adj.map_smulₛₗ, ContinuousLinearMap.adjoint_one]
+  rw [quantumMasterEffectComplement]
+  have hstar : (starRingEnd ℂ) (R : ℂ) = (R : ℂ) := by simp
+  rw [hstar]
+  change (R : ℂ) • (1 : E →L[ℂ] E) -
+      ContinuousLinearMap.adjoint (quantumChannelEffect C) =
+    (R : ℂ) • (1 : E →L[ℂ] E) - quantumChannelEffect C
+  rw [adjoint_quantumChannelEffect]
+
+theorem quantumMasterEffectComplement_isPositive
+    {C : E →L[ℂ] F} {R : ℝ} (hR : ‖C‖ ^ 2 ≤ R) :
+    (quantumMasterEffectComplement R C).IsPositive := by
+  rw [ContinuousLinearMap.isPositive_def']
+  refine ⟨adjoint_quantumMasterEffectComplement R C, fun x => ?_⟩
+  have hCx : ‖C x‖ ^ 2 ≤ R * ‖x‖ ^ 2 := by
+    calc
+      ‖C x‖ ^ 2 ≤ (‖C‖ * ‖x‖) ^ 2 := by
+        gcongr
+        exact C.le_opNorm x
+      _ = ‖C‖ ^ 2 * ‖x‖ ^ 2 := by ring
+      _ ≤ R * ‖x‖ ^ 2 :=
+        mul_le_mul_of_nonneg_right hR (sq_nonneg ‖x‖)
+  rw [ContinuousLinearMap.reApplyInnerSelf_apply]
+  simp only [quantumMasterEffectComplement, ContinuousLinearMap.sub_apply,
+    ContinuousLinearMap.smul_apply, ContinuousLinearMap.one_apply,
+    inner_sub_left, inner_smul_left, map_sub]
+  rw [quantumChannelEffect, ContinuousLinearMap.comp_apply,
+    ContinuousLinearMap.adjoint_inner_left, inner_self_eq_norm_sq_to_K]
+  have hreC : RCLike.re ⟪C x, C x⟫_ℂ = ‖C x‖ ^ 2 :=
+    inner_self_eq_norm_sq _
+  rw [hreC]
+  simpa [pow_two, Complex.mul_re] using (sub_nonneg.mpr hCx)
+
+theorem quantumMasterEffectComplement_nonneg
+    {C : E →L[ℂ] F} {R : ℝ} (hR : ‖C‖ ^ 2 ≤ R) :
+    0 ≤ quantumMasterEffectComplement R C := by
+  simpa [ContinuousLinearMap.le_def] using
+    quantumMasterEffectComplement_isPositive (C := C) hR
+
+def quantumMasterEffectComplementSqrt (R : ℝ) (C : E →L[ℂ] F) : E →L[ℂ] E :=
+  CFC.sqrt (quantumMasterEffectComplement R C)
+
+theorem quantumMasterEffectComplementSqrt_sq
+    {C : E →L[ℂ] F} {R : ℝ} (hR : ‖C‖ ^ 2 ≤ R) :
+    quantumMasterEffectComplementSqrt R C ^ 2 =
+      quantumMasterEffectComplement R C := by
+  exact CFC.sq_sqrt _ (quantumMasterEffectComplement_nonneg hR)
+
+theorem quantumMasterEffectComplementSqrt_isSelfAdjoint
+    (R : ℝ) (C : E →L[ℂ] F) :
+    IsSelfAdjoint (quantumMasterEffectComplementSqrt R C) :=
+  IsSelfAdjoint.of_nonneg (CFC.sqrt_nonneg _)
+
+theorem quantumChannelEffect_commute_complement (R : ℝ) (C : E →L[ℂ] F) :
+    Commute (quantumChannelEffect C) (quantumMasterEffectComplement R C) := by
+  change quantumChannelEffect C * quantumMasterEffectComplement R C =
+    quantumMasterEffectComplement R C * quantumChannelEffect C
+  simp [quantumMasterEffectComplement, mul_sub, sub_mul]
+
+theorem quantumChannelEffect_commute_complementSqrt (R : ℝ) (C : E →L[ℂ] F) :
+    Commute (quantumChannelEffect C) (quantumMasterEffectComplementSqrt R C) := by
+  exact ((quantumChannelEffect_commute_complement R C).symm.cfcₙ_nnreal NNReal.sqrt).symm
+
+private theorem commute_sandwich_pow
+    {A : Type*} [Monoid A] {T D : A} (h : Commute T D) (p r : ℕ) :
+    D ^ r * T ^ p * T * T ^ p * D ^ r =
+      T ^ (2 * p + 1) * (D ^ 2) ^ r := by
+  have hTp : T ^ p * T * T ^ p = T ^ (2 * p + 1) := by
+    rw [← pow_succ, ← pow_add]
+    congr 1
+    omega
+  calc
+    D ^ r * T ^ p * T * T ^ p * D ^ r =
+        D ^ r * (T ^ p * T * T ^ p) * D ^ r := by
+      simp only [mul_assoc]
+    _ = D ^ r * T ^ (2 * p + 1) * D ^ r := by rw [hTp]
+    _ = T ^ (2 * p + 1) * (D ^ r * D ^ r) := by
+      rw [(h.symm.pow_pow r (2 * p + 1)).eq]
+      simp only [mul_assoc]
+    _ = T ^ (2 * p + 1) * D ^ (2 * r) := by
+      rw [← pow_add]
+      congr 2
+      omega
+    _ = T ^ (2 * p + 1) * (D ^ 2) ^ r := by
+      rw [pow_mul]
+
+private theorem commute_even_sandwich_pow
+    {A : Type*} [Monoid A] {T D : A} (h : Commute T D) (p r : ℕ) :
+    D ^ r * T ^ (p + 1) * T ^ (p + 1) * D ^ r =
+      T ^ (2 * p + 2) * (D ^ 2) ^ r := by
+  have hTp : T ^ (p + 1) * T ^ (p + 1) = T ^ (2 * p + 2) := by
+    rw [← pow_add]
+    congr 1
+    omega
+  calc
+    D ^ r * T ^ (p + 1) * T ^ (p + 1) * D ^ r =
+        D ^ r * (T ^ (p + 1) * T ^ (p + 1)) * D ^ r := by
+      simp only [mul_assoc]
+    _ = D ^ r * T ^ (2 * p + 2) * D ^ r := by rw [hTp]
+    _ = T ^ (2 * p + 2) * (D ^ r * D ^ r) := by
+      rw [(h.symm.pow_pow r (2 * p + 2)).eq]
+      simp only [mul_assoc]
+    _ = T ^ (2 * p + 2) * D ^ (2 * r) := by
+      rw [← pow_add]
+      congr 2
+      omega
+    _ = T ^ (2 * p + 2) * (D ^ 2) ^ r := by
+      rw [pow_mul]
+
+/-- Real trace of `T^(k+1) (R I - T)^r`, where `T = C†C`. -/
+def quantumMasterEffectWeightedMoment
+    (R : ℝ) (C : E →L[ℂ] F) (k r : ℕ) : ℝ :=
+  (ContinuousLinearMap.opTrace
+    (quantumChannelEffect C ^ (k + 1) *
+      quantumMasterEffectComplement R C ^ r)).re
+
+/-- Rectangular square root of the weighted effect monomial at even moment degree. -/
+def quantumMasterEffectWeightedPowerColumn
+    (R : ℝ) (C : E →L[ℂ] F) (n r : ℕ) : E →L[ℂ] F :=
+  C ∘L (quantumChannelEffect C ^ n *
+    quantumMasterEffectComplementSqrt R C ^ r)
+
+/-- Endomorphic square root of the weighted effect monomial at odd moment degree. -/
+def quantumMasterEffectWeightedEffectPower
+    (R : ℝ) (C : E →L[ℂ] F) (n r : ℕ) : E →L[ℂ] E :=
+  quantumChannelEffect C ^ (n + 1) *
+    quantumMasterEffectComplementSqrt R C ^ r
+
+theorem quantumMasterEffectWeightedPowerColumn_isHilbertSchmidt
+    {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C)
+    (R : ℝ) (n r : ℕ) :
+    ContinuousLinearMap.IsHilbertSchmidt
+      (quantumMasterEffectWeightedPowerColumn R C n r) :=
+  hC.comp_right _
+
+theorem quantumMasterEffectWeightedEffectPower_isHilbertSchmidt
+    {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C)
+    (R : ℝ) (n r : ℕ) :
+    ContinuousLinearMap.IsHilbertSchmidt
+      (quantumMasterEffectWeightedEffectPower R C n r) :=
+  (quantumChannelEffect_pow_isHilbertSchmidt hC (n := n + 1) (by omega)).comp_right _
+
+theorem adjoint_comp_quantumMasterEffectWeightedPowerColumn
+    {C : E →L[ℂ] F} {R : ℝ} (hR : ‖C‖ ^ 2 ≤ R) (n r : ℕ) :
+    ContinuousLinearMap.adjoint (quantumMasterEffectWeightedPowerColumn R C n r) ∘L
+        quantumMasterEffectWeightedPowerColumn R C n r =
+      quantumChannelEffect C ^ (2 * n + 1) *
+        quantumMasterEffectComplement R C ^ r := by
+  let T := quantumChannelEffect C
+  let D := quantumMasterEffectComplementSqrt R C
+  let B := quantumMasterEffectComplement R C
+  have hTadj : ContinuousLinearMap.adjoint T = T :=
+    adjoint_quantumChannelEffect C
+  have hDadj : ContinuousLinearMap.adjoint D = D :=
+    quantumMasterEffectComplementSqrt_isSelfAdjoint R C
+  have hcomm : Commute T D :=
+    quantumChannelEffect_commute_complementSqrt R C
+  have hsquare : D ^ 2 = B :=
+    quantumMasterEffectComplementSqrt_sq hR
+  have hAdjPow : ContinuousLinearMap.adjoint (T ^ n * D ^ r) =
+      D ^ r * T ^ n := by
+    change star (T ^ n * D ^ r) = D ^ r * T ^ n
+    rw [star_mul, star_pow, star_pow]
+    change ContinuousLinearMap.adjoint D ^ r *
+      ContinuousLinearMap.adjoint T ^ n = D ^ r * T ^ n
+    rw [hTadj, hDadj]
+  change ContinuousLinearMap.adjoint (C ∘L (T ^ n * D ^ r)) ∘L
+      (C ∘L (T ^ n * D ^ r)) = T ^ (2 * n + 1) * B ^ r
+  rw [ContinuousLinearMap.adjoint_comp]
+  rw [hAdjPow]
+  change (D ^ r * T ^ n) * (ContinuousLinearMap.adjoint C ∘L C) *
+      (T ^ n * D ^ r) = T ^ (2 * n + 1) * B ^ r
+  change (D ^ r * T ^ n) * T * (T ^ n * D ^ r) =
+      T ^ (2 * n + 1) * B ^ r
+  calc
+    (D ^ r * T ^ n) * T * (T ^ n * D ^ r) =
+        D ^ r * T ^ n * T * T ^ n * D ^ r := by
+      simp only [mul_assoc]
+    _ = T ^ (2 * n + 1) * (D ^ 2) ^ r :=
+      commute_sandwich_pow hcomm n r
+    _ = T ^ (2 * n + 1) * B ^ r := by rw [hsquare]
+
+theorem adjoint_comp_quantumMasterEffectWeightedEffectPower
+    {C : E →L[ℂ] F} {R : ℝ} (hR : ‖C‖ ^ 2 ≤ R) (n r : ℕ) :
+    ContinuousLinearMap.adjoint (quantumMasterEffectWeightedEffectPower R C n r) ∘L
+        quantumMasterEffectWeightedEffectPower R C n r =
+      quantumChannelEffect C ^ (2 * n + 2) *
+        quantumMasterEffectComplement R C ^ r := by
+  let T := quantumChannelEffect C
+  let D := quantumMasterEffectComplementSqrt R C
+  let B := quantumMasterEffectComplement R C
+  have hTadj : ContinuousLinearMap.adjoint T = T :=
+    adjoint_quantumChannelEffect C
+  have hDadj : ContinuousLinearMap.adjoint D = D :=
+    quantumMasterEffectComplementSqrt_isSelfAdjoint R C
+  have hcomm : Commute T D :=
+    quantumChannelEffect_commute_complementSqrt R C
+  have hsquare : D ^ 2 = B :=
+    quantumMasterEffectComplementSqrt_sq hR
+  have hAdjPow : ContinuousLinearMap.adjoint (T ^ (n + 1) * D ^ r) =
+      D ^ r * T ^ (n + 1) := by
+    change star (T ^ (n + 1) * D ^ r) = D ^ r * T ^ (n + 1)
+    rw [star_mul, star_pow, star_pow]
+    change ContinuousLinearMap.adjoint D ^ r *
+      ContinuousLinearMap.adjoint T ^ (n + 1) =
+        D ^ r * T ^ (n + 1)
+    rw [hTadj, hDadj]
+  change ContinuousLinearMap.adjoint (T ^ (n + 1) * D ^ r) ∘L
+      (T ^ (n + 1) * D ^ r) = T ^ (2 * n + 2) * B ^ r
+  rw [hAdjPow]
+  calc
+    (D ^ r * T ^ (n + 1)) * (T ^ (n + 1) * D ^ r) =
+        D ^ r * T ^ (n + 1) * T ^ (n + 1) * D ^ r := by
+      simp only [mul_assoc]
+    _ = T ^ (2 * n + 2) * (D ^ 2) ^ r :=
+      commute_even_sandwich_pow hcomm n r
+    _ = T ^ (2 * n + 2) * B ^ r := by rw [hsquare]
+
+/-- Even weighted moments are squared Hilbert--Schmidt norms of rectangular columns. -/
+theorem quantumMasterEffectWeightedMoment_even_eq_hsNormSq
+    {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C)
+    {R : ℝ} (hR : ‖C‖ ^ 2 ≤ R) (n r : ℕ) :
+    quantumMasterEffectWeightedMoment R C (2 * n) r =
+      ContinuousLinearMap.hsNormSq
+        (quantumMasterEffectWeightedPowerColumn R C n r) := by
+  rw [quantumMasterEffectWeightedMoment]
+  rw [← adjoint_comp_quantumMasterEffectWeightedPowerColumn hR n r]
+  exact ContinuousLinearMap.re_opTrace_adjoint_comp_self
+    (quantumMasterEffectWeightedPowerColumn_isHilbertSchmidt hC R n r)
+
+/-- Odd weighted moments are squared Hilbert--Schmidt norms of endomorphic powers. -/
+theorem quantumMasterEffectWeightedMoment_odd_eq_hsNormSq
+    {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C)
+    {R : ℝ} (hR : ‖C‖ ^ 2 ≤ R) (n r : ℕ) :
+    quantumMasterEffectWeightedMoment R C (2 * n + 1) r =
+      ContinuousLinearMap.hsNormSq
+        (quantumMasterEffectWeightedEffectPower R C n r) := by
+  rw [quantumMasterEffectWeightedMoment]
+  rw [show 2 * n + 1 + 1 = 2 * n + 2 by omega]
+  rw [← adjoint_comp_quantumMasterEffectWeightedEffectPower hR n r]
+  exact ContinuousLinearMap.re_opTrace_adjoint_comp_self
+    (quantumMasterEffectWeightedEffectPower_isHilbertSchmidt hC R n r)
+
+/-- Every operator-weighted Hausdorff monomial has nonnegative trace. -/
+theorem quantumMasterEffectWeightedMoment_nonneg
+    {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C)
+    {R : ℝ} (hR : ‖C‖ ^ 2 ≤ R) (k r : ℕ) :
+    0 ≤ quantumMasterEffectWeightedMoment R C k r := by
+  obtain ⟨n, h | h⟩ := Nat.even_or_odd' k
+  · subst k
+    rw [quantumMasterEffectWeightedMoment_even_eq_hsNormSq hC hR]
+    exact ContinuousLinearMap.hsNormSq_nonneg _
+  · subst k
+    rw [quantumMasterEffectWeightedMoment_odd_eq_hsNormSq hC hR]
+    exact ContinuousLinearMap.hsNormSq_nonneg _
+
+private theorem opTrace_sub_eq_sub_of_summable_diag
+    (S T : E →L[ℂ] E)
+    (hS : Summable (fun i => inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
+      (S (ContinuousLinearMap.hsBasis ℂ E i))))
+    (hT : Summable (fun i => inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
+      (T (ContinuousLinearMap.hsBasis ℂ E i)))) :
+    ContinuousLinearMap.opTrace (S - T) =
+      ContinuousLinearMap.opTrace S - ContinuousLinearMap.opTrace T := by
+  unfold ContinuousLinearMap.opTrace
+  calc
+    ∑' i, inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
+        ((S - T) (ContinuousLinearMap.hsBasis ℂ E i)) =
+        ∑' i, (inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
+          (S (ContinuousLinearMap.hsBasis ℂ E i)) -
+          inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
+            (T (ContinuousLinearMap.hsBasis ℂ E i))) := by
+      exact tsum_congr fun i => by
+        rw [ContinuousLinearMap.sub_apply, inner_sub_right]
+    _ = _ := hS.tsum_sub hT
+
+private theorem opTrace_smul_eq_of_summable_diag
+    (c : ℂ) (S : E →L[ℂ] E)
+    (hS : Summable (fun i => inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
+      (S (ContinuousLinearMap.hsBasis ℂ E i)))) :
+    ContinuousLinearMap.opTrace (c • S) =
+      c * ContinuousLinearMap.opTrace S := by
+  unfold ContinuousLinearMap.opTrace
+  rw [← tsum_mul_left]
+  exact tsum_congr fun i => by
+    rw [ContinuousLinearMap.smul_apply, inner_smul_right]
+
+theorem summable_inner_diag_quantumMasterEffectWeighted
+    {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C)
+    (R : ℝ) (k r : ℕ) :
+    Summable (fun i => inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
+      ((quantumChannelEffect C ^ (k + 1) *
+        quantumMasterEffectComplement R C ^ r)
+          (ContinuousLinearMap.hsBasis ℂ E i))) := by
+  let T := quantumChannelEffect C
+  let B := quantumMasterEffectComplement R C
+  let A : E →L[ℂ] F := C ∘L (T ^ k * B ^ r)
+  have hA : ContinuousLinearMap.IsHilbertSchmidt A := hC.comp_right _
+  have hsum := ContinuousLinearMap.summable_inner_diag_comp
+    hC.adjoint hA (ContinuousLinearMap.hsBasis ℂ E)
+  have hfactor : ContinuousLinearMap.adjoint C ∘L A =
+      T ^ (k + 1) * B ^ r := by
+    change T * (T ^ k * B ^ r) = T ^ (k + 1) * B ^ r
+    rw [← pow_succ']
+  exact hsum.congr fun i => by rw [hfactor]
+
+theorem quantumMasterEffect_weightedOperator_succ
+    (R : ℝ) (C : E →L[ℂ] F) (k r : ℕ) :
+    quantumChannelEffect C ^ (k + 1) *
+        quantumMasterEffectComplement R C ^ (r + 1) =
+      (R : ℂ) •
+          (quantumChannelEffect C ^ (k + 1) *
+            quantumMasterEffectComplement R C ^ r) -
+        quantumChannelEffect C ^ (k + 2) *
+          quantumMasterEffectComplement R C ^ r := by
+  let T := quantumChannelEffect C
+  let B := quantumMasterEffectComplement R C
+  change T ^ (k + 1) * B ^ (r + 1) =
+    (R : ℂ) • (T ^ (k + 1) * B ^ r) - T ^ (k + 2) * B ^ r
+  rw [pow_succ']
+  rw [show B = (R : ℂ) • (1 : E →L[ℂ] E) - T by
+    rfl]
+  rw [mul_sub, sub_mul]
+  simp only [mul_smul_comm, mul_one, smul_mul_assoc]
+  rw [← pow_succ]
+
+/-- Multiplication by the complement `R I - T` is exactly one scaled Hausdorff difference. -/
+/-
+theorem quantumMasterEffectWeightedMoment_succ
+    {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C)
+    (R : ℝ) (k r : ℕ) :
+    quantumMasterEffectWeightedMoment R C k (r + 1) =
+      R * quantumMasterEffectWeightedMoment R C k r -
+        quantumMasterEffectWeightedMoment R C (k + 1) r := by
+  let A := quantumChannelEffect C ^ (k + 1) *
+    quantumMasterEffectComplement R C ^ r
+  let A' := quantumChannelEffect C ^ (k + 2) *
+    quantumMasterEffectComplement R C ^ r
+  have hA := summable_inner_diag_quantumMasterEffectWeighted hC R k r
+  have hA' := summable_inner_diag_quantumMasterEffectWeighted hC R (k + 1) r
+  rw [quantumMasterEffectWeightedMoment,
+    quantumMasterEffect_weightedOperator_succ]
+  rw [opTrace_sub_eq_sub_of_summable_diag ((R : ℂ) • A) A'
+    (hA.smul (R : ℂ)) hA']
+  rw [opTrace_smul_eq_of_summable_diag (R : ℂ) A hA]
+  simp only [Complex.sub_re, Complex.mul_re, Complex.ofReal_re,
+    Complex.ofReal_im, zero_mul, sub_zero]
+  rfl
+
+/-- Recursive `R`-scaled complementary difference of the master-effect trace moments. -/
+def quantumMasterEffectScaledDifference
+    (R : ℝ) (C : E →L[ℂ] F) (k : ℕ) : ℕ → ℝ
+  | 0 => quantumMasterEffectMoment C k
+  | r + 1 => R * quantumMasterEffectScaledDifference R C k r -
+      quantumMasterEffectScaledDifference R C (k + 1) r
+
+/-- The recursive scaled difference is the trace of the positive operator monomial
+`T^(k+1) (R I - T)^r`. -/
+theorem quantumMasterEffectScaledDifference_eq_weightedMoment
+    {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C)
+    (R : ℝ) (k r : ℕ) :
+    quantumMasterEffectScaledDifference R C k r =
+      quantumMasterEffectWeightedMoment R C k r := by
+  induction r generalizing k with
+  | zero =>
+      simp [quantumMasterEffectScaledDifference,
+        quantumMasterEffectWeightedMoment, quantumMasterEffectMoment]
+  | succ r ih =>
+      rw [quantumMasterEffectScaledDifference, ih k, ih (k + 1),
+        ← quantumMasterEffectWeightedMoment_succ hC R k r]
+
+/-- **All-order bounded-effect Hausdorff law.**  A channel radius `‖C‖² ≤ R` makes
+every scaled complementary difference of the positive master-effect moments nonnegative. -/
+theorem quantumMasterEffectScaledDifference_nonneg
+    {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C)
+    {R : ℝ} (hR : ‖C‖ ^ 2 ≤ R) (k r : ℕ) :
+    0 ≤ quantumMasterEffectScaledDifference R C k r := by
+  rw [quantumMasterEffectScaledDifference_eq_weightedMoment hC]
+  exact quantumMasterEffectWeightedMoment_nonneg hC hR k r
+
+/-- The operator-norm square of a Hilbert--Schmidt channel is at most its total HS mass. -/
+theorem sq_opNorm_le_quantumMasterEffectMass
+    {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C) :
+    ‖C‖ ^ 2 ≤ quantumMasterEffectMass C := by
+  have hop := ContinuousLinearMap.opNorm_le_hsNorm hC
+  have hsquare : ‖C‖ ^ 2 ≤ ContinuousLinearMap.hsNorm C ^ 2 := by
+    nlinarith [norm_nonneg C, ContinuousLinearMap.hsNorm_nonneg C]
+  calc
+    ‖C‖ ^ 2 ≤ ContinuousLinearMap.hsNorm C ^ 2 := hsquare
+    _ = quantumMasterEffectMass C := by
+      rw [ContinuousLinearMap.hsNorm,
+        Real.sq_sqrt (ContinuousLinearMap.hsNormSq_nonneg C)]
+      rfl
+
+/-- Recursive complementary difference of the density-normalized replica moments. -/
+def quantumMasterEffectReplicaDifference
+    (C : E →L[ℂ] F) (k : ℕ) : ℕ → ℝ
+  | 0 => quantumMasterEffectReplicaMoment C k
+  | r + 1 => quantumMasterEffectReplicaDifference C k r -
+      quantumMasterEffectReplicaDifference C (k + 1) r
+
+theorem quantumMasterEffectReplicaDifference_eq_scaledDifference_div
+    {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C)
+    (hmass : quantumMasterEffectMass C ≠ 0) (k r : ℕ) :
+    quantumMasterEffectReplicaDifference C k r =
+      quantumMasterEffectScaledDifference (quantumMasterEffectMass C) C k r /
+        quantumMasterEffectMass C ^ (k + r + 1) := by
+  induction r generalizing k with
+  | zero =>
+      simp [quantumMasterEffectReplicaDifference,
+        quantumMasterEffectScaledDifference, quantumMasterEffectReplicaMoment]
+  | succ r ih =>
+      rw [quantumMasterEffectReplicaDifference, ih k, ih (k + 1),
+        quantumMasterEffectScaledDifference]
+      field_simp [hmass]
+      ring
+
+/-- **Complete quantum Hausdorff positivity.**  Every density-operator replica sequence has
+all complementary finite differences nonnegative. -/
+theorem quantumMasterEffectReplicaDifference_nonneg
+    {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C)
+    (k r : ℕ) :
+    0 ≤ quantumMasterEffectReplicaDifference C k r := by
+  by_cases hmass : quantumMasterEffectMass C = 0
+  · have hCzero : C = 0 :=
+      (ContinuousLinearMap.hsNormSq_eq_zero_iff hC).mp hmass
+    subst C
+    have hzero : ∀ j, quantumMasterEffectReplicaDifference
+        (0 : E →L[ℂ] F) j r = 0 := by
+      intro j
+      induction r generalizing j with
+      | zero =>
+          simp [quantumMasterEffectReplicaDifference,
+            quantumMasterEffectReplicaMoment, quantumMasterEffectMoment,
+            quantumMasterEffectMass, quantumChannelEffect]
+      | succ r ih =>
+          rw [quantumMasterEffectReplicaDifference, ih j, ih (j + 1), sub_self]
+    rw [hzero k]
+  · rw [quantumMasterEffectReplicaDifference_eq_scaledDifference_div hC hmass]
+    exact div_nonneg
+      (quantumMasterEffectScaledDifference_nonneg hC
+        (sq_opNorm_le_quantumMasterEffectMass hC) k r)
+      (pow_nonneg (ContinuousLinearMap.hsNormSq_nonneg C) _)
 
 /-! ### Homogeneous replica log-convexity -/
 

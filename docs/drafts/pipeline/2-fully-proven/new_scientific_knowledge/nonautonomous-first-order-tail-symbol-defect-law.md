@@ -263,11 +263,25 @@ rescaling `v |-> a v`, it proves invariance of the integer Laurent weight and th
 `q_0 = sigma(q_1) a^k`, including negative `k`.  It also proves the weight-zero escape: subtracting
 the infinity value of a genuinely vertical fraction produces strictly negative Laurent weight.
 
-The remaining stage-3 obligation is to package arbitrary order-at-most-one elements of the free
-differential rational field as these polynomial fractions, and connect that concrete carrier to
-the existing nonautonomous tail interface.  The algebraic Laurent step and all of Theorem B are no
-longer open, but the carrier-to-symbol converse is not hidden by an abstract hypothesis, so the
-card remains at stage 2.
+`formal/GaloisForLFunctions/HTGeometry/FirstOrderRationalTailSymbol.lean` supplies the concrete
+first-order carrier.  It constructs the injective rational-function homomorphism induced by an
+injective coefficient-field map and a nonzero vertical Jacobian, identifies its transported
+numerator and denominator exactly, and applies the Laurent machinery to every nonzero element of
+`RatFunc K`.  For an arbitrary phase-compatible chain it proves that all phases have the same
+integer Laurent weight and that their actual leading coefficients satisfy the transported tensor
+law.
+
+`formal/GaloisForLFunctions/HTGeometry/RatFuncCompositionDegree.lean` formalizes the order-zero
+exclusion.  It constructs genuine rational substitution `a(X) |-> a(P)`, identifies its image
+field as `K(P)`, and proves exact degree multiplicativity from the intermediate-field tower
+`K(a(P)) subseteq K(P) subseteq K(X)`.  Consequently a compatible rational phase chain factoring
+through prefixes of degree at least `2^n` has constant zero phase.  Because the proof uses field
+degrees rather than unreduced numerator and denominator degrees, all cancellation is included.
+
+The remaining stage-3 obligation is the differential-algebraic transitivity step proving that the
+reconstructed nonzero-weight tensor observable is hypertranscendental.  The order-zero exclusion,
+rational carrier-to-symbol connection, weight-zero escape, and all of Theorem B are now
+formalized; the card remains at stage 2 until that final implication is machine-checked.
 
 ## Gates
 
@@ -275,5 +289,8 @@ card remains at stage 2.
 - [x] 1 -> 2: complete symbolic proof and finite-transient correction
 - [x] exact tensor transport, prefix-tail membership, global divisor budget, and axiom audit
 - [x] Laurent-weight invariance, leading-symbol transport, and the weight-zero escape in Lean
-- [ ] 2 -> 3: concrete first-order differential-rational carrier and tail-to-tensor connection
+- [x] arbitrary rational first-order carrier and phase-chain tensor-symbol extraction in Lean
+- [x] degree-growth exclusion of nonconstant order-zero rational tails in Lean
+- [ ] hypertranscendence of the reconstructed nonzero-weight tensor observable in Lean
+- [ ] 2 -> 3: every theorem and corollary claim above machine-checked
 - [ ] 3 -> 4: independent novelty audit and standalone manuscript
