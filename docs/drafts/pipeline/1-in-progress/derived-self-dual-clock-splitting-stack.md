@@ -3,7 +3,7 @@
 - **ID:** `derived-self-dual-clock-splitting-stack`
 - **Stage:** 1-in-progress
 - **Type:** MEDAL-SCALE CONJECTURE / UNIFIED HT OBSTRUCTION OBJECT
-- **Scientific status:** `[CONJECTURE] [FINITE-STAGE ACYCLICITY PROVED] [NOT AN RH RESULT]`
+- **Scientific status:** `[CONJECTURE] [FINITE-STAGE ACYCLICITY PROVED] [CAPACITY-FIELD REALIZATION/COVARIANCE PROVED] [NOT AN RH RESULT]`
 - **Parent theorems:**
   `../2-fully-proven/new_scientific_knowledge/hypertranscendental-clock-incompressibility.md`,
   `../2-fully-proven/new_scientific_knowledge/differential-variational-building-balance-law.md`
@@ -411,14 +411,16 @@ hypertranscendence is infinite algebraic clock capacity concentrated on a thin c
 now has a precise candidate meaning:
 
 ```text
-infinite capacity = the pro-system of free finite jet packets,
-finite rigidity   = affine and asymptotically incompressible local splitting spaces,
-thin boundary     = the modular-corona class whose admissible trivialization stack degenerates.
+infinite capacity = the universal moduli cone of positive finite-jet capacity paths,
+finite rigidity   = bounded-congruence invariance and exact Hermitian covariance,
+thin boundary     = the asymptotic/self-dual boundary where the capacity field has no admissible
+                    global reduction or trivialization.
                                                                             (16)
 ```
 
-The clock is a filtration of observables.  The boundary is the failure of compatible observation,
-not a moment in time.
+The scalar growth law is not universal: every monotone positive law occurs.  What constrains an HT
+source is the naturality and holonomy class of its capacity field.  The clock is a filtration of
+observables.  The boundary is the failure of compatible observation, not a moment in time.
 
 ## 7. External novelty gate
 
@@ -436,13 +438,19 @@ Parent theories include:
 - differential substitutions and their Frechet chain rule,
   https://arxiv.org/abs/2301.04475 and https://arxiv.org/abs/solv-int/9509006;
 - affine buildings and their boundary geometry,
-  https://doi.org/10.2140/iig.2023.20.471.
+  https://doi.org/10.2140/iig.2023.20.471;
+- RKHS minimum-norm interpolation and positive-kernel boundaries;
+- Hermitian metrics on vector bundles and Thompson geometry of the positive cone;
+- differential-algebraic jet spaces, https://arxiv.org/abs/1311.3546;
+- invariant jet differentials under source reparametrization,
+  https://doi.org/10.1007/s00222-023-01219-z.
 
 These theories make the ingredients legitimate; they do not make `(4)`, `(7)`, or `(13)` an
-external theorem.  Targeted searches located no construction of a tame positive self-dual
-splitting stack for differential-field realizations, no finite-immersion acyclicity/boundary
-trichotomy in this setting, and no theorem identifying spectral, continuation, positivity,
-monodromy, and boundary-condition defects as conservative images of such a stack.
+external theorem.  Targeted searches located no HT capacity-realization theorem and descended
+minimum-boundary capacity field of the form proved in Theorem J, no tame positive self-dual
+splitting stack for differential-field realizations, and no theorem identifying spectral,
+continuation, positivity, monodromy, and boundary-condition defects as conservative images of such
+a field and its derived trivialization stack.
 
 External novelty is therefore **provisional**.  Operadic Andre--Quillen theory, D-module
 deformation theory, integrable-systems reduction, derived completion, and analytic Fredholm theory
@@ -452,8 +460,12 @@ all require specialist review before any priority claim.
 
 - `[PASS]` The object is forced by the proved no-go: local finite embeddings always split, so only
   compatibility of splittings can carry an obstruction.
-- `[PASS]` It gives one exact object with five testable realization functors, rather than declaring
-  five metaphors equivalent.
+- `[PASS]` The scalar realization theorem kills every universal scalar growth law and replaces it
+  with an exact moduli classification.
+- `[PASS]` Bounded-realization invariance and Hermitian congruence covariance prove the finite-rank
+  capacity field descends; monodromy is now actual holonomy rather than metaphor.
+- `[PASS]` It proposes five testable conservative representation functors from one exact finite
+  object, rather than declaring five metaphors equivalent.
 - `[PASS]` Rank, map, and completion failures form an exact conditional trichotomy inside one
   moduli problem.
 - `[PASS]` It predicts a source-defined multiplicity-bearing degeneracy support.
@@ -462,22 +474,22 @@ all require specialist review before any priority claim.
   completions and is provably nontrivial under bounded positive gauges.
 - `[PASS]` The exactly symmetric non-diagonal escape is classified: one canonical boundary
   eigenline and unavoidable Bessel failure.
-- `[FAIL until proved]` Existence of `(4)` in a usable category, completeness of `(7)`,
-  conservativity of the splitting-tower presentation, and any zeta realization remain open.
+- `[FAIL until proved]` A source-natural analytic capacity field, existence of `(4)` in a usable
+  category, completeness of `(7)`, conservativity, and any zeta realization remain open.
 - `[FAIL if redressed]` Calling an arbitrary cotangent complex, Fredholm determinant, or sheaf of
   boundary conditions `SHT` does not instantiate the conjecture.
-- `[MEDAL-SCALE VERDICT]` A proof of splitting-stack completeness plus a nontrivial arithmetic
-  realization satisfying `(15)` would create the requested new field.  The definition and local
-  acyclicity theorem alone do not.
+- `[MEDAL-SCALE VERDICT]` A proof of capacity-field completeness plus a nontrivial arithmetic or
+  analytic realization satisfying `(15)` would create the requested new field.  The finite
+  realization/covariance theorems and local acyclicity alone do not.
 
 ## 9. Attack and falsifiers
 
-1. Construct `SHT(rho)` first for inverse systems of finite-dimensional valued differential
-   modules, where derived limits and affine torsors are explicit.
-2. Prove the rank/map/completion stratification and a descent spectral sequence for its homotopy
-   groups.
-3. Add reflection and positivity; determine when homotopy fixed splittings exist.
-4. Prove conservativity for two genuinely different realizations, not two notations for one map.
+1. Construct a source-natural `Cap_HT(rho)` for one analytic HT realization and prove its local
+   capacities satisfy the minimum-energy, innovation, bounded-comparison, and descent laws.
+2. Exhibit nontrivial holonomy or asymptotic building boundary not removable by bounded gauge.
+3. Construct `SHT(rho)` as the derived positive self-dual trivialization stack of that field.
+4. Prove three conservative obstruction representations for two genuinely different realizations,
+   not two notations for one map.
 5. Only then test completed-zeta data.
 
 Falsifiers:
@@ -486,7 +498,7 @@ Falsifiers:
 - a global obstruction with a uniformly tame compatible right inverse at every scale;
 - two obstruction chains with identical classes in `(4)` but inequivalent multiplicity spectra;
 - a self-dual degeneracy spectrum whose support depends on a choice of local splitting;
-- a fourth boundary phase outside rank, map, and completion.
+- a fourth boundary phase outside rank, map, completion, or holonomy of the capacity field.
 
 Every no-go has a positive successor:
 
@@ -494,12 +506,15 @@ Every no-go has a positive successor:
 - failure of positivity equivalence isolates a genuinely order-theoretic obstruction not detected
   by derived descent;
 - failure of monodromy conservativity produces a higher nonabelian splitting invariant;
+- failure of capacity-field completeness produces a new invariant not visible to positive
+  minimum-boundary energy;
 - failure of the zeta identification still leaves a general HT realization theory with its own
   classification theorem.
 
 ## Gates
 
 - [x] 0 -> 1: object, finite theorem, conjectures, parent theories, attack, and falsifiers stated
+- [x] prove capacity realization, bounded-realization invariance, and coordinate descent
 - [ ] 1 -> 2: construct the stack and prove conservative splitting-tower completeness and descent
 - [ ] 2 -> 3: formalize finite inverse systems, torsor descent, and the self-dual fixed object
 - [ ] 3 -> 4: specialist novelty validation and a nontrivial analytic/arithmetic realization

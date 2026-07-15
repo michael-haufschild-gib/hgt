@@ -60,6 +60,8 @@ The unconditional proof is split across:
 - `formal/GaloisForLFunctions/HTGeometry/MatrixPrincipalSymbolHypertranscendenceHorizon.lean`;
 - `formal/GaloisForLFunctions/HTGeometry/MatrixPrincipalSymbolLowerLaw.lean`;
 - `formal/GaloisForLFunctions/HTGeometry/MatrixPrincipalSymbolDifferentialHorizon.lean`;
+- `formal/GaloisForLFunctions/HTGeometry/MatrixPrincipalSymbolDerivationLawHorizon.lean`;
+- `formal/GaloisForLFunctions/HTGeometry/MatrixPrincipalSymbolCoefficientFlatness.lean`;
 - `formal/GaloisForLFunctions/HTGeometry/MatrixPrincipalSymbolDeterminantHorizon.lean`.
 
 Principal declarations:
@@ -71,7 +73,17 @@ Principal declarations:
 - `matrixPrincipalLowerLaw_hypertranscendentalOver_iff`;
 - `matrixDifferentialDependentSet_eq_characteristicSet`;
 - `matrixDifferentialDependentSet_eq_firstSingularSet_of_flat`;
-- `matrixPrincipalLowerLaw_flat_differentialSpectrum_dichotomy`.
+- `matrixPrincipalLowerLaw_flat_differentialSpectrum_dichotomy`;
+- `derivationPrincipalLowerLaw_independent_iff`;
+- `derivationLawDependentSet_eq_characteristicSet`;
+- `derivationLawDependentSet_eq_firstSingularSet_of_coefficientFlat`;
+- `derivationPrincipalLowerLaw_coefficientFlat_spectrum_dichotomy`.
+
+The varying-derivation declarations do not disguise the law parameter as a parameterized function:
+each point of law space selects its own `Derivation`, and independence is defined from that
+derivation's complete iterate tower. `MatrixCoefficientPrincipalSymbolFlat` records the row-order
+composition convention produced by actual iterated derivations; transposition identifies it with
+the geometric-arrow flat square without changing determinant loci.
 
 Targeted builds pass. Formal lint passes. The terminal axiom audit reports only `propext`,
 `Classical.choice`, and `Quot.sound`.

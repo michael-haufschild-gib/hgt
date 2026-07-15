@@ -140,6 +140,13 @@ The remaining realization problem is concrete rather than formal: exhibit a name
 field-observable family whose full jets satisfy `MatrixPrincipalLowerLaw`. That
 application-facing hypothesis cannot be advertised as physics until it is constructed.
 
+`formal/GaloisForLFunctions/HTGeometry/MatrixPrincipalSymbolDerivationLawHorizon.lean` also proves
+the genuinely varying-law version: every point of law space selects its own derivation, and the
+exact set of derivations for which the observable packet is differential-algebraically dependent
+is the determinant characteristic set. The coefficient-order flatness forced by composing
+derivation matrices is separated and related by transpose to the geometric-arrow convention in
+`MatrixPrincipalSymbolCoefficientFlatness.lean`.
+
 ## 4. Algebraic object
 
 The flat symbols form a representation of the layered commutative-square quiver: the arrows are
@@ -206,6 +213,9 @@ out independent scale-by-scale walls and identifies the only possible finite-ran
 - [x] prove exact joint hypertranscendence criterion `(2)`
 - [x] combine it with determinant rigidity into the complete spectrum theorem
 - [x] lift the theorem to genuine differential independence and one-element hypertranscendence
+- [x] formalize the exact varying-derivation spectrum rather than only parameterized functions
+- [x] separate coefficient curvature from geometric-arrow flatness and prove transpose equivalence
 - [x] formalize and classify the discrete-Lax spectral strengthening as bridge material
+- [ ] derive coefficient-curvature vanishing from higher-rank commutator closure
 - [ ] construct a concrete named function/QFT observable realization of the lower law
 - [x] targeted leaf build, formal lint, and terminal axiom audit

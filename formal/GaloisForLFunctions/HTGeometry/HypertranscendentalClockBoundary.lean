@@ -1023,6 +1023,72 @@ theorem unitaryClock_fixedVector_eq_smul_boundary
   intro n
   rw [inner_sub_right, inner_smul_right, hconst n, hy n, mul_one, sub_self]
 
+section DilationScaleObstruction
+
+variable {𝕜 F : Type*} [NontriviallyNormedField 𝕜]
+  [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+
+/-- **Finite clock-dilation distortion.**  A bounded operator implementing the pure clock weights
+through level `n` has operator norm at least the `n`th dilation power.  This lower bound is
+independent of every choice of positive weights on the clock modes. -/
+theorem clockDilation_pow_norm_le_operatorNorm
+    (u : ℕ → F) (hu : ∀ n, u n ≠ 0) (T : F →L[𝕜] F) (lambda : 𝕜)
+    (hT : ∀ n, T (u n) = lambda ^ n • u n) (n : ℕ) :
+    ‖lambda‖ ^ n ≤ ‖T‖ := by
+  have hbound := T.le_opNorm (u n)
+  rw [hT n, norm_smul, norm_pow] at hbound
+  nlinarith [norm_pos_iff.mpr (hu n)]
+
+/-- **Single-carrier dilation no-go.**  No bounded operator on one normed carrier can implement a
+clock dilation of norm greater than one on infinitely many nonzero pure-weight modes.  An infinite
+hypertranscendental jet clock therefore cannot carry its full dilation symmetry inside one fixed
+positive Hilbert topology. -/
+theorem no_bounded_clockDilation_of_one_lt_norm
+    (u : ℕ → F) (hu : ∀ n, u n ≠ 0) (T : F →L[𝕜] F) (lambda : 𝕜)
+    (hT : ∀ n, T (u n) = lambda ^ n • u n) (hlambda : 1 < ‖lambda‖) : False := by
+  obtain ⟨n, hn⟩ :=
+    ((tendsto_pow_atTop_atTop_of_one_lt hlambda).eventually_gt_atTop ‖T‖).exists
+  exact (not_lt_of_ge (clockDilation_pow_norm_le_operatorNorm u hu T lambda hT n)) hn
+
+/-- **Bilateral single-carrier rigidity.**  A bounded implementation of both directions of the
+full grading action on one carrier is possible only for the unit-norm subgroup.  Nonunit source
+dilations must move between different positive topologies. -/
+theorem bounded_bilateral_clockDilation_norm_eq_one
+    (u : ℕ → F) (hu : ∀ n, u n ≠ 0) (lambda : 𝕜) (hlambda : lambda ≠ 0)
+    (Tforward Tbackward : F →L[𝕜] F)
+    (hforward : ∀ n, Tforward (u n) = lambda ^ n • u n)
+    (hbackward : ∀ n, Tbackward (u n) = lambda⁻¹ ^ n • u n) :
+    ‖lambda‖ = 1 := by
+  apply le_antisymm
+  · by_contra h
+    exact no_bounded_clockDilation_of_one_lt_norm u hu Tforward lambda hforward
+      (lt_of_not_ge h)
+  · by_contra h
+    have hinv : 1 < ‖lambda⁻¹‖ := by
+      rw [norm_inv]
+      exact (one_lt_inv₀ (norm_pos_iff.mpr hlambda)).2 (lt_of_not_ge h)
+    exact no_bounded_clockDilation_of_one_lt_norm u hu Tbackward lambda⁻¹ hbackward hinv
+
+/-- **Covariant Hilbert-scale rigidity.**  Translation covariance of logarithmic clock weights
+forces the unique affine law `L(s,n)=L(0,n)-2ns`.  Exponentiating gives the positive scale weights
+`w_n(s)=c_n exp(-2ns)`. -/
+theorem covariantClockLogWeight_eq
+    (L : ℝ → ℕ → ℝ)
+    (hcov : ∀ s t n, L (s + t) n + 2 * (n : ℝ) * t = L s n)
+    (s : ℝ) (n : ℕ) :
+    L s n = L 0 n - 2 * (n : ℝ) * s := by
+  have h := hcov 0 s n
+  simpa using (eq_sub_iff_add_eq.mpr h)
+
+/-- Conversely, every affine logarithmic clock weight gives an exactly covariant positive scale. -/
+theorem affineClockLogWeight_covariant
+    (c : ℕ → ℝ) (s t : ℝ) (n : ℕ) :
+    (c n - 2 * (n : ℝ) * (s + t)) + 2 * (n : ℝ) * t =
+      c n - 2 * (n : ℝ) * s := by
+  ring
+
+end DilationScaleObstruction
+
 end SpectralBoundaryRigidity
 
 end GaloisForLFunctions.HTGeometry
