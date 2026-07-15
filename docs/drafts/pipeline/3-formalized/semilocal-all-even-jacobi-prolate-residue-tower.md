@@ -1,10 +1,13 @@
 # Semilocal all-even Jacobi--prolate residue tower
 
 - **ID:** semilocal-all-even-jacobi-prolate-residue-tower
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); first Fourier-kernel sign formalized in Lean
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper and Lean 4)
 - **Scientific status:** CANDIDATE NEW SCIENTIFIC KNOWLEDGE, provisional pending independent review
-- **Lean core:** `formal/GaloisForLFunctions/RHTower/SoninSemilocalTwoPlaceAssociation.lean`
+- **Lean core:** `formal/GaloisForLFunctions/RHTower/SoninSemilocalJacobiTransform.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninSemilocalJacobiOrthonormal.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninSemilocalFinitePrimeMeasure.lean`, and
+  `formal/GaloisForLFunctions/RHTower/SoninSemilocalJacobiResidueCorollaries.lean`
 - **Parent sources:** Connes--Consani--Moscovici, *Zeta zeros and prolate wave operators*,
   arXiv:2310.18423v2, Sections 3 and 4.3; Connes--Consani--Moscovici,
   *On q-series and the moment problem associated to local factors*, arXiv:2403.01247
@@ -172,6 +175,35 @@ support give the strict lower bound. The first Jacobi recurrence gives `a_0(P)^2
 
 Scientific novelty remains provisional until independent experts verify the proof and literature
 comparison.
+
+## Formalization
+
+The Lean development constructs the literal Gamma density and measure, proves all polynomial
+moments and normalized mass, constructs the recurrence-selected Jacobi polynomials, and identifies
+them as the unique degree-`n`, positive-leading-coefficient orthonormal family through
+`semilocalArchimedeanJacobiGram_eq_ite`,
+`semilocalArchimedeanJacobiPolynomial_natDegree`, and
+`semilocalArchimedeanJacobiPolynomial_leadingCoeff_pos`.
+
+The numbered claims are represented by the following checked declarations:
+
+- `(1)` `semilocalFinitePrimeActualEvenJacobiMoment_signed_pos`;
+- `(2)` `semilocalFinitePrimeActualGradingGroundDefect_signed_pos`;
+- `(3)` `semilocalFinitePrimeActualProlateGroundDefect_signed_pos`;
+- `(4)` `semilocalFinitePrimeNormalizedSecondMoment_bounds`;
+- `(5)` `semilocalFinitePrimeActualGradingGroundDefect_one_eq_explicitResidue`;
+- `(6)` `semilocalArchimedeanJacobiFourier_eq_closedForm`;
+- `(7)` `hasDerivAt_semilocalArchimedeanJacobiFourier_succ_recurrence`;
+- `(8)` `semilocalFinitePrimeEulerDensity_eq_poissonSeries_complex`, together with the termwise
+  integration theorems in `SoninSemilocalFinitePrimeMeasure.lean`;
+- `(9)` `semilocalNonzeroPrimeLogFrequency_ne_zero`;
+- `(10)` `semilocalArchimedeanJacobiFourierClosedForm_even` and
+  `semilocalArchimedeanEvenJacobiKernel_signed_pos`.
+
+The grading and prolate operator notation is reduced to its exact ground-state scalar coefficient;
+the common multiplication term is eliminated before definition, so the formal objects contain no
+unproved operator-domain premise. The direct module checks, standard-axiom audit, and repository
+formal lint gate pass without `sorry`, `admit`, project axioms, `opaque`, or `unsafe` declarations.
 
 ## Next move
 

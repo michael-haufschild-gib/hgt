@@ -3,7 +3,7 @@
 - **ID:** `ind-flat-pro-curved-boundary-transfer`
 - **Stage:** 1-in-progress
 - **Type:** GENERAL HT CONJECTURE / VARIANCE-DUAL BOUNDARY FIELD
-- **Scientific status:** `[CONJECTURE] [BOUNDARY FACTORIZATION LEAN-FORMALIZED] [GAMMA IND-FLATNESS LEAN-FORMALIZED] [NOVELTY OPEN]`
+- **Scientific status:** `[CONJECTURE] [BOUNDARY FACTORIZATION LEAN-FORMALIZED] [CURVATURE-ONLY RECONSTRUCTION KILLED] [BOUNDARY COLLIGATION LEAN-FORMALIZED] [GAMMA IND-FLATNESS LEAN-FORMALIZED] [NOVELTY OPEN]`
 - **Parents:**
   - `constraint-curvature-integration-stack.md`
   - `self-dual-decorated-clock-boundary.md`
@@ -114,60 +114,79 @@ Ind-flat source assembly + Pro-curved observation + analytic integrability.  (11
 This makes Gamma the positive integrable vacuum of the proposed field theory, not a nonzero
 ordinary derived-limit obstruction.
 
-## Conjecture I: the boundary-transfer field
+## Transfer-only field no-go and positive colligation field
 
-**[CONJECTURE — TRANSFER FIELD]** Every regular finite-observably free constrained HT source has a
-canonical sequence
+Curvature and transfer do not determine the higher clock action. With `b_N=1-i_N p_N`, every
+boundary perturbation `b_N g_N b_N` preserves both forward compatibility and `beta_N`. This is
+Lean-formalized.
+
+**Positive reconstruction theorem `[LEAN-FORMALIZED]`.** The higher action is exactly
 
 ```text
-beta_x,N : B_x,N -> O_x,N,     B_x,N=ker(p_N),            (12)
+T_(N+1)=i_N T_N p_N+i_N kappa_N+delta_N,                  (12)
+delta_N=b_N T_(N+1)b_N.                                   (13)
 ```
 
-equivariant for its source-constraint algebra and independent of faithful split clock charts.
-The complete source curvature is the transfer field `(beta_x,N)` plus its higher nonlinear and
-topological descent data.
+Therefore `(T_N,beta_N,delta_N)` reconstructs `T_(N+1)` uniquely.
 
-**Falsifier.** Two source-equivalent calibrated split clocks yield inequivalent transfer sequences
-after their boundary layers are canonically identified.
+**[CONJECTURE — COLLIGATION FIELD]** Every regular finite-observably free constrained HT source has
+a canonical sequence of boundary colligations
 
-## Conjecture II: constraint reconstruction from transfer, not rank
+```text
+(beta_x,N,delta_x,N),       beta_x,N:B_x,N->O_x,N,
+                            delta_x,N:B_x,N->B_x,N,        (14)
+```
 
-**[CONJECTURE — TRANSFER RECONSTRUCTION]** In the analytic source-minimal category, the full
+equivariant for its source-constraint algebra and independent of faithful split clock charts. The
+source-specific field further includes the descent anomaly; the universal clock colligation alone
+is only observation kinematics.
+
+**Falsifier.** Two source-equivalent calibrated split clocks yield inequivalent colligation and
+anomaly sequences after their boundary layers are canonically identified.
+
+## Conjecture II: source reconstruction from anomaly colligation
+
+**[CONJECTURE — ANOMALY-COLLIGATION RECONSTRUCTION]** In the analytic source-minimal category, the full
 nonlinear source deformation problem is reconstructible from:
 
 ```text
-(Ind clock, boundary layers B_N, transfer field beta_N,
- affine calibration, source algebra, holonomy).           (13)
+(Ind clock, boundary layers B_N, beta_N, delta_N,
+ descent anomaly alpha_N, affine calibration,
+ source algebra, topology, holonomy).                     (15)
 ```
 
-For Gamma, `(10)` reconstructs the exponential Taylor kernel and hence unit translation on the
-source completion. In general, the integrability stack is the moduli of global source operations
-having the prescribed boundary transfers.
+For Gamma, the universal translation colligation has factorial `beta_N` and unit `delta_N`; the
+source-specific period-one tangent and affine shift anomaly distinguish Gamma from arbitrary
+analytic germs. In general, the integrability stack is the moduli of global source operations
+having the prescribed anomaly colligation.
 
 **Falsifier.** Two inequivalent source-minimal analytic constraints have isomorphic complete data
-`(13)` but different deformation functors.
+`(15)` but different deformation functors.
 
-## Conjecture III: self-dual transfer pair
+## Conjecture III: self-dual anomaly colligation
 
 A polarized realization has an incoming transfer from old observables into the new boundary and
-an outgoing transfer `(12)`. Write schematically
+an outgoing transfer `beta_N`, together with the internal boundary symbol `delta_N` and source
+anomaly `alpha_N`. Write schematically
 
 ```text
-F_N = [ 0        beta_N
-        beta_N^* 0      ].                                (14)
+F_N = [ T_N       beta_N      alpha_N
+        beta_N^*  delta_N     alpha_N^vee
+        0          0          S_N       ].                (16)
 ```
 
-**[CONJECTURE — SELF-DUAL BOUNDARY FIELD]** Source reflection identifies the two off-diagonal
-transfers up to calibrated gauge. The positive observable energy is `beta_N beta_N^*` or its
-opposite block, while spectral incompleteness is homology of the assembled transfer complex.
+**[CONJECTURE — SELF-DUAL BOUNDARY FIELD]** Source reflection identifies the complete augmented
+colligation with its reflected dual up to calibrated gauge. The positive observable energy is not
+merely `beta_N beta_N^*`; it is the orientation form of the minimal realization of `(16)`, while
+spectral incompleteness is its tangent homology or failure of controllable/observable minimality.
 
 This connects the curvature model to the already formalized cross-boundary/Kadison operator
 without asserting that every positive block carries source arithmetic. Positivity is automatic for
 `beta beta^*`; the new obligation is source orientation and comparison across realizations.
 
-## Conjecture IV: five integration phases of one transfer field
+## Conjecture IV: five integration phases of one anomaly colligation
 
-**[CONJECTURE — TRANSFER REALIZATION LAW]** For a fixed source transfer field:
+**[CONJECTURE — COLLIGATION REALIZATION LAW]** For a fixed source anomaly colligation:
 
 1. continuation asks whether `(beta_N)` integrates on a larger source domain;
 2. boundary conditions are inequivalent global integrations;
@@ -199,8 +218,11 @@ transfers. No common transfer sequence has yet been constructed.
 - [x] split-clock boundary-transfer factorization Lean-formalized
 - [x] curvature vanishing on assembled lower clock Lean-formalized
 - [x] intrinsic transfer through `O_(N+1)/range(i_N)` Lean-formalized
+- [x] transfer-only reconstruction no-go Lean-formalized
+- [x] exact boundary-colligation reconstruction and uniqueness Lean-formalized
 - [x] Gamma forward Ind compatibility Lean-formalized
 - [x] Gamma factorial transfer vector and rank-one range Lean-formalized
+- [x] Gamma unit boundary self-symbol Lean-formalized
 - [ ] transfer-field covariance under faithful split clock charts proved
 - [ ] Gamma analytic integration reconstructed from the transfer sequence
 - [ ] one non-Gamma transfer field constructed

@@ -255,9 +255,40 @@ This suggests a refinement of binary hypertranscendence:
 pole-holographic freeness = differential freeness + filtration-strict singular boundary trace.
 ```
 
+The diagonal proof gives a nonempty general class, not only a Gamma example.  Let `f` have
+infinitely many distinct simple poles `a_n`; normalize by each nonzero residue scale `s_n` so that
+
+```text
+f(a_n+s_n x)=U_n(x)/x,   U_n(0)=1.                                        (19)
+```
+
+Call this pole tower **scale-separated pole-holographically free** if every finite family
+
+```text
+s_n, U_n'(0), U_n''(0), ...                                                (20)
+```
+
+is algebraically independent over the rational pole-position germ field `C(a_n)`.  Then the proof
+of Theorem C, with `-n` replaced by `a_n`, proves the stronger preimage form of the abstract
+affine-horizon theorem
+
+```text
+{P in C[z][Y_0,Y_1,...] : P(z,f,f',...) has pole order <= 1 on the tower}
+  = C[z]+C[z]Y_0.                                                          (21)
+```
+
+Consequently the image intersection is `C[z]+C[z]f`.  The preimage statement also proves that `f`
+is hypertranscendental: a differential relation lies on the left of `(21)`, hence has the form
+`A(z)+B(z)Y_0`; the infinite pole tower forces `B=0` and then `A=0`.
+
+Thus hypertranscendence is not only the absence of a finite flow.  For this class it is positively
+encoded by a static boundary embedding with two independent valuations: differential particle
+number is read by pole grade, while residue-scale exponent keeps the particle sectors separated
+after normalization.  Gamma is the first proved member through `(10)`--`(18)`.
+
 `[CONJECTURE]` The useful geometric classification of meromorphic hypertranscendental functions is
-not by their abstract one-generator differential fields, which are universal, but by the
-topological/valuative types of these boundary embeddings.
+by the topological/valuative type and rank of these boundary embeddings, not by their abstract
+one-generator differential fields, which are universal.
 
 ## RH impact audit
 
@@ -298,7 +329,8 @@ analytic intersection `(9)`.
 
 Both touched leaf modules pass direct `lake env lean` verification.  No umbrella or full-project
 build was run because this workspace is concurrently shared and the task explicitly requires the
-smallest possible build.
+smallest possible build.  Direct source-level `#print axioms` audits report only `propext`,
+`Classical.choice`, and `Quot.sound`; the repository formal lint passes.
 
 ## Parent-theory and priority audit
 
@@ -323,10 +355,11 @@ bigrading to classify an actual hypertranscendental differential-polynomial alge
   classification `(9)`.  Specialist priority review is mandatory before promotion.
 - **Significance:** Theorem C gives a new exact rigidity classification inside the differential
   polynomial algebra of the founding hypertranscendental function.  It is more than an analogy or
-  repackaging, but it does not yet establish a broad theory or solve a recognized central problem.
-- **Fields-Medal gate:** not cleared.  The result is a serious candidate theorem and a definition
-  of a broader geometric class, not evidence for the level of field creation or problem resolution
-  required by the user-specified bar.
+  repackaging and extends to the abstract class `(19)`--`(21)`, but only Gamma is currently proved
+  to inhabit that class and no recognized central problem is solved.
+- **Fields-Medal gate:** not cleared.  The result is a serious candidate theorem with one proved
+  natural example, not evidence for the level of field creation or problem resolution required by
+  the user-specified bar.
 
 ## Gates
 
@@ -338,8 +371,6 @@ bigrading to classify an actual hypertranscendental differential-polynomial alge
 - [x] global Gamma polynomial differential simple-pole classification proved on paper
 - [x] primary parent-theory audit completed; priority remains unverified
 - [x] exact RH non-consequence recorded
-- [x] primary-literature parent audit completed
-- [x] global Gamma coefficient descent proved on paper
 - [ ] specialist priority audit establishes novelty of Theorem C
-- [ ] broad natural class of pole-holographically-free HT functions established
+- [x] abstract scale-separated pole-holographically-free class and affine-horizon theorem proved
 - [ ] dual novelty-significance gate cleared

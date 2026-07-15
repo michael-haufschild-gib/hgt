@@ -16,6 +16,7 @@
   - `../2-fully-proven/not_new_scientific_knowledge/meixner-root-prime-laplace-value-frame.md`
   - `../2-fully-proven/not_new_scientific_knowledge/xi-global-meixner-shape-landau-rh.md`
   - `../2-fully-proven/not_new_scientific_knowledge/xi-reciprocal-translation-prime-seam-norm-law.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/xi-gamma-shape-completely-monotone-rh.md`
 - **Statement:** Realize the global Xi prime-seam series as the cofinal reflected
   star-Kadison trace of the source-derived Gamma--Meixner clock-curvature field.  If this trace is
   a locally bounded holomorphic family for every positive Gamma shape, then Landau's theorem
@@ -185,22 +186,81 @@ pieces specify the finite clocks and the thin boundary field.  They do **not** b
 prove the local trace bound in item 4; that is the proposed integration theorem for the actual
 source-curvature field.
 
-## Smallest non-circular theorem
-
-Before constructing the complete family, prove one fixed-prime trace identity.  For a rational
-prime `p`, the source-built curvature observable must have star-Kadison trace
+There is an important refinement.  The factorial transfer in `(14)` is universal Taylor
+translation kinematics: by itself it does not distinguish Gamma from an arbitrary analytic germ.
+The source-specific object must therefore be the complete anomaly--boundary colligation
 
 ```text
-sourceTrace_p
- =A_p
- =2(log p)^2/p * (N(log p)-N(0)),                      (15)
+C_N=(T_N,beta_N,delta_N,alpha_N),                         (14a)
 ```
 
-where `N(L)` is the reciprocal-Cauchy translation norm.  The first equality must be proved from
-the completed source graph; the second is already proved on paper.  The observable must remain
-defined after a rational FE--Schwarz orbit insertion, with its trace changing by the inserted
-residue seam.  That gauge-covariance test makes `(15)` orbit-sensitive and rules out a
-divisor-blind Euler Gram.
+not bare curvature.  Here `beta_N` is the outgoing factorial transfer, `delta_N` the new-boundary
+self-symbol, and `alpha_N=T_N q_N-q_N S` the source descent anomaly.  The finite reconstruction
+theorem for `(14a)` is Lean-formalized in the ongoing HTGeometry work.
+
+`[CONJECTURE — REFLECTED ANOMALY PASSIVITY]` The FE and Schwarz rational-Hurwitz responses form
+the two reflected anomaly blocks of the completed prime--Gamma colligation.  Reflection swaps the
+blocks, and their anti-invariant transfer at scale `p` is the exact source value
+
+```text
+(log p)(p^(-conj rho)-p^(-(1-rho)))=C_p(rho).             (14b)
+```
+
+The completed colligation is reflection-passive in the source Mackey metric, with its
+anti-invariant star-Kadison defect dominated uniformly by the factorial Gamma boundary after the
+canonical factor `2log(p)/sqrt(p)`.  Cofinal residue evaluation preserves this quadratic value.
+
+The pointwise equality `(14b)` is already formalized through finite rational-Hurwitz fibres; its
+interpretation as an anomaly block, reflection-passivity, and metric preservation are conjectural.
+This formulation is stronger than naming an abstract positive metric: it fixes the two source
+coordinates, the reflection, the boundary transfer, and the normalization before any divisor
+norm is introduced.
+
+## Smallest non-circular theorem
+
+The coordinate part of the fixed-prime source/divisor incidence is already proved.  Put
+
+```text
+B_L(z)=rectangularWindowAmplitude(L,i*z).
+```
+
+Sharp-window tomography identifies `B_(log 2)(alpha_q)` with the normalized trailing coefficient
+of the continued dyadic prime source at the corresponding reflected pole.  If `b_L` is the vector
+of these residue values, then
+
+```text
+N(L)-N(0)
+ =||b_L||^2+2*Im <v_0,b_L>,                              (15)
+```
+
+and the right side is unconditionally nonnegative in the divisor metric.  Thus neither the
+individual residue coordinates nor their algebraic identification with `A_2` is open.
+
+The smallest missing theorem is a **source metric contraction**.  Construct, before divisor
+insertion, a Gamma-clock completion in which the same normalized dyadic residue current satisfies
+
+```text
+Q_source(b_(log 2),v_0)
+ =||b_(log 2)||^2+2*Im <v_0,b_(log 2)> <=0,              (15a)
+```
+
+and prove that its cofinal metric is the residue metric in `(15)`.  Then the target nonnegativity
+and `(15a)` force equality, `A_2=0`, and RH.  The construction must remain defined after a rational
+FE--Schwarz orbit insertion, with its quadratic value changing by the inserted residue seam.  This
+gauge-covariance test makes `(15a)` orbit-sensitive and rules out a divisor-blind Euler Gram.
+
+A quantitative all-prime alternative is enough.  If `X_(p,N)` is the source curvature observable
+with the canonical normalization `2 log(p)/sqrt(p)` and
+
+```text
+sup_(p,N) ||X_(p,N) psi||^2 * p/(4(log p)^2) <= C,       (15b)
+```
+
+then star-Kadison contractivity bounds its defect by `4C(log p)^2/p`.  An orbit-sensitive safe
+trace identification with `A_p` would make the Gamma--Meixner sum finite for every positive shape,
+so the completely-monotone criterion below gives RH.  The factorial Gamma boundary proves the
+corresponding bare-clock constant is finite; the open point is that the source/residue incidence
+preserves this bound.
 
 The next theorem is a two-shape normal-family estimate:
 
@@ -240,6 +300,13 @@ proof-bearing statement.
 7. **Reflection is not confinement.**  The completed source makes `T_N` self-dual, but a
    self-dual curvature field can retain paired off-fixed degeneracies.  The positive
    star-Kadison orientation and the normal-family theorem are both load-bearing.
+8. **Bare Gamma curvature is kinematic.**  Rank-one factorial curvature and its finite Euclidean
+   energy occur for universal Taylor translation.  They cannot, without the source anomaly and
+   boundary self-symbol, control the arithmetic prime coupling.
+9. **Prime-dependent rescaling.**  Even a rank-one curvature vector of uniformly finite energy
+   may be multiplied at prime `p` by `p^b`.  Finite rank and levelwise nuclearity survive while
+   the Gamma-shape abscissa moves by `2b`.  Thinness at each clock is therefore not the required
+   cofinal estimate.
 
 ## Positive residues of the attacks
 
@@ -322,6 +389,22 @@ Each no-go above leaves a usable positive theorem or a stricter construction tar
    Reflection therefore supplies a canonical second-order horizontal curvature even though it
    does not supply its vanishing.  This is the scalar tangent which the source clock curvature
    must match.
+8. **Full colligation reconstruction `[PROVED IN LEAN]`.**  The kinematic-curvature no-go leaves
+   an exact positive finite theorem: lower action, outgoing curvature transfer, and boundary
+   compression uniquely reconstruct the next clock action.  The source descent anomaly obeys a
+   Bianchi identity with curvature.  Hence the RH construction target is finite and checkable:
+   build the reflected anomaly colligation `(14a)` and test passivity; no unspecified global
+   integration stack is needed at the first stage.
+9. **Quantitative strip theorem `[PROVED ON PAPER]`.**  If an orbit-sensitive source incidence
+   proves, for some `beta>=0`,
+
+   ```text
+   A_p=O((log p)^k p^(-1+beta))                           (22a)
+   ```
+
+   for one finite `k`, then the exact abscissa law `(20)` forces `2a_Xi<=beta`.  The desired uniform factorial
+   bound is the sharp case `beta=0` and gives RH.  Thus any imperfect source estimate still yields
+   a nontrivial horizontal zero-free strip rather than a binary failure.
 
 ## Completely monotone positive successor `[PROVED ON PAPER]`
 
@@ -351,7 +434,8 @@ phase--radial Toeplitz--Hankel polarization law; the prime phases alone could no
 ```text
 RH;
 G_Xi extends from theta>1 to a finite completely monotone function on theta>0;
-the safe radial Hankel kernel in (24) extends to all positive theta_i.       (25)
+the safe radial Hankel kernel in (24) extends to all positive theta_i
+  as a Laplace-positive kernel with nonnegative generator spectrum.         (25)
 ```
 
 Under RH the extension is zero.  Conversely, Bernstein's theorem represents a completely
@@ -362,9 +446,14 @@ with the discrete measure
 nu_Xi=sum_p A_p delta_(lambda_p).
 ```
 
-Uniqueness of Laplace transforms identifies the two measures.  Finiteness of the extension at
-every `theta>0` then forces the Laplace abscissa of `nu_Xi` to be nonpositive.  Equation `(20)`
-gives `a_Xi=0`, hence RH.
+Choose `theta_0>1` and tilt both measures by `exp(-theta_0 lambda)`; they are then finite and have
+equal Laplace transforms on a neighborhood of zero.  Uniqueness identifies the tilted measures,
+and hence the original measures.  Finiteness of the extension at every `theta>0` forces the
+Laplace abscissa of `nu_Xi` to be nonpositive.  Equation `(20)` gives `a_Xi=0`, hence RH.
+
+Plain positive-semidefinite Hankel extension is deliberately not asserted: a kernel such as
+`exp(theta_i+theta_j)` is positive semidefinite but has a negative generator frequency.  The
+nonnegative radial spectrum, equivalently complete monotonicity, is load-bearing.
 
 This is the nontrivial positive replacement for the failed claim that finite-stage entire
 functions automatically have a holomorphic cofinal limit.  The source proof may now target a
@@ -404,8 +493,10 @@ Vocabulary or an abstract existence theorem does not clear the novelty gate.
 - [x] prime-seam local Euler tangent and source visibility formalized
 - [x] derive the exact target-side two-cycle clock factorization `(5)`--`(9)` on paper
 - [x] prove Gamma factorial-curvature energy recurrence and convergence in Lean scratch
-- [ ] construct the fixed-prime source observable in `(15)`
-- [ ] prove the source/divisor trace identity `(15)`
+- [x] construct every fixed-prime residue coordinate from the sharp-window source
+- [x] identify its anchored divisor quadratic current with `(15)`
+- [ ] construct the source metric and prove the dyadic contraction `(15a)`
+- [ ] alternatively prove the uniform source-incidence bound `(15b)`
 - [ ] construct the cofinal shape family `(10)`
 - [ ] prove orbit-insertion covariance
 - [ ] prove the local normal-family bound `(16)`

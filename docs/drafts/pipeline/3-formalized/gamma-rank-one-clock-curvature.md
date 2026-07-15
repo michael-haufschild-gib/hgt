@@ -7,9 +7,10 @@
 - **Parents:**
   - `../1-in-progress/calibrated-clock-curvature-class.md`
   - `../1-in-progress/constraint-curvature-integration-stack.md`
-- **Statement:** The canonical finite Taylor shadows of Gamma's unit translation have exactly
-  rank-one incompatibility across every positive clock truncation. The boundary vector is the
-  factorial tail of the infinite periodic conormal.
+- **Statement:** The canonical finite Taylor shadows of unit translation have exactly rank-one
+  incompatibility across every positive clock truncation, and their compressed action on the new
+  highest-jet boundary is exactly the identity. The boundary vector is the factorial tail of the
+  infinite periodic conormal.
 
 ## Finite shadows
 
@@ -64,6 +65,22 @@ finite translation curvature
   -> accumulated analytic translation conormal.          (9)
 ```
 
+Let
+
+```text
+b_N=1-i_N p_N                                             (10)
+```
+
+be the projector onto the new highest-jet line, where `i_N` appends zero. The missing boundary
+self-symbol is also exact:
+
+```text
+b_N E_(N+1)b_N=b_N.                                       (11)
+```
+
+Thus the Gamma-model colligation has factorial outgoing transfer and unit internal boundary
+symbol. Equation `(11)` is Lean-formalized.
+
 ## Lean declarations
 
 `GaloisForLFunctions.HTGeometry.GammaPeriodicConstraintCorona` contains:
@@ -79,7 +96,11 @@ finite translation curvature
 - `gammaClockBoundaryVector_ne_zero`;
 - `finrank_range_gammaClockCurvature`.
 - `gammaClockExtendZero`;
-- `gammaClockTranslation_extendZero`.
+- `gammaClockTranslation_extendZero`;
+- `gammaClockBoundaryProjector`;
+- `gammaClockBoundaryProjector_apply_last`;
+- `gammaClockBoundaryProjector_apply_castSucc`;
+- `gammaClockBoundaryCompression_eq_projector`.
 
 The module's existing object cache was reused. The touched source passed one direct Lean check; no
 build was run for this extension.
@@ -90,10 +111,14 @@ Finite Taylor translation, cancellation, and a rank-one outer product are elemen
 displacement rank is established structured-matrix theory. The theorem is not claimed as new for
 linear algebra.
 
-The provisional new interpretation is its role inside constrained HT geometry: Gamma has maximal
-differential clock capacity, yet the failure of its canonical finite nonlocal shadows to sew is
-one boundary line per resolution, and those lines assemble into the actual source conormal. This
-is the first Lean-verified nonzero field-strength model for the proposed integration-stack theory.
+The translation matrices, factorial transfer, and unit boundary symbol are universal jet
+kinematics; none depends on Gamma. They therefore cannot by themselves be an HT source invariant.
+This is a source-specificity no-go.
+
+The positive interpretation is sharper: they form a canonical integrable vacuum colligation over
+which Gamma supplies a distinguished affine source section, period-one tangent, and periodic
+conormal. The source field must couple this universal colligation to Gamma's descent anomaly rather
+than identify the kinematics with the source.
 
 It does not prove a nonzero obstruction. The forward-compatibility theorem proves algebraic
 Ind-integrability: unit-translation shadows commute exactly with zero-extension. Gamma's analytic
@@ -108,6 +133,7 @@ source-topological theorem remains open.
 - [x] exact range line proved
 - [x] rank-one theorem proved at every positive resolution
 - [x] exact compatibility with forward zero-extension proved
+- [x] exact unit boundary self-symbol proved
 - [x] factorial vector matched formally to the coefficients used by the infinite conormal
 - [ ] global analytic integration map constructed
 - [ ] unique normalized Gamma primitive proved

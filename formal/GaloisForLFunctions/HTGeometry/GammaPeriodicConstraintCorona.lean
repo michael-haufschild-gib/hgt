@@ -269,6 +269,85 @@ theorem gammaClockTranslation_extendZero (n : ℕ) :
     rw [Fin.sum_univ_castSucc]
     simp
 
+/-- The finite raw-jet action of multiplication by the coordinate `z`. Differentiating
+`z f(z)` gives the lower-triangular rule `(z f)^(j) = z f^(j) + j f^(j-1)`. -/
+def gammaClockCoordinateMultiplication (n : ℕ) (z : ℂ) :
+    (Fin (n + 1) → ℂ) →ₗ[ℂ] (Fin (n + 1) → ℂ) where
+  toFun a i := Fin.cases (z * a 0)
+    (fun j => z * a j.succ + (j.succ : ℕ) * a j.castSucc) i
+  map_add' a b := by
+    funext i
+    refine Fin.cases ?_ (fun j => ?_) i
+    · simp [mul_add]
+    · simp [mul_add]
+      ring
+  map_smul' c a := by
+    funext i
+    refine Fin.cases ?_ (fun j => ?_) i <;>
+      simp [smul_eq_mul, mul_add] <;> ring
+
+/-- **Algebraic Pro-flatness.** Coordinate multiplication on differentiated jets commutes exactly
+with forgetting the highest derivative. This is the variance-dual statement to the Ind-flatness
+of finite Taylor translation. -/
+theorem gammaClockCoordinateMultiplication_truncate (n : ℕ) (z : ℂ) :
+    (gammaClockTruncate (n + 1)).comp
+        (gammaClockCoordinateMultiplication (n + 1) z) =
+      (gammaClockCoordinateMultiplication n z).comp
+        (gammaClockTruncate (n + 1)) := by
+  apply LinearMap.ext
+  intro a
+  funext i
+  refine Fin.cases ?_ (fun j => ?_) i <;>
+    simp [gammaClockCoordinateMultiplication, gammaClockTruncate, LinearMap.comp_apply]
+
+/-- Failure of coordinate multiplication to commute with forward zero-extension. This is the
+incoming boundary transfer dual to the outgoing Taylor-translation curvature. -/
+def gammaClockCoordinateIncoming (n : ℕ) (z : ℂ) :
+    (Fin (n + 1) → ℂ) →ₗ[ℂ] (Fin (n + 2) → ℂ) :=
+  (gammaClockCoordinateMultiplication (n + 1) z).comp
+      (gammaClockExtendZero (n + 1)) -
+    (gammaClockExtendZero (n + 1)).comp
+      (gammaClockCoordinateMultiplication n z)
+
+/-- **Exact incoming Gamma boundary channel.** The algebraic prolongation defect is zero on all
+retained jet slots and sends only the old highest derivative into the new boundary slot, with
+Leibniz weight `n+1`. -/
+theorem gammaClockCoordinateIncoming_apply_castSucc (n : ℕ) (z : ℂ)
+    (a : Fin (n + 1) → ℂ) (i : Fin (n + 1)) :
+    gammaClockCoordinateIncoming n z a i.castSucc = 0 := by
+  refine Fin.cases ?_ (fun j => ?_) i
+  · simp [gammaClockCoordinateIncoming, gammaClockCoordinateMultiplication,
+      gammaClockExtendZero, LinearMap.comp_apply]
+  · change (z * (Fin.snoc a (0 : ℂ) : Fin (n + 2) → ℂ) j.succ.castSucc +
+        (j.succ : ℕ) * (Fin.snoc a (0 : ℂ) : Fin (n + 2) → ℂ)
+          j.castSucc.castSucc) -
+        (Fin.snoc (gammaClockCoordinateMultiplication n z a) (0 : ℂ) :
+          Fin (n + 2) → ℂ) j.succ.castSucc = 0
+    rw [Fin.snoc_castSucc, Fin.snoc_castSucc, Fin.snoc_castSucc]
+    simp [gammaClockCoordinateMultiplication]
+
+theorem gammaClockCoordinateIncoming_apply_last (n : ℕ) (z : ℂ)
+    (a : Fin (n + 1) → ℂ) :
+    gammaClockCoordinateIncoming n z a (Fin.last (n + 1)) =
+      (n + 1 : ℂ) * a (Fin.last n) := by
+  change gammaClockCoordinateMultiplication (n + 1) z
+      (Fin.snoc a (0 : ℂ) : Fin (n + 2) → ℂ)
+      (Fin.last (n + 1)) -
+      (Fin.snoc (gammaClockCoordinateMultiplication n z a) (0 : ℂ) :
+        Fin (n + 2) → ℂ) (Fin.last (n + 1)) = _
+  rw [Fin.snoc_last, show Fin.last (n + 1) = (Fin.last n).succ by rfl]
+  simp only [gammaClockCoordinateMultiplication, sub_zero]
+  change (@Fin.cases (n + 1) (fun _ : Fin (n + 2) => ℂ)
+      (z * (Fin.snoc a (0 : ℂ) : Fin (n + 2) → ℂ) 0)
+      (fun j => z * (Fin.snoc a (0 : ℂ) : Fin (n + 2) → ℂ) j.succ +
+        (j.succ : ℕ) *
+          (Fin.snoc a (0 : ℂ) : Fin (n + 2) → ℂ) j.castSucc)
+      (Fin.last (n + 1))) = _
+  rw [show Fin.last (n + 1) = (Fin.last n).succ by rfl, Fin.cases_succ,
+    show (Fin.last n).succ = Fin.last (n + 1) by rfl,
+    Fin.snoc_last, Fin.snoc_castSucc]
+  simp
+
 /-- The new-boundary projector in the split Gamma jet clock. -/
 def gammaClockBoundaryProjector (n : ℕ) :
     (Fin (n + 1) → ℂ) →ₗ[ℂ] (Fin (n + 1) → ℂ) :=

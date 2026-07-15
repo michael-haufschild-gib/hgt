@@ -3,7 +3,7 @@
 - **ID:** `constraint-curvature-integration-stack`
 - **Stage:** 1-in-progress
 - **Type:** FOUNDATIONAL HT CONJECTURE / UNIFIED REALIZATION OBJECT
-- **Scientific status:** `[CONJECTURE] [LINEAR FIBER SKELETON LEAN-FORMALIZED] [RAW LIM1 CARRIER KILLED] [NOVELTY OPEN]`
+- **Scientific status:** `[CONJECTURE] [LINEAR FIBER SKELETON LEAN-FORMALIZED] [RAW LIM1 CARRIER KILLED] [CURVATURE-ONLY FIBER KILLED] [ANOMALY-COLLIGATION REFINEMENT] [NOVELTY OPEN]`
 - **Parents:**
   - `source-transgression-field.md`
   - `calibrated-clock-curvature-class.md`
@@ -64,6 +64,33 @@ field `bold_kappa_x` is invariant under analytic source-presentation equivalence
 
 The curvature field can be nonzero and still globally integrable. Nonzero curvature and
 nonintegrability are distinct.
+
+## Curvature-fiber no-go and positive refinement
+
+Curvature does not determine a finite clock action. For a split edge with `b=1-i p`, every
+perturbation `b g b` has zero curvature and preserves forward assembly. Consequently the fiber
+`(8)` identifies global realizations having different boundary self-symbols. A curvature-only
+integration stack is therefore too coarse to be the common object. This no-go and the following
+positive finite theorem are Lean-formalized:
+
+```text
+T_1=i T_0 p+i kappa+b T_1 b.                              (5a)
+```
+
+**Positive replacement.** Replace curvature by the complete source-anomaly boundary colligation
+
+```text
+C_x=(T_N,beta_N,delta_N,alpha_N)_N,                       (5b)
+```
+
+where `delta_N=b_N T_(N+1)b_N` is the boundary self-symbol and
+`alpha_N=T_N q_N-q_N S` is the source-specific descent anomaly. Equation `(5a)` gives exact finite
+reconstruction and uniqueness. The refined integration object must be the homotopy fiber over
+`C_x`, not over curvature alone.
+
+The same correction gives a second positive statement: universal Taylor translation is an
+integrable vacuum colligation, while the HT source is a source-specific anomalous section over
+that vacuum. This separates observation kinematics from source constraint.
 
 ## The integration stack
 

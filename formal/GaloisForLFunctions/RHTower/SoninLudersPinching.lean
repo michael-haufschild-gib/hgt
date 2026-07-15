@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.CCMSoninResolventCommutator
+import GaloisForLFunctions.RHTower.SoninEssentialNormExtensions
 import GaloisForLFunctions.HTGeometry.FiniteConstraintGroupAverage
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtOperator
 import GaloisForLFunctions.HTGeometry.TwoOutcomePinchingKadison
@@ -150,7 +151,7 @@ theorem star_mul_self_ludersDisturbance_eq_cutoffCommutator
       star (ccmCommutator X e) * ccmCommutator X e := by
   have hdistStar : star (X - ludersPinching e X) = X - ludersPinching e X := by
     simp only [ludersPinching, star_sub, star_add, star_mul, star_one,
-      heStar, hXStar]
+      heStar, hXStar, mul_assoc]
   have hcommStar : star (ccmCommutator X e) = -ccmCommutator X e := by
     simp only [ccmCommutator, star_sub, star_mul, heStar, hXStar]
     abel
@@ -167,9 +168,35 @@ theorem star_mul_self_crossBoundary_eq_compression_sub_sq
       compression e X - compression e X * compression e X := by
   have hee : e * e = e := he
   have hXX : X * X = X := hX
-  simp only [crossBoundary, compression, star_mul, star_sub, star_one,
-    heStar, hXStar]
-  noncomm_ring [hee, hXX]
+  have hff : (1 - e) * (1 - e) = 1 - e := by
+    noncomm_ring [hee]
+  have hstar : star (crossBoundary e X) = e * X * (1 - e) := by
+    simp only [crossBoundary, star_mul, star_sub, star_one, heStar, hXStar,
+      mul_assoc]
+  have hlowerProduct :
+      (e * X * (1 - e)) * ((1 - e) * X * e) =
+        e * X * (1 - e) * X * e := by
+    calc
+      (e * X * (1 - e)) * ((1 - e) * X * e) =
+          e * X * ((1 - e) * (1 - e)) * X * e := by noncomm_ring
+      _ = e * X * (1 - e) * X * e := by rw [hff]
+  have hcompressionProduct :
+      (e * X * e) * (e * X * e) = e * X * e * X * e := by
+    calc
+      (e * X * e) * (e * X * e) = e * X * (e * e) * X * e := by
+        noncomm_ring
+      _ = e * X * e * X * e := by rw [hee]
+  rw [hstar]
+  simp only [crossBoundary, compression]
+  rw [hlowerProduct, hcompressionProduct]
+  have hXXcompression : e * X * e = e * X * X * e := by
+    calc
+      e * X * e = e * (X * X) * e := by rw [hXX]
+      _ = e * X * X * e := by noncomm_ring
+  calc
+    e * X * (1 - e) * X * e =
+        e * X * X * e - e * X * e * X * e := by noncomm_ring
+    _ = e * X * e - e * X * e * X * e := by rw [← hXXcompression]
 
 /-- An idempotent cutoff acts on the left of its pinching by selecting the cutoff block. -/
 theorem mul_ludersPinching_eq_cutoffBlock

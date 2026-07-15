@@ -98,12 +98,11 @@ removes the strict-contraction premise by using the already proved central time-
 
 ## Status
 
-[PROVED IN LEAN] The directly touched module passes a single-threaded direct Lean check.  The
-exported theorem audit reports only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`
-axioms.  This module contains no formal-lint proof debt; the current repository-wide lint is blocked
-by three unrelated active `sorry`s in the concurrent `HTGeometry/DigammaRationalCarrier.lean`
-lane.  The central specialization was added afterward during the user-mandated no-computation
-phase and has been source-reviewed but deliberately not recompiled.  No full project build was run.
+[PROVED IN LEAN] The complete module, including the central and one-prime Euler consumers, passes
+an exact-module cache build and a direct source check.  Axiom audits of the transition-impurity,
+pinched resolvent, arbitrary-observable boundary split, and one-prime noncompact-disturbance
+theorems report only Lean's standard `propext`, `Classical.choice`, and `Quot.sound` axioms.  No
+full project build, numerical experiment, or concurrent Lean process was run.
 
 ## Compact disturbance equivalence — 2026-07-14
 
@@ -120,4 +119,5 @@ theorem `archimedeanPrimeEuler_ludersDisturbance_not_isCompactOperator` shows th
 by the corresponding nonselective measurement is itself noncompact.  This adds no hypothesis and
 turns the existing operator obstruction into a quantum-measurement statement.
 
-The declarations were added during the user-mandated no-computation phase and are source-reviewed only.  No Lean process, build, lint, numerical experiment, or axiom audit was run; the previously validated part of this card remains distinct from these unvalidated additions.
+The compact-disturbance equivalence and the one-prime noncompactness consumer are included in the
+validated exact module and axiom audit described above.
