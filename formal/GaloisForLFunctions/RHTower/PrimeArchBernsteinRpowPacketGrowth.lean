@@ -43,10 +43,10 @@ lemma finset_sum_rpow_le_rpow_sum_of_nonneg
     ∑ i ∈ s, f i ^ p ≤ (∑ i ∈ s, f i) ^ p := by
   classical
   induction s using Finset.induction_on with
-  | empty => simp
+  | empty => simp [Real.zero_rpow (by linarith : p ≠ 0)]
   | @insert i s hi ih =>
       rw [Finset.sum_insert hi, Finset.sum_insert hi]
-      exact (add_le_add_left
+      exact (add_le_add_right
         (ih (fun j hj => hf j (Finset.mem_insert_of_mem hj))) (f i ^ p)).trans
         (Real.add_rpow_le_rpow_add
           (hf i (Finset.mem_insert_self i s))
@@ -90,38 +90,34 @@ theorem norm_finitePacketTransform_rpow_le_card_mul_energy
   have hmean := Real.rpow_sum_le_const_mul_sum_rpow
     (s := Finset.range (n + 1)) (f := fun i => ‖a n i‖) hp
   simp only [abs_of_nonneg (norm_nonneg _), Finset.card_range] at hmean
-  exact (Real.rpow_le_rpow (norm_nonneg _) htransform (by linarith)).trans hmean
+  have hmean' : finitePacketL1 a n ^ p ≤
+      (n + 1 : ℝ) ^ (p - 1) * finitePacketRpowEnergy a p n := by
+    simpa only [finitePacketL1, finitePacketRpowEnergy, Nat.cast_add, Nat.cast_one]
+      using hmean
+  exact (Real.rpow_le_rpow (norm_nonneg _) htransform (by linarith)).trans hmean'
 
 /-- A positive exponential dominates every fixed natural power of the packet cardinality. -/
 lemma tendsto_const_mul_pow_div_nat_add_one_pow_atTop
     {rho eta : ℝ} (k : ℕ) (hrho : 1 < rho) (heta : 0 < eta) :
     Tendsto (fun n : ℕ => eta * rho ^ n / (n + 1 : ℝ) ^ k) atTop atTop := by
   have hbase := tendsto_pow_const_div_const_pow_of_one_lt k hrho
-  have hupper : Tendsto
-      (fun n : ℕ => (2 : ℝ) ^ k * ((n : ℝ) ^ k / rho ^ n))
+  have hshift : Tendsto
+      (fun n : ℕ => ((n + 1 : ℕ) : ℝ) ^ k / rho ^ (n + 1))
       atTop (nhds 0) := by
-    simpa using tendsto_const_nhds.mul hbase
+    exact (tendsto_add_atTop_iff_nat 1).2 hbase
   have hpoly : Tendsto (fun n : ℕ => (n + 1 : ℝ) ^ k / rho ^ n)
       atTop (nhds 0) := by
-    apply squeeze_zero
-      (fun n => div_nonneg (pow_nonneg (by positivity) k)
-        (pow_nonneg (lt_trans zero_lt_one hrho).le n))
-      (fun n => ?_) hupper
-    by_cases hn : n = 0
-    · subst n
-      simp
-    · have hn1 : 1 ≤ n := Nat.one_le_iff_ne_zero.mpr hn
-      have hcast : (n + 1 : ℝ) ≤ 2 * (n : ℝ) := by
-        exact_mod_cast (show n + 1 ≤ 2 * n by omega)
-      have hpow : (n + 1 : ℝ) ^ k ≤ (2 * (n : ℝ)) ^ k :=
-        pow_le_pow_left₀ (by positivity) hcast k
-      calc
-        (n + 1 : ℝ) ^ k / rho ^ n ≤
-            (2 * (n : ℝ)) ^ k / rho ^ n :=
-          div_le_div_of_nonneg_right hpow (pow_nonneg (lt_trans zero_lt_one hrho).le n)
-        _ = (2 : ℝ) ^ k * ((n : ℝ) ^ k / rho ^ n) := by
-          rw [mul_pow]
-          ring
+    have hmul : Tendsto
+        (fun n : ℕ => rho * (((n + 1 : ℕ) : ℝ) ^ k / rho ^ (n + 1)))
+        atTop (nhds 0) := by
+      simpa using (tendsto_const_nhds.mul hshift :
+        Tendsto
+          (fun n : ℕ => rho * (((n + 1 : ℕ) : ℝ) ^ k / rho ^ (n + 1)))
+          atTop (nhds (rho * 0)))
+    convert hmul using 1
+    funext n
+    rw [Nat.cast_add, Nat.cast_one, pow_succ]
+    field_simp [(lt_trans zero_lt_one hrho).ne']
   have hpos : ∀ᶠ n : ℕ in atTop, 0 < (n + 1 : ℝ) ^ k / rho ^ n :=
     Eventually.of_forall fun n => div_pos (pow_pos (by positivity) k)
       (pow_pos (lt_trans zero_lt_one hrho) n)
@@ -195,7 +191,8 @@ theorem finitePacketRpowEnergy_exactExponent
           (mul_nonneg hdelta.le (pow_nonneg hB.le n)) hn hp0
       have hcard : (n + 1 : ℝ) ^ (p - 1) ≤ (n + 1 : ℝ) ^ k := by
         rw [← Real.rpow_natCast]
-        exact Real.rpow_le_rpow_of_exponent_le (by positivity) hk
+        exact Real.rpow_le_rpow_of_exponent_le
+          (by exact_mod_cast Nat.succ_le_succ (Nat.zero_le n)) hk
       have hsource :
           delta ^ p * (B ^ p) ^ n ≤
             (n + 1 : ℝ) ^ k * finitePacketRpowEnergy a p n := by

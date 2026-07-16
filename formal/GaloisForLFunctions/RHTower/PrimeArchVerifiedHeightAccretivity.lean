@@ -454,3 +454,15 @@ theorem continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_plattTrudgianArbR
 end
 
 end RHTower
+
+namespace RHTower
+
+/-- Unconditional one-sided endpoint at the source-pure threshold four: after the verified central
+band `|Re z| ≤ 4`, the signed positive-frequency source tail is exactly RH.  The verified-height
+hypothesis is discharged by the endpoint height gap through `9 / 2`. -/
+theorem continuedPrimeArchPositiveFrequencyAbove_four_iff_rh :
+    ContinuedPrimeArchPositiveFrequencyAbove 4 ↔ RiemannHypothesis :=
+  continuedPrimeArchPositiveFrequencyAbove_iff_rh_of_verifiedHeight
+    (9 / 2) 4 rhVerifiedThrough_nine_halves (by norm_num)
+
+end RHTower

@@ -1,7 +1,7 @@
 # Combined Square-Test Positivity Is Insufficient
 
 - **ID:** combined-square-test-positivity-insufficient
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** docs/consolidated/gpt/proof-route.md, Layer B square-test positivity
 - **Statement:** Positivity of the combined shifted form `Q_0+Q_1` does not imply sectorwise positivity of `Q_0` and `Q_1`, even at every finite truncation order. The Layer B theorem cannot be weakened to an ungraded combined positivity statement.
@@ -24,7 +24,11 @@ Q_0[p] >= 0 and Q_1[p] >= 0 for all p.
 
 - [x] 0 -> 1 in-progress: well-posed, source-pure, attack idea
 - [x] 1 -> 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 -> 3 formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 -> 3 formalized: unconditional theorem
+  `HTGeometry.combinedSquareTestPositivity_insufficient` in
+  `formal/GaloisForLFunctions/HTGeometry/HankelGuardrailConsequences.lean`;
+  exact target build passed and the capstone axiom audit reports only
+  `propext`, `Classical.choice`, and `Quot.sound`.
 - [ ] 3 -> 4 publication-ready: standalone note if needed
 
 ## Proof

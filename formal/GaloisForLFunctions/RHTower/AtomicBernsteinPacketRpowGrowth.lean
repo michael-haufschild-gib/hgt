@@ -50,16 +50,21 @@ private lemma norm_atomicBernsteinCoefficientTerm
       ‖c j‖ * (n.choose i : ℝ) * ‖u j‖ ^ i * ‖1 - u j‖ ^ (n - i) := by
   simp only [atomicBernsteinCoefficientTerm, norm_mul, norm_pow,
     Complex.norm_natCast]
-  ring
 
 private lemma binomial_term_le_affineAmplitude_pow
     {x y : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) {n i : ℕ} (hi : i ≤ n) :
     (n.choose i : ℝ) * x ^ i * y ^ (n - i) ≤ (x + y) ^ n := by
   rw [add_pow]
-  apply Finset.single_le_sum
-  · intro j hj
-    positivity
-  · exact Finset.mem_range.mpr (Nat.lt_succ_of_le hi)
+  calc
+    (n.choose i : ℝ) * x ^ i * y ^ (n - i) =
+        x ^ i * y ^ (n - i) * (n.choose i : ℝ) := by ring
+    _ ≤ ∑ m ∈ Finset.range (n + 1),
+        x ^ m * y ^ (n - m) * (n.choose m : ℝ) := by
+      exact Finset.single_le_sum
+        (s := Finset.range (n + 1))
+        (f := fun m => x ^ m * y ^ (n - m) * (n.choose m : ℝ))
+        (fun j hj => by positivity)
+        (Finset.mem_range.mpr (Nat.lt_succ_of_le hi))
 
 /-- Under a uniform affine-amplitude ceiling, every atomic coefficient series is absolutely
 summable. -/
@@ -96,7 +101,7 @@ theorem finitePacketL1_atomicBernsteinPacket_le
   have hsumm (i : ℕ) (hi : i ∈ Finset.range (n + 1)) :
       Summable (atomicBernsteinCoefficientTerm c u n i) :=
     summable_atomicBernsteinCoefficientTerm hc hB (Nat.le_of_lt_succ (Finset.mem_range.mp hi))
-  rw [finitePacketL1, atomicBernsteinPacket, atomicBernsteinCoefficient]
+  simp only [finitePacketL1, atomicBernsteinPacket, atomicBernsteinCoefficient]
   calc
     (∑ i ∈ Finset.range (n + 1),
         ‖∑' j : I, atomicBernsteinCoefficientTerm c u n i j‖) ≤
@@ -112,10 +117,19 @@ theorem finitePacketL1_atomicBernsteinPacket_le
       apply tsum_congr
       intro j
       simp_rw [norm_atomicBernsteinCoefficientTerm]
-      rw [← Finset.mul_sum]
-      congr 1
-      simpa only [Nat.cast_ofNat] using
-        (add_pow ‖u j‖ ‖1 - u j‖ n).symm
+      calc
+        (∑ i ∈ Finset.range (n + 1),
+            ‖c j‖ * (n.choose i : ℝ) * ‖u j‖ ^ i * ‖1 - u j‖ ^ (n - i)) =
+            ∑ i ∈ Finset.range (n + 1),
+              ‖c j‖ * (‖u j‖ ^ i * ‖1 - u j‖ ^ (n - i) * (n.choose i : ℝ)) := by
+          apply Finset.sum_congr rfl
+          intro i hi
+          ring
+        _ = ‖c j‖ * ∑ i ∈ Finset.range (n + 1),
+              ‖u j‖ ^ i * ‖1 - u j‖ ^ (n - i) * (n.choose i : ℝ) := by
+          rw [Finset.mul_sum]
+        _ = ‖c j‖ * (‖u j‖ + ‖1 - u j‖) ^ n := by
+          rw [add_pow]
     _ ≤ ∑' j : I, ‖c j‖ * B ^ n := by
       apply Summable.tsum_le_tsum
       · intro j
@@ -142,7 +156,7 @@ theorem finitePacketTransform_atomicBernsteinPacket_eq
       Summable (fun j : I => atomicBernsteinCoefficientTerm c u n i j * w ^ i) :=
     (summable_atomicBernsteinCoefficientTerm hc hB
       (Nat.le_of_lt_succ (Finset.mem_range.mp hi))).mul_right (w ^ i)
-  rw [finitePacketTransform, atomicBernsteinPacket, atomicBernsteinCoefficient,
+  simp only [finitePacketTransform, atomicBernsteinPacket, atomicBernsteinCoefficient,
     atomicBernsteinPencil]
   calc
     (∑ i ∈ Finset.range (n + 1),
@@ -160,10 +174,17 @@ theorem finitePacketTransform_atomicBernsteinPacket_eq
       intro j
       rw [show 1 - u j + u j * w = u j * w + (1 - u j) by ring, add_pow]
       simp_rw [atomicBernsteinCoefficientTerm]
-      apply Finset.sum_congr rfl
-      intro i hi
-      push_cast
-      ring
+      calc
+        (∑ i ∈ Finset.range (n + 1),
+            c j * (n.choose i : ℂ) * u j ^ i * (1 - u j) ^ (n - i) * w ^ i) =
+            ∑ i ∈ Finset.range (n + 1),
+              c j * ((u j * w) ^ i * (1 - u j) ^ (n - i) * (n.choose i : ℂ)) := by
+          apply Finset.sum_congr rfl
+          intro i hi
+          ring
+        _ = c j * ∑ i ∈ Finset.range (n + 1),
+              (u j * w) ^ i * (1 - u j) ^ (n - i) * (n.choose i : ℂ) := by
+          rw [Finset.mul_sum]
 
 /-- A finite noncancelling maximal atomic mode supplies the transform lower envelope required by
 the abstract packet theorem. -/

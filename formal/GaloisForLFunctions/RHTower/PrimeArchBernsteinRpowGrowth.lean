@@ -54,8 +54,11 @@ lemma finitePacketTransform_primeArchEndpointBernsteinPacket_one (n : ℕ) :
   rw [finitePacketTransform_primeArchEndpointBernsteinPacket,
     bernsteinCoefficientTransform]
   simp only [one_pow, mul_one]
-  rw [sum_bernsteinCoefficient]
-  simp [radiusNormalizedMoment]
+  have h := congrArg (fun x : ℝ => (x : ℂ))
+    (sum_bernsteinCoefficient
+      (radiusNormalizedMoment primeArchEndpointHausdorffRadius normalizedPrimeArchMoment) n)
+  push_cast at h
+  simpa [radiusNormalizedMoment] using h
 
 /-- Under RH every endpoint atom has affine amplitude exactly one. -/
 lemma xiEndpointBernsteinAtomAmplitudeBase_eq_one_of_riemannHypothesis
@@ -149,7 +152,7 @@ theorem riemannHypothesis_iff_tendsto_primeArchEndpointBernsteinRpowEnergy
     have heq : B ^ p = 1 := tendsto_nhds_unique hgrowth hneutral
     have hp0 : 0 < p := lt_of_lt_of_le zero_lt_one hp
     have hgt : 1 < B ^ p := by
-      simpa only [Real.one_rpow] using Real.rpow_lt_rpow_of_exponent_lt hB hp0
+      simpa only [Real.rpow_zero] using Real.rpow_lt_rpow_of_exponent_lt hB hp0
     linarith
 
 end

@@ -1,11 +1,12 @@
 import GaloisForLFunctions.HTGeometry.ExpandedEvaluationProjectiveStratification
 import GaloisForLFunctions.HTGeometry.SmoothAffineControlFamily
+import GaloisForLFunctions.HTGeometry.StratifiedParametricAvoidance
 
 /-!
 # Compact-patch density for expanded evaluation rank
 
-This is the exact meeting point of the two cited classical inputs and the project's original
-formal geometry.  The projective incidence calculation supplies a finite real stratification of
+This is the exact meeting point of the cited classical incidence input, the in-tree stratified
+parametric-avoidance theorem, and the project's original formal geometry.  The projective incidence calculation supplies a finite real stratification of
 the literal rank defect.  A smooth family whose finite probe derivative is onto is then densely
 perturbable away from that defect on a compact configuration patch whenever the formal
 codimension exceeds the real configuration dimension.
@@ -20,7 +21,6 @@ noncomputable section
 /-- **Compact-patch expanded-evaluation density law.** -/
 theorem expandedEvaluation_compactPatchAvoidance_dense
     (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
-    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
     {P H row κ : Type}
     [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
     [NormedAddCommGroup H] [NormedSpace ℝ H] [FiniteDimensional ℝ H]
@@ -39,7 +39,7 @@ theorem expandedEvaluation_compactPatchAvoidance_dense
     Dense (compactConfigurationAvoidance F
       (expandedDifferentialEvaluationRankDefect q n z exponent) K) := by
   exact compactConfigurationAvoidance_dense_of_classicalStratifiedTransversality
-    parametricAvoidance F
+    classicalStratifiedParametricAvoidance F
     (expandedDifferentialEvaluationRankDefect q n z exponent)
     (2 * (Fintype.card row - Fintype.card (κ × Fin (q + 1)) - q + 1))
     U K hU hK hKU hF hsubmersion
@@ -51,7 +51,6 @@ theorem expandedEvaluation_compactPatchAvoidance_dense
 by the exact derivative theorem in `SmoothAffineControlFamily`. -/
 theorem expandedEvaluation_affineProbe_compactPatchAvoidance_dense
     (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
-    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
     {P H row κ : Type}
     [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
     [NormedAddCommGroup H] [NormedSpace ℝ H] [FiniteDimensional ℝ H]
@@ -71,7 +70,7 @@ theorem expandedEvaluation_affineProbe_compactPatchAvoidance_dense
       (smoothAffineControlFamily base direction)
       (expandedDifferentialEvaluationRankDefect q n z exponent) K) := by
   apply expandedEvaluation_compactPatchAvoidance_dense
-    projectiveGeometry parametricAvoidance q n z hz exponent hexponent hrows
+    projectiveGeometry q n z hz exponent hexponent hrows
     (smoothAffineControlFamily base direction) U K hU hK hKU
   · exact contDiffOn_smoothAffineControlFamily hbase hdirection
   · intro p h hh

@@ -229,3 +229,18 @@ theorem primeArchCofinalSourceTemperatureSpectrum
 end
 
 end RHTower
+
+namespace RHTower
+
+/-- Unconditional ultraviolet compression at the source-pure threshold four: the signed
+positive-frequency tail above four is exactly the cofinal Hausdorff/Bernstein negative-mass
+vanishing.  The verified-height hypothesis is discharged by the endpoint height gap through
+`9 / 2`. -/
+theorem continuedPrimeArchPositiveFrequencyAbove_four_iff_cofinalBernsteinNegativeMass :
+    ContinuedPrimeArchPositiveFrequencyAbove 4 ↔
+      CofinalHausdorffBernsteinNegativeMassVanishing
+        primeArchEndpointHausdorffRadius normalizedPrimeArchMoment :=
+  continuedPrimeArchPositiveFrequencyAbove_iff_cofinalBernsteinNegativeMass_of_verifiedHeight
+    (9 / 2) 4 rhVerifiedThrough_nine_halves (by norm_num)
+
+end RHTower

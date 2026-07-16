@@ -1,9 +1,9 @@
 # Generic time change restores the lost differential coordinate
 
 - **ID:** `generic-time-change-jet-birationality`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Scientific status:** `[PROVED HERE] [INFRASTRUCTURE]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
+- **Scientific status:** `[PROVED HERE] [LEAN-FORMALIZED] [INFRASTRUCTURE]`
 - **Statement:** Let `(E,D)` be a differential field extension of a field `K` of characteristic
   zero.  Let `w,a,f₁,…,f_k∈E`, assume `Dw=1`, and fix `m∈ℕ`.  If
 
@@ -86,6 +86,27 @@ Equivalently, the finite jet transformation is birational.  In polynomial coordi
 triangular diagonal consists of powers of `a`; localization at `a` gives the displayed rational
 inverse.
 
+## Lean formalization
+
+File:
+`formal/GaloisForLFunctions/HTGeometry/GenericTimeChangeJetBirationality.lean`.
+
+The formal surface is:
+
+- `universalTimeChangeAlgHom_injective`: the unbounded universal time-change substitution is
+  injective.  Its proof constructs the rational inverse in the fraction field of the target jet
+  ring using `(δw)⁻¹δ`.
+- `finiteUniversalTimeChangeAlgHom_injective`: every order-`m` target packet descends to the exact
+  finite source ring containing `w`, the scale jets of orders `< m`, and the observable jets of
+  orders `≤ m`; the resulting finite substitution is injective.
+- `algebraicIndependent_timeChangeFiniteTargetValue`: for arbitrary observable index type `ι`,
+  fields `K,E`, a `K`-derivation `D : E → E`, and `Dw=1`, algebraic independence of the finite
+  source packet implies algebraic independence of the finite `δ=aD` target packet.
+
+The Lean theorem is unconditional and slightly stronger than the paper statement: it does not
+need a characteristic-zero hypothesis.  The only logical inputs are the field/algebra structures,
+the derivation, `Dw=1`, and algebraic independence of the stated source packet.
+
 ## Boundary
 
 The theorem does not assert that a particular analytic time-change factor has independent jets.
@@ -96,6 +117,5 @@ disjointness from the lower-iterate jet frame.
 
 - [x] 0 → 1 in-progress: exact statement and Gamma role isolated
 - [x] 1 → 2 fully-proven: rational inverse and transcendence-degree proof complete
-- [ ] 2 → 3 formalized: arbitrary finite `k,m` theorem in Lean
+- [x] 2 → 3 formalized: arbitrary observable type and arbitrary finite order `m` theorem in Lean
 - [ ] 3 → 4 publication-ready: integrate into the Gamma-iterate proof
-

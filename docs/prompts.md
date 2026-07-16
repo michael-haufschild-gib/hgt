@@ -16,7 +16,7 @@ folders:
 - formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
 
 skip cards that are not relevant for hypertranscendental functions nor for the riemann zeta function
-
+before any build make sure you have the most efficient lean code, e.g. do not pull unnecessary modules.
 
 #research and formalize
 /goal
@@ -37,4 +37,4 @@ folders:
 - formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
 - formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
 
-
+before any build make sure you have the most efficient lean code, e.g. do not pull unnecessary modules.

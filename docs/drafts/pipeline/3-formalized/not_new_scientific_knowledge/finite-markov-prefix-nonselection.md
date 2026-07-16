@@ -1,7 +1,7 @@
 # Finite Markov Prefixes Do Not Select Stieltjes Positivity
 
 - **ID:** finite-markov-prefix-nonselection
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / seam-log source-gate guardrail
 - **Source:** `seam-log-markov-pick-rh-equivalence.md`,
   `seam-log-hankel-rh-equivalence.md`,
@@ -127,8 +127,12 @@ square test.
 
 - [x] 0 -> 1 in-progress: finite Markov-prefix loophole isolated.
 - [x] 1 -> 2 fully-proven: arbitrary-late negative square test constructed.
-- [ ] 2 -> 3 formalized: finite sequence extension and polynomial-square
-  calculation.
+- [x] 2 -> 3 formalized: unconditional theorem
+  `HTGeometry.exists_continuation_preserving_prefix_not_momentSequence` in
+  `formal/GaloisForLFunctions/HTGeometry/HankelGuardrailConsequences.lean`;
+  the exact target build passed. The recursive capstone axiom printer was
+  resource-bounded, while the formal lint scan found no forbidden declaration
+  in this proof or its project dependencies.
 
 ## Log
 

@@ -1,8 +1,5 @@
-import GaloisForLFunctions.HTGeometry.CofinalCholeskyResidualPhase
-import GaloisForLFunctions.HTGeometry.NevanlinnaBauerRetract
 import GaloisForLFunctions.HTGeometry.CompleteCauchyGermClosure
-import GaloisForLFunctions.HTGeometry.ProjectiveNevanlinnaGenericity
-import GaloisForLFunctions.HTGeometry.SingularSchurDefectCollapse
+import GaloisForLFunctions.HTGeometry.FAndMRieszSchurConsequences
 
 /-!
 # Moment-fiber boundary splitting, Pick phases, and Schur condensation
@@ -122,15 +119,12 @@ theorem xiSchur_inverseLimit_atomicCondensation
     (RH : Prop)
     (mu : ProbabilityMeasure Circle)
     (hmu : (mu : Measure Circle).support.Infinite)
-    (hRH : RH ↔ (mu : Measure Circle) ⟂ₘ circleLebesgue)
-    (hriesz : HasRieszBrothersDensityConclusion
-      (mu : Measure Circle) circleLebesgue) :
+    (hRH : RH ↔ (mu : Measure Circle) ⟂ₘ circleLebesgue) :
     RH →
       HasSingularSchurDefectCollapse (mu : Measure Circle) hmu ∧
       HasBernsteinSzegoCofinalApproximation mu hmu := by
   intro h
-  exact singularSchurDefect_doubleBoundary_of_rieszBrothers
-    mu hmu (hRH.mp h) hriesz
+  exact singularSchurDefect_doubleBoundary mu hmu (hRH.mp h)
 
 end
 

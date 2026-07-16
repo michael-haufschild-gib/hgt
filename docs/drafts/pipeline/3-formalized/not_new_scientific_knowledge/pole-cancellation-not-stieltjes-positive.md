@@ -1,7 +1,7 @@
 # Pole Cancellation Does Not Imply Stieltjes Positivity
 
 - **ID:** pole-cancellation-not-stieltjes-positive
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `docs/consolidated/revision01/proof-route.md`
 - **Statement:** A cancellation/renormalization step that only removes an infinite scalar term need not preserve Hankel positivity. Therefore a bridge theorem from completion + explicit formula + pole cancellation to Stieltjes positivity must prove positivity preservation on square test functions, or move to a shifted finite moment space.
@@ -70,6 +70,18 @@ cannot be proved by finiteness/cancellation alone. It must prove one of:
 2. the argument works in the shifted finite moment space `[T_{i+j+1}]`;
 3. a finite-window limiting theorem preserves PSD before the limit;
 4. a specified `T_0` finite-part is compatible with all Hankel minors.
+
+## Formalization
+
+The unconditional theorem
+`HTGeometry.poleCancellation_can_destroy_momentPositivity` in
+`formal/GaloisForLFunctions/HTGeometry/HankelGuardrailConsequences.lean`
+constructs the positive cutoff measure, proves its full moment representation,
+preserves every positive-degree moment under cancellation, and proves that the
+cancelled sequence has no positive representing measure. The exact target
+build passed. The recursive capstone axiom printer was resource-bounded, while
+the formal lint scan found no forbidden declaration in this proof or its
+project dependencies.
 
 ## Computation
 Artifacts:

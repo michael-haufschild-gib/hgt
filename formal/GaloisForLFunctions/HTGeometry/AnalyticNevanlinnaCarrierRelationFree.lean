@@ -234,7 +234,6 @@ residual family in the positive mass-one chart whose actual weighted-carrier tra
 coefficient rigidity for every encoded differential pattern and every distinct shift tuple. -/
 theorem countablePatterns_positiveActualCarrier_relationFree_dense_residual
     (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
-    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
     (row κ ι : ℕ → Type)
     [∀ n, Fintype (row n)] [∀ n, DecidableEq (row n)]
     [∀ n, Fintype (κ n)] [∀ n, DecidableEq (κ n)]
@@ -297,7 +296,7 @@ theorem countablePatterns_positiveActualCarrier_relationFree_dense_residual
     simpa [relationFree, frozen, S, amplitude, quotient,
       projectiveNevanlinnaAmplitude, projectiveNevanlinnaQuotient] using
       (countablePatterns_actualNevanlinna_relationFree_dense_residual
-        projectiveGeometry parametricAvoidance row κ ι hCmin F.differentiable_d
+        projectiveGeometry row κ ι hCmin F.differentiable_d
         hnoCommon hCp hCc hupperMap' F.background F.contDiffOn_iteratedDeriv_background
         zf hqf_inj' hupperf'
         nf degree orders exponent hexponent hrows eta heta
@@ -313,7 +312,6 @@ finite admissible row-packet certificate of full coefficient rank for every cano
 every tuple of distinct complex shifts. -/
 theorem allFinitePatterns_abstractCarrier_fullRankWitness_dense_residual
     (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
-    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
     {ιf : Type} [Fintype ιf] [DecidableEq ιf]
     (hCmin : HasMinimalExponentialType F.c)
     (hnoCommon : ∀ z, ¬ (F.c z = 0 ∧ F.d z = 0))
@@ -368,7 +366,7 @@ theorem allFinitePatterns_abstractCarrier_fullRankWitness_dense_residual
       (global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
         (row := CarrierPatternRow p) (κ := CarrierPatternMonomial p)
         (ι := CarrierPatternShift p)
-        projectiveGeometry parametricAvoidance hCmin F.differentiable_d
+        projectiveGeometry hCmin F.differentiable_d
         hnoCommon hCp hCc hupperMap' F.background
         F.contDiffOn_iteratedDeriv_background zf hqf_inj' hupperf' nf
         p.coefficientDegree p.orders (carrierPatternExponent p)
@@ -396,7 +394,6 @@ simultaneous abstract witness phase to the unit ball preserves density and resid
 every tangent vector a strictly positive mass-one density. -/
 theorem allFinitePatterns_positiveAbstractCarrier_fullRankWitness_dense_residual
     (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
-    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
     {ιf : Type} [Fintype ιf] [DecidableEq ιf]
     (hCmin : HasMinimalExponentialType F.c)
     (hnoCommon : ∀ z, ¬ (F.c z = 0 ∧ F.d z = 0))
@@ -438,7 +435,7 @@ theorem allFinitePatterns_positiveAbstractCarrier_fullRankWitness_dense_residual
   have habstract : Dense abstractFullRank ∧ abstractFullRank ∈ residual S := by
     simpa [abstractFullRank, frozen, S] using
       (F.allFinitePatterns_abstractCarrier_fullRankWitness_dense_residual
-        projectiveGeometry parametricAvoidance hCmin hnoCommon hCp hCc hupperMap
+        projectiveGeometry hCmin hnoCommon hCp hCc hupperMap
         zf hqf_inj hupperf nf eta heta)
   simpa [abstractFullRank, frozen, S] using
     (normalizedProjectiveCauchy_positiveChart_dense_residual
@@ -450,7 +447,6 @@ dense residual tangent locus with coefficient rigidity for every finite differen
 shape at once. -/
 theorem allFinitePatterns_abstractCarrier_relationFree_dense_residual
     (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
-    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
     {ιf : Type} [Fintype ιf] [DecidableEq ιf]
     (hCmin : HasMinimalExponentialType F.c)
     (hnoCommon : ∀ z, ¬ (F.c z = 0 ∧ F.d z = 0))
@@ -509,7 +505,7 @@ theorem allFinitePatterns_abstractCarrier_relationFree_dense_residual
       (global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
         (row := CarrierPatternRow p) (κ := CarrierPatternMonomial p)
         (ι := CarrierPatternShift p)
-        projectiveGeometry parametricAvoidance hCmin F.differentiable_d
+        projectiveGeometry hCmin F.differentiable_d
         hnoCommon hCp hCc hupperMap' F.background
         F.contDiffOn_iteratedDeriv_background zf hqf_inj' hupperf' nf
         p.coefficientDegree p.orders (carrierPatternExponent p)
@@ -533,7 +529,6 @@ dense residual family of actual weighted Nevanlinna carrier transforms admits no
 of any canonical finite differential-pattern shape. -/
 theorem allFinitePatterns_positiveActualCarrier_relationFree_dense_residual
     (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
-    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
     {ιf : Type} [Fintype ιf] [DecidableEq ιf]
     (hCmin : HasMinimalExponentialType F.c)
     (hnoCommon : ∀ z, ¬ (F.c z = 0 ∧ F.d z = 0))
@@ -575,7 +570,7 @@ theorem allFinitePatterns_positiveActualCarrier_relationFree_dense_residual
   have habstract : Dense relationFree ∧ relationFree ∈ residual S := by
     simpa [relationFree, frozen, S] using
       (F.allFinitePatterns_abstractCarrier_relationFree_dense_residual
-        projectiveGeometry parametricAvoidance hCmin hnoCommon hCp hCc hupperMap
+        projectiveGeometry hCmin hnoCommon hCp hCc hupperMap
         zf hqf_inj hupperf nf eta heta)
   exact F.normalizedPositiveChart_actualCarrier_relationFree_dense_residual
     zf nf eta hupperf
@@ -709,7 +704,6 @@ incidence/projection/stratified-avoidance inputs, the positive mass-one chart co
 residual family whose actual weighted-carrier Cauchy transforms are hypertranscendental. -/
 theorem positiveActualCarrier_hypertranscendental_dense_residual
     (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
-    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
     {ιf : Type} [Fintype ιf] [DecidableEq ιf]
     (hCmin : HasMinimalExponentialType F.c)
     (hnoCommon : ∀ z, ¬ (F.c z = 0 ∧ F.d z = 0))
@@ -759,7 +753,7 @@ theorem positiveActualCarrier_hypertranscendental_dense_residual
           ∫ t, (linftyOne eta + w.1.1) t ∂eta = 1 := by
     simpa [actualRelationFree, frozen, S, positiveChart] using
       (F.allFinitePatterns_positiveActualCarrier_relationFree_dense_residual
-        projectiveGeometry parametricAvoidance hCmin hnoCommon hCp hCc hupperMap
+        projectiveGeometry hCmin hnoCommon hCp hCc hupperMap
         zf hqf_inj hupperf nf eta heta)
   have hsubset : actualRelationFree ⊆ hypertranscendentalCarrier := by
     intro w hw
@@ -774,7 +768,6 @@ of the positive chart is an atomless singular probability solution of the same H
 problem, while a dense residual subfamily has hypertranscendental Cauchy transform. -/
 theorem positiveSingularContinuousCarrier_hypertranscendental_dense_residual
     (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
-    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
     {ιf : Type} [Fintype ιf] [DecidableEq ιf]
     (hCmin : HasMinimalExponentialType F.c)
     (hnoCommon : ∀ z, ¬ (F.c z = 0 ∧ F.d z = 0))
@@ -829,7 +822,7 @@ theorem positiveSingularContinuousCarrier_hypertranscendental_dense_residual
           ∫ t, (linftyOne mu + w.1.1) t ∂mu = 1 := by
     simpa [hypertranscendentalCarrier, positiveChart, frozen, S, mu] using
       (F.positiveActualCarrier_hypertranscendental_dense_residual
-        projectiveGeometry parametricAvoidance hCmin hnoCommon hCp hCc hupperMap
+        projectiveGeometry hCmin hnoCommon hCp hCc hupperMap
         zf hqf_inj hupperf nf mu hetaInfinite)
   refine ⟨hht.1, hht.2.1, ?_⟩
   intro w

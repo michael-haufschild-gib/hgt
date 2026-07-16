@@ -57,6 +57,26 @@ H=log d.                                                 (4)
 Thus the four-unit Mobius curvature is not merely analogous to thermodynamic dissipation: it is
 an exactly normalized finite KMS entropy production.
 
+## Lean surface and remaining formal core
+
+`formal/GaloisForLFunctions/RHTower/MobiusIncidenceKMSEntropyProduction.lean` now formalizes the
+finite realization unconditionally:
+
+- `finiteGibbsStateWeight_incidence` proves that the Gibbs weights for energy `epsilon log d` and
+  inverse temperature `sigma/epsilon` are exactly the normalized finite incidence weights;
+- `finiteIncidenceKMSAmplitude_hermitian` and `finiteIncidenceKMSAmplitude_normSq` construct and
+  verify the canonical Hermitian amplitude;
+- `finiteKMSEntropyProductionTransitionIntensity_incidence` proves equation `(3)` entry by entry;
+- `sum_finiteKMSEntropyProductionTransitionIntensity_incidence` proves equation `(4)`;
+- `finiteIncidenceKMSResponse_eq` identifies the exact finite passive gap response, and
+  `finiteIncidenceKMSResponse_im_nonpos` proves its anti-Herglotz sign;
+- `integral_mobiusIncidenceUniversalGapDensity` proves that the proposed universal limiting
+  density `2|x|exp(-|x|)` has total mass four.
+
+The card remains at Stage 2.  The exact open Lean core is the unconditional squarefree critical
+gap-response convergence to this density and the logarithmic derivative singularity at the
+origin.  No hypothesis standing in for either statement has been introduced.
+
 ## Critical response theorem
 
 Let `D` increase cofinally through the squarefree integers and then let `sigma->1+`.  The proved

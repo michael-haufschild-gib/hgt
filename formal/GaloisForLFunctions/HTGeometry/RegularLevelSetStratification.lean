@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ClassicalStratifiedParametricAvoidance
+import Mathlib.Data.Fintype.Pi
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -176,6 +177,35 @@ def finiteRegularStratification_of_regular
     exact (hij (Subsingleton.elim i j)).elim
   have h := finiteRegularStratification_of_pairwise stratum hpair (fun _ => hregular)
   simpa only [stratum, iUnion_const] using h
+
+def FiniteRegularStratification.cons
+    {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
+    {S R T : Set Y} {c : ℕ}
+    (tail : FiniteRegularStratification T c)
+    (hR : IsLocalRegularLevelSetOfCodimAtLeast R c)
+    (hRT : Disjoint R T) (hS : S = R ∪ T) :
+    FiniteRegularStratification S c where
+  numberOfStrata := tail.numberOfStrata + 1
+  stratum := Fin.cases R tail.stratum
+  pairwise_disjoint := by
+    rw [Set.PairwiseDisjoint, Set.pairwise_univ, pairwise_fin_succ_iff]
+    have hsubset : ∀ j, tail.stratum j ⊆ T := by
+      intro j x hx
+      have hx' : x ∈ ⋃ i, tail.stratum i := mem_iUnion.mpr ⟨j, hx⟩
+      exact tail.cover.symm ▸ hx'
+    refine ⟨?_, ?_, ?_⟩
+    · intro i
+      exact hRT.symm.mono_left (hsubset i)
+    · intro j
+      exact hRT.mono_right (hsubset j)
+    · intro i j hij
+      exact tail.pairwise_disjoint (mem_univ i) (mem_univ j) hij
+  cover := by
+    rw [iUnion_fin_add_one_eq_iUnion_succ]
+    simpa only [tail.cover] using hS
+  regular := by
+    intro i
+    refine Fin.cases hR (fun j => tail.regular j) i
 
 end
 

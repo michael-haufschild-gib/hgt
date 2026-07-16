@@ -326,7 +326,6 @@ piece; it then instantiates the genuine smooth Nevanlinna row family and the uni
 The only upper-half-plane hypothesis is the classical Nevanlinna mapping property of `-D/C`. -/
 theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProbe
     (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
-    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
     {row κ ι ιf : Type}
     [Fintype row] [DecidableEq row]
     [Fintype κ] [DecidableEq κ]
@@ -507,7 +506,7 @@ theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProb
     exact (hdataU0 h (hKU0 hh)).2.2.2 x
   obtain ⟨V, hVfg, hDense⟩ :=
     compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
-    projectiveGeometry parametricAvoidance a q Omega hOmega ha hq η hη
+    projectiveGeometry a q Omega hOmega ha hq η hη
     zf hqf_inj hupperf nf degree orders packet.1 packet.2
     exponent hexponent hrows mu hmu baseDensity background nodes hnodes U K hU hK hKU
     hbackground
@@ -556,7 +555,6 @@ open dense.  Thus every shift in the original compact patch has at least one sim
 packet witnessing full coefficient-uniform rank. -/
 theorem compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
     (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
-    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
     {row κ ι ιf : Type}
     [Fintype row] [DecidableEq row]
     [Fintype κ] [DecidableEq κ]
@@ -648,7 +646,7 @@ theorem compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
     intro j
     obtain ⟨V, hVfg, hj⟩ :=
       compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProbe
-        projectiveGeometry parametricAvoidance hCmin.1 hD hupperMap
+        projectiveGeometry hCmin.1 hD hupperMap
         m0 hm0
         zf hqf_inj hupperf nf degree orders (packets j)
         exponent hexponent hrows mu hmu baseDensity (pieces j)
@@ -685,7 +683,6 @@ residual subset of the frozen tangent on which every distinct shift tuple has a 
 packet witnessing full expanded-evaluation rank. -/
 theorem global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
     (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
-    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
     {row κ ι ιf : Type}
     [Fintype row] [DecidableEq row]
     [Fintype κ] [DecidableEq κ]
@@ -741,7 +738,7 @@ theorem global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
   obtain ⟨n, packets, pieces, hcover, hpiecesCompact, hpiecesChart,
       hDense, hOpen, hWitness⟩ :=
     compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
-      projectiveGeometry parametricAvoidance hCmin hD hnoCommon hCp hCc hupperMap
+      projectiveGeometry hCmin hD hnoCommon hCp hCc hupperMap
       m0 hm0
       zf hqf_inj hupperf nf degree orders exponent hexponent hrows
       mu hmu baseDensity Kshift hKshift hdim
@@ -752,7 +749,6 @@ simultaneously has complete row-packet witnesses for every pattern in a countabl
 tuple of distinct complex shifts. -/
 theorem countablePatterns_global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
     (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
-    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
     (row κ ι : ℕ → Type)
     [∀ n, Fintype (row n)] [∀ n, DecidableEq (row n)]
     [∀ n, Fintype (κ n)] [∀ n, DecidableEq (κ n)]
@@ -811,7 +807,7 @@ theorem countablePatterns_global_injectiveShifts_actualNevanlinna_fullRankWitnes
     intro n
     simpa [goodPattern, a, q, frozen, S] using
       (global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
-        projectiveGeometry parametricAvoidance hCmin hD hnoCommon hCp hCc hupperMap
+        projectiveGeometry hCmin hD hnoCommon hCp hCc hupperMap
         m0 hm0
         zf hqf_inj hupperf nf (degree n) (orders n) (exponent n)
         (hexponent n) (hrows n) mu hmu baseDensity (hdim n))
@@ -833,7 +829,6 @@ residual subset of every frozen tangent satisfies coefficient rigidity for every
 differential pattern and every tuple of distinct complex shifts. -/
 theorem countablePatterns_actualNevanlinna_relationFree_dense_residual
     (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
-    (parametricAvoidance : ClassicalStratifiedParametricAvoidance)
     (row κ ι : ℕ → Type)
     [∀ n, Fintype (row n)] [∀ n, DecidableEq (row n)]
     [∀ n, Fintype (κ n)] [∀ n, DecidableEq (κ n)]
@@ -887,7 +882,7 @@ theorem countablePatterns_actualNevanlinna_relationFree_dense_residual
       infer_instance
   have hfull :=
     countablePatterns_global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
-      projectiveGeometry parametricAvoidance row κ ι hCmin hD hnoCommon hCp hCc
+      projectiveGeometry row κ ι hCmin hD hnoCommon hCp hCc
       hupperMap m0 hm0 zf hqf_inj hupperf nf degree orders exponent
       hexponent hrows mu hmu baseDensity hdim
   exact countablePatterns_relationFree_dense_residual_of_fullRankWitness
