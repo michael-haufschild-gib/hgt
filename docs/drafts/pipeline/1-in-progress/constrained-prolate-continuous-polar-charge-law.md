@@ -287,28 +287,21 @@ The classical prime-number-theorem remainder gives
 |J(t)|<=C*(1+t+exp(t-kappa*sqrt(t)))                            (26)
 ```
 
-for some `kappa>0`.  Therefore the remaining center audit reduces to the concrete summed radial
-envelope
-
-```text
-|R_lambda(t)|
- <=C*lambda^M*sqrt(d_lambda)*exp(-t/2),        t>=0,             (27)
-```
-
-with one fixed `M`.  Equations `(24)`--`(27)` give
+for some `kappa>0`. In particular, `exp(-t)*|J(t)|` is integrable. Combining `(19d)` with
+`(24)`--`(26)` gives directly
 
 ```text
 |p_lambda|*
  |int_0^infinity exp(-t/2)R_lambda(t)J(t)dt|
- <=C*lambda^(M-1/2)*d_lambda^(3/2)
- =o(d_lambda).                                                  (28)
+ <=C*|g_lambda(0)|
+   [Var(g_lambda^+)+|g_lambda(0)|]/lambda.                       (27)
 ```
 
-Equation `(27)` follows from `(19g)` after bounding the logarithm by a fixed power of
-`lambda`.  It cannot be replaced by the ambient bounded-variation Muntz estimate, which loses the
-factor `sqrt(d_lambda)`.
+Since `g_lambda(0)=O(d_lambda)`, the fixed-mode variation law `(19e)` makes `(27)`
+`O(d_lambda/lambda)=o(d_lambda)`. Even the weaker variation target stated after `(19e)` makes it
+`o(d_lambda*log lambda)`, which is enough to preserve the positive leading coefficient.
 
-Once `(27)` is proved, `(22)`--`(28)` yield the genuine global statement
+Equations `(22)`--`(27)` yield the genuine global statement
 
 ```text
 Q_(polar-prime)(b_lambda,b_lambda)
@@ -370,10 +363,12 @@ RayleighExcess_lambda/Gap_lambda=O(lambda^(-1)).                (34)
 
 The abstract primitive identity `(7)` is elementary.  The potentially new content is the
 continuous polar-charge consequence `(18)` for the exact constrained radial prolate sum and its
-closure of the coupled global source law `(32)`.  No parent statement of this continuous polar
-estimate was located in the CCM or radial-PSWF literature.  Significance is high if `(17)` and
-`(27)` survive formula-level audit because they remove the first analytic source gate in the
-determinant route without assuming a Weil floor or an RH-equivalent bound.
+closure of the coupled global source law `(32)`. The Poisson--BV envelope is a classical
+quadrature bridge, but it removes the unnecessary far-field PSWF phase gate from the source
+theorem. No parent statement of the continuous polar estimate was located in the CCM or
+radial-PSWF literature. Significance is high if `(17)` and the fixed-mode variation input `(19e)`
+survive formula-level audit because they remove the first analytic source gate in the determinant
+route without assuming a Weil floor or an RH-equivalent bound.
 
 ## Lean plan
 
@@ -381,13 +376,16 @@ The formal tree already contains the exact finite-dimensional polar signature, t
 autocorrelation/Stieltjes identity, and the abstract first-order interaction-picture transport.
 The required new infrastructure is:
 
-1. a half-line autocorrelation/Fubini module formalizing `(7)`--`(10)`;
-2. a concrete radial-PSWF interface with the pole-uniform Bessel and exterior phase bounds;
-3. the summable all-radial primitive estimate `(11)` and summed envelope `(27)`;
-4. the constrained-source and critical-Mellin specialization `(18)`--`(32)`.
+1. `[FORMALIZED]` the half-line autocorrelation/Fubini module `(7)`--`(10)`;
+2. `[FORMALIZED]` the zero-mean BV square-root lattice envelope `(19c)`;
+3. `[FORMALIZED]` the exact critical-Mellin cumulative `(25)`;
+4. a concrete radial-PSWF endpoint/exterior interface proving the all-radial primitive `(11)`;
+5. the fixed-mode source variation bound `(19e)` and the Poisson specialization `(19a)`;
+6. the constrained-source and critical-Mellin specialization `(18)`--`(32)`.
 
-No abstract hypothesis wrapper is sufficient: the concrete prolate primitive and summed-envelope
-estimates must be theorems before `(32)` can be promoted or used in a paper.
+No abstract hypothesis wrapper is sufficient: the concrete prolate primitive, one-sided Poisson
+specialization, and fixed-mode variation estimate must be theorems before `(32)` can be promoted
+or used in a paper.
 
 ## Gates
 
@@ -397,11 +395,12 @@ estimates must be theorems before `(32)` can be promoted or used in a paper.
 - [x] pass finite radial primitives to the exact radial sum by projective `L2` convergence
 - [x] center autocorrelations reduced exactly to the Abel boundary value and the PNT-weighted
   radial integral `(24)`
-- [x] reduce the global summed radial envelope to Dunster's phase cancellation `(2.18)`, leading
-  sine law `(2.22)`, the exact endpoint coefficient, and the interaction-picture amplitude tail
-- [x] audit the constant phase cancellation and leakage normalization against Dunster's formulas
-- [ ] formalize the phase-preserving `z^(-2)` tail after exact endpoint matching
-- [ ] promote `(18)` and `(32)` after the two analytic audits above
+- [x] replace the global radial phase tail by the exact Poisson--BV lattice envelope
+- [x] formalize the square-root BV lattice envelope, including a non-lattice support endpoint
+- [x] formalize the growing critical-Mellin cumulative `(25)`
+- [ ] prove and formalize the exact one-sided Poisson--Muntz specialization `(19a)`
+- [ ] prove the fixed-mode source variation bound `(19e)`
+- [ ] promote `(18)` and `(32)` after the primitive and source-regularity audits
 - [ ] formalize the concrete radial-PSWF primitive theorem and its polar consequence in Lean
 - [ ] true even ground/gap comparison
 - [ ] locally uniform determinant convergence to `Xi`

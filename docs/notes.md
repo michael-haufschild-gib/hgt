@@ -16,3 +16,12 @@ The sharp audit for any proposed RH proof is: "If I apply an orientation surgery
 -> If no step changes, the argument cannot prove an orientation-sensitive conclusion such as critical-line confinement. If one step changes, that step—not the derived topology—is the real RH-bearing theorem.
 
 The positive research target is therefore very specific: construct the zeta object before its zeros, prove that its prime–archimedean source coupling canonically selects a positive polarization, and prove that the relevant analytic/spectral realization is conservative for that polarized object. Then self-duality supplies symmetry and the new positivity theorem could supply fixed-line confinement. Without that selector, different RH chains can indeed be reaching the same unpolarized boundary and failing for the same structural reason.
+
+
+##
+Divisors, finite jets, abstract fields, and principal symbols are all too blind. Any successful carrier must be sensitive to reflection, positive orientation, prime–archimedean joining, and source-produced effectivity.
+
+- That excludes the moving-Hankel parity idea for a deeper reason than its counterexample: it reads orientation only after compressing the joined source into finite moments.
+- The Bernstein “sharp radius” theorem fails the test on its own because its carrier is reconstructed from XiZeroCopy.
+- A second consequence of the criterion is that “common charge vanishes” cannot be supplied by a scalar normalization.
+
