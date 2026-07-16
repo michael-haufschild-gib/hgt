@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.PinnedAffinePrimeJetRigidity
 import GaloisForLFunctions.Hurwitz.ExpIndependence
 import GaloisForLFunctions.HTGeometry.FormalUnitInverseFreeness
+import GaloisForLFunctions.HTGeometry.GammaClockCoronaConormal
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.LinearAlgebra.FiniteDimensional.Basic
@@ -196,6 +197,250 @@ def gammaFactorialRawClock (n : ℕ) : ℂ :=
   simp only [gammaPeriodicConormalCoefficient, gammaFactorialRawClock, one_div]
   apply inv_mul_cancel₀
   exact_mod_cast Nat.factorial_ne_zero (n + 1)
+
+/-! ### Exact comparison with the universal finite-blind stream corona -/
+
+/-- The factorial Taylor coefficients satisfy the unique weighted-prepend recurrence. -/
+theorem gammaPeriodicConormalCoefficient_succ (n : ℕ) :
+    gammaPeriodicConormalCoefficient (n + 1) =
+      ((n + 2 : ℕ) : ℂ)⁻¹ * gammaPeriodicConormalCoefficient n := by
+  simp only [gammaPeriodicConormalCoefficient, one_div]
+  conv_lhs => rw [Nat.factorial_succ]
+  push_cast
+  rw [mul_inv_rev]
+  ring
+
+/-- Diagonal factorial normalization from raw coefficient streams to analytic Taylor-conormal
+streams.  Its inverse multiplies by the corresponding factorial scale. -/
+def gammaFactorialStreamEquiv : (ℕ → ℂ) ≃ₗ[ℂ] (ℕ → ℂ) where
+  toFun c n := gammaPeriodicConormalCoefficient n * c n
+  invFun a n := gammaFactorialRawClock n * a n
+  left_inv c := by
+    funext n
+    change gammaFactorialRawClock n *
+      (gammaPeriodicConormalCoefficient n * c n) = c n
+    rw [← mul_assoc, mul_comm (gammaFactorialRawClock n),
+      gammaPeriodicConormalCoefficient_mul_factorialRawClock]
+    simp
+  right_inv a := by
+    funext n
+    change gammaPeriodicConormalCoefficient n *
+      (gammaFactorialRawClock n * a n) = a n
+    rw [← mul_assoc, gammaPeriodicConormalCoefficient_mul_factorialRawClock]
+    simp
+  map_add' c d := by
+    funext n
+    simp only [Pi.add_apply, mul_add]
+  map_smul' a c := by
+    funext n
+    simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
+    ring
+
+/-- The Taylor-normalized dual shift.  Its kernel recurrence is the factorial-tail recurrence,
+not the constant-stream recurrence. -/
+def gammaTaylorStreamSource : (ℕ → ℂ) →ₗ[ℂ] (ℕ → ℂ) where
+  toFun a n := Nat.casesOn n (-a 0)
+    (fun m => ((m + 2 : ℕ) : ℂ)⁻¹ * a m - a (m + 1))
+  map_add' a b := by
+    funext n
+    cases n <;> simp [mul_add] <;> ring
+  map_smul' c a := by
+    funext n
+    cases n <;> simp [mul_assoc] <;> ring
+
+@[simp] theorem gammaTaylorStreamSource_apply_zero (a : ℕ → ℂ) :
+    gammaTaylorStreamSource a 0 = -a 0 := rfl
+
+@[simp] theorem gammaTaylorStreamSource_apply_succ (a : ℕ → ℂ) (n : ℕ) :
+    gammaTaylorStreamSource a (n + 1) =
+      ((n + 2 : ℕ) : ℂ)⁻¹ * a n - a (n + 1) := rfl
+
+/-- **Raw Gamma corona comparison.**  Factorial normalization conjugates the source-defined
+constant-stream constraint to the analytic Taylor-weighted constraint. -/
+theorem gammaFactorialStreamEquiv_intertwines (c : ℕ → ℂ) :
+    gammaFactorialStreamEquiv (streamCoronaSource ℂ c) =
+      gammaTaylorStreamSource (gammaFactorialStreamEquiv c) := by
+  funext n
+  cases n with
+  | zero =>
+      simp [gammaFactorialStreamEquiv, gammaPeriodicConormalCoefficient]
+  | succ n =>
+      change gammaPeriodicConormalCoefficient (n + 1) *
+          (c n - c (n + 1)) =
+        ((n + 2 : ℕ) : ℂ)⁻¹ *
+            (gammaPeriodicConormalCoefficient n * c n) -
+          gammaPeriodicConormalCoefficient (n + 1) * c (n + 1)
+      rw [gammaPeriodicConormalCoefficient_succ]
+      ring
+
+/-- Factorial normalization preserves finite observability. -/
+theorem gammaFactorialStreamEquiv_eventuallyZero
+    {c : ℕ → ℂ} (hc : c ∈ eventuallyZeroStream ℂ) :
+    gammaFactorialStreamEquiv c ∈ eventuallyZeroStream ℂ := by
+  obtain ⟨N, hN⟩ := hc
+  exact ⟨N, fun n hn => by simp [gammaFactorialStreamEquiv, hN n hn]⟩
+
+/-- Inverse factorial normalization also preserves finite observability. -/
+theorem gammaFactorialStreamEquiv_symm_eventuallyZero
+    {c : ℕ → ℂ} (hc : c ∈ eventuallyZeroStream ℂ) :
+    gammaFactorialStreamEquiv.symm c ∈ eventuallyZeroStream ℂ := by
+  obtain ⟨N, hN⟩ := hc
+  exact ⟨N, fun n hn => by simp [gammaFactorialStreamEquiv, hN n hn]⟩
+
+/-- Factorial normalization descended to the finite-blind corona quotient. -/
+def gammaFactorialCoronaScale : StreamCorona ℂ →ₗ[ℂ] StreamCorona ℂ :=
+  Submodule.mapQ _ _ gammaFactorialStreamEquiv.toLinearMap
+    (fun _ hc => gammaFactorialStreamEquiv_eventuallyZero hc)
+
+/-- Inverse factorial normalization on the finite-blind corona quotient. -/
+def gammaFactorialCoronaUnscale : StreamCorona ℂ →ₗ[ℂ] StreamCorona ℂ :=
+  Submodule.mapQ _ _ gammaFactorialStreamEquiv.symm.toLinearMap
+    (fun _ hc => gammaFactorialStreamEquiv_symm_eventuallyZero hc)
+
+/-- The raw finite-blind corona and the Taylor-normalized corona are canonically linearly
+equivalent. -/
+def gammaFactorialCoronaEquiv : StreamCorona ℂ ≃ₗ[ℂ] StreamCorona ℂ where
+  toFun := gammaFactorialCoronaScale
+  invFun := gammaFactorialCoronaUnscale
+  left_inv x := by
+    obtain ⟨c, rfl⟩ := Submodule.Quotient.mk_surjective _ x
+    simp [gammaFactorialCoronaScale, gammaFactorialCoronaUnscale,
+      Submodule.mapQ_apply]
+  right_inv x := by
+    obtain ⟨c, rfl⟩ := Submodule.Quotient.mk_surjective _ x
+    simp [gammaFactorialCoronaScale, gammaFactorialCoronaUnscale,
+      Submodule.mapQ_apply]
+  map_add' := gammaFactorialCoronaScale.map_add
+  map_smul' := gammaFactorialCoronaScale.map_smul
+
+/-- The analytic factorial-tail conormal stream. -/
+def gammaFactorialConormalStream : ℕ → ℂ :=
+  gammaPeriodicConormalCoefficient
+
+/-- Factorial normalization carries the raw constant conormal to the analytic factorial-tail
+conormal, coefficient for coefficient. -/
+theorem gammaFactorialStreamEquiv_const :
+    gammaFactorialStreamEquiv (fun _ => (1 : ℂ)) =
+      gammaFactorialConormalStream := by
+  funext n
+  simp [gammaFactorialStreamEquiv, gammaFactorialConormalStream]
+
+/-- The comparison equivalence carries the nonzero raw corona class to the analytic conormal
+class. -/
+@[simp] theorem gammaFactorialCoronaEquiv_const :
+    gammaFactorialCoronaEquiv
+        (Submodule.Quotient.mk (fun _ => (1 : ℂ)) : StreamCorona ℂ) =
+      (Submodule.Quotient.mk gammaFactorialConormalStream : StreamCorona ℂ) := by
+  change Submodule.Quotient.mk
+      (gammaFactorialStreamEquiv (fun _ => (1 : ℂ))) =
+    Submodule.Quotient.mk gammaFactorialConormalStream
+  rw [gammaFactorialStreamEquiv_const]
+
+/-- The Taylor-weighted source preserves finite observability. -/
+theorem eventuallyZeroStream_le_comap_gammaTaylorStreamSource :
+    eventuallyZeroStream ℂ ≤
+      (eventuallyZeroStream ℂ).comap gammaTaylorStreamSource := by
+  rintro a ⟨N, hN⟩
+  refine ⟨N + 1, fun n hn => ?_⟩
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  rw [gammaTaylorStreamSource_apply_succ, hN m (by omega),
+    hN (m + 1) (by omega)]
+  simp
+
+/-- The analytic Taylor-weighted constraint descended to the finite-blind corona. -/
+def gammaTaylorCoronaConstraint : StreamCorona ℂ →ₗ[ℂ] StreamCorona ℂ :=
+  Submodule.mapQ _ _ gammaTaylorStreamSource
+    eventuallyZeroStream_le_comap_gammaTaylorStreamSource
+
+/-- **Corona-level Gamma comparison.**  The factorial comparison intertwines the raw and analytic
+corona constraints. -/
+theorem gammaFactorialCoronaEquiv_intertwines :
+    gammaFactorialCoronaEquiv.toLinearMap.comp (streamCoronaConstraint ℂ) =
+      gammaTaylorCoronaConstraint.comp gammaFactorialCoronaEquiv.toLinearMap := by
+  apply LinearMap.ext
+  intro x
+  obtain ⟨c, rfl⟩ := Submodule.Quotient.mk_surjective _ x
+  change Submodule.Quotient.mk
+      (gammaFactorialStreamEquiv (streamCoronaSource ℂ c)) =
+    Submodule.Quotient.mk
+      (gammaTaylorStreamSource (gammaFactorialStreamEquiv c))
+  rw [gammaFactorialStreamEquiv_intertwines]
+
+/-- The analytic factorial-tail class survives finite observability. -/
+theorem gammaFactorialConormalCoronaClass_ne_zero :
+    (Submodule.Quotient.mk gammaFactorialConormalStream : StreamCorona ℂ) ≠ 0 := by
+  intro hzero
+  apply coronaClass_const_ne_zero ℂ
+  apply gammaFactorialCoronaEquiv.injective
+  simpa using hzero
+
+/-- The analytic factorial-tail stream is killed by the Taylor-weighted source modulo a single
+finite boundary coordinate. -/
+theorem gammaTaylorStreamSource_factorial_mem_eventuallyZero :
+    gammaTaylorStreamSource gammaFactorialConormalStream ∈ eventuallyZeroStream ℂ := by
+  refine ⟨1, fun n hn => ?_⟩
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  rw [gammaTaylorStreamSource_apply_succ]
+  exact sub_eq_zero.mpr (gammaPeriodicConormalCoefficient_succ m).symm
+
+/-- The analytic factorial-tail class is a nonzero conormal in the Taylor-normalized corona. -/
+theorem gammaFactorialConormalCoronaClass_mem_ker :
+    (Submodule.Quotient.mk gammaFactorialConormalStream : StreamCorona ℂ) ∈
+      LinearMap.ker gammaTaylorCoronaConstraint := by
+  rw [LinearMap.mem_ker, gammaTaylorCoronaConstraint, Submodule.mapQ_apply,
+    Submodule.Quotient.mk_eq_zero]
+  exact gammaTaylorStreamSource_factorial_mem_eventuallyZero
+
+/-- **Analytic Gamma corona line theorem.**  The Taylor-normalized finite-blind constraint has
+exactly one conormal line, spanned by the factorial-tail class.  The comparison equivalence
+therefore identifies the complete raw and analytic corona kernels, not only one chosen vector. -/
+theorem ker_gammaTaylorCoronaConstraint :
+    LinearMap.ker gammaTaylorCoronaConstraint =
+      Submodule.span ℂ
+        {(Submodule.Quotient.mk gammaFactorialConormalStream : StreamCorona ℂ)} := by
+  apply le_antisymm
+  · intro x hx
+    let y : StreamCorona ℂ := gammaFactorialCoronaEquiv.symm x
+    have hyker : y ∈ LinearMap.ker (streamCoronaConstraint ℂ) := by
+      rw [LinearMap.mem_ker]
+      apply gammaFactorialCoronaEquiv.injective
+      have hcomm := LinearMap.congr_fun gammaFactorialCoronaEquiv_intertwines y
+      simp only [LinearMap.comp_apply] at hcomm
+      calc
+        gammaFactorialCoronaEquiv ((streamCoronaConstraint ℂ) y) =
+            gammaTaylorCoronaConstraint (gammaFactorialCoronaEquiv y) := hcomm
+        _ = 0 := by
+          rw [gammaFactorialCoronaEquiv.apply_symm_apply,
+            LinearMap.mem_ker.mp hx]
+        _ = gammaFactorialCoronaEquiv 0 := by rw [map_zero]
+    have hyspan : y ∈ Submodule.span ℂ
+        {(Submodule.Quotient.mk (fun _ => (1 : ℂ)) : StreamCorona ℂ)} := by
+      rw [← ker_streamCoronaConstraint ℂ]
+      exact hyker
+    obtain ⟨a, ha⟩ := Submodule.mem_span_singleton.mp hyspan
+    dsimp [y] at ha
+    rw [← gammaFactorialCoronaEquiv.apply_symm_apply x, ← ha, map_smul,
+      gammaFactorialCoronaEquiv_const]
+    exact Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self _)
+  · rw [Submodule.span_le]
+    intro x hx
+    simp only [Set.mem_singleton_iff] at hx
+    subst x
+    exact gammaFactorialConormalCoronaClass_mem_ker
+
+/-- **Uniqueness of the Gamma comparison scale.**  Zeroth-order normalization and intertwining
+with the Taylor-weighted prepend recurrence force the complete factorial-tail sequence. -/
+theorem gammaFactorialConormalStream_unique
+    (w : ℕ → ℂ) (hzero : w 0 = 1)
+    (hsucc : ∀ n, w (n + 1) = ((n + 2 : ℕ) : ℂ)⁻¹ * w n) :
+    w = gammaFactorialConormalStream := by
+  funext n
+  induction n with
+  | zero => simpa [gammaFactorialConormalStream,
+      gammaPeriodicConormalCoefficient] using hzero
+  | succ n ih =>
+      rw [hsucc n, ih, gammaFactorialConormalStream,
+        gammaPeriodicConormalCoefficient_succ]
 
 /-- **Raw-clock domain no-go.**  The genuine factorial-tail source conormal does not define a
 summable pairing on every raw sequence: on the factorial-growth clock every term is one.  Hence an

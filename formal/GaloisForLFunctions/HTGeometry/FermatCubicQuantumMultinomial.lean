@@ -1,4 +1,5 @@
 import Mathlib.Tactic.NoncommRing
+import Mathlib.Algebra.Module.LinearMap.End
 
 /-!
 # The cubic quantum multinomial identity
@@ -87,5 +88,57 @@ theorem quantumMultinomial_cube_three (q X Y Z : R)
     noncomm_ring [hXZ, hYZ]
   rw [quantumBinomial_cube_two q (X + Y) Z hqXY hqZ hq hXYZ,
     quantumBinomial_cube_two q X Y hqX hqY hq hXY]
+
+variable {K M : Type*} [Field K] [AddCommGroup M] [Module K M]
+
+/-- A cubic root-of-unity triple of endomorphisms linearizes the Fermat cubic form. -/
+theorem quantumFermatCubic_endomorphism
+    (ω a b c : K) (X Y Z : Module.End K M)
+    (hω : ω ^ 2 + ω + 1 = 0)
+    (hX3 : X ^ 3 = 1) (hY3 : Y ^ 3 = 1) (hZ3 : Z ^ 3 = 1)
+    (hXY : X * Y = ω • (Y * X))
+    (hXZ : X * Z = ω • (Z * X))
+    (hYZ : Y * Z = ω • (Z * Y)) :
+    (a • X + b • Y + c • Z) ^ 3 =
+      (a ^ 3 + b ^ 3 + c ^ 3) • (1 : Module.End K M) := by
+  let q : Module.End K M := ω • 1
+  have hq_comm (T : Module.End K M) : q * T = T * q := by
+    ext m
+    simp [q]
+  have hq : q ^ 2 + q + 1 = 0 := by
+    calc
+      q ^ 2 + q + 1 = (ω ^ 2 + ω + 1) • (1 : Module.End K M) := by
+        simp [q, smul_pow, add_smul]
+      _ = 0 := by rw [hω]; simp
+  have hXY' : (a • X) * (b • Y) = q * (b • Y) * (a • X) := by
+    calc
+      (a • X) * (b • Y) = (a * b) • (X * Y) := by
+        simp [smul_mul_smul_comm]
+      _ = (a * b) • (ω • (Y * X)) := by rw [hXY]
+      _ = q * (b • Y) * (a • X) := by
+        simp [q, smul_mul_smul_comm, smul_smul]
+        congr 1
+        ac_rfl
+  have hXZ' : (a • X) * (c • Z) = q * (c • Z) * (a • X) := by
+    calc
+      (a • X) * (c • Z) = (a * c) • (X * Z) := by
+        simp [smul_mul_smul_comm]
+      _ = (a * c) • (ω • (Z * X)) := by rw [hXZ]
+      _ = q * (c • Z) * (a • X) := by
+        simp [q, smul_mul_smul_comm, smul_smul]
+        congr 1
+        ac_rfl
+  have hYZ' : (b • Y) * (c • Z) = q * (c • Z) * (b • Y) := by
+    calc
+      (b • Y) * (c • Z) = (b * c) • (Y * Z) := by
+        simp [smul_mul_smul_comm]
+      _ = (b * c) • (ω • (Z * Y)) := by rw [hYZ]
+      _ = q * (c • Z) * (b • Y) := by
+        simp [q, smul_mul_smul_comm, smul_smul]
+        congr 1
+        ac_rfl
+  rw [quantumMultinomial_cube_three q (a • X) (b • Y) (c • Z)
+    (hq_comm _) (hq_comm _) (hq_comm _) hq hXY' hXZ' hYZ']
+  simp [smul_pow, hX3, hY3, hZ3, add_smul]
 
 end GaloisForLFunctions.HTGeometry
