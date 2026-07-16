@@ -1,4 +1,7 @@
 import GaloisForLFunctions.HTGeometry.DifferenceDifferential
+import GaloisForLFunctions.HTGeometry.SourceGaugeObservabilitySpectrum
+import GaloisForLFunctions.HTGeometry.GammaFactorialObservabilitySpectrum
+import GaloisForLFunctions.HTGeometry.GammaCofinalReconstructionDefect
 
 /-!
 # Joint source-realization conservativity

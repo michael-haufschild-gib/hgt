@@ -294,6 +294,59 @@ At the linear level, if `curv_R` is a linear map `P -> C`, the fiber over `kappa
 when `kappa` is outside its range. Once a primitive exists, the fiber is canonically an affine
 torsor under `ker(curv_R)`. These two facts are Lean-formalized.
 
+The notation `(8)` is now only a curvature truncation. The complete object replaces `curv_R` by
+the colligation realization
+
+```text
+coll_R : Global_R(x) -> Coll_R(x),
+I_x^full(R)=hofib_(C_x)(coll_R),                            (8a)
+```
+
+because the curvature-only fibre has already been proved nonconservative.
+
+## Residual-gauge observability spectrum `[PROVED LINEAR LAW; HT ASSIGNMENT CONJECTURAL]`
+
+The Gamma periodic-gauge collision shows that a nonempty integration fibre still does not select a
+canonical primitive. The exact common-kernel theorem identifies algebraic conservativity but not
+its stability. Let `G_x` be the completed normalized automorphism space of one fibre of `(8a)`, and
+let
+
+```text
+A_x(R):G_x -> H_R,
+Delta_x(R)=A_x(R)^* A_x(R).                                (8b)
+```
+
+Lean proves the exact abstract trichotomy for `(8b)`:
+
+```text
+ker A_x(R) != 0;                                           exact gauge ambiguity
+ker A_x(R) = 0 but unit g_n satisfy A_x(R)g_n -> 0;        nonclosed-range instability
+A_x(R) anti-Lipschitz.                                     stable conservativity       (8c)
+```
+
+For an injective reporter, the middle condition is equivalent to nonclosed range. If `G_x` is
+infinite-dimensional and the reporter is compact, the stable phase is impossible: even an
+algebraically injective compact reporter has normalized approximate-null gauges. Therefore the
+positive successor to the bare-source no-go is a **noncompact transverse realization theorem**, not
+another completion or topology functorially derived from the forgotten source.
+
+This refines the five-face dictionary. Exact automorphisms and spectral incompleteness are the
+point-zero and approximate-zero phases of the same Gram field. Positivity is its reflected/Krein
+orientation; monodromy is holonomy of the zero-mode family; continuation is graph-domain descent.
+The full colligation is still needed because a Gram operator alone forgets descent anomaly,
+integral structure, and boundary self-symbol.
+
+The source-normalized Gamma factorial conormal now realizes the middle phase exactly. On the
+square-summable clock completion it is an injective Hilbert--Schmidt diagonal reporter with unit
+mode scales `1/(n+1)!`, hence compact with nonclosed range. This proves that the natural HT target
+need not be stable observability: a nonlinear all-scale positivity/incidence condition can select a
+unique section on a critical `P1` boundary while every finite clock remains well conditioned only
+at its own fixed depth. The new invariant to transport is the decay law of the approximate-zero
+field, not merely whether its kernel vanishes.
+
+See `hypertranscendental-conservativity-spectrum.md` and
+`../3-formalized/not_new_scientific_knowledge/source-gauge-observability-trichotomy.md`.
+
 ## Conjecture I: the five-face theorem
 
 **[CONJECTURE — FIVE FACES OF ONE FIBER]** Whenever `(8)` is a perfect derived analytic stack with

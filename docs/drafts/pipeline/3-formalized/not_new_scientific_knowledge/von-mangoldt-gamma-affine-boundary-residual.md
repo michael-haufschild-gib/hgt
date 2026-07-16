@@ -170,5 +170,5 @@ Principal declarations:
 - [x] exact target build and axiom audit
 - [ ] formalize depth-two and depth-three cofinal summability
 - [ ] prove the depth-two completed moment-jet value identity `(11)`
-- [ ] replace two-boundary balance by an arbitrary-order source construction
+- [x] replace two-boundary balance by an arbitrary-order source construction
 - [ ] RH

@@ -1,7 +1,8 @@
 # Cofinal two-edge profiles are a complete Weil detector
 
 - **ID:** `cofinal-two-edge-weil-completeness-landau-oscillation`
-- **Stage:** 2-fully-proven
+- **Stage:** 2-fully-proven / canonical fixed-width logarithmic family Lean-complete / residual
+  profile theorem open
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent results:** Weil's zero-side quadratic form, Paley--Wiener decay, and Landau's
@@ -225,10 +226,17 @@ one cofinal detector geometry but does not prove its positivity from primes.
 
 ## Lean decision
 
-The formal tree has finite zero/quartet algebra and negative-index infrastructure, but not the
-zeta zero-side Weil sum, Paley--Wiener decay, meromorphic Laplace continuation of `(13)`, or
-Landau's oscillation theorem. A partial finite-quartet formalization would not certify the new
-globalization, so no Lean file is added.
+`formal/GaloisForLFunctions/RHTower/CCMRectangularWeilCompleteness.lean` now proves the complete
+globalization for one canonical fixed positive-width rectangular two-edge profile sampled at
+logarithmic apertures.  If the right Xi divisor is nonempty, its Weil values fall below every real
+level at arbitrarily late samples.  Consequently both pointwise nonnegativity and eventual lower
+boundedness of this one family are equivalent to RH.  These theorems use the actual Xi divisor and
+the multiplicity-exact Weil polarization; they contain no finite-quartet surrogate or added axiom.
+
+The stronger residual-profile statement in the card is not yet formalized.  The formal tree still
+lacks the Paley--Wiener profile space and the general meromorphic Laplace/Landau theorem needed to
+prove cofinal negative divergence for a residual set of arbitrary boundary profiles.  Therefore
+the card remains in step 2.
 
 ## Gates
 
@@ -240,6 +248,14 @@ globalization, so no Lean file is added.
 - [x] Landau oscillation removes the nonattained-layer obstruction
 - [x] residual cofinal negative detector theorem proved
 - [x] restricted two-edge Weil criterion proved equivalent to RH
+- [x] canonical fixed-width logarithmic two-edge criterion formalized in Lean
+- [ ] residual arbitrary-profile Landau globalization formalized in Lean
 - [ ] independent specialist audit of the Landau/Weil interface
 - [ ] source-side CCM nonnegativity theorem
 - [ ] RH
+
+## Log
+
+- 2026-07-16 -- Audited the later `CCMRectangularWeilCompleteness` module: the canonical
+  fixed-width logarithmic detector and both RH equivalences are Lean-complete with standard axioms
+  only. The residual arbitrary-profile Landau theorem remains the exact stage-3 blocker.

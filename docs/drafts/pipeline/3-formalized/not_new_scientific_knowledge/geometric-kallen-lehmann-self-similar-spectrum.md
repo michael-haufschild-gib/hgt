@@ -57,6 +57,11 @@ R(X) = (1-a)/(1-X) + a R(bX).                              (5)
 Equation `(5)` is a fixed self-similarity constraint on one positive spectrum.  It is not a time
 propagation law.
 
+Lean also proves the converse uniqueness theorem: any formal response `Q` satisfying `(5)` with
+the same normalized boundary term has `Q=R` coefficientwise.  The static constraint therefore
+determines the full response; the geometric spectrum was not merely substituted into a relation
+that many unrelated responses could satisfy.
+
 Finally, `(3)` rules out
 
 ```text
@@ -95,6 +100,7 @@ ramified-rational descent.
 - `geometricKallenLehmannMoment_not_fixedSpectralWidthLocalClosure`
 - `geometricKallenLehmannResponse`
 - `geometricKallenLehmannResponse_selfSimilarity`
+- `geometricKallenLehmannResponse_unique`
 
 ## Anti-theatre verdict
 

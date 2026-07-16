@@ -201,6 +201,20 @@ The capacity is the maximal vertical observable growth.  The thin boundary is th
 fracture diagram.  The constraint on hypertranscendental functions is the requirement that their
 partial realizations glue to an effective point of this diagram.
 
+### Strict-descent correction
+
+The phrase “each vertex carries its own Postnikov tower” is still incomplete unless the vertex
+category remembers strict morphisms.  Gamma now gives an exact discriminator: all finite
+factorial reporter maps are bijections, but the completed map is a dense non-strict monomorphism
+with no continuous left inverse.  Conversely, the three-channel fracture witness fails common
+lifting before completion.  Horizontal coherence degree and vertical cofinal strictness are
+therefore independent coordinates.
+
+The corrected local carrier of every analytic vertex is a source-rigged quasi-Abelian object, and
+the corrected total object is the polarized strict-descent bicomplex developed in
+`hypertranscendental-polarized-strict-descent-field.md`.  Ordinary derived topology remains too
+coarse because unit rescaling can preserve it while reversing source-labelled orientation.
+
 ## Elliptic gamma is the first pointed analytic fracture object `[PROVED ON PAPER]`
 
 The irrational elliptic gamma function already has two independently constructed anomaly faces.
@@ -672,29 +686,65 @@ with repackaging their equivalence.
 See
 `../3-formalized/not_new_scientific_knowledge/period-gauge-attainment-complementarity.md`.
 
-## Source defect complex and wall crossing `[CONJECTURE]`
+## Source-gauge conservativity spectrum `[PROVED LINEAR LAW; HT CONJECTURE]`
 
-The complete dichotomy suggests that automorphism and nonattainment obstructions are cohomology in
-adjacent degrees of one object. For a source-effectively normalized HT constraint `S`, posit a
-two-degree bornological complex
+The two-degree kernel/cokernel complex is too coarse to be the common object. It cannot distinguish
+an injective closed-range reporter from an injective dense/nonclosed-range reporter, although that
+is exactly stable reconstruction versus spectral incompleteness. The Gamma collision forces the
+reporter to be retained as an operator on the whole residual solution fibre.
+
+For a completed source boundary `Q_S:E_S->B_S`, put
 
 ```text
-D(S)^(-1)  ----d_S---->  D(S)^(0),                                      (30p'')
-
-H^(-1)(D(S)) = residual normalized joint-fixed gauge,
-H^(0)(D(S))  = completed incidence nonattainment defect.
+G_S=ker Q_S,
+A_(S,R)=R|G_S : G_S -> H_R,
+Delta_(S,R)=A_(S,R)^* A_(S,R) >= 0.                     (30p'')
 ```
 
-> **[CONJECTURE -- GAUGE/ATTAINMENT TRANSGRESSION.]** In a natural degeneration from discrete to
-> nondiscrete source topology, the degree `-1` gauge class does not simply disappear. After a
-> canonical projective jet, residue, or spherical-derivative renormalization, it transgresses to
-> the degree `0` nonattainment class. For period sources the escape rate of normalized nonconstant
-> gauges equals the blow-up rate of the optimal incidence inverse.
+Lean proves the exact three-phase law:
 
-The first falsifiable model is `L_n=(1/n)Z` converging to `R`: the exponential gauges acquire
-frequency `n`, while the period gap and the uniform inverse degenerate at the reciprocal scale.
-The rank-two theta cusp is the next model. A proof requires an actual comparison map and a
-quantitative conservation law; neither follows from the classical phase equivalence.
+```text
+exact blindness:       ker A_(S,R) != 0;
+approximate blindness: ker A_(S,R) = 0 and
+                       exists ||g_n||=1, A_(S,R)g_n -> 0;
+stable conservativity: A_(S,R) is anti-Lipschitz.        (30p''a)
+```
+
+For an injective bounded operator, the middle phase is equivalent to nonclosed range. On Hilbert
+completions, algebraic source/reporter injectivity is exactly injectivity of `Delta_(S,R)`. Thus
+gauge ambiguity and spectral incompleteness are literal exact-zero and approximate-zero phases of
+one positive operator, not merely adjacent labels.
+
+There is a stronger positive successor. If `G_S` is infinite-dimensional and `R` is compact, then
+even algebraic conservativity forces the middle phase:
+
+```text
+R compact and (Q_S,R) injective
+  -> exists ||g_n||=1 with R(g_n)->0.                    (30p''b)
+```
+
+Hence finite-rank, smoothing, or compact source-derived data cannot stably normalize an infinite
+HT gauge fibre. A successful reconstruction must contain a genuinely noncompact transverse
+channel with a uniform lower observability bound.
+
+Gamma supplies the first natural critical exception to “reconstruction means a gap.” Its
+source-forced factorial conormal defines an injective compact diagonal reporter on the
+square-summable clock completion with exact unit-mode scales `1/(n+1)!`. Lean proves that its range
+is nonclosed. Combined with arbitrary finite periodic-jet realization, this gives a literal model
+of infinite clock capacity concentrated on a thin all-clock boundary: algebraic uniqueness is
+compatible with factorially unstable reconstruction. A nonlinear all-scale cone may select a
+unique point in this `P1` phase without producing a linear spectral gap.
+
+> **[CONJECTURE -- GAUGE/ATTAINMENT SPECTRAL TRANSGRESSION.]** In a natural source degeneration,
+> exact zero modes do not merely disappear and independent cokernel classes appear. The graphs and
+> zero spectral measures of `A_(S,R)` converge in a source-canonical topology; lost point mass at
+> zero becomes approximate-zero mass or a domain/nonattainment defect. The anomaly-boundary
+> colligation, not an arbitrary two-term complex, carries the comparison.
+
+For `L_n=(1/n)Z` converging to `R`, the exponential gauge frequency and incidence inverse blow-up
+remain a scalar shadow. The real falsifiable target is graph convergence of the reporter operator
+and conservation of its normalized zero-mode measure through the rank-one and rank-two cusp
+models. See `hypertranscendental-conservativity-spectrum.md`.
 
 ## Candidate unified object: normalized anomaly-fracture stack `[CONJECTURE]`
 
@@ -702,31 +752,36 @@ The exact results now force a more precise object than the original phrase “de
 space.”  For a source-effectively normalized pair `(F,R)`, let
 
 ```text
-G_(F,R)  = residual joint-fixed gauge invisible to all reporters,
+G_F      = completed normalized residual source gauge,
+A_(F,R)  = jointly realized reporter operator on G_F,
+Delta_(F,R)=A_(F,R)^* A_(F,R),
 L_(a_F)  = line/torsor classified by the physical orientation-anomaly cocycle,
-D_(F,R)  = two-degree gauge/attainment defect complex,
+C_F      = complete source-anomaly boundary colligation,
 kappa_(F,R)^(p,q) = calibration map in
                      osculation degree p and effectivity degree q.          (30q)
 ```
 
-The candidate obstruction object is the anomaly-twisted bifiltered realization of `D_(F,R)`
+The candidate obstruction object is the anomaly-twisted bifiltered integration fibre retaining
+the full graph and Gram field of `A_(F,R)`
 
 ```text
 U_(F,R)^(p,q)
-  = Rees_(p,q)(D_(F,R)) tensor L_(a_F)
+  = Rees_(p,q)(Graph(A_(F,R)),Delta_(F,R),C_F) tensor L_(a_F)
   = hofib_(b_(F,R)^(p,q))(kappa_(F,R)^(p,q); L_(a_F)).      (30r)
 ```
 
 The second equality is part of the conjecture, not notation: it asserts that the derived fibre
-presentation and the two-degree defect complex carry the same obstruction class.
+presentation and the completed reporter graph carry the same obstruction field without forgetting
+closed range, domain, orientation, or approximate zero modes.
 
 > **[CONJECTURE -- NORMALIZED ANOMALY-FRACTURE PRINCIPLE.]**  On the maximal
 > source-effectively normalized HT essential image, the different obstruction classes are
 > conservative realizations of `(30r)`:
 >
-> - `H^(-1)` is the typed nonlinear joint-fixed common kernel;
-> - `H^(0)` is the calibration/descent and bornological nonattainment obstruction;
-> - phase change is a transgression `H^(-1) -> H^(0)`, not independent disappearance and birth;
+> - the exact zero space of `Delta_(F,R)` is the typed nonlinear joint-fixed common kernel;
+> - its approximate-zero field is calibration/descent and bornological nonattainment;
+> - phase change transports zero spectral mass through the completed graph rather than merely
+>   moving a class from `H^(-1)` to `H^(0)`;
 > - closure without a point is critical bornological nonattainment or spectral incompleteness;
 > - failure of positive real points is the positivity/orientation obstruction;
 > - twisting of local fibres is monodromy or noncanonical boundary data;
@@ -737,17 +792,19 @@ A source producer theorem does not merely show that one obstruction scalar vanis
 that the critical self-dual bidegree of `(30r)` has a reporter-compatible positive point with
 trivial automorphism group and the required integral/ramified lift.
 
-The Gamma collision prevents deleting `R`; complete gauge-attainment classification forces
-normalization and critical completion into adjacent degrees of `D_(F,R)`; the
+The Gamma collision prevents deleting `R`; complete gauge-attainment classification and the
+compact-source wall force normalization and critical completion into the full graph of
+`A_(F,R)`; the
 osculation/effectivity fracture prevents collapsing
 `(p,q)` to one filtration; the reversal-blind locus prevents deleting `L_(a_F)`; and the
 three-channel interaction example prevents replacing the derived fibre by pairwise compatibility.
 Each constituent is therefore forced by a separate exact no-go.
 
-Derived fibres, quotient stacks, anomaly lines, Rees filtrations, and kernel/cokernel sequences are
-parent mathematics.  Candidate novelty can begin only with a presentation-invariant HT
-construction of `(30r)`, a natural nontrivial analytic realization, and a transferred theorem that
-is unavailable in the parent realizations separately.
+Derived fibres, quotient stacks, anomaly lines, Rees filtrations, observability Gramians,
+closed-range trichotomies, and compact-operator walls are parent mathematics. Candidate novelty can
+begin only with a presentation-invariant HT construction of `(30r)`, a classification of the
+endogenous reporter ideal as compact, a natural transverse noncompact channel, and a transferred
+theorem unavailable in the parent realizations separately.
 
 ## Unified explanation of the RH-chain obstructions `[CONJECTURE; PRESSURE TEST ONLY]`
 

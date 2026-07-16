@@ -74,6 +74,77 @@ theorem unitScaledCofaceIdeal_eq_span_pow
     have hcancel := (unitScaledCofaceIdeal r a u).mul_mem_left (↑(U⁻¹)) hgen
     simpa [U, mul_assoc, mul_comm, mul_left_comm] using hcancel
 
+/-- The unit multiplying `a^r` in one pulled-back coface generator. -/
+def unitScaledCofaceUnit
+    {R : Type*} [CommRing R] (r : ℕ)
+    (u : Fin (r + 1) → Rˣ) (i : Fin (r + 1)) : Rˣ :=
+  ∏ j ∈ Finset.univ.erase i, u j
+
+theorem unitScaledCofaceGenerator_eq_pow_mul_cofaceUnit
+    {R : Type*} [CommRing R] (r : ℕ) (a : R)
+    (u : Fin (r + 1) → Rˣ) (i : Fin (r + 1)) :
+    unitScaledCofaceGenerator r a u i =
+      a ^ r * (unitScaledCofaceUnit r u i : R) := by
+  rw [unitScaledCofaceGenerator_eq_pow_mul_unit]
+  congr 1
+  exact (Units.coe_prod u (Finset.univ.erase i)).symm
+
+/-- Scale every coface by its unit inverse and subtract the zeroth row from the others. -/
+def unitScaledCofaceRowReduce
+    {R : Type*} [CommRing R] (r : ℕ) (u : Fin (r + 1) → Rˣ)
+    (v : Fin (r + 1) → R) : Fin (r + 1) → R :=
+  fun i ↦ if i = 0 then
+      (↑((unitScaledCofaceUnit r u 0)⁻¹) : R) * v 0
+    else
+      (↑((unitScaledCofaceUnit r u i)⁻¹) : R) * v i -
+        (↑((unitScaledCofaceUnit r u 0)⁻¹) : R) * v 0
+
+/-- The explicit inverse row operation. -/
+def unitScaledCofaceRowRestore
+    {R : Type*} [CommRing R] (r : ℕ) (u : Fin (r + 1) → Rˣ)
+    (v : Fin (r + 1) → R) : Fin (r + 1) → R :=
+  fun i ↦ (unitScaledCofaceUnit r u i : R) *
+    (if i = 0 then v 0 else v i + v 0)
+
+/-- The pulled-back coface row operations form an invertible linear change of generators. -/
+def unitScaledCofaceRowEquiv
+    {R : Type*} [CommRing R] (r : ℕ) (u : Fin (r + 1) → Rˣ) :
+    (Fin (r + 1) → R) ≃ₗ[R] (Fin (r + 1) → R) where
+  toFun := unitScaledCofaceRowReduce r u
+  invFun := unitScaledCofaceRowRestore r u
+  map_add' v w := by
+    funext i
+    by_cases hi : i = 0 <;>
+      simp [unitScaledCofaceRowReduce, hi] <;> ring
+  map_smul' c v := by
+    funext i
+    by_cases hi : i = 0 <;>
+      simp [unitScaledCofaceRowReduce, hi, smul_eq_mul] <;> ring
+  left_inv v := by
+    funext i
+    by_cases hi : i = 0 <;>
+      simp [unitScaledCofaceRowReduce, unitScaledCofaceRowRestore, hi]
+  right_inv v := by
+    funext i
+    by_cases hi : i = 0 <;>
+      simp [unitScaledCofaceRowReduce, unitScaledCofaceRowRestore, hi]
+
+/-- Explicit row reduction of the physical coface sequence to `(a^r, 0, ..., 0)`. -/
+theorem unitScaledCofaceRowEquiv_generators
+    {R : Type*} [CommRing R] (r : ℕ) (a : R)
+    (u : Fin (r + 1) → Rˣ) :
+    unitScaledCofaceRowEquiv r u (unitScaledCofaceGenerator r a u) =
+      fun i ↦ if i = 0 then a ^ r else 0 := by
+  funext i
+  by_cases hi : i = 0
+  · subst i
+    simp [unitScaledCofaceRowEquiv, unitScaledCofaceRowReduce,
+      unitScaledCofaceGenerator_eq_pow_mul_cofaceUnit,
+      mul_assoc, mul_comm]
+  · simp [unitScaledCofaceRowEquiv, unitScaledCofaceRowReduce, hi,
+      unitScaledCofaceGenerator_eq_pow_mul_cofaceUnit,
+      mul_assoc, mul_comm]
+
 /-- Translation defect on a complex-valued mode. -/
 def physicalTranslationDefect (tau : ℂ) (f : ℂ → ℂ) : ℂ → ℂ :=
   fun z ↦ f (z + tau) - f z

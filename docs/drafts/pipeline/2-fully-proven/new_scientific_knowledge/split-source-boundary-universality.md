@@ -1,7 +1,8 @@
 # Split source-boundary universality
 
 - **ID:** `split-source-boundary-universality`
-- **Stage:** 2-fully-proven
+- **Stage:** 2-fully-proven / exact mixed linearized boundary Lean-complete / raw-family rank
+  bridge open
 - **Type:** THEOREM (paper) / formalization open
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** For observables valued in any split commutative group
@@ -217,7 +218,28 @@ object together with the Tannakian tensor relations of its adjoint local system.
 - [ ] independent specialist novelty audit
 - [ ] concrete noncommuting analytic application
 - [x] Lean exact dependence/coboundary equivalence for one multiplicative observable
+- [x] Lean exact dependence/coboundary equivalence for the complete mixed linearized family
 - [ ] Lean mixed-family matroid representation
+
+## Lean formalization boundary
+
+`formal/GaloisForLFunctions/HTGeometry/SourceLogarithmicBoundary.lean` now proves the exact
+arbitrary-family additive Ostrowski equivalence and applies it to the combined family
+
+```text
+(u_a, D(x_b)/x_b).
+```
+
+The theorem
+`automorphismFamily_mixedLinearized_differentialIndependent_iff` is the exact Lean form of `(10)`:
+the full mixed linearized family is differentially independent if and only if every nonzero finite
+differential character of the combined increments fails to be one simultaneous base coboundary.
+The source family remains arbitrary and need not commute.
+
+This does not yet formalize the finite-family rank equality `(9)` between the raw multiplicative
+coordinates `(x_b)` and their logarithmic derivatives, nor the localized quotient rank formula
+`(5)`.  Those are the remaining matroid/rank-preservation bridge.  The card therefore remains in
+step 2 and must not be moved to step 3 yet.
 
 ## References checked
 
@@ -234,3 +256,6 @@ object together with the Tannakian tensor relations of its adjoint local system.
 
 - 2026-07-15 -- Paper proof completed from logarithmic linearization plus the arbitrary-family
   additive Ostrowski theorem.
+- 2026-07-16 -- Lean completed the exact mixed linearized dependence/coboundary equivalence for
+  arbitrary source families. The raw/logarithmic finite-family rank bridge remains the sole
+  formal obstruction to the complete matroid statement and stage-3 promotion.

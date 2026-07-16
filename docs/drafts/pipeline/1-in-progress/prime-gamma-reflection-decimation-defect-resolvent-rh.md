@@ -389,8 +389,60 @@ limit at Gamma depths two and three: depth two follows from `Lambda(n)<=log n` a
 The same construction fails sharply from depth four onward.  Its last jet coordinate has square
 asymptotic to a nonzero multiple of `Lambda(n)/n` away from the two boundary points, so the norm
 diverges.  Therefore one fixed two-boundary subtraction cannot produce the complete Hankel tower.
-It salvages the first two-/three-jet discriminators; arbitrary degree requires order-growing
-divided differences or the inverse-centered Green powers.
+It salvages the first two-/three-jet discriminators and forces an order-growing boundary divisor.
+
+### Arbitrary-order boundary-jet balance `[CLOSED ALGEBRAICALLY; CONVERGENCE PROVED ON PAPER]`
+
+Multiplicity `k` at both boundary characters, monic degree at most `2k`, and unit regularized
+coefficient at the original Cauchy pole uniquely force
+
+```text
+B_(k,a)(w,lambda)
+ = ((w^2-a^2)/(lambda^2-a^2))^k/(w+lambda).             (22h)
+```
+
+Lean proves the polynomial uniqueness, pole normalization, order-one recovery of `(22g)`, both
+boundary vanishings, literal cutoff-prefix compatibility, and finite Gram positivity at every
+order.  The degree-less-than-`2k` Hermite interpolant of `1/(w+lambda)` at `w=±a`, matching the
+first `k` boundary jets, has exactly `(22h)` as its remainder.  Thus this is the boundary-jet
+subtraction forced by the source constraints, not an arbitrary damping inserted to obtain a
+Gram.
+
+For nonempty depth `N`, match the boundary multiplicity to the source depth, `k=N`.  This is the
+canonical depth-matched choice; using `N+1` would insert an unforced extra damping factor.  On a
+compact central `w`-set, the resulting squared feature is
+bounded by
+
+```text
+C_N*Lambda(n)/(n*(log n)^(2*N+4)).                     (22i)
+```
+
+Chebyshev plus partial summation gives unconditional summability.  Lean now proves the stronger
+fact needed here without invoking Chebyshev: the exact Taylor bound and `Lambda(n)<=log n` dominate
+the squared depth-`N`, order-`N` feature by
+`C_(N,w)*Lambda(n)/(n*(log n)^(2N+2))`, and Cauchy condensation proves joint square summability
+over every finite Gamma depth and all source atoms.  Hence every fixed finite Gamma depth has a
+cofinal positive `ell^2` packet.  This removes the decay obstruction, but it does not identify the
+limit with the completed moment jet.
+
+The limiting Gram is indexed by Cauchy parameters, not by moment degree.  Its internal Gamma
+coordinate is summed in the norm.  Therefore the next map cannot be a relabelling.  Let `K_N(z,w)`
+be the formalized infinite positive von Mangoldt-anomaly kernel.  Uniform convergence on central
+compact discs gives a positive mixed Taylor-jet matrix.  The corpus separately supplies the
+positive quarter-shift spectral realization of the actual central `gammaRealLogConnection` jet;
+the rational polar modes are explicit.  One must first couple these with `K_N` using the exact
+signs of `continuedPrimeArchSourceRelativeTrace`, producing `K_N^comp`.  The exact remaining source
+theorem is
+
+```text
+(1/(r!*s!)) d_z^r d_conj(w)^s K_N^comp(z,w)|_(z=w=0)
+ =normalizedPrimeArchMoment(r+s),   0<=r,s<N.             (22j)
+```
+
+The prime and Gamma inputs are source-positive before comparison; the completed coupling must
+preserve positivity with its forced signs.  The right side is already the explicit inverse-tilted
+prime--Gamma Taylor coefficient.  Equation `(22j)` plus this positivity-preserving incidence is
+the sole RH-bearing theorem on this branch.
 
 The live bridge is consequently:
 
@@ -399,9 +451,10 @@ full finite-aperture von Mangoldt--Gamma jet cone with first-prime floor
   -> positive finite radial Cauchy/Gauss--Ward source Gram
   -> positive finite two-boundary balanced source Gram
   -> depth-2/3 cutoff-compatible affine Euler-boundary limit
-  -> [OPEN] completed value identity for the first source packets
-  -> [OPEN] arbitrary-order boundary/Green construction
-  -> [OPEN] Euler-boundary comparison with inverse-tilted completed moment jets
+  -> arbitrary-order Hermite boundary-jet source packet
+  -> all-depth cofinal positive ell^2 packets [formalized]
+  -> completed positive mixed center-jet Gram [coupling and analytic formalization open]
+  -> [OPEN] exact identity (22j) with inverse-tilted completed moment jets
   -> complete prime--Gamma Hankel cone
   -> RH.                                                  (22f)
 ```
@@ -499,10 +552,9 @@ source packet to produce the mixed value `m_1` as well as both diagonal values.
 
 ## Ranked research targets
 
-1. **Balanced Euler-boundary convergence.**  Starting from the now-formalized positive finite
-   two-boundary compression, prove convergence of the projections and their Grams as aperture grows
-   and radial damping tends to the Euler unit field.  The two boundary modes must remain removed in
-   the same limit.
+1. **Completed Hermite-boundary jet comparison.**  Starting from the formalized cofinal positive
+   prime kernel and the existing positive Gamma spectral clock, construct their forced completed
+   coupling, formalize its mixed center-jet Gram, and prove `(22j)`.
 2. **Two-vector completed comparison.**  For `N=2`, identify three entries of that one source
    packet with `m_0,m_1,m_2` through the inverse-tilted central source relation.  This subsumes
    `(23)` without defining its square root from the determinant.
@@ -517,8 +569,9 @@ source packet to produce the mixed value `m_1` as well as both diagonal values.
    the source value identity.
 6. **Finite source trace comparison.**  Prove the entrywise limit `(21)` using the reduced
    Gauss--Ward identity and the formalized inverse-tilted central source identity.
-7. **Arbitrary finite Gram jet.**  Extend the two-vector construction to `(10)` for arbitrary
-   `N`.  This is already sufficient for RH and avoids a premature global completion.
+7. **Arbitrary finite Gram value identity.**  The positive arbitrary-`N` source packet now exists;
+   prove that its limiting entries are exactly `(10)`.  This is sufficient for RH and avoids a
+   premature global completion.
 8. **Singular boundary completion.**  Only if the finite packets reveal natural compatibility,
    construct `H_src` and prove `(5)`--`(6)`.  Bounded Laurent evaluation must follow from the
    pole-cancelled graph norm, not be assumed.
@@ -552,7 +605,14 @@ source packet to produce the mixed value `m_1` as well as both diagonal values.
 - [x] exact Cauchy numerator-to-anomaly equality formalized
 - [x] canonical finite two-boundary balanced compression formalized
 - [x] both boundary modes and pairings proved zero; balanced Gram positivity proved
-- [ ] prove balanced projection/Gram convergence at the nonnormal Euler boundary
+- [x] cutoff-compatible affine boundary residual and positive prefix Grams formalized
+- [x] arbitrary-order Hermite boundary divisor, pole normalization, and positive prefix Grams formalized
+- [x] arbitrary-depth cofinal summability proved on paper
+- [x] arbitrary-depth packet square summability formalized in Lean
+- [x] finite-prefix Grams identified with a common infinite kernel and proved entrywise convergent
+- [x] limiting finite packet Grams proved positive semidefinite
+- [ ] formalize the positive mixed center-jet Gram of the infinite kernel
+- [ ] couple the Gamma spectral clock and polar boundary modes with the prime anomaly kernel
 - [ ] prove Euler-boundary causal/polar cancellation, including common-charge cancellation
 - [ ] construct the common positive `2 x 2` source cutoff packet
 - [ ] prove its three entrywise moment limits

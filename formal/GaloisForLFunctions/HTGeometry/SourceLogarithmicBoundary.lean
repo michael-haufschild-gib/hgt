@@ -649,6 +649,139 @@ theorem no_finitePole_solution_constantCoeffDifferentialOperator_inv
     rw [show additiveOrbitPoint 0 1 n = (n : ℂ) by simp [additiveOrbitPoint]] at hn
     exact (not_lt_of_ge hopAnalytic.meromorphicOrderAt_nonneg) hn
 
+/-- **Exact arbitrary-family differential Ostrowski criterion.**  Differential independence of
+an additive primitive family is equivalent to the absence of every nonzero finite differential
+character whose complete source-increment family is one simultaneous base coboundary. -/
+theorem automorphismFamily_differentialIndependent_iff_no_constant_simultaneous_jet_telescoping
+    {I κ C K L : Type*}
+    [Field C] [Field K] [Field L]
+    [Algebra C K] [Algebra C L] [Algebra K L]
+    [IsScalarTower C K L]
+    [Differential K] [Differential L] [DifferentialAlgebra K L]
+    [CharZero K]
+    (tau : I → K ≃+* K) (sigma : I → L ≃+* L)
+    (hcomp : ∀ i k, sigma i (algebraMap K L k) =
+      algebraMap K L (tau i k))
+    (hderiv : ∀ i y, sigma i y′ = (sigma i y)′)
+    (hCfixed : ∀ i c, sigma i (algebraMap C L c) = algebraMap C L c)
+    (hfixed : ∀ z : L, (∀ i, sigma i z = z) →
+      ∃ c : C, algebraMap C L c = z)
+    (x : κ → L) (b : I → κ → K)
+    (hshift : ∀ i j, sigma i (x j) =
+      x j + algebraMap K L (b i j)) :
+    DifferentialIndependent K x ↔
+      ∀ c : (κ × ℕ) →₀ C, c ≠ 0 → ∀ k : K, ∃ i,
+        tau i k - k ≠
+          Finsupp.linearCombination K
+            (fun p ↦ differentialJet p.2 (b i p.1))
+            (Finsupp.mapRange (algebraMap C K)
+              (map_zero (algebraMap C K)) c) := by
+  let xJet : κ × ℕ → L := fun p ↦ differentialJet p.2 (x p.1)
+  let bJet : I → κ × ℕ → K :=
+    fun i p ↦ differentialJet p.2 (b i p.1)
+  have hshiftJet : ∀ i p, sigma i (xJet p) =
+      xJet p + algebraMap K L (bJet i p) := by
+    intro i p
+    dsimp only [xJet, bJet]
+    rw [ringEquiv_differentialJet sigma hderiv, hshift]
+    rw [differentialJet_additive,
+      differentialJet_algebraMap_of_differentialAlgebra]
+  constructor
+  · intro hDI c hc k
+    by_contra hnone
+    push Not at hnone
+    let cL : (κ × ℕ) →₀ L :=
+      Finsupp.mapRange (algebraMap C L) (map_zero (algebraMap C L)) c
+    let cK : (κ × ℕ) →₀ K :=
+      Finsupp.mapRange (algebraMap C K) (map_zero (algebraMap C K)) c
+    let g : L := Finsupp.linearCombination L xJet cL
+    have hshiftg : ∀ i, sigma i g = g + algebraMap K L
+        (Finsupp.linearCombination K (bJet i) cK) := by
+      intro i
+      dsimp only [g]
+      rw [ringEquiv_linearCombination]
+      have hcmap :
+          Finsupp.mapRange (sigma i) (map_zero (sigma i)) cL = cL := by
+        ext j
+        simp [cL, hCfixed]
+      rw [hcmap]
+      simp_rw [hshiftJet i]
+      rw [finsupp_linearCombination_add_family]
+      rw [algebraMap_constant_finsupp_linearCombination]
+    have hzfix : ∀ i,
+        sigma i (g - algebraMap K L k) = g - algebraMap K L k := by
+      intro i
+      rw [map_sub, hshiftg i, hcomp]
+      have htel : tau i k - k =
+          Finsupp.linearCombination K (bJet i) cK := by
+        simpa [bJet, cK] using hnone i
+      rw [← htel, map_sub]
+      abel
+    obtain ⟨c0, hc0⟩ := hfixed (g - algebraMap K L k) hzfix
+    let a : K := k + algebraMap C K c0
+    have hgbase : g = algebraMap K L a := by
+      calc
+        g = algebraMap K L k + algebraMap C L c0 := by rw [hc0]; abel
+        _ = algebraMap K L a := by
+          simp [a, IsScalarTower.algebraMap_apply C K L]
+    have hdep : ¬ AlgebraicIndependent K xJet :=
+      not_algebraicIndependent_of_finsupp_linearCombination_eq
+        xJet c hc a (by simpa [g, cL] using hgbase)
+    apply hdep
+    simpa [DifferentialIndependent, xJet] using hDI
+  · exact automorphismFamily_differentialIndependent_of_no_constant_simultaneous_jet_telescoping
+      tau sigma hcomp hderiv hCfixed hfixed x b hshift
+
+/-- **Exact split-source boundary for the linearized mixed family.**  Additive primitives and
+logarithmic derivatives of nonzero multiplicative primitives form one differentially independent
+family exactly when no nonzero finite differential character of their combined source increments
+is a simultaneous base coboundary.  The source automorphisms need not commute. -/
+theorem automorphismFamily_mixedLinearized_differentialIndependent_iff
+    {I A B C K L : Type*}
+    [Field C] [Field K] [Field L]
+    [Algebra C K] [Algebra C L] [Algebra K L]
+    [IsScalarTower C K L]
+    [Differential K] [Differential L] [DifferentialAlgebra K L]
+    [CharZero K]
+    (tau : I → K ≃+* K) (sigma : I → L ≃+* L)
+    (hcomp : ∀ i k, sigma i (algebraMap K L k) =
+      algebraMap K L (tau i k))
+    (hderiv : ∀ i y, sigma i y′ = (sigma i y)′)
+    (hCfixed : ∀ i c, sigma i (algebraMap C L c) = algebraMap C L c)
+    (hfixed : ∀ z : L, (∀ i, sigma i z = z) →
+      ∃ c : C, algebraMap C L c = z)
+    (u : A → L) (x : B → L)
+    (p : I → A → K) (q : I → B → K)
+    (hx : ∀ b, x b ≠ 0) (hq : ∀ i b, q i b ≠ 0)
+    (hadd : ∀ i a, sigma i (u a) =
+      u a + algebraMap K L (p i a))
+    (hmul : ∀ i b, sigma i (x b) =
+      algebraMap K L (q i b) * x b) :
+    DifferentialIndependent K
+        (Sum.elim u (fun b ↦ (x b)′ / x b)) ↔
+      ∀ c : ((A ⊕ B) × ℕ) →₀ C, c ≠ 0 → ∀ k : K, ∃ i,
+        tau i k - k ≠
+          Finsupp.linearCombination K
+            (fun r ↦ differentialJet r.2
+              (Sum.elim (p i) (fun b ↦ (q i b)′ / q i b) r.1))
+            (Finsupp.mapRange (algebraMap C K)
+              (map_zero (algebraMap C K)) c) := by
+  let z : A ⊕ B → L := Sum.elim u (fun b ↦ (x b)′ / x b)
+  let omega : I → A ⊕ B → K :=
+    fun i ↦ Sum.elim (p i) (fun b ↦ (q i b)′ / q i b)
+  have hshift : ∀ i j, sigma i (z j) =
+      z j + algebraMap K L (omega i j) := by
+    intro i j
+    cases j with
+    | inl a => simpa [z, omega] using hadd i a
+    | inr b =>
+        simpa [z, omega] using
+          ringEquiv_deriv_div_self_of_mul (sigma i) (hderiv i)
+            (x b) (q i b) (hx b) (hq i b) (hmul i b)
+  simpa only [z, omega] using
+    (automorphismFamily_differentialIndependent_iff_no_constant_simultaneous_jet_telescoping
+      tau sigma hcomp hderiv hCfixed hfixed z omega hshift)
+
 end
 
 end GaloisForLFunctions

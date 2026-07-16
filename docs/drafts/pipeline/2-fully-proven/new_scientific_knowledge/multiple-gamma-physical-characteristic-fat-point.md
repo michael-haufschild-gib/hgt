@@ -1,7 +1,8 @@
 # The physical multiple-Gamma characteristic pullback is a central fat point of order `r`
 
 - **ID:** `multiple-gamma-physical-characteristic-fat-point`
-- **Stage:** 2-fully-proven / Lean physical-symbol and ideal core complete
+- **Stage:** 2-fully-proven / Lean physical-symbol, ideal, row-reduction, and powered-incidence
+  cores complete; physical Koszul homology remains paper-only
 - **Type:** THEOREM / PHYSICAL CHARACTERISTIC PULLBACK / DERIVED INCIDENCE SEAM
 - **Scientific status:** `[PAPER PROOF COMPLETE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE — PROVISIONAL]`
   `[PARENT COMPONENTS SEPARATED] [NOT AN RH RESULT]`
@@ -19,6 +20,8 @@
   `formal/GaloisForLFunctions/HTGeometry/MeromorphicPhysicalCharacteristicIncidence.lean`
 - **Lean uniform-effectivity phase law:**
   `formal/GaloisForLFunctions/HTGeometry/PeriodIncidenceUniformEffectivity.lean`
+- **Lean powered-incidence phase law:**
+  `formal/GaloisForLFunctions/HTGeometry/PeriodIncidenceMultiplier.lean`
 - **Lean osculation/effectivity discriminator:**
   - `formal/GaloisForLFunctions/HTGeometry/QuadraticPhysicalCharacterOsculation.lean`
   - `formal/GaloisForLFunctions/HTGeometry/PhysicalOsculationEffectivityFracture.lean`
@@ -74,6 +77,10 @@ unit multiples of `lambda^r`.  It is equivalent by invertible row operations to
 ```text
 (lambda^r,0,...,0).                                       (5)
 ```
+
+The invertible linear row operation and its explicit inverse are formalized by
+`unitScaledCofaceRowEquiv`; Lean proves its action on the physical coface generators is exactly
+`(lambda^r,0,...,0)`.
 
 Hence
 
@@ -251,8 +258,8 @@ b_crit,r(q)=sqrt(|m_r(q)|)=|w(q)|^(r/2).                 (16a)
 
 Thus the normalized critical exponent is always one half, while its unnormalized vanishing order
 is `r/2`.  Using `sqrt(|w|)` for every order would discard the fat-point multiplicity and is
-therefore nonconservative.  The order-one Lean theorem is the universal atomic case; the powered
-family `(16a)` is the next formal target.
+therefore nonconservative.  Lean now proves the complete powered family `(16a)`, including the
+pointwise identity with `sqrt(|w^r|)` and its exact/closure-only/exterior trichotomy.
 
 More generally, put
 
@@ -482,12 +489,15 @@ five-way equality `(13)`.  This is preliminary negative evidence, not priority c
 - [x] exact positive-tangency source model formalized
 - [x] same-source osculation/effectivity independence formalized
 - [x] finish Lean formalization of the pullback ideal core
+- [x] formalize the invertible row reduction to `(lambda^r,0,...,0)`
 - [x] formalize the physical central-resonance theorem
 - [x] formalize the coface-by-coface DA/source-translation symbol comparison
 - [x] realize the comparison inside the genuine global meromorphic field
 - [x] restrict the calibrated rank-three boundary carrier to physical exponential modes
 - [x] prove uniform continuous source effectivity iff the period group is discrete
-- [ ] formalize the powered incidence and order-`r` half-density trichotomy
+- [x] formalize the powered incidence and order-`r` half-density trichotomy
+- [ ] formalize the complete physical Koszul homology `(6)`--`(8)` rather than only its
+      principal fat-point ideal
 - [ ] construct the filtration-preserving analytic comparison morphism
 - [ ] identify the critically completed bounded symbol with `w^r`
 - [ ] prove the Barnes/multiple-sine second realization

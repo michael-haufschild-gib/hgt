@@ -199,6 +199,32 @@ theorem geometricKallenLehmannResponse_selfSimilarity
   have h := geometricKallenLehmannMoment_constraint ha₀ ha₁ hb₀ hb₁ n
   linear_combination h
 
+/-- **Constraint uniqueness.**  The positive geometric response is the only formal response with
+the normalized one-atom boundary term and the prescribed geometric rescaling law.  Thus the
+self-similarity identity determines the entire response coefficientwise; it is not merely a law
+verified by a preselected series. -/
+theorem geometricKallenLehmannResponse_unique
+    {a b : ℝ} (ha₀ : 0 ≤ a) (ha₁ : a < 1)
+    (hb₀ : 0 ≤ b) (hb₁ : b ≤ 1)
+    (R : PowerSeries ℝ)
+    (hR : R =
+      (1 - a) • (PowerSeries.invOneSubPow ℝ 1).val +
+        a • PowerSeries.rescale b R) :
+    R = geometricKallenLehmannResponse a b := by
+  ext n
+  have hcoeff := congrArg (PowerSeries.coeff n) hR
+  simp only [map_add, PowerSeries.coeff_smul,
+    PowerSeries.coeff_rescale] at hcoeff
+  rw [PowerSeries.invOneSubPow_val_succ_eq_mk_add_choose] at hcoeff
+  simp only [PowerSeries.coeff_mk, Nat.zero_add, Nat.choose_zero_right,
+    smul_eq_mul, Nat.cast_one] at hcoeff
+  rw [geometricKallenLehmannResponse_coeff,
+    geometricKallenLehmannMoment]
+  have hden := geometricKallenLehmannMoment_denominator_pos
+    ha₀ ha₁ hb₀ hb₁ n
+  field_simp [ne_of_gt hden]
+  linear_combination hcoeff
+
 end
 
 end HTGeometry

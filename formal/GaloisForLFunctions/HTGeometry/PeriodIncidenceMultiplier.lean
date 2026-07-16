@@ -656,6 +656,397 @@ theorem rankThreePeriodIncidenceCanonicalTrichotomy
   exact periodIncidenceCanonicalTrichotomy_of_not_discrete _
     (not_discrete_intSpan_fin_three v hv)
 
+/-! ## Powered incidence and the full fractional phase law -/
+
+/-- The order-`r` period symbol, retaining the physical contact multiplicity. -/
+def poweredPeriodWeightVector (L : Submodule ℤ ℂ) (r : ℕ) :
+    lp (fun _ : NonzeroPeriod L ↦ ℂ) ∞ :=
+  ⟨fun q ↦ regularizedPeriodWeight q.1.1 ^ r,
+    memℓp_infty ⟨1, by
+      rintro _ ⟨q, rfl⟩
+      change ‖regularizedPeriodWeight q.1.1 ^ r‖ ≤ 1
+      rw [norm_pow]
+      exact pow_le_one₀ (norm_nonneg _)
+        (norm_regularizedPeriodWeight_le_one q.1.1)⟩⟩
+
+@[simp] theorem poweredPeriodWeightVector_apply
+    (L : Submodule ℤ ℂ) (r : ℕ) (q : NonzeroPeriod L) :
+    poweredPeriodWeightVector L r q = regularizedPeriodWeight q.1.1 ^ r := rfl
+
+/-- Multiplication by the full order-`r` physical period symbol `w^r`. -/
+def poweredPeriodIncidenceMultiplier (L : Submodule ℤ ℂ) (r : ℕ) :
+    lp (fun _ : NonzeroPeriod L ↦ ℂ) ∞ →L[ℂ]
+      lp (fun _ : NonzeroPeriod L ↦ ℂ) ∞ where
+  toFun x := poweredPeriodWeightVector L r * x
+  map_add' x y := by rw [mul_add]
+  map_smul' c x := by
+    ext q
+    simp [poweredPeriodWeightVector, lp.infty_coeFn_mul, mul_comm, mul_left_comm]
+  cont := continuous_const.mul continuous_id
+
+@[simp] theorem poweredPeriodIncidenceMultiplier_apply
+    (L : Submodule ℤ ℂ) (r : ℕ)
+    (x : lp (fun _ : NonzeroPeriod L ↦ ℂ) ∞) (q : NonzeroPeriod L) :
+    poweredPeriodIncidenceMultiplier L r x q =
+      regularizedPeriodWeight q.1.1 ^ r * x q := rfl
+
+/-- The positive target of vanishing order `β` relative to the atomic symbol `w`. -/
+def periodIncidencePowerTarget
+    (L : Submodule ℤ ℂ) (β : ℝ) (hβ : 0 ≤ β) :
+    lp (fun _ : NonzeroPeriod L ↦ ℂ) ∞ :=
+  ⟨fun q ↦ ((‖regularizedPeriodWeight q.1.1‖ ^ β : ℝ) : ℂ),
+    memℓp_infty ⟨1, by
+      rintro _ ⟨q, rfl⟩
+      change ‖((‖regularizedPeriodWeight q.1.1‖ ^ β : ℝ) : ℂ)‖ ≤ 1
+      rw [Complex.norm_real,
+        Real.norm_of_nonneg (Real.rpow_nonneg (norm_nonneg _) _)]
+      exact Real.rpow_le_one (norm_nonneg _)
+        (norm_regularizedPeriodWeight_le_one q.1.1) hβ⟩⟩
+
+@[simp] theorem periodIncidencePowerTarget_apply
+    (L : Submodule ℤ ℂ) (β : ℝ) (hβ : 0 ≤ β)
+    (q : NonzeroPeriod L) :
+    periodIncidencePowerTarget L β hβ q =
+      ((‖regularizedPeriodWeight q.1.1‖ ^ β : ℝ) : ℂ) := rfl
+
+theorem norm_periodIncidencePowerTarget_div_pow
+    (L : Submodule ℤ ℂ) (r : ℕ) (β : ℝ) (hβ : 0 ≤ β)
+    (q : NonzeroPeriod L) :
+    ‖periodIncidencePowerTarget L β hβ q /
+        regularizedPeriodWeight q.1.1 ^ r‖ =
+      ‖regularizedPeriodWeight q.1.1‖ ^ (β - r) := by
+  rw [norm_div, periodIncidencePowerTarget_apply, Complex.norm_real,
+    Real.norm_of_nonneg (Real.rpow_nonneg (norm_nonneg _) _), norm_pow,
+    ← Real.rpow_natCast,
+    ← Real.rpow_sub (norm_pos_iff.mpr (regularizedPeriodWeight_ne_zero q.2))]
+
+/-- The bounded exact inverse for every target whose vanishing order is at least `r`. -/
+def periodIncidencePowerPreimage
+    (L : Submodule ℤ ℂ) (r : ℕ) (β : ℝ) (hβ : 0 ≤ β)
+    (hβr : (r : ℝ) ≤ β) : lp (fun _ : NonzeroPeriod L ↦ ℂ) ∞ :=
+  ⟨fun q ↦ periodIncidencePowerTarget L β hβ q /
+      regularizedPeriodWeight q.1.1 ^ r,
+    memℓp_infty ⟨1, by
+      rintro _ ⟨q, rfl⟩
+      change ‖periodIncidencePowerTarget L β hβ q /
+        regularizedPeriodWeight q.1.1 ^ r‖ ≤ 1
+      rw [norm_periodIncidencePowerTarget_div_pow]
+      exact Real.rpow_le_one (norm_nonneg _)
+        (norm_regularizedPeriodWeight_le_one q.1.1) (sub_nonneg.mpr hβr)⟩⟩
+
+theorem poweredPeriodIncidenceMultiplier_powerPreimage
+    (L : Submodule ℤ ℂ) (r : ℕ) (β : ℝ) (hβ : 0 ≤ β)
+    (hβr : (r : ℝ) ≤ β) :
+    poweredPeriodIncidenceMultiplier L r
+        (periodIncidencePowerPreimage L r β hβ hβr) =
+      periodIncidencePowerTarget L β hβ := by
+  apply lp.ext
+  funext q
+  change regularizedPeriodWeight q.1.1 ^ r *
+      (periodIncidencePowerTarget L β hβ q /
+        regularizedPeriodWeight q.1.1 ^ r) =
+    periodIncidencePowerTarget L β hβ q
+  field_simp [pow_ne_zero r (regularizedPeriodWeight_ne_zero q.2)]
+
+theorem periodIncidencePowerTarget_mem_range_of_natCast_le
+    (L : Submodule ℤ ℂ) (r : ℕ) (β : ℝ) (hβ : 0 ≤ β)
+    (hβr : (r : ℝ) ≤ β) :
+    periodIncidencePowerTarget L β hβ ∈
+      Set.range (poweredPeriodIncidenceMultiplier L r) :=
+  ⟨periodIncidencePowerPreimage L r β hβ hβr,
+    poweredPeriodIncidenceMultiplier_powerPreimage L r β hβ hβr⟩
+
+/-- Cut off division by `w^r` below atomic symbol size `δ`. -/
+def periodIncidencePowerCutoffPreimage
+    (L : Submodule ℤ ℂ) (r : ℕ) (β : ℝ) (hβ : 0 ≤ β)
+    (δ : ℝ) (hδ : 0 < δ) : lp (fun _ : NonzeroPeriod L ↦ ℂ) ∞ :=
+  ⟨fun q ↦ if δ ≤ ‖regularizedPeriodWeight q.1.1‖ then
+      periodIncidencePowerTarget L β hβ q /
+        regularizedPeriodWeight q.1.1 ^ r
+    else 0,
+    memℓp_infty ⟨max 1 (δ ^ (β - r)), by
+      rintro _ ⟨q, rfl⟩
+      by_cases hq : δ ≤ ‖regularizedPeriodWeight q.1.1‖
+      · simp only [if_pos hq]
+        rw [norm_periodIncidencePowerTarget_div_pow]
+        by_cases hexp : 0 ≤ β - (r : ℝ)
+        · exact (Real.rpow_le_one (norm_nonneg _)
+            (norm_regularizedPeriodWeight_le_one q.1.1) hexp).trans
+              (le_max_left _ _)
+        · exact (Real.rpow_le_rpow_of_nonpos hδ hq (le_of_not_ge hexp)).trans
+              (le_max_right _ _)
+      · simp only [if_neg hq, norm_zero]
+        exact (by positivity : (0 : ℝ) ≤ max 1 (δ ^ (β - r)))⟩⟩
+
+theorem poweredPeriodIncidenceMultiplier_cutoff_apply
+    (L : Submodule ℤ ℂ) (r : ℕ) (β : ℝ) (hβ : 0 ≤ β)
+    (δ : ℝ) (hδ : 0 < δ) (q : NonzeroPeriod L) :
+    poweredPeriodIncidenceMultiplier L r
+        (periodIncidencePowerCutoffPreimage L r β hβ δ hδ) q =
+      if δ ≤ ‖regularizedPeriodWeight q.1.1‖ then
+        periodIncidencePowerTarget L β hβ q
+      else 0 := by
+  by_cases hq : δ ≤ ‖regularizedPeriodWeight q.1.1‖
+  · rw [poweredPeriodIncidenceMultiplier_apply]
+    simp only [periodIncidencePowerCutoffPreimage, if_pos hq]
+    field_simp [pow_ne_zero r (regularizedPeriodWeight_ne_zero q.2)]
+  · simp [poweredPeriodIncidenceMultiplier_apply,
+      periodIncidencePowerCutoffPreimage, hq]
+
+theorem norm_poweredPeriodIncidenceMultiplier_cutoff_sub_le
+    (L : Submodule ℤ ℂ) (r : ℕ) (β : ℝ) (hβ : 0 ≤ β)
+    (δ : ℝ) (hδ : 0 < δ) :
+    ‖poweredPeriodIncidenceMultiplier L r
+          (periodIncidencePowerCutoffPreimage L r β hβ δ hδ) -
+        periodIncidencePowerTarget L β hβ‖ ≤ δ ^ β := by
+  apply lp.norm_le_of_forall_le (Real.rpow_nonneg hδ.le β)
+  intro q
+  change ‖poweredPeriodIncidenceMultiplier L r
+      (periodIncidencePowerCutoffPreimage L r β hβ δ hδ) q -
+        periodIncidencePowerTarget L β hβ q‖ ≤ δ ^ β
+  by_cases hq : δ ≤ ‖regularizedPeriodWeight q.1.1‖
+  · rw [poweredPeriodIncidenceMultiplier_cutoff_apply, if_pos hq]
+    simpa using Real.rpow_nonneg hδ.le β
+  · rw [poweredPeriodIncidenceMultiplier_cutoff_apply, if_neg hq]
+    simp only [zero_sub, norm_neg, periodIncidencePowerTarget_apply,
+      Complex.norm_real,
+      Real.norm_of_nonneg (Real.rpow_nonneg (norm_nonneg _) _)]
+    exact Real.rpow_le_rpow (norm_nonneg _) (le_of_not_ge hq) hβ
+
+/-- Every positive fractional target is approximable by bounded cutoff inverses. -/
+theorem periodIncidencePowerTarget_mem_closure_range_of_pos
+    (L : Submodule ℤ ℂ) (r : ℕ) (β : ℝ) (hβ : 0 < β) :
+    periodIncidencePowerTarget L β hβ.le ∈
+      closure (Set.range (poweredPeriodIncidenceMultiplier L r)) := by
+  rw [Metric.mem_closure_iff]
+  intro ε hε
+  let δ : ℕ → ℝ := fun n ↦ 1 / ((n : ℝ) + 1)
+  have hδzero : Tendsto δ atTop (𝓝 0) := by
+    simpa [δ] using
+      (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+  have hpowzero : Tendsto (fun n ↦ δ n ^ β) atTop (𝓝 0) := by
+    have hcont :=
+      (Real.continuousAt_rpow_const 0 β (Or.inr hβ.le)).tendsto.comp hδzero
+    simpa [Real.zero_rpow hβ.ne'] using hcont
+  obtain ⟨N, hN⟩ := (Metric.tendsto_atTop.1 hpowzero) ε hε
+  have hδpos : 0 < δ N := by
+    dsimp [δ]
+    positivity
+  have hpowlt : δ N ^ β < ε := by
+    have h := hN N le_rfl
+    simpa [Real.dist_eq, abs_of_nonneg (Real.rpow_nonneg hδpos.le β)] using h
+  refine ⟨poweredPeriodIncidenceMultiplier L r
+      (periodIncidencePowerCutoffPreimage L r β hβ.le (δ N) hδpos),
+    Set.mem_range_self _, ?_⟩
+  rw [dist_eq_norm, norm_sub_rev]
+  exact (norm_poweredPeriodIncidenceMultiplier_cutoff_sub_le
+    L r β hβ.le (δ N) hδpos).trans_lt hpowlt
+
+/-- Below order `r`, exact inversion would force an unbounded inverse source. -/
+theorem periodIncidencePowerTarget_not_mem_range_of_lt_natCast
+    (L : Submodule ℤ ℂ) (hL : ¬ DiscreteTopology L)
+    (r : ℕ) (β : ℝ) (hβ : 0 < β) (hβr : β < (r : ℝ)) :
+    periodIncidencePowerTarget L β hβ.le ∉
+      Set.range (poweredPeriodIncidenceMultiplier L r) := by
+  classical
+  rintro ⟨x, hx⟩
+  obtain ⟨p, hpL, hpne, hp0⟩ :=
+    exists_small_nonzero_of_not_discrete_intSubmodule L hL
+  let q : ℕ → NonzeroPeriod L := fun n ↦ ⟨⟨p n, hpL n⟩, hpne n⟩
+  let a : ℕ → ℝ := fun n ↦ ‖regularizedPeriodWeight (p n)‖
+  have ha0 : Tendsto a atTop (𝓝 0) :=
+    tendsto_zero_iff_norm_tendsto_zero.mp
+      (tendsto_regularizedPeriodWeight_zero hp0)
+  have hapos : ∀ n, 0 < a n := fun n ↦
+    norm_pos_iff.mpr (regularizedPeriodWeight_ne_zero (hpne n))
+  let γ : ℝ := (r : ℝ) - β
+  have hγ : 0 < γ := sub_pos.mpr hβr
+  have hpow0 : Tendsto (fun n ↦ a n ^ γ) atTop (𝓝 0) := by
+    have hcont :=
+      (Real.continuousAt_rpow_const 0 γ (Or.inr hγ.le)).tendsto.comp ha0
+    simpa [Real.zero_rpow hγ.ne'] using hcont
+  have hpowGT : Tendsto (fun n ↦ a n ^ γ) atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_iff.2
+      ⟨hpow0, Eventually.of_forall fun n ↦ Real.rpow_pos_of_pos (hapos n) γ⟩
+  have hinv : Tendsto (fun n ↦ (a n ^ γ)⁻¹) atTop atTop :=
+    hpowGT.inv_tendsto_nhdsGT_zero
+  have hinv_eq : ∀ n, (a n ^ γ)⁻¹ = ‖x (q n)‖ := by
+    intro n
+    have hcoord := congrArg
+      (fun z : lp (fun _ : NonzeroPeriod L ↦ ℂ) ∞ ↦ z (q n)) hx
+    have hnorm := congrArg norm hcoord
+    simp only [poweredPeriodIncidenceMultiplier_apply,
+      periodIncidencePowerTarget_apply, norm_mul, norm_pow, Complex.norm_real,
+      Real.norm_of_nonneg (Real.rpow_nonneg (norm_nonneg _) _)] at hnorm
+    change a n ^ r * ‖x (q n)‖ = a n ^ β at hnorm
+    calc
+      (a n ^ γ)⁻¹ = a n ^ (-γ) :=
+        (Real.rpow_neg (hapos n).le γ).symm
+      _ = a n ^ (β - (r : ℝ)) := by
+        congr 1
+        dsimp [γ]
+        ring
+      _ = a n ^ β / a n ^ (r : ℝ) :=
+        Real.rpow_sub (hapos n) β (r : ℝ)
+      _ = ‖x (q n)‖ := by
+        rw [Real.rpow_natCast, ← hnorm]
+        field_simp [pow_ne_zero r (hapos n).ne']
+  have hevent : ∀ᶠ n in atTop, ‖x‖ < (a n ^ γ)⁻¹ :=
+    hinv.eventually (eventually_gt_atTop ‖x‖)
+  obtain ⟨n, hn⟩ := hevent.exists
+  rw [hinv_eq n] at hn
+  exact (not_lt_of_ge (lp.norm_apply_le_norm ENNReal.top_ne_zero x (q n))) hn
+
+theorem periodIncidencePowerTarget_closureOnly_of_between
+    (L : Submodule ℤ ℂ) (hL : ¬ DiscreteTopology L)
+    (r : ℕ) (β : ℝ) (hβ : 0 < β) (hβr : β < (r : ℝ)) :
+    periodIncidencePowerTarget L β hβ.le ∈
+        closure (Set.range (poweredPeriodIncidenceMultiplier L r)) ∧
+      periodIncidencePowerTarget L β hβ.le ∉
+        Set.range (poweredPeriodIncidenceMultiplier L r) :=
+  ⟨periodIncidencePowerTarget_mem_closure_range_of_pos L r β hβ,
+    periodIncidencePowerTarget_not_mem_range_of_lt_natCast L hL r β hβ hβr⟩
+
+theorem poweredPeriodIncidenceMultiplier_range_subset
+    (L : Submodule ℤ ℂ) (r : ℕ) (hr : 1 ≤ r) :
+    Set.range (poweredPeriodIncidenceMultiplier L r) ⊆
+      Set.range (periodIncidenceMultiplier L) := by
+  rintro _ ⟨x, rfl⟩
+  refine ⟨poweredPeriodWeightVector L (r - 1) * x, ?_⟩
+  apply lp.ext
+  funext q
+  change regularizedPeriodWeight q.1.1 *
+      (regularizedPeriodWeight q.1.1 ^ (r - 1) * x q) =
+    regularizedPeriodWeight q.1.1 ^ r * x q
+  rw [← mul_assoc, ← pow_succ']
+  congr 2
+  omega
+
+theorem poweredPeriodIncidenceExteriorTarget_not_mem_closure_range
+    (L : Submodule ℤ ℂ) (hL : ¬ DiscreteTopology L)
+    (r : ℕ) (hr : 1 ≤ r) :
+    periodIncidenceExteriorTarget L ∉
+      closure (Set.range (poweredPeriodIncidenceMultiplier L r)) := by
+  intro hmem
+  exact periodIncidenceExteriorTarget_not_mem_closure_range_of_not_discrete L hL
+    (closure_mono (poweredPeriodIncidenceMultiplier_range_subset L r hr) hmem)
+
+/-- The order-`r` target corresponding to normalized fractional exponent `α`. -/
+def poweredPeriodIncidenceFractionalTarget
+    (L : Submodule ℤ ℂ) (r : ℕ) (α : ℝ) (hα : 0 ≤ α) :
+    lp (fun _ : NonzeroPeriod L ↦ ℂ) ∞ :=
+  periodIncidencePowerTarget L ((r : ℝ) * α)
+    (mul_nonneg (Nat.cast_nonneg r) hα)
+
+@[simp] theorem poweredPeriodIncidenceFractionalTarget_apply
+    (L : Submodule ℤ ℂ) (r : ℕ) (α : ℝ) (hα : 0 ≤ α)
+    (q : NonzeroPeriod L) :
+    poweredPeriodIncidenceFractionalTarget L r α hα q =
+      ((‖regularizedPeriodWeight q.1.1‖ ^ ((r : ℝ) * α) : ℝ) : ℂ) := rfl
+
+theorem poweredPeriodIncidenceFractionalTarget_zero
+    (L : Submodule ℤ ℂ) (r : ℕ) :
+    poweredPeriodIncidenceFractionalTarget L r 0 le_rfl =
+      periodIncidenceExteriorTarget L := by
+  apply lp.ext
+  funext q
+  simp [poweredPeriodIncidenceFractionalTarget,
+    periodIncidenceExteriorTarget_apply]
+
+/-- The exact `α=0`, closure-only `0<α<1`, exact `α≥1` phase law. -/
+theorem poweredPeriodIncidenceFractionalPhaseLaw
+    (L : Submodule ℤ ℂ) (hL : ¬ DiscreteTopology L)
+    (r : ℕ) (hr : 1 ≤ r) (α : ℝ) (hα : 0 ≤ α) :
+    (α = 0 → poweredPeriodIncidenceFractionalTarget L r α hα ∉
+        closure (Set.range (poweredPeriodIncidenceMultiplier L r))) ∧
+      (0 < α → α < 1 →
+        poweredPeriodIncidenceFractionalTarget L r α hα ∈
+            closure (Set.range (poweredPeriodIncidenceMultiplier L r)) ∧
+          poweredPeriodIncidenceFractionalTarget L r α hα ∉
+            Set.range (poweredPeriodIncidenceMultiplier L r)) ∧
+      (1 ≤ α → poweredPeriodIncidenceFractionalTarget L r α hα ∈
+        Set.range (poweredPeriodIncidenceMultiplier L r)) := by
+  have hrpos : (0 : ℝ) < (r : ℝ) := by exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hr)
+  constructor
+  · intro hα0
+    subst α
+    simpa [poweredPeriodIncidenceFractionalTarget_zero] using
+      poweredPeriodIncidenceExteriorTarget_not_mem_closure_range L hL r hr
+  constructor
+  · intro hαpos hαone
+    have hβpos : 0 < (r : ℝ) * α := mul_pos hrpos hαpos
+    have hβr : (r : ℝ) * α < (r : ℝ) := by
+      simpa using mul_lt_mul_of_pos_left hαone hrpos
+    simpa [poweredPeriodIncidenceFractionalTarget] using
+      periodIncidencePowerTarget_closureOnly_of_between
+        L hL r ((r : ℝ) * α) hβpos hβr
+  · intro hαone
+    have hβr : (r : ℝ) ≤ (r : ℝ) * α := by
+      simpa using mul_le_mul_of_nonneg_left hαone hrpos.le
+    exact periodIncidencePowerTarget_mem_range_of_natCast_le
+      L r ((r : ℝ) * α) (mul_nonneg hrpos.le hα) hβr
+
+/-- The normalized self-dual target `α=1/2`, with unnormalized order `r/2`. -/
+def poweredPeriodIncidenceHalfDensity (L : Submodule ℤ ℂ) (r : ℕ) :
+    lp (fun _ : NonzeroPeriod L ↦ ℂ) ∞ :=
+  poweredPeriodIncidenceFractionalTarget L r (1 / 2) (by norm_num)
+
+theorem poweredPeriodIncidenceHalfDensity_apply
+    (L : Submodule ℤ ℂ) (r : ℕ) (q : NonzeroPeriod L) :
+    poweredPeriodIncidenceHalfDensity L r q =
+      (Real.sqrt ‖regularizedPeriodWeight q.1.1 ^ r‖ : ℂ) := by
+  change ((‖regularizedPeriodWeight q.1.1‖ ^ ((r : ℝ) * (1 / 2 : ℝ)) : ℝ) : ℂ) =
+    (Real.sqrt ‖regularizedPeriodWeight q.1.1 ^ r‖ : ℂ)
+  congr 1
+  rw [Real.sqrt_eq_rpow, norm_pow, ← Real.rpow_natCast,
+    ← Real.rpow_mul (norm_nonneg _)]
+
+theorem poweredPeriodIncidenceHalfDensity_closureOnly
+    (L : Submodule ℤ ℂ) (hL : ¬ DiscreteTopology L)
+    (r : ℕ) (hr : 1 ≤ r) :
+    poweredPeriodIncidenceHalfDensity L r ∈
+        closure (Set.range (poweredPeriodIncidenceMultiplier L r)) ∧
+      poweredPeriodIncidenceHalfDensity L r ∉
+        Set.range (poweredPeriodIncidenceMultiplier L r) := by
+  exact (poweredPeriodIncidenceFractionalPhaseLaw
+    L hL r hr (1 / 2) (by norm_num)).2.1 (by norm_num) (by norm_num)
+
+/-- The full physical symbol `w^r` is the canonical exact order-`r` target. -/
+def poweredPeriodIncidenceExactTarget (L : Submodule ℤ ℂ) (r : ℕ) :
+    lp (fun _ : NonzeroPeriod L ↦ ℂ) ∞ :=
+  poweredPeriodWeightVector L r
+
+theorem poweredPeriodIncidenceExactTarget_mem_range
+    (L : Submodule ℤ ℂ) (r : ℕ) :
+    poweredPeriodIncidenceExactTarget L r ∈
+      Set.range (poweredPeriodIncidenceMultiplier L r) := by
+  refine ⟨1, ?_⟩
+  apply lp.ext
+  funext q
+  simp [poweredPeriodIncidenceExactTarget,
+    poweredPeriodIncidenceMultiplier_apply]
+
+/-- Every positive order realizes the exact / half-density / exterior trichotomy. -/
+theorem poweredPeriodIncidenceCanonicalTrichotomy
+    (L : Submodule ℤ ℂ) (hL : ¬ DiscreteTopology L)
+    (r : ℕ) (hr : 1 ≤ r) :
+    poweredPeriodIncidenceExactTarget L r ∈
+        Set.range (poweredPeriodIncidenceMultiplier L r) ∧
+      (poweredPeriodIncidenceHalfDensity L r ∈
+          closure (Set.range (poweredPeriodIncidenceMultiplier L r)) ∧
+        poweredPeriodIncidenceHalfDensity L r ∉
+          Set.range (poweredPeriodIncidenceMultiplier L r)) ∧
+      periodIncidenceExteriorTarget L ∉
+        closure (Set.range (poweredPeriodIncidenceMultiplier L r)) :=
+  ⟨poweredPeriodIncidenceExactTarget_mem_range L r,
+    poweredPeriodIncidenceHalfDensity_closureOnly L hL r hr,
+    poweredPeriodIncidenceExteriorTarget_not_mem_closure_range L hL r hr⟩
+
+/-- The source-condition duality `α ↦ 1-α` has the unique fixed exponent `1/2`. -/
+theorem periodIncidenceFractionalDuality_fixed_iff (α : ℝ) :
+    1 - α = α ↔ α = 1 / 2 := by
+  constructor <;> intro h <;> linarith
+
 end
 
 end GaloisForLFunctions
