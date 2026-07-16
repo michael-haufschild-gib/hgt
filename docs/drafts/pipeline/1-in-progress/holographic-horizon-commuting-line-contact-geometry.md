@@ -4,7 +4,8 @@
 - **Stage:** 1-in-progress
 - **Type:** THEOREM / CONJECTURAL CLASSIFICATION / DIFFERENTIAL ALGEBRA / PROJECTIVE GEOMETRY
 - **Scientific status:** `[CHORD THEOREM LEAN-PROVEN] [ABSTRACT RANK THEOREM LEAN-PROVEN]`
-  `[GENERAL-HYPERSURFACE BOUND PAPER-PROVEN] [NOVELTY PROVISIONAL]`
+  `[GENERAL-HYPERSURFACE BOUND PAPER-PROVEN] [TOTAL-INCOMPATIBILITY COROLLARY PAPER-PROVEN]`
+  `[NOVELTY PROVISIONAL]`
 - **Paper lane:** *Before There Was Time: The Holographic Horizon Measures Quantum Noncommutativity*
 
 ## 1. The horizon--commutator theorem `[LEAN-PROVEN]`
@@ -133,13 +134,49 @@ The exact-horizon hypothesis is nonvacuous: the already Lean-proven universal re
 `exists_completeJet_horizon_eq_finiteHomogeneousZeroLocus` realizes every homogeneous
 hypersurface as the complete DA horizon of one observable in a rational differential field.
 
-## 5. Why this could matter
+## 5. High-degree horizons force total incompatibility `[PAPER-PROVEN]`
+
+Under the hypotheses of Section 4, if
+
+```text
+d ≥ 2n,
+```
+
+then every two linearly independent laws are noncommuting:
+
+```text
+v,w linearly independent  ==>  [rho(v),rho(w)] != 0.                 (11)
+```
+
+Indeed, a general degree-`d` hypersurface contains no projective line in this range.  Ikeda's
+order-`d` incidence variety is also empty.  Hence every projective line meets `X` in at least two
+distinct points and also leaves `X`.  If `rho(v)` and `rho(w)` commuted, all derivations associated
+with their two-dimensional span would commute.  Two horizon intersection points on that line and
+one point outside the horizon would then contradict the commuting-chord theorem.
+
+For a plane horizon, `n=2`.  Every bivector in `Λ²V` is decomposable when `dim V=3`; therefore a
+general plane curve of degree at least four forces
+
+```text
+B_rho : Λ²V -> Der_K(L)  injective,     rank(B_rho)=3.                (12)
+```
+
+This is a rigidity theorem about every realization, not a property of the free construction.
+A general quartic exact hypertranscendence horizon permits no commuting independent pair of laws
+and no linear cancellation among their three commutator channels.
+
+## 6. Why this could matter
 
 Equation `(10)` says that algebraic complexity visible on a one-observable hypertranscendence
 horizon cannot be implemented with arbitrarily cheap noncommutativity.  Each additional degree
 forces another independent commutator channel until the universal projective ceiling `2n-1` is
 reached.  This turns a differential-algebraic boundary into a quantitative measurement of the
 minimum noncommutative complexity of every realization.
+
+Equations `(11)--(12)` remove the remaining qualitative ambiguity in the high-degree regime.  The
+horizon does not merely require that some quantum channel be present: it forbids every classical
+two-law sector.  In three law dimensions a quartic horizon already determines maximal
+noncommutativity of the full principal commutator symbol.
 
 `[CONJECTURE -- PHYSICAL READING]` In a pretemporal QFT observable algebra, `V` is a reconstructed
 finite space of regular constraint-compatible infinitesimal laws.  Before a time direction is
@@ -148,7 +185,7 @@ commutator channels already forced by that horizon.  A physical claim requires a
 constructed local observable algebra, state, and regularity class; the abstract theorem alone is
 not evidence about cosmology or black holes.
 
-## 6. Anti-theatre and parent gate
+## 7. Anti-theatre and parent gate
 
 Known ingredients not claimed as novelty:
 
@@ -163,11 +200,13 @@ a general degree-`d` hypersurface is smooth of dimension `2n-m-1` for `m≤2n-1`
 `m≥2n`.  The projective intersection inequality is classical.  Neither is claimed as new.
 
 Exact searches have not located the implication from a varying-derivation complete DA horizon to
-the exterior commutator kernel, the general contact-defect law `(9)`, or the degree bound `(10)`.
-This is an absence-of-hit result, not a priority certification.  The candidate novelty is the
-coupling of complete ordinary differential algebra, Kähler principal symbols, Plücker kernel
-geometry, and commutator rank.  Unlike the earlier qualitative statement that nonlinear horizons
-require some noncommutativity, `(10)` is quantitative and applies to every realization.
+the exterior commutator kernel, the general contact-defect law `(9)`, the degree bound `(10)`, or
+the total-incompatibility theorem `(11)--(12)`.  Searches explicitly coupling plane quartics,
+commutator maps, derivations, and hypertranscendence returned no relevant parent.  This is an
+absence-of-hit result, not a priority certification.  The candidate novelty is the coupling of
+complete ordinary differential algebra, Kähler principal symbols, Plücker kernel geometry, and
+commutator rank.  Unlike the earlier qualitative statement that nonlinear horizons require some
+noncommutativity, `(10)--(12)` are quantitative or rigid and apply to every realization.
 
 Primary comparison points:
 
@@ -178,7 +217,7 @@ Primary comparison points:
 - J. van der Hoeven, *Computing with D-algebraic power series*, Proposition 24, for the known
   commuting-derivation finite-rectangle parent of the Kähler superposition input.
 
-## 7. Counterexample attacks
+## 8. Counterexample attacks
 
 1. A line can meet a hypersurface at one point with full multiplicity; tangent and flex lines must
    be included in `LinContact(X)`.
@@ -193,22 +232,29 @@ Primary comparison points:
 7. The bound is on the linear rank of the derivation bracket image, not on operator norm, entropy,
    or a measured quantum energy.  Those require representation and state data.
 
-## 8. RH impact
+8. Pairwise noncommutation in `(11)` does not imply injectivity of `B_rho` when `n≥3`: a nonzero
+   kernel vector may be a sum of decomposable bivectors even though the kernel contains no
+   decomposable point.  The plane conclusion `(12)` uses the special fact that every bivector in
+   three dimensions is decomposable.
+
+## 9. RH impact
 
 The result is a source filter, not an RH proof.  If a completed-`L` construction proposes a
 degree-`d` one-function law horizon, `(5)--(10)` demand explicit independent commutator channels
 or show that the model cannot realize its claimed geometry.  No current arithmetic construction
 supplies such a horizon or bracket map.
 
-## 9. Lean route
+## 10. Lean route
 
 1. [DONE] Define the general linear derivation-law jet and dependence horizon.
 2. [DONE] Prove commuting chords lie entirely in the horizon.
 3. [DONE] Prove an escaping hypertranscendental chord forces noncommutation.
 4. [DONE] Factor the derivation bracket through `Λ²V`.
 5. [DONE] Prove the abstract exterior-subspace avoidance rank theorem.
-6. Formalize the projective dimension specialization and Ikeda incidence input for `(10)`.
-7. Compute sharp examples and determine whether equality in `(10)` is realizable inside a
+6. [DONE] Prove the abstract nonzero-bivector secant criterion for commutator-map injectivity.
+7. [DONE] Prove the law-plane escaping-secant criterion for pairwise noncommutation.
+8. Formalize the projective dimension specialization and Ikeda incidence input for `(10)--(12)`.
+9. Construct sharp examples and determine whether equality in `(10)` is realizable inside a
    finite-dimensional Lie algebra.
 
 No rank theorem may infer injectivity merely from pointwise nonvanishing on a spanning set of

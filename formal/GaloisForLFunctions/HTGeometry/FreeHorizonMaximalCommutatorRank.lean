@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.HolographicCommutatorRank
 import GaloisForLFunctions.HTGeometry.DirectionalProjectiveCompleteRealization
+import GaloisForLFunctions.HTGeometry.DirectionalProjectiveZeroLocusRealization
 
 /-!
 # Universal free horizons have maximal commutator rank
@@ -207,6 +208,32 @@ theorem projectiveComplete_commutatorMap_injective
   change decodedProjectiveCompleteCommutatorMap a d j z =
     decodedProjectiveCompleteCommutatorMap a d j z' at hdecoded
   simpa [decodedProjectiveCompleteCommutatorMap_eq_id] using hdecoded
+
+/-- **Universal maximal-noncommutativity horizon realization.**  Every finite homogeneous
+projective zero locus with a nonempty lifted equation packet is realized as an exact complete
+ordinary differential-algebraicity horizon by a law map whose exterior commutator symbol is
+injective. -/
+theorem exists_completeJet_horizon_eq_finiteHomogeneousZeroLocus_and_commutatorMap_injective
+    (P : η → MvPolynomial ι K) (degree : η → ℕ)
+    [Nonempty (CommonDegreeEquationIndex ι degree)]
+    (hP : ∀ j, (P j).IsHomogeneous (degree j)) :
+    ∃ a : CommonDegreeEquationIndex ι degree → ProjectiveWordState ι → K,
+      (∀ (c : ι → K), (∃ i, c i ≠ 0) →
+        ((¬ AlgebraicIndependent K
+            (fun r : ℕ ↦ directionalJet
+              (projectiveCompleteDerivation a ((∑ j, degree j) + 1)) c r
+              (projectiveCompleteRoot
+                (K := K) (ι := ι)
+                  (η := CommonDegreeEquationIndex ι degree)))) ↔
+          ∀ j, MvPolynomial.eval c (P j) = 0)) ∧
+      Function.Injective
+        (derivationCommutatorMap
+          (projectiveCompleteLawMap a ((∑ j, degree j) + 1))) := by
+  obtain ⟨a, ha⟩ :=
+    exists_completeJet_horizon_eq_finiteHomogeneousZeroLocus P degree hP
+  refine ⟨a, ha, ?_⟩
+  exact projectiveComplete_commutatorMap_injective
+    a ((∑ j, degree j) + 1)
 
 end
 

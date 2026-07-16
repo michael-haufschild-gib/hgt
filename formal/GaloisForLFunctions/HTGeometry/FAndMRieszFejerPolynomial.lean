@@ -208,12 +208,9 @@ theorem tendsto_fAndMFejerPolynomial_coeff_of_pos
   filter_upwards [eventually_ge_atTop n] with N hN
   rw [fAndMFejerPolynomial_coeff_of_pos_of_le mu nu f g N n hn hN]
   apply congrArg (fun z : ℂ => z * (starRingEnd ℂ) (fAndMRemainingMoment mu nu f g n))
-  rw [Nat.cast_sub (by omega : n ≤ N + 1)]
-  push_cast
   have hden : (N : ℂ) + 1 ≠ 0 := by
     exact_mod_cast Nat.succ_ne_zero N
   field_simp
-  ring
 
 private theorem integral_conj_circle_pow_mul_conj_eq
     (mu : Measure Circle) (f : Circle → ℂ) (n : ℕ) :

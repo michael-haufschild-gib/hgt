@@ -161,6 +161,29 @@ theorem differentialFinsuppPivotRelationIdeal_eq_ker
       sub_finsuppPivotInclusion_elimination_mem_relationIdeal A h P
     simpa [helim] using hnormal
 
+/-- Finitely supported pivot elimination is onto: pivot inclusion is an explicit section. -/
+theorem differentialFinsuppPivotElimination_surjective
+    {F B R : Type*} [Field F]
+    (A : R → B →₀ F) (h : R → ℕ → F) :
+    Function.Surjective (differentialFinsuppPivotElimination A h) := by
+  intro P
+  exact ⟨differentialFinsuppPivotInclusion P,
+    differentialFinsuppPivotElimination_inclusion A h P⟩
+
+/-- **All-cardinality PBW normal form.**  Quotienting the full jet polynomial algebra by the
+displayed finitely supported affine relations gives exactly the free polynomial algebra on the
+pivot jets. -/
+noncomputable def differentialFinsuppPivotQuotientEquiv
+    {F B R : Type*} [Field F]
+    (A : R → B →₀ F) (h : R → ℕ → F) :
+    (DifferentialPolynomial (B ⊕ R) F ⧸
+        differentialFinsuppPivotRelationIdeal A h) ≃ₐ[F]
+      DifferentialPolynomial B F :=
+  (Ideal.quotientEquivAlgOfEq F
+      (differentialFinsuppPivotRelationIdeal_eq_ker A h)).trans
+    (Ideal.quotientKerAlgEquivOfSurjective
+      (differentialFinsuppPivotElimination_surjective A h))
+
 /-- Evaluation of the full pivot/dependent family factors through finitely supported elimination. -/
 theorem differentialPolynomialEval_sumElim_eq_finsuppPivotElimination
     {F K B R : Type*} [Field F] [Field K] [Algebra F K] [Differential K]

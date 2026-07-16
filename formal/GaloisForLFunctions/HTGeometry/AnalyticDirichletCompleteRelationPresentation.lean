@@ -21,6 +21,9 @@ noncomputable section
 
 universe u v w
 
+set_option maxHeartbeats 600000
+set_option synthInstance.maxHeartbeats 100000
+
 attribute [local instance]
   analyticObservableUpperEndAnalyticDomain
   analyticObservableUpperEndMeroComplexAlgebra
@@ -164,6 +167,38 @@ theorem cofiniteTailDenseOn_analyticObservable_completeRelationPresentation
     rw [map_zero, zero_add]
     exact differentialJet_analyticObservableSubspaceCarrier_eq_pivotRow
       x f M hM a W c r n
+
+/-- **Analytic PBW/free-jet law.**  After quotienting by every differential-polynomial relation,
+the full analytic carrier family has exactly the polynomial normal form on the independent source
+basis jets.  This is an algebra equivalence, not merely an equality of transcendence ranks. -/
+noncomputable def cofiniteTailDenseOn_analyticObservable_relationQuotientEquiv
+    {V : Type u} {J : Type v} {R : Type w} [TopologicalSpace V]
+    (x : Nat.Primes → V) (K : Set V) (hx : CofiniteTailDenseOn x K)
+    (f : J → V → ℂ) (hf : ∀ j, Continuous (f j))
+    (hlinear : LinearIndependent ℂ (fun j ↦ fun z : K ↦ f j z.1))
+    (M : J → ℝ) (hM : ∀ j p, ‖f j (x p)‖ ≤ M j)
+    (a : ℂ) (W : Submodule ℂ (J →₀ ℂ)) (c : R → W) :
+    (GaloisForLFunctions.DifferentialPolynomial
+          (analyticObservableGrassmannIndex W ⊕ R)
+          upperEndRationalCoordinateField ⧸
+        GaloisForLFunctions.differentialRelationIdeal
+          (C := upperEndRationalCoordinateField)
+          (Sum.elim
+            (analyticObservableGrassmannPivotCarrier x f M hM a W)
+            (fun r ↦ analyticObservableSubspaceCarrier x f M hM a W (c r)))) ≃ₐ[upperEndRationalCoordinateField]
+        GaloisForLFunctions.DifferentialPolynomial
+          (analyticObservableGrassmannIndex W) upperEndRationalCoordinateField :=
+  (Ideal.quotientEquivAlgOfEq upperEndRationalCoordinateField
+      (cofiniteTailDenseOn_analyticObservable_completeRelationPresentation
+        x K hx f hf hlinear M hM a W c)).trans
+    ((Ideal.quotientEquivAlgOfEq upperEndRationalCoordinateField
+        (differentialFinsuppPivotRelationIdeal_eq_ker
+          (analyticObservableSubspacePivotRow W c) (fun _ _ ↦ 0))).trans
+      (Ideal.quotientKerAlgEquivOfSurjective (by
+        intro P
+        exact ⟨differentialFinsuppPivotInclusion P,
+          differentialFinsuppPivotElimination_inclusion
+            (analyticObservableSubspacePivotRow W c) (fun _ _ ↦ 0) P⟩)))
 
 end
 

@@ -234,19 +234,66 @@ The boundary is exact.  This theorem reconstructs the mixed-constraint class mod
 full analytic germ; it is abelian and height one; and its completeness uses the separately audited
 elliptic-gamma atomic theorem.  It does not prove the general constraint-Hodge correspondence.
 
-> **[CONJECTURE — HIGHER ORBIT-RESIDUE DESCENT]** For every height `r`, a regular source-minimal
-> meromorphic HT constraint class has a source-native residue/Cousin complex on its rank-`r`
-> face nerve.  Its first nonzero cohomology occurs at the augmentation onset, its higher
-> reciprocity equations are the cocycle condition, and its DA quotient is reconstructed by the
-> corresponding labelled cohomology object.  The triptic theorem is the height-one equivalence;
-> the all-order coface annihilator and normal-crossing derived excess are respectively the
-> associated-graded and derived shadows of the higher equivalence.
+## Rank-two localization and noncompressible boundary field `[PROVED ON PAPER + LEAN CORE]`
 
-This is stronger than extrapolating one residue formula.  It predicts the target category, the
-degree in which it first appears, an intrinsic essential-image condition, and a reconstruction
-theorem.  Failure at height two would be equally significant: it would prove that residue data
-must be enlarged by a new analytic component beyond source height, derived excess, growth, and
-polarization.
+The proposed full higher residue complex is overbuilt in the generic constant mixed-constraint
+class.  For every finite parameter set `V`, every pair `e={i,j}` carries a triptic divisor module
+
+```text
+A_e=C[delta][C/(Z+Z tau_i+Z tau_j)].
+```
+
+Let `Comp_V` be the space of pair-divisor families whose three pushforwards agree on every triple.
+The all-depth pair-face theorem proves, conditional only on the height-one triptic completeness
+parent,
+
+```text
+Q_V/(Q_V intersection Mer_DA) ~= Comp_V.                  (7)
+```
+
+Thus the quotient is `2`-local and `3`-glued: rank-two faces contain all local HT data, equality on
+rank-three faces is the complete descent law, and no higher raw residue is needed.
+
+This sufficient `2`-skeleton is also irreducible.  For every pair `e`, define
+
+```text
+Priv_e=intersection_(k notin e) ker(A_e -> A_(e union {k}))
+      =product_(k notin e)(t_(tau_k)-1)A_e.               (8)
+```
+
+`Priv_e` is nonzero and first appears at exact transverse augmentation order `|V|-2`.  A canonical
+multiple-elliptic-gamma carrier has nonzero signature precisely on `e`; every other pair coordinate
+vanishes.  Consequently every pair face is necessary: deleting any proper subset of the complete
+pair atlas destroys conservativity.
+
+The unconditional orbit algebra of `(8)` is formalized in
+
+```text
+formal/GaloisForLFunctions/HTGeometry/PairFacePrivateSector.lean
+```
+
+including nonvanishing, annihilation by every transverse push, exact order `|V|-2`, its universal
+degree lower bound, and exact target/off-target pair-coordinate separation.  The actual HT status
+of the canonical carrier uses the independently unaudited generic order-one elliptic-gamma theorem.
+The full theorem is recorded in
+`../2-fully-proven/new_scientific_knowledge/hypertranscendental-pair-localization-noncompression.md`.
+
+This gives a precise form of “capacity concentrated on a thin constraint boundary” without any
+temporal motif: the local atom remains rank two, while unbounded capacity is stored in the number
+of indispensable pair channels and in their growing transverse concealment order.
+
+> **[CONJECTURE — UNIVERSAL HT CONSTRAINT COSKELETON]** Every regular source-minimal constrained
+> HT germ has a canonical defect nerve modulo DA with a finite **locality dimension** `ell`.  The
+> defect object is the right Kan extension of its `ell`-faces, compatibility on `(ell+1)`-faces is
+> the complete gluing law, and every `ell`-face has a nonzero private sector.  In the generic
+> meromorphic normal-crossing class, `ell=2`; rank one is DA-only, rank two is the first HT atom,
+> and all higher complexity is transverse concealment and gluing rather than a new local species.
+
+The bold universal form predicts `ell=2` throughout the regular self-dual geometric class.  The
+anti-theatre alternative is equally substantive: if a source has `ell>2`, prove that no lower
+skeleton is conservative and promote `ell` itself to a differential-birational invariant.  Either
+outcome constrains hypertranscendental functions by an intrinsic locality law rather than by a
+chosen differential equation or a propagation rule.
 
 ## Why bare differential modules cannot be the object
 
@@ -336,11 +383,13 @@ would be the full equivalence above, including:
 1. construction and Morita invariance of `C_x` for a nonlinear nonabelian HT source class;
 2. identification of augmentation-adic source height with the first nonzero source-Postnikov
    layer, including its forced unboundedness across the category;
-3. an intrinsic essential-image theorem with the constraint cone and polarization as substantive
+3. construction and differential-birational invariance of the locality dimension, including a
+   proof or refutation of universal rank-two coskeletality in the regular self-dual class;
+4. an intrinsic essential-image theorem with the constraint cone and polarization as substantive
    restrictions;
-4. reconstruction of the analytic source germ;
-5. two genuinely different realization functors proved jointly conservative;
-6. a new analytic theorem obtained from the constraint-Hodge object that neither parent theory
+5. reconstruction of the analytic source germ;
+6. two genuinely different realization functors proved jointly conservative;
+7. a new analytic theorem obtained from the constraint-Hodge object that neither parent theory
    proves alone.
 
 ## RH pressure test only
@@ -360,8 +409,13 @@ zeta, its zeros, nor an RH-equivalent positivity condition may define the object
 - [x] joint immediate-coface reconstruction proved for every normal-crossing height at least two
 - [x] two noncommensurable boundary-residue realizations proved conservative on the height-one
   triptic DA-quotient class
+- [x] all-depth mixed-constraint quotient proved `2`-local with complete triple gluing
+- [x] every pair coordinate proved indispensable; private sectors have exact transverse order
+  `|V|-2`, with the unconditional orbit algebra formalized in Lean
 - [x] collided Rees, Hodge, twistor, derived-critical, and parameterized-Galois vocabulary with
   parent theory
+- [ ] define locality dimension invariantly beyond the normal-crossing class
+- [ ] prove universal rank-two coskeletality or exhibit and classify the first genuine `ell>2` HT atom
 - [ ] construct the pointed bifiltered object in one nonlinear nonabelian HT class
 - [ ] prove source-presentation Morita invariance
 - [ ] prove the cone is a strict essential-image restriction

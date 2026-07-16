@@ -50,6 +50,7 @@ theorem hasDerivAt_oneDimQuadraticInverseCurvatureObservable
     oneDimQuadraticInverseCurvatureScore
   convert ((hasDerivAt_id x).const_mul 2).div hcurvature hcurvature_ne using 1
   field_simp [hcurvature_ne]
+  simp only [id_eq]
   ring
 
 /-- The quadratic inverse-curvature observable satisfies the Dirichlet trace required at the
@@ -64,7 +65,10 @@ theorem oneDimQuadraticInverseCurvatureScore_zero
     {V₂ V₃ : ℝ} :
     oneDimQuadraticInverseCurvatureScore 0 V₂ V₃ = 2 / V₂ := by
   unfold oneDimQuadraticInverseCurvatureScore
-  ring
+  by_cases hV₂ : V₂ = 0
+  · simp [hV₂]
+  · field_simp [hV₂]
+    ring
 
 /-- The pointwise first Popescu correction density selected by the quadratic observable. -/
 def oneDimQuadraticPopescuCorrectionDensity
@@ -102,8 +106,8 @@ theorem oneDimQuadraticPopescuCorrectionDensity_pos_iff
     mul_pos hV₂ hN
   constructor
   · intro h hzero
-    rw [hzero, zero_pow, mul_zero, zero_div] at h
-    linarith
+    rw [hzero] at h
+    norm_num at h
   · intro hnonzero
     exact div_pos (mul_pos (by norm_num) (sq_pos_of_ne_zero hnonzero)) hden
 
