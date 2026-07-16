@@ -431,40 +431,40 @@ The conjecture requires these to be conservative realizations of one object.  Si
 does not prove that two obstructions are the same.  A proof must construct comparison functors and
 show that joint vanishing detects equivalence.
 
-## Polarized selection gerbe `[CONJECTURE]`
+## Capacity-descent Postnikov tower `[CONJECTURE; DEGREE-ONE SEED PROVED]`
 
 The source-blindness theorem forces the missing selector to compare local active charts rather than
-add another chart invariant.  The bold candidate is a polarized descent gerbe.
-
-For the minimal-prime active atlas, let `Aut_DA(A)` be the sheaf of differential-birational gauge
-automorphisms of the active carrier on chart `A`.  Pairwise comparison maps `phi_AB` have triple
-defect
+add another chart invariant.  A first attempt placed the universal obstruction in one polarized
+`H^2` gerbe.  The pair-face class falsifies that fixed-degree claim: its local data are additive
+sections, and the complete obstruction is the degree-one difference map
 
 ```text
-c_ABC=phi_CA phi_BC phi_AB.                               (11)
+d_pair:direct_sum_(i<j) A_(ij)
+       -> direct_sum_(i<j<k) (A_(ijk) direct_sum A_(ijk)),
+Comp_d=ker d_pair.                                        (11)
 ```
 
-After passing to the central band selected by the polarization, the defects should define a
-canonical class
+Thus the positive candidate is a Postnikov tower whose degree follows the categorical height of
+the data:
 
 ```text
-o_HT(F) in H^2(X_HT(F), ZAut_DA^pol).                     (12)
+degree 0: active stabilizer/capacity defect;
+degree 1: additive sewing defect, proved complete in the pair-face class;
+degree 2: associator gerbe for genuinely nonabelian comparison objects;
+higher:   coherence of coherence when the source class requires it.       (12)
 ```
 
-> **[CONJECTURE -- CONCENTRATION-SEWING PRINCIPLE]** For a regular source-minimal self-dual HT
-> system, local active capacity concentrates into one global source object exactly when (12)
-> vanishes.  When it vanishes, equivalence classes of global sewings form an `H^1` torsor and their
-> automorphisms form `H^0`.  Continuation, monodromy, boundary choice, and positivity are the
-> effectivity, holonomy, torsor, and structure-group-reduction images of this one descent object.
+> **[CONJECTURE -- CAPACITY-DESCENT POSTNIKOV PRINCIPLE]** A regular source-minimal self-dual HT
+> class has a canonical differential-birational selection tower.  Its effectivity is equivalent to
+> reconstruction of one pointed analytic source; its polarized reductions classify positive
+> sewings; and continuation, monodromy, spectral, boundary, and positivity failures are
+> conservative realization images of successive stages.
 
-This is deliberately stronger than saying that the five words sound similar.  It predicts an
-actual obstruction class, its vanishing criterion, and the moduli of positive solutions.
-
-Gerbes, nonabelian Cech descent, and reduction of structure group are parent theory.  The possible
-new theorem is the existence and differential-birational invariance of the **canonical HT band and
-class** (12), plus the proof that the analytic realization functors send it to the obstruction
-classes already seen in distinct proof chains.  Without that canonical construction this section
-is only a research conjecture and fails the novelty gate.
+Postnikov towers, gerbes, nonabelian Cech descent, and reduction of structure group are parent
+theory.  The possible new theorem is the canonical HT construction, the identification of (11) as
+its first linearized `k`-invariant, source reconstruction from effectivity, and comparison theorems
+to existing analytic obstruction classes.  See
+`hypertranscendental-capacity-descent-postnikov-tower.md`.
 
 ## Parent-theory and novelty gate
 
@@ -560,8 +560,9 @@ zeta, its zeros, nor an RH-equivalent positivity condition may define the object
 - [x] exact active-palette dimension law `htDim=aqaDim` proved
 - [x] support plus activity proved source-blind, forcing a third sewing/selection layer
 - [ ] construct the marked locality spectrum invariantly for natural nonlinear source classes
-- [ ] construct the canonical polarized HT band and obstruction class `o_HT`
-- [ ] identify two existing analytic obstruction classes as images of `o_HT`
+- [x] universal fixed-degree gerbe selector falsified; degree-one pair sewing extracted positively
+- [ ] construct the canonical capacity-descent Postnikov tower
+- [ ] identify two existing analytic obstruction classes as realization images of its stages
 - [ ] construct the pointed bifiltered object in one nonlinear nonabelian HT class
 - [ ] prove source-presentation Morita invariance
 - [ ] prove the cone is a strict essential-image restriction

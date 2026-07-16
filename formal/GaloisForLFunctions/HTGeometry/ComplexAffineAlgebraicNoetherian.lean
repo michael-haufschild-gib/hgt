@@ -53,6 +53,51 @@ theorem wellFounded_ssubset_complexAffineAlgebraic {n : ℕ} :
   intro T S hTS
   exact IsComplexAffineAlgebraic.vanishingIdeal_strictMono S.2 T.2 hTS
 
+/-! ## Arbitrary finite coordinate types -/
+
+/-- A complex affine algebraic set with an arbitrary coordinate index type. -/
+def IsComplexAffineAlgebraicSet {σ : Type*} (S : Set (σ → ℂ)) : Prop :=
+  ∃ I : Ideal (MvPolynomial σ ℂ), S = MvPolynomial.zeroLocus ℂ I
+
+theorem IsComplexAffineAlgebraicSet.zeroLocus_vanishingIdeal_eq
+    {σ : Type*} {S : Set (σ → ℂ)} (hS : IsComplexAffineAlgebraicSet S) :
+    MvPolynomial.zeroLocus ℂ (MvPolynomial.vanishingIdeal ℂ S) = S := by
+  obtain ⟨I, rfl⟩ := hS
+  apply le_antisymm
+  · exact MvPolynomial.zeroLocus_anti_mono
+      (MvPolynomial.le_vanishingIdeal_zeroLocus I)
+  · exact MvPolynomial.zeroLocus_vanishingIdeal_le _
+
+theorem IsComplexAffineAlgebraicSet.vanishingIdeal_strictMono
+    {σ : Type*} {S T : Set (σ → ℂ)}
+    (hS : IsComplexAffineAlgebraicSet S) (hT : IsComplexAffineAlgebraicSet T)
+    (hTS : T ⊂ S) :
+    MvPolynomial.vanishingIdeal ℂ S < MvPolynomial.vanishingIdeal ℂ T := by
+  rw [lt_iff_le_and_ne]
+  refine ⟨MvPolynomial.vanishingIdeal_anti_mono hTS.le, ?_⟩
+  intro heq
+  apply hTS.ne
+  calc
+    T = MvPolynomial.zeroLocus ℂ (MvPolynomial.vanishingIdeal ℂ T) :=
+      hT.zeroLocus_vanishingIdeal_eq.symm
+    _ = MvPolynomial.zeroLocus ℂ (MvPolynomial.vanishingIdeal ℂ S) := by rw [heq]
+    _ = S := hS.zeroLocus_vanishingIdeal_eq
+
+/-- Noetherian descent for affine algebraic sets in any finite coordinate type. -/
+theorem wellFounded_ssubset_complexAffineAlgebraicSet
+    {σ : Type*} [Finite σ] :
+    WellFounded (fun T S : {Z : Set (σ → ℂ) // IsComplexAffineAlgebraicSet Z} =>
+      T.1 ⊂ S.1) := by
+  let v : {Z : Set (σ → ℂ) // IsComplexAffineAlgebraicSet Z} →
+      Ideal (MvPolynomial σ ℂ) :=
+    fun Z => MvPolynomial.vanishingIdeal ℂ Z.1
+  have hwf : WellFounded ((· > ·) : Ideal (MvPolynomial σ ℂ) →
+      Ideal (MvPolynomial σ ℂ) → Prop) :=
+    (inferInstance : IsNoetherianRing (MvPolynomial σ ℂ)).wf
+  refine (hwf.onFun (f := v)).mono ?_
+  intro T S hTS
+  exact IsComplexAffineAlgebraicSet.vanishingIdeal_strictMono S.2 T.2 hTS
+
 end
 
 end GaloisForLFunctions.HTGeometry

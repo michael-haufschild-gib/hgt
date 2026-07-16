@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.InfiniteMobiusCriticalBoundaryLayer
 import Mathlib.MeasureTheory.Measure.LevyConvergence
+import Mathlib.MeasureTheory.Measure.FiniteMeasureProd
 import Mathlib.Probability.ProbabilityMassFunction.Constructions
 import Mathlib.Probability.ProbabilityMassFunction.Integrals
 import Mathlib.Probability.Distributions.Exponential
@@ -226,11 +227,17 @@ theorem tendsto_charFun_squarefreeMobiusCriticalClockProbabilityMeasure
     have h := (hunitParam.mul hzetaTwoSigma).div
       ((hunitSigma.mul hzetaTwoParam).mul_const q)
       (mul_ne_zero (mul_ne_zero one_ne_zero hzetaTwo) hq)
+    have htarget :
+        riemannZeta (2 : ℂ) / (riemannZeta (2 : ℂ) * q) = q⁻¹ := by
+      field_simp [hzetaTwo, hq]
+    simp only [one_mul] at h
+    rw [htarget] at h
     simpa [q, hq] using h
   apply hregularized.congr'
   filter_upwards [self_mem_nhdsWithin] with sigma hsigmaGt
   change 1 < sigma at hsigmaGt
   have hsigOne : sigma ≠ 1 := ne_of_gt hsigmaGt
+  have hsigGt : 1 < ((sigma : ℂ)).re := by simpa using hsigmaGt
   have hparamGt :
       1 < (squarefreeMobiusCriticalClockParameter sigma t).re := by
     simpa [squarefreeMobiusCriticalClockParameter_re] using hsigmaGt
@@ -244,7 +251,7 @@ theorem tendsto_charFun_squarefreeMobiusCriticalClockProbabilityMeasure
     linarith
   have htwoParamGt :
       1 < (2 * squarefreeMobiusCriticalClockParameter sigma t).re := by
-    rw [two_mul_re, squarefreeMobiusCriticalClockParameter_re]
+    norm_num [Complex.mul_re, squarefreeMobiusCriticalClockParameter_re]
     linarith
   rw [charFun_squarefreeMobiusCriticalClockProbabilityMeasure_eq_zetaRatio hsigmaGt,
     ofReal_squarefreeMobiusTotal_eq_zetaRatio hsigmaGt]
@@ -263,12 +270,414 @@ theorem tendsto_charFun_squarefreeMobiusCriticalClockProbabilityMeasure
       squarefreeMobiusCriticalClockParameter sigma t - 1 ≠ 0 :=
     sub_ne_zero.mpr hparamOne
   field_simp [hq, hsigOneC, hparamOneC,
-    riemannZeta_ne_zero_of_one_lt_re (by simpa using hsigmaGt),
+    riemannZeta_ne_zero_of_one_lt_re hsigGt,
     riemannZeta_ne_zero_of_one_lt_re hparamGt,
     riemannZeta_ne_zero_of_one_lt_re htwoSigGt,
     riemannZeta_ne_zero_of_one_lt_re htwoParamGt]
   unfold squarefreeMobiusCriticalClockParameter q
   push_cast
   ring
+
+/-- The characteristic function of the unit-rate exponential critical clock. -/
+theorem charFun_mobiusCriticalExponentialProbabilityMeasure (t : ℝ) :
+    charFun (mobiusCriticalExponentialProbabilityMeasure : Measure ℝ) t =
+      (1 - (t : ℂ) * Complex.I)⁻¹ := by
+  rw [charFun_apply_real]
+  unfold mobiusCriticalExponentialProbabilityMeasure
+  simp only [ProbabilityMeasure.coe_mk]
+  unfold ProbabilityTheory.expMeasure ProbabilityTheory.gammaMeasure
+  change (∫ x : ℝ,
+      Complex.exp ((t : ℂ) * (x : ℂ) * Complex.I)
+        ∂(volume.withDensity (ProbabilityTheory.exponentialPDF 1))) = _
+  rw [integral_withDensity_eq_integral_toReal_smul
+    (f := ProbabilityTheory.exponentialPDF 1)
+    (ProbabilityTheory.measurable_exponentialPDFReal 1).ennreal_ofReal
+    (Filter.Eventually.of_forall (fun x => by
+      rw [ProbabilityTheory.exponentialPDF]
+      exact ENNReal.ofReal_lt_top))]
+  rw [show (fun x : ℝ =>
+      (ProbabilityTheory.exponentialPDF 1 x).toReal •
+        Complex.exp ((t : ℂ) * (x : ℂ) * Complex.I)) =
+      (Ici 0).indicator (fun x : ℝ =>
+        (Real.exp (-x) : ℂ) *
+          Complex.exp ((t : ℂ) * (x : ℂ) * Complex.I)) by
+    funext x
+    rw [ProbabilityTheory.exponentialPDF_eq]
+    by_cases hx : 0 ≤ x
+    · rw [if_pos hx]
+      have hxmem : x ∈ Ici (0 : ℝ) := hx
+      rw [indicator_of_mem hxmem]
+      simp only [one_mul, ENNReal.toReal_ofReal (Real.exp_nonneg _)]
+      change (Real.exp (-x) : ℂ) * _ = _
+      rfl
+    · rw [if_neg hx]
+      have hxmem : x ∉ Ici (0 : ℝ) := hx
+      rw [indicator_of_notMem hxmem]
+      simp]
+  rw [integral_indicator measurableSet_Ici, integral_Ici_eq_integral_Ioi]
+  rw [show (fun x : ℝ =>
+      (Real.exp (-x) : ℂ) *
+        Complex.exp ((t : ℂ) * (x : ℂ) * Complex.I)) =
+      fun x : ℝ =>
+        Complex.exp (((-1 : ℂ) + (t : ℂ) * Complex.I) * x) by
+    funext x
+    push_cast
+    rw [← Complex.exp_add]
+    congr 1
+    ring]
+  rw [integral_exp_mul_complex_Ioi (a := (-1 : ℂ) + (t : ℂ) * Complex.I)
+    (by simp [Complex.mul_re]) 0]
+  norm_num
+  have hq : (1 - (t : ℂ) * Complex.I) ≠ 0 := by
+    intro h
+    have := congrArg Complex.re h
+    simp [Complex.mul_re] at this
+  have ha : (-1 : ℂ) + (t : ℂ) * Complex.I ≠ 0 := by
+    intro h
+    apply hq
+    calc
+      1 - (t : ℂ) * Complex.I = -((-1 : ℂ) + (t : ℂ) * Complex.I) := by ring
+      _ = 0 := by rw [h, neg_zero]
+  field_simp [hq, ha]
+  ring
+
+/-- **Unconditional squarefree critical clock law.**  The rescaled logarithmic squarefree
+probability measures converge weakly to the unit-rate exponential law as `sigma → 1+`. -/
+theorem tendsto_squarefreeMobiusCriticalClockProbabilityMeasure :
+    Tendsto squarefreeMobiusCriticalClockProbabilityMeasure
+      (nhdsWithin 1 (Ioi 1))
+      (nhds mobiusCriticalExponentialProbabilityMeasure) := by
+  rw [tendsto_iff_seq_tendsto]
+  intro sigma hsigma
+  apply ProbabilityMeasure.tendsto_of_tendsto_charFun
+  intro t
+  have hchar :=
+    (tendsto_charFun_squarefreeMobiusCriticalClockProbabilityMeasure t).comp hsigma
+  rw [charFun_mobiusCriticalExponentialProbabilityMeasure]
+  simpa only [Function.comp_apply] using hchar
+
+/-- Oriented difference of two independent squarefree critical clocks. -/
+def squarefreeMobiusCriticalGapProbabilityMeasure (sigma : ℝ) : ProbabilityMeasure ℝ :=
+  ProbabilityMeasure.map
+    ((squarefreeMobiusCriticalClockProbabilityMeasure sigma).prod
+      (squarefreeMobiusCriticalClockProbabilityMeasure sigma))
+    ((continuous_fst.sub continuous_snd).measurable.aemeasurable)
+
+/-- Oriented difference of two independent unit-rate exponential clocks. -/
+def mobiusCriticalExponentialGapProbabilityMeasure : ProbabilityMeasure ℝ :=
+  ProbabilityMeasure.map
+    (mobiusCriticalExponentialProbabilityMeasure.prod
+      mobiusCriticalExponentialProbabilityMeasure)
+    ((continuous_fst.sub continuous_snd).measurable.aemeasurable)
+
+/-- Weak convergence of the independent squarefree clock gap to the universal Laplace gap law. -/
+theorem tendsto_squarefreeMobiusCriticalGapProbabilityMeasure :
+    Tendsto squarefreeMobiusCriticalGapProbabilityMeasure
+      (nhdsWithin 1 (Ioi 1))
+      (nhds mobiusCriticalExponentialGapProbabilityMeasure) := by
+  have hclock := tendsto_squarefreeMobiusCriticalClockProbabilityMeasure
+  have hpair : Tendsto
+      (fun sigma : ℝ =>
+        (squarefreeMobiusCriticalClockProbabilityMeasure sigma,
+          squarefreeMobiusCriticalClockProbabilityMeasure sigma))
+      (nhdsWithin 1 (Ioi 1))
+      (nhds
+        (mobiusCriticalExponentialProbabilityMeasure,
+          mobiusCriticalExponentialProbabilityMeasure)) :=
+    hclock.prodMk_nhds hclock
+  have hprod : Tendsto
+      (fun sigma : ℝ =>
+        (squarefreeMobiusCriticalClockProbabilityMeasure sigma).prod
+          (squarefreeMobiusCriticalClockProbabilityMeasure sigma))
+      (nhdsWithin 1 (Ioi 1))
+      (nhds
+        (mobiusCriticalExponentialProbabilityMeasure.prod
+          mobiusCriticalExponentialProbabilityMeasure)) :=
+    ProbabilityMeasure.continuous_prod.continuousAt.tendsto.comp hpair
+  exact (ProbabilityMeasure.continuous_map (continuous_fst.sub continuous_snd)).continuousAt.tendsto
+    |>.comp hprod
+
+/-- The centered Laplace density of the difference of two independent unit-rate exponential
+clocks. -/
+def mobiusCriticalLaplaceGapDensity (x : ℝ) : ℝ :=
+  (1 / 2 : ℝ) * Real.exp (-|x|)
+
+theorem mobiusCriticalLaplaceGapDensity_nonneg (x : ℝ) :
+    0 ≤ mobiusCriticalLaplaceGapDensity x := by
+  unfold mobiusCriticalLaplaceGapDensity
+  positivity
+
+theorem continuous_mobiusCriticalLaplaceGapDensity :
+    Continuous mobiusCriticalLaplaceGapDensity := by
+  unfold mobiusCriticalLaplaceGapDensity
+  fun_prop
+
+theorem integrable_mobiusCriticalLaplaceGapDensity :
+    Integrable mobiusCriticalLaplaceGapDensity := by
+  have hpos : IntegrableOn (fun x : ℝ => Real.exp (-|x|)) (Ioi 0) := by
+    have h := integrableOn_exp_neg_Ioi 0
+    exact h.congr_fun
+      (fun x hx => by rw [abs_of_pos hx]) measurableSet_Ioi
+  have hneg : IntegrableOn (fun x : ℝ => Real.exp (-|x|)) (Iic 0) := by
+    have h := integrableOn_exp_Iic 0
+    exact h.congr_fun
+      (fun x hx => by rw [abs_of_nonpos hx, neg_neg]) measurableSet_Iic
+  have hfull : Integrable (fun x : ℝ => Real.exp (-|x|)) := by
+    simpa [Ioi_union_Iic] using hpos.union hneg
+  unfold mobiusCriticalLaplaceGapDensity
+  simpa only [one_div] using hfull.const_mul (1 / 2 : ℝ)
+
+theorem integral_mobiusCriticalLaplaceGapDensity :
+    (∫ x : ℝ, mobiusCriticalLaplaceGapDensity x) = 1 := by
+  rw [show mobiusCriticalLaplaceGapDensity =
+      fun x : ℝ => (1 / 2 : ℝ) * Real.exp (-|x|) by rfl]
+  rw [integral_const_mul,
+    integral_comp_abs (f := fun x : ℝ => Real.exp (-x))]
+  rw [show (fun x : ℝ => Real.exp (-x)) =
+      fun x => Real.exp ((-1 : ℝ) * x) by
+    funext x
+    congr 1
+    ring]
+  rw [integral_exp_mul_Ioi (a := (-1 : ℝ)) (by norm_num) 0]
+  norm_num
+
+def mobiusCriticalLaplaceGapDensityNNReal (x : ℝ) : NNReal :=
+  ⟨mobiusCriticalLaplaceGapDensity x,
+    mobiusCriticalLaplaceGapDensity_nonneg x⟩
+
+theorem continuous_mobiusCriticalLaplaceGapDensityNNReal :
+    Continuous mobiusCriticalLaplaceGapDensityNNReal :=
+  Continuous.subtype_mk continuous_mobiusCriticalLaplaceGapDensity _
+
+/-- The centered Laplace law as an explicit density measure. -/
+def mobiusCriticalLaplaceGapMeasure : Measure ℝ :=
+  volume.withDensity fun x => (mobiusCriticalLaplaceGapDensityNNReal x : ℝ≥0∞)
+
+theorem isProbabilityMeasure_mobiusCriticalLaplaceGapMeasure :
+    IsProbabilityMeasure mobiusCriticalLaplaceGapMeasure := by
+  constructor
+  rw [mobiusCriticalLaplaceGapMeasure,
+    withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+  rw [show (fun x : ℝ => (mobiusCriticalLaplaceGapDensityNNReal x : ℝ≥0∞)) =
+      fun x => ENNReal.ofReal (mobiusCriticalLaplaceGapDensity x) by
+    funext x
+    exact (ENNReal.ofReal_eq_coe_nnreal
+      (mobiusCriticalLaplaceGapDensity_nonneg x)).symm]
+  rw [← ofReal_integral_eq_lintegral_ofReal
+    integrable_mobiusCriticalLaplaceGapDensity
+    (Filter.Eventually.of_forall mobiusCriticalLaplaceGapDensity_nonneg)]
+  rw [integral_mobiusCriticalLaplaceGapDensity]
+  norm_num
+
+def mobiusCriticalLaplaceGapProbabilityMeasure : ProbabilityMeasure ℝ :=
+  ⟨mobiusCriticalLaplaceGapMeasure,
+    isProbabilityMeasure_mobiusCriticalLaplaceGapMeasure⟩
+
+private theorem integrable_mobiusCriticalLaplaceGapCharacteristic (t : ℝ) :
+    Integrable (fun x : ℝ =>
+      (mobiusCriticalLaplaceGapDensity x : ℂ) *
+        Complex.exp ((t : ℂ) * (x : ℂ) * Complex.I)) := by
+  refine integrable_mobiusCriticalLaplaceGapDensity.mono'
+    (((Complex.continuous_ofReal.comp continuous_mobiusCriticalLaplaceGapDensity).mul
+      (Complex.continuous_exp.comp (by fun_prop))).aestronglyMeasurable) ?_
+  filter_upwards with x
+  rw [norm_mul, Complex.norm_exp, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (mobiusCriticalLaplaceGapDensity_nonneg x)]
+  have hre : ((t : ℂ) * (x : ℂ) * Complex.I).re = 0 := by
+    simp [Complex.mul_re]
+  rw [hre, Real.exp_zero, mul_one]
+
+private theorem integral_eq_integral_Ioi_add_reflect_gap
+    {f : ℝ → ℂ} (hf : Integrable f) :
+    (∫ x : ℝ, f x) = ∫ x : ℝ in Ioi 0, (f x + f (-x)) := by
+  have hsplit := integral_add_compl (s := Ioi (0 : ℝ)) measurableSet_Ioi hf
+  simp only [compl_Ioi] at hsplit
+  have hneg : (∫ x : ℝ in Iic 0, f x) = ∫ x : ℝ in Ioi 0, f (-x) := by
+    simpa only [neg_zero] using (integral_comp_neg_Ioi 0 f).symm
+  rw [← hsplit, hneg, ← integral_add hf.integrableOn hf.comp_neg.integrableOn]
+
+/-- Characteristic function of the explicit centered Laplace density. -/
+theorem charFun_mobiusCriticalLaplaceGapProbabilityMeasure (t : ℝ) :
+    charFun (mobiusCriticalLaplaceGapProbabilityMeasure : Measure ℝ) t =
+      (((1 + t ^ 2 : ℝ) : ℂ))⁻¹ := by
+  rw [charFun_apply_real]
+  unfold mobiusCriticalLaplaceGapProbabilityMeasure
+  simp only [ProbabilityMeasure.coe_mk]
+  rw [mobiusCriticalLaplaceGapMeasure,
+    integral_withDensity_eq_integral_smul
+      continuous_mobiusCriticalLaplaceGapDensityNNReal.measurable]
+  rw [show (fun x : ℝ =>
+      mobiusCriticalLaplaceGapDensityNNReal x •
+        Complex.exp ((t : ℂ) * (x : ℂ) * Complex.I)) =
+      fun x : ℝ =>
+        (mobiusCriticalLaplaceGapDensity x : ℂ) *
+          Complex.exp ((t : ℂ) * (x : ℂ) * Complex.I) by
+    funext x
+    change (mobiusCriticalLaplaceGapDensity x : ℂ) * _ = _
+    rfl]
+  rw [integral_eq_integral_Ioi_add_reflect_gap
+    (integrable_mobiusCriticalLaplaceGapCharacteristic t)]
+  let aPlus : ℂ := -1 + (t : ℂ) * Complex.I
+  let aMinus : ℂ := -1 - (t : ℂ) * Complex.I
+  rw [show (∫ x : ℝ in Ioi 0,
+      ((mobiusCriticalLaplaceGapDensity x : ℂ) *
+            Complex.exp ((t : ℂ) * (x : ℂ) * Complex.I) +
+        (mobiusCriticalLaplaceGapDensity (-x) : ℂ) *
+            Complex.exp ((t : ℂ) * ((-x : ℝ) : ℂ) * Complex.I))) =
+      ∫ x : ℝ in Ioi 0, (1 / 2 : ℂ) *
+        (Complex.exp (aPlus * x) + Complex.exp (aMinus * x)) by
+    apply setIntegral_congr_fun measurableSet_Ioi
+    intro x hx
+    have hx0 : 0 < x := hx
+    have habs : |(-x : ℝ)| = |x| := abs_neg x
+    simp only [mobiusCriticalLaplaceGapDensity, habs, abs_of_pos hx0]
+    push_cast
+    ring_nf
+    rw [← Complex.exp_add, ← Complex.exp_add]
+    congr 1
+    · unfold aPlus
+      ring_nf
+    · congr 1
+      unfold aMinus
+      ring_nf]
+  rw [integral_const_mul, integral_add
+    (integrableOn_exp_mul_complex_Ioi (by simp [aPlus, Complex.mul_re]) 0)
+    (integrableOn_exp_mul_complex_Ioi (by simp [aMinus, Complex.mul_re]) 0),
+    integral_exp_mul_complex_Ioi (by simp [aPlus, Complex.mul_re]) 0,
+    integral_exp_mul_complex_Ioi (by simp [aMinus, Complex.mul_re]) 0]
+  norm_num
+  have hp : aPlus ≠ 0 := by
+    intro h
+    have := congrArg Complex.re h
+    simp [aPlus] at this
+  have hm : aMinus ≠ 0 := by
+    intro h
+    have := congrArg Complex.re h
+    simp [aMinus] at this
+  have ht : (((1 + t ^ 2 : ℝ) : ℂ)) ≠ 0 := by
+    exact_mod_cast (by positivity : (1 + t ^ 2 : ℝ) ≠ 0)
+  have hp' : (-1 : ℂ) + (t : ℂ) * Complex.I ≠ 0 := by
+    simpa [aPlus] using hp
+  have hm' : (-1 : ℂ) - (t : ℂ) * Complex.I ≠ 0 := by
+    simpa [aMinus] using hm
+  have ht' : (1 : ℂ) + (t : ℂ) ^ 2 ≠ 0 := by
+    exact_mod_cast (by positivity : (1 + t ^ 2 : ℝ) ≠ 0)
+  unfold aPlus aMinus
+  field_simp [hp', hm', ht, ht']
+  ring_nf
+  simp
+
+/-- The difference of two independent unit-rate exponential clocks has the centered
+Laplace characteristic function. -/
+theorem charFun_mobiusCriticalExponentialGapProbabilityMeasure (t : ℝ) :
+    charFun (mobiusCriticalExponentialGapProbabilityMeasure : Measure ℝ) t =
+      (((1 + t ^ 2 : ℝ) : ℂ))⁻¹ := by
+  rw [charFun_apply_real]
+  unfold mobiusCriticalExponentialGapProbabilityMeasure ProbabilityMeasure.map
+  simp only [ProbabilityMeasure.coe_mk, ProbabilityMeasure.toMeasure_prod]
+  rw [integral_map
+    ((continuous_fst.sub continuous_snd).measurable.aemeasurable)
+    (by fun_prop)]
+  rw [show (fun p : ℝ × ℝ =>
+      Complex.exp ((t : ℂ) * ((p.1 - p.2 : ℝ) : ℂ) * Complex.I)) =
+      fun p : ℝ × ℝ =>
+        Complex.exp ((t : ℂ) * (p.1 : ℂ) * Complex.I) *
+          Complex.exp (((-t : ℝ) : ℂ) * (p.2 : ℂ) * Complex.I) by
+    funext p
+    rw [← Complex.exp_add]
+    congr 1
+    push_cast
+    ring]
+  rw [integral_prod_mul
+      (μ := (mobiusCriticalExponentialProbabilityMeasure : Measure ℝ))
+      (ν := (mobiusCriticalExponentialProbabilityMeasure : Measure ℝ))
+      (fun x : ℝ => Complex.exp ((t : ℂ) * (x : ℂ) * Complex.I))
+      (fun y : ℝ => Complex.exp (((-t : ℝ) : ℂ) * (y : ℂ) * Complex.I)),
+    ← charFun_apply_real, ← charFun_apply_real,
+    charFun_mobiusCriticalExponentialProbabilityMeasure,
+    charFun_mobiusCriticalExponentialProbabilityMeasure]
+  rw [← mul_inv]
+  congr 1
+  ring
+
+/-- Bounded continuous transition observable defining the incidence gap response. -/
+def mobiusIncidenceGapResponseIntegrand (z : ℂ) (x : ℝ) : ℂ :=
+  ((4 * |x| : ℝ) : ℂ) / (z - x)
+
+theorem continuous_mobiusIncidenceGapResponseIntegrand
+    {z : ℂ} (hz : z.im ≠ 0) :
+    Continuous (mobiusIncidenceGapResponseIntegrand z) := by
+  unfold mobiusIncidenceGapResponseIntegrand
+  apply Continuous.div
+  · fun_prop
+  · fun_prop
+  · intro x h
+    apply hz
+    have := congrArg Complex.im h
+    simpa using this
+
+theorem norm_mobiusIncidenceGapResponseIntegrand_le
+    {z : ℂ} (hz : z.im ≠ 0) (x : ℝ) :
+    ‖mobiusIncidenceGapResponseIntegrand z x‖ ≤
+      4 * (‖z‖ / |z.im| + 1) := by
+  have hb : 0 < |z.im| := abs_pos.mpr hz
+  have hdenLower : |z.im| ≤ ‖z - (x : ℂ)‖ := by
+    have h := Complex.abs_im_le_norm (z - (x : ℂ))
+    simpa using h
+  have hdenPos : 0 < ‖z - (x : ℂ)‖ := hb.trans_le hdenLower
+  have hxnorm : |x| ≤ ‖z‖ + ‖z - (x : ℂ)‖ := by
+    have h := norm_sub_le z (z - (x : ℂ))
+    simpa [Complex.norm_real] using h
+  have hzpart : ‖z‖ ≤ (‖z‖ / |z.im|) * ‖z - (x : ℂ)‖ := by
+    rw [div_mul_eq_mul_div, le_div_iff₀ hb]
+    exact mul_le_mul_of_nonneg_left hdenLower (norm_nonneg z)
+  unfold mobiusIncidenceGapResponseIntegrand
+  rw [norm_div, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (by positivity : 0 ≤ 4 * |x|)]
+  apply (div_le_iff₀ hdenPos).2
+  nlinarith
+
+/-- The response integrand packaged for the weak topology on probability measures. -/
+def mobiusIncidenceGapResponseBCF (z : ℂ) (hz : z.im ≠ 0) :
+    BoundedContinuousFunction ℝ ℂ :=
+  BoundedContinuousFunction.mkOfBound
+    ⟨mobiusIncidenceGapResponseIntegrand z,
+      continuous_mobiusIncidenceGapResponseIntegrand hz⟩
+    (8 * (‖z‖ / |z.im| + 1))
+    (fun x y => by
+      calc
+        dist (mobiusIncidenceGapResponseIntegrand z x)
+            (mobiusIncidenceGapResponseIntegrand z y)
+            ≤ ‖mobiusIncidenceGapResponseIntegrand z x‖ +
+                ‖mobiusIncidenceGapResponseIntegrand z y‖ := dist_le_norm_add_norm _ _
+        _ ≤ 4 * (‖z‖ / |z.im| + 1) + 4 * (‖z‖ / |z.im| + 1) :=
+          add_le_add
+            (norm_mobiusIncidenceGapResponseIntegrand_le hz x)
+            (norm_mobiusIncidenceGapResponseIntegrand_le hz y)
+        _ = 8 * (‖z‖ / |z.im| + 1) := by ring)
+
+/-- Infinite squarefree incidence response at fixed `sigma`. -/
+def squarefreeMobiusCriticalGapResponse (sigma : ℝ) (z : ℂ) : ℂ :=
+  ∫ x : ℝ, mobiusIncidenceGapResponseIntegrand z x
+    ∂(squarefreeMobiusCriticalGapProbabilityMeasure sigma : Measure ℝ)
+
+/-- Universal response as the weak limit of the critical squarefree incidence laws. -/
+def mobiusCriticalExponentialGapResponse (z : ℂ) : ℂ :=
+  ∫ x : ℝ, mobiusIncidenceGapResponseIntegrand z x
+    ∂(mobiusCriticalExponentialGapProbabilityMeasure : Measure ℝ)
+
+/-- Unconditional critical convergence of the infinite squarefree incidence response. -/
+theorem tendsto_squarefreeMobiusCriticalGapResponse
+    {z : ℂ} (hz : z.im ≠ 0) :
+    Tendsto (fun sigma : ℝ => squarefreeMobiusCriticalGapResponse sigma z)
+      (nhdsWithin 1 (Ioi 1))
+      (nhds (mobiusCriticalExponentialGapResponse z)) := by
+  have h :=
+    (ProbabilityMeasure.tendsto_iff_forall_integral_rclike_tendsto ℂ).mp
+      tendsto_squarefreeMobiusCriticalGapProbabilityMeasure
+      (mobiusIncidenceGapResponseBCF z hz)
+  simpa [squarefreeMobiusCriticalGapResponse,
+    mobiusCriticalExponentialGapResponse,
+    mobiusIncidenceGapResponseBCF] using h
 
 end RHTower

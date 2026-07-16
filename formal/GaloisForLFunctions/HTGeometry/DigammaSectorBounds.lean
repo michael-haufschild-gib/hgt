@@ -117,7 +117,8 @@ private theorem norm_gaussDigammaSeriesTerm_halfShift_le {z : ℂ}
     _ ≤ ((1 + ‖z‖) / 2) / ((n : ℝ) + 1) / (((n : ℝ) + 1) / 4) := by
             gcongr
     _ = 2 * (1 + ‖z‖) * (1 / ((n : ℝ) + 1) ^ 2) := by
-            field_simp <;> ring
+            field_simp
+            ring
 
 /-- Digamma has at most linear growth on the shifted Watson sector. -/
 theorem exists_norm_digamma_halfShift_le :

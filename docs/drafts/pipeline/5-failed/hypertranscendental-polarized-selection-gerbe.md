@@ -1,13 +1,44 @@
 # The polarized HT selection gerbe unifies local obstruction chains
 
 - **ID:** `hypertranscendental-polarized-selection-gerbe`
-- **Stage:** 1-in-progress
-- **Type:** FOUNDATIONAL CONJECTURE / GLOBAL SELECTION OBJECT
-- **Scientific status:** `[CONJECTURE] [FIELDS-SCALE TARGET] [NOVELTY UNVERIFIED]`
-- **Statement:** A source-minimal self-dual HT system carries a canonical polarized descent gerbe
-  over its active constraint spectrum; its obstruction class controls whether local infinite
-  capacity concentrates into one global source, while its realization images are continuation,
-  monodromy, positivity, spectral, and boundary-condition obstructions.
+- **Stage:** 5-failed
+- **Type:** FALSIFIED FIXED-DEGREE CONJECTURE / POSITIVE POSTNIKOV SUCCESSOR
+- **Scientific status:** `[FALSIFIED AS UNIVERSAL H^2 LAW]`
+- **Statement:** A single degree-two gerbe cannot be the universal HT selection object.  In the
+  exact all-depth pair-face class, the complete sewing obstruction is additive and degree one.
+
+## Terminal verdict
+
+The first required specialization falsifies the universal `H^2` claim.  Pair-face data are actual
+sections
+
+```text
+D_(ij) in A_(ij),
+```
+
+and their complete compatibility law is equality of three pushforwards on every triple.  After
+choosing two independent differences per triple, define
+
+```text
+d_pair:direct_sum_(i<j) A_(ij)
+       -> direct_sum_(i<j<k) (A_(ijk) direct_sum A_(ijk)).
+```
+
+Then
+
+```text
+Comp_d=ker d_pair,
+Q_d/(Q_d intersection Mer_DA)=H^0(C_pair^bullet).         (0)
+```
+
+There is no associator object and no degree-two obstruction in this abelian class.  Forcing (0)
+into `H^2` would be categorical redressing.
+
+The strong positive replacement is a **capacity-descent Postnikov tower** whose obstruction degree
+depends on the categorical level of the local data: activity/stabilizer defects in degree zero,
+additive section sewing in degree one, and gerbe associators only for genuinely nonabelian local
+objects.  That route continues in
+`../1-in-progress/hypertranscendental-capacity-descent-postnikov-tower.md`.
 
 ## Why this object is forced
 
@@ -147,4 +178,3 @@ its zeros define (2), and no vanishing or positivity assertion about (2) is curr
 - [ ] construct two jointly conservative realization functors
 - [ ] complete primary-literature and specialist novelty audit
 - [ ] formalize the finite descent core in Lean after the concrete band is fixed
-

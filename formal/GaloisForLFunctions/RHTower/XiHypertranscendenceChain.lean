@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RiemannTower
 import GaloisForLFunctions.RHTower.XiLogDerivNotHolonomic
-import GaloisForLFunctions.HTGeometry.QuantitativeHolderInterface
+import GaloisForLFunctions.HTGeometry.WatsonFlatnessDischarge
 
 /-!
 # The hypertranscendence chain for the completed ξ
@@ -177,6 +177,12 @@ theorem xi_hypertranscendental_of_watsonFlatness
     Hypertranscendental xi :=
   xi_hypertranscendental_of_quantitativeHolder
     (quantitativeHolder_of_watsonFlatness hW) hFC
+
+/-- The Watson-flatness input is now unconditional: only the independent Dirichlet-frequency
+collapse remains in the completed-`xi` chain. -/
+theorem xi_hypertranscendental_of_frequencyCollapse
+    (hFC : XiFrequencyCollapse) : Hypertranscendental xi :=
+  xi_hypertranscendental_of_watsonFlatness HTGeometry.watsonFlatness hFC
 
 end RHTower
 

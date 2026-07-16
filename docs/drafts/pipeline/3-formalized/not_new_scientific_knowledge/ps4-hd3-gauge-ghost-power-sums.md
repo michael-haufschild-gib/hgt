@@ -1,7 +1,7 @@
 # PS4 Inversion Turns The HD3 Gauge Into Ghost Power Sums
 
 - **ID:** ps4-hd3-gauge-ghost-power-sums
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), proof-route atlas normalization
 - **Source:** random formula-graph node 44/100, `PS4` in `docs/consolidated/revision01/formulas-graph.md`
 - **Statement:** If the HD3 zero-free gauge shift `delta lambda_n = c n^2` is blindly inverted through the PS4 Li/binomial transform, it appears as the finite ordinary-power-sum perturbation
@@ -22,7 +22,13 @@ Make the PS4 atlas normalization problem exact. The formula `lambda_n <-> P_j` i
 
 - [x] 0 -> 1 in-progress: random formula selected and checked against existing Li/HD3 cards
 - [x] 1 -> 2 fully-proven: binomial finite-difference proof complete
-- [ ] 2 -> 3 formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 -> 3 formalized: unconditional forward-difference identification
+  `RHTower.ps4QuadraticGhost_eq_signed_fwdDiff`, exact degree-one and
+  degree-two values, all-higher-degree vanishing, and real-parameter capstone
+  `RHTower.ps4QuadraticGaugeGhost_classification` in
+  `formal/GaloisForLFunctions/RHTower/PS4GaugeGhostPowerSums.lean`; exact
+  target build passed and the capstone audit reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.
 - [ ] 3 -> 4 publication-ready: fold into the Li/Jensen/Hadamard atlas notes
 
 ## Proof
