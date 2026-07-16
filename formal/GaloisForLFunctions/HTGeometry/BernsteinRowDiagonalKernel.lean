@@ -27,7 +27,8 @@ lemma integral_comp_two_eq_of_two_pi_periodic
   have hdouble := hperiod.intervalIntegral_add_zsmul_eq (2 : ℤ) (0 : ℝ) hint
   have hdouble' : (∫ x in (0 : ℝ)..4 * Real.pi, f x) =
       2 * ∫ x in (0 : ℝ)..2 * Real.pi, f x := by
-    convert hdouble using 1 <;> norm_num <;> ring
+    convert hdouble using 1 <;> norm_num
+    all_goals ring
   rw [intervalIntegral.integral_comp_mul_left f (by norm_num : (2 : ℝ) ≠ 0)]
   simp only [mul_zero]
   rw [show (2 : ℝ) * (2 * Real.pi) = 4 * Real.pi by ring, hdouble']

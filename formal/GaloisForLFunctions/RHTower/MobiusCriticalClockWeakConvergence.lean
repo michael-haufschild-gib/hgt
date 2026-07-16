@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.InfiniteMobiusCriticalBoundaryLayer
+import GaloisForLFunctions.RHTower.MobiusIncidenceUniversalGapResponse
 import Mathlib.MeasureTheory.Measure.LevyConvergence
 import Mathlib.MeasureTheory.Measure.FiniteMeasureProd
 import Mathlib.Probability.ProbabilityMassFunction.Constructions
@@ -598,7 +599,24 @@ theorem charFun_mobiusCriticalExponentialGapProbabilityMeasure (t : ℝ) :
     charFun_mobiusCriticalExponentialProbabilityMeasure]
   rw [← mul_inv]
   congr 1
+  ring_nf
+  simp
   ring
+
+/-- The independent-exponential gap law is exactly the centered Laplace density. -/
+theorem mobiusCriticalExponentialGapProbabilityMeasure_eq_laplace :
+    mobiusCriticalExponentialGapProbabilityMeasure =
+      mobiusCriticalLaplaceGapProbabilityMeasure := by
+  letI : IsProbabilityMeasure
+      (mobiusCriticalLaplaceGapProbabilityMeasure : Measure ℝ) :=
+    mobiusCriticalLaplaceGapProbabilityMeasure.prop
+  apply Subtype.ext
+  change (mobiusCriticalExponentialGapProbabilityMeasure : Measure ℝ) =
+    (mobiusCriticalLaplaceGapProbabilityMeasure : Measure ℝ)
+  apply Measure.ext_of_charFun
+  funext t
+  rw [charFun_mobiusCriticalExponentialGapProbabilityMeasure,
+    charFun_mobiusCriticalLaplaceGapProbabilityMeasure]
 
 /-- Bounded continuous transition observable defining the incidence gap response. -/
 def mobiusIncidenceGapResponseIntegrand (z : ℂ) (x : ℝ) : ℂ :=
@@ -637,6 +655,16 @@ theorem norm_mobiusIncidenceGapResponseIntegrand_le
   apply (div_le_iff₀ hdenPos).2
   nlinarith
 
+theorem integrable_mobiusCriticalLaplaceGap_response
+    {z : ℂ} (hz : z.im ≠ 0) :
+    Integrable (fun x : ℝ =>
+      (mobiusCriticalLaplaceGapDensity x : ℂ) *
+        mobiusIncidenceGapResponseIntegrand z x) := by
+  exact integrable_mobiusCriticalLaplaceGapDensity.ofReal.mul_bdd
+    (continuous_mobiusIncidenceGapResponseIntegrand hz).aestronglyMeasurable
+    (Filter.Eventually.of_forall
+      (norm_mobiusIncidenceGapResponseIntegrand_le hz))
+
 /-- The response integrand packaged for the weak topology on probability measures. -/
 def mobiusIncidenceGapResponseBCF (z : ℂ) (hz : z.im ≠ 0) :
     BoundedContinuousFunction ℝ ℂ :=
@@ -666,6 +694,54 @@ def mobiusCriticalExponentialGapResponse (z : ℂ) : ℂ :=
   ∫ x : ℝ, mobiusIncidenceGapResponseIntegrand z x
     ∂(mobiusCriticalExponentialGapProbabilityMeasure : Measure ℝ)
 
+/-- The weak-limit response is exactly the folded four-unit universal gap response. -/
+theorem mobiusCriticalExponentialGapResponse_eq_universal
+    {z : ℂ} (hz : z.im ≠ 0) :
+    mobiusCriticalExponentialGapResponse z =
+      mobiusIncidenceUniversalGapResponse z := by
+  unfold mobiusCriticalExponentialGapResponse
+  rw [mobiusCriticalExponentialGapProbabilityMeasure_eq_laplace]
+  unfold mobiusCriticalLaplaceGapProbabilityMeasure
+  simp only [ProbabilityMeasure.coe_mk]
+  rw [mobiusCriticalLaplaceGapMeasure,
+    integral_withDensity_eq_integral_smul
+      continuous_mobiusCriticalLaplaceGapDensityNNReal.measurable]
+  rw [show (fun x : ℝ =>
+      mobiusCriticalLaplaceGapDensityNNReal x •
+        mobiusIncidenceGapResponseIntegrand z x) =
+      fun x : ℝ =>
+        (mobiusCriticalLaplaceGapDensity x : ℂ) *
+          mobiusIncidenceGapResponseIntegrand z x by
+    funext x
+    change (mobiusCriticalLaplaceGapDensity x : ℂ) * _ = _
+    rfl]
+  rw [integral_eq_integral_Ioi_add_reflect_gap
+    (integrable_mobiusCriticalLaplaceGap_response hz)]
+  unfold mobiusIncidenceUniversalGapResponse
+  rw [← integral_const_mul]
+  apply setIntegral_congr_fun measurableSet_Ioi
+  intro x hx
+  have hx0 : 0 < x := hx
+  have hminus : z - (x : ℂ) ≠ 0 := by
+    intro h
+    apply hz
+    have him := congrArg Complex.im h
+    simpa using him
+  have hplus : z + (x : ℂ) ≠ 0 := by
+    intro h
+    apply hz
+    have him := congrArg Complex.im h
+    simpa using him
+  have hquad : z ^ 2 - (x : ℂ) ^ 2 ≠ 0 := by
+    rw [show z ^ 2 - (x : ℂ) ^ 2 =
+        (z - (x : ℂ)) * (z + (x : ℂ)) by ring]
+    exact mul_ne_zero hminus hplus
+  simp only [mobiusCriticalLaplaceGapDensity,
+    mobiusIncidenceGapResponseIntegrand, abs_neg, abs_of_pos hx0]
+  push_cast
+  field_simp [hminus, hplus, hquad]
+  ring
+
 /-- Unconditional critical convergence of the infinite squarefree incidence response. -/
 theorem tendsto_squarefreeMobiusCriticalGapResponse
     {z : ℂ} (hz : z.im ≠ 0) :
@@ -679,5 +755,15 @@ theorem tendsto_squarefreeMobiusCriticalGapResponse
   simpa [squarefreeMobiusCriticalGapResponse,
     mobiusCriticalExponentialGapResponse,
     mobiusIncidenceGapResponseBCF] using h
+
+/-- The unconditional squarefree critical response converges to the explicit universal folded
+gap response. -/
+theorem tendsto_squarefreeMobiusCriticalGapResponse_to_universal
+    {z : ℂ} (hz : z.im ≠ 0) :
+    Tendsto (fun sigma : ℝ => squarefreeMobiusCriticalGapResponse sigma z)
+      (nhdsWithin 1 (Ioi 1))
+      (nhds (mobiusIncidenceUniversalGapResponse z)) := by
+  rw [← mobiusCriticalExponentialGapResponse_eq_universal hz]
+  exact tendsto_squarefreeMobiusCriticalGapResponse hz
 
 end RHTower

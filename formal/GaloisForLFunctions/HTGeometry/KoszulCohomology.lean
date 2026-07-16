@@ -283,9 +283,8 @@ theorem nodalDisconnectCycle_not_koszulBoundary {F : Type*} [Field F] :
       _ = -1 := by rw [hsecondAdd]; ring
   have hcompat : c.1.1.coeff 0 = c.1.2.coeff 0 := by
     exact c.2
-  have horigin : (0 : F) = -1 := by
-    simpa [hfirst, hsecond] using hcompat
-  exact (zero_ne_one : (0 : F) ≠ 1) (by simpa using congrArg Neg.neg horigin)
+  rw [hfirst, hsecond] at hcompat
+  simp at hcompat
 
 /-! The same class in the actual squarefree quotient `F[x,y]/(xy)`.  Mapping the quotient into
 the nodal fibre product is enough for nonboundary detection; no presentation isomorphism is
@@ -318,7 +317,7 @@ theorem nodalNonedgeIdeal_le_ker_boundaryEvaluation
 def nodalStanleyReisnerBoundaryMap {F : Type*} [Field F] :
     NodalStanleyReisnerRing F →+* nodalBoundarySubring F :=
   Ideal.Quotient.lift (nodalNonedgeIdeal F) nodalBoundaryEvaluation
-    (fun p hp => RingHom.mem_ker.mp
+    (fun _ hp => RingHom.mem_ker.mp
       (nodalNonedgeIdeal_le_ker_boundaryEvaluation hp))
 
 /-- The first coordinate class in the nodal Stanley--Reisner quotient. -/
@@ -380,6 +379,48 @@ theorem nodalStanleyReisnerDisconnectCycle_not_koszulBoundary
   funext i
   rw [← nodalStanleyReisnerKoszulBoundary_map c i,
     hc, nodalStanleyReisnerDisconnectCycle_map]
+
+/-! ### Polarization is extra structure on the same Hochster line -/
+
+/-- The signed one-dimensional polarization on the coefficient line of the nodal Hochster class.
+The underlying Koszul class is unchanged when `ε` changes. -/
+def nodalHochsterPolarization (ε a b : ℝ) : ℝ := ε * a * b
+
+@[simp]
+theorem nodalHochsterPolarization_positive_apply (a b : ℝ) :
+    nodalHochsterPolarization 1 a b = a * b := by
+  simp [nodalHochsterPolarization]
+
+@[simp]
+theorem nodalHochsterPolarization_negative_apply (a b : ℝ) :
+    nodalHochsterPolarization (-1) a b = -(a * b) := by
+  simp [nodalHochsterPolarization]
+
+/-- The positive polarization is strictly positive on every nonzero Hochster coefficient. -/
+theorem nodalHochsterPolarization_positive_definite {a : ℝ} (ha : a ≠ 0) :
+    0 < nodalHochsterPolarization 1 a a := by
+  rw [nodalHochsterPolarization_positive_apply]
+  exact mul_self_pos.mpr ha
+
+/-- The negative polarization is strictly negative on every nonzero Hochster coefficient. -/
+theorem nodalHochsterPolarization_negative_definite {a : ℝ} (ha : a ≠ 0) :
+    nodalHochsterPolarization (-1) a a < 0 := by
+  have hs : 0 < a * a := mul_self_pos.mpr ha
+  simp only [nodalHochsterPolarization_negative_apply]
+  nlinarith [hs]
+
+/-- **Polarized Hochster separation.**  The positive and negative forms on the same underlying
+one-dimensional nodal source-coherence class are not linearly isometric over `ℝ`.  Forgetting the
+polarization identifies them; retaining it separates them. -/
+theorem nodalHochsterPolarization_positive_not_isometric_negative :
+    ¬ ∃ e : ℝ ≃ₗ[ℝ] ℝ, ∀ a b,
+      nodalHochsterPolarization 1 a b =
+        nodalHochsterPolarization (-1) (e a) (e b) := by
+  rintro ⟨e, he⟩
+  have h := he 1 1
+  have hs : 0 ≤ (e (1 : ℝ)) ^ 2 := sq_nonneg _
+  simp [nodalHochsterPolarization] at h
+  nlinarith
 
 end
 

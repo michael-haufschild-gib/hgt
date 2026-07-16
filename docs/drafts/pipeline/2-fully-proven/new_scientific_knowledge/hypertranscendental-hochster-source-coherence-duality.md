@@ -245,12 +245,17 @@ formal/GaloisForLFunctions/HTGeometry/KoszulCohomology.lean
 ```
 
 The file defines the nodal Stanley--Reisner boundary as the fibre-product ring
-`F[x] x_F F[y]`, constructs its two-coordinate Koszul complex at degrees one and two, and proves:
+`F[x] x_F F[y]`, maps the actual squarefree quotient `F[x,y]/(xy)` into that detecting model,
+constructs its two-coordinate Koszul complex at degrees one and two, and proves:
 
 - `nodalBoundaryX_mul_Y`, the missing-edge relation `xy=0`;
 - `nodalKoszulRelation_disconnectCycle`, that the disconnected-vertex representative is a cycle;
 - `nodalKoszulRelation_boundary`, that the displayed degree-two images are cycles;
 - `nodalDisconnectCycle_not_koszulBoundary`, that the representative is not a boundary.
+- `nodalNonedgeIdeal_le_ker_boundaryEvaluation`, that the missing-edge quotient maps to the
+  detecting fibre product;
+- `nodalStanleyReisnerDisconnectCycle_not_koszulBoundary`, that the class is nonboundary in the
+  actual quotient `F[x,y]/(xy)`, not only in the detecting model.
 
 This is the characteristic-free reduced-`H^0` Hochster class of two isolated vertices.  The
 general strand equivalence remains open.

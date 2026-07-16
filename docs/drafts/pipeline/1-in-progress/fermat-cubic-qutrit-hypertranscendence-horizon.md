@@ -70,6 +70,28 @@ mechanics and fractional supersymmetry.  Those parent connections are known.  Th
 result is that this qutrit algebra realizes an exact ordinary hypertranscendence boundary and that
 its full commutator symbol is the noncommutative refinement of the Fermat cubic horizon.
 
+## 3.1. General Fermat extension `[CONJECTURE -- PROOF ROUTE IDENTIFIED]`
+
+For a primitive `d`th root `omega`, consider the finite twisted group algebra
+
+```text
+A_(n,d)=K<g_1,...,g_n> /(g_i^d=1, g_i g_j=omega g_j g_i for i<j).
+```
+
+Its ordered monomials with exponents in `{0,...,d-1}` should form a basis.  The quantum
+multinomial theorem then gives
+
+```text
+(sum c_i g_i)^d = (sum c_i^d) I.                                    (6)
+```
+
+The commutators are nonzero scalar multiples of the distinct basis monomials `g_i g_j`, so the
+full map `exterior^2(K^n)->A_(n,d)` is injective.  The regular representation would therefore give
+every Fermat hypersurface a finite-width exact horizon with maximal commutator rank.
+
+The cubic qutrit is the smallest test.  The general statement is not promoted until the normal-form
+basis and quantum multinomial identity are formalized unconditionally in Lean.
+
 ## 4. Anti-theatre gate
 
 The theorem is not complete until:
