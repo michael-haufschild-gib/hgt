@@ -1,4 +1,5 @@
 import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.Data.Real.StarOrdered
 import GaloisForLFunctions.HTGeometry.LeeYangForcingThreshold
 
 /-!
@@ -22,7 +23,7 @@ open Matrix Set
 
 namespace GaloisForLFunctions
 
-variable {n : Type*} [Fintype n]
+variable {n : Type*}
 
 /-- The localization locus of the pencil `t • A − P`: the set of weights at which the
 pencil is positive semidefinite. -/
@@ -43,7 +44,7 @@ theorem isForcingFamily_pencilPositivityLocus {A P : Matrix n n ℝ}
 
 /-- **Positivity is a closed condition on the weight.** The pencil locus is the
 intersection over test vectors of closed half-lines in `t`, hence closed. -/
-theorem isClosed_pencilPositivityLocus {A P : Matrix n n ℝ}
+theorem isClosed_pencilPositivityLocus [Fintype n] {A P : Matrix n n ℝ}
     (hA : A.IsHermitian) (hP : P.IsHermitian) :
     IsClosed (pencilPositivityLocus A P) := by
   have hrepr : pencilPositivityLocus A P
@@ -70,7 +71,7 @@ theorem isClosed_pencilPositivityLocus {A P : Matrix n n ℝ}
 /-- **The no-margin equality for the pencil.** Under the free half `1 ≤ sInf`,
 positivity of `A − P` at the physical weight is exactly the pinning of the pencil
 threshold at `1`. -/
-theorem pencil_posSemidef_iff_csInf_eq_one {A P : Matrix n n ℝ}
+theorem pencil_posSemidef_iff_csInf_eq_one [Fintype n] {A P : Matrix n n ℝ}
     (hA : A.PosSemidef) (hP : P.IsHermitian)
     (hne : (pencilPositivityLocus A P).Nonempty)
     (hbd : BddBelow (pencilPositivityLocus A P))

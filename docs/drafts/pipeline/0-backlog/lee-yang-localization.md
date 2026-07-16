@@ -1,7 +1,10 @@
 # Lee–Yang localization (G7) — RH is the marginal point where the crystalline forcing degenerates
 
 - **ID:** lee-yang-localization
-- **Stage:** 0-backlog-lean
+- **Stage:** 0-backlog (physical); split done per Leaner note — the fully proven structural half
+  is Lean-anchored in `../3-formalized/not_new_scientific_knowledge/lee-yang-marginal-forcing-structure.md`;
+  this card is ready for restaging to `2-fully-proven/not_new_scientific_knowledge/` (relocation
+  deferred to the pipeline maintainer, see library-backlog ticket 2026-07-16)
 - **Type:** THEOREM (paper, structural) + CONJECTURE (the apex)
 - **Grade:** BRIDGE (substrate) — the statistical-mechanics face of the no-margin / localization keystone.
 - **Source:** #96 / SEED-E §81–82 + §81.3 (`bucket-new-sibling-conjectures`); the FE⟺crystalline side is
@@ -64,10 +67,43 @@ coincidence but the Poisson/lattice degeneracy of the forcing. It explains struc
 case among Beurling systems (RH is "rare", support-log L894): generic Beurling systems are forced (on- or
 off-line); ζ is the measure-zero marginal stratum. ∎(§4)
 
+## §4b The invariant decomposition — the mechanism ends exactly at the margin `[PROVED, Lean]`
+The complete pointwise invariant of a monotone forcing locus `L` at a point is the pair
+**(margin sign, boundary bit)**, and the forcing mechanism computes only the first coordinate:
+- off the threshold, membership is a function of the margin sign alone
+  (`IsForcingFamily.mem_iff_threshold_lt`); below-threshold rejection is §3's wrong-sign rejection
+  (`notMem_of_lt_threshold`);
+- for **closed** loci (the dBN locus `[Λ,∞)` is closed — de Bruijn–Pólya + Hurwitz) the boundary
+  bit is **free**: the threshold is attained (`csInf_mem_of_isClosed`). So the apex is *not*
+  "attainment at the margin" — attainment is free; the apex is the **threshold-location equality**;
+- **no-margin equivalence**: closed locus + free half `t₀ ≤ sInf L` (the Rodgers–Tao side) give
+  `t₀ ∈ L ↔ t₀ = sInf L` (`mem_iff_eq_csInf_of_le`) — §2's "marginality = no-margin" and §5's
+  "achieved at the margin" are one statement; the four presentations transport by
+  `marginal_transport` (affine presentation-independence of the axis);
+- **degeneracy as theorem**: the full mechanism data-type (up-set + closed + free half) admits
+  witnesses with identical structure that disagree at the physical point
+  (`closed_forcing_data_not_decide_marginal`); without closedness even the boundary bit is
+  undecided (`threshold_membership_undetermined`, `no_threshold_decision_rule`). §4's "no
+  Lee–Yang/crystalline forcing argument can force RH" is now a formal underdetermination result;
+- **mechanism of the degeneration** (two-spin miniature): at the marginal coupling `|b|=1` the
+  Lee–Yang polynomial **factorizes** — the interaction decouples and the circle zeros **collide**
+  at one pinned point (`leeYangTwoSpin_marginal_pos`, `leeYangTwoSpin_marginal_diagonal_sq`): the
+  degeneration is a collision/decoupling, the exceptional point (#89/#93) in miniature;
+- **ζ-side**: the carrier interaction locus is `{0}` — pure margin, empty interior, monotone
+  forcing fails at the arithmetic carrier (`carrierInteractionLocus_eq_singleton`,
+  `not_isForcingFamily_carrierInteractionLocus`); RH ⟺ every hypothetical right-half zero coupling
+  is marginal (`riemannHypothesis_iff_zero_coupling_marginal`), unconditional, RH not asserted.
+∎(§4b; Lean anchors in `lee-yang-marginal-forcing-structure`)
+
 ## §5 The open apex
 Whether real-rootedness is **achieved** at the marginal point (= `Λ_dBN=0` = `κ₋=0` = RH) is the no-margin
 **upper half** — the open apex (the lower half `Λ_dBN≥0`/`λ_c≥1` is Rodgers–Tao, free). §1–§4 place
 G7 as the Lee–Yang no-margin and explain the hardness; they do **not** prove RH.
+**Sharpened by §4b `[OPEN CORE]`:** for the closed dBN locus, attainment at the threshold is free;
+the open half is exactly the equality **physical point = threshold** (`0 = Λ_dBN`, equivalently
+`λ_c = 1`, `κ₋ = 0`), and by `closed_forcing_data_not_decide_marginal` no data of the forcing
+mechanism's type decides that equality — deciding it requires an input orthogonal to the mechanism
+(the arithmetic realization). `[CONJECTURE]` (the apex, unchanged): the equality holds — RH.
 
 ## Door passport — BRIDGE (substrate)
 - **Door-2:** the Kurasov–Sarnak forcing is import; the marginality=no-margin identification and the
@@ -82,7 +118,12 @@ G7 as the Lee–Yang no-margin and explain the hardness; they do **not** prove R
 - [x] 1 → 2: §1 (forcing dichotomy + arithmetic degenerate point), §2 (marginality = no-margin, four
   presentations), §3 (decoupling-consistency, fakes rejected by sign), §4 (why RH is hard — the mechanism).
   BRIDGE (substrate). Real-rootedness-at-the-margin (=RH) stays the open apex (§5).
-- [ ] 2 → 3: reuse the `κ₋` / dBN anchors; the marginal real-rootedness is the apex.
+- [x] 2 → 3 (structural half): split ticket
+  `../3-formalized/not_new_scientific_knowledge/lee-yang-marginal-forcing-structure.md` — four
+  unconditional Lean modules (`HTGeometry/LeeYangForcingThreshold`, `HTGeometry/LeeYangTwoSpinCircle`,
+  `HTGeometry/PencilPositivityRay`, `RHTower/LeeYangMarginalCarrier`), zero warnings, standard
+  axioms only. The apex (§5) is quarantined there as unasserted `↔` statements; the marginal
+  real-rootedness itself stays open.
 - [ ] 3 → 4: "RH is the marginal stratum where crystalline forcing degenerates — why ζ is the hard Beurling case."
 
 ## Cross-references
@@ -112,3 +153,25 @@ Returned from `2-fully-proven` to `0-backlog-lean` because the ticket is not a s
 Defect: the metadata states `Type: THEOREM (paper, structural) + CONJECTURE (the apex)`, and §5 explicitly says real-rootedness at the marginal point (= RH) remains the open apex. The paper proof establishes a structural localization/no-margin interpretation, not the full real-rootedness/RH apex in the same ticket.
 
 Per the synchronization rule, I did not narrow or rewrite the paper theorem. Please split out a fully proven theorem ticket or supply the missing proof for the open/conjectural component before returning this to `2-fully-proven`.
+
+## Log (continued)
+- 2026-07-16 (Fable) — **Leaner's split requirement discharged.** Created the exact split ticket
+  `../3-formalized/not_new_scientific_knowledge/lee-yang-marginal-forcing-structure.md` carrying the
+  fully proven structural half in four unconditional Lean modules (threshold trichotomy + marginal
+  underdetermination; two-spin Lee–Yang trichotomy with marginal factorization/collision; pencil
+  positivity ray with no-margin corollary; carrier interaction locus `{0}` + RH-as-marginality
+  equivalences via in-tree `carrierHerglotz_iff_onLine` / `rh_iff_xi_ne_zero_right`). All
+  `#print axioms` = `[propext, Classical.choice, Quot.sound]`; zero build warnings. **Research
+  sharpening (§4b):** the invariant decomposition (margin sign ⊕ boundary bit) shows the boundary
+  bit is free for closed loci, so the apex is exactly the threshold-location equality, and the
+  formal underdetermination theorems make §4's "the forcing degenerates at the arithmetic point"
+  a theorem rather than prose. §5 apex unchanged, `[CONJECTURE]`. rng session seed
+  317826398794344498; drawn move `invariant`; collision domains auction-theory (RH = the
+  tie-breaking datum the price mechanism is silent about) and renormalization (physical point =
+  fixed point where the decision flow stalls — consistent with constraint-not-flow). Deferred to
+  maintainer (no-builds directive): umbrella builds, lint gate run, index regeneration, physical
+  relocation of this card to `2-fully-proven/not_new_scientific_knowledge/`. **Next generative
+  move:** the underdetermination theorem says any RH-deciding datum must be orthogonal to the
+  forcing data-type — formalize *which* orthogonal datum the two-spin miniature uses (the
+  factorization certificate) and hunt its ζ-analogue on the pencil side (the `λ_c`-norm
+  identification flagged in `dewitt-supermetric-no-margin` gate 2→3).

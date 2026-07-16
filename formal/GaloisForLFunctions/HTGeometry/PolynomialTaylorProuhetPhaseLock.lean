@@ -26,6 +26,7 @@ theorem exists_aevalWeight_mass_natPow_bound
   let C := A₀ * L ^ E
   refine ⟨E + 1, ?_⟩
   filter_upwards [eventually_ge_atTop (max C 1)] with q hq
+  have hq1 : 1 ≤ q := (le_max_right _ _).trans hq
   have hCq : C ≤ q := (le_max_left _ _).trans hq
   have hlevel : D * q + τ + 1 ≤ L * q := by
     dsimp [L]

@@ -46,8 +46,7 @@ def carrierInteractionLocus (x : ℝ) : Set ℝ :=
 theorem carrierInteractionLocus_eq_singleton (x : ℝ) :
     carrierInteractionLocus x = {0} := by
   ext y
-  have him : ((x : ℂ) + (y : ℂ) * Complex.I).im = y := by simp
-  simp [carrierInteractionLocus, carrierHerglotz_iff_onLine, OnLine, him]
+  simp [carrierInteractionLocus, carrierHerglotz_iff_onLine, OnLine]
 
 /-- The monotone forcing mechanism fails on the carrier locus: localization does not
 persist under increased coupling, because the locus is a single point. -/
@@ -81,10 +80,9 @@ theorem seam_coordinate_eq (ρ : ℂ) :
   rw [h2]
   apply Complex.ext
   · simp [Complex.mul_re, Complex.sub_re, Complex.sub_im, Complex.add_re,
-      Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im]
-  · simp [Complex.mul_re, Complex.sub_re, Complex.sub_im, Complex.add_im,
-      Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im]
-    ring
+      Complex.ofReal_re, Complex.ofReal_im]
+  · simp [Complex.sub_re, Complex.sub_im, Complex.add_im, Complex.mul_im,
+      Complex.ofReal_re, Complex.ofReal_im]
 
 /-- **RH as marginality of the zero couplings.** The Riemann Hypothesis holds iff for
 every hypothetical `ξ`-zero in the open right half-plane the associated carrier

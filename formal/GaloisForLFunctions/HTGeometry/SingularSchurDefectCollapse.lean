@@ -1,5 +1,4 @@
 import GaloisForLFunctions.HTGeometry.BernsteinSzegoCaratheodoryRational
-import GaloisForLFunctions.HTGeometry.CofinalCholeskyResidualPhase
 
 /-!
 # Singular Schur-defect collapse and canonical cofinal approximation

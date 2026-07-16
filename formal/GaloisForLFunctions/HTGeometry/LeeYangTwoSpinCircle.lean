@@ -119,7 +119,7 @@ theorem leeYang_confinement {b : ℝ} (hb : |b| ≤ 1) {z w : ℂ}
         _ ≤ Real.sqrt (‖1 + (b : ℂ) * z‖ ^ 2) := Real.sqrt_le_sqrt hsq
         _ = ‖1 + (b : ℂ) * z‖ := Real.sqrt_sq (norm_nonneg _)
     by_contra hcon
-    push_neg at hcon
+    rw [not_le] at hcon
     have hlt2 := mul_lt_mul_of_pos_right hcon hpos
     rw [one_mul] at hlt2
     linarith
@@ -158,7 +158,7 @@ theorem leeYang_confinement_strict {b : ℝ} (hb : |b| < 1) {z w : ℂ}
         _ < Real.sqrt (‖1 + (b : ℂ) * z‖ ^ 2) := Real.sqrt_lt_sqrt (sq_nonneg _) hsq
         _ = ‖1 + (b : ℂ) * z‖ := Real.sqrt_sq (norm_nonneg _)
     by_contra hcon
-    push_neg at hcon
+    rw [not_lt] at hcon
     have hle2 := mul_le_mul_of_nonneg_right hcon hpos.le
     rw [one_mul] at hle2
     linarith
