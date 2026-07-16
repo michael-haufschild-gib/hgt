@@ -201,6 +201,106 @@ The positive normal boundary becomes singular exactly at the infinite-clock limi
 prime line is normal, while the limiting tangent has norm of order `epsilon^(-1)` before the
 critical rescaling.  The four-unit law is the finite residue of this HT normalization anomaly.
 
+## Exterior-horizon lift and critical Fock escape `[PROVED HERE]`
+
+Let `E_S` be the one-particle space with ordered orthonormal basis `(e_p)_(p in S)`.  The occupation
+basis gives a canonical unitary identification
+
+```text
+tensor_(p in S) C^2 ~= exteriorAlgebra(E_S).              (16a)
+```
+
+where a squarefree subset `T subset S` is sent to the ordered wedge `wedge_(p in T)e_p`.  Under
+`(16a)`, the source vector `(2)` is the ordered exterior product
+
+```text
+phi_S(sigma)=product_(p in S)^wedge (1-p^(-sigma/2)e_p). (16b)
+```
+
+Thus each prime is a two-state horizon apartment, the squarefree determinant line is its finite
+Pluecker/Fock line, and the horizontal derivative is a one-quasiparticle tangent relative to the
+moving product vacuum.  More precisely,
+
+```text
+chi_S=4 epsilon nabla_sigma psi_S,                        (16c)
+```
+
+and the adjacent-prime decomposition `(10)` is the orthogonal decomposition of that tangent into
+the mutually orthogonal single-prime excitation lines.  Consequently `(11)` is literally the
+one-particle Pythagorean law, not only an identity of scalar variances.
+
+There is also a sharp completion no-go.  Let `Omega` be the empty-occupation vacuum.  For the
+all-prime normalized state at fixed `sigma>1`,
+
+```text
+|<Omega,psi_sigma>|^2=1/Z(sigma).                         (16d)
+```
+
+More generally, the coefficient of every fixed finite occupation state is a fixed finite product
+times `Z(sigma)^(-1/2)`.  Since `Z(sigma)->infinity` as `sigma downarrow 1`, every such coefficient
+tends to zero.  The finite-particle vectors are dense, so
+
+```text
+psi_sigma ->0 weakly,       ||psi_sigma||=1.              (16e)
+```
+
+Hence there is no strong limit in the ordinary vacuum Fock representation.  At the same time,
+`(16)` gives
+
+```text
+||4 epsilon nabla_sigma psi_sigma||^2->4.                 (16f)
+```
+
+**No-go.**  The critical squarefree source cannot be completed as a normal vector in one fixed
+prime Fock space.  Ordinary Fock implementability loses the source exactly at the Euler boundary.
+
+**Positive HT theorem.**  The projective source line escapes while its critically renormalized
+one-particle tangent retains a finite, nonzero metric residue.  The natural critical object is
+therefore a tangent in the source-rigged Tate/capacity boundary.  This separates the phase-bearing
+determinant torsor from the normal one-particle metric and supplies the exact geometric input for a
+Laurent--Pluecker Ward transgression.
+
+## Exact Pluecker--residue half-density isometry `[PROVED; LEAN-FORMALIZED]`
+
+The raw Laurent residue metric and the Fisher tangent metric have different mode weights, but the
+source supplies a canonical square-root conversion.  Put
+
+```text
+lambda_p=log p,
+q_p=p^(-sigma),
+a_p=2epsilon sqrt(lambda_p)sqrt(q_p)/(1+q_p).             (16g)
+```
+
+In the positive-energy representation of the Euler Laurent central extension, the raw opposite
+current mode of frequency `lambda_p` has squared norm `lambda_p`.  Therefore its source
+half-density coefficient `(16g)` has energy
+
+```text
+lambda_p |a_p|^2
+ =4epsilon^2 lambda_p^2 q_p/(1+q_p)^2.                   (16h)
+```
+
+The right side is exactly the squared norm of the single-prime horizontal excitation in `(8)`.
+Equivalently, sending the unit Pluecker excitation at `p` to the normalized current mode
+`J_(-lambda_p)/sqrt(lambda_p)` is an isometry.  Summing the orthogonal prime lines gives
+
+```text
+||chi_S||^2=sum_(p in S) lambda_p |a_p|^2.               (16i)
+```
+
+Thus the source-derived Laurent seam and the squarefree HT capacity field already have the same
+finite one-particle metric.  The standard residue weight is not the Ward norm by itself; the
+source-forced half-density is the missing comparison.
+
+`RHTower/EulerLaurentResidueDouble.lean` formalizes the centered real-frequency characters,
+reflection/inversion, same-half isotropy, exact prime opposite seams, the `A2` Lie-cocycle identity,
+and the generic half-density isometry `(16h)`.
+
+**Remaining wall.**  Equation `(16i)` solves the finite Euler-chart metric comparison.  It does
+not yet prove that analytic continuation through the first-trace corona carries this positive-
+energy packet to the Hardy one-particle packet with normal component `P_anti Q_sq`.  That
+source-rigged transgression is now the sole metric-bearing RH step.
+
 ## Holomorphic prime current and the corona codiagonal
 
 For complex `s` with `Re s>1/2`, define the prime-coordinate modular current
@@ -253,6 +353,75 @@ singular global scalarization.
 Thus the possible Xi divisor is a **conormal-corona singularity**.  It is not a singularity of any
 finite Euler clock or of the Hilbert-valued modular connection.
 
+## Sharp determinant-order reduction `[PROVED HERE]`
+
+The corona codiagonal has one exact operator-ideal coordinate.  On `ell^2(Primes)` put
+
+```text
+A_s e_p=p^(-s)e_p.                                        (22a)
+```
+
+For every `Re s>1/2`, `A_s` is Hilbert--Schmidt and `I+A_s` is uniformly invertible on closed
+sub-half-planes, because
+
+```text
+sum_p p^(-2 Re s)<infinity,
+|1+p^(-s)|>=1-p^(-Re s).                                  (22b)
+```
+
+Hence the second regularized determinant
+
+```text
+D_2(s)=det_2(I+A_s)
+      =product_p(1+p^(-s))exp(-p^(-s))                    (22c)
+```
+
+is holomorphic and nowhere zero throughout `Re s>1/2`.  On `Re s>1`, with
+`P_prime(s)=sum_p p^(-s)`, the squarefree determinant has the exact factorization
+
+```text
+Z_sq(s)=D_2(s)exp(P_prime(s)).                             (22d)
+```
+
+Equivalently,
+
+```text
+log D_2(s)
+ =sum_(k>=2)(-1)^(k+1)P_prime(k s)/k,                     (22e)
+```
+
+and `(22e)` is already holomorphic on `Re s>1/2`.  Differentiation gives
+
+```text
+J_sq(s)=-D_2'(s)/D_2(s)-P_prime'(s),
+-P_prime'(s)=sum_p(log p)p^(-s).                          (22f)
+```
+
+The difference between the full von Mangoldt current and the last term of `(22f)` is the locally
+uniformly convergent sum over prime powers `p^k`, `k>=2`, on the same strict half-plane.  Therefore
+the corona in `(22)` is not an uncontrolled all-depth failure: it is exactly the missing first
+trace between Hilbert--Schmidt and trace-class determinant theory.  All higher determinant orders
+form the nonvanishing safe factor `(22c)`.
+
+This also kills an ordinary-Hodge shortcut.  The direct-sum prime complex with differential
+`I+A_s` is uniformly acyclic on `Re s>1/2`; its `ell^2` cohomology cannot be the Xi divisor.  The
+divisor is the logarithmic monodromy/Chern--Simons current of the first-trace determinant-line
+central extension.  This is the precise modular-corona class predicted by the general HT
+normalization-anomaly theorem.
+
+The positive source metric of that line is already `(3)`--`(7)`.  In complex notation its dual
+Hermitian metric `h_S(s)=Z_S(Re s)^(-1)` has Chern form
+
+```text
+-partial partial-bar log h_S
+  =(1/4)Var_(S,Re s)(H_S) ds d-conj(s),                   (22g)
+```
+
+so the determinant-line Chern metric and the Fisher metric are the same fixed geometry.  The open
+Ward theorem is correspondingly rank one: construct the self-dual polarization of the first-trace
+corona and prove that its Chern--Simons boundary current splits into a causal exact current and
+`ell_E`, with total critically rescaled energy four.
+
 ## Rank-one and curvature-only no-gos
 
 The rank-one principal-symbol theorem concerns an alternating two-law commutator curvature.  The
@@ -272,8 +441,8 @@ the boundary self-symbol and source anomaly.
 
 ## Direct RH consequence and remaining theorem
 
-Let the Gamma/Sonin framing extend `(9)`--`(13)` to a conservative self-dual boundary colligation.
-If its horizontal derivative splits as
+Let the Gamma-framed Laurent double lift `(9)`--`(13)` to a source-polarized Pluecker--Tate
+boundary.  If its renormalized one-particle tangent splits as
 
 ```text
 completed source tangent
@@ -297,9 +466,10 @@ give
 and the existing Cauchy threshold proves RH.
 
 The missing theorem is not positivity of `(5)`; that is exact.  It is the source-framed
-identification `(23)`, including continuity of the corona codiagonal through the Gamma/Sonin
-rigging.  Any construction that keeps only the Hilbert vector `(19)` cannot see the divisor and is
-rejected.
+identification `(23)`: the Laurent residue central extension must transgress the first-trace corona
+to the anti-causal component of the renormalized one-particle tangent.  Any construction that keeps
+only the Hilbert vector `(19)` or only the determinant line cannot see both the divisor and its
+`L2` metric and is rejected.
 
 ## General HT consequences
 
@@ -328,9 +498,18 @@ rejected.
 - [x] prime-coordinate current extended holomorphically to `Re s>1/2` in `ell^2`
 - [x] global codiagonal proved unbounded
 - [x] strict right-half divisor localized to corona scalarization
+- [x] Hilbert--Schmidt determinant proved nonvanishing on `Re s>1/2`
+- [x] unique first-trace determinant-corona obstruction isolated
+- [x] ordinary direct-sum Hodge cohomology killed by uniform acyclicity
+- [x] determinant-line Chern metric identified with the Fisher metric
+- [x] finite determinant line identified with the exterior-horizon occupation line
+- [x] horizontal Fisher vector identified with the orthogonal one-quasiparticle tangent
+- [x] ordinary critical Fock-vector completion killed while the four-unit tangent residue survives
+- [x] source half-density proved to identify the Laurent residue norm with the Fisher mode norm
+- [x] real-frequency Laurent seam and half-density isometry Lean-formalized
 - [x] alternating principal-symbol and symmetric Fisher curvatures separated by type
 - [x] curvature-only route rejected positively
 - [ ] combine the prime--Laplace descent anomaly with the squarefree determinant-line colligation
-- [ ] construct the Gamma/Sonin conservative completion of the resulting full source colligation
+- [ ] construct the Gamma-framed Laurent--Pluecker tangent transgression
 - [ ] prove the anti-causal second fundamental form identity `(23)`
 - [ ] RH

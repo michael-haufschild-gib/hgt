@@ -1,4 +1,7 @@
 import Mathlib.Algebra.MvPolynomial.Basic
+import Mathlib.Algebra.MvPolynomial.Division
+import Mathlib.Algebra.MvPolynomial.PDeriv
+import Mathlib.Algebra.Module.Torsion.Basic
 import Mathlib.RingTheory.Ideal.Span
 import Mathlib.Tactic
 
@@ -133,5 +136,627 @@ theorem mem_veroneseIdeal_iff {r : ℕ} (P : MvPolynomial σ R) :
     refine Ideal.sum_mem _ ?_
     intro d hd
     exact monomial_mem_ideal _ (hP d (mem_support_iff.mp hd))
+
+/-- **Empty-critical-locus threshold.**  Over a nontrivial coefficient ring, the squarefree
+Veronese ideal is the unit ideal exactly in degree zero.  Thus positive squarefree width is not
+merely a larger presentation: it is precisely the onset of a nonempty closed constraint scheme. -/
+theorem veroneseIdeal_eq_top_iff [Nontrivial R] (r : ℕ) :
+    veroneseIdeal R σ r = ⊤ ↔ r = 0 := by
+  constructor
+  · intro htop
+    have hwide : MonoWide r (1 : MvPolynomial σ R) :=
+      (mem_veroneseIdeal_iff (R := R) (r := r) 1).mp (by simp [htop])
+    have hzero : r ≤ 0 := by
+      simpa using hwide 0 (by simp)
+    omega
+  · rintro rfl
+    rw [Ideal.eq_top_iff_one]
+    apply Ideal.subset_span
+    exact ⟨∅, by simp, by simp⟩
+
+end GaloisForLFunctions.VeroneseIdeal
+
+namespace GaloisForLFunctions.VeroneseIdeal
+
+open MvPolynomial Finset
+
+universe u v w
+
+variable {R : Type u} {A : Type v} [CommRing R] [CommRing A] [Algebra R A]
+
+/-- The intrinsic critical ideal of a principal source law: the source equation together with
+all of its derivatives under `R`-derivations of the ambient algebra.  Unlike the bare coordinate
+Jacobian ideal, this definition does not choose coordinates or a preferred generator. -/
+noncomputable def derivationalCriticalIdeal (f : A) : Ideal A :=
+  Ideal.span (Set.insert f (Set.range fun D : Derivation R A A => D f))
+
+/-- Multiplying a source equation by an arbitrary factor can only shrink its derivational
+critical ideal.  The reverse inclusion becomes available exactly when that factor is a unit. -/
+theorem derivationalCriticalIdeal_mul_le (a f : A) :
+    derivationalCriticalIdeal (R := R) (a * f) ≤
+      derivationalCriticalIdeal (R := R) f := by
+  rw [derivationalCriticalIdeal]
+  refine Ideal.span_le.2 ?_
+  rintro x (rfl | ⟨D, rfl⟩)
+  · exact Ideal.mul_mem_left _ _
+      (Ideal.subset_span (Set.mem_insert _ _))
+  · change D (a * f) ∈ derivationalCriticalIdeal (R := R) f
+    rw [D.leibniz a f, smul_eq_mul, smul_eq_mul]
+    exact Ideal.add_mem _
+      (Ideal.mul_mem_left _ _
+        (Ideal.subset_span (by
+          right
+          exact ⟨D, rfl⟩)))
+      (Ideal.mul_mem_right _ _
+        (Ideal.subset_span (Set.mem_insert _ _)))
+
+/-- **Unit-presentation invariance.**  Replacing a principal source equation by a unit multiple
+does not change its derivational critical scheme. -/
+theorem derivationalCriticalIdeal_unit_mul (u : Aˣ) (f : A) :
+    derivationalCriticalIdeal (R := R) ((u : A) * f) =
+      derivationalCriticalIdeal (R := R) f := by
+  apply le_antisymm
+  · exact derivationalCriticalIdeal_mul_le (R := R) (u : A) f
+  · have h := derivationalCriticalIdeal_mul_le (R := R)
+      (↑(u⁻¹) : A) ((u : A) * f)
+    simpa [mul_assoc] using h
+
+variable {σ : Type w} [Fintype σ] [DecidableEq σ]
+
+/-- The coordinate presentation of the critical ideal of a polynomial hypersurface. -/
+noncomputable def coordinateCriticalIdeal (f : MvPolynomial σ R) :
+    Ideal (MvPolynomial σ R) :=
+  Ideal.span (Set.insert f (Set.range fun i => MvPolynomial.pderiv i f))
+
+/-- **Coordinate-independence theorem for polynomial source laws.**  In a finite polynomial
+algebra, adjoining the source equation to its coordinate partial derivatives already captures
+the values of every coefficient-linear derivation. -/
+theorem derivationalCriticalIdeal_eq_coordinateCriticalIdeal
+    (f : MvPolynomial σ R) :
+    derivationalCriticalIdeal (R := R) f = coordinateCriticalIdeal f := by
+  apply le_antisymm
+  · rw [derivationalCriticalIdeal]
+    refine Ideal.span_le.2 ?_
+    rintro x (rfl | ⟨D, rfl⟩)
+    · exact Ideal.subset_span (Set.mem_insert _ _)
+    · have hD : D = ∑ i, D (MvPolynomial.X i) • MvPolynomial.pderiv i := by
+        apply MvPolynomial.derivation_ext
+        intro j
+        have heval :
+            (∑ i, D (MvPolynomial.X i) • MvPolynomial.pderiv i)
+                (MvPolynomial.X j) =
+              ∑ i, D (MvPolynomial.X i) *
+                MvPolynomial.pderiv i (MvPolynomial.X j) := by
+          change (Derivation.coeFnAddMonoidHom
+              (∑ i, D (MvPolynomial.X i) • MvPolynomial.pderiv i))
+              (MvPolynomial.X j) = _
+          rw [map_sum]
+          simp
+        rw [heval]
+        simp [Pi.single_apply]
+      have hDf : D f =
+          ∑ i, D (MvPolynomial.X i) * MvPolynomial.pderiv i f := by
+        calc
+          D f = (∑ i, D (MvPolynomial.X i) • MvPolynomial.pderiv i) f := by
+            rw [← hD]
+          _ = _ := by
+            change (Derivation.coeFnAddMonoidHom
+                (∑ i, D (MvPolynomial.X i) • MvPolynomial.pderiv i)) f = _
+            rw [map_sum]
+            simp
+      change D f ∈ coordinateCriticalIdeal f
+      rw [hDf]
+      exact (coordinateCriticalIdeal f).sum_mem fun i _ =>
+        Ideal.mul_mem_left _ _
+          (Ideal.subset_span (by
+            right
+            exact ⟨i, rfl⟩))
+  · rw [coordinateCriticalIdeal]
+    refine Ideal.span_le.2 ?_
+    rintro x (rfl | ⟨i, rfl⟩)
+    · exact Ideal.subset_span (Set.mem_insert _ _)
+    · apply Ideal.subset_span
+      right
+      exact ⟨(MvPolynomial.pderiv i :
+        Derivation R (MvPolynomial σ R) (MvPolynomial σ R)), rfl⟩
+
+end GaloisForLFunctions.VeroneseIdeal
+
+namespace GaloisForLFunctions.VeroneseIdeal
+
+open MvPolynomial Finset
+
+variable {F : Type*} [Field F]
+
+/-- The codimension-one face monomial obtained by omitting the variable indexed by `i`. -/
+noncomputable def cofaceMonomial (r : ℕ) (i : Fin (r + 1)) :
+    MvPolynomial (Fin (r + 1)) F :=
+  ∏ j ∈ Finset.univ.erase i, X j
+
+/-- Partial differentiation of a squarefree coordinate product removes exactly the selected
+coordinate when it occurs, and vanishes otherwise. -/
+theorem pderiv_finset_prod_X (s : Finset (Fin (r + 1))) (i : Fin (r + 1)) :
+    pderiv i (∏ j ∈ s, (X j : MvPolynomial (Fin (r + 1)) F)) =
+      if i ∈ s then ∏ j ∈ s.erase i, X j else 0 := by
+  classical
+  induction s using Finset.induction with
+  | empty => simp
+  | @insert a s ha ih =>
+      by_cases hai : a = i
+      · subst a
+        simp [Finset.prod_insert, ha, ih]
+      · have hia : i ≠ a := Ne.symm hai
+        by_cases hi : i ∈ s
+        · rw [Finset.prod_insert ha, MvPolynomial.pderiv_mul,
+            MvPolynomial.pderiv_X_of_ne hai, zero_mul, zero_add, ih, if_pos hi,
+            if_pos (Finset.mem_insert_of_mem hi)]
+          rw [Finset.erase_insert_of_ne hai, Finset.prod_insert]
+          exact fun hmem => ha (Finset.mem_of_mem_erase hmem)
+        · rw [Finset.prod_insert ha, MvPolynomial.pderiv_mul,
+            MvPolynomial.pderiv_X_of_ne hai, zero_mul, zero_add, ih, if_neg hi,
+            mul_zero, if_neg]
+          intro hmem
+          rcases Finset.mem_insert.mp hmem with hEq | hs
+          · exact hia hEq
+          · exact hi hs
+
+/-- The normal-crossing source constraint: the product of all structural coordinates. -/
+noncomputable def normalCrossingPolynomial (r : ℕ) :
+    MvPolynomial (Fin (r + 1)) F :=
+  ∏ j, X j
+
+/-- The scheme-theoretic critical boundary of the normal-crossing source constraint. -/
+noncomputable def normalCrossingJacobianIdeal (r : ℕ) :
+    Ideal (MvPolynomial (Fin (r + 1)) F) :=
+  Ideal.span (Set.range fun i => pderiv i (normalCrossingPolynomial (F := F) r))
+
+/-- Every gradient component of the normal-crossing source constraint is its complementary face
+monomial. -/
+theorem pderiv_normalCrossingPolynomial (r : ℕ) (i : Fin (r + 1)) :
+    pderiv i (normalCrossingPolynomial (F := F) r) = cofaceMonomial r i := by
+  unfold normalCrossingPolynomial
+  rw [pderiv_finset_prod_X]
+  simp [cofaceMonomial]
+
+/-- **Normal-crossing criticalization theorem.** The Jacobian ideal of the product constraint is
+exactly the squarefree degree-`r` Veronese ideal. Thus the coface constraint scheme is the singular
+scheme of the normal-crossing hypersurface, not merely a set-theoretic shadow of it. -/
+theorem normalCrossingJacobianIdeal_eq_veroneseIdeal (r : ℕ) :
+    normalCrossingJacobianIdeal (F := F) r = veroneseIdeal F (Fin (r + 1)) r := by
+  apply le_antisymm
+  · rw [normalCrossingJacobianIdeal]
+    refine Ideal.span_le.2 ?_
+    rintro P ⟨i, rfl⟩
+    change pderiv i (normalCrossingPolynomial (F := F) r) ∈ _
+    rw [pderiv_normalCrossingPolynomial]
+    exact Ideal.subset_span ⟨Finset.univ.erase i, by simp, rfl⟩
+  · rw [veroneseIdeal]
+    refine Ideal.span_le.2 ?_
+    rintro P ⟨J, hJcard, rfl⟩
+    have hproper : J ⊂ (Finset.univ : Finset (Fin (r + 1))) := by
+      rw [Finset.ssubset_iff_subset_ne]
+      refine ⟨Finset.subset_univ J, ?_⟩
+      intro hJuniv
+      subst J
+      simp at hJcard
+    obtain ⟨i, hi, hsubset⟩ := Finset.ssubset_iff_exists_subset_erase.mp hproper
+    have hcardErase : (Finset.univ.erase i : Finset (Fin (r + 1))).card = r := by simp
+    have hJeq : J = Finset.univ.erase i :=
+      Finset.eq_of_subset_of_card_le hsubset (by omega)
+    rw [hJeq]
+    apply Ideal.subset_span
+    refine ⟨i, ?_⟩
+    change pderiv i (normalCrossingPolynomial (F := F) r) = _
+    rw [pderiv_normalCrossingPolynomial]
+    rfl
+
+end GaloisForLFunctions.VeroneseIdeal
+
+namespace GaloisForLFunctions.VeroneseIdeal
+
+open MvPolynomial Finset
+
+variable {F : Type*} [Field F]
+
+/-- The relation map presented by the codimension-one face monomials. -/
+noncomputable def cofaceRelation (r : ℕ)
+    (a : Fin (r + 1) → MvPolynomial (Fin (r + 1)) F) :
+    MvPolynomial (Fin (r + 1)) F :=
+  ∑ i, a i * cofaceMonomial r i
+
+/-- The weighted star boundary whose columns are `X_i e_i - X_0 e_0`. -/
+noncomputable def cofaceBoundary (r : ℕ)
+    (b : Fin r → MvPolynomial (Fin (r + 1)) F) :
+    Fin (r + 1) → MvPolynomial (Fin (r + 1)) F :=
+  Fin.cases (-X 0 * ∑ i, b i) (fun i => X i.succ * b i)
+
+/-- Every variable times its complementary face monomial is the full squarefree product. -/
+theorem X_mul_cofaceMonomial (r : ℕ) (i : Fin (r + 1)) :
+    X i * cofaceMonomial (F := F) r i = ∏ j, X j := by
+  exact Finset.mul_prod_erase Finset.univ
+    (fun j : Fin (r + 1) => (X j : MvPolynomial _ F)) (Finset.mem_univ i)
+
+/-- **Intrinsic normal-crossing criticalization.**  The squarefree Veronese boundary is the
+derivational critical scheme of the normal-crossing source law.  Consequently the earlier
+Jacobian formula is independent both of the chosen structural coordinates and of unit rescaling
+of the principal source equation. -/
+theorem normalCrossingDerivationalCriticalIdeal_eq_veroneseIdeal (r : ℕ) :
+    derivationalCriticalIdeal (R := F) (normalCrossingPolynomial (F := F) r) =
+      veroneseIdeal F (Fin (r + 1)) r := by
+  rw [derivationalCriticalIdeal_eq_coordinateCriticalIdeal]
+  calc
+    coordinateCriticalIdeal (normalCrossingPolynomial (F := F) r) =
+        normalCrossingJacobianIdeal (F := F) r := by
+      apply le_antisymm
+      · rw [coordinateCriticalIdeal]
+        refine Ideal.span_le.2 ?_
+        rintro P (rfl | ⟨i, rfl⟩)
+        · have hface :
+              pderiv 0 (normalCrossingPolynomial (F := F) r) ∈
+                normalCrossingJacobianIdeal (F := F) r :=
+            Ideal.subset_span ⟨0, rfl⟩
+          rw [pderiv_normalCrossingPolynomial] at hface
+          change normalCrossingPolynomial (F := F) r ∈
+            normalCrossingJacobianIdeal (F := F) r
+          rw [normalCrossingPolynomial, ← X_mul_cofaceMonomial r 0]
+          exact Ideal.mul_mem_left _ _ hface
+        · exact Ideal.subset_span ⟨i, rfl⟩
+      · rw [normalCrossingJacobianIdeal]
+        refine Ideal.span_le.2 ?_
+        rintro P ⟨i, rfl⟩
+        apply Ideal.subset_span
+        right
+        exact ⟨i, rfl⟩
+    _ = veroneseIdeal F (Fin (r + 1)) r :=
+      normalCrossingJacobianIdeal_eq_veroneseIdeal r
+
+/-- **Normal-crossing singularity threshold.**  The intrinsic critical scheme of a product of
+`r+1` coordinates is empty exactly for one coordinate.  The first genuinely singular member is
+the two-coordinate crossing, and every higher member remains intrinsically singular. -/
+theorem normalCrossingDerivationalCriticalIdeal_eq_top_iff (r : ℕ) :
+    derivationalCriticalIdeal (R := F) (normalCrossingPolynomial (F := F) r) = ⊤ ↔
+      r = 0 := by
+  rw [normalCrossingDerivationalCriticalIdeal_eq_veroneseIdeal]
+  exact veroneseIdeal_eq_top_iff r
+
+/-- **Cyclic-obstruction / critical-module comparison.**  If a source vector has the exact
+squarefree coface ideal as its scalar annihilator, then its full cyclic orbit is canonically
+linearly equivalent to the intrinsic critical quotient of the normal-crossing source law.  This
+is the algebraic comparison needed to identify a relative source obstruction with cotangent
+singular support, rather than merely compare their nonvanishing thresholds. -/
+noncomputable def normalCrossingCriticalQuotientEquivCyclic
+    (r : ℕ) {Q : Type*} [AddCommGroup Q]
+    [Module (MvPolynomial (Fin (r + 1)) F) Q]
+    (q : Q)
+    (hq : Ideal.torsionOf (MvPolynomial (Fin (r + 1)) F) Q q =
+      veroneseIdeal F (Fin (r + 1)) r) :
+    ((MvPolynomial (Fin (r + 1)) F) ⧸
+      derivationalCriticalIdeal (R := F)
+        (normalCrossingPolynomial (F := F) r))
+      ≃ₗ[(MvPolynomial (Fin (r + 1)) F)]
+        (MvPolynomial (Fin (r + 1)) F) ∙ q := by
+  rw [normalCrossingDerivationalCriticalIdeal_eq_veroneseIdeal, ← hq]
+  exact Ideal.quotTorsionOfEquivSpanSingleton _ _ q
+
+/-- A variable does not divide the face monomial which omits it. -/
+theorem X_not_dvd_cofaceMonomial (r : ℕ) (i : Fin (r + 1)) :
+    ¬ X i ∣ cofaceMonomial (F := F) r i := by
+  apply (MvPolynomial.X_prime (R := F) (σ := Fin (r + 1))).not_dvd_finsetProd
+  intro j hj
+  rw [MvPolynomial.X_dvd_X]
+  exact (Finset.ne_of_mem_erase hj).symm
+
+/-- Every other face monomial is divisible by the selected variable. -/
+theorem X_dvd_cofaceMonomial_of_ne (r : ℕ) {i j : Fin (r + 1)} (hij : i ≠ j) :
+    X i ∣ cofaceMonomial (F := F) r j := by
+  apply Finset.dvd_prod_of_mem
+  exact Finset.mem_erase.mpr ⟨hij, Finset.mem_univ i⟩
+
+/-- Every weighted star boundary is a syzygy of the face-monomial presentation. -/
+theorem cofaceRelation_boundary (r : ℕ)
+    (b : Fin r → MvPolynomial (Fin (r + 1)) F) :
+    cofaceRelation r (cofaceBoundary r b) = 0 := by
+  rw [cofaceRelation, Fin.sum_univ_succ]
+  simp only [cofaceBoundary, Fin.cases_zero, Fin.cases_succ]
+  have hsucc :
+      (∑ i : Fin r, (X i.succ * b i) * cofaceMonomial r i.succ) =
+        (∑ i : Fin r, b i) * (∏ j : Fin (r + 1), X j) := by
+    calc
+      _ = ∑ i : Fin r, b i * (X i.succ * cofaceMonomial r i.succ) := by
+        apply Finset.sum_congr rfl
+        intro i hi
+        ring
+      _ = ∑ i : Fin r, b i * (∏ j : Fin (r + 1), X j) := by
+        apply Finset.sum_congr rfl
+        intro i hi
+        rw [X_mul_cofaceMonomial]
+      _ = _ := by rw [Finset.sum_mul]
+  rw [hsucc]
+  calc
+    (-X 0 * ∑ i, b i) * cofaceMonomial r 0 +
+        (∑ i, b i) * (∏ j, X j) =
+      -(∑ i, b i) * (X 0 * cofaceMonomial r 0) +
+        (∑ i, b i) * (∏ j, X j) := by ring
+    _ = -(∑ i, b i) * (∏ j, X j) +
+        (∑ i, b i) * (∏ j, X j) := by rw [X_mul_cofaceMonomial]
+    _ = 0 := by ring
+
+/-- **Complete coface-syzygy theorem.** Every relation among the `r+1` complementary
+squarefree monomials is generated by the `r` weighted star boundaries
+`X_i e_i - X_0 e_0`. This is exactness at the middle term of the codimension-two
+Hilbert--Burch complex. -/
+theorem cofaceRelation_eq_zero_iff (r : ℕ)
+    (a : Fin (r + 1) → MvPolynomial (Fin (r + 1)) F) :
+    cofaceRelation r a = 0 ↔
+      ∃ b : Fin r → MvPolynomial (Fin (r + 1)) F, a = cofaceBoundary r b := by
+  constructor
+  · intro hrel
+    have hdiv : ∀ i : Fin r, X i.succ ∣ a i.succ := by
+      intro i
+      let f : Fin (r + 1) → MvPolynomial (Fin (r + 1)) F :=
+        fun j => a j * cofaceMonomial r j
+      have hrest : X i.succ ∣ ∑ j ∈ Finset.univ.erase i.succ, f j := by
+        apply Finset.dvd_sum
+        intro j hj
+        have hne : i.succ ≠ j := (Finset.ne_of_mem_erase hj).symm
+        exact dvd_mul_of_dvd_right (X_dvd_cofaceMonomial_of_ne r hne) (a j)
+      have hsplit := Finset.sum_erase_add Finset.univ f (Finset.mem_univ i.succ)
+      have hsum : ∑ j, f j = 0 := hrel
+      rw [hsum] at hsplit
+      have hterm : f i.succ = -(∑ j ∈ Finset.univ.erase i.succ, f j) :=
+        eq_neg_of_add_eq_zero_right hsplit
+      have htermdiv : X i.succ ∣ f i.succ := by
+        rw [hterm]
+        exact dvd_neg.mpr hrest
+      have hcases :=
+        (MvPolynomial.X_prime (R := F) (σ := Fin (r + 1))).dvd_mul.mp htermdiv
+      exact hcases.resolve_right (X_not_dvd_cofaceMonomial r i.succ)
+    choose b hb using hdiv
+    refine ⟨b, ?_⟩
+    funext i
+    refine Fin.cases ?_ (fun j => ?_) i
+    · have hsum :
+          a 0 * cofaceMonomial r 0 +
+              ∑ j : Fin r, a j.succ * cofaceMonomial r j.succ = 0 := by
+        unfold cofaceRelation at hrel
+        simpa only [Fin.sum_univ_succ] using hrel
+      simp_rw [hb] at hsum
+      have hfactored :
+          (a 0 + X 0 * ∑ j : Fin r, b j) * cofaceMonomial r 0 = 0 := by
+        calc
+          _ = a 0 * cofaceMonomial r 0 +
+                (X 0 * ∑ j : Fin r, b j) * cofaceMonomial r 0 := by ring
+          _ = a 0 * cofaceMonomial r 0 +
+                ∑ j : Fin r, (X 0 * b j) * cofaceMonomial r 0 := by
+              rw [Finset.mul_sum, Finset.sum_mul]
+          _ = a 0 * cofaceMonomial r 0 +
+                ∑ j : Fin r, (X j.succ * b j) * cofaceMonomial r j.succ := by
+              congr 1
+              apply Finset.sum_congr rfl
+              intro j hj
+              calc
+                (X 0 * b j) * cofaceMonomial r 0 =
+                    b j * (X 0 * cofaceMonomial r 0) := by ring
+                _ = b j * (X j.succ * cofaceMonomial r j.succ) := by
+                    rw [X_mul_cofaceMonomial, X_mul_cofaceMonomial]
+                _ = (X j.succ * b j) * cofaceMonomial r j.succ := by ring
+          _ = 0 := hsum
+      have hmne : cofaceMonomial (F := F) r 0 ≠ 0 := by
+        rw [cofaceMonomial, Finset.prod_ne_zero_iff]
+        intro j hj
+        exact MvPolynomial.X_ne_zero j
+      have hcoeff : a 0 + X 0 * ∑ j : Fin r, b j = 0 :=
+        (mul_eq_zero.mp hfactored).resolve_right hmne
+      simp only [cofaceBoundary, Fin.cases_zero]
+      simpa only [neg_mul] using eq_neg_of_add_eq_zero_left hcoeff
+    · simp only [cofaceBoundary, Fin.cases_succ]
+      exact hb j
+  · rintro ⟨b, rfl⟩
+    exact cofaceRelation_boundary r b
+
+/-- The boundary presentation has no relations of its own: the Hilbert--Burch complex stops in
+homological degree two. -/
+theorem cofaceBoundary_injective (r : ℕ) :
+    Function.Injective (cofaceBoundary (F := F) r) := by
+  intro b c hbc
+  funext i
+  have hi := congrFun hbc i.succ
+  simp only [cofaceBoundary, Fin.cases_succ] at hi
+  exact mul_left_cancel₀ (MvPolynomial.X_ne_zero i.succ) hi
+
+/-- A coordinate variable cannot belong to a squarefree coface ideal of width at least two. -/
+theorem X_not_mem_veroneseIdeal_of_two_le
+    {r : ℕ} (hr : 2 ≤ r) (i : Fin (r + 1)) :
+    (X i : MvPolynomial (Fin (r + 1)) F) ∉
+      veroneseIdeal F (Fin (r + 1)) r := by
+  intro hX
+  have hwide :=
+    (mem_veroneseIdeal_iff (R := F) (r := r)
+      (X i : MvPolynomial (Fin (r + 1)) F)).mp hX
+  have hcard := hwide (Finsupp.single i 1) (by simp [MvPolynomial.X])
+  simp only [Finsupp.support_single i one_ne_zero, Finset.card_singleton] at hcard
+  omega
+
+/-- A distinguished minimal star syzygy of the complementary face monomials. -/
+noncomputable def cofaceStarSyzygy (r : ℕ) (i : Fin r) :
+    Fin (r + 1) → MvPolynomial (Fin (r + 1)) F :=
+  cofaceBoundary r (Pi.single i 1)
+
+/-- Every distinguished star chain is a genuine first syzygy. -/
+theorem cofaceRelation_starSyzygy (r : ℕ) (i : Fin r) :
+    cofaceRelation r (cofaceStarSyzygy (F := F) r i) = 0 := by
+  exact cofaceRelation_boundary r (Pi.single i 1)
+
+/-- The positive coordinate of a distinguished star syzygy is the corresponding variable. -/
+theorem cofaceStarSyzygy_succ (r : ℕ) (i : Fin r) :
+    cofaceStarSyzygy (F := F) r i i.succ = X i.succ := by
+  simp [cofaceStarSyzygy, cofaceBoundary]
+
+/-- The coordinatewise ideal-valued envelope containing every degree-two Koszul boundary of the
+coface sequence.  Antisymmetry is deliberately omitted: non-membership in this larger image is a
+stronger obstruction than non-membership in the actual Koszul-boundary image. -/
+noncomputable def cofaceKoszulBoundaryEnvelope (r : ℕ)
+    (b : Fin (r + 1) → Fin (r + 1) → MvPolynomial (Fin (r + 1)) F) :
+    Fin (r + 1) → MvPolynomial (Fin (r + 1)) F :=
+  fun i => ∑ j, b j i * cofaceMonomial r j
+
+/-- Every coordinate of the Koszul-boundary envelope belongs to the coface ideal. -/
+theorem cofaceKoszulBoundaryEnvelope_mem_veroneseIdeal
+    (r : ℕ)
+    (b : Fin (r + 1) → Fin (r + 1) → MvPolynomial (Fin (r + 1)) F)
+    (i : Fin (r + 1)) :
+    cofaceKoszulBoundaryEnvelope r b i ∈
+      veroneseIdeal F (Fin (r + 1)) r := by
+  apply Ideal.sum_mem
+  intro j hj
+  exact Ideal.mul_mem_left _ _
+    (Ideal.subset_span ⟨Finset.univ.erase j, by simp, rfl⟩)
+
+/-- **First derived-excess theorem.**  From three structural coordinates onward, a minimal star
+syzygy is not a degree-two Koszul boundary.  Hence the derived critical locus of the normal-
+crossing source law has nonzero first excess homology even though its classical truncation is the
+same squarefree coface scheme. -/
+theorem cofaceStarSyzygy_not_koszulBoundaryEnvelope
+    {r : ℕ} (hr : 2 ≤ r) (i : Fin r) :
+    ¬ ∃ b : Fin (r + 1) → Fin (r + 1) →
+        MvPolynomial (Fin (r + 1)) F,
+      cofaceKoszulBoundaryEnvelope r b = cofaceStarSyzygy r i := by
+  rintro ⟨b, hb⟩
+  have hmem := cofaceKoszulBoundaryEnvelope_mem_veroneseIdeal r b i.succ
+  rw [hb, cofaceStarSyzygy_succ] at hmem
+  exact X_not_mem_veroneseIdeal_of_two_le hr i.succ hmem
+
+/-! ### Exterior derived-excess capacity -/
+
+/-- A squarefree coordinate product of width strictly below the coface width cannot belong to the
+coface ideal.  This is the coefficient reader used to detect higher Koszul classes. -/
+theorem prod_X_not_mem_veroneseIdeal_of_card_lt
+    {r : ℕ} (J : Finset (Fin (r + 1))) (hJ : J.card < r) :
+    (∏ j ∈ J, (X j : MvPolynomial (Fin (r + 1)) F)) ∉
+      veroneseIdeal F (Fin (r + 1)) r := by
+  intro hmem
+  have hwide :=
+    (mem_veroneseIdeal_iff (R := F) (r := r)
+      (∏ j ∈ J, (X j : MvPolynomial (Fin (r + 1)) F))).mp hmem
+  have hcoeff :
+      coeff (∑ j ∈ J, Finsupp.single j 1)
+        (∏ j ∈ J, (X j : MvPolynomial (Fin (r + 1)) F)) ≠ 0 := by
+    rw [prod_X_eq_monomial, coeff_monomial]
+    simp
+  have hwidth := hwide (∑ j ∈ J, Finsupp.single j 1) hcoeff
+  rw [support_sum_single] at hwidth
+  omega
+
+/-- The exterior product of two distinguished star syzygies, presented as an alternating
+two-chain. -/
+noncomputable def cofaceStarWedge (r : ℕ) (i k : Fin r) :
+    Fin (r + 1) → Fin (r + 1) → MvPolynomial (Fin (r + 1)) F :=
+  fun a b =>
+    cofaceStarSyzygy r i a * cofaceStarSyzygy r k b -
+      cofaceStarSyzygy r i b * cofaceStarSyzygy r k a
+
+/-- Exterior products of star syzygies are genuine degree-two Koszul cycles. -/
+theorem cofaceKoszulBoundaryEnvelope_starWedge_eq_zero
+    (r : ℕ) (i k : Fin r) :
+    cofaceKoszulBoundaryEnvelope r (cofaceStarWedge (F := F) r i k) = 0 := by
+  funext a
+  have hi := cofaceRelation_starSyzygy (F := F) r i
+  have hk := cofaceRelation_starSyzygy (F := F) r k
+  unfold cofaceRelation at hi hk
+  unfold cofaceKoszulBoundaryEnvelope cofaceStarWedge
+  simp only [Pi.zero_apply]
+  conv_lhs =>
+    enter [2, j]
+    rw [sub_mul]
+  rw [Finset.sum_sub_distrib]
+  calc
+    (∑ j, cofaceStarSyzygy r i j * cofaceStarSyzygy r k a *
+          cofaceMonomial r j) -
+        ∑ j, cofaceStarSyzygy r i a * cofaceStarSyzygy r k j *
+          cofaceMonomial r j =
+      (∑ j, cofaceStarSyzygy r i j * cofaceMonomial r j) *
+          cofaceStarSyzygy r k a -
+        cofaceStarSyzygy r i a *
+          (∑ j, cofaceStarSyzygy r k j * cofaceMonomial r j) := by
+            rw [Finset.sum_mul, Finset.mul_sum]
+            apply congrArg₂ (· - ·)
+            · apply Finset.sum_congr rfl
+              intro j hj
+              ring
+            · apply Finset.sum_congr rfl
+              intro j hj
+              ring
+    _ = 0 := by rw [hi, hk]; simp
+
+/-- The distinguished coefficient of the wedge of two different star syzygies is the product of
+their two visible coordinates. -/
+theorem cofaceStarWedge_succ_succ
+    (r : ℕ) {i k : Fin r} (hik : i ≠ k) :
+    cofaceStarWedge (F := F) r i k i.succ k.succ =
+      X i.succ * X k.succ := by
+  simp [cofaceStarWedge, cofaceStarSyzygy, cofaceBoundary,
+    Pi.single_apply, hik, Ne.symm hik]
+
+/-- The coordinatewise ideal-valued envelope containing every degree-three Koszul boundary. -/
+noncomputable def cofaceKoszulThirdBoundaryEnvelope (r : ℕ)
+    (c : Fin (r + 1) → Fin (r + 1) → Fin (r + 1) →
+      MvPolynomial (Fin (r + 1)) F) :
+    Fin (r + 1) → Fin (r + 1) → MvPolynomial (Fin (r + 1)) F :=
+  fun a b => ∑ j, c j a b * cofaceMonomial r j
+
+/-- Every coefficient of the degree-three boundary envelope belongs to the coface ideal. -/
+theorem cofaceKoszulThirdBoundaryEnvelope_mem_veroneseIdeal
+    (r : ℕ)
+    (c : Fin (r + 1) → Fin (r + 1) → Fin (r + 1) →
+      MvPolynomial (Fin (r + 1)) F)
+    (a b : Fin (r + 1)) :
+    cofaceKoszulThirdBoundaryEnvelope r c a b ∈
+      veroneseIdeal F (Fin (r + 1)) r := by
+  apply Ideal.sum_mem
+  intro j hj
+  exact Ideal.mul_mem_left _ _
+    (Ideal.subset_span ⟨Finset.univ.erase j, by simp, rfl⟩)
+
+/-- **Second derived-excess theorem.**  From four structural coordinates onward, the wedge of any
+two different minimal star syzygies is a degree-two Koszul cycle which is not a degree-three
+boundary.  This is the first formally verified exterior multiplication law in the derived
+normal-crossing obstruction. -/
+theorem cofaceStarWedge_not_thirdBoundaryEnvelope
+    {r : ℕ} (hr : 3 ≤ r) {i k : Fin r} (hik : i ≠ k) :
+    ¬ ∃ c : Fin (r + 1) → Fin (r + 1) → Fin (r + 1) →
+        MvPolynomial (Fin (r + 1)) F,
+      cofaceKoszulThirdBoundaryEnvelope r c = cofaceStarWedge r i k := by
+  rintro ⟨c, hc⟩
+  have hmem :=
+    cofaceKoszulThirdBoundaryEnvelope_mem_veroneseIdeal r c i.succ k.succ
+  rw [hc, cofaceStarWedge_succ_succ r hik] at hmem
+  have hnot := prod_X_not_mem_veroneseIdeal_of_card_lt
+    (F := F) (r := r) ({i.succ, k.succ} : Finset (Fin (r + 1))) (by
+      simp [hik]
+      omega)
+  apply hnot
+  simpa [hik] using hmem
+
+/-- The number of nonempty proper exterior labels on the `r` independent star comparisons is
+exactly `2^r - 2`.  Together with the coefficient obstruction above, this is the finite-rank
+capacity count underlying the exterior derived-excess law. -/
+theorem truncatedExteriorCapacity_count (r : ℕ) (hr : 1 ≤ r) :
+    (∑ p ∈ Finset.Icc 1 (r - 1), r.choose p) = 2 ^ r - 2 := by
+  have htotal := Nat.sum_range_choose r
+  have hset : Finset.range (r + 1) =
+      insert 0 (insert r (Finset.Icc 1 (r - 1))) := by
+    ext p
+    simp only [Finset.mem_range, Finset.mem_insert, Finset.mem_Icc]
+    omega
+  rw [hset] at htotal
+  have hrnot : r ∉ Finset.Icc 1 (r - 1) := by
+    simp only [Finset.mem_Icc]
+    omega
+  have hzero : 0 ≠ r := by omega
+  have hzeronot : 0 ∉ insert r (Finset.Icc 1 (r - 1)) := by
+    simp [hzero]
+  simp only [Finset.sum_insert hzeronot, Finset.sum_insert hrnot,
+    Nat.choose_zero_right, Nat.choose_self] at htotal
+  omega
 
 end GaloisForLFunctions.VeroneseIdeal

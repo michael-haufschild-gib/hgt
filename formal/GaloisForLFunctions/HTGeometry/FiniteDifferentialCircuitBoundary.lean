@@ -68,6 +68,16 @@ theorem differentialAlgebraicOver_of_mem_differentialAdjoin_singleton
     (derivationClosed_differentialAdjoin F ({x} : Set E))
     (differentialAdjoin_trdeg_lt_aleph0_of_differentialAlgebraic hx) hy
 
+/-- Every embedded coefficient is differentially algebraic over its coefficient field. -/
+theorem differentialAlgebraicOver_algebraMap
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (c : F) : DifferentialAlgebraicOver F (algebraMap F E c) := by
+  unfold DifferentialAlgebraicOver
+  intro hind
+  have htrans : Transcendental F (algebraMap F E c) :=
+    hind.algebraicIndependent.transcendental Unit.unit
+  exact htrans (isAlgebraic_algebraMap c)
+
 /-- Every element obtained by adjoining two differentially algebraic elements in sequence is
 differentially algebraic over the original base. -/
 theorem differentialAlgebraicOver_of_mem_binary_differentialAdjoin
@@ -132,6 +142,16 @@ theorem differentialAlgebraicOver_neg
   exact IntermediateField.neg_mem _
     (subset_differentialAdjoin F ({x} : Set E) rfl)
 
+/-- Differential algebraicity is closed under subtraction. -/
+theorem differentialAlgebraicOver_sub
+    {F E : Type*} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {x y : E} (hx : DifferentialAlgebraicOver F x)
+    (hy : DifferentialAlgebraicOver F y) :
+    DifferentialAlgebraicOver F (x - y) := by
+  simpa [sub_eq_add_neg] using
+    differentialAlgebraicOver_add hx (differentialAlgebraicOver_neg hy)
+
 /-- Differential algebraicity is closed under multiplicative inverse. -/
 theorem differentialAlgebraicOver_inv
     {F E : Type*} [Field F] [Field E] [Algebra F E]
@@ -141,6 +161,26 @@ theorem differentialAlgebraicOver_inv
   apply differentialAlgebraicOver_of_mem_differentialAdjoin_singleton hx
   exact IntermediateField.inv_mem _
     (subset_differentialAdjoin F ({x} : Set E) rfl)
+
+/-- Differential algebraicity is closed under division. -/
+theorem differentialAlgebraicOver_div
+    {F E : Type*} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {x y : E} (hx : DifferentialAlgebraicOver F x)
+    (hy : DifferentialAlgebraicOver F y) :
+    DifferentialAlgebraicOver F (x / y) := by
+  simpa [div_eq_mul_inv] using
+    differentialAlgebraicOver_mul hx (differentialAlgebraicOver_inv hy)
+
+/-- Every natural power of a differentially algebraic element is differentially algebraic. -/
+theorem differentialAlgebraicOver_pow
+    {F E : Type*} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {x : E} (hx : DifferentialAlgebraicOver F x) (n : ℕ) :
+    DifferentialAlgebraicOver F (x ^ n) := by
+  apply differentialAlgebraicOver_of_mem_differentialAdjoin_singleton hx
+  exact (differentialAdjoin F ({x} : Set E)).toSubalgebra.pow_mem
+    (subset_differentialAdjoin F ({x} : Set E) rfl) n
 
 /-- Differential algebraicity is closed under the ambient derivation. -/
 theorem differentialAlgebraicOver_deriv
@@ -168,6 +208,14 @@ inductive FiniteDifferentialCircuit {E : Type*} [Field E] [Differential E]
       FiniteDifferentialCircuit Atom x⁻¹
   | deriv {x : E} : FiniteDifferentialCircuit Atom x →
       FiniteDifferentialCircuit Atom x′
+
+/-- Leaves admitted by a scalar-aware circuit: either a genuine model atom or a freely available
+coefficient from the base field.  This is the exact leaf class used by finite weighted genomic
+clocks, symbolic regressors, and neural expression trees. -/
+def BaseScalarOrAtom
+    (F E : Type*) [Field F] [Field E] [Algebra F E]
+    (Atom : E → Prop) (x : E) : Prop :=
+  Atom x ∨ ∃ c : F, algebraMap F E c = x
 
 /-- A finite differential circuit whose atoms are all differentially algebraic has a
 differentially algebraic output. -/
@@ -200,6 +248,22 @@ theorem exists_hypertranscendental_atom_of_finiteDifferentialCircuit
     by_contra hda
     exact hnone ⟨a, ha, hda⟩
   exact hx (hcircuit.differentialAlgebraicOver hAtom)
+
+/-- **Scalar-aware positive source extraction.**  A finite differential circuit may use arbitrary
+base-field coefficients for free.  If its output is hypertranscendental, some genuine non-scalar
+model atom is nevertheless hypertranscendental.  Learned weights and affine offsets therefore do
+not count as hidden sources. -/
+theorem exists_hypertranscendental_atom_of_scalarAwareFiniteDifferentialCircuit
+    {F E : Type*} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {Atom : E → Prop} {x : E} (hx : HypertranscendentalOver F x)
+    (hcircuit : FiniteDifferentialCircuit (BaseScalarOrAtom F E Atom) x) :
+    ∃ a : E, Atom a ∧ HypertranscendentalOver F a := by
+  obtain ⟨a, ha, hHT⟩ :=
+    exists_hypertranscendental_atom_of_finiteDifferentialCircuit hx hcircuit
+  rcases ha with ha | ⟨c, rfl⟩
+  · exact ⟨a, ha, hHT⟩
+  · exact (hHT (differentialAlgebraicOver_algebraMap c)).elim
 
 end
 

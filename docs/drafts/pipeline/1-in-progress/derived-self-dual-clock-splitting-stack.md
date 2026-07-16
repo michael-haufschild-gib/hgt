@@ -3,15 +3,16 @@
 - **ID:** `derived-self-dual-clock-splitting-stack`
 - **Stage:** 1-in-progress
 - **Type:** MEDAL-SCALE CONJECTURE / UNIFIED HT OBSTRUCTION OBJECT
-- **Scientific status:** `[CONJECTURE] [FINITE-STAGE ACYCLICITY PROVED] [CAPACITY-FIELD REALIZATION/COVARIANCE PROVED] [NOT AN RH RESULT]`
+- **Scientific status:** `[CONJECTURE] [FINITE-STAGE ACYCLICITY PROVED] [CAPACITY-FIELD REALIZATION/COVARIANCE PROVED] [POSITIVE-SCALE RIGIDITY FORMALIZED] [NOT AN RH RESULT]`
 - **Parent theorems:**
   `../2-fully-proven/new_scientific_knowledge/hypertranscendental-clock-incompressibility.md`,
   `../2-fully-proven/new_scientific_knowledge/differential-variational-building-balance-law.md`
 - **Statement:** The universal positive linearized object of a hypertranscendental realization is
-  its capacity field: the building-valued clock-capacity path descended over the source realization
-  groupoid modulo bounded congruence.  The derived stack of filtration-tame, global, positive, and
-  self-dual splittings is the stack of admissible trivializations of that field.  The familiar
-  obstruction modes are conjecturally conservative representations of this one object.
+  its scale-valued capacity field: the building-valued clock-capacity path descended over the
+  source realization groupoid modulo bounded congruence, together with the unavoidable domain or
+  carrier scale of the noncompact jet grading.  The derived stack of filtration-tame, global,
+  positive, and self-dual splittings is the stack of admissible trivializations of that field.  The
+  familiar obstruction modes are conjecturally conservative representations of this one object.
 
 ## 1. Why the obstruction object has a splitting stack
 
@@ -337,6 +338,218 @@ self-dual trivialization object.
 The complete paper proof, external novelty gate, and Lean kernels are in
 `../2-fully-proven/new_scientific_knowledge/hypertranscendental-capacity-field-realization-covariance.md`.
 
+### Theorem K: faithful positive realizations cannot trivialize the full grading
+
+Hypertranscendence makes every intrinsic Kähler jet mode nonzero.  A bounded operator implementing
+the pure grading weight `lambda^n` therefore has norm at least `||lambda||^n` at every cutoff.  No
+nonunit expanding dilation acts boundedly on one faithful carrier, and bounded action of both
+directions is possible only for `||lambda||=1`.
+
+The positive successor is a rigidity theorem, not merely a demand for more topology.  Exact
+inter-fiber covariance of diagonal squared norms forces, and is forced by,
+
+```text
+w_n(s)=a_n exp(-2ns),                    a_n>0.
+```
+
+Consequently the capacity field is genuinely scale-valued whenever bounded noncompact grading
+symmetry is retained.  The only alternative on one faithful carrier is an unbounded operator with
+its domain filtration.  The proof and Lean certificate are in
+`../3-formalized/hypertranscendental-positive-realization-scale-rigidity.md`.
+
+### Theorem L: the asymptotic connection is the complete bounded obstruction
+
+Dilation covariance and the intrinsic unit Kähler principal symbol define a conserved adjacent-grade
+connection on the scale-valued capacity field.  In rank one its complete bounded-gauge class is
+
+```text
+[n |-> log w_n(0)] in R^N/ell^infinity.
+```
+
+The zero class has the unique flat chart `w_n(s)=a exp(-2ns)` and a critical capacity wall at
+`s=0`: the complete unit boundary is normal for `s>0` and has exactly linear cutoff capacity at the
+wall.  The proof and Lean certificate are in
+`../3-formalized/hypertranscendental-flat-positive-uniformization.md`.
+
+In rank `r`, metric frames turn the principal-symbol steps into a scale-independent `GL(r)`
+connection `U_n` with partial transport `P_N`.  Every connection on the grade half-line is
+algebraically flat.  A bounded flat gauge exists exactly when `P_N` and `P_N^(-1)` are uniformly
+bounded.  Normalized Cartan/Lyapunov spectra are strictly incomplete: the scalar path `P_N=N+1`
+has zero normalized exponent but no bounded flat gauge.  Hence spectral and continuation failures
+can be provably different shadows of the same transport object.  The paper theorem and formalized
+group core are in
+`../2-fully-proven/new_scientific_knowledge/hypertranscendental-nonabelian-asymptotic-connection.md`.
+
+### Theorem M: minimality of the universal obstruction object
+
+Three proved no-go theorems give an information-theoretic lower bound on any conservative HT
+obstruction theory.
+
+1. It cannot factor through one fixed finite differential stage: every full-rank finite comparison
+   has an affine space of splittings.
+2. It cannot select a universal scalar capacity-growth law from hypertranscendence and positivity:
+   every nondecreasing positive scalar path is realizable.
+3. It cannot factor through normalized linear-rate spectral data: `P_N=N+1` has zero normalized
+   exponent but no bounded flat gauge.
+
+Consequently every conservative universal obstruction invariant must retain at least
+
+```text
+infinite stage + full coarse transport path + bounded-gauge class.                    (M)
+```
+
+For rank greater than one, coordinate descent forces the transport to be nonabelian.  Positivity
+and reflection further force positive-cone and self-dual structure.  The scale-valued capacity
+connection is the first object in the hierarchy that retains all information required by `(M)`.
+
+**[CONJECTURE: MINIMAL COMPLETENESS.]**  The derived self-dual completion of the capacity connection
+is not only necessary by Theorem M but sufficient: every persistent HT reconstruction obstruction
+is represented conservatively by it.  A proof would establish the proposed unified field theory;
+a counterexample would be a new independent invariant beyond finite stage, scalar capacity, and
+coarse nonabelian transport.
+
+### Theorem N: the universal object is a bornological shape, not a clock
+
+Different obstruction chains use different exhaustive filtrations.  Ordinary cofinality of their
+index sets is not conservative: the cofinal sampling `phi(n)=2n` can see the zero profile while an
+unbounded profile escapes at every omitted odd index.  A comparison is conservative for bounded
+flatability exactly under the stronger bornological condition that the sampled transport path is
+uniformly dense in the full transport path.
+
+In rank one, if
+
+```text
+for every m there is n with |h(m)-h(phi(n))| <= C,
+```
+
+then `h` is bounded if and only if `h composed with phi` is bounded.  This theorem is
+Lean-formalized.  Moreover, no finite family of divergent normalizing rates is conservative: the
+profile obtained from the square root of their pointwise minimum is unbounded but sub-rate for all
+of them.
+
+Therefore the universal object cannot be tied to derivative order, pole number, spectral cutoff,
+prime cutoff, or any single clock.  It must be localized over all source-natural filtrations at
+bornologically cofinal comparisons.  Ordinary cohomology of each grading ray vanishes, whereas its
+bounded-primitive obstruction groupoid completely classifies bounded uniformizability.  The full
+theorem, proof, external parent gate, and Lean certificate are in
+`../3-formalized/hypertranscendental-controlled-cohomology-and-bornological-shape.md`.
+
+**[CONJECTURE: UNIVERSAL BORNOLOGICAL SHAPE.]**  The derived self-dual localization of the capacity
+connection over bornologically cofinal filtration charts is an initial conservative recipient of
+all persistent source-natural HT reconstruction obstructions.  If false, the counterexample is a
+new filtration invariant or a second HT shape component.
+
+The first non-formal chart comparison is already source-defined and Lean-verified.  For Gamma, the
+normalized inverse branches `B_n` and intrinsic moving-base transitions
+
+```text
+D_n=B_n/(1-(s_n/n)B_n)
+```
+
+are uniformly asymptotic to one another and to the identity on the same analytic collar.  Thus
+they are bornologically cofinal at finite analytic resolution.  Transport of their positive
+capacity forms and relative algebraic multiplicities remains open.
+
+### Theorem O: source depth and observable order form a genuine scale cone
+
+The Gamma comparison itself disproves the one-ray version of the universal object.  For the
+tangent Möbius germ `M_a(z)=z/(1-az)`, the exact all-order law is
+
+```text
+M_a^(k)(0)=k! a^(k-1),
+M_a^(k)(0)/k!=a^(k-1).
+```
+
+Hence every nonidentity comparison has an unbounded raw derivative tail, however small `a` is,
+while Taylor normalization converts it exactly to a geometric capacity profile.  For the Gamma
+shells `a_n=s_n/n->0`, every fixed finite order converges to the identity, but the raw supremum over
+all orders is infinite for every `n`.  Source depth and observable order therefore have
+noncommuting limits.
+
+The minimal scale geometry is not one clock but a directed cone containing at least
+
+```text
+source/realization depth x observable/jet order.
+```
+
+A conservative invariant must retain the full bornological diagram and its Gevrey weights;
+different cofinal directions can have inequivalent boundary shadows.  The complete theorem,
+external gate, and Lean certificate are in
+`../3-formalized/hypertranscendental-two-scale-factorial-wall.md`.
+
+The weight exponent is forced.  Below Gevrey order one every nonidentity tangent Möbius chart is
+unbounded; above order one every finite parameter becomes square-summable; exactly order one
+retains a nontrivial proper boundary.  Lean verifies the raw, critical, and supercritical
+order-two regimes.  The completion therefore has a selected critical regularity, not an arbitrary
+choice of jet norm.
+
+**[CONJECTURE: MULTISCALE COMPLETENESS.]**  The derived self-dual multifiltered capacity shape,
+localized at comparisons uniformly tame on cofinal regions of the full scale cone, is an initial
+conservative recipient of every persistent source-natural HT reconstruction obstruction.
+
+### Theorem P: the algebraic moduli collapses; only completion moduli remains
+
+For any two one-generator HT sources `x,y` over the same differential base and every finite order
+`L`, their marked finite-jet fields are canonically equivalent:
+
+```text
+F(x,Dx,...,D^(L-1)x) ~= F(y,Dy,...,D^(L-1)y),
+D^i x |-> D^i y.
+```
+
+This is Lean-formalized.  It implies that every invariant factoring through any fixed marked
+finite differential-algebraic stage is constant on HT sources.  Differential algebra therefore
+does not contain the identity of Gamma, zeta, or any other one-generator HT source: it supplies a
+single universal free bulk.  The source identity can only lie in the analytic/bornological
+completion and its boundary gluing.
+
+The candidate universal object is consequently sharpened to the **polarized HT completion shape**:
+the free differential-rational bulk equipped with its source-natural analytic charts,
+Gevrey-weighted product bornology, nonabelian controlled connection, signed Hermitian/Krein
+polarization, and intrinsic self-duality.  The complete
+statement and anti-theatre gate are in
+`../3-formalized/hypertranscendental-algebraic-bulk-completion-boundary.md`.
+
+An existing universal orientation family kills the unpolarized version: its differential field
+and compact-open completion are fixed while every finite Krein index occurs.  The strong positive
+replacement is the independent polarization component; magnitude bornology alone cannot recover
+orientation.
+
+**[CONJECTURE: POLARIZED COMPLETION-MODULI PRINCIPLE.]**  This polarized completion shape is faithful on
+source-natural one-generator HT analytic germs up to differential analytic equivalence.
+
+**[CONJECTURE: BOUNDARY LOCALIZATION.]**  Every persistent HT reconstruction obstruction is the
+failure of the canonical finite-jet pro-equivalence to extend across this polarized completion boundary.
+Thus the unification target is an extension defect, not a common scalar law or a hidden flow.
+
+### Theorem Q: the minimum viable architecture is forced
+
+Five exact nonconservativity witnesses now exclude, respectively: finite differential-algebraic
+stages, unpolarized analytic completion, noncritical Gevrey admissibility, one cofinal scale path,
+and every finite rate spectrum.  Therefore any invariant conservative on the combined HT test
+class must retain at least
+
+```text
+external source constraint groupoid
++ signed Hermitian/Krein polarization
++ critical Gevrey product bornology
++ full controlled nonabelian transport germ.
+```
+
+This minimality theorem is fully proved on paper, with most components Lean-formalized, in
+`../2-fully-proven/needs-audit/hypertranscendental-minimal-polarized-critical-completion-architecture.md`.
+It is a necessity theorem, not the open completeness theorem.
+
+Two local converses are already exact: the critical Möbius jet profile is Lean-proved injective,
+and the labeled Krein--Hamming polarization separates every finite prime-orientation chamber.  The
+open core is therefore not local faithfulness of these components but their conservative descent
+and gluing with one source groupoid and one controlled connection.
+
+**[CONJECTURE: MINIMAL-ARCHITECTURE COMPLETENESS.]**  The derived polarized comparison stack built
+from these four components is conservative for every persistent source-natural HT reconstruction
+obstruction.  Failure would force a fifth independent structure and would itself be a major
+classification theorem.
+
 ### Rank boundary
 
 The source tail is not finitely differentially generated or the completed cotangent module is not
@@ -413,7 +626,9 @@ now has a precise candidate meaning:
 ```text
 infinite capacity = the universal moduli cone of positive finite-jet capacity paths,
 finite rigidity   = bounded-congruence invariance and exact Hermitian covariance,
-thin boundary     = the asymptotic/self-dual boundary where the capacity field has no admissible
+topological force = noncompact grading has no bounded faithful single-carrier trivialization,
+field connection  = the nonabelian partial-transport class modulo bounded gauge,
+thin boundary     = the asymptotic/self-dual boundary where that class has no admissible bounded
                     global reduction or trivialization.
                                                                             (16)
 ```
@@ -444,6 +659,8 @@ Parent theories include:
 - differential-algebraic jet spaces, https://arxiv.org/abs/1311.3546;
 - invariant jet differentials under source reparametrization,
   https://doi.org/10.1007/s00222-023-01219-z.
+- rigged Hilbert spaces and directed families of carriers,
+  https://arxiv.org/abs/1312.1371.
 
 These theories make the ingredients legitimate; they do not make `(4)`, `(7)`, or `(13)` an
 external theorem.  Targeted searches located no HT capacity-realization theorem and descended
@@ -464,6 +681,16 @@ all require specialist review before any priority claim.
   with an exact moduli classification.
 - `[PASS]` Bounded-realization invariance and Hermitian congruence covariance prove the finite-rank
   capacity field descends; monodromy is now actual holonomy rather than metaphor.
+- `[PASS]` Hypertranscendental jet freeness plus noncompact grading forces either an unbounded
+  domain tower or a nontrivial carrier scale; the exact diagonal scale law is classified.
+- `[PASS]` The conserved scale connection and its finite-rank transport path completely classify
+  bounded flatability; normalized spectral data are proved to be a strictly lossy representation.
+- `[PASS]` Controlled cofinality exactly identifies when changing filtration preserves the
+  obstruction; ordinary cofinality and every prescribed finite rate spectrum are too weak.
+- `[PASS]` Gamma supplies an actual two-filtration controlled comparison, with a factorially
+  vanishing same-index error, rather than two renamed copies of one abstract path.
+- `[PASS]` The exact factorial wall proves that source depth and observable order have
+  noncommuting limits and forces a Gevrey-weighted product scale rather than a single grading ray.
 - `[PASS]` It proposes five testable conservative representation functors from one exact finite
   object, rather than declaring five metaphors equivalent.
 - `[PASS]` Rank, map, and completion failures form an exact conditional trichotomy inside one
@@ -484,17 +711,24 @@ all require specialist review before any priority claim.
 
 ## 9. Attack and falsifiers
 
-1. Construct a source-natural `Cap_HT(rho)` for one analytic HT realization and prove its local
-   capacities satisfy the minimum-energy, innovation, bounded-comparison, and descent laws.
-2. Exhibit nontrivial holonomy or asymptotic building boundary not removable by bounded gauge.
-3. Construct `SHT(rho)` as the derived positive self-dual trivialization stack of that field.
-4. Prove three conservative obstruction representations for two genuinely different realizations,
+1. Construct a source-natural scale-valued `Cap_HT(rho)` for one analytic HT realization and prove
+   its local capacities satisfy the minimum-energy, innovation, bounded-comparison, grading-scale,
+   connection-transport, and descent laws.
+2. Construct a second source-natural filtration and prove its comparison with the first is
+   bornologically cofinal; mere equality of normalized spectra is insufficient.
+3. Construct the Gevrey-weighted product-bornological capacity category and prove comparison maps
+   are controlled on cofinal regions, not only at each finite order.
+4. Exhibit nontrivial holonomy or asymptotic building boundary not removable by bounded gauge.
+5. Construct `SHT(rho)` as the derived positive self-dual trivialization stack of that field.
+6. Prove three conservative obstruction representations for two genuinely different realizations,
    not two notations for one map.
-5. Only then test completed-zeta data.
+7. Only then test completed-zeta data.
 
 Falsifiers:
 
 - a persistent obstruction for a fixed finite free differential embedding;
+- a faithful positive realization carrying the full nonunit grading group boundedly on one fixed
+  carrier;
 - a global obstruction with a uniformly tame compatible right inverse at every scale;
 - two obstruction chains with identical classes in `(4)` but inequivalent multiplicity spectra;
 - a self-dual degeneracy spectrum whose support depends on a choice of local splitting;
@@ -515,6 +749,8 @@ Every no-go has a positive successor:
 
 - [x] 0 -> 1: object, finite theorem, conjectures, parent theories, attack, and falsifiers stated
 - [x] prove capacity realization, bounded-realization invariance, and coordinate descent
+- [x] prove the faithful single-carrier grading obstruction and exact covariant diagonal scale law
+- [x] prove the rank-one and finite-rank asymptotic connection classification
 - [ ] 1 -> 2: construct the stack and prove conservative splitting-tower completeness and descent
 - [ ] 2 -> 3: formalize finite inverse systems, torsor descent, and the self-dual fixed object
 - [ ] 3 -> 4: specialist novelty validation and a nontrivial analytic/arithmetic realization

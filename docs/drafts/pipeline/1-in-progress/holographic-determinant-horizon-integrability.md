@@ -80,8 +80,11 @@ the complete DA spectrum is the single determinantal hypersurface H.
 ```
 
 For `r=1`, `H` is the hyperplane proved in
-`pretemporal-horizon-curvature-rigidity`. For `r>1`, this is the first integrable setting in which
-the horizon can be nonlinear.
+`pretemporal-horizon-curvature-rigidity`. A bare rank-`r` determinant may be nonlinear. Under the
+stronger regular coefficient-flat and law-linear hypotheses, however, abelian-gauge rigidity
+forces the geometric horizon to split into linear characters; see
+`before-time-finite-rank-no-interaction`. Thus irreducible nonlinear horizons require leaving that
+exact-flat finite-rank class.
 
 The complete determinant-rigidity claim is unconditional in
 `formal/GaloisForLFunctions/HTGeometry/MatrixPrincipalSymbolDeterminantHorizon.lean`:
@@ -170,6 +173,14 @@ formalized in
 This is a discrete Lax/ispectral transport law and is therefore `[BRIDGE]`, not a novelty claim.
 Its role is structural: it identifies the exact parent theory and shows that the potentially new
 content must involve the hypertranscendence/dependence spectrum, not isospectrality itself.
+
+The coefficient-oriented theory is more rigid than isospectrality alone. A regular exact-flat
+tower is a single static commuting matrix family up to gauge, and its normalized joint generalized
+eigenspaces exhaust the observable fiber. This abelian classification and its ancestral
+independence conservation law are formalized in
+`MatrixPrincipalSymbolAbelianRigidity.lean`, `MatrixPrincipalSymbolAbelianSpectrum.lean`, and
+`MatrixPrincipalSymbolAncestralConservation.lean`. The resulting hyperplane-collapse theorem for
+linear pencils is tracked separately in `before-time-finite-rank-no-interaction`.
 
 ## 6. Physical interpretation `[CONJECTURE]`
 

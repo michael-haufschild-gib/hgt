@@ -454,6 +454,39 @@ theorem differentialIndependent_differentialOperatorRows_iff
   · intro hL
     exact differentialIndependent_differentialOperatorRows hconst L hL x hx
 
+/-- **Nonzero linear differential observations preserve hypertranscendence.**  If the coefficient
+field is constant for the ambient derivation, applying any nonzero polynomial in the derivation to
+a hypertranscendental observable leaves a hypertranscendental observable.  Thus a finite
+constant-coefficient input--output filter cannot hide the complete differential observation
+structure of a clock. -/
+theorem hypertranscendentalOver_differentialOperatorApply
+    {C K : Type*} [Field C] [Field K] [Algebra C K] [Differential K]
+    (hconst : ∀ c : C, (algebraMap C K c)′ = 0)
+    {P : Polynomial C} (hP : P ≠ 0) {x : K}
+    (hx : HypertranscendentalOver C x) :
+    HypertranscendentalOver C (differentialOperatorApply P x) := by
+  let L : Unit → Unit → Polynomial C := fun _ _ => P
+  let source : Unit → K := fun _ => x
+  have hsource : DifferentialIndependent C source := by
+    simpa only [source] using
+      (hypertranscendentalOver_iff_differentialIndependent_singleton C x).mp hx
+  have hL : LinearIndependent (Polynomial C) L := by
+    apply linearIndependent_unique_iff.mpr
+    intro hzero
+    apply hP
+    exact congrFun hzero Unit.unit
+  have hout := differentialIndependent_differentialOperatorRows
+    hconst L hL source hsource
+  apply (hypertranscendentalOver_iff_differentialIndependent_singleton
+    C (differentialOperatorApply P x)).mpr
+  have hrow : differentialOperatorRowApply L source =
+      fun _ : Unit => differentialOperatorApply P x := by
+    funext i
+    cases i
+    simp [differentialOperatorRowApply, L, source]
+  rw [hrow] at hout
+  exact hout
+
 end
 
 end GaloisForLFunctions.HTGeometry

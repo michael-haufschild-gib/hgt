@@ -3,7 +3,7 @@
 - **ID:** `gamma-thin-universal-clock-horizon`
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE THEOREM
-- **Scientific status:** `[UNCONDITIONAL ANALYTIC TOPOLOGY, IRREVERSIBLE CLOCK, AND ALL-FINITE-DEPTH B-JET UNIVERSALITY PROVED IN LEAN] [MOVING-BASE D-JET BRIDGE OPEN] [NOVELTY PLAUSIBLE, NOT PRIORITY-CERTIFIED]`
+- **Scientific status:** `[UNCONDITIONAL ANALYTIC TOPOLOGY, IRREVERSIBLE FILTRATION, AND ALL-FINITE-DEPTH B-JET UNIVERSALITY PROVED IN LEAN] [B-D ANALYTIC CONTROLLED COMPARISON FORMALIZED] [D-JET RELATIVE FREENESS OPEN] [NOVELTY PLAUSIBLE, NOT PRIORITY-CERTIFIED]`
 - **Statement:** There is a nonstationary inverse-Gamma horizon homeomorphic to Baire space and of
   Hausdorff dimension zero, while every finite depth and every finite normalized inverse-jet
   resolution remains Zariski universal.
@@ -123,6 +123,18 @@ transcendental over that harmonic field.  Hence the `D_n` coefficients are likew
 over `C(n)`, and their finite product tails are Zariski dense.  Formalizing this relative-base
 upgrade is the remaining algebraic proof obligation.
 
+The analytic part of this comparison is now closed in Lean.  On the common inverse collar,
+
+```text
+sup_T |D_n(T)-B_n(T)| <= 2 |s_n/n| -> 0,
+B_n -> id uniformly,
+D_n -> id uniformly.
+```
+
+Thus the `B_n` and `D_n` filtrations are same-index bornologically cofinal at every fixed analytic
+resolution.  What remains is not a vague wrong-clock issue: it is transport of relative algebraic
+freeness and positive capacity through this already-controlled Möbius comparison.
+
 ## What is new and what is not
 
 - A rapidly contracting nonstationary iterated-function system can have a dimension-zero Baire
@@ -134,7 +146,8 @@ upgrade is the remaining algebraic proof obligation.
   normalized jet of its own moving-base transition at every finite depth.
 
 The significance gate is not cleared by topology alone.  It is cleared only if the normalized
-clock decoration is shown to be intrinsic to the moving-base Gamma jet groupoid, or if the horizon
+filtration decoration is shown to preserve the algebraic and positive invariants of the moving-base
+Gamma jet groupoid, or if the horizon
 closes the differential-independence proof for the positive Gamma iterates.
 
 ## Unconditional Lean theorem package
@@ -167,8 +180,9 @@ dimension hypotheses.
 The integrated terminal declaration
 `gamma_dimensionZero_algebraicallyUniversal_irreversibleClockHorizon` is unconditional.  The
 algebraic decoration currently uses the tangent-to-identity normalized branch jets `B_n`.  It does
-not yet identify them with the intrinsic moving-base clocks `D_n`; that distinction remains the
-load-bearing significance gate.
+not yet transport its relative algebraic freeness to the intrinsic moving-base germs `D_n`.  Their
+analytic same-index controlled equivalence is formalized; preservation of the algebraic capacity is
+the load-bearing significance gate.
 
 ## Physical interpretation
 
@@ -197,8 +211,10 @@ functional ignores them.  No zero localization or positivity statement follows.
 3. `[LOGARITHMIC SOURCE DONE]` `GammaPoleRelativeLogFreeness.lean` proves that the complete exact
    Gamma pole logarithmic-jet family is algebraically independent over the full rational
    pole-position field `C(n)`.  The exact target build and direct file elaboration pass.
-4. `[OPEN]` Transport this relative freeness through the Bell, unit-inverse, compositional-inverse, and
-   intrinsic Möbius coefficient automorphisms to obtain `B_n <-> D_n` over `C(n)`.
+4. `[ANALYTIC COMPARISON DONE; ALGEBRAIC TRANSPORT OPEN]` The `B_n <-> D_n` Möbius comparison is
+   uniformly asymptotic to the identity on the common collar.  Transport relative freeness through
+   the Bell, unit-inverse, compositional-inverse, and intrinsic Möbius coefficient automorphisms
+   over `C(n)`.
 5. `[DONE FOR ACTUAL GAMMA]` The common collar, exterior sheets, Baire coding, and exact clock are
    formalized directly rather than behind a reusable conditional IFS interface.
 6. `[DONE]` The dimension-zero cylinder argument is formalized and instantiated with the actual
@@ -214,7 +230,7 @@ already cached; no full or concurrent build was run.
 
 1. **Generic-IFS attack.**  Dimension zero alone is standard and not significant.  The only
    source-specific content is simultaneous actual Gamma coding and universal normalized clocks.
-2. **Wrong-clock attack.**  Actual reciprocal transitions are
+2. **Distinct-filtration attack.**  Actual reciprocal transitions are
    `C_n(T)=1/(n-s_nB_n(T))`.  The theorem uses their intrinsic normalization
    `D_n=(n^2/s_n)(C_n-1/n)`, not false prefix composition of the `B_n`.
 3. **Metric-dependence attack.**  Hausdorff dimension uses the ambient Euclidean metric and is not
@@ -226,7 +242,7 @@ already cached; no full or concurrent build was run.
 ## Gates
 
 - [x] 0 -> 1 in-progress: exact theorem, proof, no-go correction, physical meaning, and RH audit
-- [ ] 1 -> 2 fully-proven: moving-base intrinsicity or differential-independence consumer closed;
+- [ ] 1 -> 2 fully-proven: moving-base relative freeness/capacity or differential-independence consumer closed;
   otherwise classify as a strong source-specific theorem below the significance threshold
 - [ ] 2 -> 3 formalized: product density, inverse coding, and zero-dimension threshold theorem in
   Lean with serialized exact-module verification

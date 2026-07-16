@@ -25,6 +25,53 @@ noncomputable section
 
 open Polynomial
 
+section FiniteJetHomogeneity
+
+/-- **Universal finite-jet homogeneity.**  Every pair of one-generator hypertranscendental
+sources has the same finite differential-algebraic model: their first `L` jets generate
+canonically equivalent function fields, with equal-order jets identified.  Source-specific
+information can therefore occur only in structure beyond a fixed finite algebraic jet stage. -/
+def hypertranscendentalFiniteJetEquiv
+    {F E E' : Type*} [Field F] [Field E] [Field E']
+    [Algebra F E] [Algebra F E'] [Differential E] [Differential E']
+    {x : E} {y : E'} (hx : HypertranscendentalOver F x)
+    (hy : HypertranscendentalOver F y) (L : ℕ) :
+    IntermediateField.adjoin F (Set.range (finiteDifferentialJet x L)) ≃ₐ[F]
+      IntermediateField.adjoin F (Set.range (finiteDifferentialJet y L)) :=
+  (hypertranscendentalFiniteJetParametrization hx L).symm.trans
+    (hypertranscendentalFiniteJetParametrization hy L)
+
+/-- The universal finite-jet equivalence sends every derivative coordinate to the derivative of
+the same order. -/
+@[simp]
+theorem hypertranscendentalFiniteJetEquiv_generator
+    {F E E' : Type*} [Field F] [Field E] [Field E']
+    [Algebra F E] [Algebra F E'] [Differential E] [Differential E']
+    {x : E} {y : E'} (hx : HypertranscendentalOver F x)
+    (hy : HypertranscendentalOver F y) (L : ℕ) (i : Fin L) :
+    hypertranscendentalFiniteJetEquiv hx hy L
+        ⟨finiteDifferentialJet x L i,
+          IntermediateField.subset_adjoin F _ (Set.mem_range_self i)⟩ =
+      ⟨finiteDifferentialJet y L i,
+        IntermediateField.subset_adjoin F _ (Set.mem_range_self i)⟩ := by
+  let u := algebraMap (MvPolynomial (Fin L) F)
+    (FractionRing (MvPolynomial (Fin L) F)) (MvPolynomial.X i)
+  change (hypertranscendentalFiniteJetParametrization hy L)
+      ((hypertranscendentalFiniteJetParametrization hx L).symm
+        ⟨finiteDifferentialJet x L i,
+          IntermediateField.subset_adjoin F _ (Set.mem_range_self i)⟩) = _
+  calc
+    _ = (hypertranscendentalFiniteJetParametrization hy L) u := by
+      congr 1
+      apply (hypertranscendentalFiniteJetParametrization hx L).injective
+      rw [AlgEquiv.apply_symm_apply]
+      simpa [u] using
+        (hypertranscendentalFiniteJetParametrization_X hx L i).symm
+    _ = _ := by
+      simpa [u] using hypertranscendentalFiniteJetParametrization_X hy L i
+
+end FiniteJetHomogeneity
+
 /-- The coordinate derivation `d/dt` on the rational function field `K(t)`. -/
 def ratFuncCoordinateDerivation (K : Type*) [Field K] :
     Derivation K (RatFunc K) (RatFunc K) :=
@@ -1050,6 +1097,47 @@ theorem no_bounded_clockDilation_of_one_lt_norm
     ((tendsto_pow_atTop_atTop_of_one_lt hlambda).eventually_gt_atTop ‖T‖).exists
   exact (not_lt_of_ge (clockDilation_pow_norm_le_operatorNorm u hu T lambda hT n)) hn
 
+/-- **Hypertranscendental single-carrier obstruction.**  Injective realization of the intrinsic
+Kähler jet clock of a hypertranscendental element produces nonzero modes at every weight.  Hence
+no bounded operator on one normed carrier can implement a nonunit expanding grading dilation. -/
+theorem hypertranscendental_no_bounded_realizedJetDilation
+    {K E H : Type*} [Field K] [Field E] [Algebra K E] [Differential E]
+    [NormedAddCommGroup H] [NormedSpace 𝕜 H]
+    {x : E} (hx : HypertranscendentalOver K x)
+    (ι : KaehlerDifferential K (jetObservableFieldInfinity K x) →+ H)
+    (hι : Function.Injective ι)
+    (T : H →L[𝕜] H) (lambda : 𝕜)
+    (hT : ∀ n, T (ι (KaehlerDifferential.D K (jetObservableFieldInfinity K x)
+      (⟨differentialJet n x,
+        IntermediateField.subset_adjoin K
+          (Set.range fun q : ℕ ↦ differentialJet q x) ⟨n, rfl⟩⟩ :
+        jetObservableFieldInfinity K x))) =
+      lambda ^ n • ι (KaehlerDifferential.D K (jetObservableFieldInfinity K x)
+        (⟨differentialJet n x,
+          IntermediateField.subset_adjoin K
+            (Set.range fun q : ℕ ↦ differentialJet q x) ⟨n, rfl⟩⟩ :
+          jetObservableFieldInfinity K x)))
+    (hlambda : 1 < ‖lambda‖) : False := by
+  let u : ℕ → H := fun n ↦
+    ι (KaehlerDifferential.D K (jetObservableFieldInfinity K x)
+      (⟨differentialJet n x,
+        IntermediateField.subset_adjoin K
+          (Set.range fun q : ℕ ↦ differentialJet q x) ⟨n, rfl⟩⟩ :
+        jetObservableFieldInfinity K x))
+  have hsource : ∀ n, KaehlerDifferential.D K (jetObservableFieldInfinity K x)
+      (⟨differentialJet n x,
+        IntermediateField.subset_adjoin K
+          (Set.range fun q : ℕ ↦ differentialJet q x) ⟨n, rfl⟩⟩ :
+        jetObservableFieldInfinity K x) ≠ 0 := by
+    intro n
+    exact (hypertranscendental_kaehlerD_jet_linearIndependent hx).ne_zero n
+  have hu : ∀ n, u n ≠ 0 := by
+    intro n h
+    apply hsource n
+    apply hι
+    simpa using h
+  exact no_bounded_clockDilation_of_one_lt_norm u hu T lambda hT hlambda
+
 /-- **Bilateral single-carrier rigidity.**  A bounded implementation of both directions of the
 full grading action on one carrier is possible only for the unit-norm subgroup.  Nonunit source
 dilations must move between different positive topologies. -/
@@ -1087,7 +1175,350 @@ theorem affineClockLogWeight_covariant
       c n - 2 * (n : ℝ) * s := by
   ring
 
+/-- The positive scale attached to initial squared mode weights `a`. -/
+noncomputable def covariantClockWeight (a : ℕ → ℝ) (s : ℝ) (n : ℕ) : ℝ :=
+  a n * Real.exp (-2 * (n : ℝ) * s)
+
+/-- Positive initial mode weights remain positive in every fiber of the covariant scale. -/
+theorem covariantClockWeight_pos
+    (a : ℕ → ℝ) (ha : ∀ n, 0 < a n) (s : ℝ) (n : ℕ) :
+    0 < covariantClockWeight a s n := by
+  exact mul_pos (ha n) (Real.exp_pos _)
+
+/-- **Exact positive scale realization.**  Multiplication of the `n`th mode by `exp(nt)` is an
+isometry from the fiber at `s` to the fiber at `s+t`. -/
+theorem covariantClockWeight_scale
+    (a : ℕ → ℝ) (s t : ℝ) (n : ℕ) :
+    covariantClockWeight a (s + t) n * Real.exp (2 * (n : ℝ) * t) =
+      covariantClockWeight a s n := by
+  rw [covariantClockWeight, covariantClockWeight, mul_assoc, ← Real.exp_add]
+  congr 1
+  ring_nf
+
+/-- The scale-normalized failure of the intrinsic unit principal symbol to be isometric between
+adjacent clock grades. -/
+def clockConnectionDefect (L : ℝ → ℕ → ℝ) (s : ℝ) (n : ℕ) : ℝ :=
+  L s n - L s (n + 1) - 2 * s
+
+/-- **Defect conservation.**  Under exact dilation covariance, the normalized connection defect
+is independent of the scale fiber and is exactly the adjacent difference of the base weights. -/
+theorem clockConnectionDefect_eq_baseDifference
+    (L : ℝ → ℕ → ℝ)
+    (hcov : ∀ s t n, L (s + t) n + 2 * (n : ℝ) * t = L s n)
+    (s : ℝ) (n : ℕ) :
+    clockConnectionDefect L s n = L 0 n - L 0 (n + 1) := by
+  rw [clockConnectionDefect,
+    covariantClockLogWeight_eq L hcov s n,
+    covariantClockLogWeight_eq L hcov s (n + 1)]
+  push_cast
+  ring
+
+/-- A fiber-independent logarithmic change of metric on the clock grades. -/
+def clockGauge (L : ℝ → ℕ → ℝ) (g : ℕ → ℝ) (s : ℝ) (n : ℕ) : ℝ :=
+  L s n + 2 * g n
+
+/-- Fiber-independent clock gauges preserve exact dilation covariance. -/
+theorem clockGauge_preserves_covariance
+    (L : ℝ → ℕ → ℝ) (g : ℕ → ℝ)
+    (hcov : ∀ s t n, L (s + t) n + 2 * (n : ℝ) * t = L s n)
+    (s t : ℝ) (n : ℕ) :
+    clockGauge L g (s + t) n + 2 * (n : ℝ) * t = clockGauge L g s n := by
+  rw [clockGauge, clockGauge]
+  calc
+    L (s + t) n + 2 * g n + 2 * (n : ℝ) * t =
+        (L (s + t) n + 2 * (n : ℝ) * t) + 2 * g n := by ring
+    _ = L s n + 2 * g n := by rw [hcov]
+
+/-- The connection defect changes by the discrete coboundary of the logarithmic clock gauge. -/
+theorem clockConnectionDefect_gauge
+    (L : ℝ → ℕ → ℝ) (g : ℕ → ℝ) (s : ℝ) (n : ℕ) :
+    clockConnectionDefect (clockGauge L g) s n =
+      clockConnectionDefect L s n + 2 * (g n - g (n + 1)) := by
+  simp only [clockConnectionDefect, clockGauge]
+  ring
+
+/-- The algebraic gauge that normalizes every base-fiber clock line to grade zero. -/
+noncomputable def clockFlatGauge (L : ℝ → ℕ → ℝ) (n : ℕ) : ℝ :=
+  (L 0 0 - L 0 n) / 2
+
+theorem clockFlatGauge_base (L : ℝ → ℕ → ℝ) (n : ℕ) :
+    clockGauge L (clockFlatGauge L) 0 n = L 0 0 := by
+  simp only [clockGauge, clockFlatGauge]
+  ring
+
+/-- **Algebraic flatness, bounded obstruction.**  Every dilation-covariant logarithmic clock
+metric has zero connection defect after its canonical algebraic flat gauge.  The residual
+obstruction can therefore only be failure of this gauge to remain bounded at infinite grade. -/
+theorem clockFlatGauge_defect_zero
+    (L : ℝ → ℕ → ℝ)
+    (hcov : ∀ s t n, L (s + t) n + 2 * (n : ℝ) * t = L s n)
+    (s : ℝ) (n : ℕ) :
+    clockConnectionDefect (clockGauge L (clockFlatGauge L)) s n = 0 := by
+  rw [clockConnectionDefect_gauge,
+    clockConnectionDefect_eq_baseDifference L hcov s n]
+  simp only [clockFlatGauge]
+  ring
+
+/-- **Flat positive uniformization.**  Exact dilation covariance together with an isometric
+scale-normalized unit principal symbol leaves a unique logarithmic metric up to one scalar:
+`L(s,n)=L(0,0)-2ns`. -/
+theorem flatClockLogWeight_eq
+    (L : ℝ → ℕ → ℝ)
+    (hcov : ∀ s t n, L (s + t) n + 2 * (n : ℝ) * t = L s n)
+    (hsymbol : ∀ s n, L s (n + 1) + 2 * s = L s n)
+    (s : ℝ) (n : ℕ) :
+    L s n = L 0 0 - 2 * (n : ℝ) * s := by
+  have hbase : ∀ m, L 0 m = L 0 0 := by
+    intro m
+    induction m with
+    | zero => rfl
+    | succ m ih =>
+        have hstep : L 0 (m + 1) = L 0 m := by
+          simpa using hsymbol 0 m
+        exact hstep.trans ih
+  rw [covariantClockLogWeight_eq L hcov s n, hbase n]
+
+/-- The unique flat logarithmic metric satisfies the normalized unit-symbol law. -/
+theorem flatClockLogWeight_symbol
+    (c s : ℝ) (n : ℕ) :
+    (c - 2 * ((n + 1 : ℕ) : ℝ) * s) + 2 * s =
+      c - 2 * (n : ℝ) * s := by
+  push_cast
+  ring
+
+/-- The positive flat clock scale selected jointly by grading covariance and the intrinsic unit
+principal symbol. -/
+noncomputable def flatClockWeight (a : ℝ) (s : ℝ) (n : ℕ) : ℝ :=
+  covariantClockWeight (fun _ ↦ a) s n
+
+theorem flatClockWeight_pos (a : ℝ) (ha : 0 < a) (s : ℝ) (n : ℕ) :
+    0 < flatClockWeight a s n := by
+  exact covariantClockWeight_pos (fun _ ↦ a) (fun _ ↦ ha) s n
+
+/-- Dilation remains exact inter-fiber isometry on the flat clock scale. -/
+theorem flatClockWeight_scale (a s t : ℝ) (n : ℕ) :
+    flatClockWeight a (s + t) n * Real.exp (2 * (n : ℝ) * t) =
+      flatClockWeight a s n := by
+  exact covariantClockWeight_scale (fun _ ↦ a) s t n
+
+/-- The scale-normalized intrinsic unit symbol is exactly isometric on the flat clock scale. -/
+theorem flatClockWeight_symbol (a s : ℝ) (n : ℕ) :
+    flatClockWeight a s (n + 1) * Real.exp (2 * s) =
+      flatClockWeight a s n := by
+  rw [flatClockWeight, flatClockWeight, covariantClockWeight, covariantClockWeight,
+    mul_assoc, ← Real.exp_add]
+  congr 1
+  push_cast
+  ring_nf
+
+/-- At the critical scale wall every finite clock mode has the same weight, so the first `N+1`
+unit boundary responses have exactly linear capacity. -/
+theorem flatClockWeight_capacity_at_wall (a : ℝ) (N : ℕ) :
+    ∑ n ∈ Finset.range (N + 1), flatClockWeight a 0 n = (N + 1) * a := by
+  simp [flatClockWeight, covariantClockWeight, Nat.cast_add, Nat.cast_one]
+
 end DilationScaleObstruction
+
+section BornologicalCofinality
+
+/-- A scalar transport profile remains in a uniformly bounded region.  This is the rank-one
+bounded-flatability condition after taking logarithms. -/
+def IsUniformlyBoundedProfile {ι : Type*} (h : ι → ℝ) : Prop :=
+  ∃ B : ℝ, ∀ i, |h i| ≤ B
+
+/-- A sampling of a transport profile is bornologically cofinal when its image is uniformly dense
+in the full path.  Unlike ordinary cofinality of indices, this condition cannot skip unbounded
+transport spikes. -/
+def IsBornologicallyCofinal {ι κ : Type*} (h : ι → ℝ) (φ : κ → ι) : Prop :=
+  ∃ C : ℝ, ∀ i, ∃ j, |h i - h (φ j)| ≤ C
+
+/-- Uniform boundedness always descends to a sampled transport path. -/
+theorem uniformlyBoundedProfile_subsample
+    {ι κ : Type*} {h : ι → ℝ} {φ : κ → ι} (hh : IsUniformlyBoundedProfile h) :
+    IsUniformlyBoundedProfile (h ∘ φ) := by
+  rcases hh with ⟨B, hB⟩
+  exact ⟨B, fun n => hB (φ n)⟩
+
+/-- **Controlled-cofinal reconstruction.**  If a sampled transport path is bounded and uniformly
+dense in the full path, then the full path is bounded. -/
+theorem uniformlyBoundedProfile_of_bornologicallyCofinal
+    {ι κ : Type*} {h : ι → ℝ} {φ : κ → ι}
+    (hsample : IsUniformlyBoundedProfile (h ∘ φ))
+    (hcofinal : IsBornologicallyCofinal h φ) :
+    IsUniformlyBoundedProfile h := by
+  rcases hsample with ⟨B, hB⟩
+  rcases hcofinal with ⟨C, hC⟩
+  refine ⟨C + B, ?_⟩
+  intro m
+  rcases hC m with ⟨n, hn⟩
+  calc
+    |h m| = |(h m - h (φ n)) + h (φ n)| := by ring_nf
+    _ ≤ |h m - h (φ n)| + |h (φ n)| := abs_add_le _ _
+    _ ≤ C + B := add_le_add hn (hB n)
+
+/-- Bounded flatability is invariant under bornologically cofinal changes of filtration. -/
+theorem uniformlyBoundedProfile_iff_subsample_of_bornologicallyCofinal
+    {ι κ : Type*} {h : ι → ℝ} {φ : κ → ι}
+    (hcofinal : IsBornologicallyCofinal h φ) :
+    IsUniformlyBoundedProfile (h ∘ φ) ↔ IsUniformlyBoundedProfile h := by
+  constructor
+  · intro hsample
+    exact uniformlyBoundedProfile_of_bornologicallyCofinal hsample hcofinal
+  · exact uniformlyBoundedProfile_subsample
+
+/-- A transport profile in an arbitrary pseudometric target stays in a bounded region.  This is
+the coordinate-free form of bounded flatability; for a metric group the centre may be chosen at
+the identity by translation invariance. -/
+def IsUniformlyBoundedAround {ι X : Type*} [PseudoMetricSpace X]
+    (p : ι → X) : Prop :=
+  ∃ x₀ : X, ∃ R : ℝ, ∀ i, dist (p i) x₀ ≤ R
+
+/-- A comparison is metric-bornologically cofinal when every point of the full transport image
+lies at uniformly bounded distance from the sampled image.  The indices themselves need carry no
+order: the condition belongs to the realized transport geometry. -/
+def IsMetricBornologicallyCofinal {ι κ X : Type*} [PseudoMetricSpace X]
+    (p : ι → X) (φ : κ → ι) : Prop :=
+  ∃ C : ℝ, ∀ i, ∃ j, dist (p i) (p (φ j)) ≤ C
+
+/-- Boundedness in a pseudometric transport space descends along every sampling. -/
+theorem uniformlyBoundedAround_subsample
+    {ι κ X : Type*} [PseudoMetricSpace X] {p : ι → X} {φ : κ → ι}
+    (hp : IsUniformlyBoundedAround p) :
+    IsUniformlyBoundedAround (p ∘ φ) := by
+  rcases hp with ⟨x₀, R, hR⟩
+  exact ⟨x₀, R, fun j => hR (φ j)⟩
+
+/-- **Nonabelian controlled-cofinal reconstruction.**  A bounded sampled profile reconstructs a
+bounded full profile whenever the comparison is metric-bornologically cofinal.  The theorem
+applies directly to noncommutative transport groups and positive cones equipped with an invariant
+pseudometric. -/
+theorem uniformlyBoundedAround_of_metricBornologicallyCofinal
+    {ι κ X : Type*} [PseudoMetricSpace X] {p : ι → X} {φ : κ → ι}
+    (hsample : IsUniformlyBoundedAround (p ∘ φ))
+    (hcofinal : IsMetricBornologicallyCofinal p φ) :
+    IsUniformlyBoundedAround p := by
+  rcases hsample with ⟨x₀, R, hR⟩
+  rcases hcofinal with ⟨C, hC⟩
+  refine ⟨x₀, C + R, ?_⟩
+  intro i
+  rcases hC i with ⟨j, hj⟩
+  exact (dist_triangle (p i) (p (φ j)) x₀).trans
+    (add_le_add hj (hR j))
+
+/-- Metric-bornologically cofinal changes of filtration preserve and reflect bounded
+flatability, without commutativity or linear coordinates. -/
+theorem uniformlyBoundedAround_iff_subsample_of_metricBornologicallyCofinal
+    {ι κ X : Type*} [PseudoMetricSpace X] {p : ι → X} {φ : κ → ι}
+    (hcofinal : IsMetricBornologicallyCofinal p φ) :
+    IsUniformlyBoundedAround (p ∘ φ) ↔ IsUniformlyBoundedAround p := by
+  constructor
+  · intro hsample
+    exact uniformlyBoundedAround_of_metricBornologicallyCofinal hsample hcofinal
+  · exact uniformlyBoundedAround_subsample
+
+/-- The universal moving-boundary profile on source depth by observable order.  Every fixed
+observable order eventually vanishes in source depth, but each fixed source slice is unbounded. -/
+def movingBoundaryProfile (p : ℕ × ℕ) : ℝ :=
+  ((p.2 - p.1 : ℕ) : ℝ)
+
+@[simp] theorem movingBoundaryProfile_diagonal (n : ℕ) :
+    movingBoundaryProfile (n, n) = 0 := by
+  simp [movingBoundaryProfile]
+
+/-- Every fixed observable order eventually lies below the moving boundary. -/
+theorem movingBoundaryProfile_fixedOrder_eventually_zero (k : ℕ) :
+    ∀ᶠ n : ℕ in Filter.atTop, movingBoundaryProfile (n, k) = 0 := by
+  filter_upwards [Filter.eventually_ge_atTop k] with n hn
+  simp [movingBoundaryProfile, hn]
+
+/-- The diagonal cofinal path sees only the zero profile. -/
+theorem movingBoundaryProfile_diagonal_bounded :
+    IsUniformlyBoundedProfile
+      (movingBoundaryProfile ∘ fun n : ℕ => (n, n)) := by
+  exact ⟨0, by simp⟩
+
+/-- The full source-depth by observable-order diagram is nevertheless unbounded. -/
+theorem movingBoundaryProfile_not_uniformlyBounded :
+    ¬ IsUniformlyBoundedProfile movingBoundaryProfile := by
+  rintro ⟨B, hB⟩
+  obtain ⟨m, hm⟩ := exists_nat_gt B
+  have h := hB (0, m)
+  simp [movingBoundaryProfile] at h
+  exact (not_lt_of_ge h) hm
+
+/-- **One-path no-go.**  Ordinary diagonal cofinality in the product order is not bornologically
+cofinal for a moving boundary. -/
+theorem diagonal_not_bornologicallyCofinal_for_movingBoundary :
+    ¬ IsBornologicallyCofinal movingBoundaryProfile
+      (fun n : ℕ => (n, n)) := by
+  intro hcofinal
+  have hbounded :=
+    uniformlyBoundedProfile_of_bornologicallyCofinal
+      movingBoundaryProfile_diagonal_bounded hcofinal
+  exact movingBoundaryProfile_not_uniformlyBounded hbounded
+
+end BornologicalCofinality
+
+section NonabelianAsymptoticConnection
+
+variable {G : Type*} [Group G]
+
+/-- Ordered transport of a group-valued discrete connection along the first `n` clock links. -/
+def discreteConnectionTransport (U : ℕ → G) : ℕ → G
+  | 0 => 1
+  | n + 1 => U n * discreteConnectionTransport U n
+
+/-- Gauge action on a discrete nonabelian clock connection. -/
+def discreteConnectionGauge (U g : ℕ → G) (n : ℕ) : G :=
+  g (n + 1) * U n * (g n)⁻¹
+
+/-- The canonical algebraic flat gauge, inverse to partial connection transport. -/
+def discreteConnectionFlatGauge (U : ℕ → G) (n : ℕ) : G :=
+  (discreteConnectionTransport U n)⁻¹
+
+/-- Every connection on the one-sided clock graph is algebraically flat. -/
+@[simp] theorem discreteConnectionGauge_flat (U : ℕ → G) (n : ℕ) :
+    discreteConnectionGauge U (discreteConnectionFlatGauge U) n = 1 := by
+  simp [discreteConnectionGauge, discreteConnectionFlatGauge, discreteConnectionTransport]
+
+/-- Nonabelian transport transforms by its endpoint gauges. -/
+theorem discreteConnectionTransport_gauge (U g : ℕ → G) : ∀ n,
+    discreteConnectionTransport (discreteConnectionGauge U g) n =
+      g n * discreteConnectionTransport U n * (g 0)⁻¹ := by
+  intro n
+  induction n with
+  | zero => simp [discreteConnectionTransport]
+  | succ n ih =>
+      rw [discreteConnectionTransport, discreteConnectionGauge, ih,
+        discreteConnectionTransport]
+      group
+
+/-- Every flat gauge is the canonical inverse-transport gauge up to one constant left factor.
+Consequently bounded flat trivialization is exactly boundedness of partial transport and its
+inverse in any normed matrix realization. -/
+theorem discreteConnectionFlatGauge_unique (U g : ℕ → G)
+    (hflat : ∀ n, discreteConnectionGauge U g n = 1) (n : ℕ) :
+    g n = g 0 * (discreteConnectionTransport U n)⁻¹ := by
+  have htransport : ∀ m, discreteConnectionTransport (discreteConnectionGauge U g) m = 1 := by
+    intro m
+    induction m with
+    | zero => simp [discreteConnectionTransport]
+    | succ m ih => simp [discreteConnectionTransport, hflat, ih]
+  have hlaw := discreteConnectionTransport_gauge U g n
+  rw [htransport n] at hlaw
+  calc
+    g n = (g n * discreteConnectionTransport U n * (g 0)⁻¹) *
+        g 0 * (discreteConnectionTransport U n)⁻¹ := by group
+    _ = g 0 * (discreteConnectionTransport U n)⁻¹ := by rw [← hlaw]; simp
+
+/-- Closed transport has the usual conjugacy covariance of holonomy. -/
+theorem discreteConnectionTransport_gauge_closed (U g : ℕ → G) (N : ℕ)
+    (hclosed : g N = g 0) :
+    discreteConnectionTransport (discreteConnectionGauge U g) N =
+      g 0 * discreteConnectionTransport U N * (g 0)⁻¹ := by
+  rw [discreteConnectionTransport_gauge, hclosed]
+
+end NonabelianAsymptoticConnection
 
 end SpectralBoundaryRigidity
 

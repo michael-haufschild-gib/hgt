@@ -381,6 +381,149 @@ noncomputable def unitAddCircleReflectionTateCohomologyEquivZModTwoSquared :
   reflectionTateCohomologyEquivZModTwoSquared unitAddCircleReflection
     (fun x => neg_neg x) unitAddCircleReflectionFixedEquivFinTwo
 
+/-! ### Characteristic-zero averaging and restricted gauges -/
+
+variable {K V : Type*} [Field K] [CharZero K]
+  [AddCommGroup V] [Module K V]
+
+/-- Displacement of a vector under a linear reflection. -/
+def relativeReflectionBoundary (C : V →ₗ[K] V) (g : V) : V :=
+  C g - g
+
+/-- The signed reflection condition satisfied by a reflection displacement. -/
+def LinearReflectionAntiInvariant (C : V →ₗ[K] V) (v : V) : Prop :=
+  C v = -v
+
+/-- The canonical primitive of an anti-invariant displacement supplied by
+characteristic-zero averaging. -/
+def canonicalReflectionPrimitive (v : V) : V :=
+  (-((2 : K)⁻¹)) • v
+
+/-- The canonical primitive really has the prescribed reflection displacement. -/
+theorem relativeReflectionBoundary_canonical
+    (C : V →ₗ[K] V) {v : V} (hv : LinearReflectionAntiInvariant C v) :
+    relativeReflectionBoundary C (canonicalReflectionPrimitive (K := K) v) = v := by
+  rw [relativeReflectionBoundary, canonicalReflectionPrimitive, map_smul, hv]
+  have htwo : (2 : K) ≠ 0 := by norm_num
+  module
+
+/-- **Primitive-torsor theorem.** The full fibre of the reflection-boundary map above an
+anti-invariant displacement `v` is the affine translate of the fixed subspace by the canonical
+primitive `-v/2`.  Hence failure of a restricted realization is an incidence failure of this
+affine torsor, while nonuniqueness is exactly its surviving fixed direction. -/
+theorem relativeReflectionBoundary_eq_iff_sub_canonical_fixed
+    (C : V →ₗ[K] V) {v g : V} (hv : LinearReflectionAntiInvariant C v) :
+    relativeReflectionBoundary C g = v ↔
+      C (g - canonicalReflectionPrimitive (K := K) v) =
+        g - canonicalReflectionPrimitive (K := K) v := by
+  have hcanonical := relativeReflectionBoundary_canonical (K := K) C hv
+  constructor
+  · intro hg
+    rw [map_sub]
+    rw [relativeReflectionBoundary] at hg hcanonical
+    have heq : C g - g =
+        C (canonicalReflectionPrimitive (K := K) v) -
+          canonicalReflectionPrimitive (K := K) v :=
+      hg.trans hcanonical.symm
+    calc
+      C g - C (canonicalReflectionPrimitive (K := K) v) =
+          (C g - g) +
+            (g - C (canonicalReflectionPrimitive (K := K) v)) := by abel
+      _ = (C (canonicalReflectionPrimitive (K := K) v) -
+            canonicalReflectionPrimitive (K := K) v) +
+            (g - C (canonicalReflectionPrimitive (K := K) v)) := by rw [heq]
+      _ = g - canonicalReflectionPrimitive (K := K) v := by abel
+  · intro hfixed
+    rw [map_sub] at hfixed
+    rw [relativeReflectionBoundary] at hcanonical ⊢
+    calc
+      C g - g =
+          (C g - C (canonicalReflectionPrimitive (K := K) v)) +
+            (C (canonicalReflectionPrimitive (K := K) v) - g) := by abel
+      _ = (g - canonicalReflectionPrimitive (K := K) v) +
+            (C (canonicalReflectionPrimitive (K := K) v) - g) := by rw [hfixed]
+      _ = C (canonicalReflectionPrimitive (K := K) v) -
+            canonicalReflectionPrimitive (K := K) v := by abel
+      _ = v := hcanonical
+
+/-- Any two primitives of the same reflection displacement differ by a fixed vector. -/
+theorem relativeReflectionBoundary_sub_fixed
+    (C : V →ₗ[K] V) {v g h : V}
+    (hg : relativeReflectionBoundary C g = v)
+    (hh : relativeReflectionBoundary C h = v) :
+    C (g - h) = g - h := by
+  rw [map_sub]
+  rw [relativeReflectionBoundary] at hg hh
+  have heq : C g - g = C h - h := hg.trans hh.symm
+  calc
+    C g - C h = (C g - g) + (g - C h) := by abel
+    _ = (C h - h) + (g - C h) := by rw [heq]
+    _ = g - h := by abel
+
+/-- **Characteristic-zero averaging firewall.** Every anti-invariant vector for a linear
+reflection is an unrestricted reflection boundary.  Thus complex-linear reflection cohomology
+cannot retain such a defect once arbitrary gauges are allowed. -/
+theorem linearReflectionAntiInvariant_is_boundary
+    (C : V →ₗ[K] V) {v : V} (hv : LinearReflectionAntiInvariant C v) :
+    ∃ g : V, relativeReflectionBoundary C g = v := by
+  exact ⟨canonicalReflectionPrimitive (K := K) v,
+    relativeReflectionBoundary_canonical (K := K) C hv⟩
+
+/-- **Restricted-gauge positive replacement.** Let `D` be a reflection-stable subspace of
+admissible gauges.  An anti-invariant displacement has a primitive in `D` exactly when the
+displacement itself belongs to `D`.  In particular, restricting gauges can retain precisely the
+defects erased by unrestricted characteristic-zero averaging. -/
+theorem linearReflectionAntiInvariant_relativeBoundary_iff_mem
+    (C : V →ₗ[K] V) (D : Submodule K V)
+    (hstable : ∀ g ∈ D, C g ∈ D)
+    {v : V} (hv : LinearReflectionAntiInvariant C v) :
+    (∃ g : V, g ∈ D ∧ relativeReflectionBoundary C g = v) ↔ v ∈ D := by
+  constructor
+  · rintro ⟨g, hg, rfl⟩
+    exact D.sub_mem (hstable g hg) hg
+  · intro hvD
+    refine ⟨(-((2 : K)⁻¹)) • v, D.smul_mem _ hvD, ?_⟩
+    rw [relativeReflectionBoundary, map_smul, hv]
+    have htwo : (2 : K) ≠ 0 := by norm_num
+    module
+
+/-- **Linear-incidence collapse.** For any family of reflection-stable linear admissibility
+conditions, individual membership of an anti-invariant displacement supplies one primitive that
+satisfies every condition simultaneously: the canonical primitive `-v/2`.  Thus such linear
+incidence systems have no higher compatibility obstruction. -/
+theorem linearReflectionAntiInvariant_simultaneousRelativeBoundary_iff
+    {I : Type*} (C : V →ₗ[K] V) (D : I → Submodule K V)
+    (hstable : ∀ i g, g ∈ D i → C g ∈ D i)
+    {v : V} (hv : LinearReflectionAntiInvariant C v) :
+    (∃ g : V, (∀ i, g ∈ D i) ∧ relativeReflectionBoundary C g = v) ↔
+      ∀ i, v ∈ D i := by
+  constructor
+  · rintro ⟨g, hg, rfl⟩ i
+    exact (D i).sub_mem (hstable i g (hg i)) (hg i)
+  · intro hvD
+    refine ⟨canonicalReflectionPrimitive (K := K) v, ?_,
+      relativeReflectionBoundary_canonical (K := K) C hv⟩
+    intro i
+    exact (D i).smul_mem _ (hvD i)
+
+/-- For reflection-stable linear gauges, separate solvability in every admissible class is
+equivalent to solvability by one common primitive.  This is the precise Helly-number-one form of
+the linear-incidence collapse. -/
+theorem linearReflectionAntiInvariant_simultaneous_iff_individual
+    {I : Type*} (C : V →ₗ[K] V) (D : I → Submodule K V)
+    (hstable : ∀ i g, g ∈ D i → C g ∈ D i)
+    {v : V} (hv : LinearReflectionAntiInvariant C v) :
+    (∃ g : V, (∀ i, g ∈ D i) ∧ relativeReflectionBoundary C g = v) ↔
+      ∀ i, ∃ g : V, g ∈ D i ∧ relativeReflectionBoundary C g = v := by
+  rw [linearReflectionAntiInvariant_simultaneousRelativeBoundary_iff C D hstable hv]
+  constructor
+  · intro hvD i
+    exact (linearReflectionAntiInvariant_relativeBoundary_iff_mem
+      C (D i) (hstable i) hv).2 (hvD i)
+  · intro h i
+    exact (linearReflectionAntiInvariant_relativeBoundary_iff_mem
+      C (D i) (hstable i) hv).1 (h i)
+
 end
 
 end GaloisForLFunctions

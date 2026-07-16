@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DirectionalMultiplierAtiyahClass
+import GaloisForLFunctions.HTGeometry.ProjectiveDirectionalFiniteLaw
 
 /-!
 # The multiplier Atiyah kernel is an order-one finite-law locus
@@ -27,7 +28,7 @@ theorem not_algebraicIndependent_pair_of_eq_smul
     intro hzero
     have h := congrArg
       (MvPolynomial.eval fun j : Fin 2 => ![(0 : K), 1] j) hzero
-    simpa [P] using h
+    simp [P] at h
   apply hP
   apply hAI.eq_zero_of_aeval_eq_zero
   simp [P, hY]
@@ -52,6 +53,73 @@ theorem multiplierAtiyahClassMap_zero_not_algebraicIndependent_pair
     (multiplierAtiyahClassMap_eq_zero_iff_exists_firstOrder
       rhoK rhoL hfix hcomp hfixed D0 D hDcomp hDcomm a ha X hX hmul).mp hker
   exact not_algebraicIndependent_pair_of_eq_smul X (D X) q hq
+
+/-- **Projectivized Atiyah-kernel inclusion.** For a finite compatible family of equivariant
+derivations, every nonzero law direction in the kernel of the multiplier Atiyah-class map belongs
+to the projective order-one finite-law stratum. -/
+theorem multiplierAtiyahKernel_mk_mem_projectiveDirectionalFiniteLawLocus_one
+    {ι : Type*} [Fintype ι]
+    (rhoK : G →* (K ≃+* K)) (rhoL : G →* (L ≃+* L))
+    (hfix : ∀ g c, rhoK g (algebraMap k K c) = algebraMap k K c)
+    (hcomp : ∀ g y, rhoL g (algebraMap K L y) = algebraMap K L (rhoK g y))
+    (hfixed : ∀ z : L, (∀ g, rhoL g z = z) → ∃ q : K, algebraMap K L q = z)
+    (D0 : ι → equivariantDerivations rhoK hfix)
+    (δ : ι → Derivation k L L)
+    (hDcomp : ∀ i y, δ i (algebraMap K L y) = algebraMap K L ((D0 i).1 y))
+    (hDcomm : ∀ i g y, δ i (rhoL g y) = rhoL g (δ i y))
+    (hfixL : ∀ g c, rhoL g (algebraMap k L c) = algebraMap k L c)
+    (a : G → Kˣ)
+    (ha : ∀ g h, (a (g * h) : K) = rhoK g (a h : K) * (a g : K))
+    (X : L) (hX : X ≠ 0)
+    (hmul : ∀ g, rhoL g X = algebraMap K L (a g : K) * X)
+    (c : ι → k) (hc : c ≠ 0)
+    (hker : multiplierAtiyahClassMap rhoK hfix a ha (∑ i, c i • D0 i) = 0) :
+    Projectivization.mk k c hc ∈
+      projectiveDirectionalFiniteLawLocus (K := K) δ X 1 := by
+  classical
+  let D0c : equivariantDerivations rhoK hfix := ∑ i, c i • D0 i
+  let D : Derivation k L L := directionalDerivation δ c
+  have hD0c_apply (y : K) : D0c.1 y = ∑ i, c i • (D0 i).1 y := by
+    change (D0c.1 y) = Finset.sum Finset.univ (fun i ↦ c i • (D0 i).1 y)
+    change ((Finset.sum Finset.univ (fun i ↦ c i • D0 i) :
+      equivariantDerivations rhoK hfix).1 y) = _
+    induction (Finset.univ : Finset ι) using Finset.induction_on with
+    | empty => simp
+    | @insert i s hi ih =>
+        rw [Finset.sum_insert hi, Finset.sum_insert hi]
+        change (c i • (D0 i).1 + (Finset.sum s fun j ↦ c j • D0 j).1) y = _
+        rw [Derivation.add_apply, Derivation.smul_apply, ih]
+  have hDcompc : ∀ y, D (algebraMap K L y) = algebraMap K L (D0c.1 y) := by
+    intro y
+    simp only [D, directionalDerivation_apply, hD0c_apply]
+    rw [map_sum]
+    apply Finset.sum_congr rfl
+    intro i hi
+    rw [hDcomp i y]
+    simp only [Algebra.smul_def]
+    rw [map_mul, IsScalarTower.algebraMap_apply k K L]
+  have hDcommc : ∀ g y, D (rhoL g y) = rhoL g (D y) := by
+    intro g y
+    simp only [D, directionalDerivation_apply]
+    rw [map_sum]
+    apply Finset.sum_congr rfl
+    intro i hi
+    rw [hDcomm i g y]
+    simp only [Algebra.smul_def]
+    rw [map_mul, hfixL]
+  have hdep : ¬ AlgebraicIndependent K (fun j : Fin 2 ↦ ![X, D X] j) := by
+    apply multiplierAtiyahClassMap_zero_not_algebraicIndependent_pair
+      rhoK rhoL hfix hcomp hfixed D0c D hDcompc hDcommc a ha X hX hmul
+    exact hker
+  rw [mk_mem_projectiveDirectionalFiniteLawLocus_iff]
+  change ¬ AlgebraicIndependent K
+    (fun j : Fin 2 ↦ directionalJet δ c j X)
+  have hfun : (fun j : Fin 2 ↦ directionalJet δ c j X) =
+      (fun j : Fin 2 ↦ ![X, D X] j) := by
+    funext j
+    fin_cases j <;> simp [directionalJet, D]
+  rw [hfun]
+  exact hdep
 
 end
 

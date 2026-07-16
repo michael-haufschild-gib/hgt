@@ -255,6 +255,35 @@ theorem complexProjectiveDirectionalFiniteLaw_collapse_or_denseResidualInEveryCh
           exact hnot hHT
       simpa [hset] using hgeneric
 
+/-- **Exact complex projective directional dichotomy.** The alternatives are disjoint: either one
+finite law stratum is universal, or every projective chart has a dense residual complete-HT locus
+whose complement is Lebesgue-null. -/
+theorem complexProjectiveDirectionalFiniteLaw_exactDichotomy
+    (m : ℕ) (δ : Fin (m + 1) → Derivation ℂ L L) (x : L) :
+    (∃ N, projectiveDirectionalFiniteLawLocus (K := K) δ x N = Set.univ) ∨
+      ((¬∃ N, projectiveDirectionalFiniteLawLocus (K := K) δ x N = Set.univ) ∧
+        ∀ i : Fin (m + 1),
+          Dense {c : Fin m → ℂ |
+            projectiveChartPoint i c ∈ projectiveDirectionalHTLocus (K := K) δ x} ∧
+          {c : Fin m → ℂ |
+            projectiveChartPoint i c ∈ projectiveDirectionalHTLocus (K := K) δ x} ∈
+              residual (Fin m → ℂ) ∧
+          volume {c : Fin m → ℂ |
+            projectiveChartPoint i c ∉ projectiveDirectionalHTLocus (K := K) δ x} = 0) := by
+  by_cases hcollapse :
+      ∃ N, projectiveDirectionalFiniteLawLocus (K := K) δ x N = Set.univ
+  · exact Or.inl hcollapse
+  · right
+    refine ⟨hcollapse, ?_⟩
+    rcases complexProjectiveDirectionalFiniteLaw_collapse_or_denseResidualInEveryChart
+      (K := K) m δ x with hbad | hgeneric
+    · exact False.elim (hcollapse hbad)
+    rcases complexProjectiveDirectionalFiniteLaw_collapse_or_fullMeasureInEveryChart
+      (K := K) m δ x with hbad | hmeasure
+    · exact False.elim (hcollapse hbad)
+    intro i
+    exact ⟨(hgeneric i).1, (hgeneric i).2, hmeasure i⟩
+
 end
 
 end GaloisForLFunctions.HTGeometry

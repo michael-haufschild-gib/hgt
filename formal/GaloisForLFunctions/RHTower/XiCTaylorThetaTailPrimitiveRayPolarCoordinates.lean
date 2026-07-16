@@ -151,9 +151,38 @@ theorem tsum_thetaCuspTailSecondDensityAtom_arithmeticPolar_eq_radialPacket
     _ = _ := by
       rw [tsum_thetaCuspPrimitiveRayPolynomialAtom_eq]
 
+/-- Signed Jacobian determinant of the inverse map `(r,u) -> (x,y)`. -/
+def thetaCuspPrimitiveRayArithmeticPolarSignedJacobian (u : ℝ) : ℝ :=
+  -(1 / (2 * thetaCuspPrimitiveRayMoment u))
+
+/-- The derivative matrix of the displayed inverse coordinates has the claimed signed
+determinant. -/
+theorem thetaCuspPrimitiveRayArithmeticPolarSignedJacobian_eq
+    {u : ℝ} (hu0 : 0 < u) (hu1 : u < 1) :
+    1 * (-(1 / (2 * (1 - u)))) - (1 / (2 * u)) * 1 =
+      thetaCuspPrimitiveRayArithmeticPolarSignedJacobian u := by
+  have hu : u ≠ 0 := hu0.ne'
+  have hsub : 1 - u ≠ 0 := (sub_pos.mpr hu1).ne'
+  unfold thetaCuspPrimitiveRayArithmeticPolarSignedJacobian
+    thetaCuspPrimitiveRayMoment
+  field_simp [hu, hsub]
+  ring
+
 /-- Absolute Jacobian of the inverse map `(r,u) -> (x,y)` on the open angular interval. -/
 def thetaCuspPrimitiveRayArithmeticPolarJacobian (u : ℝ) : ℝ :=
   1 / (2 * thetaCuspPrimitiveRayMoment u)
+
+theorem abs_thetaCuspPrimitiveRayArithmeticPolarSignedJacobian
+    {u : ℝ} (hu0 : 0 < u) (hu1 : u < 1) :
+    |thetaCuspPrimitiveRayArithmeticPolarSignedJacobian u| =
+      thetaCuspPrimitiveRayArithmeticPolarJacobian u := by
+  have hmoment : 0 < thetaCuspPrimitiveRayMoment u := by
+    unfold thetaCuspPrimitiveRayMoment
+    positivity
+  unfold thetaCuspPrimitiveRayArithmeticPolarSignedJacobian
+    thetaCuspPrimitiveRayArithmeticPolarJacobian
+  rw [abs_neg, abs_of_pos]
+  positivity
 
 /-- The displayed Jacobian is positive on the active angular interval. -/
 theorem thetaCuspPrimitiveRayArithmeticPolarJacobian_pos
@@ -162,6 +191,35 @@ theorem thetaCuspPrimitiveRayArithmeticPolarJacobian_pos
   unfold thetaCuspPrimitiveRayArithmeticPolarJacobian
     thetaCuspPrimitiveRayMoment
   positivity
+
+/-- **Exact arithmetic seam weight.**  Dividing the polar density prefactor by the angular
+Jacobian moment produces precisely the singular beta weight used by the seam-preserving angular
+bridge.  The remaining factor depends on the primitive indices only through their joint
+logarithmic height; no density factor has been estimated separately. -/
+theorem thetaCuspPrimitiveRayArithmeticPolarPrefactor_div_moment_eq
+    (a b : ℕ) (r : ℝ) {u : ℝ} (hu0 : 0 < u) (hu1 : u < 1) :
+    Real.exp
+          ((thetaCuspPrimitiveRayArithmeticPolarX a r u +
+              thetaCuspPrimitiveRayArithmeticPolarY b r u - r) / 2) /
+        thetaCuspPrimitiveRayMoment u =
+      Real.exp
+          (r / 2 - (Real.log (a : ℝ) + Real.log (b : ℝ)) / 2) *
+        (thetaCuspPrimitiveRayMoment u) ^ (-(3 / 4 : ℝ)) := by
+  have hsub : 0 < 1 - u := sub_pos.mpr hu1
+  have hw : 0 < u * (1 - u) := mul_pos hu0 hsub
+  have hinv : (u * (1 - u))⁻¹ =
+      Real.exp (-(Real.log u + Real.log (1 - u))) := by
+    calc
+      (u * (1 - u))⁻¹ = (Real.exp (Real.log (u * (1 - u))))⁻¹ := by
+        rw [Real.exp_log hw]
+      _ = Real.exp (-Real.log (u * (1 - u))) := (Real.exp_neg _).symm
+      _ = _ := by rw [Real.log_mul hu0.ne' hsub.ne']
+  unfold thetaCuspPrimitiveRayArithmeticPolarX
+    thetaCuspPrimitiveRayArithmeticPolarY thetaCuspPrimitiveRayMoment
+  rw [Real.rpow_def_of_pos hw, Real.log_mul hu0.ne' hsub.ne']
+  rw [div_eq_mul_inv, hinv, ← Real.exp_add, ← Real.exp_add]
+  congr 1
+  ring
 
 /-- Pointwise density times the exact polar Jacobian.  This is the integrand required by the later
 global change-of-variables theorem. -/
@@ -183,6 +241,42 @@ theorem tsum_thetaCuspTailSecondDensityAtom_arithmeticPolar_mul_jacobian
     ha hb r hu0 hu1]
   unfold thetaCuspPrimitiveRayArithmeticPolarJacobian
   ring
+
+/-- The complete arithmetic ray with its exact Jacobian is the seam weight times the full radial
+packet.  This is the pointwise interface between the original square-index density product and
+`integral_thetaCuspPrimitiveRayGrowingCoefficient_mul_corePolarKernel`: the exponent `-3/4` is
+forced by the density and the change of variables, rather than inserted as an auxiliary weight. -/
+theorem tsum_thetaCuspTailSecondDensityAtom_arithmeticPolar_mul_jacobian_eq_seamWeight
+    {a b : ℕ} (ha : 0 < a) (hb : 0 < b) (r : ℝ)
+    {u : ℝ} (hu0 : 0 < u) (hu1 : u < 1) :
+    (∑' g : ℕ,
+      thetaCuspTailSecondDensityAtom (a * (g + 1))
+          (thetaCuspPrimitiveRayArithmeticPolarX a r u) *
+        thetaCuspTailSecondDensityAtom (b * (g + 1))
+          (thetaCuspPrimitiveRayArithmeticPolarY b r u)) *
+        thetaCuspPrimitiveRayArithmeticPolarJacobian u =
+      8 * Real.exp
+          (r / 2 - (Real.log (a : ℝ) + Real.log (b : ℝ)) / 2) *
+        (thetaCuspPrimitiveRayMoment u) ^ (-(3 / 4 : ℝ)) *
+        thetaCuspPrimitiveRayRadialPacket u r := by
+  rw [tsum_thetaCuspTailSecondDensityAtom_arithmeticPolar_mul_jacobian
+    ha hb r hu0 hu1]
+  calc
+    (8 * Real.exp
+          ((thetaCuspPrimitiveRayArithmeticPolarX a r u +
+              thetaCuspPrimitiveRayArithmeticPolarY b r u - r) / 2) /
+        thetaCuspPrimitiveRayMoment u) *
+        thetaCuspPrimitiveRayRadialPacket u r =
+      8 *
+        (Real.exp
+            ((thetaCuspPrimitiveRayArithmeticPolarX a r u +
+                thetaCuspPrimitiveRayArithmeticPolarY b r u - r) / 2) /
+          thetaCuspPrimitiveRayMoment u) *
+        thetaCuspPrimitiveRayRadialPacket u r := by ring
+    _ = _ := by
+      rw [thetaCuspPrimitiveRayArithmeticPolarPrefactor_div_moment_eq
+        a b r hu0 hu1]
+      ring
 
 end
 

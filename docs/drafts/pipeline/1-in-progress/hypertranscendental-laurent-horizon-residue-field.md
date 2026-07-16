@@ -3,7 +3,7 @@
 - **ID:** `hypertranscendental-laurent-horizon-residue-field`
 - **Stage:** 1-in-progress
 - **Type:** UNIFIED FIELD THEORY / AFFINE BUILDING AND CENTRAL-SEAM PROGRAM
-- **Scientific status:** `[CONJECTURE] [CLASSICAL LOCAL MODEL LEAN-FORMALIZED] [PLUCKER IDENTITY LEAN-FORMALIZED] [HT IDENTIFICATION OPEN]`
+- **Scientific status:** `[CONJECTURE] [CLASSICAL LOCAL MODEL LEAN-FORMALIZED] [EULER SOURCE LAURENT DOUBLE PROVED] [PLUCKER IDENTITY LEAN-FORMALIZED] [GENERAL HT IDENTIFICATION OPEN]`
 - **Parents:** `projective-horizon-a2-current-rank-jump`,
   `projective-horizon-solomon-tits-topological-charge`,
   `hypertranscendental-hilbert-cocycle-rigidity`
@@ -83,6 +83,46 @@ projective inversion of the target does not by itself invert the arc parameter. 
 puncture or multiplicative scale chart is required.  Introducing a Laurent variable by hand would
 fail the source-purity gate.
 
+## Euler source-derived Laurent double `[PROVED SPECIALIZATION]`
+
+The squarefree Euler source closes this gap without introducing a formal loop coordinate.  Center
+at `z=s-1/2`.  Its positive characters are `n^(-z)` for positive integers `n`; functional-equation
+reflection sends them to `n^z`.  The cancellative Dirichlet monoid group-completes canonically to
+the positive rational character group:
+
+```text
+C[N_(>0)] -> C[Q_(>0)^x],
+chi_q(z)=q^(-z),
+chi_q(-z)=chi_(q^(-1))(z).                               (2a)
+```
+
+With scale derivation `D chi_q=-(log q)chi_q` and neutral-character coefficient `CT`, the source
+residue seam is
+
+```text
+omega_E(f,g)=CT(f Dg),
+omega_E(chi_q,chi_r)=-(log r)  if q r=1.                 (2b)
+```
+
+Both integer and inverse-integer halves are isotropic, while
+
+```text
+omega_E(chi_n,chi_(n^(-1)))=log n !=0                   (n>1). (2c)
+```
+
+For each prime, the two reflected squarefree apartment charts are exactly
+
+```text
+1+p^(-1/2)chi_p(z),
+1+p^(-1/2)chi_(p^(-1))(z).                               (2d)
+```
+
+The full proof is in
+`../2-fully-proven/not_new_scientific_knowledge/euler-dirichlet-laurent-residue-double.md`.
+Thus the source-puncture and negative-mode gates are closed for the Euler specialization.  The
+general HT theorem remains open: an arbitrary constrained HT source need not carry a
+multiplicative Dirichlet monoid or a reflection-fixed scale coordinate.
+
 ## Plucker packet and positive level
 
 For an Xi fibre, let `a_p` be the canonical prime seam and use reciprocal-prime weights.  The
@@ -149,7 +189,11 @@ obstruction and explains why pointwise cocycle boundedness is irrelevant.
       pairing;
 - [ ] connect the nonnegative half to the formalized `A2` projective-horizon current modes;
 - [x] formalize the weighted Plucker/Gram identity `(3)` for the Xi pair energy;
-- [ ] derive a source-pure negative horizon chart;
+- [x] derive the source-pure positive-rational Laurent double for the Euler specialization;
+- [x] identify its reflected negative modes and exact opposite-mode residue weights;
+- [x] formalize the Euler real-frequency characters, reflection, residue pairing, prime seams, and
+      `A2` cocycle in `RHTower/EulerLaurentResidueDouble.lean`;
+- [ ] derive a source-pure negative horizon chart for the general Laurent-integrable HT class;
 - [ ] construct the determinant-line packet action;
 - [ ] prove the exact obstruction pullback diagrams;
 - [ ] close the RH contradiction and run the dual novelty/significance gate.

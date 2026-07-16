@@ -258,6 +258,277 @@ theorem gammaCommonInverseCollar_branch_mem
     gammaCommonInverseCollar.branch n t ∈ Metric.ball (0 : ℂ) 1 :=
   gammaCommonInverseCollar.branch_maps hn ht
 
+/-- The tangent-to-identity Möbius germ that compares normalized and moving-base Gamma charts. -/
+def mobiusTangentGerm (a z : ℂ) : ℂ := z / (1 - a * z)
+
+private theorem iteratedDeriv_one_sub_inv_zero (k : ℕ) :
+    iteratedDeriv k (fun z : ℂ => (1 - z)⁻¹) 0 = (k.factorial : ℂ) := by
+  have hfun : (fun z : ℂ => (1 - z)⁻¹) =
+      -(fun z : ℂ => (z + (-1 : ℂ))⁻¹) := by
+    funext z
+    rw [show (1 - z : ℂ) = -(z + (-1 : ℂ)) by ring, inv_neg]
+    simp only [Pi.neg_apply]
+  rw [hfun, iteratedDeriv_neg,
+    iteratedDeriv_inv_add_const (-1) k 0 (by norm_num)]
+  simp only [zero_add]
+  have hpow : ((-1 : ℂ) ^ (k + 1))⁻¹ = (-1 : ℂ) ^ (k + 1) := by
+    rw [← inv_pow]
+    norm_num
+  rw [hpow, pow_succ]
+  ring_nf
+  rw [show (-1 : ℂ) ^ (k * 2) = 1 by
+    rw [mul_comm, pow_mul]
+    norm_num]
+  ring
+
+/-- Exact raw derivative profile of a tangent Möbius germ.  The factorial is the all-order wall
+hidden by every fixed finite jet truncation. -/
+theorem iteratedDeriv_mobiusTangentGerm_zero
+    (a : ℂ) {k : ℕ} (hk : 1 ≤ k) :
+    iteratedDeriv k (mobiusTangentGerm a) 0 =
+      (k.factorial : ℂ) * a ^ (k - 1) := by
+  let g : ℂ → ℂ := fun z => (1 - a * z)⁻¹
+  have hg : ContDiffAt ℂ k g 0 := by
+    dsimp [g]
+    apply ContDiffAt.inv
+    · fun_prop
+    · norm_num
+  have hgder : iteratedDeriv (k - 1) g 0 =
+      a ^ (k - 1) * ((k - 1).factorial : ℂ) := by
+    dsimp [g]
+    rw [iteratedDeriv_comp_mul_left_uncond (fun z : ℂ => (1 - z)⁻¹) a (k - 1) 0]
+    rw [mul_zero, iteratedDeriv_one_sub_inv_zero]
+  change iteratedDeriv k (fun z : ℂ => z * (1 - a * z)⁻¹) 0 = _
+  change iteratedDeriv k ((fun z : ℂ => z) * g) 0 = _
+  rw [iteratedDeriv_mul (f := fun z : ℂ => z) (g := g) contDiffAt_id hg]
+  rw [Finset.sum_eq_single 1]
+  · rw [show iteratedDeriv 1 (fun z : ℂ => z) 0 = 1 by simp]
+    rw [hgder, Nat.choose_one_right]
+    have hfac : (k : ℂ) * ((k - 1).factorial : ℂ) = (k.factorial : ℂ) := by
+      exact_mod_cast Nat.mul_factorial_pred (Nat.ne_of_gt hk)
+    calc
+      (k : ℂ) * 1 * (a ^ (k - 1) * ((k - 1).factorial : ℂ)) =
+          ((k : ℂ) * ((k - 1).factorial : ℂ)) * a ^ (k - 1) := by ring
+      _ = (k.factorial : ℂ) * a ^ (k - 1) := by rw [hfac]
+  · intro b hb hb1
+    have hbid : iteratedDeriv b (fun z : ℂ => z) 0 = 0 := by
+      rw [show (fun z : ℂ => z) = id from rfl, iteratedDeriv_id]
+      simp [hb1]
+    rw [hbid]
+    ring
+  · simp only [Finset.mem_range]
+    omega
+
+/-- Taylor normalization removes exactly the factorial wall: the normalized all-order profile is
+the geometric sequence `a^k`. -/
+theorem normalizedIteratedDeriv_mobiusTangentGerm_zero
+    (a : ℂ) (k : ℕ) :
+    iteratedDeriv (k + 1) (mobiusTangentGerm a) 0 /
+        (((k + 1).factorial : ℕ) : ℂ) = a ^ k := by
+  rw [iteratedDeriv_mobiusTangentGerm_zero a (by omega)]
+  rw [Nat.add_sub_cancel]
+  field_simp [show (((k + 1).factorial : ℕ) : ℂ) ≠ 0 by
+    exact_mod_cast Nat.factorial_ne_zero (k + 1)]
+
+/-- The complete critical Taylor/Gevrey jet profile of a tangent Möbius chart. -/
+def mobiusCriticalJetProfile (a : ℂ) (k : ℕ) : ℂ :=
+  iteratedDeriv (k + 1) (mobiusTangentGerm a) 0 /
+    (((k + 1).factorial : ℕ) : ℂ)
+
+@[simp]
+theorem mobiusCriticalJetProfile_apply (a : ℂ) (k : ℕ) :
+    mobiusCriticalJetProfile a k = a ^ k := by
+  exact normalizedIteratedDeriv_mobiusTangentGerm_zero a k
+
+/-- **Critical-chart completeness.**  The complete Taylor-normalized jet profile remembers the
+Möbius chart exactly; its second-derivative coordinate recovers the parameter. -/
+theorem mobiusCriticalJetProfile_injective :
+    Function.Injective mobiusCriticalJetProfile := by
+  intro a b hab
+  have h := congrFun hab 1
+  simpa using h
+
+/-- A second Gevrey normalization divides the Taylor profile by one further factorial.  Unlike
+the critical Taylor normalization, this profile is bounded for every finite Möbius parameter. -/
+theorem gevreyTwoNorm_mobiusTangentGerm_zero
+    (a : ℂ) (k : ℕ) :
+    ‖iteratedDeriv (k + 1) (mobiusTangentGerm a) 0‖ /
+        ((((k + 1).factorial : ℕ) : ℝ) ^ 2) =
+      ‖a‖ ^ k / (((k + 1).factorial : ℕ) : ℝ) := by
+  rw [iteratedDeriv_mobiusTangentGerm_zero a (by omega), Nat.add_sub_cancel]
+  simp only [norm_mul, Complex.norm_natCast, norm_pow]
+  field_simp [show ((((k + 1).factorial : ℕ) : ℝ)) ≠ 0 by positivity]
+
+/-- **Supercritical Gevrey collapse.**  The twice-factorially normalized complete Möbius jet is
+bounded by `exp ‖a‖` for every parameter `a`; hence it has no finite parameter wall. -/
+theorem gevreyTwoNorm_mobiusTangentGerm_zero_le_exp
+    (a : ℂ) (k : ℕ) :
+    ‖iteratedDeriv (k + 1) (mobiusTangentGerm a) 0‖ /
+        ((((k + 1).factorial : ℕ) : ℝ) ^ 2) ≤ Real.exp ‖a‖ := by
+  rw [gevreyTwoNorm_mobiusTangentGerm_zero]
+  calc
+    ‖a‖ ^ k / (((k + 1).factorial : ℕ) : ℝ) ≤
+        ‖a‖ ^ k / (k.factorial : ℝ) := by
+      apply div_le_div_of_nonneg_left (pow_nonneg (norm_nonneg a) k)
+      · positivity
+      · exact_mod_cast Nat.factorial_le (Nat.le_succ k)
+    _ ≤ Real.exp ‖a‖ :=
+      Real.pow_div_factorial_le_exp (x := ‖a‖) (norm_nonneg a) k
+
+/-- Exact recurrence of the raw derivative norms.  For every nonzero `a`, its multiplier
+`(k+2)‖a‖` eventually exceeds every fixed expansion factor. -/
+theorem norm_iteratedDeriv_mobiusTangentGerm_zero_succ
+    (a : ℂ) (k : ℕ) :
+    ‖iteratedDeriv (k + 2) (mobiusTangentGerm a) 0‖ =
+      ((k + 2 : ℕ) : ℝ) * ‖a‖ *
+        ‖iteratedDeriv (k + 1) (mobiusTangentGerm a) 0‖ := by
+  rw [iteratedDeriv_mobiusTangentGerm_zero a (by omega),
+    iteratedDeriv_mobiusTangentGerm_zero a (by omega)]
+  rw [show k + 2 - 1 = k + 1 by omega, Nat.add_sub_cancel]
+  simp only [norm_mul, Complex.norm_natCast, norm_pow]
+  rw [Nat.factorial_succ]
+  push_cast
+  ring
+
+/-- The factorially small shell parameter relating the normalized branch and moving-base germs. -/
+def gammaMovingBaseShell (n : ℕ) : ℂ :=
+  reciprocalGammaFactorialScale n / (n : ℂ)
+
+/-- The intrinsic moving-base transition chart on the common inverse collar.  This is the exact
+Möbius transform `Dₙ=Bₙ/(1-(sₙ/n)Bₙ)` of the selected normalized inverse branch. -/
+def gammaMovingBaseTransition (n : ℕ) (t : ℂ) : ℂ :=
+  gammaCommonInverseCollar.branch n t /
+    (1 - gammaMovingBaseShell n * gammaCommonInverseCollar.branch n t)
+
+private theorem gamma_one_sub_inv_norm_le_two_of_norm_lt_half {u : ℂ}
+    (hu : ‖u‖ < (1 / 2 : ℝ)) :
+    (1 - u) ≠ 0 ∧ ‖(1 - u)⁻¹‖ ≤ (2 : ℝ) := by
+  have htri : ‖(1 : ℂ)‖ ≤ ‖1 - u‖ + ‖u‖ := by
+    simpa [sub_eq_add_neg, add_assoc, add_left_comm, add_comm] using
+      norm_add_le (1 - u) u
+  have hhalf : (1 / 2 : ℝ) < ‖1 - u‖ := by
+    norm_num at htri
+    linarith
+  have hpos : 0 < ‖1 - u‖ := by linarith
+  refine ⟨norm_pos_iff.mp hpos, ?_⟩
+  rw [norm_inv]
+  have hhalfpos : 0 < (1 / 2 : ℝ) := by norm_num
+  have hlt := (inv_lt_inv₀ hpos hhalfpos).2 hhalf
+  norm_num at hlt
+  exact le_of_lt hlt
+
+/-- The intrinsic moving-base chart is uniformly close to the normalized inverse branch, with an
+exact bound controlled only by the factorial shell parameter. -/
+theorem gammaMovingBaseTransition_dist_branch_le
+    {n : ℕ} (hn : gammaCommonInverseCollar.threshold ≤ n)
+    {t : ℂ} (ht : t ∈ Metric.closedBall (0 : ℂ) (1 / 4))
+    (hshell : ‖gammaMovingBaseShell n‖ < (1 / 2 : ℝ)) :
+    dist (gammaMovingBaseTransition n t)
+      (gammaCommonInverseCollar.branch n t) ≤
+        2 * ‖gammaMovingBaseShell n‖ := by
+  let a := gammaMovingBaseShell n
+  let B := gammaCommonInverseCollar.branch n t
+  have hBmem := gammaCommonInverseCollar_branch_mem hn ht
+  have hB : ‖B‖ < 1 := by
+    simpa [B, Metric.mem_ball, dist_zero_left] using hBmem
+  have hu : ‖a * B‖ < (1 / 2 : ℝ) := by
+    calc
+      ‖a * B‖ = ‖a‖ * ‖B‖ := norm_mul _ _
+      _ ≤ ‖a‖ * 1 := mul_le_mul_of_nonneg_left hB.le (norm_nonneg a)
+      _ < 1 / 2 := by simpa [a] using hshell
+  obtain ⟨hden, hinv⟩ := gamma_one_sub_inv_norm_le_two_of_norm_lt_half hu
+  have hid : gammaMovingBaseTransition n t - B =
+      a * B ^ 2 * (1 - a * B)⁻¹ := by
+    rw [gammaMovingBaseTransition]
+    change B / (1 - a * B) - B = _
+    have hid' : B / (1 - a * B) - B =
+        (a * B ^ 2) / (1 - a * B) := by
+      have hden' : 1 - B * a ≠ 0 := by simpa [mul_comm] using hden
+      field_simp [hden, hden']
+      ring
+    simpa [div_eq_mul_inv] using hid'
+  have hBsq : ‖B‖ ^ 2 ≤ 1 := by nlinarith [norm_nonneg B, hB]
+  rw [dist_eq_norm, show gammaCommonInverseCollar.branch n t = B from rfl, hid,
+    norm_mul, norm_mul, norm_pow]
+  calc
+    ‖a‖ * ‖B‖ ^ 2 * ‖(1 - a * B)⁻¹‖
+        ≤ ‖a‖ * 1 * 2 := by gcongr
+    _ = 2 * ‖gammaMovingBaseShell n‖ := by simp [a]; ring
+
+theorem tendsto_gammaMovingBaseShell_zero :
+    Tendsto gammaMovingBaseShell atTop (nhds 0) := by
+  have hinv : Tendsto (fun n : ℕ => ((n : ℂ)⁻¹)) atTop (nhds 0) := by
+    have hreal : Tendsto (fun n : ℕ => ((n : ℝ)⁻¹)) atTop (nhds 0) :=
+      tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop
+    simpa using hreal.ofReal
+  simpa [gammaMovingBaseShell, div_eq_mul_inv] using
+    tendsto_reciprocalGammaFactorialScale_zero.mul hinv
+
+/-- The moving-base and normalized-branch charts become uniformly identical on their common
+collar. -/
+theorem tendsto_gammaMovingBaseTransition_branch_uniformlyOn :
+    ∀ ε > 0, ∀ᶠ n : ℕ in atTop, ∀ t ∈ Metric.closedBall (0 : ℂ) (1 / 4),
+      dist (gammaMovingBaseTransition n t)
+        (gammaCommonInverseCollar.branch n t) < ε := by
+  intro ε hε
+  have hshell : Tendsto (fun n => ‖gammaMovingBaseShell n‖) atTop (nhds 0) := by
+    simpa using tendsto_gammaMovingBaseShell_zero.norm
+  filter_upwards [
+      (tendsto_order.1 hshell).2 (1 / 2) (by norm_num),
+      (tendsto_order.1 hshell).2 (ε / 2) (by linarith),
+      eventually_ge_atTop gammaCommonInverseCollar.threshold]
+      with n hnHalf hnε hn
+  intro t ht
+  have hdist := gammaMovingBaseTransition_dist_branch_le hn ht hnHalf
+  exact lt_of_le_of_lt hdist (by linarith)
+
+/-- The actual selected normalized inverse branches converge uniformly to the identity on the
+common closed target collar. -/
+theorem tendsto_gammaCommonInverseCollar_branch_uniformlyOn :
+    TendstoUniformlyOn gammaCommonInverseCollar.branch id atTop
+      (Metric.closedBall (0 : ℂ) (1 / 4)) := by
+  have hcompact : IsCompact (Metric.closedBall (0 : ℂ) 1) :=
+    isCompact_closedBall 0 1
+  have hmicroscope : TendstoUniformlyOn gammaPoleMicroscope id atTop
+      (Metric.closedBall (0 : ℂ) 1) :=
+    (tendstoLocallyUniformly_iff_forall_isCompact.mp
+      tendsto_gammaPoleMicroscope_locallyUniformly)
+      (Metric.closedBall (0 : ℂ) 1) hcompact
+  rw [Metric.tendstoUniformlyOn_iff] at hmicroscope ⊢
+  intro ε hε
+  filter_upwards [hmicroscope ε hε,
+    eventually_ge_atTop gammaCommonInverseCollar.threshold] with n hnclose hn
+  intro t ht
+  have hb := gammaCommonInverseCollar_branch_mem hn ht
+  have hinv := gammaCommonInverseCollar_rightInverse hn ht
+  have hnear := hnclose (gammaCommonInverseCollar.branch n t)
+    (Metric.ball_subset_closedBall hb)
+  simpa [hinv, dist_comm] using hnear
+
+/-- **Two-filtration analytic comparison.**  The intrinsic moving-base Gamma transition germs
+converge uniformly to the identity on the same collar as the normalized inverse branches.  Hence
+the two source filtrations are asymptotically identical at every finite analytic resolution. -/
+theorem tendsto_gammaMovingBaseTransition_uniformlyOn :
+    TendstoUniformlyOn gammaMovingBaseTransition id atTop
+      (Metric.closedBall (0 : ℂ) (1 / 4)) := by
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro ε hε
+  have hclose := tendsto_gammaMovingBaseTransition_branch_uniformlyOn
+    (ε / 2) (by linarith)
+  have hbranch := tendsto_gammaCommonInverseCollar_branch_uniformlyOn
+  rw [Metric.tendstoUniformlyOn_iff] at hbranch
+  filter_upwards [hclose, hbranch (ε / 2) (by linarith)] with n hnclose hnbranch
+  intro t ht
+  calc
+    dist (id t) (gammaMovingBaseTransition n t)
+        ≤ dist (id t) (gammaCommonInverseCollar.branch n t) +
+          dist (gammaCommonInverseCollar.branch n t)
+            (gammaMovingBaseTransition n t) := dist_triangle _ _ _
+    _ < ε := by
+      have hc := hnclose t ht
+      rw [dist_comm] at hc
+      linarith [hc, hnbranch t ht]
+
 end
 
 end GaloisForLFunctions

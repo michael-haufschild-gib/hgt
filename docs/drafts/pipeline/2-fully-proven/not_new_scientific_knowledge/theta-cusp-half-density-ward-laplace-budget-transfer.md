@@ -347,7 +347,10 @@ budget transfer `(15)`--`(21)`.
 - [x] two uniform-factor-free low-degree transfers proved on paper
 - [x] intersect with the formal uniform tail bound to obtain pointwise no-stronger hypotheses
 - [x] reflected-budget branches activated by the damped-atom successor
-- [ ] formalize the Ward--Laplace values and exponential budgets in Lean
+- [x] formalize the Ward--Laplace values, completed/higher exact budgets, and first two positive
+  budget truncations in Lean (`PrimeArchThetaWardLaplaceHalfDensity.lean`)
+- [x] formalize the antisymmetric endpoint value and opposite-channel fidelity deficit in Lean
+  (`HTGeometry.ObservationFidelity` and `PrimeArchThetaWardLaplaceHalfDensity.lean`)
 - [ ] formalize the likelihood-budget transfers in Lean
 - [ ] prove finite first-atom inequalities `(18)` and `(20)`
 - [ ] prove the independent degree-at-least-two or leading-determinant tail
@@ -356,7 +359,16 @@ budget transfer `(15)`--`(21)`.
 
 The difference of the two half-density anchors, not only their sum, is useful.  It supplies the
 exact odd-moment budget and exposes the two open gates as the first two Turan defects of one
-half-line source.  The successor
+half-line source.  The endpoint difference, its `sinh` integral, and the fidelity square deficit
+are now formalized.  In particular Lean proves
+
+```text
+a_(0,n)^2 + exp(-pi n^2)^2
+  <= ((4 pi n^2 - 1) exp(-pi n^2))^2,
+exp(-pi n^2) < 2 pi L_(0,n),
+```
+
+where `L_(0,n)` is the existing zeroth Liouville--Gibbs moment.  The successor
 `theta-cusp-antisymmetric-half-density-turan-curvature-transfer.md` proves the boundary-pole split,
 the source floor `V''>=19`, the one-sign-change law for the regular slope curvature, and the positive
 unimodal crossing-window representation.  Its remaining problem is the paired order-one/order-two

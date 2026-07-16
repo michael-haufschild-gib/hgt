@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.AutomorphismFamilyOstrowski
-import GaloisForLFunctions.HTGeometry.DifferentialAlgebraicTransitivity
+import GaloisForLFunctions.HTGeometry.FiniteDifferentialCircuitBoundary
 
 /-!
 # Source-logarithmic boundary exactness
@@ -25,23 +25,9 @@ theorem differentialAlgebraicOver_deriv_div_self
     [Differential K] [Differential L] [DifferentialAlgebra K L]
     [CharZero L] {x : L} (hx : DifferentialAlgebraicOver K x) :
     DifferentialAlgebraicOver K (x′ / x) := by
-  apply differentialAlgebraicOver_trans hx
-  let F := differentialAdjoin K ({x} : Set L)
-  let ell : L := x′ / x
-  have hxF : x ∈ F := subset_differentialAdjoin K ({x} : Set L) (by simp)
-  have hdxF : x′ ∈ F := by
-    have h := differentialJet_mem_differentialAdjoin K
-      (s := ({x} : Set L)) (x := x) (by simp) 1
-    simpa using h
-  have hellF : ell ∈ F := F.div_mem hdxF hxF
-  change DifferentialAlgebraicOver F ell
-  unfold DifferentialAlgebraicOver
-  intro hDI
-  have htrans : Transcendental F ell :=
-    hDI.algebraicIndependent.transcendental Unit.unit
-  exact htrans (by
-    simpa [ell] using isAlgebraic_algebraMap
-      (R := F) (A := L) (⟨ell, hellF⟩ : F))
+  simpa [div_eq_mul_inv] using HTGeometry.differentialAlgebraicOver_mul
+    (HTGeometry.differentialAlgebraicOver_deriv hx)
+    (HTGeometry.differentialAlgebraicOver_inv hx)
 
 /-- An element is hypertranscendental exactly when its algebraic logarithmic derivative is. -/
 theorem hypertranscendentalOver_deriv_div_self_iff

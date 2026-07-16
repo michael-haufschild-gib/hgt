@@ -20,6 +20,21 @@ open scoped ComplexOrder
 
 noncomputable section
 
+/-- Canonical innovation amplitude of the unit response packet in one inverse-Cholesky row. -/
+def inverseCholeskyUnitAmplitude {N : ℕ}
+    (C : Matrix (Fin N) (Fin N) ℂ) (i : Fin N) : ℂ :=
+  ∑ j, C i j
+
+/-- Squared energy of the unit response packet in inverse-Cholesky coordinates. -/
+def inverseCholeskyUnitCapacity {N : ℕ}
+    (C : Matrix (Fin N) (Fin N) ℂ) : ℝ :=
+  ∑ i, ‖inverseCholeskyUnitAmplitude C i‖ ^ 2
+
+/-- The new unit-packet amplitude at level `N` of a coherent inverse-Cholesky tower. -/
+def coherentClockInnovation
+    (C : ∀ N : ℕ, Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ) (N : ℕ) : ℂ :=
+  inverseCholeskyUnitAmplitude (C N) (Fin.last N)
+
 /-- The finite lower-triangular change of coordinates induced by the Cayley transform. -/
 def cayleyTriangularTransform (b : ℕ → ℂ) (n : ℕ) : ℂ :=
   ∑ r ∈ Finset.range (n + 1),
@@ -613,15 +628,199 @@ open scoped ComplexOrder
 
 noncomputable section
 
-/-- Canonical innovation amplitude of the unit response packet in one inverse-Cholesky row. -/
-def inverseCholeskyUnitAmplitude {N : ℕ}
-    (C : Matrix (Fin N) (Fin N) ℂ) (i : Fin N) : ℂ :=
-  ∑ j, C i j
+/-!
+## Complete scalar capacity realization, including zero increments
 
-/-- Squared energy of the unit response packet in inverse-Cholesky coordinates. -/
-def inverseCholeskyUnitCapacity {N : ℕ}
-    (C : Matrix (Fin N) (Fin N) ℂ) : ℝ :=
-  ∑ i, ‖inverseCholeskyUnitAmplitude C i‖ ^ 2
+The diagonal realization later in this module requires every innovation to be strictly positive.  The following
+lower-triangular frame keeps a positive diagonal while allowing arbitrary later row sums.  It
+therefore realizes every positive monotone capacity profile, including profiles with flat steps.
+-/
+
+/-- The positive Gram matrix induced by an invertible inverse-Cholesky frame. -/
+def gramOfInvertibleFrame {n : Type*} [Fintype n] [DecidableEq n]
+    (C : Matrix n n ℂ) : Matrix n n ℂ :=
+  C⁻¹ * (C⁻¹)ᴴ
+
+theorem gramOfInvertibleFrame_posDef {n : Type*} [Fintype n] [DecidableEq n]
+    (C : Matrix n n ℂ) (hC : IsUnit C) :
+    (gramOfInvertibleFrame C).PosDef := by
+  have hInv : IsUnit C⁻¹ := Matrix.isUnit_nonsing_inv_iff.mpr hC
+  simpa [gramOfInvertibleFrame] using
+    (Matrix.PosDef.one.mul_mul_conjTranspose_same
+      (Matrix.vecMul_injective_of_isUnit hInv))
+
+theorem frame_isInverseCholesky_gramOfInvertibleFrame
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (C : Matrix n n ℂ) (hC : IsUnit C) :
+    IsInverseCholeskyFrame C (gramOfInvertibleFrame C) := by
+  have hdet : IsUnit C.det := C.isUnit_iff_isUnit_det.mp hC
+  unfold IsInverseCholeskyFrame gramOfInvertibleFrame
+  calc
+    C * (C⁻¹ * (C⁻¹)ᴴ) * Cᴴ = (C * C⁻¹) * (C⁻¹)ᴴ * Cᴴ := by
+      simp only [Matrix.mul_assoc]
+    _ = (C⁻¹)ᴴ * Cᴴ := by rw [C.mul_nonsing_inv hdet, Matrix.one_mul]
+    _ = (C * C⁻¹)ᴴ := by rw [Matrix.conjTranspose_mul]
+    _ = 1 := by rw [C.mul_nonsing_inv hdet, Matrix.conjTranspose_one]
+
+/-- A lower-triangular frame whose row sums are an arbitrary real packet.  Its diagonal stays
+positive when the zeroth packet entry is positive, even if any later row sum vanishes. -/
+def arbitraryInnovationFrame {N : ℕ} (eta : Fin (N + 1) → ℝ) :
+    Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ :=
+  fun i j => (if i = j then 1 else 0) +
+    if j = 0 then ((eta i - 1 : ℝ) : ℂ) else 0
+
+theorem arbitraryInnovationFrame_lowerTriangular {N : ℕ}
+    (eta : Fin (N + 1) → ℝ) :
+    (arbitraryInnovationFrame eta).BlockTriangular
+      (fun i : Fin (N + 1) => OrderDual.toDual i) := by
+  intro i j hij
+  have hij' : i < j := hij
+  have hji : j ≠ i := ne_of_gt hij'
+  have hj0 : j ≠ 0 := by
+    intro hj
+    subst j
+    exact (Fin.not_lt_zero i) hij'
+  simp only [arbitraryInnovationFrame]
+  simp [Ne.symm hji, hj0]
+
+theorem arbitraryInnovationFrame_diag_pos {N : ℕ}
+    (eta : Fin (N + 1) → ℝ) (heta0 : 0 < eta 0) (i : Fin (N + 1)) :
+    (arbitraryInnovationFrame eta i i).im = 0 ∧
+      0 < (arbitraryInnovationFrame eta i i).re := by
+  by_cases hi : i = 0
+  · subst i
+    simp [arbitraryInnovationFrame, heta0]
+  · simp [arbitraryInnovationFrame, hi]
+
+theorem arbitraryInnovationFrame_isUnit {N : ℕ}
+    (eta : Fin (N + 1) → ℝ) (heta0 : 0 < eta 0) :
+    IsUnit (arbitraryInnovationFrame eta) := by
+  rw [Matrix.isUnit_iff_isUnit_det]
+  rw [Matrix.det_of_lowerTriangular _
+    (arbitraryInnovationFrame_lowerTriangular eta)]
+  rw [isUnit_iff_ne_zero]
+  exact Finset.prod_ne_zero_iff.mpr fun i _ =>
+    Complex.ne_zero_of_re_pos (arbitraryInnovationFrame_diag_pos eta heta0 i).2
+
+theorem arbitraryInnovationFrame_isCanonical {N : ℕ}
+    (eta : Fin (N + 1) → ℝ) (heta0 : 0 < eta 0) :
+    IsCanonicalInverseCholeskyFrame
+      (arbitraryInnovationFrame eta)
+      (gramOfInvertibleFrame (arbitraryInnovationFrame eta)) := by
+  refine ⟨frame_isInverseCholesky_gramOfInvertibleFrame _
+    (arbitraryInnovationFrame_isUnit eta heta0),
+    arbitraryInnovationFrame_lowerTriangular eta, ?_⟩
+  intro i
+  exact arbitraryInnovationFrame_diag_pos eta heta0 i
+
+theorem arbitraryInnovationFrame_amplitude {N : ℕ}
+    (eta : Fin (N + 1) → ℝ) (i : Fin (N + 1)) :
+    inverseCholeskyUnitAmplitude (arbitraryInnovationFrame eta) i = eta i := by
+  classical
+  simp [inverseCholeskyUnitAmplitude, arbitraryInnovationFrame,
+    Finset.sum_add_distrib]
+
+theorem arbitraryInnovationFrame_capacity {N : ℕ}
+    (eta : Fin (N + 1) → ℝ) :
+    inverseCholeskyUnitCapacity (arbitraryInnovationFrame eta) =
+      ∑ i, eta i ^ 2 := by
+  unfold inverseCholeskyUnitCapacity
+  apply Finset.sum_congr rfl
+  intro i hi
+  rw [arbitraryInnovationFrame_amplitude]
+  simp [Real.norm_eq_abs, sq_abs]
+
+/-- Coherent inverse-Cholesky frames with an arbitrary prescribed real innovation sequence. -/
+def arbitraryInnovationTower (eta : ℕ → ℝ) (N : ℕ) :
+    Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ :=
+  arbitraryInnovationFrame fun i => eta i
+
+/-- The positive Gram tower induced by `arbitraryInnovationTower`. -/
+def arbitraryInnovationGramTower (eta : ℕ → ℝ) (N : ℕ) :
+    Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ :=
+  gramOfInvertibleFrame (arbitraryInnovationTower eta N)
+
+theorem arbitraryInnovationTower_coherent (eta : ℕ → ℝ) (N : ℕ) :
+    leadingPrincipalSubmatrix (arbitraryInnovationTower eta (N + 1)) =
+      arbitraryInnovationTower eta N := by
+  ext i j
+  simp [leadingPrincipalSubmatrix, arbitraryInnovationTower,
+    arbitraryInnovationFrame]
+
+theorem arbitraryInnovationGramTower_posDef (eta : ℕ → ℝ)
+    (heta0 : 0 < eta 0) (N : ℕ) :
+    (arbitraryInnovationGramTower eta N).PosDef :=
+  gramOfInvertibleFrame_posDef _
+    (arbitraryInnovationFrame_isUnit (fun i : Fin (N + 1) => eta i) heta0)
+
+theorem arbitraryInnovationTower_isCanonical (eta : ℕ → ℝ)
+    (heta0 : 0 < eta 0) (N : ℕ) :
+    IsCanonicalInverseCholeskyFrame
+      (arbitraryInnovationTower eta N) (arbitraryInnovationGramTower eta N) :=
+  arbitraryInnovationFrame_isCanonical _ heta0
+
+theorem arbitraryInnovationGramTower_coherent (eta : ℕ → ℝ)
+    (heta0 : 0 < eta 0) (N : ℕ) :
+    leadingPrincipalSubmatrix (arbitraryInnovationGramTower eta (N + 1)) =
+      arbitraryInnovationGramTower eta N := by
+  apply gram_eq_of_same_inverseCholesky (arbitraryInnovationTower eta N)
+  · rw [← arbitraryInnovationTower_coherent eta N]
+    exact (leadingPrincipalSubmatrix_isCanonical _ _
+      (arbitraryInnovationTower_isCanonical eta heta0 (N + 1))).1
+  · exact (arbitraryInnovationTower_isCanonical eta heta0 N).1
+
+theorem arbitraryInnovationTower_innovation (eta : ℕ → ℝ) (N : ℕ) :
+    coherentClockInnovation (arbitraryInnovationTower eta) N = eta N :=
+  arbitraryInnovationFrame_amplitude _ (Fin.last N)
+
+theorem arbitraryInnovationTower_capacity (eta : ℕ → ℝ) (N : ℕ) :
+    inverseCholeskyUnitCapacity (arbitraryInnovationTower eta N) =
+      ∑ i : Fin (N + 1), eta i ^ 2 :=
+  arbitraryInnovationFrame_capacity _
+
+/-- Innovation sequence whose cumulative squared mass is a prescribed monotone capacity. -/
+def monotoneCapacityInnovation (q : ℕ → ℝ) : ℕ → ℝ
+  | 0 => Real.sqrt (q 0)
+  | n + 1 => Real.sqrt (q (n + 1) - q n)
+
+theorem monotoneCapacityInnovation_zero_pos (q : ℕ → ℝ) (hq0 : 0 < q 0) :
+    0 < monotoneCapacityInnovation q 0 := by
+  simpa [monotoneCapacityInnovation] using Real.sqrt_pos.2 hq0
+
+theorem sum_monotoneCapacityInnovation_sq (q : ℕ → ℝ)
+    (hq0 : 0 < q 0) (hq : Monotone q) (N : ℕ) :
+    ∑ i : Fin (N + 1), monotoneCapacityInnovation q i ^ 2 = q N := by
+  induction N with
+  | zero =>
+      simp [monotoneCapacityInnovation, Real.sq_sqrt hq0.le]
+  | succ N ih =>
+      rw [Fin.sum_univ_castSucc]
+      have hprefix :
+          (∑ i : Fin (N + 1), monotoneCapacityInnovation q i.castSucc ^ 2) = q N := by
+        simpa using ih
+      rw [hprefix]
+      simp [monotoneCapacityInnovation,
+        Real.sq_sqrt (sub_nonneg.mpr (hq (Nat.le_succ N)))]
+
+/-- **Complete scalar capacity realization.**  Every positive monotone capacity profile is the
+exact capacity path of a coherent positive Gram clock, including profiles with zero increments. -/
+theorem monotoneCapacity_realized (q : ℕ → ℝ)
+    (hq0 : 0 < q 0) (hq : Monotone q) (N : ℕ) :
+    inverseCholeskyUnitCapacity
+        (arbitraryInnovationTower (monotoneCapacityInnovation q) N) = q N := by
+  rw [arbitraryInnovationTower_capacity,
+    sum_monotoneCapacityInnovation_sq q hq0 hq N]
+
+end
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open Complex Matrix
+open scoped ComplexOrder
+
+noncomputable section
 
 /-- **Clock-capacity increment law.**  For a lower-triangular inverse frame, adjoining one clock
 constraint adds exactly the squared norm of the new row's unit-packet amplitude. -/
@@ -664,11 +863,6 @@ theorem inverseCholeskyUnitCapacity_le_succ
       inverseCholeskyUnitCapacity C := by
   rw [inverseCholeskyUnitCapacity_succ C htri]
   exact le_add_of_nonneg_right (sq_nonneg _)
-
-/-- The new unit-packet amplitude at level `N` of a coherent inverse-Cholesky tower. -/
-def coherentClockInnovation
-    (C : ∀ N : ℕ, Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ) (N : ℕ) : ℂ :=
-  inverseCholeskyUnitAmplitude (C N) (Fin.last N)
 
 /-- **Clock-capacity decomposition.**  In every coherent lower-triangular frame tower, the finite
 unit-boundary capacity is exactly the cumulative squared innovation amplitude. -/
