@@ -4,13 +4,14 @@
 - **Stage:** 1-in-progress
 - **Type:** FOUNDATIONAL CONJECTURE / GRADED GLOBAL SELECTION OBJECT
 - **Scientific status:** `[CONJECTURE] [DEGREE-ONE SEED PROVED] [FIELDS-SCALE OPEN CORE]`
-- **Statement:** Source-specific HT selection is governed not by one universal obstruction class,
-  but by a Postnikov tower whose degree-zero layer controls active capacity, degree-one layer
-  controls additive sewing, and higher layers record nonabelian associators and polarized descent.
+- **Statement:** Source-specific HT selection is governed not by one universal obstruction class.
+  Postnikov degree records coherence height inside each direction of a source-effectivity fracture
+  hypercube; the cube directions record incomparable realization channels.  Higher layers can arise
+  from abelian multi-channel interaction as well as nonabelian associators and polarized descent.
 
 ## Why a tower is forced
 
-Three attacks now determine three distinct levels.
+Five attacks now separate the realization directions from their coherence levels.
 
 1. Constraint support is universal: every finite simplicial spectrum occurs.
 2. Active palettes exactly classify finite realizability and minimum dimension, but a residual
@@ -19,9 +20,13 @@ Three attacks now determine three distinct levels.
    degree-one additive sewing law.
 4. Intrinsic analytic dimension does not bound the tower: boundary-wedge sources have `htDim=2`
    while their source-coherence projective dimension takes every value at least three.
+5. Two quotient channels always satisfy an exact common-lift law, but three abelian quotient
+   channels can be pairwise compatible with no common lift.  Hence coherence height and realization
+   direction are independent coordinates.
 
-Therefore the unified object cannot live at one fixed cohomological degree.  Its obstruction degree
-must follow the categorical height of the local data.
+Therefore the unified object cannot live at one fixed cohomological degree or in one linearly
+ordered tower.  Its obstruction degree must follow the categorical height of the local data, while
+its incomparable realization channels form a fracture hypercube.
 
 ## Degree-zero layer: capacity concentration `[PROVED]`
 
@@ -89,37 +94,69 @@ Priv_e=intersection_(k notin e) ker p_(e,e+k)             (6)
 
 embeds as a cocycle supported on `e`.  Thus degree-one sewing is complete but noncompressible.
 
-## Higher layers `[CONJECTURE]`
+## Higher layers: two independent mechanisms `[PROVED SEED + CONJECTURE]`
 
-For nonlinear local objects with noncommutative gauge automorphisms, pairwise comparison maps need
-not compose strictly on triples.  Their associators form the next obstruction layer.  Iterated
-coherence of those associators may require further stages.
+Higher layers do not require noncommutative gauge theory.  For three abelian quotient channels
+`M/I,M/J,M/K`, every pairwise compatibility quotient can vanish while a triple has no common
+representative.  The exact residual class lies in `M/((I intersection J)+K)`.  This is
+Lean-formalized and proves an abelian multi-channel interaction mechanism.
+
+For nonlinear local objects with noncommutative gauge automorphisms, a second mechanism occurs:
+pairwise comparison maps need not compose strictly on triples.  Their associators form further
+obstruction layers, whose iterated coherence may require additional stages.
 
 > **[CONJECTURE -- CAPACITY-DESCENT POSTNIKOV PRINCIPLE]** Every regular source-minimal HT class has
-> a canonical differential-birational Postnikov object `Sel_HT(F)` over its active constraint
-> spectrum such that:
+> a canonical differential-birational fracture hypercube whose vertices carry Postnikov objects
+> `Sel_HT(F;S)` over the retained realization channels such that:
 >
 > 1. `pi_0` is the active capacity/stabilizer layer;
 > 2. the first linearized `k`-invariant is the additive sewing differential;
-> 3. the next `k`-invariant is the nonabelian comparison associator;
-> 4. polarization is a homotopy-coherent transport reduction of the entire tower, not a scalar
+> 3. higher linearized invariants include abelian multi-channel Cech interaction classes;
+> 4. nonlinear higher invariants include nonabelian comparison associators;
+> 5. polarization is a homotopy-coherent transport reduction of the entire cube, not a scalar
 >    sign attached at the end;
-> 5. the tower is effective exactly when it reconstructs one pointed analytic HT source;
-> 6. continuation, monodromy, positivity, spectral completeness, and boundary canonicity are
->    conservative realization images of successive layers of this same tower.
+> 6. the total cube is effective exactly when it reconstructs one pointed analytic HT source;
+> 7. continuation, monodromy, positivity, spectral completeness, and boundary canonicity are
+>    conservative realization images of faces and successive layers of this same object.
 
-This formulation does not force every obstruction into the same degree or scalar group.  It claims
-they are successive shadows of one structured global selection object.
+This formulation does not force every obstruction into the same direction, degree, or scalar
+group.  It claims they are face and Postnikov shadows of one structured global selection object.
+
+## Cubical correction to the original tower
+
+For gauge subobjects `(I_i)` of a linearized ambient realization `M`, the abelian seed is the
+augmented complex
+
+```text
+C^(-1)=M/intersection_i I_i,
+C^p=direct_sum_(|S|=p+1) M/sum_(i in S) I_i.
+```
+
+The two-channel complex is exact.  From three channels onward its interaction cohomology can be
+nonzero.  A source-specific vanishing theorem may still make a particular HT class two-local, as
+the pair-face theorem does.  The general program must therefore determine which source laws kill
+which interaction groups; it cannot assume either universal pairwise descent or universal
+nonabelianity.
 
 ## Exact first new theorem target
 
-Upgrade (5) from a module isomorphism to a functorial descent theorem:
+The exact first target now has two linked parts.
+
+First, upgrade (5) from a module isomorphism to a functorial descent theorem:
 
 1. define `C_pair^bullet` independently of the ordering of directions;
 2. prove naturality under deletion, permutation, and source refinement;
 3. show the pair-face map is an isomorphism of differential-translation objects onto `H^0`;
 4. identify private sectors as the local-support filtration of `H^0`;
 5. prove the terminal residue is the augmentation of the same complex, not a separate invariant.
+
+Second, construct the finite-channel augmented fracture complex and prove:
+
+1. functoriality under channel deletion, refinement, and permutation;
+2. the two-channel exact sequence as its first fracture square;
+3. identification of the three-channel residual quotient with its first interaction group;
+4. a source-specific criterion under which the pair-face class has zero higher interaction;
+5. one natural HT source with a nonzero higher interaction class.
 
 The point is not the elementary identity (4).  The candidate-new content is functoriality and the
 identification of the already complete nonlinear differential matroid with the cohomology object of
@@ -135,28 +172,29 @@ its comparison 2-groupoid and prove that its associator class:
 - vanishes exactly when the local active carriers reconstruct one analytic source;
 - is detected by two independently constructed realization functors.
 
-Without this target, the Postnikov language is only parent-theory decoration.
+Without these targets, the Postnikov and fracture language is only parent-theory decoration.
 
 ## Obstruction-chain dictionary `[CONJECTURE]`
 
 ```text
-spectral incompleteness  = failure of faithfulness at pi_0 or a surviving linearized k-invariant;
-continuation failure     = non-effectivity of a descent stage;
-monodromy                = holonomy of the first nontrivial comparison stage;
-positivity failure       = obstruction to polarized reduction of the tower;
-boundary noncanonicity   = torsor of trivializations after obstruction vanishing.
+spectral incompleteness  = failure of faithfulness on a spectral face or a surviving interaction;
+continuation failure     = non-effectivity on the transport/bornology faces;
+monodromy                = holonomy of a comparison edge or higher stage;
+positivity failure       = obstruction to polarized reduction of a globally effective cube point;
+boundary noncanonicity   = torsor of total lifts after obstruction vanishing.
 ```
 
 The dictionary is testable only through constructed realization functors.
 
 ## Parent-theory and novelty boundary
 
-Postnikov towers, obstruction theory, hypercohomology, Cech descent, gerbes, stacks, and differential
-modules are parent theory.  The following are not novelty:
+Postnikov towers, obstruction theory, hypercohomology, Cech descent, gerbes, stacks, fracture cubes,
+and differential modules are parent theory.  The following are not novelty:
 
 - writing compatibility as a kernel;
 - calling a sequence of obstructions a Postnikov tower;
-- assigning standard cohomological degrees to standard descent data.
+- assigning standard cohomological degrees to standard descent data;
+- packaging incomparable localizations into a standard fracture cube.
 
 The possible new mathematics is the canonical HT construction, the active capacity `pi_0`, the
 proof that the pair-face differential is its first linearized `k`-invariant, reconstruction of the
@@ -192,6 +230,10 @@ kernel description should be formalized once the exact finite indexing types are
 `TelescopeIdeal`, `PairFacePrivateSector`, and differential-matroid modules supply the quotient and
 private-sector algebra; no analytic statement should enter as an axiom.
 
+The universal two-channel fracture square and the abelian three-channel interaction obstruction
+are now Lean-formalized in `FacetRestrictionEmbedding`.  They are parent algebraic bridges, not a
+formalization of any analytic HT realization.
+
 ## Gates
 
 - [x] support universality established
@@ -201,7 +243,13 @@ private-sector algebra; no analytic statement should enter as an axiom.
 - [x] positive private cocycles identified
 - [x] no finite Postnikov-height bound follows from intrinsic HT dimension
 - [x] rank-one polarization transport shown to collapse local orientation chambers
+- [x] exact two-channel common-lift fracture square Lean-formalized
+- [x] pairwise compatibility disproved as a universal three-channel effectivity criterion
+- [x] exact abelian three-channel residual quotient Lean-formalized
+- [x] nonabelian-only account of higher stages falsified with a positive interaction receiver
 - [ ] formalize the functorial pair descent complex
+- [ ] formalize the finite-channel augmented fracture complex
+- [ ] compute one natural nonzero HT interaction group
 - [ ] prove permutation/deletion/refinement naturality
 - [ ] recover the terminal residue as augmentation
 - [ ] build one nonlinear comparison 2-groupoid

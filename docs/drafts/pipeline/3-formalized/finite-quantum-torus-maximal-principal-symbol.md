@@ -3,7 +3,7 @@
 - **ID:** `finite-quantum-torus-maximal-principal-symbol`
 - **Stage:** 3-formalized
 - **Type:** THEOREM / FINITE QUANTUM PHASE SPACE / PRINCIPAL SYMBOL
-- **Scientific status:** `[LEAN-PROVEN] [AXIOM AUDIT PENDING] [NOVELTY PROVISIONAL]`
+- **Scientific status:** `[LEAN-PROVEN] [AXIOM-AUDITED] [NOVELTY PROVISIONAL]`
 - **Lean module:** `GaloisForLFunctions.HTGeometry.FiniteQuantumTorusRepresentation`
 
 ## The theorem
@@ -45,8 +45,8 @@ quadratic monomials are linearly independent.
 
 This removes the existential representation hypothesis from the universal principal-symbol
 program.  Maximal bivector rank is now available in an explicit finite packet of size `d^|I|` for
-every injective coefficient family.  The remaining universal-horizon burden is scalar: prove the
-all-degree power identity and supply a spanning Waring family.
+every injective coefficient family.  Every generator also has exact `d`th power equal to the
+identity; the separate root-of-unity multinomial theorem therefore supplies the scalar horizon.
 
 The finite phase-space representation itself belongs to known quantum-torus/finite-Heisenberg
 parent theory.  The novelty candidate is its exact use as an unconditional, lossless exterior
@@ -69,4 +69,7 @@ The touched module direct-checks.  Its main results are
 `finiteQuantumGenerator_mul_of_lt`,
 `finiteQuantumPairOperator_linearIndependent`,
 `finiteQuantumTorus_endomorphismCommutatorMap_injective`, and
-`finiteQuantumTorus_derivationCommutatorMap_injective`.
+`finiteQuantumTorus_derivationCommutatorMap_injective`.  The additional theorem
+`finiteQuantumGenerator_pow_degree` proves the all-degree generator relation.  The narrow build
+target passes; axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound` (the power
+theorem itself uses only `propext` and `Quot.sound`).

@@ -411,3 +411,48 @@ theorem pairwiseCompatible_without_commonTripleRepresentative
 end
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+/-- **Exact three-channel interaction quotient.**  For the triple whose first two observations
+vanish and whose third is represented by `v`, common effectivity is equivalent to vanishing of the
+class of `v` modulo `(I ⊓ J) ⊔ K`. -/
+theorem zero_zero_third_has_commonRepresentative_iff
+    {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    (I J K : Submodule R M) (v : M) :
+    (∃ a : M, I.mkQ a = 0 ∧ J.mkQ a = 0 ∧ K.mkQ a = K.mkQ v) ↔
+      v ∈ (I ⊓ J) ⊔ K := by
+  constructor
+  · rintro ⟨a, haI, haJ, haK⟩
+    have haI_mem : a ∈ I := by
+      have hai0 : I.mkQ a = I.mkQ 0 := by simpa using haI
+      have := (Submodule.Quotient.eq I).1 hai0
+      simpa using this
+    have haJ_mem : a ∈ J := by
+      have haj0 : J.mkQ a = J.mkQ 0 := by simpa using haJ
+      have := (Submodule.Quotient.eq J).1 haj0
+      simpa using this
+    have havK : a - v ∈ K := (Submodule.Quotient.eq K).1 haK
+    apply Submodule.mem_sup.2
+    refine ⟨a, ⟨haI_mem, haJ_mem⟩, v - a, ?_, ?_⟩
+    · simpa only [neg_sub] using K.neg_mem havK
+    · abel
+  · intro hv
+    rcases Submodule.mem_sup.1 hv with ⟨a, ha, k, hk, hak⟩
+    refine ⟨a, ?_, ?_, ?_⟩
+    · change I.mkQ a = I.mkQ 0
+      apply (Submodule.Quotient.eq I).2
+      simpa using ha.1
+    · change J.mkQ a = J.mkQ 0
+      apply (Submodule.Quotient.eq J).2
+      simpa using ha.2
+    · apply (Submodule.Quotient.eq K).2
+      have : a - v = -k := by rw [← hak]; abel
+      rw [this]
+      exact K.neg_mem hk
+
+end
+
+end GaloisForLFunctions.HTGeometry

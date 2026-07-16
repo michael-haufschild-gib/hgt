@@ -3,7 +3,7 @@
 - **ID:** `waring-quantum-torus-universal-horizon`
 - **Stage:** 1-in-progress
 - **Type:** THEOREM / HYPERTRANSCENDENCE / QUANTUM TORUS / WARING DECOMPOSITION
-- **Scientific status:** `[PAPER PROOF COMPLETE SUBJECT TO LINE-BY-LINE CHECK] [PRINCIPAL SYMBOL LEAN-PROVEN] [UNIVERSAL EXISTENCE LEAN-PENDING] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PAPER PROOF COMPLETE SUBJECT TO LINE-BY-LINE CHECK] [SMOOTH WARING CASE LEAN-PROVEN] [PURE-POWER SPANNING LEAN-PENDING] [NOVELTY UNVERIFIED]`
 - **Depends on:** `generalized-clifford-ulrich-hypertranscendence-horizons`
 
 ## 1. Main theorem
@@ -177,22 +177,33 @@ existence as a plausible RH bottleneck.
 ## 9. Lean route
 
 1. **Completed:** finish and axiom-audit the general principal-symbol kernel theorem.
-2. **Principal-symbol half completed:** an abstract finite `q`-commuting family with linearly
+2. **Completed:** an abstract finite `q`-commuting family with linearly
    independent ordered quadratic monomials has an explicit exterior decoder; injective linear
-   coefficient families preserve maximal rank; shift suspension preserves it exactly.  The
-   all-degree root-of-unity quantum multinomial theorem remains.
-3. **Completed for the principal-symbol surface:** construct an explicit finite cyclic phase-space
+   coefficient families preserve maximal rank; shift suspension preserves it exactly.
+3. **Completed:** construct an explicit finite cyclic phase-space
    representation, prove exact ordered `q`-commutation, prove its ordered quadratic monomials
-   linearly independent, and instantiate maximal commutator rank.  The all-degree ordered-monomial
-   basis is no longer needed for rank, but the generator power identity remains necessary for the
-   scalar horizon.
-4. Prove equation `(7)` and injectivity from a spanning linear family.
-5. Formalize pure-power spanning and coefficient absorption over an algebraically closed field.
-6. Prove smoothness implies the Waring linear family spans.
-7. Instantiate the exact horizon and maximal commutator-rank theorem.
+   linearly independent, prove every generator has `d`th power one, and instantiate maximal
+   commutator rank.
+4. **Completed:** prove the primitive-root quantum binomial and finite multinomial identities for
+   every degree `d>0`, including scalar-weighted generators.
+5. **Completed:** combine the explicit representation, scalar power law, exact rational-field
+   dependence horizon, and exterior decoder for every finite Waring family.
+6. **Completed:** formalize Waring polynomials as multivariate polynomials and prove that
+   projective smoothness makes their coefficient map injective; instantiate the simultaneous
+   exact-horizon/maximal-principal-symbol theorem.
+7. **Remaining:** formalize pure-power spanning and coefficient absorption over an algebraically
+   closed characteristic-zero field, then transport an arbitrary smooth homogeneous polynomial to
+   the completed smooth-Waring theorem.
+
+The stronger card `universal-principal-symbol-completion` asks whether a nilpotent detector can
+remove smoothness and Waring hypotheses altogether while preserving the scalar form.  It is a
+separate conjectural branch and does not change the status of this theorem.
 
 The completed theorem surfaces are in
 `GaloisForLFunctions.HTGeometry.QuantumTorusPrincipalSymbol` and
-`GaloisForLFunctions.HTGeometry.FiniteQuantumTorusRepresentation`.  They isolate the remaining
-burden sharply: universal existence now requires the Waring packet and the all-degree power
-identity; no representation-existence or commutator-rank assumption remains hidden.
+`GaloisForLFunctions.HTGeometry.FiniteQuantumTorusRepresentation`,
+`GaloisForLFunctions.HTGeometry.QuantumBinomialRootOfUnity`,
+`GaloisForLFunctions.HTGeometry.FiniteQuantumWaringHorizon`, and
+`GaloisForLFunctions.HTGeometry.MvPolynomialWaringSmoothHorizon`.  The remaining burden on this
+route is only the general Waring-existence bridge; no representation, power-law, smooth-concision,
+or commutator-rank assumption remains hidden after a Waring presentation is supplied.

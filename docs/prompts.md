@@ -110,3 +110,31 @@ research rules:
 - conjecture boldly, think bg
 - use anti-theatre and novelty gates to avoid work that's just rediscovery of known dead ends
 - check from time to time the lean code for new additions and pipeline cards for new additions that aren't yet formalized
+
+## physics
+
+use literature research and our existing lean code base in formal/GaloisForLFunctions/HTGeometry and formal/GaloisForLFunctions/RHTower to identify interesting and useful value relations between our codebase and other topics that can do the following:
+- expand a theorem
+- close gaps between theorems
+- connect theorems into new theorems
+- discharge a hypothesis or prop interfaces
+
+lean rules:
+1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.
+2. aim for the smallest lean build possible and use caching heavily for lean. write lean code in batches instead of building after every edit.
+3. lean proofs must be unconditional
+4. always check first what the project lean code already offers
+5. effort estimation are not a criterion. if it is missing in mathlib -> you build it. if it takes months -> you build it.
+6. no computations.
+
+topics:
+- everything "quantum ..."
+- everything physics
+- everything chemistry
+- unified field theory, gravity, weak and strong force, electromagnetism
+- cosmology, black holes, singularities, many world
+- mathematical sound fringe theories
+
+go deep, also consider arxiv papers
+
+do this until nothing new can be found

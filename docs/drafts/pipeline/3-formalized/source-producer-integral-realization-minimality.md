@@ -113,7 +113,11 @@ every HT source.
 
 ## The unified object forced by the obstruction report
 
-The six channels divide naturally into kinematics and effectivity.  Let
+The six channels divide naturally into kinematics and effectivity, but they are not naturally
+linearly ordered.  Differential-algebraic, holomorphic, polarized, bornological, transported,
+pointed, and integral realizations can be incomparable.  They must therefore be organized as
+directions of a fracture hypercube, while Postnikov degree records coherence height within and
+between those directions.  Let
 
 ```text
 Kin_HT = (source action, polarization, critical bornology,
@@ -138,8 +142,14 @@ This corrects two weaker candidates.
 - A determinant or spectral object stores one realization of a lift but does not prove that it
   was produced source-purely or that an integral lift exists.
 
-The common object is therefore a **space of source-effective lifts**, not a common scalar
-obstruction and not a static topology.
+The common object is therefore a **space of source-effective lifts over a fracture hypercube**, not
+a common scalar obstruction, not a static topology, and not one linearly ordered filtration.
+
+The algebraic correction is now exact.  Two quotient channels obey a short common-lift sequence,
+but three abelian channels can be pairwise compatible with no common representative.  The residual
+class is measured by an explicit three-channel interaction quotient.  See
+`../1-in-progress/hypertranscendental-source-fracture-hypercube.md` and
+`not_new_scientific_knowledge/birelative-fracture-square-and-three-channel-interaction.md`.
 
 The effectivity fibration now has a concrete conjectural local model rather than remaining an
 unspecified stack.  A source law supplies a total variational/descent one-form
@@ -175,8 +185,9 @@ The obstruction classes in `docs/reports/rh-proof-chains-and-obstructions-2026-0
 | `O6` missing typed bridge | an actual comparison morphism inside the effective lift |
 | `O7` algebraicity/integrality/rigidity | arithmetic essential-image condition on the integral lift |
 
-The claim is not that these predicates are equivalent.  It is that each is a different failure
-mode of existence, extension, uniqueness, positivity, or arithmetic effectivity of one lift.
+The claim is not that these predicates are equivalent.  It is that each is a different face or
+higher interaction failure of existence, extension, uniqueness, positivity, or arithmetic
+effectivity of one total lift.  Pairwise agreement of selected faces is not sufficient in general.
 
 ## Fields-scale conjecture: source-effectivity equivalence
 

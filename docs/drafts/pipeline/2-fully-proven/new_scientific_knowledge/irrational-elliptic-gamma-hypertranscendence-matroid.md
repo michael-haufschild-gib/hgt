@@ -132,6 +132,25 @@ the theorem.  Equivalently, the fixed coset of `Gamma` in `M/B` has nonzero conn
 This is the first natural analytic realization of the source-effectivity object: locally DA
 boundary multipliers possess a meromorphic primitive but no DA primitive.
 
+## Pointed DA--holomorphic bi-anomaly corollary
+
+The gamma-gerbe construction supplies a second, independent anomaly face from the same source
+cochain.  On the fixed irrational triptic fibre, the Felder--Henriques--Rossi--Zhu group--Cech
+cochain `s_Gamma` has coboundary components that are exponentials of rational functions.  Hence
+its coboundary lies in the intersection of the holomorphic-unit and DA-meromorphic coefficient
+complexes.
+
+It follows that `s_Gamma` defines a nonzero relative class modulo this intersection.  Its
+connecting class maps to the nontrivial gamma-gerbe class and hence to the Dixmier--Douady
+generator.  The source pointing selects the standard wedge component `Gamma(z;tau,sigma)`, whose
+independently nonzero edge is the DA translation anomaly above.  Both edge anomalies become
+effective in the ambient meromorphic coefficient theory.
+
+This is proved in
+`irrational-elliptic-gamma-pointed-bi-anomaly-fracture.md`.  It is the first natural analytic
+two-axis model of the source-fracture architecture.  The DA and DD classes are not identified;
+their exact relation is common pointed origin and simultaneous ambient effectivity.
+
 ## Significance and novelty gate
 
 Masaki Kato proved differential algebraicity of the multiple elliptic gamma function for rational
@@ -152,6 +171,10 @@ The principal parent theories are:
 - the gamma gerbe of Felder--Henriques--Rossi--Zhu,
   https://arxiv.org/abs/math/0601337.
 
+Morain's 2025--2026 geometric multiple-elliptic-gamma papers extend the Bernoulli-rational
+coboundary and higher-cocycle theory to higher-rank lattices.  They do not address differential
+algebraicity, the irrational shift spectrum, or the DA-filtered anomaly.
+
 Targeted searches through 2026 found results on differential transcendence of elliptic
 hypergeometric solutions and `q`-difference equations over elliptic fields, but no theorem for the
 irrational elliptic gamma function, no spectrum `(1)`, no matroid `(2)`, and no DA-filtered
@@ -159,7 +182,9 @@ cohomology class above.  This is a preliminary novelty conclusion, not a substit
 review.
 
 - **Paper verdict:** yes.  The hypertranscendence theorem, exact spectrum, matroid, and DA anomaly
-  form a coherent standalone paper.
+  form a coherent standalone paper.  The pointed DA--holomorphic bi-anomaly materially strengthens
+  it by connecting the new DA theorem to the established gamma-gerbe geometry through a new
+  intersection-coefficient relative class.
 - **Fields verdict:** no.  This is significant new special-function knowledge, not the general HT
   reconstruction/effectivity equivalence.
 - **RH boundary:** the theorem supplies a natural analytic HT effectivity model but no zeta source
@@ -188,6 +213,8 @@ those layers.
 - [x] Hardouin--Singer several-automorphism parent checked
 - [x] exact shift spectrum and finite differential matroid proved
 - [x] nonzero DA-filtered cohomology class deduced
+- [x] pointed DA--holomorphic bi-anomaly class deduced
+- [x] DD and DA anomaly faces recovered from one pointed gamma cochain
 - [x] external search found Kato's explicit open non-rational regime
 - [x] preliminary exact/equivalent/stronger novelty search
 - [x] significance: resolves an open special-function regime and gives strictly stronger structure
