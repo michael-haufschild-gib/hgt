@@ -1,7 +1,7 @@
 # Semilocal cyclic--transported prolate core disjointness
 
 - **ID:** semilocal-prolate-core-disjointness
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Scientific status:** CANDIDATE NEW SCIENTIFIC KNOWLEDGE, provisional pending independent review
 - **Parent source:** Connes--Consani--Moscovici, *Zeta zeros and prolate wave operators*,
@@ -121,3 +121,34 @@ or `alpha<1/4`, proving (3).
   regularity threshold in the semilocal prolate literature.
 
 Scientific novelty remains provisional pending independent proof and literature review.
+
+## Lean boundary
+
+`formal/GaloisForLFunctions/RHTower/SoninSemilocalGradingBounds.lean` formalizes both theorem
+components:
+
+- `mellinCharacter_add_eulerPeriod` and `semilocalPrimeWeight_periodic` prove the exact Euler
+  period of the spectral metric;
+- `semilocalPrimeWeight_halfPeriod_ne_zero` proves that this periodic metric is nonconstant;
+- `semilocalPrimeWeight_polynomial_core_disjoint_ae` proves
+  `C[s] intersect w_p C[s]={0}` in the spectral almost-everywhere sense;
+- `semilocalPrimeWeight_inv_polynomial_core_disjoint_ae` proves the inverse-metric form
+  `C[s] intersect w_p^(-1) C[s]={0}`;
+- `semilocalOnePrimeTransportedGroundDomainSquare` is the squared Jacobi-domain summand for
+  `(N_infinity+1)^alpha G_p p_0`;
+- `semilocalOnePrimeGroundDomainSquare_comparable` compares it, beyond the harmless zeroth
+  coefficient, to the already-controlled semilocal commutator row;
+- `summable_semilocalOnePrimeTransportedGroundDomainSquare_iff` proves summability exactly when
+  `alpha < 1/4`.
+
+The already-formalized semilocal transport square and Gram identity identify the same actual Euler
+metric.  No proposition-valued analytic assumption is used.
+
+## Gates
+
+- [x] exact Sonin transport and Euler metric identified on paper
+- [x] polynomial-core disjointness proved on paper
+- [x] sharp Jacobi coefficient order proved in Lean
+- [x] exact `alpha < 1/4` transported-ground-state threshold proved in Lean
+- [x] actual periodic Euler-metric core disjointness formalized in Lean
+- [ ] independent proof and literature review

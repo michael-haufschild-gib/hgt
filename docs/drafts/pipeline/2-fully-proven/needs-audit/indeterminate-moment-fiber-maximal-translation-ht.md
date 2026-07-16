@@ -819,17 +819,18 @@ The complete theorem surface is now formalized across
 `CofinalCholeskyResidualPhase.lean`.  These modules construct the exact complete-moment boundary
 simplex and retract, prove projective-label recovery and barycentric moment preservation, identify
 the actual translated Cauchy packets, and prove dense residual maximal full-complex translation
-freeness on every infinite closed boundary face.  The parametric-avoidance parent is now
-constructed unconditionally in `StratifiedParametricAvoidance`; the named Nevanlinna and
-proper-projective-image/Whitney parents remain explicit structure inputs, not Lean axioms.
+freeness on every infinite closed boundary face. The parametric-avoidance parent is constructed
+unconditionally in `StratifiedParametricAvoidance`, and the projected-incidence stratification is
+constructed unconditionally in `ProjectiveIncidenceHausdorffDimension`. The named Nevanlinna
+family remains an explicit structure input, not a Lean axiom.
 
 Formalization audit (needs-audit pass): the concrete pointed-Xi gate check is confirmed formalized
 and axiom-clean (`RHTower.normalizedPrimeArchMomentGerm_allOrder_determinate`,
 `XiC_unique_entire_solution_of_pointedMomentConstraint` in `XiHedenmalmMomentDeterminacy.lean`). The
 abstract full-fiber theorem has no bounded self-contained kernel: aperiodicity `(4a)`,
-parameter-jet controllability `(10)`, and the incidence stratification all route through the
-absent Nevanlinna matrix / minimal-exponential-type Jensen bound / proper-projective-image and
-Whitney stack. The finite-dimensional stratified-avoidance step itself is now unconditional. The
+parameter-jet controllability `(10)` and the analytic identification of the incidence family route
+through the absent Nevanlinna matrix / minimal-exponential-type Jensen bound. The algebraic
+incidence stratification and finite-dimensional stratified-avoidance steps are now unconditional. The
 coordinate-free classical step — extreme points of a compact convex set are `G_δ`, `(29)`--`(30)` —
 was absent from mathlib and is now formalized axiom-clean as `HTGeometry.isGδ_extremePoints` in
 `formal/GaloisForLFunctions/HTGeometry/CompactConvexExtremeGdelta.lean` (real normed space, `K` compact convex;
@@ -876,9 +877,9 @@ Two further self-contained steps are now formalized axiom-clean:
   conjugate-Poisson representations of its imaginary and real parts (`stieltjesTransform_im_eq_poisson`,
   `stieltjesTransform_re_eq_conjPoisson`), the harmonic kernels whose boundary limits invert to `μ`.
 
-The barycentric construction, parameter-jet controllability, and full-configuration transversality
-still route through the absent Nevanlinna matrix / minimal-exponential-type Jensen bound / Whitney
-transversality stack.
+The barycentric construction and analytic parameter-jet family still route through the absent
+Nevanlinna matrix / minimal-exponential-type Jensen bound. Once that family is supplied, the
+full-configuration incidence and transversality stack is unconditional.
 
 ## Gates
 

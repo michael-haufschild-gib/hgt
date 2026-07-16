@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SoninSemilocalGradingDeformation
 import GaloisForLFunctions.RHTower.GammaConductorSchurCapacity
+import GaloisForLFunctions.RHTower.HardyTitchmarshSemilocalSquare
 import Mathlib.Analysis.Real.Pi.Wallis
 import Mathlib.Analysis.Real.Pi.Bounds
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
@@ -1194,5 +1195,187 @@ theorem summable_semilocalOnePrimeTransportedGroundDomainSquare_iff
         (fun n => (semilocalOnePrimeGroundDomainSquare_comparable
           p alpha (by omega : 0 < n + 1)).2) hmajor
     exact (summable_nat_add_iff 1).1 hTshift
+
+/-! ### Semilocal polynomial-core disjointness -/
+
+/-- The Mellin character has the Euler period `2π / log p`. -/
+theorem mellinCharacter_add_eulerPeriod
+    (p s : ℝ) (hp : 1 < p) :
+    MellinL2.mellinCharacter p (s + 2 * Real.pi / Real.log p) =
+      MellinL2.mellinCharacter p s := by
+  have hlog : Real.log p ≠ 0 := ne_of_gt (Real.log_pos hp)
+  unfold MellinL2.mellinCharacter
+  rw [show Real.log p * (s + 2 * Real.pi / Real.log p) =
+      Real.log p * s + 2 * Real.pi by field_simp]
+  push_cast
+  rw [add_mul, Complex.exp_add, Complex.exp_two_pi_mul_I, mul_one]
+
+/-- The positive one-prime Euler metric is periodic in the spectral coordinate. -/
+theorem semilocalPrimeWeight_periodic
+    (p : ℝ) (hp : 1 < p) :
+    Function.Periodic (fun s : ℝ => semilocalPrimeWeight p s)
+      (2 * Real.pi / Real.log p) := by
+  intro s
+  change semilocalPrimeWeight p (s + 2 * Real.pi / Real.log p) =
+    semilocalPrimeWeight p s
+  rw [semilocalPrimeWeight_eq_symbol_sq, semilocalPrimeWeight_eq_symbol_sq]
+  congr 2
+  unfold semilocalPrimeSymbol
+  rw [mellinCharacter_add_eulerPeriod p s hp]
+
+@[simp]
+theorem mellinCharacter_zero (p : ℝ) :
+    MellinL2.mellinCharacter p 0 = 1 := by
+  simp [MellinL2.mellinCharacter]
+
+/-- At the half-period the Mellin character changes sign. -/
+theorem mellinCharacter_half_eulerPeriod
+    (p : ℝ) (hp : 1 < p) :
+    MellinL2.mellinCharacter p (Real.pi / Real.log p) = -1 := by
+  have hlog : Real.log p ≠ 0 := ne_of_gt (Real.log_pos hp)
+  unfold MellinL2.mellinCharacter
+  rw [show Real.log p * (Real.pi / Real.log p) = Real.pi by field_simp]
+  exact Complex.exp_pi_mul_I
+
+/-- The one-prime Euler metric is genuinely nonconstant: its half-period and zero values differ. -/
+theorem semilocalPrimeWeight_halfPeriod_ne_zero
+    (p : ℝ) (hp : 1 < p) :
+    semilocalPrimeWeight p (Real.pi / Real.log p) ≠
+      semilocalPrimeWeight p 0 := by
+  rw [semilocalPrimeWeight_eq_symbol_sq, semilocalPrimeWeight_eq_symbol_sq]
+  unfold semilocalPrimeSymbol
+  rw [mellinCharacter_half_eulerPeriod p hp, mellinCharacter_zero]
+  simp only [inv_neg, inv_one, mul_neg, mul_one, sub_neg_eq_add]
+  have hsqrt : 0 < (Real.sqrt p)⁻¹ :=
+    inv_pos.mpr (Real.sqrt_pos.2 (zero_lt_one.trans hp))
+  intro h
+  have hreal := congrArg (fun x : NNReal => (x : ℝ)) h
+  simp only [NNReal.coe_pow, coe_nnnorm] at hreal
+  have hplus : (1 + ((Real.sqrt p : ℂ))⁻¹) =
+      ((1 + (Real.sqrt p)⁻¹ : ℝ) : ℂ) := by push_cast; rfl
+  have hminus : (1 - ((Real.sqrt p : ℂ))⁻¹) =
+      ((1 - (Real.sqrt p)⁻¹ : ℝ) : ℂ) := by push_cast; rfl
+  rw [hplus, hminus, Complex.norm_real, Complex.norm_real,
+    Real.norm_eq_abs, Real.norm_eq_abs,
+    abs_of_pos (by linarith : 0 < 1 + (Real.sqrt p)⁻¹),
+    abs_of_pos (by
+      have hlt := sqrt_inv_lt_one p hp
+      linarith : 0 < 1 - (Real.sqrt p)⁻¹)] at hreal
+  nlinarith
+
+/-- **Polynomial-core disjointness, pointwise form.**  A polynomial cannot equal the nonconstant
+periodic Euler metric times another polynomial unless both vanish. -/
+theorem semilocalPrimeWeight_polynomial_core_disjoint
+    (p : ℝ) (hp : 1 < p) (P Q : Polynomial ℂ)
+    (h : ∀ s : ℝ, P.eval (s : ℂ) =
+      (((semilocalPrimeWeight p s : NNReal) : ℝ) : ℂ) * Q.eval (s : ℂ)) :
+    P = 0 ∧ Q = 0 := by
+  let period : ℝ := 2 * Real.pi / Real.log p
+  let halfPeriod : ℝ := Real.pi / Real.log p
+  let c0 : ℂ := (((semilocalPrimeWeight p 0 : NNReal) : ℝ) : ℂ)
+  have hperiod0 : period ≠ 0 := by
+    dsimp [period]
+    exact div_ne_zero (mul_ne_zero (by norm_num) Real.pi_ne_zero)
+      (ne_of_gt (Real.log_pos hp))
+  have hperiodic :
+      Function.Periodic (fun s : ℝ => semilocalPrimeWeight p s) period := by
+    simpa [period] using semilocalPrimeWeight_periodic p hp
+  let orbit : ℕ → ℂ := fun n => (((n : ℝ) * period : ℝ) : ℂ)
+  have horbit : Function.Injective orbit := by
+    intro m n hmn
+    apply Nat.cast_injective (R := ℝ)
+    apply mul_right_cancel₀ hperiod0
+    simpa [orbit] using congrArg Complex.re hmn
+  have hP : P = Polynomial.C c0 * Q := by
+    apply Polynomial.eq_of_infinite_eval_eq
+    apply (Set.infinite_range_of_injective horbit).mono
+    rintro z ⟨n, rfl⟩
+    have hw := (hperiodic.nsmul n) 0
+    have hsample := h ((n : ℝ) * period)
+    simp only [zero_add, nsmul_eq_mul] at hw
+    simpa [orbit, c0, Polynomial.eval_mul, hw] using hsample
+  have hQzero : Q = 0 := by
+    apply Polynomial.eq_zero_of_infinite_isRoot
+    let halfOrbit : ℕ → ℂ := fun n =>
+      (((halfPeriod + (n : ℝ) * period : ℝ)) : ℂ)
+    have hhalfOrbit : Function.Injective halfOrbit := by
+      intro m n hmn
+      apply Nat.cast_injective (R := ℝ)
+      apply mul_right_cancel₀ hperiod0
+      have hre := congrArg Complex.re hmn
+      dsimp [halfOrbit] at hre
+      linarith
+    apply (Set.infinite_range_of_injective hhalfOrbit).mono
+    rintro z ⟨n, rfl⟩
+    have hw0 := (hperiodic.nsmul n) halfPeriod
+    have hsample := h (halfPeriod + (n : ℝ) * period)
+    have hhalfNe : semilocalPrimeWeight p halfPeriod ≠
+        semilocalPrimeWeight p 0 := by
+      simpa [halfPeriod] using semilocalPrimeWeight_halfPeriod_ne_zero p hp
+    have hcoeff :
+        (((semilocalPrimeWeight p 0 : NNReal) : ℝ) : ℂ) -
+          (((semilocalPrimeWeight p halfPeriod : NNReal) : ℝ) : ℂ) ≠ 0 := by
+      exact sub_ne_zero.mpr (by exact_mod_cast Ne.symm hhalfNe)
+    simp only [nsmul_eq_mul] at hw0
+    rw [hP, Polynomial.eval_mul, Polynomial.eval_C] at hsample
+    have heq :
+        ((((semilocalPrimeWeight p 0 : NNReal) : ℝ) : ℂ) -
+          (((semilocalPrimeWeight p halfPeriod : NNReal) : ℝ) : ℂ)) *
+            Q.eval (((halfPeriod + (n : ℝ) * period : ℝ)) : ℂ) = 0 := by
+      rw [hw0] at hsample
+      linear_combination hsample
+    exact (mul_eq_zero.mp heq).resolve_left hcoeff
+  exact ⟨by rw [hP, hQzero, mul_zero], hQzero⟩
+
+/-- **Polynomial-core disjointness in the spectral `L²` sense.**  Equality almost everywhere
+against the positive Euler metric already forces both polynomial representatives to vanish. -/
+theorem semilocalPrimeWeight_polynomial_core_disjoint_ae
+    (p : ℝ) (hp : 1 < p) (P Q : Polynomial ℂ)
+    (h : (fun s : ℝ => P.eval (s : ℂ)) =ᵐ[MeasureTheory.volume]
+      fun s : ℝ =>
+        (((semilocalPrimeWeight p s : NNReal) : ℝ) : ℂ) * Q.eval (s : ℂ)) :
+    P = 0 ∧ Q = 0 := by
+  have hweightNN : Continuous fun s : ℝ => semilocalPrimeWeight p s := by
+    unfold semilocalPrimeWeight
+    exact (((primeEulerFactor_continuous p hp).nnnorm).inv₀
+      (fun s => nnnorm_ne_zero_iff.mpr (primeEulerFactor_ne_zero p hp s))).pow 2
+  have hweightC : Continuous fun s : ℝ =>
+      (((semilocalPrimeWeight p s : NNReal) : ℝ) : ℂ) :=
+    Complex.continuous_ofReal.comp (NNReal.continuous_coe.comp hweightNN)
+  have hpoint := (Continuous.ae_eq_iff_eq MeasureTheory.volume
+    (P.continuous.comp Complex.continuous_ofReal)
+    (hweightC.mul (Q.continuous.comp Complex.continuous_ofReal))).mp h
+  exact semilocalPrimeWeight_polynomial_core_disjoint p hp P Q
+    (fun s => congrFun hpoint s)
+
+/-- The inverse Euler multiplier has the same trivial intersection with the polynomial core. -/
+theorem semilocalPrimeWeight_inv_polynomial_core_disjoint_ae
+    (p : ℝ) (hp : 1 < p) (P Q : Polynomial ℂ)
+    (h : (fun s : ℝ => P.eval (s : ℂ)) =ᵐ[MeasureTheory.volume]
+      fun s : ℝ =>
+        ((((semilocalPrimeWeight p s : NNReal) : ℝ)⁻¹ : ℝ) : ℂ) *
+          Q.eval (s : ℂ)) :
+    P = 0 ∧ Q = 0 := by
+  have hforward : (fun s : ℝ => Q.eval (s : ℂ)) =ᵐ[MeasureTheory.volume]
+      fun s : ℝ =>
+        (((semilocalPrimeWeight p s : NNReal) : ℝ) : ℂ) * P.eval (s : ℂ) := by
+    filter_upwards [h] with s hs
+    have hwNN : semilocalPrimeWeight p s ≠ 0 :=
+      semilocalPrimeWeight_ne_zero p hp s
+    have hwR : ((semilocalPrimeWeight p s : NNReal) : ℝ) ≠ 0 := by
+      exact_mod_cast hwNN
+    have hwC : ((((semilocalPrimeWeight p s : NNReal) : ℝ) : ℂ)) ≠ 0 := by
+      exact_mod_cast hwR
+    calc
+      Q.eval (s : ℂ) =
+          (((semilocalPrimeWeight p s : NNReal) : ℝ) : ℂ) *
+            (((((semilocalPrimeWeight p s : NNReal) : ℝ)⁻¹ : ℝ) : ℂ) *
+              Q.eval (s : ℂ)) := by
+        push_cast
+        field_simp
+      _ = (((semilocalPrimeWeight p s : NNReal) : ℝ) : ℂ) *
+          P.eval (s : ℂ) := by rw [← hs]
+  have hzero := semilocalPrimeWeight_polynomial_core_disjoint_ae p hp Q P hforward
+  exact ⟨hzero.2, hzero.1⟩
 
 end RHTower

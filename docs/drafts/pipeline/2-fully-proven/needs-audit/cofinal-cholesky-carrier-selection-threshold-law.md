@@ -1045,9 +1045,13 @@ chain depends on that module. This validates only the declarations listed above 
 capstones named below.
 
 The project-specific compact-patch density chain is now formalized. The global incidence-ring
-bound is converted to a finite real-codimension stratification of the literal projected rank
-defect through the general classical proper-projection/Whitney interface
-`ClassicalComplexProjectiveIncidenceGeometry`. The actual Nevanlinna row-evaluation family is
+bound is converted unconditionally to a finite real-codimension stratification of the literal
+projected rank defect in `ProjectiveIncidenceHausdorffDimension`: each affine projective chart is
+flattened to one polynomial space, its Krull bound gives a finite regular stratification, smooth
+coordinate projection preserves the Hausdorff-dimension bound, and target algebraicity upgrades
+the projected defect to the required codimension. The compatibility structure
+`ClassicalComplexProjectiveIncidenceGeometry` is now inhabited by the proved value
+`provedComplexProjectiveIncidenceGeometry`. The actual Nevanlinna row-evaluation family is
 smooth in operator norm; constrained pointwise surjectivity is promoted to one uniform finite
 probe on each compact shift patch; the unconditional finite-dimensional stratified-avoidance
 theorem then gives compact-patch density. Sigma-compact exhaustion and countable Baire intersection produce
@@ -1086,9 +1090,10 @@ graph saturation, frame escape, and coherent unitary construction are now uncond
 axiom-clean. `PureSingularCarrierTrichotomy` and `PureSingularCarrierUnitary` contain the downstream
 carrier deductions, and `FAndMRieszVanishing` discharges their former analytic input.
 The indeterminate-Hamburger Nevanlinna-family construction remains a source-faithful interface, not
-an unconditional theorem. The remaining general geometry input is the packaged
-proper-projective-image/Whitney stratification theorem. Both obligations must be constructed in
-Lean before this card can move to Stage 3 under the unconditional proof rule.
+an unconditional theorem. The proper-projective-image/Whitney obligation is now discharged by the
+stronger Hausdorff-dimension route above, without importing a Whitney-stratification theorem.
+The Nevanlinna construction is the remaining mathematical blocker before this card can move to
+Stage 3 under the unconditional proof rule.
 Bernstein--Szegő finite-prefix reproduction is already unconditional through
 stable-terminal feedback reconstruction.
 
@@ -1117,7 +1122,7 @@ stable-terminal feedback reconstruction.
 - [ ] full primary-source priority audit
 - [ ] exact primary-source match for every literature theorem interface
 - [ ] unconditional construction of the classical N-extremal Nevanlinna family
-- [ ] unconditional proper-projective-image / Whitney-stratification theorem
+- [x] unconditional projected-incidence dimension and finite regular stratification theorem
 - [x] unconditional finite-dimensional stratified parametric-avoidance theorem
 - [x] axiom-free Lean formalization of every original deduction in the relative paper capstone
 - [x] single-declaration weak-topology gluing of the global carrier-range residual phase

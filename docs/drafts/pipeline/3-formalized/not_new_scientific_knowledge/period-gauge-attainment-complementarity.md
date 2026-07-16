@@ -122,10 +122,17 @@ credible novelty basis for a standalone paper.
 - `[DUAL GATE -- FAIL]` Significant-but-derivable is not a new scientific result.
 - `[ANTI-THEATRE -- PASS]` The card is classified as not-new despite the complete Lean theorem.
 
-Useful external checks include the standard period-group proposition and lattice classification
-in Joachim Wehler's *Modular Forms* notes, the MIT elliptic-function notes on rank-two period
-modules, and standard closed-range multiplication-operator criteria. Absence of the project's
-combined vocabulary from search results is not evidence of mathematical novelty.
+Useful external checks include:
+
+- Joachim Wehler, *Modular Forms*, Proposition 1.4 and the following lattice classification,
+  `https://www.mathematik.uni-muenchen.de/~wehler/ModularFormsScript.pdf`;
+- MIT 18.784 elliptic-function notes on rank-two period modules,
+  `https://math.mit.edu/~brubaker/Math784/elliptic.pdf`;
+- the standard bounded-away-from-zero closed-range criterion for multiplication operators,
+  `https://doi.org/10.1515/dema-2022-0162`.
+
+Absence of the project's combined vocabulary from search results is not evidence of mathematical
+novelty.
 
 ## The genuinely new target: gauge-attainment transgression
 

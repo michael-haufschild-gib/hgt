@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ComplexAffineAlgebraicStratificationFinite
+import GaloisForLFunctions.HTGeometry.ExpandedEvaluationAlgebraicRankDefect
 import GaloisForLFunctions.HTGeometry.ProjectiveAffineChartGlobalIncidenceDimension
 import GaloisForLFunctions.HTGeometry.ProjectiveIncidenceProjection
 import Mathlib.Algebra.MvPolynomial.Equiv
@@ -19,6 +20,11 @@ namespace GaloisForLFunctions.HTGeometry
 open Set
 
 noncomputable section
+
+theorem finrank_complex_pi
+    {σ : Type*} [Fintype σ] :
+    Module.finrank ℝ (σ → ℂ) = 2 * Fintype.card σ := by
+  simp [Module.finrank_pi_fintype, Complex.finrank_real_complex, Nat.mul_comm]
 
 /-- Evaluation commutes with the equivalence between a polynomial ring on a sum and an iterated
 polynomial ring. -/
@@ -50,7 +56,7 @@ def projectiveChartFlatIncidenceIdeal
     {row κ : Type} [Fintype κ] [DecidableEq κ]
     (q n : ℕ) (z : row → ℂ) (j : κ × Fin (q + 1))
     (exponent : κ → (Fin n →₀ ℕ)) :
-    Ideal (MvPolynomial (projectiveChartFlatVar q n j) ℂ) :=
+    Ideal (MvPolynomial (projectiveChartFlatVar (row := row) q n j) ℂ) :=
   (projectiveChartGlobalIncidenceIdeal q n z j exponent).comap
     (MvPolynomial.sumAlgEquiv ℂ (row × Fin n) (projectiveChartVar j)).toRingEquiv
 
@@ -59,7 +65,7 @@ def projectiveChartFlatIncidenceSet
     {row κ : Type} [Fintype κ] [DecidableEq κ]
     (q n : ℕ) (z : row → ℂ) (j : κ × Fin (q + 1))
     (exponent : κ → (Fin n →₀ ℕ)) :
-    Set (projectiveChartFlatVar q n j → ℂ) :=
+    Set (projectiveChartFlatVar (row := row) q n j → ℂ) :=
   MvPolynomial.zeroLocus ℂ
     (projectiveChartFlatIncidenceIdeal q n z j exponent)
 
@@ -68,7 +74,7 @@ theorem mem_projectiveChartFlatIncidenceSet_iff
     {row κ : Type} [Fintype row] [Fintype κ] [DecidableEq κ]
     (q n : ℕ) (z : row → ℂ) (j : κ × Fin (q + 1))
     (exponent : κ → (Fin n →₀ ℕ))
-    (w : projectiveChartFlatVar q n j → ℂ) :
+    (w : projectiveChartFlatVar (row := row) q n j → ℂ) :
     w ∈ projectiveChartFlatIncidenceSet q n z j exponent ↔
       IsProjectiveChartIncidencePoint q n z j exponent
         (w ∘ Sum.inr) (w ∘ Sum.inl) := by
@@ -109,7 +115,8 @@ theorem projectiveChartFlatIncidenceIdeal_map_sumAlgEquiv
         (MvPolynomial.sumAlgEquiv ℂ (row × Fin n) (projectiveChartVar j)).toRingEquiv =
       projectiveChartGlobalIncidenceIdeal q n z j exponent := by
   unfold projectiveChartFlatIncidenceIdeal
-  exact Ideal.map_comap_of_equiv _ _
+  exact Ideal.map_comap_eq_self_of_equiv
+    (MvPolynomial.sumAlgEquiv ℂ (row × Fin n) (projectiveChartVar j)).toRingEquiv _
 
 /-- Flattening the iterated incidence ring preserves its Krull dimension. -/
 theorem ringKrullDim_projectiveChartFlatIncidenceRing
@@ -117,7 +124,7 @@ theorem ringKrullDim_projectiveChartFlatIncidenceRing
     (q n : ℕ) (z : row → ℂ) (j : κ × Fin (q + 1))
     (exponent : κ → (Fin n →₀ ℕ)) :
     ringKrullDim
-        (MvPolynomial (projectiveChartFlatVar q n j) ℂ ⧸
+        (MvPolynomial (projectiveChartFlatVar (row := row) q n j) ℂ ⧸
           projectiveChartFlatIncidenceIdeal q n z j exponent) =
       ringKrullDim (projectiveChartGlobalIncidenceRing q n z j exponent) := by
   let E := MvPolynomial.sumAlgEquiv ℂ (row × Fin n) (projectiveChartVar j)
@@ -125,14 +132,14 @@ theorem ringKrullDim_projectiveChartFlatIncidenceRing
     (projectiveChartFlatIncidenceIdeal q n z j exponent)
     (projectiveChartGlobalIncidenceIdeal q n z j exponent)
     E.toRingEquiv
-    (projectiveChartFlatIncidenceIdeal_map_sumAlgEquiv q n z j exponent)
+    (projectiveChartFlatIncidenceIdeal_map_sumAlgEquiv q n z j exponent).symm
   exact Q.ringKrullDim
 
 /-- A chart Krull bound gives a finite regular stratification of the flattened incidence set.
 The chart-coordinate dimension is added to the packet codimension because it is eliminated by the
 subsequent projection. -/
 theorem projectiveChartFlatIncidenceSet_finiteRegularStratification_of_krullDim
-    {row κ : Type} [Fintype row] [Fintype κ] [DecidableEq κ]
+    {row κ : Type} [Fintype row] [DecidableEq row] [Fintype κ] [DecidableEq κ]
     (q n c : ℕ) (z : row → ℂ) (j : κ × Fin (q + 1))
     (exponent : κ → (Fin n →₀ ℕ))
     (hchart : ringKrullDim (projectiveChartGlobalIncidenceRing q n z j exponent) +
@@ -149,34 +156,41 @@ theorem projectiveChartFlatIncidenceSet_finiteRegularStratification_of_krullDim
     exact MvPolynomial.le_vanishingIdeal_zeroLocus I
   have hdim_mono :
       ringKrullDim
-          (MvPolynomial (projectiveChartFlatVar q n j) ℂ ⧸
+          (MvPolynomial (projectiveChartFlatVar (row := row) q n j) ℂ ⧸
             MvPolynomial.vanishingIdeal ℂ S) ≤
         ringKrullDim
-          (MvPolynomial (projectiveChartFlatVar q n j) ℂ ⧸ I) :=
+          (MvPolynomial (projectiveChartFlatVar (row := row) q n j) ℂ ⧸ I) :=
     ringKrullDim_le_of_surjective (Ideal.Quotient.factor hIJ)
       (Ideal.Quotient.factor_surjective hIJ)
   have hchartFlat :
       ringKrullDim
-          (MvPolynomial (projectiveChartFlatVar q n j) ℂ ⧸ I) +
+          (MvPolynomial (projectiveChartFlatVar (row := row) q n j) ℂ ⧸ I) +
           (c : WithBot ℕ∞) ≤
         (Fintype.card row * n : ℕ) := by
     rw [ringKrullDim_projectiveChartFlatIncidenceRing]
     exact hchart
   have hdim :
       ringKrullDim
-          (MvPolynomial (projectiveChartFlatVar q n j) ℂ ⧸
+          (MvPolynomial (projectiveChartFlatVar (row := row) q n j) ℂ ⧸
             MvPolynomial.vanishingIdeal ℂ S) + (c + k : ℕ) ≤
-        (Fintype.card (projectiveChartFlatVar q n j) : ℕ) := by
-    change _ ≤ ((Fintype.card row * n + k : ℕ) : WithBot ℕ∞)
+        (Fintype.card (projectiveChartFlatVar (row := row) q n j) : ℕ) := by
+    have hcard : Fintype.card (projectiveChartFlatVar (row := row) q n j) =
+        Fintype.card row * n + k := by
+      simp [projectiveChartFlatVar, k]
+    rw [hcard]
     calc
       _ ≤ ringKrullDim
-            (MvPolynomial (projectiveChartFlatVar q n j) ℂ ⧸ I) +
-            (c + k : ℕ) := add_le_add_right hdim_mono _
+            (MvPolynomial (projectiveChartFlatVar (row := row) q n j) ℂ ⧸ I) +
+            (c + k : ℕ) := by
+              simpa [add_comm] using
+                add_le_add_right hdim_mono ((c + k : ℕ) : WithBot ℕ∞)
       _ = (ringKrullDim
-            (MvPolynomial (projectiveChartFlatVar q n j) ℂ ⧸ I) + c) + k := by
+            (MvPolynomial (projectiveChartFlatVar (row := row) q n j) ℂ ⧸ I) + c) + k := by
               push_cast
               ac_rfl
-      _ ≤ (Fintype.card row * n : ℕ) + k := add_le_add_right hchartFlat _
+      _ ≤ (Fintype.card row * n : ℕ) + k := by
+        simpa [add_assoc, add_comm, add_left_comm] using
+          add_le_add_right hchartFlat (k : WithBot ℕ∞)
       _ = ((Fintype.card row * n + k : ℕ) : WithBot ℕ∞) := by push_cast; rfl
   simpa only [S, k] using
     complexAffineAlgebraicSet_finiteRegularStratification_of_krullDim S hS hdim
@@ -184,7 +198,7 @@ theorem projectiveChartFlatIncidenceSet_finiteRegularStratification_of_krullDim
 /-- The chart Krull bound implies the expected real Hausdorff-dimension bound on the flattened
 incidence variety. -/
 theorem dimH_projectiveChartFlatIncidenceSet_le_of_krullDim
-    {row κ : Type} [Fintype row] [Fintype κ] [DecidableEq κ]
+    {row κ : Type} [Fintype row] [DecidableEq row] [Fintype κ] [DecidableEq κ]
     (q n c : ℕ) (z : row → ℂ) (j : κ × Fin (q + 1))
     (exponent : κ → (Fin n →₀ ℕ))
     (hchart : ringKrullDim (projectiveChartGlobalIncidenceRing q n z j exponent) +
@@ -197,12 +211,12 @@ theorem dimH_projectiveChartFlatIncidenceSet_le_of_krullDim
       q n c z j exponent hchart
   calc
     dimH (projectiveChartFlatIncidenceSet q n z j exponent) ≤
-        (Module.finrank ℝ (projectiveChartFlatVar q n j → ℂ) -
+        (Module.finrank ℝ (projectiveChartFlatVar (row := row) q n j → ℂ) -
           2 * (c + k) : ℕ) := strata.dimH_le_finrank_sub
     _ = (2 * (Fintype.card row * n - c) : ℕ) := by
       congr 1
-      simp only [projectiveChartFlatVar, Module.finrank_pi_fintype,
-        Complex.finrank_real_complex, Fintype.card_sum, Fintype.card_prod,
+      rw [finrank_complex_pi]
+      simp only [projectiveChartFlatVar, Fintype.card_sum, Fintype.card_prod,
         Fintype.card_fin]
       omega
 
@@ -229,7 +243,7 @@ theorem projectiveChartFlatPacketProjection_image
     exact ⟨w ∘ Sum.inr,
       (mem_projectiveChartFlatIncidenceSet_iff q n z j exponent w).mp hw⟩
   · rintro ⟨x, hx⟩
-    let w : projectiveChartFlatVar q n j → ℂ := Sum.elim y x
+    let w : projectiveChartFlatVar (row := row) q n j → ℂ := Sum.elim y x
     refine ⟨w, ?_, ?_⟩
     · apply (mem_projectiveChartFlatIncidenceSet_iff q n z j exponent w).mpr
       simpa only [w, Function.comp_def, Sum.elim_inr, Sum.elim_inl] using hx
@@ -238,7 +252,7 @@ theorem projectiveChartFlatPacketProjection_image
 
 /-- Smooth coordinate projection cannot increase the Hausdorff dimension of one affine chart. -/
 theorem dimH_projectiveChartIncidenceProjection_le_of_krullDim
-    {row κ : Type} [Fintype row] [Fintype κ] [DecidableEq κ]
+    {row κ : Type} [Fintype row] [DecidableEq row] [Fintype κ] [DecidableEq κ]
     (q n c : ℕ) (z : row → ℂ) (j : κ × Fin (q + 1))
     (exponent : κ → (Fin n →₀ ℕ))
     (hchart : ringKrullDim (projectiveChartGlobalIncidenceRing q n z j exponent) +
@@ -258,7 +272,7 @@ theorem dimH_projectiveChartIncidenceProjection_le_of_krullDim
 
 /-- The finite standard projective-chart cover preserves the uniform Hausdorff-dimension bound. -/
 theorem dimH_projectiveChartIncidenceProjection_union_le_of_krullDim
-    {row κ : Type} [Fintype row] [Fintype κ] [DecidableEq κ]
+    {row κ : Type} [Fintype row] [DecidableEq row] [Fintype κ] [DecidableEq κ]
     (q n c : ℕ) (z : row → ℂ) (exponent : κ → (Fin n →₀ ℕ))
     (hcharts : ∀ j : κ × Fin (q + 1),
       ringKrullDim (projectiveChartGlobalIncidenceRing q n z j exponent) +
@@ -297,8 +311,9 @@ noncomputable def projectiveChartIncidenceProjection_finiteRegularStratification
       rw [← expandedDifferentialEvaluationRankDefect_eq_projectiveChartIncidenceProjection]
       exact isComplexAffineAlgebraicSet_expandedDifferentialEvaluationRankDefect
         q n z exponent
-    obtain ⟨strata⟩ := complexAffineAlgebraicSet_finiteRegularStratification_zero
-      (projectiveChartIncidenceProjection q n z exponent) hbad
+    let strata := Classical.choice
+      (complexAffineAlgebraicSet_finiteRegularStratification_zero
+        (projectiveChartIncidenceProjection q n z exponent) hbad)
     apply strata.of_dimH_le hc
     calc
       dimH (projectiveChartIncidenceProjection q n z exponent) ≤
@@ -307,8 +322,8 @@ noncomputable def projectiveChartIncidenceProjection_finiteRegularStratification
           q n c z exponent hcharts
       _ = (Module.finrank ℝ (row × Fin n → ℂ) - 2 * c : ℕ) := by
         congr 1
-        simp only [Module.finrank_pi_fintype, Complex.finrank_real_complex,
-          Fintype.card_prod, Fintype.card_fin]
+        rw [finrank_complex_pi]
+        simp only [Fintype.card_prod, Fintype.card_fin]
         omega
   · have htarget : Module.finrank ℝ (row × Fin n → ℂ) < 2 * c :=
       Nat.lt_of_not_ge hc
@@ -316,17 +331,17 @@ noncomputable def projectiveChartIncidenceProjection_finiteRegularStratification
       ext y
       simp only [mem_empty_iff_false, iff_false]
       rintro ⟨j, x, hincidence⟩
-      let w : projectiveChartFlatVar q n j → ℂ := Sum.elim y x
+      let w : projectiveChartFlatVar (row := row) q n j → ℂ := Sum.elim y x
       have hw : w ∈ projectiveChartFlatIncidenceSet q n z j exponent := by
         apply (mem_projectiveChartFlatIncidenceSet_iff q n z j exponent w).mpr
         simpa only [w, Function.comp_def, Sum.elim_inr, Sum.elim_inl] using hincidence
       obtain ⟨strata⟩ :=
         projectiveChartFlatIncidenceSet_finiteRegularStratification_of_krullDim
           q n c z j exponent (hcharts j)
-      have hsource : Module.finrank ℝ (projectiveChartFlatVar q n j → ℂ) <
+      have hsource : Module.finrank ℝ (projectiveChartFlatVar (row := row) q n j → ℂ) <
           2 * (c + Fintype.card (projectiveChartVar j)) := by
-        simp only [projectiveChartFlatVar, Module.finrank_pi_fintype,
-          Complex.finrank_real_complex, Fintype.card_sum, Fintype.card_prod,
+        rw [finrank_complex_pi] at htarget ⊢
+        simp only [projectiveChartFlatVar, Fintype.card_sum, Fintype.card_prod,
           Fintype.card_fin] at htarget ⊢
         omega
       have hsourceEmpty := strata.eq_empty_of_finrank_lt_codim hsource
@@ -335,7 +350,7 @@ noncomputable def projectiveChartIncidenceProjection_finiteRegularStratification
     rw [hempty]
     apply finiteRegularStratification_of_regular
     intro y hy
-    exact (not_mem_empty y hy).elim
+    simp at hy
 
 /-- The project's proved chart bound gives the expanded rank defect its exact real codimension,
 without any classical input structure. -/

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.ProjectiveIncidenceProjection
+import GaloisForLFunctions.HTGeometry.ProjectiveIncidenceHausdorffDimension
 import GaloisForLFunctions.HTGeometry.ClassicalStratifiedParametricAvoidance
 
 /-!
@@ -41,6 +41,15 @@ structure ClassicalComplexProjectiveIncidenceGeometry where
       FiniteRegularStratification
         (projectiveChartIncidenceProjection q n z exponent) (2 * c)
 
+/-- The projective-incidence geometry interface is inhabited by the proved flattened-chart
+Hausdorff-dimension argument.  No external algebraic-geometric input remains. -/
+noncomputable def provedComplexProjectiveIncidenceGeometry :
+    ClassicalComplexProjectiveIncidenceGeometry where
+  finite_stratification_of_chart_krull_bounds := by
+    intro row κ _ _ _ _ q n z exponent c hcharts
+    exact projectiveChartIncidenceProjection_finiteRegularStratification_of_krullDim
+      q n z exponent c hcharts
+
 /-- **Projected expanded-evaluation codimension law.**  The exact global incidence-ring theorem,
 proper projective projection, and finite Whitney stratification give real codimension twice the
 formal complex excess
@@ -50,7 +59,7 @@ formal complex excess
 All deductions specific to the expanded differential-evaluation matrix are proved here in Lean;
 `classicalInput` contains only the general algebraic-geometric theorem above. -/
 noncomputable def expandedDifferentialEvaluationRankDefect_finiteRegularStratification
-    (classicalInput : ClassicalComplexProjectiveIncidenceGeometry)
+    (_classicalInput : ClassicalComplexProjectiveIncidenceGeometry)
     {row κ : Type}
     [Fintype row] [DecidableEq row] [Fintype κ] [DecidableEq κ]
     (q n : ℕ) (z : row → ℂ) (hz : Function.Injective z)
@@ -59,12 +68,8 @@ noncomputable def expandedDifferentialEvaluationRankDefect_finiteRegularStratifi
     FiniteRegularStratification
       (expandedDifferentialEvaluationRankDefect q n z exponent)
       (2 * (Fintype.card row - Fintype.card (κ × Fin (q + 1)) - q + 1)) := by
-  let c := Fintype.card row - Fintype.card (κ × Fin (q + 1)) - q + 1
-  rw [expandedDifferentialEvaluationRankDefect_eq_projectiveChartIncidenceProjection]
-  exact classicalInput.finite_stratification_of_chart_krull_bounds
-    q n z exponent c (fun j => by
-      exact projectiveChartGlobalIncidenceRing_evaluationCodimension
-        q n z hz j exponent hexponent hrows)
+  exact expandedDifferentialEvaluationRankDefect_finiteRegularStratification_unconditional
+    q n z hz exponent hexponent hrows
 
 end
 

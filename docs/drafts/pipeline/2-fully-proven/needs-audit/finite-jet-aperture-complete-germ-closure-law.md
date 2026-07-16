@@ -240,8 +240,9 @@ inside the proposed carrier class.
 
 ## Lean status
 
-Formalization is complete only relative to the exact classical Nevanlinna and finite-dimensional
-parametric-transversality interfaces already isolated by the carrier stack.
+Formalization is complete only relative to the exact classical Nevanlinna family already isolated
+by the carrier stack. Finite-dimensional stratified avoidance and projected-incidence
+stratification are now unconditional.
 
 - `CauchyJetControllability` proves real-linear finite Cauchy-jet surjectivity and arbitrarily
   small positive finitely supported perturbations.
@@ -259,10 +260,12 @@ parametric-transversality interfaces already isolated by the carrier stack.
 - The boundary barycenter is a closed embedding in `NevanlinnaBoundaryKernel`; therefore equality
   of the selected carrier laws also identifies their boundary probability laws.
 
-All project-specific deductions on this card are represented in Lean, but the classical
-Nevanlinna source theorem and the general proper-projection/Whitney-parametric-transversality
-theorem remain theorem parameters.  Until those inputs are constructed in Lean, the residual-HT
-half of the card is not unconditional and the card does not clear Stage 3.
+All project-specific deductions on this card are represented in Lean. The classical Nevanlinna
+source theorem remains a theorem parameter; the former proper-projection/Whitney and smooth
+parametric-transversality parameters are discharged by
+`ProjectiveIncidenceHausdorffDimension` and `StratifiedParametricAvoidance`. Until the Nevanlinna
+family is constructed in Lean, the residual-HT half of the card is not unconditional and the card
+does not clear Stage 3.
 
 ## Positive RH-carrier consequence
 
@@ -314,11 +317,11 @@ a plausible 90 case, not a verified field-level score.
 
 The complete-germ closure `(11)`--`(13)`, finite Cauchy-jet controllability, positive Hilbert-cube
 aperture, Nevanlinna carrier bridge, and all project-specific Baire deductions are formalized.
-The remaining blockers are the construction of the classical analytic Nevanlinna family from an
-arbitrary indeterminate Hamburger sequence and the proper-projection/Whitney stratification
-theorem.  `StratifiedParametricAvoidance` now constructs the formerly packaged
-`ClassicalStratifiedParametricAvoidance` value unconditionally; the residual-HT capstone is not yet
-unconditional because `ClassicalComplexProjectiveIncidenceGeometry` remains unresolved.
+The remaining blocker is the construction of the classical analytic Nevanlinna family from an
+arbitrary indeterminate Hamburger sequence. `StratifiedParametricAvoidance` constructs the
+formerly packaged finite-dimensional avoidance value, and
+`ProjectiveIncidenceHausdorffDimension` constructs the formerly packaged projective-incidence
+stratification value unconditionally.
 
 ## Gates
 

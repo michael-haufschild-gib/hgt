@@ -326,13 +326,12 @@ In particular Lean proves the closed boundary embedding, type-preserving barycen
 residual phase on every infinite closed spectral face, and the atomless singular maximal-translation
 capstone.  Classical analytic inputs remain explicit structures rather than axioms.
 
-Formalization audit (needs-audit pass): no bounded self-contained kernel closes a gate. Every step
-routes through an absent deep theory — the Hamburger moment problem and Nevanlinna extremal family
-(barycenter moment preservation, `(4)`), Aleksandrov--Clark measurable disintegration (type transport,
-`(6)`--`(9)`), and Whitney transversality + Baire (the full-configuration HT step). Mathlib packages
-none of these. The one elementary-looking piece — the rational principal-part elimination in the
-controllability proof `(12)`--`(13)` — is inseparable from the Nevanlinna `m_τ` structure. No partial
-file is added.
+Formalization audit (needs-audit pass): the projected-incidence stratification and
+finite-dimensional Baire/transversality layer are now unconditional. The remaining deep theory is
+the Hamburger moment problem and Nevanlinna extremal family (barycenter moment preservation, `(4)`)
+together with the source-faithful measurable spectral disintegration used in `(6)`--`(9)`. The
+rational principal-part elimination in `(12)`--`(13)` is formalized once the Nevanlinna `m_τ`
+family is supplied.
 
 ## Gates
 

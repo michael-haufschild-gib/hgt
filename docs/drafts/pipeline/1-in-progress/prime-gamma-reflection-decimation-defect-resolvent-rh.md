@@ -369,13 +369,38 @@ charge vanishes.  The remaining theorem is that these balanced projections conve
 nonnormal Euler boundary and that their limit is the completed inverse-tilted source form.  That
 source value identity, not the finite projection algebra, carries the unresolved RH content.
 
+### Cutoff-compatible affine boundary balance `[CLOSED ALGEBRAICALLY]`
+
+Orthogonal projection is not compatible under changing apertures.  The two boundary characters
+force a second balance with cutoff-independent coefficients.  Subtracting the affine interpolant
+of the Cauchy cells at `w=±1/2` gives the exact residual
+
+```text
+(w^2-1/4)
+ /((lambda+w)(lambda+1/2)(lambda-1/2)).                 (22g)
+```
+
+Lean proves `(22g)`, both boundary vanishings, positive finite Grams, and literal prefix
+compatibility as the aperture grows.  The triple denominator gives a genuine cofinal `ell^2`
+limit at Gamma depths two and three: depth two follows from `Lambda(n)<=log n` and convergence of
+`sum 1/(n log(n)^3)`; depth three follows by partial summation from Chebyshev's unconditional
+`psi(x)=O(x)` bound.  This analytic convergence frontier is proved on paper and awaits Lean.
+
+The same construction fails sharply from depth four onward.  Its last jet coordinate has square
+asymptotic to a nonzero multiple of `Lambda(n)/n` away from the two boundary points, so the norm
+diverges.  Therefore one fixed two-boundary subtraction cannot produce the complete Hankel tower.
+It salvages the first two-/three-jet discriminators; arbitrary degree requires order-growing
+divided differences or the inverse-centered Green powers.
+
 The live bridge is consequently:
 
 ```text
 full finite-aperture von Mangoldt--Gamma jet cone with first-prime floor
   -> positive finite radial Cauchy/Gauss--Ward source Gram
   -> positive finite two-boundary balanced source Gram
-  -> [OPEN] balanced nonnormal Euler-boundary convergence and value identity
+  -> depth-2/3 cutoff-compatible affine Euler-boundary limit
+  -> [OPEN] completed value identity for the first source packets
+  -> [OPEN] arbitrary-order boundary/Green construction
   -> [OPEN] Euler-boundary comparison with inverse-tilted completed moment jets
   -> complete prime--Gamma Hankel cone
   -> RH.                                                  (22f)

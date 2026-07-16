@@ -505,7 +505,8 @@ Verification: direct leaf checks and targeted module builds passed; `#print axio
 - [ ] independent specialist proof audit
 - [ ] full primary-source priority audit
 - [x] unconditional Lean formalization of the circle double-boundary law
-- [ ] unconditional Nevanlinna-family and projective-incidence stratification for the residual real-line phase
+- [x] unconditional projective-incidence stratification for the residual real-line phase
+- [ ] unconditional Nevanlinna-family construction for the residual real-line phase
 
 ## Log
 
