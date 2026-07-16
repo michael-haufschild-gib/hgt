@@ -237,6 +237,52 @@ This validates the relative-effectivity core of `(10)` on an actual analytic HT 
 an exact shift-defect matroid.  It still does not supply critical bornology, polarization, or a
 spectral/integral realization, so it is not the full six-channel equivalence.
 
+The physical-character comparison now strengthens this model in one precise direction.  The
+multiple-Gamma DA coface boundary and the genuine meromorphic translation boundary agree on every
+exponential character inside the global meromorphic field, and rational independence leaves only
+the central degeneracy.  This proves an actual DA/meromorphic comparison edge rather than merely
+two compatible formulas.  The separately proved nonclosed rank-three period-incidence range shows
+why this still does not produce the full effective lift: fibrewise comparison can be exact while
+critical bornological assembly is not attained.  The open six-channel interaction is the
+source-natural defect of commuting this physical-character base change with critical completion;
+see
+`not_new_scientific_knowledge/multiple-gamma-da-meromorphic-physical-character-comparison.md`.
+
+The newly formalized osculation/effectivity fracture sharpens the internal structure of these
+channels without adding a seventh one.  One rationally independent rank-three source supports
+quadratic physical-character constraints of exact contact orders two and three while remaining in
+the same globally non-effective period-incidence phase.  Hence the source-constraint face must
+retain its physical arc-contact filtration, and the critical-bornology face must retain its
+effectivity filtration; neither marginal filtration reconstructs the other.  The six-channel
+fracture object is therefore at least bifiltered internally.  The open theorem is a
+presentation-invariant interaction morphism between those filtrations, not another carrier.  See
+`new_scientific_knowledge/quadratic-physical-osculation-effectivity-fracture.md`.
+
+The physical reversal-anomaly theorem makes the polarization necessity sharper.  For an even-rank
+balanced source, opposite source orientations have identical complete analytic physical defect
+germs, hence identical contact filtrations and functorial derived objects.  The exact residual
+multiplier away from that blind locus is
+`(-1)^r exp(-(sum_i tau_i)z)` and satisfies the involutive cocycle law.  Therefore polarization is
+not recoverable from the carrier even after physical pullback; it must be retained as
+source-effectively normalized equivariant lift/trivialization data.  This is an internal
+realization of channel `(ii)`, not a seventh channel.  See
+`new_scientific_knowledge/physical-defect-orientation-anomaly.md`.
+
+The word `normalized` is forced by the Gamma collision.  `Gamma(z)` and
+`exp(2 pi i z)Gamma(z)` satisfy the same unit-shift source equation and regular pointing but are
+distinct HT germs; periodic gauges can preserve every fixed finite jet.  Thus none of the six
+channels, if derived solely from the same bare source, can manufacture the forgotten gauge data.
+The maximal correct effectivity statement is relative to a reporter family `R` and is gated by
+
+```text
+K^S intersect intersection_r ker(R_r)={0}.                (10a)
+```
+
+The full object is a stack of source-effectively normalized lifts whose stabilizer is the typed
+joint-fixed common kernel, not a canonically chosen lift for every bare source.  See
+`../5-failed/universal-bare-source-effectivity-reconstruction.md` and
+`not_new_scientific_knowledge/joint-source-realization-common-kernel-criterion.md`.
+
 ### Falsifiers
 
 Retire or enlarge `(10)` if any of the following occurs.

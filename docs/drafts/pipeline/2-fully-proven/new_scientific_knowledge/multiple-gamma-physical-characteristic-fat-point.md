@@ -15,8 +15,17 @@
   `formal/GaloisForLFunctions/HTGeometry/MeromorphicRankThreeSourceBoundary.lean`
 - **Lean physical comparison:**
   `formal/GaloisForLFunctions/HTGeometry/PhysicalCharacteristicIncidence.lean`
-- **Unified-object successor:**
-  `../../1-in-progress/polarized-framed-derived-source-character-principle.md`
+- **Lean meromorphic comparison:**
+  `formal/GaloisForLFunctions/HTGeometry/MeromorphicPhysicalCharacteristicIncidence.lean`
+- **Lean uniform-effectivity phase law:**
+  `formal/GaloisForLFunctions/HTGeometry/PeriodIncidenceUniformEffectivity.lean`
+- **Lean osculation/effectivity discriminator:**
+  - `formal/GaloisForLFunctions/HTGeometry/QuadraticPhysicalCharacterOsculation.lean`
+  - `formal/GaloisForLFunctions/HTGeometry/PhysicalOsculationEffectivityFracture.lean`
+- **Unified-object parent:**
+  `../../1-in-progress/hypertranscendental-source-fracture-hypercube.md`
+- **Retired local-chart precursor:**
+  `../../5-failed/polarized-framed-derived-source-character-principle.md`
 
 ## Statement
 
@@ -189,8 +198,14 @@ not new invariants of algebraic geometry.  Their HT consequence is a hard discri
 **Positive successor:** the zero-tangency class `tang_phys=0` is the maximal class on which source
 height survives physical realization unchanged.  The multiple-Gamma coface hierarchy lies in this
 class because every relevant initial form is a monomial nonzero at a period vector with no zero
-coordinate.  A source with `tang_phys>0` would be the first exact test of whether obstruction chains
-detect physical contact rather than abstract source height.
+coordinate.
+
+The positive-tangency test is now exact at source-geometric level.  For the Hankel conic on the
+rank-three source `(1,alpha,alpha^2)`, Lean proves source height two and physical contact order three.
+It also proves that the same nondiscrete source supports another quadratic constraint of contact
+order two.  Hence physical contact and global source effectivity are independent axes; neither can
+replace the other.  What remains is a natural special-function realization rather than an
+engineered constraint source.
 
 ## What the latest period-incidence theorem adds
 
@@ -269,8 +284,19 @@ There is a further necessary refinement.  Componentwise unit changes of the pull
 generators preserve the fat point and the quasi-isomorphism class of its Koszul complex while
 changing source phase and orientation.  Thus even the full unframed derived germ is
 orientation-blind.  The conservative candidate must retain the integral source presentation,
-logarithmic lift, polarization, and calibration.  The successor card calls this the **polarized
-framed derived source-character germ**.
+logarithmic lift, polarization, and calibration.  The physical character germ is therefore a
+local chart of the stronger six-channel source-effectivity fracture object.  Its earlier promotion
+as a separate complete ontology has been retired by the anti-epicycle gate.
+
+This orientation no-go now has an exact analytic physical model.  For any finite source defect
+product, full reversal multiplies the complete germ by
+`(-1)^rank exp(-(sum_i tau_i)lambda)`.  On the balanced even-rank locus the multiplier is one, so
+opposite source orientations have literally identical analytic germs and hence identical derived
+pullbacks.  The positive replacement is the explicit reversal cocycle and its source-produced
+anomaly torsor together with a source-effectively normalized polarized trivialization, not another
+derived refinement of the fat point.  The Gamma periodic-gauge collision forbids a canonical
+trivialization from bare source syntax; see
+`../../3-formalized/new_scientific_knowledge/physical-defect-orientation-anomaly.md`.
 
 For the multiple-Gamma hierarchy, `(17)` is the explicit derived fat point `(5)`--`(6)`.  It
 compresses the previously forced channels rather than adding a seventh one:
@@ -288,12 +314,14 @@ does not reconstruct quantitative closure rates.
 
 ## Strong conjecture and exact open core
 
-> **[CONJECTURE — DERIVED PHYSICAL CHARACTERISTIC PRINCIPLE.]**  For every source-minimal
-> constrained hypertranscendental system, continuation, positivity, spectral realization,
+> **[CONJECTURE — NORMALIZED DERIVED PHYSICAL CHARACTERISTIC PRINCIPLE.]**  For every
+> source-effectively normalized constrained hypertranscendental system, continuation, positivity,
+> spectral realization,
 > monodromy, and boundary-condition obstructions are conservative realizations of the derived
 > physical characteristic germ `(17)`.  Algebraic support records exact degeneracy; its derived
 > nilpotent filtration records constraint depth; the topology of the integral period embedding
-> records cofinal attainability; and the source half-density is the canonical polarized effective
+> records cofinal attainability; and, on a source-effectively normalized stratum with trivial
+> joint-fixed reporter kernel, the source half-density is the distinguished polarized effective
 > section.
 
 The conjecture is stronger than the topological-radical proposal.  Two systems may have the same
@@ -362,9 +390,10 @@ The next search is not for another RH criterion and not for more abstract topolo
    with the powered source regularity filtration.
 2. **Global meromorphic realization.**  The newly formalized rank-three meromorphic boundary
    fingerprint has kernel exactly the complex constants, and one calibration makes it injective.
-   Linearize its finite three-generator source boundary along the physical characteristic arc and
-   prove that its principal incidence symbol is `w^r`.  This is now the shortest route to two
-   genuinely independent realizations of the same object.
+   Its restriction to genuine meromorphic exponential modes is now proved to have exactly the DA
+   physical coface symbol, with common central degeneracy spectrum.  The remaining step is not
+   another fibrewise symbol calculation: construct the source-forced critical completion and
+   compare its bounded principal incidence realization with `w^r`.
 3. **Transference theorem.**  Relate small primal period combinations to near-resonance of the
    appropriate unitary dual realization.  The holomorphic exponential character and the unitary
    Pontryagin character are different real forms; the comparison between them is part of the
@@ -372,10 +401,11 @@ The next search is not for another RH criterion and not for more abstract topolo
 4. **Rigidity test.**  Find a source with the same reduced pair arrangement but a different physical
    pullback multiplicity.  If the predicted obstruction phases do not change, `(17)` is too rich;
    if they do, reduced-support theories are conclusively nonconservative.
-5. **Tangency-excess test.**  Construct a natural HT source with `tang_phys>0` and compare its
-   analytic closure exponent with its abstract DA source height.  This is the smallest example on
-   which the multiple-Gamma equality and the general contact-order theory make different
-   predictions.
+5. **Tangency/effectivity interaction.**  The exact conic source model with `tang_phys=1` is now
+   formalized, as is its independence from the nondiscrete effectivity phase.  Construct the
+   ideal-level physical arc-contact Rees filtration and compare it source-naturally with the
+   powered period-incidence filtration.  Then realize positive tangency in a natural HT special
+   function rather than only in the universal constraint source.
 6. **Barnes/multiple-sine realization.**  After the meromorphic comparison, perform the same
    physical pullback for the Barnes/multiple-sine source, whose classical normal-crossing ideal is
    already known to agree, and test whether the complete derived and half-density data agree.
@@ -440,12 +470,18 @@ five-way equality `(13)`.  This is preliminary negative evidence, not priority c
 - [x] preliminary cross-field parent and novelty gate run
 - [x] general arc-contact parent identified and separated from the HT residue
 - [x] physical tangency excess isolated as the next discriminator
+- [x] exact positive-tangency source model formalized
+- [x] same-source osculation/effectivity independence formalized
 - [x] finish Lean formalization of the pullback ideal core
 - [x] formalize the physical central-resonance theorem
 - [x] formalize the coface-by-coface DA/source-translation symbol comparison
+- [x] realize the comparison inside the genuine global meromorphic field
+- [x] restrict the calibrated rank-three boundary carrier to physical exponential modes
+- [x] prove uniform continuous source effectivity iff the period group is discrete
 - [ ] formalize the powered incidence and order-`r` half-density trichotomy
 - [ ] construct the filtration-preserving analytic comparison morphism
-- [ ] identify the principal symbol of the calibrated rank-three meromorphic boundary fingerprint
+- [ ] identify the critically completed bounded symbol with `w^r`
 - [ ] prove the Barnes/multiple-sine second realization
+- [ ] realize positive tangency in a natural HT special-function family
 - [ ] construct a natural positive-tangency HT source or prove rigidity of zero tangency
 - [ ] obtain independent specialist novelty and significance audit

@@ -476,10 +476,12 @@ whose fibre consists of source-pure effective lifts carrying the distinguished g
 typed comparison morphisms.  The analytic germ and its divisor are outputs of the observation
 functor, not stored in the lift.
 
-> **[CONJECTURE -- SOURCE-EFFECTIVITY RECONSTRUCTION]** On regular source-minimal constrained HT
-> germs, maximal vertical Kolchin growth plus thin source-relative amplitude cuts out an essential
-> image of `(11a)` on which the observation functor is an equivalence and the analytic, spectral,
-> polarized, monodromy, and integral realization functors are jointly conservative.
+> **[CORRECTED CONJECTURE -- SOURCE-EFFECTIVITY RECONSTRUCTION]** On regular source-minimal,
+> source-effectively normalized HT germs, maximal vertical Kolchin growth plus thin
+> source-relative amplitude cuts out an essential image of `(11a)` on which the observation
+> functor is an equivalence and the analytic, spectral, polarized, monodromy, and integral
+> realization functors are jointly conservative.  Source-effective normalization means that the
+> normalized joint-fixed gauge is trivial; it is a theorem to prove from the source, not a label.
 
 This is sharper than saying that the obstructions are cohomology classes of one topology.  Sign,
 critical scale, spectral production, divisibility, source-purity, typed comparison, and arithmetic
@@ -564,9 +566,11 @@ The first natural analytic source now passes the reconstruction gate.  For three
 independent periods, equality of the three multiplicative source ratios is equivalent to equality
 up to one nonzero complex scalar.  A common nonzero regular value removes that scalar and
 reconstructs the global meromorphic germ.  The theorem applies to the actual elliptic-gamma
-product, whose three source equations are now derived directly by reindexing the convergent
+product.  On paper its three source equations are derived directly by reindexing the convergent
 products: period one is invariant and the two structural shifts peel off explicit one-dimensional
-theta boundary products.
+theta boundary products.  Lean certifies the whole period-one equation and all zero/successor
+factor identities for the two structural reindexings; their whole infinite-product packaging is
+still open.
 
 The result and its Lean certificate are recorded in
 `../3-formalized/not_new_scientific_knowledge/rank-three-meromorphic-source-effectivity-reconstruction.md`.
@@ -586,6 +590,30 @@ solution-fibre theorem then makes the five compatible realizations jointly conse
 This is the first fully reconstructed analytic model, not the universal theorem stated in
 `(11a)`: the remaining Fields-scale core is extension beyond the triptic class and an intrinsic
 essential-image theorem for general regular source-minimal HT germs.
+
+### Universal bare-source wording falsified `[PROVED + LEAN ANALYTIC WITNESS]`
+
+The word `source-effectively normalized` above is forced.  The Gamma source gives an exact
+counterexample to reconstruction from a bare source plus one point:
+
+```text
+Gamma(z),  exp(2 pi i z) Gamma(z)
+```
+
+are distinct hypertranscendental meromorphic germs satisfying the same unit-shift equation and
+the same value at `z=1`.  Periodic gauges can match every prescribed finite jet as well.  Thus the
+unrestricted universal statement is false; rank-one sources require an asymptotic or positivity
+normalization, whereas irrational triptic density reduces the fixed gauge to constants and one
+regular value suffices.  See
+`../5-failed/universal-bare-source-effectivity-reconstruction.md`.
+
+The exact linearized joint-conservativity criterion is now Lean-formalized: source boundary plus a
+family of realization maps is injective if and only if the common realization kernel intersects
+the joint-fixed source gauge trivially.  See
+`../3-formalized/not_new_scientific_knowledge/joint-source-realization-common-kernel-criterion.md`.
+The surviving medal-scale theorem is therefore a classification of the maximal
+source-effectively normalized essential image, not a universal construction from bare source
+syntax.
 
 The following are established and are not novelty claims:
 
@@ -683,6 +711,8 @@ zeta, its zeros, nor an RH-equivalent positivity condition may define the object
 - [x] critical weighted coordinate-facet descent proved exact with uniform Hodge gap
 - [x] finite full-simplex Clifford Dirac square Lean-formalized
 - [x] closure-only phase localized away from facet descent to the physical period comparison
+- [x] universal bare-source plus finite-pointing reconstruction falsified by a Gamma periodic gauge
+- [x] joint-realization conservativity characterized by the common source-gauge kernel in Lean
 - [ ] construct the marked locality spectrum invariantly for natural nonlinear source classes
 - [x] universal fixed-degree gerbe selector falsified; degree-one pair sewing extracted positively
 - [ ] construct the canonical capacity-descent Postnikov tower

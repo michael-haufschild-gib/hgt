@@ -5,7 +5,9 @@
 - **Type:** FOUNDATIONAL CONJECTURE / MULTI-RELATIVE EFFECTIVITY / ENRICHED INCIDENCE OBJECT
 - **Scientific status:** `[CONJECTURE] [TWO-CHANNEL EXACT SEED LEAN-FORMALIZED]`
   `[ABELIAN THREE-CHANNEL OBSTRUCTION LEAN-FORMALIZED]`
-  `[COORDINATE-FACET EFFECTIVITY LEAN-FORMALIZED] [FIELDS-SCALE OPEN CORE]`
+  `[COORDINATE-FACET EFFECTIVITY LEAN-FORMALIZED]`
+  `[NORMALIZED GAUGE GATE + PHYSICAL OSCULATION/ANOMALY SEEDS LEAN-FORMALIZED]`
+  `[FIELDS-SCALE OPEN CORE]`
   `[NOT AN RH RESULT]`
 - **Parents:**
   - `hypertranscendental-capacity-descent-postnikov-tower.md`
@@ -19,9 +21,11 @@
 - **Statement:** The source-canonical fracture hypercube is the kinematic coordinate system of a
   constrained hypertranscendental source, not the unified obstruction by itself.  Its faces record
   incomparable partial realizations and its Postnikov directions record coherence.  The unified
-  object is the derived incidence fibre between the ambient primitive reconstructed by fracture
-  descent and the pointed, polarized, bornological, integral analytic effectivity locus.  Total
-  interaction classes are one possible obstruction shadow; they are not hypertranscendence itself.
+  object is conjecturally an anomaly-twisted, osculation/effectivity-bifiltered derived stack of
+  reporter-normalized incidence lifts.  Its automorphisms are residual joint-fixed gauges; its
+  existence, closure, positivity, monodromy, and higher interaction classes are different
+  obstruction shadows.  It is defined only on a source-effectively normalized stratum, not
+  canonically from bare source syntax, and it is not hypertranscendence itself.
 
 ## The displacement
 
@@ -147,8 +151,11 @@ mathematical content; the bare Cech complex is parent machinery.
 
 ## Nonlinear source fracture hypercube `[CONJECTURE]`
 
-Let `F` be a regular source-minimal constrained HT germ.  Its source law should canonically supply
-partial realization functors indexed by retained channel subsets.  Write
+Let `(F,R)` be a regular source-minimal **source-effectively normalized** constrained HT germ with
+reporter/normalization family `R`.  The bare source law may canonically supply its kinematic
+partial realizations, but the Gamma periodic-gauge collision proves that it cannot canonically
+supply the distinguished effective section.  The pair `(F,R)` should supply partial realization
+functors indexed by retained channel subsets.  Write
 
 ```text
 Fr_F(S) = realization retaining exactly the channels in S.                  (10)
@@ -168,8 +175,9 @@ integral or ramified realization.                                           (11)
 The maps of the cube are forgetful or localization functors, not arbitrary projections.  Each
 vertex carries its own source-specific Postnikov tower of descent and coherence.
 
-> **[CONJECTURE -- HT FRACTURE-HYPERCUBE EFFECTIVITY.]** There is a differential-birationally and
-> Morita invariant construction `Fr_F` such that:
+> **[CONJECTURE -- NORMALIZED HT FRACTURE-HYPERCUBE EFFECTIVITY.]** There is a
+> differential-birationally and Morita invariant construction `Fr_(F,R)` on the maximal
+> source-effectively normalized essential image such that:
 >
 > 1. the full source-effective realization is the homotopy limit of the compatible punctured
 >    fracture cube on the essential image of regular source-minimal HT germs;
@@ -395,20 +403,22 @@ K_s --c--> N.                                              (27)
 If `(27)` is surjective and injective, every compatible packet and every pointing have one unique
 effective lift.  This is the first exact resolution theorem for the unified incidence object.
 
-> **[CONJECTURE -- HT INCIDENCE-INDEX PRINCIPLE.]** Every regular source-minimal constrained HT
-> germ canonically determines, after kinematic fracture descent, a derived calibration morphism
-> `kappa_F:K_F->N_F` from its residual gauge object to its pointed polarized controlled integral
+> **[CONJECTURE -- NORMALIZED HT INCIDENCE-INDEX PRINCIPLE.]** Every regular source-minimal
+> source-effectively normalized constrained HT pair `(F,R)` canonically determines, after
+> kinematic fracture descent, a derived calibration morphism
+> `kappa_(F,R):K_F->N_(F,R)` from its residual gauge object to its reporter-pointed polarized controlled integral
 > target.  The unified obstruction is the derived fibre of `kappa_F` over the source pointing.
 > Its degree-zero obstruction is the nonlinear replacement of `coker(kappa_F)`, its automorphisms
 > are the replacement of `ker(kappa_F)`, and its higher homotopy records interaction and descent
 > coherence.  Natural analytic, Hermitian, spectral, bornological, and integral obstruction
 > theories are conservative realizations of this one derived calibration cone.
 
-The statement is falsifiable.  It fails if a natural HT obstruction survives while every
-source-canonical realization of the calibration cone is contractible, or if two inequivalent
-source-minimal HT germs have equivalent pointed cones.  Standard kernel--cokernel algebra and
-derived fibres are parent theory; the candidate-new claim is the canonical HT construction,
-reconstruction, and joint conservativity.
+The statement is falsifiable.  It fails if a natural normalized HT obstruction survives while
+every reporter-compatible realization of the calibration cone is contractible, or if two
+inequivalent normalized HT germs have equivalent pointed cones.  Standard kernel--cokernel algebra
+and derived fibres are parent theory; the candidate-new claim is the normalized HT construction,
+reconstruction, and joint conservativity.  No canonical reconstruction from bare source syntax is
+claimed.
 
 ## Polarized incidence has three phases `[PROVED + LEAN]`
 
@@ -456,6 +466,213 @@ single source-built cone map, locates each obstruction relative to its image and
 identifies the additional theorem that resolves the middle phase.  It is falsified if the natural
 RH-chain realizations cannot be compared to one source cone map or if their critical obstruction
 persists after that map is proved closed and exact.
+
+## Physical-character comparison and the completion interaction `[PROVED BRIDGE + OPEN FACE]`
+
+The multiple-Gamma chart now supplies a genuine two-realization comparison.  The exponential mode
+`E_lambda(z)=exp(lambda z)` has been constructed inside the global meromorphic fraction field, and
+Lean proves for every source-labelled coface
+
+```text
+product_(j!=i)(T_(tau_j)-1)E_lambda
+  =product_(j!=i)(exp(lambda tau_j)-1)E_lambda.             (30a)
+```
+
+Consequently the DA physical characteristic boundary is exactly the locus on which all genuine
+meromorphic source cofaces kill `E_lambda`.  Under rational independence their common degeneracy
+spectrum is the single central character.  This closes a real comparison edge of the fracture
+chart; see
+`../3-formalized/not_new_scientific_knowledge/multiple-gamma-da-meromorphic-physical-character-comparison.md`.
+
+The same source exhibits the next interaction obstruction.  Every finite nonzero period-mode
+restriction is invertible, while the complete rank-three period-incidence operator has nonclosed
+range.  More precisely, Lean now proves that the complete period-incidence representation admits
+a continuous left inverse exactly when the embedded integral period group is discrete.  Thus
+exactness of every physical character fibre does not imply exactness after the source-forced
+critical completion.
+
+```text
+[NO-GO] fibrewise comparison exactness implies uniform source effectivity;
+[POSITIVE] the remaining class is the defect of commuting physical-character base change with
+           critical completion.                            (30b)
+```
+
+For a source constraint complex `C_F`, physical character germ `chi_F`, and source-forced
+completion `Comp_F`, the proposed interaction object is
+
+```text
+BCDef_F=cofib(
+  L chi_F^*(Comp_F C_F)
+    -> Comp_F(L chi_F^* C_F)).                              (30c)
+```
+
+Derived completion and base-change defects are parent mathematics.  The candidate-new obligation
+is to construct `Comp_F` from the embedded HT source, prove `(30c)` presentation invariant, and
+show that one natural analytic nonattainment obstruction is exactly a realization of `BCDef_F`.
+Without those steps `(30c)` is only a typed open face of `(23)`, not a discovery claim.
+
+## Osculation/effectivity fracture `[PROVED; LEAN-FORMALIZED]`
+
+The physical-character comparison has a second independent filtration which completion alone does
+not see.  For a quadratic binomial source constraint
+
+```text
+F(lambda)
+ =(exp(a lambda)-1)(exp(b lambda)-1)
+  -(exp(c lambda)-1)(exp(d lambda)-1),                    (30d)
+```
+
+Lean proves the exact phase law
+
+```text
+ab!=cd                                      -> ord_0 F=2,
+ab=cd, ab!=0, a+b!=c+d                     -> ord_0 F=3.  (30e)
+```
+
+Thus matching tangent products cancels the quadratic jet, while the first unmatched symmetric
+moment produces tangency excess one.  The Hankel conic on the source
+`(1,alpha,alpha^2)` realizes the second phase: its cubic jet is
+`-3 alpha^2(alpha-1)^2`.
+
+More importantly, one rationally independent rank-three source supports both an exact order-two
+quadratic constraint and this exact order-three Hankel constraint, while its complete
+period-incidence representation has no continuous left inverse.  Therefore the global effectivity
+phase does not determine local physical osculation.
+
+```text
+[NO-GO] the common obstruction is one scalar defect or one unfiltered derived class;
+[POSITIVE] the conservative source object is at least bifiltered by
+           global effectivity x local physical osculation.             (30f)
+```
+
+The source fracture object `(23)` must therefore retain the physical arc-contact Rees filtration
+as part of its constraint incidence, alongside the critical bornological filtration.  The new open
+interaction is not merely whether base change commutes with completion, but whether the
+source-natural comparison between these two filtrations is strict.  See
+`../3-formalized/new_scientific_knowledge/quadratic-physical-osculation-effectivity-fracture.md`.
+
+## Physical reversal anomaly `[PROVED; LEAN-FORMALIZED]`
+
+The osculation filtration still does not recover source orientation.  For the complete finite
+physical defect product
+
+```text
+G_tau(z)=product_i(exp(tau_i z)-1),                         (30g)
+```
+
+Lean proves
+
+```text
+G_(-tau)(z)=(-1)^r exp(-(sum_i tau_i)z) G_tau(z).           (30h)
+```
+
+The multiplier in `(30h)` is an involutive reversal cocycle.  Moreover,
+
+```text
+G_tau(z)=exp((sum_i tau_i)z/2) product_i 2sinh(tau_i z/2),  (30i)
+```
+
+which separates the oriented first-moment character from the centered self-dual factor.  If `r`
+is even and `sum_i tau_i=0`, the two opposite source orientations have identical complete analytic
+physical germs.  Consequently support, multiplicity, contact filtration, and every functorial
+derived topology built from that germ are simultaneously blind.
+
+This has now been extended to every componentwise sign-surgery mask.  Lean constructs the exact
+multiplier and proves its XOR composition law, so the anomaly is a genuine cocycle for the source
+orientation groupoid.  The remaining object is the torsor classified by that cocycle together with
+a reporter-compatible trivialization on the source-effectively normalized stratum.  The bare source
+cannot choose this point: `Gamma` and `exp(2 pi i z)Gamma` have the same unit-shift constraint and
+regular pointing.
+
+```text
+[NO-GO] orientation is recoverable by enriching the unlabelled physical germ;
+[POSITIVE] orientation is a normalized source-equivariant lift carrying the explicit reversal
+           anomaly, with conservativity gated by
+           K^S intersect intersection_r ker(R_r)={0}.                      (30j)
+```
+
+Thus polarization is not another invariant extracted from the derived characteristic carrier.  It
+is candidate reporter-normalized equivariance/trivialization data over the source groupoid.  See
+`../3-formalized/new_scientific_knowledge/physical-defect-orientation-anomaly.md`.
+
+## Normalized gauge fibre `[PROVED LINEAR GATE + TYPED OPEN LIFT]`
+
+The Gamma periodic-gauge collision forces a correction to the whole reconstruction program.  A
+bare source constraint determines a solution torsor, not a canonical analytic germ.  Even one
+regular value and every fixed finite jet can leave a nontrivial source-fixed gauge.
+
+For an additive reporter family `R=(R_r)`, Lean proves the exact gate
+
+```text
+Obs_R injective
+  iff G_(F,R):=K^(S_F) intersect intersection_r ker(R_r)={0}.       (30k)
+```
+
+A nonzero member of `G_(F,R)` is an explicit joint-nonconservativity witness.  Multiplicatively,
+the normalized solution fibre is a torsor under the gauges preserving the normalization and is a
+singleton exactly when that stabilizer is trivial.
+
+```text
+[NO-GO] a bare source canonically generates its effective section or polarization;
+[POSITIVE] reconstruction is exact on the maximal source-effectively normalized stratum cut out
+           by the joint-fixed common-kernel condition.                     (30l)
+```
+
+This changes the candidate unified object from a single source-assigned point to a **stack of
+normalized effective lifts** over the kinematic fracture cube.  Its automorphism group at `(F,R)`
+is the typed nonlinear replacement of `G_(F,R)`; its existence obstruction is the corresponding
+cokernel/higher interaction class.  The open Fields-scale theorem is to construct this stack for
+natural HT sources and prove that the analytic, Hermitian, spectral, bornological, monodromy, and
+integral reporters are jointly conservative on its normalized essential image.  See
+`../5-failed/universal-bare-source-effectivity-reconstruction.md` and
+`../3-formalized/not_new_scientific_knowledge/joint-source-realization-common-kernel-criterion.md`.
+
+## Candidate unified object: normalized anomaly-fracture stack `[CONJECTURE]`
+
+The exact results now force a more precise object than the original phrase “derived incidence
+space.”  For a source-effectively normalized pair `(F,R)`, let
+
+```text
+G_(F,R)  = residual joint-fixed gauge invisible to all reporters,
+L_(a_F)  = line/torsor classified by the physical orientation-anomaly cocycle,
+kappa_(F,R)^(p,q) = calibration map in
+                     osculation degree p and effectivity degree q.          (30m)
+```
+
+The candidate obstruction object is the anomaly-twisted bifiltered derived fibre
+
+```text
+U_(F,R)^(p,q)
+  =hofib_(b_(F,R)^(p,q))(kappa_(F,R)^(p,q); L_(a_F)).       (30n)
+```
+
+This notation is a typed research target, not an existing construction.
+
+> **[CONJECTURE -- NORMALIZED ANOMALY-FRACTURE PRINCIPLE.]**  On the maximal
+> source-effectively normalized HT essential image, the different obstruction classes are
+> conservative realizations of `(30n)`:
+>
+> - its automorphism object is the typed nonlinear joint-fixed common kernel;
+> - failure of nonemptiness is the calibration/descent obstruction;
+> - closure without a point is critical bornological nonattainment or spectral incompleteness;
+> - failure of positive real points is the positivity/orientation obstruction;
+> - twisting of local fibres is monodromy or noncanonical boundary data;
+> - osculation degree records physical contact multiplicity independently of effectivity degree;
+> - higher homotopy records genuine multi-face interaction classes.
+
+A source producer theorem does not merely show that one obstruction scalar vanishes.  It proves
+that the critical self-dual bidegree of `(30n)` has a reporter-compatible positive point with
+trivial automorphism group and the required integral/ramified lift.
+
+The Gamma collision prevents deleting `R`; the osculation/effectivity fracture prevents collapsing
+`(p,q)` to one filtration; the reversal-blind locus prevents deleting `L_(a_F)`; and the
+three-channel interaction example prevents replacing the derived fibre by pairwise compatibility.
+Each constituent is therefore forced by a separate exact no-go.
+
+Derived fibres, quotient stacks, anomaly lines, Rees filtrations, and kernel/cokernel sequences are
+parent mathematics.  Candidate novelty can begin only with a presentation-invariant HT
+construction of `(30n)`, a natural nontrivial analytic realization, and a transferred theorem that
+is unavailable in the parent realizations separately.
 
 ## Unified explanation of the RH-chain obstructions `[CONJECTURE; PRESSURE TEST ONLY]`
 
@@ -511,9 +728,17 @@ their comparisons before it may use the zero divisor.
 6. **Anomaly coupling precedes positivity.** Positivity cannot be added at the end.  It is a
    reduction of a globally effective fracture point and can be obstructed by non-polarization
    interaction classes.
-7. **Zeros are outputs of a section.** A carrier, topology, determinant line, or spectral category
-   can be complete while its distinguished section is not source-produced.  Degeneracy belongs to
-   the section in the full cube.
+7. **Zeros are outputs of a normalized section.** A carrier, topology, determinant line, or
+   spectral category can be complete while the bare source leaves a gauge torsor of possible
+   sections.  Degeneracy belongs to the reporter-normalized distinguished section in the full
+   stack.
+8. **No scalar master obstruction.** The same nondiscrete source can carry different physical
+   contact orders.  Obstruction classes must be bidegree-sensitive: effectivity and osculation are
+   independent axes whose interaction, rather than either marginal invariant, is the candidate
+   common object.
+9. **Orientation is equivariant lift data.** Even the complete physical analytic germ can be
+   reversal-blind.  A sign-sensitive producer must carry and trivialize the source reversal
+   anomaly; no derived refinement of the unlabelled germ can substitute for that lift.
 
 ## Parent theory and external novelty boundary
 
@@ -546,9 +771,11 @@ evidence, not priority certification.
 
 The candidate-new content begins only when the following are proved:
 
-1. the channels and cube maps are canonically generated by a source-minimal HT constraint;
+1. the kinematic channels and cube maps are canonically generated by a source-minimal HT
+   constraint, while the effective section is selected only on a classified normalized stratum;
 2. the total interaction spectrum is presentation invariant;
-3. effectivity reconstructs the analytic germ;
+3. effectivity reconstructs the analytic germ exactly when the normalized joint-fixed reporter
+   kernel is trivial;
 4. two genuinely different analytic realizations recover their known obstructions from one class;
 5. the unified object yields a new analytic theorem not available in either realization alone.
 
@@ -578,6 +805,8 @@ Retire or enlarge the conjecture if:
     HT source cone and realization map;
 13. finite positivity is called phase II without proving convergence to the critical target and
     failure of exact incidence.
+14. a distinguished section, polarization, or anomaly trivialization is claimed to be canonical
+    from the bare source despite a surviving normalized joint-fixed gauge.
 
 Every no-go has a positive successor: identify the missing cube direction, compute the residual
 interaction quotient, prove the maximal source class on which descent is effective, or exhibit the
@@ -589,13 +818,15 @@ The exact module sequence and three-channel counterexample are not Fields-scale.
 result would prove the enriched fracture-incidence correspondence for a nontrivial analytic class,
 including:
 
-1. a source-canonical and presentation-invariant construction of all cube vertices and maps;
-2. an intrinsic maximal-growth/thin-amplitude essential image;
-3. reconstruction of the pointed analytic HT germ from one effective fracture point;
+1. a source-canonical and presentation-invariant construction of the kinematic cube plus a
+   classification of admissible reporter/normalization families;
+2. an intrinsic maximal-growth/thin-amplitude source-effectively normalized essential image;
+3. reconstruction of the pointed analytic HT germ from one normalized effective fracture point,
+   with the joint-fixed common kernel calculated exactly;
 4. calculation of its total interaction spectrum, a source-specific collapse law, and the
    residual enriched incidence object after kinematic descent collapses;
-5. construction of the source-canonical derived calibration morphism and identification of its
-   kernel, cokernel, and higher incidence groups in natural analytic realizations;
+5. construction of the reporter-normalized derived calibration morphism and identification of its
+   kernel, cokernel, stabilizer torsor, and higher incidence groups in natural analytic realizations;
 6. construction of its polarized source cone and a theorem deciding exact incidence versus the
    closure-only phase at the critical bornology;
 7. the elliptic-gamma anomaly bicomplex as a fully typed two-axis analytic model;
@@ -632,6 +863,11 @@ and proves that both a single tower and pairwise compatibility are structurally 
 - [x] cofinal positive approximation and dual blindness Lean-formalized
 - [x] closed-image promotion theorem Lean-formalized
 - [x] critical closure-defect principle stated with explicit falsifiers
+- [x] genuine DA/meromorphic physical-character comparison Lean-formalized
+- [x] fibrewise exact/global nonclosed interaction isolated
+- [x] uniform character-effectivity iff period discreteness Lean-formalized
+- [ ] construct the source-forced completion and base-change comparison morphism
+- [ ] compute the physical base-change/completion defect in one analytic HT source
 - [ ] define the full finite-channel augmented fracture complex in Lean
 - [ ] formalize its monomialwise chain contraction
 - [x] type the elliptic-gamma DA/holomorphic filtered group--Cech complex on paper

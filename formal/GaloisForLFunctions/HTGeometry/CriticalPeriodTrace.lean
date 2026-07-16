@@ -17,6 +17,8 @@ namespace GaloisForLFunctions
 
 noncomputable section
 
+universe u
+
 def criticalPeriodWeight (lambda : ℂ) : ℂ :=
   lambda / ((1 + ‖lambda‖ : ℝ) : ℂ)
 
@@ -25,17 +27,18 @@ theorem criticalPeriodWeight_ne_zero {lambda : ℂ} (hlambda : lambda ≠ 0) :
   apply div_ne_zero hlambda
   exact_mod_cast (by positivity : (1 + ‖lambda‖ : ℝ) ≠ 0)
 
-abbrev CriticalPeriodTrace (L : Type*) : Type :=
+abbrev CriticalPeriodTrace (L : Type u) : Type u :=
   lp (fun _ : L ↦ ℂ) ∞
 
-example (L : Type*) : CompleteSpace (CriticalPeriodTrace L) := inferInstance
+theorem criticalPeriodTrace_completeSpace (L : Type u) :
+    CompleteSpace (CriticalPeriodTrace L) := inferInstance
 
 def criticalPeriodTraceRealization
-    {L : Type*} (period : L → ℂ) (x : CriticalPeriodTrace L) : L → ℂ :=
+    {L : Type u} (period : L → ℂ) (x : CriticalPeriodTrace L) : L → ℂ :=
   fun lambda ↦ criticalPeriodWeight (period lambda) * x lambda
 
 theorem criticalPeriodTraceRealization_injective
-    {L : Type*} (period : L → ℂ) (hperiod : ∀ lambda, period lambda ≠ 0) :
+    {L : Type u} (period : L → ℂ) (hperiod : ∀ lambda, period lambda ≠ 0) :
     Function.Injective (criticalPeriodTraceRealization period) := by
   intro x y hxy
   apply lp.ext
@@ -44,11 +47,11 @@ theorem criticalPeriodTraceRealization_injective
   exact mul_left_cancel₀ (criticalPeriodWeight_ne_zero (hperiod lambda)) h
 
 theorem criticalPeriodTrace_reconstruction
-    {L : Type*} (period : L → ℂ) (hperiod : ∀ lambda, period lambda ≠ 0)
+    {L : Type u} (period : L → ℂ) (hperiod : ∀ lambda, period lambda ≠ 0)
     (x : CriticalPeriodTrace L) (lambda : L) :
     (criticalPeriodWeight (period lambda))⁻¹ *
         criticalPeriodTraceRealization period x lambda = x lambda := by
-  rw [criticalPeriodTraceRealization, inv_mul_cancel₀
+  rw [criticalPeriodTraceRealization, ← mul_assoc, inv_mul_cancel₀
     (criticalPeriodWeight_ne_zero (hperiod lambda)), one_mul]
 
 def criticalPeriodPhase (lambda : ℂ) : ℂ :=
@@ -56,10 +59,10 @@ def criticalPeriodPhase (lambda : ℂ) : ℂ :=
 
 theorem norm_criticalPeriodPhase {lambda : ℂ} (hlambda : lambda ≠ 0) :
     ‖criticalPeriodPhase lambda‖ = 1 := by
-  rw [criticalPeriodPhase, norm_div, norm_norm]
+  rw [criticalPeriodPhase, norm_div, Complex.norm_real,
+    Real.norm_of_nonneg (norm_nonneg _)]
   exact div_self (norm_ne_zero_iff.mpr (criticalPeriodWeight_ne_zero hlambda))
 
 end
 
 end GaloisForLFunctions
-

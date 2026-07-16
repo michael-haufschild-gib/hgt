@@ -235,7 +235,8 @@ source-produced conservative character without storing the germ.
 
 Lean formalizes unconditionally:
 
-- explicit period-one and two structural elliptic-gamma source equations from product reindexing;
+- the complete period-one elliptic-gamma source equation and the zero/successor factor identities
+  underlying the two structural product reindexings;
 - the rank-three commuting difference-differential field and its constant joint-fixed field;
 - classification of equal multiplicative boundaries by one nonzero constant;
 - regular-point analytic reconstruction and the subsingleton pointed solution fibre;
@@ -263,5 +264,6 @@ five-face homotopy limit.  No such result is inserted as an axiom.
 - [x] five deletion tests recorded
 - [x] differential-cohomology and limit-theory parent collision explicit
 - [ ] global analytic-subring packaging of the source boundary in Lean
+- [ ] whole-product `sigma` and `tau` source equations packaged in Lean
 - [ ] FHRZ/differential-character comparison formalized in Lean
 - [ ] independent specialist proof and novelty audit

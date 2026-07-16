@@ -89,7 +89,19 @@ research rules:
 
 ## ht to rh
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research how the existing and ongoing research into hypertranscenental functions can be applied to develop an rh proof.
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research and formalize this rh proof approach:
+"Euler–Gamma–theta source
+  → source-effectively normalized Xi lift
+  → source-forced orientation/coercivity/spectral reality
+  → existing Lean endpoint
+  → RH
+
+The proof needs one unconditional source producer for:
+- critical orientation;
+- a critical all-scale lower bound;
+- a real/stable spectral determinant; or
+- arithmetic multiplicity divisibility.
+"
 
 lean rules:
 1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.

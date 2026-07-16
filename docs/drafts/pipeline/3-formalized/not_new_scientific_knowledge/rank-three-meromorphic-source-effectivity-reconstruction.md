@@ -39,9 +39,10 @@ to the exact scalar gauge `C^x`; one regular source pointing kills precisely tha
 
 ## Explicit source production
 
-The elliptic-gamma boundary in `(1)` is not defined by translating the answer.  Direct reindexing
-of the convergent numerator and denominator double products proves three explicit source laws.
-Period one has ratio one.  The two structural shifts peel off the one-dimensional products
+The elliptic-gamma boundary in `(1)` is not defined by translating the answer.  On paper, direct
+reindexing of the convergent numerator and denominator double products proves three explicit
+source laws.  Period one has ratio one.  The two structural shifts peel off the one-dimensional
+products
 
 ```text
 Theta_tau(z)
@@ -62,7 +63,9 @@ Gamma(z+tau)=Theta_(sigma|tau)(z) Gamma(z).                 (5)
 
 Equations `(3)`--`(5)` are constructed solely from the source periods and one-dimensional
 products.  They close the circularity gate left open by a boundary fingerprint defined from
-`Gamma` itself.
+`Gamma` itself.  Lean certifies every zero/successor factor identity needed by the two structural
+reindexings and the complete period-one product equation.  Packaging the two infinite double
+product reindexings as whole-product equalities remains outside the Lean certificate.
 
 ## Proof of reconstruction
 
@@ -136,9 +139,12 @@ actual HT source.
 New declarations include:
 
 - `ellipticGammaProduct_add_one`;
-- `ellipticGammaProduct_add_sigma`;
-- `ellipticGammaProduct_add_tau`;
-- `ellipticGammaProduct_explicit_source_equations`;
+- `ellipticGammaForwardFactor_add_sigma_zero`;
+- `ellipticGammaForwardFactor_add_sigma_succ`;
+- `ellipticGammaBackwardFactor_add_sigma`;
+- `ellipticGammaForwardFactor_add_tau_zero`;
+- `ellipticGammaForwardFactor_add_tau_succ`;
+- `ellipticGammaBackwardFactor_add_tau`;
 - `rankThree_generator_jointFixed_iff_constant`;
 - `rankThreeGeneratorMultiplicativeBoundary_eq_iff_constant_multiple`;
 - `RegularPointedMeromorphicPresentation.eq_toMero_of_same_sourceBoundary_and_value`;
@@ -156,7 +162,9 @@ New declarations include:
 - [x] source-preserving morphisms classified by `C^x`
 - [x] literal regular-point evaluation proved to kill exactly the scalar gauge
 - [x] actual elliptic-gamma product specialized
-- [x] three explicit source equations proved from product reindexing
+- [x] three explicit source equations proved on paper from product reindexing
+- [x] structural zero/successor factor identities and period-one product equation formalized
+- [ ] whole-product `sigma` and `tau` reindexings packaged in Lean
 - [x] complete critical trace and coordinate reconstruction formalized
 - [ ] global field identity for `(5)` packaged as analytic-subring boundary elements
 - [ ] five realization comparisons proved jointly conservative on the full effective lift

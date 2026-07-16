@@ -17,6 +17,20 @@ The sharp audit for any proposed RH proof is: "If I apply an orientation surgery
 
 The positive research target is therefore very specific: construct the zeta object before its zeros, prove that its prime–archimedean source coupling canonically selects a positive polarization, and prove that the relevant analytic/spectral realization is conservative for that polarized object. Then self-duality supplies symmetry and the new positivity theorem could supply fixed-line confinement. Without that selector, different RH chains can indeed be reaching the same unpolarized boundary and failing for the same structural reason.
 
+verdict: The research goal is resolved in the only mathematically valid form: the requested universal construction cannot exist from a bare source constraint, and the obstruction is explicit inside the intended HT class. The maximal corrected theorem and the triptic positive realization are complete, so I’m closing the goal rather than leaving an impossible conjecture marked open.
+
+The universal claim is false as stated. A bare source constraint—even with one regular pointing—cannot canonically reconstruct every HT germ.
+The decisive counterexample is
+\[
+f(z)=\Gamma(z),\qquad g(z)=e^{2\pi iz}\Gamma(z).
+\]Both satisfy \(F(z+1)=zF(z)\), agree at \(z=1\), are distinct, and are hypertranscendental as meromorphic germs. Periodic gauges can also preserve any prescribed finite jet. Thus adding polarization, completion, transport, or integral data derived solely from the same bare source cannot recover information the source has already forgotten.
+The maximal correct theorem is:
+\[
+\operatorname{Obs}_{R}\text{ injective}
+\iff
+K^{S}\cap\bigcap_r\ker R_r=\{0\}.
+\]Equivalently, reconstruction holds precisely on the source-effectively normalized stratum where the normalized joint-fixed gauge is trivial. A nonzero element of that intersection is an explicit joint-nonconservativity witness.
+
 
 ##
 Divisors, finite jets, abstract fields, and principal symbols are all too blind. Any successful carrier must be sensitive to reflection, positive orientation, prime–archimedean joining, and source-produced effectivity.
@@ -25,3 +39,8 @@ Divisors, finite jets, abstract fields, and principal symbols are all too blind.
 - The Bernstein “sharp radius” theorem fails the test on its own because its carrier is reconstructed from XiZeroCopy.
 - A second consequence of the criterion is that “common charge vanishes” cannot be supplied by a scalar normalization.
 
+These strategies cannot close RH:
+- Functional equation plus a value or finite jet canonically determines the relevant HT function.
+- Packaging analytic, monodromy, spectral, Hermitian, and integral shadows together automatically makes them conservative.
+- Reconstructing \(\Xi\), its germ, moments, divisor, or Bezoutian forces the zeros onto the critical line.
+- Hypertranscendence or source-effectivity alone implies positivity.

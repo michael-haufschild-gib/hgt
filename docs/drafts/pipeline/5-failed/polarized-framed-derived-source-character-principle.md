@@ -1,17 +1,39 @@
-# Polarized framed derived source-character principle
+# Polarized framed derived source-character principle — retired as a separate unified object
 
 - **ID:** `polarized-framed-derived-source-character-principle`
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE / UNIFIED HT OBSTRUCTION OBJECT / COMPARISON PROGRAM
-- **Scientific status:** `[BOLD CONJECTURE] [SUPPORTED BY ONE EXACT HIERARCHY]`
-  `[T1 LEAN-VERIFIED] [EXTERNAL NOVELTY GATE OPEN] [NOT AN RH RESULT]`
+- **Stage:** 5-failed
+- **Type:** RETIRED INDEPENDENT ONTOLOGY / SURVIVING LOCAL EFFECTIVITY CHART
+- **Scientific status:** `[RETIRED BY ANTI-EPICYCLE GATE] [T1 LEAN-VERIFIED]`
+  `[LOCAL CHART RETAINED] [NOT AN RH RESULT]`
 - **Parents:**
   - `../2-fully-proven/new_scientific_knowledge/multiple-gamma-physical-characteristic-fat-point.md`
   - `../2-fully-proven/new_scientific_knowledge/multiple-gamma-period-excess-closure-phase-transition.md`
-  - `hypertranscendental-critical-closure-defect-principle.md`
-  - `hypertranscendental-constraint-hodge-duality.md`
+  - `../1-in-progress/hypertranscendental-critical-closure-defect-principle.md`
+  - `../1-in-progress/hypertranscendental-constraint-hodge-duality.md`
+  - `../3-formalized/source-producer-integral-realization-minimality.md`
+  - `../1-in-progress/hypertranscendental-source-fracture-hypercube.md`
 - **RH pressure-test input only:**
   - `../../../reports/rh-proof-chains-and-obstructions-2026-07-16.md`
+
+## Retirement verdict and positive survivor
+
+The proposed package `U(F)` is not a new complete HT ontology.  The existing six-channel
+source-effectivity and fracture-incidence theory is strictly stronger: it already separates
+source action, polarization, critical bornology, controlled transport, distinguished effective
+section, and integral/ramified realization, and it proves by deletion witnesses that none can be
+recovered from the others.  Maintaining `U(F)` as a competing foundational object would violate
+the anti-epicycle gate.
+
+The positive survivor is exact.  The derived source-character germ is a **local chart** of the
+kinematic fracture object, and the DA/meromorphic physical-character comparison is now
+Lean-formalized inside the genuine global meromorphic field.  It supplies one real comparison edge
+of the source-effectivity cube.
+
+The new open interaction is not “add a frame.”  Frames, orientations, and polarization transport
+are already present in stronger form.  It is whether physical-character base change commutes with
+the critical completion forced by the embedded integral period group.  This is recorded as the
+base-change/completion defect in
+`../3-formalized/not_new_scientific_knowledge/multiple-gamma-da-meromorphic-physical-character-comparison.md`.
 
 ## The level shift
 
@@ -88,18 +110,19 @@ U(F) = (
 The word `physical` means source-character realization; it does not assert that `lambda` is time.
 It is an observable coordinate on the character family.
 
-## Main conjecture
+## Retired completeness conjecture
 
-> **[CONJECTURE — POLARIZED FRAMED DERIVED SOURCE-CHARACTER PRINCIPLE.]**  Every conservative
+> **[RETIRED CONJECTURE — POLARIZED FRAMED DERIVED SOURCE-CHARACTER PRINCIPLE.]**  Every conservative
 > obstruction produced by a source-minimal constrained hypertranscendental system factors through
 > `U(F)`.  The algebraic support of `(3)` records exact degeneracy, its nilpotent and derived
 > filtrations record constraint depth, the embedded integral source group and bornology record
 > cofinal attainability, the logarithmic lift records monodromy and orientation, and the polarized
 > pointed framing selects the effective source boundary condition.
 
-This is a universality conjecture about HT source constraints, not an assertion about any zeta
-zero.  It is falsified by two source systems with isomorphic data `(4)` and different conservative
-obstruction theories.
+This claim is retired because `(4)` omits the independently necessary distinguished effective
+section and does not organize incomparable realization channels or their higher interactions.
+Those are already handled by the source-effectivity fracture-incidence object.  The definitions
+below remain useful only as coordinates on its physical-character chart.
 
 ## Exact multiple-Gamma evidence
 
@@ -237,31 +260,45 @@ DA physical characteristic boundary
 For a rationally independent period frame, prove both sides of `(8)` hold exactly at `lambda=0`.
 This theorem is unconditional and does not mention RH.
 
-### T2. Framing no-go
+### T2. Framing no-go `[SUBSUMED]`
 
 For a commutative local ring, prove componentwise unit rescaling of a source sequence induces an
 isomorphism of source Koszul complexes, while the oriented determinant of the labelled
 presentation changes by the product of those units.  The unframed derived object is invariant;
 the framed determinant line is not.
 
-### T3. Rees-to-powered-incidence comparison
+This is parent infrastructure and is already subsumed by stronger orientation-surgery,
+polarization-transport, and source-section blindness theorems in the live corpus.  It is not the
+next research target.
 
-Construct the polynomial functional calculus
+### T3. Base-change/completion comparison `[SURVIVING OPEN FACE]`
+
+The polynomial functional calculus remains a useful algebraic seed:
 
 ```text
 C[lambda] -> bounded diagonal source operators,
 lambda |-> M_w,
 ```
 
-and prove `(lambda^k) |-> M_(w^k)` together with the exact fractional phase law for `k=r`.  Then
-identify which completion of the Rees algebra is forced by the embedded period group rather than
-chosen by hand.
+but it is not the full target.  Construct the completion functor forced by the embedded period
+group and the comparison
+
+```text
+L chi_F^*(Comp_F C_F) -> Comp_F(L chi_F^* C_F).
+```
+
+Compute its cofiber in the multiple-Gamma chart.  The exact DA/meromorphic fibre comparison and
+the nonclosed global period-incidence range predict a nontrivial critical defect.
 
 ### T4. Positive-tangency falsifier
 
-Construct a natural HT source with physical tangency excess `>0`.  Test whether its DA depth tracks
-abstract source height while its analytic closure exponent tracks physical contact order.  If the
-closure exponent does not change, the contact filtration in `(4)` is not conservative.
+The exact source-geometric falsifier is now constructed independently of this retired ontology.
+The Hankel conic on `(1,alpha,alpha^2)` has source height two and exact physical contact order three,
+while a second quadratic constraint on the same nondiscrete source has exact contact order two.
+Therefore global effectivity does not determine local osculation.  The surviving task is to realize
+positive tangency in a natural HT special-function family and construct the interaction between
+the osculation and bornological filtrations; see
+`../3-formalized/new_scientific_knowledge/quadratic-physical-osculation-effectivity-fracture.md`.
 
 ### T5. Second-family comparison
 
@@ -270,11 +307,10 @@ hierarchy is not enough for a universality claim.
 
 ## Decision
 
-The immediate search target is T1 followed by T2, not another scalar equality and not an RH
-criterion.  The first can establish that two independent analytic/algebraic realizations share the
-same source-character fiber.  The second determines the minimum extra structure needed to retain
-orientation.  Only after both should the bornological comparison T3 be treated as a candidate
-unification theorem.
+T1 is complete, including its realization in the genuine meromorphic field.  T2 is retired as an
+independent research direction.  The surviving target is T3 interpreted as the
+base-change/completion interaction face of the source-effectivity fracture object.  This card no
+longer proposes a separate unified theory.
 
 ## Gates
 
@@ -285,8 +321,12 @@ unification theorem.
 - [x] parent components separated from candidate novelty
 - [x] RH kept as downstream pressure test
 - [x] T1 Lean-verified
-- [ ] T2 Lean-verified
-- [ ] T3 Lean-verified
-- [ ] positive-tangency example constructed
+- [x] genuine meromorphic T1 comparison Lean-verified
+- [x] independent framing direction subsumed by stronger live theory
+- [x] separate completeness conjecture retired
+- [ ] source-forced completion functor constructed
+- [ ] base-change/completion defect computed
+- [x] positive-tangency source model constructed and Lean-verified
+- [ ] positive tangency realized by a natural HT special-function source
 - [ ] second HT family realizes the same package
 - [ ] broader external novelty audit complete

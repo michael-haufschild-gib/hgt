@@ -123,6 +123,28 @@ theorem gradedMatrixTrace_hodgeCompression
     Matrix.mul_sub, Matrix.trace_sub] at hzero
   exact sub_eq_zero.mp hzero
 
+/-- Positive harmonic parity removes the grading from the compressed trace.  This is the exact
+finite sign firewall between a Hodge supertrace and an ordinary positive-sector trace. -/
+theorem gradedMatrixTrace_compression_eq_trace_of_positiveParity
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (Γ P A : Matrix n n ℂ) (hpositive : Γ * P = P) :
+    gradedMatrixTrace Γ (P * A) = (P * A).trace := by
+  rw [gradedMatrixTrace, ← mul_assoc, hpositive]
+
+/-- Finite Hodge compression lands in an ordinary trace once the harmonic projection is entirely
+in positive parity.  All cancellation remains supplied by oddness and the Hodge relation; the
+only additional datum is the source-specific parity statement `ΓP=P`. -/
+theorem gradedMatrixTrace_hodgeCompression_eq_trace_of_positiveParity
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (Γ P Res d h : Matrix n n ℂ)
+    (hodd : Γ * d = -(d * Γ))
+    (hHodge : 1 - P = d * h + h * d)
+    (hcomm : d * Res = Res * d)
+    (hpositive : Γ * P = P) :
+    gradedMatrixTrace Γ Res = (P * Res).trace := by
+  rw [gradedMatrixTrace_hodgeCompression Γ P Res d h hodd hHodge hcomm]
+  exact gradedMatrixTrace_compression_eq_trace_of_positiveParity Γ P Res hpositive
+
 /-- A two-sided inverse inherits every commutation relation of the inverted matrix.  Applied to
 `A=s-Θ`, this discharges resolvent/differential commutation from generator/differential
 commutation. -/

@@ -62,7 +62,7 @@ theorem exists_integral_primitive_polynomial_representation {ι : Type*} [Fintyp
     apply pb.adjoin_eq_top_of_gen_mem_adjoin
     have hyQ : (y : ℚ) ≠ 0 := by exact_mod_cast hy0
     have hθKcast : θK = (y : ℚ) • pb.gen := by
-      simp [θK, Algebra.smul_def, zsmul_eq_mul]
+      simp [θK, Algebra.smul_def]
     have hgen : pb.gen = (y : ℚ)⁻¹ • θK := by
       rw [hθKcast, smul_smul, inv_mul_cancel₀ hyQ, one_smul]
     rw [hgen]
@@ -77,7 +77,8 @@ theorem exists_integral_primitive_polynomial_representation {ι : Type*} [Fintyp
     have hgen : pb'.gen = θK := PowerBasis.ofAdjoinEqTop_gen hθKQ htop
     change IsIntegral ℤ (algebraMap K ℂ pb'.gen)
     rw [hgen]
-    exact (by simpa [θK] using hyint).algHom (IsScalarTower.toAlgHom ℤ K ℂ)
+    have hθKint : IsIntegral ℤ θK := by simpa [θK] using hyint
+    exact hθKint.map (IsScalarTower.toAlgHom ℤ K ℂ)
   have hmin : minpoly ℚ θ = minpoly ℚ pb'.gen := by
     simpa [θ] using minpoly.algebraMap_eq (algebraMap K ℂ).injective pb'.gen
   refine ⟨θ, q, hθint, ?_, ?_⟩
