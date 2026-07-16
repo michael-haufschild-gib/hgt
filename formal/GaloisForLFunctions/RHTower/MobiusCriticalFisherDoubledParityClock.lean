@@ -552,3 +552,124 @@ theorem tendsto_finiteMobiusDoubledErasedQFI
   exact (finiteMobiusDoubledErasedQFI_eq_variance sigma N).symm
 
 end RHTower
+namespace RHTower
+
+private theorem hasDerivAt_finiteIncidenceMass
+    {sigma : ℝ} {n : ℕ} (hn : 0 < n) :
+    HasDerivAt (fun t : ℝ => (n : ℝ) ^ (-t))
+      (-((n : ℝ) ^ (-sigma) * Real.log n)) sigma := by
+  have hbase : HasDerivAt (fun _ : ℝ => (n : ℝ)) 0 sigma := hasDerivAt_const _ _
+  have hexp : HasDerivAt (fun t : ℝ => -t) (-1) sigma :=
+    (hasDerivAt_id sigma).neg
+  have h := hbase.rpow hexp (by exact_mod_cast hn)
+  convert h using 1
+  ring
+
+private theorem hasDerivAt_finiteIncidencePartition
+    {α : Type*} [Fintype α] [Nonempty α]
+    {sigma : ℝ} {d : α → ℕ} (hd : ∀ i, 0 < d i) :
+    HasDerivAt (fun t : ℝ => finiteIncidencePartition t d)
+      (-∑ i, (d i : ℝ) ^ (-sigma) * Real.log (d i)) sigma := by
+  unfold finiteIncidencePartition
+  have hsum0 := HasDerivAt.sum (u := Finset.univ)
+    (fun i _ => hasDerivAt_finiteIncidenceMass (sigma := sigma) (hd i))
+  have hsum : HasDerivAt (fun t : ℝ => ∑ i, (d i : ℝ) ^ (-t))
+      (∑ i, -((d i : ℝ) ^ (-sigma) * Real.log (d i))) sigma := by
+    convert hsum0 using 1
+    funext t
+    simp
+  convert hsum using 1
+  rw [Finset.sum_neg_distrib]
+
+end RHTower
+
+namespace RHTower
+
+private def finiteIncidenceLogMean
+    {α : Type*} [Fintype α] (sigma : ℝ) (d : α → ℕ) : ℝ :=
+  ∑ i, finiteIncidenceProbability sigma d i * Real.log (d i)
+
+private theorem hasDerivAt_finiteIncidenceProbability
+    {α : Type*} [Fintype α] [Nonempty α]
+    {sigma : ℝ} {d : α → ℕ} (hd : ∀ i, 0 < d i) (i : α) :
+    HasDerivAt (fun t : ℝ => finiteIncidenceProbability t d i)
+      (finiteIncidenceProbability sigma d i *
+        (finiteIncidenceLogMean sigma d - Real.log (d i))) sigma := by
+  have hmass := hasDerivAt_finiteIncidenceMass (sigma := sigma) (hd i)
+  have hpartition := hasDerivAt_finiteIncidencePartition (sigma := sigma) hd
+  have hpartitionNe : finiteIncidencePartition sigma d ≠ 0 :=
+    ne_of_gt (finiteIncidencePartition_pos hd)
+  have hquot := hmass.div hpartition hpartitionNe
+  unfold finiteIncidenceProbability
+  convert hquot using 1
+  unfold finiteIncidenceLogMean finiteIncidenceProbability
+  rw [show (fun j : α => (d j : ℝ) ^ (-sigma) /
+      finiteIncidencePartition sigma d * Real.log (d j)) =
+      fun j => ((d j : ℝ) ^ (-sigma) * Real.log (d j)) /
+        finiteIncidencePartition sigma d by
+    funext j
+    ring]
+  rw [← Finset.sum_div Finset.univ]
+  field_simp [hpartitionNe]
+  ring
+
+private theorem hasDerivAt_sqrt_finiteIncidenceProbability
+    {α : Type*} [Fintype α] [Nonempty α]
+    {sigma : ℝ} {d : α → ℕ} (hd : ∀ i, 0 < d i) (i : α) :
+    HasDerivAt (fun t : ℝ => Real.sqrt (finiteIncidenceProbability t d i))
+      ((1 / 2) * (finiteIncidenceLogMean sigma d - Real.log (d i)) *
+        Real.sqrt (finiteIncidenceProbability sigma d i)) sigma := by
+  have hp := hasDerivAt_finiteIncidenceProbability (sigma := sigma) hd i
+  have hpne : finiteIncidenceProbability sigma d i ≠ 0 :=
+    ne_of_gt (finiteIncidenceProbability_pos hd i)
+  have hsqrt := hp.sqrt hpne
+  convert hsqrt using 1
+  have hsqrtPos : Real.sqrt (finiteIncidenceProbability sigma d i) ≠ 0 :=
+    ne_of_gt (Real.sqrt_pos.2 (finiteIncidenceProbability_pos hd i))
+  field_simp [hsqrtPos]
+  rw [Real.sq_sqrt (finiteIncidenceProbability_pos hd i).le]
+
+end RHTower
+
+namespace RHTower
+
+private theorem hasDerivAt_finiteMobiusSourceWeight
+    {sigma : ℝ} (N : ℕ) (i : squarefreeMobiusCriticalFiniteIndex N) :
+    HasDerivAt (fun t : ℝ => finiteMobiusSourceWeight t N i)
+      ((((1 / 2 : ℝ) *
+        (finiteMobiusLogMean sigma N -
+          Real.log (squarefreeMobiusCriticalFiniteIndexValue i)) : ℝ) : ℂ) *
+        finiteMobiusSourceWeight sigma N i) sigma := by
+  let d := squarefreeMobiusCriticalFiniteIndexValue (N := N)
+  have hsqrt := hasDerivAt_sqrt_finiteIncidenceProbability
+    (sigma := sigma) (d := d)
+    (squarefreeMobiusCriticalFiniteIndexValue_pos (N := N)) i
+  have hcomplex := hsqrt.ofReal_comp
+  have hmul := hcomplex.const_mul
+    (((ArithmeticFunction.moebius
+      (squarefreeMobiusCriticalFiniteIndexValue i) : ℤ) : ℂ))
+  convert hmul using 1
+  unfold finiteMobiusSourceWeight finiteMobiusLogMean
+    finiteIncidenceLogMean
+  dsimp [d]
+  push_cast
+  ring
+
+def finiteMobiusFisherTangentWeight (sigma : ℝ) (N : ℕ)
+    (i : squarefreeMobiusCriticalFiniteIndex N) : ℂ :=
+  ((-2 * (sigma - 1) *
+    (Real.log (squarefreeMobiusCriticalFiniteIndexValue i) -
+      finiteMobiusLogMean sigma N) : ℝ) : ℂ) *
+    finiteMobiusSourceWeight sigma N i
+
+theorem finiteMobiusFisherTangentWeight_eq_four_mul_deriv_source
+    {sigma : ℝ} (N : ℕ) (i : squarefreeMobiusCriticalFiniteIndex N) :
+    finiteMobiusFisherTangentWeight sigma N i =
+      ((4 * (sigma - 1) : ℝ) : ℂ) *
+        deriv (fun t : ℝ => finiteMobiusSourceWeight t N i) sigma := by
+  rw [(hasDerivAt_finiteMobiusSourceWeight N i).deriv]
+  unfold finiteMobiusFisherTangentWeight
+  push_cast
+  ring
+
+end RHTower

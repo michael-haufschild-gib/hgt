@@ -235,8 +235,11 @@ The following formal files prove the complete continuation and divisor-residue i
 - `formal/GaloisForLFunctions/RHTower/BVPrimeWindowDivisorTomography.lean`: the exact residue
   `(3b)`, the Mellin-censorship pole-order theorem, and the fixed-window RH holomorphy criterion.
 
-These modules are wired through `formal/GaloisForLFunctions/RHTower.lean`.  The dilation,
-reciprocal-window reflection, and oriented comparison `(8a)` remain paper-level in this card.
+These modules are wired through `formal/GaloisForLFunctions/RHTower.lean`.
+`BVPrimeWindowDilationOrientation.lean` now constructs the forward and inverse compact-BV
+windows, proves their exact Mellin and continued-source residue covariance, and formalizes the
+oriented squared-norm comparison `(8a)`--`(10)`, including its strict sign and zero locus.  The
+reciprocal-conjugate window involution `(11)`--`(14)` remains paper-level.
 
 Burnol's source-defined co-Poisson quotient and its zero evaluators are supplied by
 J.-F. Burnol, *Two complete and minimal systems associated with the zeros of the Riemann zeta
@@ -257,6 +260,7 @@ is `../../1-in-progress/bv-prime-window-decimation-boundary-contraction-rh.md`.
 - [x] one fixed dyadic sharp window detects every right off-critical zero
 - [x] fixed countable rational interval family separates every zero fibre
 - [ ] prove the right-half prime-source Laurent contraction `(16)`
-- [ ] formalize compact-BV dilation and reflection
-- [ ] formalize the oriented comparison `(8a)`--`(10)`
+- [x] formalize compact-BV forward and inverse dilation
+- [ ] formalize reciprocal-conjugate window reflection
+- [x] formalize the oriented comparison `(8a)`--`(10)`
 - [ ] compose an unconditional source contraction to RH

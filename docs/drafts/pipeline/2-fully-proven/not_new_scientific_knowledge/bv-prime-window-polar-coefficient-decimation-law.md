@@ -229,8 +229,12 @@ The continuation and residue laws used in `(9)` are formalized in:
 - `formal/GaloisForLFunctions/RHTower/BVPrimeWindowContinuation.lean`;
 - `formal/GaloisForLFunctions/RHTower/BVPrimeWindowDivisorTomography.lean`.
 
-They are wired through `formal/GaloisForLFunctions/RHTower.lean`.  Window dilation, coefficient
-decimation `(4)`, and the layer law `(15)` remain paper theorems.
+`formal/GaloisForLFunctions/RHTower/BVPrimeWindowDilationOrientation.lean` now constructs the
+forward and inverse compact-BV windows, proves the reciprocal-pair coefficient decimation `(12)`
+for both the finite von-Mangoldt window and the complete prime--polar coefficient, and proves the
+continued Laurent character and its oriented squared-norm factorization.  These modules are wired
+through `formal/GaloisForLFunctions/RHTower.lean`.  The full bilateral integer ladder and the
+off-multiple layer law `(15)` remain paper theorems.
 
 ## Gates
 
@@ -240,7 +244,8 @@ decimation `(4)`, and the layer law `(15)` remain paper theorems.
 - [x] weighted coefficient-space norm law
 - [x] ordinary Dirichlet--Hardy completion excluded for every uncensored source
 - [x] fixed-window conditional chain to RH isolated
-- [ ] formalize compact-BV dilation and coefficient decimation
+- [x] formalize compact-BV forward/inverse dilation and reciprocal-pair coefficient decimation
+- [ ] formalize the full bilateral integer ladder and off-multiple layer law
 - [ ] construct the scale-zero source boundary quotient `(20)`
 - [ ] prove source-side positivity without divisor-selected weights
 - [ ] compose an unconditional proof of RH

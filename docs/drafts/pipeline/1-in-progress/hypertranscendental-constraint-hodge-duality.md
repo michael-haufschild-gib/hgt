@@ -508,6 +508,39 @@ to existing analytic obstruction classes.  See
 
 ## Parent-theory and novelty gate
 
+### Critical completed facet descent and the surviving topological core `[PAPER THEOREM + LEAN SEED]`
+
+The coordinate-facet descent edge now has a complete weighted Hodge calculation.  On the monomial
+block of support `S`, the augmented facet complex is the full simplex on the facets containing
+`S`.  If their number is `n_S`, exterior creation and annihilation by the all-facet vector give
+
+```text
+Box_S=n_S id,                 n_S>=1.                       (13)
+```
+
+Hence every monomial-compatible critical Hilbert completion of this descent complex is exact with
+closed range and a uniform spectral gap at least one.  A separate cone contraction preserves the
+integral monomial lattice, and tensoring with the closed unbounded vertical jet shift preserves the
+gap.  The paper proof and formal boundary are recorded in
+`../2-fully-proven/not_new_scientific_knowledge/critical-completed-facet-hodge-descent.md`; the
+finite Clifford Dirac square is Lean-formalized in `SimplexConstraintDirac.lean`.
+
+This does not solve enriched source effectivity.  The independently proved multiple-gamma period
+incidence map has nonclosed range from elliptic-gamma order onward because the physical rank-three
+period group is nondiscrete.  Therefore the closure-only obstruction is not in kinematic facet
+descent.  It lies in the comparison between the abstract squarefree constraint module and its
+physical period embedding.
+
+> **[CONJECTURE -- CRITICAL DIVIDED-DIFFERENCE COMPARISON.]** The source-canonical comparison is
+> the normalized family `(T_lambda-1)/lambda`, completed at `lambda=0` by the vertical derivative.
+> Diagonal rescaling preserves the squarefree ideal over `C`, while the unscaled operators retain
+> the integral source lattice.  Prove that this comparison is forced by the analytic source collar
+> and is conservative in an independent realization; an ad hoc graph norm chosen only to close
+> the range is forbidden.
+
+This sharpens the open reconstruction object to the topologized constraint corona together with
+its critical divided-difference comparison, pointing, polarization, and integral lattice.
+
 The following are established and are not novelty claims:
 
 1. bifiltered and multi-Rees `D`-modules, including order and `V` filtrations;
@@ -601,6 +634,9 @@ zeta, its zeros, nor an RH-equivalent positivity condition may define the object
 - [x] fixed positive factors on torusless quasi-Abelian quotients proved all-order jet ample
 - [x] exact active-palette dimension law `htDim=aqaDim` proved
 - [x] support plus activity proved source-blind, forcing a third sewing/selection layer
+- [x] critical weighted coordinate-facet descent proved exact with uniform Hodge gap
+- [x] finite full-simplex Clifford Dirac square Lean-formalized
+- [x] closure-only phase localized away from facet descent to the physical period comparison
 - [ ] construct the marked locality spectrum invariantly for natural nonlinear source classes
 - [x] universal fixed-degree gerbe selector falsified; degree-one pair sewing extracted positively
 - [ ] construct the canonical capacity-descent Postnikov tower
@@ -610,5 +646,6 @@ zeta, its zeros, nor an RH-equivalent positivity condition may define the object
 - [ ] prove the cone is a strict essential-image restriction
 - [ ] reconstruct one analytic HT source from the complete object
 - [ ] prove two realization functors jointly conservative
+- [ ] prove the critical divided-difference comparison is source-canonical and conservative
 - [ ] derive a new analytic consequence
 - [ ] obtain an independent specialist novelty and significance verdict

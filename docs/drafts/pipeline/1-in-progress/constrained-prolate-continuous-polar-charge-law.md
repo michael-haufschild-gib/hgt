@@ -273,7 +273,7 @@ int_0^H exp(h/2)T_R(h)dM(h)
  =int_0^infinity exp(-t/2)R_lambda(t)J_H(t)dt,                  (24)
 ```
 
-where `J_H(t)` is the weighted cumulative defect up to `min(H,t)`.  At the full limit,
+where `J_H(t)=J(min(H,t))` is the weighted cumulative defect clipped at the finite aperture and
 
 ```text
 J(t)=int_0^t exp(h/2)dM(h)
@@ -281,25 +281,30 @@ J(t)=int_0^t exp(h/2)dM(h)
  =t-1-E(exp(t)).                                                (25)
 ```
 
-The classical prime-number-theorem remainder gives
+No prime-number-theorem remainder is needed. Chebyshev's elementary bound
+`Psi(x)<=(log 4+4)x` gives
 
 ```text
-|J(t)|<=C*(1+t+exp(t-kappa*sqrt(t)))                            (26)
+exp(-t)|J(t)|<=log 4+7,                                        (26)
+
+int_0^H exp(-t)|J_H(t)|dt
+ <=(log 4+7)(H+1).                                             (26a)
 ```
 
-for some `kappa>0`. In particular, `exp(-t)*|J(t)|` is integrable. Combining `(19d)` with
-`(24)`--`(26)` gives directly
+The final `+1` in `(26a)` is the frozen tail
+`exp(-H)|J(H)|`. Combining `(19d)` with `(24)`--`(26a)` gives directly
 
 ```text
 |p_lambda|*
- |int_0^infinity exp(-t/2)R_lambda(t)J(t)dt|
+ |int_0^infinity exp(-t/2)R_lambda(t)J_H(t)dt|
  <=C*|g_lambda(0)|
-   [Var(g_lambda^+)+|g_lambda(0)|]/lambda.                       (27)
+   [Var(g_lambda^+)+|g_lambda(0)|]*(H+1)/lambda.                 (27)
 ```
 
-Since `g_lambda(0)=O(d_lambda)`, the fixed-mode variation law `(19e)` makes `(27)`
-`O(d_lambda/lambda)=o(d_lambda)`. Even the weaker variation target stated after `(19e)` makes it
-`o(d_lambda*log lambda)`, which is enough to preserve the positive leading coefficient.
+At the matching height `H=2*log lambda`, `g_lambda(0)=O(d_lambda)` and the fixed-mode variation
+law `(19e)` make `(27)` `O(d_lambda*log(lambda)/lambda)=o(d_lambda)`. Even the weaker variation
+target stated after `(19e)` is enough to preserve the positive leading coefficient after its rate
+is paired with `(H+1)/lambda`.
 
 Equations `(22)`--`(27)` yield the genuine global statement
 
@@ -378,8 +383,10 @@ The required new infrastructure is:
 
 1. `[FORMALIZED]` the half-line autocorrelation/Fubini module `(7)`--`(10)`;
 2. `[FORMALIZED]` the zero-mean BV square-root lattice envelope `(19c)`;
-3. `[FORMALIZED]` the exact critical-Mellin cumulative `(25)`;
-4. a concrete radial-PSWF endpoint/exterior interface proving the all-radial primitive `(11)`;
+3. `[FORMALIZED]` the exact critical-Mellin cumulative `(25)` and its finite-aperture Chebyshev
+   mass bound `(26a)`;
+4. `[PHASE FORMALIZED; AMPLITUDE OPEN]` a concrete radial-PSWF endpoint/exterior interface proving
+   the all-radial primitive `(11)`;
 5. the fixed-mode source variation bound `(19e)` and the Poisson specialization `(19a)`;
 6. the constrained-source and critical-Mellin specialization `(18)`--`(32)`.
 
@@ -397,7 +404,8 @@ or used in a paper.
   radial integral `(24)`
 - [x] replace the global radial phase tail by the exact Poisson--BV lattice envelope
 - [x] formalize the square-root BV lattice envelope, including a non-lattice support endpoint
-- [x] formalize the growing critical-Mellin cumulative `(25)`
+- [x] formalize the growing critical-Mellin cumulative `(25)` and the clipped mass bound `(26a)`
+- [x] formalize the exact exterior Liouville phase, dilation derivative, and derivative floor
 - [ ] prove and formalize the exact one-sided Poisson--Muntz specialization `(19a)`
 - [ ] prove the fixed-mode source variation bound `(19e)`
 - [ ] promote `(18)` and `(32)` after the primitive and source-regularity audits

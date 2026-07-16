@@ -25,6 +25,12 @@ noncomputable section
 def euclideanSpectralNode (tau energy : ℝ) : ℝ :=
   Real.exp (-tau * energy)
 
+/-- The Euclidean spectral reporter is measurable. -/
+theorem euclideanSpectralNode_measurable (tau : ℝ) :
+    Measurable (euclideanSpectralNode tau) := by
+  unfold euclideanSpectralNode
+  fun_prop
+
 /-- Integer-clock samples of a positive Euclidean spectral correlation. -/
 def euclideanSpectralMoments (mu : Measure ℝ) (tau : ℝ) (n : ℕ) : ℝ :=
   ∫ energy, euclideanSpectralNode tau energy ^ n ∂mu
@@ -60,7 +66,7 @@ theorem euclideanSpectralMoments_eq_pushforward_moment
     euclideanSpectralMoments mu tau n =
       ∫ node, node ^ n ∂observablePushforwardMeasure mu (euclideanSpectralNode tau) := by
   rw [euclideanSpectralMoments,
-    integral_pow_observablePushforwardMeasure mu (by fun_prop) n]
+    integral_pow_observablePushforwardMeasure mu (euclideanSpectralNode_measurable tau) n]
 
 /-- **Euclidean spectral strictness.**  An integrable positive infinite spectral palette makes
 every finite sampled-correlator Hankel determinant positive. -/
@@ -71,7 +77,7 @@ theorem det_momentHankelMatrix_euclideanSpectralMoments_pos
     (n : ℕ) :
     0 < (momentHankelMatrix (euclideanSpectralMoments mu tau) n).det :=
   det_momentHankelMatrix_pos_of_observable_infiniteSupport
-    mu (euclideanSpectralNode tau) (by fun_prop)
+    mu (euclideanSpectralNode tau) (euclideanSpectralNode_measurable tau)
     (euclideanSpectralMoments mu tau) (fun _ ↦ rfl) hint
     (euclideanSpectralNode_infiniteSupport htau hmuinf) n
 

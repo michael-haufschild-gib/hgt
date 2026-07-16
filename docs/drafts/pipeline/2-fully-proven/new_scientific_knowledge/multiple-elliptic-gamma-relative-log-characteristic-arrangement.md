@@ -10,6 +10,7 @@
   - `multiple-gamma-effective-fracture-descent-orthogonality.md`
   - `../../3-formalized/gamma-periodic-constraint-corona.md`
   - `../../1-in-progress/hypertranscendental-critical-closure-defect-principle.md`
+- **Successor:** `multiple-gamma-period-excess-closure-phase-transition.md`
 - **Lean:**
   `formal/GaloisForLFunctions/HTGeometry/RelativeLogCharacteristicArrangement.lean`
 

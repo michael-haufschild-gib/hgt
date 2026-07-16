@@ -69,6 +69,13 @@ discrete, compactly supported, or indeterminate representation is all sufficient
 future Stieltjes, Sonin-barycenter, Nevanlinna, or theta pushforward constructions need not prove
 support infinitude before entering the RH chain.
 
+The formalized Euclidean spectral specialization in
+`euclidean-spectral-pushforward-hankel-rh-capstone.md` now supplies a physics-native entry point:
+any positive spectral measure whose integer Euclidean-clock samples equal the normalized
+prime--Gamma moments pushes forward to this arbitrary positive representation.  Infinite spectral
+support and nonzero clock spacing remain necessary only for the stronger strict-determinant
+hierarchy, not for RH.
+
 ## Classification
 
 The implication is the standard representing-measure proof of Hankel positivity, so it is not new
@@ -88,6 +95,9 @@ Main declarations:
 - `primeArchSourceTraceHankelIntNonnegative_of_momentRepresentation`
 - `riemannHypothesis_of_primeArchMomentRepresentation`
 - `primeArchMomentRepresentation_of_infiniteSupport`
+- `PrimeArchEuclideanSpectralRepresentation`
+- `primeArchMomentRepresentation_of_euclideanSpectral`
+- `riemannHypothesis_of_primeArchEuclideanSpectralRepresentation`
 
 Verification:
 

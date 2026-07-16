@@ -150,7 +150,8 @@ private theorem ofReal_squarefreeMobiusLogMoment_eq_iteratedDeriv_div
       rw [hiter]
       ring
 
-private theorem ofReal_squarefreeMobiusLogMoment_one_eq_fixedCurrent
+/-- The first squarefree logarithmic moment is the fixed squarefree current. -/
+theorem ofReal_squarefreeMobiusLogMoment_one_eq_fixedCurrent
     {sigma : ℝ} (hsigma : 1 < sigma) :
     (squarefreeMobiusLogMoment 1 sigma : ℂ) =
       _root_.GaloisForLFunctions.squarefreeFixedCurrent sigma := by

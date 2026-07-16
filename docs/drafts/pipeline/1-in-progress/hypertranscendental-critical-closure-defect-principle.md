@@ -4,12 +4,14 @@
 - **Stage:** 1-in-progress
 - **Type:** FOUNDATIONAL CONJECTURE / POLARIZED INCIDENCE / UNIFIED CRITICAL OBSTRUCTION
 - **Scientific status:** `[CONJECTURE] [THREE-PHASE LINEAR THEOREM LEAN-FORMALIZED]`
-  `[FIELDS-SCALE OPEN CORE] [NOVELTY PROVISIONAL] [NOT AN RH RESULT]`
+  `[NATURAL PHASE-II OPERATOR LEAN-FORMALIZED] [FIELDS-SCALE OPEN CORE]`
+  `[NOVELTY PROVISIONAL] [NOT AN RH RESULT]`
 - **Parents:**
   - `hypertranscendental-source-fracture-hypercube.md`
   - `pointed-polarized-constraint-coupling-correspondence.md`
   - `hypertranscendental-polarization-fibration.md`
   - `../2-fully-proven/new_scientific_knowledge/multiple-elliptic-gamma-relative-log-characteristic-arrangement.md`
+  - `../2-fully-proven/new_scientific_knowledge/multiple-gamma-period-excess-closure-phase-transition.md`
   - `../3-formalized/not_new_scientific_knowledge/polarized-fracture-incidence-trichotomy.md`
 - **Statement:** Source-sign failure, critical all-scale failure, and spectral nonclosed-range
   failure are conjecturally not separate obstructions.  They are the exterior, closure-only, and
@@ -77,6 +79,61 @@ completion data.
 This is stronger and more falsifiable than merely asserting that some cone exists.  It fails if a
 natural positivity or spectral realization cannot be recovered from `(2b)` after adding only
 source-derived polarization and topology.
+
+## The first natural phase-II HT realization now exists
+
+The structural period group supplies a topology which the algebraic logarithmic support does not
+remember.  For an integer period submodule `Lambda subset C`, the canonical bounded multiplier
+
+```text
+(I_Lambda x)(lambda)=lambda/(1+|lambda|) x(lambda),
+x in ell^infty(Lambda\{0}),                              (2d)
+```
+
+is always injective and satisfies the exact phase law
+
+```text
+range(I_Lambda) closed
+  iff I_Lambda surjective
+  iff Lambda discrete.                                  (2e)
+```
+
+Every finite nonzero modal restriction is bijective.  If `Lambda` is nondiscrete, however, the
+full range is nonclosed and its closure contains a genuine closure-only target.  This gives an unconditional
+natural example of finite exactness with cofinal nonattainment.
+
+For the generic order-`r` multiple elliptic Gamma source,
+
+```text
+Lambda_r=<1,tau_0,...,tau_r>_Z,
+rank_Q Lambda_r-dim_R C=r.                               (2f)
+```
+
+The independent annihilator theorem gives exact DA transverse constraint depth `r`.  Thus the
+algebraic depth and topological period excess agree throughout the hierarchy.  At theta order
+`r=0`, the period group is a discrete lattice and `(2d)` is exact; for every `r>=1`, rank-three
+period geometry makes it nondiscrete and `(2d)` enters phase II.
+
+This forces a strengthening of the candidate unified object.  It must retain both the DA-relative
+characteristic arrangement and the topology of the source period embedding:
+
+```text
+U_F=(R_source/Ann_DA(F), LogChar_DA(F),
+     Lambda_F -> V_F, source polarization).              (2g)
+```
+
+The algebraic support records which constraints exist.  The topological radical
+`closure(Lambda_F)/Lambda_F` records whether their finite exact solutions assemble to an effective
+global state.  Neither layer determines the other.
+
+> **[CONJECTURE -- TOPOLOGIZED CONSTRAINT-CORONA PRINCIPLE.]**  The common phase-II obstruction
+> seen by continuation, positivity, and spectral realizations is the conservative image of the
+> action of `closure(Lambda_F)/Lambda_F` on the polarized logarithmic characteristic fibre of
+> `(2g)`.  A source-derived splitting, quotient, or coercive annihilation of that action promotes
+> every conservative phase-II realization to exact incidence simultaneously.
+
+This is now falsifiable by comparison, not analogy: two claimed realizations must preserve the
+same module, period embedding, pointing, radical action, and target class.
 
 ## The conjecture
 
@@ -155,6 +212,11 @@ and prove that the named chains preserve the same incidence target.
 6. **Deck-orientation necessity.** Any realization factoring only through the algebraic
    translation character is orientation-blind; an orientation theorem must retain logarithmic
    deck charge or an equivalent source-derived lift.
+7. **Period-excess transition.** In source-minimal transverse hierarchies with no hidden
+   annihilators, positive rational period-rank excess should be exactly the boundary between
+   closed and closure-only unweighted cofinal incidence.
+8. **Finite-test impossibility.** No family of merely finite modal checks can detect this boundary,
+   because every finite nonzero diagonal restriction is exact on both sides.
 
 ## Parent theory and novelty gate
 
@@ -214,10 +276,14 @@ HT theorem exists.  No RH conclusion is claimed here.
 - [x] bold source-canonical conjecture stated
 - [x] natural unpolarized logarithmic characteristic object constructed for multiple Gamma
 - [x] arbitrary cone choice replaced by polarized log-characteristic reconstruction conjecture
+- [x] source-period topology added to the unified object
+- [x] natural closure-only HT incidence example formalized
+- [x] discrete-source closed-image positive class formalized
+- [x] multiple-Gamma transverse depth identified with period-rank excess
 - [x] precise falsifiers and anti-theatre gate stated
 - [x] conic weak-infeasibility parent literature identified
 - [ ] construct a natural HT source cone and realization map
-- [ ] prove one natural closure-only HT example or closed-image theorem
+- [x] prove one natural closure-only HT example or closed-image theorem
 - [ ] prove two realization functors preserve the same cone image
 - [ ] prove source-presentation invariance
 - [ ] obtain independent specialist novelty and significance audit
