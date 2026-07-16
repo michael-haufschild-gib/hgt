@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** THEOREM / COFINAL CARRIER-GRAPH PHASE LAW
 - **Lane:** general hypertranscendence; singular Herglotz carriers; operator-relation geometry
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[CIRCLE GRAPH/UNITARY LAW FORMALIZED UNCONDITIONALLY; REAL-LINE NEVANLINNA/TRANSVERSALITY INPUTS REMAIN] [NOVELTY UNVERIFIED]`
 - **Parents:** `singular-maximal-ht-schur-defect-collapse-law.md`,
   `nevanlinna-boundary-bauer-retract-maximal-ht.md`
 - **Statement:** For a purely singular infinite-support probability measure on the circle, the
@@ -412,9 +412,10 @@ priority and specialist audits remain open.
 
 ## Lean status
 
-Stage 3 is complete relative to the card's explicitly named classical inputs. The project now
-contains exact interfaces for the F. and M. Riesz one-sided density conclusion and the first Szego
-limit conclusion; all deductions from those inputs are checked in Lean.
+The pure-singular circle graph and coherent-unitary conclusions are now unconditional:
+`FAndMRieszVanishing` proves the one-sided density theorem, and `RieszSingularSzegoCollapse` derives
+the singular Szego limit internally. The residual real-line maximal-HT phase still consumes the
+packaged Nevanlinna-family and transversality inputs, so the complete card is not yet Stage 3.
 
 The formal theorem surface is distributed as follows:
 
@@ -452,7 +453,8 @@ only `propext`, `Classical.choice`, and `Quot.sound`.
 - [x] preliminary novelty search
 - [ ] independent specialist proof audit
 - [ ] full primary-source priority audit
-- [x] unconditional Lean formalization of all deductions from the stated classical interfaces
+- [x] unconditional Lean formalization of the circle graph-saturation and coherent-unitary laws
+- [ ] unconditional Nevanlinna-family and transversality construction for the residual real-line phase
 
 ## Log
 

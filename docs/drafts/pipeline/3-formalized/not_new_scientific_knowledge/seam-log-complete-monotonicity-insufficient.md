@@ -1,7 +1,7 @@
 # Seam-Log Complete Monotonicity Is Insufficient
 
 - **ID:** seam-log-complete-monotonicity-insufficient
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / analytic shortcut guardrail
 - **Source:** `seam-log-markov-pick-rh-equivalence.md`
 - **Statement:** Complete monotonicity of the real-axis function `G(-s)` is not enough
@@ -89,7 +89,11 @@ analytic replacement for the Markov/Pick target.
 
 - [x] 0 -> 1 in-progress: complete-monotonicity shortcut isolated.
 - [x] 1 -> 2 fully-proven: explicit completely monotone non-Stieltjes example.
-- [ ] 2 -> 3 formalized: finite derivative and determinant checks.
+- [x] 2 -> 3 formalized: analyticity, all alternating derivative signs, reciprocal-factorial
+  Taylor coefficients, the negative Hankel determinant, and nonexistence of a positive
+  representing measure are proved by
+  `exists_analytic_strictlyCompletelyMonotone_nonStieltjesTaylor` in
+  `formal/GaloisForLFunctions/HTGeometry/HankelGuardrailCounterexamples.lean`.
 
 ## Log
 

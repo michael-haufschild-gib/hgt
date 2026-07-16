@@ -2,7 +2,11 @@
 
 - **ID:** tate-prime-rigidity
 - **Stage:** 0-backlog-lean
-- **Type:** THEOREM (paper, structural) + CONJECTURE (the apex)
+- **Type:** THEOREM (paper, structural). This ticket claims ONLY the proven backbone
+  (§1 decomposition given #11, §2 operational definition, §3 rigidity in the two instances +
+  D2-unification). The apex — the general independence / maximal non-splitting — is **not part
+  of this ticket**: it is delegated to its own open cards (`bigraded-corank-dss-cross`,
+  `baker-for-stieltjes`); §4 is a pointer, not a claim.
 - **Grade:** BRIDGE (substrate) — unifies #101/#117/#124 under one K-non-splitting (D2-load-bearing).
 - **Source:** ../../door/bucket-new-sibling-conjectures.md (#69 SEED-M), bucket-the-seam-archimedean-obstruction.md
   · 00-status row #101. Built on the **proven** DSS reduction (#11), `exponential-period-dss-cross` (DeWitt),
@@ -64,13 +68,14 @@ inseparability:
 Erase the K-framework and the three look like unrelated facts (a gluing cohomology fact, a Padé-isolation
 fact, a period-decomposition fact); under it they are one — substrate-load-bearing, not a relabel. ∎(§3)
 
-## §4 What stays open — the apex
+## §4 Delegated apex — NOT claimed by this ticket
 The **general** rigidity across *all* secular coordinates — equivalently the full transcendental
 independence `B_mot` ⟂ `B_wild` (the blocks ℚ-algebraically free, the K-extension non-split in the strong
-sense of maximal `corank^{exp}`) — is the **DSS-cross relative apex** (`bigraded-corank-dss-cross`,
-`baker-for-stieltjes`): `{γ_n}` alg-indep over `𝓡 = 𝒫·ℚ({log p})`. **open.** This card proves
-the weld is non-split *in the two instances* and gives the operational meaning; it does **not** claim the
-general independence.
+sense of maximal `corank^{exp}`) — is the **DSS-cross relative apex**: `{γ_n}` alg-indep over
+`𝓡 = 𝒫·ℚ({log p})`. **open.** Per the 2026-06-19 Leaner return, the apex is **split out of this
+ticket**: it lives as its own open cards (`bigraded-corank-dss-cross.md`, `baker-for-stieltjes.md`)
+and no part of it is asserted here. This card proves the weld is non-split *in the two instances*
+and gives the operational meaning; the general independence is a cross-reference only.
 
 ## Door passport — BRIDGE (substrate)
 - **Door-3:** the weld (the `B_mot ⊕ B_wild` decomposition + its non-splitting class) is a native invariant
@@ -115,3 +120,12 @@ Returned from `2-fully-proven` to `0-backlog-lean` because the ticket is not a s
 Defect: the metadata states `Type: THEOREM (paper, structural) + CONJECTURE (the apex)`, and §4 explicitly leaves the general transcendental independence / maximal non-splitting statement open as the DSS-cross relative apex. The card proves only two non-splitting instances plus a unification, not the full apex content in the same ticket.
 
 Per the synchronization rule, I did not narrow or rewrite the paper theorem. Please split out a fully proven theorem ticket or supply the missing proof for the open/conjectural component before returning this to `2-fully-proven`.
+
+## Split note — 2026-07-16 (resolves the Leaner return)
+
+The Leaner return asked to split the fully proven theorem from the open/conjectural component.
+Done, in place: the ticket's **Type is now THEOREM only** (header), covering exactly the backbone
+§1–§3; the apex is **delegated** to its existing open cards (`bigraded-corank-dss-cross.md`,
+`baker-for-stieltjes.md`) and §4 is demoted from co-claimed CONJECTURE to a cross-reference.
+No new ticket was needed — the apex already has its own cards. The paper theorem was not narrowed:
+§1–§3 are word-for-word the content DeWitt banked on 2026-06-19.

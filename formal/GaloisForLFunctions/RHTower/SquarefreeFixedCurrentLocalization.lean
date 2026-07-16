@@ -32,7 +32,7 @@ def completedSquarefreeFixedCurrent (s : ℂ) : ℂ :=
 theorem squarefreePartition_ne_zero {s : ℂ} (hs : 1 < s.re) :
     squarefreePartition s ≠ 0 := by
   have h2re : 1 < (2 * s).re := by
-    norm_num only [mul_re, ofNat_re, ofNat_im, zero_mul, sub_zero]
+    norm_num only [mul_re, Complex.re_ofNat, Complex.im_ofNat, zero_mul, sub_zero]
     linarith
   exact div_ne_zero (riemannZeta_ne_zero_of_one_lt_re hs)
     (riemannZeta_ne_zero_of_one_lt_re h2re)
@@ -44,12 +44,12 @@ theorem differentiableAt_squarefreePartition {s : ℂ} (hs : 1 < s.re) :
     rw [h] at hs
     norm_num at hs
   have h2re : 1 < (2 * s).re := by
-    norm_num only [mul_re, ofNat_re, ofNat_im, zero_mul, sub_zero]
+    norm_num only [mul_re, Complex.re_ofNat, Complex.im_ofNat, zero_mul, sub_zero]
     linarith
   have h2one : 2 * s ≠ 1 := by
     intro h
     have hre := congrArg Complex.re h
-    norm_num only [mul_re, ofNat_re, ofNat_im, zero_mul, sub_zero, one_re] at hre
+    norm_num only [mul_re, Complex.re_ofNat, Complex.im_ofNat, zero_mul, sub_zero, one_re] at hre
     linarith
   unfold squarefreePartition
   exact (differentiableAt_riemannZeta hs1).div
@@ -65,24 +65,32 @@ theorem neg_logDeriv_squarefreePartition_eq_squarefreeFixedCurrent
     rw [h] at hs
     norm_num at hs
   have h2re : 1 < (2 * s).re := by
-    norm_num only [mul_re, ofNat_re, ofNat_im, zero_mul, sub_zero]
+    norm_num only [mul_re, Complex.re_ofNat, Complex.im_ofNat, zero_mul, sub_zero]
     linarith
   have h2one : 2 * s ≠ 1 := by
     intro h
     have hre := congrArg Complex.re h
-    norm_num only [mul_re, ofNat_re, ofNat_im, zero_mul, sub_zero, one_re] at hre
+    norm_num only [mul_re, Complex.re_ofNat, Complex.im_ofNat, zero_mul, sub_zero, one_re] at hre
     linarith
   have hzs : riemannZeta s ≠ 0 := riemannZeta_ne_zero_of_one_lt_re hs
   have hz2 : riemannZeta (2 * s) ≠ 0 := riemannZeta_ne_zero_of_one_lt_re h2re
   have hds : DifferentiableAt ℂ riemannZeta s := differentiableAt_riemannZeta hs1
   have hd2 : DifferentiableAt ℂ (fun z : ℂ => riemannZeta (2 * z)) s :=
     (differentiableAt_riemannZeta h2one).comp s (by fun_prop)
-  rw [squarefreePartition, logDeriv_div s hzs hz2 hds hd2]
+  change -logDeriv (fun z : ℂ => riemannZeta z / riemannZeta (2 * z)) s =
+    squarefreeFixedCurrent s
+  rw [logDeriv_div (f := riemannZeta) (g := fun z : ℂ => riemannZeta (2 * z))
+    s hzs hz2 hds hd2]
   have hcomp : logDeriv (fun z : ℂ => riemannZeta (2 * z)) s =
       2 * logDeriv riemannZeta (2 * s) := by
-    rw [logDeriv_comp (differentiableAt_riemannZeta h2one) (by fun_prop)]
-    have hderiv : deriv (fun z : ℂ => 2 * z) s = 2 := by fun_prop
-    rw [hderiv]
+    have hchain := logDeriv_comp (f := riemannZeta) (g := fun z : ℂ => 2 * z)
+      (differentiableAt_riemannZeta h2one) (show DifferentiableAt ℂ (fun z : ℂ => 2 * z) s by
+        fun_prop)
+    change logDeriv (fun z : ℂ => riemannZeta (2 * z)) s =
+      logDeriv riemannZeta (2 * s) * deriv (fun z : ℂ => 2 * z) s at hchain
+    have hderiv : deriv (fun z : ℂ => 2 * z) s = 2 := by simp
+    rw [hderiv] at hchain
+    linear_combination hchain
   rw [hcomp]
   simp only [squarefreeFixedCurrent, RHTower.infinitePrimeFlux]
   ring
@@ -92,11 +100,12 @@ theorem differentiableAt_infinitePrimeFlux_two_mul
     {s : ℂ} (hs : 1 / 2 < s.re) :
     DifferentiableAt ℂ (fun z : ℂ => RHTower.infinitePrimeFlux (2 * z)) s := by
   have h2re : 1 < (2 * s).re := by
-    norm_num only [mul_re, ofNat_re, ofNat_im, zero_mul, sub_zero]
+    norm_num only [mul_re, Complex.re_ofNat, Complex.im_ofNat, zero_mul, sub_zero]
     linarith
-  have houter := RHTower.differentiableAt_neg_logDeriv_riemannZeta_of_one_lt_re h2re
-  have hcomp := houter.comp s (show DifferentiableAt ℂ (fun z : ℂ => 2 * z) s by fun_prop)
-  simpa [RHTower.infinitePrimeFlux, logDeriv_apply] using hcomp
+  have houter : DifferentiableAt ℂ RHTower.infinitePrimeFlux (2 * s) := by
+    simpa only [RHTower.infinitePrimeFlux, logDeriv_apply, neg_div] using
+      RHTower.differentiableAt_neg_logDeriv_riemannZeta_of_one_lt_re h2re
+  exact houter.comp s (show DifferentiableAt ℂ (fun z : ℂ => 2 * z) s by fun_prop)
 
 /-- On the Euler region, the coefficient-two completed Xi current differs from the completed
 squarefree current by exactly the strict-right holomorphic correction `4 A(2s)`. -/
@@ -130,9 +139,11 @@ theorem deriv_squarefreeBoundaryOverlap_eq_neg_mul_fixedCurrent
     (differentiableAt_squarefreePartition hshift).hasDerivAt
   have hinner : HasDerivAt (fun v : ℂ => sigma + v * epsilon) epsilon u := by
     convert (hasDerivAt_const (x := u) (c := sigma)).add
-      ((hasDerivAt_id u).mul_const epsilon) using 1 <;> ring
+      ((hasDerivAt_id u).mul_const epsilon) using 1
+    all_goals ring
   have hcomp : HasDerivAt (fun v : ℂ => squarefreePartition (sigma + v * epsilon))
-      (deriv squarefreePartition s * epsilon) u := houter.comp u hinner
+      (deriv squarefreePartition s * epsilon) u := by
+    simpa only [s] using houter.comp u hinner
   have hquot : HasDerivAt (squarefreeBoundaryOverlap sigma epsilon)
       ((deriv squarefreePartition s * epsilon) / squarefreePartition sigma) u := by
     simpa [squarefreeBoundaryOverlap] using hcomp.div_const (squarefreePartition sigma)
@@ -140,9 +151,15 @@ theorem deriv_squarefreeBoundaryOverlap_eq_neg_mul_fixedCurrent
   have hlog := neg_logDeriv_squarefreePartition_eq_squarefreeFixedCurrent hshift
   rw [logDeriv_apply] at hlog
   have hsne : squarefreePartition s ≠ 0 := squarefreePartition_ne_zero hshift
-  field_simp [hden, hsne] at hlog ⊢
-  simp only [s] at hlog ⊢
-  linear_combination -epsilon * squarefreePartition sigma * hlog
+  have hratio : deriv squarefreePartition s / squarefreePartition s =
+      -squarefreeFixedCurrent s := by
+    linear_combination -hlog
+  have hderiv : deriv squarefreePartition s =
+      -squarefreeFixedCurrent s * squarefreePartition s :=
+    (div_eq_iff hsne).mp hratio
+  rw [hderiv]
+  simp only [s, squarefreeBoundaryOverlap]
+  field_simp [hden]
 
 /-- Division-free Fisher numerator identity. -/
 theorem epsilon_mul_overlap_mul_fixedCurrent_eq_neg_deriv

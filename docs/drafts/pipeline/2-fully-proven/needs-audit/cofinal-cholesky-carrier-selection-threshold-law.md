@@ -920,15 +920,11 @@ Thus the paper's global incidence-ring dimension estimate is now unconditional L
 algebraic/Whitney stratification, projection control, and smooth parametric transversality remain
 unformalized.
 
-The unconditional module
-`GaloisForLFunctions.HTGeometry.RieszBrothersRieszFischer` formalizes the Riesz--Fischer step in
-the graph-saturation proof. It transports the Fourier Hilbert basis from the additive circle to
+`GaloisForLFunctions.HTGeometry.RieszBrothersRieszFischer` formalizes the Riesz--Fischer reduction
+in the graph-saturation proof. It transports the Fourier Hilbert basis from the additive circle to
 the multiplicative circle, extends every square-summable analytic half-line by zero to an
 `ℓ²(ℤ)` sequence, and constructs an `L²` circle function with exactly the prescribed analytic
-monomial coefficients. It then proves that the paper's square-summable Riesz-brothers conclusion
-follows from the classical vanishing-half-line F. and M. Riesz statement. Thus coefficient
-reconstruction and the density-measure algebra are closed; the vanishing-half-line theorem itself
-remains the analytic core and graph saturation is not yet counted as unconditional.
+monomial coefficients.
 
 The unconditional module
 `GaloisForLFunctions.HTGeometry.AnalyticPolynomialHardyFactorization` now closes the finite
@@ -936,9 +932,7 @@ factorization step in the F. and M. Riesz proof. For every nonzero complex polyn
 the open-disk zeros into a literal finite Blaschke factor, proves the complementary outerization
 is zero-free on the open disk, and constructs holomorphic factors `p = g h`. With no unit-circle
 zeros, the factors extend through the boundary and satisfy the exact identities
-`|g|^2 = |h|^2 = |p|` there. The remaining Riesz core is the bounded-Hardy compactness passage
-from these finite factorizations to the limiting analytic measure, followed by Fourier
-identification; it is no longer hidden behind the project interface.
+`|g|^2 = |h|^2 = |p|` there.
 
 The unconditional modules
 `GaloisForLFunctions.HTGeometry.HardyCoefficientBound`,
@@ -955,9 +949,14 @@ convolution, and proves the uniform estimate
 boundaryL1(P_N) <= integral |f| dmu + integral |g| dnu.
 ```
 
-The remaining F. and M. Riesz core is therefore the sequential compactness passage for these
-uniformly bounded `ℓ²` factor coefficients, multiplication of the limiting coefficient series,
-and uniqueness of the resulting complex circle measure from all Fourier coefficients.
+`HardyCoefficientCompactness`, `FAndMRieszHardyCompactness`, `CircleRieszFischerFourier`, and
+`HardyProductConvolution` close the sequential compactness and limiting-product layer.
+`CircleFourierDensityUniqueness` proves Laurent-moment uniqueness for finite positive measures,
+real signed density measures, and complex density-measure differences. Finally,
+`FAndMRieszVanishing` proves the vanishing-half-line F. and M. Riesz conclusion for every finite
+circle measure, with no classical-interface hypothesis. Thus the Riesz-brothers graph-saturation
+input is now unconditional Lean. This closes the former Riesz analytic boundary; it does not close
+the separate Nevanlinna-family and finite-dimensional transversality boundaries of this card.
 
 The unconditional modules `GaloisForLFunctions.HTGeometry.AtomlessProbabilityLaws` and
 `CircleAtomlessProbabilityLaws` formalize the first half of the paper's residual
@@ -1062,46 +1061,29 @@ transform. Compact-patch density, actual Nevanlinna-image identification, the
 singular-continuous/HT intersection in the positive chart, and the relative carrier capstone are
 therefore closed in Lean.
 
-The classical N-extremal source
-is now matched convention-by-convention by `NevanlinnaClassicalInterface`; its existence for an
-indeterminate Hamburger sequence remains a cited classical theorem rather than a Lean reproof.
-The Riesz-brothers and Szegő boundaries are isolated at their exact
-classical conclusions: one-sided square-summable Fourier coefficients imply absolute continuity,
-and consecutive Toeplitz-determinant ratios tend to the Szegő geometric mean. From those exact
-leaves, Lean now proves graph saturation, analytic-polynomial completeness, ratio-to-root collapse,
-least-eigenvalue collapse, and normalized-determinant and Euclidean-operator-norm escape.
+The classical N-extremal source is matched convention-by-convention by
+`NevanlinnaClassicalInterface`; its existence for an indeterminate Hamburger sequence remains an
+unproved Lean obligation. The Riesz-brothers boundary is no longer external:
+`FAndMRieszVanishing` proves the required one-sided density theorem, and
+`RieszSingularSzegoCollapse` derives the singular Szegő limit internally from analytic-polynomial
+completeness. Lean therefore proves graph saturation, analytic-polynomial completeness,
+ratio-to-root collapse, least-eigenvalue collapse, and normalized-determinant and
+Euclidean-operator-norm escape without a Riesz or singular-Szegő interface hypothesis.
 The unitary carrier realization is now closed: Lean proves that the finite canonical frames
 synthesize orthonormal polynomial families, leading-principal coherence stabilizes every row, the
-stable diagonal rows have exactly the analytic-monomial span, and the Riesz-brothers input upgrades
-them to a Hilbert basis and unitary `ell^2 -> L^2(mu)`. The classical source theorems
-themselves need not be reproved in Lean for publication, but every original deduction from their
-exact hypotheses must be axiom-free.
+stable diagonal rows have exactly the analytic-monomial span, and F. and M. Riesz upgrades them to
+a Hilbert basis and unitary `ell^2 -> L^2(mu)`.
 
-Formalization audit (needs-audit pass): the listed modules are confirmed present in the tree and
-spot-checked axiom-clean. The remaining literature inputs are classical theorems absent from
-mathlib. The exact Riesz-brothers density conclusion is matched by Yafaev's formulation of the
-classical theorem, and the exact determinant-ratio conclusion is matched by Lyons's extended
-Szegő theorem; neither theorem is reproved in Lean. `SzegoFirstLimitInterface` represents the
-classical target as the geometric mean of the actual Radon--Nikodym derivative of the absolutely
-continuous part, including the standard zero convention. Lean proves that singularity makes this
-density vanish almost everywhere and therefore makes the geometric mean and determinant-ratio
-limit vanish. The old specialized external predicate that assumed the zero ratio directly has
-been removed. The `PureSingularCarrierTrichotomy` capstone contains every original deduction from
-these two exact inputs through frame escape. `PureSingularCarrierUnitary` contains the remaining
-original unitary-carrier deductions and constructs the unitary directly from the coherent finite
-inverse-Cholesky tower rather than from an unrelated limiting choice.
-The indeterminate-Hamburger Nevanlinna-family construction remains an exact source-faithful
-external interface; every project-specific deduction from it is formalized. Bernstein--Szegő
-finite-prefix reproduction is no longer an external input: the
-project proves it unconditionally by stable-terminal feedback reconstruction.
-No project-specific differential-genericity deduction remains outside Lean. The two general
-geometry inputs are isolated exactly as proper-projective-image/Whitney stratification and smooth
-finite-dimensional parametric avoidance. Reproving those general classical theorems in Lean would
-strengthen the verification base but is not part of the paper's new contribution. The remaining
-paper-status work is an independent specialist proof and priority audit, exact source matching for
-each classical interface, and, if the opening global residual statement is to be machine-checked
-as one declaration rather than assembled from the relative capstone, a final weak-topology gluing
-theorem on the entire carrier range.
+Formalization audit (needs-audit pass): the circle Fourier-density theorem, singular Szegő collapse,
+graph saturation, frame escape, and coherent unitary construction are now unconditional and
+axiom-clean. `PureSingularCarrierTrichotomy` and `PureSingularCarrierUnitary` contain the downstream
+carrier deductions, and `FAndMRieszVanishing` discharges their former analytic input.
+The indeterminate-Hamburger Nevanlinna-family construction remains a source-faithful interface, not
+an unconditional theorem. The two general geometry inputs also remain packaged as
+proper-projective-image/Whitney stratification and smooth finite-dimensional parametric avoidance.
+All three must be constructed in Lean before this card can move to Stage 3 under the unconditional
+proof rule. Bernstein--Szegő finite-prefix reproduction is already unconditional through
+stable-terminal feedback reconstruction.
 
 ## Gates
 
@@ -1113,6 +1095,7 @@ theorem on the entire carrier range.
 - [x] spectral type held fixed in the prefix chart
 - [x] complete tower proved injective and topologically faithful
 - [x] pure-singular graph saturation imported with exact scope
+- [x] F. and M. Riesz and the singular Szegő collapse formalized unconditionally
 - [x] unique divergent unitary repair assembled in Lean from exact classical scope
 - [x] residual singular-continuous probability phase on `P(T)` formalized unconditionally
 - [x] projective probability phase transported as dense `G_delta` to the exact carrier range
@@ -1126,6 +1109,9 @@ theorem on the entire carrier range.
 - [ ] independent specialist proof audit
 - [ ] full primary-source priority audit
 - [ ] exact primary-source match for every literature theorem interface
+- [ ] unconditional construction of the classical N-extremal Nevanlinna family
+- [ ] unconditional proper-projective-image / Whitney-stratification theorem
+- [ ] unconditional finite-dimensional stratified parametric-avoidance theorem
 - [x] axiom-free Lean formalization of every original deduction in the relative paper capstone
 - [x] single-declaration weak-topology gluing of the global carrier-range residual phase
 

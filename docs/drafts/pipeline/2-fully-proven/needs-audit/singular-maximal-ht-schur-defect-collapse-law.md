@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** THEOREM / COFINAL DOUBLE-BOUNDARY LAW
 - **Lane:** general hypertranscendence; singular Herglotz carriers; Schur geometry
-- **Scientific status:** `[PROVED HERE] [LEAN 4 FORMALIZED] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[CIRCLE LAW FORMALIZED UNCONDITIONALLY; REAL-LINE NEVANLINNA/TRANSVERSALITY INPUTS REMAIN] [NOVELTY UNVERIFIED]`
 - **Parents:** `spectral-type-stratified-moment-fiber-maximal-ht.md`,
   `nevanlinna-boundary-bauer-retract-maximal-ht.md`,
   `pick-defect-finite-selector-maximal-ht-phase-law.md`
@@ -452,10 +452,10 @@ not proved.
 
 ## Lean status
 
-Formalized unconditionally at the theorem's two natural carrier interfaces. The circle-side
-double-boundary theorem is
-`HTGeometry.singularSchurDefect_doubleBoundary_of_rieszBrothers`; the real-line canonical Bauer
-simplex phase is
+The circle-side double-boundary theorem is now unconditional: `FAndMRieszVanishing` proves the
+one-sided density theorem consumed by
+`HTGeometry.singularSchurDefect_doubleBoundary_of_rieszBrothers`. The real-line canonical Bauer
+simplex phase is still stated from the packaged Nevanlinna/transversality inputs in
 `ClassicalAnalyticNevanlinnaCarrierFamily.cofinalCholeskyResidualPhase_dense_gdelta_residual`, with
 the pointwise singular-continuous/maximal-translation conclusion supplied by
 `cofinalCholeskyResidualPhase_isSingularContinuous_maximalTranslation`.
@@ -473,13 +473,13 @@ The new circle formalization constructs literal Bernstein--Szego probability mea
 - locally uniform convergence of those genuine transforms on every closed subdisk;
 - singular small-aperture concentration and divergence of every finite superlinear `L^p` norm.
 
-The principal implementation modules are
+The principal circle implementation modules are
 `HTGeometry.BernsteinSzegoProbabilityApproximation`,
 `HTGeometry.CircleCaratheodoryApproximation`,
 `HTGeometry.BernsteinSzegoCaratheodoryRational`, and
-`HTGeometry.SingularSchurDefectCollapse`. The classical analytic theorem boundary is explicit in
-the `HasRieszBrothersDensityConclusion` hypothesis; no axiom, `sorry`, or hidden RH assumption is
-introduced. The real-line-to-circle Cayley normalization is represented by the existing
+`HTGeometry.SingularSchurDefectCollapse`. The former
+`HasRieszBrothersDensityConclusion` boundary is discharged by `HTGeometry.FAndMRieszVanishing`.
+The real-line-to-circle Cayley normalization is represented by the existing
 `realCayley`/`circleCayley` infrastructure, while the promoted capstone deliberately states its
 measure theorem directly on the circle and its residual carrier theorem directly on the real line;
 it does not pretend these distinct carrier types are definitionally identical.
@@ -504,8 +504,8 @@ Verification: direct leaf checks and targeted module builds passed; `#print axio
 - [x] preliminary novelty search
 - [ ] independent specialist proof audit
 - [ ] full primary-source priority audit
-- [x] unconditional Lean formalization of the circle double-boundary law and the residual real-line
-      carrier phase, at their exact natural interfaces
+- [x] unconditional Lean formalization of the circle double-boundary law
+- [ ] unconditional Nevanlinna-family and transversality construction for the residual real-line phase
 
 ## Log
 

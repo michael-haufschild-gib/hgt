@@ -1,7 +1,7 @@
 # Seam-Log Coefficient Positivity Is Insufficient
 
 - **ID:** seam-log-coefficient-positivity-insufficient
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / analytic shortcut guardrail
 - **Source:** `seam-log-markov-pick-rh-equivalence.md`
 - **Statement:** Nonnegativity of all Taylor coefficients of the seam-log Markov
@@ -94,7 +94,10 @@ property.
 
 - [x] 0 -> 1 in-progress: coefficient-positivity shortcut isolated.
 - [x] 1 -> 2 fully-proven: explicit positive-coefficient non-moment sequence.
-- [ ] 2 -> 3 formalized: finite determinant calculation.
+- [x] 2 -> 3 formalized: the positive sequence, positive-radius convergence witness, negative
+  Hankel determinant, and nonexistence of a positive representing measure are proved by
+  `exists_positiveCoefficient_summable_not_momentSequence` in
+  `formal/GaloisForLFunctions/HTGeometry/HankelGuardrailCounterexamples.lean`.
 
 ## Log
 
