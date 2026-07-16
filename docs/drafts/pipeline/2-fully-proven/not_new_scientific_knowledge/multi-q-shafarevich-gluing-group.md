@@ -289,3 +289,17 @@ statement, not only the fixed-point core — in
   Lean form (per `tate-prime-rigidity`, now 3-formalized).
 Still unformalized: nonabelian `H¹`, the `Ш` definition, Procesi/character-variety, and the C5★
 coboundary-regularity identification.
+
+## Lean anchor update 2 — 2026-07-16 (Fable)
+
+The R3-corrected **arithmetic residue** ("the diagonal `m·ℓ`-division regularity") now has its
+qualitative floor in Lean, `formal/GaloisForLFunctions/HTGeometry/DiagonalModeDivision.lean`:
+the mode-by-mode coboundary division `g_m = (a)_m/(w(m)−1)` is formalized as
+`diagonal_mode_division` with `diagonalWeight_eq_one_iff` guaranteeing the divisor never
+vanishes (`m·ℓ ≠ 0`, `modeFrequency_ne_zero` — the per-prime "no small divisors" and the joint
+no-resonance both live here), and `no_diagonal_equivariant_retraction` shows the single diagonal
+dilation already forbids an equivariant ring retraction `𝒪 → ℂ`. The quantitative (Baker,
+combination-mode summability) layer stays paper-tier per
+`combination-mode-reducibility-baker-bridge.md` — note the C5★ pointer in this card refers to a
+conjecture since REFUTED (`5-failed/combination-mode-baker-reducibility.md`); the surviving
+content is Lemma R, whose (i)-half is the part now formalized.

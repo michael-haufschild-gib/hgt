@@ -1,8 +1,9 @@
 # Joint freeness of the factorial scale and inverse-Gamma pole branches
 
 - **ID:** `gamma-inverse-branch-scale-freeness`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper + Lean)
+- **Lean:** `formal/GaloisForLFunctions/HTGeometry/GammaInversePoleBranchScaleFreeness.lean`
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED]`
 - **Statement:** Let
 
@@ -100,10 +101,28 @@ For `w=-1/T` and `z=-n+s_nB_n(T)`, set `q_n(T)=1/B_n'(T)`.  Then
 Joint scale-branch freeness separates the highest derivative-weight component exactly; branch
 freeness then supplies the generic time-change jets which restore the depth-shifted coordinate.
 
+## Formal surface
+
+The Lean module proves the finite weighted scale--harmonic embedding injective without assuming
+that the scale is invertible: it factors the variable weighting through diagonal scaling over an
+integral domain.  It then lifts the existing Bell, multiplicative-inverse, and compositional-
+inverse coordinate maps while fixing the distinguished scale variable.  The exported headline is
+
+```text
+algebraicIndependent_gammaPoleScaleAndInverseBranchCoefficientFamily
+```
+
+for the `Option ℕ`-indexed family whose head is `reciprocalSignedFactorialGerm` and whose tail is
+`gammaInversePoleBranchCoefficientGerm`.
+
+The cached leaf build
+`lake build +GaloisForLFunctions.HTGeometry.GammaInversePoleBranchScaleFreeness` passes.  A separate
+`#print axioms` audit of the logarithmic, actual-unit, and final inverse-branch theorems reports only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
 ## Gates
 
 - [x] 0 → 1 in-progress: exact obstruction and finite-prefix coordinate map isolated
 - [x] 1 → 2 fully-proven: birational coordinate proof complete
-- [ ] 2 → 3 formalized: joint countable theorem in Lean with direct checks and axiom audit
+- [x] 2 → 3 formalized: joint countable theorem in Lean with direct checks and axiom audit
 - [ ] 3 → 4 publication-ready: specialist priority audit and integration into the iterate theorem
-

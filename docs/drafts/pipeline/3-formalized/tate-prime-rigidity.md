@@ -169,3 +169,22 @@ No new ticket was needed — the apex already has its own cards. The paper theor
   Baker-floor is reachable WITHOUT Baker. Next generative move: the same weight-kill mechanism
   applied to the `Ш_arith`/C5★ layer — formalize the diagonal `m·ℓ`-division as the weight of the
   combination-mode lane, making C5★ a third instance of the same non-splitting.
+- 2026-07-16 (Fable, second pass) — executed the recorded next move: the **third instance** is in
+  Lean. `formal/GaloisForLFunctions/HTGeometry/DiagonalModeDivision.lean` (unconditional, baseline
+  axioms): `modeFrequency` (`m·ℓ = Σ m_p log p`) with `modeFrequency_eq_zero_iff` /
+  `modeFrequency_ne_zero` (no resonances — Lemma R(i) of
+  `combination-mode-reducibility-baker-bridge`, UFD floor, no Hermite/Baker input);
+  `log_diagonalWeightReal` (the weight of the combination-mode lane IS `e^{-m·ℓ}`);
+  `diagonalWeight_eq_one_iff`; `diagonal_mode_division` (the coboundary division `(δ−id)g = χ_m`
+  solved with explicit nonvanishing divisor `w(m)−1` — the diagonal m·ℓ-division of #117's R3
+  arithmetic residue, qualitative tier); `diagonal_equivariant_kills_mode` and
+  `no_diagonal_equivariant_retraction` (the single diagonal dilation alone forbids the splitting),
+  both through the SAME `equivariant_linear_kills_scaled`. The weld now has **three instances of
+  one mechanism** in Lean: per-prime lane (#117 face), weight-one Taylor lane (#124 Tier-1 face),
+  combination-mode lane (Lemma-R(i) face). NOT claimed: the quantitative small-divisor tier
+  (Baker–Wüstholz effective bound) — classical import, open in Lean; and note C5★-as-reducibility
+  itself is REFUTED (5-failed) — the third instance formalizes the *proven residue* (Lemma R(i) +
+  division + non-splitting), not the refuted conjecture. Next generative move: the mixed-sign
+  near-resonance ladder (`2^19/3^12`-type modes) as a *quantitative* invariant — formalize the
+  Dirichlet-pigeonhole Part-1 no-go (`|m·ℓ|` exponentially small along unbounded support), giving
+  the weld's rigidity a two-sided profile: divisors never vanish, yet cannot be uniformly bounded.

@@ -80,3 +80,20 @@ the Weil explicit formula, to a prime-side `Σm_p\log p≈0` that Baker forbids 
   unbounded-support no-go: `(\log p)_∞` not polynomially Diophantine, uniform Baker degrades super-exp), the
   **support-≤d** structural lemma, and the **RH-blind verdict** (`σ>¾` threshold integer-gap-driven;
   reducibility⟺RH refuted; RH relocated to single-orbit positivity). Grade BRIDGE.
+
+## Lean anchor — 2026-07-16 (Fable)
+
+Lemma R(i) and the mode-division equation are formalized, unconditional (baseline axioms, no
+`sorry`), in `formal/GaloisForLFunctions/HTGeometry/DiagonalModeDivision.lean`:
+- `modeFrequency_eq_zero_iff` / `modeFrequency_ne_zero` — `m·ℓ ≠ 0` for every nonzero mode
+  (the "ĥ(m) is defined" half of Lemma R), via `ℚ`-linear independence of prime logs.
+- `log_diagonalWeightReal`, `diagonalWeight_eq_one_iff` — the diagonal time-one weight of the
+  mode lane is `e^{-m·ℓ}`, equal to `1` only at `m = 0`.
+- `diagonal_mode_division` — the cohomological division `(δ − id) g = χ_m` solved mode-by-mode
+  with explicit divisor `w(m) − 1 ≠ 0`, on the secular Laurent algebra.
+- `diagonal_equivariant_kills_mode`, `no_diagonal_equivariant_retraction` — the non-splitting
+  consequence, through the shared weld mechanism (`equivariant_linear_kills_scaled`).
+NOT formalized (and not claimable unconditionally in Lean today): Lemma R(ii) — the
+Baker–Wüstholz effective lower bound `|m·ℓ| ≥ γ·H(m)^{-κ}` — and the Part-1 pigeonhole no-go;
+these remain classical-import / paper-tier. The formalized floor is exactly the
+unique-factorization half the card marks as (i).

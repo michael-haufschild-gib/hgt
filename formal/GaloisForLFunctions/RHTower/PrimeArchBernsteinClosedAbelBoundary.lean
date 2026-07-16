@@ -37,22 +37,33 @@ theorem tendsto_rpow_inv_natCast_of_exactExponentialExponentAtNatInfinity
   apply tendsto_order.2
   constructor
   · intro a haE
-    by_cases ha : a ≤ 0
-    · filter_upwards with n
-      exact lt_of_le_of_lt ha (Real.rpow_pos_of_nonneg (hf n) (by positivity))
-    · have ha0 : 0 < a := lt_of_not_ge ha
-      have hbelow := hE.2.2 a ha0 haE
-      have hlarge : ∀ᶠ n : ℕ in atTop, 1 < f n / a ^ n :=
-        hbelow.eventually_gt_atTop 1
-      filter_upwards [hlarge, eventually_ge_atTop 1] with n hn hnone
-      have han : 0 < a ^ n := pow_pos ha0 n
-      have hpow : a ^ n < f n := (lt_div_iff₀ han).mp hn
-      have hinv : 0 < (n : ℝ)⁻¹ := inv_pos.mpr (by exact_mod_cast hnone)
-      calc
-        a = (a ^ n) ^ ((n : ℝ)⁻¹) :=
-          (rpow_inv_natCast_pow_eq ha0 hnone).symm
-        _ < (f n) ^ ((n : ℝ)⁻¹) :=
-          Real.rpow_lt_rpow (pow_nonneg ha0.le n) hpow hinv
+    let c : ℝ := (max a 0 + E) / 2
+    have hmaxE : max a 0 < E := (max_lt_iff.mpr ⟨haE, hE.1⟩)
+    have hc0 : 0 < c := by
+      dsimp only [c]
+      have hmax0 : 0 ≤ max a 0 := le_max_right _ _
+      linarith
+    have hac : a < c := by
+      dsimp only [c]
+      have hamax : a ≤ max a 0 := le_max_left _ _
+      linarith
+    have hcE : c < E := by
+      dsimp only [c]
+      linarith
+    have hbelow := hE.2.2 c hc0 hcE
+    have hlarge : ∀ᶠ n : ℕ in atTop, 1 < f n / c ^ n :=
+      hbelow.eventually_gt_atTop 1
+    filter_upwards [hlarge, eventually_ge_atTop 1] with n hn hnone
+    have hcn : 0 < c ^ n := pow_pos hc0 n
+    have hpow : c ^ n < f n := by
+      simpa only [one_mul] using (lt_div_iff₀ hcn).mp hn
+    have hinv : 0 < (n : ℝ)⁻¹ := inv_pos.mpr (by exact_mod_cast hnone)
+    calc
+      a < c := hac
+      _ = (c ^ n) ^ ((n : ℝ)⁻¹) :=
+        (rpow_inv_natCast_pow_eq hc0 hnone).symm
+      _ < (f n) ^ ((n : ℝ)⁻¹) :=
+        Real.rpow_lt_rpow (pow_nonneg hc0.le n) hpow hinv
   · intro b hEb
     have hb0 : 0 < b := hE.1.trans hEb
     have habove := hE.2.1 b hEb
@@ -79,12 +90,11 @@ theorem tendsto_primeArchEndpointBernsteinPurity_rpow_inv_natCast
 private lemma not_summable_const_div_nat_add_one {c : ℝ} (hc : 0 < c) :
     ¬ Summable (fun n : ℕ => c / (n + 1 : ℝ)) := by
   intro h
-  have hone : Summable (fun n : ℕ => 1 / (n + 1 : ℝ)) := by
-    apply Summable.of_norm_bounded_eventually h
-    filter_upwards with n
-    rw [Real.norm_of_nonneg (one_div_nonneg.mpr (by positivity)),
-      Real.norm_of_nonneg (div_nonneg hc.le (by positivity))]
-    exact (le_div_iff₀ hc).2 (by ring_nf; positivity)
+  have hscaled : Summable
+      (fun n : ℕ => (1 / c) * (c / (n + 1 : ℝ))) := h.mul_left (1 / c)
+  have hone : Summable (fun n : ℕ => 1 / (n + 1 : ℝ)) :=
+    hscaled.congr fun n => by
+      field_simp [hc.ne']
   apply Real.not_summable_one_div_natCast
   apply (summable_nat_add_iff (f := fun n : ℕ => 1 / (n : ℝ)) 1).mp
   simpa only [Nat.cast_add, Nat.cast_one] using hone
@@ -92,17 +102,15 @@ private lemma not_summable_const_div_nat_add_one {c : ℝ} (hc : 0 < c) :
 private lemma not_summable_at_reciprocal_boundary
     {f : ℕ → ℝ} {E η : ℝ}
     (hE : 0 < E) (hη : 0 < η)
-    (hf : ∀ n, 0 ≤ f n)
     (hlower : ∀ᶠ n : ℕ in atTop, η * E ^ n ≤ (n + 1 : ℝ) * f n) :
     ¬ Summable (fun n : ℕ => f n * (1 / E) ^ n) := by
   intro hsum
   have hharm : Summable (fun n : ℕ => η / (n + 1 : ℝ)) := by
-    apply Summable.of_norm_bounded_eventually hsum
+    apply Summable.of_norm_bounded_eventually_nat hsum
     filter_upwards [hlower] with n hn
     have hEinvnonneg : 0 ≤ (1 / E) ^ n :=
       pow_nonneg (one_div_nonneg.mpr hE.le) n
-    rw [Real.norm_of_nonneg (div_nonneg hη.le (by positivity)),
-      Real.norm_of_nonneg (mul_nonneg (hf n) hEinvnonneg)]
+    rw [Real.norm_of_nonneg (div_nonneg hη.le (by positivity))]
     apply (div_le_iff₀ (by positivity : (0 : ℝ) < n + 1)).2
     calc
       η ≤ ((n + 1 : ℝ) * f n) / E ^ n := by
@@ -110,7 +118,7 @@ private lemma not_summable_at_reciprocal_boundary
       _ = (n + 1 : ℝ) * (f n * (1 / E) ^ n) := by
         rw [one_div, inv_pow]
         field_simp [hE.ne']
-    ring_nf
+      _ = (f n * (1 / E) ^ n) * (n + 1 : ℝ) := by ring
   exact not_summable_const_div_nat_add_one hη hharm
 
 /-- The exact Abel radius is a divergence boundary, not only an open transition. -/
@@ -127,25 +135,26 @@ theorem not_primeArchEndpointBernsteinAbelSusceptibilityFinite_at_criticalRadius
     intro hsum
     have hharm : Summable
         (fun n : ℕ => normalizedPrimeArchMoment 0 ^ 2 / (n + 1 : ℝ)) := by
-      apply Summable.of_norm_bounded_eventually hsum
-      filter_upwards with n
-      rw [Real.norm_of_nonneg (div_nonneg (sq_nonneg _) (by positivity)),
-        Real.norm_of_nonneg (bernsteinCoefficientPurity_nonneg _ n)]
+      apply Summable.of_norm_bounded hsum
+      intro n
+      rw [Real.norm_of_nonneg (div_nonneg (sq_nonneg _) (by positivity))]
       exact (div_le_iff₀ (by positivity : (0 : ℝ) < n + 1)).2
-        (mass_sq_le_card_mul_primeArchEndpointBernsteinPurity n)
+        (by simpa [mul_comm] using
+          mass_sq_le_card_mul_primeArchEndpointBernsteinPurity n)
     exact not_summable_const_div_nat_add_one
       (sq_pos_of_pos normalizedPrimeArchMoment_zero_pos) hharm
   · obtain ⟨B, η, hB, _hBsector, hη, _hattained, _hmax, _hupper,
-        hlower, _habove, _hbelow⟩ :=
+        hlower, habove, hbelow⟩ :=
       exists_primeArchEndpointBernstein_exactExponentialThreshold_of_not_rh hRH
-    obtain ⟨_B', _hthreshold, hRB⟩ :=
-      exists_attained_primeArchEndpointBernsteinAbelCriticalRadius_of_not_rh hRH
+    have hBpos : 0 < B := lt_trans zero_lt_one hB
+    have hE : PrimeArchEndpointBernsteinExactExponentialExponent (B ^ 2) :=
+      ⟨sq_pos_of_pos hBpos, habove, hbelow⟩
+    have hmul := primeArchEndpointBernsteinAbelRadius_mul_exactExponent_eq_one hR hE
     have hReq : R = 1 / B ^ 2 :=
-      primeArchEndpointBernsteinAbelCriticalRadius_unique hR hRB
+      (eq_div_iff (sq_pos_of_pos hBpos).ne').2 (by simpa [mul_comm] using hmul)
     rw [hReq]
     exact not_summable_at_reciprocal_boundary
-      (E := B ^ 2) (by positivity) hη
-      (fun n => bernsteinCoefficientPurity_nonneg _ n) hlower
+      (E := B ^ 2) (by positivity) hη hlower
 
 /-- On the nonnegative real axis the Abel convergence set is exactly `[0,R)`. -/
 theorem primeArchEndpointBernsteinAbelSusceptibilityFinite_iff_lt_criticalRadius

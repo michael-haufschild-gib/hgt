@@ -36,7 +36,13 @@ theorem norm_div_add_norm_one_sub_div_le_one_add_two_mul_div
     exact div_le_div_of_nonneg_right hM hR.le
   have htriangle : ‖1 - z / (R : ℂ)‖ ≤ 1 + ‖z / (R : ℂ)‖ := by
     simpa using norm_sub_le (1 : ℂ) (z / (R : ℂ))
-  nlinarith
+  calc
+    ‖z / (R : ℂ)‖ + ‖1 - z / (R : ℂ)‖ ≤
+        ‖z / (R : ℂ)‖ + (1 + ‖z / (R : ℂ)‖) :=
+      add_le_add_right htriangle _
+    _ = 1 + 2 * ‖z / (R : ℂ)‖ := by ring
+    _ ≤ 1 + 2 * (M / R) := by linarith
+    _ = 1 + 2 * M / R := by ring
 
 /-- Pointwise divisor-envelope bound for a Bernstein coefficient at an arbitrary positive
 normalization radius. -/
@@ -58,7 +64,6 @@ theorem abs_bernsteinCoefficient_radiusNormalized_le_divisorEnvelope
   apply tsum_congr
   intro q
   rw [norm_mul]
-  rfl
 
 /-- The complete radius-normalized Bernstein vector inherits the scale-dependent affine
 amplitude ceiling. -/
@@ -152,7 +157,6 @@ theorem exists_largeScale_affineAmplitude_lt
     have heq : ε * R = 2 * M + ε := by
       dsimp only [R]
       field_simp [hε.ne']
-      ring
     linarith
   refine ⟨R, hR, ?_⟩
   have hdiv : 2 * M / R < ε := (div_lt_iff₀ hR).2 hcore

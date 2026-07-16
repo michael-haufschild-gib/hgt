@@ -458,3 +458,27 @@ theorem signedDigammaBooleanCompletion_allPositive_eq_explicitDigammaHerglotzSou
 end
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+/-- Every Boolean signed completion is the locally normal sum of its finite chambers.  The
+residue-bound hypothesis is discharged: Boolean weights are `±1`, hence bounded by one. -/
+theorem hasSumLocallyUniformlyOn_signedDigammaBooleanCompletion (ε : ℕ → Bool) :
+    HasSumLocallyUniformlyOn
+      (fun n z => signedDigammaCompletionTerm (signedDigammaBooleanWeight ε) z n)
+      (signedDigammaBooleanCompletion ε) Set.univ :=
+  hasSumLocallyUniformlyOn_signedDigammaCompletionTerm
+    (signedDigammaBooleanWeight ε) (abs_signedDigammaBooleanWeight_le_one ε)
+
+/-- Every Boolean signed completion is holomorphic on the upper half-plane.  The
+residue-bound hypothesis is discharged: Boolean weights are `±1`, hence bounded by one. -/
+theorem differentiableOn_signedDigammaBooleanCompletion_upperHalf (ε : ℕ → Bool) :
+    DifferentiableOn ℂ (signedDigammaBooleanCompletion ε) {z : ℂ | 0 < z.im} :=
+  differentiableOn_signedDigammaCompletion_upperHalf
+    (signedDigammaBooleanWeight ε) (abs_signedDigammaBooleanWeight_le_one ε)
+
+end
+
+end GaloisForLFunctions.HTGeometry

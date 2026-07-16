@@ -65,11 +65,11 @@ private lemma binomial_term_le_affineAmplitude_pow
 summable. -/
 lemma summable_atomicBernsteinCoefficientTerm
     {I : Type*} {c u : I → ℂ} (hc : Summable c)
-    {B : ℝ} (hB0 : 0 ≤ B)
+    {B : ℝ}
     (hB : ∀ j : I, ‖u j‖ + ‖1 - u j‖ ≤ B)
     {n i : ℕ} (hi : i ≤ n) :
     Summable (atomicBernsteinCoefficientTerm c u n i) := by
-  apply hc.norm.of_norm_bounded
+  apply (hc.norm.mul_right (B ^ n)).of_norm_bounded
   intro j
   rw [norm_atomicBernsteinCoefficientTerm]
   have hterm := binomial_term_le_affineAmplitude_pow
@@ -89,13 +89,13 @@ lemma summable_atomicBernsteinCoefficientTerm
 maximal affine amplitude to the degree. -/
 theorem finitePacketL1_atomicBernsteinPacket_le
     {I : Type*} {c u : I → ℂ} (hc : Summable c)
-    {B : ℝ} (hB0 : 0 ≤ B)
+    {B : ℝ}
     (hB : ∀ j : I, ‖u j‖ + ‖1 - u j‖ ≤ B)
     (n : ℕ) :
     finitePacketL1 (atomicBernsteinPacket c u) n ≤ atomicWeightL1 c * B ^ n := by
   have hsumm (i : ℕ) (hi : i ∈ Finset.range (n + 1)) :
       Summable (atomicBernsteinCoefficientTerm c u n i) :=
-    summable_atomicBernsteinCoefficientTerm hc hB0 hB (Nat.le_of_lt_succ (Finset.mem_range.mp hi))
+    summable_atomicBernsteinCoefficientTerm hc hB (Nat.le_of_lt_succ (Finset.mem_range.mp hi))
   rw [finitePacketL1, atomicBernsteinPacket, atomicBernsteinCoefficient]
   calc
     (∑ i ∈ Finset.range (n + 1),
@@ -133,14 +133,14 @@ theorem finitePacketL1_atomicBernsteinPacket_le
 /-- The finite coefficient transform is exactly the infinite atomic pencil. -/
 theorem finitePacketTransform_atomicBernsteinPacket_eq
     {I : Type*} {c u : I → ℂ} (hc : Summable c)
-    {B : ℝ} (hB0 : 0 ≤ B)
+    {B : ℝ}
     (hB : ∀ j : I, ‖u j‖ + ‖1 - u j‖ ≤ B)
     (n : ℕ) (w : ℂ) :
     finitePacketTransform (atomicBernsteinPacket c u) n w =
       atomicBernsteinPencil c u n w := by
   have hsumm (i : ℕ) (hi : i ∈ Finset.range (n + 1)) :
       Summable (fun j : I => atomicBernsteinCoefficientTerm c u n i j * w ^ i) :=
-    (summable_atomicBernsteinCoefficientTerm hc hB0 hB
+    (summable_atomicBernsteinCoefficientTerm hc hB
       (Nat.le_of_lt_succ (Finset.mem_range.mp hi))).mul_right (w ^ i)
   rw [finitePacketTransform, atomicBernsteinPacket, atomicBernsteinCoefficient,
     atomicBernsteinPencil]
@@ -183,16 +183,6 @@ theorem eventually_norm_atomicBernsteinPencil_ge_of_dominant_constant
       c b hc D hB hdom hsub hbeta hC
   filter_upwards [hnormalized] with n hn
   have hBpow : 0 < B ^ n := pow_pos hB n
-  have hsum : Summable (fun j : I => c j * b j ^ n) := by
-    have hble (j : I) : ‖b j‖ ≤ B := by
-      by_cases hj : j ∈ D
-      · rw [hdom j hj, hbeta]
-      · exact (hsub j hj).le
-    apply hc.norm.of_norm_bounded
-    intro j
-    rw [norm_mul, norm_pow]
-    exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg _) (hble j) n)
-      (norm_nonneg _)
   have heq :
       ∑' j : I, c j * (b j / (B : ℂ)) ^ n =
         (∑' j : I, c j * b j ^ n) / (B : ℂ) ^ n := by
@@ -228,11 +218,11 @@ theorem tendsto_atomicBernsteinPacketRpowEnergy_rpow_inv_natCast
   apply tendsto_finitePacketRpowEnergy_rpow_inv_natCast
     (atomicBernsteinPacket c u) hp hmass hB hCpos hw
   · intro n
-    exact finitePacketL1_atomicBernsteinPacket_le hc hB.le hamp n
+    exact finitePacketL1_atomicBernsteinPacket_le hc hamp n
   · have hpencil := eventually_norm_atomicBernsteinPencil_ge_of_dominant_constant
       c u hc D hB hdom hsub hbeta hC
     filter_upwards [hpencil] with n hn
-    rwa [finitePacketTransform_atomicBernsteinPacket_eq hc hB.le hamp n w]
+    rwa [finitePacketTransform_atomicBernsteinPacket_eq hc hamp n w]
 
 end
 

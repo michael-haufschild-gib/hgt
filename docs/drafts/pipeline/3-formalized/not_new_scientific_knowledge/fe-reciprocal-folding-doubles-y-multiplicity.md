@@ -18,6 +18,9 @@ Prevent proof-route experiments from testing inadmissible "simple" conjugate ato
   `RHTower.xiReciprocalFold_pair`, `RHTower.xiReciprocalFold_quartet`,
   `RHTower.xiReciprocalFold_quartet_weights`, and
   `RHTower.xiReciprocalFold_criticalLine_pair`
+  in `formal/GaloisForLFunctions/RHTower/FEReciprocalFolding.lean`; the exact
+  target build passes and all four capstones use only `propext`,
+  `Classical.choice`, and `Quot.sound`.
 - [ ] 3 -> 4 publication-ready: standalone note if needed
 
 ## Proof

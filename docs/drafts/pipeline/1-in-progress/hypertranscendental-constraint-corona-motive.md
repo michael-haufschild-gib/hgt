@@ -3,7 +3,8 @@
 - **ID:** `hypertranscendental-constraint-corona-motive`
 - **Stage:** 1-in-progress
 - **Type:** FOUNDATIONAL UNIFIED-FIELD CONJECTURE / UNIVERSAL REALIZATION THEORY
-- **Scientific status:** `[CONJECTURE] [FINITE ANOMALY LAWS LEAN-FORMALIZED] [UNIVERSAL OBJECT OPEN] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[CONJECTURE] [FINITE ANOMALY LAWS LEAN-FORMALIZED]`
+  `[LINEAR CORONA SLICE OF M_GAMMA LEAN-PROVEN] [UNIVERSAL OBJECT OPEN] [NOVELTY UNVERIFIED]`
 - **Parents:**
   - `hypertranscendental-source-mobility-profile.md`
   - `clock-descent-anomaly.md`

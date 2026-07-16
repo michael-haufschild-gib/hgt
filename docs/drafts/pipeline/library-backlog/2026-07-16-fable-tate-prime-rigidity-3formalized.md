@@ -25,3 +25,17 @@ Informal ticket for the door-index agent; do not apply to door files from this s
 - Under the seam/DSS-cross cluster, note: "rigid weld = non-split K-extension" now has an
   unconditional Lean backbone; the Tier-1 weld sits at the **Hermite floor** (in-tree
   `exp_int_irrational`), strictly below Baker — no Baker input is consumed by the banked tier.
+
+## Addendum (same day, second pass) — third instance formalized
+- New module `formal/GaloisForLFunctions/HTGeometry/DiagonalModeDivision.lean` (unconditional,
+  baseline axioms): `modeFrequency_eq_zero_iff`, `modeFrequency_ne_zero`,
+  `log_diagonalWeightReal`, `diagonalWeight_eq_one_iff`, `diagonal_mode_division`,
+  `diagonal_equivariant_kills_mode`, `no_diagonal_equivariant_retraction`.
+- 00-status: rows for #117 (arithmetic residue: qualitative floor formalized) and the Lemma-R
+  bridge card (`combination-mode-reducibility-baker-bridge`: R(i) + division formalized; R(ii)
+  Baker stays paper-tier). The weld now has three Lean instances of one mechanism
+  (per-prime, weight-one Taylor, combination-mode).
+- Housekeeping note for the maintainers: `formal_tools.py lint` currently reports several hundred
+  "owned module unreachable from umbrella" errors caused by OTHER sessions' freshly created leaf
+  files not yet registered in the area umbrellas (e.g. RHTower/AtomicBernsteinPacketRpowGrowth,
+  created 11:51 today). The three modules of this ticket ARE registered and clean.

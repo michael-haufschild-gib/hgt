@@ -1,7 +1,7 @@
 # Nonlinear Finite Selector Oracle Vacuity
 
 - **ID:** nonlinear-finite-selector-oracle-vacuity
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / source-functor guardrail
 - **Source:** `finite-type-source-functor-rh-nonselection.md`;
   `rh-landscape-proof-gate.md`;
@@ -141,7 +141,13 @@ nonlinear maps, or accepting a nonlinear target oracle as a source theorem.
 - [x] 0 -> 1 in-progress: entropy selected the nonlinear-functor/oracle route.
 - [x] 1 -> 2 fully-proven: characteristic-function selector proof written and
   anti-oracle gate stated.
-- [ ] 2 -> 3 formalized: optional elementary set-theoretic selector lemma.
+- [x] 2 -> 3 formalized: unconditional theorems
+  `HTGeometry.exists_finTwo_selector` and
+  `HTGeometry.exists_finTwo_preimage_eq` in
+  `formal/GaloisForLFunctions/HTGeometry/FiniteSelectorOracle.lean`; exact
+  target build
+  `+GaloisForLFunctions.HTGeometry.FiniteSelectorOracle` passed, and both
+  theorem audits report only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Log
 
