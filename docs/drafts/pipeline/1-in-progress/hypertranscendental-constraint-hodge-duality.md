@@ -2,7 +2,7 @@
 
 - **ID:** `hypertranscendental-constraint-hodge-duality`
 - **Stage:** 1-in-progress
-- **Type:** FOUNDATIONAL CLASSIFICATION CONJECTURE / BIFILTERED SOURCE THEORY
+- **Type:** FOUNDATIONAL CLASSIFICATION CONJECTURE / ACTIVE SEWN CONSTRAINT THEORY
 - **Scientific status:** `[CONJECTURE] [NORMAL-CROSSING SEED LEAN-FORMALIZED]`
   `[FIELDS-MEDAL-SCALE OPEN CORE] [NOVELTY OPEN] [NOT AN RH RESULT]`
 - **Parents:**
@@ -13,36 +13,49 @@
 ## Founding claim
 
 Hypertranscendence kills the degree-zero differential constraint ideal.  It does not kill
-constraints comparing different source fibres.  A source-minimal constrained HT object should
-therefore have two irreducible homological coordinates:
+constraints comparing different source fibres.  The bifiltered pair
 
 ```text
 p = internal derived/conormal excess,
 q = source-face/descent depth.
 ```
 
-These coordinates are not two clocks and are not two choices of presentation.  They distinguish
-how much derived constraint is visible from how many source comparisons are required to expose it.
+distinguishes how much derived constraint is visible from how many source comparisons are required
+to expose it.  It is not the whole object.  The elliptic-shadow capacity theorem forces an
+additional action-relative layer: a structural lattice may be faithful in a noncompact carrier but
+be trapped in its compact complex shadow, in which case all finite capacities occur but no single
+observable attains infinite capacity.
 
-> **[CONJECTURE -- HT CONSTRAINT-HODGE DUALITY]** The category of regular source-minimal self-dual
-> constrained hypertranscendental germs is equivalent, modulo differential-birational source
-> equivalence, to a category of pointed source-effective polarized constraint-Hodge objects
-> `C_x^(p,q)` satisfying:
+The current candidate object therefore has three logically different layers:
+
+```text
+support:  the reduced/derived constraint spectrum and its (p,q) chart data;
+activity: the structural lattice representation on each active noncompact quotient;
+sewing:   comparison, polarization, and monodromy data between active charts.
+```
+
+> **[CONJECTURE -- ACTIVE HT CONSTRAINT-HODGE DUALITY]** The category of regular source-minimal
+> self-dual constrained hypertranscendental germs is equivalent, modulo differential-birational
+> source equivalence, to a category of pointed source-effective **active sewn** constraint-Hodge
+> objects `C_x^(p,q)` satisfying:
 >
 > 1. the vertex algebra in source degree zero is differentially free;
 > 2. all nontrivial conormal constraint data occur in positive source degree;
 > 3. elementary source restriction has quasi-smooth exterior excess, so `C_x^(p,q)=0` outside
 >    `0 <= p <= q` after source minimalization;
 > 4. fixed-source-degree duality pairs `p` with `q-p`;
-> 5. the pointed bifiltered object, its source composition, affine calibration, analytic growth,
->    and polarization reconstruct the HT source germ;
-> 6. analytic continuation, monodromy, spectral, boundary, and Hermitian realizations are jointly
->    conservative.
+> 5. every minimal-prime structural lattice is faithful on the quotient of its quasi-Abelian period
+>    carrier by the maximal compact complex subtorus;
+> 6. the active charts carry comparison and polarization data satisfying a global sewing law;
+> 7. the pointed bifiltered object, active representations, source composition, affine calibration,
+>    analytic growth, and sewing reconstruct the HT source germ;
+> 8. analytic continuation, monodromy, spectral, boundary, and Hermitian realizations are jointly
+>    conservative because they are coupled realizations of the same sewn object.
 
 This is a proposed positive dual category for a class currently defined negatively by the absence
-of differential equations.  It constrains hypertranscendental functions themselves: only source
-boundaries satisfying effectivity, the constraint cone, duality, and analytic realization may
-occur in the self-dual geometric class.
+of differential equations.  It constrains hypertranscendental functions themselves: a candidate
+must not only carry an allowed constraint topology, but concentrate infinite capacity along the
+source action and sew the resulting active charts into one polarized object.
 
 ## Exact normal-crossing constraint diamond `[PROVED + LEAN]`
 
@@ -97,8 +110,8 @@ phi : N^2 -> N.
 ```
 
 No such homomorphism is injective.  If the weights are positive `a,b`, the pure bidegrees `(b,0)`
-and `(0,a)` already collide.  Therefore no one-parameter totalization, master clock, or scalar
-spectral parameter can be a faithful invariant of an unbounded constraint-Hodge object.
+and `(0,a)` already collide.  Therefore no one-parameter totalization or scalar complexity
+parameter can be a faithful invariant of an unbounded constraint-Hodge object.
 
 This is formalized in
 
@@ -290,18 +303,64 @@ observable.  Hence bare HT permits arbitrary finite locality spectra, including 
 This sharp no-go and its positive universality theorem are recorded in
 `../3-formalized/new_scientific_knowledge/hypertranscendental-constraint-spectrum-universality.md`.
 
+## Active capacity is the missing source selector `[PROVED SPLIT MODEL; GENERAL CONJECTURE]`
+
+Constraint-spectrum universality shows that topology alone cannot constrain bare HT.  The
+quasi-Abelian period quotient also does not suffice.  On
+
+```text
+X=E x C*,
+H=Z a subset E
+```
+
+with `a` nontorsion, `X` is noncompact and `H` is faithful in `X`, but every single meromorphic
+observable has finite differential-transcendence rank under the `H`-orbit.  Relative rationality
+along the projective elliptic fibre makes each observable use only finitely many `C*`-coefficient
+functions, and compact translation merely mixes that finite palette.
+
+The no-go has an exact positive successor.  Every prescribed finite capacity occurs, so
+
+```text
+sup_g cap_H(g)=infinity,
+cap_H(g)<infinity for every g.                            (9)
+```
+
+This is an unbounded but unattained capacity boundary.  If instead the structural lattice embeds
+faithfully in the active quotient obtained after dividing by the maximal compact complex subtorus,
+finite jet interpolation on that quotient produces one observable with a completely free orbit.
+The split theorem is recorded in
+`../2-fully-proven/new_scientific_knowledge/elliptic-shadow-ht-capacity-nonattainment.md`; its exact
+finite matrix core is formalized in
+`formal/GaloisForLFunctions/HTGeometry/FiniteShadowCapacity.lean`.
+
+Thus a source marking is not merely a label on the constraint spectrum.  At every minimal prime it
+must include a faithful representation of the surviving structural lattice on the **active
+noncompact quotient**.  This distinguishes:
+
+```text
+dispersed infinity:    finite capacity for each observable, unbounded across observables;
+concentrated infinity: one cyclic structural observable has infinite capacity.             (10)
+```
+
+Hypertranscendental constraint geometry requires concentrated infinity.  The corrected dimension
+program is `htDim=aqaDim`, where `aqaDim` adds active-quotient faithfulness to the quasi-Abelian
+palette.  See
+`active-quasi-abelian-palette-exact-ht-dimension-classification.md`.
+
 > **[CONJECTURE — SOURCE-SELECTED CONSTRAINT-SPECTRUM CLASSIFICATION]** A regular source-minimal
 > self-dual constrained HT germ has a canonical reduced or derived constraint spectrum together
-> with a source marking, polarization, growth datum, and comparison atlas.  The minimal-prime
-> height spectrum is a differential-birational invariant; its component restrictions are jointly
-> conservative; and the marked polarized spectrum lies in a strict essential image that excludes
-> the arbitrary facet-sewn universal realizations.  In the generic multiple-gamma normal-crossing
-> stratum all minimal primes have height two, giving the proven pair-face theory.  Other natural
-> strata may have genuinely nonuniform locality spectra.
+> with an active source marking, polarization, growth datum, and comparison atlas.  The
+> minimal-prime height spectrum is a differential-birational invariant; every component lattice is
+> faithful on its active quotient; the component restrictions are jointly conservative; and the
+> active marked polarized spectrum lies in a strict essential image that excludes the arbitrary
+> facet-sewn universal realizations.  In the generic multiple-gamma normal-crossing stratum all
+> minimal primes have height two, giving the proven pair-face theory.  Other natural strata may
+> have genuinely nonuniform locality spectra.
 
-The load-bearing word is **source-selected**.  Hypertranscendence supplies universal finite
-constraint capacity and therefore cannot select the topology.  The new field must classify which
-marked spectra arise naturally and why; without a strict selection theorem, a universal
+The load-bearing phrase is **active source-selected**.  Hypertranscendence supplies universal
+finite constraint capacity and therefore cannot select the topology.  Ambient noncompactness also
+cannot select concentration.  The new field must classify which active marked spectra arise
+naturally and how their local quotients sew; without both selection and sewing the proposed
 constraint-Hodge category is false rather than merely unproved.
 
 The first strict essential image is already known.  A scalar meromorphic HT function of one

@@ -1,13 +1,38 @@
 # Quasi-Abelian palettes classify finite full HT constraint geometry
 
 - **ID:** `quasi-abelian-palette-exact-ht-dimension-classification`
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE / EXACT HT CONSTRAINT-DIMENSION CLASSIFICATION
-- **Scientific status:** `[CONJECTURE] [NOVELTY UNVERIFIED]`
-- **Statement:** The intrinsic analytic dimension of a finite full Stanley--Reisner HT constraint
-  geometry equals the least dimension of a facetwise noncompact quasi-Abelian period palette whose
-  complement incidence is exact and whose integral facet lattices survive faithfully in the
-  corresponding quotients.
+- **Stage:** 5-failed
+- **Type:** FALSIFIED CONJECTURE / MISSING ACTION-RELATIVE SELECTOR
+- **Scientific status:** `[FALSIFIED] [POSITIVE REPLACEMENT EXTRACTED]`
+- **Statement:** Ambient noncompact quasi-Abelian geometry does not suffice for a completely free
+  structural orbit.  A facet lattice trapped in a compact Abelian factor has finite capacity for
+  every individual observable, even when the total meromorphic field has unbounded complexity.
+
+## Terminal verdict
+
+The equality `htDim=qaDim` and the quasi-Abelian full-orbit theorem stated below are false.
+Take
+
+```text
+X=E x C*,
+H=Z a subset E,
+```
+
+with `E` elliptic and `a` nontorsion.  The group `X` is noncompact and satisfies the relevant
+generalized Riemann geometry, while `H` is faithful in `X`.  Nevertheless relative rationality
+along the projective elliptic fibre makes every `g in Mer(X)` a rational Abelian function with only
+finitely many meromorphic `C*`-coefficient functions.  Compact translation changes the Abelian
+coordinate but creates no new coefficient functions.  Hence every cyclic `H`-orbit has finite
+differential transcendence degree.
+
+The no-go has a strong positive residue: every prescribed finite orbit capacity occurs, so the
+capacity supremum is infinite but is not attained by one observable.  The exact theorem and proof
+are isolated in
+`../2-fully-proven/new_scientific_knowledge/elliptic-shadow-ht-capacity-nonattainment.md`.
+
+The corrected classification must require the structural lattice to remain faithful after
+quotienting by the maximal compact complex subtorus.  That route continues in
+`../1-in-progress/active-quasi-abelian-palette-exact-ht-dimension-classification.md`.
 
 ## The gap this theorem would close
 

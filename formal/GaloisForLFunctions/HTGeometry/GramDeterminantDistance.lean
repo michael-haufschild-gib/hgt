@@ -260,4 +260,85 @@ theorem det_gram_fin_succ (w : ℕ → E) (N : ℕ)
     rw [gramSchmidt_fin_val w (N + 1) i.castSucc, gramSchmidt_fin_val w N i, Fin.val_castSucc]
   · rw [gramSchmidt_fin_val w (N + 1) (Fin.last N), Fin.val_last]
 
+/-- The new Gram--Schmidt vector vanishes exactly when the new observation is already in the
+span of the preceding observations.  This is the static conditional-identifiability relation
+behind partial Fisher information and sequential D-optimal design. -/
+theorem gramSchmidt_eq_zero_iff_mem_span_Iio (v : ℕ → E) (k : ℕ) :
+    gramSchmidt ℂ v k = 0 ↔
+      v k ∈ Submodule.span ℂ (v '' Set.Iio k) := by
+  constructor
+  · intro hzero
+    have hmem := sub_gramSchmidt_mem_span v k
+    rw [hzero, sub_zero, span_gramSchmidt_Iio ℂ v k] at hmem
+    exact hmem
+  · intro hv
+    rw [← span_gramSchmidt_Iio ℂ v k] at hv
+    have hsub := sub_gramSchmidt_mem_span v k
+    have hgs : gramSchmidt ℂ v k ∈
+        Submodule.span ℂ (gramSchmidt ℂ v '' Set.Iio k) := by
+      rw [show gramSchmidt ℂ v k =
+          v k - (v k - gramSchmidt ℂ v k) by abel]
+      exact Submodule.sub_mem _ hv hsub
+    have horth : inner ℂ (gramSchmidt ℂ v k) (gramSchmidt ℂ v k) = 0 := by
+      refine Submodule.span_induction
+        (p := fun y _ => inner ℂ (gramSchmidt ℂ v k) y = 0) ?_ ?_ ?_ ?_ hgs
+      · rintro y ⟨i, hi, rfl⟩
+        exact gramSchmidt_orthogonal ℂ v (Set.mem_Iio.mp hi).ne'
+      · simp
+      · intro x y _ _ hx hy
+        rw [inner_add_right, hx, hy, add_zero]
+      · intro c x _ hx
+        rw [inner_smul_right, hx, mul_zero]
+    exact inner_self_eq_zero.mp horth
+
+/-- Once the preceding observations are independent, the enlarged observation block is
+independent exactly when its conditional innovation is nonzero. -/
+theorem linearIndependent_fin_succ_iff_gramSchmidt_ne_zero
+    (w : ℕ → E) (N : ℕ)
+    (hprev : LinearIndependent ℂ (fun i : Fin N => w (i : ℕ))) :
+    LinearIndependent ℂ (fun i : Fin (N + 1) => w (i : ℕ)) ↔
+      gramSchmidt ℂ w N ≠ 0 := by
+  have hsnoc : (fun i : Fin (N + 1) => w (i : ℕ)) =
+      Fin.snoc (fun i : Fin N => w (i : ℕ)) (w N) := by
+    funext i
+    refine Fin.lastCases ?_ (fun j => ?_) i
+    · simp
+    · simp
+  have himage : w '' Set.Iio N =
+      Set.range (fun i : Fin N => w (i : ℕ)) := by
+    ext y
+    constructor
+    · rintro ⟨i, hi, rfl⟩
+      exact ⟨⟨i, hi⟩, rfl⟩
+    · rintro ⟨i, rfl⟩
+      exact ⟨i, i.2, rfl⟩
+  rw [hsnoc, linearIndependent_finSnoc]
+  simp only [hprev, true_and]
+  rw [← himage]
+  exact not_congr (gramSchmidt_eq_zero_iff_mem_span_Iio w N).symm
+
+/-- **Conditional Gram/Fisher determinant law.**  If the preceding information block is
+nonsingular, adjoining one observation multiplies its determinant by the squared norm of the
+new observation after orthogonal projection away from all preceding observations.  The new
+block may itself be singular; in that case both sides vanish. -/
+theorem det_gram_fin_succ_of_det_ne_zero (w : ℕ → E) (N : ℕ)
+    (hprev : (Matrix.gram ℂ (fun i : Fin N => w (i : ℕ))).det ≠ 0) :
+    (Matrix.gram ℂ (fun i : Fin (N + 1) => w (i : ℕ))).det =
+      (Matrix.gram ℂ (fun i : Fin N => w (i : ℕ))).det *
+        ⟪gramSchmidt ℂ w N, gramSchmidt ℂ w N⟫_ℂ := by
+  have hprevLI : LinearIndependent ℂ (fun i : Fin N => w (i : ℕ)) :=
+    Matrix.det_gram_ne_zero_iff_linearIndependent.mp hprev
+  by_cases hinnovation : gramSchmidt ℂ w N = 0
+  · have hnextNotLI : ¬ LinearIndependent ℂ
+        (fun i : Fin (N + 1) => w (i : ℕ)) := by
+      rw [linearIndependent_fin_succ_iff_gramSchmidt_ne_zero w N hprevLI]
+      exact not_not_intro hinnovation
+    have hnextZero :
+        (Matrix.gram ℂ (fun i : Fin (N + 1) => w (i : ℕ))).det = 0 := by
+      by_contra hdet
+      exact hnextNotLI (Matrix.det_gram_ne_zero_iff_linearIndependent.mp hdet)
+    rw [hnextZero, hinnovation, inner_zero_left, mul_zero]
+  · exact det_gram_fin_succ w N
+      ((linearIndependent_fin_succ_iff_gramSchmidt_ne_zero w N hprevLI).2 hinnovation)
+
 end GaloisForLFunctions.HTGeometry

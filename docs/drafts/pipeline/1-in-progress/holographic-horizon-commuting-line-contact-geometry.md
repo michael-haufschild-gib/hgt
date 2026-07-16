@@ -6,6 +6,7 @@
 - **Scientific status:** `[CHORD THEOREM LEAN-PROVEN] [ABSTRACT RANK THEOREM LEAN-PROVEN]`
   `[GENERAL-HYPERSURFACE BOUND PAPER-PROVEN] [TOTAL-INCOMPATIBILITY COROLLARY PAPER-PROVEN]`
   `[MAXIMAL FREE ENDPOINT LEAN-PROVEN] [HEISENBERG REPRESENTATION LEAN-PROVEN]`
+  `[PARTIAL-KERNEL SPENCER LAW LEAN-PROVEN]`
   `[NOVELTY PROVISIONAL]`
 - **Paper lane:** *Before There Was Time: The Holographic Horizon Measures Quantum Noncommutativity*
 
@@ -253,6 +254,26 @@ proper kernel `K` must annihilate the first symbol through its Spencer prolongat
 must satisfy every higher compatibility identity.  Line-contact geometry is exactly the
 degree-two necessity; whether it controls the full prolongation tower is the content of `(16)`.
 
+The first partial-kernel law is now unconditional in Lean.  If
+
+```text
+delta_i z = sum_j a_(i,j) y_j,
+sum_(i,k) q_(i,k) [delta_i,delta_k] = 0,
+q_(k,i) = -q_(i,k),
+```
+
+and the first descendant packet `{delta_i y_j}` is linearly independent, then
+
+```text
+q a = 0.                                                              (17)
+```
+
+Thus a commutator kernel cannot be chosen independently of the terminal horizon symbol.  Every
+kernel relation is a first Spencer syzygy of that symbol.  In particular, a low-rank realization
+of a smooth nonlinear horizon cannot retain a free Fock-like first descendant layer unless the
+symbol columns lie in the kernel forced by `q`; correlated descendants are mandatory in the
+generic case.
+
 ## 6. Why this could matter
 
 Equation `(10)` says that algebraic complexity visible on a one-observable hypertranscendence
@@ -357,9 +378,11 @@ supplies such a horizon or bracket map.
 8. [DONE] Prove that every finite projective horizon has an exact realization with injective
    commutator symbol.
 9. [DONE] Prove the canonical Heisenberg operator realization and preservation of commutators.
-10. Formalize the projective kernel-avoidance invariant, the projective dimension specialization,
+10. [DONE] Prove the partial commutator-kernel first Spencer law and the free-tail equation
+    `q a=0`.
+11. Formalize the projective kernel-avoidance invariant, the projective dimension specialization,
    and the Ikeda incidence input for `(9)--(13)`.
-11. Construct sharp examples and determine whether equality in `(9a)` is realizable inside a
+12. Construct sharp examples and determine whether equality in `(9a)` is realizable inside a
    finite-dimensional Lie algebra.
 
 No rank theorem may infer injectivity merely from pointwise nonvanishing on a spanning set of
