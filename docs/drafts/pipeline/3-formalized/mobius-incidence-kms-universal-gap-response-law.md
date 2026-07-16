@@ -1,7 +1,7 @@
 # Mobius incidence curvature is KMS entropy production with a universal singular gap response
 
 - **ID:** `mobius-incidence-kms-universal-gap-response-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / ANTI-CAUSAL WARD ROUTE TEST
 - **Scientific status:** `[PROVED HERE] [PROOF-DELIVERY TEST] [NOVELTY GATE BYPASSED BY REQUEST] [NOT RH]`
 - **Parents:**
@@ -57,7 +57,7 @@ H=log d.                                                 (4)
 Thus the four-unit Mobius curvature is not merely analogous to thermodynamic dissipation: it is
 an exactly normalized finite KMS entropy production.
 
-## Lean surface and remaining formal core
+## Lean surface
 
 `formal/GaloisForLFunctions/RHTower/MobiusIncidenceKMSEntropyProduction.lean` now formalizes the
 finite realization unconditionally:
@@ -73,11 +73,21 @@ finite realization unconditionally:
 - `formal/GaloisForLFunctions/RHTower/MobiusIncidenceUniversalGapResponse.lean` proves that the
   proposed universal limiting density `2|x|exp(-|x|)` has total mass four, constructs its folded
   Cauchy response, proves equation `(10)`, proves the logarithmic quotient divergence, and proves
-  `not_differentiableAt_mobiusIncidenceUniversalGapResponse_zero` unconditionally.
+  `not_differentiableAt_mobiusIncidenceUniversalGapResponse_zero` unconditionally;
+- `formal/GaloisForLFunctions/RHTower/MobiusCriticalClockWeakConvergence.lean` constructs the
+  squarefree critical PMF, proves its characteristic-function convergence to `Exp(1)`, transports
+  convergence through independent gaps, identifies the centered Laplace density, identifies the
+  weak-limit response with `mobiusIncidenceUniversalGapResponse`, and proves both the fixed-`sigma`
+  cofinal truncation limit and the `sigma -> 1+` critical limit;
+- `formal/GaloisForLFunctions/RHTower/MobiusIncidenceKMSCofinalResponse.lean` proves that the
+  cofinal finite squarefree probability measure is exactly the conditioned truncation, that its
+  passive response is exactly `finiteIncidenceKMSResponse`, and that these exact finite KMS
+  responses converge cofinally to the complete squarefree response.  It also proves
+  `not_exists_upperNeighborhood_continuedPrimeArchSourceRelativeTrace_eq_universalGapResponse`,
+  the unconditional incompatibility with the analytic continued prime--archimedean germ.
 
-The card remains at Stage 2.  The exact open Lean core is the unconditional squarefree critical
-gap-response convergence to this density.  No hypothesis standing in for that convergence has
-been introduced.
+All convergence and mismatch statements are theorem conclusions; no convergence, analyticity, or
+RH hypothesis has been introduced to stand in for the claimed result.
 
 ## Critical response theorem
 

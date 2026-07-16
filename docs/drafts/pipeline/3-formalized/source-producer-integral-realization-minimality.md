@@ -141,6 +141,25 @@ This corrects two weaker candidates.
 The common object is therefore a **space of source-effective lifts**, not a common scalar
 obstruction and not a static topology.
 
+The effectivity fibration now has a concrete conjectural local model rather than remaining an
+unspecified stack.  A source law supplies a total variational/descent one-form
+
+```text
+omega_F=(full Frechet form, source-boundary increments)
+```
+
+on the bifiltered Kähler--Tate correspondence object.  Its vertical curvature is the Helmholtz
+cross-partial defect; its mixed curvature is the Spencer source/prolongation defect.  Objects of
+`Eff_HT` are critically completed, polarized, integral source-pure primitives
+
+```text
+omega_F=d_tot Phi_F.
+```
+
+The finite polynomial pointed-reconstruction theorem proves this description at one nonlinear
+finite-jet stratum.  The infinite analytic essential-image theorem is the open core.  See
+`../1-in-progress/constraint-curvature-integration-stack.md`.
+
 ## Seven reported obstruction classes as faces of one producer space
 
 The obstruction classes in `docs/reports/rh-proof-chains-and-obstructions-2026-07-16.md` map to
@@ -179,6 +198,33 @@ Equation `(10)` is the exact form of “infinite algebraic capacity concentrated
 constraint boundary.”  Capacity is maximal in the vertical observable direction; thinness is a
 source-relative finite-generation condition; effectivity selects the special source among the
 universally realizable kinematic objects.
+
+The first positive model is now proved on the height-one multiplicative triptic class.  Its
+source-effectivity quotient is the finite integral orbit-divisor group `Z[C/H_3]`; the two
+noncommensurable elliptic boundary realizations agree; and the integral lift reconstructs the
+source class modulo DA.  Moreover, coefficientwise divisibility of that lift is equivalent to
+existence of a source root modulo DA, with exact maximum root order given by coefficient gcd.  See
+`../2-fully-proven/new_scientific_knowledge/triptic-ht-kummer-content-root-classification.md`.
+This proves a nontrivial abelian height-one instance of effectivity and arithmetic reconstruction,
+not the general equivalence `(10)`.
+
+A second, deliberately demoted model handles nonlinear noncommuting source maps.  On finite
+complex polynomial sources, the full Jacobian field plus one affine calibration is injective;
+the unpointed Jacobian is not.  A Hénon automorphism and a translation give an explicit
+noncommuting action on a free rank-two HT field.  See
+`not_new_scientific_knowledge/pointed-variational-polynomial-source-reconstruction.md`.  This
+proves the source-morphism/effectivity face but not analytic descent, polarization, or integral
+realization, so it is not promoted as the nonlinear case of `(10)`.
+
+A first natural analytic degree-zero effectivity model is now proved for the irrational elliptic
+gamma function.  Its two theta-logarithmic boundaries lie in the DA sector, while their compatible
+primitive is hypertranscendental; neither boundary is conservative alone, the pair has only the
+constant joint-fixed gauge, and one calibration makes the pair conservative.  Thus the source
+cocycle is nontrivial in the DA category and effective in the meromorphic category.  See
+`../2-fully-proven/new_scientific_knowledge/irrational-elliptic-gamma-hypertranscendence-matroid.md`.
+This validates the relative-effectivity core of `(10)` on an actual analytic HT source, including
+an exact shift-defect matroid.  It still does not supply critical bornology, polarization, or a
+spectral/integral realization, so it is not the full six-channel equivalence.
 
 ### Falsifiers
 
@@ -264,8 +310,9 @@ New declarations:
 - [x] all seven report obstruction classes mapped to typed faces
 - [x] parent realization and integral-conjugacy theories identified
 - [x] anti-theatre distinction between lower bound and reconstruction conjecture made explicit
-- [ ] construct `Eff_HT` for the height-one triptic class without storing the source germ
-- [ ] prove its observation functor reconstructs that class modulo DA
-- [ ] construct a nonlinear nonabelian effective lift
+- [x] construct the height-one triptic effective quotient without storing the source germ
+- [x] reconstruct the multiplicative triptic class modulo DA and classify every source root
+- [x] construct a finite pointed-variational nonlinear noncommuting model
+- [ ] construct a natural analytic nonlinear nonabelian effective lift with all six channels
 - [ ] prove two genuinely different realization functors jointly conservative
 - [ ] obtain independent specialist novelty review

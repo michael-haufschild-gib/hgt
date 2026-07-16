@@ -3,7 +3,7 @@
 - **ID:** `fermat-cubic-qutrit-hypertranscendence-horizon`
 - **Stage:** 1-in-progress
 - **Type:** THEOREM / CUBIC HORIZON / GENERALIZED CLIFFORD ALGEBRA / FINITE HEISENBERG GROUP
-- **Scientific status:** `[PAPER PROOF IN PROGRESS] [LEAN PENDING] [NOVELTY PROVISIONAL]`
+- **Scientific status:** `[CUBIC THEOREM LEAN-PROVEN] [GENERAL FERMAT EXTENSION OPEN] [NOVELTY PROVISIONAL]`
 - **Depends on:** `generalized-clifford-ulrich-hypertranscendence-horizons`
 
 ## 1. Target theorem
@@ -94,13 +94,16 @@ basis and quantum multinomial identity are formalized unconditionally in Lean.
 
 ## 4. Anti-theatre gate
 
-The theorem is not complete until:
+The cubic theorem has cleared every proof gate:
 
 1. the phase normalization and all three relations `(4)` are exact over the stated base field;
-2. `(1)` is proved algebraically, without a numerical matrix check;
-3. Weyl-character independence proves `(2)` without assuming it;
-4. the resulting exact differential-field horizon is instantiated from the general Lean theorem;
-5. all promoted statements are axiom-audited in Lean.
+2. `(1)` is proved symbolically, without a numerical matrix check;
+3. an explicit three-channel matrix-coefficient decoder is a left inverse to `(2)`;
+4. the exact differential-field horizon and maximal exterior commutator rank are one Lean theorem;
+5. the axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+The remaining open item on this card is the all-degree, all-variable Fermat extension in Section
+3.1.  It must not be conflated with the completed cubic theorem.
 
 ## 5. Novelty gate
 
@@ -118,8 +121,12 @@ and not an RH implication.
 
 ## 7. Lean route
 
-1. Formalize an abstract three-generator `omega`-commuting cube identity.
-2. Construct the order-three Weyl representation symbolically.
-3. Prove independence of the three commutator channels.
-4. Instantiate the generalized Clifford differential-field horizon theorem.
-5. Build only the new module and print its axioms.
+Completed modules:
+
+- `GaloisForLFunctions.HTGeometry.FermatCubicQuantumMultinomial`;
+- `GaloisForLFunctions.HTGeometry.FermatCubicCliffordHorizon`;
+- `GaloisForLFunctions.HTGeometry.FermatCubicWeylRepresentation`.
+
+The theorem `fermatCubicWeyl_maximalHorizon` packages the exact Fermat-cubic dependence locus and
+injectivity of the differential-field exterior commutator map.  Its direct check, narrow build,
+and axiom audit pass.

@@ -1,4 +1,6 @@
 import GaloisForLFunctions.HTGeometry.MvPolynomialJacobianMinors
+import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.LinearAlgebra.Matrix.Rank
 import Mathlib.LinearAlgebra.Basis.Basic
 
@@ -238,6 +240,99 @@ theorem surjective_fderiv_complexMvPolynomialFamilyEval_real_iff_notMem_rankDefe
       not_forall]
     exact ⟨cols, by rwa [eval_complexMvPolynomialFamilyJacobianMinor]⟩
   · exact surjective_fderiv_complexMvPolynomialFamilyEval_real_of_notMem_rankDefect P x
+
+/-! A pointed variational realization reconstructs a finite polynomial source map. -/
+
+/-- A finite complex polynomial family is determined by its Jacobian field and one calibrated
+value.  The Jacobian is the variational realization; the value removes its constant-translation
+kernel. -/
+theorem complexMvPolynomialFamily_eq_of_jacobian_eq_of_value_eq
+    {n m : ℕ} (P Q : Fin m → MvPolynomial (Fin n) ℂ)
+    (x0 : Fin n → ℂ)
+    (hJ : ∀ x, complexMvPolynomialFamilyJacobian P x =
+      complexMvPolynomialFamilyJacobian Q x)
+    (h0 : complexMvPolynomialFamilyEval P x0 =
+      complexMvPolynomialFamilyEval Q x0) :
+    P = Q := by
+  have hderiv : ∀ x,
+      fderiv ℂ (complexMvPolynomialFamilyEval P) x =
+        fderiv ℂ (complexMvPolynomialFamilyEval Q) x := by
+    intro x
+    ext v i
+    rw [fderiv_complexMvPolynomialFamilyEval_complex_apply,
+      fderiv_complexMvPolynomialFamilyEval_complex_apply, hJ x]
+  have heval : complexMvPolynomialFamilyEval P =
+      complexMvPolynomialFamilyEval Q :=
+    eq_of_fderiv_eq
+      (differentiable_complexMvPolynomialFamilyEval_complex P)
+      (differentiable_complexMvPolynomialFamilyEval_complex Q)
+      hderiv x0 h0
+  funext i
+  apply MvPolynomial.funext
+  intro x
+  exact congrFun (congrFun heval x) i
+
+def pointedPolynomialSourceFingerprint {n m : ℕ}
+    (P : Fin m → MvPolynomial (Fin n) ℂ) :
+    ((Fin n → ℂ) → Matrix (Fin m) (Fin n) ℂ) × (Fin m → ℂ) :=
+  (complexMvPolynomialFamilyJacobian P,
+    complexMvPolynomialFamilyEval P 0)
+
+/-- Jacobian field plus one affine calibration is a faithful receiver for every finite nonlinear
+polynomial source map. -/
+theorem pointedPolynomialSourceFingerprint_injective {n m : ℕ} :
+    Function.Injective
+      (pointedPolynomialSourceFingerprint (n := n) (m := m)) := by
+  intro P Q h
+  apply complexMvPolynomialFamily_eq_of_jacobian_eq_of_value_eq P Q 0
+  · exact congrFun (congrArg Prod.fst h)
+  · exact congrArg Prod.snd h
+
+/-- The unpointed Jacobian realization is already nonfaithful in one variable: it identifies the
+identity coordinate with its translate by one. -/
+theorem unpointedPolynomialSourceJacobian_not_injective :
+    ¬ Function.Injective
+      (fun P : Fin 1 → MvPolynomial (Fin 1) ℂ =>
+        complexMvPolynomialFamilyJacobian P) := by
+  intro hinj
+  let P : Fin 1 → MvPolynomial (Fin 1) ℂ := fun _ => MvPolynomial.X 0
+  let Q : Fin 1 → MvPolynomial (Fin 1) ℂ := fun _ =>
+    MvPolynomial.X 0 + MvPolynomial.C 1
+  have hJ : complexMvPolynomialFamilyJacobian P =
+      complexMvPolynomialFamilyJacobian Q := by
+    funext x i j
+    simp [complexMvPolynomialFamilyJacobian, P, Q]
+  have hEq := hinj hJ
+  have hval := congrArg
+    (fun R : Fin 1 → MvPolynomial (Fin 1) ℂ =>
+      MvPolynomial.eval (0 : Fin 1 → ℂ) (R 0)) hEq
+  norm_num [P, Q] at hval
+
+/-- The polynomial Hénon source map.  On a free differential pair its prolongation is a nonlinear
+differential-field automorphism. -/
+def henonPlaneSource (v : ℂ × ℂ) : ℂ × ℂ :=
+  (v.2, v.2 ^ 2 - v.1)
+
+def henonPlaneSourceInv (v : ℂ × ℂ) : ℂ × ℂ :=
+  (v.1 ^ 2 - v.2, v.1)
+
+theorem henonPlaneSource_bijective : Function.Bijective henonPlaneSource := by
+  refine Function.bijective_iff_has_inverse.mpr ⟨henonPlaneSourceInv, ?_, ?_⟩
+  · intro v
+    apply Prod.ext <;> simp [henonPlaneSource, henonPlaneSourceInv]
+  · intro v
+    apply Prod.ext <;> simp [henonPlaneSource, henonPlaneSourceInv]
+
+def firstPlaneTranslation (v : ℂ × ℂ) : ℂ × ℂ :=
+  (v.1 + 1, v.2)
+
+/-- A concrete nonlinear, noncommuting source pair. -/
+theorem henonPlaneSource_firstPlaneTranslation_noncommute :
+    henonPlaneSource ∘ firstPlaneTranslation ≠
+      firstPlaneTranslation ∘ henonPlaneSource := by
+  intro h
+  have h0 := congrFun h (0, 0)
+  norm_num [Function.comp_def, henonPlaneSource, firstPlaneTranslation] at h0
 
 end
 

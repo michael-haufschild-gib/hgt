@@ -193,3 +193,221 @@ theorem linearIndependent_localizedStanleyReisnerFacetEmbedding_iff
 end
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+/-!
+## Birelative anomaly gluing
+
+Two quotient channels need not be ordered.  Their common information is the quotient by the
+intersection, while the obstruction to joining independently observed classes is their difference
+modulo the sum.  The next declarations package the resulting short exact Mayer--Vietoris law.
+-/
+
+/-- The compatibility defect of two quotient observations.  It vanishes precisely when the two
+classes can be represented by one ambient element. -/
+def birelativeCompatibilityMap
+    {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    (I J : Submodule R M) :
+    (M ⧸ I) × (M ⧸ J) →ₗ[R] M ⧸ (I ⊔ J) :=
+  ((Submodule.factor (show I ≤ I ⊔ J from le_sup_left)).comp
+      (LinearMap.fst R (M ⧸ I) (M ⧸ J))) -
+    ((Submodule.factor (show J ≤ I ⊔ J from le_sup_right)).comp
+      (LinearMap.snd R (M ⧸ I) (M ⧸ J)))
+
+/-- A common ambient class gives its two quotient observations. -/
+def birelativeCommonLiftMap
+    {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    (I J : Submodule R M) :
+    M ⧸ (I ⊓ J) →ₗ[R] (M ⧸ I) × (M ⧸ J) :=
+  (Submodule.factor (show I ⊓ J ≤ I from inf_le_left)).prod
+    (Submodule.factor (show I ⊓ J ≤ J from inf_le_right))
+
+@[simp]
+theorem birelativeCompatibilityMap_mk
+    {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    (I J : Submodule R M) (x y : M) :
+    birelativeCompatibilityMap I J (I.mkQ x, J.mkQ y) = (I ⊔ J).mkQ (x - y) := by
+  rfl
+
+@[simp]
+theorem birelativeCommonLiftMap_mk
+    {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    (I J : Submodule R M) (x : M) :
+    birelativeCommonLiftMap I J ((I ⊓ J).mkQ x) = (I.mkQ x, J.mkQ x) := by
+  rfl
+
+/-- Common quotient observations retain exactly the class modulo the intersection. -/
+theorem birelativeCommonLiftMap_injective
+    {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    (I J : Submodule R M) :
+    Function.Injective (birelativeCommonLiftMap I J) := by
+  intro x y hxy
+  obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective (I ⊓ J) x
+  obtain ⟨y, rfl⟩ := Submodule.Quotient.mk_surjective (I ⊓ J) y
+  apply (Submodule.Quotient.eq (I ⊓ J)).2
+  constructor
+  · apply (Submodule.Quotient.eq I).1
+    exact congrArg Prod.fst hxy
+  · apply (Submodule.Quotient.eq J).1
+    exact congrArg Prod.snd hxy
+
+/-- **Birelative exactness.**  Compatible pairs are exactly common lifts. -/
+theorem range_birelativeCommonLiftMap_eq_ker
+    {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    (I J : Submodule R M) :
+    LinearMap.range (birelativeCommonLiftMap I J) =
+      LinearMap.ker (birelativeCompatibilityMap I J) := by
+  apply le_antisymm
+  · rintro _ ⟨z, rfl⟩
+    obtain ⟨a, rfl⟩ := Submodule.Quotient.mk_surjective (I ⊓ J) z
+    change birelativeCompatibilityMap I J (I.mkQ a, J.mkQ a) = 0
+    rw [birelativeCompatibilityMap_mk]
+    simp
+  · rintro ⟨x, y⟩ hxy
+    obtain ⟨a, rfl⟩ := Submodule.Quotient.mk_surjective I x
+    obtain ⟨b, rfl⟩ := Submodule.Quotient.mk_surjective J y
+    have hxy' : (I ⊔ J).mkQ (a - b) = 0 := by
+      simpa only [birelativeCompatibilityMap_mk] using hxy
+    have hab : a - b ∈ I ⊔ J := by
+      apply (Submodule.Quotient.eq (I ⊔ J)).1
+      rw [← sub_eq_zero]
+      simpa only [map_sub] using hxy'
+    rcases Submodule.mem_sup.1 hab with ⟨i, hi, j, hj, hij⟩
+    refine ⟨(I ⊓ J).mkQ (a - i), ?_⟩
+    apply Prod.ext
+    · apply (Submodule.Quotient.eq I).2
+      change a - i - a ∈ I
+      have : a - i - a = -i := by abel
+      rw [this]
+      exact I.neg_mem hi
+    · apply (Submodule.Quotient.eq J).2
+      change a - i - b ∈ J
+      have : a - i - b = j := by
+        calc
+          a - i - b = (a - b) - i := by abel
+          _ = (i + j) - i := by rw [hij]
+          _ = j := by abel
+      rw [this]
+      exact hj
+
+/-- Every compatibility-defect class occurs. -/
+theorem birelativeCompatibilityMap_surjective
+    {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    (I J : Submodule R M) :
+    Function.Surjective (birelativeCompatibilityMap I J) := by
+  intro z
+  obtain ⟨a, rfl⟩ := Submodule.Quotient.mk_surjective (I ⊔ J) z
+  refine ⟨(I.mkQ a, 0), ?_⟩
+  change birelativeCompatibilityMap I J (I.mkQ a, J.mkQ 0) = (I ⊔ J).mkQ a
+  rw [birelativeCompatibilityMap_mk]
+  simp
+
+/-- Two quotient observations have a common ambient representative exactly when their compatibility
+defect vanishes. -/
+theorem exists_commonRepresentative_iff_compatible
+    {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    (I J : Submodule R M) (x : M ⧸ I) (y : M ⧸ J) :
+    (∃ a : M, I.mkQ a = x ∧ J.mkQ a = y) ↔
+      birelativeCompatibilityMap I J (x, y) = 0 := by
+  constructor
+  · rintro ⟨a, rfl, rfl⟩
+    simpa using (birelativeCompatibilityMap_mk I J a a)
+  · intro hxy
+    have hmem : (x, y) ∈ LinearMap.ker (birelativeCompatibilityMap I J) := hxy
+    rw [← range_birelativeCommonLiftMap_eq_ker I J] at hmem
+    rcases hmem with ⟨z, hz⟩
+    obtain ⟨a, rfl⟩ := Submodule.Quotient.mk_surjective (I ⊓ J) z
+    exact ⟨a, congrArg Prod.fst hz, congrArg Prod.snd hz⟩
+
+/-- Two common representatives differ by exactly the intersection ambiguity. -/
+theorem commonRepresentative_sub_mem_inf
+    {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    (I J : Submodule R M) {a b : M}
+    (hI : I.mkQ a = I.mkQ b) (hJ : J.mkQ a = J.mkQ b) :
+    a - b ∈ I ⊓ J := by
+  exact ⟨(Submodule.Quotient.eq I).1 hI, (Submodule.Quotient.eq J).1 hJ⟩
+
+end
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+/-!
+## Higher interaction: pairwise compatibility need not be effective
+
+The two-channel sequence above is always exact.  Starting with three channels, pairwise agreement
+can be vacuous while a common ambient representative does not exist.  This is the first abelian
+higher-interaction obstruction behind the cubical descent architecture.
+-/
+
+/-- Pairwise vanishing of all three birelative compatibility defects. -/
+def triplePairwiseCompatible
+    {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    (I J K : Submodule R M) (x : M ⧸ I) (y : M ⧸ J) (z : M ⧸ K) : Prop :=
+  birelativeCompatibilityMap I J (x, y) = 0 ∧
+    birelativeCompatibilityMap I K (x, z) = 0 ∧
+      birelativeCompatibilityMap J K (y, z) = 0
+
+/-- If every pair of channels generates the ambient module, every triple of observations is
+pairwise compatible. -/
+theorem triplePairwiseCompatible_of_pairwise_sup_eq_top
+    {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    (I J K : Submodule R M)
+    (hIJ : I ⊔ J = ⊤) (hIK : I ⊔ K = ⊤) (hJK : J ⊔ K = ⊤)
+    (x : M ⧸ I) (y : M ⧸ J) (z : M ⧸ K) :
+    triplePairwiseCompatible I J K x y z := by
+  obtain ⟨a, rfl⟩ := Submodule.Quotient.mk_surjective I x
+  obtain ⟨b, rfl⟩ := Submodule.Quotient.mk_surjective J y
+  obtain ⟨c, rfl⟩ := Submodule.Quotient.mk_surjective K z
+  constructor
+  · change birelativeCompatibilityMap I J (I.mkQ a, J.mkQ b) = 0
+    rw [birelativeCompatibilityMap_mk, hIJ]
+    apply (Submodule.Quotient.eq ⊤).2
+    simp
+  constructor
+  · change birelativeCompatibilityMap I K (I.mkQ a, K.mkQ c) = 0
+    rw [birelativeCompatibilityMap_mk, hIK]
+    apply (Submodule.Quotient.eq ⊤).2
+    simp
+  · change birelativeCompatibilityMap J K (J.mkQ b, K.mkQ c) = 0
+    rw [birelativeCompatibilityMap_mk, hJK]
+    apply (Submodule.Quotient.eq ⊤).2
+    simp
+
+/-- **Three-channel interaction obstruction.**  Even when all pairwise compatibility tests vanish,
+a triple can have no common representative.  The positive obstruction is the surviving class
+modulo `(I ⊓ J) ⊔ K`. -/
+theorem pairwiseCompatible_without_commonTripleRepresentative
+    {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    (I J K : Submodule R M)
+    (hIJ : I ⊔ J = ⊤) (hIK : I ⊔ K = ⊤) (hJK : J ⊔ K = ⊤)
+    {v : M} (hv : v ∉ (I ⊓ J) ⊔ K) :
+    triplePairwiseCompatible I J K 0 0 (K.mkQ v) ∧
+      ¬ ∃ a : M, I.mkQ a = 0 ∧ J.mkQ a = 0 ∧ K.mkQ a = K.mkQ v := by
+  constructor
+  · exact triplePairwiseCompatible_of_pairwise_sup_eq_top I J K hIJ hIK hJK 0 0 (K.mkQ v)
+  · rintro ⟨a, haI, haJ, haK⟩
+    have haI_mem : a ∈ I := by
+      have hai0 : I.mkQ a = I.mkQ 0 := by simpa using haI
+      have := (Submodule.Quotient.eq I).1 hai0
+      simpa using this
+    have haJ_mem : a ∈ J := by
+      have haj0 : J.mkQ a = J.mkQ 0 := by simpa using haJ
+      have := (Submodule.Quotient.eq J).1 haj0
+      simpa using this
+    have havK : a - v ∈ K := (Submodule.Quotient.eq K).1 haK
+    apply hv
+    apply Submodule.mem_sup.2
+    refine ⟨a, ⟨haI_mem, haJ_mem⟩, v - a, ?_, ?_⟩
+    · simpa only [neg_sub] using K.neg_mem havK
+    · abel
+
+end
+
+end GaloisForLFunctions.HTGeometry

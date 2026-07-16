@@ -280,21 +280,21 @@ theorem fermatCubicWeylCommutatorDecoder_clock_shift
         ⁅fermatCubicClock ω, fermatCubicShift⁆ =
       fermatCubicBasisWedge (K := K) 0 1 := by
   have hω1 := omega_ne_one_of_sq_add_self_add_one_eq_zero ω hω
-  have hA : 1 - ω * 2 + ω ^ 2 ≠ 0 := by
-    rw [show 1 - ω * 2 + ω ^ 2 = (ω - 1) ^ 2 by ring]
+  have hA : (ω - 1) ^ 2 ≠ 0 := by
     exact pow_ne_zero 2 (sub_ne_zero.mpr hω1)
-  have hnormA :
-      -(ω * (1 - ω * 2 + ω ^ 2)⁻¹ * 2) +
-          ω ^ 2 * (1 - ω * 2 + ω ^ 2)⁻¹ +
-          (1 - ω * 2 + ω ^ 2)⁻¹ = 1 := by
-    calc
-      _ = (1 - ω * 2 + ω ^ 2) * (1 - ω * 2 + ω ^ 2)⁻¹ := by ring
-      _ = 1 := mul_inv_cancel₀ hA
+  have hAexp : 1 - ω * 2 + ω ^ 2 ≠ 0 := by
+    rw [show 1 - ω * 2 + ω ^ 2 = (ω - 1) ^ 2 by ring]
+    exact hA
+  have hsub : -1 + ω ≠ 0 := by
+    simpa [sub_eq_add_neg, add_comm] using (sub_ne_zero.mpr hω1 : ω - 1 ≠ 0)
+  have hthree : (3 : K) ≠ 0 := by norm_num
   simp [fermatCubicWeylCommutatorDecoder, fermatCubicEndomorphismCoefficient,
     fermatCubicClock, fermatCubicShift, LieRing.of_associative_ring_bracket,
     Module.End.mul_apply]
   match_scalars
-  exact hnormA
+  all_goals ring_nf
+  all_goals field_simp [hA, hAexp, hsub, hthree]
+  all_goals ring
 
 @[simp]
 theorem fermatCubicWeylCommutatorDecoder_clock_third
@@ -303,24 +303,22 @@ theorem fermatCubicWeylCommutatorDecoder_clock_third
         ⁅fermatCubicClock ω, fermatCubicThird ω⁆ =
       fermatCubicBasisWedge (K := K) 0 2 := by
   have hω1 := omega_ne_one_of_sq_add_self_add_one_eq_zero ω hω
+  have hA : (ω - 1) ^ 2 ≠ 0 :=
+    pow_ne_zero 2 (sub_ne_zero.mpr hω1)
+  have hsub : -1 + ω ≠ 0 := by
+    simpa [sub_eq_add_neg, add_comm] using (sub_ne_zero.mpr hω1 : ω - 1 ≠ 0)
   have hω3 := cube_eq_one_of_sq_add_self_add_one_eq_zero ω hω
   have hω4 : ω ^ 4 = ω := by rw [pow_succ, hω3, one_mul]
   have hthree : (3 : K) ≠ 0 := by norm_num
-  have hpoly : -ω ^ 2 + ω ^ 3 * 2 - ω ^ 4 = (3 : K) := by
-    rw [hω3, hω4]
-    linear_combination -hω
-  have hnormB :
-      -(ω ^ 2 * (3 : K)⁻¹) + ω ^ 3 * (3 : K)⁻¹ * 2 -
-          ω ^ 4 * (3 : K)⁻¹ = 1 := by
-    calc
-      _ = (3 : K)⁻¹ * (-ω ^ 2 + ω ^ 3 * 2 - ω ^ 4) := by ring
-      _ = (3 : K)⁻¹ * 3 := by rw [hpoly]
-      _ = 1 := inv_mul_cancel₀ hthree
   simp [fermatCubicWeylCommutatorDecoder, fermatCubicEndomorphismCoefficient,
     fermatCubicClock, fermatCubicThird, LieRing.of_associative_ring_bracket,
     Module.End.mul_apply]
   match_scalars
-  exact hnormB
+  all_goals ring_nf
+  all_goals try field_simp [hA, hsub, hthree]
+  all_goals try ring_nf
+  all_goals rw [hω3, hω4]
+  all_goals linear_combination -hω
 
 @[simp]
 theorem fermatCubicWeylCommutatorDecoder_shift_third
@@ -333,17 +331,17 @@ theorem fermatCubicWeylCommutatorDecoder_shift_third
   have hC : -ω + ω ^ 2 ≠ 0 := by
     rw [show -ω + ω ^ 2 = ω * (ω - 1) by ring]
     exact mul_ne_zero hω0 (sub_ne_zero.mpr hω1)
-  have hnormC :
-      -(ω * (-ω + ω ^ 2)⁻¹) +
-          ω ^ 2 * (-ω + ω ^ 2)⁻¹ = 1 := by
-    calc
-      _ = (-ω + ω ^ 2) * (-ω + ω ^ 2)⁻¹ := by ring
-      _ = 1 := mul_inv_cancel₀ hC
+  have hA : (ω - 1) ^ 2 ≠ 0 :=
+    pow_ne_zero 2 (sub_ne_zero.mpr hω1)
+  have hsub : -1 + ω ≠ 0 := by
+    simpa [sub_eq_add_neg, add_comm] using (sub_ne_zero.mpr hω1 : ω - 1 ≠ 0)
+  have hthree : (3 : K) ≠ 0 := by norm_num
   simp [fermatCubicWeylCommutatorDecoder, fermatCubicEndomorphismCoefficient,
     fermatCubicShift, fermatCubicThird, LieRing.of_associative_ring_bracket,
     Module.End.mul_apply]
   match_scalars
-  exact hnormC
+  all_goals ring_nf
+  all_goals field_simp [hA, hsub, hC, hthree]
 
 /-- Reversing the canonical law directions reverses the coordinate bivector. -/
 theorem fermatCubicBasisWedge_swap (i j : Fin 3) :
@@ -418,8 +416,8 @@ theorem fermatCubicWeylCommutatorDecoder_comp_eq_id
       ![Pi.basisFun K (Fin 3) i, Pi.basisFun K (Fin 3) j] := by
     funext r
     fin_cases r
-    · rw [h0]
-    · rw [h1]
+    · simpa using congrArg (Pi.basisFun K (Fin 3)) h0
+    · simpa using congrArg (Pi.basisFun K (Fin 3)) h1
   rw [hvec]
   fin_cases i <;> fin_cases j
   all_goals first

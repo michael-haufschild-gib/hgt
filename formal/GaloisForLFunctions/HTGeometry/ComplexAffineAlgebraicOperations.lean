@@ -36,6 +36,20 @@ theorem IsComplexAffineAlgebraic.inter {n : ℕ}
     I ⊔ J ≤ RingHom.ker (MvPolynomial.aeval x)
   exact sup_le_iff.symm
 
+/-- Finite unions of complex affine algebraic sets are algebraic. -/
+theorem IsComplexAffineAlgebraic.union {n : ℕ}
+    {S T : Set (Fin n → ℂ)}
+    (hS : IsComplexAffineAlgebraic S) (hT : IsComplexAffineAlgebraic T) :
+    IsComplexAffineAlgebraic (S ∪ T) := by
+  obtain ⟨I, rfl⟩ := hS
+  obtain ⟨J, rfl⟩ := hT
+  refine ⟨I * J, ?_⟩
+  ext x
+  change (I ≤ RingHom.ker (MvPolynomial.aeval x) ∨
+      J ≤ RingHom.ker (MvPolynomial.aeval x)) ↔
+    I * J ≤ RingHom.ker (MvPolynomial.aeval x)
+  exact (Ideal.IsPrime.mul_le (RingHom.ker_isPrime _)).symm
+
 /-- The common zero set of a finite polynomial family is algebraic. -/
 theorem isComplexAffineAlgebraic_zeroLocus_family {n m : ℕ}
     (P : Fin m → MvPolynomial (Fin n) ℂ) :
@@ -76,6 +90,19 @@ theorem IsComplexAffineAlgebraicSet.inter {σ : Type*}
       J ≤ RingHom.ker (MvPolynomial.aeval x)) ↔
     I ⊔ J ≤ RingHom.ker (MvPolynomial.aeval x)
   exact sup_le_iff.symm
+
+theorem IsComplexAffineAlgebraicSet.union {σ : Type*}
+    {S T : Set (σ → ℂ)}
+    (hS : IsComplexAffineAlgebraicSet S) (hT : IsComplexAffineAlgebraicSet T) :
+    IsComplexAffineAlgebraicSet (S ∪ T) := by
+  obtain ⟨I, rfl⟩ := hS
+  obtain ⟨J, rfl⟩ := hT
+  refine ⟨I * J, ?_⟩
+  ext x
+  change (I ≤ RingHom.ker (MvPolynomial.aeval x) ∨
+      J ≤ RingHom.ker (MvPolynomial.aeval x)) ↔
+    I * J ≤ RingHom.ker (MvPolynomial.aeval x)
+  exact (Ideal.IsPrime.mul_le (RingHom.ker_isPrime _)).symm
 
 /-- Every algebraic set in finitely many arbitrary coordinates has finite equations. -/
 theorem IsComplexAffineAlgebraicSet.exists_fin_zeroLocus_family

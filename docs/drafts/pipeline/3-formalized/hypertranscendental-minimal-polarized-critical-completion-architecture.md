@@ -304,7 +304,8 @@ New Lean declarations:
 - `minimalHTCompletionArchitecture`;
 - `sourceSectionDivisorBlindness`;
 - `integralRealificationBlindness`;
-- `sourceProducerIntegralLowerBound`.
+- `sourceProducerIntegralLowerBound`;
+- `integralOrbitDivisor_has_nsmul_root_iff`.
 
 Existing Lean declarations used for the polarization witness include:
 
@@ -319,6 +320,8 @@ minimality lower bound are encoded by `continuousMobiusGevreyTrichotomy`,
 necessity only; it does not assert the open Minimal-Architecture Completeness converse.
 The final three declarations are the formally certified successor channels described in
 `source-producer-integral-realization-minimality.md`.
+The final root criterion is the integral algebraic core of the first positive triptic
+source-effectivity model.
 
 ## Gates
 

@@ -264,6 +264,45 @@ analytic realizations without containing the unknown global generator.
 This proves the first noncircular positive reconstruction law. It does not yet prove that arbitrary
 source-equivalent presentations produce the same calibrated boundary object.
 
+### 3.1 Pointed variational full faithfulness on finite nonlinear sources `[PROVED + LEAN]`
+
+The finite polynomial source category now supplies a genuinely noncommuting model.  For a complex
+polynomial family `P:C^n->C^m`, the unpointed Jacobian field is nonfaithful: `x` and `x+1` have the
+same Jacobian.  The exact positive theorem is
+
+```text
+P |-> (x |-> J_P(x), P(0))                               (3a)
+```
+
+is injective.  Thus full variational data plus one affine calibration reconstructs every finite
+nonlinear polynomial source map.  The Hénon automorphism
+
+```text
+H(x,y)=(y,y^2-x)
+```
+
+and the translation `(x,y)|->(x+1,y)` are bijective and noncommuting, so their prolongations give
+an explicit nonlinear nonabelian action on the free HT field `C<x,y>`.  All statements are
+Lean-formalized in `MvPolynomialJacobianFDeriv.lean` and recorded in
+`../3-formalized/not_new_scientific_knowledge/pointed-variational-polynomial-source-reconstruction.md`.
+
+This is a parent-theory bridge, not the conjectural correspondence.  It proves full faithfulness
+only before infinite-jet completion and source descent.  The open residue is to characterize the
+essential image of compatible pointed Fréchet towers under differential-birational source changes
+and calibrated correspondences.
+
+The scalar rational tail classification places an exact boundary on that extension.  One-sided
+degree-expanding maps on a fixed projective line force every persistent HT tail to collapse to a
+finite-holonomy parabolic current.  Minimal projective information can persist through two-sided
+correspondences only by paying the extensive topological capacity law
+
+```text
+degree * hyperbolic excess <= 2 genus + puncture budget - 2.  (3b)
+```
+
+Therefore the nonlinear essential image cannot be a one-sided category of maps.  Its persistent
+sector must retain correspondence topology as part of the source-effective lift.
+
 ## 4. Coupling reconstruction conjecture
 
 **[CONJECTURE — CRITICAL TATE GALOIS CORRESPONDENCE]** There is a category `HT_src` of regular
@@ -560,6 +599,9 @@ or that inserts the global germ into `beta_F`, fails the target.
 - [x] prove principal-source criticalization is presentation invariant
 - [x] exhibit one nontrivial criticalization morphism across natural HT families
 - [x] prove calibrated boundary uniqueness in the constant joint-fixed-field regime
+- [x] prove pointed variational full faithfulness for finite nonlinear polynomial sources
+- [x] construct a concrete nonlinear noncommuting source action on a free HT field
+- [x] isolate the one-sided-map collapse and correspondence-capacity positive successor
 - [x] state a falsifiable categorical reconstruction conjecture
 - [x] state the common-obstruction hypothesis without asserting RH
 - [ ] define source equivalence and calibrated critical-Tate equivalence without circular reference to

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.MobiusIncidenceKMSEntropyProduction
 import GaloisForLFunctions.RHTower.MobiusCriticalClockWeakConvergence
+import GaloisForLFunctions.RHTower.PrimeArchCentralMomentGerm
 
 open Complex MeasureTheory Set Filter
 open scoped BigOperators Topology ENNReal NNReal
@@ -406,5 +407,76 @@ theorem tendsto_finiteIncidenceKMSResponse_squarefreeMobiusCriticalFiniteIndex
   filter_upwards with N
   rw [finiteIncidenceKMSResponse_squarefreeMobiusCriticalFiniteIndex hsigma N hz,
     squarefreeMobiusCriticalFiniteGapResponse_eq_truncated hsigma N z]
+
+private theorem tendsto_posImag_nhdsWithin_zero : Tendsto
+    (fun eta : ℝ => Complex.I * (eta : ℂ))
+    (nhdsWithin 0 (Ioi 0)) (nhds (0 : ℂ)) := by
+  have hcont : ContinuousAt (fun eta : ℝ => Complex.I * (eta : ℂ)) 0 := by
+    fun_prop
+  simpa using hcont.tendsto.mono_left nhdsWithin_le_nhds
+
+/-- The universal incidence response cannot agree even eventually along the positive imaginary
+axis with the analytic continued prime--archimedean trace germ. -/
+theorem not_eventuallyEq_continuedPrimeArchSourceRelativeTrace_universalGapResponse_posImag :
+    ¬ (fun eta : ℝ =>
+        continuedPrimeArchSourceRelativeTrace (Complex.I * eta)) =ᶠ[
+          nhdsWithin 0 (Ioi 0)]
+      (fun eta : ℝ =>
+        mobiusIncidenceUniversalGapResponse (Complex.I * eta)) := by
+  intro heq
+  have hmap_mem : ∀ᶠ eta : ℝ in nhdsWithin 0 (Ioi 0),
+      Complex.I * (eta : ℂ) ∈ ({0} : Set ℂ)ᶜ := by
+    filter_upwards [self_mem_nhdsWithin] with eta heta
+    simp only [mem_compl_iff, mem_singleton_iff]
+    exact mul_ne_zero Complex.I_ne_zero (by exact_mod_cast heta.ne')
+  have hmap : Tendsto
+      (fun eta : ℝ => Complex.I * (eta : ℂ))
+      (nhdsWithin 0 (Ioi 0)) (nhdsWithin 0 ({0} : Set ℂ)ᶜ) :=
+    tendsto_nhdsWithin_iff.mpr ⟨tendsto_posImag_nhdsWithin_zero, hmap_mem⟩
+  have htraceFinite :=
+    _root_.HTGeometry.tendsto_div_sub_of_hasDerivAt_eq_zero
+      analyticAt_continuedPrimeArchSourceRelativeTrace.differentiableAt
+      continuedPrimeArchSourceRelativeTrace_zero
+  have htraceQuotient : Tendsto
+      (fun eta : ℝ =>
+        continuedPrimeArchSourceRelativeTrace (Complex.I * eta) /
+          (Complex.I * eta))
+      (nhdsWithin 0 (Ioi 0))
+      (nhds (deriv continuedPrimeArchSourceRelativeTrace 0)) := by
+    simpa only [Function.comp_apply, sub_zero] using htraceFinite.comp hmap
+  have hquotientEq :
+      (fun eta : ℝ =>
+        continuedPrimeArchSourceRelativeTrace (Complex.I * eta) /
+          (Complex.I * eta)) =ᶠ[nhdsWithin 0 (Ioi 0)]
+      (fun eta : ℝ =>
+        mobiusIncidenceUniversalGapResponse (Complex.I * eta) /
+          (Complex.I * eta)) :=
+    heq.mono (fun eta h => by
+      exact congrArg (fun w : ℂ => w / (Complex.I * eta)) h)
+  have huniversal := htraceQuotient.congr' hquotientEq
+  exact
+    (not_tendsto_mobiusIncidenceUniversalGapResponse_I_mul_div_nhds
+      (deriv continuedPrimeArchSourceRelativeTrace 0)) huniversal
+
+/-- There is no punctured upper neighborhood of the centered origin on which the universal
+incidence response equals the analytic continued prime--archimedean trace. -/
+theorem not_exists_upperNeighborhood_continuedPrimeArchSourceRelativeTrace_eq_universalGapResponse :
+    ¬ ∃ U : Set ℂ, U ∈ nhds (0 : ℂ) ∧
+      ∀ z ∈ U, 0 < z.im →
+        continuedPrimeArchSourceRelativeTrace z =
+          mobiusIncidenceUniversalGapResponse z := by
+  rintro ⟨U, hU, hagree⟩
+  have hmem : ∀ᶠ eta : ℝ in nhdsWithin 0 (Ioi 0),
+      Complex.I * (eta : ℂ) ∈ U := tendsto_posImag_nhdsWithin_zero hU
+  have heq :
+      (fun eta : ℝ =>
+        continuedPrimeArchSourceRelativeTrace (Complex.I * eta)) =ᶠ[
+          nhdsWithin 0 (Ioi 0)]
+      (fun eta : ℝ =>
+        mobiusIncidenceUniversalGapResponse (Complex.I * eta)) := by
+    filter_upwards [hmem, self_mem_nhdsWithin] with eta hetaU heta
+    exact hagree _ hetaU (by simpa using heta)
+  exact
+    not_eventuallyEq_continuedPrimeArchSourceRelativeTrace_universalGapResponse_posImag heq
 
 end RHTower

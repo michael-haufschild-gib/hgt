@@ -247,6 +247,13 @@ The boundary is exact.  This theorem reconstructs the mixed-constraint class mod
 full analytic germ; it is abelian and height one; and its completeness uses the separately audited
 elliptic-gamma atomic theorem.  It does not prove the general constraint-Hodge correspondence.
 
+The multiplicative form now supplies the first integral effectivity theorem.  Its source quotient
+is `Z[C/H_3]`, and an `m`-th root modulo DA exists exactly when every coefficient of the common
+integral divisor is divisible by `m`; the root is unique modulo DA and the coefficient gcd is its
+maximum root order.  Thus the height-one class already realizes source-purity, paired analytic
+comparison, and integral arithmetic reconstruction in one object.  See
+`../2-fully-proven/new_scientific_knowledge/triptic-ht-kummer-content-root-classification.md`.
+
 ## Rank-two localization and noncompressible boundary field `[PROVED ON PAPER + LEAN CORE]`
 
 The proposed full higher residue complex is overbuilt in the generic constant mixed-constraint

@@ -74,7 +74,7 @@ Now `W=F-r Psi(z+a)` is `1`-periodic and has constant increments `Delta_sigma W=
 
 The abstract class therefore contains no functions beyond translated scalar-affine copies of the elliptic-gamma logarithmic derivative.
 
-## Consequent spectrum theorem `[PROVED, BUT NOT INDEPENDENT]`
+## Consequent spectrum theorem `[PROVED; SCIENTIFIC CLAIM SPLIT OUT]`
 
 Every simple paired quasi-elliptic primitive has exact differential-algebraic translation spectrum
 
@@ -202,7 +202,11 @@ The difference of two solutions of the four constraint equations has periods `1,
 
 Choose `h notin H`. The exact spectrum makes `Delta_h F` hypertranscendental. If `F` were DA, all its translates and translation differences would be DA. Hence `F` is hypertranscendental.
 
-This realizes the constraint-first principle for elliptic gamma, but the collapse theorem shows that the present one-pole axioms do not define a scientifically broader class.
+This realizes the constraint-first principle for elliptic gamma.  The collapse theorem shows that
+the present one-pole axioms do not define a scientifically broader class.  It does **not** show
+that the consequent theorem about the actual elliptic gamma function is known.  That scientific
+claim is now separated in
+`../new_scientific_knowledge/irrational-elliptic-gamma-hypertranscendence-matroid.md`.
 
 ## Elliptic gamma as a corollary
 
@@ -234,7 +238,13 @@ The proof mechanism is the combination of joint-constant collapse, simultaneous 
 
 ### Preliminary literature verdict
 
-Primary-source searches through 2026 found no theorem using this terminology. That absence is irrelevant to scientific novelty because the class itself collapses to a known special-function object. The card is retained to prevent the same false abstraction from being promoted again.
+Primary-source searches through 2026 found no theorem using this terminology.  The abstract class
+still fails novelty because it collapses to a known special-function object.  However, Kato's 2021
+paper explicitly states that differential algebraicity for non-rational periods was unknown.  The
+actual irrational elliptic-gamma hypertranscendence theorem, its exact spectrum, and its defect
+matroid therefore require a separate novelty and significance verdict; collapse of the class is
+not evidence against novelty of a theorem about the resulting function.  This card is retained to
+prevent the false abstraction from being promoted, while the function theorem is split out.
 
 ## Boundaries
 
@@ -252,7 +262,9 @@ Formalizing the analytic theorem would presently be theatre: the local tree has 
 - [x] Exact theorem and constraint-defined class stated.
 - [x] Paper proof written without numerical discovery.
 - [x] Exact spectrum strengthened to the complete finite-shift matroid.
-- [ ] Independent significance: failed because the one-pole class equals translated scalar-affine elliptic-gamma logarithmic derivatives.
+- [ ] Independent significance of the **abstract class**: failed because it equals translated
+  scalar-affine elliptic-gamma logarithmic derivatives.  The actual special-function theorem has a
+  separate significance pass.
 - [x] Exact/equivalent/stronger preliminary literature search across primary adjacent sources.
 - [x] Elliptic gamma recovered as a consequential corollary rather than used as the definition.
 - [ ] Independent expert audit of the paired telescoping descent remains relevant to the elliptic-gamma theorem.
@@ -263,3 +275,6 @@ Formalizing the analytic theorem would presently be theatre: the local tree has 
 - 2026-07-10 - Proved constraint uniqueness, exact rank-three DA spectrum, and the complete finite-shift differential-dependence matroid for the abstract class.
 - 2026-07-10 - Demoted after the anti-rediscovery gate: the one-pole hypotheses force the increments to be translated scalar theta logarithmic derivatives and the primitive to be a translated scalar-affine elliptic-gamma logarithmic derivative. The apparent class was only a renaming.
 - 2026-07-10 - Corrected the collapse statement to include a common argument translate. Cross-curve orbit-residue reciprocity aligns the two pole classes modulo `H`; the exact spectrum and anti-novelty verdict are unchanged.
+- 2026-07-16 - Corrected the scope of the anti-novelty verdict.  Collapse demotes the proposed
+  class, not the theorem resolving the irrational elliptic-gamma regime; that theorem was split to
+  a candidate-new card after checking Kato's explicit open statement.

@@ -3,7 +3,7 @@
 - **ID:** `waring-quantum-torus-universal-horizon`
 - **Stage:** 1-in-progress
 - **Type:** THEOREM / HYPERTRANSCENDENCE / QUANTUM TORUS / WARING DECOMPOSITION
-- **Scientific status:** `[PAPER PROOF COMPLETE SUBJECT TO LINE-BY-LINE CHECK] [LEAN PENDING] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PAPER PROOF COMPLETE SUBJECT TO LINE-BY-LINE CHECK] [PRINCIPAL SYMBOL LEAN-PROVEN] [UNIVERSAL EXISTENCE LEAN-PENDING] [NOVELTY UNVERIFIED]`
 - **Depends on:** `generalized-clifford-ulrich-hypertranscendence-horizons`
 
 ## 1. Main theorem
@@ -176,10 +176,23 @@ existence as a plausible RH bottleneck.
 
 ## 9. Lean route
 
-1. Finish and axiom-audit the general principal-symbol kernel theorem.
-2. Formalize an abstract q-commuting family and the root-of-unity quantum multinomial theorem.
-3. Construct the finite quantum torus with its ordered basis and faithful regular action.
+1. **Completed:** finish and axiom-audit the general principal-symbol kernel theorem.
+2. **Principal-symbol half completed:** an abstract finite `q`-commuting family with linearly
+   independent ordered quadratic monomials has an explicit exterior decoder; injective linear
+   coefficient families preserve maximal rank; shift suspension preserves it exactly.  The
+   all-degree root-of-unity quantum multinomial theorem remains.
+3. **Completed for the principal-symbol surface:** construct an explicit finite cyclic phase-space
+   representation, prove exact ordered `q`-commutation, prove its ordered quadratic monomials
+   linearly independent, and instantiate maximal commutator rank.  The all-degree ordered-monomial
+   basis is no longer needed for rank, but the generator power identity remains necessary for the
+   scalar horizon.
 4. Prove equation `(7)` and injectivity from a spanning linear family.
 5. Formalize pure-power spanning and coefficient absorption over an algebraically closed field.
 6. Prove smoothness implies the Waring linear family spans.
 7. Instantiate the exact horizon and maximal commutator-rank theorem.
+
+The completed theorem surfaces are in
+`GaloisForLFunctions.HTGeometry.QuantumTorusPrincipalSymbol` and
+`GaloisForLFunctions.HTGeometry.FiniteQuantumTorusRepresentation`.  They isolate the remaining
+burden sharply: universal existence now requires the Waring packet and the all-degree power
+identity; no representation-existence or commutator-rank assumption remains hidden.

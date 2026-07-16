@@ -3,8 +3,9 @@
 - **ID:** `elliptic-gamma-differential-algebraic-anomaly`
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE / COHOMOLOGICAL REFORMULATION / QFT INTERPRETATION
-- **Scientific status:** `[CONJECTURE: ACTUAL ELLIPTIC-GAMMA NONVANISHING]`
-  `[UNCONDITIONAL ABSTRACT LEAN THEOREM]`
+- **Scientific status:** `[ACTUAL ELLIPTIC-GAMMA NONVANISHING PROVED ON PAPER]`
+  `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [UNCONDITIONAL ABSTRACT LEAN THEOREM]`
+  `[FULL ANALYTIC LEAN FORMALIZATION OPEN]`
 - **Working title:** *Hypertranscendence as an Anomaly: The Holographic Horizon of a
   Four-Dimensional Quantum Field Theory*
 - **Statement:** In the irrational-period phase, the free-chiral superconformal index has
@@ -12,7 +13,7 @@
   global trivializing section.  Its hypertranscendence is exactly the nonvanishing of this
   differential-algebraic cocycle obstruction.
 
-## Claim `[CONJECTURE: ANALYTIC INSTANTIATION OPEN]`
+## Claim `[PROVED ON PAPER]`
 
 Let `1,tau,sigma` be linearly independent over `Q`, let
 
@@ -50,7 +51,9 @@ The second equivalence is not an analogy.  If `b in B^*` also satisfies
 meromorphic function fixed by these translations is constant.  Hence `G` differs from `b` by a
 nonzero constant and belongs to `B`.  Conversely, `G in B^*` itself trivializes the cocycle.
 
-Therefore the independent-period hypertranscendence theorem is equivalent to nontriviality of a
+The independent-period hypertranscendence theorem is now proved in
+`../2-fully-proven/new_scientific_knowledge/irrational-elliptic-gamma-hypertranscendence-matroid.md`.
+Therefore it is equivalent to nontriviality of a
 locally DA constraint cocycle which becomes trivial in the full meromorphic world.  This is the
 precise sense in which the protected observable has a **differential-algebraic anomaly**.
 
@@ -171,8 +174,9 @@ location-blind and do not qualify.
 4. `MultiplicativeTranslationCharacter` proves the character law forced by a multiplicative
    translation cocycle.
 5. `QuotientCharacterAnnihilator` proves that algebraic quotient characters recover `H` exactly.
-6. The open analytic instantiation is the actual elliptic gamma, the DA sector `B`, theta
-   membership, and the irrational-period hypertranscendence/matroid theorem.
+6. The actual elliptic-gamma, theta-membership, and irrational-period
+   hypertranscendence/matroid theorem are proved on paper in the cited stage-2 card.  Their Lean
+   formalization remains open.
 
 ## Gates
 
@@ -182,9 +186,11 @@ location-blind and do not qualify.
 - [x] Topological-versus-algebraic visibility gap formalized unconditionally in Lean.
 - [x] Physical meaning and prohibited black-hole overclaim stated.
 - [ ] DA meromorphic sector constructed as a translation-stable differential field in Lean.
-- [ ] Actual elliptic-gamma multiplier cocycle instantiated in that sector.
-- [ ] Independent-period elliptic-gamma hypertranscendence formalized unconditionally.
-- [ ] Nonzero DA cohomology class packaged rather than represented only by the no-trivializer law.
+- [x] Actual elliptic-gamma multiplier cocycle and nonvanishing proved on paper.
+- [x] Independent-period elliptic-gamma hypertranscendence and exact defect matroid proved on paper.
+- [ ] Independent-period elliptic-gamma hypertranscendence formalized unconditionally in Lean.
+- [x] Nonzero DA cohomology class proved on paper; abstract no-internal-primitive criterion
+  Lean-formalized.
 - [ ] Connecting identity `partial([G])=[a]` formalized for the multiplicative coefficient quotient.
 - [ ] Differential-Galois character reconstruction instantiated on the actual quotient family.
 - [ ] Comparison with the gamma gerbe constructed or the transgression conjecture retired.

@@ -65,6 +65,177 @@ field `bold_kappa_x` is invariant under analytic source-presentation equivalence
 The curvature field can be nonzero and still globally integrable. Nonzero curvature and
 nonintegrability are distinct.
 
+## Pointed Spencer--Helmholtz sharpening `[FINITE MODEL PROVED; HT TOTALIZATION CONJECTURAL]`
+
+The phrase “source curvature” is too loose until its local equations and primitive are named.
+Let `F=(F_i)` be a finite source map on jet coordinates `u_j^b`, and let
+
+```text
+J_(i;a,b,j)=partial(D^a F_i)/partial(u_j^b).                (5c)
+```
+
+Two independent compatibility tensors are forced.
+
+```text
+Helmholtz_(i;a,b,j,c,k)
+  = partial_(u_k^c) J_(i;a,b,j)
+    - partial_(u_j^b) J_(i;a,c,k),                         (5d)
+
+Spencer_(i;a,b,j)
+  = J_(i;a+1,b,j)-D J_(i;a,b,j)-J_(i;a,b-1,j),             (5e)
+```
+
+with the last term zero at `b=0`.  Equation `(5d)` is vertical closedness of the variational
+one-form.  Equation `(5e)` is the commutator identity
+
+```text
+[partial_(u_j^(b+1)),D]=partial_(u_j^b).                   (5f)
+```
+
+Every actual finite differential-polynomial source map satisfies `(5d)`--`(5e)`.  Conversely, at
+the finite complex polynomial level the full Jacobian field plus one calibrated value reconstructs
+the source map exactly.  The Jacobian without the calibration is nonfaithful already for `x` and
+`x+1`.  This pointed reconstruction and a nonlinear noncommuting Hénon/translation source pair are
+Lean-formalized in `MvPolynomialJacobianFDeriv.lean`; the Spencer commutator core is already
+Lean-formalized in `DifferentialUnitEquation.lean`.
+
+The infinite HT object should combine vertical variation and source descent rather than treating
+them as unrelated curvatures.  On the bifiltered Kähler--Tate correspondence object, let
+
+```text
+d_tot=d_src+(-1)^p d_var,
+omega_F=(vertical Frechet form, source-boundary increments) in Tot^1.   (5g)
+```
+
+The mixed component of `d_tot omega_F` is precisely the typed compatibility between source
+restriction and variational realization.  A global source operation `Phi_F` is a calibrated
+primitive
+
+```text
+omega_F=d_tot Phi_F.                                       (5h)
+```
+
+> **[CONJECTURE -- POLARIZED INTEGRAL SPENCER--HELMHOLTZ EFFECTIVITY.]**  For regular
+> source-minimal constrained HT germs, the refined effectivity fibration is the moduli of
+> source-pure primitives `(5h)` of critically bornologically completed forms `(5g)` satisfying:
+>
+> 1. Helmholtz and Spencer closedness;
+> 2. source-face descent and differential-birational covariance;
+> 3. integral/ramified period structure;
+> 4. reflected Hermitian polarization;
+> 5. maximal vertical Kolchin growth and thin source-relative amplitude.
+>
+> The observation functor from such primitives to analytic HT germs is an equivalence on its
+> essential image.  The analytic germ or its divisor is not part of `omega_F`.
+
+This gives the obstruction report a single explicit dictionary.
+
+| Report class | Exactness face of `(5g)`--`(5h)` |
+|---|---|
+| `O1` orientation | the primitive or its tangent misses the positive real polarized locus |
+| `O2` critical all-scale estimate | `d_tot` fails to have closed/effective range in the critical product bornology |
+| `O3` spectral realization | the realized primitive complex is nonperfect or its distinguished section is not effective |
+| `O4` multiplicity/divisibility | the closed form has no lift to the integral/ramified lattice |
+| `O5` non-circular comparison | `omega_F` is not constructed source-purely before the target divisor |
+| `O6` typed bridge | the mixed Spencer component of `d_tot omega_F` does not vanish |
+| `O7` arithmetic rigidity | the primitive lies outside the arithmetic essential image despite complex exactness |
+
+Continuation, monodromy, and noncanonical boundary conditions are respectively failure to extend
+the primitive, a closed non-exact period class, and a noncontractible primitive fibre.  They are
+not declared equal scalar invariants.
+
+The finite model also sharpens the map/correspondence boundary.  One-sided degree-expanding scalar
+rational protocols force every persistent HT tail into a finite-holonomy parabolic current.
+Persistent projective curvature requires two-sided correspondence topology satisfying
+
+```text
+degree * hyperbolic excess <= 2 genus + puncture budget - 2.  (5i)
+```
+
+Thus the source differential `d_src` in `(5g)` must live on a correspondence/face category, not
+only on an iteration category of maps.
+
+### Parent collision and surviving novelty residue
+
+Variational bicomplexes, Spencer complexes, formal integrability, Helmholtz conditions, global
+inverse problems, and difference variational bicomplexes are parent mathematics.  In particular:
+
+- Giachetta--Mangiarotti--Sardanashvily compute the infinite-jet variational bicomplex and solve
+  the finite-order global inverse problem, https://arxiv.org/abs/math/0006074;
+- Bucataru--Constantinescu formulate global Helmholtz conditions,
+  https://arxiv.org/abs/0908.1631;
+- Peng--Hydon construct the difference variational bicomplex,
+  https://arxiv.org/abs/2307.13935;
+- differential substitutions and their Fréchet operators are established parent theory, for
+  example https://arxiv.org/abs/solv-int/9509006.
+
+Therefore `(5d)`--`(5h)` as generic jet geometry are `[BRIDGE]`, not new science.  The
+novelty-unverified residue is the HT essential-image theorem with the simultaneously forced
+critical bornology, source correspondence descent, integral periods, polarization, maximal
+Kolchin growth, and thin nonholonomic boundary, followed by conservative comparison of genuinely
+different analytic realizations.
+
+## First natural analytic effectivity object: the irrational elliptic-gamma boundary class
+
+The paired elliptic-gamma source makes the degree-zero effectivity mechanism literal.  Let `M` be
+the field of meromorphic functions, let `B` be its differential-algebraic subfield over `C(z)`,
+and work in the 1-periodic sector with translations by `tau` and `sigma`.  For
+
+```text
+F=partial_z log Gamma(z;tau,sigma)
+```
+
+the source boundary is
+
+```text
+boundary(F)=(Delta_sigma F,Delta_tau F)
+           =(lambda_tau,lambda_sigma) in B x B.             (5j)
+```
+
+When `1,tau,sigma` are `Q`-independent, the actual elliptic-gamma theorem now proves:
+
+```text
+F notin B,
+M^(T_tau,T_sigma)=C subset B.                               (5k)
+```
+
+Consequently `(5j)` has a primitive in `M` but no primitive in `B`.  It is a nonzero relative
+effectivity class: locally finite-law, globally hypertranscendental.  Equivalently, the coset of
+`F` in `M/B` is a nonzero joint-fixed class whose connecting cocycle is `(5j)`.
+
+At the same time, the pair of boundary observations plus one scalar calibration reconstructs `F`
+uniquely.  Each single boundary is nonconservative because it forgets a nonconstant elliptic
+field; the pair forgets only constants; calibration kills that final fibre.  The abstract kernel,
+calibration, and relative-effectivity equivalences are Lean-formalized in
+`DifferenceDifferential.lean`.  The analytic theorem and exact defect matroid are proved on paper
+in
+`../2-fully-proven/new_scientific_knowledge/irrational-elliptic-gamma-hypertranscendence-matroid.md`.
+
+This is the first natural analytic positive model of “different representations of one object”:
+the two boundary functors are individually nonconservative but jointly conservative on the
+calibrated primitive fibre.  It also corrects a false intuition: hypertranscendence does not force
+infinitely many source constraints.  Finite nonlocal compatibility can determine a primitive with
+maximal differential-jet freedom.
+
+> **[CONJECTURE -- RELATIVE EFFECTIVITY CORE.]**  Every regular source-minimal HT function selected
+> by finite-law nonlocal constraints determines a nonzero invariant class in a source-relative
+> complexity quotient `M/B_src`, or equivalently a nonzero class in the kernel
+>
+> ```text
+> H^1(G_src,B_src) -> H^1(G_src,M),                          (5l)
+> ```
+>
+> and the full six-channel HT object is the minimal polarized, critically completed, integral,
+> source-pure refinement of `(5l)` on which the analytic realization family is jointly
+> conservative.
+
+The plain cohomology class `(5l)` is not yet the unified field theory: it is abelian and forgets
+source-labelled higher presentations, critical bornology, polarization, integral structure, and
+the distinguished effective section.  The normal-crossing exterior-coherence no-go proves that
+an ordinary DA quotient can erase essential higher source data.  **Positive successor:** use
+`(5l)` as the unavoidable degree-zero truncation of the derived source-presentation object, not as
+its replacement.
+
 ## Curvature-fiber no-go and positive refinement
 
 Curvature does not determine a finite clock action. For a split edge with `b=1-i p`, every

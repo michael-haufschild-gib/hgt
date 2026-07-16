@@ -151,6 +151,134 @@ theorem CommutingDifferenceDifferentialField.defect_eq_zero_of_jointFixed
     (hx : JointFixed S x) (i : ι) : S.defect i x = 0 := by
   rw [CommutingDifferenceDifferentialField.defect, hx i, sub_self]
 
+/-! ### Joint boundary conservativity and relative effectivity -/
+
+/-- The complete family of additive source-boundary observations. -/
+def CommutingDifferenceDifferentialField.boundaryFingerprint
+    {ι C K : Type*} [Field C] [Field K] [Algebra C K] [Differential K]
+    (S : CommutingDifferenceDifferentialField ι C K) (x : K) : ι → K :=
+  fun i => S.defect i x
+
+/-- The source-boundary family together with one additive calibration. -/
+def CommutingDifferenceDifferentialField.pointedBoundaryFingerprint
+    {ι C K A : Type*} [Field C] [Field K] [Algebra C K] [Differential K]
+    [AddCommGroup A]
+    (S : CommutingDifferenceDifferentialField ι C K) (calibration : K →+ A) (x : K) :
+    (ι → K) × A :=
+  (S.boundaryFingerprint x, calibration x)
+
+/-- Two primitives have the same complete boundary precisely when their difference is fixed by
+every source automorphism. -/
+theorem CommutingDifferenceDifferentialField.boundaryFingerprint_eq_iff_sub_jointFixed
+    {ι C K : Type*} [Field C] [Field K] [Algebra C K] [Differential K]
+    (S : CommutingDifferenceDifferentialField ι C K) (x y : K) :
+    S.boundaryFingerprint x = S.boundaryFingerprint y ↔ JointFixed S (x - y) := by
+  constructor
+  · intro h i
+    have hi := congrFun h i
+    simp only [boundaryFingerprint, defect] at hi
+    rw [map_sub]
+    linear_combination hi
+  · intro h
+    funext i
+    have hi := h i
+    simp only [boundaryFingerprint, defect]
+    rw [map_sub] at hi
+    linear_combination hi
+
+/-- The kernel relation of the pointed boundary is exactly the joint-fixed gauge killed by the
+calibration. -/
+theorem CommutingDifferenceDifferentialField.pointedBoundaryFingerprint_eq_iff
+    {ι C K A : Type*} [Field C] [Field K] [Algebra C K] [Differential K]
+    [AddCommGroup A]
+    (S : CommutingDifferenceDifferentialField ι C K) (calibration : K →+ A) (x y : K) :
+    S.pointedBoundaryFingerprint calibration x = S.pointedBoundaryFingerprint calibration y ↔
+      JointFixed S (x - y) ∧ calibration (x - y) = 0 := by
+  constructor
+  · intro h
+    refine ⟨S.boundaryFingerprint_eq_iff_sub_jointFixed x y |>.mp
+      (congrArg Prod.fst h), ?_⟩
+    have hcal := congrArg Prod.snd h
+    simpa [pointedBoundaryFingerprint] using sub_eq_zero.mpr hcal
+  · rintro ⟨hfixed, hcal⟩
+    apply Prod.ext
+    · exact S.boundaryFingerprint_eq_iff_sub_jointFixed x y |>.mpr hfixed
+    · apply sub_eq_zero.mp
+      simpa using hcal
+
+/-- Exact conservativity criterion: boundary observations plus calibration reconstruct the
+primitive if and only if the calibration separates the residual joint-fixed gauge. -/
+theorem CommutingDifferenceDifferentialField.pointedBoundaryFingerprint_injective_iff
+    {ι C K A : Type*} [Field C] [Field K] [Algebra C K] [Differential K]
+    [AddCommGroup A]
+    (S : CommutingDifferenceDifferentialField ι C K) (calibration : K →+ A) :
+    Function.Injective (S.pointedBoundaryFingerprint calibration) ↔
+      ∀ z, JointFixed S z → calibration z = 0 → z = 0 := by
+  constructor
+  · intro hinjective z hfixed hcal
+    apply hinjective
+    apply S.pointedBoundaryFingerprint_eq_iff calibration z 0 |>.mpr
+    simpa using And.intro hfixed hcal
+  · intro hseparates x y hxy
+    have hkernel := S.pointedBoundaryFingerprint_eq_iff calibration x y |>.mp hxy
+    exact sub_eq_zero.mp (hseparates (x - y) hkernel.1 hkernel.2)
+
+/-- A nonzero joint-fixed gauge proves that the unpointed boundary family is nonconservative. -/
+theorem CommutingDifferenceDifferentialField.boundaryFingerprint_not_injective_of_jointFixed
+    {ι C K : Type*} [Field C] [Field K] [Algebra C K] [Differential K]
+    (S : CommutingDifferenceDifferentialField ι C K) (z : K)
+    (hfixed : JointFixed S z) (hz : z ≠ 0) :
+    ¬ Function.Injective S.boundaryFingerprint := by
+  intro hinjective
+  apply hz
+  apply hinjective
+  apply S.boundaryFingerprint_eq_iff_sub_jointFixed z 0 |>.mpr
+  simpa using hfixed
+
+/-- Calibration gives the positive successor to boundary nonconservativity whenever it separates
+all joint-fixed gauges. -/
+theorem CommutingDifferenceDifferentialField.pointedBoundaryFingerprint_injective
+    {ι C K A : Type*} [Field C] [Field K] [Algebra C K] [Differential K]
+    [AddCommGroup A]
+    (S : CommutingDifferenceDifferentialField ι C K) (calibration : K →+ A)
+    (hseparates : ∀ z, JointFixed S z → calibration z = 0 → z = 0) :
+    Function.Injective (S.pointedBoundaryFingerprint calibration) :=
+  (S.pointedBoundaryFingerprint_injective_iff calibration).mpr hseparates
+
+/-- A source boundary which is internal to `B` although its primitive escapes `B`. -/
+def CommutingDifferenceDifferentialField.RelativeBoundaryEscape
+    {ι C K : Type*} [Field C] [Field K] [Algebra C K] [Differential K]
+    (S : CommutingDifferenceDifferentialField ι C K) (B : AddSubgroup K) (x : K) : Prop :=
+  (∀ i, S.defect i x ∈ B) ∧ x ∉ B
+
+/-- **Relative boundary-effectivity criterion.** If every joint-fixed gauge already belongs to
+`B`, then a boundary which is locally `B`-valued has no primitive in `B` exactly when its given
+ambient primitive escapes `B`. -/
+theorem CommutingDifferenceDifferentialField.relativeBoundaryEscape_iff
+    {ι C K : Type*} [Field C] [Field K] [Algebra C K] [Differential K]
+    (S : CommutingDifferenceDifferentialField ι C K) (B : AddSubgroup K) (x : K)
+    (hfixed : ∀ z, JointFixed S z → z ∈ B) :
+    S.RelativeBoundaryEscape B x ↔
+      (∀ i, S.defect i x ∈ B) ∧
+        ¬ ∃ b : B, ∀ i, S.defect i (b : K) = S.defect i x := by
+  constructor
+  · rintro ⟨hlocal, hescape⟩
+    refine ⟨hlocal, ?_⟩
+    rintro ⟨b, hboundary⟩
+    apply hescape
+    have hfingerprint : S.boundaryFingerprint x = S.boundaryFingerprint (b : K) := by
+      funext i
+      exact (hboundary i).symm
+    have hjoint : JointFixed S (x - (b : K)) :=
+      (S.boundaryFingerprint_eq_iff_sub_jointFixed x (b : K)).mp hfingerprint
+    have hsub : x - (b : K) ∈ B := hfixed _ hjoint
+    simpa using B.add_mem hsub b.property
+  · rintro ⟨hlocal, hnoPrimitive⟩
+    refine ⟨hlocal, ?_⟩
+    intro hx
+    apply hnoPrimitive
+    exact ⟨⟨x, hx⟩, fun _ => rfl⟩
+
 /-- One linear differential relation among compatible primitives gives one common primitive `g`
 in all simultaneous telescoping equations. -/
 theorem simultaneous_telescoping_of_linear_relation
