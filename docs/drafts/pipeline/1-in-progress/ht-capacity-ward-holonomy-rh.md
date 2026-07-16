@@ -1011,25 +1011,41 @@ boundary self-symbol.
 
 ## Exact next construction
 
-At derivative-clock depth `N` and finite prime-power aperture `S`, construct from source
-coefficients alone:
+The characteristic transfer no longer has to be guessed from the anomaly colligation.  The actual
+normalized Möbius shift is contractive and, after the safe squarefree correction and Gamma
+completion, has transfer
 
-1. the full anomaly colligation `(T_(N,S),beta_(N,S),delta_(N,S),alpha_(N,S))` -- its
-   prime-power Hilbert-scale, faithful observations, omitted-tail anomaly, factorial Bianchi
-   current, and Gamma unit boundary symbol are now assembled on paper in
-   `../2-fully-proven/not_new_scientific_knowledge/von-mangoldt-gamma-clock-descent-anomaly.md`;
-2. its affine characteristic/Green transform in the factorial Gamma polarization;
-3. a causal feature matrix `II_(P,N,S)^src`; and
-4. the finite identity
+```text
+T_sigma(s)=1/(zeta(sigma)X_sq(s)),
+2 d log T_sigma=Q_sq.                                   (23a)
+```
+
+This is proved in
+`../2-fully-proven/not_new_scientific_knowledge/mobius-squarefree-reciprocal-projective-transfer.md`.
+The critical squarefree Möbius half-density score has squared norm four, while the local
+normalized/moving-base Gamma metrics are now uniformly congruent by
+`../3-formalized/gamma-moving-base-capacity-congruence.md`.
+
+The exact construction is therefore:
+
+1. place the finite Möbius contractions, the Gamma moving-base comparisons, and the Laurent
+   first-trace cocycle in the full source-depth by observable-order Gevrey-one scale cone;
+2. take their graph closure in the polarized derived HT completion, not in a fixed Hardy or Fock
+   space;
+3. prove that the boundary transgression of the completed four-unit Fisher score is the Hardy
+   vector `c_sq directSum ell_E`; and
+4. at every finite Cauchy packet recover the identity
 
    ```text
    4G_P-r_(P,N,S)r_(P,N,S)^*
      =II_(P,N,S)^src (II_(P,N,S)^src)^*.                 (24)
    ```
 
-The limit must be taken in the source-rigged graph topology forced by the prime-log Cauchy-rank
-no-go, not in one fixed factorial Fock carrier.  Compatibility first in `N`, then in `S`, must
-identify `r_(P,N,S)` with `r_P` through the fixed-current localization theorem.
+The normal component in step 3 is not an imposed response: `(23a)` and fixed-current localization
+already identify it with `ell_E`.  The only remaining substantive theorem is nonexpansiveness of
+this derived boundary transgression.  Every finite transfer is causal, so a fixed-polarization
+limit would force the normal component to vanish; the nonzero opposite component can occur only as
+the derived defect of the noncommuting scale limit identified by general HT completion theory.
 
 If `(24)` fails, its coherent negative part is still a nontrivial positive result: it defines the
 **affine Ward-defect field**, an obstruction to conservative realization which is invisible to
@@ -1061,6 +1077,9 @@ That enlargement is the positive successor demanded by a no-go; it is not an RH 
 - [x] prove and Lean-formalize the finite Pluecker/Fisher-to-Laurent half-density isometry
 - [x] prove and Lean-formalize the reciprocal projective-horizon connection identity and identify
       its squarefree anti-causal component with `ell_E`
+- [x] identify the reciprocal squarefree projective transfer with the completed characteristic
+      transfer of the actual contractive Möbius channel
+- [x] prove and Lean-formalize bounded local capacity congruence of the two Gamma source charts
 - [ ] construct the cofinal Pluecker--Tate tangent bundle and first-trace transgression
 - [ ] prove its capacity metric is the one-particle Hardy metric
 - [ ] prove the finite Gauss--Ward factorization `(24)` and pass compatibly to `(21)`

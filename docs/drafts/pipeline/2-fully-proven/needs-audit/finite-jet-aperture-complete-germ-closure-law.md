@@ -1,7 +1,7 @@
 # Finite jets retain maximal HT; one complete germ closes the boundary modulus
 
 - **ID:** `finite-jet-aperture-complete-germ-closure-law`
-- **Stage:** 3-formalized
+- **Stage:** 2-fully-proven / needs-audit
 - **Type:** THEOREM / ANALYTIC SELECTION THRESHOLD LAW
 - **Lane:** general hypertranscendence; indeterminate moment carriers; analytic constraints
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED]`
@@ -240,7 +240,7 @@ inside the proposed carrier class.
 
 ## Lean status
 
-Formalization is complete relative to the exact classical Nevanlinna and finite-dimensional
+Formalization is complete only relative to the exact classical Nevanlinna and finite-dimensional
 parametric-transversality interfaces already isolated by the carrier stack.
 
 - `CauchyJetControllability` proves real-linear finite Cauchy-jet surjectivity and arbitrarily
@@ -259,9 +259,10 @@ parametric-transversality interfaces already isolated by the carrier stack.
 - The boundary barycenter is a closed embedding in `NevanlinnaBoundaryKernel`; therefore equality
   of the selected carrier laws also identifies their boundary probability laws.
 
-All project-specific deductions on this card are therefore represented in Lean. The classical
+All project-specific deductions on this card are represented in Lean, but the classical
 Nevanlinna source theorem and the general proper-projection/Whitney-parametric-transversality
-theorem remain explicit external mathematical inputs, rather than hidden project axioms.
+theorem remain theorem parameters.  Until those inputs are constructed in Lean, the residual-HT
+half of the card is not unconditional and the card does not clear Stage 3.
 
 ## Positive RH-carrier consequence
 
@@ -309,16 +310,15 @@ a plausible 90 case, not a verified field-level score.
   transversality engine; priority is unaudited; no explicit source-canonical maximally HT member is
   constructed; the theorem is not formalized in Lean; and the Xi orientation sign remains open.
 
-## Lean status
+## Formalization audit
 
-No Stage 3 claim is made. Exact formalization requires the parent Nevanlinna boundary simplex,
-`L-infinity` finite-codimension geometry, rational principal-part independence, parameterized
-transversality over constrained Banach charts, analytic germ uniqueness, and Stieltjes inversion.
-
-Formalization audit (needs-audit pass): no bounded self-contained kernel closes a gate. Both the
-finite-jet infinite-aperture step `(3)`--`(5)` and the disjoint-pole controllability `(8)` are
-inseparable from the absent Nevanlinna `m_τ` structure and the parent transversality/Baire engine;
-the complete-germ closure `(11)`--`(13)` needs Stieltjes-transform uniqueness. No partial file is added.
+The complete-germ closure `(11)`--`(13)`, finite Cauchy-jet controllability, positive Hilbert-cube
+aperture, Nevanlinna carrier bridge, and all project-specific Baire deductions are formalized.
+The remaining blockers are the construction of the classical analytic Nevanlinna family from an
+arbitrary indeterminate Hamburger sequence, the proper-projection/Whitney stratification theorem,
+and the finite-dimensional stratified parametric-avoidance theorem.  The current residual-HT
+capstone takes the last two as values of `ClassicalComplexProjectiveIncidenceGeometry` and
+`ClassicalStratifiedParametricAvoidance`; therefore it is not yet unconditional.
 
 ## Gates
 

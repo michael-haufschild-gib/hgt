@@ -1,16 +1,14 @@
 # The finite-aperture CCM symbol carries an exact polar--prime critical Mellin defect
 
 - **ID:** `ccm-polar-prime-critical-mellin-defect-law`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / SOURCE-CORRECTION AND CARRIER LAW
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [ERRATUM CANDIDATE] [NOT AN RH PROOF]`
-- **Lean status:** `[PARTIALLY FORMALIZED]` — the unconditional finite-dimensional kernel,
-  signature, corrected zero-frequency multiplier, full real-cutoff Abel identity `(12)`, its
-  von Mangoldt specialization, the zero-frequency defect `(13)`, the infinite real-ray Laplace
-  colligation `(22)`--`(25)`, and its full complex right-half-plane scalar and finite-matrix lift
-  are verified in `formal/GaloisForLFunctions/RHTower/PolarPrimeMellinDefect.lean` and
-  `formal/GaloisForLFunctions/RHTower/CCMComplexMellinColligation.lean`; the distributional
-  source-sign derivation and autocorrelation identities remain paper-level
+- **Lean status:** `[FORMALIZED]` — the unconditional finite-dimensional kernel, signature,
+  corrected zero-frequency multiplier, Abel and Mellin identities, real/complex Laplace
+  colligation, distributional source sign, and autocorrelation Stieltjes carrier are verified in
+  the `PolarPrimeMellinDefect`, `CCMComplexMellinColligation`, `CCMPolarPrimeSourceSign`, and
+  `CCMPolarPrimeStieltjesAutocorrelation` modules
 - **Parent source:** Suzuki, *Weil's quadratic form via the screw function*, arXiv:2606.09096,
   equations (2.5), (2.7), and (2.11)
 - **Statement:** The exact finite-aperture Fourier symbol contains an aperture-dependent rank-two
@@ -330,7 +328,8 @@ knowledge.
 - [x] infinite real-ray polar--prime Laplace identity and four-channel kernel colligation
   formalized in Lean
 - [ ] independent source/author audit of the printed sign
-- [ ] formalize the distributional/autocorrelation Stieltjes layers and full complex continuation
+- [x] formalize the distributional/autocorrelation Stieltjes layers and the stated Euler-region
+  complex continuation
 - [ ] control the full compressed symbol on `PW_a`
 - [ ] RH
 

@@ -198,6 +198,31 @@ theorem fullAffineCentralizer_jet_algebraicIndependent_iff
     (affineTranslationCoefficient c beta) lambda x hET hEx hT]
   exact not_congr (affineTranslationCoefficient_eq_zero_iff c beta)
 
+/-- Full affine-centralizer horizon over a genuine ambient extension.  The canonical period
+parameter field is the coefficient field, while the observable and its jets live in an arbitrary
+ambient field `L`.  Thus the source-jet independence hypothesis is no longer the impossible
+same-field hypothesis of `fullAffineCentralizer_jet_algebraicIndependent_iff`.
+
+The variable translation symbol `c + ∑ᵢ βᵢωᵢ` is a scalar in the coefficient field, so the exact
+affine horizon applies directly over that field: the mixed jet tower is algebraically independent
+exactly away from the pure-dilation locus `c = 0` and `β = 0`. -/
+theorem fullAffineCentralizer_jet_algebraicIndependent_iff_of_extension
+    {L : Type*} [Field L] [Algebra (AffineParameterField k ι) L]
+    (T E : Derivation (AffineParameterField k ι) L L)
+    (w lambda : AffineParameterField k ι) (c : k) (beta : ι → k) (x : L)
+    (hET : ∀ y, E (T y) - T (E y) = w • T y)
+    (hEx : E x = 0)
+    (hT : AlgebraicIndependent (AffineParameterField k ι)
+      (fun n : ℕ => ((T : L → L)^[n] x))) :
+    AlgebraicIndependent (AffineParameterField k ι)
+        (fun n : ℕ =>
+          ((affineLawDerivation T E (affineTranslationCoefficient c beta) lambda :
+            L → L)^[n] x)) ↔
+      ¬ (c = 0 ∧ beta = 0) := by
+  rw [affineLaw_jet_algebraicIndependent_iff T E w
+    (affineTranslationCoefficient c beta) lambda x hET hEx hT]
+  exact not_congr (affineTranslationCoefficient_eq_zero_iff c beta)
+
 end
 
 end GaloisForLFunctions.HTGeometry

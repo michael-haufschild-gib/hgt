@@ -397,15 +397,21 @@ residues also classify only this `H_0` layer.  Their completeness is not a deriv
 ```text
 [NO-GO] rho_F factors through an abelian quotient by DA functions or through pair-face residue
         data alone.
-[POSITIVE] V_F must be a stable localization of source-presented analytic objects by
-           source-presented DA objects, so distinct DA factorizations and their higher
-           homotopies remain visible.
+[POSITIVE] V_F must be built from minimal source presentations and their homotopy-coherent
+           transition data under source restriction, so distinct DA factorizations and their
+           higher homotopies remain visible without admitting arbitrary exterior stabilization.
 ```
 
-This refines the `[OPEN CORE]`: construct that stable analytic localization and the canonical
-`rho_F` into it, then prove that it detects the exterior source classes.  Merely declaring a
-Verdier quotient is insufficient; the source-presentation category and its weak equivalences must
-be defined without the unknown germ or target obstruction.
+The arbitrary-presentation version is now ruled out: zero generators preserve the classical ideal
+while manufacturing an exterior algebra of relations.  Minimalization removes that artifact at a
+fixed face, but it is noncanonical under source restriction.  In the normal-crossing tower the
+competing minimalizations are exactly separated by the star classes.
+
+This refines the `[OPEN CORE]`: construct the relative-minimalization gerbe over the source face
+category and the canonical `rho_F` into its polarized homotopy limit, then prove that it detects
+the exterior transition classes.  Merely declaring a Verdier quotient is insufficient; the
+minimal presentation groupoids, stabilization equivalences, and restriction coherences must be
+defined without the unknown germ or target obstruction.
 
 This formulation explains why independent proof chains can stop at apparently different walls.
 They may be testing one primitive torsor against inequivalent admissible realizations.
@@ -472,17 +478,18 @@ The distinction is already forced by the normal-crossing hierarchy: its classica
 support has codimension two for every rank, while the derived Koszul amplitude is exactly `N-2`
 and its explicit exterior coherence capacity is at least `2^(N-1)-2`.  The Hilbert--Burch
 resolution of `H_0` is therefore not the unified object.  See
-`../2-fully-proven/needs-audit/normal-crossing-derived-critical-excess-phase-law.md` and
-`../2-fully-proven/needs-audit/normal-crossing-exterior-coherence-capacity-law.md`.
+`../3-formalized/normal-crossing-derived-critical-excess-phase-law.md` and
+`../3-formalized/normal-crossing-exterior-coherence-capacity-law.md`.
 
-**`[CONJECTURE -- DERIVED PRESENTATION PRINCIPLE]`** Hypertranscendence is constrained by the
-stable homotopy type of its finite DA presentation stack, not by the Boolean fact that the
-function is outside the DA field.  Proper source faces may admit finite DA presentations while the
-homotopy-coherent diagram of all such presentations carries a nonzero relative class.  Finite
-differential matroids are its classical truncation; continuation, monodromy, spectral,
-positivity, and boundary obstructions are realization functors of the higher class.  In the
-normal-crossing hierarchies, the exterior law is the first theorem-level lower bound on that
-higher presentation capacity.
+**`[CONJECTURE -- RELATIVE MINIMALIZATION PRINCIPLE]`** Hypertranscendence is constrained by the
+polarized homotopy type of minimal DA source presentations *and their restriction maps*, not by the
+Boolean fact that the function is outside the DA field and not by an arbitrary presentation
+stack.  Proper source faces may admit finite minimal presentations while their restriction diagram
+has no canonical coherent minimalization.  Finite differential matroids are its classical
+truncation; continuation, monodromy, spectral, positivity, and boundary obstructions are
+realization functors of the transition class.  In the normal-crossing hierarchies, the exterior
+law is the first theorem-level lower bound on this relative-minimalization capacity.  See
+`../3-formalized/normal-crossing-relative-minimalization-descent-gerbe.md`.
 
 This replaces the former time/clock motif. No temporal parameter is part of `(7)`.
 

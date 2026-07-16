@@ -237,13 +237,21 @@ classical quotient.
 [NO-GO 5] The analytic lift is the derived version of the unlabelled quotient M/D.
 ```
 
-The positive successor is a stable localization of **source-presented** analytic objects by
-source-presented DA objects.  It must remember which DA face supplies each null relation and the
-higher homotopies between coface factorizations.  The exact open core is to construct that
-localization and prove that its source-canonical cyclic mapping cdga is equivalent to the oriented
-derived critical cdga.  See
-`../2-fully-proven/needs-audit/normal-crossing-derived-critical-excess-phase-law.md` and
-`../2-fully-proven/needs-audit/normal-crossing-exterior-coherence-capacity-law.md`.
+The first proposed successor, a stable localization of arbitrary source-presented objects, also
+fails without minimalization: adjoining zero generators preserves the ideal but creates arbitrary
+exterior homology.  This is now Lean-formalized.  The normal-crossing gradient presentation is
+irredundant, so its excess survives that artifact test.
+
+The corrected positive successor is the **relative-minimalization gerbe** over the source face
+category.  It removes exterior stabilization at each fixed face but retains the noncanonical
+minimalization maps created by source restriction.  In the normal-crossing tower, restricting one
+rank turns the terminal full product into a redundant generator; its source-labelled eliminations
+have differences equal to the nonzero star classes.  The exact open core is to construct the
+analytic realization of this gerbe and prove it equivalent to the oriented derived critical
+object.  See
+`../3-formalized/normal-crossing-derived-critical-excess-phase-law.md` and
+`../3-formalized/normal-crossing-exterior-coherence-capacity-law.md` and
+`../3-formalized/normal-crossing-relative-minimalization-descent-gerbe.md`.
 
 The general two-thick constraint-tower theorem constructs many abstract Stanley--Reisner HT
 matroids.  They need not all lie in the critical-ideal image of a principal potential.  Therefore

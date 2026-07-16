@@ -122,9 +122,12 @@ D_n -> id uniformly.                                            (11)
 ```
 
 Thus the `B_n` and `D_n` analytic filtrations are same-index bornologically cofinal at every fixed
-collar resolution.  This closes the analytic wrong-filtration problem.  It does not yet prove that
-their induced capacity forms are boundedly congruent, nor does it transport relative algebraic
-freeness through the parameter-dependent Möbius coefficient automorphism.
+collar resolution.  The successor `gamma-moving-base-capacity-congruence.md` now proves that their
+one-dimensional Hermitian tangent metrics are boundedly congruent on that collar, with exact
+conformal factor `|1-(s_n/n)B_n|^(-4)` and depth-independent bounds `16/81` and `16`.  This closes
+the local analytic capacity comparison.  It does not yet identify pole depth with the full
+intrinsic Kähler filtration, prove bornological density in that full scale cone, or transport
+relative algebraic freeness through the parameter-dependent Möbius coefficient automorphism.
 
 ## External novelty and anti-theatre gate
 
@@ -179,7 +182,8 @@ full or concurrent build was run.
 - [x] preserve the distinct-filtration boundary explicitly
 - [x] prove and formalize same-index bornological cofinality of the `B_n` and moving-base `D_n`
       analytic germs
-- [ ] prove that the `B_n <-> D_n` comparison preserves the capacity connection up to bounded
-      congruence
+- [x] prove that the `B_n <-> D_n` comparison preserves the local tangent capacity metric up to
+      bounded congruence
+- [ ] compare the pole-depth capacity connection with the full intrinsic Kähler-jet connection
 - [ ] prove conservative comparison with the dimension-zero horizon and algebraic jet capacity
 - [ ] complete specialist external novelty review

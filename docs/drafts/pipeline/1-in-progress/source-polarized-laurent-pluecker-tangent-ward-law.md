@@ -16,6 +16,7 @@
   - `../2-fully-proven/squarefree-euler-modular-corona-curvature-colligation.md`;
   - `../2-fully-proven/squarefree-fixed-current-right-half-ward-localization.md`;
   - `../2-fully-proven/not_new_scientific_knowledge/projective-reciprocal-horizon-ward-seam.md`;
+  - `../2-fully-proven/not_new_scientific_knowledge/mobius-squarefree-reciprocal-projective-transfer.md`;
   - `../2-fully-proven/not_new_scientific_knowledge/anti-causal-cauchy-trace-unique-phase-noncancellation.md`;
   - `../2-fully-proven/not_new_scientific_knowledge/prime-support-ht-horizon-hodge-cofactor-law.md`;
   - `ht-capacity-ward-holonomy-rh.md`.
@@ -352,6 +353,21 @@ capacity boundary and prove `T_HT(g_sq)<=4`.  The target trace itself is no long
 
 The existing HT results now determine the type of the missing map.
 
+The source transfer itself is now exact.  If `tau_sigma` is the causal multiplier of the actual
+normalized Möbius shift, then
+
+```text
+[zeta(2s)/zeta(2sigma)] tau_sigma(s)
+  =1/(zeta(sigma) Z_sq(s)),
+C(s)^(-1)[zeta(2s)/zeta(2sigma)] tau_sigma(s)
+  =1/(zeta(sigma) X_sq(s)).                              (19e'')
+```
+
+Twice the logarithmic connection of the last transfer is `Q_sq`, so its anti-causal connection is
+`ell_E`.  Thus the conjectural object below is no longer asked to invent the Ward response: it is
+asked only to extend the actual finite Möbius contractions through the Gamma-critical derived
+boundary without increasing the distinguished Fisher score.
+
 - The reciprocal-jet tower is an exact Lagrangian polarization atlas.
 - The finite squarefree exterior line is its fermionic Pluecker quantization.
 - The Euler Laurent residue cocycle is its prequantum central extension.
@@ -401,6 +417,15 @@ define the **HT polarization-distortion field**.  It is independent of the scala
 and measures the failure of two source-compatible positive realizations of the same exact
 Lagrangian constraint to have a contractive half-form pairing.  Its positive and negative parts
 are nontrivial general HT invariants even if the squarefree specialization does not prove RH.
+
+The current strongest formulation is the less decorative **derived Möbius--Laurent Ward
+contraction**: take the graph closure of the completed source transfer `(19e'')` in the polarized
+critical Gevrey product bornology forced by the HT minimal-architecture theorem.  The finite
+Möbius maps are contractions, the critical Möbius half-density score has squared norm four, and
+the local normalized/moving-base Gamma metrics are now uniformly congruent.  Prove that the graph
+boundary transgression of that score is `c_sq directSum ell_E`.  Fixed-polarization convergence is
+impossible because every finite transfer is causal; the opposite component is necessarily a
+derived boundary class of the noncommuting scale limit.
 
 ## Hard attacks and their positive residues
 
