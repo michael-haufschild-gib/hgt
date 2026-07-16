@@ -16,8 +16,11 @@ The theorem is deliberately confined to `s > 1`; it makes no critical-strip cont
 -/
 
 open scoped BigOperators
+open Filter
 
 noncomputable section
+
+set_option maxHeartbeats 1000000
 
 namespace RHTower
 
@@ -28,7 +31,8 @@ theorem primeSchurWeight_eq_cpow (sigma : ℝ) (p : Nat.Primes) :
   rw [show (-(sigma : ℂ)) = ((-sigma : ℝ) : ℂ) by push_cast; ring,
     ← Complex.ofReal_natCast, ← Complex.ofReal_cpow (by positivity)]
   congr 1
-  rw [primeSchurWeight, Real.rpow_def_of_pos (by positivity)]
+  have hp : (0 : ℝ) < (p : ℕ) := by exact_mod_cast p.property.pos
+  rw [primeSchurWeight, Real.rpow_def_of_pos hp]
   congr 1
   ring
 
@@ -39,7 +43,10 @@ theorem multipliable_primeSquarefreeEulerFactor {s : ℂ} (hs : 1 < s.re) :
   apply Complex.multipliable_one_add_of_summable
   apply Summable.of_norm
   have h := (summable_norm_squarefreeCpow hs).subtype Nat.Prime
-  simpa [squarefreeCpow_apply] using h
+  refine h.congr ?_
+  intro p
+  simp only [Function.comp_apply, squarefreeCpow_apply,
+    if_pos p.property.squarefree]
 
 /-- The squarefree Euler factor at a prime. -/
 def primeSquarefreeEulerFactor (s : ℂ) (p : Nat.Primes) : ℂ :=
@@ -82,13 +89,15 @@ theorem multipliable_primeSquarefreeLoschmidtPurityFactor
     Multipliable (primeSquarefreeLoschmidtPurityFactor sigma) := by
   have hs : 1 < ((sigma : ℂ)).re := by simpa using hsigma
   have htwo : 1 < (2 * (sigma : ℂ)).re := by
-    simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero,
-      Complex.ofNat_re, Complex.ofNat_im, zero_mul, sub_zero]
+    rw [Complex.mul_re]
+    norm_num
     linarith
   have hbase := multipliable_primeSquarefreeEulerFactor hs
   have htwoBase := multipliable_primeSquarefreeEulerFactor htwo
-  simpa only [primeSquarefreeLoschmidtPurityFactor,
-    primeSquarefreeEulerFactor] using htwoBase.div (hbase.pow 2)
+  change Multipliable (fun p =>
+    primeSquarefreeEulerFactor (2 * (sigma : ℂ)) p /
+      primeSquarefreeEulerFactor (sigma : ℂ) p ^ 2)
+  exact Multipliable.div htwoBase (Multipliable.pow hbase 2)
 
 /-- Exact zeta value of the cofinal-prime Möbius Loschmidt purity. -/
 theorem infinitePrimeSquarefreeLoschmidtPurity_eq_zetaRatio
@@ -98,21 +107,22 @@ theorem infinitePrimeSquarefreeLoschmidtPurity_eq_zetaRatio
         (riemannZeta (4 * (sigma : ℂ)) * riemannZeta (sigma : ℂ) ^ 2) := by
   have hs : 1 < ((sigma : ℂ)).re := by simpa using hsigma
   have htwo : 1 < (2 * (sigma : ℂ)).re := by
-    simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero,
-      Complex.ofNat_re, Complex.ofNat_im, zero_mul, sub_zero]
+    rw [Complex.mul_re]
+    norm_num
     linarith
   have hbase := multipliable_primeSquarefreeEulerFactor hs
   have htwoBase := multipliable_primeSquarefreeEulerFactor htwo
   have hbaseValue := squarefree_eulerProduct_tprod hs
   have htwoValue := squarefree_eulerProduct_tprod htwo
-  rw [infinitePrimeSquarefreeLoschmidtPurity,
-    primeSquarefreeLoschmidtPurityFactor,
+  unfold infinitePrimeSquarefreeLoschmidtPurity
+  simp only [primeSquarefreeLoschmidtPurityFactor]
+  rw [
     htwoBase.tprod_div (hbase.pow 2), hbase.tprod_pow,
     htwoValue, hbaseValue]
   have hfour : riemannZeta (4 * (sigma : ℂ)) ≠ 0 :=
     riemannZeta_ne_zero_of_one_lt_re (by
-      simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero,
-        Complex.ofNat_re, Complex.ofNat_im, zero_mul, sub_zero]
+      rw [Complex.mul_re]
+      norm_num
       linarith)
   have htwoZeta : riemannZeta (2 * (sigma : ℂ)) ≠ 0 :=
     riemannZeta_ne_zero_of_one_lt_re htwo
@@ -131,13 +141,20 @@ theorem tendsto_finitePrimeSquarefreeLoschmidtPurity_cofinal
   rw [infinitePrimeSquarefreeLoschmidtPurity]
   have hprod :=
     (multipliable_primeSquarefreeLoschmidtPurityFactor hsigma).hasProd
-  convert hprod using 1
-  funext S
-  rw [finitePrimeSquarefreeLoschmidtPurity_eq_prod]
-  push_cast
-  apply Finset.prod_congr rfl
-  intro p hp
-  exact ofReal_primeSquarefreeLoschmidtPurityFactor sigma p
+  have hfinite :
+      (fun S : Finset Nat.Primes =>
+        (finitePrimeSquarefreeLoschmidtPurity S sigma : ℂ)) =
+        fun S => ∏ p ∈ S, primeSquarefreeLoschmidtPurityFactor sigma p := by
+    funext S
+    rw [finitePrimeSquarefreeLoschmidtPurity_eq_prod]
+    push_cast
+    apply Finset.prod_congr rfl
+    intro p hp
+    have h := ofReal_primeSquarefreeLoschmidtPurityFactor sigma p
+    push_cast at h
+    exact h
+  rw [hfinite]
+  exact hprod
 
 /-- Cofinal finite-aperture purities converge to the explicit zeta ratio. -/
 theorem tendsto_finitePrimeSquarefreeLoschmidtPurity_cofinal_zetaRatio
@@ -158,13 +175,13 @@ theorem infinitePrimeSquarefreeLoschmidtPurity_ne_zero
   rw [infinitePrimeSquarefreeLoschmidtPurity_eq_zetaRatio hsigma]
   apply div_ne_zero
   · exact pow_ne_zero 3 (riemannZeta_ne_zero_of_one_lt_re (by
-      simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero,
-        Complex.ofNat_re, Complex.ofNat_im, zero_mul, sub_zero]
+      rw [Complex.mul_re]
+      norm_num
       linarith))
   · apply mul_ne_zero
     · exact riemannZeta_ne_zero_of_one_lt_re (by
-        simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero,
-          Complex.ofNat_re, Complex.ofNat_im, zero_mul, sub_zero]
+        rw [Complex.mul_re]
+        norm_num
         linarith)
     · exact pow_ne_zero 2 (riemannZeta_ne_zero_of_one_lt_re (by simpa using hsigma))
 

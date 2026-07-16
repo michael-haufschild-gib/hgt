@@ -125,7 +125,10 @@ theorem integral_Ioi_mobiusCriticalExponentialScore_sq_mul_density :
     _ = ((∫ y : ℝ in Ioi 0, mobiusCriticalExponentialDensity y) -
           ∫ y : ℝ in Ioi 0, 2 * (y * mobiusCriticalExponentialDensity y)) +
           ∫ y : ℝ in Ioi 0, y ^ 2 * mobiusCriticalExponentialDensity y := by
-      rw [integral_sub h0 (h1.const_mul 2)]
+      exact congrArg
+        (fun x => x + ∫ y : ℝ in Ioi 0,
+          y ^ 2 * mobiusCriticalExponentialDensity y)
+        (integral_sub h0 (h1.const_mul 2))
     _ = 1 := by
       rw [integral_const_mul,
         show (∫ y : ℝ in Ioi 0, mobiusCriticalExponentialDensity y) = 1 by

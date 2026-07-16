@@ -69,7 +69,7 @@ theorem summable_xiCentralReciprocalMoment_endpointSeries :
   rw [norm_mul, norm_pow]
   have hquarter : ‖(-1 / 4 : ℂ)‖ = (1 / 4 : ℝ) := by norm_num
   rw [hquarter]
-  exact mul_le_mul_of_nonneg_right hmoment'
+  simpa [mul_comm] using mul_le_mul_of_nonneg_right hmoment'
     (pow_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 4) n)
 
 /-- At the endpoint, the central moment germ is the exact FE--Schwarz endpoint cross trace. -/
@@ -109,7 +109,11 @@ theorem xiCentralMomentGerm_I_half_im_eq_zero :
       intro n
       rw [I_half_pow_two_mul]
       have hmoment := xiCentralReciprocalMoment_im_eq_zero n
-      simp [Complex.mul_im, hmoment]
+      have hfactor : ((-1 / 4 : ℂ) ^ n).im = 0 := by
+        rw [show (-1 / 4 : ℂ) = ((-1 / 4 : ℝ) : ℂ) by norm_num]
+        rw [← Complex.ofReal_pow (-1 / 4 : ℝ) n]
+        exact Complex.ofReal_im _
+      simp [Complex.mul_im, hmoment, hfactor]
     _ = 0 := tsum_zero
 
 /-- **Endpoint/central boundary value law.**  The completed endpoint curvature is exactly the
