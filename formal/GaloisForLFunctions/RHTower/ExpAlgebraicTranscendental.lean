@@ -28,6 +28,7 @@ exponent uniquely attained with coefficient the pure product `a_0^{d−|·|} a_n
 -/
 
 import Mathlib
+import GaloisForLFunctions.RHTower.ScaledHermiteContradiction
 import GaloisForLFunctions.RHTower.SymmetricConjugateIntegral
 
 open Polynomial MvPolynomial Filter Complex
@@ -98,117 +99,25 @@ theorem exp_aggregate_integral_relation_ne {ι : Type*} [Fintype ι]
     refine ⟨hgne, ?_⟩
     rw [Polynomial.aeval_def, Polynomial.eval₂_eq_eval_map]
     convert hgr using 2
-  have hsplit : (a0 : ℂ) + ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc),
-      c i * Complex.exp (E i - wc) = 0 := by
-    have he : (a0 : ℂ) = ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i = wc),
-        c i * Complex.exp (E i - wc) := by
-      rw [← ha0]
-      refine Finset.sum_congr rfl (fun i hi => ?_)
-      rw [Finset.mem_filter] at hi
-      rw [hi.2, sub_self, Complex.exp_zero, mul_one]
-    rw [he, Finset.sum_filter_add_sum_filter_not]
-    exact hrel2
-  -- ============ analytic finish ============
-  have hg0e : g.eval 0 ≠ 0 := by rw [← Polynomial.coeff_zero_eq_eval_zero]; exact hg0
-  obtain ⟨B, hB⟩ := LindemannWeierstrass.exp_polynomial_approx g hg0e
-  have hsum_exp : ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc),
-      c i * Complex.exp (E i - wc) = -(a0 : ℂ) :=
-    eq_neg_of_add_eq_zero_right hsplit
-  set Cabs : ℝ := ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc),
-      ‖c i‖ with hCabs
-  have hlim : Filter.Tendsto (fun p : ℕ => Cabs * (B ^ p / (p - 1)!)) Filter.atTop (nhds 0) := by
-    have h1 := FloorSemiring.tendsto_mul_pow_div_factorial_sub_atTop (1 : ℝ) B 1
-    have h2 : Filter.Tendsto (fun p : ℕ => B ^ p / (p - 1)!) Filter.atTop (nhds 0) := by simpa using h1
-    simpa using h2.const_mul Cabs
-  have hev : ∀ᶠ p : ℕ in Filter.atTop, Cabs * (B ^ p / (p - 1)!) < 1 :=
-    hlim.eventually_lt_const (by norm_num)
-  rw [Filter.eventually_atTop] at hev
-  obtain ⟨P₀, hP₀⟩ := hev
-  obtain ⟨p, hp_gt, hp_prime⟩ :=
-    Nat.exists_infinite_primes (max P₀ (max ((g.eval 0).natAbs + 1) (a0.natAbs + 1)))
-  have hp_ge_P₀ : P₀ ≤ p := le_trans (le_max_left _ _) hp_gt
-  have hp_gt_g : (g.eval 0).natAbs < p := by
-    have := le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hp_gt; omega
-  have hp_gt_a0 : a0.natAbs < p := by
-    have := le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) hp_gt; omega
-  obtain ⟨n_p, hnp_ndvd, gp, hgp_deg, hgp_bound⟩ := hB p hp_gt_g hp_prime
-  -- integer part via the symmetric-sum hypothesis
-  have haevalcomp : ∀ i : ι, Polynomial.aeval (E i) (gp.comp (Polynomial.X - Polynomial.C w))
-      = Polynomial.aeval (E i - wc) gp := by
-    intro i
-    rw [aeval_comp]
-    congr 1
-    simp [hwc]
-  obtain ⟨T₀, hT₀⟩ := hTint (gp.comp (Polynomial.X - Polynomial.C w))
-  have hT₀' : ∑ i : ι, c i * Polynomial.aeval (E i - wc) gp = (T₀ : ℂ) := by
-    rw [← hT₀]; refine Finset.sum_congr rfl (fun i _ => ?_); rw [haevalcomp i]
-  have hev0 : Polynomial.aeval (0 : ℂ) gp = ((gp.eval 0 : ℤ) : ℂ) := by
-    have h0 : ((0 : ℂ)) = (algebraMap ℤ ℂ) (0 : ℤ) := by simp
-    rw [h0, Polynomial.aeval_algebraMap_apply_eq_algebraMap_eval]; simp
-  have hTfull : (T₀ : ℂ) = (a0 : ℂ) * ((gp.eval 0 : ℤ) : ℂ)
-      + ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc),
-          c i * Polynomial.aeval (E i - wc) gp := by
-    rw [← hT₀', ← Finset.sum_filter_add_sum_filter_not
-        (Finset.univ : Finset ι) (fun i => E i = wc)]
-    congr 1
-    rw [← ha0, Finset.sum_mul]
-    refine Finset.sum_congr rfl (fun i hi => ?_)
-    rw [Finset.mem_filter] at hi
-    rw [hi.2, sub_self, hev0]
-  set T : ℤ := T₀ - a0 * gp.eval 0 with hT
-  have hTcast : (T : ℂ) = ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc),
-      c i * Polynomial.aeval (E i - wc) gp := by
-    rw [hT]; push_cast; rw [hTfull]; ring
-  have hbound : ∀ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc),
-      ‖(n_p : ℂ) * Complex.exp (E i - wc)
-        - (p : ℂ) * Polynomial.aeval (E i - wc) gp‖ ≤ B ^ p / (p - 1)! := by
-    intro i hi
-    rw [Finset.mem_filter] at hi
-    have hr : (E i - wc) ∈ g.aroots ℂ := hroot i (sub_ne_zero.mpr hi.2)
-    have hb := hgp_bound hr
-    rw [zsmul_eq_mul, nsmul_eq_mul] at hb
-    exact hb
-  set Iℤ : ℤ := a0 * n_p + (p : ℤ) * T with hIℤ
-  set δfun : ι → ℂ := fun i => c i
-      * ((n_p : ℂ) * Complex.exp (E i - wc)
-        - (p : ℂ) * Polynomial.aeval (E i - wc) gp) with hδ
-  have hkey : (Iℤ : ℂ) = - ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc), δfun i := by
-    have expand : ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc), δfun i
-        = (n_p : ℂ) * (∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc),
-            c i * Complex.exp (E i - wc))
-          - (p : ℂ) * (∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc),
-            c i * Polynomial.aeval (E i - wc) gp) := by
-      rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_sub_distrib]
-      refine Finset.sum_congr rfl (fun i _ => ?_)
-      simp only [hδ]; ring
-    rw [expand, hsum_exp, ← hTcast, hIℤ]
-    push_cast; ring
-  have hnorm : ‖(Iℤ : ℂ)‖ < 1 := by
-    rw [hkey, norm_neg]
-    calc ‖∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc), δfun i‖
-        ≤ ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc), ‖δfun i‖ := norm_sum_le _ _
-      _ ≤ ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc),
-            ‖c i‖ * (B ^ p / (p - 1)!) := by
-          refine Finset.sum_le_sum (fun i hi => ?_)
-          rw [hδ]
-          simp only [norm_mul]
-          exact mul_le_mul_of_nonneg_left (hbound i hi) (norm_nonneg _)
-      _ = Cabs * (B ^ p / (p - 1)!) := by rw [hCabs, ← Finset.sum_mul]
-      _ < 1 := hP₀ p hp_ge_P₀
-  have hI0 : Iℤ = 0 := by
-    have habs : |(Iℤ : ℝ)| < 1 := by rw [← Complex.norm_intCast]; exact hnorm
-    exact_mod_cast Int.abs_lt_one_iff.mp (by exact_mod_cast habs)
-  have hdvd2 : (p : ℤ) ∣ a0 * n_p := by
-    have heq : a0 * n_p = -((p : ℤ) * T) := by
-      have := hI0; rw [hIℤ] at this; linarith
-    rw [heq]; exact (Dvd.intro T rfl).neg_right
-  have hp_prime_int : Prime (p : ℤ) := Nat.prime_iff_prime_int.mp hp_prime
-  rcases hp_prime_int.dvd_mul.mp hdvd2 with h | h
-  · have hdvdnat : p ∣ a0.natAbs := by
-      have := Int.natAbs_dvd_natAbs.mpr h; rwa [Int.natAbs_natCast] at this
-    have hle := Nat.le_of_dvd (Int.natAbs_pos.mpr ha0ne) hdvdnat
-    exact absurd hle (not_le.mpr hp_gt_a0)
-  · exact hnp_ndvd h
+  have hg0e : g.eval 0 ≠ 0 := by
+    rw [← Polynomial.coeff_zero_eq_eval_zero]
+    exact hg0
+  refine exp_scaled_aggregate_zero_relation_ne
+    (fun i => E i - wc) c g hg0e hroot 1 a0 (by norm_num) 0 0 hrel2 ?_ ha0ne ?_
+  · simpa [sub_eq_zero, hwc] using ha0
+  · intro q
+    obtain ⟨T, hT⟩ := hTint (q.comp (Polynomial.X - Polynomial.C w))
+    refine ⟨0, T, by simp, ?_⟩
+    calc
+      (1 : ℂ) ^ 0 * ∑ i : ι, c i * Polynomial.aeval (E i - wc) q
+          = ∑ i : ι, c i * Polynomial.aeval (E i - wc) q := by simp
+      _ = ∑ i : ι, c i * Polynomial.aeval (E i)
+          (q.comp (Polynomial.X - Polynomial.C w)) := by
+            refine Finset.sum_congr rfl (fun i _ => ?_)
+            rw [Polynomial.aeval_comp]
+            congr 1
+            simp [hwc]
+      _ = (T : ℂ) := hT
 
 /-- **Integer-coefficient Hermite contradiction.** This preserves the original public interface as
 a thin specialization of `exp_aggregate_integral_relation_ne`. -/

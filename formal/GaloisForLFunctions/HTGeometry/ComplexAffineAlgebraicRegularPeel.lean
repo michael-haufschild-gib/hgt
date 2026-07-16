@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ComplexAffineAlgebraicOperations
 import GaloisForLFunctions.HTGeometry.LocalizationIdealClearing
-import GaloisForLFunctions.HTGeometry.MvPolynomialLocalJacobianChart
+import GaloisForLFunctions.HTGeometry.MvPolynomialLocalJacobianCodimension
 import GaloisForLFunctions.HTGeometry.MvPolynomialRegularPeel
 
 /-!
@@ -17,17 +17,23 @@ open Set
 noncomputable section
 
 set_option maxHeartbeats 2000000 in
-theorem exists_regularPeel_complex_zeroLocus_of_proper_radical {n : ℕ}
+theorem exists_regularPeel_complex_zeroLocus_of_localJacobianChart {n m : ℕ}
     (I : Ideal (MvPolynomial (Fin n) ℂ))
-    (hI : I ≠ ⊤) (hrad : I.IsRadical) :
-    ∃ (m : ℕ) (R : Set (Fin n → ℂ)),
+    (p : PrimeSpectrum ((MvPolynomial (Fin n) ℂ) ⧸ I))
+    (x : Fin n → ℂ)
+    (hxI : x ∈ MvPolynomial.zeroLocus ℂ I)
+    (hQ : polynomialPointIdeal I p = MvPolynomial.vanishingIdeal ℂ {x})
+    (relation : Fin m → MvPolynomial (Fin n) ℂ)
+    (hrelation : ∀ i, relation i ∈ I)
+    (hlocalGen : Ideal.span (Set.range (fun i ↦
+        algebraMap (MvPolynomial (Fin n) ℂ) (localPolynomialRing I p) (relation i))) =
+      localPresentationKernel I p)
+    (hgrad : LinearIndependent ℂ
+      (fun i j ↦ MvPolynomial.eval x (MvPolynomial.pderiv j (relation i)))) :
+    ∃ (R : Set (Fin n → ℂ)),
       R.Nonempty ∧ R ⊆ MvPolynomial.zeroLocus ℂ I ∧
       IsLocalRegularLevelSetOfCodimAtLeast R (2 * m) ∧
       IsComplexAffineAlgebraic (MvPolynomial.zeroLocus ℂ I \ R) := by
-  obtain ⟨p, x, hxI, hQ, hlocal⟩ :=
-    exists_complex_zero_formallySmooth_of_radicalIdeal I hI hrad
-  obtain ⟨m, relation, hrelation, hlocalGen, hgrad⟩ :=
-    exists_localJacobianChart_of_formallySmooth_point I p x hQ hlocal
   let q : Ideal ((MvPolynomial (Fin n) ℂ) ⧸ I) := p.asIdeal
   let Q : Ideal (MvPolynomial (Fin n) ℂ) :=
     q.comap (Ideal.Quotient.mk I)
@@ -85,8 +91,7 @@ theorem exists_regularPeel_complex_zeroLocus_of_proper_radical {n : ℕ}
     change MvPolynomial.eval x (s : MvPolynomial (Fin n) ℂ) ≠ 0
     intro hsx
     apply s.2
-    change (s : MvPolynomial (Fin n) ℂ) ∈
-      Ideal.comap (Ideal.Quotient.mk I) p.asIdeal
+    change (s : MvPolynomial (Fin n) ℂ) ∈ polynomialPointIdeal I p
     rw [hQ, MvPolynomial.mem_vanishingIdeal_singleton_iff]
     exact hsx
   have hzero_of_mem_I : ∀ {y : Fin n → ℂ},
@@ -177,12 +182,60 @@ theorem exists_regularPeel_complex_zeroLocus_of_proper_radical {n : ℕ}
       · refine ⟨hy.1, ?_⟩
         intro hyR
         exact hyR.1.2 hy.2
-  refine ⟨m, R, ⟨x, hxR⟩, hRsub, hRreg, ?_⟩
+  refine ⟨R, ⟨x, hxR⟩, hRsub, hRreg, ?_⟩
   rw [hrem]
   exact IsComplexAffineAlgebraic.union
     ((isComplexAffineAlgebraic_zeroLocus I).inter hZs)
     ((isComplexAffineAlgebraic_zeroLocus I).inter
       (isComplexAffineAlgebraic_complexMvPolynomialFamilyJacobianRankDefect relation))
+
+set_option maxHeartbeats 4000000 in
+/-- Every nonempty reduced complex affine algebraic set has a nonempty regular peel whose
+algebraic remainder is strictly smaller. -/
+theorem exists_regularPeel_complex_zeroLocus_of_proper_radical {n : ℕ}
+    (I : Ideal (MvPolynomial (Fin n) ℂ))
+    (hI : I ≠ ⊤) (hrad : I.IsRadical) :
+    ∃ (m : ℕ) (R : Set (Fin n → ℂ)),
+      R.Nonempty ∧ R ⊆ MvPolynomial.zeroLocus ℂ I ∧
+      IsLocalRegularLevelSetOfCodimAtLeast R (2 * m) ∧
+      IsComplexAffineAlgebraic (MvPolynomial.zeroLocus ℂ I \ R) := by
+  obtain ⟨p, x, hxI, hQ, hlocal⟩ :=
+    exists_complex_zero_formallySmooth_of_radicalIdeal I hI hrad
+  obtain ⟨m, relation, hrelation, hlocalGen, hgrad⟩ :=
+    exists_localJacobianChart_of_formallySmooth_point I p x hQ hlocal
+  obtain ⟨R, hRne, hRsub, hRreg, hrem⟩ :=
+    exists_regularPeel_complex_zeroLocus_of_localJacobianChart
+      I p x hxI hQ relation hrelation hlocalGen hgrad
+  exact ⟨m, R, hRne, hRsub, hRreg, hrem⟩
+
+set_option maxHeartbeats 4000000 in
+/-- A global complex Krull-codimension bound is inherited by a nonempty smooth peel.  The peel is
+a real regular level set of at least twice the complex codimension, and its remainder stays
+algebraic. -/
+theorem exists_regularPeel_complex_zeroLocus_of_proper_radical_with_codim
+    {n c : ℕ}
+    (I : Ideal (MvPolynomial (Fin n) ℂ))
+    (hI : I ≠ ⊤) (hrad : I.IsRadical)
+    (hdim : ringKrullDim ((MvPolynomial (Fin n) ℂ) ⧸ I) + c ≤
+      (n : WithBot ℕ∞)) :
+    ∃ (m : ℕ) (R : Set (Fin n → ℂ)),
+      c ≤ m ∧ R.Nonempty ∧ R ⊆ MvPolynomial.zeroLocus ℂ I ∧
+      IsLocalRegularLevelSetOfCodimAtLeast R (2 * c) ∧
+      IsComplexAffineAlgebraic (MvPolynomial.zeroLocus ℂ I \ R) := by
+  obtain ⟨p, x, hxI, hQ, hlocal⟩ :=
+    exists_complex_zero_formallySmooth_of_radicalIdeal I hI hrad
+  obtain ⟨m, relation, hcm, hrelation, hlocalGen, hgrad⟩ :=
+    exists_localJacobianChart_of_formallySmooth_point_with_codim
+      I p x hQ hlocal hdim
+  obtain ⟨R, hRne, hRsub, hRreg, hrem⟩ :=
+    exists_regularPeel_complex_zeroLocus_of_localJacobianChart
+      I p x hxI hQ relation hrelation hlocalGen hgrad
+  have hRregc : IsLocalRegularLevelSetOfCodimAtLeast R (2 * c) := by
+    intro y hy
+    obtain ⟨k, hmk, U, hU, hyU, g, hg, hzero, hsurj⟩ := hRreg y hy
+    exact ⟨k, (Nat.mul_le_mul_left 2 hcm).trans hmk,
+      U, hU, hyU, g, hg, hzero, hsurj⟩
+  exact ⟨m, R, hcm, hRne, hRsub, hRregc, hrem⟩
 
 end
 

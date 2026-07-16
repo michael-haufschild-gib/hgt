@@ -175,64 +175,51 @@ is continuous on `L2(0,H)`.  Passing `N->infinity` first therefore retains the s
 each `H`; taking the supremum afterwards proves `(11)`.  No interchange of an infinite radial sum
 with an improper primitive is used.
 
-## Summed radial envelope
+## Poisson--BV radial envelope
 
-The center-cross estimate below needs one pointwise envelope, but no sharp constant.  Dunster's
-exterior phase satisfies
+The far radial phase is not needed for the center audit. Put `a=lambda*exp(t)` and let
+`g_lambda^+` be the positive-half compact source, extended by zero. The source is even and has
+zero integral, so the exact one-sided Poisson--Muntz identity is
 
 ```text
-xi_c(z)+J(sigma_c)=z+O(z^(-1)),                                (19a)
+sqrt(a)*sum_(k>=1)q_lambda(k*a)
+ =1/sqrt(a)*sum_(n>=1)g_lambda(n/a)
+  +g_lambda(0)/(2*sqrt(a)).                                    (19a)
 ```
 
-and the exact interaction-picture amplitudes have limits at infinity, with tails
-`O((c*z)^(-1))`.  The limiting two-branch combination is pinned by the exact Fourier endpoint
-identity: because the compact source is even, its `z^(-1)` term is the sine term and there is no
-cosine term of that order.  Consequently, for `z` larger than a fixed multiple of `c`,
+The final term in `(19a)` is exactly the Poisson center. Hence
 
 ```text
-q_lambda(lambda*z)
- =g_lambda(lambda)/(pi*lambda*z)*sin(c*z)
-  +sqrt(d_lambda/lambda)*E_lambda(z),                           (19b)
-
-|E_lambda(z)|<=C*c^M/z^2.                                     (19c)
+b_lambda(t)=R_lambda(t)-C_lambda(t)
+ =1/sqrt(a)*sum_(n>=1)g_lambda(n/a).                            (19b)
 ```
 
-For `2<=z<=C*c`, the leading exterior bound itself is
+The sum in `(19b)` is finite because `g_lambda` is compactly supported. It is the square-root
+normalization of a right-endpoint Riemann sum for the zero integral of `g_lambda^+`. The exact BV
+quadrature theorem gives, without a Fourier-tail estimate,
 
 ```text
-|q_lambda(lambda*z)|
- <=C*sqrt(d_lambda/lambda)/z.                                  (19d)
-```
+|b_lambda(t)|
+ <=2*Var(g_lambda^+)/sqrt(lambda)*exp(-t/2),                    (19c)
 
-The point of `(19c)`--`(19d)` is that both estimates are normalized by the exterior leakage
-`sqrt(d_lambda)`, not by an interior derivative norm.  Formula `(19a)` and Dunster's leading sine
-law `(2.22)` give the phase matching; the interaction-picture tail prevents the additive Olver
-remainder from losing its oscillatory normalization.
-
-At `z=k*exp(t)`, split at `k*exp(t)=C*c`.  The finite part is bounded by `(19d)` and the harmonic
-sum `O(log(2+c))`.  In the tail, the leading terms in `(19b)` sum to the classical bounded
-sawtooth series,
-
-```text
-sum_(k>=1) sin(k*c*exp(t))/k.                                  (19e)
-```
-
-The remainders are absolutely summable by `(19c)`.  The single sector
-`1<=z<=2` is covered by the pole-uniform Bessel envelope.  Using
-
-```text
-|g_lambda(lambda)|<=C*sqrt(lambda*d_lambda)                    (19f)
-```
-
-therefore gives
-
-```text
 |R_lambda(t)|
- <=C*log(2+c)*sqrt(d_lambda)*exp(-t/2),        t>=0.             (19g)
+ <=[2*Var(g_lambda^+)+|g_lambda(0)|/2]
+    /sqrt(lambda)*exp(-t/2).                                   (19d)
 ```
 
-This is the global summed radial envelope used below.  It is stronger than the ambient Muntz
-bound precisely because the radial ODE retains the leakage normalization in `(19c)`--`(19d)`.
+The formal theorem permits the support endpoint to fall between lattice points and includes the
+last partial cell. Thus `(19c)` is not an asymptotic Euler--Maclaurin statement and does not
+interchange the radial series with a limit.
+
+For the fixed `m=0,4` constrained source, the remaining concrete source-side estimate is
+
+```text
+Var(g_lambda^+)=O(1).                                          (19e)
+```
+
+It follows from fixed-mode prolate-to-Hermite convergence in `W^(1,1)`; the weaker
+`Var(g_lambda^+)=o(lambda*log lambda)` already suffices for the leading law below. This replaces
+the former leakage-normalized `z^(-2)` far-field gate by a compact-source regularity theorem.
 
 ## Poisson center: the critical Mellin coupling cannot be discarded
 
