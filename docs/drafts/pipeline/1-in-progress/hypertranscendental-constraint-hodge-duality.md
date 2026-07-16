@@ -343,9 +343,16 @@ concentrated infinity: one cyclic structural observable has infinite capacity.  
 ```
 
 Hypertranscendental constraint geometry requires concentrated infinity.  The corrected dimension
-program is `htDim=aqaDim`, where `aqaDim` adds active-quotient faithfulness to the quasi-Abelian
-palette.  See
-`active-quasi-abelian-palette-exact-ht-dimension-classification.md`.
+law is now proved:
+
+```text
+htDim(Delta)=aqaDim(Delta),
+```
+
+where `aqaDim` adds active-quotient faithfulness to the quasi-Abelian palette.  Necessity is proper
+compact-kernel nonconcentration; sufficiency is fixed-factor all-order jet interpolation on the
+active quotient.  See
+`../2-fully-proven/new_scientific_knowledge/active-quasi-abelian-palette-exact-ht-dimension-classification.md`.
 
 > **[CONJECTURE — SOURCE-SELECTED CONSTRAINT-SPECTRUM CLASSIFICATION]** A regular source-minimal
 > self-dual constrained HT germ has a canonical reduced or derived constraint spectrum together
@@ -362,6 +369,24 @@ finite constraint capacity and therefore cannot select the topology.  Ambient no
 cannot select concentration.  The new field must classify which active marked spectra arise
 naturally and how their local quotients sew; without both selection and sewing the proposed
 constraint-Hodge category is false rather than merely unproved.
+
+The exact active-palette theorem now yields a second foundational no-go.
+
+> **[THEOREM -- ACTIVE KINEMATICS IS SOURCE-BLIND]** Support plus active-faithful facet geometry is
+> complete for finite realizability and minimum analytic dimension: every such palette is realized
+> by a dense residual family of scalar meromorphic HT sources.  Therefore no invariant factoring
+> only through the active constraint spectrum can distinguish a special arithmetic source inside
+> that realization class.
+>
+> **[POSITIVE SUCCESSOR]** The remaining selector must live in the sewing layer: comparison maps,
+> polarization, growth, and distinguished global-section data coupling the active charts.  This is
+> not an optional refinement.  It is the only layer not exhausted by the universal realization
+> theorem.
+
+This makes the division of labor exact.  The active constraint spectrum is the universal
+**kinematic** object; a source-specific sewn polarization is the missing **selection** object.  A
+unified theory which merely renames support or period data cannot address the shared obstruction
+seen by the different proof chains.
 
 The first strict essential image is already known.  A scalar meromorphic HT function of one
 complex variable realizing a full Stanley--Reisner matroid has minimal-prime height at most one;
@@ -396,15 +421,50 @@ For a constraint-Hodge object `C_x`, the candidate obstruction readings are:
 
 ```text
 continuation failure     = non-effectivity in source degree q,
-monodromy                = holonomy of source-face comparison maps,
-spectral incompleteness  = surviving internal classes in degree p,
-boundary noncanonicity   = inequivalent completions/totalizations of the bifiltration,
-positivity failure       = failure of a compatible positive real polarization.
+monodromy                = holonomy of active-chart comparison maps,
+spectral incompleteness  = nonfaithfulness or surviving internal classes in the active realization,
+boundary noncanonicity   = a nontrivial torsor of global sewings/completions,
+positivity failure       = failure to reduce the sewing group to a positive real polarization.
 ```
 
 The conjecture requires these to be conservative realizations of one object.  Similar vocabulary
 does not prove that two obstructions are the same.  A proof must construct comparison functors and
 show that joint vanishing detects equivalence.
+
+## Polarized selection gerbe `[CONJECTURE]`
+
+The source-blindness theorem forces the missing selector to compare local active charts rather than
+add another chart invariant.  The bold candidate is a polarized descent gerbe.
+
+For the minimal-prime active atlas, let `Aut_DA(A)` be the sheaf of differential-birational gauge
+automorphisms of the active carrier on chart `A`.  Pairwise comparison maps `phi_AB` have triple
+defect
+
+```text
+c_ABC=phi_CA phi_BC phi_AB.                               (11)
+```
+
+After passing to the central band selected by the polarization, the defects should define a
+canonical class
+
+```text
+o_HT(F) in H^2(X_HT(F), ZAut_DA^pol).                     (12)
+```
+
+> **[CONJECTURE -- CONCENTRATION-SEWING PRINCIPLE]** For a regular source-minimal self-dual HT
+> system, local active capacity concentrates into one global source object exactly when (12)
+> vanishes.  When it vanishes, equivalence classes of global sewings form an `H^1` torsor and their
+> automorphisms form `H^0`.  Continuation, monodromy, boundary choice, and positivity are the
+> effectivity, holonomy, torsor, and structure-group-reduction images of this one descent object.
+
+This is deliberately stronger than saying that the five words sound similar.  It predicts an
+actual obstruction class, its vanishing criterion, and the moduli of positive solutions.
+
+Gerbes, nonabelian Cech descent, and reduction of structure group are parent theory.  The possible
+new theorem is the existence and differential-birational invariance of the **canonical HT band and
+class** (12), plus the proof that the analytic realization functors send it to the obstruction
+classes already seen in distinct proof chains.  Without that canonical construction this section
+is only a research conjecture and fails the novelty gate.
 
 ## Parent-theory and novelty gate
 
@@ -493,7 +553,15 @@ zeta, its zeros, nor an RH-equivalent positivity condition may define the object
 - [x] universal rank-two locality refuted for bare HT by arbitrary finite simplicial realizations
 - [x] minimal-prime height spectrum identified as the correct boundary-locality invariant on every
   Stanley--Reisner HT realization
+- [x] ambient noncompactness refuted as an orbit-capacity selector; compact shadows have unbounded
+  but unattained capacity
+- [x] active-quotient faithfulness proved necessary for every full HT facet lattice
+- [x] fixed positive factors on torusless quasi-Abelian quotients proved all-order jet ample
+- [x] exact active-palette dimension law `htDim=aqaDim` proved
+- [x] support plus activity proved source-blind, forcing a third sewing/selection layer
 - [ ] construct the marked locality spectrum invariantly for natural nonlinear source classes
+- [ ] construct the canonical polarized HT band and obstruction class `o_HT`
+- [ ] identify two existing analytic obstruction classes as images of `o_HT`
 - [ ] construct the pointed bifiltered object in one nonlinear nonabelian HT class
 - [ ] prove source-presentation Morita invariance
 - [ ] prove the cone is a strict essential-image restriction

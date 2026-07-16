@@ -1,7 +1,7 @@
 # Seam Center Unique For Reciprocal Bridge
 
 - **ID:** seam-center-unique-for-reciprocal-bridge
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `docs/consolidated/revision01/bridge-theorem.md`, RNG-selected `Xi(w)=xi(1/2+w)`
 - **Statement:** The centre `1/2` in `Xi(w)=xi(1/2+w)` is forced by the reciprocal bridge. If one uses an
@@ -23,7 +23,13 @@ The centre must be the FE fixed seam `c=1/2`.
 
 - [x] 0 -> 1 in-progress: bridge-theorem variable selected by RNG and checked against reset-centre prior probe
 - [x] 1 -> 2 fully-proven: algebraic proof complete
-- [ ] 2 -> 3 formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 -> 3 formalized: unconditional FE-pair folding equivalence
+  `RHTower.offCenterReciprocalAtom_fePair_eq_iff`, critical-line imaginary-part
+  formula and nonvanishing theorem, and centered positive-real capstone
+  `RHTower.offCenterReciprocalAtom_zero_criticalLine` in
+  `formal/GaloisForLFunctions/RHTower/ReciprocalDiscriminantGuardrails.lean`;
+  exact target build passed and all capstone audits report only `propext`,
+  `Classical.choice`, and `Quot.sound`.
 - [ ] 3 -> 4 publication-ready: fold into bridge-coordinate guardrails
 
 ## Proof

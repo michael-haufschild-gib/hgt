@@ -107,9 +107,17 @@ surjective in the base case.
 
 ## Induction step `[PROVED]`
 
-Assume finite-packet jet surjectivity for Abe's proper subgroup `H` of lower toroidal rank.  Choose
-subgroup Poincare series `G_1,...,G_N`, `N=dim J`, whose jet-evaluation matrix is the identity and
-which are grouped by their target point.
+Assume finite-packet jet surjectivity for Abe's proper subgroup `H` of lower toroidal rank.  Inside
+this rank induction, run Abe's second induction on the number of packet points.  Suppose the full
+lattice forms already interpolate the first `s-1` local Artin blocks.  Among the remaining points,
+choose the extremal point selected by Abe's maximum-modulus argument.  Subgroup surjectivity gives
+a basis `G_1,...,G_d` for its `d`-dimensional local jet algebra which vanishes to the prescribed
+orders at the first `s-1` points.
+
+As in Abe's Proposition 8.2, the induction invariant is stronger than abstract surjectivity: every
+`G_j` is represented by a Poincare series from an admissible seed `f_j phi_j`.  The base construction
+has this form, and the damping extension below preserves it.  Hence every subgroup interpolant is
+eligible for the next lattice-extension step; no arbitrary section is inserted into the series.
 
 Abe extends a subgroup series to the full lattice by inserting a damping exponential.  For all
 lattice elements of `H`, the damping character is constant in the lattice index.  Hence the full
@@ -121,9 +129,9 @@ F_B=m_B G+R_B,                                            (5)
 
 where `m_B` is a nowhere-zero holomorphic multiplier and `R_B` is the complement-lattice sum.
 
-Choose Abe's damping ray separately for each target-point block.  At the target point,
-`|m_B|=1`; at the complement lattice, the real part of the exponent is uniformly negative on all
-packet neighborhoods.  By the growth stability lemma,
+Choose Abe's damping ray for this extremal target block.  At the target point, `|m_B|=1`; at the
+complement lattice, the real part of the exponent is uniformly negative on all packet
+neighborhoods.  By the growth stability lemma,
 
 ```text
 jet_R(R_B)->0                                             (6)
@@ -138,26 +146,30 @@ jet coordinates its matrix is lower triangular with diagonal `m_B(p)`.  Therefor
 det Mul_(m_B)|J_p = m_B(p)^(dim J_p) !=0.                 (7)
 ```
 
-At every other point, the subgroup section `G` vanishes to the prescribed jet order, so
-multiplication by `m_B` preserves that vanishing.  Normalize each target block by the inverse of
-its multiplication matrix.  Its entries grow at most polynomially in `B`, whereas the normalized
-remainder still tends to zero by (6).  The normalized full jet-evaluation matrix therefore tends
-to the identity.  It is invertible for all sufficiently large parameters.
+At each of the first `s-1` points, the subgroup sections `G_j` vanish to the prescribed jet order,
+so multiplication by `m_B` preserves that vanishing.  Normalize the new target block by the
+inverse of its multiplication matrix.  Its entries grow at most polynomially in `B`, whereas the
+normalized remainder still tends to zero by (6).  Appending this normalized block to the existing
+columns gives a jet-evaluation matrix tending to a block-triangular matrix with invertible old and
+new diagonal blocks.  It is invertible for all sufficiently large parameters.
 
-This proves surjectivity at the next subgroup rank.  Abe's final passage from the distinguished
-subgroup to `Gamma` has the identical decomposition (5), so the same finite-jet argument completes
-the induction. `QED`
+Peeling the finite point packet one extremal block at a time completes the inner induction, hence
+surjectivity at the next subgroup rank.  Abe's final passage from the distinguished subgroup to
+`Gamma` has the identical decomposition (5), so the same two-level induction completes the proof.
+`QED`
 
 ## Residual complete orbit freedom `[PROVED]`
 
 The section space `H^0(X,L)` with compact-open topology is a Frechet, hence Baire, space.  For a
 countable faithful translation subgroup `H subset X`, every proposed differential polynomial
-relation among finitely many translates depends on one finite jet packet.  Surjectivity of (1)
-shows that the corresponding defect polynomial is not identically zero.  Its zero set is closed
-with empty interior.
+relation among finitely many translates depends on one finite decorated-monomial support and one
+finite jet packet.  Surjectivity of (1) supplies a sample packet on which the corresponding
+decorated monomials have full evaluation rank.  Therefore no nonzero coefficient choice on that
+support vanishes identically, and the determinant-defect locus is closed with empty interior.
 
-Removing the countable union of all rational-coefficient defect loci gives a dense residual set of
-section pairs `(s_0,s_1)` such that
+Finite decorated-monomial supports and derivative orders form a countable family; coefficients do
+not need to be enumerated.  Removing the resulting countable union of coefficient-uniform defect
+loci gives a dense residual set of section pairs `(s_0,s_1)` such that
 
 ```text
 g=s_1/s_0                                                (8)
@@ -188,8 +200,10 @@ all-order theorem to the torusless active quotient and pull the residual meromor
 The analytic Poincare-series induction is not represented by an axiom.  Its two exact algebraic
 interfaces are formalized:
 
-- `truncatedJetMultiplicationMatrix_det_ne_zero` in
-  `formal/GaloisForLFunctions/HTGeometry/FiniteShadowCapacity.lean` proves (7);
+- `truncatedJetMultiplicationMatrix_det_ne_zero` and
+  `truncatedLocalAlgebra_mul_bijective_of_isUnit` in
+  `formal/GaloisForLFunctions/HTGeometry/FiniteShadowCapacity.lean` prove (7) in divided
+  one-variable coordinates and in arbitrary truncated local algebras;
 - `affineJetPacketCollision_denseResidual_exactMatroid` in
   `formal/GaloisForLFunctions/HTGeometry/AffineJetPacketCollisionCompletion.lean` proves the
   countable Baire assembly once every finite defect has empty interior.
@@ -227,4 +241,3 @@ constraint-dimension classification.
 - [ ] independent specialist check of the all-order induction
 - [ ] exact-formulation primary-literature audit
 - [ ] direct Lean formalization of the analytic Poincare estimates before Stage 3
-

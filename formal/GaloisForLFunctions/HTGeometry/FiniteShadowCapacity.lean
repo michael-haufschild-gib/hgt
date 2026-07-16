@@ -66,6 +66,14 @@ theorem truncatedJetMultiplicationMatrix_det_ne_zero
   rw [truncatedJetMultiplicationMatrix_det]
   exact pow_ne_zero N ha
 
+/-- **Local Artin unit law.**  In any finite or multivariate truncated local algebra,
+multiplication by the class of a nonvanishing germ is bijective as soon as that class is a unit.
+This is the coordinate-free version of the preceding triangular determinant theorem. -/
+theorem truncatedLocalAlgebra_mul_bijective_of_isUnit
+    {A : Type*} [Monoid A] (u : A) (hu : IsUnit u) :
+    Function.Bijective (u * ·) := by
+  exact IsUnit.isUnit_iff_mulLeft_bijective.mp hu
+
 /-- Differentiating a matrix observation applies the same matrix to every jet order when the
 actual matrix entries, rather than the whole coefficient field, are differential constants. -/
 theorem differentialJet_matrixLinearForms_of_coefficients_constant
@@ -200,6 +208,26 @@ theorem activeQuotient_injective_of_fullOrbitFree_of_kernelCyclic_not
     simpa only [Function.comp_apply] using
       horbit.comp (fun n : ℤ => n • k) (hcyclic k hkne)
   exact hcompact k hkq hkne hsub
+
+/-- **Exact active-palette dimension classification.**  If every full HT realization extracts an
+active quasi-Abelian palette in the same dimension and every active palette realizes a full HT
+system in the same dimension, then their least realization dimensions coincide.
+
+The two analytic directions are explicit hypotheses: compact-kernel nonconcentration supplies
+`extract`, while all-order packet interpolation on the active quotient supplies `realize`. -/
+theorem activeQuasiAbelianDimension_eq_hypertranscendenceDimension
+    (FullHTRealizable ActivePaletteRealizable : ℕ → Prop)
+    (htDim aqaDim : ℕ)
+    (hfull : FullHTRealizable htDim)
+    (hactive : ActivePaletteRealizable aqaDim)
+    (extract : ∀ d, FullHTRealizable d → ActivePaletteRealizable d)
+    (realize : ∀ d, ActivePaletteRealizable d → FullHTRealizable d)
+    (hhtLeast : ∀ d, FullHTRealizable d → htDim ≤ d)
+    (haqaLeast : ∀ d, ActivePaletteRealizable d → aqaDim ≤ d) :
+    htDim = aqaDim := by
+  apply Nat.le_antisymm
+  · exact hhtLeast aqaDim (realize aqaDim hactive)
+  · exact haqaLeast htDim (extract htDim hfull)
 
 end
 

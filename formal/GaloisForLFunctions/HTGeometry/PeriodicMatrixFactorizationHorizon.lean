@@ -57,8 +57,8 @@ def periodicUnilateralShift : Module.End K (ℕ → M) where
 def twoPeriodicFactorizationOperator
     (A B : Module.End K M) : Module.End K (TwoPeriodicState M) where
   toFun s :=
-    (periodicUnilateralShift (periodicPointwiseEnd B s.2),
-      periodicPointwiseEnd A s.1)
+    (periodicUnilateralShift (K := K) (periodicPointwiseEnd (K := K) B s.2),
+      periodicPointwiseEnd (K := K) A s.1)
   map_add' s t := by
     apply Prod.ext
     · funext n
@@ -89,22 +89,29 @@ theorem periodicUnilateralShift_level (n : ℕ) (m : M) :
   | zero => simp [periodicUnilateralShift, periodicLevel]
   | succ k =>
       by_cases h : k = n <;>
-        simp [periodicUnilateralShift, periodicLevel, h, Nat.succ.injEq]
+        simp [periodicUnilateralShift, periodicLevel, h]
 
 @[simp]
 theorem twoPeriodicFactorizationOperator_evenLevel
     (A B : Module.End K M) (n : ℕ) (m : M) :
     twoPeriodicFactorizationOperator A B (periodicLevel n m, 0) =
       (0, periodicLevel n (A m)) := by
-  ext k <;> simp [twoPeriodicFactorizationOperator, periodicPointwiseEnd,
-    periodicUnilateralShift]
+  change
+    (periodicUnilateralShift (K := K)
+        (periodicPointwiseEnd (K := K) B 0),
+      periodicPointwiseEnd (K := K) A (periodicLevel n m)) = _
+  rw [map_zero, map_zero, periodicPointwiseEnd_level]
 
 @[simp]
 theorem twoPeriodicFactorizationOperator_oddLevel
     (A B : Module.End K M) (n : ℕ) (m : M) :
     twoPeriodicFactorizationOperator A B (0, periodicLevel n m) =
       (periodicLevel (n + 1) (B m), 0) := by
-  ext k <;> simp [twoPeriodicFactorizationOperator]
+  change
+    (periodicUnilateralShift (K := K)
+        (periodicPointwiseEnd (K := K) B (periodicLevel n m)),
+      periodicPointwiseEnd (K := K) A 0) = _
+  rw [periodicPointwiseEnd_level, periodicUnilateralShift_level, map_zero]
 
 /-- Exact even and odd orbit formulas for a two-periodic factorization. -/
 theorem twoPeriodicFactorizationOperator_orbit
@@ -137,7 +144,6 @@ theorem twoPeriodicFactorizationOperator_orbit
         constructor
         · rw [show 2 * (r + 1) = (2 * r + 1) + 1 by omega,
             Function.iterate_succ_apply', ih.2]
-          change T (0, periodicLevel r (F ^ r • A m)) = _
           rw [show T = twoPeriodicFactorizationOperator A B by rfl,
             twoPeriodicFactorizationOperator_oddLevel]
           simp [map_smul, hpoint, pow_succ, smul_smul, mul_comm]
@@ -145,7 +151,6 @@ theorem twoPeriodicFactorizationOperator_orbit
             Function.iterate_succ_apply']
           rw [show 2 * (r + 1) = (2 * r + 1) + 1 by omega,
             Function.iterate_succ_apply', ih.2]
-          change T (T (0, periodicLevel r (F ^ r • A m))) = _
           rw [show T = twoPeriodicFactorizationOperator A B by rfl,
             twoPeriodicFactorizationOperator_oddLevel,
             twoPeriodicFactorizationOperator_evenLevel]
@@ -160,12 +165,19 @@ theorem periodicLevel_linearIndependent
   intro l hl
   apply Finsupp.ext
   intro n
-  rw [Finsupp.linearCombination_apply] at hl
-  have hn := congrFun hl n
-  simp only [Finsupp.sum, Finset.sum_apply, Pi.zero_apply, periodicLevel] at hn
-  by_cases hln : l n = 0
-  · exact hln
-  · exact (hu n (smul_eq_zero.mp hn |>.resolve_left hln)).elim
+  by_cases hnmem : n ∈ l.support
+  · rw [Finsupp.linearCombination_apply] at hl
+    have hn := congrFun hl n
+    simp only [Finsupp.sum, Finset.sum_apply, Pi.zero_apply] at hn
+    rw [Finset.sum_eq_single n] at hn
+    · have hcoef : l n • u n = 0 := by
+        simpa [periodicLevel] using hn
+      simpa using (smul_eq_zero.mp hcoef).resolve_right (hu n)
+    · intro b _ hbn
+      simp [periodicLevel, hbn.symm]
+    · intro hnnot
+      exact (hnnot hnmem).elim
+  · exact Finsupp.notMem_support_iff.mp hnmem
 
 /-- The two parity-separated single-grade families are jointly linearly independent. -/
 theorem twoPeriodicLevel_linearIndependent
@@ -210,7 +222,7 @@ theorem twoPeriodicFactorizationOperator_orbit_linearIndependent
   let v : ℕ → M := fun r ↦ (F ^ r) • A m
   have hu : ∀ r, u r ≠ 0 := fun r ↦ smul_ne_zero (pow_ne_zero r hF) hm
   have hv : ∀ r, v r ≠ 0 := fun r ↦ smul_ne_zero (pow_ne_zero r hF) hAm
-  have hsum := twoPeriodicLevel_linearIndependent u v hu hv
+  have hsum := twoPeriodicLevel_linearIndependent (K := K) u v hu hv
   have hreindex := hsum.comp Equiv.natSumNatEquivNat.symm
     Equiv.natSumNatEquivNat.symm.injective
   have hfamily : (fun n : ℕ ↦

@@ -23,7 +23,7 @@ The correct ambient quotient class is quasi-Abelian, characterized by generalize
 relations, not Stein.  Subsequent work also falsified ambient quasi-Abelian noncompactness as a
 complete selector: the structural lattice must remain faithful after quotienting compact complex
 shadows.  The surviving exact-classification question is continued in
-`../1-in-progress/active-quasi-abelian-palette-exact-ht-dimension-classification.md`.
+`../2-fully-proven/new_scientific_knowledge/active-quasi-abelian-palette-exact-ht-dimension-classification.md`.
 
 ## Why this is the required strengthening
 

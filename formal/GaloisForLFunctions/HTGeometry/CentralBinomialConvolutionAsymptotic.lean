@@ -247,13 +247,51 @@ theorem tendsto_sqrtNat_mul_normalizedCentralBinomialGeometricConvolution
     have hscaled := hgf.mul_left (1 / Real.sqrt Real.pi)
     have hscaledG : HasSum G
         ((1 / Real.sqrt Real.pi) * ((1 - q) ^ (-1 / 2 : ℝ))) := by
-      convert hscaled using 1 with j
-      dsimp only [G]
-      ring
+      simpa only [G, one_div, mul_assoc, mul_left_comm, mul_comm] using hscaled
     exact hscaledG.tsum_eq
   rw [hGsum] at hlimit
   apply hlimit.congr'
   exact Eventually.of_forall htsum
+
+/-- Factoring the leading characteristic radius reduces the diagonal kernel coefficient to the
+normalized geometric convolution. -/
+theorem centralBinomialDiagonalKernelCoefficient_eq_pow_mul_convolution
+    {B D : ℝ} (hB : B ≠ 0) (n : ℕ) :
+    centralBinomialDiagonalKernelCoefficient B D n =
+      (B ^ 2) ^ n *
+        normalizedCentralBinomialGeometricConvolution (D ^ 2 / B ^ 2) n := by
+  rw [centralBinomialDiagonalKernelCoefficient,
+    normalizedCentralBinomialGeometricConvolution, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro k hk
+  have hkn : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
+  have hpow : (B ^ 2) ^ n = (B ^ 2) ^ k * (B ^ 2) ^ (n - k) := by
+    rw [← pow_add, Nat.add_sub_of_le hkn]
+  rw [div_pow, hpow]
+  field_simp [hB]
+
+/-- **Sharp diagonal-kernel coefficient asymptotic.**  The exact leading exponential radius is
+`B²`; after removing it, the coefficient has the universal half-order limit determined by the
+transverse ratio `D²/B²`. -/
+theorem tendsto_sqrtNat_mul_centralBinomialDiagonalKernelCoefficient_div_pow
+    {B D : ℝ} (hB : 0 < B) (hD : |D| < B) :
+    Tendsto
+      (fun n : ℕ =>
+        Real.sqrt n * centralBinomialDiagonalKernelCoefficient B D n / (B ^ 2) ^ n)
+      atTop
+      (nhds ((1 / Real.sqrt Real.pi) *
+        ((1 - D ^ 2 / B ^ 2) ^ (-1 / 2 : ℝ)))) := by
+  have hBsq : 0 < B ^ 2 := sq_pos_of_pos hB
+  have hDinterval := abs_lt.mp hD
+  have hDsq : D ^ 2 < B ^ 2 := by nlinarith
+  have hq0 : 0 ≤ D ^ 2 / B ^ 2 := div_nonneg (sq_nonneg D) hBsq.le
+  have hq1 : D ^ 2 / B ^ 2 < 1 := (div_lt_one hBsq).2 hDsq
+  have hlimit :=
+    tendsto_sqrtNat_mul_normalizedCentralBinomialGeometricConvolution hq0 hq1
+  apply hlimit.congr'
+  filter_upwards with n
+  rw [centralBinomialDiagonalKernelCoefficient_eq_pow_mul_convolution hB.ne' n]
+  field_simp [(pow_pos hBsq n).ne']
 
 end
 

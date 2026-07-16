@@ -1,9 +1,9 @@
 # Active quasi-Abelian palettes classify finite full HT constraint geometry
 
 - **ID:** `active-quasi-abelian-palette-exact-ht-dimension-classification`
-- **Stage:** 1-in-progress
-- **Type:** CORRECTED CONJECTURE / ACTION-RELATIVE HT DIMENSION CLASSIFICATION
-- **Scientific status:** `[CONJECTURE] [ACTIVE-FAITHFUL NECESSITY PROVED]`
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (paper) / ACTION-RELATIVE HT DIMENSION CLASSIFICATION
+- **Scientific status:** `[PROVED HERE] [FORMALIZED FINITE CORE] [NOVELTY UNVERIFIED]`
 - **Statement:** The intrinsic analytic dimension of a finite full Stanley--Reisner HT constraint
   geometry is governed by quasi-Abelian facet quotients in which every structural facet lattice is
   faithful on the quotient by the maximal compact complex subtorus.
@@ -90,7 +90,7 @@ Every periodic pencil has no compact complex shadow in its active `C*` quotient,
 aqaDim(Delta)<=ppDim(Delta).                               (7)
 ```
 
-## Corrected exact classification `[CONJECTURE]`
+## Exact active-palette classification `[PROVED HERE]`
 
 For every finite essential simplicial complex,
 
@@ -98,7 +98,7 @@ For every finite essential simplicial complex,
 htDim(Delta)=aqaDim(Delta).                                (8)
 ```
 
-The expected hierarchy is
+The exact hierarchy is
 
 ```text
 peDim(Delta)<=qaDim(Delta)<=aqaDim(Delta)
@@ -136,12 +136,12 @@ The kernel-to-injectivity implication is formalized as
 `activeQuotient_injective_of_fullOrbitFree_of_kernelCyclic_not` in
 `formal/GaloisForLFunctions/HTGeometry/FiniteShadowCapacity.lean`.
 
-## Sufficiency program
+## Active-faithful sufficiency `[PROVED HERE]`
 
 Let `Y_A=Act(X_A)`.  If (4) holds, the integral facet lattice acts faithfully on `Y_A`.  The needed
-analytic theorem is:
+analytic theorem now holds:
 
-> **Torusless all-order packet theorem `[CONJECTURE]`.** On every torusless noncompact
+> **Torusless all-order packet theorem `[PROVED HERE]`.** On every torusless noncompact
 > quasi-Abelian group satisfying the generalized Riemann relations, one fixed ample automorphic
 > factor has a Frechet section space whose evaluation map onto every finite jet packet is
 > surjective.
@@ -154,10 +154,17 @@ extension:
 2. after any fixed finite number of derivatives, the complement-lattice terms are a polynomial in
    the damping parameter times an exponentially decaying factor.
 
-The new proof must run Abe's subgroup-rank induction on finite local Artin algebras rather than on
-point values.  Multiplication by the damping exponential acts invertibly on each truncated local
-algebra, while the complement contribution tends to zero.  This should give simultaneous
-surjectivity for arbitrary finite jet packets without changing the automorphic factor.
+The proof runs Abe's subgroup-rank induction on finite local Artin algebras rather than on point
+values.  Raising his order-one separator supplies arbitrary finite zero multiplicities without
+leaving the convergence class.  Multiplication by the damping exponential acts invertibly on each
+truncated local algebra, while every fixed finite jet of the complement contribution is polynomial
+in the damping parameter times an exponentially decaying factor.  After block normalization the
+full jet matrix tends to the subgroup interpolation matrix and is therefore invertible.  The
+complete proof is in
+`torusless-quasi-abelian-fixed-factor-all-order-jet-ampleness.md`.
+
+Remmert--Morimoto decomposition adds the Stein factors of `Y_A`; Cartan interpolation supplies
+their finite jets, while the torusless quasi-Abelian factor is handled by the theorem above.
 
 The already formalized affine jet-packet Baire theorem then produces a meromorphic ratio on each
 `Y_A` whose faithful facet orbit is completely differentially free.  Pullback to `X_A`, facetwise
@@ -166,6 +173,13 @@ sum, and the localized Stanley--Reisner matroid theorem yield
 ```text
 htDim(Delta)<=aqaDim(Delta).                               (11)
 ```
+
+Combining (10) and (11) proves (8). `QED`
+
+The least-dimension assembly is formalized as
+`activeQuasiAbelianDimension_eq_hypertranscendenceDimension` in
+`formal/GaloisForLFunctions/HTGeometry/FiniteShadowCapacity.lean`, with extraction and realization
+kept as explicit analytic inputs.
 
 ## The higher object: active constraint spectrum
 
@@ -209,14 +223,13 @@ genericity, and Stanley--Reisner geometry.  None of those parents appears to def
 action-relative active quotient invariant (5), the attained-versus-dispersed capacity dichotomy,
 or the active sewn constraint spectrum (12).
 
-The route is not promoted as new scientific knowledge until:
+The mathematical proof gate is closed.  The remaining anti-theatre gates are external:
 
-- the nonsplit compact-kernel theorem is proved;
-- the torusless all-order packet theorem is proved;
-- equality (8) is proved rather than assumed;
-- an exact-formulation literature audit finds no equivalent action-relative classification;
-- examples separate `qaDim`, `aqaDim`, and `ppDim`, or prove a collapse theorem;
-- the finite and geometric theorem surfaces are formalized without analytic axioms.
+- an exact-formulation literature audit must find no equivalent action-relative classification;
+- an independent specialist must check the proper-fibration and all-order Poincare induction;
+- examples must separate `qaDim`, `aqaDim`, and `ppDim`, or a collapse theorem must explain why
+  they coincide;
+- direct Lean formalization of the analytic parents is required before Stage 3.
 
 ## Current exact boundary
 
@@ -225,13 +238,13 @@ Proved:
 - the original ambient-noncompact full-orbit conjecture is false;
 - the proper compact-kernel finite-capacity theorem;
 - every finite capacity occurs in the split elliptic model;
-- the split active quotient criterion;
+- the general active quotient principle;
+- all-order fixed-factor jet interpolation on torusless quasi-Abelian groups;
+- the exact active dimension equality (8);
 - the exact finite-shadow matrix rank core in Lean.
 
 Open:
 
-- all-order fixed-factor jet interpolation on torusless quasi-Abelian groups;
-- the exact active dimension equality (8);
 - the sewing law selecting special functions inside the universal constraint class.
 
 ## Gates
@@ -239,11 +252,11 @@ Open:
 - [x] old conjecture falsified rather than patched cosmetically
 - [x] strong positive theorem extracted from the no-go
 - [x] action-relative invariant defined
-- [x] necessity and sufficiency reduced to named geometric theorems
+- [x] necessity and sufficiency proved by named geometric theorems
 - [x] active sewn constraint spectrum stated
 - [x] prove nonsplit compact-kernel finite capacity
-- [ ] prove torusless all-order packet interpolation
-- [ ] prove `htDim=aqaDim`
+- [x] prove torusless all-order packet interpolation
+- [x] prove `htDim=aqaDim`
 - [ ] separate or collapse `qaDim`, `aqaDim`, and `ppDim`
 - [ ] complete primary-literature novelty audit
 - [ ] full Lean formalization of every promoted theorem surface

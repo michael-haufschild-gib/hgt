@@ -58,9 +58,10 @@ folders:
 
 research rules:
 - goal is a paper worthy a fields medal
-- conjecture boldly, think bg
+- conjecture boldly, think big
 - use anti-theatre and novelty gates to avoid work that's just rediscovery of known knowledge
 - novelty gate refers to literature, not to our own research corpus
+- check from time to time the lean code for new additions and pipeline cards for new additions that aren't yet formalized
 
 ## ht
 
@@ -83,3 +84,29 @@ research rules:
 - conjecture boldly, think bg
 - use anti-theatre and novelty gates to avoid work that's just rediscovery of known knowledge
 - novelty gate refers to literature, not to our own research corpus
+- check from time to time the lean code for new additions and pipeline cards for new additions that aren't yet formalized
+
+
+## ht to rh
+
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research how the existing and ongoing research into hypertranscenental functions can be applied to develop an rh proof.
+
+lean rules:
+1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.
+2. aim for the smallest lean build possible and use caching heavily for lean. write lean code in batches instead of building after every edit.
+3. lean proofs must be unconditional
+4. always check first what the project lean code already offers
+5. effort estimation are not a criterion. if it is missing in mathlib -> you build it. if it takes months -> you build it.
+6. no computations.
+
+folders:
+- formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
+- formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
+
+research rules:
+- goal is the rh proof no matter what
+- constraint vs flow rule is softened - whatever brings the proof is acceptable
+- novelty gate is softened - it does not matter if it is new or not, if it delivers the proof
+- conjecture boldly, think bg
+- use anti-theatre and novelty gates to avoid work that's just rediscovery of known dead ends
+- check from time to time the lean code for new additions and pipeline cards for new additions that aren't yet formalized

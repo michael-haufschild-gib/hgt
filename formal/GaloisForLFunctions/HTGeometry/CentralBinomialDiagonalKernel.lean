@@ -37,8 +37,8 @@ lemma normalizedCentralBinom_nonneg (n : ℕ) :
 /-- Coefficients of the factored diagonal square-root kernel. -/
 def centralBinomialDiagonalKernelCoefficient (B D : ℝ) (n : ℕ) : ℝ :=
   ∑ k ∈ Finset.range (n + 1),
-    normalizedCentralBinom k * (B ^ 2) ^ k *
-      (normalizedCentralBinom (n - k) * (D ^ 2) ^ (n - k))
+    normalizedCentralBinom k * (D ^ 2) ^ k *
+      (normalizedCentralBinom (n - k) * (B ^ 2) ^ (n - k))
 
 /-- **Exact diagonal kernel generating identity.**  Inside both characteristic radii, the
 central-binomial convolution sums to the universal factored square-root kernel. -/
@@ -49,29 +49,34 @@ theorem hasSum_centralBinomialDiagonalKernelCoefficient
       (fun n : ℕ => centralBinomialDiagonalKernelCoefficient B D n * t ^ n)
       (((1 - B ^ 2 * t) ^ (-1 / 2 : ℝ)) *
         ((1 - D ^ 2 * t) ^ (-1 / 2 : ℝ))) := by
-  let f : ℕ → ℝ := fun n => normalizedCentralBinom n * (B ^ 2 * t) ^ n
-  let g : ℕ → ℝ := fun n => normalizedCentralBinom n * (D ^ 2 * t) ^ n
+  let f : ℕ → ℝ := fun n => normalizedCentralBinom n * (D ^ 2 * t) ^ n
+  let g : ℕ → ℝ := fun n => normalizedCentralBinom n * (B ^ 2 * t) ^ n
   have hBx0 : 0 ≤ B ^ 2 * t := mul_nonneg (sq_nonneg B) ht
   have hDx0 : 0 ≤ D ^ 2 * t := mul_nonneg (sq_nonneg D) ht
-  have hf : HasSum f ((1 - B ^ 2 * t) ^ (-1 / 2 : ℝ)) := by
-    simpa only [f] using normalizedCentralBinom_gf hBx0 hBt
-  have hg : HasSum g ((1 - D ^ 2 * t) ^ (-1 / 2 : ℝ)) := by
-    simpa only [g] using normalizedCentralBinom_gf hDx0 hDt
+  have hf : HasSum f ((1 - D ^ 2 * t) ^ (-1 / 2 : ℝ)) := by
+    simpa only [f] using normalizedCentralBinom_gf hDx0 hDt
+  have hg : HasSum g ((1 - B ^ 2 * t) ^ (-1 / 2 : ℝ)) := by
+    simpa only [g] using normalizedCentralBinom_gf hBx0 hBt
   have hfnorm : Summable (fun n : ℕ => ‖f n‖) := by
     apply hf.summable.congr
     intro n
     dsimp only [f]
     rw [Real.norm_eq_abs, abs_of_nonneg
-      (mul_nonneg (normalizedCentralBinom_nonneg n) (pow_nonneg hBx0 n))]
+      (mul_nonneg (normalizedCentralBinom_nonneg n) (pow_nonneg hDx0 n))]
   have hgnorm : Summable (fun n : ℕ => ‖g n‖) := by
     apply hg.summable.congr
     intro n
     dsimp only [g]
     rw [Real.norm_eq_abs, abs_of_nonneg
-      (mul_nonneg (normalizedCentralBinom_nonneg n) (pow_nonneg hDx0 n))]
+      (mul_nonneg (normalizedCentralBinom_nonneg n) (pow_nonneg hBx0 n))]
   have hcauchy := hasSum_sum_range_mul_of_summable_norm hfnorm hgnorm
   rw [hf.tsum_eq, hg.tsum_eq] at hcauchy
-  convert hcauchy using 2 with n
+  have hcauchy' : HasSum
+      (fun n => ∑ k ∈ Finset.range (n + 1), f k * g (n - k))
+      (((1 - B ^ 2 * t) ^ (-1 / 2 : ℝ)) *
+        ((1 - D ^ 2 * t) ^ (-1 / 2 : ℝ))) := by
+    simpa only [mul_comm] using hcauchy
+  convert hcauchy' using 2 with n
   rw [centralBinomialDiagonalKernelCoefficient]
   rw [Finset.sum_mul]
   apply Finset.sum_congr rfl

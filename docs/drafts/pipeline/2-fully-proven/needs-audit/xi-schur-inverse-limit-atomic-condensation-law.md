@@ -265,10 +265,14 @@ capstone from the explicit source equivalence to the complete double-boundary/co
 
 Formalization audit (needs-audit pass): the cited RH input is confirmed present and is the RH-facing
 anchor — `RHTower.continuedPrimeArchUpperAntiHerglotz_iff_riemannHypothesis` in
-`CCMCompletedPrimeGammaAccretivityCriterion.lean`. But the inverse-limit criterion `(9)` and the
-atomic-condensation law `(13)`--`(14)` need the Schur coefficient theorem, OPUC carrier, and
-Bernstein--Szego `L^p` blow-up, all absent from mathlib. No bounded self-contained kernel closes a
-gate; no partial file is added.
+`CCMCompletedPrimeGammaAccretivityCriterion.lean`. The Schur coefficient, OPUC,
+Bernstein--Szego, and all finite superlinear `L^p` conclusions are now formalized. The circle-side
+F. and M. Riesz input is also discharged unconditionally: `xiSchur_inverseLimit_atomicCondensation`
+no longer accepts a Riesz-brothers hypothesis and invokes `singularSchurDefect_doubleBoundary`
+directly. The remaining unconditional Stage-3 gate is the source-faithful construction of the
+canonical Xi circle probability measure together with the bridge identifying its singularity with
+the checked `RHTower` anti-Herglotz/RH criterion; the current capstone still receives that exact
+equivalence as a theorem argument.
 
 ## Gates
 

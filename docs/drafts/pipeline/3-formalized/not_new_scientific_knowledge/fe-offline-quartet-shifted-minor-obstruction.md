@@ -1,7 +1,7 @@
 # FE Off-Line Quartet Shifted Minor Obstruction
 
 - **ID:** fe-offline-quartet-shifted-minor-obstruction
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `docs/consolidated/gpt/proof-route.md`, sections 4, 7, 8; `docs/consolidated/gpt/research-topics.md` topic 40
 - **Statement:** A single functional-equation/conjugation-symmetric off-line quartet already makes both degree-one shifted reciprocal Hankel minors negative.
@@ -14,7 +14,12 @@ Give the Davenport-Heilbronn gate a concrete shifted-square-test form. Functiona
 
 - [x] 0 -> 1 in-progress: well-posed, source-pure, attack idea
 - [x] 1 -> 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 -> 3 formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 -> 3 formalized: unconditional reciprocal-atom coordinate identity,
+  both exact shifted determinant formulas, and strict-negativity capstone
+  `RHTower.seamOfflineQuartet_det_both_neg` in
+  `formal/GaloisForLFunctions/RHTower/ReciprocalDiscriminantGuardrails.lean`;
+  exact target build passed and the capstone audit reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.
 - [ ] 3 -> 4 publication-ready: standalone note if needed
 
 ## Proof

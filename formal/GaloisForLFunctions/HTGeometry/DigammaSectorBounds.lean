@@ -52,8 +52,8 @@ theorem norm_halfShift_add_nat_lower {z : ℂ} (hz : z ∈ digammaWatsonSector) 
   calc
     (‖z‖ + (2 * (n : ℝ) + 1)) / 4 =
         ((‖z‖ + (2 * (n : ℝ) + 1)) / 2) / 2 := by ring
-    _ ≤ ‖z + (2 * (n : ℝ) + 1)‖ / 2 :=
-      (div_le_div_right (by norm_num : (0 : ℝ) < 2)).2 h
+    _ ≤ ‖z + ((2 * (n : ℝ) + 1 : ℝ) : ℂ)‖ / 2 :=
+      div_le_div_of_nonneg_right h (by norm_num : (0 : ℝ) ≤ 2)
 
 theorem halfShift_ne_neg_nat {z : ℂ} (hz : z ∈ digammaWatsonSector) (n : ℕ) :
     (1 + z) / 2 ≠ -(n : ℂ) := by
@@ -117,8 +117,7 @@ private theorem norm_gaussDigammaSeriesTerm_halfShift_le {z : ℂ}
     _ ≤ ((1 + ‖z‖) / 2) / ((n : ℝ) + 1) / (((n : ℝ) + 1) / 4) := by
             gcongr
     _ = 2 * (1 + ‖z‖) * (1 / ((n : ℝ) + 1) ^ 2) := by
-            field_simp
-            <;> ring
+            field_simp <;> ring
 
 /-- Digamma has at most linear growth on the shifted Watson sector. -/
 theorem exists_norm_digamma_halfShift_le :
@@ -206,7 +205,6 @@ private theorem norm_polygammaSectorTerm_halfShift_le (m : ℕ) {z : ℂ}
           (1 / ((n : ℝ) + 1) ^ (m + 2)) := by
             rw [div_pow]
             field_simp
-            <;> ring
 
 private theorem tsum_polygammaSectorTerm_eq (m : ℕ) {z : ℂ}
     (hz : z ∈ digammaWatsonSector) :

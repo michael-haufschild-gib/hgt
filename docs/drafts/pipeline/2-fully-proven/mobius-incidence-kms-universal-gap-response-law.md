@@ -70,12 +70,14 @@ finite realization unconditionally:
 - `sum_finiteKMSEntropyProductionTransitionIntensity_incidence` proves equation `(4)`;
 - `finiteIncidenceKMSResponse_eq` identifies the exact finite passive gap response, and
   `finiteIncidenceKMSResponse_im_nonpos` proves its anti-Herglotz sign;
-- `integral_mobiusIncidenceUniversalGapDensity` proves that the proposed universal limiting
-  density `2|x|exp(-|x|)` has total mass four.
+- `formal/GaloisForLFunctions/RHTower/MobiusIncidenceUniversalGapResponse.lean` proves that the
+  proposed universal limiting density `2|x|exp(-|x|)` has total mass four, constructs its folded
+  Cauchy response, proves equation `(10)`, proves the logarithmic quotient divergence, and proves
+  `not_differentiableAt_mobiusIncidenceUniversalGapResponse_zero` unconditionally.
 
 The card remains at Stage 2.  The exact open Lean core is the unconditional squarefree critical
-gap-response convergence to this density and the logarithmic derivative singularity at the
-origin.  No hypothesis standing in for either statement has been introduced.
+gap-response convergence to this density.  No hypothesis standing in for that convergence has
+been introduced.
 
 ## Critical response theorem
 

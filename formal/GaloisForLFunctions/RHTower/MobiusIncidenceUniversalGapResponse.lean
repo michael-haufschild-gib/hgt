@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.MobiusCriticalFisherSteinContact
+import GaloisForLFunctions.HTGeometry.RemovableSingularity
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
 open MeasureTheory Set Filter
@@ -49,7 +50,7 @@ theorem integrableOn_mobiusIncidenceUniversalGapSlope
       (by norm_num) (by norm_num) (by norm_num)
     convert h using 1
     funext x
-    simp only [Real.rpow_one, one_mul]
+    simp only [Real.rpow_one]
     congr 1
     ring
   have hmajor : IntegrableOn
@@ -67,8 +68,7 @@ theorem integrableOn_mobiusIncidenceUniversalGapSlope
     have hden : eta ^ 2 ≤ x ^ 2 + eta ^ 2 := by nlinarith [sq_nonneg x]
     have hden0 : 0 < eta ^ 2 := sq_pos_of_pos heta
     have hleft : 0 ≤ x * Real.exp (-x) / (x ^ 2 + eta ^ 2) := by positivity
-    have hright : 0 ≤ (eta ^ 2)⁻¹ * (x * Real.exp (-x)) := by positivity
-    simp only [Real.norm_eq_abs, abs_of_nonneg hleft, abs_of_nonneg hright]
+    simp only [Real.norm_eq_abs, abs_of_nonneg hleft]
     calc
       x * Real.exp (-x) / (x ^ 2 + eta ^ 2)
           ≤ x * Real.exp (-x) / eta ^ 2 :=
@@ -197,6 +197,7 @@ theorem mobiusIncidenceUniversalGapResponse_I_mul_div
       ring]
     rw [div_neg]
     push_cast
+    rfl
   have hintegral :
       (∫ x in Ioi (0 : ℝ),
           ((x * Real.exp (-x) : ℝ) : ℂ) /
@@ -261,5 +262,39 @@ theorem not_tendsto_mobiusIncidenceUniversalGapResponse_I_mul_div_nhds
   exact (not_tendsto_nhds_of_tendsto_atBot
     tendsto_mobiusIncidenceUniversalGapResponse_I_mul_div_re_nhdsGT_zero_atBot
     c.re) hre
+
+/-- The logarithmic quotient singularity is nonremovable: the universal folded response is not
+complex differentiable at the centered origin. -/
+theorem not_differentiableAt_mobiusIncidenceUniversalGapResponse_zero :
+    ¬ DifferentiableAt ℂ mobiusIncidenceUniversalGapResponse 0 := by
+  intro hdiff
+  have hmap_nhds : Tendsto
+      (fun eta : ℝ => Complex.I * (eta : ℂ))
+      (nhdsWithin 0 (Ioi 0)) (nhds (0 : ℂ)) := by
+    have hcont : ContinuousAt (fun eta : ℝ => Complex.I * (eta : ℂ)) 0 := by
+      fun_prop
+    simpa using hcont.tendsto.mono_left nhdsWithin_le_nhds
+  have hmap_mem : ∀ᶠ eta : ℝ in nhdsWithin 0 (Ioi 0),
+      Complex.I * (eta : ℂ) ∈ ({0} : Set ℂ)ᶜ := by
+    filter_upwards [self_mem_nhdsWithin] with eta heta
+    simp only [mem_compl_iff, mem_singleton_iff]
+    exact mul_ne_zero Complex.I_ne_zero (by exact_mod_cast heta.ne')
+  have hmap : Tendsto
+      (fun eta : ℝ => Complex.I * (eta : ℂ))
+      (nhdsWithin 0 (Ioi 0)) (nhdsWithin 0 ({0} : Set ℂ)ᶜ) :=
+    tendsto_nhdsWithin_iff.mpr ⟨hmap_nhds, hmap_mem⟩
+  have hfinite :=
+    _root_.HTGeometry.tendsto_div_sub_of_hasDerivAt_eq_zero hdiff
+      mobiusIncidenceUniversalGapResponse_zero
+  have hquot : Tendsto
+      (fun eta : ℝ =>
+        mobiusIncidenceUniversalGapResponse (Complex.I * eta) /
+          (Complex.I * eta))
+      (nhdsWithin 0 (Ioi 0))
+      (nhds (deriv mobiusIncidenceUniversalGapResponse 0)) := by
+    simpa only [Function.comp_apply, sub_zero] using hfinite.comp hmap
+  exact
+    (not_tendsto_mobiusIncidenceUniversalGapResponse_I_mul_div_nhds
+      (deriv mobiusIncidenceUniversalGapResponse 0)) hquot
 
 end RHTower

@@ -1,7 +1,7 @@
 # Y-Plane Quartet Minors Are Imaginary-Defect Squares
 
 - **ID:** y-plane-quartet-minor-imaginary-defect
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), bridge-coordinate refinement
 - **Source:** random bridge-theorem inline draw 46/72, `y_ρ` in `docs/consolidated/revision01/bridge-theorem.md`
 - **Statement:** In the reciprocal seam coordinate `y_ρ`, a folded conjugate pair of non-real atoms has first shifted Hankel minors
@@ -21,7 +21,13 @@ Make the bridge theorem's coordinate `y_ρ = -(ρ-1/2)^(-2)` carry the local obs
 
 - [x] 0 -> 1 in-progress: bridge-theorem variable selected by RNG and checked against quartet/folding prior work
 - [x] 1 -> 2 fully-proven: algebraic proof complete
-- [ ] 2 -> 3 formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 -> 3 formalized: unconditional determinant identities
+  `RHTower.reciprocalConjugatePair_det_zero` and
+  `RHTower.reciprocalConjugatePair_det_one`, with strict-negativity capstone
+  `RHTower.reciprocalConjugatePair_det_both_neg`, in
+  `formal/GaloisForLFunctions/RHTower/ReciprocalDiscriminantGuardrails.lean`;
+  exact target build passed and the capstone audit reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.
 - [ ] 3 -> 4 publication-ready: fold into the reciprocal-coordinate bridge exposition
 
 ## Proof

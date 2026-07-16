@@ -1,7 +1,7 @@
 # Discriminant Bulk Cross Sign Needs Scale Separation
 
 - **ID:** discriminant-bulk-cross-sign-needs-scale-separation
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / route correction
 - **Source:** `docs/consolidated/revision01/bridge-theorem.md`;
   `y-plane-quartet-minor-imaginary-defect.md`;
@@ -102,7 +102,13 @@ the degree-one statement to a checked/conditional mechanism.
 
 - [x] 0 -> 1 in-progress: discriminant cross-term sign assertion isolated.
 - [x] 1 -> 2 fully-proven: exact algebraic counterexample written.
-- [ ] 2 -> 3 formalized: optional polynomial expansion over real closed fields.
+- [x] 2 -> 3 formalized: unconditional exact expansion
+  `RHTower.discriminantCross_eq`, negative self-scale theorem
+  `RHTower.discriminantCross_self_neg`, and explicit unit counterexample
+  `RHTower.discriminantCross_one_one` in
+  `formal/GaloisForLFunctions/RHTower/ReciprocalDiscriminantGuardrails.lean`;
+  exact target build passed and the capstone audit reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.
 
 ## Log
 
