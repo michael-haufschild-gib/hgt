@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteFieldStateSpaceHankelRank
+import GaloisForLFunctions.HTGeometry.LinearRecurrenceStateSpace
 import GaloisForLFunctions.RHTower.CompletedPrimeGammaComplexModalBoundary
 
 /-!
@@ -42,6 +43,16 @@ theorem completedMovingComplexFixedStateSpaceDimensionLocalClosure_of_dimensionA
     CompletedMovingComplexFixedStateSpaceDimensionLocalClosure d sigma :=
   HTGeometry.fixedAlgebraicStateSpaceDimensionLocalClosure_of_dimensionAtMost h
 
+/-- A positive finite-order recurrence for the moving completed-source values supplies its
+canonical companion-matrix realization of the same dimension. -/
+theorem completedMovingComplexStateSpaceDimensionAtMost_of_linearRecurrence
+    {sigma : ℂ} (E : LinearRecurrence ℂ)
+    (hsolution : E.IsSolution (completedMovingComplexMoment sigma))
+    (horder : E.order ≠ 0) :
+    CompletedMovingComplexStateSpaceDimensionAtMost E.order sigma :=
+  HTGeometry.algebraicStateSpaceDimensionAtMost_of_linearRecurrence
+    E hsolution horder
+
 /-- Fixed complex state dimension forces the corresponding moving determinant to vanish. -/
 theorem completedMovingComplexHankelDet_eq_zero_of_fixedStateSpaceDimensionLocalClosure
     {d : ℕ} {sigma : ℂ}
@@ -72,6 +83,18 @@ theorem not_completedMovingComplexFixedStateSpaceDimensionLocalClosure_one_half_
     (by
       rw [primeArchSourceMomentHankelMatrix_eq_xiCentralMomentHankelMatrix]
       exact det_xiCentralMomentHankelMatrix_pos_of_riemannHypothesis hRH (d + 1))
+
+/-- **RH finite-recurrence boundary.**  Under RH, the completed moving source at the center obeys
+no positive finite-order complex linear recurrence. -/
+theorem not_completedMovingComplexLinearRecurrence_one_half_of_riemannHypothesis
+    (hRH : RiemannHypothesis) (E : LinearRecurrence ℂ) (horder : E.order ≠ 0) :
+    ¬ E.IsSolution (completedMovingComplexMoment (1 / 2)) := by
+  intro hsolution
+  apply not_completedMovingComplexFixedStateSpaceDimensionLocalClosure_one_half_of_riemannHypothesis
+    hRH E.order
+  apply completedMovingComplexFixedStateSpaceDimensionLocalClosure_of_dimensionAtMost
+  exact completedMovingComplexStateSpaceDimensionAtMost_of_linearRecurrence
+    E hsolution horder
 
 end
 

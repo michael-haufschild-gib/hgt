@@ -53,6 +53,11 @@ finite complex modal width d
 
 Thus determinant nonvanishing kills all three model classes at once.
 
+The recurrence successor in `linear-recurrence-companion-state-space-boundary.md` constructs a
+companion realization for every positive finite-order complex linear recurrence.  Hence the same
+chain also excludes finite recurrences; under RH this gives
+`not_completedMovingComplexLinearRecurrence_one_half_of_riemannHypothesis` at the center.
+
 ## Formal surface
 
 `formal/GaloisForLFunctions/HTGeometry/FiniteFieldStateSpaceHankelRank.lean` exports:
@@ -78,10 +83,12 @@ Thus determinant nonvanishing kills all three model classes at once.
 - `CompletedMovingComplexStateSpaceDimensionAtMost`;
 - `CompletedMovingComplexFixedStateSpaceDimensionLocalClosure`;
 - `completedMovingComplexStateSpaceDimensionAtMost_of_modalWidthAtMost`;
+- `completedMovingComplexStateSpaceDimensionAtMost_of_linearRecurrence`;
 - `completedMovingComplexFixedStateSpaceDimensionLocalClosure_of_dimensionAtMost`;
 - `completedMovingComplexHankelDet_eq_zero_of_fixedStateSpaceDimensionLocalClosure`;
 - `not_completedMovingComplexFixedStateSpaceDimensionLocalClosure_of_det_ne_zero`;
 - `not_completedMovingComplexFixedStateSpaceDimensionLocalClosure_one_half_of_riemannHypothesis`.
+- `not_completedMovingComplexLinearRecurrence_one_half_of_riemannHypothesis`.
 
 ## Physics provenance
 

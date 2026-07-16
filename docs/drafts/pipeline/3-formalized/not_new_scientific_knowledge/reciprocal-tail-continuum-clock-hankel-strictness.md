@@ -79,6 +79,7 @@ Primary sources motivating the tail interface:
 - `reciprocalTailMeasure_infiniteSupport`
 - `det_momentHankelMatrix_reciprocalTailClock_pos`
 - `reciprocalTailClock_not_finiteModalWidthAtMost`
+- `reciprocalTailClock_not_linearRecurrence`
 - `reciprocalTailClock_not_fixedSpectralWidthLocalClosure`
 - `reciprocalTailClock_not_fixedStateSpaceDimensionLocalClosure`
 

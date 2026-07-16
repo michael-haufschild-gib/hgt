@@ -4,7 +4,8 @@
 - **Stage:** 1-in-progress
 - **Type:** FOUNDATIONAL CONJECTURE / POLARIZED INCIDENCE / UNIFIED CRITICAL OBSTRUCTION
 - **Scientific status:** `[CONJECTURE] [THREE-PHASE LINEAR THEOREM LEAN-FORMALIZED]`
-  `[NATURAL PHASE-II OPERATOR LEAN-FORMALIZED] [FIELDS-SCALE OPEN CORE]`
+  `[NATURAL THREE-PHASE OPERATOR CORE FORMALIZED] [PHYSICAL FAT-POINT THEOREM PROVED]`
+  `[FIELDS-SCALE OPEN CORE]`
   `[NOVELTY PROVISIONAL] [NOT AN RH RESULT]`
 - **Parents:**
   - `hypertranscendental-source-fracture-hypercube.md`
@@ -12,6 +13,7 @@
   - `hypertranscendental-polarization-fibration.md`
   - `../2-fully-proven/new_scientific_knowledge/multiple-elliptic-gamma-relative-log-characteristic-arrangement.md`
   - `../2-fully-proven/new_scientific_knowledge/multiple-gamma-period-excess-closure-phase-transition.md`
+  - `../2-fully-proven/new_scientific_knowledge/multiple-gamma-physical-characteristic-fat-point.md`
   - `../3-formalized/not_new_scientific_knowledge/polarized-fracture-incidence-trichotomy.md`
 - **Statement:** Source-sign failure, critical all-scale failure, and spectral nonclosed-range
   failure are conjecturally not separate obstructions.  They are the exterior, closure-only, and
@@ -135,6 +137,66 @@ global state.  Neither layer determines the other.
 This is now falsifiable by comparison, not analogy: two claimed realizations must preserve the
 same module, period embedding, pointing, radical action, and target class.
 
+## The radical is only the reduced shadow of a derived physical characteristic germ
+
+The latest multiple-Gamma theorem shows that `(2g)` still forgets structure if the characteristic
+support is reduced before it is compared with the physical clock.  Pull the exact coface ideal
+along
+
+```text
+lambda |-> (lambda tau_0,...,lambda tau_r).               (2h)
+```
+
+Every coordinate equation factors as
+
+```text
+exp(lambda tau_j)-1=lambda U_j(lambda),
+U_j(0)=tau_j!=0.                                          (2i)
+```
+
+Hence the complete physical pullback ideal is
+
+```text
+(lambda^r),                                               (2j)
+```
+
+not merely the reduced point `(lambda)`.  Its classical length and exact derived Koszul amplitude
+are both `r`.  The hierarchy therefore satisfies
+
+```text
+DA transverse depth
+ = source constraint height
+ = period-rank excess
+ = physical central multiplicity
+ = physical derived amplitude
+ = r.                                                     (2k)
+```
+
+This forces a higher object than the topological radical alone:
+
+```text
+DPhysChar_DA(F)
+  = L Phi_F^*(derived DA characteristic object),          (2l)
+```
+
+equipped with the integral period embedding and its positive incidence half-density.  The radical
+`closure(Lambda_F)/Lambda_F` is the reduced topological shadow controlling attainment; the
+nilpotent and Koszul filtrations of `(2l)` control how many source constraints have collapsed at
+the same physical degeneracy.
+
+> **[CONJECTURE -- DERIVED PHYSICAL CHARACTERISTIC PRINCIPLE.]**  The common obstruction object is
+> `(2l)`, not its reduced support and not its period radical separately.  Conservative analytic
+> realizations must preserve its source pointing, nilpotent filtration, derived homology,
+> polarization, and bornology.  Phase-II nonattainment is the failure of its distinguished
+> half-density section to acquire an effective lift in the chosen realization.
+
+The exact open core is now a comparison morphism, not another invariant: construct a source-natural
+map from the `lambda`-adic filtration of `(2j)` to the small-period incidence scale and prove that
+it realizes `lambda^k` as the powered multiplier `w^k`.  For the order-`r` source the full
+incidence symbol is therefore `w^r`, and its canonical positive half-density is `|w|^(r/2)`.
+The already formalized `sqrt(|w|)` theorem is the order-one atomic case, not a license to erase
+the fat-point multiplicity at higher order.
+
 ## The conjecture
 
 > **[CONJECTURE -- CRITICAL CLOSURE-DEFECT PRINCIPLE.]** Every regular source-minimal polarized HT
@@ -217,6 +279,11 @@ and prove that the named chains preserve the same incidence target.
    closed and closure-only unweighted cofinal incidence.
 8. **Finite-test impossibility.** No family of merely finite modal checks can detect this boundary,
    because every finite nonzero diagonal restriction is exact on both sides.
+9. **Reduced-support blindness.** Generic orders `r>=1` all have the same reduced physical
+   characteristic set `{0}`; only the fat-point and derived filtrations recover `r`.
+10. **Physical-pullback conservation.** Any two claimed realizations of the unified object must
+    agree on the physical central multiplicity and the complete pulled-back Koszul profile, not
+    merely on their zero set.
 
 ## Parent theory and novelty gate
 
@@ -280,10 +347,14 @@ HT theorem exists.  No RH conclusion is claimed here.
 - [x] natural closure-only HT incidence example formalized
 - [x] discrete-source closed-image positive class formalized
 - [x] multiple-Gamma transverse depth identified with period-rank excess
+- [x] physical characteristic pullback computed as the fat point `(lambda^r)`
+- [x] physical central multiplicity and derived amplitude identified with depth `r`
+- [x] reduced-support no-go replaced by an exact nonreduced positive theorem
 - [x] precise falsifiers and anti-theatre gate stated
 - [x] conic weak-infeasibility parent literature identified
 - [ ] construct a natural HT source cone and realization map
 - [x] prove one natural closure-only HT example or closed-image theorem
 - [ ] prove two realization functors preserve the same cone image
+- [ ] construct the filtration-preserving fat-point/period-incidence comparison morphism
 - [ ] prove source-presentation invariance
 - [ ] obtain independent specialist novelty and significance audit

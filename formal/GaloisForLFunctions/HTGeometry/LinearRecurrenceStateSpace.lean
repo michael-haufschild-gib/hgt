@@ -37,11 +37,13 @@ theorem linearRecurrence_tupleSucc_window
   dsimp [linearRecurrenceWindow]
   split_ifs with hi
   · congr 1
-    omega
-  · have hilast : (i : ℕ) + 1 = E.order := by omega
+    simp [Nat.add_comm, Nat.add_left_comm]
+  · have hle : (i : ℕ) + 1 ≤ E.order := Nat.succ_le_iff.mpr i.isLt
+    have hge : E.order ≤ (i : ℕ) + 1 := Nat.le_of_not_gt hi
+    have hilast : (i : ℕ) + 1 = E.order := Nat.le_antisymm hle hge
     rw [← hu n]
     congr 1
-    omega
+    simp [← hilast, Nat.add_comm, Nat.add_left_comm]
 
 /-- Iterating the recurrence transition from the initial window gives the window at label `n`. -/
 theorem linearRecurrence_tupleSucc_pow_initial
@@ -106,7 +108,8 @@ theorem algebraicStateSpaceResponse_linearRecurrence
   rw [algebraicStateSpaceResponse,
     linearRecurrenceCompanionMatrix_pow_mulVec,
     linearRecurrence_tupleSucc_pow_initial E hu n]
-  simp [linearRecurrenceOutput, linearRecurrenceWindow, single_dotProduct]
+  rw [linearRecurrenceOutput, single_dotProduct]
+  simp only [one_mul, linearRecurrenceWindow, Nat.add_zero]
 
 /-- Every positive-order recurrence solution has a state-space realization of the same dimension. -/
 theorem algebraicStateSpaceDimensionAtMost_of_linearRecurrence

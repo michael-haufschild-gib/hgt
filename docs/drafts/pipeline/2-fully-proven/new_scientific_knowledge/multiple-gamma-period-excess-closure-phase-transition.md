@@ -9,6 +9,7 @@
   - `multiple-elliptic-gamma-transverse-constraint-depth.md`
   - `multiple-elliptic-gamma-relative-log-characteristic-arrangement.md`
   - `../../1-in-progress/hypertranscendental-critical-closure-defect-principle.md`
+- **Successor:** `multiple-gamma-physical-characteristic-fat-point.md`
 - **Lean:**
   `formal/GaloisForLFunctions/HTGeometry/PeriodIncidenceMultiplier.lean`
 

@@ -241,6 +241,35 @@ noncomputable def FiniteRegularStratification.of_dimH_le
   have hcm : c ≤ m := by omega
   exact ⟨m, hcm, U, hUopen, hyU, g, hg, hzero, hsurjWithin⟩
 
+/-- A finite regular stratification has the global Hausdorff-dimension bound supplied by the
+common codimension lower bound on its strata. -/
+theorem FiniteRegularStratification.dimH_le_finrank_sub
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {S : Set E} {c : ℕ} (hS : FiniteRegularStratification S c) :
+    dimH S ≤ (Module.finrank ℝ E - c : ℕ) := by
+  rw [hS.cover, dimH_iUnion]
+  exact iSup_le fun i =>
+    dimH_le_finrank_sub_of_isLocalRegularLevelSetOfCodimAtLeast (hS.regular i)
+
+/-- No nonempty subset of a finite-dimensional real space admits a regular stratification whose
+codimension exceeds the ambient real dimension. -/
+theorem FiniteRegularStratification.eq_empty_of_finrank_lt_codim
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {S : Set E} {c : ℕ} (hS : FiniteRegularStratification S c)
+    (hc : Module.finrank ℝ E < c) :
+    S = ∅ := by
+  apply eq_empty_iff_forall_not_mem.mpr
+  intro x hx
+  rw [hS.cover] at hx
+  obtain ⟨i, hxi⟩ := mem_iUnion.mp hx
+  obtain ⟨m, hcm, U, hUopen, hxU, g, hg, hzero, hsurj⟩ := hS.regular i x hxi
+  have hsurj' : Function.Surjective (fderiv ℝ g x) := by
+    simpa only [fderivWithin_of_isOpen hUopen hxU] using hsurj x hxU
+  have hm : m ≤ Module.finrank ℝ E := by
+    simpa only [Module.finrank_fin_fun] using
+      LinearMap.finrank_le_finrank_of_surjective hsurj'
+  omega
+
 end
 
 end GaloisForLFunctions.HTGeometry

@@ -115,6 +115,7 @@ Euclidean spectral sampling:
 - `euclideanSpectralMoments_eq_pushforward_moment`
 - `det_momentHankelMatrix_euclideanSpectralMoments_pos`
 - `euclideanSpectralMoments_not_finiteModalWidthAtMost`
+- `euclideanSpectralMoments_not_linearRecurrence`
 - `euclideanSpectralMoments_not_fixedStateSpaceDimensionLocalClosure`
 
 Prime--Gamma/RH specialization:

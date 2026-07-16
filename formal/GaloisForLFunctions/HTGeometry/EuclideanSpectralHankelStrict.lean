@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.FiniteSpectralHankelRank
 import GaloisForLFunctions.HTGeometry.FiniteStateSpaceHankelRank
+import GaloisForLFunctions.HTGeometry.LinearRecurrenceStateSpace
 import GaloisForLFunctions.HTGeometry.ObservablePushforwardHankelStrict
 
 /-!
@@ -92,6 +93,21 @@ theorem euclideanSpectralMoments_not_finiteModalWidthAtMost
   simpa [algebraicHankelMatrix, momentHankelMatrix] using
     ne_of_gt (det_momentHankelMatrix_euclideanSpectralMoments_pos
       htau hint hmuinf (d + 1))
+
+/-- An infinite positive Euclidean spectrum satisfies no positive finite-order linear recurrence. -/
+theorem euclideanSpectralMoments_not_linearRecurrence
+    {mu : Measure ℝ} {tau : ℝ} (htau : tau ≠ 0)
+    (hint : ∀ n, Integrable (fun energy ↦ euclideanSpectralNode tau energy ^ n) mu)
+    (hmuinf : ∀ F : Finset ℝ, 0 < mu {energy : ℝ | energy ∉ F})
+    (E : LinearRecurrence ℝ) (horder : E.order ≠ 0) :
+    ¬ E.IsSolution (euclideanSpectralMoments mu tau) := by
+  intro hsolution
+  have hzero := det_algebraicHankelMatrix_succ_eq_zero_of_linearRecurrence
+    E hsolution horder
+  have hpositive := det_momentHankelMatrix_euclideanSpectralMoments_pos
+    htau hint hmuinf (E.order + 1)
+  exact (ne_of_gt hpositive) (by
+    simpa [algebraicHankelMatrix, momentHankelMatrix] using hzero)
 
 /-- An infinite positive Euclidean spectrum escapes every uniformly bounded local linear
 hidden-state model. -/

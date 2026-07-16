@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.FiniteSpectralHankelRank
 import GaloisForLFunctions.HTGeometry.FiniteStateSpaceHankelRank
+import GaloisForLFunctions.HTGeometry.LinearRecurrenceStateSpace
 
 /-!
 # Strict Hankel geometry of a reciprocal observation tail
@@ -70,6 +71,17 @@ theorem reciprocalTailClock_not_finiteModalWidthAtMost (d : ℕ) :
   apply not_finiteModalWidthAtMost_of_det_ne_zero
   simpa [algebraicHankelMatrix, momentHankelMatrix] using
     ne_of_gt (det_momentHankelMatrix_reciprocalTailClock_pos (d + 1))
+
+/-- The reciprocal continuum clock satisfies no positive finite-order linear recurrence. -/
+theorem reciprocalTailClock_not_linearRecurrence
+    (E : LinearRecurrence ℝ) (horder : E.order ≠ 0) :
+    ¬ E.IsSolution reciprocalTailClock := by
+  intro hsolution
+  have hzero := det_algebraicHankelMatrix_succ_eq_zero_of_linearRecurrence
+    E hsolution horder
+  have hpositive := det_momentHankelMatrix_reciprocalTailClock_pos (E.order + 1)
+  exact (ne_of_gt hpositive) (by
+    simpa [algebraicHankelMatrix, momentHankelMatrix] using hzero)
 
 /-- No uniformly bounded finite spectral palette can reproduce arbitrarily long reciprocal-tail
 windows, even when the approximating palette may change with the window. -/

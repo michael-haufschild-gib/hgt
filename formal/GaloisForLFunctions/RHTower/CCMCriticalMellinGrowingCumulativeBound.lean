@@ -1,7 +1,6 @@
 import GaloisForLFunctions.RHTower.CCMCriticalMellinGrowingCumulative
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
-import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 
 /-!
 # Elementary finite-aperture bound for the growing critical Mellin cumulative
@@ -178,121 +177,5 @@ theorem criticalMellinFiniteApertureCenterMass_le
               Real.exp (-t) * |criticalMellinGrowingCumulativeAtHeight t|))
     _ ≤ C * H + C := add_le_add hactive htail
     _ = (Real.log 4 + 7) * (H + 1) := by simp only [C]; ring
-
-/-- The actual complex center pairing with the growing cumulative clipped at height `H`. -/
-def criticalMellinFiniteApertureCenterPairing (R : ℝ → ℂ) (H : ℝ) : ℂ :=
-  (∫ t in 0..H,
-      ((Real.exp (-t / 2) * criticalMellinGrowingCumulativeAtHeight t : ℝ) : ℂ) * R t) +
-    (criticalMellinGrowingCumulativeAtHeight H : ℂ) *
-      ∫ t in Set.Ioi H, ((Real.exp (-t / 2) : ℝ) : ℂ) * R t
-
-/-- **Coupled finite-aperture center theorem.**  Any continuous radial factor with the natural
-half-density envelope pays at most the explicit linear Chebyshev mass.  This is the analytic
-estimate used after the Poisson--BV source reduction. -/
-theorem norm_criticalMellinFiniteApertureCenterPairing_le
-    {R : ℝ → ℂ} {H B : ℝ} (hH : 0 ≤ H) (hB : 0 ≤ B)
-    (hRcont : Continuous R)
-    (hR : ∀ t : ℝ, 0 ≤ t → ‖R t‖ ≤ B * Real.exp (-t / 2)) :
-    ‖criticalMellinFiniteApertureCenterPairing R H‖ ≤
-      B * (Real.log 4 + 7) * (H + 1) := by
-  let J : ℝ → ℝ := criticalMellinGrowingCumulativeAtHeight
-  let w : ℝ → ℝ := fun t => Real.exp (-t) * |J t|
-  have hwInt : IntervalIntegrable w (volume : MeasureTheory.Measure ℝ) 0 H := by
-    simpa only [w, J] using
-      intervalIntegrable_exp_neg_mul_abs_criticalMellinGrowingCumulativeAtHeight hH
-  have hactive :
-      ‖∫ t in 0..H, ((Real.exp (-t / 2) * J t : ℝ) : ℂ) * R t‖ ≤
-        B * ∫ t in 0..H, w t := by
-    have hbound := intervalIntegral.norm_integral_le_of_norm_le hH (g := fun t => B * w t)
-      (f := fun t => ((Real.exp (-t / 2) * J t : ℝ) : ℂ) * R t) (by
-        filter_upwards with t
-        intro ht
-        have ht0 : 0 ≤ t := ht.1.le
-        have hRt := hR t ht0
-        have hphase0 : 0 ≤ Real.exp (-t / 2) := (Real.exp_pos _).le
-        calc
-          ‖((Real.exp (-t / 2) * J t : ℝ) : ℂ) * R t‖ =
-              Real.exp (-t / 2) * |J t| * ‖R t‖ := by
-                rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
-                  abs_mul, abs_of_nonneg hphase0]
-          _ ≤ Real.exp (-t / 2) * |J t| *
-              (B * Real.exp (-t / 2)) := by
-                gcongr
-          _ = B * w t := by
-                dsimp only [w]
-                have hexp : Real.exp (-t / 2) * Real.exp (-t / 2) = Real.exp (-t) := by
-                  rw [← Real.exp_add]
-                  congr 1
-                  ring
-                rw [← hexp]
-                ring)
-      (hwInt.const_mul B)
-    simpa only [intervalIntegral.integral_const_mul] using hbound
-  have hexpInt : IntegrableOn (fun t : ℝ => B * Real.exp (-t)) (Set.Ioi H) := by
-    exact (integrableOn_exp_neg_Ioi H).const_mul B
-  let tailF : ℝ → ℂ := fun t => ((Real.exp (-t / 2) : ℝ) : ℂ) * R t
-  have htailPoint : ∀ᵐ t ∂volume.restrict (Set.Ioi H),
-      ‖tailF t‖ ≤ B * Real.exp (-t) := by
-    filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
-    have ht0 : 0 ≤ t := hH.trans ht.le
-    have hRt := hR t ht0
-    have hphase0 : 0 ≤ Real.exp (-t / 2) := (Real.exp_pos _).le
-    calc
-      ‖tailF t‖ = Real.exp (-t / 2) * ‖R t‖ := by
-        change ‖((Real.exp (-t / 2) : ℝ) : ℂ) * R t‖ = _
-        rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
-          abs_of_nonneg hphase0]
-      _ ≤ Real.exp (-t / 2) * (B * Real.exp (-t / 2)) := by gcongr
-      _ = B * Real.exp (-t) := by
-        have hexp : Real.exp (-t / 2) * Real.exp (-t / 2) = Real.exp (-t) := by
-          rw [← Real.exp_add]
-          congr 1
-          ring
-        rw [← hexp]
-        ring
-  have htailFunInt : Integrable tailF (volume.restrict (Set.Ioi H)) := by
-    have htailCont : Continuous tailF := by
-      dsimp only [tailF]
-      fun_prop
-    exact hexpInt.mono' htailCont.aestronglyMeasurable.restrict htailPoint
-  have htailIntegral :
-      ‖∫ t in Set.Ioi H, ((Real.exp (-t / 2) : ℝ) : ℂ) * R t‖ ≤
-        B * Real.exp (-H) := by
-    change ‖∫ t, tailF t ∂volume.restrict (Set.Ioi H)‖ ≤ _
-    calc
-      ‖∫ t, tailF t ∂volume.restrict (Set.Ioi H)‖ ≤
-          ∫ t, ‖tailF t‖ ∂volume.restrict (Set.Ioi H) :=
-        MeasureTheory.norm_integral_le_integral_norm tailF
-      _ ≤ ∫ t, B * Real.exp (-t) ∂volume.restrict (Set.Ioi H) :=
-        MeasureTheory.integral_mono_ae htailFunInt.norm hexpInt htailPoint
-      _ = B * Real.exp (-H) := by
-        rw [MeasureTheory.integral_const_mul, integral_exp_neg_Ioi]
-  have htail :
-      ‖(J H : ℂ) * ∫ t in Set.Ioi H, ((Real.exp (-t / 2) : ℝ) : ℂ) * R t‖ ≤
-        B * (Real.exp (-H) * |J H|) := by
-    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
-    calc
-      |J H| * ‖∫ t in Set.Ioi H, ((Real.exp (-t / 2) : ℝ) : ℂ) * R t‖ ≤
-          |J H| * (B * Real.exp (-H)) :=
-        mul_le_mul_of_nonneg_left htailIntegral (abs_nonneg _)
-      _ = B * (Real.exp (-H) * |J H|) := by ring
-  rw [criticalMellinFiniteApertureCenterPairing]
-  change ‖(∫ t in 0..H, ((Real.exp (-t / 2) * J t : ℝ) : ℂ) * R t) +
-      (J H : ℂ) * ∫ t in Set.Ioi H, ((Real.exp (-t / 2) : ℝ) : ℂ) * R t‖ ≤ _
-  calc
-    ‖(∫ t in 0..H, ((Real.exp (-t / 2) * J t : ℝ) : ℂ) * R t) +
-        (J H : ℂ) * ∫ t in Set.Ioi H, ((Real.exp (-t / 2) : ℝ) : ℂ) * R t‖ ≤
-      ‖∫ t in 0..H, ((Real.exp (-t / 2) * J t : ℝ) : ℂ) * R t‖ +
-        ‖(J H : ℂ) * ∫ t in Set.Ioi H, ((Real.exp (-t / 2) : ℝ) : ℂ) * R t‖ :=
-      norm_add_le _ _
-    _ ≤ B * (∫ t in 0..H, w t) + B * (Real.exp (-H) * |J H|) :=
-      add_le_add hactive htail
-    _ = B * criticalMellinFiniteApertureCenterMass H := by
-      rw [criticalMellinFiniteApertureCenterMass]
-      dsimp only [w, J]
-      ring
-    _ ≤ B * ((Real.log 4 + 7) * (H + 1)) :=
-      mul_le_mul_of_nonneg_left (criticalMellinFiniteApertureCenterMass_le hH) hB
-    _ = B * (Real.log 4 + 7) * (H + 1) := by ring
 
 end RHTower

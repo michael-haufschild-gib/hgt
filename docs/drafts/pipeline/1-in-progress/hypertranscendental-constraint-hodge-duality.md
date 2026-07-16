@@ -202,6 +202,23 @@ class.  The general classification must determine the allowed height/amplitude p
 than force every source onto this pure ray.  See
 `../3-formalized/unbounded-hypertranscendental-source-constraint-height.md`.
 
+The physical-characteristic successor removes the apparent `+1`.  Pulling the coface equations
+along the source clock `lambda |-> (lambda tau_j)_j` sends every generator to `lambda^r` times a
+unit.  The pulled-back ideal is `(lambda^r)`, and its `r+1`-term Koszul complex has grade one and
+exact amplitude `r`.  Therefore, on the multiple-Gamma class,
+
+```text
+ht_src(q_r)
+ = period-rank excess
+ = physical central multiplicity
+ = physical derived amplitude
+ = r.
+```
+
+The missing degree in the original normal-crossing derived locus is the physical incidence
+direction.  See
+`../2-fully-proven/new_scientific_knowledge/multiple-gamma-physical-characteristic-fat-point.md`.
+
 There is also an exact positive reconstruction theorem.  For every `r>=2`,
 
 ```text
@@ -540,6 +557,35 @@ physical period embedding.
 
 This sharpens the open reconstruction object to the topologized constraint corona together with
 its critical divided-difference comparison, pointing, polarization, and integral lattice.
+
+### Irrational triptic analytic reconstruction gate `[PROVED + LEAN]`
+
+The first natural analytic source now passes the reconstruction gate.  For three rationally
+independent periods, equality of the three multiplicative source ratios is equivalent to equality
+up to one nonzero complex scalar.  A common nonzero regular value removes that scalar and
+reconstructs the global meromorphic germ.  The theorem applies to the actual elliptic-gamma
+product, whose three source equations are now derived directly by reindexing the convergent
+products: period one is invariant and the two structural shifts peel off explicit one-dimensional
+theta boundary products.
+
+The result and its Lean certificate are recorded in
+`../3-formalized/not_new_scientific_knowledge/rank-three-meromorphic-source-effectivity-reconstruction.md`.
+This closes analytic object and source-morphism reconstruction on the irrational triptic stratum.
+It does not by itself prove that the monodromy, spectral, Hermitian, and integral faces glue to the
+same effective lift; that typed joint-conservativity comparison remains the surviving medal-scale
+core.
+
+The paper-level comparison is now complete on that triptic stratum.  The pointed DA-filtered gamma
+cochain supplies the monodromy and Hermitian differential character, the critical period trace
+supplies the closed spectral realization, and the integral period/orbit-divisor lift supplies both
+the DD class and Kummer content.  The existing period-excess theorem transfers integral rank excess
+exactly to spectral nonclosed range.  Differential-character uniqueness plus the pointed analytic
+solution-fibre theorem then makes the five compatible realizations jointly conservative.  See
+`../2-fully-proven/new_scientific_knowledge/irrational-triptic-source-effectivity-character.md`.
+
+This is the first fully reconstructed analytic model, not the universal theorem stated in
+`(11a)`: the remaining Fields-scale core is extension beyond the triptic class and an intrinsic
+essential-image theorem for general regular source-minimal HT germs.
 
 The following are established and are not novelty claims:
 
