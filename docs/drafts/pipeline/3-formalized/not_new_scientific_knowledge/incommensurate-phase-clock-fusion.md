@@ -45,6 +45,20 @@ and equality of the second gives
 for integers `m,n`.  A nonzero clock difference would imply `b/a=m/n`, contradicting
 irrationality.
 
+The converse is now formalized too.  If `b/a=m/n` with nonzero integer `n`, then
+
+\[
+  T=\frac{2\pi n}{a}
+\]
+
+is a nonzero common period of both phase channels.  Therefore, for `a != 0`,
+
+\[
+  P_{a,b}\text{ is injective}\quad\Longleftrightarrow\quad b/a\text{ is irrational}.
+\]
+
+This is an exact classification, not only a sufficient irrationality criterion.
+
 For an arbitrary source coordinate `clock : X -> Real`, the paired phase reports satisfy
 
 \[
@@ -71,6 +85,11 @@ arXiv:1509.03930](https://arxiv.org/abs/1509.03930).  The theorem isolates a mod
 observability fact: one oscillatory feature has a period ambiguity, while two incommensurate clock
 frequencies remove the global ambiguity exactly.
 
+The rational side of the dichotomy is also visible in
+[Favalli--Smerzi, *Time Observables in a Timeless Universe*, arXiv:2003.09042](https://arxiv.org/abs/2003.09042):
+bounded quantum clocks with rational energy ratios admit periodic POVM time states that need not be
+orthogonal.  The Lean theorem isolates the underlying deterministic value classification.
+
 The formal theorem does not assert that any experiment supplies noiseless phases or that a
 particular cosmological model contains an irrational pair.  It gives the exact deterministic
 interface once those phase values are available.
@@ -84,7 +103,10 @@ General HTGeometry:
 - `norm_phaseClockValue`;
 - `phaseClockValue_add_period`;
 - `not_injective_phaseClockValue`;
+- `phaseClockValue_eq_zero_of_rate_mul_time_eq_int_two_pi`;
+- `not_injective_phaseClockPair_of_rateRatio_eq_int_div`;
 - `phaseClockPair_injective`;
+- `phaseClockPair_injective_iff_irrational`;
 - `phaseClockPair_eq_iff`;
 - `phaseClockPair_comp_injective_iff`;
 - `phaseClockPair_comp_eq_iff`.
@@ -120,9 +142,9 @@ as the original clock.
 **No-go.** A single noiseless phase value is still globally nonfaithful.  More phase precision or
 larger Fisher information cannot remove the exact period lattice by itself.
 
-**Positive statement.** Two incommensurate phase channels have trivial common period and recover the
-unrestricted real clock value exactly.  Each channel is noninjective alone, while their fusion is
-injective.
+**Positive statement.** Two phase channels recover unrestricted real clock time exactly if and only
+if their rate ratio is irrational.  Rational ratios have an explicit nonzero common period;
+irrational ratios have none.  The observability boundary is now complete.
 
 ## RH pressure test
 

@@ -3,12 +3,28 @@
 - **ID:** `geometric-taylor-magnitude-torsion-language-hypertranscendence`
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** THEOREM CANDIDATE / GEOMETRIC-FACE HT LAW + EXACT-BEND STRUCTURE LAW
-- **Scientific status:** `[PROVED HERE] [LEAN-FORMALIZED] [NOVELTY UNVERIFIED] [SIGNIFICANT]`
+- **Scientific status:** `[PROVED HERE] [LEAN-PARTIAL] [NOVELTY UNVERIFIED] [SIGNIFICANT]`
 - **Statement:** On every asymptotically exact geometric log-magnitude profile
   `-log|a_n|=A lambda^n+c_n` with `c_n` convergent and arbitrary `lambda>1`, torsion-language
   universal phases force hypertranscendence over `C(z)`; on the exact profile with eventually
   periodic phases, every valuation level of every integer-ADE coefficient identity must vanish
   identically.
+
+## Lean audit status
+
+- **Theorem A and its TLU-collapse corollary are unconditional.** The formal chain constructs the
+  balanced survivor, confines every active atom to a finite geometric window, extracts the least
+  face, proves its normalized cancellation, and applies torsion-language character separation.
+  The final declarations are
+  `hypertranscendental_of_geometric_torsionLanguageUniversal` and
+  `hypertranscendental_of_eventually_geometric_torsionLanguageUniversal` in
+  `GeometricTorsionLanguageCompletion.lean`.
+- **Theorem B and its two corollaries are not yet formalized at the source-faithful surface.** The
+  current `GeometricPeriodicLevelInput` merely receives the level-polynomial convergence that the
+  paper proof must construct from the ADE coefficient identity. It is retained only as a generic
+  compatibility lemma and does not satisfy the unconditional Stage-3 gate.
+- **Pipeline decision:** keep this card in `2-fully-proven/needs-audit` until the exact periodic
+  level cascade is constructed from the integer ADE and both corollaries are derived from it.
 
 ## Goal
 

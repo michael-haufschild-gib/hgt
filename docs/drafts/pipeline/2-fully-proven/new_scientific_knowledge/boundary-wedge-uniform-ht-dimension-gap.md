@@ -201,6 +201,29 @@ intrinsic analytic directions, although any model that insists on one faithful h
 facet pays four. The theorem does not assert that a zeta-derived relation complex contains this
 pattern.
 
+## Lean formalization status
+
+The uniform lower-bound layer is formalized in
+`GaloisForLFunctions/HTGeometry/WedgeFacetLowerBound.lean`. The namespace
+`UniformBoundaryWedge` defines the common-centre vertex set, the left and right boundary-facet
+incidence predicates, and proves
+`no_faithfulSeparation_of_finrank_le_three`: for every `r,s>=2`, exact faithful separator rows in
+an ambient complex vector space of dimension at most three are impossible. The proof selects only
+two vertices from each block and gives a uniform span-dimension contradiction, so it does not
+depend on the sizes of the remaining blocks.
+
+The same module now formalizes the matching uniform upper bound. From one transcendental `tau`,
+`faithfulSeparationFinFour` constructs explicit vectors in `Fin 4 -> C` and left/right facet forms,
+then proves global `Q`-linear independence of all vertex vectors, the exact complement zero
+patterns, and `Q`-linear independence of every family of nonzero facet values.
+`faithfulSeparation_fin_four_and_minimal` combines that witness with the uniform lower theorem:
+four coordinates exist and every faithful separation has dimension at least four. Thus the entire
+uniform `ffsDim=4` layer is Lean-formalized, not only the special `S^1 wedge S^2` case.
+
+The remaining Lean work before stage 3 is the two-dimensional periodic-pencil construction and its
+lower bound, followed by the bridges from those witnesses to the project-level `ppDim` and `htDim`
+equalities.
+
 ## Parent-theory and novelty boundary
 
 Wedges of simplex boundaries, hyperplane representations, toric arrangements, and arithmetic
@@ -228,6 +251,8 @@ matroid, gain-graph, and subspace-representation invariants.
 - [x] `htDim=2` proved from the scalar dimension-one classification
 - [x] faithful four-dimensional construction proved
 - [x] faithful lower bound four proved by evaluation row spaces
+- [x] uniform faithful lower bound four formalized in Lean from exact incidence data
+- [x] uniform faithful four-dimensional witness and exact minimality formalized in Lean
 - [x] complete paper proof
 - [x] preliminary parent-theory audit
 - [ ] complete unconditional Lean formalization before stage 3

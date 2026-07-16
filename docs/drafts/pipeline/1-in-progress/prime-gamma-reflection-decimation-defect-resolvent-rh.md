@@ -426,23 +426,47 @@ cofinal positive `ell^2` packet.  This removes the decay obstruction, but it doe
 limit with the completed moment jet.
 
 The limiting Gram is indexed by Cauchy parameters, not by moment degree.  Its internal Gamma
-coordinate is summed in the norm.  Therefore the next map cannot be a relabelling.  Let `K_N(z,w)`
-be the formalized infinite positive von Mangoldt-anomaly kernel.  Uniform convergence on central
-compact discs gives a positive mixed Taylor-jet matrix.  The corpus separately supplies the
-positive quarter-shift spectral realization of the actual central `gammaRealLogConnection` jet;
-the rational polar modes are explicit.  One must first couple these with `K_N` using the exact
-signs of `continuedPrimeArchSourceRelativeTrace`, producing `K_N^comp`.  The exact remaining source
-theorem is
+coordinate is summed in the norm.  Therefore the next map cannot be a relabelling.  There is a
+sharp frequency mismatch.  At `s=1+iz`, the inverse-tilted source is initially a Dirichlet series,
+so its `r`-th centered Mellin jet carries positive prime-log powers
+
+```text
+n^(-1) (-i log n)^r.                                    (22j0)
+```
+
+The depth-`N`, order-`N` balanced Cauchy feature instead contains
+
+```text
+((w^2-1/4)/((log n)^2-1/4))^N /(w+log n),               (22j1)
+```
+
+and hence inverse prime-log powers.  Undoing the forced boundary divisor multiplies the `n`-th
+channel by `((log n)^2-1/4)^N`; it is an unbounded channel operation and destroys the very
+square-summability used to obtain the positive cofinal packets at the depths needed for the full
+moment tower.  This is consistent with the
+formalized prime-log Cauchy seam theorem: no finite rational/log-order correction can perform the
+required transport modulo the positive prime Hilbert class.  The exact real-ray
+Cauchy/Euler/polar/Mellin colligation does not remove the problem, because its signed critical
+Mellin channel remains inside the incidence identity.
+
+Thus even locally uniform convergence of the balanced kernel would only give positive jets of the
+balanced resolvent law, not the Taylor-Hankel moments of the inverse-tilted Mellin germ.  A valid
+next theorem must construct an infinite-rank, channel-resolved incidence transform which performs
+this unbalancing together with Gamma/polar completion and proves positivity after transport.  Let
+`K_N(z,w)` be the formalized infinite positive von Mangoldt-anomaly kernel.  The desired completed
+kernel `K_N^comp` may be introduced only after that incidence transform is defined independently
+of the target moments.  Its terminal comparison would then be
 
 ```text
 (1/(r!*s!)) d_z^r d_conj(w)^s K_N^comp(z,w)|_(z=w=0)
  =normalizedPrimeArchMoment(r+s),   0<=r,s<N.             (22j)
 ```
 
-The prime and Gamma inputs are source-positive before comparison; the completed coupling must
-preserve positivity with its forced signs.  The right side is already the explicit inverse-tilted
-prime--Gamma Taylor coefficient.  Equation `(22j)` plus this positivity-preserving incidence is
-the sole RH-bearing theorem on this branch.
+The prime and Gamma inputs are source-positive before comparison; the unbounded completed
+incidence must preserve positivity with its forced signs.  The right side is already the explicit
+inverse-tilted prime--Gamma Taylor coefficient.  Equation `(22j)` without that incidence theorem
+would merely restate the desired moment positivity.  Equation `(22j)` together with a
+source-defined positive incidence is the sole RH-bearing theorem on this branch.
 
 The live bridge is consequently:
 
@@ -453,6 +477,7 @@ full finite-aperture von Mangoldt--Gamma jet cone with first-prime floor
   -> depth-2/3 cutoff-compatible affine Euler-boundary limit
   -> arbitrary-order Hermite boundary-jet source packet
   -> all-depth cofinal positive ell^2 packets [formalized]
+  -> [OPEN] infinite-rank channel-resolved unbalancing/incidence transform
   -> completed positive mixed center-jet Gram [coupling and analytic formalization open]
   -> [OPEN] exact identity (22j) with inverse-tilted completed moment jets
   -> complete prime--Gamma Hankel cone
@@ -552,9 +577,11 @@ source packet to produce the mixed value `m_1` as well as both diagonal values.
 
 ## Ranked research targets
 
-1. **Completed Hermite-boundary jet comparison.**  Starting from the formalized cofinal positive
-   prime kernel and the existing positive Gamma spectral clock, construct their forced completed
-   coupling, formalize its mixed center-jet Gram, and prove `(22j)`.
+1. **Infinite-rank Hermite unbalancing incidence.**  Starting from the formalized cofinal positive
+   prime kernel, construct a channel-resolved transform which converts the inverse-log Cauchy law
+   `(22j1)` into the positive-log Mellin jets `(22j0)` without passing through a finite-rank
+   correction or assuming target positivity.  Couple the Gamma spectral clock and polar boundary
+   modes inside the same transform, then prove `(22j)`.
 2. **Two-vector completed comparison.**  For `N=2`, identify three entries of that one source
    packet with `m_0,m_1,m_2` through the inverse-tilted central source relation.  This subsumes
    `(23)` without defining its square root from the determinant.
@@ -611,6 +638,11 @@ source packet to produce the mixed value `m_1` as well as both diagonal values.
 - [x] arbitrary-depth packet square summability formalized in Lean
 - [x] finite-prefix Grams identified with a common infinite kernel and proved entrywise convergent
 - [x] limiting finite packet Grams proved positive semidefinite
+- [x] finite rational/log-order seam corrections excluded by the prime-log transport theorem
+- [x] coefficientwise nonnegative Gamma/positive corrections proved unable to lower the canonical
+      sharp-source critical abscissa
+- [x] scalar Gamma-conductor completion excluded by divergent prime Schur capacity
+- [ ] construct an infinite-rank channel-resolved unbalancing/incidence transform
 - [ ] formalize the positive mixed center-jet Gram of the infinite kernel
 - [ ] couple the Gamma spectral clock and polar boundary modes with the prime anomaly kernel
 - [ ] prove Euler-boundary causal/polar cancellation, including common-charge cancellation
@@ -639,3 +671,10 @@ source packet to produce the mixed value `m_1` as well as both diagonal values.
   exclusion gate now forbids reconstruction or source-effectivity from supplying positivity.  The
   live open core is the reduced Euler-boundary Gauss--Ward source identity, including cancellation
   of its independent first-moment charge anomaly.
+- 2026-07-17 -- Corrected the cofinal boundary-jet route after the exact source audit.  The positive
+  balanced Cauchy packet has inverse prime-log jets, whereas the reconstructed inverse-tilted
+  Mellin germ has positive prime-log jets.  Undoing the boundary divisor is unbounded; finite-rank,
+  scalar-conductor, and coefficientwise positive corrections are already excluded by formal
+  theorems.  The open producer is therefore an infinite-rank channel-resolved unbalancing incidence
+  which remains positive after completed Gamma/polar transport.  The bare comparison `(22j)` is not
+  itself a source theorem.

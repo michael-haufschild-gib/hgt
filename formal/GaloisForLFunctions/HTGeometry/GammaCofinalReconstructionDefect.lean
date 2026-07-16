@@ -64,6 +64,27 @@ theorem gammaFactorialFiniteReconstruction_amplification_tendsto_atTop :
   exact ((tendsto_natCast_atTop_atTop (R := ℝ)).comp factorial_tendsto_atTop).comp
     (tendsto_add_atTop_nat 1)
 
+/-- The completed Hilbert reporter is coordinatewise the restriction of the already formalized
+raw-stream factorial equivalence.  The strictness jump therefore belongs to the source rigging,
+not to a change of algebraic normalization. -/
+theorem gammaFactorialObservabilityOperator_eq_streamEquiv_apply
+    (x : lp (fun _ : ℕ ↦ ℂ) 2) (n : ℕ) :
+    gammaFactorialObservabilityOperator x n =
+      gammaFactorialStreamEquiv (fun k => x k) n := by
+  simp [gammaFactorialObservabilityOperator_apply, gammaFactorialStreamEquiv]
+
+/-- The completed Gamma reporter is not an independently chosen diagonal: its coefficient in
+clock direction `n` is the oriented rank-one curvature exposed between the adjacent finite
+translation shadows at levels `n + 1` and `n + 2`.  Hence the completed strictness defect is
+forced coordinatewise by the finite source action. -/
+theorem gammaFactorialObservabilityOperator_apply_eq_clockCurvature
+    (x : lp (fun _ : ℕ ↦ ℂ) 2) (n : ℕ) :
+    gammaFactorialObservabilityOperator x n =
+      gammaClockCurvature (n + 1) (Pi.single (Fin.last (n + 1)) 1)
+          (⟨0, Nat.succ_pos n⟩ : Fin (n + 1)) * x n := by
+  rw [gammaFactorialObservabilityOperator_apply, gammaClockCurvature_apply]
+  simp [gammaPeriodicConormalCoefficient]
+
 /-- The completed Gamma reporter has no bounded reconstruction map, even on its range. -/
 theorem gammaFactorialObservabilityOperator_no_continuousLeftInverse :
     ¬ ∃ B : lp (fun _ : ℕ ↦ ℂ) 2 →L[ℂ] lp (fun _ : ℕ ↦ ℂ) 2,
@@ -111,6 +132,15 @@ theorem gammaFactorialObservabilityOperator_not_surjective :
   apply gammaFactorialObservabilityOperator_not_isClosed_range
   rw [hsurj.range_eq]
   exact isClosed_univ
+
+/-- The same factorial normalization is an algebraic equivalence on raw streams but is not
+continuously left-split on the source-rigged square-summable completion. -/
+theorem gammaFactorial_rawEquiv_completed_nonsplit :
+    Function.Bijective gammaFactorialStreamEquiv ∧
+      ¬ ∃ B : lp (fun _ : ℕ ↦ ℂ) 2 →L[ℂ] lp (fun _ : ℕ ↦ ℂ) 2,
+        Function.LeftInverse B gammaFactorialObservabilityOperator := by
+  exact ⟨gammaFactorialStreamEquiv.bijective,
+    gammaFactorialObservabilityOperator_no_continuousLeftInverse⟩
 
 /-- **Gamma cofinal reconstruction defect.** Every finite source-normalized clock is exactly
 reconstructible. The completed reporter has dense proper range and no continuous left inverse. -/

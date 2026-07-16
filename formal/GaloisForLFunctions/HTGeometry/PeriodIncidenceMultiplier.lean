@@ -656,6 +656,50 @@ theorem rankThreePeriodIncidenceCanonicalTrichotomy
   exact periodIncidenceCanonicalTrichotomy_of_not_discrete _
     (not_discrete_intSpan_fin_three v hv)
 
+/-- Every rationally independent finite period family of rank at least three has nondiscrete
+integer span in the complex plane. -/
+theorem not_discrete_intSpan_fin_of_three_le
+    {n : ℕ} (hn : 3 ≤ n) (v : Fin n → ℂ) (hv : LinearIndependent ℚ v) :
+    ¬ DiscreteTopology (Submodule.span ℤ (Set.range v)) := by
+  let e : Fin 3 → Fin n := fun i => ⟨i, by omega⟩
+  have he : Function.Injective e := by
+    intro i j hij
+    apply Fin.ext
+    simpa [e] using congrArg Fin.val hij
+  have hv3 : LinearIndependent ℚ (fun i => v (e i)) := hv.comp e he
+  let K : Submodule ℤ ℂ := Submodule.span ℤ (Set.range fun i => v (e i))
+  let L : Submodule ℤ ℂ := Submodule.span ℤ (Set.range v)
+  have hKL : K ≤ L := by
+    apply Submodule.span_mono
+    rintro z ⟨i, rfl⟩
+    exact ⟨e i, rfl⟩
+  intro hL
+  let inclusion : K → L := fun z => ⟨z, hKL z.2⟩
+  have hcontinuous : Continuous inclusion := continuous_subtype_val.subtype_mk _
+  have hinjective : Function.Injective inclusion := by
+    intro x y hxy
+    apply Subtype.ext
+    exact congrArg (fun z : L => (z : ℂ)) hxy
+  letI : DiscreteTopology L := hL
+  letI : DiscreteTopology K :=
+    DiscreteTopology.of_continuous_injective hcontinuous hinjective
+  exact not_discrete_intSpan_fin_three (fun i => v (e i)) hv3 (by infer_instance)
+
+/-- Every rationally independent finite period family of rank at least three has the same
+exact/closure-only/exterior period-incidence trichotomy. -/
+theorem finiteIndependentPeriodIncidenceCanonicalTrichotomy
+    {n : ℕ} (hn : 3 ≤ n) (v : Fin n → ℂ) (hv : LinearIndependent ℚ v) :
+    let L := Submodule.span ℤ (Set.range v)
+    periodIncidenceExactTarget L ∈ Set.range (periodIncidenceMultiplier L) ∧
+      (periodIncidenceHalfDensity L ∈
+          closure (Set.range (periodIncidenceMultiplier L)) ∧
+        periodIncidenceHalfDensity L ∉
+          Set.range (periodIncidenceMultiplier L)) ∧
+      periodIncidenceExteriorTarget L ∉
+        closure (Set.range (periodIncidenceMultiplier L)) := by
+  exact periodIncidenceCanonicalTrichotomy_of_not_discrete _
+    (not_discrete_intSpan_fin_of_three_le hn v hv)
+
 /-! ## Powered incidence and the full fractional phase law -/
 
 /-- The order-`r` period symbol, retaining the physical contact multiplicity. -/

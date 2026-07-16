@@ -31,6 +31,12 @@ diagonal operator
 
 is injective with dense proper nonclosed range and has no continuous left inverse.
 
+The pointwise diagonal is not an artificial second map.  Lean identifies it with the restriction
+of `gammaFactorialStreamEquiv`, the existing algebraic factorial equivalence on all raw streams.
+Lean now also identifies each diagonal coefficient with the oriented rank-one curvature of two
+adjacent finite Gamma translation shadows.  Thus the coefficient sequence is source-forced, while
+the loss of invertibility occurs on passage to the square-summable rigging/completion.
+
 Equivalently, every finite source-normalized observation problem is exactly reconstructible, but
 finite reconstruction does not survive the cofinal Hilbert completion as a bounded operation.
 
@@ -43,9 +49,12 @@ finite reconstruction does not survive the cofinal Hilbert completion as a bound
 - `gammaFactorialFiniteObservation_bijective`
 - `gammaFactorialFiniteReconstruction_apply`
 - `gammaFactorialFiniteReconstruction_amplification_tendsto_atTop`
+- `gammaFactorialObservabilityOperator_eq_streamEquiv_apply`
+- `gammaFactorialObservabilityOperator_apply_eq_clockCurvature`
 - `gammaFactorialObservabilityOperator_denseRange`
 - `gammaFactorialObservabilityOperator_not_surjective`
 - `gammaFactorialObservabilityOperator_no_continuousLeftInverse`
+- `gammaFactorial_rawEquiv_completed_nonsplit`
 - `gammaFactorial_finite_effective_completed_nonsplit`
 
 The formal axiom basis is only `propext`, `Classical.choice`, and `Quot.sound`.
@@ -60,6 +69,10 @@ Its value is structural.  It is a source-natural exact model in which every fini
 succeeds while the completed reconstruction fails.  It supplies the vertical seed for the
 conjectural polarized strict-descent field in
 `../../1-in-progress/hypertranscendental-polarized-strict-descent-field.md`.
+
+The parent operator theorem remains downgraded.  The separate candidate-new claim is the exact
+source-curvature comparison that constructs its diagonal from the finite Gamma tower; see
+`../new_scientific_knowledge/gamma-source-curvature-forced-strictness.md`.
 
 ## Gates
 

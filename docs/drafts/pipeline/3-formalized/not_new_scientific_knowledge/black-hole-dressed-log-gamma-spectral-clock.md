@@ -110,7 +110,7 @@ constant polynomial.  The declaration is
 Thus a genuine black-hole response coordinate lies inside the general HTGeometry field, not merely
 inside the RH-specific tower.
 
-## The complete higher-multipole response is hypertranscendental
+## Complete higher-multipole response identity and HT transfer
 
 The published outer kernel is not arbitrary.  For every `ell >= 1`, it is
 
@@ -130,7 +130,17 @@ After inserting `y = -eta^2 tau / 2`, the complete normalized response simplifie
 Lean proves the derivative of the RG kernel and this complete value identity in
 
 - `hasDerivAt_blackHoleHigherMultipoleRGKernel`;
-- `blackHoleHigherMultipoleDressedResponse_eq_exponentialAffine`.
+- `blackHoleHigherMultipoleDressedResponse_eq_exponentialAffine`;
+- `blackHoleHigherMultipoleDressedResponse_eq_phaseReadout`.
+
+The readout is also faithful.  Under the same nonzero seed, rate, and affine-gain conditions, Lean
+gives an explicit algebraic inverse and proves injectivity:
+
+- `blackHoleHigherMultipolePhaseReadout_recover`;
+- `blackHoleHigherMultipolePhaseReadout_injective`.
+
+Thus one complete higher-multipole response value determines the exponential clock phase exactly;
+the outer response law loses no phase information.
 
 The differential-algebraic transfer is then formalized without assuming an analytic branch of a
 logarithm.  If `phase'/phase = (a*tau)'`, a hypertranscendental `tau` forces `phase` to be
@@ -144,9 +154,16 @@ differentially algebraic offsets preserves that status exactly.  The reusable de
 - `hypertranscendentalOver_exponentialAffineObservable`;
 - `hypertranscendentalOver_blackHoleHigherMultipoleResponse`.
 
-This is stronger than a theorem only about the input clock: under the nondegeneracy conditions on
-the physical seed, rate, frequency coordinate, and affine gain, the complete response observable
-itself is hypertranscendental.
+This is stronger than a theorem only about the input clock: in an arbitrary differential field,
+under the nondegeneracy conditions on the physical seed, rate, frequency coordinate, and affine
+gain, the response element is hypertranscendental.
+
+Formal-status boundary: Lean separately proves the concrete complex response identity and the
+concrete function-level HT of the dressed log, while the response-transfer theorem is stated in an
+abstract differential field.  The direct local analytic-germ instantiation for the actual
+exponential response is tracked in
+`docs/drafts/pipeline/1-in-progress/black-hole-love-response-local-germ-instantiation.md`.  It is not
+yet claimed as one concrete Lean theorem about the published response function.
 
 ## The monopole response also cannot hide its HT phase
 
@@ -174,9 +191,10 @@ outer composition: a constant or specially collapsing map can destroy it.
 
 **Significant positive statement.** The actual Schwarzschild kernels are not arbitrary collapsing
 maps.  The higher multipoles are nondegenerate exponential-affine observations, while the monopole
-obeys a nonzero quadratic algebraic relation.  Both channels therefore preserve
-hypertranscendence under their explicit nondegeneracy conditions.  The generic no-go is retained as
-a guardrail, but the complete physical response clears it.
+obeys a nonzero quadratic algebraic relation.  Both abstract channel laws preserve
+hypertranscendence under their explicit nondegeneracy conditions, and the higher-multipole complex
+readout is injective with an explicit inverse.  The remaining formal task is the concrete local
+analytic-germ identification, not a new differential-algebra obstruction.
 
 ## RH pressure test
 
@@ -186,8 +204,9 @@ This does not prove RH.  It strengthens the corpus in two useful ways:
    tower and all its strict Hankel certificates;
 2. it shows that Gamma-sector hypertranscendence and infinite observability are physically robust,
    universal far-zone effects rather than artifacts of the zeta completion;
-3. it upgrades the physics bridge from an HT input coordinate to an HT complete response, so any
-   future finite differential model of these Love observables must expose an infinite source.
+3. it supplies the exact transfer and recovery interfaces needed to upgrade the HT input coordinate
+   to the local response germ; after the tracked analytic identification is closed, any finite
+   differential model of these Love observables must expose an infinite source.
 
 The relation does not resolve the prime residual sign.  It reinforces the earlier conclusion that
 the archimedean/Gamma side is not the remaining producer gap; any RH advance must still control the

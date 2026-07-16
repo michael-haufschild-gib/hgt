@@ -1,8 +1,7 @@
 import GaloisForLFunctions.HTGeometry.GammaBoseSpectralHankel
 import GaloisForLFunctions.HTGeometry.DigammaPolynomialCarrier
 import GaloisForLFunctions.HTGeometry.ArgumentScalingInvariance
-import GaloisForLFunctions.HTGeometry.FiniteDifferentialCircuitBoundary
-import GaloisForLFunctions.HTGeometry.FiniteJetConstraintSourceBoundary
+import GaloisForLFunctions.HTGeometry.ExponentialObservationHypertranscendence
 
 /-!
 # The black-hole far-zone dressed logarithm is a Gamma spectral clock
@@ -239,6 +238,49 @@ theorem blackHoleHigherMultipoleDressedResponse_eq_exponentialAffine
   field_simp [hnu]
   ring
 
+/-- The complete higher-multipole response as a readout of its exponential phase. -/
+def blackHoleHigherMultipolePhaseReadout
+    (seed nu eta phase : ℂ) : ℂ :=
+  seed / (-4 * nu) * ((1 + 2 * nu * eta) * phase - 1)
+
+/-- The dressed response is the phase readout evaluated on the Gamma-clock exponential. -/
+theorem blackHoleHigherMultipoleDressedResponse_eq_phaseReadout
+    (seed nu eta tau : ℂ) (hnu : nu ≠ 0) :
+    blackHoleHigherMultipoleDressedResponse seed nu eta tau =
+      blackHoleHigherMultipolePhaseReadout seed nu eta
+        (Complex.exp (2 * nu * eta ^ 2 * tau)) := by
+  simpa [blackHoleHigherMultipolePhaseReadout] using
+    blackHoleHigherMultipoleDressedResponse_eq_exponentialAffine
+      seed nu eta tau hnu
+
+/-- **Exact phase recovery.**  A nondegenerate higher-multipole Love response algebraically
+recovers the exponential clock phase. -/
+theorem blackHoleHigherMultipolePhaseReadout_recover
+    (seed nu eta phase : ℂ) (hseed : seed ≠ 0) (hnu : nu ≠ 0)
+    (haffine : 1 + 2 * nu * eta ≠ 0) :
+    ((-4 * nu) / seed *
+        blackHoleHigherMultipolePhaseReadout seed nu eta phase + 1) /
+      (1 + 2 * nu * eta) = phase := by
+  apply (div_eq_iff haffine).2
+  rw [blackHoleHigherMultipolePhaseReadout]
+  field_simp [hseed, hnu]
+  ring
+
+/-- The complete higher-multipole Love response is a faithful observation of its clock phase. -/
+theorem blackHoleHigherMultipolePhaseReadout_injective
+    (seed nu eta : ℂ) (hseed : seed ≠ 0) (hnu : nu ≠ 0)
+    (haffine : 1 + 2 * nu * eta ≠ 0) :
+    Function.Injective (blackHoleHigherMultipolePhaseReadout seed nu eta) := by
+  intro phase₁ phase₂ hresponse
+  have hrecovered := congrArg
+    (fun response =>
+      ((-4 * nu) / seed * response + 1) / (1 + 2 * nu * eta))
+    hresponse
+  simpa only [blackHoleHigherMultipolePhaseReadout_recover
+    seed nu eta phase₁ hseed hnu haffine,
+    blackHoleHigherMultipolePhaseReadout_recover
+      seed nu eta phase₂ hseed hnu haffine] using hrecovered
+
 /-- The monopole response written directly in terms of its exponential RG phase `phase`. -/
 def blackHoleMonopoleDressedResponse (eta phase : ℂ) : ℂ :=
   ((3 / 2) * phase - 1 / 3) / (1 - phase) +
@@ -268,103 +310,6 @@ open scoped Differential
 noncomputable section
 
 /-! ## Differential-algebraic transport through the response law -/
-
-/-- Every derivative of a hypertranscendental element is hypertranscendental. -/
-theorem hypertranscendentalOver_deriv
-    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
-    {x : E} (hx : HypertranscendentalOver F x) :
-    HypertranscendentalOver F x′ := by
-  rw [hypertranscendentalOver_iff_differentialIndependent_singleton] at hx ⊢
-  have hshift := hx.jetShift (fun _ : Unit => 1)
-  simpa [differentialJet_succ] using hshift
-
-/-- Adding a differentially algebraic observable preserves hypertranscendence exactly. -/
-theorem hypertranscendentalOver_add_differentialAlgebraic_iff
-    {F E : Type*} [Field F] [Field E] [Algebra F E]
-    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
-    {x d : E} (hd : DifferentialAlgebraicOver F d) :
-    HypertranscendentalOver F (x + d) ↔ HypertranscendentalOver F x := by
-  constructor
-  · intro hsum hx
-    exact hsum (differentialAlgebraicOver_add hx hd)
-  · intro hx hsum
-    have hx' := differentialAlgebraicOver_sub hsum hd
-    exact hx (by simpa using hx')
-
-/-- Multiplication by a nonzero differentially algebraic observable preserves
-hypertranscendence exactly. -/
-theorem hypertranscendentalOver_mul_differentialAlgebraic_iff
-    {F E : Type*} [Field F] [Field E] [Algebra F E]
-    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
-    {x d : E} (hd : DifferentialAlgebraicOver F d) (hd0 : d ≠ 0) :
-    HypertranscendentalOver F (x * d) ↔ HypertranscendentalOver F x := by
-  constructor
-  · intro hprod hx
-    exact hprod (differentialAlgebraicOver_mul hx hd)
-  · intro hx hprod
-    have hx' := differentialAlgebraicOver_mul hprod
-      (differentialAlgebraicOver_inv hd)
-    exact hx (by simpa [mul_assoc, hd0] using hx')
-
-/-- A logarithmic exponential observation cannot collapse a hypertranscendental source.  This is
-the converse direction needed by physical exponential response laws: if `phase'/phase = source'`,
-then a hypertranscendental source forces a hypertranscendental phase. -/
-theorem hypertranscendentalOver_phase_of_logDeriv_eq_deriv
-    {F E : Type*} [Field F] [Field E] [Algebra F E]
-    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
-    {source phase : E} (hsource : HypertranscendentalOver F source)
-    (hlog : phase′ / phase = source′) :
-    HypertranscendentalOver F phase := by
-  intro hphase
-  have hlogDA : DifferentialAlgebraicOver F (phase′ / phase) :=
-    differentialAlgebraicOver_div
-      (differentialAlgebraicOver_deriv hphase) hphase
-  have hsourceDerivDA : DifferentialAlgebraicOver F source′ := by
-    simpa [hlog] using hlogDA
-  exact (hypertranscendentalOver_deriv hsource) hsourceDerivDA
-
-/-- **Exponential-affine observability transfer.**  A nonzero base-field rescaling of an HT source,
-followed by a logarithmic exponential channel and a nondegenerate affine readout, remains HT.  The
-theorem is independent of black holes and applies to eikonal, Wilson-line, interferometric,
-cosmological-clock, and learned exponential response channels. -/
-theorem hypertranscendentalOver_exponentialAffineObservable
-    {F E : Type*} [Field F] [Field E] [Algebra F E]
-    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
-    {source phase : E} {a b c : F}
-    (ha : a ≠ 0) (hb : b ≠ 0) (hc : c ≠ 0)
-    (hsource : HypertranscendentalOver F source)
-    (hlog : phase′ / phase = (algebraMap F E a * source)′) :
-    HypertranscendentalOver F
-      (algebraMap F E c * (algebraMap F E b * phase - 1)) := by
-  have haE : algebraMap F E a ≠ 0 := (map_ne_zero (algebraMap F E)).2 ha
-  have hbE : algebraMap F E b ≠ 0 := (map_ne_zero (algebraMap F E)).2 hb
-  have hcE : algebraMap F E c ≠ 0 := (map_ne_zero (algebraMap F E)).2 hc
-  have haDA : DifferentialAlgebraicOver F (algebraMap F E a) :=
-    differentialAlgebraicOver_algebraMap a
-  have hbDA : DifferentialAlgebraicOver F (algebraMap F E b) :=
-    differentialAlgebraicOver_algebraMap b
-  have hcDA : DifferentialAlgebraicOver F (algebraMap F E c) :=
-    differentialAlgebraicOver_algebraMap c
-  have hscaled : HypertranscendentalOver F (algebraMap F E a * source) := by
-    have h := (hypertranscendentalOver_mul_differentialAlgebraic_iff
-      haDA haE).2 hsource
-    simpa [mul_comm] using h
-  have hphase : HypertranscendentalOver F phase :=
-    hypertranscendentalOver_phase_of_logDeriv_eq_deriv hscaled hlog
-  have hweighted : HypertranscendentalOver F (algebraMap F E b * phase) := by
-    have h := (hypertranscendentalOver_mul_differentialAlgebraic_iff
-      hbDA hbE).2 hphase
-    simpa [mul_comm] using h
-  have hminusOne : HypertranscendentalOver F
-      (algebraMap F E b * phase - 1) := by
-    have hnegOne : DifferentialAlgebraicOver F (-1 : E) := by
-      simpa using differentialAlgebraicOver_neg
-        (differentialAlgebraicOver_algebraMap (F := F) (E := E) 1)
-    simpa [sub_eq_add_neg] using
-      (hypertranscendentalOver_add_differentialAlgebraic_iff hnegOne).2 hweighted
-  have h := (hypertranscendentalOver_mul_differentialAlgebraic_iff
-    hcDA hcE).2 hminusOne
-  simpa [mul_comm] using h
 
 /-- The abstract differential-field version of the higher-multipole Schwarzschild response.
 The base field contains the frequency coordinate `eta` and the rational matching data. -/

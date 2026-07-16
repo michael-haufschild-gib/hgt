@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.Hypertranscendence
 import GaloisForLFunctions.HTGeometry.TorsionFaceExactification
 import GaloisForLFunctions.HTGeometry.DATaylorLogRatioResonance
+import GaloisForLFunctions.HTGeometry.GeometricTorsionLanguageRelationExclusion
 
 /-!
 # Geometric Taylor magnitudes and torsion-language exactification
@@ -14,7 +15,7 @@ separately from the project-internal polynomial level-vanishing theorem.
 
 namespace GaloisForLFunctions.HTGeometry
 
-open Filter Topology
+open Filter MvPolynomial PowerSeries Topology
 
 noncomputable section
 
@@ -47,6 +48,121 @@ theorem hypertranscendental_of_geometricTLU_lockedFace
     input.degree_lt_torsionOrder input.face input.multiplicity_le input.weight
     (input.torsionFaceVanishes_of_differentiallyAlgebraic hDA)
   exact hweight (hall e he)
+
+set_option maxHeartbeats 2000000 in
+/-- **Unconditional geometric TLU hypertranscendence.**  An exact geometric Taylor
+log-magnitude with a convergent additive correction and a torsion-language-universal unit phase
+admits no algebraic differential equation.  The balanced survivor, finite locked face,
+exponential confinement, and Fourier exactification are all constructed internally. -/
+theorem hypertranscendental_of_geometric_torsionLanguageUniversal
+    {f : ℂ → ℂ} (hf : ContDiff ℂ (⊤ : ℕ∞) f)
+    {u : ℕ → ℂ} {A lam c₀ : ℝ}
+    (hA : 0 < A) (hlam : 1 < lam)
+    {c : ℕ → ℝ} (hc : Tendsto c atTop (nhds c₀))
+    (hbpos : ∀ i, 0 < A * lam ^ i + c i)
+    (hcoeff : ∀ i, PowerSeries.coeff i (taylorPS f) =
+      ((Real.exp (-(A * lam ^ i + c i)) : ℝ) : ℂ) * u i)
+    (huNorm : ∀ i, ‖u i‖ = 1)
+    (hu : TorsionLanguageUniversal u) :
+    Hypertranscendental f := by
+  intro hDA
+  obtain ⟨n, P, hP, hPfun⟩ := hDA
+  have hjz : jetFun f n P = 0 := by
+    funext z
+    exact hPfun z
+  have hformal : aeval (formalJets n (taylorPS f)) P = 0 := by
+    rw [← taylorPS_jetFun f n hf P, hjz,
+      show (0 : ℂ → ℂ) = fun _ => (0 : ℂ) from rfl, taylorPS_const, map_zero]
+  obtain ⟨n', Q, hQ, hQint, hrel⟩ := formal_mahler_integer_normalization hP hformal
+  have hb : ∀ i, ‖PowerSeries.coeff i (taylorPS f)‖ =
+      Real.exp (-(A * lam ^ i + c i)) := by
+    intro i
+    rw [hcoeff, norm_mul, huNorm, mul_one, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_pos (Real.exp_pos _)]
+  have hDpos := magnitudeMaxJetDegree_pos_of_integer_relation
+    (taylorPS f) hb Q hQ hQint hrel
+  obtain ⟨anchor, ha, haD, _haMax⟩ :=
+    exists_maxShiftCode_topDegree_anchor Q hDpos
+  let D := jetMonomialDegree n' anchor
+  have hD : 0 < D := by simpa [D, haD] using hDpos
+  have hDmax : D = magnitudeMaxJetDegree n' Q := by simpa [D] using haD
+  obtain ⟨K, M, p, Q₀, hpcount, hp⟩ :=
+    exists_eventually_boundedPattern_nonzero_aevalWeight_residue
+      ha (by simpa [D] using hD) 0 (by simpa [D] using hD)
+  have hpweight : ∀ᶠ q : ℕ in atTop,
+      aevalWeight n' (D * q + 0) Q (shiftedAtomPatternKey q K p) ≠ 0 := by
+    filter_upwards [eventually_ge_atTop Q₀] with q hq
+    simpa [D] using (hp q hq).2
+  have hgrowth : UniformGeometricGrowth (fun i => A * lam ^ i + c i) :=
+    uniformGeometricGrowth_hierarchical hlam hA
+      (isLittleO_constPow_of_tendsto hlam hc)
+  exact GaloisForLFunctions.no_integerADE_of_geometric_torsionLanguageUniversal
+    (F := taylorPS f) (u := u) (A := A) (lam := lam) (c₀ := c₀) (c := c)
+    hA hlam hc hbpos hgrowth hcoeff huNorm hu
+    (n := n') (D := D) (K₀ := K) (τ := 0) (M₀ := M)
+    Q hrel hD hDmax p hpcount hpweight
+
+set_option maxHeartbeats 1200000 in
+/-- Eventual paper form of geometric TLU hypertranscendence.  An arbitrary finite Taylor prefix is
+removed by a polynomial correction; the geometric correction and phase are changed only on that
+finite prefix, so convergence and torsion-language universality are preserved. -/
+theorem hypertranscendental_of_eventually_geometric_torsionLanguageUniversal
+    {f : ℂ → ℂ} (hf : ContDiff ℂ (⊤ : ℕ∞) f)
+    {u : ℕ → ℂ} {A lam c₀ : ℝ}
+    (hA : 0 < A) (hlam : 1 < lam)
+    {c : ℕ → ℝ} (hc : Tendsto c atTop (nhds c₀))
+    (hcoeff : ∀ᶠ i : ℕ in atTop, PowerSeries.coeff i (taylorPS f) =
+      ((Real.exp (-(A * lam ^ i + c i)) : ℝ) : ℂ) * u i)
+    (huNorm : ∀ᶠ i : ℕ in atTop, ‖u i‖ = 1)
+    (hu : TorsionLanguageUniversal u) :
+    Hypertranscendental f := by
+  have hcLittle := isLittleO_constPow_of_tendsto hlam hc
+  have hbposEv : ∀ᶠ i : ℕ in atTop, 0 < A * lam ^ i + c i :=
+    eventually_pos_hierarchical hlam hA hcLittle
+  obtain ⟨T, hT⟩ := Filter.eventually_atTop.mp ((hcoeff.and huNorm).and hbposEv)
+  let F := taylorPS f
+  let p := finiteTaylorCorrection F T
+  let g : ℂ → ℂ := fun z => f z + p.eval z
+  let u' : ℕ → ℂ := fun i => if i < T then 1 else u i
+  let c' : ℕ → ℝ := fun i => if i < T then 1 - A * lam ^ i else c i
+  have hp : ContDiff ℂ (⊤ : ℕ∞) (fun z : ℂ => p.eval z) :=
+    contDiff_polynomial_eval p
+  have hg : ContDiff ℂ (⊤ : ℕ∞) g := hf.add hp
+  have htaylor : taylorPS g = F + (p : PowerSeries ℂ) := by
+    change taylorPS (fun z => f z + p.eval z) = _
+    rw [show (fun z => f z + p.eval z) = f + (fun z => p.eval z) from rfl,
+      taylorPS_add hf hp, taylorPS_polynomial_eval]
+  have hcoeff' : ∀ i, PowerSeries.coeff i (taylorPS g) =
+      ((Real.exp (-(A * lam ^ i + c' i)) : ℝ) : ℂ) * u' i := by
+    intro i
+    rw [htaylor, map_add, Polynomial.coeff_coe, coeff_finiteTaylorCorrection]
+    by_cases hi : i < T
+    · simp [c', u', hi]
+    · have hiT : T ≤ i := Nat.le_of_not_gt hi
+      simp only [if_neg hi, add_zero]
+      simpa [F, c', u', hi] using (hT i hiT).1.1
+  have huNorm' : ∀ i, ‖u' i‖ = 1 := by
+    intro i
+    by_cases hi : i < T
+    · simp [u', hi]
+    · simpa [u', hi] using (hT i (Nat.le_of_not_gt hi)).1.2
+  have hcEq : c' =ᶠ[atTop] c := by
+    filter_upwards [eventually_ge_atTop T] with i hi
+    simp [c', Nat.not_lt.mpr hi]
+  have hc' : Tendsto c' atTop (nhds c₀) := hc.congr' hcEq.symm
+  have hbpos' : ∀ i, 0 < A * lam ^ i + c' i := by
+    intro i
+    by_cases hi : i < T
+    · simp [c', hi]
+    · simpa [c', hi] using (hT i (Nat.le_of_not_gt hi)).2
+  have huEq : u' =ᶠ[atTop] u := by
+    filter_upwards [eventually_ge_atTop T] with i hi
+    simp [u', Nat.not_lt.mpr hi]
+  have hu' : TorsionLanguageUniversal u' := hu.of_eventuallyEq huEq
+  have hght : Hypertranscendental g :=
+    hypertranscendental_of_geometric_torsionLanguageUniversal
+      hg hA hlam hc' hbpos' hcoeff' huNorm' hu'
+  exact (hypertranscendental_add_polynomial_iff hf p).mp hght
 
 /-- Exact input for all valuation levels of an eventually periodic phase on the exact geometric
 profile.  The exponentially separated ADE cascade supplies the convergent level polynomials. -/

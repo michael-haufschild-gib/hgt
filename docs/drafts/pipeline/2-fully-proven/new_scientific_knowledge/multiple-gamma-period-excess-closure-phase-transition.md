@@ -283,7 +283,15 @@ is negative search evidence, not priority certification.
    closed range;
 5. closed range and surjectivity are each equivalent to discreteness;
 6. every finite nonzero diagonal restriction is bijective;
-7. every rationally independent rank-three period family gives a closure-only incidence class.
+7. every rationally independent rank-three period family gives a closure-only incidence class;
+8. every finite rationally independent period family of rank at least three has nondiscrete
+   integer span and the same exact/closure-only/exterior canonical incidence trichotomy.
+
+The new declarations are `not_discrete_intSpan_fin_of_three_le` and
+`finiteIndependentPeriodIncidenceCanonicalTrichotomy`.  Applied to the `r+2` periods of the generic
+order-`r` family, the latter covers every `r>=1` topological phase in the statement, rather than
+only a selected rank-three subfamily.  The card remains in stage 2 because the source-specific
+identity `d_DA(Psi_r)=r` is still paper-level.
 
 The Lean theorem is source-independent.  The source-specific equality `(4)` uses the paper theorem
 `Ann_DA(Psi_r)=I_r`; that analytic identification is not inserted into Lean as an axiom.
@@ -298,6 +306,7 @@ The Lean theorem is source-independent.  The source-specific equality `(4)` uses
 - [x] operator parent separated from candidate-new source comparison
 - [x] preliminary external novelty search completed
 - [x] unconditional operator core formalized in Lean
+- [x] all finite rationally independent period ranks `>=3` connected to the operator trichotomy
 - [ ] independently audit the multiple-Gamma annihilator classification
 - [ ] construct source polarization on the topologized corona
 - [ ] prove two independent realizations preserve the same radical action

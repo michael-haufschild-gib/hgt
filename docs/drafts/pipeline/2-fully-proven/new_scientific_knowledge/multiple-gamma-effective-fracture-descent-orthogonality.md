@@ -4,6 +4,7 @@
 - **Stage:** 2-fully-proven / analytic parent needs independent audit
 - **Type:** THEOREM / SOURCE-EFFECTIVITY COLLAPSE / FOUNDATIONAL NO-GO AND POSITIVE LAW
 - **Scientific status:** `[PAPER PROOF COMPLETE] [ALGEBRAIC H0 CORE LEAN-FORMALIZED]`
+  `[NORMALIZED SIMPLEX BLOCK CONTRACTION LEAN-FORMALIZED]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH RESULT]`
 - **Parents:**
   - `multiple-elliptic-gamma-transverse-constraint-depth.md`
@@ -94,7 +95,10 @@ every term, including `C^(-1)`.  Taking the direct sum over monomials proves exa
 at the elements `1+x_j=t_j` preserves the exact complex and yields `(4)` over `R_tau`.
 
 The H0 argument, including `(5)`, `(6)`, pairwise effectivity, and uniqueness modulo the
-Stanley--Reisner ideal, is Lean-formalized without analytic assumptions.
+Stanley--Reisner ideal, is Lean-formalized without analytic assumptions.  The all-degree
+normalized contraction of every nonempty full-simplex monomial block is also formalized.  The
+remaining algebraic assembly is the explicit decomposition of the localized quotient complex
+into those monomial blocks.
 
 ## Hypertranscendence persists inside exact descent `[PROVED FROM (1)]`
 
@@ -231,6 +235,20 @@ In `formal/GaloisForLFunctions/HTGeometry/FacetRestrictionEmbedding.lean`:
 The formal theorem is unconditional parent algebra.  It does not assume the multiple-gamma
 annihilator theorem or encode a special function as an axiom.
 
+In `formal/GaloisForLFunctions/HTGeometry/SimplexAugmentedContraction.lean`:
+
+- `standardSimplexAugmentedModule`
+- `standardSimplexExtraDegeneracy`
+- `standardSimplexChainHomotopyEquivPoint`
+- `standardSimplexNormalizedHomotopyEquivPoint`
+- `standardSimplexNormalized_exactAt_succ`
+
+The normalized complex is indexed by the nondegenerate simplices, hence by the strictly increasing
+vertex packets occurring in `(4)`.  The homotopy equivalence contracts the whole complex to its
+augmentation point, and the final theorem states exactness in every positive degree.  The direct
+sum over monomial supports and its localization into the concrete facet quotient complex remain
+to be assembled in Lean.
+
 ## Gates
 
 - [x] exact facet ideals identified
@@ -242,8 +260,10 @@ annihilator theorem or encode a special function as an axiom.
 - [x] failure-of-descent definition of HT falsified
 - [x] enriched-incidence positive successor stated
 - [x] algebraic H0 core Lean-formalized
+- [x] normalized full-simplex monomial-block contraction Lean-formalized in all degrees
 - [x] preliminary external novelty and parent audit
 - [ ] independent audit of the multiple-gamma order-one atomic parent
-- [ ] Lean-formalize the full augmented chain contraction
+- [ ] assemble the monomial-block contractions into the full localized augmented facet complex
+- [ ] formalize the actual multiple-gamma annihilator and transverse-HT conjunction
 - [ ] construct one nontrivial polarized analytic effectivity locus for the hierarchy
 - [ ] prove a transferred analytic theorem from the incidence object

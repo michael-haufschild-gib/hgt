@@ -254,6 +254,24 @@ geometry must exhibit at least two analytic directions or an equivalent transver
 quotient.  A prime/Euler versus archimedean/completion split is a possible interpretation, not a
 theorem here.
 
+## Lean formalization status
+
+The universal finite-dimensional witnesses are formalized in `FaithfulFacetDimension.lean` and
+`FaithfulFacetVertexDimension.lean`, proving the facet-count and vertex-count upper bounds from a
+single transcendental power family.
+
+`WedgeFacetLowerBound.lean` now formalizes the exact faithful dimension of the complete boundary-
+wedge family, strengthening the single complex in `(13)`. The namespace `UniformBoundaryWedge`
+constructs the explicit four-coordinate faithful separation, including global rational
+independence, exact facet-complement zero patterns, and facetwise rational independence. Its
+theorem `faithfulSeparation_fin_four_and_minimal` proves that four coordinates exist and that no
+faithful separation in dimension at most three exists for any `r,s>=2`. The earlier concrete
+`S^1 wedge S^2` lower theorem is retained as a specialization-independent check.
+
+The card remains in stage 2 because the complete generic compressed Herglotz realization theorem
+and its nonlinear differential-matroid rank formula have not yet been packaged as one unconditional
+Lean theorem consuming arbitrary `FaithfulSeparation` data.
+
 ## Novelty and parent boundary
 
 The ingredients--hyperplane representations, Stanley--Reisner prime decompositions, Herglotz
@@ -273,6 +291,7 @@ dimension, and older translation-module literature.
 - [x] universal facet-count upper bound proved
 - [x] explicit four-dimensional wedge representation proved
 - [x] dimension-three impossibility proved
+- [x] universal upper bounds and exact boundary-wedge faithful dimension formalized in Lean
 - [x] positive analytic-dimension geometry stated
 - [ ] independent specialist novelty audit
 - [ ] complete unconditional Lean formalization before stage 3

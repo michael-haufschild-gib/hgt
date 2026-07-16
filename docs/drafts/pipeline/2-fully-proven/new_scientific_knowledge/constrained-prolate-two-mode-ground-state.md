@@ -468,11 +468,18 @@ with `twoModeSecularRoot_mem_Ioo` (it lies strictly in `(d₀,d₁)`, so `C_λ` 
 by `ccm_groundState_weight_eq`: `a₀²/(a₀²+a₁²) = 8/11` for the prolate-to-Hermite limits
 `a₀ = 2^{1/4}`, `a₁ = √3·2^{−5/4}` — the value `μ_0(λ)/d_1(λ)` converges to in (5).
 
+`formal/GaloisForLFunctions/RHTower/TwoModeFuchsLimit.lean` goes one step further.  Under the exact
+Fuchs-rate model it proves `twoModeSecularRoot_fuchs_ratio_tendsto` for arbitrary increasing fixed
+indices, then specializes it to the CCM pair as `ccm_twoMode_ground_leakage_ratio` with limit
+`8/11`.  The theorem `ccm_twoMode_ground_gap_ratio` proves the complementary two-mode gap ratio
+`3/11`.  These are genuine limit theorems, not just arithmetic identities for the limiting
+weights.
+
 The scientifically new asymptotic theorem `(4)`--`(7)` is not yet fully formalized. Its remaining
 inputs are the classical identification and simplicity theorem matching the positive signed modes
 with the `4j` numbering, Fuchs fixed-index asymptotics with normalization, prolate-to-Hermite
-convergence, and the uniform infinite-tail secular estimate (existence of the root and its
-`8/11`/`3/11` asymptotics on top of the now-formalized monotonicity/uniqueness).
+convergence, and the uniform infinite-tail secular estimate transferring the now-formalized
+two-mode `8/11`/`3/11` limits to the exact constrained optimizer.
 
 ## Gates
 
@@ -484,6 +491,7 @@ convergence, and the uniform infinite-tail secular estimate (existence of the ro
 - [x] rediscovery attack
 - [x] provisional novelty gate
 - [x] provisional significance gate
+- [x] two-mode Fuchs-rate `8/11` ground and `3/11` gap limits formalized in Lean
 - [ ] independent proof review
 - [ ] independent literature review
 - [ ] true Weil residual and spectral-gap transfer

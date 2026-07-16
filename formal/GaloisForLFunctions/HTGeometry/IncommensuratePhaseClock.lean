@@ -64,6 +64,50 @@ theorem not_injective_phaseClockValue {rate : ℝ} (hrate : rate ≠ 0) :
     exact div_ne_zero (mul_ne_zero (by norm_num) Real.pi_ne_zero) hrate
   exact hperiod (by simpa using htime)
 
+/-- An integral number of phase turns is observationally indistinguishable from zero. -/
+theorem phaseClockValue_eq_zero_of_rate_mul_time_eq_int_two_pi
+    (rate time : ℝ) (n : ℤ)
+    (hturn : rate * time = (n : ℝ) * (2 * Real.pi)) :
+    phaseClockValue rate time = phaseClockValue rate 0 := by
+  rw [phaseClockValue, phaseClockValue]
+  apply Complex.exp_eq_exp_iff_exists_int.mpr
+  refine ⟨n, ?_⟩
+  simp only [mul_zero, Complex.ofReal_zero, zero_mul, zero_add]
+  rw [hturn]
+  push_cast
+  ring
+
+/-- A rational rate ratio gives the phase pair a nonzero common period. -/
+theorem not_injective_phaseClockPair_of_rateRatio_eq_int_div
+    {rate₁ rate₂ : ℝ} (hrate₁ : rate₁ ≠ 0)
+    (m n : ℤ) (hn : n ≠ 0)
+    (hratio : rate₂ / rate₁ = (m : ℝ) / (n : ℝ)) :
+    ¬ Function.Injective (phaseClockPair rate₁ rate₂) := by
+  let period : ℝ := (n : ℝ) * (2 * Real.pi) / rate₁
+  have hnReal : (n : ℝ) ≠ 0 := Int.cast_ne_zero.mpr hn
+  have hperiod : period ≠ 0 := by
+    exact div_ne_zero
+      (mul_ne_zero hnReal (mul_ne_zero (by norm_num) Real.pi_ne_zero)) hrate₁
+  have hrate₁Turn : rate₁ * period = (n : ℝ) * (2 * Real.pi) := by
+    dsimp only [period]
+    field_simp
+  have hcross : rate₂ * (n : ℝ) = rate₁ * (m : ℝ) := by
+    field_simp [hrate₁, hnReal] at hratio
+    nlinarith [hratio]
+  have hrate₂Turn : rate₂ * period = (m : ℝ) * (2 * Real.pi) := by
+    dsimp only [period]
+    field_simp
+    nlinarith [hcross]
+  intro hinjective
+  have hpair : phaseClockPair rate₁ rate₂ period =
+      phaseClockPair rate₁ rate₂ 0 := by
+    apply Prod.ext
+    · exact phaseClockValue_eq_zero_of_rate_mul_time_eq_int_two_pi
+        rate₁ period n hrate₁Turn
+    · exact phaseClockValue_eq_zero_of_rate_mul_time_eq_int_two_pi
+        rate₂ period m hrate₂Turn
+  exact hperiod (hinjective hpair)
+
 /-- **Incommensurate two-phase clock theorem.**  If the rate ratio is irrational, the paired
 phase reporter recovers unrestricted real clock time exactly. -/
 theorem phaseClockPair_injective {rate₁ rate₂ : ℝ}
@@ -131,6 +175,21 @@ theorem phaseClockPair_injective {rate₁ rate₂ : ℝ}
     nlinarith [hcross]
   exact ((irrational_iff_ne_rational (rate₂ / rate₁)).mp
     hirrational m n hnzero) hratio
+
+/-- **Exact rate classification.**  For a nonzero first rate, a two-phase clock is globally
+injective exactly when the rate ratio is irrational. -/
+theorem phaseClockPair_injective_iff_irrational {rate₁ rate₂ : ℝ}
+    (hrate₁ : rate₁ ≠ 0) :
+    Function.Injective (phaseClockPair rate₁ rate₂) ↔
+      Irrational (rate₂ / rate₁) := by
+  rw [irrational_iff_ne_rational]
+  constructor
+  · intro hinjective m n hn hratio
+    exact (not_injective_phaseClockPair_of_rateRatio_eq_int_div
+      hrate₁ m n hn hratio) hinjective
+  · intro hrat
+    exact phaseClockPair_injective hrate₁
+      ((irrational_iff_ne_rational (rate₂ / rate₁)).2 hrat)
 
 /-- Equality of an incommensurate phase pair is exactly equality of the underlying clock value. -/
 theorem phaseClockPair_eq_iff {rate₁ rate₂ : ℝ}

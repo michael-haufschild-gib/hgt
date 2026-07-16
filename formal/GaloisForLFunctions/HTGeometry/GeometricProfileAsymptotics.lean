@@ -10,6 +10,17 @@ open Filter Topology
 
 noncomputable section
 
+/-- Every convergent real sequence is little-`o` of a geometric sequence of ratio greater than
+one. -/
+theorem isLittleO_constPow_of_tendsto
+    {lam c₀ : ℝ} (hlam : 1 < lam) {c : ℕ → ℝ}
+    (hc : Tendsto c atTop (nhds c₀)) :
+    c =o[atTop] fun t : ℕ => lam ^ t := by
+  refine (Asymptotics.isLittleO_iff_tendsto' ?_).2 ?_
+  · exact Filter.Eventually.of_forall fun t hzero =>
+      ((pow_ne_zero t (zero_lt_one.trans hlam).ne') hzero).elim
+  · exact hc.div_atTop (tendsto_pow_atTop_atTop_of_one_lt hlam)
+
 /-- A convergent additive correction cannot remove more than half of a positive geometric leading
 term, uniformly after any fixed forward shift. -/
 theorem eventually_geometricProfile_half_lower

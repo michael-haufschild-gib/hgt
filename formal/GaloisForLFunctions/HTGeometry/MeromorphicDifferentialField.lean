@@ -140,6 +140,79 @@ theorem meroFieldDifferential_algebraMap {U : Set ℂ}
   rw [fractionRingDerivation_algebraMap]
   rfl
 
+/-- Restriction of analytic germs commutes with differentiation.  This is the carrier-level
+naturality needed to transport differential equations and differential independence from a
+connected ambient domain to a nonempty open subdomain. -/
+theorem restrictAnalytic_analyticSubringDeriv
+    {U V : Set ℂ} (hVU : V ⊆ U) (hUo : IsOpen U) (hVo : IsOpen V)
+    (a : analyticSubring U) :
+    Bottcher.restrictAnalytic hVU (analyticSubringDeriv hUo a) =
+      analyticSubringDeriv hVo (Bottcher.restrictAnalytic hVU a) := by
+  obtain ⟨f, hf, hfa⟩ := a.2
+  apply Subtype.ext
+  change (Bottcher.restrictGermHom hVU)
+      (analyticGermDeriv hUo (a : Germ (𝓟 U) ℂ)) =
+    analyticGermDeriv hVo
+      ((Bottcher.restrictGermHom hVU) (a : Germ (𝓟 U) ℂ))
+  rw [← hfa]
+  change (↑(deriv f) : Germ (𝓟 U) ℂ).compTendsto id
+      (tendsto_principal_principal.mpr (fun _ hx => hVU hx)) =
+    analyticGermDeriv hVo
+      ((↑f : Germ (𝓟 U) ℂ).compTendsto id
+        (tendsto_principal_principal.mpr (fun _ hx => hVU hx)))
+  rw [Germ.coe_compTendsto]
+  rfl
+
+set_option synthInstance.maxHeartbeats 100000
+
+/-- **Differential restriction of meromorphic germs.**  The canonical restriction field embedding
+`meroField U -> meroField V` commutes with the meromorphic differential whenever `V` is a nonempty
+open subdomain of the open connected domain `U`. -/
+theorem restrictMeroHom_deriv
+    {U V : Set ℂ} (hVU : V ⊆ U)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hVo : IsOpen V) (hVc : IsPreconnected V) (hVne : V.Nonempty)
+    (x : meroField U) :
+    letI := Bottcher.isDomain_analyticSubring U hUo hUc hUne
+    letI := Bottcher.isDomain_analyticSubring V hVo hVc hVne
+    letI := meroFieldDifferential hUo hUc hUne
+    letI := meroFieldDifferential hVo hVc hVne
+    Bottcher.restrictMeroHom hVU hUo hUc hUne hVo hVc hVne x′ =
+      (Bottcher.restrictMeroHom hVU hUo hUc hUne hVo hVc hVne x)′ := by
+  letI := Bottcher.isDomain_analyticSubring U hUo hUc hUne
+  letI := Bottcher.isDomain_analyticSubring V hVo hVc hVne
+  letI : Algebra ℤ (analyticSubring U) := Ring.toIntAlgebra _
+  letI : Algebra ℤ (analyticSubring V) := Ring.toIntAlgebra _
+  letI : Algebra ℤ (meroField U) := Ring.toIntAlgebra _
+  letI : Algebra ℤ (meroField V) := Ring.toIntAlgebra _
+  letI := meroFieldDifferential hUo hUc hUne
+  letI := meroFieldDifferential hVo hVc hVne
+  let ρ : meroField U →+* meroField V :=
+    Bottcher.restrictMeroHom hVU hUo hUc hUne hVo hVc hVne
+  change ρ x′ = (ρ x)′
+  obtain ⟨a, b, hb, rfl⟩ :=
+    IsFractionRing.div_surjective (analyticSubring U) x
+  have hmap (c : analyticSubring U) :
+      ρ (algebraMap (analyticSubring U) (meroField U) c) =
+        algebraMap (analyticSubring V) (meroField V)
+          (Bottcher.restrictAnalytic hVU c) := by
+    exact Bottcher.restrictMeroHom_algebraMap
+      hVU hUo hUc hUne hVo hVc hVne c
+  have hderiv (c : analyticSubring U) :
+      ρ ((algebraMap (analyticSubring U) (meroField U) c)′) =
+        (algebraMap (analyticSubring V) (meroField V)
+          (Bottcher.restrictAnalytic hVU c))′ := by
+    rw [meroFieldDifferential_algebraMap, hmap,
+      meroFieldDifferential_algebraMap,
+      restrictAnalytic_analyticSubringDeriv]
+  rw [Derivation.leibniz_div]
+  simp only [map_sub, map_mul, map_pow, map_inv₀, map_div₀, smul_eq_mul]
+  rw [Derivation.leibniz_div]
+  simp only [smul_eq_mul]
+  rw [hmap, hmap, hderiv, hderiv]
+
+set_option synthInstance.maxHeartbeats 20000
+
 end
 
 end GaloisForLFunctions

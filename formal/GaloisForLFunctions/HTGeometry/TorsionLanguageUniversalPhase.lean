@@ -23,6 +23,18 @@ def TorsionLanguageUniversal (u : ℕ → ℂ) : Prop :=
     (∀ r, s r ^ m = 1) →
       ∃ q, N ≤ q ∧ ∀ r : Fin M, u (q + (r : ℕ)) = s r
 
+/-- Torsion-language universality is unchanged by a finite modification of the phase sequence. -/
+theorem TorsionLanguageUniversal.of_eventuallyEq
+    {u v : ℕ → ℂ} (hu : TorsionLanguageUniversal u)
+    (huv : v =ᶠ[atTop] u) : TorsionLanguageUniversal v := by
+  obtain ⟨T, hT⟩ := Filter.eventually_atTop.mp huv
+  intro m M N hm s hs
+  obtain ⟨q, hq, hword⟩ := hu m M (max N T) hm s hs
+  refine ⟨q, (le_max_left N T).trans hq, fun r => ?_⟩
+  rw [hT (q + (r : ℕ)) ((le_max_right N T).trans hq |>.trans
+    (Nat.le_add_right q (r : ℕ)))]
+  exact hword r
+
 /-- Arbitrarily late occurrences of one torsion word contain a strictly increasing cofinal
 subsequence of exact occurrences. -/
 theorem TorsionLanguageUniversal.exists_strictMono_occurrences
