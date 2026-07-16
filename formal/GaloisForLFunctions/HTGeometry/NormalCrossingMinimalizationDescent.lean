@@ -137,6 +137,40 @@ theorem cofaceEliminationDifference_not_boundary
   rw [cofaceEliminationDifference_zero_succ]
   exact cofaceStarSyzygy_not_koszulBoundaryEnvelope hr i
 
+/-- The polynomial coefficient carried by a finite family of source-labelled minimalization
+directions.  In the normal-crossing model, a `p`-fold coherence is labelled by the squarefree
+product of the corresponding `p` structural coordinates. -/
+def relativeMinimalizationCoherenceCoefficient (r : ℕ)
+    (J : Finset (Fin (r + 1))) : MvPolynomial (Fin (r + 1)) F :=
+  ∏ j ∈ J, X j
+
+/-- **Normal-crossing diagonal purity.**  The polynomial degree of a coherence coefficient is
+exactly the number of source-labelled minimalization directions which create it.  Thus the source
+depth and algebraic degree filtrations agree on every squarefree coherence label. -/
+theorem relativeMinimalizationCoherenceCoefficient_totalDegree (r : ℕ)
+    (J : Finset (Fin (r + 1))) :
+    MvPolynomial.totalDegree
+        (relativeMinimalizationCoherenceCoefficient (F := F) r J) = J.card := by
+  rw [relativeMinimalizationCoherenceCoefficient, prod_X_eq_monomial,
+    totalDegree_monomial _ one_ne_zero]
+  simp [Finsupp.sum, support_sum_single]
+  rw [Finset.sum_comm]
+  simp [Finsupp.single_apply]
+
+/-- The distinguished coefficient of a two-fold minimalization coherence has pure degree two.
+This is the first nontrivial case of diagonal purity which is already realized by the star-wedge
+Koszul class. -/
+theorem cofaceStarWedge_distinguished_totalDegree
+    (r : ℕ) (i k : Fin r) (hik : i ≠ k) :
+    MvPolynomial.totalDegree
+        (cofaceStarWedge (F := F) r i k i.succ k.succ) = 2 := by
+  rw [cofaceStarWedge_succ_succ r hik]
+  rw [show X i.succ * X k.succ =
+      relativeMinimalizationCoherenceCoefficient (F := F) r {i.succ, k.succ} by
+        simp [relativeMinimalizationCoherenceCoefficient, hik]]
+  rw [relativeMinimalizationCoherenceCoefficient_totalDegree]
+  simp [hik]
+
 end
 
 end GaloisForLFunctions.HTGeometry

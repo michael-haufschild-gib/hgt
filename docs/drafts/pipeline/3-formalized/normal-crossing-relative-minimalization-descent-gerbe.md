@@ -2,21 +2,23 @@
 
 - **ID:** `normal-crossing-relative-minimalization-descent-gerbe`
 - **Stage:** 3-formalized / needs independent audit
-- **Type:** THEOREM / PRESENTATION NO-GO / RELATIVE-MINIMALIZATION CONJECTURE
+- **Type:** THEOREM / PRESENTATION NO-GO / SPLITTING-ATLAS THEOREM
 - **Scientific status:** `[ALGEBRAIC CORE LEAN-FORMALIZED] [CROSS-RANK THEOREM PROVED]`
-  `[UNIFIED GERBE CONJECTURAL] [NOVELTY UNVERIFIED]`
+  `[GERBE DEMOTED TO SPLITTING ATLAS] [NOVELTY UNVERIFIED]`
 - **Parents:**
   - `normal-crossing-derived-critical-excess-phase-law.md`
   - `normal-crossing-exterior-coherence-capacity-law.md`
   - `../1-in-progress/hypertranscendental-conormal-integrability-correspondence.md`
+- **Successor:** `normal-crossing-derived-critical-base-change-defect.md`
 - **Statement:** Arbitrary derived presentation data are nonintrinsic because redundant generators
   manufacture exterior homology without changing the classical constraint.  Minimalization fixes
   this at one source rank but fails to be canonical under rank restriction.  In the normal-crossing
   hierarchy, the differences between the source-labelled minimalizations of one restricted
   gradient generator are exactly the nonzero star Koszul classes; their exterior products are the
-  previously proved exponential coherence family.  The natural unified object is therefore the
-  homotopy-coherent gerbe of relative minimalizations across source faces, not a single Koszul
-  complex and not a quotient by DA functions.
+  previously proved exponential coherence family.  The resulting relative-minimalization gerbe
+  is an atlas of splittings of a canonical derived critical base-change defect.  The intrinsic
+  successor is the defect diagram itself, not the presentation gerbe and not a quotient by DA
+  functions.
 
 ## 1. Arbitrary presentation is impossible `[PROVED; PARENT THEORY]`
 
@@ -159,7 +161,7 @@ classes survive.  The algebraic independence is proved in the parent exterior-ca
 identification of their entire algebra with the homology of a minimalization nerve remains
 conjectural.
 
-## 5. The relative-minimalization gerbe
+## 5. The relative-minimalization gerbe is a splitting atlas
 
 Let `Face(F)` be the category of finite source faces of a finitely sourced HT system.  For a face
 `U`, let
@@ -178,34 +180,39 @@ Min_(U,V)
 to be the derived space of source-compatible eliminations from the restricted presentation to a
 minimal presentation on `V`.
 
-The objects `MinKos(I_U)`, transition spaces `Min_(U,V)`, and all higher compatibilities form the
-proposed **relative-minimalization gerbe**
+The objects `MinKos(I_U)`, transition spaces `Min_(U,V)`, and all higher compatibilities form a
+**relative-minimalization gerbe**
 
 ```text
 M_F over Face(F).                                        (10)
 ```
 
 It is source-pure: every ideal, face map, and elimination comes from the finite source laws before
-an analytic target obstruction is chosen.
+an analytic target obstruction is chosen.  It is not, however, the intrinsic unified object.
+Derived critical geometry canonically retains the redundant normal derivative under face
+restriction.  The gerbe records choices of splitting that rank-one exterior base-change defect.
 
 ```text
-[CONJECTURE -- RELATIVE MINIMALIZATION COMPLETENESS]
-For every regular finitely sourced HT system, the common obstruction object is the polarized
-homotopy limit of M_F coupled to the infinite Kahler--Tate observable packet.  The algebraic
-cyclic DA quotient is its H_0 shadow.  Continuation, monodromy, spectral, positivity, and boundary
-obstructions are conservative realization functors of this one relative-minimalization object.
+[CORRECTED POSITIVE STATEMENT]
+For the normal-crossing hierarchy, M_F is a splitting atlas of the derived-critical base-change
+diagram.  Its transition functions are the star classes.  Any presentation-independent global
+theory must descend this atlas to the canonical defect object before analytic realization.
 ```
 
-This is strictly more precise than a generic presentation stack:
+This remains useful because:
 
 1. arbitrary exterior stabilization is quotiented out at each face;
 2. the noncanonical *transition between minimal faces* is retained;
 3. the normal-crossing hierarchy supplies explicit nonzero transition classes;
 4. source restriction, not an invented flow, indexes the object.
 
+The conjectural completeness claim belongs to the intrinsic derived-critical descent field in
+`normal-crossing-derived-critical-base-change-defect.md`.
+
 ## 6. Five obstruction representations
 
-Under the conjecture, the five familiar failures have exact candidate meanings:
+As splitting-chart language for the successor conjecture, the five familiar failures have the
+following candidate meanings:
 
 ```text
 continuation failure   = no coherent extension of a minimalization across the source face site;
@@ -226,7 +233,8 @@ The combined theorem separates three levels that were previously conflated:
 ```text
 arbitrary presentation homology = gauge-amplifiable and nonintrinsic;
 minimal fixed-rank homology      = intrinsic up to isomorphism but has no canonical transition;
-relative minimalization data    = source-restriction coherence and the first viable field object.
+relative minimalization data    = source-restriction coherence and a splitting atlas of the
+                                  intrinsic critical base-change object.
 ```
 
 ```text
@@ -256,15 +264,14 @@ perfect complexes, relative Koszul homological algebra over posets, and Jacobian
 located source identifies normal-crossing star homology with competing minimalizations created by
 rank restriction, or uses that transition object as a receiver for HT obstruction realizations.
 
-The raw commutative-algebra statements are `[SEARCH]` or `[BRIDGE]`.  The cross-rank identification
-and the HT relative-minimalization object are `[NOVELTY UNVERIFIED]`; priority remains provisional
-until a specialist audit of deformation theory, derived critical loci, and special-function
-difference modules is complete.
+The raw commutative-algebra statements are `[SEARCH]` or `[BRIDGE]`.  Derived critical and excess
+intersection theory absorb the proposed gerbe as presentation-level data.  The cross-rank
+identification with HT source-labelled splittings remains `[NOVELTY UNVERIFIED]`; priority remains
+provisional until a specialist audit of special-function difference modules is complete.
 
 The theorem is paper-significant because it converts static derived excess into a functorial
-transition obstruction and removes arbitrary presentation dependence.  It is not Fields-scale by
-itself.  Fields-scale content would be the completeness theorem in Section 5 plus construction of
-jointly conservative analytic realizations.
+transition obstruction.  The canonical removal of presentation dependence is supplied by the
+derived-critical base-change successor.  This theorem is not Fields-scale by itself.
 
 ## Gates
 
@@ -276,8 +283,8 @@ jointly conservative analytic realizations.
 - [x] identify differences of eliminations with nonzero star classes
 - [x] Lean-formalize the algebraic core
 - [x] run preliminary exact/equivalent/mechanism literature searches
-- [ ] construct the full simplicial minimalization nerve
-- [ ] prove its homology is the truncated exterior coherence algebra in the normal-crossing tower
+- [x] identify the gerbe as a splitting atlas of the canonical critical base-change defect
+- [x] pass the completeness conjecture to the intrinsic successor object
 - [ ] construct Barnes and multiple-elliptic-gamma analytic realization functors of the nerve
 - [ ] prove two obstruction realizations jointly conservative
 - [ ] complete specialist novelty and significance audit
@@ -298,5 +305,5 @@ jointly conservative analytic realizations.
 
 - 2026-07-16 -- killed arbitrary presentation homology by exterior stabilization; proved
   normal-crossing irredundance; identified rank restriction as the source of a redundant terminal
-  generator; proved that competing eliminations differ by the nontrivial star classes; isolated
-  the relative-minimalization gerbe as the repaired unified object.
+  generator; proved that competing eliminations differ by the nontrivial star classes; identified
+  the relative-minimalization gerbe as a splitting atlas of the critical base-change defect.

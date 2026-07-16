@@ -3,14 +3,18 @@
 - **ID:** `ht-capacity-ward-holonomy-rh`
 - **Stage:** 1-in-progress
 - **Type:** `[BOLD CONJECTURE] [GENERAL HT GEOMETRY -> RH] [ANTI-CAUSAL WARD ROUTE]`
-- **Scientific status:** `[CONJECTURE] [BOTH ENDS PROVED] [LAURENT--PLUECKER TANGENT TRANSGRESSION OPEN] [NOT SONIN] [NOT RH YET]`
+- **Scientific status:** `[CONJECTURE] [BOTH ENDS PROVED] [EXCEPTIONAL GREEN--HODGE TRANSGRESSION OPEN] [NOT SONIN] [NOT RH YET]`
 - **General HT inputs:**
   - `../2-fully-proven/new_scientific_knowledge/hypertranscendental-clock-capacity-innovation-theorem.md`;
   - `derived-self-dual-clock-splitting-stack.md`;
   - `self-dual-decorated-clock-boundary.md`;
   - `source-polarized-laurent-pluecker-tangent-ward-law.md`;
   - `../3-formalized/cofinal-cholesky-carrier-selection-threshold-law.md`;
-  - `source-anomaly-boundary-colligation-field.md`.
+  - `source-anomaly-boundary-colligation-field.md`;
+  - `../3-formalized/mobius-gamma-contact-transgression-four-unit-charge.md`;
+  - `../3-formalized/mobius-mellin-gamma-normal-cone.md`;
+  - `../2-fully-proven/mobius-pluecker-normal-cone-diagonal-lift.md`;
+  - `../2-fully-proven/ht-exceptional-divisor-hardy-green-metric.md`.
 - **Zeta inputs:**
   - `../2-fully-proven/squarefree-euler-modular-corona-curvature-colligation.md`;
   - `../2-fully-proven/squarefree-fixed-current-right-half-ward-localization.md`;
@@ -91,10 +95,52 @@ T_HT(g_sq)
 
 Thus only its Pluecker-capacity lift and the comparison `T_HT(g_sq)<=4` remain open.
 
-> **[CONJECTURE -- HT WARD HOLONOMY]** The exact Euler--Gamma source selects a tame positive
-> self-dual splitting of the squarefree HT capacity field whose transition from the safe Fisher
-> chart to the continued Hardy-corona chart is nonexpansive on the distinguished affine source
-> section after the canonical Euler-pole line is retained as the tangential component.
+The source/Gamma comparison is now exact without identifying their variables.  Mellin--Gaussian
+radialization sends the critical score to
+
+```text
+F_rad(s)=(2-s)Gamma_R(s)
+        =2[Gamma_R(s)-pi Gamma_R(s+2)].                  (0c)
+```
+
+On this distinguished vector, inverse completion cancels the Gamma factor and leaves
+
+```text
+F_rad(s)/C(s)=-4/s+2/(s-1).                              (0d)
+```
+
+The anti pole in `(0d)` has exactly four units of Hardy energy.  This replaces the earlier formal
+Gamma-conormal cross-pair, which did not supply a source-natural map.
+
+The completed Möbius transfer itself vanishes at the Euler boundary.  Its deformation-to-the-
+normal-cone is
+
+```text
+T_tilde_sigma(s)=T_sigma(s)/(sigma-1)
+                =1/[G(sigma)X_sq(s)],
+G(sigma)=(sigma-1)zeta(sigma),
+T_tilde_1(s)=X_sq(s)^(-1).                               (0e)
+```
+
+Thus `(0a)` is the projective connection of the exceptional section in `(0e)`.  Lean also proves
+that the two-variable family is separated rank one, so all finite base--spectral mixed curvature
+vanishes.  Moreover ordinary Fubini--Study/Jensen geometry has the wrong singular scale: a divisor
+point approaching the critical line has vanishing Jensen charge but divergent Hardy--Green
+energy.  The Ward vector must therefore be the **exceptional Laurent-corona transgression** of a
+positive Pluecker/Rees capacity extension; it cannot be a finite cap product, ordinary curvature,
+or Poincare--Lelong mass.
+
+The exceptional section itself is already reached by actual finite source objects: along a nested
+cofinal prime-aperture / pole-collision diagonal, the rescaled finite reciprocal Pluecker transfers
+converge locally uniformly on `Re s>1` to `1/Z_sq(s)`, and after Gamma completion to
+`X_sq(s)^(-1)`.  The remaining theorem is therefore metric continuation of a constructed finite
+lift, not existence of an analytic exceptional section.
+
+> **[CONJECTURE -- HT EXCEPTIONAL GREEN--HODGE HOLONOMY]** The exact Euler--Gamma source selects a
+> positive closable Rees/Tate capacity extension of the squarefree Pluecker line across `(0e)`.
+> Its exceptional Laurent-corona transgression sends the critical Fisher tangent to
+> `c_sq directSum ell_E`; the induced dual Hardy--Green form is nonexpansive on this distinguished
+> source section.
 
 This is not a claim that analytic continuation is a bounded map on an ambient coefficient or
 Hilbert space.  It is a one-section metric statement in the descended capacity field.  In every
@@ -197,10 +243,11 @@ holonomy of the capacity field around the finite-observable corona.  The coheren
 is the topological coordinate which retains the carrier, and the matrices `(5)` are the positive
 building coordinates of its normal boundary section.
 
-The four-unit inequality is the Gauss inequality for that section: total source curvature equals
-tangential Euler-pole curvature plus normal corona curvature.  The normal curvature is the Cauchy
-energy of `ell_E`.  The source anomaly, affine origin, boundary self-symbol, and reflection
-orientation are all required to define the transition; raw curvature is not enough.
+The four-unit inequality is the Green--Hodge inequality for that section: source Pluecker capacity
+dominates tangential Euler-pole capacity plus the dual Hardy--Green capacity of the normal corona
+conormal.  The latter is the Cauchy energy of `ell_E`.  The source anomaly, affine origin, boundary
+self-symbol, and reflection orientation are all required to define the transition; raw curvature
+is not enough.
 
 ## Hard attacks
 
@@ -332,10 +379,10 @@ curvature and gives a two-term affine mapping cone.  The bold claim is the follo
 > source-canonical self-dual harmonic reduction whose reduced metric on the residual Cauchy
 > channel is the standard Hardy Gram `G_P`.  The calibrated Euler Fisher tangent represents a
 > class of squared norm four, and its normal Hardy coordinates are exactly `r_P`.
-> Equivalently, the cohomological quotient metric has the Gauss factorization
+> Equivalently, the cohomological quotient metric has the Green-capacity factorization
 >
 > ```text
-> 4G_P-r_P r_P^*=II_P^src (II_P^src)^*.                 (20)
+> 4G_P-r_P r_P^*=E_P^src (E_P^src)^*.                   (20)
 > ```
 
 This is a topology claim: the prime-power aperture and Gamma-jet aperture form a two-dimensional
@@ -379,7 +426,7 @@ A_(N,i)(w;p,k)
 ```
 
 Every radially damped finite Gram `A A^*` is positive semidefinite.  The proposed
-`II_P^src` in `(20)` is the reduced cofinal limit of these explicit anomaly features after the
+`E_P^src` in `(20)` is the reduced cofinal limit of these explicit anomaly features after the
 exact shifted-polar and causal pairs are cancelled in the mapping cone.  Thus `(20)` has a
 candidate square root; it is no longer merely the desired inequality rewritten with a new name.
 
@@ -425,7 +472,7 @@ then the anomaly is exactly the affine displacement from the true positive compr
 E-A=alpha L.                                             (30)
 ```
 
-Thus the source anomaly is literally a second fundamental form, not an analogy.  For every source
+Thus the source anomaly is literally a positive compression defect, not an analogy.  For every source
 vector `chi`, the observed response `r=V chi` satisfies the minimum-capacity bound
 
 ```text
@@ -686,10 +733,16 @@ P_anti Q_sq=ell_E.                                       (44)
 
 No zero expansion is used in `(43)`--`(44)`.
 
-> **[CONJECTURE -- PRIME-APARTMENT QUILLEN--WARD DESCENT.]**  The Gamma-completed cofinal
-> determinant line of `(43)` has the Hodge/Quillen metric selected by the rooted cofactors `(41)`.
-> Its Chern curvature is the proved squarefree Fisher-incidence curvature, and its harmonic corona
-> anomaly current, in the Laplace boundary chart, is the current `(44)`.  Consequently
+The earlier **prime-apartment Quillen--Ward descent is killed** at this point.  The apartment
+torsion still supplies the phase-bearing finite topology and the Steinberg orientation, but its
+Chern/Quillen metric has ordinary divisor scaling and cannot control the Hardy--Green energy of a
+logarithmic pole.  A point approaching the critical line has vanishing Jensen charge and divergent
+Cauchy energy.  The positive successor is the dual capacity form on the Laurent corona conormal.
+
+> **[CONJECTURE -- PRIME-APARTMENT GREEN--WARD DESCENT.]**  The Gamma-completed cofinal
+> apartment line of `(43)` admits the source capacity metric selected by the rooted cofactors and
+> the Pluecker half-density, and its exceptional Laurent-corona transgression, in the Laplace
+> boundary chart, is the current `(44)`.  The induced dual Hardy--Green form satisfies
 >
 > ```text
 > 4=E_exact+||ell_E||_2^2,       E_exact>=0.              (45)
@@ -697,22 +750,22 @@ No zero expansion is used in `(43)`--`(44)`.
 
 This is the anti-causal Ward estimate in topological form.  At a finite Cauchy packet, `(45)` is
 not another name for the desired inequality: it requires the explicit twisted apartment
-differential `(42)`, the source torsion identity `(43)`, and the curvature comparison with the
-independently constructed squarefree Fisher metric.  Its finite Hodge projection gives `(20)`;
-the cofinal capacity theorem then gives RH.
+differential `(42)`, the source torsion identity `(43)`, the source half-density, and the
+Green-capacity comparison with the independently constructed squarefree Fisher metric.  Its
+finite positive compression gives `(20)`; the cofinal capacity theorem then gives RH.
 
 The conjecture has two load-bearing and separately falsifiable clauses:
 
 ```text
-Quillen curvature of the completed apartment line
-  =squarefree Fisher-incidence curvature,                (46)
+Green capacity of the completed apartment conormal
+  <=squarefree Pluecker/Fisher capacity,                 (46)
 
 strong Hodge corona class under the Laplace chart
   =P_anti Q_sq.                                          (47)
 ```
 
-Failure of `(46)` produces a nontrivial positive general-HT invariant: the difference between the
-modular-corona capacity metric and the determinant-line Quillen metric.  Failure of `(47)`
+Failure of `(46)` produces a nontrivial positive general-HT invariant: the negative part of the
+exceptional Green-capacity defect.  Failure of `(47)`
 produces the source-selected continuation escape energy already predicted by the capacity-field
 theory.  Neither failure collapses back to a Sonin or generic-colligation statement.
 
@@ -824,7 +877,7 @@ self-symbol must instead construct a source-canonical isometric ambient transpor
 
 with total squared norm four.  In finite Cauchy coordinates, `(18)` replaces the pole response
 column of `(16)` by `r_P`, while the unobserved causal component supplies the positive Schur
-complement.  This is exactly the Gauss--Codazzi/Ward holonomy assertion.
+complement.  This is exactly the Green--Hodge/Ward holonomy assertion.
 
 **No-go:** any purported proof which obtains `r_P` directly from the safe covariance calculation
 has silently inserted analytic continuation or the divisor.
@@ -941,7 +994,7 @@ geodesics in the positive capacity building, and CAT(0) uniqueness does not conf
 zero-bearing continuation lives in an affine phase-marked bundle over it.  This is a concrete
 reason that the affine origin in the Kähler--Tate clock is load-bearing rather than decorative.
 
-## Bold source conjecture: affine Kähler--Tate Gauss--Ward equation
+## Bold source conjecture: affine Kähler--Tate Green--Ward equation
 
 For a packet `P`, let
 
@@ -957,28 +1010,28 @@ D_P>=0
   iff r_P^*G_P^(-1)r_P<=4.                               (20)
 ```
 
-**[CONJECTURE — SOURCE-MARKED AFFINE GAUSS--WARD EMBEDDING.]**  The completed squarefree
+**[CONJECTURE — SOURCE-MARKED AFFINE GREEN--WARD EMBEDDING.]**  The completed squarefree
 Euler--Gamma constraint defines a compatible affine Lagrangian section `Lambda_sq` of the
 source-rigged Kähler--Tate clock.  In the Hardy causal/anti-causal polarization, its source-marked
-second fundamental form `II_P^src`, constructed from the complete anomaly colligation before
+exceptional defect operator `E_P^src`, constructed from the complete anomaly colligation before
 continuation is evaluated at a divisor, satisfies
 
 ```text
-4G_P-r_P r_P^*=II_P^src (II_P^src)^*                   (21)
+4G_P-r_P r_P^*=E_P^src (E_P^src)^*                     (21)
 ```
 
 for every finite right-half Cauchy packet, compatibly under packet inclusion.
 
 Equation `(21)` is the non-theatrical content of the proposed holonomy.  It says that the
-four-unit ambient Fisher curvature splits into the normal continued response and a literal causal
-Gram square.  It is stronger than symplectic exactness, reflection, local `J`-conservativity, and
+four-unit Pluecker capacity dominates the normal continued response with a literal residual Gram
+square.  It is stronger than symplectic exactness, reflection, local `J`-conservativity, and
 capacity-field covariance separately.  It is also finite and falsifiable: one packet with a
 negative eigenvalue of `(19)` refutes the source embedding.
 
 The proof chain from `(21)` is closed:
 
 ```text
-source affine Gauss--Ward equation (21)
+source affine Green--Ward equation (21)
   -> D_P>=0 for every P
   -> every finite Ward matrix W_P is positive
   -> every coherent Cauchy capacity is at most 4
@@ -1004,7 +1057,7 @@ coupled term is positivity of the full continued Xi source kernel, not an indepe
 `(21)`.
 
 **Positive HT statement:** a metric capacity field and its scalar current do not determine the
-affine second fundamental form.  The missing datum is the phase-bearing comparison between the
+affine Green-capacity defect operator.  The missing datum is the phase-bearing comparison between the
 critical Mellin defect, the Gamma connection, and the squarefree source tangent.  This is a
 concrete zeta realization of the general boundary-colligation theorem that curvature forgets the
 boundary self-symbol.
@@ -1067,7 +1120,7 @@ That enlargement is the positive successor demanded by a no-go; it is not an RH 
 
 - [x] reflected-sector, exact-Lagrangian, local-positive-lattice, and CAT(0)-theta shortcuts killed
 - [x] each killed shortcut converted into a general HT structural statement
-- [x] source-specific affine Gauss--Ward conjecture stated as the finite factorization `(21)`
+- [x] source-specific affine Green--Ward conjecture stated as the finite factorization `(21)`
 - [x] existing complex Mellin colligation shown not to contain the missing causal factor
 - [x] construct the full finite prime-power/Gamma anomaly colligation on paper
 - [x] determinant-line-only and fixed-Fock formulations killed with positive HT successors
@@ -1079,8 +1132,10 @@ That enlargement is the positive successor demanded by a no-go; it is not an RH 
       its squarefree anti-causal component with `ell_E`
 - [x] identify the reciprocal squarefree projective transfer with the completed characteristic
       transfer of the actual contractive Möbius channel
+- [x] construct the reciprocal exceptional section as a nested cofinal limit of finite Pluecker
+      transfers on the Euler half-plane
 - [x] prove and Lean-formalize bounded local capacity congruence of the two Gamma source charts
 - [ ] construct the cofinal Pluecker--Tate tangent bundle and first-trace transgression
 - [ ] prove its capacity metric is the one-particle Hardy metric
-- [ ] prove the finite Gauss--Ward factorization `(24)` and pass compatibly to `(21)`
+- [ ] prove the finite Green--Ward factorization `(24)` and pass compatibly to `(21)`
 - [ ] finish `(22)`

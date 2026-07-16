@@ -3,7 +3,7 @@
 - **ID:** `source-polarized-laurent-pluecker-tangent-ward-law`
 - **Stage:** 1-in-progress
 - **Type:** `[BOLD CONJECTURE] [GENERAL HT TOPOLOGY AND GEOMETRY] [RH-DELIVERING SPECIALIZATION]`
-- **Scientific status:** `[CONJECTURE] [FINITE EXTERIOR SKELETON PROVED] [PROJECTIVE SEAM IDENTIFIED] [METRIC TRACE THEOREM OPEN] [NOT SONIN]`
+- **Scientific status:** `[CONJECTURE] [FINITE EXTERIOR SKELETON PROVED] [EXCEPTIONAL NORMAL-CONE SEAM IDENTIFIED] [GREEN--HODGE CAPACITY THEOREM OPEN] [NOT SONIN]`
 - **General HT parents:**
   - `hypertranscendental-laurent-horizon-residue-field.md`;
   - `hypertranscendental-mackey-corona-field.md`;
@@ -19,6 +19,10 @@
   - `../2-fully-proven/not_new_scientific_knowledge/mobius-squarefree-reciprocal-projective-transfer.md`;
   - `../2-fully-proven/not_new_scientific_knowledge/anti-causal-cauchy-trace-unique-phase-noncancellation.md`;
   - `../2-fully-proven/not_new_scientific_knowledge/prime-support-ht-horizon-hodge-cofactor-law.md`;
+  - `../3-formalized/mobius-gamma-contact-transgression-four-unit-charge.md`;
+  - `../3-formalized/mobius-mellin-gamma-normal-cone.md`;
+  - `../2-fully-proven/mobius-pluecker-normal-cone-diagonal-lift.md`;
+  - `../2-fully-proven/ht-exceptional-divisor-hardy-green-metric.md`;
   - `ht-capacity-ward-holonomy-rh.md`.
 
 ## The conjecture
@@ -56,7 +60,7 @@ degeneracy divisor is inspected:
 > 5. the determinant of `(1)` is the original source determinant section, so the vector lift cannot
 >    be changed by a divisor-bearing scalar gauge.
 
-The resulting Gauss--Ward law is
+The resulting Green--Ward law is
 
 ```text
 ||chi_x^crit||^2
@@ -427,6 +431,97 @@ boundary transgression of that score is `c_sq directSum ell_E`.  Fixed-polarizat
 impossible because every finite transfer is causal; the opposite component is necessarily a
 derived boundary class of the noncommuting scale limit.
 
+## Mellin--Gamma normal cone and exceptional Green--Hodge form `[LEAN ALGEBRA CORE]`
+
+The earlier Gamma-conormal evaluation of `f(z)=2(1-z)exp(-z)` was a formal cross-pair, not a
+source-natural transgression: it silently reused the critical variable as Gamma's affine
+argument.  The source-natural comparison is Mellin duality.  For the critical score density,
+
+```text
+M[2(1-y)exp(-y)](z)=2[Gamma(z)-Gamma(z+1)].              (19g)
+```
+
+After the radial change `y=pi r^2`, the exact real archimedean response is
+
+```text
+F_rad(s)=(2-s)Gamma_R(s)
+        =2[Gamma_R(s)-pi Gamma_R(s+2)].                  (19h)
+```
+
+Dividing by the completed archimedean factor is source-safe on this distinguished vector and
+gives the polarized rational section
+
+```text
+F_rad(s)/C(s)=2(2-s)/[s(s-1)]
+             =-4/s+2/(s-1).                             (19i)
+```
+
+The anti pole in `(19i)` has Cauchy energy four.  This is the correct Gamma explanation of the
+four-unit source tangent: the first radial Laguerre mode becomes a two-sided Gamma-completed
+section whose anti component, not its total norm, has exactly four units.
+
+The completed transfer from `(19e'')` vanishes at the Euler boundary.  With
+`G(sigma)=(sigma-1)zeta(sigma)`, its blow-up is
+
+```text
+T_tilde_sigma(s)=T_sigma(s)/(sigma-1)
+                =1/[G(sigma)X_sq(s)],
+T_tilde_1(s)=X_sq(s)^(-1).                              (19j)
+```
+
+Hence the reciprocal-horizon transition is the projectivized exceptional normal-cone section:
+
+```text
+-T_tilde_1(s)^2=-X_sq(s)^(-2),
+d log[-T_tilde_1^2]=Q_sq,
+P_anti d log[-T_tilde_1^2]=ell_E.                       (19k)
+```
+
+This is the actual topology-to-current map.  Moreover the two-variable family is separated,
+
+```text
+T_tilde(b1,s1)T_tilde(b2,s2)
+ =T_tilde(b1,s2)T_tilde(b2,s1),                          (19l)
+```
+
+so every finite mixed-curvature interpretation is false.  The Ward class can only be a singular
+Laurent-corona transgression created on the exceptional HT boundary.
+
+The exceptional section is nevertheless a genuine finite-source completion class.  For every
+`epsilon_n->0+` there are nested cofinal prime apertures `S_n` such that the finite reciprocal
+Pluecker transfers satisfy
+
+```text
+M_(S_n,1+epsilon_n)(s)/epsilon_n ->1/Z_sq(s)             (19l')
+```
+
+locally uniformly on `Re s>1`; after Gamma completion the limit is `X_sq(s)^(-1)`.  Fixed prime
+aperture cannot have this limit.  Thus the normal cone is a genuinely two-filtered HT completion,
+not a section adjoined after continuation.  What `(19l')` does not transport is the positive
+capacity metric through the strip.
+
+Ordinary Fubini--Study curvature does not control the required logarithmic divisor current.  For
+one transverse point at distance `a` from the critical line, its Jensen charge tends to zero as
+`a->0+`, whereas its coefficient-two Hardy--Green energy is `2/a` and diverges.  The proved
+metric-selection theorem
+`../2-fully-proven/ht-exceptional-divisor-hardy-green-metric.md` therefore kills the earlier
+ordinary Gauss--Codazzi reading and selects the dual Cauchy-capacity metric on the exceptional
+corona conormal.
+
+> **[CONJECTURE -- HT EXCEPTIONAL GREEN--HODGE.]**  The finite Pluecker/Fisher capacity forms and
+> the Mellin--Gamma radial rigging admit a positive closable Rees/Tate extension across `(19j)`.
+> Its exceptional Laurent-corona transgression sends the critical tangent to
+> `c_sq directSum ell_E`, and its dual Hardy--Green form obeys
+>
+> ```text
+> ||c_sq||^2+||ell_E||^2<=||chi_sq^crit||^2=4.           (19m)
+> ```
+
+The detailed theorem, falsifier, and exact Lean identities are in
+`../3-formalized/mobius-mellin-gamma-normal-cone.md`.  The factorial cross-pair and its exact
+finite counterterm remain valid HT truncation results, but they may enter this construction only
+after a source-natural embedding into the exceptional Rees graph is proved.
+
 ## Hard attacks and their positive residues
 
 1. **Fixed-Fock attack `[KILLED]`.**  Equation `(8)` proves that the critical state is not a normal
@@ -465,13 +560,15 @@ The conjecture clears the anti-theatre gate only by constructing all of the foll
    compatibility under prime aperture.
 3. Show that the cofinal transition is the first-trace central extension `(11)`, with the safe
    `D_2` factor acting only in the causal chart.
-4. Construct the Gamma-framed self-dual positive polarization on the rigged tangent bundle.
-5. Prove that its capacity metric is the inverse-Cholesky one-particle metric, not the Quillen norm
-   `(12)`.
-6. Extend the proved reciprocal-horizon connection `(19c)` to the source-rigged Pluecker boundary
-   trace and recover `(19d)` before any principal-part expansion.
-7. Prove cofinal isometry or nonexpansivity on the distinguished tangent.  At finite Cauchy packets
-   this is exactly positivity of `[[G_P,r_P],[r_P^*,4]]`.
+4. Build the Rees/Tate deformation of the finite Pluecker lines using the source-natural
+   Mellin--Gamma radial comparison `(19g)`--`(19i)`.
+5. Prove that its singular capacity form is positive and closes on the exceptional section
+   `(19j)`; ordinary mixed curvature cannot be used because `(19l)` makes it zero, and ordinary
+   Fubini--Study/Jensen mass has the wrong boundary scale.
+6. Identify the exceptional Laurent-corona transgression with the proved reciprocal-horizon
+   connection `(19k)` before any principal-part expansion.
+7. Prove Green--Hodge domination on the distinguished tangent.  At finite Cauchy packets this is
+   exactly positivity of `[[G_P,r_P],[r_P^*,4]]`.
 
 Failure of obligation 5 produces a new general HT invariant: the **Laurent--capacity metric
 defect**, the bounded-congruence class of the difference between the central-extension metric and
@@ -498,11 +595,15 @@ statements even if the RH specialization fails.
       `||ell_E||_2^2`
 - [x] derive and Lean-formalize the source-pure Euler negative Laurent chart and its `A2` residue
       seam
+- [x] derive and Lean-formalize the source-natural Mellin--Gamma score comparison
+- [x] identify the reciprocal horizon as the exceptional normal-cone section
+- [x] construct the exceptional reciprocal section as a cofinal finite Pluecker diagonal
+- [x] kill ordinary mixed curvature by exact separated-rank-one cross minors
+- [x] kill ordinary Fubini--Study/Jensen domination and select the dual Hardy--Green capacity
 - [ ] construct the cofinal Pluecker--Tate tangent bundle
-- [ ] construct the Pluecker-capacity lift of the reciprocal-horizon boundary trace
-- [ ] construct the cofinal Euler--Laurent--Hardy half-form BKS pairing
-- [ ] prove the Gamma-framed positive self-dual polarization
+- [ ] construct the positive closable Rees/Tate capacity extension
+- [ ] identify its exceptional Laurent-corona transgression with `Q_sq`
 - [x] prove its finite Euler-chart metric equals the HT capacity-innovation metric
-- [ ] prove the cofinal continuation transport preserves that metric in the Hardy chart
+- [ ] prove exceptional Green--Hodge domination in the Hardy chart
 - [ ] prove `(17)` and the Pythagorean identity `(18)`
 - [ ] compose with the Cauchy threshold and formalize RH

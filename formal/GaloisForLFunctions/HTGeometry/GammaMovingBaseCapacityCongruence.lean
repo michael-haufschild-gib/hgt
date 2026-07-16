@@ -109,4 +109,26 @@ theorem gammaMovingBaseTransition_capacity_congruent
       mul_le_mul_of_nonneg_left hbranchNorm.le (norm_nonneg _)
     _ < 1 / 2 := by simpa using hshell
 
+/-- The differential comparison factor tends to the identity at every point of the common
+collar.  Thus the bounded congruence above is asymptotically isometric, not merely uniformly
+equivalent. -/
+theorem tendsto_gammaMovingBaseTangentFactor_one
+    {t : ℂ} (ht : t ∈ Metric.closedBall (0 : ℂ) (1 / 4)) :
+    Tendsto
+      (fun n : ℕ =>
+        (1 - gammaMovingBaseShell n * gammaCommonInverseCollar.branch n t)⁻¹ ^ 2)
+      atTop (nhds 1) := by
+  have hbranch : Tendsto (fun n : ℕ => gammaCommonInverseCollar.branch n t)
+      atTop (nhds t) :=
+    tendsto_gammaCommonInverseCollar_branch_uniformlyOn.tendsto_at ht
+  have hprod : Tendsto
+      (fun n : ℕ => gammaMovingBaseShell n * gammaCommonInverseCollar.branch n t)
+      atTop (nhds 0) := by
+    simpa using tendsto_gammaMovingBaseShell_zero.mul hbranch
+  have hden : Tendsto
+      (fun n : ℕ => 1 - gammaMovingBaseShell n * gammaCommonInverseCollar.branch n t)
+      atTop (nhds 1) := by
+    simpa using tendsto_const_nhds.sub hprod
+  simpa using (hden.inv₀ one_ne_zero).pow 2
+
 end GaloisForLFunctions

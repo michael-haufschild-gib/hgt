@@ -407,11 +407,12 @@ while manufacturing an exterior algebra of relations.  Minimalization removes th
 fixed face, but it is noncanonical under source restriction.  In the normal-crossing tower the
 competing minimalizations are exactly separated by the star classes.
 
-This refines the `[OPEN CORE]`: construct the relative-minimalization gerbe over the source face
-category and the canonical `rho_F` into its polarized homotopy limit, then prove that it detects
-the exterior transition classes.  Merely declaring a Verdier quotient is insufficient; the
-minimal presentation groupoids, stabilization equivalences, and restriction coherences must be
-defined without the unknown germ or target obstruction.
+This refines the `[OPEN CORE]`: construct the canonical derived-critical base-change diagram over
+the source face category and the canonical `rho_F` into its polarized Tate totalization, then prove
+that it detects the exterior transition classes.  The relative-minimalization gerbe supplies an
+atlas of splittings, not the intrinsic target.  Merely declaring a Verdier quotient is
+insufficient; the base-change defects, shifted duality, sum/product boundary, and restriction
+coherences must be defined without the unknown germ or target obstruction.
 
 This formulation explains why independent proof chains can stop at apparently different walls.
 They may be testing one primitive torsor against inequivalent admissible realizations.
@@ -481,15 +482,16 @@ resolution of `H_0` is therefore not the unified object.  See
 `../3-formalized/normal-crossing-derived-critical-excess-phase-law.md` and
 `../3-formalized/normal-crossing-exterior-coherence-capacity-law.md`.
 
-**`[CONJECTURE -- RELATIVE MINIMALIZATION PRINCIPLE]`** Hypertranscendence is constrained by the
-polarized homotopy type of minimal DA source presentations *and their restriction maps*, not by the
-Boolean fact that the function is outside the DA field and not by an arbitrary presentation
-stack.  Proper source faces may admit finite minimal presentations while their restriction diagram
-has no canonical coherent minimalization.  Finite differential matroids are its classical
-truncation; continuation, monodromy, spectral, positivity, and boundary obstructions are
-realization functors of the transition class.  In the normal-crossing hierarchies, the exterior
-law is the first theorem-level lower bound on this relative-minimalization capacity.  See
-`../3-formalized/normal-crossing-relative-minimalization-descent-gerbe.md`.
+**`[CONJECTURE -- CRITICAL-DESCENT PRINCIPLE]`** Hypertranscendence is constrained by the
+polarized Tate totalization of derived DA critical objects *and their base-change defects under
+source restriction*, not by the Boolean fact that the function is outside the DA field and not by
+an arbitrary presentation stack.  The object is bifiltered by internal critical degree and source
+face degree.  Continuation, monodromy, spectral, positivity, and boundary obstructions are
+conjectural spectral sequences or realization functors of that same totalization.  In the
+normal-crossing hierarchy, one face restriction contributes an exact exterior excess line,
+competing splittings differ by the star classes, and a codimension-`q` face contributes exterior
+capacity `2^q`.  See
+`../3-formalized/normal-crossing-derived-critical-base-change-defect.md`.
 
 This replaces the former time/clock motif. No temporal parameter is part of `(7)`.
 

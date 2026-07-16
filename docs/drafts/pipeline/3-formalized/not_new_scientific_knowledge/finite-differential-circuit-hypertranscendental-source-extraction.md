@@ -143,6 +143,11 @@ clock vocabulary does not evade the boundary merely by being reinterpreted as a 
 - A. Ovchinnikov, G. Pogudin, and P. Thompson, *Parameter identifiability and input-output
   equations*, arXiv:2007.14787. Rational state/output systems and the generated differential
   input-output fields are the precise systems-biology model class relevant here.
+- T. E. Loman, A. P. Browning, and R. E. Baker, *Structural functional identifiability and model
+  discovery in differential equation models*, arXiv:2606.30289.  Functional identifiability
+  extends the same differential-algebra interface to ML-represented unknown constitutive
+  functions.  The Lean source-extraction law supplies the corresponding HT boundary for every
+  finite circuit built from differentially algebraic primitives.
 
 The mathematical closure principle is established parent theory. No novelty claim is made. The
 value is the reusable Lean closure API, the finite-circuit induction theorem, and the unconditional

@@ -28,7 +28,8 @@ theorem summable_zetaTwoShiftMass {sigma : ℝ} (hsigma : 1 < sigma) :
     Summable (zetaTwoShiftMass sigma) := by
   have hbase : Summable (fun n : ℕ => (n : ℝ) ^ (-(2 * sigma))) :=
     Real.summable_nat_rpow.mpr (by linarith)
-  simpa [zetaTwoShiftMass, Nat.cast_add, Nat.cast_one] using
+  change Summable (fun n : ℕ => (((n + 1 : ℕ) : ℝ)) ^ (-(2 * sigma)))
+  simpa only [Nat.cast_add, Nat.cast_one] using
     (summable_nat_add_iff 1).2 hbase
 
 /-- The zeta-two partition function in positive real coordinates. -/
@@ -102,8 +103,8 @@ theorem norm_zetaTwoShiftTerm
     {sigma : ℝ} (hsigma : 1 < sigma) (n : ℕ)
     (f : Lp ℂ 2 (volume : Measure ℝ)) :
     ‖zetaTwoShiftTerm sigma n f‖ = zetaTwoShiftProbability sigma n * ‖f‖ := by
-  rw [zetaTwoShiftTerm, norm_smul, LinearIsometryEquiv.norm_map,
-    Complex.norm_real, Real.norm_eq_abs,
+  rw [zetaTwoShiftTerm, norm_smul, LinearIsometryEquiv.norm_map]
+  simp only [Real.norm_eq_abs,
     abs_of_nonneg (zetaTwoShiftProbability_nonneg hsigma n)]
 
 theorem summable_zetaTwoShiftTerm
@@ -188,4 +189,3 @@ theorem norm_mobiusSquarefreeShiftContraction_le
     (norm_infiniteMobiusShiftAverage_le hsigma f)
 
 end RHTower
-

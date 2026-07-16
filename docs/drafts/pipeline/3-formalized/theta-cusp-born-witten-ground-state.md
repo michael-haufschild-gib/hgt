@@ -6,7 +6,8 @@
 - **Physics source:** supersymmetric quantum mechanics, Witten-Laplacian factorization, and
   boundary Brascamp--Lieb coercivity.
 - **Lean source:** `PrimeArchThetaBornWittenGroundState.lean`,
-  `PrimeArchThetaBornWittenBootstrap.lean`, and `PrimeArchThetaBornWittenSourceMoment.lean`.
+  `PrimeArchThetaBornWittenBootstrap.lean`, `PrimeArchThetaBornWittenCurvatureGap.lean`, and
+  `PrimeArchThetaBornWittenSourceMoment.lean`.
 
 ## Claim
 
@@ -47,6 +48,30 @@ B_n'(x) = 2 t_n(x) + 3 t_n(x) / q_n(x)^2.                (C)
 Consequently `B_n' >= 2 pi n^2` on `x>=0`; the logarithmic Born-density curvature is
 `2 B_n' >= 4 pi n^2`, and the supersymmetric partner potential `B_n^2+B_n'` has the same
 `2 pi n^2` pointwise floor.
+
+The positive readout coordinate itself exposes a stronger source-specific value law:
+
+```text
+2 B_n'(x) = 4q_n(x) + 6 + 6/q_n(x) + 9/q_n(x)^2 >= 19. (G)
+```
+
+Hence the exact log-density gap is simultaneously at least `max(19,4 pi n^2)`.  For the dominant
+first atom, `19 > 4 pi`, and the partner-potential floor improves from `2 pi` to `19/2`.  Radial
+dressing retains `(G)` and adds its exact centrifugal term `2k/x^2` to the log curvature.
+
+For the dominant atom the boundary value and Ward identity turn this curvature into a static
+localization theorem:
+
+```text
+B_1(0) >= -1/16,
+B_1(x) >= -1/16 + (19/2)x,
+240 * thetaCuspAtomRawEvenMoment 1 1
+  <= 13 * thetaCuspAtomRawEvenMoment 0 1.                 (L)
+```
+
+Thus its normalized quadratic clock value is at most `13/240`.  This proves that the former
+uniform-curvature Brascamp--Lieb mean-floor route is impossible and selects the full
+inverse-curvature-weighted Brascamp--Lieb relation as the surviving route.
 
 ## Direct corpus application
 
@@ -91,6 +116,17 @@ The three Lean modules prove:
 - `hasDerivAt_thetaCuspBornWittenLogDensityPotential` and
   `thetaCuspBornWittenLogCurvature_floor`, the literal negative-log-density derivative chain and
   the `4 pi n^2` logarithmic-curvature floor;
+- `thetaCuspBornWittenLogCurvature_eq_readoutProfile`,
+  `nineteen_le_thetaCuspBornWittenLogCurvature`, and
+  `max_nineteen_four_pi_sq_le_thetaCuspBornWittenLogCurvature`, the exact readout profile `(G)`
+  and its simultaneous absolute/scale-sensitive gap;
+- `nineteen_halves_le_thetaCuspBornWittenPotentialPlus` and
+  `nineteen_add_centrifugal_le_thetaCuspBornWittenRadialLogCurvature`, the improved partner and
+  radial coercivity floors;
+- `thetaCuspFirstBornWittenSuperpotential_affine_lower`,
+  `two_hundred_forty_mul_firstAtomMoment_one_le_thirteen_mass`, and
+  `not_thetaCuspFirstAtom_uniformCurvature_meanFloor`, the Ward localization law `(L)` and the
+  exact route no-go it supplies;
 - `thetaCuspMorseBornMoment_eq_integral_bornWittenAmplitude_sq`,
   `thetaCuspAtomRawEvenMoment_eq_integral_bornWittenAmplitude_sq`, and
   `thetaCuspRawEvenMoment_eq_tsum_integral_bornWittenAmplitude_sq`, the existing moment transports;
@@ -117,6 +153,10 @@ The principal declarations use only `propext`, `Classical.choice`, and `Quot.sou
 - [x] prove the square/source identity `(S)`
 - [x] prove the zero-mode relation `(Z)`
 - [x] prove the curvature identity and floor `(C)`
+- [x] sharpen the source-specific log-curvature floor to `19` and propagate it to the partner and
+      radial hierarchy
+- [x] integrate the gap through the anomalous Ward identity to obtain `(L)` and kill the false
+      lower-mean route
 - [x] prove the Born, atom, and full raw-moment transports
 - [x] connect the pure-state moment form to the two existing Hankel hypotheses
 - [x] connect the full pure-state moment family to the even central jets and first normalized

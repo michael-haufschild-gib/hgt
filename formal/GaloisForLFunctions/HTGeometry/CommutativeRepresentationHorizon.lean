@@ -147,6 +147,18 @@ def commutativeRepresentationDirectionalDerivation
     Derivation K (SymmetricAlgebra K M) (SymmetricAlgebra K M) :=
   symmetricAlgebraDerivation (ρ (L v))
 
+/-- Every pair of law directions gives commuting observable derivations.  This is the actual
+integrability content of factoring the principal symbol through a commutative algebra. -/
+theorem commutativeRepresentationDirectionalDerivation_commute
+    (ρ : A →ₐ[K] Module.End K M) (L : V →ₗ[K] A) (v w : V) :
+    Function.Commute
+      (commutativeRepresentationDirectionalDerivation ρ L v)
+      (commutativeRepresentationDirectionalDerivation ρ L w) := by
+  apply symmetricAlgebraDerivation_commute
+  intro x
+  rw [← Module.End.mul_apply, ← Module.End.mul_apply,
+    ← map_mul, mul_comm, map_mul]
+
 /-- The actual complete iterated differential jet of the chosen root observable. -/
 def commutativeRepresentationJet
     (ρ : A →ₐ[K] Module.End K M) (m : M) (L : V →ₗ[K] A)

@@ -1,7 +1,7 @@
 # Ray-complete flat carriers are translation-faithful
 
 - **ID:** `ray-complete-flat-translation-faithfulness`
-- **Stage:** 2-fully-proven / paper proof complete
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / GENERAL HYPERTRANSCENDENCE LANDSCAPE
 - **Scientific status:** `[PROVED] [NOVELTY UNVERIFIED]`
 - **Statement:** A right-half-plane Dirichlet carrier supported nontrivially on every positive

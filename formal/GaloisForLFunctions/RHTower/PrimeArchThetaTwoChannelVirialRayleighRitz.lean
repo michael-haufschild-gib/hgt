@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.PrimeArchThetaTwoChannelRayleighRitz
+import GaloisForLFunctions.RHTower.PrimeArchThetaBornWittenPopescuCorrection
 
 /-!
 # Polarized hypervirial form of the theta two-channel Rayleigh matrix

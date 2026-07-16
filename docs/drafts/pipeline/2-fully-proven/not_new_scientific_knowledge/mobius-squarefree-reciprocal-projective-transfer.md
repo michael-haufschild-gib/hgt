@@ -4,7 +4,8 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM / HTGEOMETRY--RHTOWER BRIDGE
 - **Scientific status:** `[PROVED] [LEAN ALGEBRA CORE] [BRIDGE] [NOT RH]`
-- **Lean:** `GaloisForLFunctions.RHTower.MobiusSquarefreeReciprocalTransfer`
+- **Lean:** `GaloisForLFunctions.RHTower.MobiusSquarefreeReciprocalTransfer`;
+  `GaloisForLFunctions.RHTower.ZetaTwoShiftContraction`
 - **Parents:** `MobiusFiniteSchurTransfer.lean`; `InfiniteMobiusSignedChannel.lean`;
   `InfiniteMobiusLaplaceMultiplier.lean`; `ProjectiveHorizonWardSeam.lean`;
   `../3-formalized/gamma-moving-base-capacity-congruence.md`.
@@ -67,6 +68,24 @@ P_anti(2 d log T_sigma)=P_anti Q_sq=ell_E.               (7)
 
 No Xi zero or divisor packet is used to construct `(1)--(6)`.
 
+The contractivity assertion is operator-level, not only pointwise.  Put probability
+
+```text
+P_sigma(n)=(n+1)^(-2sigma)/zeta(2sigma).                 (7a)
+```
+
+The positive average of logarithmic translation unitaries
+
+```text
+S_sigma^2 f=sum_(n>=0) P_sigma(n)
+  Translation_(-2log(n+1)) f                            (7b)
+```
+
+is a contraction on logarithmic `L2`, and its causal Laplace multiplier is `(2)`.  Therefore
+`S_sigma^2` composed with the already formalized signed Möbius shift is an explicit contraction
+whose multiplier is `(3)`.  This construction and the exact probability-transform identity are
+Lean-formalized.
+
 ## Proof
 
 Equation `(1)` is the formalized Laplace multiplier identity for the normalized signed Möbius
@@ -128,6 +147,8 @@ connection class, rather than a scalar determinant, is the conservative invarian
 - [x] actual Möbius contraction constructed and formalized
 - [x] causal multiplier identified with reciprocal zeta
 - [x] safe squarefree correction identified and Lean-formalized
+- [x] safe correction realized as a positive logarithmic-shift contraction
+- [x] pre-Gamma reciprocal squarefree transfer realized as a composition of two contractions
 - [x] completed transfer identified with reciprocal `X_sq`
 - [x] logarithmic connection identified with `Q_sq`
 - [x] anti-causal component identified with `ell_E`
@@ -135,4 +156,3 @@ connection class, rather than a scalar determinant, is the conservative invarian
 - [ ] construct the derived critical completed transfer
 - [ ] prove it is nonexpansive on the distinguished four-unit score
 - [ ] RH
-

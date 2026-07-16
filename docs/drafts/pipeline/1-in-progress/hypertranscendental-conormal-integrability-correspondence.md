@@ -242,16 +242,16 @@ fails without minimalization: adjoining zero generators preserves the ideal but 
 exterior homology.  This is now Lean-formalized.  The normal-crossing gradient presentation is
 irredundant, so its excess survives that artifact test.
 
-The corrected positive successor is the **relative-minimalization gerbe** over the source face
-category.  It removes exterior stabilization at each fixed face but retains the noncanonical
-minimalization maps created by source restriction.  In the normal-crossing tower, restricting one
-rank turns the terminal full product into a redundant generator; its source-labelled eliminations
-have differences equal to the nonzero star classes.  The exact open core is to construct the
-analytic realization of this gerbe and prove it equivalent to the oriented derived critical
-object.  See
+The corrected positive successor is the **derived-critical base-change diagram** over the source
+face category.  In the normal-crossing tower, restricting one rank retains one normal derivative;
+the restricted higher critical Koszul object is the lower one tensored with a rank-one exterior
+zero-differential factor.  The relative-minimalization gerbe is an atlas of source-labelled
+splittings of this canonical defect, and differences of splittings are the nonzero star classes.
+The exact open core is to construct a polarized analytic Tate totalization of the intrinsic
+base-change diagram and prove conservative realization.  See
 `../3-formalized/normal-crossing-derived-critical-excess-phase-law.md` and
 `../3-formalized/normal-crossing-exterior-coherence-capacity-law.md` and
-`../3-formalized/normal-crossing-relative-minimalization-descent-gerbe.md`.
+`../3-formalized/normal-crossing-derived-critical-base-change-defect.md`.
 
 The general two-thick constraint-tower theorem constructs many abstract Stanley--Reisner HT
 matroids.  They need not all lie in the critical-ideal image of a principal potential.  Therefore
