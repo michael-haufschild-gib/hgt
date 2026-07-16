@@ -1,22 +1,27 @@
-# Hypertranscendental source effectivity is a cubical fracture problem
+# Hypertranscendental source effectivity is enriched incidence over a fracture hypercube
 
 - **ID:** `hypertranscendental-source-fracture-hypercube`
 - **Stage:** 1-in-progress
-- **Type:** FOUNDATIONAL CONJECTURE / MULTI-RELATIVE EFFECTIVITY / UNIFIED OBSTRUCTION OBJECT
+- **Type:** FOUNDATIONAL CONJECTURE / MULTI-RELATIVE EFFECTIVITY / ENRICHED INCIDENCE OBJECT
 - **Scientific status:** `[CONJECTURE] [TWO-CHANNEL EXACT SEED LEAN-FORMALIZED]`
-  `[ABELIAN THREE-CHANNEL OBSTRUCTION LEAN-FORMALIZED] [FIELDS-SCALE OPEN CORE]`
+  `[ABELIAN THREE-CHANNEL OBSTRUCTION LEAN-FORMALIZED]`
+  `[COORDINATE-FACET EFFECTIVITY LEAN-FORMALIZED] [FIELDS-SCALE OPEN CORE]`
   `[NOT AN RH RESULT]`
 - **Parents:**
   - `hypertranscendental-capacity-descent-postnikov-tower.md`
   - `hypertranscendental-constraint-hodge-duality.md`
   - `../3-formalized/source-producer-integral-realization-minimality.md`
   - `../2-fully-proven/new_scientific_knowledge/irrational-elliptic-gamma-hypertranscendence-matroid.md`
+  - `../2-fully-proven/new_scientific_knowledge/multiple-gamma-effective-fracture-descent-orthogonality.md`
   - `../3-formalized/not_new_scientific_knowledge/birelative-fracture-square-and-three-channel-interaction.md`
-- **Statement:** The unified obstruction object of a constrained hypertranscendental source is not
-  a scalar, a topology, or a linearly ordered tower.  It is a source-canonical fracture hypercube
-  of incomparable partial realizations, with a Postnikov tower in each cubical direction.  Its
-  total interaction classes measure failure of the partial realizations to come from one
-  source-effective lift.
+  - `../3-formalized/not_new_scientific_knowledge/calibrated-fracture-incidence-kernel-cokernel.md`
+  - `../3-formalized/not_new_scientific_knowledge/polarized-fracture-incidence-trichotomy.md`
+- **Statement:** The source-canonical fracture hypercube is the kinematic coordinate system of a
+  constrained hypertranscendental source, not the unified obstruction by itself.  Its faces record
+  incomparable partial realizations and its Postnikov directions record coherence.  The unified
+  object is the derived incidence fibre between the ambient primitive reconstructed by fracture
+  descent and the pointed, polarized, bornological, integral analytic effectivity locus.  Total
+  interaction classes are one possible obstruction shadow; they are not hypertranscendence itself.
 
 ## The displacement
 
@@ -256,6 +261,202 @@ whose differential sends any chosen function to a prescribed boundary.
 > **Positive successor.** The unified object is a pointed relative cochain in a source-canonical
 > fracture hypercube, not an unpointed cohomology class.
 
+## Natural all-depth model: transverse multiple-gamma constraint height `[PROVED]`
+
+The multiple elliptic gamma hierarchy supplies a much stronger natural cubical model than the
+abstract three-submodule example.  Let `Psi_r` be the logarithmic derivative of the generic
+order-`r` multiple elliptic gamma function with `r+1` structural parameter translations, and put
+
+```text
+R_tau=C[t_0^(+-1),...,t_r^(+-1)],
+x_j=t_j-1.
+```
+
+The exact theorem already proved in the corpus is
+
+```text
+Ann_DA(Psi_r)
+ = I_r
+ = < product_(j in J) x_j : |J|=r >.                       (18)
+```
+
+Equivalently, for an iterated structural difference
+
+```text
+D_m=product_j Delta_(tau_j)^(m_j),
+```
+
+one has
+
+```text
+D_m Psi_r is DA  iff  #{j:m_j>0} >= r.                     (19)
+```
+
+The total number of iterations is irrelevant.  Repeating one direction arbitrarily often remains
+HT.  What matters is transverse support: the number of distinct source directions coupled by the
+observable.
+
+This gives a decisive no-go and positive law.
+
+> **[NO-GO -- LINEAR OR TEMPORAL DEPTH.]** Hypertranscendental constraint depth is not the number
+> of repeated evolution steps.  No amount of iteration in fewer than `r` directions reaches the DA
+> sector.
+
+> **Positive theorem.** The complete constant-coefficient constraint object is the squarefree
+> cubical ideal `(18)`.  The cyclic structural module is
+>
+> ```text
+> R_tau.[Psi_r] ~= R_tau/I_r,                               (20)
+> ```
+>
+> the localized Stanley--Reisner ring of the `(r-2)`-skeleton on `r+1` vertices.
+
+Thus the slogan “infinite capacity on a thin boundary” is literal in a natural analytic hierarchy:
+all faces using fewer than `r` independent directions remain hypertranscendental, while every
+`r`-direction transverse face lands in DA.  The source constraint is a skeleton, not a clock
+trajectory.
+
+Equation `(18)` also gives the first exact source-specific fracture-collapse law.  The abstract
+fracture complex need not be exact universally, but the multiple-gamma source specifies exactly
+which cubical faces vanish modulo DA and which carry irreducible HT information.  See
+`../2-fully-proven/new_scientific_knowledge/multiple-elliptic-gamma-transverse-constraint-depth.md`.
+
+## Exact correction: HT is not a descent obstruction `[PROVED]`
+
+The coordinate-facet ideals of the squarefree module satisfy the finite distributivity law
+
+```text
+J_F + intersection_G J_G = intersection_G (J_F+J_G).      (21)
+```
+
+Lean now proves that every pairwise-compatible finite facet packet has one global polynomial
+representative, unique modulo the Stanley--Reisner ideal.  The full augmented facet complex is
+exact by a monomialwise simplex contraction, and localization preserves this exactness.
+
+Combining this with `(18)`--`(20)` gives a natural analytic separation theorem:
+
+> **HT--DESCENT ORTHOGONALITY.** The generic multiple-gamma structural HT module has complete
+> effective facet descent, while arbitrary iteration in fewer than `r` source directions remains
+> hypertranscendental.  Hypertranscendence can live in global sections of an exact constraint
+> sheaf; it is not intrinsically a failure of gluing or a nonzero higher Cech class.
+
+This falsifies the strongest reading of the fracture proposal.
+
+```text
+[NO-GO] the fracture cube or its unpolarized cohomology is itself the unified HT obstruction;
+[POSITIVE] the cube reconstructs the ambient primitive class, and the remaining obstruction is
+           incidence with the enriched source-effective locus.                              (22)
+```
+
+Let `V_F` be the ambient primitive object, `Prim_F` the affine torsor fixed by the source boundary,
+and `A_F` the source-built pointed, polarized, controlled, integral admissible object.  The refined
+common obstruction object is
+
+```text
+Inc_F=A_F times^h_(V_F) Prim_F.                            (23)
+```
+
+The fracture hypercube presents the inputs and computes kinematic descent.  Empty incidence,
+multiple components, stabilizers, and higher homotopy of `(23)` distinguish failure of existence,
+noncanonicity, monodromy, and higher coherence.  This is the same primitive-incidence object
+independently forced by the pointed polarized critical-Tate coupling program; the present result
+localizes where it must enter and prevents a second competing foundational object.
+
+## First exact incidence computation `[PROVED + LEAN]`
+
+The finite linearized theory now computes `(23)`, rather than merely naming it.  Let `J_i<=M` be
+the finite channels, put
+
+```text
+K_s=intersection_(i in s) J_i,                             (24)
+```
+
+and let `c:M->N` be a source calibration.  Suppose `a` is one common representative of the local
+packet and `n in N` is the prescribed pointing.  Define
+
+```text
+omega_c(x,n)=[n-c(a)] in N/c(K_s).                         (25)
+```
+
+Lean proves that `(25)` is independent of `a` and that
+
+```text
+Inc_c(x,n) is nonempty  iff  omega_c(x,n)=0,
+if nonempty, Inc_c(x,n) is a torsor under K_s intersection ker(c).   (26)
+```
+
+Thus existence failure and boundary noncanonicity are literally the cokernel and kernel of the
+same restricted calibration map
+
+```text
+K_s --c--> N.                                              (27)
+```
+
+If `(27)` is surjective and injective, every compatible packet and every pointing have one unique
+effective lift.  This is the first exact resolution theorem for the unified incidence object.
+
+> **[CONJECTURE -- HT INCIDENCE-INDEX PRINCIPLE.]** Every regular source-minimal constrained HT
+> germ canonically determines, after kinematic fracture descent, a derived calibration morphism
+> `kappa_F:K_F->N_F` from its residual gauge object to its pointed polarized controlled integral
+> target.  The unified obstruction is the derived fibre of `kappa_F` over the source pointing.
+> Its degree-zero obstruction is the nonlinear replacement of `coker(kappa_F)`, its automorphisms
+> are the replacement of `ker(kappa_F)`, and its higher homotopy records interaction and descent
+> coherence.  Natural analytic, Hermitian, spectral, bornological, and integral obstruction
+> theories are conservative realizations of this one derived calibration cone.
+
+The statement is falsifiable.  It fails if a natural HT obstruction survives while every
+source-canonical realization of the calibration cone is contractible, or if two inequivalent
+source-minimal HT germs have equivalent pointed cones.  Standard kernel--cokernel algebra and
+derived fibres are parent theory; the candidate-new claim is the canonical HT construction,
+reconstruction, and joint conservativity.
+
+## Polarized incidence has three phases `[PROVED + LEAN]`
+
+The kernel--cokernel calculation is still linear and unpolarized.  Let `C` now be the closed proper
+cone of admissible positive source corrections in a Hilbert realization, let `f` be the continuous
+calibration map, and let `b` be the target defect.  Positivity asks whether
+
+```text
+b belongs to f(C).                                         (28)
+```
+
+Lean proves the exact trichotomy:
+
+```text
+I.   b in f(C):                  an effective positive lift exists;
+II.  b in closure(f(C))\f(C):    positive lifts exist cofinally but are not attained;
+III. b notin closure(f(C)):      a strict dual-cone certificate detects failure.    (29)
+```
+
+Phase II is load-bearing.  Farkas duality gives
+
+```text
+b in closure(f(C))
+  iff every continuous dual-cone reporter is nonnegative on b.             (30)
+```
+
+Therefore every continuous positivity test can pass while no positive source-effective lift
+exists.  A cofinal sequence of actual positive finite lifts proves only phase I or II; closedness
+of `f(C)`, compactness, coercivity, or another attainment theorem is required to exclude II.
+
+```text
+[NO-GO] all finite or continuous dual positivity tests imply positive effectivity;
+[POSITIVE] they imply weak incidence, and closed-image attainment promotes weak to exact.
+```
+
+> **[CONJECTURE -- CRITICAL CLOSURE-DEFECT PRINCIPLE.]** In a regular constrained HT source, the
+> source-sign obstruction and the critical all-scale obstruction are different phases of the same
+> polarized incidence map.  A negative Weil/Hankel/Herglotz/spectral reporter is a phase-III dual
+> certificate.  Cofinal finite positivity without a critical source state is phase-II nonattainment.
+> Spectral incompleteness is the same closure defect seen as nonclosed operator range.  A genuine
+> source producer proves phase I by constructing a lift or proving the relevant image closed.
+
+This is stronger than saying that several criteria are equivalent to positivity.  It predicts a
+single source-built cone map, locates each obstruction relative to its image and closure, and
+identifies the additional theorem that resolves the middle phase.  It is falsified if the natural
+RH-chain realizations cannot be compared to one source cone map or if their critical obstruction
+persists after that map is proved closed and exact.
+
 ## Unified explanation of the RH-chain obstructions `[CONJECTURE; PRESSURE TEST ONLY]`
 
 The 26 proof chains in the obstruction report typically construct one face or one edge of a
@@ -264,18 +465,20 @@ why this repeatedly fails:
 
 | Report obstruction | Fracture interpretation |
 |---|---|
-| source sign/orientation | missing positive-polarized lift on the polarization face |
-| critical all-scale estimate | failure to extend the lift across the critical bornology face |
-| spectral/determinant realization | missing perfect realization of the distinguished section |
+| source sign/orientation | phase-III separation from the positive image, detected by a dual reporter |
+| critical all-scale estimate | phase-II closure-only nonattainment at the critical bornology |
+| spectral/determinant realization | missing realization map or nonclosed-range phase II |
 | arithmetic multiplicity | missing integral/ramified lift |
 | non-circular comparison | face data do not descend from one source-pure common lift |
 | missing typed bridge | a required edge or higher comparison map of the cube is absent |
 | algebraicity/rigidity | the integral lift misses its arithmetic essential image |
 
-The conjectural common obstruction is therefore not one scalar shared by all chains.  It is the
-failure of their individually plausible face data to be the restrictions of one positive,
-integral, critical, source-effective global point.  Different chains see different edge maps or
-Postnikov shadows of the same total interaction object.
+The multiple-gamma collapse shows that “missing common lift” is still too narrow: an ambient common
+lift may exist uniquely while no enriched source-effective realization exists.  The conjectural
+common obstruction is therefore not one scalar or merely one Cech class.  It is the derived
+incidence space `(23)` between the reconstructed primitive and the simultaneously positive,
+integral, critical, controlled, source-pointed locus.  Different chains see different realization
+shadows of the same incidence problem.
 
 > **[CONJECTURE -- COMMON SELF-DUAL DEGENERACY SPECTRUM; NOT RH.]** If a completed-zeta fracture
 > object is constructed entirely from prime and archimedean source data, its critical zeros are the
@@ -290,19 +493,25 @@ their comparisons before it may use the zero divisor.
 
 ## Strong predictions
 
-1. **Interaction-before-orientation.** A source sign theorem can fail even after every pairwise
+1. **Descent before selection.** Exact reconstruction of the ambient primitive does not imply
+   enriched source effectivity.  Natural HT sources can be Cech-acyclic and still have nontrivial
+   polarization, bornology, integral, or pointing incidence.
+2. **Interaction-before-orientation.** A source sign theorem can fail even after every pairwise
    analytic comparison is closed, because the remaining class may live in a higher interaction
    group rather than on the polarization edge itself.
-2. **Source-specific descent height.** No universal finite truncation exists, but particular
-   source laws can force interaction groups above a finite degree to vanish.  Such vanishing is a
-   real theorem about the source.
-3. **Producer theorems are total-lift theorems.** A useful source producer will simultaneously
-   improve more than one obstruction face because it constructs a common lift, not because several
-   RH criteria were restated as equivalent.
-4. **Anomaly coupling precedes positivity.** Positivity cannot be added at the end.  It is a
+3. **Source-specific descent height.** No universal finite truncation exists, but particular
+   source laws can force a sharp transverse face threshold.  The multiple elliptic gamma hierarchy
+   proves that this threshold is squarefree support width, not iteration order.
+4. **Producer theorems are incidence theorems.** A useful source producer will simultaneously
+   improve more than one obstruction face because it places one reconstructed primitive in the
+   coupled admissible locus, not because several RH criteria were restated as equivalent.
+5. **Critical failure is often nonattainment, not negativity.** Cofinal positive finite states and
+   nonnegative dual reporters need not produce a critical state.  A closed-image or compactness
+   theorem is an independent source law.
+6. **Anomaly coupling precedes positivity.** Positivity cannot be added at the end.  It is a
    reduction of a globally effective fracture point and can be obstructed by non-polarization
    interaction classes.
-5. **Zeros are outputs of a section.** A carrier, topology, determinant line, or spectral category
+7. **Zeros are outputs of a section.** A carrier, topology, determinant line, or spectral category
    can be complete while its distinguished section is not source-produced.  Degeneracy belongs to
    the section in the full cube.
 
@@ -315,6 +524,8 @@ The following are parent mathematics and are not novelty claims:
 - homotopy limits, total fibres, Bousfield localizations, and chromatic fracture cubes;
 - Postnikov towers, obstruction theory, gerbes, and descent;
 - systems of realizations, comparison torsors, and Tannakian reconstruction.
+- Farkas duality, weak infeasibility, facial reduction, and nonclosed linear images of proper
+  cones.
 
 Primary parent checks include the gamma-gerbe construction of
 Felder--Henriques--Rossi--Zhu, the general chromatic fracture cube of
@@ -323,7 +534,15 @@ Naumann--Pol--Ramzi.  Morain's 2025--2026 geometric multiple-elliptic-gamma theo
 the Bernoulli-rational coboundary architecture to higher-rank lattices; that extension is parent
 mathematics, not evidence for novelty here.  Exact searches did not locate a source-canonical
 fracture cube for hypertranscendental functions, a DA-filtered/holomorphic elliptic-gamma
-bi-anomaly, or an essential-image reconstruction theorem coupling the six channels in `(11)`.
+bi-anomaly, a source-calibration incidence cone for HT functions, or an essential-image
+reconstruction theorem coupling the six channels in `(11)`.  A new exact search for
+hypertranscendental derived incidence, reconstruction, polarization, and kernel--cokernel
+calibration found ordinary HT closure results such as Huang--Ng
+(`https://arxiv.org/abs/2007.10037`) and unrelated derived obstruction theories, but no equivalent
+of the incidence-index principle.  Liu--Pataki (`https://arxiv.org/abs/1507.00290`) and
+Pataki--Touzov (`https://arxiv.org/abs/2110.11437`) already develop the closure-only phase for
+general conic programs; that phase is parent mathematics, not HT novelty.  This is negative search
+evidence, not priority certification.
 
 The candidate-new content begins only when the following are proved:
 
@@ -349,6 +568,16 @@ Retire or enlarge the conjecture if:
 7. no pair of genuinely different realization functors is proved jointly conservative;
 8. an existing fracture, motivic-realization, or twistor category already supplies the claimed
    essential-image theorem unchanged.
+9. unpolarized fracture cohomology is called the HT obstruction despite the exact multiple-gamma
+   descent theorem.
+10. the calibration morphism is chosen to kill the desired obstruction rather than constructed
+    functorially from the source;
+11. the nonlinear theory merely renames the kernel and cokernel of an arbitrary map without
+    proving reconstruction or joint conservativity.
+12. closure-only incidence merely renames weak conic infeasibility without constructing a natural
+    HT source cone and realization map;
+13. finite positivity is called phase II without proving convergence to the critical target and
+    failure of exact incidence.
 
 Every no-go has a positive successor: identify the missing cube direction, compute the residual
 interaction quotient, prove the maximal source class on which descent is effective, or exhibit the
@@ -357,16 +586,22 @@ additional comparison morphism required for a common lift.
 ## Fields-scale theorem target
 
 The exact module sequence and three-channel counterexample are not Fields-scale.  A Fields-scale
-result would prove the HT fracture-hypercube equivalence for a nontrivial analytic class, including:
+result would prove the enriched fracture-incidence correspondence for a nontrivial analytic class,
+including:
 
 1. a source-canonical and presentation-invariant construction of all cube vertices and maps;
 2. an intrinsic maximal-growth/thin-amplitude essential image;
 3. reconstruction of the pointed analytic HT germ from one effective fracture point;
-4. calculation of its total interaction spectrum and a source-specific collapse law;
-5. the elliptic-gamma anomaly bicomplex as a fully typed two-axis analytic model;
-6. a nonlinear or nonabelian model with a genuinely higher interaction class;
-7. two independently constructed realization functors proved jointly conservative;
-8. a new transferred analytic theorem that neither parent realization proves alone.
+4. calculation of its total interaction spectrum, a source-specific collapse law, and the
+   residual enriched incidence object after kinematic descent collapses;
+5. construction of the source-canonical derived calibration morphism and identification of its
+   kernel, cokernel, and higher incidence groups in natural analytic realizations;
+6. construction of its polarized source cone and a theorem deciding exact incidence versus the
+   closure-only phase at the critical bornology;
+7. the elliptic-gamma anomaly bicomplex as a fully typed two-axis analytic model;
+8. a nonlinear or nonabelian model with a genuinely higher interaction class;
+9. two independently constructed realization functors proved jointly conservative;
+10. a new transferred analytic theorem that neither parent realization proves alone.
 
 That theorem would found a genuine field.  The present result identifies the shape of the object
 and proves that both a single tower and pairwise compatibility are structurally insufficient.
@@ -382,8 +617,23 @@ and proves that both a single tower and pairwise compatibility are structurally 
 - [x] linear tower corrected to cube directions plus Postnikov height
 - [x] nonabelian-only explanation of higher stages falsified
 - [x] fracture-cube parent theory identified
+- [x] natural all-depth HT fracture module identified in the multiple elliptic gamma hierarchy
+- [x] exact squarefree transverse collapse law linked to the fracture architecture
+- [x] linear/temporal depth falsified with a nontrivial positive support theorem
+- [x] pairwise-to-global coordinate-facet effectivity Lean-formalized
+- [x] uniqueness modulo the Stanley--Reisner ideal Lean-formalized
+- [x] full coordinate-facet augmented complex proved exact on paper
+- [x] failure-of-descent definition of HT falsified by a strong natural positive theorem
+- [x] fracture cube corrected from unified object to chart for the derived incidence fibre
+- [x] linear calibrated incidence cokernel and kernel Lean-formalized
+- [x] unique pointed reconstruction criterion Lean-formalized
+- [x] incidence-index principle stated with explicit falsifiers
+- [x] exact/closure-only/dual-certificate polarized trichotomy Lean-formalized
+- [x] cofinal positive approximation and dual blindness Lean-formalized
+- [x] closed-image promotion theorem Lean-formalized
+- [x] critical closure-defect principle stated with explicit falsifiers
 - [ ] define the full finite-channel augmented fracture complex in Lean
-- [ ] compute one nonzero natural HT interaction group
+- [ ] formalize its monomialwise chain contraction
 - [x] type the elliptic-gamma DA/holomorphic filtered group--Cech complex on paper
 - [x] prove the two nonzero anomaly faces have one pointed cochain origin
 - [ ] formalize the elliptic-gamma filtered group--Cech theorem in Lean

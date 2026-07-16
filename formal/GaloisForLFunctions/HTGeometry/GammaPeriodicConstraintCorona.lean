@@ -928,6 +928,55 @@ theorem gammaShiftCofactorSymbol_neg {z : ℂ} (hz : z ≠ 0) :
   field_simp [hz, Complex.exp_ne_zero]
   ring
 
+/-- The analytic shift cofactor with its removable value at the origin restored.  Unlike
+`gammaShiftCofactorSymbol`, this completed symbol separates the constant periodic gauge from the
+nonconstant periodic defect. -/
+def gammaShiftCofactorEntireSymbol (z : ℂ) : ℂ :=
+  if z = 0 then 1 else gammaShiftCofactorSymbol z
+
+@[simp] theorem gammaShiftCofactorEntireSymbol_zero :
+    gammaShiftCofactorEntireSymbol 0 = 1 := by
+  simp [gammaShiftCofactorEntireSymbol]
+
+/-- The completed cofactor is one on the constant gauge mode and zero on every nonconstant
+nonnegative periodic Fourier mode. -/
+@[simp] theorem gammaShiftCofactorEntireSymbol_periodicFrequency (m : ℕ) :
+    gammaShiftCofactorEntireSymbol (gammaPeriodicFrequency m) =
+      if m = 0 then 1 else 0 := by
+  by_cases hm : m = 0
+  · subst m
+    simp [gammaShiftCofactorEntireSymbol, gammaPeriodicFrequency]
+  · simp [gammaShiftCofactorEntireSymbol,
+      gammaPeriodicFrequency_ne_zero hm, hm]
+
+/-- The completed shift cofactor acting on a finite periodic Fourier gauge packet. -/
+def gammaShiftCofactorGaugeReduction {k : ℕ} (a : Fin k → ℂ) : ℂ :=
+  ∑ m : Fin k,
+    a m * gammaShiftCofactorEntireSymbol (gammaPeriodicFrequency m)
+
+/-- **Canonical Gamma gauge reduction.**  On every nonempty finite periodic Fourier packet, the
+completed global cofactor is exactly projection to the constant mode. -/
+theorem gammaShiftCofactorGaugeReduction_eq_constantMode
+    {k : ℕ} (a : Fin (k + 1) → ℂ) :
+    gammaShiftCofactorGaugeReduction a = a 0 := by
+  rw [gammaShiftCofactorGaugeReduction, Fin.sum_univ_succ]
+  simp
+
+/-- The kernel of source-canonical Gamma gauge reduction consists exactly of the nonconstant
+periodic gauge packets. -/
+theorem gammaShiftCofactorGaugeReduction_eq_zero_iff
+    {k : ℕ} (a : Fin (k + 1) → ℂ) :
+    gammaShiftCofactorGaugeReduction a = 0 ↔ a 0 = 0 := by
+  rw [gammaShiftCofactorGaugeReduction_eq_constantMode]
+
+/-- Gamma gauge reduction reaches every constant calibration target. -/
+theorem gammaShiftCofactorGaugeReduction_surjective (k : ℕ) :
+    Function.Surjective
+      (gammaShiftCofactorGaugeReduction : (Fin (k + 1) → ℂ) → ℂ) := by
+  intro c
+  refine ⟨fun _ ↦ c, ?_⟩
+  rw [gammaShiftCofactorGaugeReduction_eq_constantMode]
+
 end
 
 

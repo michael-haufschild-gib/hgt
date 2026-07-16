@@ -30,6 +30,7 @@ structure QuantumLawPair (ι : Type*) [LT ι] where
   lower : ι
   upper : ι
   isLt : lower < upper
+  deriving DecidableEq
 
 /-- The ordered quadratic monomial attached to an increasing law pair. -/
 def quantumPairOperator (G : ι → Module.End K M) (p : QuantumLawPair ι) :

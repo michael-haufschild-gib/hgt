@@ -153,6 +153,18 @@ boundaryWedgeCompatibleOrientationEquivBool.
 This is the first positive theorem beyond orientation blindness: topology does not select a sign,
 but topology coupled to nondegenerate polarization transport propagates it.
 
+The polarized-incidence trichotomy adds an independent global effectivity condition.  Even when
+local polarizations transport coherently and every continuous dual reporter is nonnegative, the
+critical target may lie only in the closure of the positive realization image.  Then the positive
+section is approximable but does not exist.  Closedness of the source realization image promotes
+weak positivity to an actual section; without it, the arithmetic-section principle has a genuine
+nonattainment obstruction invisible to all continuous dual sign tests.
+
+```text
+[NO-GO] compatible polarization transport plus all dual inequalities produces a positive section;
+[POSITIVE] it produces weak incidence, and a closed-image/attainment theorem produces the section.
+```
+
 The same family has `htDim=2` while its source-coherence projective dimension takes every value
 at least three.  Therefore the fibre in `(1)` cannot have a universal finite obstruction theory,
 even over the fixed `htDim=2` stratum.  The precise successor is the spectrum-valued exit-path
@@ -212,6 +224,8 @@ structure, or a source class on which the fibration truncates and admits a uniqu
 - [ ] prove presentation/Morita invariance of its fibres
 - [x] couple positive and negative polarizations to the same nodal Hochster line in Lean
 - [x] prove a nontrivial restriction-compatible polarization collapse in Lean
+- [x] formalize exact/closure-only/dual-certificate polarized incidence
+- [x] isolate closed-image attainment as independent from dual positivity
 - [x] prove no finite obstruction-height bound follows from intrinsic HT dimension
 - [ ] prove unique positive section in one analytic model
 - [ ] construct an arithmetic section without target-divisor input

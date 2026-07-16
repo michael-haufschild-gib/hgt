@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HTGeometry.LocalizedMvPolynomialCotangent
+import GaloisForLFunctions.HTGeometry.MvPolynomialLocalJacobianData
 import GaloisForLFunctions.HTGeometry.SourceResidueCotangent
+import GaloisForLFunctions.HTGeometry.SourceResidueCotangentApply
 import Mathlib.LinearAlgebra.Basis.SMul
 import Mathlib.LinearAlgebra.LinearIndependent.BaseChange
 import Mathlib.RingTheory.Localization.Algebra
@@ -102,6 +104,7 @@ theorem gradient_linearIndependent_of_sourceResidueCotangent
         (algebraMap (MvPolynomial σ ℂ) P
           (MvPolynomial.pderiv j (relation i)))) := by
     funext i j
+    rw [sourceResidueCotangentMap_one_tmul]
     change ((localizedMvPolynomialKaehlerBasis Q).baseChange K).repr
       (1 ⊗ₜ[P] KaehlerDifferential.D ℂ P (u i).1) j = _
     rw [huval i]
@@ -147,120 +150,21 @@ theorem exists_localJacobianChart_of_formallySmooth_point
       LinearIndependent ℂ
         (fun i j ↦ MvPolynomial.eval x
           (MvPolynomial.pderiv j (relation i))) := by
-  let q : Ideal ((MvPolynomial σ ℂ) ⧸ I) := p.asIdeal
-  let Q : Ideal (MvPolynomial σ ℂ) :=
-    q.comap (Ideal.Quotient.mk I)
-  let P := Localization.AtPrime Q
-  let S := Localization.AtPrime q
-  letI : Algebra.FormallyEtale (MvPolynomial σ ℂ) P :=
-    Algebra.FormallyEtale.of_isLocalization Q.primeCompl
-  let bP : Module.Basis σ P Ω[P⁄ℂ] :=
-    localizedMvPolynomialKaehlerBasis Q
-  letI : Module.Free P Ω[P⁄ℂ] := Module.Free.of_basis bP
-  letI : Module.Finite P Ω[P⁄ℂ] := Module.Finite.of_basis bP
-  letI : q.LiesOver Q := ⟨rfl⟩
-  letI : Algebra P S := Localization.AtPrime.algebraOfLiesOver Q q
-  have hsurj : Function.Surjective (algebraMap P S) := by
-    rw [Localization.AtPrime.IsLiesOverAlgebra.algebraMap_eq]
-    exact RingHom.surjective_localRingHom_of_surjective
-      (Ideal.Quotient.mk I) Ideal.Quotient.mk_surjective q
-  have hfg : (RingHom.ker (algebraMap P S)).FG :=
-    IsNoetherian.noetherian _
-  have hker : RingHom.ker (algebraMap P S) ≤
-      IsLocalRing.maximalIdeal P := by
-    intro a ha
-    rw [IsLocalRing.mem_maximalIdeal]
-    intro hua
-    have hu : IsUnit (algebraMap P S a) := hua.map (algebraMap P S)
-    rw [RingHom.mem_ker.mp ha] at hu
-    exact not_isUnit_zero hu
-  have hinj : Function.Injective
-      (sourceResidueCotangentMap ℂ P S hker) :=
-    sourceResidueCotangentMap_injective ℂ P S hsurj hfg hlocal
   obtain ⟨m, v, hvspan, hvli⟩ :=
-    exists_finite_sourceResidue_basis_lifts ℂ P S hker hfg hinj
-  have hT : Submonoid.map (Ideal.Quotient.mk I) Q.primeCompl =
-      q.primeCompl := by
-    exact q.map_primeCompl_comap_of_surjective
-      (Ideal.Quotient.mk I) Ideal.Quotient.mk_surjective
-  have hle : Q.primeCompl ≤
-      Submonoid.comap (Ideal.Quotient.mk I) q.primeCompl := by
-    exact hT.symm ▸ Submonoid.le_comap_map Q.primeCompl
-  let fLoc : P →+* S :=
-    Localization.localRingHom Q q (Ideal.Quotient.mk I) rfl
-  have hmap : algebraMap P S = fLoc :=
-    Localization.AtPrime.IsLiesOverAlgebra.algebraMap_eq
-  let rawLocKer : RingHom.ker (Ideal.Quotient.mk I) →ₗ[MvPolynomial σ ℂ]
-      RingHom.ker fLoc :=
-    RingHom.toKerIsLocalization P S (Ideal.Quotient.mk I) hle
-  let kerEquiv : RingHom.ker fLoc ≃ₗ[P]
-      RingHom.ker (algebraMap P S) :=
-    LinearEquiv.ofEq _ _ (congrArg RingHom.ker hmap.symm)
-  let locKer : RingHom.ker (Ideal.Quotient.mk I) →ₗ[MvPolynomial σ ℂ]
-      RingHom.ker (algebraMap P S) :=
-    (kerEquiv.restrictScalars (MvPolynomial σ ℂ)).toLinearMap.comp rawLocKer
-  letI : IsLocalizedModule Q.primeCompl rawLocKer :=
-    RingHom.toKerIsLocalization_isLocalizedModule S
-      (Ideal.Quotient.mk I) hT
-  letI : IsLocalizedModule Q.primeCompl locKer :=
-    IsLocalizedModule.of_linearEquiv Q.primeCompl rawLocKer
-      (kerEquiv.restrictScalars (MvPolynomial σ ℂ))
-  choose liftData hliftData using fun i ↦
-    IsLocalizedModule.surj Q.primeCompl locKer (v i)
-  let relationKer : Fin m → RingHom.ker (Ideal.Quotient.mk I) :=
-    fun i ↦ (liftData i).1
-  let denominator : Fin m → Q.primeCompl :=
-    fun i ↦ (liftData i).2
-  let denominatorUnit : Fin m → Pˣ := fun i ↦
-    (IsLocalization.map_units P (denominator i)).unit
-  let u : Fin m → RingHom.ker (algebraMap P S) :=
-    fun i ↦ locKer (relationKer i)
-  have hu : u = denominatorUnit • v := by
-    funext i
-    change locKer (relationKer i) =
-      (denominatorUnit i : P) • v i
-    rw [IsUnit.unit_spec]
-    exact (hliftData i).symm
-  have huspan : Submodule.span P (Set.range u) = ⊤ := by
-    rw [hu]
-    exact Module.Basis.units_smul_span_eq_top hvspan
-  let relation : Fin m → MvPolynomial σ ℂ :=
-    fun i ↦ (relationKer i).1
-  have hrelation_mem : ∀ i, relation i ∈ I := by
-    intro i
-    exact (Ideal.Quotient.eq_zero_iff_mem).mp (relationKer i).2
-  have huval : ∀ i, (u i).1 =
-      algebraMap (MvPolynomial σ ℂ) P (relation i) := by
-    intro i
-    rfl
-  have hideal : Ideal.span (Set.range (fun i ↦
-      algebraMap (MvPolynomial σ ℂ) P (relation i))) =
-      RingHom.ker (algebraMap P S) := by
-    have hmapped := congrArg
-      (Submodule.map (RingHom.ker (algebraMap P S)).subtype) huspan
-    simpa [Submodule.map_span, huval] using hmapped
-  refine ⟨m, relation, hrelation_mem, ?_, ?_⟩
-  · exact hideal
-  · let K := IsLocalRing.ResidueField P
-    let denominatorUnitK : Fin m → Kˣ := fun i ↦
-      Units.map (algebraMap P K) (denominatorUnit i)
-    have husource :
-        (fun i ↦ sourceResidueCotangentMap ℂ P S hker
-          (1 ⊗ₜ[P] u i)) =
-        denominatorUnitK •
-          (fun i ↦ sourceResidueCotangentMap ℂ P S hker
-            (1 ⊗ₜ[P] v i)) := by
-      funext i
-      rw [hu]
-      simp [denominatorUnitK]
-    have huli : LinearIndependent K
-        (fun i ↦ sourceResidueCotangentMap ℂ P S hker
-          (1 ⊗ₜ[P] u i)) := by
-      rw [husource]
-      exact hvli.units_smul denominatorUnitK
-    have hQ' : Q = MvPolynomial.vanishingIdeal ℂ {x} := hQ
-    exact gradient_linearIndependent_of_sourceResidueCotangent
-      Q S hker x hQ' relation u huval huli
+    exists_sourceResidue_basis_at_formallySmooth_point I p hlocal
+  obtain ⟨relation, u, hrelation_mem, huval, hideal, huli⟩ :=
+    exists_originalRelations_of_sourceResidue_basis I p v hvspan hvli
+  refine ⟨m, relation, hrelation_mem, hideal, ?_⟩
+  have hQ' : polynomialPointIdeal I p =
+      MvPolynomial.vanishingIdeal ℂ {x} := hQ
+  exact gradient_linearIndependent_of_sourceResidueCotangent
+    (polynomialPointIdeal I p) (localQuotientRing I p)
+    (localPresentationKernel_le_maximal I p) x hQ' relation u huval (by
+      change LinearIndependent
+        (IsLocalRing.ResidueField (localPolynomialRing I p))
+        (fun i ↦ localPresentationSourceResidueCotangentMap I p
+          (1 ⊗ₜ[localPolynomialRing I p] u i))
+      exact huli)
 
 end
 

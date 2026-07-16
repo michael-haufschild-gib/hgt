@@ -1,19 +1,35 @@
 # The Mobius divisor-incidence clock has exactly four units of critical relative energy
 
 - **ID:** `mobius-incidence-clock-gini-fisher-four-unit-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / HT-TO-RH SOURCE CURVATURE
 - **Scientific status:** `[PROVED HERE] [LITERATURE NOVELTY OPEN] [NOT AN RH PROOF]`
 - **Parents:**
-  - `mobius-critical-fisher-tangent-hilbert-lift.md`
-  - `not_new_scientific_knowledge/mobius-signed-channel-coisometry-incidence-law.md`
-  - `../3-formalized/infinite-mobius-critical-boundary-layer-product.md`
-  - `../3-formalized/finite-clock-star-kadison-observability.md`
+  - `../2-fully-proven/mobius-critical-fisher-tangent-hilbert-lift.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/mobius-signed-channel-coisometry-incidence-law.md`
+  - `infinite-mobius-critical-boundary-layer-product.md`
+  - `finite-clock-star-kadison-observability.md`
 - **Statement:** The moving signed squarefree source line and the complementary divisor-threshold
   clock have a canonical commutator curvature.  Its semifinite channel-time energy, multiplied by
   the critical clock scale, tends exactly to four.  Equivalently, the source curvature energy is
   four times the Gini mean difference of the critical exponential clock.  This supplies a fully
   explicit four-unit source budget before Gamma/Sonin continuation.
+
+
+## Lean formalization
+
+The unconditional formalization is split along its actual dependency boundary:
+
+- `formal/GaloisForLFunctions/HTGeometry/FiniteProbabilityGiniLayerCake.lean` proves the exact
+  finite layer-cake/Gini identity.
+- `formal/GaloisForLFunctions/RHTower/RankOneIncidenceCommutatorEnergy.lean` proves the exact
+  rank-one cutoff energy `2 A(1-A)` and clock-involution energy `8 A(1-A)`.
+- `formal/GaloisForLFunctions/RHTower/MobiusCriticalClockMoments.lean` proves the critical first-
+  and second-moment limits `1` and `2`.
+- `formal/GaloisForLFunctions/RHTower/MobiusIncidenceClockGiniFisherFourUnit.lean` proves the
+  finite energy identity, the unbounded Gini limit, the global four-unit incidence limit, the
+  projective Fisher four-unit limit and collision, and the finite-window profile
+  `4(1-exp(-u))^2`.
 
 ## Pointed source projection and incidence clock
 

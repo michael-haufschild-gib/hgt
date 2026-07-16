@@ -47,6 +47,13 @@ Re(w)>0  implies  M_L(w)!=0.                              (5)
 - `criticalMellinVolterraMode_eq`
 - `criticalMellinVolterraModeAdjacentBlock_eq`
 
+Finite-packet successor:
+
+- `GaloisForLFunctions.HTGeometry.FiniteModalTransfer`
+- `GaloisForLFunctions.RHTower.CCMCriticalMellinVolterraHaarFinitePacket`
+- `det_criticalMellinVolterraHaarFinitePacket_ne_zero_iff`
+- `criticalMellinVolterraHaarFinitePacket_exact_hankel_mode_count`
+
 ## Proof
 
 Direct integration gives `(1)` and `(2)`.  Linearity gives `(3)`--`(4)`.  In the open right
@@ -60,7 +67,9 @@ The normalized Chebyshev reduction identifies the remaining rectangular source e
 fixed Volterra--Haar filter.  Equation `(5)` proves that the filter faithfully retains every
 positive-growth exponential mode.  Therefore a successful proof must constrain the normalized
 Chebyshev source values; it cannot rely on cancellation caused solely by the choice of fixed-width
-filter.
+filter.  The finite-packet successor strengthens this from isolated-mode detection to preservation
+of the exact joint Hankel mode count for every finite positive-growth packet with distinct sampled
+nodes and nonzero amplitudes.
 
 ## Verification
 

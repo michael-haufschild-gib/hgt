@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.PrimeArchBernsteinExactHalfOrderAbelBoundary
+import GaloisForLFunctions.RHTower.XiBernsteinPuritySquareRootDecomposition
 import GaloisForLFunctions.HTGeometry.HalfOrderMeromorphicObstruction
 
 /-!
@@ -31,6 +31,25 @@ def PrimeArchEndpointBernsteinAbelSharpFalsePhase (R : ℝ) : Prop :=
     Tendsto
       (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) *
         primeArchEndpointBernsteinAbelSusceptibility t)
+      (nhdsWithin R (Set.Ico 0 R))
+      (nhds (Real.sqrt Real.pi * L)) ∧
+    (∀ t : ℝ, 0 < t → t < R →
+      HasSum
+        (fun n : ℕ => xiEndpointCoordinateDiagonalPurity D n * t ^ n)
+        (finiteBernsteinCoordinateDiagonalSquareRootKernel
+          (xiEndpointCoordinateSet D) (xiEndpointCoordinateWeight D) B t)) ∧
+    (∀ t : ℝ, 0 < t → t < R →
+      primeArchEndpointBernsteinAbelSusceptibility t =
+        finiteBernsteinCoordinateDiagonalSquareRootKernel
+          (xiEndpointCoordinateSet D) (xiEndpointCoordinateWeight D) B t +
+        primeArchEndpointBernsteinDiagonalRemainderAbelSusceptibility D t) ∧
+    Tendsto
+      (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) *
+        primeArchEndpointBernsteinDiagonalRemainderAbelSusceptibility D t)
+      (nhdsWithin R (Set.Ico 0 R)) (nhds 0) ∧
+    Tendsto
+      (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) *
+        xiEndpointCoordinateDiagonalAbelSusceptibility D t)
       (nhdsWithin R (Set.Ico 0 R))
       (nhds (Real.sqrt Real.pi * L)) ∧
     Tendsto primeArchEndpointBernsteinAbelSusceptibility
@@ -76,8 +95,14 @@ theorem primeArchEndpointBernsteinAbelSharpSelectionMaster :
   · by_cases hRH : RiemannHypothesis
     · exact Or.inl ⟨hRH, hR.2.2.2.mp hRH⟩
     · obtain ⟨D, B, beta, L, hB, hbeta1, hbeta, hDne, hD, hDsub,
-          hL, hLpos, hboundaryPos, hcritical, hboundary, hblowup⟩ :=
-        exists_exactRadius_positiveHalfOrder_primeArchEndpointBernsteinAbelBoundary_of_not_rh hRH
+          hL, hLpos, hcritical, hdiagExact, hpointDecomp, hremBoundary,
+          hdiagBoundary, hboundary⟩ :=
+        exists_exact_maximalDiagonalSquareRootDecomposition_of_not_rh hRH
+      have hboundaryPos : 0 < Real.sqrt Real.pi * L :=
+        mul_pos (Real.sqrt_pos.2 Real.pi_pos) hLpos
+      have hblowup :=
+        GaloisForLFunctions.HTGeometry.tendsto_atTop_of_positive_sqrt_scaled_boundary
+          (lt_trans zero_lt_one hB) hboundaryPos hboundary
       have hReq : R = 1 / B ^ 2 :=
         primeArchEndpointBernsteinAbelCriticalRadius_unique hR.2.2.1 hcritical
       have hRne : R ≠ 1 := fun hEq => hRH (hR.2.2.2.mpr hEq)
@@ -93,6 +118,31 @@ theorem primeArchEndpointBernsteinAbelSharpSelectionMaster :
           (nhdsWithin R (Set.Ico 0 R)) atTop := by
         rw [hReq]
         exact hblowup
+      have hdiagExactR : ∀ t : ℝ, 0 < t → t < R →
+          HasSum
+            (fun n : ℕ => xiEndpointCoordinateDiagonalPurity D n * t ^ n)
+            (finiteBernsteinCoordinateDiagonalSquareRootKernel
+              (xiEndpointCoordinateSet D) (xiEndpointCoordinateWeight D) B t) := by
+        simpa only [hReq] using hdiagExact
+      have hpointDecompR : ∀ t : ℝ, 0 < t → t < R →
+          primeArchEndpointBernsteinAbelSusceptibility t =
+            finiteBernsteinCoordinateDiagonalSquareRootKernel
+              (xiEndpointCoordinateSet D) (xiEndpointCoordinateWeight D) B t +
+            primeArchEndpointBernsteinDiagonalRemainderAbelSusceptibility D t := by
+        simpa only [hReq] using hpointDecomp
+      have hremBoundaryR : Tendsto
+          (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) *
+            primeArchEndpointBernsteinDiagonalRemainderAbelSusceptibility D t)
+          (nhdsWithin R (Set.Ico 0 R)) (nhds 0) := by
+        rw [hReq]
+        exact hremBoundary
+      have hdiagBoundaryR : Tendsto
+          (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) *
+            xiEndpointCoordinateDiagonalAbelSusceptibility D t)
+          (nhdsWithin R (Set.Ico 0 R))
+          (nhds (Real.sqrt Real.pi * L)) := by
+        rw [hReq]
+        exact hdiagBoundary
       have hnomero : ∀ f : ℂ → ℂ, MeromorphicAt f R →
           ¬ (fun t : ℝ => f t) =ᶠ[nhdsWithin R (Set.Ico 0 R)]
             (fun t : ℝ =>
@@ -109,7 +159,8 @@ theorem primeArchEndpointBernsteinAbelSharpSelectionMaster :
           GaloisForLFunctions.HTGeometry.false_of_meromorphicAt_of_positive_sqrt_scaled_boundary
             (lt_trans zero_lt_one hB) hboundaryPos hf' hagree' hboundary
       exact Or.inr ⟨hRH, hRlt, D, B, beta, L, hReq, hB, hbeta1, hbeta,
-        hDne, hD, hDsub, hL, hLpos, hboundaryPos, hboundaryR, hblowupR, hnomero⟩
+        hDne, hD, hDsub, hL, hLpos, hboundaryPos, hboundaryR, hdiagExactR,
+        hpointDecompR, hremBoundaryR, hdiagBoundaryR, hblowupR, hnomero⟩
   · intro S hS
     exact primeArchEndpointBernsteinAbelCriticalRadius_unique hS.2.2.1 hR.2.2.1
 

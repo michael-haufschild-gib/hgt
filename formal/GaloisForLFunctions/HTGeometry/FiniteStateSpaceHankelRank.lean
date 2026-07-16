@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.FiniteSpectralHankelRank
+import GaloisForLFunctions.HTGeometry.FiniteFieldStateSpaceHankelRank
 
 /-!
 # Finite state-space realizations force finite Hankel rank
@@ -119,11 +119,9 @@ realization has zero leading Hankel determinant in size `d+1`. -/
 theorem det_momentHankelMatrix_finiteStateSpaceResponse_succ_eq_zero {d : ℕ}
     (A : Matrix (Fin d) (Fin d) ℝ) (input output : Fin d → ℝ) :
     (momentHankelMatrix (finiteStateSpaceResponse A input output) (d + 1)).det = 0 := by
-  obtain ⟨c, hrel, j, hj⟩ := exists_finiteStateSpace_controllability_relation A input
-  apply Matrix.det_eq_zero_of_mulVec_eq_zero_of_mem_nonZeroDivisors
-    (momentHankelMatrix_mulVec_finiteStateSpace_relation_eq_zero A input output c hrel)
-    (i := j)
-  simpa [mem_nonZeroDivisors_iff_ne_zero] using hj
+  simpa [momentHankelMatrix, finiteStateSpaceResponse, algebraicHankelMatrix,
+    algebraicStateSpaceResponse] using
+      (det_algebraicHankelMatrix_stateSpaceResponse_succ_eq_zero A input output)
 
 /-- The determinant obstruction in realization form. -/
 theorem det_momentHankelMatrix_succ_eq_zero_of_stateSpaceDimensionAtMost
@@ -138,25 +136,12 @@ theorem det_momentHankelMatrix_succ_eq_zero_of_fixedStateSpaceDimension_tendsto
     (hm : ∀ j, StateSpaceDimensionAtMost d (m j))
     (hconv : Tendsto m atTop (nhds target)) :
     (momentHankelMatrix target (d + 1)).det = 0 := by
-  have hmatrix : Tendsto
-      (fun j ↦ momentHankelMatrix (m j) (d + 1)) atTop
-      (nhds (momentHankelMatrix target (d + 1))) := by
-    apply tendsto_pi_nhds.mpr
-    intro r
-    apply tendsto_pi_nhds.mpr
-    intro c
-    simpa [momentHankelMatrix] using
-      (tendsto_pi_nhds.mp hconv) ((r : ℕ) + (c : ℕ))
-  have hdet : Tendsto
-      (fun j ↦ (momentHankelMatrix (m j) (d + 1)).det) atTop
-      (nhds (momentHankelMatrix target (d + 1)).det) :=
-    continuous_id.matrix_det.continuousAt.tendsto.comp hmatrix
-  have hzero : Tendsto
-      (fun j ↦ (momentHankelMatrix (m j) (d + 1)).det) atTop (nhds 0) := by
-    refine tendsto_const_nhds.congr' ?_
-    exact Filter.Eventually.of_forall fun j ↦
-      (det_momentHankelMatrix_succ_eq_zero_of_stateSpaceDimensionAtMost (hm j)).symm
-  exact tendsto_nhds_unique hdet hzero
+  have hm' : ∀ j, AlgebraicStateSpaceDimensionAtMost d (m j) := by
+    intro j
+    simpa [StateSpaceDimensionAtMost, AlgebraicStateSpaceDimensionAtMost,
+      finiteStateSpaceResponse, algebraicStateSpaceResponse] using hm j
+  simpa [momentHankelMatrix, algebraicHankelMatrix] using
+    (det_algebraicHankelMatrix_succ_eq_zero_of_fixedStateSpaceDimension_tendsto hm' hconv)
 
 /-- Uniformly bounded hidden-state dimension remains impossible even when each finite observation
 window may use a different realization. -/
@@ -164,31 +149,12 @@ theorem det_momentHankelMatrix_succ_eq_zero_of_fixedStateSpaceDimensionLocalClos
     {d : ℕ} {target : ℕ → ℝ}
     (h : FixedStateSpaceDimensionLocalClosure d target) :
     (momentHankelMatrix target (d + 1)).det = 0 := by
-  have happ : ∀ j : ℕ, ∃ A : Matrix (Fin d) (Fin d) ℝ,
-      ∃ input output : Fin d → ℝ,
-      ∀ n : ℕ, n < j + 1 →
-        dist (finiteStateSpaceResponse A input output n) (target n) <
-          1 / ((j : ℝ) + 1) := by
-    intro j
-    exact h (j + 1) (1 / ((j : ℝ) + 1)) (by positivity)
-  choose A input output happrox using happ
-  let approx : ℕ → ℕ → ℝ :=
-    fun j ↦ finiteStateSpaceResponse (A j) (input j) (output j)
-  have hdim : ∀ j, StateSpaceDimensionAtMost d (approx j) := by
-    intro j
-    exact ⟨A j, input j, output j, rfl⟩
-  have hconv : Tendsto approx atTop (nhds target) := by
-    apply tendsto_pi_nhds.mpr
-    intro n
-    rw [Metric.tendsto_atTop]
-    intro ε hε
-    have herr : ∀ᶠ j : ℕ in atTop, 1 / ((j : ℝ) + 1) < ε :=
-      tendsto_one_div_add_atTop_nhds_zero_nat.eventually (Iio_mem_nhds hε)
-    obtain ⟨J, hJ⟩ := eventually_atTop.mp herr
-    refine ⟨max J n, fun j hj ↦ ?_⟩
-    exact (happrox j n (by omega)).trans
-      (hJ j (le_trans (le_max_left _ _) hj))
-  exact det_momentHankelMatrix_succ_eq_zero_of_fixedStateSpaceDimension_tendsto hdim hconv
+  have h' : FixedAlgebraicStateSpaceDimensionLocalClosure d target := by
+    simpa [FixedStateSpaceDimensionLocalClosure,
+      FixedAlgebraicStateSpaceDimensionLocalClosure,
+      finiteStateSpaceResponse, algebraicStateSpaceResponse] using h
+  simpa [momentHankelMatrix, algebraicHankelMatrix] using
+    (det_algebraicHankelMatrix_succ_eq_zero_of_fixedStateSpaceDimensionLocalClosure h')
 
 /-- A single nonzero Hankel determinant rules out fixed-dimensional local state-space
 approximation. -/

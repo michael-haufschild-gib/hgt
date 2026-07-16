@@ -172,6 +172,47 @@ Finally, in `C_M` equation `(5)` exhibits the gerbe cocycle as a coboundary, whi
 trivializes `(10)`.  Hence both edge anomalies are effective in the same ambient meromorphic
 theory. `QED`
 
+## Pointed incidence phase `[PROVED]`
+
+The new calibrated-fracture theorem turns ambient effectivity into an exact fibre calculation.
+Let
+
+```text
+F=partial_z log Gamma(z;tau,sigma),
+b=(Delta_sigma F,Delta_tau F)=(lambda_tau,lambda_sigma).  (14a)
+```
+
+Choose a source basepoint `z_*` away from the polar divisor of `F`.  Every ambient meromorphic
+primitive of `b` differs from `F` by a function fixed by `tau` and `sigma`; after retaining the
+existing period `1`, irrationality makes that joint-fixed function constant.  Evaluation at
+`z_*` therefore identifies the ambient primitive torsor with `C`.
+
+Let `B` be the additive DA-meromorphic sector and `M` the ambient meromorphic sector.  With the
+pointing `F(z_*)`, the two incidence fibres are
+
+```text
+Inc_B(b,F(z_*)) = empty,
+Inc_M(b,F(z_*)) = {F}.                                    (14b)
+```
+
+The first equality is the HT theorem: a DA primitive with boundary `b` would differ from `F` by a
+constant and make `F` DA.  The second is ambient existence supplied by `F`, together with the
+constant-kernel separation supplied by evaluation.
+
+Thus the first natural HT fracture object exhibits both sides of the incidence-index principle:
+
+```text
+relative DA effectivity obstruction = nonzero cokernel class,
+ambient boundary ambiguity          = constant kernel,
+source pointing                      = exact removal of that kernel.          (14c)
+```
+
+This is not a new proof of elliptic-gamma hypertranscendence.  It is the exact positive realization
+of the unified obstruction object: the same thin DA boundary has empty pointed incidence in the
+thin coefficient theory and one canonical effective point in the ambient theory.  The generic
+kernel--cokernel skeleton is Lean-formalized in
+`../../3-formalized/not_new_scientific_knowledge/calibrated-fracture-incidence-kernel-cokernel.md`.
+
 ## What is genuinely learned
 
 This theorem supplies the first natural analytic model of a multi-relative HT effectivity object.
@@ -182,6 +223,7 @@ one source-pointed meromorphic cochain;
 one coboundary lying in DA intersection holomorphic coefficients;
 one nonzero degree-two holomorphic/DA refinement;
 one nonzero degree-one DA translation anomaly;
+one pointed incidence phase from empty in DA to a singleton in the ambient theory;
 one ambient meromorphic primitive for both.                (15)
 ```
 
@@ -218,6 +260,12 @@ cocycles exist.  Morain has already extended the geometric multiple-elliptic-gam
 higher-rank lattices and proved Bernoulli-rational coboundary relations.  The open prediction is
 that source minimality and differential-algebraic capacity identify the *minimal nonzero relative
 degree* and make its DA-filtered class nontrivial.
+
+One half of the predicted height law is already proved by the exact multiple-elliptic-gamma
+translation-annihilator theorem.  For order `r`, the minimum number of **distinct** structural
+parameter directions needed to reach DA is exactly `r`; arbitrary repetition in fewer directions
+remains HT.  What remains conjectural here is the identification of that transverse support height
+with the minimal degree of a pointed DA-filtered relative cochain in the higher geometric family.
 
 ## Novelty gate
 
@@ -292,6 +340,8 @@ HT theorem, and the DD generator computation.  No analytic claim is inserted as 
 - [x] standard wedge pointing identified with actual elliptic gamma
 - [x] DA edge proved nonzero by the exact translation anomaly theorem
 - [x] common ambient meromorphic effectivity proved
+- [x] pointed DA incidence proved empty and ambient incidence proved singleton
+- [x] relative obstruction and residual ambiguity identified as cokernel and kernel phases
 - [x] gauge invariance under the intersection sector proved
 - [x] parent and anti-theatre boundaries explicit
 - [ ] independent specialist proof and novelty audit

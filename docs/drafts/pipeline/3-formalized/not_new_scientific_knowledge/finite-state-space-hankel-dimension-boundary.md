@@ -5,6 +5,7 @@
 - **Type:** THEOREM (Lean); cross-field realization boundary and RHTower consumer
 - **Register:** `[BRIDGE] [CORPUS-STRENGTHENING] [NOT A NOVELTY CLAIM]`
 - **Formal files:**
+  `formal/GaloisForLFunctions/HTGeometry/FiniteFieldStateSpaceHankelRank.lean` and
   `formal/GaloisForLFunctions/HTGeometry/FiniteStateSpaceHankelRank.lean` and
   `formal/GaloisForLFunctions/RHTower/PrimeArchFiniteStateDimension.lean`
 - **Statement:** Every scalar response `m_n=output dot A^n input` of a real `d`-dimensional linear
@@ -89,6 +90,21 @@ The RHTower theorem strictly widens the previous finite-clock exclusion: one non
 determinant excludes every real `d`-state linear realization, not only every `d`-line spectral
 clock.
 
+### Field-generic successor and corpus simplification
+
+`FiniteFieldStateSpaceHankelRank.lean` now proves the same local-closure boundary over every normed
+field and adds the exact factorization
+
+```text
+H_d = Observability_d * Controllability_d.
+```
+
+The old real pointwise-limit and local-closure proofs have been replaced by direct specialization
+of that theorem.  This removes duplicated determinant-continuity and approximation arguments while
+preserving every existing real declaration.  The complex specialization and its moving
+prime--Gamma consumer are recorded in
+`complex-state-space-hankel-pseudospectral-boundary.md`.
+
 ## Physics, AI, and genomic transfer
 
 1. **Quantum physics and quantum many-body theory.**  Finite-dimensional channels compose by
@@ -165,6 +181,8 @@ prime--archimedean determinant consumer.
 - one targeted cached build was run for each new module because its `.olean` was absent;
 - both touched Lean files pass direct `lake env lean` checks;
 - capstone axiom reports contain only `propext`, `Classical.choice`, and `Quot.sound`;
+- after the field-generic extension, the real module passes a direct source check with its two
+  closure proofs discharged by specialization;
 - formal lint passes;
 - no numerical computation and no full or self-concurrent build was run.
 

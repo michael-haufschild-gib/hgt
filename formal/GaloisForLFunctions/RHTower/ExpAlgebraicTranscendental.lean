@@ -10,13 +10,13 @@ algebraic numbers entirely.
 (`LindemannWeierstrass.exp_polynomial_approx`).  The algebraic half is Hermite's argument, packaged
 here in two stages.
 
-`exp_symm_relation_ne` is the abstract Hermite contradiction: given a finite family of complex
-"exponents" `E : ι → ℂ` and integer "coefficients" `c : ι → ℤ` whose exponent polynomial
+`exp_aggregate_integral_relation_ne` is the abstract Hermite contradiction: given a finite family of
+complex "exponents" `E : ι → ℂ` and complex coefficients whose exponent polynomial
 `∏ (X − E i)` has integer coefficients, whose weighted symmetric sums `∑ c_i · h(E_i)` are integers
 for every `h ∈ ℤ[X]`, satisfying the exponential relation `∑ c_i e^{E_i} = 0` and the nondegeneracy
-`∑_{E_i = w} c_i ≠ 0` at an integer reference `w`, a contradiction follows.  The mechanism: shift by
-the integer `w`, multiply by the analytic approximant `nₚ`, and estimate with `exp_polynomial_approx`
-to force a nonzero integer of absolute value `< 1`.
+`∑_{E_i = w} c_i = a₀ ≠ 0` at an integer reference `w`, a contradiction follows. The mechanism:
+shift by the integer `w`, multiply by the analytic approximant `nₚ`, and estimate with
+`exp_polynomial_approx` to force a nonzero integer of absolute value `< 1`.
 
 `exp_algInt_transcendental` feeds this the conjugate-product relation.  Assume `γ = exp β` algebraic;
 pick `P ∈ ℤ[X]` with `P(γ) = 0`, `P.coeff 0 ≠ 0`, degree `n`.  With `β = β₁, …, β_d` the complete
@@ -36,21 +36,21 @@ open GaloisForLFunctions.RHTower
 
 namespace GaloisForLFunctions.RHTower
 
-/-- **Abstract Hermite contradiction.**  A finite family of complex exponents `E : ι → ℂ` and integer
-coefficients `c : ι → ℤ` such that the exponent polynomial `∏ (X − E i)` lifts to `ℤ[X]`, every
-weighted sum `∑ c_i · aeval (E i) h` (`h ∈ ℤ[X]`) is an integer, the exponential relation
-`∑ c_i e^{E_i} = 0` holds, and the coefficient sum over `{i : E i = w}` is nonzero for an integer
-reference `w`, is contradictory.  Hermite's mechanism completing `exp_polynomial_approx`. -/
-theorem exp_symm_relation_ne {ι : Type*} [Fintype ι] (E : ι → ℂ) (c : ι → ℤ) (w : ℤ)
+/-- **Aggregate-integral Hermite contradiction.** Pointwise integrality of the coefficients is
+unnecessary: Hermite's argument only uses integrality of every polynomially weighted exponent sum
+and of one nonzero integer-reference fiber. -/
+theorem exp_aggregate_integral_relation_ne {ι : Type*} [Fintype ι]
+    (E c : ι → ℂ) (w a0 : ℤ)
     (hlift : (∏ i : ι, (Polynomial.X - Polynomial.C (E i))) ∈ Polynomial.lifts (Int.castRingHom ℂ))
-    (hTint : ∀ h : ℤ[X], ∃ m : ℤ, ∑ i : ι, (c i : ℂ) * Polynomial.aeval (E i) h = (m : ℂ))
-    (hrel : ∑ i : ι, (c i : ℂ) * Complex.exp (E i) = 0)
-    (ha0 : (∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i = (w : ℂ)), c i) ≠ 0) : False := by
+    (hTint : ∀ h : ℤ[X], ∃ m : ℤ, ∑ i : ι, c i * Polynomial.aeval (E i) h = (m : ℂ))
+    (hrel : ∑ i : ι, c i * Complex.exp (E i) = 0)
+    (ha0 : ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i = (w : ℂ)), c i = (a0 : ℂ))
+    (ha0ne : a0 ≠ 0) : False := by
   set wc : ℂ := (w : ℂ) with hwc
   -- shifted relation
-  have hrel2 : ∑ i : ι, (c i : ℂ) * Complex.exp (E i - wc) = 0 := by
-    have hstep : ∑ i : ι, (c i : ℂ) * Complex.exp (E i - wc)
-        = (∑ i : ι, (c i : ℂ) * Complex.exp (E i)) * Complex.exp (-wc) := by
+  have hrel2 : ∑ i : ι, c i * Complex.exp (E i - wc) = 0 := by
+    have hstep : ∑ i : ι, c i * Complex.exp (E i - wc)
+        = (∑ i : ι, c i * Complex.exp (E i)) * Complex.exp (-wc) := by
       rw [Finset.sum_mul]
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [mul_assoc, ← Complex.exp_add]; ring_nf
@@ -98,26 +98,24 @@ theorem exp_symm_relation_ne {ι : Type*} [Fintype ι] (E : ι → ℂ) (c : ι 
     refine ⟨hgne, ?_⟩
     rw [Polynomial.aeval_def, Polynomial.eval₂_eq_eval_map]
     convert hgr using 2
-  set a0 : ℤ := ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i = wc), c i with ha0def
   have hsplit : (a0 : ℂ) + ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc),
-      (c i : ℂ) * Complex.exp (E i - wc) = 0 := by
+      c i * Complex.exp (E i - wc) = 0 := by
     have he : (a0 : ℂ) = ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i = wc),
-        (c i : ℂ) * Complex.exp (E i - wc) := by
-      rw [ha0def]; push_cast
+        c i * Complex.exp (E i - wc) := by
+      rw [← ha0]
       refine Finset.sum_congr rfl (fun i hi => ?_)
       rw [Finset.mem_filter] at hi
       rw [hi.2, sub_self, Complex.exp_zero, mul_one]
     rw [he, Finset.sum_filter_add_sum_filter_not]
     exact hrel2
-  have ha0ne : a0 ≠ 0 := ha0
   -- ============ analytic finish ============
   have hg0e : g.eval 0 ≠ 0 := by rw [← Polynomial.coeff_zero_eq_eval_zero]; exact hg0
   obtain ⟨B, hB⟩ := LindemannWeierstrass.exp_polynomial_approx g hg0e
   have hsum_exp : ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc),
-      (c i : ℂ) * Complex.exp (E i - wc) = -(a0 : ℂ) :=
+      c i * Complex.exp (E i - wc) = -(a0 : ℂ) :=
     eq_neg_of_add_eq_zero_right hsplit
   set Cabs : ℝ := ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc),
-      |((c i : ℤ) : ℝ)| with hCabs
+      ‖c i‖ with hCabs
   have hlim : Filter.Tendsto (fun p : ℕ => Cabs * (B ^ p / (p - 1)!)) Filter.atTop (nhds 0) := by
     have h1 := FloorSemiring.tendsto_mul_pow_div_factorial_sub_atTop (1 : ℝ) B 1
     have h2 : Filter.Tendsto (fun p : ℕ => B ^ p / (p - 1)!) Filter.atTop (nhds 0) := by simpa using h1
@@ -142,24 +140,24 @@ theorem exp_symm_relation_ne {ι : Type*} [Fintype ι] (E : ι → ℂ) (c : ι 
     congr 1
     simp [hwc]
   obtain ⟨T₀, hT₀⟩ := hTint (gp.comp (Polynomial.X - Polynomial.C w))
-  have hT₀' : ∑ i : ι, (c i : ℂ) * Polynomial.aeval (E i - wc) gp = (T₀ : ℂ) := by
+  have hT₀' : ∑ i : ι, c i * Polynomial.aeval (E i - wc) gp = (T₀ : ℂ) := by
     rw [← hT₀]; refine Finset.sum_congr rfl (fun i _ => ?_); rw [haevalcomp i]
   have hev0 : Polynomial.aeval (0 : ℂ) gp = ((gp.eval 0 : ℤ) : ℂ) := by
     have h0 : ((0 : ℂ)) = (algebraMap ℤ ℂ) (0 : ℤ) := by simp
     rw [h0, Polynomial.aeval_algebraMap_apply_eq_algebraMap_eval]; simp
   have hTfull : (T₀ : ℂ) = (a0 : ℂ) * ((gp.eval 0 : ℤ) : ℂ)
       + ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc),
-          (c i : ℂ) * Polynomial.aeval (E i - wc) gp := by
+          c i * Polynomial.aeval (E i - wc) gp := by
     rw [← hT₀', ← Finset.sum_filter_add_sum_filter_not
         (Finset.univ : Finset ι) (fun i => E i = wc)]
     congr 1
-    rw [ha0def]; push_cast; rw [Finset.sum_mul]
+    rw [← ha0, Finset.sum_mul]
     refine Finset.sum_congr rfl (fun i hi => ?_)
     rw [Finset.mem_filter] at hi
     rw [hi.2, sub_self, hev0]
   set T : ℤ := T₀ - a0 * gp.eval 0 with hT
   have hTcast : (T : ℂ) = ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc),
-      (c i : ℂ) * Polynomial.aeval (E i - wc) gp := by
+      c i * Polynomial.aeval (E i - wc) gp := by
     rw [hT]; push_cast; rw [hTfull]; ring
   have hbound : ∀ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc),
       ‖(n_p : ℂ) * Complex.exp (E i - wc)
@@ -171,15 +169,15 @@ theorem exp_symm_relation_ne {ι : Type*} [Fintype ι] (E : ι → ℂ) (c : ι 
     rw [zsmul_eq_mul, nsmul_eq_mul] at hb
     exact hb
   set Iℤ : ℤ := a0 * n_p + (p : ℤ) * T with hIℤ
-  set δfun : ι → ℂ := fun i => (((c i : ℤ) : ℂ))
+  set δfun : ι → ℂ := fun i => c i
       * ((n_p : ℂ) * Complex.exp (E i - wc)
         - (p : ℂ) * Polynomial.aeval (E i - wc) gp) with hδ
   have hkey : (Iℤ : ℂ) = - ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc), δfun i := by
     have expand : ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc), δfun i
         = (n_p : ℂ) * (∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc),
-            (c i : ℂ) * Complex.exp (E i - wc))
+            c i * Complex.exp (E i - wc))
           - (p : ℂ) * (∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc),
-            (c i : ℂ) * Polynomial.aeval (E i - wc) gp) := by
+            c i * Polynomial.aeval (E i - wc) gp) := by
       rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_sub_distrib]
       refine Finset.sum_congr rfl (fun i _ => ?_)
       simp only [hδ]; ring
@@ -190,13 +188,11 @@ theorem exp_symm_relation_ne {ι : Type*} [Fintype ι] (E : ι → ℂ) (c : ι 
     calc ‖∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc), δfun i‖
         ≤ ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc), ‖δfun i‖ := norm_sum_le _ _
       _ ≤ ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i ≠ wc),
-            |((c i : ℤ) : ℝ)| * (B ^ p / (p - 1)!) := by
+            ‖c i‖ * (B ^ p / (p - 1)!) := by
           refine Finset.sum_le_sum (fun i hi => ?_)
           rw [hδ]
           simp only [norm_mul]
-          gcongr
-          · apply le_of_eq; rw [Complex.norm_intCast]
-          · exact hbound i hi
+          exact mul_le_mul_of_nonneg_left (hbound i hi) (norm_nonneg _)
       _ = Cabs * (B ^ p / (p - 1)!) := by rw [hCabs, ← Finset.sum_mul]
       _ < 1 := hP₀ p hp_ge_P₀
   have hI0 : Iℤ = 0 := by
@@ -213,6 +209,20 @@ theorem exp_symm_relation_ne {ι : Type*} [Fintype ι] (E : ι → ℂ) (c : ι 
     have hle := Nat.le_of_dvd (Int.natAbs_pos.mpr ha0ne) hdvdnat
     exact absurd hle (not_le.mpr hp_gt_a0)
   · exact hnp_ndvd h
+
+/-- **Integer-coefficient Hermite contradiction.** This preserves the original public interface as
+a thin specialization of `exp_aggregate_integral_relation_ne`. -/
+theorem exp_symm_relation_ne {ι : Type*} [Fintype ι] (E : ι → ℂ) (c : ι → ℤ) (w : ℤ)
+    (hlift : (∏ i : ι, (Polynomial.X - Polynomial.C (E i))) ∈ Polynomial.lifts (Int.castRingHom ℂ))
+    (hTint : ∀ h : ℤ[X], ∃ m : ℤ, ∑ i : ι, (c i : ℂ) * Polynomial.aeval (E i) h = (m : ℂ))
+    (hrel : ∑ i : ι, (c i : ℂ) * Complex.exp (E i) = 0)
+    (ha0 : (∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i = (w : ℂ)), c i) ≠ 0) : False := by
+  let a0 : ℤ := ∑ i ∈ (Finset.univ : Finset ι).filter (fun i => E i = (w : ℂ)), c i
+  refine exp_aggregate_integral_relation_ne E (fun i => (c i : ℂ)) w a0 hlift hTint hrel ?_ ?_
+  · simp only [a0]
+    push_cast
+    rfl
+  · exact ha0
 
 /-- For a tuple `κ : Fin d → Fin (n+1)`, the multivariate exponent `∑ⱼ (κ j)·Xⱼ` transforms under
 a variable permutation `σ` by precomposition: `rename σ (∑ⱼ (κ j)·Xⱼ) = ∑ⱼ (κ (σ⁻¹ j))·Xⱼ`. -/

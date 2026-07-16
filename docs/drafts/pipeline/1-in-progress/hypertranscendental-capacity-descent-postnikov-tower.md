@@ -138,6 +138,20 @@ the pair-face theorem does.  The general program must therefore determine which 
 which interaction groups; it cannot assume either universal pairwise descent or universal
 nonabelianity.
 
+The generic multiple elliptic gamma hierarchy gives the first natural all-depth collapse law.  For
+its order-`r` logarithmic derivative, the complete structural translation annihilator modulo DA is
+the squarefree degree-`r` ideal.  An iterated difference becomes DA exactly when it uses at least
+`r` distinct parameter directions; arbitrary repetition in fewer directions remains HT.  Hence
+Postnikov/source height is transverse cubical support, not iteration count.
+
+Its coordinate-facet cover now gives a second, logically independent collapse: every compatible
+facet packet has one global representative, unique modulo the squarefree annihilator, and the full
+augmented facet complex is exact.  Thus arbitrary-depth HT persistence coexists with exact
+kinematic descent.  Postnikov obstruction groups cannot be identified with hypertranscendence
+itself; they govern only one stage of effectivity.  After kinematic descent collapses, the residual
+object is the incidence of the reconstructed primitive with the pointed, polarized, controlled,
+integral analytic essential image.
+
 ## Exact first new theorem target
 
 The exact first target now has two linked parts.
@@ -247,6 +261,8 @@ formalization of any analytic HT realization.
 - [x] pairwise compatibility disproved as a universal three-channel effectivity criterion
 - [x] exact abelian three-channel residual quotient Lean-formalized
 - [x] nonabelian-only account of higher stages falsified with a positive interaction receiver
+- [x] natural all-depth squarefree transverse-height law supplied by multiple elliptic gamma
+- [x] linear iteration depth falsified: distinct-direction support is the exact invariant
 - [ ] formalize the functorial pair descent complex
 - [ ] formalize the finite-channel augmented fracture complex
 - [ ] compute one natural nonzero HT interaction group

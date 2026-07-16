@@ -130,6 +130,20 @@ P_x=Isom^tensor(omega_alg,omega_an).                        (4)
 In nonlinear or nonneutral settings, `(4)` must be replaced by a derived comparison groupoid. It
 must retain clock filtration, affine calibration, source topology, and reflection.
 
+The fracture analysis now proves that even a derived comparison groupoid cannot be the whole
+object if it is arranged along one realization direction.  DA descent, holomorphic descent,
+polarization, critical bornology, source pointing, and integral realization need not be successive
+refinements.  Moreover three abelian quotient realizations can agree pairwise without one common
+lift.
+
+> **[NO-GO -- ONE COMPARISON TORSOR AS THE WHOLE INTERVAL.]** A single algebraic--analytic
+> comparison torsor may encode one edge, but it cannot universally reconstruct all incomparable
+> coefficient directions or their higher interaction classes.
+
+> **Positive successor.** The comparison torsor is an edge of the pointed source-effectivity
+> fracture hypercube.  Postnikov degree measures coherence height over that edge; total effectivity
+> is a common-lift theorem for the entire cube.
+
 **[CONJECTURE — HT SOURCE RIEMANN--HILBERT]** There is a natural equivalence between:
 
 1. the analytification of the minimal parameterized source-Galois groupoid of `M_x`; and
@@ -146,19 +160,31 @@ exactly the curvature, topology, domains, and orientation erased by the bare dif
 parameterized Galois group; source-equivalent equations yield inequivalent comparison torsors; or
 the analytic topology can be changed without changing any data in `(4)`.
 
-## Conjecture I: the common interval is the comparison torsor
+## Conjecture I: the common interval is the pointed fracture object
 
 **[CONJECTURE — COMPARISON-INTERVAL LAW]** The five obstruction languages are invariants of the
-same comparison object:
+same pointed source-effectivity fracture object, with `P_x` one algebraic--analytic edge:
 
-1. continuation failure is failure to extend a point of `P_x`;
-2. monodromy is descent holonomy of `P_x`;
+1. continuation failure is failure to extend the common lift across the analytic/bornological
+   faces;
+2. monodromy is descent holonomy on a comparison edge;
 3. boundary-condition ambiguity is nonuniqueness of an analytic extension of `omega_an`;
-4. spectral incompleteness is homology of a representation of the derived tangent of `P_x`;
-5. positivity failure is absence of a positive real/polarized point in the reflected torsor.
+4. spectral incompleteness is homology of a conservative representation of the total interaction
+   object;
+5. positivity failure is absence of a positive real/polarized total lift.
 
 A common determinant or degeneracy set does not establish this law. The comparison functors must
 intertwine the source algebra, curvature derivation, period lattice, and reflection.
+
+The conjectural local form is now sharper.  A minimal pointed ambient cochain `s_x` should satisfy
+
+```text
+D s_x in A_x,
+[s_x] != 0 in H^q(C_ambient/C_A_x),                         (4a)
+```
+
+where `A_x` is the thin intersection of the relevant coefficient sectors.  Hypertranscendence is
+the non-descending primitive in `(4a)`; the finite source constraint is its thin coboundary.
 
 ## Conjecture II: maximal dimension on a thin module
 
@@ -210,6 +236,15 @@ Use the rank-one shift module `sigma(y)=z y`. Construct:
 
 Gamma should prove the correspondence in the integrable abelian phase. Its hypertranscendence is
 parent input, not the new theorem.
+
+The irrational elliptic gamma function now supplies the first pointed two-axis analytic model.
+Felder--Henriques--Rossi--Zhu's group--Cech gamma cochain has exponential-rational coboundary, hence
+boundary in the intersection of the DA and holomorphic coefficient complexes.  The resulting
+relative class maps to the nontrivial gamma-gerbe/DD class, while its standard wedge pointing
+recovers the independently nonzero DA translation anomaly.  Both become effective in the same
+ambient meromorphic theory.  This proves a common pointed origin, not equality of the two anomaly
+classes.  See
+`../2-fully-proven/new_scientific_knowledge/irrational-elliptic-gamma-pointed-bi-anomaly-fracture.md`.
 
 A point value alone does not rigidify the analytic fiber: solutions differ by nonzero period-one
 multipliers. The uncalibrated analytic integration object is therefore a periodic-gauge torsor, not
@@ -291,6 +326,9 @@ or analytic fiber functor. No such torsor has yet been constructed.
 - [x] general opposite-variance seam conservation Lean-formalized
 - [x] Gamma/digamma analytic periodic torsor and asymptotic source selection identified from
   existing Lean-formalized theorems
+- [x] one-comparison-torsor universal object falsified by fracture interaction
+- [x] comparison torsor repositioned as one edge of the source-effectivity hypercube
+- [x] elliptic-gamma pointed DA--holomorphic bi-anomaly proved on paper
 - [ ] Gamma finite Weyl seam formalized in Lean
 - [ ] Gamma algebraic solution torsor constructed in the project language
 - [ ] Gamma analytic integration torsor constructed

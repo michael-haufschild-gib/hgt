@@ -8,10 +8,13 @@
   `formal/GaloisForLFunctions/HTGeometry/FiniteReporterBlindness.lean` and
   `formal/GaloisForLFunctions/HTGeometry/FiniteReporterGramFisher.lean` and
   `formal/GaloisForLFunctions/HTGeometry/FiniteReporterConditionalInformation.lean` and
+  `formal/GaloisForLFunctions/HTGeometry/FiniteReporterDataProcessing.lean` and
+  `formal/GaloisForLFunctions/HTGeometry/FiniteReporterNetworkFusion.lean` and
   `formal/GaloisForLFunctions/RHTower/XiLogDerivFiniteReporterBlindness.lean` and
   `formal/GaloisForLFunctions/RHTower/XiLogDerivReporterRankNullity.lean` and
   `formal/GaloisForLFunctions/RHTower/XiLogDerivReporterGramFisher.lean` and
-  `formal/GaloisForLFunctions/RHTower/XiLogDerivReporterConditionalInformation.lean`
+  `formal/GaloisForLFunctions/RHTower/XiLogDerivReporterConditionalInformation.lean` and
+  `formal/GaloisForLFunctions/RHTower/XiLogDerivReporterDataProcessing.lean`
 - **Statement:** If a complex function has no nonzero constant-coefficient differential
   annihilator, then every finite-dimensional linear reporter misses a nonzero linear combination
   of the first `finrank+1` derivative observables.  More precisely, at every finite resolution
@@ -104,6 +107,18 @@ exactly when they erase no common jet direction.  For a genuine infinite derivat
 singularity of the fused Gram is equivalently witnessed by one nonzero derivative packet erased
 by both panels.
 
+The same law holds for every finite dependent family of output Hilbert spaces.  If `R_a` are the
+component reporters and `R_net` is their `L2` direct sum, then
+
+```text
+G_net = sum_a G_a,                                               (7F)
+ker(T_net) = intersection_a ker(T_a),                            (8F)
+det(G_net) != 0 <-> intersection_a ker(T_a) = {0}.               (9F)
+```
+
+This is the exact positive network law: no individual detector need be complete, but the network
+is complete precisely when no coefficient direction is erased everywhere.
+
 The same information admits an exact source-ordered decomposition.  Let `u_N` be the component of
 `R(f^(N))` orthogonal to the span of the first `N` reported derivatives, and put
 
@@ -135,6 +150,28 @@ constant-coefficient-differentially-transcendental source, `f^(k)` itself is not
 predecessors.  Thus the first zero innovation localizes an observation-induced collapse rather
 than merely producing an unspecified blind packet.
 
+The localization is stable under downstream data processing.  For a linear decoder `D`,
+
+```text
+Prev_N(D o R) = D(Prev_N(R)),                              (15)
+I_N(D o R) <= norm(D)^2 * I_N(R).                          (16)
+```
+
+In particular, a contractive channel cannot increase conditional clock information.  More
+sharply,
+
+```text
+I_N(R) = 0  ->  I_N(D o R) = 0,                            (17)
+D injective -> (I_N(D o R) = 0 <-> I_N(R) = 0),            (18)
+D injective -> (I_N(D o R) > 0 <-> I_N(R) > 0).            (19)
+```
+
+Hence ordinary measurement, coarse graining, or decoding cannot repair a derivative direction
+already lost by a finite reporter.  Injective coordinate changes preserve the exact zero/positive
+boundary; noninjective processing can only lose more.  A nonsingular postprocessed Gram matrix
+therefore certifies that the original Gram matrix was nonsingular, with equivalence for injective
+postprocessing.
+
 ## Formalized content
 
 ### General HTGeometry layer
@@ -159,6 +196,12 @@ than merely producing an unspecified blind packet.
 - `ker_finiteDerivativeReporterMap_paired`
 - `finiteDerivativeReporterGram_paired_det_ne_zero_iff_commonKer_eq_bot`
 - `finiteDerivativeReporterGram_paired_det_eq_zero_iff_exists_commonBlindPacket`
+- `finiteFamilyDerivativeReporter`
+- `finiteDerivativeReporterMap_family_apply`
+- `finiteDerivativeReporterGram_family_eq_sum`
+- `ker_finiteDerivativeReporterMap_family`
+- `finiteDerivativeReporterGram_family_det_ne_zero_iff_iInf_ker_eq_bot`
+- `finiteDerivativeReporterGram_family_det_eq_zero_iff_exists_commonBlindPacket`
 - `finiteDerivativeReporterPreviousSpace`
 - `finiteDerivativeReporterInnovation`
 - `finiteDerivativeReporterConditionalInformation`
@@ -169,6 +212,14 @@ than merely producing an unspecified blind packet.
 - `finiteDerivativeReporterGram_det_ne_zero_iff_forall_conditionalInformation_pos`
 - `exists_finiteDerivativeReporterConditionalInformation_eq_zero`
 - `exists_finiteDerivativeReporterConditionalInformation_collapse`
+- `finiteDerivativeReporterPreviousSpace_postcomp`
+- `finiteDerivativeReporterConditionalInformation_eq_zero_postcomp`
+- `finiteDerivativeReporterConditionalInformation_postcomp_eq_zero_iff`
+- `finiteDerivativeReporterConditionalInformation_postcomp_pos_iff`
+- `finiteDerivativeReporterConditionalInformation_postcomp_le`
+- `finiteDerivativeReporterConditionalInformation_postcomp_le_of_norm_le_one`
+- `finiteDerivativeReporterGram_det_ne_zero_of_postcomp`
+- `finiteDerivativeReporterGram_postcomp_det_ne_zero_iff`
 - `exists_nonzero_finiteDerivativeReporterPacket_ker`
 - `exists_nonzero_finiteDerivativeReporterPacket_ker_of_hypertranscendental`
 
@@ -185,6 +236,7 @@ hypertranscendence and therefore enlarges the usable field beyond HT functions.
 - `xiLogDeriv_reporterGram_det_eq_zero_iff_exists_blindPacket`
 - `xiLogDeriv_add_finiteGibbs_reporterGram_det_eq_zero_iff_exists_blindPacket`
 - `exists_xiLogDeriv_finiteReporterConditionalInformation_collapse`
+- `exists_xiLogDeriv_finiteReporterConditionalInformation_dataProcessing_collapse`
 
 The Xi logarithmic derivative has the required infinite derivative rank unconditionally because
 the corpus already proves an actual simple pole.  The finite-spectral-dressing theorem then shows
@@ -196,7 +248,9 @@ Xi reporter truncation is faithful exactly when its reported-jet information mat
 nonsingular, and the criterion is unchanged by finite Gibbs dressing.
 The conditional-information consumer is sharper at the failure boundary: it unconditionally
 locates an order `k` no larger than reporter dimension whose Xi derivative is new before reporting
-but redundant afterwards.
+but redundant afterwards.  The data-processing consumer uses the same `k` and proves simultaneous
+zero conditional information and reported dependence before and after every downstream linear
+decoder, while retaining the source-level independence witness.
 
 ## Field transfer
 
@@ -219,6 +273,17 @@ but redundant afterwards.
    the exact condition under which two genetic panels or intervention regimes repair one
    another's blind directions.  Equations `(10)--(14)` identify the first derivative order at
    which a proposed reporter library ceases to add observability.
+4. **Quantum/classical data processing.**  Quantum measurements and classical decoders are
+   downstream maps from an encoded state or statistic to a coarser outcome.  Equations
+   `(15)--(19)` give a source-ordered data-processing inequality and its equality boundary: a
+   contractive decoder cannot increase the squared innovation, arbitrary linear processing
+   preserves every zero, and injective processing preserves exactly which derivative orders add
+   information.  This is a static observation law, not a claim about temporal channel evolution.
+5. **Gravitational-wave and pulsar networks.**  Network parameter estimation sums the Fisher
+   contributions of separate detectors or timing channels.  Equations `(7F)--(9F)` prove the
+   corresponding finite derivative-clock value law for heterogeneous output Hilbert spaces and
+   identify exactly when complementary interferometers, frequency bands, or pulsars remove one
+   another's blind directions.
 
 The result does not assert that a biological gene network is hypertranscendental.  It says what
 follows if an HT or more generally constant-coefficient-differentially-transcendental source is
@@ -228,7 +293,8 @@ observed through that established reporter architecture.
 
 **No-go.**  A fixed finite set of scalar reporters cannot be a faithful complete observer of an HT
 derivative clock.  Adding a finite learned latent space, a finite quantum ancilla, or a finite Gibbs
-spectral dressing does not change that conclusion.
+spectral dressing does not change that conclusion.  Nor can a later linear measurement, coarse
+graining, or decoder recover a derivative direction already erased by that reporter.
 
 **Positive replacement.**  Every chosen reporter panel canonically forces the existence of a
 nonzero hidden finite derivative packet and a first zero conditional-information reading of order
@@ -242,6 +308,7 @@ following:
 - prove that only a specified finite jet truncation is needed and certify it by the nonsingularity
   test `(5)`; or
 - fuse complementary panels and prove their blind-subspace intersection is trivial using `(9)`.
+- fuse any finite detector network and prove the total blind intersection is trivial using `(9F)`.
 
 This is a constructive research interface: the hidden packet can be fed into later strict
 Gram/quantum-geometric or source-incidence work once a source-defined reporter is supplied.
@@ -250,7 +317,9 @@ Gram/quantum-geometric or source-incidence work once a source-defined reporter i
 
 The theorem does not prove RH and does not orient an off-line Xi zero.  Its direct RH value is an
 unconditional architecture exclusion: no proof can obtain complete Xi-log-derivative observability
-from one fixed finite linear reporter panel, even after finite spectral clock dressing.
+from one fixed finite linear reporter panel, even after finite spectral clock dressing.  The new
+same-witness data-processing theorem closes a common escape hatch: appending a downstream finite
+quantum measurement or classical decoder cannot restore the lost Xi derivative information.
 
 The surviving RH route is positive and precise.  A physics-derived source reporter must either be
 cofinally infinite/nonlocal, or use the prime--Gamma completion to select a nonlinear incidence
@@ -290,8 +359,21 @@ prime--archimedean orientation.
   quantum systems*, arXiv:1111.3509.  Informational completeness is the ability of outcome
   statistics to identify the underlying state; the finite-dimensional constructions depend on
   retaining sufficient independent outcomes.
+- D. Petz and C. Ghinea, *Introduction to quantum Fisher information*, arXiv:1008.2417.  Monotone
+  quantum metrics contract under stochastic coarse graining; `(16)` is the exact elementary
+  Hilbert-space contraction law for the derivative-clock conditional information used here.
+- D. Petz, *Covariance and Fisher information in quantum mechanics*, arXiv:quant-ph/0106125.
+  Quantum Fisher information is formulated through monotonicity under coarse graining; equations
+  `(17)--(19)` isolate the zero-information and injective-equality cases needed by this corpus.
+- F. Iacovelli, M. Mancarella, S. Foffa, and M. Maggiore, *GWFAST: a Fisher information matrix
+  Python code for third-generation gravitational-wave detectors*, arXiv:2207.06910.  It evaluates
+  parameter information for networks of gravitational-wave detectors; `(7F)` is the exact abstract
+  finite-network addition law.
+- U. Dupletsa et al., *GWFish: A simulation software to evaluate parameter-estimation capabilities
+  of gravitational-wave detector networks*, arXiv:2205.02499.  Its multiband, heterogeneous
+  network setting is represented by the dependent family of output Hilbert spaces in `(7F)--(9F)`.
 
-These sources motivate the three readout interfaces.  The Lean theorem is their common elementary
+These sources motivate the five readout interfaces.  The Lean theorem is their common elementary
 rank boundary applied to the derivative-observable family; no scientific novelty is claimed for
 the linear algebra.
 
@@ -308,7 +390,18 @@ the linear algebra.
 - the capstone declarations use only the standard theorem-prover axioms in their axiom reports;
 - the conditional-information declarations use only `propext`, `Classical.choice`, and
   `Quot.sound` in their axiom reports;
-- formal lint passes;
+- one serialized targeted build was run for the new Xi data-processing module because its `.olean`
+  was absent; it cached the new HTGeometry dependency;
+- both data-processing files then passed direct `lake env lean` checks;
+- the data-processing declarations use only `propext`, `Classical.choice`, and `Quot.sound` in
+  their axiom reports;
+- one serialized targeted build was run for the finite reporter-network module because its
+  `.olean` was absent, followed by a passing direct source check;
+- the finite-network addition, kernel, completeness, and common-blind-packet declarations use only
+  `propext`, `Classical.choice`, and `Quot.sound`;
+- the lint gate reports none of the data-processing or finite-network modules as unreachable; the current
+  repo-wide lint remains blocked by unrelated modules being added concurrently without umbrella
+  imports;
 - no numerical computation and no full or self-concurrent build was run.
 
 ## Gates

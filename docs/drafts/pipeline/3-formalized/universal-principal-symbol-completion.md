@@ -1,11 +1,11 @@
 # Before There Was Time: universal principal-symbol completion by a nilpotent detector
 
 - **ID:** `universal-principal-symbol-completion`
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE / GENERALIZED CLIFFORD / HYPERTRANSCENDENCE / QUANTUM DETECTOR
-- **Scientific status:** `[CONJECTURE] [NILPOTENT DETECTOR LEAN-PROVEN] [CLOCKED COUPLING LEAN-PENDING] [NOVELTY UNVERIFIED]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM / GENERALIZED CLIFFORD / HYPERTRANSCENDENCE / QUANTUM DETECTOR
+- **Scientific status:** `[LEAN-PROVEN] [UNCONDITIONAL RELATIVE TO STATED ALGEBRAIC HYPOTHESES] [NOVELTY PROVISIONAL]`
 
-## Main conjecture
+## Main theorem
 
 Let `K` be a characteristic-zero field containing a primitive `d`th root of unity, `d>1`, and let
 `V` be finite-dimensional.  Suppose a finite linear pencil
@@ -41,10 +41,14 @@ Lambda^2 V -> End_K(M),  u wedge v |-> [A(u),A(v)]
 
 is injective.
 
-If true, every finite generalized-Clifford linearization admits a finite maximal-principal-symbol
+Thus every finite generalized-Clifford linearization admits a finite maximal-principal-symbol
 completion without changing its scalar form.  Combined with finite linearizability, every
 homogeneous form would possess a maximally noncommutative exact hypertranscendence horizon; smooth
 Waring geometry would no longer be needed for existence.
+
+The formal theorem also proves the rational differential-field consequence: the complete-jet
+dependence horizon remains exactly `F = 0`, while the full exterior derivation commutator map is
+injective.
 
 ## Proposed construction
 
@@ -98,10 +102,11 @@ with all of the following laws:
 6. the degree-two readout kills the scalar and cross sectors exactly.
 
 These laws are realized on the finite representative phase space `(I -> Z/dZ)` by boundary-killed
-shifts with the same tail-charge cocycle as the cyclic quantum torus.  The module
-`GaloisForLFunctions.HTGeometry.FiniteQuantumGrassmannRepresentation` now proves laws 1--5,
-including all-degree nilpotence and an axiom-audited exterior decoder.  Law 6 and the clocked
-coupling remain.
+shifts with the same tail-charge cocycle as the cyclic quantum torus.  The modules
+`GaloisForLFunctions.HTGeometry.FiniteQuantumGrassmannRepresentation` and
+`GaloisForLFunctions.HTGeometry.UniversalPrincipalSymbolCompletion` prove all six laws, the clocked
+coupling, exact scalar preservation, the pair decoder, exterior commutator injectivity, and the
+field-horizon theorem.
 
 ## Novelty gate
 
@@ -119,11 +124,28 @@ hypertranscendence-horizon consequence.  Absence of a hit is not a priority clai
 
 1. **Completed:** construct the truncated detector and prove its `d`th-power-zero law in Lean.
 2. **Completed:** prove ordered quadratic independence by an explicit vacuum readout.
-3. Construct the clocked tensor extension in Lean; no abstract existence hypotheses remain.
-4. Prove exact separation of degree zero, one, and two terms.
-5. Axiom-audit the scalar preservation and commutator injectivity theorems.
-6. Audit generalized-Clifford sum/product constructions from 1969--1998 for an equivalent
-   faithful-bivector statement.
+3. **Completed:** construct the clocked extension in Lean; no abstract existence hypotheses remain.
+4. **Completed:** prove exact separation of degree zero, one, and two terms.
+5. **Completed:** the narrow module build and final scalar/horizon/commutator axiom audit pass;
+   dependencies are only `propext`, `Classical.choice`, and `Quot.sound`.
+6. **Open novelty gate:** audit generalized-Clifford sum/product constructions from 1969--1998 for
+   an equivalent faithful-bivector statement.
+
+## Lean declarations
+
+File:
+`formal/GaloisForLFunctions/HTGeometry/UniversalPrincipalSymbolCompletion.lean`
+
+- `quantumPrincipalSymbolCompletion_pow`
+- `quantumPrincipalCompletionPairReadout_principalBracketPair`
+- `quantumPrincipalSymbolCompletion_principalBracketPair_linearIndependent`
+- `quantumPrincipalSymbolCompletion_endomorphismCommutatorMap_injective`
+- `quantumPrincipalSymbolCompletion_dependenceHorizon_eq_zeroLocus`
+- `quantumPrincipalSymbolCompletion_fieldHorizon_and_maximalPrincipalSymbol`
+
+The reusable minimal-hypothesis decoder is in
+`formal/GaloisForLFunctions/HTGeometry/GeneralExteriorPrincipalSymbolDecoder.lean` as
+`endomorphismCommutatorMap_injective_of_principalBracketPair_linearIndependent`.
 
 ## Physical meaning
 

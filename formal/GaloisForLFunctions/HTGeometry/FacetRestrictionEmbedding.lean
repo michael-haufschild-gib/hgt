@@ -456,3 +456,369 @@ theorem zero_zero_third_has_commonRepresentative_iff
 end
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+/-!
+## Distributive finite-family fracture descent
+
+Two-channel exactness extends to a finite family precisely when the family of gauge submodules
+obeys the required finite distributivity law.  Under that law, pairwise compatibility is already
+global effectivity, and the ambiguity of the common representative is the finite intersection.
+-/
+
+/-- Every pair of observations indexed by `s` has zero birelative compatibility defect. -/
+def familyPairwiseCompatibleOn
+    {R M ι : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    (J : ι → Submodule R M) (s : Finset ι)
+    (x : (i : ι) → M ⧸ J i) : Prop :=
+  ∀ i ∈ s, ∀ j ∈ s,
+    birelativeCompatibilityMap (J i) (J j) (x i, x j) = 0
+
+/-- The finite distributivity law needed to glue quotient observations one channel at a time. -/
+def IsFractureDistributive
+    {R M ι : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    (J : ι → Submodule R M) : Prop :=
+  ∀ (i : ι) (s : Finset ι),
+    J i ⊔ s.inf J = s.inf (fun j => J i ⊔ J j)
+
+/-- Pairwise-compatible quotient observations in a distributive finite fracture family have one
+common ambient representative. -/
+theorem exists_commonFamilyRepresentative_of_pairwiseCompatible
+    {R M ι : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    [DecidableEq ι]
+    (J : ι → Submodule R M) (hJ : IsFractureDistributive J)
+    (s : Finset ι) (x : (i : ι) → M ⧸ J i)
+    (hx : familyPairwiseCompatibleOn J s x) :
+    ∃ a : M, ∀ i ∈ s, (J i).mkQ a = x i := by
+  induction s using Finset.induction_on with
+  | empty =>
+      exact ⟨0, by simp⟩
+  | @insert i s hi ih =>
+      have hxs : familyPairwiseCompatibleOn J s x := by
+        intro j hj k hk
+        exact hx j (Finset.mem_insert_of_mem hj) k (Finset.mem_insert_of_mem hk)
+      obtain ⟨a, ha⟩ := ih hxs
+      obtain ⟨b, hb⟩ := Submodule.Quotient.mk_surjective (J i) (x i)
+      have h_each : ∀ j ∈ s, b - a ∈ J i ⊔ J j := by
+        intro j hj
+        have hc := hx i (Finset.mem_insert_self i s) j (Finset.mem_insert_of_mem hj)
+        rw [← hb, ← ha j hj] at hc
+        have hc' : (J i ⊔ J j).mkQ (b - a) = 0 := by
+          simpa only [birelativeCompatibilityMap_mk] using hc
+        apply (Submodule.Quotient.eq (J i ⊔ J j)).1
+        rw [← sub_eq_zero]
+        simpa only [map_sub] using hc'
+      have h_inf : b - a ∈ s.inf (fun j => J i ⊔ J j) := by
+        simpa only [Finset.inf_eq_iInf, Submodule.mem_iInf] using h_each
+      rw [← hJ i s] at h_inf
+      rcases Submodule.mem_sup.1 h_inf with ⟨u, hu, k, hk, huk⟩
+      refine ⟨a + k, ?_⟩
+      intro j hj
+      by_cases hji : j = i
+      · subst j
+        rw [← hb]
+        apply (Submodule.Quotient.eq (J i)).2
+        have : a + k - b = -u := by
+          calc
+            a + k - b = k - (b - a) := by abel
+            _ = k - (u + k) := by rw [huk]
+            _ = -u := by abel
+        rw [this]
+        exact (J i).neg_mem hu
+      · have hjs : j ∈ s := (Finset.mem_insert.mp hj).resolve_left hji
+        rw [← ha j hjs]
+        apply (Submodule.Quotient.eq (J j)).2
+        have : a + k - a = k := by abel
+        rw [this]
+        have hle : s.inf J ≤ J j := Finset.inf_le_of_le hjs le_rfl
+        exact hle hk
+
+/-- **Distributive fracture H0 law.**  Pairwise compatibility is equivalent to existence of a
+common representative for every finite distributive family of quotient channels. -/
+theorem exists_commonFamilyRepresentative_iff
+    {R M ι : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    [DecidableEq ι]
+    (J : ι → Submodule R M) (hJ : IsFractureDistributive J)
+    (s : Finset ι) (x : (i : ι) → M ⧸ J i) :
+    (∃ a : M, ∀ i ∈ s, (J i).mkQ a = x i) ↔
+      familyPairwiseCompatibleOn J s x := by
+  constructor
+  · rintro ⟨a, ha⟩ i hi j hj
+    rw [← ha i hi, ← ha j hj]
+    rw [birelativeCompatibilityMap_mk]
+    simp
+  · exact exists_commonFamilyRepresentative_of_pairwiseCompatible J hJ s x
+
+/-- Common representatives of a complete finite family differ by the intersection of all gauge
+submodules. -/
+theorem commonFamilyRepresentative_sub_mem_inf
+    {R M ι : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    [DecidableEq ι]
+    (J : ι → Submodule R M) (s : Finset ι) {a b : M}
+    (h : ∀ i ∈ s, (J i).mkQ a = (J i).mkQ b) :
+    a - b ∈ s.inf J := by
+  induction s using Finset.induction_on with
+  | empty => simp
+  | @insert i s hi ih =>
+      rw [Finset.inf_insert]
+      constructor
+      · exact (Submodule.Quotient.eq (J i)).1
+          (h i (Finset.mem_insert_self i s))
+      · apply ih
+        intro j hj
+        exact h j (Finset.mem_insert_of_mem hj)
+
+end
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open Finset MvPolynomial
+
+noncomputable section
+
+/-!
+## Effective descent for coordinate-facet channels
+
+Arbitrary quotient channels can have genuine higher interaction obstructions.  Coordinate-facet
+ideals are different: their monomial support law makes their finite lattice distributive.  Hence
+pairwise-compatible facet observations have one global polynomial representative, unique modulo
+the Stanley--Reisner nonface ideal.
+-/
+
+variable {R α : Type*} [CommRing R] [DecidableEq α]
+
+/-- The sum of two coordinate-facet ideals is the coordinate ideal of the facet intersection. -/
+theorem facetIdeal_sup (F G : Finset α) :
+    facetIdeal R F ⊔ facetIdeal R G = facetIdeal R (F ∩ G) := by
+  rw [facetIdeal, facetIdeal, facetIdeal, ← Ideal.span_union, ← Set.image_union]
+  congr 1
+  ext i
+  constructor
+  · rintro ⟨x, hx, rfl⟩
+    exact ⟨x, by simpa only [Finset.mem_inter, not_and_or] using hx, rfl⟩
+  · rintro ⟨x, hx, rfl⟩
+    exact ⟨x, by simpa only [Finset.mem_inter, not_and_or] using hx, rfl⟩
+
+/-- Coordinate-facet ideals obey the finite distributivity law needed for fracture descent. -/
+theorem facetIdeal_isFractureDistributive :
+    IsFractureDistributive
+      (facetIdeal R : Finset α → Ideal (MvPolynomial α R)) := by
+  intro F s
+  apply le_antisymm
+  · apply Finset.le_inf
+    intro G hG
+    exact sup_le_sup_left (Finset.inf_le_of_le hG le_rfl) _
+  · intro P hP
+    rw [MvPolynomial.as_sum P]
+    apply Ideal.sum_mem
+    intro d hd
+    by_cases hdF : d.support ⊆ F
+    · apply (show s.inf (facetIdeal R) ≤
+        facetIdeal R F ⊔ s.inf (facetIdeal R) from le_sup_right)
+      rw [Finset.inf_eq_iInf]
+      simp only [Ideal.mem_iInf]
+      intro G hG
+      rw [mem_facetIdeal_iff]
+      intro e he heG
+      have hcoeff : coeff d P ≠ 0 := Finsupp.mem_support_iff.mp hd
+      have hed : d = e := by simpa [hcoeff] using he
+      subst e
+      have hPG : P ∈ facetIdeal R (F ∩ G) := by
+        rw [← facetIdeal_sup]
+        have hle : s.inf (fun G => facetIdeal R F ⊔ facetIdeal R G) ≤
+            facetIdeal R F ⊔ facetIdeal R G :=
+          Finset.inf_le_of_le hG le_rfl
+        exact hle hP
+      exact (mem_facetIdeal_iff (R := R) (F ∩ G) P).mp hPG d hd
+        (Finset.subset_inter hdF heG)
+    · apply (show facetIdeal R F ≤
+        facetIdeal R F ⊔ s.inf (facetIdeal R) from le_sup_left)
+      rw [mem_facetIdeal_iff]
+      intro e he heF
+      have hcoeff : coeff d P ≠ 0 := Finsupp.mem_support_iff.mp hd
+      have hed : d = e := by simpa [hcoeff] using he
+      subst e
+      exact hdF heF
+
+/-- **Coordinate-facet effectivity.**  A finite packet of facet quotient observations has one
+global polynomial representative exactly when all of its pairwise compatibility defects vanish. -/
+theorem exists_commonFacetPolynomialRepresentative_iff
+    (s : Finset (Finset α))
+    (x : (F : Finset α) → MvPolynomial α R ⧸ (facetIdeal R F)) :
+    (∃ P : MvPolynomial α R, ∀ F ∈ s, (facetIdeal R F).mkQ P = x F) ↔
+      familyPairwiseCompatibleOn (facetIdeal R) s x :=
+  exists_commonFamilyRepresentative_iff
+    (facetIdeal R) facetIdeal_isFractureDistributive s x
+
+/-- Two global representatives of the same complete finite facet packet differ by the
+Stanley--Reisner nonface ideal of that facet family. -/
+theorem commonFacetPolynomialRepresentative_sub_mem_stanleyReisnerIdeal
+    (s : Finset (Finset α)) {P Q : MvPolynomial α R}
+    (h : ∀ F ∈ s, (facetIdeal R F).mkQ P = (facetIdeal R F).mkQ Q) :
+    P - Q ∈ stanleyReisnerIdeal R s := by
+  rw [stanleyReisnerIdeal_eq_inf_facetIdeal]
+  exact commonFamilyRepresentative_sub_mem_inf (facetIdeal R) s h
+
+end
+
+end GaloisForLFunctions.HTGeometry
+namespace GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+/-!
+## Calibrated fracture incidence
+
+Compatible local observations determine a torsor under the intersection of the gauge submodules.
+A calibration does two logically different jobs on that torsor.  Its image on the intersection
+controls existence of a prescribed calibrated lift; its kernel on the intersection controls
+uniqueness.  The quotient by the image is the exact residual incidence obstruction.
+-/
+
+/-- The obstruction to changing a common representative `a` to one with calibration `target`,
+measured modulo all calibration changes invisible to the finite fracture packet. -/
+def calibratedFractureDefect
+    {R M N ι : Type*} [CommRing R]
+    [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
+    (J : ι → Submodule R M) (s : Finset ι)
+    (calibration : M →ₗ[R] N) (a : M) (target : N) :
+    N ⧸ (s.inf J).map calibration :=
+  ((s.inf J).map calibration).mkQ (target - calibration a)
+
+/-- The calibrated defect is independent of which common representative of the same finite
+fracture packet is used to compute it. -/
+theorem calibratedFractureDefect_eq_of_commonRepresentatives
+    {R M N ι : Type*} [CommRing R]
+    [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
+    [DecidableEq ι]
+    (J : ι → Submodule R M) (s : Finset ι)
+    (calibration : M →ₗ[R] N) {a b : M} (target : N)
+    (h : ∀ i ∈ s, (J i).mkQ a = (J i).mkQ b) :
+    calibratedFractureDefect J s calibration a target =
+      calibratedFractureDefect J s calibration b target := by
+  apply (Submodule.Quotient.eq ((s.inf J).map calibration)).2
+  have hab : a - b ∈ s.inf J :=
+    commonFamilyRepresentative_sub_mem_inf J s h
+  have hba : b - a ∈ s.inf J := by
+    simpa only [neg_sub] using (s.inf J).neg_mem hab
+  have hcalc :
+      (target - calibration a) - (target - calibration b) =
+        calibration (b - a) := by
+    rw [map_sub]
+    abel
+  rw [hcalc]
+  exact Submodule.mem_map_of_mem hba
+
+/-- **Exact calibrated-incidence obstruction.**  Once one common representative `a` exists, a
+representative with prescribed calibration exists exactly when the calibrated fracture defect
+vanishes in the quotient by the calibration image of the residual gauge intersection. -/
+theorem exists_calibratedFamilyRepresentative_iff_defect_eq_zero
+    {R M N ι : Type*} [CommRing R]
+    [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
+    [DecidableEq ι]
+    (J : ι → Submodule R M) (s : Finset ι)
+    (x : (i : ι) → M ⧸ J i)
+    (calibration : M →ₗ[R] N) (a : M) (target : N)
+    (ha : ∀ i ∈ s, (J i).mkQ a = x i) :
+    (∃ b : M, (∀ i ∈ s, (J i).mkQ b = x i) ∧ calibration b = target) ↔
+      calibratedFractureDefect J s calibration a target = 0 := by
+  constructor
+  · rintro ⟨b, hb, hcal⟩
+    apply (Submodule.Quotient.eq ((s.inf J).map calibration)).2
+    have hba : b - a ∈ s.inf J :=
+      commonFamilyRepresentative_sub_mem_inf J s (by
+        intro i hi
+        exact (hb i hi).trans (ha i hi).symm)
+    change target - calibration a - 0 ∈ (s.inf J).map calibration
+    rw [sub_zero, ← hcal, ← map_sub]
+    exact Submodule.mem_map_of_mem hba
+  · intro hzero
+    have hmem : target - calibration a ∈ (s.inf J).map calibration := by
+      change ((s.inf J).map calibration).mkQ (target - calibration a) = 0 at hzero
+      exact (Submodule.Quotient.mk_eq_zero ((s.inf J).map calibration)).mp hzero
+    rcases hmem with ⟨k, hk, hcal⟩
+    refine ⟨a + k, ?_, ?_⟩
+    · intro i hi
+      rw [← ha i hi]
+      apply (Submodule.Quotient.eq (J i)).2
+      change a + k - a ∈ J i
+      rw [add_sub_cancel_left]
+      have hle : s.inf J ≤ J i := Finset.inf_le_of_le hi le_rfl
+      exact hle hk
+    · rw [map_add, hcal]
+      abel
+
+/-- Two representatives with the same finite fracture packet and the same calibration differ by
+exactly an element of the gauge intersection killed by the calibration. -/
+theorem calibratedFamilyRepresentative_sub_mem_inf_inf_ker
+    {R M N ι : Type*} [CommRing R]
+    [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
+    [DecidableEq ι]
+    (J : ι → Submodule R M) (s : Finset ι)
+    (calibration : M →ₗ[R] N) {a b : M}
+    (hlocal : ∀ i ∈ s, (J i).mkQ a = (J i).mkQ b)
+    (hcal : calibration a = calibration b) :
+    a - b ∈ s.inf J ⊓ LinearMap.ker calibration := by
+  constructor
+  · exact commonFamilyRepresentative_sub_mem_inf J s hlocal
+  · change calibration (a - b) = 0
+    rw [map_sub, hcal, sub_self]
+
+/-- If the calibration kills no nonzero residual gauge, a calibrated representative is unique. -/
+theorem calibratedFamilyRepresentative_eq_of_inf_inf_ker_eq_bot
+    {R M N ι : Type*} [CommRing R]
+    [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
+    [DecidableEq ι]
+    (J : ι → Submodule R M) (s : Finset ι)
+    (calibration : M →ₗ[R] N) {a b : M}
+    (hlocal : ∀ i ∈ s, (J i).mkQ a = (J i).mkQ b)
+    (hcal : calibration a = calibration b)
+    (hseparates : s.inf J ⊓ LinearMap.ker calibration = ⊥) :
+    a = b := by
+  apply sub_eq_zero.mp
+  have hmem := calibratedFamilyRepresentative_sub_mem_inf_inf_ker
+    J s calibration hlocal hcal
+  rw [hseparates] at hmem
+  simpa using hmem
+
+/-- **Pointed fracture reconstruction.**  If the calibration realizes every value along the
+residual gauge intersection and separates that intersection, then every compatible finite packet
+and every prescribed calibration have one unique common representative. -/
+theorem existsUnique_calibratedFamilyRepresentative
+    {R M N ι : Type*} [CommRing R]
+    [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
+    [DecidableEq ι]
+    (J : ι → Submodule R M) (hJ : IsFractureDistributive J)
+    (s : Finset ι) (x : (i : ι) → M ⧸ J i)
+    (hx : familyPairwiseCompatibleOn J s x)
+    (calibration : M →ₗ[R] N) (target : N)
+    (hsurjective : (s.inf J).map calibration = ⊤)
+    (hseparates : s.inf J ⊓ LinearMap.ker calibration = ⊥) :
+    ∃! a : M, (∀ i ∈ s, (J i).mkQ a = x i) ∧ calibration a = target := by
+  obtain ⟨a, ha⟩ :=
+    exists_commonFamilyRepresentative_of_pairwiseCompatible J hJ s x hx
+  have hdefect : calibratedFractureDefect J s calibration a target = 0 := by
+    change ((s.inf J).map calibration).mkQ (target - calibration a) = 0
+    exact (Submodule.Quotient.mk_eq_zero ((s.inf J).map calibration)).mpr (by
+      rw [hsurjective]
+      simp)
+  obtain ⟨b, hb, hcal⟩ :=
+    (exists_calibratedFamilyRepresentative_iff_defect_eq_zero
+      J s x calibration a target ha).2 hdefect
+  refine ⟨b, ⟨hb, hcal⟩, ?_⟩
+  intro c hc
+  exact calibratedFamilyRepresentative_eq_of_inf_inf_ker_eq_bot
+    J s calibration
+    (by
+      intro i hi
+      exact (hc.1 i hi).trans (hb i hi).symm)
+    (hc.2.trans hcal.symm) hseparates
+
+end
+
+end GaloisForLFunctions.HTGeometry

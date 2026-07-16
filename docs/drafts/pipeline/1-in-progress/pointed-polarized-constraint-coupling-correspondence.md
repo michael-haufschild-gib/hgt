@@ -441,6 +441,57 @@ residues also classify only this `H_0` layer.  Their completeness is not a deriv
            higher homotopies remain visible without admitting arbitrary exterior stabilization.
 ```
 
+The multiple-gamma facet-descent theorem now gives the exact opposite boundary.  For its
+squarefree structural orbit module, every pairwise-compatible coordinate-facet packet has one
+global representative, unique modulo the DA annihilator, and the full augmented facet complex is
+exact.  Nevertheless arbitrary iteration in fewer than the critical number of source directions
+remains HT.  Therefore HT capacity can occupy `H_0` of a completely effective descent object.
+
+```text
+[NO-GO] hypertranscendence itself is the nonzero Cech obstruction of the unpolarized DA quotient;
+[POSITIVE] kinematic descent reconstructs the ambient primitive class, while rho_F tests whether
+           that class lands in the pointed polarized critical-Tate admissible locus.
+```
+
+This identifies the role of `(6a)` more sharply.  The fracture complex presents `A_F` and
+`Prim_F`; it is not a rival unified object.  Even when the ambient common lift exists uniquely,
+`Inc_F` can remain empty or acquire nontrivial polarized, bornological, integral, or boundary
+homotopy.  See
+`../2-fully-proven/new_scientific_knowledge/multiple-gamma-effective-fracture-descent-orthogonality.md`.
+
+The calibrated finite-fracture theorem now computes the linear incidence fibre.  If `K_s` is the
+intersection ambiguity of a compatible local packet and `c:K_s->N` is the restricted source
+calibration, then a prescribed pointing has obstruction in `coker(c)` and, when effective, its
+space of choices is a torsor under `ker(c)`.  Surjectivity and separation give a unique pointed
+lift for every target.  This is the first literal instance of `(6a)`:
+
+```text
+empty incidence       = nonzero calibration cokernel class,
+boundary noncanonicity = nonzero calibration kernel.       (6b)
+```
+
+The nonlinear open core is therefore not to invent more obstruction groups.  It is to construct
+the source-canonical derived calibration morphism whose cone replaces `(6b)` while retaining
+polarization, bornology, integral structure, and source restriction.  See
+`../3-formalized/not_new_scientific_knowledge/calibrated-fracture-incidence-kernel-cokernel.md`.
+
+Polarization adds an exact third possibility.  For a proper positive source cone `C` and a
+continuous realization `f`, the target may lie in `closure(f(C))` without lying in `f(C)`.  Then
+every continuous dual positivity reporter is nonnegative and cofinal positive approximants may
+exist, but the effective incidence fibre is empty.  If `f(C)` is closed, this phase disappears and
+Farkas duality becomes an exact alternative between a positive lift and a strict dual certificate.
+
+```text
+phase I   = exact positive incidence;
+phase II  = closure-only critical nonattainment;
+phase III = strict dual-detectable positivity failure.       (6c)
+```
+
+This refines the conjectural common object: the critical bornology must be part of `beta_F`
+because it decides whether the polarized image is closed.  Algebraic positivity and all dual
+inequalities determine only its closure.  See
+`../3-formalized/not_new_scientific_knowledge/polarized-fracture-incidence-trichotomy.md`.
+
 The arbitrary-presentation version is now ruled out: zero generators preserve the classical ideal
 while manufacturing an exterior algebra of relations.  Minimalization removes that artifact at a
 fixed face, but it is noncanonical under source restriction.  In the normal-crossing tower the
@@ -593,6 +644,12 @@ or that inserts the global germ into `beta_F`, fails the target.
 - [x] prove constraint topology is independent of finite residue orientation
 - [x] prove both vary inside one fixed differential field
 - [x] identify analytic coupling as the missing datum
+- [x] prove exact kinematic facet descent can coexist with arbitrary-depth HT persistence
+- [x] localize the residual obstruction from unpolarized Cech gluing to enriched incidence
+- [x] compute linearized enriched incidence as one calibration kernel--cokernel complex
+- [x] prove a surjective separating calibration gives one unique effective lift
+- [x] prove the exact/closure-only/dual-certificate polarized incidence trichotomy
+- [x] identify critical bornology with the closed-image promotion problem
 - [x] prove the finite jet fields cannot form an inverse system
 - [x] prove the free countable Kähler packet and its affine-origin no-go
 - [x] replace the single-perfect-complex architecture by a critical Tate coupling

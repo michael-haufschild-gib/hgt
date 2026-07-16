@@ -123,6 +123,30 @@ Thus the source-puncture and negative-mode gates are closed for the Euler specia
 general HT theorem remains open: an arbitrary constrained HT source need not carry a
 multiplicative Dirichlet monoid or a reflection-fixed scale coordinate.
 
+## Gamma source puncture `[PROVED; LEAN-FORMALIZED BRIDGE]`
+
+The inverse-Gamma exterior supplies a second actual source puncture without selecting an Xi zero.
+On its logarithmic cover, put
+
+```text
+y(z)=-exp(-z),             t(z)=exp(z).
+```
+
+For every sufficiently late inverse sheet `I_n`, Lean proves
+
+```text
+Gamma(I_n(y(z)))=y(z),
+t(z)=-1/y(z),              t(z)^(-1)=-y(z),
+I_n(y(z+2*pi*i))=I_n(y(z)).                              (2e)
+```
+
+Thus the Gamma source itself supplies both scalar Laurent halves and the deck cover.  This closes
+the source-puncture gate for the Gamma branch-clock row.  It does **not** close the negative-current
+gate: the scalar functions in `(2e)` have not been identified with the negative `A2` arc action,
+the affine residue cocycle, or the Xi prime-packet norm.  The tempting Xi-Hurwitz
+“identification” was rejected because both sides were definitionally the same exponential
+character and therefore added no proof content.
+
 ## Plucker packet and positive level
 
 For an Xi fibre, let `a_p` be the canonical prime seam and use reciprocal-prime weights.  The
@@ -189,6 +213,8 @@ obstruction and explains why pointwise cocycle boundedness is irrelevant.
       pairing;
 - [ ] connect the nonnegative half to the formalized `A2` projective-horizon current modes;
 - [x] formalize the weighted Plucker/Gram identity `(3)` for the Xi pair energy;
+- [x] derive the inverse-Gamma source puncture and its positive/negative scalar Laurent coordinates;
+- [ ] identify the inverse-Gamma scalar negative modes with the negative `A2` current action;
 - [x] derive the source-pure positive-rational Laurent double for the Euler specialization;
 - [x] identify its reflected negative modes and exact opposite-mode residue weights;
 - [x] formalize the Euler real-frequency characters, reflection, residue pairing, prime seams, and

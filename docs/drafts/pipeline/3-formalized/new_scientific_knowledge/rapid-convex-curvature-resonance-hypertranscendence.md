@@ -1,7 +1,7 @@
 # Rapid Convex Taylor Magnitudes: Curvature Resonance Is the Only DA Escape
 
 - **ID:** `rapid-convex-curvature-resonance-hypertranscendence`
-- **Stage:** 2-fully-proven / needs scientific-novelty audit
+- **Stage:** 3-formalized / needs scientific-novelty audit
 - **Type:** THEOREM CANDIDATE / GENERAL HT LAW / RATIO-ONE CURVATURE CONSTRAINT
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [SIGNIFICANT]`
 - **Statement:** For an admissibly rapid, discretely convex logarithmic Taylor-magnitude profile, differential algebraicity forces one fixed Laurent relation in the discrete curvature `Delta^2 b` to return to logarithmic width infinitely often. Shift-separation of the curvature therefore forces hypertranscendence for every coefficient phase.
@@ -245,14 +245,20 @@ The theorem makes HT status constant over every phase fiber satisfying `(KLSS)`.
 
 ## Lean status
 
-No Lean formalization is claimed. The whole theorem would require the missing Mahler normalization and generic coefficient-extraction substrate, plus discrete convex balancing and Laurent factorization. The card cannot move to stage 3 until the unconditional theorem is fully formalized.
+The theorem and its log-Weibull corollaries are formalized unconditionally in Lean 4.
+
+- `formal/GaloisForLFunctions/HTGeometry/RapidConvexCurvatureResonance.lean` contains the generic discrete-convex confinement, integer shift-operator factorization, ADE bend extraction, recurrent curvature-resonance law, and shift-separation hypertranscendence theorem.
+- `formal/GaloisForLFunctions/HTGeometry/LogWeibullFiniteDifference.lean` contains the all-order log-Weibull derivative asymptotic, arbitrary first-surviving-moment finite-difference asymptotic, fixed-shift stability, and logarithmic domination theorem.
+- `formal/GaloisForLFunctions/HTGeometry/RapidConvexCurvatureResonanceHypertranscendence.lean` proves log-Weibull admissibility, curvature shift-separation, finite-prefix invariance, the eventual magnitude and log-magnitude corollaries, and hypertranscendence of every arbitrary-phase log-Weibull entire function.
+
+The formal resonance theorem is slightly stronger than the paper interface: monotonicity of the discrete curvature is not required, and curvature positivity is needed only eventually. The checked theorem surface uses only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
 - [x] Exact candidate law and scale-separated corollary stated.
 - [x] Complete unconditional paper proof.
 - [ ] Parent-theory and literature novelty gates.
-- [ ] Whole theorem formalized unconditionally in Lean.
+- [x] Whole theorem formalized unconditionally in Lean.
 
 ## Log
 
