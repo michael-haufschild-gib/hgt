@@ -232,6 +232,15 @@ The diagonal and fractional-power facts in `(15)`--`(16)` are `[BRIDGE]` operato
 role is to identify the analytic completion of the physical fat-point obstruction, not to supply
 novelty by themselves.
 
+The new period-gauge complementarity theorem gives the nonclosed-range phase a strong positive
+counterpart.  For every integral period submodule, failure of a continuous incidence left inverse
+forces all global meromorphic source-fixed gauges to be constant.  Thus the rank-three
+multiple-Gamma source trades global attainment for gauge rigidity: one calibration separating
+constants reconstructs the meromorphic primitive even though no uniform incidence inverse exists.
+Conversely, a nonconstant periodic gauge can occur only in the discrete uniformly effective phase.
+See
+`../../3-formalized/new_scientific_knowledge/period-gauge-attainment-complementarity.md`.
+
 For the full order-`r` source, `(15)` is only the atomic incidence coordinate.  Equation `(3)`
 forces the complete physical multiplier and its positive half-density to be
 

@@ -1,9 +1,9 @@
 # Projective tail defects obey a finite-source Hurwitz budget
 
 - **ID:** nonautonomous-projective-tail-defect-collapse-law
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Scientific status:** `[PROVED HERE] [LEAN FORMALIZED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** rational projective-connection pullback + genus-zero Riemann--Hurwitz
 - **Statement:** A fixed rational projective connection on the source sphere cannot be the pullback of hyperbolic projective-orbifold connections through rational maps of unbounded degree.  Irregular terminal singularities have a degree-amplified defect, at most two terminal fibres can remain non-orbifold, and a hyperbolic orbifold core forces the explicit bound `degree <= 42(|S|-2)`, where `S` is the fixed source singular set.
 
@@ -182,14 +182,22 @@ constructed here, so there is no direct RH implication.
 ## Lean status
 
 `NonautonomousProjectiveTailCollapse.lean` formalizes the affine shifted-residue law, the
-projective exponent-discriminant law, the genus-zero marked-fibre budget, the three trapped-fibre
-cutoff, the normalized projective excess budget, and the algebraic consequence of the `1/42`
-Hurwitz gap.  The analytic interpretation of rational projective connections and the orbifold
-signature lemma remain paper-level rather than being asserted as axioms.
+projective exponent-discriminant law, the exact pulled-back pole order
+`2+e(r-2)`, and the analytic fact that a Schwarzian term of order at least `-2` cannot cancel an
+irregular principal part.  It then proves the fibrewise inequality `D I_y <= I_0` and the
+finite-transient conclusion that `D>I_0` forces every terminal pole to be Fuchsian.  The same
+module formalizes the genus-zero marked-fibre budget, the three trapped-fibre cutoff, the
+normalized projective excess budget, and the algebraic consequence of the `1/42` Hurwitz gap.
+
+`HurwitzOrbifoldGap.lean`, imported by the collapse module, proves the missing integral-signature
+input directly: every ordered hyperbolic triangle signature has excess at least `1/42`, with
+equality at `(2,3,7)`.  Thus all promoted theorem surfaces in Theorems A--D are represented by
+axiom-clean Lean declarations; projective connections are encoded through their local meromorphic
+principal parts and finite fibre data rather than through an opaque global analytic axiom.
 
 ## Gates
 
 - [x] 0 -> 1: exact source-pure statement and non-Galois fibre formulation
 - [x] 1 -> 2: complete local and global defect proof
-- [ ] 2 -> 3: formalize the local divisor interpretation and Hurwitz signature gap
+- [x] 2 -> 3: local divisor interpretation and Hurwitz signature gap formalized
 - [ ] 3 -> 4: primary-source novelty audit and independent projective-structure review

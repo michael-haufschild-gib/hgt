@@ -1,9 +1,9 @@
 # Twisted affine scalar-boundary incompleteness and curvature necessity
 
 - **ID:** `twisted-affine-scalar-boundary-incompleteness`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / COUNTEREXAMPLE SCHEME
-- **Scientific status:** `[PROVED HERE] [ABSTRACT CORE FORMALIZED] [POSITIVE CURVATURE THEOREM]`
+- **Scientific status:** `[PROVED HERE] [LEAN FORMALIZED] [POSITIVE CURVATURE THEOREM]`
 - **Statement:** A scalar simultaneous boundary class can have full non-torsion clock capacity
   while the associated affine observable is already in the base field.  The discrepancy is
   exactly a nontrivial semilinear gauge class of the linear source action.  Therefore scalar
@@ -235,8 +235,23 @@ in `GaloisForLFunctions.HTGeometry.SourceLogarithmicBoundary`.  The proof uses t
 simultaneous-telescoping predicate and the exact gauge `(k-P(D)h)/2`.  It passed direct module
 checking and depends only on the standard Mathlib logical axioms.
 
-The rational discrete-residue instantiation remains paper-level until the project has a rational
-summation-residue library.
+The same module now formalizes Theorems B--D through the coefficient-aware additive map
+
+```text
+u |-> (tau_i(u)-A_i u)_i.
+```
+
+Its quotient class of `(tau_i(h)+h)_i` is exactly zero for `A_i=-1`; the transformed coefficient
+`-tau_i(B)/B` equals one exactly when `tau_i(B)=-B`; and a simultaneous trivialization
+`tau_i(B)A_i=B` transports every twisted coboundary to an ordinary translation coboundary.
+
+The concrete rational-shift obstruction is also formalized.  Squaring a hypothetical nonzero
+anti-invariant rational quotient makes it unit-shift periodic, after which the existing
+shift-periodic quotient theorem forces it to be constant and yields a contradiction.  For every
+nonzero constant-coefficient differential operator `P(D)`, Lean proves that `P(D)(1/z)` has one
+and only one pole on the integer orbit and therefore cannot equal `g(z+1)-g(z)` for any meromorphic
+`g` with finite orbit-pole support; rational functions are a special case.  These declarations
+complete the rational model without an opaque summability axiom.
 
 ## Log
 

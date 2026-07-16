@@ -83,6 +83,13 @@ the period-incidence representation has a continuous left inverse
 Thus the rationally independent rank-three source has no continuous global left inverse.  The
 obstruction is uniform effectivity, not algebraic invertibility of the individual characters.
 
+The no-go has an exact positive successor.  The same nondiscrete period geometry forces every
+global meromorphic source-fixed gauge to be constant.  More generally, Lean proves that failure of
+a continuous period-incidence left inverse implies maximal meromorphic gauge rigidity, while a
+nonconstant fixed gauge implies uniform left invertibility.  Hence global nonattainment and
+nonconstant boundary gauge are complementary period-closure phases; see
+`../new_scientific_knowledge/period-gauge-attainment-complementarity.md`.
+
 ```text
 [NO-GO]
 Fibrewise exact DA--meromorphic comparison implies a bounded or closed-range global source lift.

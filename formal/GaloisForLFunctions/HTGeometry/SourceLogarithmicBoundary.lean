@@ -1,5 +1,8 @@
 import GaloisForLFunctions.HTGeometry.AutomorphismFamilyOstrowski
 import GaloisForLFunctions.HTGeometry.FiniteDifferentialCircuitBoundary
+import GaloisForLFunctions.HTGeometry.HolderDifferenceBricks
+import GaloisForLFunctions.HTGeometry.MeromorphicPoleOrbitBoundary
+import GaloisForLFunctions.HTGeometry.MeromorphicSimplePoleDifferentialOperator
 
 /-!
 # Source-logarithmic boundary exactness
@@ -497,6 +500,154 @@ theorem automorphismFamily_no_telescoping_tau_add_self
   rw [htwo]
   field_simp
   linear_combination halli
+
+/-- The coefficient-aware affine boundary map `u ↦ (τᵢ(u) - Aᵢu)ᵢ`.  Its additive quotient is
+the correct extension-class space for a fixed one-dimensional semilinear coefficient system. -/
+def twistedAffineBoundaryMap
+    {I K : Type*} [Ring K] (tau : I → K ≃+* K) (A : I → K) :
+    K →+ (I → K) where
+  toFun u i := tau i u - A i * u
+  map_zero' := by
+    ext i
+    simp
+  map_add' u v := by
+    ext i
+    simp [mul_add]
+    abel
+
+/-- Coboundaries for the fixed affine coefficient system. -/
+def twistedAffineBoundarySubgroup
+    {I K : Type*} [Ring K] (tau : I → K ≃+* K) (A : I → K) :
+    AddSubgroup (I → K) :=
+  (twistedAffineBoundaryMap tau A).range
+
+/-- The coefficient-aware boundary class of an affine increment family. -/
+def twistedAffineBoundaryClass
+    {I K : Type*} [Ring K] (tau : I → K ≃+* K) (A omega : I → K) :
+    (I → K) ⧸ twistedAffineBoundarySubgroup tau A :=
+  QuotientAddGroup.mk omega
+
+/-- In the `Aᵢ = -1` local system, the increment `τᵢ(h)+h` is the literal coboundary of `h`.
+Thus its coefficient-aware boundary class is zero even when its ordinary translation-boundary
+class is non-torsion. -/
+@[simp]
+theorem twistedAffineBoundaryClass_tau_add_self_eq_zero
+    {I K : Type*} [Ring K] (tau : I → K ≃+* K) (h : K) :
+    twistedAffineBoundaryClass tau (fun _ => -1) (fun i => tau i h + h) = 0 := by
+  rw [twistedAffineBoundaryClass, QuotientAddGroup.eq_zero_iff]
+  exact ⟨h, by
+    ext i
+    simp [twistedAffineBoundaryMap]⟩
+
+/-- The base observable realizes the twisted affine law identically. -/
+theorem twistedAffine_baseObservable_identity
+    {I K : Type*} [Ring K] (tau : I → K ≃+* K) (h : K) (i : I) :
+    tau i h = -h + (tau i h + h) := by
+  abel
+
+/-- The transformed linear coefficient `-τ(B)/B` is trivial exactly when `B` is a common
+anti-invariant unit.  This is the precise simultaneous gauge obstruction. -/
+theorem twistedAffine_gaugeLinearPart_eq_one_iff
+    {K : Type*} [Field K] (x B : K) (hB : B ≠ 0) :
+    -x / B = 1 ↔ x = -B := by
+  constructor
+  · intro h
+    have hmul : -x = 1 * B := (div_eq_iff hB).mp h
+    linear_combination -hmul
+  · intro h
+    rw [h]
+    simp [hB]
+
+/-- A gauge trivialization transports the twisted coboundary to an ordinary translation
+coboundary.  Under `τᵢ(B) Aᵢ = B`, the coordinate scaling is the nonzero factor `τᵢ(B)`. -/
+theorem twistedAffineBoundary_gauge_transport
+    {I K : Type*} [Field K] (tau : I → K ≃+* K) (A : I → K)
+    (B u : K) (htriv : ∀ i, tau i B * A i = B) (i : I) :
+    tau i (B * u) - B * u = tau i B * (tau i u - A i * u) := by
+  have hBu : B * u = (tau i B * A i) * u := congrArg (· * u) (htriv i).symm
+  rw [map_mul, hBu]
+  ring
+
+/-- No nonzero reduced rational quotient can transform by the sign character under unit shift.
+Squaring would make the quotient shift-periodic, and the existing periodic-quotient theorem then
+forces numerator and denominator to be constant, contradicting anti-periodicity. -/
+theorem no_nonzero_shiftAntiInvariant_quotient
+    {p q : Polynomial ℂ} (hco : IsCoprime p q) (hp : p ≠ 0) (hq : q ≠ 0)
+    (hanti : p.comp (Polynomial.X + Polynomial.C 1) * q =
+      -(p * q.comp (Polynomial.X + Polynomial.C 1))) : False := by
+  let S : Polynomial ℂ := Polynomial.X + Polynomial.C 1
+  have hantiS : p.comp S * q = -(p * q.comp S) := by
+    simpa [S] using hanti
+  have hsquare : (p ^ 2).comp S * q ^ 2 = p ^ 2 * (q ^ 2).comp S := by
+    calc
+      (p ^ 2).comp S * q ^ 2 = (p.comp S) ^ 2 * q ^ 2 := by
+        rw [Polynomial.pow_comp]
+      _ = (p.comp S * q) ^ 2 := by ring
+      _ = (-(p * q.comp S)) ^ 2 := congrArg (· ^ 2) hantiS
+      _ = (p * q.comp S) ^ 2 := by ring
+      _ = p ^ 2 * (q.comp S) ^ 2 := by ring
+      _ = p ^ 2 * (q ^ 2).comp S := by rw [Polynomial.pow_comp]
+  have hcopow : IsCoprime (p ^ 2) (q ^ 2) := hco.pow
+  obtain ⟨a, b, hpconst, hqconst⟩ :=
+    shift_periodic_quotient_constant hcopow (by simpa [S] using hsquare)
+  have hpdeg : p.natDegree = 0 := by
+    have hdeg := congrArg Polynomial.natDegree hpconst
+    rw [Polynomial.natDegree_pow p 2] at hdeg
+    simp at hdeg
+    omega
+  have hqdeg : q.natDegree = 0 := by
+    have hdeg := congrArg Polynomial.natDegree hqconst
+    rw [Polynomial.natDegree_pow q 2] at hdeg
+    simp at hdeg
+    omega
+  obtain ⟨c, hpc⟩ := Polynomial.natDegree_eq_zero.mp hpdeg
+  obtain ⟨d, hqd⟩ := Polynomial.natDegree_eq_zero.mp hqdeg
+  have hc : c ≠ 0 := by
+    intro hc0
+    apply hp
+    rw [← hpc, hc0]
+    simp
+  have hd : d ≠ 0 := by
+    intro hd0
+    apply hq
+    rw [← hqd, hd0]
+    simp
+  rw [← hpc, ← hqd] at hanti
+  have hconst := congrArg (fun r : Polynomial ℂ => r.coeff 0) hanti
+  simp at hconst
+  have hcd0 : c * d = 0 := by
+    have htwo : (2 : ℂ) * (c * d) = 0 := by
+      linear_combination hconst
+    exact (mul_eq_zero.mp htwo).resolve_left (by norm_num)
+  exact (mul_ne_zero hc hd) hcd0
+
+/-- Every nonzero constant-coefficient differential operator applied to `1/z` has one pole on the
+integer translation orbit, so it cannot be a shift coboundary of any meromorphic function with
+finite pole support on that orbit.  Rational functions are a special case. -/
+theorem no_finitePole_solution_constantCoeffDifferentialOperator_inv
+    (L : Polynomial ℂ) (hL : L ≠ 0) (g : ℂ → ℂ)
+    (hg : ∀ n : ℤ, MeromorphicAt g (additiveOrbitPoint 0 1 n))
+    (hfinite : (poleIndexSet g 0 1).Finite)
+    (hshift : ∀ z : ℂ,
+      constantCoeffDifferentialOperator L (fun w : ℂ => w⁻¹) z = g (z + 1) - g z) : False := by
+  apply shiftCoboundary_not_singleton_poleOrbit g
+    (constantCoeffDifferentialOperator L (fun w : ℂ => w⁻¹)) 0 1 hg hshift hfinite
+  · have hinvMero : MeromorphicAt (fun w : ℂ => w⁻¹) 0 := by fun_prop
+    have hinvOrder : meromorphicOrderAt (fun w : ℂ => w⁻¹) 0 =
+        ((-1 : ℤ) : WithTop ℤ) := by
+      simpa [zpow_neg_one, sub_zero] using
+        (meromorphicOrderAt_zpow_id_sub_const (𝕜 := ℂ) (x := 0) (n := (-1 : ℤ)))
+    rw [meromorphicOrderAt_constantCoeffDifferentialOperator_of_simplePole
+      hL hinvMero hinvOrder]
+    exact_mod_cast (show -((L.natDegree + 1 : ℕ) : ℤ) < 0 by omega)
+  · intro n hn
+    by_contra hn0
+    have hnC : (n : ℂ) ≠ 0 := by exact_mod_cast hn0
+    have hinvAnalytic : AnalyticAt ℂ (fun w : ℂ => w⁻¹) (n : ℂ) :=
+      analyticAt_id.inv hnC
+    have hopAnalytic := analyticAt_constantCoeffDifferentialOperator (L := L) hinvAnalytic
+    rw [show additiveOrbitPoint 0 1 n = (n : ℂ) by simp [additiveOrbitPoint]] at hn
+    exact (not_lt_of_ge hopAnalytic.meromorphicOrderAt_nonneg) hn
 
 end
 

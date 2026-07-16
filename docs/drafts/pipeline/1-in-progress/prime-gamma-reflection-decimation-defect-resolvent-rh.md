@@ -10,6 +10,9 @@
   `../3-formalized/not_new_scientific_knowledge/prime-arch-positive-moment-representation-to-rh.md`;
   `../3-formalized/not_new_scientific_knowledge/inverse-tilted-prime-gamma-central-source-value-relation.md`;
   `../3-formalized/not_new_scientific_knowledge/finite-skew-green-trace-positivity.md`;
+  `../3-formalized/not_new_scientific_knowledge/simplex-effective-harmonic-positive-parity.md`;
+  `../3-formalized/not_new_scientific_knowledge/von-mangoldt-gamma-all-depth-oriented-anomaly.md`;
+  `../3-formalized/not_new_scientific_knowledge/von-mangoldt-gamma-all-depth-cauchy-gram.md`;
   `../2-fully-proven/not_new_scientific_knowledge/ccm-gamma-damped-cauchy-frame-trace-law.md`;
   `../2-fully-proven/not_new_scientific_knowledge/prime-arch-explicit-circle-state-reflection-law.md`.
 - **Statement:** `[CONJECTURE]` The normalized prime--Gamma moment germ is the cyclic resolvent of
@@ -295,8 +298,82 @@ constraint-orientation junction; it must not be hidden inside the words “spect
 
 Lean now also proves the exact parity interface: graded Hodge compression together with
 `Gamma_X P_X=P_X` equals the ordinary compressed trace.  Therefore trace cyclicity and the
-graded-to-ungraded conversion are no longer open.  The only parity input left is the
-source-specific effectivity theorem itself.
+graded-to-ungraded conversion are no longer open.  Lean also constructs a canonical finite model
+with this parity: unaugmented full-simplex descent retains one constant degree-zero harmonic line,
+whose projection is positive and has trace one, while its complement has an explicit positive
+Hodge Green operator.  Thus positive parity is not an abstract existence problem.
+
+This closes only bookkeeping.  It remains necessary to identify the actual completed
+prime--Gamma source-selection complex with such a positive block.  More importantly,
+source-effectivity or `Gamma_X P_X=P_X` alone does not make the continued prime--Gamma values
+positive.  The positive form must be produced by an explicit source identity before the moment
+comparison.
+
+### All-depth von Mangoldt--Gamma orientation `[CLOSED]`
+
+For a resolved positive exponential atom of weight `q`, logarithmic rate `lambda`, base point `x`,
+and positive Gamma depth `N`, Lean identifies every Gamma-descent anomaly coordinate exactly as
+
+```text
+(alpha_N(q,lambda,x))_i
+ =q exp(-x lambda)(-lambda)^i
+   (sum_(j<N-i)(-lambda)^j/j! - exp(-lambda)).           (22c)
+```
+
+Taylor's theorem gives
+
+```text
+(-1)^(N+1)(alpha_N(q,lambda,x))_i>0.                    (22d)
+```
+
+For the actual resolved Euler atom, `q=Lambda(n)/n` and `lambda=log n`; hence every prime-power
+atom and every jet coordinate lie in the same strict depth-`N` cone.  This extends the existing
+depth-one Cauchy positivity and adjacent-depth Bianchi current to an unconditional all-depth
+orientation theorem.  It is
+source-specific and uses no Xi divisor, reconstruction theorem, target moment measure, or
+source-effectivity implication.
+
+### Finite radial Gauss--Ward packet `[CLOSED]`
+
+The full finite Cauchy polarization is now also formalized.  With the oriented residual
+`R_(N-i)(lambda)` define
+
+```text
+A_(N,i)(w;p)
+ =sqrt(q_p) lambda_p^i R_(N-i)(lambda_p)/(w+lambda_p).  (22e)
+```
+
+Lean proves that restoring the other factor `sqrt(q_p)(w+lambda_p)` gives exactly the actual
+oriented anomaly coordinate.  The vectors indexed jointly by prime-power atoms and Gamma-jet
+coordinates therefore form an unconditional positive semidefinite finite Gram at arbitrary
+Cauchy points.  This is positivity before continuation, not positivity inferred from the target
+moment matrix.
+
+### Two-boundary source balance `[CLOSED FINITELY]`
+
+The literature identifies the correct reduction as two constraints, not one unexplained charge:
+the Mellin characters at `+1/2` and `-1/2` must both vanish before applying the Weil square.  Lean
+now performs the finite source construction canonically.  At each aperture and Gamma depth it
+orthogonally projects every anomaly Cauchy vector onto the complement of the span of its two
+boundary vectors at `w=+1/2` and `w=-1/2`.  Both boundary vectors and both boundary pairings vanish
+after compression, and the compressed Gram remains positive semidefinite.
+
+This removes the finite source charge modes without asserting that the RH-faithful divisor seam
+charge vanishes.  The remaining theorem is that these balanced projections converge through the
+nonnormal Euler boundary and that their limit is the completed inverse-tilted source form.  That
+source value identity, not the finite projection algebra, carries the unresolved RH content.
+
+The live bridge is consequently:
+
+```text
+all-depth oriented von Mangoldt--Gamma anomaly
+  -> positive finite radial Cauchy/Gauss--Ward source Gram
+  -> positive finite two-boundary balanced source Gram
+  -> [OPEN] balanced nonnormal Euler-boundary convergence and value identity
+  -> [OPEN] Euler-boundary comparison with inverse-tilted completed moment jets
+  -> complete prime--Gamma Hankel cone
+  -> RH.                                                  (22f)
+```
 
 ### Hodge--Stieltjes source conjecture
 
@@ -316,21 +393,25 @@ target germ.  Source degree is effective:
 Gamma_X P_X=P_X.                                         (22b)
 ```
 
-Expanding `(22a)` produces `(21)` simultaneously for all fixed moments.  Positivity is already
-forced by the Green square and `(22b)`, while the formalized inverse-tilted value relation
-identifies the limit with the canonical prime--Gamma moments.  This would give RH without a
-global spectrum, an infinite-support argument, or a flow.
+Expanding `(22a)` produces `(21)` simultaneously for all fixed moments.  The Green square and
+`(22b)` make the finite compressed trace positive once the actual source complex has been
+constructed.  They do not prove that this trace equals the continued source germ.  That comparison
+must come from the all-depth anomaly and its reduced Gauss--Ward factorization; the formalized
+inverse-tilted value relation can then identify the resulting limit with the canonical
+prime--Gamma moments.  This would give RH without a global spectrum, an infinite-support argument,
+or a flow.
 
-The geometric content of `(22b)` should be sought as a relative effectivity theorem for the
-completed source mapping cone: finite-prime and Gamma/boundary incidence cancel in opposite
-degrees, while the surviving harmonic class is carried by the designated positive source degree.
-It should not be proved by inspecting Xi zeros or by assuming positivity of the target kernel.
+The geometric content of `(22b)` may be modeled by the now-formalized unaugmented-simplex
+effective line, but that model is useful only after a source-specific chain equivalence is proved.
+It must not be promoted from abstract effectivity, reconstruction of Xi, or packaging several
+conservative shadows.
 
-There is a secondary charge test.  `[CONJECTURE]` The common first-prime seam charge is the finite
-boundary-index shadow of the negative harmonic block `(1-Gamma_X)P_X/2`.  An exact index formula
-of this kind would make `(22b)` a source-side reason for common-charge vanishing, instead of a new
-charge hypothesis.  This identification is not yet proved and is not needed if `(22a)`--`(22b)`
-can be established directly.
+The former proposal to identify the common first-prime seam charge solely with the negative
+harmonic block is insufficient.  Exact orientation reversal of a physical defect packet contains
+an independent exponential factor governed by the first source moment.  Positive harmonic parity
+can remove a grading sign but cannot cancel that source-balance anomaly.  Common-charge vanishing,
+if needed, must therefore follow from the explicit prime--Gamma causal/polar subtraction in the
+reduced Gauss--Ward identity, not from effectivity alone.
 
 ## Discriminator
 
@@ -387,33 +468,37 @@ source packet to produce the mixed value `m_1` as well as both diagonal values.
 
 ## Ranked research targets
 
-1. **Two-vector finite jet packet.**  Construct the positive cutoff Gram in `(11)` for `N=2` and
-   prove the three source limits `G_00->m_0`, `G_01->m_1`, and `G_11->m_2`.  This subsumes `(23)`
-   without defining its square root from the determinant.
-2. **Finite centered Green square.**  Construct `C_X`, `P_X`, and `A_X` in `(18)` directly from a
-   finite inverse-tilted prime--Gamma complex.  The skew-inverse, positive-square, and
-   trace-Hankel algebra is already formalized; only the source construction remains.
-3. **Positive harmonic parity.**  Prove `(22)` from source degree/effectivity, not from Xi zero
-   locations or a target spectral measure.
-4. **Finite source trace comparison.**  Prove the entrywise limit `(21)` using the formalized
-   inverse-tilted central source identity.
-5. **Channel-resolved relative incidence.**  Construct the exact archimedean/boundary channel
-   missing from the Gamma-damped Cauchy frame so that its trace is the centered prime--Gamma source,
-   not merely the absolute-Euler source.
-6. **Arbitrary finite Gram jet.**  Extend the two-vector construction to `(10)` for arbitrary
+1. **Balanced Euler-boundary convergence.**  Starting from the now-formalized positive finite
+   two-boundary compression, prove convergence of the projections and their Grams as aperture grows
+   and radial damping tends to the Euler unit field.  The two boundary modes must remain removed in
+   the same limit.
+2. **Two-vector completed comparison.**  For `N=2`, identify three entries of that one source
+   packet with `m_0,m_1,m_2` through the inverse-tilted central source relation.  This subsumes
+   `(23)` without defining its square root from the determinant.
+3. **Channel-resolved relative incidence.**  Construct the exact archimedean/boundary channel
+   missing from the Gamma-damped Cauchy frame so that its reduced trace is the centered
+   prime--Gamma source, not merely the absolute-Euler source.
+4. **Finite centered Green square.**  Construct `C_X`, `P_X`, and `A_X` in `(18)` directly from the
+   reduced finite prime--Gamma anomaly complex.  The skew-inverse, positive-square, Hodge
+   complement, and trace-Hankel algebra are already formalized.
+5. **Source-complex identification.**  Prove that the completed source-selection harmonic block
+   is the positive unaugmented-simplex effective line.  This discharges `(22)` but does not replace
+   the source value identity.
+6. **Finite source trace comparison.**  Prove the entrywise limit `(21)` using the reduced
+   Gauss--Ward identity and the formalized inverse-tilted central source identity.
+7. **Arbitrary finite Gram jet.**  Extend the two-vector construction to `(10)` for arbitrary
    `N`.  This is already sufficient for RH and avoids a premature global completion.
-7. **Singular boundary completion.**  Only if the finite packets reveal natural compatibility,
-   construct `H_src` and
-   prove `(5)`--`(6)`.  Bounded Laurent evaluation must follow from the pole-cancelled graph norm,
-   not be assumed.
-8. **HTGeometry abstraction.**  Extract a general theorem: a reflected hypertranscendental source
-   constraint with a positive decimation defect and an exact completed incidence resolvent produces
-   a positive cyclic state.  The zeta source is the pressure test, not the definition of the
-   abstraction.
-9. **Charge-index comparison.**  Test whether the common first-prime seam charge is the boundary
-   index of the negative harmonic block.  Promote this only if an exact source-side index formula
-   is obtained; a value-level equivalence with orientation energy is already known and adds no
-   mechanism.
+8. **Singular boundary completion.**  Only if the finite packets reveal natural compatibility,
+   construct `H_src` and prove `(5)`--`(6)`.  Bounded Laurent evaluation must follow from the
+   pole-cancelled graph norm, not be assumed.
+9. **HTGeometry abstraction.**  Extract a general theorem: a reflected hypertranscendental source
+   constraint with a positive decimation defect and an exact completed incidence resolvent
+   produces a positive cyclic state.  The zeta source is the pressure test, not the definition of
+   the abstraction.
+10. **No residual boundary charge.**  Prove that the finite two-boundary orthogonality survives the
+    Euler limit and matches the causal/polar moments of the completed relative source.  This is a
+    source-limit theorem; it must not be replaced by assuming the RH-equivalent divisor seam charge
+    vanishes.  A grading-index identity alone is not sufficient.
 
 ## Gates
 
@@ -429,10 +514,19 @@ source packet to produce the mixed value `m_1` as well as both diagonal values.
 - [x] inverse centered scale generator identified as the forced reciprocal-square mechanism
 - [x] finite skew-inverse Green square and trace-power Hankel positivity formalized
 - [x] positive harmonic parity isolated as sufficient for graded-to-ordinary trace compression
+- [x] canonical finite unaugmented-simplex harmonic line with positive parity formalized
+- [x] all-depth strict orientation of each resolved von Mangoldt--Gamma anomaly atom formalized
+- [x] all-coordinate anomaly factorization and common depth orientation formalized
+- [x] finite radial all-depth Cauchy/Gauss--Ward Gram constructed from the actual anomaly
+- [x] exact Cauchy numerator-to-anomaly equality formalized
+- [x] canonical finite two-boundary balanced compression formalized
+- [x] both boundary modes and pairings proved zero; balanced Gram positivity proved
+- [ ] prove balanced projection/Gram convergence at the nonnormal Euler boundary
+- [ ] prove Euler-boundary causal/polar cancellation, including common-charge cancellation
 - [ ] construct the common positive `2 x 2` source cutoff packet
 - [ ] prove its three entrywise moment limits
 - [ ] construct the finite skew-Hermitian centered Green square
-- [ ] prove positive harmonic parity/effectivity
+- [ ] identify the actual completed source harmonic block with the positive effective line
 - [ ] prove the finite reflected-scale Gram jet theorem for arbitrary cutoff
 - [ ] prove the first source defect norm identity `(23)`
 - [ ] construct the exact completed relative prime--Gamma incidence
@@ -449,3 +543,8 @@ source packet to produce the mixed value `m_1` as well as both diagonal values.
   scale-character/moment-node mismatch forced replacement of raw dilation jets by the centered
   Green square `-C^(-2)`.  The new open core is a finite positive-parity Hodge--Green trace
   comparison, not a representing-measure or support theorem.
+- 2026-07-16 -- Formalized the positive effective harmonic line of unaugmented simplex descent and
+  the strict all-depth orientation of actual resolved von Mangoldt--Gamma anomaly atoms.  The
+  exclusion gate now forbids reconstruction or source-effectivity from supplying positivity.  The
+  live open core is the reduced Euler-boundary Gauss--Ward source identity, including cancellation
+  of its independent first-moment charge anomaly.

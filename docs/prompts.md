@@ -65,7 +65,7 @@ research rules:
 
 ## ht
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to develop and formalize a "unified field theory" of hypertranscendental functions that can explain the different obstructions we have met in all our different rh proof chains and resolve them.
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research and discover the physical reality of hypertranscendental functions - ignoring any special function like RH. There is a connection to QFT and we need to develop this new field of physics and mathematics.
 
 lean rules:
 1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.
@@ -80,7 +80,7 @@ folders:
 - formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
 
 research rules:
-- goal is a paper worthy a fields medal
+- goal is a paper worthy a fields medal or nobel prize
 - conjecture boldly, think bg
 - use anti-theatre and novelty gates to avoid work that's just rediscovery of known knowledge
 - novelty gate refers to literature, not to our own research corpus

@@ -1,9 +1,9 @@
 # The Hedenmalm theta pair forces a divisor-supported nonlocal metric
 
 - **ID:** `hedenmalm-theta-pair-divisor-supported-metric-law`
-- **Stage:** 2-fully-proven / needs full literature audit
+- **Stage:** 3-formalized / needs full literature audit
 - **Type:** THEOREM (paper) / DIRECT HILBERT--POLYA METRIC CLASSIFICATION
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PROVED HERE] [LEAN FORMALIZED] [NOVELTY UNVERIFIED]`
 - **Statement:** Every continuous positive source-core form which symmetrizes Hedenmalm's 2026
   theta differential pair pulls back to a positive Fourier measure supported on the real divisor
   of `Xi`.  Thus every nonzero admissible metric is necessarily nonlocal and divisor-supported;
@@ -457,9 +457,14 @@ fourier (2*pi * thetaCuspFullSource (2*pi * ·)) t = XiC t.
 
 It also specializes the spectral-measure adapter: nullity of this explicit source in any positive
 temperate spectral form forces the complete atomic measure decomposition on the real `Xi` zero set.
-The remaining formal gap is only the central Schwartz-kernel plus Bochner--Schwartz existence theorem
-taking an arbitrary positive continuous translation-invariant Schwartz form to its positive tempered
-spectral measure. Mathlib supplies the component theories but not this assembled representation theorem.
+`formal/GaloisForLFunctions/RHTower/HedenmalmUniversalPositiveFormClassification.lean` closes the
+former central representation gap.  It constructs the unique positive temperate spectral measure
+of every nonnegative momentum-symmetric Schwartz form, proves that theta nullity is equivalent to
+support on the real `Xi` divisor, and derives the exact atomic decomposition.  Together with the
+modules above, this formalizes the full divisor-supported classification, the ordinary-`L²`
+nonclosability boundary, exact eigenfunction sampling, and the conservativity criterion.  The
+still-open construction of a source-derived conservative metric is a new mathematical input, not
+a missing formalization of any theorem promoted by this card.
 
 `formal/GaloisForLFunctions/RHTower/XiThetaSchwartzL2ExtensionObstruction.lean` proves a stronger
 ordinary-topology boundary without using that missing representation theorem. If a continuous
@@ -501,4 +506,4 @@ bounded-multiplier class.
 - [x] Lean exact Fourier transform of the normalized theta-cusp Schwartz object equals `XiC`
 - [x] Lean no nonzero momentum-symmetric theta-null Schwartz form extends continuously to ordinary
       `L²(R)`
-- [ ] Lean Schwartz translation-invariance to Bochner--Schwartz classification bridge
+- [x] Lean Schwartz translation-invariance to Bochner--Schwartz classification bridge

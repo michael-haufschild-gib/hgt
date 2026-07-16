@@ -173,6 +173,13 @@ reporters or asymptotic/positivity conditions kill the residual fixed gauge.  Se
 `../../5-failed/universal-bare-source-effectivity-reconstruction.md` and
 `../not_new_scientific_knowledge/joint-source-realization-common-kernel-criterion.md`.
 
+The period-gauge complementarity theorem further shows that this normalization torsor is coupled
+to global effectivity.  In the nondiscrete phase, absence of a continuous incidence inverse forces
+every global meromorphic fixed gauge to be constant; in the discrete phase, nonconstant gauges can
+survive while the incidence inverse exists.  Thus the normalized anomaly torsor and the critical
+completion defect are complementary faces of the same period-closure object, not independent
+decorations.  See `period-gauge-attainment-complementarity.md`.
+
 ## Meaning for any potential RH proof
 
 This theorem does not assert that the zeta source lies on the balanced even locus.  It gives a hard
@@ -217,7 +224,8 @@ distinguished anomaly-trivialized section.  This is a research hypothesis, not a
 
 1. **Normalized anomaly torsor.**  Build the line/torsor classified by the proved componentwise
    cocycle `(5c)` over the source-effectively normalized stratum.  Its objects are reporter-compatible
-   trivializations, not a bare-source canonical choice.
+   trivializations, not a bare-source canonical choice, and its construction must respect the
+   gauge/attainment phase duality.
 2. **All-degree cumulant spectrum.**  Divide `(7)` by its leading monomial and compute the logarithm
    of the centered factor.  The predicted jet spectrum consists of the first moment and even power
    sums, with odd moments above degree one absent.

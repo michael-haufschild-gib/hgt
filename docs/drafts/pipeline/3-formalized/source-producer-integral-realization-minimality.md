@@ -283,6 +283,15 @@ joint-fixed common kernel, not a canonically chosen lift for every bare source. 
 `../5-failed/universal-bare-source-effectivity-reconstruction.md` and
 `not_new_scientific_knowledge/joint-source-realization-common-kernel-criterion.md`.
 
+The normalization and critical-bornology channels also satisfy a one-way complementarity theorem.
+For every integral period submodule of `C`, failure of a continuous period-incidence left inverse
+forces every global meromorphic source-fixed gauge to be constant; conversely, a nonconstant fixed
+gauge forces uniform left invertibility.  Hence discrete rank-one Gamma can have large periodic
+normalization ambiguity while retaining uniform incidence effectivity, whereas a nondiscrete
+rank-three source has scalar gauge rigidity but global nonattainment.  The two channels are
+independent data, yet their phase changes are coupled by the same period closure.  See
+`new_scientific_knowledge/period-gauge-attainment-complementarity.md`.
+
 ### Falsifiers
 
 Retire or enlarge `(10)` if any of the following occurs.

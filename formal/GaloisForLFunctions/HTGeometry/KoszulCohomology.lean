@@ -380,6 +380,164 @@ theorem nodalStanleyReisnerDisconnectCycle_not_koszulBoundary
   rw [← nodalStanleyReisnerKoszulBoundary_map c i,
     hc, nodalStanleyReisnerDisconnectCycle_map]
 
+/-! ### Arbitrarily many isolated vertices
+
+The two-vertex seed extends uniformly to every finite discrete complex.  We use the coordinate-axis
+model: a tuple of one-variable polynomials whose constant terms agree.  Products of different
+coordinate axes vanish.  A coefficient-one detector on two selected axes kills every degree-two
+Koszul boundary but evaluates to one on the canonical disconnected-vertex cycle. -/
+
+/-- The Stanley--Reisner boundary of `n+2` isolated vertices, presented as coordinate axes glued
+at their common origin. -/
+def isolatedBoundarySubring (F : Type*) [Field F] (n : ℕ) :
+    Subalgebra F (Fin (n + 2) → Polynomial F) where
+  carrier := {p | ∀ i, (p i).coeff 0 = (p 0).coeff 0}
+  zero_mem' := by simp
+  one_mem' := by simp
+  add_mem' := by
+    intro p q hp hq i
+    simp only [Pi.add_apply, Polynomial.coeff_add]
+    rw [hp i, hq i]
+  mul_mem' := by
+    intro p q hp hq i
+    simp only [Pi.mul_apply, Polynomial.mul_coeff_zero]
+    rw [hp i, hq i]
+  algebraMap_mem' := by simp
+
+/-- The squarefree coordinate supported on one axis of the isolated-vertex boundary. -/
+def isolatedBoundaryX {F : Type*} [Field F] {n : ℕ} (j : Fin (n + 2)) :
+    isolatedBoundarySubring F n :=
+  ⟨fun i => if i = j then Polynomial.X else 0, by
+    intro i
+    by_cases hij : i = j <;> by_cases h0j : (0 : Fin (n + 2)) = j <;>
+      simp [hij, h0j, Polynomial.coeff_X_zero]⟩
+
+@[simp]
+theorem isolatedBoundaryX_apply {F : Type*} [Field F] {n : ℕ}
+    (i j : Fin (n + 2)) :
+    (isolatedBoundaryX (F := F) j : Fin (n + 2) → Polynomial F) i =
+      if i = j then Polynomial.X else 0 := rfl
+
+/-- Different coordinate axes have zero product, the defining nonedge relation of a discrete
+complex. -/
+@[simp]
+theorem isolatedBoundaryX_mul_eq_zero {F : Type*} [Field F] {n : ℕ}
+    {i j : Fin (n + 2)} (hij : i ≠ j) :
+    isolatedBoundaryX (F := F) i * isolatedBoundaryX (F := F) j = 0 := by
+  apply Subtype.ext
+  funext k
+  by_cases hki : k = i <;> by_cases hkj : k = j <;>
+    simp [isolatedBoundaryX, hki, hkj, hij, Ne.symm hij]
+
+/-- The first Koszul relation map for the isolated coordinate family. -/
+def isolatedKoszulRelation {F : Type*} [Field F] {n : ℕ}
+    (a : Fin (n + 2) → isolatedBoundarySubring F n) : isolatedBoundarySubring F n :=
+  ∑ i, a i * isolatedBoundaryX i
+
+/-- The canonical disconnected-vertex cycle using the first two isolated axes. -/
+def isolatedDisconnectCycle {F : Type*} [Field F] {n : ℕ} :
+    Fin (n + 2) → isolatedBoundarySubring F n :=
+  fun i => if i = 0 then isolatedBoundaryX 1 else 0
+
+/-- Degree-two Koszul boundaries, written with one coefficient for each ordered pair `i<j`. -/
+def isolatedKoszulBoundary {F : Type*} [Field F] {n : ℕ}
+    (c : Fin (n + 2) → Fin (n + 2) → isolatedBoundarySubring F n)
+    (i : Fin (n + 2)) : isolatedBoundarySubring F n :=
+  ∑ j, if i < j then -c i j * isolatedBoundaryX j
+    else if j < i then c j i * isolatedBoundaryX j else 0
+
+/-- The canonical disconnected-vertex representative is a first Koszul cycle for every finite
+discrete complex with at least two vertices. -/
+@[simp]
+theorem isolatedKoszulRelation_disconnectCycle {F : Type*} [Field F] {n : ℕ} :
+    isolatedKoszulRelation (isolatedDisconnectCycle (F := F) (n := n)) = 0 := by
+  classical
+  simp [isolatedKoszulRelation, isolatedDisconnectCycle,
+    isolatedBoundaryX_mul_eq_zero (Fin.zero_ne_one.symm : (1 : Fin (n + 2)) ≠ 0)]
+
+/-- Multiplication by an isolated coordinate reads the constant coefficient on its own axis into
+the linear coefficient and vanishes on every other axis. -/
+@[simp]
+theorem isolatedBoundary_mul_X_coeff_one {F : Type*} [Field F] {n : ℕ}
+    (r : isolatedBoundarySubring F n) (i j : Fin (n + 2)) :
+    (((r * isolatedBoundaryX j : isolatedBoundarySubring F n) :
+      Fin (n + 2) → Polynomial F) i).coeff 1 =
+      if i = j then (r.1 i).coeff 0 else 0 := by
+  by_cases hij : i = j
+  · subst j
+    simp [isolatedBoundaryX, Polynomial.coeff_mul_X]
+  · simp [isolatedBoundaryX, hij]
+
+/-- The reduced-`H^0` detector comparing the two oriented coefficient-one entries. -/
+def isolatedH0Detector {F : Type*} [Field F] {n : ℕ}
+    (a : Fin (n + 2) → isolatedBoundarySubring F n) : F :=
+  (((a 0 : isolatedBoundarySubring F n) : Fin (n + 2) → Polynomial F) 1).coeff 1 +
+    (((a 1 : isolatedBoundarySubring F n) : Fin (n + 2) → Polynomial F) 0).coeff 1
+
+@[simp]
+theorem isolatedH0Detector_disconnectCycle {F : Type*} [Field F] {n : ℕ} :
+    isolatedH0Detector (isolatedDisconnectCycle (F := F) (n := n)) = 1 := by
+  simp [isolatedH0Detector, isolatedDisconnectCycle, isolatedBoundaryX]
+
+/-- Every degree-two Koszul boundary has zero reduced-`H^0` detector. -/
+@[simp]
+theorem isolatedH0Detector_boundary {F : Type*} [Field F] {n : ℕ}
+    (c : Fin (n + 2) → Fin (n + 2) → isolatedBoundarySubring F n) :
+    isolatedH0Detector (isolatedKoszulBoundary c) = 0 := by
+  classical
+  have hcompat : ((c 0 1).1 1).coeff 0 = ((c 0 1).1 0).coeff 0 := (c 0 1).2 1
+  have hfirst :
+      ∑ b, (((if (0 : Fin (n + 2)) < b then
+          -c 0 b * isolatedBoundaryX b else 0 : isolatedBoundarySubring F n) :
+            Fin (n + 2) → Polynomial F) 1).coeff 1 =
+        -((c 0 1).1 1).coeff 0 := by
+    rw [Finset.sum_eq_single (1 : Fin (n + 2))]
+    · simp
+    · intro b _ hb
+      by_cases hlt : (0 : Fin (n + 2)) < b
+      · simp [hlt, Ne.symm hb]
+      · simp [hlt]
+    · intro h
+      simp at h
+  have hsecond :
+      ∑ b, (((if (1 : Fin (n + 2)) < b then
+          -c 1 b * isolatedBoundaryX b
+        else if b = 0 then c b 1 * isolatedBoundaryX b else 0 :
+          isolatedBoundarySubring F n) : Fin (n + 2) → Polynomial F) 0).coeff 1 =
+        ((c 0 1).1 0).coeff 0 := by
+    rw [Finset.sum_eq_single (0 : Fin (n + 2))]
+    · simp
+    · intro b _ hb
+      by_cases hlt : (1 : Fin (n + 2)) < b
+      · simp [hlt, Ne.symm hb]
+      · simp [hlt, hb]
+    · intro h
+      simp at h
+  calc
+    isolatedH0Detector (isolatedKoszulBoundary c) =
+        (∑ b, (((if (0 : Fin (n + 2)) < b then
+            -c 0 b * isolatedBoundaryX b else 0 : isolatedBoundarySubring F n) :
+              Fin (n + 2) → Polynomial F) 1).coeff 1) +
+          ∑ b, (((if (1 : Fin (n + 2)) < b then
+              -c 1 b * isolatedBoundaryX b
+            else if b = 0 then c b 1 * isolatedBoundaryX b else 0 :
+              isolatedBoundarySubring F n) : Fin (n + 2) → Polynomial F) 0).coeff 1 := by
+      simp [isolatedH0Detector, isolatedKoszulBoundary]
+    _ = 0 := by
+      rw [hfirst, hsecond, hcompat]
+      simp
+
+/-- **Discrete-family Hochster class.**  Every finite discrete complex with at least two vertices
+has a nonzero first Koszul class, represented by the same two-axis cycle.  This extends the nodal
+seed from one example to an arbitrary-size family of induced disconnected subcomplexes. -/
+theorem isolatedDisconnectCycle_not_koszulBoundary
+    {F : Type*} [Field F] {n : ℕ} :
+    ¬ ∃ c : Fin (n + 2) → Fin (n + 2) → isolatedBoundarySubring F n,
+      isolatedKoszulBoundary c = isolatedDisconnectCycle := by
+  rintro ⟨c, hc⟩
+  have h := congrArg isolatedH0Detector hc
+  simp at h
+
 /-! ### Polarization is extra structure on the same Hochster line -/
 
 /-- The signed one-dimensional polarization on the coefficient line of the nodal Hochster class.

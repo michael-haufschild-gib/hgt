@@ -627,6 +627,40 @@ integral reporters are jointly conservative on its normalized essential image.  
 `../5-failed/universal-bare-source-effectivity-reconstruction.md` and
 `../3-formalized/not_new_scientific_knowledge/joint-source-realization-common-kernel-criterion.md`.
 
+## Gauge-attainment complementarity `[PROVED; LEAN-FORMALIZED]`
+
+The normalization and bornological faces are not merely independent.  They are driven in opposite
+directions by the same period-closure phase.  For every integral submodule `L<=C`, Lean proves
+
+```text
+period-incidence for L has no continuous left inverse
+  -> every global meromorphic L-fixed gauge is constant,                  (30m)
+
+there exists a nonconstant global meromorphic L-fixed gauge
+  -> period-incidence for L has a continuous left inverse.                (30n)
+```
+
+Together with continuous left invertibility iff `L` is discrete, this gives
+
+```text
+nondiscrete source: automatic meromorphic gauge rigidity + global incidence nonattainment;
+discrete gauge ambiguity: uniform incidence attainment.                    (30o)
+```
+
+The Gamma and irrational-triptic sources occupy opposite endpoints.  Densifying a source removes
+periodic boundary noncanonicity by producing arbitrarily small periods, and those same periods
+destroy the uniform inverse.  Therefore source enrichment cannot monotonically solve both
+obstructions.
+
+```text
+[NO-GO] densification simultaneously removes gauge ambiguity and preserves uniform attainment;
+[POSITIVE] gauge rigidity and global attainment are complementary phases of one period-closure
+           object, requiring phase-specific normalization or completion producers.            (30p)
+```
+
+See
+`../3-formalized/new_scientific_knowledge/period-gauge-attainment-complementarity.md`.
+
 ## Candidate unified object: normalized anomaly-fracture stack `[CONJECTURE]`
 
 The exact results now force a more precise object than the original phrase “derived incidence
@@ -636,21 +670,21 @@ space.”  For a source-effectively normalized pair `(F,R)`, let
 G_(F,R)  = residual joint-fixed gauge invisible to all reporters,
 L_(a_F)  = line/torsor classified by the physical orientation-anomaly cocycle,
 kappa_(F,R)^(p,q) = calibration map in
-                     osculation degree p and effectivity degree q.          (30m)
+                     osculation degree p and effectivity degree q.          (30q)
 ```
 
 The candidate obstruction object is the anomaly-twisted bifiltered derived fibre
 
 ```text
 U_(F,R)^(p,q)
-  =hofib_(b_(F,R)^(p,q))(kappa_(F,R)^(p,q); L_(a_F)).       (30n)
+  =hofib_(b_(F,R)^(p,q))(kappa_(F,R)^(p,q); L_(a_F)).       (30r)
 ```
 
 This notation is a typed research target, not an existing construction.
 
 > **[CONJECTURE -- NORMALIZED ANOMALY-FRACTURE PRINCIPLE.]**  On the maximal
 > source-effectively normalized HT essential image, the different obstruction classes are
-> conservative realizations of `(30n)`:
+> conservative realizations of `(30r)`:
 >
 > - its automorphism object is the typed nonlinear joint-fixed common kernel;
 > - failure of nonemptiness is the calibration/descent obstruction;
@@ -661,17 +695,18 @@ This notation is a typed research target, not an existing construction.
 > - higher homotopy records genuine multi-face interaction classes.
 
 A source producer theorem does not merely show that one obstruction scalar vanishes.  It proves
-that the critical self-dual bidegree of `(30n)` has a reporter-compatible positive point with
+that the critical self-dual bidegree of `(30r)` has a reporter-compatible positive point with
 trivial automorphism group and the required integral/ramified lift.
 
-The Gamma collision prevents deleting `R`; the osculation/effectivity fracture prevents collapsing
+The Gamma collision prevents deleting `R`; gauge-attainment complementarity forces normalization
+and critical completion to vary oppositely with period closure; the osculation/effectivity fracture prevents collapsing
 `(p,q)` to one filtration; the reversal-blind locus prevents deleting `L_(a_F)`; and the
 three-channel interaction example prevents replacing the derived fibre by pairwise compatibility.
 Each constituent is therefore forced by a separate exact no-go.
 
 Derived fibres, quotient stacks, anomaly lines, Rees filtrations, and kernel/cokernel sequences are
 parent mathematics.  Candidate novelty can begin only with a presentation-invariant HT
-construction of `(30n)`, a natural nontrivial analytic realization, and a transferred theorem that
+construction of `(30r)`, a natural nontrivial analytic realization, and a transferred theorem that
 is unavailable in the parent realizations separately.
 
 ## Unified explanation of the RH-chain obstructions `[CONJECTURE; PRESSURE TEST ONLY]`

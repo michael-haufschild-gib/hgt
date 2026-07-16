@@ -79,8 +79,11 @@ Gamma P=P  ->  Str_Gamma(PR)=Tr(PR).                    (9)
 ```
 
 Combining `(8)` and `(9)` turns the compressed supertrace into an ordinary trace.  Therefore the
-remaining sign problem is not hidden in trace cyclicity or Hodge cancellation.  It is precisely
-the source theorem `Gamma P=P` (or an equivalent effectivity statement).
+grading sign is not hidden in trace cyclicity or Hodge cancellation.  A canonical positive-parity
+finite model is now formalized by unaugmented simplex descent.  This is only a parity conversion:
+`Gamma P=P` or source-effectivity does not prove that the resulting positive trace equals the
+continued prime--Gamma values.  That equality still requires an explicit source-produced value
+identity.
 
 ## Consequence for the RH route
 
@@ -122,9 +125,11 @@ only on `propext`, `Classical.choice`, and `Quot.sound`.
 - [x] inverse of a skew-adjoint finite constraint proved skew-adjoint
 - [x] positive Green square identified with the negative inverse square
 - [x] positive harmonic parity proved sufficient to remove the grading
+- [x] canonical finite positive-parity harmonic model formalized separately
 - [x] modules wired and targeted checks pass
 - [x] axiom audit passes
 - [ ] construct the finite centered constraint from prime--Gamma source incidence
-- [ ] prove source-specific positive harmonic parity
+- [ ] identify the actual source harmonic block with the positive-parity model
+- [ ] prove the source-produced positive value identity
 - [ ] compare the resulting trace powers with normalized prime--Gamma moments
 - [ ] RH

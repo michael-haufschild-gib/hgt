@@ -1,3 +1,4 @@
+import Mathlib.Analysis.Meromorphic.Order
 import GaloisForLFunctions.HTGeometry.HurwitzOrbifoldGap
 
 /-!
@@ -38,6 +39,143 @@ theorem projectiveConnection_exponentDiscriminant_transport
     {K : Type*} [CommRing K] (e c : K) :
     1 - (e ^ 2 * c + (1 - e ^ 2)) = e ^ 2 * (1 - c) := by
   ring
+
+/-- The irregularity of a projective pole is the part of its pole order above the Fuchsian
+threshold two. -/
+def projectivePoleIrregularity (poleOrder : ℕ) : ℕ :=
+  poleOrder - 2
+
+/-- A terminal projective pole of order `r` pulled back through local degree `e` has principal
+pole order `2 + e * (r - 2)`. -/
+def projectivePullbackPoleOrder (ramification terminalPoleOrder : ℕ) : ℕ :=
+  2 + ramification * projectivePoleIrregularity terminalPoleOrder
+
+/-- Pullback multiplies projective irregularity exactly by the local ramification index. -/
+@[simp]
+theorem projectivePullbackPoleOrder_irregularity
+    (ramification terminalPoleOrder : ℕ) :
+    projectivePoleIrregularity
+        (projectivePullbackPoleOrder ramification terminalPoleOrder) =
+      ramification * projectivePoleIrregularity terminalPoleOrder := by
+  simp [projectivePoleIrregularity, projectivePullbackPoleOrder]
+
+/-- A genuinely irregular terminal pole remains strictly more singular than a Schwarzian
+double pole at every nonconstant local branch. -/
+theorem two_lt_projectivePullbackPoleOrder
+    (ramification terminalPoleOrder : ℕ)
+    (hramification : 0 < ramification) (hirregular : 2 < terminalPoleOrder) :
+    2 < projectivePullbackPoleOrder ramification terminalPoleOrder := by
+  have hterminal : 0 < projectivePoleIrregularity terminalPoleOrder := by
+    simp [projectivePoleIrregularity, hirregular]
+  have hproduct : 0 < ramification * projectivePoleIrregularity terminalPoleOrder :=
+    Nat.mul_pos hramification hterminal
+  simp only [projectivePullbackPoleOrder]
+  omega
+
+/-- A nonzero analytic unit times the local projective principal part has exactly the expected
+pulled-back pole order. -/
+theorem meromorphicOrderAt_projectivePrincipalPart
+    (p : ℂ) (unit : ℂ → ℂ) (hunit : AnalyticAt ℂ unit p) (hunit_ne : unit p ≠ 0)
+    (ramification terminalPoleOrder : ℕ) :
+    meromorphicOrderAt
+        (fun z : ℂ => unit z *
+          (z - p) ^ (-((projectivePullbackPoleOrder ramification terminalPoleOrder : ℕ) : ℤ))) p =
+      ((-((projectivePullbackPoleOrder ramification terminalPoleOrder : ℕ) : ℤ)) : WithTop ℤ) := by
+  change meromorphicOrderAt
+      (unit * ((· - p) ^ (-((projectivePullbackPoleOrder ramification terminalPoleOrder : ℕ) : ℤ))))
+        p = _
+  rw [meromorphicOrderAt_mul_of_ne_zero hunit hunit_ne]
+  exact meromorphicOrderAt_zpow_id_sub_const
+
+/-- The Schwarzian term cannot cancel an irregular pulled-back projective pole: its order is at
+least `-2`, while the principal part has strictly smaller meromorphic order. -/
+theorem meromorphicOrderAt_projectivePrincipalPart_add_schwarzian
+    (p : ℂ) (unit schwarzian : ℂ → ℂ)
+    (hunit : AnalyticAt ℂ unit p) (hunit_ne : unit p ≠ 0)
+    (hschwarzian : MeromorphicAt schwarzian p)
+    (hschwarzianOrder : ((-2 : ℤ) : WithTop ℤ) ≤ meromorphicOrderAt schwarzian p)
+    (ramification terminalPoleOrder : ℕ)
+    (hramification : 0 < ramification) (hirregular : 2 < terminalPoleOrder) :
+    meromorphicOrderAt
+        (fun z : ℂ => unit z *
+            (z - p) ^ (-((projectivePullbackPoleOrder ramification terminalPoleOrder : ℕ) : ℤ)) +
+          schwarzian z) p =
+      ((-((projectivePullbackPoleOrder ramification terminalPoleOrder : ℕ) : ℤ)) : WithTop ℤ) := by
+  have hpole : 2 < projectivePullbackPoleOrder ramification terminalPoleOrder :=
+    two_lt_projectivePullbackPoleOrder ramification terminalPoleOrder
+      hramification hirregular
+  have hpoleInt : (2 : ℤ) < projectivePullbackPoleOrder ramification terminalPoleOrder := by
+    exact_mod_cast hpole
+  have horderLt :
+      ((-((projectivePullbackPoleOrder ramification terminalPoleOrder : ℕ) : ℤ)) : WithTop ℤ) <
+        ((-2 : ℤ) : WithTop ℤ) :=
+    WithTop.coe_lt_coe.mpr (neg_lt_neg hpoleInt)
+  have hprincipalOrder := meromorphicOrderAt_projectivePrincipalPart p unit hunit hunit_ne
+    ramification terminalPoleOrder
+  have hstrict :
+      meromorphicOrderAt
+          (fun z : ℂ => unit z *
+            (z - p) ^ (-((projectivePullbackPoleOrder ramification terminalPoleOrder : ℕ) : ℤ))) p <
+        meromorphicOrderAt schwarzian p := by
+    rw [hprincipalOrder]
+    exact horderLt.trans_le hschwarzianOrder
+  change meromorphicOrderAt
+      ((fun z : ℂ => unit z *
+        (z - p) ^ (-((projectivePullbackPoleOrder ramification terminalPoleOrder : ℕ) : ℤ))) +
+        schwarzian) p = _
+  calc
+    _ = meromorphicOrderAt
+        (fun z : ℂ => unit z *
+          (z - p) ^ (-((projectivePullbackPoleOrder ramification terminalPoleOrder : ℕ) : ℤ))) p :=
+      meromorphicOrderAt_add_eq_left_of_lt hschwarzian hstrict
+    _ = _ := hprincipalOrder
+
+/-- Summing the exact local irregularity law over one degree-`D` fibre gives the
+degree-amplified divisor inequality `D * I_y ≤ I₀`. -/
+theorem projectiveIrregularity_fiber_degree_amplified
+    {α : Type*} (fiber : Finset α) (ramification sourcePoleOrder : α → ℕ)
+    (terminalPoleOrder degree : ℕ)
+    (hdegree : ∑ x ∈ fiber, ramification x = degree)
+    (hlocal : ∀ x ∈ fiber,
+      projectivePullbackPoleOrder (ramification x) terminalPoleOrder ≤ sourcePoleOrder x) :
+    degree * projectivePoleIrregularity terminalPoleOrder ≤
+      ∑ x ∈ fiber, projectivePoleIrregularity (sourcePoleOrder x) := by
+  calc
+    degree * projectivePoleIrregularity terminalPoleOrder =
+        (∑ x ∈ fiber, ramification x) * projectivePoleIrregularity terminalPoleOrder := by
+          rw [hdegree]
+    _ = ∑ x ∈ fiber, ramification x * projectivePoleIrregularity terminalPoleOrder := by
+      rw [Finset.sum_mul]
+    _ ≤ ∑ x ∈ fiber, projectivePoleIrregularity (sourcePoleOrder x) := by
+      exact Finset.sum_le_sum fun x hx => by
+        apply Nat.le_sub_of_add_le
+        simpa [projectivePullbackPoleOrder, projectivePoleIrregularity, Nat.add_comm] using
+          hlocal x hx
+
+/-- Once the covering degree exceeds the complete source irregularity budget, every terminal pole
+is Fuchsian.  This is the finite-transient conclusion of the local divisor law. -/
+theorem terminalProjectivePoleOrder_le_two_of_sourceBudget_lt_degree
+    {α : Type*} (fiber : Finset α) (ramification sourcePoleOrder : α → ℕ)
+    (terminalPoleOrder degree sourceIrregularityBudget : ℕ)
+    (hdegree : ∑ x ∈ fiber, ramification x = degree)
+    (hlocal : ∀ x ∈ fiber,
+      projectivePullbackPoleOrder (ramification x) terminalPoleOrder ≤ sourcePoleOrder x)
+    (hsource : (∑ x ∈ fiber, projectivePoleIrregularity (sourcePoleOrder x)) ≤
+      sourceIrregularityBudget)
+    (hdeep : sourceIrregularityBudget < degree) :
+    terminalPoleOrder ≤ 2 := by
+  have hamplified : degree * projectivePoleIrregularity terminalPoleOrder ≤
+      sourceIrregularityBudget :=
+    (projectiveIrregularity_fiber_degree_amplified fiber ramification sourcePoleOrder
+      terminalPoleOrder degree hdegree hlocal).trans hsource
+  have hirregularity : projectivePoleIrregularity terminalPoleOrder = 0 := by
+    by_contra hne
+    have hpositive : 0 < projectivePoleIrregularity terminalPoleOrder := Nat.pos_of_ne_zero hne
+    have hdegree_le : degree ≤ degree * projectivePoleIrregularity terminalPoleOrder :=
+      Nat.le_mul_of_pos_right degree hpositive
+    omega
+  simp only [projectivePoleIrregularity] at hirregularity
+  omega
 
 /-- Projectivizing an affine connection commutes with rational pullback.  If the affine
 coefficient transforms as `p₁ * μ + p₂ / p₁`, then `2 μ' - μ²` transforms by the projective
