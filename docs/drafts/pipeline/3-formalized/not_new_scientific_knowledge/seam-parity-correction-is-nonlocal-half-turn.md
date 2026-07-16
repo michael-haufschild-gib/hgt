@@ -1,7 +1,7 @@
 # Seam Parity Correction Is A Nonlocal Half-Turn
 
 - **ID:** seam-parity-correction-is-nonlocal-half-turn
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / source-transfer routing
 - **Grade:** BRIDGE / guardrail. Door-2 reduces the proof to elementary
   polynomial algebra and the pullback `z -> -z`.
@@ -114,7 +114,13 @@ language from concealing the same failed transfer.
 - [x] 0 -> 1 in-progress: parity correction isolated from the finite-order
   local-operator no-go.
 - [x] 1 -> 2 fully-proven: polynomial impossibility proof written.
-- [ ] 2 -> 3 formalized: optional polynomial-root proof plus monomial action.
+- [x] 2 -> 3 formalized: unconditional theorems
+  `HTGeometry.no_polynomial_nat_eval_eq_neg_one_pow`,
+  `HTGeometry.eval_neg_X_pow`, and
+  `HTGeometry.no_polynomial_degreeSymbol_eq_halfTurn` in
+  `formal/GaloisForLFunctions/HTGeometry/HalfTurnParityNoGo.lean`; the exact
+  target build passed and the capstone axiom audit reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.
 
 ## Log
 

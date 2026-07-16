@@ -1,7 +1,7 @@
 # Two Boundary Rank-One Nontransfer
 
 - **ID:** two-boundary-rank-one-nontransfer
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / proof-route guardrail
 - **Source:** `docs/consolidated/revision01/formulas.md` formulas 182--185,
   `zero-fed-uvarov-repair-tautology.md`, and `no-boundary-selection-of-zeta.md`
@@ -100,8 +100,13 @@ language alone does not identify which boundary is carrying the sign.
 
 - [x] 0 -> 1 in-progress: boundary-channel conflation isolated.
 - [x] 1 -> 2 fully-proven: finite evaluation-functional proof written.
-- [ ] 2 -> 3 formalized: optional; a short Lean theorem about evaluation
-  functionals on degree-one polynomials would suffice.
+- [x] 2 -> 3 formalized: unconditional theorems
+  `HTGeometry.eval_kernels_ne`, `HTGeometry.eval_not_scalar_multiple`,
+  `HTGeometry.eval_normSq_zero_sets_ne`, and the numerical capstone
+  `HTGeometry.pole_firstTrivialZero_boundary_nontransfer` in
+  `formal/GaloisForLFunctions/HTGeometry/FiniteSourceGuardrails.lean`; exact
+  target build passed and the capstone audit reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.
 
 ## Log
 

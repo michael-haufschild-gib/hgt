@@ -1,9 +1,9 @@
 # Polynomial Taylor Magnitudes Force Exponentially Accurate Prouhet Phase Locks
 
 - **ID:** `polynomial-taylor-prouhet-phase-lock`
-- **Stage:** 2-fully-proven / needs scientific-novelty audit
+- **Stage:** 3-formalized / needs scientific-novelty audit
 - **Type:** THEOREM CANDIDATE / GENERAL DA PHASE LAW / PROUHET OSCULATION
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [SIGNIFICANT]`
+- **Scientific status:** `[PROVED HERE] [LEAN FORMALIZED] [NOVELTY UNVERIFIED] [SIGNIFICANT]`
 - **Statement:** For exact polynomial logarithmic Taylor magnitudes with exponent `beta>2`, every integer ADE forces the coefficient phases to satisfy an exponentially accurate bounded-window trigonometric relation inside one minimal high-order Prouhet class at every sufficiently large coefficient index.
 
 ## Goal
@@ -159,16 +159,33 @@ This law says that a polynomial-magnitude DA escape requires exponentially accur
 
 ## Lean status
 
-No Lean formalization is claimed. The theorem requires the missing generic ADE coefficient substrate, plus bounded-pattern polynomiality, asymptotic moment ordering, and the exponentially small remainder estimate.
+Formalized unconditionally in
+`formal/GaloisForLFunctions/HTGeometry/PolynomialTaylorProuhetPhaseLock.lean`.
+The capstone theorem `exists_polynomialTaylorProuhetPhaseLock` proves, for
+`beta > 2`, `B > 0`, an integer-coefficient ADE of positive maximal dependent-variable
+degree, and every residue `tau < D`:
+
+- a nonempty finite survivor set and its least-source, lexicographically minimal moment cluster;
+- at least two distinct patterns in that cluster;
+- nonzero integer weight polynomials giving the exact grouped ADE weights at every large index;
+- common moments through `ceil(beta)-1` and divisibility of every cluster difference by
+  `(X-1)^ceil(beta)`;
+- nonnegative uniformly bounded relative valuations inside the cluster; and
+- the normalized phase-lock inequality with exponent
+  `min(beta-2, beta-(ceil(beta)-1)) > 0` and a polynomial weight-mass factor.
+
+The proof has no project axioms or placeholders; `#print axioms` reports only
+`propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
 - [x] Exact candidate phase law stated.
 - [x] Complete unconditional paper proof.
 - [ ] Parent-theory and literature novelty gates.
-- [ ] Whole theorem formalized unconditionally in Lean.
+- [x] Whole theorem formalized unconditionally in Lean.
 
 ## Log
 
 - 2026-07-11 — Opened the phase-sensitive propagation of the recurrent polynomial Prouhet lock.
 - 2026-07-11 — Proved the residue-class polynomial-weight decomposition, minimal Prouhet cluster selection, and exponentially accurate local phase-lock law; promoted to paper-proven with novelty unverified.
+- 2026-07-16 — Formalized the full residue-wise Prouhet cluster, bounded relative valuation, exponentially accurate phase-lock, nonsingleton cardinality, and Prouhet divisibility theorem in Lean 4; moved to stage 3.

@@ -1,7 +1,7 @@
 # Positive Source Weights Require Pointwise Hankel Kernels
 
 - **ID:** positive-source-weights-require-pointwise-hankel-kernels
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / source-transfer guardrail
 - **Source:** `axis-positivity-does-not-imply-hankel-positivity.md`,
   `source-selector-repair-obligation-ledger.md`,
@@ -126,7 +126,12 @@ the pointwise Hankel-kernel positivity that makes positive coefficients relevant
 
 - [x] 0 -> 1 in-progress: positive-weight transfer criterion isolated.
 - [x] 1 -> 2 fully-proven: finite point-mass proof completed.
-- [ ] 2 -> 3 formalized: finite matrix-cone lemma.
+- [x] 2 -> 3 formalized: unconditional equivalence
+  `HTGeometry.weightedKernel_posSemidef_iff` and point-mass counterwitness
+  `HTGeometry.exists_nonnegative_weight_not_posSemidef_of_pointwise` in
+  `formal/GaloisForLFunctions/HTGeometry/FiniteSourceGuardrails.lean`; exact
+  target build passed and the capstone audit reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.
 
 ## Log
 

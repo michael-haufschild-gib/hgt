@@ -310,25 +310,6 @@ theorem finiteIncidenceKMSResponse_im_nonpos
       finiteKMSEntropyProductionTransitionIntensity_nonneg
         _ _ _ (finiteIncidenceKMSAmplitude_hermitian sigma epsilon d)) hz
 
-def mobiusIncidenceUniversalGapDensity (x : ℝ) : ℝ :=
-  2 * |x| * Real.exp (-|x|)
-
-theorem mobiusIncidenceUniversalGapDensity_nonneg (x : ℝ) :
-    0 ≤ mobiusIncidenceUniversalGapDensity x := by
-  positivity
-
-theorem integral_mobiusIncidenceUniversalGapDensity :
-    (∫ x : ℝ, mobiusIncidenceUniversalGapDensity x) = 4 := by
-  rw [show mobiusIncidenceUniversalGapDensity =
-      fun x : ℝ => 2 * (|x| * Real.exp (-|x|)) by
-    funext x
-    rfl]
-  rw [integral_const_mul, integral_comp_abs]
-  have h := integral_Ioi_pow_mul_exp_neg_rate 1 (show (0 : ℝ) < 1 by norm_num)
-  simp only [pow_one, one_mul] at h
-  rw [h]
-  norm_num
-
 end
 
 end RHTower

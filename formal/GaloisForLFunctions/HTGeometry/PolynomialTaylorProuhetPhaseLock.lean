@@ -130,7 +130,8 @@ theorem polynomialPhaseLockExponent_pos {β : ℝ} (hβ : 2 < β) :
     have hceil2 : Nat.ceil β ≤ 2 := by omega
     have : β ≤ (2 : ℝ) := Nat.ceil_le.mp hceil2
     linarith
-  have hceilLt : (Nat.ceil β : ℝ) < β + 1 := Nat.ceil_lt_add_one β
+  have hceilLt : (Nat.ceil β : ℝ) < β + 1 :=
+    Nat.ceil_lt_add_one (by linarith : 0 ≤ β)
   have hcast : ((Nat.ceil β - 1 : ℕ) : ℝ) = (Nat.ceil β : ℝ) - 1 := by
     rw [Nat.cast_sub (by omega)]
     norm_num
@@ -375,6 +376,7 @@ theorem exists_residueCluster_activeAtom_gap
   have hcount : ∀ p ∈ S, (∑ r, (p r : ℕ)) = D := fun p hp =>
     polynomialPatternSurvivors_count hp
   obtain ⟨p₀, hp₀⟩ := hC
+  have hC : C.Nonempty := ⟨p₀, hp₀⟩
   obtain ⟨cpat, hcpat, hpatReal⟩ :=
     eventually_uniform_survivor_gap_from_cluster hβ S hS hcount p₀ hp₀
   have hbaseT : Tendsto (fun q : ℕ => (q : ℝ) - K) atTop atTop := by
@@ -428,7 +430,8 @@ theorem exists_residueCluster_activeAtom_gap
     rw [key_weighted_sum] at hinvq
     change (∑ i, s i) + magnitudeShiftCode n Q anchor =
       Nraw + magnitudeMaxJetOrder n Q at hwraw'
-    simpa only [D, qraw, s] at hinvq
+    change (∑ i, s i) + magnitudeShiftCode n Q anchor =
+      D * q + τ + magnitudeMaxJetOrder n Q at hinvq
     omega
   have hνActive : ν ∈ activeAevalAtoms n (D * q + τ) Q :=
     (Finset.mem_sdiff.mp hν).1
@@ -617,43 +620,46 @@ theorem two_le_card_of_polynomialPhaseLock
     subst r
     exact hr.symm
   have hsmall := eventually_natPow_mul_exp_neg_rpow_lt_one P hc hη
-  filter_upwards [hactive, hlock, hsmall, eventually_ge_atTop K] with
-      q hactiveq hlockq hsmallq hKq
-  have hw := hactiveq p hpC
-  have hwLower := aevalWeight_norm_ge_one n (D * q + τ) Q
-    (shiftedAtomPatternKey q K p) hQint hw
-  have hval := atomValuation_shiftedAtomPatternKey
-    (B := B) (β := β) p hKq
-  have hdelta :
-      atomValuation (fun i => B * (i : ℝ) ^ β)
-          (shiftedAtomPatternKey q K p) -
-        B * polynomialPatternClusterMinValuation β C hC ((q : ℝ) - K) = 0 := by
-    rw [hval, hmin]
-  let f : (Fin M → Fin (D + 1)) → ℂ := fun r =>
-    aevalWeight n (D * q + τ) Q (shiftedAtomPatternKey q K r) *
-      (Real.exp (-(atomValuation (fun i => B * (i : ℝ) ^ β)
-        (shiftedAtomPatternKey q K r) -
-          B * polynomialPatternClusterMinValuation β C hC
-            ((q : ℝ) - K))) : ℂ) *
-      normalizedAtomPhase F (fun i => B * (i : ℝ) ^ β)
-        (shiftedAtomPatternKey q K r)
-  have hsum : ∑ r ∈ C, f r = f p := by simp [hCeq]
-  have hlockp : ‖f p‖ ≤
-      (q : ℝ) ^ P * Real.exp (-(c * (q : ℝ) ^ η)) := by
-    rw [← hsum]
-    simpa only [f] using hlockq
-  have hphase :
-      ‖normalizedAtomPhase F (fun i => B * (i : ℝ) ^ β)
-        (shiftedAtomPatternKey q K p)‖ = 1 :=
-    norm_normalizedAtomPhase F (fun i => B * (i : ℝ) ^ β) hb _
-  have hterm : 1 ≤ ‖f p‖ := by
-    dsimp only [f]
-    rw [norm_mul, norm_mul, hdelta, neg_zero, Real.exp_zero, Complex.norm_one,
-      hphase, mul_one, mul_one]
-    exact hwLower
-  exact (not_lt_of_ge (hterm.trans hlockp)) hsmallq
+  have hfalse : ∀ᶠ q : ℕ in atTop, False := by
+    filter_upwards [hactive, hlock, hsmall, eventually_ge_atTop K] with
+        q hactiveq hlockq hsmallq hKq
+    have hw := hactiveq p hpC
+    have hwLower := aevalWeight_norm_ge_one n (D * q + τ) Q
+      (shiftedAtomPatternKey q K p) hQint hw
+    have hval := atomValuation_shiftedAtomPatternKey
+      (B := B) (β := β) p hKq
+    have hdelta :
+        atomValuation (fun i => B * (i : ℝ) ^ β)
+            (shiftedAtomPatternKey q K p) -
+          B * polynomialPatternClusterMinValuation β C hC ((q : ℝ) - K) = 0 := by
+      rw [hval, hmin]
+      ring
+    let f : (Fin M → Fin (D + 1)) → ℂ := fun r =>
+      aevalWeight n (D * q + τ) Q (shiftedAtomPatternKey q K r) *
+        (Real.exp (-(atomValuation (fun i => B * (i : ℝ) ^ β)
+          (shiftedAtomPatternKey q K r) -
+            B * polynomialPatternClusterMinValuation β C hC
+              ((q : ℝ) - K))) : ℂ) *
+        normalizedAtomPhase F (fun i => B * (i : ℝ) ^ β)
+          (shiftedAtomPatternKey q K r)
+    have hsum : ∑ r ∈ C, f r = f p := by simp [hCeq]
+    have hlockp : ‖f p‖ ≤
+        (q : ℝ) ^ P * Real.exp (-(c * (q : ℝ) ^ η)) := by
+      rw [← hsum]
+      simpa only [f] using hlockq
+    have hphase :
+        ‖normalizedAtomPhase F (fun i => B * (i : ℝ) ^ β)
+          (shiftedAtomPatternKey q K p)‖ = 1 :=
+      norm_normalizedAtomPhase F (fun i => B * (i : ℝ) ^ β) hb _
+    have hterm : 1 ≤ ‖f p‖ := by
+      dsimp only [f]
+      rw [norm_mul, norm_mul, hdelta, neg_zero, Real.exp_zero, hphase]
+      simpa using hwLower
+    exact (not_lt_of_ge (hterm.trans hlockp)) hsmallq
+  obtain ⟨q, hq⟩ := hfalse.exists
+  exact hq.elim
 
-/-- Exact polynomial Taylor magnitudes force a finite, nonsingleton minimal
+/- Exact polynomial Taylor magnitudes force a finite, nonsingleton minimal
 Prouhet cluster whose normalized ADE phase sum is exponentially small on
 every prescribed top-degree residue class. -/
 set_option maxHeartbeats 600000 in
@@ -730,7 +736,9 @@ theorem exists_polynomialTaylorProuhetPhaseLock
   have hCS : C ⊆ S :=
     (polynomialPatternMinimalCluster_subset T hT).trans
       (polynomialPatternLeastSourceClass_subset S hS)
-  choose cint hcint using hQint
+  let cint : (Fin (n + 2) →₀ ℕ) → ℤ := fun a => (hQint a).choose
+  have hcint : ∀ a, MvPolynomial.coeff a Q = (cint a : ℂ) := fun a =>
+    (hQint a).choose_spec
   let W : (Fin M → Fin (D + 1)) → Polynomial ℤ := fun p =>
     polynomialPatternWeightPolyInt n D K τ Q cint p
   have hW : ∀ p ∈ S, W p ≠ 0 ∧ ∀ q, K + n ≤ q →
@@ -776,6 +784,7 @@ theorem exists_polynomialTaylorProuhetPhaseLock
   obtain ⟨P, hlock⟩ := eventually_polynomialPhaseLock_of_activeAtom_gap
     F Q hb hrel C m hactive hgap'
   obtain ⟨p₀, hp₀⟩ := hC
+  have hC : C.Nonempty := ⟨p₀, hp₀⟩
   have hcountT : ∀ p ∈ T, (∑ r, (p r : ℕ)) = D := fun p hp =>
     hcountS p (polynomialPatternLeastSourceClass_subset S hS hp)
   have hsumT : ∀ p ∈ T,

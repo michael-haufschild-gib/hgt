@@ -1,7 +1,7 @@
 # Hankel Atom Displacement Tangents Are Indefinite
 
 - **ID:** hankel-atom-displacement-tangent-indefinite
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / source-transfer guardrail
 - **Source:** `c5-jensen-prime-kernel.md`,
   `positive-source-weights-require-pointwise-hankel-kernels.md`,
@@ -128,7 +128,12 @@ intrinsically indefinite.
 
 - [x] 0 -> 1 in-progress: atom-displacement tangent isolated.
 - [x] 1 -> 2 fully-proven: quadratic-form proof completed.
-- [ ] 2 -> 3 formalized: finite polynomial/tangent lemma.
+- [x] 2 -> 3 formalized: unconditional positive-atom theorem
+  `HTGeometry.hankelAtom_posSemidef` and all-degree sign-changing tangent
+  theorem `HTGeometry.hankelAtomDisplacementTangent_indefinite` in
+  `formal/GaloisForLFunctions/HTGeometry/FiniteSourceGuardrails.lean`; exact
+  target build passed and the capstone audit reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.
 
 ## Log
 
