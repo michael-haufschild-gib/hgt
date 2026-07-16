@@ -193,6 +193,110 @@ theorem thetaBornPopescuPolynomial_pos
     ring]
   positivity
 
+/-- The leading seventh-degree term is itself a lower bound for the cleared Popescu polynomial
+on the theta range. -/
+theorem ninety_six_mul_pow_seven_le_thetaBornPopescuPolynomial
+    {q : ℝ} (hq : (3 / 2 : ℝ) < q) :
+    96 * q ^ 7 ≤ thetaBornPopescuPolynomial q := by
+  have hq0 : 0 < q := by linarith
+  have hlinear : 0 < 768 * q - 36 := by nlinarith
+  rw [show thetaBornPopescuPolynomial q =
+      96 * q ^ 7 + 232 * q ^ 6 + 624 * q ^ 5 +
+        q ^ 3 * (768 * q - 36) + 630 * q ^ 2 + 162 * q + 324 by
+    unfold thetaBornPopescuPolynomial
+    ring]
+  have hrest : 0 ≤ 232 * q ^ 6 + 624 * q ^ 5 +
+      q ^ 3 * (768 * q - 36) + 630 * q ^ 2 + 162 * q + 324 := by
+    positivity
+  linarith
+
+/-- The exact theta log curvature grows at most linearly in the readout coordinate. -/
+theorem thetaCuspBornWittenLogCurvature_le_fourteen_mul_weight
+    {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
+    thetaCuspBornWittenLogCurvature n x ≤
+      14 * thetaCuspBornWittenWeight n x := by
+  let q := thetaCuspBornWittenWeight n x
+  have hq : (3 / 2 : ℝ) < q :=
+    three_halves_lt_thetaCuspBornWittenWeight hn hx
+  have hq0 : 0 < q := by linarith
+  have hq2 : 0 < q ^ 2 := sq_pos_of_pos hq0
+  have hz : 0 ≤ q - 3 / 2 := by linarith
+  have hpoly : 0 ≤ 10 * q ^ 3 - 6 * q ^ 2 - 6 * q - 9 := by
+    rw [show 10 * q ^ 3 - 6 * q ^ 2 - 6 * q - 9 =
+        10 * (q - 3 / 2) ^ 3 + 39 * (q - 3 / 2) ^ 2 +
+          (87 / 2) * (q - 3 / 2) + 9 / 4 by ring]
+    positivity
+  rw [thetaCuspBornWittenLogCurvature_eq_readoutProfile hn hx]
+  change 4 * q + 6 + 6 / q + 9 / q ^ 2 ≤ 14 * q
+  rw [show 4 * q + 6 + 6 / q + 9 / q ^ 2 =
+      (4 * q ^ 3 + 6 * q ^ 2 + 6 * q + 9) / q ^ 2 by
+    field_simp [hq0.ne']]
+  apply (div_le_iff₀ hq2).2
+  nlinarith
+
+/-- The third logarithmic jet also has a linear readout-coordinate envelope. -/
+theorem abs_thetaCuspBornWittenLogThirdDerivative_le_sixteen_mul_weight
+    {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
+    |thetaCuspBornWittenLogThirdDerivative n x| ≤
+      16 * thetaCuspBornWittenWeight n x := by
+  let q := thetaCuspBornWittenWeight n x
+  let s := 4 - 6 / q ^ 2 - 18 / q ^ 3
+  have hq : (3 / 2 : ℝ) < q :=
+    three_halves_lt_thetaCuspBornWittenWeight hn hx
+  have hq0 : 0 < q := by linarith
+  have hq3 : 0 < q ^ 3 := pow_pos hq0 3
+  have hpoly : 0 ≤ 8 * q ^ 3 - 6 * q - 18 := by
+    rw [show 8 * q ^ 3 - 6 * q - 18 =
+        (2 * q - 3) * (4 * q ^ 2 + 6 * q + 6) by ring]
+    exact mul_nonneg (by linarith) (by positivity)
+  have hsLower : (-4 : ℝ) ≤ s := by
+    change (-4 : ℝ) ≤ 4 - 6 / q ^ 2 - 18 / q ^ 3
+    rw [show 4 - 6 / q ^ 2 - 18 / q ^ 3 =
+        (4 * q ^ 3 - 6 * q - 18) / q ^ 3 by
+      field_simp [hq0.ne']]
+    apply (le_div_iff₀ hq3).2
+    nlinarith
+  have hsUpper : s ≤ (4 : ℝ) := by
+    change 4 - 6 / q ^ 2 - 18 / q ^ 3 ≤ (4 : ℝ)
+    rw [show 4 - 6 / q ^ 2 - 18 / q ^ 3 =
+        (4 * q ^ 3 - 6 * q - 18) / q ^ 3 by
+      field_simp [hq0.ne']]
+    apply (div_le_iff₀ hq3).2
+    nlinarith
+  have hsAbs : |s| ≤ (4 : ℝ) := (abs_le).2 ⟨hsLower, hsUpper⟩
+  have hrPos : 0 ≤ 2 * q + 3 := by positivity
+  have hrLe : 2 * q + 3 ≤ 4 * q := by linarith
+  unfold thetaCuspBornWittenLogThirdDerivative
+  change |(2 * q + 3) * s| ≤ 16 * q
+  rw [abs_mul, abs_of_nonneg hrPos]
+  calc
+    (2 * q + 3) * |s| ≤ (2 * q + 3) * 4 :=
+      mul_le_mul_of_nonneg_left hsAbs hrPos
+    _ ≤ (4 * q) * 4 := mul_le_mul_of_nonneg_right hrLe (by norm_num)
+    _ = 16 * q := by ring
+
+/-- The first Popescu numerator has a cubic readout-coordinate floor. -/
+theorem three_hundred_eighty_four_mul_weight_cube_le_popescuNumerator
+    {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
+    384 * thetaCuspBornWittenWeight n x ^ 3 ≤
+      thetaCuspBornWittenPopescuNumerator n x := by
+  let q := thetaCuspBornWittenWeight n x
+  have hqRange : (3 / 2 : ℝ) < q :=
+    three_halves_lt_thetaCuspBornWittenWeight hn hx
+  have hq : 0 < q := by linarith
+  have hq6 : 0 < q ^ 6 := pow_pos hq 6
+  have hpoly :=
+    ninety_six_mul_pow_seven_le_thetaBornPopescuPolynomial hqRange
+  have hsquare : (2 * q) ^ 2 ≤ (2 * q + 3) ^ 2 := by nlinarith
+  apply (mul_le_mul_iff_of_pos_left hq6).mp
+  rw [thetaCuspBornWittenWeight_six_mul_popescuNumerator_eq hn hx]
+  calc
+    q ^ 6 * (384 * q ^ 3) = (2 * q) ^ 2 * (96 * q ^ 7) := by ring
+    _ ≤ (2 * q + 3) ^ 2 * (96 * q ^ 7) :=
+      mul_le_mul_of_nonneg_right hsquare (by positivity)
+    _ ≤ (2 * q + 3) ^ 2 * thetaBornPopescuPolynomial q :=
+      mul_le_mul_of_nonneg_left hpoly (sq_nonneg _)
+
 /-- The actual theta Born--Witten logarithmic potential satisfies Popescu's strict first-correction
 condition at every point of every positive atom. -/
 theorem thetaCuspBornWittenPopescuNumerator_pos
@@ -317,6 +421,92 @@ theorem thetaCuspBornWittenQuadraticPopescuCorrectionDensity_zero_pos
     have h := nineteen_le_thetaCuspBornWittenLogCurvature (x := 0) hn (by norm_num)
     linarith
   simpa using hcurv.ne'
+
+/-- The exact quadratic correction density has a uniform quadratic envelope.  This turns the
+source-specific correction into an integrable clock observable using only the zeroth and second
+Born--Witten moments already present in the corpus. -/
+theorem thetaCuspBornWittenQuadraticPopescuCorrectionDensity_le
+    {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
+    thetaCuspBornWittenQuadraticPopescuCorrectionDensity n x ≤
+      24 * (1 + x ^ 2) := by
+  let q := thetaCuspBornWittenWeight n x
+  let V₂ := thetaCuspBornWittenLogCurvature n x
+  let V₃ := thetaCuspBornWittenLogThirdDerivative n x
+  let N := thetaCuspBornWittenPopescuNumerator n x
+  have hq : 0 < q := thetaCuspBornWittenWeight_pos hn hx
+  have hV₂pos : 0 < V₂ := by
+    have h := nineteen_le_thetaCuspBornWittenLogCurvature hn hx
+    dsimp only [V₂]
+    linarith
+  have hNpos : 0 < N := by
+    exact thetaCuspBornWittenPopescuNumerator_pos hn hx
+  have hV₂Lower : 4 * q ≤ V₂ := by
+    dsimp only [q, V₂]
+    rw [thetaCuspBornWittenLogCurvature_eq_readoutProfile hn hx]
+    have hq' : 0 < thetaCuspBornWittenWeight n x :=
+      thetaCuspBornWittenWeight_pos hn hx
+    have hdiv₁ : 0 ≤ 6 / thetaCuspBornWittenWeight n x := by positivity
+    have hdiv₂ : 0 ≤ 9 / thetaCuspBornWittenWeight n x ^ 2 := by positivity
+    linarith
+  have hV₂Upper : V₂ ≤ 14 * q :=
+    thetaCuspBornWittenLogCurvature_le_fourteen_mul_weight hn hx
+  have hV₃Abs : |V₃| ≤ 16 * q :=
+    abs_thetaCuspBornWittenLogThirdDerivative_le_sixteen_mul_weight hn hx
+  have hNLower : 384 * q ^ 3 ≤ N :=
+    three_hundred_eighty_four_mul_weight_cube_le_popescuNumerator hn hx
+  have hV₂sq : V₂ ^ 2 ≤ (14 * q) ^ 2 :=
+    (sq_le_sq₀ hV₂pos.le (mul_nonneg (by norm_num) hq.le)).2 hV₂Upper
+  have hV₃sq : V₃ ^ 2 ≤ (16 * q) ^ 2 := by
+    have hs :=
+      (sq_le_sq₀ (abs_nonneg V₃) (mul_nonneg (by norm_num) hq.le)).2 hV₃Abs
+    simpa only [sq_abs] using hs
+  have hxV₃sq : (x * V₃) ^ 2 ≤ (16 * x * q) ^ 2 := by
+    calc
+      (x * V₃) ^ 2 = x ^ 2 * V₃ ^ 2 := by ring
+      _ ≤ x ^ 2 * (16 * q) ^ 2 :=
+        mul_le_mul_of_nonneg_left hV₃sq (sq_nonneg x)
+      _ = (16 * x * q) ^ 2 := by ring
+  have hdiffsq : (V₂ - x * V₃) ^ 2 ≤
+      512 * q ^ 2 * (1 + x ^ 2) := by
+    calc
+      (V₂ - x * V₃) ^ 2 ≤ 2 * V₂ ^ 2 + 2 * (x * V₃) ^ 2 := by
+        nlinarith [sq_nonneg (V₂ + x * V₃)]
+      _ ≤ 2 * (14 * q) ^ 2 + 2 * (16 * x * q) ^ 2 := by
+        gcongr
+      _ ≤ 512 * q ^ 2 * (1 + x ^ 2) := by
+        nlinarith [sq_nonneg q]
+  have hdenLower : 1536 * q ^ 4 ≤ V₂ * N := by
+    calc
+      1536 * q ^ 4 = (4 * q) * (384 * q ^ 3) := by ring
+      _ ≤ V₂ * N := mul_le_mul hV₂Lower hNLower (by positivity) hV₂pos.le
+  have hdenPos : 0 < V₂ * N := mul_pos hV₂pos hNpos
+  have hleft : 16 * (V₂ - x * V₃) ^ 2 ≤
+      8192 * q ^ 2 * (1 + x ^ 2) := by
+    nlinarith
+  have hqRange : (3 / 2 : ℝ) < q :=
+    three_halves_lt_thetaCuspBornWittenWeight hn hx
+  have hqSqOne : (1 : ℝ) ≤ q ^ 2 := by
+    nlinarith [sq_nonneg (q - 1)]
+  have hqSqLeFourth : q ^ 2 ≤ q ^ 4 := by
+    have hmul := mul_le_mul_of_nonneg_left hqSqOne (sq_nonneg q)
+    nlinarith
+  have hmiddle : 8192 * q ^ 2 * (1 + x ^ 2) ≤
+      24 * (1 + x ^ 2) * (1536 * q ^ 4) := by
+    have hbase : 8192 * q ^ 2 ≤ 24 * 1536 * q ^ 4 := by
+      nlinarith
+    calc
+      8192 * q ^ 2 * (1 + x ^ 2) = (1 + x ^ 2) * (8192 * q ^ 2) := by ring
+      _ ≤ (1 + x ^ 2) * (24 * 1536 * q ^ 4) :=
+        mul_le_mul_of_nonneg_left hbase (by positivity)
+      _ = 24 * (1 + x ^ 2) * (1536 * q ^ 4) := by ring
+  have hright : 24 * (1 + x ^ 2) * (1536 * q ^ 4) ≤
+      24 * (1 + x ^ 2) * (V₂ * N) :=
+    mul_le_mul_of_nonneg_left hdenLower (by positivity)
+  unfold thetaCuspBornWittenQuadraticPopescuCorrectionDensity
+  rw [HTGeometry.oneDimQuadraticPopescuCorrectionDensity_eq hV₂pos.ne' hNpos.ne']
+  change 16 * (V₂ - x * V₃) ^ 2 / (V₂ * N) ≤ 24 * (1 + x ^ 2)
+  apply (div_le_iff₀ hdenPos).2
+  exact hleft.trans (hmiddle.trans hright)
 
 /-- The source-specific quadratic correction density is continuous throughout the physical
 half-line. -/
@@ -484,6 +674,45 @@ theorem thetaCuspBornWittenQuadraticPopescuCorrectionValue_pos_of_integrable
     rw [Real.volume_Ioo]
     simpa only [sub_zero, ENNReal.ofReal_pos] using hε
   exact hvolume.trans_le (measure_mono hsubset)
+
+/-- The exact theta correction integrand is unconditionally integrable: its density is dominated
+by a quadratic clock observable, so the existing zeroth and second Born--Witten moments suffice. -/
+theorem integrableOn_thetaCuspBornWittenQuadraticPopescuCorrectionIntegrand
+    {n : ℕ} (hn : 0 < n) :
+    IntegrableOn (thetaCuspBornWittenQuadraticPopescuCorrectionIntegrand n) (Ioi 0) := by
+  have h₀ := integrableOn_pow_mul_thetaCuspBornWittenAmplitude_sq 0 hn
+  have h₂ := integrableOn_pow_mul_thetaCuspBornWittenAmplitude_sq 2 hn
+  have hmajor : IntegrableOn (fun x : ℝ =>
+      24 * (1 + x ^ 2) * thetaCuspBornWittenAmplitude n x ^ 2) (Ioi 0) := by
+    have hsum := (h₀.const_mul 24).add (h₂.const_mul 24)
+    apply hsum.congr
+    filter_upwards [] with x
+    simp only [Pi.add_apply, pow_zero, one_mul]
+    ring
+  apply Integrable.mono hmajor
+  · apply ContinuousOn.aestronglyMeasurable _ measurableSet_Ioi
+    intro x hx
+    exact
+      ((continuousAt_thetaCuspBornWittenQuadraticPopescuCorrectionDensity hn hx.le).mul
+        ((hasDerivAt_thetaCuspBornWittenAmplitude hn hx.le).continuousAt.pow 2)).continuousWithinAt
+  · filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+    have hnonneg :=
+      thetaCuspBornWittenQuadraticPopescuCorrectionIntegrand_nonneg hn hx.le
+    have hmajorNonneg : 0 ≤
+        24 * (1 + x ^ 2) * thetaCuspBornWittenAmplitude n x ^ 2 := by positivity
+    rw [Real.norm_of_nonneg hnonneg, Real.norm_of_nonneg hmajorNonneg]
+    unfold thetaCuspBornWittenQuadraticPopescuCorrectionIntegrand
+    exact mul_le_mul_of_nonneg_right
+      (thetaCuspBornWittenQuadraticPopescuCorrectionDensity_le hn hx.le)
+      (sq_nonneg _)
+
+/-- **Strict finite Popescu gain for every positive theta clock.**  The half-line quadratic
+correction has a genuinely positive integral value, with no residual integrability hypothesis. -/
+theorem thetaCuspBornWittenQuadraticPopescuCorrectionValue_pos
+    {n : ℕ} (hn : 0 < n) :
+    0 < thetaCuspBornWittenQuadraticPopescuCorrectionValue n :=
+  thetaCuspBornWittenQuadraticPopescuCorrectionValue_pos_of_integrable hn
+    (integrableOn_thetaCuspBornWittenQuadraticPopescuCorrectionIntegrand hn)
 
 end
 

@@ -51,6 +51,12 @@ Primary literature used for the transfer:
   to Weyl's unified field theory*, arXiv:2002.00285.
 - I. Quiros, *Gauge invariant approach to nonmetricity theories and the second clock effect*,
   arXiv:2201.03076.
+- E. E. Flanagan, A. M. Grant, A. I. Harte, and D. A. Nichols, *Persistent gravitational wave
+  observables: general framework*, arXiv:1901.00021.  Their proper-time, rotation, and holonomy
+  memories motivate retaining conjugacy-class readings rather than a chosen gauge representative.
+- V. S. H. Lee and K. M. Zurek, *Proper Time Observables of General Gravitational Perturbations in
+  Laser Interferometry-based Gravitational Wave Detectors*, arXiv:2408.03363.  Their proper-time
+  observable is explicitly gauge invariant and agrees with detector strain for a plane wave.
 
 The physical status of the second-clock effect in particular Weyl gauge theories is disputed; the
 formal theorem does not depend on that dispute.  It uses only the common gauge/holonomy algebra.
@@ -71,6 +77,12 @@ The no-go has a significant positive residue.  Failure of scalar integrability i
 absence: a concrete nonunit loop is a gauge-stable curvature witness.  Conversely, flatness
 constructs a global calibration rather than assuming one.
 
+The gravitational-wave audit further removes an unnecessary commutativity hypothesis from the
+observable layer.  For an arbitrary group the raw loop holonomy changes by conjugation, but every
+conjugation-invariant scalar readout is literally gauge invariant.  If that scalar differs from
+its unit value, it alone obstructs every global scalar calibration; the full group-valued
+holonomy need not be reconstructed.
+
 ## RH boundary
 
 The theorem does not prove RH.  It does sharpen route triage: any proposed scalar clock or scalar
@@ -85,11 +97,14 @@ very charge it needs to detect.
 `formal/GaloisForLFunctions/HTGeometry/ClockCalibrationHolonomy.lean` exports:
 
 - `clockWalkTransport_append` and `clockWalkTransport_reverse`;
-- `clockWalkTransport_gauge` and `clockClosedHolonomy_gauge_invariant`;
+- `clockWalkTransport_gauge`, `clockClosedHolonomy_gauge_conjugate`, and
+  `clockClosedHolonomy_gauge_invariant`;
+- `ConjugationInvariantClockReadout` and `clockClosedReadout_gauge_invariant`;
 - `clockWalkTransport_of_exact`, `clockWalkTransport_ratio`, and
   `clockRatioCalibration_flat`;
 - `clockCalibrationExact_of_flat` and `clockCalibrationExact_iff_flat`;
 - `not_clockCalibrationExact_of_nontrivial_holonomy`;
+- `not_clockCalibrationExact_of_closedReadout_ne_unit`;
 - `clockCalibrationFlat_gauge`.
 
 ## Gates

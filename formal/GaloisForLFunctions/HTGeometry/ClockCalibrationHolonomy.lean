@@ -78,6 +78,29 @@ theorem clockClosedHolonomy_gauge_invariant {G : SimpleGraph V} [CommGroup A]
   rw [clockWalkTransport_gauge]
   simp [mul_comm]
 
+/-- Without commutativity, a closed clock reading is gauge covariant by endpoint conjugation.
+This is the natural value relation for Lorentz, spin, and other nonabelian calibration groups. -/
+theorem clockClosedHolonomy_gauge_conjugate {G : SimpleGraph V} [Group A]
+    (g : V → A) (c : V → V → A) (u : V) (p : G.Walk u u) :
+    clockWalkTransport (clockCalibrationGauge g c) p =
+      (g u)⁻¹ * clockWalkTransport c p * g u :=
+  clockWalkTransport_gauge g c p
+
+/-- A scalar or categorical observation of clock holonomy is physical when it is insensitive to
+conjugation by a change of local standard. -/
+def ConjugationInvariantClockReadout [Group A] {B : Type*} (readout : A → B) : Prop :=
+  ∀ (g a : A), readout (g⁻¹ * a * g) = readout a
+
+/-- **Nonabelian closed-clock observability.**  Every conjugation-invariant readout of a closed
+holonomy is literally gauge invariant; commutativity of the calibration group is unnecessary. -/
+theorem clockClosedReadout_gauge_invariant {G : SimpleGraph V} [Group A]
+    {B : Type*} (readout : A → B) (hreadout : ConjugationInvariantClockReadout readout)
+    (g : V → A) (c : V → V → A) (u : V) (p : G.Walk u u) :
+    readout (clockWalkTransport (clockCalibrationGauge g c) p) =
+      readout (clockWalkTransport c p) := by
+  rw [clockClosedHolonomy_gauge_conjugate]
+  exact hreadout (g u) (clockWalkTransport c p)
+
 /-- A calibration field is flat when every closed walk has unit clock holonomy. -/
 def ClockCalibrationFlat (G : SimpleGraph V) [Monoid A] (c : V → V → A) : Prop :=
   ∀ (u : V) (p : G.Walk u u), clockWalkTransport c p = 1
@@ -173,6 +196,17 @@ theorem not_clockCalibrationExact_of_nontrivial_holonomy
     ¬ ClockCalibrationExact G c := by
   intro hexact
   exact hp ((clockCalibrationFlat_of_exact c hexact) u p)
+
+/-- A scalar closed-clock observation that differs from its unit value already obstructs every
+global calibration.  Access to the full group-valued holonomy is not required. -/
+theorem not_clockCalibrationExact_of_closedReadout_ne_unit
+    {G : SimpleGraph V} [Group A] {B : Type*}
+    (readout : A → B) (c : V → V → A) {u : V} (p : G.Walk u u)
+    (hp : readout (clockWalkTransport c p) ≠ readout 1) :
+    ¬ ClockCalibrationExact G c := by
+  apply not_clockCalibrationExact_of_nontrivial_holonomy c p
+  intro hunit
+  exact hp (congrArg readout hunit)
 
 /-- Gauge changes preserve flatness even for a nonabelian calibration group: closed holonomy is
 conjugated, and conjugation preserves the unit. -/

@@ -88,6 +88,23 @@ theorem setVariablesOne_privateSectorPolynomial_eq_zero
   apply Finset.prod_eq_zero hkt
   simp [setVariablesOne, hks]
 
+/-- **Irredundant facet coordinates.**  The augmentation product on a face `A` survives the
+coordinate projection onto `A`, but vanishes on the coordinate projection onto any `B` that does
+not contain `A`.  For a facet antichain this gives a private nonzero coordinate for every facet. -/
+theorem privateSectorPolynomial_facetCoordinates
+    [Fintype σ] {A B : Finset σ} (hAB : ¬ A ⊆ B) :
+    setVariablesOne (F := F) (Finset.univ \ A)
+        (privateSectorPolynomial (F := F) A) = privateSectorPolynomial (F := F) A ∧
+      setVariablesOne (F := F) (Finset.univ \ B)
+        (privateSectorPolynomial (F := F) A) = 0 := by
+  constructor
+  · apply setVariablesOne_privateSectorPolynomial_eq_self (F := F)
+    exact Finset.sdiff_disjoint
+  · obtain ⟨k, hkA, hkB⟩ := Finset.not_subset.mp hAB
+    apply setVariablesOne_privateSectorPolynomial_eq_zero (F := F) (k := k)
+    · simp [hkB]
+    · exact hkA
+
 /-- The private charge uses exactly one augmentation factor in every transverse direction. -/
 theorem privateSectorPolynomial_totalDegree (s : Finset σ) :
     totalDegree (privateSectorPolynomial (F := F) s) = s.card := by

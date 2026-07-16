@@ -140,6 +140,64 @@ theorem differentialJet_analyticFinitePrimeShiftCarrier_mem_eulerBase
   · exact GaloisForLFunctions.differentialJet_mem_differentialAdjoin
       upperEndRationalCoordinateField (Set.mem_range_self q) n
 
+/-- The analytic jet represented by a bounded source is independent of the numerical bound used
+to certify convergence. -/
+theorem differentialJet_analyticPrimeObservableShiftCarrier_congr_bound
+    (c : Nat.Primes → ℂ) (M N : ℝ)
+    (hc : ∀ p, ‖c p‖ ≤ M) (hd : ∀ p, ‖c p‖ ≤ N)
+    (a : ℂ) (k : ℕ) :
+    GaloisForLFunctions.differentialJet k
+        (analyticPrimeObservableShiftCarrier c M hc a) =
+      GaloisForLFunctions.differentialJet k
+        (analyticPrimeObservableShiftCarrier c N hd a) := by
+  have hlin := differentialJet_analyticPrimeObservableShiftCarrier_linearCombination
+    (J := Fin 1) (fun _ ↦ c) (fun _ ↦ M) (fun _ ↦ hc)
+    (fun _ ↦ (1 : ℂ)) c N hd (by intro p; simp) a k
+  simpa using hlin.symm
+
+/-- Two bounded prime sources that differ at only finitely many primes have the same analytic
+tail at every differential order: their jet difference lies in the Euler-exponential base. -/
+theorem differentialJet_analyticPrimeObservableShiftCarrier_sub_mem_eulerBase_of_finiteSupport
+    (c d : Nat.Primes → ℂ) (M N : ℝ)
+    (hc : ∀ p, ‖c p‖ ≤ M) (hd : ∀ p, ‖d p‖ ≤ N)
+    (hsupport : {p | c p - d p ≠ 0}.Finite) (a : ℂ) (k : ℕ) :
+    GaloisForLFunctions.differentialJet k
+          (analyticPrimeObservableShiftCarrier c M hc a) -
+        GaloisForLFunctions.differentialJet k
+          (analyticPrimeObservableShiftCarrier d N hd a) ∈
+      analyticEulerExponentialBase a := by
+  classical
+  let u : Nat.Primes →₀ ℂ :=
+    Finsupp.onFinset hsupport.toFinset (fun p ↦ c p - d p) (by
+      intro p hp
+      exact hsupport.mem_toFinset.mpr hp)
+  have hu (p : Nat.Primes) : u p = c p - d p := by
+    exact Finsupp.onFinset_apply
+  have hcarrier :
+      analyticFinitePrimeShiftCarrier a u =
+        analyticPrimeObservableShiftCarrier c M hc a -
+          analyticPrimeObservableShiftCarrier d N hd a := by
+    have hlin := analyticPrimeObservableShiftCarrier_linearCombination
+      (J := Fin 2)
+      (fun i ↦ if i = 0 then c else d)
+      (fun i ↦ if i = 0 then M else N)
+      (by
+        intro i p
+        fin_cases i
+        · simpa using hc p
+        · simpa using hd p)
+      (fun i ↦ if i = 0 then (1 : ℂ) else -1)
+      (fun p ↦ u p) (finitePrimeSourceBound u)
+      (finitePrimeSource_norm_le_bound u)
+      (by
+        intro p
+        change u p = _
+        rw [hu]
+        simp [Fin.sum_univ_two, sub_eq_add_neg]) a
+    simpa [analyticFinitePrimeShiftCarrier, Fin.sum_univ_two, sub_eq_add_neg] using hlin
+  rw [← GaloisForLFunctions.differentialJet_sub, ← hcarrier]
+  exact differentialJet_analyticFinitePrimeShiftCarrier_mem_eulerBase a u k
+
 end
 
 end GaloisForLFunctions.HTGeometry

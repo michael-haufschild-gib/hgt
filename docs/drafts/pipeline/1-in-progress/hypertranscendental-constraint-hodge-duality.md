@@ -282,18 +282,35 @@ This gives a precise form of “capacity concentrated on a thin constraint bound
 temporal motif: the local atom remains rank two, while unbounded capacity is stored in the number
 of indispensable pair channels and in their growing transverse concealment order.
 
-> **[CONJECTURE — UNIVERSAL HT CONSTRAINT COSKELETON]** Every regular source-minimal constrained
-> HT germ has a canonical defect nerve modulo DA with a finite **locality dimension** `ell`.  The
-> defect object is the right Kan extension of its `ell`-faces, compatibility on `(ell+1)`-faces is
-> the complete gluing law, and every `ell`-face has a nonzero private sector.  In the generic
-> meromorphic normal-crossing class, `ell=2`; rank one is DA-only, rank two is the first HT atom,
-> and all higher complexity is transverse concealment and gluing rather than a new local species.
+The universal rank-two form is false for bare HT.  The facet-sewn Herglotz theorem realizes every
+finite simplicial complex as the exact Stanley--Reisner DA relation spectrum of a scalar
+meromorphic HT system.  Its minimal primes are the irreducible boundary charts, their heights are
+the facet-complement cardinalities, and every chart has a private differentially independent HT
+observable.  Hence bare HT permits arbitrary finite locality spectra, including nonpure spectra.
+This sharp no-go and its positive universality theorem are recorded in
+`../3-formalized/new_scientific_knowledge/hypertranscendental-constraint-spectrum-universality.md`.
 
-The bold universal form predicts `ell=2` throughout the regular self-dual geometric class.  The
-anti-theatre alternative is equally substantive: if a source has `ell>2`, prove that no lower
-skeleton is conservative and promote `ell` itself to a differential-birational invariant.  Either
-outcome constrains hypertranscendental functions by an intrinsic locality law rather than by a
-chosen differential equation or a propagation rule.
+> **[CONJECTURE — SOURCE-SELECTED CONSTRAINT-SPECTRUM CLASSIFICATION]** A regular source-minimal
+> self-dual constrained HT germ has a canonical reduced or derived constraint spectrum together
+> with a source marking, polarization, growth datum, and comparison atlas.  The minimal-prime
+> height spectrum is a differential-birational invariant; its component restrictions are jointly
+> conservative; and the marked polarized spectrum lies in a strict essential image that excludes
+> the arbitrary facet-sewn universal realizations.  In the generic multiple-gamma normal-crossing
+> stratum all minimal primes have height two, giving the proven pair-face theory.  Other natural
+> strata may have genuinely nonuniform locality spectra.
+
+The load-bearing word is **source-selected**.  Hypertranscendence supplies universal finite
+constraint capacity and therefore cannot select the topology.  The new field must classify which
+marked spectra arise naturally and why; without a strict selection theorem, a universal
+constraint-Hodge category is false rather than merely unproved.
+
+The first strict essential image is already known.  A scalar meromorphic HT function of one
+complex variable realizing a full Stanley--Reisner matroid has minimal-prime height at most one;
+equivalently its complex is a simplex or a deletion family and its squarefree annihilator is zero
+or principal.  Conversely every such principal stratum is realized.  Nonpure constraint topology
+therefore requires analytic dimension at least two or genuinely non-DA-flat internal transport.
+The higher-dimensional source-selection problem is now precise: classify the marked constraint
+spectra realizable in analytic dimension `n`, then impose self-duality and polarization.
 
 ## Why bare differential modules cannot be the object
 
@@ -383,8 +400,8 @@ would be the full equivalence above, including:
 1. construction and Morita invariance of `C_x` for a nonlinear nonabelian HT source class;
 2. identification of augmentation-adic source height with the first nonzero source-Postnikov
    layer, including its forced unboundedness across the category;
-3. construction and differential-birational invariance of the locality dimension, including a
-   proof or refutation of universal rank-two coskeletality in the regular self-dual class;
+3. construction and differential-birational invariance of the minimal-prime locality spectrum,
+   together with a strict source-selected essential image excluding arbitrary universal HT spectra;
 4. an intrinsic essential-image theorem with the constraint cone and polarization as substantive
    restrictions;
 5. reconstruction of the analytic source germ;
@@ -414,8 +431,10 @@ zeta, its zeros, nor an RH-equivalent positivity condition may define the object
   `|V|-2`, with the unconditional orbit algebra formalized in Lean
 - [x] collided Rees, Hodge, twistor, derived-critical, and parameterized-Galois vocabulary with
   parent theory
-- [ ] define locality dimension invariantly beyond the normal-crossing class
-- [ ] prove universal rank-two coskeletality or exhibit and classify the first genuine `ell>2` HT atom
+- [x] universal rank-two locality refuted for bare HT by arbitrary finite simplicial realizations
+- [x] minimal-prime height spectrum identified as the correct boundary-locality invariant on every
+  Stanley--Reisner HT realization
+- [ ] construct the marked locality spectrum invariantly for natural nonlinear source classes
 - [ ] construct the pointed bifiltered object in one nonlinear nonabelian HT class
 - [ ] prove source-presentation Morita invariance
 - [ ] prove the cone is a strict essential-image restriction

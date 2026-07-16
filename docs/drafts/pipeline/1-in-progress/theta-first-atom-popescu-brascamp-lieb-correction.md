@@ -112,18 +112,25 @@ and strict positivity proof belong in `RHTower`.
   inverse-curvature jet reduction, positivity equivalences for both correction weights, the
   nonnegativity and strict-improvement relations, and the corrected quadratic-certificate
   transfer theorem.
+- `formal/GaloisForLFunctions/HTGeometry/HalfLineQuadraticPopescuBoundary.lean` proves that the
+  quadratic inverse-curvature observable `2x/V''` has zero endpoint trace, identifies its
+  derivative as `2(V''-xV''')/(V'')^2`, and reduces its correction density to
+  `16(V''-xV''')^2/(V'' N_V)`.
 - `formal/GaloisForLFunctions/RHTower/PrimeArchThetaBornWittenPopescuCorrection.lean` proves the
   third- and fourth-derivative profiles, the cleared polynomial identity, strict positivity of
-  `N_V`, and strict positivity of both Popescu correction weights for every positive theta atom.
+  `N_V`, strict positivity of both Popescu correction weights, the endpoint trace law, the
+  quadratic envelope `density <= 24(1+x^2)`, integrability against the exact Born--Witten density,
+  and the unconditional strict finite gain `C>0` for every positive theta atom.
 - The new module is imported through the existing two-channel virial/Rayleigh route, so the
   correction values are available to its current RH consumer without changing that consumer.
 
 ## Open analytic core
 
-1. Formalize the half-line version of `(PBL)`, including the endpoint current and exhaustion.
-2. Instantiate `f=x^2` and define the correction value `C`.
-3. Prove `(PCert)` from the exact theta profiles, Ward relations, or the supersymmetric resolvent.
-4. Feed the resulting relaxed first-atom gate to the existing degree-one theta Hankel consumer.
+1. Formalize the half-line resolvent inequality `(PBL)`.  The quadratic test's Dirichlet endpoint
+   trace, pointwise denominator positivity, correction nonnegativity, integrability, and strict
+   value have all been discharged; only the operator-domain/resolvent inequality remains.
+2. Prove `(PCert)` from the exact theta profiles, Ward relations, or the supersymmetric resolvent.
+3. Feed the resulting relaxed first-atom gate to the existing degree-one theta Hankel consumer.
 
 The independent upper radial-ratio hypothesis remains open.
 
@@ -133,6 +140,8 @@ The independent upper radial-ratio hypothesis remains open.
 - [x] exact theta positivity condition derived on paper
 - [x] generic correction algebra formalized in HTGeometry
 - [x] theta derivative profiles and positivity condition formalized in RHTower
+- [x] half-line quadratic endpoint trace discharged
+- [x] correction value defined, integrability discharged, and `C>0` proved
 - [ ] half-line corrected Brascamp--Lieb theorem formalized
 - [ ] corrected theta certificate proved
 - [ ] relaxed first-atom gate discharged

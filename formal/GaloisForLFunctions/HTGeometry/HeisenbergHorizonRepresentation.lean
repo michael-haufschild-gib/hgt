@@ -50,9 +50,9 @@ theorem derivationEndomorphism_commutator_multiplication
     ⁅derivationEndomorphism D, Algebra.lmul K L f⁆ =
       Algebra.lmul K L (D f) := by
   ext g
-  simp only [Ring.lie_def, Module.End.sub_apply, Module.End.mul_apply,
-    derivationEndomorphism, Algebra.coe_lmul_eq_mul, Function.comp_apply]
+  change D (f * g) - f * D g = D f * g
   rw [Derivation.leibniz]
+  simp only [smul_eq_mul]
   ring
 
 /-- The operator embedding preserves the Lie bracket of derivation laws exactly. -/
@@ -81,6 +81,8 @@ theorem heisenbergJetOperator_eq_multiplication
       rw [heisenbergJetOperator, Function.iterate_succ_apply',
         ← heisenbergJetOperator, ih,
         derivationEndomorphism_commutator_multiplication]
+      congr 1
+      rw [Function.iterate_succ_apply']
 
 /-- Evaluation at `1` recovers the faithful multiplication symbol of an operator. -/
 def multiplicationOperatorSymbol : Module.End K L →ₗ[K] L where
@@ -111,12 +113,16 @@ theorem heisenbergDirectionalJetSymbol_eq_linearDerivationLawJet
 /-- **Heisenberg horizon theorem.**  The complete dependence horizon recovered from nested
 operator-commutator symbols is exactly the original hypertranscendence horizon. -/
 theorem heisenbergDependenceHorizon_eq
-    [CharZero K] (ρ : V →ₗ[K] Derivation K L L) (x : L) :
+    (ρ : V →ₗ[K] Derivation K L L) (x : L) :
     {v : V | ¬ AlgebraicIndependent K (heisenbergDirectionalJetSymbol ρ x v)} =
       linearDerivationDependenceHorizon ρ x := by
   ext v
-  simp only [Set.mem_setOf_eq, linearDerivationDependenceHorizon,
-    heisenbergDirectionalJetSymbol_eq_linearDerivationLawJet]
+  have hjet : heisenbergDirectionalJetSymbol ρ x v =
+      linearDerivationLawJet ρ x v := by
+    funext n
+    exact heisenbergDirectionalJetSymbol_eq_linearDerivationLawJet ρ x v n
+  simp only [Set.mem_setOf_eq, linearDerivationDependenceHorizon]
+  rw [hjet]
 
 /-- The exterior commutator symbol after the faithful Heisenberg operator embedding. -/
 def heisenbergLawCommutatorMap
