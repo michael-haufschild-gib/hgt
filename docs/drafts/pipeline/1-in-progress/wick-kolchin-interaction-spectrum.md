@@ -223,6 +223,16 @@ representation, and Gaussian factorization are all established parent theories.
 the wrong invariant and force the Wick reduction.  Candidate novelty begins only with a
 scheme- and probe-invariant interaction profile plus a nontrivial continuum-QFT theorem about it.
 
+## Formal finite skeleton
+
+`[FORMALIZED; NOT NEW SCIENTIFIC KNOWLEDGE]` The finite algebraic negative control is now proved in
+`formal/GaloisForLFunctions/HTGeometry/WickKolchinProfile.lean`.  It constructs finite connected
+jet packets, their algebraic-matroid rank, and the Wick-reduced rank above designated Gaussian
+sectors.  It proves exact vanishing when every higher connected sector is zero and invariance
+under injective base-field algebra embeddings.  This does not promote Candidate C: the intrinsic
+source category, counterterm quotient, directed multivariate limit, and an interacting continuum
+QFT with positive relative profile remain open.
+
 ## Exact open core
 
 `[OPEN CORE 1 -- INTRINSIC SOURCE CATEGORY]` Define the admissible source-probe category for a

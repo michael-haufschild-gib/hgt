@@ -333,6 +333,12 @@ orientation theorem.  It is
 source-specific and uses no Xi divisor, reconstruction theorem, target moment measure, or
 source-effectivity implication.
 
+Lean now also proves that the sign survives the actual finite aperture, not merely each atom.
+For every nonempty cutoff `M` and every `i<N`, the complete finite von Mangoldt anomaly has the
+same strict sign `(-1)^(N+1)`.  The prime `2` contribution is a strictly positive coordinatewise
+lower floor independent of `M`.  Hence neither higher Gamma jets nor finite Euler aggregation can
+be the source of the critical sign loss.
+
 ### Finite radial Gauss--Ward packet `[CLOSED]`
 
 The full finite Cauchy polarization is now also formalized.  With the oriented residual
@@ -366,7 +372,7 @@ source value identity, not the finite projection algebra, carries the unresolved
 The live bridge is consequently:
 
 ```text
-all-depth oriented von Mangoldt--Gamma anomaly
+full finite-aperture von Mangoldt--Gamma jet cone with first-prime floor
   -> positive finite radial Cauchy/Gauss--Ward source Gram
   -> positive finite two-boundary balanced source Gram
   -> [OPEN] balanced nonnormal Euler-boundary convergence and value identity

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.AlgebraicMatroidRank
+import GaloisForLFunctions.HTGeometry.DifferentialClockEmbeddingCovariance
 
 /-!
 # Finite Wick-reduced Kolchin profiles
@@ -70,12 +71,19 @@ theorem connectedJetPacket_mono_jetHeight
   obtain ⟨hx₀, i, hi, n, hn, hix⟩ := hx
   exact ⟨hx₀, i, hi, n, by omega, hix⟩
 
-/-- Algebraic-transcendence rank of a finite connected-sector jet packet. -/
-def finiteConnectedKolchinRank
-    (K : Type*) {L ι : Type*} [Field K] [Field L] [Algebra K L]
-    (connected : ι → ℕ → L) (sectors : Finset ι) (jetHeight : ℕ) : ℕ := by
+/-- Algebraic-transcendence rank of a finite packet.  Its implementation uses classical decidable
+equality only to present the packet as a `Finset`. -/
+noncomputable def finiteTranscendenceRank
+    (K : Type*) {L : Type*} [Field K] [Field L] [Algebra K L]
+    (packet : Finset L) : ℕ := by
   classical
-  exact (transcendenceRank K L).ρ (connectedJetPacket connected sectors jetHeight)
+  exact (transcendenceRank K L).ρ packet
+
+/-- Algebraic-transcendence rank of a finite connected-sector jet packet. -/
+noncomputable def finiteConnectedKolchinRank
+    (K : Type*) {L ι : Type*} [Field K] [Field L] [Algebra K L]
+    (connected : ι → ℕ → L) (sectors : Finset ι) (jetHeight : ℕ) : ℕ :=
+  finiteTranscendenceRank K (connectedJetPacket connected sectors jetHeight)
 
 /-- Relative finite rank contributed above the designated Gaussian connected sectors. -/
 def finiteWickReducedKolchinRank
@@ -106,7 +114,7 @@ theorem finiteConnectedKolchinRank_gaussian_add_wickReduced
       finiteConnectedKolchinRank K connected all jetHeight := by
   have hle := finiteConnectedKolchinRank_mono_sectors
     K connected h jetHeight
-  omega
+  exact Nat.add_sub_of_le hle
 
 /-- If every sector outside the Gaussian family vanishes, erasing the algebraic zero leaves
 exactly the Gaussian connected packet. -/
@@ -139,17 +147,27 @@ theorem finiteWickReducedKolchinRank_eq_zero_of_vanishes_off_gaussian
     (hvanish : ∀ i ∈ all, i ∉ gaussian → ∀ n, connected i n = 0)
     (jetHeight : ℕ) :
     finiteWickReducedKolchinRank K connected gaussian all jetHeight = 0 := by
-  rw [finiteWickReducedKolchinRank,
+  rw [finiteWickReducedKolchinRank, finiteConnectedKolchinRank,
+    finiteConnectedKolchinRank,
     connectedJetPacket_eq_of_vanishes_off_gaussian connected hsub hvanish]
   exact Nat.sub_self _
+
+/-- Image of a finite packet under a base-field algebra map.  The classical decidable equality
+needed by `Finset.image` is kept behind this noncomputable definition. -/
+noncomputable def algHomImage
+    (K : Type*) {L E : Type*}
+    [Field K] [Field L] [Field E] [Algebra K L] [Algebra K E]
+    (e : L →ₐ[K] E) (s : Finset L) : Finset E := by
+  classical
+  exact s.image e
 
 /-- Injective base-field algebra maps preserve the transcendence rank of every finite packet. -/
 theorem transcendenceRank_image_algHom
     (K : Type*) {L E : Type*}
     [Field K] [Field L] [Field E] [Algebra K L] [Algebra K E]
     (e : L →ₐ[K] E) (s : Finset L) :
-    (transcendenceRank K E).ρ (s.image e) =
-      (transcendenceRank K L).ρ s := by
+    finiteTranscendenceRank K (algHomImage K e s) =
+      finiteTranscendenceRank K s := by
   classical
   let ML := AlgebraicIndependent.matroid K L
   let ME := AlgebraicIndependent.matroid K E
@@ -165,13 +183,13 @@ theorem transcendenceRank_image_algHom
       have hmap := AlgHom.algebraicIndependent_iff
         (x := fun x : I ↦ (x : L)) e e.injective
       simpa [AlgebraicIndepOn, Function.comp_def] using himage.symm.trans hmap
-  have hrank := ME.eRk_comap e (↑s : Set L)
+  have hrank := ME.eRk_comap (f := e) (↑s : Set L)
   rw [hcomap] at hrank
-  have himage : e '' (↑s : Set L) = (↑(s.image e) : Set E) := by
+  have himage : e '' (↑s : Set L) = (↑(algHomImage K e s) : Set E) := by
     ext x
-    simp
+    simp [algHomImage]
   rw [himage] at hrank
-  change (ME.eRk (↑(s.image e) : Set E)).toNat =
+  change (ME.eRk (↑(algHomImage K e s) : Set E)).toNat =
     (ML.eRk (↑s : Set L)).toNat
   exact congrArg ENat.toNat hrank.symm
 
@@ -183,14 +201,14 @@ theorem connectedJetPacket_map_algHom
     (e : L →ₐ[K] E) (connected : ι → ℕ → L)
     (sectors : Finset ι) (jetHeight : ℕ) :
     connectedJetPacket (fun i n ↦ e (connected i n)) sectors jetHeight =
-      (connectedJetPacket connected sectors jetHeight).image e := by
+      algHomImage K e (connectedJetPacket connected sectors jetHeight) := by
   classical
   ext y
   constructor
   · intro hy
     rw [mem_connectedJetPacket_iff] at hy
     obtain ⟨hy₀, i, hi, n, hn, hiy⟩ := hy
-    rw [Finset.mem_image]
+    rw [algHomImage, Finset.mem_image]
     refine ⟨connected i n, ?_, hiy⟩
     rw [mem_connectedJetPacket_iff]
     refine ⟨?_, i, hi, n, hn, rfl⟩
@@ -199,12 +217,12 @@ theorem connectedJetPacket_map_algHom
     rw [hz, map_zero] at hiy
     exact hiy.symm
   · intro hy
-    rw [Finset.mem_image] at hy
+    rw [algHomImage, Finset.mem_image] at hy
     obtain ⟨x, hx, rfl⟩ := hy
     rw [mem_connectedJetPacket_iff] at hx ⊢
     obtain ⟨hx₀, i, hi, n, hn, hix⟩ := hx
-    refine ⟨map_ne_zero e hx₀, i, hi, n, hn, ?_⟩
-    rw [hix]
+    refine ⟨(map_ne_zero e).2 hx₀, i, hi, n, hn, ?_⟩
+    exact congrArg e hix
 
 /-- Finite connected-sector Kolchin rank is invariant under injective ambient field embeddings. -/
 theorem finiteConnectedKolchinRank_map_algHom
@@ -228,6 +246,120 @@ theorem finiteWickReducedKolchinRank_map_algHom
       finiteWickReducedKolchinRank K connected gaussian all jetHeight := by
   simp only [finiteWickReducedKolchinRank,
     finiteConnectedKolchinRank_map_algHom K e connected]
+
+section DifferentialProfile
+
+open scoped Differential
+
+/-- Finite packet of actual differential jets of connected-sector responses. -/
+def connectedDifferentialJetPacket
+    {L ι : Type*} [Field L] [Differential L]
+    (connected : ι → L) (sectors : Finset ι) (jetHeight : ℕ) : Finset L :=
+  connectedJetPacket
+    (fun i n ↦ GaloisForLFunctions.differentialJet n (connected i))
+    sectors jetHeight
+
+/-- Finite algebraic-transcendence rank of genuine differential jets. -/
+noncomputable def finiteConnectedDifferentialKolchinRank
+    (K : Type*) {L ι : Type*}
+    [Field K] [Field L] [Algebra K L] [Differential L]
+    (connected : ι → L) (sectors : Finset ι) (jetHeight : ℕ) : ℕ :=
+  finiteConnectedKolchinRank K
+    (fun i n ↦ GaloisForLFunctions.differentialJet n (connected i))
+    sectors jetHeight
+
+/-- Finite Wick-reduced rank formed from genuine differential jets. -/
+noncomputable def finiteWickReducedDifferentialKolchinRank
+    (K : Type*) {L ι : Type*}
+    [Field K] [Field L] [Algebra K L] [Differential L]
+    (connected : ι → L) (gaussian all : Finset ι) (jetHeight : ℕ) : ℕ :=
+  finiteWickReducedKolchinRank K
+    (fun i n ↦ GaloisForLFunctions.differentialJet n (connected i))
+    gaussian all jetHeight
+
+/-- A differential embedding maps the source differential-jet packet exactly onto the target
+packet at the same sector and jet resolution. -/
+theorem connectedDifferentialJetPacket_map_algHom
+    (K : Type*) {L E ι : Type*}
+    [Field K] [Field L] [Field E] [Algebra K L] [Algebra K E]
+    [Differential L] [Differential E]
+    (e : L →ₐ[K] E) (hderiv : ∀ z : L, e z′ = (e z)′)
+    (connected : ι → L) (sectors : Finset ι) (jetHeight : ℕ) :
+    connectedDifferentialJetPacket (fun i ↦ e (connected i)) sectors jetHeight =
+      algHomImage K e (connectedDifferentialJetPacket connected sectors jetHeight) := by
+  unfold connectedDifferentialJetPacket
+  have hfun :
+      (fun i n ↦ GaloisForLFunctions.differentialJet n (e (connected i))) =
+        (fun i n ↦ e (GaloisForLFunctions.differentialJet n (connected i))) := by
+    funext i n
+    exact (GaloisForLFunctions.HTGeometry.differentialJet_algHom
+      e hderiv (connected i) n).symm
+  rw [hfun]
+  exact connectedJetPacket_map_algHom K e _ sectors jetHeight
+
+/-- Finite differential connected-sector rank is invariant under derivation-preserving field
+embeddings. -/
+theorem finiteConnectedDifferentialKolchinRank_map_algHom
+    (K : Type*) {L E ι : Type*}
+    [Field K] [Field L] [Field E] [Algebra K L] [Algebra K E]
+    [Differential L] [Differential E]
+    (e : L →ₐ[K] E) (hderiv : ∀ z : L, e z′ = (e z)′)
+    (connected : ι → L) (sectors : Finset ι) (jetHeight : ℕ) :
+    finiteConnectedDifferentialKolchinRank K (fun i ↦ e (connected i))
+        sectors jetHeight =
+      finiteConnectedDifferentialKolchinRank K connected sectors jetHeight := by
+  unfold finiteConnectedDifferentialKolchinRank
+  have hfun :
+      (fun i n ↦ GaloisForLFunctions.differentialJet n (e (connected i))) =
+        (fun i n ↦ e (GaloisForLFunctions.differentialJet n (connected i))) := by
+    funext i n
+    exact (GaloisForLFunctions.HTGeometry.differentialJet_algHom
+      e hderiv (connected i) n).symm
+  rw [hfun]
+  exact finiteConnectedKolchinRank_map_algHom K e _ sectors jetHeight
+
+/-- The finite Wick-reduced differential profile is invariant under every derivation-preserving
+field embedding.  This is the finite source-frame covariance required by the proposed invariant. -/
+theorem finiteWickReducedDifferentialKolchinRank_map_algHom
+    (K : Type*) {L E ι : Type*}
+    [Field K] [Field L] [Field E] [Algebra K L] [Algebra K E]
+    [Differential L] [Differential E]
+    (e : L →ₐ[K] E) (hderiv : ∀ z : L, e z′ = (e z)′)
+    (connected : ι → L) (gaussian all : Finset ι) (jetHeight : ℕ) :
+    finiteWickReducedDifferentialKolchinRank K (fun i ↦ e (connected i))
+        gaussian all jetHeight =
+      finiteWickReducedDifferentialKolchinRank K connected gaussian all jetHeight := by
+  unfold finiteWickReducedDifferentialKolchinRank
+  have hfun :
+      (fun i n ↦ GaloisForLFunctions.differentialJet n (e (connected i))) =
+        (fun i n ↦ e (GaloisForLFunctions.differentialJet n (connected i))) := by
+    funext i n
+    exact (GaloisForLFunctions.HTGeometry.differentialJet_algHom
+      e hderiv (connected i) n).symm
+  rw [hfun]
+  exact finiteWickReducedKolchinRank_map_algHom K e _ gaussian all jetHeight
+
+/-- **Differential Gaussian negative control.**  If every connected response outside the
+Gaussian sector is zero, the finite Wick-reduced differential profile vanishes at every jet
+height. -/
+theorem finiteWickReducedDifferentialKolchinRank_eq_zero_of_vanishes_off_gaussian
+    (K : Type*) {L ι : Type*}
+    [Field K] [Field L] [Algebra K L] [Differential L]
+    (connected : ι → L) {gaussian all : Finset ι} (hsub : gaussian ⊆ all)
+    (hvanish : ∀ i ∈ all, i ∉ gaussian → connected i = 0)
+    (jetHeight : ℕ) :
+    finiteWickReducedDifferentialKolchinRank K connected gaussian all jetHeight = 0 := by
+  apply finiteWickReducedKolchinRank_eq_zero_of_vanishes_off_gaussian
+    K (fun i n ↦ GaloisForLFunctions.differentialJet n (connected i)) hsub
+  intro i hi hig n
+  rw [hvanish i hi hig]
+  induction n with
+  | zero => rfl
+  | succ n ih =>
+      rw [GaloisForLFunctions.differentialJet_succ, ih]
+      exact map_zero Differential.deriv
+
+end DifferentialProfile
 
 end
 

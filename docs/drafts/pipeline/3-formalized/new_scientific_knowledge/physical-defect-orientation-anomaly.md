@@ -178,7 +178,7 @@ to global effectivity.  In the nondiscrete phase, absence of a continuous incide
 every global meromorphic fixed gauge to be constant; in the discrete phase, nonconstant gauges can
 survive while the incidence inverse exists.  Thus the normalized anomaly torsor and the critical
 completion defect are complementary faces of the same period-closure object, not independent
-decorations.  See `period-gauge-attainment-complementarity.md`.
+decorations.  See `../not_new_scientific_knowledge/period-gauge-attainment-complementarity.md`.
 
 ## Meaning for any potential RH proof
 

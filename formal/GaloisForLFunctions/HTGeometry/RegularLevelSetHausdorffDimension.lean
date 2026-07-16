@@ -258,8 +258,9 @@ theorem FiniteRegularStratification.eq_empty_of_finrank_lt_codim
     {S : Set E} {c : ℕ} (hS : FiniteRegularStratification S c)
     (hc : Module.finrank ℝ E < c) :
     S = ∅ := by
-  apply eq_empty_iff_forall_not_mem.mpr
-  intro x hx
+  ext x
+  simp only [mem_empty_iff_false, iff_false]
+  intro hx
   rw [hS.cover] at hx
   obtain ⟨i, hxi⟩ := mem_iUnion.mp hx
   obtain ⟨m, hcm, U, hUopen, hxU, g, hg, hzero, hsurj⟩ := hS.regular i x hxi

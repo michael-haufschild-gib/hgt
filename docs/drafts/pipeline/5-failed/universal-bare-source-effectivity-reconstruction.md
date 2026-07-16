@@ -8,6 +8,7 @@
 - **Lean:**
   - `formal/GaloisForLFunctions/HTGeometry/GammaPointedSourceNonEffectivity.lean`
   - `formal/GaloisForLFunctions/HTGeometry/JointSourceRealizationConservativity.lean`
+  - `formal/GaloisForLFunctions/HTGeometry/DiscretePeriodGaugeClassification.lean`
 - **Positive special case:**
   `../2-fully-proven/new_scientific_knowledge/irrational-triptic-source-effectivity-character.md`
 
@@ -126,6 +127,30 @@ conservative.  A nonzero element of the intersection is an explicit counterexamp
 These mechanisms cannot be collapsed into one canonical finite pointing.  The source must carry
 or force a gauge-separating normalization.
 
+## Universal period-source strengthening `[PROVED; LEAN-FORMALIZED]`
+
+The Gamma witness is now the rank-one endpoint of a complete theorem. For every integral period
+source `L<=C`, Lean proves
+
+```text
+L discrete
+  <-> complete period incidence has a continuous left inverse
+  <-> a nonconstant global meromorphic L-fixed gauge exists,
+
+L nondiscrete
+  <-> complete period incidence has no continuous left inverse
+  <-> every global meromorphic L-fixed gauge is constant.                 (11)
+```
+
+Hence no bare period source is both uniformly effective and gauge-rigid modulo constants.
+Discrete sources solve attainment and retain nonconstant automorphisms; nondiscrete sources kill
+those automorphisms and lose attainment, with a scalar calibration still needed for uniqueness.
+The positive theorem is the exhaustive dichotomy itself: successful reconstruction must add
+transverse normalization in the first phase or transverse completion in the second.
+
+This strengthening is a classical bridge, not new science. Its value is to rule out every attempt
+to repair the Gamma collision merely by changing period rank or densifying the same source.
+
 ## Consequence for the six-channel object
 
 A pointed, polarized, critically completed, transported, integral, unbounded descent object built
@@ -163,11 +188,9 @@ analytic theorem transferred across its genuinely different realizations.
   amount of added categorical vocabulary is allowed to conceal the fixed gauge.
 - `[NOVELTY -- PARENT NO-GO]` Periodic ambiguity and kernel separation are not new science.
 - `[SIGNIFICANCE -- DECISIVE CORRECTION]` The no-go replaces an impossible universal theorem by an
-  exact maximality criterion and identifies why triptic density succeeds while rank-one pointing
-  fails.
+  exact maximality criterion and a complete period-source uncertainty theorem.
 - `[FIELDS VERDICT]` Neither the no-go nor the triptic special case alone is Fields-scale.  A
-  classification of source-forced gauge-separating normalizations plus a nontrivial cross-family
-  essential-image theorem could be.
+  functorial gauge-to-nonattainment transgression in a natural degenerating HT family could be.
 - `[RH BOUNDARY]` No zeta input or RH conclusion occurs.
 
 ## Gates
@@ -179,6 +202,8 @@ analytic theorem transferred across its genuinely different realizations.
 - [x] exact normalized-gauge criterion stated
 - [x] additive joint-realization criterion Lean-formalized
 - [x] triptic and rank-one effectivity mechanisms separated
+- [x] all integral period sources classified into the two exclusive obstruction phases
 - [x] parent characterization literature identified
+- [ ] construct the gauge/attainment defect complex and wall-crossing map
 - [ ] classify source-forced normalizations on a second natural nontriptic HT family
 - [ ] prove the nonlinear typed common-kernel theorem for all five realization categories

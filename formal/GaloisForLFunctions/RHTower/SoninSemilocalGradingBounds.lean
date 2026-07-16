@@ -1096,4 +1096,103 @@ theorem summable_semilocalOnePrimeGroundRowSmoothedSquare_iff
     (semilocalOnePrimeGroundRowSmoothedSquare_sharp_order hp alpha)]
   constructor <;> intro h <;> linarith
 
+/-! ### Transported ground-state quarter-derivative threshold -/
+
+/-- Squared Jacobi coefficients of the transported semilocal ground state after applying the
+spectral weight `(N∞ + 1)^alpha`. -/
+def semilocalOnePrimeTransportedGroundDomainSquare
+    (p : ℕ) (alpha : ℝ) (k : ℕ) : ℝ :=
+  (semilocalOnePrimeEvenJacobiCoefficient k p *
+    ((2 * k + 1 : ℕ) : ℝ) ^ alpha) ^ 2
+
+/-- Away from the harmless zeroth coefficient, the transported ground-state domain summand is
+uniformly comparable with the already-controlled commutator-row smoothing at exponent
+`1 - alpha`. -/
+theorem semilocalOnePrimeGroundDomainSquare_comparable
+    (p : ℕ) (alpha : ℝ) {k : ℕ} (hk : 0 < k) :
+    semilocalOnePrimeGroundRowSmoothedSquare p (1 - alpha) k ≤
+        semilocalOnePrimeTransportedGroundDomainSquare p alpha k ∧
+      semilocalOnePrimeTransportedGroundDomainSquare p alpha k ≤
+        (9 / 4 : ℝ) *
+          semilocalOnePrimeGroundRowSmoothedSquare p (1 - alpha) k := by
+  let w : ℝ := ((2 * k + 1 : ℕ) : ℝ)
+  let r : ℝ := (2 * (k : ℝ)) / w
+  let T : ℝ := semilocalOnePrimeTransportedGroundDomainSquare p alpha k
+  let S : ℝ := semilocalOnePrimeGroundRowSmoothedSquare p (1 - alpha) k
+  have hkR : (0 : ℝ) < k := by exact_mod_cast hk
+  have hw : 0 < w := by dsimp [w]; positivity
+  have hr0 : 0 ≤ r := by dsimp [r]; positivity
+  have hrUpper : r ≤ 1 := by
+    dsimp [r, w]
+    rw [div_le_one (by positivity)]
+    push_cast
+    linarith
+  have hrLower : (2 / 3 : ℝ) ≤ r := by
+    dsimp [r, w]
+    rw [le_div_iff₀ (by positivity)]
+    have hkOne : (1 : ℝ) ≤ k := by exact_mod_cast hk
+    push_cast
+    nlinarith
+  have hT0 : 0 ≤ T := by dsimp [T, semilocalOnePrimeTransportedGroundDomainSquare]; positivity
+  have hrelation : S = r ^ 2 * T := by
+    dsimp [S, r, T, w]
+    unfold semilocalOnePrimeGroundRowSmoothedSquare
+      semilocalOnePrimeTransportedGroundDomainSquare
+      semilocalOnePrimeGroundCommutatorRow
+    rw [show -(1 - alpha) = alpha - 1 by ring,
+      Real.rpow_sub hw alpha 1, Real.rpow_one]
+    field_simp
+    ring
+  have hrSqUpper : r ^ 2 ≤ 1 := by nlinarith [sq_nonneg r]
+  have hrSqLower : (4 / 9 : ℝ) ≤ r ^ 2 := by
+    nlinarith [sq_nonneg (r - 2 / 3)]
+  constructor
+  · change S ≤ T
+    rw [hrelation]
+    simpa using mul_le_mul_of_nonneg_right hrSqUpper hT0
+  · change T ≤ (9 / 4 : ℝ) * S
+    have hscaled : (4 / 9 : ℝ) * T ≤ S := by
+      rw [hrelation]
+      exact mul_le_mul_of_nonneg_right hrSqLower hT0
+    nlinarith
+
+/-- **Sharp quarter-derivative law.**  The transported semilocal ground state belongs to the
+`(N∞ + 1)^alpha` Jacobi domain exactly below `alpha = 1/4`. -/
+theorem summable_semilocalOnePrimeTransportedGroundDomainSquare_iff
+    {p : ℕ} (hp : p.Prime) (alpha : ℝ) :
+    Summable (semilocalOnePrimeTransportedGroundDomainSquare p alpha) ↔
+      alpha < 1 / 4 := by
+  constructor
+  · intro hT
+    have hTshift : Summable (fun n : ℕ =>
+        semilocalOnePrimeTransportedGroundDomainSquare p alpha (n + 1)) :=
+      (summable_nat_add_iff 1).2 hT
+    have hSshift : Summable (fun n : ℕ =>
+        semilocalOnePrimeGroundRowSmoothedSquare p (1 - alpha) (n + 1)) :=
+      Summable.of_nonneg_of_le (fun n => sq_nonneg _)
+        (fun n => (semilocalOnePrimeGroundDomainSquare_comparable
+          p alpha (by omega : 0 < n + 1)).1) hTshift
+    have hS : Summable (semilocalOnePrimeGroundRowSmoothedSquare p (1 - alpha)) :=
+      (summable_nat_add_iff 1).1 hSshift
+    have hthreshold :=
+      (summable_semilocalOnePrimeGroundRowSmoothedSquare_iff hp (1 - alpha)).1 hS
+    linarith
+  · intro halpha
+    have hS : Summable (semilocalOnePrimeGroundRowSmoothedSquare p (1 - alpha)) :=
+      (summable_semilocalOnePrimeGroundRowSmoothedSquare_iff hp (1 - alpha)).2 (by
+        linarith)
+    have hSshift : Summable (fun n : ℕ =>
+        semilocalOnePrimeGroundRowSmoothedSquare p (1 - alpha) (n + 1)) :=
+      (summable_nat_add_iff 1).2 hS
+    have hmajor : Summable (fun n : ℕ =>
+        (9 / 4 : ℝ) *
+          semilocalOnePrimeGroundRowSmoothedSquare p (1 - alpha) (n + 1)) :=
+      hSshift.mul_left (9 / 4 : ℝ)
+    have hTshift : Summable (fun n : ℕ =>
+        semilocalOnePrimeTransportedGroundDomainSquare p alpha (n + 1)) :=
+      Summable.of_nonneg_of_le (fun n => sq_nonneg _)
+        (fun n => (semilocalOnePrimeGroundDomainSquare_comparable
+          p alpha (by omega : 0 < n + 1)).2) hmajor
+    exact (summable_nat_add_iff 1).1 hTshift
+
 end RHTower

@@ -627,39 +627,74 @@ integral reporters are jointly conservative on its normalized essential image.  
 `../5-failed/universal-bare-source-effectivity-reconstruction.md` and
 `../3-formalized/not_new_scientific_knowledge/joint-source-realization-common-kernel-criterion.md`.
 
-## Gauge-attainment complementarity `[PROVED; LEAN-FORMALIZED]`
+## Complete gauge-attainment phase classification `[PROVED; LEAN-FORMALIZED]`
 
-The normalization and bornological faces are not merely independent.  They are driven in opposite
-directions by the same period-closure phase.  For every integral submodule `L<=C`, Lean proves
+The normalization and bornological faces are not merely correlated. For every integral submodule
+`L<=C`, Lean now proves the complete equivalences
 
 ```text
+L is discrete
+  <-> period-incidence for L has a continuous left inverse
+  <-> the global meromorphic L-fixed field contains a nonconstant element, (30m)
+
 period-incidence for L has no continuous left inverse
-  -> every global meromorphic L-fixed gauge is constant,                  (30m)
-
-there exists a nonconstant global meromorphic L-fixed gauge
-  -> period-incidence for L has a continuous left inverse.                (30n)
+  <-> every global meromorphic L-fixed element is constant.                (30n)
 ```
 
-Together with continuous left invertibility iff `L` is discrete, this gives
+The missing converse in the earlier version is closed constructively by the rank `0/1/2`
+classification of discrete subgroups of the complex plane: rank one uses a rescaled exponential
+gauge and rank two a rescaled, orientation-independent theta-defect gauge. Hence every bare period
+source lies in exactly one phase:
 
 ```text
-nondiscrete source: automatic meromorphic gauge rigidity + global incidence nonattainment;
-discrete gauge ambiguity: uniform incidence attainment.                    (30o)
+discrete:    incidence attainment + nonconstant gauge ambiguity;
+nondiscrete: incidence nonattainment + meromorphic gauge rigidity.          (30o)
 ```
 
-The Gamma and irrational-triptic sources occupy opposite endpoints.  Densifying a source removes
-periodic boundary noncanonicity by producing arbitrarily small periods, and those same periods
-destroy the uniform inverse.  Therefore source enrichment cannot monotonically solve both
-obstructions.
+The Gamma and irrational-triptic sources are the two endpoints of this exhaustive law. In
+particular Lean proves the universal bare-source no-go
 
 ```text
-[NO-GO] densification simultaneously removes gauge ambiguity and preserves uniform attainment;
-[POSITIVE] gauge rigidity and global attainment are complementary phases of one period-closure
-           object, requiring phase-specific normalization or completion producers.            (30p)
+not (uniform period-incidence effectivity and fixed-gauge rigidity modulo constants). (30p)
 ```
+
+```text
+[NO-GO] a bare period source is simultaneously uniformly effective and rigid modulo constants;
+[POSITIVE] the two failures are exhaustive adjacent phases, so a successful reconstruction must
+           add genuinely transverse gauge-separating or completion-producing data.             (30p')
+```
+
+The theorem is architecturally decisive but fails the external novelty gate: the period-group
+classification, exponential/elliptic constructions, and multiplier closed-range criterion are
+classical parents. The new target begins with a canonical comparison between the two phases, not
+with repackaging their equivalence.
 
 See
-`../3-formalized/new_scientific_knowledge/period-gauge-attainment-complementarity.md`.
+`../3-formalized/not_new_scientific_knowledge/period-gauge-attainment-complementarity.md`.
+
+## Source defect complex and wall crossing `[CONJECTURE]`
+
+The complete dichotomy suggests that automorphism and nonattainment obstructions are cohomology in
+adjacent degrees of one object. For a source-effectively normalized HT constraint `S`, posit a
+two-degree bornological complex
+
+```text
+D(S)^(-1)  ----d_S---->  D(S)^(0),                                      (30p'')
+
+H^(-1)(D(S)) = residual normalized joint-fixed gauge,
+H^(0)(D(S))  = completed incidence nonattainment defect.
+```
+
+> **[CONJECTURE -- GAUGE/ATTAINMENT TRANSGRESSION.]** In a natural degeneration from discrete to
+> nondiscrete source topology, the degree `-1` gauge class does not simply disappear. After a
+> canonical projective jet, residue, or spherical-derivative renormalization, it transgresses to
+> the degree `0` nonattainment class. For period sources the escape rate of normalized nonconstant
+> gauges equals the blow-up rate of the optimal incidence inverse.
+
+The first falsifiable model is `L_n=(1/n)Z` converging to `R`: the exponential gauges acquire
+frequency `n`, while the period gap and the uniform inverse degenerate at the reciprocal scale.
+The rank-two theta cusp is the next model. A proof requires an actual comparison map and a
+quantitative conservation law; neither follows from the classical phase equivalence.
 
 ## Candidate unified object: normalized anomaly-fracture stack `[CONJECTURE]`
 
@@ -669,25 +704,29 @@ space.”  For a source-effectively normalized pair `(F,R)`, let
 ```text
 G_(F,R)  = residual joint-fixed gauge invisible to all reporters,
 L_(a_F)  = line/torsor classified by the physical orientation-anomaly cocycle,
+D_(F,R)  = two-degree gauge/attainment defect complex,
 kappa_(F,R)^(p,q) = calibration map in
                      osculation degree p and effectivity degree q.          (30q)
 ```
 
-The candidate obstruction object is the anomaly-twisted bifiltered derived fibre
+The candidate obstruction object is the anomaly-twisted bifiltered realization of `D_(F,R)`
 
 ```text
 U_(F,R)^(p,q)
-  =hofib_(b_(F,R)^(p,q))(kappa_(F,R)^(p,q); L_(a_F)).       (30r)
+  = Rees_(p,q)(D_(F,R)) tensor L_(a_F)
+  = hofib_(b_(F,R)^(p,q))(kappa_(F,R)^(p,q); L_(a_F)).      (30r)
 ```
 
-This notation is a typed research target, not an existing construction.
+The second equality is part of the conjecture, not notation: it asserts that the derived fibre
+presentation and the two-degree defect complex carry the same obstruction class.
 
 > **[CONJECTURE -- NORMALIZED ANOMALY-FRACTURE PRINCIPLE.]**  On the maximal
 > source-effectively normalized HT essential image, the different obstruction classes are
 > conservative realizations of `(30r)`:
 >
-> - its automorphism object is the typed nonlinear joint-fixed common kernel;
-> - failure of nonemptiness is the calibration/descent obstruction;
+> - `H^(-1)` is the typed nonlinear joint-fixed common kernel;
+> - `H^(0)` is the calibration/descent and bornological nonattainment obstruction;
+> - phase change is a transgression `H^(-1) -> H^(0)`, not independent disappearance and birth;
 > - closure without a point is critical bornological nonattainment or spectral incompleteness;
 > - failure of positive real points is the positivity/orientation obstruction;
 > - twisting of local fibres is monodromy or noncanonical boundary data;
@@ -698,8 +737,9 @@ A source producer theorem does not merely show that one obstruction scalar vanis
 that the critical self-dual bidegree of `(30r)` has a reporter-compatible positive point with
 trivial automorphism group and the required integral/ramified lift.
 
-The Gamma collision prevents deleting `R`; gauge-attainment complementarity forces normalization
-and critical completion to vary oppositely with period closure; the osculation/effectivity fracture prevents collapsing
+The Gamma collision prevents deleting `R`; complete gauge-attainment classification forces
+normalization and critical completion into adjacent degrees of `D_(F,R)`; the
+osculation/effectivity fracture prevents collapsing
 `(p,q)` to one filtration; the reversal-blind locus prevents deleting `L_(a_F)`; and the
 three-channel interaction example prevents replacing the derived fibre by pairwise compatibility.
 Each constituent is therefore forced by a separate exact no-go.

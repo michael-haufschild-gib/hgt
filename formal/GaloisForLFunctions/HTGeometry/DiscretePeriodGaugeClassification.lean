@@ -524,8 +524,9 @@ theorem periodIncidenceMultiplier_not_hasLeftInverse_iff_all_fixed_constant
       (periodIncidenceMultiplier_hasLeftInverse_iff_exists_nonconstant_fixed L).mp hleft
     exact hnonconstant (hrigid z hfix)
 
-/-- **Bare-source reconstruction uncertainty.** Uniform source effectivity and global fixed-gauge
-uniqueness cannot coexist for any integral translation source in the complex plane. -/
+/-- **Bare-source reconstruction uncertainty.** Uniform source effectivity and fixed-gauge
+rigidity modulo constants cannot coexist for any integral translation source in the complex
+plane. -/
 theorem not_periodIncidenceMultiplier_hasLeftInverse_and_all_fixed_constant
     (L : Submodule ℤ ℂ) :
     ¬ ((periodIncidenceMultiplier L).HasLeftInverse ∧

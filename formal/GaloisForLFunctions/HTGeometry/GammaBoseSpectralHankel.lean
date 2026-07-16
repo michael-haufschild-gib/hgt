@@ -64,10 +64,14 @@ theorem gammaBoseMoment_ofReal_eq_hzeta (a : ℝ) (m : ℕ) :
 theorem gammaBoseMoment_one_ofReal_eq_riemannZeta (m : ℕ) :
     (gammaBoseMoment 1 m : ℂ) =
       riemannZeta ((m + 2 : ℕ) : ℂ) := by
-  rw [gammaBoseMoment_ofReal_eq_hzeta,
-    GaloisForLFunctions.hzeta_one_eq_riemannZeta (by
-      rw [Complex.natCast_re]
-      exact_mod_cast (show 1 < m + 2 by omega))]
+  calc
+    (gammaBoseMoment 1 m : ℂ) =
+        HurwitzZetaShift.hzeta ((m + 2 : ℕ) : ℂ) 1 := by
+          simpa using gammaBoseMoment_ofReal_eq_hzeta 1 m
+    _ = riemannZeta ((m + 2 : ℕ) : ℂ) :=
+      GaloisForLFunctions.hzeta_one_eq_riemannZeta (by
+        rw [Complex.natCast_re]
+        exact_mod_cast (show 1 < m + 2 by omega))
 
 /-- Exact value relation between the digamma jet at equilibrium and the positive spectral
 moment: `ψ⁽ᵐ⁺¹⁾(a)=(-1)^(m+2)(m+1)!·M_m(a)`. -/
@@ -173,8 +177,11 @@ theorem det_gammaBoseHankel_pos
 theorem signedNormalizedDigammaJet_hankel_posDef
     {a : ℝ} (ha : 0 < a) (n : ℕ) :
     (momentHankelMatrix (signedNormalizedDigammaJet a) n).PosDef := by
-  simpa only [signedNormalizedDigammaJet_eq_gammaBoseMoment ha] using
-    gammaBoseHankel_posDef ha n
+  have hseq : signedNormalizedDigammaJet a = gammaBoseMoment a := by
+    funext m
+    exact signedNormalizedDigammaJet_eq_gammaBoseMoment ha m
+  rw [hseq]
+  exact gammaBoseHankel_posDef ha n
 
 /-- Every finite Hankel determinant of the actual signed normalized digamma jet is positive. -/
 theorem det_signedNormalizedDigammaJet_hankel_pos

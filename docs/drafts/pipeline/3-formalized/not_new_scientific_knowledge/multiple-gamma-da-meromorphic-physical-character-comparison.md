@@ -88,7 +88,7 @@ global meromorphic source-fixed gauge to be constant.  More generally, Lean prov
 a continuous period-incidence left inverse implies maximal meromorphic gauge rigidity, while a
 nonconstant fixed gauge implies uniform left invertibility.  Hence global nonattainment and
 nonconstant boundary gauge are complementary period-closure phases; see
-`../new_scientific_knowledge/period-gauge-attainment-complementarity.md`.
+`period-gauge-attainment-complementarity.md`.
 
 ```text
 [NO-GO]

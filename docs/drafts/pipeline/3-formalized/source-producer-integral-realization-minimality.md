@@ -290,7 +290,7 @@ gauge forces uniform left invertibility.  Hence discrete rank-one Gamma can have
 normalization ambiguity while retaining uniform incidence effectivity, whereas a nondiscrete
 rank-three source has scalar gauge rigidity but global nonattainment.  The two channels are
 independent data, yet their phase changes are coupled by the same period closure.  See
-`new_scientific_knowledge/period-gauge-attainment-complementarity.md`.
+`not_new_scientific_knowledge/period-gauge-attainment-complementarity.md`.
 
 ### Falsifiers
 

@@ -1,7 +1,8 @@
 # Hypertranscendental source coherence is the topology of the constraint boundary
 
 - **ID:** `hypertranscendental-hochster-source-coherence-duality`
-- **Stage:** 2-fully-proven / first nontrivial Lean seed complete / independent audit required
+- **Stage:** 2-fully-proven / arbitrary finite discrete-family Lean bridge complete /
+  general finite-complex bridge and independent audit required
 - **Type:** THEOREM / DERIVED CONSTRAINT-TOPOLOGY REALIZATION / SELECTOR NO-GO
 - **Scientific status:** `[PAPER PROOF COMPLETE] [ANALYTIC INPUT FORMALIZED]`
   `[HOCHSTER PARENT THEOREM] [CROSS-CATEGORY NOVELTY PROVISIONAL] [NOT AN RH RESULT]`
@@ -256,9 +257,18 @@ constructs its two-coordinate Koszul complex at degrees one and two, and proves:
   detecting fibre product;
 - `nodalStanleyReisnerDisconnectCycle_not_koszulBoundary`, that the class is nonboundary in the
   actual quotient `F[x,y]/(xy)`, not only in the detecting model.
+- `isolatedBoundaryX_mul_eq_zero`, the complete family of nonedge relations for any finite
+  discrete complex with at least two vertices;
+- `isolatedKoszulRelation_disconnectCycle`, the uniform disconnected-vertex cycle law;
+- `isolatedH0Detector_boundary`, that the reduced-`H^0` coefficient detector annihilates every
+  degree-two Koszul boundary in the arbitrary-size family;
+- `isolatedDisconnectCycle_not_koszulBoundary`, that every such discrete complex carries the
+  resulting nonzero first Koszul class.
 
-This is the characteristic-free reduced-`H^0` Hochster class of two isolated vertices.  The
-general strand equivalence remains open.
+This now formalizes the characteristic-free reduced-`H^0` Hochster class uniformly for every
+finite discrete complex with at least two vertices, rather than only for the two-vertex seed.  The
+general strand equivalence for arbitrary finite complexes remains open, so this card stays in
+stage 2.
 
 ## Gates
 
@@ -270,6 +280,8 @@ general strand equivalence remains open.
 - [x] strong topology--orientation product successor stated
 - [x] preliminary external exact/mechanism novelty search
 - [x] Lean-formalize a nontrivial unconditional Hochster class
+- [x] Lean-formalize the reduced-`H^0` class for every finite discrete complex with at least two
+  vertices
 - [ ] Lean-formalize the general finite-complex bridge
 - [ ] independently audit localization and grading conventions
 - [ ] obtain specialist novelty and significance review

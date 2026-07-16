@@ -239,7 +239,7 @@ multiple-Gamma source trades global attainment for gauge rigidity: one calibrati
 constants reconstructs the meromorphic primitive even though no uniform incidence inverse exists.
 Conversely, a nonconstant periodic gauge can occur only in the discrete uniformly effective phase.
 See
-`../../3-formalized/new_scientific_knowledge/period-gauge-attainment-complementarity.md`.
+`../../3-formalized/not_new_scientific_knowledge/period-gauge-attainment-complementarity.md`.
 
 For the full order-`r` source, `(15)` is only the atomic incidence coordinate.  Equation `(3)`
 forces the complete physical multiplier and its positive half-density to be
