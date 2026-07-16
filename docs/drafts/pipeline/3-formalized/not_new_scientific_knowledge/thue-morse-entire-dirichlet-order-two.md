@@ -1,7 +1,7 @@
 # The shifted Thue--Morse Dirichlet series has exact order two
 
 - **ID:** thue-morse-entire-dirichlet-order-two
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Date:** 2026-07-10
 - **Status banner:** `[SEARCH]` The entire continuation is classical (Allouche--Cohen, 1985).

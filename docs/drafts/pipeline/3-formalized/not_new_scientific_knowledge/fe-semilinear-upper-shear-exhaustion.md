@@ -1,7 +1,7 @@
 # FE-semilinear upper shears are automatically split
 
 - **ID:** fe-semilinear-upper-shear-exhaustion
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / FAMILY EXHAUSTION / ROUTE NO-GO, `[PROVED HERE]`
 - **Date:** 2026-07-10
 - **Parent:** `sheared-seam-gauge-trivialization.md`

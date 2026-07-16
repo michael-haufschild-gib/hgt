@@ -1,7 +1,7 @@
 # Constant and prime sources activate the pinned-affine quotient everywhere
 
 - **ID:** pinned-affine-constant-source-blindness
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** activation classification / RH-interface no-go
 - **Status:** `[PROVED ON PAPER + LEAN]`
 

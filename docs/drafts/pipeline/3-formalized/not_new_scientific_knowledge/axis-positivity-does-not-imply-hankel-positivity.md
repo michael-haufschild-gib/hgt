@@ -1,7 +1,7 @@
 # Axis Positivity Does Not Imply Hankel Positivity
 
 - **ID:** axis-positivity-does-not-imply-hankel-positivity
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / source-transfer guardrail
 - **Source:** `seam-log-coefficient-positivity-insufficient.md`,
   `archimedean-generator-axis-mode.md`,
@@ -108,7 +108,10 @@ combination-mode positivity.
 - [x] 0 -> 1 in-progress: weak axis-positive version of the Euler transfer
   isolated.
 - [x] 1 -> 2 fully-proven: positive-coordinate counterexample written.
-- [ ] 2 -> 3 formalized: finite determinant calculation.
+- [x] 2 -> 3 formalized: `axisPositiveHankelCounterexample_entry_pos`,
+  `axisPositiveHankelCounterexample_det`, and
+  `axisPositiveHankelCounterexample_not_posSemidef` in
+  `formal/GaloisForLFunctions/HTGeometry/HankelGuardrailCounterexamples.lean`.
 
 ## Log
 

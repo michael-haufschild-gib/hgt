@@ -1,7 +1,7 @@
 # Relational clock observable values
 
 - **ID:** relational-clock-observable-values
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** [BRIDGE] stationary relational clocks, periodic-clock group averaging, and observer-algebra zero modes
 - **Statement:** A finite cyclic observable twirl is an idempotent projection onto the constraint commutant, preserves every physical matrix element and conditional value, and forces a uniform raw clock marginal whenever one clock effect resolves the identity over its orbit.
@@ -16,7 +16,7 @@ observables, and hypertranscendental sources; RHTower is only a downstream consu
 
 - [x] 0 → 1 in-progress: source-pure statement, exact finite identity, general and RHTower consumers identified
 - [x] 1 → 2 fully-proven: complete recursive proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: theorem names and targeted Lean checks are green; targeted axiom audit remains
+- [x] 2 → 3 formalized: theorem names and targeted Lean checks are green; targeted axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`
 - [ ] 3 → 4 publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Physics relation

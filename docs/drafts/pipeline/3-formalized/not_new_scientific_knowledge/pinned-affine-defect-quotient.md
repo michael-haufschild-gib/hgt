@@ -1,7 +1,7 @@
 # The universal quotient by pinned affine defects
 
 - **ID:** pinned-affine-defect-quotient
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** new constraint object / universal quotient theorem
 - **Status:** `[PROVED ON PAPER + LEAN]`
 

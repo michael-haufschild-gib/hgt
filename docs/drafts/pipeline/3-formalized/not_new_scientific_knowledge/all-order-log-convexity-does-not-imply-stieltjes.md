@@ -1,7 +1,7 @@
 # All-Order Log-Convexity Does Not Imply Stieltjes Positivity
 
 - **ID:** all-order-log-convexity-does-not-imply-stieltjes
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / positivity-transfer guardrail
 - **Source:** `seam-log-markov-pick-rh-equivalence.md`;
   `seam-log-hankel-rh-equivalence.md`;
@@ -122,8 +122,11 @@ shadow from being mistaken for the source-built Stieltjes theorem.
 - [x] 0 -> 1 in-progress: weak all-order positivity transfer isolated.
 - [x] 1 -> 2 fully-proven: explicit positive log-convex sequence with negative
   `3 x 3` Hankel determinant.
-- [ ] 2 -> 3 formalized: finite determinant and geometric-tail
-  log-convexity calculation.
+- [x] 2 -> 3 formalized: `allOrderLogConvexCounterexample_pos`,
+  `allOrderLogConvexCounterexample_logConvex`,
+  `allOrderLogConvexCounterexampleHankel_det`, and
+  `exists_positive_logConvex_not_hankelPosSemidef` in
+  `formal/GaloisForLFunctions/HTGeometry/HankelGuardrailCounterexamples.lean`.
 
 ## Log
 

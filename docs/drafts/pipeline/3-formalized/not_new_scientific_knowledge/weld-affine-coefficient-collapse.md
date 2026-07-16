@@ -1,7 +1,7 @@
 # Affine collapse and order-filtration boundary of the scalar weld
 
 - **ID:** weld-affine-coefficient-collapse
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / ROUTE NO-GO / FILTRATION OBSTRUCTION, `[PROVED HERE]`
 - **Date:** 2026-07-10
 - **Parents:** `../../3-formalized/weld-class-table.md`,

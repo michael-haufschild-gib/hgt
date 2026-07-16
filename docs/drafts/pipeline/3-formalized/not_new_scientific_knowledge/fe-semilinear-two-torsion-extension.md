@@ -1,7 +1,7 @@
 # A genuine FE-semilinear two-torsion extension and its Witt activation
 
 - **ID:** fe-semilinear-two-torsion-extension
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / NEW NATIVE OBJECT / LOCAL WITT BRIDGE, `[PROVED HERE]`
 - **Date:** 2026-07-10
 - **Parents:** `fe-semilinear-upper-shear-exhaustion.md`,

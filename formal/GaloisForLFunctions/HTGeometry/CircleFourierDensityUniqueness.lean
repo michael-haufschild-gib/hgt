@@ -295,17 +295,33 @@ theorem withDensityV_complex_sub_eq_of_forall_zpow_integral_eq
     withDensityᵥ_apply hg hs, withDensityᵥ_apply hq hs]
   apply Complex.ext
   · have hres := congrArg (fun v : SignedMeasure Circle => v s) hre
-    rw [VectorMeasure.sub_apply,
-      withDensityᵥ_apply hf.re hs, withDensityᵥ_apply hg.re hs,
-      withDensityᵥ_apply hq.re hs] at hres
-    simpa only [map_sub, ← integral_re hf.integrableOn,
-      ← integral_re hg.integrableOn, ← integral_re hq.integrableOn] using hres
+    change (mu.withDensityᵥ (fun x => (f x).re)) s -
+      (nu.withDensityᵥ (fun x => (g x).re)) s =
+        (rho.withDensityᵥ (fun x => (q x).re)) s at hres
+    rw [withDensityᵥ_apply
+        (show Integrable (fun x => (f x).re) mu from hf.re) hs,
+      withDensityᵥ_apply
+        (show Integrable (fun x => (g x).re) nu from hg.re) hs,
+      withDensityᵥ_apply
+        (show Integrable (fun x => (q x).re) rho from hq.re) hs] at hres
+    rw [Complex.sub_re, ← RCLike.re_eq_complex_re,
+      ← integral_re hf.integrableOn, ← integral_re hg.integrableOn,
+      ← integral_re hq.integrableOn, RCLike.re_eq_complex_re]
+    exact hres
   · have hims := congrArg (fun v : SignedMeasure Circle => v s) him
-    rw [VectorMeasure.sub_apply,
-      withDensityᵥ_apply hf.im hs, withDensityᵥ_apply hg.im hs,
-      withDensityᵥ_apply hq.im hs] at hims
-    simpa only [map_sub, ← integral_im hf.integrableOn,
-      ← integral_im hg.integrableOn, ← integral_im hq.integrableOn] using hims
+    change (mu.withDensityᵥ (fun x => (f x).im)) s -
+      (nu.withDensityᵥ (fun x => (g x).im)) s =
+        (rho.withDensityᵥ (fun x => (q x).im)) s at hims
+    rw [withDensityᵥ_apply
+        (show Integrable (fun x => (f x).im) mu from hf.im) hs,
+      withDensityᵥ_apply
+        (show Integrable (fun x => (g x).im) nu from hg.im) hs,
+      withDensityᵥ_apply
+        (show Integrable (fun x => (q x).im) rho from hq.im) hs] at hims
+    rw [Complex.sub_im, ← RCLike.im_eq_complex_im,
+      ← integral_im hf.integrableOn, ← integral_im hg.integrableOn,
+      ← integral_im hq.integrableOn, RCLike.im_eq_complex_im]
+    exact hims
 
 end
 end GaloisForLFunctions.HTGeometry

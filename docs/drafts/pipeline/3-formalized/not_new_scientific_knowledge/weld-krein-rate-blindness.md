@@ -1,7 +1,7 @@
 # FE-weld rate blindness and the finite-source activation obstruction
 
 - **ID:** weld-krein-rate-blindness
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / ROUTE NO-GO / ACTIVATION OBSTRUCTION, `[PROVED HERE]`
 - **Date:** 2026-07-10
 - **Parents:** `weld-class-determines-area-not-j.md`,

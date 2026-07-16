@@ -1,7 +1,7 @@
 # The weld class cannot canonically orient a scalar germ line
 
 - **ID:** weld-germ-orientation-no-go
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** carrier-free naturality obstruction
 - **Status:** `[PROVED ON PAPER + LEAN]`
 

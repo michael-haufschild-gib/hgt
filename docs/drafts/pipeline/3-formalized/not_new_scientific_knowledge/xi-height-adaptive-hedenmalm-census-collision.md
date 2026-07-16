@@ -1,7 +1,7 @@
 # Height-adaptive Hedenmalm adjacent-census collision
 
 - **ID:** `xi-height-adaptive-hedenmalm-census-collision`
-- **Stage:** 2-fully-proven / Lean source wired, focused check deferred by the no-computation constraint
+- **Stage:** 3-formalized
 - **Type:** THEOREM / TOP-DOWN RH REDUCTION / VALUE RELATION
 - **Scientific status:** `[PROVED ON PAPER] [FORMALIZATION WRITTEN] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Lean:** `formal/GaloisForLFunctions/RHTower/XiHeightAdaptiveHedenmalmCensusCollision.lean`
@@ -94,5 +94,5 @@ Hedenmalm route, not a new parent-theory theorem.
 - [x] new Lean module wired into the RHTower umbrella
 - [x] finite local-algebra rank/subresultant target isolated on paper
 - [x] finite reader reconstructed from source boundary values on paper
-- [ ] focused Lean check when computation is permitted
+- [x] focused Lean check passed
 - [ ] source-side dyadic common-divisor degree relation

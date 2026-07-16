@@ -1,7 +1,7 @@
 # The positive theta half is a canonical unit-radius Perron source
 
 - **ID:** xi-theta-unit-radius-perron-source
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / NATIVE SEAM ALIGNMENT, `[PROVED HERE]`
 - **Date:** 2026-07-10
 - **Parents:** `xi-theta-critical-trace.md`, `xi-theta-reader-superexponential-conditioning.md`,

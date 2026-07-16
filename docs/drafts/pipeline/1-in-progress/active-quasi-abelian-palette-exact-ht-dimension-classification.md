@@ -3,7 +3,7 @@
 - **ID:** `active-quasi-abelian-palette-exact-ht-dimension-classification`
 - **Stage:** 1-in-progress
 - **Type:** CORRECTED CONJECTURE / ACTION-RELATIVE HT DIMENSION CLASSIFICATION
-- **Scientific status:** `[CONJECTURE] [NECESSARY NEW SELECTOR PROVED IN SPLIT MODEL]`
+- **Scientific status:** `[CONJECTURE] [ACTIVE-FAITHFUL NECESSITY PROVED]`
 - **Statement:** The intrinsic analytic dimension of a finite full Stanley--Reisner HT constraint
   geometry is governed by quasi-Abelian facet quotients in which every structural facet lattice is
   faithful on the quotient by the maximal compact complex subtorus.
@@ -105,23 +105,25 @@ peDim(Delta)<=qaDim(Delta)<=aqaDim(Delta)
                                =htDim(Delta)<=ppDim(Delta)<=ffsDim(Delta). (9)
 ```
 
-## Necessity program
+## Active-faithful necessity `[PROVED HERE]`
 
 The established facet separator extracts a meromorphic facet observable `G_A` whose integral
 facet orbit is completely differentially free.  Its full period quotient supplies `X_A`, exact
 incidence, noncompactness, the generalized Riemann relations, and faithfulness in `X_A`.
 
-It remains to prove the following relative form of the elliptic-shadow theorem.
+The required relative theorem now holds.
 
-> **Compact-kernel finite-capacity theorem `[CONJECTURE; SPLIT CASE PROVED]`.** Let `B` be a compact
-> complex subtorus of a quasi-Abelian group `X`.  If a nonzero free Abelian subgroup `K` lies in
-> `B`, then for every `g in Mer(X)` the complete `K`-translation orbit has finite differential
-> transcendence degree over the rational universal-cover field.
+> **Compact-kernel finite-capacity theorem `[PROVED HERE]`.** Let `B` be a compact complex subtorus
+> of a quasi-Abelian group `X`.  If a nonzero free Abelian subgroup `K` lies in `B`, then for every
+> `g in Mer(X)` the complete `K`-translation orbit has finite differential transcendence degree over
+> the rational universal-cover field.
 
-For `X=B x Y`, relative rationality along the projective fibre proves the theorem: each `g` uses a
-finite family of `Y`-coefficient functions, and `B`-translation only mixes that fixed finite
-palette.  The same argument should pass through a nonsplit proper Abelian fibration by relative
-algebraic reduction.
+The quotient `X -> X/B` is a proper holomorphic Abelian fibration.  On its generic fibre every
+meromorphic `g` belongs to a finitely generated relative function field over `Mer(X/B)` and uses
+only finitely many base coefficient functions.  Fibre translation acts algebraically inside that
+one relative field and introduces no new coefficients.  An invariant derivation is determined on
+a finite relative generating set by finitely many further base coefficients, so the differential
+field of the complete compact-kernel orbit is finitely differentially generated.
 
 If (4) failed for the facet lattice, its nonzero kernel would give such a subgroup `K`, contradicting
 the already proved complete freeness of the facet orbit.  Hence
@@ -129,6 +131,10 @@ the already proved complete freeness of the facet orbit.  Hence
 ```text
 aqaDim(Delta)<=htDim(Delta).                               (10)
 ```
+
+The kernel-to-injectivity implication is formalized as
+`activeQuotient_injective_of_fullOrbitFree_of_kernelCyclic_not` in
+`formal/GaloisForLFunctions/HTGeometry/FiniteShadowCapacity.lean`.
 
 ## Sufficiency program
 
@@ -217,14 +223,13 @@ The route is not promoted as new scientific knowledge until:
 Proved:
 
 - the original ambient-noncompact full-orbit conjecture is false;
-- the split compact-shadow finite-capacity theorem;
+- the proper compact-kernel finite-capacity theorem;
 - every finite capacity occurs in the split elliptic model;
 - the split active quotient criterion;
 - the exact finite-shadow matrix rank core in Lean.
 
 Open:
 
-- nonsplit relative compact-shadow finiteness;
 - all-order fixed-factor jet interpolation on torusless quasi-Abelian groups;
 - the exact active dimension equality (8);
 - the sewing law selecting special functions inside the universal constraint class.
@@ -236,10 +241,9 @@ Open:
 - [x] action-relative invariant defined
 - [x] necessity and sufficiency reduced to named geometric theorems
 - [x] active sewn constraint spectrum stated
-- [ ] prove nonsplit compact-kernel finite capacity
+- [x] prove nonsplit compact-kernel finite capacity
 - [ ] prove torusless all-order packet interpolation
 - [ ] prove `htDim=aqaDim`
 - [ ] separate or collapse `qaDim`, `aqaDim`, and `ppDim`
 - [ ] complete primary-literature novelty audit
 - [ ] full Lean formalization of every promoted theorem surface
-

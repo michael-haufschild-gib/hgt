@@ -1,7 +1,7 @@
 # Scalar germ gauges cannot trivialize the filtered weld
 
 - **ID:** scalar-germ-gauge-weld-obstruction
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** hypothesis-discharge theorem / local-global gauge no-go
 - **Status:** `[PROVED ON PAPER + LEAN]`
 

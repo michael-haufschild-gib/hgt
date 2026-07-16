@@ -1,7 +1,7 @@
 # The theta moving boundary is an exact flat coboundary
 
 - **ID:** xi-theta-boundary-coboundary-no-go
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / ROUTE-CLOSING OBSTRUCTION, `[PROVED HERE]`
 - **Date:** 2026-07-10
 - **Parents:** `xi-theta-critical-log-translation-seam.md`,

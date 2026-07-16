@@ -1,7 +1,7 @@
 # FE/Schwarz germ gluing is coefficient-gauge trivial
 
 - **ID:** fe-schwarz-germ-gluing-gauge-trivialization
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** carrier-free local descent classification / no-go theorem
 - **Status:** `[PROVED ON PAPER + LEAN]`
 

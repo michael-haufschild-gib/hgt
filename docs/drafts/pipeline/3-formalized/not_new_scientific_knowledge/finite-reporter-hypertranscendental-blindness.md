@@ -7,9 +7,11 @@
 - **Formal files:**
   `formal/GaloisForLFunctions/HTGeometry/FiniteReporterBlindness.lean` and
   `formal/GaloisForLFunctions/HTGeometry/FiniteReporterGramFisher.lean` and
+  `formal/GaloisForLFunctions/HTGeometry/FiniteReporterConditionalInformation.lean` and
   `formal/GaloisForLFunctions/RHTower/XiLogDerivFiniteReporterBlindness.lean` and
   `formal/GaloisForLFunctions/RHTower/XiLogDerivReporterRankNullity.lean` and
-  `formal/GaloisForLFunctions/RHTower/XiLogDerivReporterGramFisher.lean`
+  `formal/GaloisForLFunctions/RHTower/XiLogDerivReporterGramFisher.lean` and
+  `formal/GaloisForLFunctions/RHTower/XiLogDerivReporterConditionalInformation.lean`
 - **Statement:** If a complex function has no nonzero constant-coefficient differential
   annihilator, then every finite-dimensional linear reporter misses a nonzero linear combination
   of the first `finrank+1` derivative observables.  More precisely, at every finite resolution
@@ -102,6 +104,37 @@ exactly when they erase no common jet direction.  For a genuine infinite derivat
 singularity of the fused Gram is equivalently witnessed by one nonzero derivative packet erased
 by both panels.
 
+The same information admits an exact source-ordered decomposition.  Let `u_N` be the component of
+`R(f^(N))` orthogonal to the span of the first `N` reported derivatives, and put
+
+```text
+I_N = norm(u_N)^2.                                      (10)
+```
+
+Then
+
+```text
+I_N = 0  <->  R(f^(N)) lies in span(R(f),...,R(f^(N-1))),       (11)
+I_N > 0  <->  the N-th reading supplies a new observable direction.       (12)
+```
+
+Whenever `det(G_N) != 0`, the sequential D-optimal/Fisher identity is
+
+```text
+det(G_(N+1)) = det(G_N) * I_N.                          (13)
+```
+
+Globally, the opaque determinant test becomes a triangular family of clock-ordered tests:
+
+```text
+det(G_N) != 0  <->  I_k > 0 for every k < N.            (14)
+```
+
+Every `d`-dimensional reporter has some `k <= d` with `I_k=0`.  For a
+constant-coefficient-differentially-transcendental source, `f^(k)` itself is not in the span of its
+predecessors.  Thus the first zero innovation localizes an observation-induced collapse rather
+than merely producing an unspecified blind packet.
+
 ## Formalized content
 
 ### General HTGeometry layer
@@ -126,6 +159,16 @@ by both panels.
 - `ker_finiteDerivativeReporterMap_paired`
 - `finiteDerivativeReporterGram_paired_det_ne_zero_iff_commonKer_eq_bot`
 - `finiteDerivativeReporterGram_paired_det_eq_zero_iff_exists_commonBlindPacket`
+- `finiteDerivativeReporterPreviousSpace`
+- `finiteDerivativeReporterInnovation`
+- `finiteDerivativeReporterConditionalInformation`
+- `finiteDerivativeReporterInnovation_eq_zero_iff`
+- `finiteDerivativeReporterConditionalInformation_eq_zero_iff`
+- `finiteDerivativeReporterConditionalInformation_pos_iff`
+- `finiteDerivativeReporterGram_succ_det_eq_mul_conditionalInformation`
+- `finiteDerivativeReporterGram_det_ne_zero_iff_forall_conditionalInformation_pos`
+- `exists_finiteDerivativeReporterConditionalInformation_eq_zero`
+- `exists_finiteDerivativeReporterConditionalInformation_collapse`
 - `exists_nonzero_finiteDerivativeReporterPacket_ker`
 - `exists_nonzero_finiteDerivativeReporterPacket_ker_of_hypertranscendental`
 
@@ -141,6 +184,7 @@ hypertranscendence and therefore enlarges the usable field beyond HT functions.
 - `xiLogDeriv_add_finiteGibbs_finiteDerivativeReporter_rank_nullity`
 - `xiLogDeriv_reporterGram_det_eq_zero_iff_exists_blindPacket`
 - `xiLogDeriv_add_finiteGibbs_reporterGram_det_eq_zero_iff_exists_blindPacket`
+- `exists_xiLogDeriv_finiteReporterConditionalInformation_collapse`
 
 The Xi logarithmic derivative has the required infinite derivative rank unconditionally because
 the corpus already proves an actual simple pole.  The finite-spectral-dressing theorem then shows
@@ -150,6 +194,9 @@ kernel dimension counts genuine erased Xi observables.
 The Gram theorems make the corresponding positive design criterion source-explicit: any finite
 Xi reporter truncation is faithful exactly when its reported-jet information matrix is
 nonsingular, and the criterion is unchanged by finite Gibbs dressing.
+The conditional-information consumer is sharper at the failure boundary: it unconditionally
+locates an order `k` no larger than reporter dimension whose Xi derivative is new before reporting
+but redundant afterwards.
 
 ## Field transfer
 
@@ -157,7 +204,8 @@ nonsingular, and the criterion is unchanged by finite Gibbs dressing.
    state/operator space to outcome statistics.  Finite-dimensional systems can admit finite
    informationally complete measurements only when enough independent outcomes are retained.  In
    the present infinite derivative-observable span, every finite outcome space has a nontrivial
-   kernel.
+   kernel.  Equations `(10)--(14)` are the Gram form of parameter orthogonalization: nuisance
+   directions are projected away and the surviving squared innovation is the partial information.
 2. **Machine learning and AI.**  Koopman/DMD and learned latent-linear methods select a finite
    observable dictionary and a finite readout.  The previous corpus theorem rules out exact
    derivative-invariant closure; `(1)--(2)` now rules out exact faithful finite reporting even
@@ -169,7 +217,8 @@ nonsingular, and the criterion is unchanged by finite Gibbs dressing.
    dynamically selected or intervention-dependent reporter schedule is covered by stacking its
    outputs into one finite-dimensional reporter space.  Equations `(7)--(9)` additionally give
    the exact condition under which two genetic panels or intervention regimes repair one
-   another's blind directions.
+   another's blind directions.  Equations `(10)--(14)` identify the first derivative order at
+   which a proposed reporter library ceases to add observability.
 
 The result does not assert that a biological gene network is hypertranscendental.  It says what
 follows if an HT or more generally constant-coefficient-differentially-transcendental source is
@@ -182,8 +231,10 @@ derivative clock.  Adding a finite learned latent space, a finite quantum ancill
 spectral dressing does not change that conclusion.
 
 **Positive replacement.**  Every chosen reporter panel canonically forces the existence of a
-nonzero hidden finite derivative packet of order at most its output dimension.  A viable complete
-observer must therefore do at least one of the following:
+nonzero hidden finite derivative packet and a first zero conditional-information reading of order
+at most its output dimension.  The latter identifies a source-independent derivative which became
+dependent only after reporting.  A viable complete observer must therefore do at least one of the
+following:
 
 - let readout dimension grow without a fixed bound;
 - retain an infinite-dimensional or nonlocal measurement channel;
@@ -227,6 +278,14 @@ prime--archimedean orientation.
   Forecasting in Continuous Time*, arXiv:2604.26070.  Latent-state observability is a necessary
   condition for causal identifiability; `(8)--(9)` identify the exact finite-jet obstruction and
   the complementary-panel repair criterion for an HT clock.
+- J. Suzuki, Y. Yang, and M. Hayashi, *Quantum state estimation with nuisance parameters*,
+  arXiv:1911.02790.  Quantum parameter orthogonalization removes nuisance directions before
+  evaluating the information available for the target parameter; `(10)--(13)` are the exact
+  Hilbert-Gram value law for that projection in the derivative-clock reporter.
+- H. Antil, A. Jain, and R. Lohner, *Fisher-Information-Based Sensor Placement for Structural
+  Digital Twins: Analytic Results and Benchmarks*, arXiv:2602.02981.  Their D-optimal criterion
+  uses the Fisher log determinant of the measurement Jacobian; `(13)--(14)` factor the analogous
+  derivative-clock determinant into sequential sensor innovations.
 - C. Carmeli, T. Heinosaari, and A. Toigo, *Informationally complete joint measurements on finite
   quantum systems*, arXiv:1111.3509.  Informational completeness is the ability of outcome
   statistics to identify the underlying state; the finite-dimensional constructions depend on
@@ -247,6 +306,8 @@ the linear algebra.
 - the later paired-panel extension reused the existing HTGeometry cache and passed one direct file
   check without another build;
 - the capstone declarations use only the standard theorem-prover axioms in their axiom reports;
+- the conditional-information declarations use only `propext`, `Classical.choice`, and
+  `Quot.sound` in their axiom reports;
 - formal lint passes;
 - no numerical computation and no full or self-concurrent build was run.
 

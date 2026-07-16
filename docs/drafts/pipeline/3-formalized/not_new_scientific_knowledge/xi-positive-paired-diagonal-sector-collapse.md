@@ -1,7 +1,7 @@
 # Xi positive-paired diagonal collapses the source matrix gate
 
 - **ID:** `xi-positive-paired-diagonal-sector-collapse`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), `[TOP-DOWN INTERFACE DISCHARGE]`, `[VALUE RELATION]`
 - **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Formal parents:**

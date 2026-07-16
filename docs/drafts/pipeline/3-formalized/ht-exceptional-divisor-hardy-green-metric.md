@@ -1,9 +1,9 @@
 # The RH-facing exceptional divisor carries Hardy--Green capacity, not Fubini--Study area
 
 - **ID:** `ht-exceptional-divisor-hardy-green-metric`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** `[THEOREM] [GENERAL HT METRIC SELECTION] [NO-GO WITH POSITIVE SUCCESSOR]`
-- **Scientific status:** `[PROVED ON PAPER] [SOURCE-INDEPENDENT LOCAL MODEL] [NOT RH]`
+- **Scientific status:** `[FORMALIZED IN LEAN] [SOURCE-INDEPENDENT LOCAL MODEL] [NOT RH]`
 - **Parents:**
   - `../1-in-progress/source-polarized-laurent-pluecker-tangent-ward-law.md`;
   - `../1-in-progress/ht-capacity-ward-holonomy-rh.md`;
@@ -157,6 +157,8 @@ available Pluecker tangent capacity.
 - [x] kill ordinary Fubini--Study/Chern/Poincare--Lelong domination
 - [x] identify the asymptotically dual product constant four
 - [x] state the source-pure Green--Hodge successor with a finite PSD falsifier
+- [x] formalize the one-point energy, three boundary limits, and no-domination theorem in `RHTower/ExceptionalDivisorHardyGreenMetric.lean`
+- [x] direct leaf build and axiom audit pass; theorem dependencies are only `propext`, `Classical.choice`, and `Quot.sound`
 - [ ] construct the exceptional Laurent-corona transgression
 - [ ] prove positivity of every augmented response matrix
 - [ ] four-unit Ward estimate

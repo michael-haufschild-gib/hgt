@@ -1,7 +1,7 @@
 # The weld class determines area, not a complex structure
 
 - **ID:** weld-class-determines-area-not-j
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / INTERFACE NO-GO / POLARIZATION DIRECTION, `[PROVED HERE]`
 - **Date:** 2026-07-10
 - **Parents:** `weld-affine-coefficient-collapse.md`,

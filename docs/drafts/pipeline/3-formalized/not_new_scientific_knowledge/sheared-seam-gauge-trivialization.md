@@ -1,7 +1,7 @@
 # The sheared seam is split-equivalent; cutoff alignment is the missing datum
 
 - **ID:** sheared-seam-gauge-trivialization
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / INTERFACE CORRECTION / ROUTE NO-GO, `[PROVED HERE]`
 - **Date:** 2026-07-10
 - **Parents:** `../../3-formalized/new/sheared-seam-coordinate-criterion.md`,

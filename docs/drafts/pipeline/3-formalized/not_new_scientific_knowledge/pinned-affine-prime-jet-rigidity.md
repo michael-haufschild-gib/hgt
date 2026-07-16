@@ -1,7 +1,7 @@
 # Finite prime jets classify the one-slot quotient, but not the all-orders constraint
 
 - **ID:** pinned-affine-prime-jet-rigidity
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** finite-quotient classification / all-orders separation theorem
 - **Status:** `[PROVED ON PAPER + LEAN]`
 

@@ -1,0 +1,230 @@
+# One positive factor on a torusless quasi-Abelian variety interpolates every finite jet packet
+
+- **ID:** `torusless-quasi-abelian-fixed-factor-all-order-jet-ampleness`
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (paper) / INFINITE JET AMPLENESS
+- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [PARENT PROOF EXTENDED]`
+- **Statement:** Every positive holomorphic line bundle on a torusless noncompact quasi-Abelian
+  variety is jet ample of every finite order without taking tensor powers.
+
+## Statement
+
+Let
+
+```text
+X=C^n/Gamma
+```
+
+be a torusless noncompact quasi-Abelian variety, and let `L` be a positive holomorphic line bundle
+on `X`.  For pairwise distinct points `p_1,...,p_s`, positive integers `r_1,...,r_s`, and the
+corresponding finite subscheme
+
+```text
+Z=sum_i (r_i+1)p_i,
+```
+
+the restriction map
+
+```text
+H^0(X,L) -> H^0(Z,L|Z)                                   (1)
+```
+
+is surjective.
+
+Equivalently, one fixed positive automorphic factor interpolates arbitrary prescribed finite jets
+at arbitrary finite point packets.  No tensor power depending on the jet order is required.
+
+This sharply separates the noncompact torusless phase from compact Abelian varieties, where
+`H^0(X,L)` is finite-dimensional and one fixed `L` cannot interpolate jets of unbounded order.
+
+## Parent boundary
+
+Abe constructs the complete space `AF(alpha rho)=H^0(X,L)` by convergent Poincare series for one
+fixed automorphic factor.  His published theorems prove:
+
+- arbitrary finite point separation (Theorem 8.1);
+- separation of one nonzero tangent direction (Theorem 9.1).
+
+The proof below lifts his same subgroup-rank induction from reduced point packets to arbitrary
+finite local Artin jet packets.  No new convergence regime is introduced.
+
+## Finite jet packet
+
+Choose lifts `a_i in C^n` of the points.  Put
+
+```text
+J=sum_i O_(C^n,a_i)/m_(a_i)^(r_i+1).                      (2)
+```
+
+After trivializing `L` near the packet, (1) is surjectivity of the continuous linear map
+
+```text
+ev_J:AF(alpha rho)->J.                                    (3)
+```
+
+Fix monomial jet bases in the summands of (2).  It suffices to construct `dim J` automorphic forms
+whose evaluation matrix is invertible.
+
+## Growth stability lemma `[PROVED]`
+
+Abe's admissible seed class consists of entire functions with subquadratic lattice growth.  It has
+the following properties for every fixed finite order `R`.
+
+1. Multiplication by a polynomial preserves the class.
+2. If `h` has order one, then `h^(R+1)` has order one and imposes zero multiplicity `R+1` at every
+   zero of `h`.
+3. Every derivative of order at most `R` of a convergent Poincare series converges compactly after
+   termwise differentiation.
+4. If a summand contains a damping factor `exp(B chi)` with `Re(B chi)<=-c|B|`, then every derivative
+   of order at most `R` is bounded by a polynomial in `|B|` and the lattice index times the same
+   exponential.  It therefore tends uniformly to zero on compact packet neighborhoods.
+
+Items 1--2 are elementary order estimates.  Item 3 follows from Abe's Gaussian majorant after
+multiplication by a fixed polynomial in the lattice index.  Item 4 follows from Leibniz and the
+chain rule; exponential decay dominates every polynomial produced by finitely many derivatives.
+
+## Base of the subgroup-rank induction `[PROVED]`
+
+In Abe's rank-zero case the relevant lattice is an integer lattice `H` in affine coordinates.  The
+union of all undesired translates of the packet is discrete.  The order-one entire separator used
+by Abe can be raised to
+
+```text
+R+1,   R=max_i r_i,                                       (4)
+```
+
+so it vanishes to the required multiplicity at every undesired translated point while remaining
+inside the admissible growth class.
+
+For one chosen packet basis jet, multiply this separator by a polynomial whose Taylor class at the
+target point is the desired basis vector.  The `lambda=0` term of the Poincare series contributes
+that prescribed jet; every `lambda!=0` term vanishes through order `R`.  Multiplication by the
+nonzero automorphic and Gaussian seed factors acts invertibly on the target local algebra, so the
+polynomial can be chosen after applying its inverse.
+
+Repeating this for every basis vector of (2) gives an identity jet-evaluation matrix.  Thus (3) is
+surjective in the base case.
+
+## Induction step `[PROVED]`
+
+Assume finite-packet jet surjectivity for Abe's proper subgroup `H` of lower toroidal rank.  Choose
+subgroup Poincare series `G_1,...,G_N`, `N=dim J`, whose jet-evaluation matrix is the identity and
+which are grouped by their target point.
+
+Abe extends a subgroup series to the full lattice by inserting a damping exponential.  For all
+lattice elements of `H`, the damping character is constant in the lattice index.  Hence the full
+series decomposes as
+
+```text
+F_B=m_B G+R_B,                                            (5)
+```
+
+where `m_B` is a nowhere-zero holomorphic multiplier and `R_B` is the complement-lattice sum.
+
+Choose Abe's damping ray separately for each target-point block.  At the target point,
+`|m_B|=1`; at the complement lattice, the real part of the exponent is uniformly negative on all
+packet neighborhoods.  By the growth stability lemma,
+
+```text
+jet_R(R_B)->0                                             (6)
+```
+
+exponentially, uniformly over the finite packet.
+
+On the local algebra at the target point, multiplication by `m_B` is an automorphism.  In divided
+jet coordinates its matrix is lower triangular with diagonal `m_B(p)`.  Therefore
+
+```text
+det Mul_(m_B)|J_p = m_B(p)^(dim J_p) !=0.                 (7)
+```
+
+At every other point, the subgroup section `G` vanishes to the prescribed jet order, so
+multiplication by `m_B` preserves that vanishing.  Normalize each target block by the inverse of
+its multiplication matrix.  Its entries grow at most polynomially in `B`, whereas the normalized
+remainder still tends to zero by (6).  The normalized full jet-evaluation matrix therefore tends
+to the identity.  It is invertible for all sufficiently large parameters.
+
+This proves surjectivity at the next subgroup rank.  Abe's final passage from the distinguished
+subgroup to `Gamma` has the identical decomposition (5), so the same finite-jet argument completes
+the induction. `QED`
+
+## Residual complete orbit freedom `[PROVED]`
+
+The section space `H^0(X,L)` with compact-open topology is a Frechet, hence Baire, space.  For a
+countable faithful translation subgroup `H subset X`, every proposed differential polynomial
+relation among finitely many translates depends on one finite jet packet.  Surjectivity of (1)
+shows that the corresponding defect polynomial is not identically zero.  Its zero set is closed
+with empty interior.
+
+Removing the countable union of all rational-coefficient defect loci gives a dense residual set of
+section pairs `(s_0,s_1)` such that
+
+```text
+g=s_1/s_0                                                (8)
+```
+
+has a completely differentially algebraically independent `H`-translation orbit.  The same
+product-space argument makes finitely many quotient carriers jointly free.
+
+Thus every active-faithful torusless quasi-Abelian facet palette supplies the analytic sources
+required by the full localized Stanley--Reisner realization theorem.
+
+## Consequence: the active quotient principle `[PROVED]`
+
+Let `X` be a noncompact quasi-Abelian group, `B(X)` its maximal compact complex subtorus, and `H`
+a finitely generated free subgroup.  Then
+
+```text
+there exists g in Mer(X) with a completely free H-orbit
+  iff H -> X/B(X) is injective.                            (9)
+```
+
+Necessity is the proper compact-kernel finite-capacity theorem.  For sufficiency, apply the
+all-order theorem to the torusless active quotient and pull the residual meromorphic ratio back to
+`X`.
+
+## Lean boundary
+
+The analytic Poincare-series induction is not represented by an axiom.  Its two exact algebraic
+interfaces are formalized:
+
+- `truncatedJetMultiplicationMatrix_det_ne_zero` in
+  `formal/GaloisForLFunctions/HTGeometry/FiniteShadowCapacity.lean` proves (7);
+- `affineJetPacketCollision_denseResidual_exactMatroid` in
+  `formal/GaloisForLFunctions/HTGeometry/AffineJetPacketCollisionCompletion.lean` proves the
+  countable Baire assembly once every finite defect has empty interior.
+
+The growth estimates and proper subgroup-rank induction remain paper analysis.
+
+## Novelty and significance gate
+
+Searches for `jet ample`, `higher jets`, `finite jet interpolation`, and fixed-factor automorphic
+forms on quasi-Abelian varieties found the classical projective theory, where tensor powers grow
+with jet order, and Abe's point/first-tangent theorems.  No all-order theorem for one fixed positive
+factor on a torusless quasi-Abelian variety was located.
+
+The theorem is a candidate-new extension, not yet literature-certified.  Its significance is not
+the triangular determinant alone.  It is the sharp phase transition:
+
+```text
+compact shadow:   every observable has finite cyclic capacity;
+torusless active: one fixed positive factor is jet ample at every finite order,
+                  and residual ratios attain infinite cyclic capacity.       (10)
+```
+
+Combined with the active facet necessity theorem, it closes the analytic gap in the exact
+constraint-dimension classification.
+
+## Gates
+
+- [x] same fixed automorphic factor retained at every jet order
+- [x] multiplicity separator remains in Abe's growth class
+- [x] all finite derivatives of complement terms decay
+- [x] damping multiplication proved invertible on each local Artin jet algebra
+- [x] subgroup-rank induction lifted from values to complete finite jet packets
+- [x] Baire conversion to complete orbit freedom
+- [x] active quotient principle proved
+- [ ] independent specialist check of the all-order induction
+- [ ] exact-formulation primary-literature audit
+- [ ] direct Lean formalization of the analytic Poincare estimates before Stage 3
+

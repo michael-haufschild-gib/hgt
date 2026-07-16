@@ -150,11 +150,12 @@ theorem finiteDerivativeReporterGram_det_ne_zero_iff_forall_conditionalInformati
       simpa only [finiteDerivativeReporterGram, w] using hdet
     have hsmall : LinearIndependent ℂ
         (fun i : Fin (k + 1) => w (i : ℕ)) := by
-      apply hLI.comp (fun i : Fin (k + 1) => (i.castLE hk.le : Fin N))
+      let e : Fin (k + 1) → Fin N := fun i => ⟨i, by omega⟩
+      apply hLI.comp e
       intro i j hij
-      exact Fin.ext hij
+      exact Fin.ext (congrArg Fin.val hij)
     have hprev : LinearIndependent ℂ (fun i : Fin k => w (i : ℕ)) := by
-      apply hsmall.comp Fin.castSucc Fin.castSucc_injective
+      exact hsmall.comp Fin.castSucc (Fin.castSucc_injective k)
     have hinnovation : gramSchmidt ℂ w k ≠ 0 :=
       (GaloisForLFunctions.HTGeometry.linearIndependent_fin_succ_iff_gramSchmidt_ne_zero
         w k hprev).mp hsmall
@@ -162,8 +163,7 @@ theorem finiteDerivativeReporterGram_det_ne_zero_iff_forall_conditionalInformati
       finiteDerivativeReporterInnovation
     exact sq_pos_of_pos (norm_pos_iff.mpr hinnovation)
   · intro hall
-    apply finiteDerivativeReporterGram_det_ne_zero_iff_injective.mpr
-    rw [← linearIndependent_reportedDerivativeJets_iff_injective]
+    apply Matrix.det_gram_ne_zero_iff_linearIndependent.mpr
     change LinearIndependent ℂ (fun i : Fin N => w (i : ℕ))
     induction N with
     | zero => exact linearIndependent_empty _ _

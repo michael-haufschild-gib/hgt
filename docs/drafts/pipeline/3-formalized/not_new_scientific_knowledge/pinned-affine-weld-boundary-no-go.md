@@ -1,7 +1,7 @@
 # Pinned affine weld defects have zero Fitting boundary
 
 - **ID:** pinned-affine-weld-boundary-no-go
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** theorem synthesis / local positive-order no-go
 - **Status:** `[PROVED ON PAPER + LEAN]`
 

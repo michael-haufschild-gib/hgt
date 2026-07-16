@@ -24,6 +24,48 @@ open Matrix GaloisForLFunctions
 
 noncomputable section
 
+/-- Multiplication by a nonvanishing germ in divided-jet coordinates.  If `a r` is the `r`th
+divided jet of the multiplier, the product jet of order `i` is the lower-triangular convolution
+with coefficients `a (i-j)`. -/
+def truncatedJetMultiplicationMatrix
+    {R : Type*} [Zero R] (a : ℕ → R) (N : ℕ) :
+    Matrix (Fin N) (Fin N) R :=
+  fun i j => if (j : ℕ) ≤ (i : ℕ) then a ((i : ℕ) - (j : ℕ)) else 0
+
+/-- Multiplication by a germ preserves the order filtration on every finite jet algebra. -/
+theorem truncatedJetMultiplicationMatrix_lowerTriangular
+    {R : Type*} [Zero R] (a : ℕ → R) (N : ℕ) :
+    (truncatedJetMultiplicationMatrix a N).BlockTriangular
+      (fun i : Fin N => OrderDual.toDual i) := by
+  intro i j hij
+  have hlt : (i : ℕ) < (j : ℕ) := OrderDual.toDual_lt_toDual.mp hij
+  simp [truncatedJetMultiplicationMatrix, Nat.not_le_of_gt hlt]
+
+/-- Every diagonal entry of finite jet multiplication is the value of the multiplier. -/
+@[simp]
+theorem truncatedJetMultiplicationMatrix_diag
+    {R : Type*} [Zero R] (a : ℕ → R) (N : ℕ) (i : Fin N) :
+    truncatedJetMultiplicationMatrix a N i i = a 0 := by
+  simp [truncatedJetMultiplicationMatrix]
+
+/-- The determinant of multiplication on `N` divided jets is the `N`th power of the multiplier's
+value. -/
+theorem truncatedJetMultiplicationMatrix_det
+    {R : Type*} [CommRing R] (a : ℕ → R) (N : ℕ) :
+    (truncatedJetMultiplicationMatrix a N).det = (a 0) ^ N := by
+  rw [Matrix.det_of_lowerTriangular _
+    (truncatedJetMultiplicationMatrix_lowerTriangular a N)]
+  simp
+
+/-- **Finite-jet unit law.**  Multiplication by a germ nonzero at the packet point is invertible
+on every finite truncated jet algebra.  This is the exact algebraic step used when a Poincare-series
+damping factor multiplies the already interpolated subgroup packet. -/
+theorem truncatedJetMultiplicationMatrix_det_ne_zero
+    {R : Type*} [Field R] (a : ℕ → R) (N : ℕ) (ha : a 0 ≠ 0) :
+    (truncatedJetMultiplicationMatrix a N).det ≠ 0 := by
+  rw [truncatedJetMultiplicationMatrix_det]
+  exact pow_ne_zero N ha
+
 /-- Differentiating a matrix observation applies the same matrix to every jet order when the
 actual matrix entries, rather than the whole coefficient field, are differential constants. -/
 theorem differentialJet_matrixLinearForms_of_coefficients_constant
