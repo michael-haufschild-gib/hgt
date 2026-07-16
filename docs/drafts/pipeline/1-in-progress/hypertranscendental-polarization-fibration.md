@@ -8,6 +8,7 @@
 - **Parents:**
   - `../2-fully-proven/new_scientific_knowledge/hypertranscendental-hochster-source-coherence-duality.md`
   - `hypertranscendental-constraint-sheaf-reconstruction-duality.md`
+  - `hypertranscendental-polarization-transport-spectrum.md`
   - `../3-formalized/new_scientific_knowledge/summable-residue-source-orientation-completion-law.md`
   - `../3-formalized/hypertranscendental-minimal-polarized-critical-completion-architecture.md`
 
@@ -136,6 +137,27 @@ universal kinematic phase.  A natural source must impose compatibility:
 The nontrivial invariant is the coupling class of these data.  A free decoration by signs fails
 the selector problem just as badly as forgetting signs.
 
+### Exact transport seed and forced nontruncation
+
+The boundary-wedge transport theorem now proves that compatibility is a real restriction.  After
+deleting the common vertex of `boundary(sigma^r) wedge boundary(sigma^s)`, the two components carry
+two independent Boolean orientations.  Sewing the vertex back in and requiring edge transport
+collapses the compatible fibre from `Bool x Bool` to `Bool`; a positive pointing at the sewing
+vertex leaves a unique section.  The exact equivalences are Lean-formalized as
+
+```text
+boundaryWedgeDeletedCompatibleOrientationEquivBoolProd,
+boundaryWedgeCompatibleOrientationEquivBool.
+```
+
+This is the first positive theorem beyond orientation blindness: topology does not select a sign,
+but topology coupled to nondegenerate polarization transport propagates it.
+
+The same family has `htDim=2` while its source-coherence projective dimension takes every value
+at least three.  Therefore the fibre in `(1)` cannot have a universal finite obstruction theory,
+even over the fixed `htDim=2` stratum.  The precise successor is the spectrum-valued exit-path
+transport object in `hypertranscendental-polarization-transport-spectrum.md`.
+
 ## Parent-theory boundary
 
 The following are established parents and not novelty claims:
@@ -189,6 +211,8 @@ structure, or a source class on which the fibration truncates and admits a uniqu
 - [ ] define the polarization fibration functorially
 - [ ] prove presentation/Morita invariance of its fibres
 - [x] couple positive and negative polarizations to the same nodal Hochster line in Lean
+- [x] prove a nontrivial restriction-compatible polarization collapse in Lean
+- [x] prove no finite obstruction-height bound follows from intrinsic HT dimension
 - [ ] prove unique positive section in one analytic model
 - [ ] construct an arithmetic section without target-divisor input
 - [ ] prove a positive fixed-locus theorem away from RH

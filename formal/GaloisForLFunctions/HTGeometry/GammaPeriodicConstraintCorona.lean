@@ -246,7 +246,11 @@ def gammaTaylorStreamSource : (ℕ → ℂ) →ₗ[ℂ] (ℕ → ℂ) where
     cases n <;> simp [mul_add] <;> ring
   map_smul' c a := by
     funext n
-    cases n <;> simp [mul_assoc] <;> ring
+    cases n with
+    | zero => simp
+    | succ n =>
+        simp
+        ring
 
 @[simp] theorem gammaTaylorStreamSource_apply_zero (a : ℕ → ℂ) :
     gammaTaylorStreamSource a 0 = -a 0 := rfl

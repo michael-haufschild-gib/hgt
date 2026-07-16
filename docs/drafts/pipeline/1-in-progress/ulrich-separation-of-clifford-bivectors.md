@@ -3,7 +3,7 @@
 - **ID:** `ulrich-separation-of-clifford-bivectors`
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE / GENERALIZED CLIFFORD ALGEBRA / ULRICH MODULI / QUANTUM HORIZON
-- **Scientific status:** `[CONJECTURE] [FIELDS-SCALE CORE] [NOVELTY PROVISIONAL]`
+- **Scientific status:** `[CONJECTURE] [PAPER-PROOF CANDIDATE VIA WARING QUANTUM TORUS] [LEAN PENDING] [NOVELTY PROVISIONAL]`
 - **Depends on:** `generalized-clifford-ulrich-hypertranscendence-horizons`
 
 ## 1. Conjecture
@@ -32,6 +32,32 @@ is injective.
 Under the generalized-Clifford/Ulrich correspondence, `(1)` says that finite families of Ulrich
 bundles on the cyclic cover `X_F : w^d=F` separate every Clifford bivector.
 
+## 1.1. The invariant that survives failure
+
+Let `beta_F : exterior^2 V -> C_F` send `u wedge v` to the commutator of the canonical
+generators, and let
+
+```text
+J_fd(C_F) = intersection { ker rho : rho is a finite-dimensional representation of C_F }.
+```
+
+Define the **finite-world blind bivector space**
+
+```text
+I_2(F) = beta_F^(-1)(J_fd(C_F)).                                  (3)
+```
+
+This is defined whether or not the conjecture holds.  The Ulrich bivector-separation conjecture is
+exactly `I_2(F)=0`.  A nonzero value would be a new invariant of a smooth hypersurface: a canonical
+part of its antisymmetric generalized-Clifford sector invisible to every finite-dimensional
+Clifford module and hence to every Ulrich bundle.
+
+For `N>=1`, intersect only kernels of representations of dimension at most `N` and write the
+result as `I_2^(N)(F)`.  These form a descending filtration of the finite-dimensional space
+`exterior^2 V`, so they stabilize at `I_2(F)`.  Thus `I_2(F)=0` is equivalent to separation at one
+finite representation-size cutoff, and finite direct sum then produces one representation with
+injective commutator symbol.
+
 ## 2. Hypertranscendence consequence
 
 The Lean-proven Clifford shift-suspension theorem turns `rho` into a finite-width exact
@@ -50,12 +76,17 @@ the classical boundary; Ulrich matter supplies enough worlds to detect its entir
 1. The exact shift-suspension horizon theorem is unconditional in Lean once a finite-dimensional
    Clifford representation is supplied.
 2. Finite-dimensional Clifford representations exist for smooth forms by the classical
-   Ulrich-existence route.
+   Clifford/Ulrich correspondence together with the 2024 existence theorem for Ulrich bundles on
+   every smooth cyclic covering of projective space.
 3. Any decomposable bivector represented by a horizon chord containing an escaping point is
    detected in every exact realization, by the Lean-proven horizon-chord commutator theorem.
 4. In three law dimensions every bivector is decomposable.  Hence for a plane horizon with no
    total-contact line, every Clifford representation already has injective commutator symbol.
 5. The explicit conic Clifford/factorization model has maximal commutator rank.
+6. The general principal-symbol factorization has a complete proof and a Lean module in
+   verification: the differential-field exterior commutator kernel is exactly the internal
+   Clifford-representation kernel.  Therefore `I_2(F)` is the precise obstruction, with no loss
+   introduced by shift suspension or by passage to rational observables.
 
 The genuinely open content begins with nondecomposable bivectors in law dimension at least four.
 
@@ -91,10 +122,10 @@ For a representation kernel `K_rho=ker B_rho`, the Lean-proven first Spencer law
 is to identify this matrix intrinsically from the Ulrich resolution.  If stability or linear
 resolution exactness makes that coefficient map faithful on bivectors, `(1)` follows.
 
-If not, the higher Spencer annihilator tower should define the corrected invariant:
+If not, the higher Spencer annihilator tower should refine the degree-two invariant:
 
 ```text
-I_invisible(F) = intersection over Ulrich E of the full Spencer kernel of E.               (3)
+I_invisible(F) = intersection over Ulrich E of the full Spencer kernel of E.               (4)
 ```
 
 The conjecture is `I_invisible(F)=0` in degree two.
@@ -108,10 +139,14 @@ than an RH implication.
 
 ## 8. Proof route
 
-1. Define `C_F` and its canonical bivector map without assuming PBW.
-2. Prove separation for binary forms and for plane forms without total-contact lines.
-3. Translate representation kernels through the Ulrich correspondence.
-4. Express the first and higher Spencer annihilators from the linear Ulrich resolution.
-5. Prove degree-two separation for a Zariski-open set of representations, then attack all smooth
-   forms by deformation and specialization.
+The direct route is now the Waring quantum-torus construction in
+`waring-quantum-torus-universal-horizon.md`.  A spanning decomposition
+`F=sum ell_i^d` and pairwise q-commuting generators make the commutator map a faithful copy of
+`exterior^2(c |-> (ell_i(c)))`.  Smoothness forces that coefficient map to be injective.
+
+1. Complete the parent-literature audit of general polynomial linearizations.
+2. Prove the finite quantum-torus ordered-monomial basis and quantum multinomial identity.
+3. Prove smoothness implies every Waring decomposition spans the full dual law space.
+4. Prove the resulting single representation has injective canonical bivector map.
+5. Translate that representation through the Ulrich correspondence.
 6. Formalize every promoted theorem in Lean; keep `(1)` labeled conjectural until then.

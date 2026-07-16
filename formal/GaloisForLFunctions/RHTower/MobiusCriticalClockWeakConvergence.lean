@@ -5,6 +5,7 @@ import Mathlib.MeasureTheory.Measure.FiniteMeasureProd
 import Mathlib.Probability.ProbabilityMassFunction.Constructions
 import Mathlib.Probability.ProbabilityMassFunction.Integrals
 import Mathlib.Probability.Distributions.Exponential
+import Mathlib.Probability.ConditionalProbability
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 
 open Complex MeasureTheory Set Filter
@@ -37,6 +38,10 @@ theorem squarefreeMobiusCriticalPMF_toReal
   change (ENNReal.ofReal (squarefreeMobiusProbability sigma n)).toReal = _
   rw [ENNReal.toReal_ofReal (squarefreeMobiusProbability_nonneg hsigma n)]
 
+/-- The squarefree critical PMF as a probability measure on its discrete index set. -/
+def squarefreeMobiusCriticalIndexProbabilityMeasure (sigma : ℝ) : ProbabilityMeasure ℕ :=
+  ⟨(squarefreeMobiusCriticalPMF sigma).toMeasure, inferInstance⟩
+
 /-- The rescaled logarithmic squarefree clock. -/
 def squarefreeMobiusCriticalClock (sigma : ℝ) (n : ℕ) : ℝ :=
   (sigma - 1) * Real.log n
@@ -44,10 +49,115 @@ def squarefreeMobiusCriticalClock (sigma : ℝ) (n : ℕ) : ℝ :=
 /-- The squarefree critical clock as a genuine Borel probability measure. -/
 def squarefreeMobiusCriticalClockProbabilityMeasure (sigma : ℝ) : ProbabilityMeasure ℝ :=
   ProbabilityMeasure.map
-    (⟨(squarefreeMobiusCriticalPMF sigma).toMeasure, inferInstance⟩ : ProbabilityMeasure ℕ)
+    (squarefreeMobiusCriticalIndexProbabilityMeasure sigma)
     (Measurable.of_discrete.aemeasurable :
       AEMeasurable (squarefreeMobiusCriticalClock sigma)
         (squarefreeMobiusCriticalPMF sigma).toMeasure)
+
+theorem squarefreeMobiusCriticalPMF_one_ne_zero
+    {sigma : ℝ} (hsigma : 1 < sigma) :
+    squarefreeMobiusCriticalPMF sigma 1 ≠ 0 := by
+  intro hzero
+  have hreal := congrArg ENNReal.toReal hzero
+  rw [squarefreeMobiusCriticalPMF_toReal hsigma] at hreal
+  simp only [ENNReal.toReal_zero] at hreal
+  have hpos : 0 < squarefreeMobiusProbability sigma 1 := by
+    unfold squarefreeMobiusProbability squarefreeMobiusMass
+    simp only [squarefree_one, if_true, Nat.cast_one, Real.one_rpow]
+    exact div_pos one_pos (squarefreeMobiusTotal_pos hsigma)
+  linarith
+
+theorem squarefreeMobiusCriticalIndexTruncation_ne_zero
+    {sigma : ℝ} (hsigma : 1 < sigma) (N : ℕ) :
+    (squarefreeMobiusCriticalPMF sigma).toMeasure (Iio (N + 2)) ≠ 0 := by
+  intro hzero
+  have hsingleton :
+      (squarefreeMobiusCriticalPMF sigma).toMeasure ({1} : Set ℕ) = 0 :=
+    measure_mono_null (by
+      rintro n rfl
+      simp) hzero
+  rw [(squarefreeMobiusCriticalPMF sigma).toMeasure_apply_singleton 1
+    (MeasurableSet.singleton 1)] at hsingleton
+  exact squarefreeMobiusCriticalPMF_one_ne_zero hsigma hsingleton
+
+/-- The finite squarefree packet obtained by conditioning the critical index law on
+`n < N + 2`.  The offset keeps every truncation nonempty without changing its cofinal limit. -/
+def squarefreeMobiusCriticalTruncatedIndexProbabilityMeasure
+    (sigma : ℝ) (hsigma : 1 < sigma) (N : ℕ) : ProbabilityMeasure ℕ :=
+  ⟨ProbabilityTheory.cond (squarefreeMobiusCriticalPMF sigma).toMeasure
+      (Iio (N + 2)),
+    ProbabilityTheory.cond_isProbabilityMeasure
+      (squarefreeMobiusCriticalIndexTruncation_ne_zero hsigma N)⟩
+
+/-- The logarithmic clock carried by the finite squarefree packet. -/
+def squarefreeMobiusCriticalTruncatedClockProbabilityMeasure
+    (sigma : ℝ) (hsigma : 1 < sigma) (N : ℕ) : ProbabilityMeasure ℝ :=
+  ProbabilityMeasure.map
+    (squarefreeMobiusCriticalTruncatedIndexProbabilityMeasure sigma hsigma N)
+    (Measurable.of_discrete.aemeasurable :
+      AEMeasurable (squarefreeMobiusCriticalClock sigma)
+        (squarefreeMobiusCriticalTruncatedIndexProbabilityMeasure sigma hsigma N :
+          Measure ℕ))
+
+private theorem iUnion_Iio_add_two_nat :
+    (⋃ N : ℕ, Iio (N + 2)) = (Set.univ : Set ℕ) := by
+  ext n
+  simp only [mem_iUnion, mem_Iio, mem_univ, iff_true]
+  exact ⟨n, by omega⟩
+
+/-- Cofinal finite conditioning recovers the complete squarefree index law. -/
+theorem tendsto_squarefreeMobiusCriticalTruncatedIndexProbabilityMeasure
+    {sigma : ℝ} (hsigma : 1 < sigma) :
+    Tendsto
+      (squarefreeMobiusCriticalTruncatedIndexProbabilityMeasure sigma hsigma)
+      atTop (nhds (squarefreeMobiusCriticalIndexProbabilityMeasure sigma)) := by
+  apply (ProbabilityMeasure.tendsto_iff_forall_integral_rclike_tendsto ℂ).2
+  intro g
+  let μ : Measure ℕ := (squarefreeMobiusCriticalPMF sigma).toMeasure
+  letI : IsProbabilityMeasure μ := by
+    dsimp only [μ]
+    infer_instance
+  have hmono : Monotone (fun N : ℕ => Iio (N + 2)) := by
+    intro a b hab n hn
+    exact hn.trans_le (Nat.add_le_add_right hab 2)
+  have hmass : Tendsto (fun N : ℕ => μ (Iio (N + 2))) atTop (nhds 1) := by
+    simpa only [Function.comp_apply, iUnion_Iio_add_two_nat, measure_univ] using
+      (tendsto_measure_iUnion_atTop (μ := μ) hmono)
+  have hcoefficient :
+      Tendsto (fun N : ℕ => (μ (Iio (N + 2))).toReal⁻¹) atTop (nhds 1) := by
+    have hreal := (ENNReal.tendsto_toReal ENNReal.one_ne_top).comp hmass
+    simpa using hreal.inv₀ (by norm_num : (1 : ℝ) ≠ 0)
+  have hg : Integrable (fun n : ℕ => g n) μ :=
+    BoundedContinuousFunction.integrable μ g
+  have hsetIntegral :
+      Tendsto (fun N : ℕ => ∫ n in Iio (N + 2), g n ∂μ) atTop
+        (nhds (∫ n, g n ∂μ)) := by
+    have h := tendsto_setIntegral_of_monotone
+      (μ := μ) (f := fun n : ℕ => g n)
+      (fun _ => MeasurableSet.of_discrete) hmono
+      (by simpa only [iUnion_Iio_add_two_nat, integrableOn_univ] using hg)
+    simpa only [iUnion_Iio_add_two_nat, setIntegral_univ] using h
+  have hproduct := hcoefficient.smul hsetIntegral
+  simpa only [squarefreeMobiusCriticalTruncatedIndexProbabilityMeasure,
+    squarefreeMobiusCriticalIndexProbabilityMeasure, ProbabilityMeasure.coe_mk,
+    ProbabilityTheory.cond, integral_smul_measure, ENNReal.toReal_inv,
+    one_smul, μ] using hproduct
+
+/-- Cofinal finite squarefree clock packets converge weakly to the complete clock law at every
+fixed `sigma > 1`. -/
+theorem tendsto_squarefreeMobiusCriticalTruncatedClockProbabilityMeasure
+    {sigma : ℝ} (hsigma : 1 < sigma) :
+    Tendsto
+      (squarefreeMobiusCriticalTruncatedClockProbabilityMeasure sigma hsigma)
+      atTop (nhds (squarefreeMobiusCriticalClockProbabilityMeasure sigma)) := by
+  have hsource :=
+    tendsto_squarefreeMobiusCriticalTruncatedIndexProbabilityMeasure hsigma
+  have hmap :=
+    (ProbabilityMeasure.continuous_map
+      (f := squarefreeMobiusCriticalClock sigma) (by fun_prop)).continuousAt.tendsto
+      |>.comp hsource
+  simpa [squarefreeMobiusCriticalTruncatedClockProbabilityMeasure,
+    squarefreeMobiusCriticalClockProbabilityMeasure] using hmap
 
 /-- The unit-rate exponential law selected by the squarefree critical clock. -/
 def mobiusCriticalExponentialProbabilityMeasure : ProbabilityMeasure ℝ :=
@@ -76,7 +186,8 @@ theorem charFun_squarefreeMobiusCriticalClockProbabilityMeasure_eq_tsum
           Complex.exp (((t * squarefreeMobiusCriticalClock sigma n : ℝ) : ℂ) *
             Complex.I) := by
   rw [charFun_apply_real]
-  unfold squarefreeMobiusCriticalClockProbabilityMeasure ProbabilityMeasure.map
+  unfold squarefreeMobiusCriticalClockProbabilityMeasure
+    squarefreeMobiusCriticalIndexProbabilityMeasure ProbabilityMeasure.map
   simp only [ProbabilityMeasure.coe_mk]
   rw [integral_map Measurable.of_discrete.aemeasurable (by fun_prop)]
   have hint : Integrable
@@ -363,6 +474,47 @@ def squarefreeMobiusCriticalGapProbabilityMeasure (sigma : ℝ) : ProbabilityMea
     ((squarefreeMobiusCriticalClockProbabilityMeasure sigma).prod
       (squarefreeMobiusCriticalClockProbabilityMeasure sigma))
     ((continuous_fst.sub continuous_snd).measurable.aemeasurable)
+
+/-- Oriented gap law of two independent cofinal finite squarefree clock packets. -/
+def squarefreeMobiusCriticalTruncatedGapProbabilityMeasure
+    (sigma : ℝ) (hsigma : 1 < sigma) (N : ℕ) : ProbabilityMeasure ℝ :=
+  ProbabilityMeasure.map
+    ((squarefreeMobiusCriticalTruncatedClockProbabilityMeasure sigma hsigma N).prod
+      (squarefreeMobiusCriticalTruncatedClockProbabilityMeasure sigma hsigma N))
+    ((continuous_fst.sub continuous_snd).measurable.aemeasurable)
+
+/-- At fixed `sigma > 1`, cofinal finite squarefree gap packets converge weakly to the complete
+squarefree gap law. -/
+theorem tendsto_squarefreeMobiusCriticalTruncatedGapProbabilityMeasure
+    {sigma : ℝ} (hsigma : 1 < sigma) :
+    Tendsto
+      (squarefreeMobiusCriticalTruncatedGapProbabilityMeasure sigma hsigma)
+      atTop (nhds (squarefreeMobiusCriticalGapProbabilityMeasure sigma)) := by
+  have hclock :=
+    tendsto_squarefreeMobiusCriticalTruncatedClockProbabilityMeasure hsigma
+  have hpair : Tendsto
+      (fun N : ℕ =>
+        (squarefreeMobiusCriticalTruncatedClockProbabilityMeasure sigma hsigma N,
+          squarefreeMobiusCriticalTruncatedClockProbabilityMeasure sigma hsigma N))
+      atTop
+      (nhds
+        (squarefreeMobiusCriticalClockProbabilityMeasure sigma,
+          squarefreeMobiusCriticalClockProbabilityMeasure sigma)) :=
+    hclock.prodMk_nhds hclock
+  have hprod : Tendsto
+      (fun N : ℕ =>
+        (squarefreeMobiusCriticalTruncatedClockProbabilityMeasure sigma hsigma N).prod
+          (squarefreeMobiusCriticalTruncatedClockProbabilityMeasure sigma hsigma N))
+      atTop
+      (nhds
+        ((squarefreeMobiusCriticalClockProbabilityMeasure sigma).prod
+          (squarefreeMobiusCriticalClockProbabilityMeasure sigma))) :=
+    ProbabilityMeasure.continuous_prod.continuousAt.tendsto.comp hpair
+  have hgap :=
+    (ProbabilityMeasure.continuous_map (continuous_fst.sub continuous_snd)).continuousAt.tendsto
+      |>.comp hprod
+  simpa [squarefreeMobiusCriticalTruncatedGapProbabilityMeasure,
+    squarefreeMobiusCriticalGapProbabilityMeasure] using hgap
 
 /-- Oriented difference of two independent unit-rate exponential clocks. -/
 def mobiusCriticalExponentialGapProbabilityMeasure : ProbabilityMeasure ℝ :=
@@ -689,10 +841,31 @@ def squarefreeMobiusCriticalGapResponse (sigma : ℝ) (z : ℂ) : ℂ :=
   ∫ x : ℝ, mobiusIncidenceGapResponseIntegrand z x
     ∂(squarefreeMobiusCriticalGapProbabilityMeasure sigma : Measure ℝ)
 
+/-- Passive response of the cofinal finite squarefree gap packet. -/
+def squarefreeMobiusCriticalTruncatedGapResponse
+    (sigma : ℝ) (hsigma : 1 < sigma) (N : ℕ) (z : ℂ) : ℂ :=
+  ∫ x : ℝ, mobiusIncidenceGapResponseIntegrand z x
+    ∂(squarefreeMobiusCriticalTruncatedGapProbabilityMeasure sigma hsigma N : Measure ℝ)
+
 /-- Universal response as the weak limit of the critical squarefree incidence laws. -/
 def mobiusCriticalExponentialGapResponse (z : ℂ) : ℂ :=
   ∫ x : ℝ, mobiusIncidenceGapResponseIntegrand z x
     ∂(mobiusCriticalExponentialGapProbabilityMeasure : Measure ℝ)
+
+/-- Cofinal finite-packet convergence of the squarefree response at every fixed
+`sigma > 1`. -/
+theorem tendsto_squarefreeMobiusCriticalTruncatedGapResponse
+    {sigma : ℝ} (hsigma : 1 < sigma) {z : ℂ} (hz : z.im ≠ 0) :
+    Tendsto
+      (fun N : ℕ => squarefreeMobiusCriticalTruncatedGapResponse sigma hsigma N z)
+      atTop (nhds (squarefreeMobiusCriticalGapResponse sigma z)) := by
+  have h :=
+    (ProbabilityMeasure.tendsto_iff_forall_integral_rclike_tendsto ℂ).mp
+      (tendsto_squarefreeMobiusCriticalTruncatedGapProbabilityMeasure hsigma)
+      (mobiusIncidenceGapResponseBCF z hz)
+  simpa [squarefreeMobiusCriticalTruncatedGapResponse,
+    squarefreeMobiusCriticalGapResponse,
+    mobiusIncidenceGapResponseBCF] using h
 
 /-- The weak-limit response is exactly the folded four-unit universal gap response. -/
 theorem mobiusCriticalExponentialGapResponse_eq_universal

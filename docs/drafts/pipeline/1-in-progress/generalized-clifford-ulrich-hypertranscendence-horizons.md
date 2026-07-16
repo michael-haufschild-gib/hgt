@@ -70,18 +70,25 @@ Then `mu_HT(F)` is exactly the least internal width of a shift-separable exact
 hypertranscendence-horizon realization.  This is not the free-tail state count: infinite grade
 depth remains mandatory, but transverse matter width is finite and intrinsic.
 
-The principal-symbol theorem needed for publication has three layers:
+The principal-symbol theorem needed for publication has four layers:
 
 1. `(1)` is equivalent to the polarized degree-`d` Roby relations among the coefficient
    operators of `A`;
 2. the shift suspension has exact horizon `Z(F)`;
-3. the kernel and image of the commutator symbol
-   `B_A : exterior^2 V -> End_K(M)` are invariants of the Clifford representation and constrain
-   the first Spencer prolongation of the horizon.
+3. the differential-field commutator map factors exactly as
+
+   ```text
+   exterior^2 V --B_A--> End_K(M) --double shift--> End_K(N -> M)
+                  --faithful observable lift--> Der_K(L),
+   ```
+
+   so its kernel is exactly `ker B_A`;
+4. `ker B_A` constrains the first Spencer prolongation of the horizon.
 
 Layer 2, including the rational differential-field lift and the escaping-chord commutator theorem,
-is Lean-proven.  Layer 1 is classical algebra but its universal-property formulation remains to be
-formalized.  Layer 3 is the new noncommutative geometry and remains open in general.
+is Lean-proven.  Layer 3 has a complete paper proof and its Lean module is in verification.  Layer
+1 is classical algebra but its universal-property formulation remains to be formalized.  The
+representation-theoretic and geometric classification of the kernels in Layer 4 remains open.
 
 ## 3. Ulrich existence changes the scale of the result
 
@@ -94,8 +101,8 @@ Ulrich bundles on the cyclic cover
 X_F : w^d = F(c).
 ```
 
-Together with the existence of Ulrich bundles on smooth hypersurfaces, the shift-suspension
-theorem predicts:
+The 2024 existence theorem for Ulrich bundles on every smooth cyclic covering of projective space
+applies directly to the covers `X_F`.  Together with shift suspension it predicts:
 
 > Every smooth projective hypersurface is the exact hypertranscendence horizon of a finite-width
 > pretemporal law system.
@@ -125,6 +132,18 @@ The moduli of Clifford representations is consequently a many-worlds space over 
 horizon: each point has the same scalar equation `F=0`, but potentially different incompatibility
 channels.  In the Ulrich correspondence these worlds are vector bundles on `X_F`, so the proposed
 quantum sector is geometric rather than metaphorical.
+
+This gives a second width invariant, distinct from `mu_HT(F)`:
+
+```text
+nu_HT(F) = min { dim M : M is a finite-dimensional C_F-module
+                         and B_M : exterior^2 V -> End(M) is injective }.
+```
+
+The general principal-symbol kernel theorem identifies `nu_HT(F)` exactly with the least internal
+width of a shift-separable exact horizon that retains every pairwise incompatibility channel.  The
+value is infinite precisely when finite-dimensional Clifford representations fail to separate the
+canonical bivector sector.
 
 This is not yet physical QFT.  A star structure, positivity, Hilbert completion, domains, a state,
 and locality are extra constraints.  For real hyperbolic `F`, star representations of the
@@ -208,7 +227,8 @@ The theorem fails the significance gate unless all of the following are delivere
 
 1. [DONE] an unconditional Lean proof of the shift-suspension exact-horizon theorem;
 2. a precise equivalence theorem defining the realization category in `(4)`;
-3. at least one nonquadratic example with certified finite width and nontrivial commutator symbol;
+3. [IN PROGRESS] at least one nonquadratic example with certified finite width and injective
+   commutator symbol;
 4. a theorem relating commutator rank or Spencer obstruction to geometric data of the associated
    Ulrich bundle;
 5. a literature audit by theorem statement, not keyword absence.
@@ -232,7 +252,8 @@ so this is not an RH implication.
 3. Prove exact linear independence off `F=0` and a length-`d` recurrence on `F=0`.
 4. Lift the state action to symmetric-algebra derivations and prove `(3)`.
 5. Lift to a fraction field so the final object is a differential field.
-6. Formalize the Roby universal property and the equivalence `(4)`.
-7. Formalize the coefficient commutator symbol and its Spencer compatibility.
-8. Formalize the positive-Hilbert obstruction `(7)`--`(8)`.
-9. Only after the parent geometry is formalized, promote the all-smooth-hypersurfaces corollary.
+6. Verify and axiom-audit the general principal-symbol kernel theorem.
+7. Formalize the Roby universal property and the equivalence `(4)`.
+8. Formalize the coefficient commutator symbol and its Spencer compatibility.
+9. Formalize the positive-Hilbert obstruction `(7)`--`(8)`.
+10. Only after the parent geometry is formalized, promote the all-smooth-hypersurfaces corollary.

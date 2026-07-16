@@ -8,6 +8,7 @@
 - **Parents:**
   - `../2-fully-proven/new_scientific_knowledge/hypertranscendental-hochster-source-coherence-duality.md`
   - `hypertranscendental-constraint-hodge-duality.md`
+  - `hypertranscendental-polarization-transport-spectrum.md`
   - `pointed-polarized-constraint-coupling-correspondence.md`
   - `../3-formalized/hypertranscendental-minimal-polarized-critical-completion-architecture.md`
 
@@ -30,7 +31,7 @@ X       finite or pro-finite reduced source-constraint spectrum;
 B       constructible derived boundary sheaf on X;
 A       active representations of structural lattices on noncompact carrier quotients;
 mu      affine pointing / source normalization;
-P       self-duality and signed Hermitian polarization;
+P       self-duality and homotopy-coherent Hermitian polarization transport;
 G       critical growth bornology on the full source-by-observable scale cone;
 beta    comparison, continuation, and descent realization of B in analytic charts.
 ```
@@ -47,6 +48,13 @@ unbounded aggregate capacity but no single observable of infinite capacity.  The
 layer is independent: every finite sign index occurs with the same field, topology, and derived
 boundary.  The comparison layer is independent: identical local objects may fail to glue or may
 glue noncanonically.
+
+Two exact laws sharpen these independence statements.  First, the boundary-wedge family has
+`htDim=2` and every projective source-coherence depth `m>=3`; hence neither `B` nor its polarization
+descent can be uniformly Postnikov-truncated by analytic dimension.  Second, in the rank-one
+boundary-wedge seed, imposing nondegenerate edge transport collapses the local sign product to one
+sign per connected component.  Thus `P` cannot be a stalkwise sign decoration: it must be a
+homotopy-coherent transport object coupled to `B`, `A`, and `beta`.
 
 ## The Fields-scale conjecture
 
@@ -122,7 +130,8 @@ arbitrary constraint X   -> the induced-subcomplex Hochster profile (1).
 
 The Postnikov tower is a filtration of `B`, not the fundamental object.  Different obstruction
 chains can land in different homotopy sheaves or different realizations without being forced into
-one scalar group.
+one scalar group.  This remains true on a fixed intrinsic analytic-dimension stratum: the exact
+boundary-wedge sources have `htDim=2` and unbounded source-coherence projective dimension.
 
 ## Unified-obstruction conjecture
 
@@ -202,11 +211,13 @@ categories.  Merely placing known HT equations in these parent languages fails t
    exactly failure of active concentration in this sheaf model.
 4. Construct one polarized analytic realization for two sources with the same `B` but different
    orientations, and prove the polarization separates them.
-5. Treat a genuinely nonlinear nonabelian source whose boundary sheaf is not truncated at degree
+5. Construct the polarization-transport homotopy limit for the facet-sewn class and prove that it
+   specializes to the Lean boundary-wedge component law.
+6. Treat a genuinely nonlinear nonabelian source whose boundary sheaf is not truncated at degree
    one.
-6. Prove full faithfulness for the smallest class containing the Barnes/multiple-sine and generic
+7. Prove full faithfulness for the smallest class containing the Barnes/multiple-sine and generic
    multiple-elliptic-gamma hierarchies.
-7. Prove two independently constructed realization functors jointly conservative on that class.
+8. Prove two independently constructed realization functors jointly conservative on that class.
 
 ## Anti-theatre gate
 
@@ -234,6 +245,8 @@ source class under attack.
 - [x] arbitrary topology--orientation independence proved from formalized parents
 - [x] active compact-shadow nonattainment theorem available
 - [x] fixed-degree gerbe proposal falsified
+- [x] fixed `htDim=2` shown to support unbounded source-coherence depth
+- [x] first restriction-compatible polarization-transport collapse proved in Lean
 - [ ] construct the functorial derived boundary sheaf `B`
 - [ ] prove Morita invariance
 - [ ] construct one active polarized analytic realization

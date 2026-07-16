@@ -8,7 +8,8 @@ amplitude only if their unique maximizing phases agree.  Distinct phases therefo
 uniform strict gap on the unit circle.
 -/
 
-open Complex
+open Complex MeasureTheory
+open scoped Interval Real
 
 namespace RHTower
 
@@ -98,7 +99,7 @@ theorem exists_uniform_reflectedBernsteinProduct_gap_of_phase_ne
     (huB : ‖u‖ + ‖1 - u‖ = B)
     (hvB : ‖v‖ + ‖1 - v‖ = B)
     (hphase : bernsteinEllipsePhase u ≠ bernsteinEllipsePhase v) :
-    ∃ gamma : ℝ, gamma < B ^ 2 ∧
+    ∃ gamma : ℝ, 0 ≤ gamma ∧ gamma < B ^ 2 ∧
       ∀ w : ℂ, ‖w‖ = 1 → ‖reflectedBernsteinProduct u v w‖ ≤ gamma := by
   let g : ℂ → ℝ := fun w => ‖reflectedBernsteinProduct u v w‖
   have hg : Continuous g := by
@@ -109,11 +110,43 @@ theorem exists_uniform_reflectedBernsteinProduct_gap_of_phase_ne
     hne hg.continuousOn
   have hw0norm : ‖w0‖ = 1 := by
     simpa only [Metric.mem_sphere, dist_zero_right] using hw0
-  refine ⟨g w0,
+  refine ⟨g w0, norm_nonneg _,
     norm_reflectedBernsteinProduct_lt_sq_of_phase_ne
       huim hvim huB hvB hphase hw0norm, ?_⟩
   intro w hw
   exact hmax (by simpa only [Metric.mem_sphere, dist_zero_right] using hw)
+
+/-- The normalized circle coefficient of the `n`-th reflected Bernstein cross power. -/
+def reflectedBernsteinCrossMoment (u v : ℂ) (n : ℕ) : ℂ :=
+  ((2 * Real.pi : ℝ) : ℂ)⁻¹ *
+    ∫ theta in (0 : ℝ)..2 * Real.pi,
+      reflectedBernsteinProduct u v (circleMap 0 1 theta) ^ n
+
+/-- A uniform circle bound passes unchanged to the normalized cross moment. -/
+theorem norm_reflectedBernsteinCrossMoment_le_pow
+    {u v : ℂ} {gamma : ℝ}
+    (hgap : ∀ w : ℂ, ‖w‖ = 1 →
+      ‖reflectedBernsteinProduct u v w‖ ≤ gamma) (n : ℕ) :
+    ‖reflectedBernsteinCrossMoment u v n‖ ≤ gamma ^ n := by
+  have hpoint : ∀ theta ∈ Set.uIoc (0 : ℝ) (2 * Real.pi),
+      ‖reflectedBernsteinProduct u v (circleMap 0 1 theta) ^ n‖ ≤ gamma ^ n := by
+    intro theta _
+    rw [norm_pow]
+    exact pow_le_pow_left₀ (norm_nonneg _)
+      (hgap _ (by rw [norm_circleMap_zero (1 : ℝ) theta]; norm_num)) n
+  have hint := intervalIntegral.norm_integral_le_of_norm_le_const hpoint
+  rw [reflectedBernsteinCrossMoment, norm_mul]
+  calc
+    ‖(((2 * Real.pi : ℝ) : ℂ)⁻¹)‖ *
+          ‖∫ theta in (0 : ℝ)..2 * Real.pi,
+            reflectedBernsteinProduct u v (circleMap 0 1 theta) ^ n‖
+        ≤ ‖(((2 * Real.pi : ℝ) : ℂ)⁻¹)‖ *
+            (gamma ^ n * |2 * Real.pi - 0|) := by gcongr
+    _ = gamma ^ n := by
+      rw [norm_inv, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_pos (by positivity : (0 : ℝ) < 2 * Real.pi), sub_zero,
+        abs_of_pos (by positivity : (0 : ℝ) < 2 * Real.pi)]
+      field_simp [Real.pi_ne_zero]
 
 end
 

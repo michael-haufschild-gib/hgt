@@ -64,14 +64,13 @@ theorem sum_finiteIncidenceProbability
 theorem exp_neg_inverseTemperature_mul_energy
     {α : Type*} {sigma epsilon : ℝ} (hsigma : 0 < sigma)
     (hepsilon : 0 < epsilon) {d : α → ℕ} (hd : ∀ i, 0 < d i) (i : α) :
-    Real.exp (-(finiteIncidenceInverseTemperature sigma epsilon *
-      finiteIncidenceEnergy epsilon d i)) =
+    Real.exp (-finiteIncidenceInverseTemperature sigma epsilon *
+      finiteIncidenceEnergy epsilon d i) =
       (d i : ℝ) ^ (-sigma) := by
   rw [Real.rpow_def_of_pos (by exact_mod_cast hd i)]
   unfold finiteIncidenceInverseTemperature finiteIncidenceEnergy
   congr 1
   field_simp [ne_of_gt hepsilon]
-  ring
 
 theorem finiteGibbsPartition_incidence
     {α : Type*} [Fintype α]
@@ -110,21 +109,24 @@ theorem finiteIncidenceProbability_ne
   have hpow : (d a : ℝ) ^ (-sigma) ≠ (d b : ℝ) ^ (-sigma) := by
     intro h
     have hcast : (d a : ℝ) = (d b : ℝ) :=
-      (Real.strictAntiOn_rpow_Ioi_of_exponent_neg (neg_neg_of_pos hsigma)).injective
-        (by exact_mod_cast hd a) (by exact_mod_cast hd b) h
+      (Real.strictAntiOn_rpow_Ioi_of_exponent_neg (neg_neg_of_pos hsigma)).injOn
+        (by change 0 < (d a : ℝ); exact_mod_cast hd a)
+        (by change 0 < (d b : ℝ); exact_mod_cast hd b) h
     exact hdab (by exact_mod_cast hcast)
   unfold finiteIncidenceProbability
-  exact (div_ne_div_iff_of_pos_right (finiteIncidencePartition_pos hd)).mpr hpow
+  intro hdiv
+  exact hpow ((div_left_inj' (ne_of_gt (finiteIncidencePartition_pos hd))).mp hdiv)
 
 def finiteIncidenceKMSAmplitude
     {α : Type*} [Fintype α]
-    (sigma epsilon : ℝ) (d : α → ℕ) (a b : α) : ℂ :=
-  if a = b then 0 else
-    Real.sqrt
-      (4 * epsilon * finiteIncidenceProbability sigma d a *
-          finiteIncidenceProbability sigma d b /
-        (sigma * |finiteIncidenceProbability sigma d b -
-          finiteIncidenceProbability sigma d a|))
+    (sigma epsilon : ℝ) (d : α → ℕ) (a b : α) : ℂ := by
+  classical
+  exact if a = b then 0 else
+      Real.sqrt
+        (4 * epsilon * finiteIncidenceProbability sigma d a *
+            finiteIncidenceProbability sigma d b /
+          (sigma * |finiteIncidenceProbability sigma d b -
+            finiteIncidenceProbability sigma d a|))
 
 theorem finiteIncidenceKMSAmplitude_hermitian
     {α : Type*} [Fintype α]
@@ -136,6 +138,8 @@ theorem finiteIncidenceKMSAmplitude_hermitian
     simp [finiteIncidenceKMSAmplitude]
   · simp [finiteIncidenceKMSAmplitude, hab, Ne.symm hab, abs_sub_comm,
       mul_comm, mul_left_comm]
+    congr 1
+    ring
 
 theorem finiteIncidenceKMSAmplitude_normSq
     {α : Type*} [Fintype α] [Nonempty α]
@@ -148,8 +152,14 @@ theorem finiteIncidenceKMSAmplitude_normSq
         (sigma * |finiteIncidenceProbability sigma d b -
           finiteIncidenceProbability sigma d a|) := by
   rw [finiteIncidenceKMSAmplitude, if_neg hab, Complex.normSq_ofReal,
-    Real.sq_sqrt]
-  positivity
+    ← pow_two]
+  apply Real.sq_sqrt
+  exact div_nonneg
+    (mul_nonneg
+      (mul_nonneg (mul_nonneg (by positivity) hepsilon.le)
+        (finiteIncidenceProbability_pos hd a).le)
+      (finiteIncidenceProbability_pos hd b).le)
+    (mul_nonneg hsigma.le (abs_nonneg _))
 
 theorem finiteIncidenceProbability_lt_iff
     {α : Type*} [Fintype α] [Nonempty α]
@@ -176,7 +186,6 @@ theorem mul_div_abs_eq_abs_of_neg_neg {x y : ℝ}
     x * y / |x| = |y| := by
   rw [abs_of_neg hx, abs_of_neg hy]
   field_simp [hx.ne]
-  ring
 
 theorem finiteIncidence_gap_mul_logGap_div_abs
     {α : Type*} [Fintype α] [Nonempty α]
@@ -195,14 +204,18 @@ theorem finiteIncidence_gap_mul_logGap_div_abs
         finiteIncidenceProbability sigma d a :=
       (finiteIncidenceProbability_lt_iff hsigma hd b a).2 hdalt
     have hlog : Real.log (d a) < Real.log (d b) :=
-      Real.strictMonoOn_log (by exact_mod_cast hd a) (by exact_mod_cast hd b)
+      Real.strictMonoOn_log
+        (by change 0 < (d a : ℝ); exact_mod_cast hd a)
+        (by change 0 < (d b : ℝ); exact_mod_cast hd b)
         (by exact_mod_cast hdalt)
     exact mul_div_abs_eq_abs_of_neg_neg (sub_neg.mpr hp) (sub_neg.mpr hlog)
   · have hp : finiteIncidenceProbability sigma d a <
         finiteIncidenceProbability sigma d b :=
       (finiteIncidenceProbability_lt_iff hsigma hd a b).2 hdbla
     have hlog : Real.log (d b) < Real.log (d a) :=
-      Real.strictMonoOn_log (by exact_mod_cast hd b) (by exact_mod_cast hd a)
+      Real.strictMonoOn_log
+        (by change 0 < (d b : ℝ); exact_mod_cast hd b)
+        (by change 0 < (d a : ℝ); exact_mod_cast hd a)
         (by exact_mod_cast hdbla)
     exact mul_div_abs_eq_abs_of_pos_pos (sub_pos.mpr hp) (sub_pos.mpr hlog)
 
@@ -211,7 +224,7 @@ theorem finiteKMSEntropyProductionTransitionIntensity_incidence
     {sigma epsilon : ℝ} (hsigma : 0 < sigma) (hepsilon : 0 < epsilon)
     {d : α → ℕ} (hd : ∀ i, 0 < d i) (hinj : Function.Injective d)
     (a b : α) :
-    GaloisForLFunctions.HTGeometry.finiteKMSEntropyProductionTransitionIntensity
+    _root_.GaloisForLFunctions.HTGeometry.finiteKMSEntropyProductionTransitionIntensity
         (finiteIncidenceInverseTemperature sigma epsilon)
         (finiteIncidenceEnergy epsilon d)
         (finiteIncidenceKMSAmplitude sigma epsilon d) a b =
@@ -220,12 +233,12 @@ theorem finiteKMSEntropyProductionTransitionIntensity_incidence
           |Real.log (d a) - Real.log (d b)| := by
   by_cases hab : a = b
   · subst b
-    simp [finiteIncidenceKMSAmplitude]
-  · rw [GaloisForLFunctions.HTGeometry.
-      finiteKMSEntropyProductionTransitionIntensity_eq_beta_mul_dissipative
+    rw [_root_.GaloisForLFunctions.HTGeometry.finiteKMSEntropyProductionTransitionIntensity_eq_beta_mul_dissipative
+      _ _ _ (finiteIncidenceKMSAmplitude_hermitian sigma epsilon d)]
+    simp [_root_.HTGeometry.finiteKMSDissipativeTransitionIntensity]
+  · rw [_root_.GaloisForLFunctions.HTGeometry.finiteKMSEntropyProductionTransitionIntensity_eq_beta_mul_dissipative
         _ _ _ (finiteIncidenceKMSAmplitude_hermitian sigma epsilon d),
-      _root_.HTGeometry.
-        finiteKMSDissipativeTransitionIntensity_eq_gap_mul_stateWeight_sub_mul_normSq,
+      _root_.HTGeometry.finiteKMSDissipativeTransitionIntensity_eq_gap_mul_stateWeight_sub_mul_normSq,
       finiteGibbsStateWeight_incidence hsigma hepsilon hd,
       finiteGibbsStateWeight_incidence hsigma hepsilon hd,
       finiteIncidenceKMSAmplitude_normSq hsigma hepsilon hd hinj hab]
@@ -249,7 +262,7 @@ theorem sum_finiteKMSEntropyProductionTransitionIntensity_incidence
     {sigma epsilon : ℝ} (hsigma : 0 < sigma) (hepsilon : 0 < epsilon)
     {d : α → ℕ} (hd : ∀ i, 0 < d i) (hinj : Function.Injective d) :
     (∑ a, ∑ b,
-      GaloisForLFunctions.HTGeometry.finiteKMSEntropyProductionTransitionIntensity
+      _root_.GaloisForLFunctions.HTGeometry.finiteKMSEntropyProductionTransitionIntensity
         (finiteIncidenceInverseTemperature sigma epsilon)
         (finiteIncidenceEnergy epsilon d)
         (finiteIncidenceKMSAmplitude sigma epsilon d) a b) =
@@ -269,7 +282,7 @@ def finiteIncidenceKMSResponse
     {α : Type*} [Fintype α]
     (sigma epsilon : ℝ) (d : α → ℕ) (z : ℂ) : ℂ :=
   _root_.HTGeometry.finiteTransitionPassiveResponse
-    (GaloisForLFunctions.HTGeometry.finiteKMSEntropyProductionTransitionIntensity
+    (_root_.GaloisForLFunctions.HTGeometry.finiteKMSEntropyProductionTransitionIntensity
       (finiteIncidenceInverseTemperature sigma epsilon)
       (finiteIncidenceEnergy epsilon d)
       (finiteIncidenceKMSAmplitude sigma epsilon d))
@@ -306,8 +319,7 @@ theorem finiteIncidenceKMSResponse_im_nonpos
     (finiteIncidenceKMSResponse sigma epsilon d z).im ≤ 0 := by
   unfold finiteIncidenceKMSResponse
   exact _root_.HTGeometry.finiteTransitionPassiveResponse_im_nonpos _ _
-    (GaloisForLFunctions.HTGeometry.
-      finiteKMSEntropyProductionTransitionIntensity_nonneg
+    (_root_.GaloisForLFunctions.HTGeometry.finiteKMSEntropyProductionTransitionIntensity_nonneg
         _ _ _ (finiteIncidenceKMSAmplitude_hermitian sigma epsilon d)) hz
 
 end

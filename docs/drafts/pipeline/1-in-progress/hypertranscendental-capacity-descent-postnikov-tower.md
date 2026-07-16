@@ -17,6 +17,8 @@ Three attacks now determine three distinct levels.
    family of sources realizes each palette: support plus activity is source-blind.
 3. A universal degree-two selection gerbe is false: the all-depth pair-face class has a complete
    degree-one additive sewing law.
+4. Intrinsic analytic dimension does not bound the tower: boundary-wedge sources have `htDim=2`
+   while their source-coherence projective dimension takes every value at least three.
 
 Therefore the unified object cannot live at one fixed cohomological degree.  Its obstruction degree
 must follow the categorical height of the local data.
@@ -100,8 +102,8 @@ coherence of those associators may require further stages.
 > 1. `pi_0` is the active capacity/stabilizer layer;
 > 2. the first linearized `k`-invariant is the additive sewing differential;
 > 3. the next `k`-invariant is the nonabelian comparison associator;
-> 4. polarization is a compatible reduction of the entire tower, not a scalar sign attached at the
->    end;
+> 4. polarization is a homotopy-coherent transport reduction of the entire tower, not a scalar
+>    sign attached at the end;
 > 5. the tower is effective exactly when it reconstructs one pointed analytic HT source;
 > 6. continuation, monodromy, positivity, spectral completeness, and boundary canonicity are
 >    conservative realization images of successive layers of this same tower.
@@ -171,6 +173,7 @@ Retire or revise the tower if:
 4. higher stages add no strict realizability restriction;
 5. effectivity fails to reconstruct a pointed analytic source;
 6. realization comparisons remain analogies.
+7. the tower is truncated using analytic dimension rather than a source-specific collapse law.
 
 Every no-go must identify the lowest missing stage or prove that the tower truncates positively for
 the source class under attack.
@@ -196,6 +199,8 @@ private-sector algebra; no analytic statement should enter as an axiom.
 - [x] fixed-degree gerbe conjecture falsified by pair-face data
 - [x] exact degree-one pair differential and cohomology statement proved on paper
 - [x] positive private cocycles identified
+- [x] no finite Postnikov-height bound follows from intrinsic HT dimension
+- [x] rank-one polarization transport shown to collapse local orientation chambers
 - [ ] formalize the functorial pair descent complex
 - [ ] prove permutation/deletion/refinement naturality
 - [ ] recover the terminal residue as augmentation
@@ -204,4 +209,3 @@ private-sector algebra; no analytic statement should enter as an axiom.
 - [ ] prove effectivity reconstructs one analytic source
 - [ ] construct two jointly conservative realization functors
 - [ ] complete literature and specialist novelty audit
-

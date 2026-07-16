@@ -53,7 +53,7 @@ theorem exists_one_lt_xiEndpointBernsteinAtomAmplitudeBase_of_not_rh
 theorem exists_uniformlySeparated_maximal_xiEndpointAmplitudePacket_of_not_rh
     (hRH : ¬ RiemannHypothesis) :
     ∃ D : Finset XiZeroCopy, ∃ B beta : ℝ,
-      1 < B ∧ beta < B ∧ D.Nonempty ∧
+      1 < B ∧ 1 < beta ∧ beta < B ∧ D.Nonempty ∧
         (∀ q ∈ D, xiEndpointBernsteinAtomAmplitudeBase q = B) ∧
         (∀ q ∉ D, xiEndpointBernsteinAtomAmplitudeBase q ≤ beta) := by
   let A : XiZeroCopy → ℝ := xiEndpointBernsteinAtomAmplitudeBase
@@ -70,9 +70,9 @@ theorem exists_uniformlySeparated_maximal_xiEndpointAmplitudePacket_of_not_rh
     dsimp only [a]
     rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (hAnonneg q)]
   have hq0a : 1 < ‖a q0‖ := by rw [hnorm]; exact hq0
-  obtain ⟨D, B, beta, hB, hbeta, hDne, hD, hDsub⟩ :=
+  obtain ⟨D, B, beta, hB, hbeta1, hbeta, hDne, hD, hDsub⟩ :=
     exists_finite_maximal_norm_packet_uniformly_separated a ha hq0a
-  refine ⟨D, B, beta, hB, hbeta, hDne, ?_, ?_⟩
+  refine ⟨D, B, beta, hB, hbeta1, hbeta, hDne, ?_, ?_⟩
   · intro q hq
     simpa only [hnorm] using hD q hq
   · intro q hq
@@ -144,7 +144,7 @@ theorem exists_uniform_mixedXiBernsteinProduct_gap_of_distinct_maximal_coordinat
     (hrB : xiEndpointBernsteinAtomAmplitudeBase r = B)
     (hcoord : xiEndpointNormalizedReciprocalSquare q ≠
       xiEndpointNormalizedReciprocalSquare r) :
-    ∃ gamma : ℝ, gamma < B ^ 2 ∧
+    ∃ gamma : ℝ, 0 ≤ gamma ∧ gamma < B ^ 2 ∧
       ∀ w : ℂ, ‖w‖ = 1 →
         ‖reflectedBernsteinProduct
           (xiEndpointNormalizedReciprocalSquare q)
@@ -160,6 +160,25 @@ theorem exists_uniform_mixedXiBernsteinProduct_gap_of_distinct_maximal_coordinat
   · simpa only [xiEndpointBernsteinAtomAmplitudeBase] using hrB
   · exact bernsteinEllipsePhase_ne_of_distinct_maximal_xiEndpointCoordinates
       hB hqB hrB hcoord
+
+/-- Distinct maximal Xi coordinates have exponentially subdominant normalized cross moments. -/
+theorem exists_uniform_mixedXiBernsteinCrossMoment_gap_of_distinct_maximal_coordinates
+    {q r : XiZeroCopy} {B : ℝ}
+    (hB : 1 < B)
+    (hqB : xiEndpointBernsteinAtomAmplitudeBase q = B)
+    (hrB : xiEndpointBernsteinAtomAmplitudeBase r = B)
+    (hcoord : xiEndpointNormalizedReciprocalSquare q ≠
+      xiEndpointNormalizedReciprocalSquare r) :
+    ∃ gamma : ℝ, 0 ≤ gamma ∧ gamma < B ^ 2 ∧
+      ∀ n : ℕ,
+        ‖reflectedBernsteinCrossMoment
+          (xiEndpointNormalizedReciprocalSquare q)
+          (xiEndpointNormalizedReciprocalSquare r) n‖ ≤ gamma ^ n := by
+  obtain ⟨gamma, hgamma0, hgamma, hpoint⟩ :=
+    exists_uniform_mixedXiBernsteinProduct_gap_of_distinct_maximal_coordinates
+      hB hqB hrB hcoord
+  exact ⟨gamma, hgamma0, hgamma,
+    norm_reflectedBernsteinCrossMoment_le_pow hpoint⟩
 
 end
 

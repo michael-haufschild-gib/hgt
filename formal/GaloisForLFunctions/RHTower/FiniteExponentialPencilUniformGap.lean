@@ -20,7 +20,7 @@ theorem exists_finite_maximal_norm_packet_uniformly_separated
     {ι : Type*} (b : ι → ℂ)
     (hb : Tendsto b cofinite (nhds 1)) {i0 : ι} (hi0 : 1 < ‖b i0‖) :
     ∃ D : Finset ι, ∃ r beta : ℝ,
-      1 < r ∧ beta < r ∧ D.Nonempty ∧
+      1 < r ∧ 1 < beta ∧ beta < r ∧ D.Nonempty ∧
         (∀ i ∈ D, ‖b i‖ = r) ∧ (∀ i ∉ D, ‖b i‖ ≤ beta) := by
   classical
   obtain ⟨D, r, hr, hDne, hD, hDsub⟩ :=
@@ -53,7 +53,8 @@ theorem exists_finite_maximal_norm_packet_uniformly_separated
     have hqnotD : q ∉ D := (Finset.mem_filter.mp hqT).2
     have hqr : ‖b q‖ < r := hDsub q hqnotD
     have hbetar : beta < r := max_lt har hqr
-    refine ⟨D, r, beta, hr, hbetar, hDne, hD, ?_⟩
+    have hbeta1 : 1 < beta := ha1.trans_le (le_max_left _ _)
+    refine ⟨D, r, beta, hr, hbeta1, hbetar, hDne, hD, ?_⟩
     intro i hiD
     by_cases hiS : i ∈ S
     · have hiT : i ∈ T := Finset.mem_filter.mpr ⟨hiS, hiD⟩
@@ -75,7 +76,7 @@ theorem exists_finite_maximal_norm_packet_uniformly_separated
         apply hiS
         simpa only [S, Set.Finite.mem_toFinset] using hai
       exact hia.le
-    exact ⟨D, r, a, hr, har, hDne, hD, hbound⟩
+    exact ⟨D, r, a, hr, ha1, har, hDne, hD, hbound⟩
 
 end
 
