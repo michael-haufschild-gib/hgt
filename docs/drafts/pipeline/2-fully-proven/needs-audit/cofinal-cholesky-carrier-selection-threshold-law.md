@@ -917,8 +917,15 @@ dim(global chart incidence) + (card(rows) - P - q + 1) <= card(rows) * n.
 ```
 
 Thus the paper's global incidence-ring dimension estimate is now unconditional Lean. Finite
-algebraic/Whitney stratification, projection control, and smooth parametric transversality remain
-unformalized.
+algebraic/Whitney stratification and proper projection control remain unformalized.
+
+`GaloisForLFunctions.HTGeometry.StratifiedParametricAvoidance` now proves the smooth
+finite-dimensional avoidance theorem unconditionally.  A local implicit-function chart bounds the
+Hausdorff dimension of the parameter projection by the derivative-kernel dimension; a Lindelof
+subcover globalizes that bound over each stratum, and the finite stratification plus
+`dense_compl_of_dimH_lt_finrank` gives dense compact-configuration avoidance.  The construction
+supplies a concrete theorem value of `ClassicalStratifiedParametricAvoidance`, so this interface is
+no longer an external obligation.
 
 `GaloisForLFunctions.HTGeometry.RieszBrothersRieszFischer` formalizes the Riesz--Fischer reduction
 in the graph-saturation proof. It transports the Fourier Hilbert basis from the additive circle to
@@ -956,7 +963,7 @@ real signed density measures, and complex density-measure differences. Finally,
 `FAndMRieszVanishing` proves the vanishing-half-line F. and M. Riesz conclusion for every finite
 circle measure, with no classical-interface hypothesis. Thus the Riesz-brothers graph-saturation
 input is now unconditional Lean. This closes the former Riesz analytic boundary; it does not close
-the separate Nevanlinna-family and finite-dimensional transversality boundaries of this card.
+the separate Nevanlinna-family and proper-projective-image/Whitney boundaries of this card.
 
 The unconditional modules `GaloisForLFunctions.HTGeometry.AtomlessProbabilityLaws` and
 `CircleAtomlessProbabilityLaws` formalize the first half of the paper's residual
@@ -1042,8 +1049,8 @@ bound is converted to a finite real-codimension stratification of the literal pr
 defect through the general classical proper-projection/Whitney interface
 `ClassicalComplexProjectiveIncidenceGeometry`. The actual Nevanlinna row-evaluation family is
 smooth in operator norm; constrained pointwise surjectivity is promoted to one uniform finite
-probe on each compact shift patch; the general classical parametric-transversality interface then
-gives compact-patch density. Sigma-compact exhaustion and countable Baire intersection produce
+probe on each compact shift patch; the unconditional finite-dimensional stratified-avoidance
+theorem then gives compact-patch density. Sigma-compact exhaustion and countable Baire intersection produce
 one residual tangent locus simultaneously covering every finite differential pattern and every
 tuple of distinct complex shifts. The analytic bridge identifies the abstract evaluation packet
 with literal derivatives of the weighted-carrier Cauchy transform and promotes all finite pattern
@@ -1079,10 +1086,10 @@ graph saturation, frame escape, and coherent unitary construction are now uncond
 axiom-clean. `PureSingularCarrierTrichotomy` and `PureSingularCarrierUnitary` contain the downstream
 carrier deductions, and `FAndMRieszVanishing` discharges their former analytic input.
 The indeterminate-Hamburger Nevanlinna-family construction remains a source-faithful interface, not
-an unconditional theorem. The two general geometry inputs also remain packaged as
-proper-projective-image/Whitney stratification and smooth finite-dimensional parametric avoidance.
-All three must be constructed in Lean before this card can move to Stage 3 under the unconditional
-proof rule. Bernstein--Szegő finite-prefix reproduction is already unconditional through
+an unconditional theorem. The remaining general geometry input is the packaged
+proper-projective-image/Whitney stratification theorem. Both obligations must be constructed in
+Lean before this card can move to Stage 3 under the unconditional proof rule.
+Bernstein--Szegő finite-prefix reproduction is already unconditional through
 stable-terminal feedback reconstruction.
 
 ## Gates
@@ -1111,7 +1118,7 @@ stable-terminal feedback reconstruction.
 - [ ] exact primary-source match for every literature theorem interface
 - [ ] unconditional construction of the classical N-extremal Nevanlinna family
 - [ ] unconditional proper-projective-image / Whitney-stratification theorem
-- [ ] unconditional finite-dimensional stratified parametric-avoidance theorem
+- [x] unconditional finite-dimensional stratified parametric-avoidance theorem
 - [x] axiom-free Lean formalization of every original deduction in the relative paper capstone
 - [x] single-declaration weak-topology gluing of the global carrier-range residual phase
 

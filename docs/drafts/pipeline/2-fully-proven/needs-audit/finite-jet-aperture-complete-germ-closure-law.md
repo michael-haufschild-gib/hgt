@@ -315,10 +315,10 @@ a plausible 90 case, not a verified field-level score.
 The complete-germ closure `(11)`--`(13)`, finite Cauchy-jet controllability, positive Hilbert-cube
 aperture, Nevanlinna carrier bridge, and all project-specific Baire deductions are formalized.
 The remaining blockers are the construction of the classical analytic Nevanlinna family from an
-arbitrary indeterminate Hamburger sequence, the proper-projection/Whitney stratification theorem,
-and the finite-dimensional stratified parametric-avoidance theorem.  The current residual-HT
-capstone takes the last two as values of `ClassicalComplexProjectiveIncidenceGeometry` and
-`ClassicalStratifiedParametricAvoidance`; therefore it is not yet unconditional.
+arbitrary indeterminate Hamburger sequence and the proper-projection/Whitney stratification
+theorem.  `StratifiedParametricAvoidance` now constructs the formerly packaged
+`ClassicalStratifiedParametricAvoidance` value unconditionally; the residual-HT capstone is not yet
+unconditional because `ClassicalComplexProjectiveIncidenceGeometry` remains unresolved.
 
 ## Gates
 

@@ -155,6 +155,32 @@ topological realization; its formal/global unit defect is one symbol realization
 lift through `(6)` is one gerbe realization. Constructing `M_Gamma` and proving these universal
 identifications is the first theorem target.
 
+### The linear-register slice of `M_Gamma` is Lean-proven
+
+`formal/GaloisForLFunctions/HTGeometry/GammaClockCoronaConormal.lean` constructs the corona
+carrier of the Gamma-clock conormal in the linear category, unconditionally
+(axioms `[propext, Classical.choice, Quot.sound]` only):
+
+- `streamCoronaSource_adjoint`: the stream constraint `sigma = prepend_0 - id` is the exact
+  adjoint of the clock source `S h = h(.+1) - h` under the finite clock pairing — the object is
+  source-defined, not freely constructed;
+- `streamCoronaSource_injective`: **no exact conormal carrier exists** — the raw dual constraint
+  is injective;
+- `ker_streamCoronaConstraint` and `coronaClass_const_ne_zero`: modulo the ideal of finitely
+  observable covectors, the descended corona constraint has kernel **exactly one nonzero line**,
+  spanned by the class of the constant stream — the predicted rank-one `M_Gamma` appears as a
+  forced kernel, with the predicted rank;
+- `windowSupported_mem_eventuallyZeroStream`, `coronaClass_eq_zero_of_windowSupported`: every
+  finite clock window kills the class — the linear register of `(4)`;
+- `finiteBlind_realization_factors_uniquely`, `conormal_transport`: the corona quotient is the
+  universal finite-blind realization, and every intertwining realization transports the constant
+  stream into its shadow kernel — the linear skeleton of representability `(3)`.
+
+This slice proves the dichotomy `(4)` and the representability shape `(3)` at the 1-categorical
+linear level for the Gamma source.  The open core above this slice: the presentation
+2-category, invariance under change of presentation, the groupoid (not vector-space) anomaly
+functor, and the self-duality `(5)`.
+
 ## RH-chain speculation `[CONJECTURE; NOT AN RH RESULT]`
 
 A completed-zeta source would need to produce `M_zeta` from prime and archimedean constraints,
@@ -195,8 +221,12 @@ satisfying `(3)`--`(5)` for corona-pure HT sources, together with one proved fiv
 - [x] lifting-gerbe realization conjectured with five exact proof obligations
 - [ ] admissible source-presentation 2-category defined
 - [ ] finite-mobility localization defined without collapsing the source object
-- [ ] corona representability `(3)` proved for Gamma
-- [ ] nontriviality `(4)` proved categorically, not only by one realization
+- [x] corona representability `(3)` proved for Gamma in the linear register: the corona quotient
+  is the universal finite-blind realization and the conormal transports functorially
+  (`GammaClockCoronaConormal.lean`); the 2-categorical groupoid form remains open
+- [x] nontriviality `(4)` proved in the linear register: no exact conormal carrier, every finite
+  window kills the class, the corona kernel is one nonzero line; the categorical
+  (realization-independent) form remains open
 - [ ] source-presentation invariance proved
 - [ ] coherent self-duality `(5)` constructed
 - [ ] two non-equivalent realizations of `M_Gamma` proved identical

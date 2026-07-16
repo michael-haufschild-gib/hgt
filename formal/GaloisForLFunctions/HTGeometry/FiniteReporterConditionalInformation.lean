@@ -153,7 +153,7 @@ theorem finiteDerivativeReporterGram_det_ne_zero_iff_forall_conditionalInformati
       let e : Fin (k + 1) → Fin N := fun i => ⟨i, by omega⟩
       apply hLI.comp e
       intro i j hij
-      exact Fin.ext (congrArg Fin.val hij)
+      exact Fin.ext (congrArg (fun x : Fin N => x.val) hij)
     have hprev : LinearIndependent ℂ (fun i : Fin k => w (i : ℕ)) := by
       exact hsmall.comp Fin.castSucc (Fin.castSucc_injective k)
     have hinnovation : gramSchmidt ℂ w k ≠ 0 :=
@@ -166,7 +166,7 @@ theorem finiteDerivativeReporterGram_det_ne_zero_iff_forall_conditionalInformati
     apply Matrix.det_gram_ne_zero_iff_linearIndependent.mpr
     change LinearIndependent ℂ (fun i : Fin N => w (i : ℕ))
     induction N with
-    | zero => exact linearIndependent_empty _ _
+    | zero => exact linearIndependent_empty_type
     | succ N ih =>
         have hprev : LinearIndependent ℂ (fun i : Fin N => w (i : ℕ)) :=
           ih (fun k hk => hall k (Nat.lt_succ_of_lt hk))
@@ -175,7 +175,7 @@ theorem finiteDerivativeReporterGram_det_ne_zero_iff_forall_conditionalInformati
         have hpos := hall N (Nat.lt_succ_self N)
         unfold finiteDerivativeReporterConditionalInformation
           finiteDerivativeReporterInnovation at hpos
-        exact norm_ne_zero_iff.mp (ne_of_gt (sq_pos_iff.mp hpos))
+        exact norm_ne_zero_iff.mp (sq_pos_iff.mp hpos)
 
 /-- Every finite-dimensional reporter has a derivative order at which its conditional
 information vanishes. -/

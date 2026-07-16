@@ -1,7 +1,7 @@
 # FE Reciprocal Folding Doubles Y-Multiplicity
 
 - **ID:** fe-reciprocal-folding-doubles-y-multiplicity
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** docs/consolidated/gpt/proof-route.md, reciprocal variable `y_rho=-(rho-1/2)^(-2)`
 - **Statement:** In the reciprocal variable `y=-w^{-2}`, the functional-equation pair `w` and `-w` folds to the same atom. Thus a nonzero zero orbit contributes even reciprocal multiplicity to each `y` atom; an off-line quartet contributes weight `2m` to each conjugate `y` atom.
@@ -14,7 +14,10 @@ Prevent proof-route experiments from testing inadmissible "simple" conjugate ato
 
 - [x] 0 -> 1 in-progress: well-posed, source-pure, attack idea
 - [x] 1 -> 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 -> 3 formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 -> 3 formalized: unconditional Lean theorems
+  `RHTower.xiReciprocalFold_pair`, `RHTower.xiReciprocalFold_quartet`,
+  `RHTower.xiReciprocalFold_quartet_weights`, and
+  `RHTower.xiReciprocalFold_criticalLine_pair`
 - [ ] 3 -> 4 publication-ready: standalone note if needed
 
 ## Proof

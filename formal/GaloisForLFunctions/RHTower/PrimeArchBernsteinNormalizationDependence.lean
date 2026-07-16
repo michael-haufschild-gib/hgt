@@ -149,9 +149,11 @@ theorem exists_largeScale_affineAmplitude_lt
     dsimp only [R]
     positivity
   have hcore : 2 * M < ε * R := by
-    dsimp only [R]
-    field_simp [hε.ne']
-    nlinarith
+    have heq : ε * R = 2 * M + ε := by
+      dsimp only [R]
+      field_simp [hε.ne']
+      ring
+    linarith
   refine ⟨R, hR, ?_⟩
   have hdiv : 2 * M / R < ε := (div_lt_iff₀ hR).2 hcore
   linarith

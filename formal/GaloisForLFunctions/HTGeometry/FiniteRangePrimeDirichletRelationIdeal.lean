@@ -19,7 +19,7 @@ noncomputable section
 set_option maxHeartbeats 300000
 set_option synthInstance.maxHeartbeats 60000
 
-local instance complexFinitePrimeRationalAmbientScalarTower :
+local instance complexFinitePrimeRationalAmbientScalarTowerRelationIdeal :
     IsScalarTower ℂ finitePrimeRationalCoefficientField
       arithmeticFunctionRationalCoordinateField :=
   .of_algebraMap_eq fun c => by
@@ -168,10 +168,10 @@ theorem PrimeCoefficientTailPivotPresentation.complete_relationIdeal
     GaloisForLFunctions.differentialRelationIdeal
         (C := finitePrimeRationalCoefficientField)
         (Sum.elim (P.pivotPalette alpha) (P.dependentPalette alpha)) =
-      differentialPivotRelationIdeal P.paletteMatrix P.baseCorrection := by
+      differentialPivotRelationIdeal P.paletteMatrix (P.baseCorrection alpha) := by
   apply differentialRelationIdeal_sumElim_eq_pivot
     (P.pivotPalette alpha) (P.dependentPalette alpha)
-    P.paletteMatrix P.baseCorrection
+    P.paletteMatrix (P.baseCorrection alpha)
   · exact P.pivotPalette_differentialIndependent alpha hdistinct
   · exact P.palette_affineJet alpha
 
@@ -191,7 +191,7 @@ theorem PrimeCoefficientTailPivotPresentation.differentialBasis
   · exact P.pivotPalette_differentialIndependent alpha hdistinct
   · exact differentialAdjoin_sumElim_eq_left_of_affineJets
       (P.pivotPalette alpha) (P.dependentPalette alpha)
-      P.paletteMatrix P.baseCorrection P.palette_affineJet
+      P.paletteMatrix (P.baseCorrection alpha) (P.palette_affineJet alpha)
 
 /-- The labelled differential basis has the exact rectangular rank `card(A) * card(B)`. -/
 theorem PrimeCoefficientTailPivotPresentation.differentialBasis_card

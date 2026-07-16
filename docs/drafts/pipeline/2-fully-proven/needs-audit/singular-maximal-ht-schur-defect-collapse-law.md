@@ -455,7 +455,7 @@ not proved.
 The circle-side double-boundary theorem is now unconditional: `FAndMRieszVanishing` proves the
 one-sided density theorem consumed by
 `HTGeometry.singularSchurDefect_doubleBoundary_of_rieszBrothers`. The real-line canonical Bauer
-simplex phase is still stated from the packaged Nevanlinna/transversality inputs in
+simplex phase is still stated from the packaged Nevanlinna/projective-stratification inputs in
 `ClassicalAnalyticNevanlinnaCarrierFamily.cofinalCholeskyResidualPhase_dense_gdelta_residual`, with
 the pointwise singular-continuous/maximal-translation conclusion supplied by
 `cofinalCholeskyResidualPhase_isSingularContinuous_maximalTranslation`.
@@ -505,7 +505,7 @@ Verification: direct leaf checks and targeted module builds passed; `#print axio
 - [ ] independent specialist proof audit
 - [ ] full primary-source priority audit
 - [x] unconditional Lean formalization of the circle double-boundary law
-- [ ] unconditional Nevanlinna-family and transversality construction for the residual real-line phase
+- [ ] unconditional Nevanlinna-family and projective-incidence stratification for the residual real-line phase
 
 ## Log
 

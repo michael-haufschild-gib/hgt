@@ -418,8 +418,9 @@ itself establish field-level novelty or significance.
 
 ## Lean status
 
-Formalized relative only to the classical Nevanlinna family and parent transversality inputs stated
-on the card. The exact support-label left inverse, moment-preserving boundary barycenter, closed
+Formalized relative to the classical Nevanlinna family and projective-incidence stratification
+inputs stated on the card; finite-dimensional stratified avoidance is now unconditional in
+`StratifiedParametricAvoidance`. The exact support-label left inverse, moment-preserving boundary barycenter, closed
 Bauer embedding, whole-fiber retraction, projective-coordinate covariance, genuine Mathlib Markov
 kernel, weak-Feller operator, idempotence, stationarity, invariant-set ergodicity, closed-face
 lattice, and infinite-face residual maximal-translation law are in:

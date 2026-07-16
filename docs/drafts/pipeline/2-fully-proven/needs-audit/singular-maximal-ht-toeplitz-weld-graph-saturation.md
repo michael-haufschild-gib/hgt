@@ -414,8 +414,10 @@ priority and specialist audits remain open.
 
 The pure-singular circle graph and coherent-unitary conclusions are now unconditional:
 `FAndMRieszVanishing` proves the one-sided density theorem, and `RieszSingularSzegoCollapse` derives
-the singular Szego limit internally. The residual real-line maximal-HT phase still consumes the
-packaged Nevanlinna-family and transversality inputs, so the complete card is not yet Stage 3.
+the singular Szego limit internally. The finite-dimensional stratified-avoidance theorem is now
+unconditional. The residual real-line maximal-HT phase still consumes the packaged
+Nevanlinna-family and projective-incidence stratification inputs, so the complete card is not yet
+Stage 3.
 
 The formal theorem surface is distributed as follows:
 
@@ -454,7 +456,7 @@ only `propext`, `Classical.choice`, and `Quot.sound`.
 - [ ] independent specialist proof audit
 - [ ] full primary-source priority audit
 - [x] unconditional Lean formalization of the circle graph-saturation and coherent-unitary laws
-- [ ] unconditional Nevanlinna-family and transversality construction for the residual real-line phase
+- [ ] unconditional Nevanlinna-family and projective-incidence stratification for the residual real-line phase
 
 ## Log
 

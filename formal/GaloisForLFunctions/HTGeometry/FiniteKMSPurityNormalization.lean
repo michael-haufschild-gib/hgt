@@ -46,7 +46,7 @@ theorem finiteGibbsPurity_eq_partitionRatio
   simp_rw [finiteGibbsStateWeight, div_pow]
   rw [← Finset.sum_div]
   congr 1
-  rw [finiteGibbsPartition, finiteGibbsPartition]
+  rw [finiteGibbsPartition]
   apply Finset.sum_congr rfl
   intro a ha
   rw [pow_two, ← Real.exp_add]
@@ -94,7 +94,7 @@ theorem one_div_card_le_finiteGibbsPurity
     (s := Finset.univ)
     (f := fun a : α => finiteGibbsStateWeight β energy a)
   rw [sum_finiteGibbsStateWeight_eq_one β energy] at h
-  simpa using h
+  simpa [mul_comm] using h
 
 /-- The KMS/Wightman half-density kernel has unit Frobenius mass. -/
 theorem sum_sq_finiteKMSWightmanWeight_eq_one
@@ -135,7 +135,7 @@ This is the coefficient form of the canonical-purification identity
 `1 - Tr (rho^2)`: the full thermofield projector has unit Frobenius mass, while its diagonal
 mass is the Gibbs purity. -/
 theorem sum_offDiagonal_sq_finiteKMSWightmanWeight_eq_one_sub_purity
-    {α : Type*} [Fintype α] [Nonempty α]
+    {α : Type*} [Fintype α] [Nonempty α] [DecidableEq α]
     (β : ℝ) (energy : α → ℝ) :
     (∑ a, ∑ b ∈ Finset.univ.erase a,
         finiteKMSWightmanWeight β energy a b ^ 2) =
@@ -152,6 +152,10 @@ theorem sum_offDiagonal_sq_finiteKMSWightmanWeight_eq_one_sub_purity
       (Finset.mem_univ a)
     have htotal := sum_sq_finiteKMSWightmanWeight_eq_stateWeight
       β energy a
+    change finiteKMSWightmanWeight β energy a a ^ 2 +
+      (∑ b ∈ Finset.univ.erase a,
+        finiteKMSWightmanWeight β energy a b ^ 2) =
+      ∑ b, finiteKMSWightmanWeight β energy a b ^ 2 at hsplit
     rw [finiteKMSWightmanWeight_self] at hsplit
     linarith
   simp_rw [hrow]
@@ -161,7 +165,7 @@ theorem sum_offDiagonal_sq_finiteKMSWightmanWeight_eq_one_sub_purity
 /-- The thermofield off-diagonal mass is nonnegative, so the linear-entropy value is
 nonnegative without a separate purity estimate. -/
 theorem zero_le_one_sub_finiteGibbsPurity_of_thermofield
-    {α : Type*} [Fintype α] [Nonempty α]
+    {α : Type*} [Fintype α] [Nonempty α] [DecidableEq α]
     (β : ℝ) (energy : α → ℝ) :
     0 ≤ 1 - finiteGibbsPurity β energy := by
   rw [← sum_offDiagonal_sq_finiteKMSWightmanWeight_eq_one_sub_purity
@@ -178,8 +182,8 @@ theorem finiteGibbsPartition_zero
 theorem finiteGibbsPurity_zero
     {α : Type*} [Fintype α] [Nonempty α] (energy : α → ℝ) :
     finiteGibbsPurity 0 energy = 1 / (Fintype.card α : ℝ) := by
-  rw [finiteGibbsPurity_eq_partitionRatio,
-    finiteGibbsPartition_zero, finiteGibbsPartition_zero]
+  rw [finiteGibbsPurity_eq_partitionRatio, mul_zero,
+    finiteGibbsPartition_zero]
   have hcard : (Fintype.card α : ℝ) ≠ 0 := by positivity
   field_simp
 
@@ -194,7 +198,7 @@ theorem finiteGibbsPartition_add_const
   rw [finiteGibbsPartition, finiteGibbsPartition]
   simp_rw [show ∀ a, -β * (energy a + c) = -β * c + -β * energy a by
     intro a; ring, Real.exp_add]
-  exact Finset.sum_mul.symm
+  rw [← Finset.mul_sum]
 
 /-- Normalized Gibbs probabilities do not depend on the chosen energy origin. -/
 theorem finiteGibbsStateWeight_add_const
@@ -367,16 +371,16 @@ theorem finiteGibbsPurity_tensor
       finiteGibbsPurity β energyA * finiteGibbsPurity β energyB := by
   rw [finiteGibbsPurity, Fintype.sum_prod_type]
   simp_rw [finiteGibbsStateWeight_tensor, mul_pow]
-  rw [Finset.sum_mul]
-  apply Finset.sum_congr rfl
-  intro a ha
-  rw [Finset.mul_sum]
+  simp_rw [← Finset.mul_sum]
+  rw [← Finset.sum_mul]
+  rw [finiteGibbsPurity, finiteGibbsPurity]
 
 /-- **Independent-system linear-entropy composition.**  Off-diagonal thermofield mass obeys
 the inclusion--exclusion law `L(A tensor B) = L(A) + L(B) - L(A) L(B)`.  This is the exact
 linear-entropy counterpart of multiplicativity of Gibbs purity. -/
 theorem sum_offDiagonal_sq_finiteKMSWightmanWeight_tensor
     {α γ : Type*} [Fintype α] [Fintype γ] [Nonempty α] [Nonempty γ]
+    [DecidableEq α] [DecidableEq γ]
     (β : ℝ) (energyA : α → ℝ) (energyB : γ → ℝ) :
     (∑ x, ∑ y ∈ Finset.univ.erase x,
         finiteKMSWightmanWeight β (finiteTensorEnergy energyA energyB) x y ^ 2) =

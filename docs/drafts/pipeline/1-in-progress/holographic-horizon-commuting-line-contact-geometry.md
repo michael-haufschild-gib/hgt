@@ -139,6 +139,19 @@ finite-dimensional law space and arbitrary field extension:
   family with commutator rank zero.  **Equality in `(9a)` is attained inside an abelian — hence
   finite-dimensional — Lie algebra.**
 
+The first genuinely noncommutative sharp value is also Lean-proven.
+`formal/GaloisForLFunctions/HTGeometry/HorizonContactSharpCrossing.lean` proves:
+
+- `horizonCommutatorIndex_crossingCone`: the crossing cone `{c | c_0 c_1 = 0}` in a
+  two-dimensional law space has `chi_HT = 1` — both axes lie on the horizon, they are
+  independent, and their superposition escapes, so no nonzero exterior subspace is contact-only;
+- `exists_crossingCone_horizon_sharp_commutator_rank`: the free-word realization has the crossing
+  cone as its exact one-observable horizon and commutator rank exactly `1 = chi_HT`.  A reducible
+  quadric horizon forces exactly one commutator channel — no more and no fewer.
+
+This proves equality in `(9a)` at both the abelian value `0` and the nonabelian value `1`, the
+first instances of the classification conjecture `(16)`.
+
 Terminal axiom audit: all of the above depend only on `[propext, Classical.choice, Quot.sound]`.
 The Ikeda incidence dimensions and the projective-dimension inequality behind `(9b)`–`(13)`
 remain external `[SEARCH]` inputs, used through the explicit secant-forcing hypothesis of the
@@ -413,11 +426,14 @@ supplies such a horizon or bracket map.
     `HorizonLinearContactInvariant.lean`.  Still open: internalize the projective-dimension
     inequality and the Ikeda incidence dimensions so that `(10)--(13)` become Lean theorems
     rather than hypothesis-interfaced consequences.
-12. [DONE for the abelian endpoint] Equality in `(9a)` is realizable inside a finite-dimensional
-    (abelian) Lie algebra: every character-kernel hyperplane horizon is exactly realized with
-    commutator rank zero (`universalWeightedShift_abelian_equality`).  Still open: a sharp
-    *nonzero*-rank realization — e.g. a Heisenberg-type rank-one realization of a two-hyperplane
-    horizon (`chi_HT = 1` in three law dimensions) — and the general classification `(16)`.
+12. [DONE for the endpoints 0 and 1] Equality in `(9a)` is realizable inside a
+    finite-dimensional (abelian) Lie algebra: every character-kernel hyperplane horizon is
+    exactly realized with commutator rank zero (`universalWeightedShift_abelian_equality`); and
+    the crossing cone is exactly realized with commutator rank one
+    (`exists_crossingCone_horizon_sharp_commutator_rank`), though the free-word realization's
+    generated Lie algebra is not shown finite-dimensional.  Still open: a rank-one realization
+    inside a finite-dimensional (Heisenberg) Lie algebra, sharp values above one, and the general
+    classification `(16)`.
 
 No rank theorem may infer injectivity merely from pointwise nonvanishing on a spanning set of
 decomposable tensors.

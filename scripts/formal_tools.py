@@ -29,6 +29,8 @@ OVERVIEW_MD = FORMAL / "LEAN_OVERVIEW.md"
 DECL_RE = re.compile(r"^\s*(theorem|lemma|def|structure|class|abbrev|inductive)\s+([\w'.]+)")
 DEBT_RE = re.compile(r"^\s*(sorry|admit)\b|^\s*(axiom|opaque)\s+[A-Za-z_]|^\s*unsafe\s+(def|theorem|axiom)\b")
 MARKER_RE = re.compile(r"\b(TODO|FIXME|OPEN|NEXT|Remaining|remaining|blocked|missing)\b")
+IMPORT_RE = re.compile(r"^\s*import\s+(.+?)\s*$")
+MODULE_NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)*$")
 
 THEOREM_AREAS = {
     "rh_tower": {
@@ -104,8 +106,8 @@ def lean_files() -> list[Path]:
     return sorted(SRC.rglob("*.lean"))
 
 
-def module_name(path: Path) -> str:
-    return ".".join(path.relative_to(FORMAL).with_suffix("").parts)
+def module_name(path: Path, *, formal: Path = FORMAL) -> str:
+    return ".".join(path.relative_to(formal).with_suffix("").parts)
 
 
 def read_lines(path: Path) -> list[str]:
@@ -137,6 +139,62 @@ def strip_lean_comments(lines: list[str]) -> list[str]:
             i += 1
         out.append("".join(kept))
     return out
+
+
+def imported_modules(path: Path) -> set[str]:
+    imports: set[str] = set()
+    for line in strip_lean_comments(read_lines(path)):
+        match = IMPORT_RE.match(line)
+        if not match:
+            continue
+        imports.update(
+            token for token in match.group(1).split() if MODULE_NAME_RE.fullmatch(token)
+        )
+    return imports
+
+
+def unreachable_owned_modules(
+    theorem_areas: dict[str, dict[str, object]] = THEOREM_AREAS,
+    *,
+    formal: Path = FORMAL,
+    src: Path = SRC,
+) -> dict[str, list[str]]:
+    paths = sorted(src.rglob("*.lean"))
+    root_module = formal / f"{src.name}.lean"
+    if root_module.exists():
+        paths.append(root_module)
+
+    module_paths = {module_name(path, formal=formal): path for path in paths}
+    import_graph = {name: imported_modules(path) for name, path in module_paths.items()}
+    unreachable: dict[str, list[str]] = {}
+
+    for area_name, info in theorem_areas.items():
+        umbrella = str(info["module"])
+        if umbrella not in module_paths:
+            continue
+
+        reachable: set[str] = set()
+        pending = [umbrella]
+        while pending:
+            current = pending.pop()
+            if current in reachable:
+                continue
+            reachable.add(current)
+            pending.extend(
+                imported
+                for imported in import_graph.get(current, set())
+                if imported in module_paths and imported not in reachable
+            )
+
+        area_path = Path(info["path"])
+        owned = {
+            module_name(path, formal=formal) for path in area_path.rglob("*.lean")
+        }
+        missing = sorted(owned - reachable)
+        if missing:
+            unreachable[area_name] = missing
+
+    return unreachable
 
 
 def doc_before(lines: list[str], index: int) -> str:
@@ -454,6 +512,13 @@ def lint(args: argparse.Namespace) -> int:
         module_path = FORMAL / Path(*info["module"].split(".")).with_suffix(".lean")
         if not module_path.exists():
             errors.append(f"missing theorem-area umbrella for {name}: {rel(module_path)}")
+
+    for name, modules in unreachable_owned_modules().items():
+        umbrella = THEOREM_AREAS[name]["module"]
+        for module in modules:
+            errors.append(
+                f"owned module unreachable from theorem-area umbrella {umbrella}: {module}"
+            )
 
     root_imports = (FORMAL / "GaloisForLFunctions.lean").read_text(encoding="utf-8")
     if "import GaloisForLFunctions.MainTheorems" not in root_imports:

@@ -819,15 +819,17 @@ The complete theorem surface is now formalized across
 `CofinalCholeskyResidualPhase.lean`.  These modules construct the exact complete-moment boundary
 simplex and retract, prove projective-label recovery and barycentric moment preservation, identify
 the actual translated Cauchy packets, and prove dense residual maximal full-complex translation
-freeness on every infinite closed boundary face.  The named classical Nevanlinna/transversality
-parents are explicit structure inputs, not Lean axioms.
+freeness on every infinite closed boundary face.  The parametric-avoidance parent is now
+constructed unconditionally in `StratifiedParametricAvoidance`; the named Nevanlinna and
+proper-projective-image/Whitney parents remain explicit structure inputs, not Lean axioms.
 
 Formalization audit (needs-audit pass): the concrete pointed-Xi gate check is confirmed formalized
 and axiom-clean (`RHTower.normalizedPrimeArchMomentGerm_allOrder_determinate`,
 `XiC_unique_entire_solution_of_pointedMomentConstraint` in `XiHedenmalmMomentDeterminacy.lean`). The
 abstract full-fiber theorem has no bounded self-contained kernel: aperiodicity `(4a)`,
-parameter-jet controllability `(10)`, and the full-configuration transversality all route through the
-absent Nevanlinna matrix / minimal-exponential-type Jensen bound / Whitney-transversality stack. The
+parameter-jet controllability `(10)`, and the incidence stratification all route through the
+absent Nevanlinna matrix / minimal-exponential-type Jensen bound / proper-projective-image and
+Whitney stack. The finite-dimensional stratified-avoidance step itself is now unconditional. The
 coordinate-free classical step — extreme points of a compact convex set are `G_δ`, `(29)`--`(30)` —
 was absent from mathlib and is now formalized axiom-clean as `HTGeometry.isGδ_extremePoints` in
 `formal/GaloisForLFunctions/HTGeometry/CompactConvexExtremeGdelta.lean` (real normed space, `K` compact convex;
@@ -903,7 +905,7 @@ transversality stack.
 - [x] jet-deficient selector necessity law
 - [x] concrete pointed Xi analytic-germ carrier classified on the rigid-selection side
 - [ ] specialist moment-problem and differential-algebra literature gates
-- [x] complete Lean theorem surface from explicit classical Nevanlinna/transversality inputs
+- [x] complete Lean theorem surface from explicit classical Nevanlinna/projective-stratification inputs
 
 ## Log
 
