@@ -76,13 +76,13 @@ monoid homomorphism into the secular algebra. -/
 def dilationChar (p : Nat.Primes) : Multiplicative PrimeExponents →* SecularAlgebra where
   toFun m := dilationWeight p m.toAdd • AddMonoidAlgebra.of ℂ PrimeExponents m
   map_one' := by
-    simp [dilationWeight_zero]
+    simp [dilationWeight_zero, AddMonoidAlgebra.one_def]
   map_mul' x y := by
     rw [toAdd_mul, dilationWeight_add, map_mul, smul_mul_assoc, mul_smul_comm, smul_smul]
 
 /-- The prime dilation as a `ℂ`-algebra endomorphism of the secular algebra. -/
 def dilation (p : Nat.Primes) : SecularAlgebra →ₐ[ℂ] SecularAlgebra :=
-  AddMonoidAlgebra.lift ℂ PrimeExponents SecularAlgebra (dilationChar p)
+  AddMonoidAlgebra.lift ℂ SecularAlgebra PrimeExponents (dilationChar p)
 
 /-- The wild generator on the prime-`p` lane: the exponent character `x_p`. -/
 def wildGenerator (p : Nat.Primes) : SecularAlgebra :=
@@ -94,7 +94,8 @@ def wildGeneratorInv (p : Nat.Primes) : SecularAlgebra :=
 
 theorem wildGenerator_mul_inv (p : Nat.Primes) :
     wildGenerator p * wildGeneratorInv p = 1 := by
-  rw [wildGenerator, wildGeneratorInv, ← map_mul]
+  unfold wildGenerator wildGeneratorInv
+  rw [← map_mul]
   have h : (Multiplicative.ofAdd (Finsupp.single p (1 : ℤ))) *
       (Multiplicative.ofAdd (Finsupp.single p (-1 : ℤ))) = 1 := by
     rw [← ofAdd_add, ← Finsupp.single_add]
@@ -104,9 +105,9 @@ theorem wildGenerator_mul_inv (p : Nat.Primes) :
 /-- The wild generator is a `p⁻¹`-eigenvector of the prime dilation. -/
 theorem dilation_wildGenerator (p : Nat.Primes) :
     dilation p (wildGenerator p) = (((p : ℕ) : ℂ))⁻¹ • wildGenerator p := by
-  rw [dilation, wildGenerator, AddMonoidAlgebra.lift_of]
-  simp [dilationChar, dilationWeight, wildGenerator, Finsupp.single_eq_same,
-    zpow_neg, zpow_one]
+  unfold dilation wildGenerator
+  rw [AddMonoidAlgebra.lift_of]
+  simp [dilationChar, dilationWeight, Finsupp.single_eq_same, zpow_neg, zpow_one]
 
 /-- An equivariant splitting of the secular weld: a `ℂ`-algebra retraction onto
 the scalar (tame) block — every `ℂ`-algebra map `𝒪 → ℂ` fixes the scalars, so
@@ -161,7 +162,8 @@ def gradingShift (t : ℚ) : Polynomial ℚ →ₐ[ℚ] Polynomial ℚ :=
 /-- The weight-`j` monomial is a `t^j`-eigenvector of the weight shift. -/
 theorem gradingShift_pow (t : ℚ) (j : ℕ) :
     gradingShift t (X ^ j) = t ^ j • (X ^ j : Polynomial ℚ) := by
-  rw [gradingShift, map_pow, aeval_X, mul_pow, ← map_pow C t j, ← smul_eq_C_mul]
+  unfold gradingShift
+  rw [map_pow, aeval_X, mul_pow, ← map_pow C t j, ← smul_eq_C_mul]
 
 /-- **Equivariant functionals are blind to positive weight**: a linear
 functional on the formal weight ring equivariant for the weight-two shift
@@ -188,7 +190,7 @@ theorem equivariant_functional_eq_constant_coeff
   · intro i _ hi
     rw [hmono i, equivariant_functional_kills_positive_weight φ hφ hi, mul_zero]
   · intro h0
-    rw [hmono 0, Polynomial.not_mem_support_iff.mp h0, zero_mul]
+    rw [hmono 0, Polynomial.notMem_support_iff.mp h0, zero_mul]
 
 end FormalWeightRing
 

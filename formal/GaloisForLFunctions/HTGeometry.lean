@@ -710,3 +710,4 @@ import GaloisForLFunctions.HTGeometry.SourceConormalProjectiveTopology
 import GaloisForLFunctions.HTGeometry.DepthOneJuliaDefect
 import GaloisForLFunctions.HTGeometry.ParabolicCrystallographicIndex
 import GaloisForLFunctions.HTGeometry.HankelGuardrailCounterexamples
+import GaloisForLFunctions.HTGeometry.SecularWeldRigidity

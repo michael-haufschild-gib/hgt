@@ -1,8 +1,9 @@
 # The completed squarefree fixed current has exactly the Xi anti-causal divisor
 
 - **ID:** `squarefree-fixed-current-right-half-ward-localization`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / ANTI-CAUSAL WARD LOCALIZATION
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper + Lean) / ANTI-CAUSAL WARD LOCALIZATION
+- **Lean:** `formal/GaloisForLFunctions/RHTower/SquarefreeFixedCurrentLocalization.lean`
 - **Scientific status:** `[PROVED HERE] [BRIDGE] [NOT A NOVELTY CLAIM] [NOT AN RH PROOF]`
 - **Parents:**
   - `../3-formalized/not_new_scientific_knowledge/mfree-telescope-right-half-divisor-localization.md`
@@ -205,6 +206,26 @@ squarefree HT geometry without changing the anti-causal divisor.
 
 The card does not prove `(9)`--`(10)` and therefore does not prove RH.
 
+## Formal surface
+
+Lean represents the strict-right divisor statement directly by equality of local meromorphic
+orders, rather than introducing an additional undefined `P_anti` operator.  The module proves:
+
+- `squarefreePartition_eq_zero_iff_riemannZeta_eq_zero`;
+- `squarefreePartition_meromorphicOrderAt_eq_riemannZeta`, preserving multiplicity away from the
+  Euler pole;
+- `neg_logDeriv_squarefreePartition_eq_squarefreeFixedCurrent`;
+- `analyticOnNhd_infinitePrimeFlux_two_mul_rightHalf`;
+- `completedXi_sub_completedSquarefree_eq_four_mul_infinitePrimeFlux_two`;
+- `deriv_squarefreeBoundaryOverlap_eq_neg_mul_fixedCurrent`;
+- `epsilon_mul_overlap_mul_fixedCurrent_eq_neg_deriv`;
+- `squarefreeFisherScore_eq_fixedCurrent_difference`.
+
+The cached leaf build
+`lake build +GaloisForLFunctions.RHTower.SquarefreeFixedCurrentLocalization` passes.  A separate
+`#print axioms` audit reports only `propext`, `Classical.choice`, and `Quot.sound` for every exported
+headline theorem above.
+
 ## Gates
 
 - [x] squarefree fixed current computed
@@ -213,6 +234,8 @@ The card does not prove `(9)`--`(10)` and therefore does not prove RH.
 - [x] Xi and squarefree anti-causal principal parts identified
 - [x] rational-gauge falsifier passed
 - [x] exact Fisher numerator/fixed-current quotient identity proved
+- [x] 2 → 3 formalized: strict-right zero set, divisor multiplicities, holomorphic correction,
+  completed-current comparison, and Fisher identities checked in Lean
 - [ ] prove completed affine-flux/Hardy block-curvature identity
 - [ ] prove source-selected graph divisibility and quotient control
 - [ ] prove causal Ward energy is nonnegative on the graph core

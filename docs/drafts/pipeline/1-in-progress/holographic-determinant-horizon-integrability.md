@@ -3,7 +3,9 @@
 - **ID:** `holographic-determinant-horizon-integrability`
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE / MATRIX PRINCIPAL SYMBOLS / JOINT HYPERTRANSCENDENCE
-- **Scientific status:** `[GENERAL DIFFERENTIAL HORIZON LEAN-FORMALIZED] [CONCRETE REALIZATION OPEN] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[GENERAL DIFFERENTIAL HORIZON LEAN-FORMALIZED]`
+  `[COMMUTATOR-CLOSURE FLATNESS LEAN-FORMALIZED] [UNIVERSAL MATRIX REALIZATION LEAN-FORMALIZED]`
+  `[ANALYTIC NAMED-FUNCTION REALIZATION OPEN] [NOVELTY UNVERIFIED]`
 - **Statement:** A flat finite-rank observable sector has either no hypertranscendental law
   direction or one intrinsic determinantal characteristic hypersurface. The infinite sequence of
   layer horizons cannot vary independently.
@@ -139,9 +141,29 @@ The actual differential theorem is unconditional in
   `matrixPrincipalLowerLaw_flat_differentialSpectrum_dichotomy` prove the exact flat holographic
   horizon theorem.
 
-The remaining realization problem is concrete rather than formal: exhibit a named function or
-field-observable family whose full jets satisfy `MatrixPrincipalLowerLaw`. That
-application-facing hypothesis cannot be advertised as physics until it is constructed.
+The realization problem is closed at the field-observable level.
+`formal/GaloisForLFunctions/HTGeometry/MatrixPrincipalSymbolUniversalMatrixField.lean` equips the
+free jet-grid fraction field with an arbitrary prescribed matrix-weighted shift
+`D u_(n,i) = sum_j (M_n)_(i,j) u_(n+1,j)` and proves unconditionally:
+
+- `universalMatrixShift_principalLowerLaw`: the complete jets of the 0-layer observables satisfy
+  `MatrixPrincipalLowerLaw` on the nose, with ordered symbol products as diagonal blocks;
+- `universalMatrixShift_derivationIndependentOver_iff`: the family is differentially independent
+  exactly when every prescribed matrix is invertible;
+- `universalMatrixShiftLaw_dependentSet_eq_characteristicSet`: every countable union of matrix
+  determinant loci — including irreducible nonlinear determinantal cones — is the exact
+  varying-derivation dependence spectrum of one concrete observable family;
+- `universalQuadric_dependentSet`, `quadricCone_not_submodule`,
+  `universalQuadric_noncommuting_witness`, `quadricConeSymbol_not_coefficientFlat`,
+  `universalQuadric_no_commutatorClosure`: the rank-3 quadric cone `A_0^2 = A_1 A_2` is realized
+  by a regular law-linear pencil whose derivations provably do not commute and whose law family
+  admits no commutator closure.  Nonlinear irreducible horizons force curvature; the flat class
+  boundary is exact, not hypothetical.
+
+The still-open application-facing move is an *analytic named-function* realization (a
+Gamma/polygamma- or QFT-localization-indexed family with formally proven joint differential
+independence).  That requires a formalized joint hypertranscendence theorem for named special
+functions and cannot be advertised as physics until constructed.
 
 `formal/GaloisForLFunctions/HTGeometry/MatrixPrincipalSymbolDerivationLawHorizon.lean` also proves
 the genuinely varying-law version: every point of law space selects its own derivation, and the
@@ -149,6 +171,30 @@ exact set of derivations for which the observable packet is differential-algebra
 is the determinant characteristic set. The coefficient-order flatness forced by composing
 derivation matrices is separated and related by transpose to the geometric-arrow convention in
 `MatrixPrincipalSymbolCoefficientFlatness.lean`.
+
+Flatness itself is now derived, not assumed.
+`formal/GaloisForLFunctions/HTGeometry/MatrixPrincipalSymbolCommutatorClosure.lean` proves,
+against an algebraically free rank-`r` grid with a strict-lower-layer matrix step law:
+
+- `matrixCoefficientPrincipalCurvature_eq_zero_of_commutatorClosure`: the two-layer coefficient of
+  a commutator of laws is exactly the matrix coefficient curvature, so closing the law family
+  under commutator inside the first-order filtered class forces the curvature to vanish;
+- `matrixCoefficientPrincipalSymbolFlat_of_commutatorClosure`: coefficient flatness is a
+  consequence of Lie closure;
+- `no_commutatorClosure_of_matrixCoefficientPrincipalCurvature_ne_zero`: one nonzero curvature
+  entry is an unconditional obstruction to any commutator closure;
+- `matrixPrincipalLowerLaw_of_filtrationStep`,
+  `filtrationStep_derivationIndependentOver_iff`,
+  `filtrationStep_dependentSet_eq_characteristicSet`: the one-step filtration law generates the
+  complete jet-packet lower law with ordered symbol products as diagonal blocks, so the exact
+  varying-law dependence spectrum of the 0-layer observables is the determinant characteristic
+  set of the one-step symbols;
+- `commutatorClosure_dependentSet_dichotomy`: **integrable holographic horizon** — a
+  commutator-closed finite-rank filtered law system has either no jointly independent direction
+  or an exact dependence spectrum equal to the single first-layer determinantal horizon.
+
+Terminal axiom audit: every theorem above depends only on
+`[propext, Classical.choice, Quot.sound]`.
 
 ## 4. Algebraic object
 
@@ -227,6 +273,12 @@ out independent scale-by-scale walls and identifies the only possible finite-ran
 - [x] formalize the exact varying-derivation spectrum rather than only parameterized functions
 - [x] separate coefficient curvature from geometric-arrow flatness and prove transpose equivalence
 - [x] formalize and classify the discrete-Lax spectral strengthening as bridge material
-- [ ] derive coefficient-curvature vanishing from higher-rank commutator closure
-- [ ] construct a concrete named function/QFT observable realization of the lower law
+- [x] derive coefficient-curvature vanishing from higher-rank commutator closure
+  (`MatrixPrincipalSymbolCommutatorClosure.lean`, unconditional, with the integrable-horizon
+  dichotomy capstone)
+- [x] construct a concrete field-observable realization of the lower law for arbitrary matrix
+  symbol towers (`MatrixPrincipalSymbolUniversalMatrixField.lean`, including the irreducible
+  quadric horizon with provably noncommuting realizing laws)
+- [ ] construct an analytic named-function realization (requires a formalized joint
+  hypertranscendence theorem for named special functions)
 - [x] targeted leaf build, formal lint, and terminal axiom audit

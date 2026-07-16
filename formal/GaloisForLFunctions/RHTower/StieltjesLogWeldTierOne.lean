@@ -72,21 +72,25 @@ theorem logPrime_rat_affine_relation_eq_zero (s : Finset Nat.Primes)
     q = 0 ∧ ∀ p ∈ s, β p = 0 := by
   classical
   set N : ℕ := q.den * ∏ p ∈ s, (β p).den with hNdef
-  have hNpos : 0 < N := Nat.mul_pos q.pos (Finset.prod_pos fun p _ => (β p).pos)
+  have hNpos : 0 < N := by
+    rw [hNdef]
+    exact mul_pos q.pos (Finset.prod_pos fun p _ => (β p).pos)
   have hmul : ∀ x : ℚ, x.den ∣ N → ∃ z : ℤ, x * (N : ℚ) = (z : ℚ) := by
     rintro x ⟨k, hk⟩
     refine ⟨x.num * k, ?_⟩
-    have hx : (x.num : ℚ) = x * (x.den : ℚ) := by
-      conv_lhs => rw [← Rat.num_div_den x]
-      have hden0 : ((x.den : ℚ)) ≠ 0 := by exact_mod_cast x.pos.ne'
-      field_simp
+    have hden0 : ((x.den : ℚ)) ≠ 0 := by exact_mod_cast x.pos.ne'
+    have hx : (x.num : ℚ) = x * (x.den : ℚ) := (div_eq_iff hden0).mp (Rat.num_div_den x)
     rw [hk]
     push_cast
     rw [hx]
     ring
-  have hdvd : ∀ p ∈ s, (β p).den ∣ N := fun p hp =>
-    Dvd.dvd.mul_left (Finset.dvd_prod_of_mem _ hp) q.den
-  have hqdvd : q.den ∣ N := dvd_mul_right _ _
+  have hdvd : ∀ p ∈ s, (β p).den ∣ N := by
+    intro p hp
+    rw [hNdef]
+    exact Dvd.dvd.mul_left (Finset.dvd_prod_of_mem _ hp) q.den
+  have hqdvd : q.den ∣ N := by
+    rw [hNdef]
+    exact dvd_mul_right _ _
   have hcast : ∀ p ∈ s, (((β p * (N : ℚ)).num : ℤ) : ℚ) = β p * (N : ℚ) := by
     intro p hp
     obtain ⟨z, hz⟩ := hmul (β p) (hdvd p hp)
@@ -127,17 +131,17 @@ theorem log_natCast_eq_sum_factorization (n : ℕ) (hn : n ≠ 0)
     (hS : ∀ p : Nat.Primes, n.factorization (p : ℕ) ≠ 0 → p ∈ S) :
     Real.log (n : ℝ)
       = ∑ p ∈ S, (n.factorization (p : ℕ) : ℝ) * Real.log ((p : ℕ) : ℝ) := by
-  have hsupp : n.factorization.support ⊆ S.image (fun p : Nat.Primes => (p : ℕ)) := by
+  have hsupp : n.factorization.support ⊆ S.image Subtype.val := by
     intro p' hp'
     have hprime : p'.Prime :=
       Nat.prime_of_mem_primeFactors (by rwa [← Nat.support_factorization])
     have hne : n.factorization p' ≠ 0 := Finsupp.mem_support_iff.mp hp'
     exact Finset.mem_image.mpr ⟨⟨p', hprime⟩, hS _ hne, rfl⟩
-  have hprodeq : (n : ℕ) = ∏ p' ∈ S.image (fun p : Nat.Primes => (p : ℕ)),
+  have hprodeq : (n : ℕ) = ∏ p' ∈ S.image Subtype.val,
       p' ^ n.factorization p' := by
     rw [← Finsupp.prod_of_support_subset _ hsupp _ (fun p _ => pow_zero p)]
     exact (Nat.prod_factorization_pow_eq_self hn).symm
-  have hcast : ((n : ℕ) : ℝ) = ∏ p' ∈ S.image (fun p : Nat.Primes => (p : ℕ)),
+  have hcast : ((n : ℕ) : ℝ) = ∏ p' ∈ S.image Subtype.val,
       ((p' : ℝ)) ^ n.factorization p' := by
     conv_lhs => rw [hprodeq]
     push_cast
@@ -175,7 +179,8 @@ theorem mem_friablePrimes {A : Finset ℕ} {p : Nat.Primes} {n : ℕ} (hn : n �
 
 theorem friableBeta_eq_zero_of_not_mem {A : Finset ℕ} {lam : ℕ → ℚ} {p : Nat.Primes}
     (hp : p ∉ friablePrimes A) : friableBeta A lam p = 0 := by
-  rw [friableBeta, neg_eq_zero]
+  unfold friableBeta
+  rw [neg_eq_zero]
   refine Finset.sum_eq_zero fun n hn => ?_
   have hv : n.factorization (p : ℕ) = 0 := by
     by_contra hv0
@@ -192,7 +197,7 @@ theorem friableC1_eq_sum_beta_log (A : Finset ℕ) (lam : ℕ → ℚ) (h0 : ∀
   have key : ∀ n ∈ A, Real.log (n : ℝ)
       = ∑ p ∈ S, (n.factorization (p : ℕ) : ℝ) * Real.log ((p : ℕ) : ℝ) :=
     fun n hn => log_natCast_eq_sum_factorization n (h0 n hn) S (hS n hn)
-  rw [friableC1]
+  unfold friableC1
   calc -∑ n ∈ A, (lam n : ℝ) * Real.log (n : ℝ) / (n : ℝ)
       = -∑ n ∈ A, ∑ p ∈ S,
           (lam n : ℝ) * ((n.factorization (p : ℕ) : ℝ) * Real.log ((p : ℕ) : ℝ)) / (n : ℝ) := by
@@ -207,7 +212,7 @@ theorem friableC1_eq_sum_beta_log (A : Finset ℕ) (lam : ℕ → ℚ) (h0 : ∀
         rw [← Finset.sum_neg_distrib]
     _ = ∑ p ∈ S, (friableBeta A lam p : ℝ) * Real.log ((p : ℕ) : ℝ) := by
         refine Finset.sum_congr rfl fun p _ => ?_
-        rw [friableBeta]
+        unfold friableBeta
         push_cast
         rw [neg_mul, Finset.sum_mul]
         congr 1
@@ -229,8 +234,7 @@ theorem friableC1_rat_iff_zero (A : Finset ℕ) (lam : ℕ → ℚ) (h0 : ∀ n 
     · exact friableBeta_eq_zero_of_not_mem hp
   · intro hβ
     refine ⟨0, ?_⟩
-    rw [hexp]
-    push_cast
+    rw [hexp, Rat.cast_zero]
     refine Finset.sum_eq_zero fun p _ => ?_
     rw [hβ p]
     norm_num
@@ -276,7 +280,7 @@ theorem tier1_no_isolation (A : Finset ℕ) (lam : ℕ → ℚ) (h0 : ∀ n ∈ 
   have h1 := hrep (fun _ => 0)
   have h2 := hrep δ
   rw [stieltjes_pairing_cauchy_j] at h1 h2
-  simp only [stieltjesA, mul_zero, zero_div, zero_mul, mul_one,
+  simp only [stieltjesA, mul_zero, zero_div,
     Finset.sum_const_zero, add_zero] at h1
   -- h1 : auxiliaryTaylorCoeff c N = q0
   have hsum : ∑ j ∈ Finset.range N, auxiliaryTaylorCoeff c j * stieltjesA δ (N - j - 1)
@@ -298,7 +302,7 @@ theorem tier1_no_isolation (A : Finset ℕ) (lam : ℕ → ℚ) (h0 : ∀ n ∈ 
   have hrhs : ∑ k ∈ Finset.range N, (qc k : ℂ) * δ k = (qc (N - 2) : ℂ) := by
     rw [Finset.sum_eq_single (N - 2)]
     · simp only [hδ]
-      rw [if_pos rfl, mul_one]
+      rw [if_true, mul_one]
     · intro k _ hkne
       simp only [hδ]
       rw [if_neg hkne, mul_zero]

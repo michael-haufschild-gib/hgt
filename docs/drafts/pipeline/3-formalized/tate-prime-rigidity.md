@@ -1,7 +1,7 @@
 # Tate–prime rigidity — the secular weld is the non-split K-extension (G12)
 
 - **ID:** tate-prime-rigidity
-- **Stage:** 0-backlog-lean
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper, structural). This ticket claims ONLY the proven backbone
   (§1 decomposition given #11, §2 operational definition, §3 rigidity in the two instances +
   D2-unification). The apex — the general independence / maximal non-splitting — is **not part
@@ -90,8 +90,31 @@ and gives the operational meaning; the general independence is a cross-reference
   weld" given operational meaning (§2: non-split K-extension); Door sketched.
 - [x] 1 → 2  fully-proven (backbone): §1 decomposition (given #11), §2 operational meaning, §3 the
   rigidity proven in the #117/#124 instances + the D2-unification. Grade BRIDGE (substrate).
-- [ ] 2 → 3  formalized — the non-splitting instances ride on #117/#124's Lean anchors; the general class is
-  apex.
+- [x] 2 → 3  formalized (2026-07-16) — the card's own claim surface is in Lean, **unconditional**
+  (baseline axioms `[propext, Classical.choice, Quot.sound]`, no `sorry`), and no longer merely
+  "rides on" the parents' partial anchors:
+  - `formal/GaloisForLFunctions/HTGeometry/SecularWeldRigidity.lean` —
+    `equivariant_linear_kills_scaled` (the one mechanism: an equivariant linear map kills every
+    eigenvector of weight `a ≠ 1`); `SecularWeld.dilation` (the prime dilation as a genuine
+    `ℂ`-algebra endomorphism of `𝒪 = ℂ[⊕_p ℤ]`), `SecularWeld.no_equivariant_dilation_retraction`
+    and `SecularWeld.secularWeld_nonSplit` (**the full #117 face**: no `σ_p`-equivariant
+    `ℂ`-algebra retraction `𝒪 → ℂ`, upgrading the earlier fixed-point-only anchor);
+    `FormalWeightRing.equivariant_functional_kills_positive_weight`,
+    `FormalWeightRing.equivariant_functional_eq_constant_coeff` (the formal §1/§2 face: an
+    equivariant extraction sees only the weight-zero/tame block — it IS the tame projection).
+  - `formal/GaloisForLFunctions/RHTower/StieltjesLogWeldTierOne.lean` —
+    `logPrime_int_affine_relation_eq_zero`, `logPrime_rat_affine_relation_eq_zero`
+    (`ℚ + Σ ℚ·log p` meets `ℚ` only trivially; mechanism = in-tree `exp_int_irrational`, Hermite,
+    unconditional — no Baker needed at this tier); `friableC1_eq_sum_beta_log` (the card's
+    `tier1_c1_in_logspan`), `friableC1_rat_iff_zero`, `friableC1_eq_zero_iff`,
+    `friableC1_irrational_of_ne_zero`, and `tier1_no_isolation` (**the full #124 Tier-1 face**:
+    `[H]_N` a rational affine form in the Stieltjes coordinates ⟹ the weight-one datum vanishes),
+    welded to the existing `stieltjes_pairing_cauchy_j` anchor.
+  - **Import caveat (§1):** the arithmetic instantiation `𝒫_𝒵 = ℚ(π, {ζ(2j+1)}, {γ_n})` is the
+    parent theorem #11 (paper) and is carried as a cross-reference, per the triage rule that
+    parent imports are not re-proven at the Lean stage; the *structural* content of §1 as used by
+    this card (tame = weight-zero block, wild = nontrivial-weight lanes, extraction sees only
+    tame) is the `FormalWeightRing` face above. The apex is delegated (§4), not formalized.
 - [ ] 3 → 4  publication-ready — folds into the DSS-cross / seam exposition as the secular-weld face.
 
 ## Cross-references
@@ -129,3 +152,20 @@ Done, in place: the ticket's **Type is now THEOREM only** (header), covering exa
 `baker-for-stieltjes.md`) and §4 is demoted from co-claimed CONJECTURE to a cross-reference.
 No new ticket was needed — the apex already has its own cards. The paper theorem was not narrowed:
 §1–§3 are word-for-word the content DeWitt banked on 2026-06-19.
+- 2026-07-16 (Fable) — resolved the Leaner return by the in-place split (Type = THEOREM only, apex
+  delegated to `bigraded-corank-dss-cross`/`baker-for-stieltjes`); formalized the card's claim
+  surface unconditionally and moved 0-backlog-lean → 3-formalized. New Lean:
+  `HTGeometry/SecularWeldRigidity.lean` (weight-kill lemma; prime dilations as algebra
+  endomorphisms; **no equivariant retraction 𝒪 → ℂ** — the full #117 face; formal graded face:
+  equivariant extraction = tame projection) and `RHTower/StieltjesLogWeldTierOne.lean`
+  ({1}∪{log p} ℚ-affine independence via in-tree `exp_int_irrational`; `c₁ = Σ β_p log p`;
+  rationality dichotomy; **Tier-1 no-isolation** for `[H]_N` — the full #124 Tier-1 face, tied to
+  `stieltjes_pairing_cauchy_j`). Both instances factor through ONE lemma
+  (`equivariant_linear_kills_scaled`) — the D2 unification is now a shared Lean mechanism, not
+  prose. Axiom audit: baseline only, all 12 new theorems; `formal_tools.py lint --check-generated`
+  passed; builds kept to the two module targets. Key session discovery: mathlib (this toolchain)
+  has only the analytic half of Lindemann–Weierstrass (`exp_polynomial_approx`) — the project's
+  own `exp_int_irrational` (Hermite integral) supplies the Tier-1 numericalization, so the weld's
+  Baker-floor is reachable WITHOUT Baker. Next generative move: the same weight-kill mechanism
+  applied to the `Ш_arith`/C5★ layer — formalize the diagonal `m·ℓ`-division as the weight of the
+  combination-mode lane, making C5★ a third instance of the same non-splitting.

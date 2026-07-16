@@ -1,7 +1,7 @@
 # Reciprocal Square Tests Need Divisor Multiplicity
 
 - **ID:** reciprocal-square-tests-need-divisor-multiplicity
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** docs/consolidated/gpt/proof-route.md, Layer B square-test positivity
 - **Statement:** Shifted square-test positivity is not determined by the distinct reciprocal support alone. Keeping the same support but changing divisor weights can change whether the first shifted Hankel tests are positive.
@@ -20,7 +20,9 @@ by a support-only sum. The divisor multiplicities `m_rho` are part of the positi
 
 - [x] 0 -> 1 in-progress: well-posed, source-pure, attack idea
 - [x] 1 -> 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 -> 3 formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 -> 3 formalized: `reciprocalMultiplicity_sameSupport_changes_hankelPositivity` in
+  `formal/GaloisForLFunctions/RHTower/ReciprocalHankelMultiplicity.lean` proves the fixed-support
+  weight-one/weight-two contrast with exact positive factorizations and negative determinants.
 - [ ] 3 -> 4 publication-ready: standalone note if needed
 
 ## Proof

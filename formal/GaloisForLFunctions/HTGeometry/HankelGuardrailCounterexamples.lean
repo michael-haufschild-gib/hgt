@@ -232,6 +232,138 @@ theorem exists_analytic_strictlyCompletelyMonotone_nonStieltjesTaylor :
   exact ⟨fun s => Real.exp (-s), analyticAt_exp_neg, exp_neg_strictly_completelyMonotone,
     exp_neg_taylorCoefficient, reciprocalFactorialMoment_not_momentSequence⟩
 
+/-- Moments of the symmetric two-point probability measure on `{-1, 1}`. -/
+def parityMoment (n : ℕ) : ℝ := if Even n then 1 else 0
+
+/-- The symmetric two-point probability measure. -/
+def parityMomentMeasure : MeasureTheory.Measure ℝ :=
+  ENNReal.ofReal (1 / 2 : ℝ) • MeasureTheory.Measure.dirac 1 +
+    ENNReal.ofReal (1 / 2 : ℝ) • MeasureTheory.Measure.dirac (-1)
+
+/-- Every monomial is integrable against the symmetric two-point measure. -/
+theorem parityMoment_integrable (n : ℕ) :
+    MeasureTheory.Integrable (fun x : ℝ => x ^ n) parityMomentMeasure := by
+  rw [parityMomentMeasure, MeasureTheory.integrable_add_measure]
+  constructor
+  · exact (MeasureTheory.integrable_dirac (by simp)).smul_measure (by simp)
+  · exact (MeasureTheory.integrable_dirac (by simp)).smul_measure (by simp)
+
+/-- `parityMoment` is represented by the symmetric two-point probability measure. -/
+theorem parityMoment_eq_integral (n : ℕ) :
+    parityMoment n = ∫ x, x ^ n ∂parityMomentMeasure := by
+  have hpos : MeasureTheory.Integrable (fun x : ℝ => x ^ n)
+      (ENNReal.ofReal (1 / 2 : ℝ) • MeasureTheory.Measure.dirac 1) :=
+    (MeasureTheory.integrable_dirac (by simp)).smul_measure (by simp)
+  have hneg : MeasureTheory.Integrable (fun x : ℝ => x ^ n)
+      (ENNReal.ofReal (1 / 2 : ℝ) • MeasureTheory.Measure.dirac (-1)) :=
+    (MeasureTheory.integrable_dirac (by simp)).smul_measure (by simp)
+  rw [parityMomentMeasure, MeasureTheory.integral_add_measure hpos hneg]
+  rcases n.even_or_odd with hn | hn
+  · rcases hn with ⟨k, rfl⟩
+    simp [parityMoment, pow_add]
+    rw [← pow_add, show k + k = 2 * k by omega, pow_mul]
+    norm_num
+  · rcases hn with ⟨k, rfl⟩
+    simp [parityMoment, pow_succ]
+
+/-- Every unshifted Hankel block of `parityMoment` is positive semidefinite. -/
+theorem parityMomentHankel_posSemidef (d : ℕ) :
+    (Matrix.of fun i j : Fin (d + 1) => parityMoment ((i : ℕ) + (j : ℕ))).PosSemidef :=
+  hankelMatrix_posSemidef parityMoment parityMoment_eq_integral parityMoment_integrable (d + 1)
+
+/-- The indefinite exchange matrix occurring as the leading principal block. -/
+def hankelSwapCounterexample : Matrix (Fin 2) (Fin 2) ℝ := !![0, 1; 1, 0]
+
+/-- The exchange matrix has determinant `-1`. -/
+theorem hankelSwapCounterexample_det : hankelSwapCounterexample.det = -1 := by
+  norm_num [hankelSwapCounterexample, Matrix.det_fin_two]
+
+/-- The exchange matrix is not positive semidefinite. -/
+theorem hankelSwapCounterexample_not_posSemidef :
+    ¬ hankelSwapCounterexample.PosSemidef := by
+  intro h
+  have hdet := h.det_nonneg
+  rw [hankelSwapCounterexample_det] at hdet
+  norm_num at hdet
+
+/-- The unshifted Hankel family of `parityMoment`. -/
+def parityMomentHankel (d : ℕ) : Matrix (Fin (d + 1)) (Fin (d + 1)) ℝ :=
+  Matrix.of fun i j => parityMoment ((i : ℕ) + (j : ℕ))
+
+/-- The shifted Hankel family of `parityMoment`. -/
+def parityMomentShiftedHankel (d : ℕ) : Matrix (Fin (d + 1)) (Fin (d + 1)) ℝ :=
+  Matrix.of fun i j => parityMoment ((i : ℕ) + (j : ℕ) + 1)
+
+/-- The unshifted parity Hankel block is positive semidefinite at every order. -/
+theorem parityMomentHankel_posSemidef' (d : ℕ) :
+    (parityMomentHankel d).PosSemidef := by
+  simpa [parityMomentHankel] using parityMomentHankel_posSemidef d
+
+/-- Every nontrivial shifted parity Hankel block contains the indefinite exchange block. -/
+theorem parityMomentShiftedHankel_not_posSemidef {d : ℕ} (hd : 1 ≤ d) :
+    ¬ (parityMomentShiftedHankel d).PosSemidef := by
+  intro h
+  let e : Fin 2 → Fin (d + 1) := fun i => Fin.castLE (by omega) i
+  have hsub := h.submatrix e
+  have heq : (parityMomentShiftedHankel d).submatrix e e = hankelSwapCounterexample := by
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      norm_num [parityMomentShiftedHankel, parityMoment, hankelSwapCounterexample, e]
+  rw [heq] at hsub
+  exact hankelSwapCounterexample_not_posSemidef hsub
+
+/-- Shift the parity sequence by one place and insert a zero initial moment. -/
+def shiftedParityMoment : ℕ → ℝ
+  | 0 => 0
+  | n + 1 => parityMoment n
+
+/-- The unshifted Hankel family of `shiftedParityMoment`. -/
+def shiftedParityMomentHankel (d : ℕ) : Matrix (Fin (d + 1)) (Fin (d + 1)) ℝ :=
+  Matrix.of fun i j => shiftedParityMoment ((i : ℕ) + (j : ℕ))
+
+/-- The shifted Hankel family of `shiftedParityMoment`. -/
+def shiftedParityMomentShiftedHankel (d : ℕ) : Matrix (Fin (d + 1)) (Fin (d + 1)) ℝ :=
+  Matrix.of fun i j => shiftedParityMoment ((i : ℕ) + (j : ℕ) + 1)
+
+/-- Shifting `shiftedParityMoment` recovers the unshifted parity Hankel block. -/
+theorem shiftedParityMomentShiftedHankel_eq (d : ℕ) :
+    shiftedParityMomentShiftedHankel d = parityMomentHankel d := by
+  ext i j
+  simp [shiftedParityMomentShiftedHankel, parityMomentHankel, shiftedParityMoment]
+
+/-- Every shifted Hankel block of `shiftedParityMoment` is positive semidefinite. -/
+theorem shiftedParityMomentShiftedHankel_posSemidef (d : ℕ) :
+    (shiftedParityMomentShiftedHankel d).PosSemidef := by
+  rw [shiftedParityMomentShiftedHankel_eq]
+  exact parityMomentHankel_posSemidef' d
+
+/-- Every nontrivial unshifted block of `shiftedParityMoment` contains the indefinite exchange
+block. -/
+theorem shiftedParityMomentHankel_not_posSemidef {d : ℕ} (hd : 1 ≤ d) :
+    ¬ (shiftedParityMomentHankel d).PosSemidef := by
+  intro h
+  let e : Fin 2 → Fin (d + 1) := fun i => Fin.castLE (by omega) i
+  have hsub := h.submatrix e
+  have heq : (shiftedParityMomentHankel d).submatrix e e = hankelSwapCounterexample := by
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      norm_num [shiftedParityMomentHankel, shiftedParityMoment, parityMoment,
+        hankelSwapCounterexample, e]
+  rw [heq] at hsub
+  exact hankelSwapCounterexample_not_posSemidef hsub
+
+/-- At every nontrivial truncation order, unshifted and shifted Hankel positivity are logically
+independent. -/
+theorem shiftedHankel_dualBarrier_independence (d : ℕ) (hd : 1 ≤ d) :
+    (parityMomentHankel d).PosSemidef ∧
+      ¬ (parityMomentShiftedHankel d).PosSemidef ∧
+      (shiftedParityMomentShiftedHankel d).PosSemidef ∧
+      ¬ (shiftedParityMomentHankel d).PosSemidef :=
+  ⟨parityMomentHankel_posSemidef' d,
+    parityMomentShiftedHankel_not_posSemidef hd,
+    shiftedParityMomentShiftedHankel_posSemidef d,
+    shiftedParityMomentHankel_not_posSemidef hd⟩
+
 end
 
 end HTGeometry

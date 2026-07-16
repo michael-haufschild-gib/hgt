@@ -38,6 +38,7 @@ def universalMatrixShiftDerivation (M : ℕ → Matrix ι ι K) :
     Derivation K (UniversalShiftField K ι) (UniversalShiftField K ι) :=
   fractionRingDerivation (universalMatrixShiftPolynomialDerivation M)
 
+omit [DecidableEq ι] in
 /-- The universal matrix derivation acts on ancestral coordinates by the prescribed matrix
 shift. -/
 theorem universalMatrixShiftDerivation_ancestor
@@ -48,6 +49,7 @@ theorem universalMatrixShiftDerivation_ancestor
     fractionRingDerivation_algebraMap]
   rw [universalMatrixShiftPolynomialDerivation, MvPolynomial.mkDerivation_X]
 
+omit [DecidableEq ι] in
 /-- The universal grid satisfies the one-step matrix filtration law exactly. -/
 theorem universalMatrixShift_filtrationStep
     (M : ℕ → Matrix ι ι K) (n : ℕ) (i : ι) :
@@ -58,6 +60,7 @@ theorem universalMatrixShift_filtrationStep
   rw [universalMatrixShiftDerivation_ancestor, sub_self]
   exact Submodule.zero_mem _
 
+omit [DecidableEq ι] in
 /-- The universal matrix derivation kills `K`-constants compatibly with the zero coefficient
 derivation. -/
 theorem universalMatrixShift_compat (M : ℕ → Matrix ι ι K) (a : K) :
@@ -115,14 +118,15 @@ theorem universalMatrixShiftLaw_dependentSet_eq_characteristicSet
     (fun A ↦ universalMatrixShift_filtrationStep (M A))
     universalShiftAncestor_algebraicIndependent
 
+omit [Fintype ι] [DecidableEq ι] in
 /-- Ancestral coordinates are nonzero in the universal field. -/
 theorem universalShiftAncestor_ne_zero (n : ℕ) (i : ι) :
     universalShiftAncestor (K := K) n i ≠ 0 := by
   intro h
   apply MvPolynomial.X_ne_zero (R := K) (n, i)
   apply universalShiftEmbedding_injective (K := K) (ι := ι)
-  rw [h]
-  exact (map_zero _).symm
+  rw [map_zero]
+  exact h
 
 /-! ## The quadric cone: an irreducible nonlinear determinantal horizon -/
 
@@ -162,17 +166,15 @@ theorem quadricCone_not_submodule :
   have he1 : e1 ∈ H := by
     change e1 ∈ (H : Set (Fin 3 → K))
     rw [hEq]
-    simp [e1, Pi.single_apply]
+    simp [e1]
   have he2 : e2 ∈ H := by
     change e2 ∈ (H : Set (Fin 3 → K))
     rw [hEq]
-    simp [e2, Pi.single_apply]
+    simp [e2]
   have hsum : e1 + e2 ∈ {A : Fin 3 → K | A 0 * A 0 = A 1 * A 2} := by
     rw [← hEq]
     exact H.add_mem he1 he2
-  have : (0 : K) = 1 := by
-    simpa [e1, e2, Pi.single_apply] using hsum
-  exact zero_ne_one this
+  simp [e1, e2] at hsum
 
 /-- The two axis derivations realizing the quadric horizon do not commute: the nonlinear horizon
 is carried by genuinely noncommuting laws. -/
@@ -185,18 +187,17 @@ theorem universalQuadric_noncommuting_witness :
   have hv0 : universalMatrixShiftLaw (K := K) (fun A _ ↦ quadricConeSymbol A) (Pi.single 1 1)
       (universalShiftAncestor (K := K) 0 0) = universalShiftAncestor (K := K) 1 1 := by
     rw [universalMatrixShiftLaw, universalMatrixShiftDerivation_ancestor]
-    simp [quadricConeSymbol, Fin.sum_univ_two, Pi.single_apply]
+    simp [quadricConeSymbol, Fin.sum_univ_two]
   have hw0 : universalMatrixShiftLaw (K := K) (fun A _ ↦ quadricConeSymbol A) (Pi.single 2 1)
       (universalShiftAncestor (K := K) 0 0) = 0 := by
     rw [universalMatrixShiftLaw, universalMatrixShiftDerivation_ancestor]
-    simp [quadricConeSymbol, Fin.sum_univ_two, Pi.single_apply]
+    simp [quadricConeSymbol, Fin.sum_univ_two]
   have hwv : universalMatrixShiftLaw (K := K) (fun A _ ↦ quadricConeSymbol A) (Pi.single 2 1)
       (universalShiftAncestor (K := K) 1 1) = universalShiftAncestor (K := K) 2 0 := by
     rw [universalMatrixShiftLaw, universalMatrixShiftDerivation_ancestor]
-    simp [quadricConeSymbol, Fin.sum_univ_two, Pi.single_apply]
+    simp [quadricConeSymbol, Fin.sum_univ_two]
   have hzero : universalShiftAncestor (K := K) 2 0 = (0 : UniversalShiftField K (Fin 2)) := by
     have hcalc := hpoint
-    rw [Function.comp_apply, Function.comp_apply] at hcalc ⊢
     rw [hw0, hv0, hwv, map_zero] at hcalc
     exact hcalc.symm
   exact universalShiftAncestor_ne_zero 2 0 hzero
@@ -215,9 +216,9 @@ theorem quadricConeSymbol_curvature_ne_zero :
   rw [matrixCoefficientPrincipalCurvature] at h00
   simp only [Matrix.sub_apply, Matrix.mul_apply, Fin.sum_univ_two] at h00
   rw [show (quadricConeSymbol (K := K) (Pi.single 1 1)) = !![0, 1; 0, 0] by
-        simp [quadricConeSymbol, Pi.single_apply],
+        simp [quadricConeSymbol],
       show (quadricConeSymbol (K := K) (Pi.single 2 1)) = !![0, 0; 1, 0] by
-        simp [quadricConeSymbol, Pi.single_apply]] at h00
+        simp [quadricConeSymbol]] at h00
   norm_num at h00
 
 /-- The quadric symbol tower is not coefficient-flat. -/
@@ -245,8 +246,8 @@ theorem universalQuadric_no_commutatorClosure :
     (fun _ ↦ (0 : Derivation K K K))
     (fun (_ : ℕ) (A : Fin 3 → K) ↦ quadricConeSymbol A)
     (fun n i ↦ universalShiftAncestor (K := K) n i)
-    (fun A ↦ universalMatrixShift_compat _)
-    (fun A ↦ universalMatrixShift_filtrationStep _)
+    (fun _ ↦ universalMatrixShift_compat _)
+    (fun _ ↦ universalMatrixShift_filtrationStep _)
     universalShiftAncestor_algebraicIndependent
     0 (Pi.single 1 1) (Pi.single 2 1)
     quadricConeSymbol_curvature_ne_zero

@@ -167,3 +167,21 @@ formal statement and supplies Tier 2 the moment Schanuel is granted.
 isolated as the open Schanuel wall. Lean: `stieltjes_pairing_cauchy_j` (★) stands; add `tier1_c1_in_logspan`
 (`c_1 = Σ β_p log p`) and reuse `linearIndependent_log_primes` for the Tier-1 transcendence — no Schanuel
 needed for Tier 1.
+
+## Lean anchor update — 2026-07-16 (Fable, via tate-prime-rigidity 2→3)
+
+The Repair-note's requested Lean targets are now DONE, unconditional (baseline axioms, no sorry),
+in `formal/GaloisForLFunctions/RHTower/StieltjesLogWeldTierOne.lean`:
+- `friableC1_eq_sum_beta_log` — the requested `tier1_c1_in_logspan`: `c₁ = Σ_p β_p log p` with
+  explicit `β_p = -Σ_n λ_n v_p(n)/n`, over any covering prime set.
+- `logPrime_int_affine_relation_eq_zero` / `logPrime_rat_affine_relation_eq_zero` — the Tier-1
+  mechanism, strengthened: `Σ β_p log p = q` (rational data) forces `q = 0` and all `β_p = 0`.
+  Note the honest accounting: this needs `{1} ∪ {log p}` independence, which is **Hermite-level**
+  (in-tree `exp_int_irrational`), not merely unique-factorization; no Baker input is used.
+- `friableC1_rat_iff_zero`, `friableC1_eq_zero_iff`, `friableC1_irrational_of_ne_zero` — the
+  Tier-1 dichotomy: `c₁` rational ⟺ `c₁ = 0` ⟺ all `β_p = 0`; nonzero `c₁` is irrational.
+- `tier1_no_isolation` — the Tier-1 theorem itself on the pairing: for `N ≥ 2`, if `[H]_N` is a
+  rational affine form in the Stieltjes coordinates (uniformly), the weight-one datum vanishes.
+  Built directly on the existing `stieltjes_pairing_cauchy_j`.
+Remaining unformalized: linear independence of `{n^{-s}}` (triviality lemma) and the Tier-2
+(Schanuel-conditional) all-weight statement — the latter is open mathematics, not Lean debt.

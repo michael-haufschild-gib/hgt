@@ -37,6 +37,43 @@ theorem squarefreePartition_ne_zero {s : ℂ} (hs : 1 < s.re) :
   exact div_ne_zero (riemannZeta_ne_zero_of_one_lt_re hs)
     (riemannZeta_ne_zero_of_one_lt_re h2re)
 
+/-- On the strict right half-plane, the squarefree partition vanishes exactly where zeta does. -/
+theorem squarefreePartition_eq_zero_iff_riemannZeta_eq_zero
+    {s : ℂ} (hs : 1 / 2 < s.re) :
+    squarefreePartition s = 0 ↔ riemannZeta s = 0 := by
+  have h2re : 1 < (2 * s).re := by
+    norm_num only [mul_re, Complex.re_ofNat, Complex.im_ofNat, zero_mul, sub_zero]
+    linarith
+  have hz2 : riemannZeta (2 * s) ≠ 0 := riemannZeta_ne_zero_of_one_lt_re h2re
+  simp [squarefreePartition, hz2]
+
+/-- Division by the doubled zeta factor preserves the complete local zeta divisor, including
+multiplicity, at every strict-right point away from the Euler pole. -/
+theorem squarefreePartition_meromorphicOrderAt_eq_riemannZeta
+    {s : ℂ} (hs : 1 / 2 < s.re) (hs1 : s ≠ 1) :
+    meromorphicOrderAt squarefreePartition s = meromorphicOrderAt riemannZeta s := by
+  have h2re : 1 < (2 * s).re := by
+    norm_num only [mul_re, Complex.re_ofNat, Complex.im_ofNat, zero_mul, sub_zero]
+    linarith
+  have h2one : 2 * s ≠ 1 := by
+    intro h
+    have hre := congrArg Complex.re h
+    norm_num only [mul_re, Complex.re_ofNat, Complex.im_ofNat, zero_mul, sub_zero,
+      one_re] at hre
+    linarith
+  have hnum : AnalyticAt ℂ riemannZeta s := analyticOn_riemannZeta s hs1
+  have hden : AnalyticAt ℂ (fun z : ℂ => riemannZeta (2 * z)) s :=
+    (analyticOn_riemannZeta (2 * s) h2one).comp
+      (show AnalyticAt ℂ (fun z : ℂ => 2 * z) s by fun_prop)
+  have hz2 : riemannZeta (2 * s) ≠ 0 := riemannZeta_ne_zero_of_one_lt_re h2re
+  change meromorphicOrderAt
+    (fun z : ℂ => riemannZeta z / riemannZeta (2 * z)) s =
+      meromorphicOrderAt riemannZeta s
+  rw [fun_meromorphicOrderAt_div hnum.meromorphicAt hden.meromorphicAt,
+    hnum.meromorphicOrderAt_eq, hden.meromorphicOrderAt_eq,
+    hden.analyticOrderAt_eq_zero.mpr hz2]
+  simp
+
 theorem differentiableAt_squarefreePartition {s : ℂ} (hs : 1 < s.re) :
     DifferentiableAt ℂ squarefreePartition s := by
   have hs1 : s ≠ 1 := by
@@ -106,6 +143,15 @@ theorem differentiableAt_infinitePrimeFlux_two_mul
     simpa only [RHTower.infinitePrimeFlux, logDeriv_apply, neg_div] using
       RHTower.differentiableAt_neg_logDeriv_riemannZeta_of_one_lt_re h2re
   exact houter.comp s (show DifferentiableAt ℂ (fun z : ℂ => 2 * z) s by fun_prop)
+
+/-- The doubled-zeta correction is holomorphic on the full strict right half-plane. -/
+theorem analyticOnNhd_infinitePrimeFlux_two_mul_rightHalf :
+    AnalyticOnNhd ℂ (fun z : ℂ => RHTower.infinitePrimeFlux (2 * z))
+      {s : ℂ | 1 / 2 < s.re} := by
+  apply DifferentiableOn.analyticOnNhd _
+    (isOpen_lt continuous_const Complex.continuous_re)
+  intro s hs
+  exact (differentiableAt_infinitePrimeFlux_two_mul hs).differentiableWithinAt
 
 /-- On the Euler region, the coefficient-two completed Xi current differs from the completed
 squarefree current by exactly the strict-right holomorphic correction `4 A(2s)`. -/

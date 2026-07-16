@@ -7,6 +7,7 @@
   `[GENERAL-HYPERSURFACE BOUND PAPER-PROVEN] [TOTAL-INCOMPATIBILITY COROLLARY PAPER-PROVEN]`
   `[MAXIMAL FREE ENDPOINT LEAN-PROVEN] [HEISENBERG REPRESENTATION LEAN-PROVEN]`
   `[PARTIAL-KERNEL SPENCER LAW LEAN-PROVEN]`
+  `[CONTACT INVARIANT AND SHARP BOUND (9a) LEAN-PROVEN] [ABELIAN SHARP ENDPOINT LEAN-PROVEN]`
   `[NOVELTY PROVISIONAL]`
 - **Paper lane:** *Before There Was Time: The Holographic Horizon Measures Quantum Noncommutativity*
 
@@ -115,6 +116,33 @@ rank(B_rho) ≥ dim Gr(2,V) - dim C_X,                                  (9b)
 ```
 
 with the stronger `rank(B_rho)≥dim Gr(2,V)+1` when `C_X` is empty.
+
+### 3.1 The contact invariant and `(9a)` are Lean-proven
+
+`formal/GaloisForLFunctions/HTGeometry/HorizonLinearContactInvariant.lean` formalizes the
+kernel-avoidance invariant without any projective-scheme machinery, over an arbitrary
+finite-dimensional law space and arbitrary field extension:
+
+- `LinearContactPlane`: a plane meets the horizon cone in at most one line or lies inside it;
+- `linearContactPlane_of_commute`: statement `(5)` — the commuting-plane locus of every
+  realization lies in the linear-contact locus of its exact one-observable dependence horizon;
+- `ContactOnlySubspace`, `horizonContactKernelDim`, `horizonCommutatorIndex`: the invariant
+  `kappa(X)` of `(9)` and its complement `chi_HT(X)`, defined on the second exterior power;
+- `contactOnlySubspace_ker_derivationCommutatorMap`: the commutator kernel is contact-only;
+- `horizonCommutatorIndex_le_finrank_derivationCommutatorMap_range`: the sharp
+  projective-obstruction law `(9a)`, unconditional;
+- `linearContactPlane_of_submodule`, `horizonCommutatorIndex_of_submodule`: every linear-subspace
+  horizon has `chi_HT = 0`;
+- `universalWeightedShift_commute`, `universalWeightedShift_dependenceHorizon`,
+  `universalWeightedShift_abelian_equality`: the diagonal universal shift field realizes every
+  character-kernel hyperplane as the exact one-observable horizon of a fully commuting law
+  family with commutator rank zero.  **Equality in `(9a)` is attained inside an abelian — hence
+  finite-dimensional — Lie algebra.**
+
+Terminal axiom audit: all of the above depend only on `[propext, Classical.choice, Quot.sound]`.
+The Ikeda incidence dimensions and the projective-dimension inequality behind `(9b)`–`(13)`
+remain external `[SEARCH]` inputs, used through the explicit secant-forcing hypothesis of the
+abstract rank theorem; they are not internalized in Lean.
 
 ## 4. Degree counts commutators `[PAPER-PROVEN]`
 
@@ -380,10 +408,16 @@ supplies such a horizon or bracket map.
 9. [DONE] Prove the canonical Heisenberg operator realization and preservation of commutators.
 10. [DONE] Prove the partial commutator-kernel first Spencer law and the free-tail equation
     `q a=0`.
-11. Formalize the projective kernel-avoidance invariant, the projective dimension specialization,
-   and the Ikeda incidence input for `(9)--(13)`.
-12. Construct sharp examples and determine whether equality in `(9a)` is realizable inside a
-   finite-dimensional Lie algebra.
+11. [DONE for the invariant and `(9a)`] The projective kernel-avoidance invariant
+    `kappa`/`chi_HT` and the sharp bound `(9a)` are unconditional in
+    `HorizonLinearContactInvariant.lean`.  Still open: internalize the projective-dimension
+    inequality and the Ikeda incidence dimensions so that `(10)--(13)` become Lean theorems
+    rather than hypothesis-interfaced consequences.
+12. [DONE for the abelian endpoint] Equality in `(9a)` is realizable inside a finite-dimensional
+    (abelian) Lie algebra: every character-kernel hyperplane horizon is exactly realized with
+    commutator rank zero (`universalWeightedShift_abelian_equality`).  Still open: a sharp
+    *nonzero*-rank realization — e.g. a Heisenberg-type rank-one realization of a two-hyperplane
+    horizon (`chi_HT = 1` in three law dimensions) — and the general classification `(16)`.
 
 No rank theorem may infer injectivity merely from pointwise nonvanishing on a spanning set of
 decomposable tensors.

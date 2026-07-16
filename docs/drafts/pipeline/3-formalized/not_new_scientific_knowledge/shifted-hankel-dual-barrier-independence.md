@@ -1,7 +1,7 @@
 # Shifted Hankel Dual-Barrier Independence
 
 - **ID:** shifted-hankel-dual-barrier-independence
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** docs/consolidated/gpt/proof-route.md, sections 7-8
 - **Statement:** For every truncation order `d>=1`, positivity of `H_0=[m_{i+j}]_{i,j=0}^d` and positivity of `H_1=[m_{i+j+1}]_{i,j=0}^d` are logically independent. Therefore the shifted proof-route target cannot drop either `Q_0` or `Q_1`.
@@ -20,7 +20,9 @@ to only one shifted Hankel family. This is not claimed as a deep theorem of mome
 
 - [x] 0 -> 1 in-progress: well-posed, source-pure, attack idea
 - [x] 1 -> 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 -> 3 formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 -> 3 formalized: `shiftedHankel_dualBarrier_independence` in
+  `formal/GaloisForLFunctions/HTGeometry/HankelGuardrailCounterexamples.lean` proves the two
+  all-order witnesses for every `d >= 1`.
 - [ ] 3 -> 4 publication-ready: standalone note if needed
 
 ## Proof

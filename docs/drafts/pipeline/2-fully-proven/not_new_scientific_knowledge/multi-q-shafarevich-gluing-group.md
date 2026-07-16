@@ -269,3 +269,23 @@ paper-proof defect. This is a **paper-proven BRIDGE theorem** whose proof legiti
 those imports are to be carried as hypotheses/axioms (or formalized separately) at the Lean stage — not a reason to
 reject the paper proof. The card's stated theorem is proved at its 1→2 gate; any co-located open conjecture
 (C5★ / ω=0 / Schanuel / apex) is explicitly a SEPARATE open core, not part of this theorem. Re-banked for Lean re-attempt.
+
+## Lean anchor update — 2026-07-16 (Fable, via tate-prime-rigidity 2→3)
+
+The repaired R3 non-splitting is now formalized at FULL strength — the actual no-retraction
+statement, not only the fixed-point core — in
+`formal/GaloisForLFunctions/HTGeometry/SecularWeldRigidity.lean` (unconditional, baseline axioms):
+- `SecularWeld.dilation` — the prime dilation `σ_p : χ_m ↦ p^{-m_p} χ_m` constructed as a genuine
+  `ℂ`-algebra endomorphism of `𝒪 = AddMonoidAlgebra ℂ (⊕_p ℤ)` (the Laurent/finite-Fourier model
+  of the torus algebra), via `AddMonoidAlgebra.lift`.
+- `SecularWeld.no_equivariant_dilation_retraction` — for EVERY `ℂ`-algebra map `r : 𝒪 → ℂ` and
+  every prime `p`, `r ∘ σ_p ≠ r`: equivariance would force the unit `x_p` to `0`
+  (`retraction_kills_wildGenerator`), and ring maps cannot kill units. This is exactly R3's
+  "no σ-equivariant ring retraction 𝒪 → ℂ", subsuming the earlier OrbitFreeness anchors.
+- `SecularWeld.secularWeld_nonSplit` — the packaged non-splitting: no equivariant retraction onto
+  the scalar block exists at all.
+- Shared mechanism `equivariant_linear_kills_scaled` — the same lemma drives the #124 Tier-1
+  no-isolation (see `stieltjes-log-weld.md`), which is the D2-unification of the two instances in
+  Lean form (per `tate-prime-rigidity`, now 3-formalized).
+Still unformalized: nonabelian `H¹`, the `Ш` definition, Procesi/character-variety, and the C5★
+coboundary-regularity identification.
