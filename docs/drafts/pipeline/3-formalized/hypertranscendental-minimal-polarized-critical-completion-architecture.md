@@ -213,9 +213,12 @@ is conservative for every persistent source-natural reconstruction obstruction. 
 monodromy, spectral incompleteness, positivity failure, and noncanonical boundary conditions are
 derived invariants of that one stack.
 
-A counterexample would remain significant: it would prove the existence of a fifth independent
-HT structure beyond source action, polarization, critical multiscale bornology, and controlled
-transport.
+A counterexample remained significant because it could force additional independent HT structure.
+The obstruction-chain audit has now done so.  The exact successor theorem
+`source-producer-integral-realization-minimality.md` proves that a distinguished source-effective
+section and an integral/ramified realization cannot be recovered from the four channels in `(8)`.
+The current unconditional lower bound is therefore six channels, not four.  The theorem on this
+card remains the proved first layer rather than being silently restated.
 
 ## 10. External novelty gate
 
@@ -262,7 +265,7 @@ remaining two universal controlled-geometry counterexamples.
 - `[PAPER VERDICT]` This theorem warrants a foundational paper together with the Gamma analytic
   source instance and the exact orientation witness, subject to specialist literature review.
 - `[MEDAL-SCALE VERDICT]` The lower bound is not medal-scale by itself.  Proving
-  Minimal-Architecture Completeness, or producing the forced fifth component, is the medal-scale
+  source-effectivity reconstruction for the now-forced six-channel architecture is the medal-scale
   objective.
 - `[RH BOUNDARY]` No RH statement occurs.  A completed-zeta realization would be only a downstream
   test of the general correspondence.
@@ -298,7 +301,10 @@ New Lean declarations:
 - `tendsto_finiteRateInvisibleProfile_div_zero`;
 - `finiteRateInvisibleProfile_not_uniformlyBounded`;
 - `finiteRateSpectrumLowerBound`;
-- `minimalHTCompletionArchitecture`.
+- `minimalHTCompletionArchitecture`;
+- `sourceSectionDivisorBlindness`;
+- `integralRealificationBlindness`;
+- `sourceProducerIntegralLowerBound`.
 
 Existing Lean declarations used for the polarization witness include:
 
@@ -311,6 +317,8 @@ The continuous-real-exponent form of `(4)`, the finite-rate theorem, and the com
 minimality lower bound are encoded by `continuousMobiusGevreyTrichotomy`,
 `finiteRateSpectrumLowerBound`, and `minimalHTCompletionArchitecture`.  The last theorem packages
 necessity only; it does not assert the open Minimal-Architecture Completeness converse.
+The final three declarations are the formally certified successor channels described in
+`source-producer-integral-realization-minimality.md`.
 
 ## Gates
 

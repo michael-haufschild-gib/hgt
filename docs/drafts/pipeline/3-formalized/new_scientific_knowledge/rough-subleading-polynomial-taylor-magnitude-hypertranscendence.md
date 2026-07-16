@@ -1,9 +1,9 @@
 # Rough Subleading Polynomial Magnitudes Destroy Every Prouhet Escape
 
 - **ID:** `rough-subleading-polynomial-taylor-magnitude-hypertranscendence`
-- **Stage:** 2-fully-proven / needs scientific-novelty audit
+- **Stage:** 3-formalized / needs scientific-novelty audit
 - **Type:** THEOREM CANDIDATE / GENERAL HT LAW / ALMOST-SURE MAGNITUDE RIGIDITY
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [SIGNIFICANT]`
+- **Scientific status:** `[PROVED HERE] [LEAN FORMALIZED] [NOVELTY UNVERIFIED] [SIGNIFICANT]`
 - **Statement:** A bounded-density rough perturbation strictly below the curvature scale of `n^beta` almost surely destroys every logarithmic fixed-shift resonance, forcing hypertranscendence for every coefficient phase.
 
 ## Goal
@@ -176,16 +176,29 @@ The law further enlarges the class of phase fibers on which HT status is constan
 
 ## Lean status
 
-No Lean formalization is claimed. Beyond the missing ADE coefficient substrate, a whole-theorem formalization requires product probability, a conditional small-ball estimate, Borel--Cantelli, and uniform discrete-convex confinement. The card cannot enter stage 3 before the full unconditional theorem is formalized.
+Unconditionally formalized in
+`formal/GaloisForLFunctions/HTGeometry/RoughSubleadingPolynomialMagnitudeHypertranscendence.lean`.
+The module proves the product-measure affine small-ball estimate, summable Borel--Cantelli
+shift separation, deterministic polynomial confinement and ADE-resonance reduction,
+finite-prefix invariance, phase-uniform hypertranscendence for every entire series with
+the stated eventual magnitudes, the explicit entire phase family, and the profile,
+first-difference, and second-difference asymptotic corollaries. The principal theorem
+surfaces are
+`ae_phaseUniform_hypertranscendental_roughPolynomialMagnitude`,
+`ae_forall_phase_hypertranscendental_roughPolynomialPhaseFunction`,
+`tendsto_roughPolynomialProfile_div_purePower`,
+`tendsto_roughPolynomialFirstDifference_ratio`, and
+`tendsto_roughPolynomialSecondDifference_ratio`.
 
 ## Gates
 
 - [x] Exact candidate theorem and scale separation stated.
 - [x] Complete unconditional paper proof.
 - [ ] Parent-theory and literature novelty gates.
-- [ ] Whole theorem formalized unconditionally in Lean.
+- [x] Whole theorem formalized unconditionally in Lean.
 
 ## Log
 
 - 2026-07-11 — Opened the sub-curvature roughness attack on the polynomial Prouhet boundary.
 - 2026-07-11 — Proved the universal small-ball law, uniform polynomial confinement, and the almost-sure phase-uniform HT theorem; promoted to paper-proven with novelty unverified.
+- 2026-07-16 — Formalized the complete unconditional theorem, its product-measure/Borel--Cantelli source, deterministic ADE-confinement bridge, explicit phase family, and all stated leading/slope/curvature asymptotics in `RoughSubleadingPolynomialMagnitudeHypertranscendence.lean`; exact-module build, direct file verification, and standard-axiom audit passed; promoted to stage 3.

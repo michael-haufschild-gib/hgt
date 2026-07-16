@@ -144,7 +144,7 @@ theorem finiteIncidenceKMSAmplitude_hermitian
 theorem finiteIncidenceKMSAmplitude_normSq
     {α : Type*} [Fintype α] [Nonempty α]
     {sigma epsilon : ℝ} (hsigma : 0 < sigma) (hepsilon : 0 < epsilon)
-    {d : α → ℕ} (hd : ∀ i, 0 < d i) (hinj : Function.Injective d)
+    {d : α → ℕ} (hd : ∀ i, 0 < d i)
     {a b : α} (hab : a ≠ b) :
     Complex.normSq (finiteIncidenceKMSAmplitude sigma epsilon d a b) =
       4 * epsilon * finiteIncidenceProbability sigma d a *
@@ -241,13 +241,21 @@ theorem finiteKMSEntropyProductionTransitionIntensity_incidence
       _root_.HTGeometry.finiteKMSDissipativeTransitionIntensity_eq_gap_mul_stateWeight_sub_mul_normSq,
       finiteGibbsStateWeight_incidence hsigma hepsilon hd,
       finiteGibbsStateWeight_incidence hsigma hepsilon hd,
-      finiteIncidenceKMSAmplitude_normSq hsigma hepsilon hd hinj hab]
+      finiteIncidenceKMSAmplitude_normSq hsigma hepsilon hd hab]
     unfold finiteIncidenceInverseTemperature finiteIncidenceEnergy
     have hgap := finiteIncidence_gap_mul_logGap_div_abs hsigma hd hinj hab
-    field_simp [ne_of_gt hsigma, ne_of_gt hepsilon,
-      finiteIncidenceProbability_ne hsigma hd hinj hab]
-    field_simp [finiteIncidenceProbability_ne hsigma hd hinj hab] at hgap
-    nlinarith
+    have hprobNe := finiteIncidenceProbability_ne hsigma hd hinj hab
+    have hdelta : finiteIncidenceProbability sigma d b -
+        finiteIncidenceProbability sigma d a ≠ 0 :=
+      sub_ne_zero.mpr hprobNe.symm
+    have habs : |finiteIncidenceProbability sigma d b -
+        finiteIncidenceProbability sigma d a| ≠ 0 :=
+      abs_ne_zero.mpr hdelta
+    field_simp [hsigma.ne', hepsilon.ne', habs]
+    field_simp [habs] at hgap
+    linear_combination
+      (finiteIncidenceProbability sigma d b *
+        finiteIncidenceProbability sigma d a) * hgap
 
 def finiteIncidenceGiniEnergy
     {α : Type*} [Fintype α]
@@ -313,8 +321,7 @@ theorem finiteIncidenceKMSResponse_eq
 
 theorem finiteIncidenceKMSResponse_im_nonpos
     {α : Type*} [Fintype α] [Nonempty α]
-    {sigma epsilon : ℝ} (hsigma : 0 < sigma) (hepsilon : 0 < epsilon)
-    {d : α → ℕ} (hd : ∀ i, 0 < d i)
+    {sigma epsilon : ℝ} {d : α → ℕ}
     {z : ℂ} (hz : 0 < z.im) :
     (finiteIncidenceKMSResponse sigma epsilon d z).im ≤ 0 := by
   unfold finiteIncidenceKMSResponse

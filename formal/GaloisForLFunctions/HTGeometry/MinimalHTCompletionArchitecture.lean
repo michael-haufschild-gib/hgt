@@ -19,6 +19,12 @@ minimum is still unbounded but is little relative to every prescribed rate.  The
 packages these results with the existing finite-jet, prime-polarization, and product-bornology
 witnesses as one unconditional lower-bound certificate.  It asserts necessity only; it does not
 assert the open completeness converse.
+
+Two further exact witnesses isolate information forced by source production.  A polynomial
+section of the trivial real line realizes every prescribed finite reduced zero set, so the carrier
+does not determine its divisor.  Two explicit integral operators become conjugate over the reals,
+while only one has four-saturated integral image.  Thus real analytic realization does not recover
+integral cokernel exponent data.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
@@ -432,6 +438,122 @@ theorem minimalHTCompletionArchitecture :
     continuousMobiusGevreyTrichotomy,
     fullProductBornologyLowerBound,
     finiteRateSpectrumLowerBound⟩
+
+/-! Two additional information-loss channels: section effectivity and integral realization. -/
+
+def prescribedFiniteZeroSection (S : Finset ℝ) (x : ℝ) : ℝ :=
+  ∏ a ∈ S, (x - a)
+
+@[simp] theorem prescribedFiniteZeroSection_eq_zero_iff
+    (S : Finset ℝ) (x : ℝ) :
+    prescribedFiniteZeroSection S x = 0 ↔ x ∈ S := by
+  classical
+  rw [prescribedFiniteZeroSection, Finset.prod_eq_zero_iff]
+  simp [sub_eq_zero]
+
+def SourceSectionDivisorBlindness : Prop :=
+  ∀ S : Finset ℝ, ∃ s : ℝ → ℝ,
+    ∀ x, s x = 0 ↔ x ∈ S
+
+theorem sourceSectionDivisorBlindness : SourceSectionDivisorBlindness := by
+  intro S
+  exact ⟨prescribedFiniteZeroSection S,
+    prescribedFiniteZeroSection_eq_zero_iff S⟩
+
+def splitRealLatticeOperator (v : ℝ × ℝ) : ℝ × ℝ :=
+  (2 * v.1, 4 * v.2)
+
+def coupledRealLatticeOperator (v : ℝ × ℝ) : ℝ × ℝ :=
+  (-8 * v.2, v.1 + 6 * v.2)
+
+def realLatticeComparison (v : ℝ × ℝ) : ℝ × ℝ :=
+  (-4 * v.1 - 2 * v.2, v.1 + v.2)
+
+def realLatticeComparisonInv (v : ℝ × ℝ) : ℝ × ℝ :=
+  (-v.1 / 2 - v.2, v.1 / 2 + 2 * v.2)
+
+theorem realLatticeComparison_bijective :
+    Function.Bijective realLatticeComparison := by
+  refine Function.bijective_iff_has_inverse.mpr
+    ⟨realLatticeComparisonInv, ?_, ?_⟩
+  · intro v
+    apply Prod.ext <;> simp [realLatticeComparison, realLatticeComparisonInv] <;> ring
+  · intro v
+    apply Prod.ext <;> simp [realLatticeComparison, realLatticeComparisonInv] <;> ring
+
+theorem realLatticeComparison_intertwines (v : ℝ × ℝ) :
+    coupledRealLatticeOperator (realLatticeComparison v) =
+      realLatticeComparison (splitRealLatticeOperator v) := by
+  apply Prod.ext <;>
+    simp [coupledRealLatticeOperator, realLatticeComparison, splitRealLatticeOperator] <;>
+    ring
+
+def splitIntegralLatticeOperator (v : ℤ × ℤ) : ℤ × ℤ :=
+  (2 * v.1, 4 * v.2)
+
+def coupledIntegralLatticeOperator (v : ℤ × ℤ) : ℤ × ℤ :=
+  (-8 * v.2, v.1 + 6 * v.2)
+
+def FourSaturatedImage (T : (ℤ × ℤ) → (ℤ × ℤ)) : Prop :=
+  ∀ v : ℤ × ℤ, ∃ w, T w = (4 * v.1, 4 * v.2)
+
+theorem splitIntegralLatticeOperator_fourSaturated :
+    FourSaturatedImage splitIntegralLatticeOperator := by
+  intro v
+  refine ⟨(2 * v.1, v.2), ?_⟩
+  simp [splitIntegralLatticeOperator]
+  ring
+
+theorem coupledIntegralLatticeOperator_not_fourSaturated :
+    ¬ FourSaturatedImage coupledIntegralLatticeOperator := by
+  intro h
+  obtain ⟨w, hw⟩ := h (1, 0)
+  have hfirst := congrArg Prod.fst hw
+  simp [coupledIntegralLatticeOperator] at hfirst
+  omega
+
+def IntegralRealificationBlindness : Prop :=
+  Function.Bijective realLatticeComparison ∧
+  (∀ v, coupledRealLatticeOperator (realLatticeComparison v) =
+    realLatticeComparison (splitRealLatticeOperator v)) ∧
+  FourSaturatedImage splitIntegralLatticeOperator ∧
+  ¬ FourSaturatedImage coupledIntegralLatticeOperator
+
+theorem integralRealificationBlindness : IntegralRealificationBlindness :=
+  ⟨realLatticeComparison_bijective,
+    realLatticeComparison_intertwines,
+    splitIntegralLatticeOperator_fourSaturated,
+    coupledIntegralLatticeOperator_not_fourSaturated⟩
+
+def SourceProducerIntegralLowerBound : Prop :=
+  SourceSectionDivisorBlindness ∧ IntegralRealificationBlindness
+
+theorem sourceProducerIntegralLowerBound : SourceProducerIntegralLowerBound :=
+  ⟨sourceSectionDivisorBlindness, integralRealificationBlindness⟩
+
+/-! The integral root criterion for a finite orbit divisor. -/
+
+def IntegralOrbitDivisorCoefficientwiseDivisible
+    {G : Type*} (m : ℕ) (D : G →₀ ℤ) : Prop :=
+  ∀ g, (m : ℤ) ∣ D g
+
+def integralOrbitDivisorQuotient
+    {G : Type*} (m : ℕ) (D : G →₀ ℤ) : G →₀ ℤ :=
+  D.mapRange (fun z => z / (m : ℤ)) (by simp)
+
+theorem integralOrbitDivisor_has_nsmul_root_iff
+    {G : Type*} (m : ℕ) (D : G →₀ ℤ) :
+    (∃ E : G →₀ ℤ, m • E = D) ↔
+      IntegralOrbitDivisorCoefficientwiseDivisible m D := by
+  constructor
+  · rintro ⟨E, rfl⟩ g
+    refine ⟨E g, ?_⟩
+    simp
+  · intro h
+    refine ⟨integralOrbitDivisorQuotient m D, ?_⟩
+    ext g
+    change (m : ℤ) * (D g / (m : ℤ)) = D g
+    rw [mul_comm, Int.ediv_mul_cancel (h g)]
 
 end
 

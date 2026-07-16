@@ -185,16 +185,18 @@ def generalizedCliffordObservableFieldLieHom :
   toFun := generalizedCliffordObservableFieldDerivation
   map_add' := generalizedCliffordObservableFieldDerivation_add
   map_smul' := generalizedCliffordObservableFieldDerivation_smul
-  map_lie' := fun T U =>
-    (generalizedCliffordObservableFieldDerivation_commutator T U).symm
+  map_lie' := by
+    intro T U
+    exact (generalizedCliffordObservableFieldDerivation_commutator T U).symm
 
 /-- No state-action information is lost by passage to the rational observable field. -/
 theorem generalizedCliffordObservableFieldLieHom_injective :
     Function.Injective
       (generalizedCliffordObservableFieldLieHom (K := K) (M := M)) := by
   intro T U hTU
-  change generalizedCliffordObservableFieldDerivation T =
-    generalizedCliffordObservableFieldDerivation U at hTU
+  have hTU' : generalizedCliffordObservableFieldDerivation T =
+      generalizedCliffordObservableFieldDerivation U := by
+    simpa [generalizedCliffordObservableFieldLieHom] using hTU
   apply LinearMap.ext
   intro f
   apply sub_eq_zero.mp
@@ -204,7 +206,7 @@ theorem generalizedCliffordObservableFieldLieHom_injective :
     generalizedCliffordObservableFieldDerivation U
       (generalizedCliffordShiftFieldEmbedding (K := K) (M := M)
         (SymmetricAlgebra.ι K (ℕ → M) f)) :=
-    DFunLike.congr_fun hTU _
+    DFunLike.congr_fun hTU' _
   rw [generalizedCliffordObservableFieldDerivation_embedding,
     generalizedCliffordObservableFieldDerivation_embedding,
     symmetricAlgebraDerivation_ι, symmetricAlgebraDerivation_ι] at hfield
@@ -420,7 +422,7 @@ theorem generalizedCliffordShiftFieldDerivation_commute_iff
       generalizedCliffordShiftFieldDerivation_eq_observableLift,
       generalizedCliffordObservableFieldDerivation_commutator,
       generalizedCliffordShiftOperator_commutator, hcomm]
-    rfl
+    simp
 
 end
 

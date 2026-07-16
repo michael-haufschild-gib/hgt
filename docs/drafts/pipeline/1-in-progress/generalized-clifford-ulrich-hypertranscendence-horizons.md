@@ -3,7 +3,7 @@
 - **ID:** `generalized-clifford-ulrich-hypertranscendence-horizons`
 - **Stage:** 1-in-progress
 - **Type:** THEOREM / HYPERTRANSCENDENCE / GENERALIZED CLIFFORD ALGEBRA / ULRICH BUNDLES
-- **Scientific status:** `[SHIFT-SUSPENSION THEOREM LEAN-PROVEN] [EXACT DIFFERENTIAL-FIELD LAW LEAN-PROVEN] [GLOBAL EXISTENCE PARENT-THEOREM DEPENDENT] [NOVELTY PROVISIONAL]`
+- **Scientific status:** `[SHIFT-SUSPENSION THEOREM LEAN-PROVEN] [EXACT DIFFERENTIAL-FIELD LAW LEAN-PROVEN] [PRINCIPAL-SYMBOL KERNEL THEOREM LEAN-PROVEN] [GLOBAL EXISTENCE PARENT-THEOREM DEPENDENT] [NOVELTY PROVISIONAL]`
 - **Paper lane:** *Before There Was Time: Generalized Clifford Horizons and Ulrich Matter*
 
 ## 1. The bold theorem
@@ -86,8 +86,8 @@ The principal-symbol theorem needed for publication has four layers:
 4. `ker B_A` constrains the first Spencer prolongation of the horizon.
 
 Layer 2, including the rational differential-field lift and the escaping-chord commutator theorem,
-is Lean-proven.  Layer 3 has a complete paper proof and its Lean module is in verification.  Layer
-1 is classical algebra but its universal-property formulation remains to be formalized.  The
+is Lean-proven.  Layer 3 is also Lean-proven, including exact kernel equality and the maximal-rank
+iff theorem.  Layer 1 is classical algebra but its universal-property formulation remains to be formalized.  The
 representation-theoretic and geometric classification of the kernels in Layer 4 remains open.
 
 ## 3. Ulrich existence changes the scale of the result

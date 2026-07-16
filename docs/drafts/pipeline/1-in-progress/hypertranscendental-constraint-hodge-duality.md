@@ -431,6 +431,39 @@ The conjecture requires these to be conservative realizations of one object.  Si
 does not prove that two obstructions are the same.  A proof must construct comparison functors and
 show that joint vanishing detects equivalence.
 
+## Source-producer fibre correction `[CONJECTURE; TWO NEW CHANNELS PROVED NECESSARY]`
+
+The full audit in `docs/reports/rh-proof-chains-and-obstructions-2026-07-16.md` shows that the
+selection tower cannot consist only of sewn topology, polarization, growth, and transport.  Two
+exact deletion tests force additional information: a fixed trivial carrier realizes every finite
+zero set through different sections, and two integral operators can be conjugate over `R` while
+having different integral cokernel exponents.  These theorems are Lean-formalized in
+`../3-formalized/source-producer-integral-realization-minimality.md`.
+
+Accordingly, let `Kin_HT` retain source action, polarization, critical product bornology,
+controlled transport, and integral/ramified realization.  The selection object is a fibration
+
+```text
+pi_eff:Eff_HT -> Kin_HT,
+Prod_HT(F)=hofib_(k_F)(pi_eff),                              (11a)
+```
+
+whose fibre consists of source-pure effective lifts carrying the distinguished global section and
+typed comparison morphisms.  The analytic germ and its divisor are outputs of the observation
+functor, not stored in the lift.
+
+> **[CONJECTURE -- SOURCE-EFFECTIVITY RECONSTRUCTION]** On regular source-minimal constrained HT
+> germs, maximal vertical Kolchin growth plus thin source-relative amplitude cuts out an essential
+> image of `(11a)` on which the observation functor is an equivalence and the analytic, spectral,
+> polarized, monodromy, and integral realization functors are jointly conservative.
+
+This is sharper than saying that the obstructions are cohomology classes of one topology.  Sign,
+critical scale, spectral production, divisibility, source-purity, typed comparison, and arithmetic
+rigidity are different failure modes of existence, extension, positivity, or arithmetic
+effectivity of one lift.  The conjecture is falsified if the lift must store the germ, if two
+inequivalent sources have the same complete lift, or if one report obstruction requires a seventh
+independent information channel.
+
 ## Capacity-descent Postnikov tower `[CONJECTURE; DEGREE-ONE SEED PROVED]`
 
 The source-blindness theorem forces the missing selector to compare local active charts rather than
@@ -525,7 +558,9 @@ would be the full equivalence above, including:
    restrictions;
 5. reconstruction of the analytic source germ;
 6. two genuinely different realization functors proved jointly conservative;
-7. a new analytic theorem obtained from the constraint-Hodge object that neither parent theory
+7. the distinguished effective section and integral/ramified realization reconstructed rather
+   than postulated independently;
+8. a new analytic theorem obtained from the constraint-Hodge object that neither parent theory
    proves alone.
 
 ## RH pressure test only
