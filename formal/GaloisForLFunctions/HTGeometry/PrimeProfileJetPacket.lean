@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.PrimeValuationLeadingEchelon
+import GaloisForLFunctions.HTGeometry.PrimeSeparatedDeterminantCoefficient
 import GaloisForLFunctions.HTGeometry.FinitePrimeCoefficientField
 
 /-!
@@ -17,11 +17,55 @@ open scoped Differential
 
 noncomputable section
 
+/-- Support on positive prime powers, without any finiteness restriction on valuation depth. -/
+def PrimeProfileSupportedOnPositivePrimePowers (f : ArithmeticFunction ℂ) : Prop :=
+  ∀ ⦃n : ℕ⦄, f n ≠ 0 →
+    ∃ (p : Nat.Primes) (e : ℕ), n = (p : ℕ) ^ (e + 1)
+
+/-- The explicit logarithmic coefficient jet, kept local to the profile packet theory so this
+leaf does not import the much broader valuation-echelon development. -/
+def primeProfileRotatedLogJet (k : ℕ) (f : ArithmeticFunction ℂ) :
+    ArithmeticFunction ℂ where
+  toFun n := (Complex.I * (Real.log n : ℂ)) ^ k * f n
+  map_zero' := by simp
+
+@[simp]
+theorem primeProfileRotatedLogJet_apply
+    (k : ℕ) (f : ArithmeticFunction ℂ) (n : ℕ) :
+    primeProfileRotatedLogJet k f n =
+      (Complex.I * (Real.log n : ℂ)) ^ k * f n :=
+  rfl
+
+/-- Prime derivation of a profile jet stays on the selected prime ray. -/
+theorem primeDeriv_primeProfileRotatedLogJet_supportedOnPrimeRay
+    (f : ArithmeticFunction ℂ)
+    (hsupport : PrimeProfileSupportedOnPositivePrimePowers f)
+    (q : Nat.Primes) (k : ℕ) :
+    SupportedOnPrimeRay q (primeDeriv q.1 (primeProfileRotatedLogJet k f)) := by
+  intro n hn
+  have hvalue : f (n * q) ≠ 0 := by
+    intro hzero
+    apply hn
+    rw [primeDeriv_apply, primeProfileRotatedLogJet_apply, hzero, mul_zero, mul_zero]
+  obtain ⟨p, e, hp⟩ := hsupport hvalue
+  have hqdvd : (q : ℕ) ∣ (p : ℕ) ^ (e + 1) := by
+    rw [← hp]
+    exact ⟨n, by ring⟩
+  have hpq : q = p := by
+    apply Subtype.ext
+    exact Nat.prime_eq_prime_of_dvd_pow q.2 p.2 hqdvd
+  subst p
+  refine ⟨e, ?_⟩
+  apply Nat.eq_of_mul_eq_mul_right q.2.pos
+  calc
+    n * q = (q : ℕ) ^ (e + 1) := hp
+    _ = (q : ℕ) ^ e * q := by rw [pow_succ]
+
 /-- The explicit finite jet family of a positive-prime-power source packet. -/
 def primeProfileJetSource
     {I : Type*} (g : I → ArithmeticFunction ℂ) (m : ℕ)
     (x : I × Fin (m + 1)) : ArithmeticFunction ℂ :=
-  rotatedLogArithmeticJet x.2 (g x.1)
+  primeProfileRotatedLogJet x.2 (g x.1)
 
 /-- The scalar Jacobian read at one selected valuation coordinate on each separated prime ray. -/
 def primeProfileJetPacketMatrix
@@ -58,14 +102,14 @@ def primeProfileJetArithmeticJacobian
 theorem primeProfileJetArithmeticJacobian_det_ne_zero
     {I : Type*} [Fintype I] [DecidableEq I]
     (g : I → ArithmeticFunction ℂ)
-    (hsupport : ∀ i, SupportedOnPositivePrimePowers (g i))
+    (hsupport : ∀ i, PrimeProfileSupportedOnPositivePrimePowers (g i))
     (m : ℕ) (q : I × Fin (m + 1) → Nat.Primes)
     (e : I × Fin (m + 1) → ℕ) (hq : Function.Injective q)
     (hdet : (primeProfileJetPacketMatrix g m q e).det ≠ 0) :
     (primeProfileJetArithmeticJacobian g m q).det ≠ 0 := by
   apply primeRayMatrix_det_ne_zero q hq e
   · intro row col
-    exact primeDeriv_rotatedLogArithmeticJet_supportedOnPrimeRay
+    exact primeDeriv_primeProfileRotatedLogJet_supportedOnPrimeRay
       (g col.1) (hsupport col.1) (q row) col.2
   · exact hdet
 
@@ -96,7 +140,7 @@ theorem fractionPrimeProfileJetJacobian_apply
 theorem fractionPrimeProfileJetJacobian_det_ne_zero
     {I : Type*} [Fintype I] [DecidableEq I]
     (g : I → ArithmeticFunction ℂ)
-    (hsupport : ∀ i, SupportedOnPositivePrimePowers (g i))
+    (hsupport : ∀ i, PrimeProfileSupportedOnPositivePrimePowers (g i))
     (m : ℕ) (q : I × Fin (m + 1) → Nat.Primes)
     (e : I × Fin (m + 1) → ℕ) (hq : Function.Injective q)
     (hdet : (primeProfileJetPacketMatrix g m q e).det ≠ 0) :
@@ -112,37 +156,6 @@ theorem fractionPrimeProfileJetJacobian_det_ne_zero
   apply FaithfulSMul.algebraMap_injective (ArithmeticFunction ℂ)
     arithmeticFunctionFractionField
   simpa using hzero
-
-/-- One separated packet gives algebraic independence over the common kernel of its selected
-prime derivations. -/
-theorem algebraicIndependent_fractionPrimeProfileJets_over_commonKernel
-    {I : Type*} [Fintype I] [DecidableEq I]
-    (g : I → ArithmeticFunction ℂ)
-    (hsupport : ∀ i, SupportedOnPositivePrimePowers (g i))
-    (m : ℕ) (q : I × Fin (m + 1) → Nat.Primes)
-    (e : I × Fin (m + 1) → ℕ) (hq : Function.Injective q)
-    (hdet : (primeProfileJetPacketMatrix g m q e).det ≠ 0) :
-    AlgebraicIndependent (primeCommonKernelField q)
-      (fun col => algebraMap (ArithmeticFunction ℂ)
-        arithmeticFunctionFractionField (primeProfileJetSource g m col)) := by
-  let M := fractionPrimeProfileJetJacobian g m q
-  have hM : M.det ≠ 0 :=
-    fractionPrimeProfileJetJacobian_det_ne_zero
-      g hsupport m q e hq hdet
-  refine algebraicIndependent_of_domain_jacobian
-    (K := primeCommonKernelField q)
-    (R := arithmeticFunctionFractionField)
-    (fun col => algebraMap (ArithmeticFunction ℂ)
-      arithmeticFunctionFractionField (primeProfileJetSource g m col))
-    (fun row => primeCommonKernelDerivation q row)
-    (fun row x y => map_add (primeCommonKernelDerivation q row) x y)
-    (fun row x y => by
-      simpa only [Algebra.smul_def] using
-        (primeCommonKernelDerivation q row).leibniz x y)
-    (fun row c => (primeCommonKernelDerivation q row).map_algebraMap c)
-    M hM ?_
-  intro row col
-  exact (fractionPrimeProfileJetJacobian_apply g m q row col).symm
 
 end
 

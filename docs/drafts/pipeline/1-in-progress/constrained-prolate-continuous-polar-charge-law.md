@@ -389,8 +389,8 @@ The required new infrastructure is:
    under the half-density radial envelope;
 5. `[PHASE FORMALIZED; AMPLITUDE OPEN]` a concrete radial-PSWF endpoint/exterior interface proving
    the all-radial primitive `(11)`;
-6. `[ABEL BOUNDARY FORMALIZED; PERIODIZATION OPEN]` the fixed-mode source variation bound `(19e)`
-   and the source-specific Poisson specialization `(19a)`;
+6. `[ABEL BOUNDARY AND SCALED PERIODIZATION FORMALIZED; ONE-SIDED SPECIALIZATION OPEN]` the
+   fixed-mode source variation bound `(19e)` and the source-specific Poisson specialization `(19a)`;
 7. the constrained-source and critical-Mellin specialization `(18)`--`(32)`.
 
 No abstract hypothesis wrapper is sufficient: the concrete prolate primitive, one-sided Poisson
@@ -413,7 +413,9 @@ or used in a paper.
 - [x] formalize the bilateral Poisson--Abel series, its exact Poisson-integral identity, and its
   boundary convergence at every symmetric Lebesgue point
 - [x] formalize the exact exterior Liouville phase, dilation derivative, and derivative floor
-- [ ] compute the scaled compact-periodization Fourier coefficients and thereby formalize the exact
+- [x] compute and formalize the scaled compact-periodization Fourier coefficients for every L1
+  source, with exact value `a * Fourier(f)(a*m)`
+- [ ] combine evenness, zero mean, compact support, and the Abel boundary theorem into the exact
   source-specific one-sided Poisson--Muntz specialization `(19a)`
 - [ ] prove the fixed-mode source variation bound `(19e)`
 - [ ] promote `(18)` and `(32)` after the primitive and source-regularity audits

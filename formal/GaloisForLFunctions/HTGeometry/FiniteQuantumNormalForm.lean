@@ -128,8 +128,8 @@ theorem finiteQuantumMonomial_list_apply
         rw [finiteQuantumTailCharge_shiftN_of_le (hht j hj)]
       simp only [List.map_cons, List.prod_cons, List.sum_cons]
       rw [Module.End.mul_apply, finiteQuantumGenerator_pow_apply, ih ht,
-        finiteQuantumCharacter_val_pow, finiteQuantumShiftN_eq_sub_single,
-        ZMod.natCast_rightInverse, sub_sub, hmap, mul_assoc]
+        finiteQuantumCharacter_val_pow, hmap, finiteQuantumShiftN_eq_sub_single,
+        ZMod.natCast_rightInverse, sub_sub, mul_assoc]
 
 /-- Product over the increasingly sorted universe is the unordered finite product. -/
 theorem finiteQuantumMonomial_sort_prod
@@ -184,7 +184,7 @@ theorem finiteQuantumMonomial_single (q : K) (hq : q ^ d = 1) (i : ι) :
   funext x
   rw [finiteQuantumMonomial_apply]
   have hphase : (∏ k, finiteQuantumCharacter d q hq
-        ((Pi.single i 1) k * finiteQuantumTailCharge k x)) =
+        ((Pi.single i (1 : ZMod d) : ι → ZMod d) k * finiteQuantumTailCharge k x)) =
       finiteQuantumCharacter d q hq (finiteQuantumTailCharge i x) := by
     trans ∏ k, (if k = i then
       finiteQuantumCharacter d q hq (finiteQuantumTailCharge i x) else 1)
@@ -193,7 +193,7 @@ theorem finiteQuantumMonomial_single (q : K) (hq : q ^ d = 1) (i : ι) :
       by_cases hk : k = i
       · subst hk
         simp [Pi.single_eq_same, one_mul]
-      · simp [Pi.single_eq_of_ne hk, zero_mul]
+      · rw [Pi.single_eq_of_ne hk, zero_mul, finiteQuantumCharacter_zero, if_neg hk]
     · rw [Finset.prod_ite_eq', if_pos (Finset.mem_univ i)]
   rw [hphase, ← finiteQuantumShift_eq_sub_single]
   simp only [finiteQuantumGenerator, LinearMap.coe_mk, AddHom.coe_mk]
@@ -324,14 +324,14 @@ theorem finiteQuantumFermat_normalForm_maximalHorizon
     (q : K) (hq : IsPrimitiveRoot q d) :
     (linearDerivationDependenceHorizon
         (generalizedCliffordShiftFieldDerivationLaw
-          (finiteQuantumTorusSymbol (d := d) q hq.pow_eq_one))
+          (finiteQuantumTorusSymbol (K := K) (d := d) (n := n) q hq.pow_eq_one))
         (generalizedCliffordShiftFieldRoot
           (finiteQuantumRoot (K := K) (ι := Fin n) (d := d))) =
         {c : Fin n → K | finiteQuantumDiagonalPotential d c = 0}) ∧
       Function.Injective
         (derivationCommutatorMap
           (generalizedCliffordShiftFieldDerivationLaw
-            (finiteQuantumTorusSymbol (d := d) q hq.pow_eq_one))) ∧
+            (finiteQuantumTorusSymbol (K := K) (d := d) (n := n) q hq.pow_eq_one))) ∧
       LinearIndependent K
         (finiteQuantumMonomial (K := K) (ι := Fin n) (d := d) q hq.pow_eq_one) ∧
       ∀ a b : Fin n → ZMod d,

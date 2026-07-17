@@ -1,8 +1,7 @@
 import GaloisForLFunctions.HTGeometry.ScalarLogCurrentReconstruction
 import GaloisForLFunctions.HTGeometry.RatFuncScaleFixedField
-import GaloisForLFunctions.HTGeometry.DifferentialIndependentFieldUniversality
+import GaloisForLFunctions.HTGeometry.DifferentialIndependentTopEquiv
 import GaloisForLFunctions.HTGeometry.ExponentialObservationHypertranscendence
-import GaloisForLFunctions.HTGeometry.StableCoreFunctoriality
 
 /-!
 # The scalar differential torsor over its logarithmic-current field
@@ -25,9 +24,6 @@ open scoped Differential
 namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
-
-set_option maxHeartbeats 50000
-set_option trace.profiler true
 
 variable {F T : Type*} [Field F] [Field T] [Algebra F T]
   [Differential F] [Differential T] [DifferentialAlgebra F T]
@@ -87,12 +83,8 @@ private def scalarDifferentialScaleEquivRaw (q : T) (hq : HypertranscendentalOve
     simpa [x] using hgen
   have hytop : differentialAdjoin F (Set.range y) = ⊤ := by
     simpa [y, differentialAdjoin_mul_algebraMap_eq q u] using hgen
-  let exy := GaloisForLFunctions.differentialIndependentAdjoinAlgEquiv x y hx hy
-  let ex : differentialAdjoin F (Set.range x) ≃ₐ[F] T :=
-    (IntermediateField.equivOfEq hxtop).trans IntermediateField.topEquiv
-  let ey : differentialAdjoin F (Set.range y) ≃ₐ[F] T :=
-    (IntermediateField.equivOfEq hytop).trans IntermediateField.topEquiv
-  exact ex.symm.trans (exy.trans ey)
+  exact GaloisForLFunctions.differentialIndependentTopAlgEquiv
+    x y hx hy hxtop hytop
 
 private theorem scalarDifferentialScaleEquivRaw_apply_q (q : T)
     (hq : HypertranscendentalOver F q)
@@ -112,10 +104,12 @@ private theorem scalarDifferentialScaleEquivRaw_apply_q (q : T)
     simpa [y] using
       (GaloisForLFunctions.hypertranscendentalOver_iff_differentialIndependent_singleton F
         (q * algebraMap F T (u : F))).mp hyHT
-  have hjet := GaloisForLFunctions.differentialIndependentAdjoinAlgEquiv_jet
-    x y hx hy Unit.unit 0
-  change ((GaloisForLFunctions.differentialIndependentAdjoinAlgEquiv x y hx hy) ⟨q, _⟩).1 = _
-  simpa [x, y] using congrArg Subtype.val hjet
+  have hxtop : differentialAdjoin F (Set.range x) = ⊤ := by
+    simpa [x] using hgen
+  have hytop : differentialAdjoin F (Set.range y) = ⊤ := by
+    simpa [y, differentialAdjoin_mul_algebraMap_eq q u] using hgen
+  exact GaloisForLFunctions.differentialIndependentTopAlgEquiv_apply
+    x y hx hy hxtop hytop Unit.unit
 
 private theorem scalarDifferentialScaleEquivRaw_deriv (q : T)
     (hq : HypertranscendentalOver F q)
@@ -139,20 +133,8 @@ private theorem scalarDifferentialScaleEquivRaw_deriv (q : T)
     simpa [x] using hgen
   have hytop : differentialAdjoin F (Set.range y) = ⊤ := by
     simpa [y, differentialAdjoin_mul_algebraMap_eq q u] using hgen
-  let exy := GaloisForLFunctions.differentialIndependentAdjoinAlgEquiv x y hx hy
-  let ex : differentialAdjoin F (Set.range x) ≃ₐ[F] T :=
-    (IntermediateField.equivOfEq hxtop).trans IntermediateField.topEquiv
-  let ey : differentialAdjoin F (Set.range y) ≃ₐ[F] T :=
-    (IntermediateField.equivOfEq hytop).trans IntermediateField.topEquiv
-  let zx : differentialAdjoin F (Set.range x) := ex.symm z
-  have hzx : ex.symm z′ = zx′ := by
-    apply Subtype.ext
-    rfl
-  have hxy := GaloisForLFunctions.differentialIndependentAdjoinAlgEquiv_deriv
-    x y hx hy zx
-  change ey (exy (ex.symm z′)) = Differential.deriv (ey (exy (ex.symm z)))
-  rw [hzx]
-  exact congrArg Subtype.val hxy
+  exact GaloisForLFunctions.differentialIndependentTopAlgEquiv_deriv
+    x y hx hy hxtop hytop z
 
 /-- Constant scalar rescaling exists on a freely generated differential field and commutes with
 the derivation.  Packaging the large universal-property construction as an existence theorem keeps
@@ -408,6 +390,119 @@ theorem scalarDifferentialScaleAction_injective (q : T)
     mul_left_cancel₀ hq0 hqeq'
   exact Units.ext ((algebraMap F T).injective hcoeff)
 
+/-- The amplitude coordinate is algebraically transcendental over its logarithmic-current
+field.  Its infinitely many constant rescalings give infinitely many roots of any hypothetical
+minimal polynomial. -/
+theorem scalar_amplitude_transcendental_over_currentField (q : T)
+    (hq : HypertranscendentalOver F q) (hq0 : q ≠ 0)
+    (hgen : differentialAdjoin F ({q} : Set T) = ⊤)
+    (hconst : ∀ c : F, c′ = 0) [CharZero F] :
+    Transcendental (scalarLogCurrentField F q) q := by
+  intro hqalg
+  let L : IntermediateField F T := scalarLogCurrentField F q
+  let p : L[X] := minpoly L q
+  let P : T[X] := p.map (algebraMap L T)
+  have hp0 : p ≠ 0 := minpoly.ne_zero hqalg
+  have hP0 : P ≠ 0 :=
+    (Polynomial.map_ne_zero_iff (algebraMap L T).injective).mpr hp0
+  let u : ℕ → Fˣ := fun n => Units.mk0 (n + 1 : F)
+    (Nat.cast_ne_zero.mpr (Nat.succ_ne_zero n))
+  let r : ℕ → T := fun n => q * algebraMap F T (u n : F)
+  have hrinj : Function.Injective r := by
+    intro m n hmn
+    have hcoeff : algebraMap F T (u m : F) = algebraMap F T (u n : F) :=
+      mul_left_cancel₀ hq0 hmn
+    have huval : (u m : F) = (u n : F) := (algebraMap F T).injective hcoeff
+    have hcast : (m + 1 : F) = (n + 1 : F) := by
+      simpa [u] using huval
+    exact Nat.succ.inj (Nat.cast_injective hcast)
+  have hqroot : P.IsRoot q := by
+    rw [Polynomial.IsRoot, P, Polynomial.eval_map, ← Polynomial.aeval_def]
+    exact minpoly.aeval L q
+  have hroot : Set.range r ⊆ {z : T | P.IsRoot z} := by
+    rintro z ⟨n, rfl⟩
+    let sigma := scalarDifferentialScaleEquivCurrent q hq hq0 hgen hconst (u n)
+    have hsroot := hqroot.map sigma.toRingEquiv.toRingHom
+    have hmap : P.map sigma.toRingEquiv.toRingHom = P := by
+      ext k
+      simp [P, p, sigma]
+    rw [hmap] at hsroot
+    simpa [r, sigma] using hsroot
+  exact hP0 (Polynomial.eq_zero_of_infinite_isRoot P
+    ((Set.infinite_range_of_injective hrinj).mono hroot))
+
+/-- The exact rational coordinate on the scalar torsor: `X` is sent to the amplitude `q`. -/
+def scalarTorsorRatFuncEquiv (q : T)
+    (hq : HypertranscendentalOver F q) (hq0 : q ≠ 0)
+    (hgen : differentialAdjoin F ({q} : Set T) = ⊤)
+    (hconst : ∀ c : F, c′ = 0) [CharZero F] :
+    RatFunc (scalarLogCurrentField F q) ≃ₐ[scalarLogCurrentField F q] T :=
+  (RatFunc.algEquivOfTranscendental q
+      (scalar_amplitude_transcendental_over_currentField q hq hq0 hgen hconst)).trans
+    ((IntermediateField.equivOfEq
+      (scalarLogCurrentField_adjoin_amplitude_eq_top q hq0 hgen)).trans
+        IntermediateField.topEquiv)
+
+@[simp]
+theorem scalarTorsorRatFuncEquiv_X (q : T)
+    (hq : HypertranscendentalOver F q) (hq0 : q ≠ 0)
+    (hgen : differentialAdjoin F ({q} : Set T) = ⊤)
+    (hconst : ∀ c : F, c′ = 0) [CharZero F] :
+    scalarTorsorRatFuncEquiv q hq hq0 hgen hconst RatFunc.X = q := by
+  simp [scalarTorsorRatFuncEquiv]
+
+/-- Two algebra maps out of a rational function field agree when they agree on `X`. -/
+theorem ratFunc_algHom_ext {K E : Type*} [Field K] [Field E] [Algebra K E]
+    {f g : RatFunc K →ₐ[K] E} (hX : f RatFunc.X = g RatFunc.X) : f = g := by
+  apply AlgHom.ext
+  intro z
+  have hring : f.toRingHom = g.toRingHom := by
+    apply IsFractionRing.ringHom_ext (A := K[X])
+    intro p
+    have hpoly :
+        f.toRingHom.comp (algebraMap K[X] (RatFunc K)) =
+          g.toRingHom.comp (algebraMap K[X] (RatFunc K)) := by
+      apply Polynomial.ringHom_ext
+      · intro c
+        simp
+      · simpa [RatFunc.algebraMap_X] using hX
+    exact DFunLike.congr_fun hpoly p
+  exact DFunLike.congr_fun hring z
+
+/-- A constant unit viewed in the logarithmic-current field. -/
+def scalarLogCurrentUnit (q : T) : Fˣ →* (scalarLogCurrentField F q)ˣ :=
+  Units.map (algebraMap F (scalarLogCurrentField F q)).toMonoidHom
+
+theorem scalarLogCurrentUnit_injective (q : T) :
+    Function.Injective (scalarLogCurrentUnit (F := F) q) :=
+  Units.map_injective (algebraMap F (scalarLogCurrentField F q)).injective
+
+theorem orderOf_scalarLogCurrentUnit (q : T) (u : Fˣ) :
+    orderOf (scalarLogCurrentUnit (F := F) q u) = orderOf u :=
+  orderOf_injective (scalarLogCurrentUnit (F := F) q)
+    (scalarLogCurrentUnit_injective q) u
+
+/-- The rational-coordinate scale action and the differential scalar action are conjugate through
+the exact coordinate equivalence `L(X) ≃ T`. -/
+theorem scalarTorsorRatFuncEquiv_scale (q : T)
+    (hq : HypertranscendentalOver F q) (hq0 : q ≠ 0)
+    (hgen : differentialAdjoin F ({q} : Set T) = ⊤)
+    (hconst : ∀ c : F, c′ = 0) [CharZero F] (u : Fˣ) (z : RatFunc
+      (scalarLogCurrentField F q)) :
+    scalarTorsorRatFuncEquiv q hq hq0 hgen hconst
+        (ratFuncUnitScaleAction (scalarLogCurrentUnit (F := F) q u) z) =
+      scalarDifferentialScaleEquivCurrent q hq hq0 hgen hconst u
+        (scalarTorsorRatFuncEquiv q hq hq0 hgen hconst z) := by
+  let e := scalarTorsorRatFuncEquiv q hq hq0 hgen hconst
+  let sigma := scalarDifferentialScaleEquivCurrent q hq hq0 hgen hconst u
+  have heq : e.toAlgHom.comp
+      (ratFuncUnitScaleAction (scalarLogCurrentUnit (F := F) q u)).toAlgHom =
+        sigma.toAlgHom.comp e.toAlgHom := by
+    apply ratFunc_algHom_ext
+    simp [e, sigma, scalarLogCurrentUnit, IsScalarTower.algebraMap_apply]
+    ring
+  exact DFunLike.congr_fun heq z
+
 /-- The amplitude solves the rank-one linear equation `Y' = JY`. -/
 theorem deriv_eq_logDeriv_mul (q : T) (hq0 : q ≠ 0) :
     q′ = Differential.logDeriv q * q := by
@@ -466,6 +561,177 @@ def scalarDifferentialGaloisGroupEquiv (q : T)
   MulEquiv.ofBijective (scalarDifferentialScaleAction q hq hq0 hgen hconst)
     ⟨scalarDifferentialScaleAction_injective q hq hq0 hgen hconst,
       scalarDifferentialScaleAction_surjective q hq hq0 hgen hconst⟩
+
+/-- Membership in a cyclic fixed field is equivalent to fixedness under its generator. -/
+theorem mem_fixedField_zpowers_iff {K E : Type*} [Field K] [Field E] [Algebra K E]
+    (sigma : E ≃ₐ[K] E) (z : E) :
+    z ∈ IntermediateField.fixedField (Subgroup.zpowers sigma) ↔ sigma z = z := by
+  constructor
+  · intro hz
+    rw [IntermediateField.mem_fixedField_iff] at hz
+    exact hz sigma (Subgroup.mem_zpowers sigma)
+  · intro hz
+    rw [IntermediateField.mem_fixedField_iff]
+    let S : Subgroup (E ≃ₐ[K] E) where
+      carrier := {tau | tau z = z}
+      one_mem' := rfl
+      mul_mem' := by
+        intro a b ha hb
+        change a (b z) = z
+        rw [hb, ha]
+      inv_mem' := by
+        intro a ha
+        apply a.injective
+        simpa [ha]
+    have hle : Subgroup.zpowers sigma ≤ S :=
+      (Subgroup.zpowers_le).mpr hz
+    intro tau htau
+    exact hle htau
+
+/-- Membership transports exactly through the image of an intermediate field under an algebra
+equivalence. -/
+theorem mem_map_algEquiv_iff {K E E' : Type*} [Field K] [Field E] [Field E']
+    [Algebra K E] [Algebra K E'] (e : E ≃ₐ[K] E')
+    (S : IntermediateField K E) (z : E') :
+    z ∈ S.map e.toAlgHom ↔ e.symm z ∈ S := by
+  constructor
+  · rintro ⟨x, hx, rfl⟩
+    simpa using hx
+  · intro hz
+    exact ⟨e.symm z, hz, e.apply_symm_apply z⟩
+
+/-- The cyclic fixed field of a finite-order constant scalar on the differential torsor is the
+power-coordinate field `L(q^N)`. -/
+theorem fixedField_zpowers_scalarDifferentialScaleAction
+    (q : T) (hq : HypertranscendentalOver F q) (hq0 : q ≠ 0)
+    (hgen : differentialAdjoin F ({q} : Set T) = ⊤)
+    (hconst : ∀ c : F, c′ = 0) [CharZero F]
+    (u : Fˣ) {N : ℕ} (hN : 0 < N) (hu : orderOf u = N) :
+    IntermediateField.fixedField
+        (Subgroup.zpowers
+          (scalarDifferentialScaleEquivCurrent q hq hq0 hgen hconst u)) =
+      IntermediateField.adjoin (scalarLogCurrentField F q) ({q ^ N} : Set T) := by
+  let L : IntermediateField F T := scalarLogCurrentField F q
+  let e : RatFunc L ≃ₐ[L] T := scalarTorsorRatFuncEquiv q hq hq0 hgen hconst
+  let uL : Lˣ := scalarLogCurrentUnit (F := F) q u
+  let sigmaX : RatFunc L ≃ₐ[L] RatFunc L := ratFuncUnitScaleAction uL
+  let sigmaT : T ≃ₐ[L] T :=
+    scalarDifferentialScaleEquivCurrent q hq hq0 hgen hconst u
+  have huL : orderOf uL = N := by
+    exact (orderOf_scalarLogCurrentUnit q u).trans hu
+  have hfixedX : IntermediateField.fixedField (Subgroup.zpowers sigmaX) =
+      ratFuncPowerField L N := by
+    exact fixedField_zpowers_ratFuncUnitScaleAction uL hN huL
+  have hmapPower : (ratFuncPowerField L N).map e.toAlgHom =
+      IntermediateField.adjoin L ({q ^ N} : Set T) := by
+    rw [ratFuncPowerField, IntermediateField.adjoin_map]
+    simp [e]
+  apply SetLike.ext'
+  intro z
+  have hconj : sigmaT z = z ↔ sigmaX (e.symm z) = e.symm z := by
+    have heq := scalarTorsorRatFuncEquiv_scale q hq hq0 hgen hconst u (e.symm z)
+    change e (sigmaX (e.symm z)) = sigmaT (e (e.symm z)) at heq
+    rw [e.apply_symm_apply] at heq
+    constructor
+    · intro hz
+      apply e.injective
+      rw [heq, hz, e.apply_symm_apply]
+    · intro hz
+      rw [← heq, hz, e.apply_symm_apply]
+  rw [mem_fixedField_zpowers_iff, hconj, ← mem_fixedField_zpowers_iff,
+    hfixedX, ← hmapPower, mem_map_algEquiv_iff]
+
+/-- An infinite-order constant scalar fixes exactly the logarithmic-current field. -/
+theorem fixedField_zpowers_scalarDifferentialScaleAction_of_infinite_order
+    (q : T) (hq : HypertranscendentalOver F q) (hq0 : q ≠ 0)
+    (hgen : differentialAdjoin F ({q} : Set T) = ⊤)
+    (hconst : ∀ c : F, c′ = 0) [CharZero F]
+    (u : Fˣ) (hu : orderOf u = 0) :
+    IntermediateField.fixedField
+        (Subgroup.zpowers
+          (scalarDifferentialScaleEquivCurrent q hq hq0 hgen hconst u)) = ⊥ := by
+  let L : IntermediateField F T := scalarLogCurrentField F q
+  let e : RatFunc L ≃ₐ[L] T := scalarTorsorRatFuncEquiv q hq hq0 hgen hconst
+  let uL : Lˣ := scalarLogCurrentUnit (F := F) q u
+  let sigmaX : RatFunc L ≃ₐ[L] RatFunc L := ratFuncUnitScaleAction uL
+  let sigmaT : T ≃ₐ[L] T :=
+    scalarDifferentialScaleEquivCurrent q hq hq0 hgen hconst u
+  have huL : orderOf uL = 0 := by
+    exact (orderOf_scalarLogCurrentUnit q u).trans hu
+  have hfixedX : IntermediateField.fixedField (Subgroup.zpowers sigmaX) = ⊥ :=
+    fixedField_zpowers_ratFuncUnitScaleAction_of_infinite_order uL huL
+  have hmapBot : (⊥ : IntermediateField L (RatFunc L)).map e.toAlgHom = ⊥ := by
+    simp
+  apply SetLike.ext'
+  intro z
+  have hconj : sigmaT z = z ↔ sigmaX (e.symm z) = e.symm z := by
+    have heq := scalarTorsorRatFuncEquiv_scale q hq hq0 hgen hconst u (e.symm z)
+    change e (sigmaX (e.symm z)) = sigmaT (e (e.symm z)) at heq
+    rw [e.apply_symm_apply] at heq
+    constructor
+    · intro hz
+      apply e.injective
+      rw [heq, hz, e.apply_symm_apply]
+    · intro hz
+      rw [← heq, hz, e.apply_symm_apply]
+  rw [mem_fixedField_zpowers_iff, hconj, ← mem_fixedField_zpowers_iff,
+    hfixedX, ← hmapBot, mem_map_algEquiv_iff]
+
+/-- The power-coordinate field is also exactly the differential field generated by `q^N`, after
+restricting scalars from the current field back to the constant field. -/
+theorem scalarLogCurrentField_adjoin_power_restrictScalars
+    (q : T) (hq0 : q ≠ 0) {N : ℕ} (hN : 0 < N) :
+    (IntermediateField.adjoin (scalarLogCurrentField F q)
+      ({q ^ N} : Set T)).restrictScalars F =
+        differentialAdjoin F ({q ^ N} : Set T) := by
+  rw [IntermediateField.restrictScalars_adjoin]
+  simpa [scalarLogCurrentField] using
+    (differentialAdjoin_pow_eq_logCurrentOrdinaryExtension
+      (F := F) hq0 hN).symm
+
+/-- A derivation-preserving current-field automorphism with multiplier `u` is the canonical
+scalar action by `u`. -/
+theorem derivationPreservingAut_eq_scaleAction_of_apply_q
+    (q : T) (hq : HypertranscendentalOver F q) (hq0 : q ≠ 0)
+    (hgen : differentialAdjoin F ({q} : Set T) = ⊤)
+    (hconst : ∀ c : F, c′ = 0)
+    (sigma : derivationPreservingAut (scalarLogCurrentField F q) T) (u : Fˣ)
+    (hsigma : sigma.1 q = q * algebraMap F T (u : F)) :
+    sigma = scalarDifferentialScaleAction q hq hq0 hgen hconst u := by
+  apply Subtype.ext
+  apply scalarCurrentAlgEquiv_ext q hq0 hgen
+  simpa [hsigma]
+
+/-- Finite-order fixed field for an arbitrary differential automorphism satisfying
+`sigma(q) = u q`. -/
+theorem fixedField_zpowers_derivationPreservingAut_of_finite_order
+    (q : T) (hq : HypertranscendentalOver F q) (hq0 : q ≠ 0)
+    (hgen : differentialAdjoin F ({q} : Set T) = ⊤)
+    (hconst : ∀ c : F, c′ = 0) [CharZero F]
+    (sigma : derivationPreservingAut (scalarLogCurrentField F q) T) (u : Fˣ)
+    (hsigma : sigma.1 q = q * algebraMap F T (u : F))
+    {N : ℕ} (hN : 0 < N) (hu : orderOf u = N) :
+    IntermediateField.fixedField (Subgroup.zpowers sigma.1) =
+      IntermediateField.adjoin (scalarLogCurrentField F q) ({q ^ N} : Set T) := by
+  rw [derivationPreservingAut_eq_scaleAction_of_apply_q
+    q hq hq0 hgen hconst sigma u hsigma]
+  exact fixedField_zpowers_scalarDifferentialScaleAction
+    q hq hq0 hgen hconst u hN hu
+
+/-- Infinite-order fixed field for an arbitrary differential automorphism satisfying
+`sigma(q) = u q`. -/
+theorem fixedField_zpowers_derivationPreservingAut_of_infinite_order
+    (q : T) (hq : HypertranscendentalOver F q) (hq0 : q ≠ 0)
+    (hgen : differentialAdjoin F ({q} : Set T) = ⊤)
+    (hconst : ∀ c : F, c′ = 0) [CharZero F]
+    (sigma : derivationPreservingAut (scalarLogCurrentField F q) T) (u : Fˣ)
+    (hsigma : sigma.1 q = q * algebraMap F T (u : F))
+    (hu : orderOf u = 0) :
+    IntermediateField.fixedField (Subgroup.zpowers sigma.1) = ⊥ := by
+  rw [derivationPreservingAut_eq_scaleAction_of_apply_q
+    q hq hq0 hgen hconst sigma u hsigma]
+  exact fixedField_zpowers_scalarDifferentialScaleAction_of_infinite_order
+    q hq hq0 hgen hconst u hu
 
 end
 
