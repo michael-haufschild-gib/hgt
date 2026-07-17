@@ -159,7 +159,7 @@ lean rules:
 
 ## new research
 
-Based on the current status report of our research in docs/reports/rh-status-1707.md, use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research the research programme number 5 outlined in docs/reports/rh-status-1707.md
+Based on the current status report of our research in docs/reports/rh-status-1707.md, use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research the research programme number 3 outlined in docs/reports/rh-status-1707.md
 
 lean rules:
 1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.
@@ -183,3 +183,6 @@ lean rules:
 4. always check first what the project lean code already offers
 5. effort estimation are not a criterion. if it is missing in mathlib -> you build it. if it takes months -> you build it.
 6. no computations.
+
+
+the goal is met when no further proof or conjecture is possible and no meaningful contribution or pivot can be made

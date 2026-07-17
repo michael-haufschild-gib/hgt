@@ -49,6 +49,7 @@ import GaloisForLFunctions.Hurwitz.JointLadderIndependence
 import GaloisForLFunctions.Hurwitz.JointHypertranscendence
 import GaloisForLFunctions.Hurwitz.JointUpperEndDifferentialIndependence
 import GaloisForLFunctions.Hurwitz.IntegerTranslationDifferentialMatroid
+import GaloisForLFunctions.Hurwitz.IntegerTranslationCompleteRelationIdeal
 import GaloisForLFunctions.Hurwitz.AnchorTransversality
 
 /- ## Complete area inventory -/

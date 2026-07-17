@@ -1,12 +1,12 @@
 # Holomorphic physical-character germs exclude the ambient period-incidence defects
 
 - **ID:** `multiple-gamma-holomorphic-period-incidence-exclusion`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / PROGRAMME-4 BENCHMARK NO-GO / POSITIVE SOURCE-IMAGE CLASSIFICATION
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4) / PROGRAMME-4 BENCHMARK NO-GO / POSITIVE SOURCE-IMAGE CLASSIFICATION
 - **Source:** `docs/reports/rh-status-1707.md`, research programme 4;
   `../3-formalized/not_new_scientific_knowledge/multiple-gamma-da-meromorphic-physical-character-comparison.md`;
   `hypertranscendental-bornological-krull-radical.md`
-- **Scientific status:** `[PAPER-PROVED] [REDISCOVERED] [BRIDGE]`
+- **Scientific status:** `[LEAN-FORMALIZED] [PAPER-PROVED] [REDISCOVERED] [BRIDGE]`
   `[NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH RESULT]`
 - **Statement:** For any subset `S` of the punctured unit disk accumulating at zero, bounded
   holomorphic evaluation `ev : H^infinity(D) -> ell^infinity(S)` meets the closure of the first
@@ -14,7 +14,37 @@
   only in zero. Consequently the ambient nonclosed-range quotient and nonzero flat intersection
   cannot be produced by a bounded holomorphic physical-character germ.
 
-## Exact claim
+## Exact Lean capstone
+
+Let `L` be a nondiscrete integer submodule of `C`, let
+
+```text
+w(q)=q/(1+|q|),
+T(a)(q)=w(q)a(q),
+T_r(a)(q)=w(q)^r a(q),
+ev_L(f)(q)=f(w(q)),
+```
+
+and suppose `f` is analytic and bounded on the unit disk. Then
+
+```text
+ev_L(f) in closure(range(T)) <-> ev_L(f) in range(T),             (F1)
+
+(forall r : N, ev_L(f) in range(T_r)) -> ev_L(f)=0.               (F2)
+```
+
+Both statements are unconditional. The proof also formalizes the sharper intermediate facts
+
+```text
+ev_L(f) in closure(range(T)) <-> f(0)=0 <-> ev_L(f) in range(T),
+
+ev_L(f) in range(T_r) -> r <= analyticOrderAt(f,0).
+```
+
+The exact theorem is `holomorphic_period_incidence_exclusion` in
+`formal/GaloisForLFunctions/HTGeometry/HolomorphicPeriodIncidenceExclusion.lean`.
+
+## Stronger paper claim
 
 Let
 
@@ -61,7 +91,7 @@ The open `BCDef_F` proposal asks for a source-natural completion/base-change com
 defect. If the claim is true, the answer is no for every completion whose physical-character
 image factors through bounded holomorphic functional calculus.
 
-## Proof
+## Paper proof
 
 For `(1)`, exact range implies closed-range membership. Suppose `ev(f)` is a uniform limit of
 `M_w a_n`. Given `epsilon>0`, choose `n` with `||ev(f)-M_w a_n||<epsilon`. Along a sequence
@@ -91,6 +121,10 @@ vanishing order is zero. Equation `(3)` is the quotient form of `(1)`. `QED`
 - `[SURVIVES]` A source-natural non-holomorphic bornological completion can evade the theorem, but
   must be constructed from the actual source. Selecting it only because it contains the ambient
   flat class is circular and fails the source-naturality gate.
+- `[FORMAL BOUNDARY]` Lean formalizes the actual nondiscrete period receiver and the capstones
+  `(F1)`--`(F2)`, together with the forward finite-order implication. The reverse finite-order
+  implication in `(2)` and the arbitrary-subset packaging remain paper-level strengthening; they
+  are not needed for the programme-4 exclusion.
 
 ## Relentless-interrogation successor
 
@@ -119,5 +153,7 @@ source-produced multiple-Gamma defect.
 - [x] dependency-closed paper proof completed
 - [x] external parent-theory and rediscovery audit completed
 - [x] hostile review of the exact hypotheses completed
-- [x] moved to Stage 2 as `[PAPER-PROVED] [BRIDGE]`
-- [ ] formalize only after Stage 2, with no conditional route hypothesis in the theorem
+- [x] moved through Stage 2 as `[PAPER-PROVED] [BRIDGE]`
+- [x] exact unconditional capstone formalized in Lean 4
+- [x] touched module checked against the repository toolchain
+- [x] moved to Stage 3 as `[LEAN-FORMALIZED] [BRIDGE]`
