@@ -1,9 +1,9 @@
 # Finite linear-state differential escape boundary
 
 - **ID:** `finite-linear-state-differential-escape-boundary`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** EXACT LINEAR PHASE BOUNDARY / CORPUS BRIDGE
-- **Scientific status:** `[PAPER-PROVED] [PARENT DIFFERENTIAL-MODULE THEORY]`
+- **Scientific status:** `[LEAN-PROVED] [BRIDGE] [PARENT DIFFERENTIAL-MODULE THEORY]`
   `[NOT NEW SCIENCE] [NOT AN RH RESULT]`
 - **Source:** research programme 5 successor from
   `../../5-failed/operator-presentation-bounded-innovation-stabilization.md`
@@ -57,17 +57,31 @@ from a finite presentation or bounded per-depth increments.
 system.  The missing generic interface supplied here is relative to an arbitrary coefficient
 field `F` and an arbitrary finite-dimensional `F`-submodule of the ambient field.
 
+## Lean theorem surface
+
+Module: `formal/GaloisForLFunctions/HTGeometry/FiniteLinearStateDifferentialEscape.lean`.
+
+- `DerivationInvariantSubmodule`
+- `differentialJet_mem_of_mem_derivationInvariantSubmodule`
+- `exists_nonzero_finite_jet_linearCombination_eq_zero_of_mem_derivationInvariantSubmodule`
+- `differentialAlgebraicOver_of_mem_derivationInvariantSubmodule`
+- `not_mem_derivationInvariantSubmodule_of_hypertranscendentalOver`
+
 ## Gates
 
 - [x] 0 -> 1: exact linear replacement isolated
 - [x] 1 -> 2: dependency-closed paper proof complete
 - [x] existing Lean surface checked before formalization
 - [x] novelty and parent-theory verdict assigned
-- [ ] 2 -> 3: unconditional Lean theorem batch
-- [ ] targeted touched-file check
-- [ ] formal lint and axiom audit
+- [x] 2 -> 3: unconditional Lean theorem batch
+- [x] targeted touched-file check
+- [x] touched-slice formal lint and axiom audit
 
 ## Log
 
 - 2026-07-17 -- Extracted as the exact linear positive residue of programme 5 after the general
   stabilization headline was falsified.
+- 2026-07-17 -- Promoted to Stage 3 after direct cached compilation.  `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`.  The project lint reports no proof debt or
+  reachability defect for this module; its nonzero repository-wide exit is an unrelated pre-existing
+  umbrella-reachability baseline.

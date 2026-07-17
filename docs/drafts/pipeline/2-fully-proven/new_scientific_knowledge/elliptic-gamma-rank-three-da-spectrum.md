@@ -321,9 +321,17 @@ local Weierstrass argument. The extension and transport are now complete: a wide
 the single pole, nome multiplication preserves meromorphicity in both directions, a minimal-power
 reduction covers all of `C*`, and the aligned additive pullback is globally meromorphic. The
 constructed-versus-analytic discrepancy is therefore globally meromorphic and has nonnegative
-order at the half-period. Full lattice removability and elliptic constancy remain. The final proof criterion is the
-concrete theorem in Lean, tracked by
-`all-order-multiple-elliptic-gamma-structural-matroid-lean-capstone`.
+order at the half-period.  The genuine meromorphic elliptic-gamma product, its logarithmic
+derivative, and the exact mixed theta-face identity are now packaged in
+`MeromorphicEllipticGamma.lean` and `EllipticGammaMixedFace.lean`.
+
+`MeromorphicEllipticCompositum.lean` now constructs the two concrete translation-fixed elliptic
+intermediate fields, proves each is derivation-closed, constructs their compositum inside the
+global meromorphic field, and proves that compositum is again derivation-closed.  Thus the base
+differential field `K=E_tau E_sigma` is no longer merely a paper object.  The remaining order-one
+gap is the finite-type tensor/fraction presentation needed to specialize an arbitrary element of
+this concrete compositum to one elliptic factor and then instantiate the simultaneous Ostrowski
+no-telescoping criterion for the actual defect family.  The card therefore remains in Stage 2.
 
 ## Gates
 

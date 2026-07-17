@@ -54,6 +54,15 @@ Noetherianity reduces it to finitely many jets and gives `rank_Q Gamma(f)<=n`. C
 counterexample cannot be an ordinary analytic quasiperiodic torus. It must exploit a genuinely
 rough transverse phase, a non-Lie protorus, or wild singular-chart gluing.
 
+For order two, the smooth global realization attack is also closed in
+`../2-fully-proven/not_new_scientific_knowledge/smooth-stein-order-two-autonomous-ade-frequency-rank.md`.
+A compact smooth minimal three-hull in a Stein complex surface is either Levi-flat, contradicting
+the strictly plurisubharmonic maximum principle, or contact, in which case its holomorphic flow is
+a Reeb flow and Taubes forces a periodic orbit. A smooth four-hull is open by invariance of domain
+and would be a compact Stein component. Thus every smooth globally Stein-realizable order-two hull
+has frequency rank at most two. The missing bridge is global: the present ADE theorem supplies
+different regular-time charts on closed pieces, not one smooth invariant Stein embedding.
+
 The adjacent Cartwright--O'Brien theorem gives fewer than `p` new frequencies for a regular
 first-order system in `R^p`, hence at most `2n-1` after viewing a regular complex order-`n` scalar
 equation as a real system. It neither proves `(1)` nor covers singular implicit equations.
@@ -144,6 +153,7 @@ be circular.
 - [x] transversely rough and singular-chart attacks stated
 - [x] order-one case proved, including singular implicit equations
 - [x] all finite-dimensional phase-holomorphic carriers proved
+- [x] smooth globally Stein-realizable order-two hulls proved
 - [ ] local total-reality/dimension theorem proved or counterexample found
 - [ ] full primary-literature audit
 - [ ] complete paper proof
@@ -158,3 +168,5 @@ be circular.
 - 2026-07-17 -- Proved the sharp bound for every transversely holomorphic quasiperiodic carrier.
   The remaining higher-order obstruction is transversely rough rather than an ordinary analytic
   torus.
+- 2026-07-17 -- Proved the sharp order-two bound under a smooth global Stein-realization
+  hypothesis. Singular branch switching and nonsmooth protorus gluing are now the exact open core.

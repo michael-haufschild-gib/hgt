@@ -1,9 +1,9 @@
 # Bounded finite-rank submodule stabilization
 
 - **ID:** `bounded-finite-rank-submodule-stabilization`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** EXACT STABILIZATION LEMMA / CORPUS BRIDGE
-- **Scientific status:** `[PAPER-PROVED] [PARENT LINEAR ALGEBRA] [NOT NEW SCIENCE]`
+- **Scientific status:** `[LEAN-PROVED] [BRIDGE] [PARENT LINEAR ALGEBRA] [NOT NEW SCIENCE]`
   `[NOT AN RH RESULT]`
 - **Source:** research programme 5 successor from
   `../../5-failed/operator-presentation-bounded-innovation-stabilization.md`
@@ -51,17 +51,28 @@ The corpus already proved eventual constancy for a bounded monotone natural-numb
 `HolonomicityLimit.lean`; the missing reusable result was the lift from stabilized ranks to
 stabilized submodules.
 
+## Lean theorem surface
+
+Module: `formal/GaloisForLFunctions/HTGeometry/FiniteRankSubmoduleStabilization.lean`.
+
+- `monotoneSubmodule_eventually_constant_of_finrank_bddAbove`
+- `monotoneSubmodule_eventually_constant_of_le_finiteDimensional`
+
 ## Gates
 
 - [x] 0 -> 1: exact total-rank hypothesis isolated
 - [x] 1 -> 2: dependency-closed paper proof complete
 - [x] existing Lean surface checked before formalization
 - [x] novelty and parent-theory verdict assigned
-- [ ] 2 -> 3: unconditional Lean theorem batch
-- [ ] targeted touched-file check
-- [ ] formal lint and axiom audit
+- [x] 2 -> 3: unconditional Lean theorem batch
+- [x] targeted touched-file check
+- [x] touched-slice formal lint and axiom audit
 
 ## Log
 
 - 2026-07-17 -- Extracted as the exact stabilization residue of programme 5; per-increment
   boundedness and strictness were explicitly excluded from the theorem.
+- 2026-07-17 -- Promoted to Stage 3 after direct cached compilation.  `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`.  The project lint reports no proof debt or
+  reachability defect for this module; its nonzero repository-wide exit is an unrelated pre-existing
+  umbrella-reachability baseline.

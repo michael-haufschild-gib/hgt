@@ -1,9 +1,10 @@
 # Hurwitz integer-translation complete mixed relation ideal
 
 - **ID:** `hurwitz-integer-translation-complete-relation-ideal`
-- **Stage:** 2-fully-proven / not-new-scientific-knowledge
+- **Stage:** 3-formalized / not-new-scientific-knowledge
 - **Type:** COMPLETE MIXED OPERATOR-PRESENTATION THEOREM
-- **Scientific status:** `[PAPER-PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH RESULT]`
+- **Scientific status:** `[LEAN-PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH RESULT]`
+- **Lean:** `GaloisForLFunctions.Hurwitz.IntegerTranslationCompleteRelationIdeal`
 - **Parent:** `../../3-formalized/hurwitz-nonintegral-residue-partition-differential-matroid-law.md`
 - **Failed predecessor:** `../../5-failed/operator-presentation-depth-one-benchmark-separation.md`
 - **Statement:** For pairwise integer-incongruent nonintegral class representatives `t_k`, the
@@ -216,10 +217,13 @@ gives the order-`n+1` generator. `QED`
 - [x] External parent-theory and exact-claim search completed
 - [x] Complete dependency-closed paper proof survives final hostile review after carrier repair
 - [x] 1 -> 2: `[PAPER-PROVED]`
-- [ ] Shifted-pivot theorem formalized without hypotheses beyond its exact mathematical setup
-- [ ] Hurwitz theorem formalized with unconditional nonintegrality/separation hypotheses only
-- [ ] Exact touched-file check, narrow cached build if required, lint, and axiom audit pass
-- [ ] 2 -> 3: `[LEAN-PROVED]`
+- [x] Shifted-pivot theorem formalized without hypotheses beyond its exact mathematical setup
+- [x] Hurwitz theorem formalized with unconditional nonintegrality/separation hypotheses only
+- [x] Exact generic and Hurwitz modules compile to cached `.olean` artifacts
+- [x] Axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`
+- [ ] Repository-wide lint clean: currently blocked by unrelated concurrently added unreachable
+  modules in the `RHTower` and `HTGeometry` umbrellas; neither new module was in the lint errors
+- [x] 2 -> 3: `[LEAN-PROVED]`
 
 ## Log
 
@@ -229,3 +233,7 @@ gives the order-`n+1` generator. `QED`
   transition and ambiguity between constant-coefficient and total coefficient derivations.  The
   statement and proof were repaired to use `differentialRelationIdealOver` and a direct
   upper-end-meromorphic jet identity; the claim then passed the paper-proof gate.
+- 2026-07-17 — formalized the generic shifted-pivot elimination kernel and the unconditional
+  Hurwitz specialization.  Both modules compiled to cached artifacts.  The axiom audit reported
+  only standard quotient/classical axioms.  A repository-wide lint attempt was contaminated by
+  unrelated concurrent umbrella omissions and is recorded above rather than misreported as green.

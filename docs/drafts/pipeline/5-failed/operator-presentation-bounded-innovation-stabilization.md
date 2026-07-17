@@ -18,13 +18,13 @@ total derivative span.  Finite presentation and strictness do not bridge the gap
 
 The exact positive replacement is a four-part boundary, split into dependency-closed cards:
 
-1. `../2-fully-proven/not_new_scientific_knowledge/finite-generator-differential-escape-boundary.md`:
+1. `../3-formalized/not_new_scientific_knowledge/finite-generator-differential-escape-boundary.md`:
    finite nonlinear rational state closed under differentiation forces DA;
-2. `../2-fully-proven/not_new_scientific_knowledge/finite-linear-state-differential-escape-boundary.md`:
+2. `../3-formalized/not_new_scientific_knowledge/finite-linear-state-differential-escape-boundary.md`:
    finite linear derivative state forces an explicit scalar linear ODE;
-3. `../2-fully-proven/not_new_scientific_knowledge/bounded-finite-rank-submodule-stabilization.md`:
+3. `../3-formalized/not_new_scientific_knowledge/bounded-finite-rank-submodule-stabilization.md`:
    a monotone finite-rank chain with bounded total rank stabilizes;
-4. `../2-fully-proven/not_new_scientific_knowledge/mixed-fundamental-solution-flatness.md`:
+4. `../3-formalized/not_new_scientific_knowledge/mixed-fundamental-solution-flatness.md`:
    an actual common fundamental solution forces the mixed flatness identity.
 
 These are the maximal generic consequences.  None uses presentation size or bounded per-depth
@@ -256,7 +256,7 @@ state.  Neither failure is detected by presentation size or categorical strictne
 - [x] proposed generic Galois strengthening killed by exact parent results
 - [x] one-dimensional mixed-state phase theorem isolated as significant classical residue
 - [x] four maximal generic positive successors proved on paper
-- [ ] positive successors Lean-formalized and moved to Stage 3
+- [x] positive successors Lean-formalized and moved to Stage 3
 
 ## Log
 
@@ -265,3 +265,6 @@ state.  Neither failure is detected by presentation size or categorical strictne
 - 2026-07-17 -- The stronger parameterized-Galois filtration conjecture was retired after the
   differential-algebraic-group and finite-prolongation audit.  Three further generic corpus
   interfaces and the complete one-dimensional geometric phase classification were retained.
+- 2026-07-17 -- The four maximal generic positive successors passed direct cached Lean compilation
+  and `#print axioms`, and were promoted to Stage 3.  No source-specific conjecture is well-posed
+  without an actual operator system or function family beyond the programme's generic hypotheses.

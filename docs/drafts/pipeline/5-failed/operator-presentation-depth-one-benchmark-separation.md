@@ -26,7 +26,7 @@ live in one unqualified analytic-germ carrier and use different natural derivati
 depth-one ideal therefore describes one unpolarized presentation stratum, not the source.
 
 The positive successor is the exact complete mixed Hurwitz relation-ideal theorem in
-`../2-fully-proven/not_new_scientific_knowledge/hurwitz-integer-translation-complete-relation-ideal.md`.  It retains the typed
+`../3-formalized/not_new_scientific_knowledge/hurwitz-integer-translation-complete-relation-ideal.md`.  It retains the typed
 operator-to-differential transition and computes every relation, rather than juxtaposing two
 marginal presentations.
 

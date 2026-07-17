@@ -115,8 +115,8 @@ theorem unseparatedCofiberNullPart_eq_top_iff_dense (T : E →ₗ[𝕜] F) :
     have hdiffClosure :
         y - z ∈ (LinearMap.range T).topologicalClosure :=
       (LinearMap.range T).le_topologicalClosure hdiff
-    convert (LinearMap.range T).topologicalClosure.add_mem hz hdiffClosure using 1
-    all_goals abel
+    convert (LinearMap.range T).topologicalClosure.add_mem hz hdiffClosure using 1 <;>
+      abel
   · intro hclosure
     rw [unseparatedCofiberNullPart, hclosure, Submodule.map_top]
     exact LinearMap.range_eq_top.mpr (Submodule.mkQ_surjective _)

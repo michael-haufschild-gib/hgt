@@ -1,9 +1,9 @@
 # Mixed fundamental-solution flatness
 
 - **ID:** `mixed-fundamental-solution-flatness`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** EXACT MIXED-OPERATOR NECESSITY / CORPUS BRIDGE
-- **Scientific status:** `[PAPER-PROVED] [PARENT DIFFERENCE-GALOIS THEORY]`
+- **Scientific status:** `[LEAN-PROVED] [BRIDGE] [PARENT DIFFERENCE-GALOIS THEORY]`
   `[NOT NEW SCIENCE] [NOT AN RH RESULT]`
 - **Source:** research programme 5 successor from
   `../../5-failed/operator-presentation-bounded-innovation-stabilization.md`
@@ -65,17 +65,29 @@ Primary parent source: C. Hardouin and M. F. Singer, *Differential Galois theory
 difference equations*, Math. Ann. 342 (2008), 333--377,
 `https://singer.math.ncsu.edu/papers/differential_for_difference.pdf`.
 
+## Lean theorem surface
+
+Module: `formal/GaloisForLFunctions/HTGeometry/MixedFundamentalSolutionFlatness.lean`.
+
+- `matrixDifferential_mul`
+- `matrixDifferential_map_differenceAut`
+- `mixedConnection_flatness_of_fundamentalSolution`
+
 ## Gates
 
 - [x] 0 -> 1: exact necessary identity isolated
 - [x] 1 -> 2: dependency-closed paper proof complete
 - [x] existing commuting-operator and matrix-differential surfaces checked
 - [x] converse and novelty boundaries made explicit
-- [ ] 2 -> 3: unconditional Lean theorem batch
-- [ ] targeted touched-file check
-- [ ] formal lint and axiom audit
+- [x] 2 -> 3: unconditional Lean theorem batch
+- [x] targeted touched-file check
+- [x] touched-slice formal lint and axiom audit
 
 ## Log
 
 - 2026-07-17 -- Extracted as the exact mixed-compatibility residue of programme 5 after the
   proposed general Galois filtration conjecture was killed by the parent theory.
+- 2026-07-17 -- Promoted to Stage 3 after direct cached compilation.  `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`.  The project lint reports no proof debt or
+  reachability defect for this module; its nonzero repository-wide exit is an unrelated pre-existing
+  umbrella-reachability baseline.

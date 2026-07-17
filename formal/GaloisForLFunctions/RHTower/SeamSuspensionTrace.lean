@@ -98,6 +98,80 @@ theorem gradedMatrixTrace_oddAnticommutator_zero
   rw [gradedMatrixTrace, Matrix.mul_add, Matrix.trace_add, hcancel]
   simp
 
+/-- Moving an odd left factor to the right of a graded trace introduces a minus sign.  This is the
+finite matrix form of odd cyclicity needed to orient a Hodge transgression as `(Hd - dH)h`. -/
+theorem gradedMatrixTrace_odd_left_rotate
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (Γ h X : Matrix n n ℂ) (hodd : Γ * h = -(h * Γ)) :
+    gradedMatrixTrace Γ (h * X) = -gradedMatrixTrace Γ (X * h) := by
+  calc
+    gradedMatrixTrace Γ (h * X) = (((Γ * h) * X).trace) := by
+      simp only [gradedMatrixTrace, mul_assoc]
+    _ = -(((h * Γ) * X).trace) := by rw [hodd]; simp
+    _ = -((h * (Γ * X)).trace) := by rw [mul_assoc]
+    _ = -(((Γ * X) * h).trace) := by rw [Matrix.trace_mul_comm]
+    _ = -gradedMatrixTrace Γ (X * h) := by
+      simp only [gradedMatrixTrace, mul_assoc]
+
+/-- **Finite graded Hodge transgression.**  An observable need not commute with the odd
+differential.  Its full graded trace is the harmonic compression plus the transgression of its
+commutator through the chain homotopy:
+
+`Str_Γ(H) = Str_Γ(PH) + Str_Γ(h(dH-Hd))`.
+
+When `dH = Hd`, the transgression vanishes and this reduces to Hodge compression.  On an acyclic
+complex (`P=0`), the entire observable trace is therefore a secondary chain-homotopy invariant,
+even though the ordinary Euler trace is zero.  The algebraic identity needs neither nilpotence nor
+projection axioms beyond the displayed Hodge relation. -/
+theorem gradedMatrixTrace_hodgeTransgression
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (Γ P H d h : Matrix n n ℂ)
+    (hodd : Γ * d = -(d * Γ))
+    (hHodge : 1 - P = d * h + h * d) :
+    gradedMatrixTrace Γ H =
+      gradedMatrixTrace Γ (P * H) +
+        gradedMatrixTrace Γ (h * (d * H - H * d)) := by
+  have hzero : gradedMatrixTrace Γ (d * (h * H) + (h * H) * d) = 0 :=
+    gradedMatrixTrace_oddAnticommutator_zero Γ d (h * H) hodd
+  have htrans :
+      gradedMatrixTrace Γ ((1 - P) * H) =
+        gradedMatrixTrace Γ (h * (d * H - H * d)) := by
+    rw [hHodge]
+    calc
+      gradedMatrixTrace Γ ((d * h + h * d) * H) =
+          gradedMatrixTrace Γ (d * (h * H) + (h * H) * d) +
+            gradedMatrixTrace Γ (h * (d * H - H * d)) := by
+        simp only [gradedMatrixTrace, Matrix.add_mul, Matrix.mul_add,
+          Matrix.mul_sub, Matrix.trace_add, Matrix.trace_sub, mul_assoc]
+        ring
+      _ = gradedMatrixTrace Γ (h * (d * H - H * d)) := by
+        rw [hzero, zero_add]
+  calc
+    gradedMatrixTrace Γ H =
+        gradedMatrixTrace Γ ((1 - P) * H) +
+          gradedMatrixTrace Γ (P * H) := by
+      simp only [gradedMatrixTrace, Matrix.sub_mul, Matrix.one_mul,
+        Matrix.mul_sub, Matrix.trace_sub]
+      ring
+    _ = gradedMatrixTrace Γ (P * H) +
+          gradedMatrixTrace Γ (h * (d * H - H * d)) := by
+      rw [htrans]
+      exact add_comm _ _
+
+/-- Right-oriented acyclic Hodge transgression.  When both the differential and contraction are
+odd and `1 = dh + hd`, the whole observable trace is the graded trace of `(Hd - dH)h`. -/
+theorem gradedMatrixTrace_acyclicHodgeTransgression_right
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (Γ H d h : Matrix n n ℂ)
+    (hdodd : Γ * d = -(d * Γ)) (hhodd : Γ * h = -(h * Γ))
+    (hHodge : 1 = d * h + h * d) :
+    gradedMatrixTrace Γ H =
+      gradedMatrixTrace Γ ((H * d - d * H) * h) := by
+  have hgeneral := gradedMatrixTrace_hodgeTransgression Γ 0 H d h hdodd (by simpa using hHodge)
+  rw [Matrix.zero_mul, gradedMatrixTrace_odd_left_rotate Γ h (d * H - H * d) hhodd] at hgeneral
+  simpa only [gradedMatrixTrace, Matrix.mul_sub, Matrix.neg_mul,
+    Matrix.trace_sub, Matrix.trace_neg, zero_add, neg_sub] using hgeneral
+
 /-- **Finite graded Hodge compression.**  If `d` is odd, the Hodge complement is
 `1-P=dh+hd`, and `Res` commutes with `d`, then the full graded trace equals the harmonic compressed
 graded trace.  This is the finite, non-renormalized seam-compression identity. -/

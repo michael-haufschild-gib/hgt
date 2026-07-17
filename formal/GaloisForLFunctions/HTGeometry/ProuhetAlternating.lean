@@ -80,6 +80,84 @@ theorem prouhet_alternating_annihilation {n : ℕ} (w : ℕ → ℂ) (p : Polyno
           omega
         rw [ih q hqn, neg_zero]
 
+/-! ### The Boolean logarithmic observable -/
+
+noncomputable section
+
+/-- The parity-graded trace of the diagonal affine logarithmic observable on an `n`-cube.  The
+basis vectors are subsets `S ⊆ {0, ..., n-1}`, their parity is `(-1)^|S|`, and their observable
+value is `B - ∑ i∈S, w i`. -/
+def booleanLogObservableSupertrace (n : ℕ) (B : ℂ) (w : ℕ → ℂ) : ℂ :=
+  ∑ S ∈ (Finset.range n).powerset,
+    (-1 : ℂ) ^ S.card * (B - ∑ i ∈ S, w i)
+
+/-- The empty Boolean cube retains the constant observable value. -/
+@[simp]
+theorem booleanLogObservableSupertrace_zero (B : ℂ) (w : ℕ → ℂ) :
+    booleanLogObservableSupertrace 0 B w = B := by
+  simp [booleanLogObservableSupertrace]
+
+/-- A one-dimensional Boolean cube retains exactly its marked edge weight. -/
+@[simp]
+theorem booleanLogObservableSupertrace_one (B : ℂ) (w : ℕ → ℂ) :
+    booleanLogObservableSupertrace 1 B w = w 0 := by
+  rw [booleanLogObservableSupertrace, show Finset.range 1 = insert 0 ∅ by simp,
+    Finset.sum_powerset_insert (by simp : 0 ∉ (∅ : Finset ℕ))
+      (fun S => (-1 : ℂ) ^ S.card * (B - ∑ i ∈ S, w i))]
+  simp
+
+/-- Every affine logarithmic observable has zero supertrace on a Boolean cube of dimension at
+least two.  This is the finite cancellation that removes every mixed-prime support. -/
+theorem booleanLogObservableSupertrace_eq_zero {n : ℕ} (hn : 2 ≤ n)
+    (B : ℂ) (w : ℕ → ℂ) :
+    booleanLogObservableSupertrace n B w = 0 := by
+  let p : Polynomial ℂ := C B - X
+  have hpdeg : p.natDegree < n := by
+    have hp : p = -(X - C B) := by
+      simp only [p]
+      ring
+    rw [hp, natDegree_neg, natDegree_X_sub_C]
+    omega
+  have h := prouhet_alternating_annihilation w p hpdeg
+  simpa only [booleanLogObservableSupertrace, p, eval_sub, eval_C, eval_X] using h
+
+/-- **Boolean singleton-support law.**  The affine logarithmic supertrace is the empty-cube value
+in dimension zero, the marked edge weight in dimension one, and zero in every higher interaction
+grade.  Coupled with the finite Hodge-transgression identity, this is the combinatorial trace law
+behind the von Mangoldt singleton-prime selector. -/
+theorem booleanLogObservableSupertrace_eq (n : ℕ) (B : ℂ) (w : ℕ → ℂ) :
+    booleanLogObservableSupertrace n B w =
+      if n = 0 then B else if n = 1 then w 0 else 0 := by
+  by_cases h0 : n = 0
+  · subst n
+    simp
+  by_cases h1 : n = 1
+  · subst n
+    simp
+  rw [if_neg h0, if_neg h1]
+  exact booleanLogObservableSupertrace_eq_zero (by omega) B w
+
+/-- The relative logarithmic observable obtained by subtracting the even empty-face projector.
+Its graded trace is the local prime current minus one unit of polar density. -/
+def booleanAugmentedLogObservableSupertrace (n : ℕ) (B : ℂ) (w : ℕ → ℂ) : ℂ :=
+  booleanLogObservableSupertrace n B w - 1
+
+/-- The augmented Boolean trace is `B - 1` on the empty cube, `w 0 - 1` on a singleton cube,
+and `-1` on every higher interaction grade. -/
+theorem booleanAugmentedLogObservableSupertrace_eq
+    (n : ℕ) (B : ℂ) (w : ℕ → ℂ) :
+    booleanAugmentedLogObservableSupertrace n B w =
+      if n = 0 then B - 1 else if n = 1 then w 0 - 1 else -1 := by
+  rw [booleanAugmentedLogObservableSupertrace,
+    booleanLogObservableSupertrace_eq]
+  by_cases h0 : n = 0
+  · simp [h0]
+  by_cases h1 : n = 1
+  · simp [h0, h1]
+  simp [h0, h1]
+
+end
+
 end GaloisForLFunctions
 
 namespace GaloisForLFunctions

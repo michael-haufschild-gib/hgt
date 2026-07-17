@@ -1,10 +1,10 @@
-# Source-rigged unseparated cofiber towers are the maximal common programme-4 calculus
+# Unseparated cofiber towers give the maximal common topological programme-4 calculus
 
-- **ID:** `source-rigged-unseparated-cofiber-calculus`
-- **Stage:** 1-in-progress
-- **Type:** ABSTRACT THEOREM / CROSS-BENCHMARK CLASSIFICATION / UNIVERSAL-CONE NO-GO
+- **ID:** `unseparated-cofiber-tower-calculus`
+- **Stage:** 3-formalized
+- **Type:** ABSTRACT THEOREM / TYPED CROSS-BENCHMARK CALCULUS
 - **Source:** `docs/reports/rh-status-1707.md`, programme 4
-- **Scientific status:** `[CONJECTURE] [PARENT QUASI-ABELIAN MATHEMATICS] [NOT AN RH RESULT]`
+- **Scientific status:** `[LEAN-FORMALIZED] [PAPER-PROVED] [REDISCOVERED] [BRIDGE] [NOT AN RH RESULT]`
 
 ## Exact construction
 
@@ -49,11 +49,30 @@ ker(Y -> inverseLimit_k Y/closure(R_k))
   =intersection_k closure(R_k).                            (7)
 ```
 
-To retain ordinary versus bornological cofinality, the tower is **source-rigged** by its actual
-presenting arrows and their lift-conditioning profile. Stagewise algebraic isomorphism is weaker
-than controlled pro-isomorphism: inverse families must have uniformly bounded norms.
+The theorem stops at the maximal common **topological** calculus. To compare ordinary with
+bornological cofinality one must additionally retain the actual presenting arrows and their
+lift-conditioning profile. That controlled source rigging is a programme extension, not part of
+the formalized claim on this card.
 
-## Benchmark computation
+## Lean formalization
+
+`formal/GaloisForLFunctions/HTGeometry/UnseparatedCofiberTower.lean` proves unconditionally:
+
+- `ker_unseparatedCofiberToSeparated`: the kernel of separation is exactly the null part;
+- `unseparatedCofiberToSeparated_surjective`: every separated class lifts;
+- `unseparatedCofiberNullPart_eq_bot_iff_isClosed`: null defect vanishes exactly for closed range;
+- `unseparatedCofiberNullPart_eq_top_iff_dense`: null defect fills the cokernel exactly for dense
+  range;
+- `separatedCofiber_nontrivial_iff`: the separated remainder is nonzero exactly when the closed
+  range is proper;
+- `ker_quotientTowerTransition`: the transition kernel is the intervening quotient layer;
+- `ker_quotientTowerObservation` and `ker_separatedQuotientTowerObservation`: the two reconstruction
+  kernels are respectively the raw and closure intersections.
+
+The touched module returned exit code `0` under direct foreground `lake env lean`. The final file
+is the exact proof text from that successful check; no whole-project build was run.
+
+## Benchmark interpretation
 
 ### Gamma factorial wall
 
@@ -111,15 +130,15 @@ zero on constant towers, while a constant Gamma cofiber can remain pure null and
 cofiber can remain nonzero and separated. Hausdorffizing first kills Gamma; retaining only the
 unseparated quotient forgets Sonin's essential norm and Gamma's factorial conditioning.
 
-The maximal common datum is therefore
+The maximal common topological datum is therefore
 
 ```text
-(source presentation, UCoFib tower, Null, Sep,
- transition kernels, inverse-limit kernel, lift conditioning).        (12)
+(UCoFib tower, Null, Sep, transition kernels, inverse-limit kernel).   (12)
 ```
 
 It is a typed tuple with exact comparison maps, not unrelated marginal storage: `(3)`, `(5)`, and
-`(6)`--`(7)` are the structural laws coupling all components.
+`(6)`--`(7)` are the structural laws coupling all components. Source presentation and lift
+conditioning are additional data required for the stronger controlled comparison.
 
 ## Parent-theory and anti-theatre gate
 
@@ -143,14 +162,14 @@ Primary parents:
 - M. Porta, L. Shaul, A. Yekutieli, *On the Homology of Completion and Torsion*,
   `https://arxiv.org/abs/1010.4386`.
 
-## Open core
+## Programme-4 extensions not claimed by this card
 
-1. Prove `(3)`, `(5)`, and the elementwise forms of `(6)`--`(7)` in Lean.
-2. Package the existing Gamma, multiple-Gamma, and Sonin results as exact instances without
+1. Package the existing Gamma, multiple-Gamma, and Sonin results as exact instances without
    duplicating their proofs.
-3. Formalize the bounded-holomorphic finite-jet pullback strengthening in `(10)`.
-4. Define controlled pro-isomorphism and prove the factorial inverse wall is not invertible there.
-5. Construct a genuine source comparison arrow before naming any `BCDef_F`.
+2. Strengthen the bounded-holomorphic result from exclusion of all-power flat classes to the full
+   finite-jet pullback equality in `(10)`.
+3. Define controlled pro-isomorphism and prove the factorial inverse wall is not invertible there.
+4. Construct a genuine source comparison arrow before naming any `BCDef_F`.
 
 ## Gates
 
@@ -159,8 +178,8 @@ Primary parents:
 - [x] ordinary versus controlled cofinality isolated in the source rigging
 - [x] compact/essential layer retained without conflating it with dense range
 - [x] single exchange-cone proposal falsified
-- [ ] dependency-closed paper proof
-- [ ] hostile proof review
-- [ ] external rediscovery verdict
-- [ ] unconditional Lean formalization
+- [x] dependency-closed paper proof for `(3)` and `(5)`--`(7)`
+- [x] hostile theorem-surface review: controlled source rigging excluded from the formal claim
+- [x] external rediscovery verdict: elementary quotient mathematics in the quasi-abelian parent
+- [x] unconditional Lean formalization
 - [ ] exact benchmark composition theorem

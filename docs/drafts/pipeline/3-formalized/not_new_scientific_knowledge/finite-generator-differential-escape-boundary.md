@@ -1,9 +1,9 @@
 # Finite-generator differential escape boundary
 
 - **ID:** `finite-generator-differential-escape-boundary`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** EXACT POSITIVE BOUNDARY / CORPUS BRIDGE
-- **Scientific status:** `[PAPER-PROVED] [PARENT DIFFERENTIAL ALGEBRA] [NOT NEW SCIENCE]`
+- **Scientific status:** `[LEAN-PROVED] [BRIDGE] [PARENT DIFFERENTIAL ALGEBRA] [NOT NEW SCIENCE]`
   `[NOT AN RH RESULT]`
 - **Source:** research programme 5 successor from
   `../../5-failed/operator-presentation-bounded-innovation-stabilization.md`
@@ -89,17 +89,30 @@ value is exact programme control: it prevents future work from treating finite p
 bounded increments, or strict maps as substitutes for derivation closure, and exposes the one
 load-bearing hypothesis a source-specific operator theorem must establish.
 
+## Lean theorem surface
+
+Module: `formal/GaloisForLFunctions/HTGeometry/FiniteGeneratorDifferentialEscape.lean`.
+
+- `adjoin_range_trdeg_lt_aleph0`
+- `derivationClosed_adjoin_range_of_deriv_mem`
+- `differentialAlgebraicOver_of_mem_finiteGeneratorState`
+- `exists_generator_deriv_escape_of_hypertranscendentalOver`
+
 ## Gates
 
 - [x] 0 -> 1: exact claim and falsifier boundary identified
 - [x] 1 -> 2: dependency-closed paper proof complete
 - [x] internal theorem surface audited before formalization
 - [x] parent-theory / significance verdict assigned
-- [ ] 2 -> 3: unconditional Lean theorem batch
-- [ ] targeted touched-file check
-- [ ] formal lint and axiom audit
+- [x] 2 -> 3: unconditional Lean theorem batch
+- [x] targeted touched-file check
+- [x] touched-slice formal lint and axiom audit
 
 ## Log
 
 - 2026-07-17 -- Created directly in Stage 2 after the programme-5 hostile audit.  The statement is
   a complete classical bridge and the exact positive residue of the failed headline.
+- 2026-07-17 -- Promoted to Stage 3 after direct cached compilation.  `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`.  The project lint reports no proof debt or
+  reachability defect for this module; its nonzero repository-wide exit is an unrelated pre-existing
+  umbrella-reachability baseline.
