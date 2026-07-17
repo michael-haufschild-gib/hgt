@@ -65,8 +65,7 @@ theorem differentialAdjoin_mul_algebraMap_eq (q : T) (u : Fˣ) :
     · exact derivationClosed_differentialAdjoin F
         ({q * algebraMap F T (u : F)} : Set T)
 
-/-- Constant scalar rescaling on a freely generated differential field. -/
-def scalarDifferentialScaleEquiv (q : T) (hq : HypertranscendentalOver F q)
+private def scalarDifferentialScaleEquivRaw (q : T) (hq : HypertranscendentalOver F q)
     (hgen : differentialAdjoin F ({q} : Set T) = ⊤) (u : Fˣ) : T ≃ₐ[F] T := by
   let x : Unit → T := fun _ => q
   let y : Unit → T := fun _ => q * algebraMap F T (u : F)
@@ -92,11 +91,10 @@ def scalarDifferentialScaleEquiv (q : T) (hq : HypertranscendentalOver F q)
     (IntermediateField.equivOfEq hytop).trans IntermediateField.topEquiv
   exact ex.symm.trans (exy.trans ey)
 
-@[simp]
-theorem scalarDifferentialScaleEquiv_apply_q (q : T)
+private theorem scalarDifferentialScaleEquivRaw_apply_q (q : T)
     (hq : HypertranscendentalOver F q)
     (hgen : differentialAdjoin F ({q} : Set T) = ⊤) (u : Fˣ) :
-    scalarDifferentialScaleEquiv q hq hgen u q =
+    scalarDifferentialScaleEquivRaw q hq hgen u q =
       q * algebraMap F T (u : F) := by
   let x : Unit → T := fun _ => q
   let y : Unit → T := fun _ => q * algebraMap F T (u : F)
@@ -116,12 +114,11 @@ theorem scalarDifferentialScaleEquiv_apply_q (q : T)
   change ((GaloisForLFunctions.differentialIndependentAdjoinAlgEquiv x y hx hy) ⟨q, _⟩).1 = _
   simpa [x, y] using congrArg Subtype.val hjet
 
-/-- The canonical scalar equivalence commutes with the derivation. -/
-theorem scalarDifferentialScaleEquiv_deriv (q : T)
+private theorem scalarDifferentialScaleEquivRaw_deriv (q : T)
     (hq : HypertranscendentalOver F q)
     (hgen : differentialAdjoin F ({q} : Set T) = ⊤) (u : Fˣ) (z : T) :
-    scalarDifferentialScaleEquiv q hq hgen u z′ =
-      (scalarDifferentialScaleEquiv q hq hgen u z)′ := by
+    scalarDifferentialScaleEquivRaw q hq hgen u z′ =
+      (scalarDifferentialScaleEquivRaw q hq hgen u z)′ := by
   let x : Unit → T := fun _ => q
   let y : Unit → T := fun _ => q * algebraMap F T (u : F)
   have hx : DifferentialIndependent F x := by
@@ -153,6 +150,40 @@ theorem scalarDifferentialScaleEquiv_deriv (q : T)
   change ey (exy (ex.symm z′)) = Differential.deriv (ey (exy (ex.symm z)))
   rw [hzx]
   exact congrArg Subtype.val hxy
+
+/-- Constant scalar rescaling exists on a freely generated differential field and commutes with
+the derivation.  Packaging the large universal-property construction as an existence theorem keeps
+downstream elaboration small. -/
+theorem exists_scalarDifferentialScaleEquiv (q : T)
+    (hq : HypertranscendentalOver F q)
+    (hgen : differentialAdjoin F ({q} : Set T) = ⊤) (u : Fˣ) :
+    ∃ sigma : T ≃ₐ[F] T,
+      sigma q = q * algebraMap F T (u : F) ∧
+        ∀ z : T, sigma z′ = (sigma z)′ :=
+  ⟨scalarDifferentialScaleEquivRaw q hq hgen u,
+    scalarDifferentialScaleEquivRaw_apply_q q hq hgen u,
+    scalarDifferentialScaleEquivRaw_deriv q hq hgen u⟩
+
+/-- Constant scalar rescaling on a freely generated differential field. -/
+def scalarDifferentialScaleEquiv (q : T) (hq : HypertranscendentalOver F q)
+    (hgen : differentialAdjoin F ({q} : Set T) = ⊤) (u : Fˣ) : T ≃ₐ[F] T :=
+  (exists_scalarDifferentialScaleEquiv q hq hgen u).choose
+
+@[simp]
+theorem scalarDifferentialScaleEquiv_apply_q (q : T)
+    (hq : HypertranscendentalOver F q)
+    (hgen : differentialAdjoin F ({q} : Set T) = ⊤) (u : Fˣ) :
+    scalarDifferentialScaleEquiv q hq hgen u q =
+      q * algebraMap F T (u : F) :=
+  (exists_scalarDifferentialScaleEquiv q hq hgen u).choose_spec.1
+
+/-- The canonical scalar equivalence commutes with the derivation. -/
+theorem scalarDifferentialScaleEquiv_deriv (q : T)
+    (hq : HypertranscendentalOver F q)
+    (hgen : differentialAdjoin F ({q} : Set T) = ⊤) (u : Fˣ) (z : T) :
+    scalarDifferentialScaleEquiv q hq hgen u z′ =
+      (scalarDifferentialScaleEquiv q hq hgen u z)′ :=
+  (exists_scalarDifferentialScaleEquiv q hq hgen u).choose_spec.2 z
 
 /-- The scalar differential field is generated as an ordinary field by its logarithmic-current
 field and the one amplitude coordinate. -/
@@ -296,19 +327,46 @@ theorem scalarCurrentAlgEquiv_ext (q : T) (hq0 : q ≠ 0)
 def derivationPreservingAut (L : Type*) (T : Type*)
     [Field L] [Field T] [Algebra L T] [Differential T] :
     Subgroup (T ≃ₐ[L] T) where
-  carrier := {sigma | ∀ z : T, sigma z′ = (sigma z)′}
+  carrier := {sigma | ∀ z : T,
+    sigma (Differential.deriv z) = Differential.deriv (sigma z)}
   one_mem' := by intro z; rfl
   mul_mem' := by
     intro sigma tau hsigma htau z
-    change sigma (tau z′) = (sigma (tau z))′
+    change sigma (tau (Differential.deriv z)) =
+      Differential.deriv (sigma (tau z))
     rw [htau, hsigma]
   inv_mem' := by
     intro sigma hsigma z
     apply sigma.injective
-    rw [sigma.apply_symm_apply]
-    calc
-      sigma ((sigma.symm z)′) = (sigma (sigma.symm z))′ := hsigma (sigma.symm z)
-      _ = z′ := by rw [sigma.apply_symm_apply]
+    simpa using (hsigma (sigma⁻¹ z)).symm
+
+theorem scalarDifferentialScaleEquivCurrent_one (q : T)
+    (hq : HypertranscendentalOver F q) (hq0 : q ≠ 0)
+    (hgen : differentialAdjoin F ({q} : Set T) = ⊤)
+    (hconst : ∀ c : F, c′ = 0) :
+    scalarDifferentialScaleEquivCurrent q hq hq0 hgen hconst 1 = 1 := by
+  apply scalarCurrentAlgEquiv_ext q hq0 hgen
+  rw [scalarDifferentialScaleEquivCurrent_apply_q]
+  simp
+
+theorem scalarDifferentialScaleEquivCurrent_mul (q : T)
+    (hq : HypertranscendentalOver F q) (hq0 : q ≠ 0)
+    (hgen : differentialAdjoin F ({q} : Set T) = ⊤)
+    (hconst : ∀ c : F, c′ = 0) (u v : Fˣ) :
+    scalarDifferentialScaleEquivCurrent q hq hq0 hgen hconst (u * v) =
+      scalarDifferentialScaleEquivCurrent q hq hq0 hgen hconst u *
+        scalarDifferentialScaleEquivCurrent q hq hq0 hgen hconst v := by
+  apply scalarCurrentAlgEquiv_ext q hq0 hgen
+  simp only [AlgEquiv.mul_apply, scalarDifferentialScaleEquivCurrent_apply_q]
+  have hvL : algebraMap F T (v : F) ∈ scalarLogCurrentField F q :=
+    (scalarLogCurrentField F q).algebraMap_mem (v : F)
+  have hfixv : scalarDifferentialScaleEquivCurrent q hq hq0 hgen hconst u
+      (algebraMap F T (v : F)) = algebraMap F T (v : F) := by
+    exact (scalarDifferentialScaleEquivCurrent q hq hq0 hgen hconst u).commutes
+      ⟨algebraMap F T (v : F), hvL⟩
+  rw [map_mul, scalarDifferentialScaleEquivCurrent_apply_q, hfixv]
+  simp only [Units.val_mul, map_mul]
+  ring
 
 /-- Constant rescaling as a multiplicative action by derivation-preserving automorphisms of the
 current-field extension. -/
@@ -319,24 +377,17 @@ def scalarDifferentialScaleAction (q : T)
     Fˣ →* derivationPreservingAut (scalarLogCurrentField F q) T where
   toFun u := ⟨scalarDifferentialScaleEquivCurrent q hq hq0 hgen hconst u,
     scalarDifferentialScaleEquiv_deriv q hq hgen u⟩
-  map_one' := by
-    apply Subtype.ext
-    apply scalarCurrentAlgEquiv_ext q hq0 hgen
-    simp
-  map_mul' u v := by
-    apply Subtype.ext
-    apply scalarCurrentAlgEquiv_ext q hq0 hgen
-    simp only [Subgroup.coe_mul, AlgEquiv.mul_apply,
-      scalarDifferentialScaleEquivCurrent_apply_q]
-    have hvL : algebraMap F T (v : F) ∈ scalarLogCurrentField F q :=
-      (scalarLogCurrentField F q).algebraMap_mem (v : F)
-    have hfixv : scalarDifferentialScaleEquivCurrent q hq hq0 hgen hconst u
-        (algebraMap F T (v : F)) = algebraMap F T (v : F) := by
-      exact (scalarDifferentialScaleEquivCurrent q hq hq0 hgen hconst u).commutes
-        ⟨algebraMap F T (v : F), hvL⟩
-    rw [map_mul, scalarDifferentialScaleEquivCurrent_apply_q, hfixv]
-    simp only [Units.val_mul, map_mul]
-    ring
+  map_one' := Subtype.ext (scalarDifferentialScaleEquivCurrent_one q hq hq0 hgen hconst)
+  map_mul' u v := Subtype.ext
+    (scalarDifferentialScaleEquivCurrent_mul q hq hq0 hgen hconst u v)
+
+@[simp]
+theorem scalarDifferentialScaleAction_apply (q : T)
+    (hq : HypertranscendentalOver F q) (hq0 : q ≠ 0)
+    (hgen : differentialAdjoin F ({q} : Set T) = ⊤)
+    (hconst : ∀ c : F, c′ = 0) (u : Fˣ) (z : T) :
+    ((scalarDifferentialScaleAction q hq hq0 hgen hconst u).1 : T → T) z =
+      scalarDifferentialScaleEquivCurrent q hq hq0 hgen hconst u z := rfl
 
 /-- The constant-scalar action on a free differential amplitude is faithful. -/
 theorem scalarDifferentialScaleAction_injective (q : T)
@@ -347,10 +398,11 @@ theorem scalarDifferentialScaleAction_injective (q : T)
   intro u v huv
   have hqeq := congrArg
     (fun sigma : derivationPreservingAut (scalarLogCurrentField F q) T => sigma.1 q) huv
-  simp only [scalarDifferentialScaleAction,
-    scalarDifferentialScaleEquivCurrent_apply_q] at hqeq
+  have hqeq' : q * algebraMap F T (u : F) = q * algebraMap F T (v : F) := by
+    simpa only [scalarDifferentialScaleAction_apply,
+      scalarDifferentialScaleEquivCurrent_apply_q] using hqeq
   have hcoeff : algebraMap F T (u : F) = algebraMap F T (v : F) :=
-    mul_left_cancel₀ hq0 hqeq
+    mul_left_cancel₀ hq0 hqeq'
   exact Units.ext ((algebraMap F T).injective hcoeff)
 
 /-- The amplitude solves the rank-one linear equation `Y' = JY`. -/
@@ -371,7 +423,8 @@ theorem scalarDifferentialScaleAction_surjective (q : T)
     subset_differentialAdjoin F ({J} : Set T) rfl
   have hfixJ : sigma.1 J = J := by
     exact sigma.1.commutes ⟨J, hJmem⟩
-  have hsigmaq0 : sigma.1 q ≠ 0 := map_ne_zero_iff sigma.1.injective |>.2 hq0
+  have hsigmaq0 : sigma.1 q ≠ 0 :=
+    (map_ne_zero_iff sigma.1 sigma.1.injective).2 hq0
   have hqderiv : q′ = J * q := deriv_eq_logDeriv_mul q hq0
   have hsigmaq_deriv : (sigma.1 q)′ = J * sigma.1 q := by
     calc

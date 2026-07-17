@@ -211,14 +211,14 @@ theorem finiteQuantumMonomial_mul (q : K) (hq : q ^ d = 1) (a b : ι → ZMod d)
         (b i * finiteQuantumTailCharge i (x - a))) =
       (∏ i, finiteQuantumCharacter d q hq (b i * finiteQuantumTailCharge i x)) /
         (∏ i, finiteQuantumCharacter d q hq (b i * finiteQuantumTailCharge i a)) := by
-    rw [Finset.prod_div_distrib]
+    rw [← Finset.prod_div_distrib]
     apply Finset.prod_congr rfl
     intro i _
     rw [finiteQuantumTailCharge_sub, mul_sub, AddChar.map_sub_eq_div]
   have hC : (∏ i, finiteQuantumCharacter d q hq
         (-(b i * finiteQuantumTailCharge i a))) =
       (∏ i, finiteQuantumCharacter d q hq (b i * finiteQuantumTailCharge i a))⁻¹ := by
-    rw [Finset.prod_inv_distrib]
+    rw [← Finset.prod_inv_distrib]
     apply Finset.prod_congr rfl
     intro i _
     rw [AddChar.map_neg_eq_inv]
@@ -245,16 +245,22 @@ theorem finiteQuantumMonomial_linearIndependent (q : K) (hq : q ^ d = 1) :
   apply LinearIndependent.of_comp
     (LinearMap.applyₗ (R := K) (finiteQuantumRoot (K := K) (ι := ι) (d := d)))
   have hb : LinearIndependent K (fun a : ι → ZMod d ↦
-      (∏ i, finiteQuantumCharacter d q hq (a i * finiteQuantumTailCharge i a)) •
-        Pi.basisFun K (FiniteQuantumState ι d) a) := by
-    have hscale := (Pi.basisFun K (FiniteQuantumState ι d)).linearIndependent.units_smul
+      (↑(Units.mk0
+          (∏ i, finiteQuantumCharacter d q hq (a i * finiteQuantumTailCharge i a))
+          (Finset.prod_ne_zero_iff.mpr (fun i _ ↦
+            finiteQuantumCharacter_ne_zero q hq _))) : K) •
+        Pi.basisFun K (FiniteQuantumState ι d) a) :=
+    (Pi.basisFun K (FiniteQuantumState ι d)).linearIndependent.units_smul
       (fun a : ι → ZMod d ↦ Units.mk0
         (∏ i, finiteQuantumCharacter d q hq (a i * finiteQuantumTailCharge i a))
-        (Finset.prod_ne_zero_iff.mpr (fun i _ ↦ finiteQuantumCharacter_ne_zero q hq _)))
-    simpa using hscale
+        (Finset.prod_ne_zero_iff.mpr (fun i _ ↦
+          finiteQuantumCharacter_ne_zero q hq _)))
   have hcomp : (fun a : ι → ZMod d ↦ finiteQuantumMonomial q hq a
         (finiteQuantumRoot (K := K) (ι := ι) (d := d))) =
-      (fun a ↦ (∏ i, finiteQuantumCharacter d q hq (a i * finiteQuantumTailCharge i a)) •
+      (fun a ↦ (↑(Units.mk0
+          (∏ i, finiteQuantumCharacter d q hq (a i * finiteQuantumTailCharge i a))
+          (Finset.prod_ne_zero_iff.mpr (fun i _ ↦
+            finiteQuantumCharacter_ne_zero q hq _))) : K) •
         Pi.basisFun K (FiniteQuantumState ι d) a) := by
     funext a
     funext x
