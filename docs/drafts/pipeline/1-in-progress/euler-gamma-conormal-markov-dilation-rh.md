@@ -251,18 +251,46 @@ The second formula is division-free.  Hence it does not conceal the desired zero
 inside a quotient by `XiC`.  Every `XiC` zero in the strip forces `Delta=0`, while Lean proves the
 strict favorable sign `Delta(iv)>0` for `0<v<1/2`.
 
-**[CONJECTURE: completed-density Hermite--Biehler orientation]**
+**[FALSE THEOREM: scalar completed-density Hermite--Biehler orientation]**
 
 ```text
 0<Im z<1/2  implies  Delta(z)>0.                           (7g)
 ```
 
-Clause `(7g)` would exclude every upper off-real centered Xi zero and, by the completed symmetry,
-imply RH.  It is now the shortest direct source-producer target.  The imaginary-axis result is
-only an anchor, not a propagation theorem: a generic positive one-sided density need not have the
-same global gap sign.  Thus the remaining proof must use the completed theta reflection law or an
-equivalent source-specific total-positivity/Herglotz mechanism, not positivity of the density
-alone.
+Clause `(7g)` would exclude every upper off-real centered Xi zero and imply RH, but Lean now proves
+unconditionally that `(7g)` is false.  If it held, boundary differentiation would force the
+real-axis phase ratio `Re E(t)/Im E(t)` to be nondecreasing on `t>0`.  This contradicts the exact
+source asymptotics below.
+
+**Positive source residue.**  Define the canonical derivative-drop mass
+
+```text
+M_drop = integral_(0,infinity) -4 T'''(x) dx.             (7h)
+```
+
+Lean proves
+
+```text
+M_drop > 0,
+t integral_(0,infinity) rho(x) sin(tx) dx -> M_drop,
+Im E(t)/t -> M_drop,
+Re E(t)/Im E(t) -> 0.                                    (7i)
+```
+
+Thus the failed scalar gap leaves a canonical, strictly positive orientation mass and an
+asymptotically orthogonal source channel.  This is stronger than a local sign: it fixes the
+normalization at positive infinity for every transported integral or spectral realization.
+The RH route must therefore be genuinely transverse.  No single scalar polarization of this
+completed density can carry the critical orientation; at least a rank-two family of different
+realizations must remain jointly conservative while allowing each individual phase ratio to
+degenerate.  This is exactly where analytic, monodromy, spectral, Hermitian, and integral
+realizations must contribute nonredundant information rather than merely repackage one gap.
+
+**[CONJECTURE: transverse source-orientation completion]**  The positive mass `(7h)` canonically
+normalizes a transported companion channel whose matrix-valued polarized current is strictly
+positive on `0<Im z<1/2`; its nullspace is the common nullspace of the analytic, monodromy,
+spectral, Hermitian, and integral realization maps.  Joint conservativity then excludes every
+off-axis Xi zero without asserting the false scalar inequality `(7g)`.
 
 ## Positive failure theorem
 
@@ -298,8 +326,12 @@ source, `Obs_CP=0` is the precise positive-orientation clause that would imply R
 - [x] raw Stieltjes phase no-go proved in general and specialized to von Mangoldt frequencies
 - [x] assemble the finite source-Julia and raw Bianchi legs on one prime carrier with forced cross terms
 - [x] reconstruct `XiC` from the canonical completed theta density and polarize its de Branges gap
+- [x] falsify scalar completed-density Hermite--Biehler orientation `(7g)` unconditionally
+- [x] extract the positive derivative-drop mass and asymptotic odd source orientation `(7h)--(7i)`
 - [ ] orient the fixed joint Gram's Beta reflection by the completed Gamma/polar/Mellin environment
-- [ ] prove completed-density Hermite--Biehler orientation `(7g)` from the theta source
+- [ ] construct a rank-two transverse source orientation normalized by `M_drop`
+- [ ] prove joint conservativity of genuinely different analytic, monodromy, spectral, Hermitian,
+      and integral realizations
 - [ ] transport that completed reflection form into a closable cofinal colligation
 - [ ] identify the critical-Mellin/Laurent environment `(7)`
 - [ ] construct a direct critical-center source producer or excursion-stable invariant

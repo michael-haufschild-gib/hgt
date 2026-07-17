@@ -256,8 +256,8 @@ with this analytic torsor and carry asymptotic calibration to a single compariso
 
 The finite comparison now has a concrete exact shape. Analytic Taylor translation `E_N` is
 Ind-flat with outgoing factorial boundary transfer. Algebraic coordinate-multiplication
-prolongation `Z_N(z)` is Pro-flat with incoming Leibniz boundary transfer. Both halves are
-Lean-formalized. Their paper-proved finite Weyl seam is
+prolongation `Z_N(z)` is Pro-flat with incoming Leibniz boundary transfer. Both halves and their
+finite Weyl seam are Lean-formalized:
 
 ```text
 E_N Z_N(z)-Z_N(z+1)E_N=-N v_N tensor top_N.               (6)
@@ -267,6 +267,16 @@ The incoming/outgoing channel product cancels the old level's defect and pushes 
 the newest boundary. The first comparison theorem should identify this migrating boundary current
 with the extension class of the parameterized difference module's analytic realization. This is
 strictly more concrete than comparing a bare Galois group to a chosen curvature stack.
+
+Lean proves the stronger map identity
+
+```text
+gammaClockWeylSeam n z=-gammaClockPairedBoundaryCurrent n z.          (6a)
+```
+
+Thus the seam and channel product are already one oriented finite class; the remaining comparison
+problem is to identify this class inside the algebraic source torsor and the completed analytic
+reporter topology.
 
 The general old-block conservation law is now Lean-formalized:
 
@@ -322,14 +332,13 @@ or analytic fiber functor. No such torsor has yet been constructed.
 - [x] bare Galois group rejected as the full analytic boundary object
 - [x] algebraic and analytic realization functors separated
 - [x] Gamma algebraic incoming and analytic outgoing finite boundary channels Lean-formalized
-- [x] Gamma finite Weyl seam and charge-migration law paper-proved
+- [x] Gamma finite Weyl seam and charge-migration law Lean-formalized
 - [x] general opposite-variance seam conservation Lean-formalized
 - [x] Gamma/digamma analytic periodic torsor and asymptotic source selection identified from
   existing Lean-formalized theorems
 - [x] one-comparison-torsor universal object falsified by fracture interaction
 - [x] comparison torsor repositioned as one edge of the source-effectivity hypercube
 - [x] elliptic-gamma pointed DA--holomorphic bi-anomaly proved on paper
-- [ ] Gamma finite Weyl seam formalized in Lean
 - [ ] Gamma algebraic solution torsor constructed in the project language
 - [ ] Gamma analytic integration torsor constructed
 - [ ] Gamma comparison equivalence proved

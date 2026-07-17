@@ -602,7 +602,9 @@ The remaining formal dependency chain is substantive:
 1. differential polynomial rings, differential algebraicity, differential independence, and
    differential transcendence degree for differential fields; the field-relative jet-family
    definition and its first preservation theorems now exist in
-   `GaloisForLFunctions.DifferentialIndependence`;
+   `GaloisForLFunctions.DifferentialIndependence`.  Its new
+   `differentialJet_algebraMap_apply` bridge makes coefficient-ring jet transport explicit, and
+   the base-gauge invariance theorem is now a specialization of the stronger jets-in-base law;
 2. several-automorphism parameterized Picard--Vessiot rings and the additive simultaneous
    telescoping theorem, including constant extension and descent; the commuting
    difference-differential field interface, differential-operator commutation, cocycle

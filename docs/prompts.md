@@ -17,6 +17,7 @@ folders:
 
 skip cards that are not relevant for hypertranscendental functions nor for the riemann zeta function
 before any build make sure you have the most efficient lean code, e.g. do not pull unnecessary modules.
+for any nogo always try to find an interesting significant positive statement
 
 ## research and formalize
 /goal
@@ -38,7 +39,7 @@ folders:
 - formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
 
 before any build make sure you have the most efficient lean code, e.g. do not pull unnecessary modules.
-
+for any nogo always try to find an interesting significant positive statement
 
 ## physics
 /goal
@@ -62,10 +63,14 @@ research rules:
 - use anti-theatre and novelty gates to avoid work that's just rediscovery of known knowledge
 - novelty gate refers to literature, not to our own research corpus
 - check from time to time the lean code for new additions and pipeline cards for new additions that aren't yet formalized
+- for any nogo always try to find an interesting significant positive statement
 
 ## ht
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research and discover the physical reality of hypertranscendental functions - ignoring any special function like RH. There is a connection to QFT and we need to develop this new field of physics and mathematics.
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research new and significant scientific knowledge about the nature of hypertranscendental functions and the mathematical landscape they are part of.
+
+- for any nogo always try to find an interesting significant positive statement
+- check from time to time the lean code for new additions and pipeline cards for new additions that aren't yet formalized
 
 lean rules:
 1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.
@@ -78,14 +83,6 @@ lean rules:
 folders:
 - formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
 - formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
-
-research rules:
-- goal is a paper worthy a fields medal or nobel prize
-- conjecture boldly, think bg
-- use anti-theatre and novelty gates to avoid work that's just rediscovery of known knowledge
-- novelty gate refers to literature, not to our own research corpus
-- check from time to time the lean code for new additions and pipeline cards for new additions that aren't yet formalized
-
 
 ## ht to rh
 
@@ -110,6 +107,7 @@ research rules:
 - conjecture boldly, think bg
 - use anti-theatre and novelty gates to avoid work that's just rediscovery of known dead ends
 - check from time to time the lean code for new additions and pipeline cards for new additions that aren't yet formalized
+- for any nogo always try to find an interesting significant positive statement
 
 ## physics
 
@@ -136,5 +134,8 @@ topics:
 - mathematical sound fringe theories
 
 go deep, also consider arxiv papers
-
+for any nogo always try to find an interesting significant positive statement
 do this until nothing new can be found
+
+
+understand what the current research body shows -> understand what the current SOTA research says -> conjecture boldly -> confirm that the conjecture is not just redressing or rediscovery or known knowledge or outright false -> research and try to proof -> if fail, interrogate why it failed and what new insight it tells us

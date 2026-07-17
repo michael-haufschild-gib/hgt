@@ -416,9 +416,10 @@ that basis and DA functions, giving the upper bound.
 The free-block replication used over the bottom field, the independence of each order-two external
 orbit, and the joint independence of the four order-two face orbits are formalized axiom-clean in
 `GaloisForLFunctions.DifferentialMatroidGluing` (`Rank.freeBlock`,
-`Rank.crossNeutral_iUnion_indep`, `Rank.graphGluing`), over an abstract monotone submodular
+`Rank.crossNeutral_iUnion_indep`, `Rank.graphGluing`,
+`Rank.graphGluing_of_indep_hasFreeTranslates`), over an abstract monotone submodular
 subcardinal rank standing for `dtrdeg`. The special-function inputs enter as the
-`Rank`/`FreeIndepOrbit`/`CrossNeutral` interfaces; the complete matroid theorem further needs the
+`Rank`/star-independence/free-translate/`CrossNeutral` interfaces; the complete matroid theorem further needs the
 differential-linear rank lemma, outside this engine.
 
 ## What this changes and what remains open

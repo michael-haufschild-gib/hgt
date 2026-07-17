@@ -8,7 +8,7 @@
 - **Scope:** finite-dimensional matrix factorizing scattering; no RH or distinguished
   special-function input
 - **Parents:** `projective-wigner-smith-nonabelian-ht-separation.md` and
-  `../../0-backlog/two-state-fermionic-zero-intrinsic-mixing-rigidity.md`
+  `two-state-fermionic-zero-intrinsic-mixing-rigidity.md`
 - **Statement:** Let `V` be a finite-dimensional complex Hilbert space and let
   `B(x) in End(V tensor V)` satisfy the additive adjacent-leg Yang--Baxter equation
 

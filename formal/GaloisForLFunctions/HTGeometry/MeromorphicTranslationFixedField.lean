@@ -107,8 +107,7 @@ theorem quotientWronskian_eq_zero_of_small_translation_fixed
   have hlocal : ∀ w, g w ≠ 0 → N w = 0 := by
     intro w hgw
     have hpwithin : Tendsto p atTop (𝓝[≠] 0) := by
-      rw [tendsto_nhdsWithin_iff]
-      exact ⟨hp0, Filter.Eventually.of_forall fun n => by simpa using hpne n⟩
+      exact tendsto_nhdsNE_of_forall_ne hp0 hpne
     let h : ℂ → ℂ := fun z ↦ f z / g z
     have hhan : AnalyticAt ℂ h w := (hf w (Set.mem_univ w)).div
       (hg w (Set.mem_univ w)) hgw

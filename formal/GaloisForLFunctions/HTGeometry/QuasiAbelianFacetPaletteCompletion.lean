@@ -1,5 +1,4 @@
 import GaloisForLFunctions.HTGeometry.FacetOrbitShift
-import GaloisForLFunctions.HTGeometry.FacetRestrictionEmbedding
 
 /-!
 # Quasi-Abelian facet-palette necessity

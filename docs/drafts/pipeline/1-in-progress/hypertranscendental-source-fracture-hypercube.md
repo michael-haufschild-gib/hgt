@@ -746,6 +746,43 @@ remain a scalar shadow. The real falsifiable target is graph convergence of the 
 and conservation of its normalized zero-mode measure through the rank-one and rank-two cusp
 models. See `hypertranscendental-conservativity-spectrum.md`.
 
+## Exact seam compression and critical-rank discriminator
+
+Two independent results now constrain the full object more sharply.
+
+First, the Gamma finite Weyl seam is Lean-proved equal to the negative paired boundary current:
+
+```text
+R_N=-beta_N gamma_N.                                      (30q0)
+```
+
+Thus the algebraic--analytic commutator and the incoming/outgoing transgression are one oriented
+boundary morphism.  A theory storing them as independent fields violates the anti-epicycle gate.
+The positive survivor is the source-clock cocycle law
+
+```text
+p_N R_(N+1)i_N-R_N=beta_N gamma_N,                        (30q1)
+```
+
+with `(30q0)` the affine width-one exact case.  For a non-affine source the residual after one
+boundary layer is a necessary new datum; the next theorem must identify its iterated
+Taylor/Hankel tail with the same source-Galois/analytic class, not merely compute another finite
+matrix rank.
+
+Second, the balanced prime--Ising source gives an exact critical-scaling wall.  Any locally
+uniformly convergent rescaled unbounded-rank family must satisfy
+
+```text
+a_n^2 |V_n|=O(1).                                         (30q2)
+```
+
+Therefore an unscaled algebraic or derived incidence object cannot distinguish the excluded
+finite-source regime from the unique surviving critically renormalized regime.  The critical
+product bornology in `(11)` and `(30r)` is independently forced by a natural source family, not
+added for flexibility.  The positive successor is the sharp live regime `(30q2)`: unbounded
+capacity can survive only together with scale collapse, and the full graph/Gram field must retain
+that compensation.
+
 ## Candidate unified object: normalized anomaly-fracture stack `[CONJECTURE]`
 
 The exact results now force a more precise object than the original phrase “derived incidence
@@ -998,6 +1035,11 @@ and proves that both a single tower and pairwise compatibility are structurally 
 - [x] genuine DA/meromorphic physical-character comparison Lean-formalized
 - [x] fibrewise exact/global nonclosed interaction isolated
 - [x] uniform character-effectivity iff period discreteness Lean-formalized
+- [x] Gamma Weyl seam compressed to the negative paired boundary current as an exact Lean map
+- [x] balanced prime--Ising critical rank--scale law incorporated as an independent necessity
+      witness for the critical product bornology
+- [ ] construct the non-affine strict seam-current totalization and identify its residual tail in
+      both source-Galois and analytic reporter realizations
 - [ ] construct the source-forced completion and base-change comparison morphism
 - [ ] compute the physical base-change/completion defect in one analytic HT source
 - [ ] define the full finite-channel augmented fracture complex in Lean

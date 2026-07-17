@@ -40,6 +40,18 @@ The same factorial coefficients occur in the differentiated Gamma shift conormal
 `D^i(exp(D)-1)`. Thus `(1)` is the exact finite boundary-symbol transgression from the cyclic
 source conormal into the newest algebraic clock direction. It is independent of `z`.
 
+The independently defined finite Weyl comparison seam is now also identified as a map, not only
+by rank or range:
+
+```text
+E_N Z_N(z)-Z_N(z+1)E_N=-C_N.                              (3a)
+```
+
+Thus the algebraic--analytic commutator and the paired incoming/outgoing transgression are two
+oriented presentations of the same finite boundary charge. This exact cross-realization equality
+is the strongest positive residue here; the finite matrix identity remains a bridge to classical
+truncated-Weyl/Hankel theory rather than a novelty claim.
+
 More precisely, if `lambda_k=1/(k+1)!`, Lean proves
 
 ```text
@@ -70,6 +82,9 @@ Galois conormal module, rather than only the explicit Gamma jet matrices, is ope
 - `gammaClockPairedBoundaryCurrent_eq_outerProduct`;
 - `range_gammaClockPairedBoundaryCurrent`;
 - `finrank_range_gammaClockPairedBoundaryCurrent`;
+- `gammaClockWeylSeam`;
+- `gammaClockWeylSeam_apply`;
+- `gammaClockWeylSeam_eq_neg_pairedBoundaryCurrent`;
 - `gammaCoronaConormal_boundaryCoefficient`;
 - `gammaCoronaConormal_ext_of_boundaryCoefficients`.
 
@@ -82,6 +97,6 @@ The touched file passed direct Lean checking. The declarations use only `propext
 - [x] exact rank-one range Lean-formalized
 - [x] current coefficient identified with differentiated shift-conormal boundary symbol
 - [x] oriented finite boundary family jointly reconstructs the infinite conormal
-- [ ] finite Weyl seam proved equal to the negative paired current in Lean
+- [x] finite Weyl seam proved equal to the negative paired current in Lean
 - [ ] minimal source-Galois conormal module constructed
 - [ ] source-Galois transgression identified with this finite current

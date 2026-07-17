@@ -260,41 +260,47 @@ shown essential by the charge-two discriminator.  Therefore an equality between 
 presentation-independent scalar interval length and the full Kolchin polynomial cannot be the
 universal comparison theorem.
 
-## `[CONJECTURE -- POLARIZED RELATIVE COTANGENT--TATE COMPARISON]`
+## Standalone cotangent--Tate cone no-go and positive derived chart
 
 Let `H_(S,R)=K^S intersect intersection_r ker(R_r)` be the source-fixed gauge invisible to a
 reporter family.  The Gamma collision shows that the base of the theory is the stack of
 source-effectively normalized germs with stabilizer `H_(S,R)`, restricted to the stratum `H=0`
-when reconstruction is required.  Over that stack form:
+when reconstruction is required.  Over that stack one may still form:
 
 1. the one-sided algebraic cotangent tower of differential prolongations, whose `n`th graded
    generic rank is the new differential freedom at order `n`;
 2. the independently constructed polarized analytic tail/exit-path tower; and
 3. a source-natural comparison morphism `Phi_(S,R)` between their Ind--Pro completions.
 
-The proposed primary invariant is the full filtered polarized Tate object
+but the cone
 
 ```text
 C_HT(S,R)=Cone(P_alg(S,R) --Phi_(S,R)--> P_an(S,R)),                    (Q13)
 ```
 
-not a subrepresentation and not its length.  The discrete derivative of the Kolchin polynomial is
-only the generic-rank shadow of the algebraic graded pieces.  For one ordinary differential
-observable it is eventually zero in the DA case and one in the HT case, but `C_HT` also retains
-the arrows, source topology, reporter normalization, real polarization, and integral lattice that
-this scalar shadow forgets.
+is not a primary invariant.  The labelled free-field universality theorem makes `P_alg` identical
+for equally indexed HT palettes.  If `Phi` is intrinsic to that carrier, `(Q13)` is source-blind;
+if it factors through the bare source, the common-kernel no-go persists; and if it uses a genuinely
+transverse reporter, `(Q13)` is only one chart of the source--reporter object.  Moreover an ordinary
+cone forgets approximate zero modes, nonclosed range, source-labelled orientation, critical
+rescaling, the boundary self-symbol, and integral effectivity.
 
-The conjectural universal theorem is that source-presentation changes induce equivalences of
-`C_HT`, and that continuation failure, spectral incompleteness, positivity failure, monodromy, and
-boundary noncanonicity are jointly conservative realization functors of this one object.  A
-critical degeneracy spectrum, when present, is the common support of the realized cone; self-dual
-degeneracies require the additional polarization and cannot be recovered from the unpolarized
-derived carrier.
+The positive survivor is exact: the oriented interval tower is the exit-path realization of the
+strict derived source--reporter observation complex
 
-This conjecture is falsified if the Gamma algebraic and analytic towers admit no source-natural
-comparison, if two source-equivalent normalized presentations give inequivalent cones, if `exp`
-and Gamma give the same algebraic graded-rank tail, or if one of the five obstruction languages
-varies while the complete polarized filtered cone is unchanged.
+```text
+Cone(RGamma(S,G_HT) -> H_R),                              (Q13+)
+```
+
+inside the normalized anomaly-fracture stack.  Its low cohomology contains the normalized common
+kernel, reporter nonattainment, and first source cohomology in one long exact sequence; its interval
+arrows retain the ordered boundary crossings.  The full stack must additionally retain the
+completed reporter graph/Gram field, complete anomaly colligation, critical product bornology,
+polarization/anomaly line, integral realization, and distinguished effective section.
+
+The candidate-new claim is no longer existence of `(Q13)`, which is parent mapping-cone
+mathematics.  It is presentation-invariant construction of the full normalized stack and proof
+that two independently constructed analytic receivers preserve the same interval/seam class.
 
 ## Gates
 
@@ -308,8 +314,9 @@ varies while the complete polarized filtered cone is unchanged.
 - [x] kill two-sided descended subrepresentations and formalize the polarized tail successor
       with its exact image--kernel interval law `(Q11)`--`(Q12+)`
 - [x] kill the full Kolchin polynomial as a presentation-independent scalar invariant
-- [ ] construct the source-effective normalization stack and the comparison morphism in `(Q13)`
-- [ ] identify the graded generic-rank shadow of `(Q13)` with Kolchin growth without discarding
-      its extension, topology, polarization, or integral data
+- [x] retire the standalone cotangent--Tate cone `(Q13)` using free-field universality and the
+      strict/oriented/critical reporter no-gos
+- [ ] realize the interval tower as the exit-path chart `(Q13+)` of the normalized anomaly-fracture
+      stack
 - [ ] construct the source-face resonance gluing of boundary intervals
 - [ ] construct the global map of localization sequences

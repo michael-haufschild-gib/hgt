@@ -90,9 +90,54 @@ algebraic prolongation side: Pro-flat, incoming gamma_N,
 comparison current:          law (3).                     (7)
 ```
 
+The finite comparison has now been closed exactly:
+
+```text
+R_N=-beta_N gamma_N.                                      (7a)
+```
+
+Lean proves `(7a)` as `gammaClockWeylSeam_eq_neg_pairedBoundaryCurrent`.  Therefore the Gamma
+Weyl seam and the paired incoming/outgoing current are not two independent decorations of the
+colligation.  They are the same boundary charge with opposite orientation.  This is stronger than
+rank-one agreement and gives the first literal cross-realization identity in `(2)`.
+
 Gamma is therefore not a contractible unframed vacuum. It is the first solvable **framing
 reduction**: a large periodic torsor reduced to one analytic point while retaining a nonzero moving
 boundary current.
+
+### Seam-current exactness and the next discriminator
+
+`[NO-GO]` A unified field which stores the finite seam and the paired current as unrelated
+coordinates is already nonminimal on Gamma.
+
+`[POSITIVE]` The general conservation law makes the pair a source-clock cocycle:
+
+```text
+p_N R_(N+1)i_N-R_N=beta_N gamma_N.                        (7b)
+```
+
+The affine Gamma source is the width-one exact case `(7a)`.  The sharpened conjecture is not a new
+ontology but an integrability law inside the normalized anomaly-fracture stack:
+
+> **[CONJECTURE -- STRICT COLLIGATION MAURER--CARTAN EFFECTIVITY.]**  For a regular source-minimal
+> constrained HT system, the seam and paired boundary currents define a presentation-independent
+> class in the strict, critically completed source-by-clock totalization.  A source-pure analytic
+> realization is an effective primitive of that class.  Hypertranscendence is compatible with a
+> cohomologically trivial class, as Gamma shows; its residual content is tail-faithful
+> nontermination of the primitive through arbitrarily high clock boundaries.
+
+Ordinary mapping cones, Maurer--Cartan equations, and Hankel boundary symbols are parent
+mathematics.  Candidate-new content begins only with source-canonical construction of this class,
+presentation invariance, and conservation under two genuinely different analytic realization
+functors.
+
+The first discriminator beyond Gamma is a non-affine rank-one law
+`f(z+1)=a(z)f(z)`.  Its finite seam should be attacked as the Taylor/Hankel tail of `a`: the
+one-step current removes only the first omitted layer, so `(7a)` should fail unless the source is
+affine.  The positive target is the exact residual seam after one layer, its iteration through all
+source boundary layers, and its graph-topological limit.  A finite-rank Hankel calculation alone
+does not pass the novelty gate; the theorem must identify that tail with the same
+source-Galois/analytic class.
 
 ## 4. Framed source Riemann--Hilbert conjecture
 
@@ -223,6 +268,7 @@ new algebraic clock cotangent directions, together with opposite-variance seam c
 - [x] finite anomaly colligation reconstruction Lean-formalized
 - [x] opposite-variance boundary-current conservation Lean-formalized
 - [x] Gamma incoming and outgoing boundary channels Lean-formalized
+- [x] Gamma Weyl seam identified exactly with the negative paired current in Lean
 - [x] product topology rejected and strict source-conormal refinement Lean-formalized
 - [x] rank-only capacity--current equality rejected with transgression-pairing replacement
 - [ ] Gamma framed parameterized-Galois/analytic comparison proved

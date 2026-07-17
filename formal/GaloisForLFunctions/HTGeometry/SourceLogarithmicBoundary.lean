@@ -743,6 +743,73 @@ theorem automorphismFamily_differentialAlgebraic_iff_exists_logIncrement_jet_tel
     exact automorphismFamily_differentialAlgebraic_of_logIncrement_jet_telescoping
       tau sigma hcomp hderiv hCfixed hfixed x b hx hb hmul c hc k htel
 
+/-- **Exact arbitrary-family algebraic Ostrowski criterion.**  Algebraic independence of a
+base-shifted family is equivalent to absence of every nonzero constant-coefficient simultaneous
+coboundary.  This is the finite-resolution matroid theorem from which the logarithmic-jet and
+differential-independence criteria are obtained by specialization. -/
+theorem automorphismFamily_algebraicIndependent_iff_no_constant_simultaneous_telescoping
+    {I κ C K L : Type*}
+    [Field C] [Field K] [Field L]
+    [Algebra C K] [Algebra C L] [Algebra K L]
+    [IsScalarTower C K L] [CharZero K]
+    (tau : I → K ≃+* K) (sigma : I → L ≃+* L)
+    (hcomp : ∀ i k, sigma i (algebraMap K L k) =
+      algebraMap K L (tau i k))
+    (hCfixed : ∀ i c, sigma i (algebraMap C L c) = algebraMap C L c)
+    (hfixed : ∀ z : L, (∀ i, sigma i z = z) →
+      ∃ c : C, algebraMap C L c = z)
+    (x : κ → L) (b : I → κ → K)
+    (hshift : ∀ i j, sigma i (x j) =
+      x j + algebraMap K L (b i j)) :
+    AlgebraicIndependent K x ↔
+      ∀ c : κ →₀ C, c ≠ 0 → ∀ k : K, ∃ i,
+        tau i k - k ≠
+          Finsupp.linearCombination K (b i)
+            (Finsupp.mapRange (algebraMap C K)
+              (map_zero (algebraMap C K)) c) := by
+  constructor
+  · intro hAI c hc k
+    by_contra hnone
+    push Not at hnone
+    let cL : κ →₀ L :=
+      Finsupp.mapRange (algebraMap C L) (map_zero (algebraMap C L)) c
+    let cK : κ →₀ K :=
+      Finsupp.mapRange (algebraMap C K) (map_zero (algebraMap C K)) c
+    let g : L := Finsupp.linearCombination L x cL
+    have hshiftg : ∀ i, sigma i g = g + algebraMap K L
+        (Finsupp.linearCombination K (b i) cK) := by
+      intro i
+      dsimp only [g]
+      rw [ringEquiv_linearCombination]
+      have hcmap :
+          Finsupp.mapRange (sigma i) (map_zero (sigma i)) cL = cL := by
+        ext j
+        simp [cL, hCfixed]
+      rw [hcmap]
+      simp_rw [hshift i]
+      rw [finsupp_linearCombination_add_family]
+      rw [algebraMap_constant_finsupp_linearCombination]
+    have hzfix : ∀ i,
+        sigma i (g - algebraMap K L k) = g - algebraMap K L k := by
+      intro i
+      rw [map_sub, hshiftg i, hcomp]
+      have htel : tau i k - k =
+          Finsupp.linearCombination K (b i) cK := by
+        simpa [cK] using hnone i
+      rw [← htel, map_sub]
+      abel
+    obtain ⟨c0, hc0⟩ := hfixed (g - algebraMap K L k) hzfix
+    let a : K := k + algebraMap C K c0
+    have hgbase : g = algebraMap K L a := by
+      calc
+        g = algebraMap K L k + algebraMap C L c0 := by rw [hc0]; abel
+        _ = algebraMap K L a := by
+          simp [a, IsScalarTower.algebraMap_apply C K L]
+    exact (not_algebraicIndependent_of_finsupp_linearCombination_eq
+      x c hc a (by simpa [g, cL] using hgbase)) hAI
+  · exact automorphismFamily_algebraicIndependent_of_no_constant_simultaneous_telescoping
+      tau sigma hcomp hCfixed hfixed x b hshift
+
 /-- **Exact finite-resolution boundary matroid.**  For any selected packet of logarithmic jet
 orders, algebraic independence of the bulk packet is equivalent to absence of a simultaneous
 source coboundary supported on exactly that packet.  Thus the entire algebraic matroid of the
@@ -790,62 +857,9 @@ theorem automorphismFamily_logarithmicJet_algebraicIndependent_iff
     rw [ringEquiv_differentialJet sigma hderiv, hshiftEll i]
     rw [differentialJet_additive,
       differentialJet_algebraMap_of_differentialAlgebra]
-  constructor
-  · intro hAI c hc k
-    by_contra hnone
-    have htel : ∀ i,
-        tau i k - k =
-          Finsupp.linearCombination K (inc i)
-            (Finsupp.mapRange (algebraMap C K)
-              (map_zero (algebraMap C K)) c) := by
-      intro i
-      by_contra hi
-      apply hnone
-      exact ⟨i, by simpa [inc] using hi⟩
-    let cL : κ →₀ L :=
-      Finsupp.mapRange (algebraMap C L) (map_zero (algebraMap C L)) c
-    let cK : κ →₀ K :=
-      Finsupp.mapRange (algebraMap C K) (map_zero (algebraMap C K)) c
-    let g : L := Finsupp.linearCombination L obs cL
-    have hshiftg : ∀ i, sigma i g = g + algebraMap K L
-        (Finsupp.linearCombination K (inc i) cK) := by
-      intro i
-      dsimp only [g]
-      rw [ringEquiv_linearCombination]
-      have hcmap :
-          Finsupp.mapRange (sigma i) (map_zero (sigma i)) cL = cL := by
-        ext j
-        simp [cL, hCfixed]
-      rw [hcmap]
-      simp_rw [hshiftObs i]
-      rw [finsupp_linearCombination_add_family]
-      rw [algebraMap_constant_finsupp_linearCombination]
-    have hzfix : ∀ i,
-        sigma i (g - algebraMap K L k) = g - algebraMap K L k := by
-      intro i
-      rw [map_sub, hshiftg i, hcomp]
-      have htel' : tau i k - k =
-          Finsupp.linearCombination K (inc i) cK := by
-        simpa [cK] using htel i
-      rw [← htel', map_sub]
-      abel
-    obtain ⟨c0, hc0⟩ := hfixed (g - algebraMap K L k) hzfix
-    let a : K := k + algebraMap C K c0
-    have hgbase : g = algebraMap K L a := by
-      calc
-        g = algebraMap K L k + algebraMap C L c0 := by rw [hc0]; abel
-        _ = algebraMap K L a := by
-          simp [a, IsScalarTower.algebraMap_apply C K L]
-    have hdep : ¬ AlgebraicIndependent K obs :=
-      not_algebraicIndependent_of_finsupp_linearCombination_eq
-        obs c hc a (by simpa [g, cL] using hgbase)
-    apply hdep
-    simpa [obs, ell] using hAI
-  · intro hnot
-    apply automorphismFamily_algebraicIndependent_of_no_constant_simultaneous_telescoping
-      tau sigma hcomp hCfixed hfixed obs inc hshiftObs
-    intro c hc k
-    simpa [inc] using hnot c hc k
+  simpa only [obs, inc, ell] using
+    (automorphismFamily_algebraicIndependent_iff_no_constant_simultaneous_telescoping
+      tau sigma hcomp hCfixed hfixed obs inc hshiftObs)
 
 /-- **Twisted affine scalar-boundary obstruction.**  If the simultaneous boundary class of `h`
 is non-torsion, then the class of the twisted increment `tau i h + h` is also non-torsion.  The
@@ -1094,51 +1108,9 @@ theorem automorphismFamily_differentialIndependent_iff_no_constant_simultaneous_
     rw [ringEquiv_differentialJet sigma hderiv, hshift]
     rw [differentialJet_additive,
       differentialJet_algebraMap_of_differentialAlgebra]
-  constructor
-  · intro hDI c hc k
-    by_contra hnone
-    push Not at hnone
-    let cL : (κ × ℕ) →₀ L :=
-      Finsupp.mapRange (algebraMap C L) (map_zero (algebraMap C L)) c
-    let cK : (κ × ℕ) →₀ K :=
-      Finsupp.mapRange (algebraMap C K) (map_zero (algebraMap C K)) c
-    let g : L := Finsupp.linearCombination L xJet cL
-    have hshiftg : ∀ i, sigma i g = g + algebraMap K L
-        (Finsupp.linearCombination K (bJet i) cK) := by
-      intro i
-      dsimp only [g]
-      rw [ringEquiv_linearCombination]
-      have hcmap :
-          Finsupp.mapRange (sigma i) (map_zero (sigma i)) cL = cL := by
-        ext j
-        simp [cL, hCfixed]
-      rw [hcmap]
-      simp_rw [hshiftJet i]
-      rw [finsupp_linearCombination_add_family]
-      rw [algebraMap_constant_finsupp_linearCombination]
-    have hzfix : ∀ i,
-        sigma i (g - algebraMap K L k) = g - algebraMap K L k := by
-      intro i
-      rw [map_sub, hshiftg i, hcomp]
-      have htel : tau i k - k =
-          Finsupp.linearCombination K (bJet i) cK := by
-        simpa [bJet, cK] using hnone i
-      rw [← htel, map_sub]
-      abel
-    obtain ⟨c0, hc0⟩ := hfixed (g - algebraMap K L k) hzfix
-    let a : K := k + algebraMap C K c0
-    have hgbase : g = algebraMap K L a := by
-      calc
-        g = algebraMap K L k + algebraMap C L c0 := by rw [hc0]; abel
-        _ = algebraMap K L a := by
-          simp [a, IsScalarTower.algebraMap_apply C K L]
-    have hdep : ¬ AlgebraicIndependent K xJet :=
-      not_algebraicIndependent_of_finsupp_linearCombination_eq
-        xJet c hc a (by simpa [g, cL] using hgbase)
-    apply hdep
-    simpa [DifferentialIndependent, xJet] using hDI
-  · exact automorphismFamily_differentialIndependent_of_no_constant_simultaneous_jet_telescoping
-      tau sigma hcomp hderiv hCfixed hfixed x b hshift
+  simpa only [DifferentialIndependent, xJet, bJet] using
+    (automorphismFamily_algebraicIndependent_iff_no_constant_simultaneous_telescoping
+      tau sigma hcomp hCfixed hfixed xJet bJet hshiftJet)
 
 /-- **Exact split-source boundary for the linearized mixed family.**  Additive primitives and
 logarithmic derivatives of nonzero multiplicative primitives form one differentially independent

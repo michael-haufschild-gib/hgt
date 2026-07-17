@@ -41,88 +41,6 @@ def wedgeFacet : Fin 7 → Finset (Fin 6)
   | 5 => {0, 4, 5}
   | 6 => {3, 4, 5}
 
-/-- **Dimension-three impossibility for the wedge.**  No faithful facet separation of the nonpure
-two-thick wedge `S¹ ∨ S²` exists in a complex vector space of dimension at most three: given
-vectors `a` and forms `ℓ` realizing the exact facet zero pattern `ℓ i (a v) = 0 ↔ v ∉ wedgeFacet i`
-in an `E` with `dim_ℂ E ≤ 3`, a contradiction follows.  Hence `ffsDim(Δ_wedge) ≥ 4`. -/
-theorem wedge_no_faithfulSeparation_of_finrank_le_three
-    {E : Type*} [AddCommGroup E] [Module ℂ E] [FiniteDimensional ℂ E]
-    (hdim : Module.finrank ℂ E ≤ 3)
-    (a : Fin 6 → E) (ℓ : Fin 7 → (E →ₗ[ℂ] ℂ))
-    (hzero : ∀ (i : Fin 7) (v : Fin 6), ℓ i (a v) = 0 ↔ v ∉ wedgeFacet i) :
-    False := by
-  -- zero / nonzero incidence facts used
-  have z10 : ℓ 1 (a 0) = 0 := (hzero 1 0).mpr (by decide)
-  have z13 : ℓ 1 (a 3) = 0 := (hzero 1 3).mpr (by decide)
-  have z14 : ℓ 1 (a 4) = 0 := (hzero 1 4).mpr (by decide)
-  have z15 : ℓ 1 (a 5) = 0 := (hzero 1 5).mpr (by decide)
-  have n11 : ℓ 1 (a 1) ≠ 0 := fun h => (hzero 1 1).mp h (by decide)
-  have z03 : ℓ 0 (a 3) = 0 := (hzero 0 3).mpr (by decide)
-  have z04 : ℓ 0 (a 4) = 0 := (hzero 0 4).mpr (by decide)
-  have z05 : ℓ 0 (a 5) = 0 := (hzero 0 5).mpr (by decide)
-  have n00 : ℓ 0 (a 0) ≠ 0 := fun h => (hzero 0 0).mp h (by decide)
-  have z35 : ℓ 3 (a 5) = 0 := (hzero 3 5).mpr (by decide)
-  have n33 : ℓ 3 (a 3) ≠ 0 := fun h => (hzero 3 3).mp h (by decide)
-  have n65 : ℓ 6 (a 5) ≠ 0 := fun h => (hzero 6 5).mp h (by decide)
-  have a5ne : a 5 ≠ 0 := fun h => n65 (by rw [h, map_zero])
-  -- L = span{a₃,a₄,a₅}
-  set L : Submodule ℂ E := Submodule.span ℂ ({a 3, a 4, a 5} : Set E) with hL
-  have a3L : a 3 ∈ L := Submodule.subset_span (by simp)
-  have a5L : a 5 ∈ L := Submodule.subset_span (by simp)
-  -- ℓ 0 and ℓ 1 annihilate L
-  have hL0 : ∀ x ∈ L, ℓ 0 x = 0 := by
-    intro x hx
-    have hsub : L ≤ LinearMap.ker (ℓ 0) := by
-      rw [hL, Submodule.span_le]
-      intro y hy
-      simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hy
-      rcases hy with h | h | h <;> subst h <;>
-        simp only [SetLike.mem_coe, LinearMap.mem_ker] <;> assumption
-    exact LinearMap.mem_ker.mp (hsub hx)
-  -- dichotomy on dim L
-  rcases Nat.lt_or_ge (Module.finrank ℂ L) 2 with hle | hgt
-  · -- dim L ≤ 1
-    have hsl : (ℂ ∙ a 5) ≤ L := (Submodule.span_singleton_le_iff_mem (a 5) L).mpr a5L
-    have hrank1 : Module.finrank ℂ (ℂ ∙ a 5) = 1 := finrank_span_singleton a5ne
-    have heq : (ℂ ∙ a 5) = L :=
-      Submodule.eq_of_le_of_finrank_le hsl (by rw [hrank1]; omega)
-    have a3span : a 3 ∈ (ℂ ∙ a 5) := by rw [heq]; exact a3L
-    obtain ⟨c, hc⟩ := Submodule.mem_span_singleton.mp a3span
-    have : ℓ 3 (a 3) = 0 := by rw [← hc, map_smul, z35, smul_zero]
-    exact n33 this
-  · -- dim L ≥ 2
-    have a0L : a 0 ∈ L := by
-      by_contra ha0
-      set M : Submodule ℂ E :=
-        Submodule.span ℂ (insert (a 0) ({a 3, a 4, a 5} : Set E)) with hM
-      have hLM : L < M := by
-        rw [hL, hM]
-        refine lt_of_le_of_ne (Submodule.span_mono (Set.subset_insert _ _)) ?_
-        intro he
-        apply ha0
-        rw [hL, he]
-        exact Submodule.subset_span (Set.mem_insert _ _)
-      have hlt : Module.finrank ℂ L < Module.finrank ℂ M :=
-        Submodule.finrank_lt_finrank_of_lt hLM
-      have h1 : Module.finrank ℂ M ≤ Module.finrank ℂ E := Submodule.finrank_le M
-      have hMtop : M = ⊤ := by
-        apply Submodule.eq_top_of_finrank_eq
-        omega
-      have hM1 : ℓ 1 (a 1) = 0 := by
-        have hsub : M ≤ LinearMap.ker (ℓ 1) := by
-          rw [hM, Submodule.span_le]
-          intro y hy
-          simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hy
-          rcases hy with h | h | h | h <;> subst h <;>
-            simp only [SetLike.mem_coe, LinearMap.mem_ker]
-          · exact z10
-          · exact z13
-          · exact z14
-          · exact z15
-        exact LinearMap.mem_ker.mp (hsub (hMtop ▸ Submodule.mem_top))
-      exact n11 hM1
-    exact n00 (hL0 (a 0) a0L)
-
 end GaloisForLFunctions
 
 namespace GaloisForLFunctions
@@ -269,6 +187,50 @@ theorem no_faithfulSeparation_of_finrank_le_three
     exact nX1c (LinearMap.mem_ker.mp (hsub acL))
 
 end UniformBoundaryWedge
+
+private def wedgeVertexIndex : UniformBoundaryWedge.BoundaryWedgeVertex 2 3 → Fin 6
+  | none => 0
+  | some (Sum.inl i) => ⟨i.1 + 1, by omega⟩
+  | some (Sum.inr j) => ⟨j.1 + 3, by omega⟩
+
+private def wedgeLeftFacetIndex : Option (Fin 2) → Fin 7
+  | none => 1
+  | some i => ![2, 0] i
+
+private def wedgeRightFacetIndex : Option (Fin 3) → Fin 7
+  | none => 6
+  | some j => ![5, 4, 3] j
+
+/-- **Dimension-three impossibility for the wedge.**  No faithful facet separation of the nonpure
+two-thick wedge `S¹ ∨ S²` exists in a complex vector space of dimension at most three: given
+vectors `a` and forms `ℓ` realizing the exact facet zero pattern `ℓ i (a v) = 0 ↔ v ∉ wedgeFacet i`
+in an `E` with `dim_ℂ E ≤ 3`, a contradiction follows.  This is the `r = 2`, `s = 3`
+specialization of the uniform boundary-wedge obstruction. -/
+theorem wedge_no_faithfulSeparation_of_finrank_le_three
+    {E : Type*} [AddCommGroup E] [Module ℂ E] [FiniteDimensional ℂ E]
+    (hdim : Module.finrank ℂ E ≤ 3)
+    (a : Fin 6 → E) (ℓ : Fin 7 → (E →ₗ[ℂ] ℂ))
+    (hzero : ∀ (i : Fin 7) (v : Fin 6), ℓ i (a v) = 0 ↔ v ∉ wedgeFacet i) :
+    False := by
+  apply UniformBoundaryWedge.no_faithfulSeparation_of_finrank_le_three
+    (r := 2) (s := 3) (by omega) (by omega) hdim
+    (fun v => a (wedgeVertexIndex v))
+    (fun u => ℓ (wedgeLeftFacetIndex u))
+    (fun u => ℓ (wedgeRightFacetIndex u))
+  · intro u v
+    rw [hzero]
+    fin_cases u <;> fin_cases v <;>
+      simp [wedgeVertexIndex, wedgeLeftFacetIndex,
+        UniformBoundaryWedge.boundaryWedgeLeftFacetMember,
+        UniformBoundaryWedge.boundaryWedgeLeftVertex,
+        UniformBoundaryWedge.boundaryWedgeLeft, wedgeFacet]
+  · intro u v
+    rw [hzero]
+    fin_cases u <;> fin_cases v <;>
+      simp [wedgeVertexIndex, wedgeRightFacetIndex,
+        UniformBoundaryWedge.boundaryWedgeRightFacetMember,
+        UniformBoundaryWedge.boundaryWedgeRightVertex,
+        UniformBoundaryWedge.boundaryWedgeRight, wedgeFacet]
 
 end GaloisForLFunctions
 

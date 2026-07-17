@@ -191,10 +191,11 @@ not the diagonal QFT construction itself.
 
 ## Exact remaining nonabelian core
 
-A provisional classification corollary has been downgraded to
-`../../0-backlog/two-state-fermionic-zero-intrinsic-mixing-rigidity.md`.  The `O(N)` benchmark
-now separates the conventions exactly: the physical quantum fermionic anchor `-P` becomes a braid
-identity anchor `-I`, while the flip-anchored adjacent class is pointwise locally product-diagonal.
+A complete-classification corollary is now proved on paper in
+`../needs-audit/two-state-fermionic-zero-intrinsic-mixing-rigidity.md`.  It upgrades the
+flip-anchored two-state adjacent class from pointwise product diagonality to one fixed product
+basis.  The `O(N)` benchmark separates the conventions exactly: the physical quantum fermionic
+anchor `-P` becomes a braid identity anchor `-I`.
 The source convention conflict and theorem are recorded in
 `../needs-audit/fermionic-zero-braid-anchor-commutation-gate.md`.  Consequently no two-state no-go
 and no lower bound of three internal states is established for the physical quantum lane.

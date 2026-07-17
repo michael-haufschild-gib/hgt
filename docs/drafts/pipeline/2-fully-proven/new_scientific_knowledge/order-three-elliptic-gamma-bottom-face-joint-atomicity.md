@@ -272,6 +272,8 @@ coordinate sets (`Rank`), and derivation-commuting translations as its rank auto
   independent orbits has an independent union.
 - `Rank.graphGluing` is the minimal-circuit graph orbit-gluing theorem, over an abstract incidence
   predicate `inc : V → ι → Prop`.
+- `Rank.graphGluing_of_indep_hasFreeTranslates` discharges the packaged `FreeIndepOrbit` input from
+  rank preservation, star independence, and freely separated translates.
 - `Rank.orderThree_sixFace_indep` specializes it to the complete graph on the four structural
   directions `Fin 4`, giving joint independence of the six bottom-face orbits.
 

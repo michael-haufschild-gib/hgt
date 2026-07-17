@@ -20,6 +20,15 @@ namespace GaloisForLFunctions
 open Filter
 open scoped Topology
 
+/-- A pointwise-avoiding net converging to `y` also converges through the punctured
+neighborhood of `y`. -/
+lemma tendsto_nhdsNE_of_forall_ne
+    {X Y : Type*} [TopologicalSpace Y] {l : Filter X} {f : X → Y} {y : Y}
+    (hf : Tendsto f l (nhds y)) (hne : ∀ x, f x ≠ y) :
+    Tendsto f l (nhdsWithin y {y}ᶜ) := by
+  rw [tendsto_nhdsWithin_iff]
+  exact ⟨hf, Eventually.of_forall fun x => by simpa using hne x⟩
+
 /-- A continuous function invariant under a dense additive subgroup is constant. This is the
 topological core of the joint-period constant collapse used by the paired telescoping theorem. -/
 theorem continuous_constant_of_dense_addPeriods
@@ -47,8 +56,7 @@ theorem differentiable_constant_of_small_periods
     (hp0 : Tendsto p atTop (𝓝 0)) (hpne : ∀ n, p n ≠ 0)
     (hperiod : ∀ n, Function.Periodic f (p n)) : ∀ x y, f x = f y := by
   have hpwithin : Tendsto p atTop (𝓝[≠] 0) := by
-    rw [tendsto_nhdsWithin_iff]
-    exact ⟨hp0, Filter.Eventually.of_forall fun n => by simpa using hpne n⟩
+    exact tendsto_nhdsNE_of_forall_ne hp0 hpne
   have hderiv : ∀ z, deriv f z = 0 := by
     intro z
     have hlim := (hf z).hasDerivAt.tendsto_slope_zero.comp hpwithin
@@ -91,8 +99,7 @@ theorem meromorphicNF_constant_of_small_periods
     (hp0 : Tendsto p atTop (𝓝 0)) (hpne : ∀ n, p n ≠ 0)
     (hperiod : ∀ n, Function.Periodic f (p n)) : ∀ x y, f x = f y := by
   have hpwithin : Tendsto p atTop (𝓝[≠] 0) := by
-    rw [tendsto_nhdsWithin_iff]
-    exact ⟨hp0, Filter.Eventually.of_forall fun n => by simpa using hpne n⟩
+    exact tendsto_nhdsNE_of_forall_ne hp0 hpne
   have han : ∀ z, AnalyticAt ℂ f z := by
     intro z
     apply (hf (Set.mem_univ z)).meromorphicOrderAt_nonneg_iff_analyticAt.mp

@@ -43,7 +43,7 @@ p R_1 i=R_0+kappa_A gamma_B.                              (7)
 Thus an old-clock comparison defect cannot simply disappear at the next resolution. It can change
 only by the round trip through the paired boundary channels.
 
-For the Gamma Weyl seam, the paper calculation gives
+For the Gamma Weyl seam, Lean now proves
 
 ```text
 R_N=-N v_N tensor top_N,
@@ -53,6 +53,14 @@ kappa_A gamma_B=+N v_N tensor top_N,                      (8)
 so `(7)` makes the old block vanish exactly: the entire defect is recreated at the newest
 boundary. This is boundary-charge migration.
 
+The specialization is the exact map identity
+
+```text
+gammaClockWeylSeam n z=-gammaClockPairedBoundaryCurrent n z,
+```
+
+not an equality of dimensions, ranges, or determinants.
+
 ## Lean declarations
 
 `GaloisForLFunctions.HTGeometry.ClockDescentAnomaly` contains:
@@ -60,6 +68,12 @@ boundary. This is boundary-charge migration.
 - `clockIncomingDefect`;
 - `clockComparisonSeam`;
 - `truncate_comp_clockComparisonSeam_comp_extend`.
+
+`GaloisForLFunctions.HTGeometry.GammaPeriodicConstraintCorona` contains the Gamma specialization:
+
+- `gammaClockWeylSeam`;
+- `gammaClockWeylSeam_apply`;
+- `gammaClockWeylSeam_eq_neg_pairedBoundaryCurrent`.
 
 The existing object cache was reused and the touched module passed direct Lean verification. No
 build was run.
@@ -81,7 +95,7 @@ spectral, continuation, and polarized realizations.
 - [x] comparison seam defined
 - [x] exact old-block conservation law Lean-formalized
 - [x] direct Lean verification passed
-- [ ] Gamma rank-one cancellation specialized in Lean
+- [x] Gamma rank-one cancellation specialized in Lean
 - [ ] source-topological current constructed
 - [ ] comparison across two genuinely different analytic categories proved
 - [ ] novelty and significance independently audited

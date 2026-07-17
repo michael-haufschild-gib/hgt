@@ -160,7 +160,13 @@ theorem map_diffPolyEvalRight {F K' : Type*} [CommRing F] [CommRing K']
     · intro c
       simp [differentialPolynomialEval, IsScalarTower.algebraMap_apply k F K']
     · rintro ⟨j, n⟩
-      simp [differentialPolynomialEval_X, differentialJet_algebraMap]
+      rw [RingHom.comp_apply]
+      change algebraMap F K'
+          (differentialPolynomialEval (C := k) y (MvPolynomial.X (j, n))) =
+        differentialPolynomialEval (C := k)
+          (fun i => algebraMap F K' (y i)) (MvPolynomial.X (j, n))
+      rw [differentialPolynomialEval_X, differentialPolynomialEval_X]
+      exact differentialJet_algebraMap (F := F) (K' := K') n (y j)
   show MvPolynomial.map (algebraMap F K')
       ((MvPolynomial.map _) (diffPolySumSplit L R k P)) = _
   rw [MvPolynomial.map_map, hrh]

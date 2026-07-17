@@ -74,6 +74,28 @@ finite-source regime in which a nontrivial unbounded completion could still be b
 particular, if `|V_(T_n)| -> infinity`, then necessarily `a_n -> 0`; this consequence is also
 formalized unconditionally.
 
+## Meaning for the general HT unified-field program
+
+This lane is an RH pressure test, not a definition of hypertranscendence.  Its general consequence
+is architectural and source-pure.  Any derived or topological realization that remembers finite
+rank but forgets the source scale identifies two regimes which the theorem separates: fixed-scale
+unbounded rank is impossible, while critically shrinking scale remains live.
+
+```text
+[NO-GO]
+Unscaled rank, support, or derived incidence is a conservative approximation invariant.
+
+[POSITIVE]
+The source-selected capacity--visibility product a_n^2 |V_n| is necessarily bounded along every
+convergent family; a viable realization functor must retain the corresponding critical product
+bornology and transported quadratic form.                                  (4)
+```
+
+This independently supports the critical-bornological channel of the normalized HT
+anomaly-fracture stack.  It does not identify the target stack, prove existence in the live regime,
+or supply positivity.  Its strongest successor is to determine whether `(4)` is tight and whether
+the critically rescaled reporter graphs have a nontrivial source-canonical limit.
+
 ## Gates
 
 - [x] 0 -> 1: source-pure statement and symbolic discriminator isolated

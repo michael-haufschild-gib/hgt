@@ -201,16 +201,16 @@ projective HT + Yang--Baxter + intrinsic mixing                 [solved here]
 ```
 
 The regular `4 x 4` difference-form classification is not by itself the physical no-go surface.
-A provisional attempt to transport a physical `S(0)=-P` family to an identity-anchored quantum
-matrix has been downgraded to
-`../../0-backlog/two-state-fermionic-zero-intrinsic-mixing-rigidity.md`.  The positive-unitary,
+The complete nonregular classification now proves the fixed-basis two-state no-go on the distinct
+adjacent flip-anchor surface in
+`../needs-audit/two-state-fermionic-zero-intrinsic-mixing-rigidity.md`.  The positive-unitary,
 intrinsically mixing `O(N)` matrix resolves the convention: its physical quantum zero is `-P`, but
 its braid conversion has zero `-I`.  The exact theorem
 `../needs-audit/fermionic-zero-braid-anchor-commutation-gate.md` proves that an adjacent family
 anchored at `-P` becomes an identity-anchored quantum family and is pointwise locally
-product-diagonal under positive unitarity.  This does not yield a no-go for the physical quantum
-lane, so neither the proposed two-state no-go nor a move to at least three internal states is
-established.
+product-diagonal under positive unitarity.  The classification corollary upgrades this to one fixed
+basis, but it still does not yield a no-go for the physical quantum lane or a move to at least three
+internal states.
 
 ## Lean boundary
 

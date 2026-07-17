@@ -3,7 +3,7 @@
 - **ID:** `gamma-opposite-variance-weyl-seam`
 - **Stage:** 1-in-progress
 - **Type:** SOLVABLE HT COMPARISON MODEL / BOUNDARY-CHARGE CONJECTURE
-- **Scientific status:** `[CONJECTURE] [ALGEBRAIC INCOMING CHANNEL LEAN-FORMALIZED] [ANALYTIC OUTGOING CHANNEL LEAN-FORMALIZED] [FINITE WEYL FORMULA PAPER-PROVED] [PARENT COLLISION IDENTIFIED]`
+- **Scientific status:** `[CONJECTURE] [ALGEBRAIC INCOMING CHANNEL LEAN-FORMALIZED] [ANALYTIC OUTGOING CHANNEL LEAN-FORMALIZED] [FINITE WEYL SEAM + MIGRATION LEAN-FORMALIZED] [PARENT COLLISION IDENTIFIED]`
 - **Parents:**
   - `source-anomaly-boundary-colligation-field.md`
   - `ht-source-riemann-hilbert-correspondence.md`
@@ -67,7 +67,7 @@ gamma_N: retained observables -> new boundary.            (12)
 No adjoint was inserted by hand. The source equation itself supplies the outgoing analytic and
 incoming algebraic halves.
 
-## 3. Finite Weyl boundary formula `[PAPER-PROVED; LEAN OPEN]`
+## 3. Finite Weyl boundary formula `[LEAN-FORMALIZED]`
 
 For `0<=i,j<N`,
 
@@ -110,6 +110,9 @@ This is the additive finite-Weyl trace obstruction concentrated on one boundary 
 oscillators, finite canonical-commutation anomalies, and the project's existing truncated-Weyl
 cards are parent theory; `(16)` is not claimed as new linear algebra.
 
+Lean proves `(16)` pointwise as `gammaClockWeylSeam_apply` for the comparison map
+`gammaClockWeylSeam`.
+
 ## 4. Boundary-charge migration
 
 The significant exact mechanism is the interaction of the two source-selected channels. The
@@ -125,19 +128,23 @@ Equations `(7)`, `(10)`, and `(16)` give
 beta_N gamma_N=+N v_N tensor ell_N=-R_N.                  (21)
 ```
 
-The positive half of `(21)` is now Lean-formalized directly. The paired map
+Both halves of `(21)` and their equality are now Lean-formalized. The paired map
 `gammaClockPairedBoundaryCurrent` has pointwise formula
 
 ```text
 (beta_N gamma_N a)_i=N a_(N-1)/(N-i)!,                    (21a)
 ```
 
-range exactly the factorial boundary line, and finrank one at every positive level. The remaining
-Lean target is its equality with the negative finite Weyl seam `-R_N`.
+range exactly the factorial boundary line, and finrank one at every positive level. The theorem
+`gammaClockWeylSeam_eq_neg_pairedBoundaryCurrent` proves the map identity
+
+```text
+R_N=-beta_N gamma_N.                                      (21b)
+```
 
 The general conservation identity behind `(20)` is Lean-formalized as
-`truncate_comp_clockComparisonSeam_comp_extend`; only the explicit Gamma substitution `(21)`
-remains to be packaged in Lean.
+`truncate_comp_clockComparisonSeam_comp_extend`; the explicit Gamma substitution `(21)` is now
+closed as well.
 
 Therefore the old defect cancels exactly. The whole Weyl charge is recreated on the newest
 boundary as `R_(N+1)`. The anomaly does not accumulate in the observable bulk:
@@ -281,8 +288,8 @@ produce both variance halves and their comparison current independently of the d
 - [x] boundary-charge migration identity proved on paper
 - [x] exact paired incoming/outgoing current and rank-one range Lean-formalized
 - [x] general opposite-variance seam conservation formalized in Lean
-- [ ] finite Weyl boundary formula formalized in Lean
-- [ ] migration identity formalized in Lean
+- [x] finite Weyl boundary formula formalized in Lean
+- [x] migration identity formalized in Lean
 - [ ] Gamma equalizer section constructed analytically in the project language
 - [x] uncalibrated periodic ambiguity and asymptotic analytic source selection anchored to existing
   Lean theorems

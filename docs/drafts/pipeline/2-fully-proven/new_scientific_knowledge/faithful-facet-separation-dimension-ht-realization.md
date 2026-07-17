@@ -258,7 +258,10 @@ theorem here.
 
 The universal finite-dimensional witnesses are formalized in `FaithfulFacetDimension.lean` and
 `FaithfulFacetVertexDimension.lean`, proving the facet-count and vertex-count upper bounds from a
-single transcendental power family.
+single transcendental power family.  The unconditional theorem
+`exists_faithfulFacetSeparation_strict_complementSpan` now chooses that family internally and
+proves, for one uniform faithful separation, that adjoining every incident facet vertex strictly
+increases the span of its facet complement.
 
 `WedgeFacetLowerBound.lean` now formalizes the exact faithful dimension of the complete boundary-
 wedge family, strengthening the single complex in `(13)`. The namespace `UniformBoundaryWedge`

@@ -1,4 +1,6 @@
-import Mathlib
+import Mathlib.Data.Complex.Basic
+import Mathlib.Data.Finset.Basic
+import Mathlib.LinearAlgebra.Span.Basic
 
 /-!
 # The faithful-separation complement-span obstruction

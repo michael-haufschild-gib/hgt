@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.BaireGenericAvoidance
+import GaloisForLFunctions.HTGeometry.AffineCollisionMatroid
 import GaloisForLFunctions.HTGeometry.PolynomialEvaluationLemma
 
 /-!
@@ -63,6 +64,16 @@ theorem affineJetPacketCollision_denseResidual_exactMatroid
   refine ⟨hdense, hresidual, ?_⟩
   intro f hf
   exact ⟨input.collisionRank_of_avoids f hf, input.operatorRank_of_avoids f hf⟩
+
+/-- On every source in the residual set, the packet orbit rank is the extended rank of the actual
+collision matroid pulled back along the affine-frame map. -/
+theorem affineJetPacketCollision_orbitRank_eq_collisionMatroid_eRk
+    {X Λ Frame : Type*} [TopologicalSpace X] [DecidableEq Frame]
+    {frame : Λ → Frame} (input : AffineJetPacketCollisionInput X Λ Frame frame)
+    {f : X} (hf : f ∈ affineJetPacketResidualSet input) (E : Finset Λ) :
+    (input.orbitRank f E : ℕ∞) =
+      (affineCollisionMatroid frame).eRk (↑E : Set Λ) := by
+  rw [input.collisionRank_of_avoids f hf, affineCollisionMatroid_eRk_finset]
 
 /-- The finite determinant witness used in every defect-density proof: linearly independent
 decorated monomials admit a square evaluation packet with nonzero determinant. -/

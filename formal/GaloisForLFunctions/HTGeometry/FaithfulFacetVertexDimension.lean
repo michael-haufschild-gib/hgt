@@ -1,3 +1,5 @@
+import GaloisForLFunctions.HTGeometry.ComplexTranscendental
+import GaloisForLFunctions.HTGeometry.FaithfulFacetComplementSpan
 import GaloisForLFunctions.HTGeometry.TranscendentalPowerIndependence
 
 /-!
@@ -82,5 +84,23 @@ theorem exists_faithfulFacetSeparation_vertexDim {V : Type*} [Fintype V] [Decida
     rw [hfam]
     exact transcendental_pow_comp_linearIndependent hτ
       (fun x y h => Subtype.ext (ginj h))
+
+/-- One faithful vertex-dimensional separation simultaneously realizes strict complement-span
+growth at every incident facet vertex.  No zero-pattern certificate or transcendental parameter
+is supplied by the caller: both are produced by the existing universal construction. -/
+theorem exists_faithfulFacetSeparation_strict_complementSpan
+    {V : Type*} [Fintype V] [DecidableEq V]
+    {m : ℕ} (fac : Fin m → Finset V) :
+    ∃ (a : V → (V → ℂ)) (ℓ : Fin m → ((V → ℂ) →ₗ[ℂ] ℂ)),
+      (∀ (i : Fin m) (v : V), ℓ i (a v) = 0 ↔ v ∉ fac i) ∧
+      ∀ (i : Fin m) (u : V), u ∈ fac i →
+        Submodule.span ℂ (a '' {v | v ∉ fac i}) <
+          Submodule.span ℂ (insert (a u) (a '' {v | v ∉ fac i})) := by
+  obtain ⟨τ, hτ⟩ := exists_transcendental_complex
+  obtain ⟨a, ℓ, _ha, hzero, _hvalues⟩ :=
+    exists_faithfulFacetSeparation_vertexDim (τ := τ) hτ fac
+  refine ⟨a, ℓ, hzero, ?_⟩
+  intro i u hu
+  exact complementSpan_lt_insert_facetVertex fac a ℓ hzero i u hu
 
 end GaloisForLFunctions

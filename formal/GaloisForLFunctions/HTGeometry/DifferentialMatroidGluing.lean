@@ -478,6 +478,27 @@ theorem graphGluing {V ι : Type*} [DecidableEq ι] (edges : Finset ι) (O : ι 
         _ = F.card := hcardF.symm
     omega
 
+/-- Graph gluing from the concrete star data: a rank automorphism, independence of each star,
+and freely separated translates.  These three hypotheses construct the `FreeIndepOrbit` input of
+`graphGluing`; callers need not package that intermediate structure themselves. -/
+theorem graphGluing_of_indep_hasFreeTranslates
+    {V iota : Type*} [DecidableEq iota]
+    (edges : Finset iota) (O : iota → Set Ω)
+    (sigma : V → Equiv.Perm Ω) (inc : V → iota → Prop)
+    [∀ q, DecidablePred (inc q)]
+    (hCover : ∀ e ∈ edges, ∃ q : V, inc q e)
+    (hStarAut : ∀ q : V, sigma q ∈ R.rankAutSubgroup)
+    (hStarIndep : ∀ q : V, R.IndepSet (⋃ e ∈ edges.filter (inc q), O e))
+    (hStarFree : ∀ q : V,
+      Rank.HasFreeTranslates (sigma q) (⋃ e ∈ edges.filter (inc q), O e))
+    (hOff : ∀ q : V,
+      R.CrossNeutral (sigma q) (⋃ e ∈ edges.filter (fun e => ¬ inc q e), O e)) :
+    R.IndepSet (⋃ e ∈ edges, O e) := by
+  apply R.graphGluing edges O sigma inc hCover
+  · intro q
+    exact R.freeIndepOrbit_of_indep (hStarAut q) (hStarIndep q) (hStarFree q)
+  · exact hOff
+
 end Rank
 
 /-!

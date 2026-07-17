@@ -277,12 +277,12 @@ gates.
    no constant one-particle gauge reduces to diagonal scattering.  The non-difference
    Corcoran--de Leeuw control solves this algebraically by a nontrivial unipotent channel block, but
    positive-metric unitarity and Lorentz difference form fail.  Solve both physical gates.
-   A provisional two-state no-go remains the backlog conjecture
-   `../../0-backlog/two-state-fermionic-zero-intrinsic-mixing-rigidity.md`.  The exact convention
-   theorem `fermionic-zero-braid-anchor-commutation-gate.md` shows that a physical quantum
-   fermionic anchor `-P` becomes a braid identity anchor `-I`.  The flip-anchored adjacent class is
-   pointwise locally product-diagonal, but that is not a no-go for the standard physical quantum
-   lane.  Neither a two-state no-go nor a minimum three-state conclusion is established.
+   The classification corollary
+   `two-state-fermionic-zero-intrinsic-mixing-rigidity.md` now proves global fixed-basis
+   diagonality for the positive-unitary two-state adjacent class anchored at `-P`.  The exact
+   convention theorem `fermionic-zero-braid-anchor-commutation-gate.md` shows why this is not a
+   no-go for the standard physical quantum lane: a physical quantum fermionic anchor `-P` becomes
+   a braid identity anchor `-I`.  No minimum three-state conclusion is established there.
 4. Classify spectral-parameter gauge transformations that preserve projective Kolchin rank and
    separate genuine HT cocycles from rapidity-dependent basis artifacts.
 5. Prove compact-local existence for the genuinely noncommuting model.

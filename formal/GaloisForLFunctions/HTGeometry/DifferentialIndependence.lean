@@ -135,44 +135,6 @@ theorem AlgebraicIndependent.add_algebraMap
   have h := hx.aeval_of_algebraicIndependent hpoly
   simpa using h
 
-@[simp]
-theorem differentialJet_add_algebraMap
-    {F K : Type*} [CommRing F] [CommRing K]
-    [Algebra F K] [Differential F] [Differential K] [DifferentialAlgebra F K]
-    (n : ℕ) (x : K) (c : F) :
-    differentialJet n (x + algebraMap F K c) =
-      differentialJet n x + algebraMap F K (differentialJet n c) := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-      rw [differentialJet_succ, differentialJet_succ, differentialJet_succ,
-        ih, map_add, deriv_algebraMap]
-
-/-- Differential independence is preserved by coordinatewise translation by elements of the base
-differential ring.  This is the exact algebraic form of rational-gauge invariance. -/
-theorem DifferentialIndependent.addBase
-    {F K : Type*} [CommRing F] [CommRing K]
-    [Algebra F K] [Differential F] [Differential K] [DifferentialAlgebra F K]
-    {ι : Type*} {x : ι → K} (hx : DifferentialIndependent F x) (c : ι → F) :
-    DifferentialIndependent F (fun i => x i + algebraMap F K (c i)) := by
-  unfold DifferentialIndependent at hx ⊢
-  have h := AlgebraicIndependent.add_algebraMap hx
-    (fun p : ι × ℕ => differentialJet p.2 (c p.1))
-  simpa only [differentialJet_add_algebraMap] using h
-
-/-- Coordinatewise base translation preserves differential independence in both directions. -/
-theorem differentialIndependent_addBase_iff
-    {F K : Type*} [CommRing F] [CommRing K]
-    [Algebra F K] [Differential F] [Differential K] [DifferentialAlgebra F K]
-    {ι : Type*} (x : ι → K) (c : ι → F) :
-    DifferentialIndependent F (fun i => x i + algebraMap F K (c i)) ↔
-      DifferentialIndependent F x := by
-  constructor
-  · intro h
-    have h' := h.addBase fun i => -c i
-    simpa only [map_neg, add_neg_cancel_right] using h'
-  · exact fun h => h.addBase c
-
 /-- Algebraic jets preserve addition. -/
 theorem differentialJet_add_apply
     {K : Type*} [CommRing K] [Differential K] (n : ℕ) (x y : K) :
@@ -181,6 +143,28 @@ theorem differentialJet_add_apply
   | zero => simp
   | succ n ih =>
       rw [differentialJet_succ, differentialJet_succ, differentialJet_succ, ih, map_add]
+
+/-- Differential jets commute with the coefficient-ring algebra map. -/
+@[simp]
+theorem differentialJet_algebraMap_apply
+    {F K : Type*} [CommRing F] [CommRing K]
+    [Algebra F K] [Differential F] [Differential K] [DifferentialAlgebra F K]
+    (n : ℕ) (c : F) :
+    differentialJet n (algebraMap F K c) =
+      algebraMap F K (differentialJet n c) := by
+  induction n with
+  | zero => rfl
+  | succ n ih =>
+      rw [differentialJet_succ, differentialJet_succ, ih, deriv_algebraMap]
+
+@[simp]
+theorem differentialJet_add_algebraMap
+    {F K : Type*} [CommRing F] [CommRing K]
+    [Algebra F K] [Differential F] [Differential K] [DifferentialAlgebra F K]
+    (n : ℕ) (x : K) (c : F) :
+    differentialJet n (x + algebraMap F K c) =
+      differentialJet n x + algebraMap F K (differentialJet n c) := by
+  rw [differentialJet_add_apply, differentialJet_algebraMap_apply]
 
 /-- Differential independence is preserved by adding a family whose every jet remains in the
 image of the coefficient ring.  Unlike `DifferentialIndependent.addBase`, this form does not ask
@@ -194,6 +178,30 @@ theorem DifferentialIndependent.addOfJetsInBase
   unfold DifferentialIndependent at hx ⊢
   have h := AlgebraicIndependent.add_algebraMap hx (fun p : ι × ℕ => b p.1 p.2)
   simpa only [differentialJet_add_apply, hb] using h
+
+/-- Differential independence is preserved by coordinatewise translation by elements of the base
+differential ring.  This is the exact algebraic form of rational-gauge invariance. -/
+theorem DifferentialIndependent.addBase
+    {F K : Type*} [CommRing F] [CommRing K]
+    [Algebra F K] [Differential F] [Differential K] [DifferentialAlgebra F K]
+    {ι : Type*} {x : ι → K} (hx : DifferentialIndependent F x) (c : ι → F) :
+    DifferentialIndependent F (fun i => x i + algebraMap F K (c i)) := by
+  apply hx.addOfJetsInBase
+  intro i n
+  exact ⟨differentialJet n (c i), differentialJet_algebraMap_apply n (c i)⟩
+
+/-- Coordinatewise base translation preserves differential independence in both directions. -/
+theorem differentialIndependent_addBase_iff
+    {F K : Type*} [CommRing F] [CommRing K]
+    [Algebra F K] [Differential F] [Differential K] [DifferentialAlgebra F K]
+    {ι : Type*} (x : ι → K) (c : ι → F) :
+    DifferentialIndependent F (fun i => x i + algebraMap F K (c i)) ↔
+      DifferentialIndependent F x := by
+  constructor
+  · intro h
+    have h' := h.addBase fun i => -c i
+    simpa only [map_neg, add_neg_cancel_right] using h'
+  · exact fun h => h.addBase c
 
 /-- Replacing each member of a differentially independent family by any fixed derivative of that
 member preserves differential independence. -/
