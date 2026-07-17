@@ -169,8 +169,19 @@ theorem gradedMatrixTrace_acyclicHodgeTransgression_right
       gradedMatrixTrace Γ ((H * d - d * H) * h) := by
   have hgeneral := gradedMatrixTrace_hodgeTransgression Γ 0 H d h hdodd (by simpa using hHodge)
   rw [Matrix.zero_mul, gradedMatrixTrace_odd_left_rotate Γ h (d * H - H * d) hhodd] at hgeneral
-  simpa only [gradedMatrixTrace, Matrix.mul_sub, Matrix.neg_mul,
-    Matrix.trace_sub, Matrix.trace_neg, zero_add, neg_sub] using hgeneral
+  have hgeneral' :
+      gradedMatrixTrace Γ H =
+        -gradedMatrixTrace Γ ((d * H - H * d) * h) := by
+    simpa [gradedMatrixTrace, Matrix.mul_zero] using hgeneral
+  calc
+    gradedMatrixTrace Γ H =
+        -gradedMatrixTrace Γ ((d * H - H * d) * h) := hgeneral'
+    _ = gradedMatrixTrace Γ ((H * d - d * H) * h) := by
+      have hmatrix :
+          (H * d - d * H) * h = -((d * H - H * d) * h) := by
+        noncomm_ring
+      rw [hmatrix]
+      simp [gradedMatrixTrace]
 
 /-- **Finite graded Hodge compression.**  If `d` is odd, the Hodge complement is
 `1-P=dh+hd`, and `Res` commutes with `d`, then the full graded trace equals the harmonic compressed

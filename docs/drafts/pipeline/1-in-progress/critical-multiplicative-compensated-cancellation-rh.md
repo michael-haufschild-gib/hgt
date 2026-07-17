@@ -5,7 +5,9 @@
 - **Type:** `[BOLD CONJECTURE] [GENERAL HT PARENT THEORY] [RH-DELIVERING SPECIALIZATION]`
 - **Scientific status:** `[CORPUS SYNTHESIS] [RADIAL PARAPRODUCT ROUTE REFUTED]`
   `[MAPPING-CONE TRACE REFUTED] [FINITE HODGE TRANSGRESSION LEAN-PROVED]`
-  `[KINK LOCALIZATION PAPER-PROVED] [COFINAL CONTROL OPEN] [NOT RH YET]`
+  `[KINK LOCALIZATION PAPER-PROVED] [ONE-BODY METRIC LIFT REFUTED]`
+  `[DOUBLED COVARIANT LIFT PAPER-PROVED] [RAW NORM ROUTES REFUTED]`
+  `[ORIENTED COFINAL CARLESON CONTROL OPEN] [NOT RH YET]`
 - **General HT inputs:**
   - `../3-formalized/new_scientific_knowledge/hypertranscendental-constraint-spectrum-universality.md`;
   - `../3-formalized/new_scientific_knowledge/hypertranscendental-clock-capacity-innovation-theorem.md`;
@@ -21,13 +23,15 @@
   - `../2-fully-proven/not_new_scientific_knowledge/ccm-universal-boundary-laplace-frame-saturation-law.md`;
   - `../2-fully-proven/not_new_scientific_knowledge/ccm-half-unit-linear-extrapolation-cost-law.md`;
   - `../2-fully-proven/not_new_scientific_knowledge/shifted-euler-quotient-finite-tangent-prime-support-filtration.md`.
-- **Statement:** The surviving parent mathematics is a bornological calculus of contractions and
-  transgressions on multifiltered acyclic complexes.  Ordinary homology can vanish at every finite
-  stage while no contraction remains controlled on the cofinal scale cone.  An observable that is
-  not a chain map then leaves the secondary current `Str(h[d,H])`.  Hypertranscendental source
-  filtrations provide one class of such controlled-acyclicity problems.  For zeta, the prime
-  current is exactly a Boolean-Koszul transgression; RH would follow from a compensated cofinal
-  estimate for its coupled discrete--polar relative transgression at the Euler half-density.
+- **Statement:** The surviving parent mathematics is oriented additive--multiplicative cofinal
+  transgression: nested additive sampling apertures carry multiplicative acyclic Boolean complexes,
+  and the complete real horizontal orientation must be reduced before any norm is taken.  An
+  observable that is not a chain map leaves the secondary current `Str(h[d,H])`.  For zeta, both
+  the von Mangoldt current and the complete prime--polar defect are exact finite Hodge
+  transgressions on a doubled divisor complex.  The sole RH-bearing step is a source-space
+  Carleson theorem coupling those transgressions across apertures through coherent ordinary-integer
+  floor packing.  Hypertranscendental controlled-primitive failures are one general class of the
+  same cofinal phenomenon.
 
 ## Corpus verdict
 
@@ -59,10 +63,12 @@ aperture scale x transverse factor scale x interaction grade,
 ```
 
 equipped with an orientation, a differential, a source-defined contracting homotopy, non-chain
-observables, and a controlled cofinal-region bornology.  Call the resulting proposed field
-**cofinal controlled transgression**.  Its characteristic law is not positivity of a finite
-complex.  It is compensation in the secondary pairing `h[d,H]` when neither factor is uniformly
-controlled separately.  Oriented multiplicative compactness is its divisor-lattice specialization.
+observables, an additive-aperture transport, and a controlled cofinal-region bornology.  Call the
+resulting proposed field **oriented additive--multiplicative cofinal transgression**.  Its
+characteristic law is not positivity of a finite complex or smallness of an ordinary operator
+ideal.  It is horizontal compensation in the secondary pairing `h[d,H]`, followed by a
+cross-aperture Carleson law on the reduced oriented section.  The ordinary divisor-lattice
+specialization is selected by coherent principal-ideal floor packing.
 
 ## Exact radial endpoint
 
@@ -255,10 +261,15 @@ It is not a chain map.  Its edge commutator and graded trace are
 ```text
 L_n d_n-d_n L_n=sum_(p|n) log(p) iota_p,
 
-Str(L_n)=Str((L_n d_n-d_n L_n)h_n)
-        =sum_(p|n)log(p)(1-1)^(omega(n)-1)
+Str(L_n)=Str(h_n(d_nL_n-L_nd_n))
+        =Str((L_n d_n-d_n L_n)h_n)
+        =1/omega(n) sum_(p|n)log(p)(1-1)^(omega(n)-1)
         =Lambda(n).                                       (T3)
 ```
+
+The raw `1/omega(n)` is essential and disappears only after the singleton selector has forced
+`omega(n)=1`.  The second equality uses odd graded cyclicity of `h_n`; both this rotation and its
+right-oriented acyclic Hodge specialization are now proved unconditionally in Lean.
 
 Thus the moving prime tent is exactly
 
@@ -283,17 +294,19 @@ projection, or parity premise beyond oddness of `d` is needed for the matrix ide
 commutes with `d`, `(14)` collapses to the existing Hodge-compression theorem.  When `P=0`, the
 whole trace is secondary even though ordinary cohomology vanishes.
 
-This identifies the parent mathematics more sharply.  A **cofinal controlled transgression** is a
-multifiltered family `(C_alpha,d_alpha,h_alpha,H_alpha)` in which every finite complex is
-algebraically contractible, but the contractions and observable commutators may escape every
-uniform bound separately.  The object of study is their oriented product
-`h_alpha[d_alpha,H_alpha]`, its dependence on the filtration, and the conditions under which it
-remains controlled after all grades are coupled.  The controlled-primitive HT theory in the corpus
-is the degree-one case: ordinary cohomology is trivial while a bounded primitive can fail to exist.
+This identifies the parent mathematics more sharply.  An **oriented additive--multiplicative
+cofinal transgression system** is a nested family `(C_alpha,d_alpha,h_alpha,H_alpha)` in which
+every finite multiplicative fibre is algebraically contractible, but the contractions and
+observable commutators may escape every uniform bound separately.  A horizontal orientation is
+reduced before norming, and a second additive-aperture transport compares the resulting sections.
+The object of study is the source-space Carleson behavior of `h_alpha[d_alpha,H_alpha]`, not its
+raw Schatten size.  The controlled-primitive HT theory in the corpus is the degree-one shadow:
+ordinary cohomology is trivial while a bounded oriented primitive can fail to exist.
 
-The identity `(14)` alone is universal and therefore not an RH advance.  The zeta advance can only
-come from constructing the *relative* discrete--polar metric transgression before scalar trace and
-proving a cofinal compensated estimate for it.
+The identity `(14)` alone is universal and therefore not an RH advance.  The finite doubled
+prime--polar transgression is constructed below.  The zeta advance can only come from a
+non-spectral source-space factorization and a cross-aperture Carleson theorem after complete real
+Möbius orientation.
 
 ## What the attached fundamental-lemma talk contributes
 
@@ -441,56 +454,182 @@ of the canonical polar-to-discrete incidence transfer `A_N j_N` to be an isometr
 normalization and lattice residual have disappeared into one metric defect without being estimated
 separately.  No zeros or negative parts enter its construction.
 
-But `(X5)` is still an exact repackaging, not an estimate.  Rank-one metric observables fail to
-intertwine with `A_N` precisely by `R_(N,L)`, so the defect is the failure of metric chain
-compatibility.  The next object is the relative metric `M_N=A_N^*A_N` lifted to the full Boolean
-Koszul complex, not the ordinary cone of `A_N`.
+But `(X5)` is still an exact repackaging, not an estimate.  The attempted local lift of the
+one-body metric `M_N=A_N^*A_N` is now refuted.  In canonical whitened incidence coordinates,
 
-## The two genuinely new theorems
+```text
+Mbar_N=(1/c_N)J^(-1/2)Z^(-1)D G_disc D Z^(-T)J^(-1/2),
+J=mu*(n |-> n log n),                                     (X6)
+```
 
-> **[CONJECTURE -- SOURCE-LOCAL RELATIVE-METRIC TRANSGRESSION.]**  The canonical relative metric
-> `M_N=A_N^*A_N`, the Möbius augmentation `j_N`, and the polar unit admit a lift to the complete
-> aperture--factor--grade Koszul system such that its Hodge transgression is supported only on
-> cells crossing a transverse cutoff kink or the cofinal grade boundary.  Its scalarization is
-> exactly
->
-> ```text
-> E_L(N)=c_N(||A_Nj_N||^2-1)=T_L(N)-c_N,                  (15)
-> ```
->
-> and the construction is local before radial pushforward and independent of `E_L(N)^+`.
+and, for `r=pR`,
 
-This is the corrected Green law.  It replaces the false nonnegative bulk square and the
-tautological mapping-cone trace with a source-defined signed transgression of a relative incidence
-metric.
+```text
+(Mbar_N)_(pR,p)
+ =p log(p)/(c_N sqrt(J(pR)J(p)))
+   sum_(t|R)mu(R/t)kappa_N(pt),
+kappa_N(q)=q K_(N,L)(q).                                  (X7)
+```
 
-> **[CONJECTURE -- COFINAL COMPENSATED-TRANSGRESSION ESTIMATE.]**  After every active grade has
-> been coupled and before scalar positive parts are taken, the relative transgression has a
-> source-local factorization whose cofinal block pairing satisfies
->
-> ```text
-> sum_(exp(J)<=N<exp(J+1)) E_L(N)^+/N
->   <=C(1+J)^a.                                             (16)
-> ```
->
-> The proof must arise from controlled contraction/commutator norms or an equivalent local
-> boundary pairing, not from the scalar values `E_L(N)` themselves.
+These are all multiplicative finite-difference grades.  The `p <-> pq` entry is already nonzero
+for the exact family `L=log 2`, `N=4p`.  Hence the actual one-body metric mixes Boolean parity and
+is nonlocal through `Z^(-1)`.  It cannot be the claimed even kink-supported observable.
 
-Equation `(16)` is the sole RH-strength estimate.  The polynomial block allowance admits every
-known local sign failure but excludes a persistent positive exponential expansion mode.  The first
-unsupported sentence is now precise: the canonical relative incidence metric has a local
-all-grade transgression whose unfavorable cofinal expansion is polynomial per logarithmic block.
+## The exact doubled covariant lift `[PROVED ON PAPER]`
+
+Let `P_N` be the primes at most `N` and take the doubled complex with basis pairs
+`(S,T) subset P_N x P_N` and grading `(-1)^(|S|+|T|)`.  Put
+
+```text
+dhat_N=sum_a iota_a,
+hhat_N=1/(2|P_N|)sum_a wedge_a,
+dhat_N hhat_N+hhat_N dhat_N=1.                            (D1)
+```
+
+For `p|n`, let
+
+```text
+Z_(n,p)(S,T)=1_(S,T subset P(n))1_(p in S intersect T),  (D2)
+```
+
+viewed as a diagonal projector, and let `Pi_00` be the doubled empty-face projector.  Define
+
+```text
+Hhat_(N,L)
+ =sum_(n<=N)w_(N,L)(n)sum_(p|n)log(p)Z_(n,p)
+  -c_N Pi_00.                                             (D3)
+```
+
+Then
+
+```text
+Str_Gamma(Z_(n,p))=1_(omega(n)=1),
+
+E_L(N)=T_L(N)-c_N
+ =Str_Gamma(Hhat_(N,L))
+ =Str_Gamma(hhat_N(dhat_NHhat_(N,L)-Hhat_(N,L)dhat_N)).   (D4)
+```
+
+This is noncircular and face-defined: it uses only divisor faces, marked prime incidence, aperture
+weights, and the explicit polar unit.  It is not local in the full active-prime complex.  Extending
+a local face projector by identity preserves locality but kills its global supertrace; freezing the
+complement in its vacuum restores visibility but creates an edge in every absent-prime direction.
+For a face with `r` primes those boundary blocks have singular values `sqrt(2)` and
+`sqrt(2(|P_N|-r))`, each with multiplicity `4^(r-1)`.  The observable also contains an unavoidable
+marked-prime bulk current and polar-vacuum edges.  The former kink-only support claim is false.
+
+On the distinguished state the continuum transfer reduces exactly to the marked-support selector,
+
+```text
+(A_Nj_N)(1)(n,p)
+ =-c_N^(-1/2)sqrt(w_(N,L)(n)log p)1_(omega(n)=1),         (D5)
+```
+
+so `(D4)` closes finite covariant-lift existence but supplies no estimate.  The local alternative
+`H_n=L_n-P_empty` gives `Str(H_n)=Lambda(n)-1` and misses `E_L(N)` only by the BV quadrature
+`O_L(N^(-1/2))`.  Thus one may have genuine locality or one exact global trace; the doubled model
+shows the cofinal boundary cost of demanding both.
+
+## The sole genuinely new RH-strength theorem
+
+Ordinary contraction, torsion, Schatten, or full-Gram trace norms are now excluded.  On an
+`r`-cube one can have `[H,d]h=dh`, a rank `2^(r-1)` projection with zero graded supertrace.  Phase
+twists `z_p=-1`, every fixed-grade truncation, and PNT-scale generalized-prime burst systems all
+violate a polynomial logarithmic-block bound while retaining the corresponding finite incidence
+identities.
+
+Inside the doubled model the polar obstruction is even sharper: the incidence operator begins in
+degree two, while `-c_N Pi_00` leaves a degree-one transgression singular value exactly `c_N`.
+Every ordinary Schatten norm therefore costs `sqrt(N)` at each aperture before arithmetic and
+polar currents can meet.
+
+The surviving target is an **oriented horizontal cofinal sewing and Carleson theorem**.  It needs a
+second cutoff-dependent differential connecting local cubes by actual multiplication transitions
+`n <-> nq` and coupling the polar current to arithmetic before norming.
+
+The coefficients of that connection are explicit.  Put
+
+```text
+q_R=product_(p in R)p,
+W_N(R)=sum_(q_R|n)w_(N,L)(n),
+ell(I)=sum_(p in I)log p.
+```
+
+The doubled incidence diagonal is
+
+```text
+F_N(S,T)=ell(S intersect T)W_N(S union T).                (C0)
+```
+
+Its two edge differences are `log(q)W_N(R)` and
+`ell(I)(W_N(R)-W_N(R\{q}))`.  A successful aperture connection must be built from these coherent
+ordinary multiple counts.
+
+Let `Z_N` be a genuine source space of horizontal sections with real prime-edge orientation
+
+```text
+x(dp)=-x(d),                                               (C1)
+```
+
+containing the Möbius--polar section `xi_N`.  Construct a degree-changing sewing operator `B_N`
+and aperture differential `delta_N` such that
+
+```text
+J_N^loc=[delta_N,B_N]_s+R_N,                              (C1a)
+```
+
+with zero-supertrace bulk and a block-controlled residual, or equivalently construct from paired
+sewn cells—not from a spectral positive part—maps `Gamma_(N,+/-)` satisfying for every `x in Z_N`
+
+```text
+tau_N(x,x)=||Gamma_(N,+)x||^2-||Gamma_(N,-)x||^2,
+c_N tau_N(xi_N,xi_N)=E_L(N).                              (C2)
+```
+
+For coherent block sections `Z_J` and restrictions `rho_N`, define
+
+```text
+C_(J,+)x
+ =(sqrt(c_N/N)Gamma_(N,+)rho_Nx)_(exp(J)<=N<exp(J+1)).   (C3)
+```
+
+The exact open theorem is
+
+```text
+||C_(J,+)||^2 <= C_L(1+J)^a.                              (C4)
+```
+
+It must hold on a source class larger than the evaluated defect line, with a norm fixed before
+`E_L`, with a cutoff-dependent noncompact carrier, and with the distinguished section uniformly
+bounded.  A fixed-`N` difference of squares is insufficient; the sewing `(C1a)` is what permits the
+polar and arithmetic degrees to meet.  Then
+
+```text
+sum_(exp(J)<=N<exp(J+1))E_L(N)^+/N
+ <=C_L(1+J)^a||xi||_(Z_J)^2.                             (C5)
+```
+
+The ordinary source axiom visible to this construction is coherent principal-ideal floor packing,
+
+```text
+#{b: |ab|<=x}=floor(x/|a|).                               (C6)
+```
+
+It identifies the normed free monoid with the ordinary positive integers and excludes the
+generalized-prime burst countermodel.  It does not imply `(C4)`.  The new mathematics still missing
+is the real-oriented all-grade cross-aperture correlation theorem for the coherent floor
+remainders in `(C6)`.
 
 ## Exact RH deduction from the new theorem
 
-By `(2)` and `(15)`,
+By `(2)` and `(D4)`,
 
 ```text
 A_L(N)^-
  <=2 E_L(N)^++O_L(1).                                     (17)
 ```
 
-For every `epsilon>0`, block decomposition and `(16)` give
+For every `epsilon>0`, block decomposition and `(C5)` give
 
 ```text
 sum_N E_L(N)^+/N^(1+epsilon)
@@ -504,16 +643,19 @@ chain is therefore
 ```text
 complete Boolean divisor-grade complex
   + radial aperture and transverse factor filtrations
-  -> canonical discrete--continuum incidence transfer (X1)--(X5)
-  -> source-local relative-metric Hodge transgression (15)
-  -> cofinal compensated-transgression estimate (16)
+  -> polar-augmented doubled covariant complex (D1)--(D4)
+  -> coherent additive-aperture horizontal source module (C1)--(C3)
+  -> cellular signed factorization (C2)
+  -> oriented cofinal Carleson theorem (C4)
+  -> positive block estimate (C5)
   -> all-epsilon negative energy by (17)--(18)
   -> existing unconditional Lean equivalence (3)
   -> RH.                                                    (19)
 ```
 
-The only unproved arrows carrying RH strength are `(15)` and `(16)`.  No existing corpus theorem
-implies them.
+The doubled finite lift `(D4)` is proved on paper and is not RH strength.  The only unproved arrows
+carrying RH strength are the non-spectral cellular source-space factorization `(C2)` and the
+cross-aperture operator estimate `(C4)`.  No existing corpus theorem implies them.
 
 ## Why this is not one of the blacklisted routes
 
@@ -527,28 +669,26 @@ implies them.
   estimate presented as the breakthrough.
 - The explicit-formula theorem is used only after the independent finite-divisor block estimate.
 
-The proposal can still fail.  If the lift in `(15)` is defined from the scalar defect rather than
-from `A_N`, `j_N`, the Koszul differential, and local cutoffs, or if `(16)` merely assumes the
+The proposal can still fail.  If `Z_J` is only the evaluated defect line, if `Gamma_+` is the
+spectral positive part of the already assembled scalar form, or if `(C4)` merely assumes the
 values it must prove, the programme is dead.
 
 ## Research programme
 
-1. Formalize the Boolean model `(T1)`--`(T4)` and the exact metric transfer `(X1)`--`(X5)` from
-   source definitions, not from their scalar consequences.
+1. Finish the arithmetic specialization of the Boolean model `(T1)`--`(T4)` and formalize the
+   doubled face-selector identity `(D2)`--`(D4)` from source definitions.
 2. Formalize the hinge decomposition `(K1)`--`(K3)`; retain the box-spline law as a paper theorem
    until the required analytic spline API is justified.
-3. Lift `M_N=A_N^*A_N` to the transverse Boolean-grade complex and calculate `[d,M_N]` cell by
-   cell.  Reject the lift if its trace is inserted by hand or if it estimates `Q_N-1` and
-   `R_(N,L)` separately.
-4. Prove or refute boundary support of the relative-metric transgression at finite aperture.  The
-   only allowed bulk term is the explicit grade-two signed Hessian current `(K5)`.
-5. Determine the correct controlled norm: contraction cost, relative torsion, Schatten
-   factorization, or a block Carleson pairing.  It must dominate `(16)` only after all grades are
-   assembled and must be independently computable from local incidence data.
-6. Test generalized-prime, altered norm-packing, phase-twisted Möbius, Liouville-twisted, and
-   truncated-grade systems to isolate the ordinary-integer packing axiom required by the norm
-   theorem.
-7. Prove `(16)` and compose it with `(17)`--`(18)` and the existing unconditional Lean endpoint.
+3. Treat `(X6)`--`(X7)` as the exact one-body falsifier; do not retry an even local `M_N` lift.
+4. Define the horizontal source module `Z_N` from real Möbius edge orientation and the polar
+   augmentation before choosing any positive factor.
+5. Derive a cellwise signed factorization `(C2)` on that full source module.  It must retain the
+   marked-prime bulk and outer divisor-face boundaries.
+6. Construct coherent block spaces `Z_J` using the principal-ideal floor-packing maps `(C6)` and
+   prove their distinguished sections are uniformly bounded.
+7. Prove or refute the Carleson operator law `(C4)`.  The raw Schatten, full-Gram trace, phase-blind,
+   fixed-grade, generalized-prime, and fixed-compact interpretations are already refuted.
+8. Compose `(C5)` with `(17)`--`(18)` and the existing unconditional Lean endpoint.
 
 ## Kill tests
 
@@ -556,7 +696,7 @@ Reject a proposed proof if it:
 
 1. assumes Xi-zero locations, a zero-free half-plane, Weil positivity, or an RH-equivalent
    Dirichlet-series continuation;
-2. defines the boundary flux from `A_L^-` or proves `(16)` by restating `(3)`;
+2. defines the boundary flux from `A_L^-` or proves `(C4)` by restating `(3)`;
 3. invokes UFD, Möbius inversion, or incidence positivity without defeating `(11)` and `(13)`;
 4. uses a fixed interaction grade or a diagonal limit without a cofinal-region comparison;
 5. estimates the normalization and lattice discrepancies in `(10)` separately;
@@ -568,6 +708,9 @@ Reject a proposed proof if it:
    extra ordinary-integer packing law used.
 10. claims an ordinary mapping-cone trace depends on the transfer map, or treats a non-chain
     observable as a cohomological Lefschetz operator.
+11. takes a finite Schatten norm on the raw Boolean complex or a trace norm of the full Gram
+    defect; the exponential-rank and `sqrt(N)log N` compressions refute both.
+12. is invariant under primewise phases of the Möbius section or closes at a fixed grade.
 
 ## Gates
 
@@ -589,10 +732,14 @@ Reject a proposed proof if it:
 - [x] local sign and nonnegative-bulk-square claims refuted
 - [x] canonical discrete and continuum Gram maps constructed
 - [x] exact metric-transfer defect `(X5)` derived
-- [ ] lift the relative metric to the full Boolean-grade complex
-- [ ] prove or refute the source-local transgression law `(15)`
-- [ ] prove the cofinal compensated-transgression estimate `(16)`
-- [ ] formalize the arithmetic producer unconditionally in Lean
+- [x] local even one-body relative-metric lift refuted by `(X6)`--`(X7)`
+- [x] exact doubled covariant source-local transgression `(D4)` proved on paper
+- [x] full-complex Schatten, full-Gram trace, phase-blind, fixed-grade, and PNT-scale
+  generalized-prime norm routes refuted
+- [x] coherent principal-ideal floor packing isolated as the ordinary-integer selector
+- [ ] formalize the doubled arithmetic face-selector producer unconditionally in Lean
+- [ ] construct a non-spectral cellular signed factorization `(C2)` on a genuine source module
+- [ ] prove the oriented horizontal cofinal Carleson estimate `(C4)`
 - [ ] invoke the existing formal negative-energy equivalence
 - [ ] RH
 
@@ -613,3 +760,10 @@ Reject a proposed proof if it:
   Gram maps and rewrote the entire prime--polar defect as the isometry defect of their unique
   transfer on the Möbius augmentation.  The open RH theorem is now local cofinal control of that
   relative-metric transgression, not purity of a mapping cone.
+- 2026-07-17 -- Refuted that last one-body step: the whitened relative metric contains every
+  multiplicative finite-difference grade and already mixes `p` with `pq`.  Replaced it by the exact
+  doubled covariant observable `(D3)`, whose finite Hodge transgression is exactly `T_L-c_N`.
+- 2026-07-17 -- Hostile norm audit proved exponential Boolean Schatten inflation, a
+  `sqrt(N)log N` full-Gram compression, phase/Liouville and fixed-grade violations, and a PNT-scale
+  generalized-prime burst countermodel.  The sole surviving target is the oriented horizontal
+  source-space Carleson law `(C4)`, using coherent ordinary floor packing across apertures.

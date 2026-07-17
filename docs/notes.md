@@ -41,3 +41,5 @@ The finite cube calculation is now complete too. It gives more than the earlier 
 -> What survives is a genuinely signed, all-grade boundary current whose control can only come from coupling the entire aperture block.
 
 The local lift is now genuinely solved at the construction level: the old \(A_N^*A_N\) proposal is provably parity-mixing and nonlocal. A doubled Boolean complex gives \(T_L(N)-C_L\sqrt N\) itself as one finite Hodge transgression, with the polar unit and prime incidence in the same object. I’m now separating that exact theorem from the still-RH-strength estimate, and stress-testing whether cube geometry supplies any real bound or merely another identity.
+
+The hostile audit has narrowed the program decisively. Raw operator norms are not merely weak; they are false in the exact way the Boolean cancellation works. The remaining object is now concrete: an all-grade real-Möbius horizontal module over the ordinary floor-packing maps, with a cellwise signed factorization and a cross-aperture Carleson bound. I’ve rewritten the live proof chain around that single theorem and removed the false one-body metric step.

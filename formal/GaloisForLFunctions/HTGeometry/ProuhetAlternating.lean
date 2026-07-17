@@ -153,7 +153,7 @@ theorem booleanAugmentedLogObservableSupertrace_eq
   by_cases h0 : n = 0
   · simp [h0]
   by_cases h1 : n = 1
-  · simp [h0, h1]
+  · simp [h1]
   simp [h0, h1]
 
 end
