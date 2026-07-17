@@ -468,6 +468,19 @@ The closest primary theories checked are:
    `10.1016/j.jcta.2006.03.006`.  Gain-labelled affine hyperplanes encode balanced-cycle and
    coloring combinatorics, not the exact facet-complement/inside dichotomy (2)--(3).
 
+## Lean formalization status
+
+`GaloisForLFunctions/HTGeometry/PPMatrixRankFormula.lean` formalizes the invariant and its exact
+matrix-rank formula.  `PPMatrixRankFormulaConsequences.lean` now additionally formalizes the full
+finite-dimensional wedge computation: the explicit two-coordinate pencil, its PP-admissibility,
+the dimension-one obstruction, and `boundaryWedge_ppDim_eq_two` uniformly for all boundary wedges
+with `r,s>=2`.  The exact faithful value four is formalized separately in
+`WedgeFacetLowerBound.lean`.
+
+The card remains at stage 2 because its generic Baire--Runge periodic-source theorem, exact
+Stanley--Reisner differential-matroid realization, and the analytic definition and lower bound for
+`htDim` are still paper-level.  The exact `ppDim=2` result is no longer part of that gap.
+
 ## Gates
 
 - [x] periodic-pencil facet dimension defined
@@ -477,6 +490,7 @@ The closest primary theories checked are:
 - [x] comparison `ppDim<=ffsDim` proved
 - [x] explicit two-dimensional wedge representation proved
 - [x] dimension-one periodic-pencil impossibility proved
+- [x] exact boundary-wedge `ppDim=2` formalized unconditionally in Lean
 - [x] intrinsic equality `htDim=2` proved using scalar purity
 - [x] strict geometry gap `htDim=ppDim=2<ffsDim=4` proved
 - [ ] independent specialist proof and novelty audit

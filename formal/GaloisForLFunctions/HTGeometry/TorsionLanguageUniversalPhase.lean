@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.PolynomialADEPhaseIdentity
 import GaloisForLFunctions.HTGeometry.PolynomialPatternWeight
 import GaloisForLFunctions.HTGeometry.TorsionFaceExactification
+import Mathlib.RingTheory.RootsOfUnity.Basic
 
 /-!
 # Torsion-language-universal Taylor phases
@@ -50,6 +51,131 @@ theorem TorsionLanguageUniversal.exists_strictMono_occurrences
     exact ⟨q, by omega, hword⟩
   obtain ⟨q, hqmono, hqP⟩ := Nat.exists_strictMono_subsequence hP
   exact ⟨q, hqmono, hqmono.tendsto_atTop, hqP⟩
+
+noncomputable local instance rootsOfUnityEncodable (m : ℕ+) :
+    Encodable (rootsOfUnity (m : ℕ) ℂ) :=
+  Fintype.toEncodable _
+
+private abbrev TorsionWord :=
+  Σ m : ℕ+, Σ M : ℕ, Fin M → rootsOfUnity (m : ℕ) ℂ
+
+noncomputable local instance : Encodable TorsionWord := inferInstance
+
+private structure FiniteWord (α : Type*) where
+  length : ℕ
+  value : ℕ → α
+
+private noncomputable def torsionWordAt (n : ℕ) : FiniteWord ℂ :=
+  match Encodable.decode (α := TorsionWord) (Nat.unpair n).1 with
+  | none => ⟨0, fun _ => 0⟩
+  | some ⟨_, M, s⟩ =>
+      ⟨M, fun i => if h : i < M then ((s ⟨i, h⟩ : ℂˣ) : ℂ) else 0⟩
+
+private def finiteWordStart {α : Type*} (e : ℕ → FiniteWord α) : ℕ → ℕ
+  | 0 => 0
+  | n + 1 => finiteWordStart e n + (e n).length + 1
+
+private theorem finiteWordStart_strictMono {α : Type*} (e : ℕ → FiniteWord α) :
+    StrictMono (finiteWordStart e) := by
+  apply strictMono_nat_of_lt_succ
+  intro n
+  simp [finiteWordStart]
+
+private theorem index_le_finiteWordStart {α : Type*} (e : ℕ → FiniteWord α) (n : ℕ) :
+    n ≤ finiteWordStart e n := by
+  induction n with
+  | zero => simp [finiteWordStart]
+  | succ n ih => simp [finiteWordStart]; omega
+
+private def finiteWordPosition {α : Type*} (e : ℕ → FiniteWord α)
+    (a : Σ n, Fin (e n).length) : ℕ :=
+  finiteWordStart e a.1 + (a.2 : ℕ)
+
+private theorem finiteWordPosition_injective {α : Type*} (e : ℕ → FiniteWord α) :
+    Function.Injective (finiteWordPosition e) := by
+  rintro ⟨n, r⟩ ⟨m, s⟩ h
+  have hmono := finiteWordStart_strictMono e
+  have hnlt : finiteWordPosition e ⟨n, r⟩ < finiteWordStart e (n + 1) := by
+    simp only [finiteWordPosition, finiteWordStart]
+    omega
+  have hmlt : finiteWordPosition e ⟨m, s⟩ < finiteWordStart e (m + 1) := by
+    simp only [finiteWordPosition, finiteWordStart]
+    omega
+  have hnm : n = m := by
+    rcases lt_trichotomy n m with hnm | hnm | hmn
+    · have hle : finiteWordStart e (n + 1) ≤ finiteWordStart e m :=
+        hmono.monotone (Nat.succ_le_iff.mpr hnm)
+      have hpos : finiteWordStart e m ≤ finiteWordPosition e ⟨m, s⟩ := by
+        simp [finiteWordPosition]
+      omega
+    · exact hnm
+    · have hle : finiteWordStart e (m + 1) ≤ finiteWordStart e n :=
+        hmono.monotone (Nat.succ_le_iff.mpr hmn)
+      have hpos : finiteWordStart e n ≤ finiteWordPosition e ⟨n, r⟩ := by
+        simp [finiteWordPosition]
+      omega
+  subst m
+  congr
+  apply Fin.ext
+  simpa [finiteWordPosition] using h
+
+private noncomputable def concatenatedFiniteWords {α : Type*} [Inhabited α]
+    (e : ℕ → FiniteWord α) : ℕ → α :=
+  Function.extend (finiteWordPosition e)
+    (fun a => (e a.1).value a.2) (fun _ => default)
+
+private theorem concatenatedFiniteWords_apply {α : Type*} [Inhabited α]
+    (e : ℕ → FiniteWord α) (a : Σ n, Fin (e n).length) :
+    concatenatedFiniteWords e (finiteWordPosition e a) = (e a.1).value a.2 := by
+  exact (finiteWordPosition_injective e).extend_apply _ _ _
+
+private theorem concatenatedFiniteWords_at_block {α : Type*} [Inhabited α]
+    (e : ℕ → FiniteWord α) {n : ℕ} (r : Fin (e n).length) :
+    concatenatedFiniteWords e (finiteWordStart e n + (r : ℕ)) = (e n).value r := by
+  simpa [finiteWordPosition] using
+    (concatenatedFiniteWords_apply e ⟨n, r⟩)
+
+/-- A chosen phase sequence obtained by concatenating a cofinally repeated enumeration of all
+finite words in all positive-order complex root-of-unity alphabets. -/
+noncomputable def universalTorsionPhase : ℕ → ℂ :=
+  concatenatedFiniteWords torsionWordAt
+
+/-- The concatenated root-of-unity phase contains every finite torsion word beyond every cutoff. -/
+theorem universalTorsionPhase_torsionLanguageUniversal :
+    TorsionLanguageUniversal universalTorsionPhase := by
+  intro m M N hm s hs
+  have hs0 : ∀ r, s r ≠ 0 := by
+    intro r hzero
+    have h := hs r
+    rw [hzero, zero_pow (Nat.ne_of_gt hm)] at h
+    exact zero_ne_one h
+  let rootWord : Fin M → rootsOfUnity m ℂ := fun r =>
+    ⟨Units.mk0 (s r) (hs0 r), by
+      rw [mem_rootsOfUnity]
+      apply Units.ext
+      simp [hs r]⟩
+  let task : TorsionWord := ⟨⟨m, hm⟩, M, rootWord⟩
+  let n := Nat.pair (Encodable.encode task) N
+  have hlength : (torsionWordAt n).length = M := by
+    simp only [torsionWordAt, n, Nat.unpair_pair, Encodable.encodek]
+    simp [task]
+  have hvalue (r : Fin M) : (torsionWordAt n).value r = s r := by
+    simp only [torsionWordAt, n, Nat.unpair_pair, Encodable.encodek]
+    simp [task, rootWord, r.isLt]
+  refine ⟨finiteWordStart torsionWordAt n, ?_, ?_⟩
+  · exact (Nat.right_le_pair (Encodable.encode task) N).trans
+      (index_le_finiteWordStart torsionWordAt n)
+  · intro r
+    let r' : Fin (torsionWordAt n).length := Fin.cast hlength.symm r
+    have hv := concatenatedFiniteWords_at_block torsionWordAt r'
+    have hr' : (r' : ℕ) = (r : ℕ) := by simp [r']
+    rw [hr'] at hv
+    exact hv.trans (hvalue r)
+
+/-- Torsion-language-universal complex phase sequences exist. -/
+theorem exists_torsionLanguageUniversal :
+    ∃ u : ℕ → ℂ, TorsionLanguageUniversal u :=
+  ⟨universalTorsionPhase, universalTorsionPhase_torsionLanguageUniversal⟩
 
 /-- A translated bounded multiplicity pattern evaluates as its finite phase character. -/
 theorem prod_shiftedAtomPatternKey

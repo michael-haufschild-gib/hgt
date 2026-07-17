@@ -15,8 +15,11 @@ translation it loses at least three quarters:
 
 Together with `PrimeLaplaceEvenFactorialFockIncidence`, this gives a complete all-prime
 Hilbert--Schmidt incidence whose source-generated transport is a strict contraction at every
-finite source scale.  It does not identify this positive defect with the normalized Xi/Weil form;
-that completed source-value comparison remains the RH-bearing step.
+finite source scale.  The inverse half-translation needed to undo safe Poisson damping has the
+opposite behavior: it expands source energy by at least two and has uniformly negative defect.
+Thus forward coefficient coercivity cannot be identified with the normalized Xi/Weil form; the
+RH-bearing step must be an unbounded channel-resolved inverse incidence whose coupled
+Gamma/polar/Mellin defect acquires a new positive orientation.
 -/
 
 open scoped BigOperators
@@ -71,6 +74,15 @@ theorem hasSum_primeLaplaceRawJet_halfTranslate
       (1 / 2 : ℝ) ^ h * primeLaplaceRawJet p (i + h) / (h.factorial : ℝ))
       ((p : ℝ) ^ (-(1 / 2 : ℝ)) * primeLaplaceRawJet p i) := by
   exact hasSum_primeLaplaceRawJet_translate p i (1 / 2)
+
+/-- Inverse critical transport has the reciprocal multiplier `p¹˲²`.  This is the
+de-Poissonizing direction: it expands, rather than contracts, every prime column. -/
+theorem hasSum_primeLaplaceRawJet_inverseHalfTranslate
+    (p : Nat.Primes) (i : ℕ) :
+    HasSum (fun h : ℕ ↦
+      (-(1 / 2 : ℝ)) ^ h * primeLaplaceRawJet p (i + h) / (h.factorial : ℝ))
+      ((p : ℝ) ^ (1 / 2 : ℝ) * primeLaplaceRawJet p i) := by
+  simpa using hasSum_primeLaplaceRawJet_translate p i (-(1 / 2 : ℝ))
 
 /-- Squared norm of a finite source coefficient packet. -/
 def finitePrimeSourceEnergy
@@ -224,6 +236,40 @@ theorem finitePrimeSourceTranslationDefectEnergy_coercive
       finitePrimeSourceTranslationDefectEnergy a prime c := by
   unfold finitePrimeSourceTranslationDefectEnergy
   linarith [finitePrimeSourceTranslationEnergy_le_half ha prime c]
+
+/-- Inverse half translation multiplies source energy in the `p`-channel by `p`, so it expands
+every finite packet by at least a factor of two.  This is the exact direction required to undo
+the safe Poisson damping, and is opposite to the forward coercive transport above. -/
+theorem finitePrimeSourceInverseHalfTranslationEnergy_ge_two
+    {P : Type*} [Fintype P] (prime : P → Nat.Primes) (c : P → ℂ) :
+    2 * finitePrimeSourceEnergy c ≤
+      finitePrimeSourceTranslationEnergy (-(1 / 2 : ℝ)) prime c := by
+  unfold finitePrimeSourceTranslationEnergy finitePrimeSourceEnergy
+  have hexp : -2 * (-(1 / 2 : ℝ)) = 1 := by norm_num
+  rw [hexp]
+  simp only [Real.rpow_one]
+  calc
+    2 * ∑ q, Complex.normSq (c q) =
+        ∑ q, Complex.normSq (c q) * 2 := by
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro q hq
+      ring
+    _ ≤ ∑ q, Complex.normSq (c q) * (prime q : ℝ) := by
+      apply Finset.sum_le_sum
+      intro q hq
+      exact mul_le_mul_of_nonneg_left (by exact_mod_cast (prime q).prop.two_le)
+        (Complex.normSq_nonneg _)
+
+/-- The inverse critical defect `I - T⁎T` is uniformly negative: it is bounded above by minus the
+entire source energy.  Forward source coercivity therefore cannot survive inverse
+de-Poissonization without a genuinely coupled Gamma/polar/Mellin correction. -/
+theorem finitePrimeSourceInverseHalfTranslationDefectEnergy_le_neg
+    {P : Type*} [Fintype P] (prime : P → Nat.Primes) (c : P → ℂ) :
+    finitePrimeSourceTranslationDefectEnergy (-(1 / 2 : ℝ)) prime c ≤
+      -finitePrimeSourceEnergy c := by
+  unfold finitePrimeSourceTranslationDefectEnergy
+  linarith [finitePrimeSourceInverseHalfTranslationEnergy_ge_two prime c]
 
 end
 

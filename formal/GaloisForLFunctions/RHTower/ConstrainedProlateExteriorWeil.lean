@@ -119,6 +119,21 @@ theorem constrainedProlateArchConstant_ge_four_div_eleven :
 
 /-! ## Lower-order radial prime coefficient -/
 
+/-- The divisor collapse used by the radial prime diagonal: removing the divisor `1` does not
+change the von Mangoldt divisor sum, so the remaining charge is exactly `log k`. -/
+theorem constrainedProlate_sum_vonMangoldt_divisors_ge_two (k : ℕ) :
+    ∑ m ∈ k.divisors.filter (fun m => 2 ≤ m), ArithmeticFunction.vonMangoldt m =
+      Real.log k := by
+  rw [← ArithmeticFunction.vonMangoldt_sum, Finset.sum_filter]
+  apply Finset.sum_congr rfl
+  intro m hm
+  by_cases h2 : 2 ≤ m
+  · simp [h2]
+  · have hm1 : m = 1 := by
+      have hmpos := Nat.pos_of_mem_divisors hm
+      omega
+    simp [hm1, ArithmeticFunction.vonMangoldt_apply_one]
+
 /-- The `k = n + 2` summand in the lower-order radial prime coefficient
 `∑_{k ≥ 2} log(k) arcsin(1 / k) / k`. -/
 def constrainedProlatePrimeSeriesTerm (n : ℕ) : ℝ :=

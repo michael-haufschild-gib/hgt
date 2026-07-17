@@ -59,6 +59,19 @@ theorem depthTwoCurrentLie_le_oneSidedCurrentLie :
   · exact hF0
   · exact hF1
 
+/-- The minimal three-mode one-sided generators produce exactly the same polynomial current Lie
+algebra as the four symmetric depth-two generators. -/
+theorem oneSidedCurrentLie_eq_depthTwoCurrentLie :
+    oneSidedCurrentLie K = depthTwoCurrentLie K := by
+  apply le_antisymm
+  · apply LieSubalgebra.lieSpan_le.mpr
+    intro A hA
+    apply LieSubalgebra.subset_lieSpan
+    simp only [oneSidedCurrentGenerators, Set.mem_insert_iff,
+      Set.mem_singleton_iff] at hA
+    rcases hA with rfl | rfl | rfl <;> simp [depthTwoCurrentGenerators]
+  · exact depthTwoCurrentLie_le_oneSidedCurrentLie K
+
 /-- **Scalar one-sided current generation.** The three modes `E₀,F₀,F₁` generate every
 polynomial `sl₂` current mode. -/
 theorem oneSidedCurrentLie_contains_all_modes (k : ℕ) :
@@ -159,6 +172,20 @@ theorem p2DepthTwoCurrentLie_le_p2OneSidedCurrentLie :
   · exact hU1
   · exact hV0
   · exact hV1
+
+/-- The minimal five-mode one-sided plane generators produce exactly the same polynomial current
+Lie algebra as the eight symmetric depth-two plane generators. -/
+theorem p2OneSidedCurrentLie_eq_p2DepthTwoCurrentLie :
+    p2OneSidedCurrentLie K = p2DepthTwoCurrentLie K := by
+  apply le_antisymm
+  · apply LieSubalgebra.lieSpan_le.mpr
+    intro A hA
+    apply LieSubalgebra.subset_lieSpan
+    simp only [p2OneSidedCurrentGenerators, Set.mem_insert_iff,
+      Set.mem_singleton_iff] at hA
+    rcases hA with rfl | rfl | rfl | rfl | rfl <;>
+      simp [p2DepthTwoCurrentGenerators]
+  · exact p2DepthTwoCurrentLie_le_p2OneSidedCurrentLie K
 
 /-- **Plane one-sided current generation.** Four constant modes and one linear root mode generate
 every polynomial mode of `sl₂ ⋉ (K²)ᵛ`. -/

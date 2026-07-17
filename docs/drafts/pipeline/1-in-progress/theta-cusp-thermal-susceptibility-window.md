@@ -274,7 +274,7 @@ Thus the same result can be read as a residual-life/aging order for translated f
 profiles.  No generic stochastic-order axiom is assumed: `(MLR-3)`--`(MLR-5)` are derived from
 the existing theta source and Born--Witten formulas.
 
-## Likelihood-ordered single-loss transfer `[PROVED ON PAPER]`
+## Likelihood-ordered single-loss transfer `[FORMALIZED]`
 
 The likelihood-ratio order also sharpens both first-atom-to-full-source transfers. Write
 
@@ -297,13 +297,15 @@ uniform bound `r_j<=(c-1)*a_j` proves on paper
 16*c*a_0*a_2<=45*a_1^2 -> 16*m_0*m_2<=45*m_1^2.          (MLR-6)
 ```
 
-The currently formalized coordinatewise transfer pays `c^2` in both premises. Equation
-`(MLR-6)` shows that only one factor is real: the ordered tail cannot independently inflate both
-members of either moment ratio. This strictly weakens both remaining finite certificates and
-replaces the Rayleigh--Ritz buffer `14*c^2-9` by `14*c-9` once formalized.
+The older coordinatewise transfer pays `c^2` in both premises. Equation `(MLR-6)` shows that only
+one factor is real: the ordered tail cannot independently inflate both members of either moment
+ratio. `PrimeArchThetaLikelihoodOrderedTailTransfer.lean` now formalizes both transfers, the
+linear-Hankel consumer, and the degree-two-tail/RH consumer. This strictly weakens both remaining
+finite certificates; certificate-specific Rayleigh--Ritz adapters for the buffer
+`14*c^2-9 -> 14*c-9` remain separate compatibility work.
 
-The complete proof is in
-`../2-fully-proven/not_new_scientific_knowledge/theta-cusp-likelihood-ordered-tail-single-loss-transfer.md`.
+The complete proof and formalization record are in
+`../3-formalized/not_new_scientific_knowledge/theta-cusp-likelihood-ordered-tail-single-loss-transfer.md`.
 
 ## Anomalous boundary-equipartition recurrence
 
@@ -653,8 +655,8 @@ compilation, lint, axiom inspection, numerical check, targeted build, or full bu
 - [x] Generic HTGeometry likelihood-kernel integration and its direct theta application written:
   all size-biased higher-tail power expectations are ordered below the first atom, discharging the
   signed between-atom covariance factor.
-- [x] The likelihood order is used to remove one complete `3005/2997` loss from each first-atom
-  transfer at paper level.
+- [x] The likelihood order is used in Lean to remove one complete `3005/2997` loss from each
+  first-atom transfer and to expose the sharpened degree-two-tail/RH consumer.
 - [ ] Narrow source verification when explicitly authorized.
 - [ ] Prove the upper susceptibility bound `(2)` from the explicit theta density.
 - [ ] Prove the lower susceptibility bound `(1)` from a source-specific Ward/score estimate.
@@ -681,9 +683,9 @@ follow from the finite first-atom conditions
 ```
 
 This is strictly weaker than paying the uniform tail enclosure once.  See
-`../2-fully-proven/not_new_scientific_knowledge/theta-cusp-half-density-ward-laplace-budget-transfer.md`.
+`../3-formalized/not_new_scientific_knowledge/theta-cusp-half-density-ward-laplace-budget-transfer.md`.
 The unconditional branch activation is
-`../2-fully-proven/not_new_scientific_knowledge/theta-cusp-half-density-damped-tail-domination.md`.
+`../3-formalized/not_new_scientific_knowledge/theta-cusp-half-density-damped-tail-domination.md`.
 The remaining work is proving these two explicit first-atom inequalities and the independent
 higher-degree Hankel tail.
 

@@ -132,9 +132,18 @@ Exact, stronger, equivalent, mechanism, and parent-field searches through 2026 l
 3. `privateSectorPolynomial_totalDegree`: its total augmentation degree is the size of the transverse set;
 4. `privateSector_card_le_totalDegree_of_dvd`: every nonzero charge divisible by the private product has at least that degree;
 5. `pairPrivateWitness_exact`: a pair-private witness has exact degree `d-2`;
-6. `pairPrivateWitness_coordinates`: its chosen pair coordinate is unchanged and every other pair coordinate is zero.
+6. `pairPrivateWitness_coordinates`: its chosen pair coordinate is unchanged and every other pair coordinate is zero;
+7. `pairPrivateWitness_linearIndependent`: the canonical witnesses over all two-element faces are
+   linearly independent, by projecting a relation to each private pair coordinate;
+8. `pairFaceIndex_card` and `pairPrivateWitness_span_finrank`: the pair index has cardinality
+   `choose(d,2)` and the span of the private witnesses has exactly that dimension.
 
 Together with `TelescopeIdeal.iInf_span_singleton_eq_span_prod_of_primes`, this gives the exact private-sector order on each free Laurent orbit. The module was checked directly and by the one cached exact-module build; the formal lint gate passes.
+
+The new linear-independence theorem is the unconditional algebraic direct-sum injection underlying
+the card's pair-private field.  The remaining gap is not finite coordinate algebra: it is the
+meromorphic exact-image theorem that realizes those independent polynomial coordinates as actual
+HT classes.
 
 Do not pretend that this formalizes meromorphic principal-part realization or triptic DA-completeness. Those remain explicit analytic parents.
 
@@ -154,5 +163,7 @@ Do not pretend that this formalizes meromorphic principal-part realization or tr
 - [x] positive theorem paired with the noncompression no-go
 - [x] preliminary external parent and novelty attack
 - [x] unconditional algebraic core formalized in Lean
+- [x] canonical pair-private witness family proved linearly independent in Lean
+- [x] exact `choose(d,2)` algebraic private-sector rank formalized in Lean
 - [ ] independent audit of the depth-two analytic parent
 - [ ] independent specialist proof and priority audit

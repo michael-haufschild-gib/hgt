@@ -158,10 +158,15 @@ This is stronger than a theorem only about the input clock: in an arbitrary diff
 under the nondegeneracy conditions on the physical seed, rate, frequency coordinate, and affine
 gain, the response element is hypertranscendental.
 
-Formal-status boundary: Lean separately proves the concrete complex response identity and the
-concrete function-level HT of the dressed log, while the response-transfer theorem is stated in an
-abstract differential field.  The direct local analytic-germ instantiation for the actual
-exponential response is tracked in
+The local analytic carrier has now also been formalized.  On every nonempty connected open chart,
+Lean constructs the actual pointwise exponential germ, proves it is nonzero, proves its logarithmic
+derivative identity, and transfers HT through the physical affine readout.  The black-hole
+specialization is
+`hypertranscendentalOver_blackHoleHigherMultipoleLocalAnalyticResponse`.
+
+Formal-status boundary: the remaining direct local-germ task is to identify the published
+`2 nu eta^2 tau(eta)` analytic representative with the restriction of the already formalized
+Gamma-sector HT meromorphic element.  That source-identification step is tracked in
 `docs/drafts/pipeline/1-in-progress/black-hole-love-response-local-germ-instantiation.md`.  It is not
 yet claimed as one concrete Lean theorem about the published response function.
 
@@ -192,9 +197,11 @@ outer composition: a constant or specially collapsing map can destroy it.
 **Significant positive statement.** The actual Schwarzschild kernels are not arbitrary collapsing
 maps.  The higher multipoles are nondegenerate exponential-affine observations, while the monopole
 obeys a nonzero quadratic algebraic relation.  Both abstract channel laws preserve
-hypertranscendence under their explicit nondegeneracy conditions, and the higher-multipole complex
-readout is injective with an explicit inverse.  The remaining formal task is the concrete local
-analytic-germ identification, not a new differential-algebra obstruction.
+hypertranscendence under their explicit nondegeneracy conditions; the higher-multipole complex
+readout is injective with an explicit inverse; and the local analytic exponential phase now
+discharges the former abstract logarithmic-derivative hypothesis.  The remaining formal task is
+the physical Gamma-source identification on the chart, not a differential-algebra or observation
+obstruction.
 
 ## RH pressure test
 

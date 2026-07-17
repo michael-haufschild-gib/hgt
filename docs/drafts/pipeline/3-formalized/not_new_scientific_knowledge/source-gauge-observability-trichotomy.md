@@ -8,6 +8,9 @@
   residual source gauge lies in exactly one of three phases: exact blindness, normalized
   approximate blindness, or stable anti-Lipschitz separation. If the residual gauge is
   infinite-dimensional, every compact injective reporter lies in the approximate-blind phase.
+  Moreover, exact blindness, cokernel failure, and approximate blindness are literally the
+  intersection, nonsurjectivity, and nonclosed-sum defects of the horizontal lattice and the
+  reporter graph.
 
 ## The theorem
 
@@ -57,6 +60,33 @@ dim G=infinity, R compact, (Q,R) injective
 Indeed, an injective compact operator with closed range would make the identity on its domain
 compact and hence force that domain to be finite-dimensional.
 
+## Exact relative-position realization
+
+For an arbitrary linear reporter `A:E -> F`, let
+
+```text
+H=E x {0},                    Gamma_A=graph(A) in E x F.     (7)
+```
+
+Lean proves over every base ring:
+
+```text
+H intersect Gamma_A={0}  <-> A injective;
+H + Gamma_A=E x range(A);
+H + Gamma_A=E x F        <-> A surjective.                  (8)
+```
+
+With arbitrary product topologies,
+
+```text
+H + Gamma_A is closed  <-> range(A) is closed.              (9)
+```
+
+Therefore the exact kernel and the strictness defect are not merely analogous spectra of one
+operator. They are two relative-position defects of one lattice pair. Combined with `(3)`, an
+injective reporter is approximately blind exactly when `H` and `Gamma_A` intersect trivially but
+have nonclosed sum.
+
 ## Positive successor
 
 Equation `(6)` rules out stable reconstruction by compact or smoothing reporters on an
@@ -67,6 +97,12 @@ infinite-dimensional source gauge. The maximal positive conclusion is exact:
 
 This is stronger than the common-kernel criterion. Trivial common kernel gives only algebraic
 injectivity; it does not exclude normalized gauges whose observation energy tends to zero.
+
+Equations `(8)`--`(9)` give the stronger positive successor required by the unified-field program:
+the kernel/cokernel/nonclosed-range interval already has an exact Grassmannian carrier. The open
+scientific problem is not to invent that carrier but to construct its two subspaces naturally
+from an HT source and genuinely transverse normalization, then add the residue/self-dual,
+positivity, determinant, and integral structures.
 
 ## Novelty gate
 
@@ -85,6 +121,10 @@ construct a natural transverse noncompact channel.
 
 `formal/GaloisForLFunctions/HTGeometry/SourceGaugeObservabilitySpectrum.lean` proves:
 
+- `horizontal_inf_graph_eq_bot_iff`;
+- `horizontal_sup_graph_eq_top_prod_range`;
+- `horizontal_sup_graph_eq_top_iff`;
+- `isClosed_horizontal_sup_graph_iff_isClosed_range`;
 - `hasApproximateUnitKernel_iff_not_isClosed_range`;
 - `finiteDimensional_of_compact_injective_isClosed_range`;
 - `compact_injective_hasApproximateUnitKernel`;
@@ -98,10 +138,16 @@ construct a natural transverse noncompact channel.
 The certificate has no `sorry`, `admit`, project axiom, opaque postulate, unsafe declaration, or
 numerical computation.
 
+The existing module cache was present, so no targeted rebuild was run after adding `(8)`--`(9)`.
+The touched source file passed `lake env lean` directly. Axiom inspection of the four new theorems
+reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
 ## Gates
 
 - [x] exact common-kernel gate strengthened to closed-range observability
 - [x] normalized approximate-null equivalence proved
+- [x] exact lattice intersection/range/sum realization proved
+- [x] nonclosed reporter range identified with nonclosed lattice sum
 - [x] exact/approximate/stable trichotomy proved
 - [x] compact reporter wall proved
 - [x] positive noncompact transverse requirement isolated

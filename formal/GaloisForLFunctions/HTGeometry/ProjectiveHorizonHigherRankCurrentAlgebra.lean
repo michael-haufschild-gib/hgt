@@ -226,6 +226,59 @@ theorem p2DepthTwoCurrentLie_contains_all_modes (k : ℕ) :
     p2CurrentV_mem_depthTwoCurrentLie K k,
     p2CurrentH_mem_depthTwoCurrentLie K k⟩
 
+/-- All monomial modes of the polynomial affine-parabolic current algebra in `P²`. -/
+def p2PolynomialCurrentGenerators :
+    Set (Matrix (Fin 3) (Fin 3) (Polynomial K)) :=
+  Set.range (p2CurrentE K) ∪
+    (Set.range (p2CurrentF K) ∪
+      (Set.range (p2CurrentU K) ∪
+        (Set.range (p2CurrentV K) ∪ Set.range (p2CurrentH K))))
+
+/-- The polynomial affine-parabolic current Lie algebra, defined from all monomial modes. -/
+def p2PolynomialCurrentLie :
+    LieSubalgebra K (Matrix (Fin 3) (Fin 3) (Polynomial K)) :=
+  LieSubalgebra.lieSpan K _ (p2PolynomialCurrentGenerators K)
+
+/-- The eight depth-two plane-chart modes generate exactly the complete polynomial
+affine-parabolic current Lie algebra. -/
+theorem p2DepthTwoCurrentLie_eq_p2PolynomialCurrentLie :
+    p2DepthTwoCurrentLie K = p2PolynomialCurrentLie K := by
+  apply le_antisymm
+  · apply LieSubalgebra.lieSpan_le.mpr
+    intro A hA
+    apply LieSubalgebra.subset_lieSpan
+    simp only [p2DepthTwoCurrentGenerators, Set.mem_insert_iff,
+      Set.mem_singleton_iff] at hA
+    rcases hA with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
+    · exact Set.mem_union_left _ ⟨0, rfl⟩
+    · exact Set.mem_union_left _ ⟨1, rfl⟩
+    · exact Set.mem_union_right _ (Set.mem_union_left _ ⟨0, rfl⟩)
+    · exact Set.mem_union_right _ (Set.mem_union_left _ ⟨1, rfl⟩)
+    · exact Set.mem_union_right _ (Set.mem_union_right _
+        (Set.mem_union_left _ ⟨0, rfl⟩))
+    · exact Set.mem_union_right _ (Set.mem_union_right _
+        (Set.mem_union_left _ ⟨1, rfl⟩))
+    · exact Set.mem_union_right _ (Set.mem_union_right _
+        (Set.mem_union_right _ (Set.mem_union_left _ ⟨0, rfl⟩)))
+    · exact Set.mem_union_right _ (Set.mem_union_right _
+        (Set.mem_union_right _ (Set.mem_union_left _ ⟨1, rfl⟩)))
+  · apply LieSubalgebra.lieSpan_le.mpr
+    intro A hA
+    rcases hA with hE | hrest
+    · obtain ⟨k, rfl⟩ := hE
+      exact p2CurrentE_mem_depthTwoCurrentLie K k
+    · rcases hrest with hF | hrest
+      · obtain ⟨k, rfl⟩ := hF
+        exact p2CurrentF_mem_depthTwoCurrentLie K k
+      · rcases hrest with hU | hrest
+        · obtain ⟨k, rfl⟩ := hU
+          exact p2CurrentU_mem_depthTwoCurrentLie K k
+        · rcases hrest with hV | hH
+          · obtain ⟨k, rfl⟩ := hV
+            exact p2CurrentV_mem_depthTwoCurrentLie K k
+          · obtain ⟨k, rfl⟩ := hH
+            exact p2CurrentH_mem_depthTwoCurrentLie K k
+
 /-- In any representation, annihilation by the eight depth-two plane-chart modes propagates to
 every polynomial mode of the generated affine-parabolic current algebra. -/
 theorem p2DepthTwoCurrent_annihilation_propagates

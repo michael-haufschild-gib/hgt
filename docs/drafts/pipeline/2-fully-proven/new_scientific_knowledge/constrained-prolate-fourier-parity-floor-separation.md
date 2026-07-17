@@ -253,8 +253,28 @@ entirely on the still-open bilinear transfer to the true Weil form.
 
 ## Lean decision
 
-The formal tree has no prolate operator, Fuchs asymptotics, or infinite-dimensional secular
-equation. Formalizing only the rational constants would be a wrapper. No Lean file is added.
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateOperator.lean` now supplies the concrete
+compressed Fourier, concentration, leakage, and zero-integral constrained operators.
+`ProlateSecularEquation.lean` supplies the finite secular root and interlacing theorems, while
+`FuchsProlateScale.lean` supplies the exact fixed-index rate model.
+
+`formal/GaloisForLFunctions/RHTower/TwoModeFuchsLimit.lean` now formalizes the complete finite
+Fuchs-model parity calculation.  The declarations
+`ccm_negativeSector_twoMode_weight_eq`,
+`ccm_negativeSector_twoMode_ground_leakage_ratio`, and
+`ccm_negativeSector_twoMode_ground_gap_ratio` prove the exact `8/13` ground and complementary
+`5/13` gap limits for the `h_2`--`h_6` contrast.  The declaration
+`ccm_twoMode_parity_floor_ratio_tendsto_zero` combines these with the positive-sector `8/11` law
+and the exact Fuchs index separation to prove that the positive two-mode floor divided by the
+negative two-mode floor tends to zero.  The sharper declaration
+`ccm_twoMode_parity_floor_scaled_ratio` proves the exact rescaled limit
+`lambda^4 mu_+(lambda)/mu_-(lambda) -> 13 A_4/(11 A_6)`.  All declarations are unconditional and
+axiom-clean.
+
+The remaining Lean boundary is the analytic passage from these two-mode Fuchs models to the exact
+infinite-dimensional constrained optimizers: the normalized prolate-to-Hermite mode convergence,
+uniform secular-tail estimate, the `O(lambda^(-7))` eigenvector rate, and min--max transfer to the
+true second constrained eigenvalue.  The card therefore remains in stage 2.
 
 ## Gates
 
@@ -262,6 +282,10 @@ equation. Formalizing only the rational constants would be a wrapper. No Lean fi
 - [x] exact constant `8/13` proved
 - [x] negative-sector gap constant `5/13` proved
 - [x] positive/negative floor ratio `C lambda^(-4)` proved
+- [x] negative-sector two-mode Fuchs-rate `8/13` and `5/13` limits formalized in Lean
+- [x] two-mode positive/negative floor ratio tending to zero formalized in Lean
+- [x] sharp two-mode `lambda^4`-rescaled parity coefficient formalized in Lean
 - [x] targeted literature search found no parent theorem
+- [ ] transfer the two-mode laws to the exact infinite-dimensional constrained floors in Lean
 - [ ] independent proof audit
 - [ ] bilinear transfer of parity separation to the true restricted Weil form

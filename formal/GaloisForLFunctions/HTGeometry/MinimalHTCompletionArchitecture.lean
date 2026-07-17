@@ -555,6 +555,86 @@ theorem integralOrbitDivisor_has_nsmul_root_iff
     change (m : ℤ) * (D g / (m : ℤ)) = D g
     rw [mul_comm, Int.ediv_mul_cancel (h g)]
 
+/-- The Kummer content of a finite integral orbit divisor: the gcd of the absolute values of all
+nonzero coefficients. -/
+def integralOrbitDivisorContent {G : Type*} (D : G →₀ ℤ) : ℕ :=
+  D.support.gcd fun g => (D g).natAbs
+
+theorem integralOrbitDivisor_coefficientwiseDivisible_iff_content_dvd
+    {G : Type*} (m : ℕ) (D : G →₀ ℤ) :
+    IntegralOrbitDivisorCoefficientwiseDivisible m D ↔
+      m ∣ integralOrbitDivisorContent D := by
+  constructor
+  · intro h
+    apply Finset.dvd_gcd
+    intro g hg
+    exact Int.natCast_dvd.mp (h g)
+  · intro h g
+    rw [Int.natCast_dvd]
+    by_cases hg : g ∈ D.support
+    · exact h.trans (Finset.gcd_dvd hg)
+    · rw [Finsupp.notMem_support_iff.mp hg]
+      exact dvd_zero m
+
+theorem integralOrbitDivisor_has_nsmul_root_iff_content_dvd
+    {G : Type*} (m : ℕ) (D : G →₀ ℤ) :
+    (∃ E : G →₀ ℤ, m • E = D) ↔
+      m ∣ integralOrbitDivisorContent D := by
+  rw [integralOrbitDivisor_has_nsmul_root_iff,
+    integralOrbitDivisor_coefficientwiseDivisible_iff_content_dvd]
+
+/-! The exact root criterion and uniqueness statement modulo the kernel of a
+surjective integral divisor map.  This is the group-theoretic Kummer core: an
+analytic source class can be substituted for `M`, with its DA subgroup as the
+kernel of `D`. -/
+
+def HasSourceRootModuloKernel
+    {M G : Type*} [AddCommGroup M]
+    (D : M →+ G →₀ ℤ) (m : ℕ) (Y : M) : Prop :=
+  ∃ Z : M, Y - m • Z ∈ D.ker
+
+theorem hasSourceRootModuloKernel_iff
+    {M G : Type*} [AddCommGroup M]
+    (D : M →+ G →₀ ℤ) (hD : Function.Surjective D)
+    (m : ℕ) (Y : M) :
+    HasSourceRootModuloKernel D m Y ↔
+      IntegralOrbitDivisorCoefficientwiseDivisible m (D Y) := by
+  rw [← integralOrbitDivisor_has_nsmul_root_iff]
+  constructor
+  · rintro ⟨Z, hZ⟩
+    refine ⟨D Z, ?_⟩
+    change D (Y - m • Z) = 0 at hZ
+    simp only [map_sub, map_nsmul] at hZ
+    exact (sub_eq_zero.mp hZ).symm
+  · rintro ⟨E, hE⟩
+    obtain ⟨Z, rfl⟩ := hD E
+    refine ⟨Z, ?_⟩
+    change D (Y - m • Z) = 0
+    simp only [map_sub, map_nsmul]
+    exact sub_eq_zero.mpr hE.symm
+
+theorem hasSourceRootModuloKernel_iff_content_dvd
+    {M G : Type*} [AddCommGroup M]
+    (D : M →+ G →₀ ℤ) (hD : Function.Surjective D)
+    (m : ℕ) (Y : M) :
+    HasSourceRootModuloKernel D m Y ↔
+      m ∣ integralOrbitDivisorContent (D Y) := by
+  rw [hasSourceRootModuloKernel_iff D hD,
+    integralOrbitDivisor_coefficientwiseDivisible_iff_content_dvd]
+
+theorem sourceRoot_unique_mod_kernel
+    {M G : Type*} [AddCommGroup M]
+    (D : M →+ G →₀ ℤ) {m : ℕ} (hm : m ≠ 0) {Y Z₁ Z₂ : M}
+    (h₁ : Y - m • Z₁ ∈ D.ker) (h₂ : Y - m • Z₂ ∈ D.ker) :
+    Z₁ - Z₂ ∈ D.ker := by
+  change D (Y - m • Z₁) = 0 at h₁
+  change D (Y - m • Z₂) = 0 at h₂
+  change D (Z₁ - Z₂) = 0
+  simp only [map_sub, map_nsmul] at h₁ h₂ ⊢
+  apply sub_eq_zero.mpr
+  apply nsmul_right_injective hm
+  exact (sub_eq_zero.mp h₁).symm.trans (sub_eq_zero.mp h₂)
+
 end
 
 end GaloisForLFunctions.HTGeometry

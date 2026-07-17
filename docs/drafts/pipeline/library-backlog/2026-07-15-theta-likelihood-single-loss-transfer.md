@@ -1,10 +1,11 @@
-# Formalize the theta likelihood-ordered single-loss transfer
+# Finish certificate adapters for the formalized theta likelihood single-loss transfer
 
 ## Scope
 
-Formalize the paper theorem in
-`../2-fully-proven/not_new_scientific_knowledge/theta-cusp-likelihood-ordered-tail-single-loss-transfer.md`.
-Use only the existing source declarations; do not rebuild the likelihood-ratio proof.
+The direct transfer is formalized in
+`../3-formalized/not_new_scientific_knowledge/theta-cusp-likelihood-ordered-tail-single-loss-transfer.md`
+and `PrimeArchThetaLikelihoodOrderedTailTransfer.lean`. The remaining work is compatibility
+adapters for the existing energy certificates.
 
 ## Existing inputs
 
@@ -27,7 +28,7 @@ thetaCuspAtomRawEvenMoment_pos_of_nat_pos
 thetaCuspHigherAtomRawEvenMoment_nonneg
 ```
 
-## Target declarations
+## Completed declarations
 
 Prove the adjacent relative-tail order in division-free form and the two direct consumers:
 
@@ -43,8 +44,9 @@ thetaCuspRelaxedFourthMomentConcentration_of_first_atom_singleLoss
   ThetaCuspRelaxedFourthMomentConcentration
 ```
 
-Then add single-loss variants of the combined linear-Hankel and RH consumers. Update the
-two-channel Rayleigh--Ritz and quadratic Stein adapters so their buffered coefficient is
+The adjacent order, both transfers, the combined linear-Hankel consumer, and the degree-two-tail
+RH consumer now pass targeted build and axiom checks. Still update the two-channel Rayleigh--Ritz
+and quadratic Stein adapters so their buffered coefficient is
 
 ```text
 14*(3005/2997)-9
@@ -55,6 +57,5 @@ uses can be changed without touching concurrent work.
 
 ## Verification boundary
 
-Use targeted leaf checks only after explicit build permission. Do not run a full project build.
-Wire the verified module through `RHTower.lean`, update the theorem indexes, and move the paper
-card to stage 3 only after the declaration and axiom checks pass.
+Use targeted leaf checks only. Keep the verified direct module and old certificate theorems for
+compatibility while adding the sharper variants.

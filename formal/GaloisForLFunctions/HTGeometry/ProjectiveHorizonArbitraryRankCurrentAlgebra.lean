@@ -228,6 +228,60 @@ theorem arOneSidedCurrentLie_contains_all_modes (k : ℕ) :
     fun w => arCurrentU_mem_oneSidedCurrentLie K ι w k,
     fun w => arCurrentV_mem_oneSidedCurrentLie K ι w k⟩
 
+/-- All monomial modes of the arbitrary-transverse-rank affine-parabolic current algebra. -/
+def arPolynomialCurrentGenerators :
+    Set (Matrix (arCurrentIndex ι) (arCurrentIndex ι) (Polynomial K)) :=
+  Set.range (arCurrentE K ι) ∪
+    (Set.range (arCurrentF K ι) ∪
+      (Set.range (arCurrentH K ι) ∪
+        (Set.range (fun p : ι × ℕ ↦ arCurrentU K ι p.1 p.2) ∪
+          Set.range (fun p : ι × ℕ ↦ arCurrentV K ι p.1 p.2))))
+
+/-- The complete polynomial affine-parabolic current Lie algebra in arbitrary transverse rank. -/
+def arPolynomialCurrentLie :
+    LieSubalgebra K
+      (Matrix (arCurrentIndex ι) (arCurrentIndex ι) (Polynomial K)) :=
+  LieSubalgebra.lieSpan K _ (arPolynomialCurrentGenerators K ι)
+
+/-- The finite one-sided horizon packet generates exactly the complete polynomial current Lie
+algebra in every finite projective dimension. -/
+theorem arOneSidedCurrentLie_eq_arPolynomialCurrentLie :
+    arOneSidedCurrentLie K ι = arPolynomialCurrentLie K ι := by
+  apply le_antisymm
+  · apply LieSubalgebra.lieSpan_le.mpr
+    intro A hA
+    apply LieSubalgebra.subset_lieSpan
+    simp only [arOneSidedCurrentGenerators, Set.mem_union, Set.mem_insert_iff,
+      Set.mem_singleton_iff, Set.mem_range] at hA
+    rcases hA with hbaseU | hV
+    · rcases hbaseU with hbase | hU
+      · rcases hbase with rfl | rfl | rfl
+        · exact Set.mem_union_left _ ⟨0, rfl⟩
+        · exact Set.mem_union_right _ (Set.mem_union_left _ ⟨0, rfl⟩)
+        · exact Set.mem_union_right _ (Set.mem_union_left _ ⟨1, rfl⟩)
+      · obtain ⟨w, rfl⟩ := hU
+        exact Set.mem_union_right _ (Set.mem_union_right _
+          (Set.mem_union_right _ (Set.mem_union_left _ ⟨(w, 0), rfl⟩)))
+    · obtain ⟨w, rfl⟩ := hV
+      exact Set.mem_union_right _ (Set.mem_union_right _
+        (Set.mem_union_right _ (Set.mem_union_right _ ⟨(w, 0), rfl⟩)))
+  · apply LieSubalgebra.lieSpan_le.mpr
+    intro A hA
+    rcases hA with hE | hrest
+    · obtain ⟨k, rfl⟩ := hE
+      exact arCurrentE_mem_oneSidedCurrentLie K ι k
+    · rcases hrest with hF | hrest
+      · obtain ⟨k, rfl⟩ := hF
+        exact arCurrentF_mem_oneSidedCurrentLie K ι k
+      · rcases hrest with hH | hrest
+        · obtain ⟨k, rfl⟩ := hH
+          exact arCurrentH_mem_oneSidedCurrentLie K ι k
+        · rcases hrest with hU | hV
+          · obtain ⟨⟨w, k⟩, rfl⟩ := hU
+            exact arCurrentU_mem_oneSidedCurrentLie K ι w k
+          · obtain ⟨⟨w, k⟩, rfl⟩ := hV
+            exact arCurrentV_mem_oneSidedCurrentLie K ι w k
+
 /-- In any representation, annihilation by the arbitrary-rank minimal generator family propagates
 to every polynomial root, diagonal, and transverse-shear mode. -/
 theorem arOneSidedCurrent_annihilation_propagates

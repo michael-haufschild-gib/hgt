@@ -81,6 +81,21 @@ Finite particle content cannot produce `(3)`: every finite tower gives a finite 
 which is differentially algebraic.  The HT signal therefore certifies an irreducibly infinite
 mass/frequency completion within this collider class.
 
+## Source-internal comparison
+
+The exact one-sided ultrametric boundary spectrum now supplies a source-derived geometric tower
+inside a field Hessian; see
+`../2-fully-proven/not_new_scientific_knowledge/ultrametric-one-loop-resolvent-hypertranscendence.md`.
+For each Euclidean de Sitter harmonic, the first finite one-loop mass susceptibility is an HT
+`q`-difference germ.  This closes the **field-internal tower** problem for a Gaussian, mode-resolved
+effective-action reporter.
+
+It does not close the present card.  The collider frequencies `(4)`, their principal-series
+production weights, the complete wavefunction coefficient, and late-time transfer have not been
+derived from that internal boundary operator.  Moreover the Gaussian influence hierarchy has
+zero face-complete Wick--Kolchin profile.  A source-natural spectrum is therefore necessary but
+not sufficient for the sought interacting primordial signal.
+
 ## Anti-theatre attacks
 
 1. **Finite-diagram relabeling.**  A fixed finite collection of exchange diagrams gives a finite

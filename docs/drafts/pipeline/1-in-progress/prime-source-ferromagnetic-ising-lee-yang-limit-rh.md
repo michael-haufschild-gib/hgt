@@ -11,6 +11,7 @@
   `formal/GaloisForLFunctions/RHTower/TwoSpinFKGLeeYangBridge.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeIsingTreeCavity.lean`,
   `formal/GaloisForLFunctions/RHTower/IsingCavityRapidityAudioCascade.lean`,
+  `formal/GaloisForLFunctions/RHTower/PrimeIsingTreeBalancedCentering.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeIsingTreeFKExpansion.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeWordEnsembleBoundaryTomography.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeSupportMultivariateLiftMarker.lean`, and
@@ -77,9 +78,9 @@ finite Euler prime words and completed Gamma/theta boundary data
        [OPEN CORE A: source point lies in the ferromagnetic moment cone]
   -> Z_P((u_v)) != 0 whenever all |u_v|<1 or all |u_v|>1
        [CLASSICAL MULTIVARIATE LEE--YANG]
-  -> F_P(z)=A_P(z) Z_P((z_(p(v))(z))) has no nonreal zero
+  -> F_P(z)=exp(i M_P z/2) Z_P(0)^(-1) Z_P((z_(p(v))(z))) has no nonreal zero
        [PRIME POLYDISK GEOMETRY PROVED IN LEAN]
-  -> F_P -> E XiC locally uniformly on C, with E entire and zero-free
+  -> F_P -> XiC(0)^(-1) XiC locally uniformly on C
        [OPEN CORE B: completed source comparison]
   -> E XiC has no nonreal zero by Hurwitz
   -> XiC has no nonreal zero
@@ -87,10 +88,14 @@ finite Euler prime words and completed Gamma/theta boundary data
   -> RH.
 ```
 
-Here `A_P` is a source-defined entire normalization which must itself be zero-free.  Local-uniform
-convergence, not coefficientwise or thermodynamic free-energy convergence, is the zero-preserving
-topology.  A common-fugacity Cayley transform remains a secondary finite model, but it is no longer
-needed for the main closure.
+Here `M_P` is the total logarithmic prime mass of the finite tree.  Global spin inversion now proves
+that this half-mass exponential is the source-forced centering: mere scalar normalization leaves
+first derivative `-i M_P/2` and cannot converge locally uniformly even to the unit-pointed even germ
+`XiC(0)^(-1)XiC` for any tree sequence.  The balanced factor is entire and zero-free and makes every
+finite approximant exactly even.  Pointing the target is mandatory because the finite partitions
+equal one at the origin.  Local-uniform convergence, not coefficientwise or thermodynamic free-energy
+convergence, is the zero-preserving topology.  A common-fugacity Cayley transform remains a
+secondary finite model, but it is no longer needed for the main closure.
 
 ## Exact finite floor in Lean
 
@@ -367,6 +372,15 @@ inequalities.  This is the first substantive arithmetic test, not a technical af
     **Positive successor:** use a triangular schedule in which aperture, interaction order, and
     retained source-cumulant depth grow together, with finite coefficient determination at every
     stage.
+14. **Scalar-normalization attack.**  Unit-central normalization was previously called canonical,
+    but spin inversion forces the exact cocycle
+    `N_P(z)=exp(-i M_P z)N_P(-z)`, hence `N_P'(0)=-iM_P/2`.  Since every finite tree has
+    `M_P>=log 2`, no such sequence can converge locally uniformly to the unit-pointed even germ
+    `XiC(0)^(-1)XiC`.
+    **Positive successor:** the unique linear exponential gauge which trivializes the cocycle is
+    `exp(iM_Pz/2)`.  The balanced partitions are entire, even, unit-central, and retain the same
+    real zeros.  This no-go and repair are formalized in
+    `PrimeIsingTreeBalancedCentering.lean`.
 
 Every no-go leaves a positive object: the closed ferromagnetic moment cone, its frustrated-sign
 obstruction class, or the zero-free relative factor.  A failure at low aperture therefore produces
@@ -428,7 +442,9 @@ convergence is weaker than locally uniform.
 - [ ] smallest completed source packet tested against the ferromagnetic moment cone
 - [ ] functorial finite ferromagnetic realization constructed at every aperture
 - [x] full-volume Lee--Yang theorem formalized for arbitrary finite rooted tree models
-- [x] serial cavity sections collapsed and canonical nonzero central normalization formalized
+- [x] serial cavity sections collapsed and nonzero scalar central normalization formalized
+- [x] scalar-normalized tree convergence to `XiC(0)^(-1)XiC` proved impossible
+- [x] source-forced half-mass balancing proved entire, even, zero-preserving, and RH-sufficient
 - [x] arbitrary tree partitions decomposed as convex FK mixtures of synchronized cluster products
-- [ ] prime-field local-uniform comparison with zero-free factor times `XiC`
-- [x] RH capstone formalized from the tree comparison with a zero-free entire factor
+- [ ] balanced prime-field local-uniform comparison with `XiC(0)^(-1)XiC`
+- [x] RH capstone formalized from the balanced tree comparison

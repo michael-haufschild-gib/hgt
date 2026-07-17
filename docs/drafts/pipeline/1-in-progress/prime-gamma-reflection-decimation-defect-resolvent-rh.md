@@ -449,10 +449,80 @@ required transport modulo the positive prime Hilbert class.  The exact real-ray
 Cauchy/Euler/polar/Mellin colligation does not remove the problem, because its signed critical
 Mellin channel remains inside the incidence identity.
 
+Lean now proves the sharper diagonal obstruction directly at the target Mellin jets.  If the
+`r`-th positive-log jet is restored separately in every resolved prime channel, its squared
+energy on the prime slice is
+
+```text
+sum_p (Lambda(p)/p)*(log p)^(2r)
+ =sum_p (log p)^(2r+1)/p=infinity.                       (22j2)
+```
+
+This uses only `Lambda(p)=log p`, `log p>=log 2`, and Euler's divergence of the prime harmonic
+series.  Therefore the infinite-rank repair cannot remain diagonal in the resolved prime basis,
+even if arbitrary phases are attached to individual channels.  A surviving positive incidence
+must mix prime channels, with Gamma/polar boundary data participating before the Hilbert norm is
+formed.  Calling the required map merely "channel-resolved" is insufficient unless this
+off-diagonal coupling is explicit.
+
+There is now one unconditional positive off-diagonal completion surviving this obstruction.
+Place the source conductance `Lambda(n)/n` on the integral successor edge `n -> n+1` and take the
+discrete derivative before the norm.  For the logarithmic jet `f_r(n)=(log n)^r`, define
+
+```text
+E_r(n)=(Lambda(n)/n)*(f_r(n+1)-f_r(n))^2.                (22j3)
+```
+
+Lean proves `sum_n E_r(n)<infinity` for every `r`, using the source bound
+`Lambda(n)<=log n` and the discrete mean-value estimate
+
+```text
+|f_r(n+1)-f_r(n)| <= r*(log(n+1))^(r-1)/n.              (22j4)
+```
+
+Thus the edge features
+
+```text
+v_r(n)=sqrt(Lambda(n)/n)*(f_r(n+1)-f_r(n))              (22j5)
+```
+
+are genuine `ell^2` vectors.  Their mixed products are absolutely summable and every finite
+all-order section
+
+```text
+G_N(r,s)=sum_n v_r(n)v_s(n),  0<=r,s<N,                 (22j6)
+```
+
+is literally a positive-semidefinite Hilbert Gram matrix.  This is an integral, unbounded
+source incidence rather than a diagonal reweighting: its Laplacian is `d^* C_Lambda d` on the
+successor graph.  It supplies a canonical positive completion of all positive-log Mellin jets and
+removes the resolved-prime diagonal divergence.
+
+This completion is not yet an RH source producer.  The successor graph uses additive order and
+does not visibly preserve Euler multiplication.  No proved identity currently identifies
+`G_N`, or a Gamma/polar boundary Schur complement of its Laplacian, with the normalized
+prime--archimedean Hankel section.  Direct identification is now formally ruled out: the
+successor derivative annihilates the constant jet, hence `G_N` has a zero zeroth row at every
+nonempty size, whereas the normalized prime--archimedean Hankel section has strictly positive
+zeroth entry.  Thus a pointed boundary jet is necessary, not optional.  The discriminating open
+theorem is therefore a completed discrete Green formula, derived before reading the target
+moments,
+
+```text
+Schur_Gamma,polar(d^* C_Lambda d)(r,s)
+ = normalizedPrimeArchMoment(r+s),  0<=r,s<N.           (22j7)
+```
+
+If `(22j7)` holds for every `N`, positivity of `(22j6)` transports through the forced boundary
+completion to the complete prime--Gamma Hankel cone and the existing Lean endpoint gives RH.  If
+the left side cannot preserve the Euler source law, the successor completion is only a new
+positive carrier and this route is killed; positivity alone is not evidence for `(22j7)`.
+
 Thus even locally uniform convergence of the balanced kernel would only give positive jets of the
 balanced resolvent law, not the Taylor-Hankel moments of the inverse-tilted Mellin germ.  A valid
-next theorem must construct an infinite-rank, channel-resolved incidence transform which performs
-this unbalancing together with Gamma/polar completion and proves positivity after transport.  Let
+next theorem must construct an infinite-rank, off-diagonal incidence transform which mixes the
+resolved prime channels and performs this unbalancing together with Gamma/polar completion before
+proving positivity after transport.  Let
 `K_N(z,w)` be the formalized infinite positive von Mangoldt-anomaly kernel.  The desired completed
 kernel `K_N^comp` may be introduced only after that incidence transform is defined independently
 of the target moments.  Its terminal comparison would then be
@@ -477,7 +547,9 @@ full finite-aperture von Mangoldt--Gamma jet cone with first-prime floor
   -> depth-2/3 cutoff-compatible affine Euler-boundary limit
   -> arbitrary-order Hermite boundary-jet source packet
   -> all-depth cofinal positive ell^2 packets [formalized]
-  -> [OPEN] infinite-rank channel-resolved unbalancing/incidence transform
+  -> additive successor Dirichlet completion of every positive-log jet [formalized]
+  -> [OPEN] Gamma/polar Green--Schur identity preserving the Euler source law
+  -> [ALTERNATIVE OPEN] infinite-rank channel-resolved unbalancing transform
   -> completed positive mixed center-jet Gram [coupling and analytic formalization open]
   -> [OPEN] exact identity (22j) with inverse-tilted completed moment jets
   -> complete prime--Gamma Hankel cone
@@ -577,11 +649,11 @@ source packet to produce the mixed value `m_1` as well as both diagonal values.
 
 ## Ranked research targets
 
-1. **Infinite-rank Hermite unbalancing incidence.**  Starting from the formalized cofinal positive
-   prime kernel, construct a channel-resolved transform which converts the inverse-log Cauchy law
-   `(22j1)` into the positive-log Mellin jets `(22j0)` without passing through a finite-rank
-   correction or assuming target positivity.  Couple the Gamma spectral clock and polar boundary
-   modes inside the same transform, then prove `(22j)`.
+1. **Infinite-rank off-diagonal Hermite unbalancing incidence.**  Starting from the formalized
+   cofinal positive prime kernel, construct a transform which genuinely mixes prime channels and
+   converts the inverse-log Cauchy law `(22j1)` into the positive-log Mellin jets `(22j0)` without
+   passing through a finite-rank correction or assuming target positivity.  Couple the Gamma
+   spectral clock and polar boundary modes before the positive norm is formed, then prove `(22j)`.
 2. **Two-vector completed comparison.**  For `N=2`, identify three entries of that one source
    packet with `m_0,m_1,m_2` through the inverse-tilted central source relation.  This subsumes
    `(23)` without defining its square root from the determinant.
@@ -642,7 +714,11 @@ source packet to produce the mixed value `m_1` as well as both diagonal values.
 - [x] coefficientwise nonnegative Gamma/positive corrections proved unable to lower the canonical
       sharp-source critical abscissa
 - [x] scalar Gamma-conductor completion excluded by divergent prime Schur capacity
-- [ ] construct an infinite-rank channel-resolved unbalancing/incidence transform
+- [x] diagonal positive-log Mellin unbalancing excluded by divergent resolved-prime energy
+- [x] integral successor Dirichlet completion of every logarithmic jet formalized
+- [x] mixed absolute summability and all-order positive successor Gram formalized
+- [x] direct successor-Gram identification with the target Hankel section excluded in Lean
+- [ ] construct an infinite-rank off-diagonal channel-mixing unbalancing/incidence transform
 - [ ] formalize the positive mixed center-jet Gram of the infinite kernel
 - [ ] couple the Gamma spectral clock and polar boundary modes with the prime anomaly kernel
 - [ ] prove Euler-boundary causal/polar cancellation, including common-charge cancellation

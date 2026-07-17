@@ -177,6 +177,60 @@ theorem pairPrivateWitness_coordinates
     apply setVariablesOne_privateSectorPolynomial_eq_zero (F := F) hkf
     simp [hke]
 
+/-- **Independent pair-private coordinate sectors.**  The canonical private witnesses indexed by
+all two-element faces are linearly independent.  Projecting to one pair kills every other witness
+and leaves its own nonzero witness unchanged. -/
+theorem pairPrivateWitness_linearIndependent (d : ℕ) :
+    LinearIndependent F (fun e : {e : Finset (Fin d) // e.card = 2} =>
+      pairPrivateWitness (F := F) d e.1) := by
+  classical
+  rw [Fintype.linearIndependent_iff]
+  intro c hsum e
+  have hproj := congrArg
+    (setVariablesOne (F := F) e.1) hsum
+  rw [map_zero, map_sum] at hproj
+  have hproj' :
+      ∑ i, c i • setVariablesOne (F := F) e.1
+          (pairPrivateWitness (F := F) d i.1) = 0 := by
+    simpa only [map_smul] using hproj
+  have hsingle :
+      ∑ i, c i • setVariablesOne (F := F) e.1
+          (pairPrivateWitness (F := F) d i.1) =
+        c e • pairPrivateWitness (F := F) d e.1 := by
+    rw [Finset.sum_eq_single e]
+    · congr 1
+      change setVariablesOne (F := F) e.1
+          (privateSectorPolynomial (F := F) (Finset.univ \ e.1)) = _
+      exact setVariablesOne_privateSectorPolynomial_eq_self (F := F)
+        Finset.disjoint_sdiff
+    · intro i _hi hie
+      have hei : e.1 ≠ i.1 := by
+        intro h
+        exact hie (Subtype.ext h.symm)
+      rw [(pairPrivateWitness_coordinates (F := F) i.2 e.2 hei).2, smul_zero]
+    · simp
+  rw [hsingle] at hproj'
+  exact (smul_eq_zero.mp hproj').resolve_right
+    (pairPrivateWitness_exact (F := F) e.2).1
+
+/-- The number of pair faces on `d` labelled directions is exactly `choose(d,2)`. -/
+theorem pairFaceIndex_card (d : ℕ) :
+    Fintype.card {e : Finset (Fin d) // e.card = 2} = Nat.choose d 2 := by
+  let e : {s : Finset (Fin d) // s.card = 2} ≃
+      {s : Finset (Fin d) // s ∈ (Finset.univ : Finset (Fin d)).powersetCard 2} :=
+    Equiv.subtypeEquivRight fun s => by simp [Finset.mem_powersetCard]
+  rw [Fintype.card_congr e, Fintype.card_coe, Finset.card_powersetCard]
+  simp
+
+/-- The algebraic direct sum of canonical pair-private sectors has exact dimension `choose(d,2)`.
+This is the finite-orbit rank statement behind the card's independently addressable pair field. -/
+theorem pairPrivateWitness_span_finrank (d : ℕ) :
+    Module.finrank F (Submodule.span F (Set.range
+      (fun e : {e : Finset (Fin d) // e.card = 2} =>
+        pairPrivateWitness (F := F) d e.1))) = Nat.choose d 2 := by
+  rw [finrank_span_eq_card (pairPrivateWitness_linearIndependent (F := F) d),
+    pairFaceIndex_card]
+
 end
 
 end GaloisForLFunctions.HTGeometry

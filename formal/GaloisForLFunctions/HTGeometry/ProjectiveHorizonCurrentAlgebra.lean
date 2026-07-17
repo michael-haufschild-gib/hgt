@@ -162,6 +162,43 @@ theorem depthTwoCurrentLie_contains_all_modes (k : ℕ) :
     sl2CurrentF_mem_depthTwoCurrentLie K k,
     sl2CurrentH_mem_depthTwoCurrentLie K k⟩
 
+/-- All monomial root and diagonal modes of the polynomial `sl₂` current algebra. -/
+def sl2PolynomialCurrentGenerators :
+    Set (Matrix (Fin 2) (Fin 2) (Polynomial K)) :=
+  Set.range (sl2CurrentE K) ∪
+    (Set.range (sl2CurrentF K) ∪ Set.range (sl2CurrentH K))
+
+/-- The polynomial `sl₂` current Lie algebra, defined from all of its monomial modes. -/
+def sl2PolynomialCurrentLie :
+    LieSubalgebra K (Matrix (Fin 2) (Fin 2) (Polynomial K)) :=
+  LieSubalgebra.lieSpan K _ (sl2PolynomialCurrentGenerators K)
+
+/-- The four depth-two horizon modes generate exactly the polynomial `sl₂` current Lie algebra,
+not merely each displayed family separately. -/
+theorem depthTwoCurrentLie_eq_sl2PolynomialCurrentLie :
+    depthTwoCurrentLie K = sl2PolynomialCurrentLie K := by
+  apply le_antisymm
+  · apply LieSubalgebra.lieSpan_le.mpr
+    intro A hA
+    apply LieSubalgebra.subset_lieSpan
+    simp only [depthTwoCurrentGenerators, Set.mem_insert_iff,
+      Set.mem_singleton_iff] at hA
+    rcases hA with rfl | rfl | rfl | rfl
+    · exact Set.mem_union_left _ ⟨0, rfl⟩
+    · exact Set.mem_union_left _ ⟨1, rfl⟩
+    · exact Set.mem_union_right _ (Set.mem_union_left _ ⟨0, rfl⟩)
+    · exact Set.mem_union_right _ (Set.mem_union_left _ ⟨1, rfl⟩)
+  · apply LieSubalgebra.lieSpan_le.mpr
+    intro A hA
+    rcases hA with hE | hFH
+    · obtain ⟨k, rfl⟩ := hE
+      exact sl2CurrentE_mem_depthTwoCurrentLie K k
+    · rcases hFH with hF | hH
+      · obtain ⟨k, rfl⟩ := hF
+        exact sl2CurrentF_mem_depthTwoCurrentLie K k
+      · obtain ⟨k, rfl⟩ := hH
+        exact sl2CurrentH_mem_depthTwoCurrentLie K k
+
 /-- In any representation, annihilation by the four depth-two modes propagates to every
 polynomial current mode. -/
 theorem depthTwoCurrent_annihilation_propagates

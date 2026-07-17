@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven/not_new_scientific_knowledge
 - **Type:** THEOREM (paper) / `[VALUE RELATION] [REFLECTION] [TOP-DOWN REFORMULATION]`
 - **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
-- **Parents:** `theta-cusp-half-density-ward-laplace-budget-transfer.md`;
+- **Parents:** `../../3-formalized/not_new_scientific_knowledge/theta-cusp-half-density-ward-laplace-budget-transfer.md`;
   `../../1-in-progress/theta-cusp-dominant-first-atom-ratio-certificate.md`;
   `../../1-in-progress/theta-cusp-thermal-susceptibility-window.md`
 - **Lean inputs:** `PrimeArchThetaAtomLikelihoodRatio.lean`;

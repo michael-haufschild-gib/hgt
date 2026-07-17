@@ -7,8 +7,11 @@
   `[THREE-CHANNEL HORIZONTAL SEED LEAN-FORMALIZED] [ORIENTATION FALSIFIER PROVED]`
   `[BARE-SOURCE DEGREE-ZERO GATE LEAN-FORMALIZED]`
   `[GAMMA CURVATURE-FORCED STRICTNESS LEAN-FORMALIZED]`
+  `[GAMMA RADIAL COMPACT COCONE LEAN-FORMALIZED]`
   `[FINITE BOUNDARY-COLLIGATION RECONSTRUCTION LEAN-FORMALIZED]`
   `[HT--DESCENT ORTHOGONALITY PAPER-PROVED; ALGEBRAIC CORE LEAN-FORMALIZED]`
+  `[MULTIPLE-GAMMA GALE SKELETON PAPER-PROVED; COMBINATORIAL CORE LEAN-FORMALIZED]`
+  `[ORIENTED GALE/PERIOD-CLOSURE FRACTURE LEAN-FORMALIZED]`
   `[QUASI-ABELIAN PARENT IDENTIFIED] [FIELDS-SCALE OPEN CORE] [NOT AN RH RESULT]`
 - **Parents:**
   - `hypertranscendental-source-fracture-hypercube.md`
@@ -165,13 +168,105 @@ then Lean proves coordinatewise
 The same corpus proves that every `Omega_N` has rank one and that the oriented family of all its
 boundary vectors uniquely reconstructs the full factorial conormal.  Therefore the coefficients
 of `A_hat` are forced by finite source curvature, and on the square-summable clock rigging their
-non-strictness follows.  This closes the coefficient-choice loophole but not the rigging-choice
-loophole: proving that the relevant completion is source-canonical, or that the defect is invariant
-through the full source-admissible rigging class, remains part of the open theorem.
+non-strictness follows.  The radial theorem below now closes a substantial part of the
+rigging-choice loophole on the finite nonnegative-frequency Fourier skeleton: the source frequencies themselves
+force a compact Hilbert scale and the reporter defect is coherent across it.  What remains open is
+uniqueness up to source-presentation equivalence, extension from this one-sided finite chart to the full
+periodic gauge space, and comparison with the nonlinear normalization horizon.
 
 The theorem is formalized in
 `formal/GaloisForLFunctions/HTGeometry/GammaCofinalReconstructionDefect.lean` as
 `gammaFactorial_finite_effective_completed_nonsplit`.
+
+## Exact Gamma radial rigging chart `[PROVED; LEAN]`
+
+For a finite nonnegative-frequency periodic Fourier packet `a=(a_m)` and radius `rho>0`, put
+
+```text
+b_(a,rho)(n)=sum_m a_m (gammaPeriodicFrequency(m)/rho)^(n+1).       (5c)
+```
+
+Lean proves the exact entry law
+
+```text
+b_(a,rho) in l2
+  <-> every active frequency of a has norm < rho.                   (5d)
+```
+
+The necessity uses the finite Fourier-jet Vandermonde equivalence: if the packet tends to zero,
+successive reading blocks recover every modal component, so an active multiplier of norm at least
+one is impossible.  Hence cancellation cannot hide an unstable mode.  Every packet in this chart enters
+some finite pivot; the supported coefficient spaces increase with `rho` and enlarge strictly when
+an actual Gamma frequency is crossed.
+
+The pivot transitions are diagonal,
+
+```text
+T_(rho,sigma)(x)_n=(rho/sigma)^(n+1)x_n,       0<rho<=sigma,        (5e)
+```
+
+compose exactly, and are identities on the diagonal.  If `rho<sigma`, `T_(rho,sigma)` is
+Hilbert--Schmidt and injective, hence a compact injective bond.  Thus the Gamma vertical chart is a
+compactly regular Hilbert/Silva-type system forced by the unit-shift frequency lattice, rather
+than an arbitrary family of weighted norms.
+
+Most importantly, the factorial reporters on radial coordinates,
+
+```text
+(D_rho x)_n = rho^(n+1)/(n+1)! x_n,                              (5f)
+```
+
+form an exact cocone:
+
+```text
+D_sigma T_(rho,sigma)=D_rho,          D_1=A_hat.                  (5g)
+```
+
+For every `rho>0`, `D_rho` is compact and injective with dense proper nonclosed range.  Therefore
+the vertical receiver triple is coherently
+
+```text
+K_rho=0,       C_rho=0,       S_rho!=0                            (5h)
+```
+
+at every pivot, and the observation of a finite packet in this chart is independent of how far up the radial
+system it first enters.  This is the first actual controlled vertical diagram in the proposed
+field, not merely a request to construct one.
+
+The Lean declarations are in
+`formal/GaloisForLFunctions/HTGeometry/GammaGaugeClockVarianceSeparation.lean`, led by
+`summable_normSq_gammaPeriodicFourierRadialTail_iff`,
+`gammaRadialClockTransition_compact_injective_of_lt`,
+`gammaRadialReporter_transition`, and
+`gammaRadialReporter_compact_injective_dense_nonsurjective`.
+
+## Bold next law: strict Noetherian fracture `[CONJECTURE]`
+
+The compact cocone itself is not yet an invariant of hypertranscendence.  The same weighted-space
+mechanism can occur for differential-algebraic sections of an analytic source.  Calling the
+cocone “the HT object” would therefore fail the anti-theatre gate.  The HT-specific claim must
+couple it to finite differential algebra.
+
+> **[CONJECTURE — SOURCE-COCONE RIGIDITY]** A source-minimal analytic difference constraint with
+> separated character frequencies and rapidly decreasing source-conormal coefficients determines,
+> up to cofinal source-frame equivalence, a unique compactly regular clock cocone.  Its character
+> entry walls, compact bonds, and strictness object are invariant under source-presentation
+> equivalence.
+
+> **[CONJECTURE — STRICT NOETHERIAN FRACTURE CHARACTERIZATION OF HT]** A normalized section of
+> this cocone is differential-algebraic exactly when it is carried by a finite-type,
+> source-stable differential-algebraic subcolligation on which the completed observation becomes
+> strict after a finite refinement.  It is hypertranscendental exactly when no such finite strict
+> subcolligation exists.  Equivalently, HT is not the existence of a compact boundary cocone but
+> the failure of every finite differential-Noetherian model to split that cocone stably.
+
+The first conjecture separates source topology from arbitrary norm choice.  The second is the
+proposed constraint on hypertranscendental functions themselves.  It is falsified by either a
+known differential-algebraic section with no finite strict source-stable model or a classical HT
+section admitting one.  In either case the required positive successor is the exact intermediate
+class—differential type, nonlinear dimension, or completion defect—which controls finite strict
+realizability.  This test must be run on a differential-algebraic shift family and on irrational
+elliptic Gamma before any zeta specialization.
 
 ## Exact horizontal seed `[PROVED; LEAN]`
 
@@ -217,6 +312,55 @@ not merely its obstruction cohomology.  HT sections may live in `H^0`; the remai
 whether such a section lies in the pointed, polarized, bornological, integral analytic locus.
 The paper theorem and its formal algebraic core are recorded in
 `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/multiple-gamma-effective-fracture-descent-orthogonality.md`.
+
+## Exact Gale--Kolchin seed `[PAPER PROVED; COMBINATORIAL CORE LEAN]`
+
+For the generic order-`r` multiple-Gamma hierarchy, the physical configuration has `r+2`
+labelled periods spanning a real two-plane, hence uniform matroid `U_(2,r+2)`.  Dualizing and
+contracting the distinguished unit-period normalization gives
+
+```text
+(U_(2,r+2))^*/1 = U_(r-1,r+1).                            (6h)
+```
+
+The independence complex on the `r+1` structural translations therefore has faces of size at
+most `r-1`, so its Stanley--Reisner nonfaces begin in degree `r`.  The independently proved exact
+multiple-Gamma DA annihilator is generated by precisely the squarefree `r`-fold translation
+differences.  Consequently its labelled annihilator complex is the contracted Gale dual of the
+physical period matroid at the unoriented level.  Lean verifies `(6h)` and the exact
+independent/dependent cardinality thresholds in `UniformGaleContraction`.
+
+This yields the non-numerological triple identity
+
+```text
+physical period excess = Gale rank = minimum DA annihilator support = r.    (6i)
+```
+
+The no-go is equally important: the underlying uniform matroid is classical and forgets analytic
+orientation, integral source labels, rigging, and the normalized section torsor.  It cannot by
+itself kill the common kernel `(2a)` or select an HT germ.  The positive successor is the
+contracted **oriented** Gale object, including its chirotope and determinant line, coupled to the
+strict boundary colligation.  The candidate-new theorem is not `(6h)` alone but a source-natural
+Gale--Kolchin duality proving that this oriented object simultaneously generates the horizontal
+annihilator complex and the polarization line.  It must survive a nonuniform HT family or be
+retired as a multiple-Gamma coincidence.
+
+There is a further exact no-go.  The triples `(1,i,1+i)` and `(1,i,sqrt(2)+i)` have identical
+labelled chirotopes, but the first integral period group is discrete and the second is
+nondiscrete.  Lean combines this with the exact period classification to prove opposite continuous
+left-inverse phases; the fixed-gauge classification consequently gives a nonconstant gauge in the
+first case and only constant gauges in the second.  Therefore even the contracted oriented Gale
+object cannot determine vertical effectivity or gauge rigidity.
+
+The nontrivial positive successor is a **coupled double dual**: the oriented Gale dual controls
+finite DA support and polarization, while the Pontryagin character object of
+`R^d/closure(L)` controls period closure, global fixed gauges, and vertical strictness.  The
+Fields-scale target is a source-natural comparison/transgression between these duals, not their
+mere juxtaposition.  It must recover the normalized common kernel as inertia and the nonclosed
+incidence range as a strictness receiver.
+
+The full conjecture and its anti-theatre gate are recorded in
+`docs/drafts/pipeline/1-in-progress/hypertranscendental-gale-kolchin-duality.md`.
 
 ## Orientation discriminator `[PROVED NO-GO; POSITIVE STRUCTURE]`
 
@@ -437,6 +581,7 @@ The following are established parent mathematics:
 - finite-section stability as uniform boundedness of finite inverses;
 - bicomplexes, Abelian envelopes, spectral sequences, Čech descent, and fracture diagrams;
 - controlled, homotopy, and derived inverse limits;
+- Silva/LS spaces, Köthe sequence spaces, and compact linking maps;
 - polarizations and oriented derived structures.
 
 There are two further parent collisions that materially narrow the claim.  Singer's Gribov theorem
@@ -445,7 +590,11 @@ and moduli-stack theory already relates automorphisms, deformations, and obstruc
 Therefore the generic slogan “a killed gauge reappears as an obstruction” is not new, and neither
 is replacing a solution set by a groupoid or stack.
 
-The Gamma theorem `(4)` is an exact natural bridge, not standalone new science.  The three-channel
+The Gamma theorems `(4)` and `(5c)`--`(5h)` are exact natural bridges, not standalone new science.
+Compact Hilbert/Silva systems and weighted diagonal cocones are parent functional analysis.  The
+new residue is the source-forced coupling of the Gamma frequency wall, finite source curvature,
+and the same all-scale strictness class, followed by presentation-invariant transport to another
+HT realization.  The three-channel
 theorem `(6)` is also parent algebra when source vocabulary is erased.
 
 The possible Fields-scale residue is narrower: construct `D_S` functorially from a minimal HT
@@ -456,8 +605,21 @@ identify exact analytic classes.  The theorem must show that two genuinely disti
 realizations preserve the same total class.  Generic gauge fixing, generic derived limits, and
 generic stack obstruction theory do not supply this source-canonical cross-family law.
 
+The Gale--Kolchin seed narrows this further.  In translation hierarchies the horizontal complex
+should not be chosen after the fact: it is predicted to be the contracted oriented Gale dual of
+the physical source configuration.  The explicit identical-chirotope/opposite-effectivity theorem
+proves that vertical structure cannot be derived from that object alone.  The corrected target is
+a comparison law between the Gale--Kolchin dual and the period-closure/Pontryagin dual.  If it
+fails, the exact falsifier supplies a nontrivial positive target: the missing analytic datum
+separating finite differential dependence from topological period closure.
+
 Primary parent references checked:
 
+- Lawson--Wegner, *The category of Silva spaces is not integral*, which uses Silva/LS spaces as
+  countable inductive limits of Banach spaces with compact linking maps,
+  `https://arxiv.org/abs/2107.13901`;
+- Kalmes--Santacreu, *Mean ergodic weighted shifts on Köthe echelon spaces*, for operator laws
+  controlled by weight sequences and Köthe matrices, `https://arxiv.org/abs/2301.11186`;
 - J.-P. Schneiders, *Quasi-abelian categories and sheaves*, Mémoires SMF 76 (1999),
   `https://www.numdam.org/item/MSMF_1999_2_76__R3_0/`;
 - the finite-section literature in which stability means eventual invertibility with uniformly
@@ -469,6 +631,13 @@ Primary parent references checked:
   (1978), `https://doi.org/10.1007/BF01609471`;
 - B. Osserman, *Deformations and automorphisms: a framework for globalizing local tangent and
   obstruction spaces*, `https://arxiv.org/abs/0805.4473`.
+
+For the Gale direction, Panov already couples arbitrary real vector configurations, Gale duality,
+rationality/discreteness, and quotient properness (`https://arxiv.org/abs/2411.03366`); lattice
+Gale duality, arithmetic matroids, toric difference varieties, and matroidal Kolchin growth are
+also established parents.  Therefore the double-dual vocabulary is not the novelty claim.  The
+open HT content is the exact comparison class between an independently computed DA annihilator
+complex and the meromorphic fixed-gauge/nonclosed-range object of the same source.
 
 No source-canonical polarized strict boundary-colligation field for hypertranscendental functions,
 nor the claimed joint obstruction-representation theorem, was found in this preliminary pass.
@@ -490,6 +659,8 @@ Retire or revise this object if:
 7. the obstruction dictionary consists only of analogies, with no exact realization functors;
 8. the total object is just a standard bicomplex or system colligation with HT labels and no new
    theorem.
+9. the Gale/Pontryagin sector reduces to an existing exponential-action properness criterion,
+   lattice Gale duality, or a toric difference lattice without an HT-specific comparison theorem.
 
 Every failure has a positive receiver: `K`, `S`, `C`, the boundary self-symbol/flat-holonomy
 sector, horizontal interaction cohomology, or the polarized-lift torsor.  A no-go that does not
@@ -498,16 +669,21 @@ new direction, not a renamed component.
 
 ## Next theorem targets
 
-1. **Gamma colligation/strictness comparison.** Upgrade `(5b)`, boundary tomography, and the exact
-   colligation identity `(6c)` to an equivalence between the periodic-gauge finite-clock pro-object
-   and the completed factorial reporter in a source-forced controlled category.
+1. **Gamma presentation-invariance theorem.** Upgrade `(5b)` and the proved radial cocone
+   `(5c)`--`(5h)` to a cofinal-equivalence theorem: every source-admissible Gamma rigging generated
+   by the unit-shift frequency filtration carries the same strictness object, and the construction
+   is independent of finite-clock splitting and source presentation.
 2. **Triptic wall crossing.** Prove how the Gamma `S` class changes when one and then two
    incommensurate translations are added, including the attainment/gauge-rigidity trade.
-3. **Multiple-Gamma bidegree theorem.** Compare squarefree horizontal constraint depth with the
+3. **Gale--Pontryagin comparison theorem.** Construct the contracted dual chirotope and the
+   period-closure character object of the actual multiple-Gamma source, then produce a natural
+   comparison/transgression whose edge objects recover horizontal annihilator support and the
+   vertical gauge/effectivity phase.
+4. **Multiple-Gamma bidegree theorem.** Compare squarefree horizontal constraint depth with the
    vertical strictness order of the physical-character completion.
-4. **Exact realization pair.** Construct two genuinely different analytic obstruction functors
+5. **Exact realization pair.** Construct two genuinely different analytic obstruction functors
    and prove that they carry the same total class, not merely the same zero set.
-5. **Presentation invariance.** Prove invariance under source Morita equivalence and boundedly
+6. **Presentation invariance.** Prove invariance under source Morita equivalence and boundedly
    invertible changes of rigging before any zeta specialization.
 
 ## Gates
@@ -519,16 +695,76 @@ new direction, not a renamed component.
 - [x] Gamma dense proper completed range Lean-formalized
 - [x] exact joint-fixed common-kernel gate Lean-formalized
 - [x] Gamma completed reporter proved coordinatewise source-curvature-forced
+- [x] exact one-sided finite-packet radial entry wall and strict coefficient filtration Lean-formalized
+- [x] Gamma radial transitions proved compact, injective, compositional, and unital
+- [x] factorial reporter cocone and all-scale dense nonclosed-range phase Lean-formalized
 - [x] Gamma oriented finite-boundary tomography of the complete conormal Lean-formalized
 - [x] curvature-only reconstruction falsified by invisible boundary compression
 - [x] exact finite boundary-colligation reconstruction and uniqueness Lean-formalized
 - [x] horizontal three-channel interaction seed Lean-formalized
 - [x] HT identified as compatible with acyclic horizontal descent in the multiple-Gamma hierarchy
+- [x] multiple-Gamma DA annihilator complex identified with contracted physical Gale dual
+- [x] uniform Gale dual-contraction/cardinality core Lean-formalized
+- [x] oriented-Gale-only effectivity classification falsified by an explicit Lean witness
+- [x] period-closure/Pontryagin character object identified as the positive successor
 - [x] quasi-Abelian and finite-section parent theories identified
-- [ ] construct the source-canonical controlled derived-limit field for Gamma
-- [ ] upgrade the Gamma curvature identity to a functorial pro/completion equivalence
+- [ ] construct the full source-canonical controlled derived-limit field beyond the one-sided finite chart
+- [ ] prove cofinal/source-presentation invariance of the Gamma radial cocone
+- [ ] compare the radial strictness object with the nonlinear Gamma normalization horizon
 - [ ] prove triptic wall crossing
 - [ ] compute one natural multiple-Gamma bidegree
+- [ ] construct the oriented contracted Gale object and its determinant line
+- [ ] construct the source-natural Gale/Pontryagin comparison morphism
+- [ ] test Gale--Kolchin duality on one nonuniform natural HT source
 - [ ] construct two conservative obstruction realization functors
 - [ ] prove source-presentation invariance
 - [ ] complete specialist novelty audit
+
+## DA control and quotient correction
+
+The radial Gamma cocone and the bare-source kernel are not HT-specific.  Periodic pointed
+non-effectivity also occurs for the distinct DA pair
+
+```text
+exp(z),  exp(2 pi i z) exp(z),
+```
+
+and a nonzero DA exponential gauge preserves HT exactly when it acts on an HT representative.
+Consequently the finite wall filtration, compact transition cocone, and formal/global shift symbol
+are valuable source-kinematic charts, but none can characterize hypertranscendence without first
+passing to the quotient by DA gauge.
+
+The correct horizontal carrier is therefore not the full source-fixed gauge `G_S` but its
+HT-relevant residue
+
+```text
+G_S^HT = G_S / (G_S intersect M_DA),                        (Q1)
+```
+
+or, in the additive source module, the pointed cyclic class `q=[f] in M/M_DA`.  The exact
+Lean-formalized gate is
+
+```text
+Obs_bar_R injective on K/D
+  iff K^S intersect intersection_r ker(R_r) is contained in D.  (Q2)
+```
+
+When `D` consists of DA gauges, `(Q2)` is enough to reconstruct the HT/DA phase even though germ
+reconstruction remains impossible.  A nonzero class in the quotient common kernel is the genuine
+HT-changing nonconservativity witness.
+
+```text
+[NO-GO]
+The polarized strict-descent field of the bare source characterizes HT.
+
+[POSITIVE]
+Its HT-specific version must be the oriented strict-descent field of the DA-relative cyclic source
+module.  Exact inertia, approximate blindness, and conormal strictness are computed only after the
+DA-neutral sector is removed.                                      (Q3)
+```
+
+This correction removes a false universality claim from the Gamma radial chart.  The next theorem
+is not another pivot or compactness lemma.  It is the DA-relative source-polarity theorem stated in
+`hypertranscendental-conormal-integrability-correspondence.md`: reconstruct a labelled source law
+from a pointed cyclic HT quotient and prove that two independently constructed obstruction
+realizations are conservative on its oriented conormal lift.

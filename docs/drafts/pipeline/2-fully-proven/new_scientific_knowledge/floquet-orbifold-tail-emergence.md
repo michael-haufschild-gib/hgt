@@ -144,14 +144,19 @@ here.
 ## Lean status
 
 `formal/GaloisForLFunctions/HTGeometry/FloquetOrbifoldTail.lean` formalizes the symbolic identities
-(2), (4), and (5), together with both phase-rotated two-step eigenobservables.  Its targeted build
-passes, and the axiom reports contain only `propext`, `Classical.choice`, and `Quot.sound`.  The
-static-tail triviality and exact-tail completeness assertions still use the paper-level autonomous
-classification.
+(2), (4), and (5), together with both phase-rotated two-step eigenobservables.  It now also proves
+the general finite periodic transport law (6)--(7):
+`finitePhasePullbackComposite_apply_of_transport` composes an arbitrary finite chain of linear
+pullbacks and multiplies its local transport scalars, while `finitePeriodicTransport_multiplier`
+closes the phase chain and obtains the product Floquet eigenvalue.  Direct elaboration uses the
+existing cache, and the axiom reports contain only `propext`, `Classical.choice`, and `Quot.sound`.
+The static-tail triviality and exact-tail completeness assertions still use the paper-level
+autonomous classification, so the card remains in step 2.
 
 ## Gates
 
 - [x] 0 -> 1: exact time-dependent phenomenon and explicit protocol isolated
 - [x] 1 -> 2: static triviality, phase tail identities, and general transport law proved
+- [x] general finite periodic transport law formalized unconditionally
 - [ ] 2 -> 3: symbolic transport is formalized; assemble with the autonomous tail classification
 - [ ] 3 -> 4: independent novelty audit and standalone exposition

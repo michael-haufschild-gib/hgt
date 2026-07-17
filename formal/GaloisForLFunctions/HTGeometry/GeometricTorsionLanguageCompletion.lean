@@ -2,15 +2,18 @@ import GaloisForLFunctions.HTGeometry.Hypertranscendence
 import GaloisForLFunctions.HTGeometry.TorsionFaceExactification
 import GaloisForLFunctions.HTGeometry.DATaylorLogRatioResonance
 import GaloisForLFunctions.HTGeometry.GeometricTorsionLanguageRelationExclusion
+import GaloisForLFunctions.HTGeometry.GeometricPeriodicLeastLevel
+import GaloisForLFunctions.HTGeometry.GeometricPeriodicEveryLevel
 
 /-!
 # Geometric Taylor magnitudes and torsion-language exactification
 
-The analytic confinement theorem for an asymptotically exact geometric Taylor profile is isolated
-as an explicit input: differential algebraicity produces one finite locked face, with a nonzero
-weight, whose character sum vanishes on every torsion state.  The project-internal Fourier
-exactifier then contradicts that nonzero weight.  The exact periodic-profile cascade is assembled
-separately from the project-internal polynomial level-vanishing theorem.
+The geometric TLU theorem is proved by constructing its finite locked face and applying the
+project-internal Fourier exactifier.  For exact profiles with eventually periodic phase, the
+finite exponential cascade, arithmetic-progression phase lock, ADE active-complement estimate,
+least-level identity, singleton obstruction, and algebraic-tie consequence are also constructed
+internally.  The compatibility inputs below are retained only for callers that already package
+their own level families.
 -/
 
 namespace GaloisForLFunctions.HTGeometry

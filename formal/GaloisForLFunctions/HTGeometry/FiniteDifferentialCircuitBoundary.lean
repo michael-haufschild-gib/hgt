@@ -193,6 +193,53 @@ theorem differentialAlgebraicOver_deriv
     (s := ({x} : Set E)) (x := x) rfl 1
   simpa using h
 
+/-- A finite product of differentially algebraic elements is differentially algebraic.  This is
+the general differential-field closure law behind finite one-loop determinants, finite sector
+partition functions, and finite products of learned or biological observables. -/
+theorem differentialAlgebraicOver_finset_prod
+    {F E ι : Type*} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {s : Finset ι} {f : ι → E}
+    (hf : ∀ i ∈ s, DifferentialAlgebraicOver F (f i)) :
+    DifferentialAlgebraicOver F (∏ i ∈ s, f i) := by
+  classical
+  induction s using Finset.induction with
+  | empty =>
+      simpa using differentialAlgebraicOver_algebraMap (F := F) (E := E) 1
+  | @insert i s hi ih =>
+      rw [Finset.prod_insert hi]
+      exact differentialAlgebraicOver_mul (hf i (by simp))
+        (ih fun j hj => hf j (by simp [hj]))
+
+/-- **Finite-product source extraction.**  A hypertranscendental finite product has at least one
+hypertranscendental factor.  The converse is deliberately not asserted: two HT factors may cancel.
+This localizes the source of an HT partition function or determinant without treating its product
+presentation as a temporal evolution law. -/
+theorem exists_hypertranscendental_factor_of_finset_prod
+    {F E ι : Type*} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {s : Finset ι} {f : ι → E}
+    (hprod : HypertranscendentalOver F (∏ i ∈ s, f i)) :
+    ∃ i ∈ s, HypertranscendentalOver F (f i) := by
+  classical
+  by_contra hnone
+  have hf : ∀ i ∈ s, DifferentialAlgebraicOver F (f i) := by
+    intro i hi
+    by_contra hDA
+    exact hnone ⟨i, hi, hDA⟩
+  exact hprod (differentialAlgebraicOver_finset_prod hf)
+
+/-- Exact-factorization form of finite-product source extraction.  It applies directly when a
+physical, arithmetic, learned, or biological observable is identified with a finite product. -/
+theorem exists_hypertranscendental_factor_of_eq_finset_prod
+    {F E ι : Type*} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {x : E} {s : Finset ι} {f : ι → E}
+    (hx : HypertranscendentalOver F x) (hfactor : x = ∏ i ∈ s, f i) :
+    ∃ i ∈ s, HypertranscendentalOver F (f i) := by
+  rw [hfactor] at hx
+  exact exists_hypertranscendental_factor_of_finset_prod hx
+
 /-- A finite differential circuit is a finite expression tree assembled from named atoms by
 field operations and differentiation. -/
 inductive FiniteDifferentialCircuit {E : Type*} [Field E] [Differential E]

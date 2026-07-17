@@ -81,6 +81,52 @@ theorem phaseOneCurrent_rotatedTwoStep
   field_simp [hx]
   ring
 
+/-!
+## General finite periodic transport
+
+The explicit two-step calculation is an instance of a general finite phase law.  If each pullback
+carries the next phase tensor to the preceding one with scalar multiplier `lambda j`, then the
+ordered period pullback carries the initial tensor to itself with the product multiplier.
+-/
+
+/-- Pull back through the first `n` phase maps, with the last phase applied first. -/
+def finitePhasePullbackComposite
+    {K V : Type*} [Semiring K] [AddCommMonoid V] [Module K V]
+    (P : ℕ → V →ₗ[K] V) : ℕ → V →ₗ[K] V
+  | 0 => LinearMap.id
+  | n + 1 => (finitePhasePullbackComposite P n).comp (P n)
+
+/-- A finite phase-transport chain multiplies its initial tensor by the product of its local
+multipliers. -/
+theorem finitePhasePullbackComposite_apply_of_transport
+    {K V : Type*} [CommSemiring K] [AddCommMonoid V] [Module K V]
+    (P : ℕ → V →ₗ[K] V) (tau : ℕ → V) (lambda : ℕ → K)
+    (htransport : ∀ j, P j (tau (j + 1)) = lambda j • tau j) :
+    ∀ n, finitePhasePullbackComposite P n (tau n) =
+      (∏ j ∈ Finset.range n, lambda j) • tau 0 := by
+  intro n
+  induction n with
+  | zero => simp [finitePhasePullbackComposite]
+  | succ n ih =>
+      rw [finitePhasePullbackComposite, LinearMap.comp_apply, htransport n,
+        LinearMap.map_smul, ih, Finset.prod_range_succ, smul_smul]
+      rw [mul_comm (lambda n)]
+
+/-- Closing the phase tensor chain turns the period composite into an eigenoperator with the
+product Floquet multiplier. -/
+theorem finitePeriodicTransport_multiplier
+    {K V : Type*} [CommSemiring K] [AddCommMonoid V] [Module K V]
+    (P : ℕ → V →ₗ[K] V) (tau : ℕ → V) (lambda : ℕ → K) (n : ℕ)
+    (htransport : ∀ j, P j (tau (j + 1)) = lambda j • tau j)
+    (hclosed : tau n = tau 0) :
+    finitePhasePullbackComposite P n (tau 0) =
+      (∏ j ∈ Finset.range n, lambda j) • tau 0 := by
+  calc
+    finitePhasePullbackComposite P n (tau 0) =
+        finitePhasePullbackComposite P n (tau n) := by rw [hclosed]
+    _ = (∏ j ∈ Finset.range n, lambda j) • tau 0 :=
+      finitePhasePullbackComposite_apply_of_transport P tau lambda htransport n
+
 end
 
 

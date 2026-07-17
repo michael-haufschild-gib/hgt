@@ -2,19 +2,23 @@
 
 - **ID:** `hypertranscendental-conservativity-spectrum`
 - **Stage:** 1-in-progress
-- **Type:** FOUNDATIONAL HT CONJECTURE / SOURCE-GAUGE SPECTRAL FIELD
-- **Scientific status:** `[CONJECTURE] [ABSTRACT THREE-PHASE LAW LEAN-FORMALIZED] [COMPACT WALL LEAN-FORMALIZED] [GAMMA FACTORIAL P1 MODEL LEAN-FORMALIZED] [PARENT OPERATOR THEORY] [FULL NATURAL HT ASSIGNMENT OPEN] [NOVELTY OPEN]`
+- **Type:** LINEAR CHART OF THE NORMALIZATION-HORIZON FIELD
+- **Scientific status:** `[CONJECTURE] [ABSTRACT THREE-PHASE LAW LEAN-FORMALIZED]`
+  `[COMPACT WALL LEAN-FORMALIZED] [GAMMA FACTORIAL P1 MODEL LEAN-FORMALIZED]`
+  `[GAMMA HORIZON EXCHANGE DEFECT LEAN-FORMALIZED] [PARENT OPERATOR THEORY]`
+  `[FULL NATURAL HT ASSIGNMENT OPEN] [NOVELTY OPEN]`
 - **Parents:**
   - `hypertranscendental-source-fracture-hypercube.md`
   - `constraint-curvature-integration-stack.md`
   - `source-transgression-field.md`
+  - `hypertranscendental-normalization-horizon-uniformization.md`
   - `../3-formalized/not_new_scientific_knowledge/joint-source-realization-common-kernel-criterion.md`
-- **Statement:** The common obstruction object is not the bare source, its derived topology, or
-  the common kernel alone. It is the completed reporter operator on the residual source gauge,
-  together with its positive Gram field and its source-presentation descent data. Exact gauge
-  ambiguity and spectral incompleteness are respectively the point-zero and approximate-zero
-  phases of this one operator. Infinite-dimensional HT gauge capacity forces every compact
-  reporter into one of those unstable phases.
+- **Statement:** The completed reporter operator on the residual source gauge is the exact
+  **linear chart** of the obstruction object.  It distinguishes exact blindness, approximate
+  blindness, and stable conservativity.  It is not the complete object: Gamma now proves that a
+  nonlinear cofinal normalization horizon can select one gauge even while every finite radial
+  linearization retains the full gauge space.  The full candidate is the normalization-horizon
+  pro-object; the operator and its Gram field are its bornological tangent realization.
 
 ## Decisive input: the source has forgotten a fibre
 
@@ -193,6 +197,42 @@ example of such a global selector. See
 `../3-formalized/not_new_scientific_knowledge/gamma-factorial-critical-observability-model.md` and
 `../3-formalized/not_new_scientific_knowledge/gamma-cofinal-reconstruction-defect.md`.
 
+## Nonlinear correction: the Gamma horizon exchange defect `[PROVED; LEAN]`
+
+The nonlinear all-scale selector is now exact.  For each `B>0`, let `N_B` be the pointed
+twice-differentiable one-periodic gauges satisfying
+
+```text
+Re psi'(x) + h''(x) >= 0,        0<x<=B.                    (8e)
+```
+
+Lean proves:
+
+```text
+N_B is nontrivial for every finite B;
+every locally bounded-curvature periodic direction h is absorbed by N_B after some
+horizon-dependent positive rescaling epsilon_B;
+intersection_(B>0) N_B = {0};
+
+forall B exists epsilon_B>0, epsilon_B h in N_B,
+but h != 0 implies
+not exists epsilon>0 forall B, epsilon h in N_B.            (8f)
+```
+
+This is stronger than saying that Gamma is a `P1` reporter.  It identifies the precise nonlinear
+defect which the reporter linearizes: finite radial admissibility does not uniformize cofinally.
+Consequently the completed operator cannot be the whole unified object.  The corrected hierarchy is
+
+```text
+normalization horizon pro-object
+  -> finite radial/tangent reporter fields
+  -> Gram/spectral conservativity spectrum.                (8g)
+```
+
+The new object and its cross-family conjecture are developed in
+`hypertranscendental-normalization-horizon-uniformization.md`.  The exact Gamma theorem is in
+`../3-formalized/not_new_scientific_knowledge/gamma-normalization-horizon-phase-transition.md`.
+
 ## `[CONJECTURE — CRITICAL HYPERTRANSCENDENCE PRINCIPLE]`
 
 For natural finite-law HT sources, the distinguished analytic section generically lies in `P1`,
@@ -221,8 +261,8 @@ under an admissible source-presentation equivalence.
 
 ## `[CONJECTURE — CONSERVATIVITY-SPECTRUM PRINCIPLE]`
 
-Every regular source-minimal constrained HT germ admits a presentation-invariant completion of its
-normalized residual gauge and a minimal jointly conservative reporter operator `A_S` such that:
+Every regular source-minimal constrained HT germ admits a presentation-invariant normalization
+horizon and a minimal family of tangent reporter operators `A_(S,lambda)` such that:
 
 1. the algebraic kernel of `A_S` is the normalized source-fixed common kernel;
 2. the approximate zero spectrum of `A_S` is the critical continuation/nonattainment and spectral
@@ -232,12 +272,14 @@ normalized residual gauge and a minimal jointly conservative reporter operator `
    data;
 5. failure of graph-domain descent under source extension is continuation failure;
 6. integral or ramified lifting is a lattice condition on the same zero-mode sheaf;
-7. differential-clock capacity is the decay/growth law of the critical singular scale rather than
-   the dimension of a finite state evolution.
+7. differential-clock capacity is the joint decay law of the critical singular scale and the
+   maximal horizon-admissible radial scale, rather than the dimension of a finite state evolution;
+8. failure of the horizon-dependent radial scales to admit one cofinal lower bound is the nonlinear
+   uniformization obstruction whose linear shadow is `P1`.
 
-The common object is therefore the **self-dual conservativity spectrum of the normalized source
-fibre**, not a spectrum attached directly to the analytic function and not a list of scalar
-obstructions.
+The conservativity spectrum is therefore the **self-dual tangent spectrum of the normalized source
+horizon**, not the whole obstruction object and not a spectrum attached directly to the analytic
+function.
 
 ## `[CONJECTURE — ENDOGENOUS COMPACTNESS / TRANSVERSE NONCOMPACTNESS]`
 
@@ -276,10 +318,12 @@ for nonlinear descent, but they must retain this bornological operator structure
 
 ## Natural test sequence
 
-1. **Gamma.** The factorial clock reporter is now proved to be the explicit `P1` model `(8b)`--
-   `(8c)`. The next step is to compare its clock completion functorially with the normalized
-   `1`-periodic solution fibre and prove that log-convex/asymptotic selection is the corresponding
-   nonlinear all-scale boundary incidence.
+1. **Gamma.** The factorial clock reporter now extends to a proved radial cocone.  Finite Fourier
+   packets have an exact active-frequency entry wall; strict scale bonds are compact and injective;
+   and every pivot reporter is compact injective with dense proper range.  Thus the `P1` phase is
+   coherent across the source-frequency scale.  The next step is no longer to choose a useful
+   completion, but to prove source-presentation invariance and compare this exact strictness object
+   with the independently constructed nonlinear normalization-horizon exchange defect.
 2. **Irrational elliptic Gamma.** Use the proved two-translation rigidity and calibrated boundary
    reconstruction to compute `A_(S,R)` for the two source boundaries plus calibration. Decide
    whether the first natural effectivity class is `P1` or `P2` at its critical completion.
@@ -377,6 +421,8 @@ The proof uses no `sorry`, axiom, opaque postulate, unsafe declaration, or numer
 - [x] kernel-only object strengthened to a topological reporter operator
 - [x] exact/approximate/stable three-phase law formalized
 - [x] compact reporter wall formalized
+- [x] Gamma one-sided finite-packet radial wall and compact-injective scale formalized
+- [x] Gamma all-scale factorial reporter cocone and coherent `P1` phase formalized
 - [x] positive noncompactness necessity isolated
 - [x] observability/control and difference-Galois parent theories identified
 - [ ] natural HT residual-gauge completion constructed
@@ -385,3 +431,40 @@ The proof uses no `sorry`, axiom, opaque postulate, unsafe declaration, or numer
 - [ ] Gram zero-mode field shown presentation invariant
 - [ ] two independent analytic obstruction chains compared through one operator
 - [ ] candidate novelty externally audited by specialists
+
+## HT-relative correction to the conservativity spectrum
+
+The full residual source gauge is too large for an HT invariant.  The elementary pointed
+exponential collision has nonzero periodic gauge inertia while both representatives are DA.
+Therefore `P0/P1/P2` on `G_S=ker Q_S` classifies stability of **germ reconstruction**, not the
+HT/DA phase.
+
+Let `D_S` be the admissible DA gauge subspace and define the HT-relevant residual gauge
+
+```text
+G_S^HT = G_S / (G_S intersect D_S).                         (C1)
+```
+
+The exact quotient theorem now proves that algebraic HT-phase conservativity is equivalent to
+triviality of the common reporter kernel on `(C1)`, not on all of `G_S`.  Equality of source and
+reporter observations then implies equality of HT/DA phase.
+
+This sharpens the compact wall.  A noncompact transverse reporter is necessary for stable **germ**
+reconstruction when `G_S` is infinite-dimensional.  It is necessary for stable HT classification
+only when the completed quotient `(C1)` is itself infinite-dimensional.  If `(C1)=0`, every source
+representative differs only by DA gauge and the source already determines the HT/DA phase despite
+failing to determine the germ.
+
+```text
+[NO-GO]
+Infinite bare-source gauge dimension alone forces an HT obstruction.
+
+[POSITIVE]
+The invariant dimension and strictness live after DA neutralization.  The topology to construct is
+the quotient bornology on G_S^HT, and its P0/P1/P2 phase is the HT conservativity spectrum. (C2)
+```
+
+The Gamma factorial `P1` reporter remains an exact natural strictness model, but it is evidence for
+HT only after identifying which nonzero DA-relative cyclic class it reports.  The next substantive
+comparison is with the Gamma orbit-charge superselection quotient, where the neutral sector is
+exactly DA and every nonzero charge sector is HT.

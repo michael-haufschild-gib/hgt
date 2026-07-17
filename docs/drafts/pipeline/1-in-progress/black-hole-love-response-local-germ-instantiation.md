@@ -36,28 +36,37 @@ The result must identify the actual local analytic germs, not merely assume an a
 - `restrictMeroHom_deriv` proves meromorphic restriction preserves the differential.
 - `hypertranscendentalOver_restrictMeroAlgHomRatFunc` transports a global meromorphic HT source to
   every nonempty open connected observation chart.
+- `meroField_deriv_ratfuncToMero_on` and `meroFieldRatFuncDifferentialAlgebra` make every such chart
+  a differential algebra over `C(z)`.
+- `analyticExponentialMero_logDeriv` constructs the actual local exponential phase and proves its
+  logarithmic-derivative identity.
+- `hypertranscendentalOver_blackHoleHigherMultipoleLocalAnalyticResponse` proves the concrete local
+  exponential-affine response theorem once the physical exponent is identified as an analytic HT
+  element of the chart.
 
 ## Open core
 
-Construct the pole-free local analytic representatives of
+Construct the pole-free local analytic representative of the physical dressed log and identify
+its scaled exponent
 
 \[
-  \tau(\eta),\qquad
-  E(\eta)=\exp(2\nu\eta^2\tau(\eta)),\qquad
-  R(\eta),
+  f(\eta)=2\nu\eta^2\tau(\eta)
 \]
 
-identify their meromorphic-field algebra operations and derivative identities, and then instantiate
-the abstract transfer theorem.  The exponential response is not globally meromorphic because the
-digamma poles become essential singularities after exponentiation; the correct carrier is a local
-analytic/meromorphic germ field on a pole-free chart.
+with the corresponding restricted global HT meromorphic element.  The local exponential carrier,
+its nonvanishing, its derivative identity, and the higher-multipole affine response transfer are
+now formalized.  The remaining task is the explicit Gamma/digamma source identification on the
+chosen pole-free chart and, separately, the analogous concrete monopole response germ.
 
 ## No-go and positive residue
 
-**No-go.** The current abstract theorem plus the concrete value identity is not yet a single Lean
-theorem about the actual response function.  Calling that instantiation already formalized would
+**No-go.** The local analytic exponent-to-response theorem does not by itself prove that the
+published `2 nu eta^2 tau(eta)` representative is the restriction of the already formalized global
+Gamma-sector HT element.  Calling the complete published response unconditional would still
 overstate the corpus.
 
-**Positive theorem already obtained.** Domain restriction is now an injective differential
-embedding and preserves HT.  The former structural blocker is removed; only the explicit local
-analytic representatives and their identification remain.
+**Positive theorem already obtained.** Domain restriction preserves HT, every local meromorphic
+chart now carries the correct `C(z)` differential-algebra structure, and the actual analytic
+exponential plus the nondegenerate higher-multipole readout preserve HT.  The abstract phase and
+logarithmic-derivative hypotheses have been eliminated; only the explicit physical source
+identification and the monopole analytic realization remain.

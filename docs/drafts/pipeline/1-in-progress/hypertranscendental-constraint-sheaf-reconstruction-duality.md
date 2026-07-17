@@ -1,15 +1,17 @@
-# Active polarized constraint-sheaf reconstruction for hypertranscendental functions
+# Active polarized constraint sheaves with transverse normalization horizons
 
 - **ID:** `hypertranscendental-constraint-sheaf-reconstruction-duality`
 - **Stage:** 1-in-progress
 - **Type:** FOUNDATIONAL CLASSIFICATION CONJECTURE / UNIFIED OBSTRUCTION FIELD
 - **Scientific status:** `[CONJECTURE] [HOCHSTER KINEMATIC FIBRE PROVED]`
+  `[BARE-SOURCE FULL FAITHFULNESS REFUTED] [NORMALIZATION-HORIZON CORRECTION]`
   `[FIELDS-MEDAL-SCALE OPEN CORE] [NOVELTY OPEN] [NOT AN RH RESULT]`
 - **Parents:**
   - `../2-fully-proven/new_scientific_knowledge/hypertranscendental-hochster-source-coherence-duality.md`
   - `hypertranscendental-constraint-hodge-duality.md`
   - `hypertranscendental-polarization-transport-spectrum.md`
   - `pointed-polarized-constraint-coupling-correspondence.md`
+  - `hypertranscendental-normalization-horizon-uniformization.md`
   - `../3-formalized/hypertranscendental-minimal-polarized-critical-completion-architecture.md`
 
 ## Founding displacement
@@ -56,40 +58,78 @@ boundary-wedge seed, imposing nondegenerate edge transport collapses the local s
 sign per connected component.  Thus `P` cannot be a stalkwise sign decoration: it must be a
 homotopy-coherent transport object coupled to `B`, `A`, and `beta`.
 
+## Decisive correction: the bare source reconstructs a quotient stack, not a germ
+
+The Gamma collision
+
+```text
+Gamma(z),       exp(2 pi i z) Gamma(z)
+```
+
+has the same source equation and one regular pointing.  Periodic gauges can also preserve every
+prescribed finite jet.  Hence any package derived functorially only from that bare source has
+nontrivial inertia and cannot be fully faithful on analytic germs.  Adding more topology,
+polarization, completion, transport, or source-derived integral data cannot restore information
+already forgotten.
+
+The maximal source-observability theorem is
+
+```text
+Obs_R injective
+  iff K^S intersect intersection_r ker R_r = {0}.           (1a)
+```
+
+Therefore `(U,X,B,A,mu,P,G,beta)` can at most reconstruct the source solution quotient stack and its
+residual gauge groupoid.  Germ reconstruction requires a genuinely transverse normalization
+horizon `N`; it is valid precisely on the stratum where the cofinal normalized inertia is trivial.
+
+Gamma supplies the first exact positive model.  Every finite log-convexity horizon retains nonzero
+radial gauge, while the cofinal intersection is a singleton and horizon-dependent radial scales do
+not uniformize.  The reconstruction object must therefore include
+
+```text
+N = {N_lambda -> residual source gauge}_(lambda cofinal),   (1b)
+```
+
+not merely a richer invariant of the source.
+
 ## The Fields-scale conjecture
 
 > **[CONJECTURE -- ACTIVE POLARIZED CONSTRAINT-SHEAF DUALITY]** There are categories
 >
 > ```text
-> HT_reg    = regular source-minimal analytic hypertranscendental germs,
-> APCS_eff  = effective pointed active polarized constraint sheaves,
+> HT_reg^N    = regular source-minimal HT germs with a natural transverse normalization horizon,
+> APCSH_eff   = effective pointed active polarized constraint sheaves with horizon inertia,
 > ```
 >
 > and a functor
 >
 > ```text
-> H : HT_reg -> APCS_eff                                  (2)
+> H^N : HT_reg^N -> APCSH_eff                             (2)
 > ```
 >
 > with the following properties.
 >
-> 1. **Full faithfulness.** Every differential-analytic source morphism is uniquely reconstructed
->    from its action on `(U,X,B,A,mu,P,G,beta)`.
-> 2. **Essential image.** An abstract package is in the image exactly when it satisfies free-vertex
+> 1. **Source quotient.** Forgetting `N` reconstructs the source solution quotient stack with
+>    residual inertia, not a preferred germ.
+> 2. **Normalized full faithfulness.** On the source-effectively normalized stratum where the
+>    cofinal normalized inertia is trivial, every differential-analytic morphism is reconstructed
+>    from its action on `(U,X,B,A,mu,P,G,beta,N)`.
+> 3. **Essential image.** An abstract package is in the image exactly when it satisfies free-vertex
 >    capacity, source-minimality, active concentration, derived face descent, critical growth,
->    polarized self-duality, and analytic effectivity.
-> 3. **Reconstruction.** The package reconstructs the analytic germ without placing that germ in
->    `mu` or `beta`.
-> 4. **Morita invariance.** Equivalent source presentations produce equivalent sheaves, including
->    their critical base-change defects.
-> 5. **Universal kinematics.** On every finite Stanley--Reisner chart, `(1)` is recovered exactly;
+>    polarized self-duality, horizon compatibility, and analytic effectivity.
+> 4. **Noncircular reconstruction.** The package reconstructs the analytic germ without placing that
+>    germ in `mu`, `beta`, or `N`; `N` must be transverse and target-free.
+> 5. **Morita invariance.** Equivalent source presentations produce equivalent sheaves, including
+>    their residual gauge, normalization-margin spectrum, and critical base-change defects.
+> 6. **Universal kinematics.** On every finite Stanley--Reisner chart, `(1)` is recovered exactly;
 >    arbitrary topology and arbitrary orientation remain possible before effectivity and coupling.
-> 6. **Joint conservativity.** Analytic continuation, monodromy, spectral, boundary, Hermitian,
->    and growth realizations form a jointly conservative family on `APCS_eff`.
+> 7. **Joint conservativity.** Analytic continuation, monodromy, spectral, boundary, Hermitian,
+>    growth, and horizon realizations form a jointly conservative family on `APCSH_eff`.
 
 This is deliberately stronger than assigning a stack, a derived category, or a Postnikov tower to
-an HT source.  It is a classification and reconstruction theorem with an intrinsic essential
-image.
+an HT source.  It is a classification of the quotient stack plus a noncircular transverse
+normalization theorem.  Full faithfulness without `N` is refuted and is no longer a live claim.
 
 ## A precise constraint on hypertranscendence itself
 
@@ -215,8 +255,9 @@ categories.  Merely placing known HT equations in these parent languages fails t
    specializes to the Lean boundary-wedge component law.
 6. Treat a genuinely nonlinear nonabelian source whose boundary sheaf is not truncated at degree
    one.
-7. Prove full faithfulness for the smallest class containing the Barnes/multiple-sine and generic
-   multiple-elliptic-gamma hierarchies.
+7. Construct natural target-free normalization horizons for the Barnes/multiple-sine and generic
+   multiple-elliptic-gamma hierarchies, then prove normalized full faithfulness on the
+   trivial-cofinal-inertia stratum.
 8. Prove two independently constructed realization functors jointly conservative on that class.
 
 ## Anti-theatre gate
@@ -247,10 +288,13 @@ source class under attack.
 - [x] fixed-degree gerbe proposal falsified
 - [x] fixed `htDim=2` shown to support unbounded source-coherence depth
 - [x] first restriction-compatible polarization-transport collapse proved in Lean
+- [x] bare-source full faithfulness refuted by the Gamma gauge collision
+- [x] exact Gamma finite-horizon/cofinal normalization law proved in Lean
+- [x] transverse normalization horizon identified as an irreducible package component
 - [ ] construct the functorial derived boundary sheaf `B`
 - [ ] prove Morita invariance
 - [ ] construct one active polarized analytic realization
-- [ ] prove a noncircular reconstruction theorem
+- [ ] prove a noncircular normalized reconstruction theorem
 - [ ] prove a nontrivial essential-image theorem
 - [ ] prove two realization functors jointly conservative
 - [ ] establish the common self-dual degeneracy spectrum away from RH

@@ -28,7 +28,7 @@ noncomputable section
 /-- An analytic function on `U`, represented as an element of the analytic germ domain. -/
 def analyticFunctionElement {U : Set ℂ} (f : ℂ → ℂ)
     (hf : AnalyticOnNhd ℂ f U) : analyticSubring U :=
-  ⟨(f : Germ (𝒷 U) ℂ), ⟨f, hf, rfl⟩⟩
+  ⟨(f : Germ (Filter.principal U) ℂ), ⟨f, hf, rfl⟩⟩
 
 /-- The pointwise exponential of a local analytic function, as an analytic germ. -/
 def analyticExponentialElement {U : Set ℂ} (f : ℂ → ℂ)
@@ -44,9 +44,9 @@ theorem analyticSubringDeriv_analyticExponentialElement
       analyticExponentialElement f hf *
         analyticSubringDeriv hUo (analyticFunctionElement f hf) := by
   apply Subtype.ext
-  change (deriv (fun z ↦ Complex.exp (f z)) : Germ (𝒷 U) ℂ) =
-    (↑(fun z ↦ Complex.exp (f z)) : Germ (𝒷 U) ℂ) *
-      (↑(deriv f) : Germ (𝒷 U) ℂ)
+  change (deriv (fun z ↦ Complex.exp (f z)) : Germ (Filter.principal U) ℂ) =
+    (↑(fun z ↦ Complex.exp (f z)) : Germ (Filter.principal U) ℂ) *
+      (↑(deriv f) : Germ (Filter.principal U) ℂ)
   rw [← Germ.coe_mul, Germ.coe_eq]
   exact eventually_principal.mpr fun z hz ↦
     (hf z hz).differentiableAt.hasDerivAt.cexp.deriv
@@ -59,7 +59,7 @@ theorem analyticExponentialElement_ne_zero
   intro hzero
   obtain ⟨z, hz⟩ := hUne
   have hgerm := congrArg Subtype.val hzero
-  change (↑(fun w ↦ Complex.exp (f w)) : Germ (𝒷 U) ℂ) = 0 at hgerm
+  change (↑(fun w ↦ Complex.exp (f w)) : Germ (Filter.principal U) ℂ) = 0 at hgerm
   rw [← Germ.coe_zero, Germ.coe_eq] at hgerm
   exact Complex.exp_ne_zero (f z) (eventually_principal.mp hgerm z hz)
 
@@ -72,8 +72,10 @@ theorem analyticExponentialMero_ne_zero
     algebraMap (analyticSubring U) (meroField U)
         (analyticExponentialElement f hf) ≠ 0 := by
   letI := Bottcher.isDomain_analyticSubring U hUo hUc hUne
-  exact (map_ne_zero (algebraMap (analyticSubring U) (meroField U))).2
-    (analyticExponentialElement_ne_zero hUne f hf)
+  intro hzero
+  apply analyticExponentialElement_ne_zero hUne f hf
+  apply IsFractionRing.injective (analyticSubring U) (meroField U)
+  simpa using hzero
 
 /-- **Local analytic logarithmic-derivative identity.**  In the genuine meromorphic field of a
 chart, the exponential observation has logarithmic derivative equal to the derivative of its
@@ -197,9 +199,56 @@ theorem hypertranscendentalOver_analyticExponentialMero
   letI := meroFieldDifferential hUo hUc hUne
   letI : DifferentialAlgebra (RatFunc ℂ) (meroField U) :=
     meroFieldRatFuncDifferentialAlgebra hUo hUc hUne hUinf
+  letI : CharZero (meroField U) :=
+    charZero_of_injective_algebraMap
+      (algebraMap (RatFunc ℂ) (meroField U)).injective
   intro hsource
   exact hypertranscendentalOver_phase_of_logDeriv_eq_deriv hsource
     (analyticExponentialMero_logDeriv hUo hUc hUne f hf)
+
+/-- A nondegenerate affine readout of an actual local analytic exponential phase remains
+hypertranscendental.  Unlike the abstract observation theorem, both the phase and its
+logarithmic-derivative identity are constructed on the meromorphic chart. -/
+theorem hypertranscendentalOver_analyticExponentialAffineMero
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (f : ℂ → ℂ) (hf : AnalyticOnNhd ℂ f U)
+    {b c : RatFunc ℂ} (hb : b ≠ 0) (hc : c ≠ 0) :
+    letI := Bottcher.isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) :=
+      (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    letI : Differential (RatFunc ℂ) :=
+      GaloisForLFunctions.ratFuncCoordinateDifferential
+    letI := meroFieldDifferential hUo hUc hUne
+    letI : DifferentialAlgebra (RatFunc ℂ) (meroField U) :=
+      meroFieldRatFuncDifferentialAlgebra hUo hUc hUne hUinf
+    HypertranscendentalOver (RatFunc ℂ)
+        (algebraMap (analyticSubring U) (meroField U)
+          (analyticFunctionElement f hf)) →
+      HypertranscendentalOver (RatFunc ℂ)
+        (algebraMap (RatFunc ℂ) (meroField U) c *
+          (algebraMap (RatFunc ℂ) (meroField U) b *
+            algebraMap (analyticSubring U) (meroField U)
+              (analyticExponentialElement f hf) - 1)) := by
+  letI := Bottcher.isDomain_analyticSubring U hUo hUc hUne
+  letI : Algebra (RatFunc ℂ) (meroField U) :=
+    (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  letI : Differential (RatFunc ℂ) :=
+    GaloisForLFunctions.ratFuncCoordinateDifferential
+  letI := meroFieldDifferential hUo hUc hUne
+  letI : DifferentialAlgebra (RatFunc ℂ) (meroField U) :=
+    meroFieldRatFuncDifferentialAlgebra hUo hUc hUne hUinf
+  letI : CharZero (meroField U) :=
+    charZero_of_injective_algebraMap
+      (algebraMap (RatFunc ℂ) (meroField U)).injective
+  intro hsource
+  apply hypertranscendentalOver_exponentialAffineObservable
+    (a := (1 : RatFunc ℂ)) (b := b) (c := c)
+  · exact one_ne_zero
+  · exact hb
+  · exact hc
+  · exact hsource
+  · simpa using analyticExponentialMero_logDeriv hUo hUc hUne f hf
 
 set_option synthInstance.maxHeartbeats 20000
 

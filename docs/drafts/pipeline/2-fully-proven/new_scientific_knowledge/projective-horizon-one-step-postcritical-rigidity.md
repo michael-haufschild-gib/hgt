@@ -202,10 +202,23 @@ placing zero-cones on the critical line.
 
 `ProjectiveHorizonPostcriticalRigidity.lean` formalizes:
 
+- the exact root-subset and complementary-factor construction for the pure critical fiber;
+- canonical indexing of all roots of `1+X^L`, with injectivity and nonvanishing;
+- recovery of `1+X^L` as the product over that root indexing;
+- existence, for every `m,n>0`, of two genuine complementary factor pairs whose left constant
+  coefficients differ;
 - the first postcritical extensions of the pure critical factor pair;
 - the exact top coefficient `(13)` over every commutative ring;
 - extraction of `(13)` from divisibility by `t^(L+1)`;
 - the explicit specialization `v=-X_0(0)^(-1)` over a field when `u=0`.
 
-The pure-fiber subset classification and the global primitive-field argument remain paper-level.
-A targeted leaf check passes; no full build was run.
+The key new endpoint is
+`exists_pureCriticalRootFactorPairs_coeff_zero_ne`; its two factor pairs both multiply to
+`pureCriticalCyclicPolynomial (m+n)`, and their left constant coefficients are unequal.  Thus the
+pure-fiber nonconstancy argument through `(14)` is formalized, rather than merely represented by
+the coefficient recurrence.
+
+The global primitive-field step `(7)--(9)` and the etale rational-descent argument converting this
+explicit fiber witness into `v notin H(u)` remain paper-level, so the card remains in stage 2.  A
+targeted leaf check and axiom audit pass; the new endpoint uses only `propext`, `Classical.choice`,
+and `Quot.sound`.  No full or module build was run.

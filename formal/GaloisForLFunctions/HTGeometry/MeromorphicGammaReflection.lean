@@ -326,23 +326,6 @@ theorem HTGeometry.differentialAlgebraicOver_zpow
       exact HTGeometry.differentialAlgebraicOver_inv
         (HTGeometry.differentialAlgebraicOver_pow hx (n + 1))
 
-/-- A finite product of differentially algebraic meromorphic elements remains differentially
-algebraic. -/
-theorem HTGeometry.differentialAlgebraicOver_finset_prod
-    {ι : Type*} {s : Finset ι} {f : ι → meroField Set.univ}
-    (hf : ∀ i ∈ s, DifferentialAlgebraicOver (RatFunc ℂ) (f i)) :
-    DifferentialAlgebraicOver (RatFunc ℂ) (∏ i ∈ s, f i) := by
-  classical
-  induction s using Finset.induction with
-  | empty =>
-      simpa using
-        (HTGeometry.differentialAlgebraicOver_algebraMap
-          (E := meroField Set.univ) (1 : RatFunc ℂ))
-  | @insert i s hi ih =>
-      rw [Finset.prod_insert hi]
-      exact HTGeometry.differentialAlgebraicOver_mul (hf i (by simp))
-        (ih fun j hj => hf j (by simp [hj]))
-
 private theorem reflectedGammaPower_normalForm
     (a x : meroField Set.univ) (hx : x ≠ 0) (p n : ℤ) :
     x ^ p * (a * x⁻¹) ^ n = a ^ n * x ^ (p - n) := by

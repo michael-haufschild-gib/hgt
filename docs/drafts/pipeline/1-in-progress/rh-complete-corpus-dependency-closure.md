@@ -1056,28 +1056,28 @@ the complementary coefficient family.
 
 ## 2026-07-15 theta reflected-budget likelihood splice
 
-- [PROVED ON PAPER] The formal Gibbs Ward equation gives the exact Laplace shift
+- [LEAN-VERIFIED] The Gibbs Ward equation gives the exact Laplace shift
   `2*pi*n^2*B_n(z+2)=b_n(0)+(z+5/2)B_n(z)` and the source transform
   `A_n(z)=2*pi*(b_n(0)+(z-1/2)B_n(z))`.  At the two half-density points these collapse to explicit
   endpoint values.
-- [PROVED ON PAPER] Reflection and `XiC(I/2)=1/2` give the exact first/higher exponential budgets
+- [LEAN-VERIFIED] Reflection and `XiC(I/2)=1/2` give the exact first/higher exponential budgets
   `sum a_j/(4^j*(2j)!)=(4*pi-1)exp(-pi)` and
   `H=sum r_j/(4^j*(2j)!)=1/2-(4*pi-1)exp(-pi)`.
-- [STRICTLY WEAKER THEOREM SURFACE] Retaining the Gaussian cusp damping proves
-  `H<q*a_0<q*(a_0+a_1/8)` for `q=8/2997`.  Hence the completed theta low block follows from
+- [LEAN-VERIFIED NO-STRONGER THEOREM SURFACE] Retaining the Gaussian cusp damping proves
+  `H<=q*a_0<=q*(a_0+a_1/8)` for `q=8/2997`.  Hence the completed theta low block follows from
   `14*(a_0+a_1/8+H)*a_2^2<=9*(a_0+a_1/8)*a_1*a_3` and
-  `16*(a_0+H)*a_2<=45*a_1^2`; both left multipliers are strictly below the old single-loss
+  `16*(a_0+H)*a_2<=45*a_1^2`; both left multipliers are no larger than the old single-loss
   multipliers without any evaluated theta value.
 - [OPEN] Prove those two finite first-atom inequalities from the exact Ward--Laplace Taylor
   constraints, then close the independent degree-at-least-two polynomial cone or the leading
   determinant tail from size three.  See
-  `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-half-density-ward-laplace-budget-transfer.md`
+  `../3-formalized/not_new_scientific_knowledge/theta-cusp-half-density-ward-laplace-budget-transfer.md`
   and
-  `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-half-density-damped-tail-domination.md`.
+  `../3-formalized/not_new_scientific_knowledge/theta-cusp-half-density-damped-tail-domination.md`.
 
 ## 2026-07-15 theta antisymmetric-reflection Turan splice
 
-- [PROVED ON PAPER] The reflected half-density difference gives the exact odd first-atom budget
+- [LEAN-VERIFIED] The reflected half-density difference gives the exact odd first-atom budget
   `sum M_(2*j+1)/(4^j*(2*j+1)!)=exp(-pi)`, complementary to the existing even budget.
 - [EXACT HYPOTHESIS COMPRESSION] The upper low-degree gate has no essential tail or zeroth-moment
   input: it follows from

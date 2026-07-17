@@ -1,8 +1,8 @@
 # The physical multiple-Gamma characteristic pullback is a central fat point of order `r`
 
 - **ID:** `multiple-gamma-physical-characteristic-fat-point`
-- **Stage:** 2-fully-proven / Lean physical-symbol, ideal, row-reduction, and powered-incidence
-  cores complete; physical Koszul homology remains paper-only
+- **Stage:** 2-fully-proven / complete formal-power-series physical fat-point and Koszul cores
+  Lean-formalized; convergent-germ instantiation and five-way special-function identity remain open
 - **Type:** THEOREM / PHYSICAL CHARACTERISTIC PULLBACK / DERIVED INCIDENCE SEAM
 - **Scientific status:** `[PAPER PROOF COMPLETE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE — PROVISIONAL]`
   `[PARENT COMPONENTS SEPARATED] [NOT AN RH RESULT]`
@@ -15,6 +15,8 @@
 - **New analytic comparison surface:**
   `formal/GaloisForLFunctions/HTGeometry/MeromorphicRankThreeSourceBoundary.lean`
 - **Lean physical comparison:**
+  `formal/GaloisForLFunctions/HTGeometry/PhysicalCharacteristicIncidence.lean`
+- **Lean physical Koszul core:**
   `formal/GaloisForLFunctions/HTGeometry/PhysicalCharacteristicIncidence.lean`
 - **Lean meromorphic comparison:**
   `formal/GaloisForLFunctions/HTGeometry/MeromorphicPhysicalCharacteristicIncidence.lean`
@@ -81,6 +83,44 @@ unit multiples of `lambda^r`.  It is equivalent by invertible row operations to
 The invertible linear row operation and its explicit inverse are formalized by
 `unitScaledCofaceRowEquiv`; Lean proves its action on the physical coface generators is exactly
 `(lambda^r,0,...,0)`.
+
+Lean now also formalizes the finite exterior-basis complex of the row-reduced sequence.  It proves
+that its differential squares to zero, identifies positive-degree cycles as the packets avoiding
+the distinguished nonzero row, identifies boundaries as precisely the coefficientwise
+`lambda^r`-divisible such packets, and proves that the number of surviving degree-`k` packets is
+`choose(r,k)`.  The kernel of coefficient reduction is proved equal to the actual boundary range,
+the reduction is proved surjective, and the resulting homology quotient is linearly equivalent to
+the surviving packet family with coefficients in `A/(lambda^r)`.  This is the row-reduced module
+form of `(6)`.  Lean also proves that the surviving packet type is empty and the quotient homology
+is zero for `k>r`, giving the row-reduced form of `(7)`.  Over the physical formal local ring
+`C[[lambda]]`, it computes the degree-`k` module length as `r choose(r,k)` and the total length as
+`r 2^r`, formalizing `(8)` for the row-reduced model.
+
+The original unit-scaled row is now connected to that model by the standard exterior Koszul
+complex, rather than by an assigned transport structure.  The declarations
+`physicalKoszulDifferential_ιMulti` and `physicalKoszulDifferential_sq` construct its alternating
+differential and prove `d^2=0`; `unitScaledCofaceKoszulRowEquiv_functional` proves that the explicit
+transpose row equivalence carries the original coface functional to `(lambda^r,0,...,0)`; and
+`unitScaledCofaceKoszulChainEquiv_commutes` proves that the induced exterior-power equivalences
+intertwine every consecutive differential.  Direct elaboration passes from the existing cache,
+and these theorems use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+The actual formal exponential arc is now instantiated over `C[[lambda]]` as well.
+`physicalFormalExponential_sub_one_eq_X_mul_unit` proves
+`exp(tau_j X)-1=X U_j(X)` with `U_j(0)=tau_j` and hence a unit for every nonzero period.
+`physicalFormalCofaceIdeal_eq_span_X_pow` proves that the resulting coface ideal is exactly
+`(X^r)`; `physicalFormalCofaceIdeal_quotient_length` proves its length is `r`; and
+`physicalFormalCofaceKoszulChainEquiv_commutes` transports its actual Koszul complex to
+`(X^r,0,...,0)`.  The linearly independent source-frame version follows without an additional
+hypothesis because linear independence makes every period nonzero.  Direct elaboration and the
+axiom audit pass from the existing cache; the audited theorems use only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+This closes both the abstract unit-scaled chain-transport gap and the formal-power-series
+exponential instantiation.  The card remains in step 2 because Lean does not yet prove the same
+factorization in the convergent-germ ring `C{lambda}` or the parent special-function identities
+`d_DA(Psi_r)=ht_src(Psi_r)=r` entering the five-way law `(13)`.  Moving the whole card would
+therefore overstate its formal status.
 
 Hence
 
@@ -490,14 +530,20 @@ five-way equality `(13)`.  This is preliminary negative evidence, not priority c
 - [x] same-source osculation/effectivity independence formalized
 - [x] finish Lean formalization of the pullback ideal core
 - [x] formalize the invertible row reduction to `(lambda^r,0,...,0)`
+- [x] formalize the row-reduced physical Koszul differential and its square-zero law
+- [x] formalize its exact cycle and boundary coefficient normal forms
+- [x] formalize the surviving `choose(r,k)` basis multiplicity
+- [x] formalize the row-reduced quotient homology equivalence with copies of `R/(a)`
+- [x] formalize row-reduced homology vanishing above degree `r`
 - [x] formalize the physical central-resonance theorem
 - [x] formalize the coface-by-coface DA/source-translation symbol comparison
 - [x] realize the comparison inside the genuine global meromorphic field
 - [x] restrict the calibrated rank-three boundary carrier to physical exponential modes
 - [x] prove uniform continuous source effectivity iff the period group is discrete
 - [x] formalize the powered incidence and order-`r` half-density trichotomy
-- [ ] formalize the complete physical Koszul homology `(6)`--`(8)` rather than only its
-      principal fat-point ideal
+- [x] formalize the Koszul-chain transport induced by `unitScaledCofaceRowEquiv`
+- [x] instantiate the physical exponential arc and prove its ideal is `(X^r)` in `C[[lambda]]`
+- [x] derive the local length statement `(8)` over the physical formal local ring `C[[lambda]]`
 - [ ] construct the filtration-preserving analytic comparison morphism
 - [ ] identify the critically completed bounded symbol with `w^r`
 - [ ] prove the Barnes/multiple-sine second realization

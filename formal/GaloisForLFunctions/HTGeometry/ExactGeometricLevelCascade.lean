@@ -261,6 +261,32 @@ theorem finite_exactGeometricLevel_cascade
   · intro v hv
     simp
 
+/-- **Singleton levels kill.** If every represented weight and phase is nonzero, an exact finite
+geometric identity has no valuation level containing exactly one atom. -/
+theorem finite_exactGeometricLevel_no_singleton
+    {α : Type*} [DecidableEq α] (S : Finset α)
+    (level : α → ℝ) (weight : α → ℂ[X]) (phase : α → ℂ)
+    {A lam : ℝ} (hA : 0 < A) (hlam : 1 < lam)
+    (hphase : ∀ a ∈ S, phase a ≠ 0)
+    (hweight : ∀ a ∈ S, weight a ≠ 0)
+    (hidentity : ∀ q : ℕ,
+      ∑ a ∈ S, (weight a).eval (q : ℂ) * phase a *
+        ((Real.exp (-A * level a * lam ^ q) : ℝ) : ℂ) = 0) :
+    ∀ v : ℝ, (S.filter fun a => level a = v).card ≠ 1 := by
+  intro v hcard
+  obtain ⟨a, hface⟩ := Finset.card_eq_one.mp hcard
+  have haFace : a ∈ S.filter (fun x => level x = v) := by simp [hface]
+  have haS : a ∈ S := (Finset.mem_filter.mp haFace).1
+  have hlevel := finite_exactGeometricLevel_cascade S level weight phase hA hlam
+    hidentity v
+  have hmul : Polynomial.C (phase a) * weight a = 0 := by
+    simpa [exactGeometricLevelPolynomial, hface] using hlevel
+  rcases mul_eq_zero.mp hmul with hphaseZero | hweightZero
+  · apply hphase a haS
+    apply Polynomial.C_injective
+    simpa using hphaseZero
+  · exact hweight a haS hweightZero
+
 end
 
 end GaloisForLFunctions

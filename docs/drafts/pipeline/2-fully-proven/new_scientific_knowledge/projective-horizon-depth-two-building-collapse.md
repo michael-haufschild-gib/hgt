@@ -275,11 +275,25 @@ and linear modes of
 sl_2 semidirect (K^2)^*.
 ```
 
-Lean proves all bracket identities, generation of every polynomial root, shear, and diagonal
-mode, and the representation-level theorem that annihilation by the eight depth-two generators
-propagates to every generated current mode. The general rational fixed-field step remains
-paper-level because the tree has no infinite free-jet rational invariant interface; it is not
-represented by an assumption.
+Lean proves all bracket identities and the exact equality
+`p2DepthTwoCurrentLie_eq_p2PolynomialCurrentLie`, so the eight depth-two generators span precisely
+the complete polynomial root, shear, and diagonal current Lie algebra.  The representation-level
+theorem propagates annihilation by those generators to every polynomial mode.
+
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonArbitraryRankCurrentAlgebra.lean` removes
+the finite-dimensional boundary for the one-sided generator packet: the new theorem
+`arOneSidedCurrentLie_eq_arPolynomialCurrentLie` identifies it with the complete polynomial
+affine-parabolic current Lie algebra for every finite transverse index type.
+
+The combinatorial observability determinant `(15)` was already present in
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonPageTransition.lean` as
+`shiftedPascalMatrix_det`: every consecutive shifted Pascal matrix has determinant exactly `1`.
+The cached module therefore supplies the nonvanishing Pascal core without duplicate code or a new
+build.
+
+The general rational fixed-field step and the specialization from the free projective jet field to
+the concrete Cramer system `(14)` remain paper-level because the tree has no infinite free-jet
+rational invariant interface; neither is represented by an assumption.
 
 ## RH impact audit
 
@@ -300,7 +314,8 @@ zero-free region, positivity statement, or critical-line implication.
 - [x] 0 -> 1: all-rank candidate and the normal-rank threshold isolated
 - [x] 1 -> 2: gauge, perfectness, current generation, triangular invariant collapse, and all-depth
       join proved
-- [ ] 2 -> 3: higher-rank current engine formalized in `P^2`; general free-jet fixed field remains
+- [ ] 2 -> 3: exact polynomial current generation and the Pascal determinant are formalized;
+      the general free-jet fixed field and concrete Cramer specialization remain
 - [ ] 3 -> 4: independent differential-invariant and algebraic-group specialist audit
 
 ## References checked
@@ -319,4 +334,3 @@ zero-free region, positivity statement, or critical-line implication.
   invariant collapse.
 - 2026-07-15 — proved pairwise all-depth reconstruction by the Pascal observability determinant.
 - 2026-07-15 — formalized the complete `P^2` current-algebra generation and annihilation engine.
-

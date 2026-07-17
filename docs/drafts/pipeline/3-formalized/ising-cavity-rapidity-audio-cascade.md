@@ -14,7 +14,10 @@
 
    `T_c(T_d(r)) = T_((c+d)/(1+cd))(r)`, for `norm r < 1`,
 
-   collapses serial cavity sections now.  At the common zero-field value of all centered prime fields it yields a closed edge-product formula for every finite tree, giving the source-comparison route a canonical nonzero normalization.  This is the selected bridge.
+   collapses serial cavity sections now.  At the common zero-field value of all centered prime
+   fields it yields a closed edge-product formula for every finite tree, giving a canonical
+   nonzero scalar normalization.  This is the selected bridge.  It does not by itself remove the
+   spin-inversion phase cocycle.
 
 ## Proof targets
 
@@ -45,7 +48,12 @@ The target and `RHTower` umbrella builds pass.  The axiom audit reports only `pr
 
 ## Open core after the bridge
 
-The cascade law simplifies source-selected unary sections and fixes the central normalization, but it does not construct the cofinal source tree or prove locally uniform convergence to `E * XiC`.
+The cascade law simplifies source-selected unary sections and fixes the nonzero scalar value at the
+origin, but that scalar-normalized family cannot converge locally uniformly to `XiC`: the later
+source-cocycle theorem proves its first derivative is `-i M_T/2` with `M_T>=log 2`.  The corrected
+open core uses the half-mass-balanced partitions from
+`PrimeIsingTreeBalancedCentering.lean` and asks for their locally uniform convergence to the
+unit-pointed germ `XiC(0)^(-1)XiC`.
 
 ## Physics and audio provenance
 
@@ -63,3 +71,6 @@ The cascade law simplifies source-selected unary sections and fixes the central 
 
 - 2026-07-14 -- Created after the audio-engineering scope was added and the rapidity/scattering cascade survived comparison with the already-saturated scalar Cayley bridge and the more expensive group-delay derivative route.
 - 2026-07-14 -- Formalized the cascade law, strict edge-product normalization, unit-central tree family, zero preservation, entireness, and normalized locally uniform RH capstone; promoted to Stage 3 after verification.
+- 2026-07-17 -- Later source-cocycle analysis proved the scalar-normalized capstone premise
+  impossible and replaced it with half-mass balancing.  The theorems here remain valid; their RH
+  implication is now classified as an unattainable premise rather than the live comparison route.

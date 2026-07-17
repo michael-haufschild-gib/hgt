@@ -297,16 +297,32 @@ literature criteria.
 
 ## Lean status
 
-No Lean formalization is claimed. Full formalization requires Mahler normalization, generic ADE
-coefficient extraction, bounded Prouhet-cluster confinement, polynomial grouped weights, the
-stable-minimizer generalized-analytic expansion, generalized-power nonflatness, construction of a
-torsion-language-universal sequence, and finite-character linear independence. The theorem cannot
-move to stage 3 until this entire chain is formalized unconditionally.
+The finite torsion-language layer is formalized in
+`HTGeometry/TorsionLanguageUniversalPhase.lean`: `TorsionLanguageUniversal` states cofinal exact
+occurrence of every finite torsion word, and
+`TorsionLanguageUniversal.exists_strictMono_occurrences` extracts a cofinal strictly increasing
+sequence of exact occurrences. The finite-character layer is formalized in
+`HTGeometry/TorsionLanguageFaceExactification.lean`:
+`face_weights_eq_zero_of_torsionLanguageUniversal` turns asymptotic cancellation of a finite ADE
+face into exact vanishing of every limiting weight, with finite Fourier inversion supplied by
+`face_fin_weights_eq_zero`.
+
+The remaining unconditional formalization is the polynomial super-Gaussian analytic chain before
+that theorem: Mahler normalization, generic ADE coefficient extraction, bounded Prouhet-cluster
+confinement, polynomial grouped weights, the stable-minimizer generalized-analytic expansion,
+generalized-power nonflatness, and the passage to the finite asymptotically cancelling face accepted
+by `face_weights_eq_zero_of_torsionLanguageUniversal`. The phase-existence input is now complete:
+`universalTorsionPhase_torsionLanguageUniversal` proves that the concatenated enumeration of all
+finite root-of-unity words is torsion-language-universal, and
+`exists_torsionLanguageUniversal` supplies the existential form. The theorem cannot move to stage
+3 until the remaining polynomial super-Gaussian analytic chain is formalized unconditionally.
 
 ## Gates
 
 - [x] 0 -> 1: exact phase-language property, source-pure theorem, and contradiction mechanism stated.
 - [x] 1 -> 2: complete unconditional paper proof written and boundary-attacked.
+- [x] Torsion-language recurrence and finite-character exactification formalized in Lean.
+- [x] Torsion-language-universal phase existence formalized in Lean.
 - [ ] Parent-theory and exact literature novelty audit.
 - [ ] Independent proof audit.
 - [ ] Whole theorem formalized unconditionally in Lean.

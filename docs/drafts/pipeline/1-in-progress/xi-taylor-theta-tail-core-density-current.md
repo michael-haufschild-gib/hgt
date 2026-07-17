@@ -2202,6 +2202,55 @@ The Lean implementation is
 `eventually_exists_canonicalThetaTailFiniteArithmeticHaarCurrent_lt_scaled_normSq`.
 
 Equation `(50)` closes the independent upper-sublinear cancellation theorem for the complete
-untruncated signed theta-tail/seam Haar current.  Promotion to the RH-equivalent raw core-current
-predicate still requires the explicit final composition with the already discharged finite
-translation defects and cofinal top row; no further untruncated orientation input is missing.
+untruncated signed theta-tail/seam Haar current.  It does not close the RH-equivalent raw
+core-current predicate.
+
+## Exact finite-arithmetic conservation and no-shortcut equivalence
+
+**[PROVED, LEAN]** The final composition has now been audited exactly.  At the canonical
+finite-arithmetic endpoint the raw core current is
+
+```text
+J = (1/8) prefix + (1/4) remainder,
+remainder = topRow + survivingTranslation
+          = 4J - (1/2) prefix.                           (51)
+```
+
+The cofinal selector makes `prefix` and `topRow` arbitrarily small.  It cannot make the combined
+`remainder` small: at fixed arithmetic cutoff, every change in `topRow` is transferred with the
+opposite sign to `survivingTranslation`.  As the finite density cutoff exhausts the source,
+
+```text
+remainder -> 4J.                                        (52)
+```
+
+Thus the earlier proposed composition double-counted a cancellation.  The exact survivor is a
+conserved Haar-refinement current, not an independently decaying error.
+
+The converse logical audit is also formalized.  Under RH, `XiC` is nonzero at the limiting point
+of each open left-strip anisotropic fibre.  Superaccuracy then bounds the raw core value and
+derivative and bounds the Taylor denominator away from zero, giving the absolute estimate
+
+```text
+|J_n| = O(1) = o(n)|P_n(z_n)|^2.                        (53)
+```
+
+Together with the cofinal small-prefix selector and `(51)`, this proves the exact equivalences
+
+```text
+finiteArithmeticRemainderJointSublinearUpper D
+  <-> XiCTaylorThetaTailCoreCurrentSublinearUpper D
+  <-> RiemannHypothesis.                                (54)
+```
+
+The Lean implementations are
+`XiCTaylorThetaTailCoreCurrentCapstone.lean` and
+`XiCTaylorThetaTailCoreCurrentRemainderEquivalence.lean`.  The second module proves
+`eventually_abs_xiCTaylorThetaTailCoreCurrent_lt_scaled_normSq_of_riemannHypothesis`,
+`xiCTaylorThetaTailCoreFiniteArithmeticRemainderJointSublinearUpper_iff_riemannHypothesis`, and
+`xiCTaylorThetaTailCoreFiniteArithmeticRemainderJointSublinearUpper_iff_coreCurrentSublinearUpper`.
+
+This retires the finite-arithmetic composition as a source producer.  The card remains open only
+at its original target: an unconditional source theorem that orients or dissipates the raw
+current `J` itself.  Any proof of the combined remainder bound without new source structure is
+already an RH proof by `(54)`.

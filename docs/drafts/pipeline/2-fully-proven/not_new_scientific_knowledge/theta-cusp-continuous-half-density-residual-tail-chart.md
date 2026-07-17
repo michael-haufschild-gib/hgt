@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven/not_new_scientific_knowledge
 - **Type:** THEOREM (paper) / `[VALUE RELATION] [REFLECTION] [SOURCE TAIL CHART]`
 - **Scientific status:** `[PROVED] [BRIDGE] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
-- **Parents:** `theta-cusp-half-density-ward-laplace-budget-transfer.md`;
+- **Parents:** `../../3-formalized/not_new_scientific_knowledge/theta-cusp-half-density-ward-laplace-budget-transfer.md`;
   `theta-cusp-antisymmetric-half-density-turan-curvature-transfer.md`
 - **Lean input:** `PrimeArchThetaAtomLikelihoodRatio.lean`, especially
   `thetaCuspSourceTerm_shift_one`

@@ -62,6 +62,22 @@ theorem integral_mul_integral_le_of_monotoneLikelihoodKernel
   have hKnonneg : 0 ≤ ∫ z, K z ∂μ.prod μ := by
     apply integral_nonneg_of_ae
     simpa only [K] using hkernel
+  have hT₁value :
+      (∫ z : α × α, h z.1 * (g z.2 * f z.2) ∂μ.prod μ) =
+        (∫ x, h x ∂μ) * ∫ x, g x * f x ∂μ :=
+    integral_prod_mul h (fun x => g x * f x)
+  have hT₂value :
+      (∫ z : α × α, f z.1 * (g z.2 * h z.2) ∂μ.prod μ) =
+        (∫ x, f x ∂μ) * ∫ x, g x * h x ∂μ :=
+    integral_prod_mul f (fun x => g x * h x)
+  have hT₃value :
+      (∫ z : α × α, (g z.1 * h z.1) * f z.2 ∂μ.prod μ) =
+        (∫ x, g x * h x ∂μ) * ∫ x, f x ∂μ :=
+    integral_prod_mul (fun x => g x * h x) f
+  have hT₄value :
+      (∫ z : α × α, (g z.1 * f z.1) * h z.2 ∂μ.prod μ) =
+        (∫ x, g x * f x ∂μ) * ∫ x, h x ∂μ :=
+    integral_prod_mul (fun x => g x * f x) h
   have hKvalue :
       (∫ z, K z ∂μ.prod μ) =
         2 * ((∫ x, g x * f x ∂μ) * (∫ x, h x ∂μ) -
@@ -69,7 +85,7 @@ theorem integral_mul_integral_le_of_monotoneLikelihoodKernel
     rw [hKexpand, integral_add' ((hT₁.sub hT₂).sub hT₃) hT₄,
       integral_sub' (hT₁.sub hT₂) hT₃, integral_sub' hT₁ hT₂]
     simp only [T₁, T₂, T₃, T₄]
-    rw [integral_prod_mul, integral_prod_mul, integral_prod_mul, integral_prod_mul]
+    rw [hT₁value, hT₂value, hT₃value, hT₄value]
     ring
   rw [hKvalue] at hKnonneg
   nlinarith

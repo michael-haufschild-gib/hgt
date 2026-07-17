@@ -298,6 +298,87 @@ theorem BoundedComparison.translationLength_eq
 
 end SubadditiveClockGauge
 
+open Filter Topology
+
+/-!
+## Bounded comparison of finite clock vectors
+
+The vector refinement uses fundamental-weight coordinates, which for a dominant finite vector are
+its prefix sums.  A fixed bound on every prefix difference gives a fixed bound on every coordinate
+difference, so normalization by the iterate number erases the discrepancy.  This is the finite
+asymptotic-cone step after the valuation-lattice comparison has supplied the prefix bounds.
+-/
+
+/-- Sum of the coordinates whose index is strictly below `k`. -/
+def finiteVectorPrefixSum {s : ℕ} (v : Fin s → ℝ) (k : ℕ) : ℝ :=
+  ∑ j ∈ Finset.univ.filter (fun j : Fin s => (j : ℕ) < k), v j
+
+theorem finiteVectorPrefixSum_succ {s : ℕ} (v : Fin s → ℝ) (i : Fin s) :
+    finiteVectorPrefixSum v (i + 1) = finiteVectorPrefixSum v i + v i := by
+  classical
+  rw [finiteVectorPrefixSum, finiteVectorPrefixSum]
+  have hi : i ∉ Finset.univ.filter (fun j : Fin s => (j : ℕ) < (i : ℕ)) := by simp
+  rw [show Finset.univ.filter (fun j : Fin s => (j : ℕ) < (i : ℕ) + 1) =
+      insert i (Finset.univ.filter (fun j : Fin s => (j : ℕ) < (i : ℕ))) by
+        ext j
+        simp
+        omega]
+  rw [Finset.sum_insert hi]
+  abel
+
+/-- Bounded differences of every prefix sum bound each coordinate difference. -/
+theorem finiteVector_coordinate_sub_le_of_prefix_bound {s : ℕ}
+    (μ ν : Fin s → ℝ) (K : ℕ → ℝ)
+    (h : ∀ k, |finiteVectorPrefixSum μ k - finiteVectorPrefixSum ν k| ≤ K k)
+    (i : Fin s) :
+    |μ i - ν i| ≤ K (i + 1) + K i := by
+  have hμ := finiteVectorPrefixSum_succ μ i
+  have hν := finiteVectorPrefixSum_succ ν i
+  calc
+    |μ i - ν i| =
+        |(finiteVectorPrefixSum μ (i + 1) - finiteVectorPrefixSum ν (i + 1)) -
+          (finiteVectorPrefixSum μ i - finiteVectorPrefixSum ν i)| := by
+      rw [hμ, hν]
+      congr 1
+      ring
+    _ ≤ |finiteVectorPrefixSum μ (i + 1) - finiteVectorPrefixSum ν (i + 1)| +
+        |finiteVectorPrefixSum μ i - finiteVectorPrefixSum ν i| := abs_sub _ _
+    _ ≤ K (i + 1) + K i := add_le_add (h (i + 1)) (h i)
+
+/-- **Finite Cartan-vector comparison.**  Uniform bounds on all fundamental-weight coordinates
+(prefix sums) force two normalized finite vectors to have the same limit. -/
+theorem tendsto_normalized_finiteVector_of_bounded_prefix
+    {s : ℕ} (μ ν : ℕ → Fin s → ℝ) (K : ℕ → ℝ) (L : Fin s → ℝ)
+    (h : ∀ n k,
+      |finiteVectorPrefixSum (μ n) k - finiteVectorPrefixSum (ν n) k| ≤ K k)
+    (hμ : Tendsto (fun n i => μ n i / n) atTop (nhds L)) :
+    Tendsto (fun n i => ν n i / n) atTop (nhds L) := by
+  rw [tendsto_pi_nhds] at hμ ⊢
+  intro i
+  let C : ℝ := K (i + 1) + K i
+  have hCzero : Tendsto (fun n : ℕ => C / n) atTop (nhds 0) :=
+    tendsto_const_div_atTop_nhds_zero_nat C
+  have hCneg : Tendsto (fun n : ℕ => -(C / n)) atTop (nhds 0) := by
+    simpa using hCzero.neg
+  have hdiff : Tendsto (fun n : ℕ => (ν n i - μ n i) / n) atTop (nhds 0) := by
+    apply tendsto_of_tendsto_of_tendsto_of_le_of_le' hCneg hCzero
+    · exact Eventually.of_forall fun n => by
+        have hcoord := finiteVector_coordinate_sub_le_of_prefix_bound
+          (μ n) (ν n) K (h n) i
+        have habs : |ν n i - μ n i| ≤ C := by
+          simpa [C, abs_sub_comm] using hcoord
+        have hlower : -C ≤ ν n i - μ n i := (abs_le.mp habs).1
+        simpa only [neg_div] using
+          (div_le_div_of_nonneg_right hlower (Nat.cast_nonneg n))
+    · exact Eventually.of_forall fun n => by
+        have hcoord := finiteVector_coordinate_sub_le_of_prefix_bound
+          (μ n) (ν n) K (h n) i
+        have habs : |ν n i - μ n i| ≤ C := by
+          simpa [C, abs_sub_comm] using hcoord
+        exact div_le_div_of_nonneg_right (abs_le.mp habs).2 (Nat.cast_nonneg n)
+  have hsum := (hμ i).add hdiff
+  simpa [sub_div] using hsum
+
 /-!
 ## A reversible rank-two clock shear
 

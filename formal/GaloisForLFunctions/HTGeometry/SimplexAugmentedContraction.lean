@@ -1,7 +1,10 @@
 import Mathlib.AlgebraicTopology.ExtraDegeneracy
 import Mathlib.AlgebraicTopology.SimplicialSet.Homology.Nondegenerate
 import Mathlib.Algebra.Category.ModuleCat.Abelian
+import Mathlib.Algebra.Category.ModuleCat.AB
 import Mathlib.Algebra.Category.ModuleCat.Colimits
+import Mathlib.Algebra.Homology.Functor
+import Mathlib.CategoryTheory.Functor.ReflectsIso.Exact
 
 /-!
 # The normalized augmented simplex contraction
@@ -23,7 +26,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-universe u
+universe u v
 
 variable (k : Type u) [Field k]
 
@@ -77,6 +80,64 @@ theorem standardSimplexNormalized_exactAt_succ (n q : ℕ) :
   rw [exactAt_iff_of_quasiIsoAt e.hom (q + 1)]
   exact HomologicalComplex.ExactAt.of_isZero
     (HomologicalComplex.isZero_single_obj_X (.down ℕ) 0 _ (q + 1) (by omega))
+
+/-- The degreewise family of normalized simplex blocks, before taking their direct sum. -/
+noncomputable def standardSimplexNormalizedFamily
+    (ι : Type v) (n : ι → ℕ) :
+    HomologicalComplex (Discrete ι ⥤ ModuleCat.{u} k) (.down ℕ) where
+  X q := Discrete.functor fun j ↦
+    ((SSet.stdSimplex.obj (SimplexCategory.mk (n j))).normalizedChainComplex
+      (ModuleCat.of k k)).X q
+  d q q' := Discrete.natTrans fun j ↦
+    ((SSet.stdSimplex.obj (SimplexCategory.mk (n j.as))).normalizedChainComplex
+      (ModuleCat.of k k)).d q q'
+  shape q q' h := by
+    apply NatTrans.ext
+    funext j
+    exact ((SSet.stdSimplex.obj (SimplexCategory.mk (n j.as))).normalizedChainComplex
+      (ModuleCat.of k k)).shape q q' h
+  d_comp_d' q q' q'' h h' := by
+    apply NatTrans.ext
+    funext j
+    exact ((SSet.stdSimplex.obj (SimplexCategory.mk (n j.as))).normalizedChainComplex
+      (ModuleCat.of k k)).d_comp_d q q' q''
+
+/-- Exactness of the simplex-block family is detected componentwise. -/
+theorem standardSimplexNormalizedFamily_exactAt_succ
+    (ι : Type v) (n : ι → ℕ) (q : ℕ) :
+    (standardSimplexNormalizedFamily k ι n).ExactAt (q + 1) := by
+  let F : ∀ j : Discrete ι,
+      (Discrete ι ⥤ ModuleCat.{u} k) ⥤ ModuleCat.{u} k :=
+    fun j ↦ (evaluation (Discrete ι) (ModuleCat.{u} k)).obj j
+  let hF : JointlyReflectIsomorphisms F :=
+    { isIso := fun f ↦ by
+        intro
+        rw [NatTrans.isIso_iff_isIso_app]
+        intro j
+        change IsIso ((F j).map f)
+        exact inferInstance }
+  rw [hF.exactAt_iff]
+  intro j
+  simpa [standardSimplexNormalizedFamily, F] using
+    standardSimplexNormalized_exactAt_succ k (n j.as) q
+
+/-- The direct sum of an arbitrary family of normalized full-simplex blocks. -/
+noncomputable def standardSimplexNormalizedCoproduct
+    (ι : Type u) (n : ι → ℕ) :
+    HomologicalComplex (ModuleCat.{u} k) (.down ℕ) :=
+  ((colim : (Discrete ι ⥤ ModuleCat.{u} k) ⥤ ModuleCat.{u} k).mapHomologicalComplex
+    (.down ℕ)).obj (standardSimplexNormalizedFamily k ι n)
+
+/-- **Direct-sum closure of the normalized simplex contraction.**
+
+An arbitrary direct sum of full-simplex monomial blocks remains exact in every positive degree.
+This is the categorical direct-sum step in the monomial-block assembly of coordinate-facet
+descent. -/
+theorem standardSimplexNormalizedCoproduct_exactAt_succ
+    (ι : Type u) (n : ι → ℕ) (q : ℕ) :
+    (standardSimplexNormalizedCoproduct k ι n).ExactAt (q + 1) := by
+  exact (standardSimplexNormalizedFamily_exactAt_succ k ι n q).map
+    (colim : (Discrete ι ⥤ ModuleCat.{u} k) ⥤ ModuleCat.{u} k)
 
 end
 

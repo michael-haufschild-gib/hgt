@@ -393,6 +393,11 @@ The algebraic core is already formalized (axiom-clean) by existing modules:
   `GaloisForLFunctions.constrainedProlateArchSeriesTerm` (`ConstrainedProlateExteriorWeil.lean`),
   whose nonnegativity, summability, and positive total are already proved
   (`constrainedProlateArchSeriesTerm_nonneg/_le`, `summable_...`, `tsum_..._pos`).
+- The exact von Mangoldt divisor collapse `(32)` is
+  `constrainedProlate_sum_vonMangoldt_divisors_ge_two`; it proves
+  `sum_(m|k, m>=2) Lambda(m) = log k` in the filtered form used by the radial diagonal charge.
+  The same module proves convergence and strict negativity of the resulting prime coefficient via
+  `summable_constrainedProlatePrimeSeriesTerm` and `constrainedProlatePrimeConstant_neg`.
 
 What is not formalized is the **weak convergence** `(4)` of the radial measures `nu_lambda` and the
 Gram-matrix diagonalization: the formal tree has no radial PSWF, Bessel-envelope asymptotics, or

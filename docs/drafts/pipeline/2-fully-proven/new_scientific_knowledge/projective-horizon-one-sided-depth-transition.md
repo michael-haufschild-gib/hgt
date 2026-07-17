@@ -189,8 +189,12 @@ there is a single exceptional lattice point `(1,1)`, rather than a broad shallow
 `formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonOneSidedCurrentAlgebra.lean` proves:
 
 - the scalar three-generator theorem `(10)--(11)`;
+- the exact equality between the scalar three-generator one-sided Lie algebra and the symmetric
+  four-generator depth-two Lie algebra;
 - generation of every scalar polynomial current mode;
 - the projective-plane five-generator theorem with only one linear root mode;
+- the exact equality between that five-generator Lie algebra and the symmetric eight-generator
+  plane depth-two Lie algebra;
 - generation of every root, shear, and diagonal plane current mode;
 - representation-level propagation of annihilation from each minimal generator set to all modes.
 
@@ -204,11 +208,17 @@ sl_2 semidirect Hom(K^2,K^ι)
 
 for arbitrary finite transverse index type `ι`. Lean proves every root, diagonal, and transverse
 shear bracket, generation of every polynomial mode from the two constant radicals plus one linear
-root, and arbitrary-representation annihilation propagation. Thus the current-algebra engine of
-the all-projective-dimension theorem is fully formalized; only the rational fixed-field layer
-remains paper-level.
+root, and arbitrary-representation annihilation propagation.  The theorem
+`arOneSidedCurrentLie_eq_arPolynomialCurrentLie` now identifies the finite-generator Lie algebra
+exactly with the Lie span of every polynomial root, diagonal, and transverse-shear mode. Thus the
+current-algebra engine of the all-projective-dimension theorem is fully formalized; only the
+rational fixed-field layer remains paper-level.
 
 No rational fixed-field assertion is postulated in Lean.
+
+Targeted leaf checks and axiom audits pass for all three equality theorems; they use only
+`propext`, `Classical.choice`, and `Quot.sound`.  No full or module build was run.  The card remains
+in stage 2 because the infinite rational fixed-field conclusion in `(2)` is still paper-level.
 
 ## RH impact audit
 

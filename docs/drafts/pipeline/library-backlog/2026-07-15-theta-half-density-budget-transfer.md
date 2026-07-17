@@ -1,8 +1,8 @@
 # Formalize the theta half-density Ward--Laplace budget transfer
 
 - **Source card:**
-  `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-half-density-ward-laplace-budget-transfer.md`;
-  `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-half-density-damped-tail-domination.md`
+  `../3-formalized/not_new_scientific_knowledge/theta-cusp-half-density-ward-laplace-budget-transfer.md`;
+  `../3-formalized/not_new_scientific_knowledge/theta-cusp-half-density-damped-tail-domination.md`
 - **Destination:** `formal/GaloisForLFunctions/RHTower/`
 - **Suggested imports:** `PrimeArchThetaGibbsEquipartition.lean`;
   `PrimeArchThetaAtomLikelihoodRatio.lean`; `ThetaCuspFourierLaplace.lean`;

@@ -226,9 +226,11 @@ certification.
 
 1. `cofaceProductsVanish_iff_exists_pair_zero`;
 2. `multipleGammaLogCharacteristicBoundary_iff_exists_resonantPair`;
-3. reflection invariance;
-4. coordinatewise deck invariance;
-5. exact blindness of the algebraic clock character to deck translation.
+3. `multipleGammaLogCharacteristicBoundary_iff_exists_integer_chargedPair`, giving the exact
+   two-coordinate, two-integer deck-sheet indexing;
+4. reflection invariance;
+5. coordinatewise deck invariance;
+6. exact blindness of the algebraic clock character to deck translation.
 
 `GammaPeriodicConstraintCorona.lean` additionally proves:
 
@@ -245,6 +247,7 @@ it is not introduced as a Lean axiom.
 - [x] relative translation characteristic variety identified
 - [x] logarithmic pullback computed exactly
 - [x] codimension-two pair-sheet structure proved
+- [x] integral deck-charge indexing of every logarithmic pair sheet Lean-formalized
 - [x] deck invariance proved
 - [x] reflection invariance proved
 - [x] removable-origin cofactor corrected

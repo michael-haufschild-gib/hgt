@@ -167,10 +167,19 @@ the finite-aperture Olver-envelope transfer, and the exact CCM sign convention.
 - A. Connes, C. Consani, H. Moscovici, *Zeta Spectral Triples*, arXiv:2511.22755.
 - NIST Digital Library of Mathematical Functions, Chapter 10.
 
-## Lean decision
+## Lean formalization status
 
-The formal tree has no PSWF radial asymptotics or closed prime-form interface. No Lean file is
-added before independent paper-proof audit.
+The exact arithmetic part is formalized unconditionally.  In
+`GaloisForLFunctions.RHTower.ConstrainedProlateExteriorWeil`,
+`constrainedProlate_sum_vonMangoldt_divisors_ge_two` proves the divisor collapse
+`sum_(q|k,q>=2) Lambda(q)=log k`; the shifted prime summands are nonnegative and summable, and
+`constrainedProlatePrimeConstant` is strictly negative.  In
+`GaloisForLFunctions.RHTower.ArcsineZetaDerivativeSpectrum`, the positive diagonal eigenvalues
+`16 log(k) arcsin(1/k)/(11*pi*k)` are strictly positive and summable, and their total mass is exactly
+the negative of `constrainedProlatePrimeConstant`.
+
+The leakage-normalized PSWF diagonal limit `(4)` and off-diagonal estimates `(7)`--`(8a)` are not in
+Lean, so the cofinal limit `(9)` is not yet formalized.  The card remains at stage 2.
 
 ## Gates
 
@@ -180,6 +189,8 @@ added before independent paper-proof audit.
 - [x] diagonal and `j,k>=2` sectors summed cofinally
 - [x] high truncated-divisor weighted first row proved negligible
 - [x] explicit universal constant obtained
+- [x] divisor collapse, positive summable diagonal spectrum, and exact scalar mass formalized
+  unconditionally in Lean
 - [x] primary formula search found no parent statement
 - [ ] independent normalization and sign audit
 - [ ] combine with central correction and archimedean form

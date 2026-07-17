@@ -194,15 +194,40 @@ exists E:G ->_0 Z, m • E=D
 every coefficient D(g) is divisible by m.                  (10)
 ```
 
-New declarations:
+For an arbitrary additive source group `M` and surjective divisor homomorphism
+`D : M ->+ (G ->_0 Z)`, Lean now also formalizes the complete abstract Kummer step:
+
+```text
+Y has an m-th root modulo ker(D)
+  iff
+every coefficient of D(Y) is divisible by m,
+```
+
+and proves that, for `m != 0`, any two such roots differ by `ker(D)`.
+Writing `content(D)` for the gcd of the absolute values of the finitely many nonzero coefficients,
+Lean further proves the exact spectrum
+
+```text
+Y has an m-th root modulo ker(D)  iff  m divides content(D).
+```
+
+Declarations:
 
 - `IntegralOrbitDivisorCoefficientwiseDivisible`;
 - `integralOrbitDivisorQuotient`;
-- `integralOrbitDivisor_has_nsmul_root_iff`.
+- `integralOrbitDivisor_has_nsmul_root_iff`;
+- `integralOrbitDivisorContent`;
+- `integralOrbitDivisor_coefficientwiseDivisible_iff_content_dvd`;
+- `integralOrbitDivisor_has_nsmul_root_iff_content_dvd`;
+- `HasSourceRootModuloKernel`;
+- `hasSourceRootModuloKernel_iff`;
+- `hasSourceRootModuloKernel_iff_content_dvd`;
+- `sourceRoot_unique_mod_kernel`.
 
-This is the exact formal step used in `(2) iff (3)`.  Formalizing the analytic equivalence would
-require the elliptic principal-part and atomic-difference theory explicitly excluded by the parent
-card's anti-theatre boundary.
+This proves the full group-theoretic implication from a surjective divisor map with specified
+kernel, including uniqueness modulo that kernel.  Instantiating `M` by the meromorphic triptic
+source class and identifying `ker(D)` with its DA subgroup still requires the elliptic
+principal-part and atomic-difference theory excluded by the parent card's anti-theatre boundary.
 
 ## Gates
 
@@ -213,6 +238,8 @@ card's anti-theatre boundary.
 - [x] root existence and uniqueness modulo DA proved
 - [x] exact Kummer-content spectrum proved
 - [x] coefficientwise divisibility core Lean-formalized
+- [x] abstract root existence and uniqueness modulo a surjective divisor kernel Lean-formalized
+- [x] exact abstract Kummer-content root spectrum Lean-formalized
 - [x] every no-go paired with the complete positive root classifier
 - [x] primary parent collision run provisionally
 - [ ] independent audit of the parent atomic theorem

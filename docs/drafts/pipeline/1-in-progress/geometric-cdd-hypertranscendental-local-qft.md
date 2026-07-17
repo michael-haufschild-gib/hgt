@@ -3,7 +3,7 @@
 - **ID:** `geometric-cdd-hypertranscendental-local-qft`
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE THEOREM / CONSTRUCTIVE QFT / PHYSICAL HT EXISTENCE
-- **Scientific status:** `[PAPER PROOF COMPLETE; INDEPENDENT AUDIT PENDING]`
+- **Scientific status:** `[PAPER PROOF COMPLETE; INTERNAL ANALYTIC AUDIT PASSED]`
   `[PHYSICAL EXISTENCE BRIDGE] [NOVELTY UNVERIFIED AND LIKELY PARENT-DERIVABLE]`
 - **Scope:** general hypertranscendence in factorizing quantum field theory; no RH or distinguished
   special-function input
@@ -189,6 +189,11 @@ The exact physical scattering observable is thus HT in the crossing coordinate
 `t=-i sinh(theta)/C`.  Promotion should state the base differential field explicitly; no
 unproved claim about arbitrary nonlinear rapidity reparametrizations is needed.
 
+The real-axis reporter and its differentially algebraic elliptic ultraviolet limit are developed
+in `hypertranscendental-scattering-elliptic-uv-boundary.md`.
+Its exact identification as the global HT completion of an infinite generalized-`T bar T`
+higher-spin germ is developed in `geometric-cdd-higher-spin-completion-fracture.md`.
+
 ### Real-axis reporter -- the phase slope is HT
 
 For real rapidity put `x=sinh(theta)/C`.  The unitary boundary value has the continuous
@@ -264,14 +269,21 @@ exact HT scattering observable.
 The focused search found:
 
 - classical infinite Blaschke/CDD and `q`-deformed integrable scattering constructions;
+- the Smirnov--Zamolodchikov pole and higher-spin-current coordinates on integrable QFT theory
+  space, including possibly infinite CDD pole products;
+- generalized-`T bar T` flow equations and the finite-domain higher-spin germ/global meromorphic
+  continuation distinction;
 - Freund--Zabrodin's hierarchy of `q`-deformed Jost and `S`-matrix functions;
 - Lechner's constructive inverse-scattering theorem for regular factorizing `S`-matrices;
 - Adamczewski--Dreyfus--Hardouin's rational-or-HT theorem.
 
 It did not find the exact product `(1)` used as a regular Lechner scattering function, nor a
-hypertranscendence theorem for a rigorously reconstructed local QFT scattering matrix.  This is
-negative search evidence, not yet a novelty proof.  A wider formula-level audit of integrable
-models and CDD classifications is mandatory before promotion.
+hypertranscendence theorem for a rigorously reconstructed local QFT scattering matrix.  The
+geometric product's interpretation as an infinite current--current deformation is parent theory,
+not new knowledge.  The surviving novelty candidate is the exact DA-finite/HT-global completion
+fracture proved in the linked higher-spin card.  This is negative search evidence, not yet a
+novelty proof.  A wider formula-level audit of integrable models and CDD classifications is
+mandatory before promotion.
 
 ## Significance gate
 
@@ -282,7 +294,8 @@ Reeh--Schlieder, inverse scattering, and asymptotic completeness.
 
 ## Exact open core
 
-1. Obtain an independent analytic audit of the enlarged-strip proof and its boundary continuity.
+1. Obtain an external expert audit of the enlarged-strip proof.  The internal source-level audit
+   against Lechner's exact regularity definition and nuclearity theorem has passed.
 2. Complete a formula-level novelty audit against infinite CDD, `q`-gamma, XXZ/XYZ, and
    factorizing-model literature.
 3. Extend the now-formalized finite-product symmetries and geometric `q`-constraint to the
@@ -302,6 +315,12 @@ Reeh--Schlieder, inverse scattering, and asymptotic completeness.
   <https://arxiv.org/abs/hep-th/9208033>.
 - A. LeClair and G. Sierra, *Renormalization group limit-cycles and field theories for elliptic
   S-matrices*, <https://arxiv.org/abs/hep-th/0403178>.
+- F. A. Smirnov and A. B. Zamolodchikov, *On space of integrable quantum field theories*,
+  <https://arxiv.org/abs/1608.05499>.
+- G. Hernandez-Chifflet, S. Negro, and A. Sfondrini, *Flow equations for generalised T bar T
+  deformations*, <https://arxiv.org/abs/1911.12233>.
+- G. Camilo, T. Fleury, M. Lencses, S. Negro, and A. Zamolodchikov, *On Factorizable S-matrices,
+  Generalized TTbar, and the Hagedorn Transition*, <https://arxiv.org/abs/2106.11999>.
 
 ## Lean boundary
 

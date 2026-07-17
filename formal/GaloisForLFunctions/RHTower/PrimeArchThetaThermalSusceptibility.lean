@@ -104,7 +104,7 @@ theorem thetaCuspHigherAtomRawEvenMoment_pos (j : ℕ) :
     have hsub := hfull.sub hone
     apply hsub.congr
     filter_upwards [] with x
-    simp only [f, ffull, fone]
+    simp only [f, ffull, fone, Pi.sub_apply]
     ring
   have hfnn : 0 ≤ᵐ[volume.restrict (Ioi 0)] f := by
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
@@ -149,8 +149,12 @@ theorem thetaCuspHigherAtomRawEvenMoment_pos (j : ℕ) :
         x ^ (2 * j) * (thetaCuspFullSource x - thetaCuspSourceTerm x 1)) =
       ffull - fone by
         funext x
-        simp only [ffull, fone]
+        simp only [ffull, fone, Pi.sub_apply]
         ring]
+    change
+      2 * (∫ x : ℝ in Ioi 0, ffull x) -
+          2 * (∫ x : ℝ in Ioi 0, fone x) =
+        2 * ∫ x : ℝ in Ioi 0, ffull x - fone x
     rw [integral_sub hfull hone]
     ring
   rw [heq]

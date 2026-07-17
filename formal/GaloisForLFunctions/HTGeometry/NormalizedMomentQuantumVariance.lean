@@ -56,7 +56,7 @@ theorem momentNormalizedCovariance_self
     (s : ℕ → ℝ) (p : Polynomial ℝ) :
     momentNormalizedCovariance s p p = momentNormalizedVariance s p := by
   unfold momentNormalizedCovariance momentNormalizedVariance
-  rw [pow_two]
+  simp only [pow_two]
 
 /-- Normalized covariance is symmetric. -/
 theorem momentNormalizedCovariance_comm
@@ -97,7 +97,6 @@ theorem momentVacuumFeshbachRemainder_eq_mass_mul_normalizedVariance
   unfold momentVacuumFeshbachRemainder momentNormalizedVariance
     momentNormalizedExpectation
   field_simp [h0]
-  ring
 
 /-- The canonically centered representative has zero normalized expectation. -/
 theorem momentNormalizedExpectation_centered
@@ -125,7 +124,6 @@ theorem pureStateQuantumFisherValue_moment_eq_four_mul_normalizedVariance
   rw [pureStateQuantumFisherValue_moment_eq s h0 p,
     momentVacuumFeshbachRemainder_eq_mass_mul_normalizedVariance s h0 p]
   field_simp [h0]
-  ring
 
 /-- With positive vacuum mass, normalized variance positivity is exactly Feshbach positivity. -/
 theorem momentNormalizedVariance_nonneg_iff_feshbach
@@ -184,7 +182,6 @@ theorem sq_mass_mul_momentNormalizedVariance_X_sizeBiased
       s k * s (k + 2) - s (k + 1) ^ 2 := by
   rw [momentNormalizedVariance_X_sizeBiased]
   field_simp [hk]
-  ring
 
 /-! ### Pearson information between successive size-biased states -/
 
@@ -220,7 +217,6 @@ theorem sq_next_mul_momentSizeBiasPearsonChiSq
       s k * s (k + 2) - s (k + 1) ^ 2 := by
   rw [momentSizeBiasPearsonChiSq_eq_momentRatios]
   field_simp [hk, hk1]
-  ring
 
 /-- Pearson nonnegativity is exactly adjacent Hankel log-convexity when the two normalizing
 moments are positive. -/
@@ -263,7 +259,6 @@ theorem momentNormalizedVariance_X_sizeBiased_eq_mean_mul_next_sub_mean
     momentNormalizedExpectation_X_sizeBiased s (k + 1)]
   rw [show k + 1 + 1 = k + 2 by omega]
   field_simp [hk, hk1]
-  ring
 
 /-! ### Price response under one further size bias -/
 
@@ -291,7 +286,6 @@ theorem sq_mass_mul_momentNormalizedCovariance_X_X_pow_sizeBiased
       s k * s (k + n + 1) - s (k + 1) * s (k + n) := by
   rw [momentNormalizedCovariance_X_X_pow_sizeBiased]
   field_simp [hk]
-  ring
 
 /-- With positive normalizing mass, nonnegative selection covariance is exactly nonnegativity of
 the corresponding cross-Hankel minor. -/
@@ -326,7 +320,6 @@ theorem momentNormalizedCovariance_X_X_pow_sizeBiased_eq_mean_mul_response
     momentNormalizedExpectation_X_pow_sizeBiased]
   rw [show k + 1 + n = k + n + 1 by omega]
   field_simp [hk, hk1]
-  ring
 
 /-- Quotient form of the Robertson--Price identity: the change of any power expectation under
 one further size bias is its selection covariance divided by the current mean. -/
@@ -356,7 +349,6 @@ theorem momentSizeBiasPearsonChiSq_eq_relativeMeanLift
     momentNormalizedExpectation_X_sizeBiased s (k + 1)]
   rw [show k + 1 + 1 = k + 2 by omega]
   field_simp [hk, hk1]
-  ring
 
 /-- **Hammersley--Chapman--Robbins saturation.**  For a size-bias pair and the statistic `X`,
 the chi-square change-of-measure bound is an equality.  Thus this generic information inequality
@@ -375,7 +367,6 @@ theorem momentSizeBiasPearsonChiSq_hcr_saturation
       s k hk hk1,
     momentSizeBiasPearsonChiSq_eq_relativeMeanLift s k hk hk1]
   field_simp [hmean]
-  ring
 
 /-- Pure-state QFI of the size-biased coordinate is four times the mean times its size-bias lift. -/
 theorem pureStateQuantumFisherValue_sizeBiased_X_eq_meanLift
@@ -415,7 +406,6 @@ theorem momentSizeBiasPearsonChiSq_eq_quantumFisher_signalRatio
       momentNormalizedExpectation (momentSizeBiasedSequence s k) X = 0
   · simp [hmean]
   · field_simp [hmean]
-    ring
 
 /-! ### Mixtures and the laws of total covariance and variance -/
 

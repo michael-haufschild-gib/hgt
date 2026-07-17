@@ -31,4 +31,12 @@ theorem frequencyRank_insert_le (S : Finset ℝ) (a : ℝ) :
     Module.finrank ℚ (Submodule.span ℚ ((insert a S : Finset ℝ) : Set ℝ)) ≤ S.card + 1 :=
   (frequencyRank_le_card (insert a S)).trans (by simpa using Finset.card_insert_le a S)
 
+/-- The finite frequency-rank bound is sharp for a rationally independent frequency packet: its
+frequency module has rank exactly the number of spectral lines. -/
+theorem frequencyRank_eq_card_of_linearIndependent (S : Finset ℝ)
+    (hS : LinearIndependent ℚ ((↑) : S → ℝ)) :
+    Module.finrank ℚ (Submodule.span ℚ (S : Set ℝ)) = S.card := by
+  rw [show (S : Set ℝ) = Set.range ((↑) : S → ℝ) by ext; simp]
+  simpa using finrank_span_eq_card hS
+
 end GaloisForLFunctions

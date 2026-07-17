@@ -67,6 +67,30 @@ theorem hypertranscendentalOver_mul_differentialAlgebraic_iff
       (differentialAlgebraicOver_inv hd)
     exact hx (by simpa [mul_assoc, hd0] using hx')
 
+/-- Multiplicative inversion preserves hypertranscendence exactly.  No nonzero hypothesis is
+needed: in a field, inversion is involutive even at zero. -/
+theorem hypertranscendentalOver_inv_iff
+    {F E : Type*} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {x : E} :
+    HypertranscendentalOver F x⁻¹ ↔ HypertranscendentalOver F x := by
+  constructor
+  · intro hinv hx
+    exact hinv (differentialAlgebraicOver_inv hx)
+  · intro hx hinv
+    exact hx (by simpa using differentialAlgebraicOver_inv hinv)
+
+/-- Dividing by a nonzero differentially algebraic gauge preserves hypertranscendence exactly. -/
+theorem hypertranscendentalOver_div_differentialAlgebraic_iff
+    {F E : Type*} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {x d : E} (hd : DifferentialAlgebraicOver F d) (hd0 : d ≠ 0) :
+    HypertranscendentalOver F (x / d) ↔ HypertranscendentalOver F x := by
+  simpa [div_eq_mul_inv] using
+    (hypertranscendentalOver_mul_differentialAlgebraic_iff
+      (differentialAlgebraicOver_inv hd) (inv_ne_zero hd0) :
+      HypertranscendentalOver F (x * d⁻¹) ↔ HypertranscendentalOver F x)
+
 /-- A logarithmic exponential observation cannot collapse a hypertranscendental source.  If
 `phase'/phase = source'`, then an HT source forces an HT phase. -/
 theorem hypertranscendentalOver_phase_of_logDeriv_eq_deriv

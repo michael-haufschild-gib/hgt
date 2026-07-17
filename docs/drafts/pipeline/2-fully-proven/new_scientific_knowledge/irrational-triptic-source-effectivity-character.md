@@ -267,3 +267,20 @@ five-face homotopy limit.  No such result is inserted as an axiom.
 - [ ] whole-product `sigma` and `tau` source equations packaged in Lean
 - [ ] FHRZ/differential-character comparison formalized in Lean
 - [ ] independent specialist proof and novelty audit
+
+## Scope clarification: fibrewise effectivity versus source-frame reconstruction
+
+The source-effectivity theorem is a theorem for the **standard oriented triptic boundary and
+pointing**.  It does not say that the common orbit divisor or the DA-relative conormal module alone
+reconstructs that source frame.
+
+The finite-marker stabilizer theorem now proves why the larger TSEC package is load-bearing.  A
+common divisor on `C/H` can recover `H` only up to its finite stabilizer and forgets a decomposition
+of `H` into the two labelled elliptic faces.  The typed pre-pushforward boundary divisors recover the
+faces on their aperiodic stratum; the oriented period embedding and gerbe data supply information
+that no subgroup-level marker can recover because `Zq=Z(-q)`.
+
+Thus this card remains a positive fibrewise effectivity model.  The new open problem is horizontal:
+prove that such models assemble functorially over changes and degenerations of source frame, rather
+than assuming the standard frame as part of the input.  See
+`../../1-in-progress/hypertranscendental-stabilizer-enriched-realization-stack.md`.

@@ -267,14 +267,27 @@ in `formal/GaloisForLFunctions/HTGeometry/StableCoreFunctoriality.lean`.  It pro
 algebra equivalence maps the stable range core exactly to itself.  The file verifies directly from
 the existing cache.
 
+`formal/GaloisForLFunctions/HTGeometry/ScalarLogCurrentReconstruction.lean` now formalizes the
+positive-charge current layer: the logarithmic current of a nonzero free scalar is itself
+hypertranscendental and nonconstant, the full scalar differential field is reconstructed from its
+current field plus one ordinary amplitude, and every positive power has the same current field.
+
+`formal/GaloisForLFunctions/HTGeometry/RatFuncScaleFixedField.lean` formalizes the complete
+ordinary fixed-field law for that amplitude coordinate: a scalar of finite order `N` fixes exactly
+`K(X^N)`, while a scalar of infinite order fixes exactly `K`.  The action is constructed as a
+faithful algebra automorphism and its order is proved exactly.
+
 The differential-Luroth, order-additivity, and algebraic-cocharacter parents are not yet available
-in this Lean toolchain, so the card remains at stage 2.  No axiom, `sorry`, `opaque`, or unsafe
-placeholder is used for them.
+in this Lean toolchain, and the rational-coordinate action has not yet been transported across the
+differential current-field reconstruction, so the card remains at stage 2.  No axiom, `sorry`,
+`opaque`, or unsafe placeholder is used for them.
 
 ## Gates
 
 - [x] 0 -> 1 in-progress: exact theorem, falsifier, and external parent boundary identified
 - [x] 1 -> 2 fully-proven: complete proof with every classical parent isolated
+- [x] positive-charge current hypertranscendence and one-amplitude reconstruction formalized
+- [x] ordinary finite- and infinite-order scalar fixed fields formalized
 - [ ] 2 -> 3 formalized: import differential Luroth/order theory and formalize projective
   cocharacter classification
 - [ ] 3 -> 4 publication-ready: specialist external novelty audit and standalone exposition
@@ -293,3 +306,7 @@ placeholder is used for them.
 
 - 2026-07-15 -- proved the scalar clock-character law, passed the preliminary external-literature
   novelty gate, and formalized exact invariance of the stable core under commuting symmetries.
+- 2026-07-17 -- formalized the positive-charge logarithmic-current field and its exact scalar
+  reconstruction law.
+- 2026-07-17 -- formalized the faithful rational-coordinate scalar action and both sides of its
+  finite/infinite holonomy fixed-field dichotomy.

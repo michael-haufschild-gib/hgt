@@ -35,6 +35,39 @@ theorem strictMono_add_mul_right {q₀ p : ℕ} (hp : 0 < p) :
   intro i j hij
   exact Nat.add_lt_add_left (Nat.mul_lt_mul_of_pos_left hij hp) q₀
 
+/-- A geometric exponential in the progression parameter beats polynomial growth in the
+corresponding arithmetic progression. -/
+theorem tendsto_add_mul_pow_mul_exp_neg_geometric
+    {lam gamma : ℝ} (hlam : 1 < lam) (hgamma : 0 < gamma)
+    (q₀ p P : ℕ) :
+    Tendsto (fun k : ℕ =>
+      (((q₀ + p * k : ℕ) : ℝ) ^ P) * Real.exp (-gamma * lam ^ k))
+      atTop (nhds 0) := by
+  let C : ℝ := q₀ + p
+  have hC : 0 ≤ C := by positivity
+  have hcore := tendsto_natAdd_pow_mul_exp_neg_geometric hlam hgamma 1 P
+  have hupper : Tendsto (fun k : ℕ =>
+      C ^ P * ((((k + 1 : ℕ) : ℝ) ^ P) * Real.exp (-gamma * lam ^ k)))
+      atTop (nhds 0) := by
+    simpa using hcore.const_mul (C ^ P)
+  apply squeeze_zero'
+  · exact Filter.Eventually.of_forall fun k =>
+      mul_nonneg (pow_nonneg (by positivity) P) (Real.exp_nonneg _)
+  · filter_upwards with k
+    have hq : ((q₀ + p * k : ℕ) : ℝ) ≤ C * ((k + 1 : ℕ) : ℝ) := by
+      dsimp [C]
+      norm_cast
+      nlinarith
+    have hpow : (((q₀ + p * k : ℕ) : ℝ) ^ P) ≤
+        (C * ((k + 1 : ℕ) : ℝ)) ^ P := pow_le_pow_left₀ (by positivity) hq P
+    calc
+      (((q₀ + p * k : ℕ) : ℝ) ^ P) * Real.exp (-gamma * lam ^ k) ≤
+          (C * ((k + 1 : ℕ) : ℝ)) ^ P * Real.exp (-gamma * lam ^ k) :=
+        mul_le_mul_of_nonneg_right hpow (Real.exp_nonneg _)
+      _ = C ^ P * ((((k + 1 : ℕ) : ℝ) ^ P) *
+          Real.exp (-gamma * lam ^ k)) := by rw [mul_pow]; ring
+  · exact hupper
+
 /-- Every fixed translated window has a constant phase state along a late period progression. -/
 theorem PeriodicFrom.windowShift_add_mul
     {u : ℕ → ℂ} {p T q₀ K : ℕ} (hu : PeriodicFrom u p T)
@@ -60,15 +93,26 @@ theorem PeriodicFrom.patternPhase_add_mul
 
 /-- Pull a complex polynomial back along `k ↦ q₀ + p*k`. -/
 def arithmeticProgressionPolynomial (q₀ p : ℕ) (W : ℂ[X]) : ℂ[X] :=
-  W.comp (C (q₀ : ℂ) + C (p : ℂ) * X)
+  W.comp (Polynomial.C (q₀ : ℂ) + Polynomial.C (p : ℂ) * Polynomial.X)
 
 @[simp] theorem arithmeticProgressionPolynomial_eval
     (q₀ p k : ℕ) (W : ℂ[X]) :
     (arithmeticProgressionPolynomial q₀ p W).eval (k : ℂ) =
-      W.eval (q₀ + p * k : ℕ) := by
-  rw [arithmeticProgressionPolynomial, Polynomial.eval_comp, Polynomial.eval_add,
-    Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X]
-  norm_cast
+      W.eval (((q₀ + p * k : ℕ) : ℕ) : ℂ) := by
+  rw [arithmeticProgressionPolynomial, Polynomial.eval_comp]
+  congr 1
+  simp
+
+/-- Pullback along a positive-step arithmetic progression preserves nonzero polynomials. -/
+theorem arithmeticProgressionPolynomial_ne_zero
+    {q₀ p : ℕ} (hp : 0 < p) {W : ℂ[X]} (hW : W ≠ 0) :
+    arithmeticProgressionPolynomial q₀ p W ≠ 0 := by
+  intro hzero
+  rcases Polynomial.comp_eq_zero_iff.mp hzero with h | h
+  · exact hW h
+  · have hcoeff := congrArg (fun Q : ℂ[X] => Q.coeff 1) h.2
+    simp [arithmeticProgressionPolynomial] at hcoeff
+    exact_mod_cast (show p ≠ 0 by omega) hcoeff
 
 /-- Along a late period progression, the intrinsic phase of every translated bounded atom is the
 fixed phase character read at the initial window. -/

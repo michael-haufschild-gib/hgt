@@ -216,12 +216,27 @@ determinant convergence.
 It remains candidate-new until independent formula-level review of the parent radial theorem. Its
 mathematical proof from `(3)`--`(4)` is complete.
 
-## Lean decision
+## Lean formalization status
 
-The finite matrix-unit and summability components are already covered by the projective
-convergence proof and the formal trace-norm infrastructure. The analytic PSWF input `(3)` is not
-present in Lean, so a wrapper formalization of `(8)` would make the central hypothesis opaque and
-is not added.
+The unconditional scalar spectrum is formalized in
+`GaloisForLFunctions.RHTower.ArcsineZetaDerivativeSpectrum`.  With Lean index `n` corresponding to
+the paper index `k=n+2`, the declaration `constrainedProlateArithmeticEigenvalue` is exactly
+
+```text
+16 log(k) arcsin(1/k)/(11*pi*k).
+```
+
+The declarations `constrainedProlateArithmeticEigenvalue_pos` and
+`summable_constrainedProlateArithmeticEigenvalue` prove that every eigenvalue is strictly positive
+and that the sequence is summable.  The exact total-mass identities
+`tsum_constrainedProlateArithmeticEigenvalue` and
+`tsum_constrainedProlateArithmeticEigenvalue_eq_neg_diagonalConstant` identify its sum with the
+negative radial prime constant in `(21)`.  This is the complete scalar diagonal/trace-class core of
+the limiting operator.
+
+The finite-aperture convergence `(3)`, hence the operator convergence `(8)` and Fredholm determinant
+convergence `(16)`, still depend on PSWF weighted projective convergence not present in Lean.  The
+card therefore remains at stage 2.
 
 ## Gates
 
@@ -231,6 +246,8 @@ is not added.
 - [x] vanishing total negative spectral mass proved
 - [x] Fredholm determinant limit and limiting spectrum obtained
 - [x] full scalar prime response recovered as negative trace
+- [x] limiting positive arithmetic eigenvalue sequence, summability, and exact total mass formalized
+  unconditionally in Lean
 - [ ] independent PSWF normalization audit
 - [ ] polar--prime critical Mellin graph-domain assembly
 - [ ] complete Weil-form lower bound

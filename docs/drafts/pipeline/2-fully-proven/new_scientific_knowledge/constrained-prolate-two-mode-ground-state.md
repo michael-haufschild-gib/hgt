@@ -472,8 +472,10 @@ by `ccm_groundState_weight_eq`: `a₀²/(a₀²+a₁²) = 8/11` for the prolate-
 Fuchs-rate model it proves `twoModeSecularRoot_fuchs_ratio_tendsto` for arbitrary increasing fixed
 indices, then specializes it to the CCM pair as `ccm_twoMode_ground_leakage_ratio` with limit
 `8/11`.  The theorem `ccm_twoMode_ground_gap_ratio` proves the complementary two-mode gap ratio
-`3/11`.  These are genuine limit theorems, not just arithmetic identities for the limiting
-weights.
+`3/11`.  Its quantified corollary `ccm_twoMode_ground_gap_eventually_ge` proves the paper's eventual
+inequality form: every `c<3/11` is, for all sufficiently large apertures, a lower bound for the
+two-mode gap after multiplication by the dominant Fuchs leakage.  These are genuine limit theorems,
+not just arithmetic identities for the limiting weights.
 
 The scientifically new asymptotic theorem `(4)`--`(7)` is not yet fully formalized. Its remaining
 inputs are the classical identification and simplicity theorem matching the positive signed modes
@@ -492,6 +494,7 @@ two-mode `8/11`/`3/11` limits to the exact constrained optimizer.
 - [x] provisional novelty gate
 - [x] provisional significance gate
 - [x] two-mode Fuchs-rate `8/11` ground and `3/11` gap limits formalized in Lean
+- [x] eventual `c<3/11` two-mode gap lower bound formalized in Lean
 - [ ] independent proof review
 - [ ] independent literature review
 - [ ] true Weil residual and spectral-gap transfer

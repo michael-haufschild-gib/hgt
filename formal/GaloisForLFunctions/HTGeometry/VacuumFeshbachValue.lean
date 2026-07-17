@@ -86,6 +86,7 @@ theorem momentFunctional_C_add_sq
         momentFunctional s (q ^ 2) := by
   have hpoly :
       (C c + q) ^ 2 = C (c ^ 2) + C (2 * c) * q + q ^ 2 := by
+    simp only [pow_two, add_mul, mul_add, map_ofNat, map_mul]
     ring
   rw [hpoly, momentFunctional_add, momentFunctional_add,
     momentFunctional_C, momentFunctional_C_mul]
@@ -112,7 +113,7 @@ theorem momentFunctional_momentVacuumCenteredPolynomial_sq
       momentVacuumCenteredPolynomial s q =
         C (-(momentFunctional s q / s 0)) + q := by
     unfold momentVacuumCenteredPolynomial
-    ring
+    rw [sub_eq_add_neg, map_neg, add_comm]
   rw [hpoly, momentFunctional_C_add_sq_eq_vacuumSquare_add_feshbach s h0]
   ring
 
@@ -123,7 +124,8 @@ theorem momentFunctional_momentVacuumCenteredPolynomial
   unfold momentVacuumCenteredPolynomial
   have hsub :
       q - C (momentFunctional s q / s 0) =
-        q + C (-(momentFunctional s q / s 0)) := by ring
+        q + C (-(momentFunctional s q / s 0)) := by
+    rw [sub_eq_add_neg, map_neg]
   rw [hsub, momentFunctional_add, momentFunctional_C]
   field_simp [h0]
   ring
@@ -136,7 +138,6 @@ theorem momentVacuumRobertsonDeterminant_eq_mul_feshbach
       s 0 * momentVacuumFeshbachRemainder s q := by
   unfold momentVacuumRobertsonDeterminant momentVacuumFeshbachRemainder
   field_simp [h0]
-  ring
 
 /-- The normalized pure-state quantum Fisher value of a moment observable is exactly four times
 its vacuum Feshbach remainder divided by the vacuum mass. -/
@@ -149,7 +150,6 @@ theorem pureStateQuantumFisherValue_moment_eq
     ← momentVacuumRobertsonDeterminant_eq_projectiveQuantumTangentValue,
     momentVacuumRobertsonDeterminant_eq_mul_feshbach s h0]
   field_simp [h0]
-  ring
 
 /-- With positive vacuum mass, Feshbach positivity is exactly the quotient-free Robertson
 determinant inequality. -/
@@ -174,7 +174,8 @@ theorem momentVacuumFeshbachRemainder_le_shifted_sq
     (s : ℕ → ℝ) (h0 : 0 < s 0) (q : Polynomial ℝ) (c : ℝ) :
     momentVacuumFeshbachRemainder s q ≤
       momentFunctional s ((q - C c) ^ 2) := by
-  have hpoly : q - C c = C (-c) + q := by ring
+  have hpoly : q - C c = C (-c) + q := by
+    rw [sub_eq_add_neg, map_neg, add_comm]
   rw [hpoly,
     momentFunctional_C_add_sq_eq_vacuumSquare_add_feshbach s h0.ne']
   exact le_add_of_nonneg_left (mul_nonneg h0.le (sq_nonneg _))

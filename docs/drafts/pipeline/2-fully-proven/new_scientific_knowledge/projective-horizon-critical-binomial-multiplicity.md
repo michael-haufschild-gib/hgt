@@ -196,12 +196,17 @@ formalizes:
 3. the exact low-coefficient survival theorem implied by `(6)`;
 4. exclusion of an all-zero truncated product on each boundary face;
 5. the Chow coefficient `(8)` as `criticalHorizonMultiplicity`;
-6. positivity and symmetry of the multiplicity.
+6. positivity and symmetry of the multiplicity;
+7. the exact Schubert-cell enumeration
+   `Fintype.card (criticalHorizonSchubertCell m n) = criticalHorizonMultiplicity m n`, where the
+   cell indices are the `m`-subsets of an `(m+n)`-element set.
 
 It imports the already formalized nonzero critical Jacobian minor. A targeted leaf build and
 scratch axiom audit pass with only `propext`, `Classical.choice`, and `Quot.sound`. No full build was
-run. The general multiprojective Bezout theorem and generic-etale theorem are used at paper level
-rather than reimplemented as a project-local algebraic-geometry library.
+run. The general multiprojective Bezout theorem, generic-etale theorem, and the topological
+identification of these indices with the actual Grassmannian Schubert cells are used at paper level
+rather than reimplemented as a project-local algebraic-geometry library. The card therefore stays
+in step 2.
 
 ## Novelty audit
 

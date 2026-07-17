@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ProjectiveHorizonPageTransition
 import Mathlib.Algebra.Polynomial.RingDivision
+import Mathlib.Data.Fintype.Powerset
 
 /-!
 # Critical projective-horizon multiplicity
@@ -121,6 +122,17 @@ theorem criticalHorizonMultiplicity_comm (m n : ℕ) :
     criticalHorizonMultiplicity m n = criticalHorizonMultiplicity n m := by
   simpa [criticalHorizonMultiplicity, Nat.add_comm] using
     (Nat.choose_symm_add (a := m) (b := n))
+
+/-- Schubert cells of `Gr(m,m+n)`, indexed combinatorially by the `m`-subsets of an
+`(m+n)`-element set. -/
+abbrev criticalHorizonSchubertCell (m n : ℕ) :=
+  {s : Finset (Fin (m + n)) // s.card = m}
+
+/-- The critical horizon multiplicity is exactly the number of Schubert-cell indices. -/
+theorem card_criticalHorizonSchubertCell (m n : ℕ) :
+    Fintype.card (criticalHorizonSchubertCell m n) =
+      criticalHorizonMultiplicity m n := by
+  simp [criticalHorizonMultiplicity]
 
 /-- Every genuinely two-sided critical horizon has at least six states.  Thus, once full symmetric
 monodromy is known, all such generic reconstruction problems lie beyond the radical-solvable

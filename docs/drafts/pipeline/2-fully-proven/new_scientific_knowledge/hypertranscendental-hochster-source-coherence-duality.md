@@ -264,11 +264,18 @@ constructs its two-coordinate Koszul complex at degrees one and two, and proves:
   degree-two Koszul boundary in the arbitrary-size family;
 - `isolatedDisconnectCycle_not_koszulBoundary`, that every such discrete complex carries the
   resulting nonzero first Koszul class.
+- `isolatedDisconnectCycleBasis`, the canonical base-to-component cycle for every non-base
+  isolated vertex;
+- `isolatedH0DetectorAt_disconnectCycleBasis`, the full Kronecker-dual detector family;
+- `isolatedH0DetectorAt_boundary`, that every component detector annihilates every degree-two
+  Koszul boundary;
+- `isolatedDisconnectCycleBasis_independent_mod_koszulBoundary`, that for `n+2` isolated vertices
+  the `n+1` canonical cycles are linearly independent modulo Koszul boundaries.
 
 This now formalizes the characteristic-free reduced-`H^0` Hochster class uniformly for every
-finite discrete complex with at least two vertices, rather than only for the two-vertex seed.  The
-general strand equivalence for arbitrary finite complexes remains open, so this card stays in
-stage 2.
+finite discrete complex with at least two vertices, including the full expected independent
+base-to-component family rather than only one class or the two-vertex seed.  The general strand
+equivalence for arbitrary finite complexes remains open, so this card stays in stage 2.
 
 ## Gates
 
@@ -282,6 +289,7 @@ stage 2.
 - [x] Lean-formalize a nontrivial unconditional Hochster class
 - [x] Lean-formalize the reduced-`H^0` class for every finite discrete complex with at least two
   vertices
+- [x] Lean-formalize the full independent reduced-`H^0` family for every finite discrete complex
 - [ ] Lean-formalize the general finite-complex bridge
 - [ ] independently audit localization and grading conventions
 - [ ] obtain specialist novelty and significance review

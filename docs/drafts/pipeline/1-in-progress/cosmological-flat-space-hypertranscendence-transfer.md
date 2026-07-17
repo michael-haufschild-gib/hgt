@@ -94,6 +94,22 @@ that scattering observable.  Possible routes are:
 
 None is currently proved.  Merely inserting `(1)` as a desired residue would be circular.
 
+## Companion operational de Sitter realization
+
+`../2-fully-proven/not_new_scientific_knowledge/de-sitter-ultrametric-detailed-balance-hypertranscendence.md`
+gives an exact, source-natural cosmological realization in a different observable class.  A
+stationary multilevel detector with the ultrametric Neumann-to-Dirichlet gap spectrum has a
+hypertranscendental trace of Bunch--Davies excitation/de-excitation ratios.  This closes the weak
+question "can an exact de Sitter response be HT?" but not the wavefunction problem on this card:
+the detector tower is prescribed as an apparatus, and the response is neither a primordial
+coefficient nor a gauge-invariant late-time in-in correlator.
+
+The companion theorem also proves that the induced equation relating Hubble scales (H) and (H/p)
+is nonrigid in the (H)-coordinate: its homogeneous part admits the differentially algebraic
+solution (Y(H)=H).  The de Sitter Boltzmann coordinate and its zero-boundary regularity are
+therefore essential, not cosmetic.  Any wavefunction realization proposed here must identify its
+own physical boundary category rather than infer HT from scale self-similarity alone.
+
 ## Observable and gauge attacks
 
 1. **Wavefunction versus in-in correlator.**  A wavefunction coefficient is not automatically an

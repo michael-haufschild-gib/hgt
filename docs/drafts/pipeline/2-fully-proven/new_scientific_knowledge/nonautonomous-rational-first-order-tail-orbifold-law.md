@@ -246,16 +246,31 @@ consequence.
 
 ## Lean status
 
+`FirstOrderRationalTailSymbol.lean` formalizes the differential-Laurent step that this card
+previously listed as missing.  For arbitrary rational first-order observables it constructs the
+injective vertical-transport map and proves:
+
+- `verticalRatFuncLaurentWeight_eq_of_transport`, invariance of the integer vertical weight;
+- `verticalRatFuncLaurentCoefficient_eq_zpow_of_transport`, the exact leading tensor law;
+- `verticalRatFuncLaurentWeight_eq_zeroPhase`, one common weight along an arbitrary phase chain;
+- `verticalRatFuncLaurentCoefficient_phaseChain`, the phasewise transported coefficient chain.
+
 `NonautonomousFirstOrderTailSymbol.lean` formalizes tensor evaluation and composition, fiberwise
 degree-times-multiplicity amplification, the exact logarithmic defect cutoff, eventual zero
 collapse, confinement of a nondividing terminal angle to the exceptional divisor, the resulting
-degree budget, and the divisibility/angle-quantization theorem.  The differential-Laurent symbol
-extraction and analytic orbifold uniformization remain paper-level rather than being introduced as
-axioms.
+degree budget, and the divisibility/angle-quantization theorem.  The cached
+`NonautonomousFirstOrderTailSymbolLaw.lean` additionally proves that every compatible tensor chain
+lies in every phase tail, and that a transcendental chain makes those tails nontrivial.
+
+The remaining formal gap is the analytic parabolic-orbifold uniformization and its identification
+of the complete tail with the finite-holonomy Maurer--Cartan field.  It is not introduced as an
+axiom.  No build was run for this audit because all three exact modules already have cached
+`.olean` files.
 
 ## Gates
 
 - [x] 0 -> 1: exact source-pure converse and tensor-symbol attack
 - [x] 1 -> 2: complete proof through integral holonomy and exact tail reconstruction
-- [ ] 2 -> 3: formalize Laurent-symbol extraction and parabolic-orbifold uniformization
+- [ ] 2 -> 3: Laurent-symbol extraction, tensor quantization, and phase-tail membership are
+      formalized; parabolic-orbifold uniformization and complete-tail identification remain
 - [ ] 3 -> 4: standalone manuscript and independent specialist audit

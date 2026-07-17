@@ -60,6 +60,38 @@ theorem thetaCuspMorseScale_strictMono_nat
   simp only [thetaCuspMorseScale]
   exact mul_lt_mul_of_pos_left hsquare Real.pi_pos
 
+private theorem bornWitten_scale_sub_algebra
+    {a b : ℝ} (ha : a - 3 / 2 ≠ 0) (hb : b - 3 / 2 ≠ 0) :
+    (a - 5 / 4 - a / (a - 3 / 2)) -
+        (b - 5 / 4 - b / (b - 3 / 2)) =
+      (a - b) *
+        (1 + (3 / 2 : ℝ) / ((a - 3 / 2) * (b - 3 / 2))) := by
+  have haExpand : a / (a - 3 / 2) =
+      1 + (3 / 2 : ℝ) * (a - 3 / 2)⁻¹ := by
+    rw [div_eq_mul_inv]
+    calc
+      a * (a - 3 / 2)⁻¹ = ((a - 3 / 2) + 3 / 2) * (a - 3 / 2)⁻¹ := by ring
+      _ = (a - 3 / 2) * (a - 3 / 2)⁻¹ +
+          (3 / 2 : ℝ) * (a - 3 / 2)⁻¹ := by ring
+      _ = 1 + (3 / 2 : ℝ) * (a - 3 / 2)⁻¹ := by rw [mul_inv_cancel₀ ha]
+  have hbExpand : b / (b - 3 / 2) =
+      1 + (3 / 2 : ℝ) * (b - 3 / 2)⁻¹ := by
+    rw [div_eq_mul_inv]
+    calc
+      b * (b - 3 / 2)⁻¹ = ((b - 3 / 2) + 3 / 2) * (b - 3 / 2)⁻¹ := by ring
+      _ = (b - 3 / 2) * (b - 3 / 2)⁻¹ +
+          (3 / 2 : ℝ) * (b - 3 / 2)⁻¹ := by ring
+      _ = 1 + (3 / 2 : ℝ) * (b - 3 / 2)⁻¹ := by rw [mul_inv_cancel₀ hb]
+  have hinv := inv_sub_inv ha hb
+  rw [haExpand, hbExpand]
+  calc
+    _ = (a - b) - (3 / 2 : ℝ) *
+        ((a - 3 / 2)⁻¹ - (b - 3 / 2)⁻¹) := by ring
+    _ = (a - b) - (3 / 2 : ℝ) *
+        (((b - 3 / 2) - (a - 3 / 2)) /
+          ((a - 3 / 2) * (b - 3 / 2))) := by rw [hinv]
+    _ = _ := by ring
+
 /-- Exact positive-factor formula behind index monotonicity of the Born--Witten
 superpotential. -/
 theorem thetaCuspBornWittenSuperpotential_sub_eq_scaleDifference_mul
@@ -71,14 +103,14 @@ theorem thetaCuspBornWittenSuperpotential_sub_eq_scaleDifference_mul
           (thetaCuspBornWittenWeight n x * thetaCuspBornWittenWeight m x)) := by
   have hwn := thetaCuspBornWittenWeight_pos hn hx
   have hwm := thetaCuspBornWittenWeight_pos hm hx
+  have hwn' : 0 < thetaCuspMorseScale n x - 3 / 2 := by
+    simpa only [← thetaCuspBornWittenWeight_eq] using hwn
+  have hwm' : 0 < thetaCuspMorseScale m x - 3 / 2 := by
+    simpa only [← thetaCuspBornWittenWeight_eq] using hwm
   rw [thetaCuspBornWittenSuperpotential, thetaCuspBornWittenSuperpotential,
     thetaCuspMorseSuperpotential, thetaCuspMorseSuperpotential,
     thetaCuspBornWittenWeight_eq, thetaCuspBornWittenWeight_eq]
-  field_simp [show thetaCuspMorseScale n x - 3 / 2 ≠ 0 by
-      simpa only [← thetaCuspBornWittenWeight_eq] using hwn.ne',
-    show thetaCuspMorseScale m x - 3 / 2 ≠ 0 by
-      simpa only [← thetaCuspBornWittenWeight_eq] using hwm.ne']
-  ring
+  exact bornWitten_scale_sub_algebra hwn'.ne' hwm'.ne'
 
 /-- The Born--Witten superpotential is monotone in the positive atom index. -/
 theorem thetaCuspBornWittenSuperpotential_mono_nat
@@ -345,6 +377,7 @@ theorem integrableOn_pow_mul_thetaCuspHigherSource (j : ℕ) :
   have hsub := hfull.sub hfirst
   apply hsub.congr
   filter_upwards [] with x
+  simp only [Pi.sub_apply]
   ring
 
 /-- Integral representation of the higher-atom raw moment, separated from the first atom. -/
@@ -397,14 +430,14 @@ theorem thetaCuspHigherFirst_rawEvenMoment_cross_le (k n : ℕ) :
   have hgmono : MonotoneOn g (Ioi 0) := by
     intro x hx y hy hxy
     exact pow_le_pow_left₀ hx.le hxy (2 * n)
-  have hmem : ∀ᶠ z : ℝ × ℝ ∂mu.prod mu,
+  have hmem : ∀ᵐ z : ℝ × ℝ ∂mu.prod mu,
       z ∈ (Ioi 0 ×ˢ Ioi 0) := by
-    apply (ae_prod_mem_iff_ae_ae_mem
+    apply (Measure.ae_prod_mem_iff_ae_ae_mem
       (measurableSet_Ioi.prod measurableSet_Ioi)).2
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with y hy
     exact ⟨hx, hy⟩
-  have hkernel : ∀ᶠ z : ℝ × ℝ ∂mu.prod mu,
+  have hkernel : ∀ᵐ z : ℝ × ℝ ∂mu.prod mu,
       0 ≤ (g z.2 - g z.1) *
         (h z.1 * f z.2 - h z.2 * f z.1) := by
     filter_upwards [hmem] with z hz
@@ -420,7 +453,9 @@ theorem thetaCuspHigherFirst_rawEvenMoment_cross_le (k n : ℕ) :
       · have hswap := thetaCuspHigherFirst_monotoneObservableKernel_nonneg
           hgmono hy hyx
         convert hswap using 1 <;> ring
-    have hweight : 0 ≤ z.1 ^ (2 * k) * z.2 ^ (2 * k) := by positivity
+    have hweight : 0 ≤ z.1 ^ (2 * k) * z.2 ^ (2 * k) :=
+      mul_nonneg ((even_two_mul k).pow_nonneg z.1)
+        ((even_two_mul k).pow_nonneg z.2)
     have hweighted := mul_nonneg hweight hbase
     simp only [g, h, f]
     convert hweighted using 1 <;> ring

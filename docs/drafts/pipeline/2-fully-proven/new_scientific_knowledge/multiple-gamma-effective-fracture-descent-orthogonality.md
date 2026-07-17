@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven / analytic parent needs independent audit
 - **Type:** THEOREM / SOURCE-EFFECTIVITY COLLAPSE / FOUNDATIONAL NO-GO AND POSITIVE LAW
 - **Scientific status:** `[PAPER PROOF COMPLETE] [ALGEBRAIC H0 CORE LEAN-FORMALIZED]`
-  `[NORMALIZED SIMPLEX BLOCK CONTRACTION LEAN-FORMALIZED]`
+  `[NORMALIZED SIMPLEX BLOCK CONTRACTION AND ARBITRARY COPRODUCT LEAN-FORMALIZED]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH RESULT]`
 - **Parents:**
   - `multiple-elliptic-gamma-transverse-constraint-depth.md`
@@ -96,9 +96,10 @@ at the elements `1+x_j=t_j` preserves the exact complex and yields `(4)` over `R
 
 The H0 argument, including `(5)`, `(6)`, pairwise effectivity, and uniqueness modulo the
 Stanley--Reisner ideal, is Lean-formalized without analytic assumptions.  The all-degree
-normalized contraction of every nonempty full-simplex monomial block is also formalized.  The
-remaining algebraic assembly is the explicit decomposition of the localized quotient complex
-into those monomial blocks.
+normalized contraction of every nonempty full-simplex monomial block and exactness of an arbitrary
+direct sum of such blocks are also formalized.  The remaining algebraic assembly is the explicit
+identification of the concrete facet quotient complex with this monomial-block coproduct and the
+localization step.
 
 ## Hypertranscendence persists inside exact descent `[PROVED FROM (1)]`
 
@@ -242,12 +243,16 @@ In `formal/GaloisForLFunctions/HTGeometry/SimplexAugmentedContraction.lean`:
 - `standardSimplexChainHomotopyEquivPoint`
 - `standardSimplexNormalizedHomotopyEquivPoint`
 - `standardSimplexNormalized_exactAt_succ`
+- `standardSimplexNormalizedFamily`
+- `standardSimplexNormalizedFamily_exactAt_succ`
+- `standardSimplexNormalizedCoproduct`
+- `standardSimplexNormalizedCoproduct_exactAt_succ`
 
 The normalized complex is indexed by the nondegenerate simplices, hence by the strictly increasing
 vertex packets occurring in `(4)`.  The homotopy equivalence contracts the whole complex to its
-augmentation point, and the final theorem states exactness in every positive degree.  The direct
-sum over monomial supports and its localization into the concrete facet quotient complex remain
-to be assembled in Lean.
+augmentation point.  The coproduct theorem then states exactness in every positive degree for an
+arbitrary family of such blocks.  Identification with the concrete monomial-support decomposition
+of the facet quotient complex and its localization remain to be assembled in Lean.
 
 ## Gates
 
@@ -256,6 +261,7 @@ to be assembled in Lean.
 - [x] pairwise-to-global effectivity proved
 - [x] uniqueness modulo the Stanley--Reisner ideal proved
 - [x] full augmented-complex exactness proved on paper
+- [x] arbitrary direct sum of normalized simplex blocks formalized
 - [x] exact HT transverse-persistence theorem combined with descent
 - [x] failure-of-descent definition of HT falsified
 - [x] enriched-incidence positive successor stated

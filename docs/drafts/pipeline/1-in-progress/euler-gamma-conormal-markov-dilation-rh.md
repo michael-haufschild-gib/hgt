@@ -114,6 +114,60 @@ defect vanishes.  Therefore the unresolved compatibility in `(6)` is no longer c
 positive source contraction: it is entirely the Gamma clock-displacement leg `(E_N-I)V_N` and its
 first-trace corona transgression.
 
+The finite Gamma clock-displacement leg now has an exact positive environment.  The pointed Ward
+law for the common bivariate remainder measure reconstructs every raw Euler logarithmic jet from
+two neighboring moments, and Lean identifies every factorially oriented mixed adjacent-depth
+Bianchi matrix with the literal raw-source Gram
+
+```text
+C_ij=sum_p q_p exp(-x lambda_p) lambda_p^(a_i+a_j).
+```
+
+Thus the Bianchi current is positive semidefinite simultaneously across arbitrary admissible
+depths and has an explicit source feature map.  The remaining part of `(6)` is no longer the sign
+or finite Stinespring realization of the Gamma displacement current.  It is the assembly of this
+environment with the source-Julia leg, including their cross terms, into a compatible unbounded
+colligation and its first-trace corona limit.
+
+The aperture limit of this current is now exact as well.  For every positive displacement, Lean
+proves absolute convergence, termwise equality with the logarithmically weighted von Mangoldt
+`LSeries` at `s=x+1`, entrywise convergence of the finite Bianchi Grams, and positivity of the
+resulting analytic Euler-moment Gram.  Hence there is no longer an open finite-to-infinite source
+reconstruction step.  The next obstruction is the coupled normalization/transport from that raw
+Gram to the critical trace realization.
+
+That obstruction is already visible before inverse-critical translation.  Lean now proves that
+the unnormalized cofinal odd moment block `[[m_1,m_3],[m_3,m_5]]` is positive semidefinite, while
+the literal factorial trace normalization
+`[[m_1,m_3/3!],[m_3/3!,m_5/5!]]` has eventually negative determinant in the far-right half-plane.
+Thus raw Bianchi positivity cannot be passed entrywise through the existing trace normalization.
+The cross-term correction demanded below must occur before factorial projection, or the critical
+realization must be replaced.
+
+The canonical pre-normalization correction is now exact.  On every real `x>1`, Lean resolves the
+completed odd moment as
+
+```text
+(-1)^k [factorial Euler moment
+        + positive half-argument Gamma/Bose moment
+        - positive two-atom polar moment].
+```
+
+At matrix level this is an exact Hankel incidence.  The Gamma block is positive definite, the
+polar block is a literal rank-two positive Gram, and the analytic completed Hankel matrix differs
+from the resolved real matrix only by an alternating diagonal sign congruence.  Hence the open
+problem is no longer to guess a Gamma/polar correction.  It is to extract a direct critical-center
+producer, or an invariant that remains coercive while the signed colligation changes chamber.
+The source does not exclude odd real crossings: the `P=X` compression is `c_2(x)`, and the proved
+four-crossing law gives a negative excursion between its positive central and far-right values.
+Therefore both generic fixed-index reasoning and source-specific sign continuation are ruled out.
+
+The formalized source-gauge observability trichotomy also rules out a smoothing shortcut: an
+injective compact reporter on an infinite-dimensional residual gauge has normalized
+approximate-null vectors, so it cannot provide the all-scale lower bound demanded by `(4)`.  The
+critical environment in `(7)` must therefore contain a genuinely transverse noncompact channel;
+mere compact completion of the positive Euler reporter cannot prove RH.
+
 ## Hard attacks
 
 1. **Generic positive-real falsifier.**  For `F(w)=1/(w-a)`, both kernels analogous to `(1)` are
@@ -133,6 +187,12 @@ first-trace corona transgression.
 4. **Corona-loss falsifier.**  Compatible finite contractions can lose their distinguished
    boundary vector when the scalarization is nonclosable.  The theorem must prove convergence in
    the source-rigged conormal topology, not only weak convergence in the prime Hilbert space.
+
+5. **Factorial-normalization no-go.**  The actual cofinal odd raw source block is positive
+   semidefinite, but its literal first factorial trace normalization is eventually indefinite.
+   Therefore a direct source-Gram-to-normalized-Hankel proof is false even far to the right.  Any
+   successful completion must retain compensating Gamma/polar/Mellin cross terms before applying
+   the factorial trace projection.
 
 ## Positive failure theorem
 
@@ -156,8 +216,17 @@ source, `Obs_CP=0` is the precise positive-orientation clause that would imply R
 - [x] local anomaly factored through the canonical Julia/Stinespring defect
 - [x] local factorization lifted to the full finite depth-one observation map `(5)`
 - [x] all-depth source-Julia leg proved exactly truncation-compatible
+- [x] Gamma clock-displacement Bianchi current integrated as a pointed mixed raw-source Gram
+- [x] cofinal Bianchi Gram identified with the analytic Euler moment germ
+- [x] compact/smoothing reporter excluded as an all-scale coercivity producer
+- [x] direct factorial normalization of the positive source Gram disproved
+- [x] canonical prime--Gamma--polar completed moment incidence formalized
+- [x] Gamma completion proved positive definite and polar pair realized as a positive rank-two Gram
+- [x] parity sign congruence proved positivity-neutral
+- [x] odd-crossing sign-transport route falsified by the `P=X` four-crossing law
 - [x] raw Stieltjes phase no-go proved in general and specialized to von Mangoldt frequencies
-- [ ] integrate the Gamma clock-displacement Bianchi correction in `(6)`
+- [ ] assemble the source-Julia and Bianchi feature legs, including cross terms, into `(6)`
 - [ ] identify the critical-Mellin/Laurent environment `(7)`
+- [ ] construct a direct critical-center source producer or excursion-stable invariant
 - [ ] prove conormal-corona complete-positive gluing
 - [ ] deduce `(4)` and RH

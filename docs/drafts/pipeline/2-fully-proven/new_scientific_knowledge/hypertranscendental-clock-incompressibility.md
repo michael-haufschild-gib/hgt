@@ -269,12 +269,29 @@ claim.
   proving that the analytic obstruction representations factor through the resulting boundary
   object.
 
+## Lean status
+
+`formal/GaloisForLFunctions/HTGeometry/DifferentialIndependentObservableNet.lean` formalizes both
+asymptotic comparison kernels:
+
+- `BoundedComparison.translationLength_eq` proves invariance of scalar clock speed under a fixed
+  two-sided additive overhead;
+- `finiteVector_coordinate_sub_le_of_prefix_bound` converts bounded fundamental-weight (prefix)
+  differences into bounded coordinate differences;
+- `tendsto_normalized_finiteVector_of_bounded_prefix` proves equation `(12) -> (13)`: two finite
+  vector sequences with uniformly bounded prefix differences have the same normalized limit.
+
+The free-transverse saturation input is formalized in
+`DifferentialIndependentObservableFactorization.lean`.  The Frechet/Ore instantiation and the
+valuation-lattice theorem supplying the prefix bounds `(12)` remain unformalized, so the card stays
+in stage 2.
+
 ## Gates
 
 - [x] 0 -> 1: exact theorem, proof mechanism, falsifier, and parent theories stated
 - [x] 1 -> 2: complete paper proof with explicit two-sided constants and vector refinement
-- [ ] 2 -> 3: `BoundedComparison.translationLength_eq` and free-transverse saturation are
-  formalized; the Frechet/Ore instantiation and valued-lattice vector comparison remain
+- [ ] 2 -> 3: scalar and finite-vector bounded-comparison kernels and free-transverse saturation
+  are formalized; the Frechet/Ore instantiation and valuation-lattice derivation of `(12)` remain
 - [ ] 3 -> 4: specialist novelty review and standalone exposition
 
 ## Log

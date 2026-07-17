@@ -346,3 +346,152 @@ proposition-valued special-function axiom or wrapper was added.
 - 2026-07-16 -- isolated conormal integrability from the Barnes comparison isomorphism; verified
   the same annihilator/critical-ideal equality in the independent multiple-elliptic-gamma
   hierarchy; formalized the cyclic critical-module comparison and the averaging no-gos.
+
+## 10. DA-relative source polarity after the bare-source no-go
+
+The pointed Gamma collision does not merely require more normalization.  The elementary DA control
+
+```text
+exp(z),  exp(2 pi i z) exp(z)
+```
+
+has the same unit-shift multiplier, the same pointing at `1`, and two distinct DA representatives.
+Therefore source-fixed inertia, horizon nonuniformity, and the formal/global shift-symbol fracture
+are not by themselves HT invariants.  They are source kinematics shared by DA and HT systems.
+
+The exact positive correction is now Lean-formalized.  If `D` is an invisible submodule consisting
+of DA gauges, then the source/reporter fingerprint descends to `K/D`, and
+
+```text
+fingerprint on K/D is injective
+  iff every joint-fixed common-reporter gauge belongs to D.             (13)
+```
+
+Moreover equality of fingerprints under the right side of `(13)` determines the HT/DA phase even
+when it does not determine the primitive.  See
+`../3-formalized/not_new_scientific_knowledge/da-relative-source-conservativity.md`.
+
+This reverses the reconstruction arrow.  A bare source cannot reconstruct its analytic germ, even
+inside the DA stratum.  But the existing Barnes and multiple-elliptic-gamma results show that the
+pointed cyclic DA-relative module can reconstruct the finite source potential up to local right
+equivalence when its annihilator is conormally integrable.
+
+> **[CONJECTURE -- DA-RELATIVE SOURCE POLARITY / FULL-FAITHFUL CONORMAL IMAGE]** There is a natural
+> category of minimal self-dual finitely sourced analytic constraint systems and a category of
+> pointed cyclic DA-relative HT modules with oriented conormal lifts such that the assignment
+>
+> ```text
+> source system  |->  (R q, q, derived conormal lift),   q=[f] modulo DA,   (14)
+> ```
+>
+> is fully faithful up to source contact/Morita equivalence on its conormally integrable essential
+> image.  It need not and cannot recover the analytic representative `f`.  It recovers the source
+> law, its labelled face geometry, and the HT superselection class.  Analytic, continuation,
+> spectral, positivity, monodromy, and integral obstruction theories are conservative realization
+> functors of the oriented derived conormal object only after passing through `(14)`.
+
+This is stronger and less circular than a source-effective normalization stack.  The source law is
+not asked to choose a point it has forgotten.  Instead, the nonzero class modulo DA is the HT phase,
+its annihilator is intrinsic, and conormal integrability asks whether that annihilator is the
+cotangent shadow of an independently given source law.
+
+The conjecture makes the common-obstruction hypothesis precise:
+
+```text
+exact source inertia         = failure of faithfulness before the DA quotient;
+HT-changing invisible gauge = residual inertia after the DA quotient;
+strict/nonclosed production = degree-zero failure of a realization of the quotient module;
+continuation and monodromy  = localization and holonomy of its conormal lift;
+positivity                  = orientation of its self-dual realization;
+noncanonical boundaries     = noncontractible fibres of conormal realization, not of the bare
+                              source solution torsor.                         (15)
+```
+
+### Novelty and anti-theatre gate
+
+The quotient criterion `(13)` is parent algebra.  Parameterized difference Galois theory is the
+parent for DA/HT solution classification, and Epure--Schulze already reconstruct source potentials
+from monomial extended Jacobian ideals in the applicable singularity class.  Neither ingredient is
+claimed new.
+
+Targeted primary-source searches located those parents and no theorem identifying a natural
+DA-relative HT cyclic module with a source-reconstructing oriented derived conormal object, much
+less a fully faithful functor with conservative spectral/positive/monodromy realizations.  This is
+only preliminary absence evidence.
+
+The candidate-new claim is exactly full faithfulness and conservative realization in `(14)`, proved
+on a natural analytic class beyond the two current normal-crossing hierarchies.  Merely quotienting
+by DA, writing `R/Ann(q)`, or attaching a Koszul complex fails the novelty gate.
+
+### Falsifiers and next attack
+
+1. Kill full faithfulness if two inequivalent minimal source laws have isomorphic pointed oriented
+   conormal HT modules.
+2. Kill conservativity if two natural analytic realizations of one conormal object disagree on the
+   DA-relative class or its source-face restrictions.
+3. Kill HT specificity if the proposed derived conormal invariant is nonzero on the DA exponential
+   control after quotienting by DA.
+4. The first positive attack is a theorem, not another definition: prove that the triptic
+   orbit-residue module together with its two boundary realization maps reconstructs the labelled
+   rank-three source face and its polarization, then compare that reconstruction with the
+   normal-crossing critical module.
+5. The second attack is nonperiodic: repeat the reconstruction for a Barnes hierarchy in a way that
+   cannot be reduced to Pontryagin or lattice duality.
+
+## 11. Attack result: unmarked full faithfulness is false
+
+Section 10's proposed full faithfulness of the pointed oriented conormal module is **superseded**.
+The attack found a structural counterexample before any RH specialization:
+
+1. equal-rank Barnes multiple-sine and multiple-elliptic-gamma systems can have the same pointed
+   normal-crossing critical module while having different analytic source realizations;
+2. the full logarithmic characteristic arrangement remains invariant under deck translation and
+   reflection;
+3. a triptic common orbit-residue divisor on `C/(Z+Z tau+Z sigma)` retains the total period subgroup
+   but not its two labelled rank-two face lattices.
+
+Thus an unmarked conormal object can be fibrewise complete and still fail to be horizontally
+conservative over source-frame moduli.  Adding its full derived local topology does not repair data
+already removed by coarsening.
+
+The maximal positive replacement is exact.  Retain the typed pre-pushforward boundary markers.  For
+`D in A[G/H]`, define
+
+```text
+Per_H(D)=pi_H^(-1)(Stab(D)).
+```
+
+The Lean-formalized theorem proves
+
+```text
+Per_H(D)=H iff Stab(D)=0;
+D!=0 implies Stab(D) is finite;
+a nonzero atom has Stab(D)=0.
+```
+
+Two typed aperiodic markers recover the two source faces, their intersection, and their join.  Their
+common coarsening recovers only the join.  Even this does not recover orientation because
+`Zq=Z(-q)`.
+
+The attempted promotion of this positive residue to a new **stabilizer-enriched realization
+stack** has now been retired.  That architecture is already present in the fracture-hypercube and
+capacity-descent Postnikov program; FHRZ already supply the oriented triptic gerbe; and the Gamma
+collision forbids a source-canonical section whenever the normalized source gauge is nontrivial.
+The exact marker theorem survives, but the stack terminology adds no new science.  See
+`../5-failed/hypertranscendental-stabilizer-enriched-realization-stack.md`.
+
+The first positive attack has now succeeded at source-face level for the standard triptic system.
+Each theta logarithmic boundary has one residue-one pole, so both typed markers are atoms.  Their
+ambient stabilizers recover the two elliptic face lattices exactly; rational independence makes
+their intersection the common integer line and their join the full rank-three period subgroup.  The
+common pushed-forward atom still retains only the join, and sign orientation still lies outside the
+subgroup invariant.
+
+The gerbe comparison has also been sharpened by a second no-go.  The ordinary FHRZ
+pseudodivisor is only the degree-zero residue shadow of the DA-complete triptic marker.  Its kernel
+contains the entire differential prolongation ideal `delta C[delta][G]`.  The strong positive
+successor is exact: every finite principal-part depth loses an explicit nonzero HT class, while the
+cofinal differential marker is complete modulo DA.  The live research target is now the
+cross-family **differential pseudodivisor descent principle** in
+`hypertranscendental-differential-pseudodivisor-prolongation.md`, with Gamma and Barnes tests and a
+comparison between independently constructed receivers.

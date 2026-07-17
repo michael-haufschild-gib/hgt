@@ -31,6 +31,99 @@ def HasApproximateUnitKernel
   ∃ u : ℕ → E, (∀ n, ‖u n‖ = 1) ∧
     Tendsto (fun n ↦ T (u n)) atTop (nhds 0)
 
+/-! ## Reporter graphs as exact relative-position objects -/
+
+/-- The horizontal lattice and a reporter graph meet trivially exactly when the reporter is
+injective.  Thus exact gauge blindness is literally a lattice-intersection defect. -/
+theorem horizontal_inf_graph_eq_bot_iff
+    {R E F : Type*} [Ring R]
+    [AddCommGroup E] [Module R E]
+    [AddCommGroup F] [Module R F]
+    (T : E →ₗ[R] F) :
+    Submodule.fst R E F ⊓ T.graph = ⊥ ↔ Function.Injective T := by
+  constructor
+  · intro hintersect x y hxy
+    have hmem : (x - y, 0) ∈ Submodule.fst R E F ⊓ T.graph := by
+      constructor
+      · simp [Submodule.fst]
+      · change (0 : F) = T (x - y)
+        simp [hxy]
+    have hzero : (x - y, 0) = 0 := by
+      rw [hintersect] at hmem
+      simpa using hmem
+    exact sub_eq_zero.mp (congrArg Prod.fst hzero)
+  · intro hinjective
+    rw [eq_bot_iff]
+    rintro ⟨x, y⟩ ⟨hhor, hgraph⟩
+    have hy : y = 0 := by simpa [Submodule.fst] using hhor
+    have hTx : T x = 0 := by
+      change y = T x at hgraph
+      exact hgraph.symm.trans hy
+    have hx : x = 0 := hinjective (by simpa using hTx)
+    simp [hx, hy]
+
+/-- The sum of the horizontal lattice and a reporter graph is exactly the ambient source factor
+times the reporter range. -/
+theorem horizontal_sup_graph_eq_top_prod_range
+    {R E F : Type*} [Ring R]
+    [AddCommGroup E] [Module R E]
+    [AddCommGroup F] [Module R F]
+    (T : E →ₗ[R] F) :
+    Submodule.fst R E F ⊔ T.graph =
+      (⊤ : Submodule R E).prod (LinearMap.range T) := by
+  ext p
+  constructor
+  · intro hp
+    rcases Submodule.mem_sup.mp hp with ⟨a, ha, b, hb, hab⟩
+    have ha2 : a.2 = 0 := by simpa [Submodule.fst] using ha
+    have hb2 : b.2 = T b.1 := by simpa [LinearMap.mem_graph_iff] using hb
+    constructor
+    · simp
+    · refine ⟨b.1, ?_⟩
+      calc
+        T b.1 = b.2 := hb2.symm
+        _ = a.2 + b.2 := by simp [ha2]
+        _ = p.2 := congrArg Prod.snd hab
+  · rintro ⟨-, ⟨y, hy⟩⟩
+    apply Submodule.mem_sup.mpr
+    refine ⟨(p.1 - y, 0), ?_, (y, T y), ?_, ?_⟩
+    · simp [Submodule.fst]
+    · simp [LinearMap.mem_graph_iff]
+    · apply Prod.ext
+      · simp
+      · simpa using hy
+
+/-- Algebraic transversality of the horizontal lattice and reporter graph is exactly reporter
+surjectivity. -/
+theorem horizontal_sup_graph_eq_top_iff
+    {R E F : Type*} [Ring R]
+    [AddCommGroup E] [Module R E]
+    [AddCommGroup F] [Module R F]
+    (T : E →ₗ[R] F) :
+    Submodule.fst R E F ⊔ T.graph = ⊤ ↔ Function.Surjective T := by
+  rw [horizontal_sup_graph_eq_top_prod_range]
+  rw [Submodule.prod_eq_top_iff]
+  simp [LinearMap.range_eq_top]
+
+/-- The horizontal/graph lattice sum is closed exactly when the reporter range is closed.  Hence
+approximate gauge blindness is literally the non-strict relative position of the same pair whose
+intersection detects exact blindness. -/
+theorem isClosed_horizontal_sup_graph_iff_isClosed_range
+    {R E F : Type*} [Ring R]
+    [AddCommGroup E] [Module R E]
+    [AddCommGroup F] [Module R F]
+    [TopologicalSpace E] [TopologicalSpace F]
+    (T : E →ₗ[R] F) :
+    IsClosed ((Submodule.fst R E F ⊔ T.graph : Submodule R (E × F)) : Set (E × F)) ↔
+      IsClosed (Set.range T) := by
+  rw [horizontal_sup_graph_eq_top_prod_range]
+  change IsClosed ((Set.univ : Set E) ×ˢ (Set.range T)) ↔ IsClosed (Set.range T)
+  constructor
+  · intro h
+    have hpre := h.preimage (Continuous.prodMk_right (0 : E))
+    simpa using hpre
+  · exact isClosed_univ.prod
+
 /-- For an injective operator between complex Banach spaces, normalized approximate invisible
 directions exist exactly when the range is not closed. -/
 theorem hasApproximateUnitKernel_iff_not_isClosed_range

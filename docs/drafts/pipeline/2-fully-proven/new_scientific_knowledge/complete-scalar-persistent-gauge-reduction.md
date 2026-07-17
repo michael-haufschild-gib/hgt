@@ -299,14 +299,25 @@ schwarzian_fixed_of_projective_semiconjugacy
 
 The newly touched file
 `formal/GaloisForLFunctions/HTGeometry/StableCoreFunctoriality.lean` verifies directly from the
-existing cache.  Differential Luroth, the free-field projective automorphism classification, and
-the Picard--Vessiot fixed-field equalities remain paper-proved parents not currently available in
-the local Lean theorem surface.  No placeholder axiom is introduced.
+existing cache.  The positive charged branch now also uses
+`formal/GaloisForLFunctions/HTGeometry/ScalarLogCurrentReconstruction.lean`, which proves that the
+logarithmic current is hypertranscendental, that the complete scalar differential field is the
+ordinary one-amplitude extension of its current field, and that every positive power has the same
+current field.  The charged branch also reuses
+`formal/GaloisForLFunctions/HTGeometry/RatFuncScaleFixedField.lean`, which constructs the faithful
+scalar action on `K(X)` and proves its exact finite-order fixed field `K(X^N)` and infinite-order
+fixed field `K`.  Differential Luroth, the free-field projective automorphism classification, and
+the transport identifying the charged differential torsor with this rational coordinate remain
+paper-proved parents not currently available in the local Lean theorem surface.  No placeholder
+axiom is introduced.
 
 ## Gates
 
 - [x] 0 -> 1 in-progress: exhaustive projective conjugacy split and fixed-field targets stated
 - [x] 1 -> 2 fully-proven: complete proof of all four cases and PV torsor structures
+- [x] charged multiplicative branch current hypertranscendence and one-amplitude reconstruction
+  formalized
+- [x] ordinary finite- and infinite-holonomy scalar fixed fields formalized
 - [ ] 2 -> 3 formalized: formalize differential Luroth/order and generic PV fixed fields
 - [ ] 3 -> 4 publication-ready: specialist external novelty audit and standalone scalar paper
 
@@ -323,3 +334,5 @@ the local Lean theorem surface.  No placeholder axiom is introduced.
 - 2026-07-15 -- completed the scalar fixed-boundary and algebraic-gauge classification, ran the
   preliminary external-literature novelty gate, and formalized all branch-level fixed-observable
   kernels available without importing missing differential-Luroth/PV infrastructure.
+- 2026-07-17 -- formalized the complete free differential-field reconstruction of the charged
+  multiplicative branch and its positive-power current covers.

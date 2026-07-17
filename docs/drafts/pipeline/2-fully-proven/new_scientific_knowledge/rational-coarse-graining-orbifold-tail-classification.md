@@ -287,8 +287,12 @@ differential endomorphism, the fixed-Schwarzian consequence of a projective semi
 fact that the Schwarzian of an HT scalar cannot be a base constant.
 
 `OrbifoldTailReconstruction.lean` formalizes first-jet transcendence and the Möbius rigidity of two
-orbifold-current monomials.  The Casale classification and the dense-deck fixed-field computation
-remain paper-level inputs, so the complete classification remains at stage 2.
+orbifold-current monomials.  `RatFuncScaleFixedField.lean` now formalizes the cyclic scalar
+invariant calculation used in equation `(9)`: finite scalar holonomy on one rational coordinate
+has fixed field exactly `K(X^k)`, and infinite scalar holonomy has fixed field exactly `K`.
+The Casale classification, the Zariski-dense translation-deck passage in `(8)`, and transport from
+the rational velocity coordinate to the full differential jet field remain paper-level inputs, so
+the complete classification remains at stage 2.
 
 ## Gates
 

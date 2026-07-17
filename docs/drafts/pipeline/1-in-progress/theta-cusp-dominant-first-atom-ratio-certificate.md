@@ -461,9 +461,9 @@ It is enough to prove
 These conditions are strictly weaker than `(19)` because `H/W<8/2997` and
 `H<(8/2997)*a_0`.
 The paper proof, including the all-order Ward--Laplace Taylor constraints, is
-`../2-fully-proven/not_new_scientific_knowledge/theta-cusp-half-density-ward-laplace-budget-transfer.md`.
+`../3-formalized/not_new_scientific_knowledge/theta-cusp-half-density-ward-laplace-budget-transfer.md`.
 The branch-activation proof is
-`../2-fully-proven/not_new_scientific_knowledge/theta-cusp-half-density-damped-tail-domination.md`.
+`../3-formalized/not_new_scientific_knowledge/theta-cusp-half-density-damped-tail-domination.md`.
 The truth of the two weakened inequalities in `(20)` has not been assessed numerically under the
 active no-computation restriction.
 

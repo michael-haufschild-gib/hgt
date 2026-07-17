@@ -1,10 +1,11 @@
-# Hypertranscendental source constraints may be Gale dual to their physical period geometry
+# Hypertranscendental translation sources carry coupled Gale and period-closure duals
 
 - **ID:** `hypertranscendental-gale-kolchin-duality`
 - **Stage:** 1-in-progress
-- **Type:** FOUNDATIONAL CONJECTURE / MULTIPLE-GAMMA EXACT SEED / ORIENTED MATROID DUALITY
+- **Type:** FOUNDATIONAL CONJECTURE / MULTIPLE-GAMMA EXACT SEED / GALE--PONTRYAGIN DUALITY
 - **Scientific status:** `[CONJECTURE] [MULTIPLE-GAMMA UNORIENTED IDENTIFICATION PAPER-PROVED]`
-  `[LEAN COMBINATORIAL CORE IN PROGRESS] [NOVELTY PRELIMINARY] [NOT AN RH RESULT]`
+  `[LEAN COMBINATORIAL CORE VERIFIED] [ORIENTED GALE/PERIOD-CLOSURE FRACTURE LEAN-PROVED]`
+  `[NOVELTY PRELIMINARY] [NOT AN RH RESULT]`
 - **Parents:**
   - `../2-fully-proven/new_scientific_knowledge/multiple-gamma-period-excess-closure-phase-transition.md`
   - `../2-fully-proven/new_scientific_knowledge/multiple-gamma-effective-fracture-descent-orthogonality.md`
@@ -89,7 +90,7 @@ is parent matroid theory.  By itself it sees neither the analytic function nor s
 Moreover, the existing orientation-surgery theorem proves that the unframed derived
 Stanley--Reisner object can remain unchanged while source-labelled orientation reverses.
 
-The positive survivor is the oriented Gale transform.  The chirotope of `(1)` records the signs of
+The first positive survivor is the oriented Gale transform.  The chirotope of `(1)` records the signs of
 the real period determinants.  Its dual and contraction orient `(4)` while the ordinary ideal
 `I_r` forgets those signs.  Therefore the minimal proposed enrichment is
 
@@ -99,6 +100,51 @@ the real period determinants.  Its dual and contraction orient `(4)` while the o
 
 If `(8)` still changes orientation under an equivalence declared conservative, the proposal is
 false and the positive successor is the exact missing lift torsor.
+
+## Oriented Gale no-go and period-closure successor `[PROVED; LEAN]`
+
+Orientation is still insufficient.  Consider the labelled triples
+
+```text
+P_lat=(1,i,1+i),             P_irr=(1,i,sqrt(2)+i).        (8a)
+```
+
+Every labelled pair has the same real determinant sign in the two triples, so their rank-two
+chirotopes are identical.  But their integral period groups have opposite topology:
+
+```text
+L_lat=Z-span(P_lat) is discrete,
+L_irr=Z-span(P_irr) is nondiscrete.                        (8b)
+```
+
+The first assertion follows from containment in the standard lattice.  For the second,
+irrationality of `sqrt(2)` makes the three periods `Q`-linearly independent, and integral rank
+three cannot be discrete in the real two-plane.  The exact period-source classification then
+gives
+
+```text
+period incidence for L_lat has a continuous left inverse,
+period incidence for L_irr has no continuous left inverse;                 (8c)
+
+L_lat admits a nonconstant global meromorphic fixed gauge,
+every global meromorphic L_irr-fixed gauge is constant.                    (8d)
+```
+
+Thus no invariant factoring only through the oriented real matroid can classify the global
+gauge/effectivity phase.  This is not repaired by a chirotope or determinant line.
+
+The maximal positive successor is a second, topological dual attached to the same source.  Besides
+the contracted oriented Gale dual controlling finite DA support, retain the closure of the
+integral period group and its character object
+
+```text
+P_top(L)=dual_Pontryagin(R^d / closure(L)).                 (8e)
+```
+
+Equivalently one may retain the annihilating characters of `closure(L)`.  Unlike the real
+chirotope, `(8e)` sees the discrete/nondiscrete wall and therefore the fixed-gauge/strictness
+phase.  Ordinary arithmetic matroid language is relevant but not sufficient unless it is extended
+to irrational period configurations and their topological closure.
 
 ## Foundational conjecture
 
@@ -119,15 +165,33 @@ and upgrades the equality from a count to a source-natural duality.  The conject
 by one natural HT translation hierarchy whose exact annihilator matroid is not the stated
 contracted Gale dual.
 
+> **[CONJECTURE — GALE--PONTRYAGIN--KOLCHIN CONSTRAINT LAW]** For every regular source-minimal
+> translation HT hierarchy, the finite differential-annihilator geometry is controlled by the
+> contracted oriented Gale dual of its physical period configuration, while normalized fixed
+> gauges and vertical strictness are controlled by the Pontryagin character object `(8e)`.  These
+> are the algebraic and topological edge realizations of one source-natural comparison object.
+> Its extension/transgression class, together with the finite boundary self-symbol, is invariant
+> under source presentation and is the translation sector of the polarized strict-colligation
+> field.
+
+This is stronger than retaining two unrelated invariants.  It predicts a canonical comparison or
+connecting morphism whose kernel is the normalized common gauge, whose non-strict image is the
+period-attainment defect, and whose finite support complex is the Gale--Kolchin annihilator
+complex.  Failure to construct that morphism means the conjecture has produced only a catalogue,
+not a unified field.
+
 ## Relation to the unified field
 
 The strict boundary-colligation field has so far required horizontal constraint data, vertical
-period/strictness data, and polarization as separate inputs.  Gale--Kolchin duality would derive
-all three from one oriented source configuration:
+period/strictness data, and polarization as separate inputs.  The fracture `(8a)--(8d)` proves
+that one oriented matroid cannot derive all three.  The corrected source object has two coupled
+duals:
 
 - the contracted Gale matroid gives the horizontal DA constraint complex;
-- its Gale rank gives the vertical period-excess/strictness order;
 - its chirotope and determinant line give the missing orientation/polarization;
+- the period-closure character object gives the global gauge and effectivity phase;
+- the comparison class between the two duals gives the proposed horizontal-to-vertical
+  transgression;
 - the colligation self-symbol retains flat boundary dynamics not determined by curvature.
 
 This does not reconstruct a preferred HT germ.  The bare-source common-kernel theorem still says
@@ -150,38 +214,80 @@ chirotopes.  Relevant parents include D'Adderio--Moci on arithmetic matroids and
 (`https://arxiv.org/abs/1105.3220`) and standard linear Gale duality as the dual exact sequence of a
 vector configuration.
 
-Targeted searches found those parent theories but no multiple-Gamma, elliptic-Gamma,
-hypertranscendence, or exact difference-annihilator theorem formulated as `(4)--(5)`.  This is a
-preliminary absence result, not a priority claim.
+Three stronger parent collisions rule out claiming the double-dual vocabulary itself as new:
+
+- Panov's framework for exponential actions treats arbitrary real vector configurations, Gale
+  duality, rationality as discreteness of the integral span, properness, and Hausdorff quotient
+  geometry in one theory (`https://arxiv.org/abs/2411.03366`);
+- lattice Gale duality and arithmetic matroids already retain integral quotient information for
+  rational/integral configurations; see Bach--Beck--Rehberg
+  (`https://arxiv.org/abs/2409.15227`);
+- toric difference varieties already encode binomial difference ideals by `Z[x]`-lattices and
+  difference-torus actions (`https://arxiv.org/abs/1604.01958`), while finitary-matroid dynamics
+  already recover Kolchin-polynomial growth (`https://arxiv.org/abs/2208.01560`).
+
+Therefore `(8a)--(8e)`, the phrase “Gale--Pontryagin”, and a generic comparison between rationality
+and quotient properness are parent mathematics or elementary consequences, not new HT theory.
+
+Targeted searches found those parent theories but no multiple-Gamma, elliptic-Gamma, or
+hypertranscendence theorem identifying an exact DA annihilator complex with the contracted Gale
+dual as in `(4)--(5)`, and no theorem connecting that complex to the meromorphic fixed-gauge and
+nonclosed-range object of the same source.  This is a preliminary absence result, not a priority
+claim.
 
 The exact unoriented theorem is a significant structural explanation of the already proved
-depth/excess equality, but not Fields-scale alone.  The possible Fields-scale residue is the
-oriented, source-natural theorem in a second nonuniform HT family, plus a proof that its determinant
-line transfers a genuinely analytic effectivity or polarization result.  If the program produces
-only `(7)` with special-function labels, it fails the anti-theatre gate.
+depth/excess equality, but not Fields-scale alone.  The exact fracture `(8a)--(8d)` prevents the
+program from incorrectly promoting orientation into a complete invariant.  The possible
+Fields-scale residue is the source-natural comparison theorem between Gale--Kolchin and
+period-closure/Pontryagin duality in a second nonuniform HT family, plus proof that its connecting
+class transfers a genuinely analytic strictness or polarization result.  If the program merely
+lists the two classical duals beside special-function examples, reproduces Panov's properness
+criterion, or relabels a toric difference lattice, it fails the anti-theatre gate.
 
-## Lean target
+## Lean theorem surface `[VERIFIED]`
 
-Formalize unconditionally:
+`GaloisForLFunctions/HTGeometry/UniformGaleContraction.lean` proves unconditionally:
 
-1. a finite uniform matroid `U_(k,n)` by its cardinality independence predicate;
-2. `(U_(k,n))^*=U_(n-k,n)` for `k<=n`;
-3. `(U_(2,r+2))^*/{e}=U_(r-1,r+1)` up to the canonical relabelling of the complement;
-4. the independent sets of the target are exactly the subsets of cardinality at most `r-1`;
-5. its minimal dependent sets have cardinality `r`, matching the nonfaces generating `I_r`.
+1. `uniformMatroidOn_indep_iff`: finite uniform independence is the cardinality bound;
+2. `uniformMatroidOn_dual`: `(U_(k,E))^*=U_(|E|-k,E)` for `k<=|E|`;
+3. `uniformMatroidOn_contractElem`: contracting a retained element lowers positive uniform rank by
+   one;
+4. `uniformRankTwo_dual_contract_distinguished`:
+   `(U_(2,r+2))^*/{0}=U_(r-1,E\\{0})` for `r>=1`;
+5. `uniformRankTwo_dual_contract_indep_iff` and
+   `uniformRankTwo_dual_contract_dep_iff`: target faces have size at most `r-1`, and its dependent
+   packets have size at least `r`.
 
 The analytic equality `(5)` remains the already proved paper input and is not to be inserted as a
 Lean axiom.
+
+`GaloisForLFunctions/HTGeometry/GalePeriodClosureFracture.lean` additionally proves
+unconditionally:
+
+1. `periodChirotope_lattice_eq_irrational`: the two triples `(8a)` have identical labelled
+   chirotopes;
+2. `irrationalPeriodTriple_linearIndependent`: the irrational triple has rational rank three;
+3. `latticePeriodGroup_discrete` and `irrationalPeriodGroup_not_discrete`: their integral spans
+   lie on opposite sides of the topology wall;
+4. `same_chirotope_opposite_period_effectivity`: identical chirotopes have opposite continuous
+   left-inverse phases.
+
+Together with `exists_nonconstant_fixed_iff_discretePeriodSource`, item 4 also yields the opposite
+fixed-gauge phases `(8d)` without any added hypothesis.
 
 ## Gates
 
 - [x] Gale-duality explanation of the multiple-Gamma depth/excess equality identified
 - [x] exact unoriented paper proof written
 - [x] orientation-surgery no-go retained
+- [x] oriented-Gale-only effectivity classification falsified by an explicit Lean witness
+- [x] period-closure/Pontryagin character object identified as the positive successor
 - [x] parent Gale/matroid/Stanley--Reisner theories identified
 - [x] preliminary external novelty search completed
-- [ ] Lean-formalize the uniform dual-contraction theorem
+- [x] Lean-formalize the uniform dual-contraction theorem
+- [x] Lean-formalize identical-chirotope/opposite-period-effectivity fracture
 - [ ] construct the oriented contracted chirotope for the actual period configuration
+- [ ] construct the source-natural Gale/Pontryagin comparison morphism
 - [ ] prove splitting/source-presentation invariance
 - [ ] test one nonuniform natural HT source
 - [ ] transfer one analytic theorem through the duality

@@ -249,16 +249,46 @@ differential memory even at the critical Gaussian scale.
 
 ## Lean status
 
-No Lean formalization is claimed. Full formalization requires Mahler normalization, generic ADE
-coefficient extraction, Gaussian degree/source-shift confinement, a uniform grouped-weight bound,
-summability of polynomially weighted lattice Gaussian tails, torsion-language recurrence, and
-finite-character Fourier inversion. The card cannot enter stage 3 until the entire unconditional
-theorem is formalized.
+The finite torsion-language layer is formalized in
+`HTGeometry/TorsionLanguageUniversalPhase.lean`: `TorsionLanguageUniversal` states cofinal exact
+occurrence of every finite torsion word, and
+`TorsionLanguageUniversal.exists_strictMono_occurrences` extracts a cofinal strictly increasing
+sequence of exact occurrences. The finite-character layer is formalized in
+`HTGeometry/TorsionLanguageFaceExactification.lean`:
+`face_weights_eq_zero_of_torsionLanguageUniversal` turns asymptotic cancellation of a finite ADE
+face into exact vanishing of every limiting weight, with finite Fourier inversion supplied by
+`face_fin_weights_eq_zero`.
+
+The ambient lattice-Gaussian summability input is formalized in
+`HTGeometry/FinitePiProductSummability.lean`. The theorem
+`summable_fintype_pi_polynomialGaussian` proves summability on every finite integer lattice for
+arbitrary positive coordinate decay rates and coordinatewise factors
+`(1+|r_i|)^(A_i)`; its one-dimensional natural and integer forms are
+`summable_pow_mul_exp_neg_nat_sq`, `summable_one_add_pow_mul_exp_neg_nat_sq`, and
+`summable_one_add_natAbs_pow_mul_exp_neg_int_sq`. The finite boxes `[-R,R]^D` are formalized by
+`integerLatticeBox`; `integerLatticeBox_tendsto_atTop` proves that they exhaust the lattice, and
+`tendsto_polynomialGaussian_tsum_outside_box_zero` proves that the corresponding ambient
+polynomial-Gaussian tail tends to zero.
+
+The remaining unconditional formalization is the Gaussian analytic chain before that theorem:
+Mahler normalization, generic ADE coefficient extraction, Gaussian degree/source-shift face
+extraction, the uniform grouped-weight bound, the comparison from the constrained max-weight in
+(10) to the coordinatewise ambient majorant, and the passage from the full Gaussian face to the
+finite asymptotically cancelling face accepted by
+`face_weights_eq_zero_of_torsionLanguageUniversal`. The phase-existence input is now complete:
+`universalTorsionPhase_torsionLanguageUniversal` proves that the concatenated enumeration of all
+finite root-of-unity words is torsion-language-universal, and
+`exists_torsionLanguageUniversal` supplies the existential form. The card cannot enter stage 3
+until the remaining Gaussian analytic theorem surface is formalized.
 
 ## Gates
 
 - [x] 0 -> 1: exact Gaussian face and finite-window attack stated.
 - [x] 1 -> 2: complete unconditional paper proof written and boundary-attacked.
+- [x] Torsion-language recurrence and finite-character exactification formalized in Lean.
+- [x] Torsion-language-universal phase existence formalized in Lean.
+- [x] Finite-dimensional polynomially weighted integer-lattice Gaussian summability formalized.
+- [x] Finite-box polynomial-Gaussian tail convergence formalized in Lean.
 - [ ] Parent-theory and exact literature novelty audit.
 - [ ] Independent proof audit.
 - [ ] Whole theorem formalized unconditionally in Lean.

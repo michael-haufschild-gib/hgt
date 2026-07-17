@@ -65,18 +65,22 @@ continuation from the actual von Mangoldt weights and Gamma clock.
 
 ## RH boundary
 
-Componentwise jet positivity is not yet Hankel or Gram positivity, and the unrenormalized unit
-source is not a vector of the cofinal Euler Hilbert carrier.  The next proof-bearing identity must
-perform the causal/polar subtraction on these same finite jets and show that the reduced packet has
-a positive Gram factorization whose entries converge to the inverse-tilted normalized
-prime--Gamma moments.
+The child theorem
+`von-mangoldt-gamma-bivariate-hausdorff-moment.md` now upgrades componentwise jet positivity to a
+canonical source-side Hausdorff moment representation and arbitrary mixed bivariate Gram
+positivity across Gamma depths.  The unrenormalized unit source is still not the completed cofinal
+Euler Hilbert carrier.  Exact analytic value identities already identify the inverse-tilted
+prime--Gamma germ with the completed central moment germ.  The next proof-bearing identity must
+show that causal/polar completion is a positive compression or Schur complement of this same
+moment kernel.
 
 The remaining chain is
 
 ```text
 full finite source jet in one strict oriented cone
-  -> [OPEN] causal/polar reduced Gauss--Ward square root
-  -> [OPEN] inverse-tilted completed moment-jet comparison
+  -> fixed bivariate source moment kernel + all mixed Gram cones
+  -> existing inverse-tilted completed source/Xi value comparison
+  -> [OPEN] positive causal/polar compression identity
   -> complete prime--Gamma Hankel cone
   -> RH.                                                  (5)
 ```
@@ -107,6 +111,7 @@ Principal declarations:
 - [x] direct Lean check
 - [x] exact target build and axiom audit (`propext`, `Classical.choice`, `Quot.sound` only)
 - [x] no numerical computation
-- [ ] causal/polar reduced source Gram
-- [ ] completed moment-jet comparison
+- [x] source-side all-depth bivariate moment Gram
+- [x] inverse-tilted completed source/Xi analytic value comparison (existing modules)
+- [ ] positive causal/polar compression identity
 - [ ] RH

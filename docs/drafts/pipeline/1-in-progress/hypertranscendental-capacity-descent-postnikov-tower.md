@@ -115,7 +115,9 @@ obstruction layers, whose iterated coherence may require additional stages.
 > 4. nonlinear higher invariants include nonabelian comparison associators;
 > 5. polarization is a homotopy-coherent transport reduction of the entire cube, not a scalar
 >    sign attached at the end;
-> 6. the total cube is effective exactly when it reconstructs one pointed analytic HT source;
+> 6. the total cube reconstructs the pointed DA-relative source class; it reconstructs an analytic
+>    representative only on a genuinely transversely normalized stratum where the normalized
+>    common reporter kernel is trivial;
 > 7. continuation, monodromy, positivity, spectral completeness, and boundary canonicity are
 >    conservative realization images of faces and successive layers of this same object.
 
@@ -152,6 +154,28 @@ itself; they govern only one stage of effectivity.  After kinematic descent coll
 object is the incidence of the reconstructed primitive with the pointed, polarized, controlled,
 integral analytic essential image.
 
+The rationally independent Barnes hierarchy now supplies a non-elliptic confirmation.  Its full
+differential-translation module is
+
+`C[delta,T_1^(+-1),...,T_N^(+-1)]/(prod_j(T_j-1))`,
+
+and the augmented complex of all coordinate-face restrictions is exact.  Hence an unbounded free
+differential direction can coexist with zero higher singular-descent cohomology in two genuinely
+different HT families.  For Barnes rank at least two, full logarithmic principal parts remove the
+elliptic gauge divisor and two-period rigidity reduces the regular remainder to a scalar, which one
+pointing kills.  Thus this family is completely source-effective after the singular and pointing
+channels are joined; no hidden singular Postnikov class remains.  This proves cross-family
+independence of capacity depth from singular descent height; it does not prove that every natural
+HT family has exact descent.
+
+Barnes also decides the derived face amplitude.  On the normal-crossing module, each factorization
+`prod_j x_j=p_j x_j` gives an exact two-periodic complex, and restriction to every nonempty face
+`S` has exactly `Tor_0=Tor_1=B_S`, with no higher Tor.  Thus face codimension is not Postnikov
+height even before analytic realization: deleting one direction or all directions produces the
+same two-degree fracture.  The positive replacement is the multigraded derived face Betti profile
+of the DA-relative characteristic module.  It must be computed family by family and kept separate
+from differential prolongation growth.
+
 ## Exact first new theorem target
 
 The exact first target now has two linked parts.
@@ -183,7 +207,8 @@ its comparison 2-groupoid and prove that its associator class:
 
 - is invariant under differential-birational source presentation;
 - restricts to (3) after abelianization/linearization;
-- vanishes exactly when the local active carriers reconstruct one analytic source;
+- vanishes exactly when the local active carriers reconstruct one DA-relative source class, with
+  analytic representative reconstruction requiring a separate transverse common-kernel gate;
 - is detected by two independently constructed realization functors.
 
 Without these targets, the Postnikov and fracture language is only parent-theory decoration.
@@ -223,7 +248,8 @@ Retire or revise the tower if:
 2. the pair-face specialization does not recover the exact quotient and nonlinear matroid;
 3. a fixed existing derived or twistor category already supplies the whole tower unchanged;
 4. higher stages add no strict realizability restriction;
-5. effectivity fails to reconstruct a pointed analytic source;
+5. effectivity fails to reconstruct the pointed DA-relative source class, or claims to reconstruct
+   an analytic representative while retaining nontrivial normalized source gauge;
 6. realization comparisons remain analogies.
 7. the tower is truncated using analytic dimension rather than a source-specific collapse law.
 
@@ -263,6 +289,10 @@ formalization of any analytic HT realization.
 - [x] nonabelian-only account of higher stages falsified with a positive interaction receiver
 - [x] natural all-depth squarefree transverse-height law supplied by multiple elliptic gamma
 - [x] linear iteration depth falsified: distinct-direction support is the exact invariant
+- [x] universal face-codimension/Postnikov-height law falsified by the Barnes Tor-amplitude-one
+      theorem, with an exact two-periodic positive replacement
+- [ ] compute the multigraded derived face Betti table of the multiple elliptic-gamma
+      Stanley--Reisner characteristic module
 - [ ] formalize the functorial pair descent complex
 - [ ] formalize the finite-channel augmented fracture complex
 - [ ] compute one natural nonzero HT interaction group

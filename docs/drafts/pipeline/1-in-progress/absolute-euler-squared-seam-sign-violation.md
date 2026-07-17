@@ -24,23 +24,28 @@ so every displayed alternating squared-coordinate derivative is nonnegative.
 The proposed sign violation is stronger than `not RiemannHypothesis`; the converse is not
 assumed. The research content is the source-derived negative sign, not the conditional endpoint.
 
-## First Gate
+## Protected Low-Order Gates
 
-For `n=1`, the witness is the explicit completed logarithmic-derivative inequality
+The paper theorem
+`../2-fully-proven/needs-audit/squared-xi-low-order-complete-monotonicity-protected.md`
+proves unconditionally that every alternating squared-coordinate derivative has the
+RH-compatible strict sign for `0<=n<=13` and every `w>1/2`.  It uses the already formalized
+reciprocal-square sector and exact squared-orbit algebra, not a zero table.
 
-`w * deriv xiLogDeriv (1/2+w) - xiLogDeriv(1/2+w) > 0`.
+In particular, the former first-gate candidate is impossible:
 
-On `w > 1/2`, both terms have the exact rational--digamma--von-Mangoldt decomposition already
-formalized in `XiCollapseDirichletLeg.lean`. This is the smallest source gate to attack before
-introducing arbitrary-order differential operators.
+`w * deriv xiLogDeriv (1/2+w) - xiLogDeriv(1/2+w) < 0`.
+
+The first order not protected by the original uniform orbit chamber was `n=14`.  A subsequent
+source trace bound protects that order as well, so any scalar violation must have `n>=15`.
 
 ## Competing Moves and Discriminator
 
-1. **Compact first gate.** Derive a strict positive lower bound for the first-gate expression on
-   a symbolic interval in `w > 1/2`. This would immediately prove `not RiemannHypothesis`.
-2. **Compact growing-order gate.** If the first gate is nonpositive, retain a fixed safe base point
-   and let `n` grow. The source proof must control the cancellation between the pole leg and the
-   von-Mangoldt leg before taking the high jet.
+1. **Compact order-fourteen gate.** Closed positively: the completed source excludes the only
+   possible edge corner and the order-fourteen sign is strict throughout `w>1/2`.
+2. **Compact growing-order gate.** Retain a fixed safe base point and let `n>=14` grow. The source
+   proof must control the cancellation between the pole leg and the von-Mangoldt leg before
+   taking the high jet.
 3. **Cofinal coupled gate.** Let both `n` and `w` grow, with a proved coupling selected by a
    saddle inequality for the completed source. This move survives only if low critical-line atoms
    are not automatically dominant in that scaling.
@@ -51,15 +56,52 @@ renames an existing Stieltjes/Hankel equivalence.
 
 ## Current Attack
 
-The existing theorem
-`tendsto_scaled_iteratedDeriv_xiLogDeriv_odd` gives the derivative half of the first gate on the
-far right. The missing companion is the elementary source asymptotic
-`Re xiLogDeriv(x) -> +infinity`. Together they force the first-gate expression to be negative
-eventually. This will close the fixed-order far-right move and confine any first-gate witness to a
-bounded interval.
+Orders through fourteen are now closed globally, not merely far right.  At order fourteen the
+only atomwise failure chamber was
+`1/5<(Re rho-1/2)^2<1/4`, `85<(Im rho)^2<100`; the formalized theta-source fourth-moment floor and
+quartet trace comparison exclude that chamber unconditionally.  Hence the live scalar target
+starts at order `n>=15`.
 
-After that boundary is formalized, the live attack is the compact gate or a genuinely
-growing-order completed-source estimate. No numerical search is part of this card.
+The former compact order-fourteen search is retired.  Its far-right sector theorem and the
+formalized compact-corner source exclusion together prove the compatible strict sign for every
+`w>1/2`.
+
+The paper theorem
+`../2-fully-proven/needs-audit/squared-xi-radial-jet-reverse-bessel-source-alignment.md`
+now gives the exact source operator at every order.  After positive rescaling, the order-`n`
+target is
+
+`Q_n(w)=sum_(j=0)^n (-1)^j*b_(n,j)*w^j*xiLogDeriv^(j)(1/2+w)`,
+
+with positive reverse-Bessel coefficients `b_(n,j)`.  Every von Mangoldt jet then has the same
+negative sign.  The pole and Euler terms must be regrouped first as the logarithmic derivative of
+the already formalized pole-filled function `(s-1)*zeta(s)`.  For later orders the exact operator
+remains a finite cancellation-preserving jet expression in `regularizedRiemannZeta`, the elementary
+`1/s` term, and the digamma term.
+
+No numerical search is part of this card.  The next discriminator must be a symbolic
+rational--digamma--von-Mangoldt inequality or an exact integral representation for an order at
+least fifteen that preserves pole/Euler cancellation.
+
+Two further source coordinates now constrain that discriminator.  The paper theorem
+`../2-fully-proven/needs-audit/squared-xi-bose-log-cumulant-coordinate.md` rewrites every completed
+jet as a half-Gamma polygamma term minus/plus cumulants of one strictly log-concave Bose-log law,
+with the zeta pole retained inside its Mellin normalization.  This is the live compact-order
+coordinate.
+
+For growing order, the paper theorem
+`../2-fully-proven/needs-audit/reverse-bessel-fixed-frequency-blindness.md` proves
+`exp(-x)B_n(x)/b_(n,0)->1` at each fixed frequency.  Hence large order does not isolate `m=2` or
+any finite Euler prefix: after normalization every fixed atom tends to weight
+`Lambda(m)/sqrt(m)`, and the source mass escapes through a prime window growing with `n`.  Any
+cofinal attack must control that moving window uniformly against the completed archimedean source.
+
+The moving window is now explicit.  The paper theorem
+`../2-fully-proven/needs-audit/squared-xi-radial-jet-chebyshev-window.md` identifies the polar jet
+and the prime jet as the Lebesgue and Chebyshev--Stieltjes integrals of the same positive kernel.
+At fixed `s=1/2+w>1`, its polar mass concentrates at
+`log x=n/(s(s-1))+o(n)`.  Thus the growing-order core is a signed completed Chebyshev discrepancy
+on one exponential prime window, including the trivial-zero/archimedean correction.
 
 ## Anti-Theatre Gate
 
@@ -75,15 +117,18 @@ growing-order completed-source estimate. No numerical search is part of this car
 
 ## Open Core
 
-`[OPEN CORE]` Prove a strict negative squared-coordinate derivative, or a negative completed
-square test, directly from the absolute Euler plus rational--Gamma source. The proof must preserve
-the completed cancellation and cannot use a zero off the critical line as an input.
+`[OPEN CORE]` Prove a strict negative order-`n` squared-coordinate derivative for some `n>=15`, or
+a negative completed square test, directly from the absolute Euler plus rational--Gamma source.
+The proof must preserve the completed cancellation and cannot use a zero off the critical line as
+an input.
 
 ## Gates
 
 - [x] 0 -> 1 in-progress: source-pure coordinate, unconditional disproof endpoint, competing moves,
   and a falsifying asymptotic discriminator are explicit.
-- [ ] Fixed-order far-right boundary proved on paper.
+- [x] Orders `0<=n<=13` excluded unconditionally by exact orbit geometry and the formal sector.
+- [x] Order-fourteen far-right boundary proved on paper (`w^2>=8`).
+- [x] Order-fourteen compact corner excluded and global atomwise strict positivity formalized.
 - [ ] Fixed-order far-right boundary formalized in Lean.
 - [ ] Strict source-side sign violation proved on paper with no open dependency.
 - [ ] Violation formalized and wired to `not RiemannHypothesis` in Lean.
@@ -92,3 +137,19 @@ the completed cancellation and cannot use a zero off the critical line as an inp
 
 - 2026-07-17 -- Created under the RH-false goal. The first move is to prove the far-right boundary,
   then attack only compact or growing-order completed-source regimes.
+- 2026-07-17 -- The formal endpoint sector and exact squared-orbit derivative powers protect
+  every order through thirteen on the entire ray. The first live scalar order is fourteen.
+- 2026-07-17 -- The off-line quartet height floor protects order fourteen for `w^2>=8`; only the
+  compact source window `1/4<w^2<8` remains.
+- 2026-07-17 -- Derived the exact reverse-Bessel radial-jet operator.  All prime jets align with
+  one negative sign, while the existing pole-filled zeta logarithmic derivative preserves the
+  mandatory pole/Euler cancellation.  The live order-fourteen problem is now one finite regularized
+  source-jet inequality.
+- 2026-07-17 -- Recast the compact jet as a Bose-log cumulant difference and proved the Bose-log
+  law strictly log-concave.  Proved separately that normalized reverse-Bessel weights are blind to
+  every fixed Euler frequency, killing finite-prime localization in the growing-order move.
+- 2026-07-17 -- Identified the exact pole--prime cancellation as one reverse-Bessel
+  Chebyshev--Stieltjes discrepancy.  Its normalized polar kernel has a Gamma-mixture index with
+  exact mode `j=n/s` and concentrates at the prime scale `log x=n/(s(s-1))`.
+- 2026-07-17 -- Closed order fourteen globally: a source-side fourth-moment bound excludes the
+  only possible edge corner.  The first live scalar order is now at least fifteen.

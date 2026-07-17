@@ -253,16 +253,47 @@ logDeriv_fixed_of_eigenvector
 logDeriv_unit_character_of_semilinear
 ```
 
-The touched module verifies directly from the existing cache.  The Picard--Vessiot fixed-field
-classification is proved on paper but not yet formalized because the required generic differential
-rational field and PV infrastructure are not in the current local theorem surface.  No placeholder
-axiom is used.
+`formal/GaloisForLFunctions/HTGeometry/ScalarLogCurrentReconstruction.lean` now formalizes the
+free differential-field layers that were previously missing:
+
+```text
+logDeriv_hypertranscendentalOver
+logDeriv_ne_algebraMap
+differentialAdjoin_eq_logCurrentOrdinaryExtension
+differential_logDeriv_pow
+differentialAdjoin_logDeriv_pow_eq
+differentialAdjoin_pow_eq_logCurrentOrdinaryExtension
+```
+
+Thus Lean proves that `J` is hypertranscendental and nonconstant, proves the exact field identity
+`T=L(q)`, and proves the finite-cover identity `C<q^N>=L(q^N)` for every positive `N`.  The new
+module passed its one exact leaf build, direct file check, and scratch axiom audit with only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+`formal/GaloisForLFunctions/HTGeometry/RatFuncScaleFixedField.lean` now formalizes the complete
+ordinary invariant theory used in proof section 4.  It constructs the faithful action
+`X |-> uX` on `K(X)`, proves that the action has exactly the order of `u`, and proves unconditionally
+
+```text
+Fix(<u>) = K(X^N)   when orderOf(u)=N>0,
+Fix(<u>) = K        when orderOf(u)=infinity.
+```
+
+The leaf passed its one exact build, direct file check, and axiom audit with only `propext`,
+`Classical.choice`, and `Quot.sound`.  The remaining stage-3 work is the differential torsor
+transport: prove that `q` is algebraically transcendental over `L=C<J>`, construct the resulting
+`L(X) ~= T` equivalence compatibly with the derivation and constraint, and identify the full
+Picard--Vessiot automorphism group.  Once that transport exists, the two fixed-field equalities are
+provided by the new rational-coordinate theorem rather than being reproved.  No placeholder axiom
+is used.
 
 ## Gates
 
 - [x] 0 -> 1 in-progress: exact fixed-current statement and falsifier identified
 - [x] 1 -> 2 fully-proven: complete algebraic and fixed-field proof
-- [ ] 2 -> 3 formalized: formalize the free differential field, `T=L(q)`, and PV fixed-field layers
+- [x] logarithmic-current hypertranscendence, `T=L(q)`, and `C<q^N>=L(q^N)` formalized
+- [x] exact finite- and infinite-order scalar fixed fields on the ordinary rational coordinate
+- [ ] 2 -> 3 formalized: construct the exact differential `G_m` torsor transport over `L`
 - [ ] 3 -> 4 publication-ready: specialist external novelty review and integration with scalar
   orbifold classification
 
@@ -278,3 +309,7 @@ axiom is used.
 
 - 2026-07-15 -- proved the fixed-current/torsor theorem, completed the preliminary external novelty
   gate, and formalized exact logarithmic-current fixedness in Lean.
+- 2026-07-17 -- formalized logarithmic-current hypertranscendence, exact one-amplitude
+  reconstruction, and the positive-power finite-cover reconstruction law.
+- 2026-07-17 -- formalized the faithful rational-coordinate scalar action and its exact finite- and
+  infinite-order fixed fields; differential PV transport from `L(X)` to `T` remains.

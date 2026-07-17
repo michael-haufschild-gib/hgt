@@ -156,6 +156,28 @@ This does **not** yet construct an interacting Lorentzian (p)-adic string or pro
 ultrametric internal coordinate.  The physical result is an exact free-field/spectral realization.
 The interaction-preserving selection theorem remains open.
 
+The companion theorem
+`de-sitter-ultrametric-detailed-balance-hypertranscendence.md` supplies an exact operational
+cosmological reporter for the same spectrum.  De Sitter KMS detailed balance evaluates `(2)` at
+(w=\exp(-2\pi\varepsilon/H)), so the degeneracy-weighted trace of channelwise detector rate ratios
+is hypertranscendental in both the Boltzmann coordinate and locally in (H).  It does not upgrade
+the present free-field model to an interacting cosmological field theory: the ultrametric tower
+is carried by the ideal detector apparatus.
+
+The companion theorem
+`ultrametric-one-loop-resolvent-hypertranscendence.md` instead puts the same spectrum inside the
+field Hessian.  Its first ultraviolet-finite mass susceptibility satisfies a contractive affine
+scale equation with a two-shell rational defect and is hypertranscendental.  For each Euclidean
+de Sitter harmonic this gives an exact source-internal one-loop reporter.  The full de Sitter
+harmonic sum is not covered by that theorem, and
+`gaussian-influence-wick-kolchin-collapse.md` proves that the resulting Gaussian vertex hierarchy
+still has zero interaction-relative profile.
+
+The finite prefixes of `(2)` and their exact next-shell scale residual are formalized in
+`../../3-formalized/not_new_scientific_knowledge/ultrametric-thermal-finite-resolution-residual.md`.
+This gives a cofinal family of finite tests for the source constraint while preserving the sharp
+fact that no one finite prefix is hypertranscendental.
+
 ## Anti-theatre and novelty verdict
 
 The exponentially spaced spectrum, its degeneracies, the ultrametric oscillator model, and its
@@ -169,6 +191,9 @@ The result advances the foundational program in two ways:
    collider toy model in an exact ultrametric quantum system;
 2. it isolates the new open invariant: survival of the thermal Mahler constraint under a
    source-natural interacting, reflection-positive completion.
+
+The one-loop resolvent companion now supplies a source-natural Gaussian completion.  Consequently
+the remaining adjective in item 2 is exactly **interacting**, not merely field-theoretic.
 
 ## Primary sources
 

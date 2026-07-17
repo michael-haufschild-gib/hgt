@@ -246,4 +246,56 @@ theorem prolateArcsineDiagonalConstant_eq_zetaDerivativeSpectrum :
     arcsine_zeta_derivative_transform_real]
   ring
 
+/-! ## Positive arithmetic spectrum -/
+
+/-- The `k = n + 2` eigenvalue
+`κ_k = 16 log(k) arcsin(1 / k) / (11 π k)` of the limiting arithmetic diagonal. -/
+noncomputable def constrainedProlateArithmeticEigenvalue (n : ℕ) : ℝ :=
+  (16 / (11 * Real.pi)) * constrainedProlatePrimeSeriesTerm n
+
+theorem constrainedProlateArithmeticEigenvalue_eq (n : ℕ) :
+    constrainedProlateArithmeticEigenvalue n =
+      let k : ℝ := ((n + 2 : ℕ) : ℝ)
+      (16 / (11 * Real.pi)) * (Real.log k / k * Real.arcsin (1 / k)) := by
+  rfl
+
+/-- Every eigenvalue of the limiting arithmetic diagonal is nonnegative. -/
+theorem constrainedProlateArithmeticEigenvalue_nonneg (n : ℕ) :
+    0 ≤ constrainedProlateArithmeticEigenvalue n := by
+  exact mul_nonneg (by positivity) (constrainedProlatePrimeSeriesTerm_nonneg n)
+
+/-- Every eigenvalue of the limiting arithmetic diagonal is in fact strictly positive. -/
+theorem constrainedProlateArithmeticEigenvalue_pos (n : ℕ) :
+    0 < constrainedProlateArithmeticEigenvalue n := by
+  unfold constrainedProlateArithmeticEigenvalue constrainedProlatePrimeSeriesTerm
+  have hk : (1 : ℝ) < ((n + 2 : ℕ) : ℝ) := by
+    exact_mod_cast (show 1 < n + 2 by omega)
+  exact mul_pos (by positivity)
+    (mul_pos (div_pos (Real.log_pos hk) (by positivity))
+      (Real.arcsin_pos.mpr (by positivity)))
+
+/-- The positive arithmetic eigenvalue sequence is summable.  This is the scalar trace-class
+criterion for the diagonal limit. -/
+theorem summable_constrainedProlateArithmeticEigenvalue :
+    Summable constrainedProlateArithmeticEigenvalue := by
+  exact summable_constrainedProlatePrimeSeriesTerm.mul_left _
+
+/-- The total mass of the positive arithmetic spectrum is exactly the negative of the signed
+radial prime constant. -/
+theorem tsum_constrainedProlateArithmeticEigenvalue :
+    (∑' n : ℕ, constrainedProlateArithmeticEigenvalue n) =
+      -constrainedProlatePrimeConstant := by
+  rw [constrainedProlatePrimeConstant]
+  change (∑' n : ℕ,
+    (16 / (11 * Real.pi)) * constrainedProlatePrimeSeriesTerm n) = _
+  rw [tsum_mul_left]
+  ring
+
+/-- The same total-mass identity in the arcsine diagonal normalization. -/
+theorem tsum_constrainedProlateArithmeticEigenvalue_eq_neg_diagonalConstant :
+    (∑' n : ℕ, constrainedProlateArithmeticEigenvalue n) =
+      -prolateArcsineDiagonalConstant := by
+  rw [tsum_constrainedProlateArithmeticEigenvalue,
+    prolateArcsineDiagonalConstant_eq_constrainedProlatePrimeConstant]
+
 end GaloisForLFunctions

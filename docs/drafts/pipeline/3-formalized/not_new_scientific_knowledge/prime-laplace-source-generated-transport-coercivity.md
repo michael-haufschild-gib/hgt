@@ -57,6 +57,17 @@ E(c)-E(T_a c)>=1/2 E(c).                                 (3)
 
 Thus the entire post-critical translation ray is source diagonal and uniformly coercive.
 
+Lean also proves the reciprocal half-translation law
+
+```text
+T_(-1/2)J_p=p^(1/2)J_p,
+E(T_(-1/2)c)>=2E(c),
+E(c)-E(T_(-1/2)c)<=-E(c).                               (4)
+```
+
+This is the direction required by exact de-Poissonization of the absolute-Euler boundary source.
+It is uniformly expansive, not coercive.
+
 ## Relation to the even-factorial incidence
 
 The parent theorem proves that the complete Gamma-damped prime-by-jet matrix is Hilbert--Schmidt
@@ -67,21 +78,38 @@ on the unbounded ambient Taylor operator.
 
 ## RH boundary
 
-This is an unconditional source coercivity producer, but it is not yet the **critical** coercivity
-producer required to close RH.  The missing theorem is an exact completed value comparison showing
-that the source defect Gram, after the forced Gamma and polar boundary coupling, is the canonical
-normalized Xi/Weil Hankel form.  Transporting only the prime diagonal would discard the signed
-quadrature and Gamma connection and would therefore be invalid.
+The exact Euler-safe stationarity law shows that the RH-complete Weil form is obtained by undoing
+the safe Poisson factor.  At a prime frequency `log p`, this inverse transport multiplies by
+`p^a`; it is the negative-displacement direction in `(1)`, not the contractive positive direction
+in `(2)`--`(3)`.  Equation `(4)` therefore kills the proposed direct transfer:
 
-The live chain is
+```text
+forward prime damping
+  -> positive coefficient-energy defect,
+
+inverse de-Poissonization required by RH
+  -> uniformly negative coefficient-energy defect.      (5)
+```
+
+Moreover the energy here is the orthogonal coefficient sum.  The RH carrier is a coupled
+prime--Gamma--polar--critical-Mellin Gram; its non-diagonal cross terms are absent from `(2)`.
+Consequently there is no remaining theorem of the form “the completed value identity preserves
+the coercivity above.”  Such a theorem would contradict `(4)` unless the coupled completion
+supplied a new positive defect large enough to reverse the inverse expansion, which is precisely
+the unresolved RH-bearing orientation inequality.
+
+The positive role of this module is narrower and exact: it constructs a valid all-prime forward
+transport and proves that any RH proof must use an unbounded, channel-resolved inverse incidence,
+not coefficientwise coercivity.  The live chain is now
 
 ```text
 all-prime even-factorial incidence
-  -> source-generated real contractive transport
-  -> uniform source defect coercivity
-  -> [OPEN] completed prime--Gamma defect/value identity
+  -> source-generated forward contraction
+  -> exact inverse-transport expansion obstruction
+  -> [OPEN] unbounded channel-resolved Gamma/polar/Mellin inverse incidence
+  -> [OPEN] positivity of its completed defect
   -> canonical Xi/Weil positivity
-  -> RH.
+  -> RH.                                                  (6)
 ```
 
 ## Gates
@@ -91,7 +119,12 @@ all-prime even-factorial incidence
 - [x] prove source transport is real and strictly contractive
 - [x] prove a cutoff-independent critical half-unit defect lower bound
 - [x] extend the lower bound uniformly to every displacement `a>=1/2`
+- [x] prove inverse half-translation has multiplier `p^(1/2)`
+- [x] prove inverse half-translation expands energy by at least two
+- [x] prove its coefficient-energy defect is at most minus the source energy
 - [x] formalize unconditionally in Lean
-- [ ] couple the prime defect with the forced Gamma and polar channels
-- [ ] identify the completed defect Gram with the normalized Xi/Weil form
+- [x] exclude direct transfer of forward coefficient coercivity through de-Poissonization
+- [ ] construct the unbounded channel-resolved completed inverse incidence
+- [ ] prove positivity of its coupled Gamma/polar/Mellin defect
+- [ ] identify that completed defect Gram with the normalized Xi/Weil form
 - [ ] RH

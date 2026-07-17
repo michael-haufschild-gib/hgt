@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.GammaBoseSpectralHankel
 import GaloisForLFunctions.HTGeometry.DigammaPolynomialCarrier
 import GaloisForLFunctions.HTGeometry.ArgumentScalingInvariance
-import GaloisForLFunctions.HTGeometry.ExponentialObservationHypertranscendence
+import GaloisForLFunctions.HTGeometry.LocalAnalyticExponentialClock
 
 /-!
 # The black-hole far-zone dressed logarithm is a Gamma spectral clock
@@ -375,6 +375,47 @@ theorem hypertranscendentalOver_blackHoleMonopoleResponse
   simp [Q, X, hrespMap]
   norm_num [map_div₀, map_mul, map_ofNat] at hrel ⊢
   linear_combination hrel
+
+/-- **Concrete local higher-multipole response germ.**  On every nonempty connected analytic
+observation chart, an HT exponent produces an actual pointwise exponential phase, and the
+nondegenerate Schwarzschild higher-multipole readout remains HT.  The logarithmic-derivative
+hypothesis of `hypertranscendentalOver_blackHoleHigherMultipoleResponse` is discharged by the
+local complex-analytic carrier rather than assumed. -/
+theorem hypertranscendentalOver_blackHoleHigherMultipoleLocalAnalyticResponse
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (exponent : ℂ → ℂ) (hexponentAnalytic : AnalyticOnNhd ℂ exponent U)
+    {seed nu eta : RatFunc ℂ} (hseed : seed ≠ 0) (hnu : nu ≠ 0)
+    (haffine : 1 + 2 * nu * eta ≠ 0) :
+    letI := Bottcher.isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (Bottcher.meroField U) :=
+      (Bottcher.ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    letI : Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
+    letI := meroFieldDifferential hUo hUc hUne
+    letI : DifferentialAlgebra (RatFunc ℂ) (Bottcher.meroField U) :=
+      meroFieldRatFuncDifferentialAlgebra hUo hUc hUne hUinf
+    HypertranscendentalOver (RatFunc ℂ)
+        (algebraMap (Bottcher.analyticSubring U) (Bottcher.meroField U)
+          (analyticFunctionElement exponent hexponentAnalytic)) →
+      HypertranscendentalOver (RatFunc ℂ)
+        (algebraMap (RatFunc ℂ) (Bottcher.meroField U) (seed / (-4 * nu)) *
+          (algebraMap (RatFunc ℂ) (Bottcher.meroField U) (1 + 2 * nu * eta) *
+            algebraMap (Bottcher.analyticSubring U) (Bottcher.meroField U)
+              (analyticExponentialElement exponent hexponentAnalytic) - 1)) := by
+  letI := Bottcher.isDomain_analyticSubring U hUo hUc hUne
+  letI : Algebra (RatFunc ℂ) (Bottcher.meroField U) :=
+    (Bottcher.ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  letI : Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
+  letI := meroFieldDifferential hUo hUc hUne
+  letI : DifferentialAlgebra (RatFunc ℂ) (Bottcher.meroField U) :=
+    meroFieldRatFuncDifferentialAlgebra hUo hUc hUne hUinf
+  intro hexponentHT
+  apply hypertranscendentalOver_analyticExponentialAffineMero
+    hUo hUc hUne hUinf exponent hexponentAnalytic
+      (b := 1 + 2 * nu * eta) (c := seed / (-4 * nu))
+  · exact haffine
+  · exact div_ne_zero hseed (mul_ne_zero (by norm_num) hnu)
+  · exact hexponentHT
 
 end
 

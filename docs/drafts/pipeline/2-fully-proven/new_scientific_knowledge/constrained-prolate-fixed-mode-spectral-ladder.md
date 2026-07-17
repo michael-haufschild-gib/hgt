@@ -377,10 +377,21 @@ nonzero coordinate) and `secular_root_unique` (it is unique, since `F` is strict
 scales is `secular_interlacing` (`ProlateSecularEquation.lean`).  The base ratio limit specializes to
 `theta_0 = q_0/(q_0+q_1) = 1/(1 + binom(4,2)/16) = 8/11 = ccm_groundState_weight_eq`.
 
-What is *not* formalized is the **limit `(8)`** `mu_k/d_(k+1) -> theta_k` and the `lambda^8` ratio
-asymptotics `(9)`: these require Fuchs fixed-index asymptotics `d_j ~ A_(4j) lambda^(8j+1)
-e^(-4 pi lambda^2)` and prolate-to-Hermite convergence `ell_j -> a_j`, the analytic layer absent from
-mathlib.
+The exact all-depth **two-mode Fuchs model** of limit `(8)` is now formalized in
+`TwoModeFuchsLimit.lean`.  The theorem `constrainedProlateHermiteTheta_eq_square_ratio` identifies
+the aggregated head weight with `theta_k`, and
+`constrainedProlate_fixedMode_twoMode_fuchs_ratio` proves for every `k` that the corresponding
+normalized two-mode secular root tends to `theta_k`.  The complementary gap law is
+`constrainedProlate_fixedMode_twoMode_fuchs_gap_ratio`, with limit `1-theta_k`; its quantified
+corollary `constrainedProlate_fixedMode_twoMode_fuchs_gap_eventually_ge` proves that every
+`c < 1-theta_k` is eventually a lower bound for the unnormalized gap after multiplication by the
+dominant Fuchs leakage.  These are unconditional theorems about the exact Fuchs-rate model, not
+assumptions about the true prolate operator.
+
+What remains unformalized is the passage from that model to the card's exact constrained
+eigenvalue `mu_k`: Fuchs fixed-index asymptotics for the actual leakages, normalized
+prolate-to-Hermite convergence `ell_j -> a_j`, and the uniform infinite-tail secular estimate.
+Those analytic inputs are also needed for the exact `lambda^8` adjacent-level asymptotics `(9)`.
 
 `formal/GaloisForLFunctions/RHTower/ConstrainedProlateHermiteContrast.lean` now formalizes the
 complete limiting Hermite algebra used by that missing analytic passage. It defines the actual
@@ -409,6 +420,9 @@ operator to this ladder; it is not replaced by an asymptotic hypothesis.
 - [x] parent-theory and rediscovery attack
 - [x] preliminary literature audit through July 2026
 - [x] provisional significance gate
+- [x] all-depth aggregated two-mode Fuchs limits `theta_k` and `1-theta_k` formalized in Lean
+- [x] quantified eventual lower bound for every constant below the all-depth Fuchs gap limit
+- [ ] transfer the all-depth Fuchs model to the exact infinite-dimensional constrained ladder
 - [ ] independent proof review
 - [ ] independent literature review
 - [ ] true finite-prime Weil spectral-ladder transfer

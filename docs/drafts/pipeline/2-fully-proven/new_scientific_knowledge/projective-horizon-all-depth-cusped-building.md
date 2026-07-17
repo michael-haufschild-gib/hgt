@@ -125,9 +125,12 @@ global topology in one exact structure.
 ## Lean boundary
 
 The all-projective-dimension current mechanism enforcing cross-cusp constant meet is formalized in
-`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonArbitraryRankCurrentAlgebra.lean`. The
-local toolchain has no Solomon--Tits/order-complex homotopy surface, so `(4)--(6)` are not added as
-assumptions.
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonArbitraryRankCurrentAlgebra.lean`.
+`arOneSidedCurrentLie_eq_arPolynomialCurrentLie` identifies the finite one-sided generator packet
+exactly with the complete polynomial root, diagonal, and transverse-shear current Lie algebra for
+every finite projective dimension.  The local toolchain has no Solomon--Tits/order-complex homotopy
+surface, so `(4)--(6)` are not added as assumptions.  This card remains in stage 2 for that
+topological layer and the infinite rational fixed-field layer.
 
 ## RH impact audit
 

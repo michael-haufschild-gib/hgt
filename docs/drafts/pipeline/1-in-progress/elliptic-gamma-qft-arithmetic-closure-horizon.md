@@ -96,6 +96,17 @@ Kato proves that the equal-period elliptic gamma is differentially algebraic.  T
 finite products preserve differential algebraicity, so `(2)` proves the dependent implication in
 `(1)`.  The factorization is classical and is not claimed as new knowledge.
 
+The additive-to-multiplicative parameter bridge is now Lean-formalized on the actual product:
+
+```text
+ellipticNome(sigma)^m = ellipticNome(tau)^n
+  <=> exists k in Z, m*sigma = n*tau + k,
+```
+
+and `ellipticGammaProduct_additivePeriod_factorization` consumes the single additive congruence
+directly.  Thus QFT clock parameters no longer have to supply an auxiliary common nome and two
+separate power equalities.
+
 ## Independent phase `[PAPER-PROVEN IN PARENT CARD]`
 
 Multiplicative independence is equivalent to `Q`-independence of `1,tau,sigma`.  The parent theorem
@@ -170,6 +181,31 @@ This is an arithmetic closure transition, not presently a thermodynamic phase tr
 index remains analytic in `p,q` away from its ordinary divisor.  No experimental signature, black
 hole theorem, or quantum-gravity claim follows from `(1)` alone.
 
+## AdS black-hole transfer boundary
+
+Large-`N` four-dimensional superconformal indices reproduce the entropy of supersymmetric rotating
+AdS5 black holes in established examples.  Their finite-rank localization integrands are assembled
+from elliptic-gamma chiral factors, so the period congruence and finite-product source theorem apply
+at the integrand level.
+
+They do not automatically pass through the gauge integral or Bethe-vacuum sum, and they do not pass
+automatically to a large-`N` saddle or its Legendre transform.  Differential algebraicity is closed
+under finite field operations, not arbitrary contour integration, infinite rank limits, or saddle
+selection.  Therefore:
+
+```text
+[NO-GO]
+HT of an elliptic-gamma integrand is not an HT theorem for black-hole entropy.
+
+[POSITIVE SOURCE STATEMENT]
+If an exact finite chiral-factor product is HT, at least one factor is HT; under the established
+multiple-sine regime input, at least one such factor has noncommensurable clock periods.
+```
+
+The missing black-hole bridge is now precisely named: prove a DA/HT transfer theorem for the actual
+index operation and then for the controlled large-`N`/Legendre limit.  No spacetime-horizon claim is
+made before those two operations are controlled.
+
 ## Anti-theatre attacks
 
 1. The QFT identification of the elliptic gamma function is standard and contributes significance,
@@ -185,6 +221,11 @@ hole theorem, or quantum-gravity claim follows from `(1)` alone.
 6. Abstract group-algebra shells do not count as formalization of the theorem.  The actual product,
    meromorphic field, paired increment identities, telescoping descent, and DA/HT conclusion must
    all be unconditional in Lean.
+7. AdS black-hole entropy is downstream of integration, a large-`N` limit, and a Legendre transform.
+   Elliptic-gamma HT at the integrand level cannot be relabelled as a black-hole HT theorem.
+
+Black-hole provenance: F. Benini, E. Colombo, S. Soltani, A. Zaffaroni, and Z. Zhang,
+*Superconformal indices at large N and the entropy of AdS5 x SE5 black holes*, arXiv:2005.12308.
 
 ## RH impact
 
@@ -204,6 +245,10 @@ horizontal zero location.  No such bridge is presently proved.
 - [x] Thermodynamic/black-hole overclaim explicitly excluded.
 - [x] Residue reindexing and numerator reversal of the actual double product formalized
   unconditionally in Lean as a flattened finite-family product.
+- [x] Additive period congruence proved equivalent to common nome powers and connected directly to
+  the actual elliptic-gamma factorization
+  (`ellipticNome_pow_eq_pow_iff_additivePeriodCongruence`,
+  `ellipticGammaProduct_additivePeriod_factorization`).
 - [ ] Finite-family Fubini regrouping formalized to identify the flattened product with the literal
   finite product of equal-nome elliptic gamma functions.
 - [ ] Kato equal-period algebraic differential equation formalized unconditionally in Lean.

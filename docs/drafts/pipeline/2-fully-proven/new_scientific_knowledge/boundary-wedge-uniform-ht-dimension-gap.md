@@ -220,9 +220,15 @@ patterns, and `Q`-linear independence of every family of nonzero facet values.
 four coordinates exist and every faithful separation has dimension at least four. Thus the entire
 uniform `ffsDim=4` layer is Lean-formalized, not only the special `S^1 wedge S^2` case.
 
-The remaining Lean work before stage 3 is the two-dimensional periodic-pencil construction and its
-lower bound, followed by the bridges from those witnesses to the project-level `ppDim` and `htDim`
-equalities.
+`GaloisForLFunctions/HTGeometry/PPMatrixRankFormulaConsequences.lean` now formalizes the complete
+periodic-pencil layer.  It defines the uniform boundary-wedge facet system, constructs the explicit
+two-coordinate translation vectors and normalized left/right pencil forms, proves every
+facet-evaluation row PP-admissible, excludes dimensions zero and one from two distinct off-facet
+integral values and global `Q`-independence, and exports
+`boundaryWedge_ppDim_eq_two` for every `r,s>=2`.
+
+The remaining Lean work before stage 3 is therefore only the analytic bridge defining the full
+intrinsic `htDim` realization and proving its equality with the already formalized `ppDim=2` value.
 
 ## Parent-theory and novelty boundary
 
@@ -253,6 +259,7 @@ matroid, gain-graph, and subspace-representation invariants.
 - [x] faithful lower bound four proved by evaluation row spaces
 - [x] uniform faithful lower bound four formalized in Lean from exact incidence data
 - [x] uniform faithful four-dimensional witness and exact minimality formalized in Lean
+- [x] uniform periodic-pencil witness, lower bound, and exact `ppDim=2` formalized in Lean
 - [x] complete paper proof
 - [x] preliminary parent-theory audit
 - [ ] complete unconditional Lean formalization before stage 3

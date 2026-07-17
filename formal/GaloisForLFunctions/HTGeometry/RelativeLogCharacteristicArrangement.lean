@@ -1,4 +1,5 @@
 import Mathlib.Analysis.SpecialFunctions.Exponential
+import Mathlib.Analysis.SpecialFunctions.Complex.Log
 import Mathlib.Tactic
 
 /-!
@@ -75,6 +76,25 @@ theorem multipleGammaLogCharacteristicBoundary_iff_exists_resonantPair
   rw [MultipleGammaLogCharacteristicBoundary,
     cofaceProductsVanish_iff_exists_pair_zero]
   simp only [logarithmicClockCharacter, sub_eq_zero]
+
+/-- **Integer-charged pair-sheet theorem.**  The logarithmic characteristic boundary is the
+union of the sheets indexed by two distinct coordinates and their two integral deck charges. -/
+theorem multipleGammaLogCharacteristicBoundary_iff_exists_integer_chargedPair
+    (r : ℕ) (lambda : Fin (r + 1) → ℂ) :
+    MultipleGammaLogCharacteristicBoundary r lambda ↔
+      ∃ a b : Fin (r + 1), a ≠ b ∧
+        ∃ k l : ℤ,
+          lambda a = k * (2 * Real.pi * Complex.I) ∧
+          lambda b = l * (2 * Real.pi * Complex.I) := by
+  rw [multipleGammaLogCharacteristicBoundary_iff_exists_resonantPair]
+  constructor
+  · rintro ⟨a, b, hab, ha, hb⟩
+    obtain ⟨k, hk⟩ := Complex.exp_eq_one_iff.mp ha
+    obtain ⟨l, hl⟩ := Complex.exp_eq_one_iff.mp hb
+    exact ⟨a, b, hab, k, l, hk, hl⟩
+  · rintro ⟨a, b, hab, k, l, hk, hl⟩
+    exact ⟨a, b, hab, Complex.exp_eq_one_iff.mpr ⟨k, hk⟩,
+      Complex.exp_eq_one_iff.mpr ⟨l, hl⟩⟩
 
 theorem exp_neg_eq_one_iff (z : ℂ) :
     Complex.exp (-z) = 1 ↔ Complex.exp z = 1 := by
