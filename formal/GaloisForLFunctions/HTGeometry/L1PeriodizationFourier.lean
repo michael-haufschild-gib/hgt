@@ -27,6 +27,25 @@ cell. -/
 def l1Periodization (f : ℝ → ℂ) (x : ℝ) : ℂ :=
   ∑' k : ℤ, f (x + k)
 
+/-- Scaling a real-line function by a nonzero signed aperture reads its Fourier transform at the
+correspondingly dilated frequency, with the exact absolute Jacobian. -/
+theorem fourier_comp_div_eq_abs_smul
+    {f : ℝ → ℂ} {a : ℝ} (ha : a ≠ 0) (w : ℝ) :
+    𝓕 (fun x => f (x / a)) w = |a| • 𝓕 f (a * w) := by
+  rw [fourier_real_eq_integral_exp_smul, fourier_real_eq_integral_exp_smul]
+  let g : ℝ → ℂ := fun y =>
+    Complex.exp (↑(-2 * Real.pi * y * (a * w)) * Complex.I) • f y
+  have hfun :
+      (fun x : ℝ =>
+        Complex.exp (↑(-2 * Real.pi * x * w) * Complex.I) • f (x / a)) =
+      fun x : ℝ => g (x / a) := by
+    funext x
+    dsimp only [g]
+    congr 2
+    push_cast
+    field_simp [ha]
+  rw [hfun, Measure.integral_comp_div]
+
 /-- **L1 periodization coefficient theorem.**  The Fourier coefficient on the unit cell of the
 integer periodization is the Euclidean Fourier transform at the corresponding integer. -/
 theorem integral_unit_l1Periodization_mul_fourier_eq
@@ -98,5 +117,16 @@ theorem integral_unit_l1Periodization_mul_fourier_eq
   congr 2
   push_cast
   ring
+
+/-- **Scaled L1 periodization coefficient theorem.**  Periodizing `x ↦ f (x / a)` packages the
+Euclidean Fourier samples at the dilated frequencies `a * m`, with the exact Jacobian `a`. -/
+theorem integral_unit_scaled_l1Periodization_mul_fourier_eq
+    {f : ℝ → ℂ} (hf : Integrable f) {a : ℝ} (ha : 0 < a) (m : ℤ) :
+    ∫ x in Set.Ioc (0 : ℝ) 1,
+      fourier (-m) (x : UnitAddCircle) *
+        l1Periodization (fun y => f (y / a)) x =
+      a • 𝓕 f (a * (m : ℝ)) := by
+  rw [integral_unit_l1Periodization_mul_fourier_eq (hf.comp_div ha.ne') m]
+  rw [fourier_comp_div_eq_abs_smul ha.ne' m, abs_of_pos ha]
 
 end GaloisForLFunctions.HTGeometry

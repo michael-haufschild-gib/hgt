@@ -27,6 +27,7 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 set_option maxHeartbeats 50000
+set_option trace.profiler true
 
 variable {F T : Type*} [Field F] [Field T] [Algebra F T]
   [Differential F] [Differential T] [DifferentialAlgebra F T]

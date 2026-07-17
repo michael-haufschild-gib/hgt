@@ -50,7 +50,9 @@ Fourier(f_a)(w)
  =a * Fourier(f)(a*w).                                        (3)
 ```
 
-The absolute Jacobian is `|a|=a` because `a>0`. Both integrals are legitimate: multiplication by
+More generally, `(3)` holds for every function in the extended integral convention and every
+nonzero signed scale after replacing `a` by `|a|` on the right. The absolute Jacobian is `|a|=a`
+here because `a>0`. Both integrals are legitimate: multiplication by
 the unit-modulus Fourier character preserves integrability, and composition with division by a
 nonzero scalar preserves integrability. Substituting `w=m` in `(3)` and then using `(2)` proves
 `(1)`. No pointwise convergence of the periodization and no Poisson summation hypothesis is used.
@@ -61,4 +63,3 @@ Equation `(1)` is the exact scale-matching step needed to turn the Abel boundary
 compact periodized source into sampled values `Fourier(f)(a*m)`. Evenness and zero mean can then
 separate the bilateral coefficient identity into the one-sided Poisson--Muntz formula. This theorem
 is classical infrastructure; it is not the candidate-new source estimate.
-

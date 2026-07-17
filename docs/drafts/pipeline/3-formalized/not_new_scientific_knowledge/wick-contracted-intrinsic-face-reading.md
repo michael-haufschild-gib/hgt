@@ -1,7 +1,7 @@
 # Wick-contracted intrinsic face reading
 
 - **ID:** WCDMF-INTRINSIC
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `wick-contracted-relative-reading.md` (its recorded open core) ·
   `quantum-matroid-pro-observable-field.md` (Q1 semantics)
@@ -85,8 +85,12 @@ applies with disjointness inherited from `Disjoint G I`.  ∎
 
 - [x] 0 → 1  in-progress: exact statements, mechanism identified, hypothesis audit done
 - [x] 1 → 2  fully-proven: complete paper proof above, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorems appended to
-      `HTGeometry/WickContractedMatroidPersistence.lean`, targeted build green, axiom audit PASS
+- [x] 2 → 3  formalized: Lean theorems appended to
+      `HTGeometry/WickContractedMatroidPersistence.lean`
+      (`diffIndepOn_differentialAdjoin_singleton_of_differentialAlgebraicOver`,
+      `diffIndepOn_differentialAdjoin_union_finite_of_differentialAlgebraicOver`,
+      `differentialMatroid_contract_indep_iff_forall_finite_stage`, plus the two nested-iff
+      bridges), targeted build green, axiom audit PASS
 - [ ] 3 → 4  publication-ready
 
 ## What this opens
@@ -102,3 +106,5 @@ and limit-field readings.
 - 2026-07-17 — created with complete paper proof (A: insert-induction against transitivity;
   B: packet induction; C: chaining monotone destruction, relative reading, closure
   identification, and directed persistence); classified `[BRIDGE]`.
+- 2026-07-17 — formalized and verified same day: single-module rebuild green, axiom audit PASS
+  (`[propext, Classical.choice, Quot.sound]` only); moved to 3-formalized.
