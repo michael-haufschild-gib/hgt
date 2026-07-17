@@ -173,7 +173,7 @@ theorem harmonicFloorMoebiusLog_succ_sub_eq_vonMangoldt (N : ℕ) :
           ((harmonic ((N + 1) / d) - harmonic (N / d) : ℚ) : ℝ) =
             (d : ℝ) / (N + 1 : ℕ) := by
         rw [hincQ]
-        norm_cast
+        simp only [Rat.cast_div, Rat.cast_natCast]
       rw [hincR]
       have hdR : (d : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hdpos)
       have hNR : ((N + 1 : ℕ) : ℝ) ≠ 0 := by positivity
@@ -182,8 +182,14 @@ theorem harmonicFloorMoebiusLog_succ_sub_eq_vonMangoldt (N : ℕ) :
       simp_rw [div_eq_mul_inv, ← neg_mul]
       rw [← Finset.sum_mul]
       simp_rw [neg_mul]
-      rw [Finset.sum_neg_distrib,
-        ArithmeticFunction.sum_moebius_mul_log_eq]
+      rw [Finset.sum_neg_distrib]
+      have hmuLog :
+          (∑ d ∈ (N + 1).divisors,
+            ((ArithmeticFunction.moebius d : ℤ) : ℝ) * Real.log d) =
+            -ArithmeticFunction.vonMangoldt (N + 1) := by
+        simpa only [ArithmeticFunction.log_apply, ArithmeticFunction.intCoe_apply] using
+          (ArithmeticFunction.sum_moebius_mul_log_eq (n := N + 1))
+      rw [hmuLog]
       ring
 
 /-- The Möbius mollifier coefficients `a_m = μ(m)` (as reals). -/
