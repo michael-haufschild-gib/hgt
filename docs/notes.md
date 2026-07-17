@@ -62,3 +62,49 @@ c_\tau(n)=\sum_{d\mid n}\mu(d)d^{i\tau},\qquad c_0(n)=\mathbf1_{n=1},\qquad i\,\
 The corpus audit is now giving a hard answer, not a slogan: the finite-jet, capacity, Hankel, and orientation-completion cards do not contain the cancellation theorem. Their legitimate contribution is negative—they prove exactly why those topologies cannot see it. The surviving positive object is much smaller than “all HT”: a distinct-prime cross-Farey Hessian of the Möbius augmentation, with same-prime towers already bounded. I’m now testing whether that Hessian admits any lower theorem that is not simply RH in disguise.
 
 A sharper obstruction has emerged from the same deformation: the tempting \(1/\log M\) analytic neighbourhood is not a shortcut. Support grade two is already macroscopically wrong by itself and cancels only against the quadratic term of support grade one; at Taylor order \(k\), grades \(1,\dots,k\) are inseparable. This leaves the dual-number \(\Lambda\) jet as the optimal reduction and prevents us from hiding the hard estimate in “analyticity.” I’m recording that, plus the exact two-prime reduction, in the canonical report.
+
+The weakest RH-sufficient statement is now explicit without any HT vocabulary: it is a centered multiplicative prime-pair variance over one fixed proportional window. Proper prime powers and the diagonal already have the right size; the only missing term is the signed aggregate over distinct primes. Crucially, this aggregate is far weaker than twin-prime or fixed-gap asymptotics, while every ordinary positive sieve still loses a factor of order \(M\) because it destroys the continuum-centering cancellation. That is the first honest candidate for genuinely new mathematics: a covariance-level, parity-preserving sieve theorem—not another renamed completion object.
+
+The full, untruncated Eratosthenes expansion has now exposed the precise place classical sieve theory stops. At cutoff \(\sqrt M\), inclusion–exclusion is pointwise exact for primality—but its smooth continuum part leaves a centered slope of size \(1/\log M\), whose energy is \(1/\log^2 M\), vastly above the RH scale. The exact floor-error sum across every Boolean grade must cancel that rough continuum down to \(M^{-1}\mathrm{polylog}\). Truncating grades or taking absolute values destroys precisely this cancellation. This is the concrete new theorem class the corpus was hinting at.
+
+The first hostile correction is already clear: the full Boolean/CRT expansion is mathematically exact, but that alone is not the missing mathematics. It is the classical full inclusion–exclusion prime detector at the parity boundary, and its proposed estimate is equivalent to the fixed-ratio RH covariance. Renaming that estimate would fail the anti-theatre test.
+The useful signal is narrower: the corpus says local hypertranscendental structure cannot determine the required correlation at all; the missing datum is the specific non-product joining created by the ordinary-integer floor cutoff. I’m now extracting laws for that joining and a sequence of non-circular intermediate theorems, rather than promoting the RH-equivalent endpoint as a “new principle.”
+----
+
+Blunt result: the corpus does not hide an RH proof, but it does reveal why the previous program stalled.
+Hypertranscendence describes local, one-coordinate inexhaustibility. The formalized joining results prove that identical local prime geometry can support arbitrary global correlations. Therefore more HT structure cannot determine RH. The missing mathematics must govern the specific non-product joining between:
+additive successor/floor geometry;
+multiplicative divisibility;
+aperture scale;
+interaction grade;
+signed quantitative control.
+The defensible overarching program is a calculus of controlled multifiltered joinings—not another “source object.”
+The anti-theatre audit also killed our latest false lead:
+The complete Boolean/CRT expansion is classical Eratosthenes inclusion–exclusion.
+Assigning continuum terms to inactive divisors \(d>K\) manufactures roughly 21% of its displayed rough energy.
+After correcting the support, the hard covariance simply returns.
+The fixed-ratio estimate (35m20) is paper-level equivalent to RH, not an intermediate theorem.
+The first honest new coordinate is instead the exact active recurrence
+\[
+Z_{S\cup\{p\}}(s;M,t)
+=
+Z_S(s;M,t)-p^{s-1}Z_S(s;M/p,t).
+\]Differentiating couples the logarithmic and harmonic channels:
+\[
+D_{S\cup\{p\}}(M)
+=
+D_S(M)-\frac1pD_S(M/p)
+-\frac{\log p}{p}E_S(M/p).
+\]This is elementary and not claimed as new. The genuinely new theorem to invent is a local energy, monotonicity, or telescoping law for this recurrence whose remainder remains summable through the critical shell \(p\le\sqrt M\). It must be defined before evaluating the terminal prime vector and must fail the harmonic/log-phase countermodels.
+The research order is now:
+Develop an active, incomplete-CRT boundary decomposition without empty channels.
+Find the two-channel one-prime energy law.
+Isolate the critical incomplete-period shell near \(p\asymp\sqrt M\).
+Prove it first for one fixed ratio \(\rho\); do not start with all determinant slopes.
+Only afterwards abstract the successful mechanism into the parent theory of controlled joinings.
+If that new law yields
+\[
+\|q_{\lfloor\rho M\rfloor}-q_M\|_2^2
+\ll \frac{\operatorname{polylog}M}{M},
+\]then geometric telescoping gives the block-current bound, the existing Bessel and negative-energy steps apply, and the already formalized endpoint gives RH. That is the likely proof shape—none of Connes, Sonin, Hilbert–Pólya, Li/Weil, or a zero expansion.
+I rewrote the [canonical verdict (line 3)](/Users/Spare/Documents/code/riemann/publications/hgt/docs/reports/rh-proof-shape-1707.md:3), recorded the [active recurrence (line 1824)](/Users/Spare/Documents/code/riemann/publications/hgt/docs/reports/rh-proof-shape-1707.md:1824), the [falsifiable research program (line 1888)](/Users/Spare/Documents/code/riemann/publications/hgt/docs/reports/rh-proof-shape-1707.md:1888), and the corrected [RH proof chain (line 2032)](/Users/Spare/Documents/code/riemann/publications/hgt/docs/reports/rh-proof-shape-1707.md:2032). RH remains explicitly unproved.

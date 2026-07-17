@@ -16,7 +16,7 @@ spectral proof.
 ## Gates
 
 - [x] 0 → 1  in-progress: exact definitional bridge and direct consumers identified
-- [ ] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
+- [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
 - [ ] 2 → 3  formalized: Lean theorem names checked, targeted Lean check green, axiom audit PASS
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
@@ -77,3 +77,41 @@ experiment, or axiom audit is run during this phase.
 - 2026-07-14 — exact master/energy-operator collision and downstream hypothesis discharge identified before Lean edits.
 - 2026-07-14 — source-level Lean bridge added in `HTGeometry/QuantumMasterConstraintSpectrum.lean` and imported by the HTGeometry umbrella: definitional equality with `energyOp`, compact greedy-mode hypothesis discharge, constraint-kernel completeness, squared-singular-value identity, and trace/HS/spectral sum rule.  No computation or build run.
 - 2026-07-15 — supersymmetric partner intertwining and Hilbert--Schmidt partner trace equality added source-only.  Non-Fredholm Witten-index literature was audited, but its spectral-shift conclusion was not promoted because the corpus still lacks a source-built partner pair and spectral-shift formalism.  No computation or build run.
+
+## Paper proof `[PROVED HERE]`
+
+Setting: `H` a complex Hilbert space, `C : H →L[ℂ] H` bounded; `M_C := C†C` the master
+constraint.  All cited declarations are existing corpus theorems; every step is either one of
+them or one-line algebra, so the proof is dependency-closed.
+
+1. **Definitional collision.**  `M_C` and the singular-value energy operator are the same
+   composite `C† ∘ C`; the equality is definitional (`quantumMasterConstraint_eq_energyOp`).
+2. **Compactness transfer.**  If `C` is compact then `M_C = C† ∘ C` is compact: composition of a
+   bounded operator with a compact operator (`energyOp_compact`).
+3. **Symmetry.**  `⟨M_C x, y⟩ = ⟨Cx, Cy⟩ = ⟨x, M_C y⟩` (`energyOp_symmetric`); positivity is
+   `⟨M_C x, x⟩ = ‖Cx‖² ≥ 0`.
+4. **Squared singular values.**  The greedy spectral value of `M_C` at index `n` is by
+   construction the square of the `n`-th singular value of `C` (`singVal_sq`), since `singVal` is
+   defined through the energy operator; no spectral theorem is invoked.
+5. **Greedy modes.**  Compactness (2), symmetry and positivity (3) discharge every premise of the
+   greedy exhaustion: each nonzero spectral value carries a unit eigenvector
+   (`isGreedyStep_svVec`), and the spectral values tend to zero (`svVal_tendsto_zero`).
+6. **Kernel completeness.**  If `x` is orthogonal to every greedy mode then `M_C x = 0`
+   (`apply_eq_zero_of_forall_inner_svVec`), and `0 = ⟨M_C x, x⟩ = ‖Cx‖²` forces `C x = 0`
+   (`physicalState_quantumMasterConstraint_iff`): orthogonality to the master modes annihilates
+   the constraint itself, not only its square.
+7. **Trace = Hilbert–Schmidt energy.**  For Hilbert–Schmidt `C`, Parseval on any Hilbert basis
+   gives `Re Tr(M_C) = Σᵢ ‖C eᵢ‖² = ‖C‖²_HS` (`re_opTrace_adjoint_comp_self`).
+8. **Supersymmetric partner intertwiner.**  `C M_C = C (C†C) = (CC†) C = M_{C†} C` by
+   associativity (`quantumMasterConstraint_partner_intertwining`).
+9. **Partner trace equality.**  For Hilbert–Schmidt `C`, trace cyclicity on the
+   Hilbert–Schmidt pair `(C†, C)` gives `Tr(C†C) = Tr(CC†)` (`opTrace_comp_comm`), i.e.
+   `Tr(M_C) = Tr(M_{C†})`.
+10. **Spectral sum rule.**  Hilbert–Schmidt `C` is compact, so
+    `‖C‖²_HS = Σₙ svVal(M_C, n)` (`hsNormSq_eq_tsum_svVal`), and with (7):
+    `Re Tr(M_C) = ‖C‖²_HS = Σₙ sₙ(C)²`.  ∎
+
+Hostile review: no step assumes a spectral decomposition, trace-class theory, or completeness of
+an eigenbasis; the greedy machinery supplies exactly the eigenvectors it constructs, and all
+trace identities are Parseval-level.  The Hilbert–Schmidt hypothesis is used only in (7), (9),
+(10); compactness only in (2), (5), (6).  No open dependency remains.

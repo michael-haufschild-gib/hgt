@@ -62,7 +62,7 @@ theorem integral_Ioi_erlangThreeKernel_eq_one {ε : ℝ} (hε : 0 < ε) :
           (1 / ε⁻¹) ^ (3 : ℝ) * Real.Gamma 3 := by simpa using h
       _ = 2 * ε ^ 3 := by
         have hgamma : Real.Gamma 3 = 2 := by
-          convert Real.Gamma_nat_eq_factorial 2 using 1 <;> norm_num
+          simpa using Real.Gamma_nat_eq_factorial 2
         rw [hgamma]
         norm_num [one_div, hε.ne']
         ring
@@ -104,12 +104,35 @@ theorem integral_Ioi_erlangWaveAmplitude_sq_eq_one {ε : ℝ} (hε : 0 < ε) :
   intro s hs
   exact erlangWaveAmplitude_sq_eq_kernel hε hs.le
 
+theorem integrableOn_erlangThreeKernel {ε : ℝ} (hε : 0 < ε) :
+    IntegrableOn (erlangThreeKernel ε) (Ioi 0) := by
+  have hmoment : IntegrableOn
+      (fun s : ℝ => s ^ 2 * Real.exp (-(ε⁻¹ * s))) (Ioi 0) := by
+    simpa [Real.rpow_two] using integrableOn_rpow_mul_exp_neg_mul_rpow
+      (p := (1 : ℝ)) (s := (2 : ℝ)) (b := ε⁻¹)
+      (by norm_num) (by norm_num) (inv_pos.mpr hε)
+  have hscaled : IntegrableOn
+      (fun s : ℝ => 1 / (2 * ε ^ 3) *
+        (s ^ 2 * Real.exp (-(ε⁻¹ * s)))) (Ioi 0) :=
+    hmoment.const_mul (1 / (2 * ε ^ 3))
+  apply hscaled.congr_fun _ measurableSet_Ioi
+  intro s _
+  unfold erlangThreeKernel
+  rw [show -s / ε = -(ε⁻¹ * s) by field_simp]
+  ring
+
+theorem integrableOn_sq_erlangWaveAmplitude {ε : ℝ} (hε : 0 < ε) :
+    IntegrableOn (fun s : ℝ => erlangWaveAmplitude ε s ^ 2) (Ioi 0) := by
+  apply (integrableOn_erlangThreeKernel hε).congr_fun _ measurableSet_Ioi
+  intro s hs
+  exact (erlangWaveAmplitude_sq_eq_kernel hε hs.le).symm
+
 theorem hasDerivAt_erlangWaveAmplitude_of_pos {ε : ℝ} (hε : 0 < ε)
     {s : ℝ} (hs : 0 < s) :
     HasDerivAt (erlangWaveAmplitude ε)
       (erlangWaveAmplitudeDerivative ε s) s := by
   have harg : HasDerivAt (fun t : ℝ => -t / (2 * ε)) (-1 / (2 * ε)) s := by
-    convert (hasDerivAt_id s).neg.div_const (2 * ε) using 1 <;> ring
+    simpa using (hasDerivAt_id s).neg.div_const (2 * ε)
   have hcore := ((hasDerivAt_id s).mul
     ((Real.hasDerivAt_exp (-s / (2 * ε))).comp s harg)).div_const
       (Real.sqrt 2 * ε ^ (3 / 2 : ℝ))
@@ -172,6 +195,34 @@ theorem integrableOn_sq_erlangWaveAmplitudeDerivative {ε : ℝ} (hε : 0 < ε) 
   field_simp [hε.ne']
   ring
 
+/-- Concrete first-derivative-domain data for the one-sided packet.  The
+amplitude vanishes at and below the lower edge, is normalized and square
+integrable, has the displayed classical derivative off the edge, and that
+derivative is square integrable.  These are the elementary `H¹` data used by
+the time-pairing theorem below. -/
+structure ErlangWavePacketFirstDerivativeData (ε : ℝ) : Prop where
+  lowerEdge_zero : erlangWaveAmplitude ε 0 = 0
+  below_lowerEdge_zero : ∀ {s : ℝ}, s < 0 → erlangWaveAmplitude ε s = 0
+  amplitude_sq_integrable :
+    IntegrableOn (fun s : ℝ => erlangWaveAmplitude ε s ^ 2) (Ioi 0)
+  normalized : (∫ s : ℝ in Ioi 0, erlangWaveAmplitude ε s ^ 2) = 1
+  hasDerivAt_of_pos : ∀ {s : ℝ}, 0 < s →
+    HasDerivAt (erlangWaveAmplitude ε)
+      (erlangWaveAmplitudeDerivative ε s) s
+  derivative_sq_integrable :
+    IntegrableOn (fun s : ℝ => erlangWaveAmplitudeDerivative ε s ^ 2) (Ioi 0)
+
+theorem erlangWavePacket_firstDerivativeData {ε : ℝ} (hε : 0 < ε) :
+    ErlangWavePacketFirstDerivativeData ε where
+  lowerEdge_zero := by simp [erlangWaveAmplitude]
+  below_lowerEdge_zero := by
+    intro s hs
+    simp [erlangWaveAmplitude, not_le.mpr hs]
+  amplitude_sq_integrable := integrableOn_sq_erlangWaveAmplitude hε
+  normalized := integral_Ioi_erlangWaveAmplitude_sq_eq_one hε
+  hasDerivAt_of_pos := fun hs => hasDerivAt_erlangWaveAmplitude_of_pos hε hs
+  derivative_sq_integrable := integrableOn_sq_erlangWaveAmplitudeDerivative hε
+
 def scalarTimePairingIntegrand
     (ψ ψ' : ℝ → ℂ) (E : ℝ) : ℂ :=
   star (ψ E) * (-Complex.I * ψ' E)
@@ -218,15 +269,15 @@ theorem hasDerivAt_erlangOneKernel {ε : ℝ} (hε : 0 < ε) (s : ℝ) :
     HasDerivAt (erlangOneKernel ε)
       (-erlangOneKernel ε s / ε) s := by
   have harg : HasDerivAt (fun t : ℝ => -t / ε) (-1 / ε) s := by
-    convert (hasDerivAt_id s).neg.div_const ε using 1 <;> ring
+    simpa using (hasDerivAt_id s).neg.div_const ε
   have h := ((Real.hasDerivAt_exp (-s / ε)).comp s harg).div_const ε
-  convert h using 1 <;> simp [erlangOneKernel] <;> field_simp [hε.ne'] <;> ring
+  convert h using 1 <;> simp [erlangOneKernel] <;> field_simp [hε.ne']
 
 theorem hasDerivAt_erlangTwoKernel {ε : ℝ} (hε : 0 < ε) (s : ℝ) :
     HasDerivAt (erlangTwoKernel ε)
       ((erlangOneKernel ε s - erlangTwoKernel ε s) / ε) s := by
   have harg : HasDerivAt (fun t : ℝ => -t / ε) (-1 / ε) s := by
-    convert (hasDerivAt_id s).neg.div_const ε using 1 <;> ring
+    simpa using (hasDerivAt_id s).neg.div_const ε
   have h := ((hasDerivAt_id s).mul
     ((Real.hasDerivAt_exp (-s / ε)).comp s harg)).div_const (ε ^ 2)
   convert h using 1 <;> simp [erlangOneKernel, erlangTwoKernel] <;>
@@ -236,12 +287,12 @@ theorem hasDerivAt_erlangThreeKernel {ε : ℝ} (hε : 0 < ε) (s : ℝ) :
     HasDerivAt (erlangThreeKernel ε)
       ((erlangTwoKernel ε s - erlangThreeKernel ε s) / ε) s := by
   have harg : HasDerivAt (fun t : ℝ => -t / ε) (-1 / ε) s := by
-    convert (hasDerivAt_id s).neg.div_const ε using 1 <;> ring
+    simpa using (hasDerivAt_id s).neg.div_const ε
   have hpow : HasDerivAt (fun t : ℝ => t ^ 2) (2 * s) s := by
-    convert hasDerivAt_pow 2 s using 1 <;> ring
+    simpa using hasDerivAt_pow 2 s
   have h := (hpow.mul
     ((Real.hasDerivAt_exp (-s / ε)).comp s harg)).div_const (2 * ε ^ 3)
-  convert h using 1 <;> simp [erlangOneKernel, erlangTwoKernel, erlangThreeKernel] <;>
+  convert h using 1 <;> simp [erlangTwoKernel, erlangThreeKernel] <;>
     field_simp [hε.ne'] <;> ring
 
 def erlangAverageOne (ε : ℝ) (f : ℝ → ℝ) (x : ℝ) : ℝ :=
@@ -518,16 +569,19 @@ theorem differentialAlgebraicOver_erlangThirdRecoveryElement
     simpa [differentialJet_succ] using h2
   have hj3 : DifferentialAlgebraicOver F (differentialJet 3 r) := by
     simpa [differentialJet_succ] using h3
+  have hthree : DifferentialAlgebraicOver F (3 : E) := by
+    simpa only [map_ofNat] using
+      differentialAlgebraicOver_algebraMap (F := F) (E := E) (3 : F)
   unfold erlangThirdRecoveryElement
   exact differentialAlgebraicOver_sub
     (differentialAlgebraicOver_add
       (differentialAlgebraicOver_sub hr
         (differentialAlgebraicOver_mul
           (differentialAlgebraicOver_mul
-            (differentialAlgebraicOver_algebraMap (F := F) (E := E) 3) hε) hj1))
+            hthree hε) hj1))
       (differentialAlgebraicOver_mul
         (differentialAlgebraicOver_mul
-          (differentialAlgebraicOver_algebraMap (F := F) (E := E) 3)
+          hthree
           (differentialAlgebraicOver_pow hε 2)) hj2))
     (differentialAlgebraicOver_mul (differentialAlgebraicOver_pow hε 3) hj3)
 
@@ -546,21 +600,39 @@ theorem differentialAlgebraicOver_of_erlangThirdRecoveryElement_eq
       MvPolynomial.C (3 * εB ^ 2) * MvPolynomial.X 2 -
         MvPolynomial.C (εB ^ 3) * MvPolynomial.X 3 - MvPolynomial.C qB
   have hεB : εB ≠ 0 := by
-    exact (algebraMap F B).injective.ne hε
+    intro hzero
+    apply hε
+    apply (algebraMap F B).injective
+    simpa [εB] using hzero
   have hP : P ≠ 0 := by
     intro hzero
     have hc := congrArg
       (MvPolynomial.coeff (Finsupp.single (3 : Fin 4) 1)) hzero
-    simp [P] at hc
-    exact hεB (by
-      have : εB ^ 3 = 0 := by simpa using hc
-      exact pow_eq_zero this)
+    simp only [P, MvPolynomial.coeff_sub, MvPolynomial.coeff_add,
+      MvPolynomial.coeff_C_mul, MvPolynomial.coeff_single_X,
+      MvPolynomial.coeff_C] at hc
+    norm_num at hc
+    have hsingle : (0 : Fin 4 →₀ ℕ) ≠
+        Finsupp.single (3 : Fin 4) 1 := by
+      intro heq
+      have := congrArg (fun f : Fin 4 →₀ ℕ => f (3 : Fin 4)) heq
+      simp at this
+    rw [if_neg hsingle] at hc
+    have h03 : (0 : Fin 4) ≠ 3 := by decide
+    have h13 : (1 : Fin 4) ≠ 3 := by decide
+    have h23 : (2 : Fin 4) ≠ 3 := by decide
+    simp [h03, h13, h23] at hc
+    exact hεB hc
   apply differentialAlgebraicOver_of_finiteJetConstraint_over_singleton hq hP
   change MvPolynomial.aeval
     (fun j : Fin 4 => differentialJet (j : ℕ) r) P = 0
   simp [P, εB, qB]
   rw [← hrel]
   simp [erlangThirdRecoveryElement]
+  have hthreeB : ((3 : B) : E) = (3 : E) := by
+    change (3 : E) = 3
+    rfl
+  rw [hthreeB]
   ring
 
 theorem hypertranscendentalOver_erlangThirdRecoveryElement_iff
@@ -578,4 +650,3 @@ theorem hypertranscendentalOver_erlangThirdRecoveryElement_iff
 end
 
 end GaloisForLFunctions.HTGeometry
-

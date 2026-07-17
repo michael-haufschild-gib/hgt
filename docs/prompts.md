@@ -19,13 +19,17 @@ skip cards that are not relevant for hypertranscendental functions nor for the r
 before any build make sure you have the most efficient lean code, e.g. do not pull unnecessary modules.
 for any nogo always try to find an interesting significant positive statement
 - you can use subagents for read-only research into literature and our own research corpus
--
+
+
 ## research and formalize
 /goal
 
-work through this card: docs/drafts/pipeline/1-in-progress/watson-flatness-discharge.md
+perform exhaustive research for these cards one by one:
+- docs/drafts/pipeline/1-in-progress/hurwitz-sonin-tropical-loop-rh.md
+- docs/drafts/pipeline/1-in-progress/symmetric-prime-gamma-contour-hermite-rh.md
+- docs/drafts/pipeline/1-in-progress/suzuki-coupled-error-boundary-energy-attack.md
 
-task: use the /hgt-fields-medalist skill to complete the research and formalize unconditionally all proofs in lean
+task: use the hgt-fields-medalist skill to complete the research and formalize unconditionally all proofs in lean. discover new knowledge, do not stop at current SOTA research.
 
 rules:
 1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.

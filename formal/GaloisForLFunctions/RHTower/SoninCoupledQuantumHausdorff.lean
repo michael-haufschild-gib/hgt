@@ -106,3 +106,62 @@ theorem soninAllPrimeCoupledRenyiReplicaMoment_hausdorffBernsteinNonnegative
 end
 
 end RHTower
+
+namespace RHTower
+
+/-- Dividing an entire moment sequence by one constant divides every scaled Hausdorff
+difference by that constant; a vanishing constant degenerates both sides to zero. -/
+theorem scaledHausdorffMomentDifference_div
+    (R : ℝ) (m : ℕ → ℝ) (c : ℝ) (k r : ℕ) :
+    scaledHausdorffMomentDifference R (fun j => m j / c) k r =
+      scaledHausdorffMomentDifference R m k r / c := by
+  induction r generalizing k with
+  | zero => simp only [scaledHausdorffMomentDifference]
+  | succ r ih =>
+      rw [scaledHausdorffMomentDifference, scaledHausdorffMomentDifference,
+        ih k, ih (k + 1)]
+      ring
+
+/-- **Ratio-normalized complete source law.**  After division by the zeroth coupled moment the
+complete scaled hierarchy persists at the same aperture-independent radius. -/
+theorem re_soninAllPrimeCoupledTraceMoment_div_zero_scaledHausdorffDifferencesNonnegative
+    (a : SoninPositiveAperture) :
+    ScaledHausdorffMomentDifferencesNonnegative soninAllPrimeColumnEffectRadius
+      (fun j => (soninAllPrimeCoupledTraceMoment a j).re /
+        (soninAllPrimeCoupledTraceMoment a 0).re) := by
+  intro k r
+  rw [scaledHausdorffMomentDifference_div]
+  exact div_nonneg
+    (re_soninAllPrimeCoupledTraceMoment_scaledHausdorffDifferencesNonnegative a k r)
+    (soninAllPrimeCoupledTraceMoment_re_nonneg a 0)
+
+/-- Complete scaled Hausdorff positivity is closed under pointwise limits of moment
+sequences. -/
+theorem scaledHausdorffMomentDifferencesNonnegative_of_tendsto
+    {R : ℝ} {m : ℕ → ℕ → ℝ} {target : ℕ → ℝ}
+    (hm : ∀ N, ScaledHausdorffMomentDifferencesNonnegative R (m N))
+    (htendsto : ∀ k, Filter.Tendsto (fun N => m N k) Filter.atTop (nhds (target k))) :
+    ScaledHausdorffMomentDifferencesNonnegative R target := by
+  intro k r
+  exact le_of_tendsto_of_tendsto tendsto_const_nhds
+    (tendsto_scaledHausdorffMomentDifference_of_tendsto R
+      (tendsto_pi_nhds.mpr htendsto) k r)
+    (Filter.Eventually.of_forall fun N => hm N k r)
+
+/-- **Aperture-schedule compatibility test.**  Every pointwise limit of ratio-normalized coupled
+Sonin moment sequences obeys the complete scaled Hausdorff hierarchy at the aperture-independent
+effect radius: proposed projective aperture schedules can only converge into this closed cone. -/
+theorem scaledHausdorffMomentDifferencesNonnegative_of_soninCoupledRatio_tendsto
+    {aperture : ℕ → SoninPositiveAperture} {target : ℕ → ℝ}
+    (htendsto : ∀ k, Filter.Tendsto (fun N =>
+        (soninAllPrimeCoupledTraceMoment (aperture N) k).re /
+          (soninAllPrimeCoupledTraceMoment (aperture N) 0).re)
+      Filter.atTop (nhds (target k))) :
+    ScaledHausdorffMomentDifferencesNonnegative soninAllPrimeColumnEffectRadius target :=
+  scaledHausdorffMomentDifferencesNonnegative_of_tendsto
+    (fun N =>
+      re_soninAllPrimeCoupledTraceMoment_div_zero_scaledHausdorffDifferencesNonnegative
+        (aperture N))
+    htendsto
+
+end RHTower
