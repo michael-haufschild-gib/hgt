@@ -186,7 +186,8 @@ Hamiltonian or boost flow misses the interaction carrier in this class.
 
 1. The nontrivial analytic locality problem is the relative Hardy-twist problem in
    `unitary-pair-twist-hardy-exponential-bound.md`, not identity `(7)`. That companion card proves
-   only a conditional pair-word norm estimate; the actual matrix twist remains open.
+   only a conditional pair-word norm estimate; a qualitative fixed-particle matrix frame exists
+   by Oka descent, but the quantitatively controlled matrix twist remains open.
 2. The intrinsic compact-local strengthening remains the on-shell-to-off-shell Kolchin transfer
    conjecture in `../needs-audit/sectoral-kolchin-signature-quantum-fields.md`.
 3. A genuinely new theorem would have to derive a locality, entropy, nuclearity, or connected-

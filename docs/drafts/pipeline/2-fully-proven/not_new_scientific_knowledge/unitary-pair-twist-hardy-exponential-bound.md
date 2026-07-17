@@ -159,7 +159,13 @@ on the central boundary, or the equivalent Alazzawi--Lechner subspace-mapping co
 `(11)`--`(12)` discharge the quantitative parts of their intertwiner property. If
 `B(0)=-F`, their theorem gives modular nuclearity and compact-local observables. In the
 right-flipped braid convention `B(0)=-I`, the componentwise Pauli theorem in the parent card
-provides the same factorial summability once the corresponding relative twist exists.
+provides the same factorial summability once the corresponding quantitatively bounded relative
+twist exists.
+
+Ordinary existence is not part of this ansatz.  The abstract descent theorem
+`fixed-particle-holomorphic-acyclicity-identity-zero-yang-baxter.md` produces a holomorphic
+invertible relative frame for every fixed particle number, but gives neither a pair-word
+factorization nor any bound in `(11)`--`(12)`.
 
 Thus, within the pair-factorized class, the open problem is not a separate large-`n` norm
 estimate. Within the pair-word ansatz, it is to construct a twist satisfying all five structural
@@ -179,8 +185,10 @@ before interpolation and does not imply `(11)`.
 ## Application to the `O(N)` problem
 
 The rational `O(N)`/Brauer scattering matrix is the first serious target. Published work proves
-regularity, the fermionic zero anchor, and analytic intertwiners through particle number two, but
-leaves `n>=3` open. Standard factorizing `F`-matrices are known for several type-A and ice-rule
+regularity, the fermionic zero anchor, and quantitatively controlled analytic intertwiners through
+particle number two.  Fixed-`n` holomorphic frames now exist abstractly at every particle number,
+but their bounded Hardy control for `n>=3` remains open. Standard factorizing `F`-matrices are
+known for several type-A and ice-rule
 models, but the literature audit found no all-`n` factorizing `F`-matrix for the rational
 `O(N)`/Brauer vector matrix and no collision-regular relative twist with the QFT Hardy
 properties.
@@ -190,8 +198,9 @@ exists, the required `exp(O(n))` conditioning follows automatically.  The three-
 `../../5-failed/on-brauer-two-body-half-twist-pair-word.md` now proves that the published
 two-particle half-phase cannot extend as any fixed one-copy-per-pair word, and that no universal
 collision-normalized pair factor can satisfy both its two-body relative equation and reduced-word
-coherence.  A surviving pair word must contain corrective/repeated factors; a genuine multi-body
-partial-twist construction requires a separate conditioning theorem.
+coherence.  The Oka-descent frame proves that this is a factorization no-go, not a qualitative
+nonexistence theorem. A surviving explicit construction must contain corrective/repeated factors
+or genuine multi-body partial twists and requires a separate conditioning theorem.
 
 ## Hypertranscendental physics consequence
 
@@ -231,13 +240,13 @@ kept only to prevent the incorrect claim that pair count alone forces `exp(O(n^2
 
 ## Bold conjecture
 
-`[CONJECTURE -- CORRECTED RELATIVE BRAUER HARDY TWIST]` For every `N>=3`, the regular `O(N)`
-sigma-model braid scattering cocycle admits a collision-regular relative Brauer twist to its zero
-anchor built from genuine multiparticle partial twists, or from bounded-multiplicity pair factors
-with nontrivial corrective/repeated terms.  It cannot be the one-copy or reduced-word lift of the
-published two-particle half-phase.  The partial factors and their inverses are bounded on fixed
-strips and unitary on the real axis, and the resulting all-particle operators obey the required
-`exp(O(n))` Hardy bounds.
+`[CONJECTURE -- CORRECTED RELATIVE BRAUER HARDY TWIST]` For every `N>=3`, the fixed-particle
+Oka-descent frames for the regular `O(N)` sigma-model braid cocycle can be replaced by an explicit
+collision-regular relative Brauer construction built from genuine multiparticle partial twists,
+or from bounded-multiplicity pair factors with nontrivial corrective/repeated terms.  It cannot
+be the one-copy or reduced-word lift of the published two-particle half-phase.  The partial
+factors and their inverses are bounded on fixed strips and unitary on the real axis, and the
+resulting all-particle operators obey the required `exp(O(n))` Hardy bounds.
 
 This is not the broader conjecture that every regular Yang--Baxter family has the intertwiner
 property. It is tied to the Brauer algebra and is falsifiable at the first three-body twist
@@ -248,8 +257,9 @@ compatibility equation.
 1. The exact three-body equation is derived and the one-copy/reduced-word lift of the known
    two-particle factor is disproved.  Classify bounded-multiplicity words with corrective/repeated
    factors.
-2. Construct the first genuine three-body partial twist/associator or exhibit its nonzero
-   Brauer/partial-index obstruction.
+2. Construct the first explicit, quantitatively controlled three-body partial twist/associator
+   or exhibit its nonzero Brauer/partial-index obstruction.  A nonconstructive holomorphic frame
+   already exists.
 3. Prove real-axis unitarizability without multiplying by a singular scalar normalization.
 4. Only after 1--3, combine the twist with a projectively HT intrinsically mixing physical
    Yang--Baxter family; scalar HT dressing alone is a commuting-clock control.

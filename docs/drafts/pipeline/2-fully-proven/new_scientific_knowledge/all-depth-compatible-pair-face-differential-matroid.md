@@ -361,11 +361,14 @@ The arbitrary-coset descending face lifting and bottom-layer joint atomicity res
 free-block replication and simplicial-star minimal-circuit gluing as the unlabelled hierarchy. These
 are formalized axiom-clean in `GaloisForLFunctions.DifferentialMatroidGluing`
 (`Rank.freeBlock`, `Rank.crossNeutral_iUnion_indep`, `Rank.graphGluing`,
-`Rank.graphGluing_of_indep_hasFreeTranslates`). The last theorem removes the intermediate
-`FreeIndepOrbit` packaging from the concrete star hypotheses. The compatible-pair label
+`Rank.graphGluing_of_indep_hasFreeTranslates`, `Rank.uniformFace_nestedStar_indep`). The last theorem
+performs the full descending nested-star recursion for uniform face families, while
+`MatroidNatRank.matroidRank` and `DifferentialMatroidRank.differentialRank` identify its rank
+conclusion with genuine differential independence. The compatible-pair label
 `c` is inert for the gluing: the incidence in `Rank.graphGluing` is an abstract predicate, so the
 extra label rides along without changing the argument. The special-function inputs and the
-differential-linear rank formula enter as the rank/interface hypotheses.
+differential-linear rank formula still enter through the concrete `FreeIndepOrbit` and
+`CrossNeutral` hypotheses.
 
 ## First proof audit
 

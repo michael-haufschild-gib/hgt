@@ -141,8 +141,11 @@ the quantum surface `(3)`, with zero `-F` and crossing `(6)`.  Its Fock-space br
 the correct construction convention.  No separate transformed-crossing or transformed
 wedge-locality axiom is needed: `(5)` and `(6)` are the same condition under the right flip.
 
-The remaining construction problem is the all-particle bounded analytic intertwiner into
-the identity-zero invariant subspace.  It is not a convention problem.
+The remaining construction problem is the all-particle identity-zero intertwiner with uniform
+`exp(O(n))` Hardy norm and central inverse-norm bounds.  Ordinary fixed-particle holomorphic
+frames exist by
+`../not_new_scientific_knowledge/fixed-particle-holomorphic-acyclicity-identity-zero-yang-baxter.md`;
+the unresolved gate is quantitative, not a convention problem.
 
 ## Anti-theatre attacks
 
@@ -155,8 +158,8 @@ the identity-zero invariant subspace.  It is not a convention problem.
 3. **Using the left flip `F B` without parity invariance.**  Rejected.  Scattering reverses
    the incoming lower indices and therefore selects the right flip `B F`.  The two agree
    only when the matrix commutes with `F`.
-4. **Claiming a full compact-local theory.**  Rejected.  The identity-zero analytic
-   intertwiner remains open.
+4. **Claiming a full compact-local theory.**  Rejected.  The uniformly conditioned identity-zero
+   Hardy intertwiner remains open.
 
 ## Novelty and significance gates
 
@@ -171,7 +174,8 @@ the resulting correction of the later `O(N)` convention have already been stated
 ## Exact open core
 
 1. Audit primary literature for an explicit `R=B F` reconstruction statement or erratum.
-2. Construct an all-particle bounded analytic intertwiner for `B(0)=-I`.
+2. Construct an all-particle identity-zero frame with uniform `exp(O(n))` Hardy bounds for
+   `B(0)=-I`; qualitative fixed-`n` holomorphic frames already exist.
 3. Combine that intertwiner with the proved componentwise-Pauli trace theorem.
 4. Construct a positive-unitary, crossing-symmetric, intrinsically mixing projective-HT
    solution of `(3)`.

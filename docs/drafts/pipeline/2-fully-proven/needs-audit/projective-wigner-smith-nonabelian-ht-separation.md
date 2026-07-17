@@ -299,7 +299,9 @@ gates.
 The companion bridge
 `../not_new_scientific_knowledge/scalar-cdd-invariance-of-intertwiner-property.md` proves the matching locality-side
 reduction: an anchor-preserving regular scalar CDD dressing changes neither existence nor failure
-of the all-particle analytic intertwiner. Thus scalar quotienting is not only operationally exact
+of the uniformly `exp(O(n))`-conditioned all-particle Hardy intertwiner.  Fixed-particle ordinary
+holomorphic frames exist by the identity-zero Oka-descent theorem, but do not settle this bounded
+property. Thus scalar quotienting is not only operationally exact
 for `Q^o`; regular scalar units also form a neutral sector for the remaining modular-nuclearity
 gate. No theorem yet identifies the resulting analytic quotient with a divisor-framed projective
 class. In particular, the pole in the usual `sigma_2`-normalized `O(N)` representative is a chart

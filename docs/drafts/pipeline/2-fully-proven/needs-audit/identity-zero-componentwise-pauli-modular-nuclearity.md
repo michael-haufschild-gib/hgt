@@ -146,9 +146,17 @@ factorial nuclearity mechanism.
 The right-flip reconstruction theorem proves that the standard-subspace crossing condition
 for `B` is exactly the physical crossing condition for `R=B P`, and that Haag--Ruelle
 scattering reconstructs `R` on the ordered rapidity chamber.  Thus only one independent
-gate remains:
+quantitative gate remains:
 
-1. bounded analytic intertwiners to `H_n^(-I)` must be built uniformly in `n`.
+1. identity-zero intertwiners must be built with uniform `exp(O(n))` Hardy norm and central
+   inverse-norm bounds.
+
+The qualitative fixed-particle existence problem is closed by
+`../not_new_scientific_knowledge/fixed-particle-holomorphic-acyclicity-identity-zero-yang-baxter.md`.
+After twisting the Yang--Baxter cocycle by the sign character, collision stabilizers act
+trivially; analytic descent and Oka--Grauert therefore produce a holomorphic invertible frame for
+every fixed `n`.  This gives no global bound or particle-uniform condition number and hence does
+not discharge the hypothesis of this theorem.
 
 The quantitative part of this gate has the conditional bridge
 `../not_new_scientific_knowledge/unitary-pair-twist-hardy-exponential-bound.md`: if the missing intertwiner admits a
@@ -160,14 +168,16 @@ collision-compatible unitary normalization.
 The scalar-dressing bridge
 `../not_new_scientific_knowledge/scalar-cdd-invariance-of-intertwiner-property.md` further proves that every regular scalar CDD
 factor with value `1` at zero is neutral for this gate. In particular, adding central scalar HT
-cannot repair or obstruct the missing identity-zero intertwiner within its regular-unit orbit.
-What remains is the noncentral matrix analytic cocycle modulo regular scalar units. Whether a
-global divisor framing is needed to classify that obstruction is open; the ordinary `O(N)`
-projective germ is regular at zero after choosing a nonvanishing channel pivot.
+cannot repair or obstruct the missing quantitatively controlled identity-zero intertwiner within
+its regular-unit orbit. What remains is the noncentral **bounded-Hardy trivialization problem**
+modulo regular scalar units. Ordinary holomorphic cocycle cohomology already vanishes at each
+fixed particle number. Whether a global divisor framing is needed to classify the quantitative
+obstruction is open; the ordinary `O(N)` projective germ is regular at zero after choosing a
+nonvanishing channel pivot.
 
 The theorem is therefore a real compact-local bridge, not a completed construction of the
 `O(N)` model or of a projective-HT nonabelian model.  It removes the zero-anchor trace
-obstruction and leaves the analytic cocycle problem exposed.
+obstruction and leaves the uniformly conditioned Hardy-frame problem exposed.
 
 ## Physical consequence for projective HT
 
@@ -176,14 +186,15 @@ The exact nonabelian HT construction lane is now
 ```text
 positive-unitary projective-HT quantum R, R(0)=-P
   -> braid conversion with zero -I
-  -> identity-zero analytic intertwiner
+  -> uniformly exp-bounded identity-zero intertwiner
   -> modular nuclearity and compact-local observables.         (15)
 ```
 
 There is no state-dimension penalty in the trace mechanism beyond the existing exponential
 factor `d^n`, which is dominated by `n!`.  Thus internal channel complexity and projective
-HT are compatible with the nuclearity estimate in principle; the remaining obstruction is
-analytic coherence of the Yang--Baxter cocycle, not thermodynamic state counting.
+HT are compatible with the nuclearity estimate in principle; the Yang--Baxter cocycle is
+qualitatively coherent and holomorphically trivial at fixed `n`.  The remaining obstruction is
+uniformly conditioned bounded trivialization, not thermodynamic state counting.
 
 ## Anti-theatre attacks
 
@@ -193,8 +204,9 @@ analytic coherence of the Yang--Baxter cocycle, not thermodynamic state counting
    pays `d^n`; it succeeds because the published estimate already contains that factor.
 3. **Equal masses silently assumed.**  Not needed for the bound: the published mass-gap
    domination makes the relevant nuclear operator scalar on `K`.
-4. **The `O(N)` model declared constructed.**  False.  Crossing and reconstruction are now
-   convention-correct, but the all-particle analytic intertwiner remains open.
+4. **The `O(N)` model declared constructed.**  False.  Crossing, reconstruction, and fixed-`n`
+   holomorphic triviality are now established, but the uniformly `exp(O(n))`-conditioned
+   all-particle intertwiner remains open.
 5. **An elementary trace estimate advertised as new physics.**  The scientific content is
    the removal of the purported Pauli obstruction on the convention-correct nonabelian
    locality lane.  Novelty still requires a literature audit.
@@ -215,9 +227,9 @@ factorial improvement needed to overcome the `n^n` Hardy loss.
 
 1. Formulate the identity-zero intertwiner property independently of the source's
    convention-conflicted `O(N)` discussion.
-2. Construct all-particle bounded analytic identity-zero intertwiners for a genuinely
-   mixing physical model.
-3. Define and detect a quantitative analytic-cocycle obstruction after regular scalar-unit CDD
+2. Construct identity-zero frames with uniform `exp(O(n))` Hardy bounds for a genuinely mixing
+   physical model; qualitative fixed-`n` holomorphic frames already exist.
+3. Define and detect a quantitative bounded-cocycle obstruction after regular scalar-unit CDD
    dressing is removed; test rather than assume that divisor framing is part of it.
 4. Audit later modular-nuclearity and twisted-Fock literature for this partial-
    antisymmetry theorem.
@@ -241,7 +253,8 @@ factorial improvement needed to overcome the `n^n` Hardy loss.
 - [x] mass-gap replacement removes equal-mass dependence
 - [x] modular-nuclearity summability proved under the identity-zero intertwiner
 - [x] right-flip crossing and scattering-reconstruction audit
-- [ ] all-particle analytic identity-zero intertwiner
+- [x] fixed-particle holomorphic identity-zero frame
+- [ ] uniformly `exp(O(n))`-conditioned identity-zero intertwiner
 - [x] anchor-preserving scalar CDD factors proved neutral for the intertwiner gate
 - [ ] literature novelty audit
 - [ ] unconditional Lean formalization of the finite reusable skeleton

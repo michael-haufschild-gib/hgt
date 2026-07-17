@@ -178,8 +178,10 @@ The proof eliminates:
 2. every reduced-word/sorting-network construction from one collision-normalized universal
    two-body Brauer factor satisfying the required `n=2` equation.
 
-It does **not** eliminate the Alazzawi--Lechner all-particle intertwiner itself.  A surviving
-construction may use:
+It does **not** eliminate the Alazzawi--Lechner all-particle intertwiner itself.  In fact,
+`../2-fully-proven/not_new_scientific_knowledge/fixed-particle-holomorphic-acyclicity-identity-zero-yang-baxter.md`
+now proves abstractly that a holomorphic invertible frame exists for every fixed particle number.
+A surviving quantitatively controlled construction may use:
 
 ```text
 a genuine three-body or higher partial twist/associator,
@@ -188,7 +190,8 @@ an n-dependent non-pair operator with its own Hardy estimate.                 (1
 ```
 
 Thus failure identifies a new structural requirement: the two-particle square root does not carry
-the associativity data needed at particle number three.
+the multiparticle data needed at particle number three.  The missing frame is genuinely
+multiparticle, quantitatively uncontrolled by ordinary Oka descent, or both.
 
 ## Divisor warning from standard Brauer factors
 
@@ -255,4 +258,5 @@ finite wrapper around the route kill, not a formalization of the missing associa
 - [x] surviving associator/corrected-word route isolated
 - [ ] independent specialist novelty audit
 - [ ] all bounded-multiplicity corrective pair words classified
-- [ ] genuine three-body partial twist or obstruction constructed
+- [x] abstract fixed-`n` holomorphic frame exists outside the killed ansatz
+- [ ] explicit, quantitatively controlled three-body partial twist or obstruction constructed

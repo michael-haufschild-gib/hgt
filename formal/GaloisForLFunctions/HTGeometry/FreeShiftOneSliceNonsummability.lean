@@ -42,7 +42,8 @@ def freeShiftPolynomialEquiv {K α : Type*} [Field K] (k : ℤ) :
 
 def freeShiftFieldEquiv {K α : Type*} [Field K] (k : ℤ) :
     FreeShiftField K α ≃ₐ[K] FreeShiftField K α :=
-  IsFractionRing.algEquivOfAlgEquiv (freeShiftPolynomialEquiv k)
+  IsFractionRing.algEquivOfAlgEquiv
+    (freeShiftPolynomialEquiv (K := K) (α := α) k)
 
 @[simp] theorem freeShiftPolynomialEquiv_X {K α : Type*} [Field K]
     (k : ℤ) (x : FreeShiftJetIndex α) :
@@ -55,14 +56,16 @@ def freeShiftFieldEquiv {K α : Type*} [Field K] (k : ℤ) :
     freeShiftFieldEquiv (K := K) k
         (algebraMap (FreeShiftPolynomial K α) (FreeShiftField K α) p) =
       algebraMap (FreeShiftPolynomial K α) (FreeShiftField K α)
-        (freeShiftPolynomialEquiv k p) := by
-  exact IsFractionRing.algEquivOfAlgEquiv_algebraMap _ _
+        (freeShiftPolynomialEquiv (K := K) (α := α) k p) := by
+  exact IsFractionRing.algEquivOfAlgEquiv_algebraMap
+    (freeShiftPolynomialEquiv (K := K) (α := α) k) p
 
 theorem freeShiftJetIndexEquiv_add {α : Type*} (a b : ℤ) (x : FreeShiftJetIndex α) :
     freeShiftJetIndexEquiv a (freeShiftJetIndexEquiv b x) =
       freeShiftJetIndexEquiv (a + b) x := by
   rcases x with ⟨i, m, n⟩
-  simp [freeShiftJetIndexEquiv, add_assoc]
+  simp only [freeShiftJetIndexEquiv, Equiv.coe_fn_mk, Prod.mk.injEq, true_and]
+  abel
 
 theorem freeShiftPolynomialEquiv_add {K α : Type*} [Field K]
     (a b : ℤ) (p : FreeShiftPolynomial K α) :
@@ -70,8 +73,12 @@ theorem freeShiftPolynomialEquiv_add {K α : Type*} [Field K]
       freeShiftPolynomialEquiv (a + b) p := by
   simp only [freeShiftPolynomialEquiv, MvPolynomial.renameEquiv_apply,
     MvPolynomial.rename_rename]
-  apply MvPolynomial.rename_congr
-  exact fun x => freeShiftJetIndexEquiv_add a b x
+  apply MvPolynomial.hom_congr_vars
+  · ext c
+    simp
+  · intro x _ _
+    simp [freeShiftJetIndexEquiv_add]
+  · rfl
 
 theorem freeShiftFieldEquiv_add {K α : Type*} [Field K]
     (a b : ℤ) (x : FreeShiftField K α) :
@@ -83,20 +90,22 @@ theorem freeShiftFieldEquiv_add {K α : Type*} [Field K]
 
 def freeShiftOneSlice {K α : Type*} [Field K]
     (c : (α × ℕ) →₀ K) : FreeShiftPolynomial K α :=
-  c.sum fun j a => MvPolynomial.C a * MvPolynomial.X (j.1, (0, j.2))
+  c.sum fun j a => (MvPolynomial.C a : FreeShiftPolynomial K α) *
+    (MvPolynomial.X (j.1, (0, j.2)) : FreeShiftPolynomial K α)
 
 def freeShiftOrbitSum {K α : Type*} [Field K]
     (N : ℕ) (c : (α × ℕ) →₀ K) : FreeShiftPolynomial K α :=
   ∑ k : Fin N, c.sum fun j a =>
-    MvPolynomial.C a * MvPolynomial.X (j.1, ((k : ℕ), j.2))
+    (MvPolynomial.C a : FreeShiftPolynomial K α) *
+      (MvPolynomial.X (j.1, ((k : ℕ), j.2)) : FreeShiftPolynomial K α)
 
 @[simp] theorem freeShiftPolynomialEquiv_oneSlice {K α : Type*} [Field K]
     (k : ℕ) (c : (α × ℕ) →₀ K) :
     freeShiftPolynomialEquiv (K := K) (k : ℤ) (freeShiftOneSlice c) =
-      c.sum fun j a => MvPolynomial.C a *
-        MvPolynomial.X (j.1, ((k : ℕ), j.2)) := by
+      c.sum fun j a => (MvPolynomial.C a : FreeShiftPolynomial K α) *
+        (MvPolynomial.X (j.1, ((k : ℕ), j.2)) : FreeShiftPolynomial K α) := by
   classical
-  simp [freeShiftOneSlice, freeShiftPolynomialEquiv,
+  simp [freeShiftOneSlice, Finsupp.sum, freeShiftPolynomialEquiv,
     MvPolynomial.renameEquiv_apply, freeShiftJetIndexEquiv]
 
 theorem freeShiftField_telescope {K α : Type*} [Field K]
@@ -105,7 +114,15 @@ theorem freeShiftField_telescope {K α : Type*} [Field K]
     freeShiftFieldEquiv (K := K) (N : ℤ) g - g =
       ∑ k ∈ Finset.range N, freeShiftFieldEquiv (K := K) (k : ℤ) F := by
   induction N with
-  | zero => simp
+  | zero =>
+      obtain ⟨p, q, hq, rfl⟩ :=
+        IsFractionRing.div_surjective (FreeShiftPolynomial K α) g
+      rw [map_div₀]
+      simp only [freeShiftFieldEquiv_algebraMap, freeShiftPolynomialEquiv,
+        MvPolynomial.renameEquiv_apply, freeShiftJetIndexEquiv, zero_add]
+      rw [show (fun x : FreeShiftJetIndex α => x) = id by rfl,
+        MvPolynomial.rename_id_apply, MvPolynomial.rename_id_apply]
+      ring
   | succ N ih =>
       have hstep : freeShiftFieldEquiv (K := K) (N + 1 : ℤ) g =
           freeShiftFieldEquiv (K := K) (N : ℤ)
@@ -114,9 +131,24 @@ theorem freeShiftField_telescope {K α : Type*} [Field K]
         congr 2
         push_cast
         omega
-      rw [hstep, sub_eq_iff_eq_add.mpr h, map_add, sub_eq_add_neg, ih,
-        Finset.sum_range_succ]
-      ring
+      have hcast : ((N + 1 : ℕ) : ℤ) = (N : ℤ) + 1 := by omega
+      rw [hcast, hstep]
+      calc
+        freeShiftFieldEquiv (K := K) (N : ℤ)
+              (freeShiftFieldEquiv (K := K) 1 g) - g =
+            freeShiftFieldEquiv (K := K) (N : ℤ) (F + g) - g := by
+              rw [sub_eq_iff_eq_add.mp h]
+        _ = freeShiftFieldEquiv (K := K) (N : ℤ) F +
+              (freeShiftFieldEquiv (K := K) (N : ℤ) g - g) := by
+              rw [map_add]
+              ring
+        _ = freeShiftFieldEquiv (K := K) (N : ℤ) F +
+              ∑ k ∈ Finset.range N, freeShiftFieldEquiv (K := K) (k : ℤ) F := by
+              rw [ih]
+        _ = ∑ k ∈ Finset.range (N + 1),
+              freeShiftFieldEquiv (K := K) (k : ℤ) F := by
+              rw [Finset.sum_range_succ]
+              ring
 
 theorem freeShiftField_telescope_oneSlice {K α : Type*} [Field K]
     (g : FreeShiftField K α) (c : (α × ℕ) →₀ K)
@@ -129,8 +161,8 @@ theorem freeShiftField_telescope_oneSlice {K α : Type*} [Field K]
   rw [freeShiftField_telescope g _ h N]
   simp only [freeShiftFieldEquiv_algebraMap, freeShiftPolynomialEquiv_oneSlice,
     ← map_sum]
-  rw [Fin.sum_univ_eq_sum_range]
-  rfl
+  congr 1
+  rw [freeShiftOrbitSum, Fin.sum_univ_eq_sum_range]
 
 theorem rename_eq_rename_of_eq_on_vars
     {K σ τ : Type*} [CommRing K] (f g : σ → τ) (p : MvPolynomial σ K)
@@ -173,22 +205,40 @@ theorem rename_freeShiftOrbitSum_ne_zero
   rw [map_zero, MvPolynomial.eval_rename] at heval
   have hinner (k : Fin N) :
       MvPolynomial.eval (e ∘ collapse)
-          (c.sum fun j' a => MvPolynomial.C a *
-            MvPolynomial.X (j'.1, ((k : ℕ), j'.2))) =
+          (c.sum fun j' a => (MvPolynomial.C a : FreeShiftPolynomial K α) *
+            (MvPolynomial.X (j'.1, ((k : ℕ), j'.2)) : FreeShiftPolynomial K α)) =
         if k = k0 then c j else 0 := by
-    rw [Finsupp.sum]
+    rw [Finsupp.sum, map_sum]
+    have hterm (j' : α × ℕ) (a : K) :
+        MvPolynomial.eval (e ∘ collapse)
+            ((MvPolynomial.C a : FreeShiftPolynomial K α) *
+              (MvPolynomial.X (j'.1, ((k : ℕ), j'.2)) :
+                FreeShiftPolynomial K α)) =
+          if j' = j ∧ k = k0 then a else 0 := by
+      simp only [map_mul, MvPolynomial.eval_C, MvPolynomial.eval_X,
+        Function.comp_apply]
+      have he : e (collapse (freeShiftOrbitIndex (j', k))) =
+          if j' = j ∧ k = k0 then 1 else 0 := by
+        simp only [e, target]
+        rw [if_congr (hEq j' k) rfl rfl]
+      rw [show (j'.1, ((k : ℕ), j'.2)) = freeShiftOrbitIndex (j', k) by rfl, he]
+      split_ifs <;> simp
+    simp_rw [hterm]
     by_cases hk : k = k0
-    · rw [if_pos hk, Finset.sum_eq_single j]
-      · simp [e, target, hEq, hk]
-      · intro j' hj'supp hj'ne
-        simp [e, target, hEq, hk, hj'ne]
+    · rw [if_pos hk]
+      subst k
+      simp only [and_true]
+      rw [Finset.sum_eq_single j]
+      · simp
+      · intro j' _ hj'ne
+        simp [hj'ne]
       · exact fun hnot => (hnot hjmem).elim
     · rw [if_neg hk]
       apply Finset.sum_eq_zero
-      intro j' hj'supp
-      simp [e, target, hEq, hk]
+      intro j' _
+      simp [hk]
   simp only [freeShiftOrbitSum, map_sum, hinner] at heval
-  rw [Finset.sum_ite_eq' (Finset.mem_univ k0)] at heval
+  simp only [Fintype.sum_ite_eq'] at heval
   exact hj heval
 
 /-- A nonzero finite linear form on one slice of the bilateral free differential grid is not a
@@ -206,7 +256,7 @@ theorem freeShiftOneSlice_ne_coboundary
   let S : Finset (FreeShiftJetIndex α) := p.vars ∪ q.vars
   let differences : Finset ℕ :=
     (S ×ˢ S).image fun xy => (xy.1.2.1 - xy.2.2.1).natAbs
-  let N : ℕ := differences.sum + 1
+  let N : ℕ := Finset.sum differences id + 1
   have hN : 0 < N := by
     dsimp [N]
     omega
@@ -221,8 +271,9 @@ theorem freeShiftOneSlice_ne_coboundary
     have hmem : (x.2.1 - y.2.1).natAbs ∈ differences := by
       apply Finset.mem_image.mpr
       exact ⟨(x, y), Finset.mem_product.mpr ⟨hx, hy⟩, rfl⟩
-    have hle : (x.2.1 - y.2.1).natAbs ≤ differences.sum :=
-      Finset.single_le_sum (fun _ _ => Nat.zero_le _) hmem
+    have hle : (x.2.1 - y.2.1).natAbs ≤ Finset.sum differences id :=
+      Finset.single_le_sum (s := differences) (f := id)
+        (fun _ _ => Nat.zero_le _) hmem
     have hdiff : x.2.1 - y.2.1 = (N : ℤ) := by
       have hm := congrArg (fun z : FreeShiftJetIndex α => z.2.1) heq
       rw [hshiftN_apply] at hm
@@ -234,16 +285,17 @@ theorem freeShiftOneSlice_ne_coboundary
   let collapse : FreeShiftJetIndex α → FreeShiftJetIndex α := fun x =>
     if hex : ∃ y, y ∈ S ∧ shiftN y = x then Classical.choose hex else x
   have hcollapse_self (x : FreeShiftJetIndex α) (hx : x ∈ S) : collapse x = x := by
-    rw [collapse, dif_neg]
-    intro hex
-    obtain ⟨y, hy, heq⟩ := hex
+    dsimp only [collapse]
+    rw [dif_neg]
+    rintro ⟨y, hy, heq⟩
     exact hdisj x hx y hy heq
   have hcollapse_shift (x : FreeShiftJetIndex α) (hx : x ∈ S) :
       collapse (shiftN x) = x := by
     let hex : ∃ y, y ∈ S ∧ shiftN y = shiftN x := ⟨x, hx, rfl⟩
-    rw [collapse, dif_pos hex]
+    dsimp only [collapse]
+    rw [dif_pos hex]
     apply shiftN.injective
-    exact (Classical.choose_spec hex).2.2
+    exact (Classical.choose_spec hex).2
   have hcollapse_poly_self (r : FreeShiftPolynomial K α) (hr : r.vars ⊆ S) :
       MvPolynomial.rename collapse r = r := by
     calc
@@ -283,17 +335,21 @@ theorem freeShiftOneSlice_ne_coboundary
     by_cases hx : ∃ u, u ∈ S ∧ shiftN u = x
     · by_cases hy : ∃ u, u ∈ S ∧ shiftN u = y
       · have huv : Classical.choose hx = Classical.choose hy := by
-          simpa [collapse, x, y, dif_pos hx, dif_pos hy] using heq
+          change (if hex : ∃ u, u ∈ S ∧ shiftN u = x then Classical.choose hex else x) =
+            (if hex : ∃ u, u ∈ S ∧ shiftN u = y then Classical.choose hex else y) at heq
+          simpa only [dif_pos hx, dif_pos hy] using heq
         apply horbitIndexInj
         change x = y
         calc
-          x = shiftN (Classical.choose hx) := (Classical.choose_spec hx).2.2.symm
+          x = shiftN (Classical.choose hx) := (Classical.choose_spec hx).2.symm
           _ = shiftN (Classical.choose hy) := by rw [huv]
-          _ = y := (Classical.choose_spec hy).2.2
+          _ = y := (Classical.choose_spec hy).2
       · have hxy : Classical.choose hx = y := by
-          simpa [collapse, x, y, dif_pos hx, dif_neg hy] using heq
+          change (if hex : ∃ u, u ∈ S ∧ shiftN u = x then Classical.choose hex else x) =
+            (if hex : ∃ u, u ∈ S ∧ shiftN u = y then Classical.choose hex else y) at heq
+          simpa only [dif_pos hx, dif_neg hy] using heq
         have hm1 := congrArg (fun t : FreeShiftJetIndex α => t.2.1)
-          (Classical.choose_spec hx).2.2
+          (Classical.choose_spec hx).2
         have hm2 := congrArg (fun t : FreeShiftJetIndex α => t.2.1) hxy
         rcases z with ⟨⟨a, n⟩, k⟩
         rcases w with ⟨⟨b, m⟩, l⟩
@@ -301,16 +357,20 @@ theorem freeShiftOneSlice_ne_coboundary
         omega
     · by_cases hy : ∃ u, u ∈ S ∧ shiftN u = y
       · have hxy : x = Classical.choose hy := by
-          simpa [collapse, x, y, dif_neg hx, dif_pos hy] using heq
+          change (if hex : ∃ u, u ∈ S ∧ shiftN u = x then Classical.choose hex else x) =
+            (if hex : ∃ u, u ∈ S ∧ shiftN u = y then Classical.choose hex else y) at heq
+          simpa only [dif_neg hx, dif_pos hy] using heq
         have hm1 := congrArg (fun t : FreeShiftJetIndex α => t.2.1)
-          (Classical.choose_spec hy).2.2
+          (Classical.choose_spec hy).2
         have hm2 := congrArg (fun t : FreeShiftJetIndex α => t.2.1) hxy
         rcases z with ⟨⟨a, n⟩, k⟩
         rcases w with ⟨⟨b, m⟩, l⟩
         simp only [x, y, freeShiftOrbitIndex, hshiftN_apply] at hm1 hm2
         omega
       · apply horbitIndexInj
-        simpa [collapse, x, y, dif_neg hx, dif_neg hy] using heq
+        change (if hex : ∃ u, u ∈ S ∧ shiftN u = x then Classical.choose hex else x) =
+          (if hex : ∃ u, u ∈ S ∧ shiftN u = y then Classical.choose hex else y) at heq
+        simpa only [dif_neg hx, dif_neg hy] using heq
   have horbit : MvPolynomial.rename collapse (freeShiftOrbitSum N c) ≠ 0 :=
     rename_freeShiftOrbitSum_ne_zero N hN c hc collapse hcollapseOrbitInj
   have htel := freeShiftField_telescope_oneSlice
@@ -318,7 +378,8 @@ theorem freeShiftOneSlice_ne_coboundary
     (algebraMap (FreeShiftPolynomial K α) (FreeShiftField K α) p /
       algebraMap (FreeShiftPolynomial K α) (FreeShiftField K α) q) c h N
   have hqN : freeShiftPolynomialEquiv (K := K) (N : ℤ) q ≠ 0 :=
-    (freeShiftPolynomialEquiv (K := K) (N : ℤ)).injective.ne hq
+    (freeShiftPolynomialEquiv (K := K) (N : ℤ)).injective.ne
+      (mem_nonZeroDivisors_iff_ne_zero.mp hq)
   have hfrac :
       algebraMap (FreeShiftPolynomial K α) (FreeShiftField K α)
           (freeShiftPolynomialEquiv (K := K) (N : ℤ) p) /
@@ -337,13 +398,15 @@ theorem freeShiftOneSlice_ne_coboundary
     apply (IsFractionRing.injective (FreeShiftPolynomial K α)
       (FreeShiftField K α))
     simp only [map_sub, map_mul]
-    field_simp at hfrac ⊢
+    have hq0 : q ≠ 0 := mem_nonZeroDivisors_iff_ne_zero.mp hq
+    field_simp [hqN, hq0] at hfrac ⊢
     exact hfrac
   have hcollapsed := congrArg (MvPolynomial.rename collapse) hcross
   simp only [map_sub, map_mul, hcollapse_poly_shift p hpvars,
     hcollapse_poly_shift q hqvars, hcollapse_poly_self p hpvars,
     hcollapse_poly_self q hqvars, sub_self, zero_eq_mul] at hcollapsed
-  exact horbit ((mul_eq_zero.mp hcollapsed).resolve_right (mul_ne_zero hq hq))
+  have hq0 : q ≠ 0 := mem_nonZeroDivisors_iff_ne_zero.mp hq
+  exact horbit (hcollapsed.resolve_right (mul_ne_zero hq0 hq0))
 
 end
 

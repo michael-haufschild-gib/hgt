@@ -15,6 +15,7 @@ open Matroid
 
 variable {Ω : Type*} [DecidableEq Ω]
 
+omit [DecidableEq Ω] in
 /-- A finite set has finite extended matroid rank. -/
 theorem matroid_eRk_ne_top (M : Matroid Ω) (s : Finset Ω) :
     M.eRk (↑s : Set Ω) ≠ ⊤ := by

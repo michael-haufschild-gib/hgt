@@ -537,7 +537,7 @@ theorem uniformFace_nestedStar_indep {V : Type*} [DecidableEq V]
     (hAtomic : ∀ J ∈ faces, R.IndepSet (O J))
     (hAut : ∀ q, σ q ∈ R.rankAutSubgroup)
     (hFree : ∀ (A : Finset V) (q : V), A.card < s → q ∉ A →
-      R.HasFreeTranslates (σ q) (faceStar faces O (insert q A)))
+      HasFreeTranslates (σ q) (faceStar faces O (insert q A)))
     (hOff : ∀ (A : Finset V) (q : V), A.card < s → q ∉ A →
       R.CrossNeutral (σ q)
         (⋃ J ∈ (faces.filter (fun J => A ⊆ J)).filter (fun J => q ∉ J), O J)) :
@@ -549,7 +549,7 @@ theorem uniformFace_nestedStar_indep {V : Type*} [DecidableEq V]
     | h d ih =>
       by_cases hge : s ≤ A.card
       · by_cases hA : A ∈ faces
-        · apply indepSet_mono (hAtomic A hA)
+        · apply R.indepSet_mono (hAtomic A hA)
           intro x hx
           rw [faceStar, Set.mem_iUnion₂] at hx
           obtain ⟨J, hJ, hxJ⟩ := hx
@@ -560,8 +560,9 @@ theorem uniformFace_nestedStar_indep {V : Type*} [DecidableEq V]
             exact hge)
           simpa [← hEq] using hxJ
         · have hempty : faceStar faces O A = ∅ := by
-            apply Set.eq_empty_iff_forall_not_mem.mpr
-            intro x hx
+            ext x
+            simp only [Set.mem_empty_iff_false, iff_false]
+            intro hx
             rw [faceStar, Set.mem_iUnion₂] at hx
             obtain ⟨J, hJ, _⟩ := hx
             have hJ' := Finset.mem_filter.mp hJ
@@ -593,7 +594,7 @@ theorem uniformFace_nestedStar_indep {V : Type*} [DecidableEq V]
           exact hAut q.1
         · intro q
           have hmeasure : s - (insert q.1 A).card < d := by
-            rw [Finset.card_insert_of_not_mem q.2, ← hd]
+            rw [Finset.card_insert_of_notMem q.2, ← hd]
             omega
           have hrec := ih (s - (insert q.1 A).card) hmeasure (insert q.1 A) rfl
           simpa [faceStar, edges, inc, Finset.insert_subset_iff,

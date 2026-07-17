@@ -42,13 +42,18 @@ theorem two_le_xiHorizontalMultiplicity_of_offLine
     rcases hz with rfl | rfl
     · exact hρ
     · exact hreflect
-  have hle := Finset.sum_le_sum_of_subset hpair
-      (f := fun z => (analyticOrderAt xi z).toNat)
-  rw [Finset.sum_pair hne, xi_orderAt_lineReflect] at hle
+  have hle :
+      (analyticOrderAt xi ρ).toNat +
+          (analyticOrderAt xi (lineReflect ρ)).toNat ≤
+        xiHorizontalMultiplicity ρ.im := by
+    rw [xiHorizontalMultiplicity]
+    simpa only [Finset.sum_pair hne] using
+      (Finset.sum_le_sum_of_subset hpair
+        (f := fun z => (analyticOrderAt xi z).toNat))
+  rw [xi_orderAt_lineReflect] at hle
   have hzero : xi ρ = 0 := (mem_stripHeightFinset.mp hρ).2.2.2
   have hpos : 1 ≤ (analyticOrderAt xi ρ).toNat :=
     Nat.one_le_iff_ne_zero.mpr (xi_order_toNat_ne_zero hzero)
-  rw [xiHorizontalMultiplicity]
   omega
 
 /-- The intrinsic group of Xi zeros whose complete horizontal fiber has total multiplicity one. -/
@@ -58,20 +63,27 @@ def XiHorizontalSingletonZero (ρ : ℂ) : Prop :=
 /-- Every horizontal-singleton Xi zero lies on the critical line. -/
 theorem xiHorizontalSingletonZero_re_eq_half {ρ : ℂ}
     (hρ : XiHorizontalSingletonZero ρ) : ρ.re = 1 / 2 := by
+  change ρ ∈ stripHeightFinset ρ.im ∧ xiHorizontalMultiplicity ρ.im = 1 at hρ
   by_contra hoff
   have htwo := two_le_xiHorizontalMultiplicity_of_offLine hρ.1 hoff
+  rw [hρ.2] at htwo
   omega
 
 /-- Every horizontal-singleton Xi zero is simple. -/
 theorem xiHorizontalSingletonZero_order_eq_one {ρ : ℂ}
     (hρ : XiHorizontalSingletonZero ρ) :
     (analyticOrderAt xi ρ).toNat = 1 := by
+  change ρ ∈ stripHeightFinset ρ.im ∧ xiHorizontalMultiplicity ρ.im = 1 at hρ
   have hzero : xi ρ = 0 := (mem_stripHeightFinset.mp hρ.1).2.2.2
   have hpos : 1 ≤ (analyticOrderAt xi ρ).toNat :=
     Nat.one_le_iff_ne_zero.mpr (xi_order_toNat_ne_zero hzero)
   have hle : (analyticOrderAt xi ρ).toNat ≤ xiHorizontalMultiplicity ρ.im := by
     rw [xiHorizontalMultiplicity]
-    exact Finset.single_le_sum (fun z _ => Nat.zero_le _) hρ.1
+    exact Finset.single_le_sum
+      (s := stripHeightFinset ρ.im)
+      (f := fun z => (analyticOrderAt xi z).toNat)
+      (fun z _ => Nat.zero_le _) hρ.1
+  rw [hρ.2] at hle
   omega
 
 end

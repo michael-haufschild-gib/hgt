@@ -203,9 +203,11 @@ physical quantum R_phys(0)=-P + intrinsic mixing
 braid B_phys(0)=-I,
 ```
 
-where compact locality needs the identity-zero braid intertwiner or a direct quantum-convention
-reconstruction theorem already isolated elsewhere in the corpus.  No state-dimension jump follows
-without solving that separate locality problem.
+where compact locality needs an identity-zero braid intertwiner with uniform `exp(O(n))` Hardy
+conditioning, or a direct quantum-convention reconstruction theorem already isolated elsewhere in
+the corpus.  Ordinary fixed-particle holomorphic frames exist by Oka descent, but do not imply
+that quantitative property. No state-dimension jump follows without solving that separate
+locality problem.
 
 ## Anti-theatre gate
 
@@ -255,4 +257,5 @@ that classification, or finding a classification-free proof, creates a substanti
 - [ ] expert novelty assessment of the full-sixteen-entry corollary
 - [ ] classification-free proof
 - [ ] unconditional Lean formalization of a substantive proof surface
-- [ ] identity-zero braid intertwiner for intrinsically mixing physical quantum scattering
+- [x] identity-zero fixed-particle holomorphic frame for intrinsically mixing scattering
+- [ ] uniformly `exp(O(n))`-conditioned identity-zero braid intertwiner

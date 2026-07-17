@@ -171,8 +171,9 @@ The exact constructive target is now convention-correct:
    intrinsic mixing, and projective HT;
 2. pass to its braid conversion with zero `-I`;
 3. use the proved identity-zero Pauli trace and conditional modular-nuclearity theorem;
-   the remaining analytic input is an all-particle bounded intertwiner into the
-   identity-zero invariant subspace, or a direct quantum-convention reformulation;
+   the remaining analytic input is an all-particle intertwiner with uniform `exp(O(n))` Hardy
+   conditioning into the identity-zero invariant subspace, or a direct quantum-convention
+   reformulation; ordinary fixed-`n` holomorphic frames already exist by Oka descent;
 4. use the proved scattering identity `R=B P` to reconstruct the original quantum
    S-matrix on the ordered rapidity chamber.
 
@@ -214,8 +215,8 @@ proof would admit genuine physical projective-HT mixing.
    `R_phys=B P` or an erratum correcting the later `O(N)` coefficient order.
 2. Search the operator-algebraic QFT literature for an identity-zero braid intertwiner or a
    quantum-convention S-symmetric Fock construction.
-3. Construct the all-particle bounded analytic intertwiner required by the proved
-   identity-zero modular-nuclearity trace theorem.
+3. Construct the all-particle uniformly `exp(O(n))`-conditioned intertwiner required by the
+   proved identity-zero modular-nuclearity trace theorem.
 4. Determine whether crossing and PCT force `U_x=V_x` or a common rapidity-independent
    product basis in the flip-anchored adjacent class.
 5. Formalize `(5)` and the operator-Schmidt local-diagonality theorem unconditionally in
@@ -244,6 +245,7 @@ proof would admit genuine physical projective-HT mixing.
 - [x] identity-zero Pauli trace estimate
 - [x] conditional identity-zero modular-nuclearity theorem
 - [x] crossing transport and right-flip scattering-reconstruction theorem
-- [ ] identity-zero all-particle bounded analytic intertwiner
+- [x] identity-zero fixed-particle holomorphic frame
+- [ ] identity-zero all-particle uniformly `exp(O(n))`-conditioned intertwiner
 - [ ] unconditional Lean formalization
 - [ ] physical intrinsically mixing projective-HT compact-local model

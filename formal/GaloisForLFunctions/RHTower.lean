@@ -1599,3 +1599,4 @@ import GaloisForLFunctions.RHTower.XiZeroHurwitzObservableNet
 import GaloisForLFunctions.RHTower.LeeYangMarginalCarrier
 import GaloisForLFunctions.RHTower.ReciprocalDiscriminantGuardrails
 import GaloisForLFunctions.RHTower.PS4GaugeGhostPowerSums
+import GaloisForLFunctions.RHTower.HorizontalSingletonZeroFiber

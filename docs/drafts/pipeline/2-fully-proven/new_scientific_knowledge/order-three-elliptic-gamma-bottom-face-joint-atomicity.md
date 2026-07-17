@@ -277,9 +277,15 @@ coordinate sets (`Rank`), and derivation-commuting translations as its rank auto
 - `Rank.orderThree_sixFace_indep` specializes it to the complete graph on the four structural
   directions `Fin 4`, giving joint independence of the six bottom-face orbits.
 
-The analytic parent enters exactly as the three interfaces: that `dtrdeg` is such a rank, and, per
-direction, `FreeIndepOrbit` (edge atomicity plus geometric freeness) and `CrossNeutral` (off-face
-DA-triviality). Nothing in the Lean development depends on those interfaces being discharged.
+The rank interface is now discharged rather than assumed. `MatroidNatRank.matroidRank` turns the
+finite-set rank of any finitary mathlib matroid into the gluing `Rank`, with `Rank.IndepSet`
+equivalent to matroid independence. `DifferentialMatroidRank.differentialRank` specializes this to
+the genuine differential matroid, and
+`differentialRank_orderThree_sixFace_diffIndepOn` concludes actual `DiffIndepOn` for the six-face
+union. The only remaining concrete interfaces are, per structural direction, `FreeIndepOrbit`
+(atomicity plus geometric freeness) and `CrossNeutral` (off-face DA-triviality) for the actual
+elliptic-gamma face orbits. Those analytic hypotheses are not yet discharged in Lean, so this card
+remains in step 2.
 
 ## Attacks and boundaries
 
@@ -337,6 +343,8 @@ orbits or in reconstruction of the top primitive, not among the atomic bottom fa
 - [x] all six order-three bottom-face orbits proved jointly independent
 - [x] multiplicative elliptic-gamma family consequence derived
 - [x] exact/stronger/equivalent literature gate completed provisionally through 2026
+- [x] abstract gluing rank realized by the genuine differential matroid in Lean
+- [ ] actual elliptic-gamma `FreeIndepOrbit` and `CrossNeutral` hypotheses discharged in Lean
 - [ ] independent proof audit
 - [ ] independent specialist priority audit
 - [ ] independent audit of the order-one atomic parent

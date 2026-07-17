@@ -54,7 +54,7 @@ The correct separation is not “HT is abelian.” It is:
 
 ```text
 scalar CDD HT
-  is invisible to the existence of the all-particle analytic intertwiner;
+  is invisible to the quantitatively bounded all-particle intertwiner property;
 
 projective mixing HT
   is the genuinely open physical sector;

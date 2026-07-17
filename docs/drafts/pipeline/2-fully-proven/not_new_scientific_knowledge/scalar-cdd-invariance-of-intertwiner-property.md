@@ -1,4 +1,4 @@
-# Scalar CDD dressing does not change the all-particle intertwiner obstruction
+# Scalar CDD dressing does not change the quantitatively bounded intertwiner obstruction
 
 - **ID:** `scalar-cdd-invariance-of-intertwiner-property`
 - **Stage:** 2-fully-proven / not_new_scientific_knowledge
@@ -15,8 +15,8 @@
   intertwiner construction on a common admissible zero-neighborhood. Then `B` has the Alazzawi--Lechner
   all-particle intertwiner property if and only if the scalar-dressed family `phi B` has it. The
   exponential norm constants change only multiplicatively. Hence an anchor-preserving scalar CDD
-  factor, including an HT one, can neither remove nor create the Alazzawi--Lechner intertwiner
-  obstruction within that regular-unit orbit. This transfers their sufficient nuclearity
+  factor, including an HT one, can neither remove nor create the quantitatively bounded
+  Alazzawi--Lechner intertwiner obstruction within that regular-unit orbit. This transfers their sufficient nuclearity
   criterion; it is not an invariance theorem for modular nuclearity or for the resulting local
   nets themselves.
 
@@ -130,10 +130,10 @@ The theorem separates two kinds of differential complexity that had to be kept d
 ```text
 central scalar HT CDD dressing
   = explicit HT pair-string in the intertwiner,
-  but no change of the existence obstruction;
+  but no change of the bounded-Hardy obstruction;
 
-matrix analytic cocycle modulo regular scalar units
-  = the residual sector in which the all-particle intertwiner
+matrix bounded-Hardy cocycle modulo regular scalar units
+  = the residual sector in which the all-particle conditioning
     obstruction can still live.                                              (13)
 ```
 
@@ -207,9 +207,12 @@ group cohomology or pair count alone.
 
 ## Exact open core
 
-1. Determine whether there exists any global analytic refinement of the projective cocycle whose
-   vanishing is equivalent to the identity-zero intertwiner property. Divisor framing is only a
-   candidate until such a definition and equivalence theorem exist.
+1. Determine whether there exists a bounded-Hardy or Banach-cohomological refinement of the
+   projective cocycle whose vanishing is equivalent to the quantitative identity-zero
+   intertwiner property. Ordinary holomorphic cohomology already vanishes at each fixed particle
+   number by
+   `fixed-particle-holomorphic-acyclicity-identity-zero-yang-baxter.md`. Divisor framing is only a
+   candidate until such a controlled definition and equivalence theorem exist.
 2. Determine whether matrix Wiener--Hopf partial indices or a stronger several-variable invariant
    detects this class.
 3. Construct the class for one genuinely mixing positive-unitary quantum `R`-matrix after the

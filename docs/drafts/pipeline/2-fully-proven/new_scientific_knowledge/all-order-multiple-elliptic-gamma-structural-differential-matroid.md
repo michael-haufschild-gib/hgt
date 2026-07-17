@@ -628,12 +628,13 @@ The remaining formal dependency chain is substantive:
 The abstract gluing engine of item 6 — free-block replication and the simplicial-star orbit gluing
 over an arbitrary incidence predicate — is now formalized axiom-clean in
 `GaloisForLFunctions.DifferentialMatroidGluing`: `Rank.freeBlock`,
-`Rank.crossNeutral_iUnion_indep`, and `Rank.graphGluing`. Differential transcendence degree over the
-base is abstracted there as a monotone submodular subcardinal rank, and translations as its rank
-automorphisms; because incidence is an abstract predicate the gluing theorem applies uniformly to
-`s`-uniform hypergraphs (the nested-star discharge of the `FreeIndepOrbit` interface is what changes
-with arity). Discharging that rank abstraction and the `FreeIndepOrbit`/`CrossNeutral` interfaces
-from the special-function chain remains.
+`Rank.crossNeutral_iUnion_indep`, `Rank.graphGluing`, and
+`Rank.uniformFace_nestedStar_indep`. The last theorem performs the descending nested-star recursion
+for an arbitrary uniform face family. `MatroidNatRank.matroidRank` and
+`DifferentialMatroidRank.differentialRank` now discharge the rank abstraction: its `IndepSet`
+predicate is exactly differential independence in the genuine differential matroid. What remains
+is the concrete special-function chain discharging `FreeIndepOrbit` and `CrossNeutral`, followed by
+the Stanley--Reisner decomposition and the all-order capstone.
 
 The theorem must not move to Stage 3 until this chain terminates in the concrete statement (1),
 the formal lint passes, and `#print axioms` reports only Lean's standard logical axioms.
