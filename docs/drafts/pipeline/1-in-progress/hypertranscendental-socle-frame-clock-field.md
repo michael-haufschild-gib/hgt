@@ -453,6 +453,20 @@ close the first natural HT realization of `(13)`.  A failure must exhibit the fi
 polynomial kernel introduced by one of those coefficient transforms; that kernel would be the
 positive replacement invariant.
 
+There is an important correction to the geometric reading.  The shell map
+
+```text
+T_a(B)=B/(1-aB)
+```
+
+is a flat additive Mobius action: `T_a composed with T_b=T_(a+b)` and `1/T_a(B)=1/B-a`.
+Consequently `a_n` is a transport parameter, not a curvature, and a plaquette made only from these
+shells has zero commutator curvature.  This flatness is a strong positive theorem: the intrinsic
+`B_n`--`D_n` comparison is path-independent and triangular on coefficients.  It also rules out
+using the shell itself as the extension anomaly.  Any nonflat Gamma obstruction must come from an
+interaction with an independent direction--dualizing depth, jet normalization, polarization, or
+analytic continuation--and must be measured by a mixed comparison rather than by renaming `a_n`.
+
 ## 8. Strong falsifiers and positive residues
 
 1. If a natural constrained HT family has finite truncations whose minimal conservative readouts

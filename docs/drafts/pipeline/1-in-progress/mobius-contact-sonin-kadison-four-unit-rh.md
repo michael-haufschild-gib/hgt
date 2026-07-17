@@ -15,6 +15,7 @@
   - `../3-formalized/luders-pinching-sonin-commutator-discharge.md`
   - `../2-fully-proven/not_new_scientific_knowledge/ccm-hankel-boundary-relative-trace-four-unit-law.md`
   - `../2-fully-proven/not_new_scientific_knowledge/ccm-boundary-strip-weak-compactness-transfer-law.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/dyadic-squarefree-euler-fock-source-factorization.md`
 - **Statement:** Realize the completed all-prime contact-to-Xi continuation as the boundary
   disturbance of a source-calibrated Sonin/Lueders clock.  The exact Kadison energy partition then
   transports the incoming four-unit budget without an additional inequality and proves RH.
@@ -206,6 +207,55 @@ This also fixes the finite observable in the smallest brick.  The finite prime-p
 construction must act on `(11)` and intertwine its source cutoff with the physical boundary
 cutoff.  Producing an arbitrary `X_(N,u)` of the right norm is no longer admissible.
 
+## Canonical squarefree-to-Euler channel now proved
+
+The source incidence before Gamma/Sonin completion is no longer abstract.  The dyadic Fock
+factorization theorem uses the unique decomposition `n=d m^2`, with `d` squarefree, to construct
+the source-defined unitary
+
+```text
+(U f)(d,m)=mu(d)f(d m^2).                                (16)
+```
+
+For the normalized Euler state `e_sigma`, signed squarefree state `s_sigma`, and their centered
+critical Fisher tangents, it proves
+
+```text
+U e_sigma=s_sigma tensor e_(2sigma),
+
+U chi_E
+ =chi_sq tensor e_(2sigma)+s_sigma tensor r_sigma,
+
+||r_sigma||^2
+ =16(sigma-1)^2 Var_(e_(2sigma))(log n) ->0.             (17)
+```
+
+Thus the canonical isometry
+
+```text
+V_sigma x=U^*(x tensor e_(2sigma))                       (18)
+```
+
+sends the pointed squarefree state exactly to the Euler state and transports the polarized
+Fisher connection with the exact defect law
+
+```text
+||X_E-V_sigma X_sigma V_sigma^*||_HS^2=||r_sigma||^2->0. (19)
+```
+
+This is stronger than the existing `W_2` coupling: it is a linear pointed source channel.  It
+also identifies why literal sharp-cutoff intertwining fails.  Under `U`, the Euler cutoff is the
+joint affine projection
+
+```text
+log d+2log m<T,                                          (20)
+```
+
+not a tensor product of independent squarefree and residual cutoffs.  After dyadic iteration the
+constraint is `sum_r 2^r log d_r<T`.  Therefore the finite prime--Gamma/Sonin brick must act on
+this affine joint projection.  The remaining missing map is now the completion of `(16)`--`(20)`
+into the physical Sonin graph, not an arbitrary squarefree-to-Euler contraction.
+
 ## Lean boundary
 
 The following algebraic and finite-Hilbert pieces are already formalized:
@@ -229,6 +279,8 @@ finite algebra, are the proof-bearing theorem.
 - [x] source contact observable fixed as the pointed Fisher-connection derivative
 - [x] exact local commutator profile and native eight-to-four normalization proved on paper
 - [x] boundary-strip weak-limit transfer theorem available on paper
+- [x] canonical linear squarefree-to-Euler source channel and exact Fisher defect proved on paper
+- [x] source cutoff defect identified as an explicit affine dyadic boundary
 - [ ] construct the finite prime-power/Gamma/Sonin image of `(11)`
 - [ ] prove the direct source commutator identity `(15)`
 - [ ] prove graph-core convergence to `[P_u,D_Xi]`

@@ -621,8 +621,9 @@ The remaining formal dependency chain is substantive:
 4. theta logarithmic derivatives, elliptic gamma, the multiple-elliptic-gamma hierarchy, and their
    exact functional equations;
 5. elliptic principal parts and the non-torsion orbit-residue obstruction;
-6. free differential-shift nonsummability, nested-star gluing, the Stanley--Reisner decomposition,
-   and the rank theorem;
+6. free differential-shift nonsummability, nested-star gluing, and the Stanley--Reisner
+   decomposition; the generic dependent operator-row rank theorem is now formalized in
+   `DifferentialOperatorMatroid.lean`;
 7. the concrete all-order capstone with its additive and multiplicative corollaries.
 
 The abstract gluing engine of item 6 — free-block replication and the simplicial-star orbit gluing
@@ -632,8 +633,13 @@ over an arbitrary incidence predicate — is now formalized axiom-clean in
 `Rank.uniformFace_nestedStar_indep`. The last theorem performs the descending nested-star recursion
 for an arbitrary uniform face family. `MatroidNatRank.matroidRank` and
 `DifferentialMatroidRank.differentialRank` now discharge the rank abstraction: its `IndepSet`
-predicate is exactly differential independence in the genuine differential matroid. What remains
-is the concrete special-function chain discharging `FreeIndepOrbit` and `CrossNeutral`, followed by
+predicate is exactly differential independence in the genuine differential matroid. Differential
+automorphisms now preserve that rank automatically, and `CrossNeutral` follows from translated-
+packet closure inclusion. `Rank.hasFreeTranslates_of_intHeight` obtains free translates from the
+integer orbit-height law. `DifferentialOperatorMatroid.lean` identifies every finite family of
+polynomial differential-operator outputs with its ordinary localized row matroid, including the
+rank of dependent packets. What remains is the concrete special-function proof of star
+independence, the orbit-height realization, and the off-star packetwise DA statements, followed by
 the Stanley--Reisner decomposition and the all-order capstone.
 
 The theorem must not move to Stage 3 until this chain terminates in the concrete statement (1),

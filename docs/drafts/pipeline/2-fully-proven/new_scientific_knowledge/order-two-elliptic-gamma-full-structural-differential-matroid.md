@@ -308,13 +308,27 @@ transcendence degree. This proves (10). `QED`
 
 The relative orbit replication lemma and the joint independence of the three face branches are
 formalized axiom-clean in `GaloisForLFunctions.DifferentialMatroidGluing` as the abstract theorems
-`Rank.freeBlock` and `Rank.crossNeutral_iUnion_indep`, over a monotone submodular subcardinal rank
-that abstracts `dtrdeg` and its translation automorphisms. The three-branch case is the union of
-three free independent orbits whose directions are mutually rank-neutral (`CrossNeutral`). The
-special-function inputs — that `dtrdeg` is such a rank, each branch is a free independent orbit
-(`FreeIndepOrbit`), and each structural direction is DA-trivial off its own face — enter as those
-interfaces. The complete structural-matroid theorem additionally needs the differential-linear rank
-lemma, which is not part of this engine.
+`Rank.freeBlock` and `Rank.crossNeutral_iUnion_indep`. The genuine differential matroid now supplies
+the rank, differential automorphisms preserve it, integer orbit heights supply free translates,
+and packetwise DA supplies `CrossNeutral`. Thus the remaining special-function inputs are the
+actual branch differential independence and off-face packetwise DA theorems. The complete
+structural-matroid theorem additionally uses the differential-linear rank lemma. Its nonlinear core
+is formalized in `DifferentialOperatorToeplitzRank.lean` as
+`differentialIndependent_differentialOperatorRows_iff`: output differential independence is exactly
+polynomial operator-row independence. `DifferentialOperatorMatroid.lean` now supplies the missing
+dependent-family packaging. It constructs the ordinary row matroid over `Frac(C[delta])` and proves
+
+```text
+differentialFamilyMatroid_differentialOperatorRows_eq
+```
+
+so the genuine differential-family matroid of every finite operator-output packet equals that row
+matroid. The corollaries `differentialOperatorRows_eRk_eq_finrank_span` and
+`differentialOperatorRows_matroidRank_eq_finrank_span` identify that rank explicitly with the
+`Frac(C[delta])`-dimension of the localized row span for arbitrary dependent families. Thus the
+remaining inputs are analytic and special-function-specific: the actual three-branch
+differential-independence theorem, the off-face packetwise DA statements, and the hierarchy
+identification of the concrete order-two outputs with these operator rows.
 
 ## Consequences
 
@@ -440,6 +454,7 @@ complete nonlinear differential invariant.
 - [x] unique squarefree module decomposition proved
 - [x] complete additive structural differential matroid proved
 - [x] multiplicative finite-product matroid derived
+- [x] arbitrary dependent operator-row matroid and rank law formalized unconditionally in Lean
 - [ ] independent proof audit
 - [x] exact/stronger/equivalent literature audit completed provisionally through 2026
 - [ ] independent audit of the order-one atomic parent

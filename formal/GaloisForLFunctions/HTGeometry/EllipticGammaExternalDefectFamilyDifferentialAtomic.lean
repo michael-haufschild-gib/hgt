@@ -146,9 +146,10 @@ theorem ellipticGammaExternalDifferentialFamilySum_ne_ellipticFraction_of_nonzer
     hσ hτ hσnt hnonres hi₀ hLi₀ (hsep i₀ hi₀)
     hb hf hg hfa hgb hperiodOne hperiodTau
 
-/-- **Free differential matroid on separated actual elliptic-gamma defects.** A finite
+/-- **Free `ℂ[∂]`-module on separated actual elliptic-gamma defects.** A finite
 `ℂ[∂]`-combination of pairwise separated external defects vanishes exactly when every operator
-coefficient vanishes. -/
+coefficient vanishes. This is differential-linear freeness, not by itself nonlinear differential
+independence. -/
 theorem ellipticGammaExternalDifferentialFamilySum_eq_zero_iff
     {ι : Type*} [DecidableEq ι] {s : Finset ι}
     {L : ι → Polynomial ℂ} {h : ι → ℂ}

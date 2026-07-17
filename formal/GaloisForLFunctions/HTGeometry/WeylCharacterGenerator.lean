@@ -1,4 +1,4 @@
-import Mathlib.Analysis.Complex.Basic
+import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Tactic
 
 /-!
@@ -78,7 +78,7 @@ theorem hasDerivAt_scalarWeylCharacter (q : ℝ) (z : ℂ) :
   have hlinear :
       HasDerivAt (fun w : ℂ => -Complex.I * (q : ℂ) * w)
         (-Complex.I * (q : ℂ)) z := by
-    simpa only using (hasDerivAt_id z).const_mul (-Complex.I * (q : ℂ))
+    simpa using (hasDerivAt_id z).const_mul (-Complex.I * (q : ℂ))
   convert hlinear.cexp using 1 <;> simp only [scalarWeylCharacter] <;> ring
 
 /-- Pointwise derivative of the scalar Weyl character. -/
@@ -99,7 +99,10 @@ identity tangent of the unit-modulus character. -/
 theorem I_mul_deriv_scalarWeylCharacter_zero (q : ℝ) :
     Complex.I * deriv (scalarWeylCharacter q) 0 = (q : ℂ) := by
   rw [deriv_scalarWeylCharacter_zero]
-  ring
+  calc
+    Complex.I * (-Complex.I * (q : ℂ)) =
+        -(Complex.I * Complex.I) * (q : ℂ) := by ring
+    _ = (q : ℂ) := by rw [Complex.I_mul_I]; ring
 
 /-- A fixed bound on all real phase values imposes no bound on the recovered tangent charge.  This
 is the precise value-level escape from arguments that try to represent a growing source by one
@@ -114,7 +117,7 @@ theorem scalarWeylCharacter_bounded_and_generator_exact (q : ℝ) :
 at every real parameter, not only at the identity.  The conjugate phase removes the arbitrary
 point on the unitary orbit. -/
 def scalarWeylWignerSmithValue (q t : ℝ) : ℂ :=
-  Complex.I * Complex.conj (scalarWeylCharacter q (t : ℂ)) *
+  Complex.I * (starRingEnd ℂ) (scalarWeylCharacter q (t : ℂ)) *
     deriv (scalarWeylCharacter q) (t : ℂ)
 
 /-- The Wigner--Smith value of a scalar Weyl channel is exactly its generator everywhere on the
@@ -122,17 +125,20 @@ real parameter axis. -/
 theorem scalarWeylWignerSmithValue_eq (q t : ℝ) :
     scalarWeylWignerSmithValue q t = (q : ℂ) := by
   let χ := scalarWeylCharacter q (t : ℂ)
-  have hphase : Complex.conj χ * χ = 1 := by
-    rw [← Complex.normSq_eq_conj_mul_self, Complex.normSq_eq_norm_sq]
-    change ‖scalarWeylCharacter q (t : ℂ)‖ ^ 2 = 1
-    rw [norm_scalarWeylCharacter_ofReal]
+  have hnorm : ‖χ‖ = 1 := by
+    simpa only [χ] using norm_scalarWeylCharacter_ofReal q t
+  have hphase : (starRingEnd ℂ) χ * χ = 1 := by
+    rw [← Complex.normSq_eq_conj_mul_self, Complex.normSq_eq_norm_sq, hnorm]
     norm_num
   rw [scalarWeylWignerSmithValue, deriv_scalarWeylCharacter]
-  change Complex.I * Complex.conj χ *
+  change Complex.I * (starRingEnd ℂ) χ *
       (-Complex.I * (q : ℂ) * χ) = (q : ℂ)
   calc
-    Complex.I * Complex.conj χ * (-Complex.I * (q : ℂ) * χ) =
-        (q : ℂ) * (Complex.conj χ * χ) := by ring
+    Complex.I * (starRingEnd ℂ) χ * (-Complex.I * (q : ℂ) * χ) =
+        (q : ℂ) * ((starRingEnd ℂ) χ * χ) := by
+          ring_nf
+          rw [Complex.I_sq]
+          ring
     _ = (q : ℂ) := by rw [hphase, mul_one]
 
 end

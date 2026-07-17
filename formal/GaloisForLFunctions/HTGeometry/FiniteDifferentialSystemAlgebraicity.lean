@@ -1,4 +1,5 @@
-import GaloisForLFunctions.HTGeometry.SourceLogarithmicBoundary
+import GaloisForLFunctions.HTGeometry.DifferentialIndependence
+import Mathlib.RingTheory.AlgebraicIndependent.Transcendental
 
 /-!
 # Finite linear differential systems are coordinatewise DA
@@ -18,6 +19,45 @@ open scoped Differential
 namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
+
+private theorem not_algebraicIndependent_of_finsupp_linearCombination_eq_finiteSystem
+    {κ C K L : Type*} [Field C] [Field K] [Field L]
+    [Algebra C K] [Algebra C L] [Algebra K L] [IsScalarTower C K L]
+    (x : κ → L) (c : κ →₀ C) (hc : c ≠ 0) (a : K)
+    (hrel :
+      Finsupp.linearCombination L x
+        (Finsupp.mapRange (algebraMap C L)
+          (map_zero (algebraMap C L)) c) = algebraMap K L a) :
+    ¬ AlgebraicIndependent K x := by
+  classical
+  intro hAI
+  let P : MvPolynomial κ K :=
+    c.sum (fun j r => MvPolynomial.C (algebraMap C K r) * MvPolynomial.X j) -
+      MvPolynomial.C a
+  have hP : P ≠ 0 := by
+    obtain ⟨j, hj⟩ := Finsupp.ne_iff.mp hc
+    have hjmem : j ∈ c.support := Finsupp.mem_support_iff.mpr hj
+    let e0 : κ → K := fun _ => 0
+    let e1 : κ → K := fun i => if i = j then 1 else 0
+    intro hzero
+    have h0 := congrArg (MvPolynomial.eval e0) hzero
+    have h1 := congrArg (MvPolynomial.eval e1) hzero
+    rw [map_zero] at h0 h1
+    have h0' : -a = 0 := by
+      simpa [P, e0, Finsupp.sum] using h0
+    have h1' : algebraMap C K (c j) - a = 0 := by
+      simpa [P, e1, Finsupp.sum, hj, hjmem] using h1
+    have hjK : algebraMap C K (c j) ≠ 0 := by
+      simpa using (algebraMap C K).injective.ne hj
+    apply hjK
+    linear_combination h1' - h0'
+  apply hP
+  apply hAI.eq_zero_of_aeval_eq_zero
+  have hrel' := hrel
+  rw [Finsupp.linearCombination_apply,
+    Finsupp.sum_mapRange_index (fun _ => by simp)] at hrel'
+  simpa [P, Finsupp.sum, IsScalarTower.algebraMap_apply C K L]
+    using sub_eq_zero.mpr hrel'
 
 /-- A nonzero linear relation among the first `m+1` jets is already an algebraic dependence of the
 complete jet family. -/
@@ -39,7 +79,7 @@ theorem differentialAlgebraicOver_of_finite_jet_linearCombination_eq_zero
       (fun r : Fin (m + 1) => differentialJet r.1 x) := by
     simpa [Function.comp_def] using
       hfull.comp (fun r : Fin (m + 1) => ((), r.1)) hembed
-  exact (not_algebraicIndependent_of_finsupp_linearCombination_eq
+  exact (not_algebraicIndependent_of_finsupp_linearCombination_eq_finiteSystem
     (C := F) (K := F) (L := E)
     (fun r : Fin (m + 1) => differentialJet r.1 x) c hc 0 (by simpa using hrel)) hfinite
 

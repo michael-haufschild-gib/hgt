@@ -419,8 +419,11 @@ orbit, and the joint independence of the four order-two face orbits are formaliz
 `Rank.crossNeutral_iUnion_indep`, `Rank.graphGluing`,
 `Rank.graphGluing_of_indep_hasFreeTranslates`), over an abstract monotone submodular
 subcardinal rank standing for `dtrdeg`. The special-function inputs enter as the
-`Rank`/star-independence/free-translate/`CrossNeutral` interfaces; the complete matroid theorem further needs the
-differential-linear rank lemma, outside this engine.
+`Rank`/star-independence/free-translate/`CrossNeutral` interfaces.
+`DifferentialOperatorMatroid.lean` now formalizes the complete dependent-family rank step: the
+genuine differential-family matroid of polynomial operator outputs equals the ordinary row matroid
+over `Frac(C[delta])`. Thus the remaining inputs are the concrete order-three star independence,
+orbit-height, off-star packetwise DA, and hierarchy-to-operator-row identifications.
 
 ## What this changes and what remains open
 

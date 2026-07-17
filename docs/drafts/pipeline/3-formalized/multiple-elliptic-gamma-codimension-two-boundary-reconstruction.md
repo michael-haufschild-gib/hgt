@@ -1,19 +1,18 @@
-# Multiple elliptic gamma has a codimension-two reconstructing boundary complex in every order
+# Squarefree coface constraints have a codimension-two reconstructing boundary complex
 
 - **ID:** `multiple-elliptic-gamma-codimension-two-boundary-reconstruction`
 - **Stage:** 3-formalized
-- **Type:** THEOREM / GENERAL HT ARCHITECTURE TEST / MULTIPLE ELLIPTIC GAMMA
-- **Scientific status:** `[PROVED HERE] [LEAN-FORMALIZED] [NOVELTY UNVERIFIED] [SIGNIFICANCE AUDIT OPEN]`
+- **Type:** THEOREM / ABSTRACT CONSTRAINT ALGEBRA / CONDITIONAL HT ARCHITECTURE TEST
+- **Scientific status:** `[PROVED HERE] [LEAN-FORMALIZED ALGEBRAIC CORE] [MEG APPLICATION OPEN]`
 - **Parents:**
   - `../new_scientific_knowledge/all-order-multiple-elliptic-gamma-structural-differential-matroid.md`
   - `../new_scientific_knowledge/multiple-elliptic-gamma-transverse-constraint-depth.md`
   - `../../1-in-progress/source-anomaly-boundary-colligation-field.md`
-- **Statement:** For every generic order `r >= 1`, the complete nonlinear differential matroid of
-  the structural translation orbit of the multiple elliptic gamma logarithmic derivative is
-  reconstructed by a length-two perfect boundary complex. Its Betti ranks are `(1,r+1,r)`, its
-  maximal boundary minors are exactly the `r+1` squarefree face constraints, and it has no higher
-  syzygies. Increasing special-function order increases boundary multiplicity but not homological
-  depth.
+- **Statement:** For every `r >= 1`, the localized squarefree coface ideal `I_r` is reconstructed by
+  a length-two perfect boundary complex. Its Betti ranks are `(1,r+1,r)`, its maximal boundary
+  minors are exactly the `r+1` squarefree face generators, and it has no higher syzygies. Applying
+  this complex to the genuine multiple elliptic-gamma differential matroid is conditional on the
+  still-open nonlinear order-one atomicity and all-order exact-matroid identification.
 
 ## 1. The exact constraint ring
 
@@ -27,13 +26,14 @@ I_r=(m_0,...,m_r).
 ```
 
 Equivalently, `A` is the localization of `F[x_0,...,x_r]` obtained by inverting every
-`1+x_i`. The all-order structural-matroid theorem identifies `I_r` with the complete
-constant-coefficient structural-translation annihilator modulo differentially algebraic
-functions. It also proves that the linear matroid of `A/I_r` is the complete nonlinear
-differential matroid of every finite structural family.
+`1+x_i`. Everything proved below is an unconditional theorem about `I_r` and `A/I_r`. The
+proposed identification of `I_r` with the complete structural annihilator of the genuine multiple
+elliptic-gamma family is not an input to the Lean theorem and remains open: the current
+elliptic-gamma code proves `C[delta]`-linear freeness of separated bottom defects, not their
+nonlinear `DifferentialIndependent` property.
 
-The theorem below therefore concerns the complete dependence theory, not merely a chosen list of
-visible face relations.
+The theorem below therefore concerns the complete dependence algebra of the abstract squarefree
+coface model. Its analytic special-function interpretation is conditional.
 
 ## 2. Boundary matrix
 
@@ -121,11 +121,12 @@ unit * x_0 product_(i != 0,k)x_i=unit * m_k.             (9)
 ```
 
 Consequently the maximal minors of `H_r` generate exactly `I_r`. The boundary map reconstructs
-the full structural annihilator, and the all-order differential-matroid theorem then reconstructs
-every nonlinear differential dependence among structural translates.
+the full abstract squarefree coface ideal. If the open analytic theorem later identifies `I_r`
+with the exact elliptic-gamma structural annihilator, this same matrix will reconstruct that
+annihilator and its associated linear matroid.
 
-This is a genuine object-level statement. The boundary matrix is not merely compatible with the
-known constraints; its maximal minors recover the complete annihilator ideal.
+This is a genuine object-level statement about the algebraic model. The boundary matrix is not
+merely compatible with the chosen generators; its maximal minors recover all of `I_r`.
 
 ## 5. Homological depth `[PROVED]`
 
@@ -148,14 +149,15 @@ together with `(5)`.
 
 ## 6. Architecture consequence
 
-The flagship all-order constrained HT hierarchy falsifies the naive principle
+The abstract squarefree coface hierarchy falsifies the algebraic principle
 
 ```text
-higher special-function order => higher homological curvature.             (12)
+more face directions => higher homological amplitude.                      (12)
 ```
 
-There are arbitrarily many face layers in the analytic hierarchy, but the complete structural
-dependence object has no homology above degree two.
+There are arbitrarily many face directions in the algebraic model, but its resolved constraint
+object has no homology above degree two. The corresponding claim for the complete actual
+elliptic-gamma dependence object remains conditional on the missing exact-matroid theorem.
 
 **Positive replacement.** The relevant measure of thinness is not the number of jet observables,
 the number of face constraints, or the visible depth of the hierarchy. It is the amplitude and
@@ -165,7 +167,7 @@ two, while the boundary multiplicity grows linearly as `(r+1,r)`.
 This separates two axes:
 
 ```text
-algebraic capacity:       unbounded free differential observables;
+coface multiplicity:      arbitrarily many squarefree generators;
 constraint complexity:    perfect boundary amplitude two.                 (13)
 ```
 
@@ -206,9 +208,10 @@ degeneracy set, such that:
 4. the analytic source germ is reconstructed, up to source equivalence, from `C_x` together with
    its critical bornology, affine calibration, and polarization.
 
-The theorem above proves the exact codimension-two differential-matroid case: `C_x` is `(5)`, its
-Fitting ideal is `I_r`, and its first boundary map reconstructs the complete nonlinear structural
-matroid.
+The theorem above proves the exact codimension-two algebraic model: `C_x` is `(5)`, its Fitting
+ideal is `I_r`, and its first boundary map reconstructs the squarefree coface ideal. Showing that
+this is the complete nonlinear structural matroid of an actual HT family is part of the conjectural
+analytic realization step, not part of the Lean certificate.
 
 This conjecture is substantially stronger than saying that a constraint has a resolution. It
 asserts source-canonicity, analytic presentation invariance, and reconstruction of the constrained
@@ -226,9 +229,10 @@ realizations of `C_x`:
 4. spectral incompleteness is homology after analytic realization;
 5. positivity failure is failure of the reflected Hermitian orientation.
 
-The exact theorem prevents this from being pure vocabulary in the multiple-elliptic-gamma test:
-there is a canonical finite complex whose maximal minors already recover the complete structural
-dependence ideal. The five-face comparison and analytic reconstruction remain conjectural.
+The exact theorem prevents this from being pure vocabulary at the algebraic-model level: there is
+a canonical finite complex whose maximal minors recover the entire squarefree coface ideal. Its
+identification with the complete multiple-elliptic-gamma dependence ideal, the five-face
+comparison, and analytic reconstruction remain conjectural.
 
 ## 9. RH pressure test only
 
@@ -245,17 +249,17 @@ No such zeta complex or cross-chain equivalence is proved here.
 - Hilbert--Burch resolutions, squarefree Veronese ideals, Fitting ideals, and perfect complexes are
   established commutative algebra. They are `[SEARCH]`, not discoveries.
 - The exact sequence `(5)` is an explicit specialization of that parent theory.
-- The candidate scientific content is the consequence of the externally unlocated all-order
-  multiple-elliptic-gamma differential-matroid theorem: the complete nonlinear differential
-  dependence geometry of every order is reconstructed by this uniform codimension-two boundary
-  complex.
+- The candidate scientific content is conditional on an all-order multiple-elliptic-gamma
+  exact-matroid theorem that is not yet proved: only then would the complete nonlinear
+  differential dependence geometry of every order be reconstructed by this uniform
+  codimension-two boundary complex.
 - The Fields-level claim is the successor reconstruction correspondence, not the existence of a
   free resolution.
 
-The result fails the significance gate as an independent paper if experts judge the homological
-reconstruction to be a routine repackaging of the all-order matroid theorem. It survives as a
-major structural theorem if bounded boundary amplitude changes the expected geometry of
-constrained HT sources and the reconstruction mechanism extends beyond this hierarchy.
+The formalized algebraic result is a Hilbert--Burch specialization and fails the novelty gate in
+isolation. It could become a significant structural theorem only if the missing analytic
+exact-matroid identification is proved and bounded boundary amplitude changes the expected
+geometry of constrained HT sources beyond this hierarchy.
 
 ## Gates
 
@@ -265,6 +269,8 @@ constrained HT sources and the reconstruction mechanism extends beyond this hier
 - [x] prove uniform projective dimension two
 - [x] state the exact higher-curvature no-go and positive successor
 - [x] formalize the algebraic exact-complex theorem in Lean
+- [ ] prove nonlinear differential independence of the actual bottom-face defects
+- [ ] identify the genuine all-order multiple elliptic-gamma structural matroid with `A/I_r`
 - [ ] run exact/equivalent/stronger/mechanism literature searches
 - [ ] test a non-simplicial non-Gamma constrained HT source
 - [ ] prove source-presentation invariance in one analytic class

@@ -502,8 +502,11 @@ critical energy four.  Their arithmetic Hilbert--Schmidt blocks are mutually ort
 
 The apparent amplification is false.  A bounded row operator sending all shell curvatures to the
 same `ell_E` would force `ell_E=0` by Bessel dilution, but the identical argument would already
-force the known incoming vector `2e^(-t/2)` to vanish.  The codiagonal that erases infinitely many
-clock labels is necessarily unbounded even before all-prime continuation.
+force the known incoming vector `2e^(-t/2)` to vanish.  The weighted-codiagonal classification in
+`../2-fully-proven/not_new_scientific_knowledge/high-shell-codiagonal-closability-dichotomy.md`
+strengthens this: a scalar shell row is closable exactly for square-summable weights, when it is
+already bounded.  The unit-weight fixed-current codiagonal is therefore nonclosable, not merely
+unbounded, even before all-prime continuation.
 
 **Positive successor:** the same theorem gives a prime-two-dominated cofinal family
 
@@ -511,8 +514,9 @@ clock labels is necessarily unbounded even before all-prime continuation.
 H_m(s)=2^(-ms)(1-2^(-s))(1+o(1))
 ```
 
-with no auxiliary right-half divisor.  It can test uniform estimates on the one closed
-multiplication graph, but it cannot replace that graph by an orthogonal direct-sum trick.
+with no auxiliary right-half divisor.  It can test uniform estimates on one operator-valued closed
+multiplication graph, but it cannot replace that graph by an orthogonal direct-sum trick or an
+unspecified scalar unbounded row.
 
 **HT consequence:** taking a fixed logarithmic current erases arbitrarily separated clock origins.
 Across infinitely many clock characters that quotient is intrinsically nonlinear or unbounded;
@@ -559,6 +563,7 @@ is a precise research target, not an RH proof.
 - [x] boundary-unitary Ward curvature decomposition written explicitly
 - [x] infinitely many disjoint positive four-unit shells with the same Xi divisor constructed
 - [x] bounded all-shell codiagonal shortcut rejected already at the incoming pole
+- [x] scalar all-shell codiagonal proved nonclosable unless its weights are square-summable
 - [x] semilocal Euler connection source
 - [x] orbit-diagonal, causal-derivative, and local-profile shortcuts rejected positively
 - [x] write the unframed `Comp_(omega,D)` entry by entry

@@ -367,8 +367,11 @@ performs the full descending nested-star recursion for uniform face families, wh
 conclusion with genuine differential independence. The compatible-pair label
 `c` is inert for the gluing: the incidence in `Rank.graphGluing` is an abstract predicate, so the
 extra label rides along without changing the argument. The special-function inputs and the
-differential-linear rank formula still enter through the concrete `FreeIndepOrbit` and
-`CrossNeutral` hypotheses.
+differential-linear rank formula now separate cleanly: `DifferentialOperatorMatroid.lean` proves the
+full operator-output matroid and rank law for arbitrary dependent row packets. The remaining inputs
+are star differential independence, an integer orbit-height law (which supplies free translates),
+off-star packetwise DA (which supplies `CrossNeutral`), and the concrete hierarchy-to-row
+identification.
 
 ## First proof audit
 

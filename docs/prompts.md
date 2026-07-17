@@ -155,3 +155,21 @@ lean rules:
 
 - for any nogo always try to find an interesting significant positive statement
 - you can use subagents for read-only research into literature and our own research corpus
+
+
+## new research
+
+Based on the current status report of our research in docs/reports/rh-status-1707.md, use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research the research programme number 5 outlined in docs/reports/rh-status-1707.md
+
+lean rules:
+1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.
+2. aim for the smallest lean build possible and use caching heavily for lean. write lean code in batches instead of building after every edit.
+3. lean proofs must be unconditional
+4. always check first what the project lean code already offers
+5. effort estimation are not a criterion. if it is missing in mathlib -> you build it. if it takes months -> you build it.
+6. no computations.
+
+other rules:
+- for any nogo always try to find an interesting significant positive statement
+- you can use subagents for read-only research into literature and our own research corp
+

@@ -81,4 +81,62 @@ theorem matroidRank_indepSet_iff (M : Matroid Ω) [M.Finitary] (S : Set Ω) :
     rw [matroidRank_rho_eq_card_iff]
     exact h.subset ht
 
+/-- A matroid automorphism is a rank automorphism of its natural finite-set rank. -/
+theorem matroidRank_mem_rankAutSubgroup_of_mapEquiv_eq
+    (M : Matroid Ω) (e : Equiv.Perm Ω) (he : M.mapEquiv e = M) :
+    e ∈ (matroidRank M).rankAutSubgroup := by
+  intro s
+  change (M.eRk (↑(s.image ⇑e) : Set Ω)).toNat = (M.eRk (↑s : Set Ω)).toNat
+  have hground : e '' M.E = M.E := by
+    have h := congrArg Matroid.E he
+    simpa using h
+  have hmemE (x : Ω) : e x ∈ M.E ↔ x ∈ M.E := by
+    constructor
+    · intro hx
+      rw [← hground] at hx
+      obtain ⟨y, hy, hey⟩ := hx
+      simpa [e.injective hey] using hy
+    · intro hx
+      rw [← hground]
+      exact ⟨x, hx, rfl⟩
+  have himage : e '' ((↑s : Set Ω) ∩ M.E) =
+      (↑(s.image ⇑e) : Set Ω) ∩ M.E := by
+    ext x
+    constructor
+    · rintro ⟨y, ⟨hys, hyE⟩, rfl⟩
+      exact ⟨by simp [hys], (hmemE y).mpr hyE⟩
+    · rintro ⟨hxs, hxE⟩
+      rw [Finset.mem_coe, Finset.mem_image] at hxs
+      obtain ⟨y, hys, hey⟩ := hxs
+      subst x
+      exact ⟨y, ⟨by simpa using hys, (hmemE y).mp hxE⟩, rfl⟩
+  have hr := M.eRk_map (f := (e : Ω → Ω)) e.injective.injOn
+    (X := (↑s : Set Ω) ∩ M.E) Set.inter_subset_right
+  rw [← M.mapEquiv_eq_map e, he, himage] at hr
+  simpa only [M.eRk_inter_ground] using congrArg ENat.toNat hr
+
+/-- A permutation is rank-neutral on `S` when every translated finite packet lies in the matroid
+closure of the original packet. -/
+theorem matroidRank_crossNeutral_of_image_subset_closure
+    (M : Matroid Ω) (hE : M.E = Set.univ) (e : Equiv.Perm Ω) (S : Set Ω)
+    (hclosure : ∀ t : Finset Ω, (↑t : Set Ω) ⊆ S → ∀ n : ℤ,
+      (↑(t.image ⇑(e ^ n)) : Set Ω) ⊆ M.closure (↑t : Set Ω)) :
+    (matroidRank M).CrossNeutral e S := by
+  intro t ht n
+  change (M.eRk (↑(t ∪ t.image ⇑(e ^ n)) : Set Ω)).toNat =
+    (M.eRk (↑t : Set Ω)).toNat
+  apply congrArg ENat.toNat
+  apply le_antisymm
+  · calc
+      M.eRk (↑(t ∪ t.image ⇑(e ^ n)) : Set Ω)
+          ≤ M.eRk (M.closure (↑t : Set Ω)) := M.eRk_mono (by
+            rw [Finset.coe_union]
+            exact Set.union_subset
+              (M.subset_closure (↑t : Set Ω) (by simp [hE]))
+              (hclosure t ht n))
+      _ = M.eRk (↑t : Set Ω) := M.eRk_closure_eq _
+  · exact M.eRk_mono (by
+      rw [Finset.coe_union]
+      exact Set.subset_union_left)
+
 end GaloisForLFunctions.MatroidGluing

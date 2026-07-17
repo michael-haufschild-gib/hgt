@@ -94,6 +94,25 @@ theorem diffIndepOn_insert_iff
     differentialIndependent_sumElim_right_iff, Subtype.range_val]
   simp [DifferentialAlgebraicOver]
 
+/-- Differential adjunction by `s` and then by `t` is adjunction by their union. -/
+theorem differentialAdjoin_union
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (s t : Set E) :
+    (differentialAdjoin (differentialAdjoin F s) t).restrictScalars F =
+      differentialAdjoin F (s ∪ t) := by
+  rw [differentialAdjoin, differentialAdjoin,
+    IntermediateField.adjoin_adjoin_left]
+  congr 1
+  ext z
+  constructor
+  · rintro (⟨w, hw, n, rfl⟩ | ⟨w, hw, n, rfl⟩)
+    · exact ⟨w, Set.mem_union_left t hw, n, rfl⟩
+    · exact ⟨w, Set.mem_union_right s hw, n, rfl⟩
+  · rintro ⟨w, hw, n, rfl⟩
+    rcases hw with hws | hwt
+    · exact Set.mem_union_left _ ⟨w, hws, n, rfl⟩
+    · exact Set.mem_union_right _ ⟨w, hwt, n, rfl⟩
+
 /-- Differential adjunction by `s` and then by `y` is the same embedded field as adjunction by
 `insert y s`. -/
 theorem differentialAdjoin_insert

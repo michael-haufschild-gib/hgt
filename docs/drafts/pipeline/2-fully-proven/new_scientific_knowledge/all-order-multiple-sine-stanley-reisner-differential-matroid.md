@@ -304,9 +304,12 @@ cannot do so.
    coefficients require a different summability problem.
 5. **Structural translations only.** Arbitrary translations are classified at the bottom
    double-sine faces, but the displayed all-order quotient concerns the structural period lattice.
-6. **Formalization boundary.** The abstract face-complex combinatorics is already partly in Lean.
-   The analytic content requires actual multiple-sine functions, the double-sine atomic theorem,
-   and simultaneous parameterized difference Galois theory.  A proposition-valued interface that
+6. **Formalization boundary.** The abstract face-complex layer is now complete at the gluing
+   interface: `Rank.uniformFace_nestedStar_indep` handles arbitrary uniform face families, the
+   genuine differential matroid supplies its rank, differential automorphisms preserve that rank,
+   integer orbit heights supply free translates, and packetwise DA supplies `CrossNeutral`. The
+   analytic content still requires actual multiple-sine functions, the double-sine atomic theorem,
+   and simultaneous parameterized difference Galois theory. A proposition-valued interface that
    assumes those statements would be wrapper theatre.
 
 ## Parent-theory and literature gate
@@ -342,4 +345,3 @@ review.
 - [ ] independent audit of the all-order descent and rank passage
 - [ ] specialist significance and priority audit
 - [ ] unconditional analytic formalization in Lean
-

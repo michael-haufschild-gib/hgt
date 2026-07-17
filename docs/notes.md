@@ -49,8 +49,25 @@ These strategies cannot close RH:
 if the proof closes, the attractive “one completed Hermite–Biehler gap is positive everywhere” route is mathematically impossible, not merely unproved. That would mean this reconstruction program does not prove RH by a single global polarization; it must retain at least two genuinely different source channels whose joint conservativity supplies orientation without forcing monotonic phase.
 
 
-
+----
 This is now materially stronger than the failed frame-tower idea:
 \[
 \ker \operatorname{Obs}_{q^\vee\ell}=\ker q.
 \]So a quotient’s conservative observables, transported upward, miss exactly the newly added source layer—no more and no less. Meanwhile the socle orientation can vanish completely. That proves “information conservation” and “orientation conservation” are distinct, which explains why spectrum/topology can remain intact while positivity or canonical boundary data fails. I’m doing the final literature/novelty comparison against finite duality and analytic behavior theory before stating how much of this is genuinely new.
+----
+
+
+A second pattern survives close reading and is more fundamental than “constraint, not flow”:
+- every finite constraint geometry can be manufactured by a hypertranscendental carrier;
+- every scalar positive capacity law can also be manufactured;
+- every fixed observation depth misses genuine classes;
+- even the full finite tower can miss flat inverse-limit classes;
+- support, rank, topology, and spectra can all agree while orientation or extension arrows differ.
+So neither “the constraint” nor “infinite complexity” is the parent principle.
+
+
+---
+The three independent audits are converging on the same correction: the parent is not a higher class of functions and not a better carrier. It is a calculus of finite capture—how prolongation, quotient, completion, comparison, and polarization interact or fail to commute. I’m now forcing that synthesis into precise laws and theorem targets, and checking it against adjacent mathematics so we don’t merely rename an existing subject.
+
+---
+One sharper correction has emerged. The corpus has often treated one marginal—differential relations, topology, capacity, cohomology, or orientation—as if it were the whole. But several of those marginals are individually arbitrary or universal. The restrictive mathematics can only live in the joint-realization locus: which combinations of all these marginals can coexist in one natural analytic system, and what mixed equations cut that locus out. That is more specific than “study completions,” and it tells us what a founding theorem must actually classify.

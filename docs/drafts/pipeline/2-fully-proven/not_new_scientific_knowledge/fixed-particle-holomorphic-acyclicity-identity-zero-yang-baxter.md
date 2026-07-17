@@ -145,9 +145,11 @@ be unitary or compatible with the physical real structure.  Compact-open approxi
 exhaustion does not imply `(12)`.
 
 Coordinatewise strip-to-disc maps identify `(11)` equivariantly with the polydisc, whose quotient
-is the symmetrized polydisc.  The missing theorem is therefore an equivariant matrix
-`H-infinity` completion/trivialization theorem with an `exp(O(n))` condition number.  Ordinary
-Oka theory, additive bounded-cohomology averaging, and generic corona language do not supply it.
+is the symmetrized polydisc.  The missing theorem is therefore a boundary-conditioned equivariant
+`H-infinity` intertwining theorem with an `exp(O(n))` norm and a lower singular-value bound on the
+central real slice.  Invertibility on the complete complex tube would be stronger than the
+Alazzawi--Lechner definition. Ordinary Oka theory, additive bounded-cohomology averaging, and
+generic corona language do not supply the actual boundary-conditioned statement.
 
 ## Quantitative residue and attack surface
 

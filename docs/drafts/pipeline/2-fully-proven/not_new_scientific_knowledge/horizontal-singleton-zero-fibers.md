@@ -1,9 +1,9 @@
 # Horizontal-singleton zero fibers have positive density and satisfy RH pointwise
 
 - **ID:** `horizontal-singleton-zero-fibers`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 2-fully-proven / not-new-scientific-knowledge
 - **Type:** THEOREM / BRIDGE
-- **Scientific status:** `[PAPER-PROVED] [LEAN-POINTWISE-PROVED] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-POINTWISE-PROVED] [BRIDGE] [INSIGNIFICANT AS A STANDALONE PAPER]`
 - **Statement:** Let `h(gamma)` be the total analytic multiplicity of all nontrivial zeta zeros
   with imaginary part `gamma`, and let `H_1(T)` count the positive ordinates at most `T` for which
   `h(gamma)=1`. Every such fiber consists of one simple critical-line zero. Moreover
@@ -113,6 +113,23 @@ fixed-point structure of functional-equation reflection.
   Searches for the exact constant and same-ordinate charging formula found no prior statement.
   This is encouraging but is not a proof of novelty.
 
+## Dual-gate verdict
+
+**Verdict: `BRIDGE / INSIGNIFICANT AS A STANDALONE PAPER`.**
+
+The exact decimal corollary may be absent from the searched literature, but its proof is a routine
+two-line combination of the already-published PRZZ proportions with the elementary reflection
+pairing already explicit in the horizontal-multiplicity papers. It introduces no new analytic
+estimate, no new zero-detecting mechanism, no source-side invariant, and no improvement in the
+known proportion of critical or simple-critical zeros. It therefore fails the significance gate
+even if priority for the displayed inequality were eventually established.
+
+The result is worth retaining as corpus support and as a normalization check for future horizontal
+multiplicity work. It is not new scientific knowledge worth submitting as its own paper. A
+paper-worthy successor must prove a new unconditional horizontal-multiplicity estimate from source
+data, improve a known zero proportion, or construct a non-vacuous source-defined stratum not
+obtained by filtering already-known critical zeros.
+
 ## Hostile attacks closed
 
 1. `[CLOSED]` `N_0^*` counts simple critical zeros and its normalization is `N_0^*/N`; this is
@@ -153,7 +170,7 @@ bounds have unconditional formal providers. No hypothesis wrapper or axiom subst
 - [x] 1 -> 2: dependency-closed paper theorem with exact published constants and citations
 - [x] exact unconditional Xi pointwise group theorem and simplicity theorem in Lean
 - [ ] formalize the finite global counting law and its analytic density inputs before 2 -> 3
-- [ ] scientific novelty and significance audit after normalization into orbit-counting theory
+- [x] scientific novelty and significance audit: bridge-grade and not standalone-paper worthy
 
 ## Log
 
@@ -164,3 +181,6 @@ bounds have unconditional formal providers. No hypothesis wrapper or axiom subst
   `0.116158438`. Pointwise critical-line placement and simplicity were formalized for the actual Xi
   divisor. The card remains in `needs-audit`: the quantitative corollary appears absent from the
   searched literature but the dual novelty/significance gate is not yet closed.
+- 2026-07-17 — Corrective dual-gate audit: demoted to `not_new_scientific_knowledge`. The theorem is
+  correct and useful, but the quantitative statement is a routine corollary of PRZZ plus elementary
+  reflection pairing and is not worth a standalone paper.

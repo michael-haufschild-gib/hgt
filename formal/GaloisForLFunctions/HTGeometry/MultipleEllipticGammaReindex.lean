@@ -8,7 +8,7 @@ type.  This is the type-level bridge needed to identify iterated coordinate-dele
 one product on the final complementary parameter set.
 -/
 
-open Complex Set
+open Complex Set Filter
 open scoped BigOperators
 
 namespace GaloisForLFunctions
@@ -139,6 +139,53 @@ theorem multipleEllipticGammaProduct_reindex
     Fintype.card_congr e,
     multipleEllipticGammaForwardProduct_reindex,
     multipleEllipticGammaBackwardProduct_reindex]
+
+/-- The global analytic forward product is independent of the finite parameter indexing type. -/
+theorem multipleEllipticGammaForwardAnalytic_reindex
+    (e : κ ≃ ι) (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) :
+    multipleEllipticGammaForwardAnalytic (fun k => τ (e k)) (fun k => hτ (e k)) =
+      multipleEllipticGammaForwardAnalytic τ hτ := by
+  apply Subtype.ext
+  change Germ.coeRingHom (𝓟 Set.univ)
+      (multipleEllipticGammaForwardProduct fun k => τ (e k)) =
+    Germ.coeRingHom (𝓟 Set.univ) (multipleEllipticGammaForwardProduct τ)
+  congr 1
+  funext z
+  exact multipleEllipticGammaForwardProduct_reindex e τ z
+
+/-- The global analytic backward product is independent of the finite parameter indexing type. -/
+theorem multipleEllipticGammaBackwardAnalytic_reindex
+    (e : κ ≃ ι) (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) :
+    multipleEllipticGammaBackwardAnalytic (fun k => τ (e k)) (fun k => hτ (e k)) =
+      multipleEllipticGammaBackwardAnalytic τ hτ := by
+  apply Subtype.ext
+  change Germ.coeRingHom (𝓟 Set.univ)
+      (multipleEllipticGammaBackwardProduct fun k => τ (e k)) =
+    Germ.coeRingHom (𝓟 Set.univ) (multipleEllipticGammaBackwardProduct τ)
+  congr 1
+  funext z
+  exact multipleEllipticGammaBackwardProduct_reindex e τ z
+
+/-- The genuine global meromorphic multiple elliptic gamma is invariant under parameter
+reindexing. -/
+theorem multipleEllipticGammaMero_reindex
+    (e : κ ≃ ι) (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) :
+    multipleEllipticGammaMero (fun k => τ (e k)) (fun k => hτ (e k)) =
+      multipleEllipticGammaMero τ hτ := by
+  rw [multipleEllipticGammaMero, multipleEllipticGammaMero,
+    Fintype.card_congr e,
+    multipleEllipticGammaForwardAnalytic_reindex,
+    multipleEllipticGammaBackwardAnalytic_reindex]
+
+/-- The genuine meromorphic logarithmic derivative is invariant under every finite parameter
+reindexing. -/
+theorem multipleEllipticGammaLogDerivMero_reindex
+    (e : κ ≃ ι) (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) :
+    multipleEllipticGammaLogDerivMero (fun k => τ (e k)) (fun k => hτ (e k)) =
+      multipleEllipticGammaLogDerivMero τ hτ := by
+  letI := meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
+  simp only [multipleEllipticGammaLogDerivMero]
+  rw [multipleEllipticGammaMero_reindex e τ hτ]
 
 end
 

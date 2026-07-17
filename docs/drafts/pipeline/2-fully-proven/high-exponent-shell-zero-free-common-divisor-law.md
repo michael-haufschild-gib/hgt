@@ -182,17 +182,20 @@ to the same vector `ell_E`, then for `N` shells its value on their normalized su
 already applies to the nonzero incoming pole vector `2e^(-t/2)`.  Therefore a row operator that
 collapses every shell clock to the common pole cannot be bounded unconditionally.
 
-**No-go.**  Artificially adjoining the shell label and then taking a bounded codiagonal is not an
-RH proof.  The fixed-current functor necessarily becomes nonlinear or unbounded when it erases
-infinitely many orthogonal clock characters.
+**Strengthened no-go.**  Artificially adjoining the shell label and then taking a scalar
+codiagonal is not an RH proof.  The weighted-codiagonal dichotomy in
+`not_new_scientific_knowledge/high-shell-codiagonal-closability-dichotomy.md` proves more than
+unboundedness: a scalar shell row is closable exactly when its weights are square-summable, in
+which case it is already bounded.  The unit-weight row which erases the common fixed-current label
+is therefore nonclosable.  It cannot be repaired by declaring an unspecified closed domain.
 
 **Positive successor.**  A viable anti-causal Ward construction must keep the arithmetic shell
-label through the pole cancellation and take the fixed-current quotient only on its closed
-multiplication graph.  Equation `(3)` guarantees that no shell-specific right-half divisor is
-introduced for `m>=12`; equation `(16)` gives a prime-two-dominated cofinal family on which a
-uniform graph estimate can be attacked.  Failure of such uniformity is now localized to the
-fixed-current quotient, not to Gamma completion, source energy, shell orthogonality, or an
-auxiliary divisor.
+label through the pole cancellation and take the fixed-current quotient only on an
+operator-valued multiplication graph.  A scalar unbounded row is excluded even as a closable
+operator.  Equation `(3)` guarantees that no shell-specific right-half divisor is introduced for
+`m>=12`; equation `(16)` gives a prime-two-dominated cofinal family on which a uniform graph
+estimate can be attacked.  Failure of such uniformity is now localized to the fixed-current
+quotient, not to Gamma completion, source energy, shell orthogonality, or an auxiliary divisor.
 
 ## Proof verdict
 
@@ -210,6 +213,7 @@ use is the prime-two-dominated cofinal test family for the single closed fixed-c
 - [x] critical `Exp(1)` clock and four-unit incidence energy
 - [x] prime-two asymptotic on closed strict half-planes
 - [x] bounded-codiagonal shortcut rejected using the incoming pole
+- [x] scalar codiagonal strengthened from unbounded to nonclosable
 - [x] proof contribution evaluated without a novelty gate
 - [ ] construct a shell-label-preserving closed Ward graph
 - [ ] prove a uniform relative estimate through pole cancellation

@@ -66,6 +66,7 @@ theorem freeShiftJetIndexEquiv_add {α : Type*} (a b : ℤ) (x : FreeShiftJetInd
   rcases x with ⟨i, m, n⟩
   simp only [freeShiftJetIndexEquiv, Equiv.coe_fn_mk, Prod.mk.injEq, true_and]
   abel
+  exact ⟨trivial, trivial⟩
 
 theorem freeShiftPolynomialEquiv_add {K α : Type*} [Field K]
     (a b : ℤ) (p : FreeShiftPolynomial K α) :
@@ -117,20 +118,22 @@ theorem freeShiftField_telescope {K α : Type*} [Field K]
   | zero =>
       obtain ⟨p, q, hq, rfl⟩ :=
         IsFractionRing.div_surjective (FreeShiftPolynomial K α) g
-      rw [map_div₀]
-      simp only [freeShiftFieldEquiv_algebraMap, freeShiftPolynomialEquiv,
-        MvPolynomial.renameEquiv_apply, freeShiftJetIndexEquiv, zero_add]
-      rw [show (fun x : FreeShiftJetIndex α => x) = id by rfl,
-        MvPolynomial.rename_id_apply, MvPolynomial.rename_id_apply]
-      ring
+      have hindex0 : freeShiftJetIndexEquiv (α := α) 0 = Equiv.refl _ := by
+        ext x <;> simp [freeShiftJetIndexEquiv]
+      have hpoly0 (r : FreeShiftPolynomial K α) :
+          freeShiftPolynomialEquiv (K := K) (α := α) 0 r = r := by
+        simp [freeShiftPolynomialEquiv, hindex0]
+      have hfield0 (x : FreeShiftField K α) :
+          freeShiftFieldEquiv (K := K) 0 x = x := by
+        obtain ⟨r, s, hs, rfl⟩ :=
+          IsFractionRing.div_surjective (FreeShiftPolynomial K α) x
+        simp [map_div₀, hpoly0]
+      simp [hfield0]
   | succ N ih =>
       have hstep : freeShiftFieldEquiv (K := K) (N + 1 : ℤ) g =
           freeShiftFieldEquiv (K := K) (N : ℤ)
             (freeShiftFieldEquiv (K := K) 1 g) := by
-        rw [freeShiftFieldEquiv_add]
-        congr 2
-        push_cast
-        omega
+        exact (freeShiftFieldEquiv_add (K := K) (α := α) (N : ℤ) 1 g).symm
       have hcast : ((N + 1 : ℕ) : ℤ) = (N : ℤ) + 1 := by omega
       rw [hcast, hstep]
       calc
@@ -162,7 +165,7 @@ theorem freeShiftField_telescope_oneSlice {K α : Type*} [Field K]
   simp only [freeShiftFieldEquiv_algebraMap, freeShiftPolynomialEquiv_oneSlice,
     ← map_sum]
   congr 1
-  rw [freeShiftOrbitSum, Fin.sum_univ_eq_sum_range]
+  rw [freeShiftOrbitSum, ← Fin.sum_univ_eq_sum_range]
 
 theorem rename_eq_rename_of_eq_on_vars
     {K σ τ : Type*} [CommRing K] (f g : σ → τ) (p : MvPolynomial σ K)
@@ -221,7 +224,7 @@ theorem rename_freeShiftOrbitSum_ne_zero
           if j' = j ∧ k = k0 then 1 else 0 := by
         simp only [e, target]
         rw [if_congr (hEq j' k) rfl rfl]
-      rw [show (j'.1, ((k : ℕ), j'.2)) = freeShiftOrbitIndex (j', k) by rfl, he]
+      rw [show (j'.1, (((k : ℕ) : ℤ), j'.2)) = freeShiftOrbitIndex (j', k) by rfl, he]
       split_ifs <;> simp
     simp_rw [hterm]
     by_cases hk : k = k0

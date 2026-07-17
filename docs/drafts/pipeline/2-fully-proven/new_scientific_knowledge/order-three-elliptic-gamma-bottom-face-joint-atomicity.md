@@ -282,10 +282,17 @@ finite-set rank of any finitary mathlib matroid into the gluing `Rank`, with `Ra
 equivalent to matroid independence. `DifferentialMatroidRank.differentialRank` specializes this to
 the genuine differential matroid, and
 `differentialRank_orderThree_sixFace_diffIndepOn` concludes actual `DiffIndepOn` for the six-face
-union. The only remaining concrete interfaces are, per structural direction, `FreeIndepOrbit`
-(atomicity plus geometric freeness) and `CrossNeutral` (off-face DA-triviality) for the actual
-elliptic-gamma face orbits. Those analytic hypotheses are not yet discharged in Lean, so this card
-remains in step 2.
+union. `DifferentialAlgEquiv.mem_differentialRank_rankAutSubgroup` also proves rank preservation
+automatically for every coefficient-fixing differential automorphism, while
+`matroidRank_crossNeutral_of_image_subset_closure` reduces `CrossNeutral` to the exact closure
+inclusion of each translated finite packet.
+`differentialRank_crossNeutral_of_image_differentialAlgebraic` further discharges that inclusion
+from the direct analytic statement that every translated packet is DA over the original packet.
+`Rank.hasFreeTranslates_of_intHeight` also constructs geometric free translates from an invariant
+integer orbit-height satisfying `height(σ^n x)=height(x)+n`. The only remaining concrete interfaces
+are therefore star differential independence, that explicit height law for the actual face-orbit
+coordinates, and the off-face packetwise DA statement. Those hypotheses are not yet discharged for
+the actual elliptic-gamma functions in Lean, so this card remains in step 2.
 
 ## Attacks and boundaries
 
@@ -344,7 +351,8 @@ orbits or in reconstruction of the top primitive, not among the atomic bottom fa
 - [x] multiplicative elliptic-gamma family consequence derived
 - [x] exact/stronger/equivalent literature gate completed provisionally through 2026
 - [x] abstract gluing rank realized by the genuine differential matroid in Lean
-- [ ] actual elliptic-gamma `FreeIndepOrbit` and `CrossNeutral` hypotheses discharged in Lean
+- [ ] actual elliptic-gamma star independence, orbit-height law, and off-face packetwise DA
+  hypotheses discharged in Lean
 - [ ] independent proof audit
 - [ ] independent specialist priority audit
 - [ ] independent audit of the order-one atomic parent

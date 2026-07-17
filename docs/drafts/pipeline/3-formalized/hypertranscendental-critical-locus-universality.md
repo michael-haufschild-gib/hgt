@@ -1,20 +1,21 @@
-# Reflection criticalizes the Barnes constraint and exposes a universal HT boundary
+# The normal-crossing critical ideal is the squarefree coface boundary
 
 - **ID:** `hypertranscendental-critical-locus-universality`
-- **Stage:** 3-formalized / parent novelty audits open
-- **Type:** CROSS-FAMILY THEOREM / GENERAL HT ARCHITECTURE TEST
-- **Scientific status:** `[PROVED HERE] [ALGEBRAIC CORE LEAN-FORMALIZED] [NOVELTY UNVERIFIED]`
+- **Stage:** 3-formalized algebraic core / cross-family application open
+- **Type:** ALGEBRAIC THEOREM / CONDITIONAL CROSS-FAMILY HT ARCHITECTURE TEST
+- **Scientific status:** `[PROVED HERE] [ALGEBRAIC CORE LEAN-FORMALIZED] [MEG PARENT OPEN]`
 - **Parents:**
   - `../new_scientific_knowledge/barnes-multiple-gamma-translation-annihilator.md`
   - `../new_scientific_knowledge/all-order-multiple-sine-stanley-reisner-differential-matroid.md`
   - `../new_scientific_knowledge/all-order-multiple-elliptic-gamma-structural-differential-matroid.md`
   - `multiple-elliptic-gamma-codimension-two-boundary-reconstruction.md`
 - **Exact threshold child:** `barnes-reflection-cotangent-singularity-threshold.md`
-- **Statement:** The generic Barnes multiple-gamma structural constraint is a normal-crossing
-  hypersurface. Barnes reflection replaces it by the Fitting degeneracy scheme of its cotangent
-  module, and the generic multiple-sine and multiple-elliptic-gamma hierarchies realize the same
-  resulting structural differential matroid. Thus two analytically different
-  hypertranscendental families share one intrinsic source-critical dependence geometry.
+- **Statement:** The derivational critical ideal of the normal-crossing polynomial
+  `f_N=product_i x_i` is the squarefree coface ideal `I_crit=(product_(j != i)x_j)_i`, which is also
+  the cotangent degeneracy ideal and has a length-two boundary resolution. Identifying this
+  algebraic object with the complete structural differential matroids of multiple-sine and
+  multiple-elliptic-gamma families is a separate analytic theorem; the elliptic-gamma input is not
+  yet proved.
 
 ## 1. Constraint coordinates
 
@@ -37,19 +38,20 @@ I_crit=(m_1,...,m_N).
 Localization at the `t_i=1+x_i` does not change any calculation below. The point `x=0` is the
 augmentation point of the structural translation torus.
 
-The parent exact-annihilator theorems give
+The proposed parent exact-annihilator identifications are
 
 ```text
 Ann_DA(Psi_Barnes,N)=(f_N),                              (1)
 Ann_DA(L_sine,N)=I_crit,                                 (2)
-Ann_DA(Psi_ell,N-1)=I_crit.                             (3)
+Ann_DA(Psi_ell,N-1)=I_crit.                             (3) [OPEN]
 ```
 
-Here `(1)` is asserted for rationally independent Barnes periods, `(2)` for the generic positive
-real multiple-sine regime, and `(3)` for generic multiple elliptic gamma parameters. Equations
-`(2)` and `(3)` include the stronger parent result that the quotient `A/I_crit`, after adjoining
-the differential-operator coefficient field, computes every nonlinear differential dependence in
-every finite structural family.
+Here `(1)` is asserted for rationally independent Barnes periods and `(2)` for the generic
+positive-real multiple-sine regime. Equation `(3)` for generic multiple elliptic-gamma parameters
+is not proved by the current Lean corpus or by the current all-order paper proof: the available
+elliptic-gamma theorem gives `C[delta]`-linear freeness of bottom defects, which does not imply
+nonlinear differential independence. Consequently the claimed complete nonlinear
+`A/I_crit`-matroid identification for the elliptic family remains open.
 
 ## 2. Critical-locus theorem `[PROVED]`
 
@@ -72,7 +74,8 @@ scheme-theoretic critical locus of the Barnes hypersurface `f_N=0` is consequent
 Crit(V(f_N))=V(f_N,Jac(f_N))=V(I_crit).                  (6)
 ```
 
-Combining `(1)`--`(6)` proves the cross-family identities
+Combining a proved parent identification with `(4)`--`(6)` yields the corresponding
+criticalization identity. In particular, the proposed cross-family identities are
 
 ```text
 Ann_DA(L_sine,N)=Jac(generator(Ann_DA(Psi_Barnes,N))),  (7)
@@ -80,8 +83,9 @@ Ann_DA(Psi_ell,N-1)=Jac(generator(Ann_DA(Psi_Barnes,N))). (8)
 ```
 
 Equation `(7)` is the exact sense in which Barnes reflection **criticalizes** the source
-constraint. Equation `(8)` shows that multiple elliptic completion reaches the same critical
-boundary through a different analytic construction.
+constraint, conditional on its stated parent annihilator theorems. Equation `(8)` would show that
+multiple elliptic completion reaches the same critical boundary through a different analytic
+construction, but `(8)` remains conditional on the open elliptic-gamma exact-matroid input.
 
 ### 2.1 Presentation no-go and intrinsic positive replacement `[PROVED]`
 
@@ -154,7 +158,8 @@ pi^(-1) Fitt_(N-1)(Omega_(B_N/F))
   =(f_N,m_1,...,m_N)=I_crit.                             (8g)
 ```
 
-Combining `(2)`, `(3)`, and `(8g)` gives the intrinsic cross-family theorem
+Combining `(8g)` with any separately proved exact-annihilator identification gives an intrinsic
+criticalization theorem. The desired pair of identities is
 
 ```text
 Ann_DA(L_sine,N)
@@ -164,10 +169,10 @@ Ann_DA(Psi_ell,N-1)
   =pi^(-1) Fitt_(N-1)(Omega_(A/Ann_DA(Psi_Barnes,N)/F)). (8h)
 ```
 
-Thus reflection and elliptic completion do not merely reproduce a coordinate gradient. They
-realize the cotangent singular support of the exact Barnes dependence scheme. This is the first
-proved coupling between the infinite Kähler capacity intrinsic to hypertranscendence and a finite
-source-critical constraint.
+The algebraic equality `(8g)` is proved. The multiple-sine instance depends on its parent theorem;
+the multiple-elliptic-gamma instance is open because `(3)` is open. Thus the current certificate
+does not yet prove that elliptic completion realizes the cotangent singular support of the Barnes
+dependence scheme.
 
 There is also a canonical exact restriction sequence.  With `B_N=A/(f_N)` and
 `J_N=Fitt_(N-1)(Omega_(B_N/F))=I_crit/(f_N)`,
@@ -176,12 +181,12 @@ There is also a canonical exact restriction sequence.  With `B_N=A/(f_N)` and
 0 -> J_N -> B_N -> A/I_crit -> 0.                         (8i)
 ```
 
-The final algebra computes the complete structural differential matroid of both reflected
-hierarchies.  Hence reflection acts on exact dependence geometry by restricting functions from
-the Barnes hypersurface to its intrinsic singular scheme; the loss module is precisely the
-cotangent Fitting ideal.  The order-one smooth case has empty target, while every higher
-normal-crossing order has nonzero singular support.  The exact threshold is recorded in
-`barnes-reflection-cotangent-singularity-threshold.md`.
+The final algebra computes the quotient geometry of the abstract critical ideal. Once a reflected
+family is independently shown to have that exact complete structural matroid, reflection acts on
+its dependence geometry by restriction from the Barnes hypersurface to the intrinsic singular
+scheme, with loss module the cotangent Fitting ideal. The order-one smooth algebraic model has
+empty target, while every higher normal-crossing order has nonzero singular support. The exact
+threshold is recorded in `barnes-reflection-cotangent-singularity-threshold.md`.
 
 ## 3. Geometry and resolution `[PROVED]`
 
@@ -221,24 +226,22 @@ This gives a sharp no-go and positive replacement:
           amplitude is controlled by the singularity type of the source law.
 ```
 
-## 4. Complete cross-family differential-matroid universality `[PROVED FROM THE PARENTS]`
+## 4. Complete cross-family differential-matroid universality `[CONDITIONAL]`
 
-After identifying structural directions, the generic multiple-sine order-`N` and generic multiple
+If their exact-matroid parents are proved, the generic multiple-sine order-`N` and generic multiple
 elliptic-gamma order-`N-1` structural differential matroids are both the linear matroid of
 
 ```text
 F(delta) tensor A/I_crit.                                (12)
 ```
 
-Consequently every finite operator family has the same rank formula in the two theories: its
-differential transcendence degree is the linear rank of its operator classes modulo the gradient
-ideal of `f_N`. This is stronger than equality of individual annihilators. It says that the entire
-nonlinear structural dependence theory is insensitive to whether the analytic realization arose
-from Barnes reflection or multiple elliptic completion.
+The current algebra proves the consequence from those inputs, but it does not prove the inputs.
+In particular, equality of every finite-packet differential transcendence rank across the two
+analytic theories is not yet established.
 
-The analytic formula is therefore not the invariant. The Fitting degeneracy type of the source
-cotangent module is a genuine presentation-independent coarse invariant of constrained
-hypertranscendence.
+**[CONJECTURE]** Once the analytic exact-matroid identifications are supplied, the Fitting
+degeneracy type of the source cotangent module will be a presentation-independent coarse invariant
+shared by the two constrained hypertranscendental realizations.
 
 ## 5. Exact form of thin infinite capacity
 
@@ -372,12 +375,13 @@ No zeta source complex, cross-chain equivalence, or RH implication is proved her
 The touched file passes direct Lean verification against cached dependencies. No Lake build was
 run.
 
-`formal/GaloisForLFunctions/HTGeometry/NormalCrossingCriticalDerivedPhase.lean` now assembles the
-full cross-family theorem surface.  `NormalCrossingFamilyCriticalizationInput` exposes the named
-Barnes, multiple-sine, multiple-elliptic-Gamma, and cotangent-Fitting parent calculations without
-adding axioms.  Lean proves that both reflected families equal the intrinsic derivational critical
-ideal, equal the cotangent Fitting pullback, and have identical rank on every finite structural
-operator packet.  Unit-presentation invariance is derived internally from
+`formal/GaloisForLFunctions/HTGeometry/NormalCrossingCriticalDerivedPhase.lean` contains a
+conditional assembly theorem. `NormalCrossingFamilyCriticalizationInput` has fields
+`sine_exact`, `ellipticGamma_exact`, `sine_rank_exact`, and `ellipticGamma_rank_exact`; these are
+hypotheses, not proved special-function calculations. The theorem
+`normalCrossing_crossFamily_criticalization` derives the cross-family conclusion from those exact
+inputs. It must not be cited as evidence for them. The unconditional Lean content is the intrinsic
+critical-ideal algebra, its resolution, and unit-presentation invariance derived from
 `derivationalCriticalIdeal_unit_mul`.
 
 ## 10. Novelty and anti-theatre gate
@@ -421,13 +425,16 @@ cross-realization equivalence, not the first normal-crossing example.
 
 - [x] remove the time/clock motif from the architecture
 - [x] identify the Barnes constraint as a normal-crossing hypersurface
-- [x] prove reflection criticalizes its exact annihilator
+- [ ] prove the analytic Barnes/reflection exact-annihilator input and instantiate the algebraic
+      criticalization theorem
 - [x] replace the presentation-dependent bare Jacobian by the intrinsic derivational critical
       ideal
 - [x] prove unit-presentation and polynomial-coordinate invariance
-- [x] identify the reflected annihilator as the Fitting degeneracy scheme of the Barnes cotangent
-      module
-- [x] identify multiple sine and multiple elliptic gamma structural matroids
+- [x] identify the abstract normal-crossing critical ideal with the cotangent Fitting degeneracy
+      scheme
+- [ ] prove the actual multiple-sine exact structural matroid input
+- [ ] prove the actual multiple-elliptic-gamma nonlinear order-one atomicity and all-order exact
+      structural matroid input
 - [x] prove the codimension-two critical boundary complex
 - [x] formalize the Jacobian/Veronese identity and its exact syzygy complex in Lean
 - [x] realize every deeper normal-crossing stratum objectwise by the formal universal HT palette

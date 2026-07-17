@@ -9,6 +9,8 @@
   `N>=3`; no RH and no distinguished scalar special-function input
 - **Parent:**
   `../2-fully-proven/not_new_scientific_knowledge/fixed-particle-holomorphic-acyclicity-identity-zero-yang-baxter.md`
+- **Real-frame theorem:**
+  `../2-fully-proven/not_new_scientific_knowledge/collision-regular-relative-yang-baxter-chamber-frame.md`
 - **Statement:** On the Alazzawi--Lechner particle tubes, the standard `O(N)` braid cocycle has
   exact holomorphic frames `J_n` satisfying
 
@@ -121,7 +123,8 @@ L_n(z):l2(G) tensor V -> V                                 (9)
 ```
 
 with the matching block equivariance and `exp(O(n))` bounds such that `L_n(z)T_n(z)` is invertible
-and uniformly well-conditioned on the central slice.  The constant invariant coisometry
+and uniformly well-conditioned on the central slice.  No inverse away from that slice is required
+by Definition 5.2. The constant invariant coisometry
 `m^(-1/2) sum_pi` turns `L_n T_n` into the normalized Reynolds average.  Hence the determinant and
 least-singular-value failure below is precisely failure of the obvious square compression, not
 failure of a controlled rectangular frame.
@@ -182,6 +185,198 @@ condition-number control are already solved in the continuous category.  The rem
 is precisely a bounded holomorphization of this frame that retains `(9f)` up to `exp(O(n))` loss.
 Ordinary equivariant Oka holomorphizes it only in the compact-open topology.
 
+## Explicit chamber frame and approximation reduction `[PROVED]`
+
+There is a more rigid continuous frame on the central real slice, which we identify with `R^n`
+by suppressing the common imaginary shift.  For a generic `theta in R^n`, let `p(theta)` be the
+unique permutation for which `theta_(p(theta))` is ordered,
+and set
+
+```text
+J_n^ch(theta)=A_n^(p(theta))(theta)^(-1).                  (9g)
+```
+
+At a collision, two sorting permutations differ by a point stabilizer.  Stabilizer triviality
+therefore makes `(9g)` independent of the choice and extends it continuously across every
+collision hyperplane.  It is unitary and satisfies the exact central cocycle equation.
+
+Let
+
+```text
+C_B=sup_(x in R) ||B'(x)||<infinity.                       (9h)
+```
+
+Regular strip analyticity gives the finiteness in `(9h)`.  In an inversion-factor expression for
+`A_n^p`, each rapidity coordinate occurs in at most `n-1` two-body factors.  All other factors are
+unitary on the real slice, so on every chamber
+
+```text
+||partial_(theta_j) J_n^ch|| <=(n-1) C_B.                  (9i)
+```
+
+Continuity across the finitely many walls crossed by a line segment turns `(9i)` into a global
+Lipschitz estimate.  The frame is not real analytic at a generic wall; the one-sided derivative
+jump is already visible at particle number two.
+
+The wall singularity has an exact one-variable normal form.  Suppose two adjacent chambers use
+sorting permutations `p` and `p tau_k`, put
+
+```text
+u=(z_p)_(k+1)-(z_p)_k,
+H_p(z)=A_n^p(z)^(-1).                                    (9i-a)
+```
+
+The cocycle identity gives the two chamber formulas
+
+```text
+J_n^ch(z)=H_p(z),
+J_n^ch(z)=A_k(u)^(-1) H_p(z),                             (9i-b)
+```
+
+on the respective sides.  Since `A_k(0)=I`, they glue continuously on `u=0`.  Their normal
+derivative jump there is
+
+```text
+-A_k'(0) H_p(z).                                         (9i-c)
+```
+
+Thus every generic collision seam is a one-dimensional matrix hinge multiplying a holomorphic
+background.  Multiple-collision strata are where these hinges must satisfy the braid and
+shifted-basepoint coherence simultaneously.  Formula `(9i-b)` is elementary cocycle algebra, not
+a novelty claim, but it localizes the possible special cancellation needed by `(9o)`.
+
+The first jet at the total collision does not itself supply that cancellation.  After
+sign normalization, linearization along `theta=t x` has the braid-fan spline form
+
+```text
+J_n^ch(t x)
+  =I+t[L(x)+sum_(i<j) (x_i-x_j)_+ K_(i j)]+O(t^2),        (9i-d)
+```
+
+for a chamber-independent affine gauge term `L` and embedded two-leg infinitesimal crossing
+operators `K_(i j)`.  Every inverted pair crosses once and all ordering commutators vanish to
+first order.  Thus `(9i-d)` is ordinary type-`A` braid-fan spline geometry, not a new obstruction.
+At higher order, partition-lattice cumulants, connected label graphs, Magnus/BCH terms, and
+iterated conormal symbols are likewise established parent languages.
+
+More importantly, a germ at the total collision cannot prove `(9l)`.  The approximation is
+uniform on the complete unbounded real slice, hence it must control every translated partial
+collision stratum with arbitrary spectator separations and both rapidity ends.  A scientifically
+meaningful connected-symbol attack would therefore require a **uniform stratified majorant** over
+all collision flats and noncompact tangential directions.  Standard polymer estimates require
+activity small enough to compensate an incompatibility degree of order `n`; the present central
+wall factors are order one.  Until a Yang--Baxter cancellation supplies that compensation,
+"collision cumulants" are bookkeeping rather than a solution.
+
+Now let `F_n` be any bounded holomorphic matrix on `Omega_n`, with no equivariance assumption,
+and define its twisted Reynolds projection
+
+```text
+P_n(F_n)(z)=m^(-1) sum_(pi in G)
+  F_n(z_pi) A_n^pi(z)^(-1).                               (9j)
+```
+
+The cocycle identity gives
+
+```text
+P_n(F_n)(z_sigma)=P_n(F_n)(z) A_n^sigma(z).                (9k)
+```
+
+If, for one fixed `0<delta<1`,
+
+```text
+sup_(theta in R^n) ||F_n(theta)-J_n^ch(theta)|| <=delta,
+sup_(z in Omega_n) ||F_n(z)|| <=exp(C_F n),                (9l)
+```
+
+then central unitarity of the cocycle and `(4)` yield
+
+```text
+sup_theta ||P_n(F_n)(theta)-J_n^ch(theta)|| <=delta,
+sup_Omega ||P_n(F_n)|| <=exp((C_F+C_tilde)n).              (9m)
+```
+
+Hence `P_n(F_n)` is centrally invertible with inverse norm at most `(1-delta)^(-1)` and solves
+`(1)`.  The full conjecture is reduced to the boundary approximation problem `(9l)`: approximate
+the explicit Coxeter-chamber unitary by a bounded holomorphic seed on the `1/n` tube with only
+exponential growth.  No holomorphic invertibility or equivariance is required of the seed.
+
+## Generic holomorphic smoothing audit and route kill
+
+The reduction `(9l)` is not closed by inserting a standard multivariate mollifier.  The Euclidean
+Lipschitz constant following from `(9i)` is
+
+```text
+Lip_2(J_n^ch) <= C_B n sqrt(n-1).                         (9n)
+```
+
+A product band-limited kernel has a typical Euclidean displacement of order `sqrt(n)/sigma`.
+Constant real-slice error therefore requires coordinate bandwidth at least order `n^2`.  But the
+product tube has `||Im z||_1=O(1)`, so its complex growth is then `exp(O(n^2))`, not
+`exp(O(n))`.  A spherical-spectrum kernel has typical displacement of order `n/sigma`; `(9n)`
+then requires `sigma=O(n^(5/2))`, while `||Im z||_2=O(n^(-1/2))`, again giving
+`exp(O(n^2))`.  Gaussian smoothing at the scale forced by `(9n)` gives the still worse bound
+`exp(O(n^3))`.
+
+This dimension loss is not merely an artefact of one proof.  The classical Newman--Shapiro and
+Ganzburg Jackson estimates have explicit dimension dependence; Ganzburg notes sharp dimension
+dependence even for the ball, cube, and octahedron.  Consequently the tempting dimension-free
+entire Jackson lemma for an arbitrary bounded Lipschitz map is not an available parent theorem.
+The exact useful successor must be special to the Coxeter--Yang--Baxter chamber frame:
+
+```text
+[CONJECTURE: COXETER JACKSON LEMMA]
+J_n^ch admits a bounded entire approximation of spherical type O(n^(3/2)),
+or another spectrum whose support function is O(n) on the AL tube,
+with one fixed real-slice error delta<1.                  (9o)
+```
+
+If `(9o)` holds, Bernstein growth gives exactly `exp(O(n))` on `Omega_n`, and `(9j)`--`(9m)`
+finish the intertwiner property.  Generic Jackson theory does not support `(9o)`; a proof must use
+braid compatibility, collision strata, or another special cancellation.  Logistic sorting gates
+do not do this: slope `O(n)` keeps their poles outside a `1/n` tube but gives only `O(1/n)`
+per-gate resolution across `O(n^2)` gates, whereas slope `O(n^2)` moves poles into the tube.
+SoftSort and NeuralSort retain absolute values or order statistics and are not holomorphic.
+
+Song-Ying Li's sup-norm `dbar` theorem on product domains has the promising estimate
+
+```text
+||S f||_infinity
+  <= n C_Omega (1-gamma)^(-n)
+     sum_k ||d_Omega(z_k)^gamma f_k||_infinity,  0<gamma<1,       (9p)
+```
+
+which has the correct exponential dimension scale.  It still does not prove `(9l)`: smoothing the
+chamber frame has no known sufficiently small `dbar` defect, the correction in `(9p)` need not be
+smaller than the fixed central invertibility margin, and conformally moving the unbounded strip to
+the disk creates inverse-distance growth at the two rapidity ends, while `(9p)` permits only a
+strictly subcritical distance weight.  This is a precise near miss, not a bounded Oka theorem.
+
+## Corona and maximal-ideal-space audit
+
+The compressor problem is not presently a matrix-corona corollary.  Central conditioning is
+strictly weaker than a corona hypothesis: a bounded holomorphic scalar can be bounded away from
+zero on the real diameter of a disk and still vanish off that diameter.  Conversely, exact
+unitarity on an open real cube would be far stronger than needed: if
+`J(x)^* J(x)=I` there, the holomorphic reflection `J^sharp(z)=J(conj z)^*` satisfies
+`J^sharp J=I` everywhere by the identity theorem.  Definition 5.2 asks only for a central lower
+singular-value bound and allows complex-tube determinant zeros.
+
+Known matrix-corona estimates also have the wrong rank scale.  Treil constructed globally
+corona-bounded rectangular matrices for which every bounded left inverse has norm exponential in
+the column rank.  Here the rank is `N^n`, so a generic matrix-corona bound can be doubly
+exponential in `n`.  The disk analytic-projection and bounded-factorization theorems, the
+`H^p`, `1<p<infinity`, polydisk theorem, and the symmetrized-bidisk Toeplitz criterion all require
+global domain hypotheses and do not retain the finite-group covariance or rank-uniform constants.
+The scalar `H^infinity(D^n)` corona problem for `n>=2` also remains open; the 2021 claim and its
+2025 successor were withdrawn, the latter in March 2026 with gaps acknowledged.
+
+There is qualitative projective freeness for the symmetric polydisc algebra continuous on the
+closed polydisc, whose geometric maximal ideal space is contractible.  That is the wrong algebra:
+symmetric `H^infinity` has non-geometric maximal-ideal fibres, and no corresponding quantitative
+projective-freeness theorem is known.  The exact open core remains `(9l)`, not a hidden standard
+completion theorem.
+
 ## Reynolds attempt and exact failure
 
 Twisted Reynolds averaging sends a bounded holomorphic seed to an exact equivariant section.  By
@@ -191,15 +386,16 @@ identity after normalization, so it is invertible near that point.
 The attempt fails globally for a precise reason:
 
 ```text
-unitary matrices can cancel in their average;
-determinant zeros can appear away from the collision locus;
-even without zeros, the least singular value can tend to zero
-along unbounded real rapidity directions.                             (10)
+unitary matrices can cancel in their average on the central slice;
+the available estimates do not exclude determinant zeros there;
+even without zeros, they do not prevent the least singular value
+from tending to zero at real rapidity infinity.                       (10)
 ```
 
-Oka theory can remove the zeros pointwise by changing the section, but supplies no bound on the
-condition number of the repaired section.  Additive bounded-cohomology vanishing does not control
-this nonlinear `GL` selection problem.
+Oka theory supplies a different everywhere-invertible holomorphic section, but no bound on its
+condition number.  The raw Reynolds estimate therefore fails as a proof; `(10)` is not evidence
+that the `O(N)` average actually becomes singular. Additive bounded-cohomology vanishing does not
+control this nonlinear square-selection problem.
 
 ## Radial Oka homotopy and exact uniform failure
 
@@ -227,12 +423,10 @@ an exact kill of the naive uniform contraction estimate.  A successful proof mus
 rapidity differences or glue at finite scale instead of transporting the complete unbounded real
 axis through the total collision.
 
-## Coxeter--Cartan attack `[CONJECTURAL]`
+## Coxeter--Cartan matching attack `[RETIRED AS STATED]`
 
-Edge-colour the complete graph on `n` particle labels into `n-1` perfect matchings when `n` is
-even, and `n` near-perfect matchings when `n` is odd.  Pair collision hyperplanes within one
-matching involve disjoint tensor legs and commute.  This suggests a gluing scheme with only
-`O(n)` noncommuting layers:
+Edge-colouring the complete graph on `n` particle labels gives `O(n)` matchings, but it does not
+give `O(n)` constant-cost analytic layers.  The attempted scheme was
 
 ```text
 collision-normalized local frames
@@ -241,17 +435,24 @@ collision-normalized local frames
   -> uniformly conditioned global frame.                           (13)
 ```
 
-The desired per-layer estimate is constant, so `O(n)` layers would yield `(2)`.  The load-bearing
-missing lemma is a near-identity matrix Cartan split on one matching that:
+Four exact gaps invalidate that inference:
 
-1. is holomorphic on the complete `1/n` tube;
-2. preserves the already repaired collision hyperplanes;
-3. has a condition number bounded independently of `n` and the internal rank `N^n`;
-4. is compatible with the Brauer contraction terms and the next Coxeter layer.
+1. a label transposition `(i,j)` has adjacent Coxeter length `2(j-i)-1`, so arbitrary matching
+   edges are conjugated braid words rather than elementary two-leg gates;
+2. disjoint transpositions satisfy shifted-basepoint coherence
+   `A^t(z)A^s(z_t)=A^s(z)A^t(z_s)`, not ordinary pointwise commutation;
+3. errors of the `O(n)` gates in one matching can add in operator norm, so scalar parallel depth
+   gives no constant layer condition number;
+4. networks using nonadjacent comparators hide exactly the adjacent word length and shifted
+   evaluations that the cocycle must control.
 
-The pure pair-word theorem shows that `(13)` cannot simply multiply one copy of the published
-two-body half-phase along the edge colouring.  Each layer must include a genuine multiparticle
-correction or a nonlinear selection from the descended frame bundle.
+The exact route kill and its parent-theory audit are recorded in
+`../5-failed/naive-matching-layer-coxeter-cartan-trivialization.md`.  Maillet--Sanchez de Santos
+factorizing `F`-matrices impose precisely the missing partial-`F` cross-layer equations, but their
+standard frames are singular at spectral collisions.  The positive successor is a
+**collision-regular relative factorizing `F`-matrix for `(S,S(0))`** with the shifted coherence and
+`exp(O(n))` bounds.  Its first serious test is the full `n=3` `O(N)` Brauer basis with genuine
+three-body coefficients; a pure pairwise half-factor is already ruled out.
 
 ## Hypertranscendental physics payoff
 
@@ -274,15 +475,28 @@ mixing projective-HT Yang--Baxter family must clear.
 4. **Generic corona language called a reduction theorem.**  Rejected.  The exact equivariant
    matrix-completion equivalence and constants must be proved.
 5. **The radial contraction called quantitative Oka.**  Rejected by the exact `1/t` loss `(12)`.
-6. **The edge-colouring schedule called a proof.**  Rejected.  The matching-layer Cartan lemma is
-   open and explicitly named.
+6. **The edge-colouring schedule called a proof.**  Rejected and retired as stated.  Matching
+   depth omits adjacent Coxeter length, shifted partial-`F` coherence, and within-layer norm
+   accumulation.
+7. **Generic Jackson smoothing called the seed.**  Rejected by the `exp(O(n^2))` dimension loss
+   above.  Only the special Coxeter Jackson lemma `(9o)` remains viable.
+8. **Product-domain sup-norm `dbar` called a proof.**  Rejected.  Its norm scale is compatible,
+   but no centrally small defect with the required rapidity-end decay has been constructed.
+9. **Collision jets or connected cumulants called the obstruction theory.**  Rejected.  The
+   first jet is a standard braid-fan hinge spline and higher connected expansions have established
+   linked-cluster and conormal parents.  Local total-collision data do not control translated
+   strata or rapidity infinity.
+10. **The optimized exponential constant renamed an entropy.**  Rejected.  Minimizing the
+    product of the tube norm and central inverse norm merely repackages Definition 5.2.  It becomes
+    new mathematics only after a non-tautological lower-bound formula, a cross-particle assembly
+    law, or a necessity theorem for locality.
 
-The possible new contribution is the `O(n)`-layer Coxeter--Cartan construction, not the conjecture
-or its physical significance.  It clears neither novelty nor significance until the missing
-matching-layer lemma is proved and compared with factorizing `F`-matrix constructions.  Focused
-searches for edge-coloured or matching-layer Yang--Baxter twists found parallel sorting networks,
-Yang--Baxter bases, and ordinary complete-graph factorization, but no analytic Hardy-frame
-construction of the form `(13)`.  This is negative search evidence only.
+The possible new contribution is the collision-regular relative factorizing `F`-matrix, not the
+published intertwiner conjecture or its physical significance.  Factorizing `F`-matrices and their
+partial coherence equations are parent theory.  Focused searches found no collision-regular
+relative `O(N)`/Brauer construction with analytic Hardy bounds.  This is negative search evidence
+only; novelty and significance remain uncleared until the `n=3` Brauer test produces a genuine
+three-body correction and a scalable estimate.
 
 ## Primary literature
 
@@ -292,12 +506,31 @@ construction of the form `(13)`.  This is negative search evidence only.
   <https://eudml.org/doc/144259>.
 - B. Berndtsson and J.-P. Rosay, *Quasi-isometric vector bundles and bounded factorization of
   holomorphic matrices*, <https://doi.org/10.5802/aif.1964>.
-- J. Leiterer, *A quantitative Oka principle*,
+- J. Leiterer, *Splitting of Holomorphic Cocycles with Estimates. Several Variables*,
   <https://doi.org/10.1090/conm/550/10869>.
 - S. Treil and B. D. Wick, *Analytic projections, corona problem and geometry of holomorphic
   vector bundles*, <https://arxiv.org/abs/math/0702756>.
 - S. Treil and B. D. Wick, *The Matrix-Valued `H^p` Corona Problem in the Disk and Polydisk*,
   <https://arxiv.org/abs/math/0409494>.
+- S.-Y. Li, *Solving Kerzman's Problem on the Sup-Norm Estimate for `dbar` on Product Domains*,
+  <https://doi.org/10.1090/tran/9208>.
+- M. I. Ganzburg, *The theorems of Jackson and Bernstein in `R^m`*,
+  <https://doi.org/10.1070/RM1979v034n01ABEH002878>.
+- D. J. Newman and H. S. Shapiro, *Jackson's theorems in higher dimensions*, in *On
+  Approximation Theory* (1964), pp. 208--219.
+- A. Sasane, *Banach Algebras of Symmetric Functions on the Polydisc*,
+  <https://arxiv.org/abs/2201.00183>.
+- J. M. Maillet and J. Sanchez de Santos, *Drinfel'd Twists and Algebraic Bethe Ansatz*,
+  <https://arxiv.org/abs/q-alg/9612012>.
+- A. Postnikov, *Permutohedra, associahedra, and beyond*,
+  <https://arxiv.org/abs/math/0507163>.
+- C. Brouder and F. Patras, *Nonlocal, noncommutative diagrammatics and the linked cluster
+  theorems*,
+  <https://arxiv.org/abs/1103.2849>.
+- M. Norledge and A. Ocneanu, *Hopf monoids, permutohedral cones, and generalized retarded
+  functions*, <https://arxiv.org/abs/1911.11736>.
+- R. Fernandez and A. Procacci, *Cluster expansion for abstract polymer models*,
+  <https://arxiv.org/abs/math-ph/0605041>.
 
 ## Lean boundary
 
@@ -319,8 +552,12 @@ alone would not formalize the load-bearing theorem.
 - [x] Reynolds averaging failure isolated to invertibility/conditioning
 - [x] naive radial contraction killed by non-integrable `1/t` loss
 - [x] pure pair-word lift killed at three particles
-- [ ] matching-layer near-identity Cartan lemma
-- [ ] `O(n)` Coxeter-layer assembly
+- [x] naive matching-layer implication retired
+- [x] local collision-jet/cumulant route reduced to standard parent theory and rejected as a
+  global Hardy argument
+- [ ] collision-regular relative partial-`F` equations solved for `O(N)`, `n=3`
+- [ ] coherent relative factorizing `F`-matrix with `exp(O(n))` control
+- [ ] uniform control on every translated collision stratum and at rapidity infinity
 - [ ] uniform lower singular-value bound
 - [ ] Alazzawi--Lechner intertwiner property for `O(N)`
 - [ ] modular nuclearity and compact-local `O(N)` net

@@ -71,9 +71,11 @@ Equivalently, one defect chosen from each distinct nonzero coset is differential
 The abstract independence content — distinct-coset defects are jointly independent, and same-coset
 translates are rank-neutral — is the star-independence case of the gluing engine formalized
 axiom-clean in `GaloisForLFunctions.DifferentialMatroidGluing` (`Rank.freeBlock`,
-`Rank.crossNeutral_iUnion_indep`), with `dtrdeg` abstracted as the submodular `Rank`; the analytic
-inputs (that `dtrdeg` is that rank; the order-one atomic parent) enter as the `Rank`/`CrossNeutral`
-interfaces.
+`Rank.crossNeutral_iUnion_indep`). The genuine differential matroid now supplies the rank,
+differential automorphisms preserve it, integer orbit heights supply free translates, and
+packetwise DA supplies `CrossNeutral`. The remaining Lean work is the actual elliptic-gamma
+star-independence and packetwise DA proof from paired telescoping and private pole orbits; it is no
+longer a missing matroid interface.
 
 The same statements hold for the multiplicative shift quotients
 

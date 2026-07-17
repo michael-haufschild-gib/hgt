@@ -71,8 +71,13 @@ The abstract independence content (2) — distinct-coset defects jointly indepen
 rank-neutral, giving `dtrdeg = ` number of distinct nonzero cosets — is the partition-matroid /
 star-independence case of the gluing engine formalized axiom-clean in
 `GaloisForLFunctions.DifferentialMatroidGluing` (`Rank.freeBlock`, `Rank.crossNeutral_iUnion_indep`).
-The analytic inputs (paired telescoping, that `dtrdeg` is the submodular `Rank`) enter as the
-`Rank`/`CrossNeutral` interfaces.
+The rank abstraction is now discharged by `DifferentialMatroidRank.differentialRank`, and
+`differentialRank_crossNeutral_of_image_differentialAlgebraic` converts packetwise DA directly to
+`CrossNeutral`. In addition, `DifferentialFamilyMatroid.differentialFamilyMatroid_eq_affineCollisionMatroid_iff`
+identifies the exact remaining target: the double-sine family represents the coset collision
+matroid precisely when every subfamily is differentially independent exactly when its nonzero
+coset labels are injective. The unformalized content is therefore the paired analytic telescoping
+and pole-orbit proof of that equivalence, not the matroid or rank infrastructure.
 
 ## Proof: structural cosets give the upper bound
 
@@ -214,8 +219,9 @@ superpositions beyond their constant-coefficient operator rank.
 4. **Meromorphic category.** Dense-period constancy and rational-cylinder specialization use actual
    meromorphic functions, not formal solutions.
 5. **No Lean promotion yet.** The local tree has no multiple-sine analytic definition or
-   several-automorphism Picard--Vessiot theory.  An abstract wrapper assuming the telescoper would
-   not formalize the scientific theorem.
+   several-automorphism Picard--Vessiot theory. The genuine differential matroid, exact collision-
+   matroid criterion, and rank/gluing bridges are formalized, but an abstract wrapper assuming the
+   telescoper would still not formalize the scientific theorem.
 
 ## Parent-theory and literature gate
 
@@ -245,4 +251,3 @@ priority before scientific-novelty promotion.
 - [ ] independent audit of the several-translation telescoper in this specialization
 - [ ] independent specialist proof and novelty audit
 - [ ] unconditional analytic formalization in Lean
-

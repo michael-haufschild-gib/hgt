@@ -285,6 +285,61 @@ def HasFreeTranslates (σ : Equiv.Perm Ω) (S : Set Ω) : Prop :=
     (∀ i j : Fin M, i ≠ j → Disjoint (B.image ⇑(σ ^ (N i))) (B.image ⇑(σ ^ (N j)))) ∧
     (∀ j : Fin M, (↑(B.image ⇑(σ ^ (N j))) : Set Ω) ⊆ S)
 
+/-- An integer height translated by `n` under `σ ^ n` supplies arbitrarily many disjoint
+translates of every finite packet. -/
+theorem hasFreeTranslates_of_intHeight (σ : Equiv.Perm Ω) (S : Set Ω) (height : Ω → ℤ)
+    (hstable : ∀ x ∈ S, ∀ n : ℤ, (σ ^ n) x ∈ S)
+    (hheight : ∀ x ∈ S, ∀ n : ℤ, height ((σ ^ n) x) = height x + n) :
+    HasFreeTranslates σ S := by
+  intro B hB M
+  let R : ℕ := ∑ x ∈ B, Int.natAbs (height x)
+  let W : ℤ := (2 * R + 1 : ℕ)
+  let N : Fin M → ℤ := fun j => (j.1 : ℤ) * W
+  refine ⟨N, ?_, ?_⟩
+  · intro i j hij
+    rw [Finset.disjoint_left]
+    intro z hzi hzj
+    rw [Finset.mem_image] at hzi hzj
+    obtain ⟨x, hxB, rfl⟩ := hzi
+    obtain ⟨y, hyB, hxy⟩ := hzj
+    have hxS : x ∈ S := hB (Finset.mem_coe.mpr hxB)
+    have hyS : y ∈ S := hB (Finset.mem_coe.mpr hyB)
+    have heq := congrArg height hxy
+    rw [hheight y hyS (N j), hheight x hxS (N i)] at heq
+    have hdelta : N j - N i = height x - height y := by omega
+    have hxR : Int.natAbs (height x) ≤ R := by
+      exact Finset.single_le_sum
+        (f := fun z => Int.natAbs (height z)) (fun _ _ => Nat.zero_le _) hxB
+    have hyR : Int.natAbs (height y) ≤ R := by
+      exact Finset.single_le_sum
+        (f := fun z => Int.natAbs (height z)) (fun _ _ => Nat.zero_le _) hyB
+    have hupper : Int.natAbs (height x - height y) ≤ 2 * R := by
+      have h := Int.natAbs_sub_le (height x) (height y)
+      omega
+    have hindex : (j.1 : ℤ) - (i.1 : ℤ) ≠ 0 := by
+      intro hzero
+      have hval : j.1 = i.1 := by exact_mod_cast sub_eq_zero.mp hzero
+      exact hij (Fin.ext hval.symm)
+    have hindexPos : 0 < Int.natAbs ((j.1 : ℤ) - (i.1 : ℤ)) :=
+      Int.natAbs_pos.mpr hindex
+    have hNdiff : N j - N i = ((j.1 : ℤ) - (i.1 : ℤ)) * W := by
+      dsimp only [N]
+      ring
+    have hWabs : Int.natAbs W = 2 * R + 1 := by
+      change Int.natAbs ((2 * R + 1 : ℕ) : ℤ) = 2 * R + 1
+      have hnonneg : (0 : ℤ) ≤ 2 * (R : ℤ) + 1 := by omega
+      have h := Int.natAbs_of_nonneg hnonneg
+      exact_mod_cast h
+    have hlower : 2 * R + 1 ≤ Int.natAbs (N j - N i) := by
+      rw [hNdiff, Int.natAbs_mul, hWabs]
+      nlinarith
+    rw [hdelta] at hlower
+    omega
+  · intro j z hz
+    rw [Finset.mem_coe, Finset.mem_image] at hz
+    obtain ⟨x, hxB, rfl⟩ := hz
+    exact hstable x (hB (Finset.mem_coe.mpr hxB)) (N j)
+
 /-- Star independence feeds the free-block interface: an independent set on which `σ` acts with free
 translates is a free independent orbit for `σ`.  This is the bridge from the first gluing step
 (`crossNeutral_iUnion_indep`) to the free-block hypothesis of the second step. -/
