@@ -17,6 +17,7 @@ moment is a Montgomery–Vaughan instance with `‖coefficients‖ = |μ(m)| ≤
 -/
 import GaloisForLFunctions.RHTower.SecondMoment
 import Mathlib.NumberTheory.ArithmeticFunction.Moebius
+import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
 import Mathlib.NumberTheory.Harmonic.Bounds
 
 open Nat ArithmeticFunction Finset
@@ -114,6 +115,76 @@ theorem harmonicFloorMoebiusSum_eq_one (N : ℕ) (hN : 1 ≤ N) :
     exact_mod_cast sum_moebius_divisors n
   simp_rw [hmu]
   simp [hN]
+
+/-- Additive successor changes the harmonic floor aperture by either one reciprocal term or zero.
+This is the unscaled floor-jump form of the additive--multiplicative curvature identity. -/
+theorem harmonicFloor_succ_sub_eq_indicator (N d : ℕ) :
+    harmonic ((N + 1) / d) - harmonic (N / d) =
+      if d ∣ N + 1 then ((N / d + 1 : ℕ) : ℚ)⁻¹ else 0 := by
+  by_cases h : d ∣ N + 1
+  · rw [if_pos h, Nat.succ_div_of_dvd h, harmonic_succ]
+    abel
+  · rw [if_neg h, Nat.succ_div_of_not_dvd h]
+    exact sub_self _
+
+/-- **Exact successor/floor curvature.**  For `d ≥ 1`, the jump of the multiplicative harmonic
+aperture under `N ↦ N + 1` is `d / (N + 1)` precisely when the new endpoint is divisible by
+`d`, and is zero otherwise. -/
+theorem harmonicFloor_succ_sub (N d : ℕ) (hd : 1 ≤ d) :
+    harmonic ((N + 1) / d) - harmonic (N / d) =
+      if d ∣ N + 1 then (d : ℚ) / (N + 1 : ℕ) else 0 := by
+  rw [harmonicFloor_succ_sub_eq_indicator]
+  by_cases h : d ∣ N + 1
+  · simp only [if_pos h]
+    have hmul : d * (N / d + 1) = N + 1 := by
+      rw [← Nat.succ_div_of_dvd h]
+      exact Nat.mul_div_cancel' h
+    have hmulQ : (d : ℚ) * (N / d + 1 : ℕ) = (N + 1 : ℕ) := by
+      exact_mod_cast hmul
+    have hdQ : (d : ℚ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hd)
+    have hqQ : ((N / d + 1 : ℕ) : ℚ) ≠ 0 := by positivity
+    rw [← hmulQ]
+    field_simp
+  · simp only [if_neg h]
+
+/-- Contracting the exact harmonic floor jump against `-μ(d) log(d) / d` produces the
+von Mangoldt curvature `Λ(N + 1) / (N + 1)`.  The divisor set is exactly the nonzero support of
+the floor jump. -/
+theorem harmonicFloorMoebiusLog_succ_sub_eq_vonMangoldt (N : ℕ) :
+    (∑ d ∈ (N + 1).divisors,
+        -((((ArithmeticFunction.moebius d : ℤ) : ℝ) * Real.log d) / (d : ℝ)) *
+          ((harmonic ((N + 1) / d) - harmonic (N / d) : ℚ) : ℝ)) =
+      ArithmeticFunction.vonMangoldt (N + 1) / (N + 1 : ℕ) := by
+  calc
+    (∑ d ∈ (N + 1).divisors,
+        -((((ArithmeticFunction.moebius d : ℤ) : ℝ) * Real.log d) / (d : ℝ)) *
+          ((harmonic ((N + 1) / d) - harmonic (N / d) : ℚ) : ℝ)) =
+        ∑ d ∈ (N + 1).divisors,
+          -((((ArithmeticFunction.moebius d : ℤ) : ℝ) * Real.log d) /
+            (N + 1 : ℕ)) := by
+      apply Finset.sum_congr rfl
+      intro d hdmem
+      have hdvd : d ∣ N + 1 := (Nat.mem_divisors.mp hdmem).1
+      have hdpos : 1 ≤ d :=
+        Nat.pos_of_dvd_of_pos hdvd (by omega : 0 < N + 1)
+      have hincQ := harmonicFloor_succ_sub N d hdpos
+      rw [if_pos hdvd] at hincQ
+      have hincR :
+          ((harmonic ((N + 1) / d) - harmonic (N / d) : ℚ) : ℝ) =
+            (d : ℝ) / (N + 1 : ℕ) := by
+        rw [hincQ]
+        norm_cast
+      rw [hincR]
+      have hdR : (d : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hdpos)
+      have hNR : ((N + 1 : ℕ) : ℝ) ≠ 0 := by positivity
+      field_simp
+    _ = ArithmeticFunction.vonMangoldt (N + 1) / (N + 1 : ℕ) := by
+      simp_rw [div_eq_mul_inv, ← neg_mul]
+      rw [← Finset.sum_mul]
+      simp_rw [neg_mul]
+      rw [Finset.sum_neg_distrib,
+        ArithmeticFunction.sum_moebius_mul_log_eq]
+      ring
 
 /-- The Möbius mollifier coefficients `a_m = μ(m)` (as reals). -/
 noncomputable def moebiusCoeff (m : ℕ) : ℝ := (ArithmeticFunction.moebius m : ℝ)
