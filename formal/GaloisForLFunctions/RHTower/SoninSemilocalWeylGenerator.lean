@@ -79,9 +79,16 @@ theorem logPositionUnitary_normalizedDilation_weyl
   simp only [logPositionUnitaryFunction, normalizedDilationFunction,
     HTGeometry.scalarWeylCharacter]
   rw [habs, Real.log_mul hp.ne' habsx.ne']
-  rw [← Complex.exp_add]
-  push_cast
-  congr 1
+  have hphase :
+      Complex.exp (Complex.I * (t : ℂ) * (Real.log |x| : ℂ)) =
+        Complex.exp (-Complex.I * (Real.log p : ℂ) * (t : ℂ)) *
+          Complex.exp (Complex.I * (t : ℂ) *
+            (Real.log p + Real.log |x| : ℝ)) := by
+    rw [← Complex.exp_add]
+    push_cast
+    congr 1
+    ring
+  rw [hphase]
   ring
 
 /-- The actual real-parameter Heisenberg conjugation orbit of physical dilation by logarithmic
@@ -169,7 +176,7 @@ theorem norm_soninSemilocalWeylCharacter_ofReal
 
 /-- Wigner--Smith relative phase derivative of the actual semilocal prime-power character. -/
 def soninSemilocalWignerSmithCharge (pk : Nat.Primes × ℕ) (t : ℝ) : ℂ :=
-  Complex.I * Complex.conj (soninSemilocalWeylCharacter pk (t : ℂ)) *
+  Complex.I * (starRingEnd ℂ) (soninSemilocalWeylCharacter pk (t : ℂ)) *
     deriv (soninSemilocalWeylCharacter pk) (t : ℂ)
 
 /-- The Wigner--Smith value recovers the full logarithmic orbital length at every real phase
@@ -269,7 +276,12 @@ theorem I_mul_deriv_soninSemilocalWeylFluxOrbit_zero
     Complex.I * deriv (soninSemilocalWeylFluxOrbit pk) 0 =
       soninSemilocalPrimeFluxCoefficient pk := by
   rw [deriv_soninSemilocalWeylFluxOrbit_zero]
-  ring
+  calc
+    Complex.I * (-Complex.I * soninSemilocalPrimeFluxCoefficient pk) =
+        -(Complex.I * Complex.I) * soninSemilocalPrimeFluxCoefficient pk := by ring
+    _ = soninSemilocalPrimeFluxCoefficient pk := by
+      rw [Complex.I_mul_I]
+      ring
 
 /-- Direct finite-corpus consumer: the existing finite von-Mangoldt central trace is the weighted
 sum of the identity tangents of the bounded prime-power Weyl orbits. -/

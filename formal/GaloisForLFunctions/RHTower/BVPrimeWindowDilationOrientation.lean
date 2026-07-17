@@ -194,6 +194,7 @@ theorem polarCoefficient_argumentDilation_eq_argumentExpansion_sq_mul
     mellinTransform_argumentDilation,
     mellinTransform_argumentExpansion,
     weightedPrimeWindow_argumentDilation_eq_argumentExpansion_sq_mul]
+  all_goals try exact hr
   rw [hcpow, hsqrt]
   ring
 

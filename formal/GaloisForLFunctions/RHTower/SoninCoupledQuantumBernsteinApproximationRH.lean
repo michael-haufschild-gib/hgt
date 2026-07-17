@@ -26,7 +26,7 @@ theorem soninAllPrimeCoupledRenyiReplicaMoment_zero_sq_le_one
     (a : SoninPositiveAperture) :
     soninAllPrimeCoupledRenyiReplicaMoment a 0 ^ 2 ≤ 1 := by
   have h := soninAllPrimeCoupledRenyiReplicaMoment_mem_Icc a 0
-  nlinarith [sq_nonneg (soninAllPrimeCoupledRenyiReplicaMoment a 0)]
+  simpa only [pow_two, one_mul] using mul_self_le_mul_self h.1 h.2
 
 /-- **Hypothesis-free coupled Hilbert comparator criterion.**  A uniform squared Bernstein
 distance bound from coupled Sonin density-replica packets along cofinal degrees proves RH.

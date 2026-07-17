@@ -223,7 +223,8 @@ private theorem finite_xiDivisorSupport_centered_norm_le {r : ℝ} (hr : 0 < r) 
   apply (xi_zeros_finite_ball (1 / 2 : ℂ) (r + 1)).subset
   rintro z ⟨rho, hrho, rfl⟩
   refine ⟨?_, xi_eq_zero_of_mem_divisor_support rho⟩
-  rw [Metric.mem_ball, Complex.dist_eq, norm_sub_rev]
+  rw [Metric.mem_ball, Complex.dist_eq]
+  change ‖(rho : ℂ) - (1 / 2 : ℂ)‖ ≤ r at hrho
   linarith
 
 private theorem xiRadialJensenSupportTerm_hasFiniteSupport {r : ℝ} (hr : 0 < r) :
@@ -231,7 +232,11 @@ private theorem xiRadialJensenSupportTerm_hasFiniteSupport {r : ℝ} (hr : 0 < r
   apply (finite_xiDivisorSupport_centered_norm_le hr).subset
   intro rho hne
   by_contra hnot
-  simp [xiRadialJensenSupportTerm, hnot] at hne
+  apply hne
+  unfold xiRadialJensenSupportTerm
+  have hnot' : ¬ ‖(rho : ℂ) - 1 / 2‖ ≤ r := by
+    simpa only [Set.mem_setOf_eq] using hnot
+  rw [if_neg hnot', mul_zero]
 
 theorem xiCenteredRadialJensenExcess_div_cube_eq_supportProfile
     {r : ℝ} (hr : 0 < r) :
@@ -268,6 +273,7 @@ theorem xiCenteredRadialJensenExcess_div_cube_eq_supportProfile
     · have hnorm : ¬ ‖u - 1 / 2‖ ≤ r := by
         simpa [Metric.mem_closedBall, Complex.dist_eq, norm_sub_rev] using hu
       have hDb := xi_divisor_closedBall_eq_zero_of_notMem hu
+      change Db u = 0 at hDb
       dsimp [g, b]
       rw [if_neg hnorm, hDb]
       simp
@@ -288,17 +294,25 @@ theorem xiCenteredRadialJensenExcess_div_cube_eq_supportProfile
     have hz : xi u = 0 :=
       xi_eq_zero_of_mem_divisor_support ⟨u, by simpa [D, Function.mem_support] using hDu⟩
     refine ⟨?_, hz⟩
-    rw [Metric.mem_ball, Complex.dist_eq, norm_sub_rev]
+    rw [Metric.mem_ball, Complex.dist_eq]
+    have hnorm' : ‖(1 / 2 : ℂ) - u‖ ≤ r := by
+      simpa only [norm_sub_rev] using hnorm
     linarith
   have hsupport :
       (∑' rho : XiDivisorSupport, xiRadialJensenSupportTerm r rho) = ∑' u : ℂ, g u := by
-    rw [tsum_subtype]
-    apply tsum_congr
-    intro u
-    by_cases hu : u ∈ Function.support D
-    · simp [Set.indicator_of_mem hu, xiRadialJensenSupportTerm, g, D]
-    · have hDu : D u = 0 := by simpa [Function.mem_support] using hu
-      simp [Set.indicator_of_notMem hu, g, D, hDu]
+    calc
+      (∑' rho : XiDivisorSupport, xiRadialJensenSupportTerm r rho) =
+          ∑' u : ℂ, (Function.support D).indicator g u := by
+        rw [← tsum_subtype]
+        rfl
+      _ = ∑' u : ℂ, g u := by
+        apply tsum_congr
+        intro u
+        by_cases hu : u ∈ Function.support D
+        · rw [Set.indicator_of_mem hu]
+        · have hDu : D u = 0 := by simpa [Function.mem_support] using hu
+          rw [Set.indicator_of_notMem hu]
+          simp [g, hDu]
   rw [xiRadialJensenSupportProfile, hsupport, tsum_eq_finsum hgfin]
   rw [show (∑ᶠ u : ℂ, g u) = ∑ᶠ u : ℂ, b u / r ^ 3 by
     apply finsum_congr
@@ -330,7 +344,8 @@ theorem summable_xiRadialJensenRealKernel {r : ℝ} (hr : 0 < r) :
   constructor
   · intro rho
     exact (hasSum_fintype _).summable
-  · apply (xiRadialJensenSupportTerm_hasFiniteSupport hr).summable.congr
+  · apply (summable_of_hasFiniteSupport
+      (xiRadialJensenSupportTerm_hasFiniteSupport hr)).congr
     intro rho
     rw [tsum_fintype]
     simp only [xiRadialJensenRealKernel, norm_xiSpectralPoint,
@@ -368,11 +383,16 @@ theorem tsum_xiRadialJensenKernel_eq_ofReal_supportProfile {r : ℝ} (hr : 0 < r
       ENNReal.ofReal (xiRadialJensenSupportProfile r) := by
   have hsum := summable_xiRadialJensenRealKernel hr
   rw [xiRadialJensenSupportProfile_eq_tsum_realKernel hr]
-  rw [← ENNReal.ofReal_tsum_of_nonneg
-    (fun q => xiRadialJensenRealKernel_nonneg hr q) hsum]
-  apply tsum_congr
-  intro q
-  rfl
+  calc
+    (∑' q : XiZeroCopy, xiRadialJensenKernel q r) =
+        ∑' q : XiZeroCopy, ENNReal.ofReal (xiRadialJensenRealKernel q r) := by
+      apply tsum_congr
+      intro q
+      unfold xiRadialJensenKernel xiRadialJensenRealKernel
+      split_ifs <;> simp
+    _ = ENNReal.ofReal (∑' q : XiZeroCopy, xiRadialJensenRealKernel q r) :=
+      (ENNReal.ofReal_tsum_of_nonneg
+        (fun q => xiRadialJensenRealKernel_nonneg hr q) hsum).symm
 
 def xiCenteredRadialJensenMassENNReal : ℝ≥0∞ :=
   4 * ∫⁻ r : ℝ in Ioi 0,

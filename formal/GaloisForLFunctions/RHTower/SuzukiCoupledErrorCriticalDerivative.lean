@@ -74,7 +74,8 @@ private theorem hasDerivAt_finset_prod {u : Finset ℕ} {f : ℕ → ℝ → ℝ
           f a 0 * ((∏ j ∈ u.erase i, f j 0) * f' i) := by
         intro i hi
         have hia : a ≠ i := fun h => ha (h ▸ hi)
-        rw [Finset.erase_insert_of_ne hia, Finset.prod_insert (Finset.not_mem_erase a u)]
+        rw [Finset.erase_insert_of_ne hia,
+          Finset.prod_insert (fun h => ha (Finset.mem_of_mem_erase h))]
         ring
       rw [Finset.sum_congr rfl hterm, ← Finset.mul_sum,
         mul_comm ((∏ j ∈ u, f j 0)) (f' a)]
@@ -97,14 +98,13 @@ theorem hasDerivAt_suzukiShiftedCoefficient {n : ℕ} (hn : 1 ≤ n) :
       funext ω
       rw [Real.rpow_def_of_pos hn0]
     rw [hrw]
-    have h := (hasDerivAt_const_mul (Real.log n) (x := (0 : ℝ))).exp
-    convert h using 2
-    simp
+    have hlin : HasDerivAt (fun ω : ℝ => Real.log n * ω) (Real.log n) 0 :=
+      hasDerivAt_const_mul _
+    simpa using hlin.exp
   have hmul := hbase.mul hprod
   have hf0 : ∀ q : ℕ, (1 : ℝ) - (q : ℝ) ^ (-2 * (0 : ℝ)) = 0 := by
     intro q
-    rw [neg_zero, Real.rpow_zero]
-    norm_num
+    norm_num [Real.rpow_zero]
   rcases Nat.eq_zero_or_pos P.card with hcard | hcard
   · have hPempty : P = ∅ := Finset.card_eq_zero.mp hcard
     have hn1 : n = 1 := by
@@ -114,13 +114,13 @@ theorem hasDerivAt_suzukiShiftedCoefficient {n : ℕ} (hn : 1 ≤ n) :
       rw [hPempty] at hne
       exact Finset.not_nonempty_empty hne
     subst hn1
-    convert hmul using 2
-    simp [hP, hPempty]
+    simpa [suzukiShiftedCoefficient] using
+      (hasDerivAt_const (0 : ℝ) (1 : ℝ))
   · have hprod0 : (∏ p ∈ P, (1 - (p : ℝ) ^ (-2 * (0 : ℝ)))) = 0 := by
       obtain ⟨p, hp⟩ := Finset.card_pos.mp hcard
       exact Finset.prod_eq_zero hp (hf0 p)
     rcases eq_or_lt_of_le (Nat.succ_le_of_lt hcard) with h1 | h2
-    · obtain ⟨p, hpP⟩ := Finset.card_eq_one.mp h1
+    · obtain ⟨p, hpP⟩ := Finset.card_eq_one.mp h1.symm
       have hD : (∑ q ∈ P, (∏ j ∈ P.erase q, (1 - (j : ℝ) ^ (-2 * (0 : ℝ)))) *
           (2 * Real.log q)) = 2 * Real.log p := by
         rw [hpP, Finset.sum_singleton, Finset.erase_singleton]
@@ -129,17 +129,22 @@ theorem hasDerivAt_suzukiShiftedCoefficient {n : ℕ} (hn : 1 ≤ n) :
         rw [← hP, hpP]
         exact Finset.mem_singleton_self p
       have hmin : n.minFac = p := by
+        have hn1 : n ≠ 1 := by
+          intro hn1
+          subst n
+          simp [hP] at hcard
         have hm : n.minFac ∈ n.primeFactors := by
           rw [Nat.mem_primeFactors]
-          exact ⟨Nat.minFac_prime (by omega), Nat.minFac_dvd n, by omega⟩
+          exact ⟨Nat.minFac_prime hn1, Nat.minFac_dvd n, by omega⟩
         rw [← hP, hpP] at hm
         exact Finset.mem_singleton.mp hm
       have hpp : IsPrimePow n :=
-        (isPrimePow_iff_card_primeFactors_eq_one).mpr (by rw [← hP, h1])
+        (isPrimePow_iff_card_primeFactors_eq_one).mpr (by rw [← hP, h1.symm])
       have hLam : Λ n = Real.log p := by
         rw [ArithmeticFunction.vonMangoldt_apply, if_pos hpp, hmin]
-      convert hmul using 2
-      simp [hprod0, hD, hLam]
+      convert hmul using 1
+      rw [hprod0, hD, hLam]
+      norm_num
     · have hD : (∑ q ∈ P, (∏ j ∈ P.erase q, (1 - (j : ℝ) ^ (-2 * (0 : ℝ)))) *
           (2 * Real.log q)) = 0 := by
         apply Finset.sum_eq_zero
@@ -159,20 +164,25 @@ theorem hasDerivAt_suzukiShiftedCoefficient {n : ℕ} (hn : 1 ≤ n) :
       have hLam : Λ n = 0 := by
         by_contra h
         exact hnpp ((ArithmeticFunction.vonMangoldt_ne_zero_iff).mp h)
-      convert hmul using 2
-      simp [hprod0, hD, hLam]
+      convert hmul using 1
+      rw [hprod0, hD, hLam]
+      norm_num
 
 /-- The summatory derivative: `∂_ω A_ω(X)|₀ = 2 ∑_{n ≤ X} Λ(n)`. -/
 theorem hasDerivAt_suzukiShiftedSummatory (X : ℕ) :
     HasDerivAt (fun ω => suzukiShiftedSummatory ω X)
       (2 * ∑ n ∈ Finset.Icc 1 X, Λ n) 0 := by
-  rw [suzukiShiftedSummatory, Finset.mul_sum]
-  exact HasDerivAt.sum fun n hn =>
+  unfold suzukiShiftedSummatory
+  rw [Finset.mul_sum]
+  have hsum := HasDerivAt.sum (u := Finset.Icc 1 X) fun n hn =>
     hasDerivAt_suzukiShiftedCoefficient (Finset.mem_Icc.mp hn).1
+  convert hsum using 1
+  funext ω
+  simp
 
 /-- The finite von Mangoldt sum is the Chebyshev `ψ` function at integer points. -/
 theorem sum_Icc_vonMangoldt_eq_psi (X : ℕ) :
-    ∑ n ∈ Finset.Icc 1 X, Λ n = ψ (X : ℝ) := by
+    ∑ n ∈ Finset.Icc 1 X, Λ n = Chebyshev.psi (X : ℝ) := by
   rw [Chebyshev.psi, Nat.floor_natCast]
   apply Finset.sum_congr
   · ext n
@@ -190,12 +200,13 @@ theorem tendsto_omega_mul_riemannZeta_re_one_add_two_mul :
     rw [tendsto_nhdsWithin_iff]
     constructor
     · have hcont : Tendsto (fun ω : ℝ => (1 : ℝ) + 2 * ω) (𝓝 0) (𝓝 1) := by
-        have := (tendsto_const_nhds (x := (1 : ℝ))).add
-          ((tendsto_id (x := (0 : ℝ))).const_mul (2 : ℝ))
-        simpa using this
+        convert (tendsto_const_nhds.add
+          (tendsto_const_nhds.mul (tendsto_id : Tendsto (fun x : ℝ => x) (𝓝 0) (𝓝 0))))
+          using 1 <;> norm_num
       have hcomp := (Complex.continuous_ofReal.tendsto 1).comp hcont
       exact hcomp.mono_left nhdsWithin_le_nhds
     · exact eventually_of_mem self_mem_nhdsWithin fun ω hω => by
+        change 0 < ω at hω
         simp only [Set.mem_compl_iff, Set.mem_singleton_iff]
         intro h
         have hre := congrArg Complex.re h
@@ -205,18 +216,23 @@ theorem tendsto_omega_mul_riemannZeta_re_one_add_two_mul :
   have h3 : Tendsto (fun ω : ℝ => (((2 * ω : ℝ)) : ℂ) *
       riemannZeta (((1 + 2 * ω : ℝ) : ℂ))) (𝓝[>] 0) (𝓝 1) := by
     refine h2.congr' (eventually_of_mem self_mem_nhdsWithin fun ω hω => ?_)
-    congr 1
-    push_cast
-    ring
+    change (((((1 + 2 * ω : ℝ) : ℂ)) - 1) *
+      riemannZeta (((1 + 2 * ω : ℝ) : ℂ))) =
+        (((2 * ω : ℝ) : ℂ) * riemannZeta (((1 + 2 * ω : ℝ) : ℂ)))
+    rw [show ((((1 + 2 * ω : ℝ) : ℂ)) - 1) = ((2 * ω : ℝ) : ℂ) by
+      push_cast
+      ring]
   have h4 := (Complex.continuous_re.tendsto 1).comp h3
   have h5 : Tendsto (fun ω : ℝ => 2 * (ω * (riemannZeta (((1 + 2 * ω : ℝ) : ℂ))).re))
       (𝓝[>] 0) (𝓝 1) := by
-    refine h4.congr' (eventually_of_forall fun ω => ?_)
+    refine h4.congr' (Filter.Eventually.of_forall fun ω => ?_)
     simp [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im]
     ring
   have h6 := h5.const_mul (1 / 2 : ℝ)
-  refine h6.congr' (eventually_of_forall fun ω => ?_)
-  ring
+  convert h6 using 1
+  · funext ω
+    ring
+  · norm_num
 
 /-- The normalized main term has the exact critical slope: `M_ω(X) / ω → 2X`. -/
 theorem suzukiMainTerm_tendsto_ratio (X : ℕ) (hX : 1 ≤ X) :
@@ -225,25 +241,29 @@ theorem suzukiMainTerm_tendsto_ratio (X : ℕ) (hX : 1 ≤ X) :
   have hzeta := tendsto_omega_mul_riemannZeta_re_one_add_two_mul
   have hpow : Tendsto (fun ω : ℝ => (X : ℝ) ^ (1 + ω)) (𝓝[>] 0) (𝓝 X) := by
     have h1 : Tendsto (fun ω : ℝ => Real.log X * (1 + ω)) (𝓝 0) (𝓝 (Real.log X)) := by
-      have hmul := (tendsto_const_nhds (x := Real.log X)).mul
-        ((tendsto_const_nhds (x := (1 : ℝ))).add (tendsto_id (x := (0 : ℝ))))
-      simpa using hmul
-    have h2 := h1.exp
+      convert (tendsto_const_nhds.mul
+        (tendsto_const_nhds.add
+          (tendsto_id : Tendsto (fun x : ℝ => x) (𝓝 0) (𝓝 0)))) using 1 <;>
+        norm_num
+    have h2 : Tendsto (fun ω : ℝ => Real.exp (Real.log X * (1 + ω)))
+        (𝓝 0) (𝓝 (Real.exp (Real.log X))) :=
+      (Real.continuous_exp.tendsto _).comp h1
     rw [Real.exp_log hX0] at h2
     refine (h2.mono_left nhdsWithin_le_nhds).congr'
-      (eventually_of_forall fun ω => ?_)
-    rw [Real.rpow_def_of_pos hX0]
-    ring_nf
+      (Filter.Eventually.of_forall fun ω => ?_)
+    simpa only [Real.rpow_def_of_pos hX0]
   have hone : Tendsto (fun ω : ℝ => (1 : ℝ) + ω) (𝓝[>] 0) (𝓝 1) := by
-    have h := (tendsto_const_nhds (x := (1 : ℝ))).add (tendsto_id (x := (0 : ℝ)))
+    have hconst : Tendsto (fun _ : ℝ => (1 : ℝ)) (𝓝 0) (𝓝 1) :=
+      tendsto_const_nhds
+    have hid : Tendsto (fun x : ℝ => x) (𝓝 0) (𝓝 0) := tendsto_id
+    have h := hconst.add hid
     simpa using h.mono_left nhdsWithin_le_nhds
   have hmain := (hpow.div hone one_ne_zero).div hzeta (by norm_num)
   have hval : (X : ℝ) / 1 / (1 / 2) = 2 * X := by ring
   rw [hval] at hmain
   refine hmain.congr' (eventually_of_mem self_mem_nhdsWithin fun ω hω => ?_)
-  have hω0 : ω ≠ 0 := ne_of_gt hω
-  simp only [suzukiMainTerm]
-  field_simp
+  simp only [Pi.div_apply, Pi.mul_apply, Pi.inv_apply, suzukiMainTerm,
+    div_eq_mul_inv, mul_inv]
   ring
 
 /-- The base value `A_0(X) = 1`: at `ω = 0` every shifted coefficient vanishes except `c_0(1)`. -/
@@ -253,6 +273,7 @@ theorem suzukiShiftedSummatory_zero (X : ℕ) (hX : 1 ≤ X) :
   rw [Finset.sum_eq_single 1]
   · simp [suzukiShiftedCoefficient]
   · intro n hn hn1
+    have hnmem := Finset.mem_Icc.mp hn
     have hn2 : 2 ≤ n := by omega
     have hne : n.primeFactors.Nonempty := Nat.nonempty_primeFactors.mpr hn2
     obtain ⟨p, hp⟩ := hne
@@ -260,7 +281,7 @@ theorem suzukiShiftedSummatory_zero (X : ℕ) (hX : 1 ≤ X) :
     rw [Finset.prod_eq_zero hp (by simp : (1 : ℝ) - (p : ℝ) ^ (-2 * (0 : ℝ)) = 0)]
     simp
   · intro h
-    exact h (Finset.mem_Icc.mpr ⟨le_refl 1, hX⟩)
+    exact (h (Finset.mem_Icc.mpr ⟨le_refl 1, hX⟩)).elim
 
 /-- **Critical derivative law for the Suzuki coupled error.**  Measured from its critical base
 value `A_0(X)` (the all-prime main term `M_ω(X)` vanishes at the critical exponent, since
@@ -269,16 +290,20 @@ value `A_0(X)` (the all-prime main term `M_ω(X)` vanishes at the critical expon
 leakage is the Chebyshev error. -/
 theorem suzukiCoupledError_critical_derivative (X : ℕ) (hX : 1 ≤ X) :
     Tendsto (fun ω => (suzukiCoupledError ω X - suzukiShiftedSummatory 0 X) / ω)
-      (𝓝[>] 0) (𝓝 (2 * ψ (X : ℝ) - 2 * X)) := by
+      (𝓝[>] 0) (𝓝 (2 * Chebyshev.psi (X : ℝ) - 2 * X)) := by
   have hA := hasDerivAt_suzukiShiftedSummatory X
   have hslope : Tendsto
       (fun ω => (suzukiShiftedSummatory ω X - suzukiShiftedSummatory 0 X) / ω)
       (𝓝[>] 0) (𝓝 (2 * ∑ n ∈ Finset.Icc 1 X, Λ n)) := by
     have h := hasDerivAt_iff_tendsto_slope.mp hA
     have hmono : 𝓝[>] (0 : ℝ) ≤ 𝓝[≠] 0 :=
-      nhdsWithin_mono_right fun ω hω => ne_of_gt hω
-    refine (h.mono_left hmono).congr' (eventually_of_forall fun ω => ?_)
-    simp [sub_zero, div_eq_mul_inv, smul_eq_mul, mul_comm]
+      nhdsWithin_mono 0 (by
+        intro ω hω
+        simp only [Set.mem_Ioi] at hω
+        simp only [Set.mem_compl_iff, Set.mem_singleton_iff]
+        exact ne_of_gt hω)
+    refine (h.mono_left hmono).congr' (Filter.Eventually.of_forall fun ω => ?_)
+    simp [slope, div_eq_mul_inv, smul_eq_mul, mul_comm]
   have hM := suzukiMainTerm_tendsto_ratio X hX
   have hsub := hslope.sub hM
   have hcongr : (fun ω => ((suzukiShiftedSummatory ω X - suzukiShiftedSummatory 0 X) / ω -
@@ -297,7 +322,7 @@ theorem suzukiCoupledError_critical_derivative (X : ℕ) (hX : 1 ≤ X) :
 /-- The derivative law at the explicit base value `A_0(X) = 1`. -/
 theorem suzukiCoupledError_critical_derivative_base_one (X : ℕ) (hX : 1 ≤ X) :
     Tendsto (fun ω => (suzukiCoupledError ω X - 1) / ω)
-      (𝓝[>] 0) (𝓝 (2 * ψ (X : ℝ) - 2 * X)) := by
+      (𝓝[>] 0) (𝓝 (2 * Chebyshev.psi (X : ℝ) - 2 * X)) := by
   rw [← suzukiShiftedSummatory_zero X hX]
   exact suzukiCoupledError_critical_derivative X hX
 

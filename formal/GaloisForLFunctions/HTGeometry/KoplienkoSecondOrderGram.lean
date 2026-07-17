@@ -58,8 +58,9 @@ theorem gramSecondOrderRemainder_eq_residualEnergy
       ContinuousLinearMap.adjoint (P + c • R) =
         ContinuousLinearMap.adjoint P +
           star c • ContinuousLinearMap.adjoint R := by
-    change star (P + c • R) = star P + star c • star R
-    rw [star_add, star_smul]
+    rw [ContinuousLinearMap.adjoint.map_add,
+      ContinuousLinearMap.adjoint.map_smulₛₗ]
+    simp only [starRingEnd_apply]
   unfold gramSecondOrderRemainder gramPerturbation gramFirstVariation
   rw [hadj]
   apply ContinuousLinearMap.ext

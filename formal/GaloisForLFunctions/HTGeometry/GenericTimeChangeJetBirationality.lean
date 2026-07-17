@@ -29,10 +29,10 @@ namespace GaloisForLFunctions
 noncomputable section
 
 abbrev TimeChangeSourceIndex (ι : Type*) :=
-  Sum PUnit (Sum ℕ (ι × ℕ))
+  Sum PUnit.{0} (Sum ℕ (ι × ℕ))
 
 abbrev TimeChangeTargetIndex (ι : Type*) :=
-  (Sum PUnit ι) × ℕ
+  (Sum PUnit.{0} ι) × ℕ
 
 abbrev TimeChangeSourcePolynomial (K ι : Type*) [CommRing K] :=
   MvPolynomial (TimeChangeSourceIndex ι) K
@@ -107,20 +107,20 @@ def timeChangeSourceTimeDerivation
     timeChangeSourceDerivation K ι
 
 def timeChangeSourceSeedVariable
-    {K ι : Type*} [CommRing K] (b : Sum PUnit ι) :
+    {K ι : Type*} [CommRing K] (b : Sum PUnit.{0} ι) :
     TimeChangeSourcePolynomial K ι :=
   match b with
   | Sum.inl _ => MvPolynomial.X timeChangeSourceClockIndex
   | Sum.inr i => MvPolynomial.X (timeChangeSourceObservableIndex i 0)
 
 def universalTimeChangeJet
-    {K ι : Type*} [CommRing K] (b : Sum PUnit ι) (n : ℕ) :
+    {K ι : Type*} [CommRing K] (b : Sum PUnit.{0} ι) (n : ℕ) :
     TimeChangeSourcePolynomial K ι :=
   (timeChangeSourceTimeDerivation K ι)^[n]
     (timeChangeSourceSeedVariable (K := K) b)
 
 theorem universalTimeChangeJet_succ
-    {K ι : Type*} [CommRing K] (b : Sum PUnit ι) (n : ℕ) :
+    {K ι : Type*} [CommRing K] (b : Sum PUnit.{0} ι) (n : ℕ) :
     universalTimeChangeJet (K := K) b (n + 1) =
       timeChangeSourceTimeDerivation K ι
         (universalTimeChangeJet (K := K) b n) := by
@@ -159,7 +159,7 @@ theorem timeChangeTargetEmbedding_injective
         (TimeChangeTargetFractionField K ι) P := rfl
 
 def timeChangeTargetJet
-    {K ι : Type*} [Field K] (b : Sum PUnit ι) (n : ℕ) :
+    {K ι : Type*} [Field K] (b : Sum PUnit.{0} ι) (n : ℕ) :
     TimeChangeTargetFractionField K ι :=
   timeChangeTargetEmbedding (K := K) (ι := ι)
     (MvPolynomial.X (b, n))
@@ -178,7 +178,7 @@ def timeChangeTargetDerivation
   fractionRingDerivation (timeChangeTargetPolynomialDerivation K ι)
 
 @[simp] theorem timeChangeTargetDerivation_jet
-    {K ι : Type*} [Field K] (b : Sum PUnit ι) (n : ℕ) :
+    {K ι : Type*} [Field K] (b : Sum PUnit.{0} ι) (n : ℕ) :
     timeChangeTargetDerivation K ι (timeChangeTargetJet (K := K) b n) =
       timeChangeTargetJet (K := K) b (n + 1) := by
   rw [timeChangeTargetDerivation, timeChangeTargetJet,
@@ -293,7 +293,7 @@ theorem timeChangeInverseAlgHom_sourceTimeDerivation
     (timeChangeTargetScale_ne_zero (K := K) (ι := ι)), one_mul]
 
 theorem timeChangeInverseAlgHom_universalTimeChangeJet
-    {K ι : Type*} [Field K] (b : Sum PUnit ι) :
+    {K ι : Type*} [Field K] (b : Sum PUnit.{0} ι) :
     ∀ n : ℕ,
       timeChangeInverseAlgHom K ι (universalTimeChangeJet (K := K) b n) =
         timeChangeTargetJet (K := K) b n := by
@@ -401,7 +401,7 @@ def actualTimeChangeDerivation
 def actualTimeChangeJet
     {K E ι : Type*} [CommRing K] [CommRing E] [Algebra K E]
     (D : Derivation K E E) (w a : E) (f : ι → E)
-    (b : Sum PUnit ι) (n : ℕ) : E :=
+    (b : Sum PUnit.{0} ι) (n : ℕ) : E :=
   (actualTimeChangeDerivation D a)^[n]
     (match b with
     | Sum.inl _ => w
@@ -423,7 +423,7 @@ theorem timeChangeSourceEval_timeDerivation
 theorem timeChangeSourceEval_universalTimeChangeJet
     {K E ι : Type*} [CommRing K] [CommRing E] [Algebra K E]
     (D : Derivation K E E) (w a : E) (f : ι → E)
-    (hclock : D w = 1) (b : Sum PUnit ι) :
+    (hclock : D w = 1) (b : Sum PUnit.{0} ι) :
     ∀ n : ℕ,
       timeChangeSourceEval D w a f (universalTimeChangeJet (K := K) b n) =
         actualTimeChangeJet D w a f b n := by
@@ -514,13 +514,17 @@ theorem timeChangeFiniteSourceEmbedding_stepEmbedding
     timeChangeFiniteSourceEmbedding (K := K) (ι := ι) (m := m + 1)
         (timeChangeFiniteSourceStepEmbedding (K := K) (ι := ι) (m := m) P) =
       timeChangeFiniteSourceEmbedding (K := K) (ι := ι) (m := m) P := by
+  have hindex :
+      timeChangeFiniteSourceIndexEmbedding ∘ timeChangeFiniteSourceStepIndex =
+        (timeChangeFiniteSourceIndexEmbedding :
+          TimeChangeFiniteIndex ι m → TimeChangeSourceIndex ι) := by
+    funext p
+    rcases p with r | ⟨i, r⟩
+    · refine Fin.cases ?_ (fun n => ?_) r <;> rfl
+    · rfl
   rw [timeChangeFiniteSourceEmbedding, timeChangeFiniteSourceStepEmbedding,
     MvPolynomial.rename_rename]
-  congr 1
-  funext p
-  rcases p with r | ⟨i, r⟩
-  · refine Fin.cases ?_ (fun n => ?_) r <;> rfl
-  · rfl
+  rw [hindex]
 
 theorem timeChangeFiniteSourceEmbedding_stepShift
     {K ι : Type*} [CommRing K] {m : ℕ}
@@ -532,7 +536,7 @@ theorem timeChangeFiniteSourceEmbedding_stepShift
   rcases p with r | ⟨i, r⟩
   · refine Fin.cases ?_ (fun n => ?_) r
     · simp [timeChangeFiniteSourceStepShift, timeChangeFiniteSourceIndexEmbedding,
-        timeChangeSourceShift]
+        timeChangeSourceShift, timeChangeSourceClockIndex]
     · simp [timeChangeFiniteSourceStepShift, timeChangeFiniteSourceIndexEmbedding,
         timeChangeSourceShift, timeChangeFiniteSourceEmbedding,
         timeChangeSourceScaleIndex]
@@ -554,6 +558,16 @@ theorem timeChangeFiniteSourceEmbedding_stepDerivation
   | mul_X P p hP =>
       rw [Derivation.leibniz]
       simp only [Algebra.smul_def, map_add, map_mul]
+      change
+        timeChangeFiniteSourceEmbedding
+              (timeChangeFiniteSourceStepEmbedding (K := K) (ι := ι) P) *
+            timeChangeFiniteSourceEmbedding
+              (timeChangeFiniteSourceStepDerivation K ι m (MvPolynomial.X p)) +
+          timeChangeFiniteSourceEmbedding
+              (timeChangeFiniteSourceStepEmbedding (K := K) (ι := ι)
+                (MvPolynomial.X p)) *
+            timeChangeSourceDerivation K ι
+              (timeChangeFiniteSourceEmbedding P) = _
       rw [Derivation.leibniz]
       simp only [smul_eq_mul]
       rw [hP, timeChangeFiniteSourceEmbedding_stepEmbedding,
@@ -574,10 +588,10 @@ def timeChangeFiniteSourceScaleVariable
         timeChangeSourceScaleVariable (K := K) (ι := ι) := by
   simp [timeChangeFiniteSourceScaleVariable, timeChangeFiniteSourceEmbedding,
     timeChangeFiniteSourceIndexEmbedding, timeChangeSourceScaleVariable,
-    timeChangeSourceScaleIndex]
+    timeChangeSourceScaleIndex, timeChangeSourceClockIndex]
 
 theorem exists_timeChangeFiniteSourcePolynomial_universalJet
-    {K ι : Type*} [CommRing K] (b : Sum PUnit ι) :
+    {K ι : Type*} [CommRing K] (b : Sum PUnit.{0} ι) :
     ∀ n : ℕ, ∃ P : TimeChangeFiniteSourcePolynomial K ι n,
       timeChangeFiniteSourceEmbedding (K := K) (ι := ι) (m := n) P =
         universalTimeChangeJet (K := K) b n := by
@@ -586,8 +600,14 @@ theorem exists_timeChangeFiniteSourcePolynomial_universalJet
   | zero =>
       rcases b with h | i
       · cases h
-        exact ⟨MvPolynomial.X (Sum.inl 0), rfl⟩
-      · exact ⟨MvPolynomial.X (Sum.inr (i, 0)), rfl⟩
+        refine ⟨MvPolynomial.X (Sum.inl 0), ?_⟩
+        simp [timeChangeFiniteSourceEmbedding, timeChangeFiniteSourceIndexEmbedding,
+          universalTimeChangeJet, timeChangeSourceSeedVariable,
+          timeChangeSourceClockIndex]
+      · refine ⟨MvPolynomial.X (Sum.inr (i, 0)), ?_⟩
+        simp [timeChangeFiniteSourceEmbedding, timeChangeFiniteSourceIndexEmbedding,
+          universalTimeChangeJet, timeChangeSourceSeedVariable,
+          timeChangeSourceObservableIndex]
   | succ n ih =>
       obtain ⟨P, hP⟩ := ih
       refine ⟨timeChangeFiniteSourceScaleVariable (K := K) (ι := ι) n *
@@ -615,17 +635,21 @@ theorem timeChangeFiniteSourceEmbedding_cast
     timeChangeFiniteSourceEmbedding (K := K) (ι := ι) (m := m)
         (timeChangeFiniteSourceCast (K := K) (ι := ι) h P) =
       timeChangeFiniteSourceEmbedding (K := K) (ι := ι) (m := n) P := by
+  have hindex :
+      timeChangeFiniteSourceIndexEmbedding ∘ timeChangeFiniteSourceIndexCast h =
+        (timeChangeFiniteSourceIndexEmbedding :
+          TimeChangeFiniteIndex ι n → TimeChangeSourceIndex ι) := by
+    funext p
+    rcases p with r | ⟨i, r⟩
+    · refine Fin.cases ?_ (fun j => ?_) r <;> rfl
+    · rfl
   rw [timeChangeFiniteSourceEmbedding, timeChangeFiniteSourceCast,
     MvPolynomial.rename_rename]
-  congr 1
-  funext p
-  rcases p with r | ⟨i, r⟩
-  · refine Fin.cases ?_ (fun j => ?_) r <;> rfl
-  · rfl
+  rw [hindex]
 
 theorem exists_timeChangeFiniteSourcePolynomial_universalJet_of_le
     {K ι : Type*} [CommRing K] {n m : ℕ} (h : n ≤ m)
-    (b : Sum PUnit ι) :
+    (b : Sum PUnit.{0} ι) :
     ∃ P : TimeChangeFiniteSourcePolynomial K ι m,
       timeChangeFiniteSourceEmbedding (K := K) (ι := ι) (m := m) P =
         universalTimeChangeJet (K := K) b n := by
@@ -644,7 +668,8 @@ theorem timeChangeFiniteTargetIndexEmbedding_injective
     {ι : Type*} {m : ℕ} :
     Function.Injective (timeChangeFiniteTargetIndexEmbedding (ι := ι) (m := m)) := by
   rintro (n | q) (n' | q') heq
-  · exact Sum.inl_injective (Fin.ext (congrArg Prod.snd heq))
+  · apply congrArg Sum.inl
+    exact Fin.ext (congrArg Prod.snd heq)
   · rcases q' with ⟨i', n'⟩
     simp [timeChangeFiniteTargetIndexEmbedding, timeChangeTargetClockIndex,
       timeChangeTargetObservableIndex] at heq
@@ -653,10 +678,10 @@ theorem timeChangeFiniteTargetIndexEmbedding_injective
       timeChangeTargetObservableIndex] at heq
   · rcases q with ⟨i, n⟩
     rcases q' with ⟨i', n'⟩
-    have hp : (i, (n : ℕ)) = (i', (n' : ℕ)) := by
-      simpa [timeChangeFiniteTargetIndexEmbedding,
-        timeChangeTargetObservableIndex] using heq
-    cases hp
+    have hi : i = i' := Sum.inr_injective (congrArg Prod.fst heq)
+    have hn : n = n' := Fin.ext (congrArg Prod.snd heq)
+    subst i'
+    subst n'
     rfl
 
 def timeChangeFiniteTargetEmbedding
@@ -677,9 +702,10 @@ def finiteUniversalTimeChangeJet
     TimeChangeFiniteSourcePolynomial K ι m :=
   Classical.choose <| match p with
   | Sum.inl n => exists_timeChangeFiniteSourcePolynomial_universalJet_of_le
-      (K := K) (Nat.lt_succ_iff.mp n.isLt) (Sum.inl PUnit.unit)
+      (K := K) (ι := ι) (Nat.lt_succ_iff.mp n.isLt)
+        (Sum.inl (PUnit.unit : PUnit.{0}))
   | Sum.inr (i, n) => exists_timeChangeFiniteSourcePolynomial_universalJet_of_le
-      (K := K) (Nat.lt_succ_iff.mp n.isLt) (Sum.inr i)
+      (K := K) (ι := ι) (Nat.lt_succ_iff.mp n.isLt) (Sum.inr i)
 
 theorem finiteUniversalTimeChangeJet_embedding
     {K ι : Type*} [CommRing K] (m : ℕ)
@@ -690,12 +716,15 @@ theorem finiteUniversalTimeChangeJet_embedding
         (timeChangeFiniteTargetIndexEmbedding p).1
         (timeChangeFiniteTargetIndexEmbedding p).2 := by
   rcases p with n | ⟨i, n⟩
-  · exact Classical.choose_spec <|
+  · simpa [timeChangeFiniteTargetIndexEmbedding, timeChangeTargetClockIndex] using
+      (Classical.choose_spec <|
       exists_timeChangeFiniteSourcePolynomial_universalJet_of_le
-        (K := K) (Nat.lt_succ_iff.mp n.isLt) (Sum.inl PUnit.unit)
-  · exact Classical.choose_spec <|
+        (K := K) (ι := ι) (Nat.lt_succ_iff.mp n.isLt)
+          (Sum.inl (PUnit.unit : PUnit.{0})))
+  · simpa [timeChangeFiniteTargetIndexEmbedding,
+      timeChangeTargetObservableIndex] using (Classical.choose_spec <|
       exists_timeChangeFiniteSourcePolynomial_universalJet_of_le
-        (K := K) (Nat.lt_succ_iff.mp n.isLt) (Sum.inr i)
+        (K := K) (ι := ι) (Nat.lt_succ_iff.mp n.isLt) (Sum.inr i))
 
 def finiteUniversalTimeChangeAlgHom
     (K ι : Type*) [CommRing K] (m : ℕ) :
@@ -720,10 +749,9 @@ theorem finiteUniversalTimeChangeAlgHom_embedding
       (timeChangeFiniteTargetEmbedding (K := K) (ι := ι) (m := m))
   have heq : lhs = rhs := by
     ext p
-    simp [lhs, rhs, finiteUniversalTimeChangeAlgHom,
-      finiteUniversalTimeChangeJet_embedding,
-      timeChangeFiniteTargetEmbedding,
-      universalTimeChangeAlgHom, universalTimeChangeJet]
+    simp only [lhs, rhs, AlgHom.comp_apply, finiteUniversalTimeChangeAlgHom,
+      MvPolynomial.aeval_X, map_X, universalTimeChangeAlgHom_X]
+    rw [finiteUniversalTimeChangeJet_embedding]
   exact DFunLike.congr_fun heq P
 
 theorem finiteUniversalTimeChangeAlgHom_injective
@@ -777,7 +805,8 @@ theorem timeChangeFiniteSourceEval_eq_comp
       (timeChangeSourceEval D w a f).comp
         (timeChangeFiniteSourceEmbedding (K := K) (ι := ι) (m := m)) := by
   ext p
-  rfl
+  simp [timeChangeFiniteSourceEval, timeChangeFiniteSourceValue,
+    timeChangeSourceEval, timeChangeFiniteSourceEmbedding]
 
 def timeChangeFiniteTargetValue
     {K E ι : Type*} [CommRing K] [CommRing E] [Algebra K E]

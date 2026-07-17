@@ -137,6 +137,7 @@ theorem degreeOneEulerLocalFlux_Schwarz_sub_FE_mul_denominators_eq_seam
     simp [q, r, RHTower.orbitwiseNatPrimeSeamCharge,
       RHTower.orbitwiseScaleSeamCharge]
   rw [hseam]
+  simp only [RHTower.degreeOneEulerLocalFlux, one_mul]
   change
     ((Real.log p : ℂ) * q / (1 - q) -
         (Real.log p : ℂ) * r / (1 - r)) *
@@ -186,8 +187,9 @@ private theorem hasDerivAt_natPrime_cpow_neg
       (-(Real.log p : ℂ) * (p : ℂ) ^ (-s)) s := by
   have h := ((hasDerivAt_id s).neg).const_cpow
     (c := (p : ℂ)) (Or.inl (Nat.cast_ne_zero.mpr hp.ne_zero))
-  rw [← Complex.ofReal_log (show (0 : ℝ) ≤ p by positivity)] at h
-  convert h using 1 <;> simp [Function.id_def] <;> ring
+  convert h using 1 <;>
+    simp [Complex.ofReal_log (show (0 : ℝ) ≤ p by positivity),
+      Function.id_def] <;> ring
 
 /-- **Connection-curvature/tangent identity.**  Spectral differentiation of the genuine local
 Euler connection returns the actual Euler-parameter tangent, up to the nonzero factor `-log p`. -/
@@ -210,6 +212,7 @@ theorem hasDerivAt_degreeOneEulerLocalFlux_spectral
   convert hscaled using 1
   · funext z
     simp only [RHTower.degreeOneEulerLocalFlux, one_mul]
+    simp only [div_eq_mul_inv, Pi.mul_apply, Pi.inv_apply]
     ring
   · dsimp only [q]
     unfold RHTower.primeEulerUnitTangent
@@ -266,10 +269,11 @@ theorem orbitwiseNatPrimeSeamCharge_eq_zero_iff_re_eq_half
     have hcpow :
         (p : ℂ) ^ (-((starRingEnd ℂ) rho)) =
           (p : ℂ) ^ (-(1 - rho)) := by
-      have hproduct := mul_eq_zero.mp (by
-        simpa [RHTower.orbitwiseNatPrimeSeamCharge,
-          RHTower.orbitwiseScaleSeamCharge] using hzero)
-      exact sub_eq_zero.mp (hproduct.resolve_left hlog)
+      change
+        (Real.log p : ℂ) *
+          ((p : ℂ) ^ (-((starRingEnd ℂ) rho)) -
+            (p : ℂ) ^ (-(1 - rho))) = 0 at hzero
+      exact sub_eq_zero.mp ((mul_eq_zero.mp hzero).resolve_left hlog)
     have hnorm := congrArg norm hcpow
     change ‖((p : ℝ) : ℂ) ^ (-((starRingEnd ℂ) rho))‖ =
       ‖((p : ℝ) : ℂ) ^ (-(1 - rho))‖ at hnorm
@@ -358,9 +362,10 @@ theorem one_sub_prime_FESchwarz_character_product_ne_zero
     linarith
   have hproduct : ‖q * r‖ < 1 := by
     rw [norm_mul]
-    exact mul_lt_mul hqnorm hrnorm (norm_nonneg _) (by norm_num)
+    nlinarith [norm_nonneg q, norm_nonneg r]
   intro hzero
-  have heq : q * r = 1 := sub_eq_zero.mp (by simpa [q, r] using hzero)
+  have heq : q * r = 1 :=
+    (sub_eq_zero.mp (by simpa [q, r] using hzero)).symm
   rw [heq, norm_one] at hproduct
   exact (lt_irrefl 1) hproduct
 

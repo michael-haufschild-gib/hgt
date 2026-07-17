@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.VacuumFeshbachValue
+import GaloisForLFunctions.RHTower.PrimeArchMomentMeasureRH
 import GaloisForLFunctions.RHTower.SoninCoupledPrimeArchGramTransfer
 import GaloisForLFunctions.RHTower.TraceHankelSequenceCone
 
@@ -95,7 +96,7 @@ theorem primeArchSourceTraceHankelIntNonnegative_of_vacuumFeshbach
   have hmap : p.map (Int.castRingHom ℝ) = C c + q := by
     have hsplit := congrArg (Polynomial.map (Int.castRingHom ℝ))
       (HTGeometry.C_coeff_zero_add_polynomialVacuumTail p)
-    simpa only [qz, q, c, map_add, map_C] using hsplit.symm
+    simpa [qz, q, c] using hsplit.symm
   rw [re_primeArchSourceTraceHankel_eq_momentFunctional_sq]
   rw [hmap,
     HTGeometry.momentFunctional_C_add_sq_eq_vacuumSquare_add_feshbach
@@ -304,7 +305,6 @@ theorem soninCoupledPrimeArchVacuumRobertsonRayleighUpperBound_iff_variance :
         rw [HTGeometry.momentVacuumRobertsonDeterminant_eq_mul_feshbach
           normalizedPrimeArchMoment normalizedPrimeArchMoment_zero_pos.ne']
         field_simp [normalizedPrimeArchMoment_zero_pos.ne']
-        ring
 
 /-- The target-centered comparison implies the weaker source-variational comparison by choosing
 the target moment mean as the scalar counterterm. -/

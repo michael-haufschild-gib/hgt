@@ -19,7 +19,7 @@ This is the rank-one Picard--Vessiot torsor statement for `Y' = JY`, expressed e
 the concrete differential field, its constants, and its automorphism group.
 -/
 
-open scoped Differential
+open scoped Differential Polynomial
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -402,11 +402,11 @@ theorem scalar_amplitude_transcendental_over_currentField (q : T)
   let L : IntermediateField F T := scalarLogCurrentField F q
   let p : L[X] := minpoly L q
   let P : T[X] := p.map (algebraMap L T)
-  have hp0 : p ≠ 0 := minpoly.ne_zero hqalg
+  have hp0 : p ≠ 0 := minpoly.ne_zero hqalg.isIntegral
   have hP0 : P ≠ 0 :=
     (Polynomial.map_ne_zero_iff (algebraMap L T).injective).mpr hp0
   let u : ℕ → Fˣ := fun n => Units.mk0 (n + 1 : F)
-    (Nat.cast_ne_zero.mpr (Nat.succ_ne_zero n))
+    (Nat.cast_add_one_ne_zero n)
   let r : ℕ → T := fun n => q * algebraMap F T (u n : F)
   have hrinj : Function.Injective r := by
     intro m n hmn
@@ -415,17 +415,22 @@ theorem scalar_amplitude_transcendental_over_currentField (q : T)
     have huval : (u m : F) = (u n : F) := (algebraMap F T).injective hcoeff
     have hcast : (m + 1 : F) = (n + 1 : F) := by
       simpa [u] using huval
-    exact Nat.succ.inj (Nat.cast_injective hcast)
+    have hcast' : (m.succ : F) = (n.succ : F) := by
+      simpa only [Nat.cast_succ] using hcast
+    exact Nat.succ.inj (Nat.cast_injective hcast')
   have hqroot : P.IsRoot q := by
-    rw [Polynomial.IsRoot, P, Polynomial.eval_map, ← Polynomial.aeval_def]
+    change (p.map (algebraMap L T)).IsRoot q
+    rw [Polynomial.IsRoot, Polynomial.eval_map, ← Polynomial.aeval_def]
     exact minpoly.aeval L q
   have hroot : Set.range r ⊆ {z : T | P.IsRoot z} := by
     rintro z ⟨n, rfl⟩
     let sigma := scalarDifferentialScaleEquivCurrent q hq hq0 hgen hconst (u n)
-    have hsroot := hqroot.map sigma.toRingEquiv.toRingHom
+    have hsroot : (P.map sigma.toRingEquiv.toRingHom).IsRoot (sigma q) :=
+      hqroot.map
     have hmap : P.map sigma.toRingEquiv.toRingHom = P := by
       ext k
-      simp [P, p, sigma]
+      simp only [P, Polynomial.coeff_map, Function.comp_apply]
+      exact sigma.commutes (p.coeff k)
     rw [hmap] at hsroot
     simpa [r, sigma] using hsroot
   exact hP0 (Polynomial.eq_zero_of_infinite_isRoot P
@@ -464,7 +469,9 @@ theorem ratFunc_algHom_ext {K E : Type*} [Field K] [Field E] [Algebra K E]
           g.toRingHom.comp (algebraMap K[X] (RatFunc K)) := by
       apply Polynomial.ringHom_ext
       · intro c
-        simp
+        change f (algebraMap K (RatFunc K) c) =
+          g (algebraMap K (RatFunc K) c)
+        rw [f.commutes, g.commutes]
       · simpa [RatFunc.algebraMap_X] using hX
     exact DFunLike.congr_fun hpoly p
   exact DFunLike.congr_fun hring z
@@ -499,7 +506,16 @@ theorem scalarTorsorRatFuncEquiv_scale (q : T)
       (ratFuncUnitScaleAction (scalarLogCurrentUnit (F := F) q u)).toAlgHom =
         sigma.toAlgHom.comp e.toAlgHom := by
     apply ratFunc_algHom_ext
-    simp [e, sigma, scalarLogCurrentUnit, IsScalarTower.algebraMap_apply]
+    change e (ratFuncUnitScaleAction (scalarLogCurrentUnit (F := F) q u) RatFunc.X) =
+      sigma (e RatFunc.X)
+    rw [ratFuncUnitScaleAction_apply_X, map_mul,
+      scalarTorsorRatFuncEquiv_X, scalarDifferentialScaleEquivCurrent_apply_q,
+      e.commutes]
+    change
+      algebraMap (scalarLogCurrentField F q) T
+        (algebraMap F (scalarLogCurrentField F q) (u : F)) * q =
+          q * algebraMap F T (u : F)
+    rw [IsScalarTower.algebraMap_apply F (scalarLogCurrentField F q) T]
     ring
   exact DFunLike.congr_fun heq z
 
@@ -539,16 +555,15 @@ theorem scalarDifferentialScaleAction_surjective (q : T)
     subst c
     simp only [map_zero] at hc
     have : sigma.1 q / q ≠ 0 := div_ne_zero hsigmaq0 hq0
-    exact this hc
+    exact this hc.symm
   let u : Fˣ := Units.mk0 c hc0
   refine ⟨u, ?_⟩
   apply Subtype.ext
   apply scalarCurrentAlgEquiv_ext q hq0 hgen
-  have hscale := scalarDifferentialScaleEquivCurrent_apply_q
-    q hq hq0 hgen hconst u
-  rw [hscale]
-  change sigma.1 q = q * algebraMap F T c
-  rw [← hc]
+  simp only [scalarDifferentialScaleAction_apply,
+    scalarDifferentialScaleEquivCurrent_apply_q]
+  change q * algebraMap F T c = sigma.1 q
+  rw [hc]
   field_simp [hq0]
 
 /-- **Full scalar differential Galois group.**  The derivation-preserving automorphism group of
@@ -572,17 +587,17 @@ theorem mem_fixedField_zpowers_iff {K E : Type*} [Field K] [Field E] [Algebra K 
     exact hz sigma (Subgroup.mem_zpowers sigma)
   · intro hz
     rw [IntermediateField.mem_fixedField_iff]
-    let S : Subgroup (E ≃ₐ[K] E) where
-      carrier := {tau | tau z = z}
-      one_mem' := rfl
-      mul_mem' := by
-        intro a b ha hb
-        change a (b z) = z
-        rw [hb, ha]
-      inv_mem' := by
-        intro a ha
-        apply a.injective
-        simpa [ha]
+    let S : Subgroup (E ≃ₐ[K] E) :=
+      { carrier := {tau : E ≃ₐ[K] E | tau z = z}
+        one_mem' := rfl
+        mul_mem' := by
+          intro a b ha hb
+          change a (b z) = z
+          rw [hb, ha]
+        inv_mem' := by
+          intro a ha
+          apply a.injective
+          simpa using ha.symm }
     have hle : Subgroup.zpowers sigma ≤ S :=
       (Subgroup.zpowers_le).mpr hz
     intro tau htau
@@ -625,9 +640,14 @@ theorem fixedField_zpowers_scalarDifferentialScaleAction
   have hmapPower : (ratFuncPowerField L N).map e.toAlgHom =
       IntermediateField.adjoin L ({q ^ N} : Set T) := by
     rw [ratFuncPowerField, IntermediateField.adjoin_map]
-    simp [e]
-  apply SetLike.ext'
-  intro z
+    rw [Set.image_singleton]
+    rw [map_pow]
+    change IntermediateField.adjoin L ({e.toAlgHom RatFunc.X ^ N} : Set T) =
+      IntermediateField.adjoin L ({q ^ N} : Set T)
+    have heX : e.toAlgHom RatFunc.X = q := by
+      exact scalarTorsorRatFuncEquiv_X q hq hq0 hgen hconst
+    rw [heX]
+  ext z
   have hconj : sigmaT z = z ↔ sigmaX (e.symm z) = e.symm z := by
     have heq := scalarTorsorRatFuncEquiv_scale q hq hq0 hgen hconst u (e.symm z)
     change e (sigmaX (e.symm z)) = sigmaT (e (e.symm z)) at heq
@@ -662,8 +682,7 @@ theorem fixedField_zpowers_scalarDifferentialScaleAction_of_infinite_order
     fixedField_zpowers_ratFuncUnitScaleAction_of_infinite_order uL huL
   have hmapBot : (⊥ : IntermediateField L (RatFunc L)).map e.toAlgHom = ⊥ := by
     simp
-  apply SetLike.ext'
-  intro z
+  ext z
   have hconj : sigmaT z = z ↔ sigmaX (e.symm z) = e.symm z := by
     have heq := scalarTorsorRatFuncEquiv_scale q hq hq0 hgen hconst u (e.symm z)
     change e (sigmaX (e.symm z)) = sigmaT (e (e.symm z)) at heq

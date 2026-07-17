@@ -196,7 +196,8 @@ theorem thetaCuspMorseScale_affine_lower
         (n : ℝ) ^ 2 * Real.exp (2 * x) :=
     mul_le_mul_of_nonneg_left hexp (sq_nonneg (n : ℝ))
   rw [thetaCuspMorseScale, mul_pow, ← he2]
-  exact mul_le_mul_of_nonneg_left hcore Real.pi_pos.le
+  simpa only [mul_assoc] using
+    mul_le_mul_of_nonneg_left hcore Real.pi_pos.le
 
 /-- Integrated affine lower bound for the Morse insertion. -/
 theorem pi_mul_sq_mul_gibbsMoment_affine_le_morseMoment

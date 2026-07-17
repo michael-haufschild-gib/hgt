@@ -39,9 +39,10 @@ theorem differentialJet_algebraMap_primeProfileRotatedLogJet
         (primeProfileRotatedLogJet k f) := by
   induction k with
   | zero =>
-      congr 1
-      ext n
-      simp [primeProfileRotatedLogJet]
+      have hzero : primeProfileRotatedLogJet 0 f = f := by
+        ext n
+        simp [primeProfileRotatedLogJet]
+      simp [hzero]
   | succ k ih =>
       rw [GaloisForLFunctions.differentialJet_succ, ih,
         arithmeticFunctionFractionField_deriv_apply,

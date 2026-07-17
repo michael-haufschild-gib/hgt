@@ -40,9 +40,12 @@ private theorem finiteVonMangoldtAllDepthCauchyFeature_two_eq_boundary_multiple
     add_pos_of_pos_of_nonneg (by norm_num) hlog
   have hplus : (1 / 2 : ℂ) + (Real.log 2 : ℂ) ≠ 0 := by
     intro hzero
-    have hre : (1 / 2 : ℝ) + Real.log 2 = 0 := by
-      simpa [Complex.log_ofReal_re] using congrArg Complex.re hzero
-    linarith
+    have hre := congrArg Complex.re hzero
+    norm_num at hre
+    have hlogRe : (Complex.log (2 : ℂ)).re = Real.log (2 : ℝ) := by
+      simpa using Complex.log_ofReal_re (2 : ℝ)
+    rw [hlogRe] at hre
+    exact hplusReal.ne' hre
   simp only [finiteVonMangoldtAllDepthCauchyFeature,
     finiteExponentialAllDepthCauchyFeature]
   let A : ℂ :=

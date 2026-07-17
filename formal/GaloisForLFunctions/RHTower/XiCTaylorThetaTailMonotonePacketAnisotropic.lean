@@ -141,7 +141,7 @@ theorem criticalLogPhaseTailPacketValue_ne_zero
     exact hzero'
   rw [hintegral] at hcompletion
   have : positiveTailCompletion h z = 0 := by
-    simpa only [h] using hcompletion
+    simpa only [h, mul_zero] using hcompletion
   rw [this] at hpos
   simp only [zero_re, lt_self_iff_false] at hpos
 

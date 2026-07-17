@@ -49,9 +49,14 @@ theorem norm_soninAllPrimeCoupledPowerVector_zero_sq
           (soninAllPrimeCoupledPowerVector a 0) =
         soninAllPrimeCoupledTraceMoment a 0 := by
     simpa [soninAllPrimeCoupledGramBlock, Matrix.gram_apply] using h
-  rw [inner_self_eq_norm_sq_to_K,
-    soninAllPrimeCoupledTraceMoment_eq_ofReal] at hinner
-  exact Complex.ofReal_injective hinner
+  calc
+    ‖soninAllPrimeCoupledPowerVector a 0‖ ^ 2 =
+        (inner ℂ (soninAllPrimeCoupledPowerVector a 0)
+          (soninAllPrimeCoupledPowerVector a 0)).re :=
+      (inner_self_eq_norm_sq (𝕜 := ℂ)
+        (soninAllPrimeCoupledPowerVector a 0)).symm
+    _ = (soninAllPrimeCoupledTraceMoment a 0).re := congrArg Complex.re hinner
+    _ = soninAllPrimeCoupledRealTraceMoment a 0 := rfl
 
 /-- The actual coupled polynomial Gram value is exactly the abstract moment-functional square
 value of the real coupled trace sequence. -/
@@ -78,6 +83,10 @@ theorem soninAllPrimeCoupledPolynomialGramValue_eq_momentFunctional
       push_cast
       simp [dotProduct, Matrix.mulVec, HTGeometry.momentHankelMatrix,
         Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro i _
+      apply Finset.sum_congr rfl
+      intro j _
       ring
     _ = HTGeometry.momentFunctional
         (soninAllPrimeCoupledRealTraceMoment a)
@@ -135,7 +144,6 @@ theorem inner_soninAllPrimeCoupledPowerVector_zero_polynomial
       apply Finset.sum_congr rfl
       intro i _
       rw [soninAllPrimeCoupledGramBlock, Matrix.gram_apply]
-      rfl
     _ = ∑ i : Fin N, ((c i : ℝ) : ℂ) *
           soninAllPrimeCoupledTraceMoment a (i : ℕ) := by
       apply Finset.sum_congr rfl
@@ -146,6 +154,7 @@ theorem inner_soninAllPrimeCoupledPowerVector_zero_polynomial
           c i * soninAllPrimeCoupledRealTraceMoment a (i : ℕ) : ℝ) := by
       simp_rw [soninAllPrimeCoupledTraceMoment_eq_ofReal]
       push_cast
+      rfl
     _ = (HTGeometry.momentFunctional
           (soninAllPrimeCoupledRealTraceMoment a)
           (Polynomial.ofFn N c) : ℂ) := by
@@ -197,8 +206,14 @@ theorem soninAllPrimeCoupledPureStateQuantumFisherValue_eq_sourceFeshbach
         soninAllPrimeCoupledRealTraceMoment a.1 0 := by
   rw [soninAllPrimeCoupledPureStateQuantumFisherValue,
     soninAllPrimeCoupledProjectiveTangentEnergy_eq_mass_mul_sourceFeshbach]
+  change 4 * (soninAllPrimeCoupledRealTraceMoment a.1 0 *
+      HTGeometry.momentVacuumFeshbachRemainder
+        (soninAllPrimeCoupledRealTraceMoment a.1) p) /
+      soninAllPrimeCoupledRealTraceMoment a.1 0 ^ 2 =
+    4 * HTGeometry.momentVacuumFeshbachRemainder
+      (soninAllPrimeCoupledRealTraceMoment a.1) p /
+      soninAllPrimeCoupledRealTraceMoment a.1 0
   field_simp [(soninAllPrimeCoupledRealTraceMoment_zero_pos a).ne']
-  ring
 
 /-- The coupled pure-state quantum Fisher value is exactly four times the normalized variance of
 the polynomial observable in the source moment state. -/
@@ -212,7 +227,6 @@ theorem soninAllPrimeCoupledPureStateQuantumFisherValue_eq_four_mul_normalizedVa
       (soninAllPrimeCoupledRealTraceMoment a.1)
       (soninAllPrimeCoupledRealTraceMoment_zero_pos a).ne' p]
   field_simp [(soninAllPrimeCoupledRealTraceMoment_zero_pos a).ne']
-  ring
 
 /-- For a monomial tangent, the coupled QFI is the elementary variance of two existing normalized
 trace-moment ratios. -/
@@ -393,7 +407,6 @@ theorem soninCoupledPrimeArchPureStateQuantumFisherUpperBound_iff_sourceFeshbach
         normalizedPrimeArchMoment 0 * (4 * sourceRem / sourceMass) * sourceMass =
           4 * (normalizedPrimeArchMoment 0 * sourceRem) := by
       field_simp [hmass.ne']
-      ring
     have hright :
         4 * (targetRem + ε) * sourceMass =
           4 * ((targetRem + ε) * sourceMass) := by ring

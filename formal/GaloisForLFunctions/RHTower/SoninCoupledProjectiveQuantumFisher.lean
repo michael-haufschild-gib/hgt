@@ -32,6 +32,7 @@ coupled polynomial source vector. -/
 def soninAllPrimeCoupledProjectiveTangentEnergy
     (a : SoninPositiveAperture) (p : Polynomial ℝ) : ℝ :=
   HTGeometry.projectiveGramTangentEnergy
+    (𝕜 := ℂ)
     (soninAllPrimeCoupledPowerVector a 0)
     (soninAllPrimeCoupledPolynomialPowerVector a p)
 
@@ -40,7 +41,7 @@ Cauchy--Schwarz; no arithmetic sign hypothesis is required. -/
 theorem soninAllPrimeCoupledProjectiveTangentEnergy_nonneg
     (a : SoninPositiveAperture) (p : Polynomial ℝ) :
     0 ≤ soninAllPrimeCoupledProjectiveTangentEnergy a p := by
-  exact HTGeometry.projectiveGramTangentEnergy_nonneg _ _
+  exact HTGeometry.projectiveGramTangentEnergy_nonneg (𝕜 := ℂ) _ _
 
 /-- Normalized pure-state quantum Fisher value of the coupled polynomial tangent.  The
 normalization uses the same zeroth source energy that canonically normalizes the coupled route. -/

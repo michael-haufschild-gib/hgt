@@ -99,7 +99,7 @@ variable [FiniteDimensional K V]
 /-- The chosen finite coordinate presentation of an arbitrary finite-dimensional law space. -/
 def finiteDimensionalLawCoordinates :
     V ≃ₗ[K] (Fin (Module.finrank K V) → K) :=
-  (FiniteDimensional.finBasis K V).equivFun
+  (Module.finBasis K V).equivFun
 
 /-- The basis-free completion obtained from the chosen finite-dimensional coordinates. -/
 def finiteDimensionalLinearHolographicCompletion

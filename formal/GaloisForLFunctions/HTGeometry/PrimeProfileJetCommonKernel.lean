@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PrimeProfileJetPacket
+import GaloisForLFunctions.HTGeometry.JacobianDomainCriterion
 
 /-!
 # Common-kernel independence for one prime-profile jet packet

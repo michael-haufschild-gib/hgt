@@ -46,7 +46,7 @@ theorem differentialIndependentTopAlgEquiv_apply
   have hxy := differentialIndependentAdjoinAlgEquiv_jet x y hx hy i 0
   change ey ((differentialIndependentAdjoinAlgEquiv x y hx hy) (ex.symm (x i))) = y i
   have hxpre : ex.symm (x i) =
-      ⟨x i, subset_differentialAdjoin F (Set.mem_range_self i)⟩ := by
+      ⟨x i, subset_differentialAdjoin F (Set.range x) (Set.mem_range_self i)⟩ := by
     apply ex.injective
     rfl
   rw [hxpre]

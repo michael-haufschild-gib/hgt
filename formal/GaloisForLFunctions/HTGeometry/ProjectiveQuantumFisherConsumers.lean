@@ -29,7 +29,7 @@ theorem twoChannelRobertsonGram_projectiveQuantumTangent
     inner ℝ f g ^ 2 * inner ℝ h h -
           2 * inner ℝ f g * inner ℝ f h * inner ℝ g h +
           inner ℝ f h ^ 2 * inner ℝ g g ≤
-      ‖f‖ ^ 2 * projectiveGramTangentEnergy g h := by
+      ‖f‖ ^ 2 * projectiveGramTangentEnergy (𝕜 := ℝ) g h := by
   calc
     inner ℝ f g ^ 2 * inner ℝ h h -
           2 * inner ℝ f g * inner ℝ f h * inner ℝ g h +
@@ -48,7 +48,7 @@ theorem thermalKrylovProjectiveTangentEnergy_eq_firstDeterminant
     {α : Type*} [Fintype α]
     (intensity : α → α → ℝ) (energy : α → ℝ)
     (hintensity : ∀ a b, 0 ≤ intensity a b) :
-    projectiveGramTangentEnergy
+    projectiveGramTangentEnergy (𝕜 := ℂ)
         (thermalKrylovVector intensity energy 0)
         (thermalKrylovVector intensity energy 1) =
       thermalEvenGapMoment intensity energy 0 *

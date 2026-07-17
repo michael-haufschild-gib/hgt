@@ -83,28 +83,16 @@ theorem ofReal_primeSquarefreeLoschmidtPurityFactor
   push_cast
   ring
 
-/-- The local Loschmidt collision factors have a convergent cofinal prime product for `sigma > 1`. -/
-theorem multipliable_primeSquarefreeLoschmidtPurityFactor
+/-- The local quotient product converges to the quotient of the two nonzero squarefree Euler
+products.  This is proved at the level of finite-product nets because `ℂ` is a group with zero,
+not a multiplicative group. -/
+private theorem hasProd_primeSquarefreeLoschmidtPurityFactor
     {sigma : ℝ} (hsigma : 1 < sigma) :
-    Multipliable (primeSquarefreeLoschmidtPurityFactor sigma) := by
-  have hs : 1 < ((sigma : ℂ)).re := by simpa using hsigma
-  have htwo : 1 < (2 * (sigma : ℂ)).re := by
-    rw [Complex.mul_re]
-    norm_num
-    linarith
-  have hbase := multipliable_primeSquarefreeEulerFactor hs
-  have htwoBase := multipliable_primeSquarefreeEulerFactor htwo
-  change Multipliable (fun p =>
-    primeSquarefreeEulerFactor (2 * (sigma : ℂ)) p /
-      primeSquarefreeEulerFactor (sigma : ℂ) p ^ 2)
-  exact Multipliable.div htwoBase (Multipliable.pow hbase 2)
-
-/-- Exact zeta value of the cofinal-prime Möbius Loschmidt purity. -/
-theorem infinitePrimeSquarefreeLoschmidtPurity_eq_zetaRatio
-    {sigma : ℝ} (hsigma : 1 < sigma) :
-    infinitePrimeSquarefreeLoschmidtPurity sigma =
-      riemannZeta (2 * (sigma : ℂ)) ^ 3 /
-        (riemannZeta (4 * (sigma : ℂ)) * riemannZeta (sigma : ℂ) ^ 2) := by
+    HasProd (primeSquarefreeLoschmidtPurityFactor sigma)
+      ((riemannZeta (2 * (sigma : ℂ)) /
+          riemannZeta (2 * (2 * (sigma : ℂ)))) /
+        ((riemannZeta (sigma : ℂ) / riemannZeta (2 * (sigma : ℂ))) *
+          (riemannZeta (sigma : ℂ) / riemannZeta (2 * (sigma : ℂ))))) := by
   have hs : 1 < ((sigma : ℂ)).re := by simpa using hsigma
   have htwo : 1 < (2 * (sigma : ℂ)).re := by
     rw [Complex.mul_re]
@@ -114,11 +102,63 @@ theorem infinitePrimeSquarefreeLoschmidtPurity_eq_zetaRatio
   have htwoBase := multipliable_primeSquarefreeEulerFactor htwo
   have hbaseValue := squarefree_eulerProduct_tprod hs
   have htwoValue := squarefree_eulerProduct_tprod htwo
-  unfold infinitePrimeSquarefreeLoschmidtPurity
-  simp only [primeSquarefreeLoschmidtPurityFactor]
-  rw [
-    htwoBase.tprod_div (hbase.pow 2), hbase.tprod_pow,
-    htwoValue, hbaseValue]
+  have hbaseProd :
+      HasProd (primeSquarefreeEulerFactor (sigma : ℂ))
+        (riemannZeta (sigma : ℂ) / riemannZeta (2 * (sigma : ℂ))) := by
+    simpa only [primeSquarefreeEulerFactor, hbaseValue] using hbase.hasProd
+  have htwoProd :
+      HasProd (primeSquarefreeEulerFactor (2 * (sigma : ℂ)))
+        (riemannZeta (2 * (sigma : ℂ)) /
+          riemannZeta (2 * (2 * (sigma : ℂ)))) := by
+    simpa only [primeSquarefreeEulerFactor, htwoValue] using htwoBase.hasProd
+  have hdenProd := hbaseProd.mul hbaseProd
+  have hbaseZeta : riemannZeta (sigma : ℂ) ≠ 0 :=
+    riemannZeta_ne_zero_of_one_lt_re hs
+  have htwoZeta : riemannZeta (2 * (sigma : ℂ)) ≠ 0 :=
+    riemannZeta_ne_zero_of_one_lt_re htwo
+  have hden_ne :
+      (riemannZeta (sigma : ℂ) / riemannZeta (2 * (sigma : ℂ))) *
+          (riemannZeta (sigma : ℂ) / riemannZeta (2 * (sigma : ℂ))) ≠ 0 :=
+    mul_ne_zero (div_ne_zero hbaseZeta htwoZeta)
+      (div_ne_zero hbaseZeta htwoZeta)
+  have hratio :
+      HasProd (fun p : Nat.Primes =>
+        primeSquarefreeEulerFactor (2 * (sigma : ℂ)) p /
+          (primeSquarefreeEulerFactor (sigma : ℂ) p *
+            primeSquarefreeEulerFactor (sigma : ℂ) p))
+        ((riemannZeta (2 * (sigma : ℂ)) /
+            riemannZeta (2 * (2 * (sigma : ℂ)))) /
+          ((riemannZeta (sigma : ℂ) / riemannZeta (2 * (sigma : ℂ))) *
+            (riemannZeta (sigma : ℂ) / riemannZeta (2 * (sigma : ℂ))))) := by
+    unfold HasProd at htwoProd hdenProd ⊢
+    convert htwoProd.div hdenProd hden_ne using 1
+    funext S
+    rw [Finset.prod_div_distrib]
+    rfl
+  change HasProd (fun p : Nat.Primes =>
+    primeSquarefreeEulerFactor (2 * (sigma : ℂ)) p /
+      primeSquarefreeEulerFactor (sigma : ℂ) p ^ 2) _
+  simpa only [pow_two] using hratio
+
+/-- The local Loschmidt collision factors have a convergent cofinal prime product for `sigma > 1`. -/
+theorem multipliable_primeSquarefreeLoschmidtPurityFactor
+    {sigma : ℝ} (hsigma : 1 < sigma) :
+    Multipliable (primeSquarefreeLoschmidtPurityFactor sigma) :=
+  (hasProd_primeSquarefreeLoschmidtPurityFactor hsigma).multipliable
+
+/-- Exact zeta value of the cofinal-prime Möbius Loschmidt purity. -/
+theorem infinitePrimeSquarefreeLoschmidtPurity_eq_zetaRatio
+    {sigma : ℝ} (hsigma : 1 < sigma) :
+    infinitePrimeSquarefreeLoschmidtPurity sigma =
+      riemannZeta (2 * (sigma : ℂ)) ^ 3 /
+        (riemannZeta (4 * (sigma : ℂ)) * riemannZeta (sigma : ℂ) ^ 2) := by
+  rw [infinitePrimeSquarefreeLoschmidtPurity,
+    (hasProd_primeSquarefreeLoschmidtPurityFactor hsigma).tprod_eq]
+  have hs : 1 < ((sigma : ℂ)).re := by simpa using hsigma
+  have htwo : 1 < (2 * (sigma : ℂ)).re := by
+    rw [Complex.mul_re]
+    norm_num
+    linarith
   have hfour : riemannZeta (4 * (sigma : ℂ)) ≠ 0 :=
     riemannZeta_ne_zero_of_one_lt_re (by
       rw [Complex.mul_re]
