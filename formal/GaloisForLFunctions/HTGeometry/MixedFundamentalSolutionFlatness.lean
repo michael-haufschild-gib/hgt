@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.DifferenceDifferential
 import GaloisForLFunctions.HTGeometry.MatrixWignerSmithDifferentialMatroid
+import GaloisForLFunctions.HTGeometry.MatrixWignerSmithHermitian
 
 /-!
 # Mixed flatness forced by a fundamental solution
@@ -22,16 +23,6 @@ namespace GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions
 
 noncomputable section
-
-/-- Entrywise matrix differentiation satisfies the matrix product rule. -/
-theorem matrixDifferential_mul
-    {E : Type*} [Field E] [Differential E] {n : ℕ}
-    (A B : Matrix (Fin (n + 1)) (Fin (n + 1)) E) :
-    matrixDifferential (A * B) =
-      matrixDifferential A * B + A * matrixDifferential B := by
-  ext i j
-  simp only [matrixDifferential, Matrix.mul_apply, map_sum, Derivation.leibniz,
-    Finset.sum_add_distrib, Matrix.add_apply, smul_eq_mul, mul_comm, add_comm]
 
 /-- A difference automorphism which commutes with the derivation also commutes with entrywise
 matrix differentiation. -/

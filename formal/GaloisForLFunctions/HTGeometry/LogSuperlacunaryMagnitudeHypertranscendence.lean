@@ -83,7 +83,7 @@ theorem DifferentiallyAlgebraic.add_polynomial {f : ℂ → ℂ}
     | succ j =>
         simp only [σ, jetPolynomialSub, Fin.cases_succ, map_sub,
           MvPolynomial.eval_X, Fin.cons_succ]
-        rw [eval_aeval_X0, Fin.cons_zero, hsplit j]
+        rw [eval_aeval_X0_finSucc, Fin.cons_zero, hsplit j]
         ring
   rw [hvec]
   exact hPz z

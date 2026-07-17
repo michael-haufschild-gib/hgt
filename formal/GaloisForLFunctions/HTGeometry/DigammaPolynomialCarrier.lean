@@ -33,7 +33,7 @@ theorem iteratedDeriv_polynomial_eval (p : Polynomial ℂ) (j : ℕ) (z : ℂ) :
       Polynomial.deriv, Function.iterate_succ_apply']
 
 /-- Evaluating `q(X₀)` at a jet vector recovers `q` at the point slot. -/
-theorem eval_aeval_X0 {N : ℕ} (q : Polynomial ℂ) (v : Fin (N + 1) → ℂ) :
+theorem eval_aeval_X0_finSucc {N : ℕ} (q : Polynomial ℂ) (v : Fin (N + 1) → ℂ) :
     MvPolynomial.eval v (Polynomial.aeval (MvPolynomial.X 0) q) = q.eval (v 0) := by
   induction q using Polynomial.induction_on with
   | C a => simp
@@ -108,7 +108,7 @@ theorem hypertranscendental_smul_digamma_add_polynomial {M : ℂ} (hM : M ≠ 0)
       | succ j =>
         simp only [hσ, Fin.cases_succ, map_add, map_mul, MvPolynomial.eval_C, MvPolynomial.eval_X,
           Fin.cons_succ]
-        rw [eval_aeval_X0, Fin.cons_zero, hsplit (j : ℕ) z hz]
+        rw [eval_aeval_X0_finSucc, Fin.cons_zero, hsplit (j : ℕ) z hz]
     rw [hvec]
     exact hQz z
   exact hP0 hann

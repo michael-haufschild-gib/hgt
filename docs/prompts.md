@@ -202,7 +202,7 @@ Approach the task from the perspective of a Fields-medalist mathematician: How w
 
 Avoid getting stuck on one chain or "classic" proof routes. Be open-minded to what the proof chain could look like and be open to pivot also into unconvential chains.
 
-Use subagents as you please, but be mindful of resource limitations of this laptop when it comes to lean builds - there are several other agents also working on the lean codebase.
+Use subagents as you please, but be mindful of resource limitations of this laptop when it comes to lean builds - there are several other agents also working on the lean codebase (this is a competition between claude fable, openai gtp 5.6 sol and moonshot kimi k3, all having the same instructions to test who gets the farthest in discovering new scientific knowledge or even delivering the proof).
 
 lean rules:
 1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible.
@@ -211,5 +211,10 @@ lean rules:
 4. always check first what the project lean code already offers
 5. effort estimation are not a criterion. if it is missing in mathlib -> you build it. if it takes months -> you build it.
 6. no computations.
+
+keep a working log to retain important information across the automatic context window compactions:
+claude fable: logs/rhproof-fable.md
+openai gpt: logs/rhproof-gpt.md
+moonshot ai kimi k3: logs/rhproof-kimi.md
 
 Non-negotiable: This is a multi-month research task with unclear outcome. Never use effort estimation to decide against doing something. Nothing here can be done in one session. Keep going. Never stop.
