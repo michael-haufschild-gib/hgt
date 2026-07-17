@@ -179,3 +179,164 @@ theorem diffIndepOn_differentialAdjoin_iUnion_iff_forall
     exact (hlimit.mp (hpers.mpr hstage)).2
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+/-- Coefficient-field form of `differentialAdjoin_union` for differential algebraicity. -/
+theorem differentialAlgebraicOver_union_iff_nested
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (s t : Set E) (x : E) :
+    DifferentialAlgebraicOver (differentialAdjoin F (s ∪ t)) x ↔
+      DifferentialAlgebraicOver
+        (differentialAdjoin (differentialAdjoin F s) t) x := by
+  rw [← differentialAdjoin_union]
+  rfl
+
+/-- Coefficient-field form of `differentialAdjoin_union` for differential independence. -/
+theorem diffIndepOn_union_iff_nested
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (s t I : Set E) :
+    DiffIndepOn (differentialAdjoin F (s ∪ t)) I ↔
+      DiffIndepOn (differentialAdjoin (differentialAdjoin F s) t) I := by
+  rw [← differentialAdjoin_union]
+  rfl
+
+/-- **One-step base insensitivity.**  Adjoining one differentially algebraic element to the
+coefficient field preserves differential independence of any set. -/
+theorem diffIndepOn_differentialAdjoin_singleton_of_differentialAlgebraicOver
+    {k K : Type*} [Field k] [Field K] [Algebra k K]
+    [Differential k] [Differential K] [DifferentialAlgebra k K] [CharZero K]
+    {I : Set K} {g : K}
+    (hg : DifferentialAlgebraicOver k g) (hI : DiffIndepOn k I) :
+    DiffIndepOn (differentialAdjoin k ({g} : Set K)) I := by
+  apply diffIndepOn_of_forall_finite
+  intro t hts htfin
+  revert hts
+  refine Set.Finite.induction_on
+    (motive := fun t _ =>
+      t ⊆ I → DiffIndepOn (differentialAdjoin k ({g} : Set K)) t)
+    t htfin (fun _ => diffIndepOn_empty) ?_
+  intro a s hnot hsfin ih hsub
+  have hsub' : s ⊆ I := (Set.subset_insert a s).trans hsub
+  rw [diffIndepOn_insert_iff hnot]
+  refine ⟨ih hsub', ?_⟩
+  intro hDA
+  rw [← differentialAlgebraicOver_union_iff_nested] at hDA
+  rw [Set.union_comm] at hDA
+  rw [differentialAlgebraicOver_union_iff_nested] at hDA
+  letI : Differential ↥(differentialAdjoin k s) :=
+    derivationClosedDifferential _ (derivationClosed_differentialAdjoin k s)
+  letI : DifferentialAlgebra ↥(differentialAdjoin k s) K :=
+    ⟨fun c => derivationClosedDifferential_apply _
+      (derivationClosed_differentialAdjoin k s) c⟩
+  have hgS : DifferentialAlgebraicOver (differentialAdjoin k s) g :=
+    differentialAlgebraicOver_mono hg
+  have haS : DifferentialAlgebraicOver (differentialAdjoin k s) a :=
+    differentialAlgebraicOver_trans hgS hDA
+  have hins : DiffIndepOn k (insert a s) := hI.subset hsub
+  rw [diffIndepOn_insert_iff hnot] at hins
+  exact hins.2 haS
+
+/-- **Finite base extension.**  Adjoining a finite packet of differentially algebraic elements
+to the coefficient field preserves differential independence. -/
+theorem diffIndepOn_differentialAdjoin_union_finite_of_differentialAlgebraicOver
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {S I : Set E} {G₀ : Set E} (hfin : G₀.Finite)
+    (hDA : ∀ g ∈ G₀, DifferentialAlgebraicOver (differentialAdjoin F S) g)
+    (hI : DiffIndepOn (differentialAdjoin F S) I) :
+    DiffIndepOn (differentialAdjoin F (S ∪ G₀)) I := by
+  revert hDA
+  refine Set.Finite.induction_on
+    (motive := fun t _ =>
+      (∀ g ∈ t, DifferentialAlgebraicOver (differentialAdjoin F S) g) →
+        DiffIndepOn (differentialAdjoin F (S ∪ t)) I)
+    G₀ hfin (fun _ => by rw [Set.union_empty]; exact hI) ?_
+  intro g G₀' hgnot hfin' ih hDA'
+  have hIH : DiffIndepOn (differentialAdjoin F (S ∪ G₀')) I :=
+    ih fun g' hg' => hDA' g' (Set.mem_insert_of_mem g hg')
+  have hSsub : S ⊆ (differentialAdjoin F (S ∪ G₀') : IntermediateField F E) :=
+    fun x hx => subset_differentialAdjoin F (S ∪ G₀') (Set.mem_union_left _ hx)
+  letI : Differential ↥(differentialAdjoin F (S ∪ G₀')) :=
+    derivationClosedDifferential _
+      (derivationClosed_differentialAdjoin F (S ∪ G₀'))
+  letI : DifferentialAlgebra ↥(differentialAdjoin F (S ∪ G₀')) E :=
+    ⟨fun c => derivationClosedDifferential_apply _
+      (derivationClosed_differentialAdjoin F (S ∪ G₀')) c⟩
+  have hgB : DifferentialAlgebraicOver (differentialAdjoin F (S ∪ G₀')) g :=
+    differentialAlgebraicOver_mono_differentialAdjoin_narrow _
+      (derivationClosed_differentialAdjoin F (S ∪ G₀')) hSsub
+      (hDA' g (Set.mem_insert g G₀'))
+  have hstep :=
+    diffIndepOn_differentialAdjoin_singleton_of_differentialAlgebraicOver hgB hIH
+  rw [← diffIndepOn_union_iff_nested] at hstep
+  have hset : (S ∪ G₀') ∪ {g} = S ∪ insert g G₀' := by
+    rw [Set.union_insert, Set.insert_eq, Set.union_comm]
+  rwa [hset] at hstep
+
+/-- **Basis-free finite-stage intrinsic reading.**  Contracted independence in the
+differential-transcendence matroid is disjointness plus relative differential independence over
+the face field of every finite base stage; no basis choice occurs in the statement. -/
+theorem differentialMatroid_contract_indep_iff_forall_finite_stage
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {G I : Set E} :
+    (differentialMatroid F E ／ G).Indep I ↔
+      Disjoint G I ∧
+        ∀ G₀ : Set E, G₀ ⊆ G → G₀.Finite →
+          DiffIndepOn (differentialAdjoin F G₀) I := by
+  constructor
+  · intro h
+    have hdisj : Disjoint G I := by
+      refine Set.disjoint_left.mpr fun x hxG hxI => ?_
+      have hg := h.subset_ground
+      rw [Matroid.contract_ground] at hg
+      exact (hg hxI).2 hxG
+    refine ⟨hdisj, fun G₀ hsub hfin => ?_⟩
+    have hstage : (differentialMatroid F E ／ G₀).Indep I :=
+      contract_indep_of_contract_indep_of_subset hsub h
+    obtain ⟨J₀, hJ₀⟩ := (differentialMatroid F E).exists_isBasis' G₀
+    have hrel : DiffIndepOn (differentialAdjoin F J₀) I :=
+      ((differentialMatroid_contract_indep_iff_of_isBasis' hJ₀).mp hstage).2
+    have hDAg : ∀ g ∈ G₀,
+        DifferentialAlgebraicOver (differentialAdjoin F J₀) g := by
+      intro g hgmem
+      have hcl : g ∈ (differentialMatroid F E).closure J₀ := by
+        rw [hJ₀.closure_eq_closure]
+        exact (differentialMatroid F E).subset_closure G₀ (by simp) hgmem
+      exact (differentialMatroid_mem_closure_iff_of_indep hJ₀.indep g).mp hcl
+    have hup :=
+      diffIndepOn_differentialAdjoin_union_finite_of_differentialAlgebraicOver
+        hfin hDAg hrel
+    rwa [Set.union_eq_self_of_subset_left hJ₀.subset] at hup
+  · rintro ⟨hdisj, hstages⟩
+    haveI : Nonempty {t : Set E // t ⊆ G ∧ t.Finite} :=
+      ⟨⟨∅, Set.empty_subset G, Set.finite_empty⟩⟩
+    have hdir : Directed (· ⊆ ·)
+        (fun i : {t : Set E // t ⊆ G ∧ t.Finite} => i.1) := fun i j =>
+      ⟨⟨i.1 ∪ j.1, Set.union_subset i.2.1 j.2.1, i.2.2.union j.2.2⟩,
+        Set.subset_union_left, Set.subset_union_right⟩
+    have hunion : (⋃ i : {t : Set E // t ⊆ G ∧ t.Finite}, i.1) = G := by
+      apply Set.Subset.antisymm
+      · exact Set.iUnion_subset fun i => i.2.1
+      · intro x hx
+        exact Set.mem_iUnion.mpr
+          ⟨⟨{x}, Set.singleton_subset_iff.mpr hx, Set.finite_singleton x⟩, rfl⟩
+    rw [← hunion, contract_iUnion_indep_iff_forall hdir]
+    intro i
+    obtain ⟨J₀, hJ₀⟩ := (differentialMatroid F E).exists_isBasis' i.1
+    refine (differentialMatroid_contract_indep_iff_of_isBasis' hJ₀).mpr
+      ⟨hdisj.mono_left i.2.1, ?_⟩
+    have hstage := hstages i.1 i.2.1 i.2.2
+    have hle : differentialAdjoin F J₀ ≤ differentialAdjoin F i.1 :=
+      differentialAdjoin_le F
+        (hJ₀.subset.trans (subset_differentialAdjoin F i.1))
+        (derivationClosed_differentialAdjoin F i.1)
+    letI : Algebra ↥(differentialAdjoin F J₀) ↥(differentialAdjoin F i.1) :=
+      (IntermediateField.inclusion hle).toAlgebra
+    haveI : IsScalarTower
+        ↥(differentialAdjoin F J₀) ↥(differentialAdjoin F i.1) E :=
+      IsScalarTower.of_algebraMap_eq fun _ => rfl
+    exact DifferentialIndependent.restrictScalarsTower hstage
+
+end GaloisForLFunctions.HTGeometry

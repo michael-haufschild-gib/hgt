@@ -277,13 +277,15 @@ theorem finiteQuantumMonomial_linearIndependent (q : K) (hq : q ^ d = 1) :
 finite quantum torus. -/
 def finiteQuantumMonomialBasis (q : K) (hq : q ^ d = 1) :
     Module.Basis (ι → ZMod d) K
-      (Submodule.span K (Set.range (finiteQuantumMonomial q hq))) :=
+      (Submodule.span K
+        (Set.range (finiteQuantumMonomial (K := K) (ι := ι) (d := d) q hq))) :=
   Module.Basis.span (finiteQuantumMonomial_linearIndependent q hq)
 
 /-- The normal-form span has rank the number of exponent vectors. -/
 theorem finiteQuantumMonomial_rank_span (q : K) (hq : q ^ d = 1) :
-    Module.rank K ↥(Submodule.span K (Set.range (finiteQuantumMonomial q hq))) =
-      Cardinal.mk (Set.range (finiteQuantumMonomial q hq)) :=
+    Module.rank K ↥(Submodule.span K
+        (Set.range (finiteQuantumMonomial (K := K) (ι := ι) (d := d) q hq))) =
+      Cardinal.mk (Set.range (finiteQuantumMonomial (K := K) (ι := ι) (d := d) q hq)) :=
   rank_span (finiteQuantumMonomial_linearIndependent q hq)
 
 section fermatCapstone
@@ -343,7 +345,8 @@ theorem finiteQuantumFermat_normalForm_maximalHorizon
   have h := finiteQuantumTorus_derivationCommutatorMap_injective
     (ι := Fin n) (V := Fin n → K) q hq.pow_eq_one (hq.ne_one Fact.out)
     LinearMap.id Function.injective_id
-  simpa [finiteQuantumTorusSymbol] using h
+  rw [LinearMap.comp_id] at h
+  exact h
 
 end fermatCapstone
 

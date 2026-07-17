@@ -26,6 +26,8 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+set_option maxHeartbeats 50000
+
 variable {F T : Type*} [Field F] [Field T] [Algebra F T]
   [Differential F] [Differential T] [DifferentialAlgebra F T]
   [CharZero T]
