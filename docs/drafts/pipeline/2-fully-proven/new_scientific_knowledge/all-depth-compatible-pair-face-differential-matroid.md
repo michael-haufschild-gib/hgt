@@ -369,9 +369,13 @@ conclusion with genuine differential independence. The compatible-pair label
 extra label rides along without changing the argument. The special-function inputs and the
 differential-linear rank formula now separate cleanly: `DifferentialOperatorMatroid.lean` proves the
 full operator-output matroid and rank law for arbitrary dependent row packets. The remaining inputs
-are star differential independence, an integer orbit-height law (which supplies free translates),
-off-star packetwise DA (which supplies `CrossNeutral`), and the concrete hierarchy-to-row
-identification.
+are further specialized by `LocalizedStanleyReisnerMatroidRank.lean`, whose
+`stanleyReisnerLaurentMatroid_indep_iff` and
+`differentialFamilyMatroid_stanleyReisnerLaurentRows_eq` prove the complete subset matroid after
+facet coordinates and Laurent denominator clearing; its `eRk` theorem gives the explicit localized
+row-span dimension. What remains is star differential independence, an integer orbit-height law
+(which supplies free translates), off-star packetwise DA (which supplies `CrossNeutral`), and the
+concrete compatible-pair hierarchy-to-row identification.
 
 ## First proof audit
 

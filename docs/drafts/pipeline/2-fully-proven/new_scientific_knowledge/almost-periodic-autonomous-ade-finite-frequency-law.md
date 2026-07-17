@@ -3,13 +3,12 @@
 - **ID:** `almost-periodic-autonomous-ade-finite-frequency-law`
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) / GENERAL HYPERTRANSCENDENCE LANDSCAPE
-- **Scientific status:** `[PROVED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED]`
 - **Novelty status:** provisional pending independent expert proof and literature review
-- **Statement:** Every holomorphic uniformly almost-periodic function satisfying an autonomous
-  algebraic differential equation has a Bohr frequency group of finite rational rank. The same is
-  true of its translation-equivariant zero-divisor distribution. Equivalently, infinite frequency
-  rank is an unconditional obstruction to every autonomous ADE, including singular implicit
-  equations with nonunique initial-value problems.
+- **Statement:** If a nonconstant holomorphic uniformly almost-periodic function has minimal
+  autonomous algebraic-differential order `n`, then its Bohr frequency group has rational rank at
+  most `2n`, even for a singular implicit equation with a nonunique initial-value problem. The same
+  bound holds for its translation-equivariant zero-divisor distribution.
 
 ## Setup
 
@@ -40,16 +39,18 @@ No equation solved for the highest derivative and no initial-value uniqueness ar
 
 ## The theorem
 
-`[PROVED]` Under `(1)`--`(3)`,
+`[PAPER-PROVED]` Under `(1)`--`(3)`, if `n` is minimal as in Section 1, then
 
 ```text
-rank_Q Gamma(f)<infinity.                                  (4)
+rank_Q Gamma(f)<=2n<infinity.                              (4)
 ```
 
-Moreover, the almost-periodic divisor distribution of `f` has frequency group of finite rational
-rank.
+Moreover, the almost-periodic divisor distribution of `f` has frequency group of rational rank at
+most `2n`.
 
 If `f` is constant, the assertion is immediate. Assume henceforth that `f` is nonconstant.
+Then the minimal order below satisfies `n>=1`, since a holomorphic function annihilated by a
+nonzero polynomial in `Y_0` alone has connected image contained in a finite set and is constant.
 
 ## 1. Minimal autonomous equation and its separant
 
@@ -101,7 +102,7 @@ Z=empty.                                                    (9)
 Thus every hull member is regular at at least one real time, although no common regular time and no
 globally unique initial-value formulation were assumed.
 
-## 3. Compactness produces a finite regular-sample atlas
+## 3. Compactness produces a finite regular-chart cover
 
 For `t in R`, define the open subset
 
@@ -122,7 +123,8 @@ such that
 X_f=U_(t_1) union ... union U_(t_m).                        (12)
 ```
 
-Define the finite observation map
+For the qualitative finite-rank theorem it is enough to combine all samples into the observation
+map
 
 ```text
 J:X_f->C^(m(n+1)),
@@ -143,14 +145,52 @@ Both `g` and `h` remain on this branch near `t_j`, and their lower initial jets 
 uniqueness for the explicit analytic equation `(14)` gives `g=h` near `t_j`. The identity theorem
 then gives `g=h` throughout `S_eta`.
 
-Since `X_f` is compact and the target of `(13)` is Hausdorff, `J` is a topological embedding. Hence
+Since `X_f` is compact and the target of `(13)` is Hausdorff, `J` is a topological embedding. This
+already proves finite covering dimension, but its bound depends on the number `m` of chosen samples.
+
+The order-sharp local argument removes that dependence. Since `X_f` is compact Hausdorff, the finite
+open cover `(12)` has a finite closed shrinking
 
 ```text
-dim X_f<=2m(n+1)<infinity.                                  (15)
+X_f=F_1 union ... union F_m,    F_j subset U_(t_j).          (15)
+```
+
+For each `j`, use only the single full-jet map
+
+```text
+E_j:F_j->C^(n+1),
+E_j(g)=(g(t_j),g'(t_j),...,g^(n)(t_j)).                     (16)
+```
+
+The same implicit-function and uniqueness argument used above shows that `E_j` is injective: if
+`g,h in F_j` have the same full jet, their common separant is nonzero, so they solve the same
+explicit local branch with the same lower initial jet and hence agree on the strip. Compactness of
+`F_j` makes `E_j` a topological embedding.
+
+Its image lies in
+
+```text
+M_P={y in C^(n+1):P(y)=0 and Sep_P(y)!=0}.                  (17)
+```
+
+The nonzero `Y_n`-partial derivative makes `M_P` a complex `n`-manifold: locally it is the graph of
+`Y_n` over `(Y_0,...,Y_(n-1))`. Therefore every subset of `M_P` has covering dimension at most
+`2n`, and hence
+
+```text
+dim F_j<=2n.                                                (18)
+```
+
+The countable closed-sum theorem for covering dimension in metrizable spaces, applied to this
+finite closed cover of the compact metric hull, now gives
+
+```text
+dim X_f<=2n.                                                (19)
 ```
 
 The finite collection `(11)`, rather than a single initial time, is the mechanism that removes the
-singular/nonunique obstruction.
+singular/nonunique obstruction. Passing to a closed shrinking and measuring each regular chart in
+the smooth jet hypersurface is what recovers a bound depending only on the differential order.
 
 ## 4. Hull dimension equals frequency rank
 
@@ -158,10 +198,10 @@ The character group of the Bohr hull is the discrete additive group generated by
 `f`. Pontryagin dimension theory for compact connected abelian groups gives
 
 ```text
-rank_Q dual(X_f)=dim X_f.                                   (16)
+rank_Q dual(X_f)=dim X_f.                                   (20)
 ```
 
-Combining `(15)` and `(16)` proves `(4)`.
+Combining `(19)` and `(20)` proves `(4)`.
 
 The theorem asserts finite rational rank, not finite generation as an abelian group. A finite-rank
 hull may be a protorus rather than an ordinary torus.
@@ -171,21 +211,21 @@ hull may be a protorus rather than an ordinary torus.
 For a nonzero holomorphic function `g`, its zero divisor is the Poincare--Lelong distribution
 
 ```text
-Div(g)=(1/(2pi)) Delta log|g|.                              (17)
+Div(g)=(1/(2pi)) Delta log|g|.                              (21)
 ```
 
 The hull of a nonzero almost-periodic function contains no zero function. Under local uniform
-convergence of nonzero holomorphic functions, `(17)` converges in the distribution topology. Thus
+convergence of nonzero holomorphic functions, `(21)` converges in the distribution topology. Thus
 
 ```text
-g |-> Div(g)                                                (18)
+g |-> Div(g)                                                (22)
 ```
 
 is a continuous translation-equivariant map from `X_f` onto the divisor hull. The latter is a
 compact abelian factor of `X_f`; its dual character group embeds in `dual(X_f)`. Therefore
 
 ```text
-rank_Q Gamma(Div(f))<=rank_Q Gamma(f)<infinity.             (19)
+rank_Q Gamma(Div(f))<=rank_Q Gamma(f)<=2n.                  (23)
 ```
 
 Every continuous translation-equivariant divisor observable inherits the same finite-rank bound.
@@ -223,7 +263,7 @@ positivity criterion. The precise law is:
 ```text
 infinite-rank prime spectrum
   => not any finite autonomous ADE constraint
-  => no autonomous algebraic flow, even a singular one, can be the missing source producer. (20)
+  => no autonomous algebraic flow, even a singular one, can be the missing source producer. (24)
 ```
 
 This is a constraint-side result: it proves that the source cannot be propagated by the proposed
@@ -247,17 +287,18 @@ finite flow. It does not infer zero location from hypertranscendence.
 
 ## Novelty and significance audit
 
-`[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`, provisionally.
+`[NOVELTY UNVERIFIED]`.
 
 - Cartwright and O'Brien prove finite frequency rank for almost-periodic solutions of
   finite-dimensional autonomous systems when the initial-value problem is unique.
 - The present theorem removes that hypothesis for every scalar analytic autonomous ADE. Its new
-  mechanism is the minimal-separant hull argument and finite regular-sample atlas `(10)`--`(13)`.
+  mechanism is the minimal-separant hull argument and finite regular-chart cover `(10)`--`(18)`.
 - Searches for combinations of "differentially algebraic", "almost periodic", "separant",
   "implicit autonomous algebraic differential equation", and "frequency module" did not locate
   this extension or a stronger theorem.
 - The result is significant for the HT landscape because it closes the entire singular implicit
-  autonomous class, the exact escape left by the classical finite-flow theorem.
+  autonomous class, the exact escape left by the classical finite-flow theorem, and gives the
+  uniform quantitative bound `rank_Q Gamma(f)<=2n` rather than only finiteness.
 - It remains possible that the finite-sample argument is implicit in older differential-algebraic
   flow literature. Scientific novelty remains provisional until independent experts check both the
   proof and the broader literature.
@@ -272,6 +313,8 @@ Primary adjacent sources:
    (1953), 178--182.
 4. O. Bournez and A. Pouly, *A Universal Ordinary Differential Equation*,
    `https://arxiv.org/abs/1702.08328`, for the analytic-universality boundary.
+5. W. Hurewicz and H. Wallman, *Dimension Theory*, Princeton University Press, 1941, for the
+   finite closed-sum theorem and the covering dimension of subsets of real manifolds.
 
 ## Lean status
 
@@ -284,6 +327,7 @@ unconditionally.
 
 - [x] complete unconditional paper proof
 - [x] singular implicit and nonunique ADEs included
+- [x] quantitative order bound `rank_Q Gamma(f)<=2n`
 - [x] finite-rank divisor corollary proved
 - [x] universal-ODE and singular-branch attacks survived
 - [x] preliminary parent and literature audit survived

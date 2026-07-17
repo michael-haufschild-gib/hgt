@@ -638,9 +638,12 @@ automorphisms now preserve that rank automatically, and `CrossNeutral` follows f
 packet closure inclusion. `Rank.hasFreeTranslates_of_intHeight` obtains free translates from the
 integer orbit-height law. `DifferentialOperatorMatroid.lean` identifies every finite family of
 polynomial differential-operator outputs with its ordinary localized row matroid, including the
-rank of dependent packets. What remains is the concrete special-function proof of star
-independence, the orbit-height realization, and the off-star packetwise DA statements, followed by
-the Stanley--Reisner decomposition and the all-order capstone.
+rank of dependent packets. `LocalizedStanleyReisnerMatroidRank.lean` then proves that complete
+facet coordinates, common Laurent-denominator clearing, and finite coordinate expansion preserve
+the entire subset matroid, and gives the explicit localized row-span dimension for every dependent
+packet. What remains is the concrete special-function proof of star independence, the orbit-height
+realization, and the off-star packetwise DA statements, followed by the concrete hierarchy-to-row
+identification and the all-order capstone.
 
 The theorem must not move to Stage 3 until this chain terminates in the concrete statement (1),
 the formal lint passes, and `#print axioms` reports only Lean's standard logical axioms.

@@ -1,15 +1,57 @@
 # Hypertranscendental translation sources carry coupled Gale and period-closure duals
 
 - **ID:** `hypertranscendental-gale-kolchin-duality`
-- **Stage:** 1-in-progress
-- **Type:** FOUNDATIONAL CONJECTURE / MULTIPLE-GAMMA EXACT SEED / GALE--PONTRYAGIN DUALITY
-- **Scientific status:** `[CONJECTURE] [MULTIPLE-GAMMA UNORIENTED IDENTIFICATION PAPER-PROVED]`
+- **Stage:** 5-failed
+- **Type:** FALSIFIED FOUNDATIONAL CONJECTURE / POSITIVE PERIOD-CLOSURE RESIDUE
+- **Scientific status:** `[FALSIFIED BY A NATURAL MULTIPLE-GAMMA FRAME]`
+  `[MULTIPLE-GAMMA UNIFORM COINCIDENCE RETAINED AS A SPECIAL CASE]`
   `[LEAN COMBINATORIAL CORE VERIFIED] [ORIENTED GALE/PERIOD-CLOSURE FRACTURE LEAN-PROVED]`
-  `[NOVELTY PRELIMINARY] [NOT AN RH RESULT]`
+  `[POSITIVE RESIDUE: RATIONAL DELETION GEOMETRY] [NOT AN RH RESULT]`
 - **Parents:**
   - `../2-fully-proven/new_scientific_knowledge/multiple-gamma-period-excess-closure-phase-transition.md`
   - `../2-fully-proven/new_scientific_knowledge/multiple-gamma-effective-fracture-descent-orthogonality.md`
-  - `hypertranscendental-polarized-strict-descent-field.md`
+  - `../1-in-progress/hypertranscendental-polarized-strict-descent-field.md`
+
+## Decisive natural-source falsification `[PROVED FROM THE EXACT ORDER-TWO PARENT]`
+
+The foundational claim that the real Gale matroid controls the differential-annihilator matroid
+already fails inside the natural order-two multiple-elliptic-gamma family.  Take the labelled
+physical period frame
+
+```text
+P=(1, i, sqrt(2)i, sqrt(3)+i).                            (0)
+```
+
+It is linearly independent over `Q`: a rational relation separates in its real part into a
+relation between `1` and `sqrt(3)`, and then in its imaginary part into a relation between `1` and
+`sqrt(2)`.  The exact order-two translation-annihilator theorem therefore applies and gives
+
+```text
+Ann_DA(Psi_2)=(x_0*x_1,x_0*x_2,x_1*x_2),
+M_DA=U_(1,{0,1,2}).                                      (0a)
+```
+
+But `i` and `sqrt(2)i` are real-collinear.  The real period matroid has the unique parallel pair
+`{i,sqrt(2)i}`.  Its dual has every two-element basis except `{1,sqrt(3)+i}`; after contraction by
+the distinguished label `1`, the label `sqrt(3)+i` is a loop and the other two labels are parallel:
+
+```text
+M_per(P)^*/1 = U_(1,{i,sqrt(2)i}) direct-sum loop(sqrt(3)+i).       (0b)
+```
+
+This is not `U_(1,3)`.  In particular, the Gale prediction would make the singleton structural
+direction belonging to `sqrt(3)+i` algebraic, whereas `(0a)` says that every singleton difference
+remains hypertranscendental.  No orientation, determinant line, or generic-position gloss repairs
+the mismatch: the counterexample is `Q`-independent and lies in the exact source family used to
+motivate the conjecture.
+
+The positive statement is that the DA annihilator is invariant across this real-collinearity wall.
+What remains fixed is the rational translation hierarchy; what changes is the real oriented
+matroid.  Thus real Gale geometry is not the controlling joint-realization invariant.  The live
+successor is the rational period-deletion geometry isolated in
+`../1-in-progress/multiple-gamma-period-deletion-annihilator-law.md`, with its first exact phase
+split proved in
+`../2-fully-proven/new_scientific_knowledge/order-two-multiple-gamma-period-deletion-phase-split.md`.
 
 ## Discovery
 
@@ -146,9 +188,9 @@ chirotope, `(8e)` sees the discrete/nondiscrete wall and therefore the fixed-gau
 phase.  Ordinary arithmetic matroid language is relevant but not sufficient unless it is extended
 to irrational period configurations and their topological closure.
 
-## Foundational conjecture
+## Foundational conjecture `[FALSIFIED]`
 
-> **[CONJECTURE — GALE--KOLCHIN SOURCE DUALITY]** Let a regular source-minimal translation HT
+> **[FALSIFIED — GALE--KOLCHIN SOURCE DUALITY]** Let a regular source-minimal translation HT
 > hierarchy have `n` labelled physical periods spanning a real clock space of dimension `d`, a
 > distinguished normalization set `N`, and an exact squarefree differential-annihilator matroid.
 > On the source-effectively-normalized stratum, that annihilator matroid is the contraction by `N`
@@ -165,7 +207,10 @@ and upgrades the equality from a count to a source-natural duality.  The conject
 by one natural HT translation hierarchy whose exact annihilator matroid is not the stated
 contracted Gale dual.
 
-> **[CONJECTURE — GALE--PONTRYAGIN--KOLCHIN CONSTRAINT LAW]** For every regular source-minimal
+The natural frame `(0)` is the demanded falsifier.  It satisfies the source family's generic
+`Q`-independence hypothesis but violates the predicted contracted real-Gale matroid.
+
+> **[FALSIFIED IN ITS GALE-CONTROL COMPONENT — GALE--PONTRYAGIN--KOLCHIN CONSTRAINT LAW]** For every regular source-minimal
 > translation HT hierarchy, the finite differential-annihilator geometry is controlled by the
 > contracted oriented Gale dual of its physical period configuration, while normalized fixed
 > gauges and vertical strictness are controlled by the Pontryagin character object `(8e)`.  These
@@ -286,9 +331,8 @@ fixed-gauge phases `(8d)` without any added hypothesis.
 - [x] preliminary external novelty search completed
 - [x] Lean-formalize the uniform dual-contraction theorem
 - [x] Lean-formalize identical-chirotope/opposite-period-effectivity fracture
-- [ ] construct the oriented contracted chirotope for the actual period configuration
-- [ ] construct the source-natural Gale/Pontryagin comparison morphism
-- [ ] prove splitting/source-presentation invariance
-- [ ] test one nonuniform natural HT source
-- [ ] transfer one analytic theorem through the duality
-- [ ] complete specialist novelty audit
+- [x] test one nonuniform natural HT source
+- [x] falsify real Gale control on the natural order-two multiple-Gamma family
+- [x] preserve period-closure and rational deletion geometry as positive residue
+- [x] route the live exact claim to `multiple-gamma-period-deletion-annihilator-law`
+- [ ] no further work on the falsified Gale-control conjecture

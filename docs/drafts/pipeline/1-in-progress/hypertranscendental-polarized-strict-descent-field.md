@@ -360,7 +360,8 @@ mere juxtaposition.  It must recover the normalized common kernel as inertia and
 incidence range as a strictness receiver.
 
 The full conjecture and its anti-theatre gate are recorded in
-`docs/drafts/pipeline/1-in-progress/hypertranscendental-gale-kolchin-duality.md`.
+`docs/drafts/pipeline/5-failed/hypertranscendental-gale-kolchin-duality.md`; the live replacement is
+`docs/drafts/pipeline/1-in-progress/multiple-gamma-period-deletion-annihilator-law.md`.
 
 ## Orientation discriminator `[PROVED NO-GO; POSITIVE STRUCTURE]`
 

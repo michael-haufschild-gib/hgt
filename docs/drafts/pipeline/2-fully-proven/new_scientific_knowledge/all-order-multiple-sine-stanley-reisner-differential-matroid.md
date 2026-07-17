@@ -140,6 +140,15 @@ The nested-star/free-block gluing is formalized axiom-clean in
 simplicial-star (hypergraph) case verbatim. The special-function inputs enter as the
 `Rank`/`FreeIndepOrbit`/`CrossNeutral` interfaces.
 
+The downstream localized Stanley--Reisner rank passage is also formalized unconditionally in
+`LocalizedStanleyReisnerMatroidRank.lean`. The theorem
+`stanleyReisnerLaurentMatroid_indep_iff` identifies every independent subset with the corresponding
+numerator-class family, while `differentialFamilyMatroid_stanleyReisnerLaurentRows_eq` identifies
+the genuine differential-output matroid with that quotient-class matroid. The explicit finite-rank
+formula is `differentialOperatorRows_stanleyReisnerLaurent_eRk_eq_finrank_span`. The remaining Lean
+gap is therefore the concrete multiple-sine analytic production of the independent source and the
+face-orbit hypotheses, not the Stanley--Reisner rank algebra.
+
 ## Descent through all face layers
 
 Let `D` be the differential field of DA meromorphic functions.  It is stable under every
