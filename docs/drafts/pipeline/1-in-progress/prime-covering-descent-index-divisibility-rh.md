@@ -191,3 +191,43 @@ The covariance structure exists and is canonical; the descent defect is a concre
   covering-index divisibility as the non-margin producer -> abelian collapse -> operator-valued
   fibre forced. Literature audit: mechanism class absent from the literature (see
   `logs/rhproof-fable.md` session-1 audit records).
+
+## 2026-07-18 session 1 (cont.) — T3: covariant-symbol blindness; mechanism reclassified
+
+**[T3 — TO PROVE ON PAPER, proof sketch complete]** Let `A(s)` be an operator-valued Fredholm
+symbol on the window stack, invertible on every window boundary, EXACTLY covariant:
+`A(s + i*theta) = U A(s) U*` for a fixed fibre unitary `U`. Then for every `j`, the window
+Toeplitz compression satisfies `T_{A|window_j} = (conj by U^j) T_{A|window_0}` up to the
+contour reparametrization `s -> s + i*j*theta`, hence ALL window indices are equal and
+`ind(stack) = 2^k * ind(window_0)` — divisibility for free, BUT the window index is constant
+across the stack. Since actual Xi window counts `N(window_j)` are not constant, no exactly
+covariant symbol can satisfy `ind T_{A|window_j} = -N(window_j)`. Exact covariance is as
+divisor-blind as periodicity: the index rigidity that produces the divisibility simultaneously
+destroys the divisor identification.
+
+**Classification consequence (relentless interrogation of T1+T2+T3).** The three theorems close
+the entire symmetry-transport family for the Weyl/covering mechanism:
+- T1: fixed-window operator conjugation — requires divisor AP symmetry (dead);
+- T2: periodic/descended scalar or finite-fibre symbols — winding abelianization, requires the
+  same AP symmetry (dead);
+- T3: exactly covariant infinite-fibre symbols — index constancy contradicts divisor
+  sensitivity (dead).
+A Weyl pair exists iff `2^k | dim` (socle KC1, tautology); T1-T3 prove every natural symmetry
+implementation of that tautology on the zeta divisor is blocked. **The surviving producer class
+for integer divisibility is non-symmetric: exact source RECURSIONS/census identities** — e.g. a
+completed-source finite-ring census value per height (the DISC-census open core) or exact
+decimation relations `N(scale r^2 X) vs N(scale X)` where divisibility emerges from a recursion
+rather than a group action. This is a rigorous narrowing of the whole parity cluster's search
+space: the census-scalar construction is not one option among many; it is the unique survivor
+of the mechanism family.
+
+**Next concrete target.** (i) Write T3's proof rigorously (Toeplitz-compression bookkeeping;
+elementary). (ii) Re-read `height-adaptive-adjacent-divisor-census-collision.md` +
+`XiHeightAdaptiveAdjacentCensusCollision.lean` to state the census scalar's exact required
+identity, now with the T1-T3 classification as design guardrails (no symmetry ansatz can work;
+the scalar must come from a finite-ring/recursion identity of the source). (iii) Candidate
+starting identity: the corpus's formalized BV square-index decimation
+`p_j(N) = p_{j-2}(r^2 N)` — an exact termwise recursion already carrying a square-index (depth-2)
+structure; question: does its Laurent-character form on zero fibres
+(`R_j/R_{j-2} = r^{2 rho - 1}`) admit a finite-ring reduction whose obstruction to consistency
+at depth `2^k` is the census scalar?
