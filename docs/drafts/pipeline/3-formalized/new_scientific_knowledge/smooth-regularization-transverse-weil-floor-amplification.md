@@ -1,9 +1,9 @@
 # Smooth edge regularization forces transverse restricted-Weil floor amplification
 
 - **ID:** `smooth-regularization-transverse-weil-floor-amplification`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Scientific status:** `[PROVED HERE] [LEAN-PROVED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent results:** the closed restricted Weil form of Connes--Consani--Moscovici and Suzuki;
   `cofinal-two-edge-weil-completeness-landau-oscillation.md`; the exact one-sided transverse
   spectrum and negative-channel abscissa law for the sharp logarithmic rectangle
@@ -309,12 +309,23 @@ paper narrative, but it does not estimate the floor and therefore does not prove
 
 ## Lean decision
 
-The scalar rectangular spectrum is already formalized. The missing internal certificate is the
-inward-regularization limit and its variational consumer. It should be formalized before this
-theorem is moved into the publication manuscript. The existing `TentMellinFactor.lean`,
-`CCMRectangularTwoEdge.lean`, and dominated-tsum infrastructure contain the necessary analytic
-building blocks; the restricted operator itself need not be reconstructed if the theorem is
-stated through its variational lower-bound interface.
+The full proved theorem surface is formalized unconditionally in Lean 4 through the variational
+lower-bound interface; the restricted operator itself does not need to be reconstructed.
+
+- `formal/GaloisForLFunctions/RHTower/CCMInwardRegularizationFloor.lean` proves the inward kernel
+  factor, trapezoidal profile and exact mass, transform convergence and domination, Xi-divisor
+  dominated convergence, the lossless sharp trial-to-floor inequality `(13)`--`(14)`, the inward
+  floor envelope, cofinal amplification `(18)`, and the critical criterion `(23)`.
+- `formal/GaloisForLFunctions/RHTower/NonnegativeMonotoneDirichletAbscissa.lean` proves the generic
+  extended-real identity `(22)` for every nonnegative monotone coefficient sequence which is not
+  eventually zero, including finite, zero, and infinite logarithmic exponents.
+- `formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilFloorGrowthSpectrum.lean` proves the sharp
+  false-RH lower abscissa `(24)`, sampled and continuous logarithmic limsup bounds `(19)`, the
+  subpower and continuous subexponential equivalences `(20)`, the exact monotone floor
+  specialization of `(22)`, and abscissa `-infinity` for the zero floor under RH.
+
+The exact module builds and direct touched-file checks pass. `#print axioms` for the principal
+theorems reports only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
@@ -325,7 +336,7 @@ stated through its variational lower-bound interface.
 - [x] transverse exponential floor amplification proved
 - [x] sampled spectral-floor abscissa criterion proved
 - [x] novelty/significance audit passed provisionally
-- [ ] formalize the inward-regularization limit and variational consumer
+- [x] formalize the inward-regularization limit and variational consumer
 - [ ] integrate the strengthened operator theorem into the publication manuscript
 - [ ] prove the critical floor-abscissa estimate `(26)`
 - [ ] RH

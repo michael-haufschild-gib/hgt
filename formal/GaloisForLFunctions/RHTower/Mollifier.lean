@@ -17,6 +17,7 @@ moment is a Montgomery–Vaughan instance with `‖coefficients‖ = |μ(m)| ≤
 -/
 import GaloisForLFunctions.RHTower.SecondMoment
 import Mathlib.NumberTheory.ArithmeticFunction.Moebius
+import Mathlib.NumberTheory.Harmonic.Bounds
 
 open Nat ArithmeticFunction Finset
 
@@ -31,6 +32,88 @@ theorem sum_moebius_divisors (n : ℕ) :
   simp only at h
   rw [ArithmeticFunction.coe_zeta_mul_apply, ArithmeticFunction.one_apply] at h
   rw [← h]
+
+private theorem sum_inv_multiples_eq_harmonic (N d : ℕ) (hd : 1 ≤ d) :
+    (∑ n ∈ (Finset.Icc 1 N).filter (d ∣ ·), (n : ℚ)⁻¹) =
+      (d : ℚ)⁻¹ * harmonic (N / d) := by
+  rw [harmonic_eq_sum_Icc, Finset.mul_sum]
+  refine (Finset.sum_bij' (fun k _ => d * k) (fun n _ => n / d) ?_ ?_ ?_ ?_ ?_).symm
+  · intro k hk
+    simp only [Finset.mem_Icc, Finset.mem_filter] at hk ⊢
+    refine ⟨⟨?_, ?_⟩, ⟨k, rfl⟩⟩
+    · exact Nat.mul_pos (by omega) (by omega)
+    · simpa [Nat.mul_comm] using
+        (Nat.le_div_iff_mul_le (by omega : 0 < d)).mp hk.2
+  · intro n hn
+    simp only [Finset.mem_filter, Finset.mem_Icc] at hn ⊢
+    rcases hn with ⟨⟨hn1, hnN⟩, hdn⟩
+    exact ⟨Nat.div_pos (Nat.le_of_dvd (by omega) hdn) (by omega),
+      Nat.div_le_div_right hnN⟩
+  · intro k _hk
+    exact Nat.mul_div_cancel_left k (by omega)
+  · intro n hn
+    simp only [Finset.mem_filter] at hn
+    exact Nat.mul_div_cancel' hn.2
+  · intro k _hk
+    simp [Nat.cast_mul]
+    ring
+
+/-- Finite Dirichlet-hyperbola swap with the reciprocal kernel.  Summing a divisor transform
+against `1 / n` is the same as pairing each coefficient with the harmonic floor `H_(N / d) / d`.
+This is the abstract finite convolution law behind the polar source normalization. -/
+theorem divisorSummatory_reciprocal_harmonic (N : ℕ) (a : ℕ → ℚ) :
+    (∑ d ∈ Finset.Icc 1 N, a d * (d : ℚ)⁻¹ * harmonic (N / d)) =
+      ∑ n ∈ Finset.Icc 1 N, (n : ℚ)⁻¹ * ∑ d ∈ n.divisors, a d := by
+  symm
+  calc
+    (∑ n ∈ Finset.Icc 1 N, (n : ℚ)⁻¹ * ∑ d ∈ n.divisors, a d) =
+        ∑ n ∈ Finset.Icc 1 N, ∑ d ∈ n.divisors, (n : ℚ)⁻¹ * a d := by
+          apply Finset.sum_congr rfl
+          intro n _hn
+          rw [Finset.mul_sum]
+    _ = ∑ d ∈ Finset.Icc 1 N,
+          ∑ n ∈ (Finset.Icc 1 N).filter (d ∣ ·), (n : ℚ)⁻¹ * a d := by
+      rw [Finset.sum_comm']
+      intro n d
+      simp only [Nat.mem_divisors, Finset.mem_filter, Finset.mem_Icc]
+      constructor
+      · rintro ⟨⟨hn1, hnN⟩, hdn, _⟩
+        exact ⟨⟨⟨hn1, hnN⟩, hdn⟩, Nat.pos_of_dvd_of_pos hdn (by omega),
+          le_trans (Nat.le_of_dvd (by omega) hdn) hnN⟩
+      · rintro ⟨⟨⟨hn1, hnN⟩, hdn⟩, _⟩
+        exact ⟨⟨hn1, hnN⟩, hdn, by omega⟩
+    _ = ∑ d ∈ Finset.Icc 1 N, a d * (d : ℚ)⁻¹ * harmonic (N / d) := by
+      apply Finset.sum_congr rfl
+      intro d hd
+      have hd1 : 1 ≤ d := (Finset.mem_Icc.mp hd).1
+      calc
+        (∑ n ∈ (Finset.Icc 1 N).filter (d ∣ ·), (n : ℚ)⁻¹ * a d) =
+            (∑ n ∈ (Finset.Icc 1 N).filter (d ∣ ·), (n : ℚ)⁻¹) * a d := by
+              rw [Finset.sum_mul]
+        _ = a d * (d : ℚ)⁻¹ * harmonic (N / d) := by
+          rw [sum_inv_multiples_eq_harmonic N d hd1]
+          ring
+
+/-- The harmonic floor source is the exact Möbius inverse of the polar unit:
+`∑_{d ≤ N} μ(d) H_{⌊N/d⌋} / d = 1` for every `N ≥ 1`. -/
+theorem harmonicFloorMoebiusSum_eq_one (N : ℕ) (hN : 1 ≤ N) :
+    (∑ d ∈ Finset.Icc 1 N,
+        ((ArithmeticFunction.moebius d : ℤ) : ℚ) / (d : ℚ) * harmonic (N / d)) = 1 := by
+  rw [show (∑ d ∈ Finset.Icc 1 N,
+      ((ArithmeticFunction.moebius d : ℤ) : ℚ) / (d : ℚ) * harmonic (N / d)) =
+      ∑ d ∈ Finset.Icc 1 N,
+        (((ArithmeticFunction.moebius d : ℤ) : ℚ) * (d : ℚ)⁻¹) *
+          harmonic (N / d) by
+    apply Finset.sum_congr rfl
+    intro d _hd
+    rw [div_eq_mul_inv]]
+  rw [divisorSummatory_reciprocal_harmonic]
+  have hmu (n : ℕ) :
+      (∑ d ∈ n.divisors, ((ArithmeticFunction.moebius d : ℤ) : ℚ)) =
+        if n = 1 then 1 else 0 := by
+    exact_mod_cast sum_moebius_divisors n
+  simp_rw [hmu]
+  simp [hN]
 
 /-- The Möbius mollifier coefficients `a_m = μ(m)` (as reals). -/
 noncomputable def moebiusCoeff (m : ℕ) : ℝ := (ArithmeticFunction.moebius m : ℝ)
