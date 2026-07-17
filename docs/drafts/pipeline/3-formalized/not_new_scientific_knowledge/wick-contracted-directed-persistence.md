@@ -1,7 +1,7 @@
 # Wick-contracted directed persistence law
 
 - **ID:** WCDMF-PERSIST
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `quantum-matroid-pro-observable-field.md` (open core Q1/O1) ·
   `wick-contracted-differential-matroid-field.md` (persistence criterion)
@@ -109,7 +109,7 @@ universal quantifier; the finitarity instance of `differentialMatroid`).  ∎
 
 - [x] 0 → 1  in-progress: exact statement, parent facts identified, hypothesis audit done
 - [x] 1 → 2  fully-proven: complete paper proof above, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorems in `HTGeometry/WickContractedMatroidPersistence.lean`,
+- [x] 2 → 3  formalized: Lean theorems in `HTGeometry/WickContractedMatroidPersistence.lean`,
       targeted build green, axiom audit PASS
 - [ ] 3 → 4  publication-ready
 

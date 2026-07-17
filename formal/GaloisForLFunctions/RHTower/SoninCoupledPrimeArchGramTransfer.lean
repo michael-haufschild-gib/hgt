@@ -1396,14 +1396,14 @@ theorem re_soninAllPrimeCoupledTraceMoment_secondDifference_nonneg
     HilbertSchmidt.isHilbertSchmidt_toOperatorRect
       (soninAllPrimeColumnKernel_isHSRect a.1 a.2)
   have hdiff := HTGeometry.quantumMasterEffectSecondDifference_nonneg hC k
+  rw [soninAllPrimeCoupledTraceMoment_zero_eq_column_hsNormSq,
+    Complex.ofReal_re]
   simpa only [HTGeometry.quantumMasterEffectSecondDifference,
     HTGeometry.quantumMasterEffectMass,
     HTGeometry.quantumMasterEffectMoment,
     HTGeometry.quantumChannelEffect,
     soninAllPrimeCoupledTraceMoment,
-    soninAllPrimeCoupledCoordinateEnergy,
-    soninAllPrimeCoupledTraceMoment_zero_eq_column_hsNormSq,
-    Complex.ofReal_re, C] using hdiff
+    soninAllPrimeCoupledCoordinateEnergy, C] using hdiff
 
 /-- **Coupled replica log-convexity.**  The source trace moments obey the homogeneous adjacent
 Hankel inequality.  In contrast with the Hausdorff difference above, no zeroth-mass factor occurs,
@@ -1465,7 +1465,8 @@ theorem re_soninAllPrimeCoupledTraceMoment_div_zero_logConvex
           (soninAllPrimeCoupledTraceMoment a (k + 2)).re) /
             (soninAllPrimeCoupledTraceMoment a 0).re ^ 2 := by ring
   rw [hleft, hright, div_le_div_iff₀ hsq]
-  exact hlog
+  · exact mul_le_mul_of_nonneg_right hlog hsq.le
+  · exact hsq
 
 /-- Every projectively normalized coupled coordinate is bounded by the corresponding power of
 the unnormalized source mass.  Therefore any positive target coordinate forces an explicit mass

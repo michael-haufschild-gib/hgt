@@ -1,8 +1,7 @@
 # Cofinal two-edge profiles are a complete Weil detector
 
 - **ID:** `cofinal-two-edge-weil-completeness-landau-oscillation`
-- **Stage:** 2-fully-proven / canonical fixed-width logarithmic family Lean-complete / residual
-  profile theorem open
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent results:** Weil's zero-side quadratic form, Paley--Wiener decay, and Landau's
@@ -226,17 +225,27 @@ one cofinal detector geometry but does not prove its positivity from primes.
 
 ## Lean decision
 
-`formal/GaloisForLFunctions/RHTower/CCMRectangularWeilCompleteness.lean` now proves the complete
-globalization for one canonical fixed positive-width rectangular two-edge profile sampled at
-logarithmic apertures.  If the right Xi divisor is nonempty, its Weil values fall below every real
-level at arbitrarily late samples.  Consequently both pointwise nonnegativity and eventual lower
-boundedness of this one family are equivalent to RH.  These theorems use the actual Xi divisor and
-the multiplicity-exact Weil polarization; they contain no finite-quartet surrogate or added axiom.
+The residual arbitrary-profile theorem is now formalized unconditionally.  The implementation is
+split into the following exact layers:
 
-The stronger residual-profile statement in the card is not yet formalized.  The formal tree still
-lacks the Paley--Wiener profile space and the general meromorphic Laplace/Landau theorem needed to
-prove cofinal negative divergence for a residual set of arbitrary boundary profiles.  Therefore
-the card remains in step 2.
+- `HTGeometry/CompactSupportSmoothBaire.lean` proves completeness, complete metrizability, and the
+  Baire property for the literal fixed-compact-support smooth-function space.
+- `RHTower/CCMSmoothTwoEdgeProfile.lean` constructs `D_(eta,L)`, its continuous real-linear
+  Laplace evaluations, proves every evaluation nonzero, and proves the simultaneous-nonvanishing
+  set on the positive-transverse Xi divisor is dense and residual.
+- `RHTower/CCMSmoothProfileDecay.lean` proves the whole-line integration-by-parts identity and the
+  reciprocal-height bound for profile amplitudes.
+- `RHTower/CCMWeightedXiLandau.lean` proves the coefficient-generic shifted-zeta continuation,
+  genuine-pole obstruction, absence of an eventual lower bound, and cofinal unboundedness below
+  for the ordinary logarithmic Dirichlet samples.
+- `RHTower/CCMSmoothTwoEdgeWeil.lean` proves the exact physical integral formula for
+  `x ↦ f(a-|x|)`, square summability on the multiplicity-exact Xi divisor, the dominant-edge fold,
+  the aperture-uniform summable remainder, residual-profile cofinal negative Weil values under
+  false RH, and both restricted Weil criteria equivalent to RH.
+
+All capstones were checked with standard axioms only: `propext`, `Classical.choice`, and
+`Quot.sound`.  No rightmost zero, finite extremal layer, transverse gap, finite-quartet surrogate,
+or added axiom is used.
 
 ## Gates
 
@@ -249,7 +258,7 @@ the card remains in step 2.
 - [x] residual cofinal negative detector theorem proved
 - [x] restricted two-edge Weil criterion proved equivalent to RH
 - [x] canonical fixed-width logarithmic two-edge criterion formalized in Lean
-- [ ] residual arbitrary-profile Landau globalization formalized in Lean
+- [x] residual arbitrary-profile Landau globalization formalized in Lean
 - [ ] independent specialist audit of the Landau/Weil interface
 - [ ] source-side CCM nonnegativity theorem
 - [ ] RH
@@ -259,3 +268,8 @@ the card remains in step 2.
 - 2026-07-16 -- Audited the later `CCMRectangularWeilCompleteness` module: the canonical
   fixed-width logarithmic detector and both RH equivalences are Lean-complete with standard axioms
   only. The residual arbitrary-profile Landau theorem remains the exact stage-3 blocker.
+- 2026-07-17 -- Formalized the literal smooth fixed-support profile space, residual simultaneous
+  nonvanishing, reciprocal-height decay, coefficient-generic shifted-zeta/Landau pole obstruction,
+  exact physical two-edge transform, multiplicity-exact dominant fold, uniform Weil remainder,
+  residual cofinal negative divergence under false RH, and both restricted RH equivalences.
+  Targeted builds and all touched-file checks passed; capstones use only standard axioms.

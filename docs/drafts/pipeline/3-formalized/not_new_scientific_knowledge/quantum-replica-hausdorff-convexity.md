@@ -1,12 +1,14 @@
 # Quantum replica Hausdorff convexity
 
 - **ID:** `quantum-replica-hausdorff-convexity`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** `[BRIDGE]` exact quantum-information value relation / general corpus strengthening
 - **Scientific status:** standard unit-interval density-spectrum constraint transferred to the
   rectangular Hilbert--Schmidt constraint API; novelty is not claimed
-- **Verification status:** narrow Lean verification complete; no full build and no concurrent
-  Lean process was run
+- **Verification status:** `[LEAN-PROVED]` — targeted module builds green for
+  `QuantumReplicaHausdorff`, `SoninCoupledQuantumHausdorff`, and the full
+  `SoninCoupledPrimeArchGramTransfer` dependency cone; axiom audit PASS
+  (`[propext, Classical.choice, Quot.sound]` only)
 
 ## Claim
 
@@ -85,11 +87,9 @@ The mathematical all-order statement is stronger:
 (-Delta)^r P_k >= 0  for every k,r.
 ```
 
-Only `r = 1` (the earlier replica contraction) and `r = 2` (this card) have source
-formalizations.  Promoting the complete Hausdorff sequence should reuse the existing
-`StieltjesMomentProblem` / Hausdorff machinery through a spectral representing measure for the
-normalized compact master effect.  That spectral-measure bridge remains open and is not claimed
-as Lean-proved.
+Every order `r` is now Lean-proved (see *All-order completion* below), via the commuting
+complement square root rather than a spectral representing measure; no
+`StieltjesMomentProblem` bridge was needed.
 
 ## Direct RHTower consumer
 
@@ -244,3 +244,56 @@ general modules `FiniteConstraintGroupAverage.lean`, `L2PairingEnergy.lean`,
 builds and direct checks.  No numerical check, full build, or concurrent Lean process was run.
 The card remains in stage 1 because the source-to-target convergence/comparison step is still
 open, not because the recorded declarations are unverified.
+
+## All-order completion and formalized closure
+
+The card's former open core — the complete all-order hierarchy `(-Δ)^r P_k ≥ 0` — is closed and
+Lean-proved, without any spectral representing measure.  The complement square root
+`D = (R·I − T)^(1/2)` (continuous functional calculus, `CFC.sqrt`) commutes with `T`, so every
+weighted monomial `T^(k+1) (R·I − T)^r` is exhibited as `A† A` for a rectangular or endomorphic
+column `A`; its real trace is a squared Hilbert–Schmidt norm and hence nonnegative.  Verified
+declarations:
+
+- `quantumMasterEffectWeightedMoment_nonneg` — `0 ≤ Re Tr(T^(k+1)(R·I−T)^r)` for all `k, r`,
+  from `‖C‖² ≤ R` alone;
+- `quantumMasterEffectScaledDifference_nonneg` — the recursive scaled Hausdorff hierarchy at
+  any radius `R ≥ ‖C‖²`, all orders;
+- `quantumMasterEffectReplicaDifference_nonneg` — complete quantum Hausdorff positivity of the
+  density-normalized replica sequence, no hypothesis beyond Hilbert–Schmidt;
+- consumer (`SoninCoupledQuantumHausdorff.lean`):
+  `re_soninAllPrimeCoupledTraceMoment_scaledHausdorffDifferencesNonnegative` — the coupled
+  all-prime source satisfies `ScaledHausdorffMomentDifferencesNonnegative` at the
+  aperture-independent radius `soninAllPrimeColumnEffectRadius`, the same predicate the RH gate
+  `riemannHypothesis_of_scaledPrimeArchHausdorffMomentDifferencesNonnegative` consumes for the
+  target moments;
+- `re_soninAllPrimeCoupledTraceMoment_div_zero_scaledHausdorffDifferencesNonnegative` — the
+  ratio-normalized (`Re Sₖ/Re S₀`) form of the complete hierarchy, unconditional in the aperture;
+- `scaledHausdorffMomentDifferencesNonnegative_of_tendsto` and
+  `scaledHausdorffMomentDifferencesNonnegative_of_soninCoupledRatio_tendsto` — complete scaled
+  positivity is closed under pointwise limits, so **every pointwise limit of ratio-normalized
+  coupled Sonin moments lies in the closed hierarchy cone at `R_S`**: the all-order
+  compatibility test for aperture schedules, strictly extending the former log-convexity test.
+
+During verification, four latent compile errors in the never-built consumer module
+`SoninCoupledPrimeArchGramTransfer.lean` were repaired (an additive regrouping, a definitional
+`rfl` after `simp only`, a zeroth-moment mass identification ordered before definitional
+unfolding, and a cross-multiplication side goal); the module now builds green with axiom-clean
+descendants.
+
+## Exact remaining route problem (not this card's claim)
+
+Construct an aperture schedule whose ratio-normalized coupled moments converge pointwise to the
+normalized prime–Gamma moments; `riemannHypothesis_of_soninCoupledPrimeArchMomentRatioCoupling`
+then yields RH.  The new compatibility test constrains every candidate schedule limit to the
+closed `R_S`-hierarchy cone — a consistency requirement the prime–Gamma target must and does
+meet under RH, so the cone test cannot refute the route; it filters proposed schedules.  Next
+generative move: compare the two radii in play (`soninAllPrimeColumnEffectRadius` vs the
+endpoint-calibrated `primeArchEndpointHausdorffRadius`) — a proved node-domination inequality
+for `R_S` would tighten the schedule interface to a single calibrated cone.
+
+## Log
+
+- 2026-07-17 — all-order hierarchy, consumer instantiation at `R_S`, ratio law, and limit
+  compatibility test verified; four latent errors in the consumer cone repaired; axiom audit
+  PASS; promoted to 3-formalized (not new scientific knowledge: quantum-information parent
+  mechanism, novelty not claimed).

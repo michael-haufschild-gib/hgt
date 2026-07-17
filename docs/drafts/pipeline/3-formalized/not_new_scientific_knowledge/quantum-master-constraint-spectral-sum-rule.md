@@ -1,7 +1,7 @@
 # Quantum master-constraint spectral sum rule
 
 - **ID:** quantum-master-constraint-spectral-sum-rule
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** [BRIDGE] quantum master constraints, supersymmetric factorization, and compact-operator spectral energy
 - **Statement:** The bounded master constraint `C†C` is definitionally the singular-value energy operator; its greedy spectral values are the squared singular values of `C`, and its trace equals the Hilbert–Schmidt constraint energy.  The supersymmetric partner `CC†` is intertwined by `C` and has the same Hilbert–Schmidt trace.
@@ -17,7 +17,7 @@ spectral proof.
 
 - [x] 0 → 1  in-progress: exact definitional bridge and direct consumers identified
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem names checked, targeted Lean check green, axiom audit PASS
+- [x] 2 → 3  formalized: Lean theorem names checked, targeted Lean check green, axiom audit PASS
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Physics relation
@@ -69,8 +69,8 @@ compactness or Hilbert–Schmidt membership for any specific Euler/RH source ope
 
 ## Verification boundary
 
-Source-level formalization only.  Per user instruction, no Lean process, build, lint, numerical
-experiment, or axiom audit is run during this phase.
+Fully verified: targeted module build green and axiom audit PASS (see 2026-07-17 log entry).
+The earlier source-only phase restriction is lifted.
 
 ## Log
 
@@ -115,3 +115,5 @@ Hostile review: no step assumes a spectral decomposition, trace-class theory, or
 an eigenbasis; the greedy machinery supplies exactly the eigenvectors it constructs, and all
 trace identities are Parseval-level.  The Hilbert–Schmidt hypothesis is used only in (7), (9),
 (10); compactness only in (2), (5), (6).  No open dependency remains.
+
+- 2026-07-17 — first verification pass: `lake build +GaloisForLFunctions.HTGeometry.QuantumMasterConstraintSpectrum` green; axiom audit of all eight bridge theorems plus the partner intertwiner PASS (`[propext, Classical.choice, Quot.sound]` only); paper proof closed; promoted to 3-formalized (bridge/synthesis of corpus theorems, not new scientific knowledge).

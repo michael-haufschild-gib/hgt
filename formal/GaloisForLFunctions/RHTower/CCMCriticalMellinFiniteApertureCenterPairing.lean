@@ -81,7 +81,8 @@ theorem integrableOn_criticalMellinCenterTail
       ‖tailF t‖ = Real.exp (-t / 2) * ‖R t‖ := by
         change ‖((Real.exp (-t / 2) : ℝ) : ℂ) * R t‖ = _
         rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hphase0]
-      _ ≤ Real.exp (-t / 2) * (B * Real.exp (-t / 2)) := by gcongr
+      _ ≤ Real.exp (-t / 2) * (B * Real.exp (-t / 2)) :=
+        mul_le_mul_of_nonneg_left (hR t ht0) hphase0
       _ = B * Real.exp (-t) := by rw [← halfDensity_sq t]; ring
   have hphaseCont : Continuous (fun t : ℝ => ((Real.exp (-t / 2) : ℝ) : ℂ)) := by
     fun_prop
@@ -110,7 +111,8 @@ theorem norm_integral_criticalMellinCenterTail_le
       ‖tailF t‖ = Real.exp (-t / 2) * ‖R t‖ := by
         change ‖((Real.exp (-t / 2) : ℝ) : ℂ) * R t‖ = _
         rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hphase0]
-      _ ≤ Real.exp (-t / 2) * (B * Real.exp (-t / 2)) := by gcongr
+      _ ≤ Real.exp (-t / 2) * (B * Real.exp (-t / 2)) :=
+        mul_le_mul_of_nonneg_left (hR t ht0) hphase0
       _ = B * Real.exp (-t) := by rw [← halfDensity_sq t]; ring
   change ‖∫ t, tailF t ∂volume.restrict (Set.Ioi H)‖ ≤ _
   calc

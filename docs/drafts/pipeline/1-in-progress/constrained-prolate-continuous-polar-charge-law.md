@@ -385,10 +385,12 @@ The required new infrastructure is:
 2. `[FORMALIZED]` the zero-mean BV square-root lattice envelope `(19c)`;
 3. `[FORMALIZED]` the exact critical-Mellin cumulative `(25)` and its finite-aperture Chebyshev
    mass bound `(26a)`;
-4. `[PHASE FORMALIZED; AMPLITUDE OPEN]` a concrete radial-PSWF endpoint/exterior interface proving
+4. `[FORMALIZED]` the actual complex clipped center pairing and its linear-in-aperture norm bound
+   under the half-density radial envelope;
+5. `[PHASE FORMALIZED; AMPLITUDE OPEN]` a concrete radial-PSWF endpoint/exterior interface proving
    the all-radial primitive `(11)`;
-5. the fixed-mode source variation bound `(19e)` and the Poisson specialization `(19a)`;
-6. the constrained-source and critical-Mellin specialization `(18)`--`(32)`.
+6. the fixed-mode source variation bound `(19e)` and the Poisson specialization `(19a)`;
+7. the constrained-source and critical-Mellin specialization `(18)`--`(32)`.
 
 No abstract hypothesis wrapper is sufficient: the concrete prolate primitive, one-sided Poisson
 specialization, and fixed-mode variation estimate must be theorems before `(32)` can be promoted
@@ -405,6 +407,8 @@ or used in a paper.
 - [x] replace the global radial phase tail by the exact Poisson--BV lattice envelope
 - [x] formalize the square-root BV lattice envelope, including a non-lattice support endpoint
 - [x] formalize the growing critical-Mellin cumulative `(25)` and the clipped mass bound `(26a)`
+- [x] formalize the actual complex finite-aperture center pairing and prove its improper tail is
+  integrable under the half-density radial envelope
 - [x] formalize the exact exterior Liouville phase, dilation derivative, and derivative floor
 - [ ] prove and formalize the exact one-sided Poisson--Muntz specialization `(19a)`
 - [ ] prove the fixed-mode source variation bound `(19e)`

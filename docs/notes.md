@@ -108,3 +108,8 @@ If that new law yields
 \ll \frac{\operatorname{polylog}M}{M},
 \]then geometric telescoping gives the block-current bound, the existing Bessel and negative-energy steps apply, and the already formalized endpoint gives RH. That is the likely proof shape—none of Connes, Sonin, Hilbert–Pólya, Li/Weil, or a zero expansion.
 I rewrote the [canonical verdict (line 3)](/Users/Spare/Documents/code/riemann/publications/hgt/docs/reports/rh-proof-shape-1707.md:3), recorded the [active recurrence (line 1824)](/Users/Spare/Documents/code/riemann/publications/hgt/docs/reports/rh-proof-shape-1707.md:1824), the [falsifiable research program (line 1888)](/Users/Spare/Documents/code/riemann/publications/hgt/docs/reports/rh-proof-shape-1707.md:1888), and the corrected [RH proof chain (line 2032)](/Users/Spare/Documents/code/riemann/publications/hgt/docs/reports/rh-proof-shape-1707.md:2032). RH remains explicitly unproved.
+
+
+I’m continuing from the canonical report only. The latest derivations killed the apparent two-channel/shear mechanism and exposed a sharper surviving core: an explicit high-LCM active-boundary correlation law across \(p\ell\asymp H\). I’m correcting the report now so the next research cycle starts from that exact obstruction, not from another recycled route.
+
+The correction is mathematically substantive: the logarithmic “coupling” is conjugate to two copies of the scalar sieve recurrence, so it cannot carry the proof. The useful residue is an exact \(p^{-1/2}\) energy-flux obstruction plus an LCM decomposition that removes every centered periodic mode through \(\ell\le\sqrt M\).
