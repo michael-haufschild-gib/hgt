@@ -16,12 +16,19 @@ depth.  It becomes classical differential algebra if it means a uniform bound on
 transcendence degree, and classical differential-module theory if it means a uniform bound on the
 total derivative span.  Finite presentation and strictness do not bridge the gap.
 
-The exact positive replacement is the finite-generator escape theorem in
-`../2-fully-proven/not_new_scientific_knowledge/finite-generator-differential-escape-boundary.md`:
-if a finite rational state packet is closed under differentiation on its generators, every
-observable in the packet is differentially algebraic.  Therefore an HT observable in such a
-packet forces at least one generator derivative to escape the packet.  The linear sibling is the
-already formalized finite observable Koopman boundary.
+The exact positive replacement is a four-part boundary, split into dependency-closed cards:
+
+1. `../2-fully-proven/not_new_scientific_knowledge/finite-generator-differential-escape-boundary.md`:
+   finite nonlinear rational state closed under differentiation forces DA;
+2. `../2-fully-proven/not_new_scientific_knowledge/finite-linear-state-differential-escape-boundary.md`:
+   finite linear derivative state forces an explicit scalar linear ODE;
+3. `../2-fully-proven/not_new_scientific_knowledge/bounded-finite-rank-submodule-stabilization.md`:
+   a monotone finite-rank chain with bounded total rank stabilizes;
+4. `../2-fully-proven/not_new_scientific_knowledge/mixed-fundamental-solution-flatness.md`:
+   an actual common fundamental solution forces the mixed flatness identity.
+
+These are the maximal generic consequences.  None uses presentation size or bounded per-depth
+increments as a substitute for the relevant closure or total-rank hypothesis.
 
 ## Exact hostile falsifier
 
@@ -63,6 +70,15 @@ conclusions.
 Primary source: C. Hardouin and M. F. Singer, *Differential Galois theory of linear difference
 equations*, Math. Ann. 342 (2008), 333--377,
 `https://singer.math.ncsu.edu/papers/differential_for_difference.pdf`, especially Corollary 3.4.
+
+More generally, for an `m`-tuple `a` and
+
+```text
+H_a(n) = trdeg_K K(D^j a_i : i <= m, j <= n),
+```
+
+one always has `0 <= H_a(n+1)-H_a(n) <= m`.  Thus a uniform per-stage innovation bound is automatic
+for every fixed finite tuple.  It cannot be the load-bearing stabilization hypothesis.
 
 ## Why the obvious repairs are not new
 
@@ -122,6 +138,29 @@ k[t]/(t^(n+1)) ->> k[t]/(t^n)
 are strict and never eventually isomorphic.  Uniform finite length or a uniform total dimension
 bound forces stabilization; strictness by itself does not.
 
+## The exact established linear mixed phase
+
+The strongest correct cross-language theorems require an actual linear operator equation, not an
+abstract finite presentation.
+
+- Adamczewski--Dreyfus--Hardouin, Theorem 1.2, prove in their exact shift, `q`-difference, and
+  Mahler Laurent/Puiseux settings that a solution of a nontrivial linear difference equation is
+  either in the base field or hypertranscendental.  Thus **linear difference presentation plus
+  DA implies base-field membership** there.  Their Theorem 1.3 treats simultaneous linear
+  equations: `https://arxiv.org/abs/1910.01874`.
+- Schaefke--Singer classify consistent pairs of linear differential and difference systems by
+  reduction to normal forms: `https://arxiv.org/abs/1605.02616`.
+- Dreyfus treats arbitrary reducible rational shift systems: a meromorphic solution vector whose
+  coordinates are differentially algebraic is constrained to a periodic--rational--exponential
+  ring, rather than being governed by presentation size alone:
+  `https://arxiv.org/abs/2212.00388`.
+- The elliptic difference setting has its own parameterized-Galois classification and cannot be
+  inferred formally from the rational-shift theorem: `https://arxiv.org/abs/2409.10092`.
+
+These are already genuine stabilization/phase theorems in specified categories.  The generic
+programme cannot weaken their operator and base-field hypotheses to “finite type” without becoming
+false.
+
 ## Stronger conjecture attacked
 
 The first stronger proposal was:
@@ -130,24 +169,51 @@ The first stronger proposal was:
 > difference-Galois group forces a filtration whose semisimple quotients are projectively
 > isomonodromic and whose extension classes are annihilated by nonzero operators in `C[D]`.
 
-This is **not promoted**.  Its simple-group and rank-one cases are already the Hardouin--Singer
-integrability and telescoper theorems; projective integrability is treated by
-Arreche--Singer (`https://arxiv.org/abs/1608.00015`); and in one derivation the linear-operator
-description of differential algebraic subgroups of additive groups makes the proposed torsion
-clause dangerously close to parent structure.  No novelty claim survives without a precise new
-reducible-module obstruction beyond those classifications.
+This is **not promoted**.  Under its canonical linear-differential-algebraic-group reading it is
+already parent structure; under the literal `C[D]`-torsion reading it is not even invariantly
+defined unless differential lifts of the extension objects are supplied.
 
-The genuine open core, if this direction is resumed, is therefore not "finite presentation forces
-stabilization."  It is a source-specific classification of the failure of a flat mixed connection
+- Cassidy--Singer's Jordan--Hoelder theory classifies the almost-simple differential algebraic
+  factors; the differential-type-zero noncommutative factors are constant-group phenomena:
+  `https://singer.math.ncsu.edu/papers/Jordan_Hoelder.pdf`.
+- Unipotent one-dimensional factors are controlled by additive differential algebraic groups
+  `ker L`, which is exactly the nonzero-operator structure the proposed torsion clause rediscovered.
+- Minchenko--Ovchinnikov--Singer prove a stronger finite-prolongation result: for a linear
+  differential algebraic group, all representations are generated by a finite prolongation level
+  (Proposition 4.3.3): `https://singer.math.ncsu.edu/papers/1304.2693.pdf`.
+- Hardouin--Singer already identify flatness with conjugacy to constants in the exact integrable
+  regime, while Arreche--Singer show that projective integrability is a genuinely weaker phase:
+  `https://arxiv.org/abs/1608.00015`.  Rank-one `q`-theta-type systems prevent silently replacing
+  projective integrability by full integrability.
 
-```text
-sigma(B) = A B A^(-1) + D(A) A^(-1)
-```
+Thus there is no surviving generic reducible-module conjecture here.  A future theorem must begin
+with a specified source and a specified parameterized Galois group, then identify an obstruction
+not already captured by differential algebraic group structure or finite prolongation.  Without
+those data, “classify failure of flatness” is a research topic, not a well-posed conjecture.
 
-inside reducible parameterized difference modules.  Hardouin--Singer already prove that this flat
-connection is exactly the constant-group/integrable condition and that, for simple noncommutative
-ordinary Galois group, any differential-dimension drop forces it.  A new programme must isolate a
-reducible extension invariant not already contained in parameterized Galois cohomology.
+## A complete one-dimensional mixed-state phase theorem
+
+There is one clean geometric synthesis which explains why the nonlinear DA phase remains broader
+than the holonomic phase.  Let `C` be a smooth projective connected curve over an algebraically
+closed characteristic-zero field, let `v` be a nonzero regular vector field, and let `sigma` be an
+infinite-order automorphism with `sigma_* v = v`.  Then `genus(C) <= 1`, and exactly two geometric
+state types occur:
+
+| Curve | Differential state | Compatible infinite-order automorphism |
+|---|---|---|
+| `P^1` | `v = (a + bx + cx^2) d/dx` (Riccati/projectively linear) | a projective transformation preserving `v` |
+| elliptic curve | a translation-invariant vector field | translation by a nontorsion point |
+
+Proof: a nonzero global section of `T_C` forces `deg(T_C)=2-2g >= 0`, so `g <= 1`.  On `P^1`, global
+vector fields are precisely the quadratic polynomial fields displayed above.  On an elliptic
+curve, write `sigma=t_P o u` with `u` fixing the origin.  Preservation of the nonzero invariant
+vector field forces the differential of `u` to be one, hence `u=id`; infinite order then says that
+`P` is nontorsion.
+
+This theorem is classical, not a novelty claim, but it is a significant positive phase statement.
+Riccati states such as `tan` and elliptic states such as the Weierstrass pair `(wp,wp')` are
+finite nonlinear algebraic states with compatible translations, yet need not be holonomic.  They
+show geometrically why “finite mixed state” can force DA without forcing a finite linear state.
 
 ## Positive phase diagram
 
@@ -157,6 +223,8 @@ reducible extension invariant not already contained in parameterized Galois coho
 | bounded total jet transcendence degree | differential algebraicity | classical / Kolchin |
 | finite derivative-invariant linear span | holonomicity | classical / differential module |
 | finite nonlinear rational state closed under `D` | differential algebraicity of every state observable | classical; project successor |
+| monotone finite-dimensional linear states with bounded total rank | eventual stabilization | classical; project successor |
+| common invertible solution of `sigma(Y)=AY`, `D(Y)=BY` | `D(A)+AB=sigma(B)A` | elementary necessity; project successor |
 | finite linear difference presentation plus DA in the standard ADH fields | base-field membership, hence rationality | literature |
 | flat mixed connection for a finite-rank difference system | a compatible linear differential system | literature / integrability |
 
@@ -170,11 +238,11 @@ state.  Neither failure is detected by presentation size or categorical strictne
   categorical vocabulary.
 - `[NOVELTY -- NO]` The correct DA and D-finite implications are parent differential algebra and
   differential-module theory.
-- `[SIGNIFICANCE -- POSITIVE CORPUS BOUNDARY]` The exact generator-escape contrapositive is a useful
-  missing interface: it tells every future operator presentation exactly what must be proved to
-  obtain DA and exactly what an HT source must violate.
-- `[FIELDS VERDICT]` No Fields-scale theorem is present.  The reducible mixed-integrability
-  classification is the only plausible hard successor, and its priority remains unverified.
+- `[SIGNIFICANCE -- POSITIVE CORPUS BOUNDARY]` The nonlinear escape, linear escape, total-rank
+  stabilization, and actual-solution flatness interfaces tell every future source theorem exactly
+  which hypothesis it must establish and exactly what an HT source must violate.
+- `[FIELDS VERDICT]` No Fields-scale theorem is present.  The generic reducible-group strengthening
+  collapses into parent structure; only a source-specific obstruction could reopen this direction.
 - `[RH BOUNDARY]` No zeta input and no RH conclusion occurs.
 
 ## Gates
@@ -185,10 +253,15 @@ state.  Neither failure is detected by presentation size or categorical strictne
 - [x] explicit natural HT falsifier identified
 - [x] bounded-total and bounded-increment meanings separated
 - [x] stronger parameterized-Galois conjecture attacked and withheld from promotion
-- [x] maximal positive finite-generator escape theorem proved on paper
-- [ ] positive successor Lean-formalized and moved to Stage 3
+- [x] proposed generic Galois strengthening killed by exact parent results
+- [x] one-dimensional mixed-state phase theorem isolated as significant classical residue
+- [x] four maximal generic positive successors proved on paper
+- [ ] positive successors Lean-formalized and moved to Stage 3
 
 ## Log
 
 - 2026-07-17 -- Programme 5 retired as a general research headline.  The exact positive
   finite-generator escape theorem was split into its own dependency-closed card before Lean work.
+- 2026-07-17 -- The stronger parameterized-Galois filtration conjecture was retired after the
+  differential-algebraic-group and finite-prolongation audit.  Three further generic corpus
+  interfaces and the complete one-dimensional geometric phase classification were retained.

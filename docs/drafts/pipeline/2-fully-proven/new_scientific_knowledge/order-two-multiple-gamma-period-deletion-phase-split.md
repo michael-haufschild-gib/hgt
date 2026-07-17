@@ -232,14 +232,26 @@ Primary sources:
 
 ## Unconditional Lean boundary
 
-No Lean theorem is claimed for `(8)`.  The hierarchy identities for the project's actual
-meromorphic multiple-elliptic-gamma kernels and the squarefree combinatorial ideal core already
-exist.  The missing load-bearing input is the unconditional Lean formalization of the exact
-order-one non-rational elliptic-gamma HT/defect theorem.  Introducing that result as an axiom or as
-a hypothesis would violate the project standard, so this card remains Stage 2.
+`formal/GaloisForLFunctions/HTGeometry/OrderTwoPeriodDeletionPhaseSplit.lean` now formalizes the
+complete unconditional rational-period geometry used by `(7)` and by the labelled-deletion part of
+`(8)`.  In particular:
 
-No Lean build was needed for this paper proof: the existing generated API and source declarations
-were audited before the theorem was formulated.
+- `orderTwoCircuitPeriodFrame_rationalPeriodRank` and
+  `orderTwoColoopPeriodFrame_rationalPeriodRank` prove that both four-entry frames have rational
+  rank three;
+- `orderTwoCircuitDeletion_rationalPeriodRank` proves that all three circuit-frame deletions retain
+  rank three;
+- `orderTwoColoopDeletion_rationalPeriodRank` proves the exact coloop deletion profile, with rank
+  two only for deletion of `tau_2` and rank three in the other two directions;
+- `orderTwo_equal_totalRank_distinct_labelledDeletionProfile` packages the nonproduct conclusion:
+  equal total rational rank coexists with distinct complete labelled deletion profiles.
+
+No Lean theorem is yet claimed for the special-function depth values in `(8)`.  The hierarchy
+identities for the project's actual meromorphic multiple-elliptic-gamma kernels and the squarefree
+combinatorial ideal core already exist, but the load-bearing analytic input remains the
+unconditional Lean formalization of the exact order-one non-rational elliptic-gamma HT/defect
+theorem.  Introducing that result as an axiom or as a hypothesis would violate the project
+standard, so this card remains Stage 2.
 
 ## Gates
 
@@ -249,6 +261,9 @@ were audited before the theorem was formulated.
 - [x] coloop-frame depth one proved from Kato plus the exact order-one parent
 - [x] hostile rank-excess and real-Gale attacks passed
 - [x] preliminary exact/equivalent/stronger literature search completed
+- [x] both explicit total rational ranks formalized unconditionally in Lean
+- [x] complete labelled deletion-rank profiles formalized unconditionally in Lean
+- [x] equal-rank/distinct-deletion-profile nonproduct core formalized unconditionally in Lean
 - [ ] independent specialist proof and priority audit
 - [ ] unconditional Lean proof of the exact order-one analytic parent
 - [ ] unconditional Lean formalization of `(8)`

@@ -37,7 +37,14 @@ theorem continuedHurwitzIntegerTranslationCoefficient_mul
   simp only [eval_mul, eval_comp, eval_add, eval_X, eval_natCast] at hp
   field_simp [hd]
   rw [pow_add, show n + d = d + n by omega, ← hp]
-  ring
+  have hsign : (-1 : ℂ) ^ d * (-1 : ℂ) ^ d = 1 := by
+    rw [← pow_add, show d + d = 2 * d by omega, pow_mul]
+    norm_num
+  calc
+    _ = ((-1 : ℂ) ^ d * (-1 : ℂ) ^ d) *
+        ((-1 : ℂ) ^ n * ((ascPochhammer ℂ d).eval s *
+          (ascPochhammer ℂ n).eval (s + d))) := by ring
+    _ = _ := by rw [hsign]; ring
 
 /-- A complex constant embedded into `RatFunc ℂ` becomes the same constant upper-end germ. -/
 theorem upperEndRatfuncToMero_algebraMap_complex (q : ℂ) :
@@ -67,19 +74,12 @@ theorem differentialJet_continuedHzetaUpperEndMero_add_nat_eq
   letI := upperEndMeroFieldDifferential
   rw [differentialJet_continuedHzetaUpperEndMero_eq,
     differentialJet_continuedHzetaUpperEndMero_eq]
-  change
-    upperEndPolyToMero
-        (Polynomial.C ((-1 : ℂ) ^ n * (ascPochhammer ℂ n).eval (s + d))) *
-          continuedHzetaUpperEndMero (s + d + n) =
-      upperEndRatfuncToMero
-          (algebraMap ℂ (RatFunc ℂ)
-            ((-1 : ℂ) ^ d / (ascPochhammer ℂ d).eval s)) *
-        (upperEndPolyToMero
-            (Polynomial.C
-              ((-1 : ℂ) ^ (n + d) * (ascPochhammer ℂ (n + d)).eval s)) *
-          continuedHzetaUpperEndMero (s + (n + d)))
+  have halg (q : RatFunc ℂ) :
+      algebraMap (RatFunc ℂ) upperEndMeroField q = upperEndRatfuncToMero q := rfl
+  rw [halg]
+  unfold continuedHurwitzIntegerTranslationCoefficient
   rw [upperEndRatfuncToMero_algebraMap_complex, ← mul_assoc, ← map_mul]
-  simp only [Polynomial.C_mul]
+  simp only [← Polynomial.C_mul]
   rw [continuedHurwitzIntegerTranslationCoefficient_mul s d n hs]
   congr 2
   push_cast

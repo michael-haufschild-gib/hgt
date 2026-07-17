@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.PeriodIncidenceFlatIntersection
 import Mathlib.Analysis.Analytic.IsolatedZeros
 import Mathlib.Analysis.Analytic.Order
 import Mathlib.Analysis.Complex.Schwarz
+import Mathlib.Analysis.Normed.Module.Connected
 
 /-!
 # Holomorphic exclusion from the period-incidence completion defect
@@ -23,11 +24,6 @@ namespace GaloisForLFunctions
 
 noncomputable section
 
-theorem norm_regularizedPeriodWeight_lt_one (z : ℂ) :
-    ‖regularizedPeriodWeight z‖ < 1 := by
-  rw [norm_regularizedPeriodWeight]
-  exact (div_lt_one (by positivity : 0 < (1 : ℝ) + ‖z‖)).2 (by linarith [norm_nonneg z])
-
 /-- Evaluation of a bounded holomorphic disk function on the regularized nonzero periods. -/
 def periodHolomorphicEvaluation
     (L : Submodule ℤ ℂ) (f : ℂ → ℂ) (R : ℝ)
@@ -35,7 +31,7 @@ def periodHolomorphicEvaluation
     lp (fun _ : NonzeroPeriod L ↦ ℂ) ∞ :=
   ⟨fun q ↦ f (regularizedPeriodWeight q.1.1),
     memℓp_infty ⟨R, by
-      intro q
+      rintro _ ⟨q, rfl⟩
       have hw : regularizedPeriodWeight q.1.1 ∈ Metric.ball (0 : ℂ) 1 := by
         simpa [Metric.mem_ball] using norm_regularizedPeriodWeight_lt_one q.1.1
       have hfw := hmap hw
@@ -55,9 +51,9 @@ def periodHolomorphicDivPreimage
     (hmap : Set.MapsTo f (Metric.ball 0 1) (Metric.closedBall 0 R))
     (hf0 : f 0 = 0) :
     lp (fun _ : NonzeroPeriod L ↦ ℂ) ∞ :=
-  ⟨fun q ↦ Complex.dslope f 0 (regularizedPeriodWeight q.1.1),
+  ⟨fun q ↦ dslope f 0 (regularizedPeriodWeight q.1.1),
     memℓp_infty ⟨R, by
-      intro q
+      rintro _ ⟨q, rfl⟩
       have hw : regularizedPeriodWeight q.1.1 ∈ Metric.ball (0 : ℂ) 1 := by
         simpa [Metric.mem_ball] using norm_regularizedPeriodWeight_lt_one q.1.1
       have hbound := Complex.norm_dslope_le_div_of_mapsTo_ball hd
@@ -70,7 +66,7 @@ def periodHolomorphicDivPreimage
     (hmap : Set.MapsTo f (Metric.ball 0 1) (Metric.closedBall 0 R))
     (hf0 : f 0 = 0) (q : NonzeroPeriod L) :
     periodHolomorphicDivPreimage L f R hd hmap hf0 q =
-      Complex.dslope f 0 (regularizedPeriodWeight q.1.1) := rfl
+      dslope f 0 (regularizedPeriodWeight q.1.1) := rfl
 
 theorem periodHolomorphicEvaluation_mem_range_of_eq_zero
     (L : Submodule ℤ ℂ) (f : ℂ → ℂ) (R : ℝ)
@@ -85,7 +81,7 @@ theorem periodHolomorphicEvaluation_mem_range_of_eq_zero
   have hw0 : regularizedPeriodWeight q.1.1 ≠ 0 :=
     regularizedPeriodWeight_ne_zero q.2
   rw [periodIncidenceMultiplier_apply, periodHolomorphicDivPreimage_apply,
-    periodHolomorphicEvaluation_apply, Complex.dslope_of_ne _ hw0, slope_def_module]
+    periodHolomorphicEvaluation_apply, dslope_of_ne _ hw0, slope_def_module]
   simp [hf0, hw0]
 
 /-- Every multiplier output converges to zero along the small-period sequence. -/
@@ -237,7 +233,7 @@ theorem natCast_le_analyticOrderAt_of_periodHolomorphicEvaluation_mem_poweredRan
               (lp.norm_apply_le_norm ENNReal.top_ne_zero a (q n)) (norm_nonneg _)
         · simpa using hpowNorm.mul_const ‖a‖
       have hgzero : Tendsto (fun n ↦ g (w n)) atTop (𝓝 0) :=
-        hright0.congr' hgeq.symm
+        hright0.congr' (hgeq.mono fun _ hn ↦ hn.symm)
       have hglimit : Tendsto (fun n ↦ g (w n)) atTop (𝓝 (g 0)) :=
         hg.continuousAt.tendsto.comp hw0
       exact hg0 (tendsto_nhds_unique hglimit hgzero)

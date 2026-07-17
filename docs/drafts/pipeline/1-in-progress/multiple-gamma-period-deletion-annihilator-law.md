@@ -3,11 +3,14 @@
 - **ID:** `multiple-gamma-period-deletion-annihilator-law`
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE / EXACT DEPENDENT-PERIOD ANNIHILATOR CLASSIFICATION
-- **Scientific status:** `[CONJECTURE] [SURVIVES FIRST HOSTILE AUDIT]`
+- **Scientific status:** `[CONJECTURE] [SURVIVES DEPENDENT-PERIOD HOSTILE AUDIT]`
+  `[EVIDENT INCLUSION PAPER-PROVED] [REVERSE INCLUSION OPEN]`
   `[NATURAL PROGRAMME-3 JOINT-REALIZATION TARGET] [NOT AN RH RESULT]`
 - **Owner:** narrowed exact child of `pointed-polarized-constraint-coupling-correspondence.md`
 - **Positive seed:**
   `../2-fully-proven/new_scientific_knowledge/order-two-multiple-gamma-period-deletion-phase-split.md`
+- **Closed boundary theorem:**
+  `../2-fully-proven/not_new_scientific_knowledge/rational-rank-two-multiple-elliptic-gamma-da.md`
 - **Failed predecessor:**
   `../5-failed/hypertranscendental-gale-kolchin-duality.md`
 - **Statement:** In the translation group algebra modulo the unit period, the DA annihilator of a
@@ -160,7 +163,7 @@ If `tau_0=tau_1`, then `[tau_0]=[tau_1]` already in `R_tau`, so `x_0=x_1`.  The 
 `x_0*x_1` becomes `x_0^2`; the quotient group algebra records multiplicity instead of pretending
 that coincident directions are independent squarefree variables.
 
-## Evident inclusion and the first open boundary
+## Evident inclusion `[PAPER-PROVED]`
 
 Hierarchy descent gives
 
@@ -179,11 +182,13 @@ reduces to the residual-rank-two DA statement:
 > If `rank_Q({1} union sigma)<=2`, then the multiple elliptic gamma function with period tuple
 > `sigma` is DA.
 
-Kato proves this when `sigma` lies in one rational ray.  Rank two also permits rational offsets
-modulo the unit period, equivalently root-of-unity twists among the nomes.  The existing
-commensurable-nome factorization is the correct starting point, but the complete finite-twist
-reduction has not yet been assembled on paper.  Failure there kills `(6)` at the evident-inclusion
-gate; it is not to be hidden as a technicality.
+This statement is paper-proved in
+`rational-rank-two-multiple-elliptic-gamma-da.md`.  Rank two writes every residual period as
+`a_i+b_i*omega` with rational `a_i,b_i` and `b_i>0`.  After clearing denominators, the standard
+all-coordinate multiplication formula turns the source into a finite product of affine translates
+whose period vectors lie on one rational ray.  Kato's theorem makes every factor DA.  Hence `(13)`
+is closed for all orders.  The unconditional Lean proof remains open at the arbitrary-family
+factorization and Kato analytic ADE, but these are no longer paper conjectures.
 
 ## Reverse-inclusion strategy
 
@@ -215,12 +220,28 @@ core is the same argument over a nonfree translation group algebra with binomial
    law of bare HT; it is a source-specific theorem about the multiple-Gamma hierarchy.
 4. **Integral relations — repaired in the statement.** A free Laurent ring would introduce false
    independent coordinates.  Passing to `C[Gamma_tau]` imposes all unit-period relations first.
-5. **Rank-two root-of-unity twists — open falsifier.** Kato's printed theorem does not by itself
-   prove the full `q<=2` inclusion.
-6. **CM or modular exceptional cancellation — open falsifier.** A finite translation identity
+5. **Rank-two root-of-unity twists — closed positively.** Kato's printed theorem does not by itself
+   cover rational offsets, but the standard multiplication formula reduces all finite twists to
+   Kato-rational factors and proves `D_tau subset Ann_DA`.
+6. **Cyclotomic torsion sector — passed, and multiplicity is load-bearing.** For
+   `tau=(alpha,beta,m*alpha)` with `1,alpha,beta` rationally independent, `g_2=g_0^m` and
+
+   ```text
+   D_tau=(x_1,x_0*x_2)
+        =(x_1,(g_0-1)^2*(1+g_0+...+g_0^(m-1))).
+   ```
+
+   The smaller `x_0^2` is not an annihilator: it leaves the nonzero order-`m` translation coset
+   on the generic order-one face and remains HT.  Multiplication by the full cyclotomic orbit norm
+   gives `x_0*x_2`, which is DA by hierarchy descent.  Thus radicalizing `D_tau`, retaining only
+   depth, or replacing the quotient group algebra by an ordinary matroid loses real analytic data.
+7. **Circuit and repeated-label degeneracies — passed.** A full-support circuit
+   `tau_2=tau_0+tau_1` gives `D_tau=(x_0,x_1)^2` after eliminating `x_2`; repeated labels give
+   `(x_2,x_0^2)`.  Both agree with the hierarchy and exact order-one spectrum.
+8. **CM or modular exceptional cancellation — open falsifier.** A finite translation identity
    caused by special parameter arithmetic but not by rational period deletion would contradict
    the reverse inclusion.
-7. **Nonlinear family relations — out of scope here.** Equation `(6)` classifies the
+9. **Nonlinear family relations — out of scope here.** Equation `(6)` classifies the
    constant-coefficient linear translation annihilator.  The stronger full nonlinear structural
    differential-matroid law is a separate successor, not silently included.
 
@@ -255,8 +276,12 @@ labelled rational period configuration  --->  DA translation-relation ideal.    
 ```
 
 Its essential image is predicted by `(6)` and is already nonproduct on the order-two slice.  The
-card does not claim a theorem about cofinal effectivity or polarization.  Those can be attached
-only after the relation edge is proved and shown source-presentation invariant.
+card does not claim a theorem about cofinal effectivity or polarization.  The hostile RH audit is
+sharper: this source has no Euler packets, mixed Gamma--prime Gram block, cofinal refinement law,
+or summable transition defect.  It is therefore relation-side structure only and cannot produce
+the semilocal sewing theorem in `docs/reports/rh-proof-shape-1707.md` without importing that missing
+source theorem.  Effectivity and polarization may be attached only through an independently proved
+source-natural coupling, not by reinterpreting the deletion ideal.
 
 ## RH pressure test only
 
@@ -267,15 +292,15 @@ source producer.
 
 ## Lean boundary
 
-The card remains read-only with respect to Lean until the full paper proof of `(6)` closes.  No
-conditional theorem interface and no axiom will be added.  The existing corpus already supplies
-the generic squarefree ideal core, quotient/group-algebra infrastructure, commensurable
-factorization identities, and actual multiple-Gamma hierarchy equations.  The missing analytic
-inputs are:
+The full equality `(6)` remains read-only with respect to Lean until its paper proof closes.  Its
+now-closed rank-two boundary theorem may be formalized independently.  No conditional theorem
+interface and no axiom will be added.  The existing corpus already supplies the generic squarefree
+ideal core, quotient/group-algebra infrastructure, binary commensurable factorization identities,
+and actual multiple-Gamma hierarchy equations.  The remaining Lean and paper inputs are:
 
-1. rank-two finite-twist DA factorization;
+1. arbitrary-family multiplication factorization and Kato ADE for the paper-proved rank-two bridge;
 2. the exact order-one defect spectrum over dependent translation groups;
-3. reverse-inclusion descent in the quotient group algebra.
+3. scheme-aware reverse-inclusion descent in the quotient group algebra.
 
 When those are proved on paper, formalization must instantiate the actual meromorphic
 multiple-elliptic-gamma source unconditionally.
@@ -287,7 +312,8 @@ multiple-elliptic-gamma source unconditionally.
 - [x] generic, rational, circuit, coloop, wall-crossing, and repeated-label tests recorded
 - [x] one nonproduct order-two slice proved on paper
 - [x] preliminary parent and exact/equivalent/stronger literature audit completed
-- [ ] prove residual rank-two DA including finite root-of-unity twists
+- [x] prove residual rank-two DA including finite root-of-unity twists on paper
+- [ ] formalize the residual rank-two DA theorem unconditionally
 - [ ] prove dependent order-one translation spectrum
 - [ ] prove reverse inclusion in `C[Gamma_tau]`
 - [ ] independently audit proof and literature priority
@@ -300,3 +326,6 @@ multiple-elliptic-gamma source unconditionally.
   Gale--Kolchin conjecture was falsified by a natural rationally independent order-two frame.
 - 2026-07-17 — Replaced scalar rank excess by the full rational deletion ideal; passed the first
   hostile audit and proved the circuit/coloop depth split as a Stage-2 positive seed.
+- 2026-07-17 — Closed the residual rank-two finite-twist gate by the all-coordinate multiplication
+  formula and Kato's rational-period theorem.  Dependent circuit, repeated-label, and cyclotomic
+  torsion attacks found no counterexample; the reverse inclusion remains the exact open core.

@@ -691,6 +691,87 @@ theorem automorphismFamily_differentialAlgebraic_iff_exists_logIncrement_jet_tel
     exact automorphismFamily_differentialAlgebraic_of_logIncrement_jet_telescoping
       tau sigma hcomp hderiv hCfixed hfixed x b hx hb hmul c hc k htel
 
+/-- **Exact simultaneous-telescoping kernel.**  For an arbitrary, possibly noncommuting family
+of compatible automorphisms, a constant coefficient vector has one common base telescoper exactly
+when the corresponding linear combination of additive primitives belongs to the base field.
+
+This is the quantitative kernel statement behind the finite-resolution Ostrowski matroid: the
+quotient by simultaneous telescopers is not merely an obstruction space but the literal space of
+primitive classes modulo the base. -/
+theorem automorphismFamily_simultaneous_telescoping_iff_linearCombination_eq_base
+    {I κ C K L : Type*}
+    [Field C] [Field K] [Field L]
+    [Algebra C K] [Algebra C L] [Algebra K L]
+    [IsScalarTower C K L] [CharZero K]
+    (tau : I → K ≃+* K) (sigma : I → L ≃+* L)
+    (hcomp : ∀ i k, sigma i (algebraMap K L k) =
+      algebraMap K L (tau i k))
+    (hCfixed : ∀ i c, sigma i (algebraMap C L c) = algebraMap C L c)
+    (hfixed : ∀ z : L, (∀ i, sigma i z = z) →
+      ∃ c : C, algebraMap C L c = z)
+    (x : κ → L) (b : I → κ → K)
+    (hshift : ∀ i j, sigma i (x j) =
+      x j + algebraMap K L (b i j))
+    (c : κ →₀ C) :
+    (∃ k : K, ∀ i,
+        tau i k - k =
+          Finsupp.linearCombination K (b i)
+            (Finsupp.mapRange (algebraMap C K)
+              (map_zero (algebraMap C K)) c)) ↔
+      ∃ k : K,
+        Finsupp.linearCombination L x
+            (Finsupp.mapRange (algebraMap C L)
+              (map_zero (algebraMap C L)) c) =
+          algebraMap K L k := by
+  classical
+  let cL : κ →₀ L :=
+    Finsupp.mapRange (algebraMap C L) (map_zero (algebraMap C L)) c
+  let cK : κ →₀ K :=
+    Finsupp.mapRange (algebraMap C K) (map_zero (algebraMap C K)) c
+  let g : L := Finsupp.linearCombination L x cL
+  let bsum : I → K := fun i ↦ Finsupp.linearCombination K (b i) cK
+  have hshiftg : ∀ i, sigma i g = g + algebraMap K L (bsum i) := by
+    intro i
+    dsimp only [g]
+    rw [ringEquiv_linearCombination]
+    have hcmap :
+        Finsupp.mapRange (sigma i) (map_zero (sigma i)) cL = cL := by
+      ext j
+      simp [cL, hCfixed]
+    rw [hcmap]
+    simp_rw [hshift i]
+    rw [finsupp_linearCombination_add_family]
+    rw [algebraMap_constant_finsupp_linearCombination]
+  constructor
+  · rintro ⟨k, hk⟩
+    have hzfix : ∀ i,
+        sigma i (g - algebraMap K L k) = g - algebraMap K L k := by
+      intro i
+      rw [map_sub, hshiftg i, hcomp]
+      have htel : tau i k - k = bsum i := by
+        simpa [bsum, cK] using hk i
+      rw [← htel, map_sub]
+      abel
+    obtain ⟨c0, hc0⟩ := hfixed (g - algebraMap K L k) hzfix
+    refine ⟨k + algebraMap C K c0, ?_⟩
+    change g = algebraMap K L (k + algebraMap C K c0)
+    calc
+      g = algebraMap K L k + algebraMap C L c0 := by rw [hc0]; abel
+      _ = algebraMap K L (k + algebraMap C K c0) := by
+        simp [IsScalarTower.algebraMap_apply C K L]
+  · rintro ⟨k, hk⟩
+    refine ⟨k, fun i ↦ ?_⟩
+    apply (algebraMap K L).injective
+    have hleft : sigma i g - g = algebraMap K L (bsum i) := by
+      rw [hshiftg i]
+      abel
+    have hright : sigma i g - g = algebraMap K L (tau i k - k) := by
+      change sigma i
+          (Finsupp.linearCombination L x cL) -
+            Finsupp.linearCombination L x cL = _
+      rw [hk, hcomp, map_sub]
+    rw [← hright, hleft]
+
 /-- **Exact arbitrary-family algebraic Ostrowski criterion.**  Algebraic independence of a
 base-shifted family is equivalent to absence of every nonzero constant-coefficient simultaneous
 coboundary.  This is the finite-resolution matroid theorem from which the logarithmic-jet and
@@ -757,6 +838,51 @@ theorem automorphismFamily_algebraicIndependent_iff_no_constant_simultaneous_tel
       x c hc a (by simpa [g, cL] using hgbase)) hAI
   · exact automorphismFamily_algebraicIndependent_of_no_constant_simultaneous_telescoping
       tau sigma hcomp hCfixed hfixed x b hshift
+
+/-- **Primitive classes modulo the base represent the algebraic matroid.**  Under an arbitrary
+compatible automorphism family, the additive primitives are algebraically independent precisely
+when no nonzero constant coefficient combination belongs to the base field.  The simultaneous
+telescoper has been eliminated from the conclusion using the exact kernel theorem above. -/
+theorem automorphismFamily_algebraicIndependent_iff_no_nonzero_linearCombination_eq_base
+    {I κ C K L : Type*}
+    [Field C] [Field K] [Field L]
+    [Algebra C K] [Algebra C L] [Algebra K L]
+    [IsScalarTower C K L] [CharZero K]
+    (tau : I → K ≃+* K) (sigma : I → L ≃+* L)
+    (hcomp : ∀ i k, sigma i (algebraMap K L k) =
+      algebraMap K L (tau i k))
+    (hCfixed : ∀ i c, sigma i (algebraMap C L c) = algebraMap C L c)
+    (hfixed : ∀ z : L, (∀ i, sigma i z = z) →
+      ∃ c : C, algebraMap C L c = z)
+    (x : κ → L) (b : I → κ → K)
+    (hshift : ∀ i j, sigma i (x j) =
+      x j + algebraMap K L (b i j)) :
+    AlgebraicIndependent K x ↔
+      ∀ c : κ →₀ C,
+        (∃ k : K,
+          Finsupp.linearCombination L x
+              (Finsupp.mapRange (algebraMap C L)
+                (map_zero (algebraMap C L)) c) =
+            algebraMap K L k) →
+          c = 0 := by
+  rw [automorphismFamily_algebraicIndependent_iff_no_constant_simultaneous_telescoping
+    tau sigma hcomp hCfixed hfixed x b hshift]
+  constructor
+  · intro hnot c hbase
+    by_contra hc
+    obtain ⟨k, hk⟩ := hbase
+    obtain ⟨ktel, htel⟩ :=
+      (automorphismFamily_simultaneous_telescoping_iff_linearCombination_eq_base
+        tau sigma hcomp hCfixed hfixed x b hshift c).mpr ⟨k, hk⟩
+    obtain ⟨i, hi⟩ := hnot c hc ktel
+    exact hi (htel i)
+  · intro hkernel c hc k
+    by_contra hnone
+    push Not at hnone
+    have hbase :=
+      (automorphismFamily_simultaneous_telescoping_iff_linearCombination_eq_base
+        tau sigma hcomp hCfixed hfixed x b hshift c).mp ⟨k, hnone⟩
+    exact hc (hkernel c hbase)
 
 /-- **Exact finite-resolution boundary matroid.**  For any selected packet of logarithmic jet
 orders, algebraic independence of the bulk packet is equivalent to absence of a simultaneous
