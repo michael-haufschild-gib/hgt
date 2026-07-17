@@ -44,6 +44,7 @@ theorem norm_sub_ccmPrimePoleProjection_le
   exact ciInf_le ⟨0, Set.forall_mem_range.mpr fun _ => norm_nonneg _⟩
     (⟨u, hu⟩ : ccmPrimePoleClosedSubspace L hL)
 
+set_option maxHeartbeats 1000000 in
 theorem exists_fin_ccmPrimePole_projection_common_coherence
     {d : ℕ} {Lref : ℝ} (href : 0 < Lref)
     (L : Fin d → ℝ) (hL : ∀ i, 0 < L i)
@@ -53,7 +54,7 @@ theorem exists_fin_ccmPrimePole_projection_common_coherence
       ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection v - v‖ ^ 2 ≤
         2 * (2 * Real.pi * (δ / L i)) ^ 2 := by
   obtain ⟨n, hn, r, hcoh⟩ :=
-    exists_fin_ccmPrimePole_common_coherence href L hL hδ
+    exists_fin_ccmPrimePole_common_coherence (δ := δ) href L hL hδ
   let v : CCMPrimePoleHilbert := ccmNormalizedPrimePoleVector Lref href n
   refine ⟨v, norm_ccmNormalizedPrimePoleVector href n,
     ccmNormalizedPrimePoleVector_mem_closedSubspace href n, ?_⟩
@@ -65,10 +66,15 @@ theorem exists_fin_ccmPrimePole_projection_common_coherence
       ‖v - (ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection v‖ ≤
         ‖v - u‖ := norm_sub_ccmPrimePoleProjection_le (hL i) v hu
   have hsq := (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).2 hmin
-  have hcoh' : ‖v - u‖ ^ 2 ≤ 2 * (2 * Real.pi * (δ / L i)) ^ 2 := by
-    simpa only [v, u, norm_sub_rev] using hcoh i
-  simpa only [norm_sub_rev] using hsq.trans hcoh'
+  calc
+    ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection v - v‖ ^ 2 =
+        ‖v - (ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection v‖ ^ 2 := by
+      rw [norm_sub_rev]
+    _ ≤ ‖v - u‖ ^ 2 := hsq
+    _ = ‖u - v‖ ^ 2 := by rw [norm_sub_rev]
+    _ ≤ 2 * (2 * Real.pi * (δ / L i)) ^ 2 := hcoh i
 
+set_option maxHeartbeats 1000000 in
 /-- The same common vector has a quantitative projective-measurement interpretation: at every
 local scale, the Born probability of surviving the pole-subspace measurement is at least one
 minus the existing projection-defect budget. -/
@@ -82,11 +88,18 @@ theorem exists_fin_ccmPrimePole_projection_common_born_survival
         Complex.re (inner ℂ v
           ((ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection v)) := by
   obtain ⟨v, hv, hvref, hdefect⟩ :=
-    exists_fin_ccmPrimePole_projection_common_coherence href L hL hδ
+    exists_fin_ccmPrimePole_projection_common_coherence (δ := δ) href L hL hδ
   refine ⟨v, hv, hvref, fun i => ?_⟩
-  exact HTGeometry.one_sub_le_bornSurvivalProbability_of_projectionDefectSq_le
-    (S := ccmPrimePoleClosedSubspace (L i) (hL i)) v hv (hdefect i)
+  change 1 - 2 * (2 * Real.pi * (δ / L i)) ^ 2 ≤
+    RCLike.re (inner ℂ v
+      ((ccmPrimePoleClosedSubspace (L i) (hL i) :
+        Submodule ℂ CCMPrimePoleHilbert).starProjection v))
+  rw [HTGeometry.bornSurvivalProbability_eq_one_sub_projectionDefectSq
+    (S := (ccmPrimePoleClosedSubspace (L i) (hL i) :
+      Submodule ℂ CCMPrimePoleHilbert)) v hv]
+  exact sub_le_sub_left (hdefect i) 1
 
+set_option maxHeartbeats 1000000 in
 /-- Cofinal operator coherence: the common approximate fixed unit vector may
 be chosen with reference pole index beyond any prescribed bound. -/
 theorem exists_fin_ccmPrimePole_projection_cofinal_common_coherence
@@ -102,7 +115,7 @@ theorem exists_fin_ccmPrimePole_projection_cofinal_common_coherence
         ccmNormalizedPrimePoleVector Lref href n‖ ^ 2 ≤
         2 * (2 * Real.pi * (δ / L i)) ^ 2 := by
   obtain ⟨n, hn, r, hcoh⟩ :=
-    exists_fin_ccmPrimePole_cofinal_common_coherence href L hL hδ B
+    exists_fin_ccmPrimePole_cofinal_common_coherence (δ := δ) href L hL hδ B
   let v : CCMPrimePoleHilbert := ccmNormalizedPrimePoleVector Lref href n
   refine ⟨n, hn, norm_ccmNormalizedPrimePoleVector href n,
     ccmNormalizedPrimePoleVector_mem_closedSubspace href n, ?_⟩
@@ -114,10 +127,17 @@ theorem exists_fin_ccmPrimePole_projection_cofinal_common_coherence
       ‖v - (ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection v‖ ≤
         ‖v - u‖ := norm_sub_ccmPrimePoleProjection_le (hL i) v hu
   have hsq := (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).2 hmin
-  have hcoh' : ‖v - u‖ ^ 2 ≤ 2 * (2 * Real.pi * (δ / L i)) ^ 2 := by
-    simpa only [v, u, norm_sub_rev] using hcoh i
-  simpa only [v, norm_sub_rev] using hsq.trans hcoh'
+  calc
+    ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection
+          (ccmNormalizedPrimePoleVector Lref href n) -
+        ccmNormalizedPrimePoleVector Lref href n‖ ^ 2 =
+        ‖v - (ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection v‖ ^ 2 := by
+      rw [norm_sub_rev]
+    _ ≤ ‖v - u‖ ^ 2 := hsq
+    _ = ‖u - v‖ ^ 2 := by rw [norm_sub_rev]
+    _ ≤ 2 * (2 * Real.pi * (δ / L i)) ^ 2 := hcoh i
 
+set_option maxHeartbeats 1000000 in
 /-- Cofinal Born survival: the high-index pole witness may be chosen beyond every prescribed
 bound while retaining the same lossless survival-probability estimate at all finite scales. -/
 theorem exists_fin_ccmPrimePole_projection_cofinal_common_born_survival
@@ -133,12 +153,21 @@ theorem exists_fin_ccmPrimePole_projection_cofinal_common_born_survival
           ((ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection
             (ccmNormalizedPrimePoleVector Lref href n))) := by
   obtain ⟨n, hn, hv, hvref, hdefect⟩ :=
-    exists_fin_ccmPrimePole_projection_cofinal_common_coherence href L hL hδ B
+    exists_fin_ccmPrimePole_projection_cofinal_common_coherence
+      (δ := δ) href L hL hδ B
   refine ⟨n, hn, hv, hvref, fun i => ?_⟩
-  exact HTGeometry.one_sub_le_bornSurvivalProbability_of_projectionDefectSq_le
-    (S := ccmPrimePoleClosedSubspace (L i) (hL i))
-    (ccmNormalizedPrimePoleVector Lref href n) hv (hdefect i)
+  change 1 - 2 * (2 * Real.pi * (δ / L i)) ^ 2 ≤
+    RCLike.re (inner ℂ (ccmNormalizedPrimePoleVector Lref href n)
+      ((ccmPrimePoleClosedSubspace (L i) (hL i) :
+        Submodule ℂ CCMPrimePoleHilbert).starProjection
+          (ccmNormalizedPrimePoleVector Lref href n)))
+  rw [HTGeometry.bornSurvivalProbability_eq_one_sub_projectionDefectSq
+    (S := (ccmPrimePoleClosedSubspace (L i) (hL i) :
+      Submodule ℂ CCMPrimePoleHilbert))
+    (ccmNormalizedPrimePoleVector Lref href n) hv]
+  exact sub_le_sub_left (hdefect i) 1
 
+set_option maxHeartbeats 1000000 in
 /-- Prime specialization: every finite family of CCM prime-local pole
 projections has a common unit vector with arbitrarily small explicitly bounded
 projection defects. -/
@@ -153,10 +182,12 @@ theorem exists_fin_prime_ccmPrimePole_projection_common_coherence
           (Real.log_pos (by exact_mod_cast (hp i).one_lt))).starProjection v - v‖ ^ 2 ≤
         2 * (2 * Real.pi * (δ / Real.log (p i))) ^ 2 := by
   exact exists_fin_ccmPrimePole_projection_common_coherence
+    (δ := δ)
     (Real.log_pos (by exact_mod_cast hpref.one_lt))
     (fun i => Real.log (p i))
     (fun i => Real.log_pos (by exact_mod_cast (hp i).one_lt)) hδ
 
+set_option maxHeartbeats 1000000 in
 /-- Prime specialization of the common Born-survival estimate. -/
 theorem exists_fin_prime_ccmPrimePole_projection_common_born_survival
     {d pref : ℕ} (hpref : pref.Prime)
@@ -170,6 +201,7 @@ theorem exists_fin_prime_ccmPrimePole_projection_common_born_survival
           ((ccmPrimePoleClosedSubspace (Real.log (p i))
             (Real.log_pos (by exact_mod_cast (hp i).one_lt))).starProjection v)) := by
   exact exists_fin_ccmPrimePole_projection_common_born_survival
+    (δ := δ)
     (Real.log_pos (by exact_mod_cast hpref.one_lt))
     (fun i => Real.log (p i))
     (fun i => Real.log_pos (by exact_mod_cast (hp i).one_lt)) hδ

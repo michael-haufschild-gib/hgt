@@ -51,8 +51,9 @@ theorem finiteSourceGibbsGramEnergyNormalized_eq
     Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro p hp
-  rw [← Real.exp_add]
-  congr 1
+  rw [show (k : ℝ) * (energy p - radius) =
+      (-(k : ℝ) * radius) + (k : ℝ) * energy p by ring,
+    Real.exp_add]
   ring
 
 private theorem tendsto_exp_nat_mul_sub_of_le
@@ -64,7 +65,8 @@ private theorem tendsto_exp_nat_mul_sub_of_le
   · have hneg : x - radius < 0 := sub_neg.mpr (lt_of_le_of_ne hupper h)
     have hlin : Tendsto (fun k : ℕ => (k : ℝ) * (x - radius)) atTop atBot :=
       tendsto_natCast_atTop_atTop.atTop_mul_const_of_neg hneg
-    simpa [h] using Real.tendsto_exp_atBot.comp hlin
+    simpa only [Function.comp_apply, if_neg h] using
+      (Real.tendsto_exp_atBot.comp hlin)
 
 /-- **Exposed-face zero-temperature limit.**  Tropical normalization of a finite positive Gibbs
 Gram ray converges to the Gram form supported exactly on the maximum-energy face. -/
@@ -76,7 +78,7 @@ theorem tendsto_finiteSourceGibbsGramEnergyNormalized_exposedFace
       (fun k : ℕ => finiteSourceGibbsGramEnergyNormalized
         c base energy radius k q)
       atTop (nhds (finiteSourceEnergyLevelGramEnergy c base energy radius q)) := by
-  rw [finiteSourceGibbsGramEnergyNormalized, finiteSourceEnergyLevelGramEnergy]
+  simp only [finiteSourceGibbsGramEnergyNormalized, finiteSourceEnergyLevelGramEnergy]
   apply tendsto_finset_sum
   intro p hp
   have hfactor := tendsto_exp_nat_mul_sub_of_le (hupper p)
@@ -86,7 +88,10 @@ theorem tendsto_finiteSourceGibbsGramEnergyNormalized_exposedFace
       (base p * ‖∑ j, q j * c j p‖ ^ 2)
   · simp only [hlevel, if_neg]
     convert hfactor.const_mul
-      (base p * ‖∑ j, q j * c j p‖ ^ 2) using 1 <;> ring
+      (base p * ‖∑ j, q j * c j p‖ ^ 2) using 1
+    · funext k
+      ring
+    · simp [hlevel]
 
 /-- The exposed-level Gram radical consists exactly of coefficient combinations vanishing on the
 exposed face. -/
@@ -194,7 +199,11 @@ theorem finiteSourceEnergyLevelGramEnergy_add_const
   rw [finiteSourceEnergyLevelGramEnergy, finiteSourceEnergyLevelGramEnergy]
   apply Finset.sum_congr rfl
   intro p hp
-  have hiff : energy p + shift = level + shift ↔ energy p = level := by linarith
+  have hiff : energy p + shift = level + shift ↔ energy p = level := by
+    constructor
+    · exact add_right_cancel
+    · intro h
+      rw [h]
   simp only [hiff]
 
 /-- The maximum-energy face of an additive product marking is exactly the product of the two
@@ -247,9 +256,10 @@ theorem finiteSourceGibbsPartitionNormalized_pos
     (energy : P → ℝ) (radius : ℝ) (k : ℕ) :
     0 < finiteSourceGibbsPartitionNormalized energy radius k := by
   rw [finiteSourceGibbsPartitionNormalized]
-  exact Finset.sum_pos' (fun p hp => (Real.exp_pos _).le)
-    (Classical.choice inferInstance) (Finset.mem_univ _)
-    (Real.exp_pos _)
+  apply Finset.sum_pos
+  · intro p hp
+    exact Real.exp_pos _
+  · exact Finset.univ_nonempty
 
 /-- The normalized partition converges to the number of points on the exposed face. -/
 theorem tendsto_finiteSourceGibbsPartitionNormalized_exposedFaceCard
@@ -257,7 +267,9 @@ theorem tendsto_finiteSourceGibbsPartitionNormalized_exposedFaceCard
     (energy : P → ℝ) (radius : ℝ) (hupper : ∀ p, energy p ≤ radius) :
     Tendsto (finiteSourceGibbsPartitionNormalized energy radius)
       atTop (nhds (finiteSourceExposedFaceCard energy radius : ℝ)) := by
-  rw [finiteSourceGibbsPartitionNormalized]
+  change Tendsto
+    (fun k : ℕ => ∑ p, Real.exp ((k : ℝ) * (energy p - radius)))
+    atTop (nhds (finiteSourceExposedFaceCard energy radius : ℝ))
   have hsum := tendsto_finset_sum (Finset.univ : Finset P) (fun p hp =>
     tendsto_exp_nat_mul_sub_of_le (hupper p))
   convert hsum using 1
@@ -281,9 +293,15 @@ theorem finiteGibbsPurity_neg_energy_eq_normalizedPartitionRatio
   have hA2kpos := finiteSourceGibbsPartitionNormalized_pos energy radius (2 * k)
   rw [show (2 : ℝ) * (k : ℝ) = ((2 * k : ℕ) : ℝ) by norm_num] at hZ2kpos ⊢
   rw [show ((2 * k : ℕ) : ℝ) = 2 * (k : ℝ) by norm_num] at h2k
-  field_simp [ne_of_gt hZkpos, ne_of_gt hZ2kpos,
-    ne_of_gt hAkpos, ne_of_gt hA2kpos, Real.exp_ne_zero] at hk h2k ⊢
-  nlinarith
+  have hexp : Real.exp (-(2 * (k : ℝ)) * radius) =
+      Real.exp (-(k : ℝ) * radius) ^ 2 := by
+    rw [pow_two, ← Real.exp_add]
+    congr 1
+    ring
+  rw [hk, h2k, hexp]
+  field_simp [ne_of_gt hZkpos, ne_of_gt hZ2kpos, Real.exp_ne_zero]
+  <;> norm_num [Nat.cast_mul]
+  <;> ring
 
 /-- **Purity--face law.**  The zero-temperature Rényi-2 purity is the reciprocal cardinality of
 the exposed maximum-energy face.  Hence purity measures degeneracy while the limiting Gram radical
@@ -306,8 +324,9 @@ theorem tendsto_finiteGibbsPurity_neg_energy_exposedFaceCard
   have hA2 := hA.comp htwo
   have hcardPosNat : 0 < finiteSourceExposedFaceCard energy radius := by
     obtain ⟨p, hp⟩ := hexposed
-    rw [finiteSourceExposedFaceCard, Finset.card_pos]
-    exact Finset.mem_filter.mpr ⟨Finset.mem_univ p, hp⟩
+    unfold finiteSourceExposedFaceCard
+    refine Finset.card_pos.mpr ⟨p, ?_⟩
+    simp [hp]
   have hcardNe : (finiteSourceExposedFaceCard energy radius : ℝ) ≠ 0 := by
     exact_mod_cast (Nat.ne_of_gt hcardPosNat)
   have hratio := hA2.div (hA.pow 2) (pow_ne_zero 2 hcardNe)
@@ -322,7 +341,7 @@ mass of the canonical thermofield projector converges to one minus the reciproca
 of the exposed maximum-energy face.  Thus the same face degeneracy that fixes the limiting
 Renyi-two purity fixes the surviving thermofield transition mass. -/
 theorem tendsto_offDiagonal_sq_finiteKMSWightmanWeight_neg_energy_exposedFaceCard
-    {P : Type*} [Fintype P] [Nonempty P]
+    {P : Type*} [Fintype P] [Nonempty P] [DecidableEq P]
     (energy : P → ℝ) (radius : ℝ)
     (hupper : ∀ p, energy p ≤ radius)
     (hexposed : ∃ p, energy p = radius) :
@@ -332,13 +351,18 @@ theorem tendsto_offDiagonal_sq_finiteKMSWightmanWeight_neg_energy_exposedFaceCar
           finiteKMSWightmanWeight (k : ℝ) (fun p => -energy p) a b ^ 2)
       atTop
       (nhds (1 - (finiteSourceExposedFaceCard energy radius : ℝ)⁻¹)) := by
+  classical
   have hpurity := tendsto_finiteGibbsPurity_neg_energy_exposedFaceCard
     energy radius hupper hexposed
-  have hoff := tendsto_const_nhds.sub hpurity
+  have hoff : Tendsto
+      (fun k : ℕ => 1 - finiteGibbsPurity (k : ℝ) (fun p => -energy p))
+      atTop
+      (nhds (1 - (finiteSourceExposedFaceCard energy radius : ℝ)⁻¹)) :=
+    tendsto_const_nhds.sub hpurity
   convert hoff using 1
   funext k
-  exact (sum_offDiagonal_sq_finiteKMSWightmanWeight_eq_one_sub_purity
-    (k : ℝ) (fun p => -energy p)).symm
+  exact sum_offDiagonal_sq_finiteKMSWightmanWeight_eq_one_sub_purity
+    (k : ℝ) (fun p => -energy p)
 
 /-- Energy-origin gauge invariance of the exposed-face cardinal. -/
 theorem finiteSourceExposedFaceCard_add_const
@@ -347,11 +371,14 @@ theorem finiteSourceExposedFaceCard_add_const
     finiteSourceExposedFaceCard (fun p => energy p + shift) (radius + shift) =
       finiteSourceExposedFaceCard energy radius := by
   classical
-  rw [finiteSourceExposedFaceCard, finiteSourceExposedFaceCard]
-  apply Finset.card_congr (Equiv.refl P)
-  intro p
-  simp only [Equiv.refl_apply, Finset.mem_filter, Finset.mem_univ, true_and]
-  constructor <;> intro h <;> linarith
+  unfold finiteSourceExposedFaceCard
+  apply congrArg Finset.card
+  ext p
+  simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+  constructor
+  · exact add_right_cancel
+  · intro h
+    rw [h]
 
 /-- Exposed-face cardinality is multiplicative for additive product source markings. -/
 theorem finiteSourceExposedFaceCard_tensor
@@ -474,11 +501,18 @@ theorem finiteSourceGibbsGramEnergyNormalized_tensor
       apply Finset.sum_congr rfl
       intro q hq
       rw [sum_finiteTensorCoefficientVector_mul_finiteTensorCoefficient,
-        norm_mul, mul_pow, ← Real.exp_add]
-      congr 1
-      · simp only [finiteTensorEnergy]
+        norm_mul, mul_pow]
+      have hexp :
+          Real.exp ((k : ℝ) *
+              (finiteTensorEnergy energyP energyQ (p, q) - (radiusP + radiusQ))) =
+            Real.exp ((k : ℝ) * (energyP p - radiusP)) *
+              Real.exp ((k : ℝ) * (energyQ q - radiusQ)) := by
+        rw [← Real.exp_add]
+        congr 1
+        simp only [finiteTensorEnergy]
         ring
-      · ring
+      rw [hexp]
+      ring
     _ = (∑ p, baseP p * Real.exp ((k : ℝ) * (energyP p - radiusP)) *
           ‖∑ i, u i * cP i p‖ ^ 2) *
         ∑ q, baseQ q * Real.exp ((k : ℝ) * (energyQ q - radiusQ)) *
@@ -522,7 +556,7 @@ theorem finiteSourceEnergyLevelGramEnergy_tensor
       intro p hp
       apply Finset.sum_congr rfl
       intro q hq
-      rw [finiteTensorEnergy_eq_add_radius_iff
+      simp only [finiteTensorEnergy_eq_add_radius_iff
         energyP energyQ radiusP radiusQ hupperP hupperQ,
         sum_finiteTensorCoefficientVector_mul_finiteTensorCoefficient, norm_mul, mul_pow]
       by_cases hpface : energyP p = radiusP <;>

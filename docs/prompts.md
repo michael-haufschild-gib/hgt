@@ -190,3 +190,26 @@ lean rules:
 
 
 the goal is met when no further proof or conjecture is possible and no meaningful contribution or pivot can be made
+
+
+## proof
+
+Build on the extensive research corpus we have gathered in the lean code base formal/GaloisForLFunctions and "paper" research pipeline docs/drafts/pipeline and expand it into delivering a formal proof of the Riemann Hypothesis.
+
+Use the hgt-fields-medalist skill, bold conjecturing, wide literature research, and anti-theatre tests to develop the missing new scientific knowledge to complete the task.
+
+Approach the task from the perspective of a Fields-medalist mathematician: How would they approach this task? What questions would they ask? What topics would they research? How would they proceed to develop the new mathematics needed for this proof?
+
+Avoid getting stuck on one chain or "classic" proof routes. Be open-minded to what the proof chain could look like and be open to pivot also into unconvential chains.
+
+Use subagents as you please, but be mindful of resource limitations of this laptop when it comes to lean builds - there are several other agents also working on the lean codebase.
+
+lean rules:
+1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible.
+2. aim for the smallest lean build possible and use caching heavily for lean. write lean code in batches instead of building after every edit.
+3. lean proofs must be unconditional
+4. always check first what the project lean code already offers
+5. effort estimation are not a criterion. if it is missing in mathlib -> you build it. if it takes months -> you build it.
+6. no computations.
+
+Non-negotiable: This is a multi-month research task with unclear outcome. Never use effort estimation to decide against doing something. Nothing here can be done in one session. Keep going. Never stop.
