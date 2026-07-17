@@ -184,6 +184,27 @@ theorem pow_fixed_of_eigenvector
     φ (q ^ N) = q ^ N := by
   rw [map_pow, hq, mul_pow, haN, one_mul]
 
+/-- Every power of the derivative of an additively translated observable is fixed. -/
+theorem pow_deriv_fixed_of_translation
+    [Differential F] (φ : F →ₐ[K] F)
+    (hderiv : ∀ x : F, φ x′ = (φ x)′)
+    (q b : F) (hb' : b′ = 0) (hq : φ q = q + b) (N : ℕ) :
+    φ (q′ ^ N) = q′ ^ N := by
+  exact pow_fixed_of_eigenvector φ q′ 1 N
+    (by simpa using deriv_fixed_of_translation φ hderiv q b hb' hq)
+    (by simp)
+
+/-- The derivative of every finite-holonomy fixed power is fixed by a commuting differential
+endomorphism. -/
+theorem deriv_pow_fixed_of_eigenvector
+    [Differential F] (φ : F →ₐ[K] F)
+    (hderiv : ∀ x : F, φ x′ = (φ x)′)
+    (q a : F) (N : ℕ) (hq : φ q = a * q) (haN : a ^ N = 1) :
+    φ ((q ^ N)′) = (q ^ N)′ := by
+  apply deriv_fixed_of_translation φ hderiv (q ^ N) 0
+  · simp
+  · simpa using pow_fixed_of_eigenvector φ q a N hq haN
+
 end
 
 end GaloisForLFunctions.HTGeometry

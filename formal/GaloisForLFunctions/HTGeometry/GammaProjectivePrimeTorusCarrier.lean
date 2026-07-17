@@ -87,6 +87,14 @@ theorem primeLogFrequency_single_mem_aperture (N : ℕ) {p : Nat.Primes} (hp : p
     exact Submodule.subset_span ⟨⟨p, hp⟩, rfl⟩
   simpa using hlog
 
+/-- Every prime coordinate frequency belongs to the character module at its own canonical
+aperture, with no external membership premise. -/
+theorem primeLogFrequency_single_mem_selfAperture (p : Nat.Primes) :
+    primeLogFrequency (Finsupp.single p 1) ∈
+      primeApertureCharacterModule (p : ℕ) := by
+  apply primeLogFrequency_single_mem_aperture (p : ℕ)
+  rw [mem_primesLE]
+
 /-- **Carrier covering-dimension lower bound.**  Let `A` be the rational character space of a compact
 abelian phase carrier producing the aperture-`N` cutoff Euler product as a continuous
 translation-equivariant observable.  The carrier factors continuously onto the aperture hull, so its
@@ -110,6 +118,17 @@ theorem primeAperture_dim_unbounded (M : ℕ) : ∃ N, M ≤ Nat.primeCounting N
   intro p hp
   rw [mem_primesLE]
   exact Finset.le_sup (f := fun p : Nat.Primes => (p : ℕ)) hp
+
+/-- **No fixed finite-dimensional carrier.**  For every finite rational character space `A`,
+some prime aperture has a character module that admits no linear injection into `A`. -/
+theorem primeAperture_no_fixed_finiteCarrier
+    (A : Type*) [AddCommGroup A] [Module ℚ A] [Module.Finite ℚ A] :
+    ∃ N, ∀ j : primeApertureCharacterModule N →ₗ[ℚ] A, ¬ Function.Injective j := by
+  obtain ⟨N, hN⟩ := primeAperture_dim_unbounded (Module.finrank ℚ A + 1)
+  refine ⟨N, ?_⟩
+  intro j hj
+  have hdim := primeAperture_carrier_covering_dim_ge N j hj
+  omega
 
 end
 

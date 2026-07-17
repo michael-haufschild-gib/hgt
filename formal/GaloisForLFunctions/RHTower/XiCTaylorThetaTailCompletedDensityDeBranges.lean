@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailCompletedDensityReflection
+import GaloisForLFunctions.RHTower.XiCTaylorThetaTailDensityMonotonicity
 
 /-!
 # A source-selected de Branges split for the completed theta density
@@ -90,6 +91,23 @@ def thetaCuspTailSecondDensityDeBrangesGap (z : ℂ) : ℝ :=
   Complex.normSq (thetaCuspTailSecondDensityDeBrangesE z) -
     Complex.normSq (thetaCuspTailSecondDensityDeBrangesESharp z)
 
+/-- Exact division-free polarization of the source-selected gap.  The symmetric channel is the
+completed Xi transform, while the antisymmetric channel retains the one-sided source orientation.
+Thus any global sign theorem must control their relative phase; positivity of the density alone
+does not disappear behind a quotient by `XiC`. -/
+theorem thetaCuspTailSecondDensityDeBrangesGap_eq_polarizedCurrent
+    {z : ℂ} (hz : |z.im| < 1) :
+    thetaCuspTailSecondDensityDeBrangesGap z =
+      ((thetaCuspTailSecondDensityDeBrangesE z -
+          thetaCuspTailSecondDensityDeBrangesESharp z) *
+        starRingEnd ℂ (4 * z ^ 2 * XiC z)).re := by
+  rw [← thetaCuspTailSecondDensityDeBrangesE_add_sharp hz]
+  unfold thetaCuspTailSecondDensityDeBrangesGap
+  simp only [Complex.normSq_apply, Complex.mul_re, Complex.sub_re,
+    Complex.sub_im, Complex.add_re, Complex.add_im, Complex.conj_re,
+    Complex.conj_im]
+  ring
+
 /-- Every `XiC` zero in the open theta strip forces equality of the two component norms. -/
 theorem thetaCuspTailSecondDensityDeBrangesGap_eq_zero_of_XiC_eq_zero
     {z : ℂ} (hz : |z.im| < 1) (hzero : XiC z = 0) :
@@ -102,6 +120,184 @@ theorem thetaCuspTailSecondDensityDeBrangesGap_eq_zero_of_XiC_eq_zero
   unfold thetaCuspTailSecondDensityDeBrangesGap
   rw [hsharp]
   simp
+
+/-- Integration by parts exposes the exact positive source behind the odd boundary channel. -/
+theorem thetaCuspTailSecondDensity_sine_identity (t : ℝ) :
+    t * (∫ x : ℝ in Ioi 0,
+      thetaCuspTailSecondDensity x * Real.sin (t * x)) =
+      ∫ x : ℝ in Ioi 0,
+        (-4 * thetaCuspTailDerivative 3 x) * (1 - Real.cos (t * x)) := by
+  let u : ℝ → ℝ := fun x => 1 - Real.cos (t * x)
+  let u' : ℝ → ℝ := fun x => t * Real.sin (t * x)
+  let v : ℝ → ℝ := thetaCuspTailSecondDensity
+  let v' : ℝ → ℝ := fun x => 4 * thetaCuspTailDerivative 3 x
+  have hu (x : ℝ) : HasDerivAt u (u' x) x := by
+    dsimp [u, u']
+    convert (hasDerivAt_const x 1).sub
+      ((Real.hasDerivAt_cos (t * x)).comp x ((hasDerivAt_id x).const_mul t)) using 1
+    ring
+  have hv (x : ℝ) : HasDerivAt v (v' x) x := by
+    simpa only [v, v'] using hasDerivAt_thetaCuspTailSecondDensity_fromAtoms x
+  have huv' : IntegrableOn (u * v') (Ioi 0) := by
+    have hbase := (integrableOn_thetaCuspTailDerivative_Ioi 3).const_mul 4
+    have hcos := (integrableOn_cos_mul_thetaCuspTailDerivative 3 t).const_mul 4
+    rw [show (u * v') = fun x =>
+        4 * thetaCuspTailDerivative 3 x -
+          4 * (Real.cos (t * x) * thetaCuspTailDerivative 3 x) by
+      funext x
+      dsimp [u, v']
+      ring]
+    exact hbase.sub hcos
+  have hu'v : IntegrableOn (u' * v) (Ioi 0) := by
+    have hsin := (integrableOn_sin_mul_thetaCuspTailDerivative 2 t).const_mul (4 * t)
+    rw [show (u' * v) = fun x =>
+        (4 * t) * (Real.sin (t * x) * thetaCuspTailDerivative 2 x) by
+      funext x
+      dsimp [u', v, thetaCuspTailSecondDensity]
+      ring]
+    exact hsin
+  have hzero : Tendsto (u * v) (𝓝[>] 0) (𝓝 0) := by
+    have hc : Continuous (u * v) :=
+      ((continuous_const.sub (Real.continuous_cos.comp
+        (continuous_const.mul continuous_id)))).mul
+          (continuous_iff_continuousAt.mpr fun x => (hv x).continuousAt)
+    simpa [u, v] using (hc.continuousAt : Tendsto (u * v) (𝓝 (0 : ℝ)) _).mono_left inf_le_left
+  have hinfty : Tendsto (u * v) atTop (𝓝 0) := by
+    have hv0 : Tendsto v atTop (𝓝 0) := by
+      simpa [v, thetaCuspTailSecondDensity] using
+        (thetaCuspTailDerivative_tendsto_atTop_zero 2).const_mul 4
+    have hcos0 : Tendsto
+        (fun x : ℝ => Real.cos (t * x) * v x) atTop (𝓝 0) := by
+      have h : Tendsto
+          (fun x : ℝ => 4 * (Real.cos (t * x) * thetaCuspTailDerivative 2 x))
+          atTop (𝓝 0) := by
+        simpa only [mul_zero] using
+          (cos_mul_thetaCuspTailDerivative_tendsto_atTop_zero 2 t).const_mul 4
+      convert h using 1
+      funext x
+      dsimp [v, thetaCuspTailSecondDensity]
+      ring
+    simpa only [sub_zero] using hv0.sub hcos0
+      |>.congr' (Eventually.of_forall fun x => by
+        dsimp [u]
+        ring)
+  have hibp := integral_Ioi_mul_deriv_eq_deriv_mul
+    (a := (0 : ℝ)) (u := u) (u' := u') (v := v) (v' := v')
+    (fun x _ => hu x) (fun x _ => hv x) huv' hu'v hzero hinfty
+  rw [show (fun x : ℝ => u x * v' x) = fun x =>
+      -((-4 * thetaCuspTailDerivative 3 x) * (1 - Real.cos (t * x))) by
+    funext x
+    dsimp [u, v']
+    ring,
+    integral_neg,
+    show (fun x : ℝ => u' x * v x) = fun x =>
+      t * (thetaCuspTailSecondDensity x * Real.sin (t * x)) by
+      funext x
+      dsimp [u', v]
+      ring,
+    integral_const_mul] at hibp
+  linarith
+
+/-- The odd sine channel of the strictly decreasing completed theta density is positive at every
+positive frequency.  This is a source theorem, not a zero-location consequence. -/
+theorem integral_thetaCuspTailSecondDensity_mul_sin_pos
+    {t : ℝ} (ht : 0 < t) :
+    0 < ∫ x : ℝ in Ioi 0,
+      thetaCuspTailSecondDensity x * Real.sin (t * x) := by
+  let h : ℝ → ℝ := fun x =>
+    (-4 * thetaCuspTailDerivative 3 x) * (1 - Real.cos (t * x))
+  have hhcont : Continuous h := by
+    dsimp [h]
+    exact (continuous_const.mul (differentiable_thetaCuspTailDerivative 3).continuous).mul
+      (continuous_const.sub (Real.continuous_cos.comp
+        (continuous_const.mul continuous_id)))
+  have hhint : IntegrableOn h (Ioi 0) := by
+    have hbase := (integrableOn_thetaCuspTailDerivative_Ioi 3).const_mul (-4)
+    have hcos := (integrableOn_cos_mul_thetaCuspTailDerivative 3 t).const_mul (-4)
+    rw [show h = fun x =>
+        -4 * thetaCuspTailDerivative 3 x -
+          (-4) * (Real.cos (t * x) * thetaCuspTailDerivative 3 x) by
+      funext x
+      dsimp [h]
+      ring]
+    exact hbase.sub hcos
+  have hhnn : ∀ᵐ x ∂(volume.restrict (Ioi 0)), 0 ≤ h x := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+    exact mul_nonneg
+      (le_of_lt (mul_pos_of_neg_of_neg (by norm_num)
+        (thetaCuspTailDerivative_three_neg hx.le)))
+      (sub_nonneg.mpr (Real.cos_le_one _))
+  have hhpos : 0 < ∫ x : ℝ in Ioi 0, h x := by
+    apply (setIntegral_pos_iff_support_of_nonneg_ae hhnn hhint).2
+    have hopen : IsOpen (Function.support h ∩ Ioi (0 : ℝ)) :=
+      hhcont.isOpen_support.inter isOpen_Ioi
+    apply hopen.measure_pos (volume : Measure ℝ)
+    refine ⟨Real.pi / t, ?_, div_pos Real.pi_pos ht⟩
+    change h (Real.pi / t) ≠ 0
+    have harg : t * (Real.pi / t) = Real.pi := by field_simp
+    dsimp [h]
+    rw [harg, Real.cos_pi]
+    have hderiv := thetaCuspTailDerivative_three_neg
+      (show 0 ≤ Real.pi / t from (div_pos Real.pi_pos ht).le)
+    exact ne_of_gt (mul_pos (mul_pos_of_neg_of_neg (by norm_num) hderiv) (by norm_num))
+  have hid := thetaCuspTailSecondDensity_sine_identity t
+  change t * (∫ x : ℝ in Ioi 0,
+    thetaCuspTailSecondDensity x * Real.sin (t * x)) = _ at hid
+  nlinarith
+
+theorem thetaCuspTailSecondDensityPhaseValue_im_ofReal_eq_sine
+    (t : ℝ) :
+    (thetaCuspTailSecondDensityPhaseValue (t : ℂ)).im =
+      ∫ x : ℝ in Ioi 0,
+        thetaCuspTailSecondDensity x * Real.sin (t * x) := by
+  have hint := integrableOn_thetaCuspTailSecondDensity_mul_phase
+    (z := (t : ℂ)) (by simp)
+  unfold thetaCuspTailSecondDensityPhaseValue
+  calc
+    (∫ x : ℝ in Ioi 0,
+        (thetaCuspTailSecondDensity x : ℂ) *
+          spectralTranslationPhase x (t : ℂ)).im =
+        ∫ x : ℝ in Ioi 0,
+          ((thetaCuspTailSecondDensity x : ℂ) *
+            spectralTranslationPhase x (t : ℂ)).im :=
+      (integral_im hint).symm
+    _ = ∫ x : ℝ in Ioi 0,
+        thetaCuspTailSecondDensity x * Real.sin (t * x) := by
+      apply integral_congr_ae
+      filter_upwards with x
+      have hphaseIm : (spectralTranslationPhase x (t : ℂ)).im =
+          Real.sin (x * t) := by
+        unfold spectralTranslationPhase
+        rw [show (x : ℂ) * I * (t : ℂ) = ((x * t : ℝ) : ℂ) * I by
+          push_cast
+          ring]
+        exact Complex.exp_ofReal_mul_I_im (x * t)
+      rw [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+        zero_mul, add_zero, hphaseIm]
+      congr 1
+      ring
+
+theorem thetaCuspTailSecondDensityPhaseValue_im_ofReal_pos
+    {t : ℝ} (ht : 0 < t) :
+    0 < (thetaCuspTailSecondDensityPhaseValue (t : ℂ)).im := by
+  rw [thetaCuspTailSecondDensityPhaseValue_im_ofReal_eq_sine]
+  exact integral_thetaCuspTailSecondDensity_mul_sin_pos ht
+
+/-- The antisymmetric boundary channel of the source-selected split has one strict orientation on
+the whole positive real axis. -/
+theorem thetaCuspTailSecondDensityDeBrangesE_im_ofReal_pos
+    {t : ℝ} (ht : 0 < t) :
+    0 < (thetaCuspTailSecondDensityDeBrangesE (t : ℂ)).im := by
+  have hF := thetaCuspTailSecondDensityPhaseValue_im_ofReal_pos ht
+  have hq : (t : ℂ) ^ 2 + 1 / 4 = ((t ^ 2 + 1 / 4 : ℝ) : ℂ) := by
+    push_cast
+    ring
+  unfold thetaCuspTailSecondDensityDeBrangesE
+  rw [hq]
+  simp only [Complex.sub_im, Complex.mul_im, Complex.ofReal_re,
+    Complex.ofReal_im, zero_mul, add_zero]
+  rw [show ((1 / 4 : ℂ)).im = 0 by norm_num, sub_zero]
+  nlinarith [sq_nonneg t]
 
 /-- Real Laplace transform of the full canonical second density. -/
 def thetaCuspTailSecondDensityRealLaplace (v : ℝ) : ℝ :=

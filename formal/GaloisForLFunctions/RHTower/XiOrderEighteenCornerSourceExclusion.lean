@@ -1,0 +1,206 @@
+import GaloisForLFunctions.RHTower.XiOrderEighteenEdgeCorner
+
+/-!
+# Source exclusion of the order-eighteen compact edge corner
+
+The order-nineteen sector can fail only in
+
+`7/50 < (Re rho - 1/2)^2 < 1/4`, `85 < (Im rho)^2 < 147`.
+
+The sharpened seven-interval theta floor bounds the complete nonnegative fourth reciprocal trace
+below `9/50000`. Four FE--Schwarz copies of any zero in this corner would contribute more than
+`9/50000`, excluding the corner unconditionally and without a zero table.
+-/
+
+open Complex Real MeasureTheory Set Filter Topology
+open scoped BigOperators
+
+namespace RHTower
+
+noncomputable section
+
+/-- One fourth reciprocal-trace atom in the order-eighteen compact edge corner exceeds one
+quarter of the global source threshold. -/
+theorem nine_over_twoHundredThousand_lt_xiFourthReciprocalTraceAtom_of_orderEighteen_edgeCorner
+    (q : XiZeroCopy)
+    (huLower : (7 / 50 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2)
+    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4)
+    (hvLower : 85 < (q.1 : ℂ).im ^ 2)
+    (hvUpper : (q.1 : ℂ).im ^ 2 < 147) :
+    (9 / 200000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ 2).re := by
+  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
+  let v : ℝ := (q.1 : ℂ).im ^ 2
+  let w : ℝ := u + v
+  let W : ℝ := 589 / 4
+  have hu0 : 0 < u := by
+    exact (by norm_num : (0 : ℝ) < 7 / 50).trans
+      (by simpa only [u] using huLower)
+  have hv0 : 0 < v := by linarith
+  have huU : u < 1 / 4 := by simpa only [u] using huUpper
+  have hvU : v < 147 := by simpa only [v] using hvUpper
+  have hw0 : 0 < w := by dsimp only [w]; positivity
+  have hwLower : 85 < w := by dsimp only [w]; linarith
+  have hwUpper : w < W := by dsimp only [w, W]; linarith
+  have hW0 : 0 < W := by dsimp only [W]; norm_num
+  have hsqUpper : w ^ 2 < W ^ 2 := by
+    exact (sq_lt_sq₀ hw0.le hW0.le).2 hwUpper
+  have hsecond : 0 < 9 * (W ^ 2 + w ^ 2) - 200000 := by
+    have hsqLower : (85 : ℝ) ^ 2 < w ^ 2 :=
+      (sq_lt_sq₀ (by norm_num) hw0.le).2 hwLower
+    dsimp only [W] at hsqLower ⊢
+    nlinarith
+  have hshape :
+      200000 * w ^ 2 - 9 * w ^ 4 >
+        200000 * W ^ 2 - 9 * W ^ 4 := by
+    have hprod := mul_pos (sub_pos.mpr hsqUpper) hsecond
+    have hid :
+        (200000 * w ^ 2 - 9 * w ^ 4) -
+            (200000 * W ^ 2 - 9 * W ^ 4) =
+          (W ^ 2 - w ^ 2) * (9 * (W ^ 2 + w ^ 2) - 200000) := by
+      ring
+    nlinarith
+  have huv : u * v < 147 / 4 := by
+    calc
+      u * v < (1 / 4 : ℝ) * v :=
+        mul_lt_mul_of_pos_right (by simpa only [u] using huUpper) hv0
+      _ < (1 / 4 : ℝ) * 147 :=
+        mul_lt_mul_of_pos_left (by simpa only [v] using hvUpper) (by norm_num)
+      _ = 147 / 4 := by norm_num
+  have hendpoint :
+      0 < (200000 * W ^ 2 - 9 * W ^ 4) - 1600000 * (147 / 4) := by
+    norm_num [W]
+  have hG :
+      0 < 200000 * (v ^ 2 - 6 * u * v + u ^ 2) - 9 * w ^ 4 := by
+    have hN : v ^ 2 - 6 * u * v + u ^ 2 = w ^ 2 - 8 * u * v := by
+      dsimp only [w]
+      ring
+    have hshapeShift :
+        200000 * W ^ 2 - 9 * W ^ 4 - 1600000 * (147 / 4) <
+          200000 * w ^ 2 - 9 * w ^ 4 - 1600000 * (147 / 4) := by
+      have h := add_lt_add_right hshape (-1600000 * (147 / 4))
+      convert h using 1 <;> ring
+    have hbase : 0 < 200000 * w ^ 2 - 9 * w ^ 4 - 1600000 * (147 / 4) :=
+      hendpoint.trans hshapeShift
+    have huvScaled : 1600000 * (u * v) < 1600000 * (147 / 4) :=
+      mul_lt_mul_of_pos_left huv (by norm_num)
+    have huvShift :
+        200000 * w ^ 2 - 9 * w ^ 4 - 1600000 * (147 / 4) <
+          200000 * w ^ 2 - 9 * w ^ 4 - 1600000 * (u * v) := by
+      exact sub_lt_sub_left huvScaled _
+    have htarget : 0 < 200000 * w ^ 2 - 9 * w ^ 4 - 1600000 * (u * v) :=
+      hbase.trans huvShift
+    rw [hN]
+    convert htarget using 1 <;> ring
+  have hformula :
+      (xiZeroCopyReciprocalSquare q ^ 2).re =
+        (v ^ 2 - 6 * u * v + u ^ 2) / w ^ 4 := by
+    rw [pow_two, Complex.mul_re, xiZeroCopyReciprocalSquare_re_formula,
+      xiZeroCopyReciprocalSquare_im_formula]
+    simp only [u, v, w]
+    have hden : u + v ≠ 0 := by positivity
+    field_simp [hden]
+    ring
+  rw [hformula]
+  rw [div_lt_div_iff₀ (by norm_num : (0 : ℝ) < 200000) (pow_pos hw0 4)]
+  nlinarith
+
+/-- Four distinct FE--Schwarz copies of an order-eighteen corner zero overspend the complete
+fourth reciprocal trace. -/
+theorem nine_over_fiftyThousand_lt_source_of_orderEighteen_edgeCorner
+    (q : XiZeroCopy)
+    (huLower : (7 / 50 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2)
+    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4)
+    (hvLower : 85 < (q.1 : ℂ).im ^ 2)
+    (hvUpper : (q.1 : ℂ).im ^ 2 < 147) :
+    (9 / 50000 : ℝ) < normalizedPrimeArchMoment 1 := by
+  have hoff : (q.1 : ℂ).re ≠ 1 / 2 := by
+    intro h
+    rw [h] at huLower
+    norm_num at huLower
+  let qJ := xiZeroCopyLineConjEquiv q
+  let qC := xiZeroCopyConjEquiv q
+  let qCJ := xiZeroCopyLineConjEquiv qC
+  let s : Finset XiZeroCopy := {q, qJ, qC, qCJ}
+  have hqJ : q ≠ qJ := by
+    simpa only [qJ] using xiZeroCopy_ne_lineConj_of_re_ne_half q hoff
+  have hqC : q ≠ qC := by simpa only [qC] using xiZeroCopy_ne_conj q
+  have hqCJ : q ≠ qCJ := by
+    simpa only [qC, qCJ] using xiZeroCopy_ne_lineConjConj q
+  have hqJqC : qJ ≠ qC := by
+    simpa only [qJ, qC] using xiZeroCopy_lineConj_ne_conj q
+  have hqJqCJ : qJ ≠ qCJ := by
+    simpa only [qJ, qC, qCJ] using xiZeroCopy_lineConj_ne_lineConjConj q
+  have hqCqCJ : qC ≠ qCJ := by
+    simpa only [qC, qCJ] using
+      xiZeroCopy_conj_ne_lineConjConj_of_re_ne_half q hoff
+  have hsum : Summable
+      (fun r : XiZeroCopy => (xiZeroCopyReciprocalSquare r ^ 2).re) :=
+    (summable_xiZeroCopyReciprocalSquare_pow 1).mapL Complex.reCLM
+  have hle := hsum.sum_le_tsum s (fun r _ => xiFourthReciprocalTraceAtom_nonneg r)
+  have hJ : (xiZeroCopyReciprocalSquare qJ ^ 2).re =
+      (xiZeroCopyReciprocalSquare q ^ 2).re := by
+    simpa only [qJ] using xiFourthReciprocalTraceAtom_lineConj q
+  have hCq : (xiZeroCopyReciprocalSquare qC ^ 2).re =
+      (xiZeroCopyReciprocalSquare q ^ 2).re := by
+    simpa only [qC] using xiFourthReciprocalTraceAtom_conj q
+  have hCJ : (xiZeroCopyReciprocalSquare qCJ ^ 2).re =
+      (xiZeroCopyReciprocalSquare q ^ 2).re := by
+    calc
+      (xiZeroCopyReciprocalSquare qCJ ^ 2).re =
+          (xiZeroCopyReciprocalSquare qC ^ 2).re := by
+        simpa only [qC, qCJ] using xiFourthReciprocalTraceAtom_lineConj qC
+      _ = (xiZeroCopyReciprocalSquare q ^ 2).re := hCq
+  have hfinite :
+      ∑ r ∈ s, (xiZeroCopyReciprocalSquare r ^ 2).re =
+        4 * (xiZeroCopyReciprocalSquare q ^ 2).re := by
+    simp only [s]
+    rw [Finset.sum_insert (by simp [hqJ, hqC, hqCJ]),
+      Finset.sum_insert (by simp [hqJqC, hqJqCJ]),
+      Finset.sum_insert (by simp [hqCqCJ]), Finset.sum_singleton,
+      hJ, hCq, hCJ]
+    ring
+  rw [hfinite, tsum_xiFourthReciprocalTraceAtom_eq_source] at hle
+  have hatom :=
+    nine_over_twoHundredThousand_lt_xiFourthReciprocalTraceAtom_of_orderEighteen_edgeCorner
+      q huLower huUpper hvLower hvUpper
+  nlinarith
+
+/-- **Unconditional order-eighteen compact-corner exclusion.** -/
+theorem not_exists_xiZeroCopy_mem_orderEighteen_edgeCorner :
+    ¬ ∃ q : XiZeroCopy,
+      (7 / 50 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
+      ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
+      85 < (q.1 : ℂ).im ^ 2 ∧
+      (q.1 : ℂ).im ^ 2 < 147 := by
+  rintro ⟨q, huLower, huUpper, hvLower, hvUpper⟩
+  have hlower := nine_over_fiftyThousand_lt_source_of_orderEighteen_edgeCorner
+    q huLower huUpper hvLower hvUpper
+  have hupper := normalizedPrimeArchMoment_one_lt_nine_over_fiftyThousand
+  linarith
+
+/-- The order-eighteen squared-seam source has strict positive atomwise sign everywhere. -/
+theorem xiOrderNineteenReciprocalPower_re_pos
+    (q : XiZeroCopy) {y : ℝ} (hy : 1 / 4 < y) :
+    let A : ℝ := (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y
+    let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
+    0 < ((((A : ℂ) - B * I)⁻¹) ^ 19).re := by
+  by_cases hoff : (q.1 : ℂ).re = 1 / 2
+  · let A : ℝ := (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y
+    let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
+    have hA : 0 < A := by
+      dsimp only [A]
+      rw [hoff]
+      norm_num
+      nlinarith [sq_nonneg (q.1 : ℂ).im]
+    apply orderNineteenReciprocalPower_re_pos_of_sectorRatio hA
+    rw [hoff]
+    norm_num
+    exact sq_pos_of_pos hA
+  · by_contra hnot
+    have hcorner := xiOrderNineteenReciprocalPower_nonpos_mem_edgeCorner q hoff hy
+      (le_of_not_gt hnot)
+    exact not_exists_xiZeroCopy_mem_orderEighteen_edgeCorner ⟨q, hcorner⟩
+
+end
+
+end RHTower

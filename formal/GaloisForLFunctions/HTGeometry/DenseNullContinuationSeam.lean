@@ -56,6 +56,27 @@ theorem frontier_eq_univ_of_dense_and_dense_compl
   rw [frontier_eq_closure_inter_closure, hSclosure, hScclosure]
   exact Set.univ_inter Set.univ
 
+/-- A set and its complement are both dense exactly when its frontier is the whole space. -/
+theorem frontier_eq_univ_iff_dense_and_dense_compl
+    {X : Type*} [TopologicalSpace X] {S : Set X} :
+    frontier S = Set.univ ↔ Dense S ∧ Dense Sᶜ := by
+  constructor
+  · intro hfrontier
+    constructor
+    · rw [dense_iff_closure_eq]
+      apply top_unique
+      change Set.univ ⊆ closure S
+      rw [← hfrontier]
+      exact frontier_subset_closure
+    · rw [dense_iff_closure_eq]
+      have hfrontierCompl : frontier Sᶜ = Set.univ := by simpa using hfrontier
+      apply top_unique
+      change Set.univ ⊆ closure Sᶜ
+      rw [← hfrontierCompl]
+      exact frontier_subset_closure
+  · rintro ⟨hS, hSc⟩
+    exact frontier_eq_univ_of_dense_and_dense_compl hS hSc
+
 /-- On a dense/codense seam, every neighborhood contains points on both sides. -/
 theorem every_open_neighborhood_meets_both_sides
     {X : Type*} [TopologicalSpace X] {S : Set X}

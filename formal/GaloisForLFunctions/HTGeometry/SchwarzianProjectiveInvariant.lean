@@ -140,6 +140,19 @@ theorem algHom_schwarzian
   simp only [schwarzian, map_sub, map_div₀, map_mul, map_pow, map_ofNat]
   rw [h1, h2, h3]
 
+/-- A differential algebra homomorphism transports the Schwarzian unchanged across a
+differential-constant projective transition between two possibly different coordinates. -/
+theorem schwarzian_transport_of_projective_transition
+    {C K : Type*} [Field C] [Field K] [CharZero K] [Algebra C K] [Differential K]
+    (phi : K →ₐ[C] K) (hphi : ∀ z : K, phi z′ = (phi z)′)
+    (u v a b c d : K)
+    (ha : a′ = 0) (hb : b′ = 0) (hcder : c′ = 0) (hdder : d′ = 0)
+    (hdet : a * d - b * c ≠ 0) (hden : c * u + d ≠ 0) (hdu : u′ ≠ 0)
+    (htransition : phi v = (a * u + b) / (c * u + d)) :
+    phi (schwarzian v) = schwarzian u := by
+  rw [algHom_schwarzian phi hphi v, htransition]
+  exact schwarzian_mobius u a b c d ha hb hcder hdder hdet hden hdu
+
 /-- A projective semiconjugate of a differential endomorphism yields a fixed Schwarzian
 observable. -/
 theorem schwarzian_fixed_of_projective_semiconjugacy
@@ -150,8 +163,8 @@ theorem schwarzian_fixed_of_projective_semiconjugacy
     (hdet : a * d - b * c ≠ 0) (hden : c * u + d ≠ 0) (hdu : u′ ≠ 0)
     (hsemi : phi u = (a * u + b) / (c * u + d)) :
     phi (schwarzian u) = schwarzian u := by
-  rw [algHom_schwarzian phi hphi u, hsemi]
-  exact schwarzian_mobius u a b c d ha hb hcder hdder hdet hden hdu
+  exact schwarzian_transport_of_projective_transition phi hphi u u a b c d
+    ha hb hcder hdder hdet hden hdu hsemi
 
 /-- The cleared differential polynomial for the equation `schwarzian x = c`. -/
 def schwarzianRelation {C : Type*} [Field C] (c : C) :

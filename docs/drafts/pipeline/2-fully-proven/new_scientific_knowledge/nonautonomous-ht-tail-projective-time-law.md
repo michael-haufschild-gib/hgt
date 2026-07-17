@@ -173,14 +173,19 @@ coarse-graining exists.  Any claimed RH application must still construct source-
 
 `NonautonomousStableCore.lean` now formalizes the finite protocol prefixes, phase tails, exact
 identity (2), the induced algebra equivalence between successive tails, and derivation closure.
-`SchwarzianProjectiveInvariant.lean` formalizes the canonical Schwarzian transport once the
-paper-level differential-Luroth/projective generator step is supplied.  The targeted builds pass,
-and axiom reports contain only `propext`, `Classical.choice`, and `Quot.sound`.
+`SchwarzianProjectiveInvariant.lean` formalizes the canonical two-coordinate transport in
+`schwarzian_transport_of_projective_transition`: if a differential homomorphism sends the next
+phase generator `v` to a constant-coefficient Mobius transform of the current generator `u`, then
+it sends `S(v)` exactly to `S(u)`.  The earlier autonomous fixed-Schwarzian theorem is now its
+specialization.  Thus equation (6) is formalized once the paper-level differential-Luroth and
+projective-generator step supplies the phase coordinates and transition.  The targeted direct
+checks pass, and axiom reports contain only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
 - [x] 0 -> 1: nonautonomous tail and projective-time claim isolated
 - [x] 1 -> 2: complete proof with classical parents separated
+- [x] exact two-coordinate Schwarzian phase transport formalized and autonomous duplication removed
 - [ ] 2 -> 3: phase-tail isomorphism and Schwarzian transport are formalized; differential Luroth
   and generator classification remain paper-level
 - [ ] 3 -> 4: external novelty audit and standalone manuscript

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.CoulombGammaPhaseClock
-import GaloisForLFunctions.HTGeometry.GammaReflectedFrequencyObservability
+import GaloisForLFunctions.HTGeometry.WignerSmithLogClockObservability
 
 /-!
 # Reflected-frequency observability of the Coulomb phase
@@ -71,6 +71,34 @@ theorem coulombPhaseMero_eq_oppositeShiftQuotient (ell : ℕ) :
         (((ell + 1 : ℕ) : ℂ)) (((ell + 1 : ℕ) : ℂ)) := by
   rfl
 
+/-- Wigner--Smith logarithmic delay of the Coulomb partial-wave phase. -/
+def coulombWignerSmithLogClockMero (ell : ℕ) : meroField Set.univ :=
+  HTGeometry.wignerSmithLogClock (coulombPhaseMero ell)
+
+/-- The Coulomb delay is the self-shift specialization of the general opposite-orientation Gamma
+Wigner--Smith clock. -/
+theorem coulombWignerSmithLogClockMero_eq_gammaOppositeShift (ell : ℕ) :
+    coulombWignerSmithLogClockMero ell =
+      gammaOppositeShiftWignerSmithLogMero
+        (((ell + 1 : ℕ) : ℂ)) (((ell + 1 : ℕ) : ℂ)) := by
+  rfl
+
+/-- **Coulomb Wigner--Smith value relation.**  The observable delay is the difference of the two
+oppositely oriented Gamma logarithmic derivatives. -/
+theorem coulombWignerSmithLogClockMero_eq_orientedLogDerivatives (ell : ℕ) :
+    coulombWignerSmithLogClockMero ell =
+      digammaShiftMero (((ell + 1 : ℕ) : ℂ)) -
+        gammaNegativeLogDerivativeMero (((ell + 1 : ℕ) : ℂ)) := by
+  rw [coulombWignerSmithLogClockMero_eq_gammaOppositeShift,
+    gammaOppositeShiftWignerSmithLogMero_eq_orientedLogDerivatives]
+
+/-- The Coulomb Wigner--Smith delay retains the HT source of the scattering phase. -/
+theorem hypertranscendentalOver_coulombWignerSmithLogClockMero (ell : ℕ) :
+    HypertranscendentalOver (RatFunc ℂ) (coulombWignerSmithLogClockMero ell) := by
+  rw [coulombWignerSmithLogClockMero,
+    HTGeometry.hypertranscendentalOver_wignerSmithLogClock_iff]
+  exact hypertranscendentalOver_coulombPhaseMero ell
+
 /-- **Global Coulomb intensity collapse.**  Frequency-reflected meromorphic intensity is exactly
 one, strengthening unit modulus on the physical real slice. -/
 theorem coulombPhaseIntensityObservationMero_eq_one (ell : ℕ) :
@@ -123,6 +151,19 @@ theorem no_scalarAwareFiniteDifferentialCircuit_coulombPhase_from_intensity (ell
       (hypertranscendentalOver_coulombPhaseOrientationObservationMero ell) hcircuit
   rw [ha] at hHT
   exact hHT (differentialAlgebraicOver_coulombPhaseIntensityObservationMero ell)
+
+/-- **Coulomb delay survives intensity collapse.**  Rational clocks and the globally unit
+reflected-frequency intensity cannot finitely reconstruct the HT Wigner--Smith delay. -/
+theorem no_scalarAwareFiniteDifferentialCircuit_coulombWignerSmith_from_intensity (ell : ℕ) :
+    ¬ HTGeometry.FiniteDifferentialCircuit
+      (HTGeometry.BaseScalarOrAtom (RatFunc ℂ) (meroField Set.univ)
+        (fun a => a = coulombPhaseIntensityObservationMero ell))
+      (coulombWignerSmithLogClockMero ell) := by
+  exact HTGeometry.no_scalarAwareFiniteDifferentialCircuit_wignerSmith_from_daObservation
+    (coulombPhaseMero ell)
+    (coulombPhaseIntensityObservationMero ell)
+    (hypertranscendentalOver_coulombPhaseMero ell)
+    (differentialAlgebraicOver_coulombPhaseIntensityObservationMero ell)
 
 end
 

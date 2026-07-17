@@ -92,38 +92,41 @@ finite rank.
 Thus the source-face object must retain not only a class and a boundary ideal but the comparison
 between the generic and boundary stabilizers.
 
-## `[CONJECTURE -- RIGIDIFICATION--SPECIALIZATION COMMUTATOR]`
+## `[CONJECTURE -- COHOMOLOGY--SPECIALIZATION TRANSMUTATION]`
 
 Let `X_T` be the solution stack of a regular source-minimal HT family and let `G_T` be its normalized
-joint-fixed inertia.  There are two operations:
+joint-fixed inertia.  A transverse reporter supplies a two-term observation complex
 
 ```text
-Rig: remove the chosen source inertia without choosing a solution;
-Sp:  specialize the labelled source action to a compactified source-monoid face.
+C_T^obs=[G_T^HT -> H_T],
+H^(-1)(C_T^obs)=residual source gauge,
+H^(0)(C_T^obs)=attainment defect.                              (R1)
 ```
 
-They need not commute.  The canonical comparison between `Sp(Rig(X_eta))` and `Rig(Sp(X)_0)` has a
-derived homotopy fibre `C_T`, the **rigidification--specialization commutator**.  On its linear
-source-gauge chart it is represented by
+Derived specialization is exact and therefore preserves the homotopy fibre defining derived
+rigidification.  The literal derived commutator is zero.  The nontrivial operation is instead the
+failure of ordinary cohomology to commute with derived specialization.  At one regular face
+`A -> B=A/(x)`, its edge sequence is
 
 ```text
-C_T^lin = [G_eta -> G_0],                                   (R1)
-H^(-1)(C_T^lin)=ker(G_eta -> G_0)       (gauge death),
-H^(0)(C_T^lin)=coker(G_eta -> G_0)       (gauge birth).      (R2)
+0 -> H^(-1)(C_T^obs)/x
+  -> H^(-1)(C_T^obs tensor_A^L B)
+  -> Tor_1^A(H^0(C_T^obs),B) -> 0.                           (R2)
 ```
 
-The full coefficient-filtered object couples `(R1)` to the source-face vanishing cycle by a
-canonical transgression
+Thus generic nonattainment can reappear one degree earlier as born reconstruction inertia without
+any loss in the derived complex.  The candidate HT-specific structure couples the edge class in
+`(R2)` to the independently constructed source-face vanishing cycle by a canonical transgression
 
 ```text
-kappa_T:C_T -> Phi_T(D_T).                                  (R3)
+kappa_T:Tor_1^A(H^0(C_T^obs),B) -> Phi_T(D_T).               (R3)
 ```
 
 It is constrained by four laws.
 
 1. **Endogenous blindness.** Every realization derived solely from the coarse source boundary
-   annihilates `C_T`; detecting `(R1)` requires a genuinely transverse channel or retention of the
-   stack inertia itself.
+   has the same fibres as that boundary; detecting the nonzero edge class in `(R2)` requires a
+   genuinely transverse channel or retention of the stack inertia itself.
 2. **Two-faced normal-character conversion.** For a multiplicative source face, the zero-face
    normal layers and infinity-face normal layers map under `(R3)` to opposite born-gauge
    **character lines**.  After choosing an oriented uniformizer the predicted charts are
@@ -139,11 +142,13 @@ It is constrained by four laws.
    the weight cone is not selectable; only the unordered pair of opposite face lattices is
    canonical.
 
-3. **Conservation.** A generic obstruction may change degree or move from source incidence to
-   stabilizer inertia, but it cannot vanish simultaneously from `C_T` and every conservative
-   coefficient vanishing cycle.
+3. **Conservation.** A generic obstruction may change cohomological degree or move from attainment
+   to stabilizer inertia, but the exact derived base-change complex retains it.  A conservative
+   coefficient realization must carry the same edge class rather than merely reproduce its
+   dimension.
 4. **Presentation invariance.** Replacing a functional-equation presentation by an equivalent
-   source presentation gives an equivalent commutator and the same weightwise transgression.
+   source presentation gives an equivalent observation complex and the same weightwise edge
+   transgression.
 
 `(R4+)`--`(R4-)` are deliberately stronger than noticing the same integer labels on two bases.
 The theorem target is a canonical two-lattice associated-graded duality, compatible with the DA
@@ -251,10 +256,10 @@ It satisfies:
 1. **source purity:** `(2)` is constructed before any divisor, spectrum, or target zero set;
 2. **coefficient compatibility:** it is natural for the DA, holomorphic, positive, integral, and
    ambient meromorphic coefficient channels;
-3. **selection--production transgression:** the map `(R3)` identifies the failure of normalized
-   selection to commute with specialization; a gauge or primitive class can disappear from the
-   generic fibre only by producing born inertia or a nonzero boundary/vanishing-cycle class,
-   possibly with a one-degree shift;
+3. **selection--production transgression:** the map `(R3)` carries the cohomology/base-change edge
+   class into the boundary receiver; a gauge or primitive class can disappear from generic
+   cohomology only by producing born inertia or a nonzero boundary/vanishing-cycle class, possibly
+   with a one-degree shift;
 4. **conservativity:** every realization functor preserving `(2)` detects the same nonzero
    projective escape profile, although it may display it as a kernel, cokernel, monodromy,
    positivity, continuation, or integrality failure;
@@ -294,10 +299,10 @@ k coordinate nomes specialized to zero
   -> order-(r-k) pointed HT class, shifted by k in descent height.                           (5)
 ```
 
-Residues commute for transverse faces, rigidification commutators satisfy the corresponding
-Beck--Chevalley interchange law, and their support matroid is the already-proved transverse
-constraint matroid.  The characteristic cycle of this stack-valued constructible object is the
-proposed presentation-independent carrier of hypertranscendental capacity.
+Residues commute for transverse faces, the cohomology/base-change edge maps satisfy the
+corresponding Beck--Chevalley interchange law, and their support matroid is the already-proved
+transverse constraint matroid.  The characteristic cycle of this stack-valued constructible
+object is the proposed presentation-independent carrier of hypertranscendental capacity.
 
 If `(5)` holds, "hypertranscendence is infinite algebraic clock capacity concentrated on a thin
 constraint boundary" becomes precise: the infinite differential capacity is not stored in a
@@ -458,16 +463,460 @@ naming a derived category, matrix factorization, or Rees module does not pass th
 gate.  The next theorem must calculate the complete multigraded face resolution for the multiple
 elliptic-gamma characteristic ideal and identify its first nonzero analytic connecting class.
 
+## Attack result: cohomological transmutation, not a derived commutator `[PROVED BRIDGE]`
+
+The common-kernel theorem from the independent reconstruction lane kills one remaining epicycle
+in `(B9)`.  A common-kernel sheaf and a derived face module must not be adjoined as unrelated
+entries.  They are adjacent cohomology of one observation-resolution complex.
+
+First, the literal derived version of `(R1)` is false as a nonzero invariant.  If rigidification
+is the homotopy fibre of an observation map and specialization is derived tensor, derived tensor
+is exact and preserves homotopy fibres.  Therefore
+
+```text
+[NO-GO]
+the commutator between derived rigidification and derived specialization is canonically zero.
+```
+
+The maximal positive replacement is the failure of ordinary cohomology to commute with derived
+specialization.  For a two-term observation complex
+
+```text
+C_obs=[G_HT --Obs_R-> H_R],       H^(-1)=common kernel, H^0=attainment defect,
+```
+
+and a regular one-coordinate face `A -> A/(x)`, there is an exact sequence
+
+```text
+0 -> H^(-1)(C_obs)/x
+  -> H^(-1)(C_obs tensor A/(x))
+  -> Tor_1^A(H^0(C_obs),A/(x)) -> 0.                       (B11)
+```
+
+Thus an attainment defect becomes a born invisible gauge one degree earlier.  More generally,
+the exact quotient theorem gives
+
+```text
+born gauge modulo inherited gauge
+  ~= (range(Obs_R) intersect forgotten target layer)
+      / Obs_R(forgotten source layer).                    (B12)
+```
+
+The right side is an excess intersection, so boundary nonconservativity is not arbitrary.
+
+On a Hilbert realization let `A_0` be the specialized reporter and
+`Delta_0=A_0^* A_0` its Gram operator.  The elementary identity
+
+```text
+ker(Delta_0)=ker(A_0)
+```
+
+combines with `(B11)` to give the exact positive-receiver form
+
+```text
+0 -> inherited Gram radical -> boundary Gram radical
+  -> Tor_1^A(H^0(C_obs),A/(x)) -> 0.                       (B11+)
+```
+
+If the generic observation is injective, the complete boundary positivity radical is therefore
+the specialized attainment `Tor_1` class.  Reconstruction failure and Gram-positivity failure are
+not merely correlated in this regime: they are the same born class under two exact realizations of
+one observation complex.  The fixed-source equality between reporter injectivity and residual
+Gram injectivity is already Lean-formalized in `SourceGaugeObservabilitySpectrum.lean`; the
+face-excess kernel and quotient law is Lean-formalized in `SourceFaceObservationExcess.lean`.
+The combined statement remains parent homological algebra and Hilbert geometry, not an HT novelty
+claim.  Its force is to remove positivity from the list of independent mysteries once a common
+polarized observation complex has actually been constructed.
+
+The smallest discriminator is multiplication by `1` versus multiplication by `x` over `k[x]`.
+Both maps have zero generic kernel.  Modulo `x`, the first remains injective and the second becomes
+zero because their cokernels are respectively `0` and `k[x]/(x)`.  Hence the common-kernel sheaf
+alone is not face-conservative; the differential and cokernel of the observation complex are
+necessary.
+
+For Barnes, `(B11)` is exactly the already-proved matrix-factorization class.  The presentation
+
+```text
+A --product_i x_i-> A -> M_N -> 0
+```
+
+is injective before restriction and zero on every nonempty coordinate face.  Consequently
+
+```text
+boundary kernel = Tor_1^A(M_N,B_S)=B_S.                   (B13)
+```
+
+The regular phrase "reconstruction inertia" and the singular phrase "capacity birth" now denote
+the same class, not two similarly sized classes.
+
+This attack supersedes the separate common-kernel entry of `(B9)`.  The corrected candidate is a
+source-face diagram of filtered perfect observation complexes
+
+```text
+OCR(F,R)=Rees_delta(U |-> C_obs(F,R;U)),                  (B14)
+```
+
+with the source presentation complex as one receiver and independently constructed analytic,
+spectral, positive, monodromic, and integral reporters as other receivers.  The characteristic
+module is a degree-zero cohomology object of `(B14)`; the common kernel is degree `-1`; higher
+syzygies and iterated face classes occupy lower degrees.  Separate direct-sum packaging is no
+longer admissible.
+
+The complete zero-face calculation for the critical normal-crossing module now gives, for a face
+of size `k`, amplitude one when `k=1` and amplitude two when `k>=2`.  On one face its degree-zero
+term is the lower normal-crossing hypersurface module, while its degree-one term is precisely the
+kernel of the map from that hypersurface module to the lower critical module.  Thus the born
+class is the entire correction from specialization-after-criticalization to
+criticalization-after-specialization.  The formulas and proof are recorded in
+`../2-fully-proven/not_new_scientific_knowledge/source-face-observation-cohomology-transmutation.md`.
+
+The algebra in `(B11)`--`(B13)` is classical and is a bridge, not new scientific knowledge.  The
+candidate-new theorem is now sharply smaller and harder:
+
+```text
+[CONJECTURE -- HT BOCKSTEIN CONSERVATIVITY]
+For one natural source-minimal HT degeneration and one independently typed transverse analytic
+reporter, the analytic born gauge or boundary charge is the Bockstein image of the same
+characteristic Tor class appearing in the source presentation complex.                (B15)
+```
+
+The explicit Tate-theta divisor-to-winding family is the first target.  Equality of the two
+integer labels is insufficient; `(B15)` requires a natural map of complexes carrying the Tor
+class to the analytic node-charge class and preserving the DA-relative filtration.  This is the
+first point at which the theory would prove conservation across genuinely different receivers.
+
+## Coefficient discriminator: the integral localization class `[PROVED LOCAL BRIDGE]`
+
+Attacking `(B15)` reveals that a purely complex-linear observation complex is still too small.
+The characteristic `Tor_1` class is a complex vector space, whereas winding/node charge is a
+primitive integral class with orientation.  Scalar multiplication acts transitively on the
+nonzero vectors of a complex line, so no construction using only that line can canonically select
+`+1` rather than an arbitrary nonzero scalar or its negative.
+
+```text
+[NO-GO]
+The coherent characteristic complex alone cannot recover integral charge, primitivity, or
+orientation.
+```
+
+The local semistable node identifies the exact positive replacement.  Let `R` be a DVR with
+uniformizer `t` and
+
+```text
+A=R[x,y]/(xy-t),       X=Spec(A),       Z=V(x),       B=A/(x).            (B16)
+```
+
+The element `x` is a unit on `X-Z`, and, with the boundary orientation in which `V(x)` is
+positive, the localization boundary sends
+
+```text
+partial_K([x^m])=m[A/(x)] in K_0^Z(A).                                  (B17)
+```
+
+Equivalently, `(B17)` is represented by `m` times the Koszul complex
+
+```text
+K(x)=[A --x-> A].                                                        (B18)
+```
+
+Derived restriction of `(B18)` to the face is
+
+```text
+K(x) tensor_A^L B=[B --0-> B],                                          (B19)
+```
+
+so its two homology groups are the exact relation-death/capacity-birth pair.  The coefficient of
+`V(x)` in the vertical divisor of `x^m` is `m`, which is the node charge.  Thus
+
+```text
+regular winding -> integral K_1 class -> supported Koszul class -> born Tor pair              (B20)
+```
+
+is one localization chain.  The algebraic localization theorem and Koszul calculation are
+classical; `(B20)` is a bridge, not a novelty claim.
+
+Algebraic K-theory is not itself the full unified object: distinct perfect complexes can have the
+same K-class, so passing immediately to a K-theory spectrum can forget the differential that
+distinguished multiplication by `1` from multiplication by `x`.  The maximal positive correction
+is therefore categorical:
+
+```text
+[CONJECTURE -- POLARIZED HT CONSTRAINT-LOCALIZATION CATEGORY]
+A source-minimal HT system determines a DA-filtered stable category of observation-resolution
+complexes with source-face localization sequences.  Its coherent realization is `(B14)` and
+produces Tor/common-kernel transmutation; its integral K-theory realization produces winding,
+divisor charge, and primitivity; a self-dual hermitian realization produces orientation and
+positivity.  These realizations are jointly conservative on the source-generated subcategory.
+                                                                            (B21)
+```
+
+This is stronger than attaching several invariants to a function: the realization functors must
+start from the same object and carry the same localization morphism.  It is also falsifiable.
+Two source-generated objects with equal coherent, integral, and hermitian realizations but
+different analytic obstruction behavior kill joint conservativity; a Tate-theta node charge not
+equal to the localization boundary of its analytic source class kills the first cross-realization
+test.
+
+The analytic side of the semistable Tate chart can now be proved locally.  Make the base change
+`q=t^4` and write the node as `xy=t`.  Direct factorization of the theta products gives
+
+```text
+E_(t^4)(x)=x u(x,y,t),       u a unit with u(0,0,0)=1.                    (B22)
+```
+
+The key identities are
+
+```text
+t theta_(t^4)(t^(-1)x)=(t-x) times a unit,
+theta_(t^4)(t^3x)=(1-y) times a unit,
+t-x=-x(1-y).
+```
+
+Hence the analytic localization class of `E_(t^4)` is exactly `[x]`, not merely a function with
+the same limiting winding.  Separately, in any one commutative ring the chain map
+
+```text
+K(xi) -> K(p xi),       degree 1: identity,       degree 0: multiplication by p          (B23)
+```
+
+commutes because `p xi=p xi`; after restriction to `xi=0`, its degree-one map remains the
+identity.  The theta factorization and this algebraic chain map are recorded in
+`../2-fully-proven/not_new_scientific_knowledge/tate-theta-koszul-barnes-localization-transmutation.md`.
+
+Attacking the composition exposes a decisive type error.  The nodal coordinate `x` in `(B22)` is
+a meromorphic gauge vector.  The Barnes factor is the source operator
+
+```text
+xi_j=T_j-1.                                                              (B24)
+```
+
+They are not elements of one ring.  A valid realization must send `x` to a vector annihilated by
+`xi_j`; it cannot identify the vector with the operator `xi_j`.
+
+```text
+[NO-GO]
+The local theta localization class and the Barnes Koszul class cannot be identified by reusing
+the symbol x.  A typed realization functor is still missing.
+```
+
+The positive replacement is now explicit at every integral charge.  For a Barnes period
+`omega_j`, put
+
+```text
+lambda_(j,m)=2 pi i m/omega_j,
+ell_(j,m)(z)=exp(lambda_(j,m) z),
+chi_(j,m)(T_k)=exp(lambda_(j,m) omega_k),
+chi_(j,m)(delta)=lambda_(j,m).                                  (B25)
+```
+
+Every `chi_(j,m)` factors through `B_j=D_N/(T_j-1)`, so the `m`-th face fibre maps `1` to the
+vector `ell_(j,m)`.  Distinct charges form linearly independent analytic modes.  Thus the full
+local receiver is the graded object
+
+```text
+Char_j=directSum_(m in Z) B_j tensor_(chi_(j,m)) C,               (B25+)
+```
+
+not the single primitive fibre.  Lean proves selected-period annihilation, every complementary
+translation phase, the differential eigenvalue, and arbitrary finite distinct-charge
+independence in `NodalChargeCharacterRealization.lean`.
+
+Attacking face gluing gives a second exact theorem.  If `omega_j,omega_k` are rationally
+independent, then
+
+```text
+lambda_(j,m)=lambda_(k,n) iff m=n=0.                              (B26)
+```
+
+Hence nonzero charge sectors on incommensurate faces cannot be glued by identifying character
+lines.  The maximal positive replacement is a face-separated source-character fan: every face
+retains `(B25+)`, while different independent rays meet only in the neutral sector.  Resonant
+overlaps must be the exact integral commensurability sublattice.  The complete bridge theorem is
+recorded in
+`../2-fully-proven/not_new_scientific_knowledge/nodal-charge-character-fan-realization.md`.
+
+The corrected open core is global, DA-relative, and typed:
+
+```text
+[OPEN CORE]
+Construct a presentation-invariant face-poset character object for a source--observation double
+whose stalks are `(B25+)` and whose overlaps are the exact resonance lattices `(B26)`.  Construct
+a map of localization sequences carrying the Tate classes `[E^m]` through the integral nodal
+boundary to the filtered charge interval with associated graded
+`L_0 directSum ... directSum L_(m-1)`, then to the coherent Barnes `Tor` class and its analytic
+interval realization.  The charge-`m` line is the endpoint reached, not this boundary.  Prove that
+the analytic reporter is genuinely transverse to the bare source, together with DA-filtered
+naturality, iterated-face coherence, and conservativity after analytic completion.             (B27)
+```
+
+Only `(B27)`, not the local Fourier/character theorems, is a candidate for new scientific
+knowledge.
+
+## `[CONJECTURE -- POLARIZED SOURCE-CHARACTER FAN]`
+
+The new local theorem makes the proposed unified object more rigid.  It is not an unstructured
+stable category plus separately attached integral and hermitian invariants.  For a regular
+source-minimal HT system equipped with reporter data `(S,R)`, conjecturally there is a
+presentation-invariant constructible observation-complex field
+
+```text
+PChar_HT(S,R) -> Face(S)                                               (B28)
+```
+
+whose stalk on a source face `F` decomposes by the integral annihilator characters of `F`.  In the
+rank-one nodal chart this is exactly `(B25+)`.  The field carries, as structures on the same stalks
+and restriction maps:
+
+```text
+coherent differential      -> kernel/cokernel and Tor transmutation;
+charge involution m <-> -m -> source reflection and multiplicative duality;
+integral localization      -> primitive node/divisor charge;
+opposite-line pairing      -> polarization and crossing form;
+strict completion          -> closed-range/spectral incompleteness;
+determinant of restrictions -> monodromy and multiplicity;
+positive charge chamber    -> oriented canonical boundary condition.                 (B29)
+```
+
+This is a refinement of `(B21)`, not another primitive added to it: the face poset, character
+grading, and involution are now forced by `(B25)`--`(B26)`.  Only the localization, pairing,
+completion, and determinant structures remain to be constructed functorially for the
+source--observation double.
+
+The orientation discriminator is exact.  By
+
+```text
+lambda_(j,-m)=-lambda_(j,m),       ell_(j,-m) ell_(j,m)=1,                (B30)
+```
+
+charge reversal is an automorphism of the unpolarized character fan.  Therefore any invariant
+factoring through the underlying derived/coherent fan is blind to orientation surgery.  This is
+not a defect that more derived topology can repair.
+
+```text
+[NO-GO]
+An unpolarized derived source-face theory cannot canonically choose positivity or an oriented
+boundary condition, even after retaining all Tor groups and all charge lines.
+```
+
+```text
+[POSITIVE]
+The source canonically supplies the opposite-charge involution and multiplicative duality.  The
+minimal missing datum is a source-compatible nondegenerate pairing between opposite sectors plus a
+chamber selected by a genuinely transverse reporter.  If that reporter is source-derived, the
+bare-source nonconservativity theorem still rules it out.
+```
+
+The bare-source theorem now imposes an exact architectural constraint.  For every face `F`, let
+`K_F^(S,HT)` be its normalized DA-relative source-fixed gauge and let `R_(F,r)` be the proposed
+reporters.  Define the invisibility stalk
+
+```text
+I_F(S,R)=K_F^(S,HT) intersect intersection_r ker(R_(F,r)).               (B31)
+```
+
+The Lean-formalized joint reconstruction theorem and first isomorphism theorem give
+
+```text
+Obs_(F,R) conservative iff I_F(S,R)=0,
+K_F^(S,HT)/I_F(S,R) ~= range(Obs_(F,R)).                                 (B32)
+```
+
+Thus a successful unified object cannot be a functor of the bare source `S` alone.  Its true input
+must be a **constant-framed source--observation double** `(K,C;S,R_perp)`, where `C` is the declared
+joint difference-constant field and `R_perp` contains information not factoring through the source
+quotient.  Presentation invariance means invariance under equivalent presentations over the same
+constant frame; it must not be misread as derivability of `R_perp` from `S`.
+
+```text
+[CONJECTURE -- POLARIZED HT INVISIBILITY FIELD]
+For every regular constant-framed source--observation double `(K,C;S,R_perp)`, the facewise fibres of the complete
+DA-relative observation complexes assemble into a charge-graded, self-dual constructible field
+I_HT(K,C;S,R_perp) over `Face(S)`.  Its H^(-1) stalk is `(B31)`, its H^0 stalk is the attainment or
+spectral defect, its face connecting maps are the Tor/Bockstein transmutations, and its determinant
+line carries monodromy and the opposite-charge polarization.  A transverse double is complete
+exactly when this field is acyclic and its positive chamber is fixed.                         (B33)
+```
+
+The charge-two discriminator forces a sharper object.  The localization boundary of `[x^m]` is
+not the endpoint character line `L_m`: already `[x^2]` has boundary multiplicity two.  Its correct
+character refinement is an oriented interval representation `B_F(m)` with consecutive graded
+pieces `L_0,...,L_(m-1)` and charge-raising arrows.  Lean proves the all-power unilateral defect,
+the exact interval-plus-tail decomposition, the interval concatenation cocycle, the analytic
+pairing value `m`, and that the interval pairing equals the endpoint pairing exactly when `m=1`.
+
+```text
+[NO-GO]
+An endpoint-labelled source-face theory cannot conserve nonprimitive localization classes.  Even
+its full split associated graded remembers only the sectors and forgets the ordered extension
+joining them.
+
+[POSITIVE]
+The minimal local carrier is the indecomposable oriented interval module, not a character line and
+not merely its K-class.  Its arrows remember which charge crossings occurred and in what order.
+```
+
+Accordingly `(B33)` must be upgraded from a field of obstruction groups to a representation of the
+oriented exit-path category of `Face(S)`:
+
+```text
+B_F(m+n)=B_F(m) concatenate shift_m(B_F(n)),
+B_F(-m)=dual(B_F(m)) with reversed orientation.                              (B34)
+```
+
+Raw interval length cannot classify hypertranscendence.  The differential-algebraic solution
+`exp(z)` of `f(z+1)=e f(z)` admits nontrivial differential-algebraic period-one gauges matching any
+prescribed finite jet; the stronger arbitrary-jet statement is already Lean-formalized by
+`existsUnique_gammaPeriodicFourierPolynomial_jet`.  Thus unbounded finite-jet invisibility can be
+created entirely by enlargement of the analytic difference-constant field.
+
+The positive successor is relative.  Let `G_S^delta` be the minimal parameterized source-Galois
+groupoid over the declared joint constants.  The algebraic--analytic comparison should cut out a
+constant-descended subrepresentation `B_rel(S,R)` of `(B34)`.  Its independently defined
+differential-order-`n` Jordan--Hölder length should satisfy
+
+```text
+length(B_rel(S,R)_(<=n))=KolchinDimensionPolynomial_(G_S^delta)(n)
+for all sufficiently large n.                                                (B35)
+```
+
+This is a sharpened local form of the existing clock/Galois and dimension/curvature conjectures.
+The right side is parent theory; the candidate-new content is constructing the left side from the
+oriented source-face interval field and proving the equality without defining it by Galois
+dimension.  If `(B35)` holds, HT is unbounded **constant-descended** interval capacity.  It is
+falsified if Gamma has bounded relative interval growth, if `exp` retains its raw periodic-gauge
+intervals after descent, or if source-equivalent presentations give different relative growth.
+
+The bold universal claim is that, for source-minimal HT systems, every natural reconstruction,
+continuation, spectral-completeness, positivity, monodromy, and boundary-condition obstruction is
+a conservative realization of the same nonzero interval representation of `(B33)`--`(B35)`.  This
+would explain the repeated
+obstructions without identifying them by analogy.  It is also sharply falsifiable: one natural
+obstruction not functorially obtained from `(B33)`, or two doubles with the same polarized field
+but different obstruction behavior, kills the claim.
+
+The complex/fibre formalism in `(B33)` is standard parent mathematics.  Candidate-new content is
+the existence and presentation-independent classification of complete transverse HT doubles, the
+double-natural conservation of one class through all face maps, and the proof that the analytic,
+coherent, integral, hermitian, and spectral reporters are jointly conservative realizations of it.
+
+The conjecture is falsified if one natural obstruction changes while `(B28)` with all structures
+in `(B29)` remains unchanged, or if equivalent source presentations produce different resonance
+overlaps.  Merely constructing a standard toric fan, Kato fan, Grothendieck--Witt spectrum, or
+Fredholm--Lagrangian bundle does not pass the novelty gate; the candidate-new content is the
+classification of complete transverse HT doubles and the proof that genuinely independent
+analytic receivers carry the same localization class.
+
 ## Why this could be Fields-scale
 
 The field-level theorem is not the abstract existence of nearby cycles, which is parent theory,
 and not the classical elliptic-gamma degeneration.  It is the construction and classification of
 a new natural invariant with all of the following simultaneously:
 
-1. defined for nonlinear source-minimal HT constraints;
-2. independent of a chosen presentation by periods or functional equations;
+1. defined for nonlinear source-minimal HT constraints equipped with genuinely transverse data;
+2. independent of a chosen presentation of the source--observation double;
 3. constructible across automorphism-to-endomorphism source walls;
-4. retains jumping source inertia and computes the rigidification--specialization commutator;
+4. retains jumping source inertia and computes the cohomology--specialization Tor/Bockstein
+   transmutation;
 5. identifies the two boundary-normal character-line systems with opposite born inertia through
    a canonical, not chosen, duality and transgression;
 6. compatible with differential-algebraic coefficient filtrations;
@@ -500,22 +949,52 @@ Known parent mathematics includes:
    arXiv:math/0311495);
 9. Picard--Vessiot solution torsors and the multiplicative solution-group structure of higher
    Gamma cocycle equations (Maurischat, arXiv:1304.7663; Perez-Marco, arXiv:2101.01291).
+10. localization in hermitian K-theory and Grothendieck--Witt theory for categories with duality
+    (Schlichting, arXiv:1209.0848, and subsequent stable-infinity-categorical refinements).
+11. parameterized difference-Galois hypertranscendence for shift, q-difference, and Mahler
+    equations (Adamczewski--Dreyfus--Hardouin, arXiv:1910.01874) and hypertranscendence of
+    multiplicative perturbations `f exp(g)`, including partial results for `Gamma exp(h)`
+    (Huang--Ng, arXiv:2007.10037).
+12. inverse-problem invisibility spaces and symmetry of objects invisible to incomplete moment
+    reporters (Batenkov--Golubyatnikov--Yomdin, arXiv:1205.5661).
+13. finite persistence modules as equioriented type-`A` quiver representations or graded
+    polynomial modules, coherent devissage by filtered subquotients, and unilateral-shift index
+    defects (De Gregorio--Guerra--Scaramuccia--Vaccarino, arXiv:2106.11884; Stacks Project,
+    Tag 07US; Fujikawa, arXiv:hep-th/9411066).
 
 Targeted exact searches for `elliptic gamma nearby cycles`, `elliptic gamma vanishing cycles`,
 `differential-algebraic elliptic gamma degeneration cohomology`, and
 `q-Pochhammer gerbe transgression`, together with searches for `rigidification specialization
 inertia` and `nearby cycles quotient stack inertia`, found the parents separately but no HT
-rigidification--specialization commutator, no two-faced normal-character/born-gauge duality
-`(R4+)`--`(R4-)`, and no coefficient-filtered source-face residue theorem of the form `(3)`--`(5)`.
-This is a preliminary novelty pass, not a specialist verdict.
+cohomology-specialization transgression into a typed analytic character receiver, no two-faced
+normal-character/born-gauge duality `(R4+)`--`(R4-)`, and no coefficient-filtered source-face
+residue theorem of the form `(3)`--`(5)`.  This is a preliminary novelty pass, not a specialist
+verdict.
 
 Further exact searches for `hypertranscendental Tate space`, `hypertranscendental Lagrangian gauge
 inertia`, `hypertranscendental Maslov`, and `hypertranscendental Fredholm source constraint` found
 the parent theories separately but no HT-specific construction of `(T0)`--`(T3)`.  The novelty
 candidate is not Tate theory, Maslov theory, solution torsors, Laurent polarization, or Gamma
-uniqueness.  It is the functorial assignment of a self-dual two-lattice relative-position field to
-source-minimal HT pairs and the proof that the distinct obstruction receivers in `(T2)` are its
-conservative images.  This remains `[NOVELTY PRELIMINARY]` pending a specialist audit.
+uniqueness, nor is it the abstract availability of hermitian localization.  It is the functorial
+assignment of a self-dual two-lattice relative-position field to source-minimal HT pairs, together
+with a typed realization carrying the same source-face class through coherent, integral,
+hermitian, and analytic receivers.  The proof that the obstruction receivers in `(T2)` are
+conservative images of that single class remains `[NOVELTY PRELIMINARY]` pending a specialist
+audit.
+
+Additional exact searches for `hypertranscendental observation complex`, `hypertranscendental
+gauge torsor reconstruction`, `source-observation double mathematics conservativity`, and
+`invisibility complex gauge reconstruction` found the source-equation, perturbation, and inverse-
+problem parents above, but no HT source--observation double, polarized invisibility field, or
+classification theorem of the form `(B31)`--`(B33)`.  This is evidence for a live novelty candidate,
+not a claim that the literature gate has been conclusively cleared.
+
+Exact searches for `hypertranscendental interval module`, `hypertranscendental persistence module`,
+`hypertranscendental exit-path category`, and `difference equation oriented interval sheaf` found
+the interval/quiver and hypertranscendence parents separately, but no boundary-interval
+classification of differential transcendence and no jointly conservative realization theorem of
+the form `(B34)`.  The local interval laws are parent mathematics; only the HT classification and
+cross-receiver theorem remain novelty candidates.
 
 ## Anti-theatre gate
 
@@ -568,7 +1047,8 @@ anti-theatre gate.
 
 Each RH chain must first construct, from prime--archimedean source data and before reading the Xi
 divisor, both the source lattice and a genuinely independent counterlattice, then realize the same
-relative-position field `(T1)`, rigidification commutator `(R1)`--`(R3)`, and triangle `(2)`.
+relative-position field `(T1)`, cohomology-specialization edge transgression `(R1)`--`(R3)`, and
+triangle `(2)`.
 Source orientation, critical all-scale failure, spectral incompleteness, multiplicity,
 noncircular comparison, missing typed bridges, and arithmetic rigidity are representations of one
 obstruction only if their comparison functors preserve the two lattices, generic and boundary
@@ -708,8 +1188,11 @@ than analogies between unrelated failures.
       factorization and prove that every nonempty face has Tor amplitude one
 - [x] construct an explicit Tate-theta family whose escaping elliptic divisor realizes every
       pointed rank-one winding character with conserved node charge
-- [ ] compute the complete multigraded derived face Betti table of the multiple elliptic-gamma
-      Stanley--Reisner characteristic module and compare it with the conjectural residue tower `(5)`
+- [x] compute on paper the complete multigraded zero-face Betti table of the multiple
+      elliptic-gamma Stanley--Reisner characteristic module; the one-face born class is exactly
+      the correction from the lower hypersurface module to the lower critical module
+- [ ] formalize the complete zero-face Betti table and compare its multigrading with the analytic
+      residue tower `(5)`
 - [ ] construct the generic-to-face stabilizer morphism for the actual elliptic-gamma family
 - [ ] construct the completed inductive/projective Gamma scale and compatible closed reporter
       relations beyond the now-proved finite Fourier cocone; identify its two natural face lattices
@@ -718,7 +1201,23 @@ than analogies between unrelated failures.
       target data
 - [ ] prove that the Gamma source/reporter relative-position field recovers the exact kernel,
       factorial nonclosed-range defect, and nonlinear normalization-horizon exchange
-- [ ] calculate the rigidification--specialization kernel, cokernel, and transgression `(R1)`--`(R3)`
+- [x] supersede the literal derived rigidification--specialization commutator by the
+      cohomology/base-change observation complex and edge sequence `(R1)`--`(R3)`, `(B11)`
+- [ ] construct the HT Bockstein comparison map `(B15)` from the characteristic Tor class to the
+      independently defined Tate-theta node-charge class
+- [x] isolate the integral-coefficient no-go for a complex-linear Tor line and identify the local
+      nodal K-theory/Koszul localization chain `(B16)`--`(B20)`
+- [x] prove the local Tate-theta factorization `(B22)` and, separately, the same-ring product-face
+      chain map `(B23)`
+- [x] reject the nodal-coordinate/source-operator symbol collision `(B24)` and construct the
+      correctly typed full Barnes charge-character grading `(B25)`--`(B25+)`
+- [x] prove rationally independent face-character spectra meet only in the neutral sector `(B26)`
+- [x] refute endpoint localization for nonprimitive charge and Lean-formalize the all-power
+      oriented interval decomposition, cocycle, pairing, and sharp endpoint exception `(B34)`
+- [x] refute raw interval capacity as an HT criterion using differential-algebraic periodic gauges
+- [ ] construct constant-field descent on the oriented interval representation and test `(B35)`
+- [ ] construct the typed global DA-relative face-poset realization and localization comparison
+      `(B27)` over the actual multiple-gamma source-face diagram
 - [ ] construct the analytic specialization map on the pointed gamma cochain
 - [ ] prove it preserves the DA--holomorphic intersection coefficient sector
 - [ ] identify the boundary class with the actual q-Pochhammer/Jackson q-gamma class

@@ -343,16 +343,6 @@ def PrimeChamberExactPositiveInertia (J L : Finset Nat.Primes) : Prop :=
         0 < (dotProduct (star y)
           ((universalPrimeChamberRelativeKreinProbeForm J L).mulVec y)).re)
 
-theorem primeChamberExactNegativeInertia
-    (J L : Finset Nat.Primes) : PrimeChamberExactNegativeInertia J L :=
-  by simpa [PrimeChamberExactNegativeInertia] using
-    universalPrimeChamberRelativeKreinProbe_exact_neg_inertia J L
-
-theorem primeChamberExactPositiveInertia
-    (J L : Finset Nat.Primes) : PrimeChamberExactPositiveInertia J L :=
-  by simpa [PrimeChamberExactPositiveInertia] using
-    universalPrimeChamberRelativeKreinProbe_exact_pos_inertia J L
-
 def PrimeOrientationBlindnessAndPolarization : Prop :=
   (∀ J : Finset Nat.Primes,
     letI := isDomain_upperEndAnalyticSubring
@@ -375,8 +365,10 @@ theorem primeOrientationBlindnessAndPolarization :
   refine ⟨universalFacetOrbitPrimeOrientedSource_differentialAdjoin_eq,
     primeOrientationCompletedRing_eq, ?_⟩
   intro J L
-  exact ⟨primeChamberExactNegativeInertia J L,
-    primeChamberExactPositiveInertia J L,
+  exact ⟨by simpa [PrimeChamberExactNegativeInertia] using
+      universalPrimeChamberRelativeKreinProbe_exact_neg_inertia J L,
+    by simpa [PrimeChamberExactPositiveInertia] using
+      universalPrimeChamberRelativeKreinProbe_exact_pos_inertia J L,
     primeChamberHammingDistance_eq_zero_iff J L⟩
 
 def ContinuousMobiusGevreyTrichotomy : Prop :=

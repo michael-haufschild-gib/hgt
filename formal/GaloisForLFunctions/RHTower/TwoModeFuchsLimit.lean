@@ -41,6 +41,18 @@ theorem eventually_const_mul_le_of_tendsto_div_atTop
   filter_upwards [hevent, hb] with x hx hbx
   exact ((lt_div_iff₀ hbx).mp hx).le
 
+/-- If `a / b` tends to zero and `b` is eventually positive, then `a` is eventually smaller than
+every positive constant multiple of `b`. -/
+theorem eventually_lt_const_mul_of_tendsto_div_zero_atTop
+    {a b : ℝ → ℝ} {c : ℝ}
+    (h : Tendsto (fun x => a x / b x) atTop (nhds 0))
+    (hb : ∀ᶠ x in atTop, 0 < b x) (hc : 0 < c) :
+    ∀ᶠ x in atTop, a x < c * b x := by
+  have hevent : ∀ᶠ x in atTop, a x / b x < c :=
+    h.eventually (eventually_lt_nhds hc)
+  filter_upwards [hevent, hb] with x hx hbx
+  exact (div_lt_iff₀ hbx).mp hx
+
 /-- **Fuchs-rate limit of the two-mode ground leakage.**  When the two mode leakages follow
 Fuchs rates of strictly increasing index, the normalized secular root converges to the pure
 weight of the dominated mode: `μ/d₁ → ℓ₀²/(ℓ₀² + ℓ₁²)`. -/
@@ -183,6 +195,20 @@ theorem ccm_negativeSector_twoMode_ground_gap_ratio
   have hd₆ : fuchsRate A₆ 6 lam ≠ 0 := (fuchsRate_pos hA₆ 6 hlam).ne'
   field_simp
 
+/-- Every constant strictly below `5/13` is an eventual lower bound for the negative-sector
+two-mode gap after scaling by its dominant Fuchs leakage. -/
+theorem ccm_negativeSector_twoMode_ground_gap_eventually_ge
+    {A₂ A₆ c : ℝ} (hA₂ : 0 < A₂) (hA₆ : 0 < A₆) (hc : c < 5 / 13) :
+    ∀ᶠ lam : ℝ in Filter.atTop,
+      c * fuchsRate A₆ 6 lam ≤
+        fuchsRate A₆ 6 lam - GaloisForLFunctions.twoModeSecularRoot
+          (fuchsRate A₂ 2 lam) (fuchsRate A₆ 6 lam) (Real.sqrt 8) (Real.sqrt 5) := by
+  apply eventually_const_mul_le_of_tendsto_div_atTop
+    (ccm_negativeSector_twoMode_ground_gap_ratio hA₂ hA₆)
+  filter_upwards [Filter.eventually_gt_atTop (0 : ℝ)] with lam hlam
+  exact fuchsRate_pos hA₆ 6 hlam
+  exact hc
+
 /-- **Two-mode Fourier-parity separation.**  In the exact Fuchs-rate model, the positive-sector
 `h₀`--`h₄` constrained floor is negligible compared with the negative-sector `h₂`--`h₆`
 floor.  This is the limit form of the card's `λ⁻⁴` parity separation. -/
@@ -219,6 +245,25 @@ theorem ccm_twoMode_parity_floor_ratio_tendsto_zero
       (fuchsRate A₂ 2 lam) (fuchsRate A₆ 6 lam) (Real.sqrt 8) (Real.sqrt 5) ≠ 0 :=
     (ccm_negativeSector_twoModeSecularRoot_pos hA₂ hA₆ hlam).ne'
   field_simp
+
+/-- **Quantified two-mode parity separation.**  Every positive multiple of the negative-sector
+floor eventually strictly dominates the positive-sector floor. -/
+theorem ccm_twoMode_parity_floor_eventually_lt_mul
+    {A₀ A₂ A₄ A₆ c : ℝ}
+    (hA₀ : 0 < A₀) (hA₂ : 0 < A₂) (hA₄ : 0 < A₄) (hA₆ : 0 < A₆)
+    (hc : 0 < c) :
+    ∀ᶠ lam : ℝ in Filter.atTop,
+      GaloisForLFunctions.twoModeSecularRoot
+          (fuchsRate A₀ 0 lam) (fuchsRate A₄ 4 lam)
+          ((2 : ℝ) ^ ((1 : ℝ) / 4))
+          (Real.sqrt 3 / (2 : ℝ) ^ ((5 : ℝ) / 4)) <
+        c * GaloisForLFunctions.twoModeSecularRoot
+          (fuchsRate A₂ 2 lam) (fuchsRate A₆ 6 lam) (Real.sqrt 8) (Real.sqrt 5) := by
+  apply eventually_lt_const_mul_of_tendsto_div_zero_atTop
+    (ccm_twoMode_parity_floor_ratio_tendsto_zero hA₀ hA₂ hA₄ hA₆)
+  filter_upwards [Filter.eventually_gt_atTop (0 : ℝ)] with lam hlam
+  exact ccm_negativeSector_twoModeSecularRoot_pos hA₂ hA₆ hlam
+  exact hc
 
 /-- **Sharp two-mode Fourier-parity scale.**  Multiplying the positive/negative floor ratio by
 `λ⁴` exposes the exact Fuchs-model coefficient `13 A₄ / (11 A₆)`. -/

@@ -1,0 +1,207 @@
+import GaloisForLFunctions.HTGeometry.WignerSmithLogClockObservability
+
+/-!
+# Kerr--Newman charged-scalar Gamma-response boundary
+
+The exact charged-scalar Kerr--Newman response coefficient of Ma--Wu--Pang--Lu contains,
+after removing factors independent of the complexified frequency coordinate `z`,
+
+`Gamma(z + (1 + Delta) / 2) / Gamma(z + (1 - Delta) / 2)`,
+
+where `Delta = 1 + 2*L` is the effective multipole gap.  Their equation (4) gives
+`Delta = sqrt((2*ell+1)^2 - 4*(q_e Q)^2)`, and equation (21) gives the Gamma ratio.
+
+This file applies the existing same-orientation Gamma-shift classification.  The response is
+differentially algebraic exactly on the integral `Delta` lattice and hypertranscendental off it.
+At the neutral odd gaps `Delta = 2*ell+1`, it is exactly a finite Pochhammer polynomial, matching
+the polynomial collapse in their equation (33).  Its logarithmic response clock is the exact
+difference of two digamma clocks and has the same DA/HT boundary.
+
+Thus the selector is the observable's effective-multipole translation gap, not temporal evolution.
+
+Physics provenance: L. Ma, Z.-H. Wu, Y. Pang, and H. Lu,
+*Charging the Love numbers: Charged scalar response coefficients of Kerr-Newman black holes*,
+arXiv:2408.10352v2 (2024), equations (4), (21), and (33).
+-/
+
+open Filter Set Topology Function Complex
+open scoped Differential
+
+namespace GaloisForLFunctions
+
+open Bottcher Polynomial
+
+noncomputable section
+
+local instance kerrNewmanGammaDomain :
+    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
+  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
+    isPreconnected_univ Set.univ_nonempty
+
+local instance kerrNewmanGammaIntAlgebraAnalytic :
+    Algebra ℤ (analyticSubring Set.univ) := Ring.toIntAlgebra _
+
+local instance kerrNewmanGammaIntAlgebraMero :
+    Algebra ℤ (meroField Set.univ) := Ring.toIntAlgebra _
+
+local instance kerrNewmanGammaIntAlgebraRatFunc :
+    Algebra ℤ (RatFunc ℂ) := Ring.toIntAlgebra _
+
+local instance kerrNewmanGammaDifferential :
+    Differential (meroField (Set.univ : Set ℂ)) :=
+  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
+
+local instance kerrNewmanGammaRatFuncAlgebra :
+    Algebra (RatFunc ℂ) (meroField Set.univ) :=
+  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
+    Set.univ_nonempty Set.infinite_univ).toAlgebra
+
+local instance kerrNewmanGammaRatFuncDifferential :
+    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
+
+local instance kerrNewmanGammaDifferentialAlgebra :
+    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
+  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
+
+local instance kerrNewmanGammaCharZero :
+    CharZero (meroField Set.univ) :=
+  charZero_of_injective_algebraMap
+    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+
+/-- Effective multipole gap in the charged-scalar Kerr--Newman response.  The dimensionless
+coupling `charge` represents `q_e Q`. -/
+def kerrNewmanChargedScalarEffectiveMultipoleGap
+    (ell : ℕ) (charge : ℂ) : ℂ :=
+  Complex.sqrt ((2 * (ell : ℂ) + 1) ^ 2 - 4 * charge ^ 2)
+
+/-- Frequency-dependent Gamma core of the charged-scalar response, parameterized by its effective
+multipole gap.  Frequency-independent Gamma factors from equation (21) are omitted. -/
+def kerrNewmanChargedScalarGammaResponseMero
+    (gap : ℂ) : meroField Set.univ :=
+  reducedVenezianoAmplitudeMero ((1 + gap) / 2) (-gap)
+
+/-- The physical specialization obtained by inserting the charged effective multipole gap. -/
+def kerrNewmanChargedScalarPhysicalGammaResponseMero
+    (ell : ℕ) (charge : ℂ) : meroField Set.univ :=
+  kerrNewmanChargedScalarGammaResponseMero
+    (kerrNewmanChargedScalarEffectiveMultipoleGap ell charge)
+
+/-- **Kerr--Newman Gamma value relation.**  The normalized frequency response is exactly the
+quotient with shifts `(1+Delta)/2` and `(1-Delta)/2`. -/
+theorem kerrNewmanChargedScalarGammaResponseMero_eq_gammaRatio
+    (gap : ℂ) :
+    kerrNewmanChargedScalarGammaResponseMero gap =
+      gammaShiftMero ((1 + gap) / 2) /
+        gammaShiftMero ((1 - gap) / 2) := by
+  rw [kerrNewmanChargedScalarGammaResponseMero,
+    reducedVenezianoAmplitudeMero]
+  congr 2
+  ring
+
+/-- **Exact effective-multipole boundary.**  The response is DA precisely when the physical
+translation gap is integral. -/
+theorem differentialAlgebraicOver_kerrNewmanChargedScalarGammaResponseMero_iff_integerGap
+    (gap : ℂ) :
+    DifferentialAlgebraicOver (RatFunc ℂ)
+        (kerrNewmanChargedScalarGammaResponseMero gap) ↔
+      ∃ k : ℤ, gap = (k : ℂ) := by
+  rw [kerrNewmanChargedScalarGammaResponseMero,
+    differentiallyAlgebraicOver_reducedVenezianoAmplitudeMero_iff_integerShift]
+  constructor
+  · rintro ⟨k, hk⟩
+    refine ⟨-k, ?_⟩
+    simpa using congrArg Neg.neg hk
+  · rintro ⟨k, hk⟩
+    refine ⟨-k, ?_⟩
+    simpa using congrArg Neg.neg hk
+
+/-- Off the integral effective-multipole lattice, the charged response is HT. -/
+theorem hypertranscendentalOver_kerrNewmanChargedScalarGammaResponseMero_iff_nonintegerGap
+    (gap : ℂ) :
+    HypertranscendentalOver (RatFunc ℂ)
+        (kerrNewmanChargedScalarGammaResponseMero gap) ↔
+      ∀ k : ℤ, gap ≠ (k : ℂ) := by
+  rw [HypertranscendentalOver,
+    differentialAlgebraicOver_kerrNewmanChargedScalarGammaResponseMero_iff_integerGap]
+  push Not
+  rfl
+
+/-- The paper's physical charged response is DA exactly when its square-root effective gap lands
+on the integer lattice. -/
+theorem differentialAlgebraicOver_kerrNewmanChargedScalarPhysicalGammaResponseMero_iff
+    (ell : ℕ) (charge : ℂ) :
+    DifferentialAlgebraicOver (RatFunc ℂ)
+        (kerrNewmanChargedScalarPhysicalGammaResponseMero ell charge) ↔
+      ∃ k : ℤ,
+        kerrNewmanChargedScalarEffectiveMultipoleGap ell charge = (k : ℂ) := by
+  exact
+    differentialAlgebraicOver_kerrNewmanChargedScalarGammaResponseMero_iff_integerGap
+      (kerrNewmanChargedScalarEffectiveMultipoleGap ell charge)
+
+/-- The complementary physical charged sector is HT. -/
+theorem hypertranscendentalOver_kerrNewmanChargedScalarPhysicalGammaResponseMero_iff
+    (ell : ℕ) (charge : ℂ) :
+    HypertranscendentalOver (RatFunc ℂ)
+        (kerrNewmanChargedScalarPhysicalGammaResponseMero ell charge) ↔
+      ∀ k : ℤ,
+        kerrNewmanChargedScalarEffectiveMultipoleGap ell charge ≠ (k : ℂ) := by
+  exact
+    hypertranscendentalOver_kerrNewmanChargedScalarGammaResponseMero_iff_nonintegerGap
+      (kerrNewmanChargedScalarEffectiveMultipoleGap ell charge)
+
+/-- **Positive exceptional-sector normal form.**  At the neutral odd gap `2*ell+1`, the complete
+frequency-dependent Gamma core is the finite Pochhammer polynomial with roots from `-ell` through
+`ell`. -/
+theorem kerrNewmanNeutralScalarGammaResponseMero_eq_pochhammer
+    (ell : ℕ) :
+    kerrNewmanChargedScalarGammaResponseMero (2 * (ell : ℂ) + 1) =
+      algebraMap (RatFunc ℂ) (meroField Set.univ)
+        (gammaOrbitNatFactor (-(ell : ℂ)) (2 * ell + 1)) := by
+  have h := reducedVenezianoAmplitudeMero_negSuccShift
+    ((ell : ℂ) + 1) (2 * ell)
+  rw [kerrNewmanChargedScalarGammaResponseMero]
+  convert h using 1 <;> push_cast <;> ring_nf
+
+/-- Neutral integer multipoles therefore have a finite differential-algebraic response core. -/
+theorem differentialAlgebraicOver_kerrNewmanNeutralScalarGammaResponseMero
+    (ell : ℕ) :
+    DifferentialAlgebraicOver (RatFunc ℂ)
+      (kerrNewmanChargedScalarGammaResponseMero (2 * (ell : ℂ) + 1)) := by
+  rw [kerrNewmanNeutralScalarGammaResponseMero_eq_pochhammer]
+  exact HTGeometry.differentialAlgebraicOver_algebraMap _
+
+/-- Logarithmic response clock of the normalized charged-scalar Gamma coefficient. -/
+def kerrNewmanChargedScalarLogResponseClockMero
+    (gap : ℂ) : meroField Set.univ :=
+  HTGeometry.wignerSmithLogClock
+    (kerrNewmanChargedScalarGammaResponseMero gap)
+
+/-- **Logarithmic clock value relation.**  The response clock is the difference of the two
+digamma observations selected by the effective multipole gap. -/
+theorem kerrNewmanChargedScalarLogResponseClockMero_eq_digammaDifference
+    (gap : ℂ) :
+    kerrNewmanChargedScalarLogResponseClockMero gap =
+      digammaShiftMero ((1 + gap) / 2) -
+        digammaShiftMero ((1 - gap) / 2) := by
+  unfold kerrNewmanChargedScalarLogResponseClockMero
+    HTGeometry.wignerSmithLogClock
+  rw [kerrNewmanChargedScalarGammaResponseMero_eq_gammaRatio,
+    Differential.logDeriv_div]
+  · rfl
+  · exact gammaShiftMero_ne_zero ((1 + gap) / 2)
+  · exact gammaShiftMero_ne_zero ((1 - gap) / 2)
+
+/-- The logarithmic clock has exactly the same integral-gap DA/HT boundary as the response. -/
+theorem hypertranscendentalOver_kerrNewmanChargedScalarLogResponseClockMero_iff_nonintegerGap
+    (gap : ℂ) :
+    HypertranscendentalOver (RatFunc ℂ)
+        (kerrNewmanChargedScalarLogResponseClockMero gap) ↔
+      ∀ k : ℤ, gap ≠ (k : ℂ) := by
+  rw [kerrNewmanChargedScalarLogResponseClockMero,
+    HTGeometry.hypertranscendentalOver_wignerSmithLogClock_iff,
+    hypertranscendentalOver_kerrNewmanChargedScalarGammaResponseMero_iff_nonintegerGap]
+
+end
+
+
+end GaloisForLFunctions

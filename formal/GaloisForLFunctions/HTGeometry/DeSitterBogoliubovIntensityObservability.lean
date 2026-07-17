@@ -1,6 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DeSitterBogoliubovGammaBoundary
-import GaloisForLFunctions.HTGeometry.GammaReflectedFrequencyObservability
-import GaloisForLFunctions.HTGeometry.FiniteDifferentialCircuitBoundary
+import GaloisForLFunctions.HTGeometry.WignerSmithLogClockObservability
 
 /-!
 # De Sitter Bogoliubov phase--intensity observability
@@ -90,6 +89,12 @@ def deSitterTypeIStaticBogoliubovPhaseMero
     (deSitterBogoliubovLowerShift branchMass ell)
     (deSitterBogoliubovUpperShift branchMass ell)
 
+/-- Wigner--Smith logarithmic delay of the de Sitter global-to-static Gamma carrier. -/
+def deSitterTypeIStaticBogoliubovWignerSmithLogClockMero
+    (branchMass : ℂ) (ell : ℕ) : meroField Set.univ :=
+  HTGeometry.wignerSmithLogClock
+    (deSitterTypeIStaticBogoliubovGammaCarrierMero branchMass ell)
+
 /-- The previously formalized de Sitter carrier is the general opposite-shift amplitude. -/
 theorem deSitterTypeIStaticBogoliubovGammaCarrierMero_eq_observableAmplitude
     (branchMass : ℂ) (ell : ℕ) :
@@ -98,6 +103,18 @@ theorem deSitterTypeIStaticBogoliubovGammaCarrierMero_eq_observableAmplitude
         (deSitterBogoliubovLowerShift branchMass ell)
         (deSitterBogoliubovUpperShift branchMass ell) := by
   rfl
+
+/-- **De Sitter Wigner--Smith value relation.**  The delay is the exact difference of the two
+oppositely oriented Gamma logarithmic derivatives. -/
+theorem deSitterTypeIStaticBogoliubovWignerSmithLogClockMero_eq_orientedLogDerivatives
+    (branchMass : ℂ) (ell : ℕ) :
+    deSitterTypeIStaticBogoliubovWignerSmithLogClockMero branchMass ell =
+      digammaShiftMero (deSitterBogoliubovLowerShift branchMass ell) -
+        gammaNegativeLogDerivativeMero
+          (deSitterBogoliubovUpperShift branchMass ell) := by
+  rw [deSitterTypeIStaticBogoliubovWignerSmithLogClockMero,
+    deSitterTypeIStaticBogoliubovGammaCarrierMero_eq_observableAmplitude]
+  exact gammaOppositeShiftWignerSmithLogMero_eq_orientedLogDerivatives _ _
 
 /-- **Exact de Sitter intensity value relation.**  Angular integrality removes every Gamma factor
 from the reflected-frequency intensity and leaves the explicit sine--Pochhammer gauge. -/
@@ -124,6 +141,16 @@ theorem hypertranscendentalOver_deSitterTypeIStaticBogoliubovPhaseMero
     HypertranscendentalOver (RatFunc ℂ)
       (deSitterTypeIStaticBogoliubovPhaseMero branchMass ell) := by
   exact hypertranscendentalOver_gammaOppositeShiftPhaseMero _ _
+
+/-- Every mass branch and angular mode also retains HT in the observable Wigner--Smith delay. -/
+theorem hypertranscendentalOver_deSitterTypeIStaticBogoliubovWignerSmithLogClockMero
+    (branchMass : ℂ) (ell : ℕ) :
+    HypertranscendentalOver (RatFunc ℂ)
+      (deSitterTypeIStaticBogoliubovWignerSmithLogClockMero branchMass ell) := by
+  rw [deSitterTypeIStaticBogoliubovWignerSmithLogClockMero,
+    HTGeometry.hypertranscendentalOver_wignerSmithLogClock_iff]
+  exact hypertranscendentalOver_deSitterTypeIStaticBogoliubovGammaCarrierMero
+    branchMass ell
 
 /-- The two observation channels recover the square of the exact de Sitter amplitude. -/
 theorem deSitterTypeIStaticBogoliubovPhase_mul_intensity
@@ -169,6 +196,22 @@ theorem no_scalarAwareFiniteDifferentialCircuit_deSitterPhase_from_intensity
       hcircuit
   rw [ha] at hHT
   exact hHT
+    (differentialAlgebraicOver_deSitterTypeIStaticBogoliubovIntensityMero
+      branchMass ell)
+
+/-- **Positive de Sitter delay boundary.**  Rational clocks and complete DA intensity cannot
+finitely reconstruct the HT Wigner--Smith delay. -/
+theorem no_scalarAwareFiniteDifferentialCircuit_deSitterWignerSmith_from_intensity
+    (branchMass : ℂ) (ell : ℕ) :
+    ¬ HTGeometry.FiniteDifferentialCircuit
+      (HTGeometry.BaseScalarOrAtom (RatFunc ℂ) (meroField Set.univ)
+        (fun a => a = deSitterTypeIStaticBogoliubovIntensityMero branchMass ell))
+      (deSitterTypeIStaticBogoliubovWignerSmithLogClockMero branchMass ell) := by
+  exact HTGeometry.no_scalarAwareFiniteDifferentialCircuit_wignerSmith_from_daObservation
+    (deSitterTypeIStaticBogoliubovGammaCarrierMero branchMass ell)
+    (deSitterTypeIStaticBogoliubovIntensityMero branchMass ell)
+    (hypertranscendentalOver_deSitterTypeIStaticBogoliubovGammaCarrierMero
+      branchMass ell)
     (differentialAlgebraicOver_deSitterTypeIStaticBogoliubovIntensityMero
       branchMass ell)
 

@@ -263,10 +263,14 @@ Fuchs-model parity calculation.  The declarations
 `ccm_negativeSector_twoMode_weight_eq`,
 `ccm_negativeSector_twoMode_ground_leakage_ratio`, and
 `ccm_negativeSector_twoMode_ground_gap_ratio` prove the exact `8/13` ground and complementary
-`5/13` gap limits for the `h_2`--`h_6` contrast.  The declaration
+`5/13` gap limits for the `h_2`--`h_6` contrast, while
+`ccm_negativeSector_twoMode_ground_gap_eventually_ge` proves the corresponding unnormalized
+eventual lower bound for every constant below `5/13`.  The declaration
 `ccm_twoMode_parity_floor_ratio_tendsto_zero` combines these with the positive-sector `8/11` law
 and the exact Fuchs index separation to prove that the positive two-mode floor divided by the
-negative two-mode floor tends to zero.  The sharper declaration
+negative two-mode floor tends to zero.  Its quantified form
+`ccm_twoMode_parity_floor_eventually_lt_mul` proves that for every `c>0`, the positive floor is
+eventually strictly below `c` times the negative floor.  The sharper declaration
 `ccm_twoMode_parity_floor_scaled_ratio` proves the exact rescaled limit
 `lambda^4 mu_+(lambda)/mu_-(lambda) -> 13 A_4/(11 A_6)`.  All declarations are unconditional and
 axiom-clean.
@@ -283,7 +287,9 @@ true second constrained eigenvalue.  The card therefore remains in stage 2.
 - [x] negative-sector gap constant `5/13` proved
 - [x] positive/negative floor ratio `C lambda^(-4)` proved
 - [x] negative-sector two-mode Fuchs-rate `8/13` and `5/13` limits formalized in Lean
+- [x] every constant below `5/13` formalized as an eventual negative-sector gap lower bound
 - [x] two-mode positive/negative floor ratio tending to zero formalized in Lean
+- [x] quantified eventual parity dominance `mu_+ < c mu_-` formalized for every `c>0`
 - [x] sharp two-mode `lambda^4`-rescaled parity coefficient formalized in Lean
 - [x] targeted literature search found no parent theorem
 - [ ] transfer the two-mode laws to the exact infinite-dimensional constrained floors in Lean

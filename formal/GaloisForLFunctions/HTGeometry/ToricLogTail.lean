@@ -30,7 +30,7 @@ theorem toricLogCurrent_mul
 
 /-- A Laurent power transports logarithmic current by its integral exponent. -/
 theorem toricLogCurrent_zpow
-    {K : Type*} [Field K] [CharZero K] [Differential K]
+    {K : Type*} [Field K] [Differential K]
     (x : K) (n : ℤ) (hx : x ≠ 0) :
     toricLogCurrent (x ^ n) = (n : K) * toricLogCurrent x := by
   have hpow : x ^ (n - 1) * x = x ^ n := by
@@ -47,7 +47,7 @@ theorem toricLogCurrent_zpow
 
 /-- The logarithmic-current row of a Laurent monomial is its character-lattice exponent row. -/
 theorem toricLogCurrent_laurentMonomial
-    {ι K : Type*} [DecidableEq ι] [Field K] [CharZero K] [Differential K]
+    {ι K : Type*} [DecidableEq ι] [Field K] [Differential K]
     (s : Finset ι) (x : ι → K) (a : ι → ℤ) (hx : ∀ i ∈ s, x i ≠ 0) :
     toricLogCurrent (∏ i ∈ s, x i ^ a i) =
       ∑ i ∈ s, (a i : K) * toricLogCurrent (x i) := by
@@ -62,6 +62,18 @@ theorem toricLogCurrent_laurentMonomial
       rw [Finset.prod_insert hi, Finset.sum_insert hi,
         toricLogCurrent_mul _ _ (zpow_ne_zero _ hxi) hprod,
         toricLogCurrent_zpow _ _ hxi, ih hxs]
+
+/-- A character-lattice matrix acts on the complete logarithmic-current frame by the same matrix.
+This is the finite-rank transport law for a torus isogeny in character coordinates. -/
+theorem toricLogCurrent_characterMatrix
+    {ι κ K : Type*} [Fintype ι] [DecidableEq ι]
+    [Field K] [Differential K]
+    (A : Matrix κ ι ℤ) (x : ι → K) (hx : ∀ i, x i ≠ 0) :
+    (fun r => toricLogCurrent (∏ i, x i ^ A r i)) =
+      fun r => ∑ i, (A r i : K) * toricLogCurrent (x i) := by
+  funext r
+  simpa using toricLogCurrent_laurentMonomial
+    (Finset.univ : Finset ι) x (A r) (fun i _ => hx i)
 
 end
 

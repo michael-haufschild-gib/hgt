@@ -55,6 +55,54 @@ coefficient tuple has the one-point projective boundary (`F_α/F_β → d_α`, e
 returns (`M_α(s₀+iT_l) → M_α(s₀)`, Bohr almost periodicity), the limiting relation
 `∑_α d_α · M_α(s₀) = 0` holds with a nonzero constant coefficient vector (`d_β = 1`).  Thus `f`
 satisfies a nontrivial autonomous algebraic differential relation. -/
+theorem recurrence_collapse_to_autonomous_eventually {ι : Type*} (E : Finset ι)
+    (F M : ι → ℂ → ℂ) (β : ι) (hβ : β ∈ E) (s₀ : ℂ) (T : ℕ → ℝ) (d : ι → ℂ)
+    (hrel : ∀ s : ℂ, ∑ α ∈ E, F α s * M α s = 0)
+    (hFβ : ∀ᶠ l in atTop, F β (s₀ + (T l : ℂ) * Complex.I) ≠ 0)
+    (hcoeff : ∀ α ∈ E, Tendsto
+      (fun l => F α (s₀ + (T l : ℂ) * Complex.I) / F β (s₀ + (T l : ℂ) * Complex.I))
+      atTop (nhds (d α)))
+    (hmon : ∀ α ∈ E, Tendsto
+      (fun l => M α (s₀ + (T l : ℂ) * Complex.I)) atTop (nhds (M α s₀))) :
+    (∑ α ∈ E, d α * M α s₀ = 0) ∧ d β = 1 := by
+  refine ⟨?_, ?_⟩
+  · have hlim : Tendsto (fun l =>
+        ∑ α ∈ E, (F α (s₀ + (T l : ℂ) * Complex.I) /
+          F β (s₀ + (T l : ℂ) * Complex.I)) *
+          M α (s₀ + (T l : ℂ) * Complex.I))
+        atTop (nhds (∑ α ∈ E, d α * M α s₀)) := by
+      apply tendsto_finsetSum
+      intro α hα
+      exact (hcoeff α hα).mul (hmon α hα)
+    have hzeroLim : Tendsto (fun l =>
+        ∑ α ∈ E, (F α (s₀ + (T l : ℂ) * Complex.I) /
+          F β (s₀ + (T l : ℂ) * Complex.I)) *
+          M α (s₀ + (T l : ℂ) * Complex.I)) atTop (nhds 0) := by
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [hFβ] with l hFβl
+      symm
+      have h := hrel (s₀ + (T l : ℂ) * Complex.I)
+      rw [show (∑ α ∈ E, (F α (s₀ + (T l : ℂ) * Complex.I) /
+          F β (s₀ + (T l : ℂ) * Complex.I)) *
+          M α (s₀ + (T l : ℂ) * Complex.I)) =
+        (∑ α ∈ E, F α (s₀ + (T l : ℂ) * Complex.I) *
+          M α (s₀ + (T l : ℂ) * Complex.I)) /
+          F β (s₀ + (T l : ℂ) * Complex.I) by
+            rw [Finset.sum_div]
+            exact Finset.sum_congr rfl (fun α _ => by ring)]
+      rw [h, zero_div]
+    exact tendsto_nhds_unique hlim hzeroLim
+  · have hlim := hcoeff β hβ
+    have hOne : Tendsto
+        (fun l => F β (s₀ + (T l : ℂ) * Complex.I) /
+          F β (s₀ + (T l : ℂ) * Complex.I)) atTop (nhds 1) := by
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [hFβ] with l hFβl
+      exact (div_self hFβl).symm
+    exact tendsto_nhds_unique hlim hOne
+
+/-- Compatibility specialization of `recurrence_collapse_to_autonomous_eventually` for a
+dominant coefficient which is nonzero at every sample. -/
 theorem recurrence_collapse_to_autonomous {ι : Type*} (E : Finset ι)
     (F M : ι → ℂ → ℂ) (β : ι) (hβ : β ∈ E) (s₀ : ℂ) (T : ℕ → ℝ) (d : ι → ℂ)
     (hrel : ∀ s : ℂ, ∑ α ∈ E, F α s * M α s = 0)
@@ -64,26 +112,9 @@ theorem recurrence_collapse_to_autonomous {ι : Type*} (E : Finset ι)
       atTop (nhds (d α)))
     (hmon : ∀ α ∈ E, Tendsto
       (fun l => M α (s₀ + (T l : ℂ) * Complex.I)) atTop (nhds (M α s₀))) :
-    (∑ α ∈ E, d α * M α s₀ = 0) ∧ d β = 1 := by
-  refine ⟨?_, ?_⟩
-  · apply finiteProjectiveRelationCollapse E
-      (fun l α => F α (s₀ + (T l : ℂ) * Complex.I) / F β (s₀ + (T l : ℂ) * Complex.I))
-      (fun l α => M α (s₀ + (T l : ℂ) * Complex.I)) d (fun α => M α s₀) hcoeff hmon
-    intro l
-    have h := hrel (s₀ + (T l : ℂ) * Complex.I)
-    have hsum :
-        ∑ α ∈ E, F α (s₀ + (T l : ℂ) * Complex.I) / F β (s₀ + (T l : ℂ) * Complex.I)
-            * M α (s₀ + (T l : ℂ) * Complex.I)
-          = (∑ α ∈ E, F α (s₀ + (T l : ℂ) * Complex.I) * M α (s₀ + (T l : ℂ) * Complex.I))
-            / F β (s₀ + (T l : ℂ) * Complex.I) := by
-      rw [Finset.sum_div]
-      exact Finset.sum_congr rfl (fun α _ => by ring)
-    rw [hsum, h, zero_div]
-  · have hlim := hcoeff β hβ
-    have h1 : (fun l => F β (s₀ + (T l : ℂ) * Complex.I) / F β (s₀ + (T l : ℂ) * Complex.I))
-        = fun _ => (1 : ℂ) := by funext l; exact div_self (hFβ l)
-    rw [h1] at hlim
-    exact tendsto_nhds_unique hlim tendsto_const_nhds
+    (∑ α ∈ E, d α * M α s₀ = 0) ∧ d β = 1 :=
+  recurrence_collapse_to_autonomous_eventually E F M β hβ s₀ T d hrel
+    (Filter.Eventually.of_forall hFβ) hcoeff hmon
 
 /-- **Monomial-valuation residue on a vertical line (eq. 3, projective form).**  Composing the
 lowest-power ratio with the exponential Gamma decay `Γ(σ+it) → 0` (and `Γ ≠ 0`), a Gamma-field

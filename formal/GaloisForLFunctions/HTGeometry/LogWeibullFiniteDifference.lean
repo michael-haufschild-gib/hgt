@@ -306,28 +306,10 @@ noncomputable section
 
 lemma tendsto_log_add_div_log (r : ℝ) :
     Tendsto (fun x : ℝ => Real.log (x + r) / Real.log x) atTop (𝓝 1) := by
-  have hinv : Tendsto (fun x : ℝ => r * x⁻¹) atTop (𝓝 0) := by
-    simpa using tendsto_inv_atTop_zero.const_mul r
-  have hbaseForm : Tendsto (fun x : ℝ => 1 + r * x⁻¹) atTop (𝓝 1) := by
-    simpa using tendsto_const_nhds.add hinv
-  have hbase : Tendsto (fun x : ℝ => (x + r) / x) atTop (𝓝 1) := by
-    refine hbaseForm.congr' ?_
-    filter_upwards [eventually_gt_atTop (max 1 (-r + 1))] with x hx
-    have hx0 : x ≠ 0 := by linarith [le_max_left (1 : ℝ) (-r + 1)]
-    field_simp
-  have hlogQuot : Tendsto (fun x : ℝ => Real.log ((x + r) / x))
-      atTop (𝓝 0) := by
-    simpa using (Real.continuousAt_log one_ne_zero).tendsto.comp hbase
-  have hdiff : Tendsto (fun x : ℝ => Real.log (x + r) - Real.log x)
-      atTop (𝓝 0) := by
-    refine hlogQuot.congr' ?_
-    filter_upwards [eventually_gt_atTop (max 0 (-r))] with x hx
-    have hx0 : x ≠ 0 := by linarith [le_max_left (0 : ℝ) (-r)]
-    have hxr0 : x + r ≠ 0 := by linarith [le_max_right (0 : ℝ) (-r)]
-    rw [Real.log_div hxr0 hx0]
-  have hsmall := hdiff.div_atTop Real.tendsto_log_atTop
-  have hone : Tendsto (fun _x : ℝ => (1 : ℝ)) atTop (𝓝 1) := tendsto_const_nhds
-  have hadd := hone.add hsmall
+  have hsmall :=
+    (Real.tendsto_log_comp_add_sub_log r).div_atTop Real.tendsto_log_atTop
+  have hadd :=
+    (tendsto_const_nhds : Tendsto (fun _x : ℝ => (1 : ℝ)) atTop (𝓝 1)).add hsmall
   simpa only [add_zero] using hadd.congr' (by
     filter_upwards [eventually_gt_atTop (1 : ℝ)] with x hx
     have hlog0 : Real.log x ≠ 0 := ne_of_gt (Real.log_pos hx)

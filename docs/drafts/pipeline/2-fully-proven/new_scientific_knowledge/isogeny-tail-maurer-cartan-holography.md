@@ -20,6 +20,7 @@ Hamiltonian, or propagated state is introduced.
 
 - [x] 0 -> 1 in-progress: well-posed, source-pure, attack idea, parent boundary audited
 - [x] 1 -> 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open mathematical dependency
+- [x] total-deck plus finite-holonomy fixed-field intersection formalized
 - [ ] 2 -> 3 formalized: full algebraic-group and jet-space statement in Lean
 - [ ] 3 -> 4 publication-ready: independent novelty audit and standalone paper
 
@@ -224,10 +225,19 @@ The exact field-theoretic core is formalized in
 
 - `fixedField_iSup`;
 - `mem_fixedField_iSup_iff`;
+- `fixedField_sup`;
+- `fixedField_iSup_sup`;
 - `stableRangeCore_eq_fixedField_iSup`;
+- `stableRangeCore_inf_fixedField_eq_fixedField_iSup_sup`;
 - `mem_stableRangeCore_iff_fixedBy_iteratedDeck`.
 
-A targeted leaf build passes.  The Zariski-closure step, algebraic-group jet quotient, and
+The three new declarations formalize the abstract field-theoretic content of Corollary D: adding
+an arbitrary holonomy group to the total iterated deck group intersects the stable core with its
+fixed field. The exact module cache already existed, so verification used only the direct source
+check; the axiom reports contain only Lean's standard `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+The Zariski-closure step, algebraic-group jet quotient, equivariant descent to `G/F`, and
 Maurer--Cartan generation statement remain paper-level because the required algebraic-group
 prolongation infrastructure is not present in the project.
 

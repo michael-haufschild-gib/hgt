@@ -13,9 +13,9 @@ The order-fifteen squared-Xi sector can fail only in the compact corner
 `1/5 < (Re rho - 1/2)^2 < 1/4`, `85 < (Im rho)^2 < 100`.
 
 This module excludes that corner without a zero table.  A rational lower bound for the dominant
-theta atom forces the normalized fourth theta moment above `1/240`.  The endpoint resolvent and
+theta atom forces the normalized fourth theta moment above `269/50000`. The endpoint resolvent and
 the unconditional quartet orientation estimate then bound the fourth reciprocal trace below
-`39/100000`.  Four FE--Schwarz copies of a zero in the corner would contribute more than that
+`1/5000`. Four FE--Schwarz copies of a zero in the corner would contribute more than that
 amount to the same nonnegative trace, which is impossible.
 
 This is a route discriminator, not an RH disproof: it proves that the first unprotected fixed
@@ -64,9 +64,9 @@ lemma twoThousandFiveHundredThirtyOne_over_thousand_lt_log_four_mul_pi :
     norm_num
   exact hrat.trans ((add_lt_add hlogv hlogc).trans hlogvc)
 
+set_option maxRecDepth 1000000 in
 /-- A certified upper bound for Euler's constant from the decreasing Euler--Mascheroni sequence
 at the factorable index `6250 = 2 * 5^5`. -/
-set_option maxRecDepth 1000000 in
 lemma eulerMascheroniConstant_lt_fiveThousandSevenHundredSeventyThree_over_tenThousand :
     Real.eulerMascheroniConstant < 5773 / 10000 := by
   refine (Real.eulerMascheroniConstant_lt_eulerMascheroniSeq' 6250).trans ?_
@@ -90,10 +90,10 @@ theorem xiEndpointCompletedCurvature_lt_fourHundredSixtyThree_over_tenThousand :
 
 /-- The dominant first theta atom and the half-density budget give a normalized fourth-moment
 floor with no numerical integration. -/
-theorem twoThousandOneHundredFiftyOne_div_fiveHundredThousand_lt_thetaCuspNormalizedEvenMoment_two :
-    (2151 / 500000 : ℝ) < thetaCuspNormalizedEvenMoment 2 := by
-  have hraw2 : (2151 / 1000000 : ℝ) < thetaCuspRawEvenMoment 2 :=
-    twoThousandOneHundredFiftyOne_div_oneMillion_lt_thetaCuspAtomRawEvenMoment_two_one.trans_le
+theorem twoHundredSixtyNine_div_fiftyThousand_lt_thetaCuspNormalizedEvenMoment_two :
+    (269 / 50000 : ℝ) < thetaCuspNormalizedEvenMoment 2 := by
+  have hraw2 : (269 / 100000 : ℝ) < thetaCuspRawEvenMoment 2 :=
+    twoHundredSixtyNine_div_oneHundredThousand_lt_thetaCuspAtomRawEvenMoment_two_one.trans_le
       (thetaCuspAtomRawEvenMoment_one_le_raw 2)
   have hraw0pos : 0 < thetaCuspRawEvenMoment 0 :=
     thetaCuspRawEvenMoment_zero_pos
@@ -103,6 +103,21 @@ theorem twoThousandOneHundredFiftyOne_div_fiveHundredThousand_lt_thetaCuspNormal
     nlinarith [thetaCuspRawEvenMomentPair_le_fullHalfDensityBudget]
   rw [thetaCuspNormalizedEvenMoment, lt_div_iff₀ hraw0pos]
   nlinarith
+
+/-- Compatibility form of the earlier seven-interval normalized fourth-moment floor. -/
+theorem twoHundredSixtyThree_div_fiftyThousand_lt_thetaCuspNormalizedEvenMoment_two :
+    (263 / 50000 : ℝ) < thetaCuspNormalizedEvenMoment 2 := by
+  nlinarith [twoHundredSixtyNine_div_fiftyThousand_lt_thetaCuspNormalizedEvenMoment_two]
+
+/-- Compatibility form of the earlier six-interval normalized fourth-moment floor. -/
+theorem three_div_sixHundredTwentyFive_lt_thetaCuspNormalizedEvenMoment_two :
+    (3 / 625 : ℝ) < thetaCuspNormalizedEvenMoment 2 := by
+  nlinarith [twoHundredSixtyThree_div_fiftyThousand_lt_thetaCuspNormalizedEvenMoment_two]
+
+/-- Compatibility form of the earlier normalized fourth-moment floor. -/
+theorem twoThousandOneHundredFiftyOne_div_fiveHundredThousand_lt_thetaCuspNormalizedEvenMoment_two :
+    (2151 / 500000 : ℝ) < thetaCuspNormalizedEvenMoment 2 := by
+  nlinarith [three_div_sixHundredTwentyFive_lt_thetaCuspNormalizedEvenMoment_two]
 
 /-- Removing the quarter-resolvent smoothing costs at most one quarter of the positive thermal
 second moment. -/
@@ -167,15 +182,15 @@ theorem normalizedPrimeArchMoment_zero_lt_twentyNine_over_sixHundredTwentyFive :
   have hM1 : M < 1 := by
     simpa only [M] using normalizedPrimeArchMoment_zero_lt_one
   have hmu2 :=
-    twoThousandOneHundredFiftyOne_div_fiveHundredThousand_lt_thetaCuspNormalizedEvenMoment_two
+    twoHundredSixtyNine_div_fiftyThousand_lt_thetaCuspNormalizedEvenMoment_two
   have hsource : normalizedPrimeArchMoment 1 <
-      M ^ 2 / 2 - (2151 / 500000 : ℝ) / 6 := by
+      M ^ 2 / 2 - (269 / 50000 : ℝ) / 6 := by
     rw [normalizedPrimeArchMoment_one_eq_thetaCuspNormalizedEvenMoment,
       ← normalizedPrimeArchMoment_zero_eq_thetaCuspNormalizedEvenMoment]
     dsimp only [M]
     nlinarith
   have hthermal : xiThermalSecondMoment <
-      (84 / 83 : ℝ) * (M ^ 2 / 2 - (2151 / 500000 : ℝ) / 6) :=
+      (84 / 83 : ℝ) * (M ^ 2 / 2 - (269 / 50000 : ℝ) / 6) :=
     xiThermalSecondMoment_le_eightyFour_over_eightyThree_source.trans_lt
       (mul_lt_mul_of_pos_left hsource (by norm_num))
   have hgap :=
@@ -184,7 +199,7 @@ theorem normalizedPrimeArchMoment_zero_lt_twentyNine_over_sixHundredTwentyFive :
   have hC := xiEndpointCompletedCurvature_lt_fourHundredSixtyThree_over_tenThousand
   have hmaster :
       M < 463 / 10000 +
-        ((84 / 83 : ℝ) * (M ^ 2 / 2 - (2151 / 500000 : ℝ) / 6)) / 4 := by
+        ((84 / 83 : ℝ) * (M ^ 2 / 2 - (269 / 50000 : ℝ) / 6)) / 4 := by
     dsimp only [M] at hgap ⊢
     nlinarith
   by_contra hnot
@@ -198,17 +213,17 @@ theorem normalizedPrimeArchMoment_zero_lt_twentyNine_over_sixHundredTwentyFive :
     nlinarith
   have hupper :
       M - (21 / 166 : ℝ) * M ^ 2 <
-      463 / 10000 - (21 / 498 : ℝ) * (2151 / 500000) := by
+      463 / 10000 - (21 / 498 : ℝ) * (269 / 50000) := by
     nlinarith [hmaster]
   have hrat :
-      463 / 10000 - (21 / 498 : ℝ) * (2151 / 500000) <
+      463 / 10000 - (21 / 498 : ℝ) * (269 / 50000) <
         (29 / 625 : ℝ) - (21 / 166 : ℝ) * (29 / 625) ^ 2 := by
     norm_num
   linarith
 
 /-- The completed fourth reciprocal trace lies strictly below the corner quartet threshold. -/
-theorem normalizedPrimeArchMoment_one_lt_nine_over_twentyFiveThousand :
-    normalizedPrimeArchMoment 1 < 9 / 25000 := by
+theorem normalizedPrimeArchMoment_one_lt_nine_over_fiftyThousand :
+    normalizedPrimeArchMoment 1 < 9 / 50000 := by
   let M : ℝ := normalizedPrimeArchMoment 0
   have hM0 : 0 < M := by
     simpa only [M] using normalizedPrimeArchMoment_zero_pos
@@ -218,14 +233,29 @@ theorem normalizedPrimeArchMoment_one_lt_nine_over_twentyFiveThousand :
       (add_pos (by norm_num : (0 : ℝ) < 29 / 625) hM0)
     nlinarith
   have hmu2 :=
-    twoThousandOneHundredFiftyOne_div_fiveHundredThousand_lt_thetaCuspNormalizedEvenMoment_two
+    twoHundredSixtyNine_div_fiftyThousand_lt_thetaCuspNormalizedEvenMoment_two
   rw [normalizedPrimeArchMoment_one_eq_thetaCuspNormalizedEvenMoment,
     ← normalizedPrimeArchMoment_zero_eq_thetaCuspNormalizedEvenMoment]
   have hrat :
-      (29 / 625 : ℝ) ^ 2 / 2 - (2151 / 500000 : ℝ) / 6 < 9 / 25000 := by
+      (29 / 625 : ℝ) ^ 2 / 2 - (269 / 50000 : ℝ) / 6 < 9 / 50000 := by
     norm_num
   simpa only [M] using (by nlinarith :
-    M ^ 2 / 2 - thetaCuspNormalizedEvenMoment 2 / 6 < 9 / 25000)
+    M ^ 2 / 2 - thetaCuspNormalizedEvenMoment 2 / 6 < 9 / 50000)
+
+/-- Compatibility form of the earlier fourth reciprocal-trace upper bound. -/
+theorem normalizedPrimeArchMoment_one_lt_one_over_fiveThousand :
+    normalizedPrimeArchMoment 1 < 1 / 5000 := by
+  nlinarith [normalizedPrimeArchMoment_one_lt_nine_over_fiftyThousand]
+
+/-- Compatibility form of the earlier fourth reciprocal-trace upper bound. -/
+theorem normalizedPrimeArchMoment_one_lt_seven_over_twentyFiveThousand :
+    normalizedPrimeArchMoment 1 < 7 / 25000 := by
+  nlinarith [normalizedPrimeArchMoment_one_lt_one_over_fiveThousand]
+
+/-- Compatibility form of the earlier fourth reciprocal-trace upper bound. -/
+theorem normalizedPrimeArchMoment_one_lt_nine_over_twentyFiveThousand :
+    normalizedPrimeArchMoment 1 < 9 / 25000 := by
+  nlinarith [normalizedPrimeArchMoment_one_lt_seven_over_twentyFiveThousand]
 
 /-- Every individual fourth reciprocal trace atom is nonnegative unconditionally. -/
 theorem xiFourthReciprocalTraceAtom_nonneg (q : XiZeroCopy) :

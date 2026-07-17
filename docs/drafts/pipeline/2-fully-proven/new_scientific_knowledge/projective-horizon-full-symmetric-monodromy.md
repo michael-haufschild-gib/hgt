@@ -294,7 +294,8 @@ pairing and Lagrangian isotropy underlying `(8)`.
 `ProjectiveHorizonRamificationUniqueness.lean` formalizes the decisive impossibility in
 `(11)--(13)` as `criticalHorizon_sharedConormal_displacement_eq_zero`.
 `ProjectiveHorizonCriticalMultiplicity.lean` supplies the trailing-degree contradiction and the
-degree `(3)`.  The Schur irreducibility, generic conormal geometry, etale-cover classification, and
+degree `(3)`; its strongest truncation theorem derives the second factor's nonzeroness directly
+from the marked nonzero coefficient.  The Schur irreducibility, generic conormal geometry, etale-cover classification, and
 permutation-group closure are paper-level.
 
 Only targeted leaf checks are used; no full build is run.

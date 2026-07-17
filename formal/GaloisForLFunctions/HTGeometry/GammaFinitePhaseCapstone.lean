@@ -53,7 +53,8 @@ vector (`d_β = 1`): `f` satisfies a nontrivial autonomous algebraic differentia
 theorem holomorphic_recurrence_collapse {ι : Type*} (E : Finset ι)
     {U : Set ℂ} (hU : IsOpen U) (f : ℂ → ℂ) (exps : ι → (ℕ →₀ ℕ))
     (F : ι → ℂ → ℂ) (β : ι) (hβ : β ∈ E) {z₀ : ℂ} (hz₀ : z₀ ∈ U) (T : ℕ → ℝ) (d : ι → ℂ)
-    (hFdiff : ∀ l : ℕ, DifferentiableOn ℂ (fun z => f (z + (T l : ℂ) * Complex.I)) U)
+    (hFdiff : ∀ᶠ l in atTop,
+      DifferentiableOn ℂ (fun z => f (z + (T l : ℂ) * Complex.I)) U)
     (hFconv : TendstoLocallyUniformlyOn
       (fun l z => f (z + (T l : ℂ) * Complex.I)) f atTop U)
     (hrel : ∀ s : ℂ, ∑ α ∈ E, F α s * diffMonomial f (exps α) s = 0)
@@ -63,8 +64,12 @@ theorem holomorphic_recurrence_collapse {ι : Type*} (E : Finset ι)
       atTop (nhds (d α))) :
     (∑ α ∈ E, d α * diffMonomial f (exps α) z₀ = 0) ∧ d β = 1 := by
   have hjet : ∀ j : ℕ, Tendsto (fun l => iteratedDeriv j f (z₀ + (T l : ℂ) * Complex.I))
-      atTop (nhds (iteratedDeriv j f z₀)) :=
-    fun j => jet_return_of_translate_locallyUniform hU hFdiff hFconv j hz₀
+      atTop (nhds (iteratedDeriv j f z₀)) := by
+    intro j
+    have hbridge := iteratedDeriv_tendsto_of_locallyUniform hU hFconv hFdiff j hz₀
+    refine hbridge.congr (fun l => ?_)
+    exact congrFun
+      (_root_.iteratedDeriv_comp_add_const j f ((T l : ℂ) * Complex.I)) z₀
   exact recurrence_collapse_to_autonomous E F (fun α => diffMonomial f (exps α)) β hβ z₀ T d
     hrel hFβ hcoeff (fun α _ => diffMonomial_return (exps α) hjet)
 

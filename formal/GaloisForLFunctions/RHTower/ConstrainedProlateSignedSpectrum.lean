@@ -53,6 +53,12 @@ theorem evenProlateSignedAbsValue_tendsto_zero (a : ℝ) (ha : 0 < a) :
       (adjoint_evenTimeBandFourier a))
   exact hlim.congr' (Filter.Eventually.of_forall fun n => (habs n).symm)
 
+/-- The actual signed prolate eigenvalues converge to zero. -/
+theorem evenProlateSignedValue_tendsto_zero (a : ℝ) (ha : 0 < a) :
+    Filter.Tendsto (evenProlateSignedValue a) Filter.atTop (nhds 0) :=
+  (tendsto_zero_iff_abs_tendsto_zero _).2
+    (evenProlateSignedAbsValue_tendsto_zero a ha)
+
 theorem evenProlateSignedMode_mem_timeLimited_of_value_ne_zero
     (a : ℝ) {n : ℕ} (hn : evenProlateSignedValue a n ≠ 0) :
     evenProlateSignedMode a n ∈ evenTimeLimitedSubspace a := by
@@ -87,4 +93,3 @@ theorem evenProlateLeakage_apply_signedMode (a : ℝ) (n : ℕ) :
   module
 
 end RHTower
-

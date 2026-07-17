@@ -254,17 +254,22 @@ is known, and the theorem does not constrain zeros or imply a critical-line stat
 
 ```text
 projectiveInversion_twoJet_reconstruction
+hypertranscendentalOver_differentialJet_ne_zero
 hypertranscendentalOver_sup_firstJetTail_inv_eq_top
 mem_of_pow_mem_and_nonzero_differentialJet_mem
 mem_of_sq_mem_and_nonzero_differentialJet_mem
 ```
 
-The first two declarations certify the full depth-one inversion case. The latter two certify the
-power branch-collapse mechanism at arbitrary depth: in any derivation-closed intermediate field,
-visibility of any positive power `x^k` and one nonzero jet forces visibility of `x`.
+The inversion and horizon declarations certify the full depth-one inversion case. The jet theorem
+certifies, uniformly at every order, that every differential jet of an HT scalar is nonzero; the
+horizon proofs reuse it instead of duplicating the order-zero and order-one arguments. The latter
+two declarations certify the power branch-collapse mechanism at arbitrary depth: in any
+derivation-closed intermediate field, visibility of any positive power `x^k` and one nonzero jet
+forces visibility of `x`.
 
-The isolated source check and targeted module build pass. Formal lint passes. Axiom reports contain
-only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`; no full build was run.
+The isolated source check passes. The exact module cache already existed, so no build was run. The
+new all-order jet theorem's axiom report contains only Lean's standard `propext`,
+`Classical.choice`, and `Quot.sound`.
 
 The uniform principal-symbol/Luroth theorem `(2)--(3)` and general algebraic branch argument remain
 paper-level because the toolchain has no differential-order or differential-Luroth interface and
@@ -275,6 +280,7 @@ no packaged algebraic function-field derivation theorem. No axiom or opaque plac
 - [x] 0 -> 1 in-progress: exact classification, source-pure proof, parent collision, and formal
   boundary identified
 - [x] 1 -> 2 fully-proven: highest-jet coefficient and algebraic-branch arguments audited
+- [x] all-order nonvanishing of every HT differential jet formalized and reused
 - [ ] 2 -> 3 formalized: depth-one inversion and quadratic branch collapse formalized; general
   Luroth principal symbol and rational branch separation remain
 - [ ] 3 -> 4 publication-ready: independent specialist priority audit and standalone exposition

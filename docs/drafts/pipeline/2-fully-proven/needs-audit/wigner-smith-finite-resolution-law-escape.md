@@ -10,8 +10,9 @@
   energy, then its Wigner--Smith delay is hypertranscendental.  A finite-bandwidth wave packet
   measures an exact smoothing of that delay.  As the bandwidth is refined, the measured delays
   eventually violate every preassigned finite family of algebraic differential laws, with a
-  positive finite-data and finite-noise margin.  No individual smoothed trace is asserted to be
-  hypertranscendental.
+  positive finite-data and finite-noise margin.  Arbitrary smoothing is not asserted to preserve
+  HT, but an explicit positive Erlang packet family is differentially recoverable and therefore
+  preserves the exact DA/HT class at every positive width.
 
 ## Physical setup
 
@@ -98,6 +99,29 @@ Q_epsilon -> Q in C^r(I) for every fixed r.               (9)
 ```
 
 No numerical differentiation or reconstruction assumption enters `(6)`--`(9)`.
+
+### A positive finite-width family that preserves HT exactly `[PROVED BRIDGE]`
+
+The caution after `(9)` is necessary for arbitrary kernels, but it is not a fundamental
+finite-resolution obstruction.  The card
+`../not_new_scientific_knowledge/erlang-wigner-smith-ht-faithful-coarse-graining.md` constructs a
+one-sided third-order Erlang energy packet whose measured delay `R_epsilon` satisfies
+
+```text
+(1-epsilon D)^3 R_epsilon=Q.                              (9a)
+```
+
+The packet density is positive, normalized, supported above its controllable lower energy edge,
+and is the square of an `H^1` amplitude.  Finite differential recovery gives
+
+```text
+R_epsilon HT  <=>  Q HT       for every epsilon>0.         (9b)
+```
+
+Thus the general theorem below provides eventual law escape for every approximate identity, while
+the Erlang subfamily provides exact HT observability at every finite resolution.  The abstract
+recovery implication and the Erlang Green-function identity are parent mathematics, not a separate
+novelty claim.
 
 ## Finite differential-law windows
 
@@ -207,7 +231,8 @@ not an infinite-precision detector reading.
    The candidate new content is their combination with HT and the robust directed law-escape
    theorem `(12)`--`(18)`.
 2. **Smoothing declared HT.**  False.  No fixed `Q_epsilon` is claimed HT.  Convolution can alter
-   differential-algebraic type.
+   differential-algebraic type.  The explicit Erlang exception is proved separately from its
+   finite differential recovery equation `(9a)`.
 3. **One experiment declared a proof of HT.**  False.  A finite packet excludes one explicitly
    bounded law space.  Global HT remains a directed hierarchy of falsifiable finite statements.
 4. **Cross sections detect the phase.**  They do not: elastic momentum probabilities remain
@@ -289,6 +314,7 @@ theorem, not wrappers around the existing logarithmic-derivative or evaluation-p
 - [x] finite energy packet and deterministic noise margin proved
 - [x] derivative-free finite packet implementation derived
 - [x] smoothing and single-experiment overclaims excluded
+- [x] positive Erlang detector preserving HT at every positive width constructed
 - [ ] formula-level novelty audit across time-delay and system-identification literature
 - [ ] unconditional Lean measurement theorem
 - [ ] quantitative margin law from locality or geometric CDD structure

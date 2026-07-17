@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.MeromorphicGammaNatScale
 import GaloisForLFunctions.HTGeometry.VenezianoGammaRatioBoundary
+import GaloisForLFunctions.HTGeometry.WignerSmithLogClockObservability
 
 /-!
 # Sauter Bogoliubov Gamma boundary
@@ -69,6 +70,12 @@ local instance sauterBogoliubovGammaCharZero :
 incoming-frequency spectral parameter. -/
 def sauterBogoliubovGammaCarrierMero (a b : ℂ) : meroField Set.univ :=
   gammaNatScaleMero 2 1 / (gammaShiftMero a * gammaShiftMero b)
+
+theorem sauterBogoliubovGammaCarrierMero_ne_zero (a b : ℂ) :
+    sauterBogoliubovGammaCarrierMero a b ≠ 0 := by
+  exact div_ne_zero
+    (gammaNatScaleMero_ne_zero (show 0 < 2 by norm_num) 1)
+    (mul_ne_zero (gammaShiftMero_ne_zero a) (gammaShiftMero_ne_zero b))
 
 /-- The two unit-scale Gamma ratios left after Gauss duplication of the Sauter carrier. -/
 def sauterBogoliubovRefinedMero (a b : ℂ) : meroField Set.univ :=
@@ -268,6 +275,34 @@ unchanged. -/
 def sauterBogoliubovReadoutMero (a b lambda : ℂ) : meroField Set.univ :=
   sauterBogoliubovGammaCarrierMero a b * physicalExponentialMero lambda
 
+/-- Wigner--Smith/logarithmic current of the bare Sauter Gamma carrier. -/
+def sauterBogoliubovGammaWignerSmithLogClockMero
+    (a b : ℂ) : meroField Set.univ :=
+  HTGeometry.wignerSmithLogClock (sauterBogoliubovGammaCarrierMero a b)
+
+/-- Wigner--Smith/logarithmic current after restoring the elementary phase readout. -/
+def sauterBogoliubovReadoutWignerSmithLogClockMero
+    (a b lambda : ℂ) : meroField Set.univ :=
+  HTGeometry.wignerSmithLogClock (sauterBogoliubovReadoutMero a b lambda)
+
+/-- **Sauter delay gauge law.**  Restoring the dynamical exponential phase shifts the observable
+logarithmic delay by exactly the constant `lambda`. -/
+theorem sauterBogoliubovReadoutWignerSmithLogClockMero_eq_carrier_add_const
+    (a b lambda : ℂ) :
+    sauterBogoliubovReadoutWignerSmithLogClockMero a b lambda =
+      sauterBogoliubovGammaWignerSmithLogClockMero a b +
+        algebraMap ℂ (meroField Set.univ) lambda := by
+  unfold sauterBogoliubovReadoutWignerSmithLogClockMero
+    sauterBogoliubovGammaWignerSmithLogClockMero HTGeometry.wignerSmithLogClock
+    sauterBogoliubovReadoutMero
+  rw [Differential.logDeriv_mul]
+  · congr 1
+    unfold Differential.logDeriv
+    rw [physicalExponentialMero_deriv]
+    field_simp [physicalExponentialMero_ne_zero lambda]
+  · exact sauterBogoliubovGammaCarrierMero_ne_zero a b
+  · exact physicalExponentialMero_ne_zero lambda
+
 theorem differentialAlgebraicOver_sauterBogoliubovReadoutMero_iff_orbitMatching
     (a b lambda : ℂ) :
     DifferentialAlgebraicOver (RatFunc ℂ)
@@ -306,6 +341,20 @@ theorem hypertranscendentalOver_sauterBogoliubovReadoutMero_iff_orbitMismatch
           ∃ n : ℤ, b - 1 / 2 = (n : ℂ)))) := by
   rw [HypertranscendentalOver,
     differentialAlgebraicOver_sauterBogoliubovReadoutMero_iff_orbitMatching]
+
+/-- The standard logarithmic delay reports exactly the same HT/DA orbit boundary as the complete
+Sauter connection coefficient, including its elementary phase calibration. -/
+theorem hypertranscendentalOver_sauterBogoliubovReadoutWignerSmithLogClockMero_iff_orbitMismatch
+    (a b lambda : ℂ) :
+    HypertranscendentalOver (RatFunc ℂ)
+        (sauterBogoliubovReadoutWignerSmithLogClockMero a b lambda) ↔
+      ¬ ((((∃ m : ℤ, a - 1 / 2 = (m : ℂ)) ∧
+          ∃ n : ℤ, b - 1 = (n : ℂ)) ∨
+        ((∃ m : ℤ, a - 1 = (m : ℂ)) ∧
+          ∃ n : ℤ, b - 1 / 2 = (n : ℂ)))) := by
+  rw [sauterBogoliubovReadoutWignerSmithLogClockMero,
+    HTGeometry.hypertranscendentalOver_wignerSmithLogClock_iff,
+    hypertranscendentalOver_sauterBogoliubovReadoutMero_iff_orbitMismatch]
 
 /-- **Positive source extraction for strong-field readout circuits.**  Off the two exceptional
 orbit matchings, any finite differential circuit with rational-function scalars that exactly

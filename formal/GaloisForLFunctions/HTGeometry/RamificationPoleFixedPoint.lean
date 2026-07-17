@@ -46,13 +46,8 @@ theorem ramificationPluriPoleOrder_fixed_eq_neg_weight
           ((e : ℤ) * c + (k : ℤ) * ((e : ℤ) - 1)) + (k : ℤ) :=
         congrArg (fun z : ℤ => z + (k : ℤ)) h
       _ = (e : ℤ) * (c + (k : ℤ)) := by ring
-  have hprod : ((e : ℤ) - 1) * (c + (k : ℤ)) = 0 := by
-    calc
-      ((e : ℤ) - 1) * (c + (k : ℤ)) =
-          (e : ℤ) * (c + (k : ℤ)) - (c + (k : ℤ)) := by ring
-      _ = 0 := by rw [← hshift]; ring
-  have he0 : (e : ℤ) - 1 ≠ 0 := by omega
-  have hc0 : c + (k : ℤ) = 0 := (mul_eq_zero.mp hprod).resolve_left he0
+  have hfixed := ramificationShift_fixed_eq_neg_one
+    (c := c + (k : ℤ) - 1) he (by simpa using hshift)
   omega
 
 end GaloisForLFunctions

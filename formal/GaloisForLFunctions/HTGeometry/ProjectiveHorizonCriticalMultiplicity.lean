@@ -76,15 +76,26 @@ theorem exists_low_mul_coeff_ne_zero {K : Type*} [Field K]
       (trailingCoeff_nonzero_iff_nonzero.mpr hp)
       (trailingCoeff_nonzero_iff_nonzero.mpr hq)
 
-/-- A low-degree factor and a factor with a marked `n`th coefficient cannot have zero truncated
-product through order `m+n-1`. -/
-theorem not_all_low_mul_coeff_zero {K : Type*} [Field K]
-    {p q : K[X]} {m n : ℕ} (hp : p ≠ 0) (hq : q ≠ 0)
+/-- A low-degree nonzero factor and a factor with a marked nonzero `n`th coefficient cannot have
+zero truncated product through order `m+n-1`.  The marked coefficient supplies the nonzeroness of
+the second factor. -/
+theorem not_all_low_mul_coeff_zero_of_coeff_ne_zero {K : Type*} [Field K]
+    {p q : K[X]} {m n : ℕ} (hp : p ≠ 0)
     (hpdeg : p.natDegree < m) (hqn : q.coeff n ≠ 0) :
     ¬ ∀ k < m + n, (p * q).coeff k = 0 := by
+  have hq : q ≠ 0 := by
+    intro hq
+    exact hqn (by simp [hq])
   intro hzero
   obtain ⟨k, hk, hne⟩ := exists_low_mul_coeff_ne_zero hp hq hpdeg hqn
   exact hne (hzero k hk)
+
+/-- Compatibility form with the formerly explicit, now redundant, second-factor premise. -/
+theorem not_all_low_mul_coeff_zero {K : Type*} [Field K]
+    {p q : K[X]} {m n : ℕ} (hp : p ≠ 0) (_hq : q ≠ 0)
+    (hpdeg : p.natDegree < m) (hqn : q.coeff n ≠ 0) :
+    ¬ ∀ k < m + n, (p * q).coeff k = 0 :=
+  not_all_low_mul_coeff_zero_of_coeff_ne_zero hp hpdeg hqn
 
 /-- If both factors have complementary low-degree bounds, their product already survives below the
 critical truncation.  This excludes the corner where both projective homogenizing coordinates

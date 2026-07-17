@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.GammaOppositeShiftBoundary
 import GaloisForLFunctions.HTGeometry.GammaReflectionRatioClock
-import GaloisForLFunctions.HTGeometry.FiniteDifferentialCircuitBoundary
+import GaloisForLFunctions.HTGeometry.WignerSmithLogClockObservability
 
 /-!
 # Horizon Bogoliubov Gamma observability
@@ -75,6 +75,15 @@ def horizonBogoliubovGammaIntensityCoreMero : meroField Set.univ :=
 def horizonBogoliubovGammaPhaseQuotientMero : meroField Set.univ :=
   (gammaReflectionRatioMero 0)⁻¹
 
+/-- Wigner--Smith/logarithmic delay of the positive-frequency horizon Gamma amplitude. -/
+def horizonBogoliubovGammaWignerSmithLogClockMero : meroField Set.univ :=
+  HTGeometry.wignerSmithLogClock horizonBogoliubovGammaAmplitudeMero
+
+/-- The horizon Wigner--Smith observable is exactly the zero-shift meromorphic digamma clock. -/
+theorem horizonBogoliubovGammaWignerSmithLogClockMero_eq_digamma :
+    horizonBogoliubovGammaWignerSmithLogClockMero = digammaShiftMero 0 := by
+  rfl
+
 theorem horizonBogoliubovGammaConjugateFrequencyMero_ne_zero :
     horizonBogoliubovGammaConjugateFrequencyMero ≠ 0 := by
   rw [horizonBogoliubovGammaConjugateFrequencyMero,
@@ -124,6 +133,21 @@ theorem hypertranscendentalOver_horizonBogoliubovGammaPhaseQuotientMero :
     HTGeometry.hypertranscendentalOver_inv_iff]
   exact hypertranscendentalOver_gammaReflectionRatioMero 0
 
+/-- **Positive horizon delay source.**  The directly observable logarithmic scattering delay is
+HT even though the conjugate-frequency intensity core is DA. -/
+theorem hypertranscendentalOver_horizonBogoliubovGammaWignerSmithLogClockMero :
+    HypertranscendentalOver (RatFunc ℂ)
+      horizonBogoliubovGammaWignerSmithLogClockMero := by
+  rw [horizonBogoliubovGammaWignerSmithLogClockMero_eq_digamma]
+  let b : Fin 1 → ℂ := fun _ => 0
+  let M : Fin 1 → ℂ := fun _ => 1
+  have h := hypertranscendentalOver_gammaOrbitDigammaMero b M 0
+    (by simp [M])
+    (by
+      intro c hc
+      exact (hc (Subsingleton.elim c 0)).elim)
+  simpa [b, M, gammaOrbitDigammaMero] using h
+
 /-- No DA multiplicative phase calibration transforms the opposite-frequency Gamma carrier into
 the positive-frequency carrier. -/
 theorem horizonBogoliubovGammaAmplitudeMero_ne_da_mul_conjugate
@@ -154,6 +178,28 @@ theorem no_scalarAwareFiniteDifferentialCircuit_horizonPhase_from_intensity :
       hypertranscendentalOver_horizonBogoliubovGammaPhaseQuotientMero hcircuit
   rw [ha] at hHT
   exact hHT differentialAlgebraicOver_horizonBogoliubovGammaIntensityCoreMero
+
+/-- Rational clocks and the complete DA horizon intensity cannot finitely reconstruct the HT
+Wigner--Smith/digamma delay. -/
+theorem no_scalarAwareFiniteDifferentialCircuit_horizonWignerSmith_from_intensity :
+    ¬ HTGeometry.FiniteDifferentialCircuit
+      (HTGeometry.BaseScalarOrAtom (RatFunc ℂ) (meroField Set.univ)
+        (fun a => a = horizonBogoliubovGammaIntensityCoreMero))
+      horizonBogoliubovGammaWignerSmithLogClockMero := by
+  exact HTGeometry.no_scalarAwareFiniteDifferentialCircuit_wignerSmith_from_daObservation
+    horizonBogoliubovGammaAmplitudeMero
+    horizonBogoliubovGammaIntensityCoreMero
+    (by
+      rw [horizonBogoliubovGammaAmplitudeMero]
+      let b : Fin 1 → ℂ := fun _ => 0
+      let m : Fin 1 → ℤ := fun _ => 1
+      have h := hypertranscendentalOver_gammaOrbitProductMero b m 0
+        (by simp [m])
+        (by
+          intro c hc
+          exact (hc (Subsingleton.elim c 0)).elim)
+      simpa [b, m, gammaOrbitProductMero] using h)
+    differentialAlgebraicOver_horizonBogoliubovGammaIntensityCoreMero
 
 end
 

@@ -535,24 +535,31 @@ boundary and Bohr return) supplied as explicit hypotheses:
   `polynomial_lowest_power_ratio_tendsto`, `gamma_monomial_valuation_residue`): as `Γ → 0` the
   smallest Gamma power dominates a rational expression `P(Γ)/Q(Γ)`, whose projective normalization
   converges to the leading `L`-coefficient ratio `R(0)/S(0)`;
-- **eq. (27) → (29) recurrence collapse** (`recurrence_collapse_to_autonomous`): a finite Gamma-field
+- **eq. (27) → (29) recurrence collapse**
+  (`recurrence_collapse_to_autonomous_eventually`, with
+  `recurrence_collapse_to_autonomous` as its all-samples specialization): a finite Gamma-field
   differential relation, translated along Bohr return times and normalized by a projectively
   dominant coefficient, converges to a nontrivial constant-coefficient (autonomous) relation
   (`d_β = 1`), so a recurrent solution differentially algebraic over `K_Γ` satisfies an autonomous
-  ADE — this is eq. (8).  The engine is the tree's `finiteProjectiveRelationCollapse`.
+  ADE — this is eq. (8). Eventual nonvanishing of the dominant coefficient is sufficient.
 
 `formal/GaloisForLFunctions/HTGeometry/GammaFormalResidueField.lean` formalizes the §3 algebraic
 residue (eq. 19) on the formal field itself.  Modeling `C(log s)((s⁻¹))` as
 `HahnSeries ℤ (RatFunc ℂ)`, `formalResidue_data` gives every nonzero element its leading data
 `(a, b, c)` — `a = order`, `b =` the `log s`-degree of the leading Laurent coefficient, `c ∈ ℂˣ` its
 leading constant (`formalResidue_const_ne_zero`) — and the residue is a genuine valuation
-(`formalResidue_order_mul` additive, `formalResidue_leadingCoeff_mul` multiplicative).
+(`formalResidue_order_mul` additive, `formalResidue_logDegree_mul` additive,
+`formalResidue_leadingConst_mul` multiplicative).  The intermediate rational-function law
+`ratLeadingCoeff_mul` and Hahn leading-coefficient law `formalResidue_leadingCoeff_mul` supply the
+two multiplicative steps.
 
 `formal/GaloisForLFunctions/HTGeometry/AlmostPeriodicHull.lean` builds, from scratch (mathlib has
 no almost-periodic theory), the **Bohr almost-periodic hull** — the load-bearing object for the
 finite-phase step.  Working in `ℝ →ᵇ ℂ`: `bcfTranslate` is an isometric additive translation action;
 `IsBohrAP` (Bochner criterion: relatively compact orbit); `bohrHull` compact, closed, `f`-containing,
-translation invariant; and the **Bohr recurrence** `bohrAP_exists_large_return` /
+translation invariant, with exact orbit and hull preservation under every shift
+(`bcfTranslate_bcfOrbit`, `bcfTranslate_bohrHull`); and the **Bohr recurrence**
+`bohrAP_exists_large_return` /
 `bohrAP_return_seq` — arbitrarily large return times `T_l → +∞` with `f(· + T_l) → f` uniformly
 (`bohrAP_pointValue_return` at the value level).  This is exactly eq. (28), and it discharges the
 return-time interface of `recurrence_collapse_to_autonomous`.
@@ -561,20 +568,27 @@ return-time interface of `recurrence_collapse_to_autonomous`.
 bridge**: `iteratedDeriv_tendsto_of_locallyUniform` (iterating mathlib's Weierstrass theorem
 `TendstoLocallyUniformlyOn.deriv` to all orders) and `jet_return_of_translate_locallyUniform` —
 local-uniform return of the vertical translates of a holomorphic `f` forces the whole differential
-jet to return, `f⁽ʲ⁾(z₀ + iT_l) → f⁽ʲ⁾(z₀)`.  This is eq. (28)'s derivative step.
+jet to return, `f⁽ʲ⁾(z₀ + iT_l) → f⁽ʲ⁾(z₀)`.  The affine-shift identity is consumed directly from
+mathlib's `iteratedDeriv_comp_add_const`; the former local duplicate has been removed. This is eq.
+(28)'s derivative step.
 
 `formal/GaloisForLFunctions/HTGeometry/GammaFinitePhaseCapstone.lean` assembles eq. (8):
 `holomorphic_recurrence_collapse` shows a holomorphic `f` satisfying a finite Gamma-field
 differential relation, whose vertical translates return locally uniformly (almost periodicity) and
 whose coefficients have the one-point projective boundary (eq. 5), collapses to a nontrivial
 autonomous algebraic differential relation (`d_β = 1`) — `f` is differentially algebraic over the
-constants.  The two remaining hypotheses are exactly the interfaces whose supplying theories are
+constants.  Holomorphicity of the translated family is needed only eventually along the return
+filter, not at every index.  The two remaining hypotheses are exactly the interfaces whose
+supplying theories are
 `AlmostPeriodicHull` (return sequence) and the Gamma monomial valuation / prime-torus law
 (projective boundary).
 
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.
+The action interface now also derives its exact identity, inverse-time, and bijectivity laws
+(`IsometricRAction.act_zero`, `act_neg_act`, `act_act_neg`, `bijective_act`) from the stored
+additive composition and isometry data.
 
 `formal/GaloisForLFunctions/HTGeometry/FrequencyRank.lean` gives the algebraic conclusion of eq. (9):
 `frequencyRank_le_card` — the `ℚ`-rank of a frequency module generated by a finite set of real
@@ -603,12 +617,16 @@ finite-aperture prime-torus carrier law (eq. 34) unconditionally:
 - the aperture-`N` character lattice `primeApertureCharacterModule N = span_ℚ {log p : p ≤ N}` is
   `ℚ`-linearly independent (unique factorization) of rank exactly `π(N)`;
 - each coordinate character's diagonal-flow frequency `log p` lies in that module
-  (`primeLogFrequency (single p 1)`), grounding the lattice in the Kronecker spectrum;
+  (`primeLogFrequency (single p 1)`), grounding the lattice in the Kronecker spectrum; at the
+  canonical aperture `N = p` this is hypothesis-free
+  (`primeLogFrequency_single_mem_selfAperture`);
 - **carrier lower bound**: any rational carrier character space receiving an injection of the
   aperture lattice has `Module.finrank ℚ ≥ π(N)` — the covering-dimension `≥ π(N)` bound, with the
   injection standing for the dual of the carrier's factor map onto the aperture hull;
 - **dimension divergence**: `∀ M, ∃ N, M ≤ π(N)`, so no fixed finite-dimensional carrier serves all
-  apertures.
+  apertures;
+- **fixed-carrier exclusion** (`primeAperture_no_fixed_finiteCarrier`): for every finite rational
+  character space `A`, some aperture module admits no linear injection into `A`.
 
 The remaining formal work is the full Laurent shift field, Poincare asymptotic field, general
 Gamma-field monomial valuation, holomorphic almost-periodic hull, and Bohr-frequency rank

@@ -59,18 +59,6 @@ theorem iteratedDeriv_tendsto_of_locallyUniform {ι : Type*} {φ : Filter ι} {U
   exact (iteratedDeriv_tendstoLocallyUniformlyOn_of_locallyUniform
     hU hconv hF j).tendsto_at hz₀
 
-/-- Iterated differentiation commutes with an affine shift:
-`(fun w ↦ f (w + c))⁽ʲ⁾(z) = f⁽ʲ⁾(z + c)`. -/
-theorem iteratedDeriv_comp_add_const (j : ℕ) (c : ℂ) (f : ℂ → ℂ) (z : ℂ) :
-    iteratedDeriv j (fun w => f (w + c)) z = iteratedDeriv j f (z + c) := by
-  induction j generalizing z with
-  | zero => simp
-  | succ j ih =>
-      rw [iteratedDeriv_succ, iteratedDeriv_succ]
-      have hfun : iteratedDeriv j (fun w => f (w + c)) = fun w => iteratedDeriv j f (w + c) :=
-        funext ih
-      rw [hfun, deriv_comp_add_const]
-
 /-- **Full differential-jet return (§5, eq. 28, all orders).**  Let `f` be holomorphic on a
 vertically-invariant open set `U` (e.g. a vertical strip), let `T_l → +∞` be return times along which
 the vertical translates `f(· + iT_l)` converge to `f` locally uniformly on `U`, and let `z₀ ∈ U`.
@@ -87,6 +75,7 @@ theorem jet_return_of_translate_locallyUniform {U : Set ℂ} (hU : IsOpen U) {f 
   have hbridge := iteratedDeriv_tendsto_of_locallyUniform hU hconv
     (Filter.Eventually.of_forall hF) j hz₀
   refine hbridge.congr (fun l => ?_)
-  exact iteratedDeriv_comp_add_const j ((T l : ℂ) * Complex.I) f z₀
+  exact congrFun
+    (_root_.iteratedDeriv_comp_add_const j f ((T l : ℂ) * Complex.I)) z₀
 
 end GaloisForLFunctions

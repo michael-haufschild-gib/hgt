@@ -281,7 +281,12 @@ as an RH bridge without that additional structure.
 ## Lean status
 
 `formal/GaloisForLFunctions/HTGeometry/StableDifferentialCore.lean` formalizes that the stable core
-is derivation-closed and that the endomorphism restricts to an automorphism.
+is derivation-closed and that the endomorphism restricts to an automorphism.  It now also
+formalizes the direct eigen-current inclusion from Section 4:
+`algHom_pow_apply_of_algebraMap_eigenvector` computes the exact multiplier `lambda^n` at every
+depth, `algebraMap_eigenvector_mem_stableRangeCore` constructs explicit preimages for a nonzero
+base eigenvalue, and `adjoin_le_stableRangeCore_of_algebraMap_eigenvector` proves the resulting
+field inclusion `C<Q_R> <= Tail(R)` from `Phi_R(Q_R)=lambda Q_R`.
 `SchwarzianProjectiveInvariant.lean` now formalizes full Möbius invariance, commutation with a
 differential endomorphism, the fixed-Schwarzian consequence of a projective semiconjugacy, and the
 fact that the Schwarzian of an HT scalar cannot be a base constant.
@@ -298,6 +303,7 @@ the complete classification remains at stage 2.
 
 - [x] 0 -> 1 in-progress: exact source-pure conjecture and attack identified
 - [x] 1 -> 2 fully-proven: Schwarzian-envelope converse and exceptional fixed-field theorem
+- [x] direct eigen-current field inclusion `C<Q_R> <= Tail(R)` formalized unconditionally
 - [ ] 2 -> 3 formalized: Lean theorem in `formal/GaloisForLFunctions/HTGeometry`
 - [ ] 3 -> 4 publication-ready: standalone paper and independent novelty audit
 

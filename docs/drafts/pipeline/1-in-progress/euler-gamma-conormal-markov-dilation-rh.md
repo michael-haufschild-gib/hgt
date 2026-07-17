@@ -129,6 +129,22 @@ or finite Stinespring realization of the Gamma displacement current.  It is the 
 environment with the source-Julia leg, including their cross terms, into a compatible unbounded
 colligation and its first-trace corona limit.
 
+The finite cross-term choice is now discharged.  The depth-one Julia/Cauchy vector and the pointed
+raw Bianchi vector use the same finite prime aperture and the same square-root von Mangoldt mass.
+Lean places both families in one complex Euclidean prime carrier and constructs their joint Gram.
+Its diagonal blocks are exactly the existing Julia Cauchy Gram and the complexified raw Bianchi
+Gram, while the off-diagonal block is the forced mixed prime sum
+
+```text
+sum_(2<=m<=M+1)
+  [raw Gamma feature at m] * [Julia Cauchy feature at m].       (7d)
+```
+
+The full finite block is positive semidefinite.  Therefore arbitrary cross-term selection is no
+longer open and cannot be used as hidden completion data.  What remains of `(6)` is strictly the
+transport of this fixed joint Gram through the critical normalization, construction of a closable
+cofinal colligation, and proof that its defect identity is the Cauchy-loss kernel `(3)`.
+
 The aperture limit of this current is now exact as well.  For every positive displacement, Lean
 proves absolute convergence, termwise equality with the logarithmically weighted von Mangoldt
 `LSeries` at `s=x+1`, entrywise convergence of the finite Bianchi Grams, and positivity of the
@@ -143,6 +159,23 @@ the literal factorial trace normalization
 Thus raw Bianchi positivity cannot be passed entrywise through the existing trace normalization.
 The cross-term correction demanded below must occur before factorial projection, or the critical
 realization must be replaced.
+
+The geometry of that normalization is now exact rather than merely negative.  Lean proves the
+Beta-reflection law
+
+```text
+1/(i+j+1)! = 1/(i!j!) integral_0^1 t^i(1-t)^j dt.       (7e)
+```
+
+For every finite von Mangoldt aperture and every selected raw-jet packet, its factorial trace
+matrix is therefore the entrywise integral of the source Borel feature at `t` paired with the
+reflected feature at `1-t`.  Reflection exchanges the two matrix indices exactly, and the finite
+forms converge entrywise to the cofinal factorial form.  The existing negative two-by-two
+determinant now has a precise interpretation: the uncompleted Beta reflection has a negative
+source sector.  Hence no ordinary compression or Schur complement of the positive raw joint Gram
+can by itself be the critical trace transport.  The Gamma/polar/Mellin completion must orient the
+Beta reflection before the Hilbert norm is formed.  This replaces the undifferentiated phrase
+"critical normalization" by the explicit source problem of completed reflection positivity.
 
 The canonical pre-normalization correction is now exact.  On every real `x>1`, Lean resolves the
 completed odd moment as
@@ -190,9 +223,46 @@ mere compact completion of the positive Euler reporter cannot prove RH.
 
 5. **Factorial-normalization no-go.**  The actual cofinal odd raw source block is positive
    semidefinite, but its literal first factorial trace normalization is eventually indefinite.
-   Therefore a direct source-Gram-to-normalized-Hankel proof is false even far to the right.  Any
-   successful completion must retain compensating Gamma/polar/Mellin cross terms before applying
-   the factorial trace projection.
+   The normalization is exactly the Beta average of the cross pairing between `t` and `1-t`, so
+   its negative sector is a reflection-orientation defect rather than loss caused by an unknown
+   scalar normalization.  Therefore a direct source-Gram-to-normalized-Hankel proof is false even
+   far to the right.  Any successful completion must retain compensating Gamma/polar/Mellin cross
+   terms and prove positivity of the completed reflection before taking the Hilbert norm.
+
+## Completed-density direct critical route
+
+The completed theta density supplies a canonical critical split without passing through the
+indefinite factorial projection.  If `F` is its one-sided phase transform, set
+
+```text
+E(z)      = (z^2+1/4)F(z)-1/4,
+E_sharp(z)= (z^2+1/4)F(-z)-1/4.
+```
+
+Lean proves throughout `|Im z|<1` that
+
+```text
+E(z)+E_sharp(z)=4 z^2 XiC(z),
+Delta(z)=|E(z)|^2-|E_sharp(z)|^2
+        = Re((E(z)-E_sharp(z)) conj(4 z^2 XiC(z))).       (7f)
+```
+
+The second formula is division-free.  Hence it does not conceal the desired zero-free conclusion
+inside a quotient by `XiC`.  Every `XiC` zero in the strip forces `Delta=0`, while Lean proves the
+strict favorable sign `Delta(iv)>0` for `0<v<1/2`.
+
+**[CONJECTURE: completed-density Hermite--Biehler orientation]**
+
+```text
+0<Im z<1/2  implies  Delta(z)>0.                           (7g)
+```
+
+Clause `(7g)` would exclude every upper off-real centered Xi zero and, by the completed symmetry,
+imply RH.  It is now the shortest direct source-producer target.  The imaginary-axis result is
+only an anchor, not a propagation theorem: a generic positive one-sided density need not have the
+same global gap sign.  Thus the remaining proof must use the completed theta reflection law or an
+equivalent source-specific total-positivity/Herglotz mechanism, not positivity of the density
+alone.
 
 ## Positive failure theorem
 
@@ -220,12 +290,17 @@ source, `Obs_CP=0` is the precise positive-orientation clause that would imply R
 - [x] cofinal Bianchi Gram identified with the analytic Euler moment germ
 - [x] compact/smoothing reporter excluded as an all-scale coercivity producer
 - [x] direct factorial normalization of the positive source Gram disproved
+- [x] factorial normalization reconstructed exactly as a finite source Beta-reflection pairing
 - [x] canonical prime--Gamma--polar completed moment incidence formalized
 - [x] Gamma completion proved positive definite and polar pair realized as a positive rank-two Gram
 - [x] parity sign congruence proved positivity-neutral
 - [x] odd-crossing sign-transport route falsified by the `P=X` four-crossing law
 - [x] raw Stieltjes phase no-go proved in general and specialized to von Mangoldt frequencies
-- [ ] assemble the source-Julia and Bianchi feature legs, including cross terms, into `(6)`
+- [x] assemble the finite source-Julia and raw Bianchi legs on one prime carrier with forced cross terms
+- [x] reconstruct `XiC` from the canonical completed theta density and polarize its de Branges gap
+- [ ] orient the fixed joint Gram's Beta reflection by the completed Gamma/polar/Mellin environment
+- [ ] prove completed-density Hermite--Biehler orientation `(7g)` from the theta source
+- [ ] transport that completed reflection form into a closable cofinal colligation
 - [ ] identify the critical-Mellin/Laurent environment `(7)`
 - [ ] construct a direct critical-center source producer or excursion-stable invariant
 - [ ] prove conormal-corona complete-positive gluing

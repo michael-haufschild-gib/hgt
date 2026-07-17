@@ -194,7 +194,9 @@ formalizes:
 1. the outer-product tensor and vanishing of all its `2 x 2` minors;
 2. factorization of every bilinear compatibility equation through a linear tensor pairing;
 3. the exact low-coefficient survival theorem implied by `(6)`;
-4. exclusion of an all-zero truncated product on each boundary face;
+4. exclusion of an all-zero truncated product on each boundary face, with the marked nonzero
+   coefficient itself supplying nonzeroness of the second factor
+   (`not_all_low_mul_coeff_zero_of_coeff_ne_zero`);
 5. the Chow coefficient `(8)` as `criticalHorizonMultiplicity`;
 6. positivity and symmetry of the multiplicity;
 7. the exact Schubert-cell enumeration

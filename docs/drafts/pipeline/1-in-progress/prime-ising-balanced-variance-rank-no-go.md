@@ -46,12 +46,41 @@ The decisive test is equation (1).  If the exact FK recursion proves it, the ent
 Lee--Yang limit route is false.  If it fails, retain the first negative covariance or cluster term
 as the exact obstruction to the variance argument.
 
+## Critical rescaling successor
+
+The variance obstruction does not merely kill the unscaled model.  For a real scale `a`, put
+
+```text
+B_(T,a)(z)=B_T(a z).
+```
+
+The exact chain rule and equation `(1)` give
+
+```text
+-Re B_(T,a)''(0)
+  >=a^2 |V_T| (log 2)^2/4.                              (2)
+```
+
+Consequently, if `B_(T_n,a_n)` converges locally uniformly to the pointed Xi germ, then
+
+```text
+a_n^2 |V_(T_n)|=O(1).                                  (3)
+```
+
+Thus every unbounded-rank successor must be critically renormalized; a fixed scale or any scale
+with `a_n^2 |V_(T_n)|` unbounded is excluded before using a Xi zero.  Equation `(3)` is a necessary
+source scaling law, not an existence theorem and not an RH criterion.  It selects the only live
+finite-source regime in which a nontrivial unbounded completion could still be built.  In
+particular, if `|V_(T_n)| -> infinity`, then necessarily `a_n -> 0`; this consequence is also
+formalized unconditionally.
+
 ## Gates
 
 - [x] 0 -> 1: source-pure statement and symbolic discriminator isolated
-- [ ] FK cluster-mass square floor formalized for every bond configuration
-- [ ] balanced second derivative identified with the FK-averaged cluster square mass
-- [ ] local-uniform convergence shown to force uniformly bounded vertex count
+- [x] FK cluster-mass square floor formalized for every bond configuration
+- [x] balanced second derivative identified with the FK-averaged cluster square mass
+- [x] local-uniform convergence shown to force uniformly bounded vertex count
+- [x] arbitrary real rescaling formalized and `a_n^2 |V_n|=O(1)` proved for every convergent family
 - [ ] uniformly bounded count converted to fixed spectral width
 - [ ] strict theta-source Hankel determinant supplies the contradiction
 - [ ] 1 -> 2: complete unconditional paper proof
@@ -69,3 +98,19 @@ clear the gate.
 - 2026-07-17 -- Created after scalar normalization was killed and source-forced balancing was
   isolated.  The new candidate attacks the balanced family itself rather than restating its RH
   capstone.
+- 2026-07-17 -- The source side of (1) is unconditional and Lean-verified in
+  `PrimeIsingTreeBalancedVarianceRankNoGo.lean`.  The file constructs exact real FK cluster
+  masses, proves the per-configuration cluster-square floor, transports it through the positive
+  centered mixture, identifies the exact second central jet, and proves
+  `vertexCount_mul_logTwo_sq_div_four_le_neg_re_iteratedDeriv_two_balanced`.
+- 2026-07-17 -- Cauchy jet transport plus the curvature floor now proves
+  `eventually_vertexCount_nat_bounded_of_balanced_tendstoLocallyUniformly`: any hypothetical
+  locally uniform balanced-tree approximation of the pointed Xi germ has eventually uniformly
+  bounded vertex count.
+- 2026-07-17 -- The exact all-order rescaling identity and the unconditional critical floor `(2)`
+  are formalized in the same Lean module.  The capstone
+  `eventually_scale_sq_mul_vertexCount_real_bounded_of_rescaled_tendstoLocallyUniformly` proves
+  `(3)`, isolating critical shrinking scale plus unbounded rank as the unique surviving
+  finite-source regime.  The theorem
+  `tendsto_scale_zero_of_vertexCount_tendsto_atTop_of_rescaled_tendstoLocallyUniformly` proves the
+  corresponding scale-collapse statement when the source rank tends to infinity.

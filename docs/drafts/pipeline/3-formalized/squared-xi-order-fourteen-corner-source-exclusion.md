@@ -21,7 +21,7 @@ negative source witness.
 Let `mu_j` be the normalized even moments of the positive theta-cusp source and let
 `M = normalizedPrimeArchMoment 0`.  The dominant first theta atom gives the unconditional floor
 
-`mu_2 > 1/240`.
+`mu_2 > 2151/500000`.
 
 The endpoint resolvent identity and the already proved quartet orientation estimate give
 
@@ -35,17 +35,18 @@ Together with
 
 and the sharpened elementary endpoint bound
 
-`xiEndpointCompletedCurvature < 29/625`,
+`xiEndpointCompletedCurvature < 463/10000`,
 
-these inequalities force `M < 2/43`, hence
+these inequalities force `M < 29/625`, hence
 
-`normalizedPrimeArchMoment 1 < 39/100000`.
+`normalizedPrimeArchMoment 1 < 9/25000`.
 
 On the other hand every fourth reciprocal atom has nonnegative real part.  Four FE--Schwarz copies
 of a zero in the displayed corner contribute strictly more than `39/100000` to the same trace,
-a contradiction.  The endpoint bound uses only rational logarithm inequalities and the existing
-Euler--Mascheroni certificate; the theta floor uses exact rational interval integration.  No zero
-table or numerical integration enters the proof.
+a contradiction.  The endpoint bound uses only rational logarithm inequalities and the exact
+Euler--Mascheroni sequence at `6250 = 2*5^5`; the theta floor uses exact rational interval
+integration.  No zero table or numerical integration enters the proof.  The stronger trace bound
+is also the source budget used by the order-fifteen corner exclusion.
 
 ## Anti-theatre gate
 

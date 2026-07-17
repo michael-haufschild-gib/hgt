@@ -90,6 +90,16 @@ theorem bcfTranslate_bcfOrbit_subset (t : ℝ) (f : ℝ →ᵇ ℂ) :
   rintro _ ⟨_, ⟨s, rfl⟩, rfl⟩
   exact ⟨s + t, by rw [bcfTranslate_bcfTranslate, add_comm s t]⟩
 
+/-- The translation orbit is preserved exactly by every real translation. -/
+theorem bcfTranslate_bcfOrbit (t : ℝ) (f : ℝ →ᵇ ℂ) :
+    bcfTranslate t '' bcfOrbit f = bcfOrbit f := by
+  apply Set.Subset.antisymm (bcfTranslate_bcfOrbit_subset t f)
+  intro g hg
+  refine ⟨bcfTranslate (-t) g, ?_, ?_⟩
+  · exact bcfTranslate_bcfOrbit_subset (-t) f ⟨g, hg, rfl⟩
+  · rw [bcfTranslate_bcfTranslate]
+    simp
+
 /-- The hull is translation invariant: translation maps the hull into itself.  This uses continuity
 (isometry) of translation together with invariance of the orbit. -/
 theorem bcfTranslate_bohrHull_subset (t : ℝ) (f : ℝ →ᵇ ℂ) :
@@ -99,6 +109,17 @@ theorem bcfTranslate_bohrHull_subset (t : ℝ) (f : ℝ →ᵇ ℂ) :
       = bcfTranslate t '' closure (bcfOrbit f) := rfl
     _ ⊆ closure (bcfTranslate t '' bcfOrbit f) := image_closure_subset_closure_image hcont
     _ ⊆ closure (bcfOrbit f) := closure_mono (bcfTranslate_bcfOrbit_subset t f)
+
+/-- The translation hull is preserved exactly by every real translation.  Thus the one-sided
+invariance above is an actual additive group action on the hull. -/
+theorem bcfTranslate_bohrHull (t : ℝ) (f : ℝ →ᵇ ℂ) :
+    bcfTranslate t '' bohrHull f = bohrHull f := by
+  apply Set.Subset.antisymm (bcfTranslate_bohrHull_subset t f)
+  intro g hg
+  refine ⟨bcfTranslate (-t) g, ?_, ?_⟩
+  · exact bcfTranslate_bohrHull_subset (-t) f ⟨g, hg, rfl⟩
+  · rw [bcfTranslate_bcfTranslate]
+    simp
 
 /-- **Bohr recurrence (arbitrarily large approximate return times).**  If `f` is Bohr almost
 periodic, then for every `ε > 0` and every bound `N` there is a real time `t ≥ N` whose translate of

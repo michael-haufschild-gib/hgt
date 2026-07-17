@@ -170,17 +170,13 @@ def polarizedNeg {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStruc
 theorem neg_isSymm {Q : LinearMap.BilinForm ℝ V} (hQ : Q.IsSymm) : (-Q).IsSymm :=
   ⟨fun x y => by simp only [LinearMap.neg_apply]; exact congrArg Neg.neg (hQ.eq x y)⟩
 
-theorem toQuadraticMap_neg (Q : LinearMap.BilinForm ℝ V) :
-    LinearMap.BilinMap.toQuadraticMap (-Q) = -(LinearMap.BilinMap.toQuadraticMap Q) := by
-  ext x; simp [LinearMap.BilinMap.toQuadraticMap_apply]
-
 /-- **The positive index is even too** (apply `polarized_sigNeg_even` to `-Q`, whose `J`-polarization
 is `polarizedNeg`). -/
 theorem polarized_sigPos_even {Q : LinearMap.BilinForm ℝ V} [FiniteDimensional ℝ V]
     (P : PolarizedOmegaComplexStructure V Q) (hQ : Q.IsSymm) :
     Even (sigPos (LinearMap.BilinMap.toQuadraticMap Q)) := by
   have h := polarized_sigNeg_even (polarizedNeg P) (neg_isSymm hQ)
-  rw [toQuadraticMap_neg] at h
+  rw [LinearMap.BilinMap.toQuadraticMap_neg] at h
   rwa [sigNeg, neg_neg] at h
 
 /-- **Not Lorentzian.**  The negative index of the seam supermetric is never `1`: a lone time

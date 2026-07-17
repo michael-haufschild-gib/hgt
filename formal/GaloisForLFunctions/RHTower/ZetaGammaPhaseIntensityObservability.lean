@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.GammaReflectedFrequencyObservability
+import GaloisForLFunctions.HTGeometry.WignerSmithLogClockObservability
 import GaloisForLFunctions.RHTower.ZetaChiHypertranscendentalClock
 
 /-!
@@ -65,6 +65,10 @@ def centeredZetaGammaIntensityObservationMero : meroField Set.univ :=
 def centeredZetaGammaPhaseObservationMero : meroField Set.univ :=
   (gammaOppositeShiftPhaseMero (1 / 4 : ℂ) (1 / 4 : ℂ))⁻¹
 
+/-- Logarithmic phase current of the centered zeta Gamma clock. -/
+def centeredZetaGammaWignerSmithLogClockMero : meroField Set.univ :=
+  HTGeometry.wignerSmithLogClock centeredZetaGammaReflectionMero
+
 /-- The centered clock and its reflected-frequency carrier are exact reciprocals. -/
 theorem centeredZetaGammaReflectionMero_eq_inv_reflectedFrequency :
     centeredZetaGammaReflectionMero =
@@ -74,6 +78,19 @@ theorem centeredZetaGammaReflectionMero_eq_inv_reflectedFrequency :
 theorem centeredZetaGammaReflectedFrequencyMero_ne_zero :
     centeredZetaGammaReflectedFrequencyMero ≠ 0 := by
   exact gammaOppositeShiftQuotientMero_ne_zero _ _
+
+/-- **Centered Gamma log-current value relation.**  The Wigner--Smith current of the centered
+reflection clock is the negative current of its reciprocal frequency-reflected carrier. -/
+theorem centeredZetaGammaWignerSmithLogClockMero_eq_neg_reflectedFrequency :
+    centeredZetaGammaWignerSmithLogClockMero =
+      -gammaOppositeShiftWignerSmithLogMero (1 / 4 : ℂ) (1 / 4 : ℂ) := by
+  unfold centeredZetaGammaWignerSmithLogClockMero HTGeometry.wignerSmithLogClock
+  rw [centeredZetaGammaReflectionMero_eq_inv_reflectedFrequency, inv_eq_one_div,
+    Differential.logDeriv_div]
+  · simp only [Differential.logDeriv_one, zero_sub]
+    rfl
+  · exact one_ne_zero
+  · exact centeredZetaGammaReflectedFrequencyMero_ne_zero
 
 /-- **Exact intensity collapse.**  The complete reflected-frequency intensity of the centered
 zeta Gamma clock is the unit meromorphic function. -/
@@ -123,6 +140,14 @@ theorem differentialAlgebraicOver_centeredZetaGammaIntensityObservationMero :
       DifferentialAlgebraicOver (RatFunc ℂ)
         (algebraMap (RatFunc ℂ) (meroField Set.univ) 1))
 
+/-- The centered archimedean logarithmic phase current retains the HT Gamma source. -/
+theorem hypertranscendentalOver_centeredZetaGammaWignerSmithLogClockMero :
+    HypertranscendentalOver (RatFunc ℂ)
+      centeredZetaGammaWignerSmithLogClockMero := by
+  rw [centeredZetaGammaWignerSmithLogClockMero,
+    HTGeometry.hypertranscendentalOver_wignerSmithLogClock_iff]
+  exact hypertranscendentalOver_centeredZetaGammaReflectionMero
+
 /-- **RH-search observability boundary.**  Rational clocks and the unit intensity, closed under
 finite field operations and differentiation, cannot reconstruct the centered Gamma phase. -/
 theorem no_scalarAwareFiniteDifferentialCircuit_centeredZetaGammaPhase_from_intensity :
@@ -136,6 +161,20 @@ theorem no_scalarAwareFiniteDifferentialCircuit_centeredZetaGammaPhase_from_inte
       hypertranscendentalOver_centeredZetaGammaPhaseObservationMero hcircuit
   rw [ha] at hHT
   exact hHT differentialAlgebraicOver_centeredZetaGammaIntensityObservationMero
+
+/-- **RH-search logarithmic observability boundary.**  Rational clocks and the complete unit
+intensity cannot finitely reconstruct the HT logarithmic phase current of the centered Gamma
+factor. -/
+theorem no_scalarAwareFiniteDifferentialCircuit_centeredZetaGammaWignerSmith_from_intensity :
+    ¬ HTGeometry.FiniteDifferentialCircuit
+      (HTGeometry.BaseScalarOrAtom (RatFunc ℂ) (meroField Set.univ)
+        (fun a => a = centeredZetaGammaIntensityObservationMero))
+      centeredZetaGammaWignerSmithLogClockMero := by
+  exact HTGeometry.no_scalarAwareFiniteDifferentialCircuit_wignerSmith_from_daObservation
+    centeredZetaGammaReflectionMero
+    centeredZetaGammaIntensityObservationMero
+    hypertranscendentalOver_centeredZetaGammaReflectionMero
+    differentialAlgebraicOver_centeredZetaGammaIntensityObservationMero
 
 end
 

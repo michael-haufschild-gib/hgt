@@ -9,9 +9,9 @@ import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 The order-fourteen squared-Xi edge corner only needs a coarse lower bound on the fourth
 theta-cusp moment.  This file supplies it without zero tables or numerical integration.
 
-On each of the five intervals `[j/8,(j+1)/8]`, convexity of the exponential bounds
+On each of the seven intervals `[j/8,(j+1)/8]`, convexity of the exponential bounds
 `exp (2*x)` by the chord through the adjacent quarter-exponential values.  The elementary
-majorant `exp (1/4) < 129/100` makes that chord rational.  A twenty-fourth-order alternating
+majorant `exp (1/4) < 257/200` makes that chord rational.  A sixty-fourth-order alternating
 Taylor section controls the endpoint decay, while a positive fifth-order Taylor section
 propagates the endpoint bound back across the interval.  The resulting degree-twelve
 polynomials integrate exactly over rational endpoints.
@@ -25,7 +25,7 @@ namespace RHTower
 noncomputable section
 
 /-- Rational majorant for one quarter of the real exponential clock. -/
-def thetaCuspQuarterExpMajorant : ℝ := 129 / 100
+def thetaCuspQuarterExpMajorant : ℝ := 257 / 200
 
 /-- The convex rational chord used on the `j`-th interval of length `1/8`. -/
 def thetaCuspQuarterExpChord (j : ℕ) (x : ℝ) : ℝ :=
@@ -58,15 +58,15 @@ def thetaCuspExpTaylorThree (u : ℝ) : ℝ :=
 
 /-- Alternating endpoint certificate for the `j`-th rational rate. -/
 def thetaCuspFirstLiouvilleEndpointCertificate (j : ℕ) : ℝ :=
-  (expNegTruncPoly 24).eval
+  (expNegTruncPoly 64).eval
     (thetaCuspFirstLiouvilleRateMajorant j (((j + 1 : ℕ) : ℝ) / 8))
 
 /-- The rational lower density integrated on the `j`-th interval. -/
 def thetaCuspFirstAtomFourthIntervalCertificate (j : ℕ) (x : ℝ) : ℝ :=
-  (6283 / 500 : ℝ) / 24 * thetaCuspFirstLiouvilleEndpointCertificate j *
+  (6283 / 500 : ℝ) * (3 / 70) * thetaCuspFirstLiouvilleEndpointCertificate j *
     x ^ 4 *
     ((6283 / 1000 : ℝ) * thetaCuspExpTaylorFive (2 * x) - 3) *
-    thetaCuspExpTaylorThree
+    thetaCuspExpTaylorFive
       (thetaCuspFirstLiouvilleRateSlope j * (((j + 1 : ℕ) : ℝ) / 8 - x))
 
 /-- Polynomial form of the positive Taylor section. -/
@@ -92,11 +92,11 @@ theorem thetaCuspExpTaylorThreePolynomial_eval (x : ℝ) :
 
 /-- Polynomial shape of one interval certificate, with its endpoint factor removed. -/
 def thetaCuspFirstAtomFourthIntervalShapePolynomial (j : ℕ) : ℝ[X] :=
-  C ((6283 / 500 : ℝ) / 24) *
+  C ((6283 / 500 : ℝ) * (3 / 70)) *
     X ^ 4 *
     (C (6283 / 1000 : ℝ) *
         thetaCuspExpTaylorFivePolynomial.comp (C 2 * X) - C 3) *
-    thetaCuspExpTaylorThreePolynomial.comp
+    thetaCuspExpTaylorFivePolynomial.comp
       (C (thetaCuspFirstLiouvilleRateSlope j * (((j + 1 : ℕ) : ℝ) / 8)) -
         C (thetaCuspFirstLiouvilleRateSlope j) * X)
 
@@ -109,14 +109,14 @@ theorem exp_one_quarter_lt_thetaCuspQuarterExpMajorant :
     Real.exp (1 / 4 : ℝ) < thetaCuspQuarterExpMajorant := by
   rw [thetaCuspQuarterExpMajorant]
   by_contra h
-  have hle : (129 / 100 : ℝ) ≤ Real.exp (1 / 4 : ℝ) := le_of_not_gt h
-  have hp := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 129 / 100) hle 4
+  have hle : (257 / 200 : ℝ) ≤ Real.exp (1 / 4 : ℝ) := le_of_not_gt h
+  have hp := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 257 / 200) hle 4
   have heq : Real.exp (1 / 4 : ℝ) ^ 4 = Real.exp 1 := by
     rw [← Real.exp_nat_mul]
     congr 1
     norm_num
   rw [heq] at hp
-  have hu : Real.exp 1 < (129 / 100 : ℝ) ^ 4 :=
+  have hu : Real.exp 1 < (257 / 200 : ℝ) ^ 4 :=
     Real.exp_one_lt_d9.trans (by norm_num)
   linarith
 
@@ -217,52 +217,61 @@ theorem thetaCuspExpTaylorThree_le_exp {u : ℝ} (hu : 0 ≤ u) :
   norm_num [Finset.sum_range_succ] at h ⊢
   convert h using 1 <;> ring
 
-/-- A coarse exact boundary floor used to remove the only transcendental prefactor. -/
-theorem one_div_twentyFour_lt_exp_neg_pi :
-    (1 / 24 : ℝ) < Real.exp (-Real.pi) := by
-  have he1 : Real.exp 1 < (68 / 25 : ℝ) :=
-    Real.exp_one_lt_d9.trans (by norm_num)
-  have he17 : Real.exp (1 / 7 : ℝ) ≤ 7 / 6 := by
+/-- A sharp exact boundary floor used to remove the only transcendental prefactor. -/
+theorem three_div_seventy_lt_exp_neg_pi :
+    (3 / 70 : ℝ) < Real.exp (-Real.pi) := by
+  have he1 : Real.exp 1 < (2.7182818286 : ℝ) := Real.exp_one_lt_d9
+  have he114 : Real.exp (1 / 14 : ℝ) ≤ 14 / 13 := by
     have h := Real.exp_bound_div_one_sub_of_interval
-      (x := (1 / 7 : ℝ)) (by norm_num) (by norm_num)
-    norm_num at h ⊢
-    exact h
-  have he3 : Real.exp 3 < (68 / 25 : ℝ) ^ 3 := by
+      (x := (1 / 14 : ℝ)) (by norm_num) (by norm_num)
+    convert h using 1 <;> norm_num
+  have he17 : Real.exp (1 / 7 : ℝ) ≤ (14 / 13 : ℝ) ^ 2 := by
+    rw [show (1 / 7 : ℝ) = (2 : ℕ) * (1 / 14 : ℝ) by norm_num,
+      Real.exp_nat_mul]
+    exact pow_le_pow_left₀ (Real.exp_pos _).le he114 2
+  have he3 : Real.exp 3 < (2.7182818286 : ℝ) ^ 3 := by
     rw [show (3 : ℝ) = (3 : ℕ) * (1 : ℝ) by norm_num,
       Real.exp_nat_mul]
     exact pow_lt_pow_left₀ he1 (by positivity) (by norm_num)
-  have hepi : Real.exp Real.pi < 24 := by
+  have hepi : Real.exp Real.pi < 70 / 3 := by
     calc
       Real.exp Real.pi < Real.exp (22 / 7 : ℝ) :=
         Real.exp_lt_exp.mpr (by nlinarith [Real.pi_lt_d4])
       _ = Real.exp 3 * Real.exp (1 / 7 : ℝ) := by
         rw [show (22 / 7 : ℝ) = 3 + 1 / 7 by norm_num, Real.exp_add]
-      _ < (68 / 25 : ℝ) ^ 3 * Real.exp (1 / 7 : ℝ) :=
+      _ < (2.7182818286 : ℝ) ^ 3 * Real.exp (1 / 7 : ℝ) :=
         mul_lt_mul_of_pos_right he3 (Real.exp_pos _)
-      _ ≤ (68 / 25 : ℝ) ^ 3 * (7 / 6 : ℝ) :=
+      _ ≤ (2.7182818286 : ℝ) ^ 3 * (14 / 13 : ℝ) ^ 2 :=
         mul_le_mul_of_nonneg_left he17 (by positivity)
-      _ < 24 := by norm_num
+      _ < 70 / 3 := by norm_num
   rw [Real.exp_neg]
-  simpa only [one_div] using
+  have hinv :=
     (div_lt_div_iff_of_pos_left (by norm_num : (0 : ℝ) < 1)
-      (by norm_num : (0 : ℝ) < 24) (Real.exp_pos _)).2 hepi
+      (by norm_num : (0 : ℝ) < 70 / 3) (Real.exp_pos _)).2 hepi
+  norm_num at hinv ⊢
+  exact hinv
+
+/-- Compatibility form of the earlier boundary floor. -/
+theorem one_div_twentyFour_lt_exp_neg_pi :
+    (1 / 24 : ℝ) < Real.exp (-Real.pi) := by
+  nlinarith [three_div_seventy_lt_exp_neg_pi]
 
 theorem thetaCuspFirstLiouvilleRateSlope_pos
-    {j : ℕ} (hj : j < 5) :
+    {j : ℕ} (hj : j < 7) :
     0 < thetaCuspFirstLiouvilleRateSlope j := by
   interval_cases j <;>
     norm_num [thetaCuspFirstLiouvilleRateSlope,
       thetaCuspQuarterExpMajorant]
 
 theorem thetaCuspFirstLiouvilleRateMajorant_endpoint_pos
-    {j : ℕ} (hj : j < 5) :
+    {j : ℕ} (hj : j < 7) :
     0 < thetaCuspFirstLiouvilleRateMajorant j (((j + 1 : ℕ) : ℝ) / 8) := by
   interval_cases j <;>
     norm_num [thetaCuspFirstLiouvilleRateMajorant,
       thetaCuspQuarterExpChord, thetaCuspQuarterExpMajorant]
 
 theorem thetaCuspFirstLiouvilleEndpointCertificate_pos
-    {j : ℕ} (hj : j < 5) :
+    {j : ℕ} (hj : j < 7) :
     0 < thetaCuspFirstLiouvilleEndpointCertificate j := by
   interval_cases j <;>
     norm_num [thetaCuspFirstLiouvilleEndpointCertificate,
@@ -271,13 +280,13 @@ theorem thetaCuspFirstLiouvilleEndpointCertificate_pos
       Finset.sum_range_succ]
 
 theorem thetaCuspFirstLiouvilleEndpointCertificate_lt_exp
-    {j : ℕ} (hj : j < 5) :
+    {j : ℕ} (hj : j < 7) :
     thetaCuspFirstLiouvilleEndpointCertificate j <
       Real.exp
         (-thetaCuspFirstLiouvilleRateMajorant j (((j + 1 : ℕ) : ℝ) / 8)) := by
   have hz := thetaCuspFirstLiouvilleRateMajorant_endpoint_pos hj
   have h := expNegTruncPoly_sub_exp_oriented_pos
-    (m := 24) (by norm_num) hz
+    (m := 64) (by norm_num) hz
   norm_num at h
   rw [thetaCuspFirstLiouvilleEndpointCertificate]
   convert h using 1 <;> push_cast <;> ring
@@ -296,10 +305,10 @@ theorem thetaCuspLiouvilleGibbsAtom_one_eq_rate (x : ℝ) :
 
 /-- The rational endpoint/Taylor certificate lies below the exact positive Gibbs atom. -/
 theorem thetaCuspFirstLiouvilleIntervalCertificate_le_gibbs
-    {j : ℕ} (hj : j < 5) {x : ℝ}
+    {j : ℕ} (hj : j < 7) {x : ℝ}
     (hx : (j : ℝ) / 8 ≤ x ∧ x ≤ (((j + 1 : ℕ) : ℝ) / 8)) :
-    (1 / 24 : ℝ) * thetaCuspFirstLiouvilleEndpointCertificate j *
-        thetaCuspExpTaylorThree
+    (3 / 70 : ℝ) * thetaCuspFirstLiouvilleEndpointCertificate j *
+        thetaCuspExpTaylorFive
           (thetaCuspFirstLiouvilleRateSlope j * (((j + 1 : ℕ) : ℝ) / 8 - x)) ≤
       thetaCuspLiouvilleGibbsAtom 1 x := by
   let b : ℝ := ((j + 1 : ℕ) : ℝ) / 8
@@ -322,26 +331,26 @@ theorem thetaCuspFirstLiouvilleIntervalCertificate_le_gibbs
     linarith
   have hP := thetaCuspFirstLiouvilleEndpointCertificate_lt_exp hj
   have hP0 := thetaCuspFirstLiouvilleEndpointCertificate_pos hj
-  have hT := thetaCuspExpTaylorThree_le_exp hu
-  have hT0 := thetaCuspExpTaylorThree_nonneg hu
+  have hT := thetaCuspExpTaylorFive_le_exp hu
+  have hT0 := thetaCuspExpTaylorFive_nonneg hu
   have hPT : thetaCuspFirstLiouvilleEndpointCertificate j *
-      thetaCuspExpTaylorThree u ≤ Real.exp (-z) * Real.exp u := by
+      thetaCuspExpTaylorFive u ≤ Real.exp (-z) * Real.exp u := by
     exact mul_le_mul hP.le hT hT0 (Real.exp_pos _).le
   rw [thetaCuspLiouvilleGibbsAtom_one_eq_rate]
   calc
-    (1 / 24 : ℝ) * thetaCuspFirstLiouvilleEndpointCertificate j *
-          thetaCuspExpTaylorThree
+    (3 / 70 : ℝ) * thetaCuspFirstLiouvilleEndpointCertificate j *
+          thetaCuspExpTaylorFive
             (thetaCuspFirstLiouvilleRateSlope j *
               (((j + 1 : ℕ) : ℝ) / 8 - x)) =
-        (1 / 24 : ℝ) *
+        (3 / 70 : ℝ) *
           (thetaCuspFirstLiouvilleEndpointCertificate j *
-            thetaCuspExpTaylorThree u) := by
+            thetaCuspExpTaylorFive u) := by
       dsimp only [u, k, b]
       ring
     _ ≤ Real.exp (-Real.pi) *
           (thetaCuspFirstLiouvilleEndpointCertificate j *
-            thetaCuspExpTaylorThree u) := by
-      exact mul_le_mul_of_nonneg_right one_div_twentyFour_lt_exp_neg_pi.le
+            thetaCuspExpTaylorFive u) := by
+      exact mul_le_mul_of_nonneg_right three_div_seventy_lt_exp_neg_pi.le
         (mul_nonneg hP0.le hT0)
     _ ≤ Real.exp (-Real.pi) * (Real.exp (-z) * Real.exp u) := by
       exact mul_le_mul_of_nonneg_left hPT (Real.exp_pos _).le
@@ -368,7 +377,7 @@ theorem thetaCuspSourceTerm_one_eq_liouvilleGibbs (x : ℝ) :
   ring
 
 theorem thetaCuspFirstAtomFourthIntervalCertificate_le_density
-    {j : ℕ} (hj : j < 5) {x : ℝ}
+    {j : ℕ} (hj : j < 7) {x : ℝ}
     (hx : (j : ℝ) / 8 ≤ x ∧ x ≤ (((j + 1 : ℕ) : ℝ) / 8)) :
     thetaCuspFirstAtomFourthIntervalCertificate j x ≤
       2 * (x ^ 4 * thetaCuspSourceTerm x 1) := by
@@ -399,12 +408,12 @@ theorem thetaCuspFirstAtomFourthIntervalCertificate_le_density
     nlinarith [Real.pi_gt_d4]
   have hb := thetaCuspFirstLiouvilleIntervalCertificate_le_gibbs hj hx
   have hb0 : 0 ≤
-      (1 / 24 : ℝ) * thetaCuspFirstLiouvilleEndpointCertificate j *
-        thetaCuspExpTaylorThree
+      (3 / 70 : ℝ) * thetaCuspFirstLiouvilleEndpointCertificate j *
+        thetaCuspExpTaylorFive
           (thetaCuspFirstLiouvilleRateSlope j * (((j + 1 : ℕ) : ℝ) / 8 - x)) := by
     exact mul_nonneg
       (mul_nonneg (by norm_num) (thetaCuspFirstLiouvilleEndpointCertificate_pos hj).le)
-      (thetaCuspExpTaylorThree_nonneg (mul_nonneg
+      (thetaCuspExpTaylorFive_nonneg (mul_nonneg
         (thetaCuspFirstLiouvilleRateSlope_pos hj).le (by
           push_cast at hx ⊢
           linarith [hx.2])))
@@ -416,15 +425,15 @@ theorem thetaCuspFirstAtomFourthIntervalCertificate_le_density
   rw [thetaCuspFirstAtomFourthIntervalCertificate,
     thetaCuspSourceTerm_one_eq_liouvilleGibbs]
   calc
-    (6283 / 500 : ℝ) / 24 * thetaCuspFirstLiouvilleEndpointCertificate j *
+    (6283 / 500 : ℝ) * (3 / 70) * thetaCuspFirstLiouvilleEndpointCertificate j *
           x ^ 4 *
           ((6283 / 1000 : ℝ) * thetaCuspExpTaylorFive (2 * x) - 3) *
-          thetaCuspExpTaylorThree
+          thetaCuspExpTaylorFive
             (thetaCuspFirstLiouvilleRateSlope j * (((j + 1 : ℕ) : ℝ) / 8 - x)) =
         (6283 / 500 : ℝ) * x ^ 4 *
           ((6283 / 1000 : ℝ) * thetaCuspExpTaylorFive (2 * x) - 3) *
-          ((1 / 24 : ℝ) * thetaCuspFirstLiouvilleEndpointCertificate j *
-            thetaCuspExpTaylorThree
+          ((3 / 70 : ℝ) * thetaCuspFirstLiouvilleEndpointCertificate j *
+            thetaCuspExpTaylorFive
               (thetaCuspFirstLiouvilleRateSlope j * (((j + 1 : ℕ) : ℝ) / 8 - x))) := by
       ring
     _ ≤ (6283 / 500 : ℝ) * x ^ 4 *
@@ -495,33 +504,34 @@ def thetaCuspFirstAtomFourthTaylorMass (a b k : ℝ) : ℝ :=
   (6283 / 1000 : ℝ) *
       ∑ n ∈ Finset.range 6,
         ((2 : ℝ) ^ n / (n.factorial : ℝ)) *
-          ∑ m ∈ Finset.range 4,
+          ∑ m ∈ Finset.range 6,
             (k ^ m / (m.factorial : ℝ)) *
               thetaCuspIntervalPowSubMass (4 + n) m a b -
-    3 * ∑ m ∈ Finset.range 4,
+    3 * ∑ m ∈ Finset.range 6,
       (k ^ m / (m.factorial : ℝ)) * thetaCuspIntervalPowSubMass 4 m a b
 
 theorem intervalIntegral_thetaCuspFirstAtomFourthTaylorShape_eq_mass
     (a b k : ℝ) :
     (∫ x in a..b,
       x ^ 4 * ((6283 / 1000 : ℝ) * thetaCuspExpTaylorFive (2 * x) - 3) *
-        thetaCuspExpTaylorThree (k * (b - x))) =
+        thetaCuspExpTaylorFive (k * (b - x))) =
       thetaCuspFirstAtomFourthTaylorMass a b k := by
   have hfun :
       (fun x : ℝ =>
         x ^ 4 * ((6283 / 1000 : ℝ) * thetaCuspExpTaylorFive (2 * x) - 3) *
-          thetaCuspExpTaylorThree (k * (b - x))) =
+          thetaCuspExpTaylorFive (k * (b - x))) =
       fun x : ℝ =>
         (6283 / 1000 : ℝ) *
             ∑ n ∈ Finset.range 6,
-              ∑ m ∈ Finset.range 4,
+              ∑ m ∈ Finset.range 6,
                 (((2 : ℝ) ^ n / (n.factorial : ℝ)) *
                   (k ^ m / (m.factorial : ℝ))) *
                     (x ^ (4 + n) * (b - x) ^ m) -
-          3 * ∑ m ∈ Finset.range 4,
+          3 * ∑ m ∈ Finset.range 6,
             (k ^ m / (m.factorial : ℝ)) * (x ^ 4 * (b - x) ^ m) := by
     funext x
-    rw [thetaCuspExpTaylorFive_eq_sum, thetaCuspExpTaylorThree_eq_sum]
+    rw [thetaCuspExpTaylorFive_eq_sum (2 * x),
+      thetaCuspExpTaylorFive_eq_sum (k * (b - x))]
     simp_rw [mul_pow, pow_add]
     simp only [Finset.mul_sum, Finset.sum_mul]
     rw [Finset.sum_comm]
@@ -537,12 +547,12 @@ theorem intervalIntegral_thetaCuspFirstAtomFourthTaylorShape_eq_mass
   rw [intervalIntegral.integral_sub
     (by exact (by fun_prop : Continuous (fun x : ℝ =>
       (6283 / 1000 : ℝ) *
-        ∑ n ∈ Finset.range 6, ∑ m ∈ Finset.range 4,
+        ∑ n ∈ Finset.range 6, ∑ m ∈ Finset.range 6,
           (((2 : ℝ) ^ n / (n.factorial : ℝ)) *
             (k ^ m / (m.factorial : ℝ))) *
               (x ^ (4 + n) * (b - x) ^ m))).intervalIntegrable a b)
     (by exact (by fun_prop : Continuous (fun x : ℝ =>
-      3 * ∑ m ∈ Finset.range 4,
+      3 * ∑ m ∈ Finset.range 6,
         (k ^ m / (m.factorial : ℝ)) * (x ^ 4 * (b - x) ^ m))).intervalIntegrable a b)]
   rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
   rw [intervalIntegral.integral_finsetSum]
@@ -574,13 +584,13 @@ theorem intervalIntegral_thetaCuspFirstAtomFourthTaylorShape_eq_mass
             (x ^ 4 * (b - x) ^ m))).intervalIntegrable a b
   · intro n hn
     exact (by fun_prop : Continuous (fun x : ℝ =>
-      ∑ m ∈ Finset.range 4,
+      ∑ m ∈ Finset.range 6,
         (((2 : ℝ) ^ n / (n.factorial : ℝ)) *
           (k ^ m / (m.factorial : ℝ))) *
             (x ^ (4 + n) * (b - x) ^ m))).intervalIntegrable a b
 
 def thetaCuspFirstAtomFourthIntervalMass (j : ℕ) : ℝ :=
-  (6283 / 500 : ℝ) / 24 *
+  (6283 / 500 : ℝ) * (3 / 70) *
     thetaCuspFirstAtomFourthTaylorMass
       ((j : ℝ) / 8) (((j + 1 : ℕ) : ℝ) / 8)
       (thetaCuspFirstLiouvilleRateSlope j)
@@ -593,9 +603,9 @@ theorem intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_eq_mass
         thetaCuspFirstAtomFourthIntervalMass j := by
   rw [show (fun x : ℝ => thetaCuspFirstAtomFourthIntervalCertificate j x) =
       fun x : ℝ =>
-        ((6283 / 500 : ℝ) / 24 * thetaCuspFirstLiouvilleEndpointCertificate j) *
+        ((6283 / 500 : ℝ) * (3 / 70) * thetaCuspFirstLiouvilleEndpointCertificate j) *
           (x ^ 4 * ((6283 / 1000 : ℝ) * thetaCuspExpTaylorFive (2 * x) - 3) *
-            thetaCuspExpTaylorThree
+            thetaCuspExpTaylorFive
               (thetaCuspFirstLiouvilleRateSlope j *
                 ((((j + 1 : ℕ) : ℝ) / 8) - x))) by
     funext x
@@ -617,7 +627,7 @@ theorem one_div_oneMillion_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalC
     thetaCuspFirstLiouvilleRateSlope,
     thetaCuspFirstLiouvilleEndpointCertificate,
     thetaCuspFirstLiouvilleRateMajorant, thetaCuspQuarterExpChord,
-    thetaCuspQuarterExpMajorant, eval_expNegTruncPoly,
+    thetaCuspQuarterExpMajorant, eval_expNegTruncPoly, Nat.choose,
     Finset.sum_range_succ]
 
 set_option maxRecDepth 10000 in
@@ -631,7 +641,7 @@ theorem nineteen_div_oneHundredThousand_lt_intervalIntegral_thetaCuspFirstAtomFo
     thetaCuspFirstLiouvilleRateSlope,
     thetaCuspFirstLiouvilleEndpointCertificate,
     thetaCuspFirstLiouvilleRateMajorant, thetaCuspQuarterExpChord,
-    thetaCuspQuarterExpMajorant, eval_expNegTruncPoly,
+    thetaCuspQuarterExpMajorant, eval_expNegTruncPoly, Nat.choose,
     Finset.sum_range_succ]
 
 set_option maxRecDepth 10000 in
@@ -645,7 +655,7 @@ theorem seventeen_div_twentyFiveThousand_lt_intervalIntegral_thetaCuspFirstAtomF
     thetaCuspFirstLiouvilleRateSlope,
     thetaCuspFirstLiouvilleEndpointCertificate,
     thetaCuspFirstLiouvilleRateMajorant, thetaCuspQuarterExpChord,
-    thetaCuspQuarterExpMajorant, eval_expNegTruncPoly,
+    thetaCuspQuarterExpMajorant, eval_expNegTruncPoly, Nat.choose,
     Finset.sum_range_succ]
 
 set_option maxRecDepth 10000 in
@@ -659,7 +669,7 @@ theorem twentyOne_div_twentyFiveThousand_lt_intervalIntegral_thetaCuspFirstAtomF
     thetaCuspFirstLiouvilleRateSlope,
     thetaCuspFirstLiouvilleEndpointCertificate,
     thetaCuspFirstLiouvilleRateMajorant, thetaCuspQuarterExpChord,
-    thetaCuspQuarterExpMajorant, eval_expNegTruncPoly,
+    thetaCuspQuarterExpMajorant, eval_expNegTruncPoly, Nat.choose,
     Finset.sum_range_succ]
 
 set_option maxRecDepth 10000 in
@@ -673,26 +683,29 @@ theorem eleven_div_twentyFiveThousand_lt_intervalIntegral_thetaCuspFirstAtomFour
     thetaCuspFirstLiouvilleRateSlope,
     thetaCuspFirstLiouvilleEndpointCertificate,
     thetaCuspFirstLiouvilleRateMajorant, thetaCuspQuarterExpChord,
-    thetaCuspQuarterExpMajorant, eval_expNegTruncPoly,
+    thetaCuspQuarterExpMajorant, eval_expNegTruncPoly, Nat.choose,
     Finset.sum_range_succ]
 
-/-- The five exact rational interval certificates clear the sharpened `2151/1000000` threshold. -/
-theorem twoThousandOneHundredFiftyOne_div_oneMillion_lt_sum_thetaCuspFirstAtomFourthIntervalCertificate :
-    (2151 / 1000000 : ℝ) <
-      ∑ j ∈ Finset.range 5,
+set_option maxRecDepth 30000 in
+set_option maxHeartbeats 1000000 in
+/-- The seven exact rational interval certificates clear the stronger `269/100000` threshold. -/
+theorem twoHundredSixtyNine_div_oneHundredThousand_lt_sum_thetaCuspFirstAtomFourthIntervalCertificate :
+    (269 / 100000 : ℝ) <
+      ∑ j ∈ Finset.range 7,
         ∫ x in (j : ℝ) / 8..(((j + 1 : ℕ) : ℝ) / 8),
           thetaCuspFirstAtomFourthIntervalCertificate j x := by
-  have h0 := one_div_oneMillion_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_zero
-  have h1 := nineteen_div_oneHundredThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_one
-  have h2 := seventeen_div_twentyFiveThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_two
-  have h3 := twentyOne_div_twentyFiveThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_three
-  have h4 := eleven_div_twentyFiveThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_four
-  norm_num [Finset.sum_range_succ] at h0 h1 h2 h3 h4 ⊢
-  linarith
+  simp_rw [intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_eq_mass]
+  norm_num [thetaCuspFirstAtomFourthIntervalMass,
+    thetaCuspFirstAtomFourthTaylorMass, thetaCuspIntervalPowSubMass,
+    thetaCuspFirstLiouvilleRateSlope,
+    thetaCuspFirstLiouvilleEndpointCertificate,
+    thetaCuspFirstLiouvilleRateMajorant, thetaCuspQuarterExpChord,
+    thetaCuspQuarterExpMajorant, eval_expNegTruncPoly, Nat.choose,
+    Finset.sum_range_succ]
 
 /-- **Unconditional dominant-atom fourth-moment floor.** -/
-theorem twoThousandOneHundredFiftyOne_div_oneMillion_lt_thetaCuspAtomRawEvenMoment_two_one :
-    (2151 / 1000000 : ℝ) < thetaCuspAtomRawEvenMoment 2 1 := by
+theorem twoHundredSixtyNine_div_oneHundredThousand_lt_thetaCuspAtomRawEvenMoment_two_one :
+    (269 / 100000 : ℝ) < thetaCuspAtomRawEvenMoment 2 1 := by
   let f : ℝ → ℝ := fun x => 2 * (x ^ 4 * thetaCuspSourceTerm x 1)
   have hfcont : Continuous f := by
     dsimp only [f]
@@ -707,7 +720,7 @@ theorem twoThousandOneHundredFiftyOne_div_oneMillion_lt_thetaCuspAtomRawEvenMome
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
     exact mul_nonneg (by norm_num) <|
       mul_nonneg (pow_nonneg hx.le _) (thetaCuspSourceTerm_nonneg_of_pos hx 1)
-  have hsegment (j : ℕ) (hj : j < 5) :
+  have hsegment (j : ℕ) (hj : j < 7) :
       (∫ x in (j : ℝ) / 8..(((j + 1 : ℕ) : ℝ) / 8),
           thetaCuspFirstAtomFourthIntervalCertificate j x) ≤
         ∫ x in (j : ℝ) / 8..(((j + 1 : ℕ) : ℝ) / 8), f x := by
@@ -716,53 +729,71 @@ theorem twoThousandOneHundredFiftyOne_div_oneMillion_lt_thetaCuspAtomRawEvenMome
       linarith
     · have hcertcont : Continuous
           (thetaCuspFirstAtomFourthIntervalCertificate j) := by
-        unfold thetaCuspFirstAtomFourthIntervalCertificate
-          thetaCuspExpTaylorFive thetaCuspExpTaylorThree
+        unfold thetaCuspFirstAtomFourthIntervalCertificate thetaCuspExpTaylorFive
         fun_prop
       exact hcertcont.intervalIntegrable _ _
     · exact hfcont.intervalIntegrable _ _
     · intro x hx
       exact thetaCuspFirstAtomFourthIntervalCertificate_le_density hj hx
   have hsum :
-      (∑ j ∈ Finset.range 5,
+      (∑ j ∈ Finset.range 7,
           ∫ x in (j : ℝ) / 8..(((j + 1 : ℕ) : ℝ) / 8),
             thetaCuspFirstAtomFourthIntervalCertificate j x) ≤
-        ∑ j ∈ Finset.range 5,
+        ∑ j ∈ Finset.range 7,
           ∫ x in (j : ℝ) / 8..(((j + 1 : ℕ) : ℝ) / 8), f x := by
     exact Finset.sum_le_sum fun j hj => hsegment j (Finset.mem_range.mp hj)
   have hjoin :
-      (∑ j ∈ Finset.range 5,
+      (∑ j ∈ Finset.range 7,
           ∫ x in (j : ℝ) / 8..(((j + 1 : ℕ) : ℝ) / 8), f x) =
-        ∫ x in (0 : ℝ)..5 / 8, f x := by
+        ∫ x in (0 : ℝ)..7 / 8, f x := by
     norm_num [Finset.sum_range_succ]
     calc
-      ((((∫ x in (0 : ℝ)..1 / 8, f x) + ∫ x in (1 / 8 : ℝ)..1 / 4, f x) +
-              ∫ x in (1 / 4 : ℝ)..3 / 8, f x) +
-            ∫ x in (3 / 8 : ℝ)..1 / 2, f x) +
-          ∫ x in (1 / 2 : ℝ)..5 / 8, f x =
-          (((∫ x in (0 : ℝ)..1 / 4, f x) +
-              ∫ x in (1 / 4 : ℝ)..3 / 8, f x) +
-            ∫ x in (3 / 8 : ℝ)..1 / 2, f x) +
-          ∫ x in (1 / 2 : ℝ)..5 / 8, f x := by
+      ((((((∫ x in (0 : ℝ)..1 / 8, f x) + ∫ x in (1 / 8 : ℝ)..1 / 4, f x) +
+                  ∫ x in (1 / 4 : ℝ)..3 / 8, f x) +
+                ∫ x in (3 / 8 : ℝ)..1 / 2, f x) +
+              ∫ x in (1 / 2 : ℝ)..5 / 8, f x) +
+            ∫ x in (5 / 8 : ℝ)..3 / 4, f x) +
+          ∫ x in (3 / 4 : ℝ)..7 / 8, f x =
+          (((((∫ x in (0 : ℝ)..1 / 4, f x) +
+                  ∫ x in (1 / 4 : ℝ)..3 / 8, f x) +
+                ∫ x in (3 / 8 : ℝ)..1 / 2, f x) +
+              ∫ x in (1 / 2 : ℝ)..5 / 8, f x) +
+            ∫ x in (5 / 8 : ℝ)..3 / 4, f x) +
+          ∫ x in (3 / 4 : ℝ)..7 / 8, f x := by
         rw [intervalIntegral.integral_add_adjacent_intervals
           (hfcont.intervalIntegrable 0 (1 / 8))
           (hfcont.intervalIntegrable (1 / 8) (1 / 4))]
-      _ = ((∫ x in (0 : ℝ)..3 / 8, f x) +
-            ∫ x in (3 / 8 : ℝ)..1 / 2, f x) +
-          ∫ x in (1 / 2 : ℝ)..5 / 8, f x := by
+      _ = ((((∫ x in (0 : ℝ)..3 / 8, f x) +
+                ∫ x in (3 / 8 : ℝ)..1 / 2, f x) +
+              ∫ x in (1 / 2 : ℝ)..5 / 8, f x) +
+            ∫ x in (5 / 8 : ℝ)..3 / 4, f x) +
+          ∫ x in (3 / 4 : ℝ)..7 / 8, f x := by
         rw [intervalIntegral.integral_add_adjacent_intervals
           (hfcont.intervalIntegrable 0 (1 / 4))
           (hfcont.intervalIntegrable (1 / 4) (3 / 8))]
-      _ = (∫ x in (0 : ℝ)..1 / 2, f x) +
-          ∫ x in (1 / 2 : ℝ)..5 / 8, f x := by
+      _ = (((∫ x in (0 : ℝ)..1 / 2, f x) +
+              ∫ x in (1 / 2 : ℝ)..5 / 8, f x) +
+            ∫ x in (5 / 8 : ℝ)..3 / 4, f x) +
+          ∫ x in (3 / 4 : ℝ)..7 / 8, f x := by
         rw [intervalIntegral.integral_add_adjacent_intervals
           (hfcont.intervalIntegrable 0 (3 / 8))
           (hfcont.intervalIntegrable (3 / 8) (1 / 2))]
-      _ = ∫ x in (0 : ℝ)..5 / 8, f x := by
+      _ = ((∫ x in (0 : ℝ)..5 / 8, f x) +
+            ∫ x in (5 / 8 : ℝ)..3 / 4, f x) +
+          ∫ x in (3 / 4 : ℝ)..7 / 8, f x := by
         rw [intervalIntegral.integral_add_adjacent_intervals
           (hfcont.intervalIntegrable 0 (1 / 2))
           (hfcont.intervalIntegrable (1 / 2) (5 / 8))]
-  have hwindow : (∫ x in (0 : ℝ)..5 / 8, f x) ≤ ∫ x in Ioi 0, f x := by
+      _ = (∫ x in (0 : ℝ)..3 / 4, f x) +
+          ∫ x in (3 / 4 : ℝ)..7 / 8, f x := by
+        rw [intervalIntegral.integral_add_adjacent_intervals
+          (hfcont.intervalIntegrable 0 (5 / 8))
+          (hfcont.intervalIntegrable (5 / 8) (3 / 4))]
+      _ = ∫ x in (0 : ℝ)..7 / 8, f x := by
+        rw [intervalIntegral.integral_add_adjacent_intervals
+          (hfcont.intervalIntegrable 0 (3 / 4))
+          (hfcont.intervalIntegrable (3 / 4) (7 / 8))]
+  have hwindow : (∫ x in (0 : ℝ)..7 / 8, f x) ≤ ∫ x in Ioi 0, f x := by
     rw [intervalIntegral.integral_of_le (by norm_num)]
     exact setIntegral_mono_set hfint hfnonneg
       (Filter.Eventually.of_forall fun x hx => hx.1)
@@ -771,17 +802,32 @@ theorem twoThousandOneHundredFiftyOne_div_oneMillion_lt_thetaCuspAtomRawEvenMome
     dsimp only [f]
     rw [← integral_const_mul]
   have hcert :=
-    twoThousandOneHundredFiftyOne_div_oneMillion_lt_sum_thetaCuspFirstAtomFourthIntervalCertificate
+    twoHundredSixtyNine_div_oneHundredThousand_lt_sum_thetaCuspFirstAtomFourthIntervalCertificate
   calc
-    (2151 / 1000000 : ℝ) <
-        ∑ j ∈ Finset.range 5,
+    (269 / 100000 : ℝ) <
+        ∑ j ∈ Finset.range 7,
           ∫ x in (j : ℝ) / 8..(((j + 1 : ℕ) : ℝ) / 8),
             thetaCuspFirstAtomFourthIntervalCertificate j x := hcert
-    _ ≤ ∑ j ∈ Finset.range 5,
+    _ ≤ ∑ j ∈ Finset.range 7,
           ∫ x in (j : ℝ) / 8..(((j + 1 : ℕ) : ℝ) / 8), f x := hsum
-    _ = ∫ x in (0 : ℝ)..5 / 8, f x := hjoin
+    _ = ∫ x in (0 : ℝ)..7 / 8, f x := hjoin
     _ ≤ ∫ x in Ioi 0, f x := hwindow
     _ = thetaCuspAtomRawEvenMoment 2 1 := hraw
+
+/-- Compatibility form of the earlier seven-interval floor. -/
+theorem twoHundredSixtyThree_div_oneHundredThousand_lt_thetaCuspAtomRawEvenMoment_two_one :
+    (263 / 100000 : ℝ) < thetaCuspAtomRawEvenMoment 2 1 := by
+  nlinarith [twoHundredSixtyNine_div_oneHundredThousand_lt_thetaCuspAtomRawEvenMoment_two_one]
+
+/-- Compatibility form of the earlier six-interval floor. -/
+theorem three_div_oneThousandTwoHundredFifty_lt_thetaCuspAtomRawEvenMoment_two_one :
+    (3 / 1250 : ℝ) < thetaCuspAtomRawEvenMoment 2 1 := by
+  nlinarith [twoHundredSixtyThree_div_oneHundredThousand_lt_thetaCuspAtomRawEvenMoment_two_one]
+
+/-- Compatibility form of the earlier five-interval floor. -/
+theorem twoThousandOneHundredFiftyOne_div_oneMillion_lt_thetaCuspAtomRawEvenMoment_two_one :
+    (2151 / 1000000 : ℝ) < thetaCuspAtomRawEvenMoment 2 1 := by
+  nlinarith [three_div_oneThousandTwoHundredFifty_lt_thetaCuspAtomRawEvenMoment_two_one]
 
 end
 

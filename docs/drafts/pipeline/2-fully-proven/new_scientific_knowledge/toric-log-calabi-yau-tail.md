@@ -20,6 +20,7 @@ the intersection of pullback fields and introduces no carrier, trajectory, or Ha
 
 - [x] 0 -> 1 in-progress: counterexample found, scope repaired, parent geometry identified
 - [x] 1 -> 2 fully-proven: complete reduction to the isogeny deck-closure theorem
+- [x] full finite character-matrix logarithmic-current transport formalized
 - [ ] 2 -> 3 formalized: toric varieties and the full stable-field equality encoded in Lean
 - [ ] 3 -> 4 publication-ready: independent novelty review and a converse beyond toric geometry
 
@@ -184,7 +185,15 @@ The source-pure character-lattice transport core is formalized in
 
 - `toricLogCurrent_mul`;
 - `toricLogCurrent_zpow`;
-- `toricLogCurrent_laurentMonomial`.
+- `toricLogCurrent_laurentMonomial`;
+- `toricLogCurrent_characterMatrix`.
+
+The last declaration is the complete finite-rank form of `(8)`: every row of an integral
+character matrix transports the logarithmic-current frame by the same row. In fact the entire
+Laurent-power and character-matrix transport core is characteristic-free; it requires only a
+differential field. The exact module cache
+already existed, so verification used only the direct source check. Its axiom report contains
+only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`.
 
 The toric variety, boundary divisor, and stable-field equality remain paper-level.  No axiom is
 introduced for them.

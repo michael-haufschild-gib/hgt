@@ -65,9 +65,9 @@ theorem phaseZeroCurrent_twoStep
     {K : Type*} [Field K] [CharZero K] [Differential K]
     (x : K) (hx : x ≠ 0) :
     phaseZeroCurrent (floquetR₂ (floquetR₁ x)) = 4 * phaseZeroCurrent x := by
-  rw [floquetR₂_comp_R₁]
-  simp only [phaseZeroCurrent, Derivation.leibniz_pow, nsmul_eq_mul, smul_eq_mul]
-  field_simp [hx]
+  rw [phaseZeroCurrent_floquetR₂ (floquetR₁ x) (by
+    simpa [floquetR₁] using pow_ne_zero 2 hx)]
+  rw [phaseOneCurrent_floquetR₁ x hx]
   ring
 
 /-- The rotated period returns the phase-one current with the same multiplier four. -/
@@ -75,10 +75,9 @@ theorem phaseOneCurrent_rotatedTwoStep
     {K : Type*} [Field K] [CharZero K] [Differential K]
     (x : K) (hx : x - 1 ≠ 0) :
     phaseOneCurrent (floquetR₁ (floquetR₂ x)) = 4 * phaseOneCurrent x := by
-  rw [floquetR₁_comp_R₂]
-  simp only [phaseOneCurrent, map_add, Derivation.leibniz_pow, map_sub,
-    deriv_one, sub_zero, add_zero, nsmul_eq_mul, smul_eq_mul]
-  field_simp [hx]
+  rw [phaseOneCurrent_floquetR₁ (floquetR₂ x) (by
+    simpa [floquetR₂] using pow_ne_zero 2 hx)]
+  rw [phaseZeroCurrent_floquetR₂ x hx]
   ring
 
 /-!

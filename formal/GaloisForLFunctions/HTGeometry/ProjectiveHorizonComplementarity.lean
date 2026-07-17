@@ -32,6 +32,15 @@ theorem secondDeriv_inv_eq
     Derivation.leibniz_inv, smul_eq_mul]
   ring
 
+/-- Every differential jet of a hypertranscendental scalar is nonzero. -/
+theorem hypertranscendentalOver_differentialJet_ne_zero
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    {x : E} (hx : HypertranscendentalOver F x) (n : ℕ) :
+    differentialJet n x ≠ 0 := by
+  intro hzero
+  apply hypertranscendentalOver_jet_transcendental hx n
+  simpa [hzero] using (isAlgebraic_zero : IsAlgebraic F (0 : E))
+
 /-- Opposite projective derivative horizons recover the original coordinate from two jets. -/
 theorem projectiveInversion_twoJet_reconstruction
     {K : Type*} [Field K] [CharZero K] [Differential K]
@@ -71,14 +80,11 @@ theorem hypertranscendentalOver_mem_sup_firstJetTail_inv
     x ∈ jetTailField F x 1 ⊔ jetTailField F x⁻¹ 1 := by
   let J : IntermediateField F E := jetTailField F x 1 ⊔ jetTailField F x⁻¹ 1
   have hx0 : x ≠ 0 := by
-    intro hzero
-    apply hypertranscendentalOver_jet_transcendental hx 0
-    simpa [hzero] using (isAlgebraic_zero : IsAlgebraic F (0 : E))
+    simpa only [differentialJet_zero] using
+      hypertranscendentalOver_differentialJet_ne_zero hx 0
   have hdx : x′ ≠ 0 := by
-    intro hzero
-    apply hypertranscendentalOver_jet_transcendental hx 1
-    simpa [differentialJet_succ, hzero] using
-      (isAlgebraic_zero : IsAlgebraic F (0 : E))
+    simpa only [differentialJet_succ] using
+      hypertranscendentalOver_differentialJet_ne_zero hx 1
   have hdinv : (x⁻¹)′ ≠ 0 := by
     rw [deriv_inv_eq_neg_inv_sq_mul_deriv]
     exact mul_ne_zero (neg_ne_zero.mpr (pow_ne_zero 2 (inv_ne_zero hx0))) hdx
@@ -140,14 +146,11 @@ theorem hypertranscendentalOver_schwarzian_mem_inf_firstJetTail_inv
     (x : E) (hx : HypertranscendentalOver F x) :
     schwarzian x ∈ jetTailField F x 1 ⊓ jetTailField F x⁻¹ 1 := by
   have hx0 : x ≠ 0 := by
-    intro hzero
-    apply hypertranscendentalOver_jet_transcendental hx 0
-    simpa [hzero] using (isAlgebraic_zero : IsAlgebraic F (0 : E))
+    simpa only [differentialJet_zero] using
+      hypertranscendentalOver_differentialJet_ne_zero hx 0
   have hdx : x′ ≠ 0 := by
-    intro hzero
-    apply hypertranscendentalOver_jet_transcendental hx 1
-    simpa [differentialJet_succ, hzero] using
-      (isAlgebraic_zero : IsAlgebraic F (0 : E))
+    simpa only [differentialJet_succ] using
+      hypertranscendentalOver_differentialJet_ne_zero hx 1
   rw [IntermediateField.mem_inf]
   refine ⟨schwarzian_mem_jetTailField_one F x, ?_⟩
   rw [← schwarzian_inv x hx0 hdx]

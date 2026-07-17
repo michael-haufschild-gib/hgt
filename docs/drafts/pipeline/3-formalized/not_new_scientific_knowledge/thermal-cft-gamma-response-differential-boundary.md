@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** A. Manenti, *Thermal CFTs in momentum space*, arXiv:1905.01355, equations (7.7)--(7.9)
-- **Statement:** The complete frequency-dependent thermal CFT response, including its elementary exponential readout, is DA exactly when `1-2h` is integral and HT otherwise; an HT finite multi-sector product must contain a non-half-integral weight.
+- **Statement:** The complete frequency-dependent thermal CFT response, including its elementary exponential readout, and its Wigner--Smith logarithmic current are DA exactly when `1-2h` is integral and HT otherwise; an HT finite multi-sector product must contain a non-half-integral weight.
 
 ## Goal
 
@@ -52,6 +52,10 @@ weight boundary unchanged.  The finite-product source theorem localizes any HT m
 response, including these exponential-dressed factors: at least one sector must have nonintegral
 `1-2h`.  This is one-way only; HT factors may still cancel in a product.
 
+Passing to the observable logarithmic response current preserves this selector exactly.  Restoring
+the exponential readout adds the constant `lambda` to the Gamma current.  The Wigner--Smith current
+is therefore DA precisely on the same integral `1-2h` lattice and HT everywhere else.
+
 ## Scope
 
 The theorem classifies the complete frequency-dependent factor in equation (7.8), up to a nonzero
@@ -61,6 +65,8 @@ full interacting thermal spectral density, the OPE sum, or a bulk black-hole rec
 ## Lean certificate
 
 Module: `GaloisForLFunctions.HTGeometry.ThermalCFTGammaResponseBoundary`
+
+Observation module: `GaloisForLFunctions.HTGeometry.ThermalCFTWignerSmithObservability`
 
 Parent module: `GaloisForLFunctions.HTGeometry.GammaOppositeShiftBoundary`
 
@@ -74,6 +80,9 @@ Parent module: `GaloisForLFunctions.HTGeometry.GammaOppositeShiftBoundary`
 - `gammaReflectionProductMero_half`
 - `exists_nonintegerWeight_of_hypertranscendental_finset_product`
 - `exists_nonintegerWeight_of_hypertranscendental_finset_response_product`
+- `thermalCFTResponseWignerSmithLogClockMero_eq_gamma_add_const`
+- `differentialAlgebraicOver_thermalCFTResponseWignerSmithLogClockMero_iff_integerWeight`
+- `hypertranscendentalOver_thermalCFTResponseWignerSmithLogClockMero_iff_nonintegerWeight`
 
 Verification:
 
@@ -90,3 +99,6 @@ Verification:
   arbitrary-shift opposite-Gamma parent theorem.
 - 2026-07-17 — calibrated to the relativistic beta-decay Fermi Gamma core; exact
   weak-decay/thermal detailed-balance identity formalized.
+- 2026-07-17 — added and exactly built the thermal-CFT Wigner--Smith observation module.  Its
+  constant gauge law and exact DA/HT weight selector pass direct verification, standard-only axiom
+  audit, and source scan.

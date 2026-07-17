@@ -245,6 +245,13 @@ exact smoothings of this delay and that, as the bandwidth is refined, those phys
 eventually exclude every fixed finite differential-law window with a positive finite-data noise
 margin.  No fixed smoothed trace is assumed to remain HT.
 
+`matrix-wigner-smith-kolchin-completeness.md` extends this observable sector beyond scalar
+scattering.  For every finite channel, the joint Wigner--Smith field has exactly the differential
+transcendence degree of the full scattering matrix, and a fixed `n^2` panel of channel-superposition
+delays generates that field.  Thus matrix HT cannot hide from all scalar time-delay experiments;
+at least one member of the finite panel is HT, and the positive-width Erlang reporter preserves
+that conclusion at every resolution.
+
 ## What the theorem changes
 
 There is no scalar label `HT QFT` with a stable physical meaning.  The minimal signature is

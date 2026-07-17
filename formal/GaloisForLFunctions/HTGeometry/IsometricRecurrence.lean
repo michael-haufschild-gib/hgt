@@ -28,6 +28,31 @@ structure IsometricRAction (M : Type*) [MetricSpace M] where
 
 variable {M : Type*} [MetricSpace M]
 
+/-- The time-zero map of an isometric additive action is the identity. -/
+@[simp] theorem IsometricRAction.act_zero (A : IsometricRAction M) (x : M) :
+    A.act 0 x = x := by
+  apply (A.isometry 0).injective
+  rw [A.map_add]
+  simp only [zero_add]
+
+/-- Acting by `t` and then by `-t` returns the original point. -/
+@[simp] theorem IsometricRAction.act_neg_act
+    (A : IsometricRAction M) (t : ℝ) (x : M) :
+    A.act (-t) (A.act t x) = x := by
+  rw [A.map_add, neg_add_cancel, A.act_zero]
+
+/-- Acting by `-t` and then by `t` returns the original point. -/
+@[simp] theorem IsometricRAction.act_act_neg
+    (A : IsometricRAction M) (t : ℝ) (x : M) :
+    A.act t (A.act (-t) x) = x := by
+  rw [A.map_add, add_neg_cancel, A.act_zero]
+
+/-- Every time map of an isometric real action is bijective, with inverse time map `-t`. -/
+theorem IsometricRAction.bijective_act (A : IsometricRAction M) (t : ℝ) :
+    Function.Bijective (A.act t) := by
+  refine ⟨(A.isometry t).injective, fun x ↦ ⟨A.act (-t) x, ?_⟩⟩
+  exact A.act_act_neg t x
+
 /-- **Recurrence of a relatively-compact isometric orbit.**  If the orbit `{act t x}` has compact
 closure, then for every `ε > 0` and every bound `N` there is a time `t ≥ N` with
 `dist (act t x) x < ε`. -/

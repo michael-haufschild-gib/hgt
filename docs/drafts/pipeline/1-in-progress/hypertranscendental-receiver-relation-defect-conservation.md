@@ -121,8 +121,10 @@ vocabulary.
 
 ## Exact evidence already proved
 
-1. **Source data processing.**  Source-derived reporters cannot distinguish a source-fixed gauge;
-   joint reconstruction is equivalent to triviality of the normalized common reporter kernel.
+1. **Source data processing.**  For normalized source-fixed gauge `K^S`, the exact invisibility
+   space is `I(S,R)=K^S intersect intersection_r ker(R_r)`.  Joint reconstruction is equivalent
+   to `I(S,R)=0`, and `K^S/I(S,R)` is canonically the joint observation range.  Source-derived
+   reporters cannot distinguish information which the bare source has already forgotten.
 2. **Linear relative-position chart.**  For a reporter `A`, its graph and the horizontal lattice
    have intersection `ker A`, sum equal to the product with `range A`, whole sum exactly when `A`
    is surjective, and closed sum exactly when its range is closed.
@@ -142,6 +144,60 @@ vocabulary.
 Items 3--6 are now one exact vertical diagram rather than separate analogies.  Item 7 is not yet
 proved to be another realization of the same `delta_Gamma`; that comparison, plus extension beyond
 the current one-sided finite Fourier chart, is the next substantive theorem.
+
+Item 1 forces a correction to the object type.  The unified field cannot be assigned to `S` alone;
+its input must be a source--observation double `(S,R_perp)` with genuinely transverse reporter
+data.  Functoriality is required under equivalent presentations of that double, not derivability
+of `R_perp` from the source.  The positive universal object at one source is the observable
+quotient `K^S/I(S,R)`; over source faces it must be replaced by the full observation complex so
+that born kernels and attainment defects remain connected.
+
+## Observation-complex correction after the common-kernel theorem
+
+The maximal common-kernel theorem identifies only `H^(-1)` of a receiver.  It does not determine
+how nonconservativity changes under a source face.  Multiplication by `1` and by `x` over `k[x]`
+have the same zero generic kernel, but after reduction modulo `x` the first remains injective and
+the second becomes zero.  Their cokernels distinguish the two cases.
+
+Therefore a field of kernels, cokernels, and named defect components is still an epicycle unless
+the components are tied together by the differential of one observation complex.  The corrected
+vertical carrier is
+
+```text
+C_(S,R,rho)=[G_S^HT --Obs_(R,rho)-> H_(R,rho)],
+```
+
+or its closed-relation analogue, retained before taking kernel or range.  Its cohomology and
+closure invariants recover the earlier defect package, while derived source-face restriction
+forces the exact edge law
+
+```text
+0 -> inherited common kernel -> boundary common kernel
+  -> Tor_1(generic attainment defect,face) -> 0.                         (OC1)
+```
+
+More generally, after quotienting source and target layers `P,Q`, the genuinely born gauge is
+
+```text
+f^(-1)(Q)/(P+ker f) ~= (range(f) intersect Q)/f(P).                       (OC2)
+```
+
+`(OC2)` is Lean-formalized in `SourceFaceObservationExcess.lean`.  In the Barnes characteristic
+presentation, `(OC1)` identifies the already-proved source-face `Tor_1` module with the entire born
+boundary kernel.  This is the first exact horizontal-to-vertical comparison.
+
+The revised conjecture is not that a universal section moves freely among a list of defects.  It
+is that independently constructed HT receiver complexes are related by conservative morphisms
+which carry the same cohomology/base-change class.  The semistable Tate chart now proves the exact
+nodal factorization `E=xu`, and the Barnes chart independently supplies the face `Tor_1` module.
+They are not yet identified: the nodal coordinate `x` is a gauge vector, whereas the Barnes
+factor `T_j-1` is its annihilating source operator.  The positive typed bridge is the character
+grading of `D_N/(T_j-1)` determined by the integral charge, complementary translation phases, and
+differential eigenvalue.  This local grading and its neutral-intersection law for rationally
+independent faces are now proved and Lean-formalized.  The decisive target is to construct the
+face-poset incidence object and a map of localization sequences from the Tate nodal classes to the
+Barnes `Tor` receiver, globalize it over the multiple-gamma face diagram, pass to the DA-relative
+quotient, and compare with a completed analytic reporter.
 
 ## Gamma theorem target
 
@@ -229,6 +285,14 @@ defining data.
 - [ ] construct the Gamma reporter as a compatible closed relation on that scale
 - [ ] compute its kernel, multivalued part, domain, range, and singular closure
 - [ ] compare its defect section with the nonlinear normalization horizon
+- [x] replace the kernel-only receiver by the full observation complex and prove the exact
+      quotient/excess-intersection law for boundary-born gauges
+- [x] prove the local Tate-theta factorization, the abstract same-ring Koszul chain map, and the
+      no-go separating the nodal vector from the source operator
+- [x] identify and Lean-formalize the full Barnes charge-character grading and its neutral
+      intersection law across rationally independent faces
+- [ ] construct and globalize that realization over the DA-relative multiple-gamma face diagram
+      and one completed independently defined analytic reporter
 - [ ] formulate the receiver characterization in differential-algebraic jet language
 - [ ] test it on one differential-algebraic family and one non-Gamma HT family
 - [ ] obtain an independent specialist novelty audit

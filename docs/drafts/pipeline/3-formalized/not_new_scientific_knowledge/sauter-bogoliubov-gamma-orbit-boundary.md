@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** S. P. Kim, H. K. Lee, and Y. Yoon, *Effective Action of QED in Electric Field Backgrounds*, arXiv:0807.2696, equations (59), (62), and (63)
-- **Statement:** The scalar Sauter in/out four-Gamma carrier, on its incoming-frequency spectral slice, is DA exactly when its two denominator translation orbits match the half- and unit-shift numerator orbits in either order; every other orbit configuration is HT, and elementary exponential readout phases preserve the boundary.
+- **Statement:** The scalar Sauter in/out four-Gamma carrier, on its incoming-frequency spectral slice, is DA exactly when its two denominator translation orbits match the half- and unit-shift numerator orbits in either order; every other orbit configuration is HT, and both elementary exponential readout phases and the Wigner--Smith logarithmic delay preserve the boundary.
 
 ## Goal
 
@@ -53,6 +53,10 @@ exponential phase/readout gauges leave the same selector.  Moreover, off the exc
 finite differential circuit with arbitrary rational-function scalars that exactly realizes the
 readout must already contain a genuinely HT non-scalar atom.
 
+The logarithmic scattering delay supplies a direct positive readout.  Restoring the elementary
+phase `exp(lambda*z)` adds exactly the constant `lambda` to the bare Gamma delay.  The complete
+delay is therefore HT on exactly the same orbit-mismatch locus as the Sauter coefficient itself.
+
 ## Corpus value
 
 The result is a strict mixed-scale consumer of `MeromorphicGammaNatScale` and the Gamma-orbit
@@ -71,6 +75,8 @@ Module: `GaloisForLFunctions.HTGeometry.SauterBogoliubovGammaBoundary`
 - `differentialAlgebraicOver_sauterBogoliubovReadoutMero_iff_orbitMatching`
 - `hypertranscendentalOver_sauterBogoliubovReadoutMero_iff_orbitMismatch`
 - `exists_hypertranscendental_atom_of_sauterBogoliubovReadoutCircuit`
+- `sauterBogoliubovReadoutWignerSmithLogClockMero_eq_carrier_add_const`
+- `hypertranscendentalOver_sauterBogoliubovReadoutWignerSmithLogClockMero_iff_orbitMismatch`
 
 The audited capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -85,3 +91,5 @@ region, sign theorem, or RH implication.
 
 - 2026-07-17 — exact source relation extracted; mixed-scale normal form, exceptional orbit locus,
   complementary HT theorem, and readout-gauge stability formalized and verified.
+- 2026-07-17 — applied logarithmic-delay observability: exact constant phase-calibration law and
+  exact HT orbit selector.  Direct file check, standard-only axiom audit, and source scan pass.
