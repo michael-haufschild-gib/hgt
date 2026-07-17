@@ -46,6 +46,11 @@ missing mathematical object.
    is not merely unconstructed.  It is ill-typed holomorphically because `d_M` is genuinely
    real-analytic, and no continuous scalar multiplier can satisfy `d_M=h d_A` near a
    critical-line Xi zero.  The zero germs have different real codimension and transverse order.
+7. The actual von Mangoldt boundary scaling gives a stronger dependency-level no-go.  For every
+   finite distinct right-half-plane packet, its scaled positive source Gram converges to the
+   nonsingular Hardy--Cauchy Gram and is eventually full rank.  Applying this to all subpackets
+   shows that the represented matroid eventually becomes the free matroid.  The Xi divisor cannot
+   survive in ordinary dependence data at this boundary.
 
 ## Surviving proved content
 
@@ -120,6 +125,9 @@ most four.  An off-line Xi divisor is precisely where this effectivity can fail.
 relevant positive object is a source-effective closed graph carrying a compatible cut-matroid
 filtration, not a family of matroids asserted jointly conservative by itself.
 
+The free-matroid stabilization and its source limit are formalized in
+`../3-formalized/not_new_scientific_knowledge/von-mangoldt-hardy-scaling-free-matroid-no-go.md`.
+
 ## Gates
 
 - [x] literal common-circuit claim falsified
@@ -130,3 +138,4 @@ filtration, not a family of matroids asserted jointly conservative by itself.
 - [x] scalar comparison category ruled out locally
 - [x] safe-offset operator criterion identified as a stationary Weil consumer
 - [x] minimal source-commutator successor isolated
+- [x] source boundary matroid proved eventually free on every finite distinct packet

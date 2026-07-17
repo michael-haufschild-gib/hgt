@@ -1,8 +1,8 @@
 # Split source-boundary universality
 
 - **ID:** `split-source-boundary-universality`
-- **Stage:** 2-fully-proven / exact raw mixed dependence boundary Lean-complete / localized
-  quotient rank representation open
+- **Stage:** 2-fully-proven / exact raw mixed dependence boundary and finite-resolution algebraic
+  matroid Lean-complete / localized quotient rank representation open
 - **Type:** THEOREM (paper) / formalization open
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** For observables valued in any split commutative group
@@ -224,6 +224,7 @@ object together with the Tannakian tensor relations of its adjoint local system.
 - [x] Lean finite differential-algebraic base-extension invariance
 - [x] Lean raw/logarithmic finite-family rank preservation
 - [x] Lean exact dependence/coboundary equivalence for the raw mixed family
+- [x] Lean exact arbitrary-family algebraic matroid criterion
 - [ ] Lean mixed-family matroid representation
 
 ## Lean formalization boundary
@@ -257,6 +258,13 @@ of `(6)`: the family `(u_a, x_b)` is differentially independent exactly when eve
 differential character of the linearized increments fails to be a simultaneous base coboundary.
 All these theorems use only Lean's standard axioms.
 
+The same module now isolates the common finite-resolution engine as
+`automorphismFamily_algebraicIndependent_iff_no_constant_simultaneous_telescoping`.  It proves for
+an arbitrary selected packet that algebraic independence is exactly absence of a nonzero
+constant-coefficient simultaneous coboundary.  Both the logarithmic-jet boundary matroid and the
+complete differential Ostrowski equivalence are specializations of this one theorem, rather than
+duplicated fixed-field arguments.
+
 Lean does not yet construct the quotient `Q_Sigma(K)`, its `C(D)` localization, or the rank
 function equality `(5)` inside that localized quotient.  That representation layer is the sole
 remaining formal boundary, so the card remains in step 2 and must not be moved to step 3 yet.
@@ -279,3 +287,7 @@ remaining formal boundary, so the card remains in step 2 and must not be moved t
 - 2026-07-16 -- Lean completed the exact mixed linearized dependence/coboundary equivalence for
   arbitrary source families. The raw/logarithmic finite-family rank bridge remains the sole
   formal obstruction to the complete matroid statement and stage-3 promotion.
+- 2026-07-17 -- Lean consolidated the finite-resolution source-boundary argument into the exact
+  arbitrary-family algebraic Ostrowski equivalence; logarithmic-jet and differential-family
+  criteria now specialize this common matroid theorem. The localized quotient rank representation
+  remains open.

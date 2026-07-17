@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.GammaDifferentialFE
+import GaloisForLFunctions.HTGeometry.AffineCollisionMatroid
 import GaloisForLFunctions.HTGeometry.ReflectedDigammaAnomaly
 import GaloisForLFunctions.HTGeometry.UniversalOrientedHerglotz
 import GaloisForLFunctions.RHTower.DigammaGaussSeries
@@ -91,6 +92,16 @@ theorem explicitDigammaPalettePoint_injective :
     have hcross := (div_eq_div_iff hm hn).mp h
     simpa [explicitDigammaPalettePoint] using hcross
   exact_mod_cast (by linarith : (m : ℝ) = n)
+
+/-- The collision matroid of the explicit digamma palette is the free matroid: the closed-form
+palette contributes one independent frame at every natural-number code. -/
+theorem explicitDigammaPalette_collisionMatroid_eq_free :
+    affineCollisionMatroid explicitDigammaPalettePoint = Matroid.freeOn Set.univ := by
+  apply Matroid.ext_indep
+  · simp
+  · intro I _
+    rw [affineCollisionMatroid_indep_iff, Matroid.freeOn_indep_iff]
+    exact iff_of_true explicitDigammaPalettePoint_injective.injOn (Set.subset_univ I)
 
 /-- Distinct explicit palette points remain distinct in `ℝ / ℤ`.  This is the periodic-divisor
 separation hypothesis in the classical joint Gamma-shift theorem. -/

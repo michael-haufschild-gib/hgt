@@ -3,7 +3,7 @@
 - **ID:** `kolchin-exchange-cocycle-obstruction`
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** QFT INSTANTIATION / BRIDGE / FOUNDATIONAL GEOMETRY
-- **Scientific status:** `[PROVED HERE] [GENERAL DA-GAUGE CURVATURE IS EXISTING INFRASTRUCTURE]`
+- **Scientific status:** `[PROVED HERE] [LEAN-PARTIAL] [GENERAL DA-GAUGE CURVATURE IS EXISTING INFRASTRUCTURE]`
   `[QFT INSTANTIATION NOVELTY UNVERIFIED] [PHYSICAL ADMISSIBILITY CATEGORY OPEN]`
 - **Scope:** general scalar factorizing exchange cocycles, with the geometric CDD family as an exact
   finite/global discriminator; no RH or distinguished special-function input
@@ -304,15 +304,34 @@ Concrete subproblems:
 
 ## Lean boundary
 
-The corpus has reflection, modular-ratio, rational-reporter, finite jet-independence, and general
-DA-cocycle curvature infrastructure.  `MeromorphicExponentialGaugeDA.lean` now also proves the
-first-order theorem that a genuine exponential with base-field logarithmic derivative is DA.
-These results cover the finite differential-algebra steps; the new physical statement depends on
-the choice of admissible exchange gauge and on Lechner's analytic/Hilbert intertwiner.
+The unconditional algebraic obstruction `(7)`--`(10)` is formalized in
+`formal/GaloisForLFunctions/HTGeometry/KolchinExchangeGaugeObstruction.lean`.
 
-Formalizing only `(7)`--`(9)` would be a short algebraic wrapper and would not establish the QFT
-claim.  No Lean edit is justified until the localization functor or an unconditional physical
-gauge interface is proved on paper.
+```text
+DifferentialAlgEquiv
+  -- a coefficient-fixing derivation-preserving field automorphism, modeling reflection
+DifferentialAlgEquiv.differentialAlgebraicOver_map_iff
+  -- reflection preserves differential algebraicity exactly
+differentialAlgebraicOver_ratio_of_daExchangeGaugeEquivalent
+  -- a DA multiplier relating `S` and `T` forces `T/S` to be DA
+not_daExchangeGaugeEquivalent_of_ratio_hypertranscendental
+  -- `T/S` HT forbids every DA exchange gauge
+differentialAlgebraicOver_exchangeLaw_of_section
+section_hypertranscendental_of_exchangeLaw
+  -- a nonzero section of `reflection(f)=S*f` is HT whenever `S` is HT
+no_daExchangeGauge_trivialization_of_hypertranscendental
+  -- an HT law cannot be DA-gauged to a nonzero constant
+halfPhase_hypertranscendental_of_exchangeLaw
+  -- every half-phase `y` with `S=c*y/reflection(y)` is HT when `S` is HT
+```
+
+These are genuine field theorems, not a packaged reflection-preservation assumption. The module
+reuses the project's unconditional closure of differential algebraicity under field operations.
+It passed one exact targeted build when its `.olean` was absent and direct single-file verification.
+
+The card remains in Stage 2 because Lechner's analytic/Hilbert intertwiner, the operator formula
+`(10b)`, and the localization/admissible-gauge interface are not formalized. The new module proves
+the complete Kolchin algebraic obstruction but not the QFT realization.
 
 ## Primary literature
 
@@ -330,6 +349,7 @@ gauge interface is proved on paper.
 ## Gates
 
 - [x] exchange-gauge relation and DA obstruction proved
+- [x] exchange-gauge relation, ratio obstruction, constant no-go, and HT half-phase formalized in Lean
 - [x] Lechner analytic/unitary trivializer verified in the primary source
 - [x] conjugated creation operator and HT many-body dressing string derived
 - [x] two-particle obstruction lifted to factorwise multiparticle intertwiners
@@ -339,4 +359,5 @@ gauge interface is proved on paper.
 - [ ] wide novelty audit against twists and differential Tannakian theory
 - [ ] physical admissibility theorem for DA exchange gauges
 - [ ] localization/OPE/profile invariant of the Kolchin exchange class
+- [ ] formalize Lechner's analytic/Hilbert intertwiner and the conjugated creation-operator formula
 - [ ] independent operator-algebraic and differential-algebra review

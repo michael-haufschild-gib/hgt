@@ -157,7 +157,9 @@ The source-specific theorem surface is axiom-clean.
 - `ExplicitDigammaHerglotzPalette.lean` proves strict upper-half-plane positivity, injectivity and
   integer incongruence of the explicit palette, exact finite-orientation Herglotz classification,
   pointwise absolute convergence, the off-pole Gauss-series identity on the full plane, and exact
-  identification of the all-positive completion with the shifted-digamma source.
+  identification of the all-positive completion with the shifted-digamma source. It also proves
+  `explicitDigammaPalette_collisionMatroid_eq_free`: the actual mathlib collision matroid of the
+  closed-form palette is the free matroid.
 - `ExplicitDigammaOrientationLimit.lean` proves global compact-local normal convergence of every
   bounded signed completion, upper-half-plane holomorphy, deleted-pole regularity and atom splitting,
   and the exact infinite Boolean Herglotz equivalence.

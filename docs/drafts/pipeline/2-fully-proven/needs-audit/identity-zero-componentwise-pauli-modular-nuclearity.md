@@ -150,6 +150,21 @@ gate remains:
 
 1. bounded analytic intertwiners to `H_n^(-I)` must be built uniformly in `n`.
 
+The quantitative part of this gate has the conditional bridge
+`../not_new_scientific_knowledge/unitary-pair-twist-hardy-exponential-bound.md`: if the missing intertwiner admits a
+collision-regular bounded-multiplicity factorization into bounded holomorphic pair twists that
+are unitary on the real axis, the `exp(O(n))` norm and inverse bounds follow automatically from
+the `1/n` tube width. The remaining burden is the relative matrix factorization and its
+collision-compatible unitary normalization.
+
+The scalar-dressing bridge
+`../not_new_scientific_knowledge/scalar-cdd-invariance-of-intertwiner-property.md` further proves that every regular scalar CDD
+factor with value `1` at zero is neutral for this gate. In particular, adding central scalar HT
+cannot repair or obstruct the missing identity-zero intertwiner within its regular-unit orbit.
+What remains is the noncentral matrix analytic cocycle modulo regular scalar units. Whether a
+global divisor framing is needed to classify that obstruction is open; the ordinary `O(N)`
+projective germ is regular at zero after choosing a nonvanishing channel pivot.
+
 The theorem is therefore a real compact-local bridge, not a completed construction of the
 `O(N)` model or of a projective-HT nonabelian model.  It removes the zero-anchor trace
 obstruction and leaves the analytic cocycle problem exposed.
@@ -202,9 +217,11 @@ factorial improvement needed to overcome the `n^n` Hardy loss.
    convention-conflicted `O(N)` discussion.
 2. Construct all-particle bounded analytic identity-zero intertwiners for a genuinely
    mixing physical model.
-3. Audit later modular-nuclearity and twisted-Fock literature for this partial-
+3. Define and detect a quantitative analytic-cocycle obstruction after regular scalar-unit CDD
+   dressing is removed; test rather than assume that divisor framing is part of it.
+4. Audit later modular-nuclearity and twisted-Fock literature for this partial-
    antisymmetry theorem.
-4. Formalize the finite permutation-projection and factorial trace skeleton in Lean only
+5. Formalize the finite permutation-projection and factorial trace skeleton in Lean only
    where the existing `HTGeometry` API supports a reusable unconditional statement.
 
 ## Primary literature
@@ -225,6 +242,7 @@ factorial improvement needed to overcome the `n^n` Hardy loss.
 - [x] modular-nuclearity summability proved under the identity-zero intertwiner
 - [x] right-flip crossing and scattering-reconstruction audit
 - [ ] all-particle analytic identity-zero intertwiner
+- [x] anchor-preserving scalar CDD factors proved neutral for the intertwiner gate
 - [ ] literature novelty audit
 - [ ] unconditional Lean formalization of the finite reusable skeleton
 - [ ] compact-local intrinsically mixing projective-HT quantum field theory

@@ -3,7 +3,7 @@
 - **ID:** `affine-jet-packet-collision-completeness`
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** THEOREM (paper) / GENERIC FUNCTIONAL TRANSCENDENCE LAW
-- **Scientific status:** `[PROVED HERE] [LEAN-FORMALIZED] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PROVED HERE] [LEAN-PARTIAL] [NOVELTY UNVERIFIED]`
 - **Statement:** For every countable family of affine automorphisms of `C^d`, a residual set of
   entire functions has differentially algebraically independent pullbacks along all distinct
   automorphisms.  Consequently the complete differential-algebraic matroid of a generic affine
@@ -266,9 +266,15 @@ functional-transcendence statement is absent.  The reason for that score is the 
 
 ## Exact Lean boundary
 
-The complete implication surface is formalized in
-`formal/GaloisForLFunctions/HTGeometry/AffineJetPacketCollisionCompletion.lean`, using the existing
-`BaireGenericAvoidance.lean` and `PolynomialEvaluationLemma.lean` infrastructure.
+The exact collision matroid is formalized in
+`formal/GaloisForLFunctions/HTGeometry/AffineCollisionMatroid.lean`: it is the pullback of the free
+matroid along the affine-frame map, its independent sets are precisely the frame-injective sets,
+and its extended rank on every finite packet is the number of distinct frames.
+
+`formal/GaloisForLFunctions/HTGeometry/AffineJetPacketCollisionCompletion.lean` proves the
+countable Baire assembly from explicit defect loci and identifies every residual packet rank with
+the rank of that actual mathlib matroid. It uses the existing `BaireGenericAvoidance.lean` and
+`PolynomialEvaluationLemma.lean` infrastructure.
 
 ```text
 AffineJetPacketCollisionInput
@@ -277,15 +283,19 @@ AffineJetPacketCollisionInput
 affineJetPacketCollision_denseResidual_exactMatroid
   -- the common avoidance set is dense residual; every member has rank `# image(sigma|E)` and the
   -- full constant-coefficient operator-rank law
+affineJetPacketCollision_orbitRank_eq_collisionMatroid_eRk
+  -- the residual packet rank is the extended rank of `affineCollisionMatroid frame`
 affineDecoratedMonomials_exist_packet_det_ne_zero
   -- every finite linearly independent decorated-monomial family has a nonsingular sample packet
 ```
 
-The multivariate Hermite/entire-function parent enters through the explicit fields certifying each
-determinant defect as closed with empty interior and converting avoidance to differential freedom;
-it is not an axiom or opaque declaration. The countable Baire selection and finite determinant
-witness are proved internally. The module passed one exact targeted build when its `.olean` was
-absent and direct single-file verification.
+The remaining gap is substantive. `AffineJetPacketCollisionInput` still packages the construction
+of the determinant defects from the compact-open Frechet space of multivariate entire functions,
+their closed/empty-interior proofs from finite Hermite interpolation and the affine chain rule, and
+the conversion from determinant avoidance to differential independence and the operator-rank law.
+Those analytic parents are not yet constructed in Lean. Consequently this card remains in Stage 2;
+the current module is an exact conditional assembly theorem, not a complete formalization of the
+paper theorem.
 
 ## Gates
 
@@ -299,4 +309,7 @@ absent and direct single-file verification.
 - [x] complete paper proof
 - [ ] exact-formulation primary-literature audit
 - [ ] independent specialist proof audit
-- [x] complete Lean theorem-surface formalization from explicit analytic jet-packet inputs
+- [x] actual collision matroid and its exact finite rank law formalized
+- [x] Baire assembly and matroid-rank identification from explicit analytic jet-packet inputs
+- [ ] construct the multivariate entire-function, Hermite-interpolation, affine-chain-rule, and
+  determinant-to-differential-independence parents unconditionally in Lean

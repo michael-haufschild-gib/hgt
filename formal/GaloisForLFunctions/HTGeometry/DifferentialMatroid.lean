@@ -180,7 +180,7 @@ theorem differentialMatroid_mem_closure_iff_of_indep
     x ∈ (differentialMatroid F E).closure s ↔ x ∈ differentialClosure F s := by
   by_cases hxs : x ∈ s
   · exact iff_of_true
-      ((differentialMatroid F E).subset_closure s hxs)
+      (((differentialMatroid F E).subset_closure s (by simp)) hxs)
       (subset_differentialClosure s hxs)
   have hMind : (differentialMatroid F E).Indep s :=
     differentialMatroid_indep_iff.mpr hs

@@ -3,7 +3,7 @@
 - **ID:** `quasi-abelian-facet-palette-necessity`
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** THEOREM (paper) / NECESSARY HT PERIOD GEOMETRY
-- **Scientific status:** `[PROVED HERE] [LEAN-FORMALIZED] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PROVED HERE] [LEAN-PARTIAL] [NOVELTY UNVERIFIED]`
 - **Statement:** Every meromorphic realization of a finite full Stanley--Reisner HT differential
   matroid canonically assigns to each facet a noncompact quasi-Abelian period quotient satisfying
   the generalized Riemann relations, with exact complement incidence and an injective integral
@@ -214,7 +214,7 @@ matroids.
 
 ## Exact Lean boundary
 
-The complete necessity surface is formalized in
+The finite lattice consequences and a conditional necessity assembly are formalized in
 `formal/GaloisForLFunctions/HTGeometry/QuasiAbelianFacetPaletteCompletion.lean`, reusing
 `FacetOrbitShift.lean`, `FacetRestrictionEmbedding.lean`, and the existing localized
 Stanley--Reisner differential-matroid modules.
@@ -234,10 +234,13 @@ quasiAbelianDimension_le_hypertranscendenceDimension
   -- `qaDim <= htDim`
 ```
 
-The period and Capocasa--Catanese parents are explicit certificate fields, never axioms or opaque
-constants. The integral facet lattice injection and dimension consequence are proved in the
-project. The module passed one exact targeted build when its `.olean` was absent and direct
-single-file verification.
+The period and Capocasa--Catanese parents are currently packaged as fields of
+`QuasiAbelianFacetCertificate` and `QuasiAbelianFacetPaletteInput`: quotient construction,
+discreteness, noncompactness, exact vertex incidence, positive Hermitian integrality, and the bridge
+from quotient-lattice equality to structural-shift equality. Packaging these conclusions in a
+structure is not their unconditional formalization. The integral facet-lattice injection and the
+abstract dimension consequence are proved, but the meromorphic full-period extraction and the
+Capocasa--Catanese necessary direction remain to be built. This card therefore stays in Stage 2.
 
 ## Gates
 
@@ -251,4 +254,5 @@ single-file verification.
 - [x] positive RH-facing carrier law stated
 - [x] complete paper proof
 - [ ] independent specialist proof and novelty audit
-- [x] complete Lean theorem-surface formalization from explicit period-theorem certificates
+- [x] finite integral facet-orbit injection and abstract dimension consequence formalized
+- [ ] construct full-period extraction and the Capocasa--Catanese necessary direction in Lean

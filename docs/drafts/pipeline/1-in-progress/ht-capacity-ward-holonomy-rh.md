@@ -895,6 +895,8 @@ represented by the current HT capacity field.
 - [x] universal finite right-half Cauchy Gram resolved into source channels
 - [x] global bounded-codiagonal and naive safe-probe routes killed
 - [x] safe affine last column identified exactly with the four-unit Euler-pole atom
+- [x] scaled raw von Mangoldt source Gram proved to converge to the universal Hardy Gram, with its
+      canonical contact converging to that same four-unit Euler-pole atom
 - [x] safe-covariance shortcut to the divisor column killed
 - [x] finite-prefix, phase-blindness, reflection-only, and rational-gauge attacks passed or localized
 - [x] bold source-specific HT Ward-holonomy conjecture stated

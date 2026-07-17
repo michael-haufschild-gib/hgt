@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.AutomorphismFamilyOstrowski
+import GaloisForLFunctions.HTGeometry.DifferentialMatroidClosure
 import GaloisForLFunctions.HTGeometry.FiniteDifferentialCircuitBoundary
 import GaloisForLFunctions.HTGeometry.HolderDifferenceBricks
 import GaloisForLFunctions.HTGeometry.MeromorphicPoleOrbitBoundary
@@ -31,71 +32,18 @@ theorem differentialIndependent_sumElim_iff
     DifferentialIndependent F (Sum.elim x y) ↔
       DifferentialIndependent F x ∧
         DifferentialIndependent (differentialAdjoin F (Set.range x)) y := by
-  let xjet : ι × ℕ → K := fun p => differentialJet p.2 (x p.1)
-  let yjet : κ × ℕ → K := fun p => differentialJet p.2 (y p.1)
-  let e := Equiv.sumProdDistrib ι κ ℕ
-  have hset : differentialJetSet (Set.range x) = Set.range xjet := by
-    ext z
+  have hswap :
+      DifferentialIndependent F (Sum.elim x y) ↔
+        DifferentialIndependent F (Sum.elim y x) := by
     constructor
-    · rintro ⟨w, ⟨i, rfl⟩, n, rfl⟩
-      exact ⟨(i, n), rfl⟩
-    · rintro ⟨⟨i, n⟩, rfl⟩
-      exact ⟨x i, ⟨i, rfl⟩, n, rfl⟩
-  have hfamily :
-      ((fun p : (ι ⊕ κ) × ℕ => differentialJet p.2 (Sum.elim x y p.1)) ∘ e.symm) =
-        Sum.elim xjet yjet := by
-    funext p
-    rcases p with p | p
-    · rcases p with ⟨i, n⟩
-      simp [e, xjet]
-    · rcases p with ⟨j, n⟩
-      simp [e, yjet]
-  constructor
-  · intro hxy
-    have hsplit : AlgebraicIndependent F (Sum.elim xjet yjet) := by
-      unfold DifferentialIndependent at hxy
-      have h := AlgebraicIndependent.comp hxy e.symm e.symm.injective
-      simpa [hfamily] using h
-    have hx : DifferentialIndependent F x := by
-      unfold DifferentialIndependent
-      exact hsplit.comp Sum.inl Sum.inl_injective
-    have hsplitSwap : AlgebraicIndependent F (Sum.elim yjet xjet) := by
-      have h := AlgebraicIndependent.comp hsplit
-        (Equiv.sumComm (κ × ℕ) (ι × ℕ))
-        (Equiv.sumComm (κ × ℕ) (ι × ℕ)).injective
-      simpa using h
-    have hy : AlgebraicIndependent
-        (IntermediateField.adjoin F (Set.range xjet)) yjet :=
-      IntermediateField.algebraicIndependent_adjoin_iff.mpr
-        (AlgebraicIndependent.sumElim_iff.mp hsplitSwap).2
-    refine ⟨hx, ?_⟩
-    unfold DifferentialIndependent
-    rw [differentialAdjoin, hset]
-    exact hy
-  · rintro ⟨hx, hy⟩
-    have hxjet : AlgebraicIndependent F xjet := hx
-    have hyjet : AlgebraicIndependent
-        (IntermediateField.adjoin F (Set.range xjet)) yjet := by
-      unfold DifferentialIndependent at hy
-      rw [differentialAdjoin, hset] at hy
-      exact hy
-    have hsplitSwap : AlgebraicIndependent F (Sum.elim yjet xjet) :=
-      AlgebraicIndependent.sumElim_iff.mpr
-        ⟨hxjet, IntermediateField.algebraicIndependent_adjoin_iff.mp hyjet⟩
-    have hsplit : AlgebraicIndependent F (Sum.elim xjet yjet) := by
-      have h := AlgebraicIndependent.comp hsplitSwap
-        (Equiv.sumComm (ι × ℕ) (κ × ℕ))
-        (Equiv.sumComm (ι × ℕ) (κ × ℕ)).injective
-      simpa using h
-    unfold DifferentialIndependent
-    have h := AlgebraicIndependent.comp hsplit e e.injective
-    have heq :
-        (Sum.elim xjet yjet) ∘ e =
-          (fun p : (ι ⊕ κ) × ℕ => differentialJet p.2 (Sum.elim x y p.1)) := by
-      funext p
-      rcases p with ⟨i | j, n⟩ <;> rfl
-    rw [heq] at h
-    exact h
+    · intro h
+      have h' := h.comp (Equiv.sumComm κ ι) (Equiv.sumComm κ ι).injective
+      simpa using h'
+    · intro h
+      have h' := h.comp (Equiv.sumComm ι κ) (Equiv.sumComm ι κ).injective
+      simpa using h'
+  rw [hswap]
+  exact differentialIndependent_sumElim_right_iff y x
 
 /-- Differential algebraicity is closed under the algebraic logarithmic derivative `x'/x`. -/
 theorem differentialAlgebraicOver_deriv_div_self

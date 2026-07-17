@@ -11,7 +11,8 @@
   - `self-dual-decorated-clock-boundary.md`;
   - `../3-formalized/source-conormal-projective-topology-calibration.md`;
   - `../3-formalized/new_scientific_knowledge/hypertranscendental-clock-capacity-innovation-theorem.md`;
-  - `../3-formalized/von-mangoldt-gamma-depth-one-cauchy-gram.md`.
+  - `../3-formalized/von-mangoldt-gamma-depth-one-cauchy-gram.md`;
+  - `../3-formalized/not_new_scientific_knowledge/von-mangoldt-hardy-scaling-free-matroid-no-go.md`.
 - **Zeta parents:**
   - `source-polarized-laurent-pluecker-tangent-ward-law.md`;
   - `ht-capacity-ward-holonomy-rh.md`;
@@ -168,6 +169,8 @@ limit be attempted.
 - [x] Hardy normal class identified with `ell_E`
 - [x] construct the finite positive depth-one anomaly Cauchy differential and its actual
       von Mangoldt Gram
+- [x] prove the independently scaled raw von Mangoldt source Gram converges to the standard Hardy
+      Gram and its canonical contact converges to the four-unit Euler-pole vector
 - [ ] construct the finite depth-one calibrated self-dual complex
 - [ ] prove its harmonic quotient metric is the standard finite Cauchy Gram
 - [ ] prove its Gamma contact coordinates are the finite `r_P`

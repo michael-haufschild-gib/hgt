@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** THEOREM (paper) / MOMENT-FIBER HT RIGIDITY DICHOTOMY
 - **Lane:** general hypertranscendence; Hamburger moment geometry; Herglotz carriers
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PROVED HERE] [LEAN-PARTIAL] [NOVELTY UNVERIFIED]`
 - **Statement:** Let `M(s)` be the full weak-topological fiber of positive probability measures
   representing a normalized Hamburger moment sequence. If `s` is determinate, `M(s)` is a point.
   If `s` is indeterminate, `M(s)` is a compact metrizable convex Baire space and contains a dense
@@ -813,7 +813,7 @@ count is not evidence of field-level significance.
 
 ## Lean status
 
-The complete theorem surface is now formalized across
+The unconditional algebraic, convex-geometric, and conditional assembly layers are formalized across
 `NevanlinnaBauerRetract.lean`, `AnalyticNevanlinnaCarrierBridge.lean`,
 `BoundaryCarrierTranslationFreeness.lean`, `NevanlinnaBoundaryFaceMaximalTranslation.lean`, and
 `CofinalCholeskyResidualPhase.lean`.  These modules construct the exact complete-moment boundary
@@ -906,7 +906,9 @@ full-configuration incidence and transversality stack is unconditional.
 - [x] jet-deficient selector necessity law
 - [x] concrete pointed Xi analytic-germ carrier classified on the rigid-selection side
 - [ ] specialist moment-problem and differential-algebra literature gates
-- [x] complete Lean theorem surface from explicit classical Nevanlinna/projective-stratification inputs
+- [x] unconditional algebraic, convex-geometric, and conditional assembly layers formalized
+- [ ] construct the Nevanlinna matrix, minimal-exponential-type Jensen bound, N-extremal density,
+  and analytic parameter-jet family in Lean
 
 ## Log
 

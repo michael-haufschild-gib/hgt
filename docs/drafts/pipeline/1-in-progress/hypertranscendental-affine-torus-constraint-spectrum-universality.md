@@ -192,6 +192,15 @@ If the classes `[P_j]` are dependent over `C(delta)`, clearing denominators give
 constant-coefficient differential-linear relation among the observables.  This proves both
 directions of `(2)`.
 
+The polynomial-coefficient uniqueness and polarization steps are proved in full as the tail-full
+Dirichlet differential-independence theorem in
+`hypertranscendental-socle-frame-clock-field.md`, Theorem B1.  That proof isolates the locally
+finite multiset exponent expansion, kills its polynomial coefficients in `y` by least-exponent
+asymptotics, and uses successively disjoint tail spans to extend distinct-index polarization to the
+whole finite jet space.  The matrix-logarithm step is valid because each logarithm is chosen as a
+polynomial in its invertible translation matrix, so the logarithms commute with every member of
+the original commuting family.
+
 ## 6. The Gorenstein barrier explains why the clock is necessary
 
 The finite-dimensional local case gives a sharp capacity law already known from
@@ -377,7 +386,7 @@ Primary comparison points checked through 2026-07-17:
 - [x] unconditional arbitrary-ideal algebraic core formalized in Lean
 - [x] exact touched-file Lean verification
 - [x] external parent collision map
-- [ ] independent proof audit of generalized-Dirichlet polarization and matrix-logarithm steps
+- [x] generalized-Dirichlet polarization and matrix-logarithm proof audit completed
 - [ ] specialist priority audit
 - [ ] formalize the analytic finite-dual realization
 - [ ] prove cogenerator conservativity for two natural HT families

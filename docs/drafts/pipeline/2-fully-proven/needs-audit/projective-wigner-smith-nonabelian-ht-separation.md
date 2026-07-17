@@ -288,6 +288,15 @@ gates.
 5. Prove compact-local existence for the genuinely noncommuting model.
 6. Quantify the least finite-law margin of the minimal relative-delay panel under physical noise.
 
+The companion bridge
+`../not_new_scientific_knowledge/scalar-cdd-invariance-of-intertwiner-property.md` proves the matching locality-side
+reduction: an anchor-preserving regular scalar CDD dressing changes neither existence nor failure
+of the all-particle analytic intertwiner. Thus scalar quotienting is not only operationally exact
+for `Q^o`; regular scalar units also form a neutral sector for the remaining modular-nuclearity
+gate. No theorem yet identifies the resulting analytic quotient with a divisor-framed projective
+class. In particular, the pole in the usual `sigma_2`-normalized `O(N)` representative is a chart
+artifact because a nonvanishing `sigma_3` pivot gives a regular projective germ at zero.
+
 ## Lean boundary
 
 `FiniteDifferentialSystemAlgebraicity.lean` supplies the finite-system DA mechanism and

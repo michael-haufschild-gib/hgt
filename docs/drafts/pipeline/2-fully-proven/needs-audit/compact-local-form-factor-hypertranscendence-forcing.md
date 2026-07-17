@@ -3,7 +3,7 @@
 - **ID:** `compact-local-form-factor-hypertranscendence-forcing`
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** CANDIDATE THEOREM / LOCAL QFT / DIFFERENTIAL-ALGEBRAIC WATSON FORCING
-- **Scientific status:** `[PROVED HERE FROM LECHNER + REEH--SCHLIEDER]`
+- **Scientific status:** `[PROVED HERE FROM LECHNER + REEH--SCHLIEDER] [LEAN-PARTIAL]`
   `[NOVELTY UNVERIFIED] [SIGNIFICANCE GATE PASSED AS A BRIDGE]`
 - **Scope:** general regular one-species factorizing QFT with an HT scattering function; no RH or
   distinguished special-function input
@@ -275,15 +275,18 @@ a law can act.
 
 ## Lean boundary
 
-The local Lean corpus already contains finite jet-independence and reporter-invariance machinery.
-The decisive hypotheses here are external analytic/operator-algebraic facts: the Lechner tube
-theorem, `S_2`-symmetric Fock sectors, modular nuclearity, compact-local intersections, and
-Reeh--Schlieder density.
+The algebraic Watson-forcing step is now unconditional in
+`formal/GaloisForLFunctions/HTGeometry/KolchinExchangeGaugeObstruction.lean`:
+`differentialAlgebraicOver_exchangeLaw_of_section` proves that a nonzero DA section of
+`reflection(F)=S*F` forces `S` to be DA, and
+`section_hypertranscendental_of_exchangeLaw` proves the contrapositive used here: every nonzero
+section of an HT exchange law is HT. Reflection is represented by an actual derivation-preserving
+field automorphism, and its preservation of DA is proved rather than assumed.
 
-Formalizing only the elementary implication
-`F(-t)=S(t)F(t) and DA(F) => DA(S)` would not formalize the physical theorem and would duplicate
-existing rational-reporter infrastructure.  No Lean edit is justified until the local analytic
-interfaces can be stated unconditionally.
+The decisive physical hypotheses remain external analytic/operator-algebraic facts: the Lechner
+tube theorem, `S_2`-symmetric Fock sectors, modular nuclearity, compact-local intersections, and
+Reeh--Schlieder density. Consequently the card stays in Stage 2 even though its differential-
+algebraic implication is now formalized.
 
 ## Primary literature
 

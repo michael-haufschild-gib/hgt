@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DifferentialIndependence
+import GaloisForLFunctions.HTGeometry.DifferentialMatroidClosure
 import Mathlib.RingTheory.AlgebraicIndependent.Adjoin
 
 open scoped Differential
@@ -15,14 +16,7 @@ theorem differentialAdjoin_range_eq_adjoin_jetRange
     differentialAdjoin F (Set.range x) =
       IntermediateField.adjoin F
         (Set.range fun p : ι × ℕ => differentialJet p.2 (x p.1)) := by
-  unfold differentialAdjoin
-  congr 1
-  ext z
-  constructor
-  · rintro ⟨w, ⟨i, rfl⟩, n, rfl⟩
-    exact ⟨(i, n), rfl⟩
-  · rintro ⟨⟨i, n⟩, rfl⟩
-    exact ⟨x i, ⟨i, rfl⟩, n, rfl⟩
+  rw [differentialAdjoin, differentialJetSet_range_eq]
 
 /-- The canonical rational jet-field parametrization of a differentially independent palette. -/
 def differentialIndependentAdjoinParametrization
