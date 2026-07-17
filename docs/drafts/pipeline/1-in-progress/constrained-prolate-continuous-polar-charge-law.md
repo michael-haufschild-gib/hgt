@@ -389,7 +389,8 @@ The required new infrastructure is:
    under the half-density radial envelope;
 5. `[PHASE FORMALIZED; AMPLITUDE OPEN]` a concrete radial-PSWF endpoint/exterior interface proving
    the all-radial primitive `(11)`;
-6. the fixed-mode source variation bound `(19e)` and the Poisson specialization `(19a)`;
+6. `[ABEL BOUNDARY FORMALIZED; PERIODIZATION OPEN]` the fixed-mode source variation bound `(19e)`
+   and the source-specific Poisson specialization `(19a)`;
 7. the constrained-source and critical-Mellin specialization `(18)`--`(32)`.
 
 No abstract hypothesis wrapper is sufficient: the concrete prolate primitive, one-sided Poisson
@@ -409,8 +410,11 @@ or used in a paper.
 - [x] formalize the growing critical-Mellin cumulative `(25)` and the clipped mass bound `(26a)`
 - [x] formalize the actual complex finite-aperture center pairing and prove its improper tail is
   integrable under the half-density radial envelope
+- [x] formalize the bilateral Poisson--Abel series, its exact Poisson-integral identity, and its
+  boundary convergence at every symmetric Lebesgue point
 - [x] formalize the exact exterior Liouville phase, dilation derivative, and derivative floor
-- [ ] prove and formalize the exact one-sided Poisson--Muntz specialization `(19a)`
+- [ ] compute the scaled compact-periodization Fourier coefficients and thereby formalize the exact
+  source-specific one-sided Poisson--Muntz specialization `(19a)`
 - [ ] prove the fixed-mode source variation bound `(19e)`
 - [ ] promote `(18)` and `(32)` after the primitive and source-regularity audits
 - [ ] formalize the concrete radial-PSWF primitive theorem and its polar consequence in Lean

@@ -1,7 +1,7 @@
 # Wick-contracted relative reading
 
 - **ID:** WCDMF-RELREAD
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `quantum-matroid-pro-observable-field.md` (open core Q1/O1 semantics) ·
   `wick-contracted-directed-persistence.md` (What-this-opens item 2)
@@ -96,8 +96,10 @@ stage; the disjointness side conditions descend from `Disjoint (⋃ᵢ G i) I` b
 
 - [x] 0 → 1  in-progress: exact statements, corpus mechanism identified, hypothesis audit done
 - [x] 1 → 2  fully-proven: complete paper proof above, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorems appended to
-      `HTGeometry/WickContractedMatroidPersistence.lean`, targeted build green, axiom audit PASS
+- [x] 2 → 3  formalized: Lean theorems appended to
+      `HTGeometry/WickContractedMatroidPersistence.lean` (`diffIndepOn_union_iff`,
+      `differentialMatroid_contract_indep_iff_of_isBasis'`,
+      `diffIndepOn_differentialAdjoin_iUnion_iff_forall`), targeted build green, axiom audit PASS
 - [ ] 3 → 4  publication-ready
 
 ## What this opens
@@ -114,3 +116,5 @@ degree" template.
 
 - 2026-07-17 — created with complete paper proof; classified `[BRIDGE]`; the `F⟨J⟩` vs `F⟨G⟩`
   gap recorded as the exact next open core of the semantics thread.
+- 2026-07-17 — formalized and verified same day: single-file rebuild green, axiom audit PASS
+  (`[propext, Classical.choice, Quot.sound]` only); moved to 3-formalized.

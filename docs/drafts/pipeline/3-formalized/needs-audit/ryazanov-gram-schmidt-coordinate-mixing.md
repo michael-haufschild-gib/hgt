@@ -1,7 +1,7 @@
 # Gram--Schmidt coordinates do not preserve the first original-basis coefficient
 
 - **ID:** ryazanov-gram-schmidt-coordinate-mixing
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized / needs-audit
 - **Type:** THEOREM (paper)
 - **Source:** Vladimir Ryazanov, *A disproof of the Riemann hypothesis on zeros of zeta-function*, arXiv:1808.10774v9, Theorem 1
 - **Statement:** In the nested Nyman--Beurling spaces used by Ryazanov, the coefficient of `a_1` in the original basis is not the coefficient of `e_1` in the Gram--Schmidt basis; all later orthonormal vectors contribute to the former coordinate.
@@ -15,7 +15,8 @@ This is a route discriminator, not an RH theorem.
 
 - [x] 0 -> 1 in-progress: the claimed contradiction reduces to one basis-coordinate identification
 - [x] 1 -> 2 fully-proven: exact change-of-basis identity proved below, `[PROVED HERE]`
-- [ ] 2 -> 3 formalized: no Lean theorem; this dead-route diagnostic is not RH-source-bearing
+- [x] 2 -> 3 formalized: exact coordinate identity, first-coordinate decomposition, and explicit
+  normalized Gram--Schmidt counterexample checked in Lean
 - [ ] 3 -> 4 publication-ready
 
 ## Theorem `[PROVED HERE]`
@@ -101,8 +102,30 @@ what is missing: the changing sum of `a_1` components from `e_2,...,e_n`.
 Those terms can make `h_1^(n)` converge to `-1` while `<chi,e_1>` remains a
 fixed positive number.  Therefore no contradiction follows.
 
+## Lean status
+
+The full linear-algebra surface is formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/RyazanovGramSchmidtCoordinateMixing.lean`:
+
+```text
+changeOfBasis_sum
+coordinate_eq_sum_changeOfBasis
+projection_originalCoordinate
+projection_firstOriginalCoordinate
+ryazanovOriginalPair_linearIndependent
+ryazanovOrthonormalPair_orthonormal
+gramSchmidtNormed_ryazanovOriginalPair
+ryazanovOrthonormalPair_triangular
+ryazanov_coordinateMixing_counterexample
+```
+
+The concrete pair is proved to be Mathlib's normalized Gram--Schmidt output, not merely an
+unrelated orthonormal basis.  Its second orthonormal vector has zero first orthonormal coordinate
+but coefficient `-1` on the first original vector.  The exact module build, direct single-file
+verification, and `#print axioms` audit passed; the load-bearing theorems use only Mathlib's standard
+foundational axioms (`propext`, `Classical.choice`, and `Quot.sound`).
+
 ## Status
 
 The linear-algebra obstruction is complete.  External bibliographic audit of
 the current preprint version remains, so the card stays in `needs-audit`.
-
