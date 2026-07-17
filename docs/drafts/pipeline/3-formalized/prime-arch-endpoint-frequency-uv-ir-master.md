@@ -28,6 +28,18 @@ copies have equal nonnegative endpoint charge.  Therefore
 \gamma^2>\frac{7907}{93}.
 \]
 
+Equivalently, the source budget supplies the unconditional critical-line subgroup
+
+\[
+\rho\in\operatorname{div}(\Xi),\qquad
+\gamma^2\le\frac{7907}{93}
+\quad\Longrightarrow\quad
+\Re\rho=\frac12.
+\]
+
+The theorem does not assert that this band contains a zero; its content is unconditional placement
+of every zero copy that belongs to the source-defined squared-height band.
+
 Call \(R\) quartet-admissible when
 
 \[
@@ -260,6 +272,7 @@ Principal declarations:
 - `xiEndpointCompletedCurvature_lt_ninetyThree_over_twoThousand`;
 - `four_le_endpointCurvature_mul_one_add_im_sq_of_offLine`;
 - `xiZeroCopy_offLine_sevenThousandNineHundredSeven_over_ninetyThree_lt_im_sq`;
+- `xiZeroCopy_re_eq_half_of_im_sq_le_sevenThousandNineHundredSeven_over_ninetyThree`;
 - `XiOffLineQuartetAccretiveBand`;
 - `XiC_ne_zero_of_upperHalf_exactOffLineQuartetBand`;
 - `xiRelativeResolventTrace_im_nonpos_exactOffLineQuartetBand`;

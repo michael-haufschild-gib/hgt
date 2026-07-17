@@ -226,9 +226,6 @@ theorem no_dualNumber_scalingInvariant_faithfulAmplitude
   simp only [Units.val_neg, Units.val_one, neg_smul, one_smul, map_neg] at hneg
   exact hell (neg_eq_self.mp hneg)
 
-#print axioms transportedPrimitiveReadout_ker_eq_sourceKernel
-#print axioms transportedPrimitiveReadout_injective_iff_sourceTransition_injective
-
 end
 
 end GaloisForLFunctions.HTGeometry

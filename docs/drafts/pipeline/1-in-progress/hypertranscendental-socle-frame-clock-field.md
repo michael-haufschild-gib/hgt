@@ -15,6 +15,7 @@
   - `hypertranscendental-polarized-strict-descent-field.md`
   - `source-framed-galois-colligation.md`
   - `hypertranscendental-constraint-sheaf-reconstruction-duality.md`
+  - `gamma-thin-universal-clock-horizon.md`
 
 ## 1. The displacement
 
@@ -421,6 +422,37 @@ connecting arrows.
 > extension class of `(13)`.  Equality of degeneracy sets alone is insufficient: the reporters
 > must identify the same kernel object and its dual cokernel.
 
+### First natural pressure test: the actual Gamma inverse-clock horizon
+
+The existing Euler-Gamma horizon supplies a non-artificial extension field.  At intrinsic jet
+resolution `m`, put
+
+```text
+J_m=C[T]/(T^(m+2)),
+J_(m+1) -> J_m.                                                            (15)
+```
+
+Each kernel in `(15)` is one-dimensional.  Hence the canonical dual sequence `(12a)` adds one
+dualizing boundary line at every resolution while the total tower never terminates.  This is the
+exact algebraic meaning of **infinite clock capacity concentrated on a thin boundary**: thinness is
+rank one per transition, not small total information and not a time variable.
+
+The normalized actual reciprocal-Gamma transition `D_n(T) mod T^(m+2)` acts on `J_m`.  The current
+Gamma theorem already provides a Hausdorff-dimension-zero inverse horizon and all-finite-depth
+Zariski universality for the analytically equivalent normalized branches `B_n`; it also proves the
+same-index analytic comparison between `B_n` and `D_n`.  The decisive remaining theorem is exact:
+
+> **[CONJECTURE -- INTRINSIC GAMMA EXTENSION CONSERVATIVITY.]** After adjoining the pole label,
+> the coefficient change from `B_n` to `D_n` is conservative on every finite product of the
+> rank-one extensions `(15)`.  Equivalently, every nonzero mixed polynomial in finitely many
+> intrinsic `D`-jet frames is detected arbitrarily far out in the legal Gamma pole horizon.
+
+This is not another topology theorem.  It is the missing algebraic transport through the Bell,
+unit-inverse, compositional-inverse, and intrinsic Mobius coefficient automorphisms.  A proof would
+close the first natural HT realization of `(13)`.  A failure must exhibit the first nonzero
+polynomial kernel introduced by one of those coefficient transforms; that kernel would be the
+positive replacement invariant.
+
 ## 8. Strong falsifiers and positive residues
 
 1. If a natural constrained HT family has finite truncations whose minimal conservative readouts
@@ -548,6 +580,7 @@ defect, but only if it contains content beyond existing dual and oriented-interv
 - [x] Theorem B closed on paper from Theorem B1
 - [ ] independent specialist paper audit of Theorems B and B1
 - [x] ordinary-versus-exceptional transition law proved without duplicating the interval API
-- [ ] one natural HT family identified with its dualizing-extension field
+- [x] actual Gamma inverse-clock jet tower identified with its rank-one dualizing-extension field
+- [ ] intrinsic Gamma `D`-jet reporter proved conservative on that field
 - [ ] two analytic obstruction functors proved conservative on one tower
 - [ ] specialist novelty audit completed

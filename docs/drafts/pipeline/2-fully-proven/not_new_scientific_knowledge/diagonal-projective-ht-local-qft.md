@@ -197,8 +197,11 @@ flip-anchored two-state adjacent class from pointwise product diagonality to one
 basis.  The `O(N)` benchmark separates the conventions exactly: the physical quantum fermionic
 anchor `-P` becomes a braid identity anchor `-I`.
 The source convention conflict and theorem are recorded in
-`../needs-audit/fermionic-zero-braid-anchor-commutation-gate.md`.  Consequently no two-state no-go
-and no lower bound of three internal states is established for the physical quantum lane.
+`../needs-audit/fermionic-zero-braid-anchor-commutation-gate.md`.  The complete regular
+permutation-anchor strict-difference `4 x 4` quantum class is now proved projectively DA in
+`two-state-regular-quantum-projective-da-rigidity.md`, but this does not erase the present
+adjacent/nonregular commuting control.  A universal two-state no-go across both conversion
+surfaces is therefore still not established.
 Construct a regular unitary crossing-symmetric quantum Yang--Baxter family `R(theta)`, leaving its
 state dimension open, such that:
 
@@ -241,5 +244,5 @@ surface.  No Lean edit or build is justified for this control.
 - [x] explicit HT relative Wigner--Smith reporter
 - [x] commuting-channel anti-theatre diagnosis
 - [x] novelty rejected for the construction itself
-- [ ] positive-unitary intrinsically mixing projective-HT scattering with at least three internal states
+- [ ] positive-unitary intrinsically mixing projective-HT scattering, with state dimension open
 - [ ] independent analytic and operator-algebraic review

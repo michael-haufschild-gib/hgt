@@ -98,6 +98,18 @@ theorem xiZeroCopy_offLine_sevenThousandNineHundredSeven_over_ninetyThree_lt_im_
   have hC := xiEndpointCompletedCurvature_lt_ninetyThree_over_twoThousand
   nlinarith [sq_nonneg (q.1 : ℂ).im]
 
+/-- **Source-produced critical-line group.** Every Xi zero copy in the closed central squared-height
+band `Im(ρ)^2 ≤ 7907 / 93` lies on the critical line.  This is the direct contrapositive packaging
+of the endpoint-curvature quartet gap, with no external zero computation or RH hypothesis. -/
+theorem xiZeroCopy_re_eq_half_of_im_sq_le_sevenThousandNineHundredSeven_over_ninetyThree
+    (q : XiZeroCopy)
+    (hheight : (q.1 : ℂ).im ^ 2 ≤ 7907 / 93) :
+    (q.1 : ℂ).re = 1 / 2 := by
+  by_contra hoff
+  have hgap :=
+    xiZeroCopy_offLine_sevenThousandNineHundredSeven_over_ninetyThree_lt_im_sq q hoff
+  linarith
+
 /-- Upper-half centered Xi is zero-free on every exact quartet-admissible band.  On-line zeros
 lie on the boundary `Im z = 0`; a zero in the open upper half would be off-line and would violate
 the four-charge height law. -/

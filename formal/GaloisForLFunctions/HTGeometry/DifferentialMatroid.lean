@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DifferentialMatroidClosure
-import GaloisForLFunctions.HTGeometry.SourceLogarithmicBoundary
+import GaloisForLFunctions.HTGeometry.DifferentialAlgebraicFiniteTransitivity
 import Mathlib.Combinatorics.Matroid.Closure
 
 /-!
@@ -79,7 +79,7 @@ theorem differentialAlgebraicOver_trans_finite_nonempty
       have hrange : Set.range z = Set.range x := by
         ext a
         simp [z]
-      exact HTGeometry.differentialAlgebraicOver_trans_fin_succ z hz y (by rwa [hrange])
+      exact HTGeometry.differentialAlgebraicOver_trans_fin_succ_narrow z hz y (by rwa [hrange])
 
 private def differentialIndepMatroid
     (F E : Type u) [Field F] [Field E] [Algebra F E]
@@ -120,7 +120,7 @@ private def differentialIndepMatroid
       have hyBase : DifferentialAlgebraicOver Base y := by
         by_cases hJempty : J = ∅
         · subst J
-          apply HTGeometry.differentialAlgebraicOver_mono_differentialAdjoin
+          apply HTGeometry.differentialAlgebraicOver_mono_differentialAdjoin_narrow
             (F := F) (E := E) (s := (∅ : Set E))
             (B := Base) (derivationClosed_differentialAdjoin F I)
           · simp
@@ -130,7 +130,7 @@ private def differentialIndepMatroid
           let x : J → E := Subtype.val
           let T := differentialAdjoin Base J
           have hyT : DifferentialAlgebraicOver T y := by
-            apply HTGeometry.differentialAlgebraicOver_mono_differentialAdjoin
+            apply HTGeometry.differentialAlgebraicOver_mono_differentialAdjoin_narrow
               (F := F) (E := E) (s := J)
               (B := T.restrictScalars F)
               (derivationClosed_differentialAdjoin Base J)

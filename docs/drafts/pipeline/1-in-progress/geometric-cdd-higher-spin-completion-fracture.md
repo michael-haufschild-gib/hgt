@@ -4,7 +4,7 @@
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE THEOREM / INTEGRABLE QFT THEORY SPACE / PHYSICAL INTERPRETATION
 - **Scientific status:** `[PAPER CORE PROVED] [PHYSICAL EXISTENCE BRIDGE]`
-  `[NOVELTY UNVERIFIED] [SIGNIFICANCE GATE OPEN]`
+  `[COMPLETE-CHARGE FLOW PARENT AUDITED] [NOVELTY UNVERIFIED] [SIGNIFICANCE GATE OPEN]`
 - **Scope:** general hypertranscendence in interacting factorizing QFT; no RH or distinguished
   special-function input
 - **Parent results:** `geometric-cdd-hypertranscendental-local-qft.md` and
@@ -57,6 +57,32 @@ explicitly permit `(3)` to have only a finite rapidity domain and its global mer
 continuation to have an arbitrary, possibly infinite, pole factor.
 Some sources write the exponent with `-i`; their deformation parameters are `-alpha_s` relative
 to the phase convention `(3)`.
+
+Doyon--Durnin--Yoshimura give a larger and load-bearing parent construction.  They replace the
+discrete local-charge basis by the complete scattering basis of extensive charges `Q_theta`,
+which includes quasilocal charges, and obtain on the real rapidity axis
+
+```text
+S_lambda(theta,phi)
+  = exp(-i(lambda_(theta,phi)-lambda_(phi,theta))) S_0(theta,phi).   (3a)
+```
+
+Thus an arbitrary antisymmetric unitary two-body phase, including the phase of `(1)`, can be
+encoded by one continuum kernel `lambda`.  This kills the stronger slogan that HT scattering is
+unreachable by an integrable flow.  The exact surviving statement is a **locality-depth
+separator**:
+
+```text
+finite span of local X_s directions  -> DA multiplier,
+HT multiplier                        -> infinite local-spin support or a complete-charge/
+                                        quasilocal kernel.                 (3b)
+```
+
+The same source warns that arbitrary quasilocal kernels need not preserve the strong analytic
+requirements of relativistic QFT and that explicit beyond-local examples require independent
+analysis.  Equation `(3a)` therefore supplies a scattering/TBA flow parent, not by itself the
+physical-strip analyticity, compact-local Haag--Kastler net, or equality with the inverse-scattering
+construction already proved for `(1)`.
 
 For `(1)`, the pole chart is exactly
 
@@ -247,7 +273,8 @@ global infrared-to-ultraviolet boundary completion: HT.    (23)
 ```
 
 This is an observable energy-scale connection, not yet a theorem identifying rapidity with a
-Wilsonian RG time.
+Wilsonian RG time.  Nor is it an absence-of-flow theorem: the complete-charge flow `(3a)` reaches
+the real-axis phase.  What fractures is every finite **local-current** coordinate chart.
 
 The completion fracture also has an exact exchange-geometric form.  Every finite CDD truncation
 has an algebraic half-phase and is therefore gauge-equivalent to constant Bose/Fermi exchange by
@@ -280,7 +307,10 @@ space.
 
 ### Not proved
 
-1. An action-level construction obtained by integrating all current--current flows at once.
+1. An explicit exponentially quasilocal charge-density realization of the continuum kernel for
+   `(1)`, together with a proof that its finite flow has the same analytic continuation and local
+   net as the inverse-scattering model.  The abstract complete-charge scattering/TBA flow is
+   already supplied by Doyon--Durnin--Yoshimura.
 2. Existence or regularity of the generalized GGE/TBA for the infinite coupling vector `(7)`.
 3. A Wilsonian ultraviolet fixed point or a conformal scaling limit.
 4. The exact Hagedorn critical radius, branch topology, and density-of-states coefficient.  The
@@ -296,6 +326,8 @@ The following ingredients are established literature and are not new knowledge:
 
 - CDD pole and higher-spin coordinates on integrable QFT theory space;
 - generalized `T bar T` current--current deformations and their flow equations;
+- complete extensive/quasilocal charge deformations generating arbitrary real-axis two-body
+  phases and their TBA thermodynamics;
 - infinite CDD products and elliptic/limit-cycle scattering;
 - local inverse scattering from regular factorizing amplitudes;
 - the rational-or-HT theorem for linear difference equations.
@@ -319,8 +351,10 @@ Fields/Nobel-scale promotion still requires at least one of:
 
 ## Exact open core
 
-1. Integrate the infinite current--current deformation with coefficients `(7)` as an operator
-   flow, rather than only as a meromorphic `S`-matrix continuation.
+1. Realize the Doyon--Durnin--Yoshimura continuum kernel for `(1)` by explicit exponentially
+   quasilocal charge densities and prove that its finite flow preserves the required strip
+   analyticity and reconstructs the same compact-local net.  Do not re-claim existence of an
+   arbitrary-phase scattering/TBA flow; that is parent literature.
 2. Upgrade the proved positive-kernel TBA exclusion interval to the exact critical radius and
    branch classification; construct the complex continuation and its ultraviolet central charge
    analytically, without numerical evidence.
@@ -337,6 +371,8 @@ Fields/Nobel-scale promotion still requires at least one of:
   <https://arxiv.org/abs/1608.05499>.
 - G. Hernandez-Chifflet, S. Negro, and A. Sfondrini, *Flow equations for generalised T bar T
   deformations*, <https://arxiv.org/abs/1911.12233>.
+- B. Doyon, J. Durnin, and T. Yoshimura, *The Space of Integrable Systems from Generalised
+  T bar T-Deformations*, <https://arxiv.org/abs/2105.03326>.
 - G. Camilo, T. Fleury, M. Lencses, S. Negro, and A. Zamolodchikov, *On Factorizable S-matrices,
   Generalized TTbar, and the Hagedorn Transition*, <https://arxiv.org/abs/2106.11999>.
 - L. Cordova, S. Negro, and F. I. Schaposnik Massolo, *Thermodynamic Bethe Ansatz past turning

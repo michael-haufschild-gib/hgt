@@ -47,3 +47,10 @@ These strategies cannot close RH:
 
 
 if the proof closes, the attractive “one completed Hermite–Biehler gap is positive everywhere” route is mathematically impossible, not merely unproved. That would mean this reconstruction program does not prove RH by a single global polarization; it must retain at least two genuinely different source channels whose joint conservativity supplies orientation without forcing monotonic phase.
+
+
+
+This is now materially stronger than the failed frame-tower idea:
+\[
+\ker \operatorname{Obs}_{q^\vee\ell}=\ker q.
+\]So a quotient’s conservative observables, transported upward, miss exactly the newly added source layer—no more and no less. Meanwhile the socle orientation can vanish completely. That proves “information conservation” and “orientation conservation” are distinct, which explains why spectrum/topology can remain intact while positivity or canonical boundary data fails. I’m doing the final literature/novelty comparison against finite duality and analytic behavior theory before stating how much of this is genuinely new.

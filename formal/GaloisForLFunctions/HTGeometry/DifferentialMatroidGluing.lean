@@ -499,6 +499,112 @@ theorem graphGluing_of_indep_hasFreeTranslates
     exact R.freeIndepOrbit_of_indep (hStarAut q) (hStarIndep q) (hStarFree q)
   · exact hOff
 
+/-!
+## Uniform hypergraph nested-star gluing
+
+For an `s`-uniform face family, the star of a fixed vertex set `A` is the union of the face
+orbits whose faces contain `A`.  Descending on the number of unfixed vertices reduces independence
+of `Star(A)` to independence of the one-vertex-larger stars `Star(A ∪ {q})`.  The existing graph
+gluing theorem performs each reduction: its vertices are the choices `q ∉ A`, its incident star is
+`Star(A ∪ {q})`, and its off-star is the union of faces avoiding `q`.
+
+This is the arity-independent nested-star recursion needed for the all-order multiple-elliptic-
+gamma face filtration.  The analytic application still has to discharge the two exact rank
+interfaces below: free translates on each enlarged star and rank-neutrality on its complement.
+-/
+
+/-- The union of the face orbits whose faces contain the fixed vertex set `A`. -/
+def faceStar {V : Type*} [DecidableEq V] (faces : Finset (Finset V))
+    (O : Finset V → Set Ω) (A : Finset V) : Set Ω :=
+  ⋃ J ∈ faces.filter (fun J => A ⊆ J), O J
+
+/-- Independence passes to a smaller coordinate set. -/
+theorem indepSet_mono {S S' : Set Ω} (h : R.IndepSet S)
+    (hsub : S' ⊆ S) : R.IndepSet S' := by
+  intro t ht
+  exact h t (ht.trans hsub)
+
+/-- **Uniform hypergraph orbit gluing by descending nested stars.**
+
+Every atomic `s`-face orbit is independent.  If every structural direction preserves rank,
+admits arbitrarily many disjoint translates on each enlarged star, and is rank-neutral on the
+faces of the current star which avoid that direction, then the union of all face orbits is
+independent.  No bound on `s` is imposed. -/
+theorem uniformFace_nestedStar_indep {V : Type*} [DecidableEq V]
+    (faces : Finset (Finset V)) (O : Finset V → Set Ω)
+    (σ : V → Equiv.Perm Ω) (s : ℕ)
+    (huniform : ∀ J ∈ faces, J.card = s)
+    (hAtomic : ∀ J ∈ faces, R.IndepSet (O J))
+    (hAut : ∀ q, σ q ∈ R.rankAutSubgroup)
+    (hFree : ∀ (A : Finset V) (q : V), A.card < s → q ∉ A →
+      R.HasFreeTranslates (σ q) (faceStar faces O (insert q A)))
+    (hOff : ∀ (A : Finset V) (q : V), A.card < s → q ∉ A →
+      R.CrossNeutral (σ q)
+        (⋃ J ∈ (faces.filter (fun J => A ⊆ J)).filter (fun J => q ∉ J), O J)) :
+    R.IndepSet (faceStar faces O ∅) := by
+  classical
+  have hstar (A : Finset V) : R.IndepSet (faceStar faces O A) := by
+    generalize hd : s - A.card = d
+    induction d using Nat.strong_induction_on generalizing A with
+    | h d ih =>
+      by_cases hge : s ≤ A.card
+      · by_cases hA : A ∈ faces
+        · apply indepSet_mono (hAtomic A hA)
+          intro x hx
+          rw [faceStar, Set.mem_iUnion₂] at hx
+          obtain ⟨J, hJ, hxJ⟩ := hx
+          have hJ' := Finset.mem_filter.mp hJ
+          have hAJ : A ⊆ J := hJ'.2
+          have hEq : A = J := Finset.eq_of_subset_of_card_le hAJ (by
+            rw [huniform J hJ'.1]
+            exact hge)
+          simpa [← hEq] using hxJ
+        · have hempty : faceStar faces O A = ∅ := by
+            apply Set.eq_empty_iff_forall_not_mem.mpr
+            intro x hx
+            rw [faceStar, Set.mem_iUnion₂] at hx
+            obtain ⟨J, hJ, _⟩ := hx
+            have hJ' := Finset.mem_filter.mp hJ
+            have hAJ : A ⊆ J := hJ'.2
+            have hEq : A = J := Finset.eq_of_subset_of_card_le hAJ (by
+              rw [huniform J hJ'.1]
+              exact hge)
+            exact hA (by simpa [hEq] using hJ'.1)
+          simpa [hempty] using R.indepSet_empty
+      · have hlt : A.card < s := Nat.lt_of_not_ge hge
+        let vertices := {q : V // q ∉ A}
+        let edges := faces.filter (fun J => A ⊆ J)
+        let σ' : vertices → Equiv.Perm Ω := fun q => σ q.1
+        let inc : vertices → Finset V → Prop := fun q J => q.1 ∈ J
+        change R.IndepSet (⋃ J ∈ edges, O J)
+        apply R.graphGluing_of_indep_hasFreeTranslates edges O σ' inc
+        · intro J hJ
+          have hJ' := Finset.mem_filter.mp hJ
+          have hcard : A.card < J.card := by
+            rw [huniform J hJ'.1]
+            exact hlt
+          have hproper : A ⊂ J := (Finset.ssubset_iff_subset_ne).mpr ⟨hJ'.2, by
+            intro hEq
+            subst J
+            omega⟩
+          obtain ⟨q, hqJ, hqA⟩ := Finset.exists_of_ssubset hproper
+          exact ⟨⟨q, hqA⟩, hqJ⟩
+        · intro q
+          exact hAut q.1
+        · intro q
+          have hmeasure : s - (insert q.1 A).card < d := by
+            rw [Finset.card_insert_of_not_mem q.2, ← hd]
+            omega
+          have hrec := ih (s - (insert q.1 A).card) hmeasure (insert q.1 A) rfl
+          simpa [faceStar, edges, inc, Finset.insert_subset_iff,
+            and_left_comm, and_comm, and_assoc] using hrec
+        · intro q
+          simpa [faceStar, edges, inc, Finset.insert_subset_iff,
+            and_left_comm, and_comm, and_assoc] using hFree A q.1 hlt q.2
+        · intro q
+          simpa [edges, inc] using hOff A q.1 hlt q.2
+  simpa [faceStar] using hstar (∅ : Finset V)
+
 end Rank
 
 /-!

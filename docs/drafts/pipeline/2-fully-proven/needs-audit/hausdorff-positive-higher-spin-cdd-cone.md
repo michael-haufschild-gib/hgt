@@ -3,7 +3,8 @@
 - **ID:** `hausdorff-positive-higher-spin-cdd-cone`
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** CANDIDATE THEOREM / INTEGRABLE-QFT SOURCE CLASSIFICATION / POSITIVITY LAW
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [SIGNIFICANCE GATE OPEN]`
+- **Scientific status:** `[PROVED HERE] [COMPLETE-CHARGE FLOW PARENT AUDITED]`
+  `[NOVELTY UNVERIFIED] [SIGNIFICANCE GATE OPEN]`
 - **Scope:** general one-species elastic QFT and hypertranscendental completions; no RH or
   distinguished special-function input
 - **Parent:** `geometric-cdd-higher-spin-completion-fracture.md`
@@ -290,12 +291,39 @@ has only two external parameters `(q,C)`, but the reason a physical theory must 
 > measure addition `(15)`, and for the geometric fixed point its global boundary condition forces
 > `(19)` and the affine q-difference law rather than accepting them as input.
 
-This conjecture is falsified by any of the following:
+Doyon--Durnin--Yoshimura already solve the weak scattering/TBA version of this conjecture.  Their
+complete extensive-charge deformation has the exact real-axis law
+
+```text
+S_lambda(theta,phi)
+ = exp(-i(lambda_(theta,phi)-lambda_(phi,theta))) S_0(theta,phi).
+```
+
+For the odd phase `(13)`, choosing
+
+```text
+lambda_nu(theta,phi)=-Sigma_nu(theta-phi)/2
+```
+
+gives the desired interaction multiplier, and measure addition `(15)` becomes kernel addition.
+This is established parent theory, not candidate novelty.  It uses the complete scattering basis
+of extensive charges and generally invokes quasilocal rather than finitely many local charges.
+
+The reduced live conjecture is therefore:
+
+> `[CONJECTURE -- POSITIVE CONSTRAINT-MEASURE LOCAL-QFT FLOW]` On a nontrivial subcone of positive
+> Hausdorff measures, the kernel `lambda_nu` has an explicit exponentially quasilocal charge-density
+> realization whose finite flow preserves the relativistic strip axioms and yields the same
+> compact-local Haag--Kastler net as inverse scattering.  For the geometric measure, a microscopic
+> boundary law selects `(19)` rather than accepting the kernel as input.
+
+This reduced conjecture is falsified by any of the following:
 
 1. the source construction adds producible asymptotic particles to the unit-modulus target;
 2. positivity fails for the physical Hilbert space or Euclidean reconstruction;
 3. only finitely many moments are generated;
-4. the construction gives only the local germ and no unique global completion;
+4. the construction gives only the real-axis phase or local germ and no controlled global
+   completion;
 5. the q-ladder measure is tuned shell by shell rather than selected by one constraint.
 
 ## Anti-theatre and novelty gate
@@ -306,6 +334,8 @@ Parent mathematics and physics:
 - uniqueness of compact moment measures;
 - CDD multiplication and the higher-spin current chart;
 - generalized `T bar T` tangent flows;
+- complete extensive/quasilocal-charge flows generating arbitrary unitary real-axis two-body
+  phases;
 - finite and infinite CDD products.
 
 The finite-difference identity `(8)` is classical.  The arctangent kernel `(14)` is an elementary
@@ -320,7 +350,8 @@ for `Hausdorff moment CDD`, `completely monotone higher-spin couplings`, `moment
 generalized T bar T`, and `Hankel CDD higher spin` found no formula-level collision.  This is
 negative evidence, not a completed novelty audit.
 
-The result becomes foundational only if the positive constraint-measure flow conjecture closes,
+The result becomes foundational only if the reduced positive constraint-measure local-QFT flow
+conjecture closes,
 or if the cone inequalities can be derived directly from locality/unitarity for a class broader
 than the paired-shell construction.  Until then it is a rigorous source coordinate and a strong
 experimental/theoretical discriminator, not a Fields-level law.
@@ -347,6 +378,8 @@ No Lean edit, build, scratch compilation, lint, axiom check, or numerical comput
   <https://arxiv.org/abs/1608.05499>.
 - G. Hernandez-Chifflet, S. Negro, and A. Sfondrini, *Flow equations for generalised T bar T
   deformations*, <https://arxiv.org/abs/1911.12233>.
+- B. Doyon, J. Durnin, and T. Yoshimura, *The Space of Integrable Systems from Generalised
+  T bar T-Deformations*, <https://arxiv.org/abs/2105.03326>.
 - S. Dubovsky, V. Gorbenko, and G. Hernandez-Chifflet, *T bar T Partition Function from
   Topological Gravity*, <https://arxiv.org/abs/1805.07386>.
 
@@ -362,5 +395,7 @@ No Lean edit, build, scratch compilation, lint, axiom check, or numerical comput
 - [x] positivity separated from global regularity and HT
 - [ ] formula-level specialist novelty audit
 - [ ] global regularity classification for non-atomic measures
-- [ ] positive microscopic flow or topological/gauge functor on a nontrivial measure subcone
+- [x] real-axis scattering/TBA flow from the complete extensive-charge kernel (published parent)
+- [ ] explicit exponentially quasilocal density and compact-local QFT flow on a nontrivial
+  measure subcone
 - [ ] universality theorem deriving the cone from locality and unitarity rather than shell input

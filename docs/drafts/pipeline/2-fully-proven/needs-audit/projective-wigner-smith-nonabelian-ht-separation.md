@@ -277,14 +277,22 @@ gates.
    no constant one-particle gauge reduces to diagonal scattering.  The non-difference
    Corcoran--de Leeuw control solves this algebraically by a nontrivial unipotent channel block, but
    positive-metric unitarity and Lorentz difference form fail.  Solve both physical gates.
+   The complete published `4 x 4` classification now closes the regular permutation-anchor
+   strict-difference quantum lane: every projective entry ratio there is DA, as recorded in
+   `../not_new_scientific_knowledge/two-state-regular-quantum-projective-da-rigidity.md`.
    The classification corollary
    `two-state-fermionic-zero-intrinsic-mixing-rigidity.md` now proves global fixed-basis
    diagonality for the positive-unitary two-state adjacent class anchored at `-P`.  The exact
-   convention theorem `fermionic-zero-braid-anchor-commutation-gate.md` shows why this is not a
-   no-go for the standard physical quantum lane: a physical quantum fermionic anchor `-P` becomes
-   a braid identity anchor `-I`.  No minimum three-state conclusion is established there.
-4. Classify spectral-parameter gauge transformations that preserve projective Kolchin rank and
-   separate genuine HT cocycles from rapidity-dependent basis artifacts.
+   convention theorem `fermionic-zero-braid-anchor-commutation-gate.md` keeps the remaining
+   scalar-identity/nonregular conversion surface separate.  Thus the proved lower bound is
+   conditional: a projectively HT construction must leave at least one of two-state dimension,
+   permutation-anchor regularity, or strict difference form.
+4. Spectral-parameter gauge transformations have now been audited for the direct abelian twist
+   route.  On a generic connected ice block, arbitrary functional dressing collapses to a central
+   CDD factor, an exponential spectral coboundary, or a constant projective cocycle; see
+   `../../5-failed/spectral-abelian-twist-projective-ht.md`.  A surviving construction must use a
+   genuinely nonabelian/dynamical mechanism or a complete-charge deformation with separately
+   proved crossing and locality.
 5. Prove compact-local existence for the genuinely noncommuting model.
 6. Quantify the least finite-law margin of the minimal relative-delay panel under physical noise.
 
@@ -296,6 +304,11 @@ for `Q^o`; regular scalar units also form a neutral sector for the remaining mod
 gate. No theorem yet identifies the resulting analytic quotient with a divisor-framed projective
 class. In particular, the pole in the usual `sigma_2`-normalized `O(N)` representative is a chart
 artifact because a nonvanishing `sigma_3` pivot gives a regular projective germ at zero.
+For the `O(N)` matrix route, the first nontrivial multiparticle test is now also negative: the
+published two-body half-phase cannot extend as a one-copy or reduced pair word.  The exact
+three-body obstruction is recorded in
+`../../5-failed/on-brauer-two-body-half-twist-pair-word.md`; any surviving locality proof needs a
+genuine partial associator or corrective/repeated factors.
 
 ## Lean boundary
 
@@ -350,7 +363,8 @@ wave-packet theorem is required for the algebraic batch.
 - [x] compact-local QFT existence for the diagonal control
 - [x] intrinsically mixing projective-HT Yang--Baxter control without physical unitarity/difference form
 - [x] braid/quantum fermionic-zero convention and `O(N)` source conflict isolated
-- [ ] global two-state no-go in the exact physical quantum convention
+- [x] regular permutation-anchor strict-difference two-state quantum class proved projectively DA
+- [ ] global two-state no-go across the remaining nonregular/scalar-identity conversion surface
 - [x] exact minimal `n^2-1` relative-delay panel proved
 - [x] reducible scalar-dressing and energy-dependent-gauge caveats recorded
 - [ ] formula-level novelty audit across differential Galois theory, inverse scattering, and
