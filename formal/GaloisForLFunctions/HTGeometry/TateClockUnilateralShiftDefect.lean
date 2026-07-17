@@ -284,6 +284,223 @@ theorem tateClockPairing_boundaryInterval_add_shift
             tateClockIndBackwardN, tateClockProBackwardN]
           abel
 
+@[simp] theorem tateClockIndForwardN_single_zero
+    {K : Type*} [Zero K] (m : ℕ) (c : K) :
+    tateClockIndForwardN m (Finsupp.single 0 c) = Finsupp.single m c := by
+  induction m with
+  | zero => rfl
+  | succ m ih =>
+      rw [tateClockIndForwardN, ih]
+      ext n
+      cases n with
+      | zero => simp
+      | succ n =>
+          rw [tateClockIndForward_apply_succ]
+          by_cases hmn : m = n
+          · subst n
+            simp
+          · have hsucc : m + 1 ≠ n + 1 := by omega
+            simp [hmn]
+
+/-- The canonical one-sided tail filtration of the Ind clock.  Its `m`th term consists of
+states whose first `m` coordinates vanish. -/
+def tateClockIndTailSubmodule (K : Type*) [Field K] (m : ℕ) :
+    Submodule K (ℕ →₀ K) where
+  carrier := {a | ∀ n, n < m → a n = 0}
+  zero_mem' := by simp
+  add_mem' := by
+    intro a b ha hb n hn
+    simp [ha n hn, hb n hn]
+  smul_mem' := by
+    intro c a ha n hn
+    simp [ha n hn]
+
+@[simp] theorem mem_tateClockIndTailSubmodule_iff
+    {K : Type*} [Field K] (m : ℕ) (a : ℕ →₀ K) :
+    a ∈ tateClockIndTailSubmodule K m ↔ ∀ n, n < m → a n = 0 :=
+  Iff.rfl
+
+/-- Forward extension preserves every level of the tail filtration. -/
+theorem tateClockIndTailSubmodule_forward_mem
+    {K : Type*} [Field K] (m : ℕ) {a : ℕ →₀ K}
+    (ha : a ∈ tateClockIndTailSubmodule K m) :
+    tateClockIndForward a ∈ tateClockIndTailSubmodule K m := by
+  intro n hn
+  cases n with
+  | zero => simp
+  | succ n =>
+      rw [tateClockIndForward_apply_succ]
+      exact ha n (by omega)
+
+/-- Forward extension raises the tail filtration by one exact level. -/
+theorem tateClockIndTailSubmodule_forward_mem_succ
+    {K : Type*} [Field K] (m : ℕ) {a : ℕ →₀ K}
+    (ha : a ∈ tateClockIndTailSubmodule K m) :
+    tateClockIndForward a ∈ tateClockIndTailSubmodule K (m + 1) := by
+  intro n hn
+  cases n with
+  | zero => simp
+  | succ n =>
+      rw [tateClockIndForward_apply_succ]
+      exact ha n (by omega)
+
+/-- Backward observation lowers the tail filtration by exactly one step. -/
+theorem tateClockIndTailSubmodule_backward_mem
+    {K : Type*} [Field K] (m : ℕ) {a : ℕ →₀ K}
+    (ha : a ∈ tateClockIndTailSubmodule K (m + 1)) :
+    tateClockIndBackward a ∈ tateClockIndTailSubmodule K m := by
+  intro n hn
+  rw [tateClockIndBackward_apply]
+  exact ha (n + 1) (by omega)
+
+/-- Every positive tail level is a nonzero proper submodule. -/
+theorem tateClockIndTailSubmodule_nontrivial_proper
+    {K : Type*} [Field K] (m : ℕ) :
+    tateClockIndTailSubmodule K (m + 1) ≠ ⊥ ∧
+      tateClockIndTailSubmodule K (m + 1) ≠ ⊤ := by
+  constructor
+  · intro hbot
+    have hmem : Finsupp.single (m + 1) (1 : K) ∈
+        tateClockIndTailSubmodule K (m + 1) := by
+      intro n hn
+      simp only [Finsupp.single_apply]
+      split_ifs with h
+      · subst n
+        omega
+      · rfl
+    rw [hbot] at hmem
+    simp at hmem
+  · intro htop
+    have hmem : Finsupp.single 0 (1 : K) ∈
+        tateClockIndTailSubmodule K (m + 1) := by
+      rw [htop]
+      exact Submodule.mem_top
+    have hzero := hmem 0 (by omega)
+    simp at hzero
+
+/-- A positive tail level is not preserved by backward observation.  Thus its nontriviality is
+intrinsically polarized: it remembers the forward direction. -/
+theorem tateClockIndTailSubmodule_not_backward_invariant
+    {K : Type*} [Field K] (m : ℕ) :
+    ¬∀ a ∈ tateClockIndTailSubmodule K (m + 1),
+      tateClockIndBackward a ∈ tateClockIndTailSubmodule K (m + 1) := by
+  intro hback
+  have ha : Finsupp.single (m + 1) (1 : K) ∈
+      tateClockIndTailSubmodule K (m + 1) := by
+    intro n hn
+    simp only [Finsupp.single_apply]
+    split_ifs with h
+    · subst n
+      omega
+    · rfl
+  have hb := hback _ ha
+  have hzero := hb m (by omega)
+  rw [tateClockIndBackward_apply] at hzero
+  simp at hzero
+
+/-- The `m`th tail is exactly the kernel of the oriented interval observation. -/
+theorem tateClockIndBoundaryInterval_eq_zero_iff_mem_tailSubmodule
+    {K : Type*} [Field K] (m : ℕ) (a : ℕ →₀ K) :
+    tateClockIndBoundaryInterval m a = 0 ↔
+      a ∈ tateClockIndTailSubmodule K m := by
+  constructor
+  · intro hzero n hn
+    have happly : tateClockIndBoundaryInterval m a n = 0 := by rw [hzero]; rfl
+    rw [tateClockIndBoundaryInterval_apply, if_pos hn] at happly
+    exact happly
+  · intro ha
+    ext n
+    rw [tateClockIndBoundaryInterval_apply]
+    by_cases hn : n < m
+    · simp [hn, ha n hn]
+    · simp [hn]
+
+/-- The `m`th tail is exactly the range of the `m`-fold forward clock.  Hence the oriented
+boundary interval is the finite quotient between the whole clock and this one-sided range. -/
+theorem mem_tateClockIndTailSubmodule_iff_exists_forwardN
+    {K : Type*} [Field K] (m : ℕ) (a : ℕ →₀ K) :
+    a ∈ tateClockIndTailSubmodule K m ↔
+      ∃ b : ℕ →₀ K, tateClockIndForwardN m b = a := by
+  constructor
+  · intro ha
+    refine ⟨tateClockIndBackwardN m a, ?_⟩
+    have hboundary : tateClockIndBoundaryInterval m a = 0 :=
+      (tateClockIndBoundaryInterval_eq_zero_iff_mem_tailSubmodule m a).2 ha
+    have hdecomp := tateClockInd_boundaryInterval_add_forwardN_backwardN m a
+    rw [hboundary, zero_add] at hdecomp
+    exact hdecomp
+  · rintro ⟨b, rfl⟩
+    intro n hn
+    rw [tateClockIndForwardN_apply]
+    simp [Nat.not_le_of_lt hn]
+
+/-- **Two-sided descent no-go.**  A submodule of the finite Ind clock invariant under both
+unilateral clock directions is either zero or the whole clock.  Consequently a nontrivial
+algebraic/analytic descent cannot be encoded as a two-sided invariant subclock; it must retain a
+polarization or live as relative comparison data. -/
+theorem tateClockInd_bishiftInvariantSubmodule_eq_bot_or_top
+    {K : Type*} [Field K] (D : Submodule K (ℕ →₀ K))
+    (hforward : ∀ a ∈ D, tateClockIndForward a ∈ D)
+    (hbackward : ∀ a ∈ D, tateClockIndBackward a ∈ D) :
+    D = ⊥ ∨ D = ⊤ := by
+  by_cases hbot : D = ⊥
+  · exact Or.inl hbot
+  right
+  classical
+  obtain ⟨a, haD, ha0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hbot
+  have hsupp : a.support.Nonempty := Finsupp.support_nonempty_iff.mpr ha0
+  let N : ℕ := a.support.max' hsupp
+  have hNmem : N ∈ a.support := Finset.max'_mem _ _
+  have hN0 : a N ≠ 0 := Finsupp.mem_support_iff.mp hNmem
+  have hforwardN : ∀ (m : ℕ) (b : ℕ →₀ K), b ∈ D → tateClockIndForwardN m b ∈ D := by
+    intro m
+    induction m with
+    | zero =>
+        intro b hb
+        simpa [tateClockIndForwardN] using hb
+    | succ m ih =>
+        intro b hb
+        rw [tateClockIndForwardN]
+        exact hforward _ (ih b hb)
+  have hbackwardN : ∀ (m : ℕ) (b : ℕ →₀ K), b ∈ D → tateClockIndBackwardN m b ∈ D := by
+    intro m
+    induction m with
+    | zero =>
+        intro b hb
+        simpa [tateClockIndBackwardN] using hb
+    | succ m ih =>
+        intro b hb
+        rw [tateClockIndBackwardN]
+        exact ih _ (hbackward b hb)
+  have htopExtract : tateClockIndBackwardN N a = Finsupp.single 0 (a N) := by
+    ext n
+    rw [tateClockIndBackwardN_apply]
+    cases n with
+    | zero => simp
+    | succ n =>
+        have hlt : N < n + 1 + N := by omega
+        have hnot : n + 1 + N ∉ a.support := by
+          intro hmem
+          exact (not_lt_of_ge (a.support.le_max' _ hmem)) hlt
+        rw [Finsupp.notMem_support_iff.mp hnot]
+        simp
+  have hsingle : Finsupp.single 0 (a N) ∈ D := by
+    rw [← htopExtract]
+    exact hbackwardN N a haD
+  have he0 : Finsupp.single 0 (1 : K) ∈ D := by
+    have hscaled := D.smul_mem ((a N)⁻¹) hsingle
+    simpa [hN0] using hscaled
+  have hunit : ∀ n : ℕ, Finsupp.single n (1 : K) ∈ D := by
+    intro n
+    have hn := hforwardN n (Finsupp.single 0 (1 : K)) he0
+    simpa using hn
+  apply Submodule.eq_top_iff'.2
+  intro b
+  induction b using Finsupp.induction with
+  | zero => exact D.zero_mem
+  | single_add n c b _ _ ih =>
+      exact D.add_mem (by simpa using D.smul_mem c (hunit n)) ih
+
 end
 
 end GaloisForLFunctions.HTGeometry

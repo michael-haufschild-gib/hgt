@@ -277,10 +277,12 @@ gates.
    no constant one-particle gauge reduces to diagonal scattering.  The non-difference
    Corcoran--de Leeuw control solves this algebraically by a nontrivial unipotent channel block, but
    positive-metric unitarity and Lorentz difference form fail.  Solve both physical gates.
-   A provisional two-state no-go has been downgraded to the backlog conjecture
-   `../../0-backlog/two-state-fermionic-zero-intrinsic-mixing-rigidity.md`.  The `O(N)` benchmark
-   shows that the operator-algebraic scattering / spin-chain quantum-`R` convention map is not yet
-   aligned, so neither the two-state no-go nor a minimum three-state conclusion is established.
+   A provisional two-state no-go remains the backlog conjecture
+   `../../0-backlog/two-state-fermionic-zero-intrinsic-mixing-rigidity.md`.  The exact convention
+   theorem `fermionic-zero-braid-anchor-commutation-gate.md` shows that a physical quantum
+   fermionic anchor `-P` becomes a braid identity anchor `-I`.  The flip-anchored adjacent class is
+   pointwise locally product-diagonal, but that is not a no-go for the standard physical quantum
+   lane.  Neither a two-state no-go nor a minimum three-state conclusion is established.
 4. Classify spectral-parameter gauge transformations that preserve projective Kolchin rank and
    separate genuine HT cocycles from rapidity-dependent basis artifacts.
 5. Prove compact-local existence for the genuinely noncommuting model.
@@ -338,7 +340,8 @@ wave-packet theorem is required for the algebraic batch.
 - [x] diagonal projective-HT Yang--Baxter control constructed
 - [x] compact-local QFT existence for the diagonal control
 - [x] intrinsically mixing projective-HT Yang--Baxter control without physical unitarity/difference form
-- [ ] two-state `S(0)=-P` positive-unitary intrinsic-mixing no-go after convention and `O(N)` audit
+- [x] braid/quantum fermionic-zero convention and `O(N)` source conflict isolated
+- [ ] global two-state no-go in the exact physical quantum convention
 - [x] exact minimal `n^2-1` relative-delay panel proved
 - [x] reducible scalar-dressing and energy-dependent-gauge caveats recorded
 - [ ] formula-level novelty audit across differential Galois theory, inverse scattering, and

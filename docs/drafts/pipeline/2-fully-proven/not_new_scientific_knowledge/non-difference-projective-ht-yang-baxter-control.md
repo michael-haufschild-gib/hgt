@@ -204,10 +204,13 @@ The regular `4 x 4` difference-form classification is not by itself the physical
 A provisional attempt to transport a physical `S(0)=-P` family to an identity-anchored quantum
 matrix has been downgraded to
 `../../0-backlog/two-state-fermionic-zero-intrinsic-mixing-rigidity.md`.  The positive-unitary,
-intrinsically mixing `O(N)` S-matrix with fermionic zero shows that the operator-algebraic
-scattering / spin-chain quantum-`R` convention must be derived, not inferred from a tensor flip.
-Until that benchmark is reproduced, neither the proposed two-state no-go nor a move to at least
-three internal states is established.
+intrinsically mixing `O(N)` matrix resolves the convention: its physical quantum zero is `-P`, but
+its braid conversion has zero `-I`.  The exact theorem
+`../needs-audit/fermionic-zero-braid-anchor-commutation-gate.md` proves that an adjacent family
+anchored at `-P` becomes an identity-anchored quantum family and is pointwise locally
+product-diagonal under positive unitarity.  This does not yield a no-go for the physical quantum
+lane, so neither the proposed two-state no-go nor a move to at least three internal states is
+established.
 
 ## Lean boundary
 
@@ -234,6 +237,7 @@ surface.
 - [x] exact no-reparametrization-to-difference proof
 - [x] quantum/braid convention and zero-rapidity mismatch isolated
 - [x] construction novelty rejected
-- [ ] physical convention map and positive-unitary slice extracted from the full nonregular `4 x 4` classification
+- [x] adjacent/quantum convention map and zero-anchor split proved
+- [ ] physical quantum positive-unitary slice extracted from the exact `4 x 4` classification
 - [ ] physical intrinsically mixing projective-HT S-matrix
 - [ ] compact-local QFT reconstruction

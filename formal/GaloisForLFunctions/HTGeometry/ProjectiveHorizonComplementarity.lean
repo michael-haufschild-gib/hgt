@@ -156,17 +156,21 @@ theorem hypertranscendentalOver_schwarzian_mem_inf_firstJetTail_inv
   rw [← schwarzian_inv x hx0 hdx]
   exact schwarzian_mem_jetTailField_one F x⁻¹
 
-/-- **Power ambiguity collapse.**  In a derivation-closed field, once a positive power of `x`
-and one nonzero jet of `x` are visible, `x` itself is visible. -/
-theorem mem_of_pow_mem_and_nonzero_differentialJet_mem
-    {F K : Type*} [Field F] [Field K] [CharZero K] [Algebra F K] [Differential K]
+/-- **Power ambiguity collapse.**  In a derivation-closed field, once a power of `x` whose
+exponent remains nonzero in the field and one nonzero jet of `x` are visible, `x` itself is
+visible. -/
+theorem mem_of_pow_mem_and_nonzero_differentialJet_mem_of_cast_ne_zero
+    {F K : Type*} [Field F] [Field K] [Algebra F K] [Differential K]
     (L : IntermediateField F K) (hL : DerivationClosed L)
-    (x : K) (k n : ℕ) (hk : k ≠ 0) (hx : x ≠ 0)
+    (x : K) (k n : ℕ) (hkK : (k : K) ≠ 0) (hx : x ≠ 0)
     (hpow : x ^ k ∈ L)
     (hjet : differentialJet n x ∈ L)
     (hjet0 : differentialJet n x ≠ 0) :
     x ∈ L := by
-  have hkK : (k : K) ≠ 0 := Nat.cast_ne_zero.mpr hk
+  have hk : k ≠ 0 := by
+    intro hk
+    apply hkK
+    simp [hk]
   have hpder : (x ^ k)′ ∈ L := hL hpow
   have hlambdaEq : x′ / x = (x ^ k)′ / ((k : K) * x ^ k) := by
     have hpowder : (x ^ k)′ = (k : K) * x ^ (k - 1) * x′ := by
@@ -207,6 +211,18 @@ theorem mem_of_pow_mem_and_nonzero_differentialJet_mem
     dsimp [r]
     field_simp [hx, hjet0, hratioN0]
   exact Eq.mp (congrArg (fun z : K => z ∈ L) hrec.symm) hr
+
+/-- Characteristic-zero specialization of power ambiguity collapse. -/
+theorem mem_of_pow_mem_and_nonzero_differentialJet_mem
+    {F K : Type*} [Field F] [Field K] [CharZero K] [Algebra F K] [Differential K]
+    (L : IntermediateField F K) (hL : DerivationClosed L)
+    (x : K) (k n : ℕ) (hk : k ≠ 0) (hx : x ≠ 0)
+    (hpow : x ^ k ∈ L)
+    (hjet : differentialJet n x ∈ L)
+    (hjet0 : differentialJet n x ≠ 0) :
+    x ∈ L :=
+  mem_of_pow_mem_and_nonzero_differentialJet_mem_of_cast_ne_zero
+    L hL x k n (Nat.cast_ne_zero.mpr hk) hx hpow hjet hjet0
 
 /-- Quadratic specialization used by projective inversion. -/
 theorem mem_of_sq_mem_and_nonzero_differentialJet_mem

@@ -2,39 +2,42 @@
 
 - **ID:** `two-state-fermionic-zero-intrinsic-mixing-rigidity`
 - **Stage:** 0-backlog
-- **Type:** CONJECTURE / CONVENTION AUDIT / POSSIBLE QFT NO-GO
-- **Scientific status:** `[CONJECTURE] [CONVENTION MAP OPEN] [O(N) BENCHMARK BLOCKS PROMOTION]`
+- **Type:** CONJECTURE / GLOBAL-GAUGE CLASSIFICATION / POSSIBLE QFT NO-GO
+- **Scientific status:** `[CONJECTURE] [BRAID/QUANTUM MAP PROVED]`
+  `[PHYSICAL CONVENTION APPLICABILITY OPEN]`
 - **Scope:** analytic two-state factorizing scattering with positive-metric unitarity and
   `S(0)=-P`; no RH or special-function input
 - **Parents:** `../2-fully-proven/needs-audit/projective-wigner-smith-nonabelian-ht-separation.md`
   and `../2-fully-proven/not_new_scientific_knowledge/diagonal-projective-ht-local-qft.md`
-- **Candidate statement:** Let `V=C^2` and let `S(theta)` be an analytic positive-unitary
-  factorizing-scattering family on `V tensor V` with `S(0)=-P`.  A proposed consequence of the
-  published analytic `4 x 4` quantum Yang--Baxter classification is that one constant
-  one-particle basis makes `S` diagonal scattering behind the tensor flip.  This is not a theorem:
-  the required map between the operator-algebraic scattering convention and the spin-chain
-  quantum-`R` convention has not been derived, and the `O(N)` benchmark disproves the corresponding
-  dimension-independent inference.
+- **Candidate statement:** Let `V=C^2` and let `S(theta)` be an analytic positive-unitary family
+  satisfying the additive adjacent-leg Yang--Baxter equation with `S(0)=-P`.  A proposed
+  consequence of the published analytic `4 x 4` quantum Yang--Baxter classification is that one
+  constant one-particle basis makes `S` diagonal behind the tensor flip.  This is not yet a
+  theorem, and it is not automatically a theorem about a physical quantum S-matrix: the
+  operator-algebraic source conflates the adjacent braid convention with the standard quantum
+  convention in its `O(N)` example.
 
-## Promotion blocker: the `O(N)` convention benchmark
+## The `O(N)` benchmark resolves the convention map but blocks the physical inference
 
-The Alazzawi--Lechner `O(N)` factorizing S-matrix is positive-unitary, satisfies `S_N(0)=-F`, and
-has intrinsic channel mixing through the invariant tensor structures `K`, `I`, and `P`.  It is not
-constant-product-basis diagonal scattering.  Therefore any convention map that sends the physical
-problem to an identity-anchored quantum classification and then derives diagonality must either:
+The exact result is recorded in
+`../2-fully-proven/needs-audit/fermionic-zero-braid-anchor-commutation-gate.md`.  Multiplication by
+the flip sends the additive adjacent equation to the standard quantum equation.  An adjacent
+family with `S(0)=-P` therefore becomes an identity-anchored quantum family and is pointwise locally
+product-diagonal after positive unitarity.
 
-1. reproduce the `O(N)` family on the quantum-`R` side; or
-2. prove and state an exact restriction that excludes it.
+The standard physical `O(N)` matrix does not contradict that theorem.  It solves the quantum
+equation and has zero `-P`; its braid conversion solves the adjacent equation and has zero `-I`.
+The formula displayed as an `O(N)` example in Alazzawi--Lechner does not satisfy their adjacent
+equation: on three distinct internal labels, setting one spectral difference to zero leaves the
+nonzero defect `sigma_2(theta)^2(P_12-P_23)`.
 
-The provisional argument does neither.  Since the standard `O(N)` benchmark has at least three
-internal states, it does not by itself refute the dimension-two candidate.  It does refute the
-dimension-independent pointwise argument that motivated the candidate and shows that the current
-placement of tensor flips, rapidity signs, and leg order is not established.  No classification
-corollary may be promoted before this benchmark is passed.
+Thus the mathematical convention map is now proved, but its use as a physical no-go is blocked.
+The two-state candidate concerns the flip-anchored adjacent class.  A standard physical quantum
+S-matrix lies on a different zero-anchor surface after braid conversion.
 
-## Proposed convention reduction to the nonregular quantum classification
+## Exact convention reduction inside the adjacent class
 
-The provisional map was
+The exact map is
 
 ```text
 R(theta)=-P S(theta).                                           (1)
@@ -46,26 +49,24 @@ and would send the fermionic zero condition to
 R(0)=I.                                                         (2)
 ```
 
-Pointwise positive-metric unitarity would be preserved by this formula:
+Pointwise positive-metric unitarity is preserved:
 
 ```text
 R(theta)^*R(theta)
   =S(theta)^*P P S(theta)=I.                                   (3)
 ```
 
-Those pointwise identities are not the missing step.  The open step is proving that `(1)` sends the
-specific adjacent-leg, rapidity-difference Yang--Baxter equation used in operator-algebraic
-scattering to the exact quantum Yang--Baxter equation and spectral convention classified by
-de Leeuw--Posch.  A valid derivation must track every leg permutation and rapidity sign and must
-reproduce the `O(N)` benchmark.  Until then, the phrases “regular”, “nonregular”, and
-“identity-anchored” cannot be transported between the two literatures as though their conventions
-were identical.
+The permutation derivation in the parent theorem proves that `(1)` sends the adjacent-leg additive
+equation to the exact quantum Yang--Baxter equation classified by de Leeuw--Posch.  The remaining
+open steps are global constant-basis classification and physical applicability.  In particular,
+the physical quantum fermionic anchor `-P` becomes the braid identity anchor `-I`, whereas the
+adjacent fermionic anchor `-P` becomes a quantum identity anchor.  These are different lanes.
 
-## Provisional exhaustion of the identity-anchored classification slice
+## Provisional global exhaustion of the identity-anchored two-state slice
 
-Assuming the proposed convention map is correct, de Leeuw--Posch's claimed complete list of
-analytic nonregular `4 x 4` quantum Yang--Baxter families can be filtered at a nonzero
-scalar-identity base point.  The following table records that useful but conditional audit.
+De Leeuw--Posch's claimed complete list of analytic nonregular `4 x 4` quantum Yang--Baxter
+families can be filtered at a nonzero scalar-identity base point.  The following table records the
+conditional global-basis audit.
 
 The full-rank list reduces as follows.
 
@@ -84,10 +85,10 @@ by `R^G`; the Jordan argument above is precisely why that omitted algebraic fami
 the positive-unitary slice.
 
 Constant similarity preserves eigenvalues, diagonalizability, and Jordan blocks, so within this
-provisional quantum-`R` slice the nontrivial `R^G` and `R^H` representatives cannot be positive
-unitary and only `R^A` survives.  This would prove the candidate if the physical-to-quantum
-convention map and classification completeness were both established.  It does not presently
-prove a statement about operator-algebraic factorizing S-matrices.
+identity-anchored quantum slice the nontrivial `R^G` and `R^H` representatives cannot be positive
+unitary and only `R^A` survives.  This would prove the global constant-basis candidate if
+classification completeness and the allowed-equivalence audit were established.  It still would
+not be a no-go for standard physical quantum S-matrices, whose braid conversion has zero `-I`.
 
 ## Conditional conclusion: projective HT would survive, intrinsic mixing would not
 
@@ -146,8 +147,9 @@ Route II: dim V = 2, change the zero sector and build new locality machinery.  (
    the current compact-local intertwiner route; another zero sector is a valid but different lane.
 5. **A classification corollary advertised as established.**  False.  Both the convention map and
    completeness audit are open.
-6. **A dimension-independent commutative-Schmidt argument.**  False in the physical scattering
-   convention: applying it to `O(N)` would contradict a standard positive-unitary mixing model.
+6. **The pointwise commutative-Schmidt theorem applied directly to physical `O(N)`.**  Wrong lane.
+   The theorem applies after an adjacent flip anchor; physical `O(N)` has a quantum flip anchor and
+   a braid identity anchor.
 
 ## Novelty gate
 
@@ -165,22 +167,21 @@ the present conjecture does not.  Novelty and significance gates are both theref
 
 ## Exact open core
 
-1. Derive the operator-level map from the Alazzawi--Lechner factorizing-scattering equation to the
-   de Leeuw quantum Yang--Baxter convention, including rapidity signs, leg order, and every
-   placement of `P`.
-2. Reproduce the `O(N)` family under that map and identify exactly why the provisional
-   identity-anchored diagonal inference does not apply to it.
-3. Only then audit every identity-anchored full-rank class in the final de Leeuw--Posch version,
+1. Audit every identity-anchored full-rank class in the final de Leeuw--Posch version,
    including the repaired referee omissions, for the exact two-state physical slice.
-4. Check the 1982 two-component factorization classification for an equivalent corollary.
-5. Seek a classification-free dimension-two theorem only after its convention is benchmarked.
-6. Independently continue the physical intrinsically mixing projective-HT construction without
-   assuming a state-dimension lower bound.
+2. Check whether all classification equivalences preserve one rapidity-independent physical
+   one-particle basis and positive unitarity.
+3. Check the 1982 two-component factorization classification for an equivalent corollary.
+4. Determine whether crossing and PCT upgrade the pointwise local product bases to one common
+   rapidity-independent basis.
+5. Keep the physical intrinsically mixing projective-HT construction on the quantum-flip / braid-
+   identity lane, without assuming a state-dimension lower bound.
 
 ## Lean boundary
 
-No Lean edit is justified.  The load-bearing convention map is open.  Formalizing a pointwise
-matrix lemma before that map passes `O(N)` would certify the wrong theorem surface.
+The load-bearing convention and pointwise local-diagonality theorem are now exact and deserve an
+unconditional Lean batch.  The global classification corollary remains external and must not be
+formalized as proved.
 
 ## Primary literature
 
@@ -195,10 +196,11 @@ matrix lemma before that map passes `O(N)` would certify the wrong theorem surfa
 
 ## Gates
 
-- [ ] operator-algebraic scattering / quantum-`R` convention aligned
-- [ ] `O(N)` benchmark reproduced under the convention map
-- [ ] physical zero condition validly converted to the classified quantum anchor
-- [x] pointwise positive unitarity preserved by the proposed multiplication by `-P`
+- [x] adjacent braid / quantum-`R` convention aligned
+- [x] `O(N)` benchmark reproduced as quantum `-P` / braid `-I`
+- [x] adjacent flip anchor converted to a scalar-identity quantum anchor
+- [x] pointwise positive unitarity preserved by multiplication by `-P`
+- [x] pointwise local product diagonality proved in every finite dimension
 - [x] all displayed full-rank nonregular classes filtered at the identity anchor
 - [x] triangular arbitrary-function branches killed by Jordan structure
 - [x] provisional diagonal projective-HT survival stated explicitly

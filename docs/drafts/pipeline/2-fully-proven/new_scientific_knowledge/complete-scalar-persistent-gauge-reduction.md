@@ -303,7 +303,9 @@ existing cache.  The positive charged branch now also uses
 `formal/GaloisForLFunctions/HTGeometry/ScalarLogCurrentReconstruction.lean`, which proves that the
 logarithmic current is hypertranscendental, that the complete scalar differential field is the
 ordinary one-amplitude extension of its current field, and that every positive power has the same
-current field.  The charged branch also reuses
+current field.  The formal equality is stronger: it only requires the exponent to remain nonzero
+in the coefficient field, with the characteristic-zero positive-power statement retained as a
+corollary.  The charged branch also reuses
 `formal/GaloisForLFunctions/HTGeometry/RatFuncScaleFixedField.lean`, which constructs the faithful
 scalar action on `K(X)` and proves its exact finite-order fixed field `K(X^N)` and infinite-order
 fixed field `K`.  Differential Luroth, the free-field projective automorphism classification, and

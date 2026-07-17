@@ -4,6 +4,7 @@
 - **Stage:** 1-in-progress
 - **Type:** TYPED LOCALIZATION CORRECTION / POLARIZED CHARGE INTERVAL
 - **Scientific status:** `[CONJECTURE UNDER ATTACK] [LOCAL INTERVAL LAWS LEAN-FORMALIZED]`
+  `[TWO-SIDED DESCENT NO-GO + POLARIZED TAIL TOWER LEAN-FORMALIZED]`
   `[PARENT EQUIVARIANT DEVISSAGE / TOEPLITZ INDEX] [GLOBAL HT COMPARISON OPEN]`
   `[NOT AN RH RESULT]`
 - **Parents:**
@@ -208,44 +209,92 @@ This explains why the bare-source theorem and local interval law cannot by thems
 They must be compared only after descent to the declared joint constant field of the minimal
 parameterized source-Galois problem.
 
-## `[CONJECTURE -- CONSTANT-DESCENDED INTERVAL/KOLCHIN COMPARISON]`
+## Two-sided descent no-go and polarized successor `[PROVED + LEAN]`
 
-Let `G_S^delta` be the minimal parameterized source-Galois groupoid over the declared joint
-difference constants, and let `B_an` be the independently constructed polarized exit-path interval
-representation.  The algebraic--analytic comparison should generate a constant-descended
-subrepresentation
-
-```text
-B_rel(S,R) subset B_an
-```
-
-which excludes interval freedom coming only from enlargement of the analytic fixed field.  If
-`iota_(S,R)(n)` is the cumulative Jordan--Hölder length of its differential-order-`n` interval
-truncation, then
+The proposed descended **subrepresentation** does not exist nontrivially if it is required to
+respect both clock directions.  Let `V=directSum_(n>=0) K e_n`, let `S(e_n)=e_(n+1)`, and let
+`B(e_0)=0`, `B(e_(n+1))=e_n`.  Lean proves
 
 ```text
-iota_(S,R)(n)=KolchinDimensionPolynomial_(G_S^delta)(n)          for all large n.       (Q11)
+D <= V, S(D) <= D, B(D) <= D  ==>  D=0 or D=V.                         (Q11)
 ```
 
-The right side is parent parameterized Galois/Kolchin theory.  The left side must be constructed
-from source-face localization, charge-raising arrows, transverse observation, and analytic
-completion without defining it to equal the right side.  Equality `(Q11)` is the new comparison
-target and a sharpened local form of the existing clock/Galois and dimension/curvature
-conjectures.
+Indeed, backward-shifting the highest nonzero coordinate of any nonzero finite-support vector
+produces a nonzero multiple of `e_0`; the field action and forward shifts then produce every
+`e_n`.  This is the algebraic finite-support form of the classical irreducibility of the
+multiplicity-one unilateral shift under the shift and its adjoint.
 
-For a single differential-algebraic observable the right side is eventually bounded; for a single
-HT observable it grows as `n+1`.  Thus, if `(Q11)` is proved, hypertranscendence is exactly
-unbounded **constant-descended** interval capacity, not raw periodic-gauge capacity.  The
-conjecture is falsified if Gamma's descended interval growth is bounded, if `exp` retains the raw
-periodic intervals after descent, or if two source-equivalent presentations give different
-`iota_(S,R)`.
+The positive successor is the canonical tail tower
 
-If `(Q11)` survives, the representations seen by the RH chains have exact meanings: continuation
-failure is failure to extend an interval across an exit path; spectral incompleteness is nonclosed
-completion of the unbounded interval limit; positivity is the chamber orientation; monodromy is
-holonomy of interval concatenation; and noncanonical boundary conditions are choices of endpoint
-splitting.  These identifications become mathematics only after comparison functors are
-constructed and proved jointly conservative.
+```text
+T_m={a : a_0=...=a_(m-1)=0}=S^m(V).                                  (Q12)
+```
+
+Every `T_(m+1)` is nonzero and proper, `S(T_m)<=T_m`, and
+`B(T_(m+1))<=T_m`, but `B` does not preserve `T_(m+1)`.  Thus every nontrivial clock descent is
+necessarily **polarized**: it is a one-sided filtration or a morphism between two filtered clocks,
+not a two-sided invariant subclock.  More sharply,
+
+```text
+T_m=range(S^m)=kernel(P_[0,m)),
+V/T_m=B(m).                                                           (Q12+)
+```
+
+The last quotient identity is represented by the already proved prefix-plus-tail decomposition;
+the following declarations formalize the image, kernel, and polarization laws:
+
+```text
+tateClockIndTailSubmodule_nontrivial_proper
+tateClockIndTailSubmodule_forward_mem
+tateClockIndTailSubmodule_backward_mem
+tateClockIndTailSubmodule_not_backward_invariant
+tateClockIndBoundaryInterval_eq_zero_iff_mem_tailSubmodule
+mem_tateClockIndTailSubmodule_iff_exists_forwardN
+tateClockInd_bishiftInvariantSubmodule_eq_bot_or_top.
+```
+
+There is a second scalar no-go.  The complete Kolchin dimension polynomial depends on the chosen
+differential generators; only its differential type and leading typical dimension are
+differential-birational invariants.  Moreover interval length forgets the extension arrows already
+shown essential by the charge-two discriminator.  Therefore an equality between a
+presentation-independent scalar interval length and the full Kolchin polynomial cannot be the
+universal comparison theorem.
+
+## `[CONJECTURE -- POLARIZED RELATIVE COTANGENT--TATE COMPARISON]`
+
+Let `H_(S,R)=K^S intersect intersection_r ker(R_r)` be the source-fixed gauge invisible to a
+reporter family.  The Gamma collision shows that the base of the theory is the stack of
+source-effectively normalized germs with stabilizer `H_(S,R)`, restricted to the stratum `H=0`
+when reconstruction is required.  Over that stack form:
+
+1. the one-sided algebraic cotangent tower of differential prolongations, whose `n`th graded
+   generic rank is the new differential freedom at order `n`;
+2. the independently constructed polarized analytic tail/exit-path tower; and
+3. a source-natural comparison morphism `Phi_(S,R)` between their Ind--Pro completions.
+
+The proposed primary invariant is the full filtered polarized Tate object
+
+```text
+C_HT(S,R)=Cone(P_alg(S,R) --Phi_(S,R)--> P_an(S,R)),                    (Q13)
+```
+
+not a subrepresentation and not its length.  The discrete derivative of the Kolchin polynomial is
+only the generic-rank shadow of the algebraic graded pieces.  For one ordinary differential
+observable it is eventually zero in the DA case and one in the HT case, but `C_HT` also retains
+the arrows, source topology, reporter normalization, real polarization, and integral lattice that
+this scalar shadow forgets.
+
+The conjectural universal theorem is that source-presentation changes induce equivalences of
+`C_HT`, and that continuation failure, spectral incompleteness, positivity failure, monodromy, and
+boundary noncanonicity are jointly conservative realization functors of this one object.  A
+critical degeneracy spectrum, when present, is the common support of the realized cone; self-dual
+degeneracies require the additional polarization and cannot be recovered from the unpolarized
+derived carrier.
+
+This conjecture is falsified if the Gamma algebraic and analytic towers admit no source-natural
+comparison, if two source-equivalent normalized presentations give inequivalent cones, if `exp`
+and Gamma give the same algebraic graded-rank tail, or if one of the five obstruction languages
+varies while the complete polarized filtered cone is unchanged.
 
 ## Gates
 
@@ -256,7 +305,11 @@ constructed and proved jointly conservative.
 - [x] run the preliminary parent and exact-search gate on the interval formulation
 - [x] replace endpoint language in the Tate--Barnes bridge and character-fan target
 - [x] kill raw interval capacity as an HT criterion by differential-algebraic periodic gauges `(Q10)`
-- [ ] construct constant-field descent and the relative interval representation in `(Q11)`
-- [ ] compare its length growth with the Kolchin polynomial
+- [x] kill two-sided descended subrepresentations and formalize the polarized tail successor
+      with its exact image--kernel interval law `(Q11)`--`(Q12+)`
+- [x] kill the full Kolchin polynomial as a presentation-independent scalar invariant
+- [ ] construct the source-effective normalization stack and the comparison morphism in `(Q13)`
+- [ ] identify the graded generic-rank shadow of `(Q13)` with Kolchin growth without discarding
+      its extension, topology, polarization, or integral data
 - [ ] construct the source-face resonance gluing of boundary intervals
 - [ ] construct the global map of localization sequences

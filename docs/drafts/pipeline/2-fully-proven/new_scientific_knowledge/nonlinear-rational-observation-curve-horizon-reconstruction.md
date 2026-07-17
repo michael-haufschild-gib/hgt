@@ -256,6 +256,7 @@ is known, and the theorem does not constrain zeros or imply a critical-line stat
 projectiveInversion_twoJet_reconstruction
 hypertranscendentalOver_differentialJet_ne_zero
 hypertranscendentalOver_sup_firstJetTail_inv_eq_top
+mem_of_pow_mem_and_nonzero_differentialJet_mem_of_cast_ne_zero
 mem_of_pow_mem_and_nonzero_differentialJet_mem
 mem_of_sq_mem_and_nonzero_differentialJet_mem
 ```
@@ -265,7 +266,9 @@ certifies, uniformly at every order, that every differential jet of an HT scalar
 horizon proofs reuse it instead of duplicating the order-zero and order-one arguments. The latter
 two declarations certify the power branch-collapse mechanism at arbitrary depth: in any
 derivation-closed intermediate field, visibility of any positive power `x^k` and one nonzero jet
-forces visibility of `x`.
+forces visibility of `x`.  The formal core is stronger and characteristic-free: it requires only
+that the image of `k` in the coefficient field be nonzero; the original characteristic-zero API
+is retained as a corollary.
 
 The isolated source check passes. The exact module cache already existed, so no build was run. The
 new all-order jet theorem's axiom report contains only Lean's standard `propext`,

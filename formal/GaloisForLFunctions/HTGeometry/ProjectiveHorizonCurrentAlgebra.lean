@@ -101,11 +101,12 @@ def sl2CurrentPointStabilizer
 
 section Generation
 
-variable [CharZero K]
+variable [NeZero (2 : K)]
 
 /-- The four depth-two modes generate every polynomial translation mode `t^k e`. -/
 theorem sl2CurrentE_mem_depthTwoCurrentLie (k : ℕ) :
     sl2CurrentE K k ∈ depthTwoCurrentLie K := by
+  have htwo : (2 : K) ≠ 0 := NeZero.ne 2
   have hE0 : sl2CurrentE K 0 ∈ depthTwoCurrentLie K :=
     LieSubalgebra.subset_lieSpan (by simp [depthTwoCurrentGenerators])
   have hF1 : sl2CurrentF K 1 ∈ depthTwoCurrentLie K :=
@@ -120,11 +121,12 @@ theorem sl2CurrentE_mem_depthTwoCurrentLie (k : ℕ) :
         (depthTwoCurrentLie K).lie_mem hH1 ih
       rw [sl2Current_lie_H_E K 1 k] at hbr
       have hs := (depthTwoCurrentLie K).smul_mem ((2 : K)⁻¹) hbr
-      simpa [smul_smul, add_comm] using hs
+      simpa [smul_smul, add_comm, htwo] using hs
 
 /-- The four depth-two modes generate every inversion-conjugate mode `t^k f`. -/
 theorem sl2CurrentF_mem_depthTwoCurrentLie (k : ℕ) :
     sl2CurrentF K k ∈ depthTwoCurrentLie K := by
+  have htwo : (2 : K) ≠ 0 := NeZero.ne 2
   have hE0 : sl2CurrentE K 0 ∈ depthTwoCurrentLie K :=
     LieSubalgebra.subset_lieSpan (by simp [depthTwoCurrentGenerators])
   have hF0 : sl2CurrentF K 0 ∈ depthTwoCurrentLie K :=
@@ -141,7 +143,7 @@ theorem sl2CurrentF_mem_depthTwoCurrentLie (k : ℕ) :
         (depthTwoCurrentLie K).lie_mem hH1 ih
       rw [sl2Current_lie_H_F K 1 k] at hbr
       have hs := (depthTwoCurrentLie K).smul_mem ((-(2 : K))⁻¹) hbr
-      simpa [smul_smul, add_comm] using hs
+      simpa [smul_smul, add_comm, htwo] using hs
 
 /-- The same depth-two modes generate every diagonal mode `t^k h`. -/
 theorem sl2CurrentH_mem_depthTwoCurrentLie (k : ℕ) :

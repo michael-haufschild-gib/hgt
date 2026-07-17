@@ -193,10 +193,13 @@ not the diagonal QFT construction itself.
 
 A provisional classification corollary has been downgraded to
 `../../0-backlog/two-state-fermionic-zero-intrinsic-mixing-rigidity.md`.  The `O(N)` benchmark
-blocks its promotion until the operator-algebraic scattering / spin-chain quantum-`R` convention
-map is derived exactly.  Consequently no two-state no-go and no lower bound of three internal
-states is established.  Construct a regular unitary crossing-symmetric Yang--Baxter family
-`R(theta)`, leaving its state dimension open, such that:
+now separates the conventions exactly: the physical quantum fermionic anchor `-P` becomes a braid
+identity anchor `-I`, while the flip-anchored adjacent class is pointwise locally product-diagonal.
+The source convention conflict and theorem are recorded in
+`../needs-audit/fermionic-zero-braid-anchor-commutation-gate.md`.  Consequently no two-state no-go
+and no lower bound of three internal states is established for the physical quantum lane.
+Construct a regular unitary crossing-symmetric quantum Yang--Baxter family `R(theta)`, leaving its
+state dimension open, such that:
 
 1. its projective field has positive differential transcendence degree;
 2. no constant one-particle gauge `U tensor U` reduces it to diagonal scattering; a
@@ -205,7 +208,7 @@ states is established.  Construct a regular unitary crossing-symmetric Yang--Bax
 3. the HT survives quotienting all rapidity-dependent gauge connections declared part of the
    base;
 4. an intertwiner, modular nuclearity estimate, or another theorem produces compact-local
-   observables.
+   observables in the braid identity-anchor convention.
 
 Tensoring `(5)` with a DA non-diagonal model, taking a direct sum, or applying a constant basis
 change does not clear this gate: each operation merely hides a decomposable HT diagonal sector.

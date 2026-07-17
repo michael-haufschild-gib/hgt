@@ -271,6 +271,8 @@ the existing cache.
 positive-charge current layer: the logarithmic current of a nonzero free scalar is itself
 hypertranscendental and nonconstant, the full scalar differential field is reconstructed from its
 current field plus one ordinary amplitude, and every positive power has the same current field.
+The current-field equality is formalized in the sharper characteristic-free form requiring only
+that the exponent have nonzero image in the coefficient field.
 
 `formal/GaloisForLFunctions/HTGeometry/RatFuncScaleFixedField.lean` formalizes the complete
 ordinary fixed-field law for that amplitude coordinate: a scalar of finite order `N` fixes exactly

@@ -267,6 +267,9 @@ differentialAdjoin_pow_eq_logCurrentOrdinaryExtension
 
 Thus Lean proves that `J` is hypertranscendental and nonconstant, proves the exact field identity
 `T=L(q)`, and proves the finite-cover identity `C<q^N>=L(q^N)` for every positive `N`.  The new
+`differentialAdjoin_logDeriv_pow_eq_of_cast_ne_zero` theorem strengthens the current-field equality
+to every characteristic in which the exponent remains nonzero; the positive characteristic-zero
+surface is retained as a corollary.  The new
 module passed its one exact leaf build, direct file check, and scratch axiom audit with only
 `propext`, `Classical.choice`, and `Quot.sound`.
 

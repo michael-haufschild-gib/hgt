@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.PinnedAffinePrimeJetRigidity
 import GaloisForLFunctions.Hurwitz.ExpIndependence
 import GaloisForLFunctions.HTGeometry.FormalUnitInverseFreeness
 import GaloisForLFunctions.HTGeometry.GammaClockCoronaConormal
+import GaloisForLFunctions.HTGeometry.ClockDescentAnomaly
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.LinearAlgebra.FiniteDimensional.Basic
@@ -844,6 +845,182 @@ theorem finrank_range_gammaClockPairedBoundaryCurrent (n : ℕ) (z : ℂ) :
     Module.finrank ℂ (LinearMap.range (gammaClockPairedBoundaryCurrent n z)) = 1 := by
   rw [range_gammaClockPairedBoundaryCurrent]
   exact finrank_span_singleton (gammaClockBoundaryVector_ne_zero n)
+
+/-! ### Exact opposite-variance Weyl seam -/
+
+/-- The finite comparison seam between unit Taylor translation and coordinate multiplication.
+The source shift changes multiplication by `z` to multiplication by `z+1`. -/
+def gammaClockWeylSeam (n : ℕ) (z : ℂ) :
+    (Fin (n + 1) → ℂ) →ₗ[ℂ] (Fin (n + 1) → ℂ) :=
+  clockComparisonSeam
+    (gammaClockTranslation (n + 1))
+    (gammaClockCoordinateMultiplication n z)
+    (gammaClockCoordinateMultiplication n (z + 1))
+
+@[simp] private theorem gammaClockTranslation_single
+    (N : ℕ) (j i : Fin N) (c : ℂ) :
+    gammaClockTranslation N (Pi.single j c : Fin N → ℂ) i =
+      gammaClockTranslationCoefficient i j * c := by
+  classical
+  simp [gammaClockTranslation, Pi.single_apply]
+
+private theorem gammaClockCoordinateMultiplication_single_castSucc
+    (n : ℕ) (z c : ℂ) (j : Fin n) :
+    gammaClockCoordinateMultiplication n z
+        (Pi.single j.castSucc c : Fin (n + 1) → ℂ) =
+      Pi.single j.castSucc (z * c) +
+        Pi.single j.succ (((j : ℕ) + 1 : ℂ) * c) := by
+  classical
+  funext i
+  refine Fin.cases ?_ (fun k => ?_) i
+  · simp [gammaClockCoordinateMultiplication, Pi.single_apply]
+  · simp [gammaClockCoordinateMultiplication, Pi.single_apply]
+    split_ifs <;> simp_all
+
+private theorem gammaClockCoordinateMultiplication_single_last
+    (n : ℕ) (z c : ℂ) :
+    gammaClockCoordinateMultiplication n z
+        (Pi.single (Fin.last n) c : Fin (n + 1) → ℂ) =
+      Pi.single (Fin.last n) (z * c) := by
+  classical
+  funext i
+  refine Fin.cases ?_ (fun k => ?_) i
+  · simp [gammaClockCoordinateMultiplication, Pi.single_apply]
+  · simp [gammaClockCoordinateMultiplication, Pi.single_apply]
+
+private theorem gammaClockWeylSeam_single (n : ℕ) (z : ℂ)
+    (j i : Fin (n + 1)) :
+    gammaClockWeylSeam n z
+        (Pi.single j (1 : ℂ) : Fin (n + 1) → ℂ) i =
+      -(n + 1 : ℂ) *
+          (Pi.single j (1 : ℂ) : Fin (n + 1) → ℂ) (Fin.last n) /
+        ((n + 1 - i).factorial : ℂ) := by
+  classical
+  simp only [gammaClockWeylSeam, clockComparisonSeam,
+    LinearMap.sub_apply, LinearMap.comp_apply]
+  refine Fin.lastCases ?_ (fun j0 => ?_) j
+  · rw [gammaClockCoordinateMultiplication_single_last]
+    refine Fin.cases ?_ (fun k => ?_) i
+    · simp [gammaClockCoordinateMultiplication,
+        gammaClockTranslationCoefficient]
+      have hn : (((n.factorial : ℕ) : ℂ)) ≠ 0 := by
+        exact_mod_cast Nat.factorial_ne_zero n
+      have hsn : ((((n + 1).factorial : ℕ) : ℂ)) ≠ 0 := by
+        exact_mod_cast Nat.factorial_ne_zero (n + 1)
+      field_simp [hn, hsn]
+      rw [Nat.factorial_succ]
+      push_cast
+      ring
+    · simp [gammaClockCoordinateMultiplication,
+        gammaClockTranslationCoefficient]
+      have hsub : n - (k : ℕ) = (n - ((k : ℕ) + 1)) + 1 := by omega
+      rw [hsub]
+      have hbase : (((n - ((k : ℕ) + 1)).factorial : ℕ) : ℂ) ≠ 0 := by
+        exact_mod_cast Nat.factorial_ne_zero (n - ((k : ℕ) + 1))
+      have hsucc : ((((n - ((k : ℕ) + 1) + 1).factorial : ℕ) : ℂ)) ≠ 0 := by
+        exact_mod_cast Nat.factorial_ne_zero (n - ((k : ℕ) + 1) + 1)
+      field_simp [hbase, hsucc]
+      rw [Nat.factorial_succ]
+      push_cast
+      have hn : n = n - ((k : ℕ) + 1) + ((k : ℕ) + 1) := by omega
+      have hnc : (n : ℂ) =
+          (n - ((k : ℕ) + 1) : ℕ) + (((k : ℕ) + 1 : ℕ) : ℂ) := by
+        exact_mod_cast hn
+      rw [hnc]
+      simp only [Nat.cast_add, Nat.cast_one]
+      ring
+  · rw [gammaClockCoordinateMultiplication_single_castSucc]
+    refine Fin.cases ?_ (fun k => ?_) i
+    · simp [gammaClockCoordinateMultiplication,
+        gammaClockTranslationCoefficient]
+      have hj : ((((j0 : ℕ).factorial : ℕ) : ℂ)) ≠ 0 := by
+        exact_mod_cast Nat.factorial_ne_zero (j0 : ℕ)
+      have hsj : (((((j0 : ℕ) + 1).factorial : ℕ) : ℂ)) ≠ 0 := by
+        exact_mod_cast Nat.factorial_ne_zero ((j0 : ℕ) + 1)
+      field_simp [hj, hsj]
+      rw [Nat.factorial_succ]
+      push_cast
+      ring
+    · by_cases hkj : k < j0
+      · have hkle : k ≤ j0 := le_of_lt hkj
+        simp [gammaClockCoordinateMultiplication,
+          gammaClockTranslationCoefficient, hkj, hkle]
+        have hsub : (j0 : ℕ) - (k : ℕ) =
+            ((j0 : ℕ) - ((k : ℕ) + 1)) + 1 := by omega
+        rw [hsub]
+        have hbase : ((((j0 : ℕ) - ((k : ℕ) + 1)).factorial : ℕ) : ℂ) ≠ 0 := by
+          exact_mod_cast Nat.factorial_ne_zero ((j0 : ℕ) - ((k : ℕ) + 1))
+        have hsucc : (((((j0 : ℕ) - ((k : ℕ) + 1) + 1).factorial : ℕ) : ℂ)) ≠ 0 := by
+          exact_mod_cast Nat.factorial_ne_zero ((j0 : ℕ) - ((k : ℕ) + 1) + 1)
+        field_simp [hbase, hsucc]
+        rw [Nat.factorial_succ]
+        push_cast
+        have hj : (j0 : ℕ) =
+            (j0 : ℕ) - ((k : ℕ) + 1) + ((k : ℕ) + 1) := by omega
+        have hjc : ((j0 : ℕ) : ℂ) =
+            (((j0 : ℕ) - ((k : ℕ) + 1) : ℕ) : ℂ) +
+              (((k : ℕ) + 1 : ℕ) : ℂ) := by
+          exact_mod_cast hj
+        rw [hjc]
+        simp only [Nat.cast_add, Nat.cast_one]
+        ring
+      · by_cases hEq : k = j0
+        · subst k
+          simp [gammaClockCoordinateMultiplication,
+            gammaClockTranslationCoefficient]
+        · have hjk : j0 < k :=
+            lt_of_le_of_ne (Nat.le_of_not_gt hkj) (Ne.symm hEq)
+          have hnle : ¬ (k : ℕ) ≤ (j0 : ℕ) := Nat.not_le_of_gt hjk
+          simp [gammaClockCoordinateMultiplication,
+            gammaClockTranslationCoefficient, hkj, hjk, hnle]
+
+/-- **Exact finite Gamma Weyl seam.**  The comparison defect between analytic unit translation and
+algebraic coordinate multiplication is supported only on the omitted highest jet.  Its emitted
+factorial tail has total coefficient `-(n+1)`, independently of the base coordinate. -/
+theorem gammaClockWeylSeam_apply (n : ℕ) (z : ℂ)
+    (a : Fin (n + 1) → ℂ) (i : Fin (n + 1)) :
+    gammaClockWeylSeam n z a i =
+      -(n + 1 : ℂ) * a (Fin.last n) /
+        ((n + 1 - i).factorial : ℂ) := by
+  classical
+  have ha : a = ∑ j : Fin (n + 1),
+      a j • (Pi.single j (1 : ℂ) : Fin (n + 1) → ℂ) := by
+    funext k
+    simp [Pi.single_apply]
+  calc
+    gammaClockWeylSeam n z a i =
+        gammaClockWeylSeam n z
+          (∑ j : Fin (n + 1),
+            a j • (Pi.single j (1 : ℂ) : Fin (n + 1) → ℂ)) i := by rw [← ha]
+    _ = ∑ j : Fin (n + 1), a j *
+          gammaClockWeylSeam n z
+            (Pi.single j (1 : ℂ) : Fin (n + 1) → ℂ) i := by
+      simp
+    _ = -(n + 1 : ℂ) * a (Fin.last n) /
+          ((n + 1 - i).factorial : ℂ) := by
+      rw [Finset.sum_eq_single (Fin.last n)]
+      · rw [gammaClockWeylSeam_single]
+        simp
+        ring
+      · intro j hj hne
+        rw [gammaClockWeylSeam_single]
+        simp [hne]
+      · simp
+
+/-- **Cross-realization boundary-charge identity.**  The finite Weyl seam is not merely another
+rank-one defect with the same dimension as the paired opposite-variance current: it is exactly
+that current with reversed orientation.  The algebraic commutator and the analytic/algebraic
+boundary transgression are therefore two presentations of one finite boundary charge. -/
+theorem gammaClockWeylSeam_eq_neg_pairedBoundaryCurrent
+    (n : ℕ) (z : ℂ) :
+    gammaClockWeylSeam n z = -gammaClockPairedBoundaryCurrent n z := by
+  apply LinearMap.ext
+  intro a
+  funext i
+  rw [gammaClockWeylSeam_apply]
+  simp only [LinearMap.neg_apply, Pi.neg_apply]
+  rw [gammaClockPairedBoundaryCurrent_apply]
+  ring
 
 /-- The new-boundary projector in the split Gamma jet clock. -/
 def gammaClockBoundaryProjector (n : ℕ) :
