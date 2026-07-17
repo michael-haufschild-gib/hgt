@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.CCMWeightedXiLandau
 import GaloisForLFunctions.RHTower.CCMRectangularDominantFold
+import GaloisForLFunctions.RHTower.XiWeilPositivityCriterion
 
 /-!
 # Smooth fixed-profile two-edge Weil detectors
@@ -14,6 +15,8 @@ open Complex Filter Function Set
 namespace RHTower
 
 noncomputable section
+
+open MeasureTheory
 
 /-- Algebraic bilateral transform of the two translates of a smooth boundary
 profile. -/
@@ -147,10 +150,11 @@ theorem xiSmoothProfileTwoEdgeTransform_squareSummable
     XiWeilSquareSummable (xiSmoothProfileTwoEdgeTransform f a) := by
   let C : ℝ := 2 * Real.exp (|a| / 2) *
     (Real.exp (L / 2) * smoothProfileDerivativeMass f)
-  apply Summable.of_nonneg_of_le
-  · intro q
-    positivity
-  · intro q
+  have hmajor : Summable (fun q : XiZeroCopy =>
+      C ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2)) :=
+    xiSpectralPoint_inv_sq_summable.mul_left (C ^ 2)
+  refine Summable.of_nonneg_of_le (fun q => sq_nonneg _) (fun q => ?_) hmajor
+  ·
     have hz : I * xiSpectralPoint q ≠ 0 :=
       mul_ne_zero I_ne_zero (xiSpectralPoint_ne_zero q)
     have h := norm_smoothProfileTwoEdgeTransform_le heta hwindow f a hz
@@ -161,7 +165,6 @@ theorem xiSmoothProfileTwoEdgeTransform_squareSummable
           (C / ‖xiSpectralPoint q‖) ^ 2 :=
         pow_le_pow_left₀ (norm_nonneg _) h 2
       _ = C ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2) := by field_simp
-  · exact xiSpectralPoint_inv_sq_summable.mul_left (C ^ 2)
 
 /-- Sign-selected growing edge for a smooth profile. -/
 def smoothProfileTwoEdgeDominant {eta L : ℝ}
@@ -276,6 +279,19 @@ theorem norm_smoothProfileTwoEdgeTransform_sq_sub_dominant_of_pos_le
   have hdec : ‖Complex.exp (-2 * (a : ℂ) * w)‖ ≤ 1 := by
     rw [Complex.norm_exp, ← Real.exp_zero]
     exact Real.exp_le_exp.mpr hdecRe
+  have hfirst :
+      2 * ‖smoothProfileLaplaceAmplitude f w‖ *
+          ‖smoothProfileLaplaceAmplitude f (-w)‖ ≤ 2 * B * B := by
+    gcongr
+  have hAn2 : ‖smoothProfileLaplaceAmplitude f (-w)‖ ^ 2 ≤ B ^ 2 :=
+    pow_le_pow_left₀ (norm_nonneg _) hAn 2
+  have hsecond : ‖smoothProfileLaplaceAmplitude f (-w)‖ ^ 2 *
+      ‖Complex.exp (-2 * (a : ℂ) * w)‖ ≤ B ^ 2 := by
+    calc
+      ‖smoothProfileLaplaceAmplitude f (-w)‖ ^ 2 *
+          ‖Complex.exp (-2 * (a : ℂ) * w)‖ ≤ B ^ 2 * 1 :=
+        mul_le_mul hAn2 hdec (norm_nonneg _) (sq_nonneg B)
+      _ = B ^ 2 := mul_one _
   rw [smoothProfileTwoEdgeTransform_sq_sub_dominant_of_pos f hwre]
   calc
     ‖2 * smoothProfileLaplaceAmplitude f w *
@@ -288,9 +304,7 @@ theorem norm_smoothProfileTwoEdgeTransform_sq_sub_dominant_of_pos_le
           Complex.exp (-2 * (a : ℂ) * w)‖ := norm_add_le _ _
     _ ≤ 2 * B * B + B ^ 2 := by
       simp only [norm_mul, norm_ofNat, norm_pow]
-      have hAn2 : ‖smoothProfileLaplaceAmplitude f (-w)‖ ^ 2 ≤ B ^ 2 :=
-        pow_le_pow_left₀ (norm_nonneg _) hAn 2
-      gcongr
+      exact add_le_add hfirst hsecond
     _ ≤ 4 * B ^ 2 := by nlinarith [sq_nonneg B]
     _ = smoothProfileTwoEdgeRemainderBound f / ‖w‖ ^ 2 := by
       dsimp only [B, C0, smoothProfileTwoEdgeRemainderBound]
@@ -498,6 +512,408 @@ theorem xiSmoothProfileTwoEdgeDominant_reflect
     xiSpectralPoint_reflect]
   rw [mul_neg]
   exact smoothProfileTwoEdgeDominant_even f a (I * xiSpectralPoint q)
+
+end
+
+end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+/-- The reflected left smooth dominant sum equals the right dominant sum. -/
+theorem tsum_xiSmoothProfileTwoEdgeDominant_left_eq_right
+    {eta L : ℝ} (f : SmoothBoundaryProfile eta L) (a : ℝ) :
+    (∑' q : XiLeftZeroCopy,
+      xiSmoothProfileTwoEdgeDominant f a (xiSpectralPoint q.1)) =
+    ∑' q : XiRightZeroCopy,
+      xiSmoothProfileTwoEdgeDominant f a (xiSpectralPoint q.1) := by
+  calc
+    (∑' q : XiLeftZeroCopy,
+        xiSmoothProfileTwoEdgeDominant f a (xiSpectralPoint q.1)) =
+      ∑' q : XiRightZeroCopy,
+        xiSmoothProfileTwoEdgeDominant f a
+          (xiSpectralPoint (xiRightLeftReflectEquiv q).1) :=
+      (xiRightLeftReflectEquiv.tsum_eq
+        (fun q : XiLeftZeroCopy =>
+          xiSmoothProfileTwoEdgeDominant f a (xiSpectralPoint q.1))).symm
+    _ = ∑' q : XiRightZeroCopy,
+        xiSmoothProfileTwoEdgeDominant f a (xiSpectralPoint q.1) := by
+      apply tsum_congr
+      intro q
+      exact xiSmoothProfileTwoEdgeDominant_reflect f a q.1
+
+/-- The full smooth dominant Xi series folds exactly to twice the
+positive-transverse half. -/
+theorem tsum_xiSmoothProfileTwoEdgeDominant_eq_two_mul_right
+    {eta L : ℝ} (heta : 0 < eta) (hwindow : eta < L - eta)
+    (f : SmoothBoundaryProfile eta L) {a : ℝ} (ha : 0 ≤ a) :
+    (∑' q : XiZeroCopy,
+      xiSmoothProfileTwoEdgeDominant f a (xiSpectralPoint q)) =
+    2 * ∑' q : XiRightZeroCopy,
+      xiSmoothProfileTwoEdgeDominant f a (xiSpectralPoint q.1) := by
+  let g : XiZeroCopy → ℂ := fun q =>
+    xiSmoothProfileTwoEdgeDominant f a (xiSpectralPoint q)
+  let P : Set XiZeroCopy := {q | 0 < (I * xiSpectralPoint q).re}
+  let M : Set XiZeroCopy := {q | (I * xiSpectralPoint q).re < 0}
+  have hsum : Summable g :=
+    xiSmoothProfileTwoEdgeDominant_summable heta hwindow f ha
+  have hpoint : g = P.indicator g + M.indicator g := by
+    funext q
+    rcases lt_trichotomy (I * xiSpectralPoint q).re 0 with hneg | hzero | hpos
+    · rw [Pi.add_apply, Set.indicator_of_notMem, Set.indicator_of_mem]
+      · simp only [zero_add]
+      · exact hneg
+      · exact not_lt.mpr hneg.le
+    · rw [Pi.add_apply, Set.indicator_of_notMem, Set.indicator_of_notMem,
+        add_zero]
+      · dsimp only [g, xiSmoothProfileTwoEdgeDominant]
+        rw [smoothProfileTwoEdgeDominant, if_neg (by linarith),
+          if_neg (by linarith)]
+      · change ¬(I * xiSpectralPoint q).re < 0
+        linarith
+      · change ¬0 < (I * xiSpectralPoint q).re
+        linarith
+    · rw [Pi.add_apply, Set.indicator_of_mem, Set.indicator_of_notMem,
+        add_zero]
+      · exact not_lt.mpr hpos.le
+      · exact hpos
+  calc
+    (∑' q : XiZeroCopy,
+        xiSmoothProfileTwoEdgeDominant f a (xiSpectralPoint q)) =
+      ∑' q : XiZeroCopy, g q := rfl
+    _ = ∑' q : XiZeroCopy, (P.indicator g q + M.indicator g q) := by
+      apply tsum_congr
+      intro q
+      exact congrFun hpoint q
+    _ = (∑' q : XiZeroCopy, P.indicator g q) +
+        ∑' q : XiZeroCopy, M.indicator g q :=
+      (hsum.indicator P).tsum_add (hsum.indicator M)
+    _ = (∑' q : P, g q.1) + ∑' q : M, g q.1 := by
+      rw [tsum_subtype, tsum_subtype]
+    _ = (∑' q : XiRightZeroCopy,
+          xiSmoothProfileTwoEdgeDominant f a (xiSpectralPoint q.1)) +
+        ∑' q : XiLeftZeroCopy,
+          xiSmoothProfileTwoEdgeDominant f a (xiSpectralPoint q.1) := rfl
+    _ = (∑' q : XiRightZeroCopy,
+          xiSmoothProfileTwoEdgeDominant f a (xiSpectralPoint q.1)) +
+        ∑' q : XiRightZeroCopy,
+          xiSmoothProfileTwoEdgeDominant f a (xiSpectralPoint q.1) := by
+      rw [tsum_xiSmoothProfileTwoEdgeDominant_left_eq_right]
+    _ = 2 * ∑' q : XiRightZeroCopy,
+        xiSmoothProfileTwoEdgeDominant f a (xiSpectralPoint q.1) := by ring
+
+/-- At logarithmic aperture a right smooth dominant edge is the coefficient
+of the generic weighted Landau carrier times its Dirichlet monomial. -/
+theorem xiSmoothProfileTwoEdgeDominant_logSample_of_right
+    {eta L : ℝ} (heta : 0 < eta) (hwindow : eta < L - eta)
+    (f : SmoothBoundaryProfile eta L) (hf : f ∈ xiSmoothProfileGenericSet eta L)
+    {n : ℕ} (hn : 1 ≤ n) (q : XiRightZeroCopy) :
+    xiSmoothProfileTwoEdgeDominant f (Real.log n / 2)
+        (xiSpectralPoint q.1) =
+      (smoothProfileXiRightCoefficientSystem heta hwindow f hf).coefficient q *
+        (n : ℂ) ^ xiRightCenteredZero q := by
+  simpa only [xiSmoothProfileTwoEdgeDominant, xiRightCenteredZero,
+    smoothProfileXiRightCoefficientSystem] using
+    smoothProfileTwoEdgeDominant_logSample_of_pos f hn q.2
+
+/-- The full logarithmic dominant carrier is exactly the real weighted
+right-divisor Dirichlet coefficient. -/
+theorem tsum_xiSmoothProfileTwoEdgeDominant_logSample_eq_ofReal_weighted
+    {eta L : ℝ} (heta : 0 < eta) (hwindow : eta < L - eta)
+    (f : SmoothBoundaryProfile eta L) (hf : f ∈ xiSmoothProfileGenericSet eta L)
+    {n : ℕ} (hn : 1 ≤ n) :
+    (∑' q : XiZeroCopy,
+      xiSmoothProfileTwoEdgeDominant f (Real.log n / 2)
+        (xiSpectralPoint q)) =
+      (xiWeightedRightDirichletCoefficientReal
+        (smoothProfileXiRightCoefficientSystem heta hwindow f hf) n : ℂ) := by
+  let D := smoothProfileXiRightCoefficientSystem heta hwindow f hf
+  have ha : 0 ≤ Real.log n / 2 := by
+    have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn
+    positivity
+  rw [tsum_xiSmoothProfileTwoEdgeDominant_eq_two_mul_right
+    heta hwindow f ha]
+  rw [ofReal_xiWeightedRightDirichletCoefficientReal, xiWeightedRightDirichletComplex]
+  congr 1
+  apply tsum_congr
+  intro q
+  rw [xiWeightedRightDirichletTerm]
+  exact xiSmoothProfileTwoEdgeDominant_logSample_of_right
+    heta hwindow f hf hn q
+
+/-- Every generic fixed smooth profile has Weil values below every real level
+at arbitrarily late physical apertures when the right Xi divisor is nonempty. -/
+theorem xiWeilPolarization_smoothProfile_logSample_cofinally_unbounded_below
+    {eta L : ℝ} (heta : 0 < eta) (hwindow : eta < L - eta)
+    (f : SmoothBoundaryProfile eta L) (hf : f ∈ xiSmoothProfileGenericSet eta L)
+    (hne : Nonempty XiRightZeroCopy) :
+    ∀ B : ℝ, ∀ N0 : ℕ, ∃ n : ℕ,
+      N0 ≤ n ∧ L < Real.log n / 2 ∧
+      (xiWeilPolarization
+        (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))
+        (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))).re < B := by
+  intro B N0
+  let D := smoothProfileXiRightCoefficientSystem heta hwindow f hf
+  let K : ℝ := smoothProfileTwoEdgeRemainderBound f *
+    ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2
+  obtain ⟨N : ℕ, hN⟩ := exists_nat_gt
+    (max (N0 : ℝ) (Real.exp (2 * L)))
+  have hN0 : N0 ≤ N := by
+    exact_mod_cast (le_max_left (N0 : ℝ) (Real.exp (2 * L))).trans hN.le
+  have hNexp : Real.exp (2 * L) < (N : ℝ) :=
+    (le_max_right (N0 : ℝ) (Real.exp (2 * L))).trans_lt hN
+  obtain ⟨n, hnN, hcoeff⟩ :=
+    xiWeightedRightDirichletCoefficientReal_cofinally_unbounded_below
+      D hne (B - K) N
+  have hn0 : N0 ≤ n := hN0.trans hnN
+  have hnexp : Real.exp (2 * L) < (n : ℝ) := by
+    exact hNexp.trans_le (by exact_mod_cast hnN)
+  have hnpos : 0 < (n : ℝ) := (Real.exp_pos _).trans hnexp
+  have hnNatPos : 0 < n := by exact_mod_cast hnpos
+  have hn1 : 1 ≤ n := hnNatPos
+  have hlog : 2 * L < Real.log n :=
+    (Real.lt_log_iff_exp_lt hnpos).2 hnexp
+  have hLa : L < Real.log n / 2 := by linarith
+  have ha : 0 ≤ Real.log n / 2 := by
+    have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn1
+    positivity
+  refine ⟨n, hn0, hLa, ?_⟩
+  have hrem := norm_xiWeilPolarization_smoothProfile_sub_dominant_le
+    heta hwindow f ha
+  rw [tsum_xiSmoothProfileTwoEdgeDominant_logSample_eq_ofReal_weighted
+    heta hwindow f hf hn1] at hrem
+  have hre := Complex.re_le_norm
+    (xiWeilPolarization
+        (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))
+        (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2)) -
+      (xiWeightedRightDirichletCoefficientReal D n : ℂ))
+  change
+    (xiWeilPolarization
+        (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))
+        (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))).re -
+      xiWeightedRightDirichletCoefficientReal D n ≤
+      ‖xiWeilPolarization
+          (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))
+          (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2)) -
+        (xiWeightedRightDirichletCoefficientReal D n : ℂ)‖ at hre
+  dsimp only [K] at hcoeff ⊢
+  linarith
+
+/-- False RH forces cofinal negative divergence for every profile in the
+residual simultaneous-nonvanishing set. -/
+theorem not_riemannHypothesis_implies_generic_smoothProfile_weil_cofinally_unbounded_below
+    {eta L : ℝ} (heta : 0 < eta) (hwindow : eta < L - eta)
+    (hRH : ¬RiemannHypothesis)
+    (f : SmoothBoundaryProfile eta L) (hf : f ∈ xiSmoothProfileGenericSet eta L) :
+    ∀ B : ℝ, ∀ N0 : ℕ, ∃ n : ℕ,
+      N0 ≤ n ∧ L < Real.log n / 2 ∧
+      (xiWeilPolarization
+        (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))
+        (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))).re < B := by
+  exact xiWeilPolarization_smoothProfile_logSample_cofinally_unbounded_below
+    heta hwindow f hf (nonempty_xiRightZeroCopy_of_not_riemannHypothesis hRH)
+
+/-- Pointwise Weil positivity on the literal fixed-support smooth two-edge
+family is exactly RH. -/
+theorem riemannHypothesis_iff_smoothProfile_logSample_weil_nonneg
+    {eta L : ℝ} (heta : 0 < eta) (hwindow : eta < L - eta) :
+    RiemannHypothesis ↔
+      ∀ (f : SmoothBoundaryProfile eta L) (n : ℕ),
+        L < Real.log n / 2 →
+        0 ≤ (xiWeilPolarization
+          (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))
+          (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))).re := by
+  constructor
+  · intro hRH f n hn
+    exact (riemannHypothesis_iff_xiWeilPolarization_nonneg.mp hRH)
+      (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))
+      (xiSmoothProfileTwoEdgeTransform_squareSummable
+        heta hwindow f (Real.log n / 2))
+  · intro hnonneg
+    by_contra hRH
+    obtain ⟨f, hf⟩ : (xiSmoothProfileGenericSet eta L).Nonempty :=
+      (xiSmoothProfileGenericSet_dense_residual hwindow).1.nonempty
+    obtain ⟨n, hn0, hLa, hneg⟩ :=
+      not_riemannHypothesis_implies_generic_smoothProfile_weil_cofinally_unbounded_below
+        heta hwindow hRH f hf 0 0
+    exact (not_lt_of_ge (hnonneg f n hLa)) hneg
+
+/-- Mere eventual lower boundedness of every smooth two-edge profile is also
+exactly RH; false RH supplies a residual family violating it. -/
+theorem riemannHypothesis_iff_smoothProfile_logSample_weil_eventually_bddBelow
+    {eta L : ℝ} (heta : 0 < eta) (hwindow : eta < L - eta) :
+    RiemannHypothesis ↔
+      ∀ f : SmoothBoundaryProfile eta L,
+        ∃ B : ℝ, ∃ N0 : ℕ, ∀ n : ℕ, N0 ≤ n →
+          L < Real.log n / 2 →
+          B ≤ (xiWeilPolarization
+            (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))
+            (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))).re := by
+  constructor
+  · intro hRH f
+    refine ⟨0, 0, ?_⟩
+    intro n hn hLa
+    exact (riemannHypothesis_iff_smoothProfile_logSample_weil_nonneg
+      heta hwindow).mp hRH f n hLa
+  · intro hlower
+    by_contra hRH
+    obtain ⟨f, hf⟩ : (xiSmoothProfileGenericSet eta L).Nonempty :=
+      (xiSmoothProfileGenericSet_dense_residual hwindow).1.nonempty
+    obtain ⟨B, N0, hB⟩ := hlower f
+    obtain ⟨n, hn, hLa, hbelow⟩ :=
+      not_riemannHypothesis_implies_generic_smoothProfile_weil_cofinally_unbounded_below
+        heta hwindow hRH f hf B N0
+    exact (not_lt_of_ge (hB n hn hLa)) hbelow
+
+end
+
+end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+open MeasureTheory
+
+/-- The literal pair of translated smooth boundary profiles.  Under the
+physical separation condition `L<a`, this is exactly `x ↦ f (a-|x|)`. -/
+def smoothProfileTwoEdgePhysical {eta L : ℝ}
+    (f : SmoothBoundaryProfile eta L) (a x : ℝ) : ℝ :=
+  f (a - x) + f (a + x)
+
+private theorem smoothProfile_eq_zero_of_not_mem_support
+    {eta L : ℝ} (f : SmoothBoundaryProfile eta L) {x : ℝ}
+    (hx : x ∉ Icc eta (L - eta)) : f x = 0 := by
+  by_contra hne
+  have hs : x ∈ support (fun y : ℝ => f y) := hne
+  have ht : x ∈ tsupport (fun y : ℝ => f y) := subset_tsupport _ hs
+  exact hx (f.tsupport_subset ht)
+
+/-- The translated-pair realization is the card's literal
+`f (a - |x|)` profile once the two supports are separated. -/
+theorem smoothProfileTwoEdgePhysical_eq_abs
+    {eta L : ℝ} (heta : 0 < eta) (f : SmoothBoundaryProfile eta L)
+    {a : ℝ} (ha : L < a) (x : ℝ) :
+    smoothProfileTwoEdgePhysical f a x = f (a - |x|) := by
+  by_cases hx : 0 ≤ x
+  · have hzero : f (a + x) = 0 := by
+      apply smoothProfile_eq_zero_of_not_mem_support f
+      intro hmem
+      have := hmem.2
+      linarith
+    rw [smoothProfileTwoEdgePhysical, abs_of_nonneg hx, hzero, add_zero]
+  · have hx' : x < 0 := lt_of_not_ge hx
+    have hzero : f (a - x) = 0 := by
+      apply smoothProfile_eq_zero_of_not_mem_support f
+      intro hmem
+      have := hmem.2
+      linarith
+    rw [smoothProfileTwoEdgePhysical, abs_of_neg hx', hzero, zero_add]
+    congr 1
+    ring
+
+private theorem integrable_smoothProfileLaplaceBase
+    {eta L : ℝ} (f : SmoothBoundaryProfile eta L) (w : ℂ) :
+    Integrable (fun x : ℝ =>
+      (f x : ℂ) * smoothProfileLaplaceWeight w x) := by
+  have hf : Continuous (fun x : ℝ => (f x : ℂ)) :=
+    Complex.continuous_ofReal.comp f.contDiff.continuous
+  have hsupp : HasCompactSupport (fun x : ℝ =>
+      (f x : ℂ) * smoothProfileLaplaceWeight w x) := by
+    apply HasCompactSupport.intro isCompact_Icc
+    intro x hx
+    have hzero := smoothProfile_eq_zero_of_not_mem_support f hx
+    simp [hzero]
+  exact (hf.mul (continuous_smoothProfileLaplaceWeight w)).integrable_of_hasCompactSupport
+    hsupp
+
+/-- Exact bilateral Laplace integral of the literal smooth two-edge profile. -/
+theorem integral_smoothProfileTwoEdgePhysical_mul_exp_eq_transform
+    {eta L : ℝ} (f : SmoothBoundaryProfile eta L) (a : ℝ) (w : ℂ) :
+    (∫ x : ℝ, (smoothProfileTwoEdgePhysical f a x : ℂ) *
+      Complex.exp (w * x)) = smoothProfileTwoEdgeTransform f a w := by
+  let gm : ℝ → ℂ := fun s =>
+    (f s : ℂ) * smoothProfileLaplaceWeight w s
+  let gp : ℝ → ℂ := fun s =>
+    (f s : ℂ) * smoothProfileLaplaceWeight (-w) s
+  have hgm : Integrable gm := integrable_smoothProfileLaplaceBase f w
+  have hgp : Integrable gp := integrable_smoothProfileLaplaceBase f (-w)
+  have hrightPoint : (fun x : ℝ =>
+      (f (a - x) : ℂ) * Complex.exp (w * x)) =
+      fun x => Complex.exp ((a : ℂ) * w) * gm (a - x) := by
+    funext x
+    dsimp only [gm, smoothProfileLaplaceWeight]
+    have he : Complex.exp (w * x) =
+        Complex.exp ((a : ℂ) * w) *
+          Complex.exp (-(a - x : ℝ) * w) := by
+      rw [← Complex.exp_add]
+      congr 1
+      push_cast
+      ring
+    rw [he]
+    ring
+  have hleftPoint : (fun x : ℝ =>
+      (f (a + x) : ℂ) * Complex.exp (w * x)) =
+      fun x => Complex.exp (-(a : ℂ) * w) * gp (a + x) := by
+    funext x
+    dsimp only [gp, smoothProfileLaplaceWeight]
+    have he : Complex.exp (w * x) =
+        Complex.exp (-(a : ℂ) * w) *
+          Complex.exp (-(a + x : ℝ) * (-w)) := by
+      rw [← Complex.exp_add]
+      congr 1
+      push_cast
+      ring
+    rw [he]
+    ring
+  have hgmSub : Integrable (fun x : ℝ => gm (a - x)) := by
+    simpa only [sub_eq_add_neg] using (hgm.comp_add_left a).comp_neg
+  have hgpAdd : Integrable (fun x : ℝ => gp (a + x)) := hgp.comp_add_left a
+  have hright : Integrable (fun x : ℝ =>
+      (f (a - x) : ℂ) * Complex.exp (w * x)) := by
+    rw [hrightPoint]
+    exact hgmSub.const_mul _
+  have hleft : Integrable (fun x : ℝ =>
+      (f (a + x) : ℂ) * Complex.exp (w * x)) := by
+    rw [hleftPoint]
+    exact hgpAdd.const_mul _
+  have hgmSubIntegral : (∫ x : ℝ, gm (a - x)) = ∫ x : ℝ, gm x := by
+    calc
+      (∫ x : ℝ, gm (a - x)) = ∫ x : ℝ, (fun y => gm (a + y)) (-x) := by
+        simp only [sub_eq_add_neg]
+      _ = ∫ x : ℝ, gm (a + x) :=
+        integral_neg_eq_self (fun x : ℝ => gm (a + x)) volume
+      _ = ∫ x : ℝ, gm x := integral_add_left_eq_self gm a
+  have hgpAddIntegral : (∫ x : ℝ, gp (a + x)) = ∫ x : ℝ, gp x :=
+    integral_add_left_eq_self gp a
+  rw [show (fun x : ℝ => (smoothProfileTwoEdgePhysical f a x : ℂ) *
+      Complex.exp (w * x)) =
+      (fun x : ℝ => (f (a - x) : ℂ) * Complex.exp (w * x)) +
+      (fun x : ℝ => (f (a + x) : ℂ) * Complex.exp (w * x)) by
+    funext x
+    simp only [smoothProfileTwoEdgePhysical, Pi.add_apply]
+    push_cast
+    ring]
+  change (∫ x : ℝ,
+      (f (a - x) : ℂ) * Complex.exp (w * x) +
+        (f (a + x) : ℂ) * Complex.exp (w * x)) = _
+  rw [integral_add hright hleft, hrightPoint, hleftPoint,
+    integral_const_mul, integral_const_mul, hgmSubIntegral, hgpAddIntegral]
+  rw [← smoothProfileLaplaceAmplitude_eq_integral f w,
+    ← smoothProfileLaplaceAmplitude_eq_integral f (-w)]
+  rfl
+
+/-- Exact transform formula for the card's literal `f(a-|x|)` profile. -/
+theorem integral_smoothProfile_abs_twoEdge_mul_exp_eq_transform
+    {eta L : ℝ} (heta : 0 < eta) (f : SmoothBoundaryProfile eta L)
+    {a : ℝ} (ha : L < a) (w : ℂ) :
+    (∫ x : ℝ, (f (a - |x|) : ℂ) * Complex.exp (w * x)) =
+      smoothProfileTwoEdgeTransform f a w := by
+  rw [← integral_smoothProfileTwoEdgePhysical_mul_exp_eq_transform f a w]
+  apply integral_congr_ae
+  filter_upwards with x
+  rw [smoothProfileTwoEdgePhysical_eq_abs heta f ha x]
 
 end
 

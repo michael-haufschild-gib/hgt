@@ -288,7 +288,7 @@ theorem soninAllPrimeCoupledChannelAugmented_normalizedSecond_eq_iff
     exact ne_of_gt (add_pos_of_pos_of_nonneg hCpos
       (ContinuousLinearMap.hsNormSq_nonneg B))
   rw [re_opTrace_soninAllPrimeCoupledChannelAugmentedEnergy a hB,
-    re_opTrace_soninAllPrimeCoupledChannelAugmentedEnergy_sq a hB]
+    re_opTrace_soninAllPrimeCoupledChannelAugmentedEnergy_sq a hB, add_assoc]
   exact HTGeometry.augmentedNormalizedSecondValue_eq_iff
     (ContinuousLinearMap.hsNormSq C)
     (ContinuousLinearMap.hsNormSq B)
@@ -1252,6 +1252,7 @@ theorem re_soninAllPrimeCoupledTraceMoment_succ_le_mass_mul
         soninAllPrimeCoupledCoordinateEnergy,
         ContinuousLinearMap.comp_apply, pow_succ',
         ContinuousLinearMap.mul_apply]
+      rfl
     rw [← hfactor]
     calc
       ContinuousLinearMap.hsNormSq (ContinuousLinearMap.adjoint C ∘L V) ≤
