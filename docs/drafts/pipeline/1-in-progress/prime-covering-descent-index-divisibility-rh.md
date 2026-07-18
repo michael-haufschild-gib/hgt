@@ -231,3 +231,48 @@ starting identity: the corpus's formalized BV square-index decimation
 structure; question: does its Laurent-character form on zero fibres
 (`R_j/R_{j-2} = r^{2 rho - 1}`) admit a finite-ring reduction whose obstruction to consistency
 at depth `2^k` is the census scalar?
+
+## 2026-07-18 session 1 (cont. 2) — census scalar identified as subresultant rank; next conjecture
+
+Census/decimation audit (readers over `XiHeightAdaptiveAdjacentCensusCollision.lean`, DiscJump,
+WindowLadder, `BVPrimeWindowDilationOrientation.lean`, both decimation cards) + synthesis:
+
+1. **Exact reduction of the census open core.** With `A` = shifted Xi and `C` =
+   `dyadicSharpPrimeCancelledSource` on the shifted box: at every shifted Xi zero
+   `min(ord_A, ord_C) = min(m, m-1) = m-1`, and at every extra `C`-zero `A ≠ 0` gives `min = 0`.
+   Hence `boxCancelledSourceCommonOrderSum = sum min(ord_A, ord_C)` — the census scalar IS the
+   gcd-degree / intersection mass of the source pair `(A, C)`.
+2. **Winding split.** `boxDistinctCount = [winding(xi, box) - winding(C, shifted box)] + X_C`,
+   where both windings are source-pure boundary integrals and `X_C` = non-incident `C`-mass.
+   All target-sampling is concentrated in the incidence split of `winding(C)`; the raw
+   boundary-pair homotopy no-go (census card) says homotopy classes cannot see it — but
+   SUBRESULTANT/BEZOUT data is finer than homotopy: for polynomials `deg gcd` is computed from
+   coefficients by subresultant vanishing, with no root enumeration. The census card's own
+   replacement mechanism ("Fitting/subresultant module of (zero algebra, L_C)") is exactly this;
+   the classical machinery is now named.
+3. **[CONJECTURE — dyadic subresultant census]** There is an analytic Sylvester/Bezout operator
+   `S(A, C)` on window boundary data (Fredholm; kernel dimension = `sum min(ord_A, ord_C)` =
+   census mass, by the analytic-subresultant argument principle), constructed from the completed
+   prime--Gamma/sharp-window source WITHOUT zero enumeration; and the DYADIC self-similarity of
+   `C` — the formalized square-index decimation `p_j(N) = p_{j-2}(4N)`
+   (`weightedPrimeWindow_argumentDilation_eq_argumentExpansion_sq_mul`,
+   `polarCoefficient_argumentDilation_eq_argumentExpansion_sq_mul`) — induces on `S(A, C)` a
+   filtration whose graded pieces recur with period dividing 2, so that
+   `dim ker S(A,C) mod 2^k` is computable by the decimation recursion at depth `k`. The
+   height-adaptive census equality then follows from a finite recursion of source identities,
+   which is the non-symmetric producer class that survives T1-T3.
+   - This respects the census card's kill conditions: nothing is sampled at Xi zeros (kernel
+     dimension of a source operator); no boundary-pair homotopy invariant is used (subresultants
+     are strictly finer); no symmetry/transport enters (recursion, not group action).
+   - `[OPEN CORE]` (first exact sub-target): construct the analytic Sylvester operator for a pair
+     of holomorphic functions on a window with the kernel-dimension = intersection-mass property,
+     in a form where `A, C` enter only through boundary data / source coefficients. Literature to
+     audit first: analytic Bezoutians (Krein--Naimark, Anderson--Jury), Fredholm-minor
+     subresultants, and the corpus's own Hedenmalm source Bezoutian surface.
+   - Hostile risks to test at Gate 3: (i) the analytic Sylvester kernel may compute
+     `sum min` only for FINITE divisor mass with a priori separation — check ill-posedness under
+     zero collision (the collision-degeneracy no-go!); (ii) the dyadic filtration may act on the
+     `C`-side only, leaving the `A`-side (Xi) unfiltered — the graded recursion must not need a
+     matching Xi self-similarity (Xi has none; T2/T3 forbid importing one); (iii) mod-2
+     periodicity of graded ranks must come from an exact source identity, not from an assumed
+     regularity of the filtration.

@@ -215,3 +215,52 @@ of the commutative/finite part of the mechanism.
   status). Next: fresh-eyes re-read of the paper proofs, then move to 2-fully-proven; window-model
   Lean instantiation; then parent card OPEN CORE 2 (annulus model) and OPEN CORE 3
   (operator-valued candidate).
+
+## Theorem 3 (covariant-family index rigidity) `[PROVED HERE, first pass]`
+
+**Setup.** Stack `S = union_{j=0}^{2^k-1} (Omega_0 + i*j*theta)` as in Theorem 2. Let `H` be a
+complex Banach space and `A` a holomorphic family on a neighborhood of `closure(S)` with values
+in Fredholm operators on `H`, invertible on every window boundary `∂(Omega_0 + i*j*theta)`.
+Write `M(A, Omega)` for the Gohberg--Sigal multiplicity (the operator argument principle:
+total multiplicity of characteristic values of `A` in `Omega`; Gohberg--Sigal 1971,
+`[LITERATURE]`, generalized Rouche/argument principle; also GGK, Classes of Linear Operators).
+
+**Statement.** Suppose there are holomorphic families `E(s), F(s)` of INVERTIBLE operators on a
+neighborhood of `closure(Omega_0 + i*j*theta)` for the relevant steps, with the deck covariance
+
+> `A(s + i*theta) = E(s) * A(s) * F(s)`.
+
+(Constant invertible `E = U`, `F = V` — in particular unitary adelic twists — are the special
+case.) Then `M(A, Omega_j) = M(A, Omega_0)` for every `j`, hence
+`sum_j M(A, Omega_j) = 2^k * M(A, Omega_0)`. Consequently no such family can satisfy the divisor
+identification `M(A, Omega_j) = N_xi(Omega_j)` for all `j` unless all Xi window counts in the
+stack coincide — which fails for variable window counts. Exactly covariant (even
+holomorphically-cocycle-covariant) Fredholm families are divisor-blind.
+
+**Proof.** (1) Parametrization invariance: `A_j(s) := A(s + i*j*theta)` is a holomorphic
+Fredholm family near `closure(Omega_0)`, invertible on `∂Omega_0`, and
+`M(A, Omega_j) = M(A_j, Omega_0)` (characteristic values and their partial multiplicities are
+transported by the biholomorphic parameter shift; this is definitional for the GS multiplicity).
+(2) Iterating the covariance, `A_j(s) = E_j(s) * A(s) * F_j(s)` with
+`E_j(s) = E(s + i*(j-1)*theta) * ... * E(s)` and similarly `F_j` — finite products of
+holomorphic invertible families, hence holomorphic invertible. (3) Equivalence invariance of
+the GS multiplicity: `M(E A F, Omega_0) = M(A, Omega_0)` for holomorphic invertible `E, F`
+(Gohberg--Sigal; the local Smith-form factorization `A = Phi * diag((s-rho)^{kappa_i}) * Psi`
+is stable under multiplication by invertible holomorphic families, which only change
+`Phi, Psi`). Hence `M(A_j, Omega_0) = M(A, Omega_0)`. QED.
+
+**Remark (T2 strengthening).** With `H = C` the covariance degenerates to scalar
+quasi-periodicity `P(s + i*theta) = c(s) * P(s)` with `c` holomorphic zero-free; the winding
+argument of Theorem 2(i) is unchanged (zero-free multipliers preserve winding), so Theorem 2
+holds verbatim with "periodic" relaxed to "quasi-periodic with zero-free cocycle".
+
+**Consequence (singular-locus redirect).** T1-T3 close every symmetry/covariance-transport
+implementation, INCLUDING holomorphic cocycle twists, of the `2^k`-divisibility mechanism. The
+only structural place left where a deck-step mechanism can see the divisor is the SINGULAR
+LOCUS of the deck cocycle: for Xi itself the scalar cocycle `xi(s + i*theta)/xi(s)` is
+meromorphic with zeros/poles exactly on (shifted divisor) minus (divisor). A divisibility
+producer must therefore read cocycle singularities — and the corpus's formalized decimation
+Laurent-character law `R_j(rho)/R_(j-2)(rho) = r^(2*rho-1)` is exactly such a
+cocycle-at-the-singular-fibre datum. This is the precise bridge from the closed
+symmetry-transport family to the surviving census/recursion family: the census scalar must be a
+finite-ring invariant of the deck-cocycle singularity structure.
