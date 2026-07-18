@@ -1418,3 +1418,37 @@ d — assume-not-select: quantify over hypothetical cones inside the contradicti
 
 **[NEXT MOVE]** Compute the epsilon_S jet at the first box family, quadratic P (symbolic; the
 cont.-24 designated computation) — the modulus-vs-phase dichotomy decides the bridge.
+
+## 2026-07-18 session 2 (cont. 33) — EPSILON JET VERDICT: MODULUS. The bridge lives as a
+## BOUNDEDNESS statement; two open steps named
+
+**[VERDICT — MODULUS; kill condition NOT triggered]** (sympy-refereed, scratchpad/epsjet.py)
+(1) Local Weil-index ratios `gamma_v(a, psi_v)` are s-INDEPENDENT mu_8 phases (exact tables:
+odd p unit/non-unit cases via (u/p) and p mod 4; v = inf: `e^{i pi (sgn a - 1)/4}`; v = 2 from
+Rao). CORRECTION to cont. 22: the two-structure comparison is NOT mu_8-valued — mu_8 is only
+its phase; ALL rate content sits in the character block `omega_v(a) = |a|_v^s`.
+(2) EXACT MODULUS LAW: `|Xi_S(|.|^{sigma+it}, a)| = (prod_{v not in S} |a|_v)^{-sigma}`;
+trivial iff S covers supp(a). Level-coupled probe `a = p_{x+1}` (LEVEL-selected — circularity
+(iii) COMPLIANT): `|Xi_{S_x}| = p_{x+1}^{sigma}` exactly; in Tate/Bushnell–Henniart self-dual
+normalization: `p_{x+1}^{sigma - 1/2}` — **level-uniformly unitary iff sigma = 1/2**.
+Mirror-fiber (T-bar) anisotropy: `p_{x+1}^{2d}` — normalization-independent, `= 1` on-line,
+`-> infinity` off-line: the exact datum surviving antiunitary conjugation where the phase died
+(cont. 22/18). Unit-modulus probes (a = -1) are rate-blind — modulus probes need height.
+(3) CIRCULARITY: (iii) compliant (definition uses no zero data; fiber evaluation inside
+assume-not-select). (i) SPLIT favorably: phase and rate live in independent blocks; the
+modulus is a FINITE EXACT product — no Abel abscissa, no Landau re-entry; the identification
+with `rho_S(B_c)` must be restated for the character block (still unproven — carried openly).
+(ii) SHARPENED DECISIVELY: forcing anisotropy = 1 would be RH verbatim, but the bridge needs
+only BOUNDEDNESS — any level-uniform bound on the comparison modulus contradicts
+`p^{2d} -> infinity`. Boundedness is the genuinely weaker forcing.
+
+**[SURVIVING BRIDGE — CONJECTURE]** RH ⟺ the incomplete-level two-structure comparison has
+level-uniformly BOUNDED modulus on every zero fiber. An off-line displacement d yields the
+exact per-level defect `p_{x+1}^d` and mirror anisotropy `p^{2d}`.
+
+**[OPEN STEPS — all remaining content]** (a) Construct the comparison's action on `V_omega`
+through Meyer's ideal filtration (the L3-V3 obligation, cont. 21); (b) prove the
+reciprocity-side A PRIORI modulus bound unconditionally — THE Gate-3 target: test whether the
+bound derives from finite-level arithmetic (reciprocity closes the phase; what closes the
+modulus?) or secretly needs zero locations. NEXT: bound the comparison norm on the level-S
+ideal presentation (Meyer Lemma 5.10 generators).
