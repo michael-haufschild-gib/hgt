@@ -297,25 +297,28 @@ literature criteria.
 
 ## Lean status
 
-The finite torsion-language layer is formalized in
-`HTGeometry/TorsionLanguageUniversalPhase.lean`: `TorsionLanguageUniversal` states cofinal exact
-occurrence of every finite torsion word, and
-`TorsionLanguageUniversal.exists_strictMono_occurrences` extracts a cofinal strictly increasing
-sequence of exact occurrences. The finite-character layer is formalized in
-`HTGeometry/TorsionLanguageFaceExactification.lean`:
-`face_weights_eq_zero_of_torsionLanguageUniversal` turns asymptotic cancellation of a finite ADE
-face into exact vanishing of every limiting weight, with finite Fourier inversion supplied by
-`face_fin_weights_eq_zero`.
+The whole theorem and its deterministic existence corollary are now formalized unconditionally.
 
-The remaining unconditional formalization is the polynomial super-Gaussian analytic chain before
-that theorem: Mahler normalization, generic ADE coefficient extraction, bounded Prouhet-cluster
-confinement, polynomial grouped weights, the stable-minimizer generalized-analytic expansion,
-generalized-power nonflatness, and the passage to the finite asymptotically cancelling face accepted
-by `face_weights_eq_zero_of_torsionLanguageUniversal`. The phase-existence input is now complete:
-`universalTorsionPhase_torsionLanguageUniversal` proves that the concatenated enumeration of all
-finite root-of-unity words is torsion-language-universal, and
-`exists_torsionLanguageUniversal` supplies the existential form. The theorem cannot move to stage
-3 until the remaining polynomial super-Gaussian analytic chain is formalized unconditionally.
+- `HTGeometry/TorsionLanguageUniversalPhase.lean` defines the cofinal finite-word language,
+  exact occurrence extraction, and the explicit `universalUnitTorsionPhase`.  Unlike the earlier
+  zero-separated enumerator, this chosen phase is proved both torsion-language universal and
+  unit norm at every index.
+- `HTGeometry/TorsionLanguageFaceExactification.lean` supplies finite Fourier inversion and turns
+  asymptotic finite-face cancellation into exact vanishing of every limiting weight.
+- `HTGeometry/PolynomialTorsionLanguageDefectLimit.lean` consumes unconditional Mahler
+  normalization and the bounded Prouhet phase-lock extractor, proves the within-face and moving-min
+  defect limits, constructs a nonzero normalized tail weight, excludes every positive-degree
+  integer ADE, and proves the coefficient-profile HT theorem.
+- `HTGeometry/PolynomialTorsionLanguageEntireSeries.lean` constructs the literal entire function,
+  proves its exact Taylor coefficients and smoothness, proves
+  `hypertranscendental_polynomialTorsionLanguageFunction`, and proves the explicit deterministic
+  existence corollary
+  `exists_unitTorsionPhase_polynomialMagnitude_hypertranscendental`.
+
+The exact owning builds are green.  Scratch `#print axioms` audits of the phase, defect, literal
+series, HT, and existence capstones report only `propext`, `Classical.choice`, and `Quot.sound`;
+the forbidden-token scans and diff checks are clean.  Only the serialized umbrella/index/lint gate
+and stage move remain.
 
 ## Gates
 
@@ -325,7 +328,7 @@ finite root-of-unity words is torsion-language-universal, and
 - [x] Torsion-language-universal phase existence formalized in Lean.
 - [ ] Parent-theory and exact literature novelty audit.
 - [ ] Independent proof audit.
-- [ ] Whole theorem formalized unconditionally in Lean.
+- [x] Whole theorem formalized unconditionally in Lean.
 
 ## Log
 
@@ -333,3 +336,5 @@ finite root-of-unity words is torsion-language-universal, and
   Prouhet phase-lock theorem and proved torsion-language-universal polynomial-magnitude HT.
 - 2026-07-11 — Removed the integer-exponent restriction: noninteger within-cluster defects are
   convergent generalized-analytic germs and cannot be exponentially flat without vanishing.
+- 2026-07-18 — Formalized the complete polynomial defect compiler, the literal entire series, and
+  a unit-norm deterministic universal torsion phase; exact leaf builds and axiom audits are green.

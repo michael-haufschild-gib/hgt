@@ -99,7 +99,7 @@ theorem normalized_integral_poissonMuntzAngularDatum_mul_phase_eq
   simp only [Complex.real_smul]
   field_simp [Real.pi_ne_zero]
   push_cast
-  ring
+  ring_nf
 
 /-- Reflection invariance of a real source passes exactly to its Euclidean Fourier transform. -/
 theorem even_fourier_ofReal {f : ℝ → ℝ} (hf : Function.Even f) :
@@ -125,7 +125,7 @@ theorem normalized_integral_poissonMuntzAngularDatum_mul_phase_eq_of_even
       (a : ℂ) * 𝓕 (fun x => (f x : ℂ)) (a * (m : ℝ)) := by
   rw [normalized_integral_poissonMuntzAngularDatum_mul_phase_eq hf ha m]
   simp only [Complex.real_smul]
-  rw [show a * -(m : ℝ) = -(a * (m : ℝ)) by ring,
+  rw [show a * -(m : ℝ) = -(a * (m : ℝ)) by ring_nf,
     even_fourier_ofReal heven]
 
 /-- The Abel-weighted bilateral lattice sample attached to the scaled source. -/
@@ -170,8 +170,8 @@ theorem poissonAbelFourierAverage_poissonMuntzAngularDatum_eq_tsum
           rw [← intervalIntegral.integral_const_mul]
           exact intervalIntegral.integral_congr (fun t _ => by
             simp only [angularPoissonFourierTerm, semilocalBilateralPoissonTerm]
-            ring)
-        _ = _ := by ring
+            ac_rfl)
+        _ = _ := by ac_rfl
     _ = poissonMuntzBilateralSampleTerm f a r m := by
       rw [hcoeff]
       rfl
@@ -207,7 +207,7 @@ theorem poissonMuntzBilateralSampleTerm_nat_succ
   unfold poissonMuntzBilateralSampleTerm
   rw [Int.natAbs_natCast]
   push_cast
-  ring
+  ring_nf
 
 /-- Evenness identifies the negative and positive shifted bilateral terms pointwise. -/
 theorem poissonMuntzBilateralSampleTerm_neg_add_one
@@ -218,7 +218,7 @@ theorem poissonMuntzBilateralSampleTerm_neg_add_one
       𝓕 (fun x => (f x : ℂ)) (a * ((-((n : ℤ) + 1) : ℤ) : ℝ)) =
         𝓕 (fun x => (f x : ℂ)) (a * (n + 1 : ℝ)) := by
     rw [show a * ((-((n : ℤ) + 1) : ℤ) : ℝ) =
-        -(a * (n + 1 : ℝ)) by push_cast; ring]
+        -(a * (n + 1 : ℝ)) by push_cast; ring_nf]
     exact even_fourier_ofReal heven (a * (n + 1 : ℝ))
   unfold poissonMuntzBilateralSampleTerm
   rw [hfreq]
@@ -275,7 +275,7 @@ theorem tsum_poissonMuntzBilateralSampleTerm_eq_zero_add_two_mul_abel
         tsum_poissonMuntzBilateralSampleTerm_neg_add_one heven]
       simp only [poissonMuntzBilateralSampleTerm, Int.natAbs_zero,
         pow_zero, Int.cast_zero, one_mul]
-      ring
+      ring_nf
 
 /-- **Exact Poisson--Muntz Abel decomposition.**  Inside the open Abel disc, the Poisson boundary
 average is the zero-frequency mean plus twice the positive sampled tail. -/
@@ -301,7 +301,7 @@ theorem poissonMuntzAbelSum_eq_meanDefect
   rw [poissonAbelFourierAverage_poissonMuntzAngularDatum_eq_zero_add_two_mul_abel
     hf heven ha hr0 hr1]
   field_simp [ha.ne']
-  ring
+  ring_nf
 
 /-- The one-sided sampled Abel series is absolutely summable at every radius in `[0,1)`. -/
 theorem summable_poissonMuntzAbelTerm
@@ -382,5 +382,177 @@ theorem tendsto_poissonMuntzAbelSum_of_integral_eq_zero
     rfl
   simpa only [hzero, mul_zero, sub_zero] using
     tendsto_poissonMuntzAbelSum_meanDefect hf heven ha hleb
+
+/-- Splitting the integer periodization at the origin gives the center plus twice the positive
+physical lattice tail. -/
+theorem poissonMuntzScaledPeriodization_zero_eq_zero_add_two_tsum
+    {f : ℝ → ℝ} (heven : Function.Even f) {a : ℝ}
+    (htail : Summable fun n : ℕ => f ((n + 1 : ℝ) / a)) :
+    poissonMuntzScaledPeriodization f a 0 =
+      f 0 + 2 * ∑' n : ℕ, f ((n + 1 : ℝ) / a) := by
+  have hpos : Summable fun n : ℕ => f ((n : ℝ) / a) := by
+    apply (summable_nat_add_iff 1).1
+    simpa only [Nat.cast_add, Nat.cast_one] using htail
+  have hneg : Summable fun n : ℕ =>
+      f (((-((n : ℤ) + 1) : ℤ) : ℝ) / a) := by
+    apply htail.congr
+    intro n
+    simpa only [Int.cast_neg, Int.cast_add, Int.cast_natCast, Int.cast_one, neg_div]
+      using (heven ((n + 1 : ℝ) / a)).symm
+  have hhead :
+      (∑' n : ℕ, f ((n : ℝ) / a)) =
+        f 0 + ∑' n : ℕ, f ((n + 1 : ℝ) / a) := by
+    simpa only [Finset.sum_range_one, Nat.cast_zero, zero_div, Nat.cast_add,
+      Nat.cast_one] using (hpos.sum_add_tsum_nat_add 1).symm
+  have hnegative :
+      (∑' n : ℕ, f (((-((n : ℤ) + 1) : ℤ) : ℝ) / a)) =
+        ∑' n : ℕ, f ((n + 1 : ℝ) / a) := by
+    apply tsum_congr
+    intro n
+    simpa only [Int.cast_neg, Int.cast_add, Int.cast_natCast, Int.cast_one, neg_div]
+      using heven ((n + 1 : ℝ) / a)
+  unfold poissonMuntzScaledPeriodization realL1Periodization
+  simp only [zero_add]
+  rw [tsum_of_nat_of_neg_add_one]
+  · rw [show (∑' n : ℕ, f (((n : ℤ) : ℝ) / a)) =
+          ∑' n : ℕ, f ((n : ℝ) / a) by rfl,
+        hhead, hnegative]
+    simp only [two_mul, add_assoc]
+  · simpa only [Int.cast_natCast] using hpos
+  · exact hneg
+
+/-- A compactly supported source has a literal finite cutoff on every positive physical lattice. -/
+theorem exists_poissonMuntzPhysicalLattice_cutoff_of_hasCompactSupport
+    {f : ℝ → ℝ} (hcompact : HasCompactSupport f)
+    {a : ℝ} (ha : 0 < a) :
+    ∃ N : ℕ, ∀ n : ℕ, N ≤ n → f ((n + 1 : ℝ) / a) = 0 := by
+  obtain ⟨B, hB⟩ := hcompact.isCompact.isBounded.exists_norm_le
+  obtain ⟨N, hN⟩ := exists_nat_gt (a * B)
+  refine ⟨N, ?_⟩
+  intro n hn
+  by_contra hx
+  have hsupp : (n + 1 : ℝ) / a ∈ Function.support f := by
+    simpa only [Function.mem_support] using hx
+  have hxt : (n + 1 : ℝ) / a ∈ tsupport f := subset_tsupport f hsupp
+  have hbound := hB _ hxt
+  have hNlt : N < n + 1 := by omega
+  have hcast : (N : ℝ) < (n + 1 : ℕ) := by exact_mod_cast hNlt
+  have hlarge : B < (n + 1 : ℝ) / a := by
+    apply (lt_div_iff₀ ha).2
+    rw [mul_comm]
+    exact hN.trans (by exact_mod_cast hcast)
+  have hxnonneg : 0 ≤ (n + 1 : ℝ) / a := by positivity
+  rw [Real.norm_eq_abs, abs_of_nonneg hxnonneg] at hbound
+  exact (not_lt_of_ge hbound) hlarge
+
+/-- The sampled positive physical lattice of a compactly supported source has finite support. -/
+theorem finite_support_poissonMuntzPhysicalLattice_of_hasCompactSupport
+    {f : ℝ → ℝ} (hcompact : HasCompactSupport f)
+    {a : ℝ} (ha : 0 < a) :
+    (Function.support fun n : ℕ => f ((n + 1 : ℝ) / a)).Finite := by
+  obtain ⟨N, hN⟩ :=
+    exists_poissonMuntzPhysicalLattice_cutoff_of_hasCompactSupport hcompact ha
+  apply (Set.finite_Iio N).subset
+  intro n hn
+  by_contra hnot
+  have hnN : N ≤ n := Nat.le_of_not_gt hnot
+  exact hn (hN n hnN)
+
+/-- Compact support makes the positive physical lattice tail summable. -/
+theorem summable_poissonMuntzPhysicalLattice_of_hasCompactSupport
+    {f : ℝ → ℝ} (hcompact : HasCompactSupport f)
+    {a : ℝ} (ha : 0 < a) :
+    Summable fun n : ℕ => f ((n + 1 : ℝ) / a) := by
+  obtain ⟨N, hN⟩ :=
+    exists_poissonMuntzPhysicalLattice_cutoff_of_hasCompactSupport hcompact ha
+  apply (summable_nat_add_iff N).1
+  apply (summable_zero : Summable (fun _ : ℕ => (0 : ℝ))).congr
+  intro n
+  symm
+  simpa only [Nat.cast_add, Nat.cast_one, add_assoc] using hN (n + N) (by omega)
+
+/-- Compact support discharges the summability hypothesis in the exact physical-lattice split. -/
+theorem poissonMuntzScaledPeriodization_zero_eq_zero_add_two_tsum_of_hasCompactSupport
+    {f : ℝ → ℝ} (heven : Function.Even f) (hcompact : HasCompactSupport f)
+    {a : ℝ} (ha : 0 < a) :
+    poissonMuntzScaledPeriodization f a 0 =
+      f 0 + 2 * ∑' n : ℕ, f ((n + 1 : ℝ) / a) :=
+  poissonMuntzScaledPeriodization_zero_eq_zero_add_two_tsum heven
+    (summable_poissonMuntzPhysicalLattice_of_hasCompactSupport hcompact ha)
+
+/-- **Physical Poisson--Muntz Abel boundary law.**  For an even zero-mean source, the Abel tail
+converges to the center-plus-lattice expression whenever the physical tail is summable. -/
+theorem tendsto_poissonMuntzAbelSum_physicalLattice_of_integral_eq_zero
+    {f : ℝ → ℝ} (hf : Integrable f) (heven : Function.Even f)
+    {a : ℝ} (ha : 0 < a) (hmean : ∫ x : ℝ, f x = 0)
+    (hleb : Tendsto
+      (fun s => (∫ t in (0 : ℝ)..s,
+        |poissonMuntzAngularDatum f a t - poissonMuntzAngularDatum f a 0| +
+          |poissonMuntzAngularDatum f a (-t) - poissonMuntzAngularDatum f a 0|) / s)
+      (𝓝[>] 0) (𝓝 0))
+    (htail : Summable fun n : ℕ => f ((n + 1 : ℝ) / a)) :
+    Tendsto (fun r : ℝ => poissonMuntzAbelSum f a r)
+      (𝓝[<] 1)
+      (𝓝 (((f 0 + 2 * (∑' n : ℕ, f ((n + 1 : ℝ) / a)) : ℝ) : ℂ) /
+        (2 * (a : ℂ)))) := by
+  have h := tendsto_poissonMuntzAbelSum_of_integral_eq_zero
+    hf heven ha hmean hleb
+  rw [poissonMuntzScaledPeriodization_zero_eq_zero_add_two_tsum heven htail] at h
+  exact h
+
+/-- Square-root normalization gives the endpoint-safe one-sided Poisson--Muntz formula. -/
+theorem tendsto_sqrt_mul_poissonMuntzAbelSum_physicalLattice_of_integral_eq_zero
+    {f : ℝ → ℝ} (hf : Integrable f) (heven : Function.Even f)
+    {a : ℝ} (ha : 0 < a) (hmean : ∫ x : ℝ, f x = 0)
+    (hleb : Tendsto
+      (fun s => (∫ t in (0 : ℝ)..s,
+        |poissonMuntzAngularDatum f a t - poissonMuntzAngularDatum f a 0| +
+          |poissonMuntzAngularDatum f a (-t) - poissonMuntzAngularDatum f a 0|) / s)
+      (𝓝[>] 0) (𝓝 0))
+    (htail : Summable fun n : ℕ => f ((n + 1 : ℝ) / a)) :
+    Tendsto (fun r : ℝ => (Real.sqrt a : ℂ) * poissonMuntzAbelSum f a r)
+      (𝓝[<] 1)
+      (𝓝 ((f 0 : ℂ) / (2 * (Real.sqrt a : ℂ)) +
+        ((∑' n : ℕ, f ((n + 1 : ℝ) / a)) : ℂ) /
+          (Real.sqrt a : ℂ))) := by
+  have hbase := tendsto_poissonMuntzAbelSum_physicalLattice_of_integral_eq_zero
+    hf heven ha hmean hleb htail
+  have hscaled := hbase.const_mul (Real.sqrt a : ℂ)
+  have hsqrt : (Real.sqrt a : ℂ) ≠ 0 := by
+    exact_mod_cast (Real.sqrt_pos.2 ha).ne'
+  have ha_sqrt : (a : ℂ) = (Real.sqrt a : ℂ) ^ 2 := by
+    exact_mod_cast (Real.sq_sqrt ha.le).symm
+  have htarget :
+      (Real.sqrt a : ℂ) *
+          (((f 0 + 2 * (∑' n : ℕ, f ((n + 1 : ℝ) / a)) : ℝ) : ℂ) /
+            (2 * (a : ℂ))) =
+        (f 0 : ℂ) / (2 * (Real.sqrt a : ℂ)) +
+          ((∑' n : ℕ, f ((n + 1 : ℝ) / a)) : ℂ) /
+            (Real.sqrt a : ℂ) := by
+    rw [ha_sqrt]
+    field_simp [hsqrt]
+    push_cast
+    ring
+  rw [htarget] at hscaled
+  exact hscaled
+
+/-- Compact support discharges the physical-tail hypothesis in the square-root boundary law. -/
+theorem tendsto_sqrt_mul_poissonMuntzAbelSum_physicalLattice_of_compactSupport
+    {f : ℝ → ℝ} (hf : Integrable f) (heven : Function.Even f)
+    (hcompact : HasCompactSupport f)
+    {a : ℝ} (ha : 0 < a) (hmean : ∫ x : ℝ, f x = 0)
+    (hleb : Tendsto
+      (fun s => (∫ t in (0 : ℝ)..s,
+        |poissonMuntzAngularDatum f a t - poissonMuntzAngularDatum f a 0| +
+          |poissonMuntzAngularDatum f a (-t) - poissonMuntzAngularDatum f a 0|) / s)
+      (𝓝[>] 0) (𝓝 0)) :
+    Tendsto (fun r : ℝ => (Real.sqrt a : ℂ) * poissonMuntzAbelSum f a r)
+      (𝓝[<] 1)
+      (𝓝 ((f 0 : ℂ) / (2 * (Real.sqrt a : ℂ)) +
+        ((∑' n : ℕ, f ((n + 1 : ℝ) / a)) : ℂ) /
+          (Real.sqrt a : ℂ))) :=
+  tendsto_sqrt_mul_poissonMuntzAbelSum_physicalLattice_of_integral_eq_zero
+    hf heven ha hmean hleb
+      (summable_poissonMuntzPhysicalLattice_of_hasCompactSupport hcompact ha)
 
 end RHTower

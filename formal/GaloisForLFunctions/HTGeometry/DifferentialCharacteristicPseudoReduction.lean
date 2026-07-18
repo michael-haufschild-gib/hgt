@@ -125,7 +125,807 @@ noncomputable def pseudoDivision
               · exact lt_of_not_ge fun hdeg ↦ h ⟨hdeg, hp⟩ }
   termination_by p => p
 
+/-- A nonzero pseudo-remainder has strictly smaller natural degree than the divisor. -/
+theorem PseudoDivision.remainder_eq_zero_or_natDegree_lt
+    {R : Type*} [CommRing R] [NoZeroDivisors R]
+    {p q : R[X]} (d : PseudoDivision p q) :
+    d.remainder = 0 ∨ d.remainder.natDegree < q.natDegree := by
+  by_cases hr : d.remainder = 0
+  · exact Or.inl hr
+  · right
+    exact (Polynomial.natDegree_lt_natDegree_iff hr).mpr d.remainder_degree_lt
+
 end Polynomial
+
+/-- The algebra equivalence which treats `i` as the univariate polynomial variable and all other
+variables as coefficient variables. -/
+def mvPolynomialPolynomialEquivAt
+    {K σ : Type*} [CommSemiring K] (i : σ) :
+    MvPolynomial σ K ≃ₐ[K]
+      Polynomial (MvPolynomial {j : σ // j ≠ i} K) := by
+  classical
+  exact (MvPolynomial.renameEquiv K (Equiv.optionSubtypeNe i).symm).trans
+    (MvPolynomial.optionEquivLeft K {j : σ // j ≠ i})
+
+@[simp]
+theorem mvPolynomialPolynomialEquivAt_apply
+    {K σ : Type*} [CommSemiring K] (i : σ) (P : MvPolynomial σ K) :
+    mvPolynomialPolynomialEquivAt i P = mvPolynomialAsPolynomialAt i P := by
+  classical
+  rfl
+
+/-- `degreeOf` is the natural degree after singling out the indicated variable. -/
+theorem mvPolynomial_degreeOf_eq_natDegree_asPolynomialAt
+    {K σ : Type*} [CommSemiring K] (i : σ) (P : MvPolynomial σ K) :
+    MvPolynomial.degreeOf i P = (mvPolynomialAsPolynomialAt i P).natDegree := by
+  classical
+  unfold mvPolynomialAsPolynomialAt
+  exact MvPolynomial.degreeOf_eq_natDegree i P
+
+/-- Coefficient polynomials in the non-distinguished variables become constants under
+`optionEquivLeft`. -/
+theorem optionEquivLeft_rename_some
+    {K σ : Type*} [CommSemiring K] (P : MvPolynomial σ K) :
+    MvPolynomial.optionEquivLeft K σ (MvPolynomial.rename some P) =
+      Polynomial.C P := by
+  classical
+  induction P using MvPolynomial.induction_on with
+  | C c => simp
+  | add P Q hP hQ => simp [hP, hQ]
+  | mul_X P j hP => simp [hP]
+
+/-- The distinguished initial maps to the constant polynomial whose value is the univariate
+leading coefficient. -/
+theorem mvPolynomialPolynomialEquivAt_initial
+    {K σ : Type*} [CommSemiring K] (i : σ) (P : MvPolynomial σ K) :
+    mvPolynomialPolynomialEquivAt i (mvPolynomialInitialAt i P) =
+      Polynomial.C (mvPolynomialAsPolynomialAt i P).leadingCoeff := by
+  classical
+  unfold mvPolynomialPolynomialEquivAt mvPolynomialInitialAt
+  simp only [AlgEquiv.trans_apply, MvPolynomial.renameEquiv_apply,
+    MvPolynomial.rename_rename]
+  rw [show (Equiv.optionSubtypeNe i).symm ∘ Subtype.val =
+      (some : {j : σ // j ≠ i} → Option {j : σ // j ≠ i}) by
+    funext j
+    exact Equiv.optionSubtypeNe_symm_of_ne j.2]
+  exact optionEquivLeft_rename_some _
+
+/-- A multivariable pseudo-reduction certificate at one distinguished variable. -/
+structure MvPolynomialPseudoReductionAt
+    {K σ : Type*} [CommRing K]
+    (i : σ) (Q D : MvPolynomial σ K) where
+  exponent : ℕ
+  quotient : MvPolynomial σ K
+  remainder : MvPolynomial σ K
+  eq_mul_add :
+    mvPolynomialInitialAt i D ^ exponent * Q = D * quotient + remainder
+  remainder_degree_lt :
+    MvPolynomial.degreeOf i remainder < MvPolynomial.degreeOf i D
+
+/-- Honest multivariable pseudo-division at one variable, obtained by transporting the recursive
+univariate construction. -/
+noncomputable def mvPolynomialPseudoReductionAt
+    {K σ : Type*} [Field K] (i : σ) (Q D : MvPolynomial σ K)
+    (hDdegree : MvPolynomial.degreeOf i D ≠ 0) :
+    MvPolynomialPseudoReductionAt i Q D := by
+  classical
+  let e : MvPolynomial σ K ≃ₐ[K]
+      Polynomial (MvPolynomial {j : σ // j ≠ i} K) :=
+    mvPolynomialPolynomialEquivAt i
+  have hD0 : e D ≠ 0 := by
+    intro heD
+    apply hDdegree
+    have hD : D = 0 := by
+      apply e.injective
+      simpa using heD
+    rw [hD]
+    simp
+  let d := Polynomial.pseudoDivision (e Q) hD0
+  let T := e.symm d.quotient
+  let R := e.symm d.remainder
+  refine
+    { exponent := d.exponent
+      quotient := T
+      remainder := R
+      eq_mul_add := ?_
+      remainder_degree_lt := ?_ }
+  · apply e.injective
+    rw [map_add, map_mul, map_mul, map_pow, e.apply_symm_apply,
+      e.apply_symm_apply]
+    have hInitial : e (mvPolynomialInitialAt i D) =
+        Polynomial.C (e D).leadingCoeff := by
+      simpa [e] using mvPolynomialPolynomialEquivAt_initial i D
+    rw [hInitial]
+    simpa only [map_pow, Polynomial.C_pow] using d.eq_mul_add
+  · rcases d.remainder_eq_zero_or_natDegree_lt with hr | hr
+    · have hR : R = 0 := by
+        apply e.injective
+        simp [R, hr]
+      rw [hR, MvPolynomial.degreeOf_zero]
+      exact Nat.pos_of_ne_zero hDdegree
+    · calc
+        MvPolynomial.degreeOf i R =
+            (mvPolynomialAsPolynomialAt i R).natDegree :=
+          mvPolynomial_degreeOf_eq_natDegree_asPolynomialAt i R
+        _ = (e R).natDegree := by
+          rw [mvPolynomialPolynomialEquivAt_apply]
+        _ = d.remainder.natDegree := by simp [R]
+        _ < (e D).natDegree := hr
+        _ = (mvPolynomialAsPolynomialAt i D).natDegree := by
+          rw [mvPolynomialPolynomialEquivAt_apply]
+        _ = MvPolynomial.degreeOf i D :=
+          (mvPolynomial_degreeOf_eq_natDegree_asPolynomialAt i D).symm
+
+/-- The direct multivariable pseudo-division step strictly lowers the distinguished degree.  This
+form is used below because, unlike a bare transport through an equivalence, its syntax also makes
+variable-support preservation transparent. -/
+theorem mvPolynomialPseudoDivision_step_degree_lt
+    {K σ : Type*} [Field K] (i : σ) {Q D : MvPolynomial σ K}
+    (h : MvPolynomial.degreeOf i D ≤ MvPolynomial.degreeOf i Q ∧ Q ≠ 0)
+    (hDdegree : MvPolynomial.degreeOf i D ≠ 0) :
+    MvPolynomial.degreeOf i
+        (mvPolynomialInitialAt i D * Q -
+          D * (mvPolynomialInitialAt i Q *
+            MvPolynomial.X i ^
+              (MvPolynomial.degreeOf i Q - MvPolynomial.degreeOf i D))) <
+      MvPolynomial.degreeOf i Q := by
+  classical
+  let e : MvPolynomial σ K ≃ₐ[K]
+      Polynomial (MvPolynomial {j : σ // j ≠ i} K) :=
+    mvPolynomialPolynomialEquivAt i
+  let Q₁ := mvPolynomialInitialAt i D * Q -
+    D * (mvPolynomialInitialAt i Q *
+      MvPolynomial.X i ^
+        (MvPolynomial.degreeOf i Q - MvPolynomial.degreeOf i D))
+  have hD0 : D ≠ 0 := by
+    intro hD
+    apply hDdegree
+    simp [hD]
+  have heD0 : e D ≠ 0 := fun heD ↦ hD0 (e.injective (by simpa using heD))
+  have heQ0 : e Q ≠ 0 := fun heQ ↦ h.2 (e.injective (by simpa using heQ))
+  have hdegreeD : (e D).natDegree = MvPolynomial.degreeOf i D := by
+    simpa [e, mvPolynomialPolynomialEquivAt_apply] using
+      (mvPolynomial_degreeOf_eq_natDegree_asPolynomialAt i D).symm
+  have hdegreeQ : (e Q).natDegree = MvPolynomial.degreeOf i Q := by
+    simpa [e, mvPolynomialPolynomialEquivAt_apply] using
+      (mvPolynomial_degreeOf_eq_natDegree_asPolynomialAt i Q).symm
+  have hpolyDegree : (e D).degree ≤ (e Q).degree := by
+    rw [Polynomial.degree_eq_natDegree heD0,
+      Polynomial.degree_eq_natDegree heQ0]
+    exact_mod_cast hdegreeD.trans_le (h.1.trans_eq hdegreeQ.symm)
+  have hstep := Polynomial.pseudoDivision_step_degree_lt
+    ⟨hpolyDegree, heQ0⟩ heD0
+  have heInitialD : e (mvPolynomialInitialAt i D) =
+      Polynomial.C (e D).leadingCoeff := by
+    simpa [e] using mvPolynomialPolynomialEquivAt_initial i D
+  have heInitialQ : e (mvPolynomialInitialAt i Q) =
+      Polynomial.C (e Q).leadingCoeff := by
+    simpa [e] using mvPolynomialPolynomialEquivAt_initial i Q
+  have heX : e (MvPolynomial.X i) = Polynomial.X := by
+    simp [e, mvPolynomialPolynomialEquivAt]
+  have heQ₁ : e Q₁ =
+      Polynomial.C (e D).leadingCoeff * e Q -
+        e D * (Polynomial.C (e Q).leadingCoeff *
+          Polynomial.X ^ ((e Q).natDegree - (e D).natDegree)) := by
+    dsimp only [Q₁]
+    simp only [map_sub, map_mul, map_pow, heInitialD, heInitialQ, heX]
+    rw [hdegreeD, hdegreeQ]
+  change MvPolynomial.degreeOf i Q₁ < MvPolynomial.degreeOf i Q
+  by_cases hQ₁0 : Q₁ = 0
+  · rw [hQ₁0, MvPolynomial.degreeOf_zero]
+    exact Nat.pos_of_ne_zero (fun hQdegree ↦ hDdegree (Nat.eq_zero_of_le_zero (h.1.trans_eq hQdegree)))
+  · have heQ₁0 : e Q₁ ≠ 0 := fun heQ₁ ↦
+      hQ₁0 (e.injective (by simpa using heQ₁))
+    have hpolyNat : (e Q₁).natDegree < (e Q).natDegree :=
+      (Polynomial.natDegree_lt_natDegree_iff heQ₁0).mpr (by
+        rw [heQ₁]
+        exact hstep)
+    calc
+      MvPolynomial.degreeOf i Q₁ = (e Q₁).natDegree := by
+        rw [show e Q₁ = mvPolynomialAsPolynomialAt i Q₁ by
+          exact mvPolynomialPolynomialEquivAt_apply i Q₁]
+        exact mvPolynomial_degreeOf_eq_natDegree_asPolynomialAt i Q₁
+      _ < (e Q).natDegree := hpolyNat
+      _ = MvPolynomial.degreeOf i Q := hdegreeQ
+
+/-- A pseudo-reduction certificate which additionally records that neither the quotient nor the
+remainder introduces a variable absent from the dividend and divisor. -/
+structure SupportedMvPolynomialPseudoReductionAt
+    {K σ : Type*} [CommRing K] [DecidableEq σ]
+    (i : σ) (Q D : MvPolynomial σ K) where
+  exponent : ℕ
+  quotient : MvPolynomial σ K
+  remainder : MvPolynomial σ K
+  eq_mul_add :
+    mvPolynomialInitialAt i D ^ exponent * Q = D * quotient + remainder
+  remainder_degree_lt :
+    MvPolynomial.degreeOf i remainder < MvPolynomial.degreeOf i D
+  quotient_vars_subset : quotient.vars ⊆ Q.vars ∪ D.vars
+  remainder_vars_subset : remainder.vars ⊆ Q.vars ∪ D.vars
+
+/-- Support-preserving multivariable pseudo-division.  The recursive construction is performed in
+the original multivariable ring, so its support bounds are proved at every cancellation step and
+do not rely on an unstated naturality property of transported univariate division. -/
+noncomputable def supportedMvPolynomialPseudoReductionAt
+    {K σ : Type*} [Field K] [DecidableEq σ] (i : σ) :
+    ∀ (Q D : MvPolynomial σ K), MvPolynomial.degreeOf i D ≠ 0 →
+      SupportedMvPolynomialPseudoReductionAt i Q D
+  | Q, D, hDdegree => by
+      classical
+      by_cases h : MvPolynomial.degreeOf i D ≤ MvPolynomial.degreeOf i Q ∧ Q ≠ 0
+      · let A := mvPolynomialInitialAt i D
+        let Z := mvPolynomialInitialAt i Q *
+          MvPolynomial.X i ^
+            (MvPolynomial.degreeOf i Q - MvPolynomial.degreeOf i D)
+        let Q₁ := A * Q - D * Z
+        have hwf : MvPolynomial.degreeOf i Q₁ < MvPolynomial.degreeOf i Q := by
+          simpa [A, Z, Q₁] using
+            mvPolynomialPseudoDivision_step_degree_lt i h hDdegree
+        have hiD : i ∈ D.vars :=
+          (MvPolynomial.mem_vars_iff_degreeOf_ne_zero).mpr hDdegree
+        have hAvars : A.vars ⊆ D.vars := by
+          simpa [A] using mvPolynomialInitialAt_vars_subset i D
+        have hIQvars : (mvPolynomialInitialAt i Q).vars ⊆ Q.vars :=
+          mvPolynomialInitialAt_vars_subset i Q
+        have hXpowvars :
+            ((MvPolynomial.X i : MvPolynomial σ K) ^
+              (MvPolynomial.degreeOf i Q - MvPolynomial.degreeOf i D)).vars ⊆
+              D.vars := by
+          intro j hj
+          have hjX := MvPolynomial.vars_pow (MvPolynomial.X i : MvPolynomial σ K)
+            (MvPolynomial.degreeOf i Q - MvPolynomial.degreeOf i D) hj
+          rw [MvPolynomial.vars_X] at hjX
+          have hji : j = i := Finset.mem_singleton.mp hjX
+          simpa [hji] using hiD
+        have hZvars : Z.vars ⊆ Q.vars ∪ D.vars := by
+          intro j hj
+          have hj' := MvPolynomial.vars_mul
+            (mvPolynomialInitialAt i Q)
+            (MvPolynomial.X i ^
+              (MvPolynomial.degreeOf i Q - MvPolynomial.degreeOf i D)) hj
+          rcases Finset.mem_union.mp hj' with hjQ | hjX
+          · exact Finset.mem_union_left _ (hIQvars hjQ)
+          · exact Finset.mem_union_right _ (hXpowvars hjX)
+        have hQ₁vars : Q₁.vars ⊆ Q.vars ∪ D.vars := by
+          intro j hj
+          have hj' := MvPolynomial.vars_sub_subset (A * Q) (q := D * Z) hj
+          rcases Finset.mem_union.mp hj' with hjAQ | hjDZ
+          · have hj'' := MvPolynomial.vars_mul A Q hjAQ
+            rcases Finset.mem_union.mp hj'' with hjA | hjQ
+            · exact Finset.mem_union_right _ (hAvars hjA)
+            · exact Finset.mem_union_left _ hjQ
+          · have hj'' := MvPolynomial.vars_mul D Z hjDZ
+            rcases Finset.mem_union.mp hj'' with hjD | hjZ
+            · exact Finset.mem_union_right _ hjD
+            · exact hZvars hjZ
+        let d := supportedMvPolynomialPseudoReductionAt i Q₁ D hDdegree
+        have hdQuotientVars : d.quotient.vars ⊆ Q.vars ∪ D.vars := by
+          intro j hj
+          rcases Finset.mem_union.mp (d.quotient_vars_subset hj) with hjQ₁ | hjD
+          · exact hQ₁vars hjQ₁
+          · exact Finset.mem_union_right _ hjD
+        have hdRemainderVars : d.remainder.vars ⊆ Q.vars ∪ D.vars := by
+          intro j hj
+          rcases Finset.mem_union.mp (d.remainder_vars_subset hj) with hjQ₁ | hjD
+          · exact hQ₁vars hjQ₁
+          · exact Finset.mem_union_right _ hjD
+        have hAZvars : (A ^ d.exponent * Z).vars ⊆ Q.vars ∪ D.vars := by
+          intro j hj
+          rcases Finset.mem_union.mp (MvPolynomial.vars_mul (A ^ d.exponent) Z hj) with
+            hjA | hjZ
+          · exact Finset.mem_union_right _
+              (hAvars (MvPolynomial.vars_pow A d.exponent hjA))
+          · exact hZvars hjZ
+        exact
+          { exponent := d.exponent + 1
+            quotient := A ^ d.exponent * Z + d.quotient
+            remainder := d.remainder
+            eq_mul_add := by
+              have hd := d.eq_mul_add
+              dsimp only [Q₁] at hd
+              dsimp only [A, Z]
+              simp only [pow_succ]
+              calc
+                mvPolynomialInitialAt i D ^ d.exponent *
+                    mvPolynomialInitialAt i D * Q =
+                    mvPolynomialInitialAt i D ^ d.exponent *
+                      (mvPolynomialInitialAt i D * Q -
+                        D * (mvPolynomialInitialAt i Q *
+                          MvPolynomial.X i ^
+                            (MvPolynomial.degreeOf i Q -
+                              MvPolynomial.degreeOf i D))) +
+                      D * (mvPolynomialInitialAt i D ^ d.exponent *
+                        (mvPolynomialInitialAt i Q *
+                          MvPolynomial.X i ^
+                            (MvPolynomial.degreeOf i Q -
+                              MvPolynomial.degreeOf i D))) := by ring
+                _ = d.remainder + D * d.quotient +
+                      D * (mvPolynomialInitialAt i D ^ d.exponent *
+                        (mvPolynomialInitialAt i Q *
+                          MvPolynomial.X i ^
+                            (MvPolynomial.degreeOf i Q -
+                              MvPolynomial.degreeOf i D))) := by
+                    rw [hd]
+                    ring
+                _ = D *
+                      (mvPolynomialInitialAt i D ^ d.exponent *
+                          (mvPolynomialInitialAt i Q *
+                            MvPolynomial.X i ^
+                              (MvPolynomial.degreeOf i Q -
+                                MvPolynomial.degreeOf i D)) + d.quotient) +
+                        d.remainder := by ring
+            remainder_degree_lt := d.remainder_degree_lt
+            quotient_vars_subset := by
+              intro j hj
+              rcases Finset.mem_union.mp
+                  (MvPolynomial.vars_add_subset (A ^ d.exponent * Z) d.quotient hj) with
+                hjAZ | hjd
+              · exact hAZvars hjAZ
+              · exact hdQuotientVars hjd
+            remainder_vars_subset := hdRemainderVars }
+      · exact
+          { exponent := 0
+            quotient := 0
+            remainder := Q
+            eq_mul_add := by simp
+            remainder_degree_lt := by
+              by_cases hQ : Q = 0
+              · subst Q
+                exact Nat.pos_of_ne_zero hDdegree
+              · exact lt_of_not_ge fun hdegree ↦ h ⟨hdegree, hQ⟩
+            quotient_vars_subset := by simp
+            remainder_vars_subset := Finset.subset_union_left }
+  termination_by Q D _ => MvPolynomial.degreeOf i Q
+
+/-- The top-jet commutator for the total differential-polynomial derivation.  Differentiating in
+jet `n+1` after the total derivation equals total differentiation after that partial derivative,
+plus the partial derivative in jet `n`. -/
+theorem pderiv_succ_differentialPolynomialOverDerivation
+    {K : Type*} [CommRing K] [Differential K] (n : ℕ)
+    (P : DifferentialPolynomial Unit K) :
+    MvPolynomial.pderiv ((), n + 1)
+        (differentialPolynomialOverDerivation Unit K P) =
+      differentialPolynomialOverDerivation Unit K
+          (MvPolynomial.pderiv ((), n + 1) P) +
+        MvPolynomial.pderiv ((), n) P := by
+  classical
+  induction P using MvPolynomial.induction_on with
+  | C c => simp
+  | add P Q hP hQ => simp [hP, hQ]; abel
+  | mul_X P j hP =>
+      rcases j with ⟨u, m⟩
+      obtain rfl : u = () := Subsingleton.elim _ _
+      simp only [Derivation.leibniz, smul_eq_mul,
+        differentialPolynomialOverDerivation_X]
+      by_cases hmn : m = n
+      · subst m
+        simp [MvPolynomial.pderiv_X]
+        rw [hP]
+        ring
+      · by_cases hmtop : m = n + 1
+        · subst m
+          have hne : n + 1 ≠ n := Nat.ne_of_gt (Nat.lt_succ_self n)
+          simp [MvPolynomial.pderiv_X, Nat.add_comm]
+          rw [hP]
+          ring
+        · have hsucc : m + 1 ≠ n + 1 := by omega
+          have hnm : n ≠ m := Ne.symm hmn
+          have htopm : n + 1 ≠ m := Ne.symm hmtop
+          simp [MvPolynomial.pderiv_X, hmn, hmtop]
+          rw [hP]
+          ring
+
+/-- In characteristic zero, occurrence of a variable forces its partial derivative to be nonzero. -/
+theorem mvPolynomial_pderiv_ne_zero_of_mem_vars_charZero
+    {K σ : Type*} [Field K] [CharZero K] {P : MvPolynomial σ K} {i : σ}
+    (hi : i ∈ P.vars) : MvPolynomial.pderiv i P ≠ 0 := by
+  obtain ⟨s, hsP, his⟩ := (MvPolynomial.mem_vars_iff_mem_support i).mp hi
+  exact pderiv_ne_zero_of_mem_support hsP his
+
+/-- A polynomial of positive degree whose derivative is a nonzero constant has natural degree
+exactly one. -/
+theorem Polynomial.natDegree_eq_one_of_derivative_eq_C
+    {R : Type*} [CommRing R] [IsAddTorsionFree R]
+    {P : R[X]} {c : R} (hderiv : P.derivative = Polynomial.C c) (hc : c ≠ 0) :
+    P.natDegree = 1 := by
+  have hPpos : 0 < P.natDegree := by
+    by_contra h
+    have hPdegree : P.natDegree = 0 := Nat.eq_zero_of_not_pos h
+    rw [Polynomial.derivative_of_natDegree_zero hPdegree] at hderiv
+    exact hc (Polynomial.C_injective (by simpa using hderiv.symm))
+  have hdegree := Polynomial.degree_derivative_eq P hPpos
+  rw [hderiv, Polynomial.degree_C hc] at hdegree
+  have hsub : P.natDegree - 1 = 0 := by
+    exact_mod_cast hdegree.symm
+  omega
+
+/-- The derivative of a degree-one polynomial is its leading coefficient as a constant
+polynomial. -/
+theorem Polynomial.derivative_eq_C_leadingCoeff_of_natDegree_eq_one
+    {R : Type*} [CommRing R] {P : R[X]} (hP : P.natDegree = 1) :
+    P.derivative = Polynomial.C P.leadingCoeff := by
+  have hlead : P.leadingCoeff = P.coeff 1 := by
+    rw [Polynomial.leadingCoeff, hP]
+  rw [hlead]
+  rw [Polynomial.eq_X_add_C_of_natDegree_le_one hP.le]
+  simp
+
+/-- `Q` has no scalar jet variables of order strictly above `N`. -/
+def ScalarJetOrderBound
+    {K : Type*} [CommSemiring K] (N : ℕ) (Q : DifferentialPolynomial Unit K) : Prop :=
+  ∀ m : ℕ, N < m → ((), m) ∉ Q.vars
+
+/-- The declared scalar differential order is an upper bound on all occurring jets. -/
+theorem scalarJetOrderBound_order
+    {K : Type*} [CommSemiring K] (Q : DifferentialPolynomial Unit K) :
+    ScalarJetOrderBound (scalarDifferentialPolynomialOrder Q) Q := by
+  intro m hm hmem
+  exact (Nat.not_le_of_lt hm)
+    (Finset.le_sup (f := fun j : Unit × ℕ ↦ j.2) hmem)
+
+/-- Total differentiation raises a scalar jet-order bound by at most one. -/
+theorem ScalarJetOrderBound.derivation
+    {K : Type*} [Field K] [Differential K] [CharZero K]
+    {N : ℕ} {Q : DifferentialPolynomial Unit K}
+    (hQ : ScalarJetOrderBound N Q) :
+    ScalarJetOrderBound (N + 1)
+      (differentialPolynomialOverDerivation Unit K Q) := by
+  intro m hm hmem
+  have hmpos : 0 < m := by omega
+  let n := m - 1
+  have hmn : n + 1 = m := by
+    dsimp [n]
+    omega
+  have hn : N < n := by
+    dsimp [n]
+    omega
+  have htopQ : ((), n + 1) ∉ Q.vars := by
+    rw [hmn]
+    exact hQ m (by omega)
+  have hprevQ : ((), n) ∉ Q.vars := hQ n hn
+  have hzero : MvPolynomial.pderiv ((), m)
+      (differentialPolynomialOverDerivation Unit K Q) = 0 := by
+    rw [← hmn, pderiv_succ_differentialPolynomialOverDerivation]
+    rw [MvPolynomial.pderiv_eq_zero_of_notMem_vars htopQ,
+      MvPolynomial.pderiv_eq_zero_of_notMem_vars hprevQ, map_zero, add_zero]
+  exact mvPolynomial_pderiv_ne_zero_of_mem_vars_charZero hmem hzero
+
+/-- At a fresh successor jet, the total derivative is linear and its distinguished initial is the
+partial derivative in the preceding jet. -/
+theorem differentialPolynomialOverDerivation_initial_succ
+    {K : Type*} [Field K] [Differential K] [CharZero K]
+    {n : ℕ} {Q : DifferentialPolynomial Unit K}
+    (hfresh : ((), n + 1) ∉ Q.vars)
+    (hpartial : MvPolynomial.pderiv ((), n) Q ≠ 0) :
+    mvPolynomialInitialAt ((), n + 1)
+        (differentialPolynomialOverDerivation Unit K Q) =
+        MvPolynomial.pderiv ((), n) Q ∧
+      MvPolynomial.degreeOf ((), n + 1)
+        (differentialPolynomialOverDerivation Unit K Q) = 1 := by
+  classical
+  let top : Unit × ℕ := ((), n + 1)
+  let S : DifferentialPolynomial Unit K := MvPolynomial.pderiv ((), n) Q
+  let DQ : DifferentialPolynomial Unit K :=
+    differentialPolynomialOverDerivation Unit K Q
+  let e : DifferentialPolynomial Unit K ≃ₐ[K]
+      Polynomial (MvPolynomial {j : Unit × ℕ // j ≠ top} K) :=
+    mvPolynomialPolynomialEquivAt top
+  have hcomm : MvPolynomial.pderiv top DQ = S := by
+    dsimp only [top, DQ, S]
+    rw [pderiv_succ_differentialPolynomialOverDerivation,
+      MvPolynomial.pderiv_eq_zero_of_notMem_vars hfresh, map_zero, zero_add]
+  have hSfresh : top ∉ S.vars := by
+    intro hmem
+    apply hfresh
+    exact mvPolynomial_vars_pderiv_subset ((), n) Q hmem
+  have hS0 : S ≠ 0 := hpartial
+  have heS0 : e S ≠ 0 := by
+    intro heS
+    apply hS0
+    apply e.injective
+    simpa using heS
+  have hSdegree : MvPolynomial.degreeOf top S = 0 := by
+    by_contra hdegree
+    exact hSfresh ((MvPolynomial.mem_vars_iff_degreeOf_ne_zero).mpr hdegree)
+  have heSnat : (e S).natDegree = 0 := by
+    calc
+      (e S).natDegree = (mvPolynomialAsPolynomialAt top S).natDegree := by
+        rw [mvPolynomialPolynomialEquivAt_apply]
+      _ = MvPolynomial.degreeOf top S :=
+        (mvPolynomial_degreeOf_eq_natDegree_asPolynomialAt top S).symm
+      _ = 0 := hSdegree
+  have heSC : e S = Polynomial.C ((e S).coeff 0) :=
+    Polynomial.eq_C_of_natDegree_eq_zero heSnat
+  have heSc0 : (e S).coeff 0 ≠ 0 := by
+    intro hc
+    apply heS0
+    rw [heSC, hc]
+    simp
+  have hderiv : (e DQ).derivative = e S := by
+    calc
+      (e DQ).derivative = e (MvPolynomial.pderiv top DQ) := by
+        rw [mvPolynomialPolynomialEquivAt_apply,
+          mvPolynomialPolynomialEquivAt_apply]
+        exact (mvPolynomialAsPolynomialAt_pderiv top DQ).symm
+      _ = e S := congrArg e hcomm
+  have hdegreeOne : (e DQ).natDegree = 1 :=
+    Polynomial.natDegree_eq_one_of_derivative_eq_C
+      (hderiv.trans heSC) heSc0
+  constructor
+  · apply e.injective
+    calc
+      e (mvPolynomialInitialAt top DQ) =
+          Polynomial.C (e DQ).leadingCoeff := by
+        simpa [e] using mvPolynomialPolynomialEquivAt_initial top DQ
+      _ = (e DQ).derivative :=
+        (Polynomial.derivative_eq_C_leadingCoeff_of_natDegree_eq_one hdegreeOne).symm
+      _ = e S := hderiv
+  · calc
+      MvPolynomial.degreeOf top DQ =
+          (mvPolynomialAsPolynomialAt top DQ).natDegree :=
+        mvPolynomial_degreeOf_eq_natDegree_asPolynomialAt top DQ
+      _ = (e DQ).natDegree := by rw [mvPolynomialPolynomialEquivAt_apply]
+      _ = 1 := hdegreeOne
+
+/-- The `n`-fold total derivative of a scalar differential polynomial.  This recursive form keeps
+the defining successor equation available without any appeal to a closed-form computation. -/
+def differentialPolynomialIterateOver
+    {K : Type*} [Field K] [Differential K] :
+    ℕ → DifferentialPolynomial Unit K → DifferentialPolynomial Unit K
+  | 0, P => P
+  | n + 1, P => differentialPolynomialOverDerivation Unit K
+      (differentialPolynomialIterateOver n P)
+
+@[simp]
+theorem differentialPolynomialIterateOver_zero
+    {K : Type*} [Field K] [Differential K]
+    (P : DifferentialPolynomial Unit K) :
+    differentialPolynomialIterateOver 0 P = P := rfl
+
+@[simp]
+theorem differentialPolynomialIterateOver_succ
+    {K : Type*} [Field K] [Differential K]
+    (n : ℕ) (P : DifferentialPolynomial Unit K) :
+    differentialPolynomialIterateOver (n + 1) P =
+      differentialPolynomialOverDerivation Unit K
+        (differentialPolynomialIterateOver n P) := rfl
+
+/-- Every iterated derivative has the expected order bound, and its partial derivative in its new
+top jet is exactly the original separant.  This is the differential triangularity statement used
+by higher-jet pseudo-reduction. -/
+theorem differentialPolynomialIterateOver_orderBound_and_topPartial
+    {K : Type*} [Field K] [Differential K] [CharZero K]
+    (P : DifferentialPolynomial Unit K) :
+    ∀ n : ℕ,
+      ScalarJetOrderBound (scalarDifferentialPolynomialOrder P + n)
+          (differentialPolynomialIterateOver n P) ∧
+        MvPolynomial.pderiv
+            ((), scalarDifferentialPolynomialOrder P + n)
+            (differentialPolynomialIterateOver n P) =
+          scalarDifferentialPolynomialSeparant P := by
+  intro n
+  induction n with
+  | zero =>
+      constructor
+      · simpa using scalarJetOrderBound_order P
+      · rfl
+  | succ n ih =>
+      let Q := differentialPolynomialIterateOver n P
+      let m := scalarDifferentialPolynomialOrder P + n
+      have hbound : ScalarJetOrderBound m Q := by
+        simpa [Q, m] using ih.1
+      have hpartial : MvPolynomial.pderiv ((), m) Q =
+          scalarDifferentialPolynomialSeparant P := by
+        simpa [Q, m] using ih.2
+      constructor
+      · simpa [Q, m, Nat.add_assoc] using hbound.derivation
+      · have hfresh : ((), m + 1) ∉ Q.vars :=
+          hbound (m + 1) (Nat.lt_succ_self m)
+        rw [differentialPolynomialIterateOver_succ]
+        have hcomm := pderiv_succ_differentialPolynomialOverDerivation m Q
+        rw [MvPolynomial.pderiv_eq_zero_of_notMem_vars hfresh, map_zero,
+          zero_add, hpartial] at hcomm
+        simpa [Q, m, Nat.add_assoc] using hcomm
+
+/-- Every positive iterated derivative is linear in its newly introduced highest jet, and its
+initial there is the original separant. -/
+theorem differentialPolynomialIterateOver_initial_top
+    {K : Type*} [Field K] [Differential K] [CharZero K]
+    {P : DifferentialPolynomial Unit K} (hPvars : P.vars.Nonempty) (n : ℕ) :
+    mvPolynomialInitialAt
+          ((), scalarDifferentialPolynomialOrder P + n + 1)
+          (differentialPolynomialIterateOver (n + 1) P) =
+        scalarDifferentialPolynomialSeparant P ∧
+      MvPolynomial.degreeOf
+          ((), scalarDifferentialPolynomialOrder P + n + 1)
+          (differentialPolynomialIterateOver (n + 1) P) = 1 := by
+  let Q := differentialPolynomialIterateOver n P
+  let m := scalarDifferentialPolynomialOrder P + n
+  have hdata :=
+    differentialPolynomialIterateOver_orderBound_and_topPartial P n
+  have hbound : ScalarJetOrderBound m Q := by
+    simpa [Q, m] using hdata.1
+  have hfresh : ((), m + 1) ∉ Q.vars :=
+    hbound (m + 1) (Nat.lt_succ_self m)
+  have hpartial : MvPolynomial.pderiv ((), m) Q ≠ 0 := by
+    rw [show MvPolynomial.pderiv ((), m) Q =
+      scalarDifferentialPolynomialSeparant P by simpa [Q, m] using hdata.2]
+    exact scalarDifferentialPolynomialSeparant_ne_zero hPvars
+  have hlinear := differentialPolynomialOverDerivation_initial_succ hfresh hpartial
+  constructor
+  · exact (by
+      rw [differentialPolynomialIterateOver_succ]
+      simpa [Q, m, Nat.add_assoc] using hlinear.1.trans hdata.2)
+  · exact (by
+      rw [differentialPolynomialIterateOver_succ]
+      simpa [Q, m, Nat.add_assoc] using hlinear.2)
+
+/-- The algebraic differential ideal generated by all total derivatives of `P`. -/
+def differentialPolynomialIterateIdeal
+    {K : Type*} [Field K] [Differential K]
+    (P : DifferentialPolynomial Unit K) : Ideal (DifferentialPolynomial Unit K) :=
+  Ideal.span (Set.range fun n : ℕ ↦ differentialPolynomialIterateOver n P)
+
+/-- Every iterated derivative is one of the generators of its differential principal ideal. -/
+theorem differentialPolynomialIterateOver_mem_iterateIdeal
+    {K : Type*} [Field K] [Differential K]
+    (P : DifferentialPolynomial Unit K) (n : ℕ) :
+    differentialPolynomialIterateOver n P ∈ differentialPolynomialIterateIdeal P :=
+  Ideal.subset_span ⟨n, rfl⟩
+
+/-- An order bound gives the corresponding inequality for the declared scalar order. -/
+theorem scalarDifferentialPolynomialOrder_le_of_orderBound
+    {K : Type*} [CommSemiring K] {N : ℕ}
+    {Q : DifferentialPolynomial Unit K} (hQ : ScalarJetOrderBound N Q) :
+    scalarDifferentialPolynomialOrder Q ≤ N := by
+  unfold scalarDifferentialPolynomialOrder
+  apply Finset.sup_le
+  intro j hj
+  by_contra hle
+  exact hQ j.2 (Nat.lt_of_not_ge hle) hj
+
+/-- If all variables have order at most `N` but the order-`N` scalar jet is absent, the declared
+order is strictly below `N` (provided `N` is positive). -/
+theorem scalarDifferentialPolynomialOrder_lt_of_orderBound_notMem_top
+    {K : Type*} [CommSemiring K] {N : ℕ}
+    {Q : DifferentialPolynomial Unit K} (hN : 0 < N)
+    (hQ : ScalarJetOrderBound N Q) (htop : ((), N) ∉ Q.vars) :
+    scalarDifferentialPolynomialOrder Q < N := by
+  unfold scalarDifferentialPolynomialOrder
+  apply (Finset.sup_lt_iff hN).mpr
+  intro j hj
+  have hjle : j.2 ≤ N := by
+    by_contra hle
+    exact hQ j.2 (Nat.lt_of_not_ge hle) hj
+  exact lt_of_le_of_ne hjle fun heq ↦ by
+    apply htop
+    have hjtop : j = ((), N) := Prod.ext (Subsingleton.elim _ _) heq
+    simpa [hjtop] using hj
+
+/-- A certificate that all jets strictly above the characteristic order have been removed using
+explicit powers of the characteristic separant and iterated derivatives of the characteristic
+polynomial. -/
+structure HigherJetPseudoReduction
+    {K : Type*} [Field K] [Differential K]
+    (P Q : DifferentialPolynomial Unit K) where
+  separantExponent : ℕ
+  remainder : DifferentialPolynomial Unit K
+  congruence :
+    scalarDifferentialPolynomialSeparant P ^ separantExponent * Q - remainder ∈
+      differentialPolynomialIterateIdeal P
+  remainder_order_le :
+    scalarDifferentialPolynomialOrder remainder ≤ scalarDifferentialPolynomialOrder P
+
+/-- Pseudo-reduce every jet above the characteristic leader.  At order `m > ord(P)`, the divisor
+is the `(m - ord(P))`-th total derivative of `P`; it is linear in jet `m` with initial the original
+separant.  Support preservation makes the recursive order drop unconditional. -/
+noncomputable def higherJetPseudoReduction
+    {K : Type*} [Field K] [Differential K] [CharZero K]
+    (P : DifferentialPolynomial Unit K) (hPvars : P.vars.Nonempty) :
+    ∀ Q : DifferentialPolynomial Unit K, HigherJetPseudoReduction P Q
+  | Q => by
+      classical
+      by_cases hle : scalarDifferentialPolynomialOrder Q ≤
+          scalarDifferentialPolynomialOrder P
+      · exact
+          { separantExponent := 0
+            remainder := Q
+            congruence := by
+              change Q - Q ∈ differentialPolynomialIterateIdeal P
+              simp
+            remainder_order_le := hle }
+      · have hlt : scalarDifferentialPolynomialOrder P <
+            scalarDifferentialPolynomialOrder Q := Nat.lt_of_not_ge hle
+        let n := scalarDifferentialPolynomialOrder Q -
+          scalarDifferentialPolynomialOrder P - 1
+        have htopOrder : scalarDifferentialPolynomialOrder P + n + 1 =
+            scalarDifferentialPolynomialOrder Q := by
+          dsimp only [n]
+          omega
+        let top : Unit × ℕ :=
+          ((), scalarDifferentialPolynomialOrder P + n + 1)
+        let D : DifferentialPolynomial Unit K :=
+          differentialPolynomialIterateOver (n + 1) P
+        have hDtop := differentialPolynomialIterateOver_initial_top hPvars n
+        have hDdegree : MvPolynomial.degreeOf top D ≠ 0 := by
+          have hdegree : MvPolynomial.degreeOf top D = 1 := by
+            simpa [top, D] using hDtop.2
+          omega
+        have hQvars : Q.vars.Nonempty := by
+          by_contra hvars
+          have hempty : Q.vars = ∅ := Finset.not_nonempty_iff_eq_empty.mp hvars
+          have horder0 : scalarDifferentialPolynomialOrder Q = 0 := by
+            simp [scalarDifferentialPolynomialOrder, hempty]
+          omega
+        have htopLeader : top = scalarDifferentialPolynomialLeader Q := by
+          unfold top scalarDifferentialPolynomialLeader
+          exact Prod.ext (Subsingleton.elim _ _) htopOrder
+        have hQdegree : MvPolynomial.degreeOf top Q ≠ 0 := by
+          rw [htopLeader, ← MvPolynomial.mem_vars_iff_degreeOf_ne_zero]
+          exact scalarDifferentialPolynomialLeader_mem_vars hQvars
+        let d := supportedMvPolynomialPseudoReductionAt top Q D hDdegree
+        have hDbound : ScalarJetOrderBound
+            (scalarDifferentialPolynomialOrder Q) D := by
+          have hdata :=
+            differentialPolynomialIterateOver_orderBound_and_topPartial P (n + 1)
+          rw [← htopOrder]
+          simpa [D, Nat.add_assoc] using hdata.1
+        have hRbound : ScalarJetOrderBound
+            (scalarDifferentialPolynomialOrder Q) d.remainder := by
+          intro m hm hmem
+          rcases Finset.mem_union.mp (d.remainder_vars_subset hmem) with hmemQ | hmemD
+          · exact scalarJetOrderBound_order Q m hm hmemQ
+          · exact hDbound m hm hmemD
+        have hRtop : top ∉ d.remainder.vars := by
+          intro hmem
+          have hdegree0 : MvPolynomial.degreeOf top d.remainder = 0 := by
+            have hdlt := d.remainder_degree_lt
+            have hDone : MvPolynomial.degreeOf top D = 1 := by
+              simpa [top, D] using hDtop.2
+            omega
+          exact (MvPolynomial.mem_vars_iff_degreeOf_ne_zero.mp hmem) hdegree0
+        have hRorder : scalarDifferentialPolynomialOrder d.remainder <
+            scalarDifferentialPolynomialOrder Q := by
+          have hQpos : 0 < scalarDifferentialPolynomialOrder Q := by omega
+          apply scalarDifferentialPolynomialOrder_lt_of_orderBound_notMem_top
+            hQpos hRbound
+          simpa [top, htopOrder] using hRtop
+        have hstep :
+            scalarDifferentialPolynomialSeparant P ^ d.exponent * Q - d.remainder ∈
+              differentialPolynomialIterateIdeal P := by
+          have hDmem := differentialPolynomialIterateOver_mem_iterateIdeal P (n + 1)
+          have heq :
+              scalarDifferentialPolynomialSeparant P ^ d.exponent * Q - d.remainder =
+                D * d.quotient := by
+            calc
+              scalarDifferentialPolynomialSeparant P ^ d.exponent * Q - d.remainder =
+                  mvPolynomialInitialAt top D ^ d.exponent * Q - d.remainder := by
+                    rw [show mvPolynomialInitialAt top D =
+                      scalarDifferentialPolynomialSeparant P by
+                        simpa [top, D] using hDtop.1]
+              _ = D * d.quotient := by rw [d.eq_mul_add]; ring
+          rw [heq]
+          exact Ideal.mul_mem_right d.quotient
+            (differentialPolynomialIterateIdeal P) hDmem
+        let next := higherJetPseudoReduction P hPvars d.remainder
+        exact
+          { separantExponent := d.exponent + next.separantExponent
+            remainder := next.remainder
+            congruence := by
+              have hmul := (differentialPolynomialIterateIdeal P).mul_mem_left
+                (scalarDifferentialPolynomialSeparant P ^ next.separantExponent) hstep
+              have hnext := next.congruence
+              rw [show
+                scalarDifferentialPolynomialSeparant P ^
+                      (d.exponent + next.separantExponent) * Q - next.remainder =
+                    scalarDifferentialPolynomialSeparant P ^ next.separantExponent *
+                        (scalarDifferentialPolynomialSeparant P ^ d.exponent * Q -
+                          d.remainder) +
+                      (scalarDifferentialPolynomialSeparant P ^ next.separantExponent *
+                          d.remainder - next.remainder) by ring]
+              exact (differentialPolynomialIterateIdeal P).add_mem hmul hnext
+            remainder_order_le := next.remainder_order_le }
+  termination_by Q => scalarDifferentialPolynomialOrder Q
 
 end
 

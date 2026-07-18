@@ -389,13 +389,42 @@ The required new infrastructure is:
    under the half-density radial envelope;
 5. `[PHASE FORMALIZED; AMPLITUDE OPEN]` a concrete radial-PSWF endpoint/exterior interface proving
    the all-radial primitive `(11)`;
-6. `[ABEL BOUNDARY AND SCALED PERIODIZATION FORMALIZED; ONE-SIDED SPECIALIZATION OPEN]` the
-   fixed-mode source variation bound `(19e)` and the source-specific Poisson specialization `(19a)`;
+6. `[GENERIC COMPACT-SOURCE ONE-SIDED SPECIALIZATION FORMALIZED; PROLATE INSTANCE OPEN]` construct
+   the concrete pointwise constrained source, prove its symmetric-Lebesgue input, identify its
+   Fourier transform with `q_lambda`, and prove the fixed-mode source variation bound `(19e)`;
 7. the constrained-source and critical-Mellin specialization `(18)`--`(32)`.
 
 No abstract hypothesis wrapper is sufficient: the concrete prolate primitive, one-sided Poisson
 specialization, and fixed-mode variation estimate must be theorems before `(32)` can be promoted
 or used in a paper.
+
+### Exact open core after the generic Abel theorem
+
+The generic analytic identity is no longer open. The formal theorem now gives `(19a)` for every
+integrable even compactly supported real source of zero mean at a symmetric Lebesgue point, and
+proves that its physical lattice tail has literal finite support. The first route-specific missing
+map is therefore
+
+```text
+constrained L2 prolate mode
+  -> canonical real pointwise representative g_lambda
+  -> even + compact support + L1 + integral zero
+  -> symmetric Lebesgue point of its scaled periodization at 0
+  -> Fourier(g_lambda)=q_lambda.                                (35)
+```
+
+The current operator corpus proves time-limited support and the vanishing aperture integral only
+at the `L2`-subspace level. It does not yet construct the continuous PSWF representative needed to
+evaluate `g_lambda(0)`, form the physical lattice samples, or state total variation. Thus `(35)`,
+not Poisson summation, is the first exact formal source gate. After `(35)`, the remaining analytic
+estimate is the cofinal fixed-mode regularity law
+
+```text
+Var(g_lambda^+)=O(1),                                          (19e)
+```
+
+followed by its substitution into the already formalized BV envelope and clipped critical-Mellin
+pairing. This separates the representative/regularity problem from the completed Abel machinery.
 
 ## Gates
 
@@ -415,8 +444,10 @@ or used in a paper.
 - [x] formalize the exact exterior Liouville phase, dilation derivative, and derivative floor
 - [x] compute and formalize the scaled compact-periodization Fourier coefficients for every L1
   source, with exact value `a * Fourier(f)(a*m)`
-- [ ] combine evenness, zero mean, compact support, and the Abel boundary theorem into the exact
-  source-specific one-sided Poisson--Muntz specialization `(19a)`
+- [x] combine evenness, zero mean, compact support, and the Abel boundary theorem into the exact
+  generic one-sided Poisson--Muntz specialization, including a finite physical-lattice cutoff
+- [ ] construct the canonical pointwise representative of the constrained prolate mode and
+  instantiate the generic theorem as the source-specific identity `(19a)`
 - [ ] prove the fixed-mode source variation bound `(19e)`
 - [ ] promote `(18)` and `(32)` after the primitive and source-regularity audits
 - [ ] formalize the concrete radial-PSWF primitive theorem and its polar consequence in Lean

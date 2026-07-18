@@ -1,9 +1,9 @@
 # The Poisson--Muntz Abel boundary has one exact mean defect
 
 - **ID:** `poisson-muntz-abel-mean-defect-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / SOURCE-SAMPLING INFRASTRUCTURE
-- **Scientific status:** `[PAPER-PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Scientific status:** `[LEAN-PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Statement:** At every symmetric Lebesgue point of an L1 periodization, the one-sided Abel sum
   of the sampled Fourier transform is exactly half the physical lattice value minus the unique
   zero-frequency mean defect.
@@ -128,3 +128,25 @@ remains route-specific is to instantiate the symmetric Lebesgue condition for th
 source away from endpoint-hit apertures, and then to justify replacement of the Abel limit by the
 ordinary Fourier-tail sum using its endpoint oscillation law.
 
+## Formal theorem surface
+
+The exact paper theorem and its compact-support consequences are formalized in
+`formal/GaloisForLFunctions/RHTower/PoissonMuntzAbelMeanDefect.lean`:
+
+- `tendsto_poissonMuntzAbelSum_meanDefect` proves `(3)` at a symmetric Lebesgue point;
+- `tendsto_poissonMuntzAbelSum_of_integral_eq_zero` proves `(4)`;
+- `poissonMuntzScaledPeriodization_zero_eq_zero_add_two_tsum` proves `(5)`;
+- `exists_poissonMuntzPhysicalLattice_cutoff_of_hasCompactSupport` proves a literal eventual-zero
+  cutoff for compact sources;
+- `finite_support_poissonMuntzPhysicalLattice_of_hasCompactSupport` proves that the sampled physical
+  sequence has finite support;
+- `summable_poissonMuntzPhysicalLattice_of_hasCompactSupport` discharges the summability hypothesis;
+- `tendsto_sqrt_mul_poissonMuntzAbelSum_physicalLattice_of_integral_eq_zero` proves `(6)`;
+- `tendsto_sqrt_mul_poissonMuntzAbelSum_physicalLattice_of_compactSupport` proves the compact-source
+  endpoint form directly.
+
+The exact module build passes. A separate `#print axioms` audit reports only `propext`,
+`Classical.choice`, and `Quot.sound` for every headline theorem. No project axiom or unproved analytic
+hypothesis is used. The generic theorem is now closed; the constrained-prolate route still has to
+construct its concrete pointwise source and prove the source-specific symmetric-Lebesgue and
+fixed-mode variation inputs.

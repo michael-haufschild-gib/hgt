@@ -177,6 +177,127 @@ theorem exists_torsionLanguageUniversal :
     ∃ u : ℕ → ℂ, TorsionLanguageUniversal u :=
   ⟨universalTorsionPhase, universalTorsionPhase_torsionLanguageUniversal⟩
 
+private noncomputable def concatenatedFiniteWordsOne
+    (e : ℕ → FiniteWord ℂ) : ℕ → ℂ :=
+  Function.extend (finiteWordPosition e)
+    (fun a => (e a.1).value a.2) (fun _ => 1)
+
+private theorem concatenatedFiniteWordsOne_apply
+    (e : ℕ → FiniteWord ℂ) (a : Σ n, Fin (e n).length) :
+    concatenatedFiniteWordsOne e (finiteWordPosition e a) =
+      (e a.1).value a.2 := by
+  exact (finiteWordPosition_injective e).extend_apply _ _ _
+
+private theorem concatenatedFiniteWordsOne_at_block
+    (e : ℕ → FiniteWord ℂ) {n : ℕ} (r : Fin (e n).length) :
+    concatenatedFiniteWordsOne e (finiteWordStart e n + (r : ℕ)) =
+      (e n).value r := by
+  simpa [finiteWordPosition] using
+    (concatenatedFiniteWordsOne_apply e ⟨n, r⟩)
+
+private theorem norm_torsionWordAt_value (n : ℕ)
+    (r : Fin (torsionWordAt n).length) :
+    ‖(torsionWordAt n).value r‖ = 1 := by
+  unfold torsionWordAt at r ⊢
+  generalize hdecode : Encodable.decode (α := TorsionWord) (Nat.unpair n).1 =
+    decoded at r ⊢
+  cases decoded with
+  | none => exact Fin.elim0 r
+  | some word =>
+    rcases word with ⟨m, M, s⟩
+    simp only at r
+    simp only [r.isLt, ↓reduceDIte]
+    exact Complex.norm_eq_one_of_mem_rootsOfUnity (s r).property
+
+private theorem torsion_torsionWordAt_value (n : ℕ)
+    (r : Fin (torsionWordAt n).length) :
+    ∃ m : ℕ, 0 < m ∧ (torsionWordAt n).value r ^ m = 1 := by
+  unfold torsionWordAt at r ⊢
+  generalize hdecode : Encodable.decode (α := TorsionWord) (Nat.unpair n).1 =
+    decoded at r ⊢
+  cases decoded with
+  | none => exact Fin.elim0 r
+  | some word =>
+    rcases word with ⟨m, M, s⟩
+    simp only at r
+    refine ⟨m, m.pos, ?_⟩
+    simp only [r.isLt, ↓reduceDIte]
+    have hp := congrArg (fun z : ℂˣ => (z : ℂ)) (s r).property
+    simpa using hp
+
+/-- A chosen torsion-language-universal phase with no zero-valued separators.  Unused positions
+in the word concatenation are filled by the root of unity `1`. -/
+noncomputable def universalUnitTorsionPhase : ℕ → ℂ :=
+  concatenatedFiniteWordsOne torsionWordAt
+
+/-- Every entry of the unit-filled universal torsion phase has unit norm. -/
+theorem universalUnitTorsionPhase_norm (n : ℕ) :
+    ‖universalUnitTorsionPhase n‖ = 1 := by
+  classical
+  by_cases h : ∃ a, finiteWordPosition torsionWordAt a = n
+  · obtain ⟨a, rfl⟩ := h
+    rw [universalUnitTorsionPhase, concatenatedFiniteWordsOne_apply]
+    exact norm_torsionWordAt_value a.1 a.2
+  · rw [universalUnitTorsionPhase, concatenatedFiniteWordsOne,
+      Function.extend_apply' _ _ _ h]
+    simp
+
+/-- Every entry of the unit-filled universal phase is itself a root of unity of some positive
+order. -/
+theorem universalUnitTorsionPhase_isTorsion (n : ℕ) :
+    ∃ m : ℕ, 0 < m ∧ universalUnitTorsionPhase n ^ m = 1 := by
+  classical
+  by_cases h : ∃ a, finiteWordPosition torsionWordAt a = n
+  · obtain ⟨a, rfl⟩ := h
+    rw [universalUnitTorsionPhase, concatenatedFiniteWordsOne_apply]
+    exact torsion_torsionWordAt_value a.1 a.2
+  · rw [universalUnitTorsionPhase, concatenatedFiniteWordsOne,
+      Function.extend_apply' _ _ _ h]
+    exact ⟨1, by omega, by simp⟩
+
+/-- The unit-filled concatenation still contains every finite torsion word beyond every cutoff. -/
+theorem universalUnitTorsionPhase_torsionLanguageUniversal :
+    TorsionLanguageUniversal universalUnitTorsionPhase := by
+  intro m M N hm s hs
+  have hs0 : ∀ r, s r ≠ 0 := by
+    intro r hzero
+    have h := hs r
+    rw [hzero, zero_pow (Nat.ne_of_gt hm)] at h
+    exact zero_ne_one h
+  let rootWord : Fin M → rootsOfUnity m ℂ := fun r =>
+    ⟨Units.mk0 (s r) (hs0 r), by
+      rw [mem_rootsOfUnity]
+      apply Units.ext
+      simp [hs r]⟩
+  let task : TorsionWord := ⟨⟨m, hm⟩, M, rootWord⟩
+  let n := Nat.pair (Encodable.encode task) N
+  have hlength : (torsionWordAt n).length = M := by
+    simp only [torsionWordAt, n, Nat.unpair_pair, Encodable.encodek]
+    simp [task]
+  have hvalue (r : Fin M) : (torsionWordAt n).value r = s r := by
+    simp only [torsionWordAt, n, Nat.unpair_pair, Encodable.encodek]
+    simp [task, rootWord, r.isLt]
+  refine ⟨finiteWordStart torsionWordAt n, ?_, ?_⟩
+  · exact (Nat.right_le_pair (Encodable.encode task) N).trans
+      (index_le_finiteWordStart torsionWordAt n)
+  · intro r
+    let r' : Fin (torsionWordAt n).length := Fin.cast hlength.symm r
+    have hv := concatenatedFiniteWordsOne_at_block torsionWordAt r'
+    have hr' : (r' : ℕ) = (r : ℕ) := by simp [r']
+    rw [hr'] at hv
+    exact hv.trans (hvalue r)
+
+/-- There exists a torsion-language-universal phase whose every entry has unit norm. -/
+theorem exists_unitNorm_torsionLanguageUniversal :
+    ∃ u : ℕ → ℂ,
+      TorsionLanguageUniversal u ∧
+      (∀ n, ‖u n‖ = 1) ∧
+      ∀ n, ∃ m : ℕ, 0 < m ∧ u n ^ m = 1 :=
+  ⟨universalUnitTorsionPhase,
+    universalUnitTorsionPhase_torsionLanguageUniversal,
+    universalUnitTorsionPhase_norm,
+    universalUnitTorsionPhase_isTorsion⟩
+
 /-- A translated bounded multiplicity pattern evaluates as its finite phase character. -/
 theorem prod_shiftedAtomPatternKey
     {M D : ℕ} (u : ℕ → ℂ) (q K : ℕ)

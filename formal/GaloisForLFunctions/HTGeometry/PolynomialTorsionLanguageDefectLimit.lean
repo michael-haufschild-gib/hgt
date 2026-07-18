@@ -72,7 +72,7 @@ theorem tendsto_polynomialPatternPowerValuation_sub_of_moments
     rw [hlimit]
     by_cases hp : p = p₀
     · subst p
-      simpa using (tendsto_const_nhds : Tendsto (fun _ : ℝ => (0 : ℝ)) atTop (𝓝 0))
+      simp
     · obtain ⟨μ, _hμD, hcancel, hmoment⟩ :=
         exists_first_atomPatternDifference_moment p₀ p (Ne.symm hp) hcount₀ hcount
       have hceilμ : Nat.ceil β ≤ μ := by
@@ -89,8 +89,7 @@ theorem tendsto_polynomialPatternPowerValuation_sub_of_moments
       have hpoch : (descPochhammer ℝ μ).eval β ≠ 0 := by
         rw [descPochhammer_eval_eq_prod_range]
         apply Finset.prod_ne_zero_iff.mpr
-        intro j hj
-        intro hzero
+        intro j hj hzero
         have hβj : β = (j : ℝ) := sub_eq_zero.mp hzero
         apply hβnat
         rw [hβj, Nat.ceil_natCast]

@@ -174,6 +174,100 @@ theorem exists_mobiusEquiv_conjugate_affine
       exists_conjugate_affine_of_c_ne_zero hdet hc
     exact ⟨ratFuncFixedPointToInfinityEquiv r, u, β, heq⟩
 
+/-- The inverse of translation by `r` is translation by `-r`. -/
+theorem ratFuncTranslationEquiv_symm (r : K) :
+    (ratFuncTranslationEquiv r).symm = ratFuncTranslationEquiv (-r) := by
+  have hmul :
+      ratFuncTranslationEquiv (-r) * ratFuncTranslationEquiv r = 1 := by
+    apply RatFunc.algEquiv_ext_X
+    change ratFuncTranslationEquiv (-r)
+      (ratFuncTranslationEquiv r RatFunc.X) = RatFunc.X
+    rw [ratFuncTranslationEquiv_X, map_add,
+      ratFuncTranslationEquiv_X, AlgEquiv.commutes]
+    push_cast
+    ring
+  have h := eq_inv_of_mul_eq_one_left hmul
+  simpa using h.symm
+
+private theorem ratFunc_conjugate_mul
+    (h k e a n : RatFunc K ≃ₐ[K] RatFunc K)
+    (he : h.symm * e * h = a)
+    (hk : k.symm * a * k = n) :
+    (h * k).symm * e * (h * k) = n := by
+  calc
+    (h * k).symm * e * (h * k) =
+        k.symm * (h.symm * e * h) * k := by
+          change (h * k)⁻¹ * e * (h * k) =
+            k⁻¹ * (h⁻¹ * e * h) * k
+          group
+    _ = k.symm * a * k := by rw [he]
+    _ = n := hk
+
+/-- Every nonidentity Möbius automorphism over an algebraically closed field is conjugate either
+to a pure scaling or to unit translation. -/
+theorem mobiusEquiv_normalForm
+    [IsAlgClosed K] {a b c d : K} (hdet : a * d - b * c ≠ 0)
+    (hne : RatFunc.mobiusEquiv a b c d hdet ≠ AlgEquiv.refl) :
+    (∃ (h : RatFunc K ≃ₐ[K] RatFunc K) (u : Kˣ),
+        h.symm * RatFunc.mobiusEquiv a b c d hdet * h =
+          ratFuncUnitScaleEquiv u) ∨
+      (∃ h : RatFunc K ≃ₐ[K] RatFunc K,
+        h.symm * RatFunc.mobiusEquiv a b c d hdet * h =
+          ratFuncTranslationEquiv 1) := by
+  let e := RatFunc.mobiusEquiv a b c d hdet
+  obtain ⟨h, u, β, he⟩ := exists_mobiusEquiv_conjugate_affine hdet
+  have haffine : ratFuncAffineEquiv u β ≠ AlgEquiv.refl := by
+    intro ha
+    apply hne
+    change e = AlgEquiv.refl
+    calc
+      e = h * (h.symm * e * h) * h.symm := by
+        change e = h * (h⁻¹ * e * h) * h⁻¹
+        group
+      _ = h * ratFuncAffineEquiv u β * h.symm := by rw [he]
+      _ = h * AlgEquiv.refl * h.symm := by rw [ha]
+      _ = AlgEquiv.refl := by
+        change h * 1 * h⁻¹ = 1
+        group
+  rcases ratFuncAffineEquiv_normalForm u β haffine with hscale | htrans
+  · left
+    obtain ⟨r, hr⟩ := hscale
+    let k := ratFuncTranslationEquiv r
+    refine ⟨h * k, u, ?_⟩
+    have hk : k.symm * ratFuncAffineEquiv u β * k =
+        ratFuncUnitScaleEquiv u := by
+      dsimp [k]
+      rw [ratFuncTranslationEquiv_symm]
+      exact hr
+    exact ratFunc_conjugate_mul h k e
+      (ratFuncAffineEquiv u β) (ratFuncUnitScaleEquiv u) he hk
+  · right
+    obtain ⟨v, hv⟩ := htrans
+    let k := (ratFuncUnitScaleEquiv v).symm
+    refine ⟨h * k, ?_⟩
+    have hk : k.symm * ratFuncAffineEquiv u β * k =
+        ratFuncTranslationEquiv 1 := by
+      simpa [k] using hv
+    exact ratFunc_conjugate_mul h k e
+      (ratFuncAffineEquiv u β) (ratFuncTranslationEquiv 1) he hk
+
+/-- Every nonidentity coefficient-fixing automorphism of `K(X)` over an algebraically closed
+field has the scaling-or-unit-translation projective normal form. -/
+theorem ratFuncAlgEquiv_normalForm
+    [IsAlgClosed K] (e : RatFunc K ≃ₐ[K] RatFunc K)
+    (hne : e ≠ AlgEquiv.refl) :
+    (∃ (h : RatFunc K ≃ₐ[K] RatFunc K) (u : Kˣ),
+        h.symm * e * h = ratFuncUnitScaleEquiv u) ∨
+      (∃ h : RatFunc K ≃ₐ[K] RatFunc K,
+        h.symm * e * h = ratFuncTranslationEquiv 1) := by
+  obtain ⟨a, b, c, d, hdet, hX⟩ := RatFunc.exists_mobius_image_X e
+  have he : e = RatFunc.mobiusEquiv a b c d hdet := by
+    apply RatFunc.algEquiv_ext_X
+    rw [RatFunc.mobiusEquiv_X]
+    exact hX
+  subst e
+  exact mobiusEquiv_normalForm hdet hne
+
 end
 
 end GaloisForLFunctions.HTGeometry

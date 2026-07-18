@@ -75,15 +75,20 @@ coordinated four-slot pool.
   now exist in `LocalizedQuotientMatroid`, `SourceBoundaryQuotientMatroid`, and
   `SplitSourceBoundaryMatroid`.  The exact owning target and scratch axiom audit pass; the remaining
   work is the serialized umbrella/index/lint gate and card promotion.
-- scalar order lane: finish and verify `SimpleTranscendentalIntersection` and
-  `ScalarDifferentialRationalOrder`.
-- bounded-relation lane: formalize the arbitrary positive superlinear profile and the corrected
-  shifted polynomial profile `B * (n + 1)^β`; the literal unshifted paper formula is inconsistent
-  at `n = 0`.
-- projective fixed-field lane: build the multivariate free-coordinate partial-kernel theorem needed
-  by the depth-two, one-sided, and Tits fixed-field cards.
-- root lane: integrate the already-green scalar substitution/projective/finite-torsor leaves and
-  build the order/leader/total-degree ranking foundation for unrestricted differential Lüroth.
+- scalar/Lüroth lane: `DifferentialKernelCharacteristic` now constructs a genuine minimal-rank
+  irreducible characteristic relation with initial and separant outside the evaluation kernel;
+  `DifferentialCharacteristicPseudoReduction` is the active exclusive leaf implementing
+  nonmonic pseudo-division and differential high-jet reduction.
+- bounded/ADE/torsion lane: the bounded-relation profile card is leaf-complete, and
+  `PolynomialTorsionLanguageDefectLimit` is the active exclusive leaf closing the polynomial
+  torsion-language TLU limit and unconditional integer-ADE contradiction.
+- projective fixed-field lane: `FreeJetTranslationFixedField` proves the depth-`n` tail fixed-field
+  theorem; the active exclusive follow-on is connecting the actual projective current action to
+  that free-coordinate theorem.
+- root lane: `RatFuncProjectiveNormalForm` now proves that every nonidentity coefficient-fixing
+  automorphism of `K(X)` over an algebraically closed field is conjugate to a pure scaling or unit
+  translation.  Its exact leaf build, axiom audit, forbidden-token scan, and diff check are green;
+  the next root work is theorem-surface integration and the serialized batch gate.
 
 ## Completed compiler queue
 
@@ -215,10 +220,11 @@ DAGs without repeating the audits.
   and logarithmic-derivative foundations
 - [ ] `complete-scalar-persistent-gauge-reduction` — stable-core reduction to a projective
   transformation, the mutually exclusive `1`, `mu_N`, `G_m`, and `G_a` branches, their exact fixed
-  fields, and rank-one Picard--Vessiot torsors inventoried; the charged `G_m` branch is now covered
-  by `ScalarDifferentialTorsor` in addition to the older invariant kernels, but differential
-  Luroth/order reduction, projective automorphism classification, additive torsor and fixed field,
-  and the single four-branch capstone remain absent
+  fields, and rank-one Picard--Vessiot torsors inventoried; the projective automorphism and
+  scaling-or-unit-translation normal-form classification, multiplicative finite/infinite torsors,
+  additive torsor and exact additive fixed field, and generator-order-zero reduction now exist.
+  The unrestricted differential Lüroth theorem, stable-intersection restriction argument, exact
+  cyclic-closure classification, and single mutually-exclusive four-branch capstone remain
 - [ ] `constrained-prolate-arithmetic-dilation-operator-limit` — arithmetic projective and
   trace-norm convergence, vanishing negative spectral mass, Fredholm determinant convergence,
   positive limiting spectrum, and negative-trace prime response inventoried;
@@ -284,7 +290,9 @@ DAGs without repeating the audits.
 - [ ] `floquet-orbifold-tail-emergence` — theorem/corollary surface inventory pending
 - [ ] `gamma-projective-boundary-finite-phase-law` — theorem/corollary surface inventory pending
 - [ ] `gauss-component-quasi-inner-residue-hierarchy` — theorem/corollary surface inventory pending
-- [ ] `gaussian-torsion-language-hypertranscendence` — theorem/corollary surface inventory pending
+- [ ] `gaussian-torsion-language-hypertranscendence` — the shared finite torsion-language
+  exactification now handles the integral exponent `β=2`; the active exclusive leaf is the
+  remaining infinite Gaussian face to finite tail-lock extraction and controlled truncation
 - [ ] `hedenmalm-pair-weil-polarization-law` — theorem/corollary surface inventory pending
 - [ ] `helson-universal-ht-arbitrary-divisor-orthogonality` — theorem/corollary surface inventory pending
 - [ ] `herglotz-full-translation-ht-krein-index-orthogonality` — theorem/corollary surface inventory pending
@@ -327,7 +335,11 @@ DAGs without repeating the audits.
   Lean has the critical Jacobian/minor core, while the exact finite-map Bezout and generic-etale
   multiplicity theorem remains to be built
 - [ ] `projective-horizon-depth-two-building-collapse` — theorem/corollary surface inventory pending
-- [ ] `projective-horizon-depth-two-current-algebra-transition` — theorem/corollary surface inventory pending
+- [ ] `projective-horizon-depth-two-current-algebra-transition` —
+  `ProjectiveHorizonCurrentFixedField` realizes the actual `E_k`, quadratic `F_k`, and `H_k`
+  derivations, proves the needed commutators and annihilation propagation, and identifies the
+  two-mode `E_0,F_1` fixed field with the full free-translation fixed field and hence the scalar
+  field; the card-level exact surface audit and remaining capstones are active
 - [ ] `projective-horizon-full-symmetric-monodromy` — paper theorem inventoried; requires the
   exact cover, ramification, transposition-generation, and splitting-field/Galois foundations
 - [ ] `projective-horizon-one-sided-depth-transition` — theorem/corollary surface inventory pending
@@ -350,7 +362,11 @@ DAGs without repeating the audits.
 - [ ] `stable-coframe-log-calabi-yau-rigidity` — theorem/corollary surface inventory pending
 - [ ] `symmetry-caged-fixed-divisor-full-orbit-freeness` — theorem/corollary surface inventory pending
 - [ ] `toric-log-calabi-yau-tail` — theorem/corollary surface inventory pending
-- [ ] `torsion-universal-phase-polynomial-magnitude-hypertranscendence` — theorem/corollary surface inventory pending
+- [ ] `torsion-universal-phase-polynomial-magnitude-hypertranscendence` — whole paper theorem and
+  deterministic existence corollary are Lean-complete in
+  `PolynomialTorsionLanguageDefectLimit`, `PolynomialTorsionLanguageEntireSeries`, and the new
+  unit-filled universal phase; exact leaf builds and standard-axiom audits are green, leaving the
+  serialized umbrella/index/lint gate and Stage-3 promotion
 - [ ] `torusless-quasi-abelian-fixed-factor-all-order-jet-ampleness` — theorem/corollary surface inventory pending
 - [ ] `triptic-ht-kummer-content-root-classification` — abstract Kummer group-theoretic core
   exists; the analytic meromorphic/triptic realization and exact DA-kernel identification remain
