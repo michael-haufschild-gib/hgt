@@ -1316,3 +1316,41 @@ a Hamburger-type condition on the (c, c')-mixture — whose failure is the width
 would be a two-height Hankel/Stieltjes condition — check against the corpus's existing
 two-parameter positivity surfaces before conjecturing); (iii) referee the cont.-29 derivations
 (scripts: paired_edge_fast_checks.py, paired_edge_fold_probe.py, atan_branch_certify.py).
+
+## 2026-07-18 session 2 (cont. 30) — Prony/multi-height closed by analyticity; RH is a SUPPORT
+## condition; referee repairs; the c-cone Bezoutian certificate is the surviving hunt
+
+**[PRONY FRAME CLOSED — analytic unification, sympy-certified]** Both configurations are ONE
+family `g_e(u) = 2m(u - x0)/((u - x0)^2 - e)`, `e = -d^2` (off-line) / `+delta^2` (on-line
+resolved) / `0` (collision). Every functional built rationally/analytically from finitely many
+heights' data is real-analytic in `e` through the three-way collision: no discriminating
+functional with (vanish-on-line, nonzero-off-line, discontinuous-at-wall) exists. The Prony
+discriminator `D = (s1^2 - s0 s2)/s0^2 = -e` exists and equals `-disc(W~)/4` — a renaming of
+the production-core object. Two-height redundancy PROVED (`q(c) - q(c') = c^2 - c'^2`, d
+cancels; the second height is a consistency identity, zero information). The joint-positivity
+candidate CANNOT fire: the width mixture `m delta_{c-d} + m delta_{c+d}` is itself a positive
+measure — **RH is a SUPPORT condition (width = c exactly), and positivity cannot see support
+location.** GENERAL LESSON (now proved in this frame): finite height families are analytic
+readers; only the semialgebraic SIGN of disc survives, and only height-CONE structures (sup
+over all c — non-analytic) escape. Corpus: no two-height/joint-moment surface exists
+(StieltjesMomentProblem.lean etc. are single-parameter).
+
+**[REFEREE cont. 29 — CONFIRMED with two repairs]** (i) Hadamard: NO background —
+`B_0 = -sum Re(1/rho)` cancels exactly; `B(x) = sum_rho (1/2 + c - beta_rho)/|s - rho|^2`
+EXACT. Full-B positivity is CONDITIONAL (a zero with `beta > 1/2 + c` is negative near its
+height); unconditional claim pinned to `B_in` (as ST1 states). (ii) ST2 exact with NO O(d^4)
+correction (`h_jl = 2m Re(u_+^{j+l+1})`). (iii) GAP REPAIRED: the vertical fold used
+`iota(u) = 2(R+1) - u` — box-center reflection, NOT a xi law (model-only). Fix: keep both
+vertical edges unfolded, or use the MIRRORED DOUBLE BOX `±[1, 2R+1]` folded by the true xi law
+`u -> -u`. The horizontal (Schwarz) fold is valid for xi as used.
+
+**[SURVIVING HUNT — the c-cone Bezoutian certificate]** Represent `-4D * (quadratic in x0) =
+disc(W~)`-data as a boundary-data Gram/Bezoutian over the FULL c-cone (all admissible heights
+simultaneously — the non-analytic structure), where the rate-domination `S^{c-d}` asymmetry
+lives. This is the exact surviving form of the production problem after every finite-frame
+closure: a semialgebraic nonnegativity certificate on cone data. Next steps: (a) mirrored
+double-box refold (the repaired FE-true geometry) — rederive the fold identities there;
+(b) formalize ST1 (paired-edge positivity, now refereed with the B_in pinning) and ST2 (exact
+Delta form) as the next Lean batch — both are finite algebra + the Hadamard input;
+(c) the cone-certificate Gate-2 statement with transparency guard (the cone escapes
+analyticity — verify it also escapes the continuity catalogue, or locate the residual wall).
