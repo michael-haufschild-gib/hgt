@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiHedenmalmReciprocalOperator
 import GaloisForLFunctions.RHTower.PrimeArchCentralMomentGerm
+import GaloisForLFunctions.HTGeometry.BalancedHilbertDefectPolarization
 
 /-!
 # The global Xi reflection-defect energy
@@ -53,21 +54,14 @@ theorem summable_xiGlobalReflectionDefectEnergy :
     Summable (fun q : XiZeroCopy =>
       ‖xiReciprocalCoordinate q -
         (starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ 2) := by
-  have hmajor : Summable (fun q : XiZeroCopy =>
-      4 * ‖xiReciprocalCoordinate q‖ ^ 2) := by
-    exact summable_norm_xiSpectralPoint_inv_sq.mul_left 4
-  refine Summable.of_nonneg_of_le (fun q => sq_nonneg _) (fun q => ?_) hmajor
-  have hnorm :
-      ‖xiReciprocalCoordinate q -
-          (starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ≤
-        2 * ‖xiReciprocalCoordinate q‖ := by
-    calc
-      _ ≤ ‖xiReciprocalCoordinate q‖ +
-          ‖(starRingEnd ℂ) (xiReciprocalCoordinate q)‖ := norm_sub_le _ _
-      _ = 2 * ‖xiReciprocalCoordinate q‖ := by simp; ring
-  nlinarith [norm_nonneg (xiReciprocalCoordinate q),
-    norm_nonneg (xiReciprocalCoordinate q -
-      (starRingEnd ℂ) (xiReciprocalCoordinate q))]
+  have hH : Summable (fun q : XiZeroCopy =>
+      ‖xiReciprocalCoordinate q‖ ^ 2) := by
+    simpa [xiReciprocalCoordinate] using summable_norm_xiSpectralPoint_inv_sq
+  have hstar : Summable (fun q : XiZeroCopy =>
+      ‖(starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ 2) := by
+    simpa only [norm_star] using hH
+  exact
+    GaloisForLFunctions.HTGeometry.summable_norm_sub_sq_of_summable_norm_sq hH hstar
 
 /-- The global reflection-defect energy is nonnegative. -/
 theorem xiGlobalReflectionDefectEnergy_nonneg :
@@ -81,35 +75,38 @@ theorem xiGlobalReflectionDefectEnergy_eq_mass_sub_moment :
   have hH : Summable (fun q : XiZeroCopy =>
       ‖xiReciprocalCoordinate q‖ ^ 2) := by
     simpa [xiReciprocalCoordinate] using summable_norm_xiSpectralPoint_inv_sq
+  have hstar : Summable (fun q : XiZeroCopy =>
+      ‖(starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ 2) := by
+    simpa only [norm_star] using hH
   have hC : Summable (fun q : XiZeroCopy =>
       xiZeroCopyReciprocalSquare q) := summable_xiZeroCopyReciprocalSquare
-  have hR : Summable (fun q : XiZeroCopy =>
-      (xiZeroCopyReciprocalSquare q).re) := by
-    exact Summable.of_norm_bounded hC.norm (fun q => by
-      rw [Real.norm_eq_abs]
-      exact abs_re_le_norm _)
   have hsum :
       (∑' q : XiZeroCopy, xiZeroCopyReciprocalSquare q) =
         xiCentralReciprocalMoment 0 := by
     simpa using tsum_xiZeroCopyReciprocalSquare_pow 0
+  have hpolar :=
+    GaloisForLFunctions.HTGeometry.tsum_norm_sub_sq_eq_two_mul_mass_sub_re_inner_of_norm_eq
+      hH hstar (fun q => norm_star (xiReciprocalCoordinate q))
+  have hcross :
+      (∑' q : XiZeroCopy,
+        RCLike.re (inner ℂ (xiReciprocalCoordinate q)
+          ((starRingEnd ℂ) (xiReciprocalCoordinate q)))) =
+        ∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q).re := by
+    apply tsum_congr
+    intro q
+    rw [GaloisForLFunctions.HTGeometry.re_inner_complex_eq_mul_conj_re,
+      starRingEnd_self_apply, xiZeroCopyReciprocalSquare,
+      xiReciprocalCoordinate, pow_two]
+  rw [hcross] at hpolar
   calc
     xiGlobalReflectionDefectEnergy =
-        ∑' q : XiZeroCopy,
-          (2 * ‖xiReciprocalCoordinate q‖ ^ 2 -
-            2 * (xiZeroCopyReciprocalSquare q).re) := by
-      apply tsum_congr
-      intro q
-      rw [norm_sub_conj_sq]
-      rfl
-    _ = (∑' q : XiZeroCopy, 2 * ‖xiReciprocalCoordinate q‖ ^ 2) -
-        ∑' q : XiZeroCopy, 2 * (xiZeroCopyReciprocalSquare q).re :=
-      (hH.mul_left 2).tsum_sub (hR.mul_left 2)
-    _ = 2 * xiReciprocalHermitianMass -
-        2 * (xiCentralReciprocalMoment 0).re := by
-      rw [tsum_mul_left, tsum_mul_left, xiReciprocalHermitianMass,
-        ← Complex.re_tsum hC, hsum]
+        2 * ((∑' q : XiZeroCopy, ‖xiReciprocalCoordinate q‖ ^ 2) -
+          ∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q).re) := by
+      rw [xiGlobalReflectionDefectEnergy]
+      exact hpolar
     _ = 2 * (xiReciprocalHermitianMass -
-        (xiCentralReciprocalMoment 0).re) := by ring
+        (xiCentralReciprocalMoment 0).re) := by
+      rw [xiReciprocalHermitianMass, ← Complex.re_tsum hC, hsum]
 
 /-- The holomorphic divisor moment is exactly the central prime--Gamma source curvature. -/
 theorem primeArchCentralCurvature_eq_moment_re :
@@ -137,27 +134,20 @@ theorem primeArchCentralCurvature_le_xiReciprocalHermitianMass :
 /-- Vanishing of the global reflection-defect energy is exactly RH. -/
 theorem xiGlobalReflectionDefectEnergy_eq_zero_iff_rh :
     xiGlobalReflectionDefectEnergy = 0 ↔ RiemannHypothesis := by
+  have hH : Summable (fun q : XiZeroCopy =>
+      ‖xiReciprocalCoordinate q‖ ^ 2) := by
+    simpa [xiReciprocalCoordinate] using summable_norm_xiSpectralPoint_inv_sq
+  have hstar : Summable (fun q : XiZeroCopy =>
+      ‖(starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ 2) := by
+    simpa only [norm_star] using hH
+  have hfixed :=
+    GaloisForLFunctions.HTGeometry.tsum_norm_sub_sq_eq_zero_iff hH hstar
+  rw [xiGlobalReflectionDefectEnergy, hfixed]
   constructor
-  · intro hzero
+  · intro hfix
     apply riemannHypothesis_of_xiSpectralPoint_real
     intro q
-    have hterm :
-        ‖xiReciprocalCoordinate q -
-          (starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ 2 = 0 := by
-      by_contra hne
-      have hpos : 0 < ‖xiReciprocalCoordinate q -
-          (starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ 2 :=
-        lt_of_le_of_ne (sq_nonneg _) (Ne.symm hne)
-      have hsumpos := summable_xiGlobalReflectionDefectEnergy.tsum_pos
-        (fun r => sq_nonneg _) q hpos
-      exact (ne_of_gt hsumpos) hzero
-    have hcoord : xiReciprocalCoordinate q =
-        (starRingEnd ℂ) (xiReciprocalCoordinate q) := by
-      have hnorm : ‖xiReciprocalCoordinate q -
-          (starRingEnd ℂ) (xiReciprocalCoordinate q)‖ = 0 := by
-        nlinarith [norm_nonneg (xiReciprocalCoordinate q -
-          (starRingEnd ℂ) (xiReciprocalCoordinate q))]
-      exact sub_eq_zero.mp (norm_eq_zero.mp hnorm)
+    have hcoord := hfix q
     have hspectral : xiSpectralPoint q =
         (starRingEnd ℂ) (xiSpectralPoint q) := by
       have hinv := congrArg Inv.inv hcoord
@@ -171,17 +161,10 @@ theorem xiGlobalReflectionDefectEnergy_eq_zero_iff_rh :
     apply Complex.ext
     · simp
     · simp [him]
-  · intro hRH
-    rw [xiGlobalReflectionDefectEnergy]
-    have hfun : (fun q : XiZeroCopy =>
-        ‖xiReciprocalCoordinate q -
-          (starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ 2) = 0 := by
-      funext q
-      obtain ⟨t, ht⟩ := xiSpectralPoint_real_of_rh hRH q
-      rw [xiReciprocalCoordinate, ht]
-      simp
-    rw [hfun]
-    exact tsum_zero
+  · intro hRH q
+    obtain ⟨t, ht⟩ := xiSpectralPoint_real_of_rh hRH q
+    rw [xiReciprocalCoordinate, ht]
+    simp
 
 /-- **Sharp RH estimate.**  Equality between Hermitian reciprocal mass and prime--Gamma central
 curvature is equivalent to RH.  In view of the unconditional opposite inequality above, the only

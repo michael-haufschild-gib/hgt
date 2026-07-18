@@ -79,6 +79,7 @@ theorem atomicAggregateRepresentative_injective
     Function.Injective (atomicAggregateRepresentative c z) := by
   intro u v huv
   apply Subtype.ext
+  change atomicAggregateNode c z u = atomicAggregateNode c z v
   rw [← atomicAggregateRepresentative_spec c z u,
     ← atomicAggregateRepresentative_spec c z v, huv]
 
@@ -135,12 +136,16 @@ theorem atomicPowerMoment_eq_atomicAggregatePowerMoment
   have hfiber := hF.hasSum.tsum_fiberwise z
   have hinner (u : ℂ) :
       (∑' i : z ⁻¹' {u}, F i.1) = atomicAggregateWeight c z u * u ^ n := by
-    rw [atomicAggregateWeight, tsum_mul_right]
-    apply tsum_congr
-    intro i
-    have hi : z i.1 = u := by simpa using i.property
-    dsimp only [F]
-    rw [hi]
+    rw [atomicAggregateWeight]
+    calc
+      (∑' i : z ⁻¹' {u}, F i.1) =
+          ∑' i : z ⁻¹' {u}, c i.1 * u ^ n := by
+        apply tsum_congr
+        intro i
+        have hi : z i.1 = u := by simpa using i.property
+        dsimp only [F]
+        rw [hi]
+      _ = (∑' i : z ⁻¹' {u}, c i.1) * u ^ n := tsum_mul_right
   have hsupp : Function.support (fun u : ℂ =>
       atomicAggregateWeight c z u * u ^ n) ⊆
       {u : ℂ | atomicAggregateWeight c z u ≠ 0} := by

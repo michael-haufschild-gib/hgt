@@ -72,6 +72,9 @@ theorem exists_tensor_fraction_of_mem_sup
       exact one_mul y
   · intro c
     refine ⟨(algebraMap C A c) ⊗ₜ[C] (1 : B), 1, one_ne_zero, ?_⟩
+    have hmuOne : mu (1 : A ⊗[C] B) = 1 :=
+      (intermediateFieldTensorMulMap C E A B).map_one
+    rw [hmuOne, div_one]
     simp [mu]
   · intro y z hy hz hyRep hzRep
     obtain ⟨Ny, Dy, hDy, hyEq⟩ := hyRep

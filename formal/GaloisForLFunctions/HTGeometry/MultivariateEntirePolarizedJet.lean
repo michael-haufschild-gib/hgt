@@ -47,7 +47,7 @@ theorem polarizedJetEvalCLM_apply {d n : ℕ} (x : Fin d → ℂ)
 the ordinary ordered mixed Frechet jet. -/
 theorem polarizedJetEvalCLM_eq_iteratedFDeriv {d n : ℕ}
     (x : Fin d → ℂ) (dirs : Fin n → (Fin d → ℂ))
-    (f : MultivariateEntire d) (hf : ContDiff ℂ (⊤ : ℕ∞) f.1) :
+    (f : MultivariateEntire d) (hf : ContDiff ℂ (⊤ : WithTop ℕ∞) f.1) :
     polarizedJetEvalCLM x dirs f =
       iteratedFDeriv ℂ n f.1 x dirs := by
   have hsymm : ∀ σ : Equiv.Perm (Fin n),
@@ -102,7 +102,7 @@ theorem orderedPartialJetEvalCLM_apply {d n : ℕ} (x : Fin d → ℂ)
 Frechet derivative on every Frechet-holomorphic source. -/
 theorem orderedPartialJetEvalCLM_eq_iteratedFDeriv {d n : ℕ}
     (x : Fin d → ℂ) (word : Fin n → Fin d)
-    (f : MultivariateEntire d) (hf : ContDiff ℂ (⊤ : ℕ∞) f.1) :
+    (f : MultivariateEntire d) (hf : ContDiff ℂ (⊤ : WithTop ℕ∞) f.1) :
     orderedPartialJetEvalCLM x word f =
       iteratedFDeriv ℂ n f.1 x
         (fun j ↦ coordinateJetDirection (word j)) := by

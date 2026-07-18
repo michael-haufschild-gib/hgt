@@ -24,6 +24,14 @@ noncomputable section
 variable {ι 𝕜 E : Type*} [RCLike 𝕜]
 variable [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
 
+/-- On the scalar complex Hilbert space, the real inner product is the real part of the
+Hermitian product in the orientation used by value-reflection formulas. -/
+theorem re_inner_complex_eq_mul_conj_re (z w : ℂ) :
+    RCLike.re (inner ℂ z w) = (z * (starRingEnd ℂ) w).re := by
+  rw [RCLike.inner_apply]
+  simp [RCLike.star_def, Complex.mul_re, Complex.conj_re, Complex.conj_im]
+  ring
+
 /-- Square summability of two Hilbert-valued channels implies summability of the product of
 their pointwise norms. -/
 theorem summable_norm_mul_norm_of_summable_norm_sq

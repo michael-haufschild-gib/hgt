@@ -63,7 +63,8 @@ theorem exists_tendsto_inverseScaleAtomicBernsteinRpowEnergy
   have huim : ∀ j ∈ D, (u j).im ≠ 0 := by
     intro j hj
     exact im_ne_zero_of_one_lt_atomicBernsteinAmplitude
-      (huhalf j) (hureal j) (hB.trans_eq (hD j hj).symm)
+      ((huhalf j).trans (by norm_num : (1 / 2 : ℝ) < 1))
+      (hureal j) (hB.trans_eq (hD j hj).symm)
   obtain ⟨iD, hiD⟩ := hDne
   have hiDim : (u iD).im ≠ 0 := huim iD hiD
   let w : ℂ := bernsteinEllipsePhase (u iD)

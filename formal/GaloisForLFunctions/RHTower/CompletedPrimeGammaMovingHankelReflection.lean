@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.CompletedPrimeGammaMovingHankel
+import GaloisForLFunctions.HTGeometry.ReflectedDividedDifference
 
 /-!
 # Reflection of the moving completed prime--Gamma Hankel family
@@ -36,28 +37,6 @@ theorem completedMovingRelativeTrace_one_sub (sigma z : ℂ) :
   rw [hnegarg, hz, hs]
   ring
 
-/-- Normalized divided difference converts the anti-reflection `-T(-z)` into reflection of the
-evenized germ.  The center case uses the exact derivative convention built into `dslope`. -/
-private theorem normalizedTraceMomentGerm_neg_comp_neg (T : ℂ → ℂ) (z : ℂ) :
-    normalizedTraceMomentGerm (fun w => -T (-w)) z =
-      normalizedTraceMomentGerm T (-z) := by
-  rw [normalizedTraceMomentGerm, normalizedTraceMomentGerm]
-  by_cases hz : z = 0
-  · subst z
-    rw [neg_zero, dslope_same, dslope_same]
-    have hcomp := iteratedDeriv_comp_neg 1 T (0 : ℂ)
-    have hneg := iteratedDeriv_neg 1 (fun w : ℂ => T (-w)) (0 : ℂ)
-    rw [iteratedDeriv_one, iteratedDeriv_one, neg_zero] at hcomp
-    rw [iteratedDeriv_one, iteratedDeriv_one] at hneg
-    have hfun : (fun w : ℂ => -T (-w)) = -(fun w : ℂ => T (-w)) := rfl
-    rw [hfun, hneg, hcomp]
-    ring
-  · have hnz : -z ≠ 0 := neg_ne_zero.mpr hz
-    rw [dslope_of_ne _ hz, dslope_of_ne _ hnz,
-      slope_def_module, slope_def_module]
-    simp only [neg_zero]
-    ring
-
 /-- Exact reflection of the moving normalized moment germ. -/
 theorem completedMovingMomentGerm_one_sub (sigma z : ℂ) :
     completedMovingMomentGerm (1 - sigma) z =
@@ -66,9 +45,11 @@ theorem completedMovingMomentGerm_one_sub (sigma z : ℂ) :
       fun w => -completedMovingRelativeTrace sigma (-w) := by
     funext w
     exact completedMovingRelativeTrace_one_sub sigma w
-  rw [completedMovingMomentGerm, completedMovingMomentGerm, href]
-  exact normalizedTraceMomentGerm_neg_comp_neg
-    (completedMovingRelativeTrace sigma) z
+  rw [completedMovingMomentGerm, completedMovingMomentGerm, href,
+    normalizedTraceMomentGerm, normalizedTraceMomentGerm]
+  have h := HTGeometry.dslope_neg_comp_neg
+    (completedMovingRelativeTrace sigma) 0 z
+  simpa using congrArg Neg.neg h
 
 /-- Every moving moment-germ jet has the parity forced by base reflection. -/
 theorem iteratedDeriv_completedMovingMomentGerm_one_sub

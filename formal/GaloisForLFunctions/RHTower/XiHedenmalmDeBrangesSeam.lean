@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiHedenmalmMultiplicityChain
+import GaloisForLFunctions.HTGeometry.ReflectedDividedDifference
 
 /-!
 # The source-defined Hedenmalm--de Branges seam
@@ -140,6 +141,19 @@ def xiHedenmalmBezoutian (z v : ℂ) : ℂ :=
   dslope
     (fun w => deriv XiC z * XiC w - XiC z * deriv XiC w)
     z v
+
+/-- The removable Xi Bezoutian is even under simultaneous centered reflection.  The numerator
+is odd, and the reflected denominator supplies the second sign, including on the diagonal. -/
+theorem xiHedenmalmBezoutian_neg_neg (z v : ℂ) :
+    xiHedenmalmBezoutian (-z) (-v) = xiHedenmalmBezoutian z v := by
+  change HTGeometry.diagonalDslopeKernel
+      (fun a b => deriv XiC a * XiC b - XiC a * deriv XiC b) (-z) (-v) =
+    HTGeometry.diagonalDslopeKernel
+      (fun a b => deriv XiC a * XiC b - XiC a * deriv XiC b) z v
+  apply HTGeometry.diagonalDslopeKernel_neg_neg_of_antiInvariant
+  intro a b
+  rw [deriv_XiC_neg, deriv_XiC_neg, XiC_even, XiC_even]
+  ring
 
 /-- Away from the diagonal, the removable definition is the literal Bezoutian quotient. -/
 theorem xiHedenmalmBezoutian_eq_div {z v : ℂ} (h : v ≠ z) :

@@ -224,6 +224,30 @@ theorem riemannHypothesis_of_xiHurwitzAnchorJetProjectiveReflectionLaw
     hstrip hzero (h support)
   exact (not_lt_of_ge hre.le) (mem_rightHalf.mp hrho)
 
+/-- RH supplies the projective Hurwitz anchor-jet reflection law with scalar one. -/
+theorem xiHurwitzAnchorJetProjectiveReflectionLaw_of_riemannHypothesis
+    (hRH : RiemannHypothesis) : XiHurwitzAnchorJetProjectiveReflectionLaw := by
+  intro rho
+  refine ⟨1, ?_⟩
+  intro r hr
+  have hhalf : (rho : ℂ).re = 1 / 2 :=
+    xi_divisor_support_re_eq_half_of_rh hRH rho
+  have href : 1 - (rho : ℂ) = (starRingEnd ℂ) (rho : ℂ) := by
+    apply Complex.ext
+    · simp only [Complex.sub_re, Complex.one_re, Complex.conj_re]
+      linarith
+    · simp only [Complex.sub_im, Complex.one_im, Complex.conj_im]
+      ring
+  rw [href, one_mul]
+  exact continuedHzeta_anchorJet_conj r
+    (xi_divisor_support_re_mem_open_unit rho).1 hr
+
+/-- The global projective Hurwitz anchor-jet reflection law is exactly RH. -/
+theorem xiHurwitzAnchorJetProjectiveReflectionLaw_iff_riemannHypothesis :
+    XiHurwitzAnchorJetProjectiveReflectionLaw ↔ RiemannHypothesis :=
+  ⟨riemannHypothesis_of_xiHurwitzAnchorJetProjectiveReflectionLaw,
+    xiHurwitzAnchorJetProjectiveReflectionLaw_of_riemannHypothesis⟩
+
 end
 
 end RHTower

@@ -19,7 +19,7 @@ noncomputable section
 iterated Frechet jet. -/
 theorem directionalJetEval_eq_iteratedFDeriv
     {d n : ℕ} (x v : Fin d → ℂ) (f : MultivariateEntire d)
-    (hf : ContDiff ℂ (⊤ : ℕ∞) f.1) :
+    (hf : ContDiff ℂ (⊤ : WithTop ℕ∞) f.1) :
     directionalJetEval n x v f =
       iteratedFDeriv ℂ n f.1 x (fun _ : Fin n ↦ v) := by
   let L : ℂ →L[ℂ] (Fin d → ℂ) :=
@@ -28,11 +28,11 @@ theorem directionalJetEval_eq_iteratedFDeriv
       (fun y ↦ f.1 (x + y)) ∘ L := by
     funext z
     simp [affineLineRestriction, L]
-  have hfShift : ContDiff ℂ (⊤ : ℕ∞) (fun y ↦ f.1 (x + y)) := by
+  have hfShift : ContDiff ℂ (⊤ : WithTop ℕ∞) (fun y ↦ f.1 (x + y)) := by
     exact hf.comp (contDiff_const.add contDiff_id)
   have hcomp := L.iteratedFDeriv_comp_right
     (f := fun y ↦ f.1 (x + y)) hfShift (0 : ℂ)
-      (show (n : ℕ∞) ≤ (⊤ : ℕ∞) by simp)
+      (show (n : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞) by simp)
   have happ := congrArg
     (fun B : ContinuousMultilinearMap ℂ (fun _ : Fin n ↦ ℂ) ℂ ↦
       B (fun _ ↦ (1 : ℂ))) hcomp

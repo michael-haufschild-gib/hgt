@@ -79,10 +79,11 @@ theorem exists_left_coboundary_of_mem_intermediateField_sup
         N * tensorLeftAction C A B sigma D =
       (a ⊗ₜ[C] (1 : B)) * tensorLeftAction C A B sigma D * D := by
     apply hmu
-    simpa only [map_sub, map_mul,
+    have hcoeOne : ((1 : B) : E) = 1 := rfl
+    simpa only [mu, map_sub, map_mul,
       intermediateFieldTensorMulMap_tensorLeftAction
         C E A B T sigma hleft hright,
-      intermediateFieldTensorMulMap_tmul, Subtype.coe_one, mul_one] using hcross
+      intermediateFieldTensorMulMap_tmul, hcoeOne, mul_one] using hcross
   exact exists_left_coboundary_of_arbitrary_right_tensor_fraction_identity
     C A B sigma a N D hD htensor
 

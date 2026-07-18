@@ -122,10 +122,10 @@ theorem ellipticMeroFields_linearDisjoint
     (ellipticMeroField sigma).LinearDisjoint (ellipticMeroField tau) := by
   let A := ellipticMeroField sigma
   let B := ellipticMeroField tau
+  letI : IsScalarTower ℂ B (meroField Set.univ) :=
+    IntermediateField.isScalarTower_mid'
   let b := Module.Free.chooseBasis ℂ A
   apply IntermediateField.LinearDisjoint.of_basis_left (A := A) (L := B) b
-  rw [linearIndependent_iff_ker]
-  by_contra hrelation
   let coefficientTranslation : Unit → B ≃+* B :=
     fun _ => (ellipticMeroFieldTranslationAlgEquiv tau sigma).toRingEquiv
   let ambientTranslation : Unit →
@@ -144,6 +144,11 @@ theorem ellipticMeroFields_linearDisjoint
       ((ellipticMeroFieldTranslationAlgEquiv tau sigma c : B) :
           meroField Set.univ) * addTranslationMeroEquiv sigma m
     rw [map_mul, ellipticMeroFieldTranslationAlgEquiv_apply]
+    change addTranslationMeroEquiv sigma (c : meroField Set.univ) *
+        addTranslationMeroEquiv sigma m =
+      addTranslationMeroEquiv sigma (c : meroField Set.univ) *
+        addTranslationMeroEquiv sigma m
+    rfl
   have hbasisFixed : ∀ i k,
       ambientTranslation i ((A.val ∘ b) k) = (A.val ∘ b) k := by
     intro i k
@@ -152,28 +157,12 @@ theorem ellipticMeroFields_linearDisjoint
     change addTranslationMeroEquiv sigma ((b k : A) : meroField Set.univ) =
       ((b k : A) : meroField Set.univ)
     exact ((mem_ellipticMeroField_iff sigma _).mp hk).2
-  obtain ⟨c, hc0, hcrelation⟩ :=
-    semilinear_relationSpace_exists_nonzero_constant_relation
-      coefficientTranslation hfixed ambientTranslation (A.val ∘ b)
-      hsemilinear hbasisFixed hrelation
-  have hbaseChange :
-      Finsupp.linearCombination B (A.val ∘ b)
-          (Finsupp.mapRange (algebraMap ℂ B)
-            (map_zero (algebraMap ℂ B)) c) =
-        Finsupp.linearCombination ℂ (A.val ∘ b) c := by
-    classical
-    rw [Finsupp.linearCombination_apply, Finsupp.linearCombination_apply]
-    rw [Finsupp.sum_mapRange_index (fun _ => by simp)]
-    apply Finsupp.sum_congr
-    intro i hi
-    exact IsScalarTower.algebraMap_smul B (c i) ((A.val ∘ b) i)
-  have hcambient :
-      Finsupp.linearCombination ℂ (A.val ∘ b) c = 0 :=
-    hbaseChange.symm.trans hcrelation
   have hbambient : LinearIndependent ℂ (A.val ∘ b) :=
     b.linearIndependent.map' A.val.toLinearMap
       (LinearMap.ker_eq_bot_of_injective A.val.injective)
-  exact hc0 ((linearIndependent_iff.mp hbambient) c hcambient)
+  exact semilinear_linearIndependent_of_fixed_field
+    coefficientTranslation hfixed ambientTranslation (A.val ∘ b)
+    hsemilinear hbasisFixed hbambient
 
 end
 

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiHedenmalmReciprocalOperator
 import GaloisForLFunctions.RHTower.PrimeArchCentralMomentGerm
 import GaloisForLFunctions.RHTower.XiWeilPolarization
+import GaloisForLFunctions.HTGeometry.BalancedHilbertDefectPolarization
 
 /-!
 # The FE--Schwarz endpoint reflection-defect energy
@@ -146,25 +147,8 @@ theorem summable_xiEndpointReflectionDefectEnergy :
   have hB : Summable (fun q : XiZeroCopy =>
       ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2) :=
     hA.comp_injective xiZeroCopyLineConjEquiv.injective
-  have hmajor : Summable (fun q : XiZeroCopy =>
-      2 * ‖xiRawReciprocalCoordinate q‖ ^ 2 +
-        2 * ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2) :=
-    (hA.mul_left 2).add (hB.mul_left 2)
-  refine Summable.of_nonneg_of_le (fun q => sq_nonneg _) (fun q => ?_) hmajor
-  have hnorm :
-      ‖xiRawReciprocalCoordinate q -
-          xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ≤
-        ‖xiRawReciprocalCoordinate q‖ +
-          ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ :=
-    norm_sub_le _ _
-  calc
-    _ ≤ (‖xiRawReciprocalCoordinate q‖ +
-        ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖) ^ 2 :=
-      pow_le_pow_left₀ (norm_nonneg _) hnorm 2
-    _ ≤ 2 * ‖xiRawReciprocalCoordinate q‖ ^ 2 +
-        2 * ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2 := by
-      nlinarith [sq_nonneg (‖xiRawReciprocalCoordinate q‖ -
-        ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖)]
+  exact
+    GaloisForLFunctions.HTGeometry.summable_norm_sub_sq_of_summable_norm_sq hA hB
 
 theorem summable_xiEndpointCrossTerm :
     Summable (fun q : XiZeroCopy =>
@@ -200,51 +184,24 @@ theorem xiEndpointReflectionDefectEnergy_eq_mass_sub_source :
     xiEndpointReflectionDefectEnergy =
       2 * (xiRawReciprocalHermitianMass - xiEndpointCompletedCurvature) := by
   have hA := summable_norm_xiRawReciprocalCoordinate_sq
-  have hB : Summable (fun q : XiZeroCopy =>
-      ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2) :=
-    hA.comp_injective xiZeroCopyLineConjEquiv.injective
   have hC := summable_xiEndpointCrossTerm
-  have hR : Summable (fun q : XiZeroCopy =>
-      (xiRawReciprocalCoordinate q *
-        (starRingEnd ℂ)
-          (xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q))).re) := by
-    exact Summable.of_norm_bounded hC.norm (fun q => by
-      rw [Real.norm_eq_abs]
-      exact abs_re_le_norm _)
-  have hreindex := xiZeroCopyLineConjEquiv.tsum_eq
-    (fun q : XiZeroCopy => ‖xiRawReciprocalCoordinate q‖ ^ 2)
+  have hpolar :=
+    GaloisForLFunctions.HTGeometry.tsum_norm_sub_equiv_sq_eq_two_mul_mass_sub_re_inner
+      xiZeroCopyLineConjEquiv xiRawReciprocalCoordinate hA
   calc
     xiEndpointReflectionDefectEnergy =
-        ∑' q : XiZeroCopy,
-          (‖xiRawReciprocalCoordinate q‖ ^ 2 +
-              ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2 -
-            2 * (xiRawReciprocalCoordinate q *
+        2 * ((∑' q : XiZeroCopy, ‖xiRawReciprocalCoordinate q‖ ^ 2) -
+          ∑' q : XiZeroCopy,
+            (xiRawReciprocalCoordinate q *
               (starRingEnd ℂ)
                 (xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q))).re) := by
-      apply tsum_congr
-      intro q
-      exact norm_sub_sq_eq _ _
-    _ = (∑' q : XiZeroCopy,
-          (‖xiRawReciprocalCoordinate q‖ ^ 2 +
-            ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2)) -
-        ∑' q : XiZeroCopy,
-          2 * (xiRawReciprocalCoordinate q *
-            (starRingEnd ℂ)
-              (xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q))).re :=
-      (hA.add hB).tsum_sub (hR.mul_left 2)
-    _ = ((∑' q : XiZeroCopy, ‖xiRawReciprocalCoordinate q‖ ^ 2) +
-          ∑' q : XiZeroCopy,
-            ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2) -
-        2 * ∑' q : XiZeroCopy,
-          (xiRawReciprocalCoordinate q *
-            (starRingEnd ℂ)
-              (xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q))).re := by
-      rw [hA.tsum_add hB, tsum_mul_left]
+      rw [xiEndpointReflectionDefectEnergy]
+      simpa only
+        [GaloisForLFunctions.HTGeometry.re_inner_complex_eq_mul_conj_re]
+        using hpolar
     _ = 2 * (xiRawReciprocalHermitianMass - xiEndpointCompletedCurvature) := by
-      rw [hreindex, xiRawReciprocalHermitianMass,
-        xiEndpointCompletedCurvature_eq_cross_re,
-        ← Complex.re_tsum hC]
-      ring
+      rw [xiRawReciprocalHermitianMass,
+        xiEndpointCompletedCurvature_eq_cross_re, ← Complex.re_tsum hC]
 
 theorem xiEndpointReflectionDefectEnergy_nonneg :
     0 ≤ xiEndpointReflectionDefectEnergy :=
@@ -258,27 +215,16 @@ theorem xiEndpointCompletedCurvature_le_rawMass :
 
 theorem xiEndpointReflectionDefectEnergy_eq_zero_iff_rh :
     xiEndpointReflectionDefectEnergy = 0 ↔ RiemannHypothesis := by
+  have hfix :=
+    GaloisForLFunctions.HTGeometry.tsum_norm_sub_equiv_sq_eq_zero_iff
+      xiZeroCopyLineConjEquiv xiRawReciprocalCoordinate
+        summable_norm_xiRawReciprocalCoordinate_sq
+  rw [xiEndpointReflectionDefectEnergy, hfix]
   constructor
-  · intro hzero
+  · intro hfixed
     apply riemannHypothesis_of_xiSpectralPoint_real
     intro q
-    have hterm :
-        ‖xiRawReciprocalCoordinate q -
-          xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2 = 0 := by
-      by_contra hne
-      have hpos : 0 < ‖xiRawReciprocalCoordinate q -
-          xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2 :=
-        lt_of_le_of_ne (sq_nonneg _) (Ne.symm hne)
-      have hsumpos := summable_xiEndpointReflectionDefectEnergy.tsum_pos
-        (fun r => sq_nonneg _) q hpos
-      exact (ne_of_gt hsumpos) hzero
-    have hcoord : xiRawReciprocalCoordinate q =
-        xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q) := by
-      have hnorm : ‖xiRawReciprocalCoordinate q -
-          xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ = 0 := by
-        nlinarith [norm_nonneg (xiRawReciprocalCoordinate q -
-          xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q))]
-      exact sub_eq_zero.mp (norm_eq_zero.mp hnorm)
+    have hcoord := hfixed q
     have hrho : (q.1 : ℂ) = ((xiZeroCopyLineConjEquiv q).1 : ℂ) := by
       have hinv := congrArg Inv.inv hcoord
       simpa [xiRawReciprocalCoordinate] using hinv
@@ -294,28 +240,18 @@ theorem xiEndpointReflectionDefectEnergy_eq_zero_iff_rh :
     apply Complex.ext
     · simp
     · simp [him]
-  · intro hRH
-    rw [xiEndpointReflectionDefectEnergy]
-    have hfun : (fun q : XiZeroCopy =>
-        ‖xiRawReciprocalCoordinate q -
-          xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2) = 0 := by
-      funext q
-      obtain ⟨t, ht⟩ := xiSpectralPoint_real_of_rh hRH q
-      have hline := xiSpectralPoint_lineConj q
-      rw [ht] at hline
-      have hspectral :
-          xiSpectralPoint (xiZeroCopyLineConjEquiv q) = xiSpectralPoint q := by
-        rw [hline, ht]
-        simp
-      have hsupport : (xiZeroCopyLineConjEquiv q).1 = q.1 := by
-        apply xiSpectralPointSupport_injective
-        simpa only [← xiSpectralPoint_eq_support] using hspectral
-      rw [show xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q) =
-          xiRawReciprocalCoordinate q by
-        rw [xiRawReciprocalCoordinate, xiRawReciprocalCoordinate, hsupport]]
+  · intro hRH q
+    obtain ⟨t, ht⟩ := xiSpectralPoint_real_of_rh hRH q
+    have hline := xiSpectralPoint_lineConj q
+    rw [ht] at hline
+    have hspectral :
+        xiSpectralPoint (xiZeroCopyLineConjEquiv q) = xiSpectralPoint q := by
+      rw [hline, ht]
       simp
-    rw [hfun]
-    exact tsum_zero
+    have hsupport : (xiZeroCopyLineConjEquiv q).1 = q.1 := by
+      apply xiSpectralPointSupport_injective
+      simpa only [← xiSpectralPoint_eq_support] using hspectral
+    rw [xiRawReciprocalCoordinate, xiRawReciprocalCoordinate, hsupport]
 
 theorem xiRawReciprocalHermitianMass_le_endpointCurvature_iff_rh :
     xiRawReciprocalHermitianMass ≤ xiEndpointCompletedCurvature ↔

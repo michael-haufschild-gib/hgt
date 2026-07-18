@@ -155,13 +155,40 @@
   `sgVal²` is antitone and `1−sgVal²` is monotone (verify the exact `sgOrthSup` antitone name
   first) — and `lower`/`upper` = the two-sided envelope.
   So only `lower`/`upper` remain.  Sub-layers:
-  L6a (upper bound): variational — Hermite trial functions against the leakage form
+  L6a MECHANISM DONE (`ConstrainedProlateTrueLeakage.lean`, 5 theorems, axiom-clean):
+  `evenProlateLeakageValue a n = 1 − evenProlateConcentrationValue a n` where the concentration
+  value is literally `svVal (evenProlateConcentration a) n`, i.e. an `orthSup` — so
+  `GreedyCourantFischer.le_orthSup_of_trial` applies verbatim.  Delivered:
+  `le_evenProlateConcentrationValue_of_trial`, `evenProlateLeakageValue_le_of_trial`
+  (leakage ≤ 1 − M), `inner_evenProlateConcentration_eq` (the concentration form IS the retained
+  Fourier mass `‖Tₐf‖²`), `norm_evenProlateConcentration_ge_of_form` (Cauchy–Schwarz bridge from
+  the form estimate to the operator bound), and the interface theorem
+  `evenProlateLeakageValue_le_of_form_trial`:
+
+```text
+  V of dim > n,  ∀ f ∈ V, (1−ε)‖f‖² ≤ ‖Tₐ f‖²   ⟹   d_n(a) ≤ ε.
+```
+
+  ALSO NOTE: `nonneg` and `mono` of the ClockEnvelope contract are ALREADY THEOREMS for this
+  family (`evenProlateLeakageValue_nonneg`, `evenProlateLeakageValue_monotone` in
+  `ConstrainedProlateOperator`).  So of the five contract fields, only the two-sided ENVELOPE
+  remains, and its upper half is now purely the analytic estimate below.
+  L6a REMAINING (purely analytic): exhibit, for each fixed `n`, an `(n+1)`-dimensional subspace
+  of aperture-supported even functions with concentration deficit `ε_n(a)` of the right size —
+  variational, Hermite trial functions against the leakage form
   `⟨(I−T²)f, f⟩ = ‖f‖² − ‖Tf‖²`; needs Hermite functions as Fourier eigenfunctions
   (mathlib: `Polynomial.hermite` exists; Gaussian Fourier transform exists —
   `fourierIntegral_gaussian`; the Hermite-function eigenrelation must be built, seed
   `HermiteOscillatorEigen`) plus Gaussian tail integrals.
-  L6b (lower bound on the leakage = upper bound on χ_n): needs Courant–Fischer for the greedy
-  values.  Reusable HTGeometry lemma to build first:
+  L6b CORE DONE (`HTGeometry/GreedyCourantFischer.lean`, 2 theorems, axiom-clean):
+  `exists_mem_ne_zero_orthogonal_of_finrank_lt` (a subspace of dimension > n contains a nonzero
+  vector orthogonal to any n prescribed vectors — the n test functionals cannot be jointly
+  injective on it) and `le_orthSup_of_trial` (if `S` is bounded below by `M` on a trial subspace
+  of dimension > n then `M ≤ orthSup S v n`).  This is the min–max input for bounding prolate
+  concentration from below by an explicit trial space, independent of which trial space.
+  What L6b still needs: the concentrated trial space itself (n+1 truncated Hermite functions)
+  and the passage `orthSup → sgVal` for the signed family.
+  Superseded design note:
   `svVal S n ≤ M` whenever there is an `(n+1)`-dimensional `V` with `‖S x‖ ≤ M‖x‖` on `V`… —
   more precisely the standard direction available from `norm_apply_le_of_orth` plus a dimension
   count showing any `(n+1)`-dim `V` meets `(span of the first n svVecs)^⊥` nontrivially.

@@ -282,6 +282,40 @@ theorem semilinear_relationSpace_exists_nonzero_constant_relation
       sigma hfixed W hWstable hrel
   exact ⟨c, hc0, LinearMap.mem_ker.mp hcW⟩
 
+/-- A family which is linearly independent over the fixed coefficient field remains linearly
+independent over a semilinear coefficient extension when every coefficient fixed by the action
+comes from the base field and the family itself is fixed pointwise. -/
+theorem semilinear_linearIndependent_of_fixed_field
+    {I kappa C K M : Type*} [Field C] [Field K] [Algebra C K]
+    [AddCommGroup M] [Module C M] [Module K M] [IsScalarTower C K M]
+    (sigma : I → K ≃+* K)
+    (hfixed : ∀ z : K, (∀ i, sigma i z = z) →
+      ∃ c : C, algebraMap C K c = z)
+    (T : I → M ≃+ M) (x : kappa → M)
+    (hsmul : ∀ i c m, T i (c • m) = sigma i c • T i m)
+    (hx : ∀ i k, T i (x k) = x k)
+    (hbase : LinearIndependent C x) :
+    LinearIndependent K x := by
+  rw [linearIndependent_iff_ker]
+  by_contra hrelation
+  obtain ⟨c, hc0, hcrelation⟩ :=
+    semilinear_relationSpace_exists_nonzero_constant_relation
+      sigma hfixed T x hsmul hx hrelation
+  have hbaseChange :
+      Finsupp.linearCombination K x
+          (Finsupp.mapRange (algebraMap C K)
+            (map_zero (algebraMap C K)) c) =
+        Finsupp.linearCombination C x c := by
+    classical
+    rw [Finsupp.linearCombination_apply, Finsupp.linearCombination_apply]
+    rw [Finsupp.sum_mapRange_index (fun _ ↦ by simp)]
+    apply Finsupp.sum_congr
+    intro i hi
+    rw [IsScalarTower.algebraMap_smul]
+  have hcbase : Finsupp.linearCombination C x c = 0 :=
+    hbaseChange.symm.trans hcrelation
+  exact hc0 ((linearIndependent_iff.mp hbase) c hcbase)
+
 end
 
 end GaloisForLFunctions

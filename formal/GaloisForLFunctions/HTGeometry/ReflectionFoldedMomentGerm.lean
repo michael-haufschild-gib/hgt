@@ -1,4 +1,4 @@
-import Mathlib
+import GaloisForLFunctions.HTGeometry.ReflectedDividedDifference
 
 /-!
 # Affine reflection folded moment germs
@@ -41,25 +41,6 @@ theorem affineRelativeTrace_reflection
   rw [hnegarg, hz, hs]
   ring
 
-/-- Normalized divided difference converts `-T(-z)` into ordinary reflection. -/
-private theorem neg_dslope_neg_comp (T : ℂ → ℂ) (z : ℂ) :
-    -dslope (fun w => -T (-w)) 0 z = -dslope T 0 (-z) := by
-  by_cases hz : z = 0
-  · subst z
-    rw [neg_zero, dslope_same, dslope_same]
-    have hcomp := iteratedDeriv_comp_neg 1 T (0 : ℂ)
-    have hneg := iteratedDeriv_neg 1 (fun w : ℂ => T (-w)) (0 : ℂ)
-    rw [iteratedDeriv_one, iteratedDeriv_one, neg_zero] at hcomp
-    rw [iteratedDeriv_one, iteratedDeriv_one] at hneg
-    have hfun : (fun w : ℂ => -T (-w)) = -(fun w : ℂ => T (-w)) := rfl
-    rw [hfun, hneg, hcomp]
-    ring
-  · have hnz : -z ≠ 0 := neg_ne_zero.mpr hz
-    rw [dslope_of_ne _ hz, dslope_of_ne _ hnz,
-      slope_def_module, slope_def_module]
-    simp only [neg_zero]
-    ring
-
 /-- **Reflection-folding law.**  An affine anti-reflection of the source becomes ordinary
 reflection of the normalized moment germ. -/
 theorem reflectionFoldedMomentGerm_reflection
@@ -72,7 +53,8 @@ theorem reflectionFoldedMomentGerm_reflection
     funext w
     exact affineRelativeTrace_reflection T kappa sigma w hreflect
   rw [reflectionFoldedMomentGerm, reflectionFoldedMomentGerm, htrace]
-  exact neg_dslope_neg_comp (affineRelativeTrace T sigma) z
+  have h := dslope_neg_comp_neg (affineRelativeTrace T sigma) 0 z
+  simpa using congrArg Neg.neg h
 
 /-- Every folded jet has the parity forced by base reflection. -/
 theorem iteratedDeriv_reflectionFoldedMomentGerm_reflection
