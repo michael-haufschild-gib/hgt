@@ -348,13 +348,19 @@ def scalarDifferentialPolynomialAsPolynomial
       (MvPolynomial {j : Unit × ℕ // j ≠ scalarDifferentialPolynomialLeader P} K) :=
   mvPolynomialAsPolynomialAt (scalarDifferentialPolynomialLeader P) P
 
+/-- The leading coefficient obtained by singling out an arbitrary variable, renamed back into the
+original multivariable-polynomial ring. -/
+def mvPolynomialInitialAt
+    {K σ : Type*} [CommSemiring K] (i : σ) (P : MvPolynomial σ K) :
+    MvPolynomial σ K :=
+  MvPolynomial.rename Subtype.val (mvPolynomialAsPolynomialAt i P).leadingCoeff
+
 /-- The initial is the leading coefficient after genuinely singling out the leader variable,
 renamed back into the original scalar jet-variable type. -/
 def scalarDifferentialPolynomialInitial
     {K : Type*} [CommSemiring K] (P : DifferentialPolynomial Unit K) :
     DifferentialPolynomial Unit K :=
-  MvPolynomial.rename Subtype.val
-    (scalarDifferentialPolynomialAsPolynomial P).leadingCoeff
+  mvPolynomialInitialAt (scalarDifferentialPolynomialLeader P) P
 
 /-- The separant is the partial derivative with respect to the scalar leader. -/
 def scalarDifferentialPolynomialSeparant
@@ -378,7 +384,7 @@ theorem mvPolynomialAsPolynomialAt_ne_zero
 theorem scalarDifferentialPolynomialInitial_ne_zero
     {K : Type*} [CommSemiring K] {P : DifferentialPolynomial Unit K}
     (hP : P ≠ 0) : scalarDifferentialPolynomialInitial P ≠ 0 := by
-  unfold scalarDifferentialPolynomialInitial
+  unfold scalarDifferentialPolynomialInitial mvPolynomialInitialAt
   intro hzero
   apply Polynomial.leadingCoeff_ne_zero.mpr
     (mvPolynomialAsPolynomialAt_ne_zero hP)
@@ -410,40 +416,58 @@ theorem mvPolynomial_vars_pderiv_subset
   apply hjs
   simp [hsj]
 
-/-- Every variable occurring in the distinguished initial already occurred in the original
+/-- A variable of the leading coefficient of `optionEquivLeft` lifts to a `some` variable of the
+original multivariable polynomial. -/
+theorem optionEquivLeft_leadingCoeff_some_mem_vars
+    {K σ : Type*} [CommSemiring K] (P : MvPolynomial (Option σ) K) {b : σ}
+    (hb : b ∈ (MvPolynomial.optionEquivLeft K σ P).leadingCoeff.vars) :
+    some b ∈ P.vars := by
+  classical
+  obtain ⟨m, hm, hbm⟩ := (MvPolynomial.mem_vars_iff_mem_support b).mp hb
+  have hmCoeff : m ∈
+      ((MvPolynomial.optionEquivLeft K σ P).coeff
+        (MvPolynomial.optionEquivLeft K σ P).natDegree).support := by
+    simpa only [Polynomial.leadingCoeff] using hm
+  have hmP : m.optionElim (MvPolynomial.optionEquivLeft K σ P).natDegree ∈
+      P.support :=
+    (MvPolynomial.mem_support_coeff_optionEquivLeft K).mp hmCoeff
+  have hsomeSupport : some b ∈
+      (m.optionElim (MvPolynomial.optionEquivLeft K σ P).natDegree).support := by
+    rw [Finsupp.mem_support_iff] at hbm ⊢
+    simpa using hbm
+  exact (MvPolynomial.mem_vars_iff_mem_support (some b)).mpr
+    ⟨_, hmP, hsomeSupport⟩
+
+/-- Every variable occurring in an arbitrary distinguished initial already occurred in the
+original polynomial. -/
+theorem mvPolynomialInitialAt_vars_subset
+    {K σ : Type*} [CommSemiring K] (i : σ) (P : MvPolynomial σ K) :
+    (mvPolynomialInitialAt i P).vars ⊆ P.vars := by
+  classical
+  intro j hj
+  obtain ⟨b, hb, hbj⟩ := MvPolynomial.mem_vars_rename Subtype.val
+    (mvPolynomialAsPolynomialAt i P).leadingCoeff hj
+  have hsome : some b ∈
+      (MvPolynomial.rename (Equiv.optionSubtypeNe i).symm P).vars := by
+    apply optionEquivLeft_leadingCoeff_some_mem_vars
+    exact hb
+  obtain ⟨k, hkP, hkb⟩ :=
+    MvPolynomial.mem_vars_rename (Equiv.optionSubtypeNe i).symm P hsome
+  have hk : k = b.1 := by
+    calc
+      k = Equiv.optionSubtypeNe i ((Equiv.optionSubtypeNe i).symm k) :=
+        ((Equiv.optionSubtypeNe i).apply_symm_apply k).symm
+      _ = Equiv.optionSubtypeNe i (some b) := congrArg (Equiv.optionSubtypeNe i) hkb
+      _ = b.1 := by simp
+  rw [← hbj, ← hk]
+  exact hkP
+
+/-- Every variable occurring in the distinguished scalar initial already occurred in the original
 polynomial. -/
 theorem scalarDifferentialPolynomialInitial_vars_subset
     {K : Type*} [CommSemiring K] (P : DifferentialPolynomial Unit K) :
-    (scalarDifferentialPolynomialInitial P).vars ⊆ P.vars := by
-  classical
-  intro j hj
-  let i := scalarDifferentialPolynomialLeader P
-  let e := Equiv.optionSubtypeNe i
-  let R : MvPolynomial (Option {k : Unit × ℕ // k ≠ i}) K :=
-    MvPolynomial.rename e.symm P
-  let Q : Polynomial (MvPolynomial {k : Unit × ℕ // k ≠ i} K) :=
-    MvPolynomial.optionEquivLeft K {k : Unit × ℕ // k ≠ i} R
-  change j ∈ (MvPolynomial.rename Subtype.val Q.leadingCoeff).vars at hj
-  obtain ⟨b, hbQ, hbj⟩ :=
-    MvPolynomial.mem_vars_rename Subtype.val Q.leadingCoeff hj
-  obtain ⟨m, hmQ, hbm⟩ :=
-    (MvPolynomial.mem_vars_iff_mem_support b).mp hbQ
-  have hmCoeff : m ∈ (Q.coeff Q.natDegree).support := by
-    simpa only [Polynomial.leadingCoeff] using hmQ
-  have hmR : m.optionElim Q.natDegree ∈ R.support := by
-    apply (MvPolynomial.mem_support_coeff_optionEquivLeft).mp
-    simpa [Q] using hmCoeff
-  have hsomeSupport : (some b) ∈ (m.optionElim Q.natDegree).support := by
-    rw [Finsupp.mem_support_iff] at hbm ⊢
-    simpa using hbm
-  have hsomeVars : some b ∈ R.vars :=
-    (MvPolynomial.mem_vars_iff_mem_support (some b)).mp⁻¹
-      ⟨m.optionElim Q.natDegree, hmR, hsomeSupport⟩
-  obtain ⟨k, hkP, hkb⟩ := MvPolynomial.mem_vars_rename e.symm P hsomeVars
-  have hk : k = b.1 := by
-    simpa [e] using congrArg e hkb
-  rw [← hbj, ← hk]
-  exact hkP
+    (scalarDifferentialPolynomialInitial P).vars ⊆ P.vars :=
+  mvPolynomialInitialAt_vars_subset (scalarDifferentialPolynomialLeader P) P
 
 /-- The leader itself cannot occur in its distinguished initial. -/
 theorem scalarDifferentialPolynomialLeader_not_mem_initial_vars
@@ -452,7 +476,7 @@ theorem scalarDifferentialPolynomialLeader_not_mem_initial_vars
       (scalarDifferentialPolynomialInitial P).vars := by
   intro hleader
   obtain ⟨b, _, hb⟩ := MvPolynomial.mem_vars_rename Subtype.val
-    (scalarDifferentialPolynomialAsPolynomial P).leadingCoeff hleader
+    (mvPolynomialAsPolynomialAt (scalarDifferentialPolynomialLeader P) P).leadingCoeff hleader
   exact b.2 hb
 
 /-- A variable of a scalar polynomial that is not its leader has strictly smaller jet order. -/
@@ -477,15 +501,20 @@ theorem scalarDifferentialPolynomialInitial_order_lt
       scalarDifferentialPolynomialOrder P := by
   obtain ⟨j₀, hj₀⟩ := hvars
   have hj₀P := scalarDifferentialPolynomialInitial_vars_subset P hj₀
-  have hj₀ne := fun h ↦
-    scalarDifferentialPolynomialLeader_not_mem_initial_vars P (h ▸ hj₀)
+  have hj₀ne : j₀ ≠ scalarDifferentialPolynomialLeader P := by
+    intro h
+    subst j₀
+    exact scalarDifferentialPolynomialLeader_not_mem_initial_vars P hj₀
   have hj₀lt := scalarDifferentialPolynomial_var_order_lt hj₀P hj₀ne
   unfold scalarDifferentialPolynomialOrder
   apply (Finset.sup_lt_iff (lt_of_le_of_lt (Nat.zero_le _) hj₀lt)).mpr
   intro j hj
   exact scalarDifferentialPolynomial_var_order_lt
     (scalarDifferentialPolynomialInitial_vars_subset P hj)
-    (fun h ↦ scalarDifferentialPolynomialLeader_not_mem_initial_vars P (h ▸ hj))
+    (by
+      intro h
+      subst j
+      exact scalarDifferentialPolynomialLeader_not_mem_initial_vars P hj)
 
 /-- A repaired-rank-minimal relation cannot contain its distinguished initial. -/
 theorem IsMinimalScalarDifferentialPolynomialRank.initial_not_mem
@@ -510,6 +539,158 @@ theorem IsMinimalScalarDifferentialPolynomialRank.initial_not_mem
       rw [hC]
       exact IsUnit.map MvPolynomial.C hc.isUnit
     exact hItop (I.eq_top_of_isUnit_mem hInitial hunit)
+
+/-- Under `optionEquivLeft`, partial differentiation in the distinguished `none` variable is the
+ordinary univariate polynomial derivative. -/
+theorem optionEquivLeft_pderiv_none
+    {K σ : Type*} [CommSemiring K] (P : MvPolynomial (Option σ) K) :
+    MvPolynomial.optionEquivLeft K σ (MvPolynomial.pderiv none P) =
+      Polynomial.derivative (MvPolynomial.optionEquivLeft K σ P) := by
+  classical
+  induction P using MvPolynomial.induction_on with
+  | C c => simp
+  | add P Q hP hQ => simp [hP, hQ]
+  | mul_X P j hP =>
+      cases j with
+      | none => simp [hP, Polynomial.derivative_mul, mul_comm]
+      | some j => simp [hP, Polynomial.derivative_mul, mul_comm]
+
+/-- Singling out a variable intertwines its partial derivative with the univariate derivative. -/
+theorem mvPolynomialAsPolynomialAt_pderiv
+    {K σ : Type*} [CommSemiring K] (i : σ) (P : MvPolynomial σ K) :
+    mvPolynomialAsPolynomialAt i (MvPolynomial.pderiv i P) =
+      Polynomial.derivative (mvPolynomialAsPolynomialAt i P) := by
+  classical
+  unfold mvPolynomialAsPolynomialAt
+  rw [← MvPolynomial.pderiv_rename (Equiv.optionSubtypeNe i).symm.injective i P,
+    Equiv.optionSubtypeNe_symm_self]
+  exact optionEquivLeft_pderiv_none _
+
+/-- A nontrivial partial derivative has strictly lower degree in the differentiated variable. -/
+theorem mvPolynomial_degreeOf_pderiv_lt
+    {K σ : Type*} [CommSemiring K] {i : σ} {P : MvPolynomial σ K}
+    (hi : MvPolynomial.degreeOf i P ≠ 0) :
+    MvPolynomial.degreeOf i (MvPolynomial.pderiv i P) <
+      MvPolynomial.degreeOf i P := by
+  classical
+  have hnat : (mvPolynomialAsPolynomialAt i P).natDegree ≠ 0 := by
+    unfold mvPolynomialAsPolynomialAt
+    rw [← MvPolynomial.degreeOf_eq_natDegree]
+    exact hi
+  calc
+    MvPolynomial.degreeOf i (MvPolynomial.pderiv i P) =
+        (mvPolynomialAsPolynomialAt i (MvPolynomial.pderiv i P)).natDegree :=
+      MvPolynomial.degreeOf_eq_natDegree i _
+    _ = (Polynomial.derivative (mvPolynomialAsPolynomialAt i P)).natDegree :=
+      congrArg Polynomial.natDegree (mvPolynomialAsPolynomialAt_pderiv i P)
+    _ < (mvPolynomialAsPolynomialAt i P).natDegree :=
+      Polynomial.natDegree_derivative_lt hnat
+    _ = MvPolynomial.degreeOf i P :=
+      (MvPolynomial.degreeOf_eq_natDegree i P).symm
+
+/-- In characteristic zero, the separant of a nonconstant scalar differential polynomial is
+nonzero. -/
+theorem scalarDifferentialPolynomialSeparant_ne_zero
+    {K : Type*} [Field K] [CharZero K] {P : DifferentialPolynomial Unit K}
+    (hP : P.vars.Nonempty) : scalarDifferentialPolynomialSeparant P ≠ 0 := by
+  obtain ⟨s, hsP, hleader⟩ :=
+    (MvPolynomial.mem_vars_iff_mem_support
+      (scalarDifferentialPolynomialLeader P)).mp
+      (scalarDifferentialPolynomialLeader_mem_vars hP)
+  exact pderiv_ne_zero_of_mem_support hsP hleader
+
+/-- The separant introduces no new scalar jet variables. -/
+theorem scalarDifferentialPolynomialSeparant_vars_subset
+    {K : Type*} [CommSemiring K] (P : DifferentialPolynomial Unit K) :
+    (scalarDifferentialPolynomialSeparant P).vars ⊆ P.vars :=
+  mvPolynomial_vars_pderiv_subset (scalarDifferentialPolynomialLeader P) P
+
+/-- The separant has scalar differential order at most that of the original polynomial. -/
+theorem scalarDifferentialPolynomialSeparant_order_le
+    {K : Type*} [CommSemiring K] (P : DifferentialPolynomial Unit K) :
+    scalarDifferentialPolynomialOrder (scalarDifferentialPolynomialSeparant P) ≤
+      scalarDifferentialPolynomialOrder P := by
+  unfold scalarDifferentialPolynomialOrder
+  exact Finset.sup_le fun j hj ↦ Finset.le_sup
+    (scalarDifferentialPolynomialSeparant_vars_subset P hj)
+
+/-- If taking the separant preserves scalar differential order, it strictly lowers the leader
+degree. -/
+theorem scalarDifferentialPolynomialSeparant_leaderDegree_lt
+    {K : Type*} [CommSemiring K] {P : DifferentialPolynomial Unit K}
+    (hP : P.vars.Nonempty)
+    (hOrder : scalarDifferentialPolynomialOrder (scalarDifferentialPolynomialSeparant P) =
+      scalarDifferentialPolynomialOrder P) :
+    scalarDifferentialPolynomialLeaderDegree (scalarDifferentialPolynomialSeparant P) <
+      scalarDifferentialPolynomialLeaderDegree P := by
+  unfold scalarDifferentialPolynomialLeaderDegree
+  have hLeader :
+      scalarDifferentialPolynomialLeader (scalarDifferentialPolynomialSeparant P) =
+        scalarDifferentialPolynomialLeader P := by
+    unfold scalarDifferentialPolynomialLeader
+    exact congrArg (fun n : ℕ ↦ ((), n)) hOrder
+  rw [hLeader]
+  unfold scalarDifferentialPolynomialSeparant
+  apply mvPolynomial_degreeOf_pderiv_lt
+  rw [← MvPolynomial.mem_vars_iff_degreeOf_ne_zero]
+  exact scalarDifferentialPolynomialLeader_mem_vars hP
+
+/-- In characteristic zero, a repaired-rank-minimal relation cannot contain its separant. -/
+theorem IsMinimalScalarDifferentialPolynomialRank.separant_not_mem
+    {K : Type*} [Field K] [CharZero K]
+    {I : Ideal (DifferentialPolynomial Unit K)} (hItop : I ≠ ⊤)
+    {P : DifferentialPolynomial Unit K}
+    (hP : IsMinimalScalarDifferentialPolynomialRank (I : Set _) P) :
+    scalarDifferentialPolynomialSeparant P ∉ I := by
+  intro hSeparant
+  have hSeparant0 := scalarDifferentialPolynomialSeparant_ne_zero hP.2.2.1
+  by_cases hvars : (scalarDifferentialPolynomialSeparant P).vars.Nonempty
+  · have hmin := hP.2.2.2 hSeparant hSeparant0 hvars
+    have hOrderLe := scalarDifferentialPolynomialSeparant_order_le P
+    have hOrder : scalarDifferentialPolynomialOrder (scalarDifferentialPolynomialSeparant P) =
+        scalarDifferentialPolynomialOrder P :=
+      Nat.le_antisymm hOrderLe hmin.1
+    exact (Nat.not_le_of_lt
+      (scalarDifferentialPolynomialSeparant_leaderDegree_lt hP.2.2.1 hOrder))
+        (hmin.2.1 hOrder.symm)
+  · have hvars0 := Finset.not_nonempty_iff_eq_empty.mp hvars
+    have hC := MvPolynomial.vars_eq_empty_iff_eq_C.mp hvars0
+    have hc : (scalarDifferentialPolynomialSeparant P).coeff 0 ≠ 0 := by
+      intro hc
+      apply hSeparant0
+      rw [hC, hc]
+      simp
+    have hunit : IsUnit (scalarDifferentialPolynomialSeparant P) := by
+      rw [hC]
+      exact IsUnit.map MvPolynomial.C hc.isUnit
+    exact hItop (I.eq_top_of_isUnit_mem hSeparant hunit)
+
+/-- Full dependency-closed characteristic-polynomial package for a nontrivial intermediate field:
+the selected relation is repaired-rank-minimal and irreducible, and its correctly distinguished
+initial and separant are both nonzero and outside the prime relation kernel. -/
+theorem exists_differentialKernelCharacteristic_with_initial_separant
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E] [CharZero E]
+    (G : IntermediateField F E) {y : E}
+    (hG : G ≤ differentialAdjoin F ({y} : Set E))
+    (u : G) (huF : (u : E) ∉ (⊥ : IntermediateField F E)) :
+    ∃ P : DifferentialPolynomial Unit G,
+      IsMinimalScalarDifferentialPolynomialRank
+          (differentialIntermediateRelationIdeal G y : Set _) P ∧
+        Irreducible P ∧
+        scalarDifferentialPolynomialInitial P ≠ 0 ∧
+        scalarDifferentialPolynomialInitial P ∉
+          differentialIntermediateRelationIdeal G y ∧
+        scalarDifferentialPolynomialSeparant P ≠ 0 ∧
+        scalarDifferentialPolynomialSeparant P ∉
+          differentialIntermediateRelationIdeal G y := by
+  obtain ⟨P, hP, hIrreducible⟩ :=
+    exists_irreducible_minimal_differentialKernelCharacteristic G hG u huF
+  have hItop := differentialIntermediateRelationIdeal_ne_top G y
+  exact ⟨P, hP, hIrreducible,
+    scalarDifferentialPolynomialInitial_ne_zero hP.2.1,
+    hP.initial_not_mem hItop,
+    scalarDifferentialPolynomialSeparant_ne_zero hP.2.2.1,
+    hP.separant_not_mem hItop⟩
 
 end
 

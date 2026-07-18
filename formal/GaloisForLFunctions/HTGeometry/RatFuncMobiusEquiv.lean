@@ -17,6 +17,27 @@ namespace RatFunc
 
 variable {K : Type*} [Field K]
 
+/-- Two coefficient-fixing automorphisms of `K(X)` agree when they agree on `X`. -/
+theorem algEquiv_ext_X
+    {f g : RatFunc K ≃ₐ[K] RatFunc K}
+    (hX : f X = g X) : f = g := by
+  apply AlgEquiv.ext
+  intro z
+  have hring : f.toRingEquiv.toRingHom = g.toRingEquiv.toRingHom := by
+    apply IsFractionRing.ringHom_ext (A := K[X])
+    intro p
+    have hpoly :
+        f.toRingEquiv.toRingHom.comp (algebraMap K[X] (RatFunc K)) =
+          g.toRingEquiv.toRingHom.comp (algebraMap K[X] (RatFunc K)) := by
+      apply Polynomial.ringHom_ext
+      · intro k
+        change f (algebraMap K (RatFunc K) k) =
+          g (algebraMap K (RatFunc K) k)
+        rw [f.commutes, g.commutes]
+      · simpa [RatFunc.algebraMap_X] using hX
+    exact DFunLike.congr_fun hpoly p
+  exact DFunLike.congr_fun hring z
+
 /-- A nondegenerate Möbius denominator is a nonzero rational function. -/
 theorem mobius_denominator_ne_zero
     {a b c d : K} (hdet : a * d - b * c ≠ 0) :
@@ -154,6 +175,69 @@ theorem mobiusEquiv_X
     (a b c d : K) (hdet : a * d - b * c ≠ 0) :
     mobiusEquiv a b c d hdet X = mobius a b c d := by
   simp [mobiusEquiv, RatFunc.algEquivOfTranscendental_X]
+
+/-- Möbius automorphisms compose by matrix multiplication, with the matrix order dictated by
+substitution: the right matrix multiplies the left matrix. -/
+theorem mobiusEquiv_mul
+    (a b c d A B C D : K)
+    (hdet : a * d - b * c ≠ 0)
+    (hDET : A * D - B * C ≠ 0) :
+    mobiusEquiv a b c d hdet * mobiusEquiv A B C D hDET =
+      mobiusEquiv
+        (A * a + B * c) (A * b + B * d)
+        (C * a + D * c) (C * b + D * d)
+        (by
+          have hfactor :
+              (A * a + B * c) * (C * b + D * d) -
+                  (A * b + B * d) * (C * a + D * c) =
+                (A * D - B * C) * (a * d - b * c) := by
+            ring
+          rw [hfactor]
+          exact mul_ne_zero hDET hdet) := by
+  apply algEquiv_ext_X
+  change mobiusEquiv a b c d hdet
+      (mobiusEquiv A B C D hDET X) = _
+  rw [mobiusEquiv_X, mobiusEquiv_X]
+  rw [mobius]
+  simp only [map_div₀, map_add, map_mul, AlgEquiv.commutes,
+    mobiusEquiv_X]
+  rw [mobius]
+  have hden := mobius_denominator_ne_zero hdet
+  have hres :
+      (A * a + B * c) * (C * b + D * d) -
+          (A * b + B * d) * (C * a + D * c) ≠ 0 := by
+    have hfactor :
+        (A * a + B * c) * (C * b + D * d) -
+            (A * b + B * d) * (C * a + D * c) =
+          (A * D - B * C) * (a * d - b * c) := by
+      ring
+    rw [hfactor]
+    exact mul_ne_zero hDET hdet
+  have hinner :
+      algebraMap K (RatFunc K) C * mobius a b c d +
+          algebraMap K (RatFunc K) D ≠ 0 := by
+    have hsource := mobius_denominator_ne_zero hDET
+    have hmapped := (map_ne_zero (mobiusEquiv a b c d hdet)).2 hsource
+    change mobiusEquiv a b c d hdet
+      (algebraMap K (RatFunc K) C * X +
+        algebraMap K (RatFunc K) D) ≠ 0 at hmapped
+    rw [map_add, map_mul, AlgEquiv.commutes, AlgEquiv.commutes,
+      mobiusEquiv_X] at hmapped
+    exact hmapped
+  have hresden :
+      algebraMap K (RatFunc K) (C * a + D * c) * X +
+          algebraMap K (RatFunc K) (C * b + D * d) ≠ 0 :=
+    mobius_denominator_ne_zero hres
+  rw [mobius]
+  apply (div_eq_div_iff hinner hresden).2
+  rw [mobius]
+  have hden' :
+      X * algebraMap K (RatFunc K) c +
+          algebraMap K (RatFunc K) d ≠ 0 := by
+    simpa [mul_comm] using hden
+  field_simp [hden, hden']
+  push_cast
+  ring
 
 end RatFunc
 
