@@ -1521,3 +1521,44 @@ not cite). The global level-uniform consumer is abandoned as conjecturally vacuo
 surviving restatement: **the L2-AVERAGED / Carleson-embedding, multiplicity-robust form of
 the quotient bound** (small gaps do not kill averaged embeddings — Baranov's Bernstein/
 embedding machinery applies). Next: state the averaged form exactly and Gate-3 it.
+
+## 2026-07-18 session 2 (cont. 36) — Hamiltonian explicit + termination signature theorem;
+## averaged consumer (AB) survives its acid test and RESTRUCTURES the wall; referee 3/3
+
+**[HAMILTONIAN — DERIVED+VERIFIED]** `H(c) = h(c) e_2 e_2^T`, `h(c) = c/(c^2-d^2)^2`,
+`t(c) = 1/(2(c^2-d^2))`: rank 1, ONE indivisible interval; the abstract trace-normalized
+system is identical for all boxes (blindness persists — consistent with the trap); the
+dichotomy sits in canonical-time depth-anchoring: `d^2 = lim_{t->infinity} c(t)^2`.
+**TERMINATION SIGNATURE THEOREM (rank-2):** `RH-per-box ⟺ int_{c0} tr H dc < infinity for
+every c0 > 0` — de Branges chain-regularity IS the exhaustion dichotomy. OFF-line: double
+pole of h at `c* = |d|`; ON-line: triple pole at 0 (confluent). SOURCE DETERMINATION: h(c) is
+source-computable POINTWISE at every admissible c (recovery theorem + source-checkable
+admissibility); the assembled germ's left-endpoint continuation property is RH-per-box. LAW
+CLASS: Krein's screw-function extension — extension iff the helical kernel stays PSD (cone/
+survivor class) — **our H(c) is the box-local rank-2 germ of the corpus's Suzuki
+canonical-system surface** (session-1 audit closes its loop). Next: express the box
+screw-kernel PSD extension in the two-height joint moment matrix (the Krein/two-height
+collision).
+
+**[AVERAGED CONSUMER (AB) — STATED, ACID TEST PASSED, WALL RESTRUCTURED]** (AB): `mu_Xi =
+sum m_rho delta_rho / K(rho,rho)` is Carleson for H(E) uniformly against the level-S
+comparison. (i) AB => RH SURVIVES: the weight is LEVEL-INDEPENDENT and bounded below
+(rank-2: `K(rho,rho) = 2c^3/pi` EXACTLY, d-free — referee-confirmed exact cancellation,
+cross-checked two ways); one off-line fiber with `p^{2d}` dominates any positive average.
+(ii) ACID TEST PASSED: on-line resolved pair embedding constant `= 2(c^2+delta^2)/(c^2+2
+delta^2) <= 2` for ALL delta, continuous through collision — GUE small gaps kill only the
+LOWER Riesz bound; AB is consistent-under-RH+GUE, non-vacuous, multiplicity-robust,
+RH-forcing. (iii) WALL RESTRUCTURE vs cont. 34: (b2) DISSOLVES (balayage `J*Jf = sum m_rho
+f(rho) K_rho / K(rho,rho)` replaces the extremal interpolant); (b1) DEMOTED (division enters
+only the isometric identification); (b3) moot. NEW ROOM, exact: `sum m_rho (f f^#)(rho)` has
+a SOURCE-SIDE explicit-formula representation; the wall concentrates entirely in the weights
+`1/K(rho,rho)`, with on-line `K(x,x) = phi'(x)|E(x)|^2/pi` boundary-computable; residual
+demand = INTEGRATED L1-comparability only — zero-repulsion demoted from per-fiber sup to
+averaged form. **[NEXT — THE WEIGHTED EXPLICIT FORMULA]** Write `sum m_rho (f f^#)(rho) /
+phi'(rho)` as a critical-line balayage integral; compute the rank-2 balayage exactly; collide
+with `H(c)`.
+
+**[REFEREE cont. 33-35 — ALL CONFIRMED]** Gamma tables vs Weil 1964 / Rao App. A / Tate
+Corvallis 3.2.3 / Bushnell-Henniart 23.4; modulus law; self-dual normalization; HB iff
+`c > |d|`; kernel d-freeness EXACT; bridge identity with opposite signs verified; separation
+monotonicity; termination-marker coincidence.
