@@ -1381,3 +1381,40 @@ and the collision-PSD dichotomy `packetHankel_collision_posSemidef`. Single-modu
 clean (8475 jobs); `#print axioms` on all four capstones = `[propext, Classical.choice,
 Quot.sound]`. The blindness/Schur layer is now formal. (Batch agent left the commit pending on
 a build monitor; this lane verified and committed: build + axioms audit done here.)
+
+## 2026-07-18 session 2 (cont. 32) — Gate-2 CONE CERTIFICATE stated (exhaustion dichotomy);
+## the two surviving lanes meet in ONE computable question (the epsilon_S jet)
+
+**[CONJECTURE — exhaustion dichotomy, marker verified]** For a v-point, cone
+`C(v+) = {(B_c, c) : admissible innermost double box, c in (|d|, c_max)}` (admissibility
+source-checkable per box; the cone is source-exhaustible though `inf{admissible c} = |d|`).
+Marker `N(c) = (pi c / m_B) * sup_x B_in,c(x)`; EXACT: `N(c) = 2c^2/(c^2 + e)` — OFF-line:
+`-> infinity` at finite depth `c -> |d|+`, where SIMULTANEOUSLY the rate gap `S^{c-d} -> 1`
+and `min_∂B |xi| -> 0`; ON-line: cone reaches depth 0 with `N <= 2` for ALL c (exact per-term
+Poisson bound). Statement: **RH-per-box ⟺ every innermost cone satisfies
+`sup_C N <= 2`** — quantized gap (2, infinity), non-analytic sup class (escapes the
+analytic-reader no-go). Exhaustion identity `c*^2 = max(D_Prony, 0)`.
+
+**[TRAP CONFIRMED + THE FORCING BRIDGE]** N at one height computes e (analytic reader): the
+cone adds certificate SHAPE, not detection; `sup N <= 2` is RH-per-box restated UNLESS forced.
+The candidate forcing law (collision of the two surviving lanes): cone depth c and Euler level
+S are dual exhaustion parameters coupled by the same `n^{±c}`/sinh weights; Hilbert
+reciprocity closes the Weil-index product EXACTLY at finite S ⊇ ram(a) — unconditional
+arithmetic. BRIDGE QUESTION: does the epsilon_S two-structure defect's superdiagonal jet
+(`d/ds log epsilon_v`) inherit an exact finite-level cancellation bounding the remainder rate
+`rho_S(B_c)` strictly below the probe rate `S^{1/2+c}` for every `c > 0` — contradicting the
+OFF branch where the dual defect `S^{1/2+d}` dominates?
+
+**[OPEN CORE]** Does the epsilon_S jet carry a c-coupled MODULUS constraint at finite level,
+or only mu_8 phase? KILL CONDITION (pre-stated): pure phase (unitary, rate-blind) => the
+bridge dies. This question absorbs MQ2 (local Weil indices feed the jet).
+
+**[CIRCULARITY MAP — three exact locations]** (i) the identification (mu_8 defect) =
+(edge-cohomology rate defect) is the UNPROVEN leg of the three-fold convergence — if it needs
+the zero-sum's Abel abscissa, Landau's `sup Re rho` re-enters; (ii) any bridge forcing the
+dual exponent to exactly 1/2 is RH verbatim — the law must force something weaker (candidate:
+MQ3's mod-8 phase coherence) that still breaks cone termination; (iii) cone construction uses
+d — assume-not-select: quantify over hypothetical cones inside the contradiction scheme only.
+
+**[NEXT MOVE]** Compute the epsilon_S jet at the first box family, quadratic P (symbolic; the
+cont.-24 designated computation) — the modulus-vs-phase dichotomy decides the bridge.
