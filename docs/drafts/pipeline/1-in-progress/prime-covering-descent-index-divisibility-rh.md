@@ -546,3 +546,34 @@ test `(A, C)`-membership on the census box using T4's finite quotient (structura
 the finite linear system — no computations); (3) T4 Lean batch per logged plan; (4) hostile:
 if membership fails, the failure class is the next interrogation input — record whether it is
 height-uniform (fatal) or box-local (absorbable by height-adaptation).
+
+## 2026-07-18 session 1 (cont. 9) — arch-slice SURVIVES; duplication identity derived; vacuity
+## alarm raised
+
+Agent-derived, first pass (needs my referee before any promotion):
+1. `[DERIVED ON PAPER — first pass]` Exact obstruction identity:
+   `O(s) = (2^s - 1) * D_{G·1_even} * zeta_W = u1*A + u2*D_G^- * zeta_W + u3*B`, with
+   `(2^s - 1)/2` a genuine unit on census boxes, `D_G^-` the parity-twisted (theta_4-channel)
+   windowed archimedean series, `B` the windowed-vs-analytic discrepancy. Legendre duplication
+   in the formalized ratio form (`sharpNeutralGammaRatio`, SignedGammaSharpExample.lean:26; from
+   mathlib `Complex.Gamma_mul_Gamma_add_half`) certifies coarse = unit * (shift-one weld) * fine
+   for the arch symbol, cancelling main terms in `D_G^-` exactly; NO `xi(2s)` term arises (the
+   2s-trap never fires: G is smooth-density in the convolution index, not square-supported).
+2. `[VERDICT]` Arch-slice membership via T4 reduces to: `ord(D_G^- * zeta_W) >= m - 1` at every
+   box zero — VACUOUS at simple zeros. Exact surviving statement: only at MULTIPLE box zeros
+   must the parity-twisted defect vanish to order `m - 1`. Sufficient sharper form:
+   `D_G^- * zeta_W ∈ (R(s-1/2), R'(s-1/2)) * O(Omega)` (the jet module — anything in it has
+   `ord >= m-1` automatically; `C` itself is visibly in it by its Lean definition).
+3. `[VACUITY ALARM — mandatory hostile assembly]` If the Koszul chain closed with vacuous
+   membership in the all-simple configuration, it would force `2^k | M` and hence no simple
+   off-line zeros — far too strong to accept without locating the hidden cost. REQUIRED NEXT:
+   assemble the full chain skeleton from census endpoint back through the bigraded Koszul
+   recursion, NAMING every unproven glue lemma (finite-section stabilization on boxes; Koszul
+   exact-sequence bookkeeping; per-step congruence composition; the discrepancy channel `B`'s
+   membership; unit normalizations), and hostile-test where RH-strength content hides in the
+   all-simple case. Lesson in force: a lane whose open steps imply the target through a shorter
+   branch is a hidden restatement (ccm-rayleigh failure).
+4. `[FORMALIZATION GAP INVENTORY]` No Jacobi theta doubling/Landen exists in the corpus (theta
+   files are divisor/principal-part only); duplication side has `sharpNeutralGammaRatio`,
+   polygamma multiplication (n=2), Sauter-Bogoliubov Gauss-duplication carrier; order law
+   `analyticOrderAt_dyadicSharpPrimeCancelledSource_eq_pred` formalized.
