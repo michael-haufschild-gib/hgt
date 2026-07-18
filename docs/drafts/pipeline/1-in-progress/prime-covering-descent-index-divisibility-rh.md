@@ -2075,3 +2075,75 @@ perimeter theorem governs. Write the slab-localized pair correlation exactly and
 source identity forcing `Q = M^2` (equivalently: no off-line splitting of the fiber mass).
 Also queue: promotions; the C1 consumer Lean layer (the Q <= M^2 algebra + the Laurent
 structure are formalizable over the existing module stack).
+
+## 2026-07-18 session 2 (cont. 51) — form-factor collision VERDICT (null confirmed, exact
+## mechanism); Lean module 9; run-level novelty audit; lane CLOSED at user instruction
+
+**[COLLISION VERDICT — pre-registered null CONFIRMED, with a sharper mechanism than
+predicted]** (certified symbolically, scratchpad `formfactor_collision.py`; validated against
+referee values):
+- Slab-localized pair correlation written exactly: reality law gives
+  `conj(tr(h+i eta)) = tr(h - i eta)` — `|tr|^2` on the vertical edge is the trace two-point
+  function at CONJUGATE points (mirror across the critical line at the same height), not at
+  horizontal separation 2h. Exact partial-fraction kernel: prefactor
+  `1/(2x0 - u_j - conj u_k)` times one-point terms. Finite-h identity:
+  `2 pi Q/h + F_0 + O(h) = PP(window-smoothed Lambda autocorrelation) + 2Re(ZP) + ZZ_cross
+  + ZZ_nonfiber`.
+- Germ is purely local even with non-fiber zeros: full config (fiber pair + off-fiber conj
+  pair + height-mirror on-line pair + regular part) has `h^{-1}` coefficient exactly
+  `2 pi Q_fiber`; the dangerous height-mirror pair's `1/(2h)` prefactor is killed by a
+  vanishing bracket.
+- THE MECHANISM (sharper than the prediction): the prime diagonal is EXACTLY h-independent
+  (`|n^{-s}|^2` on the edge = `n^{-(1-2y)}`, no h; every Lambda-term entire in h). Term-by-term
+  the prime side has ZERO `1/h` coefficient — the roles SWAP vs cont. 38-39 (there the
+  diagonal carried the divergence; here it carries none). The `2 pi Q/h` must be resummed from
+  the divergent OFF-diagonal `Lambda(n)Lambda(n')` tail = Hardy-Littlewood regime = the
+  `alpha >= 1` form-factor tail Montgomery's method cannot reach.
+- SCALE CROSSOVER certified exactly: an on-line cluster at heights `gamma ± a` has
+  `1/h`-coefficient 0 for `h << a` but `lim h F = 4pi/(1-t^2) + 4pi` along `a = t h`
+  (`-> 2 pi M_cluster^2` as `t -> 0`): the "`1/h` coefficient" is SCALE-DEPENDENT through the
+  gap. Extracting Q needs h below the fiber isolation scale `delta_min(gamma)` — divisor data.
+  Q is NOT source-computable. `Q = M^2` is the height-local multiplicity second moment — the
+  zero-gap delta of the form factor, whose global average (simplicity) is already open.
+- Adjudication: source-pure = prime diagonal (h-constant), arch, ZP at finite h; zero-data =
+  the `h -> 0` exchange (gap scale) + off-diagonal LambdaLambda (HL-conjectural).
+
+**[CONSEQUENCE — per the pre-registered null]** Quadratic-functional hunts in this
+representation are PERMANENTLY CLOSED for this lane. This was the closing datum. Residue kept
+(unproved, [CONJECTURE]): `Q_eff(h) := h F(h)/(2 pi)` is a coarsening flow interpolating
+sum-of-cluster-`M^2` down to Q; Cauchy-Schwarz says merging only raises it; a
+monotonicity-in-h identity would convert C1 into a finite-h inequality certificate. Second
+unexplored face: Mellin-transform F in h (germ extraction as a pole). Neither pursued here.
+
+**[LEAN MODULE 9 — SHIPPED, commit 50fcded2; 292 lines; single-module build green; lint
+passed; axioms propext/Classical.choice/Quot.sound on all 16 declarations]**
+`RHTower/SlabMassSquareCertificate.lean`: `sum_sq_le_sq_sum` (Q <= M^2, equality iff at most
+one nonzero mass), fiber layer (`heightFiberMass`, `heightFiberMassSquare`, mirror
+`xiPacketMass_conj`), hypothesis-free consumers incl. NEW brick
+`riemannHypothesis_iff_xiC_zero_im_eq_zero` (corpus had only forward) and CAPSTONE
+`riemannHypothesis_iff_forall_heightFiber_massSquare` (RH ⟺ Q = M^2 at every height) + the
+one-sided `riemannHypothesis_iff_forall_sq_le_heightFiberMassSquare`. (Umbrella olean stays
+red from PRE-EXISTING unrelated VanDerCorputSecond.lean breakage, commit 4ea574a4; the lint
+gate is the authority and passes.)
+
+**[RUN-LEVEL NOVELTY AUDIT — recorded as the lane's epistemic state]** Applied strictly
+("would a competent literature search have produced this?"): every result of this run reduces
+to known — formalizations of standard mathematics or self-defined structures; rediscoveries
+(flagged); micro-lemmas about self-constructed objects (repository novelty only); no-gos for
+self-proposed routes whose deepest instances are expert folklore (the pair-correlation /
+support wall). ZERO [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]. The run's product is an exact map of
+the known wall as it presents itself to this corpus, plus nine unconditional Lean support
+modules and a clean kill-list. The face-counting of the late cycles (Q-face, F_0-face as
+"progress") was register slippage: equivalent criteria, correctly excluded by the anti-theatre
+gate.
+
+**[LANE STATE AT CLOSE]** Open, unresolved, undetermined-status object: the
+CERTIFICATE-CLASSIFICATION conjecture — no functional of the zero measure analytic in
+EF-accessible variables with an unconditional source expansion can detect support (exact class
+boundary undefined; both directions open: prove the no-go, or construct the escaping
+certificate — falsity would be the interesting outcome). Calibration data: this run's entire
+kill-list, esp. cont. 51's scale-crossover mechanism (the analytic obstruction is the
+non-interchange of the germ limit with the source sum AT THE GAP SCALE) and the M <= Q <= M^2
+window (simplicity at the bottom endpoint, RH at the top). Stopped here at user instruction
+(2026-07-18): the run failed the novelty test; the next cycle, if reopened, starts at the
+classification conjecture, NOT at another face of this representation.
