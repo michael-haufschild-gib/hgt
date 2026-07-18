@@ -283,4 +283,112 @@ theorem momentTransfer_isUnit (h : PositiveMomentForm s) (n : ℕ) :
     IsUnit (momentTransfer s n) :=
   (Matrix.isUnit_iff_isUnit_det _).mpr (momentTransfer_det_isUnit h n)
 
+/-! ## The Duhamel comparison formula
+
+Comparing the orthogonal polynomials at two points.  This is the discrete variation-of-constants
+formula, and it needs no separate induction: `christoffelDarboux` supplies one partial sum in closed
+form, `mixedChristoffelDarboux` the other (contributing the `1/h₀` term), and on substitution the
+`Rₙ(z)` contributions cancel, leaving `Qₙ(w)` after one use of the constant Wronskian. -/
+
+theorem monicOrtho_duhamel (h : PositiveMomentForm s) (n : ℕ) (z w : ℝ) :
+    (monicOrtho s n).eval w
+      = (monicOrtho s n).eval z
+        - (w - z) * momentInner s (monicOrtho s 0) (monicOrtho s 0) *
+          ((monicOrtho s n).eval z *
+              (∑ j ∈ Finset.range (n + 1), (monicOrtho s j).eval w * (secondKind s j).eval z /
+                momentInner s (monicOrtho s j) (monicOrtho s j))
+            - (secondKind s n).eval z *
+              (∑ j ∈ Finset.range (n + 1), (monicOrtho s j).eval w * (monicOrtho s j).eval z /
+                momentInner s (monicOrtho s j) (monicOrtho s j))) := by
+  have h0 : momentInner s (monicOrtho s 0) (monicOrtho s 0) ≠ 0 :=
+    h.self_ne_zero (monicOrtho_ne_zero s 0)
+  have hn : momentInner s (monicOrtho s n) (monicOrtho s n) ≠ 0 :=
+    h.self_ne_zero (monicOrtho_ne_zero s n)
+  have hCD := christoffelDarboux h n w z
+  have hMix := mixedChristoffelDarboux h n w z
+  have hWz : (monicOrtho s (n + 1)).eval z * (secondKind s n).eval z
+      - (monicOrtho s n).eval z * (secondKind s (n + 1)).eval z
+      = -(momentInner s (monicOrtho s n) (monicOrtho s n) /
+          momentInner s (monicOrtho s 0) (monicOrtho s 0)) := by
+    have hev := congrArg (Polynomial.eval z) (momentWronskian_eq h n)
+    simpa [momentWronskian] using hev
+  -- the numerator identity, with no denominators in sight
+  have hnum : (monicOrtho s n).eval z *
+        ((monicOrtho s (n + 1)).eval w * (secondKind s n).eval z -
+          (monicOrtho s n).eval w * (secondKind s (n + 1)).eval z)
+      - (secondKind s n).eval z *
+        ((monicOrtho s (n + 1)).eval w * (monicOrtho s n).eval z -
+          (monicOrtho s n).eval w * (monicOrtho s (n + 1)).eval z)
+      = -((monicOrtho s n).eval w * momentInner s (monicOrtho s n) (monicOrtho s n) /
+          momentInner s (monicOrtho s 0) (monicOrtho s 0)) := by
+    have hb : (monicOrtho s n).eval z *
+          ((monicOrtho s (n + 1)).eval w * (secondKind s n).eval z -
+            (monicOrtho s n).eval w * (secondKind s (n + 1)).eval z)
+        - (secondKind s n).eval z *
+          ((monicOrtho s (n + 1)).eval w * (monicOrtho s n).eval z -
+            (monicOrtho s n).eval w * (monicOrtho s (n + 1)).eval z)
+        = (monicOrtho s n).eval w *
+          ((monicOrtho s (n + 1)).eval z * (secondKind s n).eval z -
+            (monicOrtho s n).eval z * (secondKind s (n + 1)).eval z) := by
+      ring
+    rw [hb, hWz]
+    ring
+  have key : (w - z) * momentInner s (monicOrtho s 0) (monicOrtho s 0) *
+      ((monicOrtho s n).eval z *
+          (∑ j ∈ Finset.range (n + 1), (monicOrtho s j).eval w * (secondKind s j).eval z /
+            momentInner s (monicOrtho s j) (monicOrtho s j))
+        - (secondKind s n).eval z *
+          (∑ j ∈ Finset.range (n + 1), (monicOrtho s j).eval w * (monicOrtho s j).eval z /
+            momentInner s (monicOrtho s j) (monicOrtho s j)))
+      = (monicOrtho s n).eval z - (monicOrtho s n).eval w := by
+    calc (w - z) * momentInner s (monicOrtho s 0) (monicOrtho s 0) *
+          ((monicOrtho s n).eval z *
+              (∑ j ∈ Finset.range (n + 1), (monicOrtho s j).eval w * (secondKind s j).eval z /
+                momentInner s (monicOrtho s j) (monicOrtho s j))
+            - (secondKind s n).eval z *
+              (∑ j ∈ Finset.range (n + 1), (monicOrtho s j).eval w * (monicOrtho s j).eval z /
+                momentInner s (monicOrtho s j) (monicOrtho s j)))
+        = momentInner s (monicOrtho s 0) (monicOrtho s 0) *
+            ((monicOrtho s n).eval z *
+                ((w - z) * ∑ j ∈ Finset.range (n + 1),
+                  (monicOrtho s j).eval w * (secondKind s j).eval z /
+                    momentInner s (monicOrtho s j) (monicOrtho s j))
+              - (secondKind s n).eval z *
+                ((w - z) * ∑ j ∈ Finset.range (n + 1),
+                  (monicOrtho s j).eval w * (monicOrtho s j).eval z /
+                    momentInner s (monicOrtho s j) (monicOrtho s j))) := by
+          ring
+      _ = momentInner s (monicOrtho s 0) (monicOrtho s 0) *
+            ((monicOrtho s n).eval z *
+                (((monicOrtho s (n + 1)).eval w * (secondKind s n).eval z -
+                    (monicOrtho s n).eval w * (secondKind s (n + 1)).eval z) /
+                  momentInner s (monicOrtho s n) (monicOrtho s n)
+                  + 1 / momentInner s (monicOrtho s 0) (monicOrtho s 0))
+              - (secondKind s n).eval z *
+                (((monicOrtho s (n + 1)).eval w * (monicOrtho s n).eval z -
+                    (monicOrtho s n).eval w * (monicOrtho s (n + 1)).eval z) /
+                  momentInner s (monicOrtho s n) (monicOrtho s n))) := by
+          rw [hMix, hCD]
+      _ = momentInner s (monicOrtho s 0) (monicOrtho s 0) *
+            ((monicOrtho s n).eval z *
+                ((monicOrtho s (n + 1)).eval w * (secondKind s n).eval z -
+                  (monicOrtho s n).eval w * (secondKind s (n + 1)).eval z)
+              - (secondKind s n).eval z *
+                ((monicOrtho s (n + 1)).eval w * (monicOrtho s n).eval z -
+                  (monicOrtho s n).eval w * (monicOrtho s (n + 1)).eval z)) /
+              momentInner s (monicOrtho s n) (monicOrtho s n)
+            + (monicOrtho s n).eval z := by
+          field_simp [h0, hn]
+          ring
+      _ = momentInner s (monicOrtho s 0) (monicOrtho s 0) *
+            (-((monicOrtho s n).eval w * momentInner s (monicOrtho s n) (monicOrtho s n) /
+              momentInner s (monicOrtho s 0) (monicOrtho s 0))) /
+              momentInner s (monicOrtho s n) (monicOrtho s n)
+            + (monicOrtho s n).eval z := by
+          rw [hnum]
+      _ = (monicOrtho s n).eval z - (monicOrtho s n).eval w := by
+          field_simp [h0, hn]
+          ring
+  linear_combination key
+
 end HTGeometry

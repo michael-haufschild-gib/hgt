@@ -90,7 +90,8 @@ the converse.
 ## Lean certificate
 
 - General base-change law:
-  `DifferentialIndependent.extendScalarsDifferentialAdjoin` and
+  `diffIndepOn_differentialAdjoin_of_differentialAlgebraicOver`,
+  `DifferentialIndependent.extendScalarsDifferentialAdjoin`, and
   `hypertranscendentalOver_differentialAdjoin_iff`; these cover an arbitrary set of individually
   differentially algebraic coefficients.  The earlier singleton equivalence remains as the
   cross-universe specialization.

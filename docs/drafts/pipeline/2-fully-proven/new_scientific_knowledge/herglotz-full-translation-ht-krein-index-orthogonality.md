@@ -689,3 +689,52 @@ complete measure-universal claim, so no partial theorem is promoted to stage 3.
   `HTGeometry.upperEndTranslationMeroDifferentialAlgEquiv`. So the open work is not the freeness
   predicate but the measure layer: the regularized transform (H1) as an upper-end carrier under
   (H0), and upgrading existing face-density to comeagerness in `L^infinity(mu;R)`.
+- 2026-07-19 — measure layer started, first piece Lean-checked in
+  `formal/GaloisForLFunctions/HTGeometry/RegularizedHerglotzTransform.lean`. The mismatch with the
+  existing freeness layer was that the corpus works with finite (probability) measures and the
+  plain Cauchy transform, while (H0) permits infinite mass. Resolved by factoring the Nevanlinna
+  regularization: for real `t` and non-real `z`,
+  `1/(t-z) - t/(1+t^2) = (1+t^2)^{-1} (z + (1+z^2)/(t-z))`
+  (`regularizedHerglotzKernel_eq`), so with the weighted measure `dnu = (1+t^2)^{-1} e^u dmu` —
+  finite exactly under (H0) — one gets
+  `m_u(z) = z * nu(R) + (1+z^2) * C_nu(z)`  (`regularizedHerglotzTransform_eq`).
+  Both corrections are rational in `z`, so they do not move the differential field over `C(z)`.
+  Integrability of the Cauchy kernel against a finite measure is proved, not assumed
+  (`integrable_cauchyKernel`), since the kernel is bounded by `|Im z|^{-1}`.
+  Next: normalize `nu` to a probability measure to land on the corpus predicate
+  `MaximalTranslationDifferentialFree`, then transport a translate relation through the rational
+  gauge and upgrade infinite-closed-face density to comeagerness in `L^infinity(mu;R)`.
+- 2026-07-19 — measure layer now lands on the corpus predicate's own object. Added the
+  normalization bridge: every nonzero finite measure is its total mass times a probability measure
+  (`exists_mass_probability_decomposition`, constructed rather than assumed), giving the standalone
+  form `exists_probability_regularizedHerglotzTransform_eq`:
+  `m_u(z) = c * (z + (1+z^2) * C_P(z))` for an honest probability measure `P` and mass `c`,
+  with no decomposition hypothesis. Since `w |-> z + (1+z^2) w` is invertible over `C(z)` and `c`
+  is a nonzero constant, `m_u` and `C_P` generate the same differential field over `C(z)`.
+  Remaining and not started: transport a translate relation across that gauge inside the
+  matrix/packet formalism of `probabilityCarrierExpandedPatternRelationHolds`, and upgrade
+  infinite-closed-face density to comeagerness in `L^infinity(mu;R)` — the genuine analytic step.
+- 2026-07-19 — affine base-gauge invariance built and Lean-checked in
+  `formal/GaloisForLFunctions/HTGeometry/BaseGaugeDifferentialIndependence.lean`. The corpus had
+  only the additive half (`DifferentialIndependent.addBase`); the multiplicative half was missing,
+  and it is what the `m_u = c (z + (1+z^2) C_P)` gauge actually needs. Proved via the binomial
+  Leibniz rule already in `ProjectiveHorizonFiniteJetRank` — the jets of `a * x` form a
+  jet-triangular system over the jets of `x` with constant diagonal symbol `diagonal a` — fed to
+  the existing `matrixPrincipalLowerLaw_ancestral_independence_iff`. Capstones:
+  `differentialIndependent_mulBase_iff` and `differentialIndependent_affineBase_iff`
+  (`x |-> a x + b`, `a` invertible in the base), both axiom-clean.
+  Remaining: instantiate this gauge at the translated Herglotz family to convert freeness of the
+  translates of `C_P` into freeness of the translates of `m_u`, and then the comeagerness upgrade
+  in `L^infinity(mu;R)` — still the genuine open analytic step.
+- 2026-07-19 — analytic realization done and Lean-checked. Holomorphy of the Cauchy transform of a
+  finite measure off the real axis is proved by differentiation under the integral
+  (`hasDerivAt_cauchyTransform`, derivative `∫ (t-z)^{-2}`), dominated by a constant because the
+  kernel is uniformly bounded on any ball avoiding the axis (`lt_abs_im_of_mem_ball`); holomorphy
+  upgrades to `analyticOnNhd_cauchyTransform` on any open axis-avoiding set. New module
+  `formal/GaloisForLFunctions/HTGeometry/HerglotzUpperEndCarrier.lean` then places the transform in
+  the upper-end field as `cauchyTransformUpperEndAnalytic` / `cauchyTransformUpperEndMero`, since
+  every upper half-plane avoids the axis (height 0). All axiom-clean.
+  The card's object now lives in the same field as the translation action
+  (`upperEndTranslationMeroDifferentialAlgEquiv`) and the affine gauge lemma.
+  Remaining: assemble translated carriers and apply `differentialIndependent_affineBase_iff`;
+  then the comeagerness upgrade in `L^infinity(mu;R)` — still untouched, still the hard step.

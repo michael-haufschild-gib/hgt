@@ -386,11 +386,12 @@ theorem xiRotatedUpperEndCarrier_hypertranscendentalOver :
     simp only [map_neg]
     rfl
   rw [← hscale] at hscaledDA
-  have hrecover := differentialAlgebraicOver_mul
-    (differentialAlgebraicOver_inv hd) hscaledDA
-  rw [← mul_assoc, inv_mul_cancel₀ hd0, one_mul] at hrecover
-  exact xiLogDerivRotatedUpperEndCarrier_hypertranscendentalOver
-    hrecover
+  have hscaledHT : HypertranscendentalOver upperEndRationalCoordinateField
+      (xiLogDerivRotatedUpperEndCarrier *
+        algebraMap upperEndRationalCoordinateField upperEndMeroField d) :=
+    (hypertranscendentalOver_mul_differentialAlgebraic_iff hd hd0).2
+      xiLogDerivRotatedUpperEndCarrier_hypertranscendentalOver
+  exact hscaledHT (by simpa [mul_comm] using hscaledDA)
 
 /-- The concrete intermediate-field statement restricts to the canonically embedded abstract
 rational-function coefficient field. -/

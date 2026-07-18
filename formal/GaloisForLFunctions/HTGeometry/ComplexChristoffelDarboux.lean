@@ -212,11 +212,7 @@ theorem sum_range_le_tsum_kernel (h : PositiveMomentForm s) (z : ℂ)
         momentInner s (monicOrtho s k) (monicOrtho s k)
       ≤ ∑' k, Complex.normSq (monicOrthoC s k z) /
         momentInner s (monicOrtho s k) (monicOrtho s k) :=
-  by
-  first
-    | exact hsum.sum_le_tsum _ (fun i _ => kernelTerm_nonneg h z i)
-    | exact Summable.sum_le_tsum _ (fun i _ => kernelTerm_nonneg h z i) hsum
-    | exact hsum.sum_le_tsum (fun i _ => kernelTerm_nonneg h z i)
+  hsum.sum_le_tsum _ (fun i _ => kernelTerm_nonneg h z i)
 
 /-- **Summability of the kernel is boundedness of its partial sums.** -/
 theorem summable_kernel_iff (h : PositiveMomentForm s) (z : ℂ) :
@@ -240,7 +236,8 @@ theorem summable_kernel_iff_wronskian_bdd (h : PositiveMomentForm s) {z : ℂ} (
           (momentInner s (monicOrtho s n) (monicOrtho s n) * z.im) ≤ C := by
   constructor
   · intro hsum
-    refine ⟨_, fun n => ?_⟩
+    refine ⟨∑' k, Complex.normSq (monicOrthoC s k z) /
+      momentInner s (monicOrtho s k) (monicOrtho s k), fun n => ?_⟩
     rw [← kernelSum_eq h hz n]
     exact sum_range_le_tsum_kernel h z hsum (n + 1)
   · rintro ⟨C, hC⟩

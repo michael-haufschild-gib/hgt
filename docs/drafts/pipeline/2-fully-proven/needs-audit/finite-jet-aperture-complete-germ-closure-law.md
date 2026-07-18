@@ -406,10 +406,16 @@ recurrence from `momentInner_X_mul`.
         (`mixedChristoffelDarboux`), second/second (`secondKindChristoffelDarboux`)
   - [x] exact real formula for the partial kernel sums: `kernelSum_mul_im` computes
         `(sum_{k<=n} |Q_k(z)|^2/h_k) * Im z * h_n` as a single imaginary part at level `n`
-  - [x] summability criterion at a nonreal point: `kernelSum_eq` solves the partial sum in closed
-        form and `summable_kernel_of_wronskian_le` converts a single Wronskian bound into
-        `Summable (fun k => |Q_k(z)|^2 / h_k)`
-  - [ ] transfer of that convergence from one nonreal point to all of `C`
+  - [x] indeterminacy criterion at a nonreal point, as an **equivalence**:
+        `summable_kernel_iff_wronskian_bdd` proves `Summable (fun k => |Q_k(z)|^2/h_k)` iff the
+        level-`n` Wronskian expression is bounded in `n`
+  - [x] Duhamel comparison formula `monicOrtho_duhamel` relating `Q_n(w)` to the data at `z`
+  - [x] second-kind family at complex points and mixed Christoffel--Darboux over `C`
+        (`ComplexSecondKind.lean`)
+  - [x] complex Duhamel comparison `monicOrthoC_duhamel`
+  - [x] weighted Cauchy--Schwarz `weightedSum_sq_le` bounding the Duhamel sums by the kernel sums
+  - [x] `kernelRoot` and `norm_weightedSum_le`: the Duhamel sums bounded by products of kernel roots
+  - [ ] transfer of convergence from one nonreal point to all of `C` (absorption + covering)
   - [x] finite/polynomial-level determinant condition: the transfer matrix `momentTransfer` has
         determinant the nonzero constant `-h_n/h_0`, hence is a unit over `R[X]`
   - [x] `n`-independent normalized Wronskian `a_n (p_{n+1} r_n - p_n r_{n+1}) = -1/h_0`, equal to
@@ -559,3 +565,101 @@ recurrence from `momentInner_X_mul`.
   informal series condition. The remaining half is the *transfer*: convergence at one nonreal point
   implying convergence everywhere. Exit code 0, zero warnings, all four endpoints axiom-clean, zero
   placeholders. Card remains Stage 2.
+- 2026-07-19 -- Seventeenth link: the criterion upgraded from an implication to an equivalence.
+  `sum_range_le_tsum_kernel` bounds every partial sum by the total (nonnegative terms),
+  `summable_kernel_iff` states summability as boundedness of partial sums, and
+  `summable_kernel_iff_wronskian_bdd` combines this with `kernelSum_eq` to give, at any nonreal `z`:
+  `Summable (fun k => |Q_k(z)|^2 / h_k)` **iff** `Im(Q_{n+1}(z) conj(Q_n(z))) / (h_n Im z)` is
+  bounded in `n`. Exit code 0, zero warnings, all three endpoints axiom-clean, zero placeholders.
+
+  Deliberately not attempted this turn: the discrete variation-of-constants (Duhamel) formula that
+  the *transfer* between points needs. Its index conventions were derived on paper via the transfer
+  matrix and the candidate closed form failed a small-`n` check (`n = 2` gave `R_2(z) = z - a_0`
+  where the formula demanded `-1`), so it was not formalized. The correct route is
+  `U_n = Phi_n Phi_0^{-1} U_0 + sum_k Phi_n Phi_{k+1}^{-1} (f_k, 0)` with `Phi` the already-built
+  `momentTransfer`; establishing the exact index range is the next step. Card remains Stage 2.
+- 2026-07-19 -- Duhamel comparison formula: **derived and paper-verified, NOT yet formalized.**
+
+  The formula is
+  `Q_n(w) = Q_n(z) - (w-z) h_0 [ Q_n(z) T_n - R_n(z) S_n ]`
+  with `S_n = sum_{j<=n} Q_j(w) Q_j(z)/h_j` and `T_n = sum_{j<=n} Q_j(w) R_j(z)/h_j`.
+
+  It needs **no new induction**: `christoffelDarboux` gives `(w-z) S_n` in closed form,
+  `mixedChristoffelDarboux` gives `(w-z) T_n` (contributing the `1/h_0` term), and substituting both
+  makes the `R_n(z)` contributions cancel, leaving `Q_n(w)` after one application of
+  `momentWronskian_eq`. Checked by hand at `n = 1` and `n = 2` (the `n = 2` check reproduces
+  `(w-z)(w+z-a_0-q)` on both sides), which also corrected the earlier wrong ansatz recorded in the
+  previous entry -- the correct Green kernel is `(phi_n psi_{k+1} - psi_n phi_{k+1})/W_{k+1}` with
+  the `k = n-1` term vanishing automatically.
+
+  Formalization status: the two supporting steps are settled -- the numerator rearrangement is pure
+  `ring`, and the Wronskian substitution is `momentWronskian_eq` evaluated at `z`. The final
+  assembly after `rw [hMix, hCD]; field_simp` needs a `linear_combination` coefficient that five
+  attempts did not find. Rather than keep guessing, the file was reverted to its last verified
+  state; `SecondKindMomentPolynomials.lean` compiles clean and contains no partial Duhamel code.
+  Next session should prove the numerator identity as a standalone `have` (via `hbracket` then
+  `hWz`) and divide once, instead of clearing denominators and guessing a combination.
+  Card remains Stage 2.
+- 2026-07-19 -- Eighteenth link: `monicOrtho_duhamel` **now formalized**, closing the gap left in the
+  previous entry. The fix was the one recorded there: prove the numerator identity as a standalone
+  `have` (pure `ring`, then `momentWronskian_eq` at `z`) and divide once via an explicit `calc`,
+  instead of clearing all denominators and guessing a `linear_combination` coefficient. The one
+  remaining obstacle was that `field_simp` needed the nonvanishing hypotheses passed explicitly as
+  `field_simp [h0, hn]`; with that the whole chain closes. Exit code 0, zero warnings, axiom-clean,
+  zero placeholders, file 394 lines.
+
+  The formula `Q_n(w) = Q_n(z) - (w-z) h_0 [Q_n(z) T_n - R_n(z) S_n]` expresses the polynomials at
+  an arbitrary point in terms of the data at a fixed point plus the two partial sums, which is
+  exactly the input a Gronwall bootstrap needs to transfer convergence of `sum |Q_k(z)|^2/h_k`
+  between points. Card remains Stage 2.
+- 2026-07-19 -- Nineteenth link: `HTGeometry/ComplexSecondKind.lean`. `monicOrtho_duhamel` is stated
+  over `R` via `Polynomial.eval`, but the transfer compares *complex* points, so the second-kind
+  machinery is redone over `C`: `secondKindC` with its recurrence, `monicOrthoC_succ_succ` in the
+  matching solved form, and `mixedChristoffelDarbouxC` -- the mixed identity over `C`, again with
+  the `1/h_0` boundary constant surviving at `n = 0`. Each proof mirrors its real counterpart
+  through `aeval`. Exit code 0, zero warnings, all three endpoints axiom-clean, zero placeholders.
+  With `christoffelDarbouxC` already in hand, the complex Duhamel formula now has both partial sums
+  available in closed form and can be assembled by the same `calc` shape that worked over `R`.
+  Card remains Stage 2.
+- 2026-07-19 -- Twentieth link: `monicOrthoC_duhamel`, the complex counterpart of the real Duhamel
+  formula, together with `monicOrthoC_wronskian` (the constant Wronskian at a complex point). The
+  proof is a direct transcription of the real one -- numerator identity by `ring` plus the Wronskian
+  substitution, then a five-step `calc` dividing once -- confirming that the proof *shape* found two
+  turns ago transfers verbatim. Exit code 0, zero warnings, both endpoints axiom-clean, zero
+  placeholders, file 180 lines.
+
+  All structural ingredients for the convergence transfer are now present over `C`:
+  `christoffelDarbouxC`, `mixedChristoffelDarbouxC`, `monicOrthoC_wronskian`,
+  `monicOrthoC_duhamel`, and the point criterion `summable_kernel_iff_wronskian_bdd`. What remains
+  is genuinely an estimate rather than an identity: bound the Duhamel sum by Cauchy--Schwarz against
+  the kernel, obtain `sigma_n(w) <= A + B|w-z| sigma_n(w)`, and close by absorption for
+  `|w-z|` small, then iterate over a chain of discs to reach all of `C`. Card remains Stage 2.
+- 2026-07-19 -- Twenty-first link: `weightedSum_sq_le`, weighted Cauchy--Schwarz for the weights
+  `1/h_j`. The Duhamel sums `S_n`, `T_n` are inner products against those weights, so this bounds
+  them by the kernel sums that the criterion is stated in. Proved by substituting
+  `|f_j| / sqrt(h_j)` into mathlib's `Finset.sum_mul_sq_le_sq_mul_sq` and converting the three sums
+  back with `div_mul_div_comm` and `Real.sq_sqrt` -- no `convert`, three explicit `Finset.sum_congr`
+  rewrites instead. Exit code 0, zero warnings, axiom-clean, zero placeholders, file 228 lines.
+
+  This is the first genuine *inequality* in the chain; the twenty preceding links were exact
+  identities. Remaining for the transfer: combine `monicOrthoC_duhamel` with this bound to reach
+  `sigma_n(w) <= A + B|w-z| sigma_n(w)`, absorb for `|w-z|` small, and iterate over a chain of discs.
+  Card remains Stage 2.
+- 2026-07-19 -- Twenty-second link: `kernelRoot` (the square root of a weighted kernel sum, the
+  natural norm for these estimates) and `norm_weightedSum_le`, which puts Cauchy--Schwarz in the
+  form the Duhamel estimate consumes: a weighted sum is bounded by the product of the two kernel
+  roots. Proved by the triangle inequality termwise, then `Real.sqrt_le_sqrt` applied to
+  `weightedSum_sq_le` followed by `Real.sqrt_sq` -- the `Real.le_sqrt` iff-lemma family did not
+  match in this toolchain, and monotonicity of `sqrt` avoids the naming question entirely. Exit code
+  0, zero warnings, both endpoints axiom-clean, zero placeholders, file 269 lines.
+
+  Paper derivation of the remaining absorption step, recorded so the next session does not redo it:
+  from Duhamel plus this bound,
+  `|Q_n(w)| <= |Q_n(z)| + |w-z| h_0 sigma_n(w) (|Q_n(z)| rho_n(z) + |R_n(z)| sigma_n(z))`;
+  dividing by `sqrt(h_n)`, squaring with `(a+b)^2 <= 2a^2 + 2b^2`, summing over `n <= N` and using
+  monotonicity of the partial sums gives
+  `sigma_N(w)^2 <= 2 sigma_N(z)^2 + 8 |w-z|^2 h_0^2 sigma_N(w)^2 sigma_N(z)^2 rho_N(z)^2`.
+  If both `sum |Q_j(z)|^2/h_j` and `sum |R_j(z)|^2/h_j` converge, with bounds `S^2` and `P^2`, then
+  whenever `8 |w-z|^2 h_0^2 S^2 P^2 <= 1/2` the last term absorbs and `sigma_N(w)^2 <= 4 S^2`
+  uniformly in `N`, giving summability at `w`. Note the hypothesis needs *both* series at `z`.
+  Card remains Stage 2.
