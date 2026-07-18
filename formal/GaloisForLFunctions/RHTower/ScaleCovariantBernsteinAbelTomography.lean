@@ -38,7 +38,7 @@ structure ScaleCovariantBernsteinAbelTomographyLaw
   /-- Every transverse occupied atom selects a finite positive maximal packet, a sharp coefficient
   half-order law, and the corresponding square-root Abel boundary. -/
   finite_boundary_selection :
-    ∀ {R : ℝ}, 2 * M < R → ∀ {i0 : I}, (z i0).im ≠ 0 →
+    ∀ {R : ℝ}, M < R → ∀ {i0 : I}, (z i0).im ≠ 0 →
       ∃ D : Finset I, ∃ B beta L : ℝ,
         B = HTGeometry.confocalAmplitudeEnvelope (Set.range z) R ∧
         1 < B ∧ 1 < beta ∧ beta < B ∧ D.Nonempty ∧

@@ -1,14 +1,15 @@
 import GaloisForLFunctions.RHTower.ScaleCovariantBernsteinAtomicObservation
 import GaloisForLFunctions.RHTower.FiniteExponentialPencilUniformGap
-import GaloisForLFunctions.RHTower.BernsteinEllipseMixedModeGap
+import GaloisForLFunctions.RHTower.BernsteinEllipseReflectedFiberGap
 
 /-!
 # Generic finite-packet selection for a small atomic Bernstein source
 
 An injectively indexed, absolutely summable atomic source whose nodes tend cofinally to zero has a
-finite maximal Bernstein packet whenever one node is nonreal.  If every real node is nonnegative
-and all nodes lie in the open half disk, reflection collisions are impossible.  The maximal packet
-therefore has a positive half-order energy and controls the complete atomic packet.
+finite maximal Bernstein packet whenever one node is nonreal.  If every real node lies in the
+focal interval and all nodes lie in the open unit disk, every maximal node is nonreal.  The complete
+reflected-fibre gap theorem handles the remaining phase collisions, so the maximal packet has a
+positive half-order energy and controls the complete atomic packet.
 -/
 
 open Complex Filter Topology
@@ -32,10 +33,10 @@ theorem tendsto_atomicBernsteinAmplitude_cofinite_one
   simpa only [atomicBernsteinAmplitude, norm_zero, sub_zero, norm_one,
     zero_add] using h
 
-/-- In the half disk, a nonnegative real node has neutral affine amplitude.  Hence every
+/-- In the unit disk, a nonnegative real node has neutral affine amplitude.  Hence every
 superunit node is nonreal. -/
 theorem im_ne_zero_of_one_lt_atomicBernsteinAmplitude
-    {u : ℂ} (hhalf : ‖u‖ < 1 / 2)
+    {u : ℂ} (hunit : ‖u‖ < 1)
     (hreal : u.im = 0 → 0 ≤ u.re)
     (hA : 1 < ‖u‖ + ‖1 - u‖) :
     u.im ≠ 0 := by
@@ -44,7 +45,7 @@ theorem im_ne_zero_of_one_lt_atomicBernsteinAmplitude
   have hrelt : u.re < 1 := by
     have hrele : |u.re| ≤ ‖u‖ := Complex.abs_re_le_norm u
     rw [abs_of_nonneg hre0] at hrele
-    linarith
+    exact hrele.trans_lt hunit
   have hnormu : ‖u‖ = u.re := by
     rw [Complex.norm_def, Complex.normSq_apply, him]
     rw [show u.re * u.re + 0 * 0 = u.re ^ 2 by ring,
@@ -73,7 +74,9 @@ theorem finiteExponentialFiberCoefficient_eq_of_injective
     exact (hji (hu huji)).elim
   · simp [hi]
 
-/-- Distinct equal-amplitude nodes in the open half disk have distinct maximizing ellipse phases. -/
+/-- Distinct equal-amplitude nodes in the open half disk have distinct maximizing ellipse phases.
+This older geometric shortcut is retained as a useful special case; the complete selector below
+uses the reflected-fibre cross-moment classification instead. -/
 theorem bernsteinEllipsePhase_ne_of_small_distinct_equalAmplitude
     {u v : ℂ} (huim : u.im ≠ 0) (hvim : v.im ≠ 0)
     (huhalf : ‖u‖ < 1 / 2) (hvhalf : ‖v‖ < 1 / 2)
@@ -92,7 +95,7 @@ theorem bernsteinEllipsePhase_ne_of_small_distinct_equalAmplitude
         _ = ‖v‖ + ‖u‖ := by rw [norm_star]
     linarith
 
-/-- **Generic positive maximal-packet theorem.**  The complete square energy of a small,
+/-- **Generic positive maximal-packet theorem.**  The complete square energy of a unit-disk,
 pre-aggregated atomic source has a positive sharp half-order law at one finite source-attained
 amplitude packet. -/
 theorem exists_positive_halfOrder_atomicBernsteinPacket_of_small_source
@@ -100,7 +103,7 @@ theorem exists_positive_halfOrder_atomicBernsteinPacket_of_small_source
     (hu0 : Tendsto u cofinite (nhds 0))
     (huinj : Function.Injective u)
     (hcne : ∀ i, c i ≠ 0)
-    (hhalf : ∀ i, ‖u i‖ < 1 / 2)
+    (hunit : ∀ i, ‖u i‖ < 1)
     (hreal : ∀ i, (u i).im = 0 → 0 ≤ (u i).re)
     {i0 : I} (hi0 : (u i0).im ≠ 0) :
     ∃ D : Finset I, ∃ B beta L : ℝ,
@@ -150,17 +153,12 @@ theorem exists_positive_halfOrder_atomicBernsteinPacket_of_small_source
     obtain ⟨i, hiD, hiv⟩ := Finset.mem_image.mp hv
     rw [← hiv]
     exact hDamp i hiD
-  have hvhalf : ∀ v ∈ U, ‖v‖ < 1 / 2 := by
-    intro v hv
-    obtain ⟨i, hiD, hiv⟩ := Finset.mem_image.mp hv
-    rw [← hiv]
-    exact hhalf i
   have hvim : ∀ v ∈ U, v.im ≠ 0 := by
     intro v hv
     obtain ⟨i, hiD, hiv⟩ := Finset.mem_image.mp hv
     rw [← hiv]
     exact im_ne_zero_of_one_lt_atomicBernsteinAmplitude
-      (hhalf i) (hreal i) (hB.trans_eq (hDamp i hiD).symm)
+      (hunit i) (hreal i) (hB.trans_eq (hDamp i hiD).symm)
   have hv0 : ∀ v ∈ U, v ≠ 0 := by
     intro v hv hvzero
     exact hvim v hv (by rw [hvzero]; rfl)
@@ -173,14 +171,8 @@ theorem exists_positive_halfOrder_atomicBernsteinPacket_of_small_source
       ∃ gamma : ℝ, 0 ≤ gamma ∧ gamma < B ^ 2 ∧
         ∀ n : ℕ, ‖reflectedBernsteinCrossMoment v w n‖ ≤ gamma ^ n := by
     intro v hv w hw hvw
-    obtain ⟨gamma, hgamma0, hgamma, hpoint⟩ :=
-      exists_uniform_reflectedBernsteinProduct_gap_of_phase_ne
-        (hvim v hv) (hvim w hw) (hamp v hv) (hamp w hw)
-        (bernsteinEllipsePhase_ne_of_small_distinct_equalAmplitude
-          (hvim v hv) (hvim w hw) (hvhalf v hv) (hvhalf w hw) hvw
-          ((hamp w hw).trans (hamp v hv).symm))
-    exact ⟨gamma, hgamma0, hgamma,
-      norm_reflectedBernsteinCrossMoment_le_pow hpoint⟩
+    exact exists_reflectedBernsteinCrossMoment_gap_of_distinct_equalAmplitude
+      (hvim v hv) (hvim w hw) (hamp v hv) (hamp w hw) hvw
   have hfinite :=
     tendsto_sqrtNat_mul_finiteBernsteinCoordinatePacketEnergy_div_pow
       U C (lt_trans zero_lt_one hB) hamp hv0 hv1 hmixed

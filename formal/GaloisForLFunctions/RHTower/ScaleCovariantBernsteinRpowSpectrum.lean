@@ -48,10 +48,11 @@ theorem exists_tendsto_inverseScaleAtomicBernsteinRpowEnergy
         atTop (nhds (B ^ p)) := by
   classical
   have hRpos : 0 < R := by linarith
+  have hRM : M < R := by linarith
   obtain ⟨D, B, beta, L, hBconf, hB, hbeta1, hbeta, hDne, hD, hDsub,
       hL, hLpos, hhalf⟩ :=
     exists_positive_halfOrder_inverseScaleAtomicPacket
-      c z hc hz0 hzinj hcne hM hbound hR hreal hi0
+      c z hc hz0 hzinj hcne hM hbound hRM hreal hi0
   let u : I → ℂ := inverseScaleAtomicNode z R
   have huinj : Function.Injective u :=
     inverseScaleAtomicNode_injective hzinj hRpos

@@ -278,6 +278,37 @@ theorem residueLow_add_high_eq_unitCarrier
   rw [← add_smul, hjoin x]
   by_cases hx : isUnit x <;> simp [hx]
 
+/-- The low/high coordinates are an invertible reparametrization of the unit carrier and the
+nonunit counterflow.  In particular, no information or smallness is created by passing to the two
+cutoff channels. -/
+theorem lowHighCounterflow_coordinates_inverse
+    {X Y primeCarrier counterflow : E} (headMass : ℝ)
+    (hX : X = headMass • primeCarrier + counterflow)
+    (hY : Y = (1 - headMass) • primeCarrier - counterflow) :
+    X + Y = primeCarrier ∧
+      (1 - headMass) • X - headMass • Y = counterflow := by
+  constructor
+  · rw [hX, hY]
+    module
+  · rw [hX, hY]
+    module
+
+/-- Complete geometry of the low/high cross term.  Its sign is controlled only by whether the
+nonunit counterflow lies inside the radius-`‖primeCarrier‖ / 2` ball centered at
+`(1 / 2 - headMass) • primeCarrier`; there is no source-free sign. -/
+theorem lowHighCounterflow_realInner
+    [InnerProductSpace ℝ E]
+    {X Y primeCarrier counterflow : E} (headMass : ℝ)
+    (hX : X = headMass • primeCarrier + counterflow)
+    (hY : Y = (1 - headMass) • primeCarrier - counterflow) :
+    inner ℝ X Y =
+      (1 / 4 : ℝ) * ‖primeCarrier‖ ^ 2 -
+        ‖counterflow - (1 / 2 - headMass) • primeCarrier‖ ^ 2 := by
+  rw [hX, hY, ← real_inner_self_eq_norm_sq]
+  simp only [inner_add_left, inner_add_right, inner_sub_left, inner_sub_right,
+    inner_smul_left, inner_smul_right, real_inner_self_eq_norm_sq, real_inner_comm]
+  ring
+
 end UnitNonunitCounterflow
 
 end RHTower

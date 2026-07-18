@@ -240,7 +240,7 @@ All these must be significant and ideally novel science.
 
 lean rules:
 1. You work independent from other agents and can run 1 build process in the foreground at a time yourself.
-2. Be efficient, do not constantly do minor edits and build, but batch changes and builds.
+2. Be efficient with lean, do not constantly do minor edits and build, but batch changes and builds.
 3. Optimize lean code.
 4. lean proofs must be unconditional
 5. always check first what the project lean code already offers

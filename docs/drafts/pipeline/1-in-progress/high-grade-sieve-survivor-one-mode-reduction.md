@@ -543,7 +543,8 @@ Then the low and high amplitudes have the canonical counterflow normal form
 X=a_D P(G)+C_D(G),
 Y=(1-a_D)P(G)-C_D(G),                                (HGS37)
 
-X+Y=P(G).                                             (HGS38)
+X+Y=P(G),
+C_D(G)=(1-a_D)X-a_DY.                                 (HGS38)
 ```
 
 Thus the two channels reinforce on ordinary primes and oppose only on nonunits.  The entire
@@ -552,12 +553,23 @@ it cannot be an RH provider.  In the square-root physical support range `P(G)` i
 ordinary-prime endpoint.  Consequently every cutoff-dependent low/high cancellation narrative
 reduces to one invariant statement about that endpoint.
 
+The cross term has the complete geometric classification
+
+```text
+<X,Y>=1/4||P(G)||^2
+       -||C_D(G)-(1/2-a_D)P(G)||^2.                    (HGS39)
+```
+
+It is positive exactly inside one explicit counterflow ball, zero on its boundary, and negative
+outside.  Since complete physical interval packets realize both signs at fixed aperture and ratio,
+there is no source-free cross-term sign theorem to exploit.
+
 This is stronger than merely observing `X+Y` algebraically: `(HGS37)` classifies where the
 apparent cancellation lives.  It also gives the asymptotic source split
 
 ```text
 a_D -> exp(-gamma),
-1-a_D -> 1-exp(-gamma),                               (HGS39)
+1-a_D -> 1-exp(-gamma),                               (HGS40)
 ```
 
 so a fixed positive fraction of the ordinary-prime carrier lies in each channel.  The constants
@@ -569,7 +581,7 @@ the exact classical asymptotic
 
 ```text
 log(D)m_D -> exp(-gamma)(1-exp(-gamma)),
-log(D)lambda_D -> exp(-gamma)(1-exp(-gamma)),           (HGS34)
+log(D)lambda_D -> exp(-gamma)(1-exp(-gamma)),           (HGS41)
 ```
 
 while the negative spectral radius is `O(1/(D log(D)^2))`.  Here
@@ -597,7 +609,7 @@ new external scientific knowledge.
 - 2026-07-18 — proved the exact AC25 operator join `(HGS23)`--`(HGS29)`; `HGS-SOURCE` is retired
   because the invariant RH-bearing quantity is `X+Y`, not `Y`.
 - 2026-07-18 — extracted the scalar whole-grade coprime plateau rigidity `(HGS30)`--`(HGS33)`,
-  including its non-scalar and zero-positive-line failure boundary, and audited `(HGS34)`.
+  including its non-scalar and zero-positive-line failure boundary, and audited `(HGS41)`.
 - 2026-07-18 — no Lean process was started before the dependency-closed theorem and sharp
   hypotheses were fixed on paper.
 

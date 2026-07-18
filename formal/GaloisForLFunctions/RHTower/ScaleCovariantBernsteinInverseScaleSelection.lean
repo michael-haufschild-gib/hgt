@@ -50,6 +50,18 @@ theorem norm_inverseScaleAtomicNode_lt_half
     linarith
   exact ((div_le_div_iff_of_pos_right hRpos).2 (hbound i)).trans_lt hMRhalf
 
+/-- A source in the radius-`M` disk scales into the open unit disk at the sharp radial threshold
+`M<R`. -/
+theorem norm_inverseScaleAtomicNode_lt_one
+    {I : Type*} {z : I → ℂ} {M R : ℝ}
+    (hbound : ∀ i, ‖z i‖ ≤ M) (hR : M < R) :
+    ∀ i, ‖inverseScaleAtomicNode z R i‖ < 1 := by
+  intro i
+  have hRpos : 0 < R := lt_of_le_of_lt (norm_nonneg (z i)) ((hbound i).trans_lt hR)
+  rw [inverseScaleAtomicNode_eq_div, norm_div, Complex.norm_real,
+    Real.norm_eq_abs, abs_of_pos hRpos]
+  exact (div_lt_one hRpos).2 ((hbound i).trans_lt hR)
+
 /-- Inverse positive radial scaling preserves the nonnegative-real orientation. -/
 theorem inverseScaleAtomicNode_re_nonneg_of_im_eq_zero
     {I : Type*} {z : I → ℂ} {R : ℝ} (hR : 0 < R)
@@ -85,7 +97,7 @@ theorem inverseScaleAtomicNode_im_ne_zero
   simpa only [zero_div, sub_zero] using
     div_ne_zero (mul_ne_zero hi hR.ne') (mul_ne_zero hR.ne' hR.ne')
 
-/-- At every radius larger than twice the source norm bound, the selected maximal amplitude is
+/-- At every radius larger than the source norm bound, the selected maximal amplitude is
 exactly the confocal amplitude envelope of the original source. -/
 theorem exists_positive_halfOrder_inverseScaleAtomicPacket
     {I : Type*} (c z : I → ℂ) (hc : Summable c)
@@ -93,7 +105,7 @@ theorem exists_positive_halfOrder_inverseScaleAtomicPacket
     (hzinj : Function.Injective z)
     (hcne : ∀ i, c i ≠ 0)
     {M R : ℝ} (hM : 0 ≤ M) (hbound : ∀ i, ‖z i‖ ≤ M)
-    (hR : 2 * M < R)
+    (hR : M < R)
     (hreal : ∀ i, (z i).im = 0 → 0 ≤ (z i).re)
     {i0 : I} (hi0 : (z i0).im ≠ 0) :
     ∃ D : Finset I, ∃ B beta L : ℝ,
@@ -115,13 +127,13 @@ theorem exists_positive_halfOrder_inverseScaleAtomicPacket
   have hRpos : 0 < R := by linarith
   have hu0 := tendsto_inverseScaleAtomicNode_cofinite_zero hz0 R
   have huinj := inverseScaleAtomicNode_injective hzinj hRpos
-  have huhalf := norm_inverseScaleAtomicNode_lt_half hbound hR
+  have huunit := norm_inverseScaleAtomicNode_lt_one hbound hR
   have hureal := inverseScaleAtomicNode_re_nonneg_of_im_eq_zero hRpos hreal
   have hui0 := inverseScaleAtomicNode_im_ne_zero hRpos hi0
   obtain ⟨D, B, beta, L, hB, hbeta1, hbeta, hDne, hD, hDsub,
       hL, hLpos, hhalfOrder⟩ :=
     exists_positive_halfOrder_atomicBernsteinPacket_of_small_source
-      c (inverseScaleAtomicNode z R) hc hu0 huinj hcne huhalf hureal hui0
+      c (inverseScaleAtomicNode z R) hc hu0 huinj hcne huunit hureal hui0
   have hAll : ∀ i,
       atomicBernsteinAmplitude (inverseScaleAtomicNode z R) i ≤ B := by
     intro i

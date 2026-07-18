@@ -168,20 +168,25 @@ field over `ℂ`. -/
 def meromorphicRationalCoordinateField :
     IntermediateField ℂ (meroField (Set.univ : Set ℂ)) where
   carrier := Set.range (algebraMap (RatFunc ℂ) (meroField Set.univ))
-  zero_mem' := ⟨0, map_zero _⟩
-  one_mem' := ⟨1, map_one _⟩
+  zero_mem' :=
+    ⟨0, map_zero (algebraMap (RatFunc ℂ) (meroField Set.univ))⟩
+  one_mem' :=
+    ⟨1, map_one (algebraMap (RatFunc ℂ) (meroField Set.univ))⟩
   add_mem' := by
     rintro _ _ ⟨x, rfl⟩ ⟨y, rfl⟩
-    exact ⟨x + y, map_add _ x y⟩
+    exact ⟨x + y,
+      map_add (algebraMap (RatFunc ℂ) (meroField Set.univ)) x y⟩
   mul_mem' := by
     rintro _ _ ⟨x, rfl⟩ ⟨y, rfl⟩
-    exact ⟨x * y, map_mul _ x y⟩
+    exact ⟨x * y,
+      map_mul (algebraMap (RatFunc ℂ) (meroField Set.univ)) x y⟩
   algebraMap_mem' c :=
     ⟨algebraMap ℂ (RatFunc ℂ) c,
       meromorphicRatFunc_algebraMap_complex c⟩
   inv_mem' := by
     rintro _ ⟨x, rfl⟩
-    exact ⟨x⁻¹, map_inv₀ _ x⟩
+    exact ⟨x⁻¹,
+      map_inv₀ (algebraMap (RatFunc ℂ) (meroField Set.univ)) x⟩
 
 theorem mem_meromorphicRationalCoordinateField_iff
     (x : meroField (Set.univ : Set ℂ)) :
