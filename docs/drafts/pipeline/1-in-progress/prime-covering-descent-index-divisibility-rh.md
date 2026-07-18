@@ -1859,3 +1859,38 @@ slab-germ certificate's COMPLETE ALGEBRA CORE is now formal; the analytic layer 
 contours + germ-residue transport) is the remaining Lean surface. (Calibration: cont. 43
 appended by the calibration agent — box-frame type 2d definitive, downstream audit clean,
 perimeter promotion unblocked.)
+
+## 2026-07-18 session 2 (cont. 45) — the fiberwise demand is q_2 >= 0; the Bezoutian square is
+## the production target; LEAN MODULE 5 ships the transport (chain Lean-anchored to two gaps)
+
+**[FIBERWISE GATE-2 — STATED]** Row-415 quoted and localized: the slab boundary integrals are
+the localization instrument; the divisor side `mu_1(gamma) <= 0` is PROVED, so the demand
+halves to `mu_1(gamma) >= 0` from source structure — and since the circuit kills `q_1`, the
+entire fiberwise demand is **`q_2(gamma) >= 0` at every height**: the germ second moment of
+the slab pairing nonnegative. Equality then forces single-point fibers, `E_Xi(gamma) = 0` for
+all gamma, RH. Assets: unconditionally admissible slab family; the divisor half free;
+quantized violation.
+
+**[OPEN CORE — the BEZOUTIAN SQUARE]** Verified: `q_0 q_2 - q_1^2` = germ of
+`(1/2)(2 pi i)^{-2} ∮∮_{∂S x ∂S} (u - v)^2 (Xi'/Xi)(s)(Xi'/Xi)(t) ds dt` — the Hedenmalm
+Bezoutian surface on the slab. The production demand: an EXACT source identity rewriting this
+double integral as `∮∮ K(s,t) g(s) conj(g(t))` with K PSD — a square — with the FE∘Schwarz
+circuit (height-fixing, ∂S-preserving) as the candidate symmetry, sourced on the
+regular-Cauchy prime-Gamma span. Kill conditions: (a) divisor selection dead; (b) exact
+identity only (quantized violation unreachable by epsilon-bounds); (c) if the circuit yields
+only the known seam-charge reflection-oddness without the square: reduces-to-known, discard.
+NEXT: collide the slab Bezoutian with the Hankel=Gram colligation (shortlist item 3) — is K
+the colligation's defect kernel restricted to ∂S?
+
+**[LEAN MODULE 5 — SHIPPED, commit 926cfdca]** `RHTower/SlabGermResidueTransport.lean`
+(379 lines, 14 mains, axioms clean): thin adapter over
+`rectIntegral_continuedPrimeArchSourceRelativeTrace_eq_closedRectangleZeroSum`
+(XiGuinandWeilRectanglePeeling.lean:73) specialized to monomial tests — contour moments =
+packet divisor moments (`slabContourMoment_eq_packetDivisorMoment`); eventual constancy with
+explicit gap (`exists_slabGap`, height-fiber identification); germ limits =
+height-fiber moments; and the GRAM GLUE to module 4: germ Gram real, <= 0, = 0 iff the fiber
+is a single point — the certificate's divisor half is now FORMALIZED END TO END. Remaining
+Lean gaps (logged): (i) full-width-slab admissibility adapter (Re s = 1 edge via zeta
+nonvanishing; Re s = 0 edge via FE reflection — both classical, formalizable); (ii) the
+production identity (the Bezoutian square — the open core above). The certificate chain is
+Lean-anchored except these two.
