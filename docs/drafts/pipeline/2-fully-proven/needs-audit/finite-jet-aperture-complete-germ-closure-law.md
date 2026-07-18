@@ -395,7 +395,25 @@ recurrence from `momentInner_X_mul`.
   - [x] span lemma and Fourier expansion (`mem_span_monicOrtho`, `monicOrtho_expansion`)
   - [x] explicit three-term recurrence `monicOrtho_three_term`, with lower coefficient the ratio of
         consecutive moment norms (hence positive by `monicOrtho_inner_self_pos`)
-  - [ ] indeterminacy criterion `sum |P_n(z)|^2 < infinity`
+  - [x] Christoffel--Darboux reproducing-kernel identity (`ChristoffelDarboux.lean`), the engine
+        transferring convergence of `sum |P_n(z)|^2` between points
+  - [x] complex evaluation, conjugation symmetry, and the reproducing-kernel form of
+        Christoffel--Darboux (`ComplexChristoffelDarboux.lean`)
+  - [x] second-kind polynomials, exact degree `deg R_{n+1} = n`, and the constant Wronskian
+        `Q_{n+1} R_n - Q_n R_{n+1} = -h_n/h_0` (`SecondKindMomentPolynomials.lean`)
+  - [x] the full trio of Christoffel--Darboux identities: first/first
+        (`christoffelDarboux`), first/second with its `1/h_0` boundary constant
+        (`mixedChristoffelDarboux`), second/second (`secondKindChristoffelDarboux`)
+  - [x] exact real formula for the partial kernel sums: `kernelSum_mul_im` computes
+        `(sum_{k<=n} |Q_k(z)|^2/h_k) * Im z * h_n` as a single imaginary part at level `n`
+  - [x] summability criterion at a nonreal point: `kernelSum_eq` solves the partial sum in closed
+        form and `summable_kernel_of_wronskian_le` converts a single Wronskian bound into
+        `Summable (fun k => |Q_k(z)|^2 / h_k)`
+  - [ ] transfer of that convergence from one nonreal point to all of `C`
+  - [x] finite/polynomial-level determinant condition: the transfer matrix `momentTransfer` has
+        determinant the nonzero constant `-h_n/h_0`, hence is a unit over `R[X]`
+  - [x] `n`-independent normalized Wronskian `a_n (p_{n+1} r_n - p_n r_{n+1}) = -1/h_0`, equal to
+        `-1` for a normalized sequence (`OrthonormalWronskian.lean`)
   - [ ] `A,B,C,D` as entire functions and the determinant identity `AD - BC = 1`
   - [ ] N-extremal leaf family, denominator-carried, with the moments of `s`
   - [ ] discharge `ClassicalNevanlinnaExtremalFamily`
@@ -453,3 +471,91 @@ recurrence from `momentInner_X_mul`.
   0, all endpoints axiom-clean, zero placeholders. This is the family whose complex evaluations
   control indeterminacy via convergence of `sum |P n z|^2`, which is the next link. Card remains
   Stage 2.
+- 2026-07-19 -- Seventh link: `HTGeometry/ChristoffelDarboux.lean` proves the reproducing-kernel
+  identity `(x - y) * sum_{k<=n} Q_k(x) Q_k(y) / h_k = (Q_{n+1}(x) Q_n(y) - Q_n(x) Q_{n+1}(y)) / h_n`
+  by induction on the three-term recurrence: the diagonal coefficient cancels and the off-diagonal
+  `h_{n+1}/h_n` is exactly what telescopes the Wronskian-like numerator. Purely algebraic, no
+  analysis. Exit code 0, zero warnings, all three endpoints axiom-clean, zero placeholders. This is
+  the tool that transfers convergence of `sum |P_n(z)|^2` from one point to the whole plane, which
+  is the remaining indeterminacy criterion. Card remains Stage 2.
+- 2026-07-19 -- Eighth link: `HTGeometry/ComplexChristoffelDarboux.lean`. The monic family has real
+  coefficients, so `monicOrthoC_conj` gives `Q_n(conj z) = conj (Q_n z)` via `Complex.conjAe`, and
+  Christoffel--Darboux holds verbatim over `C` (`christoffelDarbouxC`). Specializing `w = conj z`
+  (`christoffelDarbouxC_conj`) turns the left side into the positive reproducing kernel
+  `sum_{k<=n} |Q_k(z)|^2 / h_k` and the right side into a Wronskian in `Q_n, Q_{n+1}` at the single
+  point `z` -- the exact finite identity the indeterminacy criterion is read off from. Exit code 0,
+  zero warnings, all four endpoints axiom-clean, zero placeholders. Card remains Stage 2.
+- 2026-07-19 -- Ninth link: `HTGeometry/SecondKindMomentPolynomials.lean`. The recurrence
+  coefficients are named (`recurDiag`, `recurOff`) and the recurrence is put in solved form
+  `monicOrtho_succ_succ`. The second-kind polynomials `secondKind` are defined by the *same*
+  two-step recurrence with initial data `R_0 = 0`, `R_1 = 1` -- the second solution of the
+  recurrence, defined purely algebraically with no measure or divided difference. The Wronskian
+  `Q_{n+1} R_n - Q_n R_{n+1}` is proved to be a *constant polynomial* equal to `C (-h_n/h_0)`
+  (`momentWronskian_eq`), and nonvanishing (`momentWronskian_ne_zero`); the diagonal coefficient
+  cancels because both families obey the same recurrence, and the off-diagonal one telescopes.
+  Constancy in `z` is what makes `R_n / Q_n` a genuine Nevanlinna-type fraction, and the explicit
+  value is the normalization behind `AD - BC = 1`. Exit code 0, zero warnings, all five endpoints
+  axiom-clean, zero placeholders. Card remains Stage 2.
+- 2026-07-19 -- Tenth link: exact degree of the second-kind family.
+  `secondKind_succ_monic_degree` proves `R_{n+1}` is monic of degree exactly `n` (monicity and
+  degree proved together, since the two-step recurrence consumes both at each stage), with
+  `secondKind_succ_ne_zero` and `secondKind_degree_succ_eq` recording that the second solution lags
+  the first by exactly one degree. This is the fact behind the Pade/continued-fraction reading of
+  `R_n / Q_n` and is needed for the entire-function construction. Exit code 0, zero warnings, all
+  three endpoints axiom-clean, zero placeholders. Card remains Stage 2.
+- 2026-07-19 -- Eleventh link: `mixedChristoffelDarboux` pairs the first-kind family at `x` against
+  the second-kind family at `y`. The telescoping is the same as for `christoffelDarboux`, but the
+  `n = 0` boundary term no longer vanishes: `R_0 = 0`, `R_1 = 1` leave the constant `1/h_0`, giving
+  `(x-y) sum_{k<=n} Q_k(x) R_k(y)/h_k = (Q_{n+1}(x) R_n(y) - Q_n(x) R_{n+1}(y))/h_n + 1/h_0`. That
+  surviving constant is the normalization that becomes the determinant identity of the Nevanlinna
+  matrix. Supporting evaluated recurrences `monicOrtho_succ_succ_eval`, `secondKind_succ_succ_eval`.
+  Exit code 0, zero warnings, all three endpoints axiom-clean, zero placeholders. Card remains
+  Stage 2.
+- 2026-07-19 -- Twelfth link: `secondKindChristoffelDarboux` completes the trio of bilinear
+  identities carried by the recurrence. Pairing the second-kind family against itself, the `n = 0`
+  boundary term vanishes (`R_0 = 0`), so unlike the mixed identity no constant survives:
+  `(x-y) sum_{k<=n} R_k(x) R_k(y)/h_k = (R_{n+1}(x) R_n(y) - R_n(x) R_{n+1}(y))/h_n`. The three
+  identities (Q/Q, Q/R, R/R) are exactly the algebraic input to the finite determinant identity
+  `A_n D_n - B_n C_n = 1` for the truncated Nevanlinna matrix. Exit code 0, zero warnings,
+  axiom-clean, zero placeholders. Card remains Stage 2.
+- 2026-07-19 -- Thirteenth link: `momentTransfer` packages the two solutions as a `2x2` matrix over
+  `R[X]`. `momentTransfer_det_eq_wronskian` identifies its determinant with the Wronskian,
+  `momentTransfer_det` gives the explicit constant `-h_n/h_0`, and `momentTransfer_det_isUnit` /
+  `momentTransfer_isUnit` upgrade this to invertibility *over the polynomial ring itself* (a nonzero
+  constant is a unit of `R[X]`), not merely over the fraction field. This is the finite,
+  polynomial-level form of the determinant condition a Nevanlinna matrix carries.
+
+  Scope note recorded deliberately: an earlier plan for this step was a finite
+  `A_n D_n - B_n C_n = 1` for truncated Nevanlinna entries. Working the algebra on paper first, the
+  index conventions used here did not yield that cancellation, so it was **not** formalized. The
+  correct finite statement in this (monic) normalization is the Wronskian/determinant above; the
+  literal `AD - BC = 1` is the *limit* statement after the orthonormal rescaling
+  `a_n (p_{n+1} r_n - p_n r_{n+1}) = -1/h_0`, which needs the orthonormal second-kind family and is
+  left to the next link. Exit code 0, zero warnings, all four endpoints axiom-clean, zero
+  placeholders. Card remains Stage 2.
+- 2026-07-19 -- Fourteenth link: `HTGeometry/OrthonormalWronskian.lean` closes the scope gap flagged
+  in the previous entry. Rescaling both families by their moment norms (`secondKindNorm`) and
+  weighting by the orthonormal off-diagonal coefficient `a_n = ||Q_{n+1}||/||Q_n||` (`recurOffSqrt`)
+  removes the `n`-dependence of the monic Wronskian entirely: `orthonormalWronskian_eq` proves
+  `a_n (p_{n+1} r_n - p_n r_{n+1}) = -1/h_0` for every `n`, and
+  `orthonormalWronskian_eq_neg_one` specializes to `-1` when the sequence is normalized (`h_0 = 1`).
+  This is the finite precursor of `AD - BC = 1`: the paper computation
+  `(N_{n+1}/N_n) * (-h_n/h_0)/(N_n N_{n+1}) = -1/h_0` using `N_n^2 = h_n`, verified before
+  formalizing. Exit code 0, zero warnings, all four endpoints axiom-clean, zero placeholders.
+  Card remains Stage 2.
+- 2026-07-19 -- Fifteenth link: `kernelSum_mul_im` descends the complex reproducing-kernel identity
+  to a purely real one. Both sides of `christoffelDarbouxC_conj` are `2i * (real)`, so the identity
+  determines the weighted partial sum `sum_{k<=n} |Q_k(z)|^2 / h_k` exactly, as one imaginary part
+  `Im(Q_{n+1}(z) conj(Q_n(z)))` at level `n`. This is the finite quantity whose boundedness in `n`
+  *is* the indeterminacy criterion, so the criterion is now a statement about a concrete real
+  sequence rather than about an abstract series. Exit code 0, zero warnings, axiom-clean, zero
+  placeholders. Card remains Stage 2.
+- 2026-07-19 -- Sixteenth link: summability of the positive kernel. `kernelTerm_nonneg` plus
+  `summable_of_sum_range_le` reduce convergence to bounded partial sums; `kernelSum_eq` solves
+  `kernelSum_mul_im` for the partial sum in closed form
+  `Im(Q_{n+1}(z) conj(Q_n(z))) / (h_n * Im z)`; and `summable_kernel_of_wronskian_le` converts a
+  single bound on that expression into genuine `Summable` for the series `|Q_k(z)|^2 / h_k`. The
+  indeterminacy criterion is now a Lean `Summable` statement about an explicit sequence, not an
+  informal series condition. The remaining half is the *transfer*: convergence at one nonreal point
+  implying convergence everywhere. Exit code 0, zero warnings, all four endpoints axiom-clean, zero
+  placeholders. Card remains Stage 2.

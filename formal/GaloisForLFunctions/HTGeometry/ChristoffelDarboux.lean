@@ -38,8 +38,7 @@ theorem monicOrtho_three_term_eval (h : PositiveMomentForm s) (n : ℕ) (x : ℝ
 theorem monicOrtho_one_eval_sub (s : ℕ → ℝ) (x y : ℝ) :
     (monicOrtho s 1).eval x - (monicOrtho s 1).eval y = x - y := by
   rw [monicOrtho_eq s 1]
-  simp [Fin.sum_univ_one]
-  ring
+  simp
 
 /-- **Christoffel--Darboux.** -/
 theorem christoffelDarboux (h : PositiveMomentForm s) (n : ℕ) (x y : ℝ) :
@@ -53,10 +52,10 @@ theorem christoffelDarboux (h : PositiveMomentForm s) (n : ℕ) (x y : ℝ) :
   | zero =>
       have h0 : momentInner s (monicOrtho s 0) (monicOrtho s 0) ≠ 0 :=
         h.self_ne_zero (monicOrtho_ne_zero s 0)
-      have hev : (monicOrtho s 0).eval x = 1 ∧ (monicOrtho s 0).eval y = 1 := by
-        constructor <;> simp [monicOrtho_zero]
+      have hx0 : (monicOrtho s 0).eval x = 1 := by simp
+      have hy0 : (monicOrtho s 0).eval y = 1 := by simp
       have hone := monicOrtho_one_eval_sub s x y
-      simp only [Finset.sum_range_one, hev.1, hev.2, one_mul, mul_one]
+      simp only [Nat.zero_add, Finset.sum_range_one, hx0, hy0, one_mul, mul_one]
       field_simp
       linarith [hone]
   | succ n ih =>
@@ -66,8 +65,24 @@ theorem christoffelDarboux (h : PositiveMomentForm s) (n : ℕ) (x y : ℝ) :
         h.self_ne_zero (monicOrtho_ne_zero s (n + 1))
       have hrx := monicOrtho_three_term_eval h n x
       have hry := monicOrtho_three_term_eval h n y
-      rw [Finset.sum_range_succ, mul_add, ih]
+      have hex : (monicOrtho s (n + 2)).eval x =
+          x * (monicOrtho s (n + 1)).eval x
+            - (momentInner s (Polynomial.X * monicOrtho s (n + 1)) (monicOrtho s (n + 1)) /
+                momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1))) *
+              (monicOrtho s (n + 1)).eval x
+            - (momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1)) /
+                momentInner s (monicOrtho s n) (monicOrtho s n)) * (monicOrtho s n).eval x := by
+        linear_combination -hrx
+      have hey : (monicOrtho s (n + 2)).eval y =
+          y * (monicOrtho s (n + 1)).eval y
+            - (momentInner s (Polynomial.X * monicOrtho s (n + 1)) (monicOrtho s (n + 1)) /
+                momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1))) *
+              (monicOrtho s (n + 1)).eval y
+            - (momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1)) /
+                momentInner s (monicOrtho s n) (monicOrtho s n)) * (monicOrtho s n).eval y := by
+        linear_combination -hry
+      rw [Finset.sum_range_succ, mul_add, ih, hex, hey]
       field_simp
-      nlinarith [hrx, hry, sq_nonneg (momentInner s (monicOrtho s n) (monicOrtho s n))]
+      ring
 
 end HTGeometry

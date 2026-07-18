@@ -1,9 +1,9 @@
 # The Xi shift source crosses the all-valuation Euler layer boundary
 
 - **ID:** `xi-shift-source-all-valuation-euler-barrier`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper and Lean 4)
+- **Scientific status:** `[UNCONDITIONALLY FORMALIZED] [NOVELTY UNVERIFIED]`
 - **Source:** `prime-clock-euler-completion-barrier`; `xi-even-shift-prime-exposure`;
   `UpperEndRationalCoordinateDifferentialAdjoin`
 - **Statement:** Both the filtered prime carrier and the actual uncorrected `+2` shift defect of
@@ -117,12 +117,30 @@ No unproved input remains.
 
 - [x] 0 -> 1: exact source-pure statement and falsifier
 - [x] 1 -> 2: dependency-closed proof above
-- [ ] 2 -> 3: Lean theorem
+- [x] 2 -> 3: Lean theorem
   `RHTower.filteredVonMangoldtUpperEndCarrier_differentialIndependent_over_all_valuationLayers`
-- [ ] 2 -> 3: Lean rational-translation capstone for the uncorrected Xi shift carrier
+  (`formal/GaloisForLFunctions/RHTower/XiShiftAllValuationLayerBarrier.lean`), on the new general
+  triangular layer law
+  `HTGeometry.analyticPrimeProfileCarrier_differentialIndependent_over_all_valuationLayers`
+  (`formal/GaloisForLFunctions/HTGeometry/PrimeDependentValuationLayerBarrier.lean`)
+- [x] 2 -> 3: Lean rational-translation capstone for the uncorrected Xi shift carrier
+  `RHTower.xiLogDerivShiftTwoUncorrectedCarrier_hypertranscendentalOver_all_valuationLayers`, with
+  value reflection `RHTower.xiLogDerivShiftTwoUncorrectedCarrier_germ_eq` naming the carried germ
+  as `logDeriv xi (s+2) - logDeriv xi s`, on the general gauge law
+  `HTGeometry.differentialIndependent_over_all_valuationLayers_add_rationalCoordinate`
 - [ ] 3 -> 4: standalone publication audit and independent novelty verdict
 
 ## Log
 
 - 2026-07-18 — extracted by combining the full prime-clock completion geometry with the actual
   Xi `+2` source exposure; paper proof closed before Lean work.
+- 2026-07-18 — the separate absolute finite-aperture theorem is now Lean-checked in
+  `RHTower.XiTransverseShiftDefectDifferentialRank`. This does not discharge the stronger relative
+  all-valuation theorem on this card.
+- 2026-07-19 — both Lean gates closed. The diagonal leading-echelon law could not see this source,
+  which is active on every valuation layer at once; the replacement is a triangular law
+  (`HTGeometry.primeProfileClockIndependent_newSource_valuationLayers`) that annihilates the new
+  source's whole clock jet at one avoided layer first, then separates the old layers. Its analytic
+  form needs only that the source be nowhere vanishing on infinitely many layers, so it applies to
+  prime-dependent profiles generally, not just replicated scalar ones. All capstones check against
+  `[propext, Classical.choice, Quot.sound]` only.

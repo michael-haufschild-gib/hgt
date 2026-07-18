@@ -16,6 +16,8 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+universe u v
+
 /-- Differential independence descends along an injective coefficient-field extension. -/
 theorem DifferentialIndependent.restrictScalars
     {F K E ι : Type*} [Field F] [Field K] [Field E]
@@ -46,6 +48,67 @@ theorem DifferentialIndependent.extendScalarsDifferentialAdjoinSingleton
     diffIndepOn_differentialAdjoin_singleton_of_differentialAlgebraicOver hg hRange
   have h := hRangeBase.comp e e.injective
   simpa [e] using h
+
+/-- **Arbitrary differential-algebraic base-change law.**  Adjoining any set of elements that
+are individually differentially algebraic over the coefficient field preserves differential
+independence of every indexed family. -/
+theorem DifferentialIndependent.extendScalarsDifferentialAdjoin
+    {F E : Type u} {ι : Type v} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {x : ι → E} {G : Set E} (hx : DifferentialIndependent F x)
+    (hG : ∀ g ∈ G, DifferentialAlgebraicOver F g) :
+    DifferentialIndependent (differentialAdjoin F G) x := by
+  classical
+  let e : ι ≃ Set.range x := Equiv.ofInjective x hx.injective
+  have hRange : DiffIndepOn F (Set.range x) := by
+    change DifferentialIndependent F (Subtype.val : Set.range x → E)
+    have h := hx.comp e.symm e.symm.injective
+    simpa [e] using h
+  have hEmpty : differentialAdjoin F (∅ : Set E) = ⊥ := by
+    apply le_antisymm
+    · rw [differentialAdjoin]
+      apply IntermediateField.adjoin_le_iff.mpr
+      rintro _ ⟨g, hg, _, _⟩
+      exact hg.elim
+    · exact bot_le
+  have hRangeEmpty :
+      DiffIndepOn (differentialAdjoin F (∅ : Set E)) (Set.range x) := by
+    rw [hEmpty]
+    exact DifferentialIndependent.extendScalars hRange
+  have hFinite : ∀ G₀ : Set E, G₀ ⊆ G → G₀.Finite →
+      DiffIndepOn (differentialAdjoin F G₀) (Set.range x) := by
+    intro G₀ hG₀ hfin
+    have hDA : ∀ g ∈ G₀,
+        DifferentialAlgebraicOver (differentialAdjoin F (∅ : Set E)) g := by
+      intro g hg
+      exact differentialAlgebraicOver_mono (hG g (hG₀ hg))
+    have hstage :
+        DiffIndepOn (differentialAdjoin F ((∅ : Set E) ∪ G₀)) (Set.range x) :=
+      diffIndepOn_differentialAdjoin_union_finite_of_differentialAlgebraicOver
+        (F := F) (E := E) (S := (∅ : Set E)) (I := Set.range x) (G₀ := G₀)
+        hfin hDA hRangeEmpty
+    have hset : (∅ : Set E) ∪ G₀ = G₀ := Set.empty_union G₀
+    rw [hset] at hstage
+    exact hstage
+  have hRangeBase : DiffIndepOn (differentialAdjoin F G) (Set.range x) :=
+    diffIndepOn_differentialAdjoin_of_forall_finite_subset hFinite
+  have h := hRangeBase.comp e e.injective
+  simpa [e] using h
+
+/-- Hypertranscendence is unchanged after adjoining an arbitrary set of differentially algebraic
+coefficients. -/
+theorem hypertranscendentalOver_differentialAdjoin_iff
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {x : E} {G : Set E} (hG : ∀ g ∈ G, DifferentialAlgebraicOver F g) :
+    HypertranscendentalOver (differentialAdjoin F G) x ↔
+      HypertranscendentalOver F x := by
+  rw [hypertranscendentalOver_iff_differentialIndependent_singleton,
+    hypertranscendentalOver_iff_differentialIndependent_singleton]
+  constructor
+  · exact DifferentialIndependent.restrictScalars
+  · exact fun hx ↦
+      DifferentialIndependent.extendScalarsDifferentialAdjoin hx hG
 
 /-- **Differential-algebraic base-change equivalence.**  Adjoining one differentially algebraic
 coefficient does not change whether an element is hypertranscendental. -/

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PrimeClockAnalyticEulerCompletion
+import GaloisForLFunctions.HTGeometry.UpperEndRationalCoordinateDifferentialAdjoin
 
 /-!
 # Prime-dependent sources across the complete valuation-layer boundary
@@ -347,6 +348,50 @@ theorem analyticPrimeProfileCarrier_hypertranscendentalOver_all_valuationLayers
   rw [hypertranscendentalOver_iff_differentialIndependent_singleton]
   exact analyticPrimeProfileCarrier_differentialIndependent_over_all_valuationLayers
     F hsupport hinf
+
+/-- A meromorphic inverse of an analytic germ is realized by any analytic germ inverting it. -/
+theorem algebraMap_upperEndAnalytic_inv_eq
+    (a b : upperEndAnalyticSubring) (hab : a * b = 1) :
+    (algebraMap upperEndAnalyticSubring upperEndMeroField a)⁻¹ =
+      algebraMap upperEndAnalyticSubring upperEndMeroField b := by
+  apply inv_eq_of_mul_eq_one_right
+  rw [← map_mul, hab, map_one]
+
+/-- Every algebraic jet of an embedded rational coordinate gauge stays inside the complete
+valuation-layer field.  The coordinate field is derivation-closed, and the layer field is an
+extension of it. -/
+theorem differentialJet_mem_valuationLayerField_of_mem_rationalCoordinate
+    (x : upperEndMeroField) (hx : x ∈ upperEndRationalCoordinateField) (n : Nat) :
+    GaloisForLFunctions.differentialJet n x ∈
+      analyticScalarValuationLayerDifferentialField := by
+  have hcoord : ∀ k : Nat, GaloisForLFunctions.differentialJet k x ∈
+      upperEndRationalCoordinateField := by
+    intro k
+    induction k with
+    | zero => simpa using hx
+    | succ k ih =>
+        rw [GaloisForLFunctions.differentialJet_succ]
+        exact upperEndRationalCoordinateField_derivationClosed ih
+  simpa using IntermediateField.algebraMap_mem
+    analyticScalarValuationLayerDifferentialField
+    (⟨GaloisForLFunctions.differentialJet n x, hcoord n⟩ :
+      upperEndRationalCoordinateField)
+
+/-- **Rational-gauge invariance across the completion boundary.**  Translating a family by
+embedded rational coordinate gauges does not change differential independence over the complete
+prime-zeta valuation-layer field. -/
+theorem differentialIndependent_over_all_valuationLayers_add_rationalCoordinate
+    {ι : Type*} {x : ι → upperEndMeroField}
+    (hx : GaloisForLFunctions.DifferentialIndependent
+      analyticScalarValuationLayerDifferentialField x)
+    (r : ι → upperEndMeroField)
+    (hr : ∀ i, r i ∈ upperEndRationalCoordinateField) :
+    GaloisForLFunctions.DifferentialIndependent
+      analyticScalarValuationLayerDifferentialField (fun i ↦ x i + r i) := by
+  apply hx.addOfJetsInBase
+  intro i n
+  exact ⟨⟨GaloisForLFunctions.differentialJet n (r i),
+    differentialJet_mem_valuationLayerField_of_mem_rationalCoordinate (r i) (hr i) n⟩, rfl⟩
 
 end
 

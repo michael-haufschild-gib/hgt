@@ -1,6 +1,5 @@
 import GaloisForLFunctions.RHTower.XiShiftPrimeHypertranscendence
 import GaloisForLFunctions.HTGeometry.PrimeExpLogFiberRigidity
-import GaloisForLFunctions.HTGeometry.DifferentialAlgebraicBaseChange
 
 /-!
 # Differential rank of transverse Xi prime-source shift defects
@@ -253,7 +252,9 @@ theorem xiTransverseShiftArithmetic_differentialIndependent
       (fun a => xiTransverseShiftArithmetic (shift a))
       (fun a => xiTransverseShiftArithmetic_supportedOnPositivePrimePowers (shift a))).2
     exact xiTransverseShiftArithmetic_clockTailIndependent shift hpos hinj
-  exact DifferentialIndependent.restrictScalars hlarge
+  unfold GaloisForLFunctions.DifferentialIndependent at hlarge ⊢
+  exact AlgebraicIndependent.restrictScalars
+    (FaithfulSMul.algebraMap_injective ℂ finitePrimeCoefficientField) hlarge
 
 /-- **Actual analytic transverse-rank theorem.** The upper-end meromorphic
 carriers of distinct positive filtered von-Mangoldt shift defects are jointly

@@ -97,7 +97,8 @@ private noncomputable def xiShiftLinearUpperEndAnalytic (c : ℝ) :
   refine ⟨((fun z : ℂ ↦ -I * z + (c : ℂ)) : Germ upperEndFilter ℂ), ?_⟩
   exact ⟨_, 0, fun _ _ ↦ analyticAt_const.mul analyticAt_id |>.add analyticAt_const, rfl⟩
 
-private noncomputable def xiShiftReciprocalUpperEndAnalytic (c : ℝ) :
+/-- Actual upper-end analytic reciprocal `z ↦ 1 / (-I*z + c)`. -/
+noncomputable def xiShiftReciprocalUpperEndAnalytic (c : ℝ) :
     upperEndAnalyticSubring := by
   refine ⟨((fun z : ℂ ↦ 1 / (-I * z + (c : ℂ))) : Germ upperEndFilter ℂ), ?_⟩
   refine ⟨_, -c + 1, ?_, rfl⟩
@@ -128,7 +129,8 @@ private theorem xiShiftReciprocal_mul_linear (c : ℝ) :
     linarith
   simpa [one_div] using inv_mul_cancel₀ hne
 
-private theorem xiShiftReciprocalUpperEndMero (c : ℝ) :
+/-- The reciprocal germ is the corresponding rational expression in the meromorphic coordinate. -/
+theorem xiShiftReciprocalUpperEndMero (c : ℝ) :
     algebraMap upperEndAnalyticSubring upperEndMeroField
         (xiShiftReciprocalUpperEndAnalytic c) =
       (-algebraMap ℂ upperEndMeroField I * upperEndCoordinateMero +
@@ -159,7 +161,8 @@ private theorem xiShiftReciprocalUpperEndMero (c : ℝ) :
   rw [map_mul, map_one, hlinear] at hprod
   exact (mul_eq_one_iff_eq_inv₀ (right_ne_zero_of_mul_eq_one hprod)).mp hprod
 
-private theorem xiShiftReciprocalUpperEndCarrier_differentialAlgebraic (c : ℝ) :
+/-- Every shifted reciprocal carrier is differentially algebraic over the constants. -/
+theorem xiShiftReciprocalUpperEndCarrier_differentialAlgebraic (c : ℝ) :
     DifferentialAlgebraicOver ℂ
       (algebraMap upperEndAnalyticSubring upperEndMeroField
         (xiShiftReciprocalUpperEndAnalytic c)) := by
@@ -172,7 +175,8 @@ private theorem xiShiftReciprocalUpperEndCarrier_differentialAlgebraic (c : ℝ)
       differentialAlgebraicOver_upperEndCoordinateMero)
     (differentialAlgebraicOver_algebraMap (c : ℂ))
 
-private noncomputable def xiShiftTwoRationalCorrectionUpperEndAnalytic :
+/-- The explicit rational correction in the completed `+2` logarithmic-derivative defect. -/
+noncomputable def xiShiftTwoRationalCorrectionUpperEndAnalytic :
     upperEndAnalyticSubring :=
   xiShiftReciprocalUpperEndAnalytic 2 +
     xiShiftReciprocalUpperEndAnalytic 1 -
@@ -182,7 +186,8 @@ private noncomputable def xiShiftTwoRationalCorrectionUpperEndAnalytic :
 noncomputable def xiLogDerivRotatedUpperEndCarrier : upperEndMeroField :=
   algebraMap upperEndAnalyticSubring upperEndMeroField xiLogDerivRotatedUpperEndAnalytic
 
-private noncomputable def xiShiftTwoRationalCorrectionUpperEndCarrier : upperEndMeroField :=
+/-- Meromorphic carrier of the explicit completed `+2` rational correction. -/
+noncomputable def xiShiftTwoRationalCorrectionUpperEndCarrier : upperEndMeroField :=
   algebraMap upperEndAnalyticSubring upperEndMeroField
     xiShiftTwoRationalCorrectionUpperEndAnalytic
 

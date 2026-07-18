@@ -678,3 +678,14 @@ complete measure-universal claim, so no partial theorem is promoted to stage 3.
 - 2026-07-11 -- Extended residual full-translation freeness from discrete atomic supports to bounded
   positive reweightings of every infinite-support Herglotz measure.  Proved the accompanying
   finite-atomic exact-index chambers over an arbitrary positive background measure.
+- 2026-07-19 — Lean gate opened; corpus survey done before writing any new code. The predicate the
+  card needs already exists as `HTGeometry.MaximalTranslationDifferentialFree`
+  (`BoundaryCarrierTranslationFreeness.lean`), with an entry point
+  `maximalTranslationDifferentialFree_of_fullRankWitness` and a density result on infinite closed
+  boundary faces, `boundaryCarrierFace_subset_closure_maximalTranslationDifferentialFree`
+  (`NevanlinnaBoundaryFaceMaximalTranslation.lean`). "Germs at upper infinity" is the existing
+  `upperEndFilter`/`upperEndMeroField` layer, and the full complex translation orbit already acts
+  there by differential automorphisms via
+  `HTGeometry.upperEndTranslationMeroDifferentialAlgEquiv`. So the open work is not the freeness
+  predicate but the measure layer: the regularized transform (H1) as an upper-end carrier under
+  (H0), and upgrading existing face-density to comeagerness in `L^infinity(mu;R)`.
