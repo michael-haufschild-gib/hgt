@@ -28,7 +28,7 @@ theorem multivariateExpandedMonomialExponent_inl {d : ℕ} {σ : Type*}
     multivariateExpandedMonomialExponent coordinateExponent jetExponent (Sum.inl i) =
       coordinateExponent i := by
   classical
-  simp [multivariateExpandedMonomialExponent, Finsupp.embDomain_apply]
+  simp [multivariateExpandedMonomialExponent]
 
 @[simp]
 theorem multivariateExpandedMonomialExponent_inr {d : ℕ} {σ : Type*}
@@ -36,7 +36,7 @@ theorem multivariateExpandedMonomialExponent_inr {d : ℕ} {σ : Type*}
     multivariateExpandedMonomialExponent coordinateExponent jetExponent (Sum.inr i) =
       jetExponent i := by
   classical
-  simp [multivariateExpandedMonomialExponent, Finsupp.embDomain_apply]
+  simp [multivariateExpandedMonomialExponent]
 
 /-- The combined exponent remembers both of its disjoint components. -/
 theorem multivariateExpandedMonomialExponent_injective {d : ℕ} {κ σ : Type*}
@@ -68,6 +68,7 @@ theorem eval_multivariateExpandedMonomial {d : ℕ} {σ : Type*}
   simp only [multivariateExpandedMonomialExponent]
   rw [Finsupp.prod_add_index]
   · rw [Finsupp.prod_embDomain, Finsupp.prod_embDomain]
+    rfl
   · intro a ha
     cases a <;> simp
   · intro a ha b₁ b₂
@@ -89,7 +90,8 @@ theorem exists_fullRank_multivariateExpandedMonomial_packet
     multivariateExpandedMonomialExponent_injective coordinateExponent jetExponent hpair
   obtain ⟨points, hfull⟩ := exists_fullRank_restrictedMonomialEvaluation_packet exponent
     hexponent (fun _ ↦ Set.univ) (fun _ ↦ Set.infinite_univ)
-  refine ⟨fun a i ↦ points a (Sum.inl i), fun a i ↦ points a (Sum.inr i), ?_⟩
+  refine ⟨fun a i ↦ (points a).1 (Sum.inl i),
+    fun a i ↦ (points a).1 (Sum.inr i), ?_⟩
   simpa [exponent, eval_multivariateExpandedMonomial] using hfull
 
 /-- The determinant polynomial for fixed multivariate base points and decorated jet monomials. -/

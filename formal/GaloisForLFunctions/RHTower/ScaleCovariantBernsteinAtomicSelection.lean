@@ -95,12 +95,12 @@ theorem bernsteinEllipsePhase_ne_of_small_distinct_equalAmplitude
         _ = ‖v‖ + ‖u‖ := by rw [norm_star]
     linarith
 
-/-- **Generic positive maximal-packet theorem.**  The complete square energy of a unit-disk,
-pre-aggregated atomic source has a positive sharp half-order law at one finite source-attained
-amplitude packet. -/
-theorem exists_positive_halfOrder_atomicBernsteinPacket_of_small_source
+/-- **Neutral-amplitude maximal-packet theorem.**  The complete square energy of a unit-disk,
+pre-aggregated atomic source whose affine amplitudes converge cofinally to one has a positive
+sharp half-order law at one finite source-attained amplitude packet. -/
+theorem exists_positive_halfOrder_atomicBernsteinPacket_of_neutral_amplitude
     {I : Type*} (c u : I → ℂ) (hc : Summable c)
-    (hu0 : Tendsto u cofinite (nhds 0))
+    (hA : Tendsto (atomicBernsteinAmplitude u) cofinite (nhds 1))
     (huinj : Function.Injective u)
     (hcne : ∀ i, c i ≠ 0)
     (hunit : ∀ i, ‖u i‖ < 1)
@@ -121,8 +121,6 @@ theorem exists_positive_halfOrder_atomicBernsteinPacket_of_small_source
   classical
   let A : I → ℝ := atomicBernsteinAmplitude u
   let a : I → ℂ := fun i => (A i : ℂ)
-  have hA : Tendsto A cofinite (nhds 1) :=
-    tendsto_atomicBernsteinAmplitude_cofinite_one hu0
   have ha : Tendsto a cofinite (nhds 1) := by
     simpa only [a, Complex.ofReal_one] using
       Complex.continuous_ofReal.tendsto 1 |>.comp hA
@@ -198,6 +196,32 @@ theorem exists_positive_halfOrder_atomicBernsteinPacket_of_small_source
         simpa only [U, C, L] using hfinite)
   exact ⟨D, B, beta, L, hB, hbeta1, hbeta, hDne, hDamp, hDsubAmp,
     rfl, hLpos, hfull⟩
+
+/-- **Generic positive maximal-packet theorem.**  Cofinite convergence of the nodes to zero is a
+convenient sufficient condition for the intrinsic neutral-amplitude hypothesis. -/
+theorem exists_positive_halfOrder_atomicBernsteinPacket_of_small_source
+    {I : Type*} (c u : I → ℂ) (hc : Summable c)
+    (hu0 : Tendsto u cofinite (nhds 0))
+    (huinj : Function.Injective u)
+    (hcne : ∀ i, c i ≠ 0)
+    (hunit : ∀ i, ‖u i‖ < 1)
+    (hreal : ∀ i, (u i).im = 0 → 0 ≤ (u i).re)
+    {i0 : I} (hi0 : (u i0).im ≠ 0) :
+    ∃ D : Finset I, ∃ B beta L : ℝ,
+      1 < B ∧ 1 < beta ∧ beta < B ∧ D.Nonempty ∧
+      (∀ i ∈ D, atomicBernsteinAmplitude u i = B) ∧
+      (∀ i ∉ D, atomicBernsteinAmplitude u i ≤ beta) ∧
+      L = ∑ v ∈ D.image u,
+        ‖finiteExponentialFiberCoefficient D c u v‖ ^ 2 *
+          bernsteinAffineRowHalfOrderConstant v ∧
+      0 < L ∧
+      Tendsto
+        (fun n : ℕ => Real.sqrt n *
+          atomicBernsteinPacketSquareEnergy c u n / (B ^ 2) ^ n)
+        atTop (nhds L) := by
+  exact exists_positive_halfOrder_atomicBernsteinPacket_of_neutral_amplitude
+    c u hc (tendsto_atomicBernsteinAmplitude_cofinite_one hu0)
+      huinj hcne hunit hreal hi0
 
 end
 

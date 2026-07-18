@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ScaleCovariantBernsteinAtomicSelection
-import GaloisForLFunctions.HTGeometry.ConfocalAbelDefectFlow
+import GaloisForLFunctions.HTGeometry.ConfocalDefectNeutrality
 
 /-!
 # Inverse-scale transport of atomic Bernstein selection
@@ -97,15 +97,16 @@ theorem inverseScaleAtomicNode_im_ne_zero
   simpa only [zero_div, sub_zero] using
     div_ne_zero (mul_ne_zero hi hR.ne') (mul_ne_zero hR.ne' hR.ne')
 
-/-- At every radius larger than the source norm bound, the selected maximal amplitude is
-exactly the confocal amplitude envelope of the original source. -/
-theorem exists_positive_halfOrder_inverseScaleAtomicPacket
+/-- At every radius larger than the source norm bound, neutral normalized amplitudes select the
+confocal amplitude envelope of the original source. -/
+theorem exists_positive_halfOrder_inverseScaleAtomicPacket_of_neutral_amplitude
     {I : Type*} (c z : I → ℂ) (hc : Summable c)
-    (hz0 : Tendsto z cofinite (nhds 0))
-    (hzinj : Function.Injective z)
-    (hcne : ∀ i, c i ≠ 0)
     {M R : ℝ} (hM : 0 ≤ M) (hbound : ∀ i, ‖z i‖ ≤ M)
     (hR : M < R)
+    (hneutral : Tendsto
+      (atomicBernsteinAmplitude (inverseScaleAtomicNode z R)) cofinite (nhds 1))
+    (hzinj : Function.Injective z)
+    (hcne : ∀ i, c i ≠ 0)
     (hreal : ∀ i, (z i).im = 0 → 0 ≤ (z i).re)
     {i0 : I} (hi0 : (z i0).im ≠ 0) :
     ∃ D : Finset I, ∃ B beta L : ℝ,
@@ -125,15 +126,14 @@ theorem exists_positive_halfOrder_inverseScaleAtomicPacket
             (B ^ 2) ^ n)
         atTop (nhds L) := by
   have hRpos : 0 < R := by linarith
-  have hu0 := tendsto_inverseScaleAtomicNode_cofinite_zero hz0 R
   have huinj := inverseScaleAtomicNode_injective hzinj hRpos
   have huunit := norm_inverseScaleAtomicNode_lt_one hbound hR
   have hureal := inverseScaleAtomicNode_re_nonneg_of_im_eq_zero hRpos hreal
   have hui0 := inverseScaleAtomicNode_im_ne_zero hRpos hi0
   obtain ⟨D, B, beta, L, hB, hbeta1, hbeta, hDne, hD, hDsub,
       hL, hLpos, hhalfOrder⟩ :=
-    exists_positive_halfOrder_atomicBernsteinPacket_of_small_source
-      c (inverseScaleAtomicNode z R) hc hu0 huinj hcne huunit hureal hui0
+    exists_positive_halfOrder_atomicBernsteinPacket_of_neutral_amplitude
+      c (inverseScaleAtomicNode z R) hc hneutral huinj hcne huunit hureal hui0
   have hAll : ∀ i,
       atomicBernsteinAmplitude (inverseScaleAtomicNode z R) i ≤ B := by
     intro i
@@ -164,6 +164,86 @@ theorem exists_positive_halfOrder_inverseScaleAtomicPacket
     exact hsup.symm
   exact ⟨D, B, beta, L, hBconf, hB, hbeta1, hbeta, hDne, hD, hDsub,
     hL, hLpos, hhalfOrder⟩
+
+/-- Cofinite convergence to the origin supplies the neutral-amplitude hypothesis of the sharp
+inverse-scale selector. -/
+theorem exists_positive_halfOrder_inverseScaleAtomicPacket
+    {I : Type*} (c z : I → ℂ) (hc : Summable c)
+    (hz0 : Tendsto z cofinite (nhds 0))
+    (hzinj : Function.Injective z)
+    (hcne : ∀ i, c i ≠ 0)
+    {M R : ℝ} (hM : 0 ≤ M) (hbound : ∀ i, ‖z i‖ ≤ M)
+    (hR : M < R)
+    (hreal : ∀ i, (z i).im = 0 → 0 ≤ (z i).re)
+    {i0 : I} (hi0 : (z i0).im ≠ 0) :
+    ∃ D : Finset I, ∃ B beta L : ℝ,
+      B = HTGeometry.confocalAmplitudeEnvelope (Set.range z) R ∧
+      1 < B ∧ 1 < beta ∧ beta < B ∧ D.Nonempty ∧
+      (∀ i ∈ D,
+        atomicBernsteinAmplitude (inverseScaleAtomicNode z R) i = B) ∧
+      (∀ i ∉ D,
+        atomicBernsteinAmplitude (inverseScaleAtomicNode z R) i ≤ beta) ∧
+      L = ∑ v ∈ D.image (inverseScaleAtomicNode z R),
+        ‖finiteExponentialFiberCoefficient D c (inverseScaleAtomicNode z R) v‖ ^ 2 *
+          bernsteinAffineRowHalfOrderConstant v ∧
+      0 < L ∧
+      Tendsto
+        (fun n : ℕ => Real.sqrt n *
+          atomicBernsteinPacketSquareEnergy c (inverseScaleAtomicNode z R) n /
+            (B ^ 2) ^ n)
+        atTop (nhds L) := by
+  have hRpos : 0 < R := hM.trans_lt hR
+  have hu0 := tendsto_inverseScaleAtomicNode_cofinite_zero hz0 R
+  exact exists_positive_halfOrder_inverseScaleAtomicPacket_of_neutral_amplitude
+    c z hc hM hbound hR
+      (tendsto_atomicBernsteinAmplitude_cofinite_one hu0)
+      hzinj hcne hreal hi0
+
+/-- Cofinal vanishing of the intrinsic transverse defect is sufficient for the sharp inverse-scale
+selector; the nodes may accumulate anywhere along the nonnegative focal segment. -/
+theorem exists_positive_halfOrder_inverseScaleAtomicPacket_of_transverse_neutral
+    {I : Type*} (c z : I → ℂ) (hc : Summable c)
+    (htrans : Tendsto (fun i => HTGeometry.transverseDefect (z i))
+      cofinite (nhds 0))
+    (hzinj : Function.Injective z)
+    (hcne : ∀ i, c i ≠ 0)
+    {M R : ℝ} (hM : 0 ≤ M) (hbound : ∀ i, ‖z i‖ ≤ M)
+    (hR : M < R)
+    (hreal : ∀ i, (z i).im = 0 → 0 ≤ (z i).re)
+    {i0 : I} (hi0 : (z i0).im ≠ 0) :
+    ∃ D : Finset I, ∃ B beta L : ℝ,
+      B = HTGeometry.confocalAmplitudeEnvelope (Set.range z) R ∧
+      1 < B ∧ 1 < beta ∧ beta < B ∧ D.Nonempty ∧
+      (∀ i ∈ D,
+        atomicBernsteinAmplitude (inverseScaleAtomicNode z R) i = B) ∧
+      (∀ i ∉ D,
+        atomicBernsteinAmplitude (inverseScaleAtomicNode z R) i ≤ beta) ∧
+      L = ∑ v ∈ D.image (inverseScaleAtomicNode z R),
+        ‖finiteExponentialFiberCoefficient D c (inverseScaleAtomicNode z R) v‖ ^ 2 *
+          bernsteinAffineRowHalfOrderConstant v ∧
+      0 < L ∧
+      Tendsto
+        (fun n : ℕ => Real.sqrt n *
+          atomicBernsteinPacketSquareEnergy c (inverseScaleAtomicNode z R) n /
+            (B ^ 2) ^ n)
+        atTop (nhds L) := by
+  have hRpos : 0 < R := hM.trans_lt hR
+  have hconf := HTGeometry.tendsto_confocalDefect_cofinite_zero_of_transverseDefect
+    hM hR hbound htrans
+  have hscaled : Tendsto
+      (fun i => HTGeometry.confocalDefect R (z i) / R)
+      cofinite (nhds 0) := by
+    simpa only [div_eq_mul_inv, zero_mul] using hconf.mul_const R⁻¹
+  have hneutral : Tendsto
+      (atomicBernsteinAmplitude (inverseScaleAtomicNode z R))
+      cofinite (nhds 1) := by
+    have hmodel := tendsto_const_nhds.add hscaled
+    apply hmodel.congr'
+    filter_upwards with i
+    rw [atomicBernsteinAmplitude, inverseScaleAtomicNode_eq_div,
+      HTGeometry.affineAmplitude_eq_one_add_confocalDefect_div hRpos]
+  exact exists_positive_halfOrder_inverseScaleAtomicPacket_of_neutral_amplitude
+    c z hc hM hbound hR hneutral hzinj hcne hreal hi0
 
 end
 

@@ -209,8 +209,38 @@
   `e^{−πx²}` involves `e^{−2πx²}`, so the tail is `e^{−2πa²}` — this is the clock, and is exactly
   why `ClockEnvelope` was generalized off the hard-coded `e^{−4πλ²}`.
 
-  REMAINING for the L6a envelope: dilate/translate to the aperture scale, truncate to `[−a,a]`,
-  assemble `n+1` near-orthonormal such functions,
+  ### L6a TRUNCATION: **BUILT** (`HTGeometry/TruncatedFixedVector.lean`, axiom-clean)
+
+  `norm_sq_proj_unitary_proj_ge`: if the isometry `U` fixes `h` and `P` is an orthogonal
+  projection (used only via the Pythagorean identity `‖x‖² = ‖Px‖² + ‖x−Px‖²`), then
+
+```text
+  ‖P U P h‖² ≥ ‖P h‖² − 4‖h − P h‖².
+```
+
+  Pythagoras is now DISCHARGED from star-projection data:
+  `norm_sq_eq_of_isIdempotent_symmetric` (idempotent + symmetric ⟹ orthogonal splitting), so
+  `norm_sq_proj_unitary_proj_ge'` takes only `P∘P = P` and symmetry — both immediate for the
+  project's `evenIndicatorCutoff` (`evenIndicatorCutoff_idempotent`, and the cutoff is a star
+  projection).  And `norm_sq_proj_unitary_proj_ge_of_rel` puts it in the exact shape the trial
+  space consumes:
+
+```text
+  ‖h − Ph‖ ≤ θ‖Ph‖   ⟹   (1 − 4θ²)‖Ph‖² ≤ ‖P U P h‖²,
+```
+
+  i.e. `ε = 4θ²` for `evenProlateLeakageValue_le_of_form_trial`.  NOTE `IsSelfAdjoint` was
+  deliberately avoided: it drags in a `Star (H →L[ℂ] H)` instance; plain symmetry
+  `∀ x y, ⟪Px, y⟫ = ⟪x, Py⟫` needs no adjoint and is what the project's lemmas produce.
+
+  Stated ABSTRACTLY, so it needs no `SoninL2`/`evenSubspace` plumbing: instantiate `U` with the
+  Fourier unitary, `P` with the aperture cutoff, `h` with the Gaussian (Fourier-fixed by
+  `fourier_gaussianSchwartz_toLp`), and `‖h − P h‖²` is the tail bounded by
+  `integral_Ioi_gauss_sq_le`.  Helper `norm_sub_proj_le` (complementary part is a contraction).
+
+  REMAINING for the L6a envelope: instantiate the three abstract lemmas at the project's
+  operators (evenness of the Gaussian, cutoff Pythagoras, `‖h−Ph‖²` = the tail integral), then
+  dilate to the aperture scale, assemble `n+1` near-orthonormal such functions,
   feed `OrthonormalTrialSpan.norm_sq_apply_le_of_orthonormal_span`, then
   `evenProlateLeakageValue_le_of_form_trial`.  Higher `n` needs `𝓕 h_n = (−i)^n h_n`, provable
   by induction with the creation operator `(x − d/dx)` reusing the polynomial induction above.

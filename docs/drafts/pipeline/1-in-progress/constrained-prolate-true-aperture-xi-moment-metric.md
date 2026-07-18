@@ -3,7 +3,8 @@
 - **ID:** `constrained-prolate-true-aperture-xi-moment-metric`
 - **Stage:** 1-in-progress
 - **Type:** THEOREM / NO-GO CLOSURE / TRUE-METRIC PIVOT
-- **Scientific status:** `[EXACT FINITE METRIC PROVED] [METRIC-RIGID SCHUR DIRECTION PROVED]`
+- **Scientific status:** `[EXACT FINITE METRIC PROVED]`
+  `[METRIC-RIGID SCHUR DIRECTION PROVED FROM THE RECORDED FIXED-MODE REGULARITY INPUT]`
   `[CANDIDATE NEW SOURCE-SPECIFIC KNOWLEDGE] [EXTERNAL NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
 - **Parents:** the CCM summation map, the constrained fixed-mode Hermite ladder, the exact
   Poisson--Muntz fold, the radial leakage Gram law, and the regular Weil--Toeplitz limit.
@@ -252,8 +253,28 @@ The local corpus currently invokes fixed-mode `W^(1,1)` convergence and the boun
 `Var(g_(k,lambda)^+)=O(1)`, but has not proved the stronger weighted theorem `(AM18)`.  Therefore
 `(WT16)` remains open and no limiting true eigenvalue constant is claimed unconditionally.
 
-## Positive survivor without `(AM17)`: metric-rigid Schur direction `[PROVED FROM THE CURRENT
-FIXED-MODE W1,1 AND VARIATION INPUTS]`
+There is a sharper minimal rate lemma.  Let `f_lambda` be supported in `[0,lambda]`, let `f` be
+Schwartz, and suppose both have zero positive-half integral.  If
+
+```text
+Var(f_lambda-f)->0,
+lambda ||f_lambda-f||_(L-infinity(0,lambda))->0,               (AM18a)
+```
+
+then `||E(f_lambda)-E(f)||_(L2(d*u))->0`.  On `0<u<1`, the zero-mean BV discrepancy contributes at
+most `Var(f_lambda-f)^2`.  On `1<=u<=lambda`, the sampled head contributes at most
+`lambda^2||f_lambda-f||_infinity^2`.  The omitted Schwartz tail is `o(1)` after choosing any decay
+power greater than one.  Hence a fixed-mode PSWF estimate
+
+```text
+||g_(k,lambda)-phi_k||_infinity=O(lambda^(-2))                 (AM18b)
+```
+
+together with the already invoked `W^(1,1)` convergence would close `(AM17)`.  Neither `(AM18b)`
+nor an equivalent uniform Agmon envelope is currently recorded in the live corpus.
+
+## Positive survivor without `(AM17)`: metric-rigid Schur direction `[PROVED FROM THE RECORDED
+FIXED-MODE W1,1 AND VARIATION INPUT]`
 
 Full zeta-graph convergence is stronger than what is needed to identify the leading source
 direction.  Fix a finite depth `N`.  Local `W^(1,1)` convergence and the sampling inequality imply
@@ -305,8 +326,17 @@ If `(AM17)` is later proved, the eigenvalue constant becomes
 ```text
 epsilon_-/(d_1 log c)
  ->[theta_0/Gamma_00](D_0-D_1^2/D_0)
-  =[3/(2M_0)](D_0-D_1^2/D_0)>3/(4M_0).                       (AM22)
+ =[3/(2M_0)](D_0-D_1^2/D_0)>3/(4M_0).                       (AM22)
 ```
+
+The upper generalized level then also has the exact limit
+
+```text
+epsilon_+/(d_2 log c)
+ ->theta_1 D_0 Gamma_00/det(Gamma_[0,1]),                     (AM23)
+```
+
+so the true two-rung generalized gap retains the `lambda^8` prolate hierarchy.
 
 The full closed Weil form still additionally requires the intact bilinear graph-defect estimate
 `(WT17)`.  Even `(AM17)` and `(WT17)` together control only the fixed trial span, not its orthogonal
@@ -321,11 +351,14 @@ complement.
 - **Positive survivor:** the metric is explicit, positive, polynomially conditioned at fixed
   depth, and subordinate to the `lambda^8` prolate ladder.  Hence the Schur direction `(AM21)` is
   already true-metric rigid.
-- **Novelty audit:** Hermite Mellin formulas, the zeta multiplier, and positive polynomial moment
-  Grams are parent material.  The candidate-new residue is their source-specific assembly with the
-  constrained prolate ladder: `(AM5)`, the exact first excited polynomial and determinant
-  `(AM13)`--`(AM15)`, the theta-cusp normalization `(AM16)`, and especially the scale-separation
-  theorem `(AM19)`--`(AM21)`.  External priority remains unverified.
+- **Novelty audit:** the Hermite-to-polynomial-`Xi` factorization is already present in CCM
+  Proposition 3.6; Hermite Mellin formulas, the zeta multiplier, and positive polynomial moment
+  Grams are parent material.  The candidate-new residue is the constrained-prolate aperture
+  assembly: the exact arithmetic metric `(AM5)`, its explicit first two source-normalized entries,
+  the minimal graph-rate gate `(AM18a)`, and especially the scale-separation theorem
+  `(AM19)`--`(AM21)`.  Actual finite-prolate Gram convergence and the spectral constants
+  `(AM22)`--`(AM23)` become candidate-new theorems only after `(AM18b)` or an equivalent estimate is
+  proved.  External priority remains unverified.
 
 ## Lean status
 
@@ -351,10 +384,10 @@ No Lean declaration assumes `(AM17)`, `(WT17)`, a true Weil spectral floor, or R
 - [x] identify the fixed Hermite metric as the Xi-square Gram `(AM12)`
 - [x] compute the first two invariant polynomials and strict determinant
 - [x] identify the ground contrast with the formal theta-cusp source
-- [x] prove the polynomial metric bounds `(AM19)` from the current fixed-mode regularity inputs
-- [x] prove true-metric rigidity of the Schur direction `(AM21)`
+- [x] prove the polynomial metric bounds `(AM19)` from the recorded fixed-mode regularity input
+- [x] prove true-metric rigidity of the Schur direction `(AM21)` under that same input
+- [x] reduce graph convergence to the minimal BV plus sup-rate lemma `(AM18a)`
 - [ ] prove the weighted fixed-mode PSWF convergence `(AM18)`
 - [ ] conclude the actual aperture metric limit `(AM17)`
 - [ ] prove the intact full-Weil bilinear graph defect `(WT17)`
 - [ ] control the orthogonal complement / true global floor
-

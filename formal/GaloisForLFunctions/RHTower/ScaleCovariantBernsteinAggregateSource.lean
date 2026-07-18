@@ -105,6 +105,20 @@ theorem tendsto_atomicAggregateNode_cofinite_zero
   have hcomp := hz0.comp hrep
   simpa only [Function.comp_def, atomicAggregateRepresentative_spec] using hcomp
 
+/-- Cofinal vanishing of the transverse defect descends to the intrinsic aggregate support. -/
+theorem tendsto_atomicAggregateNode_transverseDefect_cofinite_zero
+    {I : Type*} {c z : I → ℂ}
+    (htrans : Tendsto (fun i => HTGeometry.transverseDefect (z i))
+      cofinite (nhds 0)) :
+    Tendsto
+      (fun u : AtomicAggregateSupport c z =>
+        HTGeometry.transverseDefect (atomicAggregateNode c z u))
+      cofinite (nhds 0) := by
+  have hrep : Tendsto (atomicAggregateRepresentative c z) cofinite cofinite :=
+    (atomicAggregateRepresentative_injective c z).tendsto_cofinite
+  have hcomp := htrans.comp hrep
+  simpa only [Function.comp_def, atomicAggregateRepresentative_spec] using hcomp
+
 /-- A uniform norm bound descends to aggregate nodes. -/
 theorem norm_atomicAggregateNode_le
     {I : Type*} {c z : I → ℂ} {M : ℝ}

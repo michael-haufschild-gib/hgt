@@ -11,7 +11,7 @@ second polarized product equation.  The period-one face vanishes exactly.
 -/
 
 open Filter Topology Set Function Complex
-open scoped Differential
+open scoped Differential Topology
 
 namespace GaloisForLFunctions
 
@@ -49,13 +49,13 @@ theorem addTranslationAnalyticEquiv_ellipticGammaForwardAnalytic_one
         (ellipticGammaForwardAnalytic sigma tau hsigma htau) =
       ellipticGammaForwardAnalytic sigma tau hsigma htau := by
   apply Subtype.ext
-  let htr : Tendsto (addTranslation 1) (𝒱 Set.univ) (𝒱 Set.univ) :=
+  let htr : Tendsto (addTranslation 1) (𝓟 Set.univ) (𝓟 Set.univ) :=
     tendsto_principal_principal.mpr (Set.mapsTo_univ _ _)
   change
-    (Germ.ofFun (l := 𝒱 Set.univ)
+    (Germ.ofFun (l := 𝓟 Set.univ)
       (ellipticGammaForwardProduct sigma tau)).compTendsto
         (addTranslation 1) htr =
-      Germ.ofFun (l := 𝒱 Set.univ)
+      Germ.ofFun (l := 𝓟 Set.univ)
         (ellipticGammaForwardProduct sigma tau)
   rw [Germ.coe_compTendsto, Germ.coe_eq]
   exact eventually_principal.mpr fun z _ ↦ by
@@ -68,13 +68,13 @@ theorem addTranslationAnalyticEquiv_ellipticGammaBackwardAnalytic_one
         (ellipticGammaBackwardAnalytic sigma tau hsigma htau) =
       ellipticGammaBackwardAnalytic sigma tau hsigma htau := by
   apply Subtype.ext
-  let htr : Tendsto (addTranslation 1) (𝒱 Set.univ) (𝒱 Set.univ) :=
+  let htr : Tendsto (addTranslation 1) (𝓟 Set.univ) (𝓟 Set.univ) :=
     tendsto_principal_principal.mpr (Set.mapsTo_univ _ _)
   change
-    (Germ.ofFun (l := 𝒱 Set.univ)
+    (Germ.ofFun (l := 𝓟 Set.univ)
       (ellipticGammaBackwardProduct sigma tau)).compTendsto
         (addTranslation 1) htr =
-      Germ.ofFun (l := 𝒱 Set.univ)
+      Germ.ofFun (l := 𝓟 Set.univ)
         (ellipticGammaBackwardProduct sigma tau)
   rw [Germ.coe_compTendsto, Germ.coe_eq]
   exact eventually_principal.mpr fun z _ ↦ by
@@ -100,7 +100,6 @@ theorem addTranslationMeroEquiv_ellipticGammaLogDerivMero_one
       ellipticGammaLogDerivMero sigma tau hsigma htau := by
   rw [ellipticGammaLogDerivMero, map_div₀,
     addTranslationMeroEquiv_deriv,
-    addTranslationMeroEquiv_ellipticGammaMero_one,
     addTranslationMeroEquiv_ellipticGammaMero_one]
 
 /-! ## The polarized `tau` face -/
@@ -176,8 +175,12 @@ theorem ellipticGammaLogDerivMero_mixed_face_tau
   rw [thetaLogDerivDefectMero_eq_div, map_div₀,
     addTranslationMeroEquiv_algebraMap,
     addTranslationMeroEquiv_algebraMap]
+  have hTQ' : addTranslationAnalyticEquiv ((tau - sigma) / 2)
+      (thetaLogDerivDefectDenominatorAnalytic h sigma hsigma) ≠ 0 := by
+    simpa [c, Q] using hTQ
+  rw [eq_div_iff (hmap_ne hTQ')]
   field_simp [hmap_ne hD, hmap_ne (hTD h), hmap_ne (hTD tau),
-    hmap_ne (hTD (tau + h)), hmap_ne hTQ]
+    hmap_ne (hTD (tau + h))]
   simp only [← map_mul, ← map_sub]
   rw [(IsFractionRing.injective (analyticSubring Set.univ)
     (meroField Set.univ)).eq_iff]
@@ -209,64 +212,64 @@ theorem ellipticGammaLogDerivMero_mixed_face_tau
   have hratio :
       (univGermEval (z + (tau + h))
             (ellipticGammaLogDerivNumeratorAnalytic sigma tau hsigma htau :
-              Germ (𝒱 Set.univ) ℂ) /
+              Germ (𝓟 Set.univ) ℂ) /
           univGermEval (z + (tau + h))
             (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
-              Germ (𝒱 Set.univ) ℂ) -
+              Germ (𝓟 Set.univ) ℂ) -
         univGermEval (z + tau)
             (ellipticGammaLogDerivNumeratorAnalytic sigma tau hsigma htau :
-              Germ (𝒱 Set.univ) ℂ) /
+              Germ (𝓟 Set.univ) ℂ) /
           univGermEval (z + tau)
             (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
-              Germ (𝒱 Set.univ) ℂ)) -
+              Germ (𝓟 Set.univ) ℂ)) -
       (univGermEval (z + h)
             (ellipticGammaLogDerivNumeratorAnalytic sigma tau hsigma htau :
-              Germ (𝒱 Set.univ) ℂ) /
+              Germ (𝓟 Set.univ) ℂ) /
           univGermEval (z + h)
             (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
-              Germ (𝒱 Set.univ) ℂ) -
+              Germ (𝓟 Set.univ) ℂ) -
         univGermEval z
             (ellipticGammaLogDerivNumeratorAnalytic sigma tau hsigma htau :
-              Germ (𝒱 Set.univ) ℂ) /
+              Germ (𝓟 Set.univ) ℂ) /
           univGermEval z
             (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
-              Germ (𝒱 Set.univ) ℂ)) =
+              Germ (𝓟 Set.univ) ℂ)) =
       univGermEval (z + c)
           (thetaLogDerivDefectNumeratorAnalytic h sigma hsigma :
-            Germ (𝒱 Set.univ) ℂ) /
+            Germ (𝓟 Set.univ) ℂ) /
         univGermEval (z + c)
           (thetaLogDerivDefectDenominatorAnalytic h sigma hsigma :
-            Germ (𝒱 Set.univ) ℂ) := by
+            Germ (𝓟 Set.univ) ℂ) := by
     rw [hKtah, hKt, hKh, hK, htheta]
     rw [show z + (tau + h) = z + h + tau by ring]
     simpa only [c] using hmix
   have hdtah : univGermEval (z + (tau + h))
       (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
-        Germ (𝒱 Set.univ) ℂ) ≠ 0 := by
+        Germ (𝓟 Set.univ) ℂ) ≠ 0 := by
     change ellipticGammaForwardProduct sigma tau (z + (tau + h)) *
       ellipticGammaBackwardProduct sigma tau (z + (tau + h)) ≠ 0
     exact mul_ne_zero hztahF hztahB
   have hdt : univGermEval (z + tau)
       (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
-        Germ (𝒱 Set.univ) ℂ) ≠ 0 := by
+        Germ (𝓟 Set.univ) ℂ) ≠ 0 := by
     change ellipticGammaForwardProduct sigma tau (z + tau) *
       ellipticGammaBackwardProduct sigma tau (z + tau) ≠ 0
     exact mul_ne_zero hztF hztB
   have hdh : univGermEval (z + h)
       (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
-        Germ (𝒱 Set.univ) ℂ) ≠ 0 := by
+        Germ (𝓟 Set.univ) ℂ) ≠ 0 := by
     change ellipticGammaForwardProduct sigma tau (z + h) *
       ellipticGammaBackwardProduct sigma tau (z + h) ≠ 0
     exact mul_ne_zero hzhF hzhB
   have hd : univGermEval z
       (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
-        Germ (𝒱 Set.univ) ℂ) ≠ 0 := by
+        Germ (𝓟 Set.univ) ℂ) ≠ 0 := by
     change ellipticGammaForwardProduct sigma tau z *
       ellipticGammaBackwardProduct sigma tau z ≠ 0
     exact mul_ne_zero hzF hzB
   have hq : univGermEval (z + c)
       (thetaLogDerivDefectDenominatorAnalytic h sigma hsigma :
-        Germ (𝒱 Set.univ) ℂ) ≠ 0 := by
+        Germ (𝓟 Set.univ) ℂ) ≠ 0 := by
     change jacobiTheta₂ (z + c + h) sigma * jacobiTheta₂ (z + c) sigma ≠ 0
     exact mul_ne_zero hzc_h_theta hzc_theta
   simp only [univGermEval_analyticSubring_mul,
@@ -294,7 +297,6 @@ theorem addTranslationMeroEquiv_ellipticGammaExternalDefect_one
   rw [ellipticGammaExternalLogDerivDefectMero, map_sub,
     addTranslationMeroEquiv_add]
   rw [show 1 + h = h + 1 by ring, ← addTranslationMeroEquiv_add,
-    addTranslationMeroEquiv_ellipticGammaLogDerivMero_one,
     addTranslationMeroEquiv_ellipticGammaLogDerivMero_one]
 
 /-- Every theta defect belongs to its concrete elliptic meromorphic field. -/
@@ -308,15 +310,14 @@ theorem thetaLogDerivDefectMero_mem_ellipticMeroField
 /-- The three actual increment cocycles, valued in the paired elliptic compositum. -/
 def ellipticGammaExternalDefectIncrement
     (h sigma tau : ℂ) (hsigma : 0 < sigma.im) (htau : 0 < tau.im) :
-    Fin 3 → meromorphicEllipticCompositum sigma tau := fun i ↦ by
-  fin_cases i
-  · exact 0
-  · exact ⟨thetaLogDerivDefectMero h tau htau,
+    Fin 3 → meromorphicEllipticCompositum sigma tau := fun i ↦
+  if i = 0 then 0
+  else if i = 1 then ⟨thetaLogDerivDefectMero h tau htau,
       (show ellipticMeroField tau ≤ meromorphicEllipticCompositum sigma tau by
         rw [meromorphicEllipticCompositum]
         exact le_sup_right)
         (thetaLogDerivDefectMero_mem_ellipticMeroField h tau htau)⟩
-  · exact ⟨addTranslationMeroEquiv ((tau - sigma) / 2)
+  else ⟨addTranslationMeroEquiv ((tau - sigma) / 2)
         (thetaLogDerivDefectMero h sigma hsigma),
       (show ellipticMeroField sigma ≤ meromorphicEllipticCompositum sigma tau by
         rw [meromorphicEllipticCompositum]
@@ -330,7 +331,7 @@ theorem ellipticGammaExternalDefectIncrement_zero_coe
     (h sigma tau : ℂ) (hsigma : 0 < sigma.im) (htau : 0 < tau.im) :
     ((ellipticGammaExternalDefectIncrement h sigma tau hsigma htau 0 :
         meromorphicEllipticCompositum sigma tau) : meroField Set.univ) = 0 := by
-  rfl
+  simp [ellipticGammaExternalDefectIncrement]
 
 @[simp]
 theorem ellipticGammaExternalDefectIncrement_one_coe
@@ -338,7 +339,7 @@ theorem ellipticGammaExternalDefectIncrement_one_coe
     ((ellipticGammaExternalDefectIncrement h sigma tau hsigma htau 1 :
         meromorphicEllipticCompositum sigma tau) : meroField Set.univ) =
       thetaLogDerivDefectMero h tau htau := by
-  rfl
+  simp [ellipticGammaExternalDefectIncrement]
 
 @[simp]
 theorem ellipticGammaExternalDefectIncrement_two_coe
@@ -347,7 +348,7 @@ theorem ellipticGammaExternalDefectIncrement_two_coe
         meromorphicEllipticCompositum sigma tau) : meroField Set.univ) =
       addTranslationMeroEquiv ((tau - sigma) / 2)
         (thetaLogDerivDefectMero h sigma hsigma) := by
-  rfl
+  simp [ellipticGammaExternalDefectIncrement]
 
 /-- The actual external defect has the three displayed base-field increments under the finite
 rank-three global source action. -/
@@ -362,11 +363,15 @@ theorem ellipticGammaExternalDefect_shift
           (meroField Set.univ)
           (ellipticGammaExternalDefectIncrement h sigma tau hsigma htau i) := by
   fin_cases i
-  · change addTranslationMeroEquiv 1
+  · simp only [rankThreeGeneratorMeromorphicDifferenceDifferentialField,
+      ellipticGammaSourcePeriods]
+    change addTranslationMeroEquiv 1
         (ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau) = _
     rw [addTranslationMeroEquiv_ellipticGammaExternalDefect_one]
     simp
-  · change addTranslationMeroEquiv sigma
+  · simp only [rankThreeGeneratorMeromorphicDifferenceDifferentialField,
+      ellipticGammaSourcePeriods]
+    change addTranslationMeroEquiv sigma
         (ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau) =
       ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau +
         thetaLogDerivDefectMero h tau htau
@@ -378,7 +383,9 @@ theorem ellipticGammaExternalDefect_shift
         thetaLogDerivDefectMero h tau htau at hface
     simpa only [add_comm] using
       sub_eq_iff_eq_add.mp hface
-  · change addTranslationMeroEquiv tau
+  · simp only [rankThreeGeneratorMeromorphicDifferenceDifferentialField,
+      ellipticGammaSourcePeriods]
+    change addTranslationMeroEquiv tau
         (ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau) =
       ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau +
         addTranslationMeroEquiv ((tau - sigma) / 2)

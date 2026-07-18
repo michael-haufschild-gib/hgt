@@ -139,6 +139,18 @@ eta_0~theta_0 d_1,   theta_0=8/11,
 eta_1~theta_1 d_2,   theta_1=176/211.                         (WT11)
 ```
 
+Explicitly, if `ell_j=integral h_(4j,lambda)`, then, up to orientation,
+
+```text
+g_0=(ell_1 h_0-ell_0 h_4)/sqrt(ell_0^2+ell_1^2),
+
+gHat_1=-ell_0 h_0-ell_1 h_4
+       +[(ell_0^2+ell_1^2)/ell_2]h_8,
+g_1=gHat_1/||gHat_1||_2.                                    (WT11a)
+```
+
+This is the exact second Gram--Schmidt contrast, not only a limiting direction.
+
 In the oriented source basis `(g_0,g_1)`, the leading pulled-back regular-Weil block is
 
 ```text
@@ -198,9 +210,45 @@ Q_lambda c=epsilon G^E_lambda c,
 G^E_(ij)=<R_lambda E(g_i),R_lambda E(g_j)>.                  (WT16)
 ```
 
-The exterior map is ambiently unbounded and no aperture-Gram asymptotic is currently proved.
-Promoting the source-metric Schur vector to a true restricted-Weil eigenvector or residual requires
-a source-specific asymptotic for `G^E_lambda`.
+The exterior map is ambiently unbounded, so source `L2` convergence does not prove an aperture-Gram
+asymptotic.  The exact finite metric and its strongest current consequences are proved in
+`constrained-prolate-true-aperture-xi-moment-metric.md`.  Its fixed-Hermite target is not the
+identity but the explicit positive Xi-square polynomial Gram
+
+```text
+Gamma_(ij)=1/(sqrt(2)pi) integral_R |xi(1/2+it)|^2
+  R_i(1/4+t^2)R_j(1/4+t^2)dt,
+
+R_0=4/sqrt(33),
+R_1=sqrt(2/731115)(401-44u).                              (WT16a)
+```
+
+The actual convergence `G^E_lambda->Gamma` remains open at one zeta-graph/PSWF rate.  However, the
+recorded fixed-mode `W^(1,1)` and variation input already gives, at every fixed depth,
+
+```text
+m_N I<=G^E_(lambda,N)<=C_N lambda I.                         (WT16b)
+```
+
+This polynomial metric distortion is subordinate to `d_1/d_2=O(lambda^(-8))`.  Solving the second
+row of the true regular generalized pencil therefore preserves the canonical direction
+
+```text
+y/x
+ =-s sqrt(211/242)(D_1/D_0)sqrt(d_1/d_2)
+   +o(sqrt(d_1/d_2)).                                       (WT16c)
+```
+
+Thus the `O(lambda^(-4))` Schur direction is already true-aperture-metric rigid.  What the missing
+Gram convergence controls is its normalization and the limiting generalized eigenvalue constant.
+If it is proved, then
+
+```text
+epsilon_-/(d_1 log c)
+ ->[3/(2M_0)](D_0-D_1^2/D_0)>3/(4M_0),
+
+M_0=1/(sqrt(2)pi) integral_R |xi(1/2+it)|^2dt.             (WT16d)
+```
 
 Second, the regular theorem does not split the polar evaluation from the Poisson-resummed source.
 To promote it to the full closed Weil numerator, one must prove, for every fixed pair `i,j`,
@@ -237,9 +285,11 @@ prove a cofinal Weil floor or RH.
 - [x] polarization and countable-sum interchange for `(WT9)`
 - [x] finite-prime cross channel proved one logarithmic order lower
 - [x] prove Toeplitz positivity and identify the `1/2` floor mechanism
-- [ ] formalize the concrete adjacent coefficient and Schur survivor in Lean
+- [x] formalize the concrete adjacent coefficient and Schur survivor in Lean
+- [x] construct the exact finite aperture Hilbert metric and its Xi-square target
+- [x] prove true-metric rigidity of the Schur direction from polynomial Gram conditioning
 - [ ] externally audit novelty and priority
-- [ ] prove the aperture-Gram asymptotic `(WT16)`
+- [ ] prove the PSWF zeta-graph rate and hence the aperture-Gram limit in `(WT16a)`
 - [ ] prove the intact bilinear graph-defect estimate `(WT17)`
 
 ## Log
@@ -252,3 +302,7 @@ prove a cofinal Weil floor or RH.
 - 2026-07-18 -- Hostile audit closed the fixed-mode cross limit and corrected the operator claim:
   the Schur law is unconditional in the orthonormal source-coordinate metric, while a true aperture
   eigenvector requires the additional Gram gate `(WT16)`.
+- 2026-07-18 -- Built the actual finite aperture metric and killed the source-identity model.  Its
+  Hermite target is an explicit Xi-square moment Gram.  Full Gram convergence remains open, but
+  the proved polynomial conditioning bound is subordinate to the `lambda^8` prolate hierarchy and
+  already promotes the `O(lambda^(-4))` Schur direction to the true regular generalized pencil.

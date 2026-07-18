@@ -111,36 +111,6 @@ theorem exists_complex_of_ellipticMeroField_translation_fixed
   change algebraMap ℂ (meroField Set.univ) c = (z : meroField Set.univ)
   simpa [meromorphicConstantEmbedding] using hc
 
-/-- Semilinear descent preserves linear independence once the concrete coefficient embedding is
-known to carry base-field linear combinations to extension-field linear combinations.  Keeping
-this compatibility explicit avoids asking typeclass search to reconstruct a scalar tower through
-a fraction-field presentation. -/
-private theorem linearIndependent_of_semilinear_fixed_field
-    {I kappa C K M : Type*} [Field C] [Field K] [Algebra C K]
-    [AddCommGroup M] [Module C M] [Module K M]
-    (coefficientAction : I → K ≃+* K)
-    (hfixed : ∀ z : K, (∀ i, coefficientAction i z = z) →
-      ∃ c : C, algebraMap C K c = z)
-    (ambientAction : I → M ≃+ M) (x : kappa → M)
-    (hsmul : ∀ i c m,
-      ambientAction i (c • m) = coefficientAction i c • ambientAction i m)
-    (hx : ∀ i k, ambientAction i (x k) = x k)
-    (hbaseChange : ∀ c : kappa →₀ C,
-      Finsupp.linearCombination K x
-          (Finsupp.mapRange (algebraMap C K)
-            (map_zero (algebraMap C K)) c) =
-        Finsupp.linearCombination C x c)
-    (hbase : LinearIndependent C x) :
-    LinearIndependent K x := by
-  rw [linearIndependent_iff_ker]
-  by_contra hrelation
-  obtain ⟨c, hc0, hcrelation⟩ :=
-    semilinear_relationSpace_exists_nonzero_constant_relation
-      coefficientAction hfixed ambientAction x hsmul hx hrelation
-  have hcbase : Finsupp.linearCombination C x c = 0 :=
-    (hbaseChange c).symm.trans hcrelation
-  exact hc0 ((linearIndependent_iff.mp hbase) c hcbase)
-
 /-! ## The tensor-product gate -/
 
 /-- Under rational independence of the common period and the two transverse periods, the two
@@ -193,20 +163,9 @@ theorem ellipticMeroFields_linearDisjoint
   have hbambient : LinearIndependent ℂ (A.val ∘ b) :=
     b.linearIndependent.map' A.val.toLinearMap
       (LinearMap.ker_eq_bot_of_injective A.val.injective)
-  have hbaseChange (c : Module.Free.ChooseBasisIndex ℂ A →₀ ℂ) :
-      Finsupp.linearCombination B (A.val ∘ b)
-          (Finsupp.mapRange (algebraMap ℂ B)
-            (map_zero (algebraMap ℂ B)) c) =
-        Finsupp.linearCombination ℂ (A.val ∘ b) c := by
-    classical
-    rw [Finsupp.linearCombination_apply, Finsupp.linearCombination_apply]
-    rw [Finsupp.sum_mapRange_index (fun _ ↦ by simp)]
-    apply Finsupp.sum_congr
-    intro i hi
-    rw [IsScalarTower.algebraMap_smul]
-  exact linearIndependent_of_semilinear_fixed_field
+  exact semilinear_linearIndependent_of_fixed_field
     coefficientTranslation hfixed ambientTranslation (A.val ∘ b)
-    hsemilinear hbasisFixed hbaseChange hbambient
+    hsemilinear hbasisFixed hbambient
 
 end
 

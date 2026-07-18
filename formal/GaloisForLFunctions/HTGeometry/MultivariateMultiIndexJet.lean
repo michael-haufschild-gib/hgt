@@ -27,9 +27,20 @@ theorem wordMultiplicity_multiIndexWord {d : ℕ} (a : Fin d →₀ ℕ) :
     wordMultiplicity (multiIndexWord a) = a := by
   classical
   ext i
-  simp only [wordMultiplicity, Finset.sum_apply, multiIndexWord]
-  rw [(Fintype.equivFin (MultiIndexSlot a)).symm.sum_comp]
-  simp [MultiIndexSlot]
+  simp only [wordMultiplicity, multiIndexWord]
+  change (Finsupp.applyAddHom i) (∑ c : Fin (Fintype.card (MultiIndexSlot a)),
+    Finsupp.single (((Fintype.equivFin (MultiIndexSlot a)).symm c).1) 1) = a i
+  rw [map_sum]
+  calc
+    ∑ c : Fin (Fintype.card (MultiIndexSlot a)),
+        (Finsupp.applyAddHom i)
+          (Finsupp.single (((Fintype.equivFin (MultiIndexSlot a)).symm c).1) 1) =
+      ∑ s : MultiIndexSlot a, (Finsupp.single s.1 1) i := by
+        simpa using ((Fintype.equivFin (MultiIndexSlot a)).symm.sum_comp
+          (fun s : MultiIndexSlot a ↦ (Finsupp.single s.1 1) i))
+    _ = a i := by
+      rw [Fintype.sum_sigma]
+      simp [Finsupp.single_apply]
 
 /-- The continuous mixed-partial observation indexed by a coordinate multi-index. -/
 def multiIndexJetEvalCLM {d : ℕ} (x : Fin d → ℂ) (a : Fin d →₀ ℕ) :
