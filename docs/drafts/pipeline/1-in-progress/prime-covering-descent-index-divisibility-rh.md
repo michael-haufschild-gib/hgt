@@ -391,3 +391,36 @@ Next actions: (1) paper-prove T4 (short); (2) window-model Lean batch: T4's alge
 `O/(A)` jet machinery shared with T1; (3) construct the dyadic-step exact sequence candidate on
 paper and attack it hostilely (does the decimation act on the IDEAL (A, C_scale) or only on C's
 coefficients? — the fracture point to find first).
+
+### T4 — complete proof (first pass, 2026-07-18)
+
+Shrink the neighborhood `U` of `closure(Omega)` so that: (i) `A*C` has finitely many zeros in
+`U` (isolated zeros + compactness), (ii) every common zero of `(A, C)` in `U` lies in `Omega`
+(possible since there are none on `∂Omega`; discard an outer shell containing any others).
+Let `{(z_j, a_j, c_j)}` be the common zeros in `Omega` with their orders and
+`G(z) := prod_j (z - z_j)^{min(a_j, c_j)}`.
+
+1. `A_1 := A/G` and `C_1 := C/G` are holomorphic on `U` (at `z_j`, `G`'s order `min(a_j,c_j)`
+   is at most `a_j` resp. `c_j`; removable singularities), and `(A_1, C_1)` have NO common
+   zeros in `U`: at `z_j` one of the two has order exactly `0` after division (whichever
+   attained the min... if `a_j = c_j` both become nonzero? no: both orders drop by
+   `min = a_j = c_j`, both become nonzero — fine, even better); away from the `z_j` a common
+   zero of `(A_1, C_1)` would be a common zero of `(A, C)` in `U \ Omega` — excluded by (ii).
+2. **Hermite--Bezout.** `A_1` has finitely many zeros `w_i` in `U` with orders `d_i`, and
+   `C_1(w_i) ≠ 0` (no common zeros). Choose by Hermite interpolation a polynomial `f_2` whose
+   jet at each `w_i` agrees to order `d_i` with the jet of `1/C_1` (defined near `w_i` since
+   `C_1(w_i) ≠ 0`). Then `1 - C_1 f_2` vanishes to order `>= d_i` at each `w_i`, so
+   `f_1 := (1 - C_1 f_2)/A_1` is holomorphic on `U`, and `A_1 f_1 + C_1 f_2 = 1`.
+3. **Ideal equality.** Multiplying by `G*h` (`h in O(Omega)` arbitrary):
+   `G*h = A*(f_1 h) + C*(f_2 h)`, so `(G) ⊆ (A, C)` in `O(Omega)`; conversely `G | A` and
+   `G | C` give `(A, C) ⊆ (G)`. Hence `O(Omega)/(A, C) = O(Omega)/(G)`.
+4. **Dimension.** The jet map `O(Omega) -> directSum_j C[z]/((z - z_j)^{min_j})` is surjective
+   (polynomial Hermite interpolation) with kernel exactly `G * O(Omega)` (a function vanishing
+   to order `min_j` at every `z_j` divided by `G` has removable singularities). Therefore
+   `dim O(Omega)/(A, C) = sum_j min(a_j, c_j)`. QED
+
+Label: `[PROVED HERE, first pass — pending fresh-context referee before promotion]`. Note the
+proof nowhere uses properties of Xi or the dyadic source beyond holomorphy near the closed box
+and boundary nonvanishing; the instantiated identities `dim O/(A) = M(T)`,
+`dim O/(A,C) = P(T)` then follow from the formalized order law `ord_C = ord_A - 1` on the Xi
+box divisor (census card input) plus T4.
