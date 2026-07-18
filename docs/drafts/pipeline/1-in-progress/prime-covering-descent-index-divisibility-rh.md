@@ -340,3 +340,54 @@ LITERATURE IMPORT and one sharp new instantiation core.**
    mathematics); (gamma) horizontal-shift ratio normalizations `xi(s)/xi(s+delta)` with
    polynomial decay compensators (branch bookkeeping on boxes). This gap is where the lane's
    next Gate-2/Gate-4 cycle lives.
+
+## 2026-07-18 session 1 (cont. 5) — Gate-2 sharpened: the pair-ideal census (T4) and the
+## source-defined congruence
+
+**Resolution of the instantiation gap by domain finiteness.** The (Xi-decay x AP) class problem
+was an artifact of infinite strips. On a finite box the correct carrier is the PAIR-IDEAL
+QUOTIENT, and the kernel-dimension law is elementary:
+
+**[T4 — TO PROVE ON PAPER, elementary]** Let `Omega` be a bounded domain with rectifiable
+boundary, `A, C` holomorphic on a neighborhood of `closure(Omega)`, with finite zero divisors
+and no zeros of `A*C` on `∂Omega`. Then, with `(A, C)` the ideal generated in `O(Omega)` (or in
+`O(nbhd(closure Omega))`):
+
+> `dim_C O/(A, C) = sum over z in Omega of min(ord_A z, ord_C z)`.
+
+Proof route (no corona needed): local colength `(z^a*unit, z^c*unit) = (z^{min(a,c)})`; global
+reduction via `G :=` the gcd-divisor polynomial `prod (z - z_j)^{min_j}`, `A = G*A_1`,
+`C = G*C_1` with `(A_1, C_1)` common-zero-free on the compact closure; Hermite finite
+interpolation constructs `f_2` polynomial with `C_1*f_2 - 1` vanishing to `ord_{A_1}` at each
+`A_1`-zero, so `f_1 := (1 - C_1 f_2)/A_1` is holomorphic and `A_1 f_1 + C_1 f_2 = 1`; hence
+`(A, C) = (G)` and `dim O/(G) = deg G` by the T1-setup jet isomorphism. All steps are
+Lean-grade elementary complex analysis / linear algebra.
+
+**Instantiation.** With `A` = shifted Xi on the census box and
+`C = dyadicSharpPrimeCancelledSource` (formalized order law: `ord_C = ord_A - 1` at every
+`A`-zero; extra `C`-zeros have `A ≠ 0`, contributing `min = 0`):
+
+> `dim O/(A) = boxOrderSum = M(T)`  and  `dim O/(A, C) = sum(m-1) = P(T)`.
+
+Both are dimensions of quotients DEFINED from the pair of source functions alone — no Xi zero
+enumeration enters either definition. This repairs the census card's recorded defect ("the Lean
+object `cancelledSourceCommonCensusH` is not yet a source boundary invariant: it evaluates the
+explicit cancelled source at the target-defined Xi box points"): the pair-ideal quotient IS the
+source boundary invariant, and the target-sampled sum is the THEOREM about it (T4), not its
+definition.
+
+**Sharpened remaining core (the RH-bearing congruence, now fully source-typed):**
+
+> `[OPEN CORE]` Prove `dim O/(A) ≡ dim O/(A, C) (mod 2^k)` at height-adapted depths — a
+> congruence between two ideal-quotient dimensions — from the arithmetic structure of the pair,
+> WITHOUT computing either dimension. Design guardrails: T1-T3 forbid any symmetry/covariance
+> transport; the collision analysis requires the mechanism to be semicontinuous-integer-valued
+> (ideal-quotient dimensions are); the dyadic decimation
+> `p_j(N) = p_{j-2}(4N)` acting on the modules `O/(A, C_scale)` across adjacent dyadic scales is
+> the designated candidate: seek an exact sequence of pair-ideal modules across one dyadic step
+> whose alternating dimension sum is divisible by 2, iterated to depth k.
+
+Next actions: (1) paper-prove T4 (short); (2) window-model Lean batch: T4's algebra + the
+`O/(A)` jet machinery shared with T1; (3) construct the dyadic-step exact sequence candidate on
+paper and attack it hostilely (does the decimation act on the IDEAL (A, C_scale) or only on C's
+coefficients? — the fracture point to find first).
