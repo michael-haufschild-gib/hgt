@@ -1669,3 +1669,49 @@ source-pointwise h(c) determine mu_k?); (ii) formulate the band-majorization sta
 exactly and Gate-3 it (the majorization is level-stable off-diagonal data vs signed
 continuum — check against the transparency catalogue and the classical density-theorem
 literature); (iii) referee cont. 38-39; (iv) queue: analytic-T4; ST1; promotion batch.
+
+## 2026-07-18 session 2 (cont. 40) — N=2 collapse verified; the separation-radius question
+## carries the certificate; the PERIMETER THEOREM closes the arithmetic side; lemma repaired
+
+**[MOMENT MINORS — VERIFIED]** Newton chain: `mu_k = sum_r (-1)^r C(2k,r) p_r p_{2k-r}` —
+every Stieltjes minor is an explicit polynomial in source boundary integrals. **N=2 COLLAPSE
+(verified):** for an isolated pair the full Stieltjes tower ⟺ `mu_1 >= 0` EXACTLY (`mu_k =
+2^{2k+1} m^2 e^k`, rank-1 relations; unshifted Hankel unconditionally PSD; the shift carries
+everything). General N: at most `N(N-1)/2` irreducible inequalities per box; variety
+membership automatic. CAVEAT (verified): on-line points do NOT drop algebraically (`mu_1 =
+-8 d^2 m^2 + 4 m m_s (s^2 - d^2)` — the cross term masks for `|s| > d`); they drop only
+GEOMETRICALLY via the separation theorem. When isolation succeeds: the ENTIRE certificate is
+ONE source-computable number `mu_1 = 2(p_0 p_2 - p_1^2)` per box. **[THE NEW CARRIER — a
+GEOMETRIC question]** Quantify the separation radius vs d: does the innermost-box descent
+always achieve pair isolation before the Jensen bound saturates? Discreteness-and-counting in
+character — outside every killed mechanism class. This single comparison now carries the
+whole certificate.
+
+**[PERIMETER THEOREM — drafted, referee queued]** Band-majorization Gate-3: REDUCES-TO-KNOWN
+(exact PNT-order cancellation `A + C + K = 0`; residue = psi-error autocorrelation; band
+growth EXACTLY `e^{2dL}`; two-sided dictionary with von Koch in bands; any functional of band
+masses factors through `sup|beta - 1/2|`). PERIMETER: every RH-certificate expressible through
+the band-mass sequence of nu_sub is classically equivalent to the zero-free-region/psi-error
+hierarchy; the faces NOT factoring through bands are exactly the lambda=0 normalizer and the
+cross-band Stieltjes moments (the per-box analytic positivity). The arithmetic exploration is
+CLOSED with a proven boundary.
+
+**[REFEREE cont. 38-39 — verdicts applied]** (i) nu power-spectrum chain confirmed. (ii)
+LEMMA REPAIRED: same-prime sites `lambda = k log p` carry infinitely many pairs — weight
+`(log p)^2 p^{-k/2}/(p-1)`, geometrically convergent, NEVER exactly stabilizing; correct
+statement: all DIVERGENT level motion at lambda = 0; cross-prime sites exactly stabilize
+(unique reduced fraction); same-prime aggregate tail `O(S^{-1/2} log^2 S)`. (iii) collision
+identity re-derived from scratch, confirmed (unified `t = 1/(2(c^2+e))`). (iv) moment
+criterion confirmed + clause added: the mu_1-kill is rank-2-specific; mixed configurations
+fail at a higher minor (determinacy pole argument). (v) the 2x2-minor identification
+confirmed symbolically at generic N.
+
+**[NEXT]** (1) THE SEPARATION-RADIUS COMPARISON (the certificate's carrier): formalize the
+descent — given a hypothetical off-line zero at height gamma, displacement d, the innermost
+admissible box must contain ONLY the pair; obstructors are on-line zeros within height-window
+h of gamma; the descent shrinks h; discreteness guarantees isolation for SOME h > 0 — but
+admissibility also demands w > b_min - 1/2-type bounds and generic edges; adjudicate whether
+isolation is UNCONDITIONAL (pure discreteness — then RH-per-box literally reduces to
+mu_1 >= 0 per isolated box, i.e. the innermost-box mu_1 is the program's FINAL OBJECT) or
+carries a hidden density/repulsion demand. (2) Referee the perimeter theorem. (3) Queue:
+analytic-T4; ST1; promotion batch (Hamiltonian/termination, separation, T4 chain).
