@@ -737,3 +737,39 @@ whether the crossing rules are source-derivable (local PF monodromy is universal
 whether the reference germ can be taken in the zero-free region Re s > 1 (source-certifiable
 empty box — M-type trivially). If both hold, the remaining content is exactly the ENTRY
 bookkeeping at box boundaries — state it and interrogate.
+
+## 2026-07-18 session 1 (cont. 14) — germ conditions pass; entry bookkeeping type-transparent;
+## SEVEN-REPRESENTATION STABILITY of the irreducible core; pivot designated
+
+**[GERM VERDICTS]** (A) Picard–Lefschetz crossing rules: universal vanishing-cycle data,
+divisor-free; crossing TYPE readable from subresultant jets at the wall (source-computable) —
+PASSES. (B) Reference germ: `Re s > 1` boxes are formally zero-free (Euler product /
+mathlib Nonvanishing), trivially M-type — PASSES.
+
+**[ENTRY BOOKKEEPING — TYPE-TRANSPARENT, terminates in the formalized collision no-go]** On a
+line-symmetric box, an off-line mirror pair enters as a symmetric DOUBLE boundary event; an
+on-line zero as a SINGLE line event. The bookkeeping faithfully records event types; forbidding
+doubles IS RH; and distinguishing a double event from two singles through boundary data is
+exactly the off-line-pair vs on-line-double configuration of the formalized collision
+degeneracy no-go (bounded scalar boundary readers blind; verified-height lane). The PF
+wall-crossing frame is therefore EQUIVALENT to the prior faces, not a new producer.
+
+**[STRUCTURAL FINDING — stability of the core]** Seven independent representations
+(subresultant census, pair-ideal congruence, Rees finite-section, bigraded Koszul,
+derivative-pair discriminant, M-curve periods, PF wall-crossing) each terminate, by proved
+no-gos, at the same irreducible invariant: one Z/2 bit per potential off-line mirror pair,
+invisible to continuous boundary readers, homotopy invariants, symmetry/covariance transport
+(T1-T3), abelian windings (T2), period reality (cont. 13), and event bookkeeping (this
+section). This representation-stability is itself a theorem-shaped fact about the search
+space; the mechanism classes it excludes are exactly the analytic-transport toolbox.
+
+**[SURVIVING UNTOUCHED FACES — pivot designated]**
+1. Spin/metaplectic: the corpus's own backlog card `moonshot-spinor-half-frobenius.md`
+   (metaplectic sqrt-Frobenius, w_2 obstruction, Re = 1/2 fixed locus) — the theta
+   characteristic/spin structure IS the sign datum Thomae needs (cont. 12); FIRST pivot target.
+2. Waldspurger / half-integral weight: value-level square roots of central L-data (literature
+   audit: unexploited).
+3. Differential-algebraic face (Hurwitz FE-Schwarz rank-two circuit etc.) — partially owned by
+   concurrent lanes; coordinate before entering.
+Next session: Gate-1 audit of the moonshot-spinor card + external metaplectic/spin literature;
+plus the T4 Lean batch (plan at cont. 6+) and referee passes for cont. 11-14 derivations.
