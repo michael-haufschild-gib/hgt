@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.GaussianEvenCarrier
 import GaloisForLFunctions.HTGeometry.HermiteOrthogonality
 import GaloisForLFunctions.HTGeometry.TrialSpanConcentration
+import GaloisForLFunctions.HTGeometry.PositiveFormTrialSpan
 
 /-!
 # The Hermite family inside the even prolate carrier
@@ -93,6 +94,11 @@ def hermiteEvenUnit (j : ℕ) : evenSubspace := ((‖hermiteEven j‖ : ℂ))⁻
 
 theorem norm_hermiteEvenUnit (j : ℕ) : ‖hermiteEvenUnit j‖ = 1 :=
   norm_smul_inv_norm (hermiteEven_ne_zero j)
+
+/-- The normalized step-four Hermite vectors are still Fourier-fixed. -/
+theorem evenFourierTransform_hermiteEvenUnit (j : ℕ) :
+    evenFourierTransform (hermiteEvenUnit j) = hermiteEvenUnit j := by
+  rw [hermiteEvenUnit, map_smul, evenFourierTransform_hermiteEven]
 
 theorem inner_hermiteEven_eq_zero {i j : ℕ} (hij : i ≠ j) :
     inner ℂ (hermiteEven i) (hermiteEven j) = 0 := by
@@ -217,8 +223,8 @@ truncation error. -/
 theorem norm_hermiteEvenUnit_sub_timeBand_le (a : ℝ) (j : ℕ) :
     ‖hermiteEvenUnit j - evenTimeBandFourier a (hermiteEvenUnit j)‖
       ≤ 2 * ‖hermiteEvenUnit j - evenIndicatorCutoff a (hermiteEvenUnit j)‖ := by
-  have hfix : evenFourierTransform (hermiteEvenUnit j) = hermiteEvenUnit j := by
-    rw [hermiteEvenUnit, map_smul, evenFourierTransform_hermiteEven]
+  have hfix : evenFourierTransform (hermiteEvenUnit j) = hermiteEvenUnit j :=
+    evenFourierTransform_hermiteEvenUnit j
   rw [evenTimeBandFourier_apply_eq]
   exact ContinuousLinearMap.norm_sub_proj_unitary_proj_le
     (fun x => evenFourierTransform_isometry x)
@@ -254,6 +260,67 @@ theorem evenProlateLeakageValue_le_of_hermite_trial (a : ℝ) (n : ℕ) {η : �
       = (1 - Real.sqrt ((n : ℝ) + 1) * (2 * η)) ^ 2 := by ring
   rw [hfinal]
   exact hmain
+
+/-! ## The sharp quadratic trial-space bound -/
+
+theorem evenProlateLeakage_symmetric (a : ℝ) (x y : evenSubspace) :
+    inner ℂ (evenProlateLeakage a x) y = inner ℂ x (evenProlateLeakage a y) :=
+  (evenProlateLeakage_isPositive a).isSymmetric x y
+
+theorem re_inner_evenProlateLeakage (a : ℝ) (f : evenSubspace) :
+    RCLike.re (inner ℂ (evenProlateLeakage a f) f)
+      = ‖f‖ ^ 2 - ‖evenTimeBandFourier a f‖ ^ 2 := by
+  rw [evenProlateLeakage_inner_eq, RCLike.re_to_complex, Complex.ofReal_re]
+
+theorem re_inner_evenProlateLeakage_nonneg (a : ℝ) (f : evenSubspace) :
+    0 ≤ RCLike.re (inner ℂ (evenProlateLeakage a f) f) := by
+  have h := (evenProlateLeakage_isPositive a).2 f
+  rwa [ContinuousLinearMap.reApplyInnerSelf_apply] at h
+
+/-- **The quadratic per-vector leakage bound.**  A Fourier-fixed vector loses at most five times
+the SQUARE of its truncation error under the compressed block.  Unlike the norm form, this bound
+survives aggregation to a span without degrading to a linear one. -/
+theorem re_inner_evenProlateLeakage_le (a : ℝ) {g : evenSubspace}
+    (hfix : evenFourierTransform g = g) :
+    RCLike.re (inner ℂ (evenProlateLeakage a g) g)
+      ≤ 5 * ‖g - evenIndicatorCutoff a g‖ ^ 2 := by
+  have hpyth := ContinuousLinearMap.norm_sq_eq_of_isIdempotent_symmetric
+    (evenIndicatorCutoff_apply_apply a) (evenIndicatorCutoff_symmetric a)
+  have hpy := hpyth g
+  have hmain := ContinuousLinearMap.norm_sq_proj_unitary_proj_ge
+    (fun x => evenFourierTransform_isometry x) hpyth hfix
+  rw [re_inner_evenProlateLeakage, evenTimeBandFourier_apply_eq]
+  linarith
+
+/-- **The leakage of the true compressed Fourier block is bounded by the squared Hermite tails.**
+For each fixed index this is the sharp shape: quadratic in the truncation error, with only a
+linear-in-index number of terms. -/
+theorem evenProlateLeakageValue_le_hermite_tail_sq (a : ℝ) (n : ℕ) :
+    evenProlateLeakageValue a n
+      ≤ ∑ k : Fin (n + 1),
+          5 * ‖hermiteEvenUnit (k : ℕ) - evenIndicatorCutoff a (hermiteEvenUnit (k : ℕ))‖ ^ 2 := by
+  set g : Fin (n + 1) → evenSubspace := fun j => hermiteEvenUnit (j : ℕ) with hgdef
+  have hg : Orthonormal ℂ g := orthonormal_hermiteEvenUnit (n + 1)
+  have hdim : n < Module.finrank ℂ (Submodule.span ℂ (Set.range g)) := by
+    rw [ContinuousLinearMap.finrank_span_orthonormal hg]
+    omega
+  refine evenProlateLeakageValue_le_of_form_trial a n (Submodule.span ℂ (Set.range g)) hdim ?_
+  intro f hf
+  have htrace := ContinuousLinearMap.re_inner_apply_self_le_of_orthonormal_span hg
+    (evenProlateLeakage a) (evenProlateLeakage_symmetric a)
+    (re_inner_evenProlateLeakage_nonneg a) hf
+  have hdiag : ∀ k : Fin (n + 1),
+      RCLike.re (inner ℂ (evenProlateLeakage a (g k)) (g k))
+        ≤ 5 * ‖g k - evenIndicatorCutoff a (g k)‖ ^ 2 := by
+    intro k
+    exact re_inner_evenProlateLeakage_le a (evenFourierTransform_hermiteEvenUnit (k : ℕ))
+  have hsum : ∑ k : Fin (n + 1), RCLike.re (inner ℂ (evenProlateLeakage a (g k)) (g k))
+      ≤ ∑ k : Fin (n + 1), 5 * ‖g k - evenIndicatorCutoff a (g k)‖ ^ 2 :=
+    Finset.sum_le_sum fun k _ => hdiag k
+  have hform : RCLike.re (inner ℂ (evenProlateLeakage a f) f)
+      = ‖f‖ ^ 2 - ‖evenTimeBandFourier a f‖ ^ 2 := re_inner_evenProlateLeakage a f
+  rw [hform] at htrace
+  nlinarith [htrace, hsum, sq_nonneg ‖f‖, norm_nonneg f]
 
 /-! ## Every fixed leakage vanishes -/
 

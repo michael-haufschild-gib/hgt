@@ -766,3 +766,36 @@ bound of the shape `(√(n+1)·2τ_n(a))²` with `τ_n` the Hermite tail — so 
 question is whether the Hermite tail `∫_{|x|>a}|h_{4j}|²` can be made explicit enough to compare
 with `a^{2e_j+1}E(a)`, and, separately, what supplies the matching LOWER bound (no variational
 argument gives one; that needs the eigenfunction itself, or a trace/determinant identity).
+
+## L6a — the SHARP (quadratic) trial-space bound (DONE, 2026-07-18)
+
+The previous all-index bound was linear in the truncation error `τ` and therefore weaker than
+the `n = 0` Gaussian bound, which is quadratic.  Two additions fix that, at every index.
+
+`formal/GaloisForLFunctions/HTGeometry/PositiveFormTrialSpan.lean` (axiom-clean):
+
+* `re_inner_apply_self_le_of_orthonormal_span` — for a **positive symmetric** operator `A` and an
+  orthonormal family `g`, on the span
+  `⟪A f, f⟫ ≤ (∑ₖ ⟪A gₖ, gₖ⟫)·‖f‖²`, i.e. a positive semidefinite matrix has operator norm at
+  most its trace.  **No square is lost** — the whole point.  Mechanism: a positive symmetric `A`
+  makes `⟪x,y⟫_A = ⟪A x, y⟫` a `PreInnerProductSpace.Core`, for which mathlib supplies
+  Cauchy–Schwarz WITHOUT definiteness (`InnerProductSpace.Core.inner_mul_inner_self_le` accepts a
+  `PreInnerProductSpace.Core` instance) — then discrete Cauchy–Schwarz plus Bessel.
+
+Additions to `RHTower/HermiteEvenCarrier.lean` (axiom-clean):
+
+* `re_inner_evenProlateLeakage : ⟪Bₐ f, f⟫ = ‖f‖² − ‖Tₐ f‖²` and its nonnegativity.
+* `re_inner_evenProlateLeakage_le : ⟪Bₐ g, g⟫ ≤ 5‖g − Pₐ g‖²` for Fourier-fixed `g` — Pythagoras
+  plus the existing squared truncation estimate.  QUADRATIC in the tail.
+* **`evenProlateLeakageValue_le_hermite_tail_sq (a) (n) :`
+  `d_n(a) ≤ ∑_{k≤n} 5‖ĥ_{4k} − Pₐ ĥ_{4k}‖²`** — the sharp shape at every index: quadratic in the
+  tail, with only `n+1` terms and no `√(n+1)` loss.  This recovers the `n = 0` Gaussian bound's
+  shape and strictly improves the linear all-index bound proved earlier.
+
+WHAT REMAINS FOR THE ENVELOPE `upper`: an explicit bound on the normalized Hermite tail
+`‖ĥ_{4k} − Pₐ ĥ_{4k}‖² = ∫_{|x|>a}|ĥ_{4k}|²`.  The bound `|h_n(x)|² ≤ C_n e^{−πx²}` (from
+`exists_bound_poly_mul_gaussReal` applied to `p_n²`) plus a ray tail for `e^{−πx²}` gives an
+explicit `e^{−πa²}` rate; the polynomial absorption costs the factor `e^{−πa²}` versus the
+Gaussian's `e^{−2πa²}`, so a sharper polynomial×Gaussian tail (integration by parts on
+`∫_{Ioi a} x^{2k} e^{−2πx²}`) is what would recover the full exponent.  NOTE the two-sided
+envelope still needs the LOWER bound, which no variational argument supplies.

@@ -73,7 +73,7 @@ theorem log_one_add_lower {x : ℝ} (hx : 0 < x) : x - x ^ 2 / 2 < Real.log (1 +
       rw [hrw]
       positivity
   have h0 : Real.log (1 + (0 : ℝ)) - 0 + (0 : ℝ) ^ 2 / 2 = 0 := by norm_num
-  have := key Set.left_mem_Ici (Set.mem_Ici.2 hx.le) hx
+  have := key Set.self_mem_Ici (Set.mem_Ici.2 hx.le) hx
   simp only [h0] at this
   linarith
 
@@ -169,6 +169,7 @@ theorem summable_logSub (hpos : ∀ m, 0 < a m) (hz : 0 < z) (hq : q < 1)
       rw [Real.log_inv] at h2
       have h3 : (1 - a m * z)⁻¹ - 1 = a m * z / (1 - a m * z) := by
         field_simp
+        ring
       rw [h3] at h2
       refine h2.trans ?_
       apply div_le_div_of_nonneg_left hx.le hdenq
@@ -298,13 +299,14 @@ theorem hasSum_logRatio {x : ℝ} (hx : |x| < 1) :
   set F : ℕ → ℝ := fun n => x ^ (n + 1) / (n + 1) - (-x) ^ (n + 1) / (n + 1) with hF
   have hinj : Function.Injective (fun j : ℕ => 2 * j) := by
     intro i j h
+    simp only at h
     omega
   have hzero : ∀ n ∉ Set.range (fun j : ℕ => 2 * j), F n = 0 := by
     intro n hn
     have hodd : ¬ Even n := by
       intro he
       obtain ⟨r, hr⟩ := he
-      exact hn ⟨r, by omega⟩
+      exact hn ⟨r, by simp only; omega⟩
     have heven : Even (n + 1) := by
       rcases Nat.even_or_odd n with h | h
       · exact absurd h hodd
@@ -328,13 +330,21 @@ theorem hasSum_logRatio {x : ℝ} (hx : |x| < 1) :
 theorem hasSum_logRatio_tail {x : ℝ} (hx : |x| < 1) :
     HasSum (fun k : ℕ => 2 * x ^ (2 * (k + 1) + 1) / (2 * (k + 1) + 1))
       (Real.log (1 + x) - Real.log (1 - x) - 2 * x) := by
-  have h := hasSum_logRatio hx
-  have hshift := (hasSum_nat_add_iff (f := fun j : ℕ => 2 * x ^ (2 * j + 1) / (2 * j + 1)) 1)
-  refine hshift.2 ?_
-  have h0 : (∑ i ∈ Finset.range 1, 2 * x ^ (2 * i + 1) / (2 * i + 1)) = 2 * x := by
-    simp
-  rw [h0]
-  simpa using h
+  set f : ℕ → ℝ := fun j => 2 * x ^ (2 * j + 1) / (2 * (j : ℝ) + 1) with hf
+  have h : HasSum f (Real.log (1 + x) - Real.log (1 - x)) := hasSum_logRatio hx
+  have h0 : (∑ i ∈ Finset.range 1, f i) = 2 * x := by
+    simp [hf]
+  have hshift : HasSum (fun n : ℕ => f (n + 1))
+      (Real.log (1 + x) - Real.log (1 - x) - 2 * x) := by
+    rw [hasSum_nat_add_iff (f := f) 1, h0]
+    simpa using h
+  have hfun : (fun n : ℕ => f (n + 1))
+      = fun k : ℕ => 2 * x ^ (2 * (k + 1) + 1) / (2 * ((k : ℝ) + 1) + 1) := by
+    funext n
+    simp only [hf]
+    push_cast
+    ring
+  rwa [hfun] at hshift
 
 /-- Each gap term is a strictly positive odd series. -/
 theorem gap_term_pos {x : ℝ} (hx0 : 0 < x) (hx1 : x < 1) :

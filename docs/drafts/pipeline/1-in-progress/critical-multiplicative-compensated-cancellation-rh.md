@@ -6357,6 +6357,14 @@ does not weaken its RH-equivalent strength.  The dependency-closed theorem and n
 are recorded in
 `2-fully-proven/not_new_scientific_knowledge/fcrj-corrected-response-saturation-law.md`.
 
+`[MONGE/TOTAL POSITIVITY RETIRED]` The centered full-cell Brownian kernel is inverse-Monge and has
+nonnegative ordered `2x2` minors exactly in the long-aperture chamber `c>=A/2`.  Nevertheless an
+exact clipped packet with `M=3,K=4` has opposite signs for its two symmetric endpoint-even
+one-prime Boolean curvatures inside that favorable chamber.  Thus variation diminution of the
+physical Gram does not orient `(AC28)`.  The sharp phase classification, symbolic physical
+counterexample, and positive survivor are recorded in
+`5-failed/brownian-monge-total-positivity-fcrj-provider.md`.
+
 No sectorwise absolute estimate is justified.  Without the exact common physical profile `W_h`,
 the primitive anchored response coordinates can be phase-aligned independently, so CRT
 conjugation and causal-color retention alone cannot improve the sector total-variation norm.  Any

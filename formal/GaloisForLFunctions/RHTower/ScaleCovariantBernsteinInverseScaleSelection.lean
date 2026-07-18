@@ -237,7 +237,12 @@ theorem exists_positive_halfOrder_inverseScaleAtomicPacket_of_transverse_neutral
   have hneutral : Tendsto
       (atomicBernsteinAmplitude (inverseScaleAtomicNode z R))
       cofinite (nhds 1) := by
-    have hmodel := tendsto_const_nhds.add hscaled
+    have hone : Tendsto (fun _ : I => (1 : ℝ)) cofinite (nhds 1) :=
+      tendsto_const_nhds
+    have hmodel : Tendsto
+        (fun i => 1 + HTGeometry.confocalDefect R (z i) / R)
+        cofinite (nhds 1) := by
+      simpa using hone.add hscaled
     apply hmodel.congr'
     filter_upwards with i
     rw [atomicBernsteinAmplitude, inverseScaleAtomicNode_eq_div,

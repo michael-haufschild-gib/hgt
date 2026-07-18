@@ -17,7 +17,7 @@ the reverse order, declaring a contradiction.
 ## Exact obstruction `[PROVED HERE]`
 
 With the preprint's notation translated as in
-`../2-fully-proven/needs-audit/liu-reciprocal-square-sandwich-positive-gap.md`,
+`../3-formalized/needs-audit/liu-reciprocal-square-sandwich-positive-gap.md`,
 the two bounds satisfy
 
 ```text
@@ -45,8 +45,16 @@ repair the contradiction.
 
 This route supplies no unconditional off-critical zero, no negative exact
 Weil-form sample, and no source-bearing Lean endpoint.  Formalizing the
-positive-gap identity would certify the failure mechanism but would not move
-the RH-false frontier, so no Lean build is authorized for this dead route.
+positive-gap identity certifies the failure mechanism but does not move
+the RH-false frontier.
+
+**Update.** The positive-gap identity has since been formalized after all, in
+`formal/GaloisForLFunctions/HTGeometry/LiuReciprocalSquareSandwich.lean`
+(`HTGeometry.LiuSandwich.liu_sandwich`, `not_upperBd_le_lowerBd`,
+`upperBd_sub_lowerBd_eq_oddSeries`), unconditionally and axiom-clean.  The original refusal was a
+cost judgement, and the cost turned out to be small.  The verdict above is unchanged: the Lean
+surface is audit-side only and is not source-bearing for RH.  It does not reopen this route; the
+re-entry condition below still stands.
 
 ## Re-entry condition
 
