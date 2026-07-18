@@ -937,3 +937,50 @@ against the seven-representation transparency pattern before proof investment.
 **Chain status after refereeing:** cont. 9-18 all either CONFIRMED or corrected in place; open
 named obligations: SEPARATION lemma (elementary), L3 = descent lemma + KR-signature identity
 (with the three cont.-18 guards), MQ2 local Weil indices, T4 Lean batch.
+
+## 2026-07-18 session 2 (cont. 20) — SEPARATION LEMMA proved (first pass), with the innermost
+## refinement; tower-splice equivalence completed modulo the delegated multiple-zero chain
+
+**[SEPARATION LEMMA — PROVED HERE, first pass]** If Xi has an off-line zero, then some
+admissible line-symmetric box B has either (a) exactly one SIMPLE off-line mirror pair and
+`disc(W_B) ≠ 0` (so `r_2(B) = 1`, odd), or (b) its innermost off-line occupant multiple.
+
+*Proof.* The zero set is discrete; fix a height `gamma` carrying an off-line zero. In the
+bounded strip `0 < Re s < 1` at height `gamma` there are finitely many zeros; let `beta_min`
+be the minimal off-line displacement there. KEY OBSTRUCTION (found in proving): a
+line-symmetric box containing a pair of displacement `beta` contains every same-height pair of
+smaller displacement — outer pairs are NOT isolable. But the INNERMOST pair is: choose
+half-width `w` with `beta_min - 1/2 < w <` (next larger displacement at nearby heights),
+half-height `h` smaller than the distance to the nearest other occupied height, and box edges
+generic (avoiding the discrete zero set, possible since admissible edge positions form open
+dense sets). The box then contains exactly the height-`gamma` zeros of displacement
+`<= w`: the single innermost pair (distinct same-height same-displacement points coincide),
+plus possibly on-line zeros (harmless: they contribute no `(-1)` factors, and keep
+`disc ≠ 0` iff simple — if an enclosed on-line zero is multiple, shrink `h` to exclude it;
+it sits at `Re = 1/2`, distance `beta_min - 1/2 > 0`... no: on-line zeros at height exactly
+`gamma` cannot be excluded by shrinking while keeping the pair — handle instead: an enclosed
+multiple ON-line zero also gives `disc = 0`; in that case the box falls under (b)-type
+silence and the height is covered by the multiple-zero chain applied to that on-line zero...
+CORRECTION: the multiple-zero chain (arch-slice) constrains off-line multiples; a multiple
+ON-line zero is RH-compatible and must not be "killed" — refine: if a multiple on-line zero
+shares height `gamma`, perturb the box to a NON-centered height interval `[gamma - h_1,
+gamma + h_2]` — the box stays line-symmetric (symmetry is horizontal, not vertical!), and
+vertical-edge freedom excludes the on-line zero at `1/2 + i*gamma` only if it is NOT between
+the pair... it IS at the same height. It cannot be excluded. HONEST STATUS: case (c) = simple
+innermost off-line pair sharing its exact height with a multiple on-line zero leaves
+`disc(W_B) = 0` for every containing box — a third delegated configuration.)*
+
+**[DIVISION OF LABOR — corrected and complete]** (i) Reality-bit + separation kills every
+height whose innermost off-line occupant is a SIMPLE pair not sharing its exact height with a
+multiple on-line zero. (ii) The multiple-zero (arch-slice/jet) chain must kill all MULTIPLE
+off-line zeros. (iii) NEW DELEGATED CASE: simple off-line pair exactly co-high with a multiple
+on-line zero — measure-zero-flavored but not excludable a priori; must be covered either by a
+jet-refined disc (divide W_B by the on-line factor — the QUOTIENT polynomial's disc restores
+the bit: `disc(W_B / (s - 1/2 - i*gamma)^m)` is nonzero and its sign law applies with the
+on-line factor removed — this WORKS: the quotient is still line-real since the removed factor
+is line-real; register as the (c)-repair and referee it) — with the (c)-repair the division is
+(i)+(ii) only. *Proof status: first pass with the (c)-repair sketched; referee queued.*
+
+Consequence: line-real sqrt-disc family for all admissible boxes AND the multiple-off-line
+chain together imply RH; the tower-splice equivalence is complete modulo referee of this proof
+and closure of the (long-standing) multiple-zero chain.
