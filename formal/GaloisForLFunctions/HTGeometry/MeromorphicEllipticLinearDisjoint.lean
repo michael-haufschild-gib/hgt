@@ -166,13 +166,13 @@ theorem ellipticMeroFields_linearDisjoint
     rw [Finsupp.sum_mapRange_index (fun _ => by simp)]
     apply Finsupp.sum_congr
     intro i hi
-    exact IsScalarTower.algebraMap_smul ℂ (c i) ((A.val ∘ b) i)
+    exact IsScalarTower.algebraMap_smul B (c i) ((A.val ∘ b) i)
   have hcambient :
       Finsupp.linearCombination ℂ (A.val ∘ b) c = 0 :=
     hbaseChange.symm.trans hcrelation
   have hbambient : LinearIndependent ℂ (A.val ∘ b) :=
     b.linearIndependent.map' A.val.toLinearMap
-      (LinearMap.ker_eq_bot.mpr A.val.injective)
+      (LinearMap.ker_eq_bot_of_injective A.val.injective)
   exact hc0 ((linearIndependent_iff.mp hbambient) c hcambient)
 
 end

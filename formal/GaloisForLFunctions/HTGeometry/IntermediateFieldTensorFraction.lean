@@ -1,4 +1,6 @@
 import Mathlib.FieldTheory.LinearDisjoint
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Ring
 
 /-!
 # Fraction presentation of a compositum
@@ -64,8 +66,10 @@ theorem exists_tensor_fraction_of_mem_sup
   · intro y z hy hz hyRep hzRep
     obtain ⟨Ny, Dy, hDy, hyEq⟩ := hyRep
     obtain ⟨Nz, Dz, hDz, hzEq⟩ := hzRep
-    have hmuDy : mu Dy ≠ 0 := hmul.ne hDy
-    have hmuDz : mu Dz ≠ 0 := hmul.ne hDz
+    have hmuDy : mu Dy ≠ 0 := by
+      simpa only [map_zero] using hmul.ne hDy
+    have hmuDz : mu Dz ≠ 0 := by
+      simpa only [map_zero] using hmul.ne hDz
     have hden : Dy * Dz ≠ 0 := by
       intro hzero
       apply mul_ne_zero hmuDy hmuDz
@@ -83,7 +87,8 @@ theorem exists_tensor_fraction_of_mem_sup
     · refine ⟨0, 1, one_ne_zero, ?_⟩
       simp [hy0]
     · obtain ⟨N, D, hD, hEq⟩ := hyRep
-      have hmuD : mu D ≠ 0 := hmul.ne hD
+      have hmuD : mu D ≠ 0 := by
+        simpa only [map_zero] using hmul.ne hD
       have hmuN : mu N ≠ 0 := by
         intro hzero
         apply hy0
@@ -97,8 +102,10 @@ theorem exists_tensor_fraction_of_mem_sup
   · intro y z hy hz hyRep hzRep
     obtain ⟨Ny, Dy, hDy, hyEq⟩ := hyRep
     obtain ⟨Nz, Dz, hDz, hzEq⟩ := hzRep
-    have hmuDy : mu Dy ≠ 0 := hmul.ne hDy
-    have hmuDz : mu Dz ≠ 0 := hmul.ne hDz
+    have hmuDy : mu Dy ≠ 0 := by
+      simpa only [map_zero] using hmul.ne hDy
+    have hmuDz : mu Dz ≠ 0 := by
+      simpa only [map_zero] using hmul.ne hDz
     have hden : Dy * Dz ≠ 0 := by
       intro hzero
       apply mul_ne_zero hmuDy hmuDz

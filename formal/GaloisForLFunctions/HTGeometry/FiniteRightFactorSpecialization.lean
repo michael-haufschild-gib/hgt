@@ -137,8 +137,10 @@ theorem exists_fg_right_subalgebra_lifts_pair
     Algebra.TensorProduct.map (AlgHom.id C A)
       (Subalgebra.inclusion (show S ≤ T from le_sup_right)) yS
   refine ⟨T, hT, xT, yT, ?_, ?_⟩
-  · rw [xT, tensorRightSubalgebraMap_map_inclusion, hxR]
-  · rw [yT, tensorRightSubalgebraMap_map_inclusion, hyS]
+  · dsimp only [xT]
+    rw [tensorRightSubalgebraMap_map_inclusion, hxR]
+  · dsimp only [yT]
+    rw [tensorRightSubalgebraMap_map_inclusion, hyS]
 
 /-- A finitely generated subalgebra carries the finite-type instance required by algebraic
 specialization. -/

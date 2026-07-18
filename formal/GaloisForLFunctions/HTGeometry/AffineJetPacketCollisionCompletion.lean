@@ -2,6 +2,8 @@ import GaloisForLFunctions.HTGeometry.BaireGenericAvoidance
 import GaloisForLFunctions.HTGeometry.AffineCollisionMatroid
 import GaloisForLFunctions.HTGeometry.MultivariateHermiteCRT
 import GaloisForLFunctions.HTGeometry.MultivariateEntireCompactOpen
+import GaloisForLFunctions.HTGeometry.AffineIteratedFDeriv
+import GaloisForLFunctions.HTGeometry.ContinuousPolynomialDefect
 import GaloisForLFunctions.HTGeometry.PolynomialEvaluationLemma
 
 /-!

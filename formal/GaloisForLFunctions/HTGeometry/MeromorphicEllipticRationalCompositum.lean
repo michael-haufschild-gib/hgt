@@ -215,6 +215,7 @@ theorem addTranslationMeroAlgEquiv_symm_apply
     (q : ℂ) (x : meroField (Set.univ : Set ℂ)) :
     (addTranslationMeroAlgEquiv q).symm x =
       addTranslationMeroAlgEquiv (-q) x := by
+  symm
   apply (addTranslationMeroAlgEquiv q).injective
   rw [(addTranslationMeroAlgEquiv q).apply_symm_apply]
   change addTranslationMeroEquiv q (addTranslationMeroEquiv (-q) x) = x

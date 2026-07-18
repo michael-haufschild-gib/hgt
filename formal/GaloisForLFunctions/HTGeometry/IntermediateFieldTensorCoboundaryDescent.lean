@@ -57,8 +57,10 @@ theorem exists_left_coboundary_of_mem_intermediateField_sup
     intermediateFieldTensorMulMap_injective_of_linearDisjoint C E A B hAB
   obtain ⟨N, D, hD, hgfrac⟩ :=
     exists_tensor_fraction_of_mem_sup C E A B hmu hg
-  have hmuD : mu D ≠ 0 := hmu.ne hD
-  have hTmuD : T (mu D) ≠ 0 := T.injective.ne hmuD
+  have hmuD : mu D ≠ 0 := by
+    simpa only [map_zero] using hmu.ne hD
+  have hTmuD : T (mu D) ≠ 0 := by
+    simpa only [map_zero] using T.injective.ne hmuD
   have hquotient :
       T (mu N) / T (mu D) - mu N / mu D = (a : E) := by
     calc

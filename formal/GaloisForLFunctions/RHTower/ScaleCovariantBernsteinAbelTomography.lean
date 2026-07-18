@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ScaleCovariantBernsteinPurityJacobian
-import GaloisForLFunctions.RHTower.ScaleCovariantBernsteinInverseScaleSelection
+import GaloisForLFunctions.RHTower.ScaleCovariantBernsteinRpowSpectrum
 
 /-!
 # Scale-covariant Bernstein--Abel tomography
@@ -59,6 +59,19 @@ structure ScaleCovariantBernsteinAbelTomographyLaw
             scaleCovariantBernsteinAbelField m R t)
           (nhdsWithin (1 / B ^ 2) (Set.Ico 0 (1 / B ^ 2)))
           (nhds (Real.sqrt Real.pi * L))
+  /-- The same selected amplitude controls the exact nth-root spectrum of every real-p packet
+  energy. -/
+  rpow_spectrum :
+    ∀ {R p : ℝ}, 2 * M < R → 1 ≤ p → ∀ {i0 : I}, (z i0).im ≠ 0 →
+      ∃ B : ℝ,
+        B = HTGeometry.confocalAmplitudeEnvelope (Set.range z) R ∧
+        1 < B ∧
+        Tendsto
+          (fun N : ℕ =>
+            finitePacketRpowEnergy
+                (atomicBernsteinPacket c (inverseScaleAtomicNode z R)) p N ^
+              ((N : ℝ)⁻¹))
+          atTop (nhds (B ^ p))
   /-- Unit Abel radius is exactly positivity of every occupied coordinate. -/
   exact_radical :
     ∀ {R : ℝ}, M < R →
@@ -106,6 +119,7 @@ theorem scaleCovariantBernsteinAbel_tomography
     source_noncritical := ?_
     atomic_realization := ?_
     finite_boundary_selection := ?_
+    rpow_spectrum := ?_
     exact_radical := ?_
     amplitude_recession := ?_
     abel_radius_recession := ?_ }
@@ -136,6 +150,9 @@ theorem scaleCovariantBernsteinAbel_tomography
       hc hbound hmoment hRpos (lt_trans zero_lt_one hB) hhalf
     exact ⟨D, B, beta, L, hBconf, hB, hbeta1, hbeta, hDne, hD, hDsub,
       hL, hLpos, hobs, habel⟩
+  · intro R p hR hp i0 hi0
+    exact exists_tendsto_inverseScaleAtomicBernsteinRpowEnergy
+      c z hc hz0 hzinj hcne hM hbound hR hp hreal hi0
   · intro R hRM
     rw [HTGeometry.confocalAbelRadius_eq_one_iff hSne hM hRM hSbound,
       HTGeometry.transverseDefectEnvelope_eq_zero_iff hSne hSbound]
