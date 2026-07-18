@@ -1354,3 +1354,30 @@ double-box refold (the repaired FE-true geometry) — rederive the fold identiti
 Delta form) as the next Lean batch — both are finite algebra + the Hadamard input;
 (c) the cone-certificate Gate-2 statement with transparency guard (the cone escapes
 analyticity — verify it also escapes the continuity catalogue, or locate the residual wall).
+
+## 2026-07-18 session 2 (cont. 31) — double-box refold verified (v-frame; height-amplified
+## defect); THIRD Lean module shipped (RankTwoPacketMomentIdentities)
+
+**[REFOLD — PROVED, sympy-certified]** The mirrored double box (xi-true `u -> -u` law): odd
+moments vanish IDENTICALLY (packet + edges); even moments double; the census lives in the EVEN
+sector where `v = u^2` collapses the quadruple to the pair `v_± = X0 ± iD`, `X0 = x0^2 - d^2 >
+0` automatic (from `x0 >= 1 > c > |d|`), `D = 2 x0 d`, mass 2m — with the SAME
+shadow+defect structure: `Delta_v = -4mD^2[[0,1],[1,3X0]]`, kernel defect `-16m x0^2 d^2
+(x0^2 - d^2)`. Structural gains: FE-true geometry (cont.-30 gap repaired); evenness HALVES the
+frame; the v-frame is the correct Stieltjes object; **NEW LEVER: the defect is
+HEIGHT-AMPLIFIED (∝ x0^2 d^2)** — feeds the c-cone/rate-domination hunt. Vertical edges: not
+eliminated, but odd-sector remainders cancel exactly and even-sector vertical terms are
+manifestly real. Honest transport: the analytic-reader no-go applies verbatim in v (g_e
+rational in v, analytic in e); the support-condition lesson stands. Double-box production
+core: `det H_v >= 0`, `h^v_jl = (2 pi i)^{-1} ∮ u^{2(j+l)+2} g du`; RH per box ⟺ `D = 0`.
+
+**[LEAN MODULE 3 — SHIPPED, verified by this lane]**
+`RHTower/RankTwoPacketMomentIdentities.lean` (20 theorems): `packetMoment`/`packetHankel`
+definitions, the exact identities `packetHankel = collisionShadow + hankelDefect`,
+`hankelDefect = -2 m d^2 [[0,1],[1,3 x0]]`, the determinant law
+`packetHankel_det_eq_mass_mul_window_mul_discrim` (with mathlib `discrim` for
+`W~ = (X-x0)^2 + d^2`), indefiniteness `packetHankel_det_neg` (`m ≠ 0, d ≠ 0 -> det < 0`),
+and the collision-PSD dichotomy `packetHankel_collision_posSemidef`. Single-module build
+clean (8475 jobs); `#print axioms` on all four capstones = `[propext, Classical.choice,
+Quot.sound]`. The blindness/Schur layer is now formal. (Batch agent left the commit pending on
+a build monitor; this lane verified and committed: build + axioms audit done here.)
