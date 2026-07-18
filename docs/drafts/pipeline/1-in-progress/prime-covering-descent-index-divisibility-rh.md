@@ -841,3 +841,34 @@ complex admit a sigma-action at all on the nose (his space is idele-class; sigma
 on the spectral side = inversion + twist on the group side — identify the exact involution);
 (ii) eta/Maslov corrections at fixed points must be computed, not assumed; (iii) the
 "arithmetic side" must be genuinely divisor-free (only prime/archimedean data).
+
+## 2026-07-18 session 1 (cont. 17) — hostile check (i) PASSES maximally: sigma on Meyer's
+## complex is on-the-nose AND equals adelic Fourier on the arithmetic wing
+
+**[VERIFIED + DERIVED (agent, first pass; referee queued)]** Meyer's model (math/0311468, Duke
+127): wings `H_+ = S(A_K)_{K^x}` embedded by `i_+ f = (Sf, JSFf)` (S = K^x-averaging, J =
+inversion `|x|^{-1} f(x^{-1})`, F = adelic Fourier) and `H_- = S(C_K)` diagonal; Poisson gives
+the glued complex; zeros = spectrum of the graded piece `pi_-` with multiplicity; explicit
+formula = Euler characteristic (Meyer's theorem). NEW derivation on top:
+- `sigma(f0, f1) := (J f1, J f0)` is bounded on the model, `sigma^2 = 1`, acts on characters by
+  `chi|.|^s -> chi^{-1}|.|^{1-s}` (trivial chi: exactly `s -> 1-s`); line reflection = sigma
+  composed with pointwise conjugation — also on the nose.
+- `sigma ∘ i_- = i_- ∘ J` (idele-class wing invariant, anomaly-free), and
+  `sigma ∘ i_+ = i_+ ∘ F` — on the adelic wing sigma IS the Fourier transform (uses `J^2 = 1`,
+  `F^2 = (-1)^*`, `S(-1)^* = S`, product formula). sigma preserves `H_+ + H_-` and both graded
+  pieces separately: the fixed-point analysis on the zero part is well-posed.
+- Metaplectic entry: half-density lift of `H_+` makes `F = rho_Weil(w)`, `w ∈ Mp` — the mu_8
+  Weil index attaches canonically and ONLY on the arithmetic wing. `sigma|_{H_+}^2 = 1` holds
+  on coinvariants — the metaplectic grading lives exactly in that quotient.
+- Literature: Meyer notes the spectral symmetries, no equivariant refinement; CCM math/0703392
+  cyclic version has no metaplectic grading; Burnol math/9902080 adjacent. TARGET REMAINS EMPTY.
+
+**[GATE-4 CONSTRUCTION TARGET — now concrete]** The sigma-equivariant metaplectic Lefschetz
+refinement of Meyer's complex: (L1) half-density lift of both wings; (L2) compute the
+sigma-eigenvalue (Maslov/Weil phase) per sigma-fixed character — the FIRST LEMMA (this is
+where `e^{±i*pi/4}`-type data per on-line zero enters, vs real contributions of swapped
+pairs); (L3) the equivariant trace identity: graded chi of sigma on the complex = arithmetic
+side with local Weil indices; (L4) the reciprocity/product-formula constraint as the global
+sign law; (L5) extract the on-line-count mod-8 law and splice into the census/tower chain.
+Referee queue: cont. 11-17 derivations. Then Lean strategy after paper closure (Gate 5
+discipline; the corpus seeds: OscillatorAlgebra.lean, Meyer-model formalization would be new).
