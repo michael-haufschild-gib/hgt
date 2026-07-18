@@ -1894,3 +1894,34 @@ Lean gaps (logged): (i) full-width-slab admissibility adapter (Re s = 1 edge via
 nonvanishing; Re s = 0 edge via FE reflection — both classical, formalizable); (ii) the
 production identity (the Bezoutian square — the open core above). The certificate chain is
 Lean-anchored except these two.
+
+## 2026-07-18 session 2 (cont. 46) — the defect IS the orientation energy; the square demand
+## relocates to ONE AREA INTEGRAL; module 6 makes the divisor half unconditional
+
+**[COLLISION VERDICT (ii) — with the structural prize]** The colligation Hankel=Gram holds
+only for the polar leg (real nodes free); direct transport is circular (node-reality IS RH at
+gamma). But the derivation yields the exact structure: on the mean-killed fiber,
+**`Bez = q_0 q_2 - q_1^2 = det G_herm - 2 q_0 * E_Xi(gamma)`** — the defect between the
+HERMITIAN Gram (conjugated pairing) and the BILINEAR Bezoutian is exactly the localized
+orientation energy (rank-one after mean-kill; verified: gap `8d^2 = 2 * 2 * 2d^2` on the
+model). Kill condition (c) fired for the circuit-only route (FE∘Schwarz reproduces the
+bilinear H — the known seam reflection-oddness — never the Hermitian G). **[SURVIVES — the
+relocation]** (a) RH at gamma ⟺ CAUCHY-SCHWARZ SATURATION of the germ pairing; (b) `G_herm`
+is source-evaluable WITHOUT the divisor via the dbar/Green identity:
+`∮_{∂S} conj(u) * u * tr ds = 2i [pi * sum m_j |u_j|^2 + ∫∫_S u * tr dA]` — boundary data
+plus ONE AREA INTEGRAL. **[NEXT EXACT QUESTION]** Derive the Green identity exactly and
+compute the h -> 0 germ of the area term `∫∫_S u * tr dA` (thin-slab area shrinking vs
+near-zero blow-up of the trace): a vanishing or signed germ converts
+`det G_herm >= 2 q_0 * E_Xi` into a boundary-computable inequality — **the square demand is
+now one area-integral germ**.
+
+**[LEAN MODULE 6 — SHIPPED, commit ee44d809]** `RHTower/SlabFullWidthAdmissibility.lean`
+(341 lines, 9 mains, axioms clean): XiC nonvanishing on/beyond the strip edges (thin over the
+corpus strip bound); full-width edge nonvanishing below the gap; the BAND-DODGE (`c` strictly
+between the fiber's max offset and 1/2 — unconditional SlabAdmissible without the literal
+c = 1/2 contour, so the FE reflection is unnecessary for transport); and the
+HYPOTHESIS-FREE capstones: `exists_germResidueTransport_unconditional`,
+`exists_slabContourGram_germ_unconditional`, `exists_slabContourGram_germ_eq_zero_iff`
+(boundary Gram germ = 0 iff the full height fiber is a single point),
+`tendsto_slabContourGram_unconditional`. **The certificate's divisor half is UNCONDITIONALLY
+formalized end to end; the chain is open ONLY at the production identity.**
