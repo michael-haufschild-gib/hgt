@@ -196,13 +196,13 @@ DAGs without repeating the audits.
   four-coordinate separation and its sharp lower bound inventoried; `WedgeFacetLowerBound` and
   `PPMatrixRankFormulaConsequences` already provide the exact uniform faithful and periodic-pencil
   layers, leaving the analytic realization defining intrinsic `htDim` and its equality to two
-- [ ] `bounded-relation-log-magnitude-hypertranscendence` — bounded-relation confinement HT,
-  private-denominator corollary, arbitrary-profile realization, and polynomial-profile corollary
-  inventoried; the live tree has unconditional private-prime confinement, a shifted inverse-prime
-  realization, generic ADE coefficient/balanced-atom machinery, and finite rational-coefficient
-  exponential separation, but still lacks the arbitrary distinct-algebraic-exponent /
-  algebraic-coefficient Lindemann--Weierstrass result, constant-field descent and transitivity,
-  the final confinement-to-HT assembly, and the card's full rational approximation theorem
+- [ ] `bounded-relation-log-magnitude-hypertranscendence` — the whole theorem surface is
+  Lean-proved: unconditional ADE normalization/balanced survival, bounded-relation and
+  private-prime confinement, finite Lindemann--Weierstrass separation, entire/full-support/HT
+  assembly for every algebraic unit phase, arbitrary positive superlinear private-prime profile
+  realization, and the corrected shifted `B*(n+1)^beta` value/first-/second-difference
+  asymptotics (including `1<beta<2`); exact leaf build and capstone axiom audit are green, leaving
+  only the serialized umbrella/index/lint gate before Stage 3
 - [ ] `charged-scalar-core-fixed-current-torsor` — all five theorem clauses are Lean-proved:
   `StableCoreFunctoriality`, `ScalarLogCurrentReconstruction`, `RatFuncScaleFixedField`,
   `ScalarDifferentialTorsor`, and `ScalarFiniteDifferentialTorsor` cover the fixed

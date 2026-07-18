@@ -134,13 +134,18 @@ theorem freeCoordinateTranslationEquiv_fixed_of_mem
     rw [map_mul, hx, hy]
   · exact hf
 
+/-- The coefficient family supported at one selected coordinate. -/
+def freeCoordinateSingleTranslationCoefficient
+    (C σ : Type*) [Field C] (i : σ) (c : C) : σ → C := by
+  classical
+  exact fun j ↦ if j = i then c else 0
+
 /-- Translation in one selected free coordinate. -/
 def freeCoordinateTranslationAt
     (C σ : Type*) [Field C] (i : σ) (c : C) :
     FreeCoordinateRationalField C σ ≃ₐ[C] FreeCoordinateRationalField C σ :=
-  by
-    classical
-    exact freeCoordinateTranslationEquiv C σ (fun j ↦ if j = i then c else 0)
+  freeCoordinateTranslationEquiv C σ
+    (freeCoordinateSingleTranslationCoefficient C σ i c)
 
 @[simp]
 theorem freeCoordinateTranslationAt_self
@@ -149,14 +154,14 @@ theorem freeCoordinateTranslationAt_self
       freeCoordinate C σ i +
         algebraMap C (FreeCoordinateRationalField C σ) c := by
   classical
-  simp [freeCoordinateTranslationAt]
+  simp [freeCoordinateTranslationAt, freeCoordinateSingleTranslationCoefficient]
 
 theorem freeCoordinateTranslationAt_of_ne
     {C σ : Type*} [Field C] {i j : σ} (hji : j ≠ i) (c : C) :
     freeCoordinateTranslationAt C σ i c (freeCoordinate C σ j) =
       freeCoordinate C σ j := by
   classical
-  simp [freeCoordinateTranslationAt, hji]
+  simp [freeCoordinateTranslationAt, freeCoordinateSingleTranslationCoefficient, hji]
 
 /-- The free coordinate family remains algebraically independent in its fraction field. -/
 theorem algebraicIndependent_freeCoordinate
@@ -223,10 +228,11 @@ def freeCoordinateUnitTranslationOverComplement
       (fun y ↦ by
         change freeCoordinateTranslationAt C σ i 1 y.1 = y.1
         apply freeCoordinateTranslationEquiv_fixed_of_mem
-          (c := fun j ↦ if j = i then (1 : C) else 0) ({i}ᶜ : Set σ)
+          (c := freeCoordinateSingleTranslationCoefficient C σ i 1)
+          ({i}ᶜ : Set σ)
         · intro j hj
           simp only [Set.mem_compl_iff, Set.mem_singleton_iff] at hj
-          simp [hj]
+          simp [freeCoordinateSingleTranslationCoefficient, hj]
         · exact y.2)
 
 @[simp]
@@ -298,8 +304,7 @@ theorem all_freeCoordinateTranslations_fixed_iff
     apply (all_freeCoordinateDerivations_eq_zero_iff f).1
     intro i
     have hfixed : freeCoordinateTranslationAt C σ i 1 f = f := by
-      simpa [freeCoordinateTranslationAt] using
-        hf (fun j ↦ if j = i then (1 : C) else 0)
+      exact hf (freeCoordinateSingleTranslationCoefficient C σ i 1)
     have hmem :=
       mem_freeCoordinateField_complement_of_unitTranslation_fixed i hfixed
     exact ((mem_freeCoordinateField_iff ({i}ᶜ : Set σ) f).1 hmem) i (by simp)
@@ -334,6 +339,15 @@ theorem freeCoordinateCommonKernelField_empty
     freeCoordinateCommonKernelField C σ ∅ = ⊥ := by
   rw [freeCoordinateCommonKernelField_eq_freeCoordinateField,
     freeCoordinateField_empty]
+
+/-- The full translation fixed field and the common kernel of all coordinate currents coincide
+and are both exactly the scalar field. -/
+theorem freeCoordinateTranslationFixedField_eq_allCurrentKernel
+    {C σ : Type*} [Field C] [CharZero C] :
+    freeCoordinateTranslationFixedField C σ =
+      freeCoordinateCommonKernelField C σ ∅ := by
+  rw [freeCoordinateTranslationFixedField_eq_bot,
+    freeCoordinateCommonKernelField_empty]
 
 /-- A translation coefficient family is supported strictly below jet depth `n`. -/
 def FreeJetTranslationSupportedBelow
@@ -392,18 +406,20 @@ fixed field of all independent translations of the jets of order strictly below 
 theorem freeJetLowTranslationFixedField_eq_tail
     {C ι : Type*} [Field C] [CharZero C] (n : ℕ) :
     freeJetLowTranslationFixedField C ι n = freeCoordinateTailField C ι n := by
+  classical
   apply le_antisymm
   · intro f hf
     rw [mem_freeCoordinateTailField_iff]
     intro i k hk
     let j : ι × ℕ := (i, k)
-    let c : (ι × ℕ) → C := fun q ↦ if q = j then 1 else 0
+    let c : (ι × ℕ) → C :=
+      freeCoordinateSingleTranslationCoefficient C (ι × ℕ) j 1
     have hc : FreeJetTranslationSupportedBelow n c := by
       intro q hq
       by_cases hqj : q = j
       · subst q
         exact (Nat.not_le_of_gt hk hq).elim
-      · simp [c, hqj]
+      · simp [c, freeCoordinateSingleTranslationCoefficient, hqj]
     have hfixed : freeCoordinateTranslationAt C (ι × ℕ) j 1 f = f := by
       simpa [freeCoordinateTranslationAt, c] using hf c hc
     have hmem :=
@@ -413,6 +429,15 @@ theorem freeJetLowTranslationFixedField_eq_tail
   · intro f hf c hc
     exact freeCoordinateTranslationEquiv_fixed_of_mem c {j | n ≤ j.2}
       (fun j hj ↦ hc j hj) hf
+
+/-- Finite low-jet translations and their infinitesimal coordinate currents have the same exact
+fixed field. -/
+theorem freeJetLowTranslationFixedField_eq_currentKernel
+    {C ι : Type*} [Field C] [CharZero C] (n : ℕ) :
+    freeJetLowTranslationFixedField C ι n =
+      freeJetLowCurrentKernelField C ι n := by
+  rw [freeJetLowTranslationFixedField_eq_tail,
+    freeJetLowCurrentKernelField_eq_tail]
 
 /-- Depth-two specialization used by the projective-horizon current transition. -/
 theorem freeJetDepthTwoTranslationFixedField_eq_tail
@@ -425,6 +450,14 @@ theorem freeJetDepthTwoCurrentKernelField_eq_tail
     {C ι : Type*} [Field C] [CharZero C] :
     freeJetLowCurrentKernelField C ι 2 = freeCoordinateTailField C ι 2 :=
   freeJetLowCurrentKernelField_eq_tail 2
+
+/-- At depth two, the finite translation fixed field and the polynomial-current coordinate kernel
+are literally the same intermediate field. -/
+theorem freeJetDepthTwoTranslationFixedField_eq_currentKernel
+    {C ι : Type*} [Field C] [CharZero C] :
+    freeJetLowTranslationFixedField C ι 2 =
+      freeJetLowCurrentKernelField C ι 2 :=
+  freeJetLowTranslationFixedField_eq_currentKernel 2
 
 end
 

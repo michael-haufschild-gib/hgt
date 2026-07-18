@@ -467,7 +467,7 @@ theorem IsPrivatePrimeSuperlinearApproximation.secondDifference_isEquivalent
   simp only [Pi.add_apply]
   ring
 
-/-- Positive shifted polynomial profiles admit exponentially close private-prime rational
+/-- Positive shifted polynomial profiles have exponentially close private-prime rational
 realizations whose algebraic unit-phase series are entire, full-support, and hypertranscendental. -/
 theorem exists_privatePrime_shiftedPolynomial_profile_entire_fullSupport_hypertranscendental
     {B β : ℝ} (hB : 0 < B) (hβ : 1 < β) :

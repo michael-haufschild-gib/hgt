@@ -1,8 +1,8 @@
 # Bounded-Relation Log-Magnitudes Force Hypertranscendence
 
 - **ID:** `bounded-relation-log-magnitude-hypertranscendence`
-- **Stage:** 2-fully-proven / needs independent scientific audit
-- **Type:** THEOREM CANDIDATE / GENERAL HT ARITHMETIC-VALUATION LAW
+- **Stage:** 2-fully-proven / complete theorem surface Lean-proved / final integration gate pending
+- **Type:** THEOREM CANDIDATE / GENERAL HT ARITHMETIC-VALUATION LAW / Lean formalization complete
 - **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`, provisional pending independent
   expert verification of the proof and literature claim.
 - **Statement:** An entire full-support series with algebraic unit phases is HT whenever every
@@ -290,14 +290,14 @@ This proves the realization theorem. `square`
 Fix `B>0` and any real `beta>1`. Taking
 
 ```text
-g_n=B n^beta,
+g_n=B (n+1)^beta,
 epsilon_n=exp(-n)                                           (12)
 ```
 
 produces positive rational `b_n` with
 
 ```text
-b_n=B n^beta+O(exp(-n)).                                    (13)
+b_n=B (n+1)^beta+O(exp(-n)).                                (13)
 ```
 
 For every algebraic unit-modulus phase sequence, the resulting entire series is HT. The
@@ -305,6 +305,10 @@ perturbation in (13) preserves the leading value, first difference, and second d
 asymptotics of the polynomial profile. In particular this gives a deterministic all-positive
 coefficient HT realization by taking `u_n=1`, throughout the range `1<beta<2` not covered by the
 preceding convex-separation mechanisms.
+
+The shift by one is necessary, not cosmetic: the literal profile `B n^beta` vanishes at `n=0` and
+therefore contradicts the positivity premise of the arbitrary-profile theorem.  It has the same
+leading value and finite-difference asymptotics at infinity.
 
 ## Boundary attacks
 
@@ -378,19 +382,39 @@ not categorically exclude the complete literature routes.
 
 ## Lean status
 
-No Lean formalization is claimed. Full formalization requires differential-algebraic transitivity,
-generic ADE coefficient extraction and balanced survival, bounded integer-relation confinement,
-rational `p`-adic valuations, Lindemann--Weierstrass, the rational approximation construction, and the entire
-series convergence argument. The theorem cannot move to stage 3 until the complete unconditional
-chain is formalized.
+The complete unconditional theorem chain is formalized.  The reusable layers are:
 
-The current Lean API contains Hermite--Lindemann for one nonzero algebraic exponent and several
-prime-log Baker interfaces, but not the required Lindemann--Weierstrass linear independence of
-`exp(alpha_i)` for an arbitrary finite family of distinct algebraic `alpha_i`. It also has no
-generic formal-power-series ADE coefficient-extraction/polarization theorem or the needed
-differential-algebraic transitivity over constant-field descent. Formalizing isolated private-prime
-valuation lemmas would therefore create support wrappers without formalizing the theorem and is not
-undertaken.
+```text
+BoundedRelationConfinement.lean
+BoundedRelationExponentialSurvival.lean
+BoundedRelationLogMagnitudeHypertranscendence.lean
+PrivatePrimeApproximation.lean
+BoundedRelationProfileRealization.lean
+```
+
+`BoundedRelationLogMagnitudeHypertranscendence.lean` combines unconditional Mahler integer
+normalization, balanced ADE atom survival, bounded-relation confinement, finite
+Lindemann--Weierstrass separation, superlinear convergence, exact Taylor coefficients, and the
+analytic-to-formal transfer.  Its capstone
+`hypertranscendental_boundedRelationExponentialFunction` is the theorem above for every algebraic
+unit-modulus phase sequence, while the neighboring declarations prove entirety and full Taylor
+support.
+
+`BoundedRelationProfileRealization.lean` proves the private-prime approximation theorem through
+`exists_privatePrime_superlinear_profile_realization` and packages the universal phase conclusion
+in `exists_privatePrime_superlinear_profile_entire_fullSupport_hypertranscendental`.  Its shifted
+polynomial capstones prove exact value, first-difference, and second-difference asymptotic
+equivalence for every `beta>1`, together with the all-positive phase specialization:
+
+```text
+exists_privatePrime_shiftedPolynomial_profile_entire_fullSupport_hypertranscendental
+exists_privatePrime_shiftedPolynomial_positive_entire_fullSupport_hypertranscendental
+```
+
+The exact owning target builds green.  A combined scratch axiom audit of the public capstones uses
+only `propext`, `Classical.choice`, and `Quot.sound`; the forbidden-token and whitespace checks are
+clean.  No missing analytic or arithmetic parent is passed in as a hypothesis.  The only remaining
+Stage-3 gate is serialized umbrella reachability, generated-index refresh, and formal lint.
 
 ## Gates
 
@@ -398,7 +422,9 @@ undertaken.
 - [x] 1 -> 2: complete unconditional paper proof and realization construction written.
 - [x] Parent-theory and preliminary exact literature novelty audit.
 - [ ] Independent proof audit.
-- [ ] Whole theorem formalized unconditionally in Lean.
+- [x] Whole theorem and all stated realization/asymptotic corollaries formalized unconditionally
+  in Lean.
+- [ ] 2 -> 3: serialized umbrella reachability, generated indexes, and formal lint.
 
 ## Log
 
@@ -407,3 +433,7 @@ undertaken.
 - 2026-07-11 — Extracted the general bounded-relation confinement law, supplied the missing
   balanced-survival proof, repaired ADE normalization, and completed a preliminary parent/literature
   audit. Promoted provisionally to candidate new scientific knowledge pending independent review.
+- 2026-07-18 — Completed the unconditional Lean chain through arbitrary private-prime profile
+  realization, universal algebraic-unit phases, entirety, full support, HT, and value/first-/second-
+  difference asymptotics; repaired the polynomial specialization at index zero by using
+  `B*(n+1)^beta`.
