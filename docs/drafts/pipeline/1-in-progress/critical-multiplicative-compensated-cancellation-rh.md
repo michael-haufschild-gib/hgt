@@ -6022,3 +6022,314 @@ complete-period, coprime, independently factorable off-axis dyadic subpacket.  I
 by triangle inequality inside `FCRJ`: doing so leaves the endpoint marginals and physical zero
 mode, and their cancellation with that subpacket is RH-bearing.  The next candidate must be a
 source-specific causal ridge-joining theorem, not a stronger generic Kloosterman estimate.
+
+## 2026-07-18 causally anchored alias collapse and exact probability contraction
+
+`[NEW FINITE THEOREM FORMALIZED] [NOVELTY UNVERIFIED] [PHYSICAL CUTOFF REMAINS]`
+`[LEAN-DISCOVERED HYPOTHESIS REMOVAL] [FCRJ NOT CLOSED]`
+
+The reduced-frequency CRT identity is stronger than the primitive-fraction form suggested by
+`(PF10)`.  If `(q,d)=1`, then for arbitrary integers `a,h`,
+
+```text
+S_(qd,h)(ad)=nu_h(d)S_(q,h)(a).                        (AC1)
+```
+
+No condition `(a,q)=1` is needed.  This matters causally.  In a first-crossing packet, the
+first-crossing prime `p` may divide the Fourier frequency.  Fully reducing `k/l` would then move
+`p` into the complementary alias modulus and erase the first-crossing color.  Equation `(AC1)`
+allows `p` to remain anchored in the active denominator `q` even when `p|a`; only future
+coordinates are collapsed.  Lean statement design exposed this strengthening before the analytic
+regrouping was fixed.
+
+For a complete complementary squarefree packet `N`, `(AC1)` and multiplicativity give the exact
+classical divisor identity
+
+```text
+sum_(d|N) mu(qd)/(qd) S_(qd,h)(ad)
+ =mu(q)/q S_(q,h)(a)
+    product_(p|N)(1-nu_h(p)/p).                        (AC2)
+```
+
+The formal theorem also proves a stronger Boolean-coordinate version for arbitrary pairwise
+coprime nonzero inactive moduli; neither primality of each coordinate nor a global squarefree
+ambient modulus is required.
+
+The local factors admit a complete classification.  For prime `p`,
+
+```text
+nu_h(p)=1_(p|h)+2 1_(p does not divide h),              (AC3)
+
+1-nu_h(p)/p = (p-1)/p  if p|h,
+                (p-2)/p  otherwise.                    (AC4)
+```
+
+Thus exact local annihilation occurs if and only if `p=2` and the gap is odd.  There is no
+odd-prime zero.
+
+The stronger positive structure is probabilistic.  For a finite coordinate set `S`, put
+
+```text
+theta_n=nu_h(n)/n,
+
+w_(S,h)(T)=product_(n in T)theta_n
+            product_(n in S\T)(1-theta_n),   T subset S. (AC5)
+```
+
+Root-set inclusion gives `0<=theta_n<=1` on nonzero coordinates, and finite product expansion gives
+
+```text
+w_(S,h)(T)>=0,
+sum_(T subset S)w_(S,h)(T)=1.                           (AC6)
+```
+
+Consequently, for responses in any real normed space,
+
+```text
+||sum_(T subset S)w_(S,h)(T)R_T||
+ <=sup_(T subset S)||R_T||.                             (AC7)
+```
+
+This removes all complete complementary alias multiplicity exactly.  It is also sharp as a
+source-independent statement: a constant response attains equality, so the contraction norm is
+one.  Any missing factor `M^(-1)` must come from the anchored primitive responses and their signed
+source joining, not from the Euler weights alone.
+
+Parity supplies an exact positive cutoff localization.  If `2|N` and `h` is odd, the complete
+anchored family `(AC2)` vanishes.  At every physical threshold `H`,
+
+```text
+sum_(d|N,qd<=H) mu(qd)/(qd)S_(qd,h)(ad)
+ =-sum_(d|N,H<qd) mu(qd)/(qd)S_(qd,h)(ad).              (AC8)
+```
+
+Therefore an odd-gap survivor is entirely a support-cutoff boundary term.  For even gaps every
+local factor is positive, so there is no analogous annihilation.
+
+`[FALSIFIED METHOD]` Treat the physical divisor truncation as if it retained the complete Euler
+survival product.  The conditions `qd<=H_h` and `H_h<qd` cut the Boolean cube; the resulting
+incomplete divisor remainder is not a product and can have the full boundary scale.  Likewise,
+fully reducing every fraction before regrouping can erase the first-crossing prime.
+
+`[POSITIVE SALVAGE]` Join aliases only after fixing a causal anchor containing the first-crossing
+prime.  Complete complementary packets then form the exact contraction `(AC7)`, odd-gap completed
+packets localize to the cutoff by `(AC8)`, and every remaining obstruction is a physically
+truncated anchored primitive response.  This sits between `(PF11)` and `(PF16)`.  It sharpens the
+object to be estimated but does not prove `FCRJ`: the even-gap primitive ridges, moving `H_h`
+switch, endpoint cells, and signed `h,p` joining remain.
+
+The finite theory is formalized in
+`GaloisForLFunctions/RHTower/ReducedFrequencyMobiusAliasCollapse.lean`, including the divisor and
+Boolean alias collapses, prime local classification, exact probability normalization and
+contraction, parity annihilation, and physical-cutoff balance.  The owned-module build passes;
+`#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound` for the principal
+theorems.
+
+`[NEXT OPEN CORE]` Derive the anchored reindexing of the full first-crossing formula without
+forgetting the prime color, then prove a source-specific interval-local bound for its truncated
+primitive response.  Abstract contraction cannot provide that bound because `(AC7)` is sharp.
+
+### Maximal anchored normal form and sectorwise future contraction
+
+`[PAPER-PROVED REGROUPING] [LEAN FINITE CORE FORMALIZED] [CAUSAL COLOR RETAINED EXTERNALLY]`
+
+The causal anchor can be made canonical.  Write a colored modulus as `l=c m`, where `c` contains
+all protected factors of the fixed first-crossing sector and `m` is a squarefree complement with
+`(c,m)=1`.  For every integer frequency `k`, put
+
+```text
+d=gcd(m,|k|),   r=m/d,   u=k/d.                        (AC9)
+```
+
+Then
+
+```text
+m=d r,   k=d u,   (d,r)=1,   (r,|u|)=1,
+S_(cm,h)(k)=nu_h(d)S_(cr,h)(u).                        (AC10)
+```
+
+This is a unique anchored normal form on the complementary coordinates: every factor of `m`
+dividing `k` is extracted, while every factor belonging to `c` stays active.  In general `u` may
+share factors with `c`.  Thus `(AC9)` is deliberately not lowest-term reduction of the whole
+fraction.  It handles negative and zero frequencies as well.
+
+For a fixed colored sector `c`, a squarefree future packet `N`, and a finitely supported frequency
+weight `F`, define
+
+```text
+T_(c,N,h)(F)
+ =sum_(m|N)mu(m)/(c m)
+    sum_(k!=0)F(k/(c m))S_(c m,h)(k).                  (AC11)
+```
+
+The bijection `(m,k)<->(r,u,d)` from `(AC9)` and the complete `d`-alias collapse give
+
+```text
+T_(c,N,h)(F)
+ =sum_(r|N)mu(r)/(c r)V_(N/r)(h)
+    sum_(u!=0,(u,r)=1)F(u/(c r))S_(c r,h)(u),          (AC12)
+
+V_R(h)=product_(ell|R)(1-nu_h(ell)/ell).
+```
+
+Only coprimality with the future remainder `r` is imposed on `u`; factors of the causal anchor are
+never reduced away.  The first-crossing prime must still remain as an outer color: the anchored
+denominator `c r` alone does not identify which factor of `c` crossed first.
+
+Set
+
+```text
+w_(N,h)(r)=nu_h(r)/r V_(N/r)(h),
+
+B_(c,r,h)(F)=1/(nu_h(c)nu_h(r))
+  sum_(u!=0,(u,r)=1)F(u/(c r))S_(c r,h)(u).            (AC13)
+```
+
+The probability law `(AC6)` becomes `sum_(r|N)w_(N,h)(r)=1`, so `(AC12)` is the signed convex
+identity
+
+```text
+T_(c,N,h)(F)
+ =nu_h(c)/c sum_(r|N)mu(r)w_(N,h)(r)B_(c,r,h)(F),
+
+|T_(c,N,h)(F)|
+ <=nu_h(c)/c sup_(r|N)|B_(c,r,h)(F)|.                  (AC14)
+```
+
+The abstract norm is exactly `nu_h(c)/c`; take `B_r=mu(r)`.  Hence complete future dressing is a
+sharp contraction onto anchored responses, not an endpoint power saving.
+
+For `(PF10)`, use one sector at a time with the first-crossing prime and the earlier shell retained
+in `c`; only the unrestricted future packet is `N`.  This preserves the causal color externally
+and collapses every redundant future alias.  It does not commute with `(PF13)`: the physical
+condition becomes `c r d<=H_h` and truncates the `d`-sum inside `(AC12)`.  Its exact coefficient is
+then
+
+```text
+sum_(d|N/r,c r d<=H_h)mu(d)nu_h(d)/d                  (AC15)
+```
+
+or its complementary high-tail sum, not `V_(N/r)(h)`.  The zero-mode law changes across the same
+boundary.  Thus the new normal form identifies the remaining obstruction exactly as a truncated
+future-coordinate boundary on each externally colored anchored response.
+
+The identities `(AC9)`--`(AC10)` and complementary maximality are formalized as
+`quadraticCongruenceRootSumTotal_causalGCDReduction` and
+`causalGCDReduction_complement_coprime`.  The full finite-support regrouping `(AC12)` is a paper
+corollary of those identities and the already-formalized divisor collapse.
+
+Two formal corollaries sharpen this picture.  Every normalized root response lies in the closed
+unit disk, and complementary insertion preserves it exactly:
+
+```text
+|S_(q,h)(a)|<=nu_h(q),
+S_(q d,h)(a d)/nu_h(q d)=S_(q,h)(a)/nu_h(q).           (AC16)
+```
+
+Thus `(AC12)` removes literal copies of the same normalized response.  However, in a fixed
+first-crossing sector the unrestricted future packet contains only primes greater than `p` and
+therefore never contains the parity prime `2`.  The odd-gap annihilation `(AC8)` is a valid global
+completion/cutoff theorem but is not a hidden gain inside the sectorwise future contraction.
+
+## 2026-07-18 physical-cutoff Jordan no-go and joined-response correction
+
+`[FALSIFIED REPRESENTATION] [PAPER-PROVED POSITIVE SALVAGE] [FCRJ PIVOT]`
+`[LEAN-PROVED FINITE JOINING] [BRIDGE] [NOVELTY UNVERIFIED]`
+
+The separately truncated anchored coefficients from `(AC15)` are not the invariant obstruction in
+`(PF20)`.  Fix an anchor `c`, a squarefree complementary packet `N`, a divisor `r|N`, and write
+
+```text
+theta_h(n)=nu_h(n)/n,
+
+A^<=(c,r;H)=sum_(d|N/r,c r d<=H)mu(d)theta_h(d),
+A^>(c,r;H)=sum_(d|N/r,H<c r d)mu(d)theta_h(d),
+
+lambda^<=_r=theta_h(r)A^<=(c,r;H),
+lambda^>_r =theta_h(r)A^>(c,r;H).                      (AC17)
+```
+
+The cutoff partitions the complete complementary divisor cube, so coordinatewise
+
+```text
+lambda^<=_r+lambda^>_r
+ =theta_h(r) product_(ell|N/r)(1-theta_h(ell))
+ =w_(N,h)(r).                                          (AC18)
+```
+
+The two separately signed measures have the exact conserved masses
+
+```text
+sum_(r|N)lambda^<=_r=1_(c<=H),
+sum_(r|N)lambda^>_r =1_(H<c),                          (AC19)
+```
+
+whereas their joined coefficient is the complete positive probability law
+
+```text
+w_(N,h)(r)>=0,
+sum_(r|N)w_(N,h)(r)=1.                                 (AC20)
+```
+
+Most importantly, the low and high coefficients multiply the **same** causally anchored primitive
+response `B_(c,r,h)`.  Therefore for every response packet in a real normed space,
+
+```text
+sum_(r|N)lambda^<=_r R_r+sum_(r|N)lambda^>_r R_r
+ =sum_(r|N)w_(N,h)(r)R_r,
+
+||sum_(r|N)w_(N,h)(r)R_r||<=sup_(r|N)||R_r||.          (AC21)
+```
+
+Thus negative Jordan mass of either cutoff half is decomposition-dependent.  It disappears before
+estimation when the forced low/high response pieces are joined.  Treating its total variation as
+the final `FCRJ` obstruction is false.
+
+The zero mode enforces the same correction at the physical formula.  Since
+`beta_h=delta_h+J_h omega_h`, equations `(PF12)`--`(PF13)` give
+
+```text
+delta_h(P_(H_h)F_p)+beta_h(Q_(H_h)F_p)
+ =delta_h(F_p)+J_h omega_h(Q_(H_h)F_p).                 (AC22)
+```
+
+After the first-crossing telescoping and `D<=H_h`, the `H_h`-dependent pieces recombine exactly:
+
+```text
+FCRJ_h=J_h S_z(h)-sum_p delta_h(F_p)
+      =J_h omega_h(P_Dv_z)+beta_h(Q_Dv_z).              (AC23)
+```
+
+So the physical cutoff is absent from the final nonzero-frequency response.  Its separate signed
+Jordan measures are a splice gauge, not a new source estimate.
+
+`[POSITIVE SALVAGE]` The exact low/high-to-probability joining `(AC18)`--`(AC21)` is a reusable
+finite theorem: a cutoff may destroy positivity in each half while preserving a positive joined
+response operator of sharp norm one.  It is Lean-proved in
+`GaloisForLFunctions/RHTower/PhysicalCutoffAliasResponseJoining.lean`, including a symbolic
+rank-one sign failure, coordinatewise joining, both mass laws, the arbitrary-module response
+identity, and the quadratic root-density norm-one contraction.  This is the correct structural
+output of the no-go, independent of `FCRJ`.
+
+The genuine remaining object is the global density-versus-response correlation.  With
+`N_p=P_>p`, `c=pa`, and the anchored response from `(AC13)`, `(PF10)` and `(AC12)` give
+
+```text
+delta_h(F_p)
+ =sum_(a|P_<p,D/p<a<=D) mu(a) nu_h(pa)/(pa)
+    sum_(r|N_p)mu(r)w_(N_p,h)(r)B_(pa,r,h).             (AC24)
+```
+
+Hence the first honest inequality is
+
+```text
+|sum_h [J_h S_z(h)
+ -sum_(p<=z)sum_(a|P_<p,D/p<a<=D) mu(a)nu_h(pa)/(pa)
+    E_(r~w_(N_p,h))[mu(r)B_(pa,r,h)]]|
+ <<_(A,rho) log(M)^b/M.                                (AC25)
+```
+
+No sectorwise absolute estimate is justified.  Without the exact common physical profile `W_h`,
+the primitive anchored response coordinates can be phase-aligned independently, so CRT
+conjugation and causal-color retention alone cannot improve the sector total-variation norm.  Any
+surviving conjecture must use the common source and the global `h,p,a,r` joining in `(AC25)`.

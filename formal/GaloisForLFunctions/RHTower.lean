@@ -463,6 +463,7 @@ import GaloisForLFunctions.RHTower.OffDiagonalBound
 import GaloisForLFunctions.RHTower.DetectionSecondMoment
 import GaloisForLFunctions.RHTower.VanDerCorput
 import GaloisForLFunctions.RHTower.DigammaSeries
+import GaloisForLFunctions.RHTower.DigammaUniform
 import GaloisForLFunctions.RHTower.LargeValues
 import GaloisForLFunctions.RHTower.LargeValuesDpoly
 import GaloisForLFunctions.RHTower.MeanValueBridge
@@ -1629,3 +1630,4 @@ import GaloisForLFunctions.RHTower.SlabFullWidthAdmissibility
 import GaloisForLFunctions.RHTower.SlabConjugatedGermTheorem
 import GaloisForLFunctions.RHTower.SlabTraceEdgeEstimate
 import GaloisForLFunctions.RHTower.SlabMassSquareCertificate
+import GaloisForLFunctions.RHTower.PhysicalCutoffAliasResponseJoining

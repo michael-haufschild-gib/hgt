@@ -323,3 +323,13 @@ S1, S2 entirely. Historical notes retained:
   SmoothAFE.lean (keystone: Mellin V from G(u)=e^{u²}, contour shift, S5
   Stirling ratio); moment files C/F (corpus MV reuse); ZMeanLemma (E);
   HardyTheorem assembly.
+
+## Gate 5 progress log (continued)
+
+- 2026-07-18 (session 4): `RHTower/DigammaUniform.lean` COMPLETE (locally-uniform
+  Euler convergence: `euler_rect_bound` uniform rectangle estimate +
+  `tendstoLocallyUniformlyOn_euler`). In umbrella, module build green.
+  Gate-5 step 2 closed. Remaining queue: ψ series via logDeriv interchange
+  (TendstoLocallyUniformlyOn.deriv + ratio; logDeriv P_n = log n − Σ_{k=0}^n 1/(s+k));
+  ψ/ψ' asymptotics (ψ = log + O(1/|z|), ψ' = 1/z + O(1/|z|²)); HardyZ.lean;
+  SmoothAFE.lean (keystone); moments C/F; ZMeanLemma; HardyTheorem assembly.
