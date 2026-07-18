@@ -1752,3 +1752,43 @@ equalities; the Wronskian identities of the Hedenmalm surface) — the target
 source-computable functionals — restate as: the functionals `f -> p_1` and `f -> p_2/p_1`...
 better: the packet measure's first two moments are proportional to its zeroth — a RIGIDITY of
 the boundary data. (3) Perimeter-theorem referee; analytic-T4; ST1; promotion batch.
+
+## 2026-07-18 session 2 (cont. 42) — THE SLAB-GERM CERTIFICATE (refereed, repaired):
+## unconditional admissibility on classical zero-free lines; corpus holds the target shape
+
+**[REPAIRED CERTIFICATE — refereed]** Core algebra CONFIRMED (Lagrange identity for complex
+points with multiplicities, no conjugation; reinforcement; the pure-pair value; the
+co-high-specificity of equality⟺single-point — verified counterexample for non-co-high
+packets: height-isolation is LOAD-BEARING). Two gaps found and FIXED: (GAP 1) narrow boxes
+can exclude the pair — FIX: **the FULL-WIDTH SLAB `S(gamma, h) = [0,1] x [gamma-h, gamma+h]`**
+— vertical edges on `Re s = 0, 1` where Xi is nonvanishing UNCONDITIONALLY (de la Vallee
+Poussin + FE: the classical zero-free result enters as the unconditional input); all
+displacements < 1/2 lie inside; horizontal edges automatically zero-free for `h <` (height
+gap): ADMISSIBILITY IS AUTOMATIC — no generic-edge selection. (GAP 2) the height-isolation
+quantifier was divisor-selected — FIX (verified): the GERM quantifier; `mu_1(S(gamma,h))` is
+EVENTUALLY CONSTANT as `h -> 0+` (discreteness), the limit exists unconditionally, the family
+is source-pure. (Minor: ordered/unordered factor-2 normalized.)
+
+> **RH ⟺ for every gamma in R:
+> `lim_{h -> 0+} (p_0 p_2 - p_1^2)(S(gamma, h)) = 0`,**
+> where `p_k = (2 pi i)^{-1} ∮_{∂S} u^k (Xi'/Xi) ds` in the u-frame. The limit exists
+> unconditionally; its value is `<= -2 d^2 m^2 (2 m_tot + m_s) < 0` at any off-line height
+> and `0` elsewhere — the Cauchy-Schwarz equality case on three boundary integrals, violation
+> quantized.
+
+**[PRODUCTION SHORTLIST — corpus inventory]** (1) `primePairDifferenceEnergy_eq_two_mul_
+pluckerGramDet` (XiPrimeSeamPairVariance.lean:131) — THE TARGET SHAPE ALREADY FORMALIZED:
+pair-difference energy = 2 * GramDet, vanishing ⟺ single point. (2) The Hedenmalm Bezoutian
+rank↔packet-size dictionary. (3) Hankel=Gram colligation (CompletedPrimeGammaResolvedMoment-
+Colligation.lean). (4) The rank-two FE-Schwarz circuit [PROVED: dependence ⟺ critical line] —
+the equality's natural source symmetry. (5) Mellin/Fourier unitarity stock. (6) Moment
+determinacy templates. NEXT GATE-4 TARGET: splice the slab-germ certificate into (1)+(4):
+the germ Gram-det in the seam-pair-variance frame, with the FE-Schwarz dependence law as the
+candidate equality-forcing symmetry.
+
+**[PERIMETER — corrected]** The A_S truncation formula was WRONG (rectangular vs triangular
+domain); corrected: `A_S(L) = 2(1 - e^{-1/2}) S e^{-L/2} - 2(e^{1/2} - 1) e^{L/2}`
+(numerically verified, ratio 0.9996). The bilinear cancellation SURVIVES (domain-
+independent). One exponent calibration (d vs 2d frames) queued before promotion. Scope
+corrected: the perimeter governs GROWTH-CLASS functionals only (band sequences encode
+ordinates). Citations: von Koch 1901; Ingham Thm 30; Landau 1909 converse.
