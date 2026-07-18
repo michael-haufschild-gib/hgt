@@ -203,3 +203,12 @@ the resulting correction of the later `O(N)` convention have already been stated
 ## Log
 
 - 2026-07-17 — paper proof completed after tracing the two-particle scattering formula rather than source notation.
+- 2026-07-18 — Lean partial: added and leaf-verified
+  `GaloisForLFunctions.HTGeometry.RightFlipScattering`.  The unconditional surface now contains
+  the literal finite two-particle flip matrix; its self-adjoint, involutive, and unitary laws; exact
+  transport of the `B(0)=-I` / `R(0)=-F` anchor, unitarity, and hermitian analyticity; the lower-index
+  reversal formula `(B F)^{a1 a2}_{b1 b2}=B^{a1 a2}_{b2 b1}`; pure-tensor flip action; and the
+  crossing-pairing equivalence.  The module is imported by the `HTGeometry` umbrella.  The card
+  remains Stage 2: the exact adjacent/quantum Yang--Baxter leg equivalence `(1) <-> (3)` is still the
+  first missing Lean theorem, and the umbrella/axiom checks are queued behind other active agents'
+  Lean processes.

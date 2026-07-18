@@ -30,6 +30,19 @@ workspace's own root file supplies its broader corpus; do not hard-code parent p
   `scripts/formal_tools.py research "<query>"` before proving a reusable lemma.
 - Numerically pre-certify a formalisation plan (mpmath) before writing Lean.
 
+## No-go closure discipline
+- A no-go is not finished when only its negative statement is proved.
+- Before retiring a route, extract and audit the strongest non-trivial positive statement exposed by
+  the obstruction: a sharp boundary, classification, rigidity law, exact decomposition, replacement
+  hypothesis, or new invariant.
+- Record the exact new insight and the survivor's paper-proof and Lean status on the failed-route
+  card.
+- Once the positive survivor has a dependency-closed paper proof, formalise that exact theorem in
+  Lean. Treat stronger statements forced or exposed by Lean as new conjectures and send them back
+  through the paper and novelty audits.
+- If no positive survivor remains after a serious second pass, record what was tried and label it
+  `NO POSITIVE SALVAGE FOUND`.
+
 ## Append-only edits
 - Append at EOF with a shell here-doc (`cat >> file <<'EOF' … EOF`) or equivalent primitive.
 - Do not use apply_patch to append. Use targeted edits only to insert, replace, move, or delete.

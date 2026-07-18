@@ -23,3 +23,6 @@ When stuck on a conjecture:
 21. **Build a dependency chain.** Ask: “What would be enough to prove this?” until you reach something manageable.
 22. **Compare nearby false statements.** Change assumptions until it breaks; the breaking point reveals the structure.
 23. **Classify boundary cases.** Study when equality, failure, or sharpness occurs.
+24. **Extract the positive residue.** After every no-go, seek the strongest positive theorem exposed
+    by the obstruction, state the new insight exactly, and formalize it in Lean once its paper proof
+    is dependency-closed. If none survives, record the serious attempts explicitly.

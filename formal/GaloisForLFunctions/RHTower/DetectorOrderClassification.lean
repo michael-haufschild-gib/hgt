@@ -1,23 +1,20 @@
 /-
-# Detector order classification for RH fiber readers
+# Order classification of divisor readers vanishing on real configurations
 
-Formal core of `docs/drafts/pipeline/1-in-progress/detector-order-classification-rh-readers.md`.
+A *reader* of a finite divisor is a functional `D ↦ ∑ⱼ mⱼ · F(zⱼ, conj zⱼ)` with kernel `F`
+holomorphic in both slots; conjugated boundary germs of a logarithmic derivative are of this form
+(`SlabConjugatedGermTheorem`).  Readers that vanish on every divisor supported on the real axis —
+the ones that could distinguish a real configuration from a complex one — are classified by the
+order of vanishing of the kernel on the diagonal:
 
-A *reader* of a height fiber is a functional `D ↦ ∑ⱼ mⱼ · F(zⱼ, conj zⱼ)` on finite divisors,
-with kernel `F` holomorphic in both slots.  Such readers are exactly what conjugated boundary
-germs of the trace produce (`SlabConjugatedGermTheorem`).  This module proves that the readers
-which vanish on every divisor supported on the real axis — i.e. those that could possibly certify
-the Riemann Hypothesis at a height — are classified by their vanishing order on the diagonal:
-
-* **order zero** (kernel holomorphic in the first slot alone): the reader is identically zero, so
-  no detector of the linear/explicit-formula class exists (`order_zero_reader_eq_zero`);
-* **order one**: detectors exist, but every one carries the displacement `z - conj z = 2i·Im z`
-  as an explicit factor (`exists_displacement_factor`, `fiberReader_eq_displacement_form`), and
-  the functional-equation mirror symmetry of the divisor annihilates all of them
-  (`mirror_mean_kill`);
-* **order two**: the minimal surviving order, and every such reader is a weighted displacement
-  variance (`fiberReader_orderTwo_eq_variance`), which vanishes exactly on fibers lying on the
-  critical line (`displacementVariance_eq_zero_iff`, `orderTwo_reader_eq_zero_iff`).
+* **order zero** (kernel holomorphic in the first slot alone): the kernel is identically zero, so
+  no such reader is nonzero (`order_zero_reader_eq_zero`);
+* **order one**: such readers exist, but every one carries the factor `z - conj z = 2i·Im z`
+  (`exists_displacement_factor`, `fiberReader_eq_displacement_form`), and a mass-preserving
+  reflection `d ↦ -d` of the configuration annihilates all of them (`mirror_mean_kill`);
+* **order two**: the minimal surviving order, and every such reader is a weighted second moment of
+  `Im z` (`fiberReader_orderTwo_eq_variance`), vanishing exactly on real configurations
+  (`displacementVariance_eq_zero_iff`, `orderTwo_reader_eq_zero_iff`).
 
 The load-bearing step is `diagonal_eq_zero`: vanishing of the kernel on the *real* diagonal
 propagates to the whole *complex* diagonal, because `z ↦ F z z` is a one-variable holomorphic

@@ -485,6 +485,7 @@ import GaloisForLFunctions.RHTower.SeamInertiaCharge
 import GaloisForLFunctions.RHTower.ChargeTomography
 import GaloisForLFunctions.RHTower.WeldChargeConnecting
 import GaloisForLFunctions.RHTower.DeciderBarrier
+import GaloisForLFunctions.RHTower.DetectorResolutionBarrier
 import GaloisForLFunctions.RHTower.SeamCollisionMechanism
 import GaloisForLFunctions.RHTower.WeldTowerFree
 import GaloisForLFunctions.RHTower.WeldTowerLimit
