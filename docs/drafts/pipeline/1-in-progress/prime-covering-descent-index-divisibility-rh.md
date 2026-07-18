@@ -1020,3 +1020,46 @@ PRESENTATION of `H_+ ∩ H_-` (Meyer Lemma 5.10 / Thm 5.11 proof) — the zero-o
 filtration. NEXT EXACT TARGET: construct the mu_8-graded comparison on `V_omega` via that
 filtration — the datum Meyer's framework provably lacks, and the precise place where the
 arithmetic phases (reciprocity law, MQ2 local indices) can act on zero fibers.
+
+## 2026-07-18 session 2 (cont. 22) — HERMITE–HANKEL wall-uniform form; two-structure mu_8
+## survivor; novelty audit queued
+
+**[W~ COHERENCE VERDICTS]** (1) No coherence gap in the theorem (per-box quantification;
+contraposition pure logic); coherence constrains only PRODUCTION certificates. (2) Equivalence
+CONFIRMED: `(forall admissible B: disc(W~_B) >= 0) <=> RH`, and disc(W~) never vanishes so
+`>= 0 <=> > 0`. (3) Collision no-go INAPPLICABLE confirmed (discontinuity gated by the
+semicontinuous deg gcd — survivor-class lockstep pattern). (4) The evaded no-go returns
+QUANTITATIVELY: no uniform sign margin at walls (0^- vs 0^+), so no estimate-with-slack can
+certify the sign — the certificate must be an EXACT sign identity (SOS/PSD), not a bound.
+
+**[HERMITE–HANKEL FORM — the wall-uniform certificate carrier]** `H(B)` := Hankel matrix of
+the box boundary Newton sums `p_k(B) = (2*pi*i)^{-1} ∮_{∂B} s^k (Xi'/Xi) ds` (in the line-real
+coordinate): `H(B) = V^T diag(mult) V`; rank = deg W~; leading principal minor
+`det H_r = (prod mult) * disc(W~_B)`; and `r~_2 = 0 <=> H(B) PSD` (Hermite's classical
+real-rootedness criterion, box-localized). PSD-ness is a CLOSED, stratification-free condition
+absorbing all gcd-degree jumps. Hence:
+
+> **RH <=> for every admissible line-symmetric box B, the Newton-sum Hankel matrix H(B) is
+> positive semidefinite** — a box-local finite-rank Hamburger moment statement (box Newton
+> sums are moments of a positive measure on the real locus).
+
+Production target: derive `H(B) PSD` from the explicit-formula prime+archimedean decomposition
+of `p_k(B)` — box-localized finite-rank Weil positivity. First sub-check passed prima facie
+(cone membership is semicontinuous — survivor class). **[MANDATORY NOVELTY AUDIT — queued
+before any investment]** Compare against: the corpus's OWN global trace-Hankel criteria
+(`XiCentralTraceHankelIntNonnegative <=> RH`, XiTraceHankelCountableCriterion.lean) — is the
+box-local version genuinely finer or a known localization? — and the external literature
+(Li's criterion positivity sequence; Hermitian-form RH criteria; any box/window-localized
+Hankel positivity). The box-locality + wall-absorption + finite-rank features are the novelty
+candidates; adjudicate honestly.
+
+**[MU_8 TWO-STRUCTURE SURVIVOR]** Single-structure phase DIES (two exact reasons: gamma(psi)
+central/global — fiber-constant grading carries no per-zero datum and cancels antiunitarily;
+and Weil reciprocity trivializes even the global scalar). SURVIVOR: the ratio of connecting
+maps for TWO metaplectic structures `psi` vs `psi_a` acts on `V_omega` by
+`prod_v omega_v(a) * (gamma_v-ratio)` — globally 1 (idele-class character = the reciprocity
+law) but NONTRIVIAL at each finite Euler level S: fiber-local, mu_8-valued, with superdiagonal
+jet action by log-derivatives of local epsilon-factors. The mod-8 datum is an eta-flavored
+DEFECT/BOUNDARY TERM of the Euler filtration whose S -> infinity trivialization IS reciprocity
+— exactly where MQ2's local Weil indices act. Next: compute the level-S comparison at a simple
+critical fiber (epsilon_S(omega)-type discrepancy on the generator L-hat_S).
