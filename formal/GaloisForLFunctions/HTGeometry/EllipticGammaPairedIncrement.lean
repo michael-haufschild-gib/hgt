@@ -49,13 +49,14 @@ theorem addTranslationAnalyticEquiv_ellipticGammaForwardAnalytic_one
         (ellipticGammaForwardAnalytic sigma tau hsigma htau) =
       ellipticGammaForwardAnalytic sigma tau hsigma htau := by
   apply Subtype.ext
-  let htr : Tendsto (addTranslation 1) (𝓟 Set.univ) (𝓟 Set.univ) :=
+  let htr : Tendsto (addTranslation 1) (Filter.principal Set.univ)
+      (Filter.principal Set.univ) :=
     tendsto_principal_principal.mpr (Set.mapsTo_univ _ _)
   change
-    (Germ.ofFun (l := 𝓟 Set.univ)
+    (Germ.ofFun (l := Filter.principal Set.univ)
       (ellipticGammaForwardProduct sigma tau)).compTendsto
         (addTranslation 1) htr =
-      Germ.ofFun (l := 𝓟 Set.univ)
+      Germ.ofFun (l := Filter.principal Set.univ)
         (ellipticGammaForwardProduct sigma tau)
   rw [Germ.coe_compTendsto, Germ.coe_eq]
   exact eventually_principal.mpr fun z _ ↦ by
@@ -68,13 +69,14 @@ theorem addTranslationAnalyticEquiv_ellipticGammaBackwardAnalytic_one
         (ellipticGammaBackwardAnalytic sigma tau hsigma htau) =
       ellipticGammaBackwardAnalytic sigma tau hsigma htau := by
   apply Subtype.ext
-  let htr : Tendsto (addTranslation 1) (𝓟 Set.univ) (𝓟 Set.univ) :=
+  let htr : Tendsto (addTranslation 1) (Filter.principal Set.univ)
+      (Filter.principal Set.univ) :=
     tendsto_principal_principal.mpr (Set.mapsTo_univ _ _)
   change
-    (Germ.ofFun (l := 𝓟 Set.univ)
+    (Germ.ofFun (l := Filter.principal Set.univ)
       (ellipticGammaBackwardProduct sigma tau)).compTendsto
         (addTranslation 1) htr =
-      Germ.ofFun (l := 𝓟 Set.univ)
+      Germ.ofFun (l := Filter.principal Set.univ)
         (ellipticGammaBackwardProduct sigma tau)
   rw [Germ.coe_compTendsto, Germ.coe_eq]
   exact eventually_principal.mpr fun z _ ↦ by
@@ -178,7 +180,7 @@ theorem ellipticGammaLogDerivMero_mixed_face_tau
   have hTQ' : addTranslationAnalyticEquiv ((tau - sigma) / 2)
       (thetaLogDerivDefectDenominatorAnalytic h sigma hsigma) ≠ 0 := by
     simpa [c, Q] using hTQ
-  rw [eq_div_iff (hmap_ne hTQ')]
+  apply (eq_div_iff (hmap_ne hTQ')).mpr
   field_simp [hmap_ne hD, hmap_ne (hTD h), hmap_ne (hTD tau),
     hmap_ne (hTD (tau + h))]
   simp only [← map_mul, ← map_sub]
@@ -242,7 +244,8 @@ theorem ellipticGammaLogDerivMero_mixed_face_tau
             Germ (𝓟 Set.univ) ℂ) := by
     rw [hKtah, hKt, hKh, hK, htheta]
     rw [show z + (tau + h) = z + h + tau by ring]
-    simpa only [c] using hmix
+    dsimp only [c]
+    linear_combination hmix
   have hdtah : univGermEval (z + (tau + h))
       (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
         Germ (𝓟 Set.univ) ℂ) ≠ 0 := by

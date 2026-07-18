@@ -111,6 +111,7 @@ theorem multivariateAffinePatternDefect_isClosed {d : ℕ} {Λ : Type*}
     (multivariateAffinePatternObservationCLM frame p base)
     (multivariateCoefficientPatternDeterminant base p.coordinateExponent p.jetExponent)
 
+set_option maxHeartbeats 1000000 in
 /-- One escaping source makes the fixed pattern defect nowhere dense. -/
 theorem multivariateAffinePatternDefect_isNowhereDense_of_witness
     {d : ℕ} {Λ : Type*}
@@ -122,10 +123,14 @@ theorem multivariateAffinePatternDefect_isNowhereDense_of_witness
       (multivariateCoefficientPatternDeterminant
         base p.coordinateExponent p.jetExponent) ≠ 0) :
     IsNowhereDense (multivariateAffinePatternDefect frame p base) := by
-  rw [(multivariateAffinePatternDefect_isClosed frame p base).isNowhereDense_iff]
-  exact interior_continuousLinearMap_mvPolynomial_zero_eq_empty_of_witness
-    (multivariateAffinePatternObservationCLM frame p base)
-    (multivariateCoefficientPatternDeterminant base p.coordinateExponent p.jetExponent) f₀ hf₀
+  let L := multivariateAffinePatternObservationCLM frame p base
+  let P := multivariateCoefficientPatternDeterminant
+    base p.coordinateExponent p.jetExponent
+  change IsNowhereDense {f | MvPolynomial.eval (L f) P = 0}
+  change MvPolynomial.eval (L f₀) P ≠ 0 at hf₀
+  have hclosed := isClosed_continuousLinearMap_mvPolynomial_zero L P
+  rw [hclosed.isNowhereDense_iff]
+  exact interior_continuousLinearMap_mvPolynomial_zero_eq_empty_of_witness L P f₀ hf₀
 
 /-- Chosen finite witness data for a decorated pattern. -/
 structure MultivariateAffinePatternWitness {d : ℕ} {Λ : Type*}
@@ -159,12 +164,17 @@ theorem multivariateAffinePatternResidualSet_dense_residual
   have hnowhere : ∀ p, IsNowhereDense (D p) := fun p ↦
     multivariateAffinePatternDefect_isNowhereDense_of_witness
       frame p (witness p).base (witness p).source (witness p).escapes
+  have hclosed : ∀ p, IsClosed (D p) := fun p ↦
+    multivariateAffinePatternDefect_isClosed frame p (witness p).base
+  have hopen : ∀ p, IsOpen (D p)ᶜ := fun p ↦ (hclosed p).isOpen_compl
+  have hdense : ∀ p, Dense (D p)ᶜ := fun p ↦
+    interior_eq_empty_iff_dense_compl.mp
+      ((hclosed p).isNowhereDense_iff.mp (hnowhere p))
   have hset : multivariateAffinePatternResidualSet frame witness = ⋂ p, (D p)ᶜ := by
     ext f
     simp [multivariateAffinePatternResidualSet, D]
   rw [hset]
-  exact ⟨dense_iInter_of_isOpen (fun p ↦ hnowhere p |>.isOpen_compl)
-      (fun p ↦ hnowhere p |>.dense_compl),
+  exact ⟨dense_iInter_of_isOpen hopen hdense,
     countable_iInter_mem.mpr (fun p ↦ (hnowhere p).isMeagre)⟩
 
 end

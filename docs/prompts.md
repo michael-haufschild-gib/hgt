@@ -1,15 +1,22 @@
 ## formalize
 /goal
 
-work through all cards directly in docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge that start with "constraint-prolate" and formalize in lean any proven theorem in there.
-docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/hedenmalm-pair-weil-polarization-law.md
-rules:
-1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.
-2. aim for the smallest lean build possible and use caching heavily for lean. write lean code in batches instead of building after every edit.
-3. lean proofs must be unconditional
-4. always check first what the project lean code already offers
-5. effort estimation are not a criterion. if it is missing in mathlib -> you build it. if it takes months -> you build it.
+work through all cards directly in docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge that start with "ccm" and formalize in lean any proven theorem in there.
+
+lean rules:
+1. You work independent from other agents and can run 1 build process in the foreground at a time yourself.
+2. Be efficient with lean, do not constantly do minor edits and build, but batch changes and builds.
+3. Optimize lean code. Use caching and limit rebuilds of dependencies to only what is truly necessary for your work.
+4. lean proofs must be unconditional
+5. always check first what the project lean code already offers
 6. no computations.
+
+Non-negotiable working mode rules:
+1. If it cannot be done in a single session -> Does not matter. Do it!
+2. If it cannot be done in a single context window -> Does not matter. Do it!
+3. If it takes months -> Does not matter. Do it!
+4. Missing in mathlib -> Build it no matter the effort.
+5. Always check what our extensive lean corpus can provide you! Reuse as much as possible.
 
 folders:
 - formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general

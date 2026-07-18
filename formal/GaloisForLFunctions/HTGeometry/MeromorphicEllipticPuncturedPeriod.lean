@@ -47,8 +47,10 @@ theorem analyticFraction_eventually_periodic_of_field_fixed
     {a b : analyticSubring (Set.univ : Set ℂ)} (hb : b ≠ 0)
     {f g : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f Set.univ)
     (hg : AnalyticOnNhd ℂ g Set.univ)
-    (hfa : Germ.coeRingHom (𝒱 Set.univ) f = (a : Germ (𝒱 Set.univ) ℂ))
-    (hgb : Germ.coeRingHom (𝒱 Set.univ) g = (b : Germ (𝒱 Set.univ) ℂ))
+    (hfa : Germ.coeRingHom (Filter.principal Set.univ) f =
+      (a : Germ (Filter.principal Set.univ) ℂ))
+    (hgb : Germ.coeRingHom (Filter.principal Set.univ) g =
+      (b : Germ (Filter.principal Set.univ) ℂ))
     (q : ℂ)
     (hfixed : addTranslationMeroEquiv q
         (algebraMap (analyticSubring Set.univ) (meroField Set.univ) a /
@@ -56,7 +58,8 @@ theorem analyticFraction_eventually_periodic_of_field_fixed
       algebraMap (analyticSubring Set.univ) (meroField Set.univ) a /
         algebraMap (analyticSubring Set.univ) (meroField Set.univ) b)
     (p : ℂ) :
-    (∀ᶠ z in 𝒩[≠] p, f (z + q) / g (z + q) = f z / g z) := by
+    (∀ᶠ z in nhdsWithin p ({p} : Set ℂ)ᶜ,
+      f (z + q) / g (z + q) = f z / g z) := by
   let fq : ℂ → ℂ := fun z ↦ f (z + q)
   let gq : ℂ → ℂ := fun z ↦ g (z + q)
   have hTba : addTranslationAnalyticEquiv q b ≠ 0 :=
@@ -65,17 +68,19 @@ theorem analyticFraction_eventually_periodic_of_field_fixed
     hf.comp (analyticOnNhd_addTranslation q _) (Set.mapsTo_univ _ _)
   have hgq : AnalyticOnNhd ℂ gq Set.univ :=
     hg.comp (analyticOnNhd_addTranslation q _) (Set.mapsTo_univ _ _)
-  have hfqa : Germ.coeRingHom (𝒱 Set.univ) fq =
-      (addTranslationAnalyticEquiv q a : Germ (𝒱 Set.univ) ℂ) := by
-    change Germ.ofFun (l := 𝒱 Set.univ) (fun z ↦ f (z + q)) =
-      (a : Germ (𝒱 Set.univ) ℂ).compTendsto (addTranslation q)
+  have hfqa : Germ.coeRingHom (Filter.principal Set.univ) fq =
+      (addTranslationAnalyticEquiv q a :
+        Germ (Filter.principal Set.univ) ℂ) := by
+    change Germ.ofFun (l := Filter.principal Set.univ) (fun z ↦ f (z + q)) =
+      (a : Germ (𝓟 Set.univ) ℂ).compTendsto (addTranslation q)
         (tendsto_principal_principal.mpr (Set.mapsTo_univ _ _))
     rw [← hfa]
     rfl
-  have hgqb : Germ.coeRingHom (𝒱 Set.univ) gq =
-      (addTranslationAnalyticEquiv q b : Germ (𝒱 Set.univ) ℂ) := by
-    change Germ.ofFun (l := 𝒱 Set.univ) (fun z ↦ g (z + q)) =
-      (b : Germ (𝒱 Set.univ) ℂ).compTendsto (addTranslation q)
+  have hgqb : Germ.coeRingHom (Filter.principal Set.univ) gq =
+      (addTranslationAnalyticEquiv q b :
+        Germ (Filter.principal Set.univ) ℂ) := by
+    change Germ.ofFun (l := Filter.principal Set.univ) (fun z ↦ g (z + q)) =
+      (b : Germ (𝓟 Set.univ) ℂ).compTendsto (addTranslation q)
         (tendsto_principal_principal.mpr (Set.mapsTo_univ _ _))
     rw [← hgb]
     rfl
@@ -117,8 +122,10 @@ theorem poleIndexSet_finite_of_ellipticField_fraction
     {a b : analyticSubring (Set.univ : Set ℂ)} (hb : b ≠ 0)
     {f g : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f Set.univ)
     (hg : AnalyticOnNhd ℂ g Set.univ)
-    (hfa : Germ.coeRingHom (𝒱 Set.univ) f = (a : Germ (𝒱 Set.univ) ℂ))
-    (hgb : Germ.coeRingHom (𝒱 Set.univ) g = (b : Germ (𝒱 Set.univ) ℂ))
+    (hfa : Germ.coeRingHom (Filter.principal Set.univ) f =
+      (a : Germ (Filter.principal Set.univ) ℂ))
+    (hgb : Germ.coeRingHom (Filter.principal Set.univ) g =
+      (b : Germ (Filter.principal Set.univ) ℂ))
     {tau p q : ℂ} (htau : 0 < tau.im)
     (helliptic :
       algebraMap (analyticSubring Set.univ) (meroField Set.univ) a /
@@ -146,7 +153,8 @@ theorem poleIndexSet_finite_of_ellipticField_fraction
       let period : ℂ := A • (1 : ℂ) + B • tau
       have hfixed := addTranslationMeroEquiv_fixed_of_mem_ellipticMeroField_int
         helliptic A B
-      have hper : ∀ᶠ z in 𝒩[≠] r n, phi (z + period) = phi z := by
+      have hper : ∀ᶠ z in nhdsWithin (r n) ({r n} : Set ℂ)ᶜ,
+          phi (z + period) = phi z := by
         simpa only [phi, period] using
           analyticFraction_eventually_periodic_of_field_fixed
             hb hf hg hfa hgb period hfixed (r n)
@@ -182,14 +190,17 @@ theorem thetaDifferentialFamily_ne_ellipticFieldShiftCoboundary_of_eventuallyEq
     {a b : analyticSubring (Set.univ : Set ℂ)} (hb : b ≠ 0)
     {f g : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f Set.univ)
     (hg : AnalyticOnNhd ℂ g Set.univ)
-    (hfa : Germ.coeRingHom (𝒱 Set.univ) f = (a : Germ (𝒱 Set.univ) ℂ))
-    (hgb : Germ.coeRingHom (𝒱 Set.univ) g = (b : Germ (𝒱 Set.univ) ℂ))
+    (hfa : Germ.coeRingHom (Filter.principal Set.univ) f =
+      (a : Germ (Filter.principal Set.univ) ℂ))
+    (hgb : Germ.coeRingHom (Filter.principal Set.univ) g =
+      (b : Germ (Filter.principal Set.univ) ℂ))
     (helliptic :
       algebraMap (analyticSubring Set.univ) (meroField Set.univ) a /
           algebraMap (analyticSubring Set.univ) (meroField Set.univ) b ∈
         ellipticMeroField tau)
     (heq : ∀ n : ℤ, thetaDifferentialFamilySum s L h tau =ᶠ[
-      𝒩[≠] additiveOrbitPoint (thetaHalfPeriod tau - h i0) q n]
+      nhdsWithin (additiveOrbitPoint (thetaHalfPeriod tau - h i0) q n)
+        ({additiveOrbitPoint (thetaHalfPeriod tau - h i0) q n} : Set ℂ)ᶜ]
       (fun z ↦ f (z + q) / g (z + q) - f z / g z)) : False := by
   let phi : ℂ → ℂ := fun z ↦ f z / g z
   obtain ⟨hpole, hunique⟩ := thetaDifferentialFamilySum_singleton_poleOrbit

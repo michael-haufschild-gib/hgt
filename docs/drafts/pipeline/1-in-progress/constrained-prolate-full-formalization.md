@@ -238,8 +238,19 @@
   `fourier_gaussianSchwartz_toLp`), and `‖h − P h‖²` is the tail bounded by
   `integral_Ioi_gauss_sq_le`.  Helper `norm_sub_proj_le` (complementary part is a contraction).
 
-  REMAINING for the L6a envelope: instantiate the three abstract lemmas at the project's
-  operators (evenness of the Gaussian, cutoff Pythagoras, `‖h−Ph‖²` = the tail integral), then
+  ### L6a CARRIER: **BUILT** (`RHTower/GaussianEvenCarrier.lean`, axiom-clean)
+
+  The Gaussian is now placed in the project's own carrier: `gaussL2 : SoninL2`,
+  `gaussL2_mem_evenSubspace` (evenness — via `l2Reflection_ae` and `gaussReal (-x) = gaussReal x`),
+  `gaussEven : evenSubspace`, `evenFourierTransform_gaussEven` (the even transform is the
+  restriction of `fourierUnitary`, which fixes the Gaussian by `fourier_gaussianSchwartz_toLp`),
+  and `gaussEven_ne_zero`.  So `U := evenFourierTransform`, `h := gaussEven` discharge the
+  hypotheses of `norm_sq_proj_unitary_proj_ge_of_rel` except those about `P`.
+
+  REMAINING for the L6a envelope: take `P := evenIndicatorCutoff a` (idempotent is
+  `evenIndicatorCutoff_idempotent`; symmetry from its star-projection structure), identify
+  `‖gaussEven − P gaussEven‖²` with the tail `∫_{|x|>a} e^{−2πx²}` bounded by
+  `integral_Ioi_gauss_sq_le`, then
   dilate to the aperture scale, assemble `n+1` near-orthonormal such functions,
   feed `OrthonormalTrialSpan.norm_sq_apply_le_of_orthonormal_span`, then
   `evenProlateLeakageValue_le_of_form_trial`.  Higher `n` needs `𝓕 h_n = (−i)^n h_n`, provable
