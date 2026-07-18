@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.StableDifferentialCore
+import GaloisForLFunctions.HTGeometry.KolchinExchangeGaugeObstruction
 
 open scoped Differential
 
@@ -16,6 +17,23 @@ noncomputable section
 
 variable {K E F : Type*} [Field K] [Field E] [Field F]
   [Algebra K E] [Algebra K F]
+
+/-- The stable-core automorphism, equipped with the differential structure induced from the
+ambient field, is a differential automorphism. -/
+noncomputable def stableRangeCoreDifferentialAlgEquiv
+    {K F : Type*} [Field K] [Field F] [Algebra K F] [Differential F]
+    (φ : F →ₐ[K] F) (hφ : ∀ x : F, φ x′ = (φ x)′) :
+    letI : Differential (stableRangeCore φ) :=
+      derivationClosedDifferential (stableRangeCore φ)
+        (derivationClosed_stableRangeCore φ hφ)
+    DifferentialAlgEquiv K (stableRangeCore φ) := by
+  letI : Differential (stableRangeCore φ) :=
+    derivationClosedDifferential (stableRangeCore φ)
+      (derivationClosed_stableRangeCore φ hφ)
+  refine ⟨stableRangeCoreAlgEquiv φ, ?_⟩
+  intro x
+  apply Subtype.ext
+  exact hφ x
 
 /-- A commuting factor map intertwines every iterate. -/
 theorem algHom_pow_intertwine

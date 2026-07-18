@@ -94,6 +94,43 @@ theorem automorphismFamily_mixedRaw_differentialFamilyMatroid_eq_sourceBoundaryQ
         (fun j i ↦ Sum.elim (p i) (fun b ↦ (q i b)′ / q i b) j) := by
       rfl
 
+/-- For every finite mixed packet, its differential-matroid rank is the dimension over `C(D)` of
+the span of its localized simultaneous source-boundary quotient classes. -/
+theorem automorphismFamily_mixedRaw_differentialFamilyMatroid_eRk_finset
+    {I A B C K L : Type u}
+    [Field C] [Field K] [Field L]
+    [Algebra C K] [Algebra C L] [Algebra K L]
+    [IsScalarTower C K L]
+    [Differential K] [Differential L] [DifferentialAlgebra K L]
+    [CharZero K] [CharZero L]
+    (tau : I → DifferentialAlgEquiv C K) (sigma : I → L ≃+* L)
+    (hconst : ∀ c : C, (algebraMap C K c)′ = 0)
+    (hcomp : ∀ i k, sigma i (algebraMap K L k) =
+      algebraMap K L ((tau i).toAlgEquiv k))
+    (hderiv : ∀ i y, sigma i y′ = (sigma i y)′)
+    (hCfixed : ∀ i c, sigma i (algebraMap C L c) = algebraMap C L c)
+    (hfixed : ∀ z : L, (∀ i, sigma i z = z) →
+      ∃ c : C, algebraMap C L c = z)
+    (u : A → L) (x : B → L)
+    (p : I → A → K) (q : I → B → K)
+    (hx : ∀ b, x b ≠ 0) (hq : ∀ i b, q i b ≠ 0)
+    (hadd : ∀ i a, sigma i (u a) =
+      u a + algebraMap K L (p i a))
+    (hmul : ∀ i b, sigma i (x b) =
+      algebraMap K L (q i b) * x b)
+    (T : Finset (A ⊕ B)) :
+    (differentialFamilyMatroid (F := K) (Sum.elim u x)).eRk
+        (↑T : Set (A ⊕ B)) =
+      (Module.finrank (FractionRing (Polynomial C))
+        (Submodule.span (FractionRing (Polynomial C))
+          (sourceBoundaryQuotientFamily hconst tau
+            (fun j i ↦ Sum.elim (p i) (fun b ↦ (q i b)′ / q i b) j) ''
+              (↑T : Set (A ⊕ B)))) : ℕ∞) := by
+  rw [automorphismFamily_mixedRaw_differentialFamilyMatroid_eq_sourceBoundaryQuotientMatroid
+    tau sigma hconst hcomp hderiv hCfixed hfixed u x p q hx hq hadd hmul]
+  exact sourceBoundaryQuotientMatroid_eRk_finset hconst tau
+    (fun j i ↦ Sum.elim (p i) (fun b ↦ (q i b)′ / q i b) j) T
+
 end
 
 end GaloisForLFunctions.HTGeometry

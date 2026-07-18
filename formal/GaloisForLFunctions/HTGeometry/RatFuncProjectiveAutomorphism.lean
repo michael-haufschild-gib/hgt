@@ -137,6 +137,52 @@ theorem mobius_eq_iff_exists_smul
     push_cast
     field_simp [hl]
 
+/-- The two-by-two coefficient matrix of a linear fractional expression. -/
+def mobiusMatrix (a b c d : K) : Matrix (Fin 2) (Fin 2) K :=
+  !![a, b; c, d]
+
+@[simp]
+theorem det_mobiusMatrix (a b c d : K) :
+    Matrix.det (mobiusMatrix a b c d) = a * d - b * c := by
+  simp [mobiusMatrix, Matrix.det_fin_two]
+
+/-- The projective matrix class of a determinant-nonzero linear fractional expression. -/
+def mobiusProjectiveClass (a b c d : K) (hdet : a * d - b * c ≠ 0) : PGL(2, K) :=
+  Matrix.ProjGenLinGroup.mk
+    (Matrix.GeneralLinearGroup.mkOfDetNeZero (mobiusMatrix a b c d)
+      (by simpa using hdet))
+
+/-- Equal determinant-nonzero linear fractional expressions define the same projective matrix
+class. -/
+theorem mobiusProjectiveClass_eq_of_mobius_eq
+    {a b c d A B C D : K}
+    (habcd : a * d - b * c ≠ 0)
+    (hABCD : A * D - B * C ≠ 0)
+    (h : mobius a b c d = mobius A B C D) :
+    mobiusProjectiveClass a b c d habcd =
+      mobiusProjectiveClass A B C D hABCD := by
+  obtain ⟨l, hl, ha, hb, hc, hd⟩ :=
+    (mobius_eq_iff_exists_smul habcd hABCD).mp h
+  let u : Kˣ := Units.mk0 l hl
+  let g : GL (Fin 2) K :=
+    Matrix.GeneralLinearGroup.mkOfDetNeZero (mobiusMatrix A B C D)
+      (by simpa using hABCD)
+  let f : GL (Fin 2) K :=
+    Matrix.GeneralLinearGroup.mkOfDetNeZero (mobiusMatrix a b c d)
+      (by simpa using habcd)
+  change Matrix.ProjGenLinGroup.mk f = Matrix.ProjGenLinGroup.mk g
+  rw [eq_comm]
+  change QuotientGroup.mk' _ g = QuotientGroup.mk' _ f
+  rw [QuotientGroup.mk'_eq_mk']
+  refine ⟨Matrix.GeneralLinearGroup.scalar (Fin 2) u, ?_, ?_⟩
+  · rw [Matrix.GeneralLinearGroup.center_eq_range_scalar]
+    exact ⟨u, rfl⟩
+  · apply Units.ext
+    apply Matrix.ext
+    intro i j
+    fin_cases i <;> fin_cases j <;>
+      simp [g, f, mobiusMatrix, u, ha, hb, hc, hd] <;> ring
+
 /-- The image of the rational coordinate under an automorphism still generates the whole rational
 function field. -/
 theorem algEquiv_adjoin_image_X_eq_top (e : RatFunc K ≃ₐ[K] RatFunc K) :
@@ -237,8 +283,9 @@ theorem exists_mobius_image_X (e : RatFunc K ≃ₐ[K] RatFunc K) :
 /-- The canonical reduced two-by-two coefficient matrix attached to a rational-function
 automorphism. -/
 def algEquivMobiusMatrix (e : RatFunc K ≃ₐ[K] RatFunc K) : Matrix (Fin 2) (Fin 2) K :=
-  !![(e X).num.coeff 1, (e X).num.coeff 0;
-    (e X).denom.coeff 1, (e X).denom.coeff 0]
+  mobiusMatrix
+    ((e X).num.coeff 1) ((e X).num.coeff 0)
+    ((e X).denom.coeff 1) ((e X).denom.coeff 0)
 
 /-- The canonical reduced coefficient matrix of an automorphism is invertible. -/
 theorem det_algEquivMobiusMatrix_ne_zero (e : RatFunc K ≃ₐ[K] RatFunc K) :
@@ -262,6 +309,18 @@ def algEquivProjectiveClass (e : RatFunc K ≃ₐ[K] RatFunc K) : PGL(2, K) :=
     (Matrix.GeneralLinearGroup.mkOfDetNeZero (algEquivMobiusMatrix e)
       (det_algEquivMobiusMatrix_ne_zero e))
 
+/-- The projective class attached to an automorphism is definitionally the class of its canonical
+reduced Möbius coefficients. -/
+theorem algEquivProjectiveClass_eq_canonical (e : RatFunc K ≃ₐ[K] RatFunc K) :
+    algEquivProjectiveClass e =
+      mobiusProjectiveClass
+        ((e X).num.coeff 1) ((e X).num.coeff 0)
+        ((e X).denom.coeff 1) ((e X).denom.coeff 0)
+        (by
+          simpa [algEquivMobiusMatrix, Matrix.det_fin_two] using
+            det_algEquivMobiusMatrix_ne_zero e) := by
+  rfl
+
 /-- The image of the rational coordinate is the Möbius expression of the canonical reduced
 matrix. -/
 theorem algEquiv_image_X_eq_canonical_mobius (e : RatFunc K ≃ₐ[K] RatFunc K) :
@@ -277,6 +336,21 @@ theorem algEquiv_image_X_eq_canonical_mobius (e : RatFunc K ≃ₐ[K] RatFunc K)
   have hden := Polynomial.eq_X_add_C_of_natDegree_le_one hd
   conv_lhs => rw [← num_div_denom (e X), hnum, hden]
   simp [mobius]
+
+/-- Every determinant-nonzero Möbius presentation of the image of `X` represents the canonical
+projective class attached to the automorphism. -/
+theorem algEquivProjectiveClass_eq_of_image_X_eq_mobius
+    (e : RatFunc K ≃ₐ[K] RatFunc K) {a b c d : K}
+    (hdet : a * d - b * c ≠ 0)
+    (himage : e X = mobius a b c d) :
+    algEquivProjectiveClass e = mobiusProjectiveClass a b c d hdet := by
+  rw [algEquivProjectiveClass_eq_canonical e]
+  have hcanon :
+      (e X).num.coeff 1 * (e X).denom.coeff 0 -
+          (e X).num.coeff 0 * (e X).denom.coeff 1 ≠ 0 := by
+    simpa [algEquivMobiusMatrix] using det_algEquivMobiusMatrix_ne_zero e
+  exact mobiusProjectiveClass_eq_of_mobius_eq hcanon hdet
+    ((algEquiv_image_X_eq_canonical_mobius e).symm.trans himage)
 
 /-- Every determinant-nonzero Möbius presentation of the image of `X` is a nonzero scalar
 multiple of the canonical reduced coefficient matrix.  Thus the associated projective matrix

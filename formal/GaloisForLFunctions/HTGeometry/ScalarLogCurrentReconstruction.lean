@@ -16,6 +16,42 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+/-- Every positive power of a hypertranscendental scalar remains hypertranscendental. -/
+theorem hypertranscendentalOver_pow_of_pos
+    {F E : Type*} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {q : E} (hq : HypertranscendentalOver F q) {N : ℕ} (hN : 0 < N) :
+    HypertranscendentalOver F (q ^ N) := by
+  let h : E := q ^ N
+  let L : IntermediateField F E := differentialAdjoin F ({h} : Set E)
+  let hL : L := ⟨h, subset_differentialAdjoin F ({h} : Set E) rfl⟩
+  let Q : MvPolynomial (Fin 1) L :=
+    MvPolynomial.X 0 ^ N - MvPolynomial.C hL
+  have hQ : Q ≠ 0 := by
+    intro hzero
+    have hcoeff := congrArg
+      (MvPolynomial.coeff (Finsupp.single (0 : Fin 1) N)) hzero
+    have honezero : (1 : L) = 0 := by
+      calc
+        1 = MvPolynomial.coeff (Finsupp.single (0 : Fin 1) N) Q := by
+          have hsingle : (0 : Fin 1 →₀ ℕ) ≠
+              Finsupp.single (0 : Fin 1) N := by
+            intro hz
+            have hz0 := DFunLike.congr_fun hz (0 : Fin 1)
+            have hzeroN : 0 = N := by simpa using hz0
+            exact hN.ne' hzeroN.symm
+          simp [Q, MvPolynomial.coeff_X_pow, hsingle]
+        _ = MvPolynomial.coeff (Finsupp.single (0 : Fin 1) N) 0 := hcoeff
+        _ = 0 := by simp
+    exact one_ne_zero honezero
+  have hann : MvPolynomial.aeval
+      (fun j : Fin 1 => differentialJet (j : ℕ) q) Q = 0 := by
+    simp only [Q, map_sub, map_pow, MvPolynomial.aeval_X,
+      MvPolynomial.aeval_C]
+    change q ^ N - h = 0
+    simp [h]
+  exact hypertranscendentalOver_input_of_finiteJetConstraint hq hQ hann
+
 /-- A nonzero hypertranscendental scalar has a hypertranscendental logarithmic current. -/
 theorem logDeriv_hypertranscendentalOver
     {F E : Type*} [Field F] [Field E] [Algebra F E]
