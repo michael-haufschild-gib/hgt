@@ -79,14 +79,15 @@ theorem mvPolynomialPolynomialEquivAt_map
   | C r =>
       simp [mvPolynomialPolynomialEquivAt]
   | add P Q hP hQ =>
-      simpa only [map_add] using congrArg₂ (fun U V ↦ U + V) hP hQ
+      simpa only [map_add, Polynomial.map_add] using
+        congrArg₂ (fun U V ↦ U + V) hP hQ
   | mul_X P j hP =>
       by_cases hji : j = i
       · subst j
-        simpa only [map_mul, MvPolynomial.map_X,
+        simpa only [map_mul, Polynomial.map_mul, MvPolynomial.map_X,
           mvPolynomialPolynomialEquivAt_X_self, Polynomial.map_X] using
           congrArg (fun U ↦ U * Polynomial.X) hP
-      · simpa only [map_mul, MvPolynomial.map_X,
+      · simpa only [map_mul, Polynomial.map_mul, MvPolynomial.map_X,
           mvPolynomialPolynomialEquivAt_X_ne hji, Polynomial.map_C] using
           congrArg
             (fun U ↦ U * Polynomial.C (MvPolynomial.X ⟨j, hji⟩)) hP
@@ -132,7 +133,7 @@ theorem exists_polynomial_fraction_clear_ne_zero
     simpa [hQ0] using hQ.symm
   rcases mul_eq_zero.mp hmul with hd | hP0
   · have hd' : algebraMap R K (d : R) = 0 := by
-      simpa using congrArg (Polynomial.coeff 0) hd
+      simpa using congrArg (fun T : Polynomial K ↦ T.coeff 0) hd
     exact (nonZeroDivisors.ne_zero d.2)
       (IsFractionRing.injective R K (by simpa using hd'))
   · exact hP hP0
@@ -274,6 +275,8 @@ theorem exists_distinguishedVariable_bezout_clear
     ∃ M : ι → Polynomial R, ∃ N : R, N ≠ 0 ∧
       ∑ i, M i * H i = Polynomial.C N := by
   classical
+  letI : NormalizationMonoid R :=
+    UniqueFactorizationMonoid.normalizationMonoid
   letI : NormalizedGCDMonoid R :=
     UniqueFactorizationMonoid.toNormalizedGCDMonoid R
   let HK : ι → Polynomial K :=
@@ -296,7 +299,8 @@ theorem exists_distinguishedVariable_bezout_clear
   obtain ⟨q, hq0, hqprimitive, a, hqmap⟩ :=
     exists_primitive_polynomial_fraction_clear (R := R) (K := K) hg0
   have hqdvd (i : ι) : q ∣ H i := by
-    apply hqprimitive.dvd_of_fraction_map_dvd hq0
+    apply Polynomial.IsPrimitive.dvd_of_fraction_map_dvd
+      (R := R) (K := K) (P := q) (Q := H i) hqprimitive hq0
     have hgdvd : g ∣ HK i := by
       exact Finset.gcd_dvd (Finset.mem_univ i)
     obtain ⟨T, hT⟩ := hgdvd
@@ -304,7 +308,9 @@ theorem exists_distinguishedVariable_bezout_clear
     calc
       HK i = g * T := hT
       _ = (Polynomial.C (a : K) *
-          Polynomial.C ((a⁻¹ : Kˣ) : K)) * (g * T) := by simp
+          Polynomial.C ((a⁻¹ : Kˣ) : K)) * (g * T) := by
+        rw [← Polynomial.C_mul]
+        simp
       _ = (Polynomial.C (a : K) * g) *
           (Polynomial.C ((a⁻¹ : Kˣ) : K) * T) := by ring
       _ = Polynomial.map (algebraMap R K) q *
@@ -317,16 +323,18 @@ theorem exists_distinguishedVariable_bezout_clear
     exact isUnit_of_mul_isUnit_right hmapqUnit
   obtain ⟨b, hb⟩ := Finset.gcd_eq_sum_mul (Finset.univ : Finset ι) HK
   rcases hgUnit with ⟨u, hu⟩
-  let B : ι → Polynomial K := fun i ↦ b i * (u⁻¹ : Polynomial K)
+  let B : ι → Polynomial K :=
+    fun i ↦ b i * ((u⁻¹ : (Polynomial K)ˣ) : Polynomial K)
   have hbezout : ∑ i, B i * HK i = 1 := by
     calc
-      ∑ i, B i * HK i = (∑ i, HK i * b i) * (u⁻¹ : Polynomial K) := by
+      ∑ i, B i * HK i =
+          (∑ i, HK i * b i) * ((u⁻¹ : (Polynomial K)ˣ) : Polynomial K) := by
         simp only [B]
         rw [Finset.sum_mul]
         apply Finset.sum_congr rfl
         intro i _
         ring
-      _ = g * (u⁻¹ : Polynomial K) := by rw [← hb]
+      _ = g * ((u⁻¹ : (Polynomial K)ˣ) : Polynomial K) := by rw [← hb]
       _ = 1 := by rw [← hu]; simp
   obtain ⟨d, M, hM⟩ :=
     exists_polynomial_family_fraction_clear (R := R) (K := K) B

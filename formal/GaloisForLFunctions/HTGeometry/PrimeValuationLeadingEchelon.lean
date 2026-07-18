@@ -62,8 +62,7 @@ theorem cofinitePrimePowerPacket_of_injective_layerExponents
       simp [primePowerBlockMatrix, primePowerPacketCoefficientMatrix,
         primePowerSigmaCoefficient, Matrix.blockDiagonal', C, E]
     · have hers : e r ≠ e s := fun h => hrs (he h)
-      simp [primePowerBlockMatrix, primePowerPacketCoefficientMatrix,
-        primePowerSigmaCoefficient, Matrix.blockDiagonal', C, E, hrs, hers]
+      simp [primePowerBlockMatrix, Matrix.blockDiagonal', C, E, hrs, hers]
   rw [hmatrix]
   have hC : ∀ r, IsUnit (C r) := by
     intro r
@@ -189,14 +188,14 @@ theorem primeDeriv_rotatedLogArithmeticJet_apply_primePow
 /-- **Finite leading-echelon jet theorem.**  Arbitrary infinite prime-power tails cannot create a
 relation among a finite jet rectangle once every source has a private nonzero valuation
 coordinate. -/
-theorem primeValuationLeadingEchelonJets_algebraicIndependent
+theorem primeValuationLeadingEchelonJets_algebraicIndependent_of_primeDependent
     {d : ℕ} [Nonempty (Fin d)]
     (g : Fin d → ArithmeticFunction ℂ)
     (e : Fin d → ℕ) (he : Function.Injective e)
-    (c : Fin d → ℂ) (hc : ∀ r, c r ≠ 0)
+    (c : Fin d → Nat.Primes → ℂ) (hc : ∀ r p, c r p ≠ 0)
     (hsupport : ∀ r, SupportedOnPositivePrimePowers (g r))
     (hprivate : ∀ r s (p : Nat.Primes),
-      g s ((p : ℕ) ^ (e r + 1)) = if r = s then c s else 0)
+      g s ((p : ℕ) ^ (e r + 1)) = if r = s then c s p else 0)
     (m : ℕ) :
     AlgebraicIndependent ℂ
       (fun x : Fin d × Fin (m + 1) =>
@@ -205,26 +204,32 @@ theorem primeValuationLeadingEchelonJets_algebraicIndependent
   letI (r : Fin d) : Fintype (A r) := inferInstance
   letI (r : Fin d) : DecidableEq (A r) := inferInstance
   let a : ∀ r, A r → Nat.Primes → ℂ := fun r x p =>
-    c r * ((((e r + 1 : ℕ) : ℂ) * rotatedPrimeLogClock p) ^ (x.2.2 : ℕ))
+    c r p * ((((e r + 1 : ℕ) : ℂ) * rotatedPrimeLogClock p) ^ (x.2.2 : ℕ))
   have htail : ∀ r, TailCoefficientIndependent (a r) := by
     intro r
-    let base : Unit → Nat.Primes → ℂ := fun _ _ => c r
+    let base : Unit → Nat.Primes → ℂ := fun _ _ => 1
     have hbase : TailCoefficientIndependent base := by
       rw [tailCoefficientIndependent_unit_iff]
       unfold PrimeCoefficientTailZero
-      simpa [base, hc r] using (Set.infinite_univ : (Set.univ : Set Nat.Primes).Infinite)
+      simpa [base] using (Set.infinite_univ : (Set.univ : Set Nat.Primes).Infinite)
     have hrange : (Set.range (coefficientPattern base)).Finite := by
-      apply (Set.finite_singleton (fun _ : Unit => c r)).subset
+      apply (Set.finite_singleton (fun _ : Unit => (1 : ℂ))).subset
       intro y hy
       obtain ⟨p, rfl⟩ := hy
       funext u
       cases u
       rfl
-    have h := (primePowerCoefficientShiftedRotatedJet_tailIndependent_iff
+    have hraw := (primePowerCoefficientShiftedRotatedJet_tailIndependent_iff
       (e r) base (fun _ : Unit => 0)
       (fun _ _ _ => Subsingleton.elim _ _) hrange m).mpr hbase
-    simpa only [a, base, primeShiftFactor, neg_zero, zero_mul, Complex.exp_zero,
-      mul_one] using h
+    let raw : A r → Nat.Primes → ℂ := fun x p =>
+      (((e r + 1 : ℕ) : ℂ) * rotatedPrimeLogClock p) ^ (x.2.2 : ℕ)
+    have hraw' : TailCoefficientIndependent raw := by
+      simpa only [raw, A, base, primeShiftFactor, neg_zero, zero_mul,
+        Complex.exp_zero, one_mul] using hraw
+    have hweighted :=
+      (tailCoefficientIndependent_commonWeight_iff raw (c r) (hc r)).mpr hraw'
+    simpa only [a, raw] using hweighted
   obtain ⟨q, hq, _havoid, hdet⟩ :=
     cofinitePrimePowerPacket_of_injective_layerExponents d A e he a htail
       ∅ Set.finite_empty
@@ -282,9 +287,58 @@ theorem primeValuationLeadingEchelonJets_algebraicIndependent
   have hsub := hAI.comp f hf
   simpa only [Function.comp_apply, f, sourceJet] using hsub
 
+/-- Constant private coefficients are the prime-independent specialization of the
+prime-dependent finite leading-echelon theorem. -/
+theorem primeValuationLeadingEchelonJets_algebraicIndependent
+    {d : ℕ} [Nonempty (Fin d)]
+    (g : Fin d → ArithmeticFunction ℂ)
+    (e : Fin d → ℕ) (he : Function.Injective e)
+    (c : Fin d → ℂ) (hc : ∀ r, c r ≠ 0)
+    (hsupport : ∀ r, SupportedOnPositivePrimePowers (g r))
+    (hprivate : ∀ r s (p : Nat.Primes),
+      g s ((p : ℕ) ^ (e r + 1)) = if r = s then c s else 0)
+    (m : ℕ) :
+    AlgebraicIndependent ℂ
+      (fun x : Fin d × Fin (m + 1) =>
+        rotatedLogArithmeticJet x.2 (g x.1)) := by
+  apply primeValuationLeadingEchelonJets_algebraicIndependent_of_primeDependent
+    g e he (fun r _ => c r) (fun r _ => hc r) hsupport
+  simpa using hprivate
+
 /-- **Prime-valuation leading-echelon law.**  A finite family of arbitrary positive-prime-power
 sources is differentially independent whenever it has pairwise distinct private valuation
 coordinates.  No assumption is made on any unselected valuation layer. -/
+theorem primeValuationLeadingEchelon_differentialIndependent_of_primeDependent
+    {d : ℕ} [Nonempty (Fin d)]
+    (g : Fin d → ArithmeticFunction ℂ)
+    (e : Fin d → ℕ) (he : Function.Injective e)
+    (c : Fin d → Nat.Primes → ℂ) (hc : ∀ r p, c r p ≠ 0)
+    (hsupport : ∀ r, SupportedOnPositivePrimePowers (g r))
+    (hprivate : ∀ r s (p : Nat.Primes),
+      g s ((p : ℕ) ^ (e r + 1)) = if r = s then c s p else 0) :
+    GaloisForLFunctions.DifferentialIndependent ℂ
+      (fun r => algebraMap (ArithmeticFunction ℂ)
+        arithmeticFunctionFractionField (g r)) := by
+  unfold GaloisForLFunctions.DifferentialIndependent
+  simp_rw [differentialJet_algebraMap_rotatedLogArithmeticJet]
+  let x : Fin d → ℕ → arithmeticFunctionFractionField := fun r k =>
+    algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+      (rotatedLogArithmeticJet k (g r))
+  apply algebraicIndependent_prod_nat_of_fin x
+  intro m
+  have hraw :=
+    primeValuationLeadingEchelonJets_algebraicIndependent_of_primeDependent
+    g e he c hc hsupport hprivate m
+  have hmap := hraw.map'
+    (f := IsScalarTower.toAlgHom ℂ (ArithmeticFunction ℂ)
+      arithmeticFunctionFractionField)
+    (IsFractionRing.injective (ArithmeticFunction ℂ)
+      arithmeticFunctionFractionField)
+  simpa only [Function.comp_apply, x] using hmap
+
+/-- **Constant-coefficient prime-valuation leading-echelon law.**  This preserves the original
+interface while the stronger theorem permits nonzero private coefficients to vary with the
+selected prime. -/
 theorem primeValuationLeadingEchelon_differentialIndependent
     {d : ℕ} [Nonempty (Fin d)]
     (g : Fin d → ArithmeticFunction ℂ)
@@ -296,21 +350,9 @@ theorem primeValuationLeadingEchelon_differentialIndependent
     GaloisForLFunctions.DifferentialIndependent ℂ
       (fun r => algebraMap (ArithmeticFunction ℂ)
         arithmeticFunctionFractionField (g r)) := by
-  unfold GaloisForLFunctions.DifferentialIndependent
-  simp_rw [differentialJet_algebraMap_rotatedLogArithmeticJet]
-  let x : Fin d → ℕ → arithmeticFunctionFractionField := fun r k =>
-    algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
-      (rotatedLogArithmeticJet k (g r))
-  apply algebraicIndependent_prod_nat_of_fin x
-  intro m
-  have hraw := primeValuationLeadingEchelonJets_algebraicIndependent
-    g e he c hc hsupport hprivate m
-  have hmap := hraw.map'
-    (f := IsScalarTower.toAlgHom ℂ (ArithmeticFunction ℂ)
-      arithmeticFunctionFractionField)
-    (IsFractionRing.injective (ArithmeticFunction ℂ)
-      arithmeticFunctionFractionField)
-  simpa only [Function.comp_apply, x] using hmap
+  apply primeValuationLeadingEchelon_differentialIndependent_of_primeDependent
+    g e he (fun r _ => c r) (fun r _ => hc r) hsupport
+  simpa using hprivate
 
 /-- Matrix linear forms compose by matrix multiplication. -/
 theorem matrixLinearForms_comp

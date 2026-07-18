@@ -444,6 +444,49 @@ has removed all transverse high dimensions but has not created a smaller quantit
 RH-bearing assertion is the source alignment `Y approximately -X`, not `||Y||` small.  Therefore
 `HGS-SOURCE` and the semiprime-only physical route are retired as providers.
 
+### Corrected-response saturation and the one-sided frontier
+
+`[PAPER-PROVED] [POSITIVE SURVIVOR] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
+
+Write `D_M` for the density baseline in `(AC25)`, `R_M` for its complete joined response, and
+`E_M=E_prog+E_quad`.  Since `FCRJ_M=D_M-R_M`, `(HGS29)` is equivalently
+
+```text
+D_M-R_M+E_M=||X+Y||^2.                                 (HGS29a)
+```
+
+The corrected response `R_M^sharp=R_M-E_M` therefore satisfies the exact envelope law
+
+```text
+R_M^sharp<=D_M,
+R_M^sharp=D_M  iff  X+Y=0.                              (HGS29b)
+```
+
+If `|E_M|<=epsilon_M`, then `FCRJ_M>=-epsilon_M` unconditionally.  For every budget
+`B_M>=epsilon_M`,
+
+```text
+|FCRJ_M|<=B_M  iff  FCRJ_M<=B_M
+                 iff  R_M>=D_M-B_M.                    (HGS29c)
+```
+
+Thus the negative half of `AC25` was never open.  Only near-saturation of the response from below,
+equivalently the small upper bound on `||X+Y||^2`, remains at RH strength.  The full proof,
+quantitative constants, equality classification, and novelty verdict are recorded in
+`2-fully-proven/not_new_scientific_knowledge/fcrj-corrected-response-saturation-law.md`.
+
+For the actual clipped ordinary-prime source, the equality case is sharper: the endpoint carrier
+vanishes exactly when the active-prime packet is empty.  Hence every nonempty finite aperture has
+strict response deficit, with the sharp local floor
+
+```text
+||X+Y||^2>=L_t R_t/(L_t+R_t)|j_M(t)|^2
+```
+
+at each endpoint.  See
+`2-fully-proven/not_new_scientific_knowledge/physical-prime-endpoint-radical-mesh-coercivity.md`.
+This is a source-specific positive survivor, not an RH-scale upper estimate.
+
 ### Universal coprime plateau rigidity
 
 `[PAPER-PROVED] [EXACT POSITIVE SURVIVOR] [SHARP HYPOTHESES] [NOVELTY UNVERIFIED]`

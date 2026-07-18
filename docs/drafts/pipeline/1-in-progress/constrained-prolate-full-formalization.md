@@ -209,61 +209,58 @@
   `hermiteStep_apply` bridges the analytic recursion to the polynomial one;
   `hermiteSchwartz_zero` identifies `n = 0` with the Gaussian.
 
-  WHAT REMAINS FOR L7 is exactly two Fourier–derivative identities in this normalization:
-  `𝓕(f′) = 2πiξ·𝓕f` and `𝓕(x f) = (i/2π)(𝓕f)′`.  Together they give `𝓕(Af) = −i·A(𝓕f)`, and
-  the induction `𝓕 h_{n+1} = 𝓕(A h_n) = −i A((−i)^n h_n) = (−i)^{n+1} h_{n+1}` yields
-  `𝓕 h_n = (−i)^n h_n` from the already-proved `𝓕 h_0 = h_0`.
+  ### L7 EIGENRELATION: **BUILT AND BANKED** (`HTGeometry/HermiteFourierEigen.lean`, axiom-clean)
 
-  **FOUND, ALREADY PACKAGED FOR SCHWARTZ MAPS** — use these, NOT the `VectorFourier` ones.
-  In `Mathlib/Analysis/Distribution/SchwartzSpace/Fourier.lean`:
+  All of it is proved, unconditionally.  The route taken uses the scalar `Real.*` identities
+  rather than the vector `lineDerivOp` ones (both work; the scalar ones needed no `smulLeftCLM`
+  scalar-field plumbing).  Operators, on `𝓢(ℝ,ℂ)`, all as bundled `→L[ℂ]` maps:
 
 ```text
-  fourier_lineDerivOp_eq (f : 𝓢(V,E)) (m : V) :
-      𝓕 (∂_{m} f) = (2π·I) • smulLeftCLM E (inner ℝ · m) (𝓕 f)
-  lineDerivOp_fourier_eq (f : 𝓢(V,E)) (m : V) :
-      ∂_{m} (𝓕 f) = 𝓕 (-(2π·I) • smulLeftCLM E (inner ℝ · m) f)
+  mulXCLM      f = x · f            (smulLeftCLM ℂ (↑·), via Function.Complex.hasTemperateGrowth_ofReal)
+  derivSCLM    f = f′               (SchwartzMap.derivCLM ℂ ℂ)
+  fourierSCLM  f = 𝓕 f              (SchwartzMap.fourierTransformCLM ℂ)
+  creationCLM    = (2π) • mulXCLM − derivSCLM
 ```
 
-  At `V = ℝ`, `m = 1` we have `inner ℝ x 1 = x` and `∂_{1} f = f′`, so these ARE exactly
-  `𝓕(f′)(ξ) = 2πiξ·𝓕f(ξ)` and `(𝓕f)′ = −2πi·𝓕(x f)`, i.e. `𝓕(x f) = (i/2π)(𝓕f)′`.
-  No integrability side conditions to discharge — they are stated for Schwartz maps.
+  The two transform rules, each discharged from `Real.fourier_deriv` / `Real.deriv_fourier`
+  with the Schwartz integrability side conditions supplied by `integrable_deriv_schwartz` and
+  `integrable_smul_id_schwartz`:
 
-  **THE `∂_{1}` COLLAPSE IS BUILT** (`HTGeometry/SchwartzLineDerivOne.lean`, axiom-clean):
-  `schwartz_lineDerivOp_one_apply (f : 𝓢(ℝ,ℂ)) (x) : (∂_{(1:ℝ)} f) x = deriv (f : ℝ → ℂ) x`
-  — and it is `fderiv_apply_one_eq_deriv`, i.e. TRUE BY `rfl` up to that lemma, since
-  `∂_{m} f = evalCLM m (fderivCLM f)` and `fderiv ℝ f x 1 = deriv f x`.  Also
-  `inner_one_eq_self : inner ℝ x 1 = x`, which collapses the `smulLeftCLM (inner ℝ · m)`
-  multiplier to plain multiplication by `x`.  These two are exactly the vector→scalar bridge,
-  and both were far cheaper than expected.
+```text
+  fourierSCLM_derivSCLM  : 𝓕 f′      = (2πI) • mulXCLM (𝓕 f)
+  derivSCLM_fourierSCLM  : (𝓕 f)′    = (−2πI) • 𝓕 (x·f)
+```
 
-  ONE API QUESTION TO SETTLE FIRST (cost me the last attempt): in
-  `smulLeftCLM E (inner ℝ · m)`, the multiplier `inner ℝ · m` is ℝ-valued while `smulLeftCLM`
-  is declared `(g : E → 𝕜)` with `𝕜 = ℂ` here.  Check whether mathlib inserts an `ℝ → ℂ`
-  coercion or whether the `𝕜` in those Fourier lemmas is instantiated at ℝ with a separate
-  scalar action.  Resolve that BEFORE writing `A`, and use `smulLeftCLM_apply` (which needs a
-  `HasTemperateGrowth` hypothesis — for `fun x : ℝ => (x:ℂ)` get it from
-  `Complex.ofRealCLM.hasTemperateGrowth` or the analogous `ContinuousLinearMap` lemma).
+  and the intertwining relation they combine into — the whole content of the layer:
 
-  SO THE WHOLE OF L7 IS NOW: define `A f = smulLeftCLM ℂ (fun x : ℝ => x) f − (1/2π)·∂_{1} f`
-  on `𝓢(ℝ,ℂ)`, combine the two displayed lemmas to get `𝓕(A f) = −i·A(𝓕 f)`, then induct using
-  `hermiteStep_apply` (already proved) to connect `A` to `hermitePoly`, with base case
-  `fourier_gaussianSchwartz` (already proved).  Expect ~40–60 lines; the only friction will be
-  `smulLeftCLM` type-class plumbing and the `V = ℝ` instantiation.
+```text
+  fourierSCLM_creationCLM : 𝓕 (A f) = (−I) • A (𝓕 f)
+```
 
-  Superseded: mathlib HAS both, but only in vector-valued form in
-  `Mathlib/Analysis/Fourier/FourierTransformDeriv.lean`, namespace `Real` (from line 671):
-  * `Real.fderiv_fourier (hf_int) (hvf_int) : fderiv ℝ (𝓕 f) = …` — this is `𝓕(x f)` up to the
-    `fourierSMulRight` packaging (the `x·` factor appears as `fourierSMulRight (innerSL ℝ) f`);
-  * `Real.fourier_fderiv (hf) (h'f) (hf')` — this is `𝓕(f′) = …`, with the multiplier appearing
-    as `fourierSMulRight (-L.flip)`.
-  Also `Real.differentiable_fourier`, `Real.contDiff_fourier`, `Real.iteratedFDeriv_fourier`.
+  `creationCLM` is `2π` times the self-dual-normalization operator `x − (1/2π)d/dx`, so
+  `hermiteSchwartz_succ_eq : h_{n+1} = (2π)⁻¹ • A hₙ`; the scalar cancels in the eigenvalue.
+  The induction off `fourier_gaussianSchwartz` then gives, for every `n`:
 
-  CONCRETE REMAINING TASK: specialise these from `V = ℝ` vector form to 1-D SCALAR form, i.e.
-  unfold `fourierSMulRight`/`innerSL` at `V = ℝ` to get the plain statements
-  `𝓕(f′)(ξ) = 2πiξ·𝓕f(ξ)` and `deriv (𝓕 f) ξ = 𝓕(fun x ↦ (-2πi x)·f x) ξ`, then feed them the
-  integrability side conditions (automatic for Schwartz maps).  Everything after that — the
-  `𝓕(Af) = −i A(𝓕f)` identity and the induction — is short.  This is packaging work, not new
-  mathematics.
+```text
+  fourierSCLM_hermiteSchwartz  : 𝓕 hₙ = (−I)^n • hₙ                        (Schwartz)
+  fourier_hermiteSchwartz_apply: 𝓕 hₙ x = (−I)^n · hₙ x                    (pointwise)
+  fourier_hermiteSchwartz_toLp : 𝓕 (hₙ.toLp 2) = (−I)^n • hₙ.toLp 2        (L², via toLp_fourier_eq)
+```
+
+  The `L²` form is the consumable one: the project's `fourierUnitary` IS `Lp.fourierTransformₗᵢ`,
+  so these are honest eigenvectors of the operator the prolate estimates use.  Parity is proved
+  alongside — `hermiteSchwartz_neg : hₙ(−x) = (−1)^n hₙ(x)` (induction through `creationCLM`,
+  using `deriv_comp_neg`), hence `hermiteSchwartz_even : h_{2k}(−x) = h_{2k}(x)`, which places
+  the even-index family in `evenSubspace` where the constrained problem lives.
+
+  Settled API facts, recorded so they are not re-derived: in `smulLeftCLM F (g : E → 𝕜)` the
+  field `𝕜` is inferred from the MULTIPLIER, not from `F`.  In mathlib's
+  `fourier_lineDerivOp_eq`/`lineDerivOp_fourier_eq` the multiplier is `fun x => inner ℝ x m`,
+  which is ℝ-valued, so those lemmas run at `𝕜 = ℝ` acting on ℂ — no `ℝ → ℂ` coercion is
+  inserted.  Bridging to the ℂ-valued multiplier `fun x : ℝ => (x:ℂ)` is one `ext` plus
+  `Complex.real_smul`.  `lineDerivOp` is a plain typeclass function `V → E → F`, not a bundled
+  map; the bundled form is `lineDerivOpCLM R E m`, available because
+  `LineDerivSMul 𝕜 E 𝓢(E,F) 𝓢(E,F)` is an instance for generic `𝕜`.
 
   Then the payoff chain, all proved:
   * `fourierIntegral_gaussianSchwartz` — `𝓕 (e^{−πx²}) = e^{−πx²}` pointwise (`b = 1` case of
@@ -725,3 +722,47 @@ truncation error of each `h_n` on `[−a,a]`, and the `n+1`-dimensional assembly
 `evenProlateLeakageValue_le_of_form_trial`.  The rate question recorded above is unchanged: the
 truncated-Gaussian profile is provably `≍ τ²`, so whether the *Hermite* profiles reach the Fuchs
 `e^{−2c}` is the open point, and it is now a statement one can write down in Lean.
+
+## L6a — every fixed leakage of the TRUE operator vanishes (DONE, 2026-07-18)
+
+Two new modules close the qualitative half of L6a for **all** indices, not only `n = 0`.
+
+`formal/GaloisForLFunctions/HTGeometry/TrialSpanConcentration.lean` (axiom-clean):
+
+* `norm_proj_le` — a projection satisfying Pythagoras is a contraction.
+* `norm_sub_proj_unitary_proj_le : ‖h − P U P h‖ ≤ 2‖h − P h‖` for `U h = h`.  This is the
+  **linear** form of the truncation estimate; the earlier `norm_sq_proj_unitary_proj_ge` loses a
+  square and therefore does not survive aggregation over a family.  Splitting
+  `h − P U P h = (h − P h) + P U (h − P h)` is the whole proof.
+* `norm_sq_apply_ge_of_orthonormal_span : (1 − √m·η)²‖f‖² ≤ ‖T f‖²` on the span of an orthonormal
+  family each of whose members `T` moves by at most `η` — the Bessel–Chebyshev aggregation
+  of `OrthonormalTrialSpan` turned into a *lower* bound by subtracting from the identity.
+
+`formal/GaloisForLFunctions/RHTower/HermiteEvenCarrier.lean` (axiom-clean):
+
+* `hermiteL2_mem_evenSubspace` — even-index Hermite classes lie in the even carrier.
+* `hermiteEven j := h_{4j}` and `evenFourierTransform_hermiteEven : F h_{4j} = h_{4j}`, since
+  `(−i)^{4j} = 1`.  **The step-four subfamily is forced**: only the Fourier-*fixed* modes feed
+  the truncation estimate, and those are exactly the `4j` ones — the same step-four ladder the
+  constrained transfer runs on, arrived at independently.
+* `orthonormal_hermiteEvenUnit` — the normalized step-four family is orthonormal in the carrier.
+* `norm_sq_sub_cut_eq` — the truncation error of ANY carrier vector is its `L²` mass outside the
+  aperture (the Gaussian-specific computation, generalized).
+* `tendsto_norm_sq_sub_cut` — that mass vanishes as `a → ∞`, by dominated convergence along
+  `atTop` (which is countably generated, so `tendsto_integral_filter_of_dominated_convergence`
+  applies directly — no ℕ-subsequence detour needed).
+* `evenProlateLeakageValue_le_of_hermite_trial` — the `(n+1)`-member trial-space bound.
+* **`evenProlateLeakageValue_tendsto_zero (n) : d_n(a) → 0 as a → ∞`, for EVERY fixed `n`.**
+  Strictly generalizes `evenProlateLeakageValue_zero_tendsto_zero`.
+* `evenProlateConcentrationValue_tendsto_one (n)` — the dual form.
+
+Lean note: `inner_smul_left/right` do NOT fire on `evenSubspace` elements (the submodule's `•`
+instance is not syntactically the inner-product-space one); descend to `SoninL2` by `rfl` first.
+
+WHAT THIS OPENS: the `ClockEnvelope` contract's qualitative content is now discharged for the
+true operator at every index.  What remains is purely the RATE: `lower` and `upper` need
+`d_n(a) ≍ C_n a^{2e_n+1} E(a)` for one shared clock `E`.  The trial-space route gives an upper
+bound of the shape `(√(n+1)·2τ_n(a))²` with `τ_n` the Hermite tail — so the next concrete
+question is whether the Hermite tail `∫_{|x|>a}|h_{4j}|²` can be made explicit enough to compare
+with `a^{2e_j+1}E(a)`, and, separately, what supplies the matching LOWER bound (no variational
+argument gives one; that needs the eigenfunction itself, or a trace/determinant identity).

@@ -84,23 +84,18 @@ def analyticScalarReplicatedCarrier
   finiteAbscissaLSeriesToUpperEndMero
     (boundedScalarReplicatedFiniteAbscissa u M hu)
 
-/-- Finite-abscissa prime-power source families inherit their complete differential spectrum in
-the actual upper-end meromorphic field over the genuine rational coordinate. -/
-theorem differentialIndependent_finiteAbscissaPrimeProfiles_of_clockIndependent
+/-- Formal differential independence over `C` is the exact algebraic input needed to transfer a
+finite-abscissa source family to the actual upper-end meromorphic field over `C(z)`. -/
+theorem differentialIndependent_finiteAbscissaPrimeProfiles_of_formal
     {I : Type*} [Fintype I] [DecidableEq I] [Nonempty I]
     (f : I → finiteAbscissaArithmeticSubalgebra)
-    (hsupport : ∀ i, PrimeProfileSupportedOnPositivePrimePowers (f i).1)
-    (hclock : PrimeProfileClockIndependent (fun i ↦ (f i).1)) :
+    (hformal : GaloisForLFunctions.DifferentialIndependent ℂ
+      (fun i ↦ algebraMap (ArithmeticFunction ℂ)
+        arithmeticFunctionFractionField (f i).1)) :
     GaloisForLFunctions.DifferentialIndependent upperEndRationalCoordinateField
       (fun i ↦ finiteAbscissaLSeriesToUpperEndMero (f i)) := by
   let sourceJets : I × Nat → finiteAbscissaArithmeticSubalgebra := fun q ↦
     (finiteAbscissaRotatedDeriv^[q.2]) (f q.1)
-  have hformal : GaloisForLFunctions.DifferentialIndependent
-      finitePrimeCoefficientField
-      (fun i ↦ algebraMap (ArithmeticFunction ℂ)
-        arithmeticFunctionFractionField (f i).1) :=
-    (differentialIndependent_fractionPrimeProfiles_iff_clockIndependent
-      (fun i ↦ (f i).1) hsupport).mpr hclock
   have hformalC : AlgebraicIndependent ℂ
       (fun q : I × Nat ↦ algebraMap (ArithmeticFunction ℂ)
         arithmeticFunctionFractionField
@@ -116,8 +111,7 @@ theorem differentialIndependent_finiteAbscissaPrimeProfiles_of_clockIndependent
       funext q
       exact differentialJet_algebraMap_primeProfileRotatedLogJet q.2 (f q.1).1
     rw [hjets] at hformal
-    exact AlgebraicIndependent.restrictScalars
-      (FaithfulSMul.algebraMap_injective ℂ finitePrimeCoefficientField) hformal
+    exact hformal
   let arithmeticIncl : ArithmeticFunction ℂ →ₐ[ℂ]
       arithmeticFunctionFractionField :=
     IsScalarTower.toAlgHom ℂ (ArithmeticFunction ℂ)
@@ -147,6 +141,26 @@ theorem differentialIndependent_finiteAbscissaPrimeProfiles_of_clockIndependent
   convert hanalytic using 1
   funext q
   exact differentialJet_finiteAbscissaLSeriesToUpperEndMero (f q.1) q.2
+
+/-- Finite-abscissa prime-power source families inherit their complete differential spectrum in
+the actual upper-end meromorphic field over the genuine rational coordinate. -/
+theorem differentialIndependent_finiteAbscissaPrimeProfiles_of_clockIndependent
+    {I : Type*} [Fintype I] [DecidableEq I] [Nonempty I]
+    (f : I → finiteAbscissaArithmeticSubalgebra)
+    (hsupport : ∀ i, PrimeProfileSupportedOnPositivePrimePowers (f i).1)
+    (hclock : PrimeProfileClockIndependent (fun i ↦ (f i).1)) :
+    GaloisForLFunctions.DifferentialIndependent upperEndRationalCoordinateField
+      (fun i ↦ finiteAbscissaLSeriesToUpperEndMero (f i)) := by
+  apply differentialIndependent_finiteAbscissaPrimeProfiles_of_formal f
+  have hformal : GaloisForLFunctions.DifferentialIndependent
+      finitePrimeCoefficientField
+      (fun i ↦ algebraMap (ArithmeticFunction ℂ)
+        arithmeticFunctionFractionField (f i).1) :=
+    (differentialIndependent_fractionPrimeProfiles_iff_clockIndependent
+      (fun i ↦ (f i).1) hsupport).mpr hclock
+  unfold GaloisForLFunctions.DifferentialIndependent at hformal ⊢
+  exact AlgebraicIndependent.restrictScalars
+    (FaithfulSMul.algebraMap_injective ℂ finitePrimeCoefficientField) hformal
 
 /-- Actual analytic differential independence of finite bounded replicated profiles is exactly
 ordinary profile independence in the direction needed for completion. -/

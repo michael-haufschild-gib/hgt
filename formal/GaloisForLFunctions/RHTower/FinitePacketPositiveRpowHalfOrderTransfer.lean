@@ -251,8 +251,7 @@ theorem finitePacketRpowEnergy_exactExponent_of_positive_square_halfOrder
               congr 1
               dsimp only [q]
               ring
-            rw [hcardPower]
-            field_simp [hcardq.ne']
+            rw [hcardPower, div_div]
           _ ≤ (card ^ q * finitePacketRpowEnergy a p n) / card ^ q :=
             div_le_div_of_nonneg_right hcombined hcardq.le
           _ = finitePacketRpowEnergy a p n := by field_simp [hcardq.ne']
@@ -267,7 +266,8 @@ theorem finitePacketRpowEnergy_exactExponent_of_positive_square_halfOrder
             rw [Real.rpow_natCast]
           _ ≤ (L / 2) ^ q * (B ^ p) ^ n / card ^ p :=
             div_le_div_of_nonneg_left
-              (mul_nonneg (Real.rpow_nonneg _ _) (pow_nonneg hBp.le n))
+              (mul_nonneg (Real.rpow_nonneg (by linarith) q)
+                (pow_nonneg hBp.le n))
               (Real.rpow_pos_of_pos hcard p) hcardPow
           _ ≤ finitePacketRpowEnergy a p n := hcore
       have hden : 0 < r ^ n := pow_pos hr n
@@ -276,7 +276,8 @@ theorem finitePacketRpowEnergy_exactExponent_of_positive_square_halfOrder
             ((L / 2) ^ q * (B ^ p) ^ n / card ^ k) / r ^ n := by
           dsimp only [card]
           rw [div_pow]
-          field_simp [hr.ne']
+          simp only [div_eq_mul_inv]
+          ring
         _ ≤ finitePacketRpowEnergy a p n / r ^ n :=
           div_le_div_of_nonneg_right hweakened hden.le
     exact tendsto_atTop_mono' atTop hlower hdiverge

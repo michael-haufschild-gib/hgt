@@ -6329,6 +6329,34 @@ Hence the first honest inequality is
  <<_(A,rho) log(M)^b/M.                                (AC25)
 ```
 
+`[FRONTIER CORRECTION]` The absolute-value notation hides an unconditional half.  The exact
+operator join `(HGS29)` in `high-grade-sieve-survivor-one-mode-reduction.md` writes the bracketed
+global scalar as
+
+```text
+FCRJ_M=D_M-R_M=||P_M||^2-E_M,
+E_M=E_prog+E_quad,                                      (AC26)
+```
+
+where `P_M` is the ordinary-prime endpoint carrier and `E_M` is already inside the allowed
+quadrature budget.  Hence
+
+```text
+D_M-R_M+E_M=||P_M||^2>=0,                               (AC27)
+```
+
+with equality exactly when `P_M=0`.  Therefore the negative half of `(AC25)` is unconditional;
+up to the controlled error, `(AC25)` is equivalent to the single reverse response inequality
+
+```text
+R_M>=D_M-O_(A,rho)(log(M)^b/M),                         (AC28)
+```
+
+or to the small upper bound on `||P_M||^2`.  This corrects the orientation of the open core but
+does not weaken its RH-equivalent strength.  The dependency-closed theorem and novelty verdict
+are recorded in
+`2-fully-proven/not_new_scientific_knowledge/fcrj-corrected-response-saturation-law.md`.
+
 No sectorwise absolute estimate is justified.  Without the exact common physical profile `W_h`,
 the primitive anchored response coordinates can be phase-aligned independently, so CRT
 conjugation and causal-color retention alone cannot improve the sector total-variation norm.  Any

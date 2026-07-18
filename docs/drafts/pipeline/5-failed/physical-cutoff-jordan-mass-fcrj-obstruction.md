@@ -2,7 +2,7 @@
 
 - **ID:** `physical-cutoff-jordan-mass-fcrj-obstruction`
 - **Stage:** 5-failed
-- **Type:** `[FALSIFIED] [BRIDGE]`
+- **Type:** `[FALSIFIED] [BRIDGE] [POSITIVE SALVAGE]`
 - **Source:** `critical-multiplicative-compensated-cancellation-rh.md`, `(PF12)`--`(PF13)`,
   `(AC15)`, `(AC17)`--`(AC25)`
 - **Statement:** The negative mass or total variation of a separately truncated physical-cutoff
@@ -74,7 +74,26 @@ sharp norm one.  It is formalized by
 `GaloisForLFunctions/RHTower/PhysicalCutoffAliasResponseJoining.lean`; the Stage 3 card is
 `3-formalized/needs-audit/physical-cutoff-alias-response-joining.md`.
 
+After the global low/high source join, `(HGS29)` exposes a second exact survivor.  If `D_M` is the
+`AC25` density, `R_M` its complete joined response, `E_M` the progression-plus-quadrature error,
+and `P_M` the ordinary-prime endpoint carrier, then
+
+```text
+D_M-R_M+E_M=||P_M||^2>=0.
+```
+
+Thus `R_M<=D_M+E_M`, with equality exactly when `P_M=0`.  Once `|E_M|` is placed inside the
+existing error budget, the negative half of the absolute `AC25` target is unconditional; only the
+reverse response inequality remains.  The dependency-closed paper proof and sharp quantitative
+reduction are recorded in
+`2-fully-proven/not_new_scientific_knowledge/fcrj-corrected-response-saturation-law.md`.
+This is a corpus-new frontier correction but an immediate Hilbert-square consequence, so it is
+honestly classified as a bridge rather than new scientific knowledge.
+
 ## Representation lesson
 
 Do not Jordan-decompose before the forced low/high response pieces and zero mode have joined.
-The genuine open target is the global density-versus-anchored-response correlation `(AC25)`.
+After joining, do not ask for an unoriented “correlation cancellation”: corrected response
+domination is automatic.  The genuine open target is the one-sided saturation inequality
+`R_M>=D_M-O(polylog(M)/M)`, equivalently the small upper bound for the ordinary-prime aperture
+energy.

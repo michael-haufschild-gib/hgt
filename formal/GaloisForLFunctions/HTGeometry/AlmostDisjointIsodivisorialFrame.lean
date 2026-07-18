@@ -115,33 +115,6 @@ theorem primeOrientationTailIndependent_setFlip_of_almostDisjoint
   primeOrientationTailIndependent_setFlip_of_exclusive A houtside
     (infinite_exclusiveBlock_of_pairwise_finite_intersections A hinfinite hpair)
 
-/-- A common nowhere-zero coordinate weight preserves tail coefficient independence. -/
-theorem tailCoefficientIndependent_commonWeight_iff
-    {I P : Type*} [Fintype I] (a : I → P → ℂ) (w : P → ℂ)
-    (hw : ∀ p, w p ≠ 0) :
-    TailCoefficientIndependent (fun i p => w p * a i p) ↔
-      TailCoefficientIndependent a := by
-  classical
-  have hsupport : ∀ c : I → ℂ,
-      {p | ∑ i, c i * (w p * a i p) ≠ 0} =
-        {p | ∑ i, c i * a i p ≠ 0} := by
-    intro c
-    ext p
-    have hsum : (∑ i, c i * (w p * a i p)) = w p * ∑ i, c i * a i p := by
-      rw [Finset.mul_sum]
-      apply Finset.sum_congr rfl
-      intro i _
-      ring
-    simp only [Set.mem_setOf_eq, hsum, mul_ne_zero_iff]
-    exact and_iff_right (hw p)
-  constructor
-  · intro h c hsupp
-    apply h c
-    rwa [hsupport c]
-  · intro h c hsupp
-    apply h c
-    rwa [← hsupport c]
-
 /-- Multiplication by a holomorphic unit preserves the local meromorphic divisor order. -/
 theorem meromorphicOrderAt_mul_analyticUnit_eq
     {f u : ℂ → ℂ} {z : ℂ} (hu : AnalyticAt ℂ u z) (huz : u z ≠ 0) :
