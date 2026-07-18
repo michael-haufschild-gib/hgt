@@ -1631,3 +1631,4 @@ import GaloisForLFunctions.RHTower.SlabConjugatedGermTheorem
 import GaloisForLFunctions.RHTower.SlabTraceEdgeEstimate
 import GaloisForLFunctions.RHTower.SlabMassSquareCertificate
 import GaloisForLFunctions.RHTower.PhysicalCutoffAliasResponseJoining
+import GaloisForLFunctions.RHTower.DetectorOrderClassification
