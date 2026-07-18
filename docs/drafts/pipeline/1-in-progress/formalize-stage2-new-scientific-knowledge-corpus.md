@@ -68,16 +68,39 @@ the same dependency-prioritized implementation queue.  Extra same-tree implement
 reintroduce file ownership and compiler-contention failures, so implementation remains in the
 coordinated four-slot pool.
 
-## Current lane
+## Current tranche
 
-The first implementation target is `split-source-boundary-universality`. The existing source
-theorems already give the arbitrary-family mixed dependence criterion. The missing paper surface is
-the simultaneous coboundary quotient, localization to the differential-operator fraction field,
-its represented matroid, and the finite-set rank equality.
+- `split-source-boundary-universality`: the formerly missing simultaneous coboundary quotient,
+  fraction-field localization, represented differential matroid, and finite-packet rank formula
+  now exist in `LocalizedQuotientMatroid`, `SourceBoundaryQuotientMatroid`, and
+  `SplitSourceBoundaryMatroid`.  The exact owning target and scratch axiom audit pass; the remaining
+  work is the serialized umbrella/index/lint gate and card promotion.
+- scalar order lane: finish and verify `SimpleTranscendentalIntersection` and
+  `ScalarDifferentialRationalOrder`.
+- bounded-relation lane: formalize the arbitrary positive superlinear profile and the corrected
+  shifted polynomial profile `B * (n + 1)^β`; the literal unshifted paper formula is inconsistent
+  at `n = 0`.
+- projective fixed-field lane: build the multivariate free-coordinate partial-kernel theorem needed
+  by the depth-two, one-sided, and Tits fixed-field cards.
+- root lane: integrate the already-green scalar substitution/projective/finite-torsor leaves and
+  build the order/leader/total-degree ranking foundation for unrestricted differential Lüroth.
 
-The first reusable leaf is a generic localized quotient matroid for an arbitrary module. It uses
-the already formalized symmetric-algebra criterion to represent linear independence without a
-finite-coordinate or finite-dimensional hypothesis.
+## Completed compiler queue
+
+The read-only compiler tasks are finished packets, not active implementation workers.  Their task
+IDs are retained so implementation agents can recover the complete theorem inventories and proof
+DAGs without repeating the audits.
+
+- scalar/Lüroth: `019f7528-57a6-7343-b49f-546e0a8e5ffc`; first leaf is repaired minimal scalar
+  differential rank, and the deepest parent is Ritt's normalized coefficient-ratio theorem.
+- projective horizon/building: `019f7528-5afd-7e50-a771-b8522143791e`; first shared leaf is the
+  multivariate free-coordinate partial-kernel fixed-field theorem.
+- log-CY/toric/entire cascade: `019f7528-5e1e-7da1-ac64-cc38fdb06468`.
+- bounded relation/ADE/torsion: `019f752c-7d8e-78c3-8e2f-a7a748b0435a`.
+- gamma/multiple-gamma/elliptic-gamma: `019f752c-80d8-7d10-8116-7cc302bfea13`.
+- quasi-abelian/divisor/Manin/isogeny: `019f752c-84c7-7740-bc50-242ee99e7b4c`.
+- constrained-prolate/operator/spectral: `019f752c-8ad5-7983-9bff-99062316842d`.
+- Euler/zeta/Bohr/Herglotz: `019f752c-901b-7981-b847-ee0dc41aa6e9`.
 
 ## Known foundation clusters
 
@@ -319,9 +342,10 @@ finite-coordinate or finite-dimensional hypothesis.
 - [ ] `scalar-differential-inversive-core-projective-law` — theorem/corollary surface inventory pending
 - [ ] `scalar-ht-horizon-celestial-sphere` — theorem/corollary surface inventory pending
 - [ ] `scalar-ht-persistent-clock-character-law` — theorem/corollary surface inventory pending
-- [ ] `split-source-boundary-universality` — in progress: exact mixed dependence and raw/log rank
-  preservation already exist; implementing the simultaneous coboundary quotient, fraction-field
-  localization, represented matroid, and finite-set rank equality
+- [ ] `split-source-boundary-universality` — exact mixed dependence, simultaneous coboundary
+  quotient, fraction-field localization, represented differential matroid, and finite-packet rank
+  equality are Lean-complete with standard axioms; serialized umbrella/index/lint gate and Stage-3
+  promotion remain
 - [ ] `stable-coframe-log-calabi-yau-rigidity` — theorem/corollary surface inventory pending
 - [ ] `symmetry-caged-fixed-divisor-full-orbit-freeness` — theorem/corollary surface inventory pending
 - [ ] `toric-log-calabi-yau-tail` — theorem/corollary surface inventory pending
