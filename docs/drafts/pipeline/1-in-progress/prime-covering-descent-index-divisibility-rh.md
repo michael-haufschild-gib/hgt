@@ -1487,3 +1487,37 @@ transparency + novelty gates (Carleson conditions are NON-analytic cone-type dat
 against the surviving-class catalogue; audit the de Branges/model-space interpolation
 literature for priors: Seip, Ortega-Cerda, Baranov on interpolating sequences in de Branges
 spaces).
+
+## 2026-07-18 session 2 (cont. 35) — HB = containment; the chain-termination law; the
+## canonical-system return; the consumer rescoped to L2-averaged form
+
+**[DERIVED + VERIFIED (rank-2 exact)]** (i) `E_c(z) = (z - x0 - i(d-c))(z - x0 + i(d+c))` is
+HERMITE-BIEHLER ⟺ `c > |d|` ⟺ box admissibility — **the containment lever IS the HB
+condition**. (ii) BRIDGE IDENTITY: `det H_2 * 4c^2(c^2 - d^2) = -pi^2 m^2 W~(0) * det G_pair`
+— fiber-Gram and Hankel are the same condition, SIGN-REVERSED: off-line pairs are
+BETTER-separated interpolation nodes within one box; the evaluation diagonal is d-free
+(`2c^3/pi` — blindness in kernel costume). The boundedness consumer cannot act on the c-scan
+diagonal; it must act across levels (the p^{2d} modulus) or across fibers.
+
+**[CONJECTURE — CHAIN-TERMINATION LAW]** The de Branges chain `{H(E_{B,c})}_c` (totally
+ordered by the dB ordering theorem — non-analytic structure, survivor class) TERMINATES at
+`c* = |d|` for an off-line pair (HB breakdown; simultaneously `det G_pair -> 0` and
+`N(c) -> infinity` — ONE termination event, two markers; `c*^2 = max(D_Prony, 0)`) and extends
+to depth 0 on-line. RH-per-box ⟺ every innermost chain reaches depth 0. **[THE
+CANONICAL-SYSTEM RETURN]** Krein–de Branges: a continuous dB chain IS a canonical system —
+the c-scan carries a HAMILTONIAN `H(c)`, and the dichotomy is endpoint behavior of that
+canonical system. The scattering/canonical-system lane (this session's very first candidate,
+set aside at the start) has REAPPEARED, forced by the proof chain. Next: construct the
+rank-2 c-scan Hamiltonian explicitly; determine what finite-level source data (recovery
+theorem, cont. 28) determines it.
+
+**[CONSUMER RESCOPED — audit verdict]** Phase-metric interpolation criteria verified
+(Marzo–Nitzan–Olsen doubling; Lyubarskii–Seip A_2; Ortega-Cerda–Seip frames). No prior work
+makes zeta zeros interpolating for any natural H(E) (Burnol: completeness+minimality only).
+DAMAGE: uniform interpolation ⟺ liminf normalized gap > 0 AND simplicity — conjecturally
+FALSE under GUE (best RH-conditional mu < 0.50895, Inoue arXiv:2604.05733; unconditional
+positive-proportion small gaps STTB Trans. AMS 2022; NOTE: GTB arXiv:1904.06001 WITHDRAWN, do
+not cite). The global level-uniform consumer is abandoned as conjecturally vacuous; the
+surviving restatement: **the L2-AVERAGED / Carleson-embedding, multiplicity-robust form of
+the quotient bound** (small gaps do not kill averaged embeddings — Baranov's Bernstein/
+embedding machinery applies). Next: state the averaged form exactly and Gate-3 it.
