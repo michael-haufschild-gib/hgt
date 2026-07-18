@@ -1998,3 +1998,41 @@ vanishing ⟺ fiber on the critical line ⟺ single point ⟺ module-6 Gram zero
 open surface: the defect contour terms `-> 0` as `h -> 0+` (one trace-edge log estimate).
 SEVEN Lean modules; the certificate is Lean-stated end to end modulo the defect-edge estimate
 and the production identity (now: the sign structure of `b_1`).
+
+## 2026-07-18 session 2 (cont. 49) — THE LIMIT IS ELIMINATED: one exact identity per height at
+## a single h; module 8 makes the displacement-germ equivalence hypothesis-free
+
+**[PROBE 1 — monotone certificate DEAD; the single-h identity is the prize]** The Im-weight
+drops under d/dh (Stokes on the moving strips): `db_1/dh` = the plain first moment on the two
+vertical edges (closed form derived; C^0 in h; half-residue structures cancel BETWEEN edges
+for EVERY fiber). Sign-indefinite (exact decisions both directions; nonzero slope even
+under RH) — fixed-h monotone certificates dead. **THE PRIZE:**
+`b_1(h) - V = (2 pi)^{-1} ∬_{S(h)} u tr dA` EXACTLY (FTC + certified germ; integrand
+integrable). The limit is ELIMINATED:
+
+> **RH at gamma ⟺ `b_1(h) = (2 pi)^{-1} ∬_{S(h)} u tr dA` at ONE (any) h — an exact identity
+> between a boundary integral and an area integral, BOTH divisor-free.**
+
+**[PROBE 2 — the singular class closed]** Fiber-linear germs of `1/(u - vbar)`-type kernels
+are exactly the mass-mean functionals — mean-killed; `|delta|`-linear detection is UNREACHABLE
+in the holomorphic-residue class (per-edge `i pi` sign-jumps cancel edge-pairwise — the same
+mechanism as P1(ii)). The ONLY class left open for `|delta|`: the genuinely non-holomorphic
+BERGMAN PAIRING `∬∬ conj(tr(u)) tr(v)/(ubar - v)^2`-type (the |tr|^2 positive kernel).
+
+**[LEAN MODULE 8 — SHIPPED, commit d238a833; 668 lines; full build green; lint passed]**
+`RHTower/SlabTraceEdgeEstimate.lean`: arsinh edge calculus (`integral_inv_sqrt_edge`,
+`tendsto_mul_arsinh_div`), pole-peeling trace bound (`exists_slabTracePoleBound` via the
+corpus factorization), defect vanishing (`tendsto_slabDisplacementDefect`), and the
+HYPOTHESIS-FREE capstone `exists_slabDisplacementMoment_tendsto_rh_equivalence`: the genuinely
+conjugated displacement moment converges to `i * fiberVariance(gamma)` and tends to 0 ⟺ the
+height fiber lies on the critical line. Module 7's defect conjunct DISCHARGED. **Eight Lean
+modules; the per-height RH-equivalence is now an unconditional formal theorem; the production
+demand is the single-h boundary=area identity (or the Bergman-pairing route to |delta|).**
+
+**[NEXT]** (1) The single-h identity's source-side analysis: both sides are divisor-free
+integrals of the SAME trace — the identity fails by exactly V > 0 at off-line heights; the
+production question: what source structure could prove boundary = area at one h (a Stokes/
+holomorphicity statement that is FALSE when poles sit off the axis... adjudicate: the identity
+IS "tr behaves as if fiber-on-axis" — check whether it reduces to yet another known face or
+carries the new leverage of finite-h exactness); (2) the Bergman pairing germ table;
+(3) promotions + referee cont. 48-49.
