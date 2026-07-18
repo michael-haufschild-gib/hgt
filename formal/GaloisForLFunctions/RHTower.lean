@@ -1622,3 +1622,4 @@ import GaloisForLFunctions.RHTower.ZetaHorizonGammaIntensitySeparation
 import GaloisForLFunctions.RHTower.FixedWindowWeylRigidity
 import GaloisForLFunctions.RHTower.PairIdealCensusAlgebra
 import GaloisForLFunctions.RHTower.RankTwoPacketMomentIdentities
+import GaloisForLFunctions.RHTower.CoHighPacketGramCollapse
