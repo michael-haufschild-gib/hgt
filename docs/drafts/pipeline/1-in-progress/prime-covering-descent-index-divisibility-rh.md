@@ -655,3 +655,50 @@ Three generative continuations (springboards, in priority order):
    constant square-root structure is the modular candidate for the source-supplied √disc.
 3. **Arithmetic face:** half-integral weight / Waldspurger (literature audit: unexploited raw
    material) — value-level square roots of central L-data as the arithmetic candidate.
+
+## 2026-07-18 session 1 (cont. 12) — tower-splice + Thomae verdicts: the M-curve frontier
+
+**[DERIVED, first pass — tower splice]** (a) √ξ-tower and box-√disc are constructionally
+independent (the tower's g branches at on-line zeros, exactly where disc data lives). (b) In
+the line-real coordinate each off-line mirror pair contributes disc factor `-(2Re rho - 1)^2 < 0`;
+cross terms are squares. Hence `disc(W_B) = (-1)^{r_2(B)} * (positive)`, and the ENTIRE depth-4
+content is one reality bit per box: √disc real ⟺ no off-line pair in the box. (c) Bare
+ℂ-valued coherent √disc families always exist (sign torsor — vacuous); the content is
+line-REALITY, and: coherent line-real √disc family on all height-adapted line-symmetric boxes
+⟺ RH ⟺ Nonempty (CoherentTower xi rightHalf) — census depth-4 unifies with the FULL formalized
+tower, not merely rung 1. The per-pair obstruction is exactly the phase `i`: the source must
+produce `arg disc`, not `|disc|`.
+
+**[LITERATURE — Thomae mechanism, verified]** Thomae (Mumford Tata II ch. IIIa): for
+`y² = prod (x - lambda_i)`, even-characteristic theta-nulls to the 4th power equal explicit
+period factors times branch-difference products — square roots of disc factors supplied by
+PERIOD DATA (Ω, det A), with signs pinned by the spin structure (w_2). Not circular in the
+cover: given the curve, periods buy √disc through a genuinely independent channel.
+McKean–Trubowitz (CPAM 29, 1976) + Feldman–Knörrer–Trubowitz: transcendental/infinite branch
+configurations support full theta/period theory. Corpus: ZERO Thomae/theta-null material; the
+spin face exists as backlog `moonshot-spinor-half-frobenius.md`.
+
+**[NEW REPRESENTATION — M-curve frontier]** The hyperelliptic curve `y² = W_B(x)` of each box
+configuration exists UNCONDITIONALLY (branch points are the box zeros; no evenness demanded),
+with W_B source-defined via boundary Newton sums. The line-real involution is a real structure
+on this curve; on-line zeros = real branch points, off-line mirror pairs = conjugate branch
+pairs. Hence, trivially at the level of statements: RH ⟺ every box curve is an M-CURVE (all
+branch points real). The VALUE is not the renaming but the toolbox it unlocks: M-curves have
+period/theta CHARACTERIZATIONS (Comessatti; Gross–Harris real theta characteristics;
+Krichever's M-curve criteria via KP — M-curves ⟺ regular real KP solitons), i.e. CHECKABLE
+positivity/reality conditions in period data. The new mechanism target, replacing "produce
+√disc": **produce the period-reality/positivity certificate of the box curves from the
+theta–prime–Gamma source** — e.g. a source integral representation of the A-periods of
+`x^k dx / y` over the box curve whose reality/positivity is provable before reading the divisor.
+- `[OPEN CORE — next Gate-2/3 cycle]` State the exact M-curve period criterion to target
+  (Gross–Harris form vs Krichever form), derive the source-side expression of the box-curve
+  periods (contour integrals of boundary data — the curve's coefficients are Newton-sum
+  polynomials in source boundary integrals), and hostile-test for hidden restatement: the
+  period integrals depend on the divisor through W_B — determine whether reality of periods is
+  provable from the SYMMETRY of the source data alone (line-reality of W_B is automatic from
+  the FE — check!) or secretly requires zero locations. NOTE: W_B line-real is automatic
+  (mirror-symmetric divisor); real curves with complex-pair branch points still have line-real
+  W — so period REALITY is not automatic and is exactly where content lives: the M-condition is
+  about the TOPOLOGICAL TYPE of the real structure, distinguishable in period data.
+- No computations (per lane rules): the genus-1 two-zero Thomae calibration must be done
+  symbolically, not numerically.
