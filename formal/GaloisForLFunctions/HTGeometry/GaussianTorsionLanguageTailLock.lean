@@ -532,6 +532,21 @@ theorem gaussianOffsetPatternOfKey_support_subset
   simp only [gaussianOffsetInterval, Finset.mem_Icc, centeredNatOffset]
   constructor <;> omega
 
+theorem gaussianAtomInWindow_of_patternOfKey_support_subset
+    {q R : ℕ} {ν : ℕ →₀ ℕ} (hRq : R ≤ q)
+    (hsupp : (gaussianOffsetPatternOfKey q ν).support ⊆
+      gaussianOffsetInterval R) :
+    gaussianAtomInWindow q R ν := by
+  intro i hi
+  have hoff : centeredNatOffset q i ∈
+      (gaussianOffsetPatternOfKey q ν).support := by
+    rw [Finsupp.mem_support_iff, gaussianOffsetPatternOfKey,
+      Finsupp.mapDomain_apply (centeredNatOffset_injective q)]
+    exact hi
+  have hz := hsupp hoff
+  simp only [gaussianOffsetInterval, Finset.mem_Icc, centeredNatOffset] at hz
+  constructor <;> omega
+
 theorem gaussianOffsetPatternOfKey_mem_face
     {D q R : ℕ} {S : ℤ} {ν : ℕ →₀ ℕ}
     (hcount : ν.sum (fun _ k => k) = D)
@@ -1792,6 +1807,539 @@ theorem exists_eventually_gaussianGapActiveAtom_linear
     nlinarith [mul_nonneg hB.le henergyν,
       mul_le_mul_of_nonneg_right hcB (by positivity : (0 : ℝ) ≤ t)]
 
+/-- The normalized aggregate of all lower-degree and larger-source atoms. -/
+noncomputable def gaussianGapResidual
+    (F : PowerSeries ℂ) (n D τ : ℕ)
+    (Q : MvPolynomial (Fin (n + 2)) ℂ) (B : ℝ) (S : ℤ)
+    (H R₀ : ℕ) (a₀ : ℤ →₀ ℕ) (t : ℕ) : ℂ :=
+  let q := t + R₀
+  let m := atomValuation (fun i => B * (i : ℝ) ^ 2)
+    (gaussianOffsetShiftedKey q a₀)
+  ∑ ν ∈ gaussianGapActiveAtoms n D τ Q S q,
+    (aevalWeight n (D * q + τ) Q ν / (q : ℂ) ^ H) *
+      (Real.exp (-(atomValuation (fun i => B * (i : ℝ) ^ 2) ν - m)) : ℂ) *
+        normalizedAtomPhase F (fun i => B * (i : ℝ) ^ 2) ν
+
+/-- The lower-degree/larger-source normalized residual tends to zero as one aggregate. -/
+theorem tendsto_gaussianGapResidual_zero
+    {B : ℝ} (hB : 0 < B)
+    {n D τ H : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
+    {anchor : Fin (n + 2) →₀ ℕ} {S : ℤ} {R₀ : ℕ} {a₀ : ℤ →₀ ℕ}
+    (F : PowerSeries ℂ)
+    (hb : ∀ i, ‖PowerSeries.coeff i F‖ =
+      Real.exp (-(B * (i : ℝ) ^ 2)))
+    (ha : anchor ∈ Q.support)
+    (haD : jetMonomialDegree n anchor = D)
+    (haMax : ∀ m ∈ Q.support,
+      jetMonomialDegree n m = D →
+        magnitudeShiftCode n Q m ≤ magnitudeShiftCode n Q anchor)
+    (hDmax : D = magnitudeMaxJetDegree n Q) (hD : 0 < D)
+    (hS : S + (magnitudeShiftCode n Q anchor : ℤ) =
+      ((τ + magnitudeMaxJetOrder n Q : ℕ) : ℤ))
+    (ha₀ : a₀ ∈ gaussianOffsetFace D S R₀) :
+    Tendsto (gaussianGapResidual F n D τ Q B S H R₀ a₀)
+      atTop (𝓝 0) := by
+  classical
+  obtain ⟨c, hc, hgap⟩ := exists_eventually_gaussianGapActiveAtom_linear
+    hB ha haD haMax hDmax hD hS ha₀
+  obtain ⟨P, hmass⟩ := exists_aevalWeight_mass_natPow_bound n D τ Q
+  have hmassShift := (tendsto_add_atTop_nat R₀).eventually hmass
+  have hdecay := tendsto_natAdd_pow_mul_exp_neg_mul_zero R₀ P hc
+  have hbound : ∀ᶠ t : ℕ in atTop,
+      ‖gaussianGapResidual F n D τ Q B S H R₀ a₀ t‖ ≤
+        (((t + R₀ : ℕ) : ℝ) ^ P) * Real.exp (-(c * (t : ℝ))) := by
+    filter_upwards [hgap, hmassShift, eventually_ge_atTop 1] with
+      t hgapT hmassT ht
+    let q := t + R₀
+    let T := gaussianGapActiveAtoms n D τ Q S q
+    let den : ℂ := (q : ℂ) ^ H
+    let m := atomValuation (fun i => B * (i : ℝ) ^ 2)
+      (gaussianOffsetShiftedKey q a₀)
+    have hden : 1 ≤ ‖den‖ := by
+      dsimp only [den]
+      rw [norm_pow, Complex.norm_natCast]
+      exact one_le_pow₀ (by exact_mod_cast (show 1 ≤ q by dsimp only [q]; omega))
+    have hscaledMass :
+        (∑ ν ∈ T, ‖aevalWeight n (D * q + τ) Q ν / den‖) ≤
+          (q : ℝ) ^ P := by
+      calc
+        (∑ ν ∈ T, ‖aevalWeight n (D * q + τ) Q ν / den‖) ≤
+            ∑ ν ∈ T, ‖aevalWeight n (D * q + τ) Q ν‖ := by
+          apply Finset.sum_le_sum
+          intro ν _hν
+          rw [norm_div]
+          exact div_le_self (norm_nonneg _) hden
+        _ ≤ ∑ ν ∈ activeAevalAtoms n (D * q + τ) Q,
+              ‖aevalWeight n (D * q + τ) Q ν‖ :=
+          Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _)
+            (fun _ _ _ => norm_nonneg _)
+        _ ≤ (q : ℝ) ^ P := by simpa only [q] using hmassT
+    change ‖∑ ν ∈ T,
+      (aevalWeight n (D * q + τ) Q ν / den) *
+        (Real.exp (-(atomValuation (fun i => B * (i : ℝ) ^ 2) ν - m)) : ℂ) *
+          normalizedAtomPhase F (fun i => B * (i : ℝ) ^ 2) ν‖ ≤ _
+    calc
+      ‖∑ ν ∈ T,
+          (aevalWeight n (D * q + τ) Q ν / den) *
+            (Real.exp (-(atomValuation (fun i => B * (i : ℝ) ^ 2) ν - m)) : ℂ) *
+              normalizedAtomPhase F (fun i => B * (i : ℝ) ^ 2) ν‖ ≤
+          ∑ ν ∈ T,
+            ‖(aevalWeight n (D * q + τ) Q ν / den) *
+              (Real.exp (-(atomValuation (fun i => B * (i : ℝ) ^ 2) ν - m)) : ℂ) *
+                normalizedAtomPhase F (fun i => B * (i : ℝ) ^ 2) ν‖ :=
+        norm_sum_le _ _
+      _ ≤ ∑ ν ∈ T,
+          ‖aevalWeight n (D * q + τ) Q ν / den‖ *
+            Real.exp (-(c * (t : ℝ))) := by
+        apply Finset.sum_le_sum
+        intro ν hν
+        have hνGap := hgapT ν (by simpa only [T, q] using hν)
+        have hexp :
+            Real.exp (-(atomValuation (fun i => B * (i : ℝ) ^ 2) ν - m)) ≤
+              Real.exp (-(c * (t : ℝ))) := by
+          apply Real.exp_le_exp.mpr
+          dsimp only [m] at hνGap ⊢
+          linarith
+        rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+          abs_of_pos (Real.exp_pos _),
+          norm_normalizedAtomPhase F (fun i => B * (i : ℝ) ^ 2) hb, mul_one]
+        exact mul_le_mul_of_nonneg_left hexp (norm_nonneg _)
+      _ = (∑ ν ∈ T,
+          ‖aevalWeight n (D * q + τ) Q ν / den‖) *
+            Real.exp (-(c * (t : ℝ))) := by
+        rw [Finset.sum_mul]
+      _ ≤ (q : ℝ) ^ P * Real.exp (-(c * (t : ℝ))) :=
+        mul_le_mul_of_nonneg_right hscaledMass (Real.exp_nonneg _)
+      _ = (((t + R₀ : ℕ) : ℝ) ^ P) * Real.exp (-(c * (t : ℝ))) := by
+        rfl
+  apply tendsto_zero_iff_norm_tendsto_zero.mpr
+  apply squeeze_zero'
+  · exact Eventually.of_forall fun t => norm_nonneg _
+  · exact hbound
+  · exact hdecay
+
+/-- One fixed constant covering both the cancellation-safe bounded-offset estimate and the
+polynomial-mass estimate for offsets comparable with the translation center. -/
+noncomputable def gaussianADEExteriorConstant
+    (n D : ℕ) (Q : MvPolynomial (Fin (n + 2)) ℂ)
+    (B Q₀ : ℝ) (P : ℕ) : ℝ :=
+  (gaussianPatternWeightNormalizationConstant n D Q +
+      ((((n + 1) ^ P : ℕ) : ℝ))) * Real.exp (B * |Q₀|)
+
+theorem gaussianADEExteriorConstant_nonneg
+    (n D : ℕ) (Q : MvPolynomial (Fin (n + 2)) ℂ)
+    {B : ℝ} (hB : 0 ≤ B) (Q₀ : ℝ) (P : ℕ) :
+    0 ≤ gaussianADEExteriorConstant n D Q B Q₀ P := by
+  unfold gaussianADEExteriorConstant
+  positivity
+
+/-- Pointwise least-source exterior estimate.  Small offsets use cancellation-safe interpolation;
+offsets comparable with `q` use the total ADE mass and spend half the Gaussian exponent. -/
+theorem norm_normalized_gaussianExteriorAtom_le
+    {B : ℝ} (hB : 0 < B)
+    {n D τ H P q R : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
+    {S : ℤ} {Q₀ : ℝ}
+    (hmass :
+      (∑ μ ∈ activeAevalAtoms n (D * q + τ) Q,
+        ‖aevalWeight n (D * q + τ) Q μ‖) ≤ (q : ℝ) ^ P)
+    (huniform : ∀ (A : ℕ) (a : ℤ →₀ ℕ)
+        (ha : a ∈ gaussianOffsetFace D S A),
+      (polynomialPatternWeightPoly n D A τ Q
+        (gaussianOffsetPatternWindow a
+          (gaussianOffsetFace_totalCount ha) A)).natDegree ≤ H)
+    (hHJ : H ≤ magnitudeMaxJetOrder n Q) (hq : 1 ≤ q)
+    {ν : ℕ →₀ ℕ}
+    (hν : ν ∈ gaussianExteriorActiveAtoms n D τ Q S q R) :
+    let a := gaussianOffsetPatternOfKey q ν
+    let hcount : a.sum (fun _ k => k) = D := by
+      rw [gaussianOffsetPatternOfKey_totalCount]
+      exact (Finset.mem_filter.mp hν).2.1
+    let z := integerTupleOfFinsupp a D hcount
+    ‖aevalWeight n (D * q + τ) Q ν / (q : ℂ) ^ H‖ *
+        Real.exp (-B * ((gaussianOffsetPatternEnergy a : ℝ) - Q₀)) ≤
+      gaussianADEExteriorConstant n D Q B Q₀ P *
+        (1 + (integerLatticeMaxNatAbs z : ℝ)) ^
+          (magnitudeMaxJetOrder n Q + P) *
+        Real.exp (-(B / 2) * (gaussianOffsetEnergy z - Q₀)) := by
+  classical
+  dsimp only
+  let a := gaussianOffsetPatternOfKey q ν
+  have hνData := (Finset.mem_filter.mp hν).2
+  have hcountν : ν.sum (fun _ k => k) = D := hνData.1
+  have hsourceν : gaussianAtomSignedSource D q ν = S := hνData.2.1
+  have hνActive : ν ∈ activeAevalAtoms n (D * q + τ) Q :=
+    (Finset.mem_filter.mp hν).1
+  have hcounta : a.sum (fun _ k => k) = D := by
+    rw [gaussianOffsetPatternOfKey_totalCount]
+    exact hcountν
+  let z := integerTupleOfFinsupp a D hcounta
+  let A := integerLatticeMaxNatAbs z
+  have hsourcea : gaussianOffsetSource a = S := by
+    dsimp only [a]
+    rw [gaussianOffsetSource_patternOfKey, hcountν]
+    simpa only [gaussianAtomSignedSource, mul_comm] using hsourceν
+  have hsuppa : a.support ⊆ gaussianOffsetInterval A := by
+    simpa only [A, z] using integerTupleOfFinsupp_support_subset_box a D hcounta
+  have haA : a ∈ gaussianOffsetFace D S A := by
+    apply mem_gaussianOffsetFace.mpr
+    refine ⟨?_, hsuppa, hsourcea⟩
+    calc
+      (∑ r ∈ gaussianOffsetInterval A, a r) = a.sum (fun _ k => k) := by
+        symm
+        exact Finsupp.sum_of_support_subset a hsuppa
+          (fun _ k => k) (fun _ _ => rfl)
+      _ = D := hcounta
+  have henergy : gaussianOffsetEnergy z =
+      (gaussianOffsetPatternEnergy a : ℝ) := by
+    simpa only [z] using gaussianOffsetEnergy_integerTupleOfFinsupp a D hcounta
+  have henergyNonneg : 0 ≤ (gaussianOffsetPatternEnergy a : ℝ) := by
+    exact_mod_cast gaussianOffsetPatternEnergy_nonneg a
+  have hexp :
+      Real.exp (-B * ((gaussianOffsetPatternEnergy a : ℝ) - Q₀)) ≤
+        Real.exp (B * |Q₀|) *
+          Real.exp (-(B / 2) * (gaussianOffsetEnergy z - Q₀)) := by
+    rw [← Real.exp_add]
+    apply Real.exp_le_exp.mpr
+    rw [henergy]
+    have hneg : -|Q₀| ≤ Q₀ := neg_abs_le Q₀
+    have habs : 0 ≤ |Q₀| := abs_nonneg Q₀
+    nlinarith
+  have hden : 1 ≤ ‖(q : ℂ) ^ H‖ := by
+    rw [norm_pow, Complex.norm_natCast]
+    exact one_le_pow₀ (by exact_mod_cast hq)
+  have hmassν : ‖aevalWeight n (D * q + τ) Q ν‖ ≤ (q : ℝ) ^ P := by
+    calc
+      ‖aevalWeight n (D * q + τ) Q ν‖ ≤
+          ∑ μ ∈ activeAevalAtoms n (D * q + τ) Q,
+            ‖aevalWeight n (D * q + τ) Q μ‖ := by
+        exact Finset.single_le_sum (fun μ _ => norm_nonneg _)
+          (by simpa using hνActive)
+      _ ≤ (q : ℝ) ^ P := hmass
+  have hdivMass :
+      ‖aevalWeight n (D * q + τ) Q ν / (q : ℂ) ^ H‖ ≤ (q : ℝ) ^ P := by
+    rw [norm_div]
+    exact (div_le_self (norm_nonneg _) hden).trans hmassν
+  have hweight :
+      ‖aevalWeight n (D * q + τ) Q ν / (q : ℂ) ^ H‖ ≤
+        (gaussianPatternWeightNormalizationConstant n D Q +
+          ((((n + 1) ^ P : ℕ) : ℝ))) *
+          (1 + (A : ℝ)) ^ (magnitudeMaxJetOrder n Q + P) := by
+    by_cases hsmall : A + n + 1 ≤ q
+    · let p := gaussianOffsetPatternWindow a
+        (gaussianOffsetFace_totalCount haA) A
+      have hkey : shiftedAtomPatternKey q A p = ν := by
+        calc
+          shiftedAtomPatternKey q A p = gaussianOffsetShiftedKey q a :=
+            shiftedAtomPatternKey_gaussianOffsetPatternWindow_eq haA (by omega)
+          _ = ν := gaussianOffsetShiftedKey_patternOfKey q ν
+      have hweightEval :
+          aevalWeight n (D * q + τ) Q ν =
+            (polynomialPatternWeightPoly n D A τ Q p).eval (q : ℂ) := by
+        rw [← hkey]
+        exact aevalWeight_shiftedAtomPatternKey_eq_eval_poly
+          n D A τ Q p (gaussianOffsetPatternWindow_count haA) (by omega)
+      have hinterp := norm_eval_gaussianOffsetPatternWeight_div_pow_le
+        Q haA (huniform A a haA) hHJ (by omega : A + 1 ≤ q)
+      have hpow :
+          (((A + 1) ^ magnitudeMaxJetOrder n Q : ℕ) : ℝ) ≤
+            (1 + (A : ℝ)) ^ (magnitudeMaxJetOrder n Q + P) := by
+        push_cast
+        exact pow_le_pow_right₀ (by positivity)
+          (by linarith : (1 : ℝ) ≤ 1 + A)
+          (Nat.le_add_right _ _)
+      rw [hweightEval]
+      calc
+        ‖(polynomialPatternWeightPoly n D A τ Q p).eval (q : ℂ) /
+            (q : ℂ) ^ H‖ ≤
+            gaussianPatternWeightNormalizationConstant n D Q *
+              (((A + 1) ^ magnitudeMaxJetOrder n Q : ℕ) : ℝ) := hinterp
+        _ ≤ gaussianPatternWeightNormalizationConstant n D Q *
+              (1 + (A : ℝ)) ^ (magnitudeMaxJetOrder n Q + P) :=
+          mul_le_mul_of_nonneg_left hpow
+            (gaussianPatternWeightNormalizationConstant_nonneg n D Q)
+        _ ≤ (gaussianPatternWeightNormalizationConstant n D Q +
+              ((((n + 1) ^ P : ℕ) : ℝ))) *
+              (1 + (A : ℝ)) ^ (magnitudeMaxJetOrder n Q + P) := by
+          gcongr
+          positivity
+    · have hqA : q ≤ A + n := by omega
+      have hbase : A + n ≤ (n + 1) * (A + 1) := by
+        nlinarith [Nat.zero_le (n * A)]
+      have hqpow : q ^ P ≤ (n + 1) ^ P * (A + 1) ^ P := by
+        calc
+          q ^ P ≤ ((n + 1) * (A + 1)) ^ P :=
+            Nat.pow_le_pow_left (hqA.trans hbase) P
+          _ = (n + 1) ^ P * (A + 1) ^ P := by rw [mul_pow]
+      have hpowExp :
+          (((A + 1) ^ P : ℕ) : ℝ) ≤
+            (1 + (A : ℝ)) ^ (magnitudeMaxJetOrder n Q + P) := by
+        push_cast
+        exact pow_le_pow_right₀ (by positivity)
+          (by linarith : (1 : ℝ) ≤ 1 + A)
+          (Nat.le_add_left P _)
+      calc
+        ‖aevalWeight n (D * q + τ) Q ν / (q : ℂ) ^ H‖ ≤
+            (q : ℝ) ^ P := hdivMass
+        _ ≤ ((((n + 1) ^ P : ℕ) : ℝ)) *
+            (((A + 1) ^ P : ℕ) : ℝ) := by exact_mod_cast hqpow
+        _ ≤ ((((n + 1) ^ P : ℕ) : ℝ)) *
+            (1 + (A : ℝ)) ^ (magnitudeMaxJetOrder n Q + P) :=
+          mul_le_mul_of_nonneg_left hpowExp (by positivity)
+        _ ≤ (gaussianPatternWeightNormalizationConstant n D Q +
+              ((((n + 1) ^ P : ℕ) : ℝ))) *
+              (1 + (A : ℝ)) ^ (magnitudeMaxJetOrder n Q + P) := by
+          gcongr
+          exact gaussianPatternWeightNormalizationConstant_nonneg n D Q
+  change ‖aevalWeight n (D * q + τ) Q ν / (q : ℂ) ^ H‖ *
+      Real.exp (-B * ((gaussianOffsetPatternEnergy a : ℝ) - Q₀)) ≤ _
+  rw [henergy]
+  calc
+    ‖aevalWeight n (D * q + τ) Q ν / (q : ℂ) ^ H‖ *
+        Real.exp (-B * (gaussianOffsetEnergy z - Q₀)) ≤
+      ((gaussianPatternWeightNormalizationConstant n D Q +
+          ((((n + 1) ^ P : ℕ) : ℝ))) *
+        (1 + (A : ℝ)) ^ (magnitudeMaxJetOrder n Q + P)) *
+          (Real.exp (B * |Q₀|) *
+            Real.exp (-(B / 2) * (gaussianOffsetEnergy z - Q₀))) :=
+      mul_le_mul hweight hexp (Real.exp_nonneg _) (by positivity)
+    _ = gaussianADEExteriorConstant n D Q B Q₀ P *
+        (1 + (integerLatticeMaxNatAbs z : ℝ)) ^
+          (magnitudeMaxJetOrder n Q + P) *
+        Real.exp (-(B / 2) * (gaussianOffsetEnergy z - Q₀)) := by
+      dsimp only [gaussianADEExteriorConstant, A]
+      ring
+
+theorem gaussianExteriorTuple_not_mem_box
+    {n D τ q R : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ} {S : ℤ}
+    (hRq : R ≤ q) {ν : ℕ →₀ ℕ}
+    (hν : ν ∈ gaussianExteriorActiveAtoms n D τ Q S q R) :
+    let a := gaussianOffsetPatternOfKey q ν
+    let hcount : a.sum (fun _ k => k) = D := by
+      rw [gaussianOffsetPatternOfKey_totalCount]
+      exact (Finset.mem_filter.mp hν).2.1
+    integerTupleOfFinsupp a D hcount ∉ integerLatticeBox (Fin D) R := by
+  classical
+  dsimp only
+  let a := gaussianOffsetPatternOfKey q ν
+  have hcountν : ν.sum (fun _ k => k) = D := (Finset.mem_filter.mp hν).2.1
+  have hnotWindow : ¬gaussianAtomInWindow q R ν :=
+    (Finset.mem_filter.mp hν).2.2.2
+  have hcounta : a.sum (fun _ k => k) = D := by
+    rw [gaussianOffsetPatternOfKey_totalCount]
+    exact hcountν
+  let z := integerTupleOfFinsupp a D hcounta
+  intro hz
+  have hmax : integerLatticeMaxNatAbs z ≤ R :=
+    integerLatticeMaxNatAbs_le_of_mem_box hz
+  have hsuppMax := integerTupleOfFinsupp_support_subset_box a D hcounta
+  have hinterval : gaussianOffsetInterval (integerLatticeMaxNatAbs z) ⊆
+      gaussianOffsetInterval R := by
+    intro r hr
+    simp only [gaussianOffsetInterval, Finset.mem_Icc] at hr ⊢
+    constructor <;> omega
+  have hsuppR : a.support ⊆ gaussianOffsetInterval R :=
+    hsuppMax.trans hinterval
+  exact hnotWindow
+    (gaussianAtomInWindow_of_patternOfKey_support_subset hRq hsuppR)
+
+/-- The complete least-source exterior contribution is bounded by the ambient tuple Gaussian
+tail.  Canonical tuple encoding prevents multiplicity-pattern overcounting. -/
+theorem sum_norm_normalized_gaussianExteriorActiveAtoms_le_tail
+    {B : ℝ} (hB : 0 < B)
+    {n D τ H P q R : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
+    {S : ℤ} {Q₀ : ℝ}
+    (hmass :
+      (∑ μ ∈ activeAevalAtoms n (D * q + τ) Q,
+        ‖aevalWeight n (D * q + τ) Q μ‖) ≤ (q : ℝ) ^ P)
+    (huniform : ∀ (A : ℕ) (a : ℤ →₀ ℕ)
+        (ha : a ∈ gaussianOffsetFace D S A),
+      (polynomialPatternWeightPoly n D A τ Q
+        (gaussianOffsetPatternWindow a
+          (gaussianOffsetFace_totalCount ha) A)).natDegree ≤ H)
+    (hHJ : H ≤ magnitudeMaxJetOrder n Q) (hq : 1 ≤ q) (hRq : R ≤ q) :
+    (∑ ν ∈ gaussianExteriorActiveAtoms n D τ Q S q R,
+      ‖aevalWeight n (D * q + τ) Q ν / (q : ℂ) ^ H‖ *
+        Real.exp (-B *
+          ((gaussianOffsetPatternEnergy (gaussianOffsetPatternOfKey q ν) : ℝ) - Q₀))) ≤
+      gaussianADEExteriorConstant n D Q B Q₀ P *
+        ∑' z : {z : Fin D → ℤ // z ∉ integerLatticeBox (Fin D) R},
+          (1 + (integerLatticeMaxNatAbs z.1 : ℝ)) ^
+              (magnitudeMaxJetOrder n Q + P) *
+            Real.exp (-(B / 2) * (gaussianOffsetEnergy z.1 - Q₀)) := by
+  classical
+  let E := gaussianExteriorActiveAtoms n D τ Q S q R
+  let encode : ↥E →
+      {z : Fin D → ℤ // z ∉ integerLatticeBox (Fin D) R} := fun ν =>
+    let a := gaussianOffsetPatternOfKey q ν.1
+    let hcount : a.sum (fun _ k => k) = D := by
+      rw [gaussianOffsetPatternOfKey_totalCount]
+      exact (Finset.mem_filter.mp ν.2).2.1
+    ⟨integerTupleOfFinsupp a D hcount,
+      gaussianExteriorTuple_not_mem_box hRq ν.2⟩
+  have hencode : Function.Injective encode := by
+    intro ν μ hνμ
+    apply Subtype.ext
+    let aν := gaussianOffsetPatternOfKey q ν.1
+    let aμ := gaussianOffsetPatternOfKey q μ.1
+    have hcountν : aν.sum (fun _ k => k) = D := by
+      rw [gaussianOffsetPatternOfKey_totalCount]
+      exact (Finset.mem_filter.mp ν.2).2.1
+    have hcountμ : aμ.sum (fun _ k => k) = D := by
+      rw [gaussianOffsetPatternOfKey_totalCount]
+      exact (Finset.mem_filter.mp μ.2).2.1
+    have htuple : integerTupleOfFinsupp aν D hcountν =
+        integerTupleOfFinsupp aμ D hcountμ := congrArg Subtype.val hνμ
+    have ha : aν = aμ := by
+      have hsub :
+          (⟨aν, hcountν⟩ : {a : ℤ →₀ ℕ // a.sum (fun _ k => k) = D}) =
+            ⟨aμ, hcountμ⟩ := integerTupleOfFinsupp_injective D htuple
+      exact congrArg Subtype.val hsub
+    calc
+      ν.1 = gaussianOffsetShiftedKey q aν :=
+        (gaussianOffsetShiftedKey_patternOfKey q ν.1).symm
+      _ = gaussianOffsetShiftedKey q aμ := by rw [ha]
+      _ = μ.1 := gaussianOffsetShiftedKey_patternOfKey q μ.1
+  let g : {z : Fin D → ℤ // z ∉ integerLatticeBox (Fin D) R} → ℝ := fun z =>
+    (1 + (integerLatticeMaxNatAbs z.1 : ℝ)) ^
+        (magnitudeMaxJetOrder n Q + P) *
+      Real.exp (-(B / 2) * (gaussianOffsetEnergy z.1 - Q₀))
+  have hgsum : Summable g := by
+    exact (summable_maxPolynomial_gaussian (Fin D)
+      (magnitudeMaxJetOrder n Q + P) (by linarith : 0 < B / 2) Q₀).subtype _
+  have hfinite : (∑ ν : ↥E, g (encode ν)) ≤ ∑' z, g z := by
+    calc
+      (∑ ν : ↥E, g (encode ν)) =
+          ∑ z ∈ (Finset.univ : Finset ↥E).image encode, g z := by
+        rw [Finset.sum_image]
+        intro x _hx y _hy hxy
+        exact hencode hxy
+      _ ≤ ∑' z, g z := hgsum.sum_le_tsum _ (fun z _hz => by
+        dsimp only [g]
+        positivity)
+  have hpoint : ∀ ν : ↥E,
+      ‖aevalWeight n (D * q + τ) Q ν.1 / (q : ℂ) ^ H‖ *
+          Real.exp (-B *
+            ((gaussianOffsetPatternEnergy
+              (gaussianOffsetPatternOfKey q ν.1) : ℝ) - Q₀)) ≤
+        gaussianADEExteriorConstant n D Q B Q₀ P * g (encode ν) := by
+    intro ν
+    simpa only [g, encode, E] using
+      norm_normalized_gaussianExteriorAtom_le hB hmass huniform hHJ hq ν.2
+  calc
+    (∑ ν ∈ gaussianExteriorActiveAtoms n D τ Q S q R,
+        ‖aevalWeight n (D * q + τ) Q ν / (q : ℂ) ^ H‖ *
+          Real.exp (-B *
+            ((gaussianOffsetPatternEnergy (gaussianOffsetPatternOfKey q ν) : ℝ) - Q₀))) =
+        ∑ ν : ↥E,
+          ‖aevalWeight n (D * q + τ) Q ν.1 / (q : ℂ) ^ H‖ *
+            Real.exp (-B *
+              ((gaussianOffsetPatternEnergy
+                (gaussianOffsetPatternOfKey q ν.1) : ℝ) - Q₀)) := by
+      simpa only [E] using Finset.sum_attach
+        (gaussianExteriorActiveAtoms n D τ Q S q R)
+        (fun ν => ‖aevalWeight n (D * q + τ) Q ν / (q : ℂ) ^ H‖ *
+          Real.exp (-B *
+            ((gaussianOffsetPatternEnergy (gaussianOffsetPatternOfKey q ν) : ℝ) - Q₀)))
+    _ ≤ ∑ ν : ↥E, gaussianADEExteriorConstant n D Q B Q₀ P *
+          g (encode ν) := Finset.sum_le_sum fun ν _hν => hpoint ν
+    _ = gaussianADEExteriorConstant n D Q B Q₀ P *
+          ∑ ν : ↥E, g (encode ν) := by rw [Finset.mul_sum]
+    _ ≤ gaussianADEExteriorConstant n D Q B Q₀ P * ∑' z, g z :=
+      mul_le_mul_of_nonneg_left hfinite
+        (gaussianADEExteriorConstant_nonneg n D Q hB.le Q₀ P)
+    _ = gaussianADEExteriorConstant n D Q B Q₀ P *
+        ∑' z : {z : Fin D → ℤ // z ∉ integerLatticeBox (Fin D) R},
+          (1 + (integerLatticeMaxNatAbs z.1 : ℝ)) ^
+              (magnitudeMaxJetOrder n Q + P) *
+            Real.exp (-(B / 2) * (gaussianOffsetEnergy z.1 - Q₀)) := by
+      rfl
+
+/-- One scaled normalized term in the exact ADE coefficient identity. -/
+noncomputable def gaussianNormalizedADETerm
+    (F : PowerSeries ℂ) (n N H : ℕ)
+    (Q : MvPolynomial (Fin (n + 2)) ℂ) (B m : ℝ)
+    (q : ℕ) (ν : ℕ →₀ ℕ) : ℂ :=
+  (aevalWeight n N Q ν / (q : ℂ) ^ H) *
+    (Real.exp (-(atomValuation (fun i => B * (i : ℝ) ^ 2) ν - m)) : ℂ) *
+      normalizedAtomPhase F (fun i => B * (i : ℝ) ^ 2) ν
+
+/-- Normalized finite-window grouped weight on the least Gaussian source face. -/
+noncomputable def gaussianFaceWeight
+    (n D τ : ℕ) (Q : MvPolynomial (Fin (n + 2)) ℂ)
+    (B Q₀ : ℝ) (H K q : ℕ)
+    (p : Fin (2 * K + 1) → Fin (D + 1)) : ℂ :=
+  (polynomialPatternWeightPoly n D K τ Q p).eval (q : ℂ) /
+      (q : ℂ) ^ H *
+    (Real.exp (-B * ((gaussianWindowPatternEnergy p : ℝ) - Q₀)) : ℂ)
+
+/-- Limiting finite-window grouped weight. -/
+noncomputable def gaussianFaceWeightLimit
+    (n D τ : ℕ) (Q : MvPolynomial (Fin (n + 2)) ℂ)
+    (B Q₀ : ℝ) (H K : ℕ)
+    (p : Fin (2 * K + 1) → Fin (D + 1)) : ℂ :=
+  (polynomialPatternWeightPoly n D K τ Q p).coeff H *
+    (Real.exp (-B * ((gaussianWindowPatternEnergy p : ℝ) - Q₀)) : ℂ)
+
+theorem tendsto_gaussianFaceWeight
+    {n D τ H K : ℕ} (Q : MvPolynomial (Fin (n + 2)) ℂ)
+    (B Q₀ : ℝ) (p : Fin (2 * K + 1) → Fin (D + 1))
+    (hdegree : (polynomialPatternWeightPoly n D K τ Q p).natDegree ≤ H) :
+    Tendsto (fun t => gaussianFaceWeight n D τ Q B Q₀ H K (t + K) p)
+      atTop (𝓝 (gaussianFaceWeightLimit n D τ Q B Q₀ H K p)) := by
+  let E : ℂ :=
+    (Real.exp (-B * ((gaussianWindowPatternEnergy p : ℝ) - Q₀)) : ℂ)
+  have hpoly := (tendsto_complexPolynomial_eval_nat_div_pow
+    (polynomialPatternWeightPoly n D K τ Q p) hdegree).comp
+      (tendsto_add_atTop_nat K)
+  simpa only [gaussianFaceWeight, gaussianFaceWeightLimit, E] using
+    hpoly.mul_const E
+
+/-- A least-source finite-window term is exactly its term in the normalized ADE identity. -/
+theorem gaussianFaceWeight_mul_phase_eq_normalizedADETerm
+    {B : ℝ} {n D τ H K q : ℕ}
+    {Q : MvPolynomial (Fin (n + 2)) ℂ} {S : ℤ} {Q₀ : ℝ}
+    (F : PowerSeries ℂ) (u : ℕ → ℂ)
+    (hcoeff : ∀ i, PowerSeries.coeff i F =
+      ((Real.exp (-(B * (i : ℝ) ^ 2)) : ℝ) : ℂ) * u i)
+    {p : Fin (2 * K + 1) → Fin (D + 1)}
+    (hp : p ∈ gaussianPolynomialPatternFace D S K)
+    (hlarge : K + n ≤ q) :
+    gaussianFaceWeight n D τ Q B Q₀ H K q p *
+        ∏ r : Fin (2 * K + 1),
+          u (windowShift q K (r : ℕ)) ^ (p r : ℕ) =
+      gaussianNormalizedADETerm F n (D * q + τ) H Q B
+        (B * ((D : ℝ) * (q : ℝ) ^ 2 + 2 * (q : ℝ) * (S : ℝ) + Q₀))
+        q (shiftedAtomPatternKey q K p) := by
+  have hpdata := mem_gaussianPolynomialPatternFace.mp hp
+  let a := gaussianOffsetPatternOfWindow K p
+  have ha : a ∈ gaussianOffsetFace D S K :=
+    gaussianOffsetPatternOfWindow_mem_face_centered p hpdata.1 hpdata.2
+  have hpback : gaussianOffsetPatternWindow a
+      (gaussianOffsetFace_totalCount ha) K = p :=
+    gaussianOffsetPatternWindow_patternOfWindow_eq p hpdata.1 hpdata.2
+  have hweight :
+      aevalWeight n (D * q + τ) Q (shiftedAtomPatternKey q K p) =
+        (polynomialPatternWeightPoly n D K τ Q p).eval (q : ℂ) :=
+    aevalWeight_shiftedAtomPatternKey_eq_eval_poly
+      n D K τ Q p hpdata.1 hlarge
+  have hvaluation := atomValuation_gaussianOffsetShiftedKey B ha
+    (by omega : K ≤ q)
+  have hkey : shiftedAtomPatternKey q K p = gaussianOffsetShiftedKey q a :=
+    shiftedAtomPatternKey_gaussianOffsetPatternOfWindow_eq p (by omega)
+  have henergy : gaussianWindowPatternEnergy p = gaussianOffsetPatternEnergy a :=
+    gaussianWindowPatternEnergy_eq_patternOfWindow p hpdata.1 hpdata.2
+  rw [gaussianFaceWeight, gaussianNormalizedADETerm,
+    normalizedAtomPhase_shiftedAtomPatternKey_eq F
+      (fun i => B * (i : ℝ) ^ 2) u hcoeff, hweight]
+  rw [hkey] at hvaluation
+  rw [hvaluation, henergy]
+  push_cast
+  ring_nf
+  congr 1
+  rw [← Complex.ofReal_exp]
+  congr 1
+  ring
+
 /-- Coordinates actually used by a bounded multiplicity pattern. -/
 def polynomialPatternSupport {M D : ℕ} (p : Fin M → Fin (D + 1)) : Finset (Fin M) :=
   Finset.univ.filter fun r => p r ≠ 0
@@ -2782,6 +3330,27 @@ theorem integerTupleOfFinsupp_energy
       gaussianOffsetPatternEnergy a := by
   rw [← integerTupleKey_energy (integerTupleOfFinsupp a D hcount),
     integerTupleKey_integerTupleOfFinsupp]
+
+theorem gaussianOffsetEnergy_integerTupleOfFinsupp
+    (a : ℤ →₀ ℕ) (D : ℕ) (hcount : a.sum (fun _ k => k) = D) :
+    gaussianOffsetEnergy (integerTupleOfFinsupp a D hcount) =
+      (gaussianOffsetPatternEnergy a : ℝ) := by
+  rw [gaussianOffsetEnergy]
+  exact_mod_cast integerTupleOfFinsupp_energy a D hcount
+
+theorem integerLatticeMaxNatAbs_le_of_mem_box
+    {ι : Type} [Fintype ι] {R : ℕ} {z : ι → ℤ}
+    (hz : z ∈ integerLatticeBox ι R) :
+    integerLatticeMaxNatAbs z ≤ R := by
+  rw [integerLatticeMaxNatAbs]
+  apply Finset.sup_le
+  intro i _hi
+  have hi := (mem_integerLatticeBox_iff ι R z).mp hz i
+  have habs : |z i| ≤ (R : ℤ) := (abs_le).2 hi
+  have hcast : ((z i).natAbs : ℤ) ≤ (R : ℤ) := by
+    rw [Int.natCast_natAbs]
+    exact habs
+  exact_mod_cast hcast
 
 theorem integerTupleOfFinsupp_support_subset_box
     (a : ℤ →₀ ℕ) (D : ℕ) (hcount : a.sum (fun _ k => k) = D) :

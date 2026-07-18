@@ -994,12 +994,12 @@ theorem primeProfileClockPolynomialSaturatedOver_iff_not_relativeClockIndependen
   constructor
   · rintro ⟨a, ha, hmem⟩
     refine ⟨a, ?_, ha⟩
-    rw [← (primeProfileClockSubmodule c).mkQ.map_finsuppSum]
+    rw [← map_finsuppSum]
     exact (Submodule.Quotient.mk_eq_zero (primeProfileClockSubmodule c)).2 hmem
   · rintro ⟨a, hzero, ha⟩
     refine ⟨a, ha, ?_⟩
     apply (Submodule.Quotient.mk_eq_zero (primeProfileClockSubmodule c)).1
-    rw [(primeProfileClockSubmodule c).mkQ.map_finsuppSum]
+    rw [map_finsuppSum]
     exact hzero
 
 /-- **Prime-clock saturation correspondence, pivot form.**  A new positive-prime-power carrier
@@ -1040,6 +1040,97 @@ theorem hypertranscendental_fractionPrimeProfile_iff_not_clockPolynomialSaturate
   rw [GaloisForLFunctions.HypertranscendentalOver,
     differentialAlgebraic_fractionPrimeProfile_iff_clockPolynomialSaturated
       c hcsupport hc f hfsupport]
+
+/-! ## Canonical representatives of the complete prime-clock quotient -/
+
+/-- Turn an arbitrary complete prime-power coordinate profile into an arithmetic function,
+vanishing away from positive prime powers.  This is a linear section of the coordinate reader. -/
+def arithmeticFunctionOfPrimePowerProfile :
+    (PrimePowerClockIndex -> ℂ) →ₗ[ℂ] ArithmeticFunction ℂ where
+  toFun u :=
+    { toFun := fun n =>
+        if hn : IsPrimePow n then
+          u (Nat.Primes.prodNatEquiv.symm ⟨n, hn⟩)
+        else 0
+      map_zero' := by simp [not_isPrimePow_zero] }
+  map_add' u v := by
+    ext n
+    by_cases hn : IsPrimePow n <;> simp [hn]
+  map_smul' a u := by
+    ext n
+    by_cases hn : IsPrimePow n <;> simp [hn, ArithmeticFunction.smul_map]
+
+@[simp]
+theorem primePowerCoordinateProfile_arithmeticFunctionOfPrimePowerProfile
+    (u : PrimePowerClockIndex -> ℂ) (x : PrimePowerClockIndex) :
+    primePowerCoordinateProfile (arithmeticFunctionOfPrimePowerProfile u) x = u x := by
+  rcases x with ⟨p, e⟩
+  unfold primePowerCoordinateProfile
+  change (if hn : IsPrimePow ((p : Nat) ^ (e + 1)) then
+      u (Nat.Primes.prodNatEquiv.symm ⟨(p : Nat) ^ (e + 1), hn⟩)
+    else 0) = u (p, e)
+  have hpow : IsPrimePow ((p : Nat) ^ (e + 1)) :=
+    (Nat.Primes.prodNatEquiv (p, e)).property
+  rw [dif_pos hpow]
+  have heq :
+      (⟨(p : Nat) ^ (e + 1), hpow⟩ : {n : Nat // IsPrimePow n}) =
+        Nat.Primes.prodNatEquiv (p, e) := by
+    apply Subtype.ext
+    rfl
+  rw [heq, Equiv.symm_apply_apply]
+
+theorem arithmeticFunctionOfPrimePowerProfile_supportedOnPositivePrimePowers
+    (u : PrimePowerClockIndex -> ℂ) :
+    PrimeProfileSupportedOnPositivePrimePowers
+      (arithmeticFunctionOfPrimePowerProfile u) := by
+  intro n hn
+  by_cases hpow : IsPrimePow n
+  · let x : PrimePowerClockIndex := Nat.Primes.prodNatEquiv.symm ⟨n, hpow⟩
+    refine ⟨x.1, x.2, ?_⟩
+    have hx := congrArg Subtype.val
+      (Nat.Primes.prodNatEquiv.apply_symm_apply ⟨n, hpow⟩)
+    simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using hx.symm
+  · exact (hn (by simp [arithmeticFunctionOfPrimePowerProfile, hpow])).elim
+
+/-- Every vector of the prime-clock quotient has a canonical positive-prime-power source
+representative.  This lets the intrinsic module theorem choose bases without leaving the source
+category. -/
+theorem primeProfileClockClass_surjective :
+    Function.Surjective primeProfileClockClass := by
+  intro q
+  obtain ⟨u, rfl⟩ :=
+    (rayLocalSubmodule primePowerClockRay).mkQ_surjective q
+  refine ⟨arithmeticFunctionOfPrimePowerProfile u, ?_⟩
+  unfold primeProfileClockClass
+  congr 1
+  funext x
+  exact primePowerCoordinateProfile_arithmeticFunctionOfPrimePowerProfile u x
+
+/-- Canonical positive-prime-power representative chosen from the quotient projection. -/
+noncomputable def primeProfileClockRepresentative
+    (q : PrimeProfileClockQuotient) : ArithmeticFunction ℂ :=
+  arithmeticFunctionOfPrimePowerProfile
+    (Function.surjInv (rayLocalSubmodule primePowerClockRay).mkQ q)
+
+@[simp]
+theorem primeProfileClockClass_representative
+    (q : PrimeProfileClockQuotient) :
+    primeProfileClockClass (primeProfileClockRepresentative q) = q := by
+  unfold primeProfileClockRepresentative primeProfileClockClass
+  rw [show primePowerCoordinateProfile
+      (arithmeticFunctionOfPrimePowerProfile
+        (Function.surjInv (rayLocalSubmodule primePowerClockRay).mkQ q)) =
+      Function.surjInv (rayLocalSubmodule primePowerClockRay).mkQ q by
+    funext x
+    exact primePowerCoordinateProfile_arithmeticFunctionOfPrimePowerProfile _ x]
+  exact Function.rightInverse_surjInv
+    (rayLocalSubmodule primePowerClockRay).mkQ_surjective q
+
+theorem primeProfileClockRepresentative_supportedOnPositivePrimePowers
+    (q : PrimeProfileClockQuotient) :
+    PrimeProfileSupportedOnPositivePrimePowers
+      (primeProfileClockRepresentative q) :=
+  arithmeticFunctionOfPrimePowerProfile_supportedOnPositivePrimePowers _
 
 /-! ## Scalar replication and Euler-profile completion -/
 
@@ -1441,6 +1532,81 @@ theorem scalarReplicatedPrimeProfile_differentialIndependent_over_all_valuationL
       (⟨y, Set.mem_singleton y⟩ : ({y} : Set arithmeticFunctionFractionField)))
     (fun a b _ => Subsingleton.elim a b)
   simpa [scalarValuationLayerDifferentialField, G, y, Function.comp_def] using hunit
+
+/-- A finitely supported scalar profile already belongs to the differential field generated by
+the individual valuation layers.  This is the finite-algebra half of the completion boundary. -/
+theorem scalarReplicatedPrimeProfile_mem_all_valuationLayers_of_support_finite
+    (u : Nat -> ℂ) (hfinite : {e : Nat | u e ≠ 0}.Finite) :
+    algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+        (scalarReplicatedPrimeProfile u) ∈
+      scalarValuationLayerDifferentialField := by
+  classical
+  let S : Finset Nat := hfinite.toFinset
+  have hout : ∀ e : Nat, e ∉ S -> u e = 0 := by
+    intro e he
+    by_contra heu
+    exact he (Set.Finite.mem_toFinset hfinite heu)
+  have hprofile :
+      u = ∑ e ∈ S, u e • scalarValuationBasisProfile e := by
+    funext n
+    by_cases hn : n ∈ S
+    · simp [scalarValuationBasisProfile, hn]
+    · simp [scalarValuationBasisProfile, hn, hout n hn]
+  have hlayer : ∀ e : Nat,
+      scalarValuationLayerCarrier e ∈ scalarValuationLayerDifferentialField := by
+    intro e
+    unfold scalarValuationLayerDifferentialField GaloisForLFunctions.differentialAdjoin
+    apply IntermediateField.subset_adjoin
+    exact ⟨scalarValuationLayerCarrier e, Set.mem_range_self e, 0, by simp⟩
+  have hcarrier :
+      algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+          (scalarReplicatedPrimeProfile u) =
+        ∑ e ∈ S,
+          algebraMap ℂ arithmeticFunctionFractionField (u e) *
+            scalarValuationLayerCarrier e := by
+    rw [hprofile]
+    simp only [map_sum, map_smul, Algebra.smul_def, map_mul,
+      scalarValuationLayerCarrier]
+  rw [hcarrier]
+  apply IntermediateField.sum_mem
+  intro e he
+  apply IntermediateField.mul_mem
+  · simpa only [map_algebraMap] using
+      (IntermediateField.algebraMap_mem scalarValuationLayerDifferentialField
+        (algebraMap ℂ finitePrimeCoefficientField (u e)))
+  · exact hlayer e
+
+/-- **Exact scalar completion boundary.**  Inside the replicated scalar sector, the pullback of
+differential-algebraic closure of the countable valuation-layer field is exactly finite support.
+Thus analytic completion adds only hypertranscendental directions. -/
+theorem scalarReplicatedPrimeProfile_differentialAlgebraic_over_all_valuationLayers_iff
+    (u : Nat -> ℂ) :
+    GaloisForLFunctions.DifferentialAlgebraicOver
+        scalarValuationLayerDifferentialField
+        (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+          (scalarReplicatedPrimeProfile u)) ↔
+      {e : Nat | u e ≠ 0}.Finite := by
+  constructor
+  · intro hda
+    by_contra hinfinite
+    exact hda
+      (scalarReplicatedPrimeProfile_differentialIndependent_over_all_valuationLayers
+        u hinfinite)
+  · intro hfinite
+    let y : arithmeticFunctionFractionField :=
+      algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+        (scalarReplicatedPrimeProfile u)
+    have hymem : y ∈ scalarValuationLayerDifferentialField :=
+      scalarReplicatedPrimeProfile_mem_all_valuationLayers_of_support_finite u hfinite
+    unfold GaloisForLFunctions.DifferentialAlgebraicOver
+    intro hdiff
+    have htrans : Transcendental scalarValuationLayerDifferentialField y := by
+      simpa only [y] using hdiff.algebraicIndependent.transcendental ()
+    exact htrans (by
+      simpa using isAlgebraic_algebraMap
+        (R := scalarValuationLayerDifferentialField)
+        (A := arithmeticFunctionFractionField)
+        (⟨y, hymem⟩ : scalarValuationLayerDifferentialField))
 
 /-- The Euler-log valuation profile `1/(e+1)`, indexed from exponent zero. -/
 def eulerLogValuationProfile (e : Nat) : ℂ :=
