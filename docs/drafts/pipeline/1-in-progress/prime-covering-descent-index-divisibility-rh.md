@@ -1964,3 +1964,37 @@ disambiguated throughout).
 integral — rewrite `∮∮ (u - v)^2 tr tr` with the mixed weight `(Im u)(Im v)` and hunt the PSD
 kernel there, where the double area term carries a genuine 2D germ (the first genuinely
 two-variable object of the production hunt).
+
+## 2026-07-18 session 2 (cont. 48) — the REALITY LAW; the demand is one real scalar function
+## per height; MODULE 7 ships the displacement-germ equivalence
+
+**[2D ITERATION — closed honestly, with the prize]** (i) Plain mixed weight: exact finite-h
+factorization `D_plain(h) = B_0(h)^2`, germ = `(sum m_j d_j)^2 = 0` by mean-kill —
+unconditional, no demand. (ii) Germ table: `lim B_k = i^k mu_{k+1}` (odd fiber moments vanish
+unconditionally); the Bezoutian combination has germ `2V^2` — SIGN-INERT (any PSD
+representation proves nothing; the PSD hunt on it is structurally empty — discarded). (iii)
+No polynomial kernel yields a fiber-linear germ; the only linear class is the singular
+Hermitian kernel `1/(u - vbar)` (PV on the contour — the parallel probe). **[THE REALITY
+LAW]** The conjugation law `tr(ubar) = conj(tr(u))` holds EXACTLY (from
+`xi(1 - conj s) = conj(xi(s))`, no fiber hypothesis); with contour conj-symmetry it makes
+`b_k(h) := -i B_k(h)` REAL AT EVERY FINITE h (and the q_k real at finite h too). **THE DEMAND
+IN ITS FINAL SCALAR FORM:**
+
+> Per height gamma: `b_1(h)` is ONE real-valued, source-computable, divisor-free scalar
+> function of h with unconditional limit `V_Xi(gamma) >= 0`;
+> **RH ⟺ `lim_{h->0+} b_1(h) = 0` at every height.**
+
+Two probes designated: (P1) `db_1/dh` — the moving-edge derivative is an explicit
+two-vertical-edge integral; derive its sign/monotonicity structure from the source side;
+(P2) the singular kernel `1/(u - vbar)` germ table (the unique fiber-linear class).
+
+**[LEAN MODULE 7 — SHIPPED, commit d54df239]** `RHTower/SlabConjugatedGermTheorem.lean`
+(591 lines; axioms clean): the thin-slab trick made EXACT (the centered fiber is purely
+imaginary; conjugated germs reduce to module-5 transport — no Pompeiu machinery needed);
+`exists_conjugatedGermTheorem` at ALL bidegrees; `heightFiberHermitianGram_one_one` = fiber
+variance; exact finite-h defect decompositions with pointwise O(h) bounds; and
+`exists_displacementGerm_rh_equivalence`: reflected displacement moment `= i * V_Xi(gamma)`,
+vanishing ⟺ fiber on the critical line ⟺ single point ⟺ module-6 Gram zero. Honestly-stated
+open surface: the defect contour terms `-> 0` as `h -> 0+` (one trace-edge log estimate).
+SEVEN Lean modules; the certificate is Lean-stated end to end modulo the defect-edge estimate
+and the production identity (now: the sign structure of `b_1`).
