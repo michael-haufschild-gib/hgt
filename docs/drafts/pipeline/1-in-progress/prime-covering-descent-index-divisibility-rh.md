@@ -439,3 +439,41 @@ follow from T4 alone plus the formalized order law `ord_C = ord_A - 1`.
 
 Label upgraded: **T4 `[PROVED HERE]` — refereed.** Ready for the Lean batch (T4 algebra shares
 T1's jet machinery; the `(A, A)` trick keeps the formalization surface minimal).
+
+## 2026-07-18 session 1 (cont. 6) — ideal-sequence candidate KILLED; Rees-graded replacement
+
+**[FALSIFIED — exact-sequence-of-ideals carrier]** Fracture verified against the live Lean:
+(1) `dyadicSharpPrimeCancelledSource` (CCMSharpPrimeWindowCancellation.lean:11) is ONE fixed
+function — window hard-coded via `sharpPrimeWindowMellin (Real.log 2)`; no scale family exists.
+(2) The decimation (BVPrimeWindowDilationOrientation.lean:164-181) is coefficientwise on
+`ℕ`-indexed sequences, `n` vs `r^2*n`; the non-surjectivity of `n ↦ 4n` (invisible `4∤n` data)
+is the genuinely 2-adic content and is index-arithmetic — extracting the residue class `4|n`
+needs additive twists `e^{2πi j n/4}` which are NOT multiplication operators in the s-domain, so
+no `O(Omega)`-linear map exists. (3) The only function-level shadow is
+`M[W_dil] = (r^2)^{s-1} * M[W_exp]` — a UNIT of `O(Omega)`, and `(A, u*C) = (A, C)`: the
+induced ideal map is the identity; alternating dimension sum 0; no mod-2 content. Killing
+mechanism recorded: the decimation's content lives one level below holomorphy (coefficients),
+its holomorphic shadow one level above (units); the ideal quotient sits exactly between and
+sees neither.
+
+**[CONJECTURE — Rees-graded finite-section census]** (failure-driven replacement; absorbs the
+kill by moving the carrier to where the coefficient data lives.) For the census pair `(A, C)`
+on a height-adapted box there is a family of finite-section Sylvester/Wiener--Hopf operators
+`S_{l}` (Gohberg--Lerer shifted kernels / dyadic truncations of the coefficient action) such
+that: (i) `dim ker S_l` is nonincreasing and stabilizes at the census mass
+`P(T) = dim O/(A, C)` (finite-section analogue of GL Prop. 1 — the "new mathematics" flagged at
+cont. 4, now fused with the carrier); (ii) the coefficient decimation induces the degree shift
+`(l, j) ↦ (4l, j-2)` on the family, making the associated Rees module a graded module over
+`C[t]` with the two-step shift = multiplication by `t^2`; (iii) in a source-controlled degree
+range the graded pieces are `t^2`-free, so alternating/graded dimension sums are even, and `k`
+iterations give the census congruence `M ≡ P (mod 2^k)` at height-adapted depths.
+- Next fracture point to hunt FIRST (hostile): (iii)-freeness — `t^2`-torsion of the Rees
+  module is precisely where the arithmetic could re-enter as an unprovable hypothesis. Find
+  what torsion MEANS for the pair (Xi, dyadic source): expected answer — torsion classes are
+  carried by the `4∤n` residue data (the off-multiple layer with its universal residue fraction
+  `1 - r^{-2}`, paper-proved on the decimation card), so the torsion computation may reduce to
+  the formalized off-multiple layer law. If torsion is uncontrollable, record the exact class
+  and interrogate again.
+- Guardrail compliance: finite-section kernels are semicontinuous integers (collision-safe);
+  no symmetry transport (the shift is a filtration degree map, not a group action); kernel
+  data indexed by divisor fibers via GL Jordan-chain bases (free-matroid-safe).
