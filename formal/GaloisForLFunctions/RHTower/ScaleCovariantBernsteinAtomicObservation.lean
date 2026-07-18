@@ -44,6 +44,13 @@ def scaleCovariantBernsteinAbelField
 def inverseScaleAtomicNode {I : Type*} (z : I → ℂ) (R : ℝ) : I → ℂ :=
   fun i => (R⁻¹ : ℂ) * z i
 
+@[simp] theorem inverseScaleAtomicNode_eq_div
+    {I : Type*} (z : I → ℂ) (R : ℝ) (i : I) :
+    inverseScaleAtomicNode z R i = z i / (R : ℂ) := by
+  rw [inverseScaleAtomicNode, div_eq_mul_inv]
+  push_cast
+  ring
+
 /-- Bounded atomic weights have absolutely summable power moments. -/
 theorem summable_atomicPowerMoment_term
     {I : Type*} {c z : I → ℂ} (hc : Summable c)
@@ -103,6 +110,7 @@ theorem ofReal_momentFunctional_eq_atomicPolynomialMoment
       rw [Polynomial.smul_eq_C_mul, Polynomial.map_mul, Polynomial.map_C,
         Polynomial.map_pow, Polynomial.map_X, Polynomial.eval_mul,
         Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X]
+      rw [Complex.coe_algebraMap]
       ring
 
 /-- The real Bernstein coefficient vector is the atomic Bernstein packet whenever their moments

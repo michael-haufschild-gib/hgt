@@ -45,12 +45,31 @@
   `ccm_fuchsModel_infiniteSecularRoot_*` — under `A_2 ≤ C^j A_{j+2}`, `C ≥ 1`).
   Remaining inputs feeding L1's CCM Fuchs-model theorems are exactly the ℓ-side facts of
   L5/L7: Σℓ(λ)² summable, Bessel bound, ℓ_0 → 2^{1/4}, ℓ_1 → √3·2^{−5/4}.
-- [ ] **L2 — eigenvector transfer**: coordinates `v_j = ℓ_j/(d_j−μ_0)`; tail/head ℓ² ratio bound
-  (card 1 eqs (20)–(22)); normalized-direction convergence to the two-mode seed and to the `w_k`
-  contrast ladder (card 1 eq (4), card 2 vector claim, card 3 eqs (10),(22)–(23)).
-- [ ] **L3 — negative sector + all-depth instances of L1/L2**: card 2 eqs (6),(9),(10) for the exact
-  optimizer (indices 4j+2, 8/13, 5/13, parity floor ratio); card 3 eqs (8),(9) for exact `μ_k` at
-  every depth (aggregate head; `θ_k`; λ⁸ ladder for the exact roots).
+- [~] **L2 — eigenvector transfer** (`ConstrainedProlateSecularVector.lean`, 6 theorems banked):
+  coordinate eigen-equation, constraint membership `Σℓ_jv_j = 0` at the exact root, squared tail
+  bound `T/(d_2−μ)²` (card 1 eq (20)), head floor `ℓ_0²/d_1²`, two-mode head orthogonality at
+  `μ_2mode`, and the family collapse `Σ_{j≥2}v_j²/v_0² → 0` at rate `(λd_1/(d_2−d_1))²`
+  (eq (21)).  Remaining L2b: head-direction Lipschitz (22) and the normalized ℓ²-distance form
+  of eq (4).
+- [~] **L3 — negative sector + parity** (`ConstrainedProlateParityExactTransfer.lean`,
+  9 theorems banked): negative Hermite weight 8/13 + complement 5/13; offset radial family
+  (indices 4j+2) struct + step-4 tail rate at every base index; exact negative floor `8/13`,
+  gap `5/13`, quantified gap; exact parity collapse `μ_+/μ_- → 0` and sharp
+  `λ⁴μ_+/μ_- → 13A_4/(11A_6)`.  Card 2 is Fuchs-model complete (ℓ-side hypotheses remain).
+- [ ] **L3b — all-depth ladder (card 3 eqs (8),(9)) via the flattening sandwich**.  Design:
+  on the k-th gap `(d_k, d_{k+1})`, the full secular function `F` is sandwiched pointwise
+  between two aggregated two-pole models — head poles flattened DOWN to `0` (upper bound `F̌`)
+  and UP to `d_k` (lower bound `F̂`), each with head mass `Σ_{j≤k}ℓ_j²` — because
+  `1/(d_k−μ) ≤ 1/(d_j−μ) ≤ 1/(0−μ)` for `0 ≤ d_j ≤ d_k < μ`.  Both flattened models are
+  literal `infiniteSecular` instances (families `(0, d_{k+1}, d_{k+2},…)` and
+  `(d_k, d_{k+1}, d_{k+2},…)` with coords `(√Σ_{j≤k}ℓ_j², ℓ_{k+1}, ℓ_{k+2+j})`), so the L1
+  master theorem gives both roots ratio → `S_k/(S_k+a_{k+1}²) = θ_k` (via
+  `constrainedProlateHermiteTheta_eq_square_ratio`).  Root ordering: `F ≤ F̌` ⇒ `ř ≤ r_k`
+  (mono), `F ≥ F̂` ⇒ `r_k ≤ r̂`; existence of `r_k` by IVT on `[ř, r̂]` once `ř > d_k`
+  eventually (from `ř/d_{k+1} → θ_k > 0`, `d_k/d_{k+1} → 0`); uniqueness by strict mono on the
+  gap; then squeeze.  Needs offset-general tail lemmas (abstract floor `B ≤ d_{j+m}`), a
+  `depthSecular` def (Finset head + shoulder + tail), and negative-denominator div monotonicity.
+  Then Fuchs-model discharge at depth k and the exact-root `λ⁸` adjacent law.
 - [ ] **L4 — operator identification (lp 2)**: the compression of the diagonal leakage operator to
   `ℓ^⊥` on `lp 2`; its eigenvalues in `(d_0,d_1)` are exactly the secular roots with coordinates
   (14)/(13); min–max interlacing `d_k ≤ μ_k ≤ d_{k+1}` at operator level.  Closes the cards'

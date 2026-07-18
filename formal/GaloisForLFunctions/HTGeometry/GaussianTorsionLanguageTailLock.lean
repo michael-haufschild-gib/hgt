@@ -4,6 +4,7 @@ import GaloisForLFunctions.HTGeometry.MagnitudeWeightMassPolynomial
 import GaloisForLFunctions.HTGeometry.PolynomialPhaseLockAssembly
 import GaloisForLFunctions.HTGeometry.PolynomialPowerExplicitConfinement
 import GaloisForLFunctions.HTGeometry.PolynomialTaylorProuhetPhaseLock
+import GaloisForLFunctions.HTGeometry.FormalMahlerIntegerNormalization
 import Mathlib.LinearAlgebra.Lagrange
 
 /-!
@@ -2203,9 +2204,8 @@ theorem norm_normalized_gaussianExteriorAtom_le
           (((A + 1) ^ magnitudeMaxJetOrder n Q : ℕ) : ℝ) ≤
             (1 + (A : ℝ)) ^ (magnitudeMaxJetOrder n Q + P) := by
         push_cast
-        exact pow_le_pow_right₀ (by positivity)
-          (by linarith : (1 : ℝ) ≤ 1 + A)
-          (Nat.le_add_right _ _)
+        rw [add_comm (A : ℝ) 1]
+        exact pow_le_pow_right₀ (by positivity) (Nat.le_add_right _ _)
       rw [hweightEval]
       calc
         ‖(polynomialPatternWeightPoly n D A τ Q p).eval (q : ℂ) /
@@ -2233,9 +2233,8 @@ theorem norm_normalized_gaussianExteriorAtom_le
           (((A + 1) ^ P : ℕ) : ℝ) ≤
             (1 + (A : ℝ)) ^ (magnitudeMaxJetOrder n Q + P) := by
         push_cast
-        exact pow_le_pow_right₀ (by positivity)
-          (by linarith : (1 : ℝ) ≤ 1 + A)
-          (Nat.le_add_left P _)
+        rw [add_comm (A : ℝ) 1]
+        exact pow_le_pow_right₀ (by positivity) (Nat.le_add_left P _)
       calc
         ‖aevalWeight n (D * q + τ) Q ν / (q : ℂ) ^ H‖ ≤
             (q : ℝ) ^ P := hdivMass
@@ -2396,11 +2395,12 @@ theorem sum_norm_normalized_gaussianExteriorActiveAtoms_le_tail
             Real.exp (-B *
               ((gaussianOffsetPatternEnergy
                 (gaussianOffsetPatternOfKey q ν.1) : ℝ) - Q₀)) := by
-      simpa only [E] using Finset.sum_attach
+      simpa only [E] using (Finset.sum_attach
         (gaussianExteriorActiveAtoms n D τ Q S q R)
         (fun ν => ‖aevalWeight n (D * q + τ) Q ν / (q : ℂ) ^ H‖ *
           Real.exp (-B *
-            ((gaussianOffsetPatternEnergy (gaussianOffsetPatternOfKey q ν) : ℝ) - Q₀)))
+            ((gaussianOffsetPatternEnergy
+              (gaussianOffsetPatternOfKey q ν) : ℝ) - Q₀)))).symm
     _ ≤ ∑ ν : ↥E, gaussianADEExteriorConstant n D Q B Q₀ P *
           g (encode ν) := Finset.sum_le_sum fun ν _hν => hpoint ν
     _ = gaussianADEExteriorConstant n D Q B Q₀ P *
@@ -2548,7 +2548,7 @@ theorem sum_gaussianFaceWeight_mul_phase_eq_interior
         exact hνNot (Finset.mem_filter.mpr ⟨hνC, hactive⟩)
       have hwzero := aevalWeight_eq_zero_of_not_mem_activeAevalAtoms hnotActive
       dsimp only [f, gaussianNormalizedADETerm]
-      rw [hwzero, zero_div, zero_mul]
+      simp only [hwzero, zero_div, zero_mul]
     _ = ∑ ν ∈ gaussianInteriorActiveAtoms n D τ Q S q K, f ν := by
       rw [gaussianInteriorActiveAtoms_eq_filter_image_face hKq]
       rfl
@@ -3813,6 +3813,286 @@ theorem norm_subface_sum_le_remainder_of_sum_eq_zero
   rw [hbalance, norm_neg]
   exact norm_sum_le _ _
 
+/-- Cancellation-preserving exact-identity splitter.  The gap aggregate remains inside one norm;
+only the genuinely exterior class is replaced by its norm mass. -/
+theorem norm_subface_sum_le_norm_gap_add_exterior_of_sum_eq_zero
+    {α : Type*} [DecidableEq α]
+    (T C G E : Finset α) (hCT : C ⊆ T)
+    (hrem : T \ C = G ∪ E) (hGE : Disjoint G E)
+    (f : α → ℂ) (hzero : ∑ x ∈ T, f x = 0) :
+    ‖∑ x ∈ C, f x‖ ≤
+      ‖∑ x ∈ G, f x‖ + ∑ x ∈ E, ‖f x‖ := by
+  have hbalance := normalized_cluster_balance_of_identity T C hCT f hzero
+  rw [hbalance, norm_neg, hrem, Finset.sum_union hGE]
+  exact (norm_add_le _ _).trans
+    (add_le_add_left (norm_sum_le _ _) _)
+
+/-- The exact normalized ADE coefficient identity written directly in terms of
+`gaussianNormalizedADETerm`. -/
+theorem sum_gaussianNormalizedADETerm_active_eq_zero
+    {B m : ℝ} {n N H q : ℕ}
+    (F : PowerSeries ℂ) (Q : MvPolynomial (Fin (n + 2)) ℂ)
+    (hrel : aeval (formalJets n F) Q = 0) :
+    ∑ ν ∈ activeAevalAtoms n N Q,
+      gaussianNormalizedADETerm F n N H Q B m q ν = 0 := by
+  let fraw : (ℕ →₀ ℕ) → ℂ := fun ν =>
+    aevalWeight n N Q ν *
+      (Real.exp (-(atomValuation (fun i => B * (i : ℝ) ^ 2) ν - m)) : ℂ) *
+        normalizedAtomPhase F (fun i => B * (i : ℝ) ^ 2) ν
+  have hzeroRaw : ∑ ν ∈ activeAevalAtoms n N Q, fraw ν = 0 := by
+    simpa only [fraw] using normalized_active_aeval_coefficient_identity
+      n N F Q (fun i => B * (i : ℝ) ^ 2) hrel m
+  calc
+    (∑ ν ∈ activeAevalAtoms n N Q,
+        gaussianNormalizedADETerm F n N H Q B m q ν) =
+        (∑ ν ∈ activeAevalAtoms n N Q, fraw ν) / (q : ℂ) ^ H := by
+      rw [Finset.sum_div]
+      apply Finset.sum_congr rfl
+      intro ν _hν
+      dsimp only [gaussianNormalizedADETerm, fraw]
+      ring
+    _ = 0 := by rw [hzeroRaw, zero_div]
+
+/-- Exact four-way Gaussian ADE estimate.  Lower-degree and larger-source atoms remain one
+cancellation-sensitive gap aggregate; only the exterior least-source class is estimated termwise. -/
+theorem norm_sum_gaussianInteriorActiveAtoms_le_gap_add_exterior
+    {B m : ℝ} {n D τ H q R : ℕ}
+    {Q : MvPolynomial (Fin (n + 2)) ℂ}
+    {anchor : Fin (n + 2) →₀ ℕ} {S : ℤ}
+    (F : PowerSeries ℂ)
+    (hrel : aeval (formalJets n F) Q = 0)
+    (ha : anchor ∈ Q.support)
+    (haD : jetMonomialDegree n anchor = D)
+    (haMax : ∀ a ∈ Q.support,
+      jetMonomialDegree n a = D →
+        magnitudeShiftCode n Q a ≤ magnitudeShiftCode n Q anchor)
+    (hDmax : D = magnitudeMaxJetDegree n Q)
+    (hS : S + (magnitudeShiftCode n Q anchor : ℤ) =
+      ((τ + magnitudeMaxJetOrder n Q : ℕ) : ℤ)) :
+    ‖∑ ν ∈ gaussianInteriorActiveAtoms n D τ Q S q R,
+        gaussianNormalizedADETerm F n (D * q + τ) H Q B m q ν‖ ≤
+      ‖∑ ν ∈ gaussianGapActiveAtoms n D τ Q S q,
+        gaussianNormalizedADETerm F n (D * q + τ) H Q B m q ν‖ +
+      ∑ ν ∈ gaussianExteriorActiveAtoms n D τ Q S q R,
+        ‖gaussianNormalizedADETerm F n (D * q + τ) H Q B m q ν‖ := by
+  classical
+  let T := activeAevalAtoms n (D * q + τ) Q
+  let I := gaussianInteriorActiveAtoms n D τ Q S q R
+  let G := gaussianGapActiveAtoms n D τ Q S q
+  let E := gaussianExteriorActiveAtoms n D τ Q S q R
+  let f : (ℕ →₀ ℕ) → ℂ := fun ν =>
+    gaussianNormalizedADETerm F n (D * q + τ) H Q B m q ν
+  have hIT : I ⊆ T := by
+    intro ν hν
+    exact (Finset.mem_filter.mp hν).1
+  have hrem : T \ I = G ∪ E := by
+    simpa only [T, I, G, E] using
+      activeAevalAtoms_sdiff_gaussianInterior_eq_gap_union_exterior
+        ha haD haMax hDmax hS
+  have hGE : Disjoint G E := by
+    simpa only [G, E] using
+      (gaussianGapActiveAtoms_disjoint_gaussianExteriorActiveAtoms
+        (n := n) (D := D) (τ := τ) (q := q) (R := R) (Q := Q) (S := S))
+  have hzero : ∑ ν ∈ T, f ν = 0 := by
+    simpa only [T, f] using
+      sum_gaussianNormalizedADETerm_active_eq_zero
+        (B := B) (m := m) (H := H) (q := q) F Q hrel
+  simpa only [I, G, E, f] using
+    norm_subface_sum_le_norm_gap_add_exterior_of_sum_eq_zero
+      T I G E hIT hrem hGE f hzero
+
+/-- Every enlarged finite Gaussian face is eventually bounded by one fixed-constant ambient
+lattice tail.  The enlarged face radius is `R + R₀`, so it always contains the stable atom; the
+right-hand tail still starts outside the requested compiler radius `R`. -/
+theorem exists_eventually_norm_gaussianFaceCluster_le_tail
+    {B : ℝ} (hB : 0 < B)
+    {F : PowerSeries ℂ} {u : ℕ → ℂ}
+    {n D τ H : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
+    {anchor : Fin (n + 2) →₀ ℕ} {S : ℤ}
+    {R₀ : ℕ} {a₀ : ℤ →₀ ℕ}
+    (hcoeff : ∀ i, PowerSeries.coeff i F =
+      ((Real.exp (-(B * (i : ℝ) ^ 2)) : ℝ) : ℂ) * u i)
+    (huNorm : ∀ i, ‖u i‖ = 1)
+    (hrel : aeval (formalJets n F) Q = 0)
+    (ha : anchor ∈ Q.support)
+    (haD : jetMonomialDegree n anchor = D)
+    (haMax : ∀ m ∈ Q.support,
+      jetMonomialDegree n m = D →
+        magnitudeShiftCode n Q m ≤ magnitudeShiftCode n Q anchor)
+    (hDmax : D = magnitudeMaxJetDegree n Q) (hD : 0 < D)
+    (hS : S + (magnitudeShiftCode n Q anchor : ℤ) =
+      ((τ + magnitudeMaxJetOrder n Q : ℕ) : ℤ))
+    (ha₀ : a₀ ∈ gaussianOffsetFace D S R₀)
+    (hHJ : H ≤ magnitudeMaxJetOrder n Q)
+    (huniform : ∀ (A : ℕ) (a : ℤ →₀ ℕ)
+        (haA : a ∈ gaussianOffsetFace D S A),
+      (polynomialPatternWeightPoly n D A τ Q
+        (gaussianOffsetPatternWindow a
+          (gaussianOffsetFace_totalCount haA) A)).natDegree ≤ H) :
+    ∃ P : ℕ, ∀ R : ℕ, ∀ᶠ t : ℕ in atTop,
+      ‖∑ p ∈ gaussianPolynomialPatternFace D S (R + R₀),
+        gaussianFaceWeight n D τ Q B
+            (gaussianOffsetPatternEnergy a₀ : ℝ) H (R + R₀)
+            (t + (R + R₀)) p *
+          ∏ r : Fin (2 * (R + R₀) + 1),
+            u (t + (r : ℕ)) ^ (p r : ℕ)‖ ≤
+        (gaussianADEExteriorConstant n D Q B
+            (gaussianOffsetPatternEnergy a₀ : ℝ) P + 1) *
+          ∑' z : {z : Fin D → ℤ // z ∉ integerLatticeBox (Fin D) R},
+            (1 + (integerLatticeMaxNatAbs z.1 : ℝ)) ^
+                (magnitudeMaxJetOrder n Q + P) *
+              Real.exp (-(B / 2) *
+                (gaussianOffsetEnergy z.1 -
+                  (gaussianOffsetPatternEnergy a₀ : ℝ))) := by
+  classical
+  letI : Nonempty (Fin D) := Fin.pos_iff_nonempty.mp hD
+  have hb : ∀ i, ‖PowerSeries.coeff i F‖ =
+      Real.exp (-(B * (i : ℝ) ^ 2)) := by
+    intro i
+    rw [hcoeff, norm_mul, huNorm, mul_one, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+  obtain ⟨P, hmass⟩ := exists_aevalWeight_mass_natPow_bound n D τ Q
+  refine ⟨P, ?_⟩
+  intro R
+  let K := R + R₀
+  let Q₀ : ℝ := gaussianOffsetPatternEnergy a₀
+  let J := magnitudeMaxJetOrder n Q + P
+  let C := gaussianADEExteriorConstant n D Q B Q₀ P
+  let Tail : ℝ :=
+    ∑' z : {z : Fin D → ℤ // z ∉ integerLatticeBox (Fin D) R},
+      (1 + (integerLatticeMaxNatAbs z.1 : ℝ)) ^ J *
+        Real.exp (-(B / 2) * (gaussianOffsetEnergy z.1 - Q₀))
+  have hTail : 0 < Tail := by
+    simpa only [Tail, J] using
+      gaussianExteriorTail_pos (Fin D) J (by linarith : 0 < B / 2) Q₀ R
+  have hgap := tendsto_gaussianGapResidual_zero (H := H) hB F hb
+    ha haD haMax hDmax hD hS ha₀
+  have hgapShift : Tendsto (fun t : ℕ =>
+      ‖gaussianGapResidual F n D τ Q B S H R₀ a₀ (t + R)‖)
+      atTop (𝗕 0) := by
+    simpa only [norm_zero] using hgap.norm.comp (tendsto_add_atTop_nat R)
+  have hgapSmall : ∀ᶠ t : ℕ in atTop,
+      ‖gaussianGapResidual F n D τ Q B S H R₀ a₀ (t + R)‖ ≤ Tail :=
+    (hgapShift.eventually_lt_const hTail).mono fun _ ht => ht.le
+  have hmassShift := (tendsto_add_atTop_nat K).eventually hmass
+  filter_upwards [hgapSmall, hmassShift,
+    eventually_ge_atTop (max n 1)] with t hgapT hmassT ht
+  let q := t + K
+  have hKq : K ≤ q := by dsimp only [q]; omega
+  have hlarge : K + n ≤ q := by
+    have hn : n ≤ t := (le_max_left n 1).trans ht
+    dsimp only [q]
+    omega
+  have hq : 1 ≤ q := by
+    have ht1 : 1 ≤ t := (le_max_right n 1).trans ht
+    dsimp only [q]
+    omega
+  have hRq : R ≤ q := by dsimp only [q, K]; omega
+  have hfaceEq := sum_gaussianFaceWeight_mul_phase_eq_interior
+    (n := n) (D := D) (τ := τ) (H := H) (K := K) (q := q)
+    (Q := Q) (S := S) (Q₀ := Q₀) F u hcoeff hKq hlarge
+  have hsplit := norm_sum_gaussianInteriorActiveAtoms_le_gap_add_exterior
+    (B := B) (m := B * ((D : ℝ) * (q : ℝ) ^ 2 +
+      2 * (q : ℝ) * (S : ℝ) + Q₀))
+    (H := H) (q := q) (R := K) F hrel ha haD haMax hDmax hS
+  have hgapEq :
+      (∑ ν ∈ gaussianGapActiveAtoms n D τ Q S q,
+        gaussianNormalizedADETerm F n (D * q + τ) H Q B
+          (B * ((D : ℝ) * (q : ℝ) ^ 2 +
+            2 * (q : ℝ) * (S : ℝ) + Q₀)) q ν) =
+        gaussianGapResidual F n D τ Q B S H R₀ a₀ (t + R) := by
+    have hbase := atomValuation_gaussianOffsetShiftedKey B ha₀
+      (by dsimp only [q, K]; omega : R₀ ≤ q)
+    simp only [gaussianGapResidual, gaussianNormalizedADETerm]
+    simp only [q, K, add_assoc]
+    rw [hbase]
+    rfl
+  have hnormExterior :
+      (∑ ν ∈ gaussianExteriorActiveAtoms n D τ Q S q K,
+          ‖gaussianNormalizedADETerm F n (D * q + τ) H Q B
+            (B * ((D : ℝ) * (q : ℝ) ^ 2 +
+              2 * (q : ℝ) * (S : ℝ) + Q₀)) q ν‖) =
+        ∑ ν ∈ gaussianExteriorActiveAtoms n D τ Q S q K,
+          ‖aevalWeight n (D * q + τ) Q ν / (q : ℂ) ^ H‖ *
+            Real.exp (-B *
+              ((gaussianOffsetPatternEnergy
+                (gaussianOffsetPatternOfKey q ν) : ℝ) - Q₀)) := by
+    apply Finset.sum_congr rfl
+    intro ν hν
+    have hνData := (Finset.mem_filter.mp hν).2
+    exact norm_gaussianNormalizedADETerm_of_leastSource
+      F hb hνData.1 hνData.2.1
+  have hsubset := gaussianExteriorActiveAtoms_subset_of_radius_le
+    (n := n) (D := D) (τ := τ) (q := q) (Q := Q) (S := S)
+    (show R ≤ K by dsimp only [K]; omega)
+  have hsmallExterior :
+      (∑ ν ∈ gaussianExteriorActiveAtoms n D τ Q S q K,
+        ‖aevalWeight n (D * q + τ) Q ν / (q : ℂ) ^ H‖ *
+          Real.exp (-B *
+            ((gaussianOffsetPatternEnergy
+              (gaussianOffsetPatternOfKey q ν) : ℝ) - Q₀))) ≤
+        ∑ ν ∈ gaussianExteriorActiveAtoms n D τ Q S q R,
+        ‖aevalWeight n (D * q + τ) Q ν / (q : ℂ) ^ H‖ *
+          Real.exp (-B *
+            ((gaussianOffsetPatternEnergy
+              (gaussianOffsetPatternOfKey q ν) : ℝ) - Q₀)) := by
+    exact Finset.sum_le_sum_of_subset_of_nonneg hsubset
+      (fun _ _ _ => by positivity)
+  have htail := sum_norm_normalized_gaussianExteriorActiveAtoms_le_tail
+    (n := n) (D := D) (τ := τ) (H := H) (P := P) (q := q) (R := R)
+    (Q := Q) (S := S) (Q₀ := Q₀)
+    hB hD hmassT huniform hHJ hq hRq
+  have hexterior :
+      (∑ ν ∈ gaussianExteriorActiveAtoms n D τ Q S q K,
+        ‖gaussianNormalizedADETerm F n (D * q + τ) H Q B
+          (B * ((D : ℝ) * (q : ℝ) ^ 2 +
+            2 * (q : ℝ) * (S : ℝ) + Q₀)) q ν‖) ≤ C * Tail := by
+    rw [hnormExterior]
+    exact hsmallExterior.trans (by simpa only [C, Tail, J] using htail)
+  have hfaceEq' :
+      (∑ p ∈ gaussianPolynomialPatternFace D S K,
+        gaussianFaceWeight n D τ Q B Q₀ H K q p *
+          ∏ r : Fin (2 * K + 1), u (t + (r : ℕ)) ^ (p r : ℕ)) =
+        ∑ ν ∈ gaussianInteriorActiveAtoms n D τ Q S q K,
+          gaussianNormalizedADETerm F n (D * q + τ) H Q B
+            (B * ((D : ℝ) * (q : ℝ) ^ 2 +
+              2 * (q : ℝ) * (S : ℝ) + Q₀)) q ν := by
+    simpa [q, windowShift] using hfaceEq
+  rw [show
+    (∑ p ∈ gaussianPolynomialPatternFace D S (R + R₀),
+      gaussianFaceWeight n D τ Q B
+          (gaussianOffsetPatternEnergy a₀ : ℝ) H (R + R₀)
+          (t + (R + R₀)) p *
+        ∏ r : Fin (2 * (R + R₀) + 1),
+          u (t + (r : ℕ)) ^ (p r : ℕ)) =
+      ∑ ν ∈ gaussianInteriorActiveAtoms n D τ Q S q K,
+        gaussianNormalizedADETerm F n (D * q + τ) H Q B
+          (B * ((D : ℝ) * (q : ℝ) ^ 2 +
+            2 * (q : ℝ) * (S : ℝ) + Q₀)) q ν by
+      simpa only [K, Q₀, q] using hfaceEq']
+  calc
+    ‖∑ ν ∈ gaussianInteriorActiveAtoms n D τ Q S q K,
+        gaussianNormalizedADETerm F n (D * q + τ) H Q B
+          (B * ((D : ℝ) * (q : ℝ) ^ 2 +
+            2 * (q : ℝ) * (S : ℝ) + Q₀)) q ν‖
+        ≤ ‖gaussianGapResidual F n D τ Q B S H R₀ a₀ (t + R)‖ +
+            ∑ ν ∈ gaussianExteriorActiveAtoms n D τ Q S q K,
+              ‖gaussianNormalizedADETerm F n (D * q + τ) H Q B
+                (B * ((D : ℝ) * (q : ℝ) ^ 2 +
+                  2 * (q : ℝ) * (S : ℝ) + Q₀)) q ν‖ := by
+          simpa only [hgapEq] using hsplit
+    _ ≤ Tail + C * Tail := add_le_add hgapT hexterior
+    _ = (C + 1) * Tail := by ring
+    _ = (gaussianADEExteriorConstant n D Q B
+          (gaussianOffsetPatternEnergy a₀ : ℝ) P + 1) *
+        ∑' z : {z : Fin D → ℤ // z ∉ integerLatticeBox (Fin D) R},
+          (1 + (integerLatticeMaxNatAbs z.1 : ℝ)) ^
+              (magnitudeMaxJetOrder n Q + P) *
+            Real.exp (-(B / 2) *
+              (gaussianOffsetEnergy z.1 -
+                (gaussianOffsetPatternEnergy a₀ : ℝ))) := by
+      rfl
+
 /-- Concrete normalized-ADE splitter.  It applies the exact coefficient identity, divides by one
 common polynomial normalization, and uses the unit norm of every normalized atom phase. -/
 theorem norm_normalized_active_aeval_subface_le_remainder
@@ -4104,6 +4384,131 @@ theorem false_of_torsionLanguageUniversal_gaussianTailLock
     u hu M F w ell p₀ epsilon hepsilon hepsilonZero hp₀ hw hface
       ell₀ hell₀ hell₀ne
 
+/-! ## Exclusion of arbitrary integer ADEs -/
+
+/-- A nonzero integer-normalized ADE is incompatible with a full-support Gaussian magnitude and
+a torsion-language-universal unit phase.  The least source, stable maximal-degree weight, complete
+Gaussian exterior estimate, and approximate Fourier exhaustion are all constructed internally. -/
+theorem false_of_integerADE_gaussian_torsionLanguageUniversal
+    {B : ℝ} (hB : 0 < B)
+    {F : PowerSeries ℂ} {u : ℕ → ℂ}
+    (hcoeff : ∀ i, PowerSeries.coeff i F =
+      ((Real.exp (-(B * (i : ℝ) ^ 2)) : ℝ) : ℂ) * u i)
+    (huNorm : ∀ i, ‖u i‖ = 1)
+    (hu : TorsionLanguageUniversal u)
+    {n : ℕ} (Q : MvPolynomial (Fin (n + 2)) ℂ) (hQ : Q ≠ 0)
+    (hQint : ∀ m, ∃ z : ℤ, MvPolynomial.coeff m Q = (z : ℂ))
+    (hrel : aeval (formalJets n F) Q = 0) :
+    False := by
+  classical
+  have hb : ∀ i, ‖PowerSeries.coeff i F‖ =
+      Real.exp (-(B * (i : ℝ) ^ 2)) := by
+    intro i
+    rw [hcoeff, norm_mul, huNorm, mul_one, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+  have hDpos := magnitudeMaxJetDegree_pos_of_integer_relation
+    F hb Q hQ hQint hrel
+  obtain ⟨anchor, ha, haD, haMax⟩ :=
+    exists_maxShiftCode_topDegree_anchor Q hDpos
+  let D := jetMonomialDegree n anchor
+  have hD : 0 < D := by simpa only [D, haD] using hDpos
+  have hDmax : D = magnitudeMaxJetDegree n Q := by
+    simpa only [D] using haD
+  obtain ⟨S, H, R₀, a₀, ha₀, ell, hS, hHJ, hell,
+      hstable, huniform⟩ :=
+    exists_gaussianOffsetFace_maximal_stable_nonzero_leadingCoefficient
+      ha (by simpa only [D] using hD) 0 (by simpa only [D] using hD)
+  obtain ⟨P, htail⟩ :=
+    exists_eventually_norm_gaussianFaceCluster_le_tail hB
+      hcoeff huNorm hrel ha (by rfl)
+      (by
+        intro m hm hmD
+        apply haMax m hm
+        simpa only [D, haD] using hmD)
+      hDmax hD hS ha₀ hHJ huniform
+  letI : Nonempty (Fin D) := Fin.pos_iff_nonempty.mp hD
+  let Q₀ : ℝ := gaussianOffsetPatternEnergy a₀
+  let J := magnitudeMaxJetOrder n Q + P
+  let C := gaussianADEExteriorConstant n D Q B Q₀ P + 1
+  let M : ℕ → ℕ := fun R => 2 * (R + R₀) + 1
+  let Face : ∀ R, Finset (Fin (M R) → Fin (D + 1)) := fun R =>
+    gaussianPolynomialPatternFace D S (R + R₀)
+  let w : ∀ R, ℕ → (Fin (M R) → Fin (D + 1)) → ℂ :=
+    fun R t p => gaussianFaceWeight n D 0 Q B Q₀ H (R + R₀)
+      (t + (R + R₀)) p
+  let ellFace : ∀ R, (Fin (M R) → Fin (D + 1)) → ℂ :=
+    fun R p => gaussianFaceWeightLimit n D 0 Q B Q₀ H (R + R₀) p
+  let p₀ : ∀ R, Fin (M R) → Fin (D + 1) := fun R =>
+    gaussianOffsetPatternWindow a₀
+      (gaussianOffsetFace_totalCount
+        (gaussianOffsetFace_mono (show R₀ ≤ R + R₀ by omega) ha₀))
+      (R + R₀)
+  have hp₀ : ∀ R, p₀ R ∈ Face R := by
+    intro R
+    let haR := gaussianOffsetFace_mono
+      (show R₀ ≤ R + R₀ by omega) ha₀
+    simpa only [p₀, Face] using
+      gaussianOffsetPatternWindow_mem_gaussianPolynomialPatternFace haR
+  have hw : ∀ R, ∀ p ∈ Face R,
+      Tendsto (fun t => w R t p) atTop (𝗕 (ellFace R p)) := by
+    intro R p hp
+    let K := R + R₀
+    have hpData : ( ∑ r, (p r : ℕ)) = D ∧
+        (polynomialPatternSourceSum p : ℤ) - (K : ℤ) * (D : ℤ) = S := by
+      simpa only [Face, K] using mem_gaussianPolynomialPatternFace.mp hp
+    let a := gaussianOffsetPatternOfWindow K p
+    let haFace : a ∈ gaussianOffsetFace D S K :=
+      gaussianOffsetPatternOfWindow_mem_face_centered p hpData.1 hpData.2
+    have hback : gaussianOffsetPatternWindow a
+        (gaussianOffsetFace_totalCount haFace) K = p := by
+      simpa only [a, haFace] using
+        gaussianOffsetPatternWindow_patternOfWindow_eq p hpData.1 hpData.2
+    have hdegree := huniform K a haFace
+    rw [hback] at hdegree
+    simpa only [w, ellFace, K] using
+      tendsto_gaussianFaceWeight Q B Q₀ p hdegree
+  have hface : ∀ R, ∀ᶠ t : ℕ in atTop,
+      ‖∑ p ∈ Face R, w R t p *
+        ∏ r : Fin (M R), u (t + (r : ℕ)) ^ (p r : ℕ)‖ ≤
+        C * ∑' z : {z : Fin D → ℤ // z ∉ integerLatticeBox (Fin D) R},
+          (1 + (integerLatticeMaxNatAbs z.1 : ℝ)) ^ J *
+            Real.exp (-(B / 2) * (gaussianOffsetEnergy z.1 - Q₀)) := by
+    intro R
+    simpa only [Face, w, M, C, J, Q₀] using htail R
+  have hell₀ : ∀ R, ellFace R (p₀ R) = ell := by
+    intro R
+    let K := R + R₀
+    let haR := gaussianOffsetFace_mono (show R₀ ≤ K by
+      dsimp only [K]
+      omega) ha₀
+    have hcoeffStable := hstable K (by dsimp only [K]; omega)
+    have henergy : gaussianWindowPatternEnergy
+        (gaussianOffsetPatternWindow a₀
+          (gaussianOffsetFace_totalCount haR) K) =
+        gaussianOffsetPatternEnergy a₀ := by
+      simpa only [gaussianWindowPatternEnergy] using
+        gaussianOffsetPatternWindow_energy haR
+    dsimp only [ellFace, p₀, gaussianFaceWeightLimit]
+    change
+      (polynomialPatternWeightPoly n D K 0 Q
+        (gaussianOffsetPatternWindow a₀
+          (gaussianOffsetFace_totalCount haR) K)).coeff H *
+          (Real.exp (-B *
+            ((gaussianWindowPatternEnergy
+              (gaussianOffsetPatternWindow a₀
+                (gaussianOffsetFace_totalCount haR) K) : ℝ) - Q₀)) : ℂ) = ell
+    rw [hcoeffStable, henergy]
+    simp only [Q₀, sub_self, mul_zero, neg_zero, Real.exp_zero,
+      Complex.ofReal_one, mul_one]
+  have hC : 0 ≤ C := by
+    dsimp only [C]
+    exact add_nonneg
+      (gaussianADEExteriorConstant_nonneg n D Q hB.le Q₀ P) zero_le_one
+  exact false_of_torsionLanguageUniversal_gaussianTailLock
+    (Fin D) (D := D) (J := J) (B := B / 2) (by linarith)
+    Q₀ C hC u hu M Face w ellFace p₀ hp₀ hw hface
+      ell hell₀ hell
+
 /-! ## Entire Gaussian phase series -/
 
 /-- Full-support Gaussian coefficients with an arbitrary complex phase. -/
@@ -4218,6 +4623,55 @@ theorem taylorPS_gaussianPhaseFunction
   exact mul_div_cancel_left₀ (gaussianPhaseCoeff B u n)
     (by exact_mod_cast Nat.factorial_ne_zero n)
 
+/-- **Gaussian torsion-language hypertranscendence.**  A smooth function with exact full-support
+Taylor magnitudes `exp (-B n²)` and a torsion-language-universal unit phase satisfies no algebraic
+differential equation. -/
+theorem hypertranscendental_of_gaussian_torsionLanguageUniversal
+    {f : ℂ → ℂ} (hf : ContDiff ℂ (⊤ : ℕ∞) f)
+    {B : ℝ} (hB : 0 < B) {u : ℕ → ℂ}
+    (hcoeff : ∀ i, PowerSeries.coeff i (taylorPS f) =
+      ((Real.exp (-(B * (i : ℝ) ^ 2)) : ℝ) : ℂ) * u i)
+    (huNorm : ∀ i, ‖u i‖ = 1)
+    (hu : TorsionLanguageUniversal u) :
+    Hypertranscendental f := by
+  intro hDA
+  obtain ⟨n, P, hP, hPfun⟩ := hDA
+  have hjz : jetFun f n P = 0 := by
+    funext z
+    exact hPfun z
+  have hformal : aeval (formalJets n (taylorPS f)) P = 0 := by
+    rw [← taylorPS_jetFun f n hf P, hjz,
+      show (0 : ℂ → ℂ) = fun _ => (0 : ℂ) from rfl,
+      taylorPS_const, map_zero]
+  obtain ⟨n', Q, hQ, hQint, hrel⟩ :=
+    formal_mahler_integer_normalization hP hformal
+  exact false_of_integerADE_gaussian_torsionLanguageUniversal
+    hB hcoeff huNorm hu Q hQ hQint hrel
+
+/-- Every entire Gaussian series with a torsion-language-universal unit phase is
+hypertranscendental. -/
+theorem hypertranscendental_gaussianPhaseFunction
+    {B : ℝ} (hB : 0 < B) {u : ℕ → ℂ}
+    (huNorm : ∀ n, ‖u n‖ = 1) (hu : TorsionLanguageUniversal u) :
+    Hypertranscendental (gaussianPhaseFunction B u) := by
+  apply hypertranscendental_of_gaussian_torsionLanguageUniversal
+    (contDiff_gaussianPhaseFunction hB huNorm) hB
+  · intro n
+    rw [taylorPS_gaussianPhaseFunction hB huNorm n]
+    rfl
+  · exact huNorm
+  · exact hu
+
+/-- The explicit concatenated universal torsion phase produces a concrete entire
+hypertranscendental Gaussian series for every `B > 0`. -/
+theorem hypertranscendental_universalUnit_gaussianPhaseFunction
+    {B : ℝ} (hB : 0 < B) :
+    Hypertranscendental
+      (gaussianPhaseFunction B universalUnitTorsionPhase) :=
+  hypertranscendental_gaussianPhaseFunction hB
+    universalUnitTorsionPhase_norm
+    universalUnitTorsionPhase_torsionLanguageUniversal
+
 /-- The explicit unit-filled universal torsion phase therefore gives an entire Gaussian series
 whose Taylor phase is torsion-language universal. -/
 theorem exists_entire_gaussian_torsionLanguageUniversal
@@ -4232,6 +4686,24 @@ theorem exists_entire_gaussian_torsionLanguageUniversal
   · exact analyticOnNhd_gaussianPhaseFunction hB universalUnitTorsionPhase_norm
   · intro n
     exact taylorPS_gaussianPhaseFunction hB universalUnitTorsionPhase_norm n
+
+/-- Existence form of the Gaussian theorem: for every positive `B` there is an explicit entire
+hypertranscendental function with full Gaussian Taylor support and torsion-language-universal
+unit phase. -/
+theorem exists_entire_hypertranscendental_gaussian_torsionLanguageUniversal
+    (B : ℝ) (hB : 0 < B) :
+    ∃ (f : ℂ → ℂ) (u : ℕ → ℂ),
+      AnalyticOnNhd ℂ f Set.univ ∧ Hypertranscendental f ∧
+      (∀ n, PowerSeries.coeff n (taylorPS f) = gaussianPhaseCoeff B u n) ∧
+      (∀ n, ‖u n‖ = 1) ∧ TorsionLanguageUniversal u := by
+  refine ⟨gaussianPhaseFunction B universalUnitTorsionPhase,
+    universalUnitTorsionPhase,
+    analyticOnNhd_gaussianPhaseFunction hB universalUnitTorsionPhase_norm,
+    hypertranscendental_universalUnit_gaussianPhaseFunction hB, ?_,
+    universalUnitTorsionPhase_norm,
+    universalUnitTorsionPhase_torsionLanguageUniversal⟩
+  intro n
+  exact taylorPS_gaussianPhaseFunction hB universalUnitTorsionPhase_norm n
 
 end
 

@@ -1000,7 +1000,7 @@ theorem primeProfileClockPolynomialSaturatedOver_iff_not_relativeClockIndependen
   · rintro ⟨a, hzero, ha⟩
     refine ⟨a, ha, ?_⟩
     apply (Submodule.Quotient.mk_eq_zero (primeProfileClockSubmodule c)).1
-    rw [Finsupp.linearCombination_apply, map_finsuppSum]
+    rw [map_finsuppSum]
     simpa only [Function.comp_apply, map_smul] using hzero
 
 /-- **Prime-clock saturation correspondence, pivot form.**  A new positive-prime-power carrier

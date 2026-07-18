@@ -275,10 +275,33 @@ eventually strictly below `c` times the negative floor.  The sharper declaration
 `lambda^4 mu_+(lambda)/mu_-(lambda) -> 13 A_4/(11 A_6)`.  All declarations are unconditional and
 axiom-clean.
 
-The remaining Lean boundary is the analytic passage from these two-mode Fuchs models to the exact
-infinite-dimensional constrained optimizers: the normalized prolate-to-Hermite mode convergence,
-uniform secular-tail estimate, the `O(lambda^(-7))` eigenvector rate, and min--max transfer to the
-true second constrained eigenvalue.  The card therefore remains in stage 2.
+The **passage to the exact infinite-dimensional constrained optimizers is now formalized** for
+the Fuchs-rate model in
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateParityExactTransfer.lean`, on top of the
+uniform infinite-tail secular estimate of `ConstrainedProlateInfiniteSecular.lean`.  The
+negative-sector Hermite weight `8/13` and complement `5/13` are evaluated exactly from
+`h_2(0)² = 1/√2`, `h_6(0)² = 5/(8√2)` (`ccm_negativeSector_hermite_weight_eq` and its
+complement).  The offset radial Fuchs family `d_j = M_j λ^{8j+5}e^{−4πλ²}` (indices `4j+2`) is
+proved to satisfy the ordered-triple-with-floor structure and the `λ·d_1/(d_2−d_1) → 0` tail rate
+(`fuchsRate_radial_offset2_struct`, `fuchsRate_step4_tail_ratio_tendsto_zero` — the latter for
+every base index).  Consequently, for the exact infinite constrained ground roots (not two-mode
+truncations):
+
+- `ccm_fuchsModel_negativeSector_root_ratio_tendsto` — `μ_-(λ)/d_6(λ) → 8/13`, eq. `(6)`;
+- `ccm_fuchsModel_negativeSector_gap_ratio_tendsto` — the complementary `5/13` of eq. `(10)`;
+- `ccm_fuchsModel_negativeSector_spectralGap_eventually` — every `c < 5/13` eventually separates
+  all competing secular zeros (the negative-sector simplicity/gap statement);
+- `ccm_fuchsModel_parity_floor_ratio_tendsto_zero` — `μ_+(λ)/μ_-(λ) → 0`, eq. `(9)`;
+- `ccm_fuchsModel_parity_floor_scaled_ratio_tendsto` — `λ⁴μ_+(λ)/μ_-(λ) → 13A_4/(11A_6)`,
+  the sharp form of eq. `(8)`.
+
+All are axiom-clean, with the Fuchs constants abstract (positivity plus tempered growth
+`A_2 ≤ C^j A_{j+2}`).  The hypotheses still open for the *true prolate operator* are the ℓ-side
+inputs: square-summability, the Bessel bound `Σℓ² ≤ 2λ`, and the prolate-to-Hermite limits of
+the first two coordinates in each sector — plus Fuchs asymptotics identifying the true leakages
+with the Fuchs family.  The `O(λ^{-7})` eigenvector rate also remains (the tail-fraction collapse
+of the exact eigenvector is proved in `ConstrainedProlateSecularVector.lean`; the normalized
+distance form is not).  The card remains in stage 2 pending those true-operator inputs.
 
 ## Gates
 
@@ -292,6 +315,10 @@ true second constrained eigenvalue.  The card therefore remains in stage 2.
 - [x] quantified eventual parity dominance `mu_+ < c mu_-` formalized for every `c>0`
 - [x] sharp two-mode `lambda^4`-rescaled parity coefficient formalized in Lean
 - [x] targeted literature search found no parent theorem
-- [ ] transfer the two-mode laws to the exact infinite-dimensional constrained floors in Lean
+- [x] exact infinite-dimensional constrained floors: `8/13`, `5/13`, quantified gap, parity
+  collapse `(9)`, and sharp `lambda^4` coefficient `(8)` formalized in Lean for the Fuchs-rate
+  model (ℓ-side inputs as explicit hypotheses)
+- [ ] true-operator ℓ-side inputs (Bessel bound, prolate-to-Hermite limits) and Fuchs
+  identification in Lean
 - [ ] independent proof audit
 - [ ] bilinear transfer of parity separation to the true restricted Weil form
