@@ -1629,3 +1629,43 @@ weighted_ef.py were sympy conjugate artifacts, cleared).
 with the Clark mass t(c) (both are the "mass at the origin" of their frames); and restate
 type-0 as PSD of SHIFTED HANKEL matrices in the stabilized site weights (the exact-identity
 certificate class, on the arithmetic side at last).
+
+## 2026-07-18 session 2 (cont. 39) — the clock-unit identity; the moment twin closes the full
+## circle onto the box Hankel; the arithmetic Hankel frame honestly closed
+
+**[COLLISION IDENTITY — DERIVED+VERIFIED]** `t(c) = F_osc(2c)/(c * Res_0 F)` with
+`F_osc = F - Res_0 F/sigma`: canonical time = level-free off-diagonal data divided by the
+arch-regularized diagonal — **the sole level-moving object is the UNIT OF THE CLOCK**;
+level-dependence is pure recalibration; type lives in stabilized off-diagonal data.
+Watson end reads all pairs (`a_{2k+1} = (-1)^k P_{2k}/pi`, pair power sums); pole end reads
+the diagonal. Termination = pole of F_osc = type.
+
+**[MOMENT TWIN — and the FULL CIRCLE]** (A) RH-per-box ⟺ `{mu_k := P_{2k}}` is a STIELTJES
+moment sequence (Hankel + shifted Hankel PSD; the off-line atom at `u = -4d^2` kills the
+shift; determinate by geometric growth). The FIRST inequality `mu_1 = P_2 >= 0` is
+`N * p_2 - p_1^2 >= 0` on box Newton sums — **the 2x2 minor of the cont.-22 box
+Hermite-Hankel matrix**: the entire nu/Krein/spectral chain closes its circle onto the
+box-Hankel family. All faces of this program are ONE object — consistency proven; the
+frontier remains the cont.-24 per-box positivity, now enriched by: the type/moment reading,
+the clock-unit identity, the level-stabilization structure, and (below) the band-majorization
+class. (B) The damped site-weight form is the same object with the depth quantifier
+(congruent).
+
+**[ARITHMETIC HANKEL FRAME — HONESTLY CLOSED]** Bookkeeping exact (all level motion in s_0;
+every s_k, k >= 1, level-stable). Unsubtracted: total collapse (infinite band mass —
+Chebyshev). Subtracted nu_sub (psi(x) - x autocorrelation): site weights unchanged, signed
+continuous density cancels the mean growth, still a power spectrum (>= 0 UNCONDITIONALLY) —
+hence PSD is AUTOMATIC wherever finite: **on the arithmetic side RH is CONVERGENCE, not
+positivity** (`type(nu_sub) = 2 sup|beta - 1/2|` exactly; convergence at sigma_0 < 1 ⟺
+zero-free strip of width sigma_0/2 — the classical wall in its cleanest form). Forced
+normalization: the lambda = 0 diagonal (Montgomery's T log T in site costume) is the
+normalizer. **[SURVIVING CERTIFICATE CLASS]** Band-by-band MAJORIZATION of the signed
+continuous (pole/arch-cross) density by the positive LambdaLambda atoms — a comparison of two
+explicit densities, not a positivity of one.
+
+**[NEXT]** (i) Express the moment twin's minors in EF-squared source data via Newton's
+identities and collide determinate-moment uniqueness with the recovery theorem (does
+source-pointwise h(c) determine mu_k?); (ii) formulate the band-majorization statement
+exactly and Gate-3 it (the majorization is level-stable off-diagonal data vs signed
+continuum — check against the transparency catalogue and the classical density-theorem
+literature); (iii) referee cont. 38-39; (iv) queue: analytic-T4; ST1; promotion batch.
